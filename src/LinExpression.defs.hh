@@ -51,7 +51,7 @@ namespace Parma_Polyhedra_Library {
 
 //! A linear expression.
 /*!
-    An object of the class LinExpression represents the linear expression 
+    An object of the class LinExpression represents the linear expression
     \f[
       \sum_{i=0}^{d-1} a_i x_i + b
     \f]
@@ -102,7 +102,7 @@ namespace Parma_Polyhedra_Library {
   e += e1 - e2 - e3;
     \endcode
     Note that, in the second definition of linear expression <CODE>e</CODE>,
-    the double type-coercion is necessary. 
+    the double type-coercion is necessary.
 */
 
 class Parma_Polyhedra_Library::LinExpression : PPL_INTERNAL Row {
@@ -138,31 +138,31 @@ private:
   friend LinExpression
   Parma_Polyhedra_Library::operator +(const LinExpression& e1,
 				      const LinExpression& e2);
-  
+
   //! Returns the linear expression \p n + \p e.
   friend LinExpression
   Parma_Polyhedra_Library::operator +(const Integer& n,
 				      const LinExpression& e);
-  
+
   //! Returns the linear expression \p e + \p n.
   friend LinExpression
   Parma_Polyhedra_Library::operator +(const LinExpression& e,
  				      const Integer& n);
-  
+
   //! Returns the linear expression - \p e.
   friend LinExpression
   Parma_Polyhedra_Library::operator -(const LinExpression& e);
-  
+
   //! Returns the linear expression \p e1 - \p e2.
   friend LinExpression
   Parma_Polyhedra_Library::operator -(const LinExpression& e1,
 				      const LinExpression& e2);
-  
+
   //! Returns the linear expression \p n - \p e.
   friend LinExpression
   Parma_Polyhedra_Library::operator -(const Integer& n,
 				      const LinExpression& e);
-  
+
   //! Returns the linear expression \p e - \p n.
   friend LinExpression
   Parma_Polyhedra_Library::operator -(const LinExpression& e,
@@ -172,7 +172,7 @@ private:
   friend LinExpression
   Parma_Polyhedra_Library::operator *(const Integer& n,
 				      const LinExpression& e);
-  
+
   //! Returns the linear expression \p e * \p n.
   friend LinExpression
   Parma_Polyhedra_Library::operator *(const LinExpression& e,

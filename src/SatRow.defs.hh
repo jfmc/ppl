@@ -100,18 +100,18 @@ public:
   //! Return the size of the row.
   size_t size();
 
-  //! Returns the index of the first set bit and 
+  //! Returns the index of the first set bit and
   //! -1 if no bit is set.
   int first() const;
 
-  //! Returns the index of the first set bit after \p pos 
+  //! Returns the index of the first set bit after \p pos
   //! and -1 if no bit after \p pos is set.
   int next(int pos) const;
 
   //! Returns the index of the last set bit and -1 if no bit is set.
   int last() const;
 
-  //! Returns the index of the first set bit before \p pos 
+  //! Returns the index of the first set bit before \p pos
   //! and -1 if no bits before \p pos is set.
   int prev(int pos) const;
 
@@ -120,7 +120,7 @@ public:
 
   //! Returns <CODE>true</CODE> if no bit is set in the row.
   bool empty() const;
-  
+
   //! Checks if all the invariants are satisfied
   bool OK() const;
 };

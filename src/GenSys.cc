@@ -58,12 +58,12 @@ size_t
 Parma_Polyhedra_Library::GenSys::num_rays() const {
   size_t n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact
-  // that rays and vertices are at the bottom of the system and 
+  // that rays and vertices are at the bottom of the system and
   // rays have the inhomogeneous term equal to zero.
   if (is_sorted()) {
     const GenSys& x = *this;
-    for (size_t i = num_rows(); i != 0 && x[--i].is_ray_or_vertex(); ) 
-      if (x[i][0] == 0) 
+    for (size_t i = num_rows(); i != 0 && x[--i].is_ray_or_vertex(); )
+      if (x[i][0] == 0)
 	++n;
   }
   else
@@ -77,19 +77,19 @@ Parma_Polyhedra_Library::GenSys::num_rays() const {
 
 /*!
   Returns:
-  - <CODE>ALL_SATURATE</CODE> if all generators belong to the hyper-plane 
+  - <CODE>ALL_SATURATE</CODE> if all generators belong to the hyper-plane
     defined by \p c (saturate \p c),
-  - <CODE>ALL_SATISFY</CODE> if all generators satisfy \p c but do not 
+  - <CODE>ALL_SATISFY</CODE> if all generators satisfy \p c but do not
     belong to the hyper-plane defined by \p c,
   - <CODE>NONE_SATISFIES</CODE> if no generators satisfy \p c,
   - <CODE>SOME_SATISFY</CODE> if one or more generators do not satisfy \p c.
 
-  If \p c is an equality, only <CODE>ALL_SATISFY</CODE> 
+  If \p c is an equality, only <CODE>ALL_SATISFY</CODE>
   or <CODE>NONE_SATISFIES</CODE> can be returned.
 */
 PPL::GenSys_Con_Rel
 PPL::GenSys::satisfy(const Constraint& c) const {
-  // Generators and constraint `c' have to be given in 
+  // Generators and constraint `c' have to be given in
   // spaces having the same dimension.
   assert(num_columns() == c.size());
   const  GenSys& gen_sys = *this;
@@ -100,7 +100,7 @@ PPL::GenSys::satisfy(const Constraint& c) const {
       if (gen_sys[i] * c != 0)
 	// There is at least one generator that does not satisfy `c'.
 	return SOME_SATISFY;
-    // All generators satisfy `c' i.e., saturate it because 
+    // All generators satisfy `c' i.e., saturate it because
     // `c' is an equality.
     return ALL_SATURATE;
   }
@@ -137,12 +137,12 @@ PPL::GenSys::satisfy(const Constraint& c) const {
 		// There are some generators satisfying c in two cases:
 		// - if r satisfy c but none of the generators that
 		//   we have already considered satisfy c;
-		// - if r does not satisfy c and there was some generators 
+		// - if r does not satisfy c and there was some generators
 		//   that we have already considered that do not satisfy c.
 		return SOME_SATISFY;
 	      if (sp_sign > 0)
-		// Since we always return if res == SOME_SATISFIES, 
-		// at this point r and all the previous generators 
+		// Since we always return if res == SOME_SATISFIES,
+		// at this point r and all the previous generators
 		// satisfy c.
 		res = ALL_SATISFY;
 	    }
@@ -153,34 +153,34 @@ PPL::GenSys::satisfy(const Constraint& c) const {
 	  if (first_ray_or_vertex) {
 	    // It is the first time that we have
 	    // a vertex and we have never had a ray.
-	    // If some lines do not saturate c we have already returned, 
+	    // If some lines do not saturate c we have already returned,
 	    // so here all lines checked until here (if any) saturate c.
 	    // - If r (that is a vertex) satisfy c then all
 	    //   the generators checked until here satisfy c.
-	    // - If r saturate c then all the generators 
+	    // - If r saturate c then all the generators
 	    //   checked until here saturate c.
 	    // - If r does not verify c we have only
 	    //   generators that saturate or do not verify c,
 	    //   then none of them satisfy c.
-	    res = (sp_sign > 0) ? ALL_SATISFY : 
+	    res = (sp_sign > 0) ? ALL_SATISFY :
 	      ((sp_sign == 0) ? ALL_SATURATE : NONE_SATISFIES);
 	    first_ray_or_vertex = false;
 	  }
 	  else{
-	    // It is not the first time we find a 
-	    // vertex or it is the first found but 
+	    // It is not the first time we find a
+	    // vertex or it is the first found but
 	    // but it has been preceded by a ray.
 	    if ((sp_sign >= 0 && res == NONE_SATISFIES)
 		|| (sp_sign < 0 && res != NONE_SATISFIES))
 	      // We return SOME_SATISFY in two cases:
 	      // - if r satisfies c and all the previous
 	      //   generators do not;
-	      // - if r does not verify and all the 
+	      // - if r does not verify and all the
 	      //   the previous generators verify.
 	      return SOME_SATISFY;
 	    if (sp_sign > 0)
-	      // Since we always return if res == SOME_SATISFIES, 
-	      // at this point r and all the previous generators 
+	      // Since we always return if res == SOME_SATISFIES,
+	      // at this point r and all the previous generators
 	      // satisfy c.
 	      res = ALL_SATISFY;
 	  }
@@ -193,18 +193,18 @@ PPL::GenSys::satisfy(const Constraint& c) const {
 
 
 /*!
-  \param var          Index of the column to which the 
+  \param var          Index of the column to which the
                       affine transformation is assigned.
   \param expr         The affine transformation:
                       \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$.
   \param denominator  The denominator of the affine transformation.
 
-  We want to allow affine transformations (see definitions.dox) having 
-  any rational coefficients. Since the coefficients of the 
-  constraints are integers we must also provide an integer \p denominator 
+  We want to allow affine transformations (see definitions.dox) having
+  any rational coefficients. Since the coefficients of the
+  constraints are integers we must also provide an integer \p denominator
   that will be used as denominator of the affine transformation.
 
-  The affine transformation assigns to each element of \p var -th 
+  The affine transformation assigns to each element of \p var -th
   column the follow expression:
   \f[
     \frac{\sum_{i = 0}^{n - 1} a_i x_i + b}
@@ -213,7 +213,7 @@ PPL::GenSys::satisfy(const Constraint& c) const {
 
   \p expr is a constant parameter and unaltered by this computation
 */
-void 
+void
 PPL::GenSys::assign_variable(size_t var,
 			     const LinExpression& expr,
 			     Integer& denominator) {
@@ -230,15 +230,15 @@ PPL::GenSys::assign_variable(size_t var,
   // Computing the numerator of the affine transformation and assigning
   // it to the column of `*this' indexed by `var'.
   for (size_t i = 0; i < num_rows; ++i) {
-    Generator& row = x[i]; 
+    Generator& row = x[i];
     row[var] *= expr[var];
-    for (size_t j = 0; j < num_columns; ++j) 
-      if (j != var) 
+    for (size_t j = 0; j < num_columns; ++j)
+      if (j != var)
 	row[var] += row[j] * expr[j];
   }
-  if (denominator != 1) 
-    // Since we want integer elements in the matrix and the 
-    // `var'-th columns is a multiple of `denominator', we 
+  if (denominator != 1)
+    // Since we want integer elements in the matrix and the
+    // `var'-th columns is a multiple of `denominator', we
     // multiply by `denominator' all the other columns of `*this'.
     for (size_t i = 0; i < num_rows; ++i)
       for (size_t j = 0; j < num_columns; ++j)
@@ -246,14 +246,14 @@ PPL::GenSys::assign_variable(size_t var,
 	  x[i][j] *= denominator;
   x.normalize();
 }
- 
+
 /*!
-  Like <CODE>ConSys::print()</CODE>, this prints the number of rows, 
-  the number of columns and value of \p sorted, using the 
-  <CODE>Matrix::print()</CODE> method, then prints the contents of 
+  Like <CODE>ConSys::print()</CODE>, this prints the number of rows,
+  the number of columns and value of \p sorted, using the
+  <CODE>Matrix::print()</CODE> method, then prints the contents of
   all the rows, specifying whether a row represent a line or a vertex/ray.
 */
-void 
+void
 PPL::GenSys::print(std::ostream& s) const {
   Matrix::print(s);
   const char separator = ' ';
@@ -270,12 +270,12 @@ PPL::GenSys::print(std::ostream& s) const {
 }
 
 /*!
-  Like <CODE>ConSys::get()</CODE>, this uses <CODE>Matrix::get()</CODE> 
-  to resize the matrix of generators taking information from \p s, 
-  then initializes the coefficients of each generator and its type 
+  Like <CODE>ConSys::get()</CODE>, this uses <CODE>Matrix::get()</CODE>
+  to resize the matrix of generators taking information from \p s,
+  then initializes the coefficients of each generator and its type
   (line or ray/vertex).
 */
-void 
+void
 PPL::GenSys::get(std::istream& s) {
   Matrix::get(s);
   std::string tempstr;
@@ -296,18 +296,18 @@ PPL::GenSys::get(std::istream& s) {
 /*!
   Returns <CODE>true</CODE> if and only if \p *this actually represents
   a set of generators. So, \p *this must satisfy some rule:
-  -# it must have a column for the inhomogeneous term and one for 
+  -# it must have a column for the inhomogeneous term and one for
      a variable;
   -# it can have no row; otherwise it must have at least a vertex;
   -# every line and ray must have the inhomogeneous term equal to zero;
-  -# the inhomogeneous term of all vertices must be positive.  
+  -# the inhomogeneous term of all vertices must be positive.
 */
 bool
 PPL::GenSys::OK() const {
   using std::endl;
   using std::cerr;
 
-  // GenSys must have at least two columns: one for the inhomogeneous 
+  // GenSys must have at least two columns: one for the inhomogeneous
   // terms and one for the coefficients of at least one variable.
   if (!Matrix::OK()) {
     cerr << "A GenSys must have at least two columns!"
@@ -318,12 +318,12 @@ PPL::GenSys::OK() const {
     // A valid system of generators can be empty.
     return true;
   bool no_vertex = true;
-  for (size_t i = num_rows(); i-- > 0; ) { 
+  for (size_t i = num_rows(); i-- > 0; ) {
     const Generator& g = (*this)[i];
     bool ray_or_line = false;
     // Looking for vertices.
     if (g.is_ray_or_vertex()) {
-      // A vertex is legal only if its inhomogeneous term 
+      // A vertex is legal only if its inhomogeneous term
       // is strictly positive.
       if (g[0] > 0)
 	// We found a vertex.
@@ -366,7 +366,7 @@ at least one nonzero homogeneous coefficient!"
   }
 
   if (no_vertex) {
-    // A valid, non-empty system 
+    // A valid, non-empty system
     // of generators must have at least one vertex.
     cerr << "There must be at least one vertex!"
 	 << endl;

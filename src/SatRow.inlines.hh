@@ -73,7 +73,7 @@ Parma_Polyhedra_Library::SatRow::clear_from(size_t i) {
 }
 
 /*!
-  Returns the index of the first set bit and 
+  Returns the index of the first set bit and
   -1 if no bit is set.
 */
 INLINE int
@@ -82,7 +82,7 @@ Parma_Polyhedra_Library::SatRow::first() const {
 }
 
 /*!
-  Returns the index of the first set bit after \p pos 
+  Returns the index of the first set bit after \p pos
   and -1 if no bit after pos is set.
 */INLINE int
 Parma_Polyhedra_Library::SatRow::next(int pos) const {
@@ -98,7 +98,7 @@ Parma_Polyhedra_Library::SatRow::last() const {
 }
 
 /*!
-  Returns the index of the first set bit before \p pos 
+  Returns the index of the first set bit before \p pos
   and -1 if no bits before pos is set.
 */
 INLINE int
@@ -150,8 +150,8 @@ Parma_Polyhedra_Library::SatRow::swap(SatRow& y) {
 }
 
 /*!
-  Specialize <CODE>std::swap </CODE> to use the fast swap that is 
-  provided as a member function instead of using the default 
+  Specialize <CODE>std::swap </CODE> to use the fast swap that is
+  provided as a member function instead of using the default
   algorithm (which creates a temporary and uses assignment).
 */
 INLINE void

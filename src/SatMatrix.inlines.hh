@@ -61,7 +61,7 @@ Parma_Polyhedra_Library::SatMatrix::rows_erase_to_end(size_t first_to_erase) {
 /*!
   Erases the columns from the \p first_to_erase -th to the last one.
 */
-INLINE void 
+INLINE void
 Parma_Polyhedra_Library::SatMatrix::columns_erase_to_end(size_t
 							 first_to_erase) {
   assert(OK());
@@ -84,8 +84,8 @@ Parma_Polyhedra_Library::SatMatrix::swap(SatMatrix& y) {
 }
 
 /*!
-  Specializes <CODE>std::swap</CODE> to use the fast swap that 
-  is provided as a member function instead of using the default 
+  Specializes <CODE>std::swap</CODE> to use the fast swap that
+  is provided as a member function instead of using the default
   algorithm (which creates a temporary and uses assignment).
 */
 INLINE void
@@ -104,7 +104,7 @@ Parma_Polyhedra_Library::SatMatrix::operator [](size_t k) {
 }
 
 /*!
-  Returns a constant reference to the \p k -th row. 
+  Returns a constant reference to the \p k -th row.
 */
 INLINE const Parma_Polyhedra_Library::SatRow&
 Parma_Polyhedra_Library::SatMatrix::operator [](size_t k) const {

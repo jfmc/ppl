@@ -38,12 +38,12 @@ namespace Parma_Polyhedra_Library {
 
 //! A line, ray or vertex.
 /*!
-  An object of the class Generator is one of the following: 
-  
+  An object of the class Generator is one of the following:
+
   - a line: \f$\sum_{i=0}^{d-1} a_i \vec{x}_i\f$;
 	
   - a ray: \f$\sum_{i=0}^{d-1} a_i \vec{x}_i\f$;
-       
+
   - a vertex: \f$\sum_{i=0}^{d-1} \frac{a_i}{b} \vec{x}_i\f$;
 
   where \f$d\f$ is the dimension of the space.
@@ -55,7 +55,7 @@ namespace Parma_Polyhedra_Library {
   The linear expression represents a direction in the space:
   note that the inhomogeneous term of this linear expression
   is clearly disregarded.
-  
+
     \par
     In all the examples it is assumed that variables
     <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE>
@@ -65,7 +65,7 @@ namespace Parma_Polyhedra_Library {
   Variable y(1);
   Variable z(2);
     \endcode
-  
+
     \par Example 1
     The following code builds a line with direction \f$x-y-z\f$:
     \code
@@ -116,7 +116,7 @@ namespace Parma_Polyhedra_Library {
 class Parma_Polyhedra_Library::Generator : public Row {
 private:
   Generator(LinExpression& e);
-  
+
   //! Returns the (bidirectional) line of direction \p e.
   friend Generator
   Parma_Polyhedra_Library::operator |(int, const LinExpression& e);

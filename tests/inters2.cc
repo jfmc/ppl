@@ -70,11 +70,11 @@ main() {
       };
 
   GenSys gs;
-  gs.insert(0*x + 0*y + 0*z /= 1); 
-  gs.insert(2*x + 0*y + 0*z /= 1); 
-  gs.insert(0*x + 2*y + 0*z /= 1); 
-  gs.insert(2*x + 2*y + 0*z /= 1); 
-  gs.insert(x + y + pyramid_height*z /= 1); 
+  gs.insert(0*x + 0*y + 0*z /= 1);
+  gs.insert(2*x + 0*y + 0*z /= 1);
+  gs.insert(0*x + 2*y + 0*z /= 1);
+  gs.insert(2*x + 2*y + 0*z /= 1);
+  gs.insert(x + y + pyramid_height*z /= 1);
   Polyhedron pyramid(gs);
 
 #if NOISY

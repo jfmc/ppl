@@ -109,7 +109,7 @@ Parma_Polyhedra_Library::ConSys::const_iterator::operator ->() const {
 }
 
 INLINE Parma_Polyhedra_Library::ConSys::const_iterator&
-Parma_Polyhedra_Library::ConSys::const_iterator::operator ++() { 
+Parma_Polyhedra_Library::ConSys::const_iterator::operator ++() {
   ++i;
   skip_forward();
   return *this;

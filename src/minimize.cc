@@ -57,8 +57,8 @@ namespace PPL = Parma_Polyhedra_Library;
 
   Given \p source, this function builds (by means of
   <CODE>conversion()</CODE>) \p dest and then simplifies (invoking
-  <CODE>simplify()</CODE>) \p source, erasing reduntant rows. 
-  For the sequel we assume that \p source is the matrix of constraints 
+  <CODE>simplify()</CODE>) \p source, erasing reduntant rows.
+  For the sequel we assume that \p source is the matrix of constraints
   and \p dest is the matrix of generators.
   This will simplify the description of the function; the dual case is
   similar.
@@ -78,11 +78,11 @@ PPL::Polyhedron::minimize(bool con_to_ray,
   // necessary.
 
   // `dest' is resized such that it is a square matrix having dimension
-  // `source.num_columns()': the most important thing is that generators 
-  // and constraints have the same number of variables. Rows of `dest' 
-  // (i.e., constraints or generators based on `con_to_ray') 
+  // `source.num_columns()': the most important thing is that generators
+  // and constraints have the same number of variables. Rows of `dest'
+  // (i.e., constraints or generators based on `con_to_ray')
   // can be added or removed if it is necessary.
-  
+
   size_t source_num_columns = source.num_columns();
   dest.resize_no_copy(source_num_columns, source_num_columns);
   // `dest' is now a square matrix.
@@ -109,7 +109,7 @@ PPL::Polyhedron::minimize(bool con_to_ray,
   // Note that `dest.num_lines_or_equalities()' is the number of the rows
   // of `dest' (because of our construction) and also the number
   // of columns of `source'.
- 
+
   size_t num_lines_or_equalities = conversion(source, 0,
 					      dest, tmp_sat,
 					      dest.num_lines_or_equalities());
@@ -124,10 +124,10 @@ PPL::Polyhedron::minimize(bool con_to_ray,
   //     vertex has 1 in the first position, while a ray has 0.
   //  -# if `dest' represent constraints:
   //     the positivity constraint is not provided; in fact (in our
-  //     representation) this constraint is an inequality in which  
-  //     only the inhomogeneus term is positive and the other term 
+  //     representation) this constraint is an inequality in which
+  //     only the inhomogeneus term is positive and the other term
   //     are equal to zero.
- 
+
   // conversion() may have modified dest.
   dest_num_rows = dest.num_rows();
   bool empty_or_illegal = true;
@@ -146,9 +146,9 @@ PPL::Polyhedron::minimize(bool con_to_ray,
     else
       // In this case `dest' contains constraints but does not contain
       // the positivity constraint. Since the polyhedron is not bounded
-      // (see definition.dox) because the inhomogeneous term is zero in 
+      // (see definition.dox) because the inhomogeneous term is zero in
       // all of them (i.e., all hyper-plane corresponding to the constraints
-      // contain the origin), the system of constraints is illegal. 
+      // contain the origin), the system of constraints is illegal.
       abort();
   }
   else {
@@ -181,8 +181,8 @@ PPL::Polyhedron::minimize(bool con_to_ray,
   \return             <CODE>true</CODE> if the obtained polyhedron
                       is empty, <CODE>false</CODE> otherwise.
 
-  \p sat has the rows indexed by rows of \p dest and the columns 
-  indexed by rows of \p source1 (on entry) and rows of the matrix 
+  \p sat has the rows indexed by rows of \p dest and the columns
+  indexed by rows of \p source1 (on entry) and rows of the matrix
   obtained merging \p source1 and \p source2 (on exit).
 
   Let us suppose we want to add some constraints to a given matrix of
@@ -262,7 +262,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_ray,
   // The remaining rows (from the `old_source1_num_rows'-th one to the
   // end) are the ones added from `source2', i.e., the rows of `source2'
   // that are different from those in the old 'source1'.
- 
+
   // source1 is not sorted any more.
   source1.set_sorted(false);
 

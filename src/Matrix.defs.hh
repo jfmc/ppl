@@ -35,9 +35,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*!
-  An object of this class is a matrix. 
+  An object of this class is a matrix.
   It is characterized by the number of rows, by the number of columns
-  and by a Boolean element \p sorted that says if a matrix is sorted 
+  and by a Boolean element \p sorted that says if a matrix is sorted
   or not.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -46,8 +46,8 @@ class Parma_Polyhedra_Library::Matrix {
 protected:
   //! Default constructor: builds a zero-matrix.
   Matrix();
-  //! Constructor: bulids a sorted matrix with \p num_rows rows 
-  //! and \p num_columns columns. 
+  //! Constructor: bulids a sorted matrix with \p num_rows rows
+  //! and \p num_columns columns.
   Matrix(size_t num_rows, size_t num_columns);
   //! Copy-constructor.
   Matrix(const Matrix& y);
@@ -120,20 +120,20 @@ public:
   const_iterator end() const {
     return const_iterator(rows.end());
   }
-  
+
 private:
   //! Contains the rows of the matrix.
   std::vector<Row> rows;
   //! Size of the initialized part of each row.
   size_t row_size;
-  //! Capacity allocated for each row, i.e., number of 
+  //! Capacity allocated for each row, i.e., number of
   //! <CODE>Integer</CODE> objects that each row can contain.
   size_t row_capacity;
-  //! <CODE>true</CODE> if rows are sorted in the ascending order as 
+  //! <CODE>true</CODE> if rows are sorted in the ascending order as
   //! defined by <CODE>bool operator <(const Row& x, const Row& y)</CODE>.
   //! If <CODE>false</CODE> we cannot conclude that rows are not sorted.
   bool sorted;
-  //! Allows the capacity of the rows to be computed depending on 
+  //! Allows the capacity of the rows to be computed depending on
   //! the required number of columns.
   static size_t compute_row_capacity(size_t num_columns);
 
@@ -205,7 +205,7 @@ public:
   void sort_and_remove_with_sat(SatMatrix& sat);
   //! Minimizes a system of equations.
   size_t gauss();
-  //! Back-substitutes the coefficients to reduce 
+  //! Back-substitutes the coefficients to reduce
   //! the complexity of the matrix.
   void back_substitute(size_t rank);
 

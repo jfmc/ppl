@@ -65,7 +65,7 @@ Parma_Polyhedra_Library::ConSys::const_iterator::skip_forward() {
 }
 
 /*!
-  Returns <CODE>true</CODE> if the given generator satisfies 
+  Returns <CODE>true</CODE> if the given generator satisfies
   all the constraints in \p *this system.
 */
 bool
@@ -92,24 +92,24 @@ PPL::ConSys::satisfies_all_constraints(const Generator& r) const {
 }
 
 /*!
-  \param var          Index of the column to which the 
+  \param var          Index of the column to which the
                       affine transformation is assigned.
   \param expr  The affine transformation:
                       \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$
   \param denominator  The denominator of the affine transformation.
 
-  We want to allow affine transformations (see definitions.dox) having 
-  any rational coefficients. Since the coefficients of the 
-  constraints are integers we must also provide an integer \p denominator 
+  We want to allow affine transformations (see definitions.dox) having
+  any rational coefficients. Since the coefficients of the
+  constraints are integers we must also provide an integer \p denominator
   that will be used as denominator of the affine transformation.
 
-  The affine transformation substitutes the matrix of constraints 
-  by a new matrix whose elements \f${a'}_{ij}\f$ are built from 
+  The affine transformation substitutes the matrix of constraints
+  by a new matrix whose elements \f${a'}_{ij}\f$ are built from
   the old one \f$a_{ij}\f$ as follows:
   \f[
     {a'}_{ij} =
     \begin{cases}
-    a_{ij} * \text{denominator} + a_{i\text{var}} * \text{expr}[j] 
+    a_{ij} * \text{denominator} + a_{i\text{var}} * \text{expr}[j]
     \quad \text{for } j \neq \text{var}; \\
     \text{expr}[\text{var}] * a_{i\text{var}}
     \quad \text{for } j = \text{var}.
@@ -125,35 +125,35 @@ PPL::ConSys::substitute_variable(size_t var,
   ConSys& x = *this;
   size_t num_columns = x.num_columns();
   size_t num_rows = x.num_rows();
- 
+
   assert(var != 0);
   assert(num_columns = expr.size());
   assert(denominator != 0);
   assert(var < num_columns);
-  
+
   // Building the new matrix of constraints.
   for (size_t i = 0; i < num_rows; ++i) {
     Constraint& row = x[i];
     if (row[var] != 0) {
       Integer tmp = row[var];
       row[var] *= expr[var];
-      for (size_t j = 0; j < num_columns; ++j)   
+      for (size_t j = 0; j < num_columns; ++j)
 	if (j != var) {
 	  row[j] *= denominator;
 	  row[j] += tmp * expr[j];
 	}
     }
   }
-  x.normalize();    
+  x.normalize();
 }
 
 /*!
-  Raw write function: prints the number of rows, 
-  the number of columns and the value of \p sorted invoking the 
-  <CODE>Matrix::print()</CODE> method, then prints the contents of 
+  Raw write function: prints the number of rows,
+  the number of columns and the value of \p sorted invoking the
+  <CODE>Matrix::print()</CODE> method, then prints the contents of
   all the rows, specifying whether a row is an equality or an inequality.
 */
-void 
+void
 PPL::ConSys::print(std::ostream& s) const {
   Matrix::print(s);
   const char separator = ' ';
@@ -168,12 +168,12 @@ PPL::ConSys::print(std::ostream& s) const {
 }
 
 /*!
-  Raw read function: resizes the matrix of constraints using number of 
-  rows and number of columns read from \p s, then initializes the 
-  coefficients of each constraint and its type (equality or inequality) 
+  Raw read function: resizes the matrix of constraints using number of
+  rows and number of columns read from \p s, then initializes the
+  coefficients of each constraint and its type (equality or inequality)
   reading the contents from \p s.
 */
-void 
+void
 PPL::ConSys::get(std::istream& s) {
   Matrix::get(s);
   std::string tempstr;
@@ -202,7 +202,7 @@ PPL::ConSys::OK() const {
   using std::endl;
   using std::cerr;
 
-  // ConSys must have at least two columns: one for the inhomogeneous 
+  // ConSys must have at least two columns: one for the inhomogeneous
   // terms and one for the coefficients of at least one variable.
   if (!Matrix::OK()) {
     cerr << "A ConSys must have at least two columns!"
@@ -213,7 +213,7 @@ PPL::ConSys::OK() const {
   if (num_rows() == 0) {
     // A valid constraint system must have at least one constraint.
     // In fact, the constraint representation of a non-universe
-    // polyhedron has, by definition, at least one constraint, 
+    // polyhedron has, by definition, at least one constraint,
     // while a constraint system denoting a universe polyhedron must have,
     // in our representation, at least one positivity constraint.
     cerr << "A ConSys must not have zero rows!"

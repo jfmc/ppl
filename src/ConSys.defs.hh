@@ -37,15 +37,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 /*!
     An object of the class ConSys is a system of constraints,
     i.e. a container of objects of the class Constraint.
-    
-    \par 
+
+    \par
     In all the examples it is assumed that variables
     <CODE>x</CODE> and <CODE>y</CODE> are defined as follows:
     \code
   Variable x(0);
   Variable y(1);
     \endcode
-    
+
     \par Example 1
     The following code builds a square in \f$\Rset^2\f$:
   \code
@@ -79,12 +79,12 @@ public:
 
   //! Swaps \p *this with \p y
   void swap(ConSys& y);
-  
+
   /*!
       A const_iterator is used to provide read-only access
       to each constraint contained in an object of ConSys.
-      
-      \par Example 
+
+      \par Example
       The following code prints the system of constraints
       defining the polyhedron <CODE>ph</CODE>:
       \code
@@ -159,7 +159,7 @@ PPL_INTERNAL:
   void substitute_variable(size_t var,
 			   const LinExpression& expr,
 			   Integer& denominator);
-  
+
   //! Returns the number of the equality constraints.
   size_t num_equalities() const;
   //! Returns the number of the inequality constraints.

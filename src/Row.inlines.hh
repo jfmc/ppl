@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 /*!
   Allocates a chunk of memory able to contain \p capacity Integer objects
-  beyond the specified \p fixed_size and returns a pointer to the new 
+  beyond the specified \p fixed_size and returns a pointer to the new
   allocated memory.
 */
 INLINE void*
@@ -37,7 +37,7 @@ new(size_t fixed_size, size_t capacity) {
 
 
 /*!
-  Uses the standard operator delete to free the memory 
+  Uses the standard operator delete to free the memory
   \p p points to.
 */
 INLINE void
@@ -57,7 +57,7 @@ Parma_Polyhedra_Library::Row::Impl::operator delete(void* p, size_t) {
 
 
 /*!
-  Returns the type of the row \p this points to. 
+  Returns the type of the row \p this points to.
 */
 INLINE Parma_Polyhedra_Library::Row::Type
 Parma_Polyhedra_Library::Row::Impl::type() const {
@@ -100,7 +100,7 @@ Parma_Polyhedra_Library::Row::Impl::bump_size() {
 
 
 /*!
-  Adds new positions to the real implementation of the row 
+  Adds new positions to the real implementation of the row
   obtaining a new row having size \p new_size.
 */
 INLINE void
@@ -114,7 +114,7 @@ Parma_Polyhedra_Library::Row::Impl::grow_no_copy(size_t new_size) {
 
 
 /*!
-  Delete elements from the real implementation of the row 
+  Delete elements from the real implementation of the row
   from \p new_size - th position to the end.
 */
 INLINE void
@@ -132,8 +132,8 @@ Parma_Polyhedra_Library::Row::Impl::shrink(size_t new_size) {
 
 
 /*!
-  Shrinks the real implementation of the row if 
-  \p new_size is less than <CODE>size()</CODE> , 
+  Shrinks the real implementation of the row if
+  \p new_size is less than <CODE>size()</CODE> ,
   otherwise it is grown without copying the old contents.
 */
 INLINE void
@@ -153,7 +153,7 @@ Parma_Polyhedra_Library::Row::Impl::Impl(Type type, size_t size)
 
 
 INLINE void
-Parma_Polyhedra_Library::Row::Impl::copy_construct(const Impl& y) { 
+Parma_Polyhedra_Library::Row::Impl::copy_construct(const Impl& y) {
   size_t y_size = y.size();
   for (size_t i = 0; i < y_size; ++i) {
     new (&vec_[i]) Integer(y.vec_[i]);
@@ -176,7 +176,7 @@ Parma_Polyhedra_Library::Row::Impl::Impl(const Impl& y, size_t size)
 
 
 /*!
-  Uses <CODE>shrink()</CODE> method with argument \f$0\f$ 
+  Uses <CODE>shrink()</CODE> method with argument \f$0\f$
   to delete all the row elements.
 */
 INLINE
@@ -219,9 +219,9 @@ Parma_Polyhedra_Library::Row::Row()
   \param size       The size of the row that will be constructed.
   \param capacity   The capacity of the row that will be constructed.
 
-  The row that we are constructing has a fixed capacity, i.e., it can 
-  contain \p capacity elements; furthermore the actual number of elements 
-  that has to be considered is \p size. 
+  The row that we are constructing has a fixed capacity, i.e., it can
+  contain \p capacity elements; furthermore the actual number of elements
+  that has to be considered is \p size.
 */
 INLINE void
 Parma_Polyhedra_Library::Row::construct(Type type,
@@ -292,7 +292,7 @@ Parma_Polyhedra_Library::Row::~Row() {
 }
 
 /*!
-  Shrinks the row if \p new_size is less than <CODE>size()</CODE> , 
+  Shrinks the row if \p new_size is less than <CODE>size()</CODE> ,
   otherwise grows the row without copying the old contents.
 */
 INLINE void
@@ -302,7 +302,7 @@ Parma_Polyhedra_Library::Row::resize_no_copy(size_t new_size) {
 }
 
 /*!
-  Adds new positions to \p *this row obtaining a new row having 
+  Adds new positions to \p *this row obtaining a new row having
   size \p new_size.
 */
 INLINE void
@@ -312,7 +312,7 @@ Parma_Polyhedra_Library::Row::grow_no_copy(size_t new_size) {
 }
 
 /*!
-  Delete elements of \p *this row from \p new_size-th position to 
+  Delete elements of \p *this row from \p new_size-th position to
   the end.
 */
 INLINE void
@@ -327,8 +327,8 @@ Parma_Polyhedra_Library::Row::swap(Row& y) {
 }
 
 /*!
-  Specialize <CODE>std::swap</CODE> to use the fast swap that is 
-  provided as a member function instead of using the default 
+  Specialize <CODE>std::swap</CODE> to use the fast swap that is
+  provided as a member function instead of using the default
   algorithm (which creates a temporary and uses assignment).
 */
 INLINE void
@@ -354,7 +354,7 @@ Parma_Polyhedra_Library::Row::type() const {
 
 
 /*!
-  Returns <CODE>true</CODE> if \p *this row represent a line or 
+  Returns <CODE>true</CODE> if \p *this row represent a line or
   an equality; <CODE>false</CODE> otherwise.
 */
 INLINE bool
@@ -364,7 +364,7 @@ Parma_Polyhedra_Library::Row::is_line_or_equality() const {
 
 
 /*!
-  Returns <CODE>true</CODE> if the row represent a ray, a vertex or an 
+  Returns <CODE>true</CODE> if the row represent a ray, a vertex or an
   inequality; <CODE>false</CODE> otherwise.
 */
 INLINE bool

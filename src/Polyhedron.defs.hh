@@ -36,7 +36,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friend later.
 
-  //! @name Polyhedron. 
+  //! @name Polyhedron.
   //@{
   //! Returns <CODE>true</CODE> if and only if
   //! \p x and \p y are the same polyhedron.
@@ -67,17 +67,17 @@ namespace Parma_Polyhedra_Library {
 /*!
     An object of the class Polyhedron represents a convex polyhedron
     in the space \f$\Rset^n\f$.
-    
+
     A polyhedron can be specified as either a finite system of constraints
     or a finite set of generators (see Minkowski's theorem in
     the Introduction).
-    So, it is possible to obtain one system from the 
-    other. That is, if we know the system of constaints, we can obtain 
+    So, it is possible to obtain one system from the
+    other. That is, if we know the system of constaints, we can obtain
     from this the set of generators that define the same polyhedron
     and vice versa.
-    These systems can contain some redundant members: in this case we say 
+    These systems can contain some redundant members: in this case we say
     that they are not in the minimal form.
- 
+
     \par
     In all the examples it is assumed that variables
     <CODE>x</CODE> and <CODE>y</CODE> are defined (where they are
@@ -86,11 +86,11 @@ namespace Parma_Polyhedra_Library {
   Variable x(0);
   Variable y(1);
     \endcode
-  
+
     \par Example 1
     The following code builds a square in \f$\Rset^2\f$ starting from
     the system of constraints:
-    \code 
+    \code
   ConSys cs;
   cs.insert(x >= 0);
   cs.insert(x <= 3);
@@ -110,7 +110,7 @@ namespace Parma_Polyhedra_Library {
     \endcode
 
     \par Example 2
-    The following code builds a half-strip in \f$\Rset^2\f$ 
+    The following code builds a half-strip in \f$\Rset^2\f$
     starting from the system of constraints:
     \code
   ConSys cs;
@@ -121,7 +121,7 @@ namespace Parma_Polyhedra_Library {
     \endcode
     The following code builds the same polyhedron starting from the
     set of generators:
-    \code 
+    \code
   GenSys gs;
   gs.insert(0 * x + 0 * y /= 1);
   gs.insert(0 * x + y /= 1);
@@ -136,7 +136,7 @@ namespace Parma_Polyhedra_Library {
   Polyhedron ph;
   ph.insert(y >= 0);
     \endcode
-    The following code builds the same polyhedron starting from 
+    The following code builds the same polyhedron starting from
     the generators:
     \code
   Polyhedron ph;
@@ -144,7 +144,7 @@ namespace Parma_Polyhedra_Library {
   ph.insert(1 ^ 0 * x + y);
   ph.insert(1 | x + 0 * y);
     \endcode
-    In this last case, it is important to note that: even if this 
+    In this last case, it is important to note that: even if this
     polyhedron has no real vertex, we must add one, because otherwise
     the polyhedron is considered empty.
 
@@ -157,10 +157,10 @@ namespace Parma_Polyhedra_Library {
   ph.add_dimensions_and_embed(1);
     \endcode
     The starting polyhedron is a point whose abscissa is equal to \f$2\f$
-    in \f$\Rset\f$. The resulting polyhedron in \f$\Rset^2\f$ 
+    in \f$\Rset\f$. The resulting polyhedron in \f$\Rset^2\f$
     is a line parallel to the \f$y\f$ axis and its intersection with the
     \f$x\f$ axis is the point with the abscissa equal to \f$2\f$.
-  
+
     \par Example 5
     The following code shows the use of the function
     <CODE>add_dimensions_and_project</CODE>:
@@ -178,7 +178,7 @@ namespace Parma_Polyhedra_Library {
     The following code shows the use of the function
     <CODE>assign_variable</CODE>:
     \code
-  Polyhedron ph; 
+  Polyhedron ph;
   ph.insert(0 * x + 0 * y /= 1);
   ph.insert(0 * x + 3 * y /= 1);
   ph.insert(3 * x + 0 * y /= 1);
@@ -187,7 +187,7 @@ namespace Parma_Polyhedra_Library {
   LinExpression coeff = x + 0*y + 4;
   ph.assign_variable(x, coeff, d);
     \endcode
-    In this example the starting polyhedron is a square in \f$\Rset^2\f$, 
+    In this example the starting polyhedron is a square in \f$\Rset^2\f$,
     \p var is the variable \f$x\f$, the affine_expression is \f$x+4\f$,
     and the denominator \p d is 1.
     The resulting polyhedron is the same square translated towards right.
@@ -198,7 +198,7 @@ namespace Parma_Polyhedra_Library {
   LinExpression coeff = x + y;
     \endcode
     the resulting polyhedron is a parallelogram with the height equal to
-    the side of the square and the oblique sides parallel to the line 
+    the side of the square and the oblique sides parallel to the line
     \f$x-y\f$.
     Instead, if we do not use an invertible transformation for the same
     variable; for example, the affine expression \f$y\f$:
@@ -206,7 +206,7 @@ namespace Parma_Polyhedra_Library {
   LinExpression coeff = 0*x + y;
     \endcode
     the resulting polyhedron is a diagonal of the square.
-  
+
     \par Example 7
     The following code shows the use of the function
     <CODE>substitute_variable</CODE>:
@@ -220,7 +220,7 @@ namespace Parma_Polyhedra_Library {
   LinExpression coeff = x + 0*y + 4;
   ph.substitute_variable(x, coeff, d);
     \endcode
-    In this example the starting polyhedron, \p var and the affine 
+    In this example the starting polyhedron, \p var and the affine
     expression and the denominator are the same as in Example 6,
     while the resulting
     polyhedron is again the same square but translated towards
@@ -231,7 +231,7 @@ namespace Parma_Polyhedra_Library {
   LinExpression coeff = x + y;
     \endcode
     the resulting polyhedron is a parallelogram with the height equal to
-    the side of the square and the oblique sides parallel to the line 
+    the side of the square and the oblique sides parallel to the line
     \f$x+y\f$.
     Instead, if we do not use an invertible transformation for the same
     variable \p x, for example, the affine expression \f$y\f$:
@@ -275,39 +275,39 @@ public:
   size_t num_dimensions() const;
   //! Intersects \p *this with polyhedron \p y and
   //! assigns the result to \p *this.
-  //! \exception std::invalid_argument \p *this and \p y 
-  //!                                  does not have the same dimension.  
+  //! \exception std::invalid_argument \p *this and \p y
+  //!                                  does not have the same dimension.
   void intersection_assign(const Polyhedron& y);
   //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this.
-  //! \exception std::invalid_argument \p *this and \p y 
-  //!                                  does not have the same dimension.  
+  //! \exception std::invalid_argument \p *this and \p y
+  //!                                  does not have the same dimension.
   void convex_hull_assign(const Polyhedron& y);
   //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this,
   //! without minimizing the result.
-  //! \exception std::invalid_argument \p *this and \p y 
-  //!                                  does not have the same dimension.  
+  //! \exception std::invalid_argument \p *this and \p y
+  //!                                  does not have the same dimension.
   void convex_hull_assign_lazy(const Polyhedron& y);
 
-  //! Returns the relation between the generators of \p *this 
+  //! Returns the relation between the generators of \p *this
   //! and the constraint \p c.
-  //! \exception std::invalid_argument \p *this and constraint \p c 
-  //!                                  does not have the same dimension.  
+  //! \exception std::invalid_argument \p *this and constraint \p c
+  //!                                  does not have the same dimension.
   GenSys_Con_Rel satisfies(const Constraint& c);
   //! Tests the inclusion of the generator \p g in a polyhedron.
-  //! \exception std::invalid_argument \p *this and constraint \p g 
-  //!                                  does not have the same dimension.  
+  //! \exception std::invalid_argument \p *this and constraint \p g
+  //!                                  does not have the same dimension.
   bool includes(const Generator& g);
 
-  //! Computes the widening between \p *this and \p y and 
+  //! Computes the widening between \p *this and \p y and
   //! assigns the result to \p *this.
-  //! \param y           The polyhedron that <EM>must</EM> 
+  //! \param y           The polyhedron that <EM>must</EM>
   //!                    be contained in \p *this.
   //! \exception std::invalid_argument \p *this and \p y do not have
   //!                                  the same dimension.
   void widening_assign(const Polyhedron& y);
   //! Limits the widening between \p *this and \p y by \p constraints
   //! and assigns the result to \p *this.
-  //! \param y                 The polyhedron that <EM>must</EM> 
+  //! \param y                 The polyhedron that <EM>must</EM>
   //!                          be contained in \p *this.
   //! \param constraints       The system of constraints that limits
   //!                          the widened polyhedron.
@@ -318,14 +318,14 @@ public:
   bool limited_widening_assign(const Polyhedron& y, ConSys& constraints);
 
   //! Returns the system of constraints.
-  //! \exception std::invalid_argument constraints of \p *this can not 
+  //! \exception std::invalid_argument constraints of \p *this can not
   //!                                  be obtained (\p *this is empty
   //!                                  or zero-dimensional).
   const ConSys& constraints() const;
   //! Returns the system of generators.
-  //! \exception std::invalid_argument generators of \p *this can not 
+  //! \exception std::invalid_argument generators of \p *this can not
   //!                                  be obtained (\p *this is empty
-  //!                                  or zero-dimensional). 
+  //!                                  or zero-dimensional).
   const GenSys& generators() const;
 
   //! Inserts a new constraint \p c into the system of constraints.
@@ -335,7 +335,7 @@ public:
   void insert(const Generator& g);
 
   //! Assigns an affine expression to the specified variable.
-  //! \param var           The variable to which the affine 
+  //! \param var           The variable to which the affine
   //!                      expression is assigned.
   //! \param expr          The affine expression.
   //! \param denominator   The denominator of the affine expression.
@@ -343,8 +343,8 @@ public:
   //!                                  \p expr and \p *this have different
   //!                                  dimension or
   //!                                  \p var is not a variable of the
-  //!                                  polyhedron 
-  void assign_variable(const Variable& var, 
+  //!                                  polyhedron
+  void assign_variable(const Variable& var,
 		       const LinExpression& expr,
 		       Integer& denominator);
   //! Substitutes an affine expression for the specified variable.
@@ -356,7 +356,7 @@ public:
   //!                                  \p expr and \p *this have different
   //!                                  dimension or
   //!                                  \p var is not a variable of the
-  //!                                  polyhedron 
+  //!                                  polyhedron
   void substitute_variable(const Variable& var,
 			   const LinExpression& expr,
 			   Integer& denominator);
@@ -366,7 +366,7 @@ public:
   //!                           whether the system of constraint is
   //!                           satisfiable.
   //! \return       <CODE>true</CODE> if the polyhedron satisfies
-  //!               all the invariants stated in the PPL, 
+  //!               all the invariants stated in the PPL,
   //!               <CODE>false</CODE> otherwise.
   bool OK(bool check_not_empty = true) const;
 
@@ -392,31 +392,31 @@ private:
 
 public:
   //! Adds new dimensions and embeds the old polyhedron in the new space.
-  //! \param add_dim      The number of dimensions to add. 
+  //! \param add_dim      The number of dimensions to add.
   void add_dimensions_and_embed(size_t add_dim);
-  //! Adds new dimensions to the polyhedron 
+  //! Adds new dimensions to the polyhedron
   //! and does not embed it in the new space.
   //! \param add_dim      The number of dimensions to add.
   void add_dimensions_and_project(size_t add_dim);
   //! Removes the specified dimensions.
-  //! \param to_be_remove The set of variable to remove. 
+  //! \param to_be_remove The set of variable to remove.
   void remove_dimensions(const std::set<Variable>& to_be_removed);
   //! Adds the specified constraints and computes a new polyhedron.
-  //! \param  constraints_to_add   The constraints that will be added to the 
+  //! \param  constraints_to_add   The constraints that will be added to the
   //!                              current system of constraints.
-  //! \return                      <CODE>false</CODE> if the resulting 
+  //! \return                      <CODE>false</CODE> if the resulting
   //!                              polyhedron is empty.
   //! \exception std::invalid_argument \p *this and \p constraints_to_add
   //!                                  does not have the same dimension.
   bool add_constraints(ConSys& constraints_to_add);
   //! Adds the specified constraints without minimizing.
-  //! \param  constraints_to_add   The constraints that will be added to the 
+  //! \param  constraints_to_add   The constraints that will be added to the
   //!                              current system of constraints.
   //! \exception std::invalid_argument \p *this and \p constraints_to_add
   //!                                  does not have the same dimension
   void add_constraints_lazy(ConSys& constraints_to_add);
   //! Adds the specified generators.
-  //! \param  generators_to_add   The generators that will be added to the 
+  //! \param  generators_to_add   The generators that will be added to the
   //!                             current system of generators.
   //! \exception std::invalid_argument \p *this and \p generators_to_add
   //!                                  does not have the same dimension
@@ -461,7 +461,7 @@ public:
   bool is_zero_dim() const;
 
 private:
-  /*! @name Private Verifiers 
+  /*! @name Private Verifiers
     Verify if individual flags are set.
   */
   //@{
@@ -473,7 +473,7 @@ private:
   bool sat_g_is_up_to_date() const;
   //@}
 
-   
+
   /*! @name State flag setters.
     Set only the specified flags.
   */
@@ -515,7 +515,7 @@ private:
 			   SatMatrix& sat,
 			   size_t num_lines_or_equalities);
 
-  //! Uses Gauss' elimination method to simplify the result of 
+  //! Uses Gauss' elimination method to simplify the result of
   //! <CODE>conversion()</CODE>.
   static int simplify(Matrix& mat, SatMatrix& sat);
 

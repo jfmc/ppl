@@ -34,19 +34,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
   //! Describes possible relations between a system of
-  //! generators and a given constraint. 
+  //! generators and a given constraint.
   enum GenSys_Con_Rel {
-    //! No generators satisfy the given constraint.  
+    //! No generators satisfy the given constraint.
     NONE_SATISFIES,
     //! All generators satisfy the given constraint but they do not
-    //! belong to the hyper-plane defined by it.  
+    //! belong to the hyper-plane defined by it.
     ALL_SATISFY,
     //! All generators saturate the given constraint (i.e.
-    //! all generators belong to the hyper-plane defined by 
-    //! the constraint).  
+    //! all generators belong to the hyper-plane defined by
+    //! the constraint).
     ALL_SATURATE,
-    //! Some generators satisfy the given constraint (i.e. one or 
-    //! more generators do not satisfy it).  
+    //! Some generators satisfy the given constraint (i.e. one or
+    //! more generators do not satisfy it).
     SOME_SATISFY
   };
 }
@@ -59,7 +59,7 @@ namespace Parma_Polyhedra_Library {
     The set of generators must include at least one vertex.
     This is needed since a line or ray only specifies a direction
     and a point is needed to indicate its position.
-    
+
     \par
      In all the examples it is assumed that variables
     <CODE>x</CODE> and <CODE>y</CODE> are defined as follows:
@@ -76,7 +76,7 @@ namespace Parma_Polyhedra_Library {
     gs.insert(1 | x + 0 * y);
     \endcode
     Instead, the following code builds a line parallel to the
-    \f$x\f$ axis in \f$\Rset^2\f$: 
+    \f$x\f$ axis in \f$\Rset^2\f$:
     \code
     GenSys gs;
     gs.insert(0 * x + y /= 1);
@@ -113,7 +113,7 @@ namespace Parma_Polyhedra_Library {
 
 
     \par Example 3
-    The following code builds a square in \f$\Rset^2\f$ 
+    The following code builds a square in \f$\Rset^2\f$
     (the same as Example 1 for the system of constraints):
     \code
     GenSys gs;
@@ -125,13 +125,13 @@ namespace Parma_Polyhedra_Library {
 
     \par Example 4
     The following code builds a half-strip in \f$\Rset^2\f$:
-    (the same as Example 2 for the system of constraints): 
-    \code 
+    (the same as Example 2 for the system of constraints):
+    \code
     GenSys gs;
     gs.insert(0 * x + 0 * y /= 1);
     gs.insert(0 * x + y /= 1);
     gs.insert(1 ^ x - y);
-    \endcode 
+    \endcode
 */
 class Parma_Polyhedra_Library::GenSys : public Matrix {
 public:
@@ -171,7 +171,7 @@ public:
 
   private:
     Matrix::const_iterator i;
-    
+
     //! Copy-constructor.
     const_iterator(const Matrix::const_iterator& iter);
 
@@ -208,7 +208,7 @@ public:
   const_iterator end() const;
 
 PPL_INTERNAL:
-  //! Constructor: it builds a system of \p num_rows rays/vertices 
+  //! Constructor: it builds a system of \p num_rows rays/vertices
   //! on a \p num_columns - 1 dimensional space.
   GenSys(size_t num_rows, size_t num_columns);
 
@@ -216,11 +216,11 @@ PPL_INTERNAL:
   Generator& operator [](size_t k);
   //! Returns a constant reference to the \p k- th generator of the system.
   const Generator& operator [](size_t k) const;
-  
-  //! Checks if the given constraint is satisfied by all generators 
+
+  //! Checks if the given constraint is satisfied by all generators
   //! in the system.
   GenSys_Con_Rel satisfy(const Constraint& c) const;
-  
+
   //! Assigns to a given variable an affine expression.
   void assign_variable(size_t var,
 		       const LinExpression& expr,

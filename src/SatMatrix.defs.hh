@@ -31,11 +31,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*!
   This class specifies a saturation matrix.
-  We use a saturation matrix to specify the relation between the 
-  generators and the constraints of a polyhedron: if a generator 
+  We use a saturation matrix to specify the relation between the
+  generators and the constraints of a polyhedron: if a generator
   saturates a constraint the corresponding element of the saturation
   matrix is \f$0\f$, otherwise (i.e. the generator only satisfies
-  the constraint) the corresponding element is \f$1\f$. 
+  the constraint) the corresponding element is \f$1\f$.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 

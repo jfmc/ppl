@@ -49,11 +49,11 @@ namespace Parma_Polyhedra_Library {
   - <EM>generators minimized</EM>: the set of generators attached
     to the polyhedron is minimized.
   - <EM>constraints' saturation matrix up-to-date</EM>: the attached
-    saturation matrix having rows indexed by generators and columns 
+    saturation matrix having rows indexed by generators and columns
     indexed by constraints correctly expresses the saturation
     relation between the attached constraints and generators;
   - <EM>generators' saturation matrix up-to-date</EM>: the attached
-    saturation matrix having rows indexed by constraints and 
+    saturation matrix having rows indexed by constraints and
     columns indexed by generators correctly expresses the saturation
     relation between the attached constraints and generators;
 

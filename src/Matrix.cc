@@ -39,11 +39,11 @@ namespace PPL = Parma_Polyhedra_Library;
 
 /*!
   \param num_rows      The number of rows of the matrix that will be created.
-  \param num_columns   The number of columns of the matrix 
+  \param num_columns   The number of columns of the matrix
                        that will be created.
 
-  This constructor creates an unsorted 
-  \p num_rows \f$\times\f$ \p num_columns matrix which rows are 
+  This constructor creates an unsorted
+  \p num_rows \f$\times\f$ \p num_columns matrix which rows are
   all initialized to rays or vertices or inequalities.
 */
 PPL::Matrix::Matrix(size_t num_rows, size_t num_columns)
@@ -77,15 +77,15 @@ PPL::Matrix::operator =(const Matrix& y) {
 
 
 /*!
-  \param new_num_rows      The number of rows of the 
+  \param new_num_rows      The number of rows of the
                            resized matrix.
-  \param new_num_columns   The number of columns of the 
+  \param new_num_columns   The number of columns of the
                            resized matrix.
-		       
-  Creates a new matrix with the given dimensions and copies the content 
+		
+  Creates a new matrix with the given dimensions and copies the content
   of the old elements to the new ones.
   If the new dimensions of the matrix are larger than the previous ones,
-  the old matrix is copied in the upper left hand side of the new 
+  the old matrix is copied in the upper left hand side of the new
   matrix.
 */
 void
@@ -95,15 +95,15 @@ PPL::Matrix::resize(size_t new_num_rows, size_t new_num_columns) {
   bool was_sorted = is_sorted();
   Matrix new_matrix(new_num_rows, new_num_columns);
 
-  size_t last_column = (row_size < new_num_columns ? 
-			row_size : 
+  size_t last_column = (row_size < new_num_columns ?
+			row_size :
 			new_num_columns);
-  size_t last_row = (num_rows() < new_num_rows ? 
-		     num_rows() : 
+  size_t last_row = (num_rows() < new_num_rows ?
+		     num_rows() :
 		     new_num_rows);
 
   for (size_t i = last_row; i-- > 0; ) {
-    for (size_t j = last_column; j-- > 0; ) 
+    for (size_t j = last_column; j-- > 0; )
       new_matrix[i][j] = x[i][j];
     if (x[i].is_line_or_equality())
       new_matrix[i].set_is_line_or_equality();
@@ -118,13 +118,13 @@ PPL::Matrix::resize(size_t new_num_rows, size_t new_num_columns) {
 
 
 /*!
-  \param new_num_rows      The number of rows of the 
+  \param new_num_rows      The number of rows of the
                            resized matrix.
-  \param new_num_columns   The number of columns of the 
+  \param new_num_columns   The number of columns of the
                            resized matrix.
-		       
-  Creates a new matrix with the given dimensions without copying 
-  the content of the old elements to the new ones. 
+		
+  Creates a new matrix with the given dimensions without copying
+  the content of the old elements to the new ones.
 */
 void
 PPL::Matrix::resize_no_copy(size_t new_num_rows, size_t new_num_columns) {
@@ -162,7 +162,7 @@ PPL::Matrix::resize_no_copy(size_t new_num_rows, size_t new_num_columns) {
 	for (size_t i = old_num_rows; i-- > 0; )
 	  rows[i].grow_no_copy(new_num_columns);
       else {
-	// Capacity exhausted: we must reallocate the rows and 
+	// Capacity exhausted: we must reallocate the rows and
 	// make sure all the rows have the same capacity.
 	row_capacity = compute_row_capacity(new_num_columns);
 	for (size_t i = old_num_rows; i-- > 0; ) {
@@ -180,12 +180,12 @@ PPL::Matrix::resize_no_copy(size_t new_num_rows, size_t new_num_columns) {
 }
 
 /*!
-  This virtual raw write method prints the number of rows, the 
+  This virtual raw write method prints the number of rows, the
   number of columns and the \p sorted flag. The specialized
   methods in ConSys and GenSys take care of properly printing
-  the contents of the Matrix. 
+  the contents of the Matrix.
 */
-void 
+void
 PPL::Matrix::print(std::ostream& s) const {
   using std::endl;
 
@@ -205,12 +205,12 @@ PPL::operator <<(std::ostream& s, const PPL::Matrix& m) {
 }
 
 /*!
-  This virtual raw read method is meant to read into a Matrix 
-  a <CODE>print()</CODE> output. The specialized methods in 
-  <CODE>ConSys</CODE> and <CODE>GenSys</CODE> take care of properly 
-  reading the contents. 
+  This virtual raw read method is meant to read into a Matrix
+  a <CODE>print()</CODE> output. The specialized methods in
+  <CODE>ConSys</CODE> and <CODE>GenSys</CODE> take care of properly
+  reading the contents.
 */
-void 
+void
 PPL::Matrix::get(std::istream& s) {
   size_t nrows;
   size_t ncols;
@@ -233,8 +233,8 @@ PPL::operator >>(std::istream& s, PPL::Matrix& m) {
 
 /*!
   \param y   The matrix to be merged with \p *this one.
-		       
-  Merge \p y with \p *this removing duplicates (i.e., rows that 
+		
+  Merge \p y with \p *this removing duplicates (i.e., rows that
   appear either in \p y and in \p *this) and obtaining a new
   sorted matrix that will be assigned to \p *this.
 
@@ -345,13 +345,13 @@ PPL::Matrix::insert(const Row& row) {
     add_row(row);
 }
 /*!
-  Adds a new empty row to the matrix setting its type to the given 
+  Adds a new empty row to the matrix setting its type to the given
   \p type.
 */
 void
 PPL::Matrix::add_row(Row::Type type) {
   bool was_sorted = is_sorted();
-  // Inserts a new empty row at the end, 
+  // Inserts a new empty row at the end,
   // then constructs it assigning it the given type \p type.
   rows.insert(rows.end(), Row())->construct(type, row_size, row_capacity);
   // Check whether the modified Matrix happens to be sorted.
@@ -381,7 +381,7 @@ PPL::Matrix::normalize() {
 }
 
 /*!
-  Returns <CODE>true</CODE> if and only if \p x and 
+  Returns <CODE>true</CODE> if and only if \p x and
   \p y are identical.
 */
 bool
@@ -400,7 +400,7 @@ PPL::operator ==(const Matrix& x, const Matrix& y) {
 /*!
   \param sat   Saturation matrix whose rows represent the rows of \p *this.
 
-  If \p *this has constraints on its rows, then the rows of \p sat are 
+  If \p *this has constraints on its rows, then the rows of \p sat are
   indexed by constraints, otherwise they are indexed by generators.
 
   Sorts the matrix keeping \p sat consistent, then removes duplicates.
@@ -408,7 +408,7 @@ PPL::operator ==(const Matrix& x, const Matrix& y) {
 void
 PPL::Matrix::sort_and_remove_with_sat(SatMatrix& sat) {
   Matrix& x = *this;
-  size_t num_kept_rows = x.num_rows();  
+  size_t num_kept_rows = x.num_rows();
   assert(num_kept_rows == sat.num_rows());
   if (num_kept_rows <= 1) {
     set_sorted(true);
@@ -419,7 +419,7 @@ PPL::Matrix::sort_and_remove_with_sat(SatMatrix& sat) {
       int cmp = compare(x[j], x[j - 1]);
       if (cmp == 0) {
 	// If the compared rows are equals, we move the one with
-	// the greatest index (and the corresponding row of 
+	// the greatest index (and the corresponding row of
 	// the saturation matrix) to the bottom of the matrix.
 	// Now the number of row is one less.
 	--num_kept_rows;
@@ -444,14 +444,14 @@ PPL::Matrix::sort_and_remove_with_sat(SatMatrix& sat) {
 }
 
 /*!
-  This method works only on equalities: this is because it requires that 
-  equalities come first in the matrix. This way they are all grouped 
+  This method works only on equalities: this is because it requires that
+  equalities come first in the matrix. This way they are all grouped
   in the top of the matrix and it is simpler to find them.
-  
-  <CODE>gauss()</CODE> method finds a minimal system for 
-  equalities and returns its rank i.e., the 
-  number of linearly independent equalities. 
-  The result is an upper triangular matrix obtained choosing 
+
+  <CODE>gauss()</CODE> method finds a minimal system for
+  equalities and returns its rank i.e., the
+  number of linearly independent equalities.
+  The result is an upper triangular matrix obtained choosing
   (for each equality) the pivot starting from the right-most columns.
 */
 size_t
@@ -463,19 +463,19 @@ PPL::Matrix::gauss() {
   size_t nb_lines_or_equalities = num_lines_or_equalities();
   for (size_t j = nb_columns; j-- > 0; ) {
     for (size_t i = rank; i < nb_lines_or_equalities; ++i) {
-      // Looking for the first non-zero coefficient (the pivot) 
+      // Looking for the first non-zero coefficient (the pivot)
       // in the j-th column, starting from the last column.
       if (rows[i][j] != 0) {
 	// We want the pivot to be placed on the secondary diagonal,
-	// if it is not the case, we swap the row containing it 
-	// with the one indexed by rank (that can be a previous one 
+	// if it is not the case, we swap the row containing it
+	// with the one indexed by rank (that can be a previous one
 	// or the same: in this case we do not swap).
 	if (i > rank) {
 	  std::swap(rows[i], rows[rank]);
 	  // After swapping the matrix is no more sorted.
 	  changed = true;
 	}
-	// We want the pivot to be greater than zero to 
+	// We want the pivot to be greater than zero to
 	// simplify future computing (back-substitution).
 	if (rows[rank][j] < 0) {
 	  for (size_t k = nb_columns; k-- > 0; )
@@ -483,8 +483,8 @@ PPL::Matrix::gauss() {
 	  // Matrix has changed.
 	  changed = true;
 	}
-	// Linear combining the row containing the pivot with 
-	// all the ones that follow it such that all the elements 
+	// Linear combining the row containing the pivot with
+	// all the ones that follow it such that all the elements
 	// on the j-th column (of these rows) become 0.
 	for (size_t k = i + 1; k < nb_lines_or_equalities; ++k) {
 	  if (rows[k][j] != 0)
@@ -506,8 +506,8 @@ PPL::Matrix::gauss() {
 
 /*!
   Takes an upper triangular matrix.
-  For each row, starting from the one having the minimum number of 
-  coefficients not equal to zero, computes the expression of an element 
+  For each row, starting from the one having the minimum number of
+  coefficients not equal to zero, computes the expression of an element
   as a function of the remaining ones and then substitutes this expression
   in all the other rows.
 */
@@ -516,7 +516,7 @@ PPL::Matrix::back_substitute(size_t rank) {
   bool was_sorted = is_sorted();
   size_t nrows = num_rows();
   for (size_t k = rank; k-- > 0; ) {
-    // For each row, starting from the rank-th one, 
+    // For each row, starting from the rank-th one,
     // looks for the last non-zero element.
     // j will be the index of such a element.
     size_t j = num_columns() - 1;
@@ -526,12 +526,12 @@ PPL::Matrix::back_substitute(size_t rank) {
     for (size_t i = 0; i < nrows; ++i)
       // i runs through all the rows of the matrix.
       if (i > k && i < rank)
-	// Coefficients on the j-th column of the rows 
-	// following the one we are considering (k-th one) 
+	// Coefficients on the j-th column of the rows
+	// following the one we are considering (k-th one)
 	// until the last one linearly independent, have to be
 	// be zero, as the matrix is triangular.
 	//          j
-	// .  .  .  .  .  .  
+	// .  .  .  .  .  .
 	// .  .  .  .  .  0
 	// .  .  .  .  0  0  k
 	// .  .  .  0  0  0
@@ -541,9 +541,9 @@ PPL::Matrix::back_substitute(size_t rank) {
 	// .  .  .  .  .  .  inequality
 	assert(rows[i][j] == 0);
       else if (rows[i][j] != 0 && i != k) {
-	// We have already a row with j-th coefficient non-zero 
-	// (the k-th one), so we linear combine all the other 
-	// rows (but these already treated above) with the 
+	// We have already a row with j-th coefficient non-zero
+	// (the k-th one), so we linear combine all the other
+	// rows (but these already treated above) with the
 	// k-th one such that they have a zero coefficient
 	// in position j.
 	rows[i].linear_combine(rows[k], j);
@@ -556,10 +556,10 @@ PPL::Matrix::back_substitute(size_t rank) {
 	    set_sorted(true);
 	  else if (nrows == 2)
 	    set_sorted(rows[0] <= rows[1]);
-	  else 
+	  else
 	    // i-th row is become a linear combination of others
-	    // rows, so it is changed: if it is still sorted 
-	    // with respect to the adjacent one(s) 
+	    // rows, so it is changed: if it is still sorted
+	    // with respect to the adjacent one(s)
 	    // the matrix remains sorted.
 	    if (i != 0 && i != nrows-1)
 	      set_sorted(rows[i-1] <= rows[i] && rows[i] <= rows[i+1]);
@@ -577,7 +577,7 @@ PPL::Matrix::back_substitute(size_t rank) {
   Turn the \f$r \times c\f$ matrix \f$M\f$ into
   the \f$r \times (c+n)\f$ matrix \f$(M \, 0)\f$.
 */
-void 
+void
 PPL::Matrix::add_zero_columns(size_t n) {
   assert(n > 0);
   resize(num_rows(), num_columns() + n);
@@ -592,7 +592,7 @@ PPL::Matrix::add_zero_columns(size_t n) {
   where \f$J\f$ is the specular image
   of the \f$n \times n\f$ identity matrix.
 */
-void 
+void
 PPL::Matrix::add_rows_and_columns(size_t n) {
   assert(n > 0);
   bool was_sorted = is_sorted();
@@ -642,9 +642,9 @@ PPL::Matrix::check_sorted() const {
 bool
 PPL::Matrix::OK() const {
   if (num_columns() < 2)
-    // A matrix will contain constraints or generators; in 
-    // both cases it must have at least two columns: one for the 
-    // inhomogeneous term and one for the coefficient of 
+    // A matrix will contain constraints or generators; in
+    // both cases it must have at least two columns: one for the
+    // inhomogeneous term and one for the coefficient of
     // (at least) a variable.
     return false;
   return true;

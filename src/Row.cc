@@ -34,9 +34,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 /*!
-  Computes the Greatest Common Divisor (GCD) among the elements of 
+  Computes the Greatest Common Divisor (GCD) among the elements of
   the row and normalizes them by the GCD itself.
-  This is useful because we know that constraints and generators are 
+  This is useful because we know that constraints and generators are
   unique up a multiplicative coefficient.
 */
 void
@@ -61,7 +61,7 @@ PPL::Row::normalize() {
 /*!
   \param x    A row of coefficients.
   \param y    Another row.
-  
+
   \return     The returned absolute value can be \f$0, 1\f$ or \f$2\f$.
 
   Compares \p x and \p y,
@@ -108,8 +108,8 @@ PPL::compare(const Row& x, const Row& y) {
       // There is at least a different coefficient.
       return (comp > 0) ? 2 : -2;
   }
-  // If all the coefficients in `x' equal all the coefficients in `y' 
-  // (starting from position 1) we compare coefficients in position 0, 
+  // If all the coefficients in `x' equal all the coefficients in `y'
+  // (starting from position 1) we compare coefficients in position 0,
   // i.e., inhomogeneous terms.
   int comp = cmp(x[0], y[0]);
   if (comp != 0)
@@ -136,9 +136,9 @@ PPL::operator *(const Row& x, const Row& y) {
   \param y   The row that will be combined with \p *this object.
   \param k   The position of \p *this that have to be \f$0\f$.
 
-  Computes a linear combination between \p *this and \p y such 
-  that the k-th element of \p *this become \f$0\f$. Then it assigns the 
-  resulting row to \p *this and normalizes it. 
+  Computes a linear combination between \p *this and \p y such
+  that the k-th element of \p *this become \f$0\f$. Then it assigns the
+  resulting row to \p *this and normalizes it.
 */
 void
 PPL::Row::linear_combine(const Row& y, size_t k) {

@@ -37,8 +37,8 @@ Parma_Polyhedra_Library::Matrix::swap(Matrix& y) {
 }
 
 /*!
-  Specialize <CODE>std::swap</CODE> to use the fast swap that 
-  is provided as a member function instead of using the default 
+  Specialize <CODE>std::swap</CODE> to use the fast swap that
+  is provided as a member function instead of using the default
   algorithm (which creates a temporary and uses assignment).
 */
 INLINE void
@@ -60,11 +60,11 @@ Parma_Polyhedra_Library::Matrix::RowCompare::operator ()(const Row& x,
 
 /*!
   \param num_columns   The number of elements we want the rows to contain.
-  
+
   \return              The actual capacity of the rows.
 
-  Computes the row capacity given the required number of columns. 
-  Allows speculative allocation aimed at reducing the number of 
+  Computes the row capacity given the required number of columns.
+  Allows speculative allocation aimed at reducing the number of
   reallocations.
 */
 INLINE size_t
@@ -74,10 +74,10 @@ Parma_Polyhedra_Library::Matrix::compute_row_capacity(size_t num_columns) {
 
 
 /*!
-  The default constructor initializes the rows' size and capacity to \f$0\f$. 
-  FIXME: This "zero-matrix" is temporarily set to be not sorted 
-         because, when we add some rows, they may not be 
-         sorted and if the flag had been set to \p true we 
+  The default constructor initializes the rows' size and capacity to \f$0\f$.
+  FIXME: This "zero-matrix" is temporarily set to be not sorted
+         because, when we add some rows, they may not be
+         sorted and if the flag had been set to \p true we
          would have to change it to \p false.
 	 The fact is that a matrix with no rows is sorted.
 */
@@ -128,8 +128,8 @@ Parma_Polyhedra_Library::Matrix::set_sorted(bool value) {
 */
 INLINE bool
 Parma_Polyhedra_Library::Matrix::is_sorted() const {
-  // Since the flag `sorted' does not really reflect the 
-  // sort status of a matrix this assertion is used to be sure that the 
+  // Since the flag `sorted' does not really reflect the
+  // sort status of a matrix this assertion is used to be sure that the
   // matrix is really sorted when `sorted' value is 'true'.
   assert(!sorted || check_sorted());
   return sorted;
@@ -137,7 +137,7 @@ Parma_Polyhedra_Library::Matrix::is_sorted() const {
 
 
 /*!
-  Returns the number of the columns of the matrix, 
+  Returns the number of the columns of the matrix,
   i.e., the size of the rows of the matrix.
 */
 INLINE size_t
@@ -156,7 +156,7 @@ Parma_Polyhedra_Library::Matrix::num_rows() const {
 
 
 /*!
-  Returns the number of the rows of the matrix 
+  Returns the number of the rows of the matrix
   that represent lines or equalities.
 */
 INLINE size_t
@@ -177,7 +177,7 @@ Parma_Polyhedra_Library::operator !=(const Matrix& x, const Matrix& y) {
 /*!
   \param first_to_erase   The row index from which start to erase.
 
-  Erases from the matrix all the rows between the 
+  Erases from the matrix all the rows between the
   \p first_to_erase -th and the last one.
 */
 INLINE void

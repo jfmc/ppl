@@ -57,7 +57,7 @@ Parma_Polyhedra_Library::Polyhedron::is_empty() const {
 }
 
 /*!
-  Returns <CODE>true</CODE> if and only if \p *this is the 
+  Returns <CODE>true</CODE> if and only if \p *this is the
   full zero-dimensional polyhedron.
 */
 INLINE bool
@@ -90,7 +90,7 @@ Parma_Polyhedra_Library::Polyhedron::constraints_are_minimized() const {
   return status.test_c_minimized();
 }
 
-/*! 
+/*!
   Returns <CODE>true</CODE> if the system of generators is minimized.
 */
 INLINE bool
@@ -178,8 +178,8 @@ Parma_Polyhedra_Library::Polyhedron::clear_empty() {
 }
 
 
-/*! 
-  Sets \p status to express sat_c 
+/*!
+  Sets \p status to express sat_c
   is no more up-to-date.
 */
 INLINE void
@@ -189,8 +189,8 @@ Parma_Polyhedra_Library::Polyhedron::clear_sat_c_up_to_date() {
 }
 
 
-/*! 
-  Sets \p status to express \p sat_g 
+/*!
+  Sets \p status to express \p sat_g
   is no longer up-to-date.
 */
 INLINE void
@@ -199,8 +199,8 @@ Parma_Polyhedra_Library::Polyhedron::clear_sat_g_up_to_date() {
   // Can get rid of sat_g here.
 }
 
-/*! 
-  Sets \p status to express constraints are 
+/*!
+  Sets \p status to express constraints are
   no longer minimized.
 */
 INLINE void
@@ -208,8 +208,8 @@ Parma_Polyhedra_Library::Polyhedron::clear_constraints_minimized() {
   status.reset_c_minimized();
 }
 
-/*! 
-  Sets \p status to express generators are 
+/*!
+  Sets \p status to express generators are
   no longer minimized.
 */
 INLINE void
@@ -218,8 +218,8 @@ Parma_Polyhedra_Library::Polyhedron::clear_generators_minimized() {
 }
 
 /*!
-  Sets \p status to express constraints are no longer up-to-date 
-  (then no minimized) and then the saturation matrices are no 
+  Sets \p status to express constraints are no longer up-to-date
+  (then no minimized) and then the saturation matrices are no
   more meaningful.
 */
 INLINE void
@@ -233,8 +233,8 @@ Parma_Polyhedra_Library::Polyhedron::clear_constraints_up_to_date() {
 
 
 /*!
-  Sets \p status to express the fact that generators are no longer up-to-date 
-  (then no minimized) and then the saturation matrices are 
+  Sets \p status to express the fact that generators are no longer up-to-date
+  (then no minimized) and then the saturation matrices are
   no longer meaningful.
 */
 INLINE void
@@ -246,7 +246,7 @@ Parma_Polyhedra_Library::Polyhedron::clear_generators_up_to_date() {
   // Can get rid of gen_sys here.
 }
 
-/*! 
+/*!
   Forces \p status to be that of a zero-dimensional polyhedron.
 */
 INLINE void
@@ -286,7 +286,7 @@ Parma_Polyhedra_Library::operator >(const Polyhedron& x,
 
 
 /*!
-  Updates the constraints as necessary, then returns a constant 
+  Updates the constraints as necessary, then returns a constant
   reference to the system of constraints.
 */
 INLINE const Parma_Polyhedra_Library::ConSys&
@@ -322,7 +322,7 @@ Parma_Polyhedra_Library::Polyhedron::constraints() const {
 
 
 /*!
-  Updates the generators as necessary, then returns a constant 
+  Updates the generators as necessary, then returns a constant
   reference to the system of generators.
 */
 INLINE const Parma_Polyhedra_Library::GenSys&
@@ -333,8 +333,8 @@ Parma_Polyhedra_Library::Polyhedron::generators() const {
   if (is_zero_dim())
     throw std::invalid_argument("PPL::Polyhedron::generators() "
 				"*this is zero-dimensional");
- 
-  if (!generators_are_up_to_date()) 
+
+  if (!generators_are_up_to_date())
     update_generators();
 
   // We insist in returning a sorted system of generators.

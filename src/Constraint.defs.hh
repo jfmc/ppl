@@ -31,7 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friend later.
-  Constraint operator ==(const LinExpression& e1, const LinExpression& e2); 
+  Constraint operator ==(const LinExpression& e1, const LinExpression& e2);
   Constraint operator ==(const LinExpression& e, const Integer& n);
   Constraint operator ==(const Integer& n, const LinExpression& e);
 
@@ -50,13 +50,13 @@ namespace Parma_Polyhedra_Library {
 }
 
 //! A linear equality or inequality.
-/*! 
+/*!
   An object of the class Constraint is either:
   - an equality: \f$\sum_{i=0}^{d-1} a_i x_i + b = 0\f$; or
   - an inequality: \f$\sum_{i=0}^{d-1} a_i x_i + b \geq 0\f$;
-  
+
   where \f$d\f$ is the dimension of the space.
-  
+
   \par How to build a constraint
   Constraints are typically built by applying a relational operator
   to a pair of linear expressions.
@@ -74,7 +74,7 @@ namespace Parma_Polyhedra_Library {
   Variable y(1);
   Variable z(2);
     \endcode
-    
+
     \par Example
     The following code builds the equality \f$3x + 5y - z = 0\f$:
     \code
@@ -83,7 +83,7 @@ namespace Parma_Polyhedra_Library {
     The following code builds the constraint \f$4x - 2y \geq z - 13\f$:
     \code
   Constraint inequal(4 * x - 2 * y >= z - 13);
-    \endcode 
+    \endcode
 */
 class Parma_Polyhedra_Library::Constraint : public Row {
 private:
@@ -93,12 +93,12 @@ private:
   friend Constraint
   Parma_Polyhedra_Library::operator ==(const LinExpression& e1,
 				       const LinExpression& e2);
-  
+
   //! Returns the constraint \p e = \p n.
   friend Constraint
   Parma_Polyhedra_Library::operator ==(const LinExpression& e,
 				       const Integer& n);
-  
+
   //! Returns the constraint \p n = \p e.
   friend Constraint
   Parma_Polyhedra_Library::operator ==(const Integer& n,
@@ -112,13 +112,13 @@ private:
   //! Returns the constraint \p e >= \p n.
   friend Constraint
   Parma_Polyhedra_Library::operator >=(const LinExpression& e,
-				       const Integer& n); 
+				       const Integer& n);
 
   //! Returns the constraint \p n >= \p e.
   friend Constraint
   Parma_Polyhedra_Library::operator >=(const Integer& n,
 				       const LinExpression& e);
-  
+
   //! Returns the constraint \p e1 <= \p e2.
   friend Constraint
   Parma_Polyhedra_Library::operator <=(const LinExpression& e1,
@@ -148,10 +148,10 @@ public:
   //! Destructor.
   ~Constraint();
 
-  //! Returns <CODE>true</CODE> if and only if 
+  //! Returns <CODE>true</CODE> if and only if
   //! \p *this is an equality constraint.
   bool is_equality() const;
-  //! Returns <CODE>true</CODE> if and only if 
+  //! Returns <CODE>true</CODE> if and only if
   //! \p *this is an inequality constraint.
   bool is_inequality() const;
 

@@ -34,35 +34,35 @@ main() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
- 
+
   Polyhedron icosahedron(3);
   icosahedron.insert(4*x - 2*y - z + 14 >= 0);
   icosahedron.insert(4*x + 2*y - z + 2 >= 0);
   icosahedron.insert(x + y - 1 >= 0);
-  icosahedron.insert(x + y + 2*z - 5 >= 0); 
-  icosahedron.insert(x + 1 >= 0); 
-  icosahedron.insert(x + z - 1 >= 0); 
-  icosahedron.insert(2*x + y -2*z + 7 >= 0); 
-  icosahedron.insert(x - y + 2*z + 1 >= 0); 
-  icosahedron.insert(x - y + 5 >= 0); 
-  icosahedron.insert(2*x - y - 2*z + 13 >= 0); 
-  icosahedron.insert(-2*x - y + 2*z + 1 >= 0); 
-  icosahedron.insert(-x + y - 1 >= 0); 
-  icosahedron.insert(-x + y -2*z + 7 >= 0); 
-  icosahedron.insert(-4*x + 2*y + z - 4 >= 0); 
-  icosahedron.insert(-2*x + y + 2*z - 5 >= 0); 
-  icosahedron.insert(-x + 1 >= 0); 
-  icosahedron.insert(-x - z + 5 >= 0); 
-  icosahedron.insert(-4*x - 2*y + z + 8 >= 0); 
-  icosahedron.insert(-x - y + 5 >= 0); 
-  icosahedron.insert(-x - y -2*z +13 >= 0); 
+  icosahedron.insert(x + y + 2*z - 5 >= 0);
+  icosahedron.insert(x + 1 >= 0);
+  icosahedron.insert(x + z - 1 >= 0);
+  icosahedron.insert(2*x + y -2*z + 7 >= 0);
+  icosahedron.insert(x - y + 2*z + 1 >= 0);
+  icosahedron.insert(x - y + 5 >= 0);
+  icosahedron.insert(2*x - y - 2*z + 13 >= 0);
+  icosahedron.insert(-2*x - y + 2*z + 1 >= 0);
+  icosahedron.insert(-x + y - 1 >= 0);
+  icosahedron.insert(-x + y -2*z + 7 >= 0);
+  icosahedron.insert(-4*x + 2*y + z - 4 >= 0);
+  icosahedron.insert(-2*x + y + 2*z - 5 >= 0);
+  icosahedron.insert(-x + 1 >= 0);
+  icosahedron.insert(-x - z + 5 >= 0);
+  icosahedron.insert(-4*x - 2*y + z + 8 >= 0);
+  icosahedron.insert(-x - y + 5 >= 0);
+  icosahedron.insert(-x - y -2*z +13 >= 0);
 
   Polyhedron column(3);
   column.insert(y >= 2);
   column.insert(y <= 4);
   column.insert(x >= 0);
   column.insert(x <= 1);
-  
+
   Polyhedron computed_result = icosahedron;
   computed_result.intersection_assign(column);
 

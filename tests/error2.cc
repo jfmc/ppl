@@ -10,7 +10,7 @@ int
 main() {
   Variable x(0);
   Variable y(1);
-  
+
   GenSys gs;
   gs.insert(x + y /= 1);
   gs.insert(1 ^ x + 0*y);

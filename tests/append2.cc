@@ -114,7 +114,7 @@ fix_point(Polyhedron& start, Polyhedron& induct, Polyhedron& finish,
     set<Variable> dimensions_to_remove;
     for (unsigned int i = num_vars-1 ; i >= arity; --i )
       dimensions_to_remove.insert(Variable(i));
-    current.remove_dimensions(dimensions_to_remove);                           
+    current.remove_dimensions(dimensions_to_remove);
 
 #if NOISY
     print_constraints(current, "*** after remove_dimensions ***");

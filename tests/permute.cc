@@ -109,13 +109,13 @@ fix_point(Polyhedron& start, Polyhedron& induct, Polyhedron& finish,
 #if NOISY
     print_constraints(current, "*** after shift_rename_insert ***");
 #endif
-    
+
     set<Variable> dimensions_to_remove;
     size_t current_dim;
     current_dim = current.num_dimensions();
     for (unsigned int i = current_dim-1 ; i >= arity; --i )
       dimensions_to_remove.insert(Variable(i));
-    current.remove_dimensions(dimensions_to_remove);                           
+    current.remove_dimensions(dimensions_to_remove);
 
 #if NOISY
     print_constraints(current, "*** after remove_dimensions ***");
@@ -170,7 +170,7 @@ permute_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
   print_constraints(base, "*** base ***");
 #endif
   // This is the inductive case:
-  // permute(A,B) :- B = [X|C], 
+  // permute(A,B) :- B = [X|C],
   //                 E = [X|G], F = A, append(D,E,F),
   //                 D = H, I = G, append(H,I,J),
   //                 K = J, L = C, permute(K,L).
@@ -227,13 +227,13 @@ main() {
     Variable L(11);
     final2.insert(B - L >= 1);
     final2.insert(A - K >= 1);
-    
+
 #if NOISY
     if (final2 == final1)
     print_constraints(final2, "*** termination condition satisfied ***");
-    else 
+    else
     print_constraints(final2, "*** termination condition not satisfied ***");
 #endif
-       
+
   return final2 == final1 ? 0 : 1;
 }

@@ -25,7 +25,7 @@ Please edit ppl.spec.in to add several more lines of description
 here if appropriate, and to delete these instructions.
 
 %prep
-%setup -n %{name}-%{version} 
+%setup -n %{name}-%{version}
 #%patch -p1
 
 %build

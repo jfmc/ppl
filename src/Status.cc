@@ -87,27 +87,27 @@ PPL::operator >>(std::istream& s, PPL::Status& u) {
     u.set_empty();
 
  get_field(s, consys_min) ?
-    u.set_c_minimized() : 
+    u.set_c_minimized() :
     u.reset_c_minimized();
 
  get_field(s, gensys_min) ?
-    u.set_g_minimized() : 
+    u.set_g_minimized() :
     u.reset_g_minimized();
 
   get_field(s, consys_upd) ?
-    u.set_c_up_to_date() : 
+    u.set_c_up_to_date() :
     u.reset_c_up_to_date();
 
   get_field(s, gensys_upd) ?
-    u.set_g_up_to_date() : 
+    u.set_g_up_to_date() :
     u.reset_g_up_to_date();
 
   get_field(s, sat_c) ?
-    u.set_sat_c_up_to_date() : 
+    u.set_sat_c_up_to_date() :
     u.reset_sat_c_up_to_date();
 
   get_field(s, sat_g) ?
-    u.set_sat_g_up_to_date() : 
+    u.set_sat_g_up_to_date() :
     u.reset_sat_g_up_to_date();
 
   return s;
@@ -128,7 +128,7 @@ PPL::Status::OK() const {
 
   if ((test_sat_c_up_to_date() || test_sat_g_up_to_date())
       && !(test_c_up_to_date() && test_g_up_to_date()))
-    // If a saturation matrix is up-to-date, constraints and 
+    // If a saturation matrix is up-to-date, constraints and
     // generators have to be both up-to-date.
     return false;
 

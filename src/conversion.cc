@@ -42,46 +42,46 @@ namespace PPL = Parma_Polyhedra_Library;
                  will be modified.
   \param start   The index of \p source row from which conversion begin.
   \param dest    The result of the conversion.
-  \param sat     The matrix that tell us which lines of \p source is 
+  \param sat     The matrix that tell us which lines of \p source is
                  saturated (or is only satisfied) by which lines of \p dest.
-  \param num_lines_or_equalities 
-                 The number of lines of the polyhedron or the number of 
+  \param num_lines_or_equalities
+                 The number of lines of the polyhedron or the number of
 		 equality constraints in given \p dest matrix.
-  \return        The number of lines of the polyhedron or the number of 
+  \return        The number of lines of the polyhedron or the number of
 		 equality constraints in the result of conversion.
 
-  If some of the constraints (or some of the generators if 
-  we are making conversion from generators to constraints) of \p source 
-  is redundant, it will be removed. This means that the matrix used 
+  If some of the constraints (or some of the generators if
+  we are making conversion from generators to constraints) of \p source
+  is redundant, it will be removed. This means that the matrix used
   to convert \p dest could be modified and then it is not constant.
 
-  \p dest is supposed to have lines from index 0 to index 
-  \p num_lines_or_equalities - 1  and ray/vertex from index 
+  \p dest is supposed to have lines from index 0 to index
+  \p num_lines_or_equalities - 1  and ray/vertex from index
   \p num_lines_or_equalities to the last row.
-  
-  \p start parameter is 0 when we have to find generators from a given set of 
+
+  \p start parameter is 0 when we have to find generators from a given set of
   constraints.
-  However \p start may not be 0. This happens, for example, when, given 
-  a set of constraints and the corresponding set of generators, we add some 
-  new constraints to the previous set and we want to find the new 
-  corresponding set of generators starting from the previous one. 
-  
-  Note that here the rows of \p sat are indexed by rows of \p dest 
+  However \p start may not be 0. This happens, for example, when, given
+  a set of constraints and the corresponding set of generators, we add some
+  new constraints to the previous set and we want to find the new
+  corresponding set of generators starting from the previous one.
+
+  Note that here the rows of \p sat are indexed by rows of \p dest
   and its columns are indexed by rows of \p source.
 
-  \p num_lines_or_equalities indicates the number of \p dest rows that 
-  represent the lines of the polyhedron (in conversion from constraints 
-  to generators) or the number of the equality constraints (in conversion 
-  from generators to constraints). This parameter will be 
+  \p num_lines_or_equalities indicates the number of \p dest rows that
+  represent the lines of the polyhedron (in conversion from constraints
+  to generators) or the number of the equality constraints (in conversion
+  from generators to constraints). This parameter will be
   returned at the end of the conversion.
 
   We know that polyhedra can be represented by both a set of constraints
-  or a set of generators (vertices, rays and lines) 
+  or a set of generators (vertices, rays and lines)
   (see user_definitions.dox).
   When we have both descriptions for a polyhedron \f$P\f$
   we have what is called a <EM>double description</EM>
   (or <EM>DD pair</EM>) for \f$P\f$.
-  
+
   Here, the <EM>representation matrix</EM> refers to the matrix \f$C\f$
   whose rows represent the constraints that characterize \f$P\f$
   and the <EM>generating matrix</EM>, the matrix \f$G\f$ whose rows
@@ -93,11 +93,11 @@ namespace PPL = Parma_Polyhedra_Library;
       \quad\iff\quad
         \exists \lambda \geq 0 \mathrel{.} x = G\lambda.
   \f]
-  
-  The term "double description" is quite natural in the sense that 
+
+  The term "double description" is quite natural in the sense that
   such a pair contains two different description of the same object.
-  In fact, if we refer to the cone representation of a polyhedron \f$P\f$ 
-  and we call \f$C\f$ and \f$G\f$ the matrices of constraints and 
+  In fact, if we refer to the cone representation of a polyhedron \f$P\f$
+  and we call \f$C\f$ and \f$G\f$ the matrices of constraints and
   rays respectively, we have
   \f[
     P = \{\, x \in \Rset^n \mid Cx \geq 0\, \}
@@ -105,9 +105,9 @@ namespace PPL = Parma_Polyhedra_Library;
                                                           \lambda \geq 0\, \}.
   \f]
 
-  Because of the theorem of Minkowski (see user_definitions.dox), 
-  we can say that, given a \f$m \times n\f$ representation matrix 
-  \f$C\f$ such that \f$\mathop{\mathrm{rank}}(C) = n = dimension of 
+  Because of the theorem of Minkowski (see user_definitions.dox),
+  we can say that, given a \f$m \times n\f$ representation matrix
+  \f$C\f$ such that \f$\mathop{\mathrm{rank}}(C) = n = dimension of
   the whole space \f$ for a non-empty polyhedron \f$P\f$,
   it is always possible to find a generating matrix \f$G\f$ for \f$P\f$
   such that \f$(C, G)\f$ is a DD pair.
@@ -150,7 +150,7 @@ namespace PPL = Parma_Polyhedra_Library;
   Thus, for each \f$x\f$ of the appropriate dimension,
   \f$Cx \geq 0\f$ if and only if
   \f$\exists \lambda \geq 0 \mathrel{.} x = G\lambda\f$,
-  which is of course equivalent to 
+  which is of course equivalent to
   \f$
     \exists \lambda \geq 0
       \mathrel{.} x^\mathrm{T} = \lambda^\mathrm{T}G^\mathrm{T}
@@ -167,12 +167,12 @@ namespace PPL = Parma_Polyhedra_Library;
   \f$,
   which, by Farkas' lemma is equivalent to
   \f$
-    \forall y \mathrel{:} (G^\mathrm{T}y \geq 0 \implies 
+    \forall y \mathrel{:} (G^\mathrm{T}y \geq 0 \implies
                             \langle y, x \rangle \geq 0)
   \f$.
   Taking \f$y = z\f$ and recalling our assumption that
   \f$G^\mathrm{T}z \geq 0\f$
-  we can conclude that \f$\langle z, x \rangle \geq 0\f$, that is 
+  we can conclude that \f$\langle z, x \rangle \geq 0\f$, that is
   equivalent to \f$\langle x, z \rangle \geq 0\f$.
   We have thus established that
   \f$
@@ -189,8 +189,8 @@ namespace PPL = Parma_Polyhedra_Library;
   In fact,
   let \f$e_j\f$ be the vector whose components are all \f$0\f$ apart from
   the \f$j\f$-th one, which is \f$1\f$.
-  Clearly \f$e_j \geq 0\f$ and, taking \f$\lambda = e_j\f$ and 
-  \f$x = G\lambda = G e_j\f$, we have 
+  Clearly \f$e_j \geq 0\f$ and, taking \f$\lambda = e_j\f$ and
+  \f$x = G\lambda = G e_j\f$, we have
   \f$Cx = C(G e_j) = (CG)e_j \geq 0\f$,
   since \f$(C, G)\f$ is a DD pair.
   Thus, as \f$(CG)e_j\f$ is the \f$j\f$-th column of \f$CG\f$
@@ -213,7 +213,7 @@ namespace PPL = Parma_Polyhedra_Library;
       \geq 0
   \f$,
   that is, the \f$j\f$-th component of \f$G^\mathrm{T}z\f$ is non-negative.
-  The arbitrary choice of \f$j\f$ allows us to conclude that  
+  The arbitrary choice of \f$j\f$ allows us to conclude that
   \f$G^\mathrm{T}z \geq 0\f$, as required.
 
   In view of this result, the following exposition assumes, for clarity,
@@ -225,27 +225,27 @@ namespace PPL = Parma_Polyhedra_Library;
 
   There are some observations that are useful to understand this function:
 
-  Observation 1: Let \f$A\f$ be a matrix of constraints that generate 
-  the polyhedron \f$P\f$ and \f$c\f$ a new constraint that must be added. 
-  Suppose that there is a line \f$z\f$ that does not saturate the 
-  constraint \f$c\f$. If we combine the old lines and rays that do not 
+  Observation 1: Let \f$A\f$ be a matrix of constraints that generate
+  the polyhedron \f$P\f$ and \f$c\f$ a new constraint that must be added.
+  Suppose that there is a line \f$z\f$ that does not saturate the
+  constraint \f$c\f$. If we combine the old lines and rays that do not
   saturate \f$c\f$ (except \f$z\f$) with \f$z\f$ such that the new
   ones saturate \f$c\f$, the new lines and rays also saturate
   the constraints  saturated by the old constraints.
 
   In fact, if \f$y_1\f$ is the old generator that does not saturate
-  \f$c\f$, \f$y_2\f$ is the new one such that 
+  \f$c\f$, \f$y_2\f$ is the new one such that
   \f[
     y_2 = \lambda y_1 + \mu z
   \f]
-  and \f$c_1\f$ is a previous constraint that \f$y_1\f$ and \f$z\f$ 
+  and \f$c_1\f$ is a previous constraint that \f$y_1\f$ and \f$z\f$
   saturates, we can see
   \f[
-    \langle c_1, y_2 \rangle = \langle c_1, (\lambda y_1 + \mu z) \rangle  
-            = \lambda \langle c_1, y_1 \rangle + \mu \langle c_1, z \rangle 
+    \langle c_1, y_2 \rangle = \langle c_1, (\lambda y_1 + \mu z) \rangle
+            = \lambda \langle c_1, y_1 \rangle + \mu \langle c_1, z \rangle
 	    = 0 + \mu \langle c_1, z \rangle = \mu \langle c_1, z \rangle
   \f]
-  and 
+  and
   \f[
     \mu \langle c_1, z \rangle = 0.
   \f]
@@ -260,59 +260,59 @@ namespace PPL = Parma_Polyhedra_Library;
      of the matrix of constraints.
 
   In fact, let \f$F\f$ be the set of generators that saturate the
-  constraints saturated by both \f$r_1\f$ and \f$r_2\f$. 
-  If b) holds, the set \f$F\f$ is 2-dimensional and \f$r_1\f$ and 
+  constraints saturated by both \f$r_1\f$ and \f$r_2\f$.
+  If b) holds, the set \f$F\f$ is 2-dimensional and \f$r_1\f$ and
   \f$r_2\f$ generate this set. So, every generator
-  \f$x\f$ of \f$F\f$ can be built as a combination of \f$r_1\f$ and 
-  \f$r_2\f$, i.e. 
+  \f$x\f$ of \f$F\f$ can be built as a combination of \f$r_1\f$ and
+  \f$r_2\f$, i.e.
   \f[
     x = \lambda r_1 + \mu r_2.
   \f]
-  This combination is non-negative because there exixt at least a 
-  constraints \f$c\f$ saturated by \f$r_1\f$ and not \f$r_2\f$ 
-  (or vice versa) (because they are distinct) for which 
-  \f[ 
+  This combination is non-negative because there exixt at least a
+  constraints \f$c\f$ saturated by \f$r_1\f$ and not \f$r_2\f$
+  (or vice versa) (because they are distinct) for which
+  \f[
     \langle c, x \rangle \geq 0
   \f]
   and
   \f[
-    \langle c, x \rangle = \lambda \langle c, r_1 \rangle  
+    \langle c, x \rangle = \lambda \langle c, r_1 \rangle
                            (or = \mu \langle c, r_2 \rangle).
   \f]
   So, there is no other extreme ray in \f$F\f$ and a) holds.
   Otherwise, if b) does not hold, the rank of the matrix generated by
   the constraints saturated by both \f$r_1\f$ and \f$r_2\f$ is equal to
   \f$d - k\f$, with \p k >= 3, the set \f$F\f$ is \p k -dimensional and
-  at least \p k extreme rays are necessary to generate \f$F\f$. 
+  at least \p k extreme rays are necessary to generate \f$F\f$.
   So, \f$r_1\f$ and \f$r_2\f$ are not adjacent and a) does not hold.
 
   Proposition 2: When we build the new set of generators starting a
-  matrix \f$A\f$ of constraints of \f$P\f$, if \f$c\f$ is the constraint 
+  matrix \f$A\f$ of constraints of \f$P\f$, if \f$c\f$ is the constraint
   to add to \f$A\f$ and all lines of \f$P\f$ saturate \f$c\f$,
-  the new set of rays is the union of those rays that saturate, of 
+  the new set of rays is the union of those rays that saturate, of
   those that satisfy and of a set \f$\overline Q\f$ of rays such that
   each of them
   -# lies on the hyper-plane represented by the k-th constraint,
   -# is a positive combination of two adjacent rays \f$r_1\f$ and
-     \f$r_2\f$ such that the first one verifies the constraint and 
+     \f$r_2\f$ such that the first one verifies the constraint and
      the other does not verify it.
-  If the adjacency property is not taken in account, the new set of 
+  If the adjacency property is not taken in account, the new set of
   rays is not irredundant, in general.
 
-  In fact, if \f$r_1\f$ and \f$r_2\f$ are not adjacent, the rank of the 
+  In fact, if \f$r_1\f$ and \f$r_2\f$ are not adjacent, the rank of the
   matrix composed by the constraints saturated by both \f$r_1\f$ and
   \f$r_2\f$ is different from \f$d - 2\f$ (see the previous proposition)
   or neither \f$r_1\f$ nor \f$r_2\f$ are extreme rays.
   Since the new ray \f$r\f$ is a combination of \f$r_1\f$ and \f$r_2\f$,
   it saturates the same constraints saturated by both \f$r_1\f$ and
-  \f$r_2\f$. 
+  \f$r_2\f$.
   If the rank is less than \f$d - 2\f$, the rank of
   the matrix composed by \f$c\f$ (that is saturated by \f$r\f$)
   and by the constraints of \f$A\f$ saturated by \f$r\f$  is less
   than \f$d - 1\f$. It means that \f$r\f$ is redundant (see definition.dox).
   If neither \f$r_1\f$ nor \f$r_2\f$ are extreme rays, they belong to
   a 2-dimensional face containing exactly two extreme rays of \f$P\f$.
-  These two adjacent rays built a ray equal to \f$r\f$ and so \f$r\f$ is 
+  These two adjacent rays built a ray equal to \f$r\f$ and so \f$r\f$ is
   redundant.
 */
 size_t
@@ -332,8 +332,8 @@ PPL::Polyhedron::conversion(Matrix& source,
   // made for the definition of `sat').
   assert(source_num_rows == sat.num_columns());
   assert(dest_num_rows == sat.num_rows());
-  
-  // Making conversion for the sub-matrix whose rows are those 
+
+  // Making conversion for the sub-matrix whose rows are those
   // of `source' from the one indexed by `start' to the last one.
   for (size_t k = start; k < source_num_rows; ) {
 
@@ -342,41 +342,41 @@ PPL::Polyhedron::conversion(Matrix& source,
     assert(source_num_columns == dest_num_columns);
 
     // The i-th element of `scalar_prod' will contain the scalar product
-    // of the k-th row of 'source' and the i-th row of `dest'. If this 
+    // of the k-th row of 'source' and the i-th row of `dest'. If this
     // product is 0 it means that the i-th generator saturates the k-th
     // constraint.
     static std::vector<Integer> scalar_prod;
     if (scalar_prod.size() < dest_num_rows)
       scalar_prod.resize(dest_num_rows);
     // `index_non_zero' will indicate the first row of `dest' that does
-    // not saturate the k-th constraint: we initialize it to 
-    // `dest_num_rows' and we will change it if we will find a 
+    // not saturate the k-th constraint: we initialize it to
+    // `dest_num_rows' and we will change it if we will find a
     // previous row that does not saturate the constraint.
     size_t index_non_zero = dest_num_rows;
     for (size_t i = 0; i < dest_num_rows; ++i) {
       scalar_prod[i] = source[k] * dest[i];
       if (index_non_zero == dest_num_rows && scalar_prod[i] != 0)
-	// We have not already changed the initial value of 
+	// We have not already changed the initial value of
 	// `index_non_zero' and we found a row that does not saturate
 	// the k-th constraint, with index i that is less than dest_num_rows.
 	index_non_zero = i;
     }
-    // The case treated below is the one when `index_non_zero' is 
-    // less than `num_lines_or_equalities', i.e., there exists a 
-    // bidirectional ray (`dest row') that does not saturate the 
+    // The case treated below is the one when `index_non_zero' is
+    // less than `num_lines_or_equalities', i.e., there exists a
+    // bidirectional ray (`dest row') that does not saturate the
     // k-th constraint.
-    // The other case (described later) that may arise is that all 
-    // the bidirectional rays represented by `dest' first 
+    // The other case (described later) that may arise is that all
+    // the bidirectional rays represented by `dest' first
     // `num_or_equalities' rows saturate the k-th constraint.
 
-    // Since the `index_non_zero'-th row of `dest' does not 
-    // saturate the k-th constraint it can not to be a line (see 
-    // saturation rule in definition.dox); so, if it is placed 
-    // among the lines we have to move it below, except if it 
+    // Since the `index_non_zero'-th row of `dest' does not
+    // saturate the k-th constraint it can not to be a line (see
+    // saturation rule in definition.dox); so, if it is placed
+    // among the lines we have to move it below, except if it
     // is already placed after all the lines.
     // Note that now the number of `dest' rows that saturate the k-th
     // constraint is one less.
-    
+
     if (index_non_zero < num_lines_or_equalities) {
       --num_lines_or_equalities;
       if (index_non_zero != num_lines_or_equalities) {
@@ -390,10 +390,10 @@ PPL::Polyhedron::conversion(Matrix& source,
       // the constraints: it belongs to one of the two half-spaces generated
       // by the hyper-plane. For this reason the generator cannot be a line
       // of the polyhedron.
-      // On the other hand, we know (see saturation rule in definitions.dox) 
-      // that every line of a polyhedron must saturate all equalities 
+      // On the other hand, we know (see saturation rule in definitions.dox)
+      // that every line of a polyhedron must saturate all equalities
       // and inequalities, then the found generator (now swapped with the
-      // `num_lines_or_equalities'-th one) can not to be a line and 
+      // `num_lines_or_equalities'-th one) can not to be a line and
       // we set it to ray/vertex.
       dest[num_lines_or_equalities].set_is_ray_or_vertex_or_inequality();
       // We have modified dest so it is no more sorted.
@@ -402,14 +402,14 @@ PPL::Polyhedron::conversion(Matrix& source,
       // lines that must lie on the hyper-plane represented by
       // the k-th constraint, i.e., the scalar product between the k-th
       // constraint and the i-th generator must be 0. So we have to consider
-      // the lines (they are placed in `dest' from the `index_non_zero'-th 
-      // row and the `num_lines_or_equalities' - 1-th one) that do 
-      // not saturate the k-th constraint and 
+      // the lines (they are placed in `dest' from the `index_non_zero'-th
+      // row and the `num_lines_or_equalities' - 1-th one) that do
+      // not saturate the k-th constraint and
       // combine them (in a linear combination) with the
       // `num_lines_or_equalities'-th one such that the new generators
-      // saturate the constraint. So, for the observation 1, 
-      // the new lines saturate the costraints that the old corresponding 
-      // ones saturate and also the `k'-th constraint.  
+      // saturate the constraint. So, for the observation 1,
+      // the new lines saturate the costraints that the old corresponding
+      // ones saturate and also the `k'-th constraint.
 
       for (size_t i = index_non_zero; i < num_lines_or_equalities; ++i) {
 	if (scalar_prod[i] != 0) {
@@ -445,24 +445,24 @@ PPL::Polyhedron::conversion(Matrix& source,
 	}
       }
       // Since the `num_lines_or_equalities'-th generator does not lie on
-      // the hyper-plane correspondent to the k-th constraint, we have 
-      // to choose the half-line that belongs to the half-space we 
+      // the hyper-plane correspondent to the k-th constraint, we have
+      // to choose the half-line that belongs to the half-space we
       // are considering. The right one is the one that multiplied by the
-      // k-th constraint give a positive result (i.e., the one that 
+      // k-th constraint give a positive result (i.e., the one that
       // satisfy the constraint). If it is not the case, we
       // multiply the `num_lines_or_equalities'-th row of `dest' by -1.
       if (scalar_prod[num_lines_or_equalities] < 0) {
 	scalar_prod[num_lines_or_equalities].negate();
 	for (size_t j = source_num_columns; j-- > 0; )
-	  // source and dest have the same number of columns: 
-	  // we can use j (running through source's columns) 
-	  // to change sign to all the elements of the 
+	  // source and dest have the same number of columns:
+	  // we can use j (running through source's columns)
+	  // to change sign to all the elements of the
 	  // `num_lines_or_equalities'-th row of dest.
 	  dest[num_lines_or_equalities][j].negate();
       }
       // To build the new pointed cone we need the new oriented ray: we
       // have to compute a positive combination of this ray with each of
-      // the old extremal ray (they are placed in `dest' from the 
+      // the old extremal ray (they are placed in `dest' from the
       // `num_lines_or_equalities' row to the last one).
       // As we seen for the lineality space, we have to consider the rays
       // that do not lie on the hyper-plane represented by the k-th
@@ -508,15 +508,15 @@ PPL::Polyhedron::conversion(Matrix& source,
       }
       // Since the `num_lines_or_equalities' generator is such that its
       // scalar product with the k-th constraint is positive (we have
-      // chosen it this way) and it does not saturate the constraint, if 
-      // the k-th constraint is an inequality we are sure that the 
-      // generator only verifies the constraint, so we set to 1 the 
-      // corresponding element of `sat'. This is what we do with the 
+      // chosen it this way) and it does not saturate the constraint, if
+      // the k-th constraint is an inequality we are sure that the
+      // generator only verifies the constraint, so we set to 1 the
+      // corresponding element of `sat'. This is what we do with the
       // following instruction.
-      if (source[k].is_ray_or_vertex_or_inequality()) 
+      if (source[k].is_ray_or_vertex_or_inequality())
 	sat[num_lines_or_equalities].set(k);
       // If the k-th constraint is an equality, as we have chosen the
-      // `num_lines_or_equalities' generator such above, it does not verify 
+      // `num_lines_or_equalities' generator such above, it does not verify
       // the constraint, so it has to be removed from the set of generators.
       else {
 	--dest_num_rows;
@@ -530,8 +530,8 @@ PPL::Polyhedron::conversion(Matrix& source,
       }
       ++k;
     }
-    // Now we treat the case in which all the lines between 
-    // `start' and `num_lines_or_equalities' `dest' positions 
+    // Now we treat the case in which all the lines between
+    // `start' and `num_lines_or_equalities' `dest' positions
     // saturate the k-th constraint, i.e., `index_non_zero' is not less than
     // `num_lines_or_equalities'.
 
@@ -574,18 +574,18 @@ PPL::Polyhedron::conversion(Matrix& source,
 
       // When the k-th constraint is an inequality and
       // `sup_bound' is equal to `dest_num_rows', it means that
-      // none of the considered generators do not verify the constraint; 
-      // then we have not decremented `inf_bound' and the while 
+      // none of the considered generators do not verify the constraint;
+      // then we have not decremented `inf_bound' and the while
       // loop terminates when `inf_bound' and `sup_bound' are both equal to
       // `dest_num_rows'.
       // Thus all the generators verify the k-th constraint and it can be
-      // removed from the constraint since it is redundant. We thus 
+      // removed from the constraint since it is redundant. We thus
       // modify `source': this explains why it is not a constant parameter.
       if (source[k].is_ray_or_vertex_or_inequality()
 	  && sup_bound == dest_num_rows) {
 	--source_num_rows;
 	// Is not necessary to do the swap on the columns of `sat'
-	// because at this point the elements of `sat' are 
+	// because at this point the elements of `sat' are
 	// all zeroes from the k-th columns to the end.
 	std::swap(source[k], source[source_num_rows]);
 	source.set_sorted(false);
@@ -595,7 +595,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	// -# none of the generators verify the k-th constraint,
 	// -# some of the generators verify the k-th constraint and some of
 	//    them do not verify it.
-	if (sup_bound == num_lines_or_equalities) 
+	if (sup_bound == num_lines_or_equalities)
 	  // If we are building the set of generators starting from
 	  // a set of constraints, this situation means that the constraint
 	  // represented by the rows of `dest' from the
@@ -617,66 +617,66 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  // -# is a positive combination of two adjacent rays such that
 	  //    the first one verifies the constraint and the other does
 	  //    not verify it.
-	       
-	  // The adjacency property is necessary to have an irredundant 
+	
+	  // The adjacency property is necessary to have an irredundant
 	  // set of new rays (see proposition 2).
 	  size_t bound = dest_num_rows;
 
 	  // Checking if the i-th generator (that verifies the
 	  // k-th constraint) and the j-th generator (that does
-	  // not verify it) are adjacent, i.e., 
-	  // if does not exist a generator that saturates all the constraints 
+	  // not verify it) are adjacent, i.e.,
+	  // if does not exist a generator that saturates all the constraints
 	  // saturated by both the i-th and the j-th generator.
 	  for (size_t i = lines_or_equal_bound; i < sup_bound; ++i)
-	    // i runs through the rows of dest containing the 
+	    // i runs through the rows of dest containing the
 	    // rays that verify the k-th constraint.
 	    for(size_t j = sup_bound; j < bound; ++j) {
-	      // j runs through the rows of dest containing 
+	      // j runs through the rows of dest containing
 	      // the rays that do not verify the k-th constraint.
 	      SatRow new_satrow;
 	      assert(sat[i].last() < 0 || unsigned(sat[i].last()) < k);
 	      assert(sat[j].last() < 0 || unsigned(sat[j].last()) < k);
-	      // `new_satrow' is a Boolean row that has 1 in position 
-	      // where `sat[i]' or `sat[j]' has 1; this new row of 
-	      // `sat' correspond to a ray that verify all the constraints 
+	      // `new_satrow' is a Boolean row that has 1 in position
+	      // where `sat[i]' or `sat[j]' has 1; this new row of
+	      // `sat' correspond to a ray that verify all the constraints
 	      // verified by both `dest[i]' and `dest[j]'.
 	      set_union(sat[i], sat[j], new_satrow);
 
-	      // `num_common_satur' indicates the number of constraints 
+	      // `num_common_satur' indicates the number of constraints
 	      // that are saturated by both `dest[i]' and `dest[j]'.
 	      // Note that the set to 1 bits of `sat[i]' and `sat[j]'
-	      // have to be less than `k' because we are treating the 
+	      // have to be less than `k' because we are treating the
 	      // `k'-th constraint: we use 'sat.set()' only with k argument.
 	      size_t num_common_satur = k - new_satrow.count_ones();
 	      if (num_common_satur >=
 		  source_num_columns - num_lines_or_equalities - 2) {
-		// To check if the new ray is an extremal ray we refer 
-		// to the definition of a minimal proper face 
+		// To check if the new ray is an extremal ray we refer
+		// to the definition of a minimal proper face
 		// (see comments in Polyhedron.defs.hh); we can say that
-		// an extremal ray saturates at least `n' - `t' - 1 
-		// constraints where `n' is the dimension of the 
+		// an extremal ray saturates at least `n' - `t' - 1
+		// constraints where `n' is the dimension of the
 		// space and `t' is the dimension of the lineality
 		// space of the considered cone. Since the first columns
-		// of `source' contains the inhomogeneous terms, in 
+		// of `source' contains the inhomogeneous terms, in
 		// our case the space dimension is `source_num_columns - 1'.
-		// Also the dimension of the lineality space is 
-		// `num_lines_or_equalities', then if a ray does not 
-		// saturate at least 
+		// Also the dimension of the lineality space is
+		// `num_lines_or_equalities', then if a ray does not
+		// saturate at least
 		// `source_num_columns - num_lines_or_equalities - 2'
-		// it is not an extremal ray. Otherwise it is an extremal 
+		// it is not an extremal ray. Otherwise it is an extremal
 		// ray and we have to check if it is redundant.
 		bool redundant = false;
 		for (size_t l = num_lines_or_equalities; l < bound; ++l)
 		  // Check if `dest[i]' and `dest[j]' are adjacent (see
-		  // definition in user_definitions.dox) otherwise 
+		  // definition in user_definitions.dox) otherwise
 		  // the new ray is redundant.
-		    
+		
 		  if (l != i && l != j && sat[l] <= new_satrow) {
 		    redundant = true;
 		    break;
 		  }
 		if (!redundant) {	
-		  // If the new ray obtained as positive combination of 
+		  // If the new ray obtained as positive combination of
 		  // the i-th and the j-th ones is not redundant, we add it
 		  // to `dest' and we add the correspondent row to `sat'.
 		  if (dest_num_rows == dest.num_rows()) {
@@ -710,9 +710,9 @@ PPL::Polyhedron::conversion(Matrix& source,
 		    new_row[c].sub_assign(tmp_Integer_4, tmp_Integer_5);
 		  }
 		  new_row.normalize();
-		  // Since we added a new row to `dest', we have to add 
-		  // a new element to `scalar_prod' too; we add 0 because 
-		  // the new ray lies on the hyper-plane represented by 
+		  // Since we added a new row to `dest', we have to add
+		  // a new element to `scalar_prod' too; we add 0 because
+		  // the new ray lies on the hyper-plane represented by
 		  // the `k'-th constraint.
 		  assert(scalar_prod.size() >= dest_num_rows);
 		  if (scalar_prod.size() <= dest_num_rows)
@@ -723,12 +723,12 @@ PPL::Polyhedron::conversion(Matrix& source,
 		}
 	      }
 	    }
-	  // Now we want to substitute the rays that do not verify the 
+	  // Now we want to substitute the rays that do not verify the
 	  // `k'-th constraint with new added rays.
 	  size_t j;
 	  if (source[k].is_ray_or_vertex_or_inequality()) {
 	    //If the `k'-th constraint is an inequality, the `dest' rows
-	    // that do not verify it are the ones from the `sup_bound' 
+	    // that do not verify it are the ones from the `sup_bound'
 	    // index to the `bound' index.
 	    j = sup_bound;
 	    // All the dest's rows in the index range
@@ -740,15 +740,15 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  }
 	  else
 	    // If the `k'-th constraint is an equality, the `dest' rows
-	    // that do not verify it are the ones from the 
-	    // `lines_or_equal_bound' index to the `bound' index. 
+	    // that do not verify it are the ones from the
+	    // `lines_or_equal_bound' index to the `bound' index.
 	    j = lines_or_equal_bound;
-	  // Since the added rays are the ones, in the `dest' matrix, 
-	  // from the `bound' index to the `dest_num_rows' index, we 
-	  // swap these new ray with the ones that do not verify the 
+	  // Since the added rays are the ones, in the `dest' matrix,
+	  // from the `bound' index to the `dest_num_rows' index, we
+	  // swap these new ray with the ones that do not verify the
 	  // `k'-th constraint.
-	    
-	  //`i' runs through the added rays and `j' runs through the rays 
+	
+	  //`i' runs through the added rays and `j' runs through the rays
 	  // that do not verify the `k'-th constraint.
 	  size_t i = dest_num_rows;
 	  while (j < bound && i > bound) {
@@ -761,10 +761,10 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  }
 	  // Setting the new dimension of `dest':
 	  // - if the number of rays that do not verify the 'k'-th constraint
-	  //   is less (or equal) than the number of the added rays, we 
-	  //   set to `i' the number of 'dest' rows because the added rays 
+	  //   is less (or equal) than the number of the added rays, we
+	  //   set to `i' the number of 'dest' rows because the added rays
 	  //   after this index have already been swapped;
-	  // - else we set to `j' the number of `dest' rows because 
+	  // - else we set to `j' the number of `dest' rows because
 	  //   the rays after this index are the ones that do not verify
 	  //   the `k'-th constraint.
 	  dest_num_rows = (j == bound) ? i : j;
@@ -775,9 +775,9 @@ PPL::Polyhedron::conversion(Matrix& source,
     }
   }
   // Since we may have deleted some redundant constraint from `source' or
-  // some redundant extremal ray from `dest', we have to delete the 
+  // some redundant extremal ray from `dest', we have to delete the
   // useless rows of both the matrices.
- 
+
   if (source_num_rows < source.num_rows())
     source.erase_to_end(source_num_rows);
   if (dest_num_rows < dest.num_rows()) {

@@ -163,8 +163,8 @@ PPL::Polyhedron::set_empty() {
 }
 
 /*!
-  Updates constraints starting from the system of generators 
-  and minimizes them. The resulting system of constraints will not 
+  Updates constraints starting from the system of generators
+  and minimizes them. The resulting system of constraints will not
   be sorted: we only know that the equalities are in the upper
   part of the matrix and the inequalities in the lower one.
 */
@@ -182,9 +182,9 @@ PPL::Polyhedron::update_constraints() const {
 }
 
 /*!
-  Updates generators starting from the system of constraints 
+  Updates generators starting from the system of constraints
   and minimizes them. The resulting set of generators will not
-  be sorted: we only know that the lines are in the upper part of 
+  be sorted: we only know that the lines are in the upper part of
   the matrix and the rays and the vertices are in the lower one.
 */
 bool
@@ -207,18 +207,18 @@ PPL::Polyhedron::update_generators() const {
 }
 
 
-/*! 
-  If required, updates generators from constraints or vice versa 
+/*!
+  If required, updates generators from constraints or vice versa
   and minimizes them.
 */
 void
 PPL::Polyhedron::minimize() const {
-  // 0-dimensional and empty polyhedra are already minimized. 
+  // 0-dimensional and empty polyhedra are already minimized.
   if (is_zero_dim()
       || is_empty()
       || (constraints_are_minimized() && generators_are_minimized()))
     return;
-  // If constraints or generators are up-to-date, invoking 
+  // If constraints or generators are up-to-date, invoking
   // update_generators() or update_constraints(), respectively,
   // minimizes both constraints and generators.
   // If both are up-to-date it does not matter whether we use
@@ -235,8 +235,8 @@ PPL::Polyhedron::minimize() const {
 }
 
 /*!
-  Sorts the matrix of constraints keeping \p sat_g consistent; if \p sat_g is 
-  not up-to-date it will be obtained from \p sat_c and then sorted together 
+  Sorts the matrix of constraints keeping \p sat_g consistent; if \p sat_g is
+  not up-to-date it will be obtained from \p sat_c and then sorted together
   with \p con_sys.
 */
 void
@@ -258,15 +258,15 @@ PPL::Polyhedron::obtain_sorted_constraints() {
       clear_sat_c_up_to_date();
     }
     else
-      // If neither `sat_g' nor `sat_c' are up-to-date, we just sort 
+      // If neither `sat_g' nor `sat_c' are up-to-date, we just sort
       // the constraints.
       con_sys.sort_rows();
   assert(con_sys.check_sorted());
 }
 
 /*!
-  Sorts the matrix of generators keeping \p sat_c consistent; if \p sat_c is 
-  not up-to-date it will be obtained from \p sat_g and then sorted together 
+  Sorts the matrix of generators keeping \p sat_c consistent; if \p sat_c is
+  not up-to-date it will be obtained from \p sat_g and then sorted together
   with \p gen_sys.
 */
 void
@@ -287,7 +287,7 @@ PPL::Polyhedron::obtain_sorted_generators() {
       clear_sat_g_up_to_date();
     }
     else
-      // If neither `sat_g' nor `sat_c' are up-to-date, we just sort 
+      // If neither `sat_g' nor `sat_c' are up-to-date, we just sort
       // the generators.
       gen_sys.sort_rows();
   assert(gen_sys.check_sorted());
@@ -295,7 +295,7 @@ PPL::Polyhedron::obtain_sorted_generators() {
 
 
 /*!
-  Sorts the matrix of constraints keeping \p sat_g consistent and then 
+  Sorts the matrix of constraints keeping \p sat_g consistent and then
   obtains \p sat_c from \p sat_g.
 */
 void
@@ -310,13 +310,13 @@ PPL::Polyhedron::obtain_sorted_constraints_with_sat_c() {
 
   if (con_sys.is_sorted()) {
     if (sat_c_is_up_to_date())
-      // If constraints are already sorted and sat_c is up to 
+      // If constraints are already sorted and sat_c is up to
       // date there is nothing to do.
       return;
   }
   else {
     if (!sat_g_is_up_to_date()) {
-      // If constraints are not sorted and sat_g is not up-to-date 
+      // If constraints are not sorted and sat_g is not up-to-date
       // we obtain sat_g from sat_c (that has to be up-to-date)...
       sat_g.transpose_assign(sat_c);
       set_sat_g_up_to_date();
@@ -334,7 +334,7 @@ PPL::Polyhedron::obtain_sorted_constraints_with_sat_c() {
 
 
 /*!
-  Sorts the matrix of generators keeping \p sat_c consistent and then 
+  Sorts the matrix of generators keeping \p sat_c consistent and then
   obtains \p sat_g from \p sat_c.
 */
 void
@@ -347,13 +347,13 @@ PPL::Polyhedron::obtain_sorted_generators_with_sat_g() {
 
   if (gen_sys.is_sorted()) {
     if (sat_g_is_up_to_date())
-      // If generators are already sorted and sat_g is up to 
+      // If generators are already sorted and sat_g is up to
       // date there is nothing to do.
       return;
   }
   else {
     if (!sat_c_is_up_to_date()) {
-      // If generators are not sorted and sat_c is not up-to-date 
+      // If generators are not sorted and sat_c is not up-to-date
       // we obtain sat_c from sat_g (that has to be up-to-date) ...
       sat_c.transpose_assign(sat_g);
       set_sat_c_up_to_date();
@@ -370,7 +370,7 @@ PPL::Polyhedron::obtain_sorted_generators_with_sat_g() {
 }
 
 /*!
-  Computes \p sat_c starting from the systems of generators 
+  Computes \p sat_c starting from the systems of generators
   and constraints and assuming that both of them are up-to-date:
   \f[
     \begin{cases}
@@ -389,30 +389,30 @@ PPL::Polyhedron::update_sat_c() const {
   size_t gsr = gen_sys.num_rows();
   Polyhedron& x = const_cast<Polyhedron&>(*this);
 
-  // Recall that the columns of `sat_c' represent the constraints and 
-  // its rows represent the generators: this is because it is resized 
+  // Recall that the columns of `sat_c' represent the constraints and
+  // its rows represent the generators: this is because it is resized
   // as follow.
   x.sat_c.resize(gsr, csr);
   for (size_t i = gsr; i-- > 0; )
     for (size_t j = csr; j-- > 0; ) {
       int sp_sign = sgn(con_sys[j] * gen_sys[i]);
-      // The negativity of this scalar product would mean 
-      // that the generator `gen_sys[i]' violates the constraint 
-      // `con_sys[j]' and it is not possible because both generators 
+      // The negativity of this scalar product would mean
+      // that the generator `gen_sys[i]' violates the constraint
+      // `con_sys[j]' and it is not possible because both generators
       // and constraints are up-to-date.
       assert(sp_sign >= 0);
       if (sp_sign > 0)
 	// `gen_sys[i]' satisfies (without saturate) `con_sys[j]'.
 	x.sat_c[i].set(j);
       else
-	// `gen_sys[i]' saturates `con_sys[j]'. 
+	// `gen_sys[i]' saturates `con_sys[j]'.
 	x.sat_c[i].clear(j);
     }
   x.set_sat_c_up_to_date();
 }
 
 /*!
-  Computes \p sat_g starting from the systems of generators 
+  Computes \p sat_g starting from the systems of generators
   and constraints and assuming both of them are up-to-date:
   \f[
   \begin{cases}
@@ -431,29 +431,29 @@ PPL::Polyhedron::update_sat_g() const {
   size_t gsr = gen_sys.num_rows();
   Polyhedron& x = const_cast<Polyhedron&>(*this);
 
-  // Recalling that the columns of `sat_g' represent generators and its 
+  // Recalling that the columns of `sat_g' represent generators and its
   // rows represent the constraints, we resize it as follow.
   x.sat_g.resize(csr, gsr);
   for (size_t i = csr; i-- > 0; )
     for (size_t j = gsr; j-- > 0; ) {
       int sp_sign = sgn(con_sys[i] * gen_sys[j]);
-      // The negativity of this scalar product would mean 
-      // that the generator `gen_sys[j]' violates the constraint 
-      // `con_sys[i]' and it is not possible because both generators 
+      // The negativity of this scalar product would mean
+      // that the generator `gen_sys[j]' violates the constraint
+      // `con_sys[i]' and it is not possible because both generators
       // and constraints are up-to-date.
       assert(sp_sign >= 0);
       if (sp_sign > 0)
 	// `gen_sys[j]' satisfies (without saturate) `con_sys[i]'.
 	x.sat_g[i].set(j);
       else
-	// `gen_sys[j]' saturates `con_sys[i]'. 
+	// `gen_sys[j]' saturates `con_sys[i]'.
 	x.sat_g[i].clear(j);
     }
   x.set_sat_g_up_to_date();
 }
 
 /*!
-  Returns <CODE>true</CODE> if and only if \p x is contained in 
+  Returns <CODE>true</CODE> if and only if \p x is contained in
   or is equal to \p y.
 */
 bool
@@ -477,10 +477,10 @@ PPL::operator <=(const Polyhedron& x, const Polyhedron& y) {
     x.minimize();
   if (!(y.constraints_are_up_to_date() && y.generators_are_up_to_date()))
     y.minimize();
-  // `x' is contained in `y' if and only if all the generators of `x' 
-  // satisfy or saturate all the inequalities and saturate all the 
-  // equalities of `y'; this comes from 
-  // the definition of a polyhedron as the set of vector that satisfy 
+  // `x' is contained in `y' if and only if all the generators of `x'
+  // satisfy or saturate all the inequalities and saturate all the
+  // equalities of `y'; this comes from
+  // the definition of a polyhedron as the set of vector that satisfy
   // a given set of constraints and the fact that all vectors in `x'
   // can be obtained as a combination of its generators.
   for (size_t i = x.gen_sys.num_rows(); i-- > 0; )
@@ -500,7 +500,7 @@ PPL::operator <=(const Polyhedron& x, const Polyhedron& y) {
 #endif
 	  return false;
 	}
-  
+
 #if DLEVEL >= 1
   cout << endl << "YES" << endl;
 #endif
@@ -520,8 +520,8 @@ throw_different_dimensions(const char* method,
 }
 
 /*!
-  The intersection of \p *this with \p y (that are assumed to 
-  have the same dimension) is assigned to \p *this. 
+  The intersection of \p *this with \p y (that are assumed to
+  have the same dimension) is assigned to \p *this.
 */
 void
 PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
@@ -533,7 +533,7 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
     x.set_empty();
     return;
   }
-  
+
   // If both polyhedra are zero-dimensional, the intersection
   // is zero-dimensional too.  It is illegal for one polyhedron
   // to be zero-dimensional and the other one neither empty
@@ -545,8 +545,8 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
     else
       return;
   }
- 
-  // add_and_minimize() requires x to be up-to-date 
+
+  // add_and_minimize() requires x to be up-to-date
   // and to have sorted constraints...
   x.minimize();
   // ... and y to have updated and sorted constraints.
@@ -556,7 +556,7 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   if (x.con_sys.num_columns() != y.con_sys.num_columns())
     throw_different_dimensions("PPL::Polyhedron::intersection_assign(y)",
 			       *this, y);
-      
+
   // After minimize() is not assured constraints of x to be sorted.
   x.obtain_sorted_constraints_with_sat_c();
   // After update_constraint() is not assured constraint of y to be sorted.
@@ -569,7 +569,7 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   if (empty)
     x.set_empty();
   else {
-    // On exit of the function intersection_assign() the polyhedron 
+    // On exit of the function intersection_assign() the polyhedron
     // is up-to-date and sat_c is meaningful.
     x.set_sat_c_up_to_date();
     x.clear_sat_g_up_to_date();
@@ -577,7 +577,7 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
 }
 
 /*!
-  The convex hull between \p *this and \p y (that are assumed to 
+  The convex hull between \p *this and \p y (that are assumed to
   have the same dimension) is assigned to \p *this.
 */
 void
@@ -604,41 +604,41 @@ PPL::Polyhedron::convex_hull_assign(const Polyhedron& y) {
     else
       return;
   }
-   
-  // The function add_and_minimize() requires `x' to be up-to-date and 
+
+  // The function add_and_minimize() requires `x' to be up-to-date and
   // to have sorted generators...
   x.minimize();
   // ...and `y' to have updated and sorted generators.
-  
+
   if (!y.generators_are_up_to_date())
     y.update_generators();
-  
+
   // `x' and `y' must have the same dimension.
   if (x.gen_sys.num_columns() != y.gen_sys.num_columns())
     throw_different_dimensions("PPL::Polyhedron::convex_hull_assign(y)",
 			       *this, y);
-  
+
   x.obtain_sorted_generators_with_sat_g();
-    
+
   const_cast<Polyhedron&>(y).obtain_sorted_generators();
-  
+
   add_and_minimize(false,
 		   x.gen_sys, x.con_sys, x.sat_g,
 		   y.gen_sys);
-  
+
   x.set_sat_g_up_to_date();
   x.clear_sat_c_up_to_date();
-  
+
 #if DLEVEL >= 1
   cout << endl << "On exit from x.convex_hull_assign(y)" << endl
        << "--- x ---" << endl << x << endl;
 #endif
-  
+
   assert(OK());
 }
 
 /*!
-  The convex hull between \p *this and \p y (that are assumed to 
+  The convex hull between \p *this and \p y (that are assumed to
   have the same dimension) is assigned to \p *this.
   The result is not minimized.
 */
@@ -666,12 +666,12 @@ PPL::Polyhedron::convex_hull_assign_lazy(const Polyhedron& y) {
     else
       return;
   }
-   
+
   if (!x.generators_are_up_to_date())
     x.update_generators();
   if (!y.generators_are_up_to_date())
     y.update_generators();
-  
+
   // 'x' and `y' must have the same dimension.
   if (x.gen_sys.num_columns() != y.gen_sys.num_columns())
     throw_different_dimensions("PPL::Polyhedron::convex_hull_assign_lazy(y)",
@@ -682,7 +682,7 @@ PPL::Polyhedron::convex_hull_assign_lazy(const Polyhedron& y) {
     x.gen_sys.sort_rows();
   if (!y.gen_sys.is_sorted())
     const_cast<Polyhedron&>(y).gen_sys.sort_rows();
- 
+
   x.gen_sys.merge_rows_assign(y.gen_sys);
 
   // After adding new generators, constraints are no more up-to-date.
@@ -699,37 +699,37 @@ PPL::Polyhedron::convex_hull_assign_lazy(const Polyhedron& y) {
 /*!
   \param mat1      The matrix to which columns are added.
   \param mat2      The matrix to which rows and columns are added.
-  \param sat1      The saturation matrix whose columns represent 
-                   constraints or generators if \p mat1 is a matrix 
+  \param sat1      The saturation matrix whose columns represent
+                   constraints or generators if \p mat1 is a matrix
 		   of constraints or generators respectively.
 		   On entry it is up-to-date.
-  \param sat2      The saturation matrix which columns represent 
-                   constraints or generators if \p mat2 is a matrix 
+  \param sat2      The saturation matrix which columns represent
+                   constraints or generators if \p mat2 is a matrix
 		   of constraints or generators respectively.
   \param add_dim   The number of dimensions to add.
 
   Adds new dimensions to the Polyhedron modifying the matrices.
   This function is invoked only by <CODE>add_dimension_and_embed()</CODE>
-  and <CODE>add_dimension_and_project()</CODE> passing the matrix of 
-  constraints and that of generators (and the corresponding saturation 
-  matrices) in different order (see those methods for details). 
-  Also, this method is invoked only when the polyhedron has at 
+  and <CODE>add_dimension_and_project()</CODE> passing the matrix of
+  constraints and that of generators (and the corresponding saturation
+  matrices) in different order (see those methods for details).
+  Also, this method is invoked only when the polyhedron has at
   least the system of constraints or generators up-to-date.
 */
 void
-PPL::Polyhedron::add_dimensions(Matrix& mat1, 
+PPL::Polyhedron::add_dimensions(Matrix& mat1,
 				Matrix& mat2,
-				SatMatrix& sat1, 
+				SatMatrix& sat1,
 				SatMatrix& sat2,
 				size_t add_dim) {
   assert(add_dim != 0);
-  
+
   mat1.add_zero_columns(add_dim);
   mat2.add_rows_and_columns(add_dim);
   // The resulting saturation matrix will be the follow:
   // from row    0    to      add_dim-1       : only zeroes
   //          add_dim     add_dim+num_rows-1  : old saturation matrix
-    
+
   // In fact all the old generators saturate all the new constraints
   // because the polyhedron has not been embedded in the new space.
    sat1.resize(sat1.num_rows() + add_dim, sat1.num_columns());
@@ -743,19 +743,19 @@ PPL::Polyhedron::add_dimensions(Matrix& mat1,
 }
 
 
-/*! 
-  Adds \p add_dim new dimensions and embeds the old polyhedron 
+/*!
+  Adds \p add_dim new dimensions and embeds the old polyhedron
   in the new space. The new dimensions are the last and the corresponding
   coefficients are in the last columns of the new matrices.
   The new polyhedron is characterized by
-  a system of constraints in which the variables running through 
+  a system of constraints in which the variables running through
   the new dimensions are not constrained, and by a set of generators
   containing the old one and the lines that are parallel to the axes
   corresponding to the new dimensions.
-  For example if the old polyhedron is a line lying on the \f$xy\f$ plane and 
+  For example if the old polyhedron is a line lying on the \f$xy\f$ plane and
   we add a third dimension \f$z\f$, then the operation results in
-  a plane parallel to the \f$z\f$ axis that contains the line fixed on 
-  the \f$xy\f$ plane.  
+  a plane parallel to the \f$z\f$ axis that contains the line fixed on
+  the \f$xy\f$ plane.
 */
 void
 PPL::Polyhedron::add_dimensions_and_embed(size_t add_dim) {
@@ -769,14 +769,14 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t add_dim) {
     gen_sys.add_rows_and_columns(add_dim + 1);
     set_generators_up_to_date();
   }
-  // To embed an n-dimensional polyhedron in a p-dimensional space (with 
-  // `p' > `n'), we just add `add_dim' zero-columns to the matrix 
-  // of constraints, while it is necessary to add new generators 
-  // to the matrix of generators: the vectors of the canonical basis for the 
+  // To embed an n-dimensional polyhedron in a p-dimensional space (with
+  // `p' > `n'), we just add `add_dim' zero-columns to the matrix
+  // of constraints, while it is necessary to add new generators
+  // to the matrix of generators: the vectors of the canonical basis for the
   // added dimensions.
-  // This means to consider for each new dimensions `x[k]' the line 
-  // having that direction. This is done by invoking 
-  // the function add_dimension() giving the matrix of generators 
+  // This means to consider for each new dimensions `x[k]' the line
+  // having that direction. This is done by invoking
+  // the function add_dimension() giving the matrix of generators
   // as second argument.
   else if (constraints_are_up_to_date() && generators_are_up_to_date()) {
     // sat_c is necessary in add_dimensions(...).
@@ -793,21 +793,21 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t add_dim) {
     assert(generators_are_up_to_date());
     gen_sys.add_rows_and_columns(add_dim);
   }
-  
+
   assert(OK());
 }
 
 /*!
-  Adds \p add_dim new dimensions to the old polyhedron and projects 
+  Adds \p add_dim new dimensions to the old polyhedron and projects
   it onto the old space.  The new dimensions are the last and the
   corresponding coefficients are in the last columns of the new matrices.
-  The new polyhedron is characterized by a system of constraints 
+  The new polyhedron is characterized by a system of constraints
   containing the old one and other \p add_dim equalities that constrain
-  the new variable to be zero. So the new matrix of generators is made 
+  the new variable to be zero. So the new matrix of generators is made
   by adding \p add_dim zero-columns to the old matrix.
-  For example if we have a line lying on the plane \f$xy\f$, we 
+  For example if we have a line lying on the plane \f$xy\f$, we
   add a third dimension \f$z\f$ and project the line in \f$\Rset^3\f$,
-  we still obtain the line on the plane \f$xy\f$ but now the new 
+  we still obtain the line on the plane \f$xy\f$ but now the new
   considered space has one more dimension.
 */
 void
@@ -822,12 +822,12 @@ PPL::Polyhedron::add_dimensions_and_project(size_t add_dim) {
     con_sys.add_rows_and_columns(add_dim + 1);
     set_constraints_up_to_date();
   }
-  // To project an n-dimensional polyhedron in a p-dimensional space (with 
-  // `p' > `n'), we just add to the matrix of generators 
-  // `add_dim' zero-columns (and this is enough to add the new dimensions), 
-  // while to the matrix of constraints it is necessary to add also 
+  // To project an n-dimensional polyhedron in a p-dimensional space (with
+  // `p' > `n'), we just add to the matrix of generators
+  // `add_dim' zero-columns (and this is enough to add the new dimensions),
+  // while to the matrix of constraints it is necessary to add also
   // new constraints to not embed the old polyhedron in the new space.
-  // This means to impose for each new dimensions `x_k' the constraint 
+  // This means to impose for each new dimensions `x_k' the constraint
   // x_k = 0 and this is done by invoking the function add_dimension()
   // giving the matrix of constraints as second argument.
   else if (constraints_are_up_to_date() && generators_are_up_to_date()) {
@@ -848,7 +848,7 @@ PPL::Polyhedron::add_dimensions_and_project(size_t add_dim) {
 }
 
 /*!
-  Removes the dimensions corresponding to the elements of 
+  Removes the dimensions corresponding to the elements of
   the set \p dims_to_remove.
 */
 void
@@ -874,7 +874,7 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>&
     // We will have one less column.
     --ncols;
     for (size_t r = nrows; r-- > 0; )
-      // For each row of the matrix, the columns to be removed are 
+      // For each row of the matrix, the columns to be removed are
       // moved to the last columns because the the function resize()
       // method will exclude these columns.
       std::swap(gen_sys[r][ncols], gen_sys[r][c]);
@@ -924,11 +924,11 @@ PPL::Polyhedron::add_constraints(ConSys& constraints_to_add) {
        << "+++ y +++" << endl
        << constraints_to_add << endl;
 #endif
-  
-  // If the polyhedrn is zero-dimensional and `constraints_to_add' has 
-  // zero columns, the resulting polyhedron is zero-dimensional too.  
-  // It is illegal for the polyhedron to be zero-dimensional and 
-  // the matrix to have some columns (or vice versa). 
+
+  // If the polyhedrn is zero-dimensional and `constraints_to_add' has
+  // zero columns, the resulting polyhedron is zero-dimensional too.
+  // It is illegal for the polyhedron to be zero-dimensional and
+  // the matrix to have some columns (or vice versa).
   if (is_zero_dim() || constraints_to_add.num_columns() == 0) {
     if (!is_zero_dim() || !(constraints_to_add.num_columns() == 0))
       throw_different_dimensions("PPL::Polyhedron::add_constraints(c)",
@@ -936,7 +936,7 @@ PPL::Polyhedron::add_constraints(ConSys& constraints_to_add) {
     else
       return true;
   }
- 
+
   // Polyhedron::add_and_minimize() requires that
   // the matrix of constraints to add is sorted.
   if (!constraints_to_add.is_sorted())
@@ -946,11 +946,11 @@ PPL::Polyhedron::add_constraints(ConSys& constraints_to_add) {
   if (is_empty())
     return false;
 
-  //  The system of current constraints and the one of constraints to 
+  //  The system of current constraints and the one of constraints to
   // add must have the same dimension.
   if (con_sys.num_columns() != constraints_to_add.num_columns())
     throw_different_dimensions("PPL::Polyhedron::add_constraints(c)",
-			       *this, constraints_to_add);  
+			       *this, constraints_to_add);
 
   obtain_sorted_constraints_with_sat_c();
 
@@ -959,7 +959,7 @@ PPL::Polyhedron::add_constraints(ConSys& constraints_to_add) {
   if (empty)
     set_empty();
   else {
-    // On exit of the function add_and_minimize() `sat_c' is up-to-date 
+    // On exit of the function add_and_minimize() `sat_c' is up-to-date
     // while `sat_g' is not up-to-date anymore.
     set_sat_c_up_to_date();
     clear_sat_g_up_to_date();
@@ -989,11 +989,11 @@ PPL::Polyhedron::insert(const Constraint& c) {
 #endif
 
   assert(!is_empty());
- 
+
   if (is_zero_dim()) {
     // If a polyhedron is zero-dimensional, `con_sys' has no rows.
     con_sys.insert(c);
-    // The positivity constraint must be added. 
+    // The positivity constraint must be added.
     con_sys.add_row(Row::RAY_OR_VERTEX_OR_INEQUALITY);
     con_sys[con_sys.num_rows()-1][0] = 1;
     // No longer zero-dimensional and with constraints up-to-date.
@@ -1008,12 +1008,12 @@ PPL::Polyhedron::insert(const Constraint& c) {
     // After adding new constraints, generators are no more up-to-date.
     clear_constraints_minimized();
     clear_generators_up_to_date();
-  }  
+  }
 #if DLEVEL >= 1
   cout << "=== x ===" << endl
        << *this << endl;
 #endif
-  
+
   // The constraint system may have become unsatisfiable.
   // Do not check for satisfiability.
   assert(OK(false));
@@ -1053,12 +1053,12 @@ PPL::Polyhedron::insert(const Generator& g) {
       if (!generators_are_up_to_date())
 	update_generators();
       gen_sys.insert(g);
-      
+
       // After adding the new generator, constraints are no longer up-to-date.
       clear_generators_minimized();
       clear_constraints_up_to_date();
     }
-  
+
 #if DLEVEL >= 1
   cout << "=== x ===" << endl
        << *this << endl;
@@ -1081,11 +1081,11 @@ PPL::Polyhedron::add_constraints_lazy(ConSys& constraints_to_add) {
 
   if (is_empty())
     return;
-  
-  // If the polyhedrn is zero-dimensional and `constraints_to_add' has 
-  // zero columns, the resulting polyhedron is zero-dimensional too.  
-  // It is illegal for the polyhedron to be zero-dimensional and 
-  // the matrix to have some columns (or vice versa). 
+
+  // If the polyhedrn is zero-dimensional and `constraints_to_add' has
+  // zero columns, the resulting polyhedron is zero-dimensional too.
+  // It is illegal for the polyhedron to be zero-dimensional and
+  // the matrix to have some columns (or vice versa).
   if (is_zero_dim() || constraints_to_add.num_columns() == 0) {
     if (!is_zero_dim() || !(constraints_to_add.num_columns() == 0))
       throw_different_dimensions("PPL::Polyhedron::add_constraints_lazy(y)",
@@ -1093,19 +1093,19 @@ PPL::Polyhedron::add_constraints_lazy(ConSys& constraints_to_add) {
     else
       return;
   }
- 
+
   if (!constraints_are_up_to_date())
     update_constraints();
 
   // Matrix::merge_rows_assign() requires both matrices to be sorted.
   if (!constraints_to_add.is_sorted())
     constraints_to_add.sort_rows();
-  
-  // The system of current constraints and the one of constraints to 
+
+  // The system of current constraints and the one of constraints to
   // add must have the same dimension.
   if (con_sys.num_columns() != constraints_to_add.num_columns())
     throw_different_dimensions("PPL::Polyhedron::add_constraints_lazy(c)",
-			       *this, constraints_to_add);  
+			       *this, constraints_to_add);
 
   con_sys.sort_rows();
 
@@ -1129,10 +1129,10 @@ PPL::Polyhedron::add_constraints_lazy(ConSys& constraints_to_add) {
 */
 void
 PPL::Polyhedron::add_generators(GenSys& generators_to_add) {
-  // If the polyhedrn is zero-dimensional and `generators_to_add' has 
-  // zero columns, the resulting polyhedron is zero-dimensional too.  
-  // It is illegal for the polyhedron to be zero-dimensional and 
-  // the matrix to have some columns (or vice versa). 
+  // If the polyhedrn is zero-dimensional and `generators_to_add' has
+  // zero columns, the resulting polyhedron is zero-dimensional too.
+  // It is illegal for the polyhedron to be zero-dimensional and
+  // the matrix to have some columns (or vice versa).
   if (is_zero_dim() || generators_to_add.num_columns() == 0) {
     if (!is_zero_dim() || !(generators_to_add.num_columns() == 0))
       throw_different_dimensions("PPL::Polyhedron::add_generators(g)",
@@ -1140,12 +1140,12 @@ PPL::Polyhedron::add_generators(GenSys& generators_to_add) {
     else
       return;
   }
- 
-  // The system of current generators and the one of generators to 
+
+  // The system of current generators and the one of generators to
   // add must have the same dimension.
   if (gen_sys.num_columns() != generators_to_add.num_columns())
     throw_different_dimensions("PPL::Polyhedron::add_generators(g)",
-			       *this, generators_to_add);  
+			       *this, generators_to_add);
 
    if (!generators_to_add.is_sorted())
       generators_to_add.sort_rows();
@@ -1157,7 +1157,7 @@ PPL::Polyhedron::add_generators(GenSys& generators_to_add) {
     clear_sat_c_up_to_date();
   }
   else {
-    // If the polyhedron is empty the only generators are the added ones 
+    // If the polyhedron is empty the only generators are the added ones
     // and then it is not empty anymore.
     gen_sys = generators_to_add;
     clear_empty();
@@ -1224,58 +1224,58 @@ PPL::operator >>(std::istream& s, PPL::Polyhedron& p) {
 
 
 /*!
-  When considering the generators of a polyhedron, the 
+  When considering the generators of a polyhedron, the
   affine transformation
   \f[
     \frac{\sum_{i=0}^{n-1} a_i x_i + b}{denominator}
   \f]
-  is assigned to \p var where \p expr is 
+  is assigned to \p var where \p expr is
   \f$\sum_{i=0}^{n-1} a_i x_i + b\f$
   (\f$b\f$ is the inhomogeneous term).
-  
-  If constraints are up-to-date, it uses the specialized function 
-  substitute_variable() (for the system of constraints) 
+
+  If constraints are up-to-date, it uses the specialized function
+  substitute_variable() (for the system of constraints)
   and inverse transformation to reach the same result.
   To obtain the inverse transformation, , we use the following observation.
 
   Observation:
   -# The affine transformation is invertible if the coefficient of \p var
      in this transformation (i.e. \p a_{var}) is different from zero.
-  -# If the transformation is invertible, then we can write 
+  -# If the transformation is invertible, then we can write
      \f[
-  	\text{denominator} * {x'}_{var} 
-	                         = \sum_{i = 0}^{n - 1} a_i x_i + b 
-	                         = a_{var} x_{var} + 
+  	\text{denominator} * {x'}_{var}
+	                         = \sum_{i = 0}^{n - 1} a_i x_i + b
+	                         = a_{var} x_{var} +
 			           \sum_{i \neq var} a_i x_i + b,
      \f]
-     so that the inverse transformation is 
+     so that the inverse transformation is
      \f[
-	a_{var} x_{var} = \text{denominator} * {x'}_{var} - 
+	a_{var} x_{var} = \text{denominator} * {x'}_{var} -
 	              \sum_{i \neq j} a_i x_i - b.
      \f]
- 
-  Then, if the transformation is invertible, all the entities that 
+
+  Then, if the transformation is invertible, all the entities that
   were up-to-date remain up-to-date. Otherwise only generators remain
   up-to-date.
 
   In other words, if \f$R\f$ is a \f$m_1 \times n_1\f$ matrix representing
-  the rays of the polyhedron, \f$V\f$ is a \f$m_2 \times n_2\f$ 
-  matrix representing the vertices of the polyhedron and 
+  the rays of the polyhedron, \f$V\f$ is a \f$m_2 \times n_2\f$
+  matrix representing the vertices of the polyhedron and
   \f[
-    P = \bigl\{\,x = (x_0, \ldots, x_{n-1})^\mathrm{T} \bigm| 
-               x = \lambda R + \mu V, 
-               \lambda \in \Rset^{m_1}_+, 
+    P = \bigl\{\,x = (x_0, \ldots, x_{n-1})^\mathrm{T} \bigm|
+               x = \lambda R + \mu V,
+               \lambda \in \Rset^{m_1}_+,
                \mu \in \Rset^{m_2}_+,
 	       \sum_{i = 0}^{m_1 - 1} \lambda_i = 1\,\bigr\}
   \f]
-  and \f$T\f$ is the affine transformation to apply to \f$P\f$, then 
+  and \f$T\f$ is the affine transformation to apply to \f$P\f$, then
   the resulting polyhedron is
   \f[
-    P' = \bigl\{\,(x_0, \ldots, T(x_0, \ldots, x_{n-1}), \ldots, 
+    P' = \bigl\{\,(x_0, \ldots, T(x_0, \ldots, x_{n-1}), \ldots,
                   x_{n-1})^\mathrm{T} \bigm| (x_0, \ldots, x_{n-1})
 		  ^\mathrm{T} \in P\,\bigr\}.
   \f]
-  
+
   Affine transformations are, for example:
   - translations
   - rotations
@@ -1294,20 +1294,20 @@ PPL::Polyhedron::assign_variable(const Variable& var,
   if (num_columns != expr.size())
     throw std::invalid_argument("PPL::Polyhedron::assign_variable"
 				"(v, e, d) with dim(expr) != dim(*this)");
-  
+
   // Index of var must be in the range of the variables of generators.
   if (!(num_var < num_columns))
     throw std::invalid_argument("PPL::Polyhedron::assign_variable(v, e, d)"
 				" with var not in *this");
-  
+
   if (expr[num_var] != 0) {
     // The transformation is invertible.
     if (generators_are_up_to_date())
       x.gen_sys.assign_variable(num_var, expr, denominator);
     if (constraints_are_up_to_date()) {
       LinExpression inverse = expr;
-      // For the observation the inverse transformation can be 
-      // obtained swapping `denominator' with `a[var]' in the initial 
+      // For the observation the inverse transformation can be
+      // obtained swapping `denominator' with `a[var]' in the initial
       // transformation and making the necessary sign changes.
       std::swap(inverse[num_var], denominator);
       for (size_t i = 0; i < num_columns; ++i)
@@ -1336,52 +1336,52 @@ PPL::Polyhedron::assign_variable(const Variable& var,
   \frac{\sum_{i=0}^{n-1} a_i x_i + b}{denominator},
   \f]
   is assigned to \p vars where \p expr is
-  \f$\sum_{i=0}^{n-1} a_i x_i + b\f$ 
+  \f$\sum_{i=0}^{n-1} a_i x_i + b\f$
   (\f$b\f$ is the inhomogeneous term).
-  
-  If generators are up-to-date, then the specialized function 
-  assign_variable() is used (for the system of generators) 
-  and inverse transformation to reach the same result. 
+
+  If generators are up-to-date, then the specialized function
+  assign_variable() is used (for the system of generators)
+  and inverse transformation to reach the same result.
   To obtain the inverse transformation, we use the following observation.
 
   Observation:
-  -# The affine transformation is invertible if the 
-     coefficient of `var' in this transformation (i.e. \p a_{var}) 
+  -# The affine transformation is invertible if the
+     coefficient of `var' in this transformation (i.e. \p a_{var})
      is different from zero.
-  -# If the transformation is invertible, then we can write 
+  -# If the transformation is invertible, then we can write
      \f[
-  	\text{denominator} * {x'}_{var} 
-	                         = \sum_{i = 0}^{n - 1} a_i x_i + b 
-                                 = a_{var} x_{var} + 
+  	\text{denominator} * {x'}_{var}
+	                         = \sum_{i = 0}^{n - 1} a_i x_i + b
+                                 = a_{var} x_{var} +
 			           \sum_{i \neq var} a_i x_i + b,
      \f],
-     the inverse transformation is 
+     the inverse transformation is
      \f[
-	a_{var} x_{var} = \text{denominator} * {x'}_{var} - 
+	a_{var} x_{var} = \text{denominator} * {x'}_{var} -
 	                  \sum_{i \neq j} a_i x_i - b.
      \f].
- 
-  Then, if the transformation is invertible, all the entities that 
+
+  Then, if the transformation is invertible, all the entities that
   were up-to-date remain up-to-date. Otherwise only constraints remain
   up-to-date.
 
   In other words, if \f$A\f$ is a \f$m \times n\f$ matrix representing
-  the constraints of the polyhedron, \f$T\f$ is the affine transformation 
-  to apply to \f$P\f$ and 
+  the constraints of the polyhedron, \f$T\f$ is the affine transformation
+  to apply to \f$P\f$ and
   \f[
-    P = \bigl\{\,x = (x_0, \ldots, x_{n-1})^\mathrm{T} \bigm| 
+    P = \bigl\{\,x = (x_0, \ldots, x_{n-1})^\mathrm{T} \bigm|
                  Ax \geq 0\,\bigr\}.
   \f]
   The resulting polyhedron is
   \f[
-    P' = \bigl\{\,x = (x_0, \ldots, x_{n-1}))^\mathrm{T} \bigm| 
+    P' = \bigl\{\,x = (x_0, \ldots, x_{n-1}))^\mathrm{T} \bigm|
                  A'x \geq 0\,\bigr\},
   \f]
   where \f$A'\f$ is defined as follows:
   \f[
     {a'}_{ij} =
     \begin{cases}
-    a_{ij} * \text{denominator} + a_{i\text{var}} * \text{expr}[j] 
+    a_{ij} * \text{denominator} + a_{i\text{var}} * \text{expr}[j]
     \quad \text{for } j \neq \text{var}; \\
     \text{expr}[\text{var}] * a_{i\text{var}}.
     \end{cases}
@@ -1394,14 +1394,14 @@ PPL::Polyhedron::substitute_variable(const Variable& var,
   if (denominator == 0)
     throw std::invalid_argument("void PPL::Polyhedron::substitute_variable"
 				"(v, e, d) with d == 0");
-  
+
   Polyhedron& x = *this;
   size_t num_columns = x.con_sys.num_columns();
   size_t num_var = var.id() + 1;
   if (num_columns != expr.size())
     throw std::invalid_argument("PPL::Polyhedron::substitute_variable"
-				"(v, e, d) with dim(expr) != dim(*this)"); 
-  
+				"(v, e, d) with dim(expr) != dim(*this)");
+
   // Index of var must be in the range of the variables of generators.
   if (!(num_var < num_columns))
     throw std::invalid_argument("PPL::Polyhedron::substitute_variable"
@@ -1413,8 +1413,8 @@ PPL::Polyhedron::substitute_variable(const Variable& var,
       x.con_sys.substitute_variable(num_var, expr, denominator);
     if (generators_are_up_to_date()) {
       LinExpression inverse = expr;
-      // For the observation, the inverse transformation can be 
-      // obtained swapping `denominator' with `a[var]' in the initial 
+      // For the observation, the inverse transformation can be
+      // obtained swapping `denominator' with `a[var]' in the initial
       // transformation and making the necessary sign changes.
       std::swap(inverse[num_var], denominator);
       for (size_t i = 0; i < num_columns; ++i)
@@ -1450,10 +1450,10 @@ throw_different_dimensions(const char* method,
 
 /*!
   Returns the relation between \p *this and the constraint \p con.
-  (See the function 
+  (See the function
   \p GenSys::satisfy(const Constraint& con)
   for more details).
-*/ 
+*/
 PPL::GenSys_Con_Rel
 PPL::Polyhedron::satisfies(const Constraint& c) {
   if (is_empty())
@@ -1463,7 +1463,7 @@ PPL::Polyhedron::satisfies(const Constraint& c) {
       throw_different_dimensions("PPL::Polyhedron::satisfies(c)",
 				 *this, c);
 
-    if (!generators_are_up_to_date()) 
+    if (!generators_are_up_to_date())
       update_generators();
     if (gen_sys.num_columns() != c.size())
       throw_different_dimensions("PPL::Polyhedron::satisfies(c)",
@@ -1472,7 +1472,7 @@ PPL::Polyhedron::satisfies(const Constraint& c) {
   }
 }
 
-/*! 
+/*!
   Returns <CODE>true</CODE> if the generator \p gen satisfies all
   the constraints representing \p *this, <CODE>false</CODE> otherwise.
 */
@@ -1497,18 +1497,18 @@ PPL::Polyhedron::includes(const Generator& g) {
 }
 
 /*!
-  This function computes the widening between \p *this and 
-  \p y and the result is assigned to the polyhedron \p *this.  
+  This function computes the widening between \p *this and
+  \p y and the result is assigned to the polyhedron \p *this.
   The resulting polyhedron has a system of constraints
   which is up-to-date for just those constraints that are common
-  to both the polyhedra. 
-  For this function, it is required that the polyhedron \p y is contained 
+  to both the polyhedra.
+  For this function, it is required that the polyhedron \p y is contained
   in \p *this.
 */
 void
 PPL::Polyhedron::widening_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
-  
+
 #ifndef NDEBUG
   {
     // We assume that y is contained or equal to x.
@@ -1537,12 +1537,12 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
     return;
   // The polyhedrons must have the same dimensions if neither
   // `x' nor `y' is zero-dimensional.
-  if (x.num_dimensions() != y.num_dimensions()) 
+  if (x.num_dimensions() != y.num_dimensions())
     throw_different_dimensions("PPL::Polyhedron::widening_assign(y)",
 			       *this, y);
-  // For this function, we need the minimal set of generators and  
+  // For this function, we need the minimal set of generators and
   // the saturation matrix `sat_g' of the polyhedron `y'. To obtain
-  // the saturation matrix, the minimal system of constraints and 
+  // the saturation matrix, the minimal system of constraints and
   // the minimal set of generators are necessary.
   y.minimize();
   // After the minimize, a polyhedron can become empty if the system
@@ -1551,33 +1551,33 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
   if (y.is_empty())
     return;
   // We only need that the system of constraints is up-to-date
-  // because 
-  // - if the system of constraints is insoluble, this means that 
+  // because
+  // - if the system of constraints is insoluble, this means that
   //   also `y' is empty and so the resulting polyhedron is `x';
-  // - if some constraints are redundant, these do not influence the 
+  // - if some constraints are redundant, these do not influence the
   //   resulting polyhedron.
-  //   If a constraint is a combination of other two, it can be also in 
+  //   If a constraint is a combination of other two, it can be also in
   //   the resulting system, if the two constraints are common to both
-  //   polyhedron. The redundant constraints is `redundant' also in 
+  //   polyhedron. The redundant constraints is `redundant' also in
   //   the new polyhedron.
-  //   If a constraint is redundant in the sense that it does not 
+  //   If a constraint is redundant in the sense that it does not
   //   satisfy the saturation rule (see in definitions.dox), it can not
-  //   be put into the new system, because of the way that we use to 
+  //   be put into the new system, because of the way that we use to
   //   choose the constraints.
   if (!x.constraints_are_up_to_date())
     x.update_constraints();
-  // This function requires the saturation matrix `sat_g' of 
+  // This function requires the saturation matrix `sat_g' of
   // the polyhedron `y' to choose which constraints of the
-  // polyhedron `x' must be also constraints of the widened 
+  // polyhedron `x' must be also constraints of the widened
   // polyhedron.
   if (!y.sat_g_is_up_to_date())
-    y.update_sat_g(); 
+    y.update_sat_g();
   // The saturation matrix sat_g is copied in a temporary one:
-  // in this way, the new saturation matrix can be sorted 
+  // in this way, the new saturation matrix can be sorted
   // without modifying the constant polyhedron `y'.
   SatMatrix tmp_sat_g = y.sat_g;
   tmp_sat_g.sort_rows();
-  // Now, we start to build the system of constraints of the 
+  // Now, we start to build the system of constraints of the
   // widened polyhedron. The first constraint is the positivity
   // one: its presence is necessary to have a correct polyhedron.
   ConSys new_con_sys(1, x.con_sys.num_columns());
@@ -1588,20 +1588,20 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
   new_con_sys.set_sorted(true);
   // The size of `buffer' will reach sat.num_columns() bit.
   SatRow buffer;
-  // We choose a constraint of `x' if its behavior with the 
+  // We choose a constraint of `x' if its behavior with the
   // generators of `y' is the same that a constraints of `y' has.
   // This means that we verify if the saturation row built starting
-  // from a constraint of `x' and all the generators of `y' is 
-  // a row of the saturation matrix `sat_g' of `y'(if it happens, 
+  // from a constraint of `x' and all the generators of `y' is
+  // a row of the saturation matrix `sat_g' of `y'(if it happens,
   // the constraint of `x' is also a constraint of `y').
-  // In this way a constraint of `x' that does not verify the 
+  // In this way a constraint of `x' that does not verify the
   // saturation rule (see in definitions.dox) can be put into the
   // resulting polyhedron, because `sat_g' is built staring from
   // a minimized polyhedron.
   for (size_t i = x.con_sys.num_rows(); i-- > 0; ) {
     buffer.clear();
-    // The saturation row `buffer' is built considering the `i'-th 
-    // constraint of the polyhedron `x' and the generators of the 
+    // The saturation row `buffer' is built considering the `i'-th
+    // constraint of the polyhedron `x' and the generators of the
     // polyhedron `y'.
     for (size_t j = tmp_sat_g.num_columns(); j-- > 0; ) {
       int sp_sgn = sgn(y.gen_sys[j] * x.con_sys[i]);
@@ -1610,14 +1610,14 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
       if (sp_sgn > 0)
 	buffer.set(j);
     }
-    // We verify if `buffer' is a row of the saturation matrix 
-    // `sat_g' of the polyhedron `y': to do this check, we use 
+    // We verify if `buffer' is a row of the saturation matrix
+    // `sat_g' of the polyhedron `y': to do this check, we use
     // the saturation matrix `tmp_sat_g' (that is sorted) in order to have
-    // faster comparisons.     
+    // faster comparisons.
     if (tmp_sat_g.sorted_contains(buffer))
       new_con_sys.add_row(x.con_sys[i]);
   }
-  
+
   std::swap(x.con_sys, new_con_sys);
 
   // Update the status of x.
@@ -1635,11 +1635,11 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
 
 
 /*!
-  This function adds to the widened polyhedron \p *this (obtained 
-  starting from \p *this and \p y) the constraints of the matrix 
-  \p, constraints that are verified by the polyhedron \p y and by 
+  This function adds to the widened polyhedron \p *this (obtained
+  starting from \p *this and \p y) the constraints of the matrix
+  \p, constraints that are verified by the polyhedron \p y and by
   the initial polyhedra \p *this.
-  Returns <CODE>true</CODE> if the widened polyhedron \p *this is 
+  Returns <CODE>true</CODE> if the widened polyhedron \p *this is
   not empty.
 */
 bool
@@ -1656,7 +1656,7 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
     assert(y_copy <= x_copy);
   }
 #endif
-  
+
 #if DLEVEL >= 1
   cout << endl << "On entry to x.limited_widening_assign(y)" << endl
        << "=== x ===" << endl << x << endl
@@ -1666,10 +1666,10 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
     return !(x.is_empty());
   if (x.is_empty())
     return false;
-  
-  // For each x, 
+
+  // For each x,
   // x.limited_widening_assign(z,...) = z.limited_widening_assign(x,...) = z,
-  // if z is a zero-dimensional polyhedron.  
+  // if z is a zero-dimensional polyhedron.
   if (x.is_zero_dim())
     return true;
   else if (y.is_zero_dim()) {
@@ -1677,7 +1677,7 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
     return true;
   }
   // The two polyhedrons and must have the same dimension, if neither
-  // `x' nor `y' is zero-dimensional. 
+  // `x' nor `y' is zero-dimensional.
   if (x.num_dimensions() != y.num_dimensions())
     throw_different_dimensions("PPL::Polyhedron::limited_widening_assign(y,c)",
 			       *this, y);
@@ -1687,11 +1687,11 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
   if (x.num_dimensions() != constraints.num_columns() - 1)
     throw_different_dimensions("PPL::Polyhedron::limited_widening_assign(y,c)",
 			       *this, constraints);
-  
+
   y.minimize();
   // This function needs that the generators of `x' are up-to-date,
-  // because we use these to choose which constraints of the matrix 
-  // \p constraints must be added to the resulting polyhedron. 
+  // because we use these to choose which constraints of the matrix
+  // \p constraints must be added to the resulting polyhedron.
   if (!x.generators_are_up_to_date())
     x.update_generators();
   // After the minimize, a polyhedron can become empty if the system
@@ -1700,29 +1700,29 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
     size_t con_nbrows = constraints.num_rows();
     size_t nbrows = 0;
     for (size_t i = 0; i < con_nbrows; ++i) {
-      // The constraints to add must be saturated by both the 
-      // polyhedrons. To choose them, we only use the generators 
+      // The constraints to add must be saturated by both the
+      // polyhedrons. To choose them, we only use the generators
       // of the greater polyhedron `x', because those of `y'
-      // are points also of `x' (`y' is contained in `x') and 
+      // are points also of `x' (`y' is contained in `x') and
       // so they verify the chosen constraints, too.
       GenSys_Con_Rel satisfy
 	= x.gen_sys.satisfy(constraints[i]);
       if (satisfy == ALL_SATURATE || satisfy == ALL_SATISFY)
-	// The chosen constraints are put at the top of the 
+	// The chosen constraints are put at the top of the
 	// matrix \p constraints.
 	std::swap(constraints[nbrows], constraints[i]);
       ++nbrows;
     }
     x.widening_assign(y);
-    
+
     // We erase the constraints that are not saturated or satisfied
     // by the generators of `x' and `y' and that are put at the end
     // of the matrix \p constraints.
     constraints.erase_to_end(nbrows);
-    
+
     constraints.sort_rows();
     x.con_sys.sort_rows();
-    // The system of constraints of the resulting polyhedron is 
+    // The system of constraints of the resulting polyhedron is
     // composed by the constraints of the widened polyhedron `x'
     // and by those of the new `constraints'.
     x.con_sys.merge_rows_assign(constraints);
@@ -1733,7 +1733,7 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
   }
   if (x.is_empty())
     return false;
-  else 
+  else
     return true;
 }
 
@@ -1764,11 +1764,11 @@ PPL::Polyhedron::check_universe() const {
   Checks if \p *this is really a polyhedron, i.e., excludes all the extreme
   cases.
 
-  For this purpose we check several things and in particular we check 
+  For this purpose we check several things and in particular we check
   whether
-  - the system of constraints and the set of generators satisfy the 
+  - the system of constraints and the set of generators satisfy the
     dimensional rules,
-  - the system of constraints and the set of generators are really 
+  - the system of constraints and the set of generators are really
     minimized, when they are declared minimal.
 */
 bool
@@ -1790,8 +1790,8 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   // An empty polyhedron is allowed.
   if (is_empty())
     return true;
-  // A zero-dimensional polyhedron is allowed if 
-  // the system of constraint `con_sys' and the set of generators 
+  // A zero-dimensional polyhedron is allowed if
+  // the system of constraint `con_sys' and the set of generators
   // `gen_sys' have no rows.
   if (is_zero_dim())
     if (!(gen_sys.num_rows() == 0 && con_sys.num_rows() == 0))
@@ -1799,8 +1799,8 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	   << endl
 	   << "and with constraints or generator not clear"
 	   << endl;
-   
-  // A polyhedron is defined by a system of constraints or a system 
+
+  // A polyhedron is defined by a system of constraints or a system
   // of generators.
   if (!(constraints_are_up_to_date() || generators_are_up_to_date())) {
     cerr << "Polyhedron not empty, not zero-dimensional"
@@ -1847,14 +1847,14 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   }
 
   if (generators_are_up_to_date()) {
-    // Check if the set of generators is well-formed. 
-    if (!gen_sys.OK()) 
+    // Check if the set of generators is well-formed.
+    if (!gen_sys.OK())
       goto bomb;
 
     if (generators_are_minimized()) {
       // If the set of generators is minimized, the number of lines,
       // rays and vertices of the polyhedron must be the same
-      // of the temporary minimized one. If it does not happen 
+      // of the temporary minimized one. If it does not happen
       // the polyhedron is not ok.
       ConSys new_con_sys;
       GenSys copy_of_gen_sys = gen_sys;
@@ -1875,10 +1875,10 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // A minimal set of generators is unique up to positive scaling if
       // the cone is pointed.
       // So, we verify if the cone is pointed (i.e. there are no lines)
-      // and after normalizing and sorting a copy of the matrix `gen_sys' 
+      // and after normalizing and sorting a copy of the matrix `gen_sys'
       // of the polyhedron (we use a copy not to modify the polyhedron's
       // matrix) and the matrix `copy_of_gen_sys' that has been just
-      // minimized, we check if the two matrices are identical. If they 
+      // minimized, we check if the two matrices are identical. If they
       // are different it means that the generators of the polyhedron
       // are declared minimized, but they are not: the polyhedron is not
       // ok.
@@ -1907,7 +1907,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 
   if (constraints_are_up_to_date()) {
     // Check if the system of constraints is well-formed.
-    if (!con_sys.OK()) 
+    if (!con_sys.OK())
       goto bomb;
 
     ConSys copy_of_con_sys = con_sys;
@@ -1926,28 +1926,28 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     }
 
     if (constraints_are_minimized()) {
-      // If the constraints are minimized, the number of equalities 
+      // If the constraints are minimized, the number of equalities
       // and of inequalities of the system of the polyhedron must be
       // the same of the temporary minimized one.
       // If it does not happen, the polyhedron is not ok.
       if (!(con_sys.num_rows() == copy_of_con_sys.num_rows() &&
   	    con_sys.num_equalities() == copy_of_con_sys.num_equalities())) {
 	cerr << "Constraints are declared minimized, but they are not!"
-	     << endl 
+	     << endl
 	     << "Here is the minimized form of the constraints:"
 	     << endl
 	     << copy_of_con_sys
 	     << endl;
 	goto bomb;
       }
-      // The matrix `copy_of_con_sys' has the form that is obtained 
-      // after the functions gauss() and back_substitute(). 
-      // A system of constraints can be minimal even if it does not 
+      // The matrix `copy_of_con_sys' has the form that is obtained
+      // after the functions gauss() and back_substitute().
+      // A system of constraints can be minimal even if it does not
       // have this form. So, to verify if the polyhedron is correct,
       // we copy the matrix `con_sys' in a temporary one that then
       // is modified using the functions gauss() and back_substitute().
       // If the temporary matrix and `copy_of_con_sys' are different,
-      // the polyhedron is not ok. 
+      // the polyhedron is not ok.
       copy_of_con_sys.normalize();
       copy_of_con_sys.sort_rows();
       ConSys tmp_con = con_sys;
@@ -1957,7 +1957,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       tmp_con.sort_rows();
       if (tmp_con != copy_of_con_sys) {
 	cerr << "Constraints are declared minimized, but they are not!"
-	     << endl 
+	     << endl
 	     << "Here is the minimized form of the constraints:"
 	     << endl
 	     << copy_of_con_sys
@@ -1976,23 +1976,23 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	 << endl;
     goto bomb;
   }
- 
-  if (sat_c_is_up_to_date()) 
+
+  if (sat_c_is_up_to_date())
     for (size_t i = sat_c.num_rows(); i-- > 0; ) {
       Generator tmp_gen = gen_sys[i];
       SatRow tmp_sat = sat_c[i];
-      for (size_t j = sat_c.num_columns(); j-- > 0; ) 
+      for (size_t j = sat_c.num_columns(); j-- > 0; )
 	if (sgn(tmp_gen * con_sys[j]) != tmp_sat[j] ) {
 	  cerr << "sat_c is declared up-to-date, but it is not!" << endl;
 	  goto bomb;
 	}
     }
 
-  if (sat_g_is_up_to_date()) 
+  if (sat_g_is_up_to_date())
     for (size_t i = sat_g.num_rows(); i-- > 0; ) {
       Constraint tmp_con = con_sys[i];
       SatRow tmp_sat = sat_g[i];
-      for (size_t j = sat_g.num_columns(); j-- > 0; ) 
+      for (size_t j = sat_g.num_columns(); j-- > 0; )
 	if (sgn(tmp_con * gen_sys[j]) != tmp_sat[j] ) {
 	  cerr << "sat_g is declared up-to-date, but it is not!" << endl;
 	  goto bomb;
