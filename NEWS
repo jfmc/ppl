@@ -22,6 +22,8 @@ o  A new `demos' directory has been added.  In the `ppl_lcdd'
    the GNU Linear Programming Kit (GLPK); thus `ppl_lpsol' is only compiled
    if a suitable version of GLPK is available.
 
+o  New macro PPL_VERSION expands to the version string of the library.
+
 o  The documentation has been improved in various ways.
 
 o  The methods

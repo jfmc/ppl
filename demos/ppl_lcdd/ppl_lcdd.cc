@@ -632,8 +632,6 @@ write_polyhedron(std::ostream& out,
 
 } // namespace
 
-#define PPL_VERSION "0.6pre5"
-
 int
 main(int argc, char* argv[]) {
   program_name = argv[0];
