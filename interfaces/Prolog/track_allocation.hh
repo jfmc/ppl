@@ -1,7 +1,7 @@
 #ifndef _track_allocation_hh
 #define _track_allocation_hh
 
-#if TRACK_ALLOCATON
+#if TRACK_ALLOCATION
 
 #include <set>
 #include <iostream>
@@ -52,7 +52,7 @@ PolyTracker::remove(const void* pp) {
 
 } // namespace Parma_Polyhedra_Library
 
-static PolyTracker poly_tracker;
+static Parma_Polyhedra_Library::PolyTracker poly_tracker;
 
 #define REGISTER(x) poly_tracker.insert(x)
 #define UNREGISTER(x) poly_tracker.remove(x)
