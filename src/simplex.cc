@@ -341,7 +341,7 @@ choose_out_var(const Matrix& tableau,
 //! The simplex algorithm.
 /*! 
   \return            <CODE>true</CODE> if and if only the algorithm computes
-                     a solution. It`s a point of the ConSys.
+                     a solution. It`s a point of the Constraint_System.
   \param tableau     The matrix containing the constraints of the LP problem.
   \param expressions The matrix that contains the cost function-s to be
                      maximized/minimized. 
@@ -1038,7 +1038,7 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expression,
 
   // Strict inequality constraints are not supported.
   if (topology() == NOT_NECESSARILY_CLOSED)
-    throw std::invalid_argument("PPL::ConSys::primal_simplex(): "
+    throw std::invalid_argument("PPL::Constraint_System::primal_simplex(): "
 				"strict inequality constraints "
 				"are not supported.");
 
@@ -1049,7 +1049,7 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expression,
   // than the dimension of the constraint system.
   if (space_dim < expr_space_dim) {
     std::ostringstream s;
-    s << "PPL::ConSys::primal_simplex():" << std::endl
+    s << "PPL::Constraint_System::primal_simplex():" << std::endl
       << "this->space_dimension() == " << space_dim
       //      << ", " << expression << "->space_dimension() == "
       << expr_space_dim << ".";
