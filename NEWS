@@ -21,6 +21,9 @@ o  All user-accessible library methods are now guarded by suitable
 o  A SICStus Prolog interface is now available.  It comes with a somewhat
    interesting demo: a toy CLP(Q) interpreter.
 
+o  Greatly improved documentation.
+
+
 Bugfixes
 ========
 
