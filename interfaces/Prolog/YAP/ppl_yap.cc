@@ -184,8 +184,12 @@ ppl_Prolog_sysdep_init() {
 */
 static inline void
 Prolog_raise_exception(Prolog_term_ref t) {
+#if 0
   args[0] = t;
   YapCallProlog(MkApplTerm(a_throw, 1, args));
+#else
+  YapThrow(t);
+#endif
 }
 
 /*!
