@@ -1758,9 +1758,9 @@ ppl_Polyhedron_check_universe(ppl_const_Polyhedron_t ph) try {
 CATCH_ALL
 
 int
-ppl_Polyhedron_is_bounded(ppl_const_Polyhedron_t ph) try {
+ppl_Polyhedron_check_bounded(ppl_const_Polyhedron_t ph) try {
   const Polyhedron& pph = *to_const(ph);
-  return pph.is_bounded() ? 1 : 0;
+  return pph.check_bounded() ? 1 : 0;
 }
 CATCH_ALL
 
@@ -1783,9 +1783,9 @@ ppl_Polyhedron_bounds_from_below(ppl_const_Polyhedron_t ph,
 CATCH_ALL
 
 int
-ppl_Polyhedron_is_topologically_closed(ppl_const_Polyhedron_t ph) try {
+ppl_Polyhedron_check_topologically_closed(ppl_const_Polyhedron_t ph) try {
   const Polyhedron& pph = *to_const(ph);
-  return pph.is_topologically_closed() ? 1 : 0;
+  return pph.check_topologically_closed() ? 1 : 0;
 }
 CATCH_ALL
 
@@ -1816,11 +1816,11 @@ ppl_Polyhedron_strictly_contains_Polyhedron(ppl_const_Polyhedron_t x,
 CATCH_ALL
 
 int
-ppl_Polyhedron_is_disjoint_from_Polyhedron(ppl_const_Polyhedron_t x,
-					   ppl_const_Polyhedron_t y) try {
+ppl_Polyhedron_check_disjoint_from_Polyhedron(ppl_const_Polyhedron_t x,
+					      ppl_const_Polyhedron_t y) try {
   const Polyhedron& xx = *to_const(x);
   const Polyhedron& yy = *to_const(y);
-  return are_disjoint(xx, yy) ? 1 : 0;
+  return check_disjoint(xx, yy) ? 1 : 0;
 }
 CATCH_ALL
 

@@ -301,7 +301,7 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
 
 <CODE>ppl_Polyhedron_check_universe(+Handle)</CODE>
 
-<CODE>ppl_Polyhedron_is_bounded(+Handle)</CODE>
+<CODE>ppl_Polyhedron_check_bounded(+Handle)</CODE>
 
 <CODE>ppl_Polyhedron_bounds_from_above(+Handle,
                                    +LinExpr)</CODE>
@@ -309,14 +309,14 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
 <CODE>ppl_Polyhedron_bounds_from_below(+Handle,
                                    +LinExpr)</CODE>
 
-<CODE>ppl_Polyhedron_is_topologically_closed(+Handle)</CODE>
+<CODE>ppl_Polyhedron_check_topologically_closed(+Handle)</CODE>
 
 <CODE>ppl_Polyhedron_contains_Polyhedron(+Handle_1, +Handle_2)</CODE>
 <CODE>ppl_Polyhedron_strictly_contains_Polyhedron(+Handle_1, +Handle_2)</CODE>
 
 <CODE>ppl_Polyhedron_equals_Polyhedron(+Handle_1, +Handle_2)</CODE>
 
-<CODE>ppl_Polyhedron_is_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
+<CODE>ppl_Polyhedron_check_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
     </CODE>
 
 <CODE>ppl_timeout_exception_atom(?Atom)</CODE>
@@ -960,7 +960,7 @@ referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is the universe.
 
-<H2><CODE>ppl_Polyhedron_is_bounded(+Handle)</CODE></H2>
+<H2><CODE>ppl_Polyhedron_check_bounded(+Handle)</CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is bounded.
@@ -979,7 +979,7 @@ referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
    the polyhedron referenced by <CODE>Handle</CODE>.
 
 
-<H2><CODE>ppl_Polyhedron_is_topologically_closed(+Handle)</CODE></H2>
+<H2><CODE>ppl_Polyhedron_check_topologically_closed(+Handle)</CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is topologically closed.
@@ -1002,7 +1002,7 @@ referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
    <CODE>Handle_1</CODE> is
    equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_is_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
+<H2><CODE>ppl_Polyhedron_check_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
     </CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by

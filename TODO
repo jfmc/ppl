@@ -11,7 +11,7 @@ Efficiency Issues
 =================
 
 - There must be a more efficient way to implement
-  bool are_disjoint(const Polyhedron&, const Polyhedron&).
+  bool check_disjoint(const Polyhedron&, const Polyhedron&).
 
 - There must be a more efficient way to compute convex
   differences.

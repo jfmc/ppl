@@ -206,13 +206,13 @@ SP_STUB_3(ppl_Polyhedron_relation_with_constraint)
 SP_STUB_3(ppl_Polyhedron_relation_with_generator)
 SP_STUB_1(ppl_Polyhedron_check_empty)
 SP_STUB_1(ppl_Polyhedron_check_universe)
-SP_STUB_1(ppl_Polyhedron_is_bounded)
+SP_STUB_1(ppl_Polyhedron_check_bounded)
 SP_STUB_2(ppl_Polyhedron_bounds_from_above)
 SP_STUB_2(ppl_Polyhedron_bounds_from_below)
-SP_STUB_1(ppl_Polyhedron_is_topologically_closed)
+SP_STUB_1(ppl_Polyhedron_check_topologically_closed)
 SP_STUB_2(ppl_Polyhedron_contains_Polyhedron)
 SP_STUB_2(ppl_Polyhedron_strictly_contains_Polyhedron)
-SP_STUB_2(ppl_Polyhedron_is_disjoint_from_Polyhedron)
+SP_STUB_2(ppl_Polyhedron_check_disjoint_from_Polyhedron)
 SP_STUB_2(ppl_Polyhedron_equals_Polyhedron)
 SP_STUB_3(ppl_Polyhedron_get_bounding_box)
 
@@ -286,13 +286,13 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_relation_with_generator, 3);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_check_empty, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_check_universe, 1);
-  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_is_bounded, 1);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_check_bounded, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_bounds_from_above, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_bounds_from_below, 2);
-  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_is_topologically_closed, 1);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_check_topologically_closed, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_contains_Polyhedron, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_strictly_contains_Polyhedron, 2);
-  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_is_disjoint_from_Polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_check_disjoint_from_Polyhedron, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_equals_Polyhedron, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_get_bounding_box, 3);
 }

@@ -87,8 +87,8 @@ enum ppl_enum_error_code {
 */
 typedef size_t ppl_dimension_type;
 
-/*! @name Initialization, Error Handling and Auxiliary Functions */
-/*!@{*/
+/*! \name Initialization, Error Handling and Auxiliary Functions */
+/*@{*/
 
 /*! \brief
   Writes to \p m the maximum space dimension this library can handle.
@@ -127,7 +127,7 @@ ppl_finalize __P((void));
 int
 ppl_set_error_handler __P((void (*h)(enum ppl_enum_error_code code,
 				     const char* description)));
-/*!@}*/ /* Initialization, Error Handling and Auxiliary Functions */
+/*@}*/ /* Initialization, Error Handling and Auxiliary Functions */
 
 #undef PPL_TYPE_DECLARATION
 #define PPL_TYPE_DECLARATION(Type) /*! \brief Opaque pointer to Type. */ typedef struct ppl_ ## Type ## _tag* ppl_ ## Type ## _t; /*! \brief Opaque pointer to const Type. */ typedef struct ppl_ ## Type ## _tag const* ppl_const_ ## Type ## _t
@@ -152,8 +152,8 @@ PPL_TYPE_DECLARATION(Polyhedron);
 
 #undef PPL_TYPE_DECLARATION
 
-/*! @name Functions Related to Coefficients */
-/*!@{*/
+/*! \name Functions Related to Coefficients */
+/*@{*/
 
 /*! \brief
   Creates a new coefficient with value 0 and writes an handle for the
@@ -211,10 +211,10 @@ ppl_Coefficient_to_mpz_t __P((ppl_const_Coefficient_t c, mpz_t z));
 */
 int
 ppl_Coefficient_OK __P((ppl_const_Coefficient_t c));
-/*!@}*/ /* Functions Related to Coefficients */
+/*@}*/ /* Functions Related to Coefficients */
 
-/*! @name Functions Related to Linear Expressions */
-/*!@{*/
+/*! \name Functions Related to Linear Expressions */
+/*@{*/
 
 /*! \brief
   Creates a new linear expression corresponding to the constant 0 in a
@@ -340,7 +340,7 @@ ppl_LinExpression_inhomogeneous_term __P((ppl_const_LinExpression_t le,
 */
 int
 ppl_LinExpression_OK __P((ppl_const_LinExpression_t le));
-/*!@}*/ /* Functions Related to Linear Expressions */
+/*@}*/ /* Functions Related to Linear Expressions */
 
 /*! \brief
   Describes the relations represented by a constraint.
@@ -359,8 +359,8 @@ enum ppl_enum_Constraint_Type {
 };
 
 
-/*! @name Functions Related to Constraints */
-/*!@{*/
+/*! \name Functions Related to Constraints */
+/*@{*/
 
 /*! \brief
   Creates the new constraint `\p le \p rel 0' and writes an handle for
@@ -444,10 +444,10 @@ ppl_Constraint_inhomogeneous_term __P((ppl_const_Constraint_t c,
 */
 int
 ppl_Constraint_OK __P((ppl_const_Constraint_t c));
-/*!@}*/ /* Functions Related to Constraints */
+/*@}*/ /* Functions Related to Constraints */
 
-/*! @name Functions Related to Constraint Systems */
-/*!@{*/
+/*! \name Functions Related to Constraint Systems */
+/*@{*/
 
 /*! \brief
   Builds an empty system of constraints and writes an handle to it at
@@ -591,7 +591,7 @@ int
 ppl_ConSys_const_iterator_equal_test
 __P((ppl_const_ConSys_const_iterator_t x,
      ppl_const_ConSys_const_iterator_t y));
-/*!@}*/ /* Functions Related to Constraint Systems */
+/*@}*/ /* Functions Related to Constraint Systems */
 
 /*! \brief
   Describes the different kinds of generators.
@@ -608,8 +608,8 @@ enum ppl_enum_Generator_Type {
 };
 
 
-/*! @name Functions Related to Generators */
-/*!@{*/
+/*! \name Functions Related to Generators */
+/*@{*/
 
 /*! \brief
   Creates a new generator of direction \p le and type \p t.  If the
@@ -697,10 +697,10 @@ ppl_Generator_divisor __P((ppl_const_Generator_t g, ppl_Coefficient_t n));
 */
 int
 ppl_Generator_OK __P((ppl_const_Generator_t g));
-/*!@}*/ /* Functions Related to Generators */
+/*@}*/ /* Functions Related to Generators */
 
-/*! @name Functions Related to Generator Systems */
-/*!@{*/
+/*! \name Functions Related to Generator Systems */
+/*@{*/
 
 /*! \brief
   Builds an empty system of generators and writes an handle to it at
@@ -847,7 +847,7 @@ int
 ppl_GenSys_const_iterator_equal_test
 __P((ppl_const_GenSys_const_iterator_t x,
      ppl_const_GenSys_const_iterator_t y));
-/*!@}*/ /* Functions Related to Generator Systems */
+/*@}*/ /* Functions Related to Generator Systems */
 
 /*! \brief
   Code of the worst-case polynomial complexity class.
@@ -895,8 +895,8 @@ extern unsigned int PPL_POLY_CON_RELATION_SATURATES;
 */
 extern unsigned int PPL_POLY_GEN_RELATION_SUBSUMES;
 
-/*! @name Functions Related to Polyhedra */
-/*!@{*/
+/*! \name Functions Related to Polyhedra */
+/*@{*/
 
 /*! \brief
   Builds an universe closed polyhedron of dimension \p d and writes an
@@ -1611,18 +1611,20 @@ ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
 
 /*! \brief
   Renames the dimensions of a polyhedron according to a partial
-  injective function.  This function is defined by means of the
-  \p maps array, which is of dimension \p n.
+  injective function.  This function is specified by means of the
+  \p maps array, which has \p n entries.
 
-  The function maps <CODE>i</CODE> to <CODE>j</CODE> if and only if
-  <CODE>i < n</CODE>, <CODE>j != ppl_not_a_dimension</CODE>, and
-  <CODE>maps[i] == j</CODE>.
-  The dimensions that are not mapped (i.e., for which the partial injective
-  function represented by \p maps is undefined) are projected away.
-  The result is undefined if \p maps does not encode a partial
-  <EM>injective</EM> function, that is, if two dimensions are mapped
-  to the same dimension (this happens when, for <CODE>i != j</CODE>,
-  <CODE>maps[i] != ppl_not_a_dimension</CODE>,
+  The partial injective function is defined on dimension <CODE>i</CODE>
+  if <CODE>i < n</CODE> and <CODE>maps[i] != ppl_not_a_dimension</CODE>;
+  otherwise it is undefined on dimension <CODE>i</CODE>. The dimensions
+  for which the partial injective function is undefined are projected away.
+  If the function is defined on dimension <CODE>i</CODE>, then dimension
+  <CODE>i</CODE> is mapped onto dimension <CODE>maps[i]</CODE>.
+  If \p maps does not encode a partial <EM>injective</EM> function,
+  i.e., if two dimensions are mapped to the same dimension, then the
+  result of the renaming is undefined (this happens when there exist
+  two dimensions <CODE>i != j</CODE> such that <CODE>i < n</CODE>,
+  <CODE>j < n</CODE>, <CODE>maps[i] != ppl_not_a_dimension</CODE>,
   and <CODE>maps[i] == maps[j]</CODE>).
 */
 int
@@ -1790,7 +1792,7 @@ ppl_Polyhedron_check_universe __P((ppl_const_Polyhedron_t ph));
   unbounded.
 */
 int
-ppl_Polyhedron_is_bounded __P((ppl_const_Polyhedron_t ph));
+ppl_Polyhedron_check_bounded __P((ppl_const_Polyhedron_t ph));
 
 /*! \brief
   Returns a positive integer if \p le is bounded from above in \p ph;
@@ -1813,7 +1815,7 @@ ppl_Polyhedron_bounds_from_below __P((ppl_const_Polyhedron_t ph,
   returns 0 if \p ph is not topologically closed.
 */
 int
-ppl_Polyhedron_is_topologically_closed __P((ppl_const_Polyhedron_t ph));
+ppl_Polyhedron_check_topologically_closed __P((ppl_const_Polyhedron_t ph));
 
 /*! \brief
   Assigns to \p ph its topological closure.
@@ -1842,8 +1844,8 @@ ppl_Polyhedron_strictly_contains_Polyhedron __P((ppl_const_Polyhedron_t x,
   if they are not.
 */
 int
-ppl_Polyhedron_is_disjoint_from_Polyhedron __P((ppl_const_Polyhedron_t x,
-						ppl_const_Polyhedron_t y));
+ppl_Polyhedron_check_disjoint_from_Polyhedron __P((ppl_const_Polyhedron_t x,
+						   ppl_const_Polyhedron_t y));
 
 /*! \brief
   Returns a positive integer if \p ph is well formed, i.e., if it
@@ -1852,7 +1854,7 @@ ppl_Polyhedron_is_disjoint_from_Polyhedron __P((ppl_const_Polyhedron_t x,
 */
 int
 ppl_Polyhedron_OK __P((ppl_const_Polyhedron_t ph));
-/*!@}*/ /* Functions Related to Polyhedra */
+/*@}*/ /* Functions Related to Polyhedra */
 
 #ifdef __cplusplus
 } /* extern "C" */
