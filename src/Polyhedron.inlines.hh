@@ -760,28 +760,6 @@ Polyhedron::map_dimensions(const PartialFunction& pfunc) {
   assert(OK(true));
 }
 
-inline bool
-Polyhedron::BHRZ03_info::Compare::operator()(const BHRZ03_info& x,
-					     const BHRZ03_info& y) const {
-  // For an efficient evaluation of the multiset ordering based
-  // on this lgo relation, we want larger elements to come first.
-  return (x.compare(y) == 1);
-}
-
-inline int
-Polyhedron::BHRZ03_info::compare(const Polyhedron& y) const {
-  // TODO: implement an incremental test, stopping as soon as possible.
-  BHRZ03_info y_info(y);
-  return compare(y_info);
-}
-
-inline bool
-Polyhedron::BHRZ03_info::is_stabilizing(const Polyhedron& y) const {
-  // TODO: implement an incremental test, stopping as soon as possible.
-  BHRZ03_info y_info(y);
-  return compare(y_info) == 1;
-}
-
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Polyhedron_inlines_hh)
