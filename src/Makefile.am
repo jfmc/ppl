@@ -227,11 +227,11 @@ noinst_HEADERS = ppl.hh ppl_install.hh
 
 BUILT_SOURCES = ppl.hh ppl_install.hh
 
-ppl.hh:	$(DOC_FILES) Makefile
+ppl.hh:	$(DOC_FILES) $(top_builddir)/src/version.hh Makefile
 	cat $(top_builddir)/src/version.hh >$@
 	(cd $(srcdir) ; cat $(DOC_FILES)) >>$@
 
-ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCLUDE_FILES) ppl_header.bottom Makefile
+ppl_install.hh:	ppl_header.top $(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.middle $(INCLUDE_FILES) ppl_header.bottom Makefile
 	mkdir -p tmp
 	cat $(top_builddir)/config.h >tmp/concat
 	(cd $(srcdir) ; cat $(INCLUDE_FILES)) >>tmp/concat
