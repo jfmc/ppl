@@ -299,10 +299,10 @@ more information regarding these issues.
   ppl_new_Polyhedron_from_dimension(+Topology, +Integer, -Handle)
 </CODE></H4>
 
-   Creates a new universe C or NNC polyhedron \f$P\f$,
+   Creates a new universe C or NNC polyhedron \f$\cP\f$,
    depending on the value of <CODE>Topology</CODE>,
    with <CODE>Integer</CODE> dimensions.
-   <CODE>Handle</CODE> is unified with the handle for \f$P\f$.
+   <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
    Thus the query
 \code
    ?- ppl_new_Polyhedron_from_dimension(c, X, 3).
@@ -315,10 +315,10 @@ more information regarding these issues.
 </CODE>
 </H4>
 
-   Creates a new empty C or NNC polyhedron \f$P\f$,
+   Creates a new empty C or NNC polyhedron \f$\cP\f$,
    depending on the value of <CODE>Topology</CODE>,
    with <CODE>Integer</CODE> dimensions.
-   <CODE>Handle</CODE> is unified with the handle for \f$P\f$.
+   <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
    Thus the query
 \code
    ?- ppl_new_Polyhedron_empty_from_dimension(nnc, X, 3).
@@ -331,12 +331,12 @@ more information regarding these issues.
                                    +Topology_2, -Handle_2)</CODE>
 </H4>
 
-   If <CODE>Handle_1</CODE> refers to a C or NNC polyhedron \f$P_1\f$
+   If <CODE>Handle_1</CODE> refers to a C or NNC polyhedron \f$\cP_1\f$
    (depending on the value of <CODE>Topology_1</CODE>),
-   then a copy \f$P_2\f$ of \f$P_1\f$ is created
+   then a copy \f$\cP_2\f$ of \f$\cP_1\f$ is created
    with topology C or NNC,
    depending on the value of <CODE>Topology_2</CODE>,
-   and <CODE>Handle_2</CODE> is unified with the handle for \f$P_2\f$.
+   and <CODE>Handle_2</CODE> is unified with the handle for \f$\cP_2\f$.
    Thus the query
 \code
    ?- ppl_new_Polyhedron_empty_from_dimension(nnc, X, 3),
@@ -359,10 +359,10 @@ more information regarding these issues.
                    +List_of_Constraints, -Handle)</CODE>
 </H4>
 
-   A polyhedron \f$P\f$ represented by <CODE>List_of_Constraints</CODE>
+   A polyhedron \f$\cP\f$ represented by <CODE>List_of_Constraints</CODE>
    is created with topology C or NNC,
    depending on the value of <CODE>Topology</CODE>,
-   and <CODE>Handle</CODE> is unified with the handle for \f$P\f$.
+   and <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
    A strict constraint can be included in <CODE>List_of_Constraints</CODE>
    only if <CODE>Topology</CODE> is <CODE>nnc</CODE>.
 
@@ -371,10 +371,10 @@ more information regarding these issues.
                    +List_of_Generators, -Handle)</CODE>
 </H4>
 
-   A polyhedron \f$P\f$ represented by <CODE>List_of_Generators</CODE>
+   A polyhedron \f$\cP\f$ represented by <CODE>List_of_Generators</CODE>
    is created with topology C or NNC,
    depending on the value of <CODE>Topology</CODE>,
-   and <CODE>Handle</CODE> is unified with the handle for \f$P\f$.
+   and <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
    A closure point can be included in <CODE>List_of_Generators</CODE>
    only if <CODE>Topology</CODE> is <CODE>nnc</CODE>.
 
@@ -383,10 +383,10 @@ more information regarding these issues.
                    +Box, -Handle)</CODE>
 </H4>
 
-   A polyhedron \f$P\f$ represented by <CODE>Box</CODE>
+   A polyhedron \f$\cP\f$ represented by <CODE>Box</CODE>
    is created with topology C or NNC,
    depending on the value of <CODE>Topology</CODE>,
-   and <CODE>Handle</CODE> is unified with the handle for \f$P\f$.
+   and <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
    A bound of the form <CODE>o(Rational)</CODE>
    can be included in an interval in <CODE>Box</CODE>
    only if <CODE>Topology</CODE> is <CODE>nnc</CODE>.
@@ -399,86 +399,62 @@ more information regarding these issues.
 
 <H4><CODE>ppl_Polyhedron_space_dimension(+Handle, -Integer)</CODE></H4>
 
-   If \f$P\f$ is the polyhedron referenced by <CODE>Handle</CODE>,
-   it unifies the space dimension of \f$P\f$ with <CODE>Integer</CODE>.
+   If \f$\cP\f$ is the polyhedron referenced by <CODE>Handle</CODE>,
+   it unifies the space dimension of \f$\cP\f$ with <CODE>Integer</CODE>.
 
 <H4><CODE>ppl_Polyhedron_intersection_assign(+Handle_1, +Handle_2)</CODE></H4>
 
-   Computes the intersection \f$P\f$ of the polyhedra referenced by
-   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
-   After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
+   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
+   the intersection of the polyhedra referenced by <CODE>Handle_1</CODE>
+   itself and <CODE>Handle_2</CODE>.
 
 <H4><CODE>ppl_Polyhedron_intersection_assign_and_minimize(+Handle_1,
                      +Handle_2)</CODE></H4>
 
-   Computes the intersection \f$P\f$ of the polyhedra referenced by
-   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
-   After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
-
+   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
+   the intersection of the polyhedra referenced by <CODE>Handle_1</CODE>
+   itself and <CODE>Handle_2</CODE>.
 
 <H4><CODE>ppl_Polyhedron_poly_hull_assign(+Handle_1, +Handle_2)</CODE></H4>
 
-   Computes the poly-hull \f$P\f$ of the polyhedra referenced by
-   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
-   After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
+   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
+   the poly-hull of the polyhedra referenced by <CODE>Handle_1</CODE>
+   itself and <CODE>Handle_2</CODE>.
 
 <H4><CODE>ppl_Polyhedron_poly_hull_assign_and_minimize(+Handle_1,
                +Handle_2)</CODE></H4>
 
-   Computes the poly-hull \f$P\f$ of the polyhedra referenced by
-   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
-   After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
+   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
+   the poly-hull of the polyhedra referenced by <CODE>Handle_1</CODE>
+   itself and <CODE>Handle_2</CODE>.
 
 <H4><CODE>ppl_Polyhedron_poly_difference_assign(+Handle_1, +Handle_2)</CODE></H4>
 
-   Computes the poly-hull \f$P\f$ of the set-theoretic difference of
-   the polyhedra referenced by
-   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
-   After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
+   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
+   its poly-difference with the polyhedra referenced by <CODE>Handle_2</CODE>.
 
 <H4><CODE>ppl_Polyhedron_poly_difference_assign_and_minimize(+Handle_1,
                +Handle_2)</CODE></H4>
 
-   Computes the poly-hull \f$P\f$ of the set-theoretic difference of
-   the polyhedra referenced by
-   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
-   After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
+   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
+   its poly-difference with the polyhedron referenced by <CODE>Handle_2</CODE>.
 
 <H4><CODE>ppl_Polyhedron_widening_CC92_assign(+Handle_1, +Handle_2)</CODE></H4>
 
-   Computes the CC92-widening \f$P\f$ between the polyhedra
-   \f$P_1\f$ referenced by
-   <CODE>Handle_1</CODE> and the polyhedra
-   \f$P_2\f$ referenced by <CODE>Handle_2</CODE>.
-   After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
-   The polyhedron \f$P_1\f$ must be contained in (or equal to)
-   the polyhedron \f$P_2\f$ and have the same topology.
+   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
+   its CC92-widening with the polyhedra referenced by <CODE>Handle_2</CODE>,
 
 <H4><CODE>ppl_Polyhedron_limited_widening_CC92_assign(+Handle_1, +Handle_2,
                +List_of_Constraints)</CODE></H4>
 
-   Computes the CC92-widening \f$P\f$ between the polyhedra referenced by
-   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>,
+   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
+   its CC92-widening with the polyhedron referenced by <CODE>Handle_2</CODE>,
    limited by <CODE>List_of_Constraints</CODE>.
-   After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
-   The polyhedron \f$P_1\f$ must be contained in (or equal to)
-   the polyhedron \f$P_2\f$ and have the same topology.
-
-<H4><CODE>ppl_Polyhedron_widening_CC92_assign(+Handle_1, +Handle_2)</CODE></H4>
-
-   Computes the CC92-widening \f$P\f$ between the polyhedra
-   \f$P_1\f$ referenced by
-   <CODE>Handle_1</CODE> and the polyhedra
-   \f$P_2\f$ referenced by <CODE>Handle_2</CODE>.
-   After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
-   The polyhedron \f$P_1\f$ must be contained in (or equal to)
-   the polyhedron \f$P_2\f$ and have the same topology.
 
 <H4><CODE>ppl_Polyhedron_topological_closure_assign(+Handle)</CODE></H4>
 
-   Computes the topological closure  \f$P\f$ of the polyhedron
-   referenced by <CODE>Handle</CODE>.
-   After execution, <CODE>Handle</CODE> refers to \f$P\f$.
+   Assigns to the polyhedron referenced by <CODE>Handle</CODE>
+   its topological closure.
 
 <H4><CODE>ppl_Polyhedron_get_constraints(+Handle, -List_of_Constraints)
 </CODE></H4>
@@ -661,11 +637,11 @@ and a query will succeed even when
  
  
    If, before the call is executed, <CODE>Handle</CODE>
-   refers to polyhedron \f$P\f$ and
+   refers to polyhedron \f$\cP\f$ and
    <CODE>List_of_Constraints</CODE> refers to a system of constraints
    \f$C\f$ in a space of \f$d\f$ dimensions, then
-   $\f$Q\f$ is the polyhedron obtained from \f$P\f$ by
-   adding \f$d\f$ new dimensions to \f$P\f$, embedding \f$P\f$
+   $\f$Q\f$ is the polyhedron obtained from \f$\cP\f$ by
+   adding \f$d\f$ new dimensions to \f$\cP\f$, embedding \f$\cP\f$
    in the new space and then adding the \f$C\f$ constraints
    to the new space.
    E.g.,
@@ -684,9 +660,9 @@ and a query will succeed even when
 </CODE></H4>
 
    If, before the call is executed, <CODE>Handle</CODE>
-   refers to polyhedron \f$P\f$ and
-   $\f$Q\f$ is the polyhedron obtained from \f$P\f$ by
-   adding <CODE>Integer</CODE> new dimensions and projecting \f$P\f$
+   refers to polyhedron \f$\cP\f$ and
+   $\f$Q\f$ is the polyhedron obtained from \f$\cP\f$ by
+   adding <CODE>Integer</CODE> new dimensions and projecting \f$\cP\f$
    in the new space, then, after execution, <CODE>Handle</CODE>
    refers to \f$Q\f$.
    E.g.,
@@ -704,9 +680,9 @@ and a query will succeed even when
 </CODE></H4>
 
    If, before the call is executed, <CODE>Handle</CODE>
-   refers to polyhedron \f$P\f$ and
-   $\f$Q\f$ is the polyhedron obtained from \f$P\f$ by
-   adding <CODE>Integer</CODE> new dimensions and embedding \f$P\f$
+   refers to polyhedron \f$\cP\f$ and
+   $\f$Q\f$ is the polyhedron obtained from \f$\cP\f$ by
+   adding <CODE>Integer</CODE> new dimensions and embedding \f$\cP\f$
    in the new space, then, after execution, <CODE>Handle</CODE>
    refers to \f$Q\f$.
    E.g.,
@@ -724,11 +700,11 @@ and a query will succeed even when
                +List_of_PPL_Vars)</CODE></H4>
 
    If, before the call is executed, <CODE>Handle</CODE>
-   refers to polyhedron \f$P\f$ then,
+   refers to polyhedron \f$\cP\f$ then,
    after execution, <CODE>Handle</CODE> refers to the polyhedron obtained 
    by removing the dimensions given by the identifiers of the
    PPL variables in list
-   <CODE>List_of_PPL_Vars</CODE> from \f$P\f$.
+   <CODE>List_of_PPL_Vars</CODE> from \f$\cP\f$.
    The identifiers for the remaining PPL variables are renumbered so that
    they are consecutive and the maximum index is less than the number
    of dimensions.
@@ -747,9 +723,9 @@ and a query will succeed even when
 <H4><CODE>ppl_Polyhedron_remove_higher_dimensions(+Handle, +Integer))</CODE></H4>
 
    If, before the call is executed, <CODE>Handle</CODE>
-   refers to polyhedron \f$P\f$ then,
+   refers to polyhedron \f$\cP\f$ then,
    after execution, <CODE>Handle</CODE> refers to the polyhedron obtained 
-   by projecting \f$P\f$ onto the first <CODE>Integer</CODE> dimensions.
+   by projecting \f$\cP\f$ onto the first <CODE>Integer</CODE> dimensions.
    E.g. 
 \code
    ?- ppl_new_Polyhedron_empty_from_dimension(c, 5, X),
@@ -758,7 +734,7 @@ and a query will succeed even when
  
    K = 3,
 \endcode
-   The polyhedron \f$P\f$ referenced by <CODE>Handle</CODE>
+   The polyhedron \f$\cP\f$ referenced by <CODE>Handle</CODE>
    must have space dimension \f$k\f$ greater that or equal to
    <CODE>Integer</CODE>.
 
@@ -778,24 +754,24 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 <H4><CODE>ppl_Polyhedron_relation_with_constraint(+Handle, +Constraint,
                -Relation)</CODE></H4>
 
-Computes the relation the polyhedron \f$P\f$
+Computes the relation the polyhedron \f$\cP\f$
 referenced by <CODE>Handle</CODE>
 has with <CODE>Constraint</CODE>.
 <CODE>Relation</CODE> is unified to a value as follows:
 
-<CODE>is_disjoint</CODE>, if \f$P\f$
+<CODE>is_disjoint</CODE>, if \f$\cP\f$
 and the set of points satisfying
  <CODE>Constraint</CODE>  are disjoint;
 
-<CODE>strictly_intersects</CODE>, if \f$P\f$
+<CODE>strictly_intersects</CODE>, if \f$\cP\f$
 intersects but is not included in the set of points satisfying
  <CODE>Constraint</CODE>;
 
-<CODE>is_included</CODE>, if \f$P\f$
+<CODE>is_included</CODE>, if \f$\cP\f$
 is included in the set of points satisfying
  <CODE>Constraint</CODE>;
 
-<CODE>saturates</CODE>, if \f$P\f$
+<CODE>saturates</CODE>, if \f$\cP\f$
 is included in the set of points saturating
  <CODE>Constraint</CODE>;
 
@@ -804,13 +780,13 @@ is included in the set of points saturating
 <H4><CODE>ppl_Polyhedron_relation_with_generator(+Handle, +Generator,
                -Relation)</CODE></H4>
 
-Computes the relation the polyhedron \f$P\f$
+Computes the relation the polyhedron \f$\cP\f$
 referenced by <CODE>Handle</CODE>
 has with <CODE>Generator</CODE>.
 <CODE>Relation</CODE>, is unified to a value as follows:
 
 <CODE>subsumes</CODE>, if adding <CODE>Generator</CODE>
-would not change \f$P\f$;
+would not change \f$\cP\f$;
 
 <CODE>nothing</CODE>, if nothing is known about the relation.
 
@@ -837,24 +813,24 @@ would not change \f$P\f$;
 
 <H4><CODE>ppl_Polyhedron_contains_Polyhedron(+Handle_1, +Handle_2)</CODE></H4>
 
-   Succeeds if and only if the polyhedron \f$P1\f$ referenced by
+   Succeeds if and only if the polyhedron \f$\cP_1\f$ referenced by
    <CODE>Handle_1</CODE> is included in or
-   equal to the polyhedron \f$P2\f$ referenced by <CODE>Handle_2</CODE>;
-   \f$P1\f$ and \f$P2\f$ must have the same topology.
+   equal to the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>;
+   \f$\cP_1\f$ and \f$\cP_2\f$ must have the same topology.
 
 <H4><CODE>ppl_Polyhedron_strictly_contains_Polyhedron(+Handle_1, +Handle_2)</CODE></H4>
 
-   Succeeds if and only if the polyhedron \f$P1\f$ referenced by
+   Succeeds if and only if the polyhedron \f$\cP_1\f$ referenced by
    <CODE>Handle_1</CODE> is included in but not
-   equal to the polyhedron \f$P2\f$ referenced by <CODE>Handle_2</CODE>;
-   \f$P1\f$ and \f$P2\f$ must have the same topology.
+   equal to the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>;
+   \f$\cP_1\f$ and \f$\cP_2\f$ must have the same topology.
 
 <H4><CODE>ppl_Polyhedron_equals_Polyhedron, 2(+Handle_1, +Handle_2)</CODE></H4>
 
-   Succeeds if and only if the polyhedron \f$P1\f$ referenced by
+   Succeeds if and only if the polyhedron \f$\cP_1\f$ referenced by
    <CODE>Handle_1</CODE> is
-   equal to the polyhedron \f$P2\f$ referenced by <CODE>Handle_2</CODE>;
-   \f$P1\f$ and \f$P2\f$ must have the same topology.
+   equal to the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>;
+   \f$\cP_1\f$ and \f$\cP_2\f$ must have the same topology.
 
 <H4><CODE>ppl_Polyhedron_get_bounding_box(+Handle, 
                                       -Box)</CODE></H4>
