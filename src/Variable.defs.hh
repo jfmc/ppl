@@ -37,7 +37,7 @@ namespace IO_Operators {
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Variable */
 std::ostream&
-operator<<(std::ostream& s, Variable v);
+operator<<(std::ostream& s, const Variable& v);
 
 } // namespace IO_Operators
 
@@ -107,7 +107,7 @@ private:
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
-						    Variable v);
+						    const Variable& v);
 
   //! Pointer to the current output function.
   static Output_Function_Type* current_output_function;
