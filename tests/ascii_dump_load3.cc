@@ -56,6 +56,7 @@ test1() {
   do
     f >> str;
   while (str != "space_dim");
+  f.seekp(0, ios_base::cur);
   f << " A";
   close(f);
 
@@ -87,6 +88,7 @@ test2() {
   do
     f >> str;
   while(str != "-ZE");
+  f.seekp(0, ios_base::cur);
   f << "A";
   close(f);
 
@@ -118,6 +120,7 @@ test3() {
   do
     f >> str;
   while(str != "con_sys");
+  f.seekp(0, ios_base::cur);
   f << "A";
   close(f);
 
@@ -149,6 +152,7 @@ test4() {
   do
     f >> str;
   while (str != "(up-to-date)");
+  f.seekp(0, ios_base::cur);
   f << "A\n";
   close(f);
 
@@ -180,6 +184,7 @@ test5() {
   do
     f >> str;
   while(str != "gen_sys");
+  f.seekp(0, ios_base::cur);
   f << "A";
   close(f);
 
@@ -211,6 +216,7 @@ test6() {
   do
     f >> str;
   while(str != "(not_up-to-date)" );
+  f.seekp(0, ios_base::cur);
   f << "A\n";
   close(f);
 
@@ -242,6 +248,7 @@ test7() {
   do
     f >> str;
   while(str != "sat_c");
+  f.seekp(0, ios_base::cur);
   f << "A";
   close(f);
 
@@ -273,6 +280,7 @@ test8() {
   do
     f >> str;
   while(str != "sat_g");
+  f.seekp(0, ios_base::cur);
   f << "A";
   close(f);
 
@@ -304,6 +312,7 @@ test9() {
   do
     f >> str;
   while (str != "(up-to-date)");
+  f.seekp(0, ios_base::cur);
   f << "\nA";
   close(f);
 
@@ -335,6 +344,7 @@ test10() {
   do
     f >> str;
   while(str != "(not_up-to-date)" );
+  f.seekp(0, ios_base::cur);
   f << "\nA";
   close(f);
 
@@ -366,6 +376,7 @@ test11() {
   do
     f >> str;
   while(str != "sat_c");
+  f.seekp(0, ios_base::cur);
   f << "\nA";
   close(f);
 
@@ -397,6 +408,7 @@ test12() {
   do
     f >> str;
   while(str != "sat_g");
+  f.seekp(0, ios_base::cur);
   f << "\nA";
   close(f);
 

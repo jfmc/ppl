@@ -79,6 +79,7 @@ test2() {
   do
     f >> str;
   while(str != "=");
+  f.seekp(0, ios_base::cur);
   f << "A";
   close(f);
   
@@ -248,6 +249,7 @@ test7() {
   do
     f >> str;
   while(str != "x");
+  f.seekp(0, ios_base::cur);
   f << " A";
   close(f);
 
