@@ -120,6 +120,8 @@ guarded_compute_open_hypercube_generators(dimension_type dimension,
   catch (...) {
     exit(1);
   }
+  // Should never get here.
+  return false;
 }
 
 #if GMP_SUPPORTS_EXCEPTIONS
