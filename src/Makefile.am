@@ -177,7 +177,7 @@ ppl.hh:	$(DOC_FILES)
 ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCLUDE_FILES) ppl_header.bottom
 	mkdir -p tmp
 	(cd $(srcdir) ; cat $(INCLUDE_FILES)) >tmp/concat
-	grep -e "^#include <" <tmp/concat | sort -u >tmp/includes
+	grep "^#include <" <tmp/concat | sort -u >tmp/includes
 	sed -e "/^#include/d" -f $(srcdir)/ppl_filter_install.sed <tmp/concat >tmp/noincludes.cc
 	cat $(srcdir)/ppl_header.top $(top_builddir)/config.h \
 		$(srcdir)/ppl_header.middle tmp/includes >ppl_install.hh
