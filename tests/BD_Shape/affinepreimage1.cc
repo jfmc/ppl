@@ -30,7 +30,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-intXF
+int
 main() TRY {
   Variable x(0);
   Variable y(1);
