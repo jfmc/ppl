@@ -116,7 +116,7 @@ STRIP_FROM_PATH        =
 # default) then the documentation will be excluded.  Set it to YES to
 # include the internal documentation.
 
-INTERNAL_DOCS          = YES
+INTERNAL_DOCS          = NO
 
 # If the CLASS_DIAGRAMS tag is set to YES (the default) Doxygen will
 # generate a class diagram (in Html and LaTeX) for classes with base
@@ -181,7 +181,7 @@ JAVADOC_AUTOBRIEF      = NO
 # undocumented member inherits the documentation from any documented
 # member that it reimplements.
 
-INHERIT_DOCS           = YES
+INHERIT_DOCS           = NO
 
 # If the INLINE_INFO tag is set to YES (the default) then a tag
 # [inline] is inserted in the documentation for inline members.
@@ -320,9 +320,7 @@ INPUT                  = @srcdir@/definitions.dox \
 # *.cpp and *.h) to filter out the source-files in the directories. If
 # left blank all files are included.
 
-FILE_PATTERNS          = *.hh \
-                         *.cc \
-                         *.dox
+FILE_PATTERNS          =
 
 # The RECURSIVE tag can be used to turn specify whether or not
 # subdirectories should be searched for input files as well. Possible
@@ -341,7 +339,7 @@ EXCLUDE                =
 # EXCLUDE_PATTERNS tag to specify one or more wildcard patterns to
 # exclude certain files from those directories.
 
-EXCLUDE_PATTERNS       = */BitSet/* */Integer/*
+EXCLUDE_PATTERNS       =
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or
 # directories that contain example code fragments that are included
