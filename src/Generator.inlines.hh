@@ -146,14 +146,12 @@ ray(const LinExpression& e) {
 }
 
 inline Generator
-point(const LinExpression& e = LinExpression::zero(),
-      const Integer& d = Integer_one()) {
+point(const LinExpression& e, const Integer& d) {
   return Generator::point(e, d);
 }
 
 inline Generator
-closure_point(const LinExpression& e = LinExpression::zero(),
-	      const Integer& d = Integer_one()) {
+closure_point(const LinExpression& e, const Integer& d) {
   return Generator::closure_point(e, d);
 }
 
