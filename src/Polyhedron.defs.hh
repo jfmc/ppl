@@ -1672,13 +1672,9 @@ private:
   //! The saturation matrix having generators on its columns.
   Saturation_Matrix sat_g;
 
-  // Please, do not move the following include directive:
-  // `Ph_Status.idefs.hh' must be included exactly at this point.
-  // And please do not remove the space separating `#' from `include':
-  // this ensures that the directive will not be moved during the
-  // procedure that automatically creates the library's include file
-  // (see `Makefile.am' in the `src' directory).
-# include "Ph_Status.idefs.hh"
+#define PPL_IN_Polyhedron_CLASS
+#include "Ph_Status.idefs.hh"
+#undef PPL_IN_Polyhedron_CLASS
 
   //! The status flags to keep track of the polyhedron's internal state.
   Status status;

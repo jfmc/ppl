@@ -24,6 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_BD_Status_defs_hh
 #define PPL_BD_Status_defs_hh 1
 
+#ifndef PPL_IN_BD_Shape_CLASS
+#error "Do not include Ph_Status.idefs.hh directly; use Polyhedron.defs.hh instead."
+#endif
+
 //! A conjunctive assertion about a BD_Shape<T> object.
 /*!
   The assertions supported are:

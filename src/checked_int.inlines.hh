@@ -24,17 +24,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_int_inlines_hh
 #define PPL_checked_int_inlines_hh 1
 
-// Please do not remove the space separating `#' from `include':
-// this ensures that the directive will not be moved during the
-// procedure that automatically creates the library's include file
-// (see `Makefile.am' in the `src' directory).
-# include <climits>
-
 #include "Limits.hh"
 #include "float.types.hh"
 #include <stdint.h>
 #include <cerrno>
 #include <cstdlib>
+#include <climits>
 #include <gmpxx.h>
 
 #if !HAVE_DECL_STRTOLL

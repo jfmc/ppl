@@ -25,12 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Float_inlines_hh 1
 
 #include "Float.defs.hh"
-
-// Please do not remove the space separating `#' from `include':
-// this ensures that the directive will not be moved during the
-// procedure that automatically creates the library's include file
-// (see `Makefile.am' in the `src' directory).
-# include <climits>
+#include <climits>
 
 namespace Parma_Polyhedra_Library {
 

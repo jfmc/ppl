@@ -1038,13 +1038,9 @@ private:
   //! The matrix that represents the system of bounded differences.
   DB_Matrix<T> dbm;
 
-  // Please, do not move the following include directive:
-  // `BD_Status.idefs.hh' must be included exactly at this point.
-  // And please do not remove the space separating `#' from `include':
-  // this ensures that the directive will not be moved during the
-  // procedure that automatically creates the library's include file
-  // (see `Makefile.am' in the `src' directory).
-# include "BDS_Status.idefs.hh"
+#define PPL_IN_BD_Shape_CLASS
+#include "BDS_Status.idefs.hh"
+#undef PPL_IN_BD_Shape_CLASS
 
   //! \brief  
   //! The status flags to keep track of the internal state,
