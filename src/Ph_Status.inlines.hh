@@ -36,20 +36,6 @@ Polyhedron::Status::Status()
   : flags(ZERO_DIM_UNIV) {
 }
 
-#if 0
-/*! \relates Polyhedron::Status */
-inline Polyhedron::Status
-operator&(Polyhedron::Status x, Polyhedron::Status y) {
-  return Polyhedron::Status(x.flags & y.flags);
-}
-
-/*! \relates Polyhedron::Status */
-inline Polyhedron::Status
-operator|(Polyhedron::Status x, Polyhedron::Status y) {
-  return Polyhedron::Status(x.flags | y.flags);
-}
-#endif
-
 inline bool
 Polyhedron::Status::test_all(flags_t mask) const {
   return (flags & mask) == mask;

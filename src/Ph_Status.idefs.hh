@@ -84,14 +84,6 @@ public:
   //! By default Status is the <EM>zero-dim universe</EM> assertion.
   Status();
 
-#if 0
-  friend Status
-  Parma_Polyhedra_Library::operator&(Status x, Status y);
-
-  friend Status
-  Parma_Polyhedra_Library::operator|(Status x, Status y);
-#endif
-
   //! \name Test, remove or add an individual assertion from the conjunction.
   //@{
   bool test_zero_dim_univ() const;
