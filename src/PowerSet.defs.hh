@@ -117,7 +117,8 @@ public:
   bool is_bottom() const;
 
   //! Checks if all the invariants are satisfied.
-  bool OK() const;
+  // FIXME: document and perhaps use an enum instead of a bool.
+  bool OK(bool disallow_bottom = false) const;
 
   //! \brief
   //! If \p *this is not empty (i.e., it is not the bottom element),
@@ -159,6 +160,7 @@ public:
   typedef typename Sequence::size_type size_type;
 
   size_type size() const;
+  bool empty() const;
 
   typedef typename Sequence::iterator iterator;
   typedef typename Sequence::const_iterator const_iterator;

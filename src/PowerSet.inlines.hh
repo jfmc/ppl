@@ -85,6 +85,12 @@ PowerSet<CS>::size() const {
 }
 
 template <typename CS>
+bool
+PowerSet<CS>::empty() const {
+  return sequence.empty();
+}
+
+template <typename CS>
 void
 PowerSet<CS>::push_back(const CS& y) {
   sequence.push_back(y);
@@ -168,6 +174,10 @@ PowerSet<CS>::omega_reduce() const {
   for (iterator xi = ps.begin(), xin = xi; xi != ps.end(); xi = xin) {
     ++xin;
     const CS& xv = *xi;
+    if (xv.is_bottom()) {
+      ps.erase(xi);
+      continue;
+    }
     for (iterator yi = ps.begin(), yin = yi; yi != ps.end(); yi = yin) {
       ++yin;
       if (xi == yi)
@@ -317,14 +327,15 @@ PowerSet<CS>::is_top() const {
 template <typename CS>
 inline bool
 PowerSet<CS>::is_bottom() const {
-  assert(OK());
+  // Must perform omega-reduction for correctness.
+  omega_reduce();
   return sequence.empty();
 }
 
 template <typename CS>
 inline void
 PowerSet<CS>::collapse() {
-  if (!is_bottom())
+  if (!empty())
     collapse(begin());
 }
 
@@ -403,11 +414,11 @@ operator<<(std::ostream& s, const PowerSet<CS>& x) {
 
 template <typename CS>
 bool
-PowerSet<CS>::OK() const {
+PowerSet<CS>::OK(const bool disallow_bottom) const {
   for (const_iterator i = begin(), send = end(); i != send; ++i) {
     if (!i->OK())
       return false;
-    if (i->is_bottom()) {
+    if (disallow_bottom && i->is_bottom()) {
 #ifndef NDEBUG
       std::cerr << "Bottom element in powerset!"
 		<< std::endl;
