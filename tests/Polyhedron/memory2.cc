@@ -23,12 +23,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 #include <new>
+#include <limits>
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
 #define NOISY 0
+#endif
+
+#ifndef VERY_NOISY
+#define VERY_NOISY 0
 #endif
 
 // If GMP does not support exceptions the test is pointless.
@@ -44,80 +49,95 @@ CATCH
 
 namespace {
 
-unsigned allocated = 0;
-unsigned deallocated = 0;
-unsigned threshold = 0;
+unsigned long mallocated = 0;
+unsigned long reallocated = 0;
+unsigned long freed = 0;
+unsigned long malloc_threshold = 0;
+unsigned long realloc_threshold = 0;
 
 void
-reset_allocators(unsigned new_threshold) {
-  allocated = deallocated = 0;
-  threshold = new_threshold;
+reset_allocators(unsigned long new_malloc_threshold,
+		 unsigned long new_realloc_threshold) {
+  mallocated = reallocated = freed = 0;
+  malloc_threshold = new_malloc_threshold;
+  realloc_threshold = new_realloc_threshold;
 }
 
 extern "C" void*
 cxx_malloc(size_t size) {
-  if (allocated > threshold) {
+  if (mallocated >= malloc_threshold) {
 #if NOISY
-    cout << "std::bad_alloc thrown" << endl;
+    cout << "std::bad_alloc thrown from cxx_malloc()" << endl;
 #endif
     throw std::bad_alloc();
   }
   void* p = ::operator new(size);
-#if NOISY
+#if VERY_NOISY
   cout << "allocated " << size << " @ " << p << endl;
 #endif
-  ++allocated;
+  ++mallocated;
   return p;
+}
+
+extern "C" void
+cxx_free(void* p, size_t) {
+#if VERY_NOISY
+  cout << "freed " << p << endl;
+#endif
+  ::operator delete(p);
+  ++freed;
 }
 
 extern "C" void*
 cxx_realloc(void* p, size_t old_size, size_t new_size) {
+  if (p == 0)
+    return cxx_malloc(new_size);
+
+  if (new_size == 0) {
+    cxx_free(p, old_size);
+    return 0;
+  }
+
   if (new_size <= old_size) {
-#if NOISY
+#if VERY_NOISY
   cout << "reallocated " << old_size << " @ " << p
-       << " to " << new_size << " @ " << p
+       << " down to " << new_size << " @ " << p
        << endl;
 #endif
     return p;
   }
   else {
-    if (allocated > threshold) {
+    if (reallocated >= realloc_threshold) {
 #if NOISY
-      cout << "std::bad_alloc thrown" << endl;
+      cout << "std::bad_alloc thrown from cxx_realloc()" << endl;
 #endif
       throw std::bad_alloc();
     }
     void* new_p = ::operator new(new_size);
     memcpy(new_p, p, old_size);
     ::operator delete(p);
-#if NOISY
+#if VERY_NOISY
     cout << "reallocated " << old_size << " @ " << p
-	 << " to " << new_size << " @ " << new_p
+	 << " up to " << new_size << " @ " << new_p
 	 << endl;
 #endif
-    ++allocated;
-    ++deallocated;
+    ++reallocated;
     return new_p;
   }
 }
 
-extern "C" void
-cxx_free(void* p, size_t) {
-#if NOISY
-  cout << "deallocated " << p << endl;
-#endif
-  ::operator delete(p);
-  ++deallocated;
-}
-
 void
 test1() {
-  reset_allocators(7);
+#if NOISY
+  cout << "test1()" << endl;
+#endif
+
+  reset_allocators(6, ULONG_MAX);
   try {
     Matrix* matrix = new Matrix(2, 5);
-    // We should never get here.
+    // We will get here only if no exception is thrown:
+    // this happens when using native coefficients.
     delete matrix;
-    exit(1);
   }
   catch (const std::bad_alloc&) {
 #if NOISY
@@ -125,9 +145,82 @@ test1() {
 #endif
   }
 
-  if (allocated != deallocated)
+  if (mallocated != freed)
     exit(1);
 }
+
+enum Threshold { Malloc, Realloc };
+
+void
+test_every_allocation(const dimension_type d, const Threshold threshold) {
+  // Run once without checking so as to allow for the allocation of
+  // statically allocated coefficients.
+  bool dry_run = true;
+  unsigned long k = ULONG_MAX;
+  bool go_ahead;
+  do {
+#if NOISY
+    cout << "**************** k = " << k << " ****************" << endl;
+    if (dry_run)
+      cout << "*************** dry run ***************" << endl;
+#endif
+    go_ahead = dry_run;
+    if (threshold == Malloc)
+      reset_allocators(k, ULONG_MAX);
+    else
+      reset_allocators(ULONG_MAX, k);
+    try {
+      C_Polyhedron ph(d);
+      ph.add_constraint(Variable(0) == ULONG_MAX);
+      for (dimension_type i = 1; i < d; ++i)
+	ph.add_constraint(Variable(i) == ULONG_MAX*Variable(i-1));
+
+      (void) ph.minimized_generators();
+    }
+    catch (const std::bad_alloc&) {
+#if NOISY
+      cout << "std::bad_alloc caught" << endl;
+#endif
+      if (mallocated != freed) {
+#if NOISY
+	cout << "Memory leak: allocated " << mallocated
+	     << ", freed " << freed
+	     << endl;
+#endif
+	exit(1);
+      }
+      else {
+#if NOISY
+	cout << "allocated = freed = " << mallocated
+	     << endl;
+#endif
+	go_ahead = true;
+	++k;
+      }
+    }
+    if (dry_run) {
+      dry_run = false;
+      k = 0;
+    }
+  } while (go_ahead);
+}
+
+void
+test2() {
+#if NOISY
+  cout << "test2()" << endl;
+#endif
+  test_every_allocation(5, Malloc);
+}
+
+void
+test3() {
+#if NOISY
+  cout << "test3()" << endl;
+#endif
+  test_every_allocation(10, Realloc);
+}
+
 
 } // namespace
 
@@ -139,6 +232,8 @@ main() TRY {
   set_handlers();
 
   test1();
+  test2();
+  test3();
 
   return 0;
 }
