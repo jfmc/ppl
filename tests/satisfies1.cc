@@ -50,9 +50,9 @@ main() {
 
 #if NOISY
   cout << "--- cs ---" << endl << cs << endl;
+  GenSys_Con_Rel rel =
 #endif
-
-  GenSys_Con_Rel rel = ph.satisfies(cs[0]);
+    ph.satisfies(cs[0]);
 #if NOISY
   cout << "ph.satisfies(cs[0]) == " << rel << endl;
 #endif
