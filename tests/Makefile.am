@@ -62,7 +62,7 @@ ORIGINAL_TESTS = \
 	bbrz02widening5 bbrz02widening6 bbrz02widening7 bbrz02widening8 \
 	bbrz02widening9 bbrz02widening10 bbrz02widening11 bbrz02widening12 \
 	bbrz02widening13 bbrz02widening14 bbrz02widening15 bbrz02widening16 \
-	bbrz02widening17 bbrz02widening18 \
+	bbrz02widening17 bbrz02widening18 bbrz02widening19 \
 	bounded1 \
 	bounds1 bounds2 \
 	boundingbox1 boundingbox2 \
@@ -84,6 +84,7 @@ ORIGINAL_TESTS = \
         intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 intersection8 \
 	intersection9 intersection10 \
+	limitedbbrz02widening1 \
 	limitedh79widening1 limitedh79widening2 \
 	limitedh79widening3 limitedh79widening4 \
 	linearpartition1 linearpartition2 linearpartition3 \
@@ -110,7 +111,7 @@ ORIGINAL_TESTS = \
 	topclosed1 topclosed2 topclosed3 \
 	topclosure1 topclosure2 topclosure3 \
 	universe1 universe2 universe3 universe4 universe5 universe6 \
-	writepolyhedron1
+	writepolyhedron1 writepolyhedron2
 
 DERIVED_TESTS = \
 	nnc_addconstraint2 nnc_addconstraint3 \
@@ -156,6 +157,7 @@ DERIVED_TESTS = \
 	nnc_intersection4 nnc_intersection5 nnc_intersection6 \
 	nnc_intersection7 nnc_intersection8 nnc_intersection9 \
 	nnc_intersection10 \
+	nnc_limitedbbrz02widening1 \
 	nnc_limitedh79widening1 nnc_limitedh79widening2 \
 	nnc_limitedh79widening3 nnc_limitedh79widening4 \
 	nnc_linearpartition1 nnc_linearpartition2 nnc_linearpartition3 \
@@ -177,7 +179,8 @@ DERIVED_TESTS = \
 	nnc_removedim5 nnc_removedim6 nnc_removedim8 nnc_removedim9 \
 	nnc_smm1 \
 	nnc_timeelapse2 nnc_timeelapse5 nnc_timeelapse6 nnc_timeelapse7 \
-	nnc_universe1 nnc_universe2 nnc_universe3 nnc_universe4 nnc_universe5
+	nnc_universe1 nnc_universe2 nnc_universe3 nnc_universe4 nnc_universe5 \
+	nnc_writepolyhedron2
 
 #
 # Sources for the tests
@@ -283,6 +286,7 @@ bbrz02widening15_SOURCES = bbrz02widening15.cc
 bbrz02widening16_SOURCES = bbrz02widening16.cc
 bbrz02widening17_SOURCES = bbrz02widening17.cc
 bbrz02widening18_SOURCES = bbrz02widening18.cc
+bbrz02widening19_SOURCES = bbrz02widening19.cc
 
 bounded1_SOURCES = bounded1.cc
 
@@ -349,6 +353,8 @@ intersection7_SOURCES = intersection7.cc
 intersection8_SOURCES = intersection8.cc
 intersection9_SOURCES = intersection9.cc
 intersection10_SOURCES = intersection10.cc
+
+limitedbbrz02widening1_SOURCES = limitedbbrz02widening1.cc
 
 limitedh79widening1_SOURCES = limitedh79widening1.cc
 limitedh79widening2_SOURCES = limitedh79widening2.cc
@@ -451,6 +457,7 @@ universe5_SOURCES = universe5.cc
 universe6_SOURCES = universe6.cc
 
 writepolyhedron1_SOURCES = writepolyhedron1.cc files.cc
+writepolyhedron2_SOURCES = writepolyhedron2.cc files.cc
 
 #
 # Sources and compilation flags for the derived check programs
@@ -681,6 +688,9 @@ nnc_intersection9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_intersection10_SOURCES = intersection10.cc
 nnc_intersection10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+nnc_limitedbbrz02widening1_SOURCES = limitedbbrz02widening1.cc
+nnc_limitedbbrz02widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
 nnc_limitedh79widening1_SOURCES = limitedh79widening1.cc
 nnc_limitedh79widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_limitedh79widening2_SOURCES = limitedh79widening2.cc
@@ -818,6 +828,9 @@ nnc_universe4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_universe5_SOURCES = universe5.cc
 nnc_universe5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+nnc_writepolyhedron2_SOURCES = writepolyhedron2.cc files.cc
+nnc_writepolyhedron2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
 watchdog1_SRCS = watchdog1.cc timings.cc timings.hh
 
 if BUILD_WATCHDOG_LIBRARY
@@ -844,4 +857,5 @@ MOSTLYCLEANFILES = \
 ascii_dump_load_1.dat \
 ascii_dump_load_2.dat \
 ascii_dump_load_3.dat \
-writepolyhedron1.dat
+writepolyhedron1.dat \
+writepolyhedron2.dat
