@@ -557,9 +557,9 @@ PPL::operator <=(const Polyhedron& x, const Polyhedron& y) {
     return x.check_empty();
   else if (x.space_dimension() == 0)
     return true;
-  if (!(x.constraints_are_up_to_date() && x.generators_are_up_to_date()))
+  if (!(x.generators_are_minimized()))
     x.minimize();
-  if (!(y.constraints_are_up_to_date() && y.generators_are_up_to_date()))
+  if (!(y.constraints_are_minimized()))
     y.minimize();
   // `x' is contained in `y' if and only if all the generators of `x'
   // satisfy or saturate all the inequalities and saturate all the
@@ -623,11 +623,7 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   // ... and y to have updated and sorted constraints.
   if (!y.constraints_are_up_to_date())
     y.update_constraints();
-  // x and y must have the same dimension.
-  if (x.con_sys.num_columns() != y.con_sys.num_columns())
-    throw_different_dimensions("PPL::Polyhedron::intersection_assign(y)",
-			       *this, y);
-
+  
   // After minimize() is not assured constraints of x to be sorted.
   x.obtain_sorted_constraints_with_sat_c();
   // After update_constraint() is not assured constraint of y to be sorted.
@@ -678,15 +674,9 @@ PPL::Polyhedron::convex_hull_assign(const Polyhedron& y) {
   // to have sorted generators...
   x.minimize();
   // ...and `y' to have updated and sorted generators.
-
   if (!y.generators_are_up_to_date())
     y.update_generators();
-
-  // `x' and `y' must have the same dimension.
-  if (x.gen_sys.num_columns() != y.gen_sys.num_columns())
-    throw_different_dimensions("PPL::Polyhedron::convex_hull_assign(y)",
-			       *this, y);
-
+   
   x.obtain_sorted_generators_with_sat_g();
 
   const_cast<Polyhedron&>(y).obtain_sorted_generators();
@@ -824,13 +814,18 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
 
   if (space_dimension() == 0) {
     // We create an identity matrix having dim+1 rows:
-    // the first row, which has a 1 in correspondence of
+    // the last row, which has a 1 in correspondence of
     // the inhomogeneous term, corresponds to the origin of the space;
     // all the other rows are the lines corresponding to the Cartesian axes.
+    // This system of generators corresponds to the universe polyhedron.
     gen_sys.add_rows_and_columns(dim + 1);
-    set_generators_up_to_date();
-    // FIXME: why an empty system of constraints is not considered
-    //        up-to-date for a universe polyhedron ?
+    set_generators_minimized();
+    // The system of constraints that describes the universe polyhedron 
+    // is only composed by the positivity constraint and it is minimal. 
+    con_sys.resize_no_copy(1, dim + 1);
+    con_sys[0][0] = 1;
+    con_sys[0].set_is_inequality();
+    set_constraints_minimized();
   }
   // To embed an n-dimension space polyhedron in a (n+dim)-dimension space,
   // we just add `dim' zero-columns to the rows in the matrix of constraints;
@@ -891,9 +886,14 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
     // We must create also the column (and the row, since we add a square
     // matrix) of the inhomogeneous term.
     con_sys.add_rows_and_columns(dim + 1);
-    set_constraints_up_to_date();
-    // FIXME: why don't we create (just OR also) the system of generators,
-    // which in this case only has one row (the origin of the space) ?
+    con_sys.erase_to_end(con_sys.num_rows() - 1);
+    set_constraints_minimized();
+    // The system of generator that corresponds to this system 
+    // of constraints has only the origin as vertex.
+    gen_sys.resize_no_copy(1, dim + 1);
+    gen_sys[0][0] = 1;
+    gen_sys[0].set_is_ray_or_vertex();
+    set_generators_minimized();
   }
   // To project an n-dimension space polyhedron in a (n+dim)-dimension space,
   // we just add to the matrix of generators `dim' zero-columns;
