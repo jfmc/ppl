@@ -1201,8 +1201,9 @@ PPL::PolyBase::convex_hull_assign_and_minimize(const PolyBase& y) {
   x.minimize();
   x.obtain_sorted_generators_with_sat_g();
   // ...and `y' to have updated and sorted generators.
-  if (!y.generators_are_up_to_date())
-    y.update_generators();
+  if (!y.generators_are_up_to_date() && !y.update_generators())
+    // We have just discovered that `y' is empty.
+    return;
   y.obtain_sorted_generators();
 
   add_and_minimize(false,
