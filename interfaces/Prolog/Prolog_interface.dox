@@ -7,6 +7,10 @@ This Prolog library is an interface to the PPL and
 provides Prolog operations for creating and
 manipulating the PPL polyhedra.
 
+In the sequel, <CODE>prefix</CODE> is the prefix under which
+you have installed the library (typically <CODE>/usr</CODE>
+or <CODE>/usr/local</CODE>).
+
 \subsection PI_SD_Features System-Dependent Features
 
 <H4>CIAO Prolog</H4>
@@ -20,10 +24,28 @@ Support for CIAO Prolog is under development and will be available in
 
 <H4>SICStus Prolog</H4>
 
-Assume <CODE>prefix</CODE> is the prefix under which you have installed
-the library (typically <CODE>/usr</CODE> or <CODE>/usr/local</CODE>).
-In order to use the library from SICStus Prolog you should simply
+The SICStus Prolog interface of the library provides is available
+both as a statically linked module or as a dynamically linked one.
+Only SICStus Prolog version 3.9.0 or later are supported.
+
+<H5>The Statically Linked <CODE>ppl_sicstus</CODE> Executable</H5>
+
+If an appropriate version of SICStus Prolog is installed on the machine
+on which you compiled the library, the command <CODE>make install</CODE>
+will install the executable <CODE>ppl_sicstus</CODE> in the directory
+<CODE>prefix/bin</CODE>.
+The <CODE>ppl_sicstus</CODE> executable is simply the SICStus Prolog
+system with the Parma Polyhedra library statically linked.
+The only thing you should do to use the library is to
 load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
+
+<H5>Dynamic Linking</H5>
+
+In order to dynamically load the library from SICStus Prolog you should
+simply load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
+Notice that, for dynamic linking to work, you should have configured
+the library with the <CODE>--enable-shared</CODE> option.
+
 
 <H4>SWI Prolog</H4>
 
