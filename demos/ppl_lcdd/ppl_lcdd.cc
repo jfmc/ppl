@@ -1011,7 +1011,10 @@ main(int argc, char* argv[]) try {
 #if defined(USE_PPL)
     write_polyhedron(output(), ph, V);
 #elif defined(USE_POLKA)
-    matrix_print(poly_frames(ph));
+    if (poly_is_empty(ph))
+      printf("%d %d\n", 0, poly_dimension(ph)+2);
+    else
+      matrix_print(poly_frames(ph));
 #elif defined(USE_POLYLIB)
     Matrix_Print(stdout, 0, Polyhedron2Rays(ph));
 #endif
