@@ -544,6 +544,7 @@ protected:
   //! Updates constraints starting from generators and minimizes them.
   void update_constraints() const;
   //! Updates generators starting from constraints and minimizes them.
+  //! Returns <CODE>false</CODE> if and only if \p *this turns out to be empty.
   bool update_generators() const;
   //! Updates \p sat_c using the updated constraints and generators.
   void update_sat_c() const;

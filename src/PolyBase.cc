@@ -228,8 +228,11 @@ PPL::PolyBase::generators() const {
     return GenSys::zero_dim_univ();
   }
 
-  if (!generators_are_up_to_date())
-    update_generators();
+  if (!generators_are_up_to_date() && !update_generators()) {
+    // We have just discovered that `*this' is empty.
+    assert(gen_sys.num_columns() == 0 && gen_sys.num_rows() == 0);
+    return gen_sys;
+  }
 
   // We insist in returning a sorted system of generators.
   obtain_sorted_generators();
@@ -453,6 +456,9 @@ PPL::PolyBase::update_constraints() const {
   and minimizes them. The resulting system of generators will not
   be sorted: we only know that the lines are in the upper part of
   the matrix and the rays and the points are in the lower one.
+  Returns <CODE>true</CODE> if and only if the polyhedron \p *this
+  is found to be empty.  It is illegal to call this method on
+  a polyhedron whose emptiness is already known.
 */
 bool
 PPL::PolyBase::update_generators() const {
