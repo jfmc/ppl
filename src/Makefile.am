@@ -219,6 +219,7 @@ DB_Row.inlines.hh \
 DB_Matrix.defs.hh \
 DB_Matrix.inlines.hh \
 BD_Shape.defs.hh \
+BDS_Status.inlines.hh \
 BD_Shape.inlines.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
@@ -231,6 +232,10 @@ Polyhedra_Powerset.defs.hh \
 Polyhedra_Powerset.inlines.hh \
 max_space_dimension.hh \
 algorithms.hh
+
+NESTED_INCLUDE_FILES = \
+Ph_Status.idefs.hh \
+BDS_Status.idefs.hh
 
 libppl_la_SOURCES = \
 Bounding_Box.cc \
@@ -266,7 +271,7 @@ simplify.cc \
 globals.cc \
 version.cc \
 $(INCLUDE_FILES) \
-Ph_Status.idefs.hh \
+$(NESTED_INCLUDE_FILES) \
 swapping_sort.icc
 
 # The ordering of the following list *matters*!
