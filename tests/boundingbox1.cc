@@ -29,7 +29,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-#define NOISY 1
+#define NOISY 0
+
 #define TEST4 0
 #define TEST5 0
 #define TEST6 0
