@@ -414,14 +414,15 @@ public:
   //! Builds a system of bounded differences from a system of constraints.
   /*!
     The system of bounded differences inherits the space dimension 
-    of system of constraints.
-    \param cs       The system of constraints defining the system 
-                    of bounded differences.
+    of the system of constraints.
+    \param cs       A system of constraints: constraints that are not
+                    in \ref bounded_difference_form "bounded differences form"
+                    are simply ignored.
     \exception std::invalid_argument thrown if the system of constraints \p cs
                                      contains strict inequalities.
   */
   BD_Shape(const Constraint_System& cs);
- 
+
   //! \brief
   //! The assignment operator
   //! (\p *this and \p y can be dimension-incompatible).
