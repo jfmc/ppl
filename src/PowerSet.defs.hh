@@ -106,8 +106,8 @@ public:
   //! Creates a PowerSet with the same information contents as \p cs.
   PowerSet(const ConSys& cs);
 
-  //! Injects \p c into \p *this.
-  PowerSet& inject(const CS& c);
+  //! Adds to \p *this the disjunct \p c.
+  PowerSet& add_disjunct(const CS& c);
 
   //! Assigns to \p *this an upper bound of \p *this and \p y.
   void upper_bound_assign(const PowerSet& y);
@@ -115,6 +115,12 @@ public:
   //! Assigns to \p *this the meet of \p *this and \p y.
   void meet_assign(const PowerSet& y);
 
+  //! Assigns to \p *this the concatenation of \p *this and \p y.
+  /*!
+    Seeing a PowerSet as a set of tuples, this method assigns to
+    \p *this all the tuples that can be obtained by concatenating,
+    in the order given, a tuple of \p *this with a tuple of \p y.
+  */
   void concatenate_assign(const PowerSet& y);
 
   //! \brief
@@ -125,20 +131,16 @@ public:
   bool definitely_entails(const PowerSet& y) const;
 
   //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is the top of the
-  //! determinate constraint system (i.e., the universe polyhedron).
-  inline bool is_top() const;
+  //! Returns <CODE>true</CODE> if and only if \p *this is the top
+  //! element of the powerset constraint system (i.e., it represents
+  //! the universe).
+  bool is_top() const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is the bottom
-  //! of the determinate constraint system (i.e., the empty polyhedron).
-  inline bool is_bottom() const;
-
-  friend CS project<>(const PowerSet& x);
-
-  friend int lcompare<>(const PowerSet& x, const PowerSet& y);
-
-  //friend std::ostream& operator <<<>(std::ostream& s, const PowerSet& x);
+  //! element of the powerset constraint system (i.e., it represents
+  //! the empty set).
+  bool is_bottom() const;
 
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
@@ -227,9 +229,17 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
+  // TO BE REMOVED.
+  friend CS project<>(const PowerSet& x);
+  friend int lcompare<>(const PowerSet& x, const PowerSet& y);
+
 private:
+  //! A powerset is implemented as a sequence of elements.
+  /*!
+    The particular sequence employed must support efficient deletion
+    in any position and efficient back insertion.
+  */
   typedef std::list<CS> Sequence;
-  typedef typename Sequence::const_reference const_reference;
 
   //! The sequence container holding powerset's elements.
   Sequence sequence;
