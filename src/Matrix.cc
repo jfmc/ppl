@@ -209,7 +209,7 @@ PPL::Matrix::print(std::ostream& s) const {
 
 // A placeholder for print().
 std::ostream&
-PPL::operator <<(std::ostream& s, const PPL::Matrix& m) {
+PPL::operator <<(std::ostream& s, const Matrix& m) {
   m.print(s);
   return s;
 }
@@ -236,7 +236,7 @@ PPL::Matrix::get(std::istream& s) {
 
 // A placeholder for get().
 std::istream&
-PPL::operator >>(std::istream& s, PPL::Matrix& m) {
+PPL::operator >>(std::istream& s, Matrix& m) {
   m.get(s);
   return s;
 }

@@ -21,44 +21,46 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+namespace Parma_Polyhedra_Library {
+
 inline
-Parma_Polyhedra_Library::SatRow::SatRow() {
+SatRow::SatRow() {
   mpz_init(vec);
 }
 
 inline
-Parma_Polyhedra_Library::SatRow::SatRow(const SatRow& y) {
+SatRow::SatRow(const SatRow& y) {
   mpz_init_set(vec, y.vec);
 }
 
 inline
-Parma_Polyhedra_Library::SatRow::~SatRow() {
+SatRow::~SatRow() {
   mpz_clear(vec);
 }
 
-inline Parma_Polyhedra_Library::SatRow&
-Parma_Polyhedra_Library::SatRow::operator =(const SatRow& y) {
+inline SatRow&
+SatRow::operator =(const SatRow& y) {
   mpz_set(vec, y.vec);
   return *this;
 }
 
 inline bool
-Parma_Polyhedra_Library::SatRow::operator [](size_t k) const {
+SatRow::operator [](size_t k) const {
   return mpz_tstbit(vec, k);
 }
 
 inline void
-Parma_Polyhedra_Library::SatRow::set(size_t k) {
+SatRow::set(size_t k) {
   mpz_setbit(vec, k);
 }
 
 inline void
-Parma_Polyhedra_Library::SatRow::clear(size_t k) {
+SatRow::clear(size_t k) {
   mpz_clrbit(vec, k);
 }
 
 inline void
-Parma_Polyhedra_Library::SatRow::clear_from(size_t k) {
+SatRow::clear_from(size_t k) {
   // FIXME: we ought to provide a better implementation.
   for (int i = k; i >= 0; i = next(i))
     clear(i);
@@ -68,7 +70,7 @@ Parma_Polyhedra_Library::SatRow::clear_from(size_t k) {
   Returns the number of set bits in the row.
 */
 inline size_t
-Parma_Polyhedra_Library::SatRow::count_ones() const {
+SatRow::count_ones() const {
   return mpz_popcount(vec);
 }
 
@@ -76,7 +78,7 @@ Parma_Polyhedra_Library::SatRow::count_ones() const {
   Returns <CODE>true</CODE> if no bit is set in the row.
 */
 inline bool
-Parma_Polyhedra_Library::SatRow::empty() const {
+SatRow::empty() const {
   return mpz_sgn(vec) == 0;
 }
 
@@ -84,9 +86,45 @@ Parma_Polyhedra_Library::SatRow::empty() const {
   Swaps \p *this with \p y.
 */
 inline void
-Parma_Polyhedra_Library::SatRow::swap(SatRow& y) {
+SatRow::swap(SatRow& y) {
   mpz_swap(vec, y.vec);
 }
+
+/*!
+  Clears all the bit of the row.
+*/
+inline void
+SatRow::clear() {
+  mpz_set_ui(vec, 0UL);
+}
+
+inline bool
+operator ==(const SatRow& x, const SatRow& y) {
+  return mpz_cmp(x.vec, y.vec) == 0;
+}
+
+inline bool
+operator !=(const SatRow& x, const SatRow& y) {
+  return mpz_cmp(x.vec, y.vec) != 0;
+}
+
+inline bool
+operator >(const SatRow& x, const SatRow& y) {
+  return y < x;
+}
+
+inline bool
+operator >=(const SatRow& x, const SatRow& y) {
+  return y <= x;
+}
+
+inline void
+set_union(const SatRow& x, const SatRow& y, SatRow& z) {
+  mpz_ior(z.vec, x.vec, y.vec);
+}
+
+} // namespace Parma_Polyhedra_Library
+
 
 /*!
   Specialize <CODE>std::swap </CODE> to use the fast swap that is
@@ -99,37 +137,3 @@ std::swap(Parma_Polyhedra_Library::SatRow& x,
   x.swap(y);
 }
 
-/*!
-  Clears all the bit of the row.
-*/
-inline void
-Parma_Polyhedra_Library::SatRow::clear() {
-  mpz_set_ui(vec, 0UL);
-}
-
-inline bool
-Parma_Polyhedra_Library::operator ==(const SatRow& x, const SatRow& y) {
-  return mpz_cmp(x.vec, y.vec) == 0;
-}
-
-inline bool
-Parma_Polyhedra_Library::operator !=(const SatRow& x, const SatRow& y) {
-  return mpz_cmp(x.vec, y.vec) != 0;
-}
-
-inline bool
-Parma_Polyhedra_Library::operator >(const SatRow& x, const SatRow& y) {
-  return y < x;
-}
-
-inline bool
-Parma_Polyhedra_Library::operator >=(const SatRow& x, const SatRow& y) {
-  return y <= x;
-}
-
-inline void
-Parma_Polyhedra_Library::set_union(const SatRow& x,
-				   const SatRow& y,
-				   SatRow& z) {
-  mpz_ior(z.vec, x.vec, y.vec);
-}

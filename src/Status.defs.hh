@@ -152,11 +152,16 @@ private:
 };
 
 namespace Parma_Polyhedra_Library {
-  //! @name Input/output.
-  //@{
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Output operator.
+  /*! \relates Status */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   std::ostream& operator <<(std::ostream& s, const Status& u);
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Input operator.
+  /*! \relates Status */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   std::istream& operator >>(std::istream& s, Status& u);
-  //@}
 }
 
 #include "Status.inlines.hh"

@@ -147,7 +147,7 @@ public:
   //! Linearly combines \p *this with \p y such that \p *this[k] is 0.
   void linear_combine(const Row& y, size_t k);
 
-  //! @name Serialization functions.
+  //! Output operator.
   friend std::ostream&
   Parma_Polyhedra_Library::operator <<(std::ostream& s, const Row& row);
 
@@ -179,16 +179,20 @@ namespace Parma_Polyhedra_Library {
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   int compare(const Row& x, const Row& y);
   
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! @name Classical comparison operators.
   /*! \relates Row */
   //@{
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool operator ==(const Row& x, const Row& y);
   bool operator !=(const Row& x, const Row& y);
   bool operator <=(const Row& x, const Row& y);
   bool operator  <(const Row& x, const Row& y);
   bool operator >=(const Row& x, const Row& y);
   bool operator  >(const Row& x, const Row& y);
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //@}
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
 } // namespace Parma_Polyhedra_Library
 

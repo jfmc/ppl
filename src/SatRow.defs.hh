@@ -129,6 +129,10 @@ public:
 };
 
 namespace Parma_Polyhedra_Library {
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Output operator.
+  /*! \relates SatRow */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   std::ostream& operator <<(std::ostream& s, const SatRow& r);
 }
 

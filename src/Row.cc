@@ -253,7 +253,7 @@ PPL::Row::linear_combine(const Row& y, size_t k) {
 }
 
 std::ostream&
-PPL::operator <<(std::ostream& s, const PPL::Row& row) {
+PPL::operator <<(std::ostream& s, const Row& row) {
   size_t i = 0;
   size_t size = row.size();
   if (i < size)

@@ -25,11 +25,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <algorithm>
 #include <cassert>
 
+namespace Parma_Polyhedra_Library {
+
 /*!
   Swaps *this with y.
 */
 inline void
-Parma_Polyhedra_Library::Matrix::swap(Matrix& y) {
+Matrix::swap(Matrix& y) {
   std::swap(rows, y.rows);
   std::swap(row_size, y.row_size);
   std::swap(row_capacity, y.row_capacity);
@@ -37,23 +39,10 @@ Parma_Polyhedra_Library::Matrix::swap(Matrix& y) {
 }
 
 /*!
-  Specialize <CODE>std::swap</CODE> to use the fast swap that
-  is provided as a member function instead of using the default
-  algorithm (which creates a temporary and uses assignment).
-*/
-inline void
-std::swap(Parma_Polyhedra_Library::Matrix& x,
-	  Parma_Polyhedra_Library::Matrix& y) {
-  x.swap(y);
-}
-
-
-/*!
   This is the comparator used for sorting the matrices.
 */
 inline bool
-Parma_Polyhedra_Library::Matrix::RowCompare::operator ()(const Row& x,
-							 const Row& y) const {
+Matrix::RowCompare::operator ()(const Row& x, const Row& y) const {
   return compare(x, y) < 0;
 }
 
@@ -68,7 +57,7 @@ Parma_Polyhedra_Library::Matrix::RowCompare::operator ()(const Row& x,
   reallocations.
 */
 inline size_t
-Parma_Polyhedra_Library::Matrix::compute_row_capacity(size_t num_columns) {
+Matrix::compute_row_capacity(size_t num_columns) {
   return num_columns;
 }
 
@@ -82,7 +71,7 @@ Parma_Polyhedra_Library::Matrix::compute_row_capacity(size_t num_columns) {
 	 The fact is that a matrix with no rows is sorted.
 */
 inline
-Parma_Polyhedra_Library::Matrix::Matrix()
+Matrix::Matrix()
   : rows(),
     row_size(0),
     row_capacity(0),
@@ -91,15 +80,15 @@ Parma_Polyhedra_Library::Matrix::Matrix()
 
 
 inline
-Parma_Polyhedra_Library::Matrix::~Matrix() {
+Matrix::~Matrix() {
 }
 
 
 /*!
   Returns a reference to the \p k-th row of the matrix.
 */
-inline Parma_Polyhedra_Library::Row&
-Parma_Polyhedra_Library::Matrix::operator [](size_t k) {
+inline Row&
+Matrix::operator [](size_t k) {
   assert(k < rows.size());
   return rows[k];
 }
@@ -108,8 +97,8 @@ Parma_Polyhedra_Library::Matrix::operator [](size_t k) {
 /*!
   Returns a constant reference to the \p k-th row of the matrix.
 */
-inline const Parma_Polyhedra_Library::Row&
-Parma_Polyhedra_Library::Matrix::operator [](size_t k) const {
+inline const Row&
+Matrix::operator [](size_t k) const {
   assert(k < rows.size());
   return rows[k];
 }
@@ -118,7 +107,7 @@ Parma_Polyhedra_Library::Matrix::operator [](size_t k) const {
   Sets the \p sorted flag of the matrix to the given \p value.
 */
 inline void
-Parma_Polyhedra_Library::Matrix::set_sorted(bool value) {
+Matrix::set_sorted(bool value) {
   sorted = value;
 }
 
@@ -127,7 +116,7 @@ Parma_Polyhedra_Library::Matrix::set_sorted(bool value) {
   Returns the value of the flag \p sorted.
 */
 inline bool
-Parma_Polyhedra_Library::Matrix::is_sorted() const {
+Matrix::is_sorted() const {
   // Since the flag `sorted' does not really reflect the
   // sort status of a matrix this assertion is used to be sure that the
   // matrix is really sorted when `sorted' value is 'true'.
@@ -141,7 +130,7 @@ Parma_Polyhedra_Library::Matrix::is_sorted() const {
   i.e., the size of the rows of the matrix.
 */
 inline size_t
-Parma_Polyhedra_Library::Matrix::num_columns() const {
+Matrix::num_columns() const {
   return row_size;
 }
 
@@ -150,13 +139,13 @@ Parma_Polyhedra_Library::Matrix::num_columns() const {
   Returns the number of the rows of the matrix.
 */
 inline size_t
-Parma_Polyhedra_Library::Matrix::num_rows() const {
+Matrix::num_rows() const {
   return rows.size();
 }
 
 
 inline bool
-Parma_Polyhedra_Library::operator !=(const Matrix& x, const Matrix& y) {
+operator !=(const Matrix& x, const Matrix& y) {
   return !(x == y);
 }
 
@@ -168,7 +157,7 @@ Parma_Polyhedra_Library::operator !=(const Matrix& x, const Matrix& y) {
   \p first_to_erase -th and the last one.
 */
 inline void
-Parma_Polyhedra_Library::Matrix::erase_to_end(size_t first_to_erase) {
+Matrix::erase_to_end(size_t first_to_erase) {
   assert(first_to_erase <= rows.size());
   if (first_to_erase < rows.size())
     rows.erase(rows.begin() + first_to_erase, rows.end());
@@ -178,10 +167,22 @@ Parma_Polyhedra_Library::Matrix::erase_to_end(size_t first_to_erase) {
   Clears the matrix deallocating all its rows.
 */
 inline void
-Parma_Polyhedra_Library::Matrix::clear() {
+Matrix::clear() {
   rows.clear();
   row_size = 0;
   row_capacity = 0;
   sorted = true;
 }
 
+} // namespace Parma_Polyhedra_Library
+
+/*!
+  Specialize <CODE>std::swap</CODE> to use the fast swap that
+  is provided as a member function instead of using the default
+  algorithm (which creates a temporary and uses assignment).
+*/
+inline void
+std::swap(Parma_Polyhedra_Library::Matrix& x,
+	  Parma_Polyhedra_Library::Matrix& y) {
+  x.swap(y);
+}

@@ -21,53 +21,55 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+namespace Parma_Polyhedra_Library {
+
 inline
-Parma_Polyhedra_Library::Status::Status(status_t mask)
+Status::Status(status_t mask)
   : flags(mask) {
 }
 
 inline
-Parma_Polyhedra_Library::Status::Status()
+Status::Status()
   : flags(ZERO_DIM_UNIV) {
 }
 
-inline Parma_Polyhedra_Library::Status
-Parma_Polyhedra_Library::operator &(const Status& x, const Status& y) {
+inline Status
+operator &(const Status& x, const Status& y) {
   return Status(x.flags & y.flags);
 }
 
-inline Parma_Polyhedra_Library::Status
-Parma_Polyhedra_Library::operator |(const Status& x, const Status& y) {
+inline Status
+operator |(const Status& x, const Status& y) {
   return Status(x.flags | y.flags);
 }
 
 inline bool
-Parma_Polyhedra_Library::Status::test_all(status_t mask) const {
+Status::test_all(status_t mask) const {
   return (flags & mask) == mask;
 }
 
 inline bool
-Parma_Polyhedra_Library::Status::test_any(status_t mask) const {
+Status::test_any(status_t mask) const {
   return flags & mask;
 }
 
 inline void
-Parma_Polyhedra_Library::Status::set(status_t mask) {
+Status::set(status_t mask) {
   flags |= mask;
 }
 
 inline void
-Parma_Polyhedra_Library::Status::reset(status_t mask) {
+Status::reset(status_t mask) {
   flags &= ~mask;
 }
 
 inline bool
-Parma_Polyhedra_Library::Status::test_zero_dim_univ() const {
+Status::test_zero_dim_univ() const {
   return flags == ZERO_DIM_UNIV;
 }
 
 inline void
-Parma_Polyhedra_Library::Status::reset_zero_dim_univ() {
+Status::reset_zero_dim_univ() {
   // This is a no-op if the current status is not zero-dim.
   if (flags == ZERO_DIM_UNIV)
     // In the zero-dim space, if it is not the universe it is empty.
@@ -75,112 +77,114 @@ Parma_Polyhedra_Library::Status::reset_zero_dim_univ() {
 }
 
 inline void
-Parma_Polyhedra_Library::Status::set_zero_dim_univ() {
+Status::set_zero_dim_univ() {
   // Zero-dim universe is incompatible with anything else.
   flags = ZERO_DIM_UNIV;
 }
 
 inline bool
-Parma_Polyhedra_Library::Status::test_empty() const {
+Status::test_empty() const {
   return test_any(EMPTY);
 }
 
 inline void
-Parma_Polyhedra_Library::Status::reset_empty() {
+Status::reset_empty() {
   reset(EMPTY);
 }
 
 inline void
-Parma_Polyhedra_Library::Status::set_empty() {
+Status::set_empty() {
   flags = EMPTY;
 }
 
 inline bool
-Parma_Polyhedra_Library::Status::test_c_up_to_date() const {
+Status::test_c_up_to_date() const {
   return test_any(C_UP_TO_DATE);
 }
 
 inline void
-Parma_Polyhedra_Library::Status::reset_c_up_to_date() {
+Status::reset_c_up_to_date() {
   reset(C_UP_TO_DATE);
 }
 
 inline void
-Parma_Polyhedra_Library::Status::set_c_up_to_date() {
+Status::set_c_up_to_date() {
   set(C_UP_TO_DATE);
 }
 
 inline bool
-Parma_Polyhedra_Library::Status::test_g_up_to_date() const {
+Status::test_g_up_to_date() const {
   return test_any(G_UP_TO_DATE);
 }
 
 inline void
-Parma_Polyhedra_Library::Status::reset_g_up_to_date() {
+Status::reset_g_up_to_date() {
   reset(G_UP_TO_DATE);
 }
 
 inline void
-Parma_Polyhedra_Library::Status::set_g_up_to_date() {
+Status::set_g_up_to_date() {
   set(G_UP_TO_DATE);
 }
 
 inline bool
-Parma_Polyhedra_Library::Status::test_c_minimized() const {
+Status::test_c_minimized() const {
   return test_any(C_MINIMIZED);
 }
 
 inline void
-Parma_Polyhedra_Library::Status::reset_c_minimized() {
+Status::reset_c_minimized() {
   reset(C_MINIMIZED);
 }
 
 inline void
-Parma_Polyhedra_Library::Status::set_c_minimized() {
+Status::set_c_minimized() {
   set(C_MINIMIZED);
 }
 
 inline bool
-Parma_Polyhedra_Library::Status::test_g_minimized() const {
+Status::test_g_minimized() const {
   return test_any(G_MINIMIZED);
 }
 
 inline void
-Parma_Polyhedra_Library::Status::reset_g_minimized() {
+Status::reset_g_minimized() {
   reset(G_MINIMIZED);
 }
 
 inline void
-Parma_Polyhedra_Library::Status::set_g_minimized() {
+Status::set_g_minimized() {
   set(G_MINIMIZED);
 }
 
 inline bool
-Parma_Polyhedra_Library::Status::test_sat_c_up_to_date() const {
+Status::test_sat_c_up_to_date() const {
   return test_any(SAT_C_UP_TO_DATE);
 }
 
 inline void
-Parma_Polyhedra_Library::Status::reset_sat_c_up_to_date() {
+Status::reset_sat_c_up_to_date() {
   reset(SAT_C_UP_TO_DATE);
 }
 
 inline void
-Parma_Polyhedra_Library::Status::set_sat_c_up_to_date() {
+Status::set_sat_c_up_to_date() {
   set(SAT_C_UP_TO_DATE);
 }
 
 inline bool
-Parma_Polyhedra_Library::Status::test_sat_g_up_to_date() const {
+Status::test_sat_g_up_to_date() const {
   return test_any(SAT_G_UP_TO_DATE);
 }
 
 inline void
-Parma_Polyhedra_Library::Status::reset_sat_g_up_to_date() {
+Status::reset_sat_g_up_to_date() {
   reset(SAT_G_UP_TO_DATE);
 }
 
 inline void
-Parma_Polyhedra_Library::Status::set_sat_g_up_to_date() {
+Status::set_sat_g_up_to_date() {
   set(SAT_G_UP_TO_DATE);
 }
+
+} // namespace Parma_Polyhedra_Library
