@@ -72,24 +72,21 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 	ConSys& cs = *this;
 	dimension_type eps_index = old_space_dim + 1;
 	dimension_type cs_num_rows = cs.num_rows();
-	bool cs_sorted = false;
-	if (cs.is_sorted())
-	  cs_sorted = true;
+	bool was_sorted = false;
+	if (cs.is_sorted()) {
+	  was_sorted = true;
+	  cs.set_sorted(false);
+	}
 	for (dimension_type i = cs_num_rows; i-- > 0; )
 	  if (cs[i][eps_index] != 0) {
 	    --cs_num_rows;
-	    // If `cs' is sorted we preserve the sortedness
-	    // of the system of constraints.
-	    if (cs_sorted)
-	      for (dimension_type j = i; j < cs_num_rows; ++j)
-		std::swap(cs[j], cs[j+1]);
-	    else
-	      // If `cs' is not sorted we only put
-	      // the rows that we want to erase in
-	      // the end of the matrix.
-	      std:: swap(cs[i], cs[cs_num_rows]);
+	    std:: swap(cs[i], cs[cs_num_rows]);
 	  }
 	cs.erase_to_end(cs_num_rows);
+	// If `cs' was sorted we sort
+	// the system again.
+	if (was_sorted)
+	  cs.sort_rows();
 	if (--cols_to_be_added > 0)
 	  add_zero_columns(cols_to_be_added);
 	set_necessarily_closed();
