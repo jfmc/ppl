@@ -3,11 +3,87 @@
 #include <sicstus/sicstus.h>
 #include <exception>
 #include <stdexcept>
+#include <sstream>
 
 //int SP_put_address(SP_term_ref t, void *pointer) 
 //void SP_raise_exception(SP_term_ref t)
 
 namespace PPL = Parma_Polyhedra_Library;
+
+class internal_exception {
+private:
+  SP_term_ref tr;
+
+public:
+  explicit internal_exception(SP_term_ref t)
+    : tr(t) {
+  }
+
+  virtual ~internal_exception() {
+  }
+
+  virtual SP_term_ref term() const {
+    return tr;
+  }
+};
+
+class integer_out_of_range : public internal_exception {
+public:
+  explicit integer_out_of_range(SP_term_ref t)
+    : internal_exception(t) {
+  }
+};
+
+class non_linear : public internal_exception {
+private:
+  const char* ws;
+
+public:
+  explicit non_linear(const char* w, SP_term_ref t)
+    : internal_exception(t), ws(w) {
+  }
+
+  const char* who() const {
+    return ws;
+  }
+};
+
+static void
+handle_exception(const integer_out_of_range& e) {
+  SP_term_ref culprit = SP_new_term_ref();
+  SP_term_ref arg_no = SP_new_term_ref();
+  SP_term_ref expected_domain = SP_new_term_ref();
+  SP_term_ref et = SP_new_term_ref();
+
+  SP_put_term(culprit, e.term());
+  SP_put_integer(arg_no, 1);
+  {
+    string s;
+    ostringstream domain(s);
+    domain << "[" << LONG_MIN << ", " << LONG_MAX << "]";
+    SP_put_string(expected_domain, domain.str().c_str());
+  }
+  SP_cons_functor(et, SP_atom_from_string("get_integer"), 1, culprit);
+  SP_cons_functor(et, SP_atom_from_string("domain_error"), 4,
+		  et, arg_no, expected_domain, culprit);
+  SP_raise_exception(et);
+}
+
+static void
+handle_exception(const non_linear& e) {
+  SP_term_ref culprit = SP_new_term_ref();
+  SP_term_ref arg_no = SP_new_term_ref();
+  SP_term_ref expected_domain = SP_new_term_ref();
+  SP_term_ref et = SP_new_term_ref();
+
+  SP_put_term(culprit, e.term());
+  SP_put_integer(arg_no, 1);
+  SP_put_string(expected_domain, "linear expression/constraint");
+  SP_cons_functor(et, SP_atom_from_string(e.who()), 1, culprit);
+  SP_cons_functor(et, SP_atom_from_string("domain_error"), 4,
+		  et, arg_no, expected_domain, culprit);
+  SP_raise_exception(et);
+}
 
 static void
 handle_exception() {
@@ -17,14 +93,26 @@ static void
 handle_exception(const std::exception& /* e */) {
 }
 
-#define CATCH_ALL \
+#define CATCH_INTERNAL \
+  catch (const integer_out_of_range& e) { \
+    handle_exception(e); \
+  } \
+  catch (const non_linear& e) { \
+    handle_exception(e); \
+  }
+
+#define CATCH_PPL \
   catch (const std::exception& e) { \
     handle_exception(e); \
   } \
   catch (...) { \
     handle_exception(); \
   } \
-  abort();  // This is only to silence a warning.
+  abort()  // This is only to silence a warning.
+
+#define CATCH_ALL \
+  CATCH_INTERNAL \
+  CATCH_PPL
 
 static SP_atom a_dollar_VAR;
 static SP_atom a_plus;
@@ -34,8 +122,7 @@ static SP_atom a_equal_equal;
 static SP_atom a_greater_than_equal;
 static SP_atom a_equal_less_than;
 
-static
-struct {
+static struct {
   SP_atom* p_atom;
   const char* name;
 } const sp_atoms[] = {
@@ -50,8 +137,7 @@ struct {
   { &a_equal_less_than,    "=<" },
 };
 
-extern "C"
-void
+extern "C" void
 ppl_init(int /* when */) {
   for (size_t i = 0; i < sizeof(sp_atoms)/sizeof(sp_atoms[0]); ++i) {
     SP_atom a = SP_atom_from_string(sp_atoms[i].name);
@@ -60,56 +146,38 @@ ppl_init(int /* when */) {
   }
 }
 
-extern "C"
-void
+extern "C" void
 ppl_deinit(int /* when */) {
   for (size_t i = 0; i < sizeof(sp_atoms)/sizeof(sp_atoms[0]); ++i)
     SP_unregister_atom(*sp_atoms[i].p_atom);
 }
 
-extern "C"
-void*
+extern "C" void*
 ppl_new_polyhedron() {
   try {
     return new PPL::Polyhedron();
   }
-  CATCH_ALL;
+  CATCH_PPL;
 }
 
-extern "C"
-void
+extern "C" void
 ppl_delete_polyhedron(void* pp) {
   // If destructors throw it is a catastrophy.
   // Anyway...
   try {
     delete static_cast<PPL::Polyhedron*>(pp);
   }
-  CATCH_ALL;
+  CATCH_PPL;
 }
-
-/*
-  LinExpression operator +(const LinExpression& e1, const LinExpression& e2);
-  LinExpression operator +(const Integer& n, const LinExpression& e);
-  LinExpression operator +(const LinExpression& e, const Integer& n);
-
-  LinExpression operator -(const LinExpression& e);
-
-  LinExpression operator -(const LinExpression& e1, const LinExpression& e2);
-  LinExpression operator -(const Integer& n, const LinExpression& e);
-  LinExpression operator -(const LinExpression& e, const Integer& n);
-
-  LinExpression operator *(const Integer& n, const LinExpression& e);
-  LinExpression operator *(const LinExpression& e, const Integer& n);
-*/
 
 static long
 get_integer(SP_term_ref t) {
+  assert(SP_is_integer(t));
   long v;
   if (SP_get_integer(t, &v))
     return v;
   else
-    throw std::out_of_range("PPL::LinExpression"
-			    " build_lin_expression(SP_term_ref)");
+    throw integer_out_of_range(t);
 }
 
 static PPL::LinExpression
@@ -165,24 +233,9 @@ build_lin_expression(SP_term_ref t) {
     }
   }
   // Invalid.
-  throw std::invalid_argument("PPL::LinExpression"
-			      " build_lin_expression(SP_term_ref)");
+  throw non_linear("build_lin_expression", t);
 }
 
-
-/*
-  Constraint operator ==(const LinExpression& e1, const LinExpression& e2);
-  Constraint operator ==(const LinExpression& e, const Integer& n);
-  Constraint operator ==(const Integer& n, const LinExpression& e);
-
-  Constraint operator <=(const LinExpression& e1, const LinExpression& e2);
-  Constraint operator <=(const LinExpression& e, const Integer& n);
-  Constraint operator <=(const Integer& n, const LinExpression& e);
-
-  Constraint operator >=(const LinExpression& e1, const LinExpression& e2);
-  Constraint operator >=(const LinExpression& e, const Integer& n);
-  Constraint operator >=(const Integer& n, const LinExpression& e);
-*/
 
 static PPL::Constraint
 build_constraint(SP_term_ref t) {
@@ -222,12 +275,10 @@ build_constraint(SP_term_ref t) {
     }
   }
   // Invalid.
-  throw std::invalid_argument("PPL::LinExpression"
-			      " build_lin_expression(SP_term_ref)");
+  throw non_linear("build_constraint", t);
 }
 
-extern "C"
-void
+extern "C" void
 ppl_insert_constraint(void* pp, SP_term_ref t) {
   try {
     static_cast<PPL::Polyhedron*>(pp)->insert(build_constraint(t));
