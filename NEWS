@@ -19,6 +19,14 @@ o  Fixed a bug in Polyhedron::operator=(const Polyhedron& y).  This bug,
    versions of the library obtained with the `--enable-assertions'
    configuration flag.
 
+o  Fixed a bug in Polyhedron::check_universe(), which was returning
+   the wrong result when called on a zero-dim universe polyhedron.
+
+o  Fixed a bug in NNC_Polyhedron::NNC_Polyhedron(ConSys& cs) whereby
+   an invariant was violated in case `cs' was empty.  This bug
+   should only affect versions of the library obtained with the
+   `--enable-assertions' configuration flag.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.4 (released on July 1, 2002)
