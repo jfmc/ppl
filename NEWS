@@ -32,6 +32,11 @@ o  New explicit constructor Powerset<CS>::Powerset(const CS& d):  if `d'
    is not bottom, builds a powerset containing only `d';  builds the empty
    powerset otherwise.
 
+o  New explicit constructor
+   Polyhedra_Powerset<CS>::Polyhedra_Powerset(const PH& ph):  if `ph' is
+   not empty, builds a powerset containing only `ph';  builds the empty
+   powerset otherwise.
+
 o  New method
 
      Polyhedra_Powerset::poly_difference_assign(const Polyhedra_Powerset& y)
@@ -83,6 +88,7 @@ o  The following constructors have been made explicit:
      NNC_Polyhedron::NNC_Polyhedron(const GenSys& cs),
      NNC_Polyhedron::NNC_Polyhedron(ConSys& cs),
      NNC_Polyhedron::NNC_Polyhedron(GenSys& cs).
+     Polyhedra_Powerset<PH>::Polyhedra_Powerset(const ConSys& cs).
 
 o  Functions in the C interface that compute (space) dimensions
    no longer return their result.  The caller is now required to pass,

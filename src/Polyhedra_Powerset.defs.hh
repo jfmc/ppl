@@ -70,13 +70,18 @@ public:
   Polyhedra_Powerset(const Polyhedra_Powerset& y);
 
   //! \brief
+  //! If \p ph is nonempty, builds a powerset containing only \p ph.
+  //! Builds the empty powerset otherwise.
+  explicit Polyhedra_Powerset(const PH& ph);
+
+  //! \brief
   //! Copy-constructor allowing a source powerset with elements of a
   //! different polyhedron kind.
   template <typename QH>
   explicit Polyhedra_Powerset(const Polyhedra_Powerset<QH>& y);
 
   //! Creates a Polyhedra_Powerset with the same information contents as \p cs.
-  Polyhedra_Powerset(const ConSys& cs);
+  explicit Polyhedra_Powerset(const ConSys& cs);
 
   //@} // Constructors and Destructor
 

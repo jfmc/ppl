@@ -71,8 +71,7 @@ main() TRY {
   loo(ph_total_size, ph_external_size, dph_total_size, dph_external_size);
 #endif
 
-  Polyhedra_Powerset<C_Polyhedron> pph(3, Polyhedron::EMPTY);
-  pph.add_disjunct(ph);
+  Polyhedra_Powerset<C_Polyhedron> pph(ph);
 
   C_Polyhedron qh(3);
   qh.add_constraint(x >= 0);
@@ -81,8 +80,7 @@ main() TRY {
   qh.add_constraint(x <= 1);
   qh.add_constraint(y <= 1);
   qh.add_constraint(z <= 1);
-  Polyhedra_Powerset<C_Polyhedron> pqh(3);
-  pqh.add_disjunct(qh);
+  Polyhedra_Powerset<C_Polyhedron> pqh(qh);
 
   Polyhedra_Powerset<C_Polyhedron> prh = pqh;
   prh.poly_difference_assign(pph);

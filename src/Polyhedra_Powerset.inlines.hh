@@ -54,6 +54,11 @@ Polyhedra_Powerset<PH>::Polyhedra_Powerset(const Polyhedra_Powerset& y)
   : Base(y), space_dim(y.space_dim) {
 }
 
+template <typename PH>
+Polyhedra_Powerset<PH>::Polyhedra_Powerset(const PH& ph)
+  : Base(ph), space_dim(ph.space_dimension()) {
+}
+
 template <>
 template <>
 inline
