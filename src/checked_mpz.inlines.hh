@@ -138,26 +138,6 @@ SPECIALIZE_SET_SPECIAL(mpz, mpz_class)
 
 template <typename Policy>
 inline Result
-pred_mpz(mpz_class& to) {
-  assert(classify<Policy>(to, true, true, false) == VC_NORMAL);
-  --to;
-  return VC_NORMAL;
-}
-
-SPECIALIZE_PRED(mpz, mpz_class)
-
-template <typename Policy>
-inline Result
-succ_mpz(mpz_class& to) {
-  assert(classify<Policy>(to, true, true, false) == VC_NORMAL);
-  ++to;
-  return VC_NORMAL;
-}
-
-SPECIALIZE_SUCC(mpz, mpz_class)
-
-template <typename Policy>
-inline Result
 assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
   if (want_rounding<Policy>(dir)) {
     mpz_srcptr n = from.get_num().get_mpz_t();

@@ -42,8 +42,6 @@ Extended_Number_Policy::handle_result(Result r) {
   case V_GT:
   case V_GE:
   case V_LE:
-  case VC_MINUS_INFINITY:
-  case VC_PLUS_INFINITY:
     break;
   default:
     throw_result_exception(r);

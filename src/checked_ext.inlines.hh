@@ -199,6 +199,7 @@ mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   }
 }
     
+// FIXME: optimize, remove classify, permit specialization of set_special
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
@@ -228,6 +229,7 @@ add_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   return set_special<To_Policy>(to, r);
 }
 
+// FIXME: optimize, remove classify, permit specialization of set_special
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
@@ -493,11 +495,11 @@ to_c_string_ext(char *str, size_t size, const Type& x, const Numeric_Format& for
   }
   else if (is_minf<Policy>(x)) {
     strncpy(str, "-inf", size);
-    return VC_MINUS_INFINITY;
+    return V_EQ;
   }
   else if (is_pinf<Policy>(x)) {
     strncpy(str, "+inf", size);
-    return VC_PLUS_INFINITY;
+    return V_EQ;
   }
   else
     return to_c_string<Policy>(str, size, x, format, dir);

@@ -90,9 +90,11 @@ set_special_mpq(mpq_class& v, Result r) {
     switch (t) {
     case VC_MINUS_INFINITY:
       num = -1;
+      r = V_EQ;
       break;
     case VC_PLUS_INFINITY:
       num = 1;
+      r = V_EQ;
       break;
     default:
       return r;
@@ -106,22 +108,6 @@ set_special_mpq(mpq_class& v, Result r) {
 }
 
 SPECIALIZE_SET_SPECIAL(mpq, mpq_class)
-
-template <typename Policy>
-inline Result
-pred_mpq(mpq_class&) {
-  throw 0;
-}
-
-SPECIALIZE_PRED(mpq, mpq_class)
-
-template <typename Policy>
-inline Result
-succ_mpq(mpq_class&) {
-  throw 0;
-}
-
-SPECIALIZE_SUCC(mpq, mpq_class)
 
 template <typename Policy>
 inline Result

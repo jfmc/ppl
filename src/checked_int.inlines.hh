@@ -92,8 +92,10 @@ set_neg_overflow_int(Type& to, Rounding_Dir dir) {
     to = min_int<Policy, Type>();
     return V_LT;
   default:
-    if (Policy::store_infinity)
+    if (Policy::store_infinity) {
       to = minus_infinity_int<Policy, Type>();
+      return V_GT;
+    }
     return V_NEG_OVERFLOW;
   }
 }
@@ -106,8 +108,10 @@ set_pos_overflow_int(Type& to, Rounding_Dir dir) {
     to = max_int<Policy, Type>();
     return V_GT;
   default:
-    if (Policy::store_infinity)
+    if (Policy::store_infinity) {
       to = plus_infinity_int<Policy, Type>();
+      return V_LT;
+    }
     return V_POS_OVERFLOW;
   }
 }
@@ -117,8 +121,10 @@ inline Result
 round_lt_int(To& to, Rounding_Dir dir) {
   if (rounding_direction(dir) == ROUND_DOWN) {
     if (to == min_int<Policy, To>()) {
-      if (Policy::store_infinity)
+      if (Policy::store_infinity) {
 	to = minus_infinity_int<Policy, To>();
+	return V_GT;
+      }
       return V_NEG_OVERFLOW;
     } else {
       to--;
@@ -133,8 +139,10 @@ inline Result
 round_gt_int(To& to, Rounding_Dir dir) {
   if (rounding_direction(dir) == ROUND_UP) {
     if (to == max_int<Policy, To>()) {
-      if (Policy::store_infinity)
+      if (Policy::store_infinity) {
 	to = plus_infinity_int<Policy, To>();
+	return V_LT;
+      }
       return V_POS_OVERFLOW;
     } else {
       to++;
@@ -239,10 +247,10 @@ set_special_int(Type& v, Result r) {
     switch (t) {
     case VC_MINUS_INFINITY:
       v = minus_infinity_int<Policy, Type>();
-      break;
+      return V_EQ;
     case VC_PLUS_INFINITY:
       v = plus_infinity_int<Policy, Type>();
-      break;
+      return V_EQ;
     default:
       break;
     }
@@ -260,34 +268,6 @@ SPECIALIZE_SET_SPECIAL(int, unsigned short)
 SPECIALIZE_SET_SPECIAL(int, unsigned int)
 SPECIALIZE_SET_SPECIAL(int, unsigned long)
 SPECIALIZE_SET_SPECIAL(int, unsigned long long)
-
-template <typename Policy, typename Type>
-inline Result
-pred_int(Type& to) {
-  assert(!is_nan<Policy>(to));
-  assert(!is_minf<Policy>(to));
-  if (is_pinf<Policy>(to))
-    to = max_int<Policy, Type>();
-  else if (to == min_int<Policy, Type>())
-    return set_special<Policy>(to, VC_MINUS_INFINITY);
-  else
-    --to;
-  return VC_NORMAL;
-}
-
-template <typename Policy, typename Type>
-inline Result
-succ_int(Type& to) {
-  assert(!is_nan<Policy>(to));
-  assert(!is_minf<Policy>(to));
-  if (is_minf<Policy>(to))
-    to = min_int<Policy, Type>();
-  else if (to == max_int<Policy, Type>())
-    return set_special<Policy>(to, VC_PLUS_INFINITY);
-  else 
-    ++to;
-  return VC_NORMAL;
-}
 
 template <typename Policy, typename To, typename From>
 inline Result
@@ -1184,28 +1164,6 @@ to_c_string_unsigned_long_long(char* str, size_t size, Type& from, const Numeric
   snprintf(str, size, "%llu", from);
   return V_EQ;
 }
-
-SPECIALIZE_PRED(int, signed char)
-SPECIALIZE_PRED(int, short)
-SPECIALIZE_PRED(int, int)
-SPECIALIZE_PRED(int, long)
-SPECIALIZE_PRED(int, long long)
-SPECIALIZE_PRED(int, unsigned char)
-SPECIALIZE_PRED(int, unsigned short)
-SPECIALIZE_PRED(int, unsigned int)
-SPECIALIZE_PRED(int, unsigned long)
-SPECIALIZE_PRED(int, unsigned long long)
-
-SPECIALIZE_SUCC(int, signed char)
-SPECIALIZE_SUCC(int, short)
-SPECIALIZE_SUCC(int, int)
-SPECIALIZE_SUCC(int, long)
-SPECIALIZE_SUCC(int, long long)
-SPECIALIZE_SUCC(int, unsigned char)
-SPECIALIZE_SUCC(int, unsigned short)
-SPECIALIZE_SUCC(int, unsigned int)
-SPECIALIZE_SUCC(int, unsigned long)
-SPECIALIZE_SUCC(int, unsigned long long)
 
 SPECIALIZE_NEG(signed_int, signed char, signed char)
 SPECIALIZE_NEG(signed_int, short, short)

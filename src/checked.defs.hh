@@ -41,7 +41,6 @@ struct Check_Overflow_Policy {
   static const int store_nan = 0;
   static const int store_infinity = 0;
   static const int convertible = 1;
-  static const int fpu_classify = 0;
   static const int fpu_check_inexact = 0;
 };
 
@@ -68,8 +67,6 @@ struct Transparent_Policy {
   static const int store_infinity = 0;
   //! Representation is identical to primitive.
   static const int convertible = 1;
-  //! Return information for special values.
-  static const int fpu_classify = 0;
   //! Check for FPU inexact result.
   static const int fpu_check_inexact = 0;
 };
@@ -244,10 +241,6 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
 
 #define nonconst
 
-#define SPECIALIZE_PRED(suf, Type) \
-  SPECIALIZE_FUN1_0_0(pred, suf, Result, nonconst, Type)
-#define SPECIALIZE_SUCC(suf, Type) \
-  SPECIALIZE_FUN1_0_0(succ, suf, Result, nonconst, Type)
 #define SPECIALIZE_SGN(suf, From) \
   SPECIALIZE_FUN1_0_0(sgn, suf, Result, const, From)
 #define SPECIALIZE_CMP(suf, Type1, Type2) \
@@ -294,8 +287,6 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
   SPECIALIZE_FUN1_2_2(to_c_string, suf, Result, char *, size_t, const, Type, const Numeric_Format&, Rounding_Dir)
 
 
-DECLARE_FUN1_0_0(pred,        Result, nonconst, Type)
-DECLARE_FUN1_0_0(succ,        Result, nonconst, Type)
 DECLARE_FUN1_0_0(sgn,         Result, const, From)
 DECLARE_FUN2_0_0(cmp,         Result, const, Type1, const, Type2)
 DECLARE_FUN1_0_1(set_special, Result, nonconst, Type, Result)

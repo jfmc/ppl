@@ -111,10 +111,10 @@ set_special_float(T& v, Result r) {
   switch (classify(r)) {
   case VC_MINUS_INFINITY:
     v = -HUGE_VAL;
-    break;
+    return V_EQ;
   case VC_PLUS_INFINITY:
     v = HUGE_VAL;
-    break;
+    return V_EQ;
   case VC_NAN:
     v = NAN;
     break;
@@ -124,8 +124,8 @@ set_special_float(T& v, Result r) {
   return r;
 }
 
-template <typename Policy, typename T>
-inline Result
+template <typename T>
+inline void
 pred_float(T& v) {
   Float<T> f(v);
   assert(!f.is_nan());
@@ -136,18 +136,15 @@ pred_float(T& v) {
   }
   else if (f.sign_bit()) {
     f.inc();
-    if (Policy::fpu_classify && f.is_inf())
-      return VC_MINUS_INFINITY;
   }
   else {
     f.dec();
   }
   v = f.value();
-  return VC_NORMAL;
 }
 
-template <typename Policy, typename T>
-inline Result
+template <typename T>
+inline void
 succ_float(T& v) {
   Float<T> f(v);
   assert(!f.is_nan());
@@ -158,14 +155,11 @@ succ_float(T& v) {
   }
   else if (!f.sign_bit()) {
     f.inc();
-    if (Policy::fpu_classify && f.is_inf())
-      return VC_PLUS_INFINITY;
   }
   else {
     f.dec();
   }
   v = f.value();
-  return VC_NORMAL;
 }
 
 SPECIALIZE_CLASSIFY(float, float32_t)
@@ -173,16 +167,12 @@ SPECIALIZE_IS_NAN(float, float32_t)
 SPECIALIZE_IS_MINF(float, float32_t)
 SPECIALIZE_IS_PINF(float, float32_t)
 SPECIALIZE_SET_SPECIAL(float, float32_t)
-SPECIALIZE_PRED(float, float32_t)
-SPECIALIZE_SUCC(float, float32_t)
 
 SPECIALIZE_CLASSIFY(float, float64_t)
 SPECIALIZE_IS_NAN(float, float64_t)
 SPECIALIZE_IS_MINF(float, float64_t)
 SPECIALIZE_IS_PINF(float, float64_t)
 SPECIALIZE_SET_SPECIAL(float, float64_t)
-SPECIALIZE_PRED(float, float64_t)
-SPECIALIZE_SUCC(float, float64_t)
 
 #ifdef FLOAT96_TYPE
 SPECIALIZE_CLASSIFY(float, float96_t)
@@ -190,8 +180,6 @@ SPECIALIZE_IS_NAN(float, float96_t)
 SPECIALIZE_IS_MINF(float, float96_t)
 SPECIALIZE_IS_PINF(float, float96_t)
 SPECIALIZE_SET_SPECIAL(float, float96_t)
-SPECIALIZE_PRED(float, float96_t)
-SPECIALIZE_SUCC(float, float96_t)
 #endif
 
 #ifdef FLOAT128_TYPE
@@ -200,16 +188,13 @@ SPECIALIZE_IS_NAN(float, float128_t)
 SPECIALIZE_IS_MINF(float, float128_t)
 SPECIALIZE_IS_PINF(float, float128_t)
 SPECIALIZE_SET_SPECIAL(float, float128_t)
-SPECIALIZE_PRED(float, float128_t)
-SPECIALIZE_SUCC(float, float128_t)
 #endif
 
 template <typename Policy, typename To>
 inline Result
 round_lt_float(To& to, Rounding_Dir dir) {
   if (rounding_direction(dir) == ROUND_DOWN) {
-    if (pred<Policy>(to) == VC_MINUS_INFINITY)
-      return V_NEG_OVERFLOW;
+    pred_float(to);
     return V_GT;
   }
   return V_LT;
@@ -219,8 +204,7 @@ template <typename Policy, typename To>
 inline Result
 round_gt_float(To& to, Rounding_Dir dir) {
   if (rounding_direction(dir) == ROUND_UP) {
-    if (succ<Policy>(to) == VC_PLUS_INFINITY)
-      return V_POS_OVERFLOW;
+    succ_float(to);
     return V_LT;
   }
   return V_GT;
@@ -251,19 +235,11 @@ result_relation(Rounding_Dir dir) {
     return Policy::fpu_check_inexact ? V_NE : V_LGE;
 }
 
-template <typename Policy, typename Type>
-inline Result 
-classify_float_(const Type x) {
-  if (Policy::fpu_classify)
-    return classify<Policy>(x, true, true, false);
-  return VC_NORMAL;
-}
-
 template <typename Policy, typename From, typename To>
 inline Result 
 assign_float_float_exact(To& to, const From from, Rounding_Dir) {
   to = from;
-  return static_cast<Result>(classify_float_<Policy>(to) | V_EQ);
+  return V_EQ;
 }
 
 template <typename Policy, typename To, typename From>
@@ -271,16 +247,14 @@ inline Result
 assign_float_float(To& to, const From from, Rounding_Dir dir) {
   prepare_inexact<Policy>();
   to = from;
-  return static_cast<Result>(classify_float_<Policy>(to) | 
-			     result_relation<Policy>(dir));
+  return result_relation<Policy>(dir);
 }
 
 template <typename Policy, typename Type>
 inline Result 
 assign_result_inexact(Type& to, const Type from, Rounding_Dir dir) {
   to = from;
-  return static_cast<Result>(classify_float_<Policy>(to) | 
-			     result_relation<Policy>(dir));
+  return result_relation<Policy>(dir);
 }
 
 template <typename Policy, typename Type>
@@ -395,7 +369,7 @@ set_neg_overflow_float(Type& to, Rounding_Dir dir) {
     }
   default:
     to = -HUGE_VAL;
-    return V_NEG_OVERFLOW;
+    return V_GT;
   }
 }
 
@@ -412,7 +386,7 @@ set_pos_overflow_float(Type& to, Rounding_Dir dir) {
     }
   default:
     to = HUGE_VAL;
-    return V_POS_OVERFLOW;
+    return V_LT;
   }
 }
 
@@ -522,9 +496,9 @@ from_c_string_float(Type& to, const char* from, Rounding_Dir dir) {
   if (errno == ERANGE) {
     to = v;
     if (v < 0)
-      return V_NEG_OVERFLOW;
+      return V_GT;
     if (v > 0)
-      return V_POS_OVERFLOW;
+      return V_LT;
     // FIXME:
     return V_EQ;
   }

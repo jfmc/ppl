@@ -53,7 +53,6 @@ struct Checked_Number_Default_Policy {
   static const int store_nan = 0;
   static const int store_infinity = 0;
   static const int convertible = 1;
-  static const int fpu_classify = 0;
   static const int fpu_check_inexact = 0;
   static void handle_result(Result r);
 };
@@ -65,7 +64,6 @@ struct Extended_Number_Policy {
   static const int use_corrent_rounding = 1;
   static const int store_nan = 1;
   static const int store_infinity = 1;
-  static const int fpu_classify = 0;
   static const int fpu_check_inexact = 0;
   static void handle_result(Result r);
 };
