@@ -28,8 +28,8 @@ http://www.cs.unipr.it/Software/ . */
 #include "EList_Iterator.defs.hh"
 
 //! \brief
-//! A list of doubly linked objects (where the links are embedded in
-//! the objects themselves).
+//! A simple kind of embedded list (i.e., a doubly linked objects
+//! where the links are embedded in the objects themselves).
 template <typename T>
 class Parma_Watchdog_Library::EList : private Doubly_Linked_Object {
 public:
