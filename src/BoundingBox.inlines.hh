@@ -69,8 +69,8 @@ BoundingBox::get_lower_bound(const dimension_type k, bool& closed,
     return false;
 
   closed = lb.is_closed();
-  n = lr.numerator();
-  d = lr.denominator();
+  lr.numerator(n);
+  lr.denominator(d);
 
   return true;
 }
@@ -86,8 +86,8 @@ BoundingBox::get_upper_bound(const dimension_type k, bool& closed,
     return false;
 
   closed = ub.is_closed();
-  n = ur.numerator();
-  d = ur.denominator();
+  ur.numerator(n);
+  ur.denominator(d);
   return true;
 }
 

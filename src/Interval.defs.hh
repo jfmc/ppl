@@ -128,6 +128,7 @@ public:
   //! a positive integer if \p *this is equal to \f$+\infty\f$.
   int direction_of_infinity() const;
 
+#if 0
   //! Returns the numerator of the canonical form for \p *this.
   /*!
     The result is undefined if \p *this represents an infinity.
@@ -139,6 +140,10 @@ public:
     The result is undefined if \p *this represent an infinity.
   */
   Integer_traits::const_reference denominator() const;
+#else
+  void numerator(Integer& n) const;
+  void denominator(Integer& d) const;
+#endif
 
   friend bool
   Parma_Polyhedra_Library::operator==(const ERational& x, const ERational& y);

@@ -596,21 +596,28 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     }
   }
 
+  TEMP_INTEGER(n);
+  TEMP_INTEGER(d);
+
   // Now shrink the bounded axes.
   for (dimension_type j = space_dim; j-- > 0; ) {
     // Lower bound.
     const LBoundary& lb = lower_bound[j];
     const ERational& lr = lb.bound();
-    if (lr.direction_of_infinity() == 0)
-      box.raise_lower_bound(j, lb.is_closed(),
-			    lr.numerator(), lr.denominator());
+    if (lr.direction_of_infinity() == 0) {
+      lr.numerator(n);
+      lr.denominator(d);
+      box.raise_lower_bound(j, lb.is_closed(), n, d);
+    }
 
     // Upper bound.
     const UBoundary& ub = upper_bound[j];
     const ERational& ur = ub.bound();
-    if (ur.direction_of_infinity() == 0)
-      box.lower_upper_bound(j, ub.is_closed(),
-			    ur.numerator(), ur.denominator());
+    if (ur.direction_of_infinity() == 0) {
+      ur.numerator(n);
+      ur.denominator(d);
+      box.lower_upper_bound(j, ub.is_closed(), n, d);
+    }
   }
 }
 

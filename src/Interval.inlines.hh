@@ -62,6 +62,7 @@ ERational::direction_of_infinity() const {
   return e;
 }
 
+#if 0
 inline Integer_traits::const_reference
 ERational::numerator() const {
   assert(e == 0);
@@ -73,6 +74,19 @@ ERational::denominator() const {
   assert(e == 0);
   return v.get_den();
 }
+#else
+inline void
+ERational::numerator(Integer& n) const {
+  assert(e == 0);
+  n = v.get_num();
+}
+
+inline void
+ERational::denominator(Integer& d) const {
+  assert(e == 0);
+  d = v.get_den();
+}
+#endif
 
 /*! \relates ERational */
 inline bool
