@@ -418,7 +418,10 @@ static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
   if (!n.fits_slong_p())
     throw PPL_integer_out_of_range(n);
-  return Mk_Integer(n.get_si());
+  long l = n.get_si();
+  if (l < Prolog_min_integer || l > Prolog_max_integer)
+    throw PPL_integer_out_of_range(l);
+  return Mk_Integer(l);
 }
 
 #undef CS
