@@ -166,14 +166,26 @@ The specification uses the following grammar rules:
           | ray(LinExpr)         	ray
           | line(LinExpr)        	line
 
- Interval  --> i(Bound, Bound)		rational interval
+ 
+ numerator --> number | + number | - number
+                                        number must be non-zero	
+
+ denominator --> number                 number must be non-zero	
+
+ Rational  --> number | + number | - number
+          | numerator/denominator	rational number in canonical form
+              (That is, if the rational is n/m, the gcd(n,m) = 1.)             
 
  Bound     --> c(Rational)		closed rational limit
           | o(Rational)			open rational limit
           | o(pinf)			unbounded in the positive direction
           | o(minf)			unbounded in the negative direction
 
- Rational  --> number | number/number	rational number
+ Interval  --> i(Bound, Bound)		rational interval
+
+ Box       --> []
+           | [Interval]
+           | [Interval | Box]           list of intervals.		
 \endcode
 
 
@@ -795,19 +807,28 @@ would not change \f$P\f$;
    \f$P1\f$ and \f$P2\f$ must have the same topology.
 
 <H4><CODE>ppl_Polyhedron_get_bounding_box(+Handle, 
-                                      -List_of_Intervals)</CODE></H4>
+                                      -Box)</CODE></H4>
 
    Succeeds if and only if the bounding box
    of the polyhedron referenced by
    <CODE>Handle</CODE>
-   unifies with the box defined by <CODE>List_of_Intervals</CODE>.
+   unifies with the box defined by <CODE>Box</CODE>.
    E.g. 
 \code
    ?- A = '$VAR'(0), B = '$VAR'(1),
-      ppl_new_Polyhedron_from_ConSys(nnc, [B > 0, 2*A =< 1], P),
+      ppl_new_Polyhedron_from_ConSys(nnc, [B > 0, 4*A =< 2], P),
       ppl_Polyhedron_get_bounding_box(P, Box).
  
    Box = [i(o(minf), c(1/2)), i(o(0), o(pinf))].
+\endcode
+Note that the rational numbers in <CODE>Box</CODE>
+must be in canonical form.
+E.g. the following will fail:
+\code
+   ?- A = '$VAR'(0), B = '$VAR'(1),
+      ppl_new_Polyhedron_from_ConSys(nnc, [B > 0, 4*A =< 2], P),
+      ppl_Polyhedron_get_bounding_box(P, Box),
+      Box = [i(o(minf), c(2/4)), i(o(0), o(pinf))].
 \endcode
 
 */

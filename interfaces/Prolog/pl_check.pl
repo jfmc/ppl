@@ -65,7 +65,8 @@ checks,
 bounded_cons,
 bounded_gens,
 project,
-embed.
+embed,
+boundingbox.
 
 incl_C :-
 ppl_new_Polyhedron_from_dimension(c, 3, P1),
@@ -505,4 +506,13 @@ ppl_Polyhedron_add_constraints_and_minimize(P,
 ppl_Polyhedron_add_dimensions_and_embed(P, 2),
 ppl_Polyhedron_get_constraints(P,CS), 
 CS = [1*A >= 1, 1*B >= 0],
+ppl_delete_Polyhedron(P).
+
+boundingbox :-
+A = '$VAR'(0), B = '$VAR'(1), 
+ppl_new_Polyhedron_from_dimension(nnc, 2, P),
+ppl_Polyhedron_add_constraints_and_minimize(P, 
+     [B > 0, 4*A =< 2]),
+ppl_Polyhedron_get_bounding_box(P, Box),
+Box = [i(o(minf), c(+1/2)), i(o(0), o(pinf))],
 ppl_delete_Polyhedron(P).
