@@ -2052,7 +2052,7 @@ int \
 ppl_io_print_ ## Type(ppl_const_ ## Type ## _t x) try { \
   using namespace IO_Operators; \
   std::ostringstream s; \
-  s << to_const(x); \
+  s << *to_const(x); \
   if (puts(s.str().c_str()) < 0) \
     return PPL_STDIO_ERROR; \
   return 0; \
@@ -2063,7 +2063,7 @@ int \
 ppl_io_fprint_ ## Type(FILE* stream, ppl_const_ ## Type ## _t x) try { \
   using namespace IO_Operators; \
   std::ostringstream s; \
-  s << to_const(x); \
+  s << *to_const(x); \
   if (fputs(s.str().c_str(), stream) < 0) \
     return PPL_STDIO_ERROR; \
   return 0; \
