@@ -21,6 +21,9 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+///////////////////////////
+//#include <iostream>
+///////////////////////////
 #include <config.h>
 #include "SatMatrix.defs.hh"
 #include "Polyhedron.defs.hh"
@@ -130,52 +133,45 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   size_t num_lines_or_equalities = conversion(source, 0,
 					      dest, tmp_sat,
 					      dest_num_rows);
+  /////////////////////
+  //std::cout << dest << std::endl;
+  /////////////////////
   // conversion() may have modified the number of rows in `dest'.
   dest_num_rows = dest.num_rows();
   // NOTE: conversion() can only remove inequalities from `source'.
   // Thus, all the equalities still come before the inequalities
   // (the correctness of simplify() relies on this hypothesis).
 
-  // Checking if the generators in `dest' represent an empty polyhedron:
-  // the polyhedron is empty if there are no points
-  // (because rays, lines and closure points need a supporting point).
-  // Points can be detected by looking at:
-  // - the divisor, for necessarily closed polyhedra;
-  // - the epsilon coordinate, for NNC polyhedra.
-  size_t checking_index = dest.is_necessarily_closed()
-    ? 0
-    : dest.num_columns() - 1;
-  size_t first_point = num_lines_or_equalities;
-  for ( ; first_point < dest_num_rows; ++first_point)
-    if (dest[first_point][checking_index] > 0)
-      break;
+  if (con_to_gen) {
+    // Checking if the generators in `dest' represent an empty polyhedron:
+    // the polyhedron is empty if there are no points
+    // (because rays, lines and closure points need a supporting point).
+    // Points can be detected by looking at:
+    // - the divisor, for necessarily closed polyhedra;
+    // - the epsilon coordinate, for NNC polyhedra.
+    size_t checking_index = dest.is_necessarily_closed()
+      ? 0
+      : dest.num_columns() - 1;
+    size_t first_point = num_lines_or_equalities;
+    for ( ; first_point < dest_num_rows; ++first_point)
+      if (dest[first_point][checking_index] > 0)
+	break;
 
-  if (first_point == dest_num_rows)
-    if (con_to_gen)
+    if (first_point == dest_num_rows)
       // No point has been found: the polyhedron is empty.
       return true;
-    else
-      // Here `con_to_gen' is false: `dest' is a matrix of constraints.
-      // In this case the condition `first_point == dest_num_rows'
-      // actually means that all the constraints in `dest' have their
-      // inhomogeneous term equal to 0.
-      // This is an ILLEGAL situation, because it implies that
-      // the constraint system `dest' lacks the positivity constraint
-      // and no linear combination of the constraints in `dest'
-      // can reintroduce the positivity constraint.
-      throw std::runtime_error("PPL internal error");
-  else {
-    // A point has been found: the polyhedron is not empty.
-    // Now invoking simplify() to remove all the redundant constraints
-    // from the matrix `source'.
-    // Since the saturation matrix `tmp_sat' returned by conversion()
-    // has rows indexed by generators (the rows of `dest') and columns
-    // indexed by constraints (the rows of `source'), we have to
-    // transpose it to obtain the saturation matrix needed by simplify().
-    sat.transpose_assign(tmp_sat);
-    simplify(source, sat);
-    return false;
   }
+
+  // Here we are sure that the polyhedron is not empty.
+  // Now invoking simplify() to remove all the redundant constraints
+  // from the matrix `source'.
+  // Since the saturation matrix `tmp_sat' returned by conversion()
+  // has rows indexed by generators (the rows of `dest') and columns
+  // indexed by constraints (the rows of `source'), we have to
+  // transpose it to obtain the saturation matrix needed by simplify().
+  sat.transpose_assign(tmp_sat);
+  simplify(source, sat);
+  return false;
 }
 
 /*!
@@ -317,47 +313,37 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   // Thus, all the equalities still come before the inequalities
   // (the correctness of simplify() relies on this hypothesis).
 
-  // Checking if the generators in `dest' represent an empty polyhedron:
-  // the polyhedron is empty if there are no points
-  // (because rays, lines and closure points need a supporting point).
-  // Points can be detected by looking at:
-  // - the divisor, for necessarily closed polyhedra;
-  // - the epsilon coordinate, for NNC polyhedra.
-  size_t checking_index = dest.is_necessarily_closed()
-    ? 0
-    : dest.num_columns() - 1;
-  size_t first_point = num_lines_or_equalities;
-  for ( ; first_point < dest_num_rows; ++first_point)
-    if (dest[first_point][checking_index] > 0)
-      break;
+  if (con_to_gen) {
+    // Checking if the generators in `dest' represent an empty polyhedron:
+    // the polyhedron is empty if there are no points
+    // (because rays, lines and closure points need a supporting point).
+    // Points can be detected by looking at:
+    // - the divisor, for necessarily closed polyhedra;
+    // - the epsilon coordinate, for NNC polyhedra.
+    size_t checking_index = dest.is_necessarily_closed()
+      ? 0
+      : dest.num_columns() - 1;
+    size_t first_point = num_lines_or_equalities;
+    for ( ; first_point < dest_num_rows; ++first_point)
+      if (dest[first_point][checking_index] > 0)
+	break;
 
-  if (first_point == dest_num_rows)
-    if (con_to_gen)
+    if (first_point == dest_num_rows)
       // No point has been found: the polyhedron is empty.
       return true;
-    else
-      // Here `con_to_gen' is false: `dest' is a matrix of constraints.
-      // In this case the condition `first_point == dest_num_rows'
-      // actually means that all the constraints in `dest' have their
-      // inhomogeneous term equal to 0.
-      // This is an ILLEGAL situation, because it implies that
-      // the constraint system `dest' lacks the positivity constraint
-      // and no linear combination of the constraints in `dest'
-      // can reintroduce the positivity constraint.
-      throw std::runtime_error("PPL internal error");
-  else {
-    // A point has been found: the polyhedron is not empty.
-    // Now invoking simplify() to remove all the redundant constraints
-    // from the matrix `source1'.
-    // Since the saturation matrix `tmp_sat' returned by conversion()
-    // has rows indexed by generators (the rows of `dest') and columns
-    // indexed by constraints (the rows of `source'), we have to
-    // transpose it to obtain the saturation matrix needed by simplify().
-    sat.transpose_assign(tmp_sat);
-    simplify(source1, sat);
-    // Transposing back.
-    sat.transpose_assign(sat);
-    return false;
   }
+
+  // Here we are sure that the polyhedron is not empty.
+  // Now invoking simplify() to remove all the redundant constraints
+  // from the matrix `source1'.
+  // Since the saturation matrix `tmp_sat' returned by conversion()
+  // has rows indexed by generators (the rows of `dest') and columns
+  // indexed by constraints (the rows of `source'), we have to
+  // transpose it to obtain the saturation matrix needed by simplify().
+  sat.transpose_assign(tmp_sat);
+  simplify(source1, sat);
+  // Transposing back.
+  sat.transpose_assign(sat);
+  return false;
 }
 
