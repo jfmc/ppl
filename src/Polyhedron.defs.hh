@@ -326,7 +326,7 @@ public:
 			   Integer& denominator);
 
   //! Checks if all the invariants are satisfied.
-  //! \param check_satisfiable   <CODE>true</CODE> if it must be checked
+  //! \param check_not_empty    <CODE>true</CODE> if it must be checked
   //!                           whether system of constraint is satisfiable.
   //! \return       <CODE>true</CODE> if the polyhedron satisfies
   //!               all the invariants stated in the PPL, 
