@@ -1,4 +1,4 @@
-# autoconf source file for the Parma Watchdog Library.
+# Autoconf source file for the Parma Watchdog Library.
 # Copyright (C) 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Watchdog Library (PWL).
