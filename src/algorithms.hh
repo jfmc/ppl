@@ -93,6 +93,11 @@ linear_partition(const PH& p, const PH& q) {
   return std::pair<PH, Polyhedra_PowerSet<NNC_Polyhedron> >(qq, r);
 }
 
+//! If the poly-hull between \p p and \p q is exact it is assigned to \p p.
+template <typename PH>
+bool
+poly_hull_assign_if_exact(PH& p, const PH& q);
+
 template <typename PH>
 bool
 poly_hull_assign_if_exact(PH& p, const PH& q) {
