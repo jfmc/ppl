@@ -69,6 +69,8 @@ namespace PPL = Parma_Polyhedra_Library;
 bool
 PPL::PolyBase::minimize(bool con_to_gen,
 			Matrix& source, Matrix& dest, SatMatrix& sat) {
+  // Topologies have to agree.
+  assert(source.topology() == dest.topology());
   // `source' cannot be empty: even if it is an empty constraint system,
   // representing the universe polyhedron, homogeneization has added
   // the positive constraint. It also cannot be an empty generator system,
@@ -139,12 +141,17 @@ PPL::PolyBase::minimize(bool con_to_gen,
   // (the correctness of simplify() relies on this hypothesis).
 
   // Checking if the generators in `dest' represent an empty polyhedron:
-  // the polyhedron is empty if there are no points (because rays
-  // and lines need a supporting point).
+  // the polyhedron is empty if there are no points
+  // (because rays, lines and closure points need a supporting point).
+  // Points can be detected by looking at:
+  //  * the divisor, for necessarily closed polyhedra;
+  //  * the \epsilon coordinate, for NNC polyhedra.
+  size_t checking_index = dest.is_necessarily_closed()
+    ? 0
+    : dest.num_columns() - 1;
   size_t first_point = num_lines_or_equalities;
   for ( ; first_point < dest_num_rows; ++first_point)
-    // Points have a positive divisor.
-    if (dest[first_point][0] > 0)
+    if (dest[first_point][checking_index] > 0)
       break;
 
   if (first_point == dest_num_rows)
@@ -315,12 +322,17 @@ PPL::PolyBase::add_and_minimize(bool con_to_gen,
   // (the correctness of simplify() relies on this hypothesis).
 
   // Checking if the generators in `dest' represent an empty polyhedron:
-  // the polyhedron is empty if there are no points (because rays
-  // and lines need a supporting point).
+  // the polyhedron is empty if there are no points
+  // (because rays, lines and closure points need a supporting point).
+  // Points can be detected by looking at:
+  //  * the divisor, for necessarily closed polyhedra;
+  //  * the \epsilon coordinate, for NNC polyhedra.
+  size_t checking_index = dest.is_necessarily_closed()
+    ? 0
+    : dest.num_columns() - 1;
   size_t first_point = num_lines_or_equalities;
   for ( ; first_point < dest_num_rows; ++first_point)
-    // Points have a positive divisor.
-    if (dest[first_point][0] > 0)
+    if (dest[first_point][checking_index] > 0)
       break;
 
   if (first_point == dest_num_rows)
