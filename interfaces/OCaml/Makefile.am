@@ -111,7 +111,7 @@ LIBPPL_OCAML_C_LT_AGE =      0
 
 lib_LTLIBRARIES = libppl_ocaml_c.la
 libppl_ocaml_c_la_CFLAGS = -w
-libppl_ocaml_c_la_CPPFLAGS = -I/usr/lib/ocaml
+libppl_ocaml_c_la_CPPFLAGS = -I../C -I/usr/lib/ocaml
 libppl_ocaml_c_la_SOURCES = $(srcdir)/ppl_ocaml_c_wrap.c
 libppl_ocaml_c_la_LDFLAGS = \
 -version-info $(LIBPPL_OCAML_C_LT_CURRENT):$(LIBPPL_OCAML_C_LT_REVISION):$(LIBPPL_OCAML_C_LT_AGE)
