@@ -60,7 +60,7 @@ namespace PPL = Parma_Polyhedra_Library;
   constraints (when \p dest is a system of constraints).
 
   For simplicity, all the following comments assume we are converting a
-  constraint system \p source into a generator system \p dest;
+  constraint system \p source to a generator system \p dest;
   the comments for the symmetric case can be obtained by duality.
 
   If some of the constraints in \p source are redundant, they will be removed.
@@ -429,7 +429,7 @@ PPL::Polyhedron::conversion(Matrix& source,
       // Since the generator `dest[index_non_zero]' does not saturate
       // the constraint `source_k', it can no longer be a line
       // (see saturation rule in Section \ref prelims).
-      // Therefore, we first transform it into a ray.
+      // Therefore, we first transform it to a ray.
       dest[index_non_zero].set_is_ray_or_point_or_inequality();
       // Of the two possible choices, we select the ray satisfying
       // the constraint (namely, the ray whose scalar product
@@ -441,7 +441,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	for (dimension_type j = dest_num_columns; j-- > 0; )
 	  negate(dest[index_non_zero][j]);
       }
-      // Having changed a line into a ray, we set `dest' to be a
+      // Having changed a line to a ray, we set `dest' to be a
       // non-sorted matrix, we decrement the number of lines of `dest' and,
       // if necessary, we move the new ray below all the remaining lines.
       dest.set_sorted(false);

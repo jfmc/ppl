@@ -48,7 +48,7 @@ PPL::Polyhedron::select_CH78_constraints(const Polyhedron& y,
 	 && !y.has_something_pending()
 	 && y.constraints_are_minimized());
 
-  // A constraint in `y.con_sys' is copied into `cs_selection'
+  // A constraint in `y.con_sys' is copied to `cs_selection'
   // if it is satisfied by all the generators of `gen_sys'.
 
   // Note: the loop index `i' goes upward to avoid reversing
@@ -84,10 +84,10 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
   SatMatrix tmp_sat_g = y.sat_g;
   tmp_sat_g.sort_rows();
 
-  // A constraint in `con_sys' is copied into `cs_selected'
+  // A constraint in `con_sys' is copied to `cs_selected'
   // if its behavior with respect to `y.gen_sys' is the same
   // as that of another constraint in `y.con_sys'.
-  // otherwise it is copied into `cs_not_selected'.
+  // otherwise it is copied to `cs_not_selected'.
   // Namely, we check whether the saturation row `buffer'
   // (built starting from the given constraint and `y.gen_sys')
   // is a row of the saturation matrix `tmp_sat_g'.
@@ -385,7 +385,7 @@ PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
 bool
 PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 				       const Polyhedron& y) {
-  // It is assumed that `y' is included into `x'.
+  // It is assumed that `y' is included in `x'.
   assert(x.topology() == y.topology());
   assert(x.space_dim == y.space_dim);
   assert(!x.marked_empty() && !x.has_something_pending()
@@ -405,7 +405,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   if (x_dimension > y_dimension)
     return true;
 
-  // Since `y' is assumed to be included into `x',
+  // Since `y' is assumed to be included in `x',
   // at this point the two polyhedra must have the same dimension.
   assert(x_dimension == y_dimension);
 
@@ -418,7 +418,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   if (x_num_lines > y_num_lines)
     return true;
 
-  // Since `y' is assumed to be included into `x', at this point
+  // Since `y' is assumed to be included in `x', at this point
   // the lineality space of the two polyhedra must have the same dimension.
   assert (x_num_lines == y_num_lines);
 
@@ -540,9 +540,9 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
 	 && H79.constraints_are_minimized() && H79.generators_are_minimized());
 
   // We will choose from `x_minus_H79_cs' many subsets of constraints,
-  // that will be collected (one at a time) into `combining_cs'.
+  // that will be collected (one at a time) in `combining_cs'.
   // For each group collected, we compute an average constraint,
-  // that will be stored into `new_cs'.
+  // that will be stored in `new_cs'.
 
   // There is no point in applying this technique when `x_minus_H79_cs'
   // has one constraint at most (no ``new'' constraint can be computed).

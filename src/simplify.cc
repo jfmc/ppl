@@ -61,7 +61,7 @@ namespace PPL = Parma_Polyhedra_Library;
   in understanding the function:
 
   Proposition: An inequality that is saturated by all the generators
-  can be transformed into an equality.
+  can be transformed to an equality.
 
   In fact, by combining any number of generators that saturate the
   constraints, we obtain a generator that saturates the constraints too:
@@ -103,7 +103,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
     if (sat[i].empty()) {
       // The constraint `mat[i]' is saturated by all the generators.
       // Thus, either it is already an equality or it can be transformed
-      // into an equality (see proposition).
+      // to an equality (see proposition).
       mat[i].set_is_line_or_equality();
       // Note: simple normalization already holds.
       mat[i].sign_normalize();
@@ -123,7 +123,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
       num_saturators[i] = num_cols_sat - sat[i].count_ones();
 
   // At this point, all the equalities of `mat' (included those
-  // inequalities that we just transformed into equalities) have
+  // inequalities that we just transformed to equalities) have
   // indexes between 0 and `num_lines_or_equalities' - 1,
   // which is the property needed by the function gauss().
   // We can simplify the system of equalities, obtaining the rank

@@ -71,7 +71,7 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
 	add_zero_columns(cols_to_be_added);
       }
       else {
-	// A NECESSARILY_CLOSED generator system is converted into
+	// A NECESSARILY_CLOSED generator system is converted to
 	// a NOT_NECESSARILY_CLOSED one by adding a further column
 	// and setting the epsilon coordinate of all points to 1.
 	// Note: normalization is preserved.

@@ -12,12 +12,12 @@ PURPOSE. */
 #ifndef PPL_Polyhedron_types_hh
 #define PPL_Polyhedron_types_hh 1
 
-//! The entire library is confined into this namespace.
+//! The entire library is confined to this namespace.
 namespace Parma_Polyhedra_Library {
 
 class Polyhedron;
 
-//! All input/output operators are confined into this namespace.
+//! All input/output operators are confined to this namespace.
 /*!
   This is done so that the library's input/output operators
   do not interfere with those the user might want to define.
