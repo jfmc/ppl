@@ -199,10 +199,6 @@ PPL::ConSys::const_iterator::skip_forward() {
     ++i;
 }
 
-/*!
-  Returns <CODE>true</CODE> if the given generator \p g satisfies
-  all the constraints in \p *this system.
-*/
 bool
 PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   assert(g.space_dimension() <= space_dimension());
@@ -299,35 +295,6 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
 }
 
 
-/*!
-  \param v            Index of the column to which the
-                      affine transformation is substituted.
-  \param expr         The numerator of the affine transformation:
-                      \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$
-  \param denominator  The denominator of the affine transformation.
-
-  We want to allow affine transformations (see the Section \ref
-  operations) having any rational coefficients. Since the coefficients
-  of the constraints are integers we must also provide an integer
-  \p denominator that will be used as denominator of the affine
-  transformation.
-  The denominator is required to be a positive integer.
-
-  The affine transformation substitutes the matrix of constraints
-  by a new matrix whose elements \f${a'}_{ij}\f$ are built from
-  the old one \f$a_{ij}\f$ as follows:
-  \f[
-    {a'}_{ij} =
-    \begin{cases}
-    a_{ij} * \mathrm{denominator} + a_{iv} * \mathrm{expr}[j]
-    \quad \text{for } j \neq v; \\
-    \mathrm{expr}[v] * a_{iv}
-    \quad \text{for } j = v.
-    \end{cases}
-  \f]
-
-  \p expr is a constant parameter and unaltered by this computation.
-*/
 void
 PPL::ConSys::affine_preimage(dimension_type v,
 			     const LinExpression& expr,
@@ -381,12 +348,6 @@ PPL::ConSys::affine_preimage(dimension_type v,
   x.strong_normalize();
 }
 
-/*!
-  Prints the number of rows, the number of columns and the value of \p
-  sorted invoking the <CODE>Matrix::ascii_dump()</CODE> method, then
-  prints the contents of all the rows, specifying whether a row is an
-  equality or an inequality.
-*/
 void
 PPL::ConSys::ascii_dump(std::ostream& s) const {
   Matrix::ascii_dump(s);
@@ -411,12 +372,6 @@ PPL::ConSys::ascii_dump(std::ostream& s) const {
   }
 }
 
-/*!
-  Resizes the matrix of constraints using number of rows and number of
-  columns read from \p s, then initializes the coefficients of each
-  constraint and its type (equality or inequality) reading the
-  contents from \p s.
-*/
 bool
 PPL::ConSys::ascii_load(std::istream& s) {
   if (!Matrix::ascii_load(s))
@@ -459,16 +414,12 @@ PPL::ConSys::ascii_load(std::istream& s) {
   return true;
 }
 
-/*!
-  Returns <CODE>true</CODE> if and only if \p *this is a valid Matrix.
-  No other checks can be performed here, since any valid Row object
-  in the matrix is also a valid Constraint object.
-*/
 bool
 PPL::ConSys::OK() const {
   return Matrix::OK();
 }
 
+/*! \relates ConSys */
 std::ostream&
 PPL::operator<<(std::ostream& s, const ConSys& cs) {
   ConSys::const_iterator i = cs.begin();
