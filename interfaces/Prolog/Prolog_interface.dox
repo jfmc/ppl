@@ -106,8 +106,8 @@ The specification uses the following grammar rules:
 
  Generator   --> point(LinExpr)		point
             | point(LinExpr, number)	point
-            | closure-point(LinExpr)	closure point
-            | closure-point(LinExpr, number)
+            | closure_point(LinExpr)	closure point
+            | closure_point(LinExpr, number)
 					closure point
               (Int is the denominator so that the point or
                closure point is defined by Expr/Int.)
