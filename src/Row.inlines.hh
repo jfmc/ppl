@@ -153,38 +153,12 @@ Row::Impl::operator[](size_t k) const {
 
 inline
 Row::Type::Type()
-  : flags(NECESSARILY_CLOSED_LINE_OR_EQUALITY) {
+  : flags(0) {
 }
-
-#include <iostream>
 
 inline
 Row::Type::Type(Topology topol, Kind kind)
   : flags(static_cast<flags_t>(topol | (kind << 1))) {
-}
-
-inline const Row::Type&
-Row::Type::necessarily_closed_line_or_equality() {
-  static Type ncle = Type(NECESSARILY_CLOSED_LINE_OR_EQUALITY);
-  return ncle;
-}
-
-inline const Row::Type&
-Row::Type::necessarily_closed_ray_or_point_or_inequality() {
-  static Type ncrpi = Type(NECESSARILY_CLOSED_RAY_OR_POINT_OR_INEQUALITY);
-  return ncrpi;
-}
-
-inline const Row::Type&
-Row::Type::not_necessarily_closed_line_or_equality() {
-  static Type nncle = Type(NOT_NECESSARILY_CLOSED_LINE_OR_EQUALITY);
-  return nncle;
-}
-
-inline const Row::Type&
-Row::Type::not_necessarily_closed_ray_or_point_or_inequality() {
-  static Type nncrpi = Type(NOT_NECESSARILY_CLOSED_RAY_OR_POINT_OR_INEQUALITY);
-  return nncrpi;
 }
 
 inline

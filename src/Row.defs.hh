@@ -236,21 +236,12 @@ namespace Parma_Polyhedra_Library {
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Parma_Polyhedra_Library::Row::Type {
 public:
-  //! The default Row::Type is a line/equality of
-  //! a necessarily closed polyhedron.
+  //! The default Row::Type is a line/equality of a closed polyhedron.
   Type();
 
   //! Builds the Row type by providing the two needed
   //! pieces of information.
   Type(Topology topol, Kind kind);
-
-  //! @name The four possible types of a Row object.
-  //@{
-  static const Type& necessarily_closed_line_or_equality();
-  static const Type& necessarily_closed_ray_or_point_or_inequality();
-  static const Type& not_necessarily_closed_line_or_equality();
-  static const Type& not_necessarily_closed_ray_or_point_or_inequality();
-  //@}
 
   //! @name Testing and setting the type.
   //@{
@@ -277,20 +268,8 @@ private:
 
   //! @name The bits that are currently in use.
   //@{
-  static const flags_t NNC = 1U << 0;
-  static const flags_t RPI = 1U << 1;
-  //@}
-
-  //! @name The four possible bit configurations for a Row object.
-  //@{
-  static const flags_t
-  NECESSARILY_CLOSED_LINE_OR_EQUALITY               = 0U;
-  static const flags_t
-  NOT_NECESSARILY_CLOSED_LINE_OR_EQUALITY           = 1U;
-  static const flags_t
-  NECESSARILY_CLOSED_RAY_OR_POINT_OR_INEQUALITY     = 2U;
-  static const flags_t
-  NOT_NECESSARILY_CLOSED_RAY_OR_POINT_OR_INEQUALITY = 3U;
+  static const flags_t NNC = NOT_NECESSARILY_CLOSED << 0;
+  static const flags_t RPI = RAY_OR_POINT_OR_INEQUALITY << 1;
   //@}
 
   //! Check whether <EM>all</EM> bits in \p mask are set.
