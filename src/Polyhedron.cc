@@ -3328,11 +3328,13 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
   assert(topology() == y.topology()
 	 && topology() == cs_selection.topology()
 	 && space_dimension() == y.space_dimension());
-  assert(!is_empty() && constraints_are_up_to_date());
+  assert(!is_empty()
+	 && !has_pending_generators()
+	 && constraints_are_up_to_date());
   assert(!y.is_empty()
+	 && !y.has_something_pending()
 	 && y.constraints_are_minimized()
 	 && y.generators_are_minimized());
-  assert(!has_something_pending() && !y.has_something_pending());
   
   // Add low-level constraints.
   add_low_level_constraints(cs_selection);
@@ -3347,7 +3349,7 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
   // The size of `buffer' will reach sat.num_columns() bit.
   SatRow buffer;
 
-  // A constraint in `con_sys' is placed in `cs_selection'
+  // A constraint in `con_sys' is copied into `cs_selection'
   // if its behavior with respect to `y.gen_sys' is the same
   // as that of another constraint in `y.con_sys'.
   // Namely, we check whether the saturation row `buffer'
@@ -3429,17 +3431,9 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
   // `x.con_sys' is just required to be up-to-date, because:
   // - if `x.con_sys' is unsatisfiable, then also `y' is empty
   //   and so the resulting polyhedron is `x';
-  // - redundant constraints in `x.con_sys' do not influence the
-  //   computation of the widened polyhedron. This is because
-  //     CHECK ME: are the following motivations correct?
-  //   if a constraint is a combination of other two constraints,
-  //   it can be also in the resulting system, if the two constraints
-  //   are common to both polyhedron. The redundant constraints
-  //   is `redundant' also in the new polyhedron.
-  //   If otherwise a constraint is redundant in the sense that it does not
-  //   satisfy the saturation rule (see Section \ref prelims), it can not
-  //   be put into the new system, because of the way that we use to
-  //   choose the constraints.
+  // - redundant constraints in `x.con_sys' do not affect the result
+  //   of the widening, because if they are selected they will be
+  //   redundant even in the result.
   if (has_something_pending())
     remove_pending_to_obtain_constraints();
   else if (!x.constraints_are_up_to_date())
@@ -3774,6 +3768,11 @@ bool
 PPL::Polyhedron::BHRZ03_averaging_constraints(Polyhedron& x,
 					      const Polyhedron& y,
 					      const ConSys& H79_con_sys) {
+
+  // FIXME: `H79_con_sys' is a selection of the constraints in `x.con_sys',
+  // so that there should be a better way of computing the constraints
+  // that do not belong to `H79_con_sys', without computing scalar products.
+
   // Select the constraints in `x.con_sys' that do not belong to `y.con_sys'.
   // To this end we use `x.sat_g'.
   if (!x.sat_g_is_up_to_date())
@@ -3793,100 +3792,93 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(Polyhedron& x,
   }
   common_sat_g.sort_rows();
   
-  // `x_con_sys_minus_y_con_sys' will contain the constraints of `x'
-  // that do not belong to `y'.
-  ConSys x_con_sys_minus_y_con_sys;
-  dimension_type x_con_sys_num_rows = x.con_sys.num_rows();
-  for (dimension_type i = x_con_sys_num_rows; i-- > 0; )
+  // `x_minus_H79_con_sys' will contain the constraints of `x.con_sys'
+  // that do not belong to `H79_con_sys'.
+  ConSys x_minus_H79_con_sys;
+  for (dimension_type i = x.con_sys.num_rows(); i-- > 0; )
     if (!x.con_sys[i].is_equality())
       if (!common_sat_g.sorted_contains(x.sat_g[i]))
-	x_con_sys_minus_y_con_sys.insert(x.con_sys[i]);
+	x_minus_H79_con_sys.insert(x.con_sys[i]);
   
   // The system of constraints of the resulting polyhedron
   // contains the constraints of `H79_con_sys'.
   ConSys new_con_sys = H79_con_sys;
-  // We must choose a point (if the polyhedra are necessarily closed)
-  // or a closure point (if the polyhedra are not necessarily closed)
-  // that belong to `x' and `y'.  In the case of not necessarily
-  // closed polyhedra, we can consider only the closure points,
-  // because the role of the points can be played by the closure
-  // points.
-  dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
-  for (dimension_type i = y_gen_sys_num_rows; i-- > 0; ) {
+
+  // Consider the points that belong to both `x.gen_sys' and `y.gen_sys'.
+  // For NNC polyhedra, the role of points is played by closure points.
+  bool closed = x.is_necessarily_closed();
+  ConSys averaging_con_sys(x.topology(), 0, x.con_sys.num_columns());
+  dimension_type x_minus_H79_con_sys_num_rows = x_minus_H79_con_sys.num_rows();
+  for (dimension_type i = y.gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = y.gen_sys[i];
-    if ((g.is_point() && x.is_necessarily_closed())
-	|| (g.is_closure_point() && !x.is_necessarily_closed())) {
-      // We choose a constraint of `x' that saturates the point `g'
-      // and that belongs to `x_con_sys_minus_y_con_sys' and we put
-      // these constraints in a temporary system of constraints.
-      ConSys tmp_con_sys(x.topology(), 0, x.con_sys.num_columns());
-      for (dimension_type j = x_con_sys_minus_y_con_sys.num_rows();
-	   j-- > 0; ) {
-	Constraint& c = x_con_sys_minus_y_con_sys[j];
+    if ((g.is_point() && closed) || (g.is_closure_point() && !closed)) {
+      // Consider all the constraints in `x_minus_H79_con_sys'
+      // that are saturated by the point `g'.
+      averaging_con_sys.clear();
+      for (dimension_type j = x_minus_H79_con_sys_num_rows; j-- > 0; ) {
+	Constraint& c = x_minus_H79_con_sys[j];
 	if (c * g == 0)
-	  tmp_con_sys.insert(c);
+	  averaging_con_sys.insert(c);
       }
-      // We build the new constraint that is
-      // obtained adding all the chosen normalized constraint.
-      if (tmp_con_sys.num_rows() != 0) {
-	if (tmp_con_sys.num_rows() == 1)
-	  // If we have chosen only a constraint, we add it to the
-	  // new system.
-	  new_con_sys.insert(tmp_con_sys[0]);
+      // Build a new constraint by combining all the chosen constraints.
+      dimension_type num_averaging_constraints = averaging_con_sys.num_rows();
+      if (num_averaging_constraints > 0) {
+	if (num_averaging_constraints == 1)
+	  // No average is needed.
+	  new_con_sys.insert(averaging_con_sys[0]);
 	else {
-	  // The number of the chosen constraints is greather than 1.
-	  dimension_type tmp_con_sys_num_rows = tmp_con_sys.num_rows();
-	  // We compute the norms of the vectors composed by the
-	  // homogeneous terms of the chosen constraints and 
-	  // we put it into the vector `norms'.
+	  // Compute the norms of the chosen constraints
+	  // (ignore the non-homogeneous term).
 	  // NOTE: Actually, the coefficients of `norms' are the
 	  // truncated integer part of the square roots of the norms
 	  // of the vectors.
-	  std::vector<Integer> norms(tmp_con_sys_num_rows);
-	  for (dimension_type h = tmp_con_sys_num_rows; h-- > 0; ) {
-	    Constraint& tmp_c = tmp_con_sys[h];
-	    for (dimension_type k = tmp_con_sys.num_columns(); k-- > 1; )
-	      norms[h] += tmp_c[k] * tmp_c[k];
+
+	  // CHECK ME: the computation of norms for strict inequality
+	  // constraints should not be biased by the value of
+	  // epsilon coefficients.
+
+	  std::vector<Integer> norms(num_averaging_constraints);
+	  for (dimension_type h = num_averaging_constraints; h-- > 0; ) {
+	    Constraint& c = averaging_con_sys[h];
+	    for (dimension_type k = averaging_con_sys.num_columns(); k-- > 1; )
+	      norms[h] += c[k] * c[k];
 	    sqrt_assign(norms[h]);
 	  }
 	  
 	  // In `lcm_norm' we put the least common multiple of the
 	  // coefficients of the vector `norms'.
 	  Integer lcm_norm = norms[0];
-	  for (dimension_type h = 0; h < tmp_con_sys_num_rows; ++h)
+	  for (dimension_type h = 0; h < num_averaging_constraints; ++h)
 	    lcm_assign(lcm_norm, norms[h]);
 	  
-	  // The new constraints is equal to `e op b', where `op' is
-	  // the symbol of strict inequality if in the system
-	  // `tmp_con_sys' there is a strict inequality or otherwise
-	  // the symbol of not strict inequality; `e' is equal to the
-	  // sum of all vectors that are obtained from the constraints
-	  // of `tmp_con_sys' erasing the non-homogeneous term and
-	  // modifying them so that they have the same length; `b' is
-	  // equal to `e * g'.
-	  // NOTE: The real thing that we do is an approximation of
-	  // what we have just written. We are still working on this
-	  // problem.
+	  // Ideally, the new constraint is equal to `e relop b', where
+	  // `relop' is strict inequality if `averaging_con_sys' contains
+	  // at least one strict inequality constraint (otherwise, `relop'
+	  // is non-strict inequality);
+	  // `e' is the sum of length-normalized versions of the vectors
+	  // corresponding to the homogeneous terms of the constraints
+	  // in `averaging_con_sys';
+	  // the inhomogeneous term `b' is equal to `e * g', so that
+	  // the new constraints saturates the generator `g'.
+	  // NOTE: actually, we compute a rational approximation of
+	  // the vector `e', since we cannot take exact square roots.
 	  LinExpression e(0);
 	  bool strict_inequality = false;
-	  for (dimension_type h = tmp_con_sys_num_rows; h-- > 0; ) {
-	    LinExpression tmp(tmp_con_sys[h]);
+	  for (dimension_type h = num_averaging_constraints; h-- > 0; ) {
+	    if (averaging_con_sys[h].is_strict_inequality())
+	      strict_inequality = true;
+	    LinExpression tmp(averaging_con_sys[h]);
 	    tmp -= tmp[0];
 	    for (dimension_type t = tmp.size(); t-- > 1; )
 	      tmp[t] = tmp[t] * lcm_norm / norms[h];
 	    e += tmp;
-	    if (tmp_con_sys[h].is_strict_inequality())
-	      strict_inequality = true;
 	  }
-	  Integer tmp = 0;
+	  Integer inhomogeneous_term = 0;
 	  for (size_t t = e.size(); t-- > 1; )
-	    tmp+= e[t] * g[t];
-	  e -= tmp;
+	    inhomogeneous_term += e[t] * g[t];
+	  e -= inhomogeneous_term;
 	  e.normalize();
 	  
-	  // If there is a strict inequality in the chosen
-	  // constraints, the new constraint is a strict inequality,
-	  // too. Otherwise it is a non-strict inequality.
 	  if (!e.all_homogeneous_terms_are_zero())
 	    if (strict_inequality)
 	      new_con_sys.insert(e > 0);
