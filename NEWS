@@ -13,6 +13,22 @@ New and Changed Features
 o  One of the possible values for the configuration option
    `--enable-coefficients' has been renamed from `gmp' to `mpz'.
 
+o  Added to class Constraint the methods
+     bool is_tautological() const;
+   and
+     bool is_inconsistent() const;
+   returning true when the constraint is always or never satisfied,
+   respectively.
+
+o  Added to classes Constraint (resp., Generator) the method
+     bool is_equivalent_to(const Constraint& y) const;
+   (resp., bool is_equivalent_to(const Generator& y) const;)
+   checking for semantic equivalence of corresponding class instances.
+   Also made available the (semantic) comparison operators == and !=.
+
+o  Added swap methods to classes Linear_Expression, Constraint, Generator,
+   Constraint_System and Generator_System.
+
 
 Bugfixes
 ========
