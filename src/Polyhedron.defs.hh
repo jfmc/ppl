@@ -1573,7 +1573,7 @@ public:
     The variable corresponding to the space dimension to be replicated;
 
     \param m
-    The number of replica to be created.
+    The number of replicas to be created.
 
     \exception std::invalid_argument
     Thrown if \p var does not correspond to a dimension of the vector space.
