@@ -2039,40 +2039,40 @@ private:
   void throw_invalid_argument(const char* method, const char* reason) const;
 
   void throw_topology_incompatible(const char* method,
-				   const char* name_polyhedron,
-				   const Polyhedron& y) const;
+				   const char* ph_name,
+				   const Polyhedron& ph) const;
   void throw_topology_incompatible(const char* method,
-				   const char* name_constraint,
-				   const Constraint& ) const;
+				   const char* c_name,
+				   const Constraint& c) const;
   void throw_topology_incompatible(const char* method,
-				   const char* name_generator,
-				   const Generator& ) const;
+				   const char* g_name,
+				   const Generator& g) const;
   void throw_topology_incompatible(const char* method,
-				   const char* name_system,
-				   const ConSys& ) const;
+				   const char* cs_name,
+				   const ConSys& cs) const;
   void throw_topology_incompatible(const char* method,
-				   const char* name_system,
-				   const GenSys& ) const;
+				   const char* gs_name,
+				   const GenSys& gs) const;
 
   void throw_dimension_incompatible(const char* method,
-				    const char* name_polyhedron,
-				    const Polyhedron& y) const;
+				    const char* ph_name,
+				    const Polyhedron& ph) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* name_variable,
+				    const char* var_name,
 				    const Variable var) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* name_row,
-				    const Row& y) const;
+				    const char* row_name,
+				    const Row& row) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* name_system,
-				    const Matrix& y) const;
+				    const char* sys_name,
+				    const Matrix& sys) const;
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_space_dim) const;
 
   void throw_invalid_generator(const char* method,
-			       const char* name_generator) const;
+			       const char* g_name) const;
   void throw_invalid_generators(const char* method,
-				const char* name_gensys) const;
+				const char* gs_name) const;
 
   //@} // Exception Throwers
 
