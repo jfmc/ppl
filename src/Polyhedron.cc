@@ -1338,6 +1338,7 @@ PPL::Polyhedron::add_dimensions_and_constraints(ConSys& cs) {
   if (space_dimension() == 0) {
     Polyhedron y(cs);
     swap(y);
+    return;
   }
 
   if (!constraints_are_up_to_date())
