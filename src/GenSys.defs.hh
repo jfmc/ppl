@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _GenSys_defs_hh
 #define _GenSys_defs_hh 1
 
+#include "LinExpression.defs.hh"
 #include "GenSys.types.hh"
 #include "Matrix.defs.hh"
 #include "Generator.types.hh"
@@ -167,8 +168,8 @@ PPL_INTERNAL:
   GenSys_Con_Rel satisfy_constraint(const Constraint& c) const;
   
   //! Assigns to a given variable an affine expression.
-  void assign_variable(size_t var,
-		       const std::vector<Integer>& coefficient,
+  void assign_variable(size_t num_var,
+		       const LinExpression& coefficient,
 		       Integer& denominator);
   //! Returns the number of lines of the system.
   size_t num_lines() const;

@@ -216,8 +216,8 @@ PPL::GenSys::satisfy_constraint(const Constraint& c) const {
   is not constant).
 */
 void 
-PPL::GenSys::assign_variable(size_t var,
-			     const std::vector<Integer>& coefficient,
+PPL::GenSys::assign_variable(size_t num_var,
+			     const LinExpression& coefficient,
 			     Integer& denominator) {
   GenSys& x = *this;
   size_t num_columns = x.num_columns();
