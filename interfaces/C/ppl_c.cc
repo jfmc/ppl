@@ -39,6 +39,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdexcept>
 #include <sstream>
 #include <cstdio>
+#include <cerrno>
 
 using namespace Parma_Polyhedra_Library;
 
@@ -121,6 +122,95 @@ Init* init_object_ptr = 0;
 
 } // namespace
 
+
+
+namespace {
+
+extern "C" const char*
+c_Variable_default_output_function(ppl_dimension_type var) {
+  // On a 64 bits architecture, `var' will not be more than 2^64-1,
+  // (2^64-1)/26 is written with 18 decimal digits, plus one letter,
+  // plus one terminator makes 20.
+  static char buffer[20];
+  buffer[0] = static_cast<char>('A' + var % 26);
+  if (ppl_dimension_type i = var / 26) {
+    int r = snprintf(buffer+1, 19, "%d", i);
+    if (r < 0)
+      return 0;
+    else if (r >= 19) {
+      errno = ERANGE;
+      return 0;
+    }
+  }
+  else
+    buffer[1] = '\0';
+  return buffer;
+}
+
+extern "C" typedef const char*
+c_Variable_output_function_type(ppl_dimension_type var);
+
+// Pointer to the C current output function.
+c_Variable_output_function_type* c_Variable_output_function;
+
+void
+cxx_Variable_output_function(std::ostream& s, const Variable& v) {
+  // FIXME: what if c_Variable_output_function() returns 0?
+  s << c_Variable_output_function(v.id());
+}
+
+Variable::Output_Function_Type* saved_cxx_Variable_output_function;
+
+} // namespace
+
+
+int
+ppl_initialize(void) try {
+  if (init_object_ptr != 0)
+    // Already initialized: error.
+    return PPL_ERROR_INVALID_ARGUMENT;
+
+  init_object_ptr = new Init();
+
+  PPL_POLY_CON_RELATION_IS_DISJOINT
+    = Poly_Con_Relation::is_disjoint().get_flags();
+  PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS
+    = Poly_Con_Relation::strictly_intersects().get_flags();
+  PPL_POLY_CON_RELATION_IS_INCLUDED
+    = Poly_Con_Relation::is_included().get_flags();
+  PPL_POLY_CON_RELATION_SATURATES
+    = Poly_Con_Relation::saturates().get_flags();
+
+  PPL_POLY_GEN_RELATION_SUBSUMES
+    = Poly_Gen_Relation::subsumes().get_flags();
+
+  PPL_COMPLEXITY_CLASS_POLYNOMIAL = POLYNOMIAL;
+  PPL_COMPLEXITY_CLASS_SIMPLEX = SIMPLEX;
+  PPL_COMPLEXITY_CLASS_ANY = ANY;
+
+  c_Variable_output_function = c_Variable_default_output_function;
+  saved_cxx_Variable_output_function = Variable::get_output_function();
+  Variable::set_output_function(cxx_Variable_output_function);
+
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_finalize(void) try {
+  if (init_object_ptr == 0)
+    // Not initialized or already finalized: error.
+    return PPL_ERROR_INVALID_ARGUMENT;
+
+  delete init_object_ptr;
+  init_object_ptr = 0;
+
+  Variable::set_output_function(saved_cxx_Variable_output_function);
+
+  return 0;
+}
+CATCH_ALL
+
 unsigned
 ppl_version_major(void) {
   return version_major();
@@ -161,46 +251,6 @@ CATCH_ALL
 int
 ppl_not_a_dimension(ppl_dimension_type* m) try {
   *m = not_a_dimension();
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_initialize(void) try {
-  if (init_object_ptr != 0)
-    // Already initialized: error.
-    return PPL_ERROR_INVALID_ARGUMENT;
-
-  init_object_ptr = new Init();
-
-  PPL_POLY_CON_RELATION_IS_DISJOINT
-    = Poly_Con_Relation::is_disjoint().get_flags();
-  PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS
-    = Poly_Con_Relation::strictly_intersects().get_flags();
-  PPL_POLY_CON_RELATION_IS_INCLUDED
-    = Poly_Con_Relation::is_included().get_flags();
-  PPL_POLY_CON_RELATION_SATURATES
-    = Poly_Con_Relation::saturates().get_flags();
-
-  PPL_POLY_GEN_RELATION_SUBSUMES
-    = Poly_Gen_Relation::subsumes().get_flags();
-
-  PPL_COMPLEXITY_CLASS_POLYNOMIAL = POLYNOMIAL;
-  PPL_COMPLEXITY_CLASS_SIMPLEX = SIMPLEX;
-  PPL_COMPLEXITY_CLASS_ANY = ANY;
-
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_finalize(void) try {
-  if (init_object_ptr == 0)
-    // Not initialized or already finalized: error.
-    return PPL_ERROR_INVALID_ARGUMENT;
-
-  delete init_object_ptr;
-  init_object_ptr = 0;
   return 0;
 }
 CATCH_ALL
