@@ -35,3 +35,34 @@ ppl_lcdd_SOURCES = ppl_lcdd.cc
 ppl_lcdd_LDADD = \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
+
+if HAVE_MD5SUM
+
+TOUGH_EXAMPLES = \
+cp7.ext \
+cyclic25_13.ext \
+prodst62.ext \
+cp6.ine \
+mit.ine \
+mit288-281.ine \
+mit41-16.ine \
+mit708-9.ine \
+mit71-61.ine \
+mit90-86.ine
+
+check-local: ppl_lcdd
+	echo $(TOUGH_EXAMPLES) >tough_examples
+	echo -n >obtained
+	for file in $(srcdir)/examples/*.ext $(srcdir)/examples/*.ine; do \
+	  grep -q `basename $$file` tough_examples && continue; \
+	  echo -n `basename $$file` " " >>obtained; \
+	  echo ppl_lcdd $$file; \
+	  ppl_lcdd $$file | $(MD5SUM) - >>obtained; \
+	done
+	diff -q $(srcdir)/expected obtained
+
+MOSTLYCLEANFILES = \
+tough_examples \
+obtained
+
+endif # HAVE_MD5SUM
