@@ -549,7 +549,10 @@ public:
   //!                     not declared <CODE>const</CODE> because it
   //!                     can be modified.
   //! \exception std::invalid_argument thrown if \p *this and
-  //!                                  \p gs are dimension-incompatible.
+  //!                                  \p gs are dimension-incompatible
+  //!                                  or if \p *this is empty and the
+  //!                                  the system of generators \p gs
+  //!                                  is not empty, but has no vertices.
   void add_generators_and_minimize(GenSys& gs);
   //! Adds the specified generators without minimizing.
   //! \param  gs             The generators that will be added to the
@@ -557,7 +560,10 @@ public:
   //!                        is not declared <CODE>const</CODE> because
   //!                        it can be modified.
   //! \exception std::invalid_argument thrown if \p *this and \p gs
-  //!                                  are dimension-incompatible.
+  //!                                  are dimension-incompatible or if
+  //!                                  \p *this is empty and the system of
+  //!                                  generators \p gs is not empty, but
+  //!                                  has no vertices.
   void add_generators(GenSys& gs);
 
   //! Returns <CODE>true</CODE> if and only if \p *this is
