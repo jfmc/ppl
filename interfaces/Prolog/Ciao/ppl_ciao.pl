@@ -109,36 +109,54 @@ site: http://www.cs.unipr.it/ppl/ . */
         foreign_interface
 ]).
 
-:- true pred ppl_version_major_1(in(Version),
-                               go(success))
-          :: any term + int
-  + (returns(Success), foreign(ppl_version_major)).
-.
 
-:- true pred ppl_version_minor_1(in(Version),
-                               go(success))
-          :: any term + int
+:- true pred ppl_version_major_2(in(Version),
+                               go(Success))
+          :: any_term * int
+  + (returns(Success), foreign(ppl_version_major)).
+
+ppl_version_major(Version) :-
+   ppl_version_major_2(Version, 1).
+
+:- true pred ppl_version_minor_2(in(Version),
+                               go(Success))
+          :: any_term * int
   + (returns(Success), foreign(ppl_version_minor)).
 
-:- true pred ppl_version_revision_1(in(Version),
-                               go(success))
-          :: any term + int
+ppl_version_minor(Version) :-
+   ppl_version_minor_2(Version, 1).
+
+:- true pred ppl_version_revision_2(in(Version),
+                               go(Success))
+          :: any_term * int
   + (returns(Success), foreign(ppl_version_revision)).
 
-:- true pred ppl_version_beta_1(in(Version),
-                               go(success))
-          :: any term + int
+ppl_version_revision(Version) :-
+   ppl_version_revision_2(Version, 1).
+
+:- true pred ppl_version_beta_2(in(Version),
+                               go(Success))
+          :: any_term * int
   + (returns(Success), foreign(ppl_version_beta)).
 
-:- true pred ppl_version_1(in(Version),
-                               go(success))
-          :: any term + int
+ppl_version_beta(Version) :-
+   ppl_version_beta_2(Version, 1).
+
+:- true pred ppl_version_2(in(Version),
+                               go(Success))
+          :: any_term * int
   + (returns(Success), foreign(ppl_version)).
 
-:- true pred ppl_max_space_dimension_1(in(Version),
-                               go(success))
-          :: any term + int
+ppl_version(Version) :-
+   ppl_version_2(Version, 1).
+
+:- true pred ppl_max_space_dimension_2(in(Dimension),
+                               go(Success))
+          :: any_term * int
   + (returns(Success), foreign(ppl_max_space_dimension)).
+
+ppl_max_space_dimension(Dimension) :-
+   ppl_max_space_dimension_2(Dimension, 1).
 
 :- true pred ppl_initialize + foreign.
 
@@ -352,7 +370,7 @@ ppl_Polyhedron_bounds_from_above(Handle, LinearExpression) :-
 ppl_Polyhedron_bounds_from_below(Handle, LinearExpression) :-
 	ppl_Polyhedron_bounds_from_below_2(Handle, LinearExpression, 1).
 
-:- true pred ppl_Polyhedron_maximize_5(in(Handle),
+:- true pred ppl_Polyhedron_maximize_2(in(Handle),
                                        in(LinearExpression),
                                        in(Num),
                                        in(Den),
@@ -362,9 +380,9 @@ ppl_Polyhedron_bounds_from_below(Handle, LinearExpression) :-
   + (returns(Success), foreign(ppl_Polyhedron_maximize)).
 
 ppl_Polyhedron_maximize(Handle, LinearExpression, Num, Den, Max) :-
-	ppl_Polyhedron_minimize_5(Handle, LinearExpression, Num, Den, Max, 1).
+	ppl_Polyhedron_maximize_2(Handle, LinearExpression, Num, Den, Max, 1).
 
-:- true pred ppl_Polyhedron_minimize_5(in(Handle),
+:- true pred ppl_Polyhedron_minimize_2(in(Handle),
                                        in(LinearExpression),
                                        in(Num),
                                        in(Den),
@@ -374,7 +392,7 @@ ppl_Polyhedron_maximize(Handle, LinearExpression, Num, Den, Max) :-
   + (returns(Success), foreign(ppl_Polyhedron_minimize)).
 
 ppl_Polyhedron_minimize(Handle, LinearExpression, Num, Den, Min) :-
-	ppl_Polyhedron_minimize_5(Handle, LinearExpression, Num, Den, Min, 1).
+	ppl_Polyhedron_minimize_2(Handle, LinearExpression, Num, Den, Min, 1).
 
 :- true pred ppl_Polyhedron_is_topologically_closed_2(in(Handle),
                                                          go(Success))
@@ -679,17 +697,17 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
 
 :- impl_defined(
 [
-        ppl_version_major_1/2,
+        ppl_version_major_2/2,
 %        ppl_version_major/1,
-        ppl_version_minor_1/2,
+        ppl_version_minor_2/2,
 %        ppl_version_minor/1,
-        ppl_version_revision_1/2,
+        ppl_version_revision_2/2,
 %        ppl_version_revision/1,
-        ppl_version_beta_1/2,
+        ppl_version_beta_2/2,
 %        ppl_version_beta/1,
-        ppl_version_1/2,
+        ppl_version_2/2,
 %        ppl_version/1,
-        ppl_max_space_dimension_1/2,
+        ppl_max_space_dimension_2/2,
 %        ppl_max_space_dimension/1,
         ppl_initialize/0,
         ppl_finalize/0,
@@ -739,7 +757,9 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
 %       ppl_Polyhedron_bounds_from_below/2,
         ppl_Polyhedron_bounds_from_below_2/3,
 %       ppl_Polyhedron_maximize/5,
-        ppl_Polyhedron_maximize_5/6,
+        ppl_Polyhedron_maximize_2/6,
+%       ppl_Polyhedron_minimize/5,
+        ppl_Polyhedron_minimize_2/6,
 %       ppl_Polyhedron_is_topologically_closed/1,
         ppl_Polyhedron_is_topologically_closed_2/2,
 %       ppl_Polyhedron_contains_Polyhedron/2,
