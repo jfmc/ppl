@@ -1338,8 +1338,8 @@ private:
   bool has_pending_generators() const;
 
   //! \brief
-  //! Returns <CODE>true</CODE> if there are pending constraints or
-  //! generators.
+  //! Returns <CODE>true</CODE> if there are
+  //! either pending constraints or pending generators.
   bool has_something_pending() const;
 
   //! \brief

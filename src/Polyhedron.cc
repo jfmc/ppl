@@ -763,17 +763,10 @@ PPL::Polyhedron::remove_pending_and_minimize() const {
     // have `sat_c' up-to-date.
     if (!x.sat_c_is_up_to_date())
       x.sat_c.transpose_assign(x.sat_g);
-    dimension_type x_cs_num_pending = x.con_sys.num_pending_rows();
-    dimension_type x_cs_index = x.con_sys.first_pending_row();
-    // In `cs', we put the pending row of `con_sys'.
-    ConSys cs(x.topology(), x_cs_num_pending, x.con_sys.num_columns());
-    for (dimension_type i = x_cs_num_pending; i-- > 0; )
-      std::swap(x.con_sys[x_cs_index + i], cs[i]);
+    // In `cs', we put the pending rows of `con_sys'.
+    ConSys cs(x.con_sys, x.con_sys.first_pending_row());
     // `add_and_minimize()' requires that `cs' is sorted.
     cs.sort_rows();
-    // NOTE: We can avoid to  update `index_first_pending' of `con_sys'
-    // before calling `erase_to_end', because it is equal to `x_cs_index'.
-    x.con_sys.erase_to_end(x_cs_index);
     // `add_and_minimize()' requires that `con_sys' is sorted:
     // in this case we also need to order `sat_c' together `con_sys'.
     if (!x.con_sys.is_sorted())
@@ -802,17 +795,10 @@ PPL::Polyhedron::remove_pending_and_minimize() const {
   // have `sat_g' up-to-date.
   if (!x.sat_g_is_up_to_date())
     x.sat_g.transpose_assign(x.sat_c);
-  dimension_type x_gs_num_pending = x.gen_sys.num_pending_rows();
-  dimension_type x_gs_index = x.gen_sys.first_pending_row();
   // In `gs', we put the pending row of `gen_sys'.
-  GenSys gs(x.topology(), x_gs_num_pending, x.gen_sys.num_columns());
-  for (dimension_type i = x_gs_num_pending; i-- > 0; )
-    std::swap(x.gen_sys[x_gs_index + i], gs[i]);
+  GenSys gs(x.gen_sys, x.gen_sys.first_pending_row());
   // `add_and_minimize()' requires that `gs' is sorted.
   gs.sort_rows();
-  // NOTE: We can avoid to  update `index_first_pending' of `gen_sys'
-  // before calling `erase_to_end', because it is equal to `x_gs_index'.
-  x.gen_sys.erase_to_end(x_gs_index);
   // `add_and_minimize()' requires that `gen_sys' is sorted:
   // in this case we also need to order `sat_g' together `gen_sys'.
   if (!x.gen_sys.is_sorted())
