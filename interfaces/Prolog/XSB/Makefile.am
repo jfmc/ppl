@@ -32,9 +32,11 @@ SUBDIRS =
 EXTRA_DIST = \
 ppl_xsb.cc \
 ppl_xsb.H \
-xsb_clpq.P expected \
-xsb_clpq2.P expected2 \
-xsb_pl_check.P
+xsb_clpq.P \
+xsb_clpq2.P \
+xsb_pl_check.P \
+expected_mpz expected_int8 expected_int16 expected_int32 expected_int64 \
+expected2_mpz expected2_int8 expected2_int16 expected2_int32 expected2_int64
 
 if HAVE_XSB_PROLOG
 
@@ -91,43 +93,10 @@ CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 #        and previous versions do not support control escape
 #        sequences.
 
-if USE_INT64
-
-EXPECTED = expected_int64
-EXPECTED2 = expected2_int64
-EXPECTED3 = expected3_int64
-
-else !USE_INT64
-if USE_INT32
-
-EXPECTED = expected_int32
-EXPECTED2 = expected2_int32
-EXPECTED3 = expected3_int32
-
-else !USE_INT32
-if USE_INT16
-
-EXPECTED = expected_int16
-EXPECTED2 = expected2_int16
-EXPECTED3 = expected3_int16
-
-else !USE_INT16
-if USE_INT8
-
-EXPECTED = expected_int8
-EXPECTED2 = expected2_int8
-EXPECTED3 = expected3_int8
-
-else !USE_INT8
-
-EXPECTED = expected
-EXPECTED2 = expected2
-EXPECTED3 = expected3
-
-endif !USE_INT8
-endif !USE_INT16
-endif !USE_INT32
-endif !USE_INT64
+COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
+EXPECTED = expected_$(COEFFICIENT_MNEMONIC)
+EXPECTED2 = expected2_$(COEFFICIENT_MNEMONIC)
+EXPECTED3 = expected3_$(COEFFICIENT_MNEMONIC)
 
 check-local: ppl_xsb.la xsb_clpq.P ../clpq.pl ../check_script $(EXPECTED) xsb_clpq2.P ../clpq2.pl ../check_script2 $(EXPECTED2) xsb_pl_check.P ../pl_check.pl
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done

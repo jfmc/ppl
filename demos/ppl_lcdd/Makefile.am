@@ -58,6 +58,8 @@ EXTRA_DIST = expected
 
 if HAVE_MD5SUM
 
+COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
+
 if ASSERTIONS_ENABLED
 
 TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED = \
@@ -74,13 +76,13 @@ mit31-20.ine \
 sampleh8.ine \
 trunc10.ine
 
-EXPECTED = expected_a
+EXPECTED = expected_$(COEFFICIENT_MNEMONIC)_a
 
-else # !ASSERTIONS_ENABLED
+else !ASSERTIONS_ENABLED
 
-EXPECTED = expected
+EXPECTED = expected_$(COEFFICIENT_MNEMONIC)
 
-endif # !ASSERTIONS_ENABLED
+endif !ASSERTIONS_ENABLED
 
 TOUGH_EXAMPLES = \
 cp7.ext \

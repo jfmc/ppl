@@ -280,46 +280,55 @@ native-int8)
   AC_MSG_RESULT([native 8 bits integers])
   coefficient_kind=native
   coefficient_type=int8_t
+  coefficient_mnemonic=nint8
   ;;
 native-int16)
   AC_MSG_RESULT([native 16 bits integers])
   coefficient_kind=native
   coefficient_type=int16_t
+  coefficient_mnemonic=nint16
   ;;
 native-int32)
   AC_MSG_RESULT([native 32 bits integers])
   coefficient_kind=native
   coefficient_type=int32_t
+  coefficient_mnemonic=nint32
   ;;
 native-int64)
   AC_MSG_RESULT([native 64 bits integers])
   coefficient_kind=native
   coefficient_type="int64_t"
+  coefficient_mnemonic=nint64
   ;;
 checked-int8)
   AC_MSG_RESULT([checked 8 bits integers])
   coefficient_kind=checked
   coefficient_type=int8_t
+  coefficient_mnemonic=int8
   ;;
 checked-int16)
   AC_MSG_RESULT([checked 16 bits integers])
   coefficient_kind=checked
   coefficient_type=int16_t
+  coefficient_mnemonic=int16
   ;;
 checked-int32)
   AC_MSG_RESULT([checked 32 bits integers])
   coefficient_kind=checked
   coefficient_type=int32_t
+  coefficient_mnemonic=int32
   ;;
 checked-int64)
   AC_MSG_RESULT([checked 64 bits integers])
   coefficient_kind=checked
   coefficient_type="int64_t"
+  coefficient_mnemonic=int64
   ;;
 gmp)
   AC_MSG_RESULT([GMP])
   coefficient_kind=unbounded
-  coefficient_type=gmp
+  coefficient_type=mpz_class
+  coefficient_mnemonic=mpz
   ;;
 *)
   AC_MSG_ERROR([bad value ${enableval} for --enable-coefficients, checked-int32, checked-int64, checked-int16, checked-int8, gmp, native-int32, native-int64, native-int16 or native-int8])
@@ -332,7 +341,7 @@ AM_CONDITIONAL(USE_INT8, test x"$coefficient_type" = xint8_t)
 AM_CONDITIONAL(USE_INT16, test x"$coefficient_type" = xint16_t)
 AM_CONDITIONAL(USE_INT32, test x"$coefficient_type" = xint32_t)
 AM_CONDITIONAL(USE_INT64, test x"$coefficient_type" = xint64_t)
-AM_CONDITIONAL(USE_GMP_INTEGERS, test x"$coefficient_type" = xgmp)
+AM_CONDITIONAL(USE_GMP_INTEGERS, test x"$coefficient_type" = xmpz_class)
 
 
 if test x"$coefficient_kind" = xnative
@@ -343,7 +352,7 @@ elif test x"$coefficient_kind" = xchecked
 then
   AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, Parma_Polyhedra_Library::Checked_Number<$coefficient_type>)
   AC_DEFINE(CHECKED_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a checked one.])
-elif test x"$coefficient_type" = xgmp
+elif test x"$coefficient_type" = xmpz_class
 then
   AC_DEFINE(COEFFICIENT_TYPE, mpz_class)
   AC_DEFINE(GMP_INTEGERS, 1, [Defined if the integral type to be used for coefficients is GMP's one.])
@@ -576,6 +585,7 @@ AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(debug_flag)
 AC_SUBST(xsb_includes)
+AC_SUBST(coefficient_mnemonic)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm ppl.spec

@@ -43,9 +43,12 @@ schedule.clpq
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
 EXTRA_DIST = \
-clpq.pl check_script expected \
-clpq2.pl  check_script2 expected2 \
+clpq.pl check_script \
+clpq2.pl  check_script2 \
 $(CLPQ_TESTS) \
-pl_check.pl expected3
+pl_check.pl \
+expected_mpz expected_int8 expected_int16 expected_int32 expected_int64 \
+expected2_mpz expected2_int8 expected2_int16 expected2_int32 expected2_int64 \
+expected3_mpz expected3_int8 expected3_int16 expected3_int32 expected3_int64
 
 noinst_HEADERS = ppl_prolog.icc exceptions.hh track_allocation.hh
