@@ -186,6 +186,9 @@ query_next_solution :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% Reading Programs %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+open_file_for_reading(File, Stream) :-
+  catch(open(File, read, Stream), _, fail).
+
 read_programs([]).
 read_programs([P|Ps]) :-
   read_program(P),
@@ -199,11 +202,11 @@ read_program(Program) :-
                  Program]),
     fail
   ),
-  (open(Program, read, Stream) ->
+  (open_file_for_reading(Program, Stream) ->
     FileName = Program
   ;
     atom_concat(Program, '.clpq', FileName),
-    (open(FileName, read, Stream) ->
+    (open_file_for_reading(FileName, Stream) ->
       true
     ;
       write_error(['read_program/1 - arg 1: file ',
