@@ -67,7 +67,8 @@ o  All the input/output operators have been confined into namespace
 Bugfixes
 ========
 
-o  Any?
+o  Fixed a bug in operator-=(LinExpression&, const LinExpression&)
+   whereby we computed a wrong result in some circumstances.
 
 
 --------------------------------------------------------------------------
