@@ -73,6 +73,8 @@ main() try {
   return retval;
 }
 catch (std::exception& e) {
+#if NOISY
   cout << e.what() << endl;
+#endif
   exit(1);
 }
