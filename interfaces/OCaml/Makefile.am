@@ -28,21 +28,24 @@ VPATH = @srcdir@
 
 if HAVE_SWIG
 
-ppl_c.ml ppl_c.mli ppl_c_wrap.c:	ppl_c.swg
-	$(SWIG) -ocaml -I$(top_srcdir)/interfaces/C $<
+ppl_c.ml ppl_c.mli ppl_c_wrap.c: .swig_ocaml
 
-DIST_FILES = ppl_c.ml ppl_c.mli ppl_c_wrap.c
+.swig_ocaml: ppl_c.swg
+	$(SWIG) -ocaml -I$(top_srcdir)/interfaces/C $<
+	@touch $@
+
+GENERATED_FILES = ppl_c.ml ppl_c.mli ppl_c_wrap.c
 
 dist-hook: $(DIST_FILES)
 
 EXTRA_DIST= \
 ppl_c.swg \
-$(DIST_FILES)
+$(GENERATED_FILES)
 
 #mostlyclean-local:
 #	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) *.aux *.log
 
-#CLEANFILES = $(DIST_DOCS)
+CLEANFILES = $(GENERATED_FILES)
 
 else # !HAVE_SWIG
 
