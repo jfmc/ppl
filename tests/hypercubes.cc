@@ -1,4 +1,4 @@
-/* Compute the vertices of NNC hypercubes.
+/* Exploit smf when computing the intersection of NNC dual hypercubes.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -27,403 +27,90 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
+#ifndef NOISY
 #define NOISY 0
-
-Integer lb = 0;
-Integer ub = 5;
-Integer shift_coeff = 3;
-
-/******************************
-
-void gen_closed_hypercubes() {
-  const size_t mindim = 8;
-  const size_t maxdim = 11;
-
-  cout << "=========================================" << endl
-       << "Computing generators of CLOSED hypercubes" << endl
-       << endl;
-
-  for (size_t dim = mindim; dim <= maxdim; dim++) {
-    ConSys cs;
-    for (size_t axis = dim; axis-- > 0; ) {
-      cs.insert(Variable(axis) >= lb);
-      cs.insert(Variable(axis) <= ub);
-    }
-    NNC_Polyhedron ph(cs);
-    cout << dim << "-dimensional hypercube: ";
-    start_clock();
-    ph.generators();
-    print_clock(cout);
-    cout << " secs." << endl;
-#if NOISY
-    print_constraints(ph, "--- ph ---");
-    print_generators(ph, "--- ph ---");
 #endif
-  }
-  cout << "=========================================" << endl
-       << endl;
-}
 
+const Integer half_diagonal = 5;
+const Integer shift_coeff = 3;
 
-void gen_open_hypercubes() {
-  const size_t mindim = 8;
-  const size_t maxdim = 11;
-
-  cout << "=========================================" << endl
-       << "Computing generators of OPEN hypercubes" << endl
-       << endl;
-
-  for (size_t dim = mindim; dim <= maxdim; dim++) {
-    ConSys cs;
-    for (size_t axis = dim; axis-- > 0; ) {
-      cs.insert(Variable(axis) > lb);
-      cs.insert(Variable(axis) < ub);
-    }
-    NNC_Polyhedron ph(cs);
-
-    cout << dim << "-dimensional hypercube: ";
-    start_clock();
-    ph.generators();
-    print_clock(cout);
-    cout << " secs." << endl;
-#if NOISY
-    print_generators(ph, "--- ph ---");
-#endif
-  }
-  cout << "=========================================" << endl
-       << endl;
-}
-
-*************************************************/
-
-void remove_vertices(size_t &to_be_removed,
-		     LinExpression expr,
-		     size_t axis,
-		     ConSys &cs) {
-  // Return if we have already removed all vertices.
-  if (to_be_removed == 0)
-    return;
-
-  if (axis == 0) {
-    // Adding first a constraint where variable with index `axis'
-    // has coefficient 1.
-    expr += Variable(axis);
-    expr -= ub;
-    cs.insert(expr < 0);
-    --to_be_removed;
-    if (to_be_removed == 0)
-      return;
-    // Restoring previous value of `expr'.
-    expr -= Variable(axis);
-    expr += ub;
-    // Then add a constraint where variable with index `axis'
-    // has coefficient -1.
-    expr -= Variable(axis);
-    cs.insert(expr < 0);
-    --to_be_removed;
-  }
-  else {
-    // axis > 0.
-    // First recursive call with variable with index `axis'
-    // having coefficient 1.
-    expr += Variable(axis);
-    expr -= ub;
-    remove_vertices(to_be_removed, expr, axis-1, cs);
-    if (to_be_removed == 0)
-      return;
-    // Restoring previous value of `expr'.
-    expr -= Variable(axis);
-    expr += ub;
-    // Second recursive call with variable with index `axis'
-    // having coefficient -1.
-    expr -= Variable(axis);
-    remove_vertices(to_be_removed, expr, axis-1, cs);
+void
+closure_points_dual_hypercube(size_t dims,
+			      const LinExpression& weight_center,
+			      const Integer& half_diagonal,
+			      GenSys& gs) {
+  // Generator system for the 2nd dual hypercube.
+  for (size_t axis = dims; axis-- > 0; ) {
+    gs.insert(closure_point(weight_center + half_diagonal * Variable(axis)));
+    gs.insert(closure_point(weight_center - half_diagonal * Variable(axis)));
   }
 }
 
-
-void gen_nnc_hypercubes() {
-  const size_t mindim = 6;
-  const size_t maxdim = 8;
-
-  cout << "=========================================" << endl
-       << "Computing generators of NNC hypercubes" << endl
-       << "missing some of the vertices" << endl
-       << endl;
-
-  for (size_t dim = mindim; dim <= maxdim; dim++) {
-    // First build the constraint system defining
-    // the closed hypercube.
-    ConSys cs;
-    for (size_t axis = dim; axis-- > 0; ) {
-      cs.insert(Variable(axis) >= lb);
-      cs.insert(Variable(axis) <= ub);
-    }
-
-    // Number of vertices in the closed hypercube.
-    size_t num_vertices = 1;
-    for (size_t axis = dim; axis-- > 0; )
-      num_vertices *= 2;
-
-    cout << dim << "-dimensional hypercubes (max ";
-    cout << num_vertices << " vertices):" << endl;
-
-    for (size_t quarters = 0; quarters <= 4; quarters++) {
-      size_t to_be_removed = (num_vertices * quarters) / 4;
-
-      cout << "  having "
-	   << (num_vertices - to_be_removed) * 100 / num_vertices
-	   << "\% of the vertices ("
-	   << (num_vertices - to_be_removed)
-	   << "): wmf ";
-
-      // Now add strict inequality constraints
-      // each one removing one vertex.
-      ConSys cs_copy = cs;
-      remove_vertices(to_be_removed, LinExpression(), dim-1, cs_copy);
-      NNC_Polyhedron ph(cs_copy);
-
-      start_clock();
-      const GenSys& gs = ph.generators();
-      print_clock(cout);
-
-      GenSys::const_iterator i = gs.begin();
-      GenSys::const_iterator gs_end = gs.end();
-      dimension_type num_generators = 0;
-      while (i != gs_end) {
-	num_generators++;
-	i++;
-      }
-      cout << " (" << num_generators << " gens) ";
-
-      cout << "smf ";
-      start_clock();
-      const GenSys& smf_gs = ph.minimized_generators();
-      print_clock(cout);
-
-      i = smf_gs.begin();
-      gs_end = smf_gs.end();
-      num_generators = 0;
-      while (i != gs_end) {
-	num_generators++;
-	i++;
-      }
-      cout << " (" << num_generators << " gens) ";
-      cout << endl;
-
-#if NOISY
-      print_generators(ph, "--- ph ---");
-#endif
-    }
-  }
-  cout << "=========================================" << endl
-       << endl;
-}
-
-
-/*******************************************
-
-void con_dual_closed_hypercubes() {
-  const size_t mindim = 8;
-  const size_t maxdim = 11;
-
-  cout << "=========================================" << endl
-       << "Computing constraints for the DUAL of a CLOSED hypercube" << endl
-       << endl;
-
-  for (size_t dim = mindim; dim <= maxdim; dim++) {
-    GenSys gs;
-    for (size_t axis = dim; axis-- > 0; ) {
-      gs.insert(point(-ub * Variable(axis)));
-      gs.insert(point(ub * Variable(axis)));
-    }
-    NNC_Polyhedron ph(gs);
-    cout << dim << "-dimensional DUAL hypercube: ";
-    start_clock();
-    ph.constraints();
-    print_clock(cout);
-    cout << " secs." << endl;
-#if NOISY
-    print_constraints(ph, "--- ph ---");
-    print_generators(ph, "--- ph ---");
-#endif
-  }
-  cout << "=========================================" << endl
-       << endl;
-}
-
-
-void con_dual_open_hypercubes() {
-  const size_t mindim = 8;
-  const size_t maxdim = 11;
-
-  cout << "=========================================" << endl
-       << "Computing constraints for the DUAL of an OPEN hypercube" << endl
-       << endl;
-
-  for (size_t dim = mindim; dim <= maxdim; dim++) {
-    GenSys gs;
-    for (size_t axis = dim; axis-- > 0; ) {
-      gs.insert(closure_point(-ub * Variable(axis)));
-      gs.insert(closure_point(ub * Variable(axis)));
-    }
-    gs.insert(point());
-    NNC_Polyhedron ph(gs);
-    cout << dim << "-dimensional DUAL hypercube: ";
-    start_clock();
-    ph.constraints();
-    print_clock(cout);
-    cout << " secs." << endl;
-#if NOISY
-    print_constraints(ph, "--- ph ---");
-    print_generators(ph, "--- ph ---");
-#endif
-  }
-  cout << "=========================================" << endl
-       << endl;
-}
-
-**********************************************/
-
-void add_facets(size_t &to_be_added,
-		LinExpression expr,
-		size_t dims,
-		size_t axis,
-		GenSys &gs) {
+void
+add_facets(size_t &to_be_added,
+	   size_t axis,
+	   const LinExpression& expr,
+	   size_t dims,
+	   const LinExpression& weight_center,
+	   const Integer& half_diagonal,
+	   GenSys &gs) {
   // Return if we have already added all facets.
   if (to_be_added == 0)
     return;
 
+  LinExpression expr1 = expr;
+  expr1 += half_diagonal * Variable(axis);
+  LinExpression expr2 = expr;
+  expr2 -= half_diagonal * Variable(axis);
+
   if (axis == 0) {
-    // Adding first a point where the 0-axis has coordinate 1/dims.
-    expr += ub * Variable(axis);
-    gs.insert(point(expr, dims));
+    gs.insert(point(dims * weight_center + expr1, dims));
     --to_be_added;
     if (to_be_added == 0)
       return;
-    // Restoring previous value of `expr'.
-    expr -= ub * Variable(axis);
-    // Then, add a point where the 0-axis has coordinate -1/dims.
-    expr -= ub * Variable(axis);
-    gs.insert(point(expr, dims));
+    gs.insert(point(dims * weight_center + expr2, dims));
     --to_be_added;
   }
   else {
     // axis > 0.
     // First recursive call with variable with index `axis'
     // having coordinate 1/dims.
-    expr += ub * Variable(axis);
-    add_facets(to_be_added, expr, dims, axis-1, gs);
+    add_facets(to_be_added, axis-1, expr1,
+	       dims, weight_center, half_diagonal, gs);
     if (to_be_added == 0)
       return;
-    // Restoring previous value of `expr'.
-    expr -= ub * Variable(axis);
     // Second recursive call with variable with index `axis'
     // having coordinate -1/dims.
-    expr -= ub * Variable(axis);
-    add_facets(to_be_added, expr, dims, axis-1, gs);
+    add_facets(to_be_added, axis-1, expr2,
+	       dims, weight_center, half_diagonal, gs);
   }
 }
-
-
-void con_dual_nnc_hypercubes() {
-  const size_t mindim = 6;
-  const size_t maxdim = 8;
-
-  cout << "=========================================" << endl
-       << "Computing constraints of duals of NNC hypercubes" << endl
-       << "missing some of the facets" << endl
-       << endl;
-
-  for (size_t dim = mindim; dim <= maxdim; dim++) {
-    // First build the generator system defining
-    // the open dual hypercube.
-    GenSys gs;
-    for (size_t axis = dim; axis-- > 0; ) {
-      gs.insert(closure_point(-ub * Variable(axis)));
-      gs.insert(closure_point(ub * Variable(axis)));
-    }
-
-    // Number of facets in the closed dual hypercube.
-    size_t num_facets = 1;
-    for (size_t axis = dim; axis-- > 0; )
-      num_facets *= 2;
-
-    cout << dim << "-dimensional dual hypercubes (max ";
-    cout << num_facets << " facets):" << endl;
-
-    for (size_t quarters = 0; quarters <= 4; quarters++) {
-      size_t to_be_added = (num_facets * quarters) / 4;
-
-      cout << "  having "
-	   << (to_be_added * 100) / num_facets
-	   << "\% of the facets ("
-	   << to_be_added
-	   << "): wmf ";
-
-      // Now add strict inequality constraints
-      // each one removing one vertex.
-      GenSys gs_copy = gs;
-
-      if (to_be_added == 0)
-	// There has to be a point, at least.
-	gs_copy.insert(point());
-      else
-	add_facets(to_be_added, LinExpression(), dim, dim-1, gs_copy);
-
-      NNC_Polyhedron ph(gs_copy);
-
-#if 0
-      cout << "generators" << endl;
-      ph.generators().ASCII_dump(cout);
-#endif
-
-      start_clock();
-      const ConSys& cs = ph.constraints();
-      print_clock(cout);
-
-      ConSys::const_iterator i = cs.begin();
-      ConSys::const_iterator cs_end = cs.end();
-      dimension_type num_constraints = 0;
-      while (i != cs_end) {
-	num_constraints++;
-	i++;
-      }
-      cout << " (" << num_constraints << " cons) ";
-
-      cout << "smf ";
-      start_clock();
-      const ConSys& smf_cs = ph.minimized_constraints();
-      print_clock(cout);
-
-      i = smf_cs.begin();
-      cs_end = smf_cs.end();
-      num_constraints = 0;
-      while (i != cs_end) {
-	num_constraints++;
-	i++;
-      }
-      cout << " (" << num_constraints << " cons)";
-      cout << endl;
-
-#if NOISY
-      ph.minimized_constraints();
-      cout << "Constraints" << endl;
-      ph.constraints().ASCII_dump(cout);
-      ph.minimized_generators();
-      cout << "Generators" << endl;
-      ph.generators().ASCII_dump(cout);
-#endif
-    }
-  }
-  cout << "=========================================" << endl
-       << endl;
-}
-
 
 void
-print_number_cons(NNC_Polyhedron& ph) {
+NNC_dual_hypercube(size_t dims,
+		   const LinExpression& weight_center,
+		   const Integer& half_diagonal,
+		   size_t facet_percentage,
+		   NNC_Polyhedron& ph) {
+  GenSys gs;
+  closure_points_dual_hypercube(dims, weight_center, half_diagonal, gs);
+  // Number of facets in the closed dual hypercube.
+  size_t num_facets = 1;
+  for (size_t axis = dims; axis-- > 0; )
+    num_facets *= 2;
+  size_t facets_to_be_added = (num_facets * facet_percentage) / 100;
+  if (facets_to_be_added == 0)
+    // There has to be a point, at least.
+    gs.insert(point(weight_center));
+  else
+    add_facets(facets_to_be_added, dims-1, LinExpression(0),
+	       dims, weight_center, half_diagonal, gs);
+  // Build the polyhedron.
+  ph = NNC_Polyhedron(gs);
+}
 
+size_t
+get_number_cons(NNC_Polyhedron& ph) {
   const ConSys& cs = ph.constraints();
   ConSys::const_iterator i = cs.begin();
   ConSys::const_iterator cs_end = cs.end();
@@ -432,28 +119,11 @@ print_number_cons(NNC_Polyhedron& ph) {
     num_constraints++;
     i++;
   }
-  cout << " (" << num_constraints << " cons) ";
-  
-  cout << "smf ";
-  start_clock();
-  const ConSys& smf_cs = ph.minimized_constraints();
-  print_clock(cout);
-  
-  i = smf_cs.begin();
-  cs_end = smf_cs.end();
-  num_constraints = 0;
-  while (i != cs_end) {
-    num_constraints++;
-    i++;
-  }
-  cout << " (" << num_constraints << " cons)";
-  cout << endl;
+  return num_constraints;
 }
 
-
-void
-print_number_gens(NNC_Polyhedron& ph) {
-
+size_t
+get_number_gens(NNC_Polyhedron& ph) {
   const GenSys& gs = ph.generators();
   GenSys::const_iterator i = gs.begin();
   GenSys::const_iterator gs_end = gs.end();
@@ -462,209 +132,183 @@ print_number_gens(NNC_Polyhedron& ph) {
     num_generators++;
     i++;
   }
-  cout << " (" << num_generators << " gens) ";
-  
-  cout << "smf ";
+  return num_generators;
+}
+
+void
+compute_smf_gens(NNC_Polyhedron& ph) {
+  cout << "    Final smf computation: ";
   start_clock();
-  const GenSys& smf_gs = ph.minimized_generators();
+  ph.minimized_generators();
   print_clock(cout);
-  
-  i = smf_gs.begin();
-  gs_end = smf_gs.end();
-  num_generators = 0;
-  while (i != gs_end) {
-    num_generators++;
-    i++;
-  }
-  cout << " (" << num_generators << " gens)";
-  cout << endl;
 }
 
+int
+smf_intersection_polyhull_test(size_t dims, size_t perc) {
 
-void
-smf_poly_hull_test() {
-  size_t mindim = 6;
-  size_t maxdim = 6;
+  // Build 4 polyhedra and 4 copies of them.
 
-  for (size_t dim = mindim; dim <= maxdim; dim++) {
+  // 1st-polyhedron.
+  LinExpression weight_center;
+  NNC_Polyhedron ph1;
+  NNC_dual_hypercube(dims, weight_center, 5, perc, ph1);
+  NNC_Polyhedron ph1_copy = ph1;
 
-    ConSys cs1;
-    for (size_t axis = dim; axis-- > 0; ) {
-      cs1.insert(Variable(axis) >= lb);
-      cs1.insert(Variable(axis) <= ub);
-    }
+  // 2nd-polyhedron.
+  weight_center = LinExpression(0);
+  for (size_t axis = dims; axis-- > 0; )
+    weight_center += Variable(axis);
+  NNC_Polyhedron ph2;
+  NNC_dual_hypercube(dims, weight_center, 4, perc, ph2);
+  NNC_Polyhedron ph2_copy = ph2;
 
-    ConSys cs2;
-    for (size_t axis = dim; axis-- > 0; ) {
-      cs2.insert(Variable(axis) >= lb + shift_coeff);
-      cs2.insert(Variable(axis) <= ub + shift_coeff);
-    }
+  // 3rd-polyhedron.
+  weight_center = LinExpression(0);
+  for (size_t axis = dims; axis-- > 0; )
+    if (axis % 2 == 0)
+      weight_center += 10*Variable(axis);
+  NNC_Polyhedron ph3;
+  NNC_dual_hypercube(dims, weight_center, 5, perc, ph3);
+  NNC_Polyhedron ph3_copy = ph3;
 
+  // 4th-polyhedron.
+  weight_center = LinExpression(0);
+  for (size_t axis = dims; axis-- > 0; )
+    if (axis % 2 == 0)
+      weight_center += 10*Variable(axis);
+    else
+      weight_center -= Variable(axis);
+  NNC_Polyhedron ph4;
+  NNC_dual_hypercube(dims, weight_center, 4, perc, ph4);
+  NNC_Polyhedron ph4_copy = ph4;
 
-
-    // Number of vertices in the closed hypercube.
-    size_t num_vertices = 1;
-    for (size_t axis = dim; axis-- > 0; )
-      num_vertices *= 2;
-
-    cout << "============================" << endl;
-    cout << dim << "-dimensional hypercubes (max ";
-    cout << num_vertices << " vertices):" << endl;
-
-    for (size_t quarters = 0; quarters <= 4; quarters++) {
-      size_t to_be_removed = (num_vertices * quarters) / 4;
-
-      cout << "    "
-	   << (num_vertices - to_be_removed) * 100 / num_vertices
-	   << "\% of the vertices ("
-	   << (num_vertices - to_be_removed)
-	   << "):" << endl;
-
-      // Now add strict inequality constraints
-      // each one removing one vertex.
-      ConSys cs1_copy = cs1;
-      ConSys cs2_copy = cs2;
-
-      size_t to_be_removed_copy = to_be_removed;
-      remove_vertices(to_be_removed, LinExpression(), dim-1, cs1_copy);
-      remove_vertices(to_be_removed_copy,
-		      LinExpression(shift_coeff), dim-1, cs2_copy);
-
-      NNC_Polyhedron ph1(cs1_copy);
-      NNC_Polyhedron ph2(cs2_copy);
-
-      NNC_Polyhedron ph1_copy = ph1;
-      NNC_Polyhedron ph2_copy = ph2;
-
-      cout << "        wmf ";
-      start_clock();
-      ph1.generators();
-      ph2.generators();
-      ph1.poly_hull_assign_and_minimize(ph2);
-      print_clock(cout);
-      print_number_cons(ph1);
-
-      cout << "        smf ";
-      start_clock();
-      ph1_copy.generators();
-      ph2_copy.minimized_generators();
-      ph1_copy.poly_hull_assign_and_minimize(ph2_copy);
-      print_clock(cout);     
-      print_number_cons(ph1_copy);
-
-#if NOISY
-      ph.minimized_constraints();
-      cout << "Constraints" << endl;
-      ph.constraints().ASCII_dump(cout);
-      ph.minimized_generators();
-      cout << "Generators" << endl;
-      ph.generators().ASCII_dump(cout);
-#endif
-    }
-  }
-}
-
-
-void
-smf_intersection_test() {
-  size_t mindim = 7;
-  size_t maxdim = 7;
-
-  for (size_t dim = mindim; dim <= maxdim; dim++) {
-
-    GenSys gs1;
-    for (size_t axis = dim; axis-- > 0; ) {
-      gs1.insert(closure_point(-ub * Variable(axis)));
-      gs1.insert(closure_point(ub * Variable(axis)));
-    }
-
-    LinExpression shift;
-    for (size_t axis = dim; axis-- > 0; )
-      shift += shift_coeff * Variable(axis);
-    GenSys gs2;
-    for (size_t axis = dim; axis-- > 0; ) {
-      gs2.insert(closure_point(shift - ub * Variable(axis)));
-      gs2.insert(closure_point(shift + ub * Variable(axis)));
-    }
-
-    // Number of facets in the closed dual hypercube.
-    size_t num_facets = 1;
-    for (size_t axis = dim; axis-- > 0; )
-      num_facets *= 2;
-
-    cout << "============================" << endl;
-    cout << dim << "-dimensional dual hypercubes (max ";
-    cout << num_facets << " facets):" << endl;
-
-    for (size_t quarters = 0; quarters <= 4; quarters++) {
-      size_t to_be_added = (num_facets * quarters) / 4;
-
-      cout << "    "
-	   << (to_be_added * 100) / num_facets
-	   << "\% of the facets ("
-	   << to_be_added
-	   << "):" << endl;
-
-      // Now add strict inequality constraints
-      // each one removing one vertex.
-      GenSys gs1_copy = gs1;
-      GenSys gs2_copy = gs2;
-
-      if (to_be_added == 0) {
-	// There has to be a point, at least.
-	gs1_copy.insert(point());
-	gs2_copy.insert(point(shift));
-      }
-      else {
-	size_t to_be_added_copy = to_be_added;
-	add_facets(to_be_added, LinExpression(), dim, dim-1, gs1_copy);
-	add_facets(to_be_added_copy, shift, dim, dim-1, gs2_copy);
-      }
-
-      NNC_Polyhedron ph1(gs1_copy);
-      NNC_Polyhedron ph2(gs2_copy);
-
-      NNC_Polyhedron ph1_copy = ph1;
-      NNC_Polyhedron ph2_copy = ph2;
-
-      cout << "        wmf ";
-      start_clock();
-      ph1.constraints();
-      ph2.constraints();
-      ph1.intersection_assign_and_minimize(ph2);
-      print_clock(cout);
-      print_number_gens(ph1);
-
-      cout << "        smf ";
-      start_clock();
-      ph1_copy.constraints();
-      ph2_copy.minimized_constraints();
-      ph1_copy.intersection_assign_and_minimize(ph2_copy);
-      print_clock(cout);     
-      print_number_gens(ph1_copy);
-
-#if NOISY
-      ph.minimized_constraints();
-      cout << "Constraints" << endl;
-      ph.constraints().ASCII_dump(cout);
-      ph.minimized_generators();
-      cout << "Generators" << endl;
-      ph.generators().ASCII_dump(cout);
-#endif
-    }
-  }
-  cout << "=========================================" << endl
+  cout << "Working with 4 NNC dual-hypercubes," << endl
+       << "each one having " << get_number_gens(ph1) << " gens" << endl
        << endl;
+
+  //-----------------------------------------------------
+  // Standard computation.
+  //-----------------------------------------------------
+  cout << "=================================" << endl;
+  cout << "  Standard computation: " << endl;
+
+  // Compute the intersection of ph1 and ph2.
+  start_clock();
+#if NOISY
+  // Print dimensions of arguments.
+  cout << "Computing intersection of ph1 and ph2:" << endl; 
+  cout << "  ph1 wmf cons: " << get_number_cons(ph1) << endl;
+  cout << "  ph2 wmf cons: " << get_number_cons(ph2) << endl;
+#endif
+  ph1.intersection_assign_and_minimize(ph2);
+
+  // Compute the intersection of ph3 and ph4.
+#if NOISY
+  // Print dimensions of arguments.
+  cout << "Computing intersection of ph3 and ph4:" << endl; 
+  cout << "  ph3 wmf cons: " << get_number_cons(ph3) << endl;
+  cout << "  ph4 wmf cons: " << get_number_cons(ph4) << endl;
+#endif
+  ph3.intersection_assign_and_minimize(ph4);
+  //  cout << "After the two intersections: ";
+  //  print_clock(cout);
+  //  cout << endl;
+
+  // Compute the poly-hull of ph1 and ph3.
+  //  start_clock();
+#if NOISY
+  // Print dimensions of arguments.
+  cout << "Computing poly-hull of ph1 and ph3:" << endl; 
+  cout << "  ph1 wmf gens: " << get_number_gens(ph1) << endl;
+  cout << "  ph3 wmf gens: " << get_number_gens(ph3) << endl;
+#endif
+  ph1.poly_hull_assign_and_minimize(ph3);
+  cout << "After poly-hull: ";
+  print_clock(cout);
+  cout << endl;
+
+  // How many constraints obtained?
+  cout << "  Final result wmf cons: " << get_number_cons(ph1) << endl;
+
+  // How many constraints obtained?
+  cout << "  Final result smf cons (time ";
+  start_clock();
+  ph1.minimized_constraints();
+  print_clock(cout);
+  cout << "): " << get_number_cons(ph1) << endl;
+  cout << endl;
+
+  //-----------------------------------------------------
+  // Enhanced computation.
+  //-----------------------------------------------------
+  cout << "=================================" << endl;
+  cout << endl << "  Enhanced computation: " << endl;
+
+  // Compute the intersection of ph1_copy and ph2_copy.
+  start_clock();
+  //ph1_copy.minimized_constraints();
+  ph2_copy.minimized_constraints();
+#if NOISY
+  // Print dimensions of arguments.
+  cout << "Computing intersection of ph1 and ph2:" << endl; 
+  cout << "  ph1 wmf cons: " << get_number_cons(ph1_copy) << endl;
+  cout << "  ph2 smf cons: " << get_number_cons(ph2_copy) << endl;
+#endif
+  ph1_copy.intersection_assign_and_minimize(ph2_copy);
+
+  // Compute the intersection of ph3_copy and ph4_copy.
+  //ph3_copy.minimized_constraints();
+  ph4_copy.minimized_constraints();
+#if NOISY
+  // Print dimensions of arguments.
+  cout << "Computing intersection of ph3 and ph4:" << endl; 
+  cout << "  ph3 wmf cons: " << get_number_cons(ph3_copy) << endl;
+  cout << "  ph4 smf cons: " << get_number_cons(ph4_copy) << endl;
+#endif
+  ph3_copy.intersection_assign_and_minimize(ph4_copy);
+  //  cout << "After the two intersections: ";
+  //  print_clock(cout);
+  //  cout << endl;
+
+  // Compute the poly-hull of ph1_copy and ph3_copy.
+  //  start_clock();
+  //ph1_copy.minimized_generators();
+  ph3_copy.minimized_generators();
+#if NOISY
+  // Print dimensions of arguments.
+  cout << "Computing poly-hull of ph1 and ph3:" << endl; 
+  cout << "  ph1 wmf gens: " << get_number_gens(ph1_copy) << endl;
+  cout << "  ph3 smf gens: " << get_number_gens(ph3_copy) << endl;
+#endif
+  ph1_copy.poly_hull_assign_and_minimize(ph3_copy);
+  cout << "After poly-hull: ";
+  print_clock(cout);
+  cout << endl;
+
+  // How many constraints obtained?
+  cout << "  Final result wmf cons: " << get_number_cons(ph1_copy) << endl;
+
+  // How many constraints obtained?
+  cout << "  Final result smf cons (time ";
+  start_clock();
+  ph1_copy.minimized_constraints();
+  print_clock(cout);
+  cout << "): " << get_number_cons(ph1_copy) << endl;
+  cout << endl;
+
+  return 0;
 }
 
 int
 main() {
-  //  gen_closed_hypercubes();
-  //  gen_open_hypercubes();
-  //  gen_nnc_hypercubes();
-  //  con_dual_closed_hypercubes();
-  //  con_dual_open_hypercubes();
-  //  con_dual_nnc_hypercubes();
-  smf_poly_hull_test();
+  for (size_t perc = 0; perc <= 50; perc += 25)
+    for (size_t dims = 4; dims <= 5; dims++) {
+      cout << endl
+	   << "++++++++ DIM = " << dims << "  ++++++++"
+	   << endl
+	   << "++++++++ PERC = " << perc << " ++++++++"
+	   << endl;
+      smf_intersection_polyhull_test(dims, perc);
+    }
   return 0;
 }
