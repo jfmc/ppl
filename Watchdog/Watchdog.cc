@@ -78,30 +78,34 @@ volatile bool PWL::Watchdog::alarm_clock_running = false;
 // Whether we are changing data which are also changed by the signal handler.
 volatile bool PWL::Watchdog::in_critical_section = false;
 
-static void
+namespace {
+
+void
 throw_syscall_error(const char* syscall_name) {
   throw std::runtime_error(std::string(syscall_name) + strerror(errno));
 }
 
-static void
+void
 my_getitimer(int which, struct itimerval* value) {
   if (getitimer(which, value) != 0)
     throw_syscall_error("getitimer");
 }
 
-static void
+void
 my_setitimer(int which,
 	     const struct itimerval* value, struct itimerval* ovalue) {
   if (setitimer(which, value, ovalue) != 0)
     throw_syscall_error("setitimer");
 }
 
-static void
+void
 my_sigaction(int signum,
 	    const struct sigaction* act, struct sigaction* oldact) {
   if (sigaction(signum, act, oldact) != 0)
     throw_syscall_error("sigaction");
 }
+
+} // namespace
 
 void
 PWL::Watchdog::get_timer(Time& time) {

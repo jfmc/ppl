@@ -961,7 +961,9 @@ enum Boundary_Kind {
   UPPER
 };
 
-static bool
+namespace {
+
+bool
 term_to_boundary(Prolog_term_ref t_b, Boundary_Kind kind,
 		 bool& finite, bool& closed,
 		 Integer& n, Integer& d) {
@@ -1021,6 +1023,8 @@ term_to_boundary(Prolog_term_ref t_b, Boundary_Kind kind,
   }
   return true;
 }
+
+} // namespace
 
 extern "C" Prolog_foreign_return_type
 ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
@@ -1277,7 +1281,9 @@ ppl_Polyhedron_relation_with_generator(Prolog_term_ref t_ph,
   CATCH_ALL;
 }
 
-static Prolog_term_ref
+namespace {
+
+Prolog_term_ref
 extended_rational_term(const ERational& e) {
   Prolog_term_ref t = Prolog_new_term_ref();
   int d = e.direction_of_infinity();
@@ -1298,7 +1304,7 @@ extended_rational_term(const ERational& e) {
   return t;
 }
 
-static Prolog_term_ref
+Prolog_term_ref
 interval_term(const Interval& i) {
   Prolog_term_ref t = Prolog_new_term_ref();
   if (i.is_empty())
@@ -1325,7 +1331,7 @@ interval_term(const Interval& i) {
   return t;
 }
 
-static bool
+bool
 term_to_complexity_class(Prolog_term_ref t, Prolog_atom& cc) {
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
@@ -1337,6 +1343,8 @@ term_to_complexity_class(Prolog_term_ref t, Prolog_atom& cc) {
   }
   return false;
 }
+
+} // namespace
 
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_get_bounding_box(Prolog_term_ref t_ph,
@@ -1739,7 +1747,9 @@ ppl_Polyhedron_affine_preimage(Prolog_term_ref t_ph, Prolog_term_ref t_v,
   CATCH_ALL;
 }
 
-static bool
+namespace {
+
+bool
 relation_symbol(Prolog_term_ref t_r, Relation_Symbol& r) {
   if (Prolog_is_atom(t_r)) {
     Prolog_atom ra;
@@ -1764,6 +1774,8 @@ relation_symbol(Prolog_term_ref t_r, Relation_Symbol& r) {
     return false;
   return true;
 }
+
+} // namespace
 
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_generalized_affine_image(Prolog_term_ref t_ph,
