@@ -70,6 +70,44 @@ schedule.clpq
 
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
+if USE_INT64
+
+EXPECTED = expected_int64
+EXPECTED2 = expected2_int64
+EXPECTED3 = expected3_int64
+
+else !USE_INT64
+if USE_INT32
+
+EXPECTED = expected_int32
+EXPECTED2 = expected2_int32
+EXPECTED3 = expected3_int32
+
+else !USE_INT32
+if USE_INT16
+
+EXPECTED = expected_int16
+EXPECTED2 = expected2_int16
+EXPECTED3 = expected3_int16
+
+else !USE_INT16
+if USE_INT8
+
+EXPECTED = expected_int8
+EXPECTED2 = expected2_int8
+EXPECTED3 = expected3_int8
+
+else !USE_INT8
+
+EXPECTED = expected
+EXPECTED2 = expected2
+EXPECTED3 = expected3
+
+endif !USE_INT8
+endif !USE_INT16
+endif !USE_INT32
+endif !USE_INT64
+
 # Notice: we are linking with libppl_gprolog.a statically.
 # This is a kludge until we understand whether and if libtool
 # and gplc can interoperate.
@@ -84,18 +122,18 @@ gp_clpq2: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../clpq2.pl
 		$(srcdir)/../clpq2.pl .libs/libppl_gprolog.a \
 		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp'
 
-check-local: gp_clpq ../check_script ../expected gp_clpq2 ../check_script2 ../expected2 ../pl_check.pl ../expected3
+check-local: gp_clpq ../check_script ../$(EXPECTED) gp_clpq2 ../check_script2 ../$(EXPECTED2) ../pl_check.pl ../$(EXPECTED3)
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		./gp_clpq <$(srcdir)/../check_script >obtained
-	diff -q --ignore-all-space $(srcdir)/../expected obtained
+	diff -q --ignore-all-space $(srcdir)/../$(EXPECTED) obtained
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		./gp_clpq2 <$(srcdir)/../check_script2 >obtained2
-	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
+	diff -q --ignore-all-space $(srcdir)/../$(EXPECTED2) obtained2
 	echo "['$(srcdir)/../pl_check.pl', '$(srcdir)/gnu_pl_check.pl']." \
 		>check_script3
 	echo "main." >>check_script3
@@ -103,7 +141,7 @@ check-local: gp_clpq ../check_script ../expected gp_clpq2 ../check_script2 ../ex
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		./ppl_gprolog <check_script3
-	diff -q --ignore-all-space $(srcdir)/../expected3 obtained3
+	diff -q --ignore-all-space $(srcdir)/../$(EXPECTED3) obtained3
 
 MOSTLYCLEANFILES = \
 gp_clpq gp_clpq2 \

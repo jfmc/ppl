@@ -62,7 +62,45 @@ schedule.clpq
 
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
-check-local: yap_clpq.pl ../check_script ../expected yap_clpq2.pl ../check_script2 ../expected2 ppl_yap.pl ../pl_check.pl ../expected3
+if USE_INT64
+
+EXPECTED = expected_int64
+EXPECTED2 = expected2_int64
+EXPECTED3 = expected3_int64
+
+else !USE_INT64
+if USE_INT32
+
+EXPECTED = expected_int32
+EXPECTED2 = expected2_int32
+EXPECTED3 = expected3_int32
+
+else !USE_INT32
+if USE_INT16
+
+EXPECTED = expected_int16
+EXPECTED2 = expected2_int16
+EXPECTED3 = expected3_int16
+
+else !USE_INT16
+if USE_INT8
+
+EXPECTED = expected_int8
+EXPECTED2 = expected2_int8
+EXPECTED3 = expected3_int8
+
+else !USE_INT8
+
+EXPECTED = expected
+EXPECTED2 = expected2
+EXPECTED3 = expected3
+
+endif !USE_INT8
+endif !USE_INT16
+endif !USE_INT32
+endif !USE_INT64
+
+check-local: yap_clpq.pl ../check_script ../$(EXPECTED) yap_clpq2.pl ../check_script2 ../$(EXPECTED2) ppl_yap.pl ../pl_check.pl ../$(EXPECTED3)
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	echo "main." >check_script
 	cat $(srcdir)/../check_script >>check_script
@@ -72,7 +110,7 @@ check-local: yap_clpq.pl ../check_script ../expected yap_clpq2.pl ../check_scrip
 		-dlopen ppl_yap.la \
 		yap -l $(srcdir)/yap_clpq.pl \
 			<check_script >obtained
-	diff -q --ignore-all-space $(srcdir)/../expected obtained
+	diff -q --ignore-all-space $(srcdir)/../$(EXPECTED) obtained
 	echo "main." >check_script2
 	cat $(srcdir)/../check_script2 >>check_script2
 	$(LIBTOOL) --mode=execute \
@@ -81,7 +119,7 @@ check-local: yap_clpq.pl ../check_script ../expected yap_clpq2.pl ../check_scrip
 		-dlopen ppl_yap.la \
 		yap -l $(srcdir)/yap_clpq2.pl \
 			<check_script2 >obtained2
-	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
+	diff -q --ignore-all-space $(srcdir)/../$(EXPECTED2) obtained2
 	echo "main." >check_script3
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
@@ -89,7 +127,7 @@ check-local: yap_clpq.pl ../check_script ../expected yap_clpq2.pl ../check_scrip
 		-dlopen ppl_yap.la \
 		yap -l $(srcdir)/yap_pl_check.pl \
 			<check_script3 >obtained3
-	diff -q --ignore-all-space $(srcdir)/../expected3 obtained3
+	diff -q --ignore-all-space $(srcdir)/../$(EXPECTED3) obtained3
 
 MOSTLYCLEANFILES = \
 check_script check_script2 check_script3 \

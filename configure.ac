@@ -328,10 +328,10 @@ esac
 
 AM_CONDITIONAL(USE_NATIVE_INTEGERS, test x"$coefficient_kind" = xnative)
 AM_CONDITIONAL(USE_CHECKED_INTEGERS, test x"$coefficient_kind" = xchecked)
-AM_CONDITIONAL(USE_INT8_T, test x"$coefficient_type" = xint8_t)
-AM_CONDITIONAL(USE_INT16_T, test x"$coefficient_type" = xint16_t)
-AM_CONDITIONAL(USE_INT32_T, test x"$coefficient_type" = xint32_t)
-AM_CONDITIONAL(USE_INT64_T, test x"$coefficient_type" = xint64_t)
+AM_CONDITIONAL(USE_INT8, test x"$coefficient_type" = xint8_t)
+AM_CONDITIONAL(USE_INT16, test x"$coefficient_type" = xint16_t)
+AM_CONDITIONAL(USE_INT32, test x"$coefficient_type" = xint32_t)
+AM_CONDITIONAL(USE_INT64, test x"$coefficient_type" = xint64_t)
 AM_CONDITIONAL(USE_GMP_INTEGERS, test x"$coefficient_type" = xgmp)
 
 
