@@ -1838,14 +1838,15 @@ ppl_Polyhedron_maximize(ppl_const_Polyhedron_t ph,
 			ppl_Coefficient_t sup_n,
 			ppl_Coefficient_t sup_d,
 			int* pmaximum,
-			ppl_Generator_t* ppoint) try {
+			ppl_const_Generator_t* ppoint) try {
   const Polyhedron& pph = *to_const(ph);
   const LinExpression& lle = *to_const(le);
   Integer& ssup_n = *to_nonconst(sup_n);
   Integer& ssup_d = *to_nonconst(sup_d);
   bool maximum;
   bool ok = ppoint != 0
-    ? pph.maximize(lle, ssup_n, ssup_d, maximum, *to_nonconst(*ppoint))
+    ? pph.maximize(lle, ssup_n, ssup_d, maximum,
+		   reinterpret_cast<const Generator** const>(ppoint))
     : pph.maximize(lle, ssup_n, ssup_d, maximum);
   if (ok)
     *pmaximum = maximum ? 1 : 0;
@@ -1859,14 +1860,15 @@ ppl_Polyhedron_minimize(ppl_const_Polyhedron_t ph,
 			ppl_Coefficient_t inf_n,
 			ppl_Coefficient_t inf_d,
 			int* pminimum,
-			ppl_Generator_t* ppoint) try {
+			ppl_const_Generator_t* ppoint) try {
   const Polyhedron& pph = *to_const(ph);
   const LinExpression& lle = *to_const(le);
   Integer& iinf_n = *to_nonconst(inf_n);
   Integer& iinf_d = *to_nonconst(inf_d);
   bool minimum;
   bool ok = ppoint != 0
-    ? pph.minimize(lle, iinf_n, iinf_d, minimum, *to_nonconst(*ppoint))
+    ? pph.minimize(lle, iinf_n, iinf_d, minimum,
+		   reinterpret_cast<const Generator** const>(ppoint))
     : pph.minimize(lle, iinf_n, iinf_d, minimum);
   if (ok)
     *pminimum = minimum ? 1 : 0;

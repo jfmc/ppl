@@ -1387,7 +1387,7 @@ ppl_Polyhedron_maximize __P((ppl_const_Polyhedron_t ph,
 			     ppl_Coefficient_t sup_n,
 			     ppl_Coefficient_t sup_d,
 			     int* pmaximum,
-			     ppl_Generator_t* ppoint));
+			     ppl_const_Generator_t* ppoint));
 
 /*! \brief
   Returns a positive integer if  \p ph is not empty
@@ -1411,7 +1411,7 @@ ppl_Polyhedron_minimize __P((ppl_const_Polyhedron_t ph,
 			     ppl_Coefficient_t inf_n,
 			     ppl_Coefficient_t inf_d,
 			     int* pminimum,
-			     ppl_Generator_t* ppoint));
+			     ppl_const_Generator_t* ppoint));
 
 /*! \brief
   Returns a positive integer if \p ph is topologically closed;
