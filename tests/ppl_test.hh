@@ -86,12 +86,16 @@ div_round_up(Checked_Number<To, To_Policy>& to,
 #else
   Rounding_State old;
   Coefficient q;
-  Coefficient::internal_save_rounding(ROUND_UP, old);
-  q.assign_div(x, y, ROUND_UP);
-  Coefficient::internal_restore_rounding(old, ROUND_UP);
-  Checked_Number<To, To_Policy>::internal_save_rounding(ROUND_UP, old);
+  rounding_save_internal<Coefficient>(ROUND_UP, old);
+  Result r = q.assign_div(x, y, ROUND_UP);
+  rounding_restore_internal<Coefficient>(old, ROUND_UP);
+  if (r == V_POS_OVERFLOW) {
+    to = PLUS_INFINITY;
+    return;
+  }
+  rounding_save_internal<To>(ROUND_UP, old);
   to.assign(q, ROUND_UP);
-  Checked_Number<To, To_Policy>::internal_restore_rounding(old, ROUND_UP);
+  rounding_restore_internal<To>(old, ROUND_UP);
 #endif
 }
 
@@ -101,9 +105,9 @@ add_round_up(Checked_Number<T, Policy>& to,
 	     const Checked_Number<T, Policy>& x,
 	     const Checked_Number<T, Policy>& y) {
   Rounding_State old;
-  Checked_Number<T, Policy>::internal_save_rounding(ROUND_UP, old);
+  rounding_save_internal<T>(ROUND_UP, old);
   to.assign_add(x, y, ROUND_UP);
-  Checked_Number<T, Policy>::internal_restore_rounding(old, ROUND_UP);
+  rounding_restore_internal<T>(old, ROUND_UP);
 }
 
 template <typename T, typename Policy>
@@ -112,9 +116,9 @@ add_round_down(Checked_Number<T, Policy>& to,
 	       const Checked_Number<T, Policy>& x,
 	       const Checked_Number<T, Policy>& y) {
   Rounding_State old;
-  Checked_Number<T, Policy>::internal_save_rounding(ROUND_DOWN, old);
+  rounding_save_internal<T>(ROUND_DOWN, old);
   to.assign_add(x, y, ROUND_DOWN);
-  Checked_Number<T, Policy>::internal_restore_rounding(old, ROUND_UP);
+  rounding_restore_internal<T>(old, ROUND_UP);
 }
 
 template <typename T, typename Policy>
@@ -122,9 +126,9 @@ inline void
 negate_round_down(Checked_Number<T, Policy>& to,
 		  const Checked_Number<T, Policy>& x) {
   Rounding_State old;
-  Checked_Number<T, Policy>::internal_save_rounding(ROUND_DOWN, old);
+  rounding_save_internal<T>(ROUND_DOWN, old);
   to.assign_neg(x, ROUND_DOWN);
-  Checked_Number<T, Policy>::internal_restore_rounding(old, ROUND_UP);
+  rounding_restore_internal<T>(old, ROUND_UP);
 }
 
 template <typename T, typename Policy>

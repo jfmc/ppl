@@ -81,6 +81,7 @@ struct Extended_Number_Policy {
 template <typename T, typename Policy>
 class Checked_Number {
 public:
+
   //! \name Constructors
   //@{
 
@@ -275,15 +276,16 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Checked_Number& y);
 
-  static void save_rounding(Rounding_Dir dir, Rounding_State& old);
-  static void restore_rounding(const Rounding_State& old, Rounding_Dir dir);
-  static void internal_save_rounding(Rounding_Dir dir, Rounding_State& old);
-  static void internal_restore_rounding(const Rounding_State& old, Rounding_Dir dir);
-
 private:
   //! The underlying native integer value.
   T v;
 
+};
+
+template <typename T, typename Policy>
+class Float<Checked_Number<T, Policy> > {
+public:
+  static const bool fpu_related = Float<T>::fpu_related;
 };
 
 //! \name Accessor Functions

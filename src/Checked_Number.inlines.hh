@@ -619,30 +619,6 @@ not_a_number() {
   return NOT_A_NUMBER;
 }
 
-template <typename T, typename Policy>
-inline void
-Checked_Number<T, Policy>::save_rounding(Rounding_Dir dir, Rounding_State& old) {
-  return rounding_save<T>(dir, old);
-}
-
-template <typename T, typename Policy>
-inline void
-Checked_Number<T, Policy>::restore_rounding(const Rounding_State& old, Rounding_Dir dir) {
-  return rounding_restore<T>(old, dir);
-}
-
-template <typename T, typename Policy>
-inline void
-Checked_Number<T, Policy>::internal_save_rounding(Rounding_Dir dir, Rounding_State& old) {
-  return rounding_save_internal<T>(dir, old);
-}
-
-template <typename T, typename Policy>
-inline void
-Checked_Number<T, Policy>::internal_restore_rounding(const Rounding_State& old, Rounding_Dir dir) {
-  return rounding_restore_internal<T>(old, dir);
-}
-
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Checked_Number_inlines_hh)
