@@ -596,6 +596,7 @@ affine_gen(T) :-
   make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraint(P, A - B = 1),
+  \+ ppl_Polyhedron_generalized_affine_image(P, A, x, A + 1, 1),
   ppl_Polyhedron_generalized_affine_image(P, A, =<, A + 1, 1),
   ppl_new_Polyhedron_from_constraints(T,
                                       [A - B =< 2],

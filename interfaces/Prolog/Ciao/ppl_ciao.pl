@@ -455,12 +455,19 @@ ppl_Polyhedron_poly_hull_assign_and_minimize(Handle1, Handle2) :-
                                             in(LinearExpression), in(Divisor))
              :: any_term * any_term * any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_generalized_affine_image(in(Handle),
-                                                     in(Var), in(Rel),
-                                                     in(LinExpression),
-                                                     in(Divisor))
-             :: any_term * any_term * any_term * any_term * any_term + foreign.
+:- true pred ppl_Polyhedron_generalized_affine_image_2(
+                                         in(Handle),
+                                         in(Var), in(Rel),
+                                         in(LinExpression),
+                                         in(Divisor), go(Success))
+  :: any_term * any_term * any_term * any_term * any_term * int
+  + (returns(Success),
+      foreign(ppl_Polyhedron_generalized_affine_image)).
 
+ppl_Polyhedron_generalized_affine_image(
+                  Handle, Var, Rel, LinExpression, Divisor) :-
+      ppl_Polyhedron_generalized_affine_image_2(
+                  Handle, Var, Rel, LinExpression, Divisor, 1).
 
 :- true pred ppl_Polyhedron_generalized_affine_image_lhs_rhs_2(
                  in(Handle), in(LHS), in(Rel), in(RHS), go(Success))
@@ -690,7 +697,8 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
         ppl_Polyhedron_poly_difference_assign/2,
         ppl_Polyhedron_affine_image/4,
         ppl_Polyhedron_affine_preimage/4,
-        ppl_Polyhedron_generalized_affine_image/5,
+%        ppl_Polyhedron_generalized_affine_image/5,
+        ppl_Polyhedron_generalized_affine_image_2/6,
 %       ppl_Polyhedron_generalized_affine_image_lhs_rhs/4,
         ppl_Polyhedron_generalized_affine_image_lhs_rhs_2/5,
         ppl_Polyhedron_time_elapse_assign/2,
