@@ -131,27 +131,22 @@ and inequalities:
         A\vect{x} = \vect{b}, C\vect{x} \geq \vect{d}
       \,\},
 \f]
-where, if \f$m_1\f$ is the number of equalities and
-\f$m_2\f$ the number of inequalities,
+where, if \f$m_1\f$ is the number of linear equalities and
+\f$m_2\f$ the number of linear inequalities,
 \f$A \in \Rset^{m_1} \times \Rset^n\f$,
 \f$\vect{b} \in \Rset^{m_1}\f$, 
 \f$C \in \Rset^{m_2} \times \Rset^n\f$ and
 \f$\vect{d} \in \Rset^{m_2}\f$. 
 
-Note that, if \f$\vect{c}, \vect{x} \in \Rset^n\f$
-and \f$\lambda \in \Rset\f$
-and we have the linear inequalities 
-\f$\langle \vect{c}, \vect{x} \rangle \geq \lambda\f$ and
-\f$\langle \vect{c}, \vect{x} \rangle \leq \lambda\f$
-(i.e., \f$\langle -\vect{c}, \vect{x} \rangle \geq -\lambda\f$),
-then they can be replaced by the equivalent unique 
-<EM>linear equality</EM>
-\f$\langle \vect{c}, \vect{x} \rangle = \lambda\f$.
-Conversely, if we have a linear equality,
-then we can split it into two linear inequalities (as above).
+In the sequel, we will simply write ``equality'' and ``inequality''
+to mean ``linear equality'' and ``linear inequality'', respectively;
+also, we will refer to either an equality or an inequality
+as a <EM>constraint</EM>.
+
+<B>Constraints representation</B>
 
 It follows that a polyhedron \f$P \sseq \Rset^n\f$
-can be always represented as 
+can be always represented by a <EM>system of constraints</EM>:
 \f[
   P = \{\,
         \vect{x} \in \Rset^n
@@ -162,10 +157,19 @@ can be always represented as
 for some matrix \f$ A \in \Rset^{m} \times \Rset^n\f$
 and vector \f$\vect{b} \in \Rset^{m}\f$.
 
-In the sequel we will simply write ``equality'' and ``inequality''
-to mean ``linear equality'' and ``linear inequality'', respectively;
-also, we will refer to either an equality or an inequality
-as a <EM>constraint</EM>.
+Note that, if \f$\vect{c}, \vect{x} \in \Rset^n\f$
+and \f$\lambda \in \Rset\f$
+and the system of constraints contains the two inequalities 
+\f$\langle \vect{c}, \vect{x} \rangle \geq \lambda\f$ and
+\f$\langle \vect{c}, \vect{x} \rangle \leq \lambda\f$
+(i.e., \f$\langle -\vect{c}, \vect{x} \rangle \geq -\lambda\f$),
+then they can be replaced by the equivalent unique 
+<EM>equality</EM>
+\f$\langle \vect{c}, \vect{x} \rangle = \lambda\f$.
+Conversely, if we have an equality,
+then it can be replaced by two inequalities (as above).
+
+<B>Rational polyhedron</B>
 
 A polyhedron \f$P \sseq \Rset^n\f$ is said to be <EM>rational</EM>
 if there exists a matrix
@@ -313,13 +317,13 @@ of \f$R\f$ and \f$S\f$ is defined as follows:
   R + S = \{\,r + s \mid r \in R, s \in S\,\}.
 \f]
 
-<B>Generators</B>
+<B>Generators representation</B>
 
-A polyhedron \f$P \sseq \Rset^n\f$ can also be generated from
+A polyhedron \f$P\f$ can also be represented by
 a set of vertices \f$V\f$,
 a set of rays \f$R\f$ and
 a set of lines \f$L\f$.
-Together, these three sets are the <EM>generators</EM> of \f$P\f$.
+Together, these three sets are called the <EM>generators</EM> of \f$P\f$.
 
 The following two theorems justify this terminology.
 The first, called Minkowski's theorem, states that
