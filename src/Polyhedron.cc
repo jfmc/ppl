@@ -1000,7 +1000,10 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
 */
 void
 PPL::Polyhedron::insert(const Constraint& c) {
-  assert(!is_empty());
+  // If the polyhedron is empty, adding a new constraint it 
+  // is still empty.
+  if (is_empty())
+    return;
 
   if (is_zero_dim()) {
     // If a polyhedron is zero-dimensional, `con_sys' has no rows.
