@@ -17,7 +17,9 @@ namespace Parma_Polyhedra_Library {
 template <typename T>
 class Native_Integer;
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Coefficient traits partial specialization for unchecked native integers.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 struct Coefficient_traits_template<Native_Integer<T> > {
   //! The type used for references to const native integers.

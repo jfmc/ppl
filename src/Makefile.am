@@ -241,7 +241,6 @@ swapping_sort.icc
 
 # The ordering of the following list *matters*!
 DOC_FILES = \
-Coefficient_traits_template.hh \
 GMP_Integer.types.hh \
 Checked_Number.types.hh \
 Native_Integer.types.hh \

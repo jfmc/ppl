@@ -538,11 +538,13 @@ PPL_INTEGER_DECLARE_NON_MEMBERS(Native_Integer)
 
 namespace std {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::numeric_limits</CODE>.
 /*!
   The Native_Integer<T> wrapper shares the same limits of the
   underlying native integer type T.
 */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 class numeric_limits<Parma_Polyhedra_Library::Native_Integer<T> >
   : public numeric_limits<T> {
