@@ -93,7 +93,7 @@ ORIGINAL_TESTS = \
 	empty1 \
 	exceptions1 exceptions2  exceptions3 \
 	expanddim1 expanddim2 \
-	folddims1 \ folddims2 \
+	folddims1 folddims2 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffineimage3 generalizedaffineimage4 \
 	generalizedaffineimage5 generalizedaffineimage6 \
