@@ -1,5 +1,5 @@
 /* Linear_Expression class implementation: inline functions.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -71,6 +71,13 @@ inline
 Linear_Expression::Linear_Expression(const Linear_Expression& e,
 				     dimension_type sz)
   : Linear_Row(e, sz, sz) {
+}
+
+inline
+Linear_Expression::Linear_Expression(const Linear_Expression& e,
+				     dimension_type sz,
+				     dimension_type capacity)
+  : Linear_Row(e, sz, capacity) {
 }
 
 inline

@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
+#include "Congruence.types.hh"
 #include "Linear_Row.defs.hh"
 #include "Coefficient.types.hh"
 #include "Variable.types.hh"
@@ -37,6 +38,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 // Put them in the namespace here to declare them friend later.
+
+//! Returns the congruence \p e1 = \p e2 \p \pmod{1}.
+/*! \relates Congruence */
+Congruence
+operator%=(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the congruence \p e = \p n \p \pmod{1}.
+/*! \relates Congruence */
+Congruence
+operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n);
 
 //! Returns the linear expression \p e1 + \p e2.
 /*! \relates Linear_Expression */
@@ -272,6 +283,7 @@ private:
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;
   friend class Parma_Polyhedra_Library::Polyhedron;
+  friend class Parma_Polyhedra_Library::Congruence;
 
   // FIXME: the following friend declaration is only to grant access to
   // Constraint_System::affine_preimage().
@@ -281,8 +293,19 @@ private:
   // Generator_System::affine_image().
   friend class Parma_Polyhedra_Library::Generator_System;
 
+  friend void std::swap(Parma_Polyhedra_Library::Linear_Expression& x,
+			Parma_Polyhedra_Library::Linear_Expression& y);
+
   //! Copy-constructor with a specified space dimension.
   Linear_Expression(const Linear_Expression& e, dimension_type sz);
+
+  //! Copy-constructor with a specified space dimension and capacity.
+  /*!
+    It is assumed that \p sz is greater than or equal to the size of \p y
+    and, of course, that \p sz is less than or equal to \p capacity.
+  */
+  Linear_Expression(const Linear_Expression& e, dimension_type sz,
+		    dimension_type capacity);
 
   //! Implementation sizing constructor.
   /*!
@@ -348,6 +371,14 @@ private:
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
 						    const Linear_Expression& e);
+
+  friend Congruence
+  Parma_Polyhedra_Library::operator%=(const Linear_Expression& e1,
+				      const Linear_Expression& e2);
+
+  friend Congruence
+  Parma_Polyhedra_Library::operator%=(const Linear_Expression& e,
+				      Coefficient_traits::const_reference n);
 };
 
 #include "Linear_Expression.inlines.hh"
