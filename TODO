@@ -3,8 +3,6 @@ Enhancements for PPL 0.6
 
 - Explain, somewhere in the documentation, that all the PPL classes
   are concrete classes that are not supposed to be derived from.
-- Make all the Polyhedron::*recycled*() methods available from
-  the Prolog interface.
 - See if we can provide some guarantee on the maximum number of
   times we are calling the methods of the argument of
   Polyhedron::map_dimensions(const PartialFunction&).
