@@ -21,9 +21,7 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-/*! \defgroup Prolog_Interface Prolog Language Interface
-
-\section PI_Introduction Introduction
+/*! \defgroup PrologInterface Prolog Language Interface
 
 The Parma Polyhedra Library comes equipped with a Prolog interface.
 Despite the lack of standardization of Prolog's foreign language interfaces,
@@ -32,13 +30,16 @@ extent this is possible, provides a uniform view of the library from
 each such systems.
 
 The system-independent features of the library are described in
-Section \ref PI_SI_Features.
-Section \ref PI_Compilation explains how the various incarnations
-of the Prolog interface are compiled and installed.
-Section \ref PI_SD_Features illustrates the system-dependent
-features of the interface for all the supported systems.
+Section \ref PI_SI_Features "System-Independent Features".
+Section \ref PI_Compilation "Compilation and Installation"
+explains how the various incarnations of the Prolog interface
+are compiled and installed.
+Section \ref PI_SD_Features "System-Dependent Features"
+illustrates the system-dependent features of the interface
+for all the supported systems.
 
-\section PI_SI_Features System-Independent Features
+\anchor PI_SI_Features
+<H1>System-Independent Features</H1>
 
 The Prolog interface provides access to the PPL polyhedra.
 A general introduction to convex polyhedra, their representation in the PPL
@@ -47,7 +48,7 @@ and the operations provided by the PPL is given in Sections
 and \ref operations of this manual.
 Here we just describe those aspects that are specific to the Prolog interface.
 
-\subsection PI_SI_Features_Overview Overview
+<H2>Overview</H2>
 
 First, here is a list of notes with general information and advice
 on the use of the interface.
@@ -125,9 +126,9 @@ on the use of the interface.
   The corresponding incarnations of the PPL-Prolog interface
   have been written so that <CODE>ppl_initialize/0</CODE> and/or
   <CODE>ppl_finalize/0</CODE> are called automatically.
-  Section \ref PI_SD_Features will detail in which cases initialization
-  and finalization is automatically performed or is left to the Prolog
-  programmer's responsibility.
+  Section \ref PI_SD_Features "System-Dependent Features" will detail
+  in which cases initialization and finalization is automatically
+  performed or is left to the Prolog programmer's responsibility.
   However, for portable applications, it is best
   to invoke <CODE>ppl_initialize/0</CODE> and <CODE>ppl_finalize/0</CODE>
   explicitly: since they can be called multiple times without problems,
@@ -135,7 +136,7 @@ on the use of the interface.
   negligible.
 
 
-\subsection PI_SI_Features_Predicate_List PPL Predicate List
+<H2>PPL Predicate List</H2>
 
 Here is a list of all the PPL predicates provided by the Prolog interface.
 
@@ -441,7 +442,7 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
   ppl_Polyhedron_map_dimensions(+Handle, +P_Func))
 </CODE>
 
-\subsection PI_SI_Features_Predicate_Spec PPL Predicate Specifications
+<H2>PPL Predicate Specifications</H2>
 
 The PPL predicates provided by the Prolog interface are specified below.
 The specification uses the following grammar rules:
@@ -1245,7 +1246,8 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    function with the properties described in the
    \ref map_dimensions "specification of the mapping operator".
 
-\section PI_Compilation Compilation and Installation
+\anchor PI_Compilation
+<H1>Compilation and Installation</H1>
 
 When the Parma Polyhedra Library is configured, it tests for the existence
 of each supported Prolog system.  If a supported Prolog system is
@@ -1267,8 +1269,9 @@ Your configure command would then look like
   path/to/configure --with-cxxflags="-DPROLOG_TRACK_ALLOCATION" ...
 \endcode
 
-\section PI_SD_Features System-Dependent Features
 
+\anchor PI_SD_Features
+<H1>System-Dependent Features</H1>
 
 <H2>CIAO Prolog</H2>
 

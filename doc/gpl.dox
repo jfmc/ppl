@@ -1,6 +1,4 @@
-/*! \defgroup PPL_license_pages PPL License Pages
-
-\section GPL GNU GENERAL PUBLIC LICENSE
+/*! \page GPL GNU GENERAL PUBLIC LICENSE
 
 Version 2, June 1991
 
@@ -12,8 +10,6 @@ Copyright (C) 1989, 1991 Free Software Foundation, Inc.
 Everyone is permitted to copy and distribute verbatim copies
 of this license document, but changing it is not allowed.
 </PRE>
-
-
 
 <H1>Preamble</H1>
 
