@@ -435,6 +435,11 @@ AC_CHECK_HEADER(Yap/c_interface.h,
 fi
 AM_CONDITIONAL(HAVE_YAP_PROLOG, test x$YAP_PROLOG = xyap)
 
+# Check for SWIG
+
+AC_CHECK_PROG(SWIG, swig, swig)
+AM_CONDITIONAL(HAVE_SWIG, test x$SWIG = xswig)
+
 # Check for the Mercury compiler
 
 AC_CHECK_PROG(MERCURY_COMPILER, mmc, mmc)
