@@ -2,10 +2,10 @@ Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 See below for the copying conditions.
 
 
-Parma Polyhedra Library (Release 0.6)
-=====================================
+Parma Polyhedra Library (Release 0.6.1)
+=======================================
 
-This is the release 0.6 of the Parma Polyhedra Library:
+This is the release 0.6.1 of the Parma Polyhedra Library:
 a C++ library for (not necessarily closed) convex polyhedra
 and other numerical abstractions.
 
@@ -52,10 +52,10 @@ See http://www.cs.unipr.it/ppl/ for more information on the PPL.
 For any additional question you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
-Here is the contents of the PPL 0.6 source distributions
+Here is the contents of the PPL 0.6.1 source distributions
 (19 directories, 739 files):
 
-ppl-0.6/
+ppl-0.6.1/
 |-- BUGS
 |-- COPYING
 |-- CREDITS
@@ -280,10 +280,10 @@ ppl-0.6/
 |   |-- gpl.ps.gz
 |   |-- gpl.tex
 |   |-- gpl.txt
-|   |-- ppl-user-0.6pre6-browse.pdf
-|   |-- ppl-user-0.6pre6-html.tar.gz
-|   |-- ppl-user-0.6pre6-print.pdf
-|   |-- ppl-user-0.6pre6-print.ps.gz
+|   |-- ppl-user-0.6.1-browse.pdf
+|   |-- ppl-user-0.6.1-html.tar.gz
+|   |-- ppl-user-0.6.1-print.pdf
+|   |-- ppl-user-0.6.1-print.ps.gz
 |   |-- ppl.sty
 |   |-- user-browse.doxyconf-latex
 |   |-- user-browse.doxyconf-latex.in
@@ -392,9 +392,6 @@ ppl-0.6/
 |-- ppl.lsm.in
 |-- ppl.spec.in
 |-- src
-|   |-- AskTell.defs.hh
-|   |-- AskTell.inlines.hh
-|   |-- AskTell.types.hh
 |   |-- BHRZ03_Certificate.cc
 |   |-- BHRZ03_Certificate.defs.hh
 |   |-- BHRZ03_Certificate.inlines.hh
@@ -814,6 +811,8 @@ ppl-0.6/
     |-- writepolyhedron3.cc
     |-- writerelation1.cc
     `-- writevariable1.cc
+
+19 directories, 736 files
 
 --------
 
