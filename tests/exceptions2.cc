@@ -49,7 +49,7 @@ error1() {
   }
   catch(invalid_argument& e) {
 #if NOISY
-    cout << "invlaid_system_of_constraints: " << e.what() << endl << endl;
+    cout << "invalid_system_of_constraints: " << e.what() << endl << endl;
 #endif
   }
   catch (...) {
@@ -78,7 +78,7 @@ error2() {
   }
   catch(invalid_argument& e) {
 #if NOISY
-    cout << "invlaid_system_of_generators: " << e.what() << endl << endl;
+    cout << "invalid_system_of_generators: " << e.what() << endl << endl;
 #endif
   }
   catch (...) {
@@ -291,7 +291,7 @@ error10() {
   
   NNC_Polyhedron ph1(3);
   ph1.add_constraint(x >= 5);
-  ph1.add_constraint(y > x -3);
+  ph1.add_constraint(y > x - 3);
 
   try {
     // It is illegal to built a closed polyhedron starting from
