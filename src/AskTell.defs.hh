@@ -225,6 +225,8 @@ public:
   template <typename PartialFunction>
   void map_dimensions(const PartialFunction& pfunc);
 
+  void H79_extrapolation_assign(const AskTell& y);
+
   friend AskTell operator +<>(const AskTell<CS>& x,
 			      const AskTell<CS>& y);
   friend AskTell operator *<>(const AskTell& x, const AskTell& y);

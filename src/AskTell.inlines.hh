@@ -566,7 +566,7 @@ operator+(const AskTell<CS>& x, const AskTell<CS>& y) {
 
 template <typename CS>
 void
-AskTell<CS>::upper_bound_assign(const AskTell<CS>& y) {
+AskTell<CS>::upper_bound_assign(const AskTell& y) {
   *this = *this + y;
 }
 
@@ -629,9 +629,9 @@ operator<<(std::ostream& s, const AskTell<CS>& x) {
 
 template <typename CS>
 void
-H79_widening_assign(AskTell<CS>& x, const AskTell<CS>& y, unsigned) {
+AskTell<CS>::H79_extrapolation_assign(const AskTell& y) {
   using namespace IO_Operators;
-  std::cout << x << std::endl
+  std::cout << *this << std::endl
 	    << y << std::endl;
 }
 
