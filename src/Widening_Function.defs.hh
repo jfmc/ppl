@@ -36,7 +36,8 @@ public:
   //! The (parametric) type of a widening method.
   typedef void (PH::* Widening_Method)(const PH&, unsigned*);
 
-  //! Constructor.
+  //! Explicit unary constructor.
+  explicit
   Widening_Function(Widening_Method wm);
 
   //! Function-application operator.
