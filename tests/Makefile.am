@@ -62,6 +62,7 @@ ORIGINAL_TESTS = \
 	boundingbox1 boundingbox2 \
 	concatenate1 concatenate2 concatenate3 concatenate4 \
 	constraints1 constraints2 constraints3 \
+	contains1 \
         empty1 \
 	exceptions1 exceptions2 \
 	generators1 generators2 generators3 generators4 generators5 \
@@ -240,6 +241,8 @@ concatenate4_SOURCES = concatenate4.cc
 constraints1_SOURCES = constraints1.cc
 constraints2_SOURCES = constraints2.cc
 constraints3_SOURCES = constraints3.cc
+
+contains1_SOURCES = contains1.cc
 
 empty1_SOURCES = empty1.cc
 

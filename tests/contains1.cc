@@ -1,5 +1,4 @@
-/* Test Polyhedron::H79_widening_assign(): we apply this function
-   to two zero-dimensional polyhedra.
+/* Test Polyhedron::operator<=(const Polyhedron&, const Polyhedron&).
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -35,24 +34,24 @@ int
 main() {
   set_handlers();
 
-  C_Polyhedron ph1;
-  C_Polyhedron ph2(0, C_Polyhedron::EMPTY);
+  Variable A(0);
+  Variable B(1);
+
+  NNC_Polyhedron ph1(2);
+  ph1.add_constraint(A > 0);
+  ph1.add_constraint(B > 0);
+
+  GenSys gs2;
+  gs2.insert(point());
+  gs2.insert(line(A + B));
+  NNC_Polyhedron ph2(gs2);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
-  print_constraints(ph2, "*** ph2 ***");
+  print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph1.H79_widening_assign(ph2);
+  bool ok = !(ph2 <= ph1);
 
-  C_Polyhedron known_result;
-  known_result = ph1;
-
-  int retval = (ph1 == known_result) ? 0 : 1;
-
-#if NOISY
-  print_constraints(ph1, "*** After ph1.H79_widening_assign(ph2) ***");
-#endif
-
-  return retval;
+  return ok ? 0 : 1;
 }

@@ -935,7 +935,7 @@ error28() {
   ph2.add_constraint(B >= 0);
   ph2.add_constraint(A - B >= 0);
 
-try {
+  try {
     // This is an invalid use of the function
     // `BBRZ02_widening_assign': it is illegal to
     // apply this function to a non-closed polyhedron and
@@ -945,6 +945,35 @@ try {
   catch(invalid_argument& e) {
 #if NOISY
     cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error29() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  NNC_Polyhedron ph1(2);
+  ph1.add_constraint(A < 2);
+  ph1.add_constraint(B > 0);
+  ph1.add_constraint(A - B > 0);
+
+  try {
+    // This is an invalid use of the function
+    // `C_Polyhedron(NNC_Polyhedron&)': it is illegal to
+    // built a closed polyhedron starting from a 
+    // non-closed polyhedron.
+    C_Polyhedron ph2(ph1);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedron: " << e.what() << endl << endl;
 #endif
   }
   catch (...) {
@@ -982,6 +1011,7 @@ main() {
   error26();
   error27();
   error28();
+  error29();
 
   return 0;
 }

@@ -41,7 +41,8 @@ main() {
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  C_Polyhedron known_result = ph1;
+  C_Polyhedron known_result;
+  known_result = ph1;
 
   ConSys cs = ph1.minimized_constraints();
 
