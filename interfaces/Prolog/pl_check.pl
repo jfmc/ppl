@@ -442,7 +442,8 @@ inters_assign(T) :-
   ppl_delete_Polyhedron(P1a),
   ppl_delete_Polyhedron(P1b).
 
-% Tests ppl_Polyhedron_intersection_assign_and_minimize for C and NNC Polyhedra
+% Tests ppl_Polyhedron_intersection_assign_and_minimize for C
+% and NNC Polyhedra.
 inters_assign_min :-
   inters_assign_min(c), inters_assign_min(nnc).
 
@@ -607,7 +608,7 @@ top_close_assign :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Pa).
 
-% Tests ppl_Polyhedron_affine_image
+% Tests ppl_Polyhedron_affine_image.
 affine :-
   affine(c), affine(nnc).
 
@@ -980,7 +981,7 @@ bound_extrapolate_H79_with_token_NNC :-
   widen_extrapolation_final(P, CS_Pa, Topology),
   widen_extrapolation_final(Q, CS_Q, Topology).
 
-% Tests ppl_Polyhedron_get_constraints
+% Tests ppl_Polyhedron_get_constraints.
 get_cons :-
   get_cons(c), get_cons(nnc).
 
@@ -996,7 +997,7 @@ get_cons(T) :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
 
-% Tests ppl_Polyhedron_get_minimized_constraints
+% Tests ppl_Polyhedron_get_minimized_constraints.
 get_min_cons :-
   get_min_cons(c), get_min_cons(nnc).
 
@@ -1030,7 +1031,7 @@ get_gens(T) :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
 
-% Tests ppl_Polyhedron_get_minimized_generators
+% Tests ppl_Polyhedron_get_minimized_generators.
 get_min_gens :-
   get_min_gens(c), get_min_gens(nnc).
 
@@ -1045,7 +1046,7 @@ get_min_gens(T) :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
 
-% Tests ppl_Polyhedron_add_constraint
+% Tests ppl_Polyhedron_add_constraint.
 add_con :-
   add_con(c), add_con(nnc).
 
@@ -1070,7 +1071,7 @@ add_con(T) :-
   ppl_delete_Polyhedron(Pb),
   ppl_delete_Polyhedron(Pc).
 
-% Tests ppl_Polyhedron_add_constraint_and_minimize
+% Tests ppl_Polyhedron_add_constraint_and_minimize.
 add_con_min :-
   add_con_min(c), add_con_min(nnc).
 
@@ -1086,7 +1087,7 @@ add_con_min(T) :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(P1).
 
-% Tests ppl_Polyhedron_add_generator
+% Tests ppl_Polyhedron_add_generator.
 add_gen :-
   add_gen(c), add_gen(nnc).
 
@@ -1101,7 +1102,7 @@ add_gen(T) :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(P1).
 
-% Tests ppl_Polyhedron_add_generator_and_minimize
+% Tests ppl_Polyhedron_add_generator_and_minimize.
 add_gen_min :-
   add_gen_min(c), add_gen_min(nnc).
 
@@ -1156,7 +1157,7 @@ add_cons_min(T) :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(P1).
 
-% Tests ppl_Polyhedron_add_generators
+% Tests ppl_Polyhedron_add_generators.
 add_gens :-
   add_gens(c), add_gens(nnc).
 
@@ -1176,7 +1177,7 @@ add_gens(T) :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(P1).
 
-% Tests ppl_Polyhedron_add_generators_and_minimize
+% Tests ppl_Polyhedron_add_generators_and_minimize.
 add_gens_min :-
   add_gens_min(c), add_gens_min(nnc).
 
@@ -1195,7 +1196,7 @@ add_gens_min(T) :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(P1).
 
-% Tests ppl_Polyhedron_add_dimensions_and_project
+% Tests ppl_Polyhedron_add_dimensions_and_project.
 project :-
   project(c), project(nnc).
 
@@ -1227,7 +1228,7 @@ embed(T) :-
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P).
 
-% Tests ppl_Polyhedron_remove_dimensions
+% Tests ppl_Polyhedron_remove_dimensions.
 remove_dim :-
   remove_dim(c), remove_dim(nnc).
 
@@ -1246,7 +1247,7 @@ remove_dim(T) :-
   ppl_Polyhedron_space_dimension(P, 0),
   ppl_delete_Polyhedron(P).
 
-% Tests ppl_Polyhedron_remove_higher_dimensions
+% Tests ppl_Polyhedron_remove_higher_dimensions.
 remove_high_dim :-
   remove_high_dim(c), remove_high_dim(nnc).
 
@@ -1268,7 +1269,7 @@ remove_high_dim(T) :-
   ppl_delete_Polyhedron(P2),
   ppl_delete_Polyhedron(P).
 
-% Tests ppl_Polyhedron_expand_dimension
+% Tests ppl_Polyhedron_expand_dimension.
 expand_dim :-
   expand_dim(c), expand_dim(nnc).
 
@@ -1292,7 +1293,7 @@ expand_dim(T) :-
   ppl_delete_Polyhedron(P2),
   ppl_Polyhedron_space_dimension(P, 4),
   ppl_delete_Polyhedron(P),
-% Example taken from Tacas04 paper
+% Example taken from GopanDMDRS04, page 519.
   ppl_new_Polyhedron_empty_from_dimension(T, 2, Ptacas),
   ppl_Polyhedron_add_generators(Ptacas,
        [point(A + 2*B), point(A + 3*B), point(A + 4*B)]),
@@ -1307,7 +1308,7 @@ expand_dim(T) :-
   ppl_delete_Polyhedron(Ptacas1),
   ppl_delete_Polyhedron(Ptacas).
 
-% Tests ppl_Polyhedron_map_dimensions using constraints and generators
+% Tests ppl_Polyhedron_map_dimensions using constraints and generators.
 map_dim:-
   map_dim(c), map_dim(nnc).
 
@@ -1710,7 +1711,7 @@ time_out(T) :-
   ppl_delete_Polyhedron(Q1),
   ppl_finalize.
 
-% time_watch(+Topology, +Goal, +NoTimeOut, +TimeOut).
+% time_watch(+Topology, +Goal, +NoTimeOut, +TimeOut)
 % time_watch makes a copy of Goal with a copy of the polyhedron
 % and executes it with the currrent timeout exception settings.
 % If the call exceeds the time allowed, it catches the exception
@@ -1764,7 +1765,7 @@ exceptions :- !.
 
 % exception_prolog(+N, +V) checks exceptions thrown by the Prolog interface
 % It does not check those that are dependent on a specific Prolog system
-
+.
 %% TEST: Prolog_unsigned_out_of_range
 exception_prolog(1, _) :-
    current_prolog_flag(bounded,false),
@@ -1839,7 +1840,7 @@ exception_prolog(4, _) :-
         ).
 
 % exception_sys_prolog(+N, +V) checks exceptions thrown by Prolog interfaces
-% that are dependent on a specific Prolog system
+% that are dependent on a specific Prolog system.
 % These are only checked if current_prolog_flag(bounded, false) holds. 
 
 exception_sys_prolog(1, [A,B,_]) :-
@@ -1892,7 +1893,7 @@ exception_sys_prolog(4, [A,B,_]) :-
 
 % exception_cplusplus(+N, +V) checks exceptions thrown by the C++
 % interface for the PPL
-
+.
 exception_cplusplus(1, [A,B,C]) :-
   catch(ppl_new_Polyhedron_from_generators(C, [point(A + B + C, 0)], P),
           M, 
@@ -2006,7 +2007,7 @@ check_exception(Exception):-
 
 %%%%%%%%%%%% extra tests not executed by run_all %%%%%%%%%%%%%%%
 
-% These next 2 tests demonstrate a bug in the bounding box software
+% These next 2 tests demonstrate a bug in the bounding box software.
 % and are not executed by run_all.
 
 boundingbox1(Box,CS) :-
