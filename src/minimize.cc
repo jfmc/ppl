@@ -480,6 +480,8 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
     if (pos) {
       if (!con_to_gen) {
 	sat.transpose_assign(sat);
+	simplify(dest, sat);
+	dest_num_rows = dest.num_rows();
 	for (size_t i = dest_num_rows; i-- > num_lines_or_equalities; )
 	  if (dest[i].only_a_term_is_positive()) {
 	    --dest_num_rows;
