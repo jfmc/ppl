@@ -30,6 +30,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline dimension_type
+compute_capacity(const dimension_type requested_size,
+		 const dimension_type maximum_size) {
+  assert(requested_size <= maximum_size);
+  // Speculation factor 2.
+  return (requested_size < maximum_size / 2)
+    ? 2*(requested_size + 1)
+    : maximum_size;
+  // Speculation factor 1.5.
+  // return (maximum_size - requested_size > requested_size/2)
+  //   ? requested_size + requested_size/2 + 1
+  //   : maximum_size;
+}
+
 inline void
 normalize2(const Integer& x, const Integer& y, Integer& nx, Integer& ny) {
   TEMP_INTEGER(gcd);

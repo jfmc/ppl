@@ -150,17 +150,7 @@ Temp_Integer_Holder temp_Integer_holder_ ## id = (id)
 #endif
 inline dimension_type
 compute_capacity(const dimension_type requested_size,
-		 const dimension_type maximum_size) {
-  assert(requested_size <= maximum_size);
-  // Speculation factor 2.
-  return (requested_size < maximum_size / 2)
-    ? 2*(requested_size + 1)
-    : maximum_size;
-  // Speculation factor 1.5.
-  // return (maximum_size - requested_size > requested_size/2)
-  //   ? requested_size + requested_size/2 + 1
-  //   : maximum_size;
-}
+		 const dimension_type maximum_size);
 
 //! User objects' the PPL can throw.
 /*!
