@@ -219,7 +219,6 @@ PPL::Matrix::grow(dimension_type new_n_rows, dimension_type new_n_columns) {
     if (was_sorted)
       set_sorted((*this)[old_n_rows-1] <= (*this)[old_n_rows]);
   // If no rows was added the matrix keeps its sortedness.
-
 }
 
 void
@@ -411,9 +410,8 @@ PPL::Matrix::merge_rows_assign(const Matrix& y) {
 
   // We get the result vector and let the old one be destroyed.
   std::swap(tmp, rows);
-  // `index_first_pending' of `*this' must be equal to
-  // the new number of rows of the matrix.
-  set_index_first_pending_row(rows.size());
+  // There are no pending rows.
+  unset_pending_rows();
   assert(check_sorted());
 }
 
@@ -432,7 +430,7 @@ PPL::Matrix::add_pending_rows(const Matrix& y) {
     std::swap(x[i], tmp[i]);
 
   // Copy the rows of `y', forcing size and capacity.
-  for (dimension_type i = x_n_rows; i-- > 0; ) {
+  for (dimension_type i = y_n_rows; i-- > 0; ) {
     Row copy(y[i], x.row_size, x.row_capacity);
     std::swap(copy, tmp[x_n_rows+i]);
   }
@@ -477,9 +475,9 @@ PPL::Matrix::sort_rows() {
 
 void
 PPL::Matrix::sort_rows(dimension_type start, dimension_type end) {
-  assert(start <= num_rows());
-  assert(end <= num_rows());
-  assert(start <= end);
+  assert(start <= end && end <= num_rows());
+  // We cannot mix pending and non-pending rows.
+  assert(start >= first_pending_row() || end <= first_pending_row());
   Matrix& x = *this;
   // Sorting one or no rows is a no-op.
   if (start >= end - 1)
@@ -512,7 +510,8 @@ PPL::Matrix::sort_rows(dimension_type start, dimension_type end) {
   x_i.assign(null);
   // The rows that we must erase are before `old_end'.
   rows.erase(rows.begin() + end, rows.begin() + old_end);
-  assert(OK());
+  // NOTE: we cannot check for well-formedness of the matrix here,
+  // because the caller still has to update `index_first_pending'.
 }
 
 void
@@ -528,11 +527,12 @@ PPL::Matrix::sort_pending_and_remove_duplicates() {
   // Recompute the number of rows, because we may have removed
   // some rows occurring more than once in the pending part.
   dimension_type num_rows = x.num_rows();
+
   dimension_type k1 = 0;
   dimension_type k2 = first_pending;
   dimension_type num_duplicates = 0;
-  // In order to erase them, put at the ned of the matrix those pending rows
-  // that also occur in the non-pending part.
+  // In order to erase them, put at the end of the matrix
+  // those pending rows that also occur in the non-pending part.
   while (k1 < first_pending && k2 < num_rows) {
     int cmp = compare(x[k1], x[k2]);
     if (cmp == 0) {
@@ -1036,8 +1036,13 @@ PPL::Matrix::OK() const {
 #endif
 
   // `index_first_pending' must be less then or equal to `num_rows()'.
-  if (first_pending_row() > num_rows())
+  if (first_pending_row() > num_rows()) {
+#ifndef NDEBUG
+      cerr << "Matrix has a negative number of pending rows!"
+	   << endl;
+#endif
     return false;
+  }
 
   // The check in the following "#else" branch currently
   // fails after calls to method Matrix::grow().
