@@ -4,13 +4,55 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.6  (released date to be decided)
+NEWS for version 0.6  (released on August 18, 2004)
 --------------------------------------------------------------------------
 
 New and Changed Features
 ========================
 
+o  New templatic classes Determinate, PowerSet, and Polyhedra_PowerSet.
+   The first two classes realize, in a completely generic way, the
+   determinate and powerset constructions described by Roberto Bagnara
+   in his 1998, Science of Computer Programming paper.  The third class
+   is a specialization of the powerset construction on polyhedra.
+   The powerset construction comes with the generic widening technique
+   proposed by Roberto Bagnara, Patricia Hill and Enea Zaffanella
+   in their VMCAI 2004 paper.  Actually, the Polyhedra_PowerSet class
+   provides the first genuine, non-trivial widening ever proposed
+   (let alone made available) on a domain of sets of convex polyhedra.
+
+o  New methods
+
+     void Polyhedron::expand_dimension(Variable, dimension_type) and
+     void Polyhedron::fold_dimensions(const Variables_Set&, Variable)
+
+   allow the easy realization of summary dimensions as proposed
+   by Denis Gopan and colleagues in their TACAS 2004 paper.
+
+o  A new `demos' directory has been added.  In the `ppl_lcdd'
+   subdirectory, this contains a sort of clone of the cddlib test
+   program `lcdd', written using the PPL's C++ interface, together
+   with several example polyhedra in the formats that the program can
+   handle.  The `ppl_lpsol' subdirectory contains another demo program
+   that solves linear programming problems by vertex/point
+   enumeration.  This is written using the PPL's C interface and comes
+   with several example problems in the Mathematical Programming
+   System (MPS) format.  In order to read MPS files, `ppl_lpsol' uses
+   the GNU Linear Programming Kit (GLPK); thus `ppl_lpsol' is only compiled
+   if a suitable version of GLPK is available.
+
+o  New macro PPL_VERSION expands to the version string of the library.
+
+o  New file README.configure provides additional information about
+   the configuration and compilation of the library.
+
 o  The documentation has been improved in various ways.
+
+o  The documentation for users, in PostScript, PDF and HTML formats,
+   is now installed in a standard place by `make install'.
+
+o  The variable `abandon_exponential_computations' has been renamed
+   `abandon_expensive_computations'.
 
 o  The methods
 
@@ -73,6 +115,17 @@ Bugfixes
 
 o  Fixed a bug in the C interface function ppl_Polyhedron_map_dimensions() 
    whereby a wrong result was computed.
+
+o  Fixed a bug in Polyhedron::poly_difference_assign(const Polyhedron&)
+   whereby a wrong result was computed.
+
+o  Fixed a bug in the Prolog interface predicate
+   ppl_Polyhedron_get_bounding_box/3 whereby a wrong result was
+   sometimes computed in the case of an empty polyhedron.
+
+o  Fixed a bug in the Prolog interface predicate
+   ppl_new_Polyhedron_from_bounding_box/3 whereby the predicate was
+   failing when given an empty bounding box.
 
 
 --------------------------------------------------------------------------

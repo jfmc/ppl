@@ -96,7 +96,9 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const ConSys& ccs)
   // Try to adapt `cs' to the required topology.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (!cs.adjust_topology_and_dimension(topol, cs_space_dim))
-    throw_topology_incompatible("Polyhedron(cs)", cs);
+    throw_topology_incompatible((topol == NECESSARILY_CLOSED)
+				? "C_Polyhedron(cs)"
+				: "NNC_Polyhedron(cs)", "cs", cs);
 
   if (cs.num_rows() > 0 && cs_space_dim > 0) {
     // Stealing the rows from `cs'.
@@ -138,7 +140,9 @@ PPL::Polyhedron::Polyhedron(const Topology topol, ConSys& cs)
   // Try to adapt `cs' to the required topology.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (!cs.adjust_topology_and_dimension(topol, cs_space_dim))
-    throw_topology_incompatible("Polyhedron(cs)", cs);
+    throw_topology_incompatible((topol == NECESSARILY_CLOSED)
+				? "C_Polyhedron(cs)"
+				: "NNC_Polyhedron(cs)", "cs", cs);
 
   if (cs.num_rows() > 0 && cs_space_dim > 0) {
     // Stealing the rows from `cs'.
@@ -189,12 +193,16 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const GenSys& cgs)
 
   // Non-empty valid generator systems have a supporting point, at least.
   if (!gs.has_points())
-    throw_invalid_generators("Polyhedron(gs)");
+    throw_invalid_generators((topol == NECESSARILY_CLOSED)
+			     ? "C_Polyhedron(gs)"
+			     : "NNC_Polyhedron(gs)", "gs");
 
   const dimension_type gs_space_dim = gs.space_dimension();
   // Try to adapt `gs' to the required topology.
   if (!gs.adjust_topology_and_dimension(topol, gs_space_dim))
-    throw_topology_incompatible("Polyhedron(gs)", gs);
+    throw_topology_incompatible((topol == NECESSARILY_CLOSED)
+				? "C_Polyhedron(gs)"
+				: "NNC_Polyhedron(gs)", "gs", gs);
 
   if (gs_space_dim > 0) {
     // Stealing the rows from `gs'.
@@ -240,12 +248,16 @@ PPL::Polyhedron::Polyhedron(const Topology topol, GenSys& gs)
 
   // Non-empty valid generator systems have a supporting point, at least.
   if (!gs.has_points())
-    throw_invalid_generators("Polyhedron(gs)");
+    throw_invalid_generators((topol == NECESSARILY_CLOSED)
+			     ? "C_Polyhedron(gs)"
+			     : "NNC_Polyhedron(gs)", "gs");
 
   const dimension_type gs_space_dim = gs.space_dimension();
   // Try to adapt `gs' to the required topology.
   if (!gs.adjust_topology_and_dimension(topol, gs_space_dim))
-    throw_topology_incompatible("Polyhedron(gs)", gs);
+    throw_topology_incompatible((topol == NECESSARILY_CLOSED)
+				? "C_Polyhedron(gs)"
+				: "NNC_Polyhedron(gs)", "gs", gs);
 
   if (gs_space_dim > 0) {
     // Stealing the rows from `gs'.
@@ -1333,7 +1345,7 @@ PPL::Polyhedron::throw_runtime_error(const char* method) const {
     s << "C_";
   else
     s << "NNC_";
-  s << "Polyhedron::" << method << std::endl;
+  s << "Polyhedron::" << method << "." << std::endl;
   throw std::runtime_error(s.str());
 }
 
@@ -1347,24 +1359,23 @@ PPL::Polyhedron::throw_invalid_argument(const char* method,
   else
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
-    << reason;
+    << reason << ".";
   throw std::invalid_argument(s.str());
 }
 
 void
 PPL::Polyhedron::throw_topology_incompatible(const char* method,
-					     const Polyhedron& y) const {
+					     const char* ph_name,
+					     const Polyhedron& ph) const {
   std::ostringstream s;
-  s << "Topology mismatch in PPL::Polyhedron::" << method << ":"
-    << std::endl
-    << "*this is a ";
+  s << "PPL::";
   if (is_necessarily_closed())
     s << "C_";
   else
     s << "NNC_";
-  s << "Polyhedron," << std::endl
-    << "y is a ";
-  if (y.is_necessarily_closed())
+  s << "Polyhedron::" << method << ":" << std::endl
+    << ph_name << " is a ";
+  if (ph.is_necessarily_closed())
     s << "C_";
   else
     s << "NNC_";
@@ -1374,46 +1385,51 @@ PPL::Polyhedron::throw_topology_incompatible(const char* method,
 
 void
 PPL::Polyhedron::throw_topology_incompatible(const char* method,
-					     const Constraint& ) const {
+					     const char* c_name,
+					     const Constraint&) const {
   assert(is_necessarily_closed());
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
-    << "the constraint is a strict inequality.";
+    << c_name << " is a strict inequality.";
   throw std::invalid_argument(s.str());
 }
 
 void
 PPL::Polyhedron::throw_topology_incompatible(const char* method,
-					     const Generator& ) const {
+					     const char* g_name,
+					     const Generator&) const {
   assert(is_necessarily_closed());
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
-    << "the generator is a closure point.";
+    << g_name << " is a closure point.";
   throw std::invalid_argument(s.str());
 }
 
 void
 PPL::Polyhedron::throw_topology_incompatible(const char* method,
-					     const ConSys& ) const {
+					     const char* cs_name,
+					     const ConSys&) const {
   assert(is_necessarily_closed());
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
-    << "constraint system contains strict inequalities.";
+    << cs_name << " contains strict inequalities.";
   throw std::invalid_argument(s.str());
 }
 
 void
 PPL::Polyhedron::throw_topology_incompatible(const char* method,
-					     const GenSys& ) const {
+					     const char* gs_name,
+					     const GenSys&) const {
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
-    << "generator system contains closure points.";
+    << gs_name << " contains closure points.";
   throw std::invalid_argument(s.str());
 }
 
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
-					      const Polyhedron& y) const {
+					      const char* ph_name,
+					      const Polyhedron& ph) const {
   std::ostringstream s;
   s << "PPL::";
   if (is_necessarily_closed())
@@ -1421,15 +1437,15 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
   else
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
-    << "this->space_dimension() == " << space_dimension()
-    << ", y->space_dimension() == " << y.space_dimension() << ".";
+    << "this->space_dimension() == " << space_dimension() << ", "
+    << ph_name << ".space_dimension() == " << ph.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
-					      const char* name_row,
-					      const Row& y) const {
+					      const char* var_name,
+					      const Variable var) const {
   std::ostringstream s;
   s << "PPL::";
   if (is_necessarily_closed())
@@ -1437,16 +1453,15 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
   else
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
-    << "this->space_dimension() == " << space_dimension()
-    << ", " << name_row << "->space_dimension() == "
-    << y.space_dimension() << ".";
+    << "this->space_dimension() == " << space_dimension() << ", "
+    << var_name << ".id() == " << var.id() << ".";
   throw std::invalid_argument(s.str());
 }
 
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
-					      const char* name_system,
-					      const Matrix& y) const {
+					      const char* row_name,
+					      const Row& row) const {
   std::ostringstream s;
   s << "PPL::";
   if (is_necessarily_closed())
@@ -1454,16 +1469,31 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
   else
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
-    << "this->space_dimension() == " << space_dimension()
-    << ", " << name_system << "->space_dimension() == "
-    << y.space_dimension() << ".";
+    << "this->space_dimension() == " << space_dimension() << ", "
+    << row_name << ".space_dimension() == " << row.space_dimension() << ".";
+  throw std::invalid_argument(s.str());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* sys_name,
+					      const Matrix& sys) const {
+  std::ostringstream s;
+  s << "PPL::";
+  if (is_necessarily_closed())
+    s << "C_";
+  else
+    s << "NNC_";
+  s << "Polyhedron::" << method << ":" << std::endl
+    << "this->space_dimension() == " << space_dimension() << ", "
+    << sys_name << ".space_dimension() == " << sys.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 
 void
 PPL::Polyhedron::
 throw_dimension_incompatible(const char* method,
-			     dimension_type required_dim) const {
+			     dimension_type required_space_dim) const {
   std::ostringstream s;
   s << "PPL::";
   if (is_necessarily_closed())
@@ -1472,12 +1502,13 @@ throw_dimension_incompatible(const char* method,
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
-    << ", required dimension == " << required_dim << ".";
+    << ", required space dimension == " << required_space_dim << ".";
   throw std::invalid_argument(s.str());
 }
 
 void
-PPL::Polyhedron::throw_invalid_generator(const char* method) const {
+PPL::Polyhedron::throw_invalid_generator(const char* method,
+					 const char* g_name) const {
   std::ostringstream s;
   s << "PPL::";
   if (is_necessarily_closed())
@@ -1485,12 +1516,14 @@ PPL::Polyhedron::throw_invalid_generator(const char* method) const {
   else
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
-    << "polyhedron is empty and generator is not a point.";
+    << "*this is an empty polyhedron and "
+    << g_name << " is not a point.";
   throw std::invalid_argument(s.str());
 }
 
 void
-PPL::Polyhedron::throw_invalid_generators(const char* method) const {
+PPL::Polyhedron::throw_invalid_generators(const char* method,
+					  const char* gs_name) const {
   std::ostringstream s;
   s << "PPL::";
   if (is_necessarily_closed())
@@ -1498,44 +1531,7 @@ PPL::Polyhedron::throw_invalid_generators(const char* method) const {
   else
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
-    << "non-empty generator system contains no points.";
-  throw std::invalid_argument(s.str());
-}
-
-void
-PPL::Polyhedron::throw_topology_incompatible(const char* method,
-					     const Polyhedron& x,
-					     const Polyhedron& y) {
-  std::ostringstream s;
-  s << "Topology mismatch in PPL::" << method << ":"
-    << std::endl
-    << "x is a ";
-  if (x.is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-  s << "Polyhedron," << std::endl
-    << "y is a ";
-  if (y.is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-  s << "Polyhedron." << std::endl;
-  throw std::invalid_argument(s.str());
-}
-
-void
-PPL::Polyhedron::throw_dimension_incompatible(const char* method,
-					      const Polyhedron& x,
-					      const Polyhedron& y) {
-  std::ostringstream s;
-  s << "PPL::";
-  if (x.is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-  s << "Polyhedron::" << method << ":" << std::endl
-    << "x->space_dimension() == " << x.space_dimension()
-    << ", y->space_dimension() == " << y.space_dimension() << ".";
+    << "*this is an empty polyhedron and" << std::endl
+    << "the non-empty generator system " << gs_name << " contains no points.";
   throw std::invalid_argument(s.str());
 }

@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_C_Polyhedron_inlines_hh 1
 
 #include <algorithm>
+#include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
 
@@ -43,7 +44,12 @@ C_Polyhedron::max_space_dimension() {
 inline
 C_Polyhedron::C_Polyhedron(dimension_type num_dimensions,
 			   Degenerate_Kind kind)
-  : Polyhedron(NECESSARILY_CLOSED, num_dimensions, kind) {
+  : Polyhedron(NECESSARILY_CLOSED,
+	       num_dimensions > max_space_dimension() ? 0 : num_dimensions,
+	       kind) {
+  if (num_dimensions > max_space_dimension())
+    throw std::length_error("PPL::C_Polyhedron::C_Polyhedron(n, k):\n"
+			    "n exceeds the maximum allowed space dimension.");
 }
 
 inline

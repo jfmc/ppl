@@ -369,7 +369,6 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/initializer.hh \
                          @srcdir@/../src/globals.hh \
                          @srcdir@/../src/globals.cc \
-                         @srcdir@/../src/statistics.hh \
                          @srcdir@/../src/Topology.hh \
                          @srcdir@/../src/Row.types.hh \
                          @srcdir@/../src/Row.defs.hh \
@@ -448,10 +447,16 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/NNC_Polyhedron.defs.hh \
                          @srcdir@/../src/NNC_Polyhedron.inlines.hh \
                          @srcdir@/../src/NNC_Polyhedron.cc \
+			 @srcdir@/../src/Widening_Function.types.hh \
+			 @srcdir@/../src/Widening_Function.defs.hh \
+			 @srcdir@/../src/Widening_Function.inlines.hh \
                          @srcdir@/../src/Determinate.defs.hh \
                          @srcdir@/../src/Determinate.inlines.hh \
                          @srcdir@/../src/PowerSet.defs.hh \
                          @srcdir@/../src/PowerSet.inlines.hh \
+			 @srcdir@/../src/Polyhedra_PowerSet.types.hh \
+			 @srcdir@/../src/Polyhedra_PowerSet.defs.hh \
+			 @srcdir@/../src/Polyhedra_PowerSet.inlines.hh \
                          @srcdir@/../src/algorithms.hh \
                          ../interfaces/C/ppl_c.h \
                          @srcdir@/../interfaces/C/ppl_c.cc \
@@ -979,7 +984,7 @@ INCLUDE_FILE_PATTERNS  =
 # omitted =1 is assumed.
 
 PREDEFINED             = PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS \
-                         __P(protos)=protos
+                         __P(protos):=protos
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then 
 # this tag can be used to specify a list of macro names that should be expanded. 

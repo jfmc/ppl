@@ -31,18 +31,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-//! Returns the lattice upper bound (i.e., the union) of \p x and \p y. 
-/*! \relates PowerSet */
-template <typename CS>
-PowerSet<CS>
-operator+(const PowerSet<CS>& x, const PowerSet<CS>& y);
-
-//! Returns the lattice meet (i.e., the intersection) of \p x and \p y. 
-/*! \relates PowerSet */
-template <typename CS>
-PowerSet<CS>
-operator*(const PowerSet<CS>& x, const PowerSet<CS>& y);
-
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
 /*! \relates PowerSet */
 template <typename CS>

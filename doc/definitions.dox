@@ -24,30 +24,42 @@
 /*!
   \defgroup PPL_Library The Library
   The core implementation of the Parma Polyhedra Library
-  is written in C++. See Namespace, Hierarchical and Compound
-  indexes for additional information.
+  is written in C++.
+  The library is mainly a collection of so-called ``concrete data types'':
+  while providing the user with a clean and friendly interface,
+  these types are not meant to --- i.e., they should not --- be used
+  polymorphically (since, e.g., most of the destructors are not declared
+  <CODE>virtual</CODE>). In practice, this restriction means that
+  the library types should not be used as <EM>public base classes</EM>
+  to be derived from. A user willing to extend the library types,
+  adding new functionalities, often can do so by using <EM>containment</EM>
+  instead of inheritance; even when there is the need of overriding a
+  <CODE>protected</CODE> method, non-public inheritance should suffice.
+  See Namespace, Hierarchical and Compound indexes
+  for additional information about each single data type.
 */
 
-/*! \mainpage Convex Polyhedra and the PPL
-\section preamble A Library for Convex Polyhedra
+/*! \mainpage General Information on the PPL
+\section preamble The Main Features
 
 The Parma Polyhedra Library (PPL) is a modern C++ library for the
-manipulation of rational convex polyhedra.
-Informally, a rational convex polyhedron is a set of points
-(in some \f$n\f$-dimensional vector space) that satisfies
-a finite number of linear inequalities having rational coefficients.
-The domain of convex polyhedra is employed in several systems
-for the analysis and verification of hardware and software components,
-with applications spanning imperative, functional and logic
-programming languages, synchronous languages and synchronization protocols,
-real-time and hybrid systems.
-Even though the PPL library is not meant to target a particular problem,
-the design of its interface has been largely influenced by the needs
-of the above class of applications.
-That is the reason why the library implements a few operators
-that are more or less specific to static analysis applications,
-while lacking some other operators that might be useful when working,
-e.g., in the field of computational geometry.
+manipulation of numerical information that can be represented by
+points in some \f$n\f$-dimensional vector space. For instance, one of
+the key domains the PPL supports is that of rational convex polyhedra
+(a rational convex polyhedron is a set of all points in the
+\f$n\f$-dimensional vector space that satisfies a finite number of
+linear inequalities with rational coefficients). Such domains
+are employed in several systems for the analysis and verification of
+hardware and software components, with applications spanning
+imperative, functional and logic programming languages, synchronous
+languages and synchronization protocols, real-time and hybrid systems.
+Even though the PPL library is not meant to target a particular
+problem, the design of its interface has been largely influenced by
+the needs of the above class of applications.  That is the reason why
+the library implements a few operators that are more or less specific
+to static analysis applications, while lacking some other operators
+that might be useful when working, e.g., in the field of computational
+geometry.
 
 The main features of the library are the following:
 - it is user friendly:
@@ -63,22 +75,30 @@ The main features of the library are the following:
 - it is rather efficient: and we hope to make it even more so;
 - it is thoroughly documented:
   perhaps not literate programming but close enough;
+- it has interfaces to other programming languages: including C and a number of
+  Prolog systems;
 - it is free software: distributed under the terms of the
   GNU General Public License.
 
-In the following sections we describe the polyhedra and
-the different representations and operations
-supported by the PPL in more detail.
+In addition to the basic domains, we also provide generic support for
+constructing new domains from pre-existing domains.
+The following domains and domain constructors are provided by the PPL:
+- the domain of rational convex polyhedra;
+- the powerset construction, instantiated for rational convex polyhedra.
+
+In the following sections we describe these domains and domain
+constructors together with their representations and operations 
+that are available to the PPL user.
+
+\section introduction Convex Polyhedra
+
+In this section we introduce convex polyhedra,
+as considered by the library, in more detail.
 For more information about the definitions and results stated here see
 \ref BRZH02b "[BRZH02b]",
 \ref Fuk98 "[Fuk98]",
 \ref NW88 "[NW88]", and
 \ref Wil93 "[Wil93]".
-
-\section introduction An Introduction to Convex Polyhedra
-
-In this section we introduce convex polyhedra,
-as considered by the library, in more detail.
 
 <B>Vectors, Matrices and Scalar Products</B>
 
@@ -346,7 +366,7 @@ such that \f$L' \sseq L\f$, \f$R' \sseq R\f$, \f$P' \sseq P\f$ and
 <B>Double Description</B>
 
 Any NNC polyhedron \f$\cP\f$ can be described by using
-a constraint system \f$\cC\f$, a generator system \f$\cC\f$, or
+a constraint system \f$\cC\f$, a generator system \f$\cG\f$, or
 both by means of the <EM>double description pair (DD pair)</EM>
 \f$(\cC, \cG)\f$.
 The <EM>double description method</EM> is a collection
@@ -476,8 +496,9 @@ operators on the lattices \f$\Pset_n\f$ and \f$\CPset_n\f$.
 
 For any pair of NNC polyhedra \f$\cP_1, \cP_2 \in \Pset_n\f$,
 the <EM>convex polyhedral difference</EM> (or <EM>poly-difference</EM>)
-of \f$\cP_1\f$ and \f$\cP_2\f$ is defined as the poly-hull
-of the set-theoretic difference of \f$\cP_1\f$ and \f$\cP_2\f$.
+of \f$\cP_1\f$ and \f$\cP_2\f$ is defined as the smallest
+convex polyhedron containing the set-theoretic difference
+of \f$\cP_1\f$ and \f$\cP_2\f$.
 
 In general, even though \f$\cP_1, \cP_2 \in \CPset_n\f$
 are topologically closed polyhedra, their poly-difference may be
@@ -486,17 +507,43 @@ For this reason, when computing the poly-difference of two
 C polyhedra, the library will enforce the topological closure
 of the result.
 
+\anchor concatenate
+<B>Concatenating Polyhedra</B>
+
+Viewing a polyhedron as a set of tuples (its points), it is sometimes
+useful to consider the set of tuples obtained by concatenating
+an ordered pair of polyhedra.
+Formally, the <EM>concatenation</EM> of the polyhedra
+\f$\cP \in \Pset_n\f$ and \f$\cQ \in \Pset_m\f$ (taken in this order)
+is the polyhedron \f$\cR \in \Pset_{n+m}\f$ such that
+\f[
+  \cR
+    \defeq
+      \Bigl\{\,
+        (x_0, \ldots, x_{n-1}, y_0, \ldots, y_{m-1})^\transpose
+          \in \Rset^{n+m}
+      \Bigm|
+        (x_0, \ldots, x_{n-1})^\transpose \in \cP,
+        (y_0, \ldots, y_{m-1})^\transpose \in \cQ
+      \,\Bigl\}.
+\f]
+Another way of seeing it is as follows: first embed polyhedron \f$\cP\f$
+into a vector space of dimension \f$n+m\f$ and then add a suitably
+renamed-apart version of the constraints defining \f$\cQ\f$.
+
+\anchor add_dimensions
 <B>Adding New Dimensions to the Vector Space</B>
 
-The library provides two operators for increasing the
-space dimension of an NNC polyhedron \f$\cP \in \Pset_n\f$,
+The library provides two operators for adding a number \f$i\f$ of
+space dimensions to an NNC polyhedron \f$\cP \in \Pset_n\f$,
 therefore transforming it into a new NNC polyhedron
-\f$\cQ \in \Pset_m\f$, where \f$m > n\f$.
+\f$\cQ \in \Pset_{n+i}\f$.
 In both cases, the added dimensions of the vector space
 are those having the highest indices.
 
-The operator \e embedding the polyhedron \f$\cP\f$
-into the new vector space will return the polyhedron \f$\cQ\f$
+The operator <CODE>add_dimensions_and_embed</CODE>
+\e embeds the polyhedron \f$\cP\f$ into the new vector space of
+dimension \f$i+n\f$ and returns the polyhedron \f$\cQ\f$
 defined by all and only the constraints defining \f$\cP\f$
 (the variables corresponding to the added dimensions are unconstrained).
 For instance, when starting from a polyhedron \f$\cP \sseq \Rset^2\f$
@@ -509,8 +556,9 @@ and adding a third dimension, the result will be the polyhedron
        \,\bigr\}.
 \f]
 
-In contrast, the operator \e projecting the polyhedron \f$\cP\f$
-into the new vector space will return the polyhedron \f$\cQ\f$
+In contrast, the operator  <CODE>add_dimensions_and_project</CODE>
+\e projects the polyhedron \f$\cP\f$ into the new vector space of
+dimension \f$i+n\f$ and returns the polyhedron \f$\cQ\f$
 whose constraint system, besides the constraints defining \f$\cP\f$,
 will include additional constraints on the added dimensions.
 Namely, the corresponding variables are all constrained to be equal to 0.
@@ -524,15 +572,16 @@ and adding a third dimension, the result will be the polyhedron
         \,\bigr\}.
 \f]
 
+\anchor remove_dimensions
 <B>Removing Dimensions from the Vector Space</B>
 
-The library provides two operators for decreasing the
-space dimension of an NNC polyhedron \f$\cP \in \Pset_n\f$,
+The library provides two operators for removing
+space dimensions from an NNC polyhedron \f$\cP \in \Pset_n\f$,
 therefore transforming it into a new NNC polyhedron
-\f$\cQ \in \Pset_m\f$, where \f$m < n\f$.
+\f$\cQ \in \Pset_m\f$ where \f$m \leq n\f$.
 
-Given a set of variables, there is an operator that will remove
-all the space dimensions corresponding to the variables in this set.
+Given a set of variables, the operator <CODE>remove_dimensions</CODE>
+removes all the space dimensions specified by the variables in the set.
 For instance, letting \f$\cP \in \Pset_4\f$ be the singleton set
 \f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$,
 then after invoking this operator with the set of variables
@@ -541,8 +590,9 @@ then after invoking this operator with the set of variables
   \cQ = \bigl\{ (3, 2)^\transpose \bigr\} \sseq \Rset^2.
 \f]
 
-Another operator removes from the vector space all the dimensions
-having an index greater than or equal to \f$m\f$.
+Given a space dimension \f$m\f$ less than or equal to that of the polyhedron,
+the operator <CODE>remove_higher_dimensions</CODE> removes
+the dimensions having indices greater than or equal to \f$m\f$.
 For instance, letting \f$\cP \in \Pset_4\f$ defined as before,
 by invoking this operator with \f$m = 2\f$ the resulting polyhedron
 will be
@@ -576,12 +626,12 @@ otherwise the result is \f$\cQ \in \Pset_m\f$ given by
 \f]
 
 \anchor expand_dimension
-<B>Expanding one Dimension of the Vector Space to Multiple Dimensions</B>
+<B>Expanding One Dimension of the Vector Space to Multiple Dimensions</B>
 
 The operator <CODE>expand_dimension</CODE> provided by the library
 adds \f$m\f$ new dimensions to a polyhedron \f$\cP \in \Pset_n\f$,
 with \f$n > 0\f$, so that dimensions
-\f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$
+\f$n\f$, \f$n+1\f$, \f$\ldots\f$, \f$n+m-1\f$
 of the result \f$\cQ\f$ are exact copies of the \f$i\f$-th dimension
 of \f$\cP\f$.  More formally,
 \f[
@@ -592,12 +642,61 @@ of \f$\cP\f$.  More formally,
       }{
         \exists \vect{v}, \vect{w} \in \cP
           \st u_i = v_i \\
-          \qquad \mathord{} \land \forall j = n, n+1, \dots, n+m-1
+          \qquad \mathord{} \land \forall j = n, n+1, \ldots, n+m-1
                                      \itc u_j = w_i \\
-          \qquad \mathord{} \land \forall k = 0, \dots, n-1
+          \qquad \mathord{} \land \forall k = 0, \ldots, n-1
                                      \itc k \neq i \implies u_k = v_k = w_k
       }.
 \f]
+This operation has been proposed in \ref GDMDRS04 "[GDMDRS04]".
+
+
+\anchor fold_dimensions
+<B>Folding Multiple Dimensions of the Vector Space into One Dimension</B>
+
+The operator <CODE>fold_dimensions</CODE> provided by the library,
+given a polyhedron \f$\cP \in \Pset_n\f$, with \f$n > 0\f$,
+folds a set of dimensions \f$J = \{ j_0, \ldots, j_{m-1} \}\f$,
+with \f$m < n\f$ and \f$j < n\f$ for each \f$j \in J\f$,
+into dimension \f$i < n\f$, where \f$i \notin J\f$.
+The result is given by
+\f[
+  \cQ \defeq \biguplus_{d = 0}^m \cQ_d
+\f]
+where
+\f[
+  \cQ_m
+    \defeq
+      \sset{
+        \vect{u} \in \Rset^{n-m}
+      }{
+        \exists \vect{v} \in \cP
+          \st u_{i'} = v_i \\
+          \qquad \mathord{} \land \forall k = 0, \ldots, n-1
+                                     \itc k \neq i \implies u_{k'} = v_k
+      }
+\f]
+and, for \f$ d = 0 \f$, \f$ \ldots \f$, \f$ m-1 \f$,
+\f[
+  \cQ_d
+    \defeq
+      \sset{
+        \vect{u} \in \Rset^{n-m}
+      }{
+        \exists \vect{v} \in \cP
+          \st u_{i'} = v_{j_d} \\
+          \qquad \mathord{} \land \forall k = 0, \ldots, n-1
+                                     \itc k \neq i \implies u_{k'} = v_k
+      },
+\f]
+and, finally, for \f$ k = 0 \f$, \f$ \ldots \f$, \f$ n-1 \f$,
+\f[
+  k'
+    \defeq
+      k - \card \{\, j \in J \mid k > j \,\},
+\f]
+(\f$\card S\f$ denotes the cardinality of the finite set \f$S\f$).
+
 This operation has been proposed in \ref GDMDRS04 "[GDMDRS04]".
 
 
@@ -787,6 +886,7 @@ the above set is also a closed polyhedron.
 In contrast, when \f$\cQ\f$ is not topologically closed,
 the above set might not be an NNC polyhedron.
 
+\anchor relation_with
 <B>Relation-with Operators</B>
 
 The library provides operators for checking the relation holding
@@ -986,6 +1086,60 @@ since the minimization process also enforces an emptyness check.
 Note anyway that the same effect can be obtained by interleaving
 the calls of the lazy operator with explicit emptyness checks.
 
+\section powerset The Powerset Construction
+
+\section cplusplus Using the C++ Library
+
+<B>On Const-Correctness: A Warning about the Use of References
+and Iterators</B>
+
+Most operators of the library depend on one or more parameters
+that are declared ``const'', meaning that they will not be changed
+by the application of the considered operator.
+Due to the adoption of lazy computation techniques, in many cases
+such a const-correctness guarantee only holds at the semantic level,
+whereas it does not necessarily hold at the implementation level.
+For a typical example, consider the extraction from a polyhedron
+of its constraint system representation.
+While this operation is not going to change the polyhedron,
+it might actually invoke the internal conversion algorithm
+and modify the generators representation of the polyhedron object,
+e.g., by reordering the generators and removing those that are
+detected as redundant. Thus, any previously computed reference
+to the generators of the polyhedron (be it a direct reference object
+or an indirect one, such as an iterator) will no longer be valid.
+For this reason, code fragments such as the following should be
+avoided, as they may result in undefined behavior:
+\code
+// Find a reference to the first point of the non-empty polyhedron `ph'.
+const GenSys& gs = ph.generators();
+GenSys::const_iterator i = gs.begin();
+for (GenSys::const_iterator gs_end = gs.end(); i != gs_end; ++i)
+  if (i->is_point())
+    break;
+const Generator& p = *i;
+// Get the constraints of `ph'.
+const ConSys& cs = ph.constraints();
+// Both the const iterator `i' and the reference `p'
+// are no longer valid at this point.
+cout << p.divisor() << endl;  // Undefinded behavior!
+++i;                          // Undefinded behavior!
+\endcode
+As a rule of thumb, if a polyhedron plays any role in a computation
+(even as a const parameter), then any previously computed reference
+to parts of the polyhedron may have been invalidated.
+Note that, in the example above, the computation of the constraint system
+could have been placed after the uses of the iterator <CODE>i</CODE>
+and the reference <CODE>p</CODE>.
+Anyway, if really needed, it is always possible to take a copy of,
+instead of a reference to, the parts of interest of the polyhedron;
+in the case above, one may have taken a copy of the generator system
+by replacing the second line of code with the following:
+\code
+GenSys gs = ph.generators();
+\endcode
+The same observations, modulo syntactic sugar, apply to the operators
+defined in the C interface of the library. 
 
 \section bibliography Bibliography
 
@@ -1697,7 +1851,7 @@ the set of equations
 \f[
   \sum_{i = 1}^k \lambda_i \vect{x}_i = \vect{0}
 \f]
-implies that, for each \f$i = 1\f$, \f$\dots\f$, \f$k\f$,
+implies that, for each \f$i = 1\f$, \f$\ldots\f$, \f$k\f$,
 \f$\lambda_i = 0\f$.
 
 Note that the maximum number of linearly independent points in

@@ -27,36 +27,84 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
+# All the documentation in docdir.
+docdir = @docdir@
+dvidir = $(docdir)
+htmldir = $(docdir)
+pdfdir = $(docdir)
+psdir = $(docdir)
+txtdir = $(docdir)
+
 DOXYGEN = doxygen
 
-LICENSES = \
+PDF_LICENSES = \
 gpl.pdf \
+fdl.pdf
+
+PS_LICENSES = \
 gpl.ps.gz \
-fdl.pdf \
 fdl.ps.gz
+
+TXT_LICENSES = \
+gpl.txt \
+fdl.txt
+
+LICENSES = \
+$(PDF_LICENSES) \
+$(PS_LICENSES) \
+$(TXT_LICENSES)
+
+HTML_MANUALS = \
+ppl-user-@VERSION@-html.tar.gz \
+ppl-devref-@VERSION@-html.tar.gz
+
+PDF_MANUALS = \
+ppl-user-@VERSION@-browse.pdf \
+ppl-user-@VERSION@-print.pdf \
+ppl-devref-@VERSION@-browse.pdf \
+ppl-devref-@VERSION@-print.pdf
+
+PS_MANUALS = \
+ppl-user-@VERSION@-print.ps.gz \
+ppl-devref-@VERSION@-print.ps.gz
+
+MANUALS = \
+$(HTML_MANUALS) \
+$(PDF_MANUALS) \
+$(PS_MANUALS)
 
 HTML_DIRS = \
 ppl-user-@VERSION@-html \
 ppl-devref-@VERSION@-html
 
+DIST_HTML_DOCS = \
+ppl-user-@VERSION@-html.tar.gz
+
+DIST_PDF_DOCS = \
+$(PDF_LICENSES) \
+ppl-user-@VERSION@-browse.pdf \
+ppl-user-@VERSION@-print.pdf
+
+DIST_PS_DOCS = \
+$(PS_LICENSES) \
+ppl-user-@VERSION@-print.ps.gz
+
+DIST_TXT_DOCS = \
+$(TXT_LICENSES)
+
+# We distribute some preprocessed user's documentation, both for
+# browsing and for printing.
+DIST_DOCS = \
+$(DIST_HTML_DOCS) \
+$(DIST_PDF_DOCS) \
+$(DIST_PS_DOCS) \
+$(DIST_TXT_DOCS)
+
 ALL_TARGETS = \
 $(HTML_DIRS) \
 $(LICENSES) \
-ppl-user-@VERSION@-browse.pdf \
-ppl-user-@VERSION@-print.pdf \
-ppl-user-@VERSION@-print.ps.gz \
-ppl-user-@VERSION@-html.tar.gz \
-ppl-devref-@VERSION@-browse.pdf \
-ppl-devref-@VERSION@-print.pdf \
-ppl-devref-@VERSION@-print.ps.gz \
-ppl-devref-@VERSION@-html.tar.gz
+$(MANUALS)
 
-# We distribute some preprocessed user's documentation,
-# both for browsing and for printing.
-DIST_DOCS = \
-ppl-user-@VERSION@-browse.pdf \
-ppl-user-@VERSION@-print.pdf \
-ppl-user-@VERSION@-print.ps.gz
 
 # Do nothing by default.
 all:
@@ -66,6 +114,83 @@ dist-hook: $(DIST_DOCS)
 user-browse: ppl-user-@VERSION@-browse.pdf
 
 world: $(ALL_TARGETS)
+
+install-data-local: install-html install-pdf install-ps install-txt
+installdirs-local: installdirs-html installdirs-pdf installdirs-ps installdirs-txt
+uninstall-local: uninstall-html uninstall-pdf uninstall-ps uninstall-txt
+
+# Installation and uninstallation of HTML documentation.
+install-html:
+	for ball in $(DIST_HTML_DOCS); do \
+	  test -f $$ball || test -f $(srcdir)/$$ball || $(MAKE) $$ball; \
+	  dir=`basename $$ball .tar.gz`; \
+	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir; \
+	  tar zxf `if test -f $$ball; then echo .; else echo $(srcdir); fi`/$$ball; \
+	  for file in $$dir/*; do \
+	    $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$dir/`basename $$file`; \
+	  done; \
+	done
+
+installdirs-html:
+	for ball in $(DIST_HTML_DOCS); do \
+	  dir=`basename $$ball .tar.gz`; \
+	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir; \
+	done
+
+uninstall-html:
+	for ball in $(DIST_HTML_DOCS); do \
+	  dir=`basename $$ball .tar.gz`; \
+	  rm -rf $(DESTDIR)$(htmldir)/$$dir; \
+	done
+
+# Installation and uninstallation of PDF documentation.
+install-pdf:
+	$(mkinstalldirs) $(DESTDIR)$(pdfdir)
+	for file in $(DIST_PDF_DOCS); do \
+	  test -f $$file || test -f $(srcdir)/$$file || $(MAKE) $$file; \
+	  $(INSTALL_DATA) `if test -f $$file; then echo .; else echo $(srcdir); fi`/$$file $(DESTDIR)$(pdfdir)/$$file; \
+	done
+
+installdirs-pdf:
+	$(mkinstalldirs) $(DESTDIR)$(pdfdir)
+
+uninstall-pdf:
+	rm -f $(DESTDIR)$(pdfdir)/*.pdf
+
+# Installation and uninstallation of PostScript documentation.
+install-ps:
+	$(mkinstalldirs) $(DESTDIR)$(psdir)
+	for file in $(DIST_PS_DOCS); do \
+	  test -f $$file || test -f $(srcdir)/$$file || $(MAKE) $$file; \
+	  $(INSTALL_DATA) `if test -f $$file; then echo .; else echo $(srcdir); fi`/$$file $(DESTDIR)$(psdir)/$$file; \
+	done
+
+installdirs-ps:
+	$(mkinstalldirs) $(DESTDIR)$(psdir)
+
+uninstall-ps:
+	rm -f $(DESTDIR)$(psdir)/*.ps.gz
+
+# Installation and uninstallation of pure text documentation.
+install-txt:
+	$(mkinstalldirs) $(DESTDIR)$(txtdir)
+	for file in $(srcdir)/*.txt; do \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(txtdir)/`basename $$file`; \
+	done
+	for file in BUGS COPYING CREDITS ChangeLog NEWS README README.configure ; do \
+	  $(INSTALL_DATA) $(srcdir)/../$$file $(DESTDIR)$(txtdir)/$$file; \
+	done
+	$(INSTALL_DATA) $(srcdir)/README $(DESTDIR)$(txtdir)/README.doc
+
+installdirs-txt:
+	$(mkinstalldirs) $(DESTDIR)$(txtdir)
+
+uninstall-txt:
+	rm -f $(DESTDIR)$(txtdir)/*.txt
+	for file in BUGS COPYING CREDITS ChangeLog NEWS README README.configure ; do \
+	  rm -f $(DESTDIR)$(txtdir)/$$file; \
+	done
+	rm -f $(DESTDIR)$(txtdir)/README.doc
 
 PPL_SOURCE_FILES = $(wildcard $(srcdir)/../src/*.hh $(srcdir)/../src/*.cc)
 
@@ -170,6 +295,8 @@ user.tex \
 devref.tex \
 gpl.tex \
 fdl.tex \
+gpl.txt \
+fdl.txt \
 ppl.sty
 
 mostlyclean-local:

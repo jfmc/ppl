@@ -1,72 +1,35 @@
-Enhancements for PPL 0.6
+
+Enhancements for PPL 0.7
 ========================
 
-- Explain, somewhere in the documentation, that all the PPL classes
-  are concrete classes that are not supposed to be derived from.
-- Make all the Polyhedron::*recycled*() methods available from
-  the Prolog interface.
-- See if we can provide some guarantee on the maximum number of
-  times we are calling the methods of the argument of
-  Polyhedron::map_dimensions(const PartialFunction&).
-- Implement void Polyhedron::envelope_assign(const Polyhedron& y).
-- Before releasing PPL 0.6, modify the documentation and the web site
-  so as to describe the new configure options that allow to use
-  versions of GMP installed in nonstandard places.
-- The name of the `abandon_exponential_computations' variable
-  is now misleading, as we use it also to abandon polynomial
-  computations in the PowerSet domains.
+- Allow the specification of alternative coefficient implementations.
 - Clearly explain, in the documentation, how (not) to use
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
-- Provide access to Polyhedron::maximize(const LinExpression&, ...) and
-  Polyhedron::minimize(const LinExpression&, ...) in the Prolog interface.
-- Try to remember why all the documentation in the C interface
-  is tagged with \brief and see whether this is actually a good idea.
-- Decide once and for all how to format lists of \param documentations.
-- We must explain very well that iterators can be invalidated by several
-  (actually, almost all) operations, and that use of an invalidated
-  iterator causes undefined behavior.
+- Completely rewrite the handling of temporary coefficients.
+- Implement the -t option of ppl_lcdd.
+- Make sure ppl_lcdd is able to parse problems produced by lrs, i.e.,
+  where the number of rows of the matrix is omitted and replaced by
+  "*****".
+
+
+Enhancements for PPL 0.8 or later versions
+==========================================
+
+- Implement void Polyhedron::envelope_assign(const Polyhedron& y).
 - Implement the extrapolation operators defined in HenzingerH95
   and HenzingerPW01.
-- Complete the Determinate and PowerSet classes so as to provide
-  complete support for sets of polyhedra.
 - See whether, using the techniques described in 
   ftp://ftp.ifor.math.ethz.ch/pub/fukuda/reports/polyunion001120.ps.gz
   we can implement bool poly_hull_assign_if_exact(PH& p, const PH& q),
   temporarily in algorithms.hh, more efficiently.
-- Harmonize all the methods void PPL::Polyhedron::throw_...().
-- Turn h79widening6 into a proper test.
 
-
-Portability
-===========
-
-- Explain how to compile with Comeau C/C++ compiler: first compile GMP
-  configuring it with a command like
-
-    CXX=como /path/to/gmp-4.1.2/configure --enable-cxx \
-        --disable-shared --prefix=/usr/local/lib/como433/local 
-
-    /path/to/ppl/configure --with-cc="como --c" --with-cxx=como \
-        --with-cxxflags="--remarks --strict --long_long \
-        --display_error_number --diag_suppress 193,236,340,401,679" \
-        --disable-shared --with-libgmpxx-prefix=/usr/local/lib/como433/local
-
-- Explain how to compile with Intel C/C++ compiler: first compile GMP
-  configuring it with a command like
-
-    CC=icc CXX=icpc /usr/local/distrib/gmp-4.1.2/configure --enable-cxx \
-        --prefix=/opt/intel_cc_80
-
-    /path/to/ppl/configure --with-cxx=icpc --with-cc=icc \
-	--with-cxxflags="-w2 -wd177,193,279,383,444,981,1418 -Xc" \
-	--with-libgmpxx-prefix=-I/opt/intel_cc_80/lib --prefix=/opt/intel_cc_80
 
 Constructions on Polyhedra
 ==========================
 
-We want to extend the PPL so as to implement the constructions
-of the constraint system hierarchy described in
+Since version 0.6, the PPL supports the determinate and powerset
+constructions of the constraint system hierarchy described in
 
   R. Bagnara.
   A hierarchy of constraint systems for data-flow analysis
@@ -74,11 +37,11 @@ of the constraint system hierarchy described in
   Science of Computer Programming 30, 1-2 (January 1998), pp. 119-155.
   Available at http://www.cs.unipr.it/~bagnara/Papers/Abstracts/SCP98
 
-A generic implementation (in the form of C++ templates) of the entire
-hierarchy has already been written.  The wrapper class for C_Polyhedron
-and NNC_Polyhedron so that a polyhedron is seen as a "determinate
-constraint system" is almost finished, as is the implementation of
-powersets of polyhedra.  Ask-and-tell systems need extensive work.
+The implementation consists in a generic implementation (in the form
+of C++ templates) of the hierarchy, plus a specialization of the
+powerset construction on polyhedra.  What is missing now is the
+ask-and-tell construction.  We have some old code implementing it
+but it requires extensive work.
 
 
 Efficiency Issues

@@ -196,7 +196,7 @@ PowerSet<CS>::omega_reduce() const {
 	break;
       }
     }
-    if (abandon_exponential_computations && xin != ps.end()) {
+    if (abandon_expensive_computations && xin != ps.end()) {
       // Hurry up!
       ps.collapse(xin);
       break;
@@ -342,25 +342,6 @@ inline void
 PowerSet<CS>::collapse() {
   if (!empty())
     collapse(begin());
-}
-
-// Meet operators
-
-/*! \relates PowerSet */
-template <typename CS>
-PowerSet<CS>
-operator*(const PowerSet<CS>& x, const PowerSet<CS>& y) {
-  PowerSet<CS> z;
-  typename PowerSet<CS>::const_iterator xi, yi;
-  for (xi = x.begin(); xi != x.end(); ++xi) {
-    for (yi = y.begin(); yi != y.end(); ++yi) {
-      CS zi = *xi * *yi;
-      if (!zi.is_bottom())
-	z.push_back(zi);
-    }
-  }
-  z.omega_reduce();
-  return z;
 }
 
 template <typename CS>

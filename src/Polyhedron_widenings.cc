@@ -27,7 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 
 #include "BHRZ03_Certificate.defs.hh"
-#include "statistics.hh"
 #include <cassert>
 #include <iostream>
 #include <stdexcept>
@@ -49,7 +48,7 @@ PPL::Polyhedron::select_CH78_constraints(const Polyhedron& y,
 	 && !y.has_something_pending()
 	 && y.constraints_are_minimized());
 
-  // A constraint in `y.con_sys' is copied into `cs_selection'
+  // A constraint in `y.con_sys' is copied to `cs_selection'
   // if it is satisfied by all the generators of `gen_sys'.
 
   // Note: the loop index `i' goes upward to avoid reversing
@@ -85,10 +84,10 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
   SatMatrix tmp_sat_g = y.sat_g;
   tmp_sat_g.sort_rows();
 
-  // A constraint in `con_sys' is copied into `cs_selected'
+  // A constraint in `con_sys' is copied to `cs_selected'
   // if its behavior with respect to `y.gen_sys' is the same
   // as that of another constraint in `y.con_sys'.
-  // otherwise it is copied into `cs_not_selected'.
+  // otherwise it is copied to `cs_not_selected'.
   // Namely, we check whether the saturation row `buffer'
   // (built starting from the given constraint and `y.gen_sys')
   // is a row of the saturation matrix `tmp_sat_g'.
@@ -134,10 +133,10 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
   // Topology compatibility check.
   const Topology tpl = x.topology();
   if (tpl != y.topology())
-    throw_topology_incompatible("H79_widening_assign(y)", y);
+    throw_topology_incompatible("H79_widening_assign(y)", "y", y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("H79_widening_assign(y)", y);
+    throw_dimension_incompatible("H79_widening_assign(y)", "y", y);
 
 #ifndef NDEBUG
   {
@@ -267,19 +266,19 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
   if (x.is_necessarily_closed()) {
     if (!y.is_necessarily_closed())
       throw_topology_incompatible("limited_H79_extrapolation_assign(y, cs)",
-				  y);
+				  "y", y);
     if (cs.has_strict_inequalities())
       throw_topology_incompatible("limited_H79_extrapolation_assign(y, cs)",
-				  cs);
+				  "cs", cs);
   }
   else if (y.is_necessarily_closed())
     throw_topology_incompatible("limited_H79_extrapolation_assign(y, cs)",
-				y);
+				"y", y);
 
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("limited_H79_extrapolation_assign(y, cs)",
-				 y);
+				 "y", y);
   // `cs' must be dimension-compatible with the two polyhedra.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (x.space_dim < cs_space_dim)
@@ -320,14 +319,16 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
 
   ConSys new_cs;
   // The constraints to be added must be satisfied by all the
-  // generators of `x'. We can disregard `y' because `y <= x'.
-  const GenSys& x_gs = x.gen_sys;
-  // FIXME: why iterating upwards here?
-  // FIXME: why repeating the call to cs[i]?
-  for (dimension_type i = 0, cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i)
-    if (x_gs.satisfied_by_all_generators(cs[i]))
-      new_cs.insert(cs[i]);
-
+  // generators of `x'.  We can disregard `y' because `y <= x'.
+  const GenSys& x_gen_sys = x.gen_sys;
+  // Iterate upwards here so as to keep the relative ordering of constraints.
+  // Not really an issue: just aesthetics.
+  for (dimension_type i = 0,
+	 cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
+    const Constraint& c = cs[i];
+    if (x_gen_sys.satisfied_by_all_generators(c))
+      new_cs.insert(c);
+  }
   x.H79_widening_assign(y, tp);
   x.add_constraints(new_cs);
   assert(OK());
@@ -383,176 +384,10 @@ PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
   add_recycled_constraints(bounding_cs);
 }
 
-PPL::Polyhedron::BHRZ03_info::BHRZ03_info(const Polyhedron& x)
-  : poly_dim(0), lin_space_dim(0), num_constraints(0), num_points(0),
-    num_zero_ray_coord(x.space_dimension(), 0) {
-  x.minimize();
-  // `x' cannot be an empty polyhedron or become empty after minimization.
-  assert(!x.marked_empty());
-  x.collect_BHRZ03_info(*this);
-  assert(OK());
-}
-
-bool
-PPL::Polyhedron::BHRZ03_info::OK() const {
-#ifndef NDEBUG
-  using std::endl;
-  using std::cerr;
-#endif
-
-  // The dimension of the vector space.
-  const dimension_type space_dim = num_zero_ray_coord.size();
-
-  if (poly_dim > space_dim) {
-#ifndef NDEBUG
-    cerr << "In the BHRZ03 info about a non-empty polyhedron:" << endl
-	 << "the polyhedron dimension is greater than the space dimension!"
-	 << endl;
-#endif
-    return false;
-  }
-
-  if (lin_space_dim > poly_dim) {
-#ifndef NDEBUG
-    cerr << "In the BHRZ03 info about a non-empty polyhedron:" << endl
-	 << "the lineality space dimension is greater than "
-	 << "the polyhedron dimension!"
-	 << endl;
-#endif
-    return false;
-  }
-
-  if (num_constraints < space_dim - poly_dim) {
-#ifndef NDEBUG
-    cerr << "In the BHRZ03 info about a non-empty polyhedron:" << endl
-	 << "in a vector space of dimension `n',"
-	 << "any polyhedron of dimension `k'" << endl
-	 << "should have `n-k' non-redundant constraints at least."
-	 << endl
-	 << "Here space_dim = " << space_dim << ", "
-	 << "poly_dim = " << poly_dim << ", "
-	 << "but num_constraints = " << num_constraints << "!"
-	 << endl;
-#endif
-    return false;
-  }
-
-  if (num_points == 0) {
-#ifndef NDEBUG
-    cerr << "In the BHRZ03 info about a non-empty polyhedron:" << endl
-	 << "the generator system has no points!"
-	 << endl;
-#endif
-    return false;
-  }
-
-  if (lin_space_dim == space_dim) {
-    // This was a universe polyhedron.
-    if (num_constraints > 0) {
-#ifndef NDEBUG
-      cerr << "In the BHRZ03 info about a non-empty polyhedron:" << endl
-	   << "a universe polyhedron has non-redundant constraints!"
-	   << endl;
-#endif
-      return false;
-    }
-
-    if (num_points != 1) {
-#ifndef NDEBUG
-      cerr << "In the BHRZ03 info about a non-empty polyhedron:" << endl
-	   << "a universe polyhedron has more than one non-redundant point!"
-	   << endl;
-#endif
-      return false;
-    }
-  }
-
-  // All tests passed.
-  return true;
-}
-
-int
-PPL::Polyhedron::BHRZ03_info::compare(const BHRZ03_info& y) const {
-  assert(OK() && y.OK());
-  if (poly_dim != y.poly_dim)
-    return poly_dim > y.poly_dim ? 1 : -1;
-  if (lin_space_dim != y.lin_space_dim)
-    return lin_space_dim > y.lin_space_dim ? 1 : -1; 
-  if (num_constraints != y.num_constraints)
-    return num_constraints > y.num_constraints ? 1 : -1;
-  if (num_points != y.num_points)
-    return num_points > y.num_points ? 1 : -1;
-
-  const dimension_type space_dim = num_zero_ray_coord.size();
-  assert(num_zero_ray_coord.size() == y.num_zero_ray_coord.size());
-  // Note: iterating upwards, because we have to check first
-  // the number of rays having more NON-zero coordinates.
-  for (dimension_type i = 0; i < space_dim; i++)
-    if (num_zero_ray_coord[i] != y.num_zero_ray_coord[i])
-      return num_zero_ray_coord[i] > y.num_zero_ray_coord[i] ? 1 : -1;
-  // All components are equal.
-  return 0;
-}
-
-void
-PPL::Polyhedron::collect_BHRZ03_info(BHRZ03_info& info) const {
-  assert(!marked_empty() && !has_something_pending()
-	 && constraints_are_minimized() && generators_are_minimized());
-
-  // Since the constraint system is minimized, the dimension of
-  // the polyhedron is obtained by subtracting the number of
-  // equalities from the space dimension.
-  info.poly_dim = space_dim - con_sys.num_equalities();
-  // Since the generator systems is minimized,
-  // the dimension of the lineality space is equal to the number of lines.
-  info.lin_space_dim = gen_sys.num_lines();
-
-  // The constraint system is in minimal form ...
-  info.num_constraints = con_sys.num_rows();
-  // ... but for a correct reasoning we have to disregard
-  // the low-level constraints (i.e., the positivity constraint
-  // and epsilon bounds).
-  // TODO: provide a correct implementation for NNC polyhedra.
-  for (dimension_type i = info.num_constraints; i-- > 0; )
-    if (con_sys[i].is_trivial_true()) {
-      --info.num_constraints;
-      break;
-    }
-
-  // The generator system is in minimal form.
-  const dimension_type gen_sys_num_rows = gen_sys.num_rows();
-  info.num_points = 0;
-  if (is_necessarily_closed()) {
-    // Count the number of points.
-    for (dimension_type i = gen_sys_num_rows; i-- > 0; )
-      if (gen_sys[i].is_point())
-	++info.num_points;
-  }
-  else {
-    // For NNC polyhedra, count the number of closure points.
-    for (dimension_type i = gen_sys_num_rows; i-- > 0; )
-      if (gen_sys[i].is_closure_point())
-	++info.num_points;
-  }
-
-  // For each i such that 0 <= i < space_dim,
-  // `num_zero_ray_coord[i]' will be the number of rays
-  // in `gen_sys' having exactly `i' coordinates equal to 0.
-  for (dimension_type i = gen_sys_num_rows; i-- > 0; )
-    if (gen_sys[i].is_ray()) {
-      const Generator& r = gen_sys[i];
-      dimension_type num_zeroes = 0;
-      for (dimension_type j = space_dim; j >= 1; j--)
-	if (r[j] == 0)
-	  ++num_zeroes;
-      ++info.num_zero_ray_coord[num_zeroes];
-    }
-}
-
 bool
 PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 				       const Polyhedron& y) {
-  // It is assumed that `y' is included into `x'.
+  // It is assumed that `y' is included in `x'.
   assert(x.topology() == y.topology());
   assert(x.space_dim == y.space_dim);
   assert(!x.marked_empty() && !x.has_something_pending()
@@ -569,14 +404,10 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
     x.space_dim - x.con_sys.num_equalities();
   const dimension_type y_dimension =
     y.space_dim - y.con_sys.num_equalities();
-  if (x_dimension > y_dimension) {
-#if PPL_STATISTICS
-    ++statistics->reason.poly_dim;
-#endif
+  if (x_dimension > y_dimension)
     return true;
-  }
 
-  // Since `y' is assumed to be included into `x',
+  // Since `y' is assumed to be included in `x',
   // at this point the two polyhedra must have the same dimension.
   assert(x_dimension == y_dimension);
 
@@ -586,14 +417,10 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   // the dimension of the lineality space is equal to the number of lines.
   const dimension_type x_num_lines = x.gen_sys.num_lines();
   const dimension_type y_num_lines = y.gen_sys.num_lines();
-  if (x_num_lines > y_num_lines) {
-#if PPL_STATISTICS
-    ++statistics->reason.lin_space_dim;
-#endif
+  if (x_num_lines > y_num_lines)
     return true;
-  }
 
-  // Since `y' is assumed to be included into `x', at this point
+  // Since `y' is assumed to be included in `x', at this point
   // the lineality space of the two polyhedra must have the same dimension.
   assert (x_num_lines == y_num_lines);
 
@@ -611,12 +438,8 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   for (ConSys::const_iterator i = y.con_sys.begin(),
 	 y_cs_end = y.con_sys.end(); i != y_cs_end; ++i)
     ++y_con_sys_num_rows;
-  if (x_con_sys_num_rows < y_con_sys_num_rows) {
-#if PPL_STATISTICS
-    ++statistics->reason.num_constraints;
-#endif
+  if (x_con_sys_num_rows < y_con_sys_num_rows)
     return true;
-  }
   else if (x_con_sys_num_rows > y_con_sys_num_rows)
     return false;
 
@@ -629,12 +452,8 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
       = x_gen_sys_num_rows - x_num_lines - x.gen_sys.num_rays();
     const dimension_type y_num_points
       = y_gen_sys_num_rows - y_num_lines - y.gen_sys.num_rays();
-    if (x_num_points < y_num_points) {
-#if PPL_STATISTICS
-      ++statistics->reason.num_points;
-#endif
+    if (x_num_points < y_num_points)
       return true;
-    }
     else
       // If the number of points of `y' is smaller than the number of
       // points of `x', then the chain is not stabilizing.
@@ -653,12 +472,8 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 	++y_num_closure_points;
     // If the number of closure points of `x' is smaller than
     // the number of closure points of `y', the chain is stabilizing.
-    if (x_num_closure_points < y_num_closure_points) {
-#if PPL_STATISTICS
-      ++statistics->reason.num_points;
-#endif
+    if (x_num_closure_points < y_num_closure_points)
       return true;
-    }
     else
       // If the number of closure points of `y' is smaller than the
       // number of closure points of `x', the chain is not stabilizing.
@@ -696,12 +511,8 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
     if (x_num_rays[i] > y_num_rays[i])
       // Not stabilizing.
       break;
-    if (x_num_rays[i] < y_num_rays[i]) {
-#if PPL_STATISTICS
-      ++statistics->reason.zero_coord_rays;
-#endif
+    if (x_num_rays[i] < y_num_rays[i])
       return true;
-    }
   }
 
   // The chain is not stabilizing.
@@ -731,9 +542,9 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
 	 && H79.constraints_are_minimized() && H79.generators_are_minimized());
 
   // We will choose from `x_minus_H79_cs' many subsets of constraints,
-  // that will be collected (one at a time) into `combining_cs'.
+  // that will be collected (one at a time) in `combining_cs'.
   // For each group collected, we compute an average constraint,
-  // that will be stored into `new_cs'.
+  // that will be stored in `new_cs'.
 
   // There is no point in applying this technique when `x_minus_H79_cs'
   // has one constraint at most (no ``new'' constraint can be computed).
@@ -822,9 +633,6 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
   // Check for stabilization wrt `y_cert' and improvement over `H79'.
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
-#if PPL_STATISTICS
-    ++statistics->technique.combining_constraints;
-#endif
     std::swap(x, result);
     assert(x.OK(true));
     return true;
@@ -892,9 +700,6 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   // Check for stabilization wrt `y_cert' and improvement over `H79'.
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
-#if PPL_STATISTICS
-    ++statistics->technique.evolving_points;
-#endif
     std::swap(x, result);
     assert(x.OK(true));
     return true;
@@ -983,9 +788,6 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   // Check for stabilization wrt `y' and improvement over `H79'.
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
-#if PPL_STATISTICS
-    ++statistics->technique.evolving_rays;
-#endif
     std::swap(x, result);
     assert(x.OK(true));
     return true;
@@ -1000,10 +802,10 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("BHRZ03_widening_assign(y)", y);
+    throw_topology_incompatible("BHRZ03_widening_assign(y)", "y", y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("BHRZ03_widening_assign(y)", y);
+    throw_dimension_incompatible("BHRZ03_widening_assign(y)", "y", y);
 
 #ifndef NDEBUG
   {
@@ -1016,27 +818,17 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 
   // If any argument is zero-dimensional or empty,
   // the BHRZ03-widening behaves as the identity function.
-  if (x.space_dim == 0 || x.marked_empty() || y.marked_empty()) {
-#if PPL_STATISTICS
-    ++statistics->reason.zero_dim_or_empty;
-    ++statistics->technique.nop;
-#endif
+  if (x.space_dim == 0 || x.marked_empty() || y.marked_empty())
     return;
-  }
 
   // `x.con_sys' and `x.gen_sys' should be in minimal form.
   x.minimize();
 
   // `y.con_sys' and `y.gen_sys' should be in minimal form.
   if (y.is_necessarily_closed()) {
-    if (!y.minimize()) {
+    if (!y.minimize())
       // `y' is empty: the result is `x'.
-#if PPL_STATISTICS
-      ++statistics->reason.zero_dim_or_empty;
-      ++statistics->technique.nop;
-#endif
       return;
-    }
   }
   else {
     // Dealing with a NNC polyhedron.
@@ -1047,14 +839,9 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
     // to also hold for the corresponding eps-representations:
     // this is obtained by intersecting the two eps-representations.
     Polyhedron& yy = const_cast<Polyhedron&>(y);
-    if (!yy.intersection_assign_and_minimize(x)) {
+    if (!yy.intersection_assign_and_minimize(x))
       // `y' is empty: the result is `x'.
-#if PPL_STATISTICS
-      ++statistics->reason.zero_dim_or_empty;
-      ++statistics->technique.nop;
-#endif
       return;
-    }
   }
 
   // Compute certificate info for polyhedron `y'.
@@ -1064,9 +851,6 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   // At this point, also check if the two polyhedra are the same
   // (exploiting the knowledge that `y <= x').
   if (y_cert.is_stabilizing(x) || y.contains(x)) {
-#if PPL_STATISTICS
-    ++statistics->technique.nop;
-#endif
     assert(OK());
     return;
   }
@@ -1075,9 +859,6 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   // If we are using the widening-with-tokens technique and
   // there are tokens available, use one of them and return `x'.
   if (tp != 0 && *tp > 0) {
-#if PPL_STATISTICS
-    ++statistics->technique.delay;
-#endif
     --(*tp);
     assert(OK());
     return;
@@ -1117,9 +898,6 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   assert(H79.OK() && x.OK() && y.OK());
 
   // No previous technique was successful: fall back to the H79 widening.
-#if PPL_STATISTICS
-  ++statistics->technique.h79;
-#endif
   std::swap(x, H79);
   assert(x.OK(true));
 
@@ -1139,19 +917,19 @@ PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
   if (x.is_necessarily_closed()) {
     if (!y.is_necessarily_closed())
       throw_topology_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
-				  y);
+				  "y", y);
     if (cs.has_strict_inequalities())
       throw_topology_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
-				  cs);
+				  "cs", cs);
   }
   else if (y.is_necessarily_closed())
     throw_topology_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
-				y);
+				"y", y);
 
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
-				 y);
+				 "y", y);
   // `cs' must be dimension-compatible with the two polyhedra.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (x.space_dim < cs_space_dim)
@@ -1193,13 +971,15 @@ PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
   ConSys new_cs;
   // The constraints to be added must be satisfied by all the
   // generators of `x'. We can disregard `y' because `y <= x'.
-  const GenSys& x_gs = x.gen_sys;
-  // FIXME: why iterating upwards here?
-  // FIXME: why repeating the call to cs[i]?
-  for (dimension_type i = 0, cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i)
-    if (x_gs.satisfied_by_all_generators(cs[i]))
-      new_cs.insert(cs[i]);
-
+  const GenSys& x_gen_sys = x.gen_sys;
+  // Iterate upwards here so as to keep the relative ordering of constraints.
+  // Not really an issue: just aesthetics.
+  for (dimension_type i = 0,
+	 cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
+    const Constraint& c = cs[i];
+    if (x_gen_sys.satisfied_by_all_generators(c))
+      new_cs.insert(c);
+  }
   x.BHRZ03_widening_assign(y, tp);
   x.add_constraints(new_cs);
   assert(OK());

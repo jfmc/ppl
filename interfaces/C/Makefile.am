@@ -26,8 +26,6 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS = . lpenum
-
 # Libtool -version-info for libppl_c.la.
 #
 #  1. Start with version information of `0:0:0' for each libtool library.

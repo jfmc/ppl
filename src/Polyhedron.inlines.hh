@@ -57,7 +57,7 @@ Polyhedron::~Polyhedron() {
 inline void
 Polyhedron::swap(Polyhedron& y) {
   if (topology() != y.topology())
-    throw_topology_incompatible("swap(y)", y);
+    throw_topology_incompatible("swap(y)", "y", y);
   std::swap(con_sys, y.con_sys);
   std::swap(gen_sys, y.gen_sys);
   std::swap(sat_c, y.sat_c);
@@ -458,7 +458,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     // Extract easy-to-find bounds from constraints.
     assert(constraints_are_up_to_date());
 
-    // We must copy `con_sys' into a temporary matrix,
+    // We must copy `con_sys' to a temporary matrix,
     // because we must apply gauss() and back_substitute()
     // to all the matrix and not only to the non-pending part.
     ConSys cs(con_sys);
@@ -659,7 +659,7 @@ Polyhedron::map_dimensions(const PartialFunction& pfunc) {
     std::vector<dimension_type> cycles;
     cycles.reserve(space_dim + space_dim/2);
 
-    // Used to mark elements as soon as they are inserted into a cycle.
+    // Used to mark elements as soon as they are inserted in a cycle.
     std::deque<bool> visited(space_dim);
 
     for (dimension_type i = space_dim; i-- > 0; ) {
@@ -704,7 +704,6 @@ Polyhedron::map_dimensions(const PartialFunction& pfunc) {
   // If control gets here, then `pfunc' is not a permutation and some
   // dimensions must be projected away.
 
-  // TODO: the implementation below is just an executable specification.
   // If there are pending constraints, using `generators()' we process them.
   const GenSys& old_gensys = generators();
 
@@ -716,18 +715,24 @@ Polyhedron::map_dimensions(const PartialFunction& pfunc) {
     return;
   }
 
+  // Make a local copy of the partial function.
+  std::vector<dimension_type> pfunc_maps(space_dim, not_a_dimension());
+  for (dimension_type j = space_dim; j-- > 0; ) {
+    dimension_type pfunc_j;
+    if (pfunc.maps(j, pfunc_j))
+      pfunc_maps[j] = pfunc_j;
+  }
+
   GenSys new_gensys;
   for (GenSys::const_iterator i = old_gensys.begin(),
 	 old_gensys_end = old_gensys.end(); i != old_gensys_end; ++i) {
     const Generator& old_g = *i;
     LinExpression e(0 * Variable(new_space_dimension-1));
     bool all_zeroes = true;
-    for (dimension_type index = 0; index < space_dim; ++index) {
-      dimension_type new_index;
-      if (old_g.coefficient(Variable(index)) != 0
-	  && pfunc.maps(index, new_index)) {
-	e += Variable(new_index)
-	  * old_g.coefficient(Variable(index));
+    for (dimension_type j = space_dim; j-- > 0; ) {
+      if (old_g.coefficient(Variable(j)) != 0
+	  && pfunc_maps[j] != not_a_dimension()) {
+	e += Variable(pfunc_maps[j]) * old_g.coefficient(Variable(j));
 	all_zeroes = false;
       }
     }
@@ -741,12 +746,11 @@ Polyhedron::map_dimensions(const PartialFunction& pfunc) {
 	new_gensys.insert(ray(e));
       break;
     case Generator::POINT:
-      // Note: a point in the origin has all zero homogeneous coefficients.
+      // A point in the origin has all zero homogeneous coefficients.
       new_gensys.insert(point(e, old_g.divisor()));
       break;
     case Generator::CLOSURE_POINT:
-      // Note: a closure point in the origin has all zero homogeneous
-      // coefficients.
+      // A closure point in the origin has all zero homogeneous coefficients.
       new_gensys.insert(closure_point(e, old_g.divisor()));
       break;
     }
@@ -754,28 +758,6 @@ Polyhedron::map_dimensions(const PartialFunction& pfunc) {
   Polyhedron new_polyhedron(topology(), new_gensys);
   std::swap(*this, new_polyhedron);
   assert(OK(true));
-}
-
-inline bool
-Polyhedron::BHRZ03_info::Compare::operator()(const BHRZ03_info& x,
-					     const BHRZ03_info& y) const {
-  // For an efficient evaluation of the multiset ordering based
-  // on this lgo relation, we want larger elements to come first.
-  return (x.compare(y) == 1);
-}
-
-inline int
-Polyhedron::BHRZ03_info::compare(const Polyhedron& y) const {
-  // TODO: implement an incremental test, stopping as soon as possible.
-  BHRZ03_info y_info(y);
-  return compare(y_info);
-}
-
-inline bool
-Polyhedron::BHRZ03_info::is_stabilizing(const Polyhedron& y) const {
-  // TODO: implement an incremental test, stopping as soon as possible.
-  BHRZ03_info y_info(y);
-  return compare(y_info) == 1;
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -72,14 +72,14 @@ private:
   //! Poly_Con_Relation is implemented by means of a finite bitset.
   typedef unsigned int flags_t;
 
-  //! \name Bitmasks for the individual assertions.
+  //! \name Bitmasks for the individual assertions
   //@{
   static const flags_t NOTHING             = 0U;
   static const flags_t IS_DISJOINT         = 1U << 0;
   static const flags_t STRICTLY_INTERSECTS = 1U << 1;
   static const flags_t IS_INCLUDED         = 1U << 2;
   static const flags_t SATURATES           = 1U << 3;
-  //@}
+  //@} // Bitmasks for the individual assertions
 
   //! All assertions together.
   static const flags_t EVERYTHING

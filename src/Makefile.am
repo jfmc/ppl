@@ -56,8 +56,9 @@ SUBDIRS =
 #	    0.3			    0:0:0
 #	    0.4			    1:0:1
 #	    0.5			    2:0:0
+#	    0.6			    3:0:0
 
-LIBPPL_LT_CURRENT =  2
+LIBPPL_LT_CURRENT =  3
 LIBPPL_LT_REVISION = 0
 LIBPPL_LT_AGE =      0
 
@@ -133,12 +134,12 @@ GenSys.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
+H79_Certificate.types.hh \
 Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
 float.types.hh \
 globals.hh \
-statistics.hh \
 Limits.hh \
 checked.defs.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
@@ -182,6 +183,8 @@ Poly_Gen_Relation.defs.hh \
 Poly_Gen_Relation.inlines.hh \
 BHRZ03_Certificate.defs.hh \
 BHRZ03_Certificate.inlines.hh \
+H79_Certificate.defs.hh \
+H79_Certificate.inlines.hh \
 Polyhedron.defs.hh \
 Ph_Status.inlines.hh \
 Polyhedron.inlines.hh \
@@ -189,15 +192,15 @@ C_Polyhedron.defs.hh \
 C_Polyhedron.inlines.hh \
 NNC_Polyhedron.defs.hh \
 NNC_Polyhedron.inlines.hh \
+Widening_Function.types.hh \
+Widening_Function.defs.hh \
+Widening_Function.inlines.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
 PowerSet.types.hh \
 PowerSet.defs.hh \
 PowerSet.inlines.hh \
-AskTell.types.hh \
-AskTell.defs.hh \
-AskTell.inlines.hh \
 Polyhedra_PowerSet.types.hh \
 Polyhedra_PowerSet.defs.hh \
 Polyhedra_PowerSet.inlines.hh \
@@ -218,6 +221,7 @@ Matrix.cc \
 Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
 BHRZ03_Certificate.cc \
+H79_Certificate.cc \
 Polyhedron_nonpublic.cc \
 Polyhedron_public.cc \
 Polyhedron_chdims.cc \
@@ -251,6 +255,7 @@ GenSys.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
+H79_Certificate.types.hh \
 Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
@@ -263,19 +268,20 @@ GenSys.defs.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Gen_Relation.defs.hh \
 BHRZ03_Certificate.defs.hh \
+H79_Certificate.defs.hh \
 Polyhedron.defs.hh \
 C_Polyhedron.defs.hh \
 NNC_Polyhedron.defs.hh \
 globals.hh \
+Widening_Function.types.hh \
+Widening_Function.defs.hh \
+Widening_Function.inlines.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
 PowerSet.types.hh \
 PowerSet.defs.hh \
 PowerSet.inlines.hh \
-AskTell.types.hh \
-AskTell.defs.hh \
-AskTell.inlines.hh \
 Polyhedra_PowerSet.types.hh \
 Polyhedra_PowerSet.defs.hh \
 Polyhedra_PowerSet.inlines.hh \
@@ -288,11 +294,11 @@ noinst_HEADERS = ppl.hh ppl_install.hh
 
 BUILT_SOURCES = ppl.hh ppl_install.hh
 
-ppl.hh:	$(DOC_FILES) Makefile
+ppl.hh:	$(DOC_FILES) $(top_builddir)/src/version.hh Makefile
 	cat $(top_builddir)/src/version.hh >$@
 	(cd $(srcdir) ; cat $(DOC_FILES)) >>$@
 
-ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCLUDE_FILES) ppl_header.bottom Makefile
+ppl_install.hh:	ppl_header.top $(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.middle $(INCLUDE_FILES) ppl_header.bottom Makefile
 	mkdir -p tmp
 	cat $(top_builddir)/config.h >tmp/concat
 	(cd $(srcdir) ; cat $(INCLUDE_FILES)) >>tmp/concat

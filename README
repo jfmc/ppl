@@ -1,12 +1,21 @@
+Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+See below for the copying conditions.
 
-This is the release 0.5 of the Parma Polyhedra Library:
-a C++ library for (not necessarily closed) convex polyhedra.
 
-To be more precise, the Parma Polyhedra Library (PPL) can handle all
-the convex polyhedra that can be defined as the intersection of a
-finite number of (open or closed) hyperspaces, each described by an
-equality or a inequality (strict or non-strict) with rational
-coefficients.
+Parma Polyhedra Library (Release 0.6)
+=====================================
+
+This is the release 0.6 of the Parma Polyhedra Library:
+a C++ library for (not necessarily closed) convex polyhedra
+and other numerical abstractions.
+
+To be more precise, the Parma Polyhedra Library (PPL) can handle:
+
+  + all the convex polyhedra that can be defined as the intersection
+    of a finite number of (open or closed) hyperspaces, each described
+    by an equality or a (strict or non-strict) with rational coefficients;
+
+  + finite powersets of the above.
 
 The Parma Polyhedra Library is:
 
@@ -30,20 +39,23 @@ The Parma Polyhedra Library is:
       perhaps not ``literate programming'' but close enough;
 
   + free software:
-       distributed under the terms of the GNU General Public License.
+      distributed under the terms of the GNU General Public License.
 
-See http://www.cs.unipr.it/ppl/ for more information on the PPL.
 See the file COPYING for licensing information.
-See the file INSTALL for build and installation instructions.
+See the file INSTALL for generic build and installation instructions.
+See the file README.configure for more specific configuration instruction.
 See the file NEWS for recent project news.
 See the file BUGS for known bugs and how to report new ones.
 See the file CREDITS for a list of people, projects and organizations
 that made the PPL a reality.
+See http://www.cs.unipr.it/ppl/ for more information on the PPL.
+For any additional question you might have, please do not hesitate to
+write to ppl-devel@cs.unipr.it.
 
-Here is the contents of the PPL 0.5 source distributions
-(15 directories, 549 files):
+Here is the contents of the PPL 0.6 source distributions
+(19 directories, 739 files):
 
-ppl-0.5
+ppl-0.6/
 |-- BUGS
 |-- COPYING
 |-- CREDITS
@@ -53,6 +65,7 @@ ppl-0.5
 |-- Makefile.in
 |-- NEWS
 |-- README
+|-- README.configure
 |-- STANDARDS
 |-- TODO
 |-- Watchdog
@@ -60,16 +73,41 @@ ppl-0.5
 |   |-- COPYING
 |   |-- CREDITS
 |   |-- ChangeLog
+|   |-- Doubly_Linked_Object.defs.hh
+|   |-- Doubly_Linked_Object.inlines.hh
+|   |-- Doubly_Linked_Object.types.hh
+|   |-- EList.defs.hh
+|   |-- EList.inlines.hh
+|   |-- EList.types.hh
+|   |-- EList_Iterator.defs.hh
+|   |-- EList_Iterator.inlines.hh
+|   |-- EList_Iterator.types.hh
+|   |-- Handler.defs.hh
+|   |-- Handler.inlines.hh
+|   |-- Handler.types.hh
 |   |-- INSTALL
 |   |-- Makefile.am
 |   |-- Makefile.in
 |   |-- NEWS
+|   |-- Pending_Element.cc
+|   |-- Pending_Element.defs.hh
+|   |-- Pending_Element.inlines.hh
+|   |-- Pending_Element.types.hh
+|   |-- Pending_List.cc
+|   |-- Pending_List.defs.hh
+|   |-- Pending_List.inlines.hh
+|   |-- Pending_List.types.hh
 |   |-- README
+|   |-- Time.cc
+|   |-- Time.defs.hh
+|   |-- Time.inlines.hh
+|   |-- Time.types.hh
 |   |-- Watchdog.cc
 |   |-- Watchdog.defs.hh
 |   |-- Watchdog.inlines.hh
 |   |-- Watchdog.types.hh
 |   |-- aclocal.m4
+|   |-- compile
 |   |-- config.guess
 |   |-- config.h.in
 |   |-- config.sub
@@ -85,13 +123,140 @@ ppl-0.5
 |   |-- pwl_header.bottom
 |   |-- pwl_header.middle
 |   `-- pwl_header.top
-|-- acinclude.m4
 |-- aclocal.m4
+|-- compile
 |-- config.guess
 |-- config.h.in
+|-- config.rpath
 |-- config.sub
 |-- configure
 |-- configure.ac
+|-- demos
+|   |-- Makefile.am
+|   |-- Makefile.in
+|   |-- ppl_lcdd
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- examples
+|   |   |   |-- 1d.ine
+|   |   |   |-- 1da.ine
+|   |   |   |-- Makefile.am
+|   |   |   |-- Makefile.in
+|   |   |   |-- allzero.ine
+|   |   |   |-- ccc4.ext
+|   |   |   |-- ccc5.ext
+|   |   |   |-- ccc6.ext
+|   |   |   |-- ccp4.ext
+|   |   |   |-- ccp5.ext
+|   |   |   |-- ccp6.ext
+|   |   |   |-- cp4.ext
+|   |   |   |-- cp4.ine
+|   |   |   |-- cp5.ext
+|   |   |   |-- cp5.ine
+|   |   |   |-- cp6.ext
+|   |   |   |-- cp6.ine
+|   |   |   |-- cp7.ext
+|   |   |   |-- cross10.ine
+|   |   |   |-- cross12.ine
+|   |   |   |-- cross4.ine
+|   |   |   |-- cross6.ine
+|   |   |   |-- cross8.ine
+|   |   |   |-- cube.ext
+|   |   |   |-- cube.ine
+|   |   |   |-- cube10.ine
+|   |   |   |-- cube12.ine
+|   |   |   |-- cube3.ine
+|   |   |   |-- cube6.ine
+|   |   |   |-- cube8.ine
+|   |   |   |-- cubetop.ine
+|   |   |   |-- cubocta.ine
+|   |   |   |-- cut16_11.ext
+|   |   |   |-- cut32_16.ext
+|   |   |   |-- cyc.ine
+|   |   |   |-- cyclic10-4.ext
+|   |   |   |-- cyclic12-6.ext
+|   |   |   |-- cyclic14-8.ext
+|   |   |   |-- cyclic16-10.ext
+|   |   |   |-- cyclic17_8.ine
+|   |   |   |-- cyclic25_13.ext
+|   |   |   |-- diamond.ine
+|   |   |   |-- dodeca_m.ine
+|   |   |   |-- ex1.ine
+|   |   |   |-- grcubocta.ine
+|   |   |   |-- hexocta.ine
+|   |   |   |-- icododeca_m.ine
+|   |   |   |-- in0.ine
+|   |   |   |-- in1.ine
+|   |   |   |-- in2.ine
+|   |   |   |-- in3.ine
+|   |   |   |-- in4.ine
+|   |   |   |-- in5.ine
+|   |   |   |-- in6.ine
+|   |   |   |-- in7.ine
+|   |   |   |-- infeas.ine
+|   |   |   |-- integralpoints.ine
+|   |   |   |-- irbox20-4.ext
+|   |   |   |-- irbox200-4.ext
+|   |   |   |-- kkd18_4.ine
+|   |   |   |-- kkd27_5.ine
+|   |   |   |-- kkd38_6.ine
+|   |   |   |-- kq20_11_m.ine
+|   |   |   |-- metric40_11.ine
+|   |   |   |-- metric80_16.ine
+|   |   |   |-- mit.ine
+|   |   |   |-- mit288-281.ine
+|   |   |   |-- mit31-20.ine
+|   |   |   |-- mit41-16.ine
+|   |   |   |-- mit708-9.ine
+|   |   |   |-- mit71-61.ine
+|   |   |   |-- mit90-86.ine
+|   |   |   |-- mp5.ext
+|   |   |   |-- mp5.ine
+|   |   |   |-- mp5a.ine
+|   |   |   |-- mp6.ine
+|   |   |   |-- nonfull.ine
+|   |   |   |-- origin.ine
+|   |   |   |-- prodst62.ext
+|   |   |   |-- project1_m.ine
+|   |   |   |-- project1res.ine
+|   |   |   |-- project2_m.ine
+|   |   |   |-- project2res.ine
+|   |   |   |-- rcubocta.ine
+|   |   |   |-- redcheck.ext
+|   |   |   |-- reg24-5.ext
+|   |   |   |-- reg24-5.ine
+|   |   |   |-- reg600-5_m.ext
+|   |   |   |-- rhomtria_m.ine
+|   |   |   |-- sample.ine
+|   |   |   |-- sampleh1.ine
+|   |   |   |-- sampleh2.ine
+|   |   |   |-- sampleh3.ine
+|   |   |   |-- sampleh4.ine
+|   |   |   |-- sampleh5.ine
+|   |   |   |-- sampleh6.ine
+|   |   |   |-- sampleh7.ine
+|   |   |   |-- sampleh8.ine
+|   |   |   |-- samplev1.ext
+|   |   |   |-- samplev2.ext
+|   |   |   |-- samplev3.ext
+|   |   |   |-- trunc10.ine
+|   |   |   |-- trunc7.ine
+|   |   |   |-- tsp5.ext
+|   |   |   `-- tsp5.ine
+|   |   `-- ppl_lcdd.cc
+|   `-- ppl_lpsol
+|       |-- Makefile.am
+|       |-- Makefile.in
+|       |-- examples
+|       |   |-- Makefile.am
+|       |   |-- Makefile.in
+|       |   |-- afiro.mps
+|       |   |-- bgprtr.mps
+|       |   |-- ex1.mps
+|       |   |-- sample.mps
+|       |   `-- unboundedmin.mps
+|       |-- expected
+|       `-- ppl_lpsol.c
 |-- depcomp
 |-- doc
 |   |-- Makefile.am
@@ -106,12 +271,19 @@ ppl-0.5
 |   |-- devref.doxyconf-html.in
 |   |-- devref.tex
 |   |-- fdl.dox
+|   |-- fdl.pdf
+|   |-- fdl.ps.gz
 |   |-- fdl.tex
+|   |-- fdl.txt
 |   |-- gpl.dox
+|   |-- gpl.pdf
+|   |-- gpl.ps.gz
 |   |-- gpl.tex
-|   |-- ppl-user-0.5-browse.pdf
-|   |-- ppl-user-0.5-print.pdf
-|   |-- ppl-user-0.5-print.ps.gz
+|   |-- gpl.txt
+|   |-- ppl-user-0.6pre6-browse.pdf
+|   |-- ppl-user-0.6pre6-html.tar.gz
+|   |-- ppl-user-0.6pre6-print.pdf
+|   |-- ppl-user-0.6pre6-print.ps.gz
 |   |-- ppl.sty
 |   |-- user-browse.doxyconf-latex
 |   |-- user-browse.doxyconf-latex.in
@@ -125,18 +297,9 @@ ppl-0.5
 |   |-- C
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
-|   |   |-- lpenum
-|   |   |   |-- Makefile.am
-|   |   |   |-- Makefile.in
-|   |   |   |-- afiro.mps
-|   |   |   |-- bgprtr.mps
-|   |   |   |-- ex1.mps
-|   |   |   |-- expected
-|   |   |   |-- lpenum.c
-|   |   |   |-- sample.mps
-|   |   |   `-- unboundedmin.mps
 |   |   |-- ppl_c.cc
-|   |   `-- ppl_c.h
+|   |   |-- ppl_c.h
+|   |   `-- ppl_c.h.in
 |   |-- Makefile.am
 |   |-- Makefile.in
 |   `-- Prolog
@@ -145,7 +308,7 @@ ppl-0.5
 |       |   |-- Makefile.in
 |       |   |-- ciao_clpq.pl
 |       |   |-- ciao_clpq2.pl
-|       |   |-- fake_main.pl
+|       |   |-- ciao_pl_check.pl
 |       |   |-- ppl_ciao.cc
 |       |   `-- ppl_ciao.pl
 |       |-- GNU
@@ -166,7 +329,8 @@ ppl-0.5
 |       |   |-- sicstus_cfli.cc
 |       |   |-- sicstus_cfli.h
 |       |   |-- sicstus_cfli.ic
-|       |   `-- sp_clpq.pl
+|       |   |-- sp_clpq.pl
+|       |   `-- sp_pl_check.pl
 |       |-- SWI
 |       |   |-- Makefile.am
 |       |   |-- Makefile.in
@@ -174,7 +338,8 @@ ppl-0.5
 |       |   |-- pl_clpq.pl
 |       |   |-- ppl_pl.cc
 |       |   |-- ppl_swiprolog.cc
-|       |   `-- ppl_swiprolog.pl
+|       |   |-- ppl_swiprolog.pl
+|       |   `-- swi_pl_check.pl
 |       |-- XSB
 |       |   |-- Makefile.am
 |       |   |-- Makefile.in
@@ -183,7 +348,8 @@ ppl-0.5
 |       |   |-- ppl_xsb.H
 |       |   |-- ppl_xsb.cc
 |       |   |-- xsb_clpq.P
-|       |   `-- xsb_clpq2.P
+|       |   |-- xsb_clpq2.P
+|       |   `-- xsb_pl_check.P
 |       |-- YAP
 |       |   |-- Makefile.am
 |       |   |-- Makefile.in
@@ -216,12 +382,23 @@ ppl-0.5
 |   |-- Makefile.am
 |   |-- Makefile.in
 |   |-- ac_check_gmp.m4
-|   `-- ac_cxx_flexible_arrays.m4
+|   |-- ac_cxx_attribute_weak.m4
+|   |-- ac_cxx_flexible_arrays.m4
+|   |-- lib-ld.m4
+|   |-- lib-link.m4
+|   `-- lib-prefix.m4
 |-- missing
 |-- mkinstalldirs
 |-- ppl.lsm.in
 |-- ppl.spec.in
 |-- src
+|   |-- AskTell.defs.hh
+|   |-- AskTell.inlines.hh
+|   |-- AskTell.types.hh
+|   |-- BHRZ03_Certificate.cc
+|   |-- BHRZ03_Certificate.defs.hh
+|   |-- BHRZ03_Certificate.inlines.hh
+|   |-- BHRZ03_Certificate.types.hh
 |   |-- BoundingBox.cc
 |   |-- BoundingBox.defs.hh
 |   |-- BoundingBox.inlines.hh
@@ -249,6 +426,10 @@ ppl-0.5
 |   |-- Generator.defs.hh
 |   |-- Generator.inlines.hh
 |   |-- Generator.types.hh
+|   |-- H79_Certificate.cc
+|   |-- H79_Certificate.defs.hh
+|   |-- H79_Certificate.inlines.hh
+|   |-- H79_Certificate.types.hh
 |   |-- Init.cc
 |   |-- Init.defs.hh
 |   |-- Init.types.hh
@@ -260,9 +441,6 @@ ppl-0.5
 |   |-- Interval.defs.hh
 |   |-- Interval.inlines.hh
 |   |-- Interval.types.hh
-|   |-- LCompare.defs.hh
-|   |-- LCompare.inlines.hh
-|   |-- LCompare.types.hh
 |   |-- LinExpression.cc
 |   |-- LinExpression.defs.hh
 |   |-- LinExpression.inlines.hh
@@ -277,6 +455,9 @@ ppl-0.5
 |   |-- NNC_Polyhedron.defs.hh
 |   |-- NNC_Polyhedron.inlines.hh
 |   |-- NNC_Polyhedron.types.hh
+|   |-- Ph_Status.cc
+|   |-- Ph_Status.idefs.hh
+|   |-- Ph_Status.inlines.hh
 |   |-- Poly_Con_Relation.cc
 |   |-- Poly_Con_Relation.defs.hh
 |   |-- Poly_Con_Relation.inlines.hh
@@ -285,6 +466,9 @@ ppl-0.5
 |   |-- Poly_Gen_Relation.defs.hh
 |   |-- Poly_Gen_Relation.inlines.hh
 |   |-- Poly_Gen_Relation.types.hh
+|   |-- Polyhedra_PowerSet.defs.hh
+|   |-- Polyhedra_PowerSet.inlines.hh
+|   |-- Polyhedra_PowerSet.types.hh
 |   |-- Polyhedron.defs.hh
 |   |-- Polyhedron.inlines.hh
 |   |-- Polyhedron.types.hh
@@ -307,26 +491,25 @@ ppl-0.5
 |   |-- SatRow.defs.hh
 |   |-- SatRow.inlines.hh
 |   |-- SatRow.types.hh
-|   |-- Status.cc
-|   |-- Status.defs.hh
-|   |-- Status.inlines.hh
-|   |-- Status.types.hh
 |   |-- Topology.hh
 |   |-- Variable.cc
 |   |-- Variable.defs.hh
 |   |-- Variable.inlines.hh
 |   |-- Variable.types.hh
+|   |-- Widening_Function.defs.hh
+|   |-- Widening_Function.inlines.hh
+|   |-- Widening_Function.types.hh
 |   |-- algorithms.hh
 |   |-- conversion.cc
 |   |-- globals.cc
 |   |-- globals.hh
 |   |-- initializer.hh
+|   |-- max_space_dimension.hh
 |   |-- minimize.cc
 |   |-- ppl_header.bottom
 |   |-- ppl_header.middle
 |   |-- ppl_header.top
 |   |-- simplify.cc
-|   |-- statistics.hh
 |   |-- version.cc
 |   `-- version.hh.in
 `-- tests
@@ -417,6 +600,8 @@ ppl-0.5
     |-- ascii_dump_load5.cc
     |-- ascii_dump_load6.cc
     |-- ascii_dump_load7.cc
+    |-- bgp99extrapolation1.cc
+    |-- bgp99extrapolation2.cc
     |-- bhrz03widening1.cc
     |-- bhrz03widening10.cc
     |-- bhrz03widening11.cc
@@ -436,11 +621,19 @@ ppl-0.5
     |-- bhrz03widening7.cc
     |-- bhrz03widening8.cc
     |-- bhrz03widening9.cc
+    |-- bhz03widening1.cc
+    |-- bhz03widening2.cc
+    |-- bhz03widening3.cc
+    |-- bhz03widening4.cc
+    |-- bhz03widening5.cc
+    |-- bhz03widening6.cc
     |-- bounded1.cc
+    |-- boundedh79extrapolation1.cc
     |-- boundingbox1.cc
     |-- boundingbox2.cc
     |-- boundingbox3.cc
     |-- boundingbox4.cc
+    |-- boundingbox5.cc
     |-- bounds1.cc
     |-- bounds2.cc
     |-- concatenate1.cc
@@ -461,13 +654,19 @@ ppl-0.5
     |-- disjoint1.cc
     |-- disjoint2.cc
     |-- disjoint3.cc
+    |-- dualhypercubes.cc
     |-- ehandlers.cc
     |-- ehandlers.hh
     |-- empty1.cc
     |-- exceptions1.cc
     |-- exceptions2.cc
+    |-- exceptions3.cc
+    |-- expanddim1.cc
+    |-- expanddim2.cc
     |-- files.cc
     |-- files.hh
+    |-- folddims1.cc
+    |-- folddims2.cc
     |-- generalizedaffineimage1.cc
     |-- generalizedaffineimage10.cc
     |-- generalizedaffineimage11.cc
@@ -491,6 +690,8 @@ ppl-0.5
     |-- h79widening3.cc
     |-- h79widening4.cc
     |-- h79widening5.cc
+    |-- h79widening6.cc
+    |-- h79widening7.cc
     |-- intersection1.cc
     |-- intersection10.cc
     |-- intersection11.cc
@@ -512,6 +713,10 @@ ppl-0.5
     |-- linearpartition3.cc
     |-- linexpression1.cc
     |-- mapdim1.cc
+    |-- mapdim2.cc
+    |-- mapdim3.cc
+    |-- max_min1.cc
+    |-- max_min2.cc
     |-- mc91.cc
     |-- memory1.cc
     |-- minconstraints1.cc
@@ -530,6 +735,7 @@ ppl-0.5
     |-- polydifference5.cc
     |-- polydifference6.cc
     |-- polydifference7.cc
+    |-- polydifference8.cc
     |-- polyhull1.cc
     |-- polyhull10.cc
     |-- polyhull2.cc
@@ -611,19 +817,32 @@ ppl-0.5
 
 --------
 
-Copyright (C) 2001-2004 Roberto Bagnara
+Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
-The Parma Polyhedra Library is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2 of the
-License, or (at your option) any later version.
+This file is part of the Parma Polyhedra Library (PPL).
 
-This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+The license is included, in various formats, in the `doc' subdirectory
+of each distribution of the PPL in files called `fdl.*'.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-USA
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.  The license is included, in various
+formats, in the `doc' subdirectory of each distribution of the PPL in
+files are called `gpl.*'.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+If you have not received a copy of one or both the above mentioned
+licenses along with the PPL, write to the Free Software Foundation,
+Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ .

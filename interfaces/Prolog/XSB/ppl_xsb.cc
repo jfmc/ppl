@@ -24,8 +24,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 #include "Integer.defs.hh"
 #include <cinterf.h>
+
+// In XSB 2.6, <error_xsb.h> does not come with the extern "C" wrapper.
+extern "C" {
+#include <error_xsb.h>
+}
+
+// In XSB 2.6, <cinterf.h> pollutes the namespace with `min' and `max'.
 #undef min
 #undef max
+
 #include <cassert>
 
 typedef prolog_term Prolog_term_ref;
@@ -237,8 +245,8 @@ Prolog_construct_cons(Prolog_term_ref& c,
   Raise a Prolog exception with \p t as the exception term.
 */
 static inline void
-Prolog_raise_exception(Prolog_term_ref /* t */) {
-  // FIXME: to be written!
+Prolog_raise_exception(Prolog_term_ref t) {
+  xsb_throw(t);
 }
 
 /*!
@@ -470,6 +478,8 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #define ppl_Polyhedron_concatenate_assign xsb_stub_ppl_Polyhedron_concatenate_assign
 #define ppl_Polyhedron_remove_dimensions xsb_stub_ppl_Polyhedron_remove_dimensions
 #define ppl_Polyhedron_remove_higher_dimensions xsb_stub_ppl_Polyhedron_remove_higher_dimensions
+#define ppl_Polyhedron_expand_dimension xsb_stub_ppl_Polyhedron_expand_dimension
+#define ppl_Polyhedron_fold_dimensions xsb_stub_ppl_Polyhedron_fold_dimensions
 #define ppl_Polyhedron_map_dimensions xsb_stub_ppl_Polyhedron_map_dimensions
 
 #include "../ppl_prolog.icc"
@@ -554,6 +564,8 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #undef ppl_Polyhedron_concatenate_assign
 #undef ppl_Polyhedron_remove_dimensions
 #undef ppl_Polyhedron_remove_higher_dimensions
+#undef ppl_Polyhedron_expand_dimension
+#undef ppl_Polyhedron_fold_dimensions
 #undef ppl_Polyhedron_map_dimensions
 
 #define XSB_ENTRY_0(name) \
@@ -699,6 +711,8 @@ XSB_ENTRY_2(ppl_Polyhedron_add_dimensions_and_embed)
 XSB_ENTRY_2(ppl_Polyhedron_concatenate_assign)
 XSB_ENTRY_2(ppl_Polyhedron_remove_dimensions)
 XSB_ENTRY_2(ppl_Polyhedron_remove_higher_dimensions)
+XSB_ENTRY_3(ppl_Polyhedron_expand_dimension)
+XSB_ENTRY_3(ppl_Polyhedron_fold_dimensions)
 XSB_ENTRY_2(ppl_Polyhedron_map_dimensions)
 
 extern "C" void

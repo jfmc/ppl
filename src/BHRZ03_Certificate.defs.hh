@@ -30,6 +30,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cassert>
 #include <vector>
 
+//! The convergence certificate for the BHRZ03 widening operator.
+/*!
+  Convergence certificates are used to instantiate the BHZ03 framework
+  so as to define widening operators for the finite powerset domain.
+  
+  \note
+  Each convergence certificate has to be used together with a
+  compatible widening operator. In particular, BHRZ03_Certificate
+  can certify the convergence of both the BHRZ03 and the H79 widenings.
+*/
 class Parma_Polyhedra_Library::BHRZ03_Certificate {
 public:
   //! Default constructor.
@@ -38,36 +48,47 @@ public:
   //! Constructor: computes the certificate for \p ph.
   BHRZ03_Certificate(const Polyhedron& ph);
 
+  //! Copy constructor.
+  BHRZ03_Certificate(const BHRZ03_Certificate& y);
+
+  //! Destructor.
+  ~BHRZ03_Certificate();
+
   //! The comparison function for certificates.
   /*!
-    \return     The returned value can be \f$-1\f$, \f$0\f$ or \f$1\f$.
+    \return
+    \f$-1\f$, \f$0\f$ or \f$1\f$ depending on whether \p *this
+    is smaller than, equal to, or greater than \p y, respectively.
 
     Compares \p *this with \p y, using a total ordering which is a
-    refinement of the lgo relation defined in BHRZ03.
-    The result is negative, zero, or positive if \p *this is smaller
-    than, equal to, or greater than y, respectively.
+    refinement of the lgo relation for the BHRZ03 widening.
   */
   int compare(const BHRZ03_Certificate& y) const;
 
   //! Compares \p *this with the certificate for polyhedron \p ph.
   int compare(const Polyhedron& ph) const;
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
   //! Returns <CODE>true</CODE> if and only if the certificate for
   //! polyhedron \p ph is stricly smaller than \p *this.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool is_stabilizing(const Polyhedron& ph) const;
   
-  //! \brief
-  //! Binary predicate defining a total ordering on BHRZ03 certificates
-  //! which is a refinement of the BHRZ03 lgo partial order, to be used
-  //! when storing information about sets of polyhedra.
+  //! A total ordering on BHRZ03 certificates.
+  /*!
+    This binary predicate defines a total ordering on BHRZ03 certificates
+    which is used when storing information about sets of polyhedra.
+  */
   struct Compare {
     //! Returns <CODE>true</CODE> if and only if \p x comes before \p y.
     bool operator()(const BHRZ03_Certificate& x,
 		    const BHRZ03_Certificate& y) const;
   };
   
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Check if gathered information is meaningful.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool OK() const;
   
 private:

@@ -28,12 +28,36 @@ VPATH = @srcdir@
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
+Doubly_Linked_Object.types.hh \
+EList.types.hh \
+EList_Iterator.types.hh \
+Handler.types.hh \
+Pending_Element.types.hh \
+Pending_List.types.hh \
+Time.types.hh \
 Watchdog.types.hh \
+Handler.defs.hh \
+Handler.inlines.hh \
+Time.defs.hh \
+Time.inlines.hh \
+Doubly_Linked_Object.defs.hh \
+Doubly_Linked_Object.inlines.hh \
+EList_Iterator.defs.hh \
+EList_Iterator.inlines.hh \
+EList.defs.hh \
+EList.inlines.hh \
+Pending_Element.defs.hh \
+Pending_Element.inlines.hh \
+Pending_List.defs.hh \
+Pending_List.inlines.hh \
 Watchdog.defs.hh \
 Watchdog.inlines.hh
 
 SOURCE_FILES = \
 $(INCLUDE_FILES) \
+Pending_Element.cc \
+Pending_List.cc \
+Time.cc \
 Watchdog.cc
 
 # The ordering of the following list *matters*!
@@ -77,8 +101,9 @@ if BUILD_WATCHDOG_LIBRARY
 #	PWL release	(with PPL release)	-version-info
 #	    0.1			0.4		    0:0:0
 #	    0.2			0.5		    1:0:0
+#	    0.3			0.6		    2:0:0
 
-LIBPWL_LT_CURRENT =  1
+LIBPWL_LT_CURRENT =  2
 LIBPWL_LT_REVISION = 0
 LIBPWL_LT_AGE =      0
 
@@ -95,7 +120,7 @@ pwl.hh:	$(DOC_FILES)
 	(cd $(srcdir) ; cat $(DOC_FILES)) \
 		| sed -f $(srcdir)/pwl_filter_doxygen.sed >pwl.hh
 
-pwl_install.hh:	pwl_header.top $(top_builddir)/config.h pwl_header.middle $(INCLUDE_FILES) pwl_header.bottom
+pwl_install.hh:	pwl_header.top $(top_builddir)/config.h pwl_header.middle $(INCLUDE_FILES) pwl_header.bottom Makefile
 	mkdir -p tmp
 	(cd $(srcdir) ; cat $(INCLUDE_FILES)) >tmp/concat
 	grep "^#include <" <tmp/concat | sort -u >tmp/includes

@@ -1,4 +1,4 @@
-/* Test Polyhedron::bounding_box().
+/* Test building a polyhedron from a non-closed interval-based bounding box.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -30,36 +30,35 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
+// This is a unbounded box in 4D but bounded in 2D with strict inequalities.
 static void
 test1() {
+  BoundingBox box(4);
+  box.raise_lower_bound(1, false, -2, 3);
+  box.lower_upper_bound(1, true, 4, 1);
+  box.raise_lower_bound(2, false, -10, 1);
+  box.lower_upper_bound(2, true, 12, 3);
+  box.raise_lower_bound(3, true, 15, 3);
+
+  NNC_Polyhedron ph(box, From_Bounding_Box());
+  
   Variable x(1);
   Variable y(2);
   Variable z(3);
 
-  NNC_Polyhedron ph(4);
-  ph.add_constraint(3 * x +y > 2);
-  ph.add_constraint(x <= 4);
-  ph.add_constraint(y <= 4);
-  ph.add_constraint(z >= 5);
-
-  BoundingBox pbox(4);
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
-
-  BoundingBox nbox(4);
-  ph.shrink_bounding_box(nbox);
-
-  NNC_Polyhedron known_pph(pbox, From_Bounding_Box());
-  NNC_Polyhedron known_nph(nbox, From_Bounding_Box());
-  known_pph.intersection_assign_and_minimize(ph);
-  known_nph.intersection_assign_and_minimize(ph);
+  NNC_Polyhedron known_ph(box.space_dimension());
+  known_ph.add_constraint(3*x > -2);
+  known_ph.add_constraint(x <= 4);
+  known_ph.add_constraint(y <= 4);
+  known_ph.add_constraint(y > -10);
+  known_ph.add_constraint(z >= 5);
 
 #if NOISY
   print_generators(ph, "*** test1 ph ***");
-  print_generators(known_pph, "*** test1 known_pph ***");
-  print_generators(known_nph, "*** test1 known_nph ***");
+  print_generators(known_ph, "*** test1 known_ph ***");
 #endif
 
-  if (ph != known_pph || ph != known_nph)
+  if (ph != known_ph)
     exit(1);
 }
 
@@ -67,63 +66,51 @@ test1() {
 // causing upper and lower bounds of the box to be open.
 static void
 test2() {
-  Variable x(0);
-  Variable y(1);
+  BoundingBox box(4);
+  box.raise_lower_bound(1, true, -2, 3);
+  box.lower_upper_bound(1, false, 4, 1);
+  box.raise_lower_bound(2, false, -10, 1);
+  box.lower_upper_bound(2, true, 12, 3);
 
-  NNC_Polyhedron ph(2);
-  ph.add_constraint(3 * x + y >= 2);
-  ph.add_constraint(x < 4);
-  ph.add_constraint(y <= 4);
+  NNC_Polyhedron ph(box, From_Bounding_Box());
+  
+  Variable x(1);
+  Variable y(2);
 
-  BoundingBox pbox(2);
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
-
-  BoundingBox nbox(2);
-  ph.shrink_bounding_box(nbox);
-
-  NNC_Polyhedron known_pph(pbox, From_Bounding_Box());
-  known_pph.intersection_assign_and_minimize(ph);
-
-  NNC_Polyhedron known_nph(nbox, From_Bounding_Box());
-  known_nph.intersection_assign_and_minimize(ph);
+  NNC_Polyhedron known_ph(box.space_dimension());
+  known_ph.add_constraint(3*x >= -2);
+  known_ph.add_constraint(x < 4);
+  known_ph.add_constraint(y <= 4);
+  known_ph.add_constraint(y > -10);
 
 #if NOISY
   print_generators(ph, "*** test2 ph ***");
-  print_generators(known_pph, "*** test2 known_pph ***");
-  print_generators(known_nph, "*** test2 known_nph ***");
+  print_generators(known_ph, "*** test2 known_ph ***");
 #endif
 
-  if (ph != known_pph || ph != known_nph)
+  if (ph != known_ph)
     exit(1);
 }
 
-// An empty polyhedron in 2D defined using strict constraints.
+// This is an empty box in 2D.
 static void
 test3() {
-  Variable x(0);
-  Variable y(1);
-  NNC_Polyhedron ph(2);
-  ph.add_constraint(x > 0);
-  ph.add_constraint(x < 0);
-  ph.add_constraint(y > 0);
-  ph.add_constraint(y < 0);
+  BoundingBox box(2);
+  box.set_empty();
 
-  BoundingBox pbox(2);
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
-
-  BoundingBox nbox(2);
-  ph.shrink_bounding_box(nbox);
-
-  NNC_Polyhedron known_pph(pbox, From_Bounding_Box());
-  NNC_Polyhedron known_nph(nbox, From_Bounding_Box());
+  NNC_Polyhedron ph(box, From_Bounding_Box());
 
 #if NOISY
-  print_generators(ph, "*** test3 ph ***");
-  print_generators(known_pph, "*** test3 known_pph ***");
-  print_generators(known_nph, "*** test3 known_nph ***");
+  print_constraints(ph, "*** test3 ph ***");
 #endif
 
-  if (ph != known_pph || ph != known_nph)
+  NNC_Polyhedron known_ph(2, C_Polyhedron::EMPTY);
+
+#if NOISY
+  print_constraints(known_ph, "*** test3 known_ph ***");
+#endif
+
+  if (ph != known_ph)
     exit(1);
 }
 

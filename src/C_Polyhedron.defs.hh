@@ -60,10 +60,14 @@ public:
 
   //! Builds either the universe or the empty C polyhedron.
   /*!
-    \param num_dimensions   The number of dimensions of the vector
-                            space enclosing the C polyhedron.
-    \param kind             Specifies whether a universe or an empty
-                            C polyhedron should be built.
+    \param num_dimensions
+    The number of dimensions of the vector space enclosing the C polyhedron;
+
+    \param kind
+    Specifies whether a universe or an empty C polyhedron should be built.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
 
     Both parameters are optional:
     by default, a 0-dimension space universe C polyhedron is built.
@@ -74,49 +78,61 @@ public:
   //! Builds a C polyhedron from a system of constraints.
   /*!
     The polyhedron inherits the space dimension of the constraint system.
-    \param cs       The system of constraints defining the polyhedron.
-    \exception std::invalid_argument thrown if the system of constraints
-                                     contains strict inequalities.
+
+    \param cs
+    The system of constraints defining the polyhedron.
+
+    \exception std::invalid_argument
+    Thrown if the system of constraints contains strict inequalities.
   */
   C_Polyhedron(const ConSys& cs);
 
   //! Builds a C polyhedron recycling a system of constraints.
   /*!
     The polyhedron inherits the space dimension of the constraint system.
-    \param cs       The system of constraints defining the polyhedron.
-                    It is not declared <CODE>const</CODE> because its
-                    data-structures will be recycled to build the polyhedron.
-    \exception std::invalid_argument thrown if the system of constraints
-                                     contains strict inequalities.
+
+    \param cs
+    The system of constraints defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures will be
+    recycled to build the polyhedron.
+
+    \exception std::invalid_argument
+    Thrown if the system of constraints contains strict inequalities.
   */
   C_Polyhedron(ConSys& cs);
 
   //! Builds a C polyhedron from a system of generators.
   /*!
     The polyhedron inherits the space dimension of the generator system.
-    \param gs       The system of generators defining the polyhedron.
-    \exception std::invalid_argument thrown if the system of generators
-                                     is not empty but has no points,
-                                     or if it contains closure points.
+
+    \param gs
+    The system of generators defining the polyhedron.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points,
+    or if it contains closure points.
   */
   C_Polyhedron(const GenSys& gs);
 
   //! Builds a C polyhedron recycling a system of generators.
   /*!
     The polyhedron inherits the space dimension of the generator system.
-    \param gs       The system of generators defining the polyhedron.
-                    It is not declared <CODE>const</CODE> because its
-                    data-structures will be recycled to build the polyhedron.
-    \exception std::invalid_argument thrown if the system of generators
-                                     is not empty but has no points,
-                                     or if it contains closure points.
+
+    \param gs
+    The system of generators defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures will be
+    recycled to build the polyhedron.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points,
+    or if it contains closure points.
   */
   C_Polyhedron(GenSys& gs);
 
   //! Builds a C polyhedron from the NNC polyhedron \p y.
   /*!
-    \exception std::invalid_argument thrown if the polyhedron \p y
-                                     is not topologically closed.
+    \exception std::invalid_argument
+    Thrown if the polyhedron \p y is not topologically closed.
   */
   explicit C_Polyhedron(const NNC_Polyhedron& y);
 
@@ -126,12 +142,17 @@ public:
     the template class Box, see the documentation of the protected method:
       template \<typename Box\>
       Polyhedron::Polyhedron(Topology topol, const Box& box);
-    \param box    The bounding box representing the polyhedron to be built.
-    \param dummy  A dummy tag to syntactically differentiate this one
-                  from the other constructors.
-    \exception std::invalid_argument thrown if \p box has intervals that
-                                     are not topologically closed (i.e.,
-                                     having some finite but open bounds).
+
+    \param box
+    The bounding box representing the polyhedron to be built;
+
+    \param dummy
+    A dummy tag to syntactically differentiate this one from the other
+    constructors.
+
+    \exception std::invalid_argument
+    Thrown if \p box has intervals that are not topologically closed
+    (i.e., having some finite but open bounds).
   */
   template <typename Box>
   C_Polyhedron(const Box& box, From_Bounding_Box dummy);

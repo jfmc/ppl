@@ -6,12 +6,12 @@ missing or unclear documentation... whatever is a subject for possible
 improvement.
 
 As far as software bugs are concerned, the best reports are those that
-are reproducible.  When possible, including (or pointing us to) code
-that exhibits the reported misbehavior is the best thing you can do to
-help us fix the library.  Of course, this is not always possible and
-we will welcome any kind of bug report.  Anyway, you may be interested
-to read http://www.chiark.greenend.org.uk/~sgtatham/bugs.html on how
-to report bugs effectively.
+are reproducible.  Including (or pointing us to) code that exhibits
+the reported misbehavior is the best thing you can do to help us fix
+the library.  Of course, this is not always possible and we will
+welcome any kind of bug report.  Anyway, you may be interested to read
+http://www.chiark.greenend.org.uk/~sgtatham/bugs.html on how to report
+bugs effectively.
 
 
 KNOWN BUGS

@@ -162,27 +162,31 @@ enum ppl_enum_error_code {
     A function has been invoked with an invalid argument. */
   PPL_ERROR_INVALID_ARGUMENT = -3,
   /*! \hideinitializer
+    The construction of an object that would exceed its maximum
+    permitted size was attempted. */
+  PPL_ERROR_LENGTH_ERROR = -4,
+  /*! \hideinitializer
     An arithmetic overflow occurred and the computation was consequently
     interrupted.  This can <EM>only</EM> happen in library's incarnations
     using bounded integers as coefficients. */
-  PPL_ARITHMETIC_OVERFLOW = -4,
+  PPL_ARITHMETIC_OVERFLOW = -5,
   /*! \hideinitializer
     An error occurred during a C input/output operation.  A more
     precise indication of what went wrong is availble via
     <CODE>errno</CODE>. */
-  PPL_STDIO_ERROR = -5,
+  PPL_STDIO_ERROR = -6,
   /*! \hideinitializer
     An internal error that was diagnosed by the PPL itself.
     This indicates a bug in the PPL. */
-  PPL_ERROR_INTERNAL_ERROR = -6,
+  PPL_ERROR_INTERNAL_ERROR = -7,
   /*! \hideinitializer
     A standard exception has been raised by the C++ run-time environment.
     This indicates a bug in the PPL. */
-  PPL_ERROR_UNKNOWN_STANDARD_EXCEPTION = -7,
+  PPL_ERROR_UNKNOWN_STANDARD_EXCEPTION = -8,
   /*! \hideinitializer
     A totally unknown, totally unexpected error happened.
     This indicates a bug in the PPL. */
-  PPL_ERROR_UNEXPECTED_ERROR = -8
+  PPL_ERROR_UNEXPECTED_ERROR = -9
 };
 
 /*! \name Version Checking */
@@ -210,10 +214,11 @@ enum ppl_enum_error_code {
 #define PPL_VERSION_BETA @PPL_VERSION_BETA@
 
 /*! \brief
-  A string containing the PPL version.  Let <CODE>M</CODE> and
-  <CODE>m</CODE> denote the numbers associated to PPL_VERSION_MAJOR
-  and PPL_VERSION_MINOR, respectively.  The format of
-  PPL_VERSION is <CODE>M "." m</CODE> if both
+  A string containing the PPL version.
+
+  Let <CODE>M</CODE> and <CODE>m</CODE> denote the numbers associated
+  to PPL_VERSION_MAJOR and PPL_VERSION_MINOR, respectively.  The
+  format of PPL_VERSION is <CODE>M "." m</CODE> if both
   PPL_VERSION_REVISION (<CODE>r</CODE>) and PPL_VERSION_BETA
   (<CODE>b</CODE>)are zero, <CODE>M "." m "pre" b</CODE> if
   PPL_VERSION_REVISION is zero and PPL_VERSION_BETA is not zero,
@@ -255,10 +260,12 @@ int
 ppl_version __P((const char** p));
 
 /*! \brief
-  Writes to \p m a pointer to a character string containing
-  information about the PPL version, the licensing, the lack of any
-  warranty whatsoever, the C++ compiler used to build the library,
-  where to report bugs and where to look for further information.
+  Writes to \p m a pointer to a character string containing the PPL banner.
+
+  The banner provides information about the PPL version, the licensing,
+  the lack of any warranty whatsoever, the C++ compiler used to build
+  the library, where to report bugs and where to look for further
+  information.
 */
 int
 ppl_banner __P((const char** p));
@@ -288,7 +295,9 @@ ppl_not_a_dimension __P((ppl_dimension_type* m));
 /*! \brief
   Initializes the Parma Polyhedra Library.
   This function must be called before any other function.
-  <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> is returned in case the library
+
+  \return
+  <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> if the library
   was already initialized.
 */
 int
@@ -297,7 +306,9 @@ ppl_initialize __P((void));
 /*! \brief
   Finalizes the Parma Polyhedra Library.
   This function must be called after any other function.
-  <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> is returned in case the library
+
+  \return
+  <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> if the library
   was already finalized.
 */
 int
@@ -723,7 +734,7 @@ int
 ppl_new_ConSys_const_iterator __P((ppl_ConSys_const_iterator_t* pcit));
 
 /*! \brief
-  Builds a const iterator system that is a copy of \p cit; writes an
+  Builds a const iterator that is a copy of \p cit; writes an
   handle for the newly created const iterator at address \p pcit.
 */
 int
@@ -978,7 +989,7 @@ int
 ppl_new_GenSys_const_iterator __P((ppl_GenSys_const_iterator_t* pgit));
 
 /*! \brief
-  Builds a const iterator system that is a copy of \p git; writes an
+  Builds a const iterator that is a copy of \p git; writes an
   handle for the newly created const iterator at address \p pgit.
 */
 int
@@ -1162,8 +1173,9 @@ ppl_new_NNC_Polyhedron_from_NNC_Polyhedron __P((ppl_Polyhedron_t* pph,
 /*! \brief
   Builds a new closed polyhedron from the system of constraints
   \p cs and writes an handle for the newly created polyhedron at
-  address \p pph.  The new polyhedron will inherit the space dimension
-  of \p cs.
+  address \p pph.
+
+  The new polyhedron will inherit the space dimension of \p cs.
 */
 int
 ppl_new_C_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph,
@@ -1172,9 +1184,10 @@ ppl_new_C_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph,
 /*! \brief
   Builds a new closed polyhedron recycling the system of constraints
   \p cs and writes an handle for the newly created polyhedron at
-  address \p pph.  Since \p cs will be <EM>the</EM> system of
-  constraints of the new polyhedron, the space dimension is also
-  inherited.
+  address \p pph.
+
+  Since \p cs will be <EM>the</EM> system of constraints of the new
+  polyhedron, the space dimension is also inherited.
 
   \warning
   This function modifies the constraint system referenced by \p cs:
@@ -1187,8 +1200,9 @@ ppl_new_C_Polyhedron_recycle_ConSys __P((ppl_Polyhedron_t* pph,
 /*! \brief
   Builds a new NNC polyhedron from the system of constraints
   \p cs and writes an handle for the newly created polyhedron at
-  address \p pph.  The new polyhedron will inherit the space dimension
-  of \p cs.
+  address \p pph.
+
+  The new polyhedron will inherit the space dimension of \p cs.
 */
 int
 ppl_new_NNC_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph,
@@ -1197,9 +1211,10 @@ ppl_new_NNC_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph,
 /*! \brief
   Builds a new NNC polyhedron recycling the system of constraints
   \p cs and writes an handle for the newly created polyhedron at
-  address \p pph.  Since \p cs will be <EM>the</EM> system of
-  constraints of the new polyhedron, the space dimension is also
-  inherited.
+  address \p pph.
+
+  Since \p cs will be <EM>the</EM> system of constraints of the new
+  polyhedron, the space dimension is also inherited.
 
   \warning
   This function modifies the constraint system referenced by \p cs:
@@ -1212,8 +1227,9 @@ ppl_new_NNC_Polyhedron_recycle_ConSys __P((ppl_Polyhedron_t* pph,
 /*! \brief
   Builds a new closed polyhedron from the system of generators
   \p gs and writes an handle for the newly created polyhedron at
-  address \p pph.  The new polyhedron will inherit the space dimension
-  of \p gs.
+  address \p pph.
+
+  The new polyhedron will inherit the space dimension of \p gs.
 */
 int
 ppl_new_C_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph,
@@ -1222,9 +1238,10 @@ ppl_new_C_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph,
 /*! \brief
   Builds a new closed polyhedron recycling the system of generators
   \p gs and writes an handle for the newly created polyhedron at
-  address \p pph.  Since \p gs will be <EM>the</EM> system of
-  generators of the new polyhedron, the space dimension is also
-  inherited.
+  address \p pph.
+
+  Since \p gs will be <EM>the</EM> system of generators of the new
+  polyhedron, the space dimension is also inherited.
 
   \warning
   This function modifies the generator system referenced by \p gs:
@@ -1237,8 +1254,9 @@ ppl_new_C_Polyhedron_recycle_GenSys __P((ppl_Polyhedron_t* pph,
 /*! \brief
   Builds a new NNC polyhedron from the system of generators
   \p gs and writes an handle for the newly created polyhedron at
-  address \p pph.  The new polyhedron will inherit the space dimension
-  of \p gs.
+  address \p pph.
+
+  The new polyhedron will inherit the space dimension of \p gs.
 */
 int
 ppl_new_NNC_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph,
@@ -1247,9 +1265,10 @@ ppl_new_NNC_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph,
 /*! \brief
   Builds a new NNC polyhedron recycling the system of generators
   \p gs and writes an handle for the newly created polyhedron at
-  address \p pph.  Since \p gs will be <EM>the</EM> system of
-  generators of the new polyhedron, the space dimension is also
-  inherited.
+  address \p pph.
+
+  Since \p gs will be <EM>the</EM> system of generators of the new
+  polyhedron, the space dimension is also inherited.
 
   \warning
   This function modifies the generator system referenced by \p gs:
@@ -1470,22 +1489,22 @@ ppl_Polyhedron_relation_with_Generator __P((ppl_const_Polyhedron_t ph,
 
 /*! \brief
   Use \p ph to shrink a generic, interval-based bounding box.
-  The bounding box is abstractly provided by means of the parameters,
+  The bounding box is abstractly provided by means of the parameters.
+
+  \param ph
+  The polyhedron that is used to shrink the bounding box;
 
   \param complexity
   The code of the complexity class of the algorithm to be used.
   Must be one of PPL_COMPLEXITY_CLASS_POLYNOMIAL,
-  PPL_COMPLEXITY_CLASS_SIMPLEX, or PPL_COMPLEXITY_CLASS_ANY.
-
-  \param ph
-  The polyhedron that is used to shrink the bounding box.
+  PPL_COMPLEXITY_CLASS_SIMPLEX, or PPL_COMPLEXITY_CLASS_ANY;
 
   \param set_empty
-  a pointer to a void function with no arguments that causes the bounding
-  box to become empty, i.e., to represent the empty set.
+  A pointer to a void function with no arguments that causes the bounding
+  box to become empty, i.e., to represent the empty set;
 
   \param raise_lower_bound
-  a pointer to a void function with arguments
+  A pointer to a void function with arguments
   <CODE>(ppl_dimension_type k, int closed,
          ppl_const_Coefficient_t n, ppl_const_Coefficient_t d)</CODE>
   that intersects the interval corresponding to the <CODE>k</CODE>-th
@@ -1493,7 +1512,7 @@ ppl_Polyhedron_relation_with_Generator __P((ppl_const_Polyhedron_t ph,
   with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is zero.
   The fraction \f$n/d\f$ is in canonical form, that is, \f$n\f$
   and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
-  being the unique representation for zero.
+  being the unique representation for zero;
 
   \param lower_upper_bound
   a pointer to a void function with argument
@@ -1557,17 +1576,28 @@ ppl_Polyhedron_bounds_from_below __P((ppl_const_Polyhedron_t ph,
   Returns a positive integer if  \p ph is not empty
   and \p le is bounded from above in \p ph, in which case
   the supremum value and a point where \p le reaches it are computed.
-  \param ph        The polyhedron constraining \p le;
-  \param le        The linear expression to be maximized subject to \p ph;
-  \param sup_n     Will be assigned the numerator of the supremum value;
-  \param sup_d     Will be assigned the denominator of the supremum value;
-  \param pmaximum  Will store 1 in this location if the supremum is also
-                   the maximum, will store 0 otherwise;
-  \param ppoint    When nonzero, a point or closure point where \p le
-                   reaches the extremum value will be stored here.
-  If \p ph is empty or \p le is not bounded from above,
-  0 is returned and \p sup_n, \p sup_d, \p *pmaximum and \p *ppoint
-  are left untouched.
+
+  \param ph
+  The polyhedron constraining \p le;
+
+  \param le
+  The linear expression to be maximized subject to \p ph;
+
+  \param sup_n
+  Will be assigned the numerator of the supremum value;
+
+  \param sup_d
+  Will be assigned the denominator of the supremum value;
+
+  \param pmaximum 
+  Will store 1 in this location if the supremum is also the maximum,
+  will store 0 otherwise;
+
+  \param ppoint
+  When nonzero, a point or closure point where \p le reaches the
+  extremum value will be stored here. If \p ph is empty or \p le is
+  not bounded from above, 0 is returned and \p sup_n, \p sup_d,
+  \p *pmaximum and \p *ppoint are left untouched.
 */
 int
 ppl_Polyhedron_maximize __P((ppl_const_Polyhedron_t ph,
@@ -1581,17 +1611,28 @@ ppl_Polyhedron_maximize __P((ppl_const_Polyhedron_t ph,
   Returns a positive integer if  \p ph is not empty
   and \p le is bounded from above in \p ph, in which case
   the infimum value and a point where \p le reaches it are computed.
-  \param ph        The polyhedron constraining \p le;
-  \param le        The linear expression to be minimized subject to \p ph;
-  \param inf_n     Will be assigned the numerator of the infimum value;
-  \param inf_d     Will be assigned the denominator of the infimum value;
-  \param pminimum  Will store 1 in this location if the infimum is also
-                   the minimum, will store 0 otherwise;
-  \param ppoint    When nonzero, a point or closure point where \p le
-                   reaches the extremum value will be stored here.
-  If \p ph is empty or \p le is not bounded from below,
-  0 is returned and \p inf_n, \p inf_d, \p *pminimum and \p *ppoint
-  are left untouched.
+
+  \param ph
+  The polyhedron constraining \p le;
+
+  \param le
+  The linear expression to be minimized subject to \p ph;
+
+  \param inf_n
+  Will be assigned the numerator of the infimum value;
+
+  \param inf_d
+  Will be assigned the denominator of the infimum value;
+
+  \param pminimum
+  Will store 1 in this location if the infimum is also the minimum,
+  will store 0 otherwise;
+
+  \param ppoint
+  When nonzero, a point or closure point where \p le reaches the
+  extremum value will be stored here.  If \p ph is empty or \p le is
+  not bounded from below, 0 is returned and \p inf_n, \p inf_d,
+  \p *pminimum and \p *ppoint are left untouched.
 */
 int
 ppl_Polyhedron_minimize __P((ppl_const_Polyhedron_t ph,
@@ -1664,7 +1705,6 @@ ppl_Polyhedron_add_constraint __P((ppl_Polyhedron_t ph,
   \p ph.  Returns a positive integer if the resulting polyhedron is
   non-empty; returns 0 if it is empty.  Upon successful return, \p ph
   is guaranteed to be minimized.
-
 */
 int
 ppl_Polyhedron_add_constraint_and_minimize __P((ppl_Polyhedron_t ph,
@@ -1794,25 +1834,23 @@ ppl_Polyhedron_intersection_assign_and_minimize
 __P((ppl_Polyhedron_t x, ppl_const_Polyhedron_t y));
 
 /*! \brief
-  Assigns to \p x the poly-hull of the set-theoretic union
-  of \p x and \p y.
+  Assigns to \p x the poly-hull of \p x and \p y.
 */
 int
 ppl_Polyhedron_poly_hull_assign __P((ppl_Polyhedron_t x,
 				     ppl_const_Polyhedron_t y));
 
 /*! \brief
-  Assigns to \p x the poly-hull of the set-theoretic union of \p x
-  and \p y.  Returns a positive integer if the resulting polyhedron is
-  non-empty; returns 0 if it is empty.  Upon successful return, \p x is
-  also guaranteed to be minimized.
+  Assigns to \p x the poly-hull of \p x and \p y. Returns a positive
+  integer if the resulting polyhedron is non-empty; returns 0 if it is
+  empty. Upon successful return, \p x is also guaranteed to be minimized.
 */
 int
 ppl_Polyhedron_poly_hull_assign_and_minimize __P((ppl_Polyhedron_t x,
 						  ppl_const_Polyhedron_t y));
 
 /*! \brief
-  Assigns to \p x the poly-hull of the set-theoretic difference
+  Assigns to \p x the \ref poly_difference "poly-difference"
   of \p x and \p y.
 */
 int
@@ -1822,10 +1860,18 @@ ppl_Polyhedron_poly_difference_assign __P((ppl_Polyhedron_t x,
 /*! \brief
   Transforms the polyhedron \p ph, assigning an affine expression
   to the specified variable.
-  \param ph  The polyhedron that is transformed;
-  \param var The variable to which the affine expression is assigned;
-  \param le  The numerator of the affine expression;
-  \param d   The denominator of the affine expression.
+
+  \param ph 
+  The polyhedron that is transformed;
+
+  \param var
+  The variable to which the affine expression is assigned;
+
+  \param le
+  The numerator of the affine expression;
+
+  \param d
+  The denominator of the affine expression.
 */
 int
 ppl_Polyhedron_affine_image __P((ppl_Polyhedron_t ph,
@@ -1836,10 +1882,18 @@ ppl_Polyhedron_affine_image __P((ppl_Polyhedron_t ph,
 /*! \brief
   Transforms the polyhedron \p ph, substituting an affine expression
   to the specified variable.
-  \param ph  The polyhedron that is transformed;
-  \param var The variable to which the affine expression is substituted;
-  \param le  The numerator of the affine expression;
-  \param d   The denominator of the affine expression.
+  
+  \param ph
+  The polyhedron that is transformed;
+
+  \param var
+  The variable to which the affine expression is substituted;
+
+  \param le
+  The numerator of the affine expression;
+
+  \param d
+  The denominator of the affine expression.
 */
 int
 ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
@@ -1853,12 +1907,21 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
   \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
   where \f$\mathord{\relsym}\f$ is the relation symbol encoded
   by \p relsym.
-  \param ph     The polyhedron that is transformed;
-  \param var    The left hand side variable of the generalized
-                affine transfer function;
-  \param relsym The relation symbol;
-  \param le     The numerator of the right hand side affine expression;
-  \param d      The denominator of the right hand side affine expression.
+
+  \param ph
+  The polyhedron that is transformed;
+
+  \param var
+  The left hand side variable of the generalized affine transfer function;
+
+  \param relsym
+  The relation symbol;
+
+  \param le
+  The numerator of the right hand side affine expression;
+
+  \param d
+  The denominator of the right hand side affine expression.
 */
 int
 ppl_Polyhedron_generalized_affine_image
@@ -1873,10 +1936,18 @@ __P((ppl_Polyhedron_t ph,
   \ref generalized_image "generalized affine transfer function"
   \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
   \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
-  \param ph            The polyhedron that is transformed;
-  \param lhs           The left hand side affine expression;
-  \param relsym        The relation symbol;
-  \param rhs           The right hand side affine expression.
+
+  \param ph
+  The polyhedron that is transformed;
+
+  \param lhs
+  The left hand side affine expression;
+
+  \param relsym
+  The relation symbol;
+
+  \param rhs
+  The right hand side affine expression.
 */
 int
 ppl_Polyhedron_generalized_affine_image_lhs_rhs
@@ -2122,6 +2193,27 @@ ppl_Polyhedron_map_dimensions __P((ppl_Polyhedron_t ph,
 				   ppl_dimension_type maps[],
 				   size_t n));
 
+/*! \brief
+  \ref expand_dimension "Expands" the \f$d\f$-th dimension of
+  \p ph to \p m new dimensions.
+*/
+int
+ppl_Polyhedron_expand_dimension __P((ppl_Polyhedron_t ph,
+				     ppl_dimension_type d,
+				     ppl_dimension_type m));
+
+/*! \brief
+  Modifies \p ph by \ref fold_dimensions "folding" the dimensions
+  contained in the first \p n positions of the array \p ds into
+  dimension \p d.  The presence of duplicates in \p ds is a waste
+  but an innocuous one.
+*/
+int
+ppl_Polyhedron_fold_dimensions __P((ppl_Polyhedron_t ph,
+				    ppl_dimension_type ds[],
+				    size_t n,
+				    ppl_dimension_type d));
+
 /*@}*/ /* Functions Related to Polyhedra */
 
 /*! \name Simple I/O Functions */
@@ -2164,8 +2256,7 @@ PPL_DECLARE_PRINT_FUNCTIONS(Polyhedron)
 
 /*! \brief
   The type of output functions used for printing variables.
-*/
-/*!
+
   An output function for variables must write a textual representation
   for \p var to a character buffer, null-terminate it, and return a
   pointer to the beginning of the buffer.  In case the operation fails,

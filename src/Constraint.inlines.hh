@@ -109,7 +109,7 @@ inline Integer_traits::const_reference
 Constraint::coefficient(const Variable v) const {
   const dimension_type v_id = v.id();
   if (v_id >= space_dimension())
-    throw_dimension_incompatible("PPL::Constraint::coefficient(v)", v);
+    throw_dimension_incompatible("coefficient(v)", "v", v);
   return Row::coefficient(v_id);
 }
 

@@ -26,9 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Determinate.types.hh"
 #include "ConSys.types.hh"
-#include "GenSys.types.hh"
 #include "Variable.defs.hh"
-#include "Polyhedron.defs.hh"
 #include "globals.hh"
 #include <iosfwd>
 #include <cassert>
@@ -37,42 +35,31 @@ namespace Parma_Polyhedra_Library {
 
 //! \brief
 //! Returns <CODE>true</CODE> if and only if
-//! \p x and \p y are the same polyhedron.
+//! \p x and \p y are the same domain element.
 /*!
   \relates Determinate
-  \exception std::invalid_argument thrown if \p x and \p y
-                                          are topology-incompatible
-                                          or dimension-incompatible.
+  \exception std::invalid_argument
+  Thrown if \p x and \p y are topology-incompatible or
+  dimension-incompatible.
 */
 template <typename PH>
 bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
 
 //! \brief
 //! Returns <CODE>true</CODE> if and only if
-//! \p x and \p y are different polyhedra.
+//! \p x and \p y are different domain elements.
 /*!
   \relates Determinate
-  \exception std::invalid_argument thrown if \p x and \p y
-                                          are topology-incompatible
-                                          or dimension-incompatible.
+  \exception std::invalid_argument
+  Thrown if \p x and \p y are topology-incompatible or
+  dimension-incompatible.
 */
 template <typename PH>
 bool operator!=(const Determinate<PH>& x, const Determinate<PH>& y);
 
-//! Computes an upper bound of \p x and \p y.
-/*! \relates Determinate */
-template <typename PH>
-Determinate<PH>
-operator+(const Determinate<PH>& x, const Determinate<PH>& y);
-
-//! Computes the meet of \p x and \p y.
-/*! \relates Determinate */
-template <typename PH>
-Determinate<PH>
-operator*(const Determinate<PH>& x, const Determinate<PH>& y);
-
 namespace IO_Operators {
 
+//! Output operator.
 /*! \relates Parma_Polyhedra_Library::Determinate */
 template <typename PH>
 std::ostream&
@@ -82,18 +69,22 @@ operator<<(std::ostream&, const Determinate<PH>&);
 
 } // namespace Parma_Polyhedra_Library
 
-//! Wraps a polyhedron class into a determinate constraint system interface.
+//! Wraps a PPL class into a determinate constraint system interface.
 template <typename PH>
 class Parma_Polyhedra_Library::Determinate {
 public:
+
+  //! \name Constructors and Destructor
+  //@{
+
   //! \brief
   //! Builds either the top or the bottom of the determinate constraint
   //! system defined on the vector space having \p num_dimensions
   //! dimensions.
   /*!
-    The top element, corresponding to the universe polyhedron,
-    is built if \p universe is \c true; otherwise the bottom element
-    (corresponding to the empty polyhedron) is built. By default,
+    The top element, corresponding to the whole vector space,
+    is built if \p universe is \c true; otherwise the bottom element,
+    corresponding to the emptyset, is built. By default,
     the top of a zero-dimension vector space is built.
   */
   explicit
@@ -101,12 +92,12 @@ public:
 
   //! \brief
   //! Injection operator: builds the determinate constraint system element
-  //! corresponding to polyhedron \p p.
+  //! corresponding to the base-level element \p p.
   Determinate(const PH& p);
 
   //! \brief
   //! Injection operator: builds the determinate constraint system element
-  //! corresponding to the polyhedron represented by \p cs.
+  //! corresponding to the base-level element represented by \p cs.
   Determinate(const ConSys& cs);
 
   //! Copy constructor.
@@ -115,11 +106,25 @@ public:
   //! Destructor.
   ~Determinate();
 
-  //! Assignment operator.
-  Determinate& operator=(const Determinate& y);
+  //@} // Constructors and Destructor
 
-  //! Swaps \p *this with \p y.
-  void swap(Determinate& y);
+  //! \name Member Functions that Do Not Modify the Domain Element
+  //@{
+
+  //! Returns the dimension of the vector space enclosing \p *this.
+  dimension_type space_dimension() const;
+
+  //! Returns the system of constraints.
+  const ConSys& constraints() const;
+
+  //! Returns the system of constraints, with no redundant constraint.
+  const ConSys& minimized_constraints() const;
+
+  //! Returns a const reference to the embedded element.
+  const PH& element() const;
+
+  //! Returns a reference to the embedded element.
+  PH& element();
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
@@ -129,19 +134,18 @@ public:
   void mutate();
 
   //! \brief
-  //! Assigns to \p *this the upper bound (i.e., poly-hull)
-  //! of \p *this and \p y.
-  void upper_bound_assign(const Determinate& y);
-
-  //! Assigns to \p *this the meet (i.e., intersection) of \p *this and \p y.
-  void meet_assign(const Determinate& y);
-
-  //! Assigns to \p *this the concatenation of \p *this with \p y.
-  void concatenate_assign(const Determinate& y);
+  //! Returns <CODE>true</CODE> if and only if \p *this is the top of the
+  //! determinate constraint system (i.e., the whole vector space).
+  bool is_top() const;
 
   //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this entails \p y.
-  //! (i.e., \p x is contained into \p y).
+  //! Returns <CODE>true</CODE> if and only if \p *this is the bottom
+  //! of the determinate constraint system (i.e., the emptyset).
+  bool is_bottom() const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this entails \p y
+  //! (i.e., \p *this is contained in \p y).
   bool definitely_entails(const Determinate& y) const;
 
   //! \brief
@@ -149,24 +153,14 @@ public:
   //! are equivalent.
   bool is_definitely_equivalent_to(const Determinate& y) const;
 
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
+  //@} // Member Functions that Do Not Modify the Domain Element
+
+
   Determinate& operator <<= (dimension_type n);
   Determinate& hide_assign(dimension_type n);
-
-  //! Returns a const reference to the embedded polyhedron.
-  const PH& polyhedron() const;
-
-  //! Returns a reference to the embedded polyhedron.
-  PH& polyhedron();
-
-  //! \brief
-  //! Returns \c true if and only if \p *this is the top of the
-  //! determinate constraint system (i.e., the universe polyhedron).
-  inline bool is_top() const;
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is the bottom
-  //! of the determinate constraint system (i.e., the empty polyhedron).
-  inline bool is_bottom() const;
 
   friend bool
   operator==<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
@@ -180,60 +174,76 @@ public:
 				  const Determinate& y);
 #endif
 
-  //! Returns the dimension of the vector space enclosing \p *this.
-  dimension_type space_dimension() const;
-
-  //! Returns the system of constraints.
-  const ConSys& constraints() const;
-
-  //! Returns the system of constraints, with no redundant constraint.
-  const ConSys& minimized_constraints() const;
-
-  //! Returns the system of generators.
-  const GenSys& generators() const;
-
-  //! Returns the system of generators, with no redundant generator.
-  const GenSys& minimized_generators() const;
+  //! \name Space-Dimension Preserving Member Functions that May Modify the Domain Element
+  //@{
 
   //! \brief
-  //! Intersects \p *this with (a copy of) constraint \p c.
+  //! Assigns to \p *this the upper bound of \p *this and \p y.
+  void upper_bound_assign(const Determinate& y);
+
+  //! Assigns to \p *this the meet of \p *this and \p y.
+  void meet_assign(const Determinate& y);
+
+  //! \brief
+  //! Assigns to \p *this the meet of \p *this and the element
+  //! represented by constraint \p c.
   /*!
-    \exception std::invalid_argument thrown if \p *this and constraint \p c
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are topology-incompatible
+    or dimension-incompatible.
   */
   void add_constraint(const Constraint& c);
 
-  //! Intersects \p *this with the constraints in \p cs.
+  //! \brief
+  //! Assigns to \p *this the meet of \p *this and the element
+  //! represented by the constraints in \p cs.
   /*!
-    \param  cs             The constraints to intersect with.
-                           This parameter is not declared
-                           <CODE>const</CODE> because  it can be modified.
-    \exception std::invalid_argument thrown if \p *this and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \param cs
+    The constraints to intersect with.  This parameter is not declared
+    <CODE>const</CODE> because it can be modified.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
   */
   void add_constraints(ConSys& cs);
 
+  //@} // Space-Dimension Preserving Member Functions that May Modify [...]
+
+  //! \name Member Functions that May Modify the Dimension of the Vector Space
+  //@{
+
+  //! Assignment operator.
+  Determinate& operator=(const Determinate& y);
+
+  //! Swaps \p *this with \p y.
+  void swap(Determinate& y);
+
   //! \brief
-  //! Adds \p m new dimensions and embeds the old polyhedron
-  //! into the new space.
+  //! Adds \p m new dimensions and embeds the old domain element
+  //! in the new vector space.
   void add_dimensions_and_embed(dimension_type m);
 
   //! \brief
-  //! Adds \p m new dimensions to the polyhedron
-  //! and does not embed it in the new space.
+  //! Adds \p m new dimensions to the domain element
+  //! and does not embed it in the new vector space.
   void add_dimensions_and_project(dimension_type m);
+
+  //! \brief
+  //! Assigns to \p *this the \ref concatenate "concatenation"
+  //! of \p *this and \p y, taken in this order.
+  void concatenate_assign(const Determinate& y);
 
   //! \brief
   //! Removes all the specified dimensions.
   /*!
-    \param to_be_removed  The set of Variable objects corresponding
-                          to the dimensions to be removed.
-    \exception std::invalid_argument thrown if \p *this is
-                                     dimension-incompatible with one
-				     of the Variable objects contained
-				     in \p to_be_removed.
+    \param to_be_removed
+    The set of Variable objects corresponding to the dimensions to be
+    removed.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
   */
   void remove_dimensions(const Variables_Set& to_be_removed);
 
@@ -241,51 +251,28 @@ public:
   //! Removes the higher dimensions so that the resulting space
   //! will have dimension \p new_dimension.
   /*!
-    \exception std::invalid_argument thrown if \p new_dimensions is greater
-                                     than the space dimension of \p *this.
+    \exception std::invalid_argument
+    Thrown if \p new_dimensions is greater than the space dimension
+    of \p *this.
   */
   void remove_higher_dimensions(dimension_type new_dimension);
 
+  //! \brief
+  //! Remaps the dimensions of the vector space according to
+  //! a partial function.
+  /*!
+    See Polyhedron::map_dimensions.
+  */
   template <typename PartialFunction>
   void map_dimensions(const PartialFunction& pfunc);
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the
-  //! \ref H79_widening "H79-widening" between \p *this and \p y.
-  /*!
-    \param y           A polyhedron that <EM>must</EM>
-                       be contained in \p *this.
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void H79_widening_assign(const Determinate& y);
-
-  //! \brief
-  //! Limits the \ref H79_widening "H79-widening" computation
-  //! between \p *this and \p y by enforcing constraints \p cs
-  //! and assigns the result to \p *this.
-  /*!
-    \param y                 A polyhedron that <EM>must</EM>
-                             be contained in \p *this.
-    \param cs                The system of constraints that limits
-                             the widened polyhedron. It is not
-                             declared <CODE>const</CODE>
-                             because it can be modified.
-    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void limited_H79_extrapolation_assign(const Determinate& y, ConSys& cs);
-
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
+  //@} // Member Functions that May Modify the Dimension of the Vector Space
 
 private:
   //! The possibly shared representation of a Determinate object.
   /*!
     By adopting the <EM>copy-on-write</EM> technique, a single
-    representation of the polyhedron may be shared by more than
+    representation of the base-level object may be shared by more than
     one object of the class Determinate.
   */
   class Rep {
@@ -307,15 +294,15 @@ private:
     Rep();
 
   public:
-    //! A possibly shared polyhedron object.
+    //! A possibly shared base-level domain element.
     PH ph;
 
     //! \brief
-    //! Builds a new representation by creating a polyhedron object
+    //! Builds a new representation by creating a domain element
     //! of the specified kind, in the specified vector space.
     Rep(dimension_type num_dimensions, Polyhedron::Degenerate_Kind kind);
 
-    //! Builds a new representation by copying polyhedron \p p.
+    //! Builds a new representation by copying base-level element \p p.
     Rep(const PH& p);
 
     //! Builds a new representation by copying the constraints in \p cs.
@@ -336,7 +323,9 @@ private:
     bool is_shared() const;
   };
 
-  //! A pointer to the possibly shared representation of the polyhedron.
+  //! \brief
+  //! A pointer to the possibly shared representation of
+  //! the base-level domain element.
   Rep* prep;
 };
 

@@ -848,7 +848,7 @@ void
 PPL::Polyhedron::add_constraint(const Constraint& c) {
   // Topology-compatibility check.
   if (c.is_strict_inequality() && is_necessarily_closed())
-    throw_topology_incompatible("add_constraint(c)", c);
+    throw_topology_incompatible("add_constraint(c)", "c", c);
   // Dimension-compatibility check:
   // the dimension of `c' can not be greater than space_dim.
   if (space_dim < c.space_dimension())
@@ -924,7 +924,7 @@ void
 PPL::Polyhedron::add_generator(const Generator& g) {
   // Topology-compatibility check.
   if (g.is_closure_point() && is_necessarily_closed())
-    throw_topology_incompatible("add_generator(g)", g);
+    throw_topology_incompatible("add_generator(g)", "g", g);
   // Dimension-compatibility check:
   // the dimension of `g' can not be greater than space_dim.
   const dimension_type g_space_dim = g.space_dimension();
@@ -938,7 +938,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
     // Closure points can only be inserted in non-empty polyhedra.
     if (marked_empty())
       if (g.type() != Generator::POINT)
-	throw_invalid_generator("add_generator(g)");
+	throw_invalid_generator("add_generator(g)", "g");
       else
 	status.set_zero_dim_univ();
     assert(OK());
@@ -951,7 +951,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
     // Here the polyhedron is empty:
     // the specification says we can only insert a point.
     if (!g.is_point())
-      throw_invalid_generator("add_generator(g)");
+      throw_invalid_generator("add_generator(g)", "g");
     if (g.is_necessarily_closed() || !is_necessarily_closed()) {
       gen_sys.insert(g);
       // Since `gen_sys' was empty, after inserting `g' we have to resize
@@ -1065,7 +1065,7 @@ void
 PPL::Polyhedron::add_recycled_constraints(ConSys& cs) {
   // Topology compatibility check.
   if (is_necessarily_closed() && cs.has_strict_inequalities())
-    throw_topology_incompatible("add_constraints(cs)", cs);
+    throw_topology_incompatible("add_constraints(cs)", "cs", cs);
   // Dimension-compatibility check:
   // the dimension of `cs' can not be greater than space_dim.
   const dimension_type cs_space_dim = cs.space_dimension();
@@ -1153,7 +1153,7 @@ PPL::Polyhedron::add_recycled_constraints_and_minimize(ConSys& cs) {
   // Topology-compatibility check.
   if (is_necessarily_closed() && cs.has_strict_inequalities())
     throw_topology_incompatible("add_recycled_constraints_and_minimize(cs)",
-				cs);
+				"cs", cs);
   // Dimension-compatibility check:
   // the dimension of `cs' can not be greater than space_dim.
   const dimension_type cs_space_dim = cs.space_dimension();
@@ -1226,7 +1226,7 @@ void
 PPL::Polyhedron::add_recycled_generators(GenSys& gs) {
   // Topology compatibility check.
   if (is_necessarily_closed() && gs.has_closure_points())
-    throw_topology_incompatible("add_recycled_generators(gs)", gs);
+    throw_topology_incompatible("add_recycled_generators(gs)", "gs", gs);
   // Dimension-compatibility check:
   // the dimension of `gs' can not be greater than space_dim.
   const dimension_type gs_space_dim = gs.space_dimension();
@@ -1243,7 +1243,7 @@ PPL::Polyhedron::add_recycled_generators(GenSys& gs) {
   // transform it in the zero-dimensional universe polyhedron.
   if (space_dim == 0) {
     if (marked_empty() && !gs.has_points())
-      throw_invalid_generators("add_recycled_generators(gs)");
+      throw_invalid_generators("add_recycled_generators(gs)", "gs");
     status.set_zero_dim_univ();
     assert(OK(true));
     return;
@@ -1263,7 +1263,7 @@ PPL::Polyhedron::add_recycled_generators(GenSys& gs) {
     // We have just discovered that `*this' is empty.
     // So `gs' must contain at least one point.
     if (!gs.has_points())
-      throw_invalid_generators("add_recycled_generators(gs)");
+      throw_invalid_generators("add_recycled_generators(gs)", "gs");
     // The polyhedron is no longer empty and generators are up-to-date.
     std::swap(gen_sys, gs);
     if (gen_sys.num_pending_rows() > 0) {
@@ -1327,7 +1327,7 @@ PPL::Polyhedron::add_recycled_generators_and_minimize(GenSys& gs) {
   // Topology compatibility check.
   if (is_necessarily_closed() && gs.has_closure_points())
     throw_topology_incompatible("add_recycled_generators_and_minimize(gs)",
-				gs);
+				"gs", gs);
   // Dimension-compatibility check:
   // the dimension of `gs' can not be greater than space_dim.
   const dimension_type gs_space_dim = gs.space_dimension();
@@ -1345,7 +1345,8 @@ PPL::Polyhedron::add_recycled_generators_and_minimize(GenSys& gs) {
   // transform it in the zero-dimensional universe polyhedron.
   if (space_dim == 0) {
     if (marked_empty() && !gs.has_points())
-      throw_invalid_generators("add_recycled_generators_and_minimize(gs)");
+      throw_invalid_generators("add_recycled_generators_and_minimize(gs)",
+			       "gs");
     status.set_zero_dim_univ();
     assert(OK(true));
     return true;
@@ -1383,7 +1384,8 @@ PPL::Polyhedron::add_recycled_generators_and_minimize(GenSys& gs) {
   else {
     // The polyhedron was empty: check if `gs' contains a point.
     if (!gs.has_points())
-      throw_invalid_generators("add_recycled_generators_and_minimize(gs)");
+      throw_invalid_generators("add_recycled_generators_and_minimize(gs)",
+			       "gs");
     // `gs' has a point: the polyhedron is no longer empty
     // and generators are up-to-date.
     std::swap(gen_sys, gs);
@@ -1408,10 +1410,10 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("intersection_assign(y)", y);
+    throw_topology_incompatible("intersection_assign(y)", "y", y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("intersection_assign(y)", y);
+    throw_dimension_incompatible("intersection_assign(y)", "y", y);
 
   // If one of the two polyhedra is empty, the intersection is empty.
   if (x.marked_empty())
@@ -1473,10 +1475,12 @@ PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("intersection_assign_and_minimize(y)", y);
+    throw_topology_incompatible("intersection_assign_and_minimize(y)",
+				"y", y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("intersection_assign_and_minimize(y)", y);
+    throw_dimension_incompatible("intersection_assign_and_minimize(y)",
+				 "y", y);
 
   // If one of the two polyhedra is empty, the intersection is empty.
   if (x.marked_empty())
@@ -1541,10 +1545,10 @@ PPL::Polyhedron::poly_hull_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("poly_hull_assign(y)", y);
+    throw_topology_incompatible("poly_hull_assign(y)", "y", y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("poly_hull_assign(y)", y);
+    throw_dimension_incompatible("poly_hull_assign(y)", "y", y);
 
   // The poly-hull of a polyhedron `p' with an empty polyhedron is `p'.
   if (y.marked_empty())
@@ -1608,10 +1612,10 @@ PPL::Polyhedron::poly_hull_assign_and_minimize(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("poly_hull_assign_and_minimize(y)", y);
+    throw_topology_incompatible("poly_hull_assign_and_minimize(y)", "y", y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("poly_hull_assign_and_minimize(y)", y);
+    throw_dimension_incompatible("poly_hull_assign_and_minimize(y)", "y", y);
 
   // The poly-hull of a polyhedron `p' with an empty polyhedron is `p'.
   if (y.marked_empty())
@@ -1672,10 +1676,10 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("poly_difference_assign(y)", y);
+    throw_topology_incompatible("poly_difference_assign(y)", "y", y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("poly_difference_assign(y)", y);
+    throw_dimension_incompatible("poly_difference_assign(y)", "y", y);
 
   // The difference of a polyhedron `p' and an empty polyhedron is `p'.
   if (y.marked_empty())
@@ -1710,10 +1714,18 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
   const ConSys& y_cs = y.constraints();
   for (ConSys::const_iterator i = y_cs.begin(),
 	 y_cs_end = y_cs.end(); i != y_cs_end; ++i) {
-    Polyhedron z = x;
     const Constraint& c = *i;
     assert(!c.is_trivial_true());
     assert(!c.is_trivial_false());
+    // If the polyhedron `x' is included in the polyhedron defined by
+    // `c', then `c' can be skipped, as adding its complement to `x'
+    // would result in the empty polyhedron.  Moreover, if we operate
+    // on C-polyhedra and `c' is a non-strict inequality, c _must_ be
+    // skipped for otherwise we would obtain a result that is less
+    // precise than the poly-difference.
+    if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
+      continue;
+    Polyhedron z = x;
     const LinExpression e = LinExpression(c);
     switch (c.type()) {
     case Constraint::NONSTRICT_INEQUALITY:
@@ -1761,8 +1773,8 @@ PPL::Polyhedron::affine_image(const Variable var,
     throw_dimension_incompatible("affine_image(v, e, d)", "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type num_var = var.id() + 1;
-  if (num_var > space_dim)
-    throw_dimension_incompatible("affine_image(v, e, d)", var.id());
+  if (space_dim < num_var)
+    throw_dimension_incompatible("affine_image(v, e, d)", "v", var);
 
   if (marked_empty())
     return;
@@ -1842,8 +1854,8 @@ affine_preimage(const Variable var,
     throw_dimension_incompatible("affine_preimage(v, e, d)", "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type num_var = var.id() + 1;
-  if (num_var > space_dim)
-    throw_dimension_incompatible("affine_preimage(v, e, d)", var.id());
+  if (space_dim < num_var)
+    throw_dimension_incompatible("affine_preimage(v, e, d)", "v", var);
 
   if (marked_empty())
     return;
@@ -1921,16 +1933,15 @@ generalized_affine_image(const Variable var,
 				 "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type num_var = var.id() + 1;
-  if (num_var > space_dim)
+  if (space_dim < num_var)
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
-				 var.id());
+				 "v", var);
 
   // Strict relation symbols are only admitted for NNC polyhedra.
   if (is_necessarily_closed()
       && (relsym == LESS_THAN || relsym == GREATER_THAN))
     throw_invalid_argument("generalized_affine_image(v, r, e, d)",
-			   "r is a strict relation symbol and "
-			   "*this is a C_Polyhedron");
+			   "r is a strict relation symbol");
 
   // Any image of an empty polyhedron is empty.
   if (marked_empty())
@@ -2011,8 +2022,7 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
   if (is_necessarily_closed()
       && (relsym == LESS_THAN || relsym == GREATER_THAN))
     throw_invalid_argument("generalized_affine_image(e1, r, e2)",
-			   "r is a strict relation symbol and "
-			   "*this is a C_Polyhedron");
+			   "r is a strict relation symbol");
 
   // Any image of an empty polyhedron is empty.
   if (marked_empty())
@@ -2140,10 +2150,10 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("time_elapse_assign(y)", y);
+    throw_topology_incompatible("time_elapse_assign(y)", "y", y);
   // Dimension-compatibility checks.
   if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("time_elapse_assign(y)", y);
+    throw_dimension_incompatible("time_elapse_assign(y)", "y", y);
 
   // Dealing with the zero-dimensional case.
   if (x.space_dim == 0) {
@@ -2359,11 +2369,11 @@ PPL::Polyhedron::contains(const Polyhedron& y) const {
 
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    Polyhedron::throw_topology_incompatible("contains(y)", y);
+    throw_topology_incompatible("contains(y)", "y", y);
 
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
-    Polyhedron::throw_dimension_incompatible("contains(y)", y);
+    throw_dimension_incompatible("contains(y)", "y", y);
 
   if (y.marked_empty())
     return true;

@@ -7,27 +7,32 @@ written, debugged and improved by the following people:
 
   Roberto Bagnara [1]  <bagnara@cs.unipr.it>
   Patricia M. Hill [2] <hill@comp.leeds.ac.uk>
-  Elisa Ricci          <ericci@cs.unipr.it>
   Enea Zaffanella [3]  <zaffanella@cs.unipr.it>
+
+An important contributor to the development of the PPL, up until
+December 2002, was
+
+  Elisa Ricci          (former student of the University of Parma)
 
 Other contributors:
 
   Giordano Fracasso    wrote the initial version of the support
                        for native integer coefficients.
 
-The following people took part to the first phase of the development
-of the library:
+The following people took part in the first phase of the library's
+development:
 
-  Sara Bonini
-  Andrea Pescetti      <pescetti@prmat.math.unipr.it>
-  Angela Stazzone
-  Tatiana Zolo         <zolo@cs.unipr.it>
+  Sara Bonini          (former student of the University of Parma)
+  Andrea Pescetti      (University of Parma)
+  Angela Stazzone      (former student of the University of Parma)
+  Tatiana Zolo         (former student of the University of Parma)
 
 
 Thanks!
 =======
 
-The following people gave help that was fundamental to the project:
+The following people have given help that has been fundamental to the
+project:
 
   + Herve' Le Verge (r.i.p.) wrote and published an implementation [4]
     of the Chernikova's algorithm [5] that has set the stage for

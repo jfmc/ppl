@@ -207,7 +207,7 @@ public:
   void clear();
 
   //! \brief
-  //! Inserts a copy of the generator \p g into \p *this,
+  //! Inserts in \p *this a copy of the generator \p g,
   //! increasing the number of dimensions if needed.
   void insert(const Generator& g);
 
@@ -364,11 +364,13 @@ private:
   //! Split-constructor: builds a system by stealing from \p y
   //! the generators having index greater or equal to \p first_stolen.
   /*!
-    \param y              The generator system being split. On entry,
-                          it is assumed that \p y has \p first_stolen + 1
-                          generators at least. On exit, it will have
-                          \p first_stolen generators.
-    \param first_stolen   The index where \p y is split.
+    \param y
+    The generator system being split. On entry, it is assumed that
+    \p y has \p first_stolen + 1 generators at least. On exit, it will
+    have \p first_stolen generators;
+
+    \param first_stolen
+    The index where \p y is split.
   */
   GenSys(GenSys& y, dimension_type first_stolen);
 
@@ -430,11 +432,15 @@ private:
 
   //! Assigns to a given variable an affine expression.
   /*!
-    \param v            Index of the column to which the
-                        affine transformation is assigned.
-    \param expr         The numerator of the affine transformation:
-                        \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$.
-    \param denominator  The denominator of the affine transformation.
+    \param v
+    Index of the column to which the affine transformation is assigned;
+
+    \param expr
+    The numerator of the affine transformation:
+    \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$;
+
+    \param denominator
+    The denominator of the affine transformation.
 
     We want to allow affine transformations (see the Introduction) having
     any rational coefficients. Since the coefficients of the
@@ -469,7 +475,7 @@ private:
   void remove_invalid_lines_and_rays();
 
   //! \brief
-  //! Inserts a copy of the generator \p g into \p *this,
+  //! Inserts in \p *this a copy of the generator \p g,
   //! increasing the number of dimensions if needed.
   //! It is a pending generator.
   void insert_pending(const Generator& g);

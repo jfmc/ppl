@@ -5,6 +5,7 @@
 .libs
 Makefile
 Makefile.in
+check_script3
 obtained
 obtained2
 obtained3

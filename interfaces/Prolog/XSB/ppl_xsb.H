@@ -102,6 +102,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_concatenate_assign/2,
 	ppl_Polyhedron_remove_dimensions/2,
 	ppl_Polyhedron_remove_higher_dimensions/2,
+	ppl_Polyhedron_expand_dimension/3,
+	ppl_Polyhedron_fold_dimensions/3,
 	ppl_Polyhedron_map_dimensions/2.
 
 :- ldoption('-L../../../src/.libs -lppl -L../../../Watchdog/.libs -lpwl -lgmp -lgmpxx').

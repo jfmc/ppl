@@ -154,7 +154,7 @@ public:
   void clear();
 
   //! \brief
-  //! Inserts a copy of the constraint \p c into \p *this
+  //! Inserts in \p *this a copy of the constraint \p c,
   //! increasing the number of dimensions if needed.
   void insert(const Constraint& c);
 
@@ -303,11 +303,13 @@ private:
   //! Split-constructor: builds a system by stealing from \p y
   //! the constraints having index greater or equal to \p first_stolen.
   /*!
-    \param y              The constraint system being split. On entry,
-                          it is assumed that \p y has \p first_stolen + 1
-                          constraints at least. On exit, it will have
-                          \p first_stolen constraints.
-    \param first_stolen   The index where \p y is split.
+    \param y
+    The constraint system being split. On entry, it is assumed that
+    \p y has \p first_stolen + 1 constraints at least. On exit, it will
+    have \p first_stolen constraints;
+
+    \param first_stolen
+    The index where \p y is split.
   */
   ConSys(ConSys& y, dimension_type first_stolen);
 
@@ -342,11 +344,15 @@ private:
   //! Substitutes a given column of coefficients by a given
   //! affine expression.
   /*!
-    \param v            Index of the column to which the
-                        affine transformation is substituted.
-    \param expr         The numerator of the affine transformation:
-                        \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$
-    \param denominator  The denominator of the affine transformation.
+    \param v
+    Index of the column to which the affine transformation is substituted.
+
+    \param expr
+    The numerator of the affine transformation:
+    \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$;
+
+    \param denominator
+    The denominator of the affine transformation.
 
     We want to allow affine transformations (see the Section \ref
     operations) having any rational coefficients. Since the coefficients
@@ -381,7 +387,7 @@ private:
   dimension_type num_inequalities() const;
 
   //! \brief
-  //! Inserts a copy of the constraint \p c into \p *this
+  //! Inserts in \p *this a copy of the constraint \p c,
   //! increasing the number of dimensions if needed. It is
   //! a pending constraint.
   void insert_pending(const Constraint& c);

@@ -269,7 +269,7 @@ PPL::Polyhedron::add_dimensions_and_project(dimension_type m) {
 void
 PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   if (topology() != y.topology())
-    throw_topology_incompatible("concatenate_assign(y)", y);
+    throw_topology_incompatible("concatenate_assign(y)", "y", y);
 
   dimension_type added_columns = y.space_dim;
 
@@ -397,13 +397,12 @@ PPL::Polyhedron::remove_dimensions(const Variables_Set& to_be_removed) {
   }
 
   // Dimension-compatibility check: the variable having
-  // maximum cardinality is the one occurring last in the set.
-  dimension_type max_dim_to_be_removed = to_be_removed.rbegin()->id();
-  if (max_dim_to_be_removed >= space_dim)
-    throw_dimension_incompatible("remove_dimensions(vs)",
-				 max_dim_to_be_removed);
+  // maximum id() is the one occurring last in the set.
+  const dimension_type min_space_dim = to_be_removed.rbegin()->id() + 1;
+  if (space_dim < min_space_dim)
+    throw_dimension_incompatible("remove_dimensions(vs)", min_space_dim);
 
-  dimension_type new_space_dim = space_dim - to_be_removed.size();
+  const dimension_type new_space_dim = space_dim - to_be_removed.size();
 
   // We need updated generators; note that keeping pending generators
   // is useless because constraints will be dropped anyway.
@@ -471,8 +470,7 @@ PPL::Polyhedron::remove_dimensions(const Variables_Set& to_be_removed) {
 
 void
 PPL::Polyhedron::remove_higher_dimensions(dimension_type new_dimension) {
-  // Dimension-compatibility check: the variable having
-  // maximum cardinality is the one occurring last in the set.
+  // Dimension-compatibility check.
   if (new_dimension > space_dim)
     throw_dimension_incompatible("remove_higher_dimensions(nd)",
 				 new_dimension);
@@ -526,4 +524,86 @@ PPL::Polyhedron::remove_higher_dimensions(dimension_type new_dimension) {
   space_dim = new_dimension;
 
   assert(OK(true));
+}
+
+void
+PPL::Polyhedron::expand_dimension(Variable var, dimension_type m) {
+  // FIXME: this implementation is _really_ an executable specification.
+
+  const dimension_type src_d = var.id();
+  // `var' should be one of the dimensions of the polyhedron.
+  if (src_d+1 > space_dim)
+    throw_dimension_incompatible("expand_dimension(v, m)", "v", var);
+
+  // Nothing to do, if no dimensions must be added.
+  if (m == 0)
+    return;
+
+  // Keep track of the dimension before adding the new ones.
+  dimension_type old_dim = space_dim;
+
+  // Add the required new dimensions.
+  add_dimensions_and_embed(m);
+
+  const ConSys& cs = constraints();
+  ConSys new_constraints;
+  for(ConSys::const_iterator i = cs.begin(),
+	cs_end = cs.end(); i != cs_end; ++i) {
+    const Constraint& c = *i;
+
+    // If `c' does not constrain `var', skip it.
+    if(c.coefficient(var) == 0)
+      continue;
+
+    // Each relevant constraint results in `m' new constraints.
+    for (dimension_type dst_d = old_dim; dst_d < old_dim+m; ++dst_d) {
+      LinExpression e;
+      for (dimension_type j = old_dim; j-- > 0; )
+	e +=
+	  c.coefficient(Variable(j))
+	  * (j == src_d ? Variable(dst_d) : Variable(j));
+      e += c.inhomogeneous_term();
+      new_constraints.insert(c.is_equality()
+			     ? (e == 0)
+			     : (c.is_nonstrict_inequality()
+				? (e >= 0)
+				: (e > 0)));
+    }
+  }
+  add_constraints(new_constraints);
+  assert(OK());
+}
+
+void
+PPL::Polyhedron::fold_dimensions(const Variables_Set& to_be_folded,
+				 Variable var) {
+  // FIXME: this implementation is _really_ an executable specification.
+
+  // `var' should be one of the dimensions of the polyhedron.
+  if (var.id()+1 > space_dim)
+    throw_dimension_incompatible("fold_dimensions(tbf, v)", "v", var);
+
+  // The folding of no dimensions is a no-op.
+  if (to_be_folded.empty())
+    return;
+
+  // All variables in `to_be_folded' should be dimensions of the polyhedron.
+  if (to_be_folded.rbegin()->id()+1 > space_dim)
+    throw_dimension_incompatible("fold_dimensions(tbf, v)",
+				 "*tbf.rbegin()",
+				 *to_be_folded.rbegin());
+
+  // Moreover, `var' should not occur in `to_be_folded'.
+  if (to_be_folded.find(var) != to_be_folded.end())
+    throw_invalid_argument("fold_dimensions(tbf, v)",
+			   "v should not occur in tbf");
+
+  for (Variables_Set::const_iterator i = to_be_folded.begin(),
+	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
+    Polyhedron copy = *this;
+    copy.affine_image(var, LinExpression(*i));
+    poly_hull_assign(copy);
+  }
+  remove_dimensions(to_be_folded);
+  assert(OK());
 }

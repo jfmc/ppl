@@ -238,17 +238,17 @@ class Parma_Polyhedra_Library::Generator : private Row {
 public:
   //! Returns the line of direction \p e.
   /*!
-    \exception std::invalid_argument thrown if the homogeneous part
-                                     of \p e represents the origin
-                                     of the vector space.
+    \exception std::invalid_argument
+    Thrown if the homogeneous part of \p e represents the origin of
+    the vector space.
   */
   static Generator line(const LinExpression& e);
 
   //! Returns the ray of direction \p e.
   /*!
-    \exception std::invalid_argument thrown if the homogeneous part
-                                     of \p e represents the origin
-				     of the vector space.
+    \exception std::invalid_argument
+    Thrown if the homogeneous part of \p e represents the origin of
+    the vector space.
   */
   static Generator ray(const LinExpression& e);
 
@@ -256,7 +256,9 @@ public:
   /*!
     Both \p e and \p d are optional arguments, with default values
     LinExpression::zero() and Integer_one(), respectively.
-    \exception std::invalid_argument thrown if \p d is zero.
+
+    \exception std::invalid_argument
+    Thrown if \p d is zero.
   */
   static Generator point(const LinExpression& e = LinExpression::zero(),
 			 Integer_traits::const_reference d = Integer_one());
@@ -265,7 +267,9 @@ public:
   /*!
     Both \p e and \p d are optional arguments, with default values
     LinExpression::zero() and Integer_one(), respectively.
-    \exception std::invalid_argument thrown if \p d is zero.
+
+    \exception std::invalid_argument
+    Thrown if \p d is zero.
   */
   static Generator
   closure_point(const LinExpression& e = LinExpression::zero(),
@@ -312,15 +316,16 @@ public:
 
   //! Returns the coefficient of \p v in \p *this.
   /*!
-    \exception std::invalid_argument thrown if the index of \p v
-    is greater than or equal to the space-dimension of \p *this.
+    \exception std::invalid_argument
+    Thrown if the index of \p v is greater than or equal to the
+    space-dimension of \p *this.
   */
   Integer_traits::const_reference coefficient(Variable v) const;
 
   //! If \p *this is either a point or a closure point, returns its divisor.
   /*!
-    \exception std::invalid_argument thrown if \p *this is neither a point
-                                     nor a closure point.
+    \exception std::invalid_argument
+    Thrown if \p *this is neither a point nor a closure point.
   */
   Integer_traits::const_reference divisor() const;
 
@@ -348,7 +353,9 @@ private:
   //! Throw a <CODE>std::invalid_argument</CODE> exception
   //! containing the appropriate error message.
   void
-  throw_dimension_incompatible(const char* method, Variable v) const;
+  throw_dimension_incompatible(const char* method,
+			       const char* name_var,
+			       Variable v) const;
 
   //! \brief
   //! Throw a <CODE>std::invalid_argument</CODE> exception

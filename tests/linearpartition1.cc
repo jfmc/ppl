@@ -47,13 +47,13 @@ partition_ok(const C_Polyhedron& p,
   NNC_Polyhedron nnc_q(q);
   typedef PowerSet<Determinate<NNC_Polyhedron> >::const_iterator iter;
   for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i) {
-    const NNC_Polyhedron& a = i->polyhedron();
+    const NNC_Polyhedron& a = i->element();
     // All elements of `s' must be disjoint from `p'.
     if (!a.is_disjoint_from(nnc_p))
       return false;
     iter j = i;
     for (++j; j != s_end; ++j) {
-      const NNC_Polyhedron& b = j->polyhedron();
+      const NNC_Polyhedron& b = j->element();
       // All elements of `s' must be pairwise disjoint.
       if (!a.is_disjoint_from(b))
 	return false;

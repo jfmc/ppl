@@ -111,11 +111,13 @@ protected:
 public:
   //! Builds a universe (top) or empty (bottom) ask-and-tell agent.
   /*!
-    \param num_dimensions   The number of dimensions of the vector
-                            space enclosing the ask-and-tell agent.
-    \param universe         If <CODE>true</CODE>, a universe ask-and-tell
-                            agent is built;  an empty agent is built
-                            otherwise.
+    \param num_dimensions
+    The number of dimensions of the vector space enclosing the
+    ask-and-tell agent;
+
+    \param universe
+    If <CODE>true</CODE>, a universe ask-and-tell agent is built; an
+    empty agent is built otherwise.
   */
   explicit AskTell(dimension_type num_dimensions = 0,
 		   bool universe = true);
@@ -178,24 +180,26 @@ public:
 
   //! Intersects \p *this with (a copy of) constraint \p c.
   /*!
-    \exception std::invalid_argument thrown if \p *this and constraint \p c
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are topology-incompatible
+    or dimension-incompatible.
   */
   void add_constraint(const Constraint& c);
 
   //! Intersects \p *this with (a copy of) the constraints in \p cs.
   /*!
-    \param  cs             Contains the constraints to intersect with.
-    \exception std::invalid_argument thrown if \p *this and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \param cs
+    Contains the constraints to intersect with.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
   */
   void add_constraints(const ConSys& cs);
 
   //! \brief
   //! Adds \p m new dimensions and embeds the old polyhedron
-  //! into the new space.
+  //! in the new space.
   void add_dimensions_and_embed(dimension_type m);
 
   //! \brief
@@ -205,12 +209,13 @@ public:
 
   //! Removes all the specified dimensions.
   /*!
-    \param to_be_removed  The set of Variable objects corresponding
-                          to the dimensions to be removed.
-    \exception std::invalid_argument thrown if \p *this is
-                                     dimension-incompatible with one
-				     of the Variable objects contained
-				     in \p to_be_removed.
+    \param to_be_removed
+    The set of Variable objects corresponding to the dimensions to be
+    removed.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
   */
   void remove_dimensions(const Variables_Set& to_be_removed);
 
@@ -218,8 +223,9 @@ public:
   //! Removes the higher dimensions so that the resulting space
   //! will have dimension \p new_dimension.
   /*!
-    \exception std::invalid_argument thrown if \p new_dimensions is greater
-                                     than the space dimension of \p *this.
+    \exception std::invalid_argument
+    Thrown if \p new_dimensions is greater than the space dimension of
+    \p *this.
   */
   void remove_higher_dimensions(dimension_type new_dimension);
 

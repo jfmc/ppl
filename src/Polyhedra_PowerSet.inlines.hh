@@ -24,9 +24,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Polyhedra_PowerSet_inlines_hh
 #define PPL_Polyhedra_PowerSet_inlines_hh 1
 
+#include "BHRZ03_Certificate.types.hh"
 #include "ConSys.defs.hh"
 #include "ConSys.inlines.hh"
 #include "algorithms.hh"
+#include "Widening_Function.defs.hh"
 #include <algorithm>
 #include <deque>
 #include <string>
@@ -97,15 +99,15 @@ Polyhedra_PowerSet<PH>::concatenate_assign(const Polyhedra_PowerSet& y) {
       new_sequence.push_back(zi);
     }
     ++xi;
-    if (abandon_exponential_computations && xi != x_end && y_begin != y_end) {
+    if (abandon_expensive_computations && xi != x_end && y_begin != y_end) {
       // Hurry up!
-      PH xph = xi->polyhedron();
+      PH xph = xi->element();
       for (++xi; xi != x_end; ++xi)
-	xph.poly_hull_assign(xi->polyhedron());
+	xph.poly_hull_assign(xi->element());
       const_iterator yi = y_begin;
-      PH yph = yi->polyhedron();
+      PH yph = yi->element();
       for (++yi; yi != y_end; ++yi)
-	yph.poly_hull_assign(yi->polyhedron());
+	yph.poly_hull_assign(yi->element());
       xph.concatenate_assign(yph);
       std::swap(Base::sequence, new_sequence);
       add_disjunct(xph);
@@ -122,7 +124,7 @@ template <typename PH>
 void
 Polyhedra_PowerSet<PH>::add_constraint(const Constraint& c) {
   for (iterator xi = Base::begin(), x_end = Base::end(); xi != x_end; ++xi)
-    xi->polyhedron().add_constraint(c);
+    xi->element().add_constraint(c);
   Base::reduced = false;
 }
 
@@ -131,7 +133,7 @@ bool
 Polyhedra_PowerSet<PH>::add_constraint_and_minimize(const Constraint& c) {
   for (iterator xi = Base::begin(), xin = xi, x_end = Base::end(); xi != x_end; xi = xin) {
     ++xin;
-    if (!xi->polyhedron().add_constraint_and_minimize(c)) {
+    if (!xi->element().add_constraint_and_minimize(c)) {
       erase(xi);
       x_end = Base::end();
     }
@@ -145,7 +147,7 @@ template <typename PH>
 void
 Polyhedra_PowerSet<PH>::add_constraints(const ConSys& cs) {
   for (iterator xi = Base::begin(), x_end = Base::end(); xi != x_end; ++xi)
-    xi->polyhedron().add_constraints(cs);
+    xi->element().add_constraints(cs);
   Base::reduced = false;
 }
 
@@ -155,7 +157,7 @@ Polyhedra_PowerSet<PH>::add_constraints_and_minimize(const ConSys& cs) {
   for (iterator xi = Base::begin(),
 	 xin = xi, x_end = Base::end(); xi != x_end; xi = xin) {
     ++xin;
-    if (!xi->polyhedron().add_constraints_and_minimize(cs)) {
+    if (!xi->element().add_constraints_and_minimize(cs)) {
       erase(xi);
       x_end = Base::end();
     }
@@ -216,7 +218,7 @@ bool
 Polyhedra_PowerSet<PH>::
 semantically_contains(const Polyhedra_PowerSet& y) const {
   for (const_iterator yi = y.Base::begin(), y_end = y.Base::end(); yi != y_end; ++yi)
-    if (!check_containment(yi->polyhedron(), *this))
+    if (!check_containment(yi->element(), *this))
       return false;
   return true;
 }
@@ -270,13 +272,13 @@ Polyhedra_PowerSet<PH>::pairwise_reduce() {
     for (iterator i = sbegin; i != send; ++i, ++i_index) {
       if (marked[i_index])
 	continue;
-      PH& pi = i->polyhedron();
+      PH& pi = i->element();
       const_iterator j = i;
       int j_index = i_index;
       for (++j, ++j_index; j != send; ++j, ++j_index) {
 	if (marked[j_index])
 	  continue;
-	const PH& pj = j->polyhedron();
+	const PH& pj = j->element();
 	if (poly_hull_assign_if_exact(pi, pj)) {
 	  marked[i_index] = marked[j_index] = true;
 	  add_non_bottom_disjunct(new_sequence, pi);
@@ -300,11 +302,10 @@ Polyhedra_PowerSet<PH>::pairwise_reduce() {
 }
 
 template <typename PH>
+template <typename Widening>
 void
 Polyhedra_PowerSet<PH>::
-BGP99_heuristics_assign(const Polyhedra_PowerSet& y,
-			void (Polyhedron::*wm)
-			(const Polyhedron&, unsigned*)) {
+BGP99_heuristics_assign(const Polyhedra_PowerSet& y, Widening wf) {
 #ifndef NDEBUG
   {
     // We assume that y entails *this.
@@ -321,12 +322,13 @@ BGP99_heuristics_assign(const Polyhedra_PowerSet& y,
   const_iterator send = Base::end();
   unsigned i_index = 0;
   for (const_iterator i = sbegin; i != send; ++i, ++i_index)
-    for (const_iterator j = y.Base::begin(), y_end = y.Base::end(); j != y_end; ++j) {
-      const PH& pi = i->polyhedron();
-      const PH& pj = j->polyhedron();
+    for (const_iterator j = y.Base::begin(),
+	   y_end = y.Base::end(); j != y_end; ++j) {
+      const PH& pi = i->element();
+      const PH& pj = j->element();
       if (pi.contains(pj)) {
 	PH pi_copy = pi;
-	(pi_copy.*wm)(pj, 0);
+	wf(pi_copy, pj);
 	add_non_bottom_disjunct(new_sequence, pi_copy);
 	marked[i_index] = true;
       }
@@ -343,47 +345,12 @@ BGP99_heuristics_assign(const Polyhedra_PowerSet& y,
 }
 
 template <typename PH>
+template <typename Widening>
 void
 Polyhedra_PowerSet<PH>::
-limited_BGP99_heuristics_assign(const Polyhedra_PowerSet& y,
-				const ConSys& cs,
-				void (Polyhedron::*lwm)(const Polyhedron&,
-							const ConSys&,
-							unsigned*)) {
-  size_type n = Base::size();
-  Sequence new_sequence;
-  std::deque<bool> marked(n, false);
-  iterator sbegin = Base::begin();
-  iterator send = Base::end();
-  unsigned i_index = 0;
-  for (iterator i = sbegin; i != send; ++i, ++i_index)
-    for (const_iterator j = y.Base::begin(), y_end = y.Base::end(); j != y_end; ++j) {
-      PH& pi = i->polyhedron();
-      const PH& pj = j->polyhedron();
-      if (pi.contains(pj)) {
-	(pi.*lwm)(pj, cs, 0);
-	add_non_bottom_disjunct(new_sequence, pi);
-	marked[i_index] = true;
-      }
-    }
-  iterator nsbegin = new_sequence.begin();
-  iterator nsend = new_sequence.end();
-  i_index = 0;
-  for (iterator i = sbegin; i != send; ++i, ++i_index)
-    if (!marked[i_index])
-      add_non_bottom_disjunct(new_sequence, *i, nsbegin, nsend);
-  std::swap(Base::sequence, new_sequence);
-  assert(OK());
-  assert(Base::is_omega_reduced());
-}
-
-template <typename PH>
-void
-Polyhedra_PowerSet<PH>::BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
-						   void (Polyhedron::*wm)
-						   (const Polyhedron&,
-						    unsigned*),
-						   unsigned max_disjuncts) {
+BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
+			   Widening wf,
+			   unsigned max_disjuncts) {
   // `x' is the current iteration value.
   Polyhedra_PowerSet<PH>& x = *this;
 
@@ -399,66 +366,45 @@ Polyhedra_PowerSet<PH>::BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
   x.pairwise_reduce();
   if (max_disjuncts != 0)
     x.collapse(max_disjuncts);
-  x.BGP99_heuristics_assign(y, wm);
+  x.BGP99_heuristics_assign(y, wf);
 }
 
 template <typename PH>
+template <typename Cert>
 void
 Polyhedra_PowerSet<PH>::
-limited_BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
-				   const ConSys& cs,
-				   void (Polyhedron::*lwm)
-				   (const Polyhedron&,
-				    const ConSys&,
-				    unsigned*),
-				   unsigned max_disjuncts) {
-  // `x' is the current iteration value.
-  Polyhedra_PowerSet<PH>& x = *this;
-
-#ifndef NDEBUG
-  {
-    // We assume that y entails *this.
-    const Polyhedra_PowerSet<PH> x_copy = x;
-    const Polyhedra_PowerSet<PH> y_copy = y;
-    assert(y_copy.definitely_entails(x_copy));
-  }
-#endif
-
-  x.pairwise_reduce();
-  if (max_disjuncts != 0)
-    x.collapse(max_disjuncts);
-  x.limited_BGP99_heuristics_assign(y, cs, lwm);
-}
-
-template <typename PH>
-void
-Polyhedra_PowerSet<PH>::
-collect_multiset_lgo_info(multiset_lgo_info& info) const {
+collect_certificates(std::map<Cert, size_type,
+		              typename Cert::Compare>& cert_ms) const {
   assert(Base::is_omega_reduced());
-  assert(info.size() == 0);
-  for (const_iterator i = Base::begin(), iend = Base::end(); i != iend; i++) {
-    base_lgo_info ph_info(i->polyhedron());
-    ++info[ph_info];
+  assert(cert_ms.size() == 0);
+  for (const_iterator i = Base::begin(),
+	 iend = Base::end(); i != iend; i++) {
+    Cert ph_cert(i->element());
+    ++cert_ms[ph_cert];
   }
 }
 
 template <typename PH>
+template <typename Cert>
 bool
 Polyhedra_PowerSet<PH>::
-is_multiset_lgo_stabilizing(const multiset_lgo_info& y_info) const {
-  multiset_lgo_info x_info;
-  collect_multiset_lgo_info(x_info);
-  typename multiset_lgo_info::const_iterator
-    xi = x_info.begin(),
-    xend = x_info.end(),
-    yi = y_info.begin(),
-    yend = y_info.end();
+is_cert_multiset_stabilizing(const std::map<Cert, size_type,
+			                    typename Cert::Compare>& y_cert_ms
+			     ) const {
+  typedef std::map<Cert, size_type, typename Cert::Compare> Cert_Multiset;
+  Cert_Multiset x_cert_ms;
+  collect_certificates(x_cert_ms);
+  typename Cert_Multiset::const_iterator
+    xi = x_cert_ms.begin(),
+    xend = x_cert_ms.end(),
+    yi = y_cert_ms.begin(),
+    yend = y_cert_ms.end();
   while (xi != xend && yi != yend) {
-    const base_lgo_info& xi_info = xi->first;  
-    const base_lgo_info& yi_info = yi->first;
-    switch (xi_info.compare(yi_info)) {
+    const Cert& xi_cert = xi->first;  
+    const Cert& yi_cert = yi->first;
+    switch (xi_cert.compare(yi_cert)) {
     case 0:
-      // xi_info == yi_info: check the number of multiset occurrences.
+      // xi_cert == yi_cert: check the number of multiset occurrences.
       {
 	const size_type& xi_count = xi->second;
 	const size_type& yi_count = yi->second;
@@ -473,25 +419,24 @@ is_multiset_lgo_stabilizing(const multiset_lgo_info& y_info) const {
 	break;
       }
     case 1:
-      // xi_info > yi_info: it is not stabilizing.
+      // xi_cert > yi_cert: it is not stabilizing.
       return false;
 
     case -1:
-      // xi_info < yi_info: it is stabilizing.
+      // xi_cert < yi_cert: it is stabilizing.
       return true;
     }
   }
   // Here xi == xend or yi == yend.
-  // Stabilization is achieved if `y_info' still has other elements.
+  // Stabilization is achieved if `y_cert_ms' still has other elements.
   return (yi != yend);
 }
 
-// TODO: to be generalized so as to use an arbitrary lgo relation.
 template <typename PH>
+template <typename Cert, typename Widening>
 void
 Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
-					      void (Polyhedron::*wm)
-					      (const Polyhedron&, unsigned*)) {
+					      Widening wf) {
   // `x' is the current iteration value.
   Polyhedra_PowerSet<PH>& x = *this;
 
@@ -514,72 +459,73 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
   // Compute the poly-hull of `x'.
   PH x_hull(x.space_dim, PH::EMPTY);
   for (const_iterator i = x.begin(), iend = x.end(); i != iend; ++i)
-    x_hull.poly_hull_assign(i->polyhedron());
+    x_hull.poly_hull_assign(i->element());
 
   // Compute the poly-hull of `y'.
   PH y_hull(y.space_dim, PH::EMPTY);
   for (const_iterator i = y.begin(), iend = y.end(); i != iend; ++i)
-    y_hull.poly_hull_assign(i->polyhedron());
-  // Compute the base-level lgo info for `y_hull'.
-  const base_lgo_info y_hull_info(y_hull);
+    y_hull.poly_hull_assign(i->element());
+  // Compute the certificate for `y_hull'.
+  const Cert y_hull_cert(y_hull);
 
-  // If the hull info is stabilizing, do nothing.
-  int hull_stabilization = y_hull_info.compare(x_hull);
+  // If the hull is stabilizing, do nothing.
+  int hull_stabilization = y_hull_cert.compare(x_hull);
   if (hull_stabilization == 1)
     return;
 
   // Multiset ordering is only useful when `y' is not a singleton. 
   const bool y_is_not_a_singleton = y.size() > 1;
 
-  // The multiset lgo information for `y':
+  // The multiset certificate for `y':
   // we want to be lazy about its computation.
-  multiset_lgo_info y_info;
-  bool y_info_computed = false;
+  typedef std::map<Cert, size_type, typename Cert::Compare> Cert_Multiset;
+  Cert_Multiset y_cert_ms;
+  bool y_cert_ms_computed = false;
 
   if (hull_stabilization == 0 && y_is_not_a_singleton) {
-    // Collect the multiset lgo information for `y'.
-    y.collect_multiset_lgo_info(y_info);
-    y_info_computed = true;
+    // Collect the multiset certificate for `y'.
+    y.collect_certificates(y_cert_ms);
+    y_cert_ms_computed = true;
     // If multiset ordering is stabilizing, do nothing.
-    if (x.is_multiset_lgo_stabilizing(y_info))
+    if (x.is_cert_multiset_stabilizing(y_cert_ms))
       return;
   }
 
   // Second widening technique: try the BGP99 powerset heuristics.
   Polyhedra_PowerSet<PH> bgp99_heuristics = x;
-  bgp99_heuristics.BGP99_heuristics_assign(y, wm);
+  bgp99_heuristics.BGP99_heuristics_assign(y, wf);
 
   // Compute the poly-hull of `bgp99_heuristics'.
   PH bgp99_heuristics_hull(x.space_dim, PH::EMPTY);
   for (const_iterator i = bgp99_heuristics.begin(),
 	 iend = bgp99_heuristics.end(); i != iend; ++i)
-    bgp99_heuristics_hull.poly_hull_assign(i->polyhedron());
+    bgp99_heuristics_hull.poly_hull_assign(i->element());
   
   // Check for stabilization and, if successful,
   // commit to the result of the extrapolation.
-  hull_stabilization = y_hull_info.compare(bgp99_heuristics_hull);
+  hull_stabilization = y_hull_cert.compare(bgp99_heuristics_hull);
   if (hull_stabilization == 1) {
     // The poly-hull is stabilizing.
     std::swap(x, bgp99_heuristics);
     return;
   }
   else if (hull_stabilization == 0 && y_is_not_a_singleton) {
-    // If not already done, compute multiset lgo info for `y'.
-    if (!y_info_computed) {
-      y.collect_multiset_lgo_info(y_info);
-      y_info_computed = true;
+    // If not already done, compute multiset certificate for `y'.
+    if (!y_cert_ms_computed) {
+      y.collect_certificates(y_cert_ms);
+      y_cert_ms_computed = true;
     }
-    if (bgp99_heuristics.is_multiset_lgo_stabilizing(y_info)) {
+    if (bgp99_heuristics.is_cert_multiset_stabilizing(y_cert_ms)) {
       std::swap(x, bgp99_heuristics);
       return;
     }
     // Third widening technique: pairwise-reduction on `bgp99_heuristics'.
     // Note that pairwise-reduction does not affect the computation
     // of the poly-hulls, so that we only have to check the multiset
-    // lgo relation.
+    // certificate relation.
     Polyhedra_PowerSet<PH> reduced_bgp99_heuristics(bgp99_heuristics);
     reduced_bgp99_heuristics.pairwise_reduce();
-    if (reduced_bgp99_heuristics.is_multiset_lgo_stabilizing(y_info)) {
+    if (reduced_bgp99_heuristics.is_cert_multiset_stabilizing(y_cert_ms)) {
       std::swap(x, reduced_bgp99_heuristics);
       return;
     }
@@ -590,7 +536,7 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
   if (bgp99_heuristics_hull.strictly_contains(y_hull)) {
     // Compute (y_hull \widen bgp99_heuristics_hull).
     PH ph = bgp99_heuristics_hull;
-    (ph.*wm)(y_hull, 0);
+    wf(ph, y_hull);
     // Compute the poly-difference between `ph' and `bgp99_heuristics_hull'.
     ph.poly_difference_assign(bgp99_heuristics_hull);
     x.add_disjunct(ph);
@@ -603,125 +549,12 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
   std::swap(x, x_hull_singleton);
 }
 
-// TODO: to be generalized so as to use an arbitrary lgo relation.
 template <typename PH>
-void
-Polyhedra_PowerSet<PH>
-::limited_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
-				const ConSys& cs,
-				void (Polyhedron::*lwm)
-				(const Polyhedron&,
-				 const ConSys&,
-				 unsigned*)) {
-  // `x' is the current iteration value.
-  Polyhedra_PowerSet<PH>& x = *this;
-
-#ifndef NDEBUG
-  {
-    // We assume that y entails *this.
-    const Polyhedra_PowerSet<PH> x_copy = x;
-    const Polyhedra_PowerSet<PH> y_copy = y;
-    assert(y_copy.definitely_entails(x_copy));
-  }
-#endif
-
-  // First widening technique: do nothing.
-
-  // If `y' is the empty collection, do nothing.
-  assert(x.size() > 0);
-  if (y.size() == 0)
-    return;
-
-  // Compute the poly-hull of `x'.
-  PH x_hull(x.space_dim, PH::EMPTY);
-  for (const_iterator i = x.begin(), iend = x.end(); i != iend; ++i)
-    x_hull.poly_hull_assign(i->polyhedron());
-
-  // Compute the poly-hull of `y'.
-  PH y_hull(y.space_dim, PH::EMPTY);
-  for (const_iterator i = y.begin(), iend = y.end(); i != iend; ++i)
-    y_hull.poly_hull_assign(i->polyhedron());
-  // Compute the base-level lgo info for `y_hull'.
-  const base_lgo_info y_hull_info(y_hull);
-
-  // If the hull info is stabilizing, do nothing.
-  int hull_stabilization = y_hull_info.compare(x_hull);
-  if (hull_stabilization == 1)
-    return;
-
-  // Multiset ordering is only useful when `y' is not a singleton. 
-  const bool y_is_not_a_singleton = y.size() > 1;
-
-  // The multiset lgo information for `y':
-  // we want to be lazy about its computation.
-  multiset_lgo_info y_info;
-  bool y_info_computed = false;
-
-  if (hull_stabilization == 0 && y_is_not_a_singleton) {
-    // Collect the multiset lgo information for `y'.
-    y.collect_multiset_lgo_info(y_info);
-    y_info_computed = true;
-    // If multiset ordering is stabilizing, do nothing.
-    if (x.is_multiset_lgo_stabilizing(y_info))
-      return;
-  }
-
-  // Second widening technique: try the BGP99 powerset heuristics.
-  Polyhedra_PowerSet<PH> bgp99_heuristics = x;
-  bgp99_heuristics.limited_BGP99_heuristics_assign(y, cs, lwm);
-
-  // Compute the poly-hull of `bgp99_heuristics'.
-  PH bgp99_heuristics_hull(x.space_dim, PH::EMPTY);
-  for (const_iterator i = bgp99_heuristics.begin(),
-	 iend = bgp99_heuristics.end(); i != iend; ++i)
-    bgp99_heuristics_hull.poly_hull_assign(i->polyhedron());
-  
-  // Check for stabilization and, if successful,
-  // commit to the result of the extrapolation.
-  hull_stabilization = y_hull_info.compare(bgp99_heuristics_hull);
-  if (hull_stabilization == 1) {
-    // The poly-hull is stabilizing.
-    std::swap(x, bgp99_heuristics);
-    return;
-  }
-  else if (hull_stabilization == 0 && y_is_not_a_singleton) {
-    // If not already done, compute multiset lgo info for `y'.
-    if (!y_info_computed) {
-      y.collect_multiset_lgo_info(y_info);
-      y_info_computed = true;
-    }
-    if (bgp99_heuristics.is_multiset_lgo_stabilizing(y_info)) {
-      std::swap(x, bgp99_heuristics);
-      return;
-    }
-    // Third widening technique: pairwise-reduction on `bgp99_heuristics'.
-    // Note that pairwise-reduction does not affect the computation
-    // of the poly-hulls, so that we only have to check the multiset
-    // lgo relation.
-    Polyhedra_PowerSet<PH> reduced_bgp99_heuristics(bgp99_heuristics);
-    reduced_bgp99_heuristics.pairwise_reduce();
-    if (reduced_bgp99_heuristics.is_multiset_lgo_stabilizing(y_info)) {
-      std::swap(x, reduced_bgp99_heuristics);
-      return;
-    }
-  }
-
-  // Fourth widening technique: this is applicable only when
-  // `y_hull' is a proper subset of `bgp99_heuristics_hull'.
-  if (bgp99_heuristics_hull.strictly_contains(y_hull)) {
-    // Compute (y_hull \widen bgp99_heuristics_hull).
-    PH ph = bgp99_heuristics_hull;
-    (ph.*lwm)(y_hull, cs, 0);
-    // Compute the poly-difference between `ph' and `bgp99_heuristics_hull'.
-    ph.poly_difference_assign(bgp99_heuristics_hull);
-    x.add_disjunct(ph);
-    return;
-  }
-
-  // Fallback to the computation of the poly-hull.
-  Polyhedra_PowerSet<PH> x_hull_singleton(x.space_dim, PH::EMPTY);
-  x_hull_singleton.add_disjunct(x_hull);
-  std::swap(x, x_hull_singleton);
+template <typename Widening>
+inline void
+Polyhedra_PowerSet<PH>::
+BHZ03_widening_assign(const Polyhedra_PowerSet& y, Widening wf) {
+  BHZ03_widening_assign<BHRZ03_Certificate>(y, wf);
 }
 
 template <typename PH>
@@ -731,7 +564,7 @@ Polyhedra_PowerSet<PH>::ascii_dump(std::ostream& s) const {
     << "\nspace_dim " << space_dim
     << std::endl;
   for (const_iterator i = Base::begin(), send = Base::end(); i != send; ++i)
-    i->polyhedron().ascii_dump(s);
+    i->element().ascii_dump(s);
 }
 
 template <typename PH>

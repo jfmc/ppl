@@ -1,4 +1,4 @@
-/* Test Polyhedron::bounding_box().
+/* Test NNC_Polyhedron::shrink_bounding_box().
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-// This is a unbounded NNC polyhedron in 4D but bounded in 2D
+// This is unbounded NNC polyhedron in 4D but bounded in 2D
 // with strict inequality and closure points at the lower bound.
 static void
 test1() {
@@ -41,7 +41,7 @@ test1() {
   Variable z(3);
 
   NNC_Polyhedron ph(4);
-  ph.add_constraint(3 * x +y > 2);
+  ph.add_constraint(3 * x + y > 2);
   ph.add_constraint(x <= 4);
   ph.add_constraint(y <= 4);
   ph.add_constraint(z >= 5);
@@ -71,8 +71,8 @@ test1() {
   known_pbox.raise_lower_bound(3, true, 5, 1);
 
 #if NOISY
-  known_nbox.print(cout, "*** test_nnc9 known_nbox ***");
-  known_pbox.print(cout, "*** test_nnc9 known_pbox ***");
+  known_nbox.print(cout, "*** test9 known_nbox ***");
+  known_pbox.print(cout, "*** test9 known_pbox ***");
 #endif
 
   if (nbox != known_nbox || pbox != known_pbox || !(nbox <= pbox))
@@ -99,9 +99,9 @@ test2() {
   ph.shrink_bounding_box(nbox);
 
 #if NOISY
-  print_constraints(ph, "*** test1 ph ***");
-  nbox.print(cout, "*** test1 nbox ***");
-  pbox.print(cout, "*** test1 pbox ***");
+  print_constraints(ph, "*** test2 ph ***");
+  nbox.print(cout, "*** test2 nbox ***");
+  pbox.print(cout, "*** test2 pbox ***");
 #endif
 
   BBox known_nbox(2);
@@ -115,11 +115,42 @@ test2() {
   known_pbox.lower_upper_bound(1, true, 4, 1);
 
 #if NOISY
-  known_nbox.print(cout, "*** test_nnc10 known_nbox ***");
-  known_pbox.print(cout, "*** test_nnc10 known_pbox ***");
+  known_nbox.print(cout, "*** test2 known_nbox ***");
+  known_pbox.print(cout, "*** test2 known_pbox ***");
 #endif
 
   if (nbox != known_nbox || pbox != known_pbox || !(nbox <= pbox))
+    exit(1);
+}
+
+// This is an empty polyhedron in 2D defined using strict constraints.
+static void
+test3() {
+  Variable x(0);
+  Variable y(1);
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(x > 0);
+  ph.add_constraint(x < 0);
+  ph.add_constraint(y > 0);
+  ph.add_constraint(y < 0);
+
+  BoundingBox pbox(2);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+
+  BoundingBox nbox(2);
+  ph.shrink_bounding_box(nbox);
+
+  NNC_Polyhedron known_ph(2, C_Polyhedron::EMPTY);
+  NNC_Polyhedron known_pph(pbox, From_Bounding_Box());
+  NNC_Polyhedron known_nph(nbox, From_Bounding_Box());
+
+#if NOISY
+  print_generators(ph, "*** test3 ph ***");
+  print_generators(known_pph, "*** test3 known_pph ***");
+  print_generators(known_nph, "*** test3 known_nph ***");
+#endif
+
+  if (ph != known_ph || ph != known_nph || ph != known_ph)
     exit(1);
 }
 
@@ -129,6 +160,7 @@ main() TRY {
 
   test1();
   test2();
+  test3();
 
   return 0;
 }

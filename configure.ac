@@ -24,10 +24,10 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library], 0.6pre5, ppl-devel@cs.unipr.it, ppl)
+AC_INIT([the Parma Polyhedra Library],[0.7pre1],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
-AC_PREREQ(2.57)
+AC_PREREQ(2.59)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Polyhedron_public.cc)
@@ -37,6 +37,7 @@ AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7.3])
 
 AC_SUBST(VERSION)
 
+# Version number machinery.
 changequote(<<, >>)dnl
 if test -n "`expr $VERSION : '\([0-9]*\)\.[0-9]*\.[0-9]*'`"
 then
@@ -59,6 +60,9 @@ AC_SUBST(PPL_VERSION_MAJOR)
 AC_SUBST(PPL_VERSION_MINOR)
 AC_SUBST(PPL_VERSION_REVISION)
 AC_SUBST(PPL_VERSION_BETA)
+
+# Installation directories.
+AC_SUBST([docdir], ['${datadir}/doc/ppl'])
 
 # Generate a configuration header file.
 AC_CONFIG_HEADER(config.h)
@@ -592,6 +596,9 @@ AC_CONFIG_FILES(Makefile
                 m4/Makefile
                 demos/Makefile
 		demos/ppl_lcdd/Makefile
+		demos/ppl_lcdd/examples/Makefile
+		demos/ppl_lpsol/Makefile
+		demos/ppl_lpsol/examples/Makefile
                 doc/Makefile
                 doc/user-browse.doxyconf-latex
                 doc/devref-browse.doxyconf-latex
@@ -602,7 +609,6 @@ AC_CONFIG_FILES(Makefile
                 interfaces/Makefile
                 interfaces/C/Makefile
 		interfaces/C/ppl_c.h
-                interfaces/C/lpenum/Makefile
                 interfaces/Prolog/Makefile
                 interfaces/Prolog/Ciao/Makefile
                 interfaces/Prolog/GNU/Makefile

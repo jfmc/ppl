@@ -72,17 +72,18 @@ ORIGINAL_TESTS = \
         append1 append2 \
 	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
 	ascii_dump_load5 ascii_dump_load6 ascii_dump_load7 \
-	bgp99extrapolation1 \
+	bgp99extrapolation1 bgp99extrapolation2 \
 	bhrz03widening1 bhrz03widening2 bhrz03widening3 bhrz03widening4 \
 	bhrz03widening5 bhrz03widening6 bhrz03widening7 bhrz03widening8 \
 	bhrz03widening9 bhrz03widening10 bhrz03widening11 bhrz03widening12 \
 	bhrz03widening13 bhrz03widening14 bhrz03widening15 bhrz03widening16 \
 	bhrz03widening17 bhrz03widening18 bhrz03widening19 \
-	bhz03widening1 bhz03widening2 \
+	bhz03widening1 bhz03widening2 bhz03widening3 bhz03widening4 \
+	bhz03widening5 bhz03widening6 \
 	bounded1 \
 	boundedh79extrapolation1 \
 	bounds1 bounds2 \
-	boundingbox1 boundingbox2 boundingbox3 boundingbox4 \
+	boundingbox1 boundingbox2 boundingbox3 boundingbox4 boundingbox5 \
 	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
 	concatenate6 \
 	constraints1 constraints2 constraints3 constraints4 \
@@ -91,6 +92,8 @@ ORIGINAL_TESTS = \
 	dualhypercubes \
 	empty1 \
 	exceptions1 exceptions2  exceptions3 \
+	expanddim1 expanddim2 \
+	folddims1 folddims2 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffineimage3 generalizedaffineimage4 \
 	generalizedaffineimage5 generalizedaffineimage6 \
@@ -107,7 +110,8 @@ ORIGINAL_TESTS = \
 	limitedbhrz03extrapolation1 \
 	limitedh79extrapolation1 limitedh79extrapolation2 \
 	limitedh79extrapolation3 limitedh79extrapolation4 \
-	linearpartition1 linearpartition2 linearpartition3 \
+	linearpartition1 linearpartition2 \
+	linearpartition3 linearpartition4 \
 	linexpression1 \
 	mc91 \
 	memory1 \
@@ -116,7 +120,7 @@ ORIGINAL_TESTS = \
 	onepoint \
         permute \
 	polydifference1 polydifference2 polydifference3 polydifference4 \
-	polydifference5 polydifference6 polydifference7 \
+	polydifference5 polydifference6 polydifference7 polydifference8 \
 	polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
 	polyhull7 polyhull8 polyhull9 polyhull10 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
@@ -162,14 +166,14 @@ DERIVED_TESTS = \
 	nnc_append1 nnc_append2 \
 	nnc_ascii_dump_load1 nnc_ascii_dump_load2 nnc_ascii_dump_load3 \
 	nnc_ascii_dump_load6 nnc_ascii_dump_load7 \
-	nnc_bgp99extrapolation1 \
+	nnc_bgp99extrapolation1 nnc_bgp99extrapolation2 \
 	nnc_bhrz03widening1 nnc_bhrz03widening2 nnc_bhrz03widening3 \
 	nnc_bhrz03widening5 nnc_bhrz03widening6 \
 	nnc_bhrz03widening8 nnc_bhrz03widening9 \
 	nnc_bhrz03widening10 nnc_bhrz03widening11 nnc_bhrz03widening12 \
 	nnc_bounded1 \
 	nnc_boundedh79extrapolation1 \
-	nnc_boundingbox1 nnc_boundingbox3 \
+	nnc_boundingbox1 nnc_boundingbox3 nnc_boundingbox5 \
 	nnc_bounds1 nnc_bounds2 \
 	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 nnc_concatenate4 \
 	nnc_concatenate5 nnc_concatenate6 \
@@ -178,6 +182,8 @@ DERIVED_TESTS = \
 	nnc_disjoint1 nnc_disjoint2 \
 	nnc_empty1 \
 	nnc_exceptions1 nnc_exceptions3 \
+	nnc_expanddim1 \
+	nnc_folddims1 \
 	nnc_generalizedaffineimage1 nnc_generalizedaffineimage2 \
 	nnc_generalizedaffineimage3 \
 	nnc_generalizedaffineimage5 nnc_generalizedaffineimage6 \
@@ -193,7 +199,8 @@ DERIVED_TESTS = \
 	nnc_limitedbhrz03extrapolation1 \
 	nnc_limitedh79extrapolation1 nnc_limitedh79extrapolation2 \
 	nnc_limitedh79extrapolation3 nnc_limitedh79extrapolation4 \
-	nnc_linearpartition1 nnc_linearpartition2 nnc_linearpartition3 \
+	nnc_linearpartition1 nnc_linearpartition2 \
+	nnc_linearpartition3 nnc_linearpartition4 \
 	nnc_mc91 \
 	nnc_minconstraints1 nnc_minconstraints2 \
 	nnc_mingenerators1 nnc_mingenerators2 \
@@ -317,6 +324,7 @@ ascii_dump_load6_SOURCES = ascii_dump_load6.cc
 ascii_dump_load7_SOURCES = ascii_dump_load7.cc
 
 bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
+bgp99extrapolation2_SOURCES = bgp99extrapolation2.cc
 
 bhrz03widening1_SOURCES = bhrz03widening1.cc
 bhrz03widening2_SOURCES = bhrz03widening2.cc
@@ -340,6 +348,10 @@ bhrz03widening19_SOURCES = bhrz03widening19.cc
 
 bhz03widening1_SOURCES = bhz03widening1.cc
 bhz03widening2_SOURCES = bhz03widening2.cc
+bhz03widening3_SOURCES = bhz03widening3.cc
+bhz03widening4_SOURCES = bhz03widening4.cc
+bhz03widening5_SOURCES = bhz03widening5.cc
+bhz03widening6_SOURCES = bhz03widening6.cc
 
 bounded1_SOURCES = bounded1.cc
 
@@ -352,6 +364,7 @@ boundingbox1_SOURCES = boundingbox1.cc BBox.cc
 boundingbox2_SOURCES = boundingbox2.cc BBox.cc
 boundingbox3_SOURCES = boundingbox3.cc
 boundingbox4_SOURCES = boundingbox4.cc
+boundingbox5_SOURCES = boundingbox5.cc BBox.cc
 
 concatenate1_SOURCES = concatenate1.cc
 concatenate2_SOURCES = concatenate2.cc
@@ -382,6 +395,12 @@ empty1_SOURCES = empty1.cc
 exceptions1_SOURCES = exceptions1.cc
 exceptions2_SOURCES = exceptions2.cc
 exceptions3_SOURCES = exceptions3.cc
+
+expanddim1_SOURCES = expanddim1.cc
+expanddim2_SOURCES = expanddim2.cc
+
+folddims1_SOURCES = folddims1.cc
+folddims2_SOURCES = folddims2.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
@@ -433,6 +452,7 @@ limitedh79extrapolation4_SOURCES = limitedh79extrapolation4.cc
 linearpartition1_SOURCES = linearpartition1.cc
 linearpartition2_SOURCES = linearpartition2.cc
 linearpartition3_SOURCES = linearpartition3.cc
+linearpartition4_SOURCES = linearpartition4.cc
 
 linexpression1_SOURCES = linexpression1.cc
 
@@ -460,6 +480,7 @@ polydifference4_SOURCES = polydifference4.cc
 polydifference5_SOURCES = polydifference5.cc
 polydifference6_SOURCES = polydifference6.cc
 polydifference7_SOURCES = polydifference7.cc
+polydifference8_SOURCES = polydifference8.cc
 
 polyhull1_SOURCES = polyhull1.cc
 polyhull2_SOURCES = polyhull2.cc
@@ -685,6 +706,8 @@ nnc_ascii_dump_load7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
 nnc_bgp99extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bgp99extrapolation2_SOURCES = bgp99extrapolation2.cc
+nnc_bgp99extrapolation2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bhrz03widening1_SOURCES = bhrz03widening1.cc
 nnc_bhrz03widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -717,6 +740,8 @@ nnc_boundingbox1_SOURCES = boundingbox1.cc BBox.cc
 nnc_boundingbox1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_boundingbox3_SOURCES = boundingbox3.cc BBox.cc
 nnc_boundingbox3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_boundingbox5_SOURCES = boundingbox3.cc BBox.cc
+nnc_boundingbox5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bounds1_SOURCES = bounds1.cc
 nnc_bounds1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -762,6 +787,12 @@ nnc_exceptions1_SOURCES = exceptions1.cc
 nnc_exceptions1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_exceptions3_SOURCES = exceptions3.cc
 nnc_exceptions3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_expanddim1_SOURCES = expanddim1.cc
+nnc_expanddim1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_folddims1_SOURCES = folddims1.cc
+nnc_folddims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 nnc_generalizedaffineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -843,6 +874,8 @@ nnc_linearpartition2_SOURCES = linearpartition2.cc
 nnc_linearpartition2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_linearpartition3_SOURCES = linearpartition3.cc
 nnc_linearpartition3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_linearpartition4_SOURCES = linearpartition4.cc
+nnc_linearpartition4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_mc91_SOURCES = mc91.cc
 nnc_mc91_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -1010,9 +1043,7 @@ TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 XFAIL_TESTS = \
 nnc_limitedh79extrapolation3 \
 nnc_polydifference1 \
-addgenerators11 \
-exceptions3 \
-nnc_exceptions3
+addgenerators11
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
