@@ -92,7 +92,8 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
   // The space dimension of the resulting polyhedron should not
   // overflow the maximum allowed space dimension.
   if (m > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow("add_space_dimensions_and_embed(m)",
+    throw_space_dimension_overflow(topology(),
+				   "add_space_dimensions_and_embed(m)",
 				   "adding m new space dimensions exceeds "
 				   "the maximum allowed space dimension");
 
@@ -187,7 +188,8 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
   // The space dimension of the resulting polyhedron should not
   // overflow the maximum allowed space dimension.
   if (m > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow("add_space_dimensions_and_project(m)",
+    throw_space_dimension_overflow(topology(),
+				   "add_space_dimensions_and_project(m)",
 				   "adding m new space dimensions exceeds "
 				   "the maximum allowed space dimension");
 
@@ -289,7 +291,8 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   // The space dimension of the resulting polyhedron should not
   // overflow the maximum allowed space dimension.
   if (y.space_dim > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow("concatenate_assign(y)",
+    throw_space_dimension_overflow(topology(),
+				   "concatenate_assign(y)",
 				   "concatenation exceeds the maximum "
 				   "allowed space dimension");
 
@@ -561,9 +564,10 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
   // The space dimension of the resulting polyhedron should not
   // overflow the maximum allowed space dimension.
   if (m > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow("expand_dimension(v, m)",
-				   "adding m new space dimensions exceeds"
-				   "the maximum allowed space dimension.");
+    throw_space_dimension_overflow(topology(),
+				   "expand_dimension(v, m)",
+				   "adding m new space dimensions exceeds "
+				   "the maximum allowed space dimension");
 
   // Nothing to do, if no dimensions must be added.
   if (m == 0)

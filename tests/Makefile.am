@@ -28,6 +28,11 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
+CHECKER =
+#CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(srcdir)/valgrind_suppressions
+
+TESTS_ENVIRONMENT = $(CHECKER)
+
 AM_CPPFLAGS = \
 -I$(top_builddir)/src \
 -I$(top_srcdir)/utils \
@@ -101,6 +106,7 @@ ORIGINAL_TESTS = \
 	disjoint1 disjoint2 disjoint3 \
 	dualhypercubes \
 	empty1 \
+	equals1 \
 	exceptions1 exceptions2  exceptions3 \
 	expandspacedim1 expandspacedim2 \
 	foldspacedims1 foldspacedims2 \
@@ -124,9 +130,11 @@ ORIGINAL_TESTS = \
 	linearpartition1 linearpartition2 \
 	linearpartition3 linearpartition4 \
 	linexpression1 \
-	mapspacedims1 mapspacedims2 mapspacedims3 \
+	mapspacedims1 mapspacedims2 mapspacedims3  mapspacedims4 \
 	max_min1 max_min2 \
+	maxspacedim1 \
 	mc91 \
+	membytes1 \
 	memory1 \
 	minconstraints1 minconstraints2 minconstraints3 minconstraints4 \
 	mingenerators1 mingenerators2 mingenerators3 \
@@ -150,7 +158,7 @@ ORIGINAL_TESTS = \
 	timeelapse6 timeelapse7 timeelapse8 \
 	topclosed1 topclosed2 topclosed3 \
 	topclosure1 topclosure2 topclosure3 topclosure4 \
-	universe1 universe2 universe3 universe4 universe5 universe6 \
+	universe1 universe2 universe3 universe4 universe5 universe6 universe7 \
 	writeconsys1 \
 	writegensys1 writegensys2 writegensys3 \
 	writepolyhedron1 writepolyhedron2 writepolyhedron3 \
@@ -195,6 +203,7 @@ DERIVED_TESTS = \
 	nnc_contains1 nnc_contains2 \
 	nnc_disjoint1 nnc_disjoint2 \
 	nnc_empty1 \
+	nnc_equals1 \
 	nnc_exceptions1 nnc_exceptions3 \
 	nnc_expandspacedim1 \
 	nnc_foldspacedims1 \
@@ -217,8 +226,10 @@ DERIVED_TESTS = \
 	nnc_linearpartition1 nnc_linearpartition2 \
 	nnc_linearpartition3 nnc_linearpartition4 \
 	nnc_mapspacedims1 nnc_mapspacedims2 nnc_mapspacedims3 \
+	nnc_mapspacedims4 \
 	nnc_max_min1 nnc_max_min2 \
 	nnc_mc91 \
+	nnc_membytes1 \
 	nnc_minconstraints1 nnc_minconstraints2 \
 	nnc_mingenerators1 nnc_mingenerators2 \
 	nnc_onepoint \
@@ -239,7 +250,8 @@ DERIVED_TESTS = \
 	nnc_smm1 \
 	nnc_timeelapse2 nnc_timeelapse5 nnc_timeelapse6 nnc_timeelapse7 \
 	nnc_timeelapse8 \
-	nnc_universe1 nnc_universe2 nnc_universe3 nnc_universe4 nnc_universe5 \
+	nnc_universe1 nnc_universe2 nnc_universe3 nnc_universe4 \
+	nnc_universe5 nnc_universe7 \
 	nnc_writepolyhedron2 nnc_writepolyhedron3
 
 #
@@ -412,6 +424,8 @@ dualhypercubes_SOURCES = dualhypercubes.cc
 
 empty1_SOURCES = empty1.cc
 
+equals1_SOURCES = equals1.cc
+
 exceptions1_SOURCES = exceptions1.cc
 exceptions2_SOURCES = exceptions2.cc
 exceptions3_SOURCES = exceptions3.cc
@@ -482,11 +496,16 @@ linexpression1_SOURCES = linexpression1.cc
 mapspacedims1_SOURCES = mapspacedims1.cc
 mapspacedims2_SOURCES = mapspacedims2.cc
 mapspacedims3_SOURCES = mapspacedims3.cc
+mapspacedims4_SOURCES = mapspacedims4.cc
 
 max_min1_SOURCES = max_min1.cc
 max_min2_SOURCES = max_min2.cc
 
+maxspacedim1_SOURCES = maxspacedim1.cc
+
 mc91_SOURCES = mc91.cc
+
+membytes1_SOURCES = membytes1.cc
 
 memory1_SOURCES = memory1.cc
 
@@ -586,6 +605,7 @@ universe3_SOURCES = universe3.cc
 universe4_SOURCES = universe4.cc
 universe5_SOURCES = universe5.cc
 universe6_SOURCES = universe6.cc
+universe7_SOURCES = universe7.cc
 
 writeconsys1_SOURCES = writeconsys1.cc
 
@@ -810,6 +830,9 @@ nnc_disjoint2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_empty1_SOURCES = empty1.cc
 nnc_empty1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+nnc_equals1_SOURCES = equals1.cc
+nnc_equals1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
 nnc_exceptions1_SOURCES = exceptions1.cc
 nnc_exceptions1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_exceptions3_SOURCES = exceptions3.cc
@@ -915,6 +938,8 @@ nnc_mapspacedims2_SOURCES = mapspacedims2.cc
 nnc_mapspacedims2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_mapspacedims3_SOURCES = mapspacedims3.cc
 nnc_mapspacedims3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_mapspacedims4_SOURCES = mapspacedims4.cc
+nnc_mapspacedims4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_max_min1_SOURCES = max_min1.cc
 nnc_max_min1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -923,6 +948,9 @@ nnc_max_min2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_mc91_SOURCES = mc91.cc
 nnc_mc91_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_membytes1_SOURCES = membytes1.cc
+nnc_membytes1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_minconstraints1_SOURCES = minconstraints1.cc
 nnc_minconstraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -1056,6 +1084,8 @@ nnc_universe4_SOURCES = universe4.cc
 nnc_universe4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_universe5_SOURCES = universe5.cc
 nnc_universe5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_universe7_SOURCES = universe7.cc
+nnc_universe7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_writepolyhedron2_SOURCES = writepolyhedron2.cc
 nnc_writepolyhedron2_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -1070,7 +1100,7 @@ WATCHDOG_TESTS = watchdog1
 watchdog1_SOURCES = $(watchdog1_SRCS)
 watchdog1_LDADD = $(LDADD) $(top_builddir)/Watchdog/libpwl.la
 
-endif # BUILD_WATCHDOG_LIBRARY
+endif BUILD_WATCHDOG_LIBRARY
 
 TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 
@@ -1083,7 +1113,9 @@ nnc_randphull2
 
 XFAIL_WITH_INT32 = \
 $(XFAIL_WITH_INT64) \
-dualhypercubes
+dualhypercubes \
+equals1 \
+nnc_equals1
 
 XFAIL_WITH_INT16 = \
 $(XFAIL_WITH_INT32) \
@@ -1108,6 +1140,7 @@ generalizedaffineimage3 \
 generalizedaffineimage7 \
 mapspacedims2 \
 max_min2 \
+membytes1 \
 onepoint \
 polydifference9 \
 randphull1 \
@@ -1117,6 +1150,7 @@ nnc_bgp99extrapolation2 \
 nnc_boundedh79extrapolation1 \
 nnc_generalizedaffineimage3 \
 nnc_max_min2 \
+nnc_membytes1 \
 nnc_onepoint \
 nnc_polydifference9 \
 nnc_randphull1 \
@@ -1124,6 +1158,7 @@ nnc_smm1
 
 XFAIL_WITH_INT8_A = \
 $(XFAIL_WITH_INT8) \
+ascii_dump_load4 \
 boundingbox4 \
 intersection1 \
 intersection2 \

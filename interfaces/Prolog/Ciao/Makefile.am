@@ -66,7 +66,7 @@ ciao_clpq: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../tests/clpq.pl
 	ciaoc -o $@ ciao_clpq.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f ciao_clpq.pl ppl_ciao.pl; \
-	  rm -f ../tests/clpq.pl; \
+	  rm -f ../clpq.pl; \
 	fi
 
 ciao_clpq2: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../tests/clpq2.pl
@@ -122,6 +122,7 @@ EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)
 endif !ASSERTIONS_ENABLED
 
 check-local: ciao_clpq$(EXEEXT) ../tests/check_script $(EXPECTED) ciao_clpq2$(EXEEXT) ../tests/check_script2 $(EXPECTED2) ciao_pl_check$(EXEEXT) $(EXPECTED3)
+	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	GLOBALSTKSIZE=1000000 \
 	$(LIBTOOL) --mode=execute \
@@ -152,4 +153,4 @@ ciao_clpq ciao_clpq2 ciao_pl_check \
 obtained obtained2 obtained3\
 $(CLPQ_TESTS)
 
-endif # HAVE_CIAO_PROLOG
+endif HAVE_CIAO_PROLOG

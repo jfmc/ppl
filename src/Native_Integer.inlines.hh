@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iostream>
 #include <limits>
 #include <cassert>
+#include <cstdlib>
 
 namespace Parma_Polyhedra_Library {
 
@@ -129,173 +130,237 @@ lcm(T x, T y) {
 template <typename T>
 inline
 Native_Integer<T>::Native_Integer()
-  : value_(0) {
-}
-
-template <typename T>
-inline
-Native_Integer<T>::Native_Integer(const Native_Integer& x)
-  : value_(x.value_) {
-}
-
-template <typename T>
-inline
-Native_Integer<T>::~Native_Integer() {
+  : v(0) {
 }
 
 #define PPL_INTEGER_CONSTRUCT_FROM_NATIVE(native) \
 template <typename T> \
 inline \
 Native_Integer<T>::Native_Integer(native z) \
-  : value_(z) { \
+  : v(z) { \
 }
 
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(signed char)
-PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned char)
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(short)
-PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned short)
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(int)
-PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned int)
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(long)
-PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned long)
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(long long)
+PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned char)
+PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned short)
+PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned int)
+PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned long)
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned long long)
 
-template <typename T>
+#define PPL_SIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(type) \
+template <> \
+inline \
+Native_Integer<type>::Native_Integer(const char* y) \
+  : v(strtol(y, 0, 0)) { \
+}
+
+template <>
 inline
-Native_Integer<T>::Native_Integer(const mpz_class& z)
-  : value_(z.get_si()) {
+Native_Integer<long long>::Native_Integer(const char* y)
+  : v(strtoll(y, 0, 0)) {
+}
+
+PPL_SIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(signed char)
+PPL_SIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(short)
+PPL_SIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(int)
+PPL_SIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(long)
+
+#define PPL_UNSIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(type) \
+template <> \
+inline \
+Native_Integer<type>::Native_Integer(const char* y) \
+  : v(strtoul(y, 0, 0)) { \
+}
+
+PPL_UNSIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(unsigned char)
+PPL_UNSIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(unsigned short)
+PPL_UNSIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(unsigned int)
+PPL_UNSIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(unsigned long)
+
+template <>
+inline
+Native_Integer<unsigned long long>::Native_Integer(const char* y)
+  : v(strtoull(y, 0, 0)) {
+}
+
+#define PPL_SIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(type) \
+template <> \
+inline \
+Native_Integer<type>::Native_Integer(const mpz_class& y) { \
+  if (sizeof(type) <= sizeof(long)) \
+    v = y.get_si(); \
+  else { \
+    mpz_export(&v, 0, 1, sizeof(type), 0, 0, y.get_mpz_t()); \
+    if (sgn(y) < 0) \
+      v = -v; \
+    } \
+}
+
+PPL_SIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(signed char)
+PPL_SIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(short)
+PPL_SIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(int)
+PPL_SIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(long)
+PPL_SIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(long long)
+
+#define PPL_UNSIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(type) \
+template <> \
+inline \
+Native_Integer<type>::Native_Integer(const mpz_class& y) { \
+  if (sizeof(type) <= sizeof(unsigned long)) \
+    v = y.get_ui(); \
+  else \
+    mpz_export(&v, 0, 1, sizeof(type), 0, 0, y.get_mpz_t()); \
+}
+
+PPL_UNSIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(unsigned char)
+PPL_UNSIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(unsigned short)
+PPL_UNSIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(unsigned int)
+PPL_UNSIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(unsigned long)
+PPL_UNSIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(unsigned long long)
+
+template <typename T>
+inline T&
+Native_Integer<T>::raw_value() {
+  return v;
 }
 
 template <typename T>
+inline const T&
+Native_Integer<T>::raw_value() const {
+  return v;
+}
+
+#if 0
+template <typename T>
 inline
 Native_Integer<T>::operator mpz_class() const {
-  return value_;
+  return v;
 }
 
 template <>
 inline
 Native_Integer<long long>::operator mpz_class() const {
   mpz_class n;
-  if (value_ >= 0)
-    mpz_import(n.get_mpz_t(), 1, 1, sizeof(long long), 0, 0, &value_);
+  if (v >= 0)
+    mpz_import(n.get_mpz_t(), 1, 1, sizeof(long long), 0, 0, &v);
   else {
-    long long abs_value_ = abs(value_);
-    mpz_import(n.get_mpz_t(), 1, 1, sizeof(long long), 0, 0, &abs_value_);
+    long long abs_v = abs(v);
+    mpz_import(n.get_mpz_t(), 1, 1, sizeof(long long), 0, 0, &abs_v);
     mpz_neg(n.get_mpz_t(), n.get_mpz_t());
   }
   return n;
 }
-
-template <typename T>
-inline void
-Native_Integer<T>::swap(Native_Integer<T>& y) {
-  std::swap(value_ , y.value_);
-}
+#endif
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator=(const Native_Integer<T> y) {
-  value_ = y.value_;
+Native_Integer<T>::operator=(const Native_Integer<T>& y) {
+  v = y.v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator+=(const Native_Integer<T> y) {
-  value_ += y.value_;
+Native_Integer<T>::operator+=(const Native_Integer<T>& y) {
+  v += y.v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator-=(const Native_Integer<T> y) {
-  value_ -= y.value_;
+Native_Integer<T>::operator-=(const Native_Integer<T>& y) {
+  v -= y.v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator*=(const Native_Integer<T> y) {
-  value_ *= y.value_;
+Native_Integer<T>::operator*=(const Native_Integer<T>& y) {
+  v *= y.v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator/=(const Native_Integer<T> y) {
-  value_ /= y.value_;
+Native_Integer<T>::operator/=(const Native_Integer<T>& y) {
+  v /= y.v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator%=(const Native_Integer<T> y) {
-  value_ %= y.value_;
+Native_Integer<T>::operator%=(const Native_Integer<T>& y) {
+  v %= y.v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>&
 Native_Integer<T>::operator++() {
-  ++value_;
+  ++v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>
 Native_Integer<T>::operator++(int) {
-  Native_Integer tmp(*this);
-  ++value_;
+  Native_Integer tmp = *this;
+  ++v;
   return tmp;
 }
 
 template <typename T>
 inline Native_Integer<T>&
 Native_Integer<T>::operator--() {
-  --value_;
+  --v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>
 Native_Integer<T>::operator--(int) {
-  Native_Integer tmp(*this);
-  --value_;
+  Native_Integer tmp = *this;
+  --v;
   return tmp;
 }
 
 template <typename T>
-inline Native_Integer<T>
-operator+(const Native_Integer<T> x, const Native_Integer<T> y) {
-  Native_Integer<T> tmp = x;
-  tmp += y;
-  return tmp;
+inline const T&
+raw_value(const Native_Integer<T>& x) {
+  return x.raw_value();
+}
+
+template <typename T>
+inline T&
+raw_value(Native_Integer<T>& x) {
+  return x.raw_value();
+}
+
+template <typename T>
+size_t
+total_memory_in_bytes(const Native_Integer<T>& x) {
+  return sizeof(x);
+}
+
+template <typename T>
+size_t
+external_memory_in_bytes(const Native_Integer<T>& x) {
+  return 0;
 }
 
 template <typename T>
 inline Native_Integer<T>
-operator+(const Native_Integer<T> x) {
+operator+(const Native_Integer<T>& x) {
   return x;
 }
 
 template <typename T>
 inline Native_Integer<T>
-operator-(const Native_Integer<T> x, const Native_Integer<T> y) {
-  Native_Integer<T> tmp = x;
-  tmp -= y;
-  return tmp;
-}
-
-template <typename T>
-inline void
-negate(Native_Integer<T>& x) {
-  x.value_ = -x.value_;
-}
-
-template <typename T>
-inline Native_Integer<T>
-operator-(const Native_Integer<T> x) {
+operator-(const Native_Integer<T>& x) {
   Native_Integer<T> tmp = x;
   negate(tmp);
   return tmp;
@@ -303,7 +368,23 @@ operator-(const Native_Integer<T> x) {
 
 template <typename T>
 inline Native_Integer<T>
-operator*(const Native_Integer<T> x, const Native_Integer<T> y) {
+operator+(const Native_Integer<T>& x, const Native_Integer<T>& y) {
+  Native_Integer<T> tmp = x;
+  tmp += y;
+  return tmp;
+}
+
+template <typename T>
+inline Native_Integer<T>
+operator-(const Native_Integer<T>& x, const Native_Integer<T>& y) {
+  Native_Integer<T> tmp = x;
+  tmp -= y;
+  return tmp;
+}
+
+template <typename T>
+inline Native_Integer<T>
+operator*(const Native_Integer<T>& x, const Native_Integer<T>& y) {
   Native_Integer<T> tmp = x;
   tmp *= y;
   return tmp;
@@ -311,7 +392,7 @@ operator*(const Native_Integer<T> x, const Native_Integer<T> y) {
 
 template <typename T>
 inline Native_Integer<T>
-operator/(const Native_Integer<T> x, const Native_Integer<T> y) {
+operator/(const Native_Integer<T>& x, const Native_Integer<T>& y) {
   Native_Integer<T> tmp = x;
   tmp /= y;
   return tmp;
@@ -319,72 +400,54 @@ operator/(const Native_Integer<T> x, const Native_Integer<T> y) {
 
 template <typename T>
 inline Native_Integer<T>
-operator%(const Native_Integer<T> x, const Native_Integer<T> y) {
+operator%(const Native_Integer<T>& x, const Native_Integer<T>& y) {
   Native_Integer<T> tmp = x;
   tmp %= y;
   return tmp;
 }
 
 template <typename T>
-inline void
-gcd_assign(Native_Integer<T>& x, const Native_Integer<T> y) {
-  x.value_ = gcd(x.value_, y.value_);
-}
-
-
-template <typename T>
-inline void
-gcd_assign(Native_Integer<T>& x,
-	   const Native_Integer<T> y, const Native_Integer<T> z) {
-  x.value_ = gcd(y.value_, z.value_);
+inline bool
+operator==(const Native_Integer<T>& x, const Native_Integer<T>& y) {
+  return x.raw_value() == y.raw_value();
 }
 
 template <typename T>
-inline void
-lcm_assign(Native_Integer<T>& x, const Native_Integer<T> y) {
-  x.value_ = lcm(x.value_, y.value_);
+inline bool
+operator!=(const Native_Integer<T>& x, const Native_Integer<T>& y) {
+  return x.raw_value() != y.raw_value();
 }
 
 template <typename T>
-inline void
-lcm_assign(Native_Integer<T>& x,
-	   const Native_Integer<T> y, const Native_Integer<T> z) {
-  x.value_ = lcm(y.value_, z.value_);
+inline bool
+operator>=(const Native_Integer<T>& x, const Native_Integer<T>& y) {
+  return x.raw_value() >= y.raw_value();
 }
 
 template <typename T>
-inline void
-exact_div_assign(Native_Integer<T>& x, const Native_Integer<T> y) {
-  x.value_ /= y.value_;
+inline bool
+operator>(const Native_Integer<T>& x, const Native_Integer<T>& y) {
+  return x.raw_value() > y.raw_value();
 }
 
 template <typename T>
-inline void
-exact_div_assign(Native_Integer<T>& x,
-		 const Native_Integer<T> y, const Native_Integer<T> z) {
-  x.value_ = y.value_ / z.value_;
+inline bool
+operator<=(const Native_Integer<T>& x, const Native_Integer<T>& y) {
+  return x.raw_value() <= y.raw_value();
 }
 
 template <typename T>
-inline void
-sqrt_assign(Native_Integer<T>& x) {
-  assert(x.value_ >= 0);
-  x.value_ = isqrt(x.value_);
-}
-
-template <typename T>
-inline void
-sqrt_assign(Native_Integer<T>& x, const Native_Integer<T> y) {
-  assert(x.value_ >= 0);
-  x.value_ = isqrt(y.value_);
+inline bool
+operator<(const Native_Integer<T>& x, const Native_Integer<T>& y) {
+  return x.raw_value() < y.raw_value();
 }
 
 template <typename T>
 inline int
-sgn(const Native_Integer<T> x) {
-  if(x.value_ > 0)
+sgn(const Native_Integer<T>& x) {
+  if(x.raw_value() > 0)
     return 1;
-  else if (x.value_ == 0)
+  else if (x.raw_value() == 0)
     return 0;
   else
     return -1;
@@ -392,82 +455,100 @@ sgn(const Native_Integer<T> x) {
 
 template <typename T>
 inline int
-cmp(const Native_Integer<T> x, const Native_Integer<T> y) {
+cmp(const Native_Integer<T>& x, const Native_Integer<T>& y) {
   return sgn(x-y);
 }
 
 template <typename T>
-inline bool
-operator==(const Native_Integer<T> x, const Native_Integer<T> y) {
-  return x.value_ == y.value_;
+inline void
+negate(Native_Integer<T>& x) {
+  x.raw_value() = -x.raw_value();
 }
 
 template <typename T>
-inline bool
-operator!=(const Native_Integer<T> x, const Native_Integer<T> y) {
-  return x.value_ != y.value_;
+inline void
+add_mul_assign(Native_Integer<T>& x,
+	       const Native_Integer<T>& y,
+	       const Native_Integer<T>& z) {
+  x.raw_value() += y.raw_value() * z.raw_value();
 }
 
 template <typename T>
-inline bool
-operator>=(const Native_Integer<T> x, const Native_Integer<T> y) {
-  return x.value_ >= y.value_;
+inline void
+sub_mul_assign(Native_Integer<T>& x,
+	       const Native_Integer<T>& y,
+	       const Native_Integer<T>& z) {
+  x.raw_value() -= y.raw_value() * z.raw_value();
 }
 
 template <typename T>
-inline bool
-operator>(const Native_Integer<T> x, const Native_Integer<T> y) {
-  return x.value_ > y.value_;
+inline void
+gcd_assign(Native_Integer<T>& x, const Native_Integer<T>& y) {
+  x.raw_value() = gcd(x.raw_value(), y.raw_value());
+}
+
+
+template <typename T>
+inline void
+gcd_assign(Native_Integer<T>& x,
+	   const Native_Integer<T>& y, const Native_Integer<T>& z) {
+  x.raw_value() = gcd(y.raw_value(), z.raw_value());
 }
 
 template <typename T>
-inline bool
-operator<=(const Native_Integer<T> x, const Native_Integer<T> y) {
-  return x.value_ <= y.value_;
+inline void
+lcm_assign(Native_Integer<T>& x, const Native_Integer<T>& y) {
+  x.raw_value() = lcm(x.raw_value(), y.raw_value());
 }
 
 template <typename T>
-inline bool
-operator<(const Native_Integer<T> x, const Native_Integer<T> y) {
-  return x.value_ < y.value_;
+inline void
+lcm_assign(Native_Integer<T>& x,
+	   const Native_Integer<T>& y, const Native_Integer<T>& z) {
+  x.raw_value() = lcm(y.raw_value(), z.raw_value());
 }
 
 template <typename T>
-inline const T&
-raw_value(const Native_Integer<T>& x) {
-  return value_;
+inline void
+exact_div_assign(Native_Integer<T>& x, const Native_Integer<T>& y) {
+  x.raw_value() /= y.raw_value();
 }
 
 template <typename T>
-inline T& raw_value(Native_Integer<T>& x) {
-  return value_;
+inline void
+exact_div_assign(Native_Integer<T>& x,
+		 const Native_Integer<T>& y, const Native_Integer<T>& z) {
+  x.raw_value() = y.raw_value() / z.raw_value();
+}
+
+template <typename T>
+inline void
+sqrt_assign(Native_Integer<T>& x) {
+  assert(x.raw_value() >= 0);
+  x.raw_value() = isqrt(x.raw_value());
+}
+
+template <typename T>
+inline void
+sqrt_assign(Native_Integer<T>& x, const Native_Integer<T>& y) {
+  assert(x.raw_value() >= 0);
+  x.raw_value() = isqrt(y.raw_value());
 }
 
 template <typename T>
 inline std::ostream&
-operator<<(std::ostream& os, const Native_Integer<T> x) {
-  return os << x.value_;
+operator<<(std::ostream& os, const Native_Integer<T>& x) {
+  return os << x.raw_value();
 }
 
 template <typename T>
 inline std::istream&
 operator>>(std::istream& is, Native_Integer<T>& x) {
-  return is >> x.value_;
+  return is >> x.raw_value();
 }
 
 PPL_INTEGER_DEFINE_NON_MEMBERS(Native_Integer)
 
 } // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-template <typename T>
-inline void
-swap(Parma_Polyhedra_Library::Native_Integer<T>& x,
-     Parma_Polyhedra_Library::Native_Integer<T>& y) {
-     x.swap(y);
-}
-
-} // namespace std
 
 #endif // !defined(PPL_Native_Integer_inlines_hh)

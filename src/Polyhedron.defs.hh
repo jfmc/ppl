@@ -1531,7 +1531,7 @@ public:
     \param pfunc
     The partial function specifying the destiny of each space dimension.
 
-    The template class PartialFunction must provide the following
+    The template class Partial_Function must provide the following
     methods.
     \code
       bool has_empty_codomain() const
@@ -1563,8 +1563,8 @@ public:
     function with the properties described in the
     \ref map_space_dimensions "specification of the mapping operator".
   */
-  template <typename PartialFunction>
-  void map_space_dimensions(const PartialFunction& pfunc);
+  template <typename Partial_Function>
+  void map_space_dimensions(const Partial_Function& pfunc);
 
   //! Creates \p m copies of the space dimension corresponding to \p var.
   /*!
@@ -1648,6 +1648,12 @@ public:
   //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
+
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
 
   //@} // Miscellaneous Member Functions
 
@@ -2248,8 +2254,11 @@ protected:
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_space_dim) const;
 
-  void throw_space_dimension_overflow(const char* method,
-				      const char* reason) const;
+  // Note: it has to be a static method, because it can be called inside
+  // constructors (before actually constructing the polyhedron object).
+  static void throw_space_dimension_overflow(Topology topol,
+					     const char* method,
+					     const char* reason);
 
   void throw_invalid_generator(const char* method,
 			       const char* g_name) const;

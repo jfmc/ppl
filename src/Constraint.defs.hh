@@ -226,6 +226,9 @@ public:
   //! Assignment operator.
   Constraint& operator=(const Constraint& c);
 
+  //! Returns the maximum space dimension a Constraint can handle.
+  static dimension_type max_space_dimension();
+
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
@@ -279,6 +282,14 @@ public:
   //! The true (zero-dimension space) constraint \f$0 \leq 1\f$,
   //! also known as <EM>positivity constraint</EM>.
   static const Constraint& zero_dim_positivity();
+
+  //! \brief
+  //! Returns a lower bound to the total size in bytes of the memory
+  //! occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

@@ -47,17 +47,20 @@ PPL::Row::Impl::expand_within_capacity(const dimension_type new_size) {
 }
 
 void
-PPL::Row::Impl::shrink(const dimension_type new_size) {
+PPL::Row::Impl::shrink(dimension_type new_size) {
+  dimension_type old_size = size();
+  assert(new_size <= old_size);
+  // Since ~Integer() does not throw exceptions, nothing here does.
+  set_size(new_size);
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  assert(new_size > 0);
+  // Make sure we do not try to destroy vec_[0].
+  if (new_size == 0)
+    ++new_size;
 #endif
-  assert(new_size <= size());
   // We assume construction was done "forward".
   // We thus perform destruction "backward".
-  for (dimension_type i = size(); i-- > new_size; )
-    // ~Integer() does not throw exceptions.  So we do.
+  for (dimension_type i = old_size; i-- > new_size; )
     vec_[i].~Integer();
-  set_size(new_size);
 }
 
 void
@@ -99,6 +102,14 @@ PPL::Row::ascii_dump(std::ostream& s) const {
   s << "f ";
   flags().ascii_dump(s);
   s << std::endl;
+}
+
+PPL::memory_size_type
+PPL::Row::Impl::external_memory_in_bytes() const {
+  memory_size_type n = 0;
+  for (dimension_type i = size(); i-- > 0; )
+    n += PPL::external_memory_in_bytes(vec_[i]);
+  return n;
 }
 
 bool

@@ -26,230 +26,218 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Native_Integer.types.hh"
 #include "Integer_macros.hh"
+#include "float.types.hh"
 #include <gmpxx.h>
 #include <limits>
 
-namespace Parma_Polyhedra_Library {
-
-template <typename T>
-Native_Integer<T> operator+(const Native_Integer<T> x,
-			    const Native_Integer<T> y);
-
-template <typename T>
-Native_Integer<T> operator+(const Native_Integer<T> x);
-
-template <typename T>
-Native_Integer<T> operator-(const Native_Integer<T> x,
-			    const Native_Integer<T> y);
-
-template <typename T>
-Native_Integer<T> operator-(const Native_Integer<T> x);
-
-template <typename T>
-Native_Integer<T> operator*(const Native_Integer<T> x,
-			    const Native_Integer<T> y);
-
-template <typename T>
-Native_Integer<T> operator/(const Native_Integer<T> x,
-			    const Native_Integer<T> y);
-
-template <typename T>
-Native_Integer<T> operator%(const Native_Integer<T> x,
-			    const Native_Integer<T> y);
-
-template <typename T>
-bool operator==(const Native_Integer<T> x, const Native_Integer<T> y);
-template <typename T>
-bool operator!=(const Native_Integer<T> x, const Native_Integer<T> y);
-template <typename T>
-bool operator>=(const Native_Integer<T> x, const Native_Integer<T> y);
-template <typename T>
-bool operator>(const Native_Integer<T> x, const Native_Integer<T> y);
-template <typename T>
-bool operator<=(const Native_Integer<T> x, const Native_Integer<T> y);
-template <typename T>
-bool operator<(const Native_Integer<T> x, const Native_Integer<T> y);
-
-template <typename T>
-int sgn(const Native_Integer<T> x);
-template <typename T>
-int cmp(const Native_Integer<T> x, const Native_Integer<T> y);
-
-template <typename T>
-void negate(Native_Integer<T>& x);
-
-template <typename T>
-void gcd_assign(Native_Integer<T>& x, const Native_Integer<T> y);
-
-template <typename T>
-void gcd_assign(Native_Integer<T>& x,
-		const Native_Integer<T> y, const Native_Integer<T> z);
-
-template <typename T>
-void lcm_assign(Native_Integer<T>& x, const Native_Integer<T> y);
-
-template <typename T>
-void lcm_assign(Native_Integer<T>& x,
-		const Native_Integer<T> y, const Native_Integer<T> z);
-
-template <typename T>
-void exact_div_assign(Native_Integer<T>& x, const Native_Integer<T> y);
-
-template <typename T>
-void exact_div_assign(Native_Integer<T>& x,
-		      const Native_Integer<T> y, const Native_Integer<T> z);
-
-template <typename T>
-void sqrt_assign(Native_Integer<T>& x);
-
-template <typename T>
-void sqrt_assign(Native_Integer<T>& x, const Native_Integer<T> y);
-
-template <typename T>
-const T& raw_value(const Native_Integer<T>& x);
-
-template <typename T>
-T& raw_value(const Native_Integer<T>& x);
-
-template <typename T>
-std::ostream& operator<<(std::ostream& os, const Native_Integer<T> x);
-
-template <typename T>
-std::istream& operator>>(std::istream& is, Native_Integer<T>& x);
-
-PPL_INTEGER_DECLARE_NON_MEMBERS(Native_Integer)
-
-} // namespace Parma_Polyhedra_Library
-
 template <typename T>
 class Parma_Polyhedra_Library::Native_Integer {
-
-  friend Native_Integer
-  Parma_Polyhedra_Library::operator+<>(const Native_Integer x,
-				       const Native_Integer y);
-  friend Native_Integer
-  Parma_Polyhedra_Library::operator-<>(const Native_Integer x,
-				       const Native_Integer y);
-  friend Native_Integer
-  Parma_Polyhedra_Library::operator*<>(const Native_Integer x,
-				       const Native_Integer y);
-  friend Native_Integer
-  Parma_Polyhedra_Library::operator/<>(const Native_Integer x,
-				       const Native_Integer y);
-  friend Native_Integer
-  Parma_Polyhedra_Library::operator%<>(const Native_Integer x,
-				       const Native_Integer y);
-
-  friend Native_Integer
-  Parma_Polyhedra_Library::operator+<>(const Native_Integer x);
-  friend Native_Integer
-  Parma_Polyhedra_Library::operator-<>(const Native_Integer x);
-
-  friend bool
-  Parma_Polyhedra_Library::operator==<>(const Native_Integer x,
-					const Native_Integer y);
-  friend bool
-  Parma_Polyhedra_Library::operator!=<>(const Native_Integer x,
-					const Native_Integer y);
-  friend bool
-  Parma_Polyhedra_Library::operator>=<>(const Native_Integer x,
-					const Native_Integer y);
-  friend bool
-  Parma_Polyhedra_Library::operator> <>(const Native_Integer x,
-					const Native_Integer y);
-  friend bool
-  Parma_Polyhedra_Library::operator<=<>(const Native_Integer x,
-					const Native_Integer y);
-  friend bool
-  Parma_Polyhedra_Library::operator< <>(const Native_Integer x,
-					const Native_Integer y);
-
-  friend int
-  Parma_Polyhedra_Library::sgn<>(const Native_Integer x);
-  friend int
-  Parma_Polyhedra_Library::cmp<>(const Native_Integer x,
-				 const Native_Integer y);
-
-  friend void
-  Parma_Polyhedra_Library::negate<>(Native_Integer& x);
-
-  friend void
-  Parma_Polyhedra_Library::gcd_assign<>(Native_Integer<T>& x,
-					const Native_Integer<T> y);
-  friend void
-  Parma_Polyhedra_Library::gcd_assign<>(Native_Integer<T>& x,
-					const Native_Integer<T> y,
-					const Native_Integer<T> z);
-  friend void
-  Parma_Polyhedra_Library::lcm_assign<>(Native_Integer<T>& x,
-					const Native_Integer<T> y);
-  friend void
-  Parma_Polyhedra_Library::lcm_assign<>(Native_Integer<T>& x,
-					const Native_Integer<T> y,
-					const Native_Integer<T> z);
-  friend void
-  Parma_Polyhedra_Library::exact_div_assign<>(Native_Integer<T>& x,
-					      const Native_Integer<T> y);
-  friend void
-  Parma_Polyhedra_Library::exact_div_assign<>(Native_Integer<T>& x,
-					      const Native_Integer<T> y,
-					      const Native_Integer<T> z);
-  friend void
-  Parma_Polyhedra_Library::sqrt_assign<>(Native_Integer<T>& x);
-
-  friend void
-  Parma_Polyhedra_Library::sqrt_assign<>(Native_Integer<T>& x,
-					 const Native_Integer<T> y);
-
-  friend std::ostream&
-  Parma_Polyhedra_Library::operator<< <>(std::ostream& os,
-					 const Native_Integer<T> x);
-  friend std::istream&
-  Parma_Polyhedra_Library::operator>> <>(std::istream& is,
-					 Native_Integer<T>& x);
-
 public:
   //! Default constructor.
   Native_Integer();
+
+#if 0
+  // Don't enable this: with GCC, the presence of a copy constructor
+  // (even if it is defined exactly as the default one) inhibits some
+  // important optimizations.
   //! Copy-constructor.
   Native_Integer(const Native_Integer& y);
-  //! Destructor.
-  ~Native_Integer();
+#endif
 
-  Native_Integer(signed char z);
-  Native_Integer(unsigned char z);
-  Native_Integer(signed short z);
-  Native_Integer(unsigned short z);
-  Native_Integer(signed int z);
-  Native_Integer(unsigned int z);
-  Native_Integer(signed long z);
-  Native_Integer(unsigned long z);
-  Native_Integer(signed long long z);
-  Native_Integer(unsigned long long z);
+  Native_Integer(const signed char y);
+  Native_Integer(const short y);
+  Native_Integer(const int y);
+  Native_Integer(const long y);
+  Native_Integer(const long long y);
 
-  Native_Integer& operator=(const Native_Integer y);
-  Native_Integer& operator+=(const Native_Integer y);
-  Native_Integer& operator-=(const Native_Integer y);
-  Native_Integer& operator*=(const Native_Integer y);
-  Native_Integer& operator/=(const Native_Integer y);
-  Native_Integer& operator%=(const Native_Integer y);
+  Native_Integer(const unsigned char y);
+  Native_Integer(const unsigned short y);
+  Native_Integer(const unsigned int y);
+  Native_Integer(const unsigned long y);
+  Native_Integer(const unsigned long long y);
+  Native_Integer(const float32_t y);
+  Native_Integer(const float64_t y);
+#ifdef FLOAT96_TYPE
+  Native_Integer(const float96_t y);
+#endif
+#ifdef FLOAT128_TYPE
+  Native_Integer(const float128_t y);
+#endif
+  Native_Integer(const mpq_class& y);
+  Native_Integer(const mpz_class& y);
+  Native_Integer(const char* y);
+
+  operator T() const;
+  T& raw_value();
+  const T& raw_value() const;
+
+  Native_Integer& operator=(const Native_Integer& y);
+  Native_Integer& operator+=(const Native_Integer& y);
+  Native_Integer& operator-=(const Native_Integer& y);
+  Native_Integer& operator*=(const Native_Integer& y);
+  Native_Integer& operator/=(const Native_Integer& y);
+  Native_Integer& operator%=(const Native_Integer& y);
   Native_Integer& operator++();
   Native_Integer  operator++(int);
   Native_Integer& operator--();
   Native_Integer  operator--(int);
 
-  Native_Integer(const mpz_class& z);
-  operator mpz_class() const;
-
-  //! Swaps \p *this with \p y.
-  void swap(Native_Integer& y);
-
-  //  PPL_INTEGER_DECLARE_MEMBERS(Native_Integer)
-
 private:
-  T value_;
-
+  T v;
 };
+
+namespace Parma_Polyhedra_Library {
+
+template <typename T>
+const T&
+raw_value(const Native_Integer<T>& x);
+
+template <typename T>
+T&
+raw_value(Native_Integer<T>& x);
+
+//! Returns the total size in bytes of the memory occupied by \p x.
+template <typename T>
+size_t
+total_memory_in_bytes(const Native_Integer<T>& x);
+
+//! Returns the size in bytes of the memory managed by \p x.
+template <typename T>
+size_t
+external_memory_in_bytes(const Native_Integer<T>& x);
+
+template <typename T>
+Native_Integer<T>
+operator+(const Native_Integer<T>& x);
+
+template <typename T>
+Native_Integer<T>
+operator-(const Native_Integer<T>& x);
+
+template <typename T>
+Native_Integer<T>
+operator+(const Native_Integer<T>& x, const Native_Integer<T>& y);
+
+template <typename T>
+Native_Integer<T>
+operator-(const Native_Integer<T>& x, const Native_Integer<T>& y);
+
+template <typename T>
+Native_Integer<T>
+operator*(const Native_Integer<T>& x, const Native_Integer<T>& y);
+
+template <typename T>
+Native_Integer<T>
+operator/(const Native_Integer<T>& x, const Native_Integer<T>& y);
+
+template <typename T>
+Native_Integer<T>
+operator%(const Native_Integer<T>& x,
+	  const Native_Integer<T>& y);
+
+template <typename T>
+bool
+operator==(const Native_Integer<T>& x,
+	   const Native_Integer<T>& y);
+
+template <typename T>
+bool
+operator!=(const Native_Integer<T>& x,
+	   const Native_Integer<T>& y);
+
+template <typename T>
+bool
+operator>=(const Native_Integer<T>& x,
+	   const Native_Integer<T>& y);
+
+template <typename T>
+bool
+operator>(const Native_Integer<T>& x,
+	  const Native_Integer<T>& y);
+
+template <typename T>
+bool
+operator<=(const Native_Integer<T>& x,
+	   const Native_Integer<T>& y);
+
+template <typename T>
+bool
+operator<(const Native_Integer<T>& x,
+	  const Native_Integer<T>& y);
+
+template <typename T>
+int
+sgn(const Native_Integer<T>& x);
+
+template <typename T>
+int
+cmp(const Native_Integer<T>& x, const Native_Integer<T>& y);
+
+template <typename T>
+void
+negate(Native_Integer<T>& x);
+
+template <typename T>
+void
+add_mul_assign(Native_Integer<T>& x,
+	       const Native_Integer<T>& y,
+	       const Native_Integer<T>& z);
+
+template <typename T>
+void
+sub_mul_assign(Native_Integer<T>& x,
+	       const Native_Integer<T>& y,
+	       const Native_Integer<T>& z);
+
+template <typename T>
+void
+gcd_assign(Native_Integer<T>& x, const Native_Integer<T>& y);
+
+template <typename T>
+void
+gcd_assign(Native_Integer<T>& x,
+	   const Native_Integer<T>& y,
+	   const Native_Integer<T>& z);
+
+template <typename T>
+void
+lcm_assign(Native_Integer<T>& x, const Native_Integer<T>& y);
+
+template <typename T>
+void
+lcm_assign(Native_Integer<T>& x,
+	   const Native_Integer<T>& y,
+	   const Native_Integer<T>& z);
+
+template <typename T>
+void
+exact_div_assign(Native_Integer<T>& x,
+		 const Native_Integer<T>& y);
+
+template <typename T>
+void
+exact_div_assign(Native_Integer<T>& x,
+		 const Native_Integer<T>& y,
+		 const Native_Integer<T>& z);
+
+template <typename T>
+void sqrt_assign(Native_Integer<T>& x);
+
+template <typename T>
+void sqrt_assign(Native_Integer<T>& x,
+		 const Native_Integer<T>& y);
+
+template <typename T>
+std::ostream&
+operator<<(std::ostream& os, const Native_Integer<T>& x);
+
+template <typename T>
+std::istream&
+operator>>(std::istream& is, Native_Integer<T>& x);
+
+PPL_INTEGER_DECLARE_NON_MEMBERS(Native_Integer)
+
+} // namespace Parma_Polyhedra_Library
 
 namespace std {
 
@@ -260,11 +248,6 @@ class numeric_limits<Parma_Polyhedra_Library::Native_Integer<T> >
 public:
   static const bool is_specialized = false;
 };
-
-//! Specializes <CODE>std::swap</CODE>.
-template <typename T>
-void swap(Parma_Polyhedra_Library::Native_Integer<T>& x,
-	  Parma_Polyhedra_Library::Native_Integer<T>& y);
 
 } // namespace std
 

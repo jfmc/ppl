@@ -133,11 +133,7 @@ Row::Impl::Impl(const Impl& y, const dimension_type sz)
 
 inline
 Row::Impl::~Impl() {
-#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   shrink(0);
-#else
-  shrink(1);
-#endif
 }
 
 inline const Row::Flags&
@@ -160,6 +156,24 @@ inline Integer_traits::const_reference
 Row::Impl::operator[](const dimension_type k) const {
   assert(k < size());
   return vec_[k];
+}
+
+inline memory_size_type
+Row::Impl::total_memory_in_bytes(dimension_type capacity) const {
+  return
+    sizeof(*this)
+    + capacity*sizeof(Integer)
+#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+    - 1*sizeof(Integer)
+#endif
+    + external_memory_in_bytes();
+}
+
+inline memory_size_type
+Row::Impl::total_memory_in_bytes() const {
+  // In general, this is a lower bound, as the capacity of *this
+  // may be strictly greater than `size_'
+  return total_memory_in_bytes(size_);
 }
 
 inline dimension_type
@@ -331,6 +345,30 @@ Row::operator[](const dimension_type k) {
 inline Integer_traits::const_reference
 Row::operator[](const dimension_type k) const {
   return (*impl)[k];
+}
+
+inline memory_size_type
+Row::external_memory_in_bytes(dimension_type capacity) const {
+  return impl->total_memory_in_bytes(capacity);
+}
+
+inline memory_size_type
+Row::total_memory_in_bytes(dimension_type capacity) const {
+  return sizeof(*this) + external_memory_in_bytes(capacity);
+}
+
+inline memory_size_type
+Row::external_memory_in_bytes() const {
+#if EXTRA_ROW_DEBUG
+  return impl->total_memory_in_bytes(capacity_);
+#else
+  return impl->total_memory_in_bytes();
+#endif
+}
+
+inline memory_size_type
+Row::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
 }
 
 /*! \relates Row */ 

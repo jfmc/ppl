@@ -2,6 +2,9 @@
 Enhancements for PPL 0.7
 ========================
 
+- Make sure all our public classes have methods total_memory_in_bytes()
+  and external_memory_in_bytes().
+
 - The check_containment() function is not officially available to
   the PPL user.  However, someone uses it and, apparently, this
   comes in handy.  See how to provide the same functionality the
@@ -21,7 +24,6 @@ Enhancements for PPL 0.7
     LinExpression -> Linear_Expression
     SatMatrix -> Saturation_Matrix
     SatRow -> Saturation_Row
-    PartialFunction -> Partial_Function
 
 - Rewrite Linear_System::sort_and_remove_with_sat() and perhaps
   Linear_System::sort_rows().
@@ -37,12 +39,7 @@ Enhancements for PPL 0.7
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
 - Completely rewrite the handling of temporary coefficients.
-- Better explain the tradeoff in the choice between C_ and NNC_Polyhedron.
-- Explain the ordering of the arguments in the widening methods.
-- Implement overflow detection when manipulating space dimensions.
 - Consider renaming Powerset::meet_assign().
-- Provide optimized implementations of Polyhedron::expand_dimension()
-  Polyhedron::fold_dimensions().
 
 
 Enhancements for PPL 0.8 or later versions
@@ -55,6 +52,8 @@ Enhancements for PPL 0.8 or later versions
   ftp://ftp.ifor.math.ethz.ch/pub/fukuda/reports/polyunion001120.ps.gz
   we can implement bool poly_hull_assign_if_exact(PH& p, const PH& q),
   temporarily in algorithms.hh, more efficiently.
+- Provide optimized implementations of Polyhedron::expand_dimension()
+  Polyhedron::fold_dimensions().
 
 
 Constructions on Polyhedra

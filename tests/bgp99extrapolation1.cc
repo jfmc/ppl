@@ -154,7 +154,7 @@ main() TRY {
     cout << "S" << n << " = " << Sn << endl;
 #endif
     Sn.BGP99_extrapolation_assign
-      (T, widen_fun(&Polyhedron::H79_widening_assign), 2);
+      (T, widen_fun_ref(&Polyhedron::H79_widening_assign), 2);
 #if NOISY
     cout << "T" << n << " = " << Sn << endl;
 #endif

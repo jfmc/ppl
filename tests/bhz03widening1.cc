@@ -153,7 +153,8 @@ main() TRY {
     cout << "S" << n << " = " << Sn << endl;
 #endif
     Sn.upper_bound_assign(T);
-    Sn.BHZ03_widening_assign(T, widen_fun(&Polyhedron::H79_widening_assign));
+    Sn.BHZ03_widening_assign(T,
+			     widen_fun_ref(&Polyhedron::H79_widening_assign));
 #if NOISY
     cout << "T" << n << " = " << Sn << endl;
 #endif

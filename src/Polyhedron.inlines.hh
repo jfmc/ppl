@@ -31,8 +31,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-inline
-dimension_type
+inline memory_size_type
+Polyhedron::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
+inline dimension_type
 Polyhedron::max_space_dimension() {
   using std::min;
   // One dimension is reserved to have a value of type dimension_type
@@ -634,9 +638,9 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
   }
 }
 
-template <typename PartialFunction>
+template <typename Partial_Function>
 void
-Polyhedron::map_space_dimensions(const PartialFunction& pfunc) {
+Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
   if (space_dim == 0)
     return;
 

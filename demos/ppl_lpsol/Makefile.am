@@ -28,7 +28,18 @@ VPATH = @srcdir@
 
 SUBDIRS = examples
 
-EXTRA_DIST = ppl_lpsol.c expected
+EXTRA_DIST = \
+ppl_lpsol.c \
+expected_mpz \
+expected_mpz_a \
+expected_int8 \
+expected_int8_a \
+expected_int16 \
+expected_int16_a \
+expected_int32 \
+expected_int32_a \
+expected_int64 \
+expected_int64_a
 
 if HAVE_GLPK
 
@@ -42,20 +53,42 @@ $(top_builddir)/interfaces/C/libppl_c.la \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
-check-local: ppl_lpsol expected
-	rm -f obtained
-	for k in $(srcdir)/examples/*.mps; \
+COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
+
+if ASSERTIONS_ENABLED
+
+TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED = \
+afiro.mps
+
+EXPECTED = expected_$(COEFFICIENT_MNEMONIC)_a
+
+else !ASSERTIONS_ENABLED
+
+EXPECTED = expected_$(COEFFICIENT_MNEMONIC)
+
+endif !ASSERTIONS_ENABLED
+
+TOUGH_EXAMPLES = \
+$(TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED)
+
+check-local: ppl_lpsol
+	echo $(TOUGH_EXAMPLES) >tough_examples
+	echo -n >obtained
+	LANG=C; \
+	for path in $(srcdir)/examples/*.mps; \
 	do \
+	  file=`basename $$path`; \
+	  grep -q $$file tough_examples && continue; \
 	  for m in --min --max; \
 	  do \
-	    echo "*** ppl_lpsol -v $$m -oobtained `basename $$k`" >>obtained; \
-	    $(LIBTOOL) --mode=execute -dlopen ../../src/libppl.la \
-	      -dlopen ../../interfaces/C/libppl_c.la \
-	        ./ppl_lpsol -v $$m -oobtained $$k >/dev/null; \
+	    echo "*** ppl_lpsol -v $$m -oobtained $$file" >>obtained; \
+	    ./ppl_lpsol -v $$m -oobtained $$path >/dev/null; \
 	  done \
 	done
-	diff -q --ignore-all-space $(srcdir)/expected obtained
+	diff -q --ignore-all-space $(srcdir)/$(EXPECTED) obtained
 
-MOSTLYCLEANFILES = obtained
+MOSTLYCLEANFILES = \
+tough_examples \
+obtained
 
-endif # HAVE_GLPK
+endif HAVE_GLPK

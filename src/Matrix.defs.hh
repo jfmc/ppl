@@ -147,7 +147,7 @@ public:
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
-  //private:
+  // FIXME: the following section must become private.
 protected:
   //! Contains the rows of the matrix.
   std::vector<Row> rows;
@@ -282,6 +282,12 @@ public:
   //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
   //! if successful, <CODE>false</CODE> otherwise.
   bool ascii_load(std::istream& s);
+
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
 
   //! \brief
   //! Erases from the matrix all the rows but those having

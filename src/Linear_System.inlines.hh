@@ -24,7 +24,34 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Linear_System_inlines_hh
 #define PPL_Linear_System_inlines_hh 1
 
+#include "SatRow.defs.hh"
+
 namespace Parma_Polyhedra_Library {
+
+inline memory_size_type
+Linear_System::external_memory_in_bytes() const {
+  return Matrix::external_memory_in_bytes();
+}
+
+inline memory_size_type
+Linear_System::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
+inline bool
+Linear_System::is_sorted() const {
+  // The flag `sorted' does not really reflect the sortedness status
+  // of a system (if `sorted' evaluates to `false' nothing is known).
+  // This assertion is used to ensure that the system
+  // is actualy sorted when `sorted' value is 'true'.
+  assert(!sorted || check_sorted());
+  return sorted;
+}
+
+inline void
+Linear_System::set_sorted(const bool b) {
+  sorted = b;
+}
 
 inline
 Linear_System::Linear_System(Topology topol)
@@ -110,11 +137,6 @@ Linear_System::set_index_first_pending_row(const dimension_type i) {
 }
 
 inline void
-Linear_System::set_sorted(const bool b) {
-  sorted = b;
-}
-
-inline void
 Linear_System::set_necessarily_closed() {
   row_topology = NECESSARILY_CLOSED;
   if (num_rows() > 0)
@@ -148,16 +170,6 @@ Linear_System::topology() const {
   return row_topology;
 }
 
-inline bool
-Linear_System::is_sorted() const {
-  // The flag `sorted' does not really reflect the sortedness status
-  // of a system (if `sorted' evaluates to `false' nothing is known).
-  // This assertion is used to ensure that the system
-  // is actualy sorted when `sorted' value is 'true'.
-  assert(!sorted || check_sorted());
-  return sorted;
-}
-
 inline dimension_type
 Linear_System::max_space_dimension() {
   // Column zero holds the inhomogeneous term or the divisor.
@@ -185,13 +197,20 @@ Linear_System::remove_trailing_columns(const dimension_type n) {
 inline void
 Linear_System::permute_columns(const std::vector<dimension_type>& cycles) {
   Matrix::permute_columns(cycles);
-  // The system may have lost sortedness.
-  set_sorted(false);
+  // The rows with permuted columns are still normalized but may
+  // be not strongly normalized: sign normalization is necessary.
+  sign_normalize();
 }
 
 inline bool
 operator!=(const Linear_System& x, const Linear_System& y) {
   return !(x == y);
+}
+
+inline bool
+Linear_System::Row_Less_Than::operator()(const Row& x, const Row& y) const {
+  return compare(static_cast<const Linear_Row&>(x),
+		 static_cast<const Linear_Row&>(y)) < 0;
 }
 
 } // namespace Parma_Polyhedra_Library
@@ -203,6 +222,146 @@ inline void
 swap(Parma_Polyhedra_Library::Linear_System& x,
      Parma_Polyhedra_Library::Linear_System& y) {
   x.swap(y);
+}
+
+} // namespace std
+
+
+namespace Parma_Polyhedra_Library {
+
+inline
+Linear_System::With_SatMatrix_iterator::
+With_SatMatrix_iterator(Iter1 iter1, Iter2 iter2)
+  : i1(iter1), i2(iter2) {
+}
+
+inline
+Linear_System::With_SatMatrix_iterator::
+With_SatMatrix_iterator(const With_SatMatrix_iterator& y)
+  : i1(y.i1), i2(y.i2) {
+}
+
+inline
+Linear_System::With_SatMatrix_iterator::
+~With_SatMatrix_iterator() {
+}
+
+inline Linear_System::With_SatMatrix_iterator&
+Linear_System::With_SatMatrix_iterator::
+operator=(const With_SatMatrix_iterator& y) {
+  i1 = y.i1;
+  i2 = y.i2;
+  return *this;
+}
+
+inline Linear_System::With_SatMatrix_iterator&
+Linear_System::With_SatMatrix_iterator::operator++() {
+  ++i1;
+  ++i2;
+  return *this;
+}
+
+inline Linear_System::With_SatMatrix_iterator
+Linear_System::With_SatMatrix_iterator::operator++(int) {
+  With_SatMatrix_iterator tmp = *this;
+  operator++();
+  return tmp;
+}
+
+inline Linear_System::With_SatMatrix_iterator&
+Linear_System::With_SatMatrix_iterator::operator--() {
+  --i1;
+  --i2;
+  return *this;
+}
+
+inline Linear_System::With_SatMatrix_iterator
+Linear_System::With_SatMatrix_iterator::operator--(int) {
+  With_SatMatrix_iterator tmp = *this;
+  operator--();
+  return tmp;
+}
+
+inline Linear_System::With_SatMatrix_iterator&
+Linear_System::With_SatMatrix_iterator::operator+=(difference_type d) {
+  i1 += d;
+  i2 += d;
+  return *this;
+}
+
+inline Linear_System::With_SatMatrix_iterator
+Linear_System::With_SatMatrix_iterator::operator+(difference_type d) const {
+  With_SatMatrix_iterator tmp = *this;
+  tmp += d;
+  return tmp;
+}
+
+inline Linear_System::With_SatMatrix_iterator&
+Linear_System::With_SatMatrix_iterator::operator-=(difference_type d) {
+  i1 -= d;
+  i2 -= d;
+  return *this;
+}
+
+inline Linear_System::With_SatMatrix_iterator
+Linear_System::With_SatMatrix_iterator::operator-(difference_type d) const {
+  With_SatMatrix_iterator tmp = *this;
+  tmp -= d;
+  return tmp;
+}
+
+inline Linear_System::With_SatMatrix_iterator::difference_type
+Linear_System::With_SatMatrix_iterator::
+operator-(const With_SatMatrix_iterator& y) const {
+  return i1 - y.i1;
+}
+
+inline bool
+Linear_System::With_SatMatrix_iterator::
+operator==(const With_SatMatrix_iterator& y) const {
+  return i1 == y.i1;
+}
+
+inline bool
+Linear_System::With_SatMatrix_iterator::
+operator!=(const With_SatMatrix_iterator& y) const {
+  return i1 != y.i1;
+}
+
+inline bool
+Linear_System::With_SatMatrix_iterator::
+operator<(const With_SatMatrix_iterator& y) const {
+  return i1 < y.i1;
+}
+
+inline Linear_System::With_SatMatrix_iterator::reference
+Linear_System::With_SatMatrix_iterator::operator*() const {
+  return *i1;
+}
+
+inline Linear_System::With_SatMatrix_iterator::pointer
+Linear_System::With_SatMatrix_iterator::operator->() const {
+  return i1.operator->();
+}
+
+inline void
+Linear_System::With_SatMatrix_iterator::
+iter_swap(const With_SatMatrix_iterator& y) const {
+  std::iter_swap(i1, y.i1);
+  std::iter_swap(i2, y.i2);
+}
+
+} // namespace Parma_Polyhedra_Library
+
+namespace std {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates Parma_Polyhedra_Library::Linear_System::With_SatMatrix_iterator */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+inline void
+iter_swap(Parma_Polyhedra_Library::Linear_System::With_SatMatrix_iterator x,
+	  Parma_Polyhedra_Library::Linear_System::With_SatMatrix_iterator y) {
+  x.iter_swap(y);
 }
 
 } // namespace std

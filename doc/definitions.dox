@@ -178,6 +178,22 @@ In theoretical terms,
 \f$\Pset_n\f$ is a <EM>lattice</EM> under set inclusion and
 \f$\CPset_n\f$ is a <EM>sub-lattice</EM> of \f$\Pset_n\f$.
 
+\note
+In the following, we will usually specify operators on the domain
+\f$\Pset_n\f$ of NNC polyhedra. Unless an explicit distinction is
+made, these operators are provided with the same specification when
+applied to the domain \f$\CPset_n\f$ of topologically closed
+polyhedra.  The implementation maintains a clearer separation between
+the two domains of polyhedra
+(see \ref topologies "Topologies and Topological-compatibility"):
+while computing polyhedra in \f$\Pset_n\f$ may provide more precise
+results, polyhedra in \f$\CPset_n\f$ can be represented and
+manipulated more efficiently.  As a rule of thumb, if your application
+will only manipulate polyhedra that are topologically closed, then it
+should use the simpler domain \f$\CPset_n\f$. Using NNC polyhedra is
+only recommended if you are going to actually benefit from the
+increased accuracy.
+
 
 <B>Bounded Polyhedra</B>
 
@@ -379,6 +395,7 @@ when using one of the representations in a DD pair,
 while being rather cumbersome when using the other.
 
 
+\anchor topologies
 <B>Topologies and Topological-compatibility</B>
 
 As indicated above, when an NNC polyhedron \f$\cP\f$ is necessarily closed,
@@ -415,11 +432,6 @@ Wherever possible,
 the library provides methods that, starting from a polyhedron of
 a given topology, build the corresponding polyhedron having
 the other topology.
-
-As a rule of thumb, if your application will only manipulate polyhedra
-that are topologically closed, then it should use C polyhedra.
-In other words, using NNC polyhedra is only recommended if you are
-going to actually benefit from the increased accuracy.
 
 
 <B>Space Dimensions and Dimension-compatibility</B>
@@ -1017,34 +1029,54 @@ representing a given bounding box.
 \anchor H79_widening
 <B>Widening Operators</B>
 
-The library provides two widening operators for the domain of NNC
-polyhedra.  The first one, that we call <EM>H79-widening</EM>, mainly
+The library provides two widening operators for the domain of polyhedra.
+The first one, that we call <EM>H79-widening</EM>, mainly
 follows the specification provided in the PhD thesis of N. Halbwachs
 \ref Hal79 "[Hal79]", also described in \ref HPR97 "[HPR97]".
-There are a few differences between the H79-widening and the widening
-described in the cited paper.  In particular, the H79-widening of an
-NNC polyhedron \f$\cP \in \Pset_n\f$ using the NNC polyhedron
-\f$\cQ \in \Pset_n\f$:
- - allows for equalities in \f$\cP\f$ and \f$\cQ\f$
-   (the original definition is restricted to inequalities);
- - requires as a precondition that \f$\cQ \sseq \cP\f$.
+The main difference between the H79-widening and the widening described
+in the cited paper is that the H79-widening \f$\cP \widen \cQ\f$ of two
+polyhedra \f$\cP, \cQ \in \CPset_n\f$ requires as a precondition that
+\f$\cP \sseq \cQ\f$ (other differences at the implementation
+level are transparent to the user of the library).
 
 \anchor BHRZ03_widening
 The second widening operator, that we call <EM>BHRZ03-widening</EM>,
 is an instance of the specification provided in \ref BHRZ03a "[BHRZ03a]".
-This operator also requires as a precondition that \f$\cQ \sseq \cP\f$
+This operator also requires as a precondition that \f$\cP \sseq \cQ\f$
 and it is guaranteed to provide a result which is at least as precise as
 the H79-widening.
 
-Both widening operators can be applied to polyhedra that are not
-topologically closed. The user is warned that, in such a case, the
-results may not closely match the geometric intuition which is at the
-base of the specification of the two widenings. The reason is that, in
-the current implementation, the widenings are not directly applied to
-the NNC polyhedra, but rather to their internal representations.
+Both widening operators can be applied to NNC polyhedra.
+The user is warned that, in such a case, the results may not closely
+match the geometric intuition which is at the base of the
+specification of the two widenings. The reason is that, in the current
+implementation, the widenings are not directly applied to the NNC
+polyhedra, but rather to their internal representations.
 Implementation work is in progress and future versions of the library
 may provide an even better integration of the two widenings with the
 domain of NNC polyhedra.
+
+\note
+As is the case for the other operators on polyhedra, the
+implementation overwrites one of the two polyhedra arguments with the
+result of the widening application. To avoid trivial
+misunderstandings, it is worth stressing that if polyhedra \f$\cP\f$
+and \f$\cQ\f$ (where \f$\cP \sseq \cQ\f$) are identified by program
+variables <CODE>p</CODE> and <CODE>q</CODE>, respectively, then the
+call <CODE>q.H79_widening_assign(p)</CODE> will assign the polyhedron
+\f$\cP \widen \cQ\f$ to variable <CODE>q</CODE>.  Namely, it is the
+bigger polyhedron \f$\cQ\f$ which is overwritten by the result of the
+widening. The smaller polyhedron is not modified, so as to lead to an
+easier coding of the usual convergence test
+(\f$\cP \Sseq \cP \widen \cQ\f$ can be coded as <CODE>p.contains(q)</CODE>).
+Note that, in the above context, a call such as
+<CODE>p.H79_widening_assign(q)</CODE> is likely to result in undefined
+behavior, since the precondition \f$\cQ \sseq \cP\f$ will be missed
+(unless it happens that \f$\cP = \cQ\f$).
+The same observation holds for all flavors of widenings and extrapolation
+operators that are implemented in the library and for all the foreign
+language interfaces.
+
 
 \anchor widening_with_tokens
 <B>Widening with Tokens</B>

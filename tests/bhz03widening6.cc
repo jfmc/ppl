@@ -88,7 +88,8 @@ test1() {
 #endif
 
   PSet oldT2 = T2;
-  T2.BHZ03_widening_assign(T1, widen_fun(&Polyhedron::H79_widening_assign));
+  T2.BHZ03_widening_assign(T1,
+			   widen_fun_ref(&Polyhedron::H79_widening_assign));
 
   C_Polyhedron phull_T2(2);
   phull_T2.add_constraint(X >= 0);
@@ -175,7 +176,8 @@ test2() {
 #endif
 
   PSet oldT2 = T2;
-  T2.BHZ03_widening_assign(T1, widen_fun(&Polyhedron::H79_widening_assign));
+  T2.BHZ03_widening_assign(T1,
+			   widen_fun_ref(&Polyhedron::H79_widening_assign));
 
 #if NOISY
   cout << "T2.BHZ03(T1, H79)" << " = " << T2 << endl;
@@ -247,7 +249,8 @@ test3() {
 #endif
 
   PSet oldT2 = T2;
-  T2.BHZ03_widening_assign(T1, widen_fun(&Polyhedron::H79_widening_assign));
+  T2.BHZ03_widening_assign(T1,
+			   widen_fun_ref(&Polyhedron::H79_widening_assign));
 
 #if NOISY
   cout << "T2.BHZ03(T1, H79)" << " = " << T2 << endl;
@@ -312,7 +315,8 @@ test4() {
 #endif
 
   PSet oldT2 = T2;
-  T2.BHZ03_widening_assign(T1, widen_fun(&Polyhedron::H79_widening_assign));
+  T2.BHZ03_widening_assign(T1,
+			   widen_fun_ref(&Polyhedron::H79_widening_assign));
 
   C_Polyhedron r1(2);
   r1.add_constraint(Y >= 2);

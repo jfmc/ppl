@@ -58,6 +58,11 @@ Constraint::operator=(const Constraint& c) {
 }
 
 inline dimension_type
+Constraint::max_space_dimension() {
+  return Linear_Row::max_space_dimension();
+}
+
+inline dimension_type
 Constraint::space_dimension() const {
   return Linear_Row::space_dimension();
 }
@@ -114,6 +119,16 @@ Constraint::coefficient(const Variable v) const {
 inline Integer_traits::const_reference
 Constraint::inhomogeneous_term() const {
   return Linear_Row::inhomogeneous_term();
+}
+
+inline memory_size_type
+Constraint::external_memory_in_bytes() const {
+  return Linear_Row::external_memory_in_bytes();
+}
+
+inline memory_size_type
+Constraint::total_memory_in_bytes() const {
+  return Linear_Row::total_memory_in_bytes();
 }
 
 /*! \relates Constraint */

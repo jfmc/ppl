@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_SatMatrix_defs_hh 1
 
 #include "SatMatrix.types.hh"
+#include "Linear_System.defs.hh"
 #include "SatRow.defs.hh"
 #include <vector>
 #include <iosfwd>
@@ -132,6 +133,12 @@ public:
   //! if successful, <CODE>false</CODE> otherwise.
   bool ascii_load(std::istream& s);
 
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
 #ifndef NDEBUG
   //! Checks whether \p *this is sorted. It does NOT check for duplicates.
   bool check_sorted() const;
@@ -144,9 +151,15 @@ private:
   //! Size of the initialized part of each row.
   dimension_type row_size;
 
-  struct RowCompare {
+  //! Ordering predicate (used when implementing the sort algorithm).
+  struct SatRow_Less_Than {
     bool operator()(const SatRow& x, const SatRow& y) const;
   };
+
+  friend
+  void Parma_Polyhedra_Library::
+  Linear_System::sort_and_remove_with_sat(SatMatrix& sat);
+
 };
 
 namespace std {

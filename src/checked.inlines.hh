@@ -230,6 +230,20 @@ cmp_generic(const Type& x, const Type& y) {
   return V_UNKNOWN;
 }
 
+template <typename Policy, typename Type>
+inline Result
+print_generic(std::ostream& os, const Type& x) {
+  os << x;
+  return V_EQ;
+}
+
+template <typename Policy, typename Type>
+inline Result
+input_generic(std::istream& is, Type& x) {
+  is >> x;
+  return V_EQ;
+}
+
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_ext(To& to, const From& from) {
@@ -491,7 +505,7 @@ inline void
 print_ext(std::ostream& os, const Type& x) {
   Result rx = value_type<Policy>(x);
   if (rx == V_EQ)
-    os << x;
+    print<Policy>(os, x);
   else if (rx == V_NEG_OVERFLOW)
     os << "-inf";
   else if (rx == V_POS_OVERFLOW)

@@ -131,7 +131,7 @@ assign_mpq_c_string(mpq_class& to, c_string from) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpq_c_string, mpq_class, c_string);
+SPECIALIZE_ASSIGN(mpq_c_string, mpq_class, c_string)
 
 template <typename Policy, typename To>
 inline Result
@@ -264,6 +264,9 @@ abs_mpq(mpq_class& to, const mpq_class& from) {
 }
 
 SPECIALIZE_ABS(mpq, mpq_class, mpq_class)
+
+SPECIALIZE_PRINT(generic, mpq_class)
+SPECIALIZE_INPUT(generic, mpq_class)
 
 } // namespace Checked
 

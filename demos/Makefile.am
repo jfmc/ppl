@@ -26,4 +26,4 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS = ppl_lcdd #ppl_lpsol
+SUBDIRS = ppl_lcdd ppl_lpsol

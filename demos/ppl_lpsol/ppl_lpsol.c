@@ -578,7 +578,7 @@ solve(char* file_name) {
   if (empty) {
     fprintf(output_file, "Unfeasible problem.\n");
     /* FIXME: check!!! */
-    return;
+    goto clean_and_return;
   }
 
   /* Deal with the objective function. */
@@ -638,7 +638,8 @@ solve(char* file_name) {
   if (unbounded) {
     fprintf(output_file, "Unbounded problem.\n");
     /* FIXME: check!!! */
-    return;
+    ppl_delete_LinExpression(ppl_objective_le);
+    goto clean_and_return;
   }
 
   ppl_new_Coefficient(&optimum_n);
@@ -688,7 +689,9 @@ solve(char* file_name) {
     fprintf(output_file, " = %g\n", mpq_get_d(tmp1_q));
   }
 
+ clean_and_return:
   ppl_delete_Polyhedron(ppl_ph);
+  mpz_clear(den_lcm);
   lpx_delete_prob(lp);
 }
 

@@ -264,9 +264,9 @@ geometrically_equals(const Polyhedra_Powerset& y) const {
 }
 
 template <typename PH>
-template <typename PartialFunction>
+template <typename Partial_Function>
 void
-Polyhedra_Powerset<PH>::map_space_dimensions(const PartialFunction& pfunc) {
+Polyhedra_Powerset<PH>::map_space_dimensions(const Partial_Function& pfunc) {
   if (Base::is_bottom()) {
     dimension_type n = 0;
     for (dimension_type i = space_dim; i-- > 0; ) {

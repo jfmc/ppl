@@ -79,6 +79,7 @@ EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)
 endif !ASSERTIONS_ENABLED
 
 check-local: yap_clpq.pl ../tests/check_script $(EXPECTED) yap_clpq2.pl ../tests/check_script2 $(EXPECTED2) ppl_yap.pl ../tests/pl_check.pl $(EXPECTED3)
+	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	echo "main." >check_script
 	cat $(srcdir)/../tests/check_script >>check_script
@@ -112,4 +113,4 @@ check_script check_script2 check_script3 \
 obtained obtained2 obtained3 \
 $(CLPQ_TESTS)
 
-endif # HAVE_YAP_PROLOG
+endif HAVE_YAP_PROLOG

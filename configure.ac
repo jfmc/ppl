@@ -24,7 +24,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.7pre1],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.7pre7],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
@@ -70,6 +70,7 @@ AC_CONFIG_HEADER(config.h)
 ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
 
+# Check for host type.
 AC_CANONICAL_HOST
 
 AH_TOP([
@@ -375,10 +376,11 @@ AC_PROG_CXXCPP
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
-# Checks for C typedefs, structures, and compiler characteristics.
+# Checks for C typedefs, structures, compiler and architecture characteristics.
 AC_LANG(C)
 AC_C_CONST
 AC_C_INLINE
+AC_C_BIGENDIAN
 
 # Checks for C functions.
 AC_CHECK_FUNCS(ffs)
@@ -394,6 +396,13 @@ AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 
 # Check whether the C++ compiler supports __attribute__ ((weak)).
 AC_CXX_SUPPORTS_ATTRIBUTE_WEAK
+
+# Check whether the C++ compiler supports long double floating point numbers.
+AC_CXX_SUPPORTS_LONG_DOUBLE
+
+# Check whether the C++ compiler provides long double numbers that
+# have bigger range or precision than double.
+AC_CXX_SUPPORTS_LONG_LONG
 
 # GMP library
 
@@ -580,6 +589,14 @@ if test x"$GXX" = xyes
 then
   CXXFLAGS="-W -Wall $CXXFLAGS"
 fi
+
+case $host in
+*-*-cygwin* | *-*-mingw*)
+  extra_libraries="${extra_libraries} -L/usr/lib/mingw -lmingwex"
+  ;;
+*)
+  ;;
+esac
 
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)

@@ -27,8 +27,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "globals.defs.hh"
 #include <iostream>
-#include <algorithm>
 #include <string>
+
+#include "swapping_sort.icc"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -42,13 +43,15 @@ PPL::SatMatrix::operator=(const SatMatrix& y){
 
 void
 PPL::SatMatrix::sort_rows() {
+  typedef std::vector<SatRow>::iterator Iter;
   // Sorting without removing duplicates.
-  std::sort(rows.begin(), rows.end(), RowCompare());
+  Iter first = rows.begin();
+  Iter last = rows.end();
+  swapping_sort(first, last, SatRow_Less_Than());
   // Moving all the duplicate elements at the end of the vector.
-  std::vector<SatRow>::iterator first_duplicate
-    = std::unique(rows.begin(), rows.end());
+  Iter new_last = swapping_unique(first, last);
   // Removing duplicates.
-  rows.erase(first_duplicate, rows.end());
+  rows.erase(new_last, last);
   assert(OK());
 }
 
@@ -136,20 +139,6 @@ PPL::SatMatrix::resize(dimension_type new_n_rows,
   assert(OK());
 }
 
-bool
-PPL::SatMatrix::sorted_contains(const SatRow& row) const {
-  assert(check_sorted());
-  const SatMatrix& x = *this;
-  for (dimension_type i = num_rows(); i-- > 0; ) {
-    const int comp = compare(x[i], row);
-    if (comp == 0)
-      return true;
-    else if (comp < 0)
-      return false;
-  }
-  return false;
-}
-
 void
 PPL::SatMatrix::ascii_dump(std::ostream& s) const {
   using std::endl;
@@ -192,6 +181,14 @@ PPL::SatMatrix::ascii_load(std::istream& s) {
   // Check for well-formedness.
   assert(OK());
   return true;
+}
+
+PPL::memory_size_type
+PPL::SatMatrix::external_memory_in_bytes() const {
+  memory_size_type n = rows.capacity() * sizeof(Row);
+  for (dimension_type i = num_rows(); i-- > 0; )
+    n += rows[i].external_memory_in_bytes();
+  return n;
 }
 
 bool

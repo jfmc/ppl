@@ -33,15 +33,15 @@ using namespace Parma_Polyhedra_Library;
 static void
 error1() {
   try {
-    // This is an invalid use of the constructor of a polyhedron:
-    // it is illegal to (try to) build a polyhedron with a dimensions
-    // greater than max_space_dimension().
-    C_Polyhedron ph(std::numeric_limits<dimension_type>::max());
+    // This is an invalid use of the constructor of a Variable:
+    // it is illegal to (try to) build a variable with an id()
+    // greater than or equal to Variable::max_space_dimension().
+    Variable v(Variable::max_space_dimension());
 
     // It is an error if the exception is not thrown.
     exit(1);
   }
-  catch(length_error& e) {
+  catch (length_error& e) {
 #if NOISY
     cout << "length_error: " << e.what() << endl << endl;
 #endif
@@ -55,15 +55,16 @@ error1() {
 static void
 error2() {
   try {
-    // This is an invalid use of the constructor of a Variable:
-    // it is illegal to (try to) build a variable with a dimension
-    // greater than max_space_dimension().
-    Variable v(Variable::max_space_dimension());
+    Variable v(LinExpression::max_space_dimension());
+    // This is an invalid use of the constructor of a LinExpression:
+    // it is illegal to (try to) build a linear expression with a dimensions
+    // greater than LinExpression::max_space_dimension().
+    LinExpression e(v);
 
     // It is an error if the exception is not thrown.
     exit(1);
   }
-  catch(length_error& e) {
+  catch (length_error& e) {
 #if NOISY
     cout << "length_error: " << e.what() << endl << endl;
 #endif
@@ -77,16 +78,17 @@ error2() {
 static void
 error3() {
   try {
-    Variable v(Variable::max_space_dimension() - 1);
+    Variable v(LinExpression::max_space_dimension());
     // This is an invalid use of the constructor of a LinExpression:
     // it is illegal to (try to) build a linear expression with a dimensions
-    // greater than max_space_dimension().
-    LinExpression e(v);
+    // greater than LinExpression::max_space_dimension().
+    LinExpression e;
+    e += v;
 
     // It is an error if the exception is not thrown.
     exit(1);
   }
-  catch(length_error& e) {
+  catch (length_error& e) {
 #if NOISY
     cout << "length_error: " << e.what() << endl << endl;
 #endif
@@ -100,17 +102,17 @@ error3() {
 static void
 error4() {
   try {
-    Variable v(Variable::max_space_dimension() - 1);
+    Variable v(LinExpression::max_space_dimension());
     // This is an invalid use of the constructor of a LinExpression:
     // it is illegal to (try to) build a linear expression with a dimensions
-    // greater than max_space_dimension().
+    // greater than LinExpression::max_space_dimension().
     LinExpression e;
-    e += v;
+    e -= v;
 
     // It is an error if the exception is not thrown.
     exit(1);
   }
-  catch(length_error& e) {
+  catch (length_error& e) {
 #if NOISY
     cout << "length_error: " << e.what() << endl << endl;
 #endif
@@ -124,17 +126,110 @@ error4() {
 static void
 error5() {
   try {
-    Variable v(Variable::max_space_dimension() - 1);
-    // This is an invalid use of the constructor of a LinExpression:
-    // it is illegal to (try to) build a linear expression with a dimensions
-    // greater than max_space_dimension().
-    LinExpression e;
-    e -= v;
+    // This is an invalid use of the constructor of a polyhedron:
+    // it is illegal to (try to) build a polyhedron with a dimensions
+    // greater than C_Polyhedron::max_space_dimension().
+    C_Polyhedron ph(C_Polyhedron::max_space_dimension() + 1);
 
     // It is an error if the exception is not thrown.
     exit(1);
   }
-  catch(length_error& e) {
+  catch (length_error& e) {
+#if NOISY
+    cout << "length_error: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    // It is an error if the wrong exception is thrown.
+    exit(1);
+  }
+}
+
+static void
+error6() {
+  try {
+    C_Polyhedron ph(1);
+    // This is an invalid use of the method for adding dimensions:
+    // it is illegal to (try to) embed a polyhedron into a vector space
+    // whose dimension is greater than C_Polyhedron::max_space_dimension().
+    ph.add_space_dimensions_and_embed(C_Polyhedron::max_space_dimension());
+
+    // It is an error if the exception is not thrown.
+    exit(1);
+  }
+  catch (length_error& e) {
+#if NOISY
+    cout << "length_error: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    // It is an error if the wrong exception is thrown.
+    exit(1);
+  }
+}
+
+static void
+error7() {
+  try {
+    C_Polyhedron ph(1);
+    // This is an invalid use of the method for adding dimensions:
+    // it is illegal to (try to) project a polyhedron into a vector space
+    // whose dimension is greater than C_Polyhedron::max_space_dimension().
+    ph.add_space_dimensions_and_project(C_Polyhedron::max_space_dimension());
+
+    // It is an error if the exception is not thrown.
+    exit(1);
+  }
+  catch (length_error& e) {
+#if NOISY
+    cout << "length_error: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    // It is an error if the wrong exception is thrown.
+    exit(1);
+  }
+}
+
+static void
+error8() {
+  try {
+    C_Polyhedron ph(C_Polyhedron::max_space_dimension(), C_Polyhedron::EMPTY);
+    // This is an invalid use of the method for concatenating polyhedra:
+    // it is illegal to (try to) concatenate polyhedra if the resulting
+    // vector space will have a dimension greater than
+    // C_Polyhedron::max_space_dimension().
+    ph.concatenate_assign(C_Polyhedron(1));
+
+    // It is an error if the exception is not thrown.
+    exit(1);
+  }
+  catch (length_error& e) {
+#if NOISY
+    cout << "length_error: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    // It is an error if the wrong exception is thrown.
+    exit(1);
+  }
+}
+
+static void
+error9() {
+  try {
+    C_Polyhedron ph(1);
+    // This is an invalid use of the method for expanding space dimensions:
+    // it is illegal to (try to) expand a space dimension if the resulting
+    // vector space will have a dimension greater than
+    // C_Polyhedron::max_space_dimension().
+    ph.expand_space_dimension(Variable(0),
+			      C_Polyhedron::max_space_dimension());
+
+    // It is an error if the exception is not thrown.
+    exit(1);
+  }
+  catch (length_error& e) {
 #if NOISY
     cout << "length_error: " << e.what() << endl << endl;
 #endif
@@ -154,6 +249,10 @@ main() TRY {
   error3();
   error4();
   error5();
+  error6();
+  error7();
+  error8();
+  error9();
 
   return 0;
 }

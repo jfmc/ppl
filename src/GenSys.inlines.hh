@@ -179,6 +179,16 @@ GenSys::swap(GenSys& y) {
   Linear_System::swap(y);
 }
 
+inline memory_size_type
+GenSys::external_memory_in_bytes() const {
+  return Linear_System::external_memory_in_bytes();
+}
+
+inline memory_size_type
+GenSys::total_memory_in_bytes() const {
+  return Linear_System::total_memory_in_bytes();
+}
+
 } // namespace Parma_Polyhedra_Library
 
 

@@ -69,6 +69,14 @@ int compare(const SatRow& x, const SatRow& y);
 bool subset_or_equal(const SatRow& x, const SatRow& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Set-theoretic inclusion test: sets \p strict_subset to a boolean
+//! indicating whether the inclusion is strict or not.
+/*! \relates SatRow */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+bool subset_or_equal(const SatRow& x, const SatRow& y, bool& strict_subset);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Set-theoretic strict inclusion test.
 /*! \relates SatRow */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -143,6 +151,10 @@ public:
   Parma_Polyhedra_Library::subset_or_equal(const SatRow& x, const SatRow& y);
 
   friend bool
+  Parma_Polyhedra_Library::subset_or_equal(const SatRow& x, const SatRow& y,
+					   bool& strict_subset);
+
+  friend bool
   Parma_Polyhedra_Library::strict_subset(const SatRow& x, const SatRow& y);
 
   friend void
@@ -171,6 +183,12 @@ public:
 
   //! Returns <CODE>true</CODE> if no bit is set in the row.
   bool empty() const;
+
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
 
   //! Checks if all the invariants are satisfied
   bool OK() const;

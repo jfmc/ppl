@@ -1,4 +1,4 @@
-/* Abstract checked arithmetic with exception throwing
+/* Checked_Number class implementation: inline functions.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,22 +21,23 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef PPL_Checked_Number_inlines_hh
+#define PPL_Checked_Number_inlines_hh 1
+
 #include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
 
-using namespace Checked;
-
 static void
-bad_result(Result r) {
+bad_result(Checked::Result r) {
   switch (r) {
-  case V_NEG_OVERFLOW:
+  case Checked::V_NEG_OVERFLOW:
     throw std::overflow_error("Negative overflow.");
-  case V_POS_OVERFLOW:
+  case Checked::V_POS_OVERFLOW:
     throw std::overflow_error("Positive overflow.");
-  case V_UNKNOWN:
-    throw std::domain_error("Undefined result.");
-  case V_DOMAIN:
+  case Checked::V_UNKNOWN:
+    throw std::overflow_error("Undefined result.");
+  case Checked::V_DOMAIN:
     throw std::domain_error("Result is out of numeric domain.");
   default:
     throw std::logic_error("Unexpected inexact computation.");
@@ -44,8 +45,8 @@ bad_result(Result r) {
 }
 
 static inline void
-check_result(Result r) {
-  if (r != V_EQ)
+check_result(Checked::Result r) {
+  if (r != Checked::V_EQ)
     bad_result(r);
 }
 
@@ -59,7 +60,7 @@ Checked_Number<T, Policy>::Checked_Number()
 template <typename T, typename Policy> \
 inline \
 Checked_Number<T, Policy>::Checked_Number(const type y) { \
-  check_result(assign<Policy>(v, y)); \
+  check_result(Checked::assign<Policy>(v, y)); \
 }
 
 DEF_CTOR(signed char)
@@ -115,18 +116,30 @@ raw_value(Checked_Number<T, Policy>& x) {
   return x.raw_value();
 }
 
+template <typename T, typename Policy>
+size_t
+total_memory_in_bytes(const Checked_Number<T, Policy>& x) {
+  return sizeof(x);
+}
+
+template <typename T, typename Policy>
+size_t
+external_memory_in_bytes(const Checked_Number<T, Policy>& x) {
+  return 0;
+}
+
 #define DEF_INCREMENT(f, fun) \
 template <typename T, typename Policy> \
 inline Checked_Number<T, Policy>& \
 Checked_Number<T, Policy>::f() { \
-  check_result(fun<Policy>(v, v, T(1))); \
+  check_result(Checked::fun<Policy>(v, v, T(1))); \
   return *this; \
 }\
 template <typename T, typename Policy> \
 inline Checked_Number<T, Policy> \
 Checked_Number<T, Policy>::f(int) {\
   T r = v;\
-  check_result(fun<Policy>(v, v, T(1)));\
+  check_result(Checked::fun<Policy>(v, v, T(1)));\
   return r;\
 }
 
@@ -150,7 +163,7 @@ Checked_Number<T, Policy>::operator=(const Checked_Number<T, Policy>& y) {
 template <typename T, typename Policy> \
 inline Checked_Number<T, Policy>& \
 Checked_Number<T, Policy>::f(const Checked_Number<T, Policy>& y) { \
-  check_result(fun<Policy>(v, v, y.v)); \
+  check_result(Checked::fun<Policy>(v, v, y.v)); \
   return *this; \
 }
 
@@ -165,7 +178,7 @@ template <typename T, typename Policy> \
 inline Checked_Number<T, Policy> \
 f(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
   T r; \
-  check_result(fun<Policy>(r, x.raw_value(), y.raw_value())); \
+  check_result(Checked::fun<Policy>(r, x.raw_value(), y.raw_value())); \
   return r; \
 }
 
@@ -180,16 +193,16 @@ template <typename T, typename Policy> \
 inline Checked_Number<T, Policy> \
 f(const type x, const Checked_Number<T, Policy>& y) { \
   T r; \
-  check_result(assign<Policy>(r, x)); \
-  check_result(fun<Policy>(r, r, y.raw_value())); \
+  check_result(Checked::assign<Policy>(r, x)); \
+  check_result(Checked::fun<Policy>(r, r, y.raw_value())); \
   return r; \
 } \
 template <typename T, typename Policy> \
 inline Checked_Number<T, Policy> \
 f(const Checked_Number<T, Policy>& x, const type y) { \
   T r; \
-  check_result(assign<Policy>(r, y)); \
-  check_result(fun<Policy>(r, x.raw_value(), r)); \
+  check_result(Checked::assign<Policy>(r, y)); \
+  check_result(Checked::fun<Policy>(r, x.raw_value(), r)); \
   return r; \
 }
 
@@ -240,14 +253,14 @@ template <typename T, typename Policy> \
 inline bool \
 f(const type x, const Checked_Number<T, Policy>& y) { \
   T r; \
-  check_result(assign<Policy>(r, x)); \
+  check_result(Checked::assign<Policy>(r, x)); \
   return r op y.raw_value(); \
 } \
 template <typename T, typename Policy> \
 inline bool \
 f(const Checked_Number<T, Policy>& x, const type y) { \
   T r; \
-  check_result(assign<Policy>(r, y)); \
+  check_result(Checked::assign<Policy>(r, y)); \
   return x.raw_value() op r; \
 }
 
@@ -290,7 +303,7 @@ template <typename T, typename Policy>
 inline Checked_Number<T, Policy>
 operator-(const Checked_Number<T, Policy>& x) {
   T r;
-  check_result(neg<Policy>(r, x.raw_value()));
+  check_result(Checked::neg<Policy>(r, x.raw_value()));
   return r;
 }
 
@@ -298,28 +311,29 @@ operator-(const Checked_Number<T, Policy>& x) {
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x) { \
-  check_result(fun<Policy>(x.raw_value(), x.raw_value())); \
+  check_result(Checked::fun<Policy>(x.raw_value(), x.raw_value())); \
 }
 
 #define DEF_ASSIGN_FUN2_2(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
-  check_result(fun<Policy>(x.raw_value(), y.raw_value())); \
+  check_result(Checked::fun<Policy>(x.raw_value(), y.raw_value())); \
 }
 
 #define DEF_ASSIGN_FUN3_2(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
-  check_result(fun<Policy>(x.raw_value(), x.raw_value(), y.raw_value())); \
+  check_result(Checked::fun<Policy>(x.raw_value(), x.raw_value(), y.raw_value())); \
 }
 
 #define DEF_ASSIGN_FUN3_3(f, fun) \
 template <typename T, typename Policy> \
 inline void \
-f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, const Checked_Number<T, Policy>& z) { \
-  check_result(fun<Policy>(x.raw_value(), y.raw_value(), z.raw_value())); \
+f(Checked_Number<T, Policy>& x, \
+  const Checked_Number<T, Policy>& y, const Checked_Number<T, Policy>& z) { \
+  check_result(Checked::fun<Policy>(x.raw_value(), y.raw_value(), z.raw_value())); \
 }
 
 DEF_ASSIGN_FUN2_1(sqrt_assign, sqrt)
@@ -345,46 +359,48 @@ DEF_ASSIGN_FUN3_3(lcm_assign, lcm)
 template <typename T, typename Policy>
 inline int
 sgn(const Checked_Number<T, Policy>& x) {
-  Result r = Checked::sgn<Policy>(x.raw_value());
+  Checked::Result r = Checked::sgn<Policy>(x.raw_value());
   switch (r) {
-  case V_LT:
-	  return -1;
-  case V_EQ:
-	  return 0;
-  case V_GT:
-	  return 1;
+  case Checked::V_LT:
+    return -1;
+  case Checked::V_EQ:
+    return 0;
+  case Checked::V_GT:
+    return 1;
   default:
-	  throw(0);
+    throw(0);
   }
 }
 
 template <typename T, typename Policy>
 inline int
 cmp(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) {
-  Result r = Checked::cmp<Policy>(x.raw_value(), y.raw_value());
+  Checked::Result r = Checked::cmp<Policy>(x.raw_value(), y.raw_value());
   switch (r) {
-  case V_LT:
-	  return -1;
-  case V_EQ:
-	  return 0;
-  case V_GT:
-	  return 1;
+  case Checked::V_LT:
+    return -1;
+  case Checked::V_EQ:
+    return 0;
+  case Checked::V_GT:
+    return 1;
   default:
-	  throw(0);
+    throw(0);
   }
 }
 
-template <typename T>
+template <typename T, typename Policy>
 inline std::ostream&
-operator<<(std::ostream& os, const Checked_Number<T>& x)
-{
-  return os << x.raw_value();
+operator<<(std::ostream& os, const Checked_Number<T, Policy>& x) {
+  check_result(Checked::print<Policy>(os, x.raw_value()));
+  return os;
 }
  
-template <typename T>
-inline std::istream& operator>>(std::istream& is, Checked_Number<T>& x)
-{
-  return is >> x.raw_value();
+template <typename T, typename Policy>
+inline std::istream& operator>>(std::istream& is, Checked_Number<T, Policy>& x) {
+  check_result(Checked::input<Policy>(is, x.raw_value()));
+  return is;
 }
 
 } // namespace Parma_Polyhedra_Library
+
+#endif // !defined(PPL_Checked_Number_inlines_hh)

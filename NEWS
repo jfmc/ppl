@@ -18,6 +18,8 @@ o  Significant efficiency improvements have been achieved in the case
 o  The classes PowerSet and Polyhedra_PowerSet have been renamed Powerset
    and Polyhedra_Powerset, respectively.
 
+o  The helper function widen_fun has been renamed widen_fun_ref.
+
 o  New explicit constructors and assignment operators allowing to obtain a
    Polyhedra_Powerset<NNC_Polyhedron> from a Polyhedra_Powerset<C_Polyhedron>
    and the other way around.  In the latter case, the topological clusure
@@ -33,12 +35,28 @@ o  New method dimension_type Polyhedron::affine_dimension() returns
    the affine dimension of *this (not to be confused with the dimension
    of its enclosing vector space) or 0, if *this is empty.
 
+o  All the public classes of the library have been endowed with methods
+
+     memory_size_type total_memory_in_bytes() const
+
+   and
+
+     memory_size_type external_memory_in_bytes() const
+
+   returning (lower bounds for) the total size in bytes of the memory
+   occupied by *this and of the memory managed by *this, respectively.
+   The type `memory_size_type' is a newly added unsigned integral type
+   suitable to the representation of such information.
+
 o  All the methods changing (i.e., adding, removing, mapping, etc.)
    the dimensions of the vector space have been renamed so as to avoid
    any possible ambiguity with the affine dimension of the modified object.
    For instance,
+
      Polyhedron::add_dimensions_and_embed(dimension_type m);
+
    has been renamed as
+
      Polyhedron::add_space_dimensions_and_embed(dimension_type m);
 
 o  The constructor C_Polyhedron(const NNC_Polyhedron& y) no longer
@@ -95,10 +113,17 @@ o  Method C_Polyhedron::H79_widening_assign() now widens the polyhedron
 o  Fixed a bug that was affecting Polyhedron::H79_widening_assign()
    as well as all the limited and bounded extrapolation operators.
 
+o  Fixed a bug in Polyhedron::map_space_dimensions() that could manifest
+   itself when used with a partial function encoding permutation.
+
 o  Fixed a bug in the C interface function
    ppl_new_LinExpression_with_dimension().
 
 o  Fixed a bug in the `ppl_lpsol' demo.
+
+o  Fixed a bug in Polyhedron::is_universe() that could manifest itself
+   when the polyhedron is described by a generator system which is
+   not in minimal form.
 
 
 --------------------------------------------------------------------------

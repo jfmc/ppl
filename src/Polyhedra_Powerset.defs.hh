@@ -43,6 +43,10 @@ template <typename PH>
 class Parma_Polyhedra_Library::Polyhedra_Powerset
   : public Parma_Polyhedra_Library::Powerset
 <Parma_Polyhedra_Library::Determinate<PH> > {
+private:
+  typedef Determinate<PH> CS;
+  typedef Powerset<CS> Base;
+
 public:
   //! Returns the maximum space dimension a Polyhedra_Powerset<PH> can handle.
   static dimension_type max_space_dimension();
@@ -174,6 +178,8 @@ public:
   */
   void pairwise_reduce();
 
+  using Base::omega_reduce;
+
   //! \brief
   //! Assigns to \p *this the result of applying the BGP99 extrapolation
   //! operator to \p *this and \p y, using the widening function \p wf
@@ -186,9 +192,9 @@ public:
     \param wf
     The widening function to be used on polyhedra objects. It is obtained
     from the corresponding widening method by using the helper function
-    Parma_Polyhedra_Library::widen_fun. Legal values are, e.g.,
-    <CODE>widen_fun(&Polyhedron::H79_widening_assign)</CODE> and
-    <CODE>widen_fun(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>;
+    Parma_Polyhedra_Library::widen_fun_ref. Legal values are, e.g.,
+    <CODE>widen_fun_ref(&Polyhedron::H79_widening_assign)</CODE> and
+    <CODE>widen_fun_ref(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>;
 
     \param max_disjuncts
     The maximum number of disjuncts occurring in the powerset \p *this
@@ -220,9 +226,9 @@ public:
     \param wf
     The widening function to be used on polyhedra objects.
     It is obtained from the corresponding widening method by using
-    the helper function widen_fun. Legal values are, e.g.,
-    <CODE>widen_fun(&Polyhedron::H79_widening_assign)</CODE> and
-    <CODE>widen_fun(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>.
+    the helper function widen_fun_ref. Legal values are, e.g.,
+    <CODE>widen_fun_ref(&Polyhedron::H79_widening_assign)</CODE> and
+    <CODE>widen_fun_ref(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
@@ -319,14 +325,10 @@ public:
   /*!
     See also Polyhedron::map_space_dimensions.
   */
-  template <typename PartialFunction>
-  void map_space_dimensions(const PartialFunction& pfunc);
+  template <typename Partial_Function>
+  void map_space_dimensions(const Partial_Function& pfunc);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
-
-private:
-  typedef Determinate<PH> CS;
-  typedef Powerset<CS> Base;
 
 public:
   typedef typename Base::Sequence Sequence;

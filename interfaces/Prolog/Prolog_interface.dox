@@ -1202,7 +1202,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 <H2><CODE> ppl_Polyhedron_BHRZ03_widening_assign(+Handle_1,
                +Handle_2) </CODE></H2>
 
-  Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
+   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
    its BHRZ03-widening with the polyhedron referenced by <CODE>Handle_2</CODE>.
 
 <H2><CODE> ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(
@@ -1215,8 +1215,8 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    and <CODE>Handle_2</CODE> are unaltered.
    The token <CODE>Integer</CODE> is 0 if
    a BHRZ03-widening with the polyhedron referenced by
-  <CODE>Handle_2</CODE>, improved by enforcing those constraints in
-  <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
+   <CODE>Handle_2</CODE>, improved by enforcing those constraints in
+   <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
    by <CODE>Handle_1</CODE> and is 1 otherwise.
 
 <H2><CODE> ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(+Handle_1,
@@ -1224,9 +1224,9 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                +Constraint_System) </CODE></H2>
 
    Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
-  the result of its BHRZ03-widening with the polyhedron referenced by
-  <CODE>Handle_2</CODE>, improved by enforcing those constraints in
-  <CODE>Constraint_System</CODE>.
+   the result of its BHRZ03-widening with the polyhedron referenced by
+   <CODE>Handle_2</CODE>, improved by enforcing those constraints in
+   <CODE>Constraint_System</CODE>.
 
 <H2><CODE> ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(
                +Handle_1,
@@ -1234,14 +1234,14 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                +Constraint_System,
                ?Integer) </CODE></H2>
 
-  The polyhedra \f$\cP_1\f$ and \f$\cP_2\f$ referenced by
+   The polyhedra \f$\cP_1\f$ and \f$\cP_2\f$ referenced by
    <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>, respectively are unaltered.
    The token <CODE>Integer</CODE> is 0 if
    a BHRZ03-widening with \f$\cP_2\f$ ,
    improved by enforcing  all the constraints of
-  the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
-  by all the points of \f$\cP_1\f$ together with the constraints in
-  <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
+   the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
+   by all the points of \f$\cP_1\f$ together with the constraints in
+   <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
    by <CODE>Handle_1</CODE> and is 1 otherwise.
 
 
@@ -1250,11 +1250,11 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                +Constraint_System) </CODE></H2>
 
    Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
-  the result of its BHRZ03-widening with the polyhedron referenced by
-  <CODE>Handle_2</CODE> improved by enforcing all the constraints of
-  the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
-  by all the points of \f$\cP\f$ together with the constraints in
-  <CODE>Constraint_System</CODE>.
+   the result of its BHRZ03-widening with the polyhedron referenced by
+   <CODE>Handle_2</CODE> improved by enforcing all the constraints of
+   the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
+   by all the points of \f$\cP\f$ together with the constraints in
+   <CODE>Constraint_System</CODE>.
 
 <H2><CODE> ppl_Polyhedron_H79_widening_assign_with_token(+Handle_1,
                +Handle_2, ?Integer) </CODE></H2>
@@ -1289,9 +1289,9 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                +Constraint_System) </CODE></H2>
 
    Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
-  its H79-widening with the polyhedron referenced by
-  <CODE>Handle_2</CODE>, improved by enforcing those constraints in
-  <CODE>Constraint_System</CODE>.
+   its H79-widening with the polyhedron referenced by
+   <CODE>Handle_2</CODE>, improved by enforcing those constraints in
+   <CODE>Constraint_System</CODE>.
 
 <H2><CODE> ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(+Handle_1,
                +Handle_2,
@@ -1299,14 +1299,14 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                ?Integer) </CODE></H2>
 
 
-  The polyhedra \f$\cP_1\f$ and \f$\cP_2\f$ referenced by
+   The polyhedra \f$\cP_1\f$ and \f$\cP_2\f$ referenced by
    <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>, respectively are unaltered.
    The token <CODE>Integer</CODE> is 0 if
    a H79-widening with \f$\cP_2\f$ ,
    improved by enforcing  all the constraints of
-  the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
-  by all the points of \f$\cP_1\f$ together with the constraints in
-  <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
+   the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
+   by all the points of \f$\cP_1\f$ together with the constraints in
+   <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
    by <CODE>Handle_1</CODE> and is 1 otherwise.
 
 <H2><CODE> ppl_Polyhedron_bounded_H79_extrapolation_assign(+Handle_1,
@@ -1314,11 +1314,11 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                +Constraint_System) </CODE></H2>
 
    Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
-  the result of its H79-widening with the polyhedron referenced by
-  <CODE>Handle_2</CODE> improved by enforcing all the constraints of
-  the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
-  by all the points of \f$\cP\f$ together with the constraints in
-  <CODE>Constraint_System</CODE>.
+   the result of its H79-widening with the polyhedron referenced by
+   <CODE>Handle_2</CODE> improved by enforcing all the constraints of
+   the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
+   by all the points of \f$\cP\f$ together with the constraints in
+   <CODE>Constraint_System</CODE>.
 
 <H2><CODE> ppl_Polyhedron_topological_closure_assign(+Handle) </CODE></H2>
 

@@ -33,6 +33,9 @@ namespace Parma_Polyhedra_Library {
 //! An unsigned integral type for representing space dimensions.
 typedef size_t dimension_type;
 
+//! An unsigned integral type for representing memory size in bytes.
+typedef size_t memory_size_type;
+
 //! Returns a value that does not designate a valid dimension.
 inline dimension_type
 not_a_dimension();

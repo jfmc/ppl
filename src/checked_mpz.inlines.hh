@@ -165,7 +165,7 @@ assign_mpz_c_string(mpz_class& to, c_string from) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpz_c_string, mpz_class, c_string);
+SPECIALIZE_ASSIGN(mpz_c_string, mpz_class, c_string)
 
 template <typename Policy>
 inline Result 
@@ -438,7 +438,10 @@ cmp_mp(const Type& x, const Type& y) {
 }
 
 SPECIALIZE_CMP(mp, mpz_class, mpz_class)
-SPECIALIZE_CMP(mp, mpq_class, mpz_class)
+SPECIALIZE_CMP(mp, mpq_class, mpq_class)
+
+SPECIALIZE_PRINT(generic, mpz_class)
+SPECIALIZE_INPUT(generic, mpz_class)
 
 } // namespace Checked
 

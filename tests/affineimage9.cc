@@ -73,7 +73,7 @@ main() TRY {
 
   NNC_Polyhedron known_result(2);
   known_result.add_constraint(i - j >= -2);
-  known_result.add_constraint(-i + j >= 0.);
+  known_result.add_constraint(-i + j >= 0);
 
   int retval = p1 == known_result ? 0 : 1;
 

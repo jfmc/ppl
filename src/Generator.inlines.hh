@@ -56,6 +56,11 @@ Generator::operator=(const Generator& g) {
 }
 
 inline dimension_type
+Generator::max_space_dimension() {
+  return Linear_Row::max_space_dimension();
+}
+
+inline dimension_type
 Generator::space_dimension() const {
   return Linear_Row::space_dimension();
 }

@@ -58,7 +58,7 @@ namespace PPL = Parma_Polyhedra_Library;
   a similar explanation can be obtain by applying duality.
 
   The explanation relies on the notion of <EM>redundancy</EM>.
-  (See the Introduction).
+  (See the Introduction.)
 
   First we make some observations that can help the reader
   in understanding the function:
@@ -227,7 +227,7 @@ PPL::Polyhedron::simplify(Linear_System& sys, SatMatrix& sat) {
     // sat[k])'.
     for (dimension_type j = num_lines_or_equalities; j < num_rows; ) {
       if (i == j)
-	// Want to compare different rows of `sys'.
+	// We want to compare different rows of `sys'.
 	++j;
       else {
 	// Let us recall that each generator lies on a facet of the
@@ -238,25 +238,28 @@ PPL::Polyhedron::simplify(Linear_System& sys, SatMatrix& sat) {
 	// corresponding to `c_2', too, and there is another one lying
 	// on the latter but not on the former, then `c_2' is more
 	// restrictive than `c_1', i.e., `c_1' is redundant.
-	if (strict_subset(sat[j], sat[i])) {
-	  // All the saturators of the inequality `sys[i]' are
-	  // saturators of the inequality `sys[j]' too,
-	  // and there exists at least one saturator of `sys[j]'
-	  // which is not a saturator of `sys[i]'.
-	  // It follows that inequality `sys[i]' is redundant.
-	  redundant = true;
-	  break;
-	}
-	else if (sat[j] == sat[i]) {
-	  // Inequalities `sys[i]' and `sys[j]' are saturated by
-	  // the same set of generators. Then we can remove either one
-	  // of the two inequalities: we remove `sys[j]'.
-	  --num_rows;
-	  std::swap(sys[j], sys[num_rows]);
-	  std::swap(sat[j], sat[num_rows]);
-	  std::swap(num_saturators[j], num_saturators[num_rows]);
-	  sys.set_sorted(false);
-	}
+	bool strict_subset;
+	if (subset_or_equal(sat[j], sat[i], strict_subset))
+	  if (strict_subset) {
+	    // All the saturators of the inequality `sys[i]' are
+	    // saturators of the inequality `sys[j]' too,
+	    // and there exists at least one saturator of `sys[j]'
+	    // which is not a saturator of `sys[i]'.
+	    // It follows that inequality `sys[i]' is redundant.
+	    redundant = true;
+	    break;
+	  }
+	  else {
+	    // We have `sat[j] == sat[i]'.  Hence inequalities
+	    // `sys[i]' and `sys[j]' are saturated by the same set of
+	    // generators. Then we can remove either one of the two
+	    // inequalities: we remove `sys[j]'.
+	    --num_rows;
+	    std::swap(sys[j], sys[num_rows]);
+	    std::swap(sat[j], sat[num_rows]);
+	    std::swap(num_saturators[j], num_saturators[num_rows]);
+	    sys.set_sorted(false);
+	  }
 	else
 	  // If we reach this point then we know that `sat[i]' does
 	  // not contain (and is different from) `sat[j]', so that
@@ -300,6 +303,6 @@ PPL::Polyhedron::simplify(Linear_System& sys, SatMatrix& sat) {
 
   // The returned value is the number of irredundant equalities i.e.,
   // the rank of the sub-system of `sys' containing only equalities.
-  // (See the Introduction for definition of lineality space dimension).
+  // (See the Introduction for definition of lineality space dimension.)
   return num_lines_or_equalities;
 }

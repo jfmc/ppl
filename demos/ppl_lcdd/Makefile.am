@@ -54,7 +54,17 @@ polylib_lcdd.o:	$(srcdir)/ppl_lcdd.cc
 polylib_lcdd: polylib_lcdd.o $(top_builddir)/utils/libppl_utils.a
 	$(CXXLINK) $< -lpolylibgmp -lgmpxx -lgmp $(top_builddir)/utils/libppl_utils.a
 
-EXTRA_DIST = expected
+EXTRA_DIST = \
+expected_mpz \
+expected_mpz_a \
+expected_int8 \
+expected_int8_a \
+expected_int16 \
+expected_int16_a \
+expected_int32 \
+expected_int32_a \
+expected_int64 \
+expected_int64_a
 
 if HAVE_MD5SUM
 
@@ -100,11 +110,14 @@ $(TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED)
 check-local: ppl_lcdd
 	echo $(TOUGH_EXAMPLES) >tough_examples
 	echo -n >obtained
-	for file in $(srcdir)/examples/*.ext $(srcdir)/examples/*.ine; do \
-	  grep -q `basename $$file` tough_examples && continue; \
-	  echo -n `basename $$file` " " >>obtained; \
-	  echo ppl_lcdd $$file; \
-	  ppl_lcdd $$file | $(MD5SUM) - >>obtained; \
+	LANG=C; \
+	for path in $(srcdir)/examples/*.ext $(srcdir)/examples/*.ine; \
+	do \
+	  file=`basename $$path`; \
+	  grep -q $$file tough_examples && continue; \
+	  echo -n $$file " " >>obtained; \
+	  echo ppl_lcdd $$path; \
+	  ./ppl_lcdd $$path | $(MD5SUM) - >>obtained; \
 	done
 	diff -q $(srcdir)/$(EXPECTED) obtained
 
@@ -112,4 +125,4 @@ MOSTLYCLEANFILES = \
 tough_examples \
 obtained
 
-endif # HAVE_MD5SUM
+endif HAVE_MD5SUM

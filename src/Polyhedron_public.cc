@@ -250,11 +250,8 @@ PPL::Polyhedron::is_universe() const {
   }
 
   assert(!has_pending_constraints() && generators_are_up_to_date());
-  // Try a fast-fail test: the universe polyhedron has `space_dim' lines.
-  // If there are too few lines and rays we can return `false'
-  // without performing minimization.
-  const dimension_type num_rays_required = 2*space_dim;
 
+  // Try a fast-fail test.
   dimension_type num_lines = 0;
   dimension_type num_rays = 0;
   const dimension_type first_pending = gen_sys.first_pending_row();
@@ -271,32 +268,57 @@ PPL::Polyhedron::is_universe() const {
     }
 
   if (has_pending_generators()) {
-    // The seen part of `gen_sys' was minimized.
-    if (num_rays == 0 && num_lines == space_dim)
+    // The non-pending part of `gen_sys' was minimized:
+    // a success-first test is possible in this case.
+    assert(generators_are_minimized());
+    if (num_lines == space_dim) {
+      assert(num_rays == 0);
       return true;
+    }
+    assert(num_lines < space_dim);
     // Now scan the pending generators.
+    dimension_type num_pending_lines = 0;
+    dimension_type num_pending_rays = 0;
     const dimension_type gs_num_rows = gen_sys.num_rows();
-    for (dimension_type i = first_pending; i < gs_num_rows; i++)
+    for (dimension_type i = first_pending; i < gs_num_rows; ++i)
       switch (gen_sys[i].type()) {
       case Generator::RAY:
-	++num_rays;
+	++num_pending_rays;
 	break;
       case Generator::LINE:
-	++num_lines;
+	++num_pending_lines;
 	break;
       default:
 	break;
       }
-    if (2*num_lines + num_rays < num_rays_required)
+    // If no pending rays and lines were found,
+    // then it is not the universe polyhedron.
+    if (num_pending_rays == 0 && num_pending_lines == 0)
       return false;
+    // Factor away the lines already seen (to be on the safe side,
+    // we assume they are all linearly independent).
+    if (num_lines + num_pending_lines < space_dim) {
+      const dimension_type num_dims_missing
+	= space_dim - (num_lines + num_pending_lines);
+      // In order to span an n dimensional space (where n = num_dims_missing),
+      // at least n+1 rays are needed.
+      if (num_rays + num_pending_rays <= num_dims_missing)
+	return false;
+    }
   }
   else {
     // There is nothing pending.
-    if (generators_are_minimized())
+    if (generators_are_minimized()) {
       // The exact test is possible.
-      return (num_rays == 0 && num_lines == space_dim);
-    else if (2*num_lines + num_rays < num_rays_required)
-      return false;
+      assert(num_rays == 0 || num_lines < space_dim);
+      return num_lines == space_dim;
+    }
+    else
+      // Only the fast-fail test can be computed: in order to span
+      // an n dimensional space (where n = space_dim - num_lines),
+      // at least n+1 rays are needed.
+      if (num_lines < space_dim && num_lines + num_rays <= space_dim)
+	return false;
   }
 
   // We need the polyhedron in minimal form.
@@ -2505,6 +2527,15 @@ PPL::Polyhedron::ascii_load(std::istream& s) {
   // Check for well-formedness.
   assert(OK());
   return true;
+}
+
+PPL::memory_size_type
+PPL::Polyhedron::external_memory_in_bytes() const {
+  return
+    con_sys.external_memory_in_bytes()
+    + gen_sys.external_memory_in_bytes()
+    + sat_c.external_memory_in_bytes()
+    + sat_g.external_memory_in_bytes();
 }
 
 /*! \relates Parma_Polyhedra_Library::Polyhedron */

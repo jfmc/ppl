@@ -24,17 +24,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_float_inlines_hh
 #define PPL_checked_float_inlines_hh 1
 
+#include "float.types.hh"
 #include <cassert>
 #include <cmath>
-#include <fenv.h>
-
+#ifdef __CYGWIN__
+// Cygwin does not conform to C99.
 // Please do not remove the space separating `#' from `include':
 // this ensures that the directive will not be moved during the
 // procedure that automatically creates the library's include file
 // (see `Makefile.am' in the `src' directory).
-# include <endian.h>
-
-#include "float.types.hh"
+# include <mingw/fenv.h>
+#else
+# include <fenv.h>
+#endif
 
 #define USE_FPU_ROUNDING_MODE
 #define USE_FPU_INEXACT
@@ -170,13 +172,12 @@ private:
   union {
     float64_t _value;
     struct {
-#if __FLOAT_WORD_ORDER == LITTLE_ENDIAN
-      u_int32_t lsp;
-      u_int32_t msp;
-#endif
-#if __FLOAT_WORD_ORDER == BIG_ENDIAN
+#ifdef WORDS_BIGENDIAN
       u_int32_t msp;
       u_int32_t lsp;
+#else
+      u_int32_t lsp;
+      u_int32_t msp;
 #endif
     } parts;
   } u;
@@ -276,13 +277,12 @@ private:
   union {
     float96_t _value;
     struct {
-#if __FLOAT_WORD_ORDER == LITTLE_ENDIAN
-      u_int64_t lsp;
-      u_int32_t msp;
-#endif
-#if __FLOAT_WORD_ORDER == BIG_ENDIAN
+#ifdef WORDS_BIGENDIAN
       u_int32_t msp;
       u_int64_t lsp;
+#else
+      u_int64_t lsp;
+      u_int32_t msp;
 #endif
     } parts;
   } u;
@@ -387,13 +387,12 @@ private:
   union {
     float128_t _value;
     struct {
-#if __FLOAT_WORD_ORDER == LITTLE_ENDIAN
-      u_int64_t lsp;
-      u_int64_t msp;
-#endif
-#if __FLOAT_WORD_ORDER == BIG_ENDIAN
+#ifdef WORDS_BIGENDIAN
       u_int64_t msp;
       u_int64_t lsp;
+#else
+      u_int64_t lsp;
+      u_int64_t msp;
 #endif
     } parts;
   } u;
@@ -811,6 +810,8 @@ SPECIALIZE_SGN(generic, float32_t)
 SPECIALIZE_CMP(generic, float32_t, float32_t)
 SPECIALIZE_ADD_MUL(generic, float32_t, float32_t)
 SPECIALIZE_SUB_MUL(float, float32_t, float32_t)
+SPECIALIZE_PRINT(generic, float32_t)
+SPECIALIZE_INPUT(generic, float32_t)
 
 SPECIALIZE_ASSIGN(float_int_exact, float64_t, int8_t)
 SPECIALIZE_ASSIGN(float_int_exact, float64_t, int16_t)
@@ -836,6 +837,8 @@ SPECIALIZE_SGN(generic, float64_t)
 SPECIALIZE_CMP(generic, float64_t, float64_t)
 SPECIALIZE_ADD_MUL(generic, float64_t, float64_t)
 SPECIALIZE_SUB_MUL(float, float64_t, float64_t)
+SPECIALIZE_PRINT(generic, float64_t)
+SPECIALIZE_INPUT(generic, float64_t)
 
 #ifdef FLOAT96_TYPE
 SPECIALIZE_ASSIGN(float_int_exact, float96_t, int8_t)
@@ -864,6 +867,8 @@ SPECIALIZE_SGN(generic, float96_t)
 SPECIALIZE_CMP(generic, float96_t, float96_t)
 SPECIALIZE_ADD_MUL(generic, float96_t, float96_t)
 SPECIALIZE_SUB_MUL(float, float96_t, float96_t)
+SPECIALIZE_PRINT(generic, float96_t)
+SPECIALIZE_INPUT(generic, float96_t)
 #endif
 
 #ifdef FLOAT128_TYPE
@@ -896,6 +901,8 @@ SPECIALIZE_SGN(generic, float128_t)
 SPECIALIZE_CMP(generic, float128_t, float128_t)
 SPECIALIZE_ADD_MUL(generic, float128_t, float128_t)
 SPECIALIZE_SUB_MUL(float, float128_t, float128_t)
+SPECIALIZE_PRINT(generic, float128_t)
+SPECIALIZE_INPUT(generic, float128_t)
 #endif
 
 #undef ASSIGN_R2

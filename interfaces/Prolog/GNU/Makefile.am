@@ -113,6 +113,7 @@ EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)
 endif !ASSERTIONS_ENABLED
 
 check-local: gp_clpq ../tests/check_script $(EXPECTED) gp_clpq2 ../tests/check_script2 $(EXPECTED2) ../tests/pl_check.pl $(EXPECTED3)
+	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
@@ -139,4 +140,4 @@ obtained obtained2 obtained3 \
 $(CLPQ_TESTS) \
 check_script3
 
-endif # HAVE_GNU_PROLOG
+endif HAVE_GNU_PROLOG
