@@ -77,6 +77,8 @@ run_all:-
         error_message(['error in a get bounding box predicate'])),
    (catch_time -> true ;
         error_message(['error in a time out predicate'])),
+   (handle_exceptions -> true ;
+        error_message(['error in an exception predicate'])),
    !,
    ppl_finalize.
 
@@ -224,6 +226,11 @@ catch_time :-
   !,
   ppl_finalize.
   
+handle_exceptions :-
+  ppl_initialize,
+  exceptions,
+  !,
+  ppl_finalize.
 
 % Tests predicates that return the versions nad the PPL banner.
 % If noisy(0) holds, there is no output but if not,
@@ -272,9 +279,7 @@ max_dim :-
   ppl_initialize,
   ppl_max_space_dimension(M),
   (noisy(0) -> true ;
-     (
-      write('Maximum possible dimension is '), write(M), nl
-     )
+     display_message(['Maximum possible dimension is', M, nl])
   ),
   !,
   ppl_finalize.
@@ -1706,6 +1711,119 @@ time_watch(Topology, Goal, NoTimeOut, TimeOut) :-
    ),
    ppl_delete_Polyhedron(PolyCopy).
 
+exceptions :-
+   make_vars(3, V),
+   (exception_prolog(_, V) ;   exception_cplusplus(_, V)),
+   !,
+   fail.
+exceptions:- !.
+
+exception_prolog(1, [A,B,C]) :-
+   catch(ppl_new_Polyhedron_from_generators(_, [point(A + B + C, 1)], _),
+          M, 
+         check_exception(invalid_argument(M))
+         ).
+
+exception_prolog(2, [A,B,C]) :-
+  catch(ppl_new_Polyhedron_from_generators(c, [point(B + A*C)], _),
+          M, 
+         check_exception(invalid_argument(M))
+        ).
+
+exception_prolog(3, _) :-
+  catch(ppl_new_Polyhedron_from_dimension(c, n, _),
+          M, 
+         check_exception(invalid_argument(M))
+        ).
+
+exception_prolog(4, _) :-
+  ppl_new_Polyhedron_from_dimension(c, 0, _P),
+  catch(ppl_Polyhedron_space_dimension(P1, _N),
+          M, 
+         check_exception(invalid_argument(M))
+        ).
+
+check_exception(Exception_Goal):-
+         (call(Exception_Goal) -> fail ; true).
+
+exception_cplusplus(1, [A,B,C]) :-
+   catch(ppl_new_Polyhedron_from_generators(C, [point(A + B + C, 0)], _),
+          M, 
+         (display_message([M]), fail)
+         ).
+
+exception_cplusplus(2, [A,B,_]) :-
+  ppl_new_Polyhedron_from_generators(c, 
+               [point(A + B), ray(A), ray(B)], P),
+  catch(ppl_Polyhedron_affine_image(P, A, A + B + 1, 0),
+          M, 
+         (display_message([M]), fail)
+        ).
+
+exception_cplusplus(3, [A, B, _]) :-
+  ppl_new_Polyhedron_from_dimension(c, 0, P1),
+  ppl_new_Polyhedron_from_generators(c, 
+               [point(A + B)], P2),
+  catch(ppl_Polyhedron_poly_hull_assign_and_minimize(P1, P2),
+          M, 
+         (display_message([M]), fail)
+        ).
+
+exception_cplusplus(4, [A,B,C]) :-
+   catch(ppl_new_Polyhedron_from_generators(c, [line(A + B + C)], _),
+          M, 
+         (display_message([M]), fail)
+        ).
+
+exception_cplusplus(5, [A,B,C]) :-
+  ppl_new_Polyhedron_from_generators(c, [point(B + 2*C)], P),
+  ppl_Polyhedron_remove_dimensions(P,[C]),
+  catch(ppl_Polyhedron_remove_dimensions(P,[A,C]),
+          M, 
+         (display_message([M]), fail)
+        ).
+
+exception_cplusplus(6, [A,B,_]) :-
+  ppl_new_Polyhedron_from_constraints(c, 
+               [A >= 1], P),
+  catch(ppl_Polyhedron_affine_image(P, B, A + 1, 1),
+          M, 
+         (display_message([M]), fail)
+        ).
+
+exception_cplusplus(7, [A, B, C]) :-
+  ppl_new_Polyhedron_from_constraints(c, 
+               [A >= 1, B>= 1], P),
+  catch(ppl_Polyhedron_affine_image(P, B, A + C + 1, 1),
+          M, 
+         (display_message([M]), fail)
+        ).
+
+exception_cplusplus(8, [A,B,_]) :-
+  ppl_new_Polyhedron_from_constraints(c, 
+               [A >= B], P),
+  catch(ppl_Polyhedron_affine_preimage(P, A, A + B + 1, 0),
+          M, 
+         (display_message([M]), fail)
+        ).
+
+exception_cplusplus(9, [A, B, C]) :-
+  ppl_new_Polyhedron_from_generators(c, 
+               [point(0), ray(A + B), ray(A)], P),
+  catch(ppl_Polyhedron_affine_preimage(P, C, A + 1, 1),
+          M, 
+         (display_message([M]), fail)
+        ).
+
+
+exception_cplusplus(10, [A, B, C]) :-
+  ppl_new_Polyhedron_from_generators(c, 
+               [point(0), point(A), line(A + B)], P),
+  catch(ppl_Polyhedron_affine_preimage(P, B, A + C, 1),
+          M, 
+         (display_message([M]), fail)
+        ).
+
 % These next 2 tests demonstrate a bug in the bounding box software
 % and are not executed by run_all.
 
@@ -1734,13 +1852,17 @@ error_message(Message):-
 
 display_message(Message):-
    noisy(1), !,
-   nl, write_all(Message), nl.
+   nl, write_all(Message).
 display_message(_).
 
-write_all([]).
+write_all([]) :- nl.
 write_all([Phrase|Phrases]):-
-   write(Phrase),
-   write(' '),
+   (Phrase == nl ->
+      nl
+   ; 
+      (write(Phrase),
+      write(' '))
+   ),
    write_all(Phrases).
 
 % make_var_list(+I,+Dimension,?VariableList)
@@ -1766,3 +1888,8 @@ make_quiet :-
       make_quiet
    ; assertz(noisy(0))
   ).
+
+invalid_argument(ppl_invalid_argument(found(F), expected(E), where(W))) :-
+  display_message(['PPL Prolog Interface Exception: ', nl, '   ',
+                   F, 'is an invalid argument for', W, nl, '   ',
+                  F, 'should be', E, '.']).
