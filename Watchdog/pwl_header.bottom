@@ -1,7 +1,9 @@
 
 #ifdef PWL_SAVE_NDEBUG
-#define NDEBUG 1
-#undef PWL_SAVE_NDEBUG
+# define NDEBUG 1
+# undef PWL_SAVE_NDEBUG
+#else
+# undef NDEBUG
 #endif
 
 #undef PACKAGE
