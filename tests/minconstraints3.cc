@@ -1,6 +1,6 @@
 /* Test Polyhedron::minimized_constraints(): we apply this function
    to a zero dimensional, non necessarily closed polyhedron.
-   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

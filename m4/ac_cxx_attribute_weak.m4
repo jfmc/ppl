@@ -1,6 +1,6 @@
 dnl A function to check whether the C++ compiler supports the function
 dnl __attribute__ ((weak)).
-dnl Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl

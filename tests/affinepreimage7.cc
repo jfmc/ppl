@@ -2,7 +2,7 @@
    a negative denominator, a negative coefficient of the
    variable to transform in the expression and a polyhedron defined
    by its system of generators.
-   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

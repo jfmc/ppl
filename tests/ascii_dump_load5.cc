@@ -1,7 +1,7 @@
 /* Test ascii_dump() 5 ascii_load(): we read a non completed file.
    we test these functions in the case that the file does not contain
    the right thing.
-   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

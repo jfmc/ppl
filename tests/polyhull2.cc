@@ -1,7 +1,7 @@
 /* Test Polyhedron::poly_hull_assign() and
    C_Polyhedron::poly_hull_assign_and_minimize(): we apply these
    functions to an empty polyhedron.
-   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

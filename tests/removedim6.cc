@@ -1,7 +1,7 @@
 /* Test Polyhedron::remove_higher_dimensions() and
    C_Polyhedron::remove_dimensions(): we obtain a zero-dimensional
    polyhedron removing all the dimensions.
-   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

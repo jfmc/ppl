@@ -1,5 +1,5 @@
 /* Definition of functions providing version and licensing information.
-   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -32,7 +32,7 @@ const char version_string[] = PACKAGE_VERSION;
 
 const char banner_string[] =
 "This is "PACKAGE_NAME" (PPL) version "PACKAGE_VERSION".\n"
-"Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>.\n"
+"Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>.\n"
 "The PPL is free software; see the source for copying conditions.\n"
 "There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\n"
 "PARTICULAR PURPOSE.\n"
