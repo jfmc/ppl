@@ -26,4 +26,4 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS = C OCaml Prolog
+SUBDIRS = C Prolog
