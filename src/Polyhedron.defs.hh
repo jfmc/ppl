@@ -103,10 +103,24 @@ namespace Parma_Polyhedra_Library {
     An object of the class Polyhedron represents a convex polyhedron
     in the vector space \f$\Rset^n\f$.
 
+    A polyhedron can be specified as either a finite system of constraints
+    or a finite system of generators (see Section \ref representation)
+    and it is always possible to obtain either representation.
+    That is, if we know the system of constraints, we can obtain
+    from this the system of generators that define the same polyhedron
+    and vice versa.
+    These systems can contain redundant members: in this case we say
+    that they are not in the minimal form.
+    Most operators on polyhedra are provided with two implementations: 
+    one of these, denoted <CODE><operator-name>_and_minimize</CODE>,
+    also enforces the minimization of the representations,
+    and returns the Boolean value <CODE>false</CODE> whenever
+    the resulting polyhedron turns out to be empty.
+
     Two key attributes of any polyhedron are its topological kind
     (recording whether it is a C_Polyhedron or an NNC_Polyhedron object)
     and its space dimension (the dimension \f$n \in \Nset\f$ of
-    the enclosing vector space).
+    the enclosing vector space):
 
     - all polyhedra, the empty ones included, are endowed with
       a specific topology and space dimension;
@@ -114,7 +128,7 @@ namespace Parma_Polyhedra_Library {
       (i.e., another polyhedron, a constraint or generator,
       a set of variables, etc.) will throw an exception if
       the polyhedron and the object are not both topology-compatible
-      and dimension-incompatible (see Section \ref representation);
+      and dimension-compatible (see Section \ref representation);
     - there is no way to change the topology of a polyhedron;
       rather, there are constructors of the two derived classes
       that builds a new polyhedron having a topology when
@@ -127,15 +141,6 @@ namespace Parma_Polyhedra_Library {
     the zero-dimension space:
     the empty polyhedron, either closed or NNC,
     and the universe polyhedron \f$R^0\f$, again either closed or NNC.
-
-    A polyhedron can be specified as either a finite system of constraints
-    or a finite system of generators (see the Introduction)
-    and it is always possible to obtain either representation.
-    That is, if we know the system of constraints, we can obtain
-    from this the system of generators that define the same polyhedron
-    and vice versa.
-    These systems can contain redundant members: in this case we say
-    that they are not in the minimal form.
 
     \par
     In all the examples it is assumed that variables
@@ -474,57 +479,68 @@ public:
   //! \brief
   //! Assigns to \p *this the intersection of \p *this and \p y,
   //! minimizing the result.
-  //! Returns <CODE>true</CODE> if and only if the result is not empty.
-  //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
+  /*!
+    \return
+      <CODE>false</CODE> if and only if the result is empty.
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   bool intersection_assign_and_minimize(const Polyhedron& y);
 
   //! \brief
   //! Assigns to \p *this the intersection of \p *this and \p y.
   //! The result is not guaranteed to be minimized.
-  //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   void intersection_assign(const Polyhedron& y);
 
   //! \brief
-  //! Assigns to \p *this the poly-hull of the set-theoretic union
-  //! of \p *this and \p y, minimizing the result.
-  //! Returns <CODE>true</CODE> if and only if the result is not empty.
-  //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
+  //! Assigns to \p *this the poly-hull of \p *this and \p y,
+  //! minimizing the result.
+  /*!
+    \return       <CODE>false</CODE> if and only if the result is empty.
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   bool poly_hull_assign_and_minimize(const Polyhedron& y);
 
   //! \brief
-  //! Assigns to \p *this the poly-hull of the set-theoretic union
-  //! \p *this and \p y.  The result is not guaranteed to be minimized.
-  //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
+  //! Assigns to \p *this the poly-hull \p *this and \p y.
+  //! The result is not guaranteed to be minimized.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   void poly_hull_assign(const Polyhedron& y);
 
   //! \brief
-  //! Computes the poly-hull of the set-theoretic difference of
-  //! \p *this and \p y; then, if \p *this is a C_Polyhedron,
-  //! computes the topological closure of the poly-hull.
-  //! The result is minimized and assigned to \p *this.
-  //! Returns <CODE>true</CODE> if and only if the result is not empty.
-  //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
+  //! Computes the poly-difference of \p *this and \p y; then,
+  //! if \p *this is a C_Polyhedron, computes its topological
+  //! closure. The result is minimized and assigned to \p *this.
+  /*!
+    \return       <CODE>false</CODE> if and only if the result is empty.
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   bool poly_difference_assign_and_minimize(const Polyhedron& y);
 
   //! \brief
-  //! Computes the poly-hull of the set-theoretic difference of
-  //! \p *this and \p y; then, if \p *this is a C_Polyhedron,
-  //! computes the topological closure of the poly-hull.
-  //! The result, which is not guaranteed to be minimized,
+  //! Computes the poly-difference of \p *this and \p y; then,
+  //! if \p *this is a C_Polyhedron, computes its topological
+  //! closure. The result, which is not guaranteed to be minimized,
   //! is assigned to \p *this.
-  //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   void poly_difference_assign(const Polyhedron& y);
 
   //! \brief
@@ -546,8 +562,8 @@ public:
   Poly_Gen_Relation relation_with(const Generator& g) const;
 
   //! \brief
-  //! Computes the H79-widening (as described in Section \ref operations)
-  //! between \p *this and \p y and assigns the result to \p *this.
+  //! Assigns to \p *this the result of computing the H79-widening
+  //! (see Section \ref operations) between \p *this and \p y.
   /*!
     \param y           A polyhedron that <EM>must</EM>
                        be contained in \p *this.
@@ -558,8 +574,8 @@ public:
   void H79_widening_assign(const Polyhedron& y);
 
   //! \brief
-  //! Limits the H79-widening between \p *this and \p y by \p cs
-  //! and assigns the result to \p *this.
+  //! Limits the H79-widening computation between \p *this and \p y
+  //! by enforcing constraints \p cs and assigns the result to \p *this.
   /*!
     \param y                 A polyhedron that <EM>must</EM>
                              be contained in \p *this.
@@ -574,8 +590,8 @@ public:
   void limited_H79_widening_assign(const Polyhedron& y, ConSys& cs);
 
   //! \brief
-  //! Computes the time-elapse between \p *this and \p y and
-  //! assigns the result to \p *this.
+  //! Assigns to \p *this the result of computing the time-elapse
+  //! between \p *this and \p y.
   /*!
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are topology-incompatible
@@ -717,10 +733,11 @@ private:
   */
   void update_constraints() const;
 
-  //! \brief
   //! Updates generators starting from constraints and minimizes them.
-  //! Returns <CODE>false</CODE> if and only if \p *this turns out to be empty.
   /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+
     The resulting system of generators is only partially sorted:
     the lines are in the upper part of the matrix,
     while rays and points are in the lower part.
@@ -807,10 +824,11 @@ private:
   */
   void obtain_sorted_generators_with_sat_g() const;
 
-  //! \brief
   //! Applies (weak) minimization to both the constraints and generators.
-  //! Returns <CODE>false</CODE> if and only if \p *this turns out to be empty.
   /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+
     Minimization is not attempted if the Status field already declares
     both systems to be minimized.
   */
@@ -819,17 +837,24 @@ private:
   //! \brief
   //! Applies strong minimization to both the constraints and generators
   //! of an NNC polyhedron.
-  //! Returns <CODE>false</CODE> if and only if \p *this turns out to be empty.
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+  */
   bool strongly_minimize() const;
 
-  //! \brief
   //! Applies strong minimization to the constraints of an NNC polyhedron.
-  //! Returns <CODE>false</CODE> if and only if \p *this turns out to be empty.
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+  */
   bool strongly_minimize_constraints() const;
 
-  //! \brief
   //! Applies strong minimization to the generators of an NNC polyhedron.
-  //! Returns <CODE>false</CODE> if and only if \p *this turns out to be empty.
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+  */
   bool strongly_minimize_generators() const;
 
 public:
@@ -874,7 +899,7 @@ public:
         (x, y)^\transpose \in \cP
       \,\bigr\}.
     \f]
-*/
+  */
   void add_dimensions_and_project(size_t dim);
 
   //! \brief
@@ -901,8 +926,9 @@ public:
   //! \brief
   //! Adds the specified constraints and minimizes the result,
   //! which is assigned to \p *this.
-  //! Returns <CODE>true</CODE> if and only if the result is not empty.
   /*!
+    \return
+      <CODE>false</CODE> if and only if the result is empty.
     \param  cs            The constraints that will be added to the
                           current system of constraints. This parameter
                           is not declared <CODE>const</CODE> because
@@ -939,8 +965,9 @@ public:
   //! \brief
   //! Adds the specified generators and minimizes the result,
   //! which is assigned to \p *this.
-  //! Returns <CODE>true</CODE> if and only if the result is not empty.
   /*!
+    \return
+      <CODE>false</CODE> if and only if the result is empty.
     \param  gs          The generators that will be added to the
                         current system of generators. The parameter is
                         not declared <CODE>const</CODE> because it
@@ -1183,6 +1210,7 @@ private:
 			     size_t add_dim);
 
   //! Performs the conversion from constraints to generators and vice versa.
+  // Detailed Doxygen comment to be found in file conversion.cc.
   static size_t conversion(Matrix& entry,
 			   size_t start,
 			   Matrix& result,
@@ -1192,15 +1220,18 @@ private:
   //! \brief
   //! Uses Gauss' elimination method to simplify the result of
   //! <CODE>conversion()</CODE>.
+  // Detailed Doxygen comment to be found in file simplify.cc.
   static int simplify(Matrix& mat, SatMatrix& sat);
 
   //! Builds and simplifies constraints from generators (or vice versa).
+  // Detailed Doxygen comment to be found in file minimize.cc.
   static bool minimize(bool con_to_gen, Matrix& source, Matrix& dest,
 		       SatMatrix& sat);
 
   //! \brief
   //! Adds given constraints and builds minimized corresponding generators
   //! or vice versa.
+  // Detailed Doxygen comment to be found in file minimize.cc.
   static bool add_and_minimize(bool con_to_gen,
 			       Matrix& source1, Matrix& dest, SatMatrix& sat,
 			       const Matrix& source2);
