@@ -44,6 +44,8 @@ namespace PPL = Parma_Polyhedra_Library;
 const PPL::ConSys&
 PPL::Polyhedron::constraints() const {
   if (is_empty()) {
+    // We want `con_sys' to only contain the unsatisfiable constraint
+    // of the appropriate dimension.
     if (con_sys.num_rows() == 0) {
       // The 0-dim unsatisfiable constraint is extended to
       // the appropriate dimension and then stored in `con_sys'.
@@ -52,6 +54,7 @@ PPL::Polyhedron::constraints() const {
       const_cast<ConSys&>(con_sys).swap(unsat_cs);
     }
     else {
+      // Checking that `con_sys' contains the right thing.
       assert(con_sys.space_dimension() == space_dim);
       assert(con_sys.num_rows() == 1);
       assert(con_sys[0].is_trivial_false());
@@ -230,11 +233,12 @@ PPL::Polyhedron::Polyhedron(GenSys& gs)
     // that is why the formal parameter is not declared const.
     std::swap(gen_sys, gs);
     set_generators_up_to_date();
+    // Set the space dimension.
     space_dim = gen_sys.num_columns() - 1;
     return;
   }
 
-  // Here gs.num_columns() <= 1.
+  // Here gs.num_columns() <= 1, so we have a zero-dim space polyhedron.
   space_dim = 0;
   if (gs.num_rows() == 0)
     status.set_empty();
@@ -618,10 +622,17 @@ PPL::operator <=(const Polyhedron& x, const Polyhedron& y) {
     return x.check_empty();
   else if (x_space_dim == 0)
     return true;
+#ifdef BE_LAZY
+  if (!x.generators_are_up_to_date())
+    x.update_generators();
+  if (!y.constraints_are_up_to_date())
+    y.update_constraints();
+#else
   if (!x.generators_are_minimized())
     x.minimize();
   if (!y.constraints_are_minimized())
     y.minimize();
+#endif
   // We have that `x' is contained in `y' if and only if all the
   // generators of `x' satisfy or saturate all the inequalities and
   // saturate all the equalities of `y'.  This comes from the
@@ -2190,8 +2201,8 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
 /*!
   This function adds to the widened polyhedron \p *this (obtained
   starting from \p *this and \p y) the constraints of the matrix
-  \p, constraints that are verified by the polyhedron \p y and by
-  the initial polyhedra \p *this.
+  \p cs that are satisfied by both the polyhedron \p y and
+  the initial polyhedron \p *this.
   Returns <CODE>true</CODE> if the widened polyhedron \p *this is
   not empty.
 */
@@ -2245,7 +2256,7 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
       // polyhedrons. To choose them, we only use the generators
       // of the greater polyhedron `x', because those of `y'
       // are points also of `x' (`y' is contained in `x') and
-      // so they verify the chosen constraints, too.
+      // so they satisfy the chosen constraints, too.
       GenSys_Con_Rel status = x.gen_sys.satisfy(cs[i]);
       if (status == ALL_SATURATE || status == ALL_SATISFY)
 	// The chosen constraints are put at the top of the
