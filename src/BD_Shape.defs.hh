@@ -29,6 +29,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "DB_Row.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
+#include "Polyhedron.types.hh"
+#include "globals.defs.hh"
 #include <vector>
 #include <cstddef>
 #include <climits>
@@ -430,6 +432,15 @@ public:
     of \p gs.
   */
   BD_Shape(const Generator_System& gs);
+
+  //! Builds a BDS from the polyhedron \p ph.
+  /*!
+    Builds a BDS containing \p ph using algorithms whose complexity
+    does not exceed the one specified by \p complexity.  If
+    \p complexity is \p ANY_COMPLEXITY, then the BDS built is the
+    smallest one containing \p ph.
+  */
+  BD_Shape(const Polyhedron& ph, Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! \brief
   //! The assignment operator
