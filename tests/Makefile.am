@@ -116,8 +116,9 @@ ORIGINAL_TESTS = \
 	topclosure1 topclosure2 topclosure3 \
 	universe1 universe2 universe3 universe4 universe5 universe6 \
 	writeconsys1 \
-	writegensys1 writegensys2 writegensys3 writegensys4 \
-	writepolyhedron1 writepolyhedron2 writepolyhedron3
+	writegensys1 writegensys2 writegensys3 \
+	writepolyhedron1 writepolyhedron2 writepolyhedron3 \
+	writevariable1
 
 DERIVED_TESTS = \
 	nnc_addconstraint2 nnc_addconstraint3 \
@@ -476,11 +477,12 @@ writeconsys1_SOURCES = writeconsys1.cc files.cc
 writegensys1_SOURCES = writegensys1.cc files.cc
 writegensys2_SOURCES = writegensys2.cc files.cc
 writegensys3_SOURCES = writegensys3.cc files.cc
-writegensys4_SOURCES = writegensys4.cc files.cc
 
 writepolyhedron1_SOURCES = writepolyhedron1.cc files.cc
 writepolyhedron2_SOURCES = writepolyhedron2.cc files.cc
 writepolyhedron3_SOURCES = writepolyhedron3.cc files.cc
+
+writevariable1_SOURCES = writevariable1.cc files.cc
 
 #
 # Sources and compilation flags for the derived check programs
@@ -885,7 +887,7 @@ writeconsys1.dat \
 writegensys1.dat \
 writegensys2.dat \
 writegensys3.dat \
-writegensys4.dat \
 writepolyhedron1.dat \
 writepolyhedron2.dat \
-writepolyhedron3.dat
+writepolyhedron3.dat \
+writevariable1.dat
