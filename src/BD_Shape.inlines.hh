@@ -388,8 +388,10 @@ BD_Shape<T>::concatenate_assign(const BD_Shape<T>& y) {
 template <typename T>
 inline bool
 BD_Shape<T>::contains(const BD_Shape& y) const {
+  dimension_type space_dim = space_dimension();
+
   // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
+  if (space_dim != y.space_dimension())
     throw_dimension_incompatible("contains(y)", y);
 
   // The zero-dimensional universal system of bounded differences
@@ -434,7 +436,6 @@ BD_Shape<T>::contains(const BD_Shape& y) const {
 
   // `*this' contains `y' if and only if every cell of `dbm'
   // is greater than or equal to the correspondent one of `y.dbm'.
-  dimension_type space_dim = space_dimension();
   for (dimension_type i = 0; i <= space_dim; ++i)
     for (dimension_type j = 0; j <= space_dim; ++j)
       if (dbm[i][j] < y.dbm[i][j])
