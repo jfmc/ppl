@@ -30,11 +30,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 // (see `Makefile.am' in the `src' directory).
 # include <climits>
 
+#include "Limits.hh"
+#include "float.types.hh"
 #include <stdint.h>
 #include <cerrno>
 #include <cstdlib>
-#include "Limits.hh"
-#include "float.types.hh"
+
+#if !HAVE_DECL_STRTOLL
+long long int
+strtoll(const char* nptr, char** endptr, int base);
+#endif
+
+#if !HAVE_DECL_STRTOULL
+unsigned long long int
+strtoull(const char* nptr, char** endptr, int base);
+#endif
+
 
 #define CHECKED_INT_POS_OVERFLOW(Type) \
 (Limits<Type>::max)
