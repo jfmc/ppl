@@ -218,6 +218,12 @@ normalize2(const Integer& x, const Integer& y, Integer& nx, Integer& ny);
 template <typename T>
 T low_bits_mask(unsigned n);
 
+//! Used to avoid warning from the compiler
+template <typename T>
+void used(const T&)
+{
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #include "globals.inlines.hh"
