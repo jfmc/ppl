@@ -315,6 +315,7 @@ ppl_set_error_handler __P((void (*h)(enum ppl_enum_error_code code,
 /*@}*/ /* Initialization, Error Handling and Auxiliary Functions */
 
 #undef PPL_TYPE_DECLARATION
+
 #define PPL_TYPE_DECLARATION(Type) /*! \brief Opaque pointer. */ typedef struct ppl_ ## Type ## _tag* ppl_ ## Type ## _t; /*! \brief Opaque pointer to const object. */ typedef struct ppl_ ## Type ## _tag const* ppl_const_ ## Type ## _t
 
 PPL_TYPE_DECLARATION(Coefficient);
@@ -2110,7 +2111,9 @@ ppl_Polyhedron_map_dimensions __P((ppl_Polyhedron_t ph,
 /*! \name Simple I/O Functions */
 /*@{*/
 
-#define DECLARE_PRINT_FUNCTIONS(Type) \
+#undef PPL_DECLARE_PRINT_FUNCTIONS
+
+#define PPL_DECLARE_PRINT_FUNCTIONS(Type) \
 int \
 ppl_io_print_ ## Type __P((ppl_const_ ## Type ## _t x)); \
  \
@@ -2118,19 +2121,21 @@ int \
 ppl_io_fprint_ ## Type __P((FILE* f, ppl_const_ ## Type ## _t x));
 
 
-DECLARE_PRINT_FUNCTIONS(Coefficient)
+PPL_DECLARE_PRINT_FUNCTIONS(Coefficient)
 
-DECLARE_PRINT_FUNCTIONS(LinExpression)
+PPL_DECLARE_PRINT_FUNCTIONS(LinExpression)
 
-DECLARE_PRINT_FUNCTIONS(Constraint)
+PPL_DECLARE_PRINT_FUNCTIONS(Constraint)
 
-DECLARE_PRINT_FUNCTIONS(ConSys)
+PPL_DECLARE_PRINT_FUNCTIONS(ConSys)
 
-DECLARE_PRINT_FUNCTIONS(Generator)
+PPL_DECLARE_PRINT_FUNCTIONS(Generator)
 
-DECLARE_PRINT_FUNCTIONS(GenSys)
+PPL_DECLARE_PRINT_FUNCTIONS(GenSys)
 
-DECLARE_PRINT_FUNCTIONS(Polyhedron)
+PPL_DECLARE_PRINT_FUNCTIONS(Polyhedron)
+
+#undef PPL_DECLARE_PRINT_FUNCTIONS
 
 /*@}*/ /* Simple I/O Functions */
 
