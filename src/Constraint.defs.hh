@@ -114,22 +114,27 @@ namespace Parma_Polyhedra_Library {
   (thus, in this case we want to obtain the equality constraint
   \f$x - 5y + 3z = 4\f$).
   \code
-  Constraint c(x - 5*y + 3*z <= 4);
+  Constraint c1(x - 5*y + 3*z <= 4);
   cout << "Constraint c1: " << c1 << endl;
   LinExpression e;
-  for (size_t i = c.space_dimension() - 1; i >= 0; i--)
-    e += c.coefficient(Variable(i)) * Variable(i); 
-  e += c.coefficient();
-  // FIXME: Probably we need an assignment operator on constraints,
-  // or better a full set of modifiers. 
-  if (c.is_equality()) {
-    Constraint c2(e == 0);
-    cout << "Constraint c2: " << c2 << endl;
+  for (int i = c1.space_dimension() - 1; i >= 0; i--)
+    e += c1.coefficient(Variable(i)) * Variable(i); 
+  e += c1.coefficient();
+  Constraint c2;
+  if (c1.is_equality()) {
+    Constraint tmp(e >= 0);
+    c2 = tmp;
   }
   else {
-    Constraint c2(e >= 0);
-    cout << "Constraint c2: " << c2 << endl;
+    Constraint tmp(e == 0);
+    c2 = tmp;
   }
+  cout << "Constraint c2: " << c2 << endl;
+  \endcode
+  The actual output is the following:
+  \code
+  Constraint c1: -A + 5*B - 3*C >= -4
+  Constraint c2: -A + 5*B - 3*C = -4
   \endcode
   Note that, in general, the particular output obtained can be
   syntactically different from the (semantically equivalent)

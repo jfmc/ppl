@@ -165,30 +165,28 @@ namespace Parma_Polyhedra_Library {
   If a zero denominator is provided, an exception is thrown.
 
   \par Example 5
-  The following code prints all the coefficients of a given generator:
+  The following code shows how it is possible to access each single
+  coefficient of a generator.
+  Assuming that <CODE>v1</CODE> is the vertex of coordinates
+  \f$(a_0, \ldots, a_{n-1})^T\f$,
+  we construct the vertex <CODE>v2</CODE> having coordinates
+  \f$(a_0, 2 a_1, \ldots, (i+1)a_i, \ldots, n a_{n-1})^T\f$.
   \code
-  size_t g_space_dim = g.space_dimension();
-  for (size_t varid = 0; varid < g_space_dim; varid++) {
-    Variable v(varid);
-    cout << "Variable " << v << " has coefficient "
-         << g.coefficient(v) << endl;
-  }
-  if (g.type() == Generator::VERTEX) {
-    const Integer& d = g.divisor();
-    if (d != 1)
-      cout << "The divisor of the vertex is " << d << endl;
-  }
+  cout << "Vertex g1: " << g1 << endl;
+  LinExpression e;
+  for (int i = g1.space_dimension() - 1; i >= 0; i--)
+    e += (i + 1) * g1.coefficient(Variable(i)) * Variable(i);
+  Generator g2 = vertex(e);
+  cout << "Vertex g2: " << g2 << endl;
   \endcode
-  Namely, for a generator defined by
+  Therefore, for the vertex
   \code
-  Generator g = vertex(2*x - z, -1);
+  Generator g1 = vertex(2*x - y + 3*z);
   \endcode
-  the output is the following:
+  we would obtain the following output:
   \code
-  Variable A has coefficient 2
-  Variable B has coefficient 0
-  Variable C has coefficient -1
-  The divisor of the vertex is -1 
+  Vertex g1: v(2*A - B + 3*C)
+  Vertex g2: v(2*A - 2*B + 9*C)
   \endcode
 */
 
