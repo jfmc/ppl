@@ -3,6 +3,8 @@ Enhancements for PPL 0.8 or later versions
 
 - Degenerate_Kind is something that we need globally: consider taking
   it out from class Polyhedron.
+- Moreover, code like "BD_Shape(Polyhedron::EMPTY);" should not compile,
+  whereas it currently does.
 - Move the documentation of our namespaces out of Polyhedron.types.hh.
 - Provide a single, generic implementation to replace all our status
   classes.
