@@ -1,6 +1,7 @@
 Enhancements for PPL 0.6
 ========================
 
+- Implement void Polyhedron::envelope_assign(const Polyhedron& y).
 - Before releasing PPL 0.6, modify the documentation and the web site
   so as to describe the new configure options that allow to use
   versions of GMP installed in nonstandard places.
