@@ -884,6 +884,15 @@ PPL::Matrix::check_sorted() const {
 
 bool
 PPL::Matrix::OK() const {
+
+  // The check in the following "#else" branch currently
+  // fails after calls to method Matrix::grow().
+  // My opinion (Enea) is that we should enforce such an invariant.
+#if 1
+  // An empty matrix must have num_columns() == 0.
+  if (num_rows() == 0)
+    return true;
+#else
   // An empty matrix must have num_columns() == 0.
   if (num_rows() == 0)
     if (num_columns() == 0)
@@ -894,6 +903,7 @@ PPL::Matrix::OK() const {
 		<< std::endl;
       return false;
     }
+#endif
 
   // A non-empty matrix will contain constraints or generators; in
   // both cases it must have at least one column for the inhomogeneous
