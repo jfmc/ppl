@@ -105,8 +105,8 @@ public:
   //! increasing the number of dimensions if needed.
   void insert(const Constraint& c);
 
-  //! Returns the singleton system containing only
-  //! Constraint::zero_dim_false().
+  //! Returns the singleton system (of the appropriate
+  //! topological kind) containing only Constraint::zero_dim_false().
   static const ConSys& zero_dim_empty();
 
   /*!
@@ -176,9 +176,27 @@ public:
   const_iterator end() const;
 
 PPL_INTERNAL:
+  //! Constructor: builds an empty system of constraints
+  //! having the specified topology.
+  ConSys(Topology topology);
   //! Constructor: it builds a system of \p n_rows constraints
-  //! on a \p n_columns - 1 dimensional space.
-  ConSys(size_t n_rows, size_t n_columns);
+  //! on a \p n_columns - 1 dimensional space (including the
+  //! \f$\epsilon\f$ dimension, if \p topology is
+  //! <CODE>NON_NECESSARILY_CLOSED</CODE>).
+  ConSys(Topology topology, size_t n_rows, size_t n_columns);
+
+  //! Adjusts \p *this so that it matches the topology and
+  //! the number of dimensions given as parameters
+  //! (adding or removing columns if needed).
+  //! Returns <CODE>false</CODE> if and only if \p topology is
+  //! equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
+  //! contains strict inequalities.
+  bool adjust_topology_and_dimension(Topology topology,
+				     size_t num_dimensions);
+
+  //! Returns <CODE>true</CODE> if and only if \p *this
+  //! contains one or more strict inequality constraints.
+  bool has_strict_inequalities() const;
 
   //! Returns the \p k- th constraint of the system.
   Constraint& operator[](size_t k);

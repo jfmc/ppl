@@ -34,6 +34,109 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+
+bool
+PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
+					   size_t new_space_dim) {
+  assert(space_dimension() <= new_space_dim);
+
+  size_t old_space_dim = space_dimension();
+  size_t cols_to_be_added = new_space_dim - old_space_dim;
+  Topology old_topology = topology();
+
+  if (cols_to_be_added > 0)
+    if (old_topology != new_topology)
+      if (new_topology == NECESSARILY_CLOSED) {
+	// A NON_NECESSARILY_CLOSED constraint system
+	// can be converted to a NECESSARILY_CLOSED one
+	// only if it does not contain strict inequalities.
+	if (has_strict_inequalities())
+	  return false;
+	// Since there were no strict inequalities,
+	// all \epsilon coefficients are equal to zero
+	// and we do not need to clear them:
+	// we just decrement the number of columns to be added.
+	if (--cols_to_be_added > 0)
+	  add_zero_columns(cols_to_be_added);
+	set_necessarily_closed();
+      }
+      else {
+	// A NECESSARILY_CLOSED constraint system is converted to
+	// a NON_NECESSARILY_CLOSED one by adding a further column
+	// of zeros for the \epsilon coefficients.
+	add_zero_columns(++cols_to_be_added);
+	set_non_necessarily_closed();
+      }
+    else {
+      // Topologies agree: first add the required zero columns ...
+      add_zero_columns(cols_to_be_added);
+      // ... and, if needed, move the \epsilon coefficients
+      // to the new last column.
+      if (old_topology == NON_NECESSARILY_CLOSED)
+	swap_columns(old_space_dim + 1, new_space_dim + 1);
+    }
+  else
+    // Here `cols_to_be_added == 0'.
+    if (old_topology != new_topology)
+      if (new_topology == NECESSARILY_CLOSED) {
+	// A NON_NECESSARILY_CLOSED constraint system
+	// can be converted to a NECESSARILY_CLOSED one
+	// only if it does not contain strict inequalities.
+	if (has_strict_inequalities())
+	  return false;
+	// We just remove the column of the \epsilon coefficients.
+	resize_no_copy(num_rows(), old_space_dim + 1);
+	set_necessarily_closed();
+      }
+      else {
+	// We just add the column of the \epsilon coefficients.
+	add_zero_columns(1);
+	set_non_necessarily_closed();
+      }
+  // We successfully adjusted dimensions and topology.
+  assert(OK());
+  return true;
+}
+
+bool
+PPL::ConSys::has_strict_inequalities() const {
+  if (is_necessarily_closed())
+    return false;
+  const ConSys& cs = *this;
+  size_t eps_index = cs.num_columns() - 1;
+  for (size_t i = num_rows(); i-- > 0; )
+    // Optimized type checking: we already know the topology;
+    // also, equalities have the \epsilon coefficient equal to zero.
+    // NOTE : the constraint eps_leq_one should not be considered
+    //        a strict inequality.
+    if (cs[i][eps_index] < 0 && !cs[i].is_trivial_true())
+      return true;
+  return false;
+}
+
+
+void
+PPL::ConSys::insert(const Constraint& c) {
+  if (topology() == c.topology())
+    Matrix::insert(c);
+  else
+    // `*this' and `c' have different topologies.
+    if (is_necessarily_closed()) {
+      // Padding the matrix with a columns of zeros
+      // corresponding to the \epsilon coefficients.
+      add_zero_columns(1);
+      set_non_necessarily_closed();
+      Matrix::insert(c);
+    }
+    else {
+      // Copying the constraint adding the missing dimensions
+      // and the \epsilon coefficient.
+      Constraint tmp_c(c, num_columns());
+      tmp_c.set_non_necessarily_closed();
+      Matrix::insert(tmp_c);
+    }
+}
+
 size_t
 PPL::ConSys::num_inequalities() const {
   int n = 0;
@@ -68,25 +171,73 @@ PPL::ConSys::const_iterator::skip_forward() {
 bool
 PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   assert(g.space_dimension() <= space_dimension());
-  bool g_is_ray_or_point = g.is_ray_or_point();
-  for (size_t i = num_rows(); i-- > 0; ) {
-    const Constraint& c = (*this)[i];
-    // Compute the sign of the scalar product.
-    int sp_sign = sgn(g * c);
-    if (g_is_ray_or_point && c.is_inequality()) {
-      // A ray satisfies an inequality if its scalar product
-      // with such a constraint is positive.
-      if (sp_sign < 0)
-	return false;
+
+  // Setting `sp_fp' to the appropriate scalar product operator.
+  // This also avoids problems when having _legal_ topology mismatches
+  // (which could also cause a mismatch in the number of columns).
+  const Integer& (*sp_fp)(const Row&, const Row&);
+  if (g.is_necessarily_closed())
+    sp_fp = PPL::operator*;
+  else
+    sp_fp = PPL::operator^;
+
+  const ConSys& cs = *this;
+  if (cs.is_necessarily_closed())
+    for (size_t i = cs.num_rows(); i-- > 0; ) {
+      const Constraint& c = cs[i];
+      int sp_sign = sgn(sp_fp(g, c));
+      if (c.is_inequality()) {
+	// `c' is a non-strict inequality.
+	if (sp_sign < 0)
+	  return false;
+      }
+      else
+	// `c' is an equality.
+	if (sp_sign != 0)
+	  return false;
     }
-    else if (sp_sign != 0)
-      // Equalities are saturated by all rays/points and lines.
-      // Lines saturate all equalities.
-      return false;
-  }
-  // All constraints are saturated by g.
+  else
+    // `cs' is NON-necessarily closed.
+    if (g.is_point())
+      // Generator `g' is a point: have to perform the special test
+      // when dealing with a strict inequality.
+      for (size_t i = cs.num_rows(); i-- > 0; ) {
+	const Constraint& c = cs[i];
+	int sp_sign = sgn(sp_fp(g, c));
+	switch (c.type()) {
+	case Constraint::EQUALITY:
+	  if (sp_sign != 0)
+	    return false;
+	  break;
+	case Constraint::NONSTRICT_INEQUALITY:
+	  if (sp_sign < 0)
+	    return false;
+	  break;
+	case Constraint::STRICT_INEQUALITY:
+	  if (sp_sign <= 0)
+	    return false;
+	  break;
+	}
+      }
+    else
+      // Generator `g' is a line, ray or closure point.
+      for (size_t i = cs.num_rows(); i-- > 0; ) {
+	const Constraint& c = cs[i];
+	int sp_sign = sgn(sp_fp(g, c));
+	if (c.is_inequality()) {
+	  // Constraint `c' is either a strict or a non-strict inequality.
+	  if (sp_sign < 0)
+	    return false;
+	}
+	else
+	  // Constraint `c' is an equality.
+	  if (sp_sign != 0)
+	    return false;
+      }
+  // `g' satisfies all constraints.
   return true;
 }
+
 
 /*!
   \param v            Index of the column to which the
@@ -106,10 +257,10 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   \f[
     {a'}_{ij} =
     \begin{cases}
-    a_{ij} * \text{denominator} + a_{i\text{v}} * \text{expr}[j]
-    \quad \text{for } j \neq \text{v}; \\
-    \text{expr}[\text{v}] * a_{i\text{v}}
-    \quad \text{for } j = \text{v}.
+    a_{ij} * \mathrm{denominator} + a_{iv} * \mathrm{expr}[j]
+    \quad \text{for } j \neq v; \\
+    \mathrm{expr}[v] * a_{iv}
+    \quad \text{for } j = v.
     \end{cases}
   \f]
 
@@ -119,24 +270,52 @@ void
 PPL::ConSys::affine_preimage(size_t v,
 			     const LinExpression& expr,
 			     const Integer& denominator) {
-  assert(v > 0 && v < num_columns());
-  assert(num_columns() == expr.size());
+  // `v' is the index of a column corresponding to
+  // a "user" variable (i.e., it cannot be the inhomogeneous term,
+  // nor the \epsilon dimension of NNC polyhedra).
+  assert(v > 0 && v <= space_dimension());
+  assert(expr.space_dimension() <= space_dimension());
   assert(denominator != 0);
 
+  size_t n_columns = num_columns();
+  size_t n_rows = num_rows();
+  size_t expr_size = expr.size();
+  bool not_invertible = (v >= expr_size || expr[v] == 0);
   ConSys& x = *this;
-  // Build the new matrix of constraints.
-  for (size_t i = num_rows(); i-- > 0; ) {
-    Constraint& row = x[i];
-    Integer& row_v = row[v];
-    if (row_v != 0) {
-      for (size_t j = num_columns(); j-- > 0; )
-	if (j != v) {
-	  row[j] *= denominator;
-	  row[j] += row_v * expr[j];
-	}
-      row_v *= expr[v];
+
+  if (denominator != 1)
+    for (size_t i = n_rows; i-- > 0; ) {
+      Constraint& row = x[i];
+      Integer& row_v = row[v];
+      if (row_v != 0) {
+	for (size_t j = n_columns; j-- > 0; )
+	  if (j != v) {
+	    row[j] *= denominator;
+	    if (j < expr_size)
+	      row[j] += row_v * expr[j];
+	  }
+	if (not_invertible)
+	  row_v = 0;
+	else
+	  row_v *= expr[v];
+      }
     }
-  }
+  else
+    // Here `denominator' == 1: optimized computation
+    // only considering columns having indexes < expr_size.
+    for (size_t i = n_rows; i-- > 0; ) {
+      Constraint& row = x[i];
+      Integer& row_v = row[v];
+      if (row_v != 0) {
+	for (size_t j = expr_size; j-- > 0; )
+	  if (j != v)
+	    row[j] += row_v * expr[j];
+	if (not_invertible)
+	  row_v = 0;
+	else
+	  row_v *= expr[v];
+      }
+    }
   x.strong_normalize();
 }
 
@@ -151,6 +330,11 @@ PPL::ConSys::print(std::ostream& s) const {
   Matrix::print(s);
   const char separator = ' ';
   const ConSys& x = *this;
+  s << "topology ";
+  if (!x.is_necessarily_closed())
+    s << "NON_";
+  s << "NECESSARILY_CLOSED"
+    << std::endl;
   for (size_t i = 0; i < x.num_rows(); ++i) {
     for (size_t j = 0; j < x.num_columns(); ++j)
       s << x[i][j] << separator;
@@ -171,6 +355,15 @@ PPL::ConSys::get(std::istream& s) {
   Matrix::get(s);
   std::string tempstr;
   ConSys& x = *this;
+  s >> tempstr;
+  assert(tempstr == "topology");
+  s >> tempstr;
+  if (tempstr == "NECESSARILY_CLOSED")
+    x.set_necessarily_closed();
+  else {
+    assert(tempstr == "NON_NECESSARILY_CLOSED");
+    x.set_non_necessarily_closed();
+  }
   for (size_t i = 0; i < x.num_rows(); ++i) {
     for (size_t j = 0; j < x.num_columns(); ++j)
       s >> x[i][j];
@@ -185,30 +378,11 @@ PPL::ConSys::get(std::istream& s) {
 }
 
 /*!
-  Returns <CODE>true</CODE> if and only if \p *this actually represents
-  a system of constraints. So \p *this must have:
-  -# at least a column for the inhomogeneus term and one for a variable;
-  -# at least a row.
+  Returns <CODE>true</CODE> if and only if \p *this is a valid Matrix.
+  No other checks can be performed here, since any valid Row object
+  in the matrix is also a valid Constraint object.
 */
 bool
 PPL::ConSys::OK() const {
-  using std::endl;
-  using std::cerr;
-
-  // A ConSys must be a valid Matrix.
-  if (!Matrix::OK())
-    return false;
-
-  if (num_rows() == 0) {
-    // A valid constraint system must have at least one constraint.
-    // In fact, the constraint representation of a non-universe
-    // polyhedron has, by definition, at least one constraint,
-    // while a constraint system denoting a universe polyhedron must have,
-    // in our representation, at least one positivity constraint.
-    cerr << "A ConSys must not have zero rows!"
-	 << endl;
-    return false;
-  }
-
-  return true;
+  return Matrix::OK();
 }

@@ -25,8 +25,25 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "LinExpression.defs.hh"
+#include "Constraint.defs.hh"
+#include "Generator.defs.hh"
 
 namespace Parma_Polyhedra_Library {
+
+LinExpression::LinExpression(const Constraint& c)
+  : Row(Row::Type(), c.space_dimension() + 1) {
+  LinExpression& e = *this;
+  for (size_t i = size(); i-- > 0; )
+    e[i] = c[i];
+}
+
+LinExpression::LinExpression(const Generator& g)
+  : Row(Row::Type(), g.space_dimension() + 1) {
+  LinExpression& e = *this;
+  // Do not copy the divisor of `g'.
+  for (size_t i = size(); --i > 0; )
+    e[i] = g[i];
+}
 
 LinExpression
 operator+(const LinExpression& e1, const LinExpression& e2) {
@@ -59,7 +76,6 @@ operator+(const LinExpression& e1, const LinExpression& e2) {
 
   return r;
 }
-
 
 LinExpression
 operator+(const Integer& n, const LinExpression& e) {

@@ -10,8 +10,8 @@
 :- foreign(ppl_add_generators_and_minimize(+term, +term)).
 :- foreign(ppl_add_dimensions_and_constraints(+term, +term)).
 :- foreign(ppl_check_empty(+term)).
-:- foreign(ppl_check_universe, 1).
-:- foreign(ppl_is_bounded, 1).
+:- foreign(ppl_check_universe(+term)).
+:- foreign(ppl_is_bounded(+term)).
 :- foreign(ppl_intersection_assign(+term, +term)).
 :- foreign(ppl_intersection_assign_and_minimize(+term, +term)).
 :- foreign(ppl_convex_hull_assign(+term, +term)).

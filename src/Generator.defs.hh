@@ -40,6 +40,7 @@ namespace Parma_Polyhedra_Library {
   Generator line(const LinExpression& e);
   Generator ray(const LinExpression& e);
   Generator point(const LinExpression& e, const Integer& d);
+  Generator closure_point(const LinExpression& e, const Integer& d);
 
 }
 
@@ -233,6 +234,14 @@ private:
   Parma_Polyhedra_Library::point(const LinExpression& e
 				 = LinExpression::zero(),
 				 const Integer& d = Integer_one());
+  //! Returns the closure point at \p e / \p d
+  //! Both \p e and \p d are optional arguments, with default values
+  //! LinExpression::zero() and Integer_one(), respectively.
+  //! \exception std::invalid_argument thrown if \p d is zero.
+  friend Generator
+  Parma_Polyhedra_Library::closure_point(const LinExpression& e
+					 = LinExpression::zero(),
+					 const Integer& d = Integer_one());
 
 public:
   //! Ordinary copy-constructor.
@@ -252,18 +261,14 @@ public:
       Describes the type of the generator.
   */
   enum Type {
-    /*! \hideinitializer
-      The generator is a line.
-    */
-    LINE = Row::LINE_OR_EQUALITY,
-    /*! \hideinitializer
-      The generator is a ray.
-    */
-    RAY = Row::RAY_OR_POINT_OR_INEQUALITY,
-    /*! \hideinitializer
-      The generator is a point.
-    */
-    POINT = RAY+1
+    /*! The generator is a line. */
+    LINE,
+    /*! The generator is a ray. */
+    RAY,
+    /*! The generator is a point. */
+    POINT,
+    /*! The generator is a closure point. */
+    CLOSURE_POINT
   };
 
   //! Returns the generator type of \p *this.
@@ -278,6 +283,9 @@ public:
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is a point.
   bool is_point() const;
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this is a closure point.
+  bool is_closure_point() const;
 
   //! If the index of variable \p v is less than the space-dimension
   //! of \p *this, returns the coefficient of \p v in \p *this.
@@ -290,11 +298,17 @@ public:
 
   //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Generator& zero_dim_point();
+  //! Returns, as a closure point,
+  //! the origin of the zero-dimensional space \f$\Rset^0\f$.
+  static const Generator& zero_dim_closure_point();
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
 PPL_INTERNAL:
+  //! Copy-constructor with given size.
+  Generator(const Generator& g, size_t sz);
+
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is either a ray or a point.
   bool is_ray_or_point() const;

@@ -60,22 +60,6 @@ Row::Impl::operator delete(void* p, size_t) {
 
 
 /*!
-  Returns the type of the row \p this points to.
-*/
-inline Row::Type
-Row::Impl::type() const {
-  return type_;
-}
-
-/*!
-  Returns the type of the row \p this points to.
-*/
-inline void
-Row::Impl::set_type(Type t) {
-  type_ = t;
-}
-
-/*!
   Returns the actual size of the row \p this points to.
 */
 inline size_t
@@ -118,20 +102,20 @@ Row::Impl::resize_no_copy(size_t new_size) {
 
 inline
 Row::Impl::Impl(Type t, size_t sz)
-  : size_(0), type_(t) {
+  : size_(0), type(t) {
   grow_no_copy(sz);
 }
 
 
 inline
 Row::Impl::Impl(const Impl& y)
-  : size_(0), type_(y.type()) {
+  : size_(0), type(y.type) {
   copy_construct(y);
 }
 
 inline
 Row::Impl::Impl(const Impl& y, size_t sz)
-  : size_(0), type_(y.type()) {
+  : size_(0), type(y.type) {
   copy_construct(y);
   grow_no_copy(sz);
 }
@@ -166,12 +150,117 @@ Row::Impl::operator[](size_t k) const {
   return vec_[k];
 }
 
+
+inline
+Row::Type::Type()
+  : flags(NECESSARILY_CLOSED_LINE_OR_EQUALITY) {
+}
+
+#include <iostream>
+
+inline
+Row::Type::Type(Topology topology, Kind kind)
+  : flags(static_cast<flags_t>(topology | (kind << 1))) {
+}
+
+inline const Row::Type&
+Row::Type::necessarily_closed_line_or_equality() {
+  static Type ncle = Type(NECESSARILY_CLOSED_LINE_OR_EQUALITY);
+  return ncle;
+}
+
+inline const Row::Type&
+Row::Type::necessarily_closed_ray_or_point_or_inequality() {
+  static Type ncrpi = Type(NECESSARILY_CLOSED_RAY_OR_POINT_OR_INEQUALITY);
+  return ncrpi;
+}
+
+inline const Row::Type&
+Row::Type::non_necessarily_closed_line_or_equality() {
+  static Type nncle = Type(NON_NECESSARILY_CLOSED_LINE_OR_EQUALITY);
+  return nncle;
+}
+
+inline const Row::Type&
+Row::Type::non_necessarily_closed_ray_or_point_or_inequality() {
+  static Type nncrpi = Type(NON_NECESSARILY_CLOSED_RAY_OR_POINT_OR_INEQUALITY);
+  return nncrpi;
+}
+
+inline
+Row::Type::Type(flags_t mask)
+  : flags(mask) {
+}
+
+inline bool
+Row::Type::test_all(flags_t mask) const {
+  return (flags & mask) == mask;
+}
+
+inline void
+Row::Type::set(flags_t mask) {
+  flags |= mask;
+}
+
+inline void
+Row::Type::reset(flags_t mask) {
+  flags &= ~mask;
+}
+
+inline bool
+Row::Type::is_line_or_equality() const {
+  return !is_ray_or_point_or_inequality();
+}
+
+inline void
+Row::Type::set_is_line_or_equality() {
+  reset(RPI);
+}
+
+inline bool
+Row::Type::is_ray_or_point_or_inequality() const {
+  return test_all(RPI);
+}
+
+inline void
+Row::Type::set_is_ray_or_point_or_inequality() {
+  set(RPI);
+}
+
+inline Topology
+Row::Type::topology() const {
+  return test_all(NNC) ? NON_NECESSARILY_CLOSED : NECESSARILY_CLOSED;
+}
+
+inline bool
+Row::Type::is_necessarily_closed() const {
+  return !test_all(NNC);
+}
+
+inline void
+Row::Type::set_necessarily_closed() {
+  reset(NNC);
+}
+
+inline void
+Row::Type::set_non_necessarily_closed() {
+  set(NNC);
+}
+
 /*!
   Returns the size of \p *this row.
 */
 inline size_t
 Row::size() const {
   return impl->size();
+}
+
+inline size_t
+Row::space_dimension() const {
+  size_t sz = size();
+  return (sz == 0)
+    ? 0
+    : sz - (is_necessarily_closed() ? 1 : 2);
 }
 
 #ifndef NDEBUG
@@ -331,7 +420,7 @@ Row::operator=(const Row& y) {
 
 inline Row::Type
 Row::type() const {
-  return impl->type();
+  return impl->type;
 }
 
 
@@ -341,9 +430,8 @@ Row::type() const {
 */
 inline bool
 Row::is_line_or_equality() const {
-  return type() == LINE_OR_EQUALITY;
+  return type().is_line_or_equality();
 }
-
 
 /*!
   Returns <CODE>true</CODE> if the row represent a ray, a point or an
@@ -351,16 +439,33 @@ Row::is_line_or_equality() const {
 */
 inline bool
 Row::is_ray_or_point_or_inequality() const {
-  return type() == RAY_OR_POINT_OR_INEQUALITY;
+  return type().is_ray_or_point_or_inequality();
 }
 
+
+/*!
+  Returns <CODE>true</CODE> if \p *this row represent a constraint
+  or generator in a necessarily closed polyhedron.
+*/
+inline bool
+Row::is_necessarily_closed() const {
+  return type().is_necessarily_closed();
+}
+
+/*!
+  Returns the topological kind of \p *this.
+*/
+inline Topology
+Row::topology() const {
+  return type().topology();
+}
 
 /*!
   Sets to \p LINE_OR_EQUALITY the type of \p *this row.
 */
 inline void
 Row::set_is_line_or_equality() {
-  impl->set_type(LINE_OR_EQUALITY);
+  impl->type.set_is_line_or_equality();
 }
 
 
@@ -369,7 +474,17 @@ Row::set_is_line_or_equality() {
 */
 inline void
 Row::set_is_ray_or_point_or_inequality() {
-  impl->set_type(RAY_OR_POINT_OR_INEQUALITY);
+  impl->type.set_is_ray_or_point_or_inequality();
+}
+
+inline void
+Row::set_necessarily_closed() {
+  impl->type.set_necessarily_closed();
+}
+
+inline void
+Row::set_non_necessarily_closed() {
+  impl->type.set_non_necessarily_closed();
 }
 
 
@@ -380,7 +495,6 @@ inline Integer&
 Row::operator[](size_t k) {
   return (*impl)[k];
 }
-
 
 /*!
   Returns a constant reference to the element of the row indexed by \p k.

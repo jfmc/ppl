@@ -212,6 +212,28 @@ PPL::operator*(const Row& x, const Row& y) {
   return tmp_Integer[0];
 }
 
+
+/*!
+  Computes the \e reduced scalar product of \p x and \p y,
+  where the \f$\epsilon\f& coefficient of \p x is ignored.
+*/
+const PPL::Integer&
+PPL::operator^(const Row& x, const Row& y) {
+  // The reduced scalar product is only defined
+  // if the topology of `x' is NNC and `y' has enough coefficients.
+  assert(!x.is_necessarily_closed());
+  assert(x.size() - 1 <= y.size());
+  tmp_Integer[0] = 0;
+  for (size_t i = x.size() - 1; i-- > 0; ) {
+    // The following two lines optimize the computation
+    // of tmp_Integer[0] += x[i] * y[i].
+    tmp_Integer[1] = x[i] * y[i];
+    tmp_Integer[0] += tmp_Integer[1];
+  }
+  return tmp_Integer[0];
+}
+
+
 /*!
   \param y   The row that will be combined with \p *this object.
   \param k   The position of \p *this that have to be \f$0\f$.
@@ -298,5 +320,16 @@ PPL::Row::OK(size_t row_size,
     is_broken = true;
   }
 #endif
+  // Topology consistency check.
+  size_t min_cols = is_necessarily_closed() ? 1 : 2;
+  if (size() < min_cols) {
+    std::cerr << "Row has fewer coefficeints than the minumum "
+	      << "allowed by its topology:"
+	      << std::endl
+	      << "size is " << size()
+	      << ", minimum is " << min_cols
+	      << std::endl;
+    is_broken = true;
+  }    
   return !is_broken;
 }

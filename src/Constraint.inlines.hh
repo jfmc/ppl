@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+  // CHECK ME.
 inline
 Constraint::Constraint(LinExpression& e) {
   swap(e);
@@ -34,6 +35,11 @@ Constraint::Constraint(LinExpression& e) {
 inline
 Constraint::Constraint(const Constraint& c)
   : Row(c) {
+}
+
+inline
+Constraint::Constraint(const Constraint& c, size_t size)
+  : Row(c, size, size) {
 }
 
 inline
@@ -53,7 +59,19 @@ Constraint::operator=(const Constraint& c) {
 
 inline size_t
 Constraint::space_dimension() const {
-  return size() - 1;
+  return Row::space_dimension();
+}
+
+inline Constraint::Type
+Constraint::type() const {
+  if (is_equality())
+    return EQUALITY;
+  if (is_necessarily_closed())
+    return NONSTRICT_INEQUALITY;
+  else
+    return ((*this)[size() - 1] < 0)
+      ? STRICT_INEQUALITY
+      : NONSTRICT_INEQUALITY;
 }
 
 inline bool
@@ -61,14 +79,19 @@ Constraint::is_equality() const {
   return is_line_or_equality();
 }
 
-inline Constraint::Type
-Constraint::type() const {
-  return is_equality() ? EQUALITY : INEQUALITY;
-}
-
 inline bool
 Constraint::is_inequality() const {
   return is_ray_or_point_or_inequality();
+}
+
+inline bool
+Constraint::is_nonstrict_inequality() const {
+  return type() == NONSTRICT_INEQUALITY;
+}
+
+inline bool
+Constraint::is_strict_inequality() const {
+  return type() == STRICT_INEQUALITY;
 }
 
 inline void
@@ -105,6 +128,18 @@ Constraint::zero_dim_positivity() {
   return zdp;
 }
 
+inline const Constraint&
+Constraint::epsilon_geq_zero() {
+  static Constraint eps_geq_zero = construct_epsilon_geq_zero();
+  return eps_geq_zero;
+}
+
+inline const Constraint&
+Constraint::epsilon_leq_one() {
+  static Constraint eps_leq_one(LinExpression::zero() < Integer_one());
+  return eps_leq_one;
+}
+
 inline Constraint
 operator==(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff = e1 - e2;
@@ -117,6 +152,18 @@ inline Constraint
 operator>=(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff = e1 - e2;
   Constraint c(diff);
+  c.set_is_inequality();
+  return c;
+}
+
+inline Constraint
+operator>(const LinExpression& e1, const LinExpression& e2) {
+  LinExpression diff = e1 - e2;
+  // Setting the \epsilon coefficient to -1.
+  diff += - Variable(diff.space_dimension());
+  Constraint c(diff);
+  // FIXME: provide a single istruction for setting both at once.
+  c.set_non_necessarily_closed();
   c.set_is_inequality();
   return c;
 }
@@ -138,6 +185,17 @@ operator>=(const Integer& n, const LinExpression& e) {
 }
 
 inline Constraint
+operator>(const Integer& n, const LinExpression& e) {
+  // Setting the \epsilon coefficient to -1.
+  LinExpression diff = n - e - Variable(e.space_dimension());
+  Constraint c(diff);
+  // FIXME: provide a single istruction for setting both at once.
+  c.set_non_necessarily_closed();
+  c.set_is_inequality();
+  return c;
+}
+
+inline Constraint
 operator==(const LinExpression& e, const Integer& n) {
   LinExpression diff = e - n;
   Constraint c(diff);
@@ -149,6 +207,17 @@ inline Constraint
 operator>=(const LinExpression& e, const Integer& n) {
   LinExpression diff = e - n;
   Constraint c(diff);
+  c.set_is_inequality();
+  return c;
+}
+
+inline Constraint
+operator>(const LinExpression& e, const Integer& n) {
+  // Setting the \epsilon coefficient to -1.
+  LinExpression diff = e - n - Variable(e.space_dimension());
+  Constraint c(diff);
+  // FIXME: provide a single istruction for setting both at once.
+  c.set_non_necessarily_closed();
   c.set_is_inequality();
   return c;
 }
@@ -166,6 +235,21 @@ operator<=(const Integer& n, const LinExpression& e) {
 inline Constraint
 operator<=(const LinExpression& e, const Integer& n) {
   return n >= e;
+}
+
+inline Constraint
+operator<(const LinExpression& e1, const LinExpression& e2) {
+  return e2 > e1;
+}
+
+inline Constraint
+operator<(const Integer& n, const LinExpression& e) {
+  return e > n;
+}
+
+inline Constraint
+operator<(const LinExpression& e, const Integer& n) {
+  return n > e;
 }
 
 } // namespace Parma_Polyhedra_Library

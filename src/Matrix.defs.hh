@@ -45,10 +45,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 class Parma_Polyhedra_Library::Matrix {
 protected:
   //! Default constructor: builds a zero-matrix.
-  Matrix();
-  //! Constructor: bulids a sorted matrix with \p n_rows rows
+  Matrix(Topology topology);
+  //! Constructor: builds a sorted matrix with \p n_rows rows
   //! and \p n_columns columns.
-  Matrix(size_t n_rows, size_t n_columns);
+  Matrix(Topology topology, size_t n_rows, size_t n_columns);
   //! Copy-constructor.
   Matrix(const Matrix& y);
   //! Destructor.
@@ -128,6 +128,8 @@ public:
 private:
   //! Contains the rows of the matrix.
   std::vector<Row> rows;
+  //! The topological kind of the rows in the matrix.
+  Topology row_topology;
   //! Size of the initialized part of each row.
   size_t row_size;
   //! Capacity allocated for each row, i.e., number of
@@ -145,6 +147,13 @@ public:
   //! Sets the \p sorted flag of the matrix to \p value.
   void set_sorted(bool value);
 
+  //! Sets \p row_topology to <CODE>NECESSARILY_CLOSED</CODE>.
+  void set_necessarily_closed();
+  //! Sets \p row_topology to <CODE>NON_NECESSARILY_CLOSED</CODE>.
+  void set_non_necessarily_closed();
+  //! Sets the topology of all rows equal to the topology of the matrix.
+  void set_rows_topology();
+
   //! Make the matrix grow adding more rows and/or more columns.
   void grow(size_t new_n_rows, size_t new_n_columns);
   //! Resizes the matrix without worrying about the old contents.
@@ -155,9 +164,15 @@ public:
   //! Turn the matrix \f$M\f$ into \f$\bigl({0 \atop M}{J \atop 0}\bigr)\f$.
   void add_rows_and_columns(size_t n);
 
-  //! Accessories
+  //! Swaps the columns having indexes \p i and \p j.
+  void swap_columns(size_t i,  size_t j);
+
+  //! Accessors
   //@{
+  Topology topology() const;
+  bool is_necessarily_closed() const;
   bool is_sorted() const;
+  size_t space_dimension() const;
   size_t num_columns() const;
   size_t num_rows() const;
   size_t num_lines_or_equalities() const;

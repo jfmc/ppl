@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _Row_defs_hh
 #define _Row_defs_hh 1
 
+#include "Topology.hh"
 #include "Row.types.hh"
 #include "Integer.types.hh"
 #include <cstddef>
@@ -77,11 +78,14 @@ public:
   const Integer& coefficient(size_t n) const;
 
 public:
-  //! The type of the object to which the coefficients refer to.
-  enum Type {
+
+  enum Kind {
     LINE_OR_EQUALITY = 0,
     RAY_OR_POINT_OR_INEQUALITY = 1
   };
+
+  //! The type of the object to which the coefficients refer to.
+  class Type;
 
   //! Tight constructor: resizing will require reallocation.
   Row(Type t, size_t sz);
@@ -132,20 +136,27 @@ public:
 
   //! @name Type inspection methods.
   //@{
+  Type type() const;
+  Topology topology() const;
   bool is_line_or_equality() const;
   bool is_ray_or_point_or_inequality() const;
-  Type type() const;
+  bool is_necessarily_closed() const;
   //@}
 
   //! @name Type coercion methods.
   //@{
   void set_is_line_or_equality();
   void set_is_ray_or_point_or_inequality();
+  void set_necessarily_closed();
+  void set_non_necessarily_closed();
   //@}
 
 public:
   //! Gives the number of coefficients currently in use.
   size_t size() const;
+
+  //! Returns the dimension of the vector space enclosing \p *this.
+  size_t space_dimension() const;
 
   //! Normalizes all the coefficients so that they are mutually prime.
   void normalize();
@@ -181,6 +192,7 @@ PPL_INTERNAL:
   //! Returns the capacity of the row (only available during debugging).
   size_t capacity() const;
 #endif
+
 };
 
 namespace Parma_Polyhedra_Library {
@@ -189,6 +201,12 @@ namespace Parma_Polyhedra_Library {
   //! Computes the scalar product between \p x and \p y.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   const Integer& operator*(const Row& x, const Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Computes the \e reduced scalar product between \p x and \p y,
+  //! where the \f$\epsilon\f$ coefficient of \p x is ignored.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  const Integer& operator^(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! The basic comparison function.
@@ -211,6 +229,77 @@ namespace Parma_Polyhedra_Library {
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
 } // namespace Parma_Polyhedra_Library
+
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! The type of a Row object.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+class Parma_Polyhedra_Library::Row::Type {
+public:
+  //! The default Row::Type is a line/equality of
+  //! a necessarily closed polyhedron.
+  Type();
+
+  //! Builds the Row type by providing the two needed
+  //! pieces of information.
+  Type(Topology topology, Kind kind);
+
+  //! @name The four possible types of a Row object.
+  //@{
+  static const Type& necessarily_closed_line_or_equality();
+  static const Type& necessarily_closed_ray_or_point_or_inequality();
+  static const Type& non_necessarily_closed_line_or_equality();
+  static const Type& non_necessarily_closed_ray_or_point_or_inequality();
+  //@}
+
+  //! @name Testing and setting the type.
+  //@{
+  Topology topology() const;
+  bool is_line_or_equality() const;
+  bool is_ray_or_point_or_inequality() const;
+  bool is_necessarily_closed() const;
+
+  void set_is_line_or_equality();
+  void set_is_ray_or_point_or_inequality();
+  void set_necessarily_closed();
+  void set_non_necessarily_closed();
+  //!@}
+
+private:
+  //! Type is implemented by means of a finite bitset.
+  typedef unsigned int flags_t;
+
+  //! Builds the type from a bitmask.
+  Type(flags_t mask);
+
+  //! This holds the current bitset.
+  flags_t flags;
+
+  //! @name The bits that are currently in use.
+  //@{
+  static const flags_t NNC = 1U << 0;
+  static const flags_t RPI = 1U << 1;
+  //@}
+
+  //! @name The four possible bit configurations for a Row object.
+  //@{
+  static const flags_t
+  NECESSARILY_CLOSED_LINE_OR_EQUALITY               = 0U;
+  static const flags_t
+  NON_NECESSARILY_CLOSED_LINE_OR_EQUALITY           = 1U;
+  static const flags_t
+  NECESSARILY_CLOSED_RAY_OR_POINT_OR_INEQUALITY     = 2U;
+  static const flags_t
+  NON_NECESSARILY_CLOSED_RAY_OR_POINT_OR_INEQUALITY = 3U;
+  //@}
+
+  //! Check whether <EM>all</EM> bits in \p mask are set.
+  bool test_all(flags_t mask) const;
+  //! Set the bits in \p mask.
+  void set(flags_t mask);
+  //! Reset the bits in \p mask.
+  void reset(flags_t mask);
+};
 
 
 class Parma_Polyhedra_Library::Row::Impl {
@@ -243,10 +332,8 @@ public:
   const Integer& operator[](size_t k) const;
   //@}
 
-  //! @name Type and size accessors.
+  //! @name Size accessors.
   //@{
-  Type type() const;
-  void set_type(Type t);
   size_t size() const;
   void set_size(size_t new_sz);
   void bump_size();
@@ -255,8 +342,11 @@ public:
 private:
   //! The number of coefficients in the row.
   size_t size_;
+public:
+  // FIXME: this should become private.
   //! The type of this row.
-  Type type_;
+  Type type;
+private:
   //! The vector of coefficients.
   Integer vec_[PPL_FLEXIBLE_ARRAY];
 

@@ -1,4 +1,4 @@
-/* Polyhedron class implementation: inline functions.
+/* NNC_Polyhedron class implementation: inline functions.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,39 +22,39 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 
-#ifndef _Polyhedron_inlines_hh
-#define _Polyhedron_inlines_hh 1
+#ifndef _NNC_Polyhedron_inlines_hh
+#define _NNC_Polyhedron_inlines_hh 1
 
 namespace Parma_Polyhedra_Library {
 
 inline
-Polyhedron::Polyhedron(size_t num_dimensions, Degenerate_Kind kind)
-  : PolyBase(NECESSARILY_CLOSED, num_dimensions, kind) {
+NNC_Polyhedron::NNC_Polyhedron(size_t num_dimensions, Degenerate_Kind kind)
+  : PolyBase(NON_NECESSARILY_CLOSED, num_dimensions, kind) {
 }
 
 inline
-Polyhedron::Polyhedron(ConSys& cs)
-  : PolyBase(NECESSARILY_CLOSED, cs) {
+NNC_Polyhedron::NNC_Polyhedron(ConSys& cs)
+  : PolyBase(NON_NECESSARILY_CLOSED, cs) {
 }
 
 inline
-Polyhedron::Polyhedron(GenSys& gs)
-  : PolyBase(NECESSARILY_CLOSED, gs) {
+NNC_Polyhedron::NNC_Polyhedron(GenSys& gs)
+  : PolyBase(NON_NECESSARILY_CLOSED, gs) {
 }
 
 inline
-Polyhedron::Polyhedron(const Polyhedron& y)
+NNC_Polyhedron::NNC_Polyhedron(const NNC_Polyhedron& y)
   : PolyBase(y) {
 }
 
-inline Polyhedron&
-Polyhedron::operator=(const Polyhedron& y) {
+inline NNC_Polyhedron&
+NNC_Polyhedron::operator=(const NNC_Polyhedron& y) {
   PolyBase::operator=(y);
   return *this;
 }
 
 inline
-Polyhedron::~Polyhedron() {
+NNC_Polyhedron::~NNC_Polyhedron() {
 }
 
 } // namespace Parma_Polyhedra_Library

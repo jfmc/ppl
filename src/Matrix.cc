@@ -57,20 +57,23 @@ PPL::Matrix::num_lines_or_equalities() const {
   \p n_rows \f$\times\f$ \p n_columns matrix which rows are
   all initialized to rays or points or inequalities.
 */
-PPL::Matrix::Matrix(size_t n_rows, size_t n_columns)
+PPL::Matrix::Matrix(Topology topology, size_t n_rows, size_t n_columns)
   : rows(n_rows),
+    row_topology(topology),
     row_size(n_columns),
     row_capacity(compute_capacity(n_columns)),
     sorted(false) {
+  // Build the appropriate row type.
+  Row::Type row_type(topology, Row::RAY_OR_POINT_OR_INEQUALITY);
   // Construct in direct order: will destroy in reverse order.
   for (size_t i = 0; i < n_rows; ++i)
-    rows[i].construct(Row::RAY_OR_POINT_OR_INEQUALITY,
-		      n_columns, row_capacity);
+    rows[i].construct(row_type, n_columns, row_capacity);
 }
 
 
 PPL::Matrix::Matrix(const Matrix& y)
   : rows(y.rows),
+    row_topology(y.row_topology),
     row_size(y.row_size),
     row_capacity(compute_capacity(y.row_size)),
     sorted(y.sorted) {
@@ -80,10 +83,21 @@ PPL::Matrix::Matrix(const Matrix& y)
 PPL::Matrix&
 PPL::Matrix::operator=(const Matrix& y) {
   rows = y.rows;
+  row_topology = y.row_topology;
   row_size = y.row_size;
   row_capacity = compute_capacity(row_size);
   sorted = y.sorted;
   return *this;
+}
+
+void
+PPL::Matrix::set_rows_topology() {
+  if (is_necessarily_closed())
+    for (size_t i = num_rows(); i-- > 0; )
+      rows[i].set_necessarily_closed();
+  else
+    for (size_t i = num_rows(); i-- > 0; )
+      rows[i].set_non_necessarily_closed();
 }
 
 
@@ -122,10 +136,10 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
 	new_rows.reserve(compute_capacity(new_n_rows));
 	new_rows.insert(new_rows.end(), new_n_rows, Row());
 	// Construct the new rows.
+	Row::Type row_type(row_topology, Row::RAY_OR_POINT_OR_INEQUALITY);
 	size_t i = new_n_rows;
 	while (i-- > old_n_rows)
-	  new_rows[i].construct(Row::RAY_OR_POINT_OR_INEQUALITY,
-				new_n_columns, row_capacity);
+	  new_rows[i].construct(row_type, new_n_columns, row_capacity);
 	// Steal the old rows.
 	++i;
 	while (i-- > 0)
@@ -136,22 +150,23 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
       else {
 	// Reallocation will NOT take place.
 	rows.insert(rows.end(), new_n_rows - old_n_rows, Row());
+	Row::Type row_type(row_topology, Row::RAY_OR_POINT_OR_INEQUALITY);
 	for (size_t i = new_n_rows; i-- > old_n_rows; )
-	  rows[i].construct(Row::RAY_OR_POINT_OR_INEQUALITY,
-			    new_n_columns, row_capacity);
+	  rows[i].construct(row_type, new_n_columns, row_capacity);
       }
     }
     else {
       // We cannot even recycle the old rows.
-      Matrix new_matrix;
+      Matrix new_matrix(row_topology);
       new_matrix.rows.reserve(compute_capacity(new_n_rows));
       new_matrix.rows.insert(new_matrix.rows.end(), new_n_rows, Row());
       // Construct the new rows.
       new_matrix.row_size = new_n_columns;
       new_matrix.row_capacity = compute_capacity(new_n_columns);
       size_t i = new_n_rows;
+      Row::Type row_type(row_topology, Row::RAY_OR_POINT_OR_INEQUALITY);
       while (i-- > old_n_rows)
-	new_matrix.rows[i].construct(Row::RAY_OR_POINT_OR_INEQUALITY,
+	new_matrix.rows[i].construct(row_type,
 				     new_matrix.row_size,
 				     new_matrix.row_capacity);
       // Copy the old rows.
@@ -163,12 +178,12 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
 	std::swap(new_matrix.rows[i], new_row);
       }
       // Rows have been added: see if the matrix is known to be sorted.
-      new_matrix.set_sorted(was_sorted
-			    && (new_matrix[old_n_rows-1]
-				<= new_matrix[old_n_rows]));
+      new_matrix.set_sorted(old_n_rows == 0
+			    || (was_sorted
+				&& (new_matrix[old_n_rows-1]
+				    <= new_matrix[old_n_rows])));
       // Put the new vector into place.
       swap(new_matrix);
-      assert(OK());
       return;
     }
   }
@@ -202,7 +217,6 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
       set_sorted((*this)[old_n_rows-1] <= (*this)[old_n_rows]);
   // If no rows was added the matrix keeps its sortedness.
 
-  assert(OK());
 }
 
 /*!
@@ -231,10 +245,10 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
 	new_rows.reserve(compute_capacity(new_n_rows));
 	new_rows.insert(new_rows.end(), new_n_rows, Row());
 	// Construct the new rows.
+	Row::Type row_type(row_topology, Row::LINE_OR_EQUALITY);
 	size_t i = new_n_rows;
 	while (i-- > old_n_rows)
-	  new_rows[i].construct(Row::LINE_OR_EQUALITY,
-				new_n_columns, row_capacity);
+	  new_rows[i].construct(row_type, new_n_columns, row_capacity);
 	// Steal the old rows.
 	++i;
 	while (i-- > 0)
@@ -245,9 +259,9 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
       else {
 	// Reallocation will NOT take place.
 	rows.insert(rows.end(), new_n_rows - old_n_rows, Row());
+	Row::Type row_type(row_topology, Row::LINE_OR_EQUALITY);
 	for (size_t i = new_n_rows; i-- > old_n_rows; )
-	  rows[i].construct(Row::LINE_OR_EQUALITY,
-			    new_n_columns, row_capacity);
+	  rows[i].construct(row_type, new_n_columns, row_capacity);
       }
       // Even though `*this' may happen to keep its sortedness,
       // we feel checking that this is the case is not worth the effort.
@@ -257,7 +271,7 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
     }
     else {
       // We cannot even recycle the old rows: allocate a new matrix and swap.
-      Matrix new_matrix(new_n_rows, new_n_columns);
+      Matrix new_matrix(row_topology, new_n_rows, new_n_columns);
       swap(new_matrix);
       return;
     }
@@ -286,8 +300,9 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
 	// Capacity exhausted: we must reallocate the rows and
 	// make sure all the rows have the same capacity.
 	size_t new_row_capacity = compute_capacity(new_n_columns);
+	Row::Type row_type(row_topology, Row::LINE_OR_EQUALITY);
 	for (size_t i = old_n_rows; i-- > 0; ) {
-	  Row new_row(Row::LINE_OR_EQUALITY, new_n_columns, new_row_capacity);
+	  Row new_row(row_type, new_n_columns, new_row_capacity);
 	  std::swap(rows[i], new_row);
 	}
 	row_capacity = new_row_capacity;
@@ -494,16 +509,43 @@ PPL::Matrix::add_row(const Row& row) {
 }
 
 /*!
-  Adds the given row to the matrix.
+  Adds the given row to the matrix, automatically resizing the
+  matrix or the row, if needed.
 */
 void
 PPL::Matrix::insert(const Row& row) {
-  if (row.size() > row_size)
-    grow(num_rows(), row.size());
-  if (row.size() < row_size)
-    add_row(Row(row, row_size, row_capacity));
-  else
+  assert(topology() == row.topology());
+
+  size_t old_num_rows = num_rows();
+
+  // Resize the matrix, if necessary.
+  if (row.size() > row_size) {
+    if (is_necessarily_closed() || old_num_rows == 0)
+      grow(old_num_rows, row.size());
+    else {
+      // After resizing, move the \epsilon coefficients to
+      // the last column (note: sorting is preserved).
+      size_t old_eps_index = row_size - 1;
+      grow(old_num_rows, row.size());
+      swap_columns(old_eps_index, row_size - 1);
+    }
     add_row(row);
+  }
+  else if (row.size() < row_size)
+    if (is_necessarily_closed() || old_num_rows == 0)
+      add_row(Row(row, row_size, row_capacity));
+    else {
+      // Create a resized copy of the row (and move the \epsilon
+      // coefficient to its last position).
+      Row tmp_row = Row(row, row_size, row_capacity);
+      std::swap(tmp_row[row.size() - 1], tmp_row[row_size - 1]);
+      add_row(tmp_row);
+    }
+  else
+    // Here row.size() == row_size.
+    add_row(row);
+
+  assert(OK());
 }
 
 /*!
@@ -550,6 +592,17 @@ PPL::Matrix::add_row(Row::Type type) {
       // A matrix having only one row is sorted.
       set_sorted(true);
   }
+}
+
+
+/*!
+  Swaps each coefficient of the two columns of indexes \p i and \p j.
+*/
+void
+PPL::Matrix::swap_columns(size_t i,  size_t j) {
+  assert(i != j && i < num_columns() && j < num_columns());
+  for (size_t k = num_rows(); k-- > 0; )
+    std::swap(rows[k][i], rows[k][j]);
 }
 
 /*!
@@ -839,26 +892,62 @@ PPL::Matrix::check_sorted() const {
 
 bool
 PPL::Matrix::OK() const {
+
+  // The check in the following "#else" branch currently
+  // fails after calls to method Matrix::grow().
+  // My opinion (Enea) is that we should enforce such an invariant.
+#if 0
+  // An empty matrix must have num_columns() == 0.
+  if (num_rows() == 0)
+    return true;
+#else
+  // An empty matrix must have num_columns() == 0.
+  if (num_rows() == 0)
+    if (num_columns() == 0)
+      // An empty matrix is ok.
+      return true;
+    else {
+      std::cerr << "Matrix has no rows but num_columns() is positive!"
+		<< std::endl;
+      return false;
+    }
+#endif
+
   // A non-empty matrix will contain constraints or generators; in
   // both cases it must have at least one column for the inhomogeneous
-  // term.
-  if (num_rows() > 0 && num_columns() < 1) {
-    std::cerr << "A Matrix must have at least two columns!"
+  // term and, if it is non-necessarily closed, another one
+  // for the \epsilon coefficient.
+  size_t min_cols = is_necessarily_closed() ? 1 : 2;
+  if (num_columns() < min_cols) {
+    std::cerr << "Matrix has fewer columns than the minimum "
+	      << "allowed by its topology:"
+	      << std::endl
+	      << "num_columns is " << num_columns()
+	      << ", minimum is " << min_cols
 	      << std::endl;
     return false;
   }
 
   const Matrix& x = *this;
-  bool is_broken = false;
   size_t n_rows = num_rows();
-  for (size_t i = 0; i < n_rows; ++i)
-    is_broken |= !x[i].OK(row_size, row_capacity);
-
-  if (sorted && !check_sorted()) {
-    is_broken = true;
-    std::cerr << "The matrix declares itself to be sorted but it is not!"
-	      << std::endl;
+  for (size_t i = 0; i < n_rows; ++i) {
+    if (!x[i].OK(row_size, row_capacity))
+      return false;
+    // Checking for topology mismatches.
+    if (x.topology() != x[i].topology()) {
+      std::cerr << "Topology mismatch between the matrix "
+		<< "and one of its rows!"
+		<< std::endl;
+      return false;
+    }
   }
 
-  return !is_broken;
+  if (sorted && !check_sorted()) {
+    std::cerr << "The matrix declares itself to be sorted but it is not!"
+	      << std::endl;
+    return false;
+  }
+
+  // All checks passed.
+  return true;
 }
