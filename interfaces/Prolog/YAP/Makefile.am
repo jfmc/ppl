@@ -80,7 +80,6 @@ check-local: yap_clpq.pl ../check_script ../expected yap_clpq2.pl ../check_scrip
 		yap -l $(srcdir)/yap_clpq2.pl \
 			<check_script2 >obtained2
 	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
-	cat $(srcdir)/ppl_yap.pl $(srcdir)/../pl_check.pl >yap_pl_check.pl
 	echo "main." >check_script3
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
