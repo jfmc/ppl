@@ -77,8 +77,9 @@ public:
   dimension_type space_dimension() const;
 
   //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this semantically 
-  //! (i.e., geometrically) contains \p y.
+  //! Returns <CODE>true</CODE> if and only if \p *this geometrically
+  //! covers \p y, i.e., if any point (in some element) of \p y is also
+  //! a point (of some element) of \p *this.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
@@ -87,11 +88,12 @@ public:
     \warning
     This may be <EM>really</EM> expensive!
   */
-  bool semantically_contains(const Polyhedra_PowerSet& y) const;
+  bool geometrically_covers(const Polyhedra_PowerSet& y) const;
 
   //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is semantically 
-  //! (i.e., geometrically) equal to \p y.
+  //! Returns <CODE>true</CODE> if and only if \p *this is geometrically
+  //! equal to \p y, i.e., if (the elements of) \p *this and \p y
+  //! contain the same set of points.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
@@ -100,7 +102,7 @@ public:
     \warning
     This may be <EM>really</EM> expensive!
   */
-  bool semantically_equals(const Polyhedra_PowerSet& y) const;
+  bool geometrically_equals(const Polyhedra_PowerSet& y) const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

@@ -216,8 +216,9 @@ Polyhedra_PowerSet<PH>::remove_higher_dimensions(dimension_type
 template <typename PH>
 bool
 Polyhedra_PowerSet<PH>::
-semantically_contains(const Polyhedra_PowerSet& y) const {
-  for (const_iterator yi = y.Base::begin(), y_end = y.Base::end(); yi != y_end; ++yi)
+geometrically_covers(const Polyhedra_PowerSet& y) const {
+  for (const_iterator yi = y.Base::begin(),
+	 y_end = y.Base::end(); yi != y_end; ++yi)
     if (!check_containment(yi->element(), *this))
       return false;
   return true;
@@ -226,9 +227,9 @@ semantically_contains(const Polyhedra_PowerSet& y) const {
 template <typename PH>
 bool
 Polyhedra_PowerSet<PH>::
-semantically_equals(const Polyhedra_PowerSet& y) const {
+geometrically_equals(const Polyhedra_PowerSet& y) const {
   const Polyhedra_PowerSet& x = * this;
-  return x.semantically_contains(y) && y.semantically_contains(x);
+  return x.geometrically_covers(y) && y.geometrically_covers(x);
 }
 
 template <typename PH>

@@ -134,7 +134,7 @@ main() TRY {
   known_result.add_disjunct(kr_2);
   known_result.add_disjunct(kr_3);
 
-  int retval = ps1.semantically_equals(known_result) ? 0 : 1;
+  int retval = ps1.geometrically_equals(known_result) ? 0 : 1;
 
 #if NOISY
   cout
