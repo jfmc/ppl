@@ -10,6 +10,10 @@ NEWS for version 0.4 (released date unknown)
 New Features
 ============
 
+o  All method and variable names containing the word "vertex"
+   have been replaced by names containing the word "point"
+   (some previous uses of the word "vertex" were not formally correct).
+
 o  The methods Polyhedron::includes(const Generator&) and
    Polyhedron::satisfies(const Constraint&) have been removed,
    as well as the enumeration GenSys_Con_Rel.
@@ -31,7 +35,7 @@ o  ...
 Bugfixes
 ========
 
-o  Fixed a bug whereby creating a vertex with a negative denominator
+o  Fixed a bug whereby creating a point with a negative denominator
    caused the library to misbehave.
 
 o  Fixed a bug in Polyhedron::add_constraints(ConSys&) whereby
