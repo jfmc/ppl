@@ -401,4 +401,6 @@ Integer_to_integer_term(const PPL::Integer& n) {
   return Mk_Integer(n.get_si());
 }
 
+#undef CS
+
 #include "../ppl_prolog.icc"
