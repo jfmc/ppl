@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_NNC_Polyhedron_inlines_hh
 #define PPL_NNC_Polyhedron_inlines_hh 1
 
+#include "C_Polyhedron.defs.hh"
+
 namespace Parma_Polyhedra_Library {
 
 inline
@@ -70,6 +72,12 @@ NNC_Polyhedron::operator=(const NNC_Polyhedron& y) {
 
 inline
 NNC_Polyhedron::~NNC_Polyhedron() {
+}
+
+inline dimension_type
+NNC_Polyhedron::max_space_dimension() {
+  // We reserve one dimension for the epsilon dimension.
+  return C_Polyhedron::max_space_dimension() - 1;
 }
 
 } // namespace Parma_Polyhedra_Library

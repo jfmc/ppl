@@ -26,6 +26,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline dimension_type
+C_Polyhedron::max_space_dimension() {
+  // One dimension is reserved to have a value of type dimension_type
+  // that does not represent a legal dimension.
+  return std::numeric_limits<dimension_type>::max() - 1;
+}
+
 inline
 C_Polyhedron::C_Polyhedron(dimension_type num_dimensions,
 			   Degenerate_Kind kind)

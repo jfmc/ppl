@@ -166,4 +166,4 @@ check_containment(const PH& ph, const Polyhedra_PowerSet<PH>& ps) {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif
+#endif // !defined(PPL_algorithms_hh)

@@ -47,6 +47,9 @@ private:
   typedef PowerSet<CS> Base;
 
 public:
+  //! Returns the maximum space dimension a Polyhedra_Powerset<PH> can handle.
+  static dimension_type max_space_dimension();
+
   //! Builds a universe (top) or empty (bottom) Polyhedra_PowerSet.
   /*!
     \param num_dimensions   The number of dimensions of the vector

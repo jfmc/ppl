@@ -344,6 +344,9 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
 
 class Parma_Polyhedra_Library::Polyhedron {
 public:
+  //! Returns the maximum space dimension all kinds of Polyhedron can handle.
+  static dimension_type max_space_dimension();
+
   //! Kinds of degenerate polyhedra.
   enum Degenerate_Kind {
     //! The universe polyhedron, i.e., the whole vector space.

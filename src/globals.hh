@@ -35,15 +35,6 @@ namespace Parma_Polyhedra_Library {
 //! An unsigned integral type for representing space dimensions.
 typedef size_t dimension_type;
 
-//! Returns the maximum space dimension this library can handle.
-inline dimension_type
-max_space_dimension() {
-  // We reserve one dimension for epsilon representations.
-  // We reserve one further dimension to have a value of type
-  // dimension_type that does not represent a legal dimension.
-  return std::numeric_limits<dimension_type>::max() - 2;
-}
-
 //! Returns a value that does not designate a valid dimension.
 inline dimension_type
 not_a_dimension() {
@@ -165,4 +156,4 @@ const Integer& reduced_scalar_product(const Constraint& c,
 
 } // namespace Parma_Polyhedra_Library
 
-#endif
+#endif // !defined(PPL_globals_hh)

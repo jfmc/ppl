@@ -140,6 +140,7 @@ AskTell.inlines.hh \
 Polyhedra_PowerSet.types.hh \
 Polyhedra_PowerSet.defs.hh \
 Polyhedra_PowerSet.inlines.hh \
+max_space_dimension.hh \
 algorithms.hh
 
 libppl_la_SOURCES = \

@@ -35,6 +35,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename PH>
+dimension_type
+Polyhedra_PowerSet<PH>::max_space_dimension() {
+  return PH::max_space_dimension();
+}
+
+template <typename PH>
 Polyhedra_PowerSet<PH>::Polyhedra_PowerSet(dimension_type num_dimensions,
 					   Polyhedron::Degenerate_Kind kind)
   : space_dim(num_dimensions) {

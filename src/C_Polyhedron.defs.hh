@@ -55,6 +55,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 class Parma_Polyhedra_Library::C_Polyhedron : public Polyhedron {
 public:
+  //! Returns the maximum space dimension a C_Polyhedron can handle.
+  static dimension_type max_space_dimension();
+
   //! Builds either the universe or the empty C polyhedron.
   /*!
     \param num_dimensions   The number of dimensions of the vector
