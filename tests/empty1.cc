@@ -31,8 +31,9 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() {
-  // This is the easy way to create an empty polyhedron.
-  Polyhedron ph1(Polyhedron::EMPTY);
+  // This is the easy way to create
+  // the empty polyhedron in the zero-dimension space.
+  Polyhedron ph1(0, Polyhedron::EMPTY);
 
   // This is a more convoluted way of doing the same thing
   // using an empty system of generators.

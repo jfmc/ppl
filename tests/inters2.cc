@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 
 int
 count_vertices(const Polyhedron& ph) {
-  if (ph.check_empty() || ph.is_zero_dim())
+  if (ph.check_empty() || (ph.space_dimension() == 0))
     return 0;
 
   int count = 0;

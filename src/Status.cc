@@ -32,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 // These are the keywords that indicate the individual assertions.
-static const std::string zero_dim = "ZE";
+static const std::string zero_dim_univ = "ZE";
 static const std::string empty = "EM";
 static const std::string consys_min = "CM";
 static const std::string gensys_min = "GM";
@@ -46,7 +46,7 @@ static const char sep = ' ';
 
 std::ostream&
 PPL::operator <<(std::ostream& s, const PPL::Status& u) {
-  s << (u.test_zero_dim() ? yes : no) << zero_dim << sep
+  s << (u.test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
     << (u.test_empty() ? yes : no) << empty << sep
     << sep
     << (u.test_c_minimized() ? yes : no) << consys_min << sep
@@ -81,8 +81,8 @@ get_field(std::istream& s, const std::string&
 
 std::istream&
 PPL::operator >>(std::istream& s, PPL::Status& u) {
-  if (get_field(s, zero_dim))
-    u.set_zero_dim();
+  if (get_field(s, zero_dim_univ))
+    u.set_zero_dim_univ();
 
   if (get_field(s, empty))
     u.set_empty();
@@ -116,15 +116,15 @@ PPL::operator >>(std::istream& s, PPL::Status& u) {
 
 bool
 PPL::Status::OK() const {
-  if (test_zero_dim())
-    // Zero-dim is ok.
+  if (test_zero_dim_univ())
+    // Zero-dim universe is ok.
     return true;
 
   if (test_empty()) {
     // The empty flag is incompatible with any other one.
     Status copy = *this;
     copy.reset_empty();
-    return copy.test_zero_dim();
+    return copy.test_zero_dim_univ();
   }
 
   if ((test_sat_c_up_to_date() || test_sat_g_up_to_date())

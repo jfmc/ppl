@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 inline void
 Parma_Polyhedra_Library::Polyhedron::swap(Polyhedron& y) {
+  std::swap(space_dim, y.space_dim);
   std::swap(con_sys, y.con_sys);
   std::swap(gen_sys, y.gen_sys);
   std::swap(sat_c, y.sat_c);
@@ -50,20 +51,14 @@ std::swap(Parma_Polyhedra_Library::Polyhedron& x,
 
 
 /*!
-  Returns <CODE>true</CODE> if and only if \p *this is empty.
+  Returns <CODE>true</CODE> if \p *this is definitely known to be
+  an empty polyhedron.
+  Note that the return value <CODE>false</CODE> does not necessarily
+  implies that \p *this is non-empty.
 */
 inline bool
 Parma_Polyhedra_Library::Polyhedron::is_empty() const {
   return status.test_empty();
-}
-
-/*!
-  Returns <CODE>true</CODE> if and only if \p *this is the
-  full zero-dimensional polyhedron.
-*/
-inline bool
-Parma_Polyhedra_Library::Polyhedron::is_zero_dim() const {
-  return status.test_zero_dim();
 }
 
 /*!
@@ -116,7 +111,7 @@ Parma_Polyhedra_Library::Polyhedron::sat_g_is_up_to_date() const {
 }
 
 /*!
-  Sets \p status to express constraints are up-to-date.
+  Sets \p status to express that constraints are up-to-date.
 */
 inline void
 Parma_Polyhedra_Library::Polyhedron::set_constraints_up_to_date() {
@@ -125,7 +120,7 @@ Parma_Polyhedra_Library::Polyhedron::set_constraints_up_to_date() {
 
 
 /*!
-  Sets \p status to express generators are up-to-date.
+  Sets \p status to express that generators are up-to-date.
 */
 inline void
 Parma_Polyhedra_Library::Polyhedron::set_generators_up_to_date() {
@@ -133,7 +128,7 @@ Parma_Polyhedra_Library::Polyhedron::set_generators_up_to_date() {
 }
 
 /*!
-  Sets \p status to express constraints are minimized.
+  Sets \p status to express that constraints are minimized.
 */
 inline void
 Parma_Polyhedra_Library::Polyhedron::set_constraints_minimized() {
@@ -142,7 +137,7 @@ Parma_Polyhedra_Library::Polyhedron::set_constraints_minimized() {
 }
 
 /*!
-  Sets \p status to express generators are minimized.
+  Sets \p status to express that generators are minimized.
 */
 inline void
 Parma_Polyhedra_Library::Polyhedron::set_generators_minimized() {
@@ -151,8 +146,9 @@ Parma_Polyhedra_Library::Polyhedron::set_generators_minimized() {
 }
 
 /*!
-  Sets \p status to express \p sat_c actually represents
-  relations between generators and constraints, i.e. it is up-to-date.
+  Sets \p status to express that \p sat_c is up-to-date,
+  i.e., it actually represents the relations between
+  generators and constraints.
 */
 inline void
 Parma_Polyhedra_Library::Polyhedron::set_sat_c_up_to_date() {
@@ -161,8 +157,9 @@ Parma_Polyhedra_Library::Polyhedron::set_sat_c_up_to_date() {
 
 
 /*!
-  Sets \p status to express \p sat_g actually represents
-  relations between constraints and generators, i.e. it is up-to-date.
+  Sets \p status to express \p sat_g is up-to-date,
+  i.e., it actually represents the relations between
+  constraints and generators. 
 */
 inline void
 Parma_Polyhedra_Library::Polyhedron::set_sat_g_up_to_date() {
@@ -171,7 +168,7 @@ Parma_Polyhedra_Library::Polyhedron::set_sat_g_up_to_date() {
 
 
 /*!
-  Clears the flag indicating the emptiness of the polyhedron.
+  Clears the status flag indicating that the polyhedron is empty.
 */
 inline void
 Parma_Polyhedra_Library::Polyhedron::clear_empty() {
@@ -180,8 +177,7 @@ Parma_Polyhedra_Library::Polyhedron::clear_empty() {
 
 
 /*!
-  Sets \p status to express sat_c
-  is no more up-to-date.
+  Sets \p status to express that \p sat_c is no longer up-to-date.
 */
 inline void
 Parma_Polyhedra_Library::Polyhedron::clear_sat_c_up_to_date() {
@@ -191,8 +187,7 @@ Parma_Polyhedra_Library::Polyhedron::clear_sat_c_up_to_date() {
 
 
 /*!
-  Sets \p status to express \p sat_g
-  is no longer up-to-date.
+  Sets \p status to express that \p sat_g is no longer up-to-date.
 */
 inline void
 Parma_Polyhedra_Library::Polyhedron::clear_sat_g_up_to_date() {
@@ -201,8 +196,7 @@ Parma_Polyhedra_Library::Polyhedron::clear_sat_g_up_to_date() {
 }
 
 /*!
-  Sets \p status to express constraints are
-  no longer minimized.
+  Sets \p status to express that constraints are no longer minimized.
 */
 inline void
 Parma_Polyhedra_Library::Polyhedron::clear_constraints_minimized() {
@@ -210,8 +204,7 @@ Parma_Polyhedra_Library::Polyhedron::clear_constraints_minimized() {
 }
 
 /*!
-  Sets \p status to express generators are
-  no longer minimized.
+  Sets \p status to express that generators are no longer minimized.
 */
 inline void
 Parma_Polyhedra_Library::Polyhedron::clear_generators_minimized() {
@@ -219,9 +212,9 @@ Parma_Polyhedra_Library::Polyhedron::clear_generators_minimized() {
 }
 
 /*!
-  Sets \p status to express constraints are no longer up-to-date
-  (then no minimized) and then the saturation matrices are no
-  more meaningful.
+  Sets \p status to express that constraints are no longer up-to-date
+  (thus, they are neither minimized and the saturation matrices are no
+  longer meaningful).
 */
 inline void
 Parma_Polyhedra_Library::Polyhedron::clear_constraints_up_to_date() {
@@ -234,9 +227,9 @@ Parma_Polyhedra_Library::Polyhedron::clear_constraints_up_to_date() {
 
 
 /*!
-  Sets \p status to express the fact that generators are no longer up-to-date
-  (then no minimized) and then the saturation matrices are
-  no longer meaningful.
+  Sets \p status to express that generators are no longer up-to-date
+  (thus, they are neither minimized and the saturation matrices are
+  no longer meaningful).
 */
 inline void
 Parma_Polyhedra_Library::Polyhedron::clear_generators_up_to_date() {
@@ -248,11 +241,12 @@ Parma_Polyhedra_Library::Polyhedron::clear_generators_up_to_date() {
 }
 
 /*!
-  Forces \p status to be that of a zero-dimensional polyhedron.
+  Sets \p status to express that \p *this is a universe zero-dimensional
+  polyhedron.
 */
 inline void
-Parma_Polyhedra_Library::Polyhedron::set_zero_dim() {
-  status.set_zero_dim();
+Parma_Polyhedra_Library::Polyhedron::set_zero_dim_univ() {
+  status.set_zero_dim_univ();
 }
 
 inline bool
@@ -287,16 +281,8 @@ Parma_Polyhedra_Library::operator >(const Polyhedron& x,
 
 
 inline size_t
-Parma_Polyhedra_Library::Polyhedron::num_dimensions() const {
-  assert(!is_empty());
-  if (is_zero_dim())
-    return 0;
-  else if (constraints_are_up_to_date())
-    return con_sys.num_columns()-1;
-  else {
-    assert(generators_are_up_to_date());
-    return gen_sys.num_columns()-1;
-  }
+Parma_Polyhedra_Library::Polyhedron::space_dimension() const {
+  return space_dim;
 }
 
 inline bool

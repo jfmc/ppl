@@ -37,8 +37,8 @@ namespace Parma_Polyhedra_Library {
 /*!
   This class implements conjunctions of assertions about a polyhedron.
   The assertions supported are:
-  - <EM>zero-dim</EM>: the polyhedron is the zero-dimensional singleton
-    \f$\Rset^0 = \{\cdot\}\f$;
+  - <EM>zero-dim universe</EM>: the polyhedron is the zero-dimension
+    vector space \f$\Rset^0 = \{\cdot\}\f$;
   - <EM>empty</EM>: the polyhedron is the empty set;
   - <EM>constraints up-to-date</EM>: the polyhedron is correctly
     characterized by the attached system of constraints;
@@ -59,7 +59,7 @@ namespace Parma_Polyhedra_Library {
 
   Not all the conjunctions of these elementary assertions constitute
   a legal Status.  In fact:
-  - <EM>zero-dim</EM> excludes any other assertion;
+  - <EM>zero-dim universe</EM> excludes any other assertion;
   - <EM>empty</EM>: excludes any other assertion;
   - <EM>constraints minimized</EM> implies <EM>constraints up-to-date</EM>;
   - <EM>generators minimized</EM> implies <EM>generators up-to-date</EM>;
@@ -72,7 +72,7 @@ namespace Parma_Polyhedra_Library {
 
 class Parma_Polyhedra_Library::Status {
 public:
-  //! By default Status is the <EM>zero-dim</EM> assertion.
+  //! By default Status is the <EM>zero-dim universe</EM> assertion.
   Status();
 
   //! Intersection: yields the assertions that are in \p x <EM>and</EM> \p y.
@@ -84,9 +84,9 @@ public:
 
   //! @name Test, remove or add an individual assertion from the conjunction.
   //@{
-  bool test_zero_dim() const;
-  void reset_zero_dim();
-  void set_zero_dim();
+  bool test_zero_dim_univ() const;
+  void reset_zero_dim_univ();
+  void set_zero_dim_univ();
 
   bool test_empty() const;
   void reset_empty();
@@ -126,7 +126,7 @@ private:
 
   //! @name Bitmasks for the individual assertions.
   //@{
-  static const status_t ZERO_DIM =              0U;
+  static const status_t ZERO_DIM_UNIV =         0U;
   static const status_t EMPTY =            1U << 0;
   static const status_t C_UP_TO_DATE =     1U << 1;
   static const status_t G_UP_TO_DATE =     1U << 2;

@@ -1,4 +1,4 @@
-/* Compute convex-hulls of random polytopes.
+/* Different ways of creating an empty polyhedron.
    Copyright (C) 2001 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -26,48 +26,26 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-#define NOISY 0
-
-int
-count_vertices(const Polyhedron& ph) {
-  if (ph.check_empty() || (ph.space_dimension() == 0))
-    return 0;
-
-  int count = 0;
-  const GenSys& gs = ph.generators();
-  for (GenSys::const_iterator i = gs.begin(), gs_end = gs.end();
-       i != gs_end;
-       ++i)
-    if (i->type() == Generator::VERTEX)
-      ++count;
-  return count;
-}
-
-#if NOISY
-#define COUNT(ph) cout << count_vertices(ph) << endl
-#else
-#define COUNT(ph) (void) count_vertices(ph)
-#endif
-
 int
 main() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
+  Variable w(3);
+  GenSys gs;
+  gs.insert(vertex(0*x + y +0*z + 2*w));
+  Polyhedron ph(gs);
 
-  const Integer maxc = 10000;
+  // This is the set of the variables that we want to remove.
+  set<Variable> to_be_removed;
+  to_be_removed.insert(y);
+  to_be_removed.insert(z);
+  ph.remove_dimensions(to_be_removed);
 
-  // Polyhedra born full.
-  Polyhedron ph(3);
-  // We need an empty one.
-  ph.insert(x <= 0);
-  ph.insert(x >= 1);
+  GenSys known_result_gs;
+  known_result_gs.insert(vertex(0*x +2*y));
+  Polyhedron known_result(known_result_gs);
 
-  COUNT(ph);
-  for (int n = 1; n <= 200; ++n) {
-    ph.insert(vertex(random(maxc)*x + random(maxc)*y + random(maxc)*z));
-    COUNT(ph);
-  }
-
-  return 0;
+  int retval = (known_result == ph) ? 0 : 1;
+  return retval;
 }

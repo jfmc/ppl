@@ -14,7 +14,7 @@ easy_print(const Polyhedron& ph,
 	   ostream& s = cout) {
   if (!intro.empty())
     s << intro << endl;
-  if (ph.is_zero_dim()) {
+  if (ph.space_dimension() == 0) {
     s << "true" << endl;
     return true;
   }

@@ -31,11 +31,12 @@ int
 main() {
   Variable x(0);
   Variable y(1);
-  Polyhedron ph;
-  ph.insert(vertex(0*x + 0*y));
-  ph.insert(vertex(0*x + 3*y));
-  ph.insert(vertex(3*x + 0*y));
-  ph.insert(vertex(3*x + 3*y));
+  GenSys gs;
+  gs.insert(vertex(0*x + 0*y));
+  gs.insert(vertex(0*x + 3*y));
+  gs.insert(vertex(3*x + 0*y));
+  gs.insert(vertex(3*x + 3*y));
+  Polyhedron ph(gs);
   LinExpression coeff = x + 0*y + 4;
 
   Polyhedron p1(ph);
@@ -44,17 +45,19 @@ main() {
   Polyhedron p2(ph);
   p2.substitute_variable(x, coeff);
 
-  Polyhedron p1_known_result;
-  p1_known_result.insert(vertex(4*x + 0*y));
-  p1_known_result.insert(vertex(4*x + 3*y));
-  p1_known_result.insert(vertex(7*x + 0*y));
-  p1_known_result.insert(vertex(7*x + 3*y));
+  GenSys gs1_known_result;
+  gs1_known_result.insert(vertex(4*x + 0*y));
+  gs1_known_result.insert(vertex(4*x + 3*y));
+  gs1_known_result.insert(vertex(7*x + 0*y));
+  gs1_known_result.insert(vertex(7*x + 3*y));
+  Polyhedron p1_known_result(gs1_known_result);
 
-  Polyhedron p2_known_result;
-  p2_known_result.insert(vertex(-4*x + 0*y));
-  p2_known_result.insert(vertex(-4*x + 3*y));
-  p2_known_result.insert(vertex(-1*x + 0*y));
-  p2_known_result.insert(vertex(-1*x + 3*y));
+  GenSys gs2_known_result;
+  gs2_known_result.insert(vertex(-4*x + 0*y));
+  gs2_known_result.insert(vertex(-4*x + 3*y));
+  gs2_known_result.insert(vertex(-1*x + 0*y));
+  gs2_known_result.insert(vertex(-1*x + 3*y));
+  Polyhedron p2_known_result(gs2_known_result);
 
   int retval = ((p1 == p1_known_result) && (p2 == p2_known_result)) ? 0 : 1;
   
