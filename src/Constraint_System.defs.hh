@@ -24,14 +24,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Constraint_System_defs_hh
 #define PPL_Constraint_System_defs_hh 1
 
-#include "Linear_Expression.types.hh"
 #include "Constraint_System.types.hh"
+#include "Linear_Expression.types.hh"
 #include "Linear_System.defs.hh"
 #include "Generator.types.hh"
 #include "Polyhedron.types.hh"
 #include "Constraint.types.hh"
-#include <cstddef>
-#include <vector>
 #include <iterator>
 #include <iosfwd>
 

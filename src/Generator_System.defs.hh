@@ -24,15 +24,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Generator_System_defs_hh
 #define PPL_Generator_System_defs_hh 1
 
-#include "Linear_Expression.types.hh"
 #include "Generator_System.types.hh"
+#include "Linear_Expression.types.hh"
 #include "Linear_System.defs.hh"
 #include "Generator.types.hh"
 #include "Constraint.types.hh"
 #include "Polyhedron.types.hh"
 #include "Poly_Con_Relation.defs.hh"
-#include <cstddef>
-#include <vector>
+#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
