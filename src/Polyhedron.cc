@@ -3634,13 +3634,28 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   dimension_type y_con_sys_num_rows = y.con_sys.num_rows();
   if (x_con_sys_num_rows < y_con_sys_num_rows)
     return true;
-  if (x_con_sys_num_rows > y_con_sys_num_rows)
+  else if (x_con_sys_num_rows == y_con_sys_num_rows) {
+    // Check if a decreasing number of constraints is obtained
+    // when disregarding the low-level constraints.
+    x_con_sys_num_rows = 0;
+    for (ConSys::const_iterator i = x.con_sys.begin(),
+	   x_cs_end = x.con_sys.end(); i != x_cs_end; ++i)
+      x_con_sys_num_rows++;
+    y_con_sys_num_rows = 0;
+    for (ConSys::const_iterator i = y.con_sys.begin(),
+	   y_cs_end = y.con_sys.end(); i != y_cs_end; ++i)
+      y_con_sys_num_rows++;
+    if (x_con_sys_num_rows < y_con_sys_num_rows)
+      return true;
+  }
+  else {
+    assert(x_con_sys_num_rows > y_con_sys_num_rows);
 #if 1
     stabilizing = false;
 #else
     return false;
-  assert(x_con_sys_num_rows == y_con_sys_num_rows);
 #endif
+  }
 #endif // #if NEW_LIMITED_GROWTH_ORDERING
 
   dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
@@ -4252,7 +4267,13 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
   std::cout << "BHRZ03: NOT stabilizing!" << std::endl;
 #endif
 #if NEW_LIMITED_GROWTH_ORDERING
-  std::cout << "BHRZ03 is not a widening!" << std::endl;
+  std::cerr << "BHRZ03 is not a widening!" << std::endl;
+  std::cerr << "=== Polyhedron x ===" << std::endl;
+  x.ascii_dump(std::cerr);
+  std::cerr << "=== Polyhedron x_backup ===" << std::endl;
+  x_backup.ascii_dump(std::cerr);
+  std::cerr << "=== Polyhedron y ===" << std::endl;
+  y.ascii_dump(std::cerr);
   assert(false);
   abort();
 #else
