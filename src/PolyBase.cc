@@ -806,81 +806,66 @@ PPL::operator<=(const PolyBase& x, const PolyBase& y) {
   assert(x.OK(false));
   assert(y.OK(false));
 
+  const GenSys& gs = x.gen_sys;
+  const ConSys& cs = y.con_sys;
+
   if (x.is_necessarily_closed())
     // When working with necessarily closed polyhedra,
     // `x' is contained in `y' if and only if all the generators of `x'
     // satisfy all the inequalities and saturate all the equalities of `y'.
-    // This comes from the definition of a polyhedron as
-    // the set of vectors satisfying a constraint system and
-    // the fact that all vectors in `x' can be obtained by suitably
-    // combining its generators.
-    for (size_t i = x.gen_sys.num_rows(); i-- > 0; ) {
-      const Generator& gx = x.gen_sys[i];
-      for (size_t j = y.con_sys.num_rows(); j-- > 0; ) {
-	const Constraint& cy = y.con_sys[j];
-	int sgn_gx_scalar_cy = sgn(gx * cy);
-	if (cy.is_inequality()) {
-	  if (sgn_gx_scalar_cy < 0)
+    // This comes from the definition of a polyhedron as the set of
+    // vectors satisfying a constraint system and the fact that all
+    // vectors in `x' can be obtained by suitably combining its generators.
+    for (size_t i = cs.num_rows(); i-- > 0; ) {
+      const Constraint& c = cs[i];
+      if (c.is_inequality()) {
+	for (size_t j = gs.num_rows(); j-- > 0; )
+	  if (c * gs[j] < 0)
 	    return false;
-	}
-	else if (sgn_gx_scalar_cy != 0)
-	  return false;
-      }
-    }
-  else {
-    // Here we have a NON-necessarily closed polyhedron.
-
-    // FIXME : can be made more efficient by providing
-    // a "strict" scalar-product method,
-    // which ignores the \epsilon coefficient.
-
-    // Check scalar products, but ignoring the \epsilon coefficient.
-    size_t eps_index = x_space_dim + 1;
-    for (size_t i = x.gen_sys.num_rows(); i-- > 0; ) {
-      const Generator& gx = x.gen_sys[i];
-      if (gx[eps_index] > 0) {
-	// Generator `gx' is a point.
-	for (size_t j = y.con_sys.num_rows(); j-- > 0; ) {
-	  const Constraint& cy = y.con_sys[j];
-	  if (cy[eps_index] < 0) {
-	    // Constraint `cy' is a strict inequality.
-	    // Here we perform the special test:
-	    // if a _point_ violates OR SATURATES a _strict_ inequality
-	    // (when ignoring the \epsilon coefficients)
-	    // then it is NOT included in the polyhedron.
-	    if (gx * cy - gx[eps_index] * cy[eps_index] <= 0)
-	      return false;
-	  }
-	  else {
-	    // Constraint `cy' is an equality or a non-strict inequality:
-	    // performing the normal test.
-	    int sgn_gx_scalar_cy = sgn(gx * cy);
-	    if (cy.is_inequality()) {
-	      if (sgn_gx_scalar_cy < 0)
-		return false;
-	    }
-	    else
-	      // Here `cy' is an equality.
-	      if (sgn_gx_scalar_cy != 0)
-		return false;
-	  }
-	}
       }
       else
-	// Generator `gx' is a ray, line or closure point:
-	// performing the normal test.
-	for (size_t j = y.con_sys.num_rows(); j-- > 0; ) {
-	  const Constraint& cy = y.con_sys[j];
-	  int sgn_gx_scalar_cy = sgn(gx * cy);
-	  if (cy.is_inequality()) {
-	    if (sgn_gx_scalar_cy < 0)
+	// `c' is an equality.
+	for (size_t j = gs.num_rows(); j-- > 0; )
+	  if (c * gs[j] != 0)
+	    return false;
+    }
+  else {
+    // Here we have a NON-necessarily closed polyhedron:
+    // using the reduced scalar product operator ^,
+    // which ignores the \epsilon coefficient.
+    size_t eps_index = x_space_dim + 1;
+    for (size_t i = cs.num_rows(); i-- > 0; ) {
+      const Constraint& c = cs[i];
+      switch (c.type()) {
+      case Constraint::NONSTRICT_INEQUALITY:
+	for (size_t j = gs.num_rows(); j-- > 0; )
+	  if ((c ^ gs[j]) < 0)
+	    return false;
+	break;
+      case Constraint::EQUALITY:
+	for (size_t j = gs.num_rows(); j-- > 0; )
+	  if ((c ^ gs[j]) != 0)
+	    return false;
+	break;
+      case Constraint::STRICT_INEQUALITY:
+	for (size_t j = gs.num_rows(); j-- > 0; ) {
+	  const Generator& g = gs[j];
+	  int sp_sign = sgn(c ^ g);
+	  if (g[eps_index] > 0) {
+	    // Generator `g' is a POINT.
+	    // If a _point_ violates OR SATURATES a _strict_ inequality
+	    // (when ignoring the \epsilon coefficients)
+	    // then it is NOT included in the polyhedron.
+	    if (sp_sign <= 0)
 	      return false;
 	  }
 	  else
-	    // Here `cy' is an equality.
-	    if (sgn_gx_scalar_cy != 0)
+	    // The generator is a line, ray or closure point: usual test.
+	    if (sp_sign < 0)
 	      return false;
 	}
+	break;
+      }
     }
   }
   // Inclusion holds.
