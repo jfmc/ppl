@@ -467,9 +467,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, ConSys& cs)
     }
     add_low_level_constraints(con_sys);
     set_constraints_up_to_date();
-    if (con_sys.first_pending_row() != con_sys.num_rows()) {
-      con_sys.set_sorted(false);
-    }
+    
     // Set the space dimension.
     space_dim = cs_space_dim;
     assert(OK());
@@ -520,9 +518,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, const ConSys& ccs)
     }
     add_low_level_constraints(con_sys);
     set_constraints_up_to_date();
-    if (con_sys.first_pending_row() != con_sys.num_rows()) {
-      con_sys.set_sorted(false);
-    }
+
     // Set the space dimension.
     space_dim = cs_space_dim;
     assert(OK());

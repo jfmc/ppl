@@ -355,7 +355,7 @@ PPL::Matrix::ascii_load(std::istream& s) {
     return false;
   if (!(s >> index))
     return false;
-  set_index_first_pending_row(nrows);  
+  set_index_first_pending_row(index);  
   // Check for well-formedness.
   assert(OK());
   return true;
@@ -652,7 +652,7 @@ PPL::Matrix::add_row(Row::Type type) {
   // FIXME: If the added row must become the first pending row
   // in this way we lose the property of sortedness of the matrix.
   // Check whether the modified Matrix happens to be sorted.
-  if (was_sorted && old_num_pending == 0) {
+  if (was_sorted) {
     dimension_type nrows = num_rows();
     // The added row may have caused the matrix to be not sorted anymore.
     if (nrows > 1) {
