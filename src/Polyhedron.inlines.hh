@@ -428,9 +428,7 @@ void
 Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
   bool reduce_complexity = (complexity != ANY_COMPLEXITY);
   if (!reduce_complexity
-      || (reduce_complexity
-	  && !has_something_pending()
-	  && constraints_are_minimized())) {
+      || (!has_something_pending() && constraints_are_minimized())) {
     // If the constraint system is minimized, the test `is_universe()'
     // is not exponential.
     if (is_universe())
