@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library;
 
 int
 count_points(const C_Polyhedron& ph) {
-  if (ph.check_empty() || (ph.space_dimension() == 0))
+  if (ph.check_empty() || ph.space_dimension() == 0)
     return 0;
 
   int count = 0;
@@ -64,12 +64,7 @@ main() {
 
   const Integer maxc = 10000;
 
-  // Polyhedra born full.
-  C_Polyhedron ph(3);
-  // We need an empty one.
-  ph.add_constraint(x <= 0);
-  ph.add_constraint(x >= 1);
-
+  C_Polyhedron ph(3, C_Polyhedron::EMPTY);
   COUNT(ph);
   for (int n = 1; n <= 200; ++n) {
     ph.add_generator(point(rg.get_z_range(maxc)*x
