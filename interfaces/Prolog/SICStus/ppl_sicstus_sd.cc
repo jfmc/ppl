@@ -374,17 +374,11 @@ sp_stub_##name(Prolog_term_ref goal, void*) { \
 
 SP_STUB_0(ppl_initialize, 0)
 SP_STUB_0(ppl_finalize, 0)
-SP_STUB_2(ppl_new_C_Polyhedron_from_dimension, 2)
-SP_STUB_2(ppl_new_NNC_Polyhedron_from_dimension, 2)
-SP_STUB_2(ppl_new_C_Polyhedron_empty_from_dimension, 2)
-SP_STUB_2(ppl_new_NNC_Polyhedron_empty_from_dimension, 2)
-SP_STUB_2(ppl_new_C_Polyhedron_from_C_Polyhedron, 2)
-SP_STUB_2(ppl_new_C_Polyhedron_from_NNC_Polyhedron, 2)
-SP_STUB_2(ppl_new_NNC_Polyhedron_from_C_Polyhedron, 2)
-SP_STUB_2(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron, 2)
-SP_STUB_2(ppl_new_NNC_Polyhedron_from_ConSys, 2)
-SP_STUB_2(ppl_new_C_Polyhedron_from_GenSys, 2)
-SP_STUB_2(ppl_new_NNC_Polyhedron_from_GenSys, 2)
+SP_STUB_2(ppl_new_Polyhedron_from_dimension, 3)
+SP_STUB_2(ppl_new_Polyhedron_empty_from_dimension, 3)
+SP_STUB_2(ppl_new_Polyhedron_from_Polyhedron, 4)
+SP_STUB_2(ppl_new_Polyhedron_from_ConSys, 3)
+SP_STUB_2(ppl_new_Polyhedron_from_GenSys, 3)
 SP_STUB_1(ppl_delete_Polyhedron, 1)
 SP_STUB_2(ppl_Polyhedron_space_dimension, 2)
 SP_STUB_2(ppl_Polyhedron_intersection_assign, 2)
@@ -438,17 +432,11 @@ ppl_sicstus_init(int /* when */) {
   }
   SP_DEFINE_C_PREDICATE(ppl_initialize, 0);
   SP_DEFINE_C_PREDICATE(ppl_finalize, 0);
-  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_dimension, 2);
-  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_dimension, 2);
-  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_empty_from_dimension, 2);
-  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_empty_from_dimension, 2);
-  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_C_Polyhedron, 2);
-  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_NNC_Polyhedron, 2);
-  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_C_Polyhedron, 2);
-  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron, 2);
-  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_ConSys, 2);
-  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_GenSys, 2);
-  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_GenSys, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_dimension, 3);
+  SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_empty_from_dimension, 3);
+  SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_Polyhedron, 4);
+  SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_ConSys, 3);
+  SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_GenSys, 3);
   SP_DEFINE_C_PREDICATE(ppl_delete_Polyhedron, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_space_dimension, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_intersection_assign, 2);

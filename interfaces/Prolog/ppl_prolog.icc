@@ -637,44 +637,6 @@ ppl_new_Polyhedron_from_dimension(Prolog_term_ref t_tp,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_new_C_Polyhedron_from_dimension(Prolog_term_ref t_nd,
-				    Prolog_term_ref t_ph) {
-  try {
-    PPL::Polyhedron* ph
-      = new PPL::C_Polyhedron(term_to_unsigned_int(t_nd));
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_address(tmp, ph);
-    if (Prolog_unify(t_ph, tmp)) {
-      REGISTER(ph);
-      return PROLOG_SUCCESS;
-    }
-    else
-      delete ph;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_new_NNC_Polyhedron_from_dimension(Prolog_term_ref t_nd,
-				      Prolog_term_ref t_ph) {
-  try {
-    PPL::Polyhedron* ph
-      = new PPL::NNC_Polyhedron(term_to_unsigned_int(t_nd));
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_address(tmp, ph);
-    if (Prolog_unify(t_ph, tmp)) {
-      REGISTER(ph);
-      return PROLOG_SUCCESS;
-    }
-    else
-      delete ph;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
 ppl_new_Polyhedron_empty_from_dimension(Prolog_term_ref t_tp,
                                         Prolog_term_ref t_nd,
 					Prolog_term_ref t_ph) {
@@ -687,46 +649,6 @@ ppl_new_Polyhedron_empty_from_dimension(Prolog_term_ref t_tp,
     else
       ph = new PPL::NNC_Polyhedron(term_to_unsigned_int(t_nd),
 				   PPL::Polyhedron::EMPTY);
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_address(tmp, ph);
-    if (Prolog_unify(t_ph, tmp)) {
-      REGISTER(ph);
-      return PROLOG_SUCCESS;
-    }
-    else
-      delete ph;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_new_C_Polyhedron_empty_from_dimension(Prolog_term_ref t_nd,
-					  Prolog_term_ref t_ph) {
-  try {
-    PPL::Polyhedron* ph
-      = new PPL::C_Polyhedron(term_to_unsigned_int(t_nd),
-			      PPL::Polyhedron::EMPTY);
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_address(tmp, ph);
-    if (Prolog_unify(t_ph, tmp)) {
-      REGISTER(ph);
-      return PROLOG_SUCCESS;
-    }
-    else
-      delete ph;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_new_NNC_Polyhedron_empty_from_dimension(Prolog_term_ref t_nd,
-					    Prolog_term_ref t_ph) {
-  try {
-    PPL::Polyhedron* ph
-      = new PPL::NNC_Polyhedron(term_to_unsigned_int(t_nd),
-			      PPL::Polyhedron::EMPTY);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -782,98 +704,6 @@ ppl_new_Polyhedron_from_Polyhedron(Prolog_term_ref t_tp_source,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_new_C_Polyhedron_from_C_Polyhedron(Prolog_term_ref t_source,
-				       Prolog_term_ref t_ph) {
-  try {
-    const PPL::C_Polyhedron* source_ph
-      = static_cast<const PPL::C_Polyhedron*>(get_ph_pointer(t_source));
-    if (source_ph == 0)
-      return PROLOG_FAILURE;
-    CHECK(source_ph);
-    PPL::C_Polyhedron* ph = new PPL::C_Polyhedron(*source_ph);
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_address(tmp, ph);
-    if (Prolog_unify(t_ph, tmp)) {
-      REGISTER(ph);
-      return PROLOG_SUCCESS;
-    }
-    else
-      delete ph;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_new_C_Polyhedron_from_NNC_Polyhedron(Prolog_term_ref t_source,
-					 Prolog_term_ref t_ph) {
-  try {
-    const PPL::NNC_Polyhedron* source_ph
-      = static_cast<const PPL::NNC_Polyhedron*>(get_ph_pointer(t_source));
-    if (source_ph == 0)
-      return PROLOG_FAILURE;
-    CHECK(source_ph);
-    PPL::C_Polyhedron* ph = new PPL::C_Polyhedron(*source_ph);
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_address(tmp, ph);
-    if (Prolog_unify(t_ph, tmp)) {
-      REGISTER(ph);
-      return PROLOG_SUCCESS;
-    }
-    else
-      delete ph;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_new_NNC_Polyhedron_from_C_Polyhedron(Prolog_term_ref t_source,
-					 Prolog_term_ref t_ph) {
-  try {
-    const PPL::C_Polyhedron* source_ph
-      = static_cast<const PPL::C_Polyhedron*>(get_ph_pointer(t_source));
-    if (source_ph == 0)
-      return PROLOG_FAILURE;
-    CHECK(source_ph);
-    PPL::NNC_Polyhedron* ph = new PPL::NNC_Polyhedron(*source_ph);
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_address(tmp, ph);
-    if (Prolog_unify(t_ph, tmp)) {
-      REGISTER(ph);
-      return PROLOG_SUCCESS;
-    }
-    else
-      delete ph;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(Prolog_term_ref t_source,
-					   Prolog_term_ref t_ph) {
-  try {
-    const PPL::NNC_Polyhedron* source_ph
-      = static_cast<const PPL::NNC_Polyhedron*>(get_ph_pointer(t_source));
-    if (source_ph == 0)
-      return PROLOG_FAILURE;
-    CHECK(source_ph);
-    PPL::NNC_Polyhedron* ph = new PPL::NNC_Polyhedron(*source_ph);
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_address(tmp, ph);
-    if (Prolog_unify(t_ph, tmp)) {
-      REGISTER(ph);
-      return PROLOG_SUCCESS;
-    }
-    else
-      delete ph;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
 ppl_new_Polyhedron_from_ConSys(Prolog_term_ref t_tp,
 				 Prolog_term_ref t_clist,
 				 Prolog_term_ref t_ph) {
@@ -905,31 +735,6 @@ ppl_new_Polyhedron_from_ConSys(Prolog_term_ref t_tp,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_new_C_Polyhedron_from_ConSys(Prolog_term_ref t_clist,
-				 Prolog_term_ref t_ph) {
-  try {
-    PPL::ConSys cs;
-    Prolog_term_ref c = Prolog_new_term_ref();
-
-    while (Prolog_is_cons(t_clist)) {
-      Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_constraint(c));
-    }
-    PPL::C_Polyhedron* ph = new PPL::C_Polyhedron(cs);
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_address(tmp, ph);
-    if (Prolog_unify(t_ph, tmp)) {
-      REGISTER(ph);
-      return PROLOG_SUCCESS;
-    }
-    else
-      delete ph;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
 ppl_new_Polyhedron_from_GenSys(Prolog_term_ref t_tp,
 				 Prolog_term_ref t_glist,
 				 Prolog_term_ref t_ph) {
@@ -947,81 +752,6 @@ ppl_new_Polyhedron_from_GenSys(Prolog_term_ref t_tp,
       ph = new PPL::C_Polyhedron(gs);
     else
       ph = new PPL::NNC_Polyhedron(gs);
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_address(tmp, ph);
-    if (Prolog_unify(t_ph, tmp)) {
-      REGISTER(ph);
-      return PROLOG_SUCCESS;
-    }
-    else
-      delete ph;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_new_C_Polyhedron_from_GenSys(Prolog_term_ref t_glist,
-				 Prolog_term_ref t_ph) {
-  try {
-    PPL::GenSys gs;
-    Prolog_term_ref g = Prolog_new_term_ref();
-
-    while (Prolog_is_cons(t_glist)) {
-      Prolog_get_cons(t_glist, g, t_glist);
-      gs.insert(build_generator(g));
-    }
-    PPL::C_Polyhedron* ph = new PPL::C_Polyhedron(gs);
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_address(tmp, ph);
-    if (Prolog_unify(t_ph, tmp)) {
-      REGISTER(ph);
-      return PROLOG_SUCCESS;
-    }
-    else
-      delete ph;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_new_NNC_Polyhedron_from_ConSys(Prolog_term_ref t_clist,
-				   Prolog_term_ref t_ph) {
-  try {
-    PPL::ConSys cs;
-    Prolog_term_ref c = Prolog_new_term_ref();
-
-    while (Prolog_is_cons(t_clist)) {
-      Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_constraint(c));
-    }
-    PPL::NNC_Polyhedron* ph = new PPL::NNC_Polyhedron(cs);
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_address(tmp, ph);
-    if (Prolog_unify(t_ph, tmp)) {
-      REGISTER(ph);
-      return PROLOG_SUCCESS;
-    }
-    else
-      delete ph;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_new_NNC_Polyhedron_from_GenSys(Prolog_term_ref t_glist,
-				   Prolog_term_ref t_ph) {
-  try {
-    PPL::GenSys gs;
-    Prolog_term_ref g = Prolog_new_term_ref();
-
-    while (Prolog_is_cons(t_glist)) {
-      Prolog_get_cons(t_glist, g, t_glist);
-      gs.insert(build_generator(g));
-    }
-    PPL::NNC_Polyhedron* ph = new PPL::NNC_Polyhedron(gs);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {

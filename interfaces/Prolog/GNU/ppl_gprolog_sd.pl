@@ -1,18 +1,11 @@
 :- foreign(ppl_init).
 :- foreign(ppl_initialize).
 :- foreign(ppl_finalize).
-:- foreign(ppl_new_C_Polyhedron_from_dimension(+term, +term)).
-:- foreign(ppl_new_NNC_Polyhedron_from_dimension(+term, +term)).
-:- foreign(ppl_new_C_Polyhedron_empty_from_dimension(+term, +term)).
-:- foreign(ppl_new_NNC_Polyhedron_empty_from_dimension(+term, +term)).
-:- foreign(ppl_new_C_Polyhedron_from_C_Polyhedron(+term, +term)).
-:- foreign(ppl_new_C_Polyhedron_from_NNC_Polyhedron(+term, +term)).
-:- foreign(ppl_new_NNC_Polyhedron_from_C_Polyhedron(+term, +term)).
-:- foreign(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(+term, +term)).
-:- foreign(ppl_new_C_Polyhedron_from_ConSys(+term, +term)).
-:- foreign(ppl_new_NNC_Polyhedron_from_ConSys(+term, +term)).
-:- foreign(ppl_new_C_Polyhedron_from_GenSys(+term, +term)).
-:- foreign(ppl_new_NNC_Polyhedron_from_GenSys(+term, +term)).
+:- foreign(ppl_new_Polyhedron_from_dimension(+term, +term, +term)).
+:- foreign(ppl_new_Polyhedron_empty_from_dimension(+term, +term, +term)).
+:- foreign(ppl_new_Polyhedron_from_Polyhedron(+term, +term, +term, +term)).
+:- foreign(ppl_new_Polyhedron_from_ConSys(+term, +term, +term)).
+:- foreign(ppl_new_Polyhedron_from_GenSys(+term, +term, +term)).
 :- foreign(ppl_delete_Polyhedron(+term)).
 :- foreign(ppl_Polyhedron_space_dimension(+term, +term)).
 :- foreign(ppl_Polyhedron_intersection_assign(+term, +term)).

@@ -52,8 +52,8 @@ ppl_delete_Polyhedron(P1),
 ppl_delete_Polyhedron(P2).
 
 incl_NNC :-
-ppl_new_NNC_Polyhedron_from_dimension(3, P1),
-ppl_new_NNC_Polyhedron_from_dimension(3, P2),
+ppl_new_Polyhedron_from_dimension(nnc, 3, P1),
+ppl_new_Polyhedron_from_dimension(nnc, 3, P2),
 ppl_Polyhedron_contains_Polyhedron(P1, P2),
 ppl_delete_Polyhedron(P1),
 ppl_delete_Polyhedron(P2).
