@@ -2723,9 +2723,9 @@ BD_Shape<T>::affine_preimage(const Variable var,
 template <typename T>
 inline void
 BD_Shape<T>::generalized_affine_image(Variable var,
-				    const Relation_Symbol relsym,
-				    const Linear_Expression& expr,
-				    const Coefficient& denominator) {
+				      const Relation_Symbol relsym,
+				      const Linear_Expression& expr,
+				      const Coefficient& denominator) {
 
   // The denominator cannot be zero.
   if (denominator == 0)
@@ -2756,16 +2756,19 @@ BD_Shape<T>::generalized_affine_image(Variable var,
   // Number of non-zero components of `expr'.
   dimension_type t = 0;
 
+  // Value of inhomogeneous term of `expr' in the case `expr' is a
+  // unary.
+  Coefficient coeff;
+  
   // Compute the number of the non-zero components of `expr'.
   // The `expr' must not be in two or plus variables.
   for (dimension_type i = expr_space_dim; i-- > 0; )
     if (expr.coefficient(Variable(i)) != 0) {
-      if (t >= 1)
-        throw_expression_too_complex("generalized_affine_image(v, r, e, d)",
-				     expr);
+      if (t++ >= 1)
+	break;
       else {
-	++t;
 	j = i;
+	coeff = expr.coefficient(Variable(j));
       }
     }
 
@@ -2781,7 +2784,6 @@ BD_Shape<T>::generalized_affine_image(Variable var,
   // Attention: in the second case the coefficient of variable must
   // equal to denominator.
   DB_Row<T>& n_v = dbm[num_var];
-  Coefficient a = expr.coefficient(Variable(j));
   Coefficient b = expr.inhomogeneous_term();
   if (t == 0) {
     // Case 1: expr = n.
@@ -2803,7 +2805,7 @@ BD_Shape<T>::generalized_affine_image(Variable var,
       // We lose(remove) all constraints of the  form `var (- var1) >= const '
       // and we add the new constraint `var >= n/denominator'.
       for (dimension_type i = 0; i <= space_dim; ++i)
-	dbm[num_var][i] = PLUS_INFINITY;
+	n_v[i] = PLUS_INFINITY;
 	add_constraint(denominator*var >= b);
       break;
     default:
@@ -2812,80 +2814,319 @@ BD_Shape<T>::generalized_affine_image(Variable var,
       break;
     }
   }
-  else {
+  else if ((t == 1) && (coeff == denominator || coeff == -denominator)) {
     // Case 2: expr = a*z + n.
     switch (relsym) {
     case LESS_THAN_OR_EQUAL:
-      if (a != denominator)
-	throw_expression_too_complex("generalized_affine_image(v, r, e, d)",
-				     expr);
-      else {
-	// We have got an expression of the following form: var + n.
-	if (j == num_var - 1) {
-	  if (b == 0)
-	    return;
-	  else {
-	    // We translate all the constraints of the form `var (- var1) <= const'
-	    // adding the value `n/denominator'.
-	    T d;
-	    div_round_up(d, b, denominator);
-	    for (dimension_type i = 0; i <= space_dim; ++i) {
-	      T& dbm_i_v = dbm[i][num_var];
-	      add_round_up(dbm_i_v, dbm_i_v, d);
-	    }
+      // We have got an expression of the following form: var + n.
+      if (j == num_var - 1) {
+	if (coeff != denominator) {
+	  T& dbm_v_0 = n_v[0];
+	  T& dbm_0_v = dbm[0][num_var];
+	  std::swap(dbm_0_v, dbm_v_0);
+	  // We remove the other constraints on 'var'.
+	  for (dimension_type i = 1; i <= space_dim; ++i) {
+	    n_v[i] = PLUS_INFINITY;
+	    dbm[i][num_var] = PLUS_INFINITY;
+	  }
+	  // In this case the closure is not preserved.
+	  status.reset_transitively_closed();
+	}
+	if (b == 0)
+	  return;
+	else {
+	  // We translate all the constraints of the form `var (- var1) <= const'
+	  // adding the value `n/denominator'.
+	  T d;
+	  div_round_up(d, b, denominator);
+	  for (dimension_type i = 0; i <= space_dim; ++i) {
+	    n_v[i] = PLUS_INFINITY;
+	    T& dbm_i_v = dbm[i][num_var];
+	    add_round_up(dbm_i_v, dbm_i_v, d);
 	  }
 	}
-	else {
-	  // We have got an expression of the following form:
-	  // var1 + n, with `var1' != `var'.
-	  // We lose(remove) all constraints of the form `var (- var1) <= const'
-	  // and we add the new constraint `var - var1 <= n/denominator'.
-	  for (dimension_type i = 0; i <= space_dim; ++i)
-	    dbm[i][num_var] = PLUS_INFINITY;
+      }
+      else {
+	// We have got an expression of the following form:
+	// var1 + n, with `var1' != `var'.
+	// We lose(remove) all constraints of the form `var (- var1) <= const'
+	// and we add the new constraint `var - var1 <= n/denominator'.
+	for (dimension_type i = 0; i <= space_dim; ++i)
+	  dbm[i][num_var] = PLUS_INFINITY;
+	if ((expr.coefficient(Variable(j)) > 0 && denominator > 0) 
+	    || (expr.coefficient(Variable(j)) < 0 && denominator < 0)) 
 	  add_constraint(denominator*var - denominator*Variable(j) <= b);
+	
+	else {
+	  T& dbm_0_v = dbm[0][num_var];
+	  const T& dbm_j_0 = dbm[j+1][0];
+	  T d;
+	  div_round_up(d, b, denominator);
+	  if (!is_plus_infinity(dbm_j_0)) {
+	    add_round_up(dbm_0_v, dbm_j_0, d);
+	    status.reset_transitively_closed();
+	  }
 	}
+	for (dimension_type i = 0; i <= space_dim; ++i)
+	  n_v[i] = PLUS_INFINITY;
       }
       break;
+
     case EQUAL:
       // The relation symbol is "==":
       // this is just an affine image computation.
       affine_image(var, expr, denominator);
       break;
+
     case GREATER_THAN_OR_EQUAL:
-      if (a != denominator)
-	throw_expression_too_complex("generalized_affine_image(v, r, e, d)",
-				     expr);
-      else {
-	// We have got an expression of the following form: var + n.
-	if (j == num_var - 1) {
-	  if (b == 0)
-	    return;
-	  else {
-	    // We translate all the constraints of the form
-            // `var (- var1) >= const' subtracting the value `n/denominator'.
-	    T c;
-	    div_round_up(c, -b, denominator);
-	    for (dimension_type i = 0; i <= space_dim; ++i) {
-	      T& dbm_v_i = n_v[i];
-	      add_round_up(dbm_v_i, dbm_v_i, c);
-	    }
+      // We have got an expression of the following form: var + n.
+      if (j == num_var - 1) {
+	if (coeff != denominator) {
+	  T& dbm_v_0 = n_v[0];
+	  T& dbm_0_v = dbm[0][num_var];
+	  std::swap(dbm_0_v, dbm_v_0);
+	  // We remove the other constraints on 'var'.
+	  for (dimension_type i = 1; i <= space_dim; ++i) {
+	    n_v[i] = PLUS_INFINITY;
+	    dbm[i][num_var] = PLUS_INFINITY;
+	  }
+	  // In this case the closure is not preserved.
+	  status.reset_transitively_closed();
+	}
+	
+	if (b == 0)
+	  return;
+	else {
+	  // We translate all the constraints of the form
+	  // `var (- var1) >= const' subtracting the value `n/denominator'.
+	  T c;
+	  div_round_up(c, -b, denominator);
+	  for (dimension_type i = 0; i <= space_dim; ++i) {
+	    T& dbm_v_i = n_v[i];
+	    add_round_up(dbm_v_i, dbm_v_i, c);
+	    dbm[i][num_var] = PLUS_INFINITY;
 	  }
 	}
-	else {
-	  // We have got an expression of the following form:
-	  // var1 + n, with `var1' != `var'.
-	  // We lose(remove) all constraints of the form `var (- var1) >= const'
-	  // and we add the new constraint `var - var1 >= n/denominator'.
-	  for (dimension_type i = 0; i <= space_dim; ++i)
-	    n_v[i] = PLUS_INFINITY;
+      }
+      else {
+	// We have got an expression of the following form:
+	// var1 + n, with `var1' != `var'.
+	// We lose(remove) all constraints of the form `var (- var1) >= const'
+	// and we add the new constraint `var - var1 >= n/denominator'.
+	for (dimension_type i = 0; i <= space_dim; ++i)
+	  n_v[i] = PLUS_INFINITY;
+	if ((expr.coefficient(Variable(j)) > 0 && denominator > 0) 
+	    || (expr.coefficient(Variable(j)) < 0 && denominator < 0))
 	  add_constraint(denominator*var - denominator*Variable(j) >= b);
+	else {
+	  T& dbm_v_0 = n_v[0];
+	  const T& dbm_0_j = dbm[0][j+1];
+	  T c;
+	  div_round_up(c, -b, denominator);
+	  if (!is_plus_infinity(dbm_0_j)) {
+	    add_round_up(dbm_v_0, dbm_0_j, c);
+	    status.reset_transitively_closed();
+	  }
 	}
+	for (dimension_type i = 0; i <= space_dim; ++i)
+	  dbm[i][num_var] = PLUS_INFINITY;
       }
       break;
+      
     default:
       // We already dealt with the case of a strict relation symbol.
       throw std::runtime_error("PPL internal error");
       break;
+    }
+  }
+
+  // General case. We have an expression of the form:
+  // expr = a_1*x_1 + a_2*x_2 + ... + a_n*x_n.
+  else {
+    switch (relsym) {
+    case LESS_THAN_OR_EQUAL:
+      {
+	Coefficient up_sum = expr.inhomogeneous_term();
+
+	Coefficient dnm = 1;
+	Coefficient dnm1 = 1;
+	// Checks if in the two approximations there are an infinite value.
+	bool up_sum_ninf = true; 
+	for (dimension_type i = expr_space_dim; i-- > 0; ) {
+	  Coefficient expr_coeff_var = expr.coefficient(Variable(i));
+	  if (expr_coeff_var != 0) {
+	    dimension_type k = i + 1;
+	    // Select the cells to be added in the two sums.
+	    const T& dbm_0_k = dbm[0][k]; 
+	    const T& dbm_k_0 = dbm[k][0]; 
+	    if (expr_coeff_var > 0) {
+	      // Upper approximation.
+	      if (up_sum_ninf)
+		if (!is_plus_infinity(dbm_0_k)) {
+		  Coefficient a; 
+		  Coefficient b;
+		  numer_denom(dbm_0_k, a, b);
+		  // Pseudo max_com_div, ma non proprio.
+		  // Controlla se b divide perfettamente `dnm', se si` aggiorna b,
+		  // altrimenti rimette a posto dnm.
+		  // FIXME: dovrebbe trovare i divisori in comune.
+		  // Adesso noi abbiamo: 
+		  // sum/dnm + a*expr_coeff_var/b = 
+		  // (sum*b + a*expr_coeff_var) / (dnm*b).           
+		  if (dnm % b == 0) {
+		    // In tal caso:
+		    // sum/dnm + a*expr_coeff_var/b =
+		    // (sum + a*expr_coeff_var*(dnm/b)) / (dnm).
+		    b = dnm/b;
+		    up_sum += (a*expr_coeff_var*b);
+		  }
+		  else {
+		    dnm *= b;
+		    up_sum *= b;
+		    up_sum += (a*expr_coeff_var*dnm);
+		  }
+		}
+		else
+		  up_sum_ninf = false;
+	      
+	    }
+	    // The coefficient is negative, so consider the negative variable
+	    // * <= -X <= *. Es.: 
+	    // x <-- -a1*x1. 
+	    else {
+	      expr_coeff_var = -expr_coeff_var;
+	      // Upper approximation.
+	      if (up_sum_ninf)
+		if (!is_plus_infinity(dbm_k_0)) {
+		  Coefficient a; 
+		  Coefficient b;
+		  numer_denom(dbm_k_0, a, b);
+		  if (dnm % b == 0) {
+		    b = dnm/b;
+		    up_sum += (a*expr_coeff_var*b);
+		  }
+		  else {
+		    dnm *= b;
+		    up_sum *= b;
+		    up_sum += (a*expr_coeff_var*dnm);
+		  }
+		}
+		else 
+		  up_sum_ninf = false;
+	    }    
+	    // If both approximations are infinite, no constraints is added.
+	    if (!up_sum_ninf)
+	      break;
+	  }
+	}
+	
+	// Remove all constraints with 'var'.
+	for (dimension_type i = 0; i <= space_dim; ++i) {
+	  n_v[i] = PLUS_INFINITY;
+	  dbm[i][num_var] = PLUS_INFINITY;
+	}
+	
+	// Added the right constraints, if necessary.
+	if (up_sum_ninf)
+	  add_constraint(denominator*dnm*var <= up_sum);
+
+	break;	
+      }
+
+    case EQUAL:
+      // The relation symbol is "==":
+      // this is just an affine image computation.
+      affine_image(var, expr, denominator);
+      break;
+     
+    case GREATER_THAN_OR_EQUAL:
+      {
+	Coefficient low_sum = expr.inhomogeneous_term();
+
+	Coefficient dnm = 1;
+	Coefficient dnm1 = 1;
+	// Checks if in the two approximations there are an infinite value.
+	bool low_sum_ninf = true;
+	for (dimension_type i = expr_space_dim; i-- > 0; ) {
+	  Coefficient expr_coeff_var = expr.coefficient(Variable(i));
+	  if (expr_coeff_var != 0) {
+	    dimension_type k = i + 1;
+	    // Select the cells to be added in the two sums.
+	    const T& dbm_0_k = dbm[0][k]; 
+	    const T& dbm_k_0 = dbm[k][0]; 
+	    if (expr_coeff_var > 0) {
+	      // Lower approximation.
+	      if (low_sum_ninf)
+		if (!is_plus_infinity(dbm_k_0)) {
+		  Coefficient a; 
+		  Coefficient b;
+		  T c;
+		  negate_round_down(c, dbm_k_0); 
+		  numer_denom(c, a, b);
+		  if (dnm1 % b == 0) {
+		    b = dnm1/b;
+		    low_sum += (a*expr_coeff_var*b);
+		  }
+		  else {
+		    dnm1 *= b;
+		    low_sum *= b;
+		    low_sum += (a*expr_coeff_var*dnm1);
+		  }
+		}
+		else
+		  low_sum_ninf = false;
+	      
+	    }
+	    // The coefficient is negative, so consider the negative variable
+	    // * <= -X <= *. Es.: 
+	    // x <-- -a1*x1. 
+	    else {
+	      expr_coeff_var = -expr_coeff_var;
+	      // Lower approximation.
+	      if (low_sum_ninf)
+		if (!is_plus_infinity(dbm_0_k)) {
+		  T c1;
+		  negate_round_down(c1, dbm_0_k);
+		  Coefficient a; 
+		  Coefficient b;
+		  numer_denom(c1, a, b);
+		  // Lower bound.
+		  if (dnm1 % b == 0) {
+		    b = dnm1/b;
+		    low_sum += (a*expr_coeff_var*b);
+		  }
+		  else {
+		    dnm1 *= b;
+		    low_sum *= b;
+		    low_sum += (a*expr_coeff_var*dnm1);
+		  }
+		}
+		else
+		  low_sum_ninf = false;
+	    }
+	    // If both approximations are infinite, no constraints is added.
+	    if (!low_sum_ninf)
+	      break;
+	  }
+	}
+
+	// Remove all constraints with 'var'.
+	for (dimension_type i = 0; i <= space_dim; ++i) {
+	  n_v[i] = PLUS_INFINITY;
+	  dbm[i][num_var] = PLUS_INFINITY;
+	}
+	
+	// Added the right constraints, if necessary.
+	if (low_sum_ninf)
+	  add_constraint(denominator*dnm1*var >= low_sum); 
+	break;
+      } 
+    
+    default:
+      // We already dealt with the case of a strict relation symbol.
+      throw std::runtime_error("PPL internal error");
+      break;
+      
     }
   }
   assert(OK());
