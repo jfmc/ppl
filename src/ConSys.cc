@@ -213,10 +213,10 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   \f[
     {a'}_{ij} =
     \begin{cases}
-    a_{ij} * \text{denominator} + a_{i\text{v}} * \text{expr}[j]
-    \quad \text{for } j \neq \text{v}; \\
-    \text{expr}[\text{v}] * a_{i\text{v}}
-    \quad \text{for } j = \text{v}.
+    a_{ij} * \mathrm{denominator} + a_{iv} * \mathrm{expr}[j]
+    \quad \text{for } j \neq v; \\
+    \mathrm{expr}[v] * a_{iv}
+    \quad \text{for } j = v.
     \end{cases}
   \f]
 
@@ -226,24 +226,52 @@ void
 PPL::ConSys::affine_preimage(size_t v,
 			     const LinExpression& expr,
 			     const Integer& denominator) {
-  assert(v > 0 && v < num_columns());
-  assert(num_columns() == expr.size());
+  // `v' is the index of a column corresponding to
+  // a "user" variable (i.e., it cannot be the inhomogeneous term,
+  // nor the \epsilon dimension of NNC polyhedra).
+  assert(v > 0 && v <= space_dimension());
+  assert(expr.space_dimension() <= space_dimension());
   assert(denominator != 0);
 
+  size_t n_columns = num_columns();
+  size_t n_rows = num_rows();
+  size_t expr_size = expr.size();
+  bool not_invertible = (v >= expr_size || expr[v] == 0);
   ConSys& x = *this;
-  // Build the new matrix of constraints.
-  for (size_t i = num_rows(); i-- > 0; ) {
-    Constraint& row = x[i];
-    Integer& row_v = row[v];
-    if (row_v != 0) {
-      for (size_t j = num_columns(); j-- > 0; )
-	if (j != v) {
-	  row[j] *= denominator;
-	  row[j] += row_v * expr[j];
-	}
-      row_v *= expr[v];
+
+  if (denominator != 1)
+    for (size_t i = n_rows; i-- > 0; ) {
+      Constraint& row = x[i];
+      Integer& row_v = row[v];
+      if (row_v != 0) {
+	for (size_t j = n_columns; j-- > 0; )
+	  if (j != v) {
+	    row[j] *= denominator;
+	    if (j < expr_size)
+	      row[j] += row_v * expr[j];
+	  }
+	if (not_invertible)
+	  row_v = 0;
+	else
+	  row_v *= expr[v];
+      }
     }
-  }
+  else
+    // Here `denominator' == 1: optimized computation
+    // only considering columns having indexes < expr_size.
+    for (size_t i = n_rows; i-- > 0; ) {
+      Constraint& row = x[i];
+      Integer& row_v = row[v];
+      if (row_v != 0) {
+	for (size_t j = expr_size; j-- > 0; )
+	  if (j != v)
+	    row[j] += row_v * expr[j];
+	if (not_invertible)
+	  row_v = 0;
+	else
+	  row_v *= expr[v];
+      }
+    }
   x.strong_normalize();
 }
 

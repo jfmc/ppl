@@ -406,7 +406,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
   column the follow expression:
   \f[
     \frac{\sum_{i = 0}^{n - 1} a_i x_i + b}
-         {denominator}.
+         {\mathrm{denominator}}.
   \f]
 
   \p expr is a constant parameter and unaltered by this computation.
@@ -415,35 +415,40 @@ void
 PPL::GenSys::affine_image(size_t v,
 			  const LinExpression& expr,
 			  const Integer& denominator) {
-  // The first coefficient is the inhomogeneous term so the `v' cannot be 0.
-  assert(v > 0 && v < num_columns());
-  assert(num_columns() == expr.size());
+  // `v' is the index of a column corresponding to
+  // a "user" variable (i.e., it cannot be the inhomogeneous term,
+  // nor the \epsilon dimension of NNC polyhedra).
+  assert(v > 0 && v <= space_dimension());
+  assert(expr.space_dimension() <= space_dimension());
   assert(denominator != 0);
 
   size_t n_columns = num_columns();
   size_t n_rows = num_rows();
   GenSys& x = *this;
+
   // Compute the numerator of the affine transformation and assign it
   // to the column of `*this' indexed by `v'.
   for (size_t i = n_rows; i-- > 0; ) {
     Generator& row = x[i];
-    row[v] *= expr[v];
-    for (size_t j = n_columns; j-- > 0; )
-      if (j != v)
-	row[v] += row[j] * expr[j];	
+    tmp_Integer[1] = 0;
+    for (size_t j = expr.size(); j-- > 0; )
+      tmp_Integer[1] += row[j] * expr[j];
+    std::swap(tmp_Integer[1], row[v]); 
   }
+
   if (denominator != 1)
-    // Since we want integer elements in the matrix and the `v'-th
-    // columns is a multiple of `denominator', we multiply by
-    // `denominator' all the other columns of `*this'.
+    // Since we want integer elements in the matrix,
+    // we multiply by `denominator' all the columns of `*this'
+    // having an index different from `v'.
     for (size_t i = n_rows; i-- > 0; )
       for (size_t j = n_columns; j-- > 0; )
 	if (j != v)
 	  x[i][j] *= denominator;
 
-  // If the mapping is not invertible we may have trasformed valid
-  // lines and rays into the origin of the space.
-  if (expr[v] == 0)
+  // If the mapping is not invertible we may have trasformed
+  // valid lines and rays into the origin of the space.
+  bool not_invertible = (v > expr.space_dimension() || expr[v] == 0);
+  if (not_invertible)
     x.remove_invalid_lines_and_rays();
 
   x.strong_normalize();

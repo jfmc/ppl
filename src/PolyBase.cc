@@ -2175,7 +2175,7 @@ PPL::operator>>(std::istream& s, PolyBase& p) {
   When considering the generators of a polyhedron, the
   affine transformation
   \f[
-    \frac{\sum_{i=0}^{n-1} a_i x_i + b}{denominator}
+    \frac{\sum_{i=0}^{n-1} a_i x_i + b}{\mathrm{denominator}}
   \f]
   is assigned to \p var where \p expr is
   \f$\sum_{i=0}^{n-1} a_i x_i + b\f$
@@ -2192,7 +2192,7 @@ PPL::operator>>(std::istream& s, PolyBase& p) {
      is different from zero.
   -# If the transformation is invertible, then we can write
      \f[
-  	\text{denominator} * {x'}_\mathrm{var}
+  	\mathrm{denominator} * {x'}_\mathrm{var}
 	  = \sum_{i = 0}^{n - 1} a_i x_i + b
 	  = a_\mathrm{var} x_\mathrm{var}
 	      + \sum_{i \neq var} a_i x_i + b,
@@ -2200,7 +2200,7 @@ PPL::operator>>(std::istream& s, PolyBase& p) {
      so that the inverse transformation is
      \f[
 	a_\mathrm{var} x_\mathrm{var}
-          = \text{denominator} * {x'}_\mathrm{var}
+          = \mathrm{denominator} * {x'}_\mathrm{var}
               - \sum_{i \neq j} a_i x_i - b.
      \f]
 
@@ -2258,13 +2258,7 @@ PPL::PolyBase::affine_image(const Variable& var,
   if (x.is_empty())
     return;
 
-  // FIXME: the const-cast is dangerous. Also we may need to
-  // adapt the topology of expr.
-  if (x_space_dim > expr_space_dim) {
-    LinExpression copy(expr, x_space_dim + 1);
-    const_cast<LinExpression&>(expr).swap(copy);
-  }
-  if (expr[num_var] != 0) {
+  if (num_var <= expr_space_dim && expr[num_var] != 0) {
     // The transformation is invertible:
     // minimality and saturators are preserved.
     if (generators_are_up_to_date())
@@ -2278,9 +2272,9 @@ PPL::PolyBase::affine_image(const Variable& var,
       x.con_sys.affine_preimage(num_var, inverse, expr[num_var]);
     }
   }
-  // The transformation is not invertible.
   else {
-    // We need that the system of generators is up-to-date.
+    // The transformation is not invertible.
+    // We need an up-to-date system of generators.
     if (!generators_are_up_to_date())
       x.minimize();
     if (!is_empty()) {
@@ -2291,6 +2285,7 @@ PPL::PolyBase::affine_image(const Variable& var,
       clear_sat_g_up_to_date();
     }
   }
+  assert(OK(false));
 }
 
 
@@ -2315,15 +2310,15 @@ PPL::PolyBase::affine_image(const Variable& var,
      is different from zero.
   -# If the transformation is invertible, then we can write
      \f[
-  	\text{denominator} * {x'}_\mathrm{var}
+  	\mathrm{denominator} * {x'}_\mathrm{var}
 	  = \sum_{i = 0}^{n - 1} a_i x_i + b
           = a_\mathrm{var} x_\mathrm{var}
-              + \sum_{i \neq \text{var}} a_i x_i + b,
+              + \sum_{i \neq \mathrm{var}} a_i x_i + b,
      \f],
      the inverse transformation is
      \f[
 	a_\mathrm{var} x_\mathrm{var}
-          = \text{denominator} * {x'}_\mathrm{var}
+          = \mathrm{denominator} * {x'}_\mathrm{var}
               - \sum_{i \neq j} a_i x_i - b.
      \f].
 
@@ -2353,10 +2348,10 @@ PPL::PolyBase::affine_image(const Variable& var,
   \f[
     {a'}_{ij}
       = \begin{cases}
-          a_{ij} * \text{denominator} + a_{i\text{var}} * \text{expr}[j]
-            \quad \text{for } j \neq \text{var}; \\
-          \text{expr}[\text{var}] * a_{i\text{var}},
-            \quad \text{for } j = \text{var}.
+          a_{ij} * \mathrm{denominator} + a_{i\mathrm{var}} * \mathrm{expr}[j]
+            \quad \mathrm{for } j \neq \mathrm{var}; \\
+          \mathrm{expr}[\mathrm{var}] * a_{i\mathrm{var}},
+            \quad \text{for } j = \mathrm{var}.
         \end{cases}
   \f]
 */
@@ -2382,14 +2377,7 @@ PPL::PolyBase::affine_preimage(const Variable& var,
   if (x.is_empty())
     return;
 
-  // FIXME: the const-cast is dangerous. Also we may need to
-  // adapt the topology of expr.
-  if (x_space_dim > expr_space_dim) {
-    LinExpression copy(expr, x_space_dim + 1);
-    const_cast<LinExpression&>(expr).swap(copy);
-  }
-
-  if (expr[num_var] != 0) {
+  if (num_var <= expr_space_dim && expr[num_var] != 0) {
     // The transformation is invertible:
     // minimality and saturators are preserved.
     if (constraints_are_up_to_date())
@@ -2405,6 +2393,7 @@ PPL::PolyBase::affine_preimage(const Variable& var,
   }
   else {
     // The transformation is not invertible.
+    // We need an up-to-date system of constraints.
     if (!constraints_are_up_to_date())
       x.minimize();
     x.con_sys.affine_preimage(num_var, expr, denominator);
@@ -2413,6 +2402,7 @@ PPL::PolyBase::affine_preimage(const Variable& var,
     clear_sat_c_up_to_date();
     clear_sat_g_up_to_date();
   }
+  assert(OK(false));
 }
 
 /*!
