@@ -44,7 +44,9 @@ main() {
   
   NNC_Polyhedron ph3;
 
-  bool ok = ph1.is_topologically_closed() && ph2.is_topologically_closed()
+  bool ok
+    = ph1.is_topologically_closed()
+    && ph2.is_topologically_closed()
     &&  ph3.is_topologically_closed();
 
 #if NOISY
