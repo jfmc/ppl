@@ -224,12 +224,6 @@ normalize2(const Coefficient& x, const Coefficient& y,
 template <typename T>
 T low_bits_mask(unsigned n);
 
-//! Used to avoid warning from the compiler
-template <typename T>
-void used(const T&)
-{
-}
-
 } // namespace Parma_Polyhedra_Library
 
 #include "globals.inlines.hh"
