@@ -996,7 +996,7 @@ ppl_polyhedron_included_or_equal(Prolog_term_ref t_lhs,
       return PROLOG_FAILURE;
     CHECK(lhs);
     CHECK(rhs);
-    if (lhs <= rhs) 
+    if (*lhs <= *rhs) 
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1015,7 +1015,7 @@ ppl_polyhedron_equal(Prolog_term_ref t_lhs,
       return PROLOG_FAILURE;
     CHECK(lhs);
     CHECK(rhs);
-    if (lhs == rhs)
+    if (*lhs == *rhs)
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1034,7 +1034,7 @@ ppl_polyhedron_strictly_included(Prolog_term_ref t_lhs,
       return PROLOG_FAILURE;
     CHECK(lhs);
     CHECK(rhs);
-    if (lhs < rhs)
+    if (*lhs < *rhs)
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
