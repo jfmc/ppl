@@ -49,18 +49,38 @@ Prolog_put_long(Prolog_term_ref t, long l) {
   return SP_put_integer(t, l);
 }
 
+static int
+Prolog_put_big_ulong(Prolog_term_ref t, unsigned long ul) {
+  static unsigned char uc_buffer[sizeof(unsigned long) + 1];
+  static unsigned n;
+#if SIZEOF_LONG_LONG > SIZEOF_UNSIGNED_LONG
+  static long long ll_buffer;
+#endif
+
+#if SIZEOF_LONG_LONG > SIZEOF_UNSIGNED_LONG
+  ll_buffer = ul;
+  if (SP_put_integer_bytes(t, &ll_buffer, sizeof(ll_buffer), 1))
+    return 1;
+#endif
+  n = 0;
+  do {
+    uc_buffer[n++] = ul & 0xff;
+    ul >>= 8;
+  } while (ul);
+  if (uc_buffer[n-1] & 0x80)
+    uc_buffer[n++] = 0;
+  return SP_put_integer_bytes(t, &uc_buffer, n, 0);
+}
+
 /*!
   Assign to \p t a Prolog integer with value \p ul.
 */
 PCFLI_EXTERN_INLINE int
 Prolog_put_ulong(Prolog_term_ref t, unsigned long ul) {
-  static long long buf;
-  if (ul <= LONG_MAX)
-    return SP_put_integer(t, (long) ul);
-  else {
-    buf = (long long) ul;
-    return SP_put_integer_bytes(t, &buf, sizeof(long long), 1);
-  }
+  return
+    (ul <= LONG_MAX)
+    ? SP_put_integer(t, (long) ul)
+    : Prolog_put_big_ulong(t, ul);
 }
 
 /*!
