@@ -455,7 +455,6 @@ the intersection and poly-hull operators defined above
 are the binary <EM>meet</EM> and the binary <EM>join</EM>
 operators on the lattices \f$\Pset_n\f$ and \f$\CPset_n\f$.
 
-
 <B>Convex Polyhedral Difference</B>
 
 For any pair of NNC polyhedra \f$\cP_1, \cP_2 \in \Pset_n\f$,
@@ -469,8 +468,6 @@ a convex polyhedron that is not topologically closed.
 For this reason, when computing the poly-difference of two
 C polyhedra, the library will enforce the topological closure
 of the result.
-
-
 
 <B>Affine Images and Preimages</B>
 
@@ -490,6 +487,44 @@ the <EM>preimage</EM> under \f$\phi\f$ of \f$S' \sseq \Rset^m\f$.
 Both \f$\Pset_n\f$ and \f$\CPset_n\f$ are closed under
 the application of any space-dimension preserving
 affine image and preimage operators.
+
+<B>Relation-with Operators</B>
+
+The library provides operators for checking the relation between an
+NNC polyhedron \f$\cP\f$ and either a constraint
+\f$c = \langle \vect{a}, \vect{x} \rangle \mathord{\relop} b\f$,
+for some \f$\mathord{\relop} \in \{ =, \geq, > \}\f$,
+or a generator \f$g\f$.
+
+The possible relations between \f$\cP\f$ and \f$c\f$ are as follows.
+- \f$\cP\f$ <EM>is disjoint</EM> from \f$c\f$ if \f$\cP\f$
+is disjoint from the set of points satisfying \f$c\f$;
+that is,
+adding \f$c\f$ to the constraint system representing \f$\cP\f$
+gives us the empty polyhedron.
+- \f$\cP\f$ <EM>strictly intersects</EM> \f$c\f$ if \f$\cP\f$
+intersects but is not included in the set of points satisfying \f$c\f$;
+that is,
+adding \f$c\f$ to the constraint system representing \f$\cP\f$
+gives us a non-empty polyhedron smaller than \f$\cP\f$.
+- \f$\cP\f$ <EM>is included</EM> in \f$c\f$ if \f$\cP\f$
+is included in the set of points satisfying \f$c\f$;
+that is,
+adding \f$c\f$ to the constraint system representing \f$\cP\f$
+leaves \f$\cP\f$ unchanged.
+- \f$\cP\f$ <EM>saturates</EM> \f$c\f$ if \f$\cP\f$
+is included in the set of points satisfying
+the hyperplane   \f$\langle \vect{a}, \vect{x} \rangle = b\f$
+induced by \f$c\f$;
+that is,
+adding the constraint \f$\langle \vect{a}, \vect{x} \rangle = b\f$
+to the constraint system representing \f$\cP\f$
+leaves \f$\cP\f$ unchanged.
+
+The polyhedron \f$\cP\f$
+<EM>subsumes</EM> \f$g\f$ if
+adding \f$g\f$ to the generator system representing \f$\cP\f$
+does not change \f$\cP\f$.
 
 <B>Widening Operators</B>
 
