@@ -231,14 +231,14 @@ operator<<(std::ostream& s, const Determinate<PH>& x) {
 template <typename PH>
 bool
 operator==(const Determinate<PH>& x, const Determinate<PH>& y) {
-  return prep == y.prep || x.prep->ph == y.prep->ph;
+  return x.prep == y.prep || x.prep->ph == y.prep->ph;
 }
 
 /*! \relates Determinate */
 template <typename PH>
 bool
 operator!=(const Determinate<PH>& x, const Determinate<PH>& y) {
-  return prep != y.prep && x.prep->ph != y.prep->ph;
+  return x.prep != y.prep && x.prep->ph != y.prep->ph;
 }
 
 template <typename PH>
