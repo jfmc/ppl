@@ -103,8 +103,14 @@ PPL::SatRow::first() const {
 int
 PPL::SatRow::next(int position) const {
   assert(position >= 0);
-
   ++position;
+
+  // The alternative implementation using the mpz_scan1() function
+  // of GMP was measured to be slower that ours.  Here it is, in
+  // case mpz_scan1() is improved.
+  //
+  // unsigned long r = mpz_scan1(vec, position);
+  // return (r == ULONG_MAX) ? -1 : r;
 
   size_t li = position / BITS_PER_GMP_LIMB;
   const size_t vec_size = mpz_size(vec);
