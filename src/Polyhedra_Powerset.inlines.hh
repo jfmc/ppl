@@ -97,7 +97,7 @@ template <typename PH>
 template <typename QH>
 Polyhedra_Powerset<PH>&
 Polyhedra_Powerset<PH>::operator=(const Polyhedra_Powerset<QH>& y) {
-  Polyhedra_Powerset<PH> pps = y;
+  Polyhedra_Powerset<PH> pps(y);
   swap(pps);
   return *this;
 }
@@ -728,8 +728,8 @@ template <>
 inline void
 Polyhedra_Powerset<C_Polyhedron>
 ::poly_difference_assign(const Polyhedra_Powerset& y) {
-  Polyhedra_Powerset<NNC_Polyhedron> nnc_this = *this;
-  Polyhedra_Powerset<NNC_Polyhedron> nnc_y = y;
+  Polyhedra_Powerset<NNC_Polyhedron> nnc_this(*this);
+  Polyhedra_Powerset<NNC_Polyhedron> nnc_y(y);
   nnc_this.poly_difference_assign(nnc_y);
   *this = nnc_this;
 }
