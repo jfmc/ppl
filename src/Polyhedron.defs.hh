@@ -42,6 +42,7 @@ namespace Parma_Polyhedra_Library {
 
 //! Output operator.
 /*!
+  \relates Polyhedron
   Writes a textual representation of \p ph on \p s:
   <CODE>false</CODE> is written if \p ph is an empty polyhedron;
   <CODE>true</CODE> is written if \p ph is a universe polyhedron;
@@ -49,7 +50,7 @@ namespace Parma_Polyhedra_Library {
   all constraints in one row separated by ", ".
 */
 std::ostream&
-Parma_Polyhedra_Library::operator<<(std::ostream& s, const Polyhedron& p);
+operator<<(std::ostream& s, const Polyhedron& ph);
 
 //! \brief
 //! Returns <CODE>true</CODE> if and only if
