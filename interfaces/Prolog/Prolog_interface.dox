@@ -141,6 +141,34 @@ on the use of the interface.
 Here is a list of all the PPL predicates provided by the Prolog interface.
 
 <CODE>
+  ppl_version_major(-Integer)
+</CODE>
+
+<CODE>
+  ppl_version_minor(-Integer)
+</CODE>
+
+<CODE>
+  ppl_version_revision(-Integer)
+</CODE>
+
+<CODE>
+  ppl_version_beta(-Integer)
+</CODE>
+
+<CODE>
+  ppl_version(-Atom)
+</CODE>
+
+<CODE>
+  ppl_banner(-Atom)
+</CODE>
+
+<CODE>
+  ppl_max_space_dimension(-Integer)
+</CODE>
+
+<CODE>
   ppl_initialize
 </CODE>
 
@@ -243,6 +271,24 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 
 <CODE>
   ppl_Polyhedron_bounds_from_below(+Handle, +LinExpr)
+</CODE>
+
+<CODE>
+  ppl_Polyhedron_maximize(+Handle, +LinExpr, -Integer, -Integer, +Bool)
+</CODE>
+
+<CODE>
+  ppl_Polyhedron_maximize_with_point(+Handle, +LinExpr, -Integer, -Integer,
+                                     -Bool, -Point)
+</CODE>
+
+<CODE>
+  ppl_Polyhedron_minimize(+Handle, +LinExpr, -Integer, -Integer, +Bool)
+</CODE>
+
+<CODE>
+  ppl_Polyhedron_minimize_with_point(+Handle, +LinExpr, -Integer, -Integer,
+                                     -Bool, -Point)
 </CODE>
 
 <CODE>
@@ -447,6 +493,8 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 The PPL predicates provided by the Prolog interface are specified below.
 The specification uses the following grammar rules:
 \code
+ Handle      --> Prolog term
+
  Topology    --> c | nnc
 
  VarId       --> number | + number	variable identifier
