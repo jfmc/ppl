@@ -27,6 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "LinExpression.types.hh"
 #include "Row.defs.hh"
 #include "Variable.types.hh"
+#include "Constraint.types.hh"
+#include "Generator.types.hh"
 #include <cstddef>
 
 namespace Parma_Polyhedra_Library {
@@ -122,6 +124,14 @@ public:
 PPL_INTERNAL:
   //! Copy-constructor with a specified dimension.
   LinExpression(const LinExpression& e, size_t sz);
+
+  //! Constructor: builds the linear expression corresponding to
+  //! the constraint \p c.
+  explicit LinExpression(const Constraint& c);
+  //! Constructor: builds the linear expression corresponding to
+  //! the coefficients of generator \p g. Note that,
+  //! for points and closure points, the divisor is \e not copied.
+  explicit LinExpression(const Generator& g);
 
 private:
   //! Implementation sizing constructor.
