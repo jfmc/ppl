@@ -48,6 +48,9 @@ o  New file README.configure provides additional information about
 
 o  The documentation has been improved in various ways.
 
+o  The documentation for users, in PostScript, PDF and HTML formats,
+   is now installed in a standard place by `make install'.
+
 o  The variable `abandon_exponential_computations' has been renamed
    `abandon_expensive_computations'.
 

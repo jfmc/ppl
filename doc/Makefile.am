@@ -27,6 +27,13 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
+# All the documentation in docdir.
+docdir = @docdir@
+dvidir = $(docdir)
+psdir = $(docdir)
+pdfdir = $(docdir)
+htmldir = $(docdir)
+
 DOXYGEN = doxygen
 
 LICENSES = \
@@ -51,12 +58,13 @@ ppl-devref-@VERSION@-print.pdf \
 ppl-devref-@VERSION@-print.ps.gz \
 ppl-devref-@VERSION@-html.tar.gz
 
-# We distribute some preprocessed user's documentation,
-# both for browsing and for printing.
+# We distribute some preprocessed user's documentation, both for
+# browsing and for printing.
 DIST_DOCS = \
 ppl-user-@VERSION@-browse.pdf \
 ppl-user-@VERSION@-print.pdf \
-ppl-user-@VERSION@-print.ps.gz
+ppl-user-@VERSION@-print.ps.gz \
+ppl-user-@VERSION@-html.tar.gz
 
 # Do nothing by default.
 all:
@@ -66,6 +74,49 @@ dist-hook: $(DIST_DOCS)
 user-browse: ppl-user-@VERSION@-browse.pdf
 
 world: $(ALL_TARGETS)
+
+install-data-local: install-html install-pdf install-ps
+installdirs-local: installdirs-html installdirs-pdf installdirs-ps
+uninstall-local: uninstall-html uninstall-pdf uninstall-ps
+
+# Installation and uninstallation of HTML documentation.
+install-html: # ppl-user-@VERSION@-html.tar.gz
+	$(mkinstalldirs) $(DESTDIR)$(htmldir)/ppl-user-@VERSION@-html
+	tar zxf `if test -f ppl-user-@VERSION@-html.tar.gz; then echo .; else echo $(srcdir); fi`/ppl-user-@VERSION@-html.tar.gz
+	for file in ppl-user-@VERSION@-html/*; do \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/ppl-user-@VERSION@-html/`basename $$file`; \
+	done
+
+installdirs-html:
+	$(mkinstalldirs) $(DESTDIR)$(htmldir)/ppl-user-@VERSION@-html
+
+uninstall-html:
+	rm -rf $(DESTDIR)$(htmldir)/ppl-user-@VERSION@-html
+
+# Installation and uninstallation of PDF documentation.
+install-pdf: # ppl-user-@VERSION@-browse.pdf ppl-user-@VERSION@-print.pdf
+	$(mkinstalldirs) $(DESTDIR)$(pdfdir)
+	for file in `if test -f ppl-user-@VERSION@-*.pdf; then echo .; else echo $(srcdir); fi`/ppl-user-@VERSION@-*.pdf; do \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/`basename $$file`; \
+	done
+
+installdirs-pdf:
+	$(mkinstalldirs) $(DESTDIR)$(pdfdir)
+
+uninstall-pdf:
+	rm -f $(DESTDIR)$(pdfdir)/ppl-user-@VERSION@-*.pdf
+
+# Installation and uninstallation of PostScript documentation.
+install-ps: # ppl-user-@VERSION@-print.ps.gz
+	$(mkinstalldirs) $(DESTDIR)$(psdir)
+	$(INSTALL_DATA) `if test -f ppl-user-@VERSION@-print.ps.gz; then echo .; else echo $(srcdir); fi`/ppl-user-@VERSION@-print.ps.gz $(DESTDIR)$(psdir)/ppl-user-@VERSION@-print.ps.gz
+
+installdirs-ps:
+	$(mkinstalldirs) $(DESTDIR)$(psdir)
+
+uninstall-ps:
+	rm -f $(DESTDIR)$(psdir)/ppl-user-@VERSION@-print.ps.gz
+
 
 PPL_SOURCE_FILES = $(wildcard $(srcdir)/../src/*.hh $(srcdir)/../src/*.cc)
 

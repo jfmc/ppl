@@ -37,6 +37,7 @@ AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7.3])
 
 AC_SUBST(VERSION)
 
+# Version number machinery.
 changequote(<<, >>)dnl
 if test -n "`expr $VERSION : '\([0-9]*\)\.[0-9]*\.[0-9]*'`"
 then
@@ -59,6 +60,9 @@ AC_SUBST(PPL_VERSION_MAJOR)
 AC_SUBST(PPL_VERSION_MINOR)
 AC_SUBST(PPL_VERSION_REVISION)
 AC_SUBST(PPL_VERSION_BETA)
+
+# Installation directories.
+AC_SUBST([docdir], ['${datadir}/doc/ppl'])
 
 # Generate a configuration header file.
 AC_CONFIG_HEADER(config.h)
