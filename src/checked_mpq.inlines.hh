@@ -36,9 +36,9 @@ inline Result
 value_type_mpq(const mpq_class& v) {
   if (::sgn(v.get_den()) == 0) {
     int s = ::sgn(v.get_num());
-    if (Policy::handle_nan && s == 0)
-      return V_NAN;
-    if (Policy::handle_infinity) {
+    if (Policy::store_unknown && s == 0)
+      return V_UNKNOWN;
+    if (Policy::store_overflows) {
       if (s < 0)
 	return V_NEG_OVERFLOW;
       if (s > 0)
@@ -54,9 +54,9 @@ template <typename Policy>
 inline void
 set_special_mpq(mpq_class& v, const Result r) {
   int num;
-  if (Policy::handle_nan && r == V_NAN)
+  if (Policy::store_unknown && (r == V_UNKNOWN || r == V_DOMAIN))
     num = 0;
-  else if (Policy::handle_infinity) {
+  else if (Policy::store_overflows) {
     if (r == V_NEG_OVERFLOW)
       num = -1;
     else if (r == V_POS_OVERFLOW)
@@ -224,7 +224,7 @@ template <typename Policy>
 inline Result 
 div_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
   if (Policy::check_divbyzero && sgn(y) == 0)
-    return V_NAN;
+    return V_UNKNOWN;
   to = x / y;
   return V_EQ;
 }
@@ -235,7 +235,7 @@ template <typename Policy>
 inline Result 
 mod_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
   if (Policy::check_divbyzero && sgn(y) == 0)
-    return V_NAN;
+    return V_UNKNOWN;
   to = x / y;
   to.get_num() %= to.get_den();
   return V_EQ;

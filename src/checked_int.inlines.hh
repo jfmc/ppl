@@ -27,11 +27,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Limits.hh"
 #include "float.types.hh"
 
-#define CHECKED_INT_PINF(Type) (Limits<Type>::max)
-#define CHECKED_INT_NINF(Type) (Limits<Type>::min >= 0 ? Limits<Type>::max - 1 : Limits<Type>::min)
-#define CHECKED_INT_NAN(Type) (Limits<Type>::min >= 0 ? Limits<Type>::max - 2 : Limits<Type>::min + 1)
-#define CHECKED_INT_MIN(Type, Policy) (Limits<Type>::min + (Limits<Type>::min >= 0 ? 0 : (Policy::handle_infinity + Policy::handle_nan)))
-#define CHECKED_INT_MAX(Type, Policy) (Limits<Type>::max - (Limits<Type>::min >= 0 ? 2 : 1) * Policy::handle_infinity - Policy::handle_nan)
+#define CHECKED_INT_POS_OVERFLOW(Type) (Limits<Type>::max)
+#define CHECKED_INT_NEG_OVERFLOW(Type) (Limits<Type>::min >= 0 ? Limits<Type>::max - 1 : Limits<Type>::min)
+#define CHECKED_INT_UNKNOWN(Type) (Limits<Type>::min >= 0 ? Limits<Type>::max - 2 : Limits<Type>::min + 1)
+#define CHECKED_INT_MIN(Type, Policy) (Limits<Type>::min + (Limits<Type>::min >= 0 ? 0 : (Policy::store_overflows + Policy::store_unknown)))
+#define CHECKED_INT_MAX(Type, Policy) (Limits<Type>::max - (Limits<Type>::min >= 0 ? 2 : 1) * Policy::store_overflows - Policy::store_unknown)
 
 
 namespace Parma_Polyhedra_Library {
@@ -41,12 +41,12 @@ namespace Checked {
 template <typename Policy, typename Type>
 inline Result
 value_type_signed_int(const Type v) {
-  if (Policy::handle_nan && v == CHECKED_INT_NAN(Type))
-    return V_NAN;
-  if (Policy::handle_infinity) {
-    if (v == CHECKED_INT_NINF(Type))
+  if (Policy::store_unknown && v == CHECKED_INT_UNKNOWN(Type))
+    return V_UNKNOWN;
+  if (Policy::store_overflows) {
+    if (v == CHECKED_INT_NEG_OVERFLOW(Type))
       return V_NEG_OVERFLOW;
-    if (v == CHECKED_INT_PINF(Type))
+    if (v == CHECKED_INT_POS_OVERFLOW(Type))
       return V_POS_OVERFLOW;
   }
   return V_EQ;
@@ -61,17 +61,17 @@ SPECIALIZE_VALUE_TYPE(signed_int, long long)
 template <typename Policy, typename Type>
 inline void
 set_special_signed_int(Type& v, const Result r) {
-  if (Policy::handle_nan && r == V_NAN) {
-    v = CHECKED_INT_NAN(Type);
+  if (Policy::store_unknown && (r == V_UNKNOWN || r == V_DOMAIN)) {
+    v = CHECKED_INT_UNKNOWN(Type);
     return;
   }
-  if (Policy::handle_infinity) {
+  if (Policy::store_overflows) {
     if (r == V_NEG_OVERFLOW) {
-      v = CHECKED_INT_NINF(Type);
+      v = CHECKED_INT_NEG_OVERFLOW(Type);
       return;
     }
     if (r == V_POS_OVERFLOW) {
-      v = CHECKED_INT_PINF(Type);
+      v = CHECKED_INT_POS_OVERFLOW(Type);
       return;
     }
   }
@@ -86,12 +86,12 @@ SPECIALIZE_SET_SPECIAL(signed_int, long long)
 template <typename Policy, typename Type>
 inline Result
 value_type_unsigned_int(const Type v) {
-  if (Policy::handle_nan && v == CHECKED_INT_NAN(Type))
-    return V_NAN;
-  if (Policy::handle_infinity) {
-    if (v == CHECKED_INT_NINF(Type))
+  if (Policy::store_unknown && v == CHECKED_INT_UNKNOWN(Type))
+    return V_UNKNOWN;
+  if (Policy::store_overflows) {
+    if (v == CHECKED_INT_NEG_OVERFLOW(Type))
       return V_NEG_OVERFLOW;
-    if (v == CHECKED_INT_PINF(Type))
+    if (v == CHECKED_INT_POS_OVERFLOW(Type))
       return V_POS_OVERFLOW;
   }
   return V_EQ;
@@ -106,17 +106,17 @@ SPECIALIZE_VALUE_TYPE(unsigned_int, unsigned long long)
 template <typename Policy, typename Type>
 inline void
 set_special_unsigned_int(Type& v, const Result r) {
-  if (Policy::handle_nan && r == V_NAN) {
-      v = CHECKED_INT_NAN(Type);
+  if (Policy::store_unknown && (r == V_UNKNOWN || r == V_DOMAIN)) {
+      v = CHECKED_INT_UNKNOWN(Type);
       return;
   }
-  if (Policy::handle_infinity) {
+  if (Policy::store_overflows) {
     if (r == V_NEG_OVERFLOW) {
-      v = CHECKED_INT_NINF(Type);
+      v = CHECKED_INT_NEG_OVERFLOW(Type);
       return;
     }
     if (r == V_POS_OVERFLOW) {
-      v = CHECKED_INT_PINF(Type);
+      v = CHECKED_INT_POS_OVERFLOW(Type);
       return;
     }
   }
@@ -132,7 +132,7 @@ template<typename Policy, typename Type>
 inline Result 
 pred_int(Type& to) {
   Result r = value_type<Policy>(to);
-  if (r == V_NAN || r == V_NEG_OVERFLOW)
+  if (r == V_UNKNOWN || r == V_NEG_OVERFLOW)
     return r;
   if (r == V_POS_OVERFLOW) {
     to = CHECKED_INT_MAX(Type, Policy);
@@ -140,7 +140,7 @@ pred_int(Type& to) {
   }
   if (Policy::check_overflow && to == CHECKED_INT_MIN(Type, Policy)) {
     r = V_NEG_OVERFLOW;
-    to = CHECKED_INT_NINF(Type);
+    to = CHECKED_INT_NEG_OVERFLOW(Type);
     return r;
   }
   --to;
@@ -151,7 +151,7 @@ template<typename Policy, typename Type>
 inline Result 
 succ_int(Type& to) {
   Result r = value_type<Policy>(to);
-  if (r == V_NAN || r == V_POS_OVERFLOW)
+  if (r == V_UNKNOWN || r == V_POS_OVERFLOW)
     return r;
   if (r == V_NEG_OVERFLOW) {
     to = CHECKED_INT_MIN(Type, Policy);
@@ -159,7 +159,7 @@ succ_int(Type& to) {
   }
   if (Policy::check_overflow && to == CHECKED_INT_MAX(Type, Policy)) {
     r = V_POS_OVERFLOW;
-    to = CHECKED_INT_PINF(Type);
+    to = CHECKED_INT_POS_OVERFLOW(Type);
     return r;
   }
   ++to;
@@ -600,7 +600,7 @@ inline Result
 div_signed_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_divbyzero && y == 0) {
-    r = V_NAN;
+    r = V_UNKNOWN;
     goto bad;
   }
   if (Policy::check_overflow && y == -1)
@@ -623,7 +623,7 @@ inline Result
 div_unsigned_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_divbyzero && y == 0) {
-    r = V_NAN;
+    r = V_UNKNOWN;
     goto bad;
   }
   r = V_EQ;
@@ -642,7 +642,7 @@ inline Result
 mod_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_divbyzero && y == 0) {
-    r = V_NAN;
+    r = V_UNKNOWN;
     goto bad;
   }
   to = x % y;
@@ -683,7 +683,7 @@ inline Result
 sqrt_signed_int(Type& to, const Type from) {
   Result r;
   if (Policy::check_sqrt_neg && from < 0) {
-    r = V_NAN;
+    r = V_DOMAIN;
     goto bad;
   }
   r = sqrt_unsigned_int<Policy>(to, from);

@@ -491,9 +491,9 @@ template <typename Policy, typename T>
 inline Result
 value_type_float(const T v) {
   Float<T> f(v);
-  if (Policy::check_nan && f.is_nan())
-    return V_NAN;
-  if (Policy::check_overflow) {
+  if (Policy::check_nan_arg && f.is_nan())
+    return V_UNKNOWN;
+  if (Policy::check_infinity_arg) {
     int i = f.is_inf();
     if (i < 0)
       return V_NEG_OVERFLOW;
@@ -506,17 +506,17 @@ value_type_float(const T v) {
 template <typename Policy, typename T>
 inline void
 set_special_float(T& v, const Result r) {
-  if (r == V_NEG_OVERFLOW) {
+  switch (r) {
+  case V_NEG_OVERFLOW:
     v = -HUGE_VAL;
     return;
-  }
-  if (r == V_POS_OVERFLOW) {
+  case V_POS_OVERFLOW:
     v = HUGE_VAL;
     return;
-  }
-  if (r == V_NAN) {
-      v = NAN;
-      return;
+  case V_DOMAIN:
+  case V_UNKNOWN:
+    v = NAN;
+    return;
   }
 }
 
@@ -524,11 +524,11 @@ template <typename Policy, typename T>
 inline Result
 pred_float(T& v) {
   Float<T> f(v);
-  if (Policy::check_nan) {
+  if (Policy::check_nan_arg) {
     if (f.is_nan())
-      return V_NAN;
+      return V_UNKNOWN;
   }
-  if (Policy::check_infinity) {
+  if (Policy::check_infinity_arg) {
     if (f.is_inf() < 0)
       return V_NEG_OVERFLOW;
   }
@@ -553,11 +553,11 @@ template <typename Policy, typename T>
 inline Result
 succ_float(T& v) {
   Float<T> f(v);
-  if (Policy::check_nan) {
+  if (Policy::check_nan_arg) {
     if (f.is_nan())
-      return V_NAN;
+      return V_UNKNOWN;
   }
-  if (Policy::check_infinity) {
+  if (Policy::check_infinity_arg) {
     if (f.is_inf() > 0)
       return V_POS_OVERFLOW;
   }
@@ -655,9 +655,9 @@ inline Result
 assign_float_float_exact(To& to, const From from) {
   Float<From> f(from);
   Result r = V_EQ;
-  if (Policy::check_nan && f.is_nan())
-    r = V_NAN;
-  else if (Policy::check_infinity) {
+  if (Policy::check_nan_arg && f.is_nan())
+    r = V_UNKNOWN;
+  else if (Policy::check_infinity_arg) {
     int i = f.is_inf();
     if (i < 0)
       r = V_NEG_OVERFLOW;
@@ -683,8 +683,8 @@ inline Result
 assign_result_exact(Type& to, const Type from) {
   Float<Type> f(from);
   Result r = V_EQ;
-  if (Policy::check_invalid && f.is_nan())
-    r = V_NAN;
+  if (Policy::check_nan_result && f.is_nan())
+    r = V_UNKNOWN;
   else if (Policy::check_overflow) {
     int i = f.is_inf();
     if (i < 0)
@@ -774,6 +774,12 @@ assign_float_int(To& to, const From from) {
   return check_inexact<Policy>(to);
 }
 
+template <typename Policy, typename Type>
+inline Result 
+sub_mul_float(Type& to, const Type x, const Type y) {
+  return add_mul<Policy>(to, x, -y);
+}
+
 #define ASSIGN_R2(Smaller, Larger) \
 SPECIALIZE_ASSIGN(float_float_exact, Larger, Smaller) \
 SPECIALIZE_ASSIGN(float_float, Smaller, Larger)
@@ -797,6 +803,7 @@ SPECIALIZE_MUL(float, float32_t, float32_t)
 SPECIALIZE_DIV(float, float32_t, float32_t)
 SPECIALIZE_MOD(float, float32_t, float32_t)
 SPECIALIZE_SQRT(float, float32_t, float32_t)
+SPECIALIZE_SUB_MUL(float, float32_t, float32_t)
 
 SPECIALIZE_ASSIGN(float_int_exact, float64_t, int8_t)
 SPECIALIZE_ASSIGN(float_int_exact, float64_t, int16_t)
@@ -816,6 +823,7 @@ SPECIALIZE_MUL(float, float64_t, float64_t)
 SPECIALIZE_DIV(float, float64_t, float64_t)
 SPECIALIZE_MOD(float, float64_t, float64_t)
 SPECIALIZE_SQRT(float, float64_t, float64_t)
+SPECIALIZE_SUB_MUL(float, float64_t, float64_t)
 
 #ifdef FLOAT96_TYPE
 SPECIALIZE_ASSIGN(float_int_exact, float96_t, int8_t)
@@ -838,6 +846,7 @@ SPECIALIZE_MUL(float, float96_t, float96_t)
 SPECIALIZE_DIV(float, float96_t, float96_t)
 SPECIALIZE_MOD(float, float96_t, float96_t)
 SPECIALIZE_SQRT(float, float96_t, float96_t)
+SPECIALIZE_SUB_MUL(float, float96_t, float96_t)
 #endif
 
 #ifdef FLOAT128_TYPE
@@ -855,7 +864,6 @@ ASSIGN_R2(float64_t, float128_t)
 #ifdef FLOAT96_TYPE
 ASSIGN_R2(float96_t, float128_t)
 #endif
-specialize_all(float, float128_t, float128_t)
 
 SPECIALIZE_NEG(float, float128_t, float128_t)
 SPECIALIZE_ABS(float, float128_t, float128_t)
@@ -865,6 +873,7 @@ SPECIALIZE_MUL(float, float128_t, float128_t)
 SPECIALIZE_DIV(float, float128_t, float128_t)
 SPECIALIZE_MOD(float, float128_t, float128_t)
 SPECIALIZE_SQRT(float, float128_t, float128_t)
+SPECIALIZE_SUB_MUL(float, float128_t, float128_t)
 #endif
 
 #undef ASSIGN_R2

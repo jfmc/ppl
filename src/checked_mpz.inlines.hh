@@ -50,9 +50,9 @@ template <typename Policy>
 inline Result
 value_type_mpz(const mpz_class& v) {
   mpz_size_t s = get_mpz_size(v);
-  if (Policy::handle_nan && s == Limits<mpz_size_t>::min + 1)
-    return V_NAN;
-  if (Policy::handle_infinity) {
+  if (Policy::store_unknown && s == Limits<mpz_size_t>::min + 1)
+    return V_UNKNOWN;
+  if (Policy::store_overflows) {
     if (s == Limits<mpz_size_t>::min)
       return V_NEG_OVERFLOW;
     if (s == Limits<mpz_size_t>::max)
@@ -66,9 +66,9 @@ SPECIALIZE_VALUE_TYPE(mpz, mpz_class)
 template <typename Policy>
 inline void
 set_special_mpz(mpz_class& v, const Result r) {
-  if (Policy::handle_nan && r == V_NAN)
+  if (Policy::store_unknown && (r == V_UNKNOWN || r == V_DOMAIN))
     set_mpz_size(v, Limits<mpz_size_t>::min + 1);
-  else if (Policy::handle_infinity) {
+  else if (Policy::store_overflows) {
     if (r == V_NEG_OVERFLOW)
       set_mpz_size(v, Limits<mpz_size_t>::min);
     else if (r == V_POS_OVERFLOW)
@@ -224,7 +224,7 @@ template <typename Policy>
 inline Result 
 div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   if (Policy::check_divbyzero && sgn(y) == 0)
-    return V_NAN;
+    return V_UNKNOWN;
   if (Policy::check_inexact) {
     mpz_t r;
     mpz_init(r);
@@ -248,7 +248,7 @@ template <typename Policy>
 inline Result 
 mod_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   if (Policy::check_divbyzero && sgn(y) == 0)
-    return V_NAN;
+    return V_UNKNOWN;
   to = x % y;
   return V_EQ;
 }
@@ -358,6 +358,24 @@ SPECIALIZE_ABS(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result 
+add_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
+  mpz_addmul(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
+  return V_EQ;
+}
+
+SPECIALIZE_ADD_MUL(mpz, mpz_class, mpz_class)
+
+template <typename Policy>
+inline Result 
+sub_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
+  mpz_submul(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
+  return V_EQ;
+}
+
+SPECIALIZE_SUB_MUL(mpz, mpz_class, mpz_class)
+
+template <typename Policy>
+inline Result 
 gcd_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   mpz_gcd(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
@@ -378,7 +396,7 @@ template <typename Policy>
 inline Result 
 sqrt_mpz(mpz_class& to, const mpz_class& from) {
   if (Policy::check_sqrt_neg && from < 0)
-    return V_NAN;
+    return V_DOMAIN;
   if (Policy::check_inexact) {
     mpz_class r;
     mpz_sqrtrem(to.get_mpz_t(), r.get_mpz_t(), from.get_mpz_t());

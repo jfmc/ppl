@@ -33,38 +33,66 @@ namespace Checked {
 struct Policy_Safe {
   /* Check for overflowed result */
   static const int check_overflow = 1;
-  /* Check for invalid result (NaN) */
-  static const int check_invalid = 1;
   /* Check for inexact result */
   static const int check_inexact = 1;
   /* Check for division by zero attempt */
   static const int check_divbyzero = 1;
   /* Check for sqrt of negative number attempt */
   static const int check_sqrt_neg = 1;
-  /* Check for NaN argument */
-  static const int check_nan = 1;
-  /* Check for infinity argument */
-  static const int check_infinity = 1;
-  /* Store NaN special value */
-  static const int handle_nan = 1;
-  /* Store infinity special value */
-  static const int handle_infinity = 1;
+  /* Store unknown special value */
+  static const int store_unknown = 1;
+  /* Store overflow special values */
+  static const int store_overflows = 1;
+  /* Check for float NaN argument */
+  static const int check_nan_arg = 1;
+  /* Check for float infinity argument */
+  static const int check_infinity_arg = 1;
+  /* Check for float NaN result */
+  static const int check_nan_result = 1;
 };
 
 
-/* This is a kind of bit mask (with logical OR semantic), with special
-   values for underflow and overflow */ 
 enum Result {
+  // Returned result is exact
   V_EQ = 1,
+
+  // Returned result is inexact and rounded up
   V_LT = 2,
+
+  // Returned result is inexact and rounded down
   V_GT = 4,
-  V_LE = V_EQ | V_LT,
-  V_GE = V_EQ | V_GT,
+
+  // Returned result is inexact
   V_NE = V_LT | V_GT,
-  V_APPROX = V_LT | V_EQ | V_GT,
-  V_NAN = 0,
-  V_NEG_OVERFLOW = 8,
-  V_POS_OVERFLOW = 9
+
+  // Returned result may be inexact and rounded up
+  V_LE = V_EQ | V_LT,
+
+  // Returned result may be inexact and rounded down
+  V_GE = V_EQ | V_GT,
+
+  // Returned result may be inexact
+  V_LGE = V_LT | V_EQ | V_GT,
+
+  // Returned result may not be the nearest representable of exact result
+  // To be OR'ed with values above
+  V_APPROX = 8,
+
+  // Special results (no numeric result is returned)
+  // Keep all of these > V_UNKNOWN
+
+  // The result is unknown
+  V_UNKNOWN = 16,
+
+  // Result is out of numeric domain
+  V_DOMAIN = 17,
+
+  // Negative overflow
+  V_NEG_OVERFLOW = 18,
+
+  // Positive overflow
+  V_POS_OVERFLOW = 19,
+
 };
 
 
@@ -134,6 +162,8 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
 #define SPECIALIZE_MUL(suf, To, From) SPECIALIZE_FUN3(mul, suf, Result, , To, const, From, const, From)
 #define SPECIALIZE_DIV(suf, To, From) SPECIALIZE_FUN3(div, suf, Result, , To, const, From, const, From)
 #define SPECIALIZE_MOD(suf, To, From) SPECIALIZE_FUN3(mod, suf, Result, , To, const, From, const, From)
+#define SPECIALIZE_ADD_MUL(suf, To, From) SPECIALIZE_FUN3(add_mul, suf, Result, , To, const, From, const, From)
+#define SPECIALIZE_SUB_MUL(suf, To, From) SPECIALIZE_FUN3(sub_mul, suf, Result, , To, const, From, const, From)
 #define SPECIALIZE_GCD(suf, To, From) SPECIALIZE_FUN3(gcd, suf, Result, , To, const, From, const, From)
 #define SPECIALIZE_LCM(suf, To, From) SPECIALIZE_FUN3(lcm, suf, Result, , To, const, From, const, From)
 #define SPECIALIZE_SGN(suf, From) SPECIALIZE_FUN1(sgn, suf, Result, const, From)
@@ -152,6 +182,8 @@ DECLARE_FUN3(sub, Result, , const, const)
 DECLARE_FUN3(mul, Result, , const, const)
 DECLARE_FUN3(div, Result, , const, const)
 DECLARE_FUN3(mod, Result, , const, const)
+DECLARE_FUN3(add_mul, Result, , const, const)
+DECLARE_FUN3(sub_mul, Result, , const, const)
 DECLARE_FUN3(gcd, Result, , const, const)
 DECLARE_FUN3(lcm, Result, , const, const)
 DECLARE_FUN1(sgn, Result, const)
@@ -188,6 +220,12 @@ inline Result div_ext(Type& to, const Type& x, const Type& y);
 
 template <typename Policy, typename Type>
 inline Result mod_ext(Type& to, const Type& x, const Type& y);
+
+template <typename Policy, typename Type>
+inline Result add_mul_ext(Type& to, const Type& x, const Type& y);
+
+template <typename Policy, typename Type>
+inline Result sub_mul_ext(Type& to, const Type& x, const Type& y);
 
 template <typename Policy, typename Type>
 inline Result sqrt_ext(Type& to, const Type& x);

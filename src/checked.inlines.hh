@@ -37,7 +37,7 @@ struct FUNCTION_CLASS(assign)<Policy, Type, Type> {
 
 template <typename Policy, typename To, typename From>
 struct FUNCTION_CLASS(abs) {
-  static inline Result function(To& to, const From from) {
+  static inline Result function(To& to, const From& from) {
     if (from < 0)
       return neg<Policy>(to, from);
     to = from;
@@ -47,7 +47,7 @@ struct FUNCTION_CLASS(abs) {
 
 template <typename Policy, typename To, typename From>
 inline Result
-gcd_common(To& to, const From x, const From y) {
+gcd_common(To& to, const From& x, const From& y) {
   To nx = x;
   To ny = y;
   To r;
@@ -62,9 +62,89 @@ gcd_common(To& to, const From x, const From y) {
   return V_EQ;
 }
 
+inline Result
+neg(Result r) {
+  assert(r < V_UNKNOWN);
+  Result ret = (Result) (r & (V_EQ | V_APPROX));
+  if (r & V_LT)
+    ret = (Result) (ret | V_GT);
+  if (r & V_GT)
+    ret = (Result) (ret | V_LT);
+  return ret;
+}
+
+inline Result
+add(Result r1, Result r2) {
+  assert(r1 < V_UNKNOWN);
+  assert(r2 < V_UNKNOWN);
+  if (r1 == V_EQ)
+    return r2;
+  if (r2 == V_EQ)
+    return r1;
+  Result ret = V_APPROX;
+  if (((r1 & V_LT) && (r2 & V_GT)) ||
+      ((r1 & V_GT) && (r2 & V_LT)))
+    return (Result) (ret | V_LGE);
+  if ((r1 & r2) & V_EQ)
+    ret = (Result) (ret | V_EQ);
+  ret = (Result) (ret | ((r1 | r2) & (V_LT | V_GT)));
+  return ret;
+}
+
+inline Result
+sub(Result r1, Result r2) {
+  return add(r1, neg(r2));
+}
+
+template <typename Policy, typename To, typename From1, typename From2>
+struct FUNCTION_CLASS(add_mul) {
+  static To temp;
+  static inline Result function(To& to, const From1& x, const From2& y) {
+    Result r1 = mul<Policy>(temp, x, y);
+    switch (r1) {
+    case V_UNKNOWN:
+    case V_DOMAIN:
+      return r1;
+    case V_NEG_OVERFLOW:
+      return to < 0 ? r1 : V_UNKNOWN;
+    case V_POS_OVERFLOW:
+      return to > 0 ? r1 : V_UNKNOWN;
+    default:
+      break;
+    }
+    Result r2 = add<Policy>(to, to, temp);
+    if (r2 >= V_UNKNOWN)
+      return r2;
+    return add(r1, r2);
+  }
+};
+
+template <typename Policy, typename To, typename From1, typename From2>
+struct FUNCTION_CLASS(sub_mul) {
+  static To temp;
+  static inline Result function(To& to, const From1& x, const From2& y) {
+    Result r1 = mul<Policy>(temp, x, y);
+    switch (r1) {
+    case V_UNKNOWN:
+    case V_DOMAIN:
+      return r1;
+    case V_NEG_OVERFLOW:
+      return to > 0 ? V_POS_OVERFLOW : V_UNKNOWN;
+    case V_POS_OVERFLOW:
+      return to < 0 ? V_NEG_OVERFLOW : V_UNKNOWN;
+    default:
+      break;
+    }
+    Result r2 = sub<Policy>(to, to, temp);
+    if (r2 >= V_UNKNOWN)
+      return r2;
+    return sub(r1, r2);
+  }
+};
+
 template <typename Policy, typename To, typename From1, typename From2>
 struct FUNCTION_CLASS(gcd) {
-  static inline Result function(To& to, const From1 x, const From2 y) {
+  static inline Result function(To& to, const From1& x, const From2& y) {
     if (x == 0)
       return abs<Policy>(to, y);
     if (y == 0)
@@ -81,7 +161,7 @@ struct FUNCTION_CLASS(gcd) {
 
 template <typename Policy, typename To, typename From1, typename From2>
 struct FUNCTION_CLASS(lcm) {
-  static inline Result function(To& to, const From1 x, const From2 y) {
+  static inline Result function(To& to, const From1& x, const From2& y) {
     if (x == 0 || y == 0) {
       to = 0;
       return V_EQ;
@@ -103,27 +183,27 @@ struct FUNCTION_CLASS(lcm) {
 
 template <typename Policy, typename Type>
 struct FUNCTION_CLASS(sgn) {
-  static inline Result function(const Type x) {
+  static inline Result function(const Type& x) {
     if (x > 0)
       return V_GT;
     if (x < 0)
       return V_LT;
-    if (!Policy::check_nan || x == 0)
+    if (!Policy::check_nan_arg || x == 0)
       return V_EQ;
-    return V_NAN;
+    return V_UNKNOWN;
   }
 };
 
 template <typename Policy, typename Type>
 struct FUNCTION_CLASS(cmp)<Policy, Type, Type> {
-  static inline Result function(const Type x, const Type y) {
+  static inline Result function(const Type& x, const Type& y) {
     if (x > y)
       return V_GT;
     if (x < y)
       return V_LT;
-    if (!Policy::check_nan || x == y)
+    if (!Policy::check_nan_arg || x == y)
       return V_EQ;
-    return V_NAN;
+    return V_UNKNOWN;
   }
 };
 
@@ -155,9 +235,9 @@ inline Result
 cmp_ext(const Type& x, const Type& y) {
   Result rx, ry;
   Result r;
-  if ((rx = value_type<Policy>(x)) == V_NAN ||
-      (ry = value_type<Policy>(y)) == V_NAN)
-    r = V_NAN;
+  if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
+      (ry = value_type<Policy>(y)) == V_UNKNOWN)
+    r = V_UNKNOWN;
   else if (rx == V_EQ && ry == V_EQ)
     r = cmp<Policy>(x, y);
   else if (rx == ry)
@@ -200,9 +280,9 @@ inline Result
 add_ext(Type& to, const Type& x, const Type& y) {
   Result rx, ry;
   Result r;
-  if ((rx = value_type<Policy>(x)) == V_NAN ||
-      (ry = value_type<Policy>(y)) == V_NAN)
-    r = V_NAN;
+  if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
+      (ry = value_type<Policy>(y)) == V_UNKNOWN)
+    r = V_UNKNOWN;
   else if (rx == V_EQ && ry == V_EQ)
     r = add<Policy>(to, x, y);
   else if (rx == V_EQ)
@@ -210,7 +290,7 @@ add_ext(Type& to, const Type& x, const Type& y) {
   else if (ry == V_EQ || rx == ry)
     r = rx;
   else
-    r = V_NAN;
+    r = V_UNKNOWN;
   set_special<Policy>(to, r);
   return r;
 }
@@ -220,9 +300,9 @@ inline Result
 sub_ext(Type& to, const Type& x, const Type& y) {
   Result rx, ry;
   Result r;
-  if ((rx = value_type<Policy>(x)) == V_NAN ||
-      (ry = value_type<Policy>(y)) == V_NAN)
-    r = V_NAN;
+  if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
+      (ry = value_type<Policy>(y)) == V_UNKNOWN)
+    r = V_UNKNOWN;
   else if (rx == V_EQ && ry == V_EQ)
     r = sub<Policy>(to, x, y);
   else if (rx == V_EQ)
@@ -230,7 +310,7 @@ sub_ext(Type& to, const Type& x, const Type& y) {
   else if (ry == V_EQ || rx != ry)
     r = rx;
   else
-    r = V_NAN;
+    r = V_UNKNOWN;
   set_special<Policy>(to, r);
   return r;
 }
@@ -240,16 +320,16 @@ inline Result
 mul_ext(Type& to, const Type& x, const Type& y) {
   Result rx, ry;
   Result r;
-  if ((rx = value_type<Policy>(x)) == V_NAN ||
-      (ry = value_type<Policy>(y)) == V_NAN)
-    r = V_NAN;
+  if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
+      (ry = value_type<Policy>(y)) == V_UNKNOWN)
+    r = V_UNKNOWN;
   else if (rx == V_EQ && ry == V_EQ)
     r = mul<Policy>(to, x, y);
   else {
     Result sx = sgn_ext<Policy>(x);
     Result sy = sgn_ext<Policy>(y);
     if (sx == V_EQ || sy == V_EQ)
-      r = V_NAN;
+      r = V_UNKNOWN;
     else if (sx == sy)
       r = V_POS_OVERFLOW;
     else
@@ -265,9 +345,9 @@ inline Result
 div_ext(Type& to, const Type& x, const Type& y) {
   Result rx, ry;
   Result r;
-  if ((rx = value_type<Policy>(x)) == V_NAN ||
-      (ry = value_type<Policy>(y)) == V_NAN)
-    r = V_NAN;
+  if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
+      (ry = value_type<Policy>(y)) == V_UNKNOWN)
+    r = V_UNKNOWN;
   else if (rx == V_EQ) {
     if (ry == V_EQ)
       r = div<Policy>(to, x, y);
@@ -279,7 +359,7 @@ div_ext(Type& to, const Type& x, const Type& y) {
   else if (ry == V_EQ) {
     Result sy = sgn<Policy>(y);
     if (sy == V_EQ)
-      r = V_NAN;
+      r = V_UNKNOWN;
     else {
       Result sx = rx == V_NEG_OVERFLOW ? V_LT : V_GT;
       if (sx == sy)
@@ -289,7 +369,7 @@ div_ext(Type& to, const Type& x, const Type& y) {
     }
   }
   else
-    r = V_NAN;
+    r = V_UNKNOWN;
   set_special<Policy>(to, r);
   return r;
 }
@@ -300,9 +380,9 @@ inline Result
 mod_ext(Type& to, const Type& x, const Type& y) {
   Result rx, ry;
   Result r;
-  if ((rx = value_type<Policy>(x)) == V_NAN ||
-      (ry = value_type<Policy>(y)) == V_NAN)
-    r = V_NAN;
+  if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
+      (ry = value_type<Policy>(y)) == V_UNKNOWN)
+    r = V_UNKNOWN;
   else if (rx == V_EQ) {
     if (ry == V_EQ)
       r = mod<Policy>(to, x, y);
@@ -312,7 +392,7 @@ mod_ext(Type& to, const Type& x, const Type& y) {
     }
   }
   else
-    r = V_NAN;
+    r = V_UNKNOWN;
   set_special<Policy>(to, r);
   return r;
 }
@@ -323,8 +403,10 @@ sqrt_ext(Type& to, const Type& x) {
   Result r = value_type<Policy>(x);
   if (r == V_EQ)
     r = sqrt<Policy>(to, x);
-  else if (r == V_NEG_OVERFLOW || r == V_NAN)
-    r = V_NAN;
+  else if (r == V_UNKNOWN)
+    r = V_UNKNOWN;
+  else if (r == V_NEG_OVERFLOW)
+    r = V_DOMAIN;
   else
     r = V_POS_OVERFLOW;
   set_special<Policy>(to, r);
@@ -336,9 +418,9 @@ inline Result
 gcd_ext(Type& to, const Type& x, const Type& y) {
   Result rx, ry;
   Result r;
-  if ((rx = value_type<Policy>(x)) == V_NAN ||
-      (ry = value_type<Policy>(y)) == V_NAN)
-    r = V_NAN;
+  if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
+      (ry = value_type<Policy>(y)) == V_UNKNOWN)
+    r = V_UNKNOWN;
   else if (rx == V_EQ) {
     if (ry == V_EQ)
       r = gcd<Policy>(to, x, y);
@@ -362,9 +444,9 @@ inline Result
 lcm_ext(Type& to, const Type& x, const Type& y) {
   Result rx, ry;
   Result r;
-  if ((rx = value_type<Policy>(x)) == V_NAN ||
-      (ry = value_type<Policy>(y)) == V_NAN)
-    r = V_NAN;
+  if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
+      (ry = value_type<Policy>(y)) == V_UNKNOWN)
+    r = V_UNKNOWN;
   else if (rx == V_EQ && ry == V_EQ)
     r = lcm<Policy>(to, x, y);
   else
