@@ -23,6 +23,7 @@ CPPFLAGS = @extra_cpp_flags@
 
 TESTS = addconstraints1 addconstraints2 addconstraints3 \
 	addgenerators1 addgenerators2 \
+	affine_image1 \
 	affinetrans \
         append1 append2 \
         empty1 \
@@ -32,6 +33,7 @@ TESTS = addconstraints1 addconstraints2 addconstraints3 \
         permute \
 	randchull1 \
 	removedim1 removedim2 removedim3 \
+	satisfies1 \
 	smm1
 
 addconstraints1_SOURCES = addconstraints1.cc
@@ -40,6 +42,8 @@ addconstraints3_SOURCES = addconstraints3.cc
 
 addgenerators1_SOURCES = addgenerators1.cc
 addgenerators2_SOURCES = addgenerators2.cc
+
+affine_image1_SOURCES = affine_image1.cc
 
 affinetrans_SOURCES = affinetrans.cc
 
@@ -66,6 +70,8 @@ randchull1_SOURCES = randchull1.cc
 removedim1_SOURCES = removedim1.cc
 removedim2_SOURCES = removedim2.cc
 removedim3_SOURCES = removedim3.cc
+
+satisfies1_SOURCES = satisfies1.cc
 
 smm1_SOURCES = smm1.cc
 
