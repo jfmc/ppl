@@ -22,6 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 check_all :-
+  ppl_initialize,
   incl_C,
   incl_NNC,
   strict_incl_C,
@@ -68,7 +69,11 @@ check_all :-
   embed,
   boundingbox,
   poly_from_boundingbox_C,
-  poly_from_boundingbox_NNC.
+  poly_from_boundingbox_NNC,
+  !,
+  ppl_finalize.
+check_all :-
+  ppl_finalize.
 
 % Tests new_Polyhedron_from_dimension
 % and ppl_Polyhedron_contains_Polyhedron for C Polyhedron.
