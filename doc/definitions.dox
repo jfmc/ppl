@@ -1211,7 +1211,7 @@ obtained by means of the \ref poly_difference "poly-difference" operator.
 For more details and a justification of the overall approach,
 see \ref BHZ03b "[BHZ03b]" and \ref BHZ04 "[BHZ04]".
 
-The library provides two covergence certificates: while
+The library provides two convergence certificates: while
 \ref Parma_Polyhedra_Library::BHRZ03_Certificate "BHRZ03_Certificate"
 is compatible with both the BHRZ03 and the H79 widenings,
 \ref Parma_Polyhedra_Library::H79_Certificate "H79_Certificate"
@@ -1220,7 +1220,7 @@ Note that using different certificates will change the results obtained,
 even when using the same base-level widening operator.
 It is also worth stressing that it is up to the user's responsibility
 to make sure that the widening operator is actually compatible with
-a given covergence certificate. If such a requirement is not met,
+a given convergence certificate. If such a requirement is not met,
 then an extrapolation operator will be obtained.
 
 \section cplusplus Using the Library
