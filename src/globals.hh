@@ -56,6 +56,17 @@ enum Relation_Operator {
   PPL_GT
 };
 
+//! Complexity pseudo-classes.
+enum Complexity_Class {
+  //! Worst-case polynomial.
+  POLYNOMIAL,
+  //! Worst-case exponential but typically polynomial.
+  SIMPLEX,
+  //! Any complexity.
+  ANY
+};
+
+ enum NewLineDisposition { sendNewLine, noNewLine };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An array of temporaries used to avoid unnecessary memory allocation.

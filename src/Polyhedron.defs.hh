@@ -993,8 +993,7 @@ public:
   //! Uses \p *this to shrink a generic, interval-based bounding box.
   /*!
     \param box         The bounding box to be shrunk.
-    \param polynomial  <CODE>true</CODE> if polynomial execution time
-                       must be guaranteed.
+    \param complexity  The complexity class of the algorithm to be used.
 
     The template class Box must provide the following
     methods, whose return value, if any, is simply ignored.
@@ -1023,7 +1022,7 @@ public:
     The fraction \f$n/d\f$ is in canonical form.
   */
   template <typename Box>
-  void shrink_bounding_box(Box& box, bool polynomial = false) const;
+  void shrink_bounding_box(Box& box, Complexity_Class complexity = ANY) const;
 
   //! Checks if all the invariants are satisfied.
   /*!

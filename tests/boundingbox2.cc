@@ -46,7 +46,7 @@ void test1() {
   ph.add_constraint(z >= 5);
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, true);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
@@ -91,7 +91,7 @@ void test2() {
   ph.add_constraint(y <= 4);
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, true);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);

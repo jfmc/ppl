@@ -40,7 +40,7 @@ void test1() {
   ph.add_constraint(x - y >= 0);
 
   BBox pbox(2);
-  ph.shrink_bounding_box(pbox, true);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
 
   BBox nbox(2);
   ph.shrink_bounding_box(nbox);
@@ -71,7 +71,7 @@ void test2() {
   ph.add_constraint(y >= 0);
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, true);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
@@ -108,7 +108,7 @@ void test3() {
   ph.add_constraint(y <= 4);
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, true);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
@@ -152,7 +152,7 @@ void test4() {
   ph.add_constraint(z >= 5);
   
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, true);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
@@ -189,7 +189,7 @@ void test5() {
   C_Polyhedron ph(2);
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, true);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
@@ -215,7 +215,7 @@ void test6() {
   C_Polyhedron ph;
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, true);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
@@ -241,7 +241,7 @@ void test7() {
   C_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, true);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
@@ -273,7 +273,7 @@ void test8() {
   ph.add_constraint(y == 4);
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, true);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
@@ -312,7 +312,7 @@ void test9() {
   C_Polyhedron ph(cs);
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, true);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
@@ -354,7 +354,7 @@ void test10() {
 #endif
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, true);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);

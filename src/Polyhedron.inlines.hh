@@ -336,7 +336,8 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
 
 template <typename Box>
 void
-Polyhedron::shrink_bounding_box(Box& box, bool polynomial) const {
+Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
+  bool polynomial = (complexity != ANY);
   if ((polynomial && constraints_are_minimized()) || !polynomial) {
     // If the constraint system is minimized, the check
     // `check_universe()' is not exponential.
