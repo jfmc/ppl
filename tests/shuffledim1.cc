@@ -285,7 +285,6 @@ test7() {
     exit(1);
 }
 
-
 void
 test8() {
   Variable A(0);
@@ -325,6 +324,32 @@ test8() {
     exit(1);
 }
 
+void
+test9() {
+  PFunction function;
+  function.insert(0, 1);
+
+  C_Polyhedron ph1;
+
+#if NOISY
+  print_function(function, "*** function ***");
+  print_generators(ph1, "*** ph1 ***");
+#endif
+
+  ph1.shuffle_dimensions(function);
+
+  C_Polyhedron known_result;
+
+  bool ok = (ph1 == known_result);
+
+#if NOISY
+  print_generators(ph1, "*** After ph1.shuffle_dimensions(function) ***");
+#endif
+  
+  if(!ok)
+    exit(1);
+}
+
 int
 main() {
   set_handlers();
@@ -337,6 +362,7 @@ main() {
   test6();
   test7();
   test8();
+  test9();
 
   return 0;
 }
