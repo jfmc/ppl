@@ -2855,11 +2855,12 @@ BD_Shape<T>::generalized_affine_image(Variable var,
     case LESS_THAN_OR_EQUAL:
       // We lose(remove) all constraints of the  form `var (- var1) <= const '
       // and we add the new constraint `var <= n/denominator'.
-	for (dimension_type i = 0; i <= space_dim; ++i) {
-	  dbm[i][num_var] = PLUS_INFINITY;
-	}
-	add_constraint(denominator*var <= b);
-	break;
+      for (dimension_type i = 0; i <= space_dim; ++i) {
+	dbm[i][num_var] = PLUS_INFINITY;
+	n_v[i] = PLUS_INFINITY;
+      }
+      add_constraint(denominator*var <= b);
+      break;
     case EQUAL:
       // The relation symbol is "==":
       // this is just an affine image computation.
@@ -2868,9 +2869,11 @@ BD_Shape<T>::generalized_affine_image(Variable var,
     case GREATER_THAN_OR_EQUAL:
       // We lose(remove) all constraints of the  form `var (- var1) >= const '
       // and we add the new constraint `var >= n/denominator'.
-      for (dimension_type i = 0; i <= space_dim; ++i)
+      for (dimension_type i = 0; i <= space_dim; ++i) {
 	n_v[i] = PLUS_INFINITY;
-	add_constraint(denominator*var >= b);
+	dbm[i][num_var] = PLUS_INFINITY;
+      }
+      add_constraint(denominator*var >= b);
       break;
     default:
       // We already dealt with the case of a strict relation symbol.

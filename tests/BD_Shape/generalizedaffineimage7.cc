@@ -34,8 +34,6 @@ int
 main() TRY {
   Variable A(0);
   Variable B(1);
-  Linear_Expression e1(A);
-  Linear_Expression e2(1);
 
   TBD_Shape bd(2);
   bd.add_constraint(A >= 0);
@@ -49,18 +47,16 @@ main() TRY {
 
   TBD_Shape known_result(2);
   known_result.add_constraint(A >= 1);
-  known_result.add_constraint(A <= 4);
-  known_result.add_constraint(A - B <= 0);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 5);
-  
-  bd.generalized_affine_image(e1, GREATER_THAN_OR_EQUAL, e2);
+
+  bd.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, Linear_Expression(1));
 
 #if NOISY
   print_constraints(bd, "*** bd.generalized_affine_image(A, "
                         "GREATER_THAN_OR_EQUAL, 1) ***");
 #endif
-
+ 
   int retval = (bd == known_result) ? 0 : 1;
 
   return retval;
