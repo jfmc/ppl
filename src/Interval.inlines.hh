@@ -124,12 +124,12 @@ Boundary::bound() const {
 }
 
 inline
-LBoundary::LBoundary(const ExtendedRational& v, OpenClosed f = CLOSED)
+LBoundary::LBoundary(const ExtendedRational& v, OpenClosed f)
   : Boundary(v, f == CLOSED ? ZERO : POS) {
 }
 
 inline
-UBoundary::UBoundary(const ExtendedRational& v, OpenClosed f = CLOSED)
+UBoundary::UBoundary(const ExtendedRational& v, OpenClosed f)
   : Boundary(v, f == CLOSED ? ZERO : NEG) {
 }
 
