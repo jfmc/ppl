@@ -67,15 +67,18 @@ PPL::Bounding_Box::CC76_widening_assign(const Bounding_Box& y,
     LBoundary& x_lb = x_vec_i.lower_bound();
     ERational& x_lbb = x_lb.bound();
     const ERational& y_lbb = y_vec_i.lower_bound().bound();
-    assert(y_lbb <= x_lbb);
-    if (y_lbb < x_lbb) {
-      Iterator k = std::upper_bound(first, last, x_lbb);
+    assert(y_lbb >= x_lbb);
+    if (y_lbb > x_lbb) {
+      Iterator k = std::lower_bound(first, last, x_lbb);
       if (k != last) {
-	if (x_lbb > *k)
-	  x_lbb = *k;
+	if (x_lbb < *k)
+	  if (k != first)
+	    x_lbb = *--k;
+	  else
+	    x_lb = LBoundary(ERational('-'), LBoundary::OPEN);
       }
       else
-	x_lb = LBoundary(ERational('-'), LBoundary::OPEN);
+	x_lbb = *--k;
     }
   }
 }
