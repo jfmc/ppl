@@ -28,7 +28,7 @@ AC_ARG_WITH(gmp-includes,
             gmp_includes=${with_gmp_includes}
             gmp_includes_option="-I${gmp_includes}")
 
-gmp_library_option="-lgmp -lgmpxx"
+gmp_library_option="-lgmpxx -lgmp"
 AC_ARG_WITH(gmp-dir,
             [  --with-gmp-dir=DIR      GMP library files are in DIR],
             gmp_dir=${with_gmp_dir}

@@ -828,7 +828,7 @@ and <CODE>source2.pl</CODE> and you want to create the executable
 <CODE>myprog</CODE>, your compilation command may look like
 \code
 gplc -o myprog prefix/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
-  -L '-Lprefix/lib/ppl -lppl_gprolog -Lprefix/lib -lppl -lgmp -lgmpxx -lstdc++'
+  -L '-Lprefix/lib/ppl -lppl_gprolog -Lprefix/lib -lppl -lgmpxx -lgmp -lstdc++'
 \endcode
 
 
