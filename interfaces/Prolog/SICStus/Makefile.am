@@ -70,15 +70,11 @@ sumto.clpq \
 tak.clpq
 
 check-local: ppl_sicstus ../check_script ../expected
-	cp -f $(srcdir)/ppl_sicstus.pl .
-	cp -f $(srcdir)/../clpq.pl .
-	cp -f $(srcdir)/sp_clpq.pl .
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
-	./ppl_sicstus -l sp_clpq.pl --goal "main." \
+	./ppl_sicstus -l $(srcdir)/sp_clpq.pl --goal "main." \
 		<$(srcdir)/../check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
-MOSTLYCLEANFILES = \
-ppl_sicstus.s.o ppl_sicstus.so \
-clpq.pl $(CLPQ_TESTS) obtained
+MOSTLYCLEANFILES = ppl_sicstus.s.o ppl_sicstus.so $(CLPQ_TESTS) obtained
+
 endif
