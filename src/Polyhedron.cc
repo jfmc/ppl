@@ -4254,7 +4254,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
 #if NEW_LIMITED_GROWTH_ORDERING
   std::cout << "BHRZ03 is not a widening!" << std::endl;
   assert(false);
-  abort;
+  abort();
 #else
   // FIXME: here we should abort the computation, because we have
   // found a chain that is not stabilizing under the BHRZ03 widening.
