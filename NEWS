@@ -66,6 +66,9 @@ o  Fixed a bug in method GenSys::insert(const Generator&) whereby the
    insertion of a generator into an empty generator system might be
    mishandled.
 
+o  Fixed a bug in method Polyhedron::operator<=(const Polyehdron&)
+   whereby the lines of the polyhedron were handled improperly.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.4.1 (released on July 30, 2002)
