@@ -1,4 +1,4 @@
-/* ConSys class implementation: primal_simplex().
+/* Constraint_System class implementation: primal_simplex().
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
