@@ -34,6 +34,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename T>
+inline void
+min_assign(T& x, const T& y) {
+  // This is an auxiliary function to compute the minimum 
+  // between two T-values.
+  if (x > y)
+    x = y;
+}
+
+template <typename T>
 inline dimension_type
 BD_Shape<T>::max_space_dimension() {
   using std::min;
