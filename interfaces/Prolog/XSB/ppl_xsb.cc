@@ -110,8 +110,10 @@ Prolog_atom_from_string(const char* s) {
 static inline bool
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1) {
-  c2p_functor(f, 1, t);
-  p2p_unify(p2p_arg(t, 1), a1);
+  prolog_term new_compound;
+  c2p_functor(f, 1, new_compound);
+  p2p_unify(p2p_arg(new_compound, 1), a1);
+  t = new_compound;
   return true;
 }
 
@@ -122,9 +124,11 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 static inline bool
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2) {
-  c2p_functor(f, 2, t);
-  p2p_unify(p2p_arg(t, 1), a1);
-  p2p_unify(p2p_arg(t, 2), a2);
+  prolog_term new_compound;
+  c2p_functor(f, 2, new_compound);
+  p2p_unify(p2p_arg(new_compound, 1), a1);
+  p2p_unify(p2p_arg(new_compound, 2), a2);
+  t = new_compound;
   return true;
 }
 
@@ -136,10 +140,12 @@ static inline bool
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3) {
-  c2p_functor(f, 3, t);
-  p2p_unify(p2p_arg(t, 1), a1);
-  p2p_unify(p2p_arg(t, 2), a2);
-  p2p_unify(p2p_arg(t, 3), a3);
+  prolog_term new_compound;
+  c2p_functor(f, 3, new_compound);
+  p2p_unify(p2p_arg(new_compound, 1), a1);
+  p2p_unify(p2p_arg(new_compound, 2), a2);
+  p2p_unify(p2p_arg(new_compound, 3), a3);
+  t = new_compound;
   return true;
 }
 
@@ -151,23 +157,27 @@ static inline bool
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3, Prolog_term_ref a4) {
-  c2p_functor(f, 4, t);
-  p2p_unify(p2p_arg(t, 1), a1);
-  p2p_unify(p2p_arg(t, 2), a2);
-  p2p_unify(p2p_arg(t, 3), a3);
-  p2p_unify(p2p_arg(t, 4), a4);
+  prolog_term new_compound;
+  c2p_functor(f, 4, new_compound);
+  p2p_unify(p2p_arg(new_compound, 1), a1);
+  p2p_unify(p2p_arg(new_compound, 2), a2);
+  p2p_unify(p2p_arg(new_compound, 3), a3);
+  p2p_unify(p2p_arg(new_compound, 4), a4);
+  t = new_compound;
   return true;
 }
 
 /*!
-  Assign to \p l a Prolog list whose head is \p h and tail is \p t. 
+  Assign to \p c a Prolog list whose head is \p h and tail is \p t. 
 */
 static inline bool
 Prolog_construct_cons(Prolog_term_ref& c,
 		      Prolog_term_ref h, Prolog_term_ref t) {
-  c2p_list(c);
-  p2p_unify(p2p_car(c), h);
-  p2p_unify(p2p_cdr(c), t);
+  prolog_term new_cons = p2p_new();
+  c2p_list(new_cons);
+  p2p_unify(p2p_car(new_cons), h);
+  p2p_unify(p2p_cdr(new_cons), t);
+  c = new_cons;
   return true;
 }
 
@@ -296,20 +306,20 @@ Prolog_get_compound_name_arity(Prolog_term_ref t,
 static inline bool
 Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref& a) {
   assert(Prolog_is_compound(t));
-  p2p_unify(p2p_arg(t, i), a);
+  a = p2p_arg(t, i);
   return true;
 }
 
 /*!
-  If \p l is a Prolog list, assign its head and tail to \p h and \p t,
-  respectively.
-  The behavior is undefined if \p l is not a Prolog list.
+  If \p c is a Prolog cons (list constructor), assign its head and
+  tail to \p h and \p t, respectively.
+  The behavior is undefined if \p c is not a Prolog cons.
 */
 static inline bool
 Prolog_get_cons(Prolog_term_ref c, Prolog_term_ref& h, Prolog_term_ref& t) {
-  assert(Prolog_is_cons(t));
-  p2p_unify(p2p_car(c), h);
-  p2p_unify(p2p_cdr(c), t);
+  assert(Prolog_is_cons(c));
+  h = p2p_car(c);
+  t = p2p_cdr(c);
   return true;
 }
 
@@ -324,7 +334,7 @@ Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
 
 static PPL::Integer
 integer_term_to_Integer(Prolog_term_ref t) {
-  // FIXME: does YAP support unlimited precision integer?
+  // FIXME: does XSB support unlimited precision integers?
   long v;
   Prolog_get_long(t, v);
   return PPL::Integer(v);
@@ -332,7 +342,7 @@ integer_term_to_Integer(Prolog_term_ref t) {
 
 static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
-  // FIXME: does YAP support unlimited precision integer?
+  // FIXME: does XSB support unlimited precision integer?
   if (!n.fits_slong_p())
     throw_unknown_interface_error("Integer_to_integer_term()");
   Prolog_term_ref t = p2p_new();
