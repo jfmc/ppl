@@ -80,15 +80,25 @@
 \newcommand*{\Sseq}{\supseteq}
 \newcommand*{\Ssgt}{\supset}
 \newcommand*{\inters}{\cap}
+\newcommand*{\setdiff}{\setminus}
 \newcommand*{\union}{\cup}
 \newcommand*{\card}{\mathop{\#}\nolimits}
 \newcommand*{\sset}[2]{{\renewcommand*{\arraystretch}{1.2}
                       \left\{\,#1 \,\left|\,
                                \begin{array}{@{}l@{}}#2\end{array}
                       \right.   \,\right\}}}
+\newcommand*{\meet}{\mathbin{\otimes}}
+\newcommand*{\join}{\mathbin{\oplus}}
 
 %% Logic notation.
 \newcommand*{\entails}{\mathrel{\vdash}}
+\newcommand*{\sentails}{\mathrel{\Vdash}}
+\newcommand*{\Nentails}{\mathrel{\nvdash}}
+\newcommand*{\Nsentails}{\mathrel{\nVdash}}
+\newcommand*{\entailss}[1]{\mathrel{\vdash_{#1}}}
+\newcommand*{\Entailss}[1]{\mathrel{\dashv_{#1}}}
+\newcommand*{\sentailss}[1]{\mathrel{\Vdash_{#1}}}
+\newcommand*{\Nentailss}[1]{\mathrel{\nvdash_{#1}}}
 \newcommand*{\bigland}{\mathop{\bigwedge}\limits}
 \newcommand*{\biglor}{\mathop{\bigvee}\limits}
 \newcommand*{\piff}{\mathrel{\leftrightarrow}}
@@ -96,6 +106,10 @@
 \newcommand*{\pimplied}{\mathrel{\leftarrow}}
 \newcommand*{\st}{\mathrel{.}}
 \newcommand*{\itc}{\mathrel{:}}
+
+% True and false
+\newcommand*{\false}{\mathord{\textbf{\textup{0}}}}
+\newcommand*{\true}{\mathord{\textbf{\textup{1}}}}
 
 %% Things that hold by definition.
 \newcommand*{\defrel}[1]{\mathrel{\buildrel \mathrm{def} \over {#1}}}
@@ -129,3 +143,16 @@
 \newcommand*{\pdim}{\mathop{\mathrm{dim}}}
 \newcommand*{\linspace}{\mathop{\mathrm{lin.space}}}
 \newcommand*{\cone}{\mathop{\mathrm{cone}}}
+
+% Powerset notation
+\newcommand*{\pnonredmap}{\mathop{\Omega^{\scriptscriptstyle\sseq}_{\scriptscriptstyle {\CPset_n}}}\nolimits}
+\newcommand*{\pnonredmapi}[1]{\mathop{\Omega^{\scriptscriptstyle\sseq}_{\scriptscriptstyle {\CPset_{#1}}}}\nolimits}
+\newcommand*{\nonredmap}{\mathop{\Omega^{\scriptscriptstyle\entails}_{\scriptscriptstyle D}}\nolimits}
+
+\newcommand*{\wpf}{\mathop{\wp_\mathrm{f}}\nolimits}
+\newcommand*{\wpfn}[2]{\mathord{\wp_\mathrm{fn}^{\scriptscriptstyle #2}}(#1)}
+
+\newcommand*{\smallP}{{\scriptscriptstyle\mathrm{P}}}
+\newcommand*{\entailsP}{\entailss{\smallP}}
+\newcommand*{\NentailsP}{\Nentailss{\smallP}}
+\newcommand*{\sentailsP}{\sentailss{\smallP}}
