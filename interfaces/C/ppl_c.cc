@@ -976,7 +976,7 @@ ppl_new_C_Polyhedron_from_bounding_box
 			ppl_Coefficient_t n,
 			ppl_Coefficient_t d)) try {
   CBuildBox cbbox(space_dimension, is_empty, get_lower_bound, get_upper_bound);
-  *pph = to_nonconst(new C_Polyhedron(cbbox));
+  *pph = to_nonconst(new C_Polyhedron(From_Bounding_Box(), cbbox));
   return 0;
 }
 CATCH_ALL
@@ -993,7 +993,7 @@ ppl_new_NNC_Polyhedron_from_bounding_box
 			ppl_Coefficient_t n,
 			ppl_Coefficient_t d)) try {
   CBuildBox cbbox(space_dimension, is_empty, get_lower_bound, get_upper_bound);
-  *pph = to_nonconst(new NNC_Polyhedron(cbbox));
+  *pph = to_nonconst(new NNC_Polyhedron(From_Bounding_Box(), cbbox));
   return 0;
 }
 CATCH_ALL
