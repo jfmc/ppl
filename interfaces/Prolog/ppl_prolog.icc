@@ -1655,6 +1655,7 @@ ppl_Polyhedron_shuffle_dimensions(Prolog_term_ref t_ph,
 				  Prolog_term_ref t_pifunc) {
   try {
     PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    PPL::dimension_type space_dim = ph->space_dimension();
     CHECK(ph);
     PIFunc pifunc;
     Prolog_term_ref t_pair = Prolog_new_term_ref();
@@ -1669,7 +1670,9 @@ ppl_Polyhedron_shuffle_dimensions(Prolog_term_ref t_ph,
       Prolog_term_ref t_j = Prolog_new_term_ref();
       Prolog_get_arg(1, t_pair, t_i);
       Prolog_get_arg(2, t_pair, t_j);
-      if (!pifunc.insert(get_variable(t_i).id(), get_variable(t_j).id()))
+      PPL::dimension_type i = get_variable(t_i).id();
+      PPL::dimension_type j = get_variable(t_j).id();
+      if (i >= space_dim || !pifunc.insert(i, j))
 	goto fail;
     }
     ph->shuffle_dimensions(pifunc);
