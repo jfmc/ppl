@@ -41,8 +41,9 @@ NNC_Polyhedron::NNC_Polyhedron(dimension_type num_dimensions,
 	       num_dimensions > max_space_dimension() ? 0 : num_dimensions,
 	       kind) {
   if (num_dimensions > max_space_dimension())
-    throw std::length_error("PPL::NNC_Polyhedron::NNC_Polyhedron(n, k):\n"
-			    "n exceeds the maximum allowed space dimension.");
+    throw_space_dimension_overflow("NNC_Polyhedron(n, k)",
+				   "n exceeds the maximum allowed "
+				   "space dimension");
 }
 
 inline
