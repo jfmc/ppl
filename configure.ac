@@ -266,6 +266,7 @@ AC_ARG_WITH(cxxflags,
 CXXFLAGS=$with_cxxflags)
 
 dnl Checks for programs.
+AC_PROG_LIBTOOL
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 AC_PROG_RANLIB
