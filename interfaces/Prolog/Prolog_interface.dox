@@ -33,46 +33,58 @@ Support for SWI Prolog is under development and will be available in
 
 \subsection PI_SI_Features System-Independent Features
 
+The Prolog interface provides access to the PPL polyhedra
+which can have one of two topologies: <EM>closed</EM>
+(closed polyhedra are referred to here as a <EM>C polyhedra</EM>),
+in which case all the constraints
+defining the polyhedron must be equalities or non-strict inequalities
+and its generators must be points, rays or lines;
+or <EM>not necessarily closed</EM>
+(not necessarily closed polyhedron are referred to here as
+<EM>NNC polyhedra</EM>),
+where the constraints defining the polyhedron may
+include strict inequalities and
+the generators can include closure points.
+
 The PPL predicates provided  for the Prolog interface are specified below.
 
 The specification uses the following grammar rules:
 \code
- VarId     -->   non-negative integer  variable identifier
+ VarId     --> non-negative integer	variable identifier
 
- PPL_Var   -->   '$VAR'(VarId)         PPL variable
+ PPL_Var   --> '$VAR'(VarId) 	 	PPL variable
 
- LinExpr   -->    PPL_Var              PPL variable
-                | number               integer
-                | + LinExpr            unary plus
-                | - LinExpr            unary minus
-                | LinExpr + LinExpr    addition
-                | LinExpr - LinExpr    subtraction
-                | number * LinExpr     multiplication
-                | LinExpr * number     multiplication
+ LinExpr   --> PPL_Var              	PPL variable
+          | number               	integer
+          | + LinExpr            	unary plus
+          | - LinExpr            	unary minus
+          | LinExpr + LinExpr    	addition
+          | LinExpr - LinExpr    	subtraction
+          | number * LinExpr     	multiplication
+          | LinExpr * number     	multiplication
 
- Constraint -->   LinExpr = LinExpr    equation
-                | LinExpr =< LinExpr   nonstrict inequation
-                | LinExpr >= LinExpr   nonstrict inequation
-                | LinExpr < LinExpr    strict inequation
-                | LinExpr > LinExpr    strict inequation
+ Constraint --> LinExpr = LinExpr   	equation
+          | LinExpr =< LinExpr 		nonstrict inequation
+          | LinExpr >= LinExpr 		nonstrict inequation
+          | LinExpr < LinExpr  		strict inequation
+          | LinExpr > LinExpr  		strict inequation
 
- Generator -->    point(LinExpr)       point
-                | point(LinExpr,Int)   point
-                | closure-point(LinExpr)     closure point
-                | closure-point(LinExpr,Int) closure point
-                                       (Int is the denominator so that the
-                                       point or closure point is defined 
-                                       by Expr/Int.)
-                | ray(LinExpr)         ray
-                | line(LinExpr)        line
+ Generator --> point(LinExpr)        	point
+          | point(LinExpr,Int)   	point
+          | closure-point(LinExpr)  	closure point
+          | closure-point(LinExpr,Int) 	closure point
+              (Int is the denominator so that the point or 
+               closure point is defined by Expr/Int.)
+          | ray(LinExpr)         	ray
+          | line(LinExpr)        	line
 \endcode
 
 
 We first give some general information about the Prolog interface
 to the PPL library.
 
--  The Prolog interface provides access to the
-   PPL polyhedra by means of Prolog terms we call <EM>handles</EM>.
+-  Access to any PPL polyhedron is provided by means of a Prolog term
+   called a <EM>handle</EM>.
    The data structure of a handle,
    is implementation-dependent, system-dependent and
    version-dependent, and, for this reason, deliberately left unspecified.
@@ -133,6 +145,16 @@ to the PPL library.
   should follow all the rules stated in the dimension-compatibility
   paragraph in the Introduction.
 
+- As explained above, a polyhedron has a fixed topology,
+  that is determined at the time of its initialization.
+  This must be respected in all subsequent operations on the polyhedron.
+  This means that whenever constraints are added to a
+  C Polyhedron, then only constraints that are equalities or non-strict
+  inequalities can be added to a C Polyhedron.
+  Similarly, only generators that are points, rays or lines can be added
+  to a C Polyhedron.
+  In addition, only polyhedra that have the same topology may be compared.
+
 - There are a number of predicates whose name ends with
   <CODE>_and_minimize</CODE>.
   These are provided to help the user obtain better performance.<BR>
@@ -174,7 +196,7 @@ more information regarding these issues.
 \code
    ?- ppl_new_C_Polyhedron_from_dimension(X, 3).
 \endcode
-   creates the closed polyhedron defining the 3-dimensional vector space
+   creates the C polyhedron defining the 3-dimensional vector space
    \f$\Rset^3\f$ with \p X bound to a valid handle for accessing it.
 
 <H4><CODE>
@@ -186,13 +208,14 @@ more information regarding these issues.
   ppl_new_NNC_Polyhedron_empty_from_dimension(-Handle, +Integer)
 </CODE></H4>
 
-   Creates a new empty polyhedron \f$P\f$ with <CODE>Integer</CODE> dimensions.
+   Creates a new empty polyhedron \f$P\f$ with <CODE>Integer</CODE>
+   dimensions.
    <CODE>Handle</CODE> is unified with the handle for \f$P\f$.
    Thus the query
 \code
    ?- ppl_new_NNC_Polyhedron_empty_from_dimension(X, 3).
 \endcode
-   creates an empty NNC-polyhedron embedded in \f$\Rset^3\f$ with
+   creates an empty NNC polyhedron embedded in \f$\Rset^3\f$ with
    \p X bound to a valid handle for accessing it.
 
 <H4>
@@ -211,6 +234,21 @@ more information regarding these issues.
    If <CODE>Handle1</CODE> refers to a polyhedron \f$P_1\f$,
    then a copy \f$P_2\f$ of \f$P_1\f$ is created and <CODE>Handle2</CODE>
    is unified with the handle for \f$P_2\f$.
+   Thus the query
+\code
+   ?- ppl_new_C_Polyhedron_empty_from_dimension(X, 3),
+      ppl_new_NNC_Polyhedron_from_C_Polyhedron(X, Y).
+\endcode
+   creates an empty C polyhedron embedded in \f$\Rset^3\f$
+   referenced by \p X
+   and then makes a copy, converting the topology to an NNC polyhedron.
+   with \p Y bound to a valid handle for accessing it.
+
+   When using <CODE>ppl_new_C_Polyhedron_from_NNC_Polyhedron/2</CODE>,
+   care must be taken that the source polyhedron referenced by
+   <CODE>Handle1</CODE> can be defined by equality and non-strict
+   inequality constraints or (equivalently) its generators are points,
+   rays and lines.
 
 <H4><CODE>ppl_delete_Polyhedron(+Handle)</CODE></H4>
 
@@ -442,7 +480,28 @@ and a query will succeed even when
                                                                        
 <H4><CODE>ppl_Polyhedron_add_dimensions_and_constraints(+Handle, 
                                    +List_of_Constraints)</CODE></H4>
-    
+ 
+ 
+   If, before the call is executed, <CODE>Handle</CODE>
+   refers to polyhedron \f$P\f$ and
+   <CODE>List_of_Constraints</CODE> refers to a system of constraints
+   \f$C\f$ in a space of \f$d\f$ dimensions, then
+   $\f$Q\f$ is the polyhedron obtained from \f$P\f$ by
+   adding \f$d\f$ new dimensions to \f$P\f$, embedding \f$P\f$
+   in the new space and then adding the \f$C\f$ constraints
+   to the new space.
+   E.g.,
+\code
+   ?- ppl_new_NNC_Polyhedron_from_dimension(2, X),
+      A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
+      D = '$VAR'(3), E = '$VAR'(4), 
+      ppl_Polyhedron_add_dimensions_and_constraints(X, 
+           [A > 1, B >= 0, C >= 0]),
+      ppl_Polyhedron_get_constraints(P, CS).
+
+   CS = [1*C > 1, 1*D >= 0, 1*E >= 0]
+\endcode
+
 <H4><CODE>ppl_Polyhedron_add_dimensions_and_project(+Handle, +Integer)
 </CODE></H4>
 
@@ -459,7 +518,7 @@ and a query will succeed even when
       ppl_Polyhedron_get_constraints(X, CS),
       ppl_Polyhedron_get_generators(X, GS).
  
-   CS = [1*A=0,1*B=0],
+   CS = [1*A = 0, 1*B = 0],
    GS = [point(0)]
 \endcode
 
@@ -595,20 +654,23 @@ would not change \f$P\f$;
 
 <H4><CODE>ppl_Polyhedron_contains_Polyhedron(+Handle_1, +Handle_2)</CODE></H4>
 
-   Succeeds if and only if the polyhedron referenced by
+   Succeeds if and only if the polyhedron \f$P1\f$ referenced by
    <CODE>Handle_1</CODE> is included in or
-   equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
+   equal to the polyhedron \f$P2\f$ referenced by <CODE>Handle_2</CODE>;
+   \f$P1\f$ and \f$P2\f$ must have the same topology.
 
 <H4><CODE>ppl_Polyhedron_strictly_contains_Polyhedron(+Handle_1, +Handle_2)</CODE></H4>
 
-   Succeeds if and only if the polyhedron referenced by
+   Succeeds if and only if the polyhedron \f$P1\f$ referenced by
    <CODE>Handle_1</CODE> is included in but not
-   equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
+   equal to the polyhedron \f$P2\f$ referenced by <CODE>Handle_2</CODE>;
+   \f$P1\f$ and \f$P2\f$ must have the same topology.
 
 <H4><CODE>ppl_Polyhedron_equals_Polyhedron, 2(+Handle_1, +Handle_2)</CODE></H4>
 
-   Succeeds if and only if the polyhedron referenced by
+   Succeeds if and only if the polyhedron \f$P1\f$ referenced by
    <CODE>Handle_1</CODE> is
-   equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
+   equal to the polyhedron \f$P2\f$ referenced by <CODE>Handle_2</CODE>;
+   \f$P1\f$ and \f$P2\f$ must have the same topology.
 
 */
