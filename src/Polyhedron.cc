@@ -699,7 +699,7 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   if (x.space_dimension() == 0)
     return;
 
-  // We need the systemo of contraints of both the polyhedra up-to-date.
+  // We need the system of contraints of both the polyhedra up-to-date.
   if(!x.constraints_are_up_to_date())
     x.update_constraints();
   if(!y.constraints_are_up_to_date())
