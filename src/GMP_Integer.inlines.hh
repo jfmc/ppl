@@ -52,6 +52,16 @@ lcm_assign(GMP_Integer& x, const GMP_Integer& y, const GMP_Integer& z) {
 }
 
 inline void
+add_mul_assign(GMP_Integer& x, const GMP_Integer& y, const GMP_Integer& z) {
+  mpz_addmul(x.get_mpz_t(), y.get_mpz_t(), z.get_mpz_t());
+}
+
+inline void
+sub_mul_assign(GMP_Integer& x, const GMP_Integer& y, const GMP_Integer& z) {
+  mpz_submul(x.get_mpz_t(), y.get_mpz_t(), z.get_mpz_t());
+}
+
+inline void
 exact_div_assign(GMP_Integer& x, const GMP_Integer& y) {
   mpz_divexact(x.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
 }

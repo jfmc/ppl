@@ -35,6 +35,10 @@ inline void gcd_assign(GMP_Integer& x,
 inline void lcm_assign(GMP_Integer& x, const GMP_Integer& y);
 inline void lcm_assign(GMP_Integer& x,
 		       const GMP_Integer& y, const GMP_Integer& z);
+inline void add_mul_assign(GMP_Integer& x,
+			   const GMP_Integer& y, const GMP_Integer& z);
+inline void sub_mul_assign(GMP_Integer& x,
+			   const GMP_Integer& y, const GMP_Integer& z);
 inline void exact_div_assign(GMP_Integer& x, const GMP_Integer& y);
 inline void exact_div_assign(GMP_Integer& x,
 			     const GMP_Integer& y, const GMP_Integer& z);
