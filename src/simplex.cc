@@ -1027,7 +1027,7 @@ compute_generator(const Matrix& tableau,
 }
 }//namespace
 
-bool
+Simplex_Status
 PPL::Constraint_System::primal_simplex(const Linear_Expression& expression,
 				       const bool maximize,
 				       Coefficient& ext_n, Coefficient& ext_d,
@@ -1077,7 +1077,7 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expression,
     // is unbounded.
     for (dimension_type i = cost_function.size(); i-- > 1; )
       if (cost_function[i] > 0)
-	return false;
+	return UNBOUNDED_PROBLEM;
     // Else a feasible solution to our LP problem is the origin. 
     ext_n = cost_function.inhomogeneous_term();
     ext_d = 1;
@@ -1085,7 +1085,7 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expression,
     Generator* gen = new Generator(g);
     if (pppoint != 0) 
       *pppoint = gen;
-    return true;
+    return SOLVED_PROBLEM;
   }
    
    
@@ -1095,7 +1095,7 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expression,
   bool return_value = first_phase(tableau, cost_function, base);
   
   if (!return_value) 
-    return false;
+    return UNFEASIBLE_PROBLEM;
   
   else {
     Generator g = compute_generator(tableau, base, map, space_dim);
@@ -1122,6 +1122,6 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expression,
     
     // We check our computed generator.
     assert(this->satisfies_all_constraints(g));  
-    return true; 
+    return SOLVED_PROBLEM; 
   }
 }

@@ -526,10 +526,10 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 		   ppl_Coefficient_t optimum_n,
 		   ppl_Coefficient_t optimum_d,
 		   ppl_Generator_t* ppoint) {
-  int ok;
+  int status;
   ppl_const_Generator_t p_ph_point;
   
-  ok = maximize
+  status = maximize
     ? ppl_Constraint_System_maximize(cs, objective,
 				     optimum_n, optimum_d, &p_ph_point)
     : ppl_Constraint_System_minimize(cs, objective,
@@ -542,10 +542,20 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     start_clock();
   }
 
-  if (ok)
+  if (status == PPL_SIMPLEX_STATUS_UNFEASIBLE) {
+    fprintf(output_file, "Unfeasible problem.\n");
+    /* FIXME: check!!! */
+    return 0;
+  }
+  else if (status == PPL_SIMPLEX_STATUS_UNBOUNDED) {
+    fprintf(output_file, "Unbounded problem.\n");
+    /* FIXME: check!!! */
+    return 0;
+  }
+  else {
     ppl_new_Generator_from_Generator(ppoint, p_ph_point);
-
-  return ok;
+    return 1;
+  }
 }
 
 static void

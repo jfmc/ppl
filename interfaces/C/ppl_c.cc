@@ -727,11 +727,10 @@ ppl_Constraint_System_maximize(ppl_const_Constraint_System_t cs,
   const Linear_Expression& lle = *to_const(le);
   Coefficient& ssup_n = *to_nonconst(sup_n);
   Coefficient& ssup_d = *to_nonconst(sup_d);
-  bool ok = ppoint != 0
+  return (ppoint != 0)
     ? ccs.primal_simplex(lle, true, ssup_n, ssup_d,
 			 reinterpret_cast<const Generator** const>(ppoint))
     : ccs.primal_simplex(lle, true, ssup_n, ssup_d);
-  return ok ? 1 : 0;
 }
 CATCH_ALL
 

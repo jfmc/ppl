@@ -158,10 +158,10 @@ public:
   void insert(const Constraint& c);
 
   // FIXME: write some documentation here!
-  bool primal_simplex(const Linear_Expression& expr, 
-		      bool maximize,
-		      Coefficient& ext_n, Coefficient& ext_d,
-		      const Generator** const pppoint = 0) const;
+  Simplex_Status primal_simplex(const Linear_Expression& expr, 
+				bool maximize,
+				Coefficient& ext_n, Coefficient& ext_d,
+				const Generator** const pppoint = 0) const;
 
   //! \brief
   //! Returns the singleton system containing only
