@@ -43,8 +43,9 @@ or you installed it in the wrong place (in which case you may want to
 reconfigure the library using the appropriate pathname for the
 <CODE>--prefix</CODE> option),
 or you forgot to tell your compiler where the right place is
-(in which case you should add an option, usually <CODE>-I</CODE>,
-to the ones you pass to the compiler).
+(in which case you should add the path to the directory where
+<CODE>ppl_c.h</CODE> is located to the compiler's include file search path;
+this is usually done with the <CODE>-I</CODE> option).
 
 The name space of the PPL's C interface is <CODE>PPL_*</CODE> for
 preprocessor symbols, enumeration values and variables,
