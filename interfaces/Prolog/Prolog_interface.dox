@@ -115,6 +115,29 @@ using the PPL predicates.
   the set of generators \f$V\f$ even though it may not be a ``proper''
   vertex of \f$P\f$.
 
+- There are a number of predicates whose name ends with
+  <CODE>_and_minimize</CODE>.
+  These are provided to help the user obtain better performance.<BR>
+  For some of the operations on polyhedra in the PPL,
+  the representation of a polyhedra has to be minimized:
+  if it is not already minimized,
+  an extra minimization operation is performed first.
+  However minimization is very costly.
+  For this reason the PPL library is lazy and avoids the
+  minimization operation as much as it can.
+  Thus it is best to use
+  a predicate without <CODE>_and_minimize</CODE> ending
+  unless a minimized representation is needed for
+  the next PPL operation.
+  In that case it is more efficient to use
+  the <CODE>_and_minimize</CODE> predicate.
+  As an example, suppose you have to compute the convex hull of several
+  polyhedra. Then use the
+  <CODE>ppl_convex_hull_assign</CODE>
+  for each intermediate step and
+  <CODE>ppl_convex_hull_assign_and_minimize</CODE> for the last step.
+  If you just have  to compute the convex hull of two polyhedra, then use
+  <CODE>ppl_convex_hull_assign_and_minimize</CODE>.
 
 See the specifications of individual predicates for examples and
 more information regarding these issues. 
