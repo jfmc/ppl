@@ -2355,7 +2355,7 @@ BD_Shape<T>::H79_widening_assign(const BD_Shape& y) {
   C_Polyhedron px(constraints());
   C_Polyhedron py(y.constraints());
   px.H79_widening_assign(py);
-  BD_Shape x(px.constraints());
+  BD_Shape x(px);
   swap(x);
   assert(OK());
 }
@@ -2363,13 +2363,13 @@ BD_Shape<T>::H79_widening_assign(const BD_Shape& y) {
 template <typename T>
 inline void
 BD_Shape<T>::limited_H79_extrapolation_assign(const BD_Shape& y,
-					    const Constraint_System& cs,
-					    unsigned* tp) {
+					      const Constraint_System& cs,
+					      unsigned* tp) {
   // Seen the polyhedra documentation.
   C_Polyhedron px(constraints());
   C_Polyhedron py(y.constraints());
   px.limited_H79_extrapolation_assign(py, cs, tp);
-  BD_Shape x(px.constraints());
+  BD_Shape x(px);
   swap(x);
   assert(OK());
 }
@@ -3435,7 +3435,7 @@ BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
   C_Polyhedron px(constraints());
   C_Polyhedron py(y.constraints());
   px.time_elapse_assign(py);
-  BD_Shape x(px.constraints());
+  BD_Shape x(px);
   swap(x);
   assert(OK());
 }
