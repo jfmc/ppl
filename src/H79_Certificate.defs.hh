@@ -30,16 +30,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cassert>
 #include <vector>
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A convergence certificate for the H79 widening operator.
 /*!
   Convergence certificates are used to instantiate the BHZ03 framework
   so as to define widening operators for the finite powerset domain.
   \note
   The convergence of the H79 widening can also be certified by
-  the BHRZ03_Certificate.
+  BHRZ03_Certificate.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Parma_Polyhedra_Library::H79_Certificate {
 public:
   //! Default constructor.
@@ -47,6 +47,12 @@ public:
   
   //! Constructor: computes the certificate for \p ph.
   H79_Certificate(const Polyhedron& ph);
+
+  //! Copy constructor.
+  H79_Certificate(const H79_Certificate& y);
+
+  //! Destructor.
+  ~H79_Certificate();
 
   //! The comparison function for certificates.
   /*!
@@ -62,26 +68,16 @@ public:
   //! Compares \p *this with the certificate for polyhedron \p ph.
   int compare(const Polyhedron& ph) const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if the certificate for
-  //! polyhedron \p ph is stricly smaller than \p *this.
-  bool is_stabilizing(const Polyhedron& ph) const;
-  
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! A total ordering on H79 certificates.
   /*!
     This binary predicate defines a total ordering on H79 certificates
     which is used when storing information about sets of polyhedra.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   struct Compare {
     //! Returns <CODE>true</CODE> if and only if \p x comes before \p y.
     bool operator()(const H79_Certificate& x,
 		    const H79_Certificate& y) const;
   };
-  
-  //! Check if gathered information is meaningful.
-  bool OK() const;
   
 private:
   //! Dimension of the polyhedron.

@@ -34,6 +34,17 @@ BHRZ03_Certificate::BHRZ03_Certificate()
   assert(OK());
 }
 
+inline
+BHRZ03_Certificate::BHRZ03_Certificate(const BHRZ03_Certificate& y)
+  : poly_dim(y.poly_dim), lin_space_dim(y.lin_space_dim),
+    num_constraints(y.num_constraints), num_points(y.num_points),
+    num_rays_null_coord(y.num_rays_null_coord) {
+}
+
+inline
+BHRZ03_Certificate::~BHRZ03_Certificate() {
+}
+
 inline bool
 BHRZ03_Certificate::is_stabilizing(const Polyhedron& ph) const {
   return compare(ph) == 1;

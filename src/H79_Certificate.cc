@@ -64,7 +64,6 @@ PPL::H79_Certificate::H79_Certificate(const Polyhedron& ph)
 
 int
 PPL::H79_Certificate::compare(const H79_Certificate& y) const {
-  assert(OK() && y.OK());
   if (poly_dim != y.poly_dim)
     return poly_dim > y.poly_dim ? 1 : -1;
   if (num_constraints != y.num_constraints)
@@ -119,8 +118,3 @@ PPL::H79_Certificate::compare(const Polyhedron& ph) const {
   return 0;
 }
 
-bool
-PPL::H79_Certificate::OK() const {
-  // No meaningful test can be defined.
-  return true;
-}

@@ -30,12 +30,15 @@ inline
 H79_Certificate::H79_Certificate()
   : poly_dim(0), num_constraints(0) {
   // This is the certificate for a zero-dim universe polyhedron.
-  assert(OK());
 }
 
-inline bool
-H79_Certificate::is_stabilizing(const Polyhedron& ph) const {
-  return compare(ph) == 1;
+inline
+H79_Certificate::H79_Certificate(const H79_Certificate& y)
+  : poly_dim(y.poly_dim), num_constraints(y.num_constraints) {
+}
+
+inline
+H79_Certificate::~H79_Certificate() {
 }
 
 inline bool
