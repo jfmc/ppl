@@ -979,6 +979,9 @@ since the above version of this is temporary.
 :- true pred ppl_Polyhedron_space_dimension(in(Handle), in(Dimension))
              :: any_term * any_term + foreign.
 
+:- true pred ppl_Polyhedron_affine_dimension(in(Handle), in(Dimension))
+             :: any_term * any_term + foreign.
+
 :- true pred ppl_Polyhedron_get_constraints(in(Handle), in(CList))
              :: any_term * any_term + foreign.
 
