@@ -3,7 +3,7 @@ Enhancements for PPL 0.7
 ========================
 
 - The Powerset class implementation is poorly documented.
-- See for what reason why we have neither
+- See for what reason we have neither
   C_Polyhedron& C_Polyhedron::operator=(const NNC_Polyhedron& y)
   nor
   NNC_Polyhedron& NNC_Polyhedron::operator=(const C_Polyhedron& y).
