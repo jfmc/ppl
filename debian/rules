@@ -35,15 +35,15 @@ else
   confflags += --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE)
 endif
 
-config.status: configure
+config.status:
 	dh_testdir
 #   Add here commands to configure the package.
 #   /usr/share/doc/autotools-dev/README.Debian.gz:
 #     - Call the autoconf suite using simple names ("autoconf", "autoheader", etc.)
 #     - Call the automake suite using *versioned* names ("automake-1.9", etc),
 #   FIX are all of these required?
-	aclocal-1.9 -I m4 && autoheader && automake-1.9 && autoconf && CFLAGS="$(CFLAGS)" ./configure $(confflags) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
-
+	aclocal-1.9 -I m4 && autoheader && automake-1.9 && autoconf && CFLAGS="$(CFLAGS)" ./configure $(confflags) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CC=/usr/bin/gcc-3.4 CXX=/usr/bin/g++-3.4
+	cd Watchdog && aclocal-1.9 && autoheader && automake-1.9 && autoconf && CFLAGS="$(CFLAGS)" ./configure $(confflags) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CC=/usr/bin/gcc-3.4 CXX=/usr/bin/g++-3.4
 
 ## Architecture
 build: build-arch build-indep
