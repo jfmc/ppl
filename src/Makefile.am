@@ -305,7 +305,7 @@ ppl_install.hh:	ppl_header.top $(top_builddir)/config.h $(top_builddir)/src/vers
 	cat $(srcdir)/ppl_header.top \
 		$(top_builddir)/src/version.hh $(top_builddir)/config.h \
 		$(srcdir)/ppl_header.middle tmp/includes >$@
-	$(CXXCPP) -I$(srcdir) -P @debug_flag@ tmp/noincludes.cc \
+	$(CXXCPP) $(CPPFLAGS) -I$(srcdir) -P @debug_flag@ tmp/noincludes.cc \
 		>>$@
 	cat $(srcdir)/ppl_header.bottom >>$@
 	rm -rf tmp
