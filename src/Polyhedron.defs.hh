@@ -39,31 +39,36 @@ namespace Parma_Polyhedra_Library {
   //! Returns <CODE>true</CODE> if and only if
   //! \p x and \p y are the same polyhedron.
   //! \exception std::invalid_argument thrown if \p x and \p y
-  //!                                  are dimension-incompatible.
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   /*! \relates Polyhedron */
   bool operator==(const Polyhedron& x, const Polyhedron& y);
   //! Returns <CODE>true</CODE> if and only if
   //! \p x and \p y are different polyhedra.
   //! \exception std::invalid_argument thrown if \p x and \p y
-  //!                                  are dimension-incompatible.
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   /*! \relates Polyhedron */
   bool operator!=(const Polyhedron& x, const Polyhedron& y);
   //! Returns <CODE>true</CODE> if and only if
   //! \p x is strictly contained in \p y.
   //! \exception std::invalid_argument thrown if \p x and \p y
-  //!                                  are dimension-incompatible.
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   /*! \relates Polyhedron */
   bool operator<(const Polyhedron& x, const Polyhedron& y);
   //! Returns <CODE>true</CODE> if and only if
   //! \p x strictly contains \p y.
   //! \exception std::invalid_argument thrown if \p x and \p y
-  //!                                  are dimension-incompatible.
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   /*! \relates Polyhedron */
   bool operator>(const Polyhedron& x, const Polyhedron& y);
   //! Returns <CODE>true</CODE> if and only if
   //! \p x contains \p y.
   //! \exception std::invalid_argument thrown if \p x and \p y
-  //!                                  are dimension-incompatible.
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   /*! \relates Polyhedron */
   bool operator>=(const Polyhedron& x, const Polyhedron& y);
 
@@ -381,33 +386,41 @@ public:
   //! Returns <CODE>true</CODE> if and only if the result is not empty.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are dimension-incompatible.
+  //! \exception std::invalid_argument thrown if \p *this and \p y
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   bool intersection_assign_and_minimize(const Polyhedron& y);
   //! Assigns to \p *this the intersection of \p *this and \p y.
   //! The result is not guaranteed to be minimized.
   //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are dimension-incompatible.
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   void intersection_assign(const Polyhedron& y);
   //! Assigns to \p *this the convex hull of the set-theoretic union
   //! of \p *this and \p y, minimizing the result.
   //! Returns <CODE>true</CODE> if and only if the result is not empty.
   //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are dimension-incompatible.
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   bool convex_hull_assign_and_minimize(const Polyhedron& y);
   //! Assigns to \p *this the convex hull of the set-theoretic union
   //! \p *this and \p y.  The result is not guaranteed to be minimized.
   //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are dimension-incompatible.
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   void convex_hull_assign(const Polyhedron& y);
   //! Assigns to \p *this the convex hull of the set-theoretic difference
   //! \p *this and \p y, minimizing the result.
   //! Returns <CODE>true</CODE> if and only if the result is not empty.
   //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are dimension-incompatible.
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   bool convex_difference_assign_and_minimize(const Polyhedron& y);
   //! Assigns to \p *this the convex hull of the set-theoretic difference
   //! \p *this and \p y.  The result is not guaranteed to be minimized.
   //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are dimension-incompatible.
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   void convex_difference_assign(const Polyhedron& y);
 
   //! Returns the relations holding between the polyhedron \p *this
@@ -427,7 +440,8 @@ public:
   //! \param y           The polyhedron that <EM>must</EM>
   //!                    be contained in \p *this.
   //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are dimension-incompatible.
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   void widening_assign(const Polyhedron& y);
   //! Limits the widening between \p *this and \p y by \p cs
   //! and assigns the result to \p *this.
@@ -437,9 +451,9 @@ public:
   //!                          the widened polyhedron. It is not
   //!                          declared <CODE>const</CODE>
   //!                          because it can be modified.
-  //! \exception std::invalid_argument thrown if \p *this, \p y and
-  //!                                  \p cs are dimension-incompatible
-  //!                                  or topology-incompatible.
+  //! \exception std::invalid_argument thrown if \p *this, \p y and \p cs
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   void limited_widening_assign(const Polyhedron& y, ConSys& cs);
 
   //! Returns the system of constraints.
@@ -450,15 +464,15 @@ public:
   //! Adds a copy of constraint \p c to the system of constraints
   //! of \p *this.
   //! \exception std::invalid_argument thrown if \p *this and constraint \p c
-  //!                                  are dimension-incompatible
-  //!                                  or topology-incompatible.
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   void add_constraint(const Constraint& c);
 
   //! Adds a copy of generator \p g to the system of generators
   //! of \p *this.
   //! \exception std::invalid_argument thrown if \p *this and generator \p g
-  //!                                  are dimension-incompatible
-  //!                                  or topology-incompatible,
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible,
   //!                                  or if \p *this is an empty polyhedron
   //!                                  and \p g is not a point.
   void add_generator(const Generator& g);
@@ -596,8 +610,8 @@ public:
   //! \return               <CODE>false</CODE> if the resulting
   //!                       polyhedron is empty.
   //! \exception std::invalid_argument thrown if \p *this and \p cs
-  //!                                  are dimension-incompatible or
-  //!                                  topology-incompatible.
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   bool add_constraints_and_minimize(ConSys& cs);
   //! Adds the specified constraints without minimizing.
   //! \param  cs             The constraints that will be added to the
@@ -605,8 +619,8 @@ public:
   //!                        is not declared <CODE>const</CODE> because
   //!                        it can be modified.
   //! \exception std::invalid_argument thrown if \p *this and \p cs
-  //!                                  are dimension-incompatible or
-  //!                                  topology-incompatible.
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   void add_constraints(ConSys& cs);
 
   //! First increases the space dimension of \p *this by adding
@@ -624,8 +638,8 @@ public:
   //! \return             <CODE>false</CODE> if the resulting
   //!                     polyhedron is empty.
   //! \exception std::invalid_argument thrown if \p *this and \p gs
-  //!                                  are dimension-incompatible or
-  //!                                  topology-incompatible,
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible,
   //!                                  or if \p *this is empty and the
   //!                                  the system of generators \p gs
   //!                                  is not empty, but has no points.
@@ -636,11 +650,11 @@ public:
   //!                        is not declared <CODE>const</CODE> because
   //!                        it can be modified.
   //! \exception std::invalid_argument thrown if \p *this and \p gs
-  //!                                  are dimension-incompatible or
-  //!                                  topoly-incompatible, or if
-  //!                                  \p *this is empty and the system of
-  //!                                  generators \p gs is not empty, but
-  //!                                  has no points.
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible,
+  //!                                  or if \p *this is empty and
+  //!                                  the system of generators \p gs
+  //!                                  is not empty, but has no points.
   void add_generators(GenSys& gs);
 
   //! Returns <CODE>true</CODE> if and only if \p *this is
@@ -661,7 +675,8 @@ public:
   //! Returns <CODE>true</CODE> if and only if
   //! polyhedron \p x is contained in polyhedron \p y.
   //! \exception std::invalid_argument thrown if \p x and \p y
-  //!                                  are dimension-incompatible.
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   friend bool
   Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 				      const Polyhedron& y);
