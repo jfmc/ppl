@@ -53,7 +53,7 @@ main() {
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
 #endif
-  
+
   ph2.BBRZ02_widening_assign(ph1);
 
   NNC_Polyhedron known_result(2);
@@ -67,4 +67,4 @@ main() {
 #endif
 
   return retval;
-}  
+}

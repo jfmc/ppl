@@ -169,7 +169,7 @@ bool AskTell<CS>::reduce() {
 //
 //     the map is well formed, the postcondition of reduce() is satisfied,
 //     and...
-//     
+//
 
 template <typename CS>
 bool AskTell<CS>::deduce() {
@@ -343,7 +343,7 @@ template <typename CS>
 AskTell<CS> operator * (const AskTell<CS>& x, const AskTell<CS>& y) {
   typename AskTell<CS>::const_iterator yi;
   AskTell<CS> ret(x);
-  for (yi = y.begin(); yi != y.end(); ++yi) 
+  for (yi = y.begin(); yi != y.end(); ++yi)
     ret.pair_insert_good((*yi).first, (*yi).second);
   ret.engine();
   return ret;
@@ -353,7 +353,7 @@ template <typename CS>
 void
 AskTell<CS>::meet_assign(const AskTell<CS>& y) {
   AskTell<CS>::const_iterator yi;
-  for (yi = y.begin(); yi != y.end(); ++yi) 
+  for (yi = y.begin(); yi != y.end(); ++yi)
     pair_insert_good((*yi).first, (*yi).second);
   engine();
 }

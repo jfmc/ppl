@@ -160,7 +160,7 @@ public:
   /*!
     A const_iterator is used to provide read-only access
     to each constraint contained in an object of ConSys.
-    
+
     \par Example
     The following code prints the system of constraints
     defining the polyhedron <CODE>ph</CODE>:
@@ -180,33 +180,33 @@ public:
   public:
     //! Default constructor.
     const_iterator();
-    
+
     //! Ordinary copy-constructor.
     const_iterator(const const_iterator& y);
-    
+
     //! Destructor.
     virtual ~const_iterator();
-    
+
     //! Assignment operator.
     const_iterator& operator=(const const_iterator& y);
-    
+
     //! Dereference operator.
     const Constraint& operator*() const;
-    
+
     //! Indirect member selector.
     const Constraint* operator->() const;
-    
+
     //! Prefix increment operator.
     const_iterator& operator++();
-    
+
     //! Postfix increment operator.
     const_iterator operator++(int);
-    
+
     //! \brief
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are identical.
     bool operator==(const const_iterator& y) const;
-    
+
     //! \brief
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are different.
@@ -217,13 +217,13 @@ public:
 
     //! The const iterator over the matrix of constraints.
     Matrix::const_iterator i;
-  
+
     //! A const pointer to the matrix of constraints.
     const Matrix* csp;
 
     //! Constructor.
     const_iterator(const Matrix::const_iterator& iter, const ConSys& csys);
-    
+
     //! \p *this skips to the next non-trivial constraint.
     void skip_forward();
   };
@@ -233,7 +233,7 @@ public:
   //! if \p *this is not empty;
   //! otherwise, returns the past-the-end const_iterator.
   const_iterator begin() const;
-  
+
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
@@ -292,7 +292,7 @@ private:
 
   //! Returns the \p k- th constraint of the system.
   Constraint& operator[](dimension_type k);
-  
+
   //! Returns a constant reference to the \p k- th constraint of the system.
   const Constraint& operator[](dimension_type k) const;
 
@@ -307,7 +307,7 @@ private:
 
   //! Returns the number of the equality constraints.
   dimension_type num_equalities() const;
-  
+
   //! Returns the number of the inequality constraints.
   dimension_type num_inequalities() const;
 };

@@ -185,7 +185,7 @@ o  The methods Polyhedron::widening_assign() and
    Polyhedron::H79_widening_assign() and
    Polyhedron::limited_H79_widening_assign(), respectively.
    This emphasizes the fact that they implement extensions
-   of the widenings introduced in 
+   of the widenings introduced in
 
      N. Halbwachs.
      Détermination Automatique de Relations Linéaires

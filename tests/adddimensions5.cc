@@ -48,7 +48,7 @@ main() {
   NNC_Polyhedron ph(cs);
 
   ph.generators();
-  
+
 #if NOISY
   print_constraints(ph, "*** ph ***");
   print_generators(ph, "*** ph ***");

@@ -44,7 +44,7 @@ main() {
   gs1.insert(ray(B));
   gs1.insert(ray(A + 4*B + 2*C));
   C_Polyhedron ph1(gs1);
-  
+
   GenSys gs2;
   gs2.insert(point());
   gs2.insert(ray(A));

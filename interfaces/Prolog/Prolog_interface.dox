@@ -531,7 +531,7 @@ and a query will succeed even when
    by first embedding \f$\cP_1\f$ in a new space enlarged by
    the space dimensions
    of the polyhedron \f$\cP_2\f$ referred to by <CODE>Handle2</CODE>,
-   and then adds to its system of constraints 
+   and then adds to its system of constraints
    a renamed-apart version of the constraints of  \f$\cP_2\f$.
 
    E.g.,
@@ -541,7 +541,7 @@ and a query will succeed even when
       D = '$VAR'(3), E = '$VAR'(4),
       ppl_new_Polyhedron_from_constraints(nnc, [A > 1, B >= 0, C >= 0], Y),
       ppl_Polyhedron_concatenate_assign(X, Y),
-      ppl_Polyhedron_get_constraints(X, CS). 
+      ppl_Polyhedron_get_constraints(X, CS).
 
    CS = [1*C > 1, 1*D >= 0, 1*E >= 0]
 \endcode

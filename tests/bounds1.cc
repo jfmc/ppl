@@ -45,9 +45,9 @@ main() {
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
 #endif
-  
+
   bool ok = ph1.bounds_from_above(LinExpression(3))
     && ph2.bounds_from_below(A);
-  
-  return ok ? 0 : 1; 
+
+  return ok ? 0 : 1;
 }

@@ -56,7 +56,7 @@ main() {
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
 #endif
-  
+
   ph1.concatenate_assign(ph2);
 
   C_Polyhedron known_result(4);

@@ -341,7 +341,7 @@ namespace PPL = Parma_Polyhedra_Library;
   If the rank is less than \f$d - 2\f$, the rank of
   the matrix composed by \f$\vect{c}\f$ (that is saturated by \f$\vect{r}\f$)
   and by the constraints of \f$A\f$ saturated by \f$\vect{r}\f$  is less
-  than \f$d - 1\f$. It means that \f$r\f$ is redundant (see 
+  than \f$d - 1\f$. It means that \f$r\f$ is redundant (see
   Section \ref prelims).
   If neither \f$\vect{r}_1\f$ nor \f$\vect{r}_2\f$ are extreme rays,
   they belong to a 2-dimensional face containing exactly two extreme rays

@@ -37,7 +37,7 @@ main() {
 
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs;
   gs.insert(point());
   gs.insert(ray(A));
@@ -58,7 +58,7 @@ main() {
   for (GenSys::const_iterator i = ph1.generators().begin(),
 	 iend = ph1.generators().end(); i != iend; ++i)
     ph2.add_generator(*i);
-  
+
   C_Polyhedron known_result(2);
   known_result.add_constraint(A >= -1);
 

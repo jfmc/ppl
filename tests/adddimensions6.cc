@@ -66,7 +66,7 @@ main() {
   print_constraints(ph1, "*** ph1 after add_dimensions_and_embed ***");
   print_generators(ph2, "*** ph2 after add_dimensions_and_embed ***");
 #endif
-  
+
   return retval;
 }
-  
+

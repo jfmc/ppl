@@ -45,7 +45,7 @@ main() {
   gs1.insert(ray(B));
   gs1.insert(ray(A + B + 2*C));
   NNC_Polyhedron ph1(gs1);
-  
+
   GenSys gs2;
   gs2.insert(point(A));
   gs2.insert(closure_point());

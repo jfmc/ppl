@@ -45,10 +45,10 @@ main() {
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
 #endif
-  
+
   if (ph1.is_bounded())
     return 1;
-  
+
   // This is a bounded polyhedron (it is a square);
   C_Polyhedron ph2(2);
   ph2.add_constraint(x >= 2);
@@ -62,37 +62,37 @@ main() {
 
   if (!ph2.is_bounded())
     return 1;
-  
-  // This is a universal, zero-dimensional polyhedron. 
+
+  // This is a universal, zero-dimensional polyhedron.
   C_Polyhedron ph3;
 
 #if NOISY
   print_constraints(ph3, "*** ph3 ***");
-#endif  
- 
+#endif
+
   if (!ph3.is_bounded())
     return 1;
-  
-  // This is an empty, zero-dimensional polyhedron. 
+
+  // This is an empty, zero-dimensional polyhedron.
   C_Polyhedron ph4;
   ph4.add_constraint(LinExpression(-3) >= 0);
 
 #if NOISY
   print_constraints(ph4, "*** ph4 ***");
-#endif  
- 
+#endif
+
   if (!ph4.is_bounded())
     return 1;
 
-  // This is an empty polyhedron. 
+  // This is an empty polyhedron.
   C_Polyhedron ph5(4, C_Polyhedron::EMPTY);
 
 #if NOISY
   print_constraints(ph5, "*** ph5 ***");
-#endif  
- 
+#endif
+
   if (!ph5.is_bounded())
-    return 1; 
+    return 1;
 
   return 0;
 }

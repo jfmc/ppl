@@ -40,7 +40,7 @@ tak.clpq
 CLPQ_TESTS_STRICT = \
 schedule.clpq
 
-CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT) 
+CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
 EXTRA_DIST = \
 clpq.pl check_script expected \

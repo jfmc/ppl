@@ -147,6 +147,6 @@ main() {
     return 1;
   if (!points())
     return 1;
-  
+
   return 0;
 }

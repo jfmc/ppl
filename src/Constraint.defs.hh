@@ -153,7 +153,7 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   cout << "Constraint c1: " << c1 << endl;
   if (c1.is_equality())
     cout << "Constraint c1 is not an inequality." << endl;
-  else { 
+  else {
     LinExpression e;
     for (int i = c1.space_dimension() - 1; i >= 0; i--)
       e += c1.coefficient(Variable(i)) * Variable(i);
@@ -202,17 +202,17 @@ public:
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is an equality constraint.
   bool is_equality() const;
-  
+
   //! \brief
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is an inequality constraint (either strict or non-strict).
   bool is_inequality() const;
-  
+
   //! \brief
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is a non-strict inequality constraint.
   bool is_nonstrict_inequality() const;
-  
+
   //! \brief
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is a strict inequality constraint.
@@ -224,7 +224,7 @@ public:
     is greater than or equal to the space-dimension of \p *this.
   */
   const Integer& coefficient(Variable v) const;
-  
+
   //! Returns the inhomogeneous term of \p *this.
   const Integer& inhomogeneous_term() const;
 
@@ -403,7 +403,7 @@ private:
 
   //! Sets the constraint type to <CODE>EQUALITY</CODE>.
   void set_is_equality();
- 
+
   //! Sets the constraint type to <CODE>INEQUALITY</CODE>.
   void set_is_inequality();
 };

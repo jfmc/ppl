@@ -35,9 +35,9 @@ using namespace Parma_Polyhedra_Library;
 int
 main() {
   set_handlers();
-  
+
   Variable A(0);
-  
+
   NNC_Polyhedron ph(1, NNC_Polyhedron::EMPTY);
   ph.add_generator(point(A));
   ph.add_generator(closure_point());
@@ -46,9 +46,9 @@ main() {
 #if NOISY
   print_generators(ph, "*** ph ***");
 #endif
-  
+
   ph.add_dimensions_and_embed(1);
-  
+
   NNC_Polyhedron known_result(2);
   known_result.add_constraint(A > 0);
   known_result.add_constraint(A < 3);
@@ -58,7 +58,7 @@ main() {
 #if NOISY
   print_constraints(ph, "*** After ph.add_dimensions_and_embed(1) ***");
   print_generators(ph, "*** After ph.add_dimensions_and_embed(1) ***");
-#endif 
+#endif
 
   return retval;
 }

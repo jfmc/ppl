@@ -44,12 +44,12 @@ main() {
 #if NOISY
   print_constraints(ph1, "*** ph constraints ***");
 #endif
-  
+
   C_Polyhedron known_result = ph1;
 
   ConSys cs = ph1.constraints();
   C_Polyhedron ph2(cs);
-  
+
   int retval = (ph2 == known_result) ? 0 : 1;
 
 #if NOISY

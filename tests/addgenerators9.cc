@@ -34,7 +34,7 @@ using namespace Parma_Polyhedra_Library;
 int
 main() {
   set_handlers();
-  
+
   Variable A(0);
 
   C_Polyhedron ph(2);

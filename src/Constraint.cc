@@ -96,7 +96,7 @@ PPL::Constraint::is_trivial_true() const {
 	  if (x[i] != 0)
 	    return false;
 	// We have the inequality `k > 0',
-	// where k is a positive integer. 
+	// where k is a positive integer.
 	return true;
       }
     }
@@ -137,7 +137,7 @@ PPL::Constraint::is_trivial_false() const {
 	  if (x[i] != 0)
 	    return false;
 	// We have the inequality `k > 0',
-	// where k is zero or a negative integer. 
+	// where k is zero or a negative integer.
 	return true;
       }
     }

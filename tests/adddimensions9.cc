@@ -33,15 +33,15 @@ using namespace Parma_Polyhedra_Library;
 int
 main() {
   set_handlers();
-  
+
   Variable C(2);
 
   C_Polyhedron ph(2);
-  
+
 #if NOISY
   print_constraints(ph, "*** ph ***");
 #endif
-  
+
   ph.add_dimensions_and_project(1);
 
   C_Polyhedron known_result(3);

@@ -487,7 +487,7 @@ solve(char* file_name) {
   for (row = 1; row <= num_rows; ++row) {
     /* Initialize the least common multiple computation. */
     mpz_set_si(den_lcm, 1);
-    /* Set `nz' to the number of non-zero coefficients. */ 
+    /* Set `nz' to the number of non-zero coefficients. */
     nz = lpx_get_mat_row(lp, row, coefficient_index, coefficient_value);
     for (i = 1; i <= nz; ++i) {
       mpq_set_d(rational_coefficient[i], coefficient_value[i]);

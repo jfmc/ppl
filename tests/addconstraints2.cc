@@ -37,7 +37,7 @@ main() {
 
   Variable A(0);
   Variable B(1);
-  
+
   C_Polyhedron ph(2);
   ph.add_constraint(A >= 0);
   ph.add_constraint(B >= 0);

@@ -42,12 +42,12 @@ main() {
   const ConSys cs = ph1.constraints();
 
   C_Polyhedron ph2(cs);
-  
+
   int retval = (ph2 == known_result) ? 0: 1;
 
 #if NOISY
   print_constraints(ph2, "*** ph2 ***");
 #endif
-  
+
   return retval;
 }

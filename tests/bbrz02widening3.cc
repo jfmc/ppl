@@ -35,7 +35,7 @@ main() {
 
   Variable A(0);
   Variable B(1);
-  
+
   C_Polyhedron ph1(2);
   ph1.add_constraint(A - B >= 0);
   ph1.add_constraint(A + B <= 2);

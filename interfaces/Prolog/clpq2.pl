@@ -128,7 +128,7 @@ solve(_, { Constraints }, [Poly|Polys], [Poly|Polys]) :-
 
 % Built-ins may be added here.
 
-% read/1 
+% read/1
 solve(_, read(N), Polys, Polys) :-
   read(N),
   get_code(user_input, _C).
@@ -219,7 +219,7 @@ parameter_passing_term(A, F, Bindings, NewBindings) :-
       % Unification fails so we force the constraints to fail.
       NewBindings = [0 = 1]
     )
-  ).      
+  ).
 
 select_clause(Atom, Head, Body) :-
   functor(Atom, F, N),
@@ -609,7 +609,7 @@ write_listexprs([Term|Terms], VarList) :-
   write_termexpr(Term, VarList),
   ((Terms == []; var(Terms)) ->
     true
-  ; 
+  ;
     write(',')
   ),
   write_listexprs(Terms, VarList).
@@ -628,7 +628,7 @@ int_expr_aux(I-J) :-
   !,
   int_expr(I),
   int_expr(J).
- 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%% Utility Predicates %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % term2wanted_dims(?Term, -List_of_Integers)
@@ -641,7 +641,7 @@ term2wanted_dims(V, Ns, Ns) :-
   !.
 term2wanted_dims('$VAR'(N), Ns, [N|Ns]) :-
   !.
-term2wanted_dims(Term, NsIn, NsOut) :- 
+term2wanted_dims(Term, NsIn, NsOut) :-
   Term =.. [_F|Args],
   terms2wanted_dims(Args, NsIn, NsOut).
 
@@ -658,7 +658,7 @@ constraints2list((A, B), Rest, LC) :-
   constraints2list(B, Rest, BRest),
   constraints2list(A, BRest, LC).
 constraints2list(C, Rest, Rest1) :-
-  (check_constraint(C) -> 
+  (check_constraint(C) ->
     Rest1 = [C|Rest]
   ;
     Rest1 = [0 = 1]
@@ -724,7 +724,7 @@ check_constraint(Expr < Expr1) :-
 
 get_unwanted_dims(Wanted, D, Unwanted) :-
   get_unwanted_dims(Wanted, 0, D, Unwanted).
-  
+
 get_unwanted_dims(_, S, D, []) :-
   S >= D,
   !.
@@ -1081,7 +1081,7 @@ TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY\n\
 YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER\n\
 PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE\n\
 POSSIBILITY OF SUCH DAMAGES.\n').
-   
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Startup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
