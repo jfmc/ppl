@@ -91,6 +91,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
       for (size_t j = 0; j < source_num_columns; ++j)
 	source[i][source_num_columns + j] = -source[i][j];
     source_num_columns =  2*source_num_columns;
+    source.set_sorted(false);
 #endif
   }
 #if 0
@@ -118,7 +119,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
 	dest[i][j] = 0;
     dest[i][i] = 1;
     if (pos 
-#if !SYPLEX_METHOD       
+#if !POS_SIMPLEX_TRICK       
 	&& con_to_gen
 #endif
 	)
@@ -148,7 +149,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   // variables (that can not be in the system of constraints). 
   SatMatrix tmp_sat(dest_num_rows, num_positive + source.num_rows());
   if (pos 
-#if !POS_SIMPLX_TRICK
+#if !POS_SIMPLEX_TRICK
       && con_to_gen
 #endif
       )
@@ -182,7 +183,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   cout << "dest" << endl << dest << endl;
   cout << "sat" << endl << tmp_sat << endl;
 #endif
-#if SYMPLEX_METHOD
+#if POS_SIMPLEX_TRICK
   if (pos && !con_to_gen) {
     source_num_columns = source_num_columns / 2;
     for (size_t i = dest.num_rows(); i-- > 0; )
@@ -252,7 +253,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
       // combination of a constraints of positivity of variables and an
       // equalities.
       if (!con_to_gen) {
-#if POS_SIMPLX_TRICK
+#if POS_SIMPLEX_TRICK
 	sat.transpose_assign(sat);
 	simplify(dest, sat);
 	dest_num_rows = dest.num_rows();
@@ -398,7 +399,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
     if (negative)
       return true;
   }
- 
+#if !POS_SIMPLEX_TRICK
   if (pos)
     if (!con_to_gen) {
       dest.grow(dest_num_rows + num_columns, num_columns);
@@ -413,7 +414,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
       dest_num_rows += num_columns;
       dest.set_sorted(false);
     }
-  
+#endif
   while (k1 < old_source1_num_rows && k2 < source2_num_rows) {
     // Add to `source1' the non-redundant constraints from `source2'
     // without sort.
@@ -457,15 +458,19 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   
   // source1 is not sorted any more.
   source1.set_sorted(false);
-#if POS_SIMPLX_TRICK
   if (pos && !con_to_gen) {
-    source1.grow(source1_num_rows, 2*num_columns);
-    for (size_t i = source1_num_rows; i-- > 0; )
-      for (size_t j = 0; j < num_columns; ++j)
-	source1[i][num_columns + j] = -source1[i][j];
-    num_columns =  2*num_columns;
-  }
+#if POS_SIMPLEX_TRICK
+    // We do not know how to transform the system of constraints
+    // that we alreay have. So, we call the function minimize()
+    // to obtain the system of constraints starting from `source1'.
+    // In this way, we lose the informations of `dest'.
+    sat.transpose_assign(sat);
+    bool empty_or_illegal = minimize(false, source1, dest, sat, true);
+    sat.transpose_assign(sat);
+    return empty_or_illegal;
 #endif
+  }
+
   // Now we have to add to `sat' the same number of rows that we added to
   // `source1'. The elements of these rows are set to zero.
   // New dimensions of `sat' are: `dest.num_rows()' rows and
@@ -516,20 +521,6 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
 					      dest, tmp_sat,
 					      dest.num_lines_or_equalities());
 
-#if POS_SIMPLX_TRICK
-  if (pos && !con_to_gen)
-    num_columns = num_columns / 2;
-    for (size_t i = dest.num_rows(); i-- > 0; )
-      for (size_t j = 0; j < num_columns; ++j)
-	dest[i][j] = dest[i][j] - dest[i][num_columns + j];
-    source1.resize_no_copy(source1.num_rows(), num_columns);
-    dest.resize_no_copy(dest.num_rows(), num_columns);
-#if 0
-    std::cout << "source" << std::endl << source1 << std::endl; 
-    std::cout << "dest" << std::endl << dest << std::endl; 
-#endif
-  }
-#endif
   // A non-empty polyhedron must have a constraints representation that
   // provides the positivity constraint and a generators representation
   // that provides at least one vertex (see the function minimize()).
@@ -574,26 +565,6 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
     // equalities. Then we re-obtain the `sat_c'.
     if (pos) {
       if (!con_to_gen) {
-#if POS_SIMPLX_TRICK
-	sat.transpose_assign(sat);
-	simplify(dest, sat);
-	dest_num_rows = dest.num_rows();
-	for (size_t i = dest_num_rows; i-- > 0; )
-	  if (dest[i].only_a_term_is_positive()) {
-	    --dest_num_rows;
-	    std::swap(dest[i], dest[dest_num_rows]);
-	    std::swap(sat[i], sat[dest_num_rows]);
-	  }
-	if (dest_num_rows < dest.num_rows()) {
-	  dest.erase_to_end(dest_num_rows);
-	  sat.rows_erase_to_end(dest_num_rows);
-	}
-	sat.transpose_assign(sat);
-#if 0
-	std::cout << "Dopo la nuova simplify" << std::endl;
-	std::cout << dest << std::endl;
-#endif
-#else
 	source1.resize_no_copy(num_columns, num_columns);
 	for(size_t i = num_columns; i-- > 0; ) {
 	  for (size_t j = num_columns; j-- > 0; )
@@ -608,7 +579,6 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
 	conversion(dest, 0, source1, tmp, 0);
 	tmp.transpose_assign(tmp);
 	std::swap(tmp, sat);
-#endif
       }
       else {
 	for (size_t i = source1.num_lines_or_equalities();
