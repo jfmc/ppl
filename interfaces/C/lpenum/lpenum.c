@@ -539,7 +539,7 @@ solve(char* file_name) {
   }
 
   /* Create the polyhedron and get rid of the constraint system. */
-  ppl_new_C_Polyhedron_from_ConSys(&ppl_ph, ppl_cs);
+  ppl_new_C_Polyhedron_recycle_ConSys(&ppl_ph, ppl_cs);
   ppl_delete_ConSys(ppl_cs);
 
   if (print_timings) {

@@ -920,7 +920,17 @@ ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t* pph,
 CATCH_ALL
 
 int
-ppl_new_C_Polyhedron_from_ConSys(ppl_Polyhedron_t* pph, ppl_ConSys_t cs) try {
+ppl_new_C_Polyhedron_from_ConSys(ppl_Polyhedron_t* pph,
+				 ppl_const_ConSys_t cs) try {
+  const ConSys& ccs = *to_const(cs);
+  *pph = to_nonconst(new C_Polyhedron(ccs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_C_Polyhedron_recycle_ConSys(ppl_Polyhedron_t* pph,
+				    ppl_ConSys_t cs) try {
   ConSys& ccs = *to_nonconst(cs);
   *pph = to_nonconst(new C_Polyhedron(ccs));
   return 0;
@@ -929,7 +939,16 @@ CATCH_ALL
 
 int
 ppl_new_NNC_Polyhedron_from_ConSys(ppl_Polyhedron_t* pph,
-				   ppl_ConSys_t cs) try {
+				   ppl_const_ConSys_t cs) try {
+  const ConSys& ccs = *to_const(cs);
+  *pph = to_nonconst(new NNC_Polyhedron(ccs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_NNC_Polyhedron_recycle_ConSys(ppl_Polyhedron_t* pph,
+				      ppl_ConSys_t cs) try {
   ConSys& ccs = *to_nonconst(cs);
   *pph = to_nonconst(new NNC_Polyhedron(ccs));
   return 0;
@@ -937,7 +956,17 @@ ppl_new_NNC_Polyhedron_from_ConSys(ppl_Polyhedron_t* pph,
 CATCH_ALL
 
 int
-ppl_new_C_Polyhedron_from_GenSys(ppl_Polyhedron_t* pph, ppl_GenSys_t gs) try {
+ppl_new_C_Polyhedron_from_GenSys(ppl_Polyhedron_t* pph,
+				 ppl_const_GenSys_t gs) try {
+  const GenSys& ggs = *to_const(gs);
+  *pph = to_nonconst(new C_Polyhedron(ggs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_C_Polyhedron_recycle_GenSys(ppl_Polyhedron_t* pph,
+				    ppl_GenSys_t gs) try {
   GenSys& ggs = *to_nonconst(gs);
   *pph = to_nonconst(new C_Polyhedron(ggs));
   return 0;
@@ -946,7 +975,16 @@ CATCH_ALL
 
 int
 ppl_new_NNC_Polyhedron_from_GenSys(ppl_Polyhedron_t* pph,
-				   ppl_GenSys_t gs) try {
+				   ppl_const_GenSys_t gs) try {
+  const GenSys& ggs = *to_const(gs);
+  *pph = to_nonconst(new C_Polyhedron(ggs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_NNC_Polyhedron_recycle_GenSys(ppl_Polyhedron_t* pph,
+				      ppl_GenSys_t gs) try {
   GenSys& ggs = *to_nonconst(gs);
   *pph = to_nonconst(new C_Polyhedron(ggs));
   return 0;
