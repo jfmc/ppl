@@ -56,7 +56,7 @@ AH_BOTTOM([
 #define __SGI_STL_INTERNAL_RELOPS
 #endif
 
-#if __GNUC__ >= 3
+#if defined(__GNUC__) && __GNUC__ >= 3
 // Flexible array members at the end of a struct
 // are defined as in
 //   Type array[];
@@ -111,7 +111,10 @@ Do not forget to enable the C++ interface: add --enable-cxx
 to the configuration options.])
 fi
 
-AC_CHECK_SIZEOF(mp_limb_t, 4, [#include <gmp.h>])
+AC_CHECK_SIZEOF(mp_limb_t, 4, [
+#include <stdio.h>
+#include <gmp.h>
+])
 
 extra_includes="${extra_includes} ${gmp_includes_option}"
 extra_libraries="${extra_libraries} ${gmp_library_option}"

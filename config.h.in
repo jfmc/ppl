@@ -85,7 +85,7 @@
 #define __SGI_STL_INTERNAL_RELOPS
 #endif
 
-#if __GNUC__ >= 3
+#if defined(__GNUC__) && __GNUC__ >= 3
 // Flexible array members at the end of a struct
 // are defined as in
 //   Type array[];
