@@ -378,21 +378,23 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
-  //! Intersects \p *this with polyhedron \p y and assigns the result
-  //! to \p *this.   The result is not guaranteed to be minimized.
+  //! Assigns to \p *this the intersection of \p *this and \p y,
+  //! minimizing the result.
+  //! Returns <CODE>true</CODE> if and only if the result is not empty.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are dimension-incompatible.
-  void intersection_assign_and_minimize(const PolyBase& y);
-  //! Intersects \p *this with polyhedron \p y and assigns the result
-  //! to \p *this without minimizing the result.
+  bool intersection_assign_and_minimize(const PolyBase& y);
+  //! Assigns to \p *this the intersection of \p *this and \p y.
+  //! The result is not guaranteed to be minimized.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are dimension-incompatible.
   void intersection_assign(const PolyBase& y);
   //! Assigns to \p *this the convex hull of the set-theoretic union
-  //! \p *this and \p y, minimizing the result.
+  //! of \p *this and \p y, minimizing the result.
+  //! Returns <CODE>true</CODE> if and only if the result is not empty.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are dimension-incompatible.
-  void convex_hull_assign_and_minimize(const PolyBase& y);
+  bool convex_hull_assign_and_minimize(const PolyBase& y);
   //! Assigns to \p *this the convex hull of the set-theoretic union
   //! \p *this and \p y.  The result is not guaranteed to be minimized.
   //! \exception std::invalid_argument thrown if \p *this and \p y
@@ -400,9 +402,10 @@ public:
   void convex_hull_assign(const PolyBase& y);
   //! Assigns to \p *this the convex hull of the set-theoretic difference
   //! \p *this and \p y, minimizing the result.
+  //! Returns <CODE>true</CODE> if and only if the result is not empty.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are dimension-incompatible.
-  void convex_difference_assign_and_minimize(const PolyBase& y);
+  bool convex_difference_assign_and_minimize(const PolyBase& y);
   //! Assigns to \p *this the convex hull of the set-theoretic difference
   //! \p *this and \p y.  The result is not guaranteed to be minimized.
   //! \exception std::invalid_argument thrown if \p *this and \p y
@@ -618,13 +621,15 @@ public:
   //!                     current system of generators. The parameter is
   //!                     not declared <CODE>const</CODE> because it
   //!                     can be modified.
+  //! \return             <CODE>false</CODE> if the resulting
+  //!                     polyhedron is empty.
   //! \exception std::invalid_argument thrown if \p *this and \p gs
   //!                                  are dimension-incompatible or
   //!                                  topology-incompatible,
   //!                                  or if \p *this is empty and the
   //!                                  the system of generators \p gs
   //!                                  is not empty, but has no points.
-  void add_generators_and_minimize(GenSys& gs);
+  bool add_generators_and_minimize(GenSys& gs);
   //! Adds the specified generators without minimizing.
   //! \param  gs             The generators that will be added to the
   //!                        current system of generators. This parameter

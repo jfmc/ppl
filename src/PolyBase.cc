@@ -1076,9 +1076,11 @@ PPL::operator<=(const PolyBase& x, const PolyBase& y) {
 /*!
   The intersection of \p *this with \p y (that are assumed to
   have the same dimension) is assigned to \p *this.
-  The result is minimized.
+  The representation of the resulting polyhedron is minimized:
+  the return value is <CODE>true</CODE> if and only if the polyhedron
+  is not empty.
 */
-void
+bool
 PPL::PolyBase::intersection_assign_and_minimize(const PolyBase& y) {
   assert(topology() == y.topology());
   PolyBase& x = *this;
@@ -1089,23 +1091,23 @@ PPL::PolyBase::intersection_assign_and_minimize(const PolyBase& y) {
 
   // If one of the two polyhedra is empty, the intersection is empty.
   if (x.is_empty())
-    return;
+    return false;
   if (y.is_empty()) {
     x.set_empty();
-    return;
+    return false;
   }
 
   // If both polyhedra are zero-dimensional,
   // then at this point they are necessarily non-empty,
   // so that their intersection is non-empty too.
   if (x_space_dim == 0)
-    return;
+    return true;
 
   // add_and_minimize() requires x to be up-to-date
   // and to have sorted constraints...
   if (!x.minimize())
     // We have just discovered that `x' is empty.
-    return;
+    return false;
   // ... and y to have updated and sorted constraints.
   if (!y.constraints_are_up_to_date())
     y.update_constraints();
@@ -1128,6 +1130,7 @@ PPL::PolyBase::intersection_assign_and_minimize(const PolyBase& y) {
     x.clear_sat_g_up_to_date();
   }
   assert(x.OK());
+  return !empty;
 }
 
 /*!
@@ -1179,10 +1182,12 @@ PPL::PolyBase::intersection_assign(const PolyBase& y) {
 
 /*!
   The convex hull of the set-theoretic union of \p *this and \p y
-  (that are assumed to have the same dimension) is assigned to \p *this.
-  The result is minimized.
+  (that are assumed to have the same dimension) is assigned to \p *this
+  The representation of the resulting polyhedron is minimized:
+  the return value is <CODE>true</CODE> if and only if the polyhedron
+  is not empty.
 */
-void
+bool
 PPL::PolyBase::convex_hull_assign_and_minimize(const PolyBase& y) {
   assert(topology() == y.topology());
   PolyBase& x = *this;
@@ -1193,32 +1198,35 @@ PPL::PolyBase::convex_hull_assign_and_minimize(const PolyBase& y) {
 
   // Convex hull of a polyhedron `p' with an empty polyhedron is `p'.
   if (y.is_empty())
-    return;
+    return !minimize();
   if (x.is_empty()) {
     x = y;
-    return;
+    return !minimize();
   }
 
   // If both polyhedra are zero-dimensional,
   // then at this point they are necessarily universe polyhedra,
   // so that their convex-hull is the universe polyhedron too.
   if (x_space_dim == 0)
-    return;
+    return true;
 
-  // The function add_and_minimize() requires `x' to be up-to-date and
-  // to have sorted generators...
+  // The function add_and_minimize() requires `x' to have both
+  // the constraints and the generators systems up-to-date and
+  // to have sorted generators ...
   if (!x.minimize()) {
     // We have just discovered that `x' is empty.
     x = y;
-    return;
+    return !minimize();
   }
   x.obtain_sorted_generators_with_sat_g();
   // ...and `y' to have updated and sorted generators.
   if (!y.generators_are_up_to_date() && !y.update_generators())
-    // We have just discovered that `y' is empty.
-    return;
+    // We have just discovered that `y' is empty
+    // (and we know that `x' is NOT empty).
+    return true;
   y.obtain_sorted_generators();
 
+  // This call to `add_and_minimize(...)' cannot return `true'.
   add_and_minimize(false,
 		   x.gen_sys, x.con_sys, x.sat_g,
 		   y.gen_sys);
@@ -1227,6 +1235,7 @@ PPL::PolyBase::convex_hull_assign_and_minimize(const PolyBase& y) {
   x.clear_sat_c_up_to_date();
 
   assert(x.OK(true) && y.OK());
+  return true;
 }
 
 /*!
@@ -1345,14 +1354,17 @@ PPL::PolyBase::convex_difference_assign(const PolyBase& y) {
 /*!
   The convex hull of the set-theoretic difference of \p *this and \p y
   (that are assumed to have the same dimension) is assigned to \p *this.
-  The result is minimized.
+  The representation of the resulting polyhedron is minimized:
+  the return value is <CODE>true</CODE> if and only if the polyhedron
+  is not empty.
 */
-void
+bool
 PPL::PolyBase::convex_difference_assign_and_minimize(const PolyBase& y) {
   assert(topology() == y.topology());
   convex_difference_assign(y);
-  minimize();
+  bool empty = minimize();
   assert(OK(true));
+  return !empty;
 }
 
 /*!
@@ -1767,8 +1779,10 @@ PPL::PolyBase::remove_higher_dimensions(size_t new_dimension) {
 
 
 /*!
-  Adds further constraints to a polyhedron and computes the new polyhedron
-  satisfying all the constraints.
+  Adds further constraints to a polyhedron.
+  The representation of the resulting polyhedron is minimized:
+  the return value is <CODE>true</CODE> if and only if the polyhedron
+  is not empty.
 */
 bool
 PPL::PolyBase::add_constraints_and_minimize(ConSys& cs) {
@@ -1782,10 +1796,10 @@ PPL::PolyBase::add_constraints_and_minimize(ConSys& cs) {
   if (is_necessarily_closed() && cs.has_strict_inequalities())
     throw_topology_incompatible("add_constraints_and_min(cs)", cs);
 
-  // Adding no constraints is the same as checking for emptyness.
+  // Adding no constraints: just minimize.
   if (cs.num_rows() == 0) {
     assert(cs.num_columns() == 0);
-    return !check_empty();
+    return !minimize();
   }
 
   // Dealing with zero-dim space polyhedra first.
@@ -1803,12 +1817,8 @@ PPL::PolyBase::add_constraints_and_minimize(ConSys& cs) {
     return false;
   }
 
-  // We use `check_empty()' because we want the flag EMPTY
-  // to precisely represents the status of the polyhedron
-  // (i.e., if it is false the polyhedron is really NOT empty)
-  // and because, for a non-empty polyhedron, we need both
-  // the system of generators and constraints minimal.
-  if (check_empty())
+  // We need both the system of generators and constraints minimal.
+  if (minimize())
     return false;
 
   // PolyBase::add_and_minimize() requires that
@@ -2177,9 +2187,12 @@ PPL::PolyBase::add_dimensions_and_constraints(ConSys& cs) {
 }
 
 /*!
-  Adds further generators to a polyhedron, performing minimization.
+  Adds further generators to a polyhedron.
+  The representation of the resulting polyhedron is minimized:
+  the return value is <CODE>true</CODE> if and only if the polyhedron
+  is not empty.
 */
-void
+bool
 PPL::PolyBase::add_generators_and_minimize(GenSys& gs) {
   // Dimension-compatibility check:
   // the dimension of `gs' can not be greater than space_dimension().
@@ -2190,10 +2203,10 @@ PPL::PolyBase::add_generators_and_minimize(GenSys& gs) {
   if (is_necessarily_closed() && gs.has_closure_points())
     throw_topology_incompatible("add_generators_and_min(gs)", gs);
 
-  // Adding no generators is a no-op.
+  // Adding no generators is equivalent to just requiring minimization.
   if (gs.num_rows() == 0) {
     assert(gs.num_columns() == 0);
-    return;
+    return !minimize();
   }
 
   // Adding valid generators to a zero-dim polyhedron
@@ -2203,7 +2216,7 @@ PPL::PolyBase::add_generators_and_minimize(GenSys& gs) {
       throw_invalid_generators("add_generators_and_min(gs)", *this);
     status.set_zero_dim_univ();
     assert(OK(true));
-    return;
+    return true;
   }
 
   // Adjust `gs' to the right topology.
@@ -2238,14 +2251,17 @@ PPL::PolyBase::add_generators_and_minimize(GenSys& gs) {
     std::swap(gen_sys, gs);
     clear_empty();
     set_generators_up_to_date();
+    // This call to `minimize()' cannot return `true'.
     minimize();
   }
   else {
     obtain_sorted_generators_with_sat_g();
+    // This call to `add_and_minimize(...)' cannot return `true'.
     add_and_minimize(false, gen_sys, con_sys, sat_g, gs);
     clear_sat_c_up_to_date();
   }
   assert(OK(true));
+  return true;
 }
 
 
