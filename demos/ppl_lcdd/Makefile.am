@@ -104,7 +104,7 @@ check-local: ppl_lcdd
 	  grep -q `basename $$file` tough_examples && continue; \
 	  echo -n `basename $$file` " " >>obtained; \
 	  echo ppl_lcdd $$file; \
-	  ppl_lcdd $$file | $(MD5SUM) - >>obtained; \
+	  ./ppl_lcdd $$file | $(MD5SUM) - >>obtained; \
 	done
 	diff -q $(srcdir)/$(EXPECTED) obtained
 
