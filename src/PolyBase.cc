@@ -305,6 +305,7 @@ PPL::PolyBase::PolyBase(Topology topology,
       set_constraints_minimized();
     }
   space_dim = num_dimensions;
+  assert(OK(false));
 }
 
 
@@ -351,6 +352,7 @@ PPL::PolyBase::PolyBase(Topology topology, ConSys& cs)
     set_constraints_up_to_date();
     // Set the space dimension.
     space_dim = cs_space_dim;
+    assert(OK(false));
     return;
   }
 
@@ -415,6 +417,7 @@ PPL::PolyBase::PolyBase(Topology topology, GenSys& gs)
     set_generators_up_to_date();
     // Set the space dimension.
     space_dim = gs_space_dim;
+    assert(OK(false));
     return;
   }
 
@@ -533,7 +536,6 @@ PPL::PolyBase::update_generators() const {
 */
 void
 PPL::PolyBase::minimize() const {
-
   // 0-dim space or empty polyhedra are already minimized.
   if (space_dim == 0
       || is_empty()
@@ -800,6 +802,9 @@ PPL::operator<=(const PolyBase& x, const PolyBase& y) {
     y.minimize();
 #endif
 
+  assert(x.OK(false));
+  assert(y.OK(false));
+
   if (x.is_necessarily_closed())
     // When working with necessarily closed polyhedra,
     // `x' is contained in `y' if and only if all the generators of `x'
@@ -969,6 +974,8 @@ PPL::PolyBase::intersection_assign(const PolyBase& y) {
   x.clear_generators_up_to_date();
   // It does not minimize the system of constraints.
   x.clear_constraints_minimized();
+
+  assert(OK(false));
 }
 
 /*!
@@ -1127,7 +1134,7 @@ PPL::PolyBase::convex_difference_assign(const PolyBase& y) {
   }
   *this = new_polyhedron;
 
-  assert(OK());
+  assert(OK(false));
 }
 
 /*!
@@ -1200,19 +1207,22 @@ PPL::PolyBase::add_dimensions(Matrix& mat1,
     mat2.swap_columns(old_eps_index, new_eps_index);
     mat2.set_sorted(false);
 #else 
-    size_t to_move = mat2.num_columns() - 1;
-    for (size_t i = 0; i < add_dim; ++i) {
-      Row& r = mat2[i];
-      std::swap(r[to_move], r[to_move - 1]);
-      --to_move;
+    if (mat2.is_sorted()) {
+      size_t to_move = mat2.num_columns() - 1;
+      for (size_t i = 0; i < add_dim; ++i) {
+	Row& r = mat2[i];
+	std::swap(r[to_move], r[to_move - 1]);
+	--to_move;
+      }
+      size_t n_rows = mat2.num_rows();
+      for (size_t i = add_dim; i < n_rows; ++i) {
+	Row& r = mat2[i];
+	std::swap(r[to_move], r[mat2.num_columns() - 1]);
+      }
     }
-    size_t n_rows = mat2.num_rows();
-    for (size_t i = add_dim; i < n_rows; ++i) {
-      Row& r = mat2[i];
-      std::swap(r[to_move], r[mat2.num_columns() - 1]);
-    }      
+    else
+      mat2.swap_columns(old_eps_index, new_eps_index);
 #endif
-
     // CHECK ME: since we swapped columns in both `mat1' and `mat2',
     // no swapping is required for `sat1' and `sat2'.
   }
@@ -1298,17 +1308,21 @@ PPL::PolyBase::add_dimensions_and_embed(size_t dim) {
       gen_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
       gen_sys.set_sorted(false);
 #else
-      size_t to_move = space_dim + 1 + dim;
-      for (size_t i = 0; i < dim; ++i) {
-	Row& g = gen_sys[i];
-	std::swap(g[to_move], g[to_move - 1]);
-	--to_move;
+      if (gen_sys.is_sorted()) {
+	size_t to_move = space_dim + 1 + dim;
+	for (size_t i = 0; i < dim; ++i) {
+	  Row& g = gen_sys[i];
+	  std::swap(g[to_move], g[to_move - 1]);
+	  --to_move;
+	}
+	size_t n_rows = gen_sys.num_rows();
+	for (size_t i = dim; i < n_rows; ++i) {
+	  Row& g = gen_sys[i];
+	  std::swap(g[space_dim + 1], g[space_dim + 1 + dim]);
+	}
       }
-      size_t n_rows = gen_sys.num_rows();
-      for (size_t i = dim; i < n_rows; ++i) {
-	Row& g = gen_sys[i];
-	std::swap(g[space_dim + 1], g[space_dim + 1 + dim]);
-      }      
+      else
+	gen_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
 #endif
 
     }
@@ -1352,17 +1366,18 @@ PPL::PolyBase::add_dimensions_and_project(size_t dim) {
     assert(status.test_zero_dim_univ() && gen_sys.num_rows() == 0);
     // The system of generators for this polyhedron has only
     // the origin as a point.
-    gen_sys.insert(Generator::zero_dim_point());
-    // FIXME: the following call performs a few redundant tests
-    //        on the topology of gen_sys.
-    gen_sys.adjust_topology_and_dimension(topology(), dim);
     // In a non-necessarily closed polyhedron, all points
     // have to be accompanied by the corresponding closure points
     // (this time, dimensions are automatically adjusted).
     if (!is_necessarily_closed())
       gen_sys.insert(Generator::zero_dim_closure_point());
+    gen_sys.insert(Generator::zero_dim_point());
+    // FIXME: the following call performs a few redundant tests
+    //        on the topology of gen_sys.
+    gen_sys.adjust_topology_and_dimension(topology(), dim);
     set_generators_minimized();
     space_dim = dim;
+    assert(OK(false));
     return;
   }
 
@@ -1394,17 +1409,21 @@ PPL::PolyBase::add_dimensions_and_project(size_t dim) {
       con_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
       con_sys.set_sorted(false);
 #else
-      size_t to_move = space_dim + 1 + dim;
-      for (size_t i = 0; i < dim; ++i) {
-	Row& c = con_sys[i];
-	std::swap(c[to_move], c[to_move - 1]);
-	--to_move;
+      if (con_sys.is_sorted()) {
+	size_t to_move = space_dim + 1 + dim;
+	for (size_t i = 0; i < dim; ++i) {
+	  Row& c = con_sys[i];
+	  std::swap(c[to_move], c[to_move - 1]);
+	  --to_move;
+	}
+	size_t n_rows = con_sys.num_rows();
+	for (size_t i = dim; i < n_rows; ++i) {
+	  Row& c = con_sys[i];
+	  std::swap(c[space_dim + 1], c[space_dim + 1 + dim]);
+	}
       }
-      size_t n_rows = con_sys.num_rows();
-      for (size_t i = dim; i < n_rows; ++i) {
-	Row& c = con_sys[i];
-	std::swap(c[space_dim + 1], c[space_dim + 1 + dim]);
-      }
+      else
+	con_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
 #endif
       
     }
@@ -1720,6 +1739,7 @@ PPL::PolyBase::insert(const Generator& g) {
 	throw_invalid_generator("insert(g)", *this);
       else
 	status.set_zero_dim_univ();
+    assert(OK(false));
     return;
   }
 
@@ -1789,6 +1809,7 @@ PPL::PolyBase::insert(const Generator& g) {
     clear_empty();
     set_generators_minimized();
   }
+  assert(OK(false));
 }
 
 
@@ -1931,6 +1952,7 @@ PPL::PolyBase::add_dimensions_and_constraints(ConSys& cs) {
 			 old_num_columns - 1 + added_columns);
   // Steal the constraints from `cs' and put them in `con_sys'
   // using the right displacement for coefficients.
+  size_t cs_num_columns = cs.num_columns();
   for (size_t i = added_rows; i-- > 0; ) {
     Constraint& c_new = con_sys[old_num_rows + i];
     Constraint& c_old = cs[i];
@@ -1938,8 +1960,8 @@ PPL::PolyBase::add_dimensions_and_constraints(ConSys& cs) {
     if (c_old.is_equality())
       c_new.set_is_equality();
     std::swap(c_new[0], c_old[0]);
-    for (size_t j = added_columns + 1; j-- > 1; )
-      std::swap(c_new[old_num_columns - 1 + j], c_old[j]);
+    for (size_t j = 1; j < cs_num_columns; ++j)
+      std::swap(c_old[j], c_new[space_dim - 1 + j]);
   }
   // Update space dimension.
   space_dim += added_columns;
@@ -2012,7 +2034,9 @@ PPL::PolyBase::add_generators_and_minimize(GenSys& gs) {
     set_generators_up_to_date();
     minimize();
   }
+  assert(OK());
 }
+
 
 /*!
   Adds specified generators to a polyhedron without minimizing.
@@ -2661,6 +2685,11 @@ PPL::PolyBase::limited_widening_assign(const PolyBase& y, ConSys& cs) {
     // of the matrix \p cs.
     cs.erase_to_end(new_cs_num_rows);
 
+#if 1
+    // FIXME : merge_rows_assign (in the #else branch below)
+    // does not automatically adjust the topology of cs !!!
+    x.add_constraints(cs);
+#else
     // The system of constraints of the resulting polyhedron is
     // composed by the constraints of the widened polyhedron `x'
     // and by those of the new `cs'.
@@ -2670,12 +2699,14 @@ PPL::PolyBase::limited_widening_assign(const PolyBase& y, ConSys& cs) {
     cs.sort_rows();
     x.con_sys.sort_rows();
     x.con_sys.merge_rows_assign(cs);
+#endif
 
     // Only the system of constraints is up-to-date.
     x.set_constraints_up_to_date();
     x.clear_constraints_minimized();
     x.clear_generators_up_to_date();
   }
+  assert(OK());
 }
 
 /*!
@@ -2880,6 +2911,30 @@ PPL::PolyBase::OK(bool check_not_empty) const {
 	   << endl;
       goto bomb;
     }
+
+#if 0
+    //=================================================
+    // FIXME : this test is wrong. However, such an invariant will
+    // hold when we will perform full-minimization of NNC polyhedra.
+    // Checking that the number of closure points is always
+    // grater than the number of points.
+    if (!is_necessarily_closed()) {
+      size_t num_points = 0;
+      size_t num_closure_points = 0;
+      size_t eps_index = gen_sys.num_columns() - 1;
+      for (size_t i = gen_sys.num_rows(); i-- > 0; )
+	if (gen_sys[i][0] != 0)
+	  if (gen_sys[i][eps_index] > 0)
+	    ++num_points;
+	  else
+	    ++num_closure_points;
+      if (num_points > num_closure_points) {
+	cerr << "# POINTS > # CLOSURE_POINTS" << endl;
+	goto bomb;
+      }
+    }
+    //=================================================
+#endif
 
     if (generators_are_minimized()) {
       // If the system of generators is minimized, the number of lines,
