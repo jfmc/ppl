@@ -3124,12 +3124,33 @@ PPL::Polyhedron::is_topologically_closed() const {
   if (is_empty() || space_dimension() == 0)
     return true;
 
-  if (constraints_are_minimized())
-    // A polyhedron is closed iff
-    // it has no (non-redundant) strict inequalities.
-    return !con_sys.has_strict_inequalities();
-
-  if (generators_are_minimized()) {
+  if (constraints_are_minimized()
+      && generators_are_minimized() && sat_g_is_up_to_date()) {
+    // A polyhedron is closed iff it has no non-redundant
+    // strict inequalities. A strict inequality saturating
+    // no (non-redundant) closure points is redundant.
+    // FIXME : highly inefficient. Have to check for correctness
+    // before even starting to think about optimizations.
+    SatRow sat_none;
+    SatRow sat_closure_points_only;
+    for (size_t i = gen_sys.num_rows(); i-- > 0; ) {
+      sat_none.set(i);
+      if (!gen_sys[i].is_closure_point())
+	sat_closure_points_only.set(i);
+    }
+    for (size_t i = con_sys.num_rows(); i-- > 0; ) {
+      const Constraint& c = con_sys[i];
+      if (c.is_strict_inequality()) {
+	SatRow sat_ci;
+	set_union(sat_g[i], sat_closure_points_only, sat_ci);
+	if (sat_ci != sat_none)
+	  // Found a non-redundant strict inequality.
+	  return false;
+      }
+    }
+    return true;
+  }
+  else if (generators_are_minimized()) {
     // A polyhedron is closed iff all of its (non-redundant)
     // closure points are matched by a corresponding point.
     obtain_sorted_generators();
@@ -3157,10 +3178,9 @@ PPL::Polyhedron::is_topologically_closed() const {
     return true;
   }
 
-  // Both `con_sys' and `gen_sys' are not minimized.
   // A polyhedron is closed iff
   // it has no (non-redundant) strict inequalities.
-  minimize();
+  NNC_minimize_constraints();
   return is_empty() || !con_sys.has_strict_inequalities();
 }
 
