@@ -132,7 +132,7 @@ ORIGINAL_TESTS = \
 	polydifference5 polydifference6 polydifference7 polydifference8 \
 	polydifference9 \
 	polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
-	polyhull7 polyhull8 polyhull9 polyhull10 \
+	polyhull7 polyhull8 polyhull9 polyhull10 polyhull11 \
 	randphull1 randphull2 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
 	relations7 relations8 relations9 relations10 relations11 \
@@ -509,6 +509,7 @@ polyhull7_SOURCES = polyhull7.cc
 polyhull8_SOURCES = polyhull8.cc
 polyhull9_SOURCES = polyhull9.cc
 polyhull10_SOURCES = polyhull10.cc
+polyhull11_SOURCES = polyhull11.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
