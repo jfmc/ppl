@@ -66,7 +66,7 @@ ORIGINAL_TESTS = \
 	bbrz02widening17 bbrz02widening18 bbrz02widening19 \
 	bounded1 \
 	bounds1 bounds2 \
-	boundingbox1 boundingbox2 \
+	boundingbox1 boundingbox2 boundingbox3 \
 	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
 	constraints1 constraints2 constraints3 \
 	contains1 \
@@ -145,6 +145,7 @@ DERIVED_TESTS = \
 	nnc_bbrz02widening8 nnc_bbrz02widening9 \
 	nnc_bbrz02widening10 nnc_bbrz02widening11 nnc_bbrz02widening12 \
 	nnc_bounded1 \
+	nnc_boundingbox1 \
 	nnc_bounds1 nnc_bounds2 \
 	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 nnc_concatenate4 \
 	nnc_concatenate5 \
@@ -305,6 +306,7 @@ bounds2_SOURCES = bounds2.cc
 
 boundingbox1_SOURCES = boundingbox1.cc
 boundingbox2_SOURCES = boundingbox2.cc
+boundingbox3_SOURCES = boundingbox3.cc
 
 concatenate1_SOURCES = concatenate1.cc
 concatenate2_SOURCES = concatenate2.cc
@@ -615,6 +617,9 @@ nnc_bbrz02widening12_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bounded1_SOURCES = bounded1.cc
 nnc_bounded1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_boundingbox1_SOURCES = boundingbox1.cc
+nnc_boundingbox1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bounds1_SOURCES = bounds1.cc
 nnc_bounds1_CXXFLAGS = $(DERIVED_CXXFLAGS)
