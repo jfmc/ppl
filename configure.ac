@@ -96,11 +96,6 @@ Do not forget to enable the C++ interface: add --enable-cxx
 to the configuration options.])
 fi
 
-AC_CHECK_SIZEOF(mp_limb_t, 4, [
-#include <stdio.h>
-#include <gmp.h>
-])
-
 extra_includes="${extra_includes} ${gmp_includes_option}"
 extra_libraries="${extra_libraries} ${gmp_library_option}"
 

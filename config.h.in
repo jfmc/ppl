@@ -87,7 +87,7 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
-/* The size of a `mp_limb_t', as computed by sizeof. */
+/* Size of GMP's mp_limb_t. */
 #undef SIZEOF_MP_LIMB_T
 
 /* Define to 1 if you have the ANSI C header files. */
