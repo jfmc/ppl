@@ -1187,8 +1187,8 @@ ppl_Polyhedron_intersection_assign_and_minimize(Prolog_term_ref t_lhs,
     CHECK(rhs);
     Polyhedron& x = *static_cast<Polyhedron*>(lhs);
     const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
-    x.intersection_assign_and_minimize(y);
-    return PROLOG_SUCCESS;
+    if (x.intersection_assign_and_minimize(y))
+      return PROLOG_SUCCESS;
   }
   CATCH_ALL;
   return PROLOG_FAILURE;
@@ -1221,8 +1221,8 @@ ppl_Polyhedron_poly_hull_assign_and_minimize(Prolog_term_ref t_lhs,
     CHECK(rhs);
     Polyhedron& x = *static_cast<Polyhedron*>(lhs);
     const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
-    x.poly_hull_assign_and_minimize(y);
-    return PROLOG_SUCCESS;
+    if (x.poly_hull_assign_and_minimize(y))
+      return PROLOG_SUCCESS;
   }
   CATCH_ALL;
   return PROLOG_FAILURE;
