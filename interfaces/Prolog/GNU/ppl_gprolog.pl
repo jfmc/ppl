@@ -37,8 +37,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_poly_hull_assign_and_minimize(+term, +term)).
 :- foreign(ppl_Polyhedron_poly_difference_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_poly_difference_assign_and_minimize(+term, +term)).
-:- foreign(ppl_Polyhedron_widening_assign(+term, +term)).
-:- foreign(ppl_Polyhedron_limited_widening_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_widening_CC92_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_limited_widening_CC92_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_get_constraints(+term, +term)).
 :- foreign(ppl_Polyhedron_get_minimized_constraints(+term, +term)).
 :- foreign(ppl_Polyhedron_get_generators(+term, +term)).
