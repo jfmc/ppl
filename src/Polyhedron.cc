@@ -998,8 +998,6 @@ PPL::Polyhedron::insert(const Generator& g) {
   cout << "=== x ===" << endl
        << *this << endl;
 #endif
-
-  assert(OK());
 }
 
 
