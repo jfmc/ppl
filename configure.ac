@@ -187,13 +187,35 @@ yes)
   ;;
 no)
   AC_MSG_RESULT(no)
-  AC_DEFINE(NDEBUG, 1, [Assertions are disabled when this is defined])
-  debug_flag="-DNDEBUG=1"
   ;;
 *)
   AC_MSG_ERROR([bad value ${enableval} --enable-assertions, needs yes or no])
   ;;
 esac
+
+enableval=no
+AC_MSG_CHECKING([whether to enable even more run-time assertions])
+AC_ARG_ENABLE(more-assertions,
+[  --enable-more-assertions check even more run-time assertions])
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  AC_DEFINE(EXTRA_ROW_DEBUG, 1, [Enable more assertions when defined.])
+  debug_flag="-DEXTRA_ROW_DEBUG=1"
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} --enable-more-assertions, needs yes or no])
+  ;;
+esac
+
+if test x"$enable_assertions" = xno && test x"$enable_more_assertions" = xno
+then
+  AC_DEFINE(NDEBUG, 1, [Assertions are disabled when this is defined.])
+  debug_flag="$debug_flag -DNDEBUG=1"
+fi
 
 arch=no
 enableval=standard

@@ -5,6 +5,9 @@
 #define PPL_ppl_config_h 1
 
 
+/* Enable more assertions when defined. */
+#undef EXTRA_ROW_DEBUG
+
 /* Not zero if GMP has been compiled with support for exceptions. */
 #undef GMP_SUPPORTS_EXCEPTIONS
 
@@ -41,7 +44,7 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
-/* Assertions are disabled when this is defined */
+/* Assertions are disabled when this is defined. */
 #undef NDEBUG
 
 /* Name of package */
