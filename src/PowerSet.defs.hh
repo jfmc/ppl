@@ -82,7 +82,7 @@ public:
   //! Creates a PowerSet with the same information contents as \p cs.
   PowerSet(const ConSys& cs);
 
-  //! Injects \p y into \p *this.
+  //! Injects \p c into \p *this.
   PowerSet& inject(const CS& c);
 
   //! Assigns to \p *this an upper bound of \p *this and \p y.
