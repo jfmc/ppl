@@ -32,10 +32,7 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() TRY {
-  Variable A(0);
-
   TBD_Shape bd1(0, Polyhedron::EMPTY);
-
   TBD_Shape bd2(1, Polyhedron::EMPTY);
 
 #if NOISY

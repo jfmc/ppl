@@ -33,10 +33,6 @@ using namespace Parma_Polyhedra_Library;
 
 static void
 test1() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   TBD_Shape bd1(0, Polyhedron::UNIVERSE);
   TBD_Shape known_result(3, Polyhedron::UNIVERSE);
 
@@ -115,7 +111,7 @@ test3() {
 
 static void
 test4() {
-  Variable A(0);
+  //Variable A(0);
   Variable B(1);
   Variable C(2);
   Variable D(3);
