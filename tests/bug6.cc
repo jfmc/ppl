@@ -16,9 +16,10 @@ main() {
   }
 
   Polyhedron x;
-  assert(x.OK());
 
   s >> x;
+
+  assert(x.OK());
 
   // Now see the program explode in unexpected and interesting ways.
   x.check_empty();

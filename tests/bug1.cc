@@ -17,11 +17,12 @@ main() {
 
   Polyhedron x;
   Polyhedron y;
-  assert(x.OK());
-  assert(y.OK());
 
   s >> x;
   s >> y;
+
+  assert(x.OK());
+  assert(y.OK());
 
   // Now see the program explode in unexpected and interesting ways.
   x.convex_hull_assign_and_minimize(y);
