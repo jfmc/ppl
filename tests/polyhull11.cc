@@ -56,10 +56,9 @@ main() TRY {
   int retval = p1.is_empty() ? 0 : 1;
 
 #if NOISY
-  print_constraints(p1, "*** p.poly_hull_assign_and_minimize(p2) ***");
+  print_constraints(p1, "*** p1.poly_hull_assign_and_minimize(p2) ***");
 #endif
 
   return retval;
 }
 CATCH
-
