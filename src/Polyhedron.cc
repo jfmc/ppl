@@ -293,7 +293,11 @@ PPL::Polyhedron::update_constraints() const {
 
   Polyhedron& x = const_cast<Polyhedron&>(*this);
   minimize(false, x.gen_sys, x.con_sys, x.sat_c);
+  // `sat_c' is the only saturation matrix up-to-date.
   x.set_sat_c_up_to_date();
+  x.clear_sat_g_up_to_date();
+  // The system of constraints and the system of generators
+  // are minimized.
   x.set_constraints_minimized();
   x.set_generators_minimized();
 }
@@ -317,7 +321,11 @@ PPL::Polyhedron::update_generators() const {
   if (empty)
     x.set_empty();
   else {
+    // `sat_g' is the only saturation matrix up-to-date.
     x.set_sat_g_up_to_date();
+    x.clear_sat_c_up_to_date();
+    // The system of constraints and the system of generators
+    // are minimized
     x.set_constraints_minimized();
     x.set_generators_minimized();
   }
@@ -1700,12 +1708,13 @@ PPL::Polyhedron::assign_variable(const Variable& var,
   }
   // The transformation is not invertible.
   else {
-    if (!generators_are_up_to_date()) {
-      if (!check_empty()) {
-	x.gen_sys.assign_variable(num_var, expr, denominator);
-	x.clear_constraints_up_to_date();
-	x.clear_generators_minimized();
-      }
+    // We need that the system of generators is up-to-date.
+    if (!generators_are_up_to_date())
+      x.minimize();
+    if (!is_empty()) {
+      x.gen_sys.assign_variable(num_var, expr, denominator);
+      x.clear_constraints_up_to_date();
+      x.clear_generators_minimized();
     }
   }
   clear_sat_c_up_to_date();
