@@ -379,6 +379,22 @@ read_coefficients(std::istream& in,
   }
 }
 
+void
+read_indexes_set(std::istream& in,
+		 std::set<unsigned>& dest,
+		 const char* what) {
+  assert(dest.empty());
+  unsigned num_elements;
+  if (!guarded_read(in, num_elements))
+    error("missing or invalid number of set elements in `%s'", what);
+  while (num_elements--) {
+    unsigned i;
+    if (!guarded_read(in, i))
+      error("missing or invalid set element in `%s'", what);
+    dest.insert(i);
+  }
+}
+
 enum Representation { H, V };
 
 Representation
@@ -397,15 +413,7 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
     else if (s == "H-representation")
       rep = H;
     else if (s == "linearity" || s == "equality" || s == "partial_enum") {
-      unsigned num_linear;
-      if (!guarded_read(in, num_linear))
-	error("missing or invalid number of linearity indexes");
-      while (num_linear--) {
-	unsigned i;
-	if (!guarded_read(in, i))
-	  error("missing or invalid linearity index");
-	linearity.insert(i);
-      }
+      read_indexes_set(in, linearity, "linearity");
       if (verbose) {
 	std::cerr << "Linearity: ";
 	for (std::set<unsigned>::const_iterator j = linearity.begin(),
@@ -475,7 +483,6 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
     }
     // Every non-empty generator system must have at least one point.
     if (num_rows > 0 && !has_a_point)
-      // FIXME: why is the following PPL:: necessary?
       gs.insert(PPL::point());
 
     if (verbose) {
@@ -650,10 +657,29 @@ main(int argc, char* argv[]) {
   Representation rep = read_polyhedron(input(), ph);
   //write_polyhedron(std::cout, ph, rep);
 
+  // Read commands, if any.
   std::string s;
   while (guarded_read(input(), s)) {
     if (s == "linearity" || s == "equality" || s == "partial_enum")
       error("the `linearity' command must occur before `begin'");
+    else if (s == "project") {
+      std::set<unsigned> indexes;
+      read_indexes_set(input(), indexes, "project");
+      if (verbose) {
+	std::cerr << "Project: ";
+	for (std::set<unsigned>::const_iterator j = indexes.begin(),
+	       indexes_end = indexes.end(); j != indexes_end; ++j)
+	  std::cerr << *j << " ";
+	std::cerr << std::endl;
+      }
+      PPL::Variables_Set vs;
+      for (std::set<unsigned>::const_iterator j = indexes.begin(),
+	     indexes_end = indexes.end(); j != indexes_end; ++j)
+	vs.insert(PPL::Variable(*j - 1));
+      ph.remove_dimensions(vs);
+      write_polyhedron(output(), ph, H);
+      goto commands_done;
+    }
     else
       warning("ignoring command `%s'", s.c_str());
     input().ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -669,6 +695,7 @@ main(int argc, char* argv[]) {
     write_polyhedron(output(), ph, V);
   }
 
+ commands_done:
   // Check the result, if requested to do so.
   if (check_file_name) {
     set_input(check_file_name);
