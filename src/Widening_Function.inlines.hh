@@ -50,7 +50,7 @@ template <typename PH>
 inline void
 Limited_Widening_Function<PH>::
 operator()(PH& x, const PH& y, unsigned* tp) const {
-  (x.*w_method)(y, limiting_cs, tp);
+  (x.*lw_method)(y, limiting_cs, tp);
 }
 
 } // namespace Parma_Polyhedra_Library
