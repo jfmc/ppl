@@ -74,16 +74,16 @@ BD_Shape<T>::init() {
 template <typename T>
 inline
 BD_Shape<T>::BD_Shape(dimension_type num_dimensions,
-		  Polyhedron::Degenerate_Kind kind)
+		      Polyhedron::Degenerate_Kind kind)
   : dbm(num_dimensions + 1), status() {
   if (kind == Polyhedron::EMPTY)
     set_empty();
   else {
     init();
     if (num_dimensions > 0)
-    // A (non zero-dim) universe system of bounded differences
-    // is transitively closed.
-    status.set_transitively_closed();
+      // A (non zero-dim) universe system of bounded differences
+      // is transitively closed.
+      status.set_transitively_closed();
   }
   assert(OK());
 }
@@ -225,6 +225,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
       break;
     }
   }
+  status.set_transitively_closed();
   assert(OK());
 }
 
@@ -3107,7 +3108,7 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 template <typename T>
 inline void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
-				       const Generator& g) const {
+					  const Generator& g) const {
   std::ostringstream s;
   s << "PPL::";
   s << "BD_Shape::" << method << ":" << std::endl
