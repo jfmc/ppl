@@ -383,9 +383,11 @@ void swap(Parma_Polyhedra_Library::Row& x,
 
 } // namespace std
 
+#ifndef EXTRA_NORMALIZATION
 // If non-zero, lines and equalities are ALWAYS normalized so that the
 // first non-zero coefficient is negative.
 #define EXTRA_NORMALIZATION 0
+#endif
 
 #include "Row.inlines.hh"
 
