@@ -484,8 +484,10 @@ PPL::ConSys::ascii_load(std::istream& s) {
 
 bool
 PPL::ConSys::OK() const {
-  // A ConSys must be a valid Matrix.
-  if (!Matrix::OK())
+  // A ConSys must be a valid Matrix; do not check for
+  // strong normalization, since this will be done when
+  // checking each individual constraint.
+  if (!Matrix::OK(false))
     return false;
 
   // Checking each constraint in the system.

@@ -306,6 +306,10 @@ public:
   */
   void strong_normalize();
 
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if the row is strongly normalized.
+  bool check_strong_normalized() const;
+
   //! Linearly combines \p *this with \p y so that <CODE>*this[k]</CODE> is 0.
   /*!
     \param y   The row that will be combined with \p *this object.

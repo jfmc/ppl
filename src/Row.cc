@@ -124,6 +124,13 @@ PPL::Row::sign_normalize() {
   }
 }
 
+bool
+PPL::Row::check_strong_normalized() const {
+  Row tmp = *this;
+  tmp.strong_normalize();
+  return compare(*this, tmp) == 0;
+}
+
 /*! \relates Parma_Polyhedra_Library::Row */
 int
 PPL::compare(const Row& x, const Row& y) {

@@ -471,7 +471,17 @@ public:
   void gram_shmidt();
 
   //! Checks if all the invariants are satisfied.
-  bool OK() const;
+  /*!
+    \param check_strong_normalized
+      <CODE>true</CODE> if and only if the strong normalization of
+      all the rows in the matrix has to be checked.
+
+    By default, the strong normalization check is performed.
+    This check may be turned off to avoid useless repeated checking;
+    e.g., when re-checking a well-formed Matrix after the permutation
+    or deletion of some of its rows.
+  */
+  bool OK(bool check_strong_normalized = true) const;
 };
 
 namespace std {

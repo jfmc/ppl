@@ -883,8 +883,10 @@ PPL::GenSys::remove_invalid_lines_and_rays() {
   
 bool
 PPL::GenSys::OK() const {
-  // A GenSys must be a valid Matrix.
-  if (!Matrix::OK())
+  // A GenSys must be a valid Matrix; do not check for
+  // strong normalization, since this will be done when
+  // checking each individual generator.
+  if (!Matrix::OK(false))
     return false;
 
   // Checking each generator in the system.

@@ -75,7 +75,7 @@ namespace PPL = Parma_Polyhedra_Library;
 int
 PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // This method is only applied to a well-formed matrix `mat'.
-  assert(mat.OK());
+  assert(mat.OK(true));
 
   dimension_type num_rows = mat.num_rows();
   dimension_type num_columns = mat.num_columns();

@@ -82,13 +82,17 @@ PPL::Matrix::Matrix(Matrix& y, dimension_type first_stolen)
   // Steal the rows from `y', starting from `first_stolen'.
   for (dimension_type i = num_rows(); i-- > 0; )
     std::swap(rows[i], y.rows[first_stolen + i]);
-  assert(OK());
+  // Do not check for strong normalization,
+  // because no modification of rows has occurred.
+  assert(OK(false));
   // Erase from `y' the rows just swapped in from `*this'.
   y.erase_to_end(first_stolen);
   // Adjust the index of the first pending row, if needed.
   if (y.first_pending_row() > first_stolen)
     y.set_index_first_pending_row(first_stolen);
-  assert(y.OK());
+  // Do not check for strong normalization,
+  // because no modification of rows has occurred.
+  assert(y.OK(false));
 }
 
 PPL::Matrix&
@@ -370,7 +374,7 @@ PPL::Matrix::ascii_load(std::istream& s) {
     return false;
   set_index_first_pending_row(index);  
   // Check for well-formedness.
-  assert(OK());
+  assert(OK(true));
   return true;
 }
 
@@ -443,8 +447,9 @@ PPL::Matrix::add_pending_rows(const Matrix& y) {
     Row copy(y[i], x.row_size, x.row_capacity);
     std::swap(copy, x[x_n_rows+i]);
   }
-
-  assert(OK());
+  // Do not check for strong normalization,
+  // because no modification of rows has occurred.
+  assert(OK(false));
 }
 
 void
@@ -468,7 +473,9 @@ PPL::Matrix::add_rows(const Matrix& y) {
   // There are no pending_rows.
   unset_pending_rows();
 
-  assert(OK());
+  // Do not check for strong normalization,
+  // because no modification of rows has occurred.
+  assert(OK(false));
 }
 
 void
@@ -478,7 +485,9 @@ PPL::Matrix::sort_rows() {
   sort_rows(0, first_pending_row());
   set_index_first_pending_row(num_rows() - num_pending);
   sorted = true;
-  assert(OK());
+  // Do not check for strong normalization,
+  // because no modification of rows has occurred.
+  assert(OK(false));
 }
 
 void
@@ -573,13 +582,16 @@ PPL::Matrix::sort_pending_and_remove_duplicates() {
 	std::swap(x[k2], x[k2 + num_duplicates]);
     x.erase_to_end(num_rows);
   }
-  assert(OK());
+  // Do not check for strong normalization,
+  // because no modification of rows has occurred.
+  assert(OK(false));
 }
 
 void
 PPL::Matrix::add_row(const Row& row) {
-  // The added row must have the same number
-  // of elements of the existing rows of the matrix.
+  // The added row must be strongly normalized and have
+  // the same number of elements of the existing rows of the matrix.
+  assert(row.check_strong_normalized());
   assert(row.size() == row_size);
   // This method is only used when the matrix has no pending rows.
   assert(num_pending_rows() == 0);
@@ -628,14 +640,18 @@ PPL::Matrix::add_row(const Row& row) {
   }
   // The added row was not a pending row.
   assert(num_pending_rows() == 0);
-  assert(OK());
+  // Do not check for strong normalization,
+  // because no modification of rows has occurred.
+  assert(OK(false));
 }
 
 void
 PPL::Matrix::add_pending_row(const Row& row) {
-  // The added row must have the same number
-  // of elements of the existing rows of the matrix.
+  // The added row must be strongly normalized and have
+  // the same number of elements of the existing rows of the matrix.
+  assert(row.check_strong_normalized());
   assert(row.size() == row_size);
+
   dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
@@ -662,11 +678,16 @@ PPL::Matrix::add_pending_row(const Row& row) {
 
   // The added row was a pending row.
   assert(num_pending_rows() > 0);
-  assert(OK());
+  // Do not check for strong normalization,
+  // because no modification of rows has occurred.
+  assert(OK(false));
 }
 
 void
 PPL::Matrix::insert(const Row& row) {
+  // The added row must be strongly normalized and have
+  // the same topology of the matrix.
+  assert(row.check_strong_normalized());
   assert(topology() == row.topology());
   // This method is only used when the matrix has no pending rows.
   assert(num_pending_rows() == 0);
@@ -702,11 +723,16 @@ PPL::Matrix::insert(const Row& row) {
 
   // The added row was not a pending row.
   assert(num_pending_rows() == 0);
-  assert(OK());
+  // Do not check for strong normalization,
+  // because no modification of rows has occurred.
+  assert(OK(false));
 }
 
 void
 PPL::Matrix::insert_pending(const Row& row) {
+  // The added row must be strongly normalized and have
+  // the same topology of the matrix.
+  assert(row.check_strong_normalized());
   assert(topology() == row.topology());
 
   dimension_type old_num_rows = num_rows();
@@ -740,7 +766,9 @@ PPL::Matrix::insert_pending(const Row& row) {
 
   // The added row was a pending row.
   assert(num_pending_rows() > 0);
-  assert(OK());
+  // Do not check for strong normalization,
+  // because no modification of rows has occurred.
+  assert(OK(false));
 }
 
 void
@@ -1028,14 +1056,15 @@ PPL::Matrix::gram_shmidt() {
   // and at most one ray/point/inequality).
   if (rank > 1 || n_rows > rank + 1)
     set_sorted(false);
-  assert(OK());
+  // A well-formed matrix has to be returned.
+  assert(OK(true));
 }
 
 PPL::dimension_type
 PPL::Matrix::gauss() {
   // This method is only applied to a well-formed matrix
   // having no pending rows.
-  assert(OK());
+  assert(OK(true));
   assert(num_pending_rows() == 0);
 
   dimension_type rank = 0;
@@ -1075,7 +1104,8 @@ PPL::Matrix::gauss() {
   }
   if (changed)
     set_sorted(false);
-  assert(OK());
+  // A well-formed matrix is returned.
+  assert(OK(true));
   return rank;
 }
 
@@ -1083,7 +1113,7 @@ void
 PPL::Matrix::back_substitute(dimension_type rank) {
   // This method is only applied to a well-formed matrix
   // having no pending rows.
-  assert(OK());
+  assert(OK(true));
   assert(num_pending_rows() == 0);
   // The matrix describes a non-empty polyhedron and thus it always
   // contains a row which is not a line/equality (corresponding to
@@ -1169,7 +1199,8 @@ PPL::Matrix::back_substitute(dimension_type rank) {
   // Set the sortedness flag.
   set_sorted(was_sorted);
 
-  assert(OK());
+  // A well-formed matrix is returned.
+  assert(OK(true));
 }
 
 
@@ -1191,6 +1222,7 @@ PPL::Matrix::add_rows_and_columns(dimension_type n) {
     Row& r = x[i];
     r[c++] = 1;
     r.set_is_line_or_equality();
+    // Note: `r' is strongly normalized.
   }
   // If the old matrix was empty, the last row added is either
   // a positivity constraint or a point.
@@ -1203,7 +1235,8 @@ PPL::Matrix::add_rows_and_columns(dimension_type n) {
   else if (was_sorted)
     set_sorted(x[n-1] <= x[n]);
 
-  assert(OK());
+  // A well-formed matrix has to be returned.
+  assert(OK(true));
 }
 
 
@@ -1218,7 +1251,7 @@ PPL::Matrix::check_sorted() const {
 
 
 bool
-PPL::Matrix::OK() const {
+PPL::Matrix::OK(bool check_strong_normalized) const {
 #ifndef NDEBUG
   using std::endl;
   using std::cerr;
@@ -1279,19 +1312,21 @@ PPL::Matrix::OK() const {
     }
   }
 
-  // Check for strong normalization of rows.
-  // Note: normalization cannot be checked inside the Row::OK() method,
-  // because a Row object may also implement a LinExpression object,
-  // which in general cannot be (strongly) normalized.
-  Matrix tmp = x;
-  tmp.strong_normalize();
-  if (x != tmp) {
+  if (check_strong_normalized) {
+    // Check for strong normalization of rows.
+    // Note: normalization cannot be checked inside the Row::OK() method,
+    // because a Row object may also implement a LinExpression object,
+    // which in general cannot be (strongly) normalized.
+    Matrix tmp = x;
+    tmp.strong_normalize();
+    if (x != tmp) {
 #ifndef NDEBUG
-    cerr << "Matrix rows are not strongly normalized!"
-	 << endl;
+      cerr << "Matrix rows are not strongly normalized!"
+	   << endl;
 #endif
-    return false;
-  }    
+      return false;
+    }
+  }
 
   if (sorted && !check_sorted()) {
 #ifndef NDEBUG
