@@ -57,17 +57,36 @@ Your configure command would then look like
 <H4>CIAO Prolog</H4>
 
 Support for CIAO Prolog is under development and will be available in 
- a future release. 
+a future release. 
 
 <H4>GNU Prolog</H4>
 
+The GNU Prolog interface to the PPL library is available
+both as a statically linked module or as a dynamically linked one.
 Only GNU Prolog version 1.2.12 or later is supported.
+
+Notice that GNU Prolog version 1.2.12 suffers from a serious limitation
+as far as foreign code is concerned.
+In order to be safe you must configure GNU Prolog with the
+<CODE>--disable-ebp</CODE> option (note that this has a negative effect
+on performance).
 See <A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001777.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001777.html</A>,
 <A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001780.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001780.html</A>,
 <A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001788.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001788.html</A>
 and
 <A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001789.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001789.html</A>
 for more information.
+
+<H5>The Statically Linked <CODE>ppl_gprolog</CODE> Executable</H5>
+
+If an appropriate version of GNU Prolog is installed on the machine
+on which you compiled the library, the command <CODE>make install</CODE>
+will install the executable <CODE>ppl_gprolog</CODE> in the directory
+<CODE>prefix/bin</CODE>.
+The <CODE>ppl_sicstus</CODE> executable is simply the GNU Prolog
+system with the Parma Polyhedra library statically linked.
+The only thing you should do to use the library is to
+call <CODE>ppl_initialize/0</CODE> before any other PPL predicate.
 
 <H4>SICStus Prolog</H4>
 
@@ -96,7 +115,7 @@ the library with the <CODE>--enable-shared</CODE> option.
 
 <H4>SWI-Prolog</H4>
 
-The SWI-Prolog interface of the library provides is available
+The SWI-Prolog interface of the library is available
 both as a statically linked module or as a dynamically linked one.
 Only SWI-Prolog version 5.0 or later is supported.
 
@@ -114,16 +133,21 @@ are available without further action.
 <H5>Dynamic Linking</H5>
 
 In order to dynamically load the library from SWI-Prolog you should
-simply execute
-\code
-  load_foreign_library('prefix/lib/ppl/libppl_swiprolog').
-\endcode
+simply load <CODE>prefix/lib/ppl/ppl_swiprolog.pl</CODE>.
 Notice that, for dynamic linking to work, you should have configured
 the library with the <CODE>--enable-shared</CODE> option.
 
  
 <H4>YAP</H4>
 
+The YAP Prolog interface to the PPL library is available
+as a dynamically linked module.
+Only YAP version 4.3.23 or later is supported.
+
+In order to dynamically load the library from YAP you should
+simply load <CODE>prefix/lib/ppl/ppl_yap.pl</CODE>.
+Notice that, for dynamic linking to work, you should have configured
+the library with the <CODE>--enable-shared</CODE> option.
 
 
 \subsection PI_SI_Features System-Independent Features

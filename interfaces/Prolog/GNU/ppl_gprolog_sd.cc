@@ -182,6 +182,10 @@ ppl_Prolog_sysdep_init() {
   a_throw = Find_Atom("throw");
 }
 
+static void
+ppl_Prolog_sysdep_deinit() {
+}
+
 /*!
   Raise a Prolog exception with \p t as the exception term.
 */

@@ -41,6 +41,11 @@ libppl_swiprolog_la_SOURCES = ppl_swiprolog.cc
 libppl_swiprolog_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
 libppl_swiprolog_la_LDFLAGS = -no-undefined -avoid-version
 
+bin_PROGRAMS = ppl_pl
+ppl_pl_SOURCES = ppl_pl.cc
+
+pkglib_DATA = ppl_swiprolog.pl
+
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
 ackn.clpq \
@@ -54,9 +59,6 @@ CLPQ_TESTS_STRICT = \
 schedule.clpq
 
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT) 
-
-bin_PROGRAMS = ppl_pl
-ppl_pl_SOURCES = ppl_pl.cc
 
 check_PROGRAMS = pl_clpq pl_clpq2
 pl_clpq_SOURCES = pl_clpq.cc

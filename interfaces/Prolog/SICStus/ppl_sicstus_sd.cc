@@ -311,6 +311,10 @@ static void
 ppl_Prolog_sysdep_init() {
 }
 
+static void
+ppl_Prolog_sysdep_deinit() {
+}
+
 #include "../ppl_prolog.icc"
 
 #define SP_STUB_0(name, arity) \
@@ -426,15 +430,14 @@ SP_STUB_2(ppl_Polyhedron_get_bounding_box, 2)
 
 extern "C" void
 ppl_sicstus_init(int /* when */) {
+  ppl_initialize();
   for (size_t i = 0; i < sizeof(prolog_atoms)/sizeof(prolog_atoms[0]); ++i) {
-    Prolog_atom a = SP_atom_from_string(prolog_atoms[i].name);
-    if (SP_register_atom(a) == 0) {
+    if (SP_register_atom(*prolog_atoms[i].p_atom) == 0) {
       Prolog_term_ref et = Prolog_new_term_ref();
       Prolog_put_atom_chars(et, "Cannot initialize the PPL interface");
       Prolog_raise_exception(et);
       return;
     }
-    *prolog_atoms[i].p_atom = a;
   }
   SP_DEFINE_C_PREDICATE(ppl_initialize, 0);
   SP_DEFINE_C_PREDICATE(ppl_finalize, 0);
@@ -490,4 +493,5 @@ ppl_sicstus_deinit(int /* when */) {
     // SP_unregister_atom can fail.
     // We ignore such failures: what else can we do?
     (void) SP_unregister_atom(*prolog_atoms[i].p_atom);
+  ppl_finalize();
 }

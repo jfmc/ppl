@@ -41,6 +41,8 @@ ppl_yap_la_SOURCES = ppl_yap.cc
 ppl_yap_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
 ppl_yap_la_LDFLAGS = -no-undefined -module -avoid-version
 
+pkglib_DATA = ppl_yap.pl
+
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
 ackn.clpq \
@@ -73,4 +75,5 @@ check-local: yap_clpq.pl ../check_script ../expected ../check_script2 ../expecte
 	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
 
 MOSTLYCLEANFILES = check_script check_script2 $(CLPQ_TESTS) obtained obtained2
+
 endif

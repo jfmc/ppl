@@ -329,6 +329,10 @@ static void
 ppl_Prolog_sysdep_init() {
 }
 
+static void
+ppl_Prolog_sysdep_deinit() {
+}
+
 #include "../ppl_prolog.icc"
 
 extern "C" void

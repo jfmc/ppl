@@ -634,14 +634,19 @@ term_to_polyhedron_handle(Prolog_term_ref t_ph) {
   throw not_a_polyhedron_handle(t_ph);
 }
 
+static bool Prolog_interface_initialized = false;
+
 extern "C" Prolog_foreign_return_type
 ppl_initialize() {
   try {
-    for (size_t i = sizeof(prolog_atoms)/sizeof(prolog_atoms[0]); i-- > 0 ; ) {
+    if (Prolog_interface_initialized)
+      return PROLOG_SUCCESS;
+    for (size_t i = sizeof(prolog_atoms)/sizeof(prolog_atoms[0]); i-- > 0; ) {
       Prolog_atom a = Prolog_atom_from_string(prolog_atoms[i].name);
       *prolog_atoms[i].p_atom = a;
     }
     ppl_Prolog_sysdep_init();
+    Prolog_interface_initialized = true;
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -651,6 +656,11 @@ ppl_initialize() {
 extern "C" Prolog_foreign_return_type
 ppl_finalize() {
   try {
+    if (!Prolog_interface_initialized)
+      return PROLOG_SUCCESS;
+
+    Prolog_interface_initialized = false;
+    ppl_Prolog_sysdep_deinit();
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
