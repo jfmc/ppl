@@ -30,17 +30,38 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace std {
 
-#define SPECIALIZE_LIMITS_INT(Type) \
+#define SPECIALIZE_LIMITS_INT(T) \
 template <typename Policy> \
-struct \
-numeric_limits<Parma_Polyhedra_Library::Checked_Number<Type, Policy> > \
-  : public numeric_limits<Type> { \
-  static Parma_Polyhedra_Library::Checked_Number<Type, Policy> min() { \
-    return Parma_Polyhedra_Library::Checked::min_int<Policy, Type>(); \
+class \
+numeric_limits<Parma_Polyhedra_Library::Checked_Number<T, Policy> > \
+  : public numeric_limits<T> { \
+private: \
+  typedef Parma_Polyhedra_Library::Checked_Number<T, Policy> Type; \
+ \
+public: \
+  static const bool has_infinity = Policy::store_infinity; \
+  static const bool has_quiet_NaN =  Policy::store_nan; \
+ \
+  static Type min() { \
+    return Parma_Polyhedra_Library::Checked::min_int<Policy, T>(); \
   } \
  \
-  static Parma_Polyhedra_Library::Checked_Number<Type, Policy> max() { \
-    return Parma_Polyhedra_Library::Checked::max_int<Policy, Type>(); \
+  static Type max() { \
+    return Parma_Polyhedra_Library::Checked::max_int<Policy, T>(); \
+  } \
+ \
+  static Type infinity() { \
+    return \
+      Policy::store_infinity \
+      ? Parma_Polyhedra_Library::PLUS_INFINITY \
+      : static_cast<Type>(0); \
+  } \
+ \
+  static Type quiet_NaN() { \
+    return \
+      Policy::store_nan \
+      ? Parma_Polyhedra_Library::NOT_A_NUMBER \
+      : static_cast<Type>(0); \
   } \
 };
 
@@ -49,11 +70,11 @@ SPECIALIZE_LIMITS_INT(short)
 SPECIALIZE_LIMITS_INT(long)
 SPECIALIZE_LIMITS_INT(long long)
 
-#define SPECIALIZE_LIMITS_FLOAT(Type) \
+#define SPECIALIZE_LIMITS_FLOAT(T) \
 template <typename Policy> \
 struct \
-numeric_limits<Parma_Polyhedra_Library::Checked_Number<Type, Policy> > \
-  : public numeric_limits<Type> { \
+numeric_limits<Parma_Polyhedra_Library::Checked_Number<T, Policy> > \
+  : public numeric_limits<T> { \
 };
 
 SPECIALIZE_LIMITS_FLOAT(float)
