@@ -2452,44 +2452,44 @@ PPL::PolyBase::affine_image(const Variable& var,
 			    const Integer& denominator) {
   if (denominator == 0)
     throw_generic("affine_image(v, e, d)", "d == 0", *this);
-  PolyBase& x = *this;
+
   // Dimension-compatibility checks.
-  // The dimension of `expr' should not be greater than the dimension of `x'.
-  size_t x_space_dim = x.space_dim;
+  // The dimension of `expr' should not be greater than the dimension
+  // of `*this'.
   size_t expr_space_dim = expr.space_dimension();
-  if (x_space_dim < expr_space_dim)
-    throw_different_dimensions("affine_image(v, e, d)", x, expr);
+  if (space_dim < expr_space_dim)
+    throw_different_dimensions("affine_image(v, e, d)", *this, expr);
   // `var' should be one of the dimensions of the polyhedron.
   size_t num_var = var.id() + 1;
-  if (num_var > x_space_dim)
-    throw_dimension_incompatible("affine_image(v, e, d)", x, var.id());
+  if (num_var > space_dim)
+    throw_dimension_incompatible("affine_image(v, e, d)", *this, var.id());
 
-  if (x.is_empty())
+  if (is_empty())
     return;
 
   if (num_var <= expr_space_dim && expr[num_var] != 0) {
     // The transformation is invertible:
     // minimality and saturators are preserved.
     if (generators_are_up_to_date())
-      x.gen_sys.affine_image(num_var, expr, denominator);
+      gen_sys.affine_image(num_var, expr, denominator);
     if (constraints_are_up_to_date()) {
       // To build the inverse transformation,
       // after copying and negating `expr',
       // we exchange the roles of `expr[num_var]' and `denominator'.
       LinExpression inverse = -expr;
       inverse[num_var] = denominator;
-      x.con_sys.affine_preimage(num_var, inverse, expr[num_var]);
+      con_sys.affine_preimage(num_var, inverse, expr[num_var]);
     }
   }
   else {
     // The transformation is not invertible.
     // We need an up-to-date system of generators.
     if (!generators_are_up_to_date())
-      x.minimize();
+      minimize();
     if (!is_empty()) {
-      x.gen_sys.affine_image(num_var, expr, denominator);
-      x.clear_constraints_up_to_date();
-      x.clear_generators_minimized();
+      gen_sys.affine_image(num_var, expr, denominator);
+      clear_constraints_up_to_date();
+      clear_generators_minimized();
       clear_sat_c_up_to_date();
       clear_sat_g_up_to_date();
     }
@@ -2571,43 +2571,42 @@ PPL::PolyBase::affine_preimage(const Variable& var,
   if (denominator == 0)
     throw_generic("affine_preimage(v, e, d)", "d == 0", *this);
 
-  PolyBase& x = *this;
   // Dimension-compatibility checks.
-  // The dimension of `expr' should not be greater than the dimension of `x'.
-  size_t x_space_dim = x.space_dim;
+  // The dimension of `expr' should not be greater than the dimension
+  // of `*this'.
   size_t expr_space_dim = expr.space_dimension();
-  if (x_space_dim < expr_space_dim)
-    throw_different_dimensions("affine_preimage(v, e, d)", x, expr);
+  if (space_dim < expr_space_dim)
+    throw_different_dimensions("affine_preimage(v, e, d)", *this, expr);
   // `var' should be one of the dimensions of the polyhedron.
   size_t num_var = var.id() + 1;
-  if (num_var > x_space_dim)
-    throw_dimension_incompatible("affine_preimage(v, e, d)", x, var.id());
+  if (num_var > space_dim)
+    throw_dimension_incompatible("affine_preimage(v, e, d)", *this, var.id());
 
-  if (x.is_empty())
+  if (is_empty())
     return;
 
   if (num_var <= expr_space_dim && expr[num_var] != 0) {
     // The transformation is invertible:
     // minimality and saturators are preserved.
     if (constraints_are_up_to_date())
-      x.con_sys.affine_preimage(num_var, expr, denominator);
+      con_sys.affine_preimage(num_var, expr, denominator);
     if (generators_are_up_to_date()) {
       // To build the inverse transformation,
       // after copying and negating `expr',
       // we exchange the roles of `expr[num_var]' and `denominator'.
       LinExpression inverse = -expr;
       inverse[num_var] = denominator;
-      x.gen_sys.affine_image(num_var, inverse, expr[num_var]);
+      gen_sys.affine_image(num_var, inverse, expr[num_var]);
     }
   }
   else {
     // The transformation is not invertible.
     // We need an up-to-date system of constraints.
     if (!constraints_are_up_to_date())
-      x.minimize();
-    x.con_sys.affine_preimage(num_var, expr, denominator);
-    x.clear_generators_up_to_date();
-    x.clear_constraints_minimized();
+      minimize();
+    con_sys.affine_preimage(num_var, expr, denominator);
+    clear_generators_up_to_date();
+    clear_constraints_minimized();
     clear_sat_c_up_to_date();
     clear_sat_g_up_to_date();
   }
