@@ -101,7 +101,6 @@ check_containment(const PH& ph, const Polyhedra_PowerSet<PH>& ps) {
 	  std::pair<NNC_Polyhedron, Polyhedra_PowerSet<NNC_Polyhedron> >
 	    partition = linear_partition(pi, pj);
 	  tmp.erase(j);
-	  new_disjuncts.add_disjunct(partition.first);
 	  new_disjuncts.upper_bound_assign(partition.second);
 	}
       }
