@@ -37,3 +37,7 @@ lpenum_LDADD = \
 -L$(top_builddir)/interfaces/C -lppl_c \
 -L$(top_builddir)/src/ -lppl \
 @extra_libraries@
+
+MPS_FILES = afiro.mps  bgprtr.mps  sample.mps
+
+EXTRA_DIST = $(MPS_FILES)
