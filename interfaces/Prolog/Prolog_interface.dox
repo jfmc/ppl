@@ -99,14 +99,11 @@ the library with the <CODE>--enable-shared</CODE> option.
 \subsection PI_SI_Features System-Independent Features
 
 The Prolog interface provides access to the PPL polyhedra
-which can have one of two topologies: <EM>closed</EM>
-(closed polyhedra are referred to here as a <EM>C polyhedra</EM>),
+which can have one of two topologies: <EM>closed (C)</EM>,
 in which case all the constraints
 defining the polyhedron must be equalities or non-strict inequalities
 and its generators must be points, rays or lines;
-or <EM>not necessarily closed</EM>
-(not necessarily closed polyhedron are referred to here as
-<EM>NNC polyhedra</EM>),
+or <EM>not necessarily closed (NNC)</EM>,
 where the constraints defining the polyhedron may
 include strict inequalities and
 the generators can include closure points.
@@ -115,6 +112,8 @@ The PPL predicates provided  for the Prolog interface are specified below.
 
 The specification uses the following grammar rules:
 \code
+ Topology  --> c | nnc			
+
  VarId     --> non-negative integer	variable identifier
 
  PPL_Var   --> '$VAR'(VarId) 	 	PPL variable
@@ -156,33 +155,27 @@ to the PPL library.
    What we do guarantee is that a handle is an ordinary Prolog term
    that can be used as such and requiring very little memory.
 
--  Only terms bound to <EM>valid handles</EM> may be used to access
+-  Only terms bound to <EM>valid</EM> handles may be used to access
    PPL polyhedra.
-   A PPL polyhedron can be created or copied and a Prolog term
-   unified with a valid handle for accessing this polyhedron by using:
+   A handle is made valid by using:
 \code  
-   ppl_new_C_Polyhedron_from_dimension/2, 
-   ppl_new_NNC_Polyhedron_from_dimension/2,
-   ppl_new_C_Polyhedron_empty_from_dimension/2,
-   ppl_new_NNC_Polyhedron_empty_from_dimension/2,
-   ppl_new_C_Polyhedron_from_C_Polyhedron/2,
-   ppl_new_C_Polyhedron_from_NNC_Polyhedron/2,
-   ppl_new_NNC_Polyhedron_from_C_Polyhedron/2,
-   ppl_new_NNC_Polyhedron_from_NNC_Polyhedron/2,
-   ppl_new_C_Polyhedron_from_ConSys/2,
-   ppl_new_NNC_Polyhedron_from_ConSys/2,
-   ppl_new_C_Polyhedron_from_GenSys/2,
-   ppl_new_NNC_Polyhedron_from_GenSys/2.
+   ppl_new_Polyhedron_from_dimension/3, 
+   ppl_new_Polyhedron_empty_from_dimension/3,
+   ppl_new_Polyhedron_from_Polyhedron/4,
+   ppl_new_Polyhedron_from_ConSys/3,
+   ppl_new_Polyhedron_from_GenSys/3.
 \endcode
-   On the other hand, once a handle has been used as an argument in 
-   <CODE>ppl_delete_Polyhedron/1</CODE>,
-   it becomes an invalid handle.
-   Before executiing a query,
-   a valid handle is required in all argument positions
-   identified in the detailed descriptions of the predicates by
-   <CODE>+Handle</CODE>.
-   If a term in such a position is not a valid handle,
-   the behavior of the query is undefined.
+   These predicates will create or copy a PPL polyhedron
+   and construct a valid handle for referencing it.
+   The first argument
+   (in the case of <CODE>ppl_new_Polyhedron_from_Polyhedron/4</CODE>,
+   the first and third arguments) denotes the topology
+   and can be either <CODE>c</CODE> or <CODE>nnc</CODE>
+   indicating a C or NNC polyhedron, respectively.
+   The third argument
+   (in the case of <CODE>ppl_new_Polyhedron_from_Polyhedron/4</CODE>,
+   the fourth argument) is a Prolog term that is
+   unified with a new valid handle for accessing this polyhedron.
 
 - As soon as a PPL polyhedron is no longer required,
   the memory occupied by it should be released
@@ -198,6 +191,9 @@ to the PPL library.
   or is uninstantiated,
   the handle can be garbage-collected, but the polyhedra to which
   the handle refers will not be released.
+  Once a handle has been used as an argument in 
+  <CODE>ppl_delete_Polyhedron/1</CODE>,
+  it becomes invalid.
   
 - For a PPL polyhedron with space dimension \p k,
   the identifiers used for the PPL variables in
@@ -210,7 +206,7 @@ to the PPL library.
   should follow all the rules stated in the dimension-compatibility
   paragraph in the Introduction.
 
-- As explained above, a polyhedron has a fixed topology,
+- As explained above, a polyhedron has a fixed topology C or NNC,
   that is determined at the time of its initialization.
   This must be respected in all subsequent operations on the polyhedron.
   This means that whenever constraints are added to a
@@ -248,72 +244,83 @@ See the specifications of individual predicates for examples and
 more information regarding these issues.
 
 <H4><CODE>
-  ppl_new_C_Polyhedron_from_dimension(-Handle, +Integer)
-</CODE></H4>
-<H4><CODE>
-  ppl_new_NNC_Polyhedron_from_dimension(-Handle, +Integer)
+  ppl_new_Polyhedron_from_dimension(+Topology, +Integer, -Handle)
 </CODE></H4>
 
-   Creates a new universe polyhedron \f$P\f$ with <CODE>Integer</CODE>
-   dimensions.
+   Creates a new universe C or NNC polyhedron \f$P\f$,
+   depending on the value of <CODE>Topology</CODE>,
+   with <CODE>Integer</CODE> dimensions.
    <CODE>Handle</CODE> is unified with the handle for \f$P\f$.
    Thus the query
 \code
-   ?- ppl_new_C_Polyhedron_from_dimension(X, 3).
+   ?- ppl_new_Polyhedron_from_dimension(c, X, 3).
 \endcode
    creates the C polyhedron defining the 3-dimensional vector space
    \f$\Rset^3\f$ with \p X bound to a valid handle for accessing it.
 
 <H4><CODE>
-  ppl_new_C_Polyhedron_empty_from_dimension(-Handle, +Integer)
+  ppl_new_Polyhedron_empty_from_dimension(+Topology, +Integer, -Handle)
 </CODE>
 </H4>
-<H4>
-<CODE>
-  ppl_new_NNC_Polyhedron_empty_from_dimension(-Handle, +Integer)
-</CODE></H4>
 
-   Creates a new empty polyhedron \f$P\f$ with <CODE>Integer</CODE>
-   dimensions.
+   Creates a new empty C or NNC polyhedron \f$P\f$,
+   depending on the value of <CODE>Topology</CODE>,
+   with <CODE>Integer</CODE> dimensions.
    <CODE>Handle</CODE> is unified with the handle for \f$P\f$.
    Thus the query
 \code
-   ?- ppl_new_NNC_Polyhedron_empty_from_dimension(X, 3).
+   ?- ppl_new_Polyhedron_empty_from_dimension(nnc, X, 3).
 \endcode
    creates an empty NNC polyhedron embedded in \f$\Rset^3\f$ with
    \p X bound to a valid handle for accessing it.
 
 <H4>
-   <CODE>ppl_new_C_Polyhedron_from_C_Polyhedron(+Handle1, -Handle2)</CODE>
-</H4>
-<H4>
-   <CODE>ppl_new_C_Polyhedron_from_NNC_Polyhedron(+Handle1, -Handle2)</CODE>
-</H4>
-<H4>
-   <CODE>ppl_new_NNC_Polyhedron_from_C_Polyhedron(+Handle1, -Handle2)</CODE>
-</H4>
-<H4>
-   <CODE>ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(+Handle1, -Handle2)</CODE>
+   <CODE>ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
+                                   +Topology_2, -Handle_2)</CODE>
 </H4>
 
-   If <CODE>Handle1</CODE> refers to a polyhedron \f$P_1\f$,
-   then a copy \f$P_2\f$ of \f$P_1\f$ is created and <CODE>Handle2</CODE>
-   is unified with the handle for \f$P_2\f$.
+   If <CODE>Handle_1</CODE> refers to a C or NNC polyhedron \f$P_1\f$
+   (depending on the value of <CODE>Topology_1</CODE>),
+   then a copy \f$P_2\f$ of \f$P_1\f$ is created
+   with topology C or NNC,
+   depending on the value of <CODE>Topology_2</CODE>,
+   and <CODE>Handle_2</CODE> is unified with the handle for \f$P_2\f$.
    Thus the query
 \code
-   ?- ppl_new_C_Polyhedron_empty_from_dimension(X, 3),
-      ppl_new_NNC_Polyhedron_from_C_Polyhedron(X, Y).
+   ?- ppl_new_Polyhedron_empty_from_dimension(nnc, X, 3),
+      ppl_new_Polyhedron_from_Polyhedron(c, X, nnc, Y).
 \endcode
    creates an empty C polyhedron embedded in \f$\Rset^3\f$
    referenced by \p X
    and then makes a copy, converting the topology to an NNC polyhedron.
    with \p Y bound to a valid handle for accessing it.
 
-   When using <CODE>ppl_new_C_Polyhedron_from_NNC_Polyhedron/2</CODE>,
+   When using <CODE>ppl_new_Polyhedron_from_Polyhedron/2</CODE>,
+   when the source polyhedron is NNC and the copy is C,
    care must be taken that the source polyhedron referenced by
    <CODE>Handle1</CODE> can be defined by equality and non-strict
    inequality constraints or (equivalently) its generators are points,
    rays and lines.
+
+<H4>
+   <CODE>ppl_new_Polyhedron_from_ConSys(+Topology,
+                   +List_of_Constraints, -Handle)</CODE>
+</H4>
+
+   A polyhedron \f$P\f$ represented by <CODE>List_of_Constraints</CODE>
+   is created with topology C or NNC,
+   depending on the value of <CODE>Topology</CODE>,
+   and <CODE>Handle</CODE> is unified with the handle for \f$P\f$.
+
+<H4>
+   <CODE>ppl_new_Polyhedron_from_GenSys(+Topology
+                   +List_of_Generators, -Handle)</CODE>
+</H4>
+
+   A polyhedron \f$P\f$ represented by <CODE>List_of_Generators</CODE>
+   is created with topology C or NNC,
+   depending on the value of <CODE>Topology</CODE>,
+   and <CODE>Handle</CODE> is unified with the handle for \f$P\f$.
 
 <H4><CODE>ppl_delete_Polyhedron(+Handle)</CODE></H4>
 
@@ -422,7 +429,7 @@ more information regarding these issues.
    <CODE>Constraint</CODE> to \f$CS\f$.
     Thus after executing the query
 \code
-   ?- ppl_new_C_Polyhedron_from_dimension(3, X),
+   ?- ppl_new_Polyhedron_from_dimension(c, 3, X),
       A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
       ppl_Polyhedron_add_constraint(X, 4*A + B - 2*C >= 5).
 \endcode
@@ -446,7 +453,7 @@ dimension of the polyhedron.
    <CODE>Generator</CODE> to \f$GS\f$.
    Thus after the query
 \code
-   ?- ppl_new_C_Polyhedron_from_dimension(3, X),
+   ?- ppl_new_Polyhedron_from_dimension(c, 3, X),
       A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
       ppl_Polyhedron_add_generator(X, point(-100*A - 5*B, 8)).
 \endcode
@@ -469,7 +476,7 @@ by <CODE>Handle</CODE>.
    the constraints in list <CODE>List_of_Constraints</CODE> to \f$CS\f$.
    E.g.,
 \code
-   | ?- ppl_new_C_Polyhedron_from_dimension(2, X),
+   | ?- ppl_new_Polyhedron_from_dimension(c, 2, X),
         A = '$VAR'(0), B = '$VAR'(1),
         ppl_Polyhedron_add_constraints(X, [4*A + B >= 3, A = 1]),
         ppl_Polyhedron_get_constraints(X, CS).
@@ -491,7 +498,7 @@ and a query will succeed even when
    the constraints in list <CODE>List_of_Constraints</CODE> to \f$CS\f$.
    E.g.,
 \code
-   ?- ppl_new_C_Polyhedron_from_dimension(2, X),
+   ?- ppl_new_Polyhedron_from_dimension(c, 2, X),
       A = '$VAR'(0), B = '$VAR'(1),
       ppl_Polyhedron_add_constraints_and_minimize(X, [4*A + B >= 3, A = 1]),
       ppl_Polyhedron_get_constraints(X, CS).
@@ -501,7 +508,7 @@ and a query will succeed even when
    E.g., the following will fail,
 \code
    ?- A = '$VAR'(0), B = '$VAR'(1),
-      ppl_new_C_Polyhedron_from_dimension(2, X),
+      ppl_new_Polyhedron_from_dimension(c, 2, X),
       ppl_Polyhedron_add_constraints_and_minimize(X,
         [4*A + B >= 3, A = 0, B =< 0]),
       ppl_Polyhedron_get_constraints(X, CS).
@@ -526,7 +533,7 @@ and a query will succeed even when
    non-empty the first element defines a point.
    E.g.,
 \code
-   ?- ppl_new_C_Polyhedron_empty_from_dimension(3, X),
+   ?- ppl_new_Polyhedron_empty_from_dimension(c, 3, X),
       A='$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
       ppl_Polyhedron_add_generators(X, 
         [point(1*A + 1*B + 1*C, 1), ray(1*A), ray(2*A)]),
@@ -550,7 +557,7 @@ and a query will succeed even when
    <CODE>List_of_Generators</CODE> is not important.
    E.g.,
 \code
-   ?- ppl_new_C_Polyhedron_empty_from_dimension(3, X),
+   ?- ppl_new_Polyhedron_empty_from_dimension(c, 3, X),
       A='$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
       ppl_Polyhedron_add_generators_and_minimize(X, 
         [ray(1*A), ray(2*A), point(1*A + 1*B + 1*C, 1)]),
@@ -573,7 +580,7 @@ and a query will succeed even when
    to the new space.
    E.g.,
 \code
-   ?- ppl_new_NNC_Polyhedron_from_dimension(2, X),
+   ?- ppl_new_Polyhedron_from_dimension(nnc, 2, X),
       A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
       D = '$VAR'(3), E = '$VAR'(4), 
       ppl_Polyhedron_add_dimensions_and_constraints(X, 
@@ -594,7 +601,7 @@ and a query will succeed even when
    refers to \f$Q\f$.
    E.g.,
 \code
-   ?- ppl_new_C_Polyhedron_empty_from_dimension(0, X),
+   ?- ppl_new_Polyhedron_empty_from_dimension(c, 0, X),
       ppl_Polyhedron_add_dimensions_and_project(X, 2),
       ppl_Polyhedron_get_constraints(X, CS),
       ppl_Polyhedron_get_generators(X, GS).
@@ -614,7 +621,7 @@ and a query will succeed even when
    refers to \f$Q\f$.
    E.g.,
 \code
-   ?- ppl_new_C_Polyhedron_empty_from_dimension(0, X),
+   ?- ppl_new_Polyhedron_empty_from_dimension(c, 0, X),
       ppl_Polyhedron_add_dimensions_and_embed(X, 2),
       ppl_Polyhedron_get_constraints(X, CS),
       ppl_Polyhedron_get_generators(X, GS).
@@ -637,7 +644,7 @@ and a query will succeed even when
    of dimensions.
    E.g.,
 \code
-   ?- ppl_new_C_Polyhedron_empty_from_dimension(3, X),
+   ?- ppl_new_Polyhedron_empty_from_dimension(c, 3, X),
       A='$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
       ppl_Polyhedron_remove_dimensions(X, [B]),
       ppl_Polyhedron_space_dimension(X, K),
@@ -655,7 +662,7 @@ and a query will succeed even when
    by projecting \f$P\f$ onto the first <CODE>Integer</CODE> dimensions.
    E.g. 
 \code
-   ?- ppl_new_C_Polyhedron_empty_from_dimension(5, X),
+   ?- ppl_new_Polyhedron_empty_from_dimension(c, 5, X),
       ppl_Polyhedron_remove_higher_dimensions(X, 3),
       ppl_Polyhedron_space_dimension(X, K).
  
