@@ -2,9 +2,6 @@
 Enhancements for PPL 0.7
 ========================
 
-- Make sure all our public classes have methods total_memory_in_bytes()
-  and external_memory_in_bytes().
-
 - The check_containment() function is not officially available to
   the PPL user.  However, someone uses it and, apparently, this
   comes in handy.  See how to provide the same functionality the
