@@ -608,6 +608,7 @@ affine_genlr(T) :-
   A = '$VAR'(0), B = '$VAR'(1),
   ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraint(P, A - B = 1),
+\+  ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x, A + 1),
   ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, =<, A + 1),
 %  ppl_Polyhedron_get_constraints(P, CS),
   ppl_new_Polyhedron_from_constraints(T,
