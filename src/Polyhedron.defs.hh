@@ -60,13 +60,18 @@ namespace Parma_Polyhedra_Library {
   //@}
 }
 
+//! A convex polyhedron.
 /*!
-  An object of this class is a polyhedron.
-  A polyhedron can be rapresented by either a system of constraints 
-  or a set of generators (see Minkowski's theorem in definition.dox):
-  they can be in the minimal form or not (if they are not minimized,
-  redundant constraints or generators can be in the systems).
+  An object of the class Polyhedron represents a convex polyhedron
+  in the space \f$\mathbb{R}^n\f$.
 
+  A polyhedron can be specified as either a finite system of constraints
+  or a finite set of generators (see Minkowski's theorem in definition.dox).
+  
+  TODO: rewrite the following.
+  
+  These sets can be in the minimal form or not (if they are not minimized,
+  redundant constraints or generators can be in the systems).
   We can built a polyhedron starting from a system of constraints, or
   from a set of generators and we can obtain a matrix from the other 
   (i.e. if we have the system of constraint, we can obtain the set 
@@ -85,7 +90,6 @@ namespace Parma_Polyhedra_Library {
   cs.insert(y <= 3);
   Polyhedron ph(cs);
   \endcode
-
   The following code builds the same polyhedron starting from the
   set of generators:
   \code
@@ -100,7 +104,7 @@ namespace Parma_Polyhedra_Library {
   \endcode
 
   \par Example 2
-  The following code builds an half-strip in \f$mathbb{R}^2\f$ 
+  The following code builds an half-strip in \f$\mathbb{R}^2\f$ 
   starting from the system of constraints:
   \code
   Variable x(0);
@@ -111,7 +115,6 @@ namespace Parma_Polyhedra_Library {
   cs.insert(x - y + 1 >= 0);
   Polyhedron ph(cs);
   \endcode
-
   The following code builds the same polyhedron starting from the
   set of generators:
   \code 
@@ -127,15 +130,15 @@ namespace Parma_Polyhedra_Library {
 
 class Parma_Polyhedra_Library::Polyhedron {
 public:
-  //! Constructs a universe polyhedron of dimension \p num_dimension.
-  explicit Polyhedron(size_t num_dimension);
-  //! Constructs zero-dimensional, full polyhedron.
+  //! Builds the zero-dimensional, universe polyhedron.
   Polyhedron();
-  //! Copy-constructor
+  //! Ordinary copy-constructor.
   Polyhedron(const Polyhedron& y);
-  //! Constructs a polyhedron starting from a system of constraints.
+  //! Builds the universe polyhedron of dimension \p num_dimensions.
+  explicit Polyhedron(size_t num_dimensions);
+  //! Builds a polyhedron from a system of constraints.
   Polyhedron(ConSys& cs);
-  //! Constructs a polyhedron starting from a system of generators.
+  //! Builds a polyhedron from a system of generators.
   Polyhedron(GenSys& gs);
   // Destructor
   ~Polyhedron();
@@ -145,11 +148,12 @@ public:
 
   //! Returns the dimension of the polyhedron.
   size_t num_dimensions() const;
-  //! Intersects \p *this with \p y and assigns the intersection to \p *this.
+  //! Intersects \p *this with polyhedron \p y and
+  //! assigns the result to \p *this.
   void intersection_assign(const Polyhedron& y);
-  //! Assigns the convex hull of \p *this and \p y to \p *this.
+  //! Assigns the convex hull of \p *this \f$\union\f$ \p y to \p *this.
   void convex_hull_assign(const Polyhedron& y);
-  //! Assigns the convex hull of \p *this and \p y to \p *this,
+  //! Assigns the convex hull of \p *this \f$\union\f$ \p y to \p *this,
   //! without minimizing the result.
   void convex_hull_assign_lazy(const Polyhedron& y);
 
@@ -159,7 +163,7 @@ public:
   //! Tests the inclusion of a generator in a polyhedron. 
   bool includes(const Generator& gen);
 
-  //! Computes widening between \p *this and \p y and 
+  //! Computes the widening between \p *this and \p y and 
   //! assigns the result to \p *this.
   void widening_assign(const Polyhedron& y);
   //! Limits the widening between \p *this and \p y by \p constraints
@@ -224,7 +228,7 @@ public:
   void add_constraints_lazy(ConSys& constraints_to_add);
   //! Adds given generators to the existing ones.
   void add_generators(GenSys& generators_to_add);
-  //! Returns <CODE>true</CODE> if the polyhedron is empty.
+  //! Returns <CODE>true</CODE> if and only if the polyhedron is empty.
   bool check_empty() const;
   //! Returns <CODE>true</CODE> if \p *this is a universe polyhedron.
   bool check_universe() const;
@@ -232,22 +236,21 @@ public:
   friend bool Parma_Polyhedra_Library::operator <=(const Polyhedron& x,
 						   const Polyhedron& y);
 
-  //! Raw read/write operators.
-  //@{
+  //! Raw read operator.
   friend std::ostream&
   Parma_Polyhedra_Library::operator <<(std::ostream& s, const Polyhedron& p);
 
+  //! Raw write operator.
   friend std::istream&
   Parma_Polyhedra_Library::operator >>(std::istream& s, Polyhedron& p);
-  //@}
 
-  //! Swaps \p *this polyhedron with \p y.
+  //! Swaps \p *this with polyhedron \p y.
   void swap(Polyhedron& y);
 
 private:
-  //! The system of constraints
+  //! The system of constraints.
   ConSys con_sys;
-  //! The system of generators
+  //! The system of generators.
   GenSys gen_sys;
   //! The saturation matrix having constraints on its columns.
   SatMatrix sat_c;
@@ -257,13 +260,12 @@ private:
   Status status;
 
 public:
-  /*! @name Public Verifiers
-    Verify if flags of special cases are set.
-  */
-  //@{
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this is an empty polyhedron.
   bool is_empty() const;
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this is a zero-dimensional polyhedron.
   bool is_zero_dim() const;
-  //@}
 
 private:
   /*! @name Private Verifiers 
@@ -279,7 +281,7 @@ private:
   //@}
 
    
-  /*! @name Setters
+  /*! @name State flag setters.
     Set only the specified flags.
   */
   //@{
@@ -293,7 +295,7 @@ private:
   void set_sat_g_up_to_date();
   //@}
 
-  /*! @name Cleaners
+  /*! @name State flag cleaners.
     Clear only the specified flag.
   */
   //@{
@@ -336,11 +338,7 @@ private:
 };
 
 namespace std {
-  /*!
-    Specialize std::swap to use the fast swap that is provided
-    as a member function instead of using the default algorithm
-    (which creates a temporary and uses assignment).
-  */
+  //! Specialize std::swap to use the faster Polyhedron::swap.
   void swap(Parma_Polyhedra_Library::Polyhedron& x,
 	    Parma_Polyhedra_Library::Polyhedron& y);
 }
