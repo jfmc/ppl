@@ -23,11 +23,11 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_c.h"
+#include <sys/resource.h>
 #include <gmp.h>
 #include <glpk.h>
 #include <getopt.h>
 #include <stdio.h>
-#include <sys/resource.h>
 #include <assert.h>
 #include <time.h>
 #include <stdarg.h>
@@ -42,22 +42,24 @@ static struct option long_options[] = {
   {"max-memory",     required_argument, 0, 'V'},
   {"output",         required_argument, 0, 'o'},
   {"timings",        no_argument,       0, 't'},
+  {"verbose",        no_argument,       0, 'v'},
   {0, 0, 0, 0}
 };
 
 static const char* usage_string
 = "Usage: %s [OPTION]... [FILE]...\n\n"
 "  -c, --check             check plausibility of the optimum value found\n"
-"  -m, --minimize          minimize the objective function (default)\n"
+"  -m, --minimize          minimize the objective function\n"
 "  -M, --maximize          maximize the objective function (default)\n"
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
 "  -VMB, --max-memory=MB   limits memory usage to MB megabytes\n"
 "  -h, --help              prints this help text\n"
 "  -oPATH, --output=PATH   write output to PATH\n"
-"  -t, --timings           print timings on stderr\n";
+"  -t, --timings           print timings on stderr\n"
+"  -v, --verbose           print constraints and other things to stderr\n";
 
 
-#define OPTION_LETTERS "bcmMC:V:ho:t"
+#define OPTION_LETTERS "bcmMC:V:ho:tv"
 
 static const char* program_name = 0;
 
@@ -66,7 +68,8 @@ static unsigned long max_bytes_of_virtual_memory = 0;
 static const char* output_argument = 0;
 static int check_optimum = 0;
 static int print_timings = 0;
-static int maximize = 0;
+static int verbose = 0;
+static int maximize = 1;
 
 static void
 fatal(const char* format, ...) {
@@ -136,6 +139,10 @@ process_options(int argc, char *argv[]) {
 
     case 't':
       print_timings = 1;
+      break;
+
+    case 'v':
+      verbose = 1;
       break;
 
     default:
@@ -281,8 +288,10 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_LinExpression_add_to_inhomogeneous(ppl_le, ppl_coeff);
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL);
-    print_constraint(ppl_c, stdout);
-    printf("\n");
+    if (verbose) {
+      print_constraint(ppl_c, stderr);
+      printf("\n");
+    }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
     break;
@@ -294,8 +303,10 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_LinExpression_add_to_inhomogeneous(ppl_le, ppl_coeff);
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL);
-    print_constraint(ppl_c, stdout);
-    printf("\n");
+    if (verbose) {
+      print_constraint(ppl_c, stderr);
+      printf("\n");
+    }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
     break;
@@ -309,8 +320,10 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_LinExpression_add_to_inhomogeneous(ppl_le, ppl_coeff);
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL);
-    print_constraint(ppl_c, stdout);
-    printf("\n");
+    if (verbose) {
+      print_constraint(ppl_c, stderr);
+      printf("\n");
+    }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
 
@@ -321,8 +334,10 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_new_Constraint(&ppl_c, ppl_le2,
 		       PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL);
     ppl_delete_LinExpression(ppl_le2);
-    print_constraint(ppl_c, stdout);
-    printf("\n");
+    if (verbose) {
+      print_constraint(ppl_c, stderr);
+      printf("\n");
+    }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
     break;
@@ -334,8 +349,10 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_LinExpression_add_to_inhomogeneous(ppl_le, ppl_coeff);
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_EQUAL);
-    print_constraint(ppl_c, stdout);
-    printf("\n");
+    if (verbose) {
+      print_constraint(ppl_c, stderr);
+      printf("\n");
+    }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
     break;
@@ -357,10 +374,14 @@ solve(char* file_name) {
   mpq_t rational_lb, rational_ub;
   mpq_t* rational_coefficient;
   mpq_t* objective;
+  ppl_LinExpression_t ppl_objective_le;
+  ppl_Generator_t ppl_objective_ray;
   mpq_t* candidate;
   int first_candidate;
   mpq_t optimum;
   mpz_t den_lcm;
+  int empty;
+  int unbounded;
 
   if (print_timings)
     start_clock();
@@ -371,7 +392,7 @@ solve(char* file_name) {
 
   if (print_timings) {
     fprintf(stderr, "Time to read the input file: ");
-    print_clock(stdout);
+    print_clock(stderr);
     printf(" s\n");
     start_clock();
   }
@@ -391,6 +412,9 @@ solve(char* file_name) {
     mpq_init(rational_coefficient[i]);
 
   mpz_init(den_lcm);
+
+  if (verbose)
+    fprintf(stderr, "Constraints:\n");
 
   /* Set up the row (ordinary) constraints. */
   num_rows = glp_get_num_rows(lp);
@@ -424,12 +448,8 @@ solve(char* file_name) {
     ppl_delete_LinExpression(ppl_le);
   }
 
-#if 1
-  ppl_new_C_Polyhedron_from_ConSys(&ppl_ph, ppl_cs);
-  printf("created\n");
-  ppl_Polyhedron_generators(ppl_ph, &ppl_const_gs);
-  printf("minimized\n");
-#endif
+  // FIXME: here we could build the polyhedron and minimize it before
+  //        adding the variable bounds.
 
   /* Set up the columns constraints, i.e., variable bounds. */
   for (column = 1; column <= dimension; ++column) {
@@ -453,12 +473,8 @@ solve(char* file_name) {
     ppl_delete_LinExpression(ppl_le);
   }
 
-#if 0
+  /* Create the polyhedron and get rid of the constraint system. */
   ppl_new_C_Polyhedron_from_ConSys(&ppl_ph, ppl_cs);
-#else
-  ppl_Polyhedron_add_constraints_and_minimize(ppl_ph, ppl_cs);
-  printf("added\n");
-#endif
   ppl_delete_ConSys(ppl_cs);
 
   if (print_timings) {
@@ -468,6 +484,77 @@ solve(char* file_name) {
     start_clock();
   }
 
+  empty = ppl_Polyhedron_check_empty(ppl_ph);
+
+  if (print_timings) {
+    fprintf(stderr, "Time to check for emptiness: ");
+    print_clock(stderr);
+    fprintf(stderr, " s\n");
+    start_clock();
+  }
+
+  if (empty) {
+    printf("Unfeasible problem.\n");
+    // Check!!!
+    return;
+  }
+
+  /* Deal with the objective function. */
+  objective = (mpq_t*) malloc((dimension+1)*sizeof(mpq_t));
+
+  /* Initialize the least common multiple computation. */
+  mpz_set_si(den_lcm, 1);
+
+  for (i = 0; i <= dimension; ++i) {
+    mpq_init(objective[i]);
+    mpq_set_d(objective[i], glp_get_obj_coef(lp, i));
+    /* Update den_lcm. */
+    mpz_lcm(den_lcm, den_lcm, mpq_denref(objective[i]));
+  }
+
+  /* Set the LinExpression ppl_objective_le to be the objective function. */
+  ppl_new_LinExpression_with_dimension(&ppl_objective_le, dimension);
+  /* The inhomogeneous term is completely useless for our purpose. */
+  if (verbose) {
+    fprintf(stderr, "Objective function:\n");
+    mpz_mul(tmp_z, den_lcm, mpq_numref(objective[0]));
+    mpz_out_str(stderr, 10, tmp_z);
+  }
+  for (i = 1; i <= dimension; ++i) {
+    mpz_mul(tmp_z, den_lcm, mpq_numref(objective[i]));
+    if (!maximize)
+      mpz_neg(tmp_z, tmp_z);
+    ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
+    ppl_LinExpression_add_to_coefficient(ppl_objective_le, i-1, ppl_coeff);
+  }
+
+  /* Create a ray out of the LinExpression: this points to the optimal
+     direction. */
+  ppl_assign_Coefficient_from_mpz_t(ppl_coeff, den_lcm);
+  ppl_new_Generator(&ppl_objective_ray, ppl_objective_le,
+		    PPL_GENERATOR_TYPE_RAY, ppl_coeff);
+
+  /* Check whether the problem is unbounded.  This is done by checking
+     whether the relation of the polyhedron with the "objective ray"
+     implies subsumption, in which case the problem is unbounded. */
+  unbounded
+    = (ppl_Polyhedron_relation_with_Generator(ppl_ph,
+					      ppl_objective_ray)
+       & PPL_POLY_GEN_RELATION_SUBSUMES) == PPL_POLY_GEN_RELATION_SUBSUMES;
+
+  if (print_timings) {
+    fprintf(stderr, "Time to check for unboundedness: ");
+    print_clock(stderr);
+    fprintf(stderr, " s\n");
+    start_clock();
+  }
+
+  if (unbounded) {
+    printf("Unbounded problem.\n");
+    // Check!!!
+    return;
+  }
+
   ppl_Polyhedron_generators(ppl_ph, &ppl_const_gs);
 
   if (print_timings) {
@@ -475,12 +562,6 @@ solve(char* file_name) {
     print_clock(stderr);
     fprintf(stderr, " s\n");
     start_clock();
-  }
-
-  objective = (mpq_t*) malloc((dimension+1)*sizeof(mpq_t));
-  for (i = 0; i <= dimension; ++i) {
-    mpq_init(objective[i]);
-    mpq_set_d(objective[i], glp_get_obj_coef(lp, i));
   }
 
   candidate = (mpq_t*) malloc((dimension)*sizeof(mpq_t));
@@ -506,26 +587,18 @@ solve(char* file_name) {
 	ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(candidate[i]));
       }
 
-      /* Here we have a candidate.  Evaluate objective function. */
+      /* Here we have a candidate.  Evaluate the objective function. */
       mpq_set(tmp1_q, objective[0]);
-      printf("***************\n");
-      mpq_out_str(stdout, 10, tmp1_q);
-      printf("\n");
       for (i = 0; i < dimension; ++i) {
 	mpq_mul(tmp2_q, candidate[i], objective[i+1]);
 	mpq_add(tmp1_q, tmp1_q, tmp2_q);
       }
-      mpq_out_str(stdout, 10, tmp1_q);
-      printf("\n");
 
       if (first_candidate
 	  || (maximize && (mpq_cmp(tmp1_q, optimum) > 0))
 	  || (!maximize && (mpq_cmp(tmp1_q, optimum) < 0))) {
 	first_candidate = 0;
 	mpq_set(optimum, tmp1_q);
-	printf("op = ");
-	mpq_out_str(stdout, 10, optimum);
-	printf("\n");
 	ppl_assign_GenSys__const_iterator_from_GenSys__const_iterator(ogit,
 								      git1);
       }
@@ -533,22 +606,20 @@ solve(char* file_name) {
     ppl_GenSys__const_iterator_increment(git1);
   }
 
-  if (first_candidate)
-    printf("unfeasible!!!\n");
-  else {
-    printf("optimum = %f\n", mpq_get_d(optimum));
-    ppl_GenSys__const_iterator_dereference(ogit, &ppl_const_g);
-    ppl_Generator_divisor(ppl_const_g, ppl_coeff);
-    ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
-    for (i = 0; i < dimension; ++i) {
-      mpz_set(mpq_denref(tmp1_q), tmp_z);
-      ppl_Generator_coefficient(ppl_const_g, i, ppl_coeff);
-      ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(tmp1_q));
-      print_variable(i, stdout);
-      printf(" = %f  ", mpq_get_d(tmp1_q));
-    }
-    printf("\n");
+  assert(!first_candidate);
+
+  printf("optimum = %f\n", mpq_get_d(optimum));
+  ppl_GenSys__const_iterator_dereference(ogit, &ppl_const_g);
+  ppl_Generator_divisor(ppl_const_g, ppl_coeff);
+  ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
+  for (i = 0; i < dimension; ++i) {
+    mpz_set(mpq_denref(tmp1_q), tmp_z);
+    ppl_Generator_coefficient(ppl_const_g, i, ppl_coeff);
+    ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(tmp1_q));
+    print_variable(i, stdout);
+    printf(" = %f  ", mpq_get_d(tmp1_q));
   }
+  printf("\n");
 
   free(candidate);
 
