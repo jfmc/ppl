@@ -111,22 +111,10 @@ solve(_, read(N), Polys, Polys, VarNames) :-
   meltvars(N, MeltN, VarNames),
   read(MeltN),
   get_code(user_input, _C),
-  (integer(MeltN) ->
-    true
-  ;
-%    ppl_delete_Polyhedron(Poly),
-    fail
-  ),
+  integer(MeltN),
 
   % Add the new binding to the polyhedron.
-  (ppl_Polyhedron_add_constraints_and_minimize(Poly, [N = MeltN]) ->
-    true
-  ;
-    % If the new value makes the constraints unsatisfiable,
-    % first throw the empty polyhedron away and then fail.
-%    ppl_delete_Polyhedron(Poly),
-    fail
-  ).
+  ppl_Polyhedron_add_constraints_and_minimize(Poly, [N = MeltN]).
 
 % write/1
 solve(_, write(Message), Polys, Polys, _VarNames) :-
@@ -158,16 +146,8 @@ solve(Topology, Atom, [Poly|Polys], PolysOut, VarNames) :-
   ppl_Polyhedron_add_dimensions_and_embed(PolyCopy, AddedDims),
 
   % First solve the parameter passing equations.
-  (ppl_Polyhedron_add_constraints_and_minimize(PolyCopy, PP_ConstraintsList) ->
-    % If satisfiable, try to solve the body.
-    % The input list of used polyhedra is augmented with the new copy.
-    solve(Topology, Body, [PolyCopy, Poly|Polys], PolysOut, VarNames)
-  ;
-    % If the parameter passing constraints are unsatisfiable,
-    % first throw the empty polyhedron away and then fail.
-%    ppl_delete_Polyhedron(PolyCopy),
-    fail
-  ).
+  ppl_Polyhedron_add_constraints_and_minimize(PolyCopy, PP_ConstraintsList),
+  solve(Topology, Body, [PolyCopy, Poly|Polys], PolysOut, VarNames).
 
 parameter_passing(Atom, Head, PP_Constraints) :-
   Atom =.. [_|Actuals],
