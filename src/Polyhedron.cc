@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include <deque>
 
 #define BE_LAZY
 
@@ -3848,7 +3849,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 	const Generator& y_g = y.gen_sys[j];
 	if (y_g.is_ray() && tmp_sat[j] > x.sat_c[i]) {
 	  Generator new_ray(x_g);
-	  std::vector<bool> considered(x.space_dim + 1);
+	  std::deque<bool> considered(x.space_dim + 1);
 	  Integer tmp_1;
 	  Integer tmp_2;
 	  // We modify the ray `new_ray' according to how `x_g'
