@@ -250,6 +250,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- true pred ppl_Polyhedron_equals_Polyhedron(in(Handle1), in(Handle2))
              :: any_term * any_term + foreign.
 
+:- extra_linker_opts('-L.libs').
 :- use_foreign_library(ppl_ciao).
 
 :- impl_defined(
