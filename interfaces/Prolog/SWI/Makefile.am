@@ -28,7 +28,7 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-# Libtool -version-info for libpplswi.la.
+# Libtool -version-info for libpplswiprolog.la.
 #
 #  1. Start with version information of `0:0:0' for each libtool library.
 #
@@ -55,18 +55,18 @@ SUBDIRS =
 #	    0.3			    -----
 #	    0.4			    0:0:0
 
-LIBPPLSWI_LT_CURRENT =  0
-LIBPPLSWI_LT_REVISION = 0
-LIBPPLSWI_LT_AGE =      0
+LIBPPLSWIPROLOG_LT_CURRENT =  0
+LIBPPLSWIPROLOG_LT_REVISION = 0
+LIBPPLSWIPROLOG_LT_AGE =      0
 
 INCLUDES = -I$(top_builddir)/src @extra_includes@
 
-lib_LTLIBRARIES = libpplswi.la
+lib_LTLIBRARIES = libpplswiprolog.la
 
-libpplswi_la_SOURCES = ppl_swi.cc
+libpplswiprolog_la_SOURCES = ppl_swiprolog.cc
 
-libpplswi_la_LDFLAGS = \
--version-info $(LIBPPLSWI_LT_CURRENT):$(LIBPPLSWI_LT_REVISION):$(LIBPPLSWI_LT_AGE)
+libpplswiprolog_la_LDFLAGS = \
+-version-info $(LIBPPLSWIPROLOG_LT_CURRENT):$(LIBPPLSWIPROLOG_LT_REVISION):$(LIBPPLSWIPROLOG_LT_AGE)
 
 CLPQ_TESTS = \
 ack.clpq \
@@ -77,13 +77,13 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
-EXTRA_DIST = ppl_swi.pl clpq.pl clpq2.pl check_script expected \
+EXTRA_DIST = ppl_swiprolog.pl clpq.pl clpq2.pl check_script expected \
 $(CLPQ_TESTS)
 
-if HAVE_SWI
+if HAVE_SWI_PROLOG
 check_PROGRAMS = pplpl
 pplpl_SOURCES = pplpl.cc
-pplpl_LDADD = libpplswi.la $(top_builddir)/src/libppl.la /usr/local/lib/pl-5.0.1/runtime/i686-linux/libpl.a -lreadline -ldl -ltermcap @extra_libraries@
+pplpl_LDADD = libpplswiprolog.la $(top_builddir)/src/libppl.la /usr/local/lib/pl-5.0.1/runtime/i686-linux/libpl.a -lreadline -ldl -ltermcap @extra_libraries@
 
 #check-local: $(check_PROGRAMS) check_script expected
 #	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/$$k .; done
