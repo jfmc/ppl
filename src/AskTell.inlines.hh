@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_AskTell_inlines_hh 1
 
 #include <algorithm>
+#include <cassert>
 
 namespace Parma_Polyhedra_Library {
 

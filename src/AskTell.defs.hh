@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "AskTell.types.hh"
 #include "ConSys.types.hh"
 #include "Constraint.types.hh"
+#include "Variable.defs.hh"
 #include "globals.hh"
 #include <iosfwd>
 #include <list>
@@ -83,6 +84,10 @@ private:
 };
 
 //! The ask and tell construction on constraint systems.
+/*!
+  This class offers a generic implementation of <EM>ask-and-tell
+  constraint systems</EM> as defined in \ref Bag98 "[Bag98]".
+*/
 template <typename CS>
 class Parma_Polyhedra_Library::AskTell {
 protected:
