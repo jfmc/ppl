@@ -1125,14 +1125,15 @@ library returns the set intersection \f$\cS_1 \inters \cS_2\f$ and
 reduced set union \f$\nonredmap(\cS_1 \union \cS_2)\f$ respectively.
 
 \anchor ps_add_disjunct
-<B>Adding a Disjunction</B>
+<B>Adding a Disjunct</B>
 
-Given the powerset \f$\cS \in D_{\smallP}\f$ and an element \f$d\f$ of
-the base-level domain, the <EM>add_disjunct</EM> operator provided by
-the library returns \f$\nonredmap\bigl(\cS_1 \union \{d\}\bigr)\f$.
+Given the powerset element \f$\cS \in D_{\smallP}\f$ and the base-level
+element \f$d \in D\f$, the <EM>add_disjunct</EM> operator provided by
+the library returns the powerset element
+\f$\nonredmap\bigl(\cS_1 \union \{d\}\bigr)\f$.
 
 \anchor ps_collapse
-<B>Collapsing the Set</B>
+<B>Collapsing a Powerset Element</B>
 
 If the given powerset element is not empty, then the
 <EM>collapse</EM> operator returns the
