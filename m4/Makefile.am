@@ -1,4 +1,4 @@
-# automake source file for the PPL.
+# Automake source file for the Parma Polyhedra Library.
 # Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
