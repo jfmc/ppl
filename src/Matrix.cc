@@ -360,10 +360,29 @@ PPL::Matrix::add_row(const Row& row) {
   // of elements of the existing rows of the matrix.
   assert(row.size() == row_size);
   bool was_sorted = is_sorted();
-  // Inserts a new empty row at the end,
-  // then substitutes it with a copy of the given row.
-  Row tmp(row, row_capacity);
-  std::swap(*rows.insert(rows.end(), Row()), tmp);
+  size_t new_rows_size = rows.size() + 1;
+  if (rows.capacity() < new_rows_size) {
+    // Reallocation will take place.
+    std::vector<Row> new_rows;
+    new_rows.reserve(Row::compute_capacity(new_rows_size));
+    new_rows.resize(new_rows_size);
+    // Put the new row in place.
+    Row new_row(row, row_capacity);
+    size_t i = new_rows_size-1;
+    std::swap(new_rows[i], new_row);
+    // Steal the old rows.
+    while (i-- > 0)
+      new_rows[i].swap(rows[i]);
+    // Put the new rows into place.
+    std::swap(rows, new_rows);
+  }
+  else {
+    // Reallocation will NOT take place.
+    // Inserts a new empty row at the end,
+    // then substitutes it with a copy of the given row.
+    Row tmp(row, row_capacity);
+    std::swap(*rows.insert(rows.end(), Row()), tmp);
+  }
   // Check whether the modified Matrix happens to be sorted.
   if (was_sorted) {
     size_t nrows = num_rows();
@@ -401,13 +420,28 @@ PPL::Matrix::insert(const Row& row) {
 void
 PPL::Matrix::add_row(Row::Type type) {
   bool was_sorted = is_sorted();
-  // Inserts a new empty row at the end,
-  // then constructs it assigning it the given type \p type.
-  // BEGIN KLUDGE
-  if (rows.capacity() == rows.size())
-    row_capacity = row_size;
-  rows.insert(rows.end(), Row())->construct(type, row_size, row_capacity);
-  // END KLUDGE
+  size_t new_rows_size = rows.size() + 1;
+  if (rows.capacity() < new_rows_size) {
+    // Reallocation will take place.
+    std::vector<Row> new_rows;
+    new_rows.reserve(Row::compute_capacity(new_rows_size));
+    new_rows.resize(new_rows_size);
+    // Put the new row in place.
+    Row new_row(type, row_size, row_capacity);
+    size_t i = new_rows_size-1;
+    std::swap(new_rows[i], new_row);
+    // Steal the old rows.
+    while (i-- > 0)
+      new_rows[i].swap(rows[i]);
+    // Put the new rows into place.
+    std::swap(rows, new_rows);
+  }
+  else
+    // Reallocation will NOT take place.
+    // Insert a new empty row at the end,
+    // then construct it assigning it the given type.
+    rows.insert(rows.end(), Row())->construct(type, row_size, row_capacity);
+
   // Check whether the modified Matrix happens to be sorted.
   if (was_sorted) {
     size_t nrows = num_rows();
