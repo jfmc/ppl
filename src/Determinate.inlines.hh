@@ -188,11 +188,21 @@ template <typename PH>
 std::ostream&
 operator<<(std::ostream& s, const Determinate<PH>& x) {
   if (x.is_top())
-    s << "TOP";
+    s << "true";
   else if (x.is_bottom())
-    s << "BOTTOM";
-  else
-    s << x.prep->ph;
+    s << "false";
+  else {
+    const ConSys& cs = x.constraints();
+    ConSys::const_iterator i = cs.begin();
+    ConSys::const_iterator cs_end = cs.end();
+    s << "{ ";
+    while (i != cs_end) {
+      s << *i++;
+      if (i != cs_end)
+	s << ", ";
+    }
+    s << " }";
+  }
   return s;
 }
 

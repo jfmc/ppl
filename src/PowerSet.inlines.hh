@@ -72,17 +72,19 @@ PowerSet<CS>::PowerSet(const ConSys& cs)
 
 template <typename CS>
 void PowerSet<CS>::omega_reduction() {
-  iterator xi, xin, yi, yin;
-  for (xi = xin = begin(); xi != end(); xi = xin) {
+  for (iterator xi = begin(), xin = xi; xi != end(); xi = xin) {
     ++xin;
     const CS& xv = *xi;
-    for (yi = yin = begin(); yi != end(); yi = yin) {
+    for (iterator yi = xin, yin = yi; yi != end(); yi = yin) {
       ++yin;
       if (xi == yi)
 	continue;
       const CS& yv = *yi;
-      if (yv.definitely_entails(xv))
+      if (yv.definitely_entails(xv)) {
+	if (yi == xin)
+	  ++xin;
 	sequence.erase(yi);
+      }
       else if (xv.definitely_entails(yv)) {
 	sequence.erase(xi);
 	break;
@@ -368,6 +370,7 @@ PowerSet<CS>::shuffle_dimensions(const PartialFunction& pfunc) {
     space_dim = b->space_dimension();
     omega_reduction();
   }
+  assert(OK());
 }
 
 template <typename CS>
