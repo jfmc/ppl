@@ -147,6 +147,10 @@ public:
   //! Linearly combines \p *this with \p y such that \p *this[k] is 0.
   void linear_combine(const Row& y, size_t k);
 
+  //! Computes the scalar product between \p x and \p y if the 
+  //! size of \p x is less then the size of \p y.
+  Integer projected_scalar_prod(const Row& x, const Row& y);
+
   //! @name Serialization functions.
   friend std::ostream&
   Parma_Polyhedra_Library::operator <<(std::ostream& s, const Row& row);

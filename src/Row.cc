@@ -209,6 +209,19 @@ PPL::operator *(const Row& x, const Row& y) {
   return result;
 }
 
+PPL::Integer
+PPL::Row::projected_scalar_prod(const Row& x, const Row& y) {
+  // The dimension of `x' must be less then the dimension of `y'.
+  assert(x.size() < y.size());
+  Integer result = 0;
+  for (size_t i = x.size(); i-- > 0; ) {
+    // The following lines optimize the computation of result += x[i] * y[i].
+    tmp_Integer_1.mul_assign(x[i], y[i]);
+    result += tmp_Integer_1;
+  }
+  return result;
+}
+
 /*!
   \param y   The row that will be combined with \p *this object.
   \param k   The position of \p *this that have to be \f$0\f$.
