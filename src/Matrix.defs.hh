@@ -108,76 +108,50 @@ public:
     typedef std::iterator_traits<Iter>::reference reference;
 
     //! Default constructor.
-    const_iterator()
-      : i(Iter()) {
-    }
+    const_iterator();
 
     //! \brief
     //! Builds a const iterator on the matrix starting from
     //! an iterator \p b on the elements of the vector \p rows.
-    explicit const_iterator(const Iter& b)
-      : i(b) {
-    }
+    explicit const_iterator(const Iter& b);
 
     //! Ordinary copy-constructor.
-    const_iterator(const const_iterator& y)
-      : i(y.i) {
-    }
+    const_iterator(const const_iterator& y);
 
     //! Assignment operator.
-    const_iterator& operator=(const const_iterator& y) {
-      i = y.i;
-      return *this;
-    }
+    const_iterator& operator=(const const_iterator& y);
 
     //! Dereference operator.
-    reference operator*() const {
-      return *i;
-    }
+    reference operator*() const;
 
     //! Indirect member selector.
-    pointer operator->() const {
-      return &*i;
-    }
+    pointer operator->() const;
 
     //! Prefix increment operator.
-    const_iterator& operator++() {
-      ++i;
-      return *this;
-    }
+    const_iterator& operator++();
 
     //! Postfix increment operator.
-    const_iterator operator++(int) {
-      return const_iterator(i++);
-    }
+    const_iterator operator++(int);
 
     //! \brief
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are identical.
-    bool operator==(const const_iterator& y) const {
-      return i == y.i;
-    }
+    bool operator==(const const_iterator& y) const;
 
     //! \brief
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are different.
-    bool operator!=(const const_iterator& y) const {
-      return !operator==(y);
-    }
+    bool operator!=(const const_iterator& y) const;
   };
 
   //! \brief
   //! Returns the const_iterator pointing to the first row,
   //! if \p *this is not empty;
   //! otherwise, returns the past-the-end const_iterator.
-  const_iterator begin() const {
-    return const_iterator(rows.begin());
-  }
+  const_iterator begin() const;
 
   //! Returns the past-the-end const_iterator.
-  const_iterator end() const {
-    return const_iterator(rows.end());
-  }
+  const_iterator end() const;
 
 private:
   //! Contains the rows of the matrix.

@@ -29,6 +29,68 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline
+Matrix::const_iterator::const_iterator()
+  : i(Iter()) {
+}
+
+inline
+Matrix::const_iterator::const_iterator(const Iter& b)
+  : i(b) {
+}
+
+inline
+Matrix::const_iterator::const_iterator(const const_iterator& y)
+  : i(y.i) {
+}
+
+inline Matrix::const_iterator&
+Matrix::const_iterator::operator=(const const_iterator& y) {
+  i = y.i;
+  return *this;
+}
+
+inline Matrix::const_iterator::reference
+Matrix::const_iterator::operator*() const {
+  return *i;
+}
+
+inline Matrix::const_iterator::pointer
+Matrix::const_iterator::operator->() const {
+  return &*i;
+}
+
+inline Matrix::const_iterator&
+Matrix::const_iterator::operator++() {
+  ++i;
+  return *this;
+}
+
+inline Matrix::const_iterator
+Matrix::const_iterator::operator++(int) {
+  return const_iterator(i++);
+}
+
+inline bool
+Matrix::const_iterator::operator==(const const_iterator& y) const {
+  return i == y.i;
+}
+
+inline bool
+Matrix::const_iterator::operator!=(const const_iterator& y) const {
+  return !operator==(y);
+}
+
+inline Matrix::const_iterator
+Matrix::begin() const {
+  return const_iterator(rows.begin());
+}
+
+inline Matrix::const_iterator
+Matrix::end() const {
+  return const_iterator(rows.end());
+}
+
 inline void
 Matrix::swap(Matrix& y) {
   std::swap(rows, y.rows);
