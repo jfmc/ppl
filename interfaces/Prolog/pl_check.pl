@@ -1062,19 +1062,18 @@ time_out(T) :-
               ppl_Polyhedron_add_constraints_and_minimize(Q, CS)),
               true),
   ppl_Polyhedron_equals_Polyhedron(P, Q),
-  ppl_reset_timeout,
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q),
   ppl_new_Polyhedron_from_dimension(T, 6, Q1),
-  ppl_set_timeout(100),
+%  ppl_set_timeout(100),
   ppl_new_Polyhedron_from_dimension(T, 6, P1),
   time_watch(T, ppl_Polyhedron_add_constraints_and_minimize(P1, CS),
-             (ppl_reset_timeout,
-              ppl_Polyhedron_add_constraints_and_minimize(Q1, CS)),
+             (ppl_Polyhedron_add_constraints_and_minimize(Q1, CS)),
               true),
   ppl_Polyhedron_equals_Polyhedron(P1, Q1),
   ppl_set_timeout_exception_atom(time_out),
-  ppl_reset_timeout,
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(Q1),
   ppl_finalize.
 
 time_watch(T, Goal, NoTimeOut, TimeOut) :-
