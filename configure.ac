@@ -415,6 +415,17 @@ AC_LANG_POP(C)
 
 AC_CHECK_HEADERS([sys/resource.h])
 
+# Checks for header declarations.
+
+AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
+               ,
+               ,
+               [
+#ifdef HAVE_SYS_RESOURCE_H
+# include <sys/resource.h>
+#endif
+])
+
 # Checks for typedefs, structures, and compiler characteristics.
 # Nothing for the time being.
 
