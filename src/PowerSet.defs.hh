@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_PowerSet_defs_hh
 
 #include "PowerSet.types.hh"
-#include "LCompare.defs.hh"
 #include <iosfwd>
 #include <list>
 
@@ -62,7 +61,7 @@ operator<<(std::ostream&, const PowerSet<CS>&);
 template <typename CS>
 class Parma_Polyhedra_Library::PowerSet {
 public:
-  //! Builds a universe (top) PowerSet.
+  //! Builds an empty (bottom) PowerSet.
   /*!
     \param num_dimensions   The number of dimensions of the vector
                             space enclosing the powerset.

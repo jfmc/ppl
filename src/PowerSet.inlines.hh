@@ -86,7 +86,6 @@ PowerSet<CS>::size() const {
 template <typename CS>
 PowerSet<CS>::PowerSet(dimension_type num_dimensions)
   : space_dim(num_dimensions) {
-  sequence.push_back(CS(num_dimensions));
 }
 
 template <typename CS>
