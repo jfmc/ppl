@@ -103,7 +103,7 @@ poly_hull_assign_if_exact(PH& p, const PH& q) {
     if (!(i->polyhedron() <= nnc_p))
       return false;
   p = phull;
-  return false;
+  return true;
 }
 
 template <typename PH>
