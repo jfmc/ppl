@@ -140,7 +140,7 @@ Checked_Number<T, Policy>::swap(Checked_Number<T, Policy>& y) {
 
 template <typename T, typename Policy>
 inline Checked_Number<T, Policy>&
-Checked_Number<T, Policy>::operator=(const Checked_Number<T, Policy> REF y) {
+Checked_Number<T, Policy>::operator=(const Checked_Number<T, Policy>& y) {
   v = y.v;
   return *this;
 }
@@ -148,7 +148,7 @@ Checked_Number<T, Policy>::operator=(const Checked_Number<T, Policy> REF y) {
 #define DEF_BINARY_ASSIGN(f, fun) \
 template <typename T, typename Policy> \
 inline Checked_Number<T, Policy>& \
-Checked_Number<T, Policy>::f(const Checked_Number<T, Policy> REF y) { \
+Checked_Number<T, Policy>::f(const Checked_Number<T, Policy>& y) { \
   check_result(fun<Policy>(v, v, y.v)); \
   return *this; \
 }
@@ -162,7 +162,7 @@ DEF_BINARY_ASSIGN(operator %=, mod)
 #define DEF_BINARY(f, fun) \
 template <typename T, typename Policy> \
 inline Checked_Number<T, Policy> \
-f(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y) { \
+f(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
   T r; \
   check_result(fun<Policy>(r, x.raw_value(), y.raw_value())); \
   return r; \
@@ -177,7 +177,7 @@ DEF_BINARY(operator %, mod)
 #define DEF_BINARY_OTHER(f, fun, type) \
 template <typename T, typename Policy> \
 inline Checked_Number<T, Policy> \
-f(const type x, const Checked_Number<T, Policy> REF y) { \
+f(const type x, const Checked_Number<T, Policy>& y) { \
   T r; \
   check_result(assign<Policy>(r, x)); \
   check_result(fun<Policy>(r, r, y.raw_value())); \
@@ -185,7 +185,7 @@ f(const type x, const Checked_Number<T, Policy> REF y) { \
 } \
 template <typename T, typename Policy> \
 inline Checked_Number<T, Policy> \
-f(const Checked_Number<T, Policy> REF x, const type y) { \
+f(const Checked_Number<T, Policy>& x, const type y) { \
   T r; \
   check_result(assign<Policy>(r, y)); \
   check_result(fun<Policy>(r, x.raw_value(), r)); \
@@ -223,7 +223,7 @@ DEF_BINARIES_OTHER(mpq_class&)
 #define DEF_COMPARE(f, op) \
 template <typename T, typename Policy> \
 inline bool \
-f(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y) { \
+f(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
   return x.raw_value() op y.raw_value(); \
 }
 
@@ -237,14 +237,14 @@ DEF_COMPARE(operator <, <)
 #define DEF_COMPARE_OTHER(f, op, type) \
 template <typename T, typename Policy> \
 inline bool \
-f(const type x, const Checked_Number<T, Policy> REF y) { \
+f(const type x, const Checked_Number<T, Policy>& y) { \
   T r; \
   check_result(assign<Policy>(r, x)); \
   return r op y.raw_value(); \
 } \
 template <typename T, typename Policy> \
 inline bool \
-f(const Checked_Number<T, Policy> REF x, const type y) { \
+f(const Checked_Number<T, Policy>& x, const type y) { \
   T r; \
   check_result(assign<Policy>(r, y)); \
   return x.raw_value() op r; \
@@ -281,13 +281,13 @@ DEF_COMPARES_OTHER(mpq_class&)
 
 template <typename T, typename Policy>
 inline Checked_Number<T, Policy>
-operator+(const Checked_Number<T, Policy> REF x) {
+operator+(const Checked_Number<T, Policy>& x) {
   return x;
 }
 
 template <typename T, typename Policy>
 inline Checked_Number<T, Policy>
-operator-(const Checked_Number<T, Policy> REF x) {
+operator-(const Checked_Number<T, Policy>& x) {
   T r;
   check_result(neg<Policy>(r, x.raw_value()));
   return r;
@@ -303,21 +303,21 @@ f(Checked_Number<T, Policy>& x) { \
 #define DEF_ASSIGN_FUN2_2(f, fun) \
 template <typename T, typename Policy> \
 inline void \
-f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y) { \
+f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
   check_result(fun<Policy>(x.raw_value(), y.raw_value())); \
 }
 
 #define DEF_ASSIGN_FUN3_2(f, fun) \
 template <typename T, typename Policy> \
 inline void \
-f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y) { \
+f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
   check_result(fun<Policy>(x.raw_value(), x.raw_value(), y.raw_value())); \
 }
 
 #define DEF_ASSIGN_FUN3_3(f, fun) \
 template <typename T, typename Policy> \
 inline void \
-f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y, const Checked_Number<T, Policy> REF z) { \
+f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, const Checked_Number<T, Policy>& z) { \
   check_result(fun<Policy>(x.raw_value(), y.raw_value(), z.raw_value())); \
 }
 
@@ -343,7 +343,7 @@ DEF_ASSIGN_FUN3_3(lcm_assign, lcm)
 
 template <typename T, typename Policy>
 inline int
-sgn(const Checked_Number<T, Policy> REF x) {
+sgn(const Checked_Number<T, Policy>& x) {
   Result r = Checked::sgn<Policy>(x.raw_value());
   switch (r) {
   case V_LT:
@@ -359,7 +359,7 @@ sgn(const Checked_Number<T, Policy> REF x) {
 
 template <typename T, typename Policy>
 inline int
-cmp(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y) {
+cmp(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) {
   Result r = Checked::cmp<Policy>(x.raw_value(), y.raw_value());
   switch (r) {
   case V_LT:
@@ -375,7 +375,7 @@ cmp(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y
 
 template <typename T>
 inline std::ostream&
-operator<<(std::ostream& os, const Checked_Number<T> REF x)
+operator<<(std::ostream& os, const Checked_Number<T>& x)
 {
   return os << x.raw_value();
 }

@@ -30,10 +30,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Checked_Number.types.hh"
 #include "checked.defs.hh"
 
-#ifndef REF
-#define REF &
-#endif
-
 namespace Parma_Polyhedra_Library {
 
 template <typename T, typename Policy>
@@ -78,12 +74,12 @@ public:
   T& raw_value();
   const T& raw_value() const;
 
-  Checked_Number& operator=(const Checked_Number REF y);
-  Checked_Number& operator+=(const Checked_Number REF y);
-  Checked_Number& operator-=(const Checked_Number REF y);
-  Checked_Number& operator*=(const Checked_Number REF y);
-  Checked_Number& operator/=(const Checked_Number REF y);
-  Checked_Number& operator%=(const Checked_Number REF y);
+  Checked_Number& operator=(const Checked_Number& y);
+  Checked_Number& operator+=(const Checked_Number& y);
+  Checked_Number& operator-=(const Checked_Number& y);
+  Checked_Number& operator*=(const Checked_Number& y);
+  Checked_Number& operator/=(const Checked_Number& y);
+  Checked_Number& operator%=(const Checked_Number& y);
   Checked_Number& operator++();
   Checked_Number  operator++(int);
   Checked_Number& operator--();
@@ -98,85 +94,85 @@ private:
 };
 
 template <typename T, typename Policy>
-Checked_Number<T, Policy> operator+(const Checked_Number<T, Policy> REF x);
+Checked_Number<T, Policy> operator+(const Checked_Number<T, Policy>& x);
 
 template <typename T, typename Policy>
-Checked_Number<T, Policy> operator-(const Checked_Number<T, Policy> REF x);
+Checked_Number<T, Policy> operator-(const Checked_Number<T, Policy>& x);
 
 template <typename T, typename Policy>
-Checked_Number<T, Policy> operator+(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
+Checked_Number<T, Policy> operator+(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 template <typename T, typename Policy>
-Checked_Number<T, Policy> operator-(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
+Checked_Number<T, Policy> operator-(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 template <typename T, typename Policy>
-Checked_Number<T, Policy> operator*(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
+Checked_Number<T, Policy> operator*(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 template <typename T, typename Policy>
-Checked_Number<T, Policy> operator/(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
+Checked_Number<T, Policy> operator/(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 template <typename T, typename Policy>
-Checked_Number<T, Policy> operator%(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
+Checked_Number<T, Policy> operator%(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 template <typename T, typename Policy>
-bool operator==(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
+bool operator==(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 template <typename T, typename Policy>
-bool operator!=(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
+bool operator!=(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 template <typename T, typename Policy>
-bool operator>=(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
+bool operator>=(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 template <typename T, typename Policy>
-bool operator>(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
+bool operator>(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 template <typename T, typename Policy>
-bool operator<=(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
+bool operator<=(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 template <typename T, typename Policy>
-bool operator<(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
+bool operator<(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 template <typename T, typename Policy>
-int sgn(const Checked_Number<T, Policy> REF x);
+int sgn(const Checked_Number<T, Policy>& x);
 
 template <typename T, typename Policy>
-int cmp(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
+int cmp(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 template <typename T, typename Policy>
 void negate(Checked_Number<T, Policy>& x);
 
 template <typename T, typename Policy>
-void add_mul_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y, const Checked_Number<T, Policy> REF z);
+void add_mul_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, const Checked_Number<T, Policy>& z);
 
 template <typename T, typename Policy>
-void sub_mul_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y, const Checked_Number<T, Policy> REF z);
+void sub_mul_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, const Checked_Number<T, Policy>& z);
 
 template <typename T, typename Policy>
-void gcd_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y);
+void gcd_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 template <typename T, typename Policy>
-void gcd_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y, const Checked_Number<T, Policy> REF z);
+void gcd_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, const Checked_Number<T, Policy>& z);
 
 template <typename T, typename Policy>
-void lcm_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y);
+void lcm_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 template <typename T, typename Policy>
-void lcm_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y, const Checked_Number<T, Policy> REF z);
+void lcm_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, const Checked_Number<T, Policy>& z);
 
 template <typename T, typename Policy>
-void exact_div_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y);
+void exact_div_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 template <typename T, typename Policy>
-void exact_div_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y, const Checked_Number<T, Policy> REF z);
+void exact_div_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, const Checked_Number<T, Policy>& z);
 
 template <typename T, typename Policy>
 void sqrt_assign(Checked_Number<T, Policy>& x);
 
 template <typename T, typename Policy>
-void sqrt_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y);
+void sqrt_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 template <typename T, typename Policy>
-std::ostream& operator<<(std::ostream& os, const Checked_Number<T, Policy> REF x);
+std::ostream& operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
 
 template <typename T, typename Policy>
 std::istream& operator>>(std::istream& is, Checked_Number<T, Policy>& x);
