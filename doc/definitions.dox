@@ -852,15 +852,387 @@ of an NNC polyhedron and conversely, for obtaining the NNC polyhedron
 representing a given bounding box.
 
 
+\section bibliography Bibliography
+
+<DL>
+
+<a name="BagnaraHZ02a"></a>
+<DT> [BHZ02] </DT>
+<DD>
+R. Bagnara, P. M. Hill, and E. Zaffanella.
+  A new encoding of not necessarily closed convex polyhedra.
+  In M. Carro, C. Vacheret, and K.-K. Lau, editors, <i>Proceedings of
+  the 1st CoLogNet Workshop on Component-based Software Development and
+  Implementation Technology for Computational Logic Systems</i>, pages 147-153,
+  Madrid, Spain, 2002.
+  Published as TR Number CLIP4/02.0, Universidad Politécnica de
+  Madrid, Facultad de Informática.
+
+</DD>
+
+
+<a name="BagnaraRZH02"></a>
+<DT> [BRZH02a] </DT>
+<DD>
+R. Bagnara, E. Ricci, E. Zaffanella, and P. M. Hill.
+  Possibly not closed convex polyhedra and the Parma Polyhedra
+  Library.
+  In M. V. Hermenegildo and G. Puebla, editors, <i>Static Analysis:
+  Proceedings of the 9th International Symposium</i>, volume 2477 of <i>Lecture
+  Notes in Computer Science</i>, pages 213-229, Madrid, Spain, 2002.
+  Springer-Verlag, Berlin.
+
+</DD>
+
+
+<a name="BagnaraRZH02TR"></a>
+<DT> [BRZH02b] </DT>
+<DD>
+R. Bagnara, E. Ricci, E. Zaffanella, and P. M. Hill.
+  Possibly not closed convex polyhedra and the Parma Polyhedra
+  Library.
+  Quaderno 286, Dipartimento di Matematica, Università di Parma,
+  Italy, 2002.
+  See also <A HREF="#BagnaraRZH02TRerrata">[BRZH02c]</A>. Available at
+  <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>.
+
+</DD>
+
+
+<a name="BagnaraRZH02TRerrata"></a>
+<DT> [BRZH02c] </DT>
+<DD>
+R. Bagnara, E. Ricci, E. Zaffanella, and P. M. Hill.
+  Errata for technical report ``Quaderno 286''.
+  Available at <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>,
+  2002.
+  See <A HREF="#BagnaraRZH02TR">[BRZH02b]</A>.
+
+</DD>
+
+
+<a name="CousotC92-PLILP"></a>
+<DT> [CC92] </DT>
+<DD>
+P. Cousot and R. Cousot.
+  Comparing the Galois connection and widening/narrowing approaches
+  to abstract interpretation.
+  In M. Bruynooghe and M. Wirsing, editors, <i>Proceedings of the 4th
+  International Symposium on Programming Language Implementation and Logic
+  Programming</i>, volume 631 of <i>Lecture Notes in Computer Science</i>, pages
+  269-295, Leuven, Belgium, 1992. Springer-Verlag, Berlin.
+
+</DD>
+
+
+<a name="CousotH78"></a>
+<DT> [CH78] </DT>
+<DD>
+P. Cousot and N. Halbwachs.
+  Automatic discovery of linear restraints among variables of a
+  program.
+  In <i>Conference Record of the Fifth Annual ACM Symposium on
+  Principles of Programming Languages</i>, pages 84-96, Tucson, Arizona, 1978.
+  ACM Press.
+
+</DD>
+
+
+<a name="Chernikova64"></a>
+<DT> [Che64] </DT>
+<DD>
+N. V. Chernikova.
+  Algorithm for finding a general formula for the non-negative
+  solutions of system of linear equations.
+  <i>U.S.S.R. Computational Mathematics and Mathematical Physics</i>,
+  4(4):151-158, 1964.
+
+</DD>
+
+
+<a name="Chernikova65"></a>
+<DT> [Che65] </DT>
+<DD>
+N. V. Chernikova.
+  Algorithm for finding a general formula for the non-negative
+  solutions of system of linear inequalities.
+  <i>U.S.S.R. Computational Mathematics and Mathematical Physics</i>,
+  5(2):228-233, 1965.
+
+</DD>
+
+
+<a name="Chernikova68"></a>
+<DT> [Che68] </DT>
+<DD>
+N. V. Chernikova.
+  Algorithm for discovering the set of all solutions of a linear
+  programming problem.
+  <i>U.S.S.R. Computational Mathematics and Mathematical Physics</i>,
+  8(6):282-293, 1968.
+
+</DD>
+
+
+<a name="Dantzig63"></a>
+<DT> [Dan63] </DT>
+<DD>
+G. B. Dantzig.
+  <i>Linear Programming and Extensions</i>.
+  Princeton University Press, Princeton, NJ, 1963.
+
+</DD>
+
+
+<a name="FukudaP96"></a>
+<DT> [FP96] </DT>
+<DD>
+K. Fukuda and A. Prodon.
+  Double description method revisited.
+  In M. Deza, R. Euler, and Y. Manoussakis, editors, <i>Combinatorics
+  and Computer Science, 8th Franco-Japanese and 4th Franco-Chinese Conference,
+  Brest, France, July 3-5, 1995, Selected Papers</i>, volume 1120 of <i>Lecture
+  Notes in Computer Science</i>, pages 91-111. Springer-Verlag, Berlin, 1996.
+
+</DD>
+
+
+<a name="Fukuda98"></a>
+<DT> [Fuk98] </DT>
+<DD>
+K. Fukuda.
+  Polyhedral computation FAQ.
+  Swiss Federal Institute of Technology, Lausanne and Zurich,
+  Switzerland, available at
+  <A HREF="http://www.ifor.math.ethz.ch/~fukuda/fukuda.html">http://www.ifor.math.ethz.ch/~fukuda/fukuda.html</A>, 1998.
+
+</DD>
+
+
+<a name="GawrilowJ00"></a>
+<DT> [GJ00] </DT>
+<DD>
+E. Gawrilow and M. Joswig.
+  <tt>polymake</tt>: a framework for analyzing convex polytopes.
+  In G. Kalai and G. M. Ziegler, editors, <i>Polytopes -
+  Combinatorics and Computation</i>, pages 43-74. Birkhäuser, 2000.
+
+</DD>
+
+
+<a name="GawrilowJ01"></a>
+<DT> [GJ01] </DT>
+<DD>
+E. Gawrilow and M. Joswig.
+  <tt>polymake</tt>: an approach to modular software design in
+  computational geometry.
+  In <i>Proceedings of the 17th Annual Symposium on Computational
+  Geometry</i>, pages 222-231. ACM, 2001.
+  June 3-5, 2001, Medford, MA.
+
+</DD>
+
+
+<a name="Halbwachs79th"></a>
+<DT> [Hal79] </DT>
+<DD>
+N. Halbwachs.
+  <i>Détermination Automatique de Relations Linéaires
+  Vérifiées par les Variables d'un Programme</i>.
+  Thèse de 3ème cicle d'informatique,
+  Université scientifique et médicale de Grenoble, Grenoble, France, March
+  1979.
+
+</DD>
+
+
+<a name="HalbwachsKP95"></a>
+<DT> [HKP95] </DT>
+<DD>
+N. Halbwachs, A. Kerbrat, and Y.-E. Proy.
+  <i>POLyhedra INtegrated Environment</i>.
+  Verimag, France, version 1.0 of POLINE edition, September 1995.
+  Documentation taken from source code.
+
+</DD>
+
+
+<a name="LeVergeVDW94"></a>
+<DT> [HLW94] </DT>
+<DD>
+V. Van Dongen H. Le Verge and D. K. Wilde.
+  Loop nest synthesis using the polyhedral library.
+  <em>Publication interne</em> 830, IRISA, Campus de Beaulieu, Rennes,
+  France, 1994.
+
+</DD>
+
+
+<a name="HalbwachsPR94"></a>
+<DT> [HPR94] </DT>
+<DD>
+N. Halbwachs, Y.-E. Proy, and P. Raymond.
+  Verification of linear hybrid systems by means of convex
+  approximations.
+  In B. Le Charlier, editor, <i>Static Analysis: Proceedings of the
+  1st International Symposium</i>, volume 864 of <i>Lecture Notes in Computer
+  Science</i>, pages 223-237, Namur, Belgium, 1994. Springer-Verlag, Berlin.
+
+</DD>
+
+
+<a name="HalbwachsPR97"></a>
+<DT> [HPR97] </DT>
+<DD>
+N. Halbwachs, Y.-E. Proy, and P. Roumanoff.
+  Verification of real-time systems using linear relation analysis.
+  <i>Formal Methods in System Design</i>, 11(2):157-185, 1997.
+
+</DD>
+
+
+<a name="NEW-POLKA-1-1-3c"></a>
+<DT> [Jea02] </DT>
+<DD>
+B. Jeannet.
+  <i>Convex Polyhedra Library</i>, release 1.1.3c edition, March 2002.
+  Documentation of the ``New Polka'' library available at
+  <A HREF="http://www.irisa.fr/prive/Bertrand.Jeannet/newpolka.html">http://www.irisa.fr/prive/Bertrand.Jeannet/newpolka.html</A>.
+
+</DD>
+
+
+<a name="Kuhn56"></a>
+<DT> [Kuh56] </DT>
+<DD>
+H. W. Kuhn.
+  Solvability and consistency for linear equations and inequalities.
+  <i>American Mathematical Monthly</i>, 63:217-232, 1956.
+
+</DD>
+
+
+<a name="LeVerge92"></a>
+<DT> [Le 92] </DT>
+<DD>
+H. Le Verge.
+  A note on Chernikova's algorithm.
+  <em>Publication interne</em> 635, IRISA, Campus de Beaulieu, Rennes,
+  France, 1992.
+
+</DD>
+
+
+<a name="Loechner99"></a>
+<DT> [Loe99] </DT>
+<DD>
+V. Loechner.
+  <i>PolyLib</i>: A library for manipulating parameterized polyhedra.
+  Available at <A HREF="http://icps.u-strasbg.fr/~loechner/polylib/">http://icps.u-strasbg.fr/~loechner/polylib/</A>, March
+  1999.
+  Declares itself to be a continuation of <A HREF="#Wilde93th">[Wil93]</A>.
+
+</DD>
+
+
+<a name="LoechnerW97"></a>
+<DT> [LW97] </DT>
+<DD>
+V. Loechner and D. K. Wilde.
+  Parameterized polyhedra and their vertices.
+  <i>International Journal of Parallel Programming</i>, 25(6):525-549,
+  1997.
+
+</DD>
+
+
+<a name="MotzkinRTT53"></a>
+<DT> [MRTT53] </DT>
+<DD>
+T. S. Motzkin, H. Raiffa, G. L. Thompson, and R. M. Thrall.
+  The double description method.
+  In H. W. Kuhn and A. W. Tucker, editors, <i>Contributions to the
+  Theory of Games - Volume II</i>, number 28 in Annals of Mathematics Studies,
+  pages 51-73. Princeton University Press, Princeton, New Jersey, 1953.
+
+</DD>
+
+
+<a name="NemhauserW88"></a>
+<DT> [NW88] </DT>
+<DD>
+G. L. Nemhauser and L. A. Wolsey.
+  <i>Integer and Combinatorial Optimization</i>.
+  Wiley Interscience Series in Discrete Mathematics and Optimization.
+  John Wiley &amp; Sons, 1988.
+
+</DD>
+
+
+<a name="Srivastava93"></a>
+<DT> [Sri93] </DT>
+<DD>
+D. Srivastava.
+  Subsumption and indexing in constraint query languages with linear
+  arithmetic constraints.
+  <i>Annals of Mathematics and Artificial Intelligence</i>,
+  8(3-4):315-343, 1993.
+
+</DD>
+
+
+<a name="StoerW70"></a>
+<DT> [SW70] </DT>
+<DD>
+J. Stoer and C. Witzgall.
+  <i>Convexity and Optimization in Finite Dimensions I</i>.
+  Springer-Verlag, Berlin, 1970.
+
+</DD>
+
+
+<a name="Weyl35"></a>
+<DT> [Wey35] </DT>
+<DD>
+H. Weyl.
+  Elementare theorie der konvexen polyeder.
+  <i>Commentarii Mathematici Helvetici</i>, 7:290-306, 1935.
+  English translation in <A HREF="#Weyl50">[Wey50]</A>.
+
+</DD>
+
+
+<a name="Weyl50"></a>
+<DT> [Wey50] </DT>
+<DD>
+H. Weyl.
+  The elementary theory of convex polyhedra.
+  In H. W. Kuhn, editor, <i>Contributions to the Theory of Games -
+  Volume I</i>, number 24 in Annals of Mathematics Studies, pages 3-18. Princeton
+  University Press, Princeton, New Jersey, 1950.
+  Translated from <A HREF="#Weyl35">[Wey35]</A> by H. W. Kuhn.
+
+</DD>
+
+
+<a name="Wilde93th"></a>
+<DT> [Wil93] </DT>
+<DD>
+D. K. Wilde.
+  A library for doing polyhedral operations.
+  Master's thesis, Oregon State University, Corvallis, Oregon,
+  December 1993.
+  Also published as IRISA <em>Publication interne</em> 785, Rennes,
+  France, 1993.
+
+</DD>
+</DL>
+
 \if Include_Implementation_Details
 
-FIXME: We should find a way to have a decent bibliography
-and also to refer to the cited papers/books as usual.
-
 The following definitions and results are taken, in addition
-to the references mentioned before, from:
-- G. B Dantzig - Linear programming and extensions - Princeton University
-  Press, New Jersey 1963.
+to the references mentioned before, from
+<A HREF="#Dantzig63">[Dan63]</A>.
 
 
 \section prelims Further notation and terminology
