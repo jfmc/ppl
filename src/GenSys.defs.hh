@@ -329,15 +329,6 @@ private:
 				     size_t num_dimensions);
 
   //! \brief
-  //! For each unmatched closure point in \p *this, adds the
-  //! corresponding point.
-  /*!
-    It is assumed that the topology of \p *this
-    is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
-  */
-  void add_corresponding_points();
-
-  //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! contains one or more points.
   bool has_points() const;

@@ -399,11 +399,6 @@ private:
   void set_is_ray_or_point();
 
   //! \brief
-  //! Returns <CODE>true</CODE> if and only if the closure point
-  //! \p *this has the same \e coordinates of the point \p p.
-  bool is_matching_closure_point(const Generator& p) const;
-
-  //! \brief
   //! Returns <CODE>true</CODE> if and only if the generator
   //! is a ray having a negative epsilon coefficient.
   /*!

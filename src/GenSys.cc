@@ -119,29 +119,6 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
   return true;
 }
 
-// TODO: would be worth to avoid adding points
-// that already are in the system of generators?
-// To do this efficiently we could sort the system and
-// perform insertions keeping its sortedness.
-void
-PPL::GenSys::add_corresponding_points() {
-  assert(!is_necessarily_closed());
-  GenSys& gs = *this;
-  size_t n_rows = gs.num_rows();
-  size_t eps_index = gs.num_columns() - 1;
-  for (size_t i = n_rows; i-- > 0; ) {
-    const Generator& g = gs[i];
-    if (g[0] > 0 && g[eps_index] == 0) {
-      // `g' is a closure point: adding the point.
-      // Note: normalization is preserved.
-      Generator p = g;
-      p[eps_index] = p[0];
-      gs.add_row(p);
-    }
-  }
-}
-
-
 bool
 PPL::GenSys::has_closure_points() const {
   // Avoiding the repeated tests on topology.
