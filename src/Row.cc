@@ -200,17 +200,6 @@ PPL::Row::linear_combine(const Row& y, dimension_type k) {
 #endif
 }
 
-std::ostream&
-PPL::operator<<(std::ostream& s, const Row& row) {
-  dimension_type i = 0;
-  dimension_type size = row.size();
-  if (i < size)
-    s << row[i];
-  for (++i ; i < size; ++i)
-    s << " " << row[i];
-  return s;
-}
-
 bool
 PPL::Row::all_homogeneous_terms_are_zero() const {
   const Row& x = *this;

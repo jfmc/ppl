@@ -32,7 +32,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 #include <cstddef>
-#include <iosfwd>
 
 #ifndef EXTRA_ROW_DEBUG
 // When EXTRA_ROW_DEBUG evaluates to <CODE>true</CODE>, each row
@@ -40,13 +39,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 // be performed.
 #define EXTRA_ROW_DEBUG 0
 #endif
-
-namespace Parma_Polyhedra_Library {
-
-// Put it in the namespace here to declare it friend later.
-std::ostream& operator<<(std::ostream& s, const Row& row);
-
-} // namespace Parma_Polyhedra_Library
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*!
@@ -214,10 +206,6 @@ public:
   //! Returns <CODE>true</CODE> if and only if all the homogeneous
   //! terms of \p *this are zero.
   bool all_homogeneous_terms_are_zero() const;
-
-  //! Output operator.
-  friend std::ostream&
-  Parma_Polyhedra_Library::operator<<(std::ostream& s, const Row& row);
 
   //! Checks if all the invariants are satisfied.
   bool OK(dimension_type row_size, dimension_type row_capacity) const;
