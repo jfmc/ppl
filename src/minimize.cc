@@ -30,6 +30,8 @@ namespace PPL = Parma_Polyhedra_Library;
 // FOR DEBUGGING PURPOSES ONLY
 #include <iostream>
 
+#define POS_SIMPLEX_TRICK 0
+
 /*!
   \fn static bool PPL::Polyhedron::minimize(bool con_to_gen,
                                             Matrix& source,
@@ -64,8 +66,6 @@ namespace PPL = Parma_Polyhedra_Library;
   similar.
 */
 
-#define POS_SIMPLEX_TRICK 0
-
 bool
 PPL::Polyhedron::minimize(bool con_to_gen,
 			  Matrix& source, Matrix& dest, SatMatrix& sat,
@@ -74,7 +74,8 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   if (!source.is_sorted())
     source.sort_rows();
   size_t source_num_columns = source.num_columns();
-  
+
+#if !POSITIVE_TRANSFORMATION
   if (pos && !con_to_gen) {
     bool negative = false;
     for (size_t i = source.num_rows(); i-- > 0; )
@@ -85,6 +86,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
 	}
     if (negative)
       return true;
+
 #if POS_SIMPLEX_TRICK
     source.grow(source.num_rows(), 2*source_num_columns);
     for (size_t i = source.num_rows(); i-- > 0; )
@@ -94,6 +96,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
     source.set_sorted(false);
 #endif
   }
+#endif
 #if 0
   std::cout << source << std::endl; 
 #endif
@@ -118,8 +121,8 @@ PPL::Polyhedron::minimize(bool con_to_gen,
       if (j != i)
 	dest[i][j] = 0;
     dest[i][i] = 1;
-    if (pos 
-#if !POS_SIMPLEX_TRICK       
+    if (pos
+#if !POS_SIMPLEX_TRICK
 	&& con_to_gen
 #endif
 	)
@@ -127,6 +130,9 @@ PPL::Polyhedron::minimize(bool con_to_gen,
     else
       dest[i].set_is_line_or_equality();
   }
+#if 0
+  std::cout << dest << std::endl;
+#endif
   // Since we have built `dest' as the identity matrix, it is not sorted
   // (see the sorting rules in Row.cc).
   dest.set_sorted(false);
@@ -155,7 +161,8 @@ PPL::Polyhedron::minimize(bool con_to_gen,
       )
     for (size_t i = 0; i < num_positive; ++i)
       tmp_sat[i].set(i);
-  // Since we want to build a new matrix of generators starting from the
+
+   // Since we want to build a new matrix of generators starting from the
   // given matrix of constraints, we invoke the function conversion() with
   // `start' parameter zero and we pass it the initialized matrices
   // `dest' and `tmp_sat'.
@@ -273,6 +280,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
 	std::cout << dest << std::endl;
 #endif
 #else
+#if !POSITIVE_TRANSFORMATION
 	source.resize_no_copy(source_num_columns, source_num_columns);
 	for(size_t i = source_num_columns; i-- > 0; ) {
 	  for (size_t j = source_num_columns; j-- > 0; )
@@ -290,7 +298,9 @@ PPL::Polyhedron::minimize(bool con_to_gen,
 	conversion(dest, 0, source, tmp, 0);
 	std::swap(tmp, sat);
 #endif
+#endif
       }
+#if !POSITIVE_TRANSFORMATION
       else {
 	// If the polyhedron is positive and we are computing the system of
 	// generators, we must erase the constraints of positivity of
@@ -311,6 +321,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
 
 	source.set_sorted(false);
       }
+#endif
   }
 #if 0
   using std::cout;
@@ -602,3 +613,4 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   }
   return empty_or_illegal;
 }
+

@@ -827,7 +827,7 @@ PPL::Polyhedron::conversion(Matrix& source,
     std::cout << "source" << std::endl << source << std::endl;
     std::cout << "source_num_rows: " << source_num_rows << std::endl; 
     std::cout << "dest" << std::endl << dest << std::endl;
-    std::cout << "dest_num_rows: " << dest_num_rows << std::endl; 
+    std::cout << "dest_num_rows: " << dest_num_rows << std::endl;
 #endif
   }
   // Since we may have deleted some redundant constraint from `source' or
@@ -840,7 +840,33 @@ PPL::Polyhedron::conversion(Matrix& source,
     dest.erase_to_end(dest_num_rows);
     sat.rows_erase_to_end(dest_num_rows);
   }
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << source << endl;
+  cout << sat << endl;
+#endif
 
+#if POSITIVE_TRANSFORMATION
+  if (num_cols_positive != 0) {
+    SatMatrix tmp_sat;
+    tmp_sat.transpose_assign(sat);
+    source.grow(source_num_rows + num_cols_positive, source_num_columns);
+    for (size_t i = source_num_rows; i-- > 0; )
+      std::swap(source[i], source[i + num_cols_positive]);
+    for (size_t i = num_cols_positive; i-- > 0; ) {
+      source[i][i] = 1;
+      source[i].set_is_ray_or_vertex_or_inequality();
+    }
+    source.set_sorted(false);
+  }
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << source << endl;
+  cout << sat << endl;
+#endif
+#else
   // We erase the columns of saturation matrix that consider the behaviour
   // of the generators with the constraints od positivity of the variables.
   // `num_cols_positive' is different form zero if and only if `dest' is the
@@ -873,7 +899,9 @@ PPL::Polyhedron::conversion(Matrix& source,
     sat.transpose_assign(tmp_sat);
   }
   else
+#endif
     sat.columns_erase_to_end(num_cols_positive + source_num_rows);
+  
 #if 0
   std::cout << "Fine conversion" << std::endl;
   std::cout << source << std::endl;

@@ -503,6 +503,12 @@ private:
   //! Sorts the matrix of generators and makes \p sat_g consistent.
   void obtain_sorted_generators_with_sat_g();
 
+#if POSITIVE_TRANSFORMATION
+  void transform_assign(Matrix& inverse_trans, Matrix& trans,
+			std::vector<Integer>& denominator);
+#endif
+
+
 public:
   //! Adds new dimensions and embeds the old polyhedron into the new space.
   //! \param dim      The number of dimensions to add.

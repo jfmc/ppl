@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstddef>
 #include <vector>
 
+
 namespace Parma_Polyhedra_Library {
   //! Describes possible relations between a system of
   //! generators and a given constraint.
@@ -272,6 +273,12 @@ PPL_INTERNAL:
   //! Removes all the invalid lines and rays (i.e., those with all
   //! the homogeneous terms set to zero).
   void remove_invalid_lines_and_rays();
+
+
+#if POSITIVE_TRANSFORMATION
+  void transform_assign(GenSys& trans, GenSys& inverse_trans,
+			std::vector<Integer>& denominator);
+#endif
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

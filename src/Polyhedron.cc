@@ -107,8 +107,9 @@ PPL::Polyhedron::generators() const {
     return GenSys::zero_dim_univ();
   }
 
-  if (!generators_are_up_to_date())
+  if (!generators_are_up_to_date()) {
     update_generators();
+  }
 
   // We insist in returning a sorted system of generators.
   if (!gen_sys.is_sorted()) {
@@ -310,6 +311,77 @@ PPL::Polyhedron::set_zero_dim_univ() {
   gen_sys.clear();
 }
 
+#if POSITIVE_TRANSFORMATION
+void
+PPL::Polyhedron::transform_assign(Matrix& inverse_trans, Matrix& trans,
+				  std::vector<Integer>& denominator) {
+
+  size_t cs_num_rows = con_sys.num_rows();
+  ConSys tmp_con_sys(cs_num_rows, space_dim + 1);
+  for (size_t i = cs_num_rows; i-- > 0; ) {
+    for (size_t j = inverse_trans.num_rows(); j-- > 0; ) {
+      for (size_t k = inverse_trans.num_columns(); k-- > 0; )
+	tmp_con_sys[i][j] += con_sys[i][k] * inverse_trans[k][j];
+      if (j == 0 && tmp_con_sys[i][0] != 0)
+	for (size_t k = inverse_trans.num_rows(); k-- > 0; )
+	  if (tmp_con_sys[i][k] != 0)
+	    tmp_con_sys[i][0] *= denominator[k];
+   }
+ //  for (size_t i = 0; i < cs_num_rows; ++i) {
+//     for (size_t j = 0; j < inverse_trans.num_rows(); ++j)
+//       for (size_t k = 0; k < space_dim + 1; ++k)
+// 	tmp_con_sys[i][j] += con_sys[i][k] * inverse_trans[j][k];
+    if (con_sys[i].is_inequality())
+      tmp_con_sys[i].set_is_inequality();
+    else
+      tmp_con_sys[i].set_is_equality();
+  }
+  tmp_con_sys.set_sorted(false);
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << tmp_con_sys << endl;
+#endif
+  for (size_t i = cs_num_rows; i-- > 0; ) {
+    if (tmp_con_sys[i].is_inequality()
+	&& tmp_con_sys[i].only_a_term_is_positive()) {
+      --cs_num_rows;
+      std::swap(tmp_con_sys[i], tmp_con_sys[cs_num_rows]);
+      // std::swap(sat_g[i], sat_g[cs_num_rows]);
+    }
+  }
+  if (cs_num_rows < tmp_con_sys.num_rows()) {
+    tmp_con_sys.erase_to_end(cs_num_rows);
+    //sat_g.rows_erase_to_end(cs_num_rows);
+  }
+  std::swap(tmp_con_sys, con_sys);
+  //sat_c.transpose_assign(sat_g);   
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << "I vincoli sono:" << endl;
+  cout << con_sys << endl;
+  //cout << sat_c << endl;
+#endif
+  size_t gs_num_rows = gen_sys.num_rows();
+  size_t gs_num_columns = gen_sys.num_columns();
+  GenSys tmp_gen_sys(gs_num_rows, gs_num_columns);
+  for (size_t i = gs_num_rows; i-- > 0; )
+    for (size_t j = gs_num_columns; j-- > 0; )
+      for (size_t k = gs_num_columns; k-- > 0; )
+	tmp_gen_sys[i][j] += gen_sys[i][k] * trans[k][j];
+  tmp_gen_sys.set_sorted(false);
+  std::swap(tmp_gen_sys, gen_sys);
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << "I generatori sono:" << endl;
+  cout << gen_sys << endl;
+#endif
+}
+#endif
+
+
 /*!
   Updates constraints starting from the system of generators
   and minimizes them. The resulting system of constraints will not
@@ -323,17 +395,35 @@ PPL::Polyhedron::update_constraints() const {
   assert(generators_are_up_to_date());
 
   Polyhedron& x = const_cast<Polyhedron&>(*this);
-  bool empty = minimize(false, x.gen_sys, x.con_sys, x.sat_c, x.positive);
-  if (x.positive && empty)
+  bool empty = false;
+#if POSITIVE_TRANSFORMATION
+  if (x.positive) {
+    GenSys trans = x.gen_sys;
+    GenSys inverse_trans;
+    std::vector<Integer> denominator(x.gen_sys.num_columns());
+    x.gen_sys.transform_assign(trans, inverse_trans, denominator);
+    
+    empty = minimize(true, x.gen_sys, x.con_sys, x.sat_g, x.positive);
+    
+    x.transform_assign(inverse_trans, trans, denominator);
+  }
+  else {
+#endif
+    empty = minimize(false, x.gen_sys, x.con_sys, x.sat_c, x.positive);
+#if POSITIVE_TRANSFORMATION
+  }
+#endif
+  if (empty)
     x.set_empty();
   else {
-    // `sat_c' is the only saturation matrix up-to-date.
-    x.set_sat_c_up_to_date();
-    x.clear_sat_g_up_to_date();
     // The system of constraints and the system of generators
     // are minimized.
     x.set_constraints_minimized();
     x.set_generators_minimized();
+    update_sat_c();
+    // `sat_c' is the only saturation matrix up-to-date.
+    x.set_sat_c_up_to_date();
+    x.clear_sat_g_up_to_date();
   }
 }
 
@@ -353,6 +443,23 @@ PPL::Polyhedron::update_generators() const {
   // If the system of constraints is not consistent the
   // polyhedron is empty.
   bool empty = minimize(true, x.con_sys, x.gen_sys, x.sat_g, x.positive);
+#if POSITIVE_TRANSFORMATION
+  if (x.positive) {
+    size_t cs_num_rows = x.con_sys.num_rows();
+    for (size_t i = cs_num_rows; i-- > 0; ) {
+      if (x.con_sys[i].is_inequality()
+	&& x.con_sys[i].only_a_term_is_positive()) {
+	--cs_num_rows;
+	std::swap(x.con_sys[i], x.con_sys[cs_num_rows]);
+	std::swap(x.sat_g[i], x.sat_g[cs_num_rows]);
+    }
+  }
+    if (cs_num_rows < x.con_sys.num_rows()) {
+    x.con_sys.erase_to_end(cs_num_rows);
+    x.sat_g.rows_erase_to_end(cs_num_rows);
+    }
+  }
+#endif
   if (empty)
     x.set_empty();
   else {
@@ -392,7 +499,6 @@ PPL::Polyhedron::minimize() const {
     assert(generators_are_up_to_date());
     update_constraints();
   }
-
   assert(OK());
 }
 
@@ -2538,6 +2644,17 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	return true;
     }
     if (constraints_are_minimized()) {
+      if (positive) {
+	size_t cs_num_rows = copy_of_con_sys.num_rows();
+	for (size_t i = cs_num_rows; i-- > 0; )
+	  if (copy_of_con_sys[i].is_inequality()
+	      && copy_of_con_sys[i].only_a_term_is_positive()) {
+	    --cs_num_rows;
+	    std::swap(copy_of_con_sys[i], copy_of_con_sys[cs_num_rows]);
+	  }
+	if (cs_num_rows < copy_of_con_sys.num_rows())
+	  copy_of_con_sys.erase_to_end(cs_num_rows);
+      }
       // If the constraints are minimized, the number of equalities
       // and of inequalities of the system of the polyhedron must be
       // the same of the temporary minimized one.

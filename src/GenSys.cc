@@ -318,6 +318,131 @@ PPL::GenSys::remove_invalid_lines_and_rays() {
     gs.erase_to_end(i);
 }
 
+
+#if POSITIVE_TRANSFORMATION
+void
+PPL::GenSys::transform_assign(GenSys& trans, GenSys& inverse_trans,
+			      std::vector<Integer>& denominator) {
+  Matrix& mat = *this;
+  size_t num_columns = mat.num_columns();
+  size_t mat_num_rows = mat.num_rows();
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << mat << endl;
+  cout << trans << endl;
+#endif
+ 
+  size_t trans_num_rows = mat_num_rows;
+
+  // We must find the linear indipendent rows.
+  GenSys lin_indip(num_columns, trans_num_rows);
+  for (size_t i = 0; i < num_columns; ++i) {
+    for (size_t j = 0; j < trans_num_rows; ++j)
+      lin_indip[i][j] = trans[j][i];
+    lin_indip[i].set_is_line_or_equality();
+  }
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << "Ho fatto la trasposta." << endl;
+  cout << lin_indip << endl;
+#endif
+  size_t rank = lin_indip.gauss();
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << "Ho fatto la gauss della trasposta." << endl;
+  cout << lin_indip << endl;
+  cout << rank << endl;
+#endif
+
+  GenSys tmp(num_columns, num_columns);
+  // In `trans' we need only `num_columns' linear indipendent lines: we choose
+  // the lines of `trans' that are linear indipendent and if these are not
+  // enought, we add the indipendent vector of the canonical base.
+  size_t found = trans_num_rows;
+  for (size_t i = trans_num_rows; i-- > 0; ) {
+    for (size_t j = num_columns; j-- > 0; )
+      if (lin_indip[j][i] != 0 && found != j) {
+	found = j;
+	break;
+      }
+    for (size_t j = num_columns; j-- > 0; )
+      tmp[found][j] = trans[trans_num_rows - 1 - found][j];
+    tmp[found].set_is_line_or_equality();
+  }
+  if (rank < num_columns)
+    for (size_t i = num_columns - rank; i-- > 0; ) {
+      tmp[rank + i][rank + i] = 1;
+      tmp[rank + i].set_is_line_or_equality();
+    }
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << "Ho fatto la matrice con solo i vettori indipendenti." << endl;
+  cout << tmp << endl;
+#endif
+  std::swap(tmp, trans);
+
+  // We must compute the inverse transformation.
+  inverse_trans = trans;
+  inverse_trans.grow(num_columns, 2*num_columns);
+  
+  for (size_t i = num_columns; i-- > 0; ) {
+    for (size_t j = num_columns; j -- > 0; )
+      std::swap(inverse_trans[i][j], inverse_trans[i][num_columns + j]);
+    inverse_trans[i][i] = 1;
+    inverse_trans[i].set_is_line_or_equality();
+  }
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << "Dopo aver inserito la matrice identita' nel posto corretto."
+       << endl;
+  cout << inverse_trans << endl;
+#endif
+  inverse_trans.gauss();
+  inverse_trans.back_substitute(num_columns);
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << "Dopo la back_substitute." << endl;
+  cout << inverse_trans << endl;
+#endif
+  for (size_t i = 0; i < num_columns; ++i) {
+    if (inverse_trans[i][num_columns + i] == 0)
+      std::swap(inverse_trans[i], inverse_trans[num_columns - 1 - i]);
+  }
+  for (size_t i = 0; i < num_columns; ++i)
+    denominator[i] = inverse_trans[i][num_columns + i];
+  inverse_trans.resize_no_copy(num_columns, num_columns);
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << "Dopo aver eliminato la parte in piu'." << endl;
+  cout << inverse_trans << endl;
+  for (size_t i = 0; i < num_columns; ++i)
+    cout << denominator[i] << endl;
+#endif
+
+  GenSys tmp_mat(mat_num_rows, num_columns);
+  for (size_t i = 0; i < mat_num_rows; ++i) {
+    for (size_t j = 0; j < num_columns; ++j)
+      for (size_t k = 0; k < num_columns; ++k)
+	tmp_mat[i][j] += mat[i][k] * inverse_trans[k][j] /denominator[k];
+  }
+  tmp_mat.set_sorted(false);
+  std::swap(tmp_mat, mat);
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << "Dopo aver calcolato i prodotti scalari." << endl;
+  cout << mat << endl;
+#endif
+}
+#endif
+
 /*!
   Returns <CODE>true</CODE> if and only if \p *this actually represents
   a system of generators. So, \p *this must satisfy some rule:

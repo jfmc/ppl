@@ -33,6 +33,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 #include <cstddef>
 
+#define POSITIVE_TRANSFORMATION 1
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*!
   An object of this class is a matrix.
