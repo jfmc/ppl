@@ -22,7 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 :- ensure_loaded('ppl_yap.pl').
-:- ensure_loaded('../clpq.pl').
+:- ensure_loaded('../tests/clpq.pl').
 :- use_module(library(lists), [append/3, member/2]).
 
 eat_eol.

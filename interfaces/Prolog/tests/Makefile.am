@@ -26,6 +26,34 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS = Ciao GNU SICStus SWI XSB YAP tests
+SUBDIRS =
 
-noinst_HEADERS = ppl_prolog.icc exceptions.hh track_allocation.hh
+CLPQ_TESTS_NONSTRICT = \
+ack.clpq \
+ackn.clpq \
+fib.clpq \
+mc91.clpq \
+smm.clpq \
+sumto.clpq \
+tak.clpq
+
+CLPQ_TESTS_STRICT = \
+schedule.clpq
+
+CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
+
+EXTRA_DIST = \
+clpq.pl check_script \
+clpq2.pl check_script2 \
+$(CLPQ_TESTS) \
+pl_check.pl \
+expected_mpz expected2_mpz expected3_mpz \
+expected_int8 expected2_int8 expected3_int8 \
+expected_int16 expected2_int16 expected3_int16 \
+expected_int32 expected2_int32 expected3_int32 \
+expected_int64 expected2_int64 expected3_int64 \
+expected_mpz_a expected2_mpz_a expected3_mpz_a \
+expected_int8_a expected2_int8_a expected3_int8_a \
+expected_int16_a expected2_int16_a expected3_int16_a \
+expected_int32_a expected2_int32_a expected3_int32_a \
+expected_int64_a expected2_int64_a expected3_int64_a

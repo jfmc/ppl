@@ -22,7 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 :- ensure_loaded('ppl_yap.pl').
-:- ensure_loaded('../pl_check.pl').
+:- ensure_loaded('../tests/pl_check.pl').
 
 main :-
     (check_all ->

@@ -615,7 +615,8 @@ AC_CONFIG_FILES(Makefile
                 interfaces/Prolog/SICStus/Makefile
                 interfaces/Prolog/SWI/Makefile
                 interfaces/Prolog/XSB/Makefile
-                interfaces/Prolog/YAP/Makefile)
+                interfaces/Prolog/YAP/Makefile
+                interfaces/Prolog/tests/Makefile)
 AC_OUTPUT
 
 if test x"$gmp_supports_exceptions" = xno

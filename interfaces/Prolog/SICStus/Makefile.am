@@ -86,24 +86,35 @@ schedule.clpq
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
 COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
-EXPECTED = expected_$(COEFFICIENT_MNEMONIC)
-EXPECTED2 = expected2_$(COEFFICIENT_MNEMONIC)
-EXPECTED3 = expected3_$(COEFFICIENT_MNEMONIC)
 
-check-local: ppl_sicstus ../check_script ../$(EXPECTED) ../check_script2 ../$(EXPECTED2) ../$(EXPECTED3)
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
+if ASSERTIONS_ENABLED
+
+EXPECTED = $(srcdir)/../tests/expected_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED2 = $(srcdir)/../tests/expected2_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)_a
+
+else !ASSERTIONS_ENABLED
+
+EXPECTED = $(srcdir)/../tests/expected_$(COEFFICIENT_MNEMONIC)
+EXPECTED2 = $(srcdir)/../tests/expected2_$(COEFFICIENT_MNEMONIC)
+EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)
+
+endif !ASSERTIONS_ENABLED
+
+check-local: ppl_sicstus ../tests/check_script $(EXPECTED) ../tests/check_script2 $(EXPECTED2) $(EXPECTED3)
+	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 	  ./ppl_sicstus -l $(srcdir)/sp_clpq.pl \
-	    --goal "main('$(top_srcdir)/interfaces/Prolog/clpq')." \
-	      <$(srcdir)/../check_script >obtained
-	diff -q --ignore-all-space $(srcdir)/../$(EXPECTED) obtained
+	    --goal "main('$(top_srcdir)/interfaces/Prolog/tests/clpq')." \
+	      <$(srcdir)/../tests/check_script >obtained
+	diff -q --ignore-all-space $(EXPECTED) obtained
 	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 	  ./ppl_sicstus -l $(srcdir)/sp_clpq.pl \
-	    --goal "main('$(top_srcdir)/interfaces/Prolog/clpq2')." \
-	      <$(srcdir)/../check_script2 >obtained2
-	diff -q --ignore-all-space $(srcdir)/../$(EXPECTED2) obtained2
+	    --goal "main('$(top_srcdir)/interfaces/Prolog/tests/clpq2')." \
+	      <$(srcdir)/../tests/check_script2 >obtained2
+	diff -q --ignore-all-space $(EXPECTED2) obtained2
 	if [ $(srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/../pl_check.pl . ;\
+	  cp -f $(srcdir)/../tests/pl_check.pl . ;\
 	fi
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
@@ -113,7 +124,7 @@ check-local: ppl_sicstus ../check_script ../$(EXPECTED) ../check_script2 ../$(EX
 	if [ $(srcdir) != `pwd` ]; then \
 	  rm -f pl_check.pl ;\
 	fi
-	diff -q --ignore-all-space $(srcdir)/../$(EXPECTED3) obtained3
+	diff -q --ignore-all-space $(EXPECTED3) obtained3
 
 MOSTLYCLEANFILES = \
 ppl_sicstus.s.o ppl_sicstus.so \
