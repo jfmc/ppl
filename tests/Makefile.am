@@ -46,14 +46,15 @@ ORIGINAL_TESTS = \
 	addconstraints12 \
 	adddimensions1 adddimensions2 adddimensions3 adddimensions4 \
 	adddimensions5 adddimensions6 adddimensions7 adddimensions8 \
-	adddimensions9 adddimensions10 adddimensions11 \
+	adddimensions9 adddimensions10 adddimensions11 adddimensions12 \
 	addgenerator1 addgenerator2 addgenerator3 \
 	addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
 	addgenerators5 addgenerators6 addgenerators7 addgenerators8 \
 	addgenerators9 addgenerators10 addgenerators11 \
 	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
+	affineimage6 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
-	affinepreimage5 affinepreimage6 affinepreimage7 \
+	affinepreimage5 affinepreimage6 affinepreimage7 affinepreimage8 \
 	affinetrans \
         append1 append2 \
 	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 \
@@ -68,6 +69,7 @@ ORIGINAL_TESTS = \
 	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
 	constraints1 constraints2 constraints3 \
 	contains1 \
+	disjoint1 \
         empty1 \
 	exceptions1 exceptions2 \
 	generalizedaffineimage1 generalizedaffineimage2 \
@@ -75,6 +77,7 @@ ORIGINAL_TESTS = \
 	generalizedaffineimage5 generalizedaffineimage6 \
 	generalizedaffineimage7 generalizedaffineimage8 \
 	generalizedaffineimage9 generalizedaffineimage10 \
+	generalizedaffineimage11 generalizedaffineimage12 \
 	generators1 generators2 generators3 generators4 generators5 \
 	h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
 	inclusion1 inclusion2 \
@@ -82,7 +85,7 @@ ORIGINAL_TESTS = \
 	intersection5 intersection6 intersection7 intersection8 \
 	intersection9 intersection10 \
 	limitedh79widening1 limitedh79widening2 \
-	limitedh79widening3 \
+	limitedh79widening3 limitedh79widening4 \
 	linearpartition1 linearpartition2 linearpartition3 \
 	mc91 \
 	memory1 \
@@ -115,16 +118,16 @@ DERIVED_TESTS = \
 	nnc_addconstraints7 nnc_addconstraints8 nnc_addconstraints9 \
 	nnc_addconstraints10 \
 	nnc_adddimensions1 nnc_adddimensions2 nnc_adddimensions3 \
-	nnc_adddimensions4 nnc_adddimensions9 \
+	nnc_adddimensions4 nnc_adddimensions9 nnc_adddimensions12 \
 	nnc_addgenerator3 \
 	nnc_addgenerators1 nnc_addgenerators2 nnc_addgenerators3 \
 	nnc_addgenerators4 nnc_addgenerators5 nnc_addgenerators6 \
 	nnc_addgenerators9 nnc_addgenerators10 \
 	nnc_affineimage1 nnc_affineimage2 nnc_affineimage3 nnc_affineimage4 \
-	nnc_affineimage5 \
+	nnc_affineimage5 nnc_affineimage6 \
 	nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
 	nnc_affinepreimage4 nnc_affinepreimage5 nnc_affinepreimage6 \
-	nnc_affinepreimage7 \
+	nnc_affinepreimage7 nnc_affinepreimage8 \
 	nnc_affinetrans \
 	nnc_append1 nnc_append2 \
 	nnc_ascii_dump_load1 nnc_ascii_dump_load2 nnc_ascii_dump_load3 \
@@ -137,11 +140,13 @@ DERIVED_TESTS = \
 	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 nnc_concatenate4 \
 	nnc_concatenate5 \
 	nnc_constraints1 nnc_constraints2 nnc_constraints3 \
+	nnc_disjoint1 \
 	nnc_empty1 \
 	nnc_exceptions1 \
 	nnc_generalizedaffineimage1 nnc_generalizedaffineimage2 \
 	nnc_generalizedaffineimage3 \
 	nnc_generalizedaffineimage5 nnc_generalizedaffineimage6 \
+	nnc_generalizedaffineimage11 \
 	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
 	nnc_generators5 \
 	nnc_h79widening1 nnc_h79widening2 nnc_h79widening4 nnc_h79widening5 \
@@ -151,7 +156,7 @@ DERIVED_TESTS = \
 	nnc_intersection7 nnc_intersection8 nnc_intersection9 \
 	nnc_intersection10 \
 	nnc_limitedh79widening1 nnc_limitedh79widening2 \
-	nnc_limitedh79widening3 \
+	nnc_limitedh79widening3 nnc_limitedh79widening4 \
 	nnc_linearpartition1 nnc_linearpartition2 nnc_linearpartition3 \
 	nnc_mc91 \
 	nnc_minconstraints1 nnc_minconstraints2 \
@@ -216,6 +221,7 @@ adddimensions8_SOURCES = adddimensions8.cc
 adddimensions9_SOURCES = adddimensions9.cc
 adddimensions10_SOURCES = adddimensions10.cc
 adddimensions11_SOURCES = adddimensions11.cc
+adddimensions12_SOURCES = adddimensions12.cc
 
 addgenerator1_SOURCES = addgenerator1.cc
 addgenerator2_SOURCES = addgenerator2.cc
@@ -238,6 +244,7 @@ affineimage2_SOURCES = affineimage2.cc
 affineimage3_SOURCES = affineimage3.cc
 affineimage4_SOURCES = affineimage4.cc
 affineimage5_SOURCES = affineimage5.cc
+affineimage6_SOURCES = affineimage6.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
@@ -246,6 +253,7 @@ affinepreimage4_SOURCES = affinepreimage4.cc
 affinepreimage5_SOURCES = affinepreimage5.cc
 affinepreimage6_SOURCES = affinepreimage6.cc
 affinepreimage7_SOURCES = affinepreimage7.cc
+affinepreimage8_SOURCES = affinepreimage8.cc
 
 affinetrans_SOURCES = affinetrans.cc
 
@@ -295,6 +303,8 @@ constraints3_SOURCES = constraints3.cc
 
 contains1_SOURCES = contains1.cc
 
+disjoint1_SOURCES = disjoint1.cc
+
 empty1_SOURCES = empty1.cc
 
 exceptions1_SOURCES = exceptions1.cc
@@ -310,6 +320,8 @@ generalizedaffineimage7_SOURCES = generalizedaffineimage7.cc
 generalizedaffineimage8_SOURCES = generalizedaffineimage8.cc
 generalizedaffineimage9_SOURCES = generalizedaffineimage9.cc
 generalizedaffineimage10_SOURCES = generalizedaffineimage10.cc
+generalizedaffineimage11_SOURCES = generalizedaffineimage11.cc
+generalizedaffineimage12_SOURCES = generalizedaffineimage12.cc
 
 generators1_SOURCES = generators1.cc
 generators2_SOURCES = generators2.cc
@@ -340,6 +352,7 @@ intersection10_SOURCES = intersection10.cc
 limitedh79widening1_SOURCES = limitedh79widening1.cc
 limitedh79widening2_SOURCES = limitedh79widening2.cc
 limitedh79widening3_SOURCES = limitedh79widening3.cc
+limitedh79widening4_SOURCES = limitedh79widening4.cc
 
 linearpartition1_SOURCES = linearpartition1.cc
 linearpartition2_SOURCES = linearpartition2.cc
@@ -477,6 +490,8 @@ nnc_adddimensions4_SOURCES = adddimensions4.cc
 nnc_adddimensions4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_adddimensions9_SOURCES = adddimensions9.cc
 nnc_adddimensions9_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_adddimensions12_SOURCES = adddimensions12.cc
+nnc_adddimensions12_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_addgenerator3_SOURCES = addgenerator3.cc
 nnc_addgenerator3_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -508,6 +523,8 @@ nnc_affineimage4_SOURCES = affineimage4.cc
 nnc_affineimage4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_affineimage5_SOURCES = affineimage5.cc
 nnc_affineimage5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affineimage6_SOURCES = affineimage6.cc
+nnc_affineimage6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affinepreimage1_SOURCES = affinepreimage1.cc
 nnc_affinepreimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -523,6 +540,8 @@ nnc_affinepreimage6_SOURCES = affinepreimage6.cc
 nnc_affinepreimage6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_affinepreimage7_SOURCES = affinepreimage7.cc
 nnc_affinepreimage7_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affinepreimage8_SOURCES = affinepreimage8.cc
+nnc_affinepreimage8_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affinetrans_SOURCES = affinetrans.cc
 nnc_affinetrans_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -593,6 +612,9 @@ nnc_constraints3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_empty1_SOURCES = empty1.cc
 nnc_empty1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+nnc_disjoint1_SOURCES = disjoint1.cc
+nnc_disjoint1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
 nnc_exceptions1_SOURCES = exceptions1.cc
 nnc_exceptions1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
@@ -606,6 +628,8 @@ nnc_generalizedaffineimage5_SOURCES = generalizedaffineimage5.cc
 nnc_generalizedaffineimage5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_generalizedaffineimage6_SOURCES = generalizedaffineimage6.cc
 nnc_generalizedaffineimage6_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_generalizedaffineimage11_SOURCES = generalizedaffineimage11.cc
+nnc_generalizedaffineimage11_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_generators1_SOURCES = generators1.cc
 nnc_generators1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -659,6 +683,8 @@ nnc_limitedh79widening2_SOURCES = limitedh79widening2.cc
 nnc_limitedh79widening2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_limitedh79widening3_SOURCES = limitedh79widening3.cc
 nnc_limitedh79widening3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_limitedh79widening4_SOURCES = limitedh79widening4.cc
+nnc_limitedh79widening4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_linearpartition1_SOURCES = linearpartition1.cc
 nnc_linearpartition1_CXXFLAGS = $(DERIVED_CXXFLAGS)
