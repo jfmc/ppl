@@ -29,11 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-ExtendedRational::ExtendedRational(const mpq_class& n)
-  : e(0), v(n) {
-}
-
-inline
 ExtendedRational::ExtendedRational(const Integer& num, const Integer& den)
   : e(0), v(num, den) {
   v.canonicalize();
@@ -65,7 +60,6 @@ ExtendedRational::direction_of_infinity() const {
   return e;
 }
 
-#if 0
 inline const Integer&
 ExtendedRational::numerator() const {
   return v.get_num();
@@ -75,24 +69,6 @@ inline const Integer&
 ExtendedRational::denominator() const {
   return v.get_den();
 }
-#else
-inline void
-ExtendedRational::canonicalize() const {
-  const_cast<ExtendedRational*>(this)->v.canonicalize();
-}
-
-inline Integer
-ExtendedRational::numerator() const {
-  canonicalize();
-  return v.get_num();
-}
-
-inline Integer
-ExtendedRational::denominator() const {
-  canonicalize();
-  return v.get_den();
-}
-#endif
 
 inline bool
 operator==(const ExtendedRational& x, const ExtendedRational& y) {

@@ -50,15 +50,7 @@ std::ostream& operator<<(std::ostream& s, const ExtendedRational& x);
 
 
 class Parma_Polyhedra_Library::ExtendedRational {
-private:
-  //! Positive if +infinity, negative if -infinity, zero otherwise.
-  int e;
-  //! The finite value: valid only if \p e=0.
-  mpq_class v;
-
 public:
-  ExtendedRational(const mpq_class& n);
-
   ExtendedRational(const Integer& num, const Integer& den);
 
   explicit ExtendedRational(char sign);
@@ -69,17 +61,9 @@ public:
 
   int direction_of_infinity() const;
 
-#if 0
   const Integer& numerator() const;
 
   const Integer& denominator() const;
-#else
-  void canonicalize() const;
-
-  Integer numerator() const;
-
-  Integer denominator() const;
-#endif
 
   friend bool
   Parma_Polyhedra_Library::operator==(const ExtendedRational& x,
@@ -102,6 +86,13 @@ public:
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
 						    const ExtendedRational& x);
+
+private:
+  //! Positive if +infinity, negative if -infinity, zero otherwise.
+  int e;
+
+  //! The finite value: valid only if \p e=0.
+  mpq_class v;
 };
 
 
