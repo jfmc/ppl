@@ -153,38 +153,24 @@ more information regarding these issues.
 
 <H4><CODE>ppl_copy_polyhedron(+Address1, -Address2)</CODE></H4>
 
-   If <CODE>Address1</CODE> is the address of a polyhedron \p P,
-   then a copy \p Q of \p P is created and <CODE>Address2</CODE>
-   is unified with the reference to \p Q.
+   Creates a copy of the polyhedron referenced by <CODE>Address1</CODE>
+   at reference <CODE>Address2</CODE>.
 
 <H4><CODE>ppl_delete_polyhedron(+Address)</CODE></H4>
 
    Deletes the polyhedron referenced by <CODE>Address</CODE>.
-
-   If <CODE>Address</CODE> is not an address of a polyhedron,
-   execution is aborted. E.g., the following aborts:
+   E.g.,
 \code
    | ?-ppl_new_polyhedron(X,3),
-       ppl_delete_polyhedron(X),
        ppl_delete_polyhedron(X).
 \endcode
+   deletes the polyhedron referenced by \p X so that, after execution,
+   \p X is no longer a valid address of a PPL polyhedron.
 
-<H4><CODE>ppl_space_dimension(+Address, -Integer+)</CODE></H4>
+<H4><CODE>ppl_space_dimension(+Address, -Integer)</CODE></H4>
 
-   There must be a polyhedron \p P referenced by <CODE>Address</CODE>.
-   Returns in <CODE>Integer</CODE> the space dimension of \p P.
-
-   If <CODE>Address</CODE> is not an address of a polyhedron,
-   execution succeeds with a large but unspecified dimension.
-   E.g., 
-\code
-   | ?- ppl_new_polyhedron(X,5),
-        ppl_delete_polyhedron(X),
-        ppl_space_dimension(X,K).
- 
-     K = 136896952,
-     X = -32966754 ?  
-\endcode
+   If \p P is the polyhedron referenced by <CODE>Address</CODE>,
+   it unifies the space dimension of \p P with <CODE>Integer</CODE>.
 
 <H4><CODE>ppl_insert_constraint(+Address, +Constraint)</CODE></H4>
 
