@@ -470,8 +470,6 @@ Polyhedra_PowerSet<PH>::new_widening_assign(const Polyhedra_PowerSet& y) {
     // Compute the poly-difference between `ph' and `extrapolated_x_hull'.
     ph.poly_difference_assign(extrapolated_x_hull);
     x.add_disjunct(ph);
-    // CHECK ME: why is this needed?
-    x.pairwise_reduce();
     return;
   }
 
