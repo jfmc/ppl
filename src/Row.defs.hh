@@ -222,7 +222,7 @@ public:
   */
   void assign(Row& y);
 
-  //! \brief.
+  //! \brief
   //! Allocates memory for a default constructed Row object, setting
   //! flags to \p f and allowing for \p capacity coefficients at most.
   /*!
