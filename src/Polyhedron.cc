@@ -1177,9 +1177,18 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
     for (size_t i = cs.num_rows(); i-- > 0; ) {
       const Constraint& c = cs[i];
       if (c.is_inequality()) {
-	for (size_t j = gs.num_rows(); j-- > 0; )
-	  if (c * gs[j] < 0)
-	    return false;
+	for (size_t j = gs.num_rows(); j-- > 0; ) {
+	  const Generator& g = gs[j];
+	  int sp_sign = sgn(c * g);
+	  if (g.is_line()) {
+	    if (sp_sign != 0)
+	      return false;
+	  }
+	  else
+	    // `g' is a ray or a point.
+	    if (sp_sign < 0)
+	      return false;
+	}
       }
       else
 	// `c' is an equality.
@@ -1195,9 +1204,18 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
       const Constraint& c = cs[i];
       switch (c.type()) {
       case Constraint::NONSTRICT_INEQUALITY:
-	for (size_t j = gs.num_rows(); j-- > 0; )
-	  if (reduced_scalar_product(c, gs[j]) < 0)
-	    return false;
+	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
+	  const Generator& g = gs[j];
+	  int sp_sign = sgn(reduced_scalar_product(c, g));
+	  if (g.is_line()) {
+	    if (sp_sign != 0)
+	      return false;
+	  }
+	  else
+	    // `g' is a ray or a point or a closure point.
+	    if (sp_sign < 0)
+	      return false;
+	}
 	break;
       case Constraint::EQUALITY:
 	for (size_t j = gs.num_rows(); j-- > 0; )
@@ -1216,8 +1234,13 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
 	    if (sp_sign <= 0)
 	      return false;
 	  }
-	  else
-	    // The generator is a line, ray or closure point: usual test.
+	  else if (g.is_line()) {
+	    // Lines have to saturate all constraints.
+	    if (sp_sign != 0)
+	      return false;
+	  }
+	  else 
+	    // The generator is a ray or closure point: usual test.
 	    if (sp_sign < 0)
 	      return false;
 	}
