@@ -61,8 +61,9 @@ TESTS = NNCinclusion1 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
 	relations7 relations8 relations9 \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
+	removedim7 \
 	smm1 \
-	universe1 universe2 universe3 universe4 universe5 \
+	universe1 universe2 universe3 universe4 universe5 universe6 \
 	widening1
 
 NNCinclusion1_SOURCES = NNCinclusion1.cc
@@ -163,6 +164,7 @@ removedim3_SOURCES = removedim3.cc
 removedim4_SOURCES = removedim4.cc
 removedim5_SOURCES = removedim5.cc
 removedim6_SOURCES = removedim6.cc
+removedim7_SOURCES = removedim7.cc
 
 smm1_SOURCES = smm1.cc
 
@@ -171,6 +173,7 @@ universe2_SOURCES = universe2.cc
 universe3_SOURCES = universe3.cc
 universe4_SOURCES = universe4.cc
 universe5_SOURCES = universe5.cc
+universe6_SOURCES = universe6.cc
 
 widening1_SOURCES = widening1.cc
 
