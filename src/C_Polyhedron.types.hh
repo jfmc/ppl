@@ -12,7 +12,6 @@ PURPOSE. */
 #ifndef _C_Polyhedron_types_hh
 #define _C_Polyhedron_types_hh 1
 
-//! The entire library is confined into this namespace.
 namespace Parma_Polyhedra_Library {
   class C_Polyhedron;
 }
