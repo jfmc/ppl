@@ -1858,15 +1858,16 @@ private:
     \param ext_d     The denominator of the extremum value;
     \param included  <CODE>true</CODE> if and only if the extremum
                      of \p expr can actually be reached in \p * this;
-    \param ppoint    When nonzero, points to a Generator object for
-                     storing a point or closure point where \p expr
-                     reaches the extremum value.
+    \param pppoint   When nonzero and maximization or minimization succeeds,
+                     a pointer to a point or closure point where \p expr
+                     reaches the corresponding extremum value will be
+                     written at this address.
     \exception std::invalid_argument thrown if \p expr and \p *this
                                      are dimension-incompatible.
 
     If \p *this is empty or \p expr is not bounded in the appropriate
     direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d,
-    \p included and \p *ppoint are left untouched.
+    \p included and \p *pppoint are left untouched.
   */
   bool max_min(const LinExpression& expr,
 	       const bool maximize,
