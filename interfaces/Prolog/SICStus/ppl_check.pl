@@ -5,7 +5,11 @@ null :- ppl_new_polyhedron(X, 0),
 
 check_empty(X) :-
 	ppl_space_dimension(X, D),
-	write(D), write(' '),
+	write(D), write(' * '),
+	ppl_get_constraints(X, CS),
+	write(CS), write(' % '),
+	ppl_get_generators(X, GS),
+	write(GS), write(' '),
         (ppl_check_empty(X) ->
 	    write(empty)
 	;
@@ -14,12 +18,12 @@ check_empty(X) :-
 	write(' ').
 
 go :-
-	ppl_new_polyhedron(X, 2),
-	numbervars((A,B), 0, _),
+	ppl_new_polyhedron(X, 3),
+	numbervars([A,B,C], 0, _),
 	check_empty(X),
-	ppl_insert_constraint(X, 4*A >= 5),
+	ppl_insert_constraint(X, 4*A+B-2*C >= 5),
 	check_empty(X),
-	ppl_insert_generator(X, ray(A + 9*B)),
+	ppl_insert_generator(X, vertex(-1000*A - 9*B+7,16)),
 	check_empty(X),
 	ppl_insert_constraint(X, A >= 5),
 	check_empty(X),
@@ -28,4 +32,13 @@ go :-
 	nl,
 	ppl_delete_polyhedron(X).
 
-:- null, write(null), nl, go, write(go), nl, halt.
+
+go1 :-
+	ppl_new_empty_polyhedron(X, 3),
+	numbervars([A,B,C], 0, _),
+	ppl_insert_generator(X, vertex(-1000*A - 9*B, 16)),
+	check_empty(X),
+	nl,
+	ppl_delete_polyhedron(X).
+
+:- go1, nl, null, write(null), nl, go, write(go), nl, halt.

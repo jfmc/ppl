@@ -144,6 +144,9 @@ handle_exception(const std::exception& e) {
   CATCH_INTERNAL  \
   CATCH_PPL
 
+// For Prolog lists.
+static SP_atom a_nil;
+
 // For variables.
 static SP_atom a_dollar_VAR;
 
@@ -166,6 +169,8 @@ static struct {
   SP_atom* p_atom;
   const char* name;
 } const sp_atoms[] = {
+  { &a_nil,                "[]" },
+
   { &a_dollar_VAR,         "$VAR" },
 
   { &a_plus,               "+" },
@@ -180,6 +185,23 @@ static struct {
   { &a_ray,                "ray" },
   { &a_vertex,             "vertex" },
 };
+
+static SP_term_ref
+integer_term(const PPL::Integer& n) {
+  SP_term_ref t = SP_new_term_ref();
+  // FIXME: handle the case where n does not fit into a signed long.
+  SP_put_integer(t, to_slong(n));
+  return t;
+}
+
+static SP_term_ref
+variable_term(unsigned int varid) {
+  SP_term_ref v = SP_new_term_ref();
+  SP_put_integer(v, varid);
+  SP_term_ref t = SP_new_term_ref();
+  SP_cons_functor(t, a_dollar_VAR, 1, v);
+  return t;
+}
 
 extern "C" void
 ppl_init(int /* when */) {
@@ -379,6 +401,8 @@ build_generator(SP_term_ref t) {
 	return line(build_lin_expression(arg));
       else if (functor == a_ray)
 	return ray(build_lin_expression(arg));
+      else if (functor == a_vertex)
+	return vertex(build_lin_expression(arg));
     }
     else if (arity == 2) {
       SP_term_ref arg1 = SP_new_term_ref();
@@ -434,6 +458,148 @@ ppl_widening_assign(void* pp_lhs, const void* pp_rhs) {
   try {
     static_cast<PPL::Polyhedron*>(pp_lhs)
       ->widening_assign(*static_cast<const PPL::Polyhedron*>(pp_rhs));
+  }
+  CATCH_ALL;
+}
+
+template <class R>
+static SP_term_ref
+get_lin_expression(const R& r) {
+  SP_term_ref so_far = SP_new_term_ref();
+  PPL::Integer coefficient;
+  unsigned int varid = 0;
+  unsigned int last_varid = r.last_variable().id();
+  while (varid <= last_varid
+	 && (coefficient = r.coefficient(PPL::Variable(varid))) == 0)
+    ++varid;
+  if (varid > last_varid) {
+    SP_put_integer(so_far, 0);
+  }
+  else {
+    SP_cons_functor(so_far, a_asterisk, 2,
+		    integer_term(coefficient), variable_term(varid));
+    while (true) {
+      ++varid;
+      while (varid <= last_varid
+	     && (coefficient = r.coefficient(PPL::Variable(varid))) == 0)
+	++varid;
+      if (varid > last_varid)
+	break;
+      else {
+	SP_term_ref addendum = SP_new_term_ref();
+	SP_cons_functor(addendum, a_asterisk, 2,
+			integer_term(coefficient), variable_term(varid));
+	SP_term_ref new_so_far = SP_new_term_ref();
+	SP_cons_functor(new_so_far, a_plus, 2,
+			so_far, addendum);
+	so_far = new_so_far;
+      }
+    }
+  }
+  return so_far;
+}
+
+static SP_term_ref
+get_false_constraint() {
+  SP_term_ref zero_times_x = SP_new_term_ref();
+  SP_cons_functor(zero_times_x, a_asterisk, 2,
+		  integer_term(0), variable_term(0));
+  SP_term_ref t = SP_new_term_ref();
+  SP_cons_functor(t, a_equal_equal, 2,
+		  zero_times_x, integer_term(1));
+  return t;
+}
+
+static SP_term_ref
+get_constraint(const PPL::Constraint& c) {
+  SP_atom relation = c.is_equality() ? a_equal_equal : a_greater_than_equal;
+  SP_term_ref t = SP_new_term_ref();
+  SP_cons_functor(t, relation, 2,
+		  get_lin_expression(c), integer_term(c.coefficient()));
+  return t;
+}
+
+extern "C" void
+ppl_get_constraints(const void* pp, SP_term_ref constraints_list) {
+  try {
+    SP_term_ref tail = SP_new_term_ref();
+    SP_put_atom(tail, a_nil);
+
+    const PPL::Polyhedron& ph = *static_cast<const PPL::Polyhedron*>(pp);
+
+    if (ph.check_empty()) {
+      SP_term_ref new_tail = SP_new_term_ref();
+      SP_cons_list(new_tail, get_false_constraint(), tail);
+      tail = new_tail;
+    }
+    else {
+      const PPL::ConSys& cs = ph.constraints();
+      PPL::ConSys::const_iterator i = cs.begin();
+      PPL::ConSys::const_iterator cs_end = cs.end();
+      while (i != cs_end) {
+	const PPL::Constraint& c = *i++;
+	SP_term_ref new_tail = SP_new_term_ref();
+	SP_cons_list(new_tail, get_constraint(c), tail);
+	tail = new_tail;
+      }
+    }
+    SP_put_term(constraints_list, tail);
+  }
+  CATCH_ALL;
+}
+
+static SP_term_ref
+get_generator(const PPL::Generator& g) {
+  SP_term_ref t = SP_new_term_ref();
+  SP_atom constructor;
+  switch (g.type()) {
+  case PPL::Generator::LINE:
+    constructor = a_line;
+    break;
+  case PPL::Generator::RAY:
+    constructor = a_ray;
+    break;
+  case PPL::Generator::VERTEX:
+    {
+      constructor = a_vertex;
+      const PPL::Integer& divisor = g.divisor();
+      if (divisor == 1)
+	break;
+      else {
+	SP_cons_functor(t, constructor, 2,
+			get_lin_expression(g), integer_term(divisor));
+	return t;
+      }
+    }
+  }
+  SP_cons_functor(t, constructor, 1, get_lin_expression(g));
+  return t;
+}
+
+extern "C" void
+ppl_get_generators(const void* pp, SP_term_ref generators_list) {
+  try {
+    SP_term_ref tail = SP_new_term_ref();
+    SP_put_atom(tail, a_nil);
+
+    const PPL::Polyhedron& ph = *static_cast<const PPL::Polyhedron*>(pp);
+
+    if (ph.space_dimension() == 0) {
+      // FIXME: what is the right thing to do?
+      abort();
+    }
+    else {
+      const PPL::GenSys& gs = ph.generators();
+      PPL::GenSys::const_iterator i = gs.begin();
+      PPL::GenSys::const_iterator gs_end = gs.end();
+      while (i != gs_end) {
+	const PPL::Generator& g = *i++;
+	SP_term_ref new_tail = SP_new_term_ref();
+	SP_cons_list(new_tail, get_generator(g), tail);
+	tail = new_tail;
+      }
+    }
+    SP_put_term(generators_list, tail);
   }
   CATCH_ALL;
 }

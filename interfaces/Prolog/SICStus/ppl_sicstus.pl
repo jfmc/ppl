@@ -9,6 +9,8 @@ foreign_resource(ppl_sicstus,
 	ppl_insert_constraint,
 	ppl_insert_generator,
 	ppl_check_empty,
+	ppl_get_constraints,
+	ppl_get_generators,
 	ppl_intersection_assign,
 	ppl_convex_hull_assign,
 	ppl_widening_assign
@@ -24,6 +26,8 @@ foreign(ppl_space_dimension,      c,
 foreign(ppl_insert_constraint,    c, ppl_insert_constraint(+address, +term)).
 foreign(ppl_insert_generator,     c, ppl_insert_generator(+address, +term)).
 foreign(ppl_check_empty,          c, ppl_check_empty(+address, [-integer])).
+foreign(ppl_get_constraints,      c, ppl_get_constraints(+address, -term)).
+foreign(ppl_get_generators,       c, ppl_get_generators(+address, -term)).
 foreign(ppl_intersection_assign,  c,
 	ppl_intersection_assign(+address, +address)).
 foreign(ppl_convex_hull_assign,   c,
