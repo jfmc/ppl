@@ -1,4 +1,5 @@
 :- ensure_loaded(ppl_sicstus).
+:- use_module(library(lists)).
 
 /*
   A non-ground meta-interpreter for CLP(Q) for use with the Parma
@@ -113,7 +114,10 @@ solve(Atom,Polyhedron,InDims,OutDims,GS):-
 recover_original_polyhedron(Polyhedron,GS,QDims):-
     !,
     ppl_remove_higher_dimensions(Polyhedron,QDims),
+    member(vertex(V),GS),
+    ppl_insert_generator(Polyhedron,vertex(V)),
     ppl_insert_generators(Polyhedron,GS).
+    
 
 /*
 The constraints are solved by inserting them into the polyhedron.
