@@ -119,6 +119,26 @@ Init* init_object_ptr = 0;
 
 } // namespace
 
+unsigned
+ppl_version_major(void) {
+  return version_major();
+}
+
+unsigned
+ppl_version_minor(void) {
+  return version_minor();
+}
+
+unsigned
+ppl_version_revision(void) {
+  return version_revision();
+}
+
+unsigned
+ppl_version_beta(void) {
+  return version_beta();
+}
+
 const char*
 ppl_version(void) {
   return version();

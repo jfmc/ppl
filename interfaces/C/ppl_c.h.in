@@ -69,11 +69,18 @@ by calling the <CODE>ppl_finalize</CODE> function.
 This function must be called <EM>after using any other interface of
 the library</EM>.
 
-Any application using the PPL should make sure that the right version
-of the library is being used.  This can be checked at compile-time
+Any application using the PPL should make sure that the version
+of the library used is (one of) the intended one(s).
+This can be checked at compile-time
 thanks to the macros PPL_VERSION_MAJOR, PPL_VERSION_MINOR,
 PPL_VERSION_REVISION and PPL_VERSION_BETA, the give, respectively
 major, minor, revision and beta numbers of the PPL version.
+\code
+#if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 6
+# error "PPL version 0.6 or following is required"
+#endif
+\endcode
+
 Compile-time checking, however, is normally not enough, especially
 in an environment where dynamic linking is used.
 
@@ -144,6 +151,30 @@ find examples of how to use several functions provided by that interface.
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/*! \brief
+  Returns the major number of the PPL version.
+*/
+unsigned
+ppl_version_major __P((void));
+
+/*! \brief
+  Returns the minor number of the PPL version.
+*/
+unsigned
+ppl_version_minor __P((void));
+
+/*! \brief
+  Returns the revision number of the PPL version.
+*/
+unsigned
+ppl_version_revision __P((void));
+
+/*! \brief
+  Returns the beta number of the PPL version.
+*/
+unsigned
+ppl_version_beta __P((void));
 
 /*! \brief
   Returns a character string containing the PPL version.
