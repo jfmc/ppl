@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_ext_defs_hh
 #define PPL_checked_ext_defs_hh 1
 
-#include <iostream>
-#include "Float.defs.hh"
 #include "checked.defs.hh"
 
 namespace Parma_Polyhedra_Library {
@@ -78,10 +76,10 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy, type
 Result lcm_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 template <typename Policy, typename Type>
-Result to_c_string_ext(char* str, size_t size, const Type& x, const Numeric_Format& format, Rounding_Dir dir);
+Result output_ext(std::ostream& os, const Type& x, const Numeric_Format& format, Rounding_Dir dir);
 
 template <typename Policy, typename Type>
-Result from_c_string_ext(Type& x, const char* str, const Numeric_Format& format, Rounding_Dir dir);
+Result input_ext(Type& x, std::istream& is, Rounding_Dir dir);
 
 } // namespace Checked
 

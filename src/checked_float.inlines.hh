@@ -401,7 +401,7 @@ assign_float_mpz(Type& to, const mpz_class& _from, Rounding_Dir dir)
     return V_EQ;
   }
   size_t exponent = mpz_sizeinbase(from, 2) - 1;
-  if (exponent >= 1 << (Float<Type>::EXPONENT_BITS - 1)) {
+  if (exponent > Float<Type>::EXPONENT_MAX) {
     if (sign < 0)
       return set_neg_overflow_float<Policy>(to, dir);
     else
@@ -417,6 +417,7 @@ assign_float_mpz(Type& to, const mpz_class& _from, Rounding_Dir dir)
     mpz_mul_2exp(mantissa, from, Float<Type>::MANTISSA_BITS - exponent);
   Float<Type> f(to);
   f.build(sign < 0, mantissa, exponent);
+  mpz_clear(mantissa);
   to = f.value();
   if (significative_bits > Float<Type>::MANTISSA_BITS) {
     if (sign < 0)
@@ -424,6 +425,75 @@ assign_float_mpz(Type& to, const mpz_class& _from, Rounding_Dir dir)
     else
       return round_gt_float<Policy>(to, dir);
   }
+  return V_EQ;
+}
+
+template <typename Policy, typename Type>
+inline Result
+assign_float_mpq(Type& to, const mpq_class& from, Rounding_Dir dir)
+{
+  const mpz_class& _num = from.get_num();
+  const mpz_class& _den = from.get_den();
+  if (_den == 1)
+    return assign_float_mpz<Policy>(to, _num, dir);
+  mpz_srcptr num = _num.get_mpz_t();
+  mpz_srcptr den = _den.get_mpz_t();
+  int sign = mpz_sgn(num);
+  signed long exponent = mpz_sizeinbase(num, 2) - mpz_sizeinbase(den, 2);
+  if (exponent < Float<Type>::EXPONENT_MIN_DENORM) {
+    to = 0;
+  inexact:
+    if (sign < 0)
+      return round_lt_float<Policy>(to, dir);
+    else
+      return round_gt_float<Policy>(to, dir);
+  }
+  if (exponent > (signed int) Float<Type>::EXPONENT_MAX + 1) {
+  overflow:
+    if (sign < 0)
+      return set_neg_overflow_float<Policy>(to, dir);
+    else
+      return set_pos_overflow_float<Policy>(to, dir);
+  }
+  unsigned int needed_bits = Float<Type>::MANTISSA_BITS + 1;
+  if (exponent < Float<Type>::EXPONENT_MIN)
+    needed_bits -= Float<Type>::EXPONENT_MIN - exponent;
+  mpz_t mantissa;
+  mpz_init(mantissa);
+  signed long shift = needed_bits - exponent;
+  if (shift > 0) {
+    mpz_mul_2exp(mantissa, num, shift);
+    num = mantissa;
+  }
+  else if (shift < 0) {
+    mpz_mul_2exp(mantissa, den, -shift);
+    den = mantissa;
+  }
+  mpz_t r;
+  mpz_init(r);
+  mpz_tdiv_qr(mantissa, r, num, den);
+  size_t bits = mpz_sizeinbase(mantissa, 2);
+  bool inexact = (mpz_sgn(r) != 0);
+  mpz_clear(r);
+  if (bits == needed_bits + 1) {
+    inexact = (inexact || mpz_odd_p(mantissa));
+    mpz_div_2exp(mantissa, mantissa, 1);
+  }
+  else
+    --exponent;
+  if (exponent > (signed int)Float<Type>::EXPONENT_MAX) {
+    mpz_clear(mantissa);
+    goto overflow;
+  } else if (exponent < Float<Type>::EXPONENT_MIN - 1) {
+    /* Denormalized */
+    exponent = Float<Type>::EXPONENT_MIN - 1;
+  }
+  Float<Type> f(to);
+  f.build(sign < 0, mantissa, exponent);
+  mpz_clear(mantissa);
+  to = f.value();
+  if (inexact)
+    goto inexact;
   return V_EQ;
 }
 
@@ -441,82 +511,16 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   return assign_result_inexact<Policy>(to, std::fma(to, x, -y), dir);
 }
 
-template <typename T>
-T strtod_(const char* nptr, char** endptr);
-
-#if !HAVE_DECL_STRTOF
-float strtof(const char* nptr, char** endptr);
-#endif
-
-template <>
-inline float
-strtod_(const char* nptr, char** endptr) {
-  return strtof(nptr, endptr);
-}
-
-#if !HAVE_DECL_STRTOD
-double strtod(const char* nptr, char** endptr);
-#endif
-
-template <>
-inline double
-strtod_(const char* nptr, char** endptr) {
-  return strtod(nptr, endptr);
-}
-
-#if !HAVE_DECL_STRTOLD
-long double
-strtold(const char* nptr, char** endptr);
-#endif
-
-template <>
-inline long double
-strtod_(const char*nptr, char** endptr) {
-  return strtold(nptr, endptr);
-}
-
-template <typename T>
-inline int
-dtostr_(char* str, size_t size, T x) {
-  return snprintf(str, size, "%.99g", static_cast<double>(x));
-}
-
-template <>
-inline int
-dtostr_<long double>(char* str, size_t size, long double x) {
-  return snprintf(str, size, "%.99Lg", x);
-}
-
 template <typename Policy, typename Type>
 inline Result
-from_c_string_float(Type& to, const char* from, Rounding_Dir dir) {
-  errno = 0;
-  char* end;
-  Type v = strtod_<Type>(from, &end);
-  if (errno == ERANGE) {
-    to = v;
-    if (v < 0)
-      return V_GT;
-    if (v > 0)
-      return V_LT;
-    // FIXME:
-    return V_EQ;
-  }
-  if (errno || *end)
-    return set_special<Policy>(to, V_CVT_STR_UNK);
-  to = v;
-  // FIXME:
-  return assign_float_float_exact<Policy>(to, v, dir);
-}
-
-template <typename Policy, typename Type>
-inline Result
-to_c_string_float(char* str, size_t size, Type& from, const Numeric_Format&, Rounding_Dir) {
+output_float(std::ostream& os, Type& from, const Numeric_Format&, Rounding_Dir) {
   if (from == 0) {
-    strncpy(str, "0", size);
+    os << "0";
     return V_EQ;
   }
-  dtostr_(str, size, from);
+  int old_precision = os.precision(10000);
+  os << from;
+  os.precision(old_precision);
   return V_EQ;
 }
 
@@ -616,8 +620,8 @@ SPECIALIZE_SGN(float, float)
 SPECIALIZE_CMP(float, float, float)
 SPECIALIZE_ADD_MUL(float, float, float)
 SPECIALIZE_SUB_MUL(float, float, float)
-SPECIALIZE_FROM_C_STRING(float, float)
-SPECIALIZE_TO_C_STRING(float, float)
+SPECIALIZE_INPUT(generic, float)
+SPECIALIZE_OUTPUT(float, float)
 
 SPECIALIZE_ASSIGN(float_minf, double, Minus_Infinity)
 SPECIALIZE_ASSIGN(float_pinf, double, Plus_Infinity)
@@ -636,8 +640,8 @@ SPECIALIZE_SGN(float, double)
 SPECIALIZE_CMP(float, double, double)
 SPECIALIZE_ADD_MUL(float, double, double)
 SPECIALIZE_SUB_MUL(float, double, double)
-SPECIALIZE_FROM_C_STRING(float, double)
-SPECIALIZE_TO_C_STRING(float, double)
+SPECIALIZE_INPUT(generic, double)
+SPECIALIZE_OUTPUT(float, double)
 
 SPECIALIZE_ASSIGN(float_minf, long double, Minus_Infinity)
 SPECIALIZE_ASSIGN(float_pinf, long double, Plus_Infinity)
@@ -656,12 +660,15 @@ SPECIALIZE_SGN(float, long double)
 SPECIALIZE_CMP(float, long double, long double)
 SPECIALIZE_ADD_MUL(float, long double, long double)
 SPECIALIZE_SUB_MUL(float, long double, long double)
-SPECIALIZE_FROM_C_STRING(float, long double)
-SPECIALIZE_TO_C_STRING(float, long double)
+SPECIALIZE_INPUT(generic, long double)
+SPECIALIZE_OUTPUT(float, long double)
 
 SPECIALIZE_ASSIGN(float_mpz, float, mpz_class)
 SPECIALIZE_ASSIGN(float_mpz, double, mpz_class)
 SPECIALIZE_ASSIGN(float_mpz, long double, mpz_class)
+SPECIALIZE_ASSIGN(float_mpq, float, mpq_class)
+SPECIALIZE_ASSIGN(float_mpq, double, mpq_class)
+SPECIALIZE_ASSIGN(float_mpq, long double, mpq_class)
 
 } // namespace Checked
 

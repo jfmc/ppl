@@ -24,11 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Checked_Number_defs_hh
 #define PPL_Checked_Number_defs_hh 1
 
-#include "float.types.hh"
 #include "Checked_Number.types.hh"
 #include "checked.defs.hh"
-#include <gmpxx.h>
-#include <iostream>
 
 namespace Parma_Polyhedra_Library {
 

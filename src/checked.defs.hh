@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_checked_defs_hh 1
 
 #include <iostream>
+#include <gmpxx.h>
 #include "Rounding.defs.hh"
 #include "Numeric_Format.defs.hh"
 
@@ -281,10 +282,10 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
   SPECIALIZE_FUN3_0_1(gcd, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
 #define SPECIALIZE_LCM(suf, To, From) \
   SPECIALIZE_FUN3_0_1(lcm, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
-#define SPECIALIZE_FROM_C_STRING(suf, Type) \
-  SPECIALIZE_FUN1_0_2(from_c_string, suf, Result, nonconst, Type, const char*, Rounding_Dir)
-#define SPECIALIZE_TO_C_STRING(suf, Type) \
-  SPECIALIZE_FUN1_2_2(to_c_string, suf, Result, char*, size_t, const, Type, const Numeric_Format&, Rounding_Dir)
+#define SPECIALIZE_INPUT(suf, Type) \
+  SPECIALIZE_FUN1_0_2(input, suf, Result, nonconst, Type, std::istream&, Rounding_Dir)
+#define SPECIALIZE_OUTPUT(suf, Type) \
+  SPECIALIZE_FUN1_1_2(output, suf, Result, std::ostream&, const, Type, const Numeric_Format&, Rounding_Dir)
 
 
 DECLARE_FUN1_0_0(sgn,         Result, const, From)
@@ -307,11 +308,13 @@ DECLARE_FUN3_0_1(add_mul,     Result, nonconst, To, const, From1, const, From2, 
 DECLARE_FUN3_0_1(sub_mul,     Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN3_0_1(gcd,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN3_0_1(lcm,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-DECLARE_FUN1_0_2(from_c_string, Result, nonconst, Type, const char*, Rounding_Dir)
-DECLARE_FUN1_2_2(to_c_string, Result, char*, size_t, const, Type, const Numeric_Format&, Rounding_Dir)
+DECLARE_FUN1_0_2(input, Result, nonconst, Type, std::istream&, Rounding_Dir)
+DECLARE_FUN1_1_2(output, Result, std::ostream&, const, Type, const Numeric_Format&, Rounding_Dir)
 
 template <typename Policy, typename To>
 Result round(To& to, Result r, Rounding_Dir dir);
+
+Result input_mpq(mpq_class& to, std::istream& is);
 
 } // namespace Checked
 

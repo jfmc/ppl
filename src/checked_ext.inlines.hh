@@ -486,37 +486,29 @@ ne_ext(const Type1& x, const Type2& y) {
 
 template <typename Policy, typename Type>
 inline Result
-to_c_string_ext(char* str, size_t size, const Type& x, const Numeric_Format& format, Rounding_Dir dir) {
+output_ext(std::ostream& os, const Type& x, const Numeric_Format& format, Rounding_Dir dir) {
   if (handle_ext_natively(Type))
-    return to_c_string<Policy>(str, size, x, format, dir);
+    return output<Policy>(os, x, format, dir);
   if (is_nan<Policy>(x)) {
-    strncpy(str, "nan", size);
+    os << "nan";
     return VC_NAN;
   }
   else if (is_minf<Policy>(x)) {
-    strncpy(str, "-inf", size);
+    os << "-inf";
     return V_EQ;
   }
   else if (is_pinf<Policy>(x)) {
-    strncpy(str, "+inf", size);
+    os << "+inf";
     return V_EQ;
   }
   else
-    return to_c_string<Policy>(str, size, x, format, dir);
+    return output<Policy>(os, x, format, dir);
 }
 
 template <typename To_Policy, typename To>
 inline Result
-from_c_string_ext(To& to, const char* str, Rounding_Dir dir) {
-  if (handle_ext_natively(To))
-    return from_c_string<To_Policy>(to, str, dir);
-  if (strcmp(str, "-inf") == 0)
-    return assign<To_Policy>(to, MINUS_INFINITY, dir);
-  if (strcmp(str, "+inf") == 0)
-    return assign<To_Policy>(to, PLUS_INFINITY, dir);
-  if (strcmp(str, "nan") == 0)
-    return set_special<To_Policy>(to, VC_NAN);
-  return from_c_string<To_Policy>(to, str, dir);
+input_ext(To& to, std::istream& is, Rounding_Dir dir) {
+  return input<To_Policy>(to, is, dir);
 }
 
 } // namespace Checked

@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_mpz_inlines_hh
 #define PPL_checked_mpz_inlines_hh 1
 
-#include "Limits.hh"
-#include <gmpxx.h>
 #include <cmath>
 
 namespace Parma_Polyhedra_Library {
@@ -141,7 +139,9 @@ assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
     mpz_t rem;
     mpz_init(rem);
     mpz_tdiv_qr(to.get_mpz_t(), rem, n, d);
-    switch (mpz_sgn(rem)) {
+    int sign = mpz_sgn(rem);
+    mpz_clear(rem);
+    switch (sign) {
     case -1:
       return round_lt_mpz<Policy>(to, dir);
     case 1:
@@ -302,7 +302,9 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir dir)
     mpz_t rem;
     mpz_init(rem);
     mpz_tdiv_qr(to.get_mpz_t(), rem, x.get_mpz_t(), y.get_mpz_t());
-    switch (mpz_sgn(rem)) {
+    int sign = mpz_sgn(rem);
+    mpz_clear(rem);
+    switch (sign) {
     case -1:
       return round_lt_mpz<Policy>(to, dir);
     case 1:
@@ -417,22 +419,13 @@ SPECIALIZE_CMP(mp, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-from_c_string_mpz(mpz_class& to, const char* from, Rounding_Dir) {
-  if (mpz_set_str(to.get_mpz_t(), from, 10) != 0)
-    return set_special<Policy>(to, V_CVT_STR_UNK);
+output_mpz(std::ostream& os, const mpz_class& from, const Numeric_Format&, Rounding_Dir) {
+  os << from;
   return V_EQ;
 }
 
-template <typename Policy>
-inline Result
-to_c_string_mpz(char* str, size_t size, const mpz_class& from, const Numeric_Format&, Rounding_Dir) {
-  std::string s = from.get_str();
-  strncpy(str, s.c_str(), size);
-  return V_EQ;
-}
-
-SPECIALIZE_FROM_C_STRING(mpz, mpz_class)
-SPECIALIZE_TO_C_STRING(mpz, mpz_class)
+SPECIALIZE_INPUT(generic, mpz_class)
+SPECIALIZE_OUTPUT(mpz, mpz_class)
 
 } // namespace Checked
 

@@ -24,9 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_mpq_inlines_hh
 #define PPL_checked_mpq_inlines_hh 1
 
-#include "checked_mpz.inlines.hh"
-#include <gmpxx.h>
-
 namespace Parma_Polyhedra_Library {
 
 namespace Checked {
@@ -237,23 +234,24 @@ SPECIALIZE_ABS(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-from_c_string_mpq(mpq_class& to, const char* from, Rounding_Dir) {
-  if (mpq_set_str(to.get_mpq_t(), from, 10) != 0)
-    return set_special<Policy>(to, V_CVT_STR_UNK);
-  to.canonicalize();
-  return V_EQ;
+input_mpq(mpq_class& to, std::istream& is, Rounding_Dir dir) {
+  Result r = input_mpq(to, is);
+  if (r == VC_MINUS_INFINITY)
+    return assign<Policy>(to, MINUS_INFINITY, dir);
+  if (r == VC_PLUS_INFINITY)
+    return assign<Policy>(to, PLUS_INFINITY, dir);
+  return set_special<Policy>(to, r);
 }
 
 template <typename Policy>
 inline Result
-to_c_string_mpq(char* str, size_t size, const mpq_class& from, const Numeric_Format&, Rounding_Dir) {
-  std::string s = from.get_str();
-  strncpy(str, s.c_str(), size);
+output_mpq(std::ostream& os, const mpq_class& from, const Numeric_Format&, Rounding_Dir) {
+  os << from;
   return V_EQ;
 }
 
-SPECIALIZE_FROM_C_STRING(mpq, mpq_class)
-SPECIALIZE_TO_C_STRING(mpq, mpq_class)
+SPECIALIZE_INPUT(mpq, mpq_class)
+SPECIALIZE_OUTPUT(mpq, mpq_class)
 
 } // namespace Checked
 

@@ -30,7 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cerrno>
 #include <cstdlib>
 #include <climits>
-#include <gmpxx.h>
+#include <string>
 
 #if !HAVE_DECL_STRTOLL
 signed long long
@@ -560,21 +560,24 @@ inline Result
 assign_int_mpq(To& to, const mpq_class& from, Rounding_Dir dir) {
   mpz_srcptr n = from.get_num().get_mpz_t();
   mpz_srcptr d = from.get_den().get_mpz_t();
-  mpz_t q;
+  mpz_class q;
+  mpz_ptr _q = q.get_mpz_t();
   mpz_t rem;
-  mpz_init(q);
   bool use_round = want_rounding<Policy>(dir);
+  int sign;
   if (use_round) {
     mpz_init(rem);
-    mpz_tdiv_qr(q, rem, n, d);
+    mpz_tdiv_qr(_q, rem, n, d);
+    sign = mpz_sgn(rem);
+    mpz_clear(rem);
   }
   else {
-    mpz_divexact(q, n, d);
+    mpz_tdiv_q(_q, n, d);
   }
   Result r = assign<Policy>(to, q, dir);
   if (r == V_EQ) {
     if (use_round) {
-      switch (mpz_sgn(rem)) {
+      switch (sign) {
       case -1:
 	return round_lt_int<Policy>(to, dir);
       case 1:
@@ -1137,102 +1140,15 @@ sub_mul_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 
 template <typename Policy, typename Type>
 inline Result
-from_c_string_signed_int(Type& to, const char* from, Rounding_Dir dir) {
-  errno = 0;
-  char* end;
-  signed long v = strtol(from, &end, 0);
-  if (errno == ERANGE)
-    return v < 0 ? set_neg_overflow_int<Policy>(to, dir) : set_pos_overflow_int<Policy>(to, dir);
-  if (errno || *end)
-    return set_special<Policy>(to, V_CVT_STR_UNK);
-  return assign<Policy>(to, v, dir);
-}
-
-template <typename Policy, typename Type>
-inline Result
-from_c_string_unsigned_int(Type& to, const char* from, Rounding_Dir dir) {
-  errno = 0;
-  char* end;
-  unsigned long v = strtoul(from, &end, 0);
-  if ((errno && errno != ERANGE) || *end)
-    return set_special<Policy>(to, V_CVT_STR_UNK);
-  char c;
-  do {
-    c = *from++;
-  } while (isspace(c));
-  if (c == '-') {
-    if (errno || v != 0)
-      return set_neg_overflow_int<Policy>(to, dir);
-  }
-  else {
-    if (errno == ERANGE)
-      return set_pos_overflow_int<Policy>(to, dir);
-  }
-  return assign<Policy>(to, v, dir);
-}
-
-template <typename Policy, typename Type>
-inline Result
-from_c_string_long_long(Type& to, const char* from, Rounding_Dir dir) {
-  errno = 0;
-  char* end;
-  signed long long v = strtoll(from, &end, 0);
-  if (errno == ERANGE)
-    return v < 0 ? set_neg_overflow_int<Policy>(to, dir) : set_pos_overflow_int<Policy>(to, dir);
-  if (errno || *end)
-    return V_CVT_STR_UNK;
-  to = v;
+output_char(std::ostream& os, Type& from, const Numeric_Format&, Rounding_Dir) {
+  os << (int) from;
   return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result
-from_c_string_unsigned_long_long(Type& to, const char* from, Rounding_Dir dir) {
-  errno = 0;
-  char* end;
-  unsigned long long v = strtoull(from, &end, 0);
-  if ((errno && errno != ERANGE) || *end)
-    return V_CVT_STR_UNK;
-  char c;
-  do {
-    c = *from++;
-  } while (isspace(c));
-  if (c == '-') {
-    if (errno || v != 0)
-      return set_neg_overflow_int<Policy>(to, dir);
-  }
-  else {
-    if (errno == ERANGE)
-      return set_pos_overflow_int<Policy>(to, dir);
-  }
-  return assign<Policy>(to, v, dir);
-}
-
-template <typename Policy, typename Type>
-inline Result
-to_c_string_signed_int(char* str, size_t size, Type& from, const Numeric_Format&, Rounding_Dir) {
-  snprintf(str, size, "%ld", static_cast<signed long>(from));
-  return V_EQ;
-}
-
-template <typename Policy, typename Type>
-inline Result
-to_c_string_unsigned_int(char* str, size_t size, Type& from, const Numeric_Format&, Rounding_Dir) {
-  snprintf(str, size, "%lu", static_cast<unsigned long>(from));
-  return V_EQ;
-}
-
-template <typename Policy, typename Type>
-inline Result
-to_c_string_long_long(char* str, size_t size, Type& from, const Numeric_Format&, Rounding_Dir) {
-  snprintf(str, size, "%lld", from);
-  return V_EQ;
-}
-
-template <typename Policy, typename Type>
-inline Result
-to_c_string_unsigned_long_long(char* str, size_t size, Type& from, const Numeric_Format&, Rounding_Dir) {
-  snprintf(str, size, "%llu", from);
+output_int(std::ostream& os, Type& from, const Numeric_Format&, Rounding_Dir) {
+  os << from;
   return V_EQ;
 }
 
@@ -1390,27 +1306,27 @@ SPECIALIZE_SUB_MUL(int, unsigned int, unsigned int)
 SPECIALIZE_SUB_MUL(int, unsigned long, unsigned long)
 SPECIALIZE_SUB_MUL(int, unsigned long long, unsigned long long)
 
-SPECIALIZE_FROM_C_STRING(signed_int, signed char)
-SPECIALIZE_FROM_C_STRING(signed_int, signed short)
-SPECIALIZE_FROM_C_STRING(signed_int, signed int)
-SPECIALIZE_FROM_C_STRING(signed_int, signed long)
-SPECIALIZE_FROM_C_STRING(long_long, signed long long)
-SPECIALIZE_FROM_C_STRING(unsigned_int, unsigned char)
-SPECIALIZE_FROM_C_STRING(unsigned_int, unsigned short)
-SPECIALIZE_FROM_C_STRING(unsigned_int, unsigned int)
-SPECIALIZE_FROM_C_STRING(unsigned_int, unsigned long)
-SPECIALIZE_FROM_C_STRING(unsigned_long_long, unsigned long long)
+SPECIALIZE_INPUT(generic, signed char)
+SPECIALIZE_INPUT(generic, signed short)
+SPECIALIZE_INPUT(generic, signed int)
+SPECIALIZE_INPUT(generic, signed long)
+SPECIALIZE_INPUT(generic, signed long long)
+SPECIALIZE_INPUT(generic, unsigned char)
+SPECIALIZE_INPUT(generic, unsigned short)
+SPECIALIZE_INPUT(generic, unsigned int)
+SPECIALIZE_INPUT(generic, unsigned long)
+SPECIALIZE_INPUT(generic, unsigned long long)
 
-SPECIALIZE_TO_C_STRING(signed_int, signed char)
-SPECIALIZE_TO_C_STRING(signed_int, signed short)
-SPECIALIZE_TO_C_STRING(signed_int, signed int)
-SPECIALIZE_TO_C_STRING(signed_int, signed long)
-SPECIALIZE_TO_C_STRING(long_long, signed long long)
-SPECIALIZE_TO_C_STRING(unsigned_int, unsigned char)
-SPECIALIZE_TO_C_STRING(unsigned_int, unsigned short)
-SPECIALIZE_TO_C_STRING(unsigned_int, unsigned int)
-SPECIALIZE_TO_C_STRING(unsigned_int, unsigned long)
-SPECIALIZE_TO_C_STRING(unsigned_long_long, unsigned long long)
+SPECIALIZE_OUTPUT(char, signed char)
+SPECIALIZE_OUTPUT(int, signed short)
+SPECIALIZE_OUTPUT(int, signed int)
+SPECIALIZE_OUTPUT(int, signed long)
+SPECIALIZE_OUTPUT(int, signed long long)
+SPECIALIZE_OUTPUT(char, unsigned char)
+SPECIALIZE_OUTPUT(int, unsigned short)
+SPECIALIZE_OUTPUT(int, unsigned int)
+SPECIALIZE_OUTPUT(int, unsigned long)
+SPECIALIZE_OUTPUT(int, unsigned long long)
 
 } // namespace Checked
 

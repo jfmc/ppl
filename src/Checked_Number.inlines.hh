@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Checked_Number_inlines_hh 1
 
 #include <stdexcept>
+#include <sstream>
 
 namespace Parma_Polyhedra_Library {
 
@@ -94,7 +95,8 @@ DEF_CTOR(mpz_class&)
 template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const char* x) {
-  Policy::handle_result(Checked::from_c_string<Policy>(v, x, ROUND_CURRENT));
+  std::istringstream s(x);
+  Policy::handle_result(Checked::input<Policy>(v, s, ROUND_CURRENT));
 }
 
 template <typename T, typename Policy>
@@ -212,13 +214,14 @@ Checked_Number<To, To_Policy>::assign(const Not_A_Number& x, Rounding_Dir dir) {
 template <typename To, typename To_Policy>
 inline Result
 Checked_Number<To, To_Policy>::assign(const char* x, Rounding_Dir dir) {
-  return Checked::from_c_string<To_Policy>(v, x, dir);
+  std::istringstream s(x);
+  return Checked::input<To_Policy>(v, s, dir);
 }
 
 template <typename To, typename To_Policy>
 inline Result
 Checked_Number<To, To_Policy>::assign(char* x, Rounding_Dir dir) {
-  return Checked::from_c_string<To_Policy>(v, x, dir);
+  return assign(const_cast<const char *>(x), dir);
 }
 
 template <typename To, typename To_Policy>
@@ -592,18 +595,14 @@ cmp(const Checked_Number<T1, Policy1>& x,
 template <typename T, typename Policy>
 inline std::ostream&
 operator<<(std::ostream& os, const Checked_Number<T, Policy>& x) {
-  char str[1024];
-  Policy::handle_result(Checked::to_c_string_ext<Policy>(str, sizeof(str), x.raw_value(), Numeric_Format(), ROUND_CURRENT));
-  os << str;
+  Policy::handle_result(Checked::output_ext<Policy>(os, x.raw_value(), Numeric_Format(), ROUND_CURRENT));
   return os;
 }
 
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
 inline std::istream& operator>>(std::istream& is, Checked_Number<T, Policy>& x) {
-  std::string str;
-  is >> str;
-  Result r = Checked::from_c_string_ext<Policy>(x.raw_value(), str.c_str(), ROUND_CURRENT);
+  Result r = Checked::input_ext<Policy>(x.raw_value(), is, ROUND_CURRENT);
   if (r == V_CVT_STR_UNK)
     is.setstate(std::ios::failbit);
   else

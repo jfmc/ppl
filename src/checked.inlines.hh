@@ -150,6 +150,20 @@ cmp_generic(const Type& x, const Type& y) {
   return V_EQ;
 }
 
+template <typename Policy, typename Type>
+inline Result
+input_generic(Type& to, std::istream& is, Rounding_Dir dir) {
+  mpq_class q;
+  Result r = input_mpq(q, is);
+  if (r == VC_MINUS_INFINITY)
+    return assign<Policy>(to, MINUS_INFINITY, dir);
+  if (r == VC_PLUS_INFINITY)
+    return assign<Policy>(to, PLUS_INFINITY, dir);
+  if (r == V_EQ)
+    return assign<Policy>(to, q, dir);
+  return set_special<Policy>(to, r);
+}
+
 template <typename Policy>
 inline bool
 want_rounding(Rounding_Dir dir) {
