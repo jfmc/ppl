@@ -75,9 +75,11 @@ main() {
   Variable d(3);
   Variable e(4);
 
+  LinExpression expr01 = (1*a + 2*b + 6*c + 7*d + 9*e);
+  LinExpression expr10 = 10 * (a + b + c + d + e);
+
   for (int i = 0; i < 10; i++) {
-    LinExpression expr = (10*i) * (a + b + c + d + e);
-    expr += (1*a + 2*b + 6*c + 7*d + 9*e);
+    LinExpression expr = i * expr10 + expr01;
     gs.insert(vertex(expr));
   }
 
