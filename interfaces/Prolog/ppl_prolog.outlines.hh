@@ -139,11 +139,12 @@ handle_exception(const integer_out_of_range& e) {
     domain << "[" << LONG_MIN << ", " << LONG_MAX << "]";
     Prolog_put_string(expected_domain, domain.str().c_str());
   }
-  SP_cons_functor(et, SP_atom_from_string("integer_term_to_Integer"), 1,
-		  culprit);
-  SP_cons_functor(et, SP_atom_from_string("domain_error"), 4,
-		  et, arg_no, expected_domain, culprit);
-  SP_raise_exception(et);
+  Prolog_construct_functor(et,
+			   Prolog_atom_from_string("integer_term_to_Integer"),
+			   culprit);
+  Prolog_construct_functor(et, Prolog_atom_from_string("domain_error"),
+			   et, arg_no, expected_domain, culprit);
+  Prolog_raise_exception(et);
 }
 
 static void
@@ -161,11 +162,12 @@ handle_exception(const not_unsigned_int& e) {
     domain << "[" << 0 << ", " << UINT_MAX << "]";
     Prolog_put_string(expected_domain, domain.str().c_str());
   }
-  SP_cons_functor(et, SP_atom_from_string("get_size_t/term_to_varid"), 1,
-		  culprit);
-  SP_cons_functor(et, SP_atom_from_string("domain_error"), 4,
-		  et, arg_no, expected_domain, culprit);
-  SP_raise_exception(et);
+  Prolog_construct_functor(et,
+			   Prolog_atom_from_string("get_size_t/term_to_varid"),
+			   culprit);
+  Prolog_construct_functor(et, Prolog_atom_from_string("domain_error"),
+			   et, arg_no, expected_domain, culprit);
+  Prolog_raise_exception(et);
 }
 
 static void
@@ -178,10 +180,10 @@ handle_exception(const non_linear& e) {
   Prolog_put_term(culprit, e.term());
   Prolog_put_integer(arg_no, 1);
   Prolog_put_string(expected_domain, "linear expression or constraint");
-  SP_cons_functor(et, SP_atom_from_string(e.who()), 1, culprit);
-  SP_cons_functor(et, SP_atom_from_string("domain_error"), 4,
-		  et, arg_no, expected_domain, culprit);
-  SP_raise_exception(et);
+  Prolog_construct_functor(et, Prolog_atom_from_string(e.who()), culprit);
+  Prolog_construct_functor(et, Prolog_atom_from_string("domain_error"),
+			   et, arg_no, expected_domain, culprit);
+  Prolog_raise_exception(et);
 }
 
 static void
@@ -194,24 +196,25 @@ handle_exception(const not_a_variable& e) {
   Prolog_put_term(culprit, e.term());
   Prolog_put_integer(arg_no, 1);
   Prolog_put_string(expected_domain, "$VAR(integer)");
-  SP_cons_functor(et, SP_atom_from_string("get_variable"), 1, culprit);
-  SP_cons_functor(et, SP_atom_from_string("domain_error"), 4,
-		  et, arg_no, expected_domain, culprit);
-  SP_raise_exception(et);
+  Prolog_construct_functor(et, Prolog_atom_from_string("get_variable"),
+			   culprit);
+  Prolog_construct_functor(et, Prolog_atom_from_string("domain_error"),
+			   et, arg_no, expected_domain, culprit);
+  Prolog_raise_exception(et);
 }
 
 static void
 handle_exception() {
   Prolog_term_ref et = Prolog_new_term_ref();
   Prolog_put_string(et, "PPL bug: unknown exception raised");
-  SP_raise_exception(et);
+  Prolog_raise_exception(et);
 }
 
 static void
 handle_exception(const std::exception& e) {
   Prolog_term_ref et = Prolog_new_term_ref();
   Prolog_put_string(et, e.what());
-  SP_raise_exception(et);
+  Prolog_raise_exception(et);
 }
 
 #define CATCH_INTERNAL \
@@ -241,28 +244,28 @@ handle_exception(const std::exception& e) {
   CATCH_PPL
 
 // For Prolog lists.
-static SP_atom a_nil;
+static Prolog_atom a_nil;
 
 // For variables.
-static SP_atom a_dollar_VAR;
+static Prolog_atom a_dollar_VAR;
 
 // For linear expressions.
-static SP_atom a_plus;
-static SP_atom a_minus;
-static SP_atom a_asterisk;
+static Prolog_atom a_plus;
+static Prolog_atom a_minus;
+static Prolog_atom a_asterisk;
 
 // For constraints.
-static SP_atom a_equal;
-static SP_atom a_greater_than_equal;
-static SP_atom a_equal_less_than;
+static Prolog_atom a_equal;
+static Prolog_atom a_greater_than_equal;
+static Prolog_atom a_equal_less_than;
 
 // For generators.
-static SP_atom a_line;
-static SP_atom a_ray;
-static SP_atom a_vertex;
+static Prolog_atom a_line;
+static Prolog_atom a_ray;
+static Prolog_atom a_vertex;
 
 static struct {
-  SP_atom* p_atom;
+  Prolog_atom* p_atom;
   const char* name;
 } const sp_atoms[] = {
   { &a_nil,                "[]" },
@@ -297,18 +300,18 @@ variable_term(unsigned int varid) {
   Prolog_term_ref v = Prolog_new_term_ref();
   Prolog_put_integer(v, varid);
   Prolog_term_ref t = Prolog_new_term_ref();
-  SP_cons_functor(t, a_dollar_VAR, 1, v);
+  Prolog_construct_functor(t, a_dollar_VAR, v);
   return t;
 }
 
 extern "C" void
 ppl_init(int /* when */) {
   for (size_t i = 0; i < sizeof(sp_atoms)/sizeof(sp_atoms[0]); ++i) {
-    SP_atom a = SP_atom_from_string(sp_atoms[i].name);
+    Prolog_atom a = Prolog_atom_from_string(sp_atoms[i].name);
     if (SP_register_atom(a) == 0) {
       Prolog_term_ref et = Prolog_new_term_ref();
       Prolog_put_string(et, "Cannot initialize the PPL interface");
-      SP_raise_exception(et);
+      Prolog_raise_exception(et);
       return;
     }
     *sp_atoms[i].p_atom = a;
@@ -416,7 +419,7 @@ build_lin_expression(Prolog_term_ref t) {
   if (SP_is_integer(t))
     return PPL::LinExpression(integer_term_to_Integer(t));
   else if (SP_is_compound(t)) {
-    SP_atom functor;
+    Prolog_atom functor;
     int arity;
     SP_get_functor(t, &functor, &arity);
     switch (arity) {
@@ -471,7 +474,7 @@ build_lin_expression(Prolog_term_ref t) {
 static PPL::Constraint
 build_constraint(Prolog_term_ref t) {
   if (SP_is_compound(t)) {
-    SP_atom functor;
+    Prolog_atom functor;
     int arity;
     SP_get_functor(t, &functor, &arity);
     if (arity == 2) {
@@ -538,7 +541,7 @@ ppl_add_constraints_and_minimize(void* pp, Prolog_term_ref constraints_list) {
 static PPL::Generator
 build_generator(Prolog_term_ref t) {
   if (SP_is_compound(t)) {
-    SP_atom functor;
+    Prolog_atom functor;
     int arity;
     SP_get_functor(t, &functor, &arity);
     if (arity == 1) {
@@ -634,8 +637,8 @@ get_lin_expression(const R& r) {
     Prolog_put_integer(so_far, 0);
   }
   else {
-    SP_cons_functor(so_far, a_asterisk, 2,
-		    integer_term(coefficient), variable_term(varid));
+    Prolog_construct_functor(so_far, a_asterisk,
+			     integer_term(coefficient), variable_term(varid));
     while (true) {
       ++varid;
       while (varid < space_dimension
@@ -645,11 +648,12 @@ get_lin_expression(const R& r) {
 	break;
       else {
 	Prolog_term_ref addendum = Prolog_new_term_ref();
-	SP_cons_functor(addendum, a_asterisk, 2,
-			integer_term(coefficient), variable_term(varid));
+	Prolog_construct_functor(addendum, a_asterisk,
+				 integer_term(coefficient),
+				 variable_term(varid));
 	Prolog_term_ref new_so_far = Prolog_new_term_ref();
-	SP_cons_functor(new_so_far, a_plus, 2,
-			so_far, addendum);
+	Prolog_construct_functor(new_so_far, a_plus,
+				 so_far, addendum);
 	so_far = new_so_far;
       }
     }
@@ -659,10 +663,11 @@ get_lin_expression(const R& r) {
 
 static Prolog_term_ref
 constraint_term(const PPL::Constraint& c) {
-  SP_atom relation = c.is_equality() ? a_equal : a_greater_than_equal;
+  Prolog_atom relation = c.is_equality() ? a_equal : a_greater_than_equal;
   Prolog_term_ref t = Prolog_new_term_ref();
-  SP_cons_functor(t, relation, 2,
-		  get_lin_expression(c), integer_term(-c.coefficient()));
+  Prolog_construct_functor(t, relation,
+			   get_lin_expression(c),
+			   integer_term(-c.coefficient()));
   return t;
 }
 
@@ -691,7 +696,7 @@ ppl_get_constraints(const void* pp, Prolog_term_ref constraints_list) {
 static Prolog_term_ref
 generator_term(const PPL::Generator& g) {
   Prolog_term_ref t = Prolog_new_term_ref();
-  SP_atom constructor;
+  Prolog_atom constructor;
   switch (g.type()) {
   case PPL::Generator::LINE:
     constructor = a_line;
@@ -706,15 +711,15 @@ generator_term(const PPL::Generator& g) {
       if (divisor == 1)
 	break;
       else {
-	SP_cons_functor(t, constructor, 2,
-			get_lin_expression(g), integer_term(divisor));
+	Prolog_construct_functor(t, constructor,
+				 get_lin_expression(g), integer_term(divisor));
 	return t;
       }
     }
   default:
     abort();
   }
-  SP_cons_functor(t, constructor, 1, get_lin_expression(g));
+  Prolog_construct_functor(t, constructor, get_lin_expression(g));
   return t;
 }
 
@@ -743,7 +748,7 @@ ppl_get_generators(const void* pp, Prolog_term_ref generators_list) {
 static PPL::Variable
 get_variable(Prolog_term_ref t) {
   if (SP_is_compound(t)) {
-    SP_atom functor;
+    Prolog_atom functor;
     int arity;
     SP_get_functor(t, &functor, &arity);
     if (functor == a_dollar_VAR && arity == 1) {
