@@ -1713,7 +1713,13 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
     const Constraint& c = *i;
     assert(!c.is_trivial_true());
     assert(!c.is_trivial_false());
-    // CHECKME: is this patch really correct?
+    // If the polyhedron `x' is included in the polyhedron defined by
+    // `c', then `c' can be skipped, as adding its complement to `x'
+    // would result in the empty polyhedron.  Moreover, if we operate
+    // on C-polyhedra and `c' is a non-strict inequality, c _must_ be
+    // skipped for otherwise we would obtain a result that is less
+    // precise than the poly-difference.
+    // CHECKME: do we really obtain the poly-difference?
     if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
       continue;
     Polyhedron z = x;
