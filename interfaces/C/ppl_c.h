@@ -32,6 +32,7 @@ Detailed description with examples to be written.
 #define _ppl_c_h 1
 
 #include <gmp.h>
+#include <stdio.h>
 
 /*
   __BEGIN_DECLS should be used at the beginning of the C declarations,
@@ -171,7 +172,7 @@ ppl_delete_Coefficient __P((ppl_const_Coefficient_t c));
   Sets the value of the GMP integer \p z to the value of \p c.
 */
 int
-ppl_Coefficient_to_mpz_t __P((ppl_Coefficient_t c, mpz_t z));
+ppl_Coefficient_to_mpz_t __P((ppl_const_Coefficient_t c, mpz_t z));
 
 /*!
   Returns a positive integer if \p c is well formed, i.e., if it
@@ -333,6 +334,12 @@ int
 ppl_Constraint_space_dimension __P((ppl_const_Constraint_t c));
 
 /*!
+  Returns the type of constraint \p c.
+*/
+int
+ppl_Constraint_type __P((ppl_const_Constraint_t c));
+
+/*!
   Copies into \p n the coefficient of variable \p var in
   constraint \p c.
 */
@@ -354,7 +361,7 @@ ppl_Constraint_inhomogeneous_term __P((ppl_const_Constraint_t c,
   noise if \p c is broken.  Useful for debugging purposes.
 */
 int
-ppl_Cnstraint_OK __P((ppl_const_Constraint_t c));
+ppl_Constraint_OK __P((ppl_const_Constraint_t c));
 
 
 PPL_TYPE_DECLARATION(ConSys);

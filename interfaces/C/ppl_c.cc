@@ -153,7 +153,7 @@ ppl_new_Coefficient_from_Coefficient(ppl_Coefficient_t* pc,
 CATCH_ALL
 
 int
-ppl_Coefficient_to_mpz_t(ppl_Coefficient_t c, mpz_t z) try {
+ppl_Coefficient_to_mpz_t(ppl_const_Coefficient_t c, mpz_t z) try {
   mpz_set(z, to_const(c)->get_mpz_t());
   return 0;
 }
@@ -353,6 +353,21 @@ CATCH_ALL
 int
 ppl_Constraint_space_dimension(ppl_const_Constraint_t c) try {
   return to_const(c)->space_dimension();
+}
+CATCH_ALL
+
+int
+ppl_Constraint_type(ppl_const_Constraint_t c) try {
+  switch (to_const(c)->type()) {
+  case Constraint::EQUALITY:
+    return PPL_CONSTRAINT_TYPE_EQUAL;
+  case Constraint::NONSTRICT_INEQUALITY:
+    return PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL;
+  case Constraint::STRICT_INEQUALITY:
+    return PPL_CONSTRAINT_TYPE_GREATER_THAN;
+  default:
+    throw std::runtime_error("ppl_Constraint_type()");
+  }
 }
 CATCH_ALL
 
