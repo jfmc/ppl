@@ -38,15 +38,16 @@ main() {
   Variable x(0);
   Variable y(1);
 
-  ConSys cs;
-  cs.insert(x > 3);
-  cs.insert(y > 3);
-  NNC_Polyhedron ph(cs);
+  ConSys cs1;
+  cs1.insert(x > 3);
+  cs1.insert(y > 3);
+  NNC_Polyhedron ph(cs1);
 
   NNC_Polyhedron ph1(ph);
 
-  C_Polyhedron ph2(2, Polyhedron::EMPTY);
-  ph2.add_generator(point());
+  GenSys gs;
+  gs.insert(point(x + y));
+  NNC_Polyhedron ph2(gs);
 
 #if NOISY
   print_constraints(ph1, "**** ph1 ****");
@@ -60,7 +61,6 @@ main() {
 #if NOISY
   print_generators(ph1, "**** ph1_time_elapse_assign(ph2) ****");
 #endif
-
-  return retval;
-
+ 
+ return retval;
 }

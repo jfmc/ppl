@@ -3053,6 +3053,9 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
 void
 PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
+  // Topology compatibility check.
+  if (x.topology() != y.topology())
+    throw_topology_incompatible("inters_assign_and_min(y)", y);
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility checks.
   if (x_space_dim != y.space_dim)
@@ -3080,57 +3083,39 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   
   GenSys y_gen_sys = const_cast<GenSys&>(y.gen_sys);
   size_t y_gen_sys_num_rows = y_gen_sys.num_rows();
-  // `is_adjusted_topology' is false if and only if `y' is
-  // NOT_NECESSARY_CLOSED and `x' is NECESSARY_CLOSED.
-  bool is_adjusted_topology =
-    y_gen_sys.adjust_topology_and_dimension(x.topology(), x_space_dim);
-  
-  // If `y_gen_sys' has closure points, `y' is NOT_NECESSARY_CLOSED.
-  // So, we can use only the lines, rays, and closure points to build
-  // the new system of generators.
-  if (y_gen_sys.has_closure_points()) {
-    for (size_t i = y_gen_sys_num_rows; i-- > 0; ) {
-      if (y_gen_sys[i].is_point()) {
-	--y_gen_sys_num_rows;
-	std::swap(y_gen_sys[i], y_gen_sys[y_gen_sys_num_rows]);
-      }
-      if (y_gen_sys[i].is_closure_point())
-	y_gen_sys[i][x_space_dim + 1] = 0;
-    }
-    // We erase all the points of `y_gen_sys'.
-    y_gen_sys.erase_to_end(y_gen_sys_num_rows);
-  }
 
-  if (!is_adjusted_topology) {
-    // In this case, `y' is NOT_NECESSARY_CLOSED, but
-    // `x' is NECESSARY_CLOSED: this means that we can not adjusted the
-    // topology of `y_gen_sys' according to the topology of `x'.
-    // So, we must build a temporary system of
-    // generators composed only by the lines, the rays of `y' and by
-    // rays that come from the closure points of `y'.
-    GenSys tmp_gen_sys(x.topology(), y_gen_sys_num_rows, x_space_dim + 1);
-    for (size_t i = 0; i < y_gen_sys_num_rows; ++i) {
-      for (size_t j = 1; j <= x_space_dim; ++j)
-	tmp_gen_sys[i][j] = y_gen_sys[i][j];
-      if (y_gen_sys[i].is_line())
-	// The lines are still lines.
-	tmp_gen_sys[i].set_is_line();
-      else {
-	// If the generator is not a line it must be a ray.
-	tmp_gen_sys[i].set_is_ray_or_point();
+  if (!x.is_necessarily_closed()) {
+    // `x' and `y' are not necessarily closed.
+    if (y_gen_sys.has_closure_points()) {
+      // If `y_gen_sys' has closure points, we can use only lines,
+      // rays and closure points to build the new polyhedron.
+      for (size_t i = y_gen_sys_num_rows; i-- > 0; ) {
+	if (y_gen_sys[i].is_point()) {
+	  // We erase the points from `y_gen_sys'.
+	  --y_gen_sys_num_rows;
+	  std::swap(y_gen_sys[i], y_gen_sys[y_gen_sys_num_rows]);
+	}
+      }
+      // We erase all the points of `y_gen_sys'.
+      y_gen_sys.erase_to_end(y_gen_sys_num_rows);
+    }
+    // All closure points or all points (if `y' is not necessarily closed,
+    // it does not have closure points) becames rays.
+    for (size_t i = y_gen_sys_num_rows; i-- > 0; ) {
+      Generator& g = y_gen_sys[i];
+      if (g[0] != 0) {
+	g[0] = 0;
+	g[x_space_dim + 1] = 0;
       }
     }
-    std::swap(tmp_gen_sys, y_gen_sys);
   }
   else {
-    // At this point, `x' and `y_gen_sys' have the same topology: we must
-    // only say that all points and closure points become rays.
+    // At this point, `x' and `y_gen_sys' are necessarily closed: we must
+    // only say that all points become rays.
     for (size_t i = y_gen_sys.num_rows(); i-- > 0; ) {
-      if (y_gen_sys[i].is_point()) {
-	y_gen_sys[i][0] = 0;
-	if (!x.is_necessarily_closed())
-	  y_gen_sys[i][x_space_dim + 1] = 0;
-      }
+      Generator& g = y_gen_sys[i];
+      if (g.is_point())
+	g[0] = 0;
     }
   }
   // Invalid rays can be built during the previous process.
@@ -3143,10 +3128,12 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   if (y_gen_sys.num_rows() != 0) {
     // To apply the function `Matrix::merge_row_assign()', the two matrices
     // must be ordered.
-    x.obtain_sorted_generators();
+    if (!x.gen_sys.is_sorted())
+      x.gen_sys.sort_rows();
+    // We have changed `y_gen_sys': so it must be sorted.
     y_gen_sys.sort_rows();
     x.gen_sys.merge_rows_assign(y_gen_sys);
-    // Only the system of generators is up- to-date.
+    // Only the system of generators is up-to-date.
     x.clear_constraints_up_to_date();
     x.clear_generators_minimized();
   }

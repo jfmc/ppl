@@ -38,7 +38,7 @@ main() {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph1(2);
+  NNC_Polyhedron ph1(2);
 
   ph1.add_constraint(x >= 0);
   ph1.add_constraint(y >= 0);
@@ -56,13 +56,15 @@ main() {
 #endif
   
   ph1.time_elapse_assign(ph2);
+
+  GenSys known_gs;
+  known_gs.insert(point());
+  known_gs.insert(point(2*x));
+  known_gs.insert(point(2*y));
+  known_gs.insert(ray(2*x + 3*y));
+  known_gs.insert(ray(4*x + 3*y));
    
-  C_Polyhedron known_result(2, Polyhedron::EMPTY);
-  known_result.add_generator(point());
-  known_result.add_generator(point(2*x));
-  known_result.add_generator(point(2*y));
-  known_result.add_generator(ray(2*x + 3*y));
-  known_result.add_generator(ray(4*x + 3*y));
+  NNC_Polyhedron known_result(known_gs);
 
   int retval = (ph1 == known_result) ? 0 : 1;
 
@@ -71,5 +73,4 @@ main() {
 #endif
 
   return retval;
-
 }

@@ -52,7 +52,7 @@ main() {
 #endif
   ph1.time_elapse_assign(ph2);
    
-  C_Polyhedron known_result(2, Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
   known_result.add_generator(point(y));
   known_result.add_generator(ray(y));
   known_result.add_generator(line(x));
@@ -64,5 +64,4 @@ main() {
 #endif
 
   return retval;
-
 }

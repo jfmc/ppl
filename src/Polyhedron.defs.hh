@@ -458,7 +458,8 @@ public:
   //! Computes the time-elapse between \p *this and \p y and
   //! assigns the result to \p *this.
   //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are dimension-incompatible.
+  //!                                  are topology-incompatible
+  //!                                  or dimension-incompatible.
   void time_elapse_assign(const Polyhedron& y);
 
 
