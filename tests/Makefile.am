@@ -77,6 +77,7 @@ ORIGINAL_TESTS = \
 	generalizedaffineimage9 generalizedaffineimage10 \
 	generators1 generators2 generators3 generators4 generators5 \
 	h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
+	hypercubes \
 	inclusion1 inclusion2 \
         intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 intersection8 \
@@ -322,6 +323,8 @@ h79widening2_SOURCES = h79widening2.cc
 h79widening3_SOURCES = h79widening3.cc
 h79widening4_SOURCES = h79widening4.cc
 h79widening5_SOURCES = h79widening5.cc
+
+hypercubes_SOURCES = hypercubes.cc timings.cc
 
 inclusion1_SOURCES = inclusion1.cc
 inclusion2_SOURCES = inclusion2.cc
