@@ -224,10 +224,10 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
      y     <= 3
      x     <= 5.
   */
-  dimension_type c_space_dimension = c.space_dimension();
+  dimension_type c_space_dim = c.space_dimension();
 
   // Dimension-compatibility check.
-  if (c_space_dimension > space_dimension())
+  if (c_space_dim > space_dimension())
     throw_dimension_incompatible("add_constraint(c)", c);
   // Not strict-inequality check.
   if (c.is_strict_inequality())
@@ -240,7 +240,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   dimension_type t = 0;
 
   // Collect the non-zero components of `c'.
-  for (dimension_type i = c_space_dimension; i-- > 0; )
+  for (dimension_type i = c_space_dim; i-- > 0; )
     if (c.coefficient(Variable(i)) != 0) {
       if (t >= 2)
 	// Constraints that are not "bounded differences" are ignored.
@@ -702,10 +702,11 @@ BD_Shape<T>::is_transitively_reduced() const {
 template <typename T>
 inline Poly_Con_Relation
 BD_Shape<T>::relation_with(const Constraint& c) const {
-  dimension_type c_space_dimension = c.space_dimension();
+  dimension_type c_space_dim = c.space_dimension();
+  dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
-  if (c_space_dimension > space_dimension())
+  if (c_space_dim > space_dim)
     throw_dimension_incompatible("relation_with(c)", c);
 
   closure_assign();
@@ -715,42 +716,39 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
 
-  if (space_dimension() == 0) {
+  if (space_dim == 0) {
     if ((c.is_equality() && c.inhomogeneous_term() != 0)
 	|| (c.is_inequality() && c.inhomogeneous_term() < 0))
       return Poly_Con_Relation::is_disjoint();
+    else if (c.is_strict_inequality() && c.inhomogeneous_term() == 0)
+      // The constraint 0 > 0 implicitly defines the hyperplane 0 = 0;
+      // thus, the zero-dimensional point also saturates it.
+      return Poly_Con_Relation::saturates()
+	&& Poly_Con_Relation::is_disjoint();
+    else if (c.is_equality() || c.inhomogeneous_term() == 0)
+      return Poly_Con_Relation::saturates()
+	&& Poly_Con_Relation::is_included();
     else
-      if (c.is_strict_inequality() && c.inhomogeneous_term() == 0)
-	// The constraint 0 > 0 implicitly defines the hyperplane 0 = 0;
-	// thus, the zero-dimensional point also saturates it.
-	return Poly_Con_Relation::saturates()
-	  && Poly_Con_Relation::is_disjoint();
-
-      else if (c.is_equality() || c.inhomogeneous_term() == 0)
-	return Poly_Con_Relation::saturates()
-	  && Poly_Con_Relation::is_included();
-
-      else
-	// The zero-dimensional point saturates
-	// neither the positivity constraint 1 >= 0,
-	// nor the strict positivity constraint 1 > 0.
-	return Poly_Con_Relation::is_included();
+      // The zero-dimensional point saturates
+      // neither the positivity constraint 1 >= 0,
+      // nor the strict positivity constraint 1 > 0.
+      return Poly_Con_Relation::is_included();
   }
 
   // Store the indices of the non-zero components of `c',
-  dimension_type j[2] = { 0, 0 };
+  dimension_type non_zero_position[2] = { 0, 0 };
 
   // Number of non-zero components of `c'.
   dimension_type t = 0;
 
   // Collect the non-zero components of `c'.
-  for (dimension_type i = c_space_dimension; i-- > 0; )
+  for (dimension_type i = c_space_dim; i-- > 0; )
     if (c.coefficient(Variable(i)) != 0) {
       if (t >= 2)
 	throw_constraint_incompatible("relation_with(c)");
 
       else
-	j[t++] = i;
+	non_zero_position[t++] = i;
     }
 
   // We will now make sure `c' has one of the following forms:
@@ -759,23 +757,24 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   //   a*x       <=/= b, if t == 1;
   //   a*x - a*y <=/= b, if t == 2.
   //
-  // In addition, j[0] and (if t >= 1) j[1] will contain the indices
+  // In addition, non_zero_position[0] and (if t >= 1) non_zero_position[1] will contain the indices
   // of the cell(s) of `dbm' to be checked.
   Coefficient a;
   Coefficient b = c.inhomogeneous_term();
   switch (t) {
   case 2:
-    a = c.coefficient(Variable(j[1]));
-    if (a != -c.coefficient(Variable(j[0])))
+    a = c.coefficient(Variable(non_zero_position[1]));
+    if (a != -c.coefficient(Variable(non_zero_position[0])))
       throw_constraint_incompatible("relation_with(c)");
-
-    ++j[1];
-    ++j[0];
+    // In DBMs there is a +1 offset on the position of each dimension.
+    ++non_zero_position[1];
+    ++non_zero_position[0];
     break;
 
   case 1:
-    a = -c.coefficient(Variable(j[0]));
-    ++j[0];
+    a = -c.coefficient(Variable(non_zero_position[0]));
+    // In DBMs there is a +1 offset on the position of each dimension.
+    ++non_zero_position[0];
     break;
 
   case 0:
@@ -797,8 +796,8 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
 
   // Select the cell to be checked for the "<=" part of the constraint,
   // and set `a' to the absolute value of itself.
-  const T& dbm_j_0_j_1 = dbm[j[0]][j[1]];
-  const T& dbm_j_1_j_0 = dbm[j[1]][j[0]];
+  const T& dbm_j_0_j_1 = dbm[non_zero_position[0]][non_zero_position[1]];
+  const T& dbm_j_1_j_0 = dbm[non_zero_position[1]][non_zero_position[0]];
   if (a < 0) {
     a = -a;
     T d;
@@ -814,29 +813,28 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
       else
 	return Poly_Con_Relation::strictly_intersects();
     }
-    else
-      if (c.is_nonstrict_inequality()) {
-	if (d >= dbm_j_0_j_1 && d1 >= dbm_j_1_j_0)
-	  return Poly_Con_Relation::saturates()
-	    && Poly_Con_Relation::is_included();
-	else if (d >= dbm_j_0_j_1)
-	  return Poly_Con_Relation::is_included();
-	else if (d < dbm_j_0_j_1 && d1 > dbm_j_1_j_0)
-	  return Poly_Con_Relation::is_disjoint();
-	else
-	  return Poly_Con_Relation::strictly_intersects();
-      }
-      else {
-	if (d >= dbm_j_0_j_1 && d1 >= dbm_j_1_j_0)
-	  return Poly_Con_Relation::saturates()
-	    && Poly_Con_Relation::is_disjoint();
-	else if (d > dbm_j_0_j_1)
-	  return Poly_Con_Relation::is_included();
-	else if (d <= dbm_j_0_j_1 && d1 >= dbm_j_1_j_0)
-	  return Poly_Con_Relation::is_disjoint();
-	else
-	  return Poly_Con_Relation::strictly_intersects();
-      }
+    else if (c.is_nonstrict_inequality()) {
+      if (d >= dbm_j_0_j_1 && d1 >= dbm_j_1_j_0)
+	return Poly_Con_Relation::saturates()
+	  && Poly_Con_Relation::is_included();
+      else if (d >= dbm_j_0_j_1)
+	return Poly_Con_Relation::is_included();
+      else if (d < dbm_j_0_j_1 && d1 > dbm_j_1_j_0)
+	return Poly_Con_Relation::is_disjoint();
+      else
+	return Poly_Con_Relation::strictly_intersects();
+    }
+    else {
+      if (d >= dbm_j_0_j_1 && d1 >= dbm_j_1_j_0)
+	return Poly_Con_Relation::saturates()
+	  && Poly_Con_Relation::is_disjoint();
+      else if (d > dbm_j_0_j_1)
+	return Poly_Con_Relation::is_included();
+      else if (d <= dbm_j_0_j_1 && d1 >= dbm_j_1_j_0)
+	return Poly_Con_Relation::is_disjoint();
+      else
+	return Poly_Con_Relation::strictly_intersects();
+    }
   }
   else {
     T d;
