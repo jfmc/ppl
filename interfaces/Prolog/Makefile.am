@@ -40,4 +40,4 @@ tak.clpq
 EXTRA_DIST = ppl_prolog.pl clpq.pl clpq2.pl check_script expected \
 $(CLPQ_TESTS)
 
-noinst_HEADERS = ppl_prolog.icc exceptions.hh track_allocation.hh
+noinst_HEADERS = ppl_prolog.icc Interval.hh exceptions.hh track_allocation.hh

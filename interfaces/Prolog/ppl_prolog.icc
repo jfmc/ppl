@@ -1,5 +1,28 @@
+/* Common part of the Prolog interfaces.
+   Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_install.hh"
+#include "Interval.hh"
 #include <exception>
 #include <stdexcept>
 #include <sstream>
@@ -1139,135 +1162,6 @@ ppl_affine_image(Prolog_term_ref t_ph, Prolog_term_ref t_v,
   return PROLOG_FAILURE;
 }
 
-#if 0
-class Boundary {
-private:
-  bool c;
-  PPL::Integer n;
-  PPL::Integer d;
-
-public:
-  Boundary(bool closed, const PPL::Integer& num, const PPL::Integer& den)
-    : c(closed), n(num), d(den) {
-  }  
-
-  bool closed() const {
-    return c;
-  }
-
-  const PPL::Integer& numerator() const {
-    return n;
-  }
-
-  const PPL::Integer& denominator() const {
-    return d;
-  }
-};
-
-class LBoundary : public Boundary {
-public:
-  //! Constructs a "(-infinity" boundary.
-  LBoundary()
-    : Boundary(false, -1, 0) {
-  }  
-
-  LBoundary(bool closed, const PPL::Integer& num, const PPL::Integer& den)
-    : Boundary(closed, num, den) {
-  }
-};
-
-inline bool
-operator<=(const LBoundary& x, const LBoundary& y) {
-  bool x_c = x.closed();
-  const PPL::Integer& x_n = x.numerator();
-  const PPL::Integer& x_d = x.denominator();
-
-  bool y_c = y.closed();
-  const PPL::Integer& y_n = y.numerator();
-  const PPL::Integer& y_d = y.denominator();
-
-  PPL::Integer d = x_d*y_d;
-  PPL::Integer xval = x_n*y_d;
-  PPL::Integer yval = y_n*x_d;
-  return ((d > 0 && xval <= yval)
-	  || (d < 0 && xval >= yval));
-}
-
-inline bool
-operator>=(const LBoundary& x, const LBoundary& y) {
-  return y <= x;
-}
-
-class UBoundary : public Boundary {
-public:
-  //! Constructs a "+infinity)" boundary.
-  UBoundary()
-    : Boundary(false, 1, 0) {
-  }
-
-  UBoundary(bool closed, const PPL::Integer& num, const PPL::Integer& den)
-    : Boundary(closed, 1, 0) {
-  }  
-};
-
-inline bool
-operator<=(const UBoundary& x, const UBoundary& y) {
-  bool x_c = x.closed();
-  const PPL::Integer& x_n = x.numerator();
-  const PPL::Integer& x_d = x.denominator();
-
-  bool y_c = y.closed();
-  const PPL::Integer& y_n = y.numerator();
-  const PPL::Integer& y_d = y.denominator();
-
-  PPL::Integer d = x_d*y_d;
-  PPL::Integer xval = x_n*y_d;
-  PPL::Integer yval = y_n*x_d;
-  return ((d > 0 && xval >= yval)
-	  || (d < 0 && xval <= yval));
-}
-
-inline bool
-operator>=(const UBoundary& x, const UBoundary& y) {
-  return y <= x;
-}
-
-inline bool
-operator>(const LBoundary& x, const UBoundary& y) {
-  return y <= x;
-}
-
-
-class Interval {
-public:
-  LBoundary lower;
-  UBoundary upper;
-
-  //! Construct the interval (-infinity, +infinity).
-  Interval() {
-  }
-
-  bool empty() const {
-    return lower > upper;
-  }
-
-  void raise_lower_bound(LBoundary new_lower) {
-    if (new_lower >= lower)
-      lower = new_lower;
-  }
-
-  void lower_upper_bound(UBoundary new_upper) {
-    if (new_upper <= upper)
-      upper = new_upper;
-  }
-
-  void set_empty() {
-    lower = LBoundary(false, 1, 0);
-    upper = UBoundary(false, -1, 0);
-    assert(empty());
-  }
-};
-
 class PBox {
 private:
   vector<Interval> vec;
@@ -1279,13 +1173,19 @@ public:
 
   void raise_lower_bound(unsigned int k, bool closed,
 			 const PPL::Integer& n, const PPL::Integer& d) {
-    vec[k].raise_lower_bound(LBoundary(closed, n, d));
+    vec[k].raise_lower_bound(LBoundary(Boundary::Value(n, d),
+				       (closed
+					? LBoundary::CLOSED
+					: LBoundary::OPEN)));
   }
 
   void lower_upper_bound(unsigned int k, bool closed,
 			 const PPL::Integer& n, const PPL::Integer& d) {
-    vec[k].lower_upper_bound(UBoundary(closed, n, d));
-  }
+    vec[k].lower_upper_bound(UBoundary(Boundary::Value(n, d),
+				       (closed
+					? UBoundary::CLOSED
+					: UBoundary::OPEN)));
+    }
 
   void set_empty(unsigned int k) {
     vec[k].set_empty();
@@ -1300,10 +1200,11 @@ ppl_get_bounding_box(Prolog_term_ref t_ph, Prolog_term_ref t_bb) {
       return PROLOG_FAILURE;
     CHECK(ph);
 
+    PBox pbox(ph->space_dimension());
+    ph->shrink_bounding_box(pbox);
     // ...
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
   return PROLOG_FAILURE;
 }
-#endif
