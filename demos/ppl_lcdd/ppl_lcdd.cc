@@ -98,7 +98,7 @@ set_input(const char* file_name) {
 
   if (file_name) {
     input_stream_p = new std::ifstream(input_file_name, std::ios_base::in);
-    if (!input_stream_p)
+    if (!*input_stream_p)
       fatal("cannot open input file `%s'", file_name);
     input_file_name = file_name;
   }
@@ -124,7 +124,7 @@ set_output(const char* file_name) {
 
   if (file_name) {
     output_stream_p = new std::ofstream(output_file_name, std::ios_base::out);
-    if (!output_stream_p)
+    if (!*output_stream_p)
       fatal("cannot open output file `%s'", file_name);
     output_file_name = file_name;
   }
@@ -164,7 +164,7 @@ warning(const char* format, ...) {
 }
 
 void
-set_alarm_on_cpu_time(unsigned int seconds, void (*handler)(int)) {
+set_alarm_on_cpu_time(const unsigned seconds, void (*handler)(int)) {
   sigset_t mask;
   struct sigaction s;
   struct rlimit t;
@@ -195,7 +195,7 @@ set_alarm_on_cpu_time(unsigned int seconds, void (*handler)(int)) {
 }
 
 void
-limit_virtual_memory(unsigned int bytes) {
+limit_virtual_memory(const unsigned bytes) {
   struct rlimit t;
 
   if (getrlimit(RLIMIT_AS, &t) != 0)
@@ -226,7 +226,6 @@ process_options(int argc, char* argv[]) {
 			&option_index);
     if (c == EOF)
       break;
-
 
     char* endptr;
     long l;
@@ -318,7 +317,7 @@ enum Number_Type { INTEGER, RATIONAL, REAL };
 
 void
 read_coefficients(std::istream& in,
-		  Number_Type number_type,
+		  const Number_Type number_type,
 		  std::vector<mpz_class>& coefficients,
 		  mpz_class& denominator) {
   unsigned num_coefficients = coefficients.size();
@@ -489,8 +488,8 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
 
 void
 write_polyhedron(std::ostream& output,
-		 const PPL::C_Polyhedron ph,
-		 Representation rep) {
+		 const PPL::C_Polyhedron& ph,
+		 const Representation rep) {
   output << (rep == H ? "H" : "V") << "-representation\n";
 
   unsigned num_rows = 0;
