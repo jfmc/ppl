@@ -339,6 +339,12 @@ public:
   */
   bool ascii_load(std::istream& s);
 
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
   //! Checks if all the invariants are satisfied.
   /*!
     \param check_strong_normalized
@@ -370,7 +376,6 @@ private:
   struct RowLessThan {
     bool operator()(const Row& x, const Row& y) const;
   };
-
 };
 
 namespace std {

@@ -42,6 +42,11 @@ Matrix::max_num_columns() {
   return Row::max_size();
 }
 
+inline memory_size_type
+Matrix::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
 inline
 Matrix::const_iterator::const_iterator()
   : i(Iter()) {

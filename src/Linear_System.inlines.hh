@@ -28,6 +28,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline memory_size_type
+Linear_System::external_memory_in_bytes() const {
+  return Matrix::external_memory_in_bytes();
+}
+
+inline memory_size_type
+Linear_System::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
 inline bool
 Linear_System::is_sorted() const {
   // The flag `sorted' does not really reflect the sortedness status

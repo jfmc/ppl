@@ -98,6 +98,16 @@ template <typename T, typename Policy>
 T&
 raw_value(Checked_Number<T, Policy>& x);
 
+//! Returns the total size in bytes of the memory occupied by \p x.
+template <typename T, typename Policy>
+size_t
+total_memory_in_bytes(const Checked_Number<T, Policy>& x);
+
+//! Returns the size in bytes of the memory managed by \p x.
+template <typename T, typename Policy>
+size_t
+external_memory_in_bytes(const Checked_Number<T, Policy>& x);
+
 template <typename T, typename Policy>
 Checked_Number<T, Policy>
 operator+(const Checked_Number<T, Policy>& x);

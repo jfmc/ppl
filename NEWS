@@ -35,12 +35,28 @@ o  New method dimension_type Polyhedron::affine_dimension() returns
    the affine dimension of *this (not to be confused with the dimension
    of its enclosing vector space) or 0, if *this is empty.
 
+o  All the public classes of the library have been endowed with methods
+
+     memory_size_type total_memory_in_bytes() const
+
+   and
+
+     memory_size_type external_memory_in_bytes() const
+
+   returning (lower bounds for) the total size in bytes of the memory
+   occupied by *this and of the memory managed by *this, respectively.
+   The type `memory_size_type' is a newly added unsigned integral type
+   suitable to the representation of such information.
+
 o  All the methods changing (i.e., adding, removing, mapping, etc.)
    the dimensions of the vector space have been renamed so as to avoid
    any possible ambiguity with the affine dimension of the modified object.
    For instance,
+
      Polyhedron::add_dimensions_and_embed(dimension_type m);
+
    has been renamed as
+
      Polyhedron::add_space_dimensions_and_embed(dimension_type m);
 
 o  The constructor C_Polyhedron(const NNC_Polyhedron& y) no longer

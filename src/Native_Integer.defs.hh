@@ -96,6 +96,16 @@ template <typename T>
 T&
 raw_value(Native_Integer<T>& x);
 
+//! Returns the total size in bytes of the memory occupied by \p x.
+template <typename T>
+size_t
+total_memory_in_bytes(const Native_Integer<T>& x);
+
+//! Returns the size in bytes of the memory managed by \p x.
+template <typename T>
+size_t
+external_memory_in_bytes(const Native_Integer<T>& x);
+
 template <typename T>
 Native_Integer<T>
 operator+(const Native_Integer<T>& x);

@@ -2529,6 +2529,15 @@ PPL::Polyhedron::ascii_load(std::istream& s) {
   return true;
 }
 
+PPL::memory_size_type
+PPL::Polyhedron::external_memory_in_bytes() const {
+  return
+    con_sys.external_memory_in_bytes()
+    + gen_sys.external_memory_in_bytes()
+    + sat_c.external_memory_in_bytes()
+    + sat_g.external_memory_in_bytes();
+}
+
 /*! \relates Parma_Polyhedra_Library::Polyhedron */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Polyhedron& ph) {

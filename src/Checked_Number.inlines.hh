@@ -116,6 +116,18 @@ raw_value(Checked_Number<T, Policy>& x) {
   return x.raw_value();
 }
 
+template <typename T, typename Policy>
+size_t
+total_memory_in_bytes(const Checked_Number<T, Policy>& x) {
+  return sizeof(x);
+}
+
+template <typename T, typename Policy>
+size_t
+external_memory_in_bytes(const Checked_Number<T, Policy>& x) {
+  return 0;
+}
+
 #define DEF_INCREMENT(f, fun) \
 template <typename T, typename Policy> \
 inline Checked_Number<T, Policy>& \

@@ -283,6 +283,14 @@ public:
   //! also known as <EM>positivity constraint</EM>.
   static const Constraint& zero_dim_positivity();
 
+  //! \brief
+  //! Returns a lower bound to the total size in bytes of the memory
+  //! occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 

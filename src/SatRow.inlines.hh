@@ -90,6 +90,16 @@ SatRow::clear() {
   mpz_set_ui(vec, 0UL);
 }
 
+inline memory_size_type
+SatRow::external_memory_in_bytes() const {
+  return vec[0]._mp_alloc * SIZEOF_MP_LIMB_T;
+}
+
+inline memory_size_type
+SatRow::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
 /*! \relates SatRow */
 inline bool
 operator==(const SatRow& x, const SatRow& y) {

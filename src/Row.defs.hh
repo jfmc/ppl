@@ -232,6 +232,26 @@ public:
   //! representation of \p *this.
   void ascii_dump(std::ostream& s) const;
 
+  //! \brief
+  //! Returns a lower bound to the total size in bytes of the memory
+  //! occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! \brief
+  //! Returns a lower bound to the size in bytes of the memory
+  //! managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
+  //! \brief
+  //! Returns the total size in bytes of the memory occupied by \p *this,
+  //! provided the capacity of \p *this is given by \p capacity.
+  memory_size_type total_memory_in_bytes(dimension_type capacity) const;
+
+  //! \brief
+  //! Returns the size in bytes of the memory managed by \p *this,
+  //! provided the capacity of \p *this is given by \p capacity.
+  memory_size_type external_memory_in_bytes(dimension_type capacity) const;
+
   //! Checks if all the invariants are satisfied.
   bool OK(dimension_type row_size, dimension_type row_capacity) const;
 
@@ -352,6 +372,17 @@ public:
   //! Returns a constant reference to the element of \p *this indexed by \p k.
   Integer_traits::const_reference operator[](dimension_type k) const;
   //@} // Subscript operators
+
+  //! \brief
+  //! Returns a lower bound to the total size in bytes of the memory
+  //! occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes(dimension_type capacity) const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
 
 private:
   //! The number of coefficients in the row.

@@ -121,6 +121,16 @@ Constraint::inhomogeneous_term() const {
   return Linear_Row::inhomogeneous_term();
 }
 
+inline memory_size_type
+Constraint::external_memory_in_bytes() const {
+  return Linear_Row::external_memory_in_bytes();
+}
+
+inline memory_size_type
+Constraint::total_memory_in_bytes() const {
+  return Linear_Row::total_memory_in_bytes();
+}
+
 /*! \relates Constraint */
 inline Constraint
 operator==(const LinExpression& e1, const LinExpression& e2) {

@@ -341,6 +341,18 @@ raw_value(Native_Integer<T>& x) {
 }
 
 template <typename T>
+size_t
+total_memory_in_bytes(const Native_Integer<T>& x) {
+  return sizeof(x);
+}
+
+template <typename T>
+size_t
+external_memory_in_bytes(const Native_Integer<T>& x) {
+  return 0;
+}
+
+template <typename T>
 inline Native_Integer<T>
 operator+(const Native_Integer<T>& x) {
   return x;
