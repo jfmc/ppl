@@ -347,45 +347,6 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
   assert(OK());
 }
 
-namespace {
-
-using namespace PPL;
-
-class BW_Box {
-private:
-  Constraint_System& con_sys;
-
-public:
-
-  BW_Box(Constraint_System& cs)
-    : con_sys(cs) {
-  }
-
-  void set_empty() {
-    throw std::runtime_error("PPL internal error");
-  }
-
-  void raise_lower_bound(const dimension_type k, const bool closed,
-			 Coefficient_traits::const_reference n,
-			 Coefficient_traits::const_reference d) {
-    if (closed)
-      con_sys.insert(d*Variable(k) >= n);
-    else
-      con_sys.insert(d*Variable(k) > n);
-  }
-
-  void lower_upper_bound(const dimension_type k, const bool closed,
-			 Coefficient_traits::const_reference n,
-			 Coefficient_traits::const_reference d) {
-    if (closed)
-      con_sys.insert(d*Variable(k) <= n);
-    else
-      con_sys.insert(d*Variable(k) < n);
-  }
-};
-
-} // namespace
-
 void
 PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
 						  const Constraint_System& cs,
@@ -401,7 +362,6 @@ PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
   // add_recycled_constraints(x_box.constraints());
   add_constraints(x_box.constraints());
 }
-
 
 bool
 PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
