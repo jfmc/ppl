@@ -126,6 +126,7 @@ ORIGINAL_TESTS = \
 	linexpression1 \
 	mapspacedims1 mapspacedims2 mapspacedims3 \
 	max_min1 max_min2 \
+	maxspacedim1 \
 	mc91 \
 	memory1 \
 	minconstraints1 minconstraints2 minconstraints3 minconstraints4 \
@@ -485,6 +486,8 @@ mapspacedims3_SOURCES = mapspacedims3.cc
 
 max_min1_SOURCES = max_min1.cc
 max_min2_SOURCES = max_min2.cc
+
+maxspacedim1_SOURCES = maxspacedim1.cc
 
 mc91_SOURCES = mc91.cc
 
