@@ -28,7 +28,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 1
+#define NOISY 0
 #endif
 
 Variable x(0);
@@ -148,6 +148,7 @@ main() TRY {
 #if NOISY
     cout << "S" << n << " = " << Sn << endl;
 #endif
+    Sn.upper_bound_assign(T);
     Sn.BHZ03_widening_assign(T, &Polyhedron::H79_widening_assign);
 #if NOISY
     cout << "T" << n << " = " << Sn << endl;
@@ -158,6 +159,6 @@ main() TRY {
       std::swap(Sn, T);
   }
 
-  return !converged ? 0 : 1;
+  return converged ? 0 : 1;
 }
 CATCH
