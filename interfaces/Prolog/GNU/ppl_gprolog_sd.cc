@@ -199,6 +199,14 @@ Prolog_is_variable(Prolog_term_ref t) {
 }
 
 /*!
+  Return true if \p t is a Prolog atom, false otherwise. 
+*/
+static inline bool
+Prolog_is_atom(Prolog_term_ref t) {
+  return Blt_Atom(t) != FALSE;
+}
+
+/*!
   Return true if \p t is a Prolog integer, false otherwise. 
 */
 static inline bool

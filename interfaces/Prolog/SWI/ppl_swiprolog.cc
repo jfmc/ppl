@@ -170,6 +170,14 @@ Prolog_is_variable(Prolog_term_ref t) {
 }
 
 /*!
+  Return true if \p t is a Prolog atom, false otherwise. 
+*/
+static inline bool
+Prolog_is_atom(Prolog_term_ref t) {
+  return PL_is_atom(t) != 0;
+}
+
+/*!
   Return true if \p t is a Prolog integer, false otherwise. 
 */
 static inline bool
@@ -231,7 +239,7 @@ Prolog_get_address(Prolog_term_ref t, void*& p) {
 */
 static inline bool
 Prolog_get_name_arity(Prolog_term_ref t, Prolog_atom& name, int& arity) {
-  //  assert(Prolog_is_compound(t));
+  assert(Prolog_is_compound(t));
   return PL_get_name_arity(t, &name, &arity) != 0;
 }
 
