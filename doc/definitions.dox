@@ -32,8 +32,8 @@ Most of the following definitions and results are taken from:
 - K. Fukuda - Polyhedral Computation FAQ - Swiss Federal Institute of
   Technology, Lausanne and Zurich, Switzerland, October 2000.
 - R. Bagnara, E. Ricci, E. Zaffanella, and P. M. Hill - Possibly Not Closed
-  Convex Polyhedra and the Parma Polyhedra Library - Quaderno 286 - Department of
-  Mathematics, University of Parma, Italy, May 2002.
+  Convex Polyhedra and the Parma Polyhedra Library - Quaderno 286 -
+  Department of Mathematics, University of Parma, Italy, May 2002.
 
 
 <B>Vectors, matrices and scalar products</B>
@@ -44,8 +44,8 @@ The set of all non-negative reals is denoted by \f$\nonnegRset\f$.
 For each \f$i \in \{0, \ldots, n-1\}\f$, \f$v_i\f$ denotes
 the \f$i\f$-th component of the (column) vector
 \f$\vect{v} = (v_0, \ldots, v_{n-1})^\transpose \in \Rset^n\f$.
-We denote by \f$\vect{0}\f$ the vector of \f$\Rset^n\f$, called <EM>the origin</EM>,
-having all components equal to zero.
+We denote by \f$\vect{0}\f$ the vector of \f$\Rset^n\f$,
+called <EM>the origin</EM>, having all components equal to zero.
 A vector \f$\vect{v} \in \Rset^n\f$ can be also interpreted
 as a matrix in \f$\Rset^{n \times 1}\f$ and manipulated accordingly
 using the usual definitions for addition, multiplication
@@ -68,25 +68,30 @@ the linear constraint \f$\langle \vect{a}, \vect{x} \rangle \relop b\f$
 defines:
 - an affine hyperplane if it is an equality constraint,
   i.e., if \f$\mathord{\relop} \in \{ = \}\f$;
-- a topologically closed affine half-space if it is a non-strict inequality constraint,
+- a topologically closed affine half-space if it is
+  a non-strict inequality constraint,
   i.e., if \f$\mathord{\relop} \in \{ \geq \}\f$;
-- a topologically open affine half-space if it is a strict inequality constraint,
+- a topologically open affine half-space if it is
+  a strict inequality constraint,
   i.e., if \f$\mathord{\relop} \in \{ > \}\f$.
 
 Note that each hyperplane \f$\langle \vect{a}, \vect{x} \rangle = b\f$
 can be defined as the intersection of the two closed affine half-spaces
 \f$\langle \vect{a}, \vect{x} \rangle \geq b\f$ and
 \f$\langle -\vect{a}, \vect{x} \rangle \geq -b\f$.
-Also note that, when \f$\vect{a} = \vect{0}\f$, the constraint \f$0 \relop b\f$
-is either a tauthology (i.e., always true) or inconsistent (i.e., always false),
-so that it defines either the whole vector space \f$\Rset^n\f$ or the empty set.
+Also note that, when \f$\vect{a} = \vect{0}\f$,
+the constraint \f$0 \relop b\f$ is either a tauthology (i.e., always true)
+or inconsistent (i.e., always false), so that it defines
+either the whole vector space \f$\Rset^n\f$ or the empty set.
 
 <B>NNC Polyhedra</B>
 
-The set \f$\cP \sseq \Rset^n\f$ is a <EM>not necessarily closed convex polyhedron</EM>
-(NNC polyhedron, for short) if and only if either \f$\cP\f$ can be expressed
-as the intersection of a finite number of (not necessarily closed) affine half-spaces
-of \f$\Rset^n\f$, or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
+The set \f$\cP \sseq \Rset^n\f$ is a
+<EM>not necessarily closed convex polyhedron</EM>
+(NNC polyhedron, for short) if and only if either
+\f$\cP\f$ can be expressed as the intersection of a finite number
+of (not necessarily closed) affine half-spaces of \f$\Rset^n\f$,
+or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
 
 The set of all NNC polyhedra on the vector space \f$\Rset^n\f$
 is denoted \f$\Pset_n\f$.
@@ -104,6 +109,22 @@ is the smallest NNC polyhedron including both \f$\cP_1\f$ and \f$\cP_2\f$.
 In theoretical terms, \f$\Pset_n\f$ is a <EM>lattice</EM> under set inclusion.
 
 
+<B>Bounded Polyhedra</B>
+
+An NNC polyhedron \f$\cP \in \Pset_n\f$ is <EM>bounded</EM>
+if there exists a \f$\lambda \in \nonnegRset\f$ such that
+\f[
+  \cP
+    \sseq
+      \bigl\{\,
+        (x_0, \ldots, x_{n-1})^\transpose \in \Rset^n
+      \bigm|
+        - \lambda \leq x_j \leq \lambda \text{ for } j = 0, \ldots, n-1
+      \,\bigr\}.
+\f]
+A bounded polyhedron is also called a <EM>polytope</EM>.
+
+
 <B>Closed Polyhedra</B>
 
 The set \f$\cP \sseq \Rset^n\f$ is a <EM>closed convex polyhedron</EM>
@@ -112,13 +133,14 @@ as the intersection of a finite number of closed affine half-spaces
 of \f$\Rset^n\f$, or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
 
 The set of all closed polyhedra on the vector space \f$\Rset^n\f$
-is denoted \f$\CPset_n\f$, where \f$\CPset_n \sseq \Pset_n\f$.
-We have \f$\emptyset, \Rset^n \in \CPset_n\f$;
+is denoted \f$\CPset_n\f$.
+Clearly, \f$\CPset_n \sseq \Pset_n\f$ and both
+\f$\emptyset\f$ and \f$\Rset^n\f$ are elements of \f$\CPset_n\f$;
 for any pair of closed polyhedra \f$\cP_1, \cP_2 \in \CPset_n\f$,
 their set intersection \f$\cP_1 \inters \cP_2 \in \CPset_n\f$
 and their poly-hull \f$\cP_1 \uplus \cP_2 \in \CPset_n\f$
-are still closed polyhedra.
-In theoretical terms, \f$\CPset_n\f$ is a <EM>sub-lattice</EM> of \f$\Pset_n\f$.
+are still closed polyhedra. In theoretical terms,
+\f$\CPset_n\f$ is a <EM>sub-lattice</EM> of \f$\Pset_n\f$.
 
 
 <B>Constraints representation</B>
@@ -149,46 +171,92 @@ the number of strict inequalities,
 respectively.
 
 
-<B>Combination</B>
-
-Let \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$ and
-\f$\vect{x}_1, \ldots, \vect{x}_k \in \Rset^n\f$. The linear combination
-\f$\sum_{j = 1}^k \lambda_j\vect{x}_j\f$
-is said to be
-
-- a <EM>positive combination</EM>,
-  if \f$\forall j \in \{ 1, \ldots, k \} \itc \lambda_j \geq 0\f$;
-- an <EM>affine combination</EM>, if \f$\sum_{j = 1}^k \lambda_j = 1\f$;
-- a <EM>convex combination</EM>, if both the previous conditions hold.
-
-Note that, when \f$k=0\f$, we have
-\f$\sum_{j = 1}^k \lambda_j\vect{x}_j = \vect{0}\f$
-and \f$\sum_{j = 1}^k \lambda_j = 0\f$.
-Therefore, the origin \f$\vect{0} \in \Rset^n\f$ can always be regarded
-as a positive (but not affine) linear combination of an empty set
-of vectors.
-
 <B>The generators of a NNC polyhedron</B>
 
 Let \f$\cP \in \Pset_n\f$ be an NNC polyhedron. Then
 - a vector \f$\vect{p} \in \cP\f$ is called a <EM>point</EM> of \f$\cP\f$;
-- a vector \f$\vect{c} \in \Rset^n\f$ is called a <EM>closure point</EM> of \f$\cP\f$
-  if it is a point of the topological closure of \f$\cP\f$;
+- a vector \f$\vect{c} \in \Rset^n\f$ is called a
+  <EM>closure point</EM> of \f$\cP\f$ if it is a point
+  of the topological closure of \f$\cP\f$;
 - a vector \f$\vect{r} \in \Rset^n\f$, where \f$\vect{r} \neq \vect{0}\f$,
-  is called a <EM>ray</EM> (or direction of infinity) of \f$\cP\f$ if,
-  for all point \f$\vect{p} \in \cP\f$ and all \f$\lambda \in \nonnegRset\f$,
+  is called a <EM>ray</EM> (or direction of infinity) of \f$\cP\f$
+  if \f$\cP \neq \emptyset\f$ and,
+  for all points \f$\vect{p} \in \cP\f$ and all \f$\lambda \in \nonnegRset\f$,
   it holds \f$\vect{p} + \lambda \vect{r} \in \cP\f$;
-- a vector \f$\vect{l} \in \Rset^n\f$ is called a <EM>line</EM> of \f$\cP\f$ if
-  both \f$\vect{l}\f$ and \f$-\vect{l}\f$ are rays of \f$\cP\f$.
+- a vector \f$\vect{l} \in \Rset^n\f$ is called a <EM>line</EM> of \f$\cP\f$
+  if both \f$\vect{l}\f$ and \f$-\vect{l}\f$ are rays of \f$\cP\f$.
 
 
+<B>Combinations, hulls and Minkowski's sum</B>
 
+Let \f$S = \{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$
+be a set of vectors.
+For all scalars \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
+the vector \f$\vect{v} = \sum_{j=1}^k \lambda_j \vect{x}_j\f$
+is said to be a <EM>linear</EM> combination of the vectors in \f$S\f$.
+Such a combination is said to be
+- a <EM>positive</EM> (or <EM>conic</EM>) combination,
+  if \f$\forall j \in \{ 1, \ldots, k \} \itc \lambda_j \in \nonnegRset\f$;
+- an <EM>affine</EM> combination, if \f$\sum_{j = 1}^k \lambda_j = 1\f$;
+- a <EM>convex</EM> combination, if both the previous conditions hold.
 
-<B>Convex hull</B>
+We denote by \f$\linearhull(S)\f$
+(resp., \f$\conichull(S)\f$, \f$\affinehull(S)\f$, \f$\convexhull(S)\f$)
+the set of all the linear (resp., positive, affine, convex) combinations
+of the vectors in \f$S\f$.
 
-The <EM>convex hull</EM> of a set \f$K \sseq \Rset^n\f$ is the set of all
-the convex combinations of the points in \f$K\f$.
-The set \f$K\f$ is convex if it is its own convex hull.
+Let \f$P, C \sseq \Rset^n\f$ be such that \f$P \union C = S\f$.
+A convex combination \f$\vect{v} = \sum_{j=1}^k \lambda_j \vect{x}_j\f$
+of the vectors in \f$S\f$ is said to be an <EM>NNC-convex</EM> combination
+of \f$P\f$ and \f$C\f$ if there exists \f$\vect{x}_j \in P\f$
+such that \f$\lambda_j > 0\f$
+(i.e., there exists a vector in \f$P\f$ that plays an active role
+in the convex combination).
+We denote by  \f$\NNChull(P, C)\f$ the set of all NNC-convex combinations
+of \f$P\f$ and \f$C\f$.
+Note that, whenever \f$C \sseq P\f$, it holds
+\f$\NNChull(P, C) = \convexhull(P)\f$.
+
+For any \f$S_1, S_2 \sseq \Rset^n\f$, the <EM>Minkowski's sum</EM> of
+\f$R\f$ and \f$S\f$ is:
+\f[
+  S_1 + S_2 = \{\,
+                \vect{v}_1 + \vect{v}_2
+              \mid
+                \vect{v}_1 \in S_1, \vect{v}_2 \in S_2
+              \,\}.
+\f]
+
+<B>Generators representation</B>
+
+Each NNC polyhedron \f$\cP \in \Pset_n\f$ can be represented by
+a finite set \f$L\f$ of lines of \f$\cP\f$,
+a finite set \f$R\f$ of rays of \f$\cP\f$,
+a finite set \f$P\f$ of points of \f$\cP\f$, and
+a finite set \f$C\f$ of closure points of \f$\cP\f$.
+The 4-tuple \f$\cG = (L, R, P, C)\f$ is said to be
+a <EM>generator system</EM> for \f$\cP\f$,
+in the sense that
+\f[
+  \cP = \linearhull(L) + \conichull(R) + \NNChull(P, C),
+\f]
+where the symbol '\f$+\f$' denotes the Minkowski's sum.
+
+Note that \f$\cP = \emptyset\f$ if and only if \f$P = \emptyset\f$.
+Also note that \f$P\f$ must contain all the vertices of \f$\cP\f$.
+However, if \f$\cP\f$ is a non-empty polyhedron having no vertices at all,
+then \f$P\f$ necessarily contains points that are <EM>not</EM> vertices
+of \f$P\f$.
+For instance, the half-space of \f$\Rset^2\f$ corresponding to the single
+constraint \f$y \geq 0\f$ can be represented by the generator system
+\f$\cG = (L, R, P, C)\f$ such that
+\f$L = \bigl\{ (1, 0)^\transpose \bigr\}\f$,
+\f$R = \bigl\{ (0, 1)^\transpose \bigr\}\f$,
+\f$P = \bigl\{ (0, 0)^\transpose \bigr\}\f$, and
+\f$C = \emptyset\f$.
+It is also worth noting that the only ray in \f$R\f$
+is <EM>not</EM> an extreme ray of \f$\cP\f$.
+
 
 <B>Affine transformation</B>
 
@@ -200,55 +268,6 @@ such that
 \f]
 where \f$A \in \Rset^m \times \Rset^n\f$ and
 \f$\vect{b} \in \Rset^m\f$.
-
-<B>Linear independence</B>
-
-A finite set of points
-\f$\{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$
-is <EM>linearly independent</EM> if,
-for all \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
-the set of equations
-\f[
-  \sum_{i = 1}^k \lambda_i \vect{x}_i = \vect{0}
-\f]
-implies that, for each \f$i = 1\f$, \f$\dots\f$, \f$k\f$,
-\f$\lambda_i = 0\f$.
-
-Note that the maximum number of linearly independent points in
-\f$\Rset^n\f$ is \f$n\f$.
-
-<B><EM>Proposition</EM></B>
-
-If \f$A\f$ is an \f$m \times n\f$ matrix, the maximum number of
-linearly independent rows of \f$A\f$, viewed as vectors of \f$\Rset^n\f$,
-equals the maximum number of linearly independent columns of \f$A\f$,
-viewed as vectors of \f$\Rset^m\f$.
-
-<B>Rank</B>
-
-The maximum number of linearly independent rows (columns) of a
-matrix \f$A\f$ is the <EM>rank</EM> of \f$A\f$ and is denoted by
-\f$\prank(A)\f$.
-
-<B>Affine independence</B>
-
-A finite set of points
-\f$\{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$ is
-<EM>affinely independent</EM> if,
-for all \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
-the set of equations
-\f[
-  \sum_{i = 1}^k \lambda_i \vect{x}_i = \vect{0},
-    \quad
-  \sum_{i = 1}^k \lambda_i = 0
-\f]
-implies that, for each \f$i = 1, \ldots, k\f$, \f$\lambda_i = 0\f$.
-
-Note that linear independence implies affine independence, but the
-converse is not true. Moreover the maximum number of affinely independent
-points in \f$\Rset^n\f$ is \f$n + 1\f$
-(e.g., \f$n\f$ linearly independent points and the origin \f$\vect{0}\f$).
-
 
 <B>Rational polyhedron</B>
 
@@ -271,28 +290,9 @@ and assume that, if
 is a system of constraints representing a polyhedron,
 then \f$A\f$ and \f$\vect{b}\f$ have rational coefficients.
 
-<B>Universe polyhedron</B>
-
-A polyhedron \f$P \sseq \Rset^n\f$ is called <EM>universe polyhedron</EM>
-if it is the whole space (i.e., \f$P = \Rset^n\f$).
-
-<B>Polytope</B>
-
-A polyhedron \f$P \sslt \Rset^n\f$ is <EM>bounded</EM> if there
-exists a \f$\lambda \in \Rset, \lambda \geq 0\f$ such that
-\f[
-  P \sseq
-   \bigl\{\,
-     (x_0, \ldots, x_{n-1})^\transpose \in \Rset^n
-   \bigm|
-     - \lambda \leq x_j \leq \lambda \text{ for } j = 0, \ldots, n-1
-    \,\bigr\}.
-\f]
-A bounded polyhedron is called a <EM>polytope</EM>.
-
 <B><EM>Proposition</EM></B>
 
-A polyhedron is a closed convex set.
+A polyhedron is a convex set.
 
 <B>Polyhedron dimension</B>
 
@@ -312,41 +312,6 @@ A <EM>vertex</EM> of a polyhedron \f$P\f$ is any point in \f$P\f$
 which cannot be expressed as a convex combination of any other
 distinct points in \f$P\f$.
 
-<B>Ray</B>
-
-Let \f$P, P_0\f$ be the polyhedra
-\f[
-  P = \{\,
-        \vect{x} \in \Rset^n
-      \mid
-        A\vect{x} \geq \vect{b}
-      \,\}
-        \neq \emptyset
-\quad \text{and }
-  P_0
-    = \{\,
-        \vect{r} \in \Rset^n
-      \mid
-        A\vect{r} \geq \vect{0}
-      \,\}
-\f]
-where
-\f$A \in \Rset^m \times \Rset^n\f$, \f$\vect{b} \in \Rset^m\f$.
-Then any point
-\f$\vect{r} \in P_0 \setminus \{ \vect{0} \}\f$
-is called a <EM>ray</EM> of \f$P\f$.
-
-A ray indicates a direction in which the polyhedron \f$P\f$ is infinite
-(i.e., unbounded).
-
-<B><EM>Proposition</EM></B>
-
-A point \f$\vect{r} \in \Rset^n \setminus \{ \vect{0} \}\f$
-is a ray of a non-empty polyhedron \f$P \sseq \Rset^n\f$
-if and only if, for any point \f$\vect{x} \in P\f$,
-\f$(\vect{x} + \lambda \vect{r}) \in P\f$
-for all \f$\lambda \in \Rset, \lambda \geq 0\f$.
-
 <B>Extreme ray</B>
 
 A ray \f$\vect{r}\f$ of a polyhedron \f$P\f$ is an <EM>extreme ray</EM>
@@ -358,12 +323,6 @@ where
 \f$\vect{r} \neq \lambda \vect{r}_2\f$ and
 \f$\vect{r}_1 \neq \lambda \vect{r}_2\f$
 for all \f$\lambda \in \Rset, \lambda \geq 0\f$.
-
-<B>Line</B>
-
-A <EM>line</EM> (or <EM>bidirectional ray</EM>) of a polyhedron
-\f$P \sseq \Rset^n\f$ is a ray \f$\vect{l}\f$ of \f$P\f$
-such that \f$-\vect{l}\f$ is another ray of \f$P\f$.
 
 <B>Cone</B>
 
@@ -391,15 +350,6 @@ the <EM>lineality space</EM> of \f$P\f$ is the set
   \{\, \vect{x} \in P \mid A\vect{x} = \vect{0} \,\}
 \f]
 and it is denoted by \f$\linspace(P)\f$.
-
-<B>Minkowski's sum</B>
-
-Let \f$R, S \sseq \Rset^n\f$ be two sets of vectors.
-Then the <EM>Minkowski's sum</EM> of
-\f$R\f$ and \f$S\f$ is:
-\f[
-  R + S = \{\,r + s \mid r \in R, s \in S\,\}.
-\f]
 
 <B>Generators representation</B>
 
@@ -553,6 +503,57 @@ The following definitions and results are taken, in addition
 to the references mentioned before, from:
 - G. B Dantzig - Linear programming and extensions - Princeton University
   Press, New Jersey 1963.
+
+
+\section prelims Further notation and terminology
+
+<B>Linear independence</B>
+
+A finite set of points
+\f$\{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$
+is <EM>linearly independent</EM> if,
+for all \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
+the set of equations
+\f[
+  \sum_{i = 1}^k \lambda_i \vect{x}_i = \vect{0}
+\f]
+implies that, for each \f$i = 1\f$, \f$\dots\f$, \f$k\f$,
+\f$\lambda_i = 0\f$.
+
+Note that the maximum number of linearly independent points in
+\f$\Rset^n\f$ is \f$n\f$.
+
+<B><EM>Proposition</EM></B>
+
+If \f$A\f$ is an \f$m \times n\f$ matrix, the maximum number of
+linearly independent rows of \f$A\f$, viewed as vectors of \f$\Rset^n\f$,
+equals the maximum number of linearly independent columns of \f$A\f$,
+viewed as vectors of \f$\Rset^m\f$.
+
+<B>Rank</B>
+
+The maximum number of linearly independent rows (columns) of a
+matrix \f$A\f$ is the <EM>rank</EM> of \f$A\f$ and is denoted by
+\f$\prank(A)\f$.
+
+<B>Affine independence</B>
+
+A finite set of points
+\f$\{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$ is
+<EM>affinely independent</EM> if,
+for all \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
+the set of equations
+\f[
+  \sum_{i = 1}^k \lambda_i \vect{x}_i = \vect{0},
+    \quad
+  \sum_{i = 1}^k \lambda_i = 0
+\f]
+implies that, for each \f$i = 1, \ldots, k\f$, \f$\lambda_i = 0\f$.
+
+Note that linear independence implies affine independence, but the
+converse is not true. Moreover the maximum number of affinely independent
+points in \f$\Rset^n\f$ is \f$n + 1\f$
+(e.g., \f$n\f$ linearly independent points and the origin \f$\vect{0}\f$).
 
 
 \section homogeneous Homogeneous Systems
