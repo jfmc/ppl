@@ -33,7 +33,8 @@ using namespace Parma_Polyhedra_Library;
 
 // This is a unbounded NNC polyhedron in 4D but bounded in 2D
 // with strict inequality and closure points at the lower bound.
-void test1() {
+static void
+test1() {
   //Variable w(0);
   Variable x(1);
   Variable y(2);
@@ -81,7 +82,8 @@ void test1() {
 
 // This is a bounded NNC polyhedron with strict inequalities
 // causing upper and lower bounds of the box to be open.
-void test2() {
+static void
+test2() {
   Variable x(0);
   Variable y(1);
 

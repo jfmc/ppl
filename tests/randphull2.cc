@@ -51,7 +51,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 // Remark on algorithm 381 [G5],
 // Communications of the ACM, Volume 15 Issue 6, p. 468, June 1972.
 
-void
+static void
 point_on_the_unit_n_sphere(unsigned n,
 			   const vector<float>& theta,
 			   vector<float>& coordinate) {
@@ -69,7 +69,7 @@ point_on_the_unit_n_sphere(unsigned n,
   }
 }
 
-void
+static void
 random_polytope(C_Polyhedron& ph, unsigned dimension, unsigned num_points,
 		float radius = 1.0) {
   if (dimension < 2)

@@ -30,7 +30,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-void
+static void
 shift_rename_add(const C_Polyhedron& p,
 		 dimension_type offset,
 		 C_Polyhedron& q) {
@@ -50,7 +50,7 @@ shift_rename_add(const C_Polyhedron& p,
 }
 
 
-void
+static void
 append_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
             dimension_type& offset, unsigned int& arity) {
   offset = 3;
@@ -91,7 +91,7 @@ append_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
   expect.add_constraint(C >= B);
 }
 
-void
+static void
 fix_point(C_Polyhedron& start, C_Polyhedron& induct, C_Polyhedron& finish,
           dimension_type offset, unsigned int arity) {
   // Initialize the fixpoint iteration.
@@ -133,7 +133,7 @@ fix_point(C_Polyhedron& start, C_Polyhedron& induct, C_Polyhedron& finish,
   finish = current;
 }
 
-void
+static void
 append_size_rel(C_Polyhedron& ph) {
   C_Polyhedron start;
   C_Polyhedron induct;
@@ -144,7 +144,7 @@ append_size_rel(C_Polyhedron& ph) {
   fix_point(start, induct, ph, recursive_offset, arity);
 }
 
-void
+static void
 permute_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
              dimension_type& offset, unsigned int& arity) {
   arity = 2;

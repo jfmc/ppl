@@ -37,7 +37,7 @@ static Variable C(2);
 static Variable D(3);
 static Variable E(4);
 
-const GenSys&
+static const GenSys&
 fixed_part() {
   static GenSys gs;
   static bool initialized = false;
@@ -53,7 +53,7 @@ fixed_part() {
   return gs;
 }
 
-C_Polyhedron
+static C_Polyhedron
 p(unsigned n) {
   C_Polyhedron ph = fixed_part();
   n += 2;

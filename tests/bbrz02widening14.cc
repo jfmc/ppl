@@ -31,7 +31,8 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-GenSys g_0() {
+static GenSys
+g_0() {
   Variable A(0);
   Variable B(1);
   GenSys new_gs;
@@ -42,9 +43,10 @@ GenSys g_0() {
   return new_gs;
 }
 
-Generator splitting_segment(const Generator& p1,
-			    const Generator& p2,
-			    unsigned magic_number) {
+static Generator
+splitting_segment(const Generator& p1,
+		  const Generator& p2,
+		  unsigned magic_number) {
   const Integer& d1 = p1.divisor();
   const Integer& d2 = p2.divisor();
   LinExpression expr = d2 * LinExpression(p1);
@@ -57,7 +59,8 @@ Generator splitting_segment(const Generator& p1,
   return point((magic_number+1)*expr, magic_number*2*d1*d2);
 } 
 
-GenSys double_generators(const GenSys& gs, unsigned magic_number) {
+static GenSys
+double_generators(const GenSys& gs, unsigned magic_number) {
   GenSys new_gs;
   GenSys::const_iterator i = gs.begin();
   GenSys::const_iterator gs_end = gs.end();
@@ -77,7 +80,8 @@ GenSys double_generators(const GenSys& gs, unsigned magic_number) {
   return new_gs;
 }
 
-C_Polyhedron p(unsigned n) {
+static C_Polyhedron
+p(unsigned n) {
 
   unsigned needed_vertices = n + 4;
 

@@ -31,7 +31,8 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-GenSys gs_square(const Integer& half_side) {
+static GenSys
+gs_square(const Integer& half_side) {
   Variable A(0);
   Variable B(1);
   GenSys gs;
@@ -42,7 +43,8 @@ GenSys gs_square(const Integer& half_side) {
   return gs;
 }
 
-GenSys gs_rombo(const Integer& half_diagonal) {
+static GenSys
+gs_rhombus(const Integer& half_diagonal) {
   Variable A(0);
   Variable B(1);
   GenSys gs;
@@ -54,7 +56,8 @@ GenSys gs_rombo(const Integer& half_diagonal) {
 }
 
 
-C_Polyhedron p(unsigned n) {
+static C_Polyhedron
+p(unsigned n) {
 
   Integer half_diagonal = 2;
   for (unsigned i = n / 8; i-- > 0; ) {
@@ -66,13 +69,13 @@ C_Polyhedron p(unsigned n) {
   if (n % 8 < 4) {
     half_side /= 2;
     gs = gs_square(half_side);
-    GenSys gs2 = gs_rombo(half_diagonal);
+    GenSys gs2 = gs_rhombus(half_diagonal);
     GenSys::const_iterator gi = gs2.begin();
     for (int i = n % 8; i-- > 0; )
       gs.insert(*gi++);
   }
   else {
-    gs = gs_rombo(half_diagonal);
+    gs = gs_rhombus(half_diagonal);
     GenSys gs2 = gs_square(half_side);
     GenSys::const_iterator gi = gs2.begin();
     for (int i = n % 8 - 4; i-- > 0; )

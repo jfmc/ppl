@@ -30,8 +30,8 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-void test1() {
-  //Variable w(0);
+static void
+test1() {
   Variable x(1);
   Variable y(2);
   Variable z(3);
@@ -65,7 +65,8 @@ void test1() {
 
 // This is a bounded NNC polyhedron with strict inequalities
 // causing upper and lower bounds of the box to be open.
-void test2() {
+static void
+test2() {
   Variable x(0);
   Variable y(1);
 
@@ -97,7 +98,8 @@ void test2() {
 }
 
 // An empty polyhedron in 2D defined using strict constraints.
-void test3() {
+static void
+test3() {
   Variable x(0);
   Variable y(1);
   NNC_Polyhedron ph(2);

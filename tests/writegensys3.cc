@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-const char* my_file = "writegensys3.dat";
+static const char* my_file = "writegensys3.dat";
 
 int
 main() {

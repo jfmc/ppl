@@ -33,7 +33,8 @@ using namespace Parma_Polyhedra_Library;
 
 // This is a non-bounded closed polyhedron consisting of the line x = y.
 // The bounding box is the xy plane - the universal polyhedron.
-void test1() {
+static void
+test1() {
   Variable x(0);
   Variable y(1);
   C_Polyhedron ph(2);
@@ -62,7 +63,8 @@ void test1() {
 }
 
 // This is a non-bounded closed polyhedron consisting of the +ve quadrant.
-void test2() {
+static void
+test2() {
   Variable x(0);
   Variable y(1);
 
@@ -97,8 +99,9 @@ void test2() {
     exit(1);
 }
 
-// This is a bounded closed polyhedron;
-void test3() {
+// This is a bounded closed polyhedron.
+static void
+test3() {
   Variable x(0);
   Variable y(1);
 
@@ -138,8 +141,9 @@ void test3() {
     exit(1);
 }
 
-// This is a unbounded closed polyhedron in 4D but bounded in 2D;
-void test4() {
+// This is a unbounded closed polyhedron in 4D but bounded in 2D.
+static void
+test4() {
   //Variable w(0);
   Variable x(1);
   Variable y(2);
@@ -185,7 +189,8 @@ void test4() {
 }
 
 // This is a universal, 2-dimensional closed polyhedron.
-void test5() {
+static void
+test5() {
   C_Polyhedron ph(2);
 
   BBox pbox(ph.space_dimension());
@@ -211,7 +216,8 @@ void test5() {
 }
 
 // This is an zero-dimensional closed polyhedron.
-void test6() {
+static void
+test6() {
   C_Polyhedron ph;
 
   BBox pbox(ph.space_dimension());
@@ -237,7 +243,8 @@ void test6() {
 }
 
 // This is an empty closed polyhedron.
-void test7() {
+static void
+test7() {
   C_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
   BBox pbox(ph.space_dimension());
@@ -263,8 +270,9 @@ void test7() {
     exit(1);
 }
 
-// This is a bounded C polyhedron that is a single point;
-void test8() {
+// This is a bounded C polyhedron that is a single point.
+static void
+test8() {
   Variable x(0);
   Variable y(1);
 
@@ -298,8 +306,9 @@ void test8() {
     exit(1);
 }
 
-// This is a unit square closed polyhedron
-void test9() {
+// This is a unit square closed polyhedron.
+static void
+test9() {
   Variable x(0);
   Variable y(1);
 
@@ -336,8 +345,9 @@ void test9() {
     exit(1);
 }
 
-// This is a unbounded closed polyhedron in 4D but bounded in 2D
-void test10() {
+// This is a unbounded closed polyhedron in 4D but bounded in 2D.
+static void
+test10() {
   //Variable w(0);
   Variable x(1);
   Variable y(2);

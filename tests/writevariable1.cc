@@ -35,9 +35,9 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-const char* my_file = "writevariable1.dat";
+static const char* my_file = "writevariable1.dat";
 
-void
+static void
 write_variables() {
   fstream f;
   open(f, my_file, ios_base::out);
@@ -47,7 +47,7 @@ write_variables() {
   close(f);
 }
 
-void
+static void
 read_variables_and_check(const string& s) {
   fstream f;
   open(f, my_file, ios_base::in);
@@ -58,7 +58,7 @@ read_variables_and_check(const string& s) {
     exit(1);
 }
 
-void
+static void
 my_output_function(ostream& s, const Variable& v) {
   s << "x" << v.id();
 }

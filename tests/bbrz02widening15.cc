@@ -31,7 +31,8 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-GenSys g_0() {
+static GenSys
+g_0() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -43,9 +44,10 @@ GenSys g_0() {
   return new_gs;
 }
 
-Generator splitting_facet(const Generator& r1,
-			  const Generator& r2,
-			  unsigned magic_number) {
+static Generator
+splitting_facet(const Generator& r1,
+		const Generator& r2,
+		unsigned magic_number) {
   LinExpression expr;
   expr += LinExpression(r1);
   expr += LinExpression(r2);
@@ -57,7 +59,8 @@ Generator splitting_facet(const Generator& r1,
   return ray(expr);
 } 
 
-GenSys double_generators(const GenSys& gs, unsigned magic_number) {
+static GenSys
+double_generators(const GenSys& gs, unsigned magic_number) {
   GenSys new_gs;
   GenSys::const_iterator i = gs.begin();
   GenSys::const_iterator gs_end = gs.end();
@@ -78,7 +81,8 @@ GenSys double_generators(const GenSys& gs, unsigned magic_number) {
 }
 
 
-C_Polyhedron p(unsigned n) {
+static C_Polyhedron
+p(unsigned n) {
 
   unsigned needed_facets = n + 4;
 

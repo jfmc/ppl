@@ -61,7 +61,7 @@ main() {
 
 #else
 
-void
+static void
 compute_open_hypercube_generators(dimension_type dimension) {
   NNC_Polyhedron hypercube(dimension);
   for (dimension_type i = 0; i < dimension; ++i) {
@@ -85,7 +85,7 @@ do { \
   } \
 } while(0)
 
-void
+static void
 limit_memory(unsigned long bytes) {
   struct rlimit t;
 #if HAVE_DECL_RLIMIT_DATA
@@ -106,7 +106,7 @@ limit_memory(unsigned long bytes) {
 #endif
 }
 
-bool
+static bool
 guarded_compute_open_hypercube_generators(dimension_type dimension,
 					  unsigned long max_memory_in_bytes) {
   try {

@@ -30,7 +30,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-void
+static void
 error1() {
   Variable x(0);
   Variable y(1);
@@ -55,7 +55,7 @@ error1() {
   }
 }
 
-void
+static void
 error2() {
   Variable x(0);
   Variable y(1);
@@ -82,7 +82,7 @@ error2() {
   }
 }
 
-void
+static void
 error3() {
   Variable x(0);
   Variable y(1);
@@ -105,7 +105,7 @@ error3() {
   }
 }
 
-void
+static void
 error4() {
   C_Polyhedron ph(3, C_Polyhedron::EMPTY);
 
@@ -125,7 +125,7 @@ error4() {
   }
 }
 
-void
+static void
 error5() {
   Variable x(0);
   Variable y(1);
@@ -154,7 +154,7 @@ error5() {
   }
 }
 
-void
+static void
 error6() {
   Variable x(0);
   Variable y(1);
@@ -180,7 +180,7 @@ error6() {
   }
 }
 
-void
+static void
 error7() {
   Variable x(0);
   Variable y(1);
@@ -208,7 +208,7 @@ error7() {
   }
 }
 
-void
+static void
 error8() {
   Variable x(0);
   Variable y(1);
@@ -237,7 +237,7 @@ error8() {
   }
 }
 
-void
+static void
 error9() {
   Variable x(0);
   Variable y(1);
@@ -264,7 +264,7 @@ error9() {
   }
 }
 
-void
+static void
 error10() {
   Variable x(0);
   Variable y(1);
@@ -289,7 +289,7 @@ error10() {
 }
 
 
-void
+static void
 error11() {
   Variable A(0);
   Variable B(1);
@@ -321,7 +321,7 @@ error11() {
   }
 }
 
-void
+static void
 error12() {
   Variable A(0);
   Variable B(1);
@@ -354,7 +354,7 @@ error12() {
 }
 
 
-void
+static void
 error13() {
   Variable A(0);
   Variable B(1);
@@ -392,7 +392,7 @@ error13() {
   }
 }
 
-void
+static void
 error14() {
   Variable A(0);
   Variable B(1);
@@ -429,7 +429,7 @@ error14() {
   }
 }
 
-void
+static void
 error15() {
   Variable A(0);
   Variable B(1);
@@ -467,7 +467,7 @@ error15() {
   }
 }
 
-void
+static void
 error16() {
   Variable A(0);
   Variable B(1);
@@ -503,7 +503,7 @@ error16() {
   }
 }    
 
-void
+static void
 error17() {
   Variable A(0);
   Variable B(1);
@@ -544,7 +544,7 @@ error17() {
   }
 }    
 
-void
+static void
 error18() {
   Variable A(0);
   Variable B(1);
@@ -585,7 +585,7 @@ error18() {
   }
 }    
 
-void
+static void
 error19() {
   Variable A(0);
   Variable B(1);
@@ -622,7 +622,7 @@ error19() {
   }
 }
   
-void
+static void
 error20() {
   Variable A(0);
 
@@ -653,7 +653,7 @@ error20() {
   }
 }
 
-void
+static void
 error21() {
   Variable A(0);
   Variable B(1);
@@ -685,7 +685,7 @@ error21() {
   }
 }   
 
-void
+static void
 error22() {
   Variable A(0);
 
@@ -715,7 +715,7 @@ error22() {
   }
 }
 
-void
+static void
 error23() {
   NNC_Polyhedron ph(0, NNC_Polyhedron::EMPTY);
 
@@ -735,7 +735,7 @@ error23() {
   }
 }
 
-void
+static void
 error24() {
   NNC_Polyhedron ph(0, NNC_Polyhedron::EMPTY);
 
@@ -763,7 +763,7 @@ error24() {
   }
 }
 
-void
+static void
 error25() {
   NNC_Polyhedron ph(0, NNC_Polyhedron::EMPTY);
 
@@ -791,7 +791,7 @@ error25() {
   }
 }
 
-void
+static void
 error26() {
   Variable A(0);
 
@@ -822,7 +822,7 @@ error26() {
   }
 }
 
-void
+static void
 error27() {
   Variable A(0);
   Variable B(1);
@@ -864,7 +864,7 @@ error27() {
   }
 }
 
-void
+static void
 error28() {
   Variable A(0);
   Variable B(1);
@@ -896,7 +896,7 @@ error28() {
   }
 }
 
-void
+static void
 error29() {
   Variable A(0);
   Variable B(1);
@@ -923,7 +923,7 @@ error29() {
   }
 }
 
-void
+static void
 error30() {
   Variable A(0);
   Variable B(1);
@@ -951,7 +951,7 @@ error30() {
   }
 }
 
-void
+static void
 error31() {
   Variable A(0);
 
@@ -974,7 +974,7 @@ error31() {
   }
 }
 
-void
+static void
 error32() {
   Variable A(0);
   Variable B(1);
@@ -999,7 +999,7 @@ error32() {
   }
 }
 
-void
+static void
 error33() {
   Variable A(0);
   Variable B(1);
@@ -1035,6 +1035,7 @@ main() {
   error7();
   error8();
   error9();
+  error10();
   error11();
   error12();
   error13();

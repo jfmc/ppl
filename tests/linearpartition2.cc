@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-bool
+static bool
 partition_ok(const C_Polyhedron& p,
 	     const C_Polyhedron& q,
 	     const pair<C_Polyhedron,
