@@ -78,8 +78,17 @@ public:
     ld = 1;}
 
   void print_interval() {
-  cout << "upper bound = " << uc << " / " << ud  << "  "
-       << "lower bound = " << lc << " / " << ld << endl;
+  cout << "upper bound = ";
+  if (ud != 0)
+    cout << uc << " / " << ud << ",  ";
+  else
+   cout << " none,  ";
+
+  cout << "lower bound = ";
+  if (ld != 0)
+   cout << lc << " / " << ld << endl;
+  else
+   cout << " none " << endl;
   }
 };
 
