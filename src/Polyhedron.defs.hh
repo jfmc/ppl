@@ -727,8 +727,8 @@ public:
 
   //! \brief
   //! Assigns to \p *this the \ref affine_transformation "affine image"
-  //! of \p *this under the function mapping variable \p v into the
-  //! affine expression specified by \p expr and \p d.
+  //! of \p *this under the function mapping variable \p var into the
+  //! affine expression specified by \p expr and \p denominator.
   /*!
     \param var           The variable to which the affine
                          expression is assigned.
@@ -815,8 +815,8 @@ public:
 
   //! \brief
   //! Assigns to \p *this the \ref affine_transformation "affine preimage"
-  //! of \p *this under the function mapping variable \p v into the
-  //! affine expression specified by \p expr and \p d.
+  //! of \p *this under the function mapping variable \p var into the
+  //! affine expression specified by \p expr and \p denominator.
   /*!
     \param var           The variable to which the affine expression
                          is substituted.
@@ -903,15 +903,17 @@ public:
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
   //! \ref generalized_image "generalized affine transfer function"
-  //! \f$\mathit{var}' \relop \frac{expr}{d}\f$, where
-  //! \f$\mathord{\relop}\f$ is the relation operator encoded by \p relop.
+  //! \f$\mathrm{var}' \relop \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
+  //! where \f$\mathord{\relop}\f$ is the relation operator encoded
+  //! by \p relop.
   /*!
-    \param var           The variable being compared to the result
-                         of the computed affine image.
+    \param var           The left hand side variable of
+                         the generalized affine transfer function.
     \param relop         The relation operator.
-    \param expr          The numerator of the affine expression.
-    \param denominator   The denominator of the affine expression
-                         (optional argument with default value 1.)
+    \param expr          The numerator of the right hand side
+                         affine expression.
+    \param denominator   The denominator of the right hand side affine
+                         expression (optional argument with default value 1.)
     \exception std::invalid_argument thrown if \p denominator is zero
                                      or if \p expr and \p *this
                                      are dimension-incompatible
@@ -928,7 +930,7 @@ public:
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
   //! \ref generalized_image "generalized affine transfer function"
-  //! \f$\mathit{lhs} \relop \mathit{rhs}\f$, where
+  //! \f$\mathrm{lhs}' \relop \mathrm{rhs}\f$, where
   //! \f$\mathord{\relop}\f$ is the relation operator encoded by \p relop.
   /*!
     \param lhs           The left hand side affine expression.
