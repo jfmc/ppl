@@ -57,7 +57,7 @@ ORIGINAL_TESTS = \
 	affinepreimage5 affinepreimage6 affinepreimage7 affinepreimage8 \
 	affinetrans \
         append1 append2 \
-	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 \
+	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
 	bbrz02widening1 bbrz02widening2 bbrz02widening3 bbrz02widening4 \
 	bbrz02widening5 bbrz02widening6 bbrz02widening7 bbrz02widening8 \
 	bbrz02widening9 bbrz02widening10 bbrz02widening11 bbrz02widening12 \
@@ -102,7 +102,7 @@ ORIGINAL_TESTS = \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
 	relations7 relations8 relations9 relations10 relations11 \
 	relations12 relations13 relations14 relations15 relations16 \
-	relations17 \
+	relations17 relations18 \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
 	removedim7 removedim8 removedim9 \
 	smm1 \
@@ -113,7 +113,7 @@ ORIGINAL_TESTS = \
 	topclosure1 topclosure2 topclosure3 \
 	universe1 universe2 universe3 universe4 universe5 universe6 \
 	writegensys1 writegensys2 \
-	writepolyhedron1 writepolyhedron2
+	writepolyhedron1 writepolyhedron2 writepolyhedron3
 
 DERIVED_TESTS = \
 	nnc_addconstraint2 nnc_addconstraint3 \
@@ -135,6 +135,7 @@ DERIVED_TESTS = \
 	nnc_affinetrans \
 	nnc_append1 nnc_append2 \
 	nnc_ascii_dump_load1 nnc_ascii_dump_load2 nnc_ascii_dump_load3 \
+	nnc_ascii_dump_load4 \
 	nnc_bbrz02widening1 nnc_bbrz02widening2 nnc_bbrz02widening3 \
 	nnc_bbrz02widening5 nnc_bbrz02widening6 \
 	nnc_bbrz02widening8 nnc_bbrz02widening9 \
@@ -182,7 +183,7 @@ DERIVED_TESTS = \
 	nnc_smm1 \
 	nnc_timeelapse2 nnc_timeelapse5 nnc_timeelapse6 nnc_timeelapse7 \
 	nnc_universe1 nnc_universe2 nnc_universe3 nnc_universe4 nnc_universe5 \
-	nnc_writepolyhedron2
+	nnc_writepolyhedron2 nnc_writepolyhedron3
 
 #
 # Sources for the tests
@@ -269,6 +270,7 @@ append2_SOURCES = append2.cc
 ascii_dump_load1_SOURCES = ascii_dump_load1.cc files.cc
 ascii_dump_load2_SOURCES = ascii_dump_load2.cc files.cc
 ascii_dump_load3_SOURCES = ascii_dump_load3.cc files.cc
+ascii_dump_load4_SOURCES = ascii_dump_load4.cc files.cc
 
 bbrz02widening1_SOURCES = bbrz02widening1.cc
 bbrz02widening2_SOURCES = bbrz02widening2.cc
@@ -417,6 +419,7 @@ relations14_SOURCES = relations14.cc
 relations15_SOURCES = relations15.cc
 relations16_SOURCES = relations16.cc
 relations17_SOURCES = relations17.cc
+relations18_SOURCES = relations18.cc
 
 randphull1_SOURCES = randphull1.cc
 
@@ -464,6 +467,7 @@ writegensys2_SOURCES = writegensys2.cc files.cc
 
 writepolyhedron1_SOURCES = writepolyhedron1.cc files.cc
 writepolyhedron2_SOURCES = writepolyhedron2.cc files.cc
+writepolyhedron3_SOURCES = writepolyhedron3.cc files.cc
 
 #
 # Sources and compilation flags for the derived check programs
@@ -574,6 +578,8 @@ nnc_ascii_dump_load2_SOURCES = ascii_dump_load2.cc files.cc
 nnc_ascii_dump_load2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_ascii_dump_load3_SOURCES = ascii_dump_load3.cc files.cc
 nnc_ascii_dump_load3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_ascii_dump_load4_SOURCES = ascii_dump_load4.cc files.cc
+nnc_ascii_dump_load4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bbrz02widening1_SOURCES = bbrz02widening1.cc
 nnc_bbrz02widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -832,6 +838,8 @@ nnc_universe5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_writepolyhedron2_SOURCES = writepolyhedron2.cc files.cc
 nnc_writepolyhedron2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_writepolyhedron3_SOURCES = writepolyhedron3.cc files.cc
+nnc_writepolyhedron3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 watchdog1_SRCS = watchdog1.cc timings.cc timings.hh
 
@@ -859,5 +867,7 @@ MOSTLYCLEANFILES = \
 ascii_dump_load_1.dat \
 ascii_dump_load_2.dat \
 ascii_dump_load_3.dat \
+ascii_dump_load_4.dat \
 writepolyhedron1.dat \
-writepolyhedron2.dat
+writepolyhedron2.dat \
+writepolyhedron3.dat
