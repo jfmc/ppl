@@ -1242,6 +1242,10 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
 
   if (!gs.is_sorted())
     gs.sort_rows();
+  
+  if (space_dimension() > gs_num_columns - 1)
+    gs.add_zero_columns(space_dimension() - gs_num_columns + 1);
+
   // We use the function `check_empty()' because we need that the 
   // flag EMPTY really represents the status of the system (i.e.
   // if it is true the polyhedron is really empty and if it is false
