@@ -30,7 +30,7 @@ predecrement to postincrement and postdecrement.
 Length of source lines
 ----------------------
 
-Avoid source lines longer than 78 characters.
+Avoid, when possible, source lines longer than 78 characters.
 
 
 Block closures
