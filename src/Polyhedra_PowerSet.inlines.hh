@@ -448,8 +448,7 @@ is_multiset_lgo_stabilizing(const multiset_lgo_info& y_info) const {
   return (yi != yend);
 }
 
-// TODO: to be generalized so as to use an arbitrary widening
-// and an arbitrary lgo relation.
+// TODO: to be generalized so as to use an arbitrary lgo relation.
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
@@ -493,7 +492,7 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
     return;
 
   // Multiset ordering is only useful when `y' is not a singleton. 
-  bool y_is_not_a_singleton = y.size() > 1;
+  const bool y_is_not_a_singleton = y.size() > 1;
 
   // The multiset lgo information for `y':
   // we want to be lazy about its computation.
