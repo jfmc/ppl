@@ -1,4 +1,4 @@
-/* Testing C_Polyhedron::check_universe(): a polyhedron defined by
+/* Testing Polyhedron::check_universe(): a polyhedron defined by
    a system of constraints containing a non-trivial inequality
    is not universal.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
@@ -25,11 +25,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
+#ifndef NOISY
 #define NOISY 0
+#endif
 
 int
 main() {

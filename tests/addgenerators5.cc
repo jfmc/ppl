@@ -1,4 +1,4 @@
-/* Testing C_Polyhedron::add_generators_and_minimize(): we add a system of
+/* Testing Polyhedron::add_generators_and_minimize(): we add a system of
    generators to a polyhedron defined by its system of constraints.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -24,11 +24,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
+#ifndef NOISY
 #define NOISY 0
+#endif
 
 int
 main() {

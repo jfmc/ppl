@@ -1,4 +1,4 @@
-/* Testing C_Polyhedron::poly_hull_assign(): we use two polyhedra
+/* Testing Polyhedron::poly_hull_assign(): we use two polyhedra
    defined by their systems of constraints.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -24,11 +24,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
+#ifndef NOISY
 #define NOISY 0
+#endif
 
 int
 main() {

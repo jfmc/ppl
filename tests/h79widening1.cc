@@ -1,4 +1,4 @@
-/* Test C_Polyhedron::H79_widening_assign() with empty polyhedra.
+/* Test Polyhedron::H79_widening_assign() with empty polyhedra.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,11 +23,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
+#ifndef NOISY
 #define NOISY 0
+#endif
 
 static bool
 try_H79_widening_assign(C_Polyhedron& ph1, const C_Polyhedron& ph2,

@@ -1,4 +1,4 @@
-/* Testing C_Polyhedron::intersection_assign_and_minimize() and
+/* Testing Polyhedron::intersection_assign_and_minimize() and
    C_Polyhedron::intersection_assign(): we intersect an empty
    polyhedron with one non-empty.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
@@ -25,11 +25,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
+#ifndef NOISY
 #define NOISY 0
+#endif
 
 int
 main() {
