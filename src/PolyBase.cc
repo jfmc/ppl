@@ -1338,8 +1338,6 @@ PPL::PolyBase::add_dimensions_and_project(size_t dim) {
     if (!is_necessarily_closed())
       gen_sys.insert(Generator::zero_dim_closure_point());
     gen_sys.insert(Generator::zero_dim_point());
-    // FIXME: the following call performs a few redundant tests
-    //        on the topology of gen_sys.
     gen_sys.adjust_topology_and_dimension(topology(), dim);
     set_generators_minimized();
     space_dim = dim;
