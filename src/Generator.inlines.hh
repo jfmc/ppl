@@ -88,8 +88,8 @@ inline const Integer&
 Generator::divisor() const {
   const Integer& d = Row::coefficient();
   if (!is_ray_or_vertex() || d == 0)
-    throw std::invalid_argument("PPL::Generator::divisor(): "
-				"*this is not a vertex");
+    throw_invalid_argument("PPL::Generator::divisor()",
+			   "*this is is not a vertex");
   return d;
 }
 

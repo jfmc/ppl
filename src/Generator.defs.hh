@@ -207,10 +207,14 @@ private:
   //! the coefficients from \p e.
   Generator(LinExpression& e);
 
-  //! Throws a <CODE>std::invalid_argument</CODE> exception
+  //! Throw a <CODE>std::invalid_argument</CODE> exception
   //! containing the appropriate error message.
+  //@{
   void
   throw_dimension_incompatible(const char* method, Variable v) const;
+  void
+  throw_invalid_argument(const char* method, const char* reason) const;
+  //@}
 
   //! Returns the (bidirectional) line of direction \p e.
   //! \exception std::invalid_argument thrown if the homogeneous part

@@ -42,6 +42,15 @@ PPL::Generator::throw_dimension_incompatible(const char* method,
   throw std::invalid_argument(s.str());
 }
 
+void
+PPL::Generator::throw_invalid_argument(const char* method,
+				       const char* reason) const {
+  std::ostringstream s;
+  s << method << ":" << std::endl
+    << reason;
+  throw std::invalid_argument(s.str());
+}
+
 PPL::Generator
 PPL::vertex(const LinExpression& e, const Integer& d) {
   if (d == 0)
