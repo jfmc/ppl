@@ -29,26 +29,26 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-ExtendedRational::ExtendedRational(const Integer& num, const Integer& den)
+ERational::ERational(const Integer& num, const Integer& den)
   : e(0), v(num, den) {
   v.canonicalize();
 }
 
 inline
-ExtendedRational::ExtendedRational(char sign)
+ERational::ERational(char sign)
   : e(sign == '+' ? 1 : -1) {
   assert(sign == '+' || sign == '-');
 }
 
 inline
-ExtendedRational::ExtendedRational(const ExtendedRational& y)
+ERational::ERational(const ERational& y)
   : e(y.e) {
   if (e == 0)
     v = y.v;
 }
 
-inline ExtendedRational&
-ExtendedRational::operator=(const ExtendedRational& y) {
+inline ERational&
+ERational::operator=(const ERational& y) {
   e = y.e;
   if (e == 0)
     v = y.v;
@@ -56,52 +56,52 @@ ExtendedRational::operator=(const ExtendedRational& y) {
 }
 
 inline int
-ExtendedRational::direction_of_infinity() const {
+ERational::direction_of_infinity() const {
   return e;
 }
 
 inline const Integer&
-ExtendedRational::numerator() const {
+ERational::numerator() const {
   return v.get_num();
 }
 
 inline const Integer&
-ExtendedRational::denominator() const {
+ERational::denominator() const {
   return v.get_den();
 }
 
 inline bool
-operator==(const ExtendedRational& x, const ExtendedRational& y) {
+operator==(const ERational& x, const ERational& y) {
   return x.e == y.e && (x.e != 0 || x.v == y.v);
 }
 
 inline bool
-operator!=(const ExtendedRational& x, const ExtendedRational& y) {
+operator!=(const ERational& x, const ERational& y) {
   return !(x == y);
 }
 
 inline bool
-operator<(const ExtendedRational& x, const ExtendedRational& y) {
+operator<(const ERational& x, const ERational& y) {
   return x.e < y.e || (x.e == 0 && y.e == 0 && x.v < y.v);
 }
 
 inline bool
-operator>(const ExtendedRational& x, const ExtendedRational& y) {
+operator>(const ERational& x, const ERational& y) {
   return y < x;
 }
 
 inline bool
-operator<=(const ExtendedRational& x, const ExtendedRational& y) {
+operator<=(const ERational& x, const ERational& y) {
   return x < y || x == y;
 }
 
 inline bool
-operator>=(const ExtendedRational& x, const ExtendedRational& y) {
+operator>=(const ERational& x, const ERational& y) {
   return y <= x;
 }
 
 inline
-Boundary::Boundary(const ExtendedRational& v, Flag f)
+Boundary::Boundary(const ERational& v, Flag f)
   : value(v), flag(f) {
 }
 
@@ -110,28 +110,28 @@ Boundary::is_closed() const {
   return flag == ZERO;
 }
 
-inline const ExtendedRational&
+inline const ERational&
 Boundary::bound() const {
   return value;
 }
 
 inline
 LBoundary::LBoundary()
-  : Boundary(ExtendedRational('-'), POS) {
+  : Boundary(ERational('-'), POS) {
 }
 
 inline
-LBoundary::LBoundary(const ExtendedRational& v, OpenClosed f)
+LBoundary::LBoundary(const ERational& v, OpenClosed f)
   : Boundary(v, f == CLOSED ? ZERO : POS) {
 }
 
 inline
 UBoundary::UBoundary()
-  : Boundary(ExtendedRational('+'), NEG) {
+  : Boundary(ERational('+'), NEG) {
 }
 
 inline
-UBoundary::UBoundary(const ExtendedRational& v, OpenClosed f)
+UBoundary::UBoundary(const ERational& v, OpenClosed f)
   : Boundary(v, f == CLOSED ? ZERO : NEG) {
 }
 
@@ -188,54 +188,54 @@ operator>=(const LBoundary& x, const UBoundary& y) {
 }
 
 inline bool
-operator==(const Boundary& x, ExtendedRational y) {
+operator==(const Boundary& x, const ERational& y) {
   return x.value == y && x.flag == Boundary::ZERO;
 }
 
 inline bool
-operator!=(const Boundary& x, ExtendedRational y) {
+operator!=(const Boundary& x, const ERational& y) {
   return !(x == y);
 }
 
 inline bool
-operator<(const Boundary& x, ExtendedRational y) {
+operator<(const Boundary& x, const ERational& y) {
   return x.value < y ||
     (x.value == y && x.flag < Boundary::ZERO);
 }
 
 inline bool
-operator<(const LBoundary& x, ExtendedRational y) {
+operator<(const LBoundary& x, const ERational& y) {
   return x.value < y;
 }
 
 inline bool
-operator>(const Boundary& x, ExtendedRational y) {
+operator>(const Boundary& x, const ERational& y) {
   return x.value > y ||
     (x.value == y && x.flag > Boundary::ZERO);
 }
 
 inline bool
-operator>(const UBoundary& x, ExtendedRational y) {
+operator>(const UBoundary& x, const ERational& y) {
   return x.value > y;
 }
 
 inline bool
-operator<=(const Boundary& x, ExtendedRational y) {
+operator<=(const Boundary& x, const ERational& y) {
   return !(x > y);
 }
 
 inline bool
-operator<=(const UBoundary& x, ExtendedRational y) {
+operator<=(const UBoundary& x, const ERational& y) {
   return !(x > y);
 }
 
 inline bool
-operator>=(const Boundary& x, ExtendedRational y) {
+operator>=(const Boundary& x, const ERational& y) {
   return !(x < y);
 }
 
 inline bool
-operator>=(const LBoundary& x, ExtendedRational y) {
+operator>=(const LBoundary& x, const ERational& y) {
   return !(x < y);
 }
 
@@ -272,8 +272,8 @@ Interval::lower_upper_bound(UBoundary new_upper) {
 
 inline void
 Interval::set_empty() {
-  lower = LBoundary(ExtendedRational('+'), LBoundary::OPEN);
-  upper = UBoundary(ExtendedRational('-'), UBoundary::OPEN);
+  lower = LBoundary(ERational('+'), LBoundary::OPEN);
+  upper = UBoundary(ERational('-'), UBoundary::OPEN);
   assert(is_empty());
 }
 

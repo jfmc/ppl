@@ -1278,7 +1278,7 @@ ppl_Polyhedron_relation_with_generator(Prolog_term_ref t_ph,
 }
 
 static Prolog_term_ref
-extended_rational_term(const ExtendedRational& e) {
+extended_rational_term(const ERational& e) {
   Prolog_term_ref t = Prolog_new_term_ref();
   int d = e.direction_of_infinity();
   if (d > 0)

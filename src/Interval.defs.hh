@@ -33,31 +33,31 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 // Put them in the namespace here to declare them friend later.
-bool operator==(const ExtendedRational& x, const ExtendedRational& y);
-bool operator!=(const ExtendedRational& x, const ExtendedRational& y);
-bool operator< (const ExtendedRational& x, const ExtendedRational& y);
-bool operator> (const ExtendedRational& x, const ExtendedRational& y);
-bool operator<=(const ExtendedRational& x, const ExtendedRational& y);
-bool operator>=(const ExtendedRational& x, const ExtendedRational& y);
+bool operator==(const ERational& x, const ERational& y);
+bool operator!=(const ERational& x, const ERational& y);
+bool operator<=(const ERational& x, const ERational& y);
+bool operator>=(const ERational& x, const ERational& y);
+bool operator<(const ERational& x, const ERational& y);
+bool operator>(const ERational& x, const ERational& y);
 
 namespace IO_Operators {
 
-std::ostream& operator<<(std::ostream& s, const ExtendedRational& x);
+std::ostream& operator<<(std::ostream& s, const ERational& x);
 
 } // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 
 
-class Parma_Polyhedra_Library::ExtendedRational {
+class Parma_Polyhedra_Library::ERational {
 public:
-  ExtendedRational(const Integer& num, const Integer& den);
+  ERational(const Integer& num, const Integer& den);
 
-  explicit ExtendedRational(char sign);
+  explicit ERational(char sign);
 
-  ExtendedRational(const ExtendedRational& y);
+  ERational(const ERational& y);
 
-  ExtendedRational& operator=(const ExtendedRational& y);
+  ERational& operator=(const ERational& y);
 
   int direction_of_infinity() const;
 
@@ -66,26 +66,20 @@ public:
   const Integer& denominator() const;
 
   friend bool
-  Parma_Polyhedra_Library::operator==(const ExtendedRational& x,
-				      const ExtendedRational& y);
+  Parma_Polyhedra_Library::operator==(const ERational& x, const ERational& y);
   friend bool
-  Parma_Polyhedra_Library::operator!=(const ExtendedRational& x,
-				      const ExtendedRational& y);
+  Parma_Polyhedra_Library::operator!=(const ERational& x, const ERational& y);
   friend bool
-  Parma_Polyhedra_Library::operator<(const ExtendedRational& x,
-				     const ExtendedRational& y);
+  Parma_Polyhedra_Library::operator<=(const ERational& x, const ERational& y);
   friend bool
-  Parma_Polyhedra_Library::operator>(const ExtendedRational& x,
-				     const ExtendedRational& y);
+  Parma_Polyhedra_Library::operator>=(const ERational& x, const ERational& y);
   friend bool
-  Parma_Polyhedra_Library::operator<=(const ExtendedRational& x,
-				      const ExtendedRational& y);
+  Parma_Polyhedra_Library::operator<(const ERational& x, const ERational& y);
   friend bool
-  Parma_Polyhedra_Library::operator>=(const ExtendedRational& x,
-				      const ExtendedRational& y);
+  Parma_Polyhedra_Library::operator>(const ERational& x, const ERational& y);
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
-						    const ExtendedRational& x);
+						    const ERational& x);
 
 private:
   //! Positive if +infinity, negative if -infinity, zero otherwise.
@@ -101,27 +95,27 @@ namespace Parma_Polyhedra_Library {
 // Put them in the namespace here to declare them friend later.
 bool operator==(const Boundary& x, const Boundary& y);
 bool operator!=(const Boundary& x, const Boundary& y);
-bool operator< (const Boundary& x, const Boundary& y);
-bool operator> (const Boundary& x, const Boundary& y);
 bool operator<=(const Boundary& x, const Boundary& y);
 bool operator>=(const Boundary& x, const Boundary& y);
+bool operator<(const Boundary& x, const Boundary& y);
+bool operator>(const Boundary& x, const Boundary& y);
 
-bool operator==(const Boundary& x, ExtendedRational y);
-bool operator!=(const Boundary& x, ExtendedRational y);
-bool operator< (const Boundary& x, ExtendedRational y);
-bool operator> (const Boundary& x, ExtendedRational y);
-bool operator<=(const Boundary& x, ExtendedRational y);
-bool operator>=(const Boundary& x, ExtendedRational y);
+bool operator==(const Boundary& x, const ERational& y);
+bool operator!=(const Boundary& x, const ERational& y);
+bool operator<=(const Boundary& x, const ERational& y);
+bool operator>=(const Boundary& x, const ERational& y);
+bool operator<(const Boundary& x, const ERational& y);
+bool operator>(const Boundary& x, const ERational& y);
 
-bool operator< (const LBoundary& x, const UBoundary& y);
-bool operator> (const UBoundary& x, const LBoundary& y);
 bool operator<=(const UBoundary& x, const LBoundary& y);
 bool operator>=(const LBoundary& x, const UBoundary& y);
+bool operator<(const LBoundary& x, const UBoundary& y);
+bool operator>(const UBoundary& x, const LBoundary& y);
 
-bool operator< (const LBoundary& x, ExtendedRational y);
-bool operator> (const UBoundary& x, ExtendedRational y);
-bool operator<=(const UBoundary& x, ExtendedRational y);
-bool operator>=(const LBoundary& x, ExtendedRational y);
+bool operator<=(const UBoundary& x, const ERational& y);
+bool operator>=(const LBoundary& x, const ERational& y);
+bool operator<(const LBoundary& x, const ERational& y);
+bool operator>(const UBoundary& x, const ERational& y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -130,67 +124,59 @@ class Parma_Polyhedra_Library::Boundary {
 protected:
   enum Flag { NEG = -1, ZERO = 0, POS = 1 };
 
-  ExtendedRational value;
+  ERational value;
   Flag flag;
 
-  Boundary(const ExtendedRational& v, Flag f);
+  Boundary(const ERational& v, Flag f);
 
   friend bool
   Parma_Polyhedra_Library::operator==(const Boundary& x, const Boundary& y);
   friend bool
   Parma_Polyhedra_Library::operator!=(const Boundary& x, const Boundary& y);
   friend bool
-  Parma_Polyhedra_Library::operator<(const Boundary& x, const Boundary& y);
-  friend bool
-  Parma_Polyhedra_Library::operator>(const Boundary& x, const Boundary& y);
-  friend bool
   Parma_Polyhedra_Library::operator<=(const Boundary& x, const Boundary& y);
   friend bool
   Parma_Polyhedra_Library::operator>=(const Boundary& x, const Boundary& y);
+  friend bool
+  Parma_Polyhedra_Library::operator<(const Boundary& x, const Boundary& y);
+  friend bool
+  Parma_Polyhedra_Library::operator>(const Boundary& x, const Boundary& y);
 
   friend bool
-  Parma_Polyhedra_Library::operator==(const Boundary& x, ExtendedRational y);
+  Parma_Polyhedra_Library::operator==(const Boundary& x, const ERational& y);
   friend bool
-  Parma_Polyhedra_Library::operator!=(const Boundary& x, ExtendedRational y);
+  Parma_Polyhedra_Library::operator!=(const Boundary& x, const ERational& y);
   friend bool
-  Parma_Polyhedra_Library::operator<(const Boundary& x, ExtendedRational y);
+  Parma_Polyhedra_Library::operator<=(const Boundary& x, const ERational& y);
   friend bool
-  Parma_Polyhedra_Library::operator>(const Boundary& x, ExtendedRational y);
+  Parma_Polyhedra_Library::operator>=(const Boundary& x, const ERational& y);
   friend bool
-  Parma_Polyhedra_Library::operator<=(const Boundary& x, ExtendedRational y);
+  Parma_Polyhedra_Library::operator<(const Boundary& x, const ERational& y);
   friend bool
-  Parma_Polyhedra_Library::operator>=(const Boundary& x, ExtendedRational y);
+  Parma_Polyhedra_Library::operator>(const Boundary& x, const ERational& y);
 
   friend bool
-  Parma_Polyhedra_Library::operator< (const LBoundary& x,
-				      const UBoundary& y);
+  Parma_Polyhedra_Library::operator<=(const UBoundary& x, const LBoundary& y);
   friend bool
-  Parma_Polyhedra_Library::operator> (const UBoundary& x,
-				      const LBoundary& y);
+  Parma_Polyhedra_Library::operator>=(const LBoundary& x, const UBoundary& y);
   friend bool
-  Parma_Polyhedra_Library::operator<=(const UBoundary& x,
-				      const LBoundary& y);
+  Parma_Polyhedra_Library::operator<(const LBoundary& x, const UBoundary& y);
   friend bool
-  Parma_Polyhedra_Library::operator>=(const LBoundary& x,
-				      const UBoundary& y);
+  Parma_Polyhedra_Library::operator>(const UBoundary& x, const LBoundary& y);
 
   friend bool
-  Parma_Polyhedra_Library::operator< (const LBoundary& x,
-				      ExtendedRational y);
+  Parma_Polyhedra_Library::operator<=(const UBoundary& x, const ERational& y);
   friend bool
-  Parma_Polyhedra_Library::operator> (const UBoundary& x,
-				      ExtendedRational y);
+  Parma_Polyhedra_Library::operator>=(const LBoundary& x, const ERational& y);
   friend bool
-  Parma_Polyhedra_Library::operator<=(const UBoundary& x,
-				      ExtendedRational y);
+  Parma_Polyhedra_Library::operator<(const LBoundary& x, const ERational& y);
   friend bool
-  Parma_Polyhedra_Library::operator>=(const LBoundary& x,
-				      ExtendedRational y);
+  Parma_Polyhedra_Library::operator>(const UBoundary& x, const ERational& y);
 
 public:
   bool is_closed() const;
 
-  const ExtendedRational& bound() const;
+  const ERational& bound() const;
 };
 
 
@@ -200,7 +186,7 @@ public:
   enum OpenClosed { OPEN = Boundary::POS, CLOSED = Boundary::ZERO };
 
   LBoundary();
-  LBoundary(const ExtendedRational& v, OpenClosed f);
+  LBoundary(const ERational& v, OpenClosed f);
 
   bool OK() const;
 };
@@ -211,7 +197,7 @@ public:
   enum OpenClosed { OPEN = Boundary::NEG, CLOSED = Boundary::ZERO };
 
   UBoundary();
-  UBoundary(const ExtendedRational& v, OpenClosed f);
+  UBoundary(const ERational& v, OpenClosed f);
 
   bool OK() const;
 };

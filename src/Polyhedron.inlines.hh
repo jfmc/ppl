@@ -389,7 +389,6 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     // is not exponential.
     if (is_universe())
       return;
-
   }
   if (polynomial) {
     if (marked_empty() ||
@@ -398,8 +397,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
       return;
     }
     if (constraints_are_up_to_date()) {
-      for (ConSys::const_iterator i = con_sys.begin();
-	   i != con_sys.end(); ++i)
+      for (ConSys::const_iterator i = con_sys.begin(); i != con_sys.end(); ++i)
 	if ((*i).is_trivial_false()){
 	  box.set_empty();
 	  return;
@@ -422,10 +420,10 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
   std::vector<UBoundary> upper_bound(space_dim);
 
   for (dimension_type j = space_dim; j-- > 0; ) {
-    // Lower bounds are initialized to (open) plus infinity;
-    lower_bound[j] = LBoundary(ExtendedRational('+'), LBoundary::OPEN);
-    // Upper bounds are initialized to (open) minus infinity;
-    upper_bound[j] = UBoundary(ExtendedRational('-'), UBoundary::OPEN);
+    // Lower bounds are initialized to (open) plus infinity.
+    lower_bound[j] = LBoundary(ERational('+'), LBoundary::OPEN);
+    // Upper bounds are initialized to (open) minus infinity.
+    upper_bound[j] = UBoundary(ERational('-'), UBoundary::OPEN);
   }
   
   if (!polynomial && has_something_pending())
@@ -481,7 +479,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	// `rel' is either the relation `==', `>=', or `>'.
 	// For the purpose of shrinking intervals, this is
 	// (morally) turned into `Variable(varid) rel  -n/d'.
-	ExtendedRational r(-n, d);
+	ERational r(-n, d);
 	Constraint::Type c_type = c.type();
 	switch (c_type) {
 	case Constraint::EQUALITY:
@@ -535,8 +533,8 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	// both below and above.
 	for (dimension_type j = space_dim; j-- > 0; )
 	  if (g.coefficient(Variable(j)) != 0) {
-	    lower_bound[j] = LBoundary(ExtendedRational('-'), LBoundary::OPEN);
-	    upper_bound[j] = UBoundary(ExtendedRational('+'), UBoundary::OPEN);
+	    lower_bound[j] = LBoundary(ERational('-'), LBoundary::OPEN);
+	    upper_bound[j] = UBoundary(ERational('+'), UBoundary::OPEN);
 	  }
 	break;
       case Generator::RAY:
@@ -545,9 +543,9 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	for (dimension_type j = space_dim; j-- > 0; ) {
 	  int sign = sgn(g.coefficient(Variable(j)));
 	  if (sign < 0)
-	    lower_bound[j] = LBoundary(ExtendedRational('-'), LBoundary::OPEN);
+	    lower_bound[j] = LBoundary(ERational('-'), LBoundary::OPEN);
 	  else if (sign > 0)
-	    upper_bound[j] = UBoundary(ExtendedRational('+'), UBoundary::OPEN);
+	    upper_bound[j] = UBoundary(ERational('+'), UBoundary::OPEN);
 	}
 	break;
       case Generator::POINT:
@@ -556,7 +554,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	  const Integer& d = g.divisor();
 	  for (dimension_type j = space_dim; j-- > 0; ) {
 	    const Integer& n = g.coefficient(Variable(j));
-	    ExtendedRational r(n, d);
+	    ERational r(n, d);
 	    LBoundary lb(r,(g_type == Generator::CLOSURE_POINT
 			    ? LBoundary::OPEN
 			    : LBoundary::CLOSED));
@@ -578,14 +576,14 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
   for (dimension_type j = space_dim; j-- > 0; ) {
     // Lower bound.
     const LBoundary& lb = lower_bound[j];
-    const ExtendedRational& lr = lb.bound();
+    const ERational& lr = lb.bound();
     if (lr.direction_of_infinity() == 0)
       box.raise_lower_bound(j, lb.is_closed(),
 			    lr.numerator(), lr.denominator());
 
     // Upper bound.
     const UBoundary& ub = upper_bound[j];
-    const ExtendedRational& ur = ub.bound();
+    const ERational& ur = ub.bound();
     if (ur.direction_of_infinity() == 0)
       box.lower_upper_bound(j, ub.is_closed(),
 			    ur.numerator(), ur.denominator());
