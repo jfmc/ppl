@@ -301,19 +301,15 @@ ppl_new_Constraint(ppl_Constraint_t* pc,
   case PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL:
     ppc = new Constraint(lle >= 0);
     break;
-#if 0
   case PPL_CONSTRAINT_TYPE_GREATER_THAN:
     ppc = new Constraint(lle > 0);
     break;
-#endif
   case PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL:
     ppc = new Constraint(lle <= 0);
     break;
-#if 0
   case PPL_CONSTRAINT_TYPE_LESS_THAN:
     ppc = new Constraint(lle < 0);
     break;
-#endif
   default:
     throw std::invalid_argument("ppl_new_Constraint(pc, le, t): "
 				"t invalid");
@@ -584,11 +580,9 @@ ppl_new_Generator(ppl_Generator_t* pg,
   case PPL_GENERATOR_TYPE_POINT:
     ppg = new Generator(point(lle, dd));
     break;
-#if 0
   case PPL_GENERATOR_TYPE_CLOSURE_POINT:
     ppg = new Generator(closure_point(lle, dd));
     break;
-#endif
   case PPL_GENERATOR_TYPE_RAY:
     ppg = new Generator(ray(lle));
     break;
@@ -611,14 +605,12 @@ ppl_new_Generator_zero_dim_point(ppl_Generator_t* pg) try {
 }
 CATCH_ALL
 
-#if 0
 int
 ppl_new_Generator_zero_dim_closure_point(ppl_Generator_t* pg) try {
   *pg = to_nonconst(new Generator(Generator::zero_dim_closure_point()));
   return 0;
 }
 CATCH_ALL
-#endif
 
 int
 ppl_new_Generator_from_Generator(ppl_Generator_t* pg,
