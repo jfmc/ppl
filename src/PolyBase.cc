@@ -521,6 +521,135 @@ PPL::PolyBase::minimize() const {
   assert(OK());
 }
 
+
+/*!
+  Performs strong minimization of generators and constraints
+  for an NNC polyhedron.
+*/
+void
+PPL::PolyBase::NNC_minimize() const {
+  assert(!is_necessarily_closed());
+
+  // FIXME : just an executable specification,
+  // that still has to be checked for correctness/efficiency.
+
+  // Start from minimized constraint and generator systems,
+  // with saturation matrices up-to-date.
+  minimize();
+  // Sort generators (to later help in identifying unmatched points).
+  obtain_sorted_generators();
+
+  // Build a SatRow where all (and only) the indexes corresponding to
+  // strict inequalities are set to 1.
+  SatRow unsat_strict_ineq;
+  for (size_t i = con_sys.num_rows(); i-- > 0; )
+    if (con_sys[i].is_strict_inequality())
+      unsat_strict_ineq.set(i);
+
+#if 0
+  std::cerr << "usat_strict_ineq: "
+	    << unsat_strict_ineq
+	    << std::endl;
+#endif
+
+  // Scan the generator system looking for points that are
+  // NOT matched by a corresponding closure point:
+  // these are the candidate NNC_redundant generators.
+  size_t n_rows = gen_sys.num_rows();
+  std::vector<bool> candidates(n_rows);
+  for (size_t i = n_rows; i-- > 0; ) {
+    const Generator& gi = gen_sys[i];
+    if (gi.is_point()) {
+      // Since `gs' is ordered, the corresponding closure point,
+      // if present, has an index `j' less than `i'.
+      candidates[i] = true;
+      for (size_t j = i; j-- > 0; ) {
+	const Generator& gj = gen_sys[j];
+	if (gj.is_closure_point()) {
+	  bool is_corresponding_closure_point = true;
+	  for (size_t k = gen_sys.num_columns() - 1; k-- > 0; )
+	    if (gi[k] != gj[k]) {
+	      is_corresponding_closure_point = false;
+	      break;
+	    }
+	  if (is_corresponding_closure_point) {
+	    candidates[i] = false;
+	    break;
+	  }
+	}
+      }
+    }
+    else
+      // `gi' is not a point.
+      candidates[i] = false;
+  }
+
+#if 0
+  std::cerr << "candidates: ";
+  for (size_t i = 0; i < n_rows; ++i)
+    if (candidates[i])
+      std::cerr << i << " ";
+  std::cerr << std::endl;
+#endif
+
+  // For all the candidates, check for NNC-redundancy
+  // and eventually move them to the bottom part of the system.
+  GenSys& gs = const_cast<GenSys&>(gen_sys);
+  SatMatrix& sat = const_cast<SatMatrix&>(sat_c);
+  for (size_t i = 0; i < n_rows; )
+    if (candidates[i]) {
+      // Compute the SatRow (corresponding to the candidate point)
+      // when strict inequality constraints are ignored.
+      SatRow sat_gi;
+      set_union(sat[i], unsat_strict_ineq, sat_gi);
+      // Check if the candidate point is actually NNC-redundant:
+      // it is redundant if there exists another point that
+      // saturates all the non-strict inequalities saturated
+      // by the candidate.
+      bool redundant = false;
+      for (size_t j = 0; j < n_rows; ++j)
+	if (i != j && gs[j].is_point() && sat[j] <= sat_gi) {
+	  // Generator `gs[i]' is NNC-redundant:
+	  // move it to the bottom of the generator system,
+	  // while keeping `sat_c' and `candidates' consistent.
+
+#if 0
+	  std::cerr << "Generator " << i
+		    << " is NNC-redundant." << std::endl;
+#endif
+
+	  redundant = true;
+	  --n_rows;
+	  std::swap(gs[i], gs[n_rows]);
+	  std::swap(sat[i], sat[n_rows]);
+	  std::swap(candidates[i], candidates[n_rows]);
+	  break;
+	}
+      // Consider next generator, which is already in place if
+      // we have perfomed the swap.
+      if (!redundant)
+	++i;
+    }
+    else
+      // Consider next generator.
+      ++i;
+
+  // If needed, erase the NNC-redundant generators.
+  if (n_rows < gs.num_rows()) {
+    gs.erase_to_end(n_rows);
+    gs.set_sorted(false);
+    // From the user perspective, the polyhedron is unchanged.
+    PolyBase& x = const_cast<PolyBase&>(*this);
+    x.clear_constraints_up_to_date();
+    x.clear_sat_c_up_to_date();
+    x.clear_sat_g_up_to_date();
+    // Recompute the minimized constraints.
+    x.minimize();
+  }
+  assert(OK());
+}
+
+
 /*!
   Sorts the matrix of constraints.
   If saturation matrices \p sat_c and \p sat_g are up-to-date,

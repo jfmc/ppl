@@ -527,6 +527,11 @@ protected:
   void obtain_sorted_generators_with_sat_g() const;
 
 public:
+  //! Applies strong minimization to generators and constraints
+  //! of an NNC polyhedron.
+  void NNC_minimize() const;
+
+public:
   //! Adds new dimensions and embeds the old polyhedron into the new space.
   //! \param dim      The number of dimensions to add.
   void add_dimensions_and_embed(size_t dim);
