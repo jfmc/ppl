@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 
 #include "LinExpression.defs.hh"
+#include <stdexcept>
 
 INLINE
 Parma_Polyhedra_Library::Generator::Generator()
@@ -89,6 +90,9 @@ operator ^(int, const LinExpression& e) {
 
 INLINE Generator
 operator /=(const LinExpression& e, const Integer& n) {
+  if (n == 0)
+    throw invalid_argument("Generator operator /=(e, n) with n == 0");
+
   LinExpression ec = e;
   Generator g(ec);
   g[0] = n;
