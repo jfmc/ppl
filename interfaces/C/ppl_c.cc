@@ -1833,6 +1833,48 @@ ppl_Polyhedron_bounds_from_below(ppl_const_Polyhedron_t ph,
 CATCH_ALL
 
 int
+ppl_Polyhedron_maximize(ppl_const_Polyhedron_t ph,
+			ppl_const_LinExpression_t le,
+			ppl_Coefficient_t sup_n,
+			ppl_Coefficient_t sup_d,
+			int* pmaximum,
+			ppl_Generator_t* ppoint) try {
+  const Polyhedron& pph = *to_const(ph);
+  const LinExpression& lle = *to_const(le);
+  Integer& ssup_n = *to_nonconst(sup_n);
+  Integer& ssup_d = *to_nonconst(sup_d);
+  bool maximum;
+  bool ok = ppoint != 0
+    ? pph.maximize(lle, ssup_n, ssup_d, maximum, *to_nonconst(*ppoint))
+    : pph.maximize(lle, ssup_n, ssup_d, maximum);
+  if (ok)
+    *pmaximum = maximum ? 1 : 0;
+  return ok ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_minimize(ppl_const_Polyhedron_t ph,
+			ppl_const_LinExpression_t le,
+			ppl_Coefficient_t inf_n,
+			ppl_Coefficient_t inf_d,
+			int* pminimum,
+			ppl_Generator_t* ppoint) try {
+  const Polyhedron& pph = *to_const(ph);
+  const LinExpression& lle = *to_const(le);
+  Integer& iinf_n = *to_nonconst(inf_n);
+  Integer& iinf_d = *to_nonconst(inf_d);
+  bool minimum;
+  bool ok = ppoint != 0
+    ? pph.minimize(lle, iinf_n, iinf_d, minimum, *to_nonconst(*ppoint))
+    : pph.minimize(lle, iinf_n, iinf_d, minimum);
+  if (ok)
+    *pminimum = minimum ? 1 : 0;
+  return ok ? 1 : 0;
+}
+CATCH_ALL
+
+int
 ppl_Polyhedron_is_topologically_closed(ppl_const_Polyhedron_t ph) try {
   const Polyhedron& pph = *to_const(ph);
   return pph.is_topologically_closed() ? 1 : 0;

@@ -1366,6 +1366,54 @@ ppl_Polyhedron_bounds_from_below __P((ppl_const_Polyhedron_t ph,
 				      ppl_const_LinExpression_t le));
 
 /*! \brief
+  Returns a positive integer if  \p ph is not empty
+  and \p le is bounded from above in \p ph, in which case
+  the supremum value and a point where \p expr reaches it are computed.
+  \param ph       The polyhedron constraining \p le;
+  \param le        The linear expression to be maximized subject to \p ph;
+  \param sup_n     Will be assigned the numerator of the supremum value;
+  \param sup_d     Will be assigned the denominator of the supremum value;
+  \param pmaximum  Will store 1 in this location if the supremum is also
+                   the maximum, will store 0 otherwise;
+  \param ppoint    When nonzero, a point or closure point where \p le
+                   reaches the extremum value will be stored here.
+  If \p ph is empty or \p le is not bounded from above,
+  0 is returned and \p sup_n, \p sup_d, \p *pmaximum and \p *ppoint
+  are left untouched.
+*/
+int
+ppl_Polyhedron_maximize __P((ppl_const_Polyhedron_t ph,
+			     ppl_const_LinExpression_t le,
+			     ppl_Coefficient_t sup_n,
+			     ppl_Coefficient_t sup_d,
+			     int* pmaximum,
+			     ppl_Generator_t* ppoint));
+
+/*! \brief
+  Returns a positive integer if  \p ph is not empty
+  and \p le is bounded from above in \p ph, in which case
+  the infimum value and a point where \p expr reaches it are computed.
+  \param ph       The polyhedron constraining \p le;
+  \param le        The linear expression to be minimized subject to \p ph;
+  \param inf_n     Will be assigned the numerator of the infimum value;
+  \param inf_d     Will be assigned the denominator of the infimum value;
+  \param pminimum  Will store 1 in this location if the infimum is also
+                   the minimum, will store 0 otherwise;
+  \param ppoint    When nonzero, a point or closure point where \p le
+                   reaches the extremum value will be stored here.
+  If \p ph is empty or \p le is not bounded from below,
+  0 is returned and \p inf_n, \p inf_d, \p *pminimum and \p *ppoint
+  are left untouched.
+*/
+int
+ppl_Polyhedron_minimize __P((ppl_const_Polyhedron_t ph,
+			     ppl_const_LinExpression_t le,
+			     ppl_Coefficient_t inf_n,
+			     ppl_Coefficient_t inf_d,
+			     int* pminimum,
+			     ppl_Generator_t* ppoint));
+
+/*! \brief
   Returns a positive integer if \p ph is topologically closed;
   returns 0 if \p ph is not topologically closed.
 */
@@ -1548,9 +1596,9 @@ ppl_Polyhedron_poly_difference_assign __P((ppl_Polyhedron_t x,
 /*! \brief
   Transforms the polyhedron \p ph, assigning an affine expression
   to the specified variable.
-  \param ph  The polyhedron that is transformed.
-  \param var The variable to which the affine expression is assigned.
-  \param le  The numerator of the affine expression.
+  \param ph  The polyhedron that is transformed;
+  \param var The variable to which the affine expression is assigned;
+  \param le  The numerator of the affine expression;
   \param d   The denominator of the affine expression.
 */
 int
@@ -1562,9 +1610,9 @@ ppl_Polyhedron_affine_image __P((ppl_Polyhedron_t ph,
 /*! \brief
   Transforms the polyhedron \p ph, substituting an affine expression
   to the specified variable.
-  \param ph  The polyhedron that is transformed.
-  \param var The variable to which the affine expression is substituted.
-  \param le  The numerator of the affine expression.
+  \param ph  The polyhedron that is transformed;
+  \param var The variable to which the affine expression is substituted;
+  \param le  The numerator of the affine expression;
   \param d   The denominator of the affine expression.
 */
 int
@@ -1579,11 +1627,11 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
   \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
   where \f$\mathord{\relsym}\f$ is the relation symbol encoded
   by \p relsym.
-  \param ph     The polyhedron that is transformed.
+  \param ph     The polyhedron that is transformed;
   \param var    The left hand side variable of the generalized
-                affine transfer function.
-  \param relsym The relation symbol.
-  \param le     The numerator of the right hand side affine expression.
+                affine transfer function;
+  \param relsym The relation symbol;
+  \param le     The numerator of the right hand side affine expression;
   \param d      The denominator of the right hand side affine expression.
 */
 int
@@ -1599,9 +1647,9 @@ __P((ppl_Polyhedron_t ph,
   \ref generalized_image "generalized affine transfer function"
   \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
   \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
-  \param ph    The polyhedron that is transformed.
-  \param lhs           The left hand side affine expression.
-  \param relsym        The relation symbol.
+  \param ph            The polyhedron that is transformed;
+  \param lhs           The left hand side affine expression;
+  \param relsym        The relation symbol;
   \param rhs           The right hand side affine expression.
 */
 int
