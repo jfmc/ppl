@@ -112,9 +112,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 :- [ppl_xsb].
 
-#define user_input user
-#include "pl_check.pl"
-
 /*
   FIXME: the following kludge is due to the fact that XSB versions up
   to and including 2.6 do not seem to support current_prolog_flag/2.
@@ -129,6 +126,9 @@ current_prolog_flag(bounded, true).
 */
 current_prolog_flag(min_integer, -268435456).
 current_prolog_flag(max_integer, 268435455).
+
+#define user_input user
+#include "pl_check.pl"
 
 main :-
     (check_all ->
