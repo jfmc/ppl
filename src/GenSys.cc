@@ -514,52 +514,22 @@ PPL::GenSys::remove_invalid_lines_and_rays() {
 /*!
   Returns <CODE>true</CODE> if and only if \p *this actually represents
   a system of generators. So, \p *this must satisfy some rule:
-  -# it must have a column for the inhomogeneous term and one for
-     a variable;
-  -# it can have no row; otherwise it must have at least a point;
-  -# every line and ray must have the inhomogeneous term equal to zero;
-  -# the divisor of all points must be strictly positive.
+  -# it must be a valid Matrix;
+  -# every row in the matrix must be a valid generator.
 */
 bool
 PPL::GenSys::OK() const {
-  using std::endl;
-  using std::cerr;
-
   // A GenSys must be a valid Matrix.
   if (!Matrix::OK())
     return false;
 
-  if (num_rows() == 0)
-    // A valid system of generators can be empty.
-    return true;
-
-  bool no_point = true;
+  // Checking each generator in the system.
   for (size_t i = num_rows(); i-- > 0; ) {
     const Generator& g = (*this)[i];
-
     if (!g.OK())
       return false;
-
-    // Checking for topology mismatches.
-    if (topology() != g.topology()) {
-      cerr << "Topology mismatch between "
-	   << "the generator systems and one of its elements!"
-	   << endl;
-      return false;
-    }
-
-    // Looking for a point.
-    if (g.is_point())
-      no_point = false;
   }
 
-  if (no_point) {
-    // A valid, non-empty system
-    // of generators must have at least one point.
-    cerr << "There must be at least one point!"
-	 << endl;
-    return false;
-  }
-
+  // All checks passed.
   return true;
 }
