@@ -69,7 +69,7 @@ integer_term_to_Integer(Prolog_term_ref t) {
     if (SP_get_number_chars(t, &s) != 0)
       return PPL::Integer(s);
     else
-      throw integer_out_of_range(t);
+      throw unknown_interface_error("integer_term_to_Integer");
   }
 }
 
