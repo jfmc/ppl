@@ -64,7 +64,7 @@ main() {
   C_Polyhedron known_result(2);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(A - B >= 0);
-  known_result.add_constraint(B <= 2);
+  known_result.add_constraint(B <= 4);
   known_result.add_constraint(A <= 5);
 
   int retval = (ph2 == known_result) ? 0 : 1;
