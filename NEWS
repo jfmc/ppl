@@ -60,6 +60,11 @@ o  Fixed a bug in methods Polyhedron::affine_image() and
    Polyhedron::affine_preimage(), whereby a wrong result could be
    obtained when using a negative denominator for the affine expression.
 
+o  Fixed a bug in methods Polyhedron::minimized_constraints() and
+   Polyhedron::minimized_generators(), whereby a library invariant
+   was violated when calling these methods on a zero-dimensional space
+   universe NNC polyhedron.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.4.1 (released on July 30, 2002)
