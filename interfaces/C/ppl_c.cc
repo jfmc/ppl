@@ -37,6 +37,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "version.hh"
 #include "ppl_c.h"
 #include <stdexcept>
+#include <sstream>
+#include <cstdio>
 
 using namespace Parma_Polyhedra_Library;
 
@@ -1972,3 +1974,41 @@ ppl_Polyhedron_OK(ppl_const_Polyhedron_t ph) try {
   return to_const(ph)->OK() ? 1 : 0;
 }
 CATCH_ALL
+
+
+#define DEFINE_PRINT_FUNCTIONS(Type) \
+int \
+ppl_io_print_ ## Type(ppl_const_ ## Type ## _t x) try { \
+  using namespace IO_Operators; \
+  std::ostringstream s; \
+  s << to_const(x); \
+  if (puts(s.str().c_str()) < 0) \
+    return PPL_STDIO_ERROR; \
+  return 0; \
+} \
+CATCH_ALL \
+ \
+int \
+ppl_io_fprint_ ## Type(FILE* f, ppl_const_ ## Type ## _t x) try { \
+  using namespace IO_Operators; \
+  std::ostringstream s; \
+  s << to_const(x); \
+  if (fputs(s.str().c_str(), f) < 0) \
+    return PPL_STDIO_ERROR; \
+  return 0; \
+} \
+CATCH_ALL
+
+DEFINE_PRINT_FUNCTIONS(Coefficient)
+
+DEFINE_PRINT_FUNCTIONS(LinExpression)
+
+DEFINE_PRINT_FUNCTIONS(Constraint)
+
+DEFINE_PRINT_FUNCTIONS(ConSys)
+
+DEFINE_PRINT_FUNCTIONS(Generator)
+
+DEFINE_PRINT_FUNCTIONS(GenSys)
+
+DEFINE_PRINT_FUNCTIONS(Polyhedron)

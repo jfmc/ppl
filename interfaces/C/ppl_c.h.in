@@ -125,6 +125,65 @@ solver written in C.  In order to use this solver you will need to install
 Programming Kit): this is used to read linear programs in MPS format.
 */
 
+/*
+  For some reason, GMP up to and including version 4.1.2 requires
+  <stdio.h> to be included before <gmp.h>.
+*/
+#include <stdio.h>
+#include <gmp.h>
+#include <stddef.h>
+
+/*
+  __P is a macro used to wrap function prototypes, so that compilers
+  that don't understand ANSI C prototypes still work, and ANSI C
+  compilers can issue warnings about type mismatches.
+*/
+#undef __P
+#if defined(__STDC__) || defined(_AIX) || (defined(__mips) && defined(_SYSTYPE_SVR4)) || defined(WIN32) || defined(__cplusplus) || defined(SWIG)
+# define __P(protos) protos
+#else
+# define __P(protos) ()
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/*! \brief
+  Defines the error codes that any function may return.
+*/
+enum ppl_enum_error_code {
+  /*! \hideinitializer
+    The virtual memory available to the process has been exhausted. */
+  PPL_ERROR_OUT_OF_MEMORY = -2,
+  /*! \hideinitializer
+    A function has been invoked with an invalid argument. */
+  PPL_ERROR_INVALID_ARGUMENT = -3,
+  /*! \hideinitializer
+    An arithmetic overflow occurred and the computation was consequently
+    interrupted.  This can <EM>only</EM> happen in library's incarnations
+    using bounded integers as coefficients. */
+  PPL_ARITHMETIC_OVERFLOW = -4,
+  /*! \hideinitializer
+    An error occurred during a C input/output operation.  A more
+    precise indication of what went wrong is availble via
+    <CODE>errno</CODE>. */
+  PPL_STDIO_ERROR = -5,
+  /*! \hideinitializer
+    An internal error that was diagnosed by the PPL itself.
+    This indicates a bug in the PPL. */
+  PPL_ERROR_INTERNAL_ERROR = -6,
+  /*! \hideinitializer
+    A standard exception has been raised by the C++ run-time environment.
+    This indicates a bug in the PPL. */
+  PPL_ERROR_UNKNOWN_STANDARD_EXCEPTION = -7,
+  /*! \hideinitializer
+    A totally unknown, totally unexpected error happened.
+    This indicates a bug in the PPL. */
+  PPL_ERROR_UNEXPECTED_ERROR = -8,
+};
+
+/*! \name Version Checking */
 /*@{*/
 
 /*! \brief
@@ -161,30 +220,6 @@ Programming Kit): this is used to read linear programs in MPS format.
   neither PPL_VERSION_REVISION nor PPL_VERSION_BETA are zero.
 */
 #define PPL_VERSION "@VERSION@"
-
-/*
-  For some reason, GMP up to and including version 4.1.2 requires
-  <stdio.h> to be included before <gmp.h>.
-*/
-#include <stdio.h>
-#include <gmp.h>
-#include <stddef.h>
-
-/*
-  __P is a macro used to wrap function prototypes, so that compilers
-  that don't understand ANSI C prototypes still work, and ANSI C
-  compilers can issue warnings about type mismatches.
-*/
-#undef __P
-#if defined(__STDC__) || defined(_AIX) || (defined(__mips) && defined(_SYSTYPE_SVR4)) || defined(WIN32) || defined(__cplusplus) || defined(SWIG)
-# define __P(protos) protos
-#else
-# define __P(protos) ()
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /*! \brief
   Returns the major number of the PPL version.
@@ -225,29 +260,7 @@ ppl_version __P((void));
 const char*
 ppl_banner __P((void));
 
-/*! \brief
-  Defines the error code that any function can return.
-*/
-enum ppl_enum_error_code {
-  /*! \hideinitializer
-    The virtual memory available to the process has been exhausted. */
-  PPL_ERROR_OUT_OF_MEMORY = -2,
-  /*! \hideinitializer
-    A function has been invoked with an invalid argument. */
-  PPL_ERROR_INVALID_ARGUMENT = -3,
-  /*! \hideinitializer
-    An internal error that was diagnosed by the PPL itself.
-    This indicates a bug in the PPL. */
-  PPL_ERROR_INTERNAL_ERROR = -4,
-  /*! \hideinitializer
-    A standard exception has been raised by the C++ run-time environment.
-    This indicates a bug in the PPL. */
-  PPL_ERROR_UNKNOWN_STANDARD_EXCEPTION = -5,
-  /*! \hideinitializer
-    A totally unknown, totally unexpected error happened.
-    This indicates a bug in the PPL. */
-  PPL_ERROR_UNEXPECTED_ERROR = -6
-};
+/*@}*/ /* Version Checking */
 
 /*! \brief
   An unsigned integral type for representing space dimensions.
@@ -2093,6 +2106,33 @@ ppl_Polyhedron_map_dimensions __P((ppl_Polyhedron_t ph,
 				   size_t n));
 
 /*@}*/ /* Functions Related to Polyhedra */
+
+/*! \name Simple I/O Functions */
+/*@{*/
+
+#define DECLARE_PRINT_FUNCTIONS(Type) \
+int \
+ppl_io_print_ ## Type __P((ppl_const_ ## Type ## _t x)); \
+ \
+int \
+ppl_io_fprint_ ## Type __P((FILE* f, ppl_const_ ## Type ## _t x));
+
+
+DECLARE_PRINT_FUNCTIONS(Coefficient)
+
+DECLARE_PRINT_FUNCTIONS(LinExpression)
+
+DECLARE_PRINT_FUNCTIONS(Constraint)
+
+DECLARE_PRINT_FUNCTIONS(ConSys)
+
+DECLARE_PRINT_FUNCTIONS(Generator)
+
+DECLARE_PRINT_FUNCTIONS(GenSys)
+
+DECLARE_PRINT_FUNCTIONS(Polyhedron)
+
+/*@}*/ /* Simple I/O Functions */
 
 #ifdef __cplusplus
 } /* extern "C" */
