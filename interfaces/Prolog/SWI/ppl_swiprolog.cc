@@ -383,6 +383,7 @@ static PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_Polyhedron_swap, 2)
   PL_EXTENSION_ENTRY(ppl_delete_Polyhedron, 1)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_space_dimension, 2)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_dimension, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_get_constraints, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_get_minimized_constraints, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_get_generators, 2)

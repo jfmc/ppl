@@ -45,6 +45,7 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_Polyhedron_swap/2,
         ppl_delete_Polyhedron/1,
         ppl_Polyhedron_space_dimension/2,
+        ppl_Polyhedron_dimension/2,
         ppl_Polyhedron_get_constraints/2,
         ppl_Polyhedron_get_minimized_constraints/2,
         ppl_Polyhedron_get_generators/2,
@@ -272,6 +273,15 @@ ppl_new_Polyhedron_from_bounding_box(Kind, BBox, Handle) :-
 
 ppl_Polyhedron_space_dimension(Handle, Dimension) :-
         ppl_Polyhedron_space_dimension_2(Handle, Dimension, 1).
+
+:- true pred ppl_Polyhedron_dimension_2(in(Handle),
+					in(Dimension),
+					go(Success))
+  :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_Polyhedron_dimension)).
+
+ppl_Polyhedron_dimension(Handle, Dimension) :-
+        ppl_Polyhedron_dimension_2(Handle, Dimension, 1).
 
 :- true pred ppl_Polyhedron_get_constraints_2(in(Handle),
                                               in(CList),
@@ -784,6 +794,8 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
         ppl_delete_Polyhedron/1,
 %       ppl_Polyhedron_space_dimension/2,
         ppl_Polyhedron_space_dimension_2/3,
+%       ppl_Polyhedron_dimension/2,
+        ppl_Polyhedron_dimension_2/3,
 %       ppl_Polyhedron_get_constraints/2,
         ppl_Polyhedron_get_constraints_2/3,
 %       ppl_Polyhedron_get_minimized_constraints/2,
@@ -1242,6 +1254,7 @@ since the above version of this is temporary.
         ppl_Polyhedron_swap/2,
         ppl_delete_Polyhedron/1,
         ppl_Polyhedron_space_dimension/2,
+        ppl_Polyhedron_dimension/2,
         ppl_Polyhedron_get_constraints/2,
         ppl_Polyhedron_get_minimized_constraints/2,
         ppl_Polyhedron_get_generators/2,

@@ -10,7 +10,6 @@ Enhancements for PPL 0.7
 - Consider whether it is the case to move the definition of dimension
   of a polyhedron in the user's manual and to refer to it in the
   documentation of Polyhedron::dimension().
-- Make Polyhedron::dimension() available in all the interfaces.
 - Allow the specification of alternative coefficient implementations.
 - Clearly explain, in the documentation, how (not) to use
   set_GMP_memory_allocation_functions().  More generally, explain how

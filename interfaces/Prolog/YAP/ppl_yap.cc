@@ -456,6 +456,7 @@ YAP_STUB_3(ppl_new_Polyhedron_from_bounding_box)
 YAP_STUB_2(ppl_Polyhedron_swap)
 YAP_STUB_1(ppl_delete_Polyhedron)
 YAP_STUB_2(ppl_Polyhedron_space_dimension)
+YAP_STUB_2(ppl_Polyhedron_dimension)
 YAP_STUB_2(ppl_Polyhedron_get_constraints)
 YAP_STUB_2(ppl_Polyhedron_get_minimized_constraints)
 YAP_STUB_2(ppl_Polyhedron_get_generators)
@@ -546,6 +547,7 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_swap, 2);
   YAP_USER_C_PREDICATE(ppl_delete_Polyhedron, 1);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_space_dimension, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_dimension, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_get_constraints, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_get_minimized_constraints, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_get_generators, 2);
