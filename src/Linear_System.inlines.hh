@@ -70,6 +70,27 @@ Linear_System::Linear_System(Topology topol,
     sorted(true) {
 }
 
+inline dimension_type
+Linear_System::first_pending_row() const {
+  return index_first_pending;
+}
+
+inline dimension_type
+Linear_System::num_pending_rows() const {
+  assert(num_rows() >= first_pending_row());
+  return num_rows() - first_pending_row();
+}
+
+inline void
+Linear_System::unset_pending_rows() {
+  index_first_pending = num_rows();
+}
+
+inline void
+Linear_System::set_index_first_pending_row(const dimension_type i) {
+  index_first_pending = i;
+}
+
 inline
 Linear_System::Linear_System(const Linear_System& y)
   : Matrix(y),
@@ -133,27 +154,6 @@ Linear_System::resize_no_copy(const dimension_type new_n_rows,
   // it is very likely that the system will be overwritten as soon as
   // we return.
   set_sorted(false);
-}
-
-inline dimension_type
-Linear_System::first_pending_row() const {
-  return index_first_pending;
-}
-
-inline dimension_type
-Linear_System::num_pending_rows() const {
-  assert(num_rows() >= first_pending_row());
-  return num_rows() - first_pending_row();
-}
-
-inline void
-Linear_System::unset_pending_rows() {
-  index_first_pending = num_rows();
-}
-
-inline void
-Linear_System::set_index_first_pending_row(const dimension_type i) {
-  index_first_pending = i;
 }
 
 inline void
