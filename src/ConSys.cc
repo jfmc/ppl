@@ -121,8 +121,8 @@ PPL::ConSys::satisfies_all_constraints(const Generator& r) const {
   is not constant).
 */
 void
-PPL::ConSys::substitute_variable(size_t var,
-				 const std::vector<Integer>& coefficient,
+PPL::ConSys::substitute_variable(size_t num_var,
+				 const LinExpression& coefficient,
 				 Integer& denominator) {
   ConSys& x = *this;
   size_t num_columns = x.num_columns();

@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _ConSys_defs_hh
 #define _ConSys_defs_hh 1
 
+#include "LinExpression.defs.hh"
 #include "ConSys.types.hh"
 #include "Matrix.defs.hh"
 #include "Generator.types.hh"
@@ -148,8 +149,8 @@ PPL_INTERNAL:
   bool satisfies_all_constraints(const Generator& r) const;
 
   //! Substitutes a given column of coefficients by a given affine expression.
-  void substitute_variable(size_t var,
-			   const std::vector<Integer>& coefficient,
+  void substitute_variable(size_t num_var,
+			   const LinExpression& coefficient,
 			   Integer& denominator);
   
   //! Returns the number of the equality constraints.
