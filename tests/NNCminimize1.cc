@@ -67,7 +67,7 @@ main() {
   print_generators(ph.generators(), "*** ph generators ***");
 #endif
 
-  ph.strongly_minimize();
+  ph.minimized_generators();
 
   GenSys gs;
   gs.insert(closure_point());

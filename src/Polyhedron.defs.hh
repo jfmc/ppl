@@ -590,13 +590,14 @@ private:
   //! Sorts the matrix of generators and updates \p sat_g.
   void obtain_sorted_generators_with_sat_g() const;
 
-  // FIXME: the following three methods are _temporarily_ public
-  // for debugging purposes.
-public:
-  //! Applies strong minimization to generators and constraints
-  //! of an NNC polyhedron.
+  //! Applies strong minimization to both the constraint and
+  //! the generator systems of an NNC polyhedron.
   void strongly_minimize() const;
+  //! Applies strong minimization to the constraint system
+  //! of an NNC polyhedron.
   void strongly_minimize_constraints() const;
+  //! Applies strong minimization to the generator system
+  //! of an NNC polyhedron.
   void strongly_minimize_generators() const;
 
 public:

@@ -66,8 +66,7 @@ main() {
   print_generators(ph.generators(), "*** ph generators ***");
 #endif
 
-  // ph.strongly_minimize();
-  ph.strongly_minimize_constraints();
+  ph.minimized_constraints();
 
 #if NOISY
   cout << endl << "After NNC minimization" << endl;
