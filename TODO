@@ -14,6 +14,10 @@ Enhancements for PPL 0.7
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
 - Completely rewrite the handling of temporary coefficients.
+- Implement the -t option of ppl_lcdd.
+- Make sure ppl_lcdd is able to parse problems produced by lrs, i.e.,
+  where the number of rows of the matrix is omitted and replaced by
+  "*****".
 
 
 Enhancements for PPL 0.8 or later versions
