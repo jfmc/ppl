@@ -81,14 +81,17 @@ EXTRA_DIST = ppl_swiprolog.pl clpq.pl clpq2.pl check_script expected \
 $(CLPQ_TESTS)
 
 if HAVE_SWI_PROLOG
-check_PROGRAMS = pplpl
-pplpl_SOURCES = pplpl.cc
-pplpl_LDADD = libpplswiprolog.la $(top_builddir)/src/libppl.la /usr/local/lib/pl-5.0.1/runtime/i686-linux/libpl.a -lreadline -ldl -ltermcap @extra_libraries@
+#check_PROGRAMS = pplpl
+#pplpl_SOURCES = pplpl.cc
+#pplpl_LDADD = libpplswiprolog.la $(top_builddir)/src/libppl.la /usr/local/lib/pl-5.0.2/runtime/i686-linux/libpl.a -lreadline -ldl -ltermcap @extra_libraries@
 
-#check-local: $(check_PROGRAMS) check_script expected
-#	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/$$k .; done
-#	./pplpl -l $(srcdir)/clpq.pl <$(srcdir)/check_script >obtained
-#	diff -q --ignore-all-space $(srcdir)/expected obtained
+#pl_clpq$(EXEEXT):	pplpl.cc ppl_swiprolog.o pl_clpq.pl ../clpq.pl
+#	plld -v -o $@ $+ -L$(top_builddir)/src/.libs -lppl @extra_libraries@
+
+#check-local: pl_clpq$(EXEEXT) ../check_script ../expected
+#	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
+#	./pl_clpq -l $(srcdir)/clpq.pl <$(srcdir)/../check_script >obtained
+#	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
 MOSTLYCLEANFILES = pplpl $(CLPQ_TESTS) obtained
 endif

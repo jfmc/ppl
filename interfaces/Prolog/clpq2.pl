@@ -114,7 +114,7 @@ solve(read(N), Polys, Polys, VarNames) :-
     Polys = [Poly|_],
     meltvars(N, MeltN, VarNames),
     read(MeltN),
-    get0(user_input, _C),
+    get_code(user_input, _C),
     (integer(MeltN) ->
        true
     ;
@@ -208,13 +208,13 @@ query_next_solution :-
   write(' more? '),
   repeat,
   flush_output(user_output),
-  get0(user_input, C),
+  get_code(user_input, C),
   (
-    C == 59, get0(user_input, _EOL)
+    C == 59, get_code(user_input, _EOL)
   ;
     C == 10
   ;
-    get0(user_input, _EOL),
+    get_code(user_input, _EOL),
     write('Action (";" for more choices, otherwise <return>): '),
     fail
   ),
@@ -288,7 +288,7 @@ write_error_aux([H|T]) :-
 main_loop :-
   write('PPL clpq ?- '),
   read_term(Command, [variable_names(VN)]),
-  get0(_EOL),
+  get_code(_EOL),
   do_command(Command, VN).
 
 clear_program :-

@@ -28,4 +28,6 @@ VPATH = @srcdir@
 
 SUBDIRS = @extra_if_Prolog_subdirs@
 
+EXTRA_DIST = check_script expected
+
 noinst_HEADERS = ppl_prolog.outlines.hh

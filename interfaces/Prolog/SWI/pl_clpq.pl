@@ -1,0 +1,3 @@
+
+main :-
+    common_main.

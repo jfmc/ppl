@@ -24,11 +24,11 @@
 % site: http://www.cs.unipr.it/ppl/ .
 
 % Object-level clauses are stored as user_clause(Head, Body) facts.
-:- dynamic user_clause/2.
+:- dynamic(user_clause/2).
 
 % Used to store the names of variables occurring in the original goal
 % as a list of the form [ Name1 = Variable1, ... ]
-:- dynamic original_goal_variables/1.
+:- dynamic(original_goal_variables/1).
 
 
 % solve(+Goals, +VariableNames)
@@ -171,13 +171,13 @@ query_next_solution :-
   write(' more? '),
   repeat,
   flush_output(user_output),
-  get0(user_input, C),
+  get_code(user_input, C),
   (
-    C == 59, get0(user_input, _EOL)
+    C == 59, get_code(user_input, _EOL)
   ;
     C == 10
   ;
-    get0(user_input, _EOL),
+    get_code(user_input, _EOL),
     write('Action (";" for more choices, otherwise <return>): '),
     fail
   ),
@@ -249,7 +249,7 @@ main_loop :-
   read_term(Command, [variable_names(VN)]),
   % The above read leaves an EOL character in the input buffer:
   % get rid of it.
-  get0(_EOL),
+  get_code(_EOL),
   do_command(Command, VN).
 
 clear_program :-
@@ -358,7 +358,7 @@ main_loop_yes :-
 %%%%%%%%%%%%%%%%% Writing Computed Answer Constraints %%%%%%%%%%%%%%%%%%
 
 write_var(Var, VariableNames) :-
-    member(Name=Var, VariableNames),
+    list_member(Name=Var, VariableNames),
     !,
     write(Name).
 
@@ -421,19 +421,19 @@ write_constraints([C|CS], VariableNames) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Utility Predicates %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% member(?Element, +List)
+% list_member(?Element, +List)
 %
 % Suceeds when Element is a member of List.  It may be used to test
 % for membership in a list, but it can also be used to enumerate all
 % the elements in List.
 
-member(Element, [Head|Tail]) :-
-	member_(Tail, Head, Element).
+list_member(Element, [Head|Tail]) :-
+	list_member_(Tail, Head, Element).
 
 % Auxiliary to avoid the creation of a choicepoint for the last element,
-member_(_, Element, Element).
-member_([Head|Tail], _, Element) :-
-	member_(Tail, Head, Element).
+list_member_(_, Element, Element).
+list_member_([Head|Tail], _, Element) :-
+	list_member_(Tail, Head, Element).
 
 
 % numvars(?Term, +InN, ?OutN)
@@ -459,17 +459,17 @@ numvars_list([Arg|Args], InN, OutN) :-
 next_or_quit :-
     write('---Type <return> to continue, or q <return> to quit---'),
     flush_output(user_output),
-    get0(user_input, C),
+    get_code(user_input, C),
     (
 	C == 10
     ;
-	get0(user_input, _EOL)
+	get_code(user_input, _EOL)
     ),
     !,
     C \== 113.
 
 show_copying :-
-    get0(user_input, _EOL),
+    get_code(user_input, _EOL),
     write('\
                     GNU GENERAL PUBLIC LICENSE\n\
                        Version 2, June 1991\n\

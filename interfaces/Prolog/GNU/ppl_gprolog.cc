@@ -243,16 +243,6 @@ Prolog_get_name_arity(Prolog_term_ref t, Prolog_atom& name, int& arity) {
   return true;
 }
 
-void
-my_write(Prolog_term_ref t) {
-  Pl_Query_Begin(FALSE);
-  Pl_Query_Call(Prolog_atom_from_string("write"), 1, &t);
-  Pl_Query_End(PL_KEEP_FOR_PROLOG);
-}
-
-#include <iostream>
-using namespace std;
-
 /*!
   If \p t is a Prolog compound term and \p i is a positive integer
   less than or equal to its arity, return true and assign to \p a the
@@ -261,14 +251,10 @@ using namespace std;
 */
 static inline bool
 Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref& a) {
-  my_write(t);
-  cout << "->(" << i << ") ";
   assert(Prolog_is_compound(t));
   static Prolog_atom dummy_name;
   static int dummy_arity;
   a = Rd_Compound_Check(t, &dummy_name, &dummy_arity)[i-1];
-  my_write(a);
-  cout << endl;
   return true;
 }
 
