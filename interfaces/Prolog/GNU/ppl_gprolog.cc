@@ -1,13 +1,8 @@
 
 #include "ppl_install.hh"
-// GNU Prolog 1.2.8 uses the C++ reserved word "template" in gprolog.h.
-// Moreover, it misses the `extern "C"' wrapper.
-//#define template templ
-//extern "C" {
 #include <gprolog.h>
-//}
-//#undef template
 #include <cassert>
+#include <climits>
 
 #define GNU 1
 #define PARANOID 1
@@ -66,15 +61,6 @@ Prolog_put_atom_chars(Prolog_term_ref& t, const char* s) {
 static inline bool
 Prolog_put_atom(Prolog_term_ref& t, Prolog_atom a) {
   t = Mk_Atom(a);
-  return true;
-}
-
-/*!
-  Assign to \p t a term representing the address contained in \p p.
-*/
-static inline bool
-Prolog_put_address(Prolog_term_ref& t, void* p) {
-  t = Mk_Positive(reinterpret_cast<long>(p));
   return true;
 }
 
@@ -158,6 +144,19 @@ Prolog_construct_cons(Prolog_term_ref& c,
 }
 
 /*!
+  Assign to \p t a term representing the address contained in \p p.
+*/
+static inline bool
+Prolog_put_address(Prolog_term_ref& t, void* p) {
+  union {
+    unsigned long l;
+    unsigned short s[2];
+  } u;
+  u.l = reinterpret_cast<unsigned long>(p);
+  return Prolog_construct_cons(t, Mk_Positive(u.s[0]), Mk_Positive(u.s[1]));
+}
+
+/*!
   Raise a Prolog exception with \p t as the exception term.
 */
 static inline void
@@ -183,14 +182,6 @@ Prolog_is_integer(Prolog_term_ref t) {
 }
 
 /*!
-  Return true if \p t is the representation of an address, false otherwise. 
-*/
-static inline bool
-Prolog_is_address(Prolog_term_ref t) {
-  return Blt_Integer(t) != FALSE;
-}
-
-/*!
   Return true if \p t is a Prolog compound term, false otherwise. 
 */
 static inline bool
@@ -203,7 +194,12 @@ Prolog_is_compound(Prolog_term_ref t) {
 */
 static inline bool
 Prolog_is_cons(Prolog_term_ref t) {
-  return (Blt_Atom(t) == FALSE) && (Blt_List(t) != FALSE);
+  if (Blt_Compound(t) == FALSE)
+    return false;
+  Prolog_atom name;
+  int arity;
+  Rd_Compound(t, &name, &arity);
+  return name == ATOM_CHAR('.') && arity == 2;
 }
 
 /*!
@@ -220,6 +216,26 @@ Prolog_get_long(Prolog_term_ref t, long& v) {
 }
 
 /*!
+  Return true if \p t is the representation of an address, false otherwise. 
+*/
+static inline bool
+Prolog_is_address(Prolog_term_ref t) {
+  if (!Prolog_is_cons(t))
+    return false;
+  Prolog_term_ref* ht = Rd_List_Check(t);
+  for (int i = 0; i <= 1; ++i) {
+    if (!Prolog_is_integer(ht[i]))
+      return false;
+    long l;
+    if (!Prolog_get_long(ht[i], l))
+      return false;
+    if (l < 0 || l > USHRT_MAX)
+      return false;
+  }
+  return true;
+}
+
+/*!
   If \p t is the Prolog representation for a memory address, return
   true and store that address into \p v; return false otherwise.
   The behavior is undefined if \p t is not an address.
@@ -227,7 +243,14 @@ Prolog_get_long(Prolog_term_ref t, long& v) {
 static inline bool
 Prolog_get_address(Prolog_term_ref t, void*& p) {
   assert(Prolog_is_address(t));
-  p = reinterpret_cast<void*>(Rd_Integer_Check(t));
+  Prolog_term_ref* ht = Rd_List_Check(t);
+  union {
+    unsigned long l;
+    unsigned short s[2];
+  } u;
+  u.s[0] = Rd_Integer_Check(ht[0]);
+  u.s[1] = Rd_Integer_Check(ht[1]);
+  p = reinterpret_cast<void*>(u.l);
   return true;
 }
 

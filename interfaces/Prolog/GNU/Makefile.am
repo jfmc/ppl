@@ -91,9 +91,9 @@ gp_clpq: gp_clpq.pl ppl_gprolog.o ppl_gprolog.pl ../clpq.pl
 	gplc -o $@ $+ -L '-L../../../src/.libs -lppl -lgmp -lgmpxx -lstdc++'
 
 check-local: gp_clpq ../check_script ../expected
-#	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
-#	gp_clpq <$(srcdir)/../check_script >obtained
-#	diff -q --ignore-all-space $(srcdir)/../expected obtained
+	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
+	gp_clpq <$(srcdir)/../check_script >obtained
+	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
 MOSTLYCLEANFILES = pplgprolog gp_clpq $(CLPQ_TESTS) obtained
 endif
