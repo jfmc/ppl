@@ -28,6 +28,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! A policy checking for integer overflows.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Check_Overflow_Policy {
   static const int check_overflow = 1;
   static const int check_nan_result = 0;
@@ -43,8 +46,14 @@ struct Check_Overflow_Policy {
 
 typedef const char* c_string;
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Types and functions implementing checked numbers.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 namespace Checked {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! A policy checking for all possible kinds of errors.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Policy_Safe {
   //! Check for overflowed result.
   static const int check_overflow = 1;
@@ -66,7 +75,9 @@ struct Policy_Safe {
   static const int check_nan_result = 1;
 };
 
-
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! The kind of result obtained by a checked computation.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 enum Result {
   //! The computed result is exact.
   V_EQ = 1,
