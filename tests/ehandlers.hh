@@ -24,12 +24,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_ehandlers_hh
 #define PPL_ehandlers_hh 1
 
+#include <stdexcept>
+
 void
 set_handlers();
 
 #define TRY try
 
 #define CATCH \
+catch (const std::overflow_error& e) { \
+  cerr << "arithmetic overflow (" << e.what() << ")" \
+       << endl; \
+  exit(1); \
+} \
 catch (const std::exception& e) { \
   cerr << "std::exception caught: " \
        << e.what() << " (type == " << typeid(e).name() << ")" \
