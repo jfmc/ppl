@@ -65,126 +65,119 @@ namespace Parma_Polyhedra_Library {
 
 //! A convex polyhedron.
 /*!
-  An object of the class Polyhedron represents a convex polyhedron
-  in the space \f$\Rset^n\f$.
-
-  A polyhedron can be specified as either a finite system of constraints
-  or a finite set of generators (see Minkowski's theorem in definition.dox).
-  So, we have the possibility to obtain a system from the 
-  other. In fact, if we have the system of constaints we can obtain 
-  the set of generators from this and vice versa.
-  These systems can contain some redundant members: in this case we say 
-  that they are not in the minimal form.
+    An object of the class Polyhedron represents a convex polyhedron
+    in the space \f$\Rset^n\f$.
+    
+    A polyhedron can be specified as either a finite system of constraints
+    or a finite set of generators (see Minkowski's theorem in definition.dox).
+    So, we have the possibility to obtain a system from the 
+    other. In fact, if we have the system of constaints we can obtain 
+    the set of generators from this and vice versa.
+    These systems can contain some redundant members: in this case we say 
+    that they are not in the minimal form.
  
-  \par Example 1
-  The following code builds a square in \f$\Rset^2\f$ starting from
-  the system of constraints:
-  \code 
+    \par
+    In all the examples it is assumed that variables
+    <CODE>x</CODE> and <CODE>y</CODE> are defined (where they are
+    used) as follows:
+    \code
   Variable x(0);
   Variable y(1);
+    \endcode
+  
+    \par Example 1
+    The following code builds a square in \f$\Rset^2\f$ starting from
+    the system of constraints:
+    \code 
   ConSys cs;
   cs.insert(x >= 0);
   cs.insert(x <= 3);
   cs.insert(y >= 0);
   cs.insert(y <= 3);
   Polyhedron ph(cs);
-  \endcode
-  The following code builds the same polyhedron starting from the
-  set of generators:
-  \code
-  Variable x(0);
-  Variable y(1);
+    \endcode
+    The following code builds the same polyhedron starting from the
+    set of generators:
+    \code
   GenSys gs;
   gs.insert(0 * x + 0 * y /= 1);
   gs.insert(0 * x + 3 * y /= 1);
   gs.insert(3 * x + 0 * y /= 1);
   gs.insert(3 * x + 3 * y /= 1);
   Polyhedron ph(gs);
-  \endcode
+    \endcode
 
-  \par Example 2
-  The following code builds an half-strip in \f$\Rset^2\f$ 
-  starting from the system of constraints:
-  \code
-  Variable x(0);
-  Variable y(1);
+    \par Example 2
+    The following code builds an half-strip in \f$\Rset^2\f$ 
+    starting from the system of constraints:
+    \code
   ConSys cs;
   cs.insert(x >= 0);
   cs.insert(x - y <= 0);
   cs.insert(x - y + 1 >= 0);
   Polyhedron ph(cs);
-  \endcode
-  The following code builds the same polyhedron starting from the
-  set of generators:
-  \code 
-  Variable x(0);
-  Variable y(1);
+    \endcode
+    The following code builds the same polyhedron starting from the
+    set of generators:
+    \code 
   GenSys gs;
   gs.insert(0 * x + 0 * y /= 1);
   gs.insert(0 * x + y /= 1);
   gs.insert(1 ^ x - y);
   Polyhedron ph(gs);
-  \endcode
+    \endcode
 
-  \par Example 3
-  The following code builds the half-plane in \f$\Rset^2\f$
-  starting from the constraints:
-  \code
-  Variable x(0);
-  Variable y(1);
+    \par Example 3
+    The following code builds the half-plane in \f$\Rset^2\f$
+    starting from the constraints:
+    \code
   Polyhedron ph;
   ph.insert(y >= 0);
-  \endcode
-  The following code builds the same polyhedron starting from 
-  the generators:
-  \code
-  Variable x(0);
-  Variable y(1);
+    \endcode
+    The following code builds the same polyhedron starting from 
+    the generators:
+    \code
   Polyhedron ph;
   ph.insert(0 * x + 0 * y /= 1);
   ph.insert(1 ^ 0 * x + y);
   ph.insert(1 | x + 0 * y);
-  \endcode
-  In this last case, we can note an important thing: even if this 
-  polyhedron has no real vertex, we must add one, because otherwise
-  the polyhedron is considered empty.
+    \endcode
+    In this last case, we can note an important thing: even if this 
+    polyhedron has no real vertex, we must add one, because otherwise
+    the polyhedron is considered empty.
 
-  \par Example 4
-  The following code shows the use of the function
-  <CODE>add_dimensions_and_embed</CODE>:
-  \code
-  Variable x(0);
+    \par Example 4
+    The following code shows the use of the function
+    <CODE>add_dimensions_and_embed</CODE>:
+    \code
   ConSys cs;
   cs.insert(x == 2);
   Polyhedron ph(cs);
   ph.add_dimensions_and_embed(1);
-  \endcode
-  The starting polyhedron is a point whose abscissa is equal to \f$2\f$
-  in \f$\Rset\f$. The resulting polyhedron in \f$\Rset^2\f$ 
-  is a line parallel to the axis \f$y\f$ and its intersection with the
-  axis \f$x\f$ is the point with the abscissa equal to \f$2\f$.
+    \endcode
+    The starting polyhedron is a point whose abscissa is equal to \f$2\f$
+    in \f$\Rset\f$. The resulting polyhedron in \f$\Rset^2\f$ 
+    is a line parallel to the axis \f$y\f$ and its intersection with the
+    axis \f$x\f$ is the point with the abscissa equal to \f$2\f$.
   
-  \par Example 5
-  The following code shows the use of the function
-  <CODE>add_dimensions_and_project</CODE>:
-  \code
-  Variable x(0);
+    \par Example 5
+    The following code shows the use of the function
+    <CODE>add_dimensions_and_project</CODE>:
+    \code
   ConSys cs;
   cs.insert(x == 2);
   Polyhedron ph(cs);
   ph.add_dimensions_and_poject(1);
-  \endcode
-  The starting polyhedron is the same of the example for the function
-  <CODE>add_dimensions_and_embed</CODE>. The resulting polyhedron
-  is a point with the abscissa equal to \f$2\f$ and the ordinate
-  equal to \f$0\f$.
+    \endcode
+    The starting polyhedron is the same of the example for the function
+    <CODE>add_dimensions_and_embed</CODE>. The resulting polyhedron
+    is a point with the abscissa equal to \f$2\f$ and the ordinate
+    equal to \f$0\f$.
 
-  \par Example 6
-  The following code shows the use of the function
-  <CODE>assign_variable</CODE>:
-  \code
-  Variable x(0);
-  Variable y(1);
+    \par Example 6
+    The following code shows the use of the function
+    <CODE>assign_variable</CODE>:
+    \code
   GenSys gs;
   gs.insert(0 * x + 0 * y /= 1);
   gs.insert(0 * x + 3 * y /= 1);
@@ -194,31 +187,30 @@ namespace Parma_Polyhedra_Library {
   Integer d = 1;
   LinExpression coeff = x + 0*y + 4;
   ph.assign_variable(x, coeff, d);
-  \endcode
-  In this example the starting polyhedron is a square in \f$\Rset^2\f$, 
-  \p var is the variable \f$x\f$, the affine_expression is \f$x+4\f$,
-  the resulting polyhedron is the same square translated towards right.
-  Moreover, if the affine transformation for the same variable is \f$x+y\f$
-  \code
+    \endcode
+    In this example the starting polyhedron is a square in \f$\Rset^2\f$, 
+    \p var is the variable \f$x\f$, the affine_expression is \f$x+4\f$,
+    the resulting polyhedron is the same square translated towards right.
+    Moreover, if the affine transformation for the same variable is \f$x+y\f$
+    \code
   Integer d = 1;
   LinExpression coeff = x + y;
-  \endcode
-  the resulting polyhedron is a parallelogram with the height equal to
-  the side of the square and the oblique sides parallel to the line 
-  \f$x-y\f$.
-  Instead, if we do not use an invertible transformation for the same
-  variable, for example \f$y\f$:
-  \code
+    \endcode
+    the resulting polyhedron is a parallelogram with the height equal to
+    the side of the square and the oblique sides parallel to the line 
+    \f$x-y\f$.
+    Instead, if we do not use an invertible transformation for the same
+    variable, for example \f$y\f$:
+    \code
   Integer d = 1;
   LinExpression coeff = 0*x + y;
-  the resulting polyhedron is the diagonal of the square.
+    \endcode
+    the resulting polyhedron is the diagonal of the square.
   
-  \par Example 7
-  The following code shows the use of the function
-  <CODE>substitue_variable</CODE>:
-  \code
-  Variable x(0);
-  Variable y(1);
+    \par Example 7
+    The following code shows the use of the function
+    <CODE>substitue_variable</CODE>:
+    \code
   ConSys cs;
   cs.insert(x >= 0);
   cs.insert(x <= 3);
@@ -228,26 +220,26 @@ namespace Parma_Polyhedra_Library {
   Integer d = 1;
   LinExpression coeff = x + 0*y + 4;
   ph.substitute_variable(x, coeff, d);
-  \endcode
-  In this example the starting polyhedron, \p var and the affine 
-  expression are the same of the previous example, while the resulting
-  polyhedron is again the same square but it is translated towards
-  left.
-  Moreover, if the affine transformation for the same variable is \f$x+y\f$
-  \code
+    \endcode
+    In this example the starting polyhedron, \p var and the affine 
+    expression are the same of the previous example, while the resulting
+    polyhedron is again the same square but it is translated towards
+    left.
+    Moreover, if the affine transformation for the same variable is \f$x+y\f$
+    \code
   Integer d = 1;
   LinExpression coeff = x + y;
-  \endcode
-  the resulting polyhedron is a parallelogram with the height equal to
-  the side of the square and the oblique sides parallel to the line 
-  \f$x+y\f$.
-  Instead, if we do not use an invertible transformation for the same
-  variable, for example \f$y\f$:
-  \code
+    \endcode
+    the resulting polyhedron is a parallelogram with the height equal to
+    the side of the square and the oblique sides parallel to the line 
+    \f$x+y\f$.
+    Instead, if we do not use an invertible transformation for the same
+    variable, for example \f$y\f$:
+    \code
   Integer d = 1;
   LinExpression coeff = 0*x + y;
-  \endcode
-  the resulting polyhedron is a line that corresponds to the axis \f$y\f$.
+    \endcode
+    the resulting polyhedron is a line that corresponds to the axis \f$y\f$.
 */
 
 class Parma_Polyhedra_Library::Polyhedron {

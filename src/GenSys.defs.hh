@@ -60,11 +60,17 @@ namespace Parma_Polyhedra_Library {
     at least a vertex, because this indicates for a line one of its 
     points, and for a ray the point from which it starts.
     
+    \par
+     In all the examples it is assumed that variables
+    <CODE>x</CODE> and <CODE>y</CODE> are defined as follows:
+    \code
+  Variable x(0);
+  Variable y(1);
+    \endcode
+
     \par Example 1
     The following code builds the axis \f$x\f$ in \f$\Rset^2\f$:
     \code
-    Variable x(0);
-    Variable y(1);
     GenSys gs;
     gs.insert(0 * x + 0 * y /= 1);
     gs.insert(1 | x + 0 * y);
@@ -72,16 +78,12 @@ namespace Parma_Polyhedra_Library {
     Instead, the following code builds a line parallel to the axis
     \f$x\f$ in \f$\Rset^2\f$: 
     \code
-    Variable x(0);
-    Variable y(1);
     GenSys gs;
     gs.insert(0 * x + y /= 1);
     gs.insert(1 | x + 0 * y);
     \endcode
     If we use the following code:
     \code
-    Variable x(0);
-    Variable y(1);
     GenSys gs;
     gs.insert(1 | x + 0 * y);
     \endcode
@@ -91,24 +93,18 @@ namespace Parma_Polyhedra_Library {
     The following code builds a ray that corresponds to the positive
     part of the axis \f$x\f$ in \f$\Rset^2\f$:
     \code
-    Variable x(0);
-    Variable y(1);
     GenSys gs;
     gs.insert(0 * x + 0 * y /= 1);
     gs.insert(1 ^ x + 0 * y);
     \endcode
     Instead,the following code builds a ray parallel to the previuos:
     \code
-    Variable x(0);
-    Variable y(1);
     GenSys gs;
     gs.insert(0 * x + y /= 1);
     gs.insert(1 ^ x + 0 * y);
     \endcode
     If we use the following code:
     \code
-    Variable x(0);
-    Variable y(1);
     GenSys gs;
     gs.insert(1 ^ x + 0 * y);
     \endcode
@@ -119,8 +115,6 @@ namespace Parma_Polyhedra_Library {
     The following code builds a square in \f$\Rset^2\f$ 
     (the same of the first example for the system of constraints):
     \code
-    Variable x(0);
-    Variable y(1);
     GenSys gs;
     gs.insert(0 * x + 0 * y /= 1);
     gs.insert(0 * x + 3 * y /= 1);
@@ -132,8 +126,6 @@ namespace Parma_Polyhedra_Library {
     The following code builds an half-strip in \f$\Rset^2\f$:
     (the same of the second example for the system of constraints): 
     \code 
-    Variable x(0);
-    Variable y(1);
     GenSys gs;
     gs.insert(0 * x + 0 * y /= 1);
     gs.insert(0 * x + y /= 1);

@@ -50,19 +50,30 @@ namespace Parma_Polyhedra_Library {
 }
 
 //! A linear equality or inequality.
-/*! An object of the class Constraint is either:
-      - an equality: \f$\sum_{i=0}^{d-1} a_i x_i + b = 0\f$;
-      - an inequality: \f$\sum_{i=0}^{d-1} a_i x_i + b \geq 0\f$;
+/*! 
+  An object of the class Constraint is either:
+  - an equality: \f$\sum_{i=0}^{d-1} a_i x_i + b = 0\f$;
+  - an inequality: \f$\sum_{i=0}^{d-1} a_i x_i + b \geq 0\f$;
+  
+  where \f$d\f$ is the dimension of the space.
+  
+  \par How to build a constraint
+  Constraints are typically built by applying a relational operator
+  to a pair of linear expressions.
+  Available relational operators include equality (<CODE>==</CODE>)
+  and non-strict inequalities (<CODE>>=</CODE> and <CODE><=</CODE>).
+  Strict inequalities (<CODE><</CODE> and <CODE>></CODE>)
+  are not supported.
 
-    where \f$d\f$ is the dimension of the space.
-    
-    \par How to build a constraint
-    Constraints are typically built by applying a relational operator
-    to a pair of linear expressions.
-    Available relational operators include equality (<CODE>==</CODE>)
-    and non-strict inequalities (<CODE>>=</CODE> and <CODE><=</CODE>).
-    Strict inequalities (<CODE><</CODE> and <CODE>></CODE>)
-    are not supported.
+    \par
+    In the following example it is assumed that variables
+    <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE>
+    are defined as follows:
+    \code
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+    \endcode
     
     \par Example
     The following code builds the equality \f$3x + 5y - z = 0\f$:
