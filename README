@@ -6,37 +6,40 @@ Parma Polyhedra Library (Release 0.6)
 =====================================
 
 This is the release 0.6 of the Parma Polyhedra Library:
-a C++ library for (not necessarily closed) convex polyhedra.
+a C++ library for (not necessarily closed) convex polyhedra
+and other numerical abstractctions.
 
-To be more precise, the Parma Polyhedra Library (PPL) can handle all
-the convex polyhedra that can be defined as the intersection of a
-finite number of (open or closed) hyperspaces, each described by an
-equality or a inequality (strict or non-strict) with rational
-coefficients.
+To be more precise, the Parma Polyhedra Library (PPL) can handle:
+
+o  All the convex polyhedra that can be defined as the intersection
+   of a finite number of (open or closed) hyperspaces, each described
+   by an equality or a (strict or non-strict) with rational coefficients.
+
+o  Finite powersets of the above.
 
 The Parma Polyhedra Library is:
 
-  + user friendly:
-      you write `x + 2*y + 5*z <= 7' when you mean it;
++  user friendly:
+     you write `x + 2*y + 5*z <= 7' when you mean it;
 
-  + fully dynamic:
-      available virtual memory is the only limitation to the dimension
-      of anything;
++  fully dynamic:
+     available virtual memory is the only limitation to the dimension
+     of anything;
 
-  + written in standard C++:
-      meant to be portable;
++  written in standard C++:
+     meant to be portable;
 
-  + exception-safe:
-      never leaks resources or leaves invalid object fragments around;
++  exception-safe:
+     never leaks resources or leaves invalid object fragments around;
 
-  + rather efficient:
-      and we hope to make it even more so;
++  rather efficient:
+     and we hope to make it even more so;
 
-  + thoroughly documented:
-      perhaps not ``literate programming'' but close enough;
++  thoroughly documented:
+     perhaps not ``literate programming'' but close enough;
 
-  + free software:
-       distributed under the terms of the GNU General Public License.
++  free software:
+     distributed under the terms of the GNU General Public License.
 
 See the file COPYING for licensing information.
 See the file INSTALL for generic build and installation instructions.
