@@ -21,10 +21,20 @@ noinst_LIBRARIES = libpplsicstus.a
 
 libpplsicstus_a_SOURCES = ppl_sicstus.cc
 
-EXTRA_DIST = ppl_sicstus.pl check_script expected
+CLPQ_TESTS = \
+ack.clpq \
+ackn.clpq \
+fib.clpq \
+mc91.clpq \
+smm.clpq \
+sumto.clpq \
+tak.clpq
+
+EXTRA_DIST = ppl_sicstus.pl clpq.pl check_script expected $(CLPQ_TESTS)
 
 if HAVE_SICSTUS
 check-local: pplsp check_script expected
+	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/$$k .; done
 	./pplsp -l $(srcdir)/clpq.pl <$(srcdir)/check_script >obtained
 	diff -q $(srcdir)/expected obtained
 
@@ -37,5 +47,5 @@ pplsp: ppl_sicstus.s.o $(top_builddir)/src/libppl.a
 ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus.o
 	splfr -S $(srcdir)/ppl_sicstus.pl ppl_sicstus.o
 
-MOSTLYCLEANFILES = pplsp
+MOSTLYCLEANFILES = pplsp $(CLPQ_TESTS) obtained
 endif
