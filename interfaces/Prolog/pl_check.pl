@@ -1839,6 +1839,31 @@ exception_sys_prolog(1, [A,B,_]) :-
        ),
   ppl_delete_Polyhedron(P).
 
+exception_sys_prolog(3, [A,B,_]) :-
+  current_prolog_flag(max_integer, MaxInt),
+  ppl_new_Polyhedron_from_generators(c, 
+               [point(MaxInt * A + B)], P),
+  ppl_Polyhedron_affine_image(P, A, A + 1, 1),
+  catch(ppl_Polyhedron_get_generators(P, _),
+          M, 
+         (ppl_delete_Polyhedron(P),
+         check_exception(M))
+        ),
+  ppl_delete_Polyhedron(P).
+
+exception_sys_prolog(4, [A,B,_]) :-
+  current_prolog_flag(min_integer, MinInt),
+  ppl_new_Polyhedron_from_generators(c, 
+               [point(MinInt * A + B)], P),
+  ppl_Polyhedron_affine_image(P, A, A - 1, 1),
+  catch(ppl_Polyhedron_get_generators(P, GS),
+          M, 
+         (ppl_delete_Polyhedron(P),
+         check_exception(M))
+        ),
+  write(GS),
+  ppl_delete_Polyhedron(P).
+
 % exception_cplusplus(+N, +V) checks exceptions thrown by the C++
 % interface for the PPL
 
