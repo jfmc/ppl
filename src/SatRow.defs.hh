@@ -69,16 +69,16 @@ public:
   void swap(SatRow& y);
 
   //! Returns the truth value corresponding to the bit in position \p k.
-  bool operator[](dimension_type k) const;
+  bool operator[](unsigned int k) const;
 
   //! Sets the bit in position \p k.
-  void set(dimension_type k);
+  void set(unsigned int k);
 
   //! Clears the bit in position \p k.
-  void clear(dimension_type k);
+  void clear(unsigned int k);
 
   //! Clears bits from position \p k (included) onwards.
-  void clear_from(dimension_type k);
+  void clear_from(unsigned int k);
 
   //! Clears all the bit of the row.
   void clear();
@@ -116,7 +116,7 @@ public:
 						 SatRow& z);
 
   //! Return the size of the row.
-  dimension_type size();
+  unsigned int size();
 
   //! Returns the index of the first set bit or -1 if no bit is set.
   int first() const;
@@ -133,7 +133,7 @@ public:
   int prev(int position) const;
 
   //! Returns the number of set bits in the row.
-  dimension_type count_ones() const;
+  unsigned int count_ones() const;
 
   //! Returns <CODE>true</CODE> if no bit is set in the row.
   bool empty() const;

@@ -92,7 +92,7 @@ PPL::SatRow::last_one(mp_limb_t w) {
 
 int
 PPL::SatRow::first() const {
-  for (dimension_type li = 0, vec_size = mpz_size(vec); li < vec_size; ++li) {
+  for (size_t li = 0, vec_size = mpz_size(vec); li < vec_size; ++li) {
     mp_limb_t limb = mpz_getlimbn(vec, li);
     if (limb != 0)
       return li*BITS_PER_GMP_LIMB + first_one(limb);
@@ -106,8 +106,8 @@ PPL::SatRow::next(int position) const {
 
   ++position;
 
-  dimension_type li = position / BITS_PER_GMP_LIMB;
-  dimension_type vec_size = mpz_size(vec);
+  size_t li = position / BITS_PER_GMP_LIMB;
+  size_t vec_size = mpz_size(vec);
   if (li >= vec_size)
     return -1;
 
@@ -128,7 +128,7 @@ PPL::SatRow::next(int position) const {
 
 int
 PPL::SatRow::last() const {
-  for (dimension_type li = mpz_size(vec); li-- > 0; ) {
+  for (size_t li = mpz_size(vec); li-- > 0; ) {
     mp_limb_t limb = mpz_getlimbn(vec, li);
     if (limb != 0)
       return li*BITS_PER_GMP_LIMB + last_one(limb);
@@ -145,8 +145,8 @@ PPL::SatRow::prev(int position) const {
 
   --position;
 
-  dimension_type li = position / BITS_PER_GMP_LIMB;
-  dimension_type vec_size = mpz_size(vec);
+  size_t li = position / BITS_PER_GMP_LIMB;
+  size_t vec_size = mpz_size(vec);
 
   mp_limb_t limb;
 
@@ -186,10 +186,10 @@ PPL::SatRow::prev(int position) const {
 */
 int
 PPL::compare(const SatRow& x, const SatRow& y) {
-  dimension_type x_size = mpz_size(x.vec);
-  dimension_type y_size = mpz_size(y.vec);
+  size_t x_size = mpz_size(x.vec);
+  size_t y_size = mpz_size(y.vec);
 
-  for (dimension_type x_li = 0, y_li = 0;
+  for (size_t x_li = 0, y_li = 0;
        x_li < x_size && y_li < y_size;
        ++x_li, ++y_li) {
     mp_limb_t a = mpz_getlimbn(x.vec, x_li);
@@ -203,13 +203,13 @@ PPL::compare(const SatRow& x, const SatRow& y) {
     }
   }
   if (x_size < y_size) {
-    for (dimension_type y_li = 0; y_li < y_size; ++y_li)
+    for (size_t y_li = 0; y_li < y_size; ++y_li)
       if (mpz_getlimbn(y.vec, y_li) != 0)
 	return -1;
     return 0;
   }
   else if (x_size > y_size) {
-    for (dimension_type x_li = 0; x_li < x_size; ++x_li)
+    for (size_t x_li = 0; x_li < x_size; ++x_li)
       if (mpz_getlimbn(x.vec, x_li) != 0)
 	return 1;
     return 0;
@@ -219,10 +219,10 @@ PPL::compare(const SatRow& x, const SatRow& y) {
 
 bool
 PPL::operator<=(const SatRow& x, const SatRow& y) {
-  dimension_type x_size = mpz_size(x.vec);
-  dimension_type y_size = mpz_size(y.vec);
+  size_t x_size = mpz_size(x.vec);
+  size_t y_size = mpz_size(y.vec);
 
-  for (dimension_type x_li = 0, y_li = 0;
+  for (size_t x_li = 0, y_li = 0;
        x_li < x_size && y_li < y_size;
        ++x_li, ++y_li) {
     mp_limb_t a = mpz_getlimbn(x.vec, x_li);
@@ -231,7 +231,7 @@ PPL::operator<=(const SatRow& x, const SatRow& y) {
       return false;
   }
   if (x_size > y_size) {
-    for (dimension_type x_li = 0; x_li < x_size; ++x_li)
+    for (size_t x_li = 0; x_li < x_size; ++x_li)
       if (mpz_getlimbn(x.vec, x_li) != 0)
 	return false;
   }
@@ -241,11 +241,11 @@ PPL::operator<=(const SatRow& x, const SatRow& y) {
 
 bool
 PPL::operator<(const SatRow& x, const SatRow& y) {
-  dimension_type x_size = mpz_size(x.vec);
-  dimension_type y_size = mpz_size(y.vec);
+  size_t x_size = mpz_size(x.vec);
+  size_t y_size = mpz_size(y.vec);
   bool one_diff = false;
 
-  for (dimension_type x_li = 0, y_li = 0;
+  for (size_t x_li = 0, y_li = 0;
        x_li < x_size && y_li < y_size;
        ++x_li, ++y_li) {
     mp_limb_t a = mpz_getlimbn(x.vec, x_li);
@@ -259,7 +259,7 @@ PPL::operator<(const SatRow& x, const SatRow& y) {
   if (x_size < y_size) {
     if (one_diff)
       return true;
-    for (dimension_type y_li = 0; y_li < y_size; ++y_li)
+    for (size_t y_li = 0; y_li < y_size; ++y_li)
       if (mpz_getlimbn(y.vec, y_li) != 0)
 	return true;
     return false;
@@ -267,7 +267,7 @@ PPL::operator<(const SatRow& x, const SatRow& y) {
   else if (x_size > y_size) {
     if (!one_diff)
       return false;
-    for (dimension_type x_li = 0; x_li < x_size; ++x_li)
+    for (size_t x_li = 0; x_li < x_size; ++x_li)
       if (mpz_getlimbn(x.vec, x_li) != 0)
 	return false;
     return true;

@@ -50,29 +50,29 @@ SatRow::operator=(const SatRow& y) {
 }
 
 inline bool
-SatRow::operator[](dimension_type k) const {
+SatRow::operator[](unsigned int k) const {
   return mpz_tstbit(vec, k);
 }
 
 inline void
-SatRow::set(dimension_type k) {
+SatRow::set(unsigned int k) {
   mpz_setbit(vec, k);
 }
 
 inline void
-SatRow::clear(dimension_type k) {
+SatRow::clear(unsigned int k) {
   mpz_clrbit(vec, k);
 }
 
 inline void
-SatRow::clear_from(dimension_type k) {
+SatRow::clear_from(unsigned int k) {
   mpz_tdiv_r_2exp(vec, vec, k);
 }
 
 /*!
   Returns the number of set bits in the row.
 */
-inline dimension_type
+inline unsigned int
 SatRow::count_ones() const {
   return mpz_popcount(vec);
 }
@@ -133,7 +133,8 @@ namespace std {
 
 /*! \relates Parma_Polyhedra_Library::SatRow */
 inline void
-swap(Parma_Polyhedra_Library::SatRow& x, Parma_Polyhedra_Library::SatRow& y) {
+swap(Parma_Polyhedra_Library::SatRow& x,
+     Parma_Polyhedra_Library::SatRow& y) {
   x.swap(y);
 }
 

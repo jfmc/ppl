@@ -59,7 +59,8 @@ static const char* usage_string
 "  -h, --help              prints this help text to stderr\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
 "  -t, --timings           prints timings to stderr\n"
-"  -v, --verbose           outputs also the constraints and objective function\n";
+"  -v, --verbose           outputs also the constraints "
+"and objective function\n";
 
 
 #define OPTION_LETTERS "bcmMC:V:ho:tv"
@@ -268,7 +269,7 @@ static ppl_Coefficient_t ppl_coeff;
 static LPX* lp;
 
 static void
-print_variable(FILE* f, unsigned int var) {
+print_variable(FILE* f, ppl_dimension_type var) {
   const char* name = lpx_get_col_name(lp, var+1);
   if (name != NULL)
     fprintf(f, "%s", name);
@@ -613,7 +614,8 @@ solve(char* file_name) {
   }
 
   if (verbose)
-    fprintf(output_file, "\n%s\n", (maximize ? "Maximizing." : "Minimizing."));
+    fprintf(output_file, "\n%s\n",
+	    (maximize ? "Maximizing." : "Minimizing."));
 
   /* Check whether the problem is unbounded. */
   unbounded = !ppl_Polyhedron_bounds_from_above(ppl_ph, ppl_objective_le);
