@@ -52,39 +52,39 @@ Prolog_new_term_ref() {
   Make \p t be a reference to the same term referenced by \p u,
   i.e., assign \p u to \p t.
 */
-static inline bool
+static inline int
 Prolog_put_term(Prolog_term_ref& t, Prolog_term_ref u) {
   t = u;
-  return true;
+  return 1;
 }
 
 /*!
   Assign to \p t a Prolog integer with value \p i.
 */
-static inline bool
+static inline int
 Prolog_put_long(Prolog_term_ref& t, long i) {
   t = Mk_Integer(i);
-  return true;
+  return 1;
 }
 
 /*!
   Assign to \p t an atom whose name is given
   by the null-terminated string \p s.
 */
-static inline bool
+static inline int
 Prolog_put_atom_chars(Prolog_term_ref& t, const char* s) {
   // FIXME: the following cast is really a bug in GNU Prolog.
   t = Mk_Atom(Create_Allocate_Atom(const_cast<char*>(s)));
-  return true;
+  return 1;
 }
 
 /*!
   Assign to \p t the Prolog atom \p a.
 */
-static inline bool
+static inline int
 Prolog_put_atom(Prolog_term_ref& t, Prolog_atom a) {
   t = Mk_Atom(a);
-  return true;
+  return 1;
 }
 
 /*!
@@ -102,32 +102,32 @@ static Prolog_term_ref args[4];
   Assign to \p t a compound term whose principal functor is \p f
   of arity 1 with argument \p a1.
 */
-static inline bool
+static inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1) {
   args[0] = a1;
   t = Mk_Compound(f, 1, args);
-  return true;
+  return 1;
 }
 
 /*!
   Assign to \p t a compound term whose principal functor is \p f
   of arity 2 with arguments \p a1 and \p a2.
 */
-static inline bool
+static inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2) {
   args[0] = a1;
   args[1] = a2;
   t = Mk_Compound(f, 2, args);
-  return true;
+  return 1;
 }
 
 /*!
   Assign to \p t a compound term whose principal functor is \p f
   of arity 3 with arguments \p a1, \p a2 and \p a3.
 */
-static inline bool
+static inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3) {
@@ -135,14 +135,14 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
   args[1] = a2;
   args[2] = a3;
   t = Mk_Compound(f, 3, args);
-  return true;
+  return 1;
 }
 
 /*!
   Assign to \p t a compound term whose principal functor is \p f
   of arity 4 with arguments \p a1, \p a2, \p a3 and \p a4.
 */
-static inline bool
+static inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3, Prolog_term_ref a4) {
@@ -151,25 +151,25 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
   args[2] = a3;
   args[3] = a4;
   t = Mk_Compound(f, 4, args);
-  return true;
+  return 1;
 }
 
 /*!
   Assign to \p c a Prolog list whose head is \p h and tail is \p t. 
 */
-static inline bool
+static inline int
 Prolog_construct_cons(Prolog_term_ref& c,
 		      Prolog_term_ref h, Prolog_term_ref t) {
   args[0] = h;
   args[1] = t;
   c = Mk_List(args);
-  return true;
+  return 1;
 }
 
 /*!
   Assign to \p t a term representing the address contained in \p p.
 */
-static inline bool
+static inline int
 Prolog_put_address(Prolog_term_ref& t, void* p) {
   union {
     unsigned long l;
@@ -201,7 +201,7 @@ Prolog_raise_exception(Prolog_term_ref t) {
 /*!
   Return true if \p t is a Prolog variable, false otherwise. 
 */
-static inline bool
+static inline int
 Prolog_is_variable(Prolog_term_ref t) {
   return Blt_Var(t) != FALSE;
 }
@@ -209,7 +209,7 @@ Prolog_is_variable(Prolog_term_ref t) {
 /*!
   Return true if \p t is a Prolog atom, false otherwise. 
 */
-static inline bool
+static inline int
 Prolog_is_atom(Prolog_term_ref t) {
   return Blt_Atom(t) != FALSE;
 }
@@ -217,7 +217,7 @@ Prolog_is_atom(Prolog_term_ref t) {
 /*!
   Return true if \p t is a Prolog integer, false otherwise. 
 */
-static inline bool
+static inline int
 Prolog_is_integer(Prolog_term_ref t) {
   return Blt_Integer(t) != FALSE;
 }
@@ -225,7 +225,7 @@ Prolog_is_integer(Prolog_term_ref t) {
 /*!
   Return true if \p t is a Prolog compound term, false otherwise. 
 */
-static inline bool
+static inline int
 Prolog_is_compound(Prolog_term_ref t) {
   return Blt_Compound(t) != FALSE;
 }
@@ -233,10 +233,10 @@ Prolog_is_compound(Prolog_term_ref t) {
 /*!
   Return true if \p t is a Prolog list, false otherwise. 
 */
-static inline bool
+static inline int
 Prolog_is_cons(Prolog_term_ref t) {
   if (Blt_Compound(t) == FALSE)
-    return false;
+    return 0;
   Prolog_atom name;
   int arity;
   Rd_Compound(t, &name, &arity);
@@ -249,35 +249,35 @@ Prolog_is_cons(Prolog_term_ref t) {
   return false otherwise.  The behavior is undefined if \p t is
   not a Prolog integer.
 */
-static inline bool
+static inline int
 Prolog_get_long(Prolog_term_ref t, long& v) {
   assert(Prolog_is_integer(t));
   v = Rd_Integer_Check(t);
-  return true;
+  return 1;
 }
 
 /*!
   Return true if \p t is the representation of an address, false otherwise. 
 */
-static inline bool
+static inline int
 Prolog_is_address(Prolog_term_ref t) {
   if (!Prolog_is_compound(t))
-    return false;
+    return 0;
   Prolog_atom name;
   int arity;
   Prolog_term_ref* a = Rd_Compound_Check(t, &name, &arity);
   if (name != a_dollar_address || arity != 2)
-    return false;
+    return 0;
   for (int i = 0; i <= 1; ++i) {
     if (!Prolog_is_integer(a[i]))
-      return false;
+      return 0;
     long l;
     if (!Prolog_get_long(a[i], l))
-      return false;
+      return 0;
     if (l < 0 || l > USHRT_MAX)
-      return false;
+      return 0;
   }
-  return true;
+  return 1;
 }
 
 /*!
@@ -285,7 +285,7 @@ Prolog_is_address(Prolog_term_ref t) {
   true and store that address into \p v; return false otherwise.
   The behavior is undefined if \p t is not an address.
 */
-static inline bool
+static inline int
 Prolog_get_address(Prolog_term_ref t, void*& p) {
   assert(Prolog_is_address(t));
   static Prolog_atom dummy_name;
@@ -298,18 +298,18 @@ Prolog_get_address(Prolog_term_ref t, void*& p) {
   u.s[0] = Rd_Integer_Check(a[0]);
   u.s[1] = Rd_Integer_Check(a[1]);
   p = reinterpret_cast<void*>(u.l);
-  return true;
+  return 1;
 }
 
 /*!
   If \p t is a Prolog atom, return true and store its name into \p name.
   The behavior is undefined if \p t is not a Prolog atom.
 */
-static inline bool
+static inline int
 Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom& name) {
   assert(Prolog_is_atom(t));
   name = Rd_Atom_Check(t);
-  return true;
+  return 1;
 }
 
 /*!
@@ -317,12 +317,12 @@ Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom& name) {
   and arity into \p name and \p arity, respectively.
   The behavior is undefined if \p t is not a Prolog compound term.
 */
-static inline bool
+static inline int
 Prolog_get_compound_name_arity(Prolog_term_ref t,
 			       Prolog_atom& name, int& arity) {
   assert(Prolog_is_compound(t));
   Rd_Compound_Check(t, &name, &arity);
-  return true;
+  return 1;
 }
 
 /*!
@@ -331,13 +331,13 @@ Prolog_get_compound_name_arity(Prolog_term_ref t,
   i-th (principal) argument of \p t.
   The behavior is undefined if \p t is not a Prolog compound term.
 */
-static inline bool
+static inline int
 Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref& a) {
   assert(Prolog_is_compound(t));
   static Prolog_atom dummy_name;
   static int dummy_arity;
   a = Rd_Compound_Check(t, &dummy_name, &dummy_arity)[i-1];
-  return true;
+  return 1;
 }
 
 /*!
@@ -345,20 +345,20 @@ Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref& a) {
   tail to \p h and \p t, respectively.
   The behavior is undefined if \p c is not a Prolog cons.
 */
-static inline bool
+static inline int
 Prolog_get_cons(Prolog_term_ref c, Prolog_term_ref& h, Prolog_term_ref& t) {
   assert(Prolog_is_cons(c));
   Prolog_term_ref* ht = Rd_List_Check(c);
   h = ht[0];
   t = ht[1];
-  return true;
+  return 1;
 }
 
 /*!
   Unify the terms referenced by \p t and \p u and return true
   if the unification is successful; return false otherwise.
 */
-static inline bool
+static inline int
 Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
   return Unify(t, u) != FALSE;
 }

@@ -62,87 +62,87 @@ static const Prolog_foreign_return_type PROLOG_FAILURE = SP_FAILURE;
 PCFLI_DECLSPEC Prolog_term_ref
 Prolog_new_term_ref();
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_put_term(Prolog_term_ref t, Prolog_term_ref u);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_put_long(Prolog_term_ref t, long i);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_put_atom_chars(Prolog_term_ref t, const char* s);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_put_atom(Prolog_term_ref t, Prolog_atom a);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_put_address(Prolog_term_ref t, void* p);
 
 Prolog_atom
 Prolog_atom_from_string(const char* s);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 			  Prolog_term_ref a1);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3, Prolog_term_ref a4);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_construct_cons(Prolog_term_ref c,
 		      Prolog_term_ref h, Prolog_term_ref t);
 
 PCFLI_DECLSPEC void
 Prolog_raise_exception(Prolog_term_ref t);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_is_variable(Prolog_term_ref t);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_is_atom(Prolog_term_ref t);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_is_integer(Prolog_term_ref t);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_is_address(Prolog_term_ref t);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_is_compound(Prolog_term_ref t);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_is_cons(Prolog_term_ref t);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_get_long(Prolog_term_ref t, long& v);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_get_address(Prolog_term_ref t, void*& p);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom& name);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_get_compound_name_arity(Prolog_term_ref t,
 			       Prolog_atom& name, int& arity);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref a);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_get_cons(Prolog_term_ref c, Prolog_term_ref h, Prolog_term_ref t);
 
-PCFLI_DECLSPEC bool
+PCFLI_DECLSPEC int
 Prolog_unify(Prolog_term_ref t, Prolog_term_ref u);
 
 #endif /* !PCFLI_INLINE_PROTOTYPES */

@@ -58,16 +58,16 @@ Prolog_new_term_ref() {
   Make \p t be a reference to the same term referenced by \p u,
   i.e., assign \p u to \p t.
 */
-static inline bool
+static inline int
 Prolog_put_term(Prolog_term_ref& t, Prolog_term_ref u) {
   t = u;
-  return true;
+  return 1;
 }
 
 /*!
   Assign to \p t a Prolog integer with value \p i.
 */
-static inline bool
+static inline int
 Prolog_put_long(Prolog_term_ref& t, long i) {
   return c2p_int(i, t) != FALSE;
 }
@@ -76,7 +76,7 @@ Prolog_put_long(Prolog_term_ref& t, long i) {
   Assign to \p t an atom whose name is given
   by the null-terminated string \p s.
 */
-static inline bool
+static inline int
 Prolog_put_atom_chars(Prolog_term_ref& t, const char* s) {
   // FIXME: the following cast is really a bug in XSB.
   return c2p_string(string_find(const_cast<char*>(s), 1), t) != FALSE;
@@ -85,7 +85,7 @@ Prolog_put_atom_chars(Prolog_term_ref& t, const char* s) {
 /*!
   Assign to \p t the Prolog atom \p a.
 */
-static inline bool
+static inline int
 Prolog_put_atom(Prolog_term_ref& t, Prolog_atom a) {
   return c2p_string(a, t) != FALSE;
 }
@@ -93,7 +93,7 @@ Prolog_put_atom(Prolog_term_ref& t, Prolog_atom a) {
 /*!
   Assign to \p t a term representing the address contained in \p p.
 */
-static inline bool
+static inline int
 Prolog_put_address(Prolog_term_ref& t, void* p) {
   return c2p_int(reinterpret_cast<long>(p), t) != FALSE;
 }
@@ -111,21 +111,21 @@ Prolog_atom_from_string(const char* s) {
   Assign to \p t a compound term whose principal functor is \p f
   of arity 1 with argument \p a1.
 */
-static inline bool
+static inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1) {
   prolog_term new_compound = p2p_new();
   c2p_functor(f, 1, new_compound);
   p2p_unify(p2p_arg(new_compound, 1), a1);
   t = new_compound;
-  return true;
+  return 1;
 }
 
 /*!
   Assign to \p t a compound term whose principal functor is \p f
   of arity 2 with arguments \p a1 and \p a2.
 */
-static inline bool
+static inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2) {
   prolog_term new_compound = p2p_new();
@@ -133,14 +133,14 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
   p2p_unify(p2p_arg(new_compound, 1), a1);
   p2p_unify(p2p_arg(new_compound, 2), a2);
   t = new_compound;
-  return true;
+  return 1;
 }
 
 /*!
   Assign to \p t a compound term whose principal functor is \p f
   of arity 3 with arguments \p a1, \p a2 and \p a3.
 */
-static inline bool
+static inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3) {
@@ -150,14 +150,14 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
   p2p_unify(p2p_arg(new_compound, 2), a2);
   p2p_unify(p2p_arg(new_compound, 3), a3);
   t = new_compound;
-  return true;
+  return 1;
 }
 
 /*!
   Assign to \p t a compound term whose principal functor is \p f
   of arity 4 with arguments \p a1, \p a2, \p a3 and \p a4.
 */
-static inline bool
+static inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3, Prolog_term_ref a4) {
@@ -168,13 +168,13 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
   p2p_unify(p2p_arg(new_compound, 3), a3);
   p2p_unify(p2p_arg(new_compound, 4), a4);
   t = new_compound;
-  return true;
+  return 1;
 }
 
 /*!
   Assign to \p c a Prolog list whose head is \p h and tail is \p t. 
 */
-static inline bool
+static inline int
 Prolog_construct_cons(Prolog_term_ref& c,
 		      Prolog_term_ref h, Prolog_term_ref t) {
   prolog_term new_cons = p2p_new();
@@ -182,7 +182,7 @@ Prolog_construct_cons(Prolog_term_ref& c,
   p2p_unify(p2p_car(new_cons), h);
   p2p_unify(p2p_cdr(new_cons), t);
   c = new_cons;
-  return true;
+  return 1;
 }
 
 static Prolog_atom a_throw;
@@ -207,7 +207,7 @@ Prolog_raise_exception(Prolog_term_ref /* t */) {
 /*!
   Return true if \p t is a Prolog variable, false otherwise. 
 */
-static inline bool
+static inline int
 Prolog_is_variable(Prolog_term_ref t) {
   // The following statement is to get around a bug in XSB 2.5.
   t = p2p_deref(t);
@@ -217,7 +217,7 @@ Prolog_is_variable(Prolog_term_ref t) {
 /*!
   Return true if \p t is a Prolog atom, false otherwise. 
 */
-static inline bool
+static inline int
 Prolog_is_atom(Prolog_term_ref t) {
   // The following statement is to get around a bug in XSB 2.5.
   t = p2p_deref(t);
@@ -227,7 +227,7 @@ Prolog_is_atom(Prolog_term_ref t) {
 /*!
   Return true if \p t is a Prolog integer, false otherwise. 
 */
-static inline bool
+static inline int
 Prolog_is_integer(Prolog_term_ref t) {
   // The following statement is to get around a bug in XSB 2.5.
   t = p2p_deref(t);
@@ -237,7 +237,7 @@ Prolog_is_integer(Prolog_term_ref t) {
 /*!
   Return true if \p t is the representation of an address, false otherwise. 
 */
-static inline bool
+static inline int
 Prolog_is_address(Prolog_term_ref t) {
   // The following statement is to get around a bug in XSB 2.5.
   t = p2p_deref(t);
@@ -247,7 +247,7 @@ Prolog_is_address(Prolog_term_ref t) {
 /*!
   Return true if \p t is a Prolog compound term, false otherwise. 
 */
-static inline bool
+static inline int
 Prolog_is_compound(Prolog_term_ref t) {
   // The following statement is to get around a bug in XSB 2.5.
   t = p2p_deref(t);
@@ -257,7 +257,7 @@ Prolog_is_compound(Prolog_term_ref t) {
 /*!
   Return true if \p t is a Prolog list, false otherwise. 
 */
-static inline bool
+static inline int
 Prolog_is_cons(Prolog_term_ref t) {
   // The following statement is to get around a bug in XSB 2.5.
   t = p2p_deref(t);
@@ -270,13 +270,13 @@ Prolog_is_cons(Prolog_term_ref t) {
   return false otherwise.  The behavior is undefined if \p t is
   not a Prolog integer.
 */
-static inline bool
+static inline int
 Prolog_get_long(Prolog_term_ref t, long& v) {
   assert(Prolog_is_integer(t));
   // The following statement is to get around a bug in XSB 2.5.
   t = p2p_deref(t);
   v = p2c_int(t);
-  return true;
+  return 1;
 }
 
 /*!
@@ -284,26 +284,26 @@ Prolog_get_long(Prolog_term_ref t, long& v) {
   true and store that address into \p v; return false otherwise.
   The behavior is undefined if \p t is not an address.
 */
-static inline bool
+static inline int
 Prolog_get_address(Prolog_term_ref t, void*& p) {
   assert(Prolog_is_address(t));
   // The following statement is to get around a bug in XSB 2.5.
   t = p2p_deref(t);
   p = reinterpret_cast<void*>(p2c_int(t));
-  return true;
+  return 1;
 }
 
 /*!
   If \p t is a Prolog atom, return true and store its name into \p name.
   The behavior is undefined if \p t is not a Prolog atom.
 */
-static inline bool
+static inline int
 Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom& name) {
   assert(Prolog_is_atom(t));
   // The following statement is to get around a bug in XSB 2.5.
   t = p2p_deref(t);
   name = p2c_string(t);
-  return true;
+  return 1;
 }
 
 /*!
@@ -311,7 +311,7 @@ Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom& name) {
   and arity into \p name and \p arity, respectively.
   The behavior is undefined if \p t is not a Prolog compound term.
 */
-static inline bool
+static inline int
 Prolog_get_compound_name_arity(Prolog_term_ref t,
 			       Prolog_atom& name, int& arity) {
   assert(Prolog_is_compound(t));
@@ -319,7 +319,7 @@ Prolog_get_compound_name_arity(Prolog_term_ref t,
   t = p2p_deref(t);
   name = p2c_functor(t);
   arity = p2c_arity(t);
-  return true;
+  return 1;
 }
 
 /*!
@@ -328,11 +328,11 @@ Prolog_get_compound_name_arity(Prolog_term_ref t,
   i-th (principal) argument of \p t.
   The behavior is undefined if \p t is not a Prolog compound term.
 */
-static inline bool
+static inline int
 Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref& a) {
   assert(Prolog_is_compound(t));
   a = p2p_arg(t, i);
-  return true;
+  return 1;
 }
 
 /*!
@@ -340,19 +340,19 @@ Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref& a) {
   tail to \p h and \p t, respectively.
   The behavior is undefined if \p c is not a Prolog cons.
 */
-static inline bool
+static inline int
 Prolog_get_cons(Prolog_term_ref c, Prolog_term_ref& h, Prolog_term_ref& t) {
   assert(Prolog_is_cons(c));
   h = p2p_car(c);
   t = p2p_cdr(c);
-  return true;
+  return 1;
 }
 
 /*!
   Unify the terms referenced by \p t and \p u and return true
   if the unification is successful; return false otherwise.
 */
-static inline bool
+static inline int
 Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
   return p2p_unify(t, u) != FALSE;
 }
