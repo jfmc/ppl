@@ -1,3 +1,7 @@
+2002-10-04  Release Manager
+
+	* PPL 0.4.2 Released.
+
 2002-10-04 Friday 10:23  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* ppl.spec.in (ppl-0_4-branch.1): Require GCC 3.2 or later version.
