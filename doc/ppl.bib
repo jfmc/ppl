@@ -435,13 +435,6 @@
               corresponding maximization problems."
 }
 
-@Book{StoerW70,
-  Author = "J. Stoer and C. Witzgall",
-  Title = "Convexity and Optimization in Finite Dimensions I",
-  Publisher = "Springer-Verlag, Berlin",
-  Year = 1970
-}
-
 @Book{NemhauserW88,
   Author = "G. L. Nemhauser and L. A. Wolsey",
   Title = "Integer and Combinatorial Optimization",
@@ -449,6 +442,51 @@
   Series = "Wiley Interscience Series
             in Discrete Mathematics and Optimization",
   Year = 1988
+}
+
+@Article{Srivastava93,
+  Author = "D. Srivastava",
+  Title = "Subsumption and Indexing in Constraint Query Languages
+           with Linear Arithmetic Constraints",
+  Journal = "Annals of Mathematics and Artificial Intelligence",
+  Volume = 8,
+  Number = "3--4",
+  Pages = "315--343",
+  Yesr = 1993,
+  Abstract = "Bottom-up evaluation of a program-query pair in a
+              constraint query language (CQL) starts with the facts in
+              the database and repeatedly applies the rules of the
+              program, in iterations, to compute new facts, until we
+              have reached a fixpoint.  Checking if a fixpoint has
+              been reached amounts to checking if any ``new'' facts
+              were computed in an iteration.  Such a check also
+              enhances efficiency in that subsumed facts can be
+              discarded, and not be used to make any further
+              derivations in subsequent iterations, if we use
+              Semi-naive evaluation.
+
+              We show that the problem of subsumption in CQLs with
+              linear arithmetic constraints is co-NP complete, and
+              present a deterministic algorithm, based on the divide
+              and conquer strategy, for this problem.  We also
+              identify polynomial-time sufficient conditions for
+              subsumption and non-subsumption in CQLs with linear
+              arithmetic constraints.  We adapt indexing strategies
+              from spatial databases for efficiently indexing facts in
+              such a CQL: such indexing is crucial for performance in
+              the presence of large databases.  Based on a recent
+              algorithm by Lassez and Lassez [LL] for quantifier
+              elimination, we present an incremental version of the
+              algorithm to check for subsumption in CQLs with linear
+              arithmetic constraints.",
+  URL = "http://www.research.att.com/~divesh/papers/s93-cqlsubsum-journal.ps"
+}
+
+@Book{StoerW70,
+  Author = "J. Stoer and C. Witzgall",
+  Title = "Convexity and Optimization in Finite Dimensions I",
+  Publisher = "Springer-Verlag, Berlin",
+  Year = 1970
 }
 
 @MastersThesis{Wilde93th,
