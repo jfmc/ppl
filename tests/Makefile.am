@@ -35,6 +35,7 @@ LDADD = $(top_builddir)/src/libppl.la ehandlers.o print.o @extra_libraries@
 CPPFLAGS = @extra_cpp_flags@
 
 ORIGINAL_TESTS = \
+	hypercubes smfintersection smfpolyhull \
 	CbecomesNNC1 \
 	NNCinclusion1 \
 	NNCminimize1 NNCminimize2 NNCminimize3 NNCminimize4 NNCminimize5 \
@@ -77,7 +78,6 @@ ORIGINAL_TESTS = \
 	generalizedaffineimage9 generalizedaffineimage10 \
 	generators1 generators2 generators3 generators4 generators5 \
 	h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
-	hypercubes \
 	inclusion1 inclusion2 \
         intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 intersection8 \
@@ -177,6 +177,10 @@ DERIVED_TESTS = \
 #
 # Sources for the tests
 #
+
+hypercubes_SOURCES = hypercubes.cc timings.cc timings.hh
+smfintersection_SOURCES = smfintersection.cc timings.cc timings.hh
+smfpolyhull_SOURCES = smfpolyhull.cc timings.cc timings.hh
 
 CbecomesNNC1_SOURCES = CbecomesNNC1.cc
 
@@ -323,8 +327,6 @@ h79widening2_SOURCES = h79widening2.cc
 h79widening3_SOURCES = h79widening3.cc
 h79widening4_SOURCES = h79widening4.cc
 h79widening5_SOURCES = h79widening5.cc
-
-hypercubes_SOURCES = hypercubes.cc timings.cc
 
 inclusion1_SOURCES = inclusion1.cc
 inclusion2_SOURCES = inclusion2.cc

@@ -194,7 +194,6 @@ smf_poly_hull_test() {
       cout << endl;
 #endif
 
-
 #if OUTPUT_TIMINGS
       cout << "    smf ";
       start_clock();
@@ -207,7 +206,7 @@ smf_poly_hull_test() {
       print_clock(cout);     
       print_number_cons(ph1_copy);
       compute_smf_cons(ph1_copy);
-      print_number_cons(ph1);
+      print_number_cons(ph1_copy);
       cout << endl;
 #endif
 
