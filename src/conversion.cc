@@ -678,8 +678,8 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	      // all the constraints saturated by both `dest[i]' and
 	      // `dest[j]', then they are NOT adjacent.
 	      Saturation_Row new_satrow;
-	      assert(sat[i].last() < 0 || unsigned(sat[i].last()) < k);
-	      assert(sat[j].last() < 0 || unsigned(sat[j].last()) < k);
+	      assert(sat[i].last() == ULONG_MAX || sat[i].last() < k);
+	      assert(sat[j].last() == ULONG_MAX || sat[j].last() < k);
 	      // Being the union of `sat[i]' and `sat[j]',
 	      // `new_satrow' corresponds to a ray that saturates all the
 	      // constraints saturated by both `dest[i]' and `dest[j]'.

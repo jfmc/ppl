@@ -51,25 +51,24 @@ Saturation_Row::operator=(const Saturation_Row& y) {
 }
 
 inline void
-Saturation_Row::set(const unsigned int k) {
+Saturation_Row::set(const unsigned long k) {
   mpz_setbit(vec, k);
 }
 
 inline void
-Saturation_Row::clear(const unsigned int k) {
+Saturation_Row::clear(const unsigned long k) {
   mpz_clrbit(vec, k);
 }
 
 inline void
-Saturation_Row::clear_from(const unsigned int k) {
+Saturation_Row::clear_from(const unsigned long k) {
   mpz_tdiv_r_2exp(vec, vec, k);
 }
 
-inline unsigned int
+inline unsigned long
 Saturation_Row::count_ones() const {
-  size_t vec_size = mpz_size(vec);
-  assert(vec_size >= 0);
-  return mpn_popcount(vec->_mp_d, vec_size);
+  assert(vec->_mp_size >= 0);
+  return mpn_popcount(vec->_mp_d, vec->_mp_size);
 }
 
 inline bool

@@ -126,16 +126,16 @@ public:
   void swap(Saturation_Row& y);
 
   //! Returns the truth value corresponding to the bit in position \p k.
-  bool operator[](unsigned int k) const;
+  bool operator[](unsigned long k) const;
 
   //! Sets the bit in position \p k.
-  void set(unsigned int k);
+  void set(unsigned long k);
 
   //! Clears the bit in position \p k.
-  void clear(unsigned int k);
+  void clear(unsigned long k);
 
   //! Clears bits from position \p k (included) onward.
-  void clear_from(unsigned int k);
+  void clear_from(unsigned long k);
 
   //! Clears all the bits of the row.
   void clear();
@@ -170,24 +170,24 @@ public:
 				     const Saturation_Row& y,
 				     Saturation_Row& z);
 
-  //! Returns the index of the first set bit or -1 if no bit is set.
-  int first() const;
+  //! Returns the index of the first set bit or ULONG_MAX if no bit is set.
+  unsigned long first() const;
 
   //! \brief
   //! Returns the index of the first set bit after \p position
-  //! or -1 if no bit after \p position is set.
-  int next(int position) const;
+  //! or ULONG_MAX if no bit after \p position is set.
+  unsigned long next(unsigned long position) const;
 
-  //! Returns the index of the last set bit or -1 if no bit is set.
-  int last() const;
+  //! Returns the index of the last set bit or ULONG_MAX if no bit is set.
+  unsigned long last() const;
 
   //! \brief
   //! Returns the index of the first set bit before \p position
-  //! or -1 if no bits before \p position is set.
-  int prev(int position) const;
+  //! or ULONG_MAX if no bits before \p position is set.
+  unsigned long prev(unsigned long position) const;
 
   //! Returns the number of set bits in the row.
-  unsigned int count_ones() const;
+  unsigned long count_ones() const;
 
   //! Returns <CODE>true</CODE> if no bit is set in the row.
   bool empty() const;

@@ -85,7 +85,7 @@ PPL::Saturation_Matrix::transpose() {
   const dimension_type ncols = num_columns();
   Saturation_Matrix tmp(ncols, nrows);
   for (dimension_type i = nrows; i-- > 0; )
-    for (int j = x[i].last(); j >= 0; j = x[i].prev(j))
+    for (unsigned long j = x[i].last(); j != ULONG_MAX; j = x[i].prev(j))
       tmp[j].set(i);
   swap(tmp);
   assert(OK());
@@ -97,7 +97,7 @@ PPL::Saturation_Matrix::transpose_assign(const Saturation_Matrix& y) {
   const dimension_type y_ncols = y.num_columns();
   Saturation_Matrix tmp(y_ncols, y_nrows);
   for (dimension_type i = y_nrows; i-- > 0; )
-    for (int j = y[i].last(); j >= 0; j = y[i].prev(j))
+    for (unsigned long j = y[i].last(); j != ULONG_MAX; j = y[i].prev(j))
       tmp[j].set(i);
   swap(tmp);
   assert(OK());
@@ -203,7 +203,7 @@ PPL::Saturation_Matrix::OK() const {
     const Saturation_Row& row = x[i];
     if (!row.OK())
       return false;
-    else if (row.last() >= 0 && unsigned(row.last()) >= row_size) {
+    else if (row.last() != ULONG_MAX && row.last() >= row_size) {
 #ifndef NDEBUG
       cerr << "Saturation_Matrix[" << i << "] is a row with too many bits!"
 	   << endl
