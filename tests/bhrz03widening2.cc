@@ -1,4 +1,4 @@
-/* Test Polyhedron::BBRZ02_widening_assign().
+/* Test Polyhedron::BHRZ03_widening_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -29,6 +29,7 @@ using namespace Parma_Polyhedra_Library;
 #ifndef NOISY
 #define NOISY 0
 #endif
+
 int
 main() {
   set_handlers();
@@ -36,30 +37,33 @@ main() {
   Variable A(0);
   Variable B(1);
 
-  NNC_Polyhedron ph1(2);
-  ph1.add_constraint(B >= 0);
-  ph1.add_constraint(A + B > 0);
-  ph1.add_constraint(A - B < 1);
+  GenSys gs1;
+  gs1.insert(point(2*A));
+  gs1.insert(closure_point(A+B));
+  gs1.insert(closure_point(3*A+B));
+  NNC_Polyhedron ph1(gs1);
 
-  NNC_Polyhedron ph2(2);
-  ph2.add_constraint(B >= 0);
-  ph2.add_constraint(A > 0);
-  ph2.add_constraint(A < 1);
+  GenSys gs2;
+  gs2.insert(point(2*A));
+  gs2.insert(closure_point(B));
+  gs2.insert(closure_point(4*A+B));
+  NNC_Polyhedron ph2(gs2);
 
 #if NOISY
-  print_constraints(ph1, "*** ph1 ***");
-  print_constraints(ph2, "*** ph2 ***");
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph1.BBRZ02_widening_assign(ph2);
+  ph2.BHRZ03_widening_assign(ph1);
 
   NNC_Polyhedron known_result(2);
   known_result.add_constraint(B >= 0);
+  known_result.add_constraint(B < 1);
 
-  int retval = (ph1 == known_result) ? 0 : 1;
+  int retval = (ph2 == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph1, "*** After BBRZ02_widening_assign ***");
+  print_constraints(ph2, "*** After BHRZ03_widening_assign ***");
 #endif
 
   return retval;

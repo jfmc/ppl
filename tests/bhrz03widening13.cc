@@ -1,4 +1,4 @@
-/* Test Polyhedron::BBRZ02_widening_assign().
+/* Test Polyhedron::BHRZ03_widening_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -116,7 +116,7 @@ main() {
     cout << q_i.generators() << endl;
 #endif
    
-    q_i.BBRZ02_widening_assign(q_i_minus_1);
+    q_i.BHRZ03_widening_assign(q_i_minus_1);
 
 #if NOISY
     cout << "*** Result of widening poly-hull with new:" << endl;

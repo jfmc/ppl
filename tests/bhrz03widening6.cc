@@ -1,5 +1,4 @@
-/* Test Polyhedron::BBRZ02_widening_assign(): the smaller polyhedron
-   is defined by its system of constraints and it is empty.
+/* Test Polyhedron::BHRZ03_widening_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -37,27 +36,37 @@ main() {
 
   Variable A(0);
   Variable B(1);
+  Variable C(2);
 
-  C_Polyhedron ph1(2);
-  ph1.add_constraint(B >= 0);
-  
-  C_Polyhedron ph2(2);
-  ph2.add_constraint(A >= 2);
-  ph2.add_constraint(A <= 0);
+  GenSys gs1;
+  gs1.insert(point());
+  gs1.insert(ray(A));
+  gs1.insert(ray(B));
+  gs1.insert(ray(A + 4*B + 2*C));
+  C_Polyhedron ph1(gs1);
+
+  GenSys gs2;
+  gs2.insert(point());
+  gs2.insert(ray(A));
+  gs2.insert(ray(B));
+  gs2.insert(ray(A + 2*B + 4*C));
+  C_Polyhedron ph2(gs2);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 #endif
 
-  C_Polyhedron known_result(ph1);
+  ph2.BHRZ03_widening_assign(ph1);
 
-  ph1.BBRZ02_widening_assign(ph2);
+  C_Polyhedron known_result(3);
+  known_result.add_constraint(4*A + 4*B - 3*C >= 0);
+  known_result.add_constraint(C >= 0);
 
-  int retval = (ph1 == known_result) ? 0 : 1;
+  int retval = (ph2 == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph1, "*** After ph1.BBRZ02_widening_assign(ph2) ***");
+  print_constraints(ph2, "*** After BHRZ03_widening_assign ***");
 #endif
 
   return retval;

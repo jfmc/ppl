@@ -1,5 +1,4 @@
-/* Test Polyhedron::BBRZ02_widening_assign(): the number of closure
-   points of ph2 is greater of the the number of closure points of ph1.
+/* Test Polyhedron::BHRZ03_widening_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -31,43 +30,41 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-int 
-main () {
+int
+main() {
   set_handlers();
 
   Variable A(0);
   Variable B(1);
 
   GenSys gs1;
-  gs1.insert(closure_point());
-  gs1.insert(closure_point(A + B));
-  gs1.insert(point(2*A + B, 2));
+  gs1.insert(point());
+  gs1.insert(point(A + 2*B));
   gs1.insert(ray(A));
-  NNC_Polyhedron ph1(gs1);
+  gs1.insert(ray(2*A + B));
+  C_Polyhedron ph1(gs1);
 
   GenSys gs2;
-  gs2.insert(closure_point());
-  gs2.insert(closure_point(A + B));
-  gs2.insert(closure_point(B, 2));
-  gs2.insert(point(2*A + B, 2));
+  gs2.insert(point());
+  gs2.insert(point(A + 2*B));
   gs2.insert(ray(A));
-  NNC_Polyhedron ph2(gs2);
+  gs2.insert(ray(A + B));
+  C_Polyhedron ph2(gs2);
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
-
-  NNC_Polyhedron known_result(2);
-  known_result.add_constraint(B > 0);
-  known_result.add_constraint(B < 1);
+  ph2.BHRZ03_widening_assign(ph1);
+  
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(2*A- B >= 0);
 
   int retval = (ph2 == known_result) ? 0 : 1;
-
 #if NOISY
-  print_constraints(ph2, "*** After  ph2.BBRZ02_widening_assign(ph1) ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   return retval;

@@ -1,4 +1,4 @@
-/* Test Polyhedron::BBRZ02_widening_assign().
+/* Test Polyhedron::BHRZ03_widening_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -61,10 +61,10 @@ dimensions() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph1.BBRZ02_widening_assign(ph2);
+  ph1.BHRZ03_widening_assign(ph2);
 
 #if NOISY
-  print_constraints(ph1, "*** After BBRZ02_widening_assign ***");
+  print_constraints(ph1, "*** After BHRZ03_widening_assign ***");
 #endif
 
   return ph1 == ph1_copy;
@@ -89,10 +89,10 @@ lines() {
   print_constraints(ph2, "*** ph2 ***");
 #endif
 
-  ph1.BBRZ02_widening_assign(ph2);
+  ph1.BHRZ03_widening_assign(ph2);
 
 #if NOISY
-  print_constraints(ph1, "*** After BBRZ02_widening_assign ***");
+  print_constraints(ph1, "*** After BHRZ03_widening_assign ***");
 #endif
 
   return ph1 == ph1_copy;
@@ -123,10 +123,10 @@ points() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph1.BBRZ02_widening_assign(ph2);
+  ph1.BHRZ03_widening_assign(ph2);
 
 #if NOISY
-  print_constraints(ph1, "*** After BBRZ02_widening_assign ***");
+  print_constraints(ph1, "*** After BHRZ03_widening_assign ***");
 #endif
 
   return ph1 == ph1_copy;

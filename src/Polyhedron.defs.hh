@@ -672,7 +672,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the result of computing the
-  //! \ref BBRZ02_widening "BBRZ02-widening" between \p *this and \p y.
+  //! \ref BHRZ03_widening "BHRZ03-widening" between \p *this and \p y.
   /*!
     \param y           A polyhedron that <EM>must</EM>
                        be contained in \p *this.
@@ -680,10 +680,10 @@ public:
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void BBRZ02_widening_assign(const Polyhedron& y);
+  void BHRZ03_widening_assign(const Polyhedron& y);
 
   //! \brief
-  //! Limits the \ref BBRZ02_widening "BBRZ02-widening" computation
+  //! Limits the \ref BHRZ03_widening "BHRZ03-widening" computation
   //! between \p *this and \p y by enforcing constraints \p cs
   //! and assigns the result to \p *this.
   /*!
@@ -697,7 +697,7 @@ public:
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void limited_BBRZ02_widening_assign(const Polyhedron& y, ConSys& cs);
+  void limited_BHRZ03_widening_assign(const Polyhedron& y, ConSys& cs);
 
   //! \brief
   //! Assigns to \p *this the result of computing the
@@ -1683,12 +1683,12 @@ private:
   
   //! \brief
   //! Returns <CODE>true</CODE> if the given polyhedra satisfy
-  //! the theorem of BBRZ02.
+  //! the theorem of BHRZ03.
   /*!
     \param x        The greater polyhedron.
     \param y        The smaller polyhedron.
   */
-  static bool is_BBRZ02_stabilizing(const Polyhedron& x, const Polyhedron& y);
+  static bool is_BHRZ03_stabilizing(const Polyhedron& x, const Polyhedron& y);
 
   //! @name Exception throwers.
   //@{

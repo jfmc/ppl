@@ -1151,15 +1151,15 @@ __P((ppl_Polyhedron_t x, ppl_const_Polyhedron_t y));
 
 /*!
   If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the BBRZ02-widening of \p x and \p y.
+  \p x, assigns to \p x the BHRZ03-widening of \p x and \p y.
 */
 int
-ppl_Polyhedron_BBRZ02_widening_assign __P((ppl_Polyhedron_t x,
+ppl_Polyhedron_BHRZ03_widening_assign __P((ppl_Polyhedron_t x,
 					   ppl_const_Polyhedron_t y));
 
 /*!
   If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the BBRZ02-widening of \p x and \p y intersected with
+  \p x, assigns to \p x the BHRZ03-widening of \p x and \p y intersected with
   the constraint system \p cs.
 
   \warning
@@ -1167,7 +1167,7 @@ ppl_Polyhedron_BBRZ02_widening_assign __P((ppl_Polyhedron_t x,
   upon return, no assumption can be made on its value.
 */
 int
-ppl_Polyhedron_limited_BBRZ02_widening_assign __P((ppl_Polyhedron_t x,
+ppl_Polyhedron_limited_BHRZ03_widening_assign __P((ppl_Polyhedron_t x,
 						   ppl_const_Polyhedron_t y,
 						   ppl_ConSys_t cs));
 

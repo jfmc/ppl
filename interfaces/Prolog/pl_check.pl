@@ -46,10 +46,10 @@ check_all :-
   polyhull_assign_min,
   polydiff_assign,
   polydiff_assign_min,
-  bbrz02_widen_C,
-  lim_bbrz02_widen_C,
-  bbrz02_widen_NNC,
-  lim_bbrz02_widen_NNC,
+  bhrz03_widen_C,
+  lim_bhrz03_widen_C,
+  bhrz03_widen_NNC,
+  lim_bhrz03_widen_NNC,
   h79_widen_C,
   lim_h79_widen_C,
   h79_widen_NNC,
@@ -447,13 +447,13 @@ polydiff_assign_min :-
   ppl_delete_Polyhedron(P1a),
   ppl_delete_Polyhedron(P1b).
 
-% Tests ppl_Polyhedron_BBRZ02_widening_assign
+% Tests ppl_Polyhedron_BHRZ03_widening_assign
 % (using C Polyhedra).
-bbrz02_widen_C :-
+bhrz03_widen_C :-
   A = '$VAR'(0), B = '$VAR'(1),
   ppl_new_Polyhedron_from_dimension(c, 2, P),
   ppl_new_Polyhedron_from_constraints(c, [A >= 1, B >= 0], Q),
-  ppl_Polyhedron_BBRZ02_widening_assign(P, Q),
+  ppl_Polyhedron_BHRZ03_widening_assign(P, Q),
   ppl_new_Polyhedron_from_dimension(c, 2, Pa),
   ppl_new_Polyhedron_from_constraints(c,
                                       [1*A >= 1, 1*B >= 0],
@@ -465,14 +465,14 @@ bbrz02_widen_C :-
   ppl_delete_Polyhedron(Pa),
   ppl_delete_Polyhedron(Qa).
 
-% Tests ppl_Polyhedron_limited_BBRZ02_widening_assign
+% Tests ppl_Polyhedron_limited_BHRZ03_widening_assign
 % (using C Polyhedra).
-lim_bbrz02_widen_C :-
+lim_bhrz03_widen_C :-
   A = '$VAR'(0), B = '$VAR'(1),
   ppl_new_Polyhedron_from_dimension(c, 2, P),
   ppl_new_Polyhedron_from_constraints(c, [A >= 1, B >= 0], Q),
   ppl_Polyhedron_add_constraints_and_minimize(Q, [A >= 1, B >= 0]),
-  ppl_Polyhedron_limited_BBRZ02_widening_assign(P, Q, [A >= 2, B >= 1]),
+  ppl_Polyhedron_limited_BHRZ03_widening_assign(P, Q, [A >= 2, B >= 1]),
   ppl_new_Polyhedron_from_constraints(c,
                                       [1*A >= 2, 1*B >= 1],
                                       Pa),
@@ -481,13 +481,13 @@ lim_bbrz02_widen_C :-
   ppl_delete_Polyhedron(Q),
   ppl_delete_Polyhedron(Pa).
 
-% Tests ppl_Polyhedron_BBRZ02_widening_assign
+% Tests ppl_Polyhedron_BHRZ03_widening_assign
 % (using NNC Polyhedra).
-bbrz02_widen_NNC :-
+bhrz03_widen_NNC :-
   A = '$VAR'(0), B = '$VAR'(1),
   ppl_new_Polyhedron_from_dimension(nnc, 2, P),
   ppl_new_Polyhedron_from_constraints(nnc, [A >= 1, B >= 0], Q),
-  ppl_Polyhedron_BBRZ02_widening_assign(P, Q),
+  ppl_Polyhedron_BHRZ03_widening_assign(P, Q),
   ppl_new_Polyhedron_from_dimension(nnc, 2, Pa),
   ppl_new_Polyhedron_from_constraints(nnc,
                                       [1*A >= 1, 1*B >= 0],
@@ -499,14 +499,14 @@ bbrz02_widen_NNC :-
   ppl_delete_Polyhedron(Pa),
   ppl_delete_Polyhedron(Qa).
 
-% Tests ppl_Polyhedron_limited_BBRZ02_widening_assign
+% Tests ppl_Polyhedron_limited_BHRZ03_widening_assign
 % (using NNC Polyhedra).
-lim_bbrz02_widen_NNC :-
+lim_bhrz03_widen_NNC :-
   A = '$VAR'(0), B = '$VAR'(1),
   ppl_new_Polyhedron_from_dimension(nnc, 2, P),
   ppl_new_Polyhedron_from_constraints(nnc, [A >= 1, B >= 0], Q),
   ppl_Polyhedron_add_constraints_and_minimize(Q, [A >= 1, B >= 0]),
-  ppl_Polyhedron_limited_BBRZ02_widening_assign(P, Q,
+  ppl_Polyhedron_limited_BHRZ03_widening_assign(P, Q,
                                              [A >= 2, B >= 1]),
   ppl_new_Polyhedron_from_constraints(nnc,
                                       [1*A >= 2, 1*B >= 1],

@@ -1,4 +1,4 @@
-/* Test Polyhedron::BBRZ02_widening_assign().
+/* Test Polyhedron::BHRZ03_widening_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -31,87 +31,46 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-static GenSys
-g_0() {
-  Variable A(0);
-  Variable B(1);
-  GenSys new_gs;
-  new_gs.insert(point(A));
-  new_gs.insert(point(-B));
-  new_gs.insert(point(-A));
-  new_gs.insert(point(B));
-  return new_gs;
-}
+static Variable A(0);
+static Variable B(1);
+static Variable C(2);
+static Variable D(3);
+static Variable E(4);
 
-static Generator
-splitting_segment(const Generator& p1,
-		  const Generator& p2,
-		  unsigned magic_number) {
-  const Integer& d1 = p1.divisor();
-  const Integer& d2 = p2.divisor();
-  LinExpression expr = d2 * LinExpression(p1);
-  expr += d1 * LinExpression(p2);
-  // The divisor for the average is 2 * d1 * d2.
-  // by carefully taking a smaller divisor, we obtain a point
-  // that won't be redundant in the polyhedron.
-  // NOTE: I am not *sure* this dirty kludge of using such
-  // a magic number will always succeed.
-  return point((magic_number+1)*expr, magic_number*2*d1*d2);
-} 
-
-static GenSys
-double_generators(const GenSys& gs, unsigned magic_number) {
-  GenSys new_gs;
-  GenSys::const_iterator i = gs.begin();
-  GenSys::const_iterator gs_end = gs.end();
-  while (true) {
-    const Generator& g = *i;
-    new_gs.insert(g);
-    i++;
-    if (i != gs_end)
-      new_gs.insert(splitting_segment(g, *i, magic_number));
-    else {
-      // Split the last segment.
-      GenSys::const_iterator gs_begin = gs.begin();
-      new_gs.insert(splitting_segment(g, *gs_begin, magic_number));
-      break;
-    }
+static const GenSys&
+fixed_part() {
+  static GenSys gs;
+  static bool initialized = false;
+  if (!initialized) {
+    gs.insert(point());
+    gs.insert(ray(C));
+    gs.insert(ray(D));
+    gs.insert(ray(E));
+    gs.insert(ray(A + D));
+    gs.insert(ray(A + B + E));
+    initialized = true;
   }
-  return new_gs;
+  return gs;
 }
 
 static C_Polyhedron
 p(unsigned n) {
-
-  unsigned needed_vertices = n + 4;
-
-  unsigned magic_number = 1;
-  unsigned magic_factor = 4;
-  GenSys gs = g_0();
-  unsigned gs_vertices = 4;
-
-  while (gs_vertices * 2 <= needed_vertices) {
-    magic_number *= magic_factor;
-    gs = double_generators(gs, magic_number);
-    gs_vertices *= 2;
+  C_Polyhedron ph = fixed_part();
+  n += 2;
+  ph.add_generator(ray(A + (n-1)*B + E));
+  if (n % 2 == 0) {
+    // Even.
+    unsigned m = n / 2;
+    ph.add_generator(ray(m*B + E));
+    ph.add_generator(ray(A + (m-1)*B + D));
   }
-
-  if (gs_vertices < needed_vertices) {
-    magic_number *= magic_factor;
-    GenSys gs2 = double_generators(gs, magic_number);
-    GenSys::const_iterator gs2_i = gs2.begin();
-    for ( ; gs_vertices < needed_vertices; gs_vertices++) {
-      // Skip the even indexed vertices of gs2.
-      gs2_i++;
-      // Add the odd indexed vertices of gs2.
-      gs.insert(*gs2_i++);
-    }
+  else {
+    // Odd.
+    ph.add_generator(ray(n*B + 2*E));
+    ph.add_generator(ray(2*A + (n-2)*B + 2*D));
   }
-
-  C_Polyhedron ph = C_Polyhedron(gs);
   return ph;
 }
-
 
 int
 main() {
@@ -126,7 +85,6 @@ main() {
   C_Polyhedron q_i_minus_1 = p(0);
 
   for (unsigned i = 1; i <= 100; ++i) {
-
 #if NOISY
     cout << "*** Result of the previous iteration:" << endl;
     cout << q_i_minus_1.generators() << endl;
@@ -144,14 +102,22 @@ main() {
     cout << q_i.generators() << endl;
 #endif
    
-    q_i.BBRZ02_widening_assign(q_i_minus_1);
+    q_i.BHRZ03_widening_assign(q_i_minus_1);
 
 #if NOISY
     cout << "*** Result of widening poly-hull with new:" << endl;
     cout << q_i.generators() << endl;
 #endif
     if (q_i == q_i_minus_1) {
-      C_Polyhedron known_result(2);
+
+      C_Polyhedron known_result(5);
+      known_result.add_constraint(A >= 0);
+      known_result.add_constraint(B >= 0);
+      known_result.add_constraint(C >= 0);
+      known_result.add_constraint(D >= 0);
+      known_result.add_constraint(E >= 0);
+      known_result.add_constraint(-A + D + E >= 0);
+      known_result.add_constraint(-A + B + D >= 0);
 
       int retval = (q_i == known_result) ? 0 : 1;
 
@@ -159,7 +125,6 @@ main() {
       print_constraints(q_i, "*** The constraints of the fix point ***");
       print_generators(q_i, "*** The generators of the fix point ***");
 #endif
-
       return retval;
     }
     q_i_minus_1 = q_i;

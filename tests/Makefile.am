@@ -60,11 +60,11 @@ ORIGINAL_TESTS = \
         append1 append2 \
 	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
 	ascii_dump_load5 ascii_dump_load6 ascii_dump_load7 \
-	bbrz02widening1 bbrz02widening2 bbrz02widening3 bbrz02widening4 \
-	bbrz02widening5 bbrz02widening6 bbrz02widening7 bbrz02widening8 \
-	bbrz02widening9 bbrz02widening10 bbrz02widening11 bbrz02widening12 \
-	bbrz02widening13 bbrz02widening14 bbrz02widening15 bbrz02widening16 \
-	bbrz02widening17 bbrz02widening18 bbrz02widening19 \
+	bhrz03widening1 bhrz03widening2 bhrz03widening3 bhrz03widening4 \
+	bhrz03widening5 bhrz03widening6 bhrz03widening7 bhrz03widening8 \
+	bhrz03widening9 bhrz03widening10 bhrz03widening11 bhrz03widening12 \
+	bhrz03widening13 bhrz03widening14 bhrz03widening15 bhrz03widening16 \
+	bhrz03widening17 bhrz03widening18 bhrz03widening19 \
 	bounded1 \
 	bounds1 bounds2 \
 	boundingbox1 boundingbox2 boundingbox3 boundingbox4 \
@@ -88,7 +88,7 @@ ORIGINAL_TESTS = \
         intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 intersection8 \
 	intersection9 intersection10 intersection11 \
-	limitedbbrz02widening1 \
+	limitedbhrz03widening1 \
 	limitedh79widening1 limitedh79widening2 \
 	limitedh79widening3 limitedh79widening4 \
 	linearpartition1 linearpartition2 linearpartition3 \
@@ -146,10 +146,10 @@ DERIVED_TESTS = \
 	nnc_append1 nnc_append2 \
 	nnc_ascii_dump_load1 nnc_ascii_dump_load2 nnc_ascii_dump_load3 \
 	nnc_ascii_dump_load6 nnc_ascii_dump_load7 \
-	nnc_bbrz02widening1 nnc_bbrz02widening2 nnc_bbrz02widening3 \
-	nnc_bbrz02widening5 nnc_bbrz02widening6 \
-	nnc_bbrz02widening8 nnc_bbrz02widening9 \
-	nnc_bbrz02widening10 nnc_bbrz02widening11 nnc_bbrz02widening12 \
+	nnc_bhrz03widening1 nnc_bhrz03widening2 nnc_bhrz03widening3 \
+	nnc_bhrz03widening5 nnc_bhrz03widening6 \
+	nnc_bhrz03widening8 nnc_bhrz03widening9 \
+	nnc_bhrz03widening10 nnc_bhrz03widening11 nnc_bhrz03widening12 \
 	nnc_bounded1 \
 	nnc_boundingbox1 nnc_boundingbox3 \
 	nnc_bounds1 nnc_bounds2 \
@@ -171,7 +171,7 @@ DERIVED_TESTS = \
 	nnc_intersection4 nnc_intersection5 nnc_intersection6 \
 	nnc_intersection7 nnc_intersection8 nnc_intersection9 \
 	nnc_intersection10 nnc_intersection11 \
-	nnc_limitedbbrz02widening1 \
+	nnc_limitedbhrz03widening1 \
 	nnc_limitedh79widening1 nnc_limitedh79widening2 \
 	nnc_limitedh79widening3 nnc_limitedh79widening4 \
 	nnc_linearpartition1 nnc_linearpartition2 nnc_linearpartition3 \
@@ -296,25 +296,25 @@ ascii_dump_load5_SOURCES = ascii_dump_load5.cc files.cc
 ascii_dump_load6_SOURCES = ascii_dump_load6.cc files.cc
 ascii_dump_load7_SOURCES = ascii_dump_load7.cc files.cc
 
-bbrz02widening1_SOURCES = bbrz02widening1.cc
-bbrz02widening2_SOURCES = bbrz02widening2.cc
-bbrz02widening3_SOURCES = bbrz02widening3.cc
-bbrz02widening4_SOURCES = bbrz02widening4.cc
-bbrz02widening5_SOURCES = bbrz02widening5.cc
-bbrz02widening6_SOURCES = bbrz02widening6.cc
-bbrz02widening7_SOURCES = bbrz02widening7.cc
-bbrz02widening8_SOURCES = bbrz02widening8.cc
-bbrz02widening9_SOURCES = bbrz02widening9.cc
-bbrz02widening10_SOURCES = bbrz02widening10.cc
-bbrz02widening11_SOURCES = bbrz02widening11.cc
-bbrz02widening12_SOURCES = bbrz02widening12.cc
-bbrz02widening13_SOURCES = bbrz02widening13.cc
-bbrz02widening14_SOURCES = bbrz02widening14.cc
-bbrz02widening15_SOURCES = bbrz02widening15.cc
-bbrz02widening16_SOURCES = bbrz02widening16.cc
-bbrz02widening17_SOURCES = bbrz02widening17.cc
-bbrz02widening18_SOURCES = bbrz02widening18.cc
-bbrz02widening19_SOURCES = bbrz02widening19.cc
+bhrz03widening1_SOURCES = bhrz03widening1.cc
+bhrz03widening2_SOURCES = bhrz03widening2.cc
+bhrz03widening3_SOURCES = bhrz03widening3.cc
+bhrz03widening4_SOURCES = bhrz03widening4.cc
+bhrz03widening5_SOURCES = bhrz03widening5.cc
+bhrz03widening6_SOURCES = bhrz03widening6.cc
+bhrz03widening7_SOURCES = bhrz03widening7.cc
+bhrz03widening8_SOURCES = bhrz03widening8.cc
+bhrz03widening9_SOURCES = bhrz03widening9.cc
+bhrz03widening10_SOURCES = bhrz03widening10.cc
+bhrz03widening11_SOURCES = bhrz03widening11.cc
+bhrz03widening12_SOURCES = bhrz03widening12.cc
+bhrz03widening13_SOURCES = bhrz03widening13.cc
+bhrz03widening14_SOURCES = bhrz03widening14.cc
+bhrz03widening15_SOURCES = bhrz03widening15.cc
+bhrz03widening16_SOURCES = bhrz03widening16.cc
+bhrz03widening17_SOURCES = bhrz03widening17.cc
+bhrz03widening18_SOURCES = bhrz03widening18.cc
+bhrz03widening19_SOURCES = bhrz03widening19.cc
 
 bounded1_SOURCES = bounded1.cc
 
@@ -390,7 +390,7 @@ intersection9_SOURCES = intersection9.cc
 intersection10_SOURCES = intersection10.cc
 intersection11_SOURCES = intersection11.cc
 
-limitedbbrz02widening1_SOURCES = limitedbbrz02widening1.cc
+limitedbhrz03widening1_SOURCES = limitedbhrz03widening1.cc
 
 limitedh79widening1_SOURCES = limitedh79widening1.cc
 limitedh79widening2_SOURCES = limitedh79widening2.cc
@@ -642,26 +642,26 @@ nnc_ascii_dump_load6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_ascii_dump_load7_SOURCES = ascii_dump_load7.cc files.cc
 nnc_ascii_dump_load7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_bbrz02widening1_SOURCES = bbrz02widening1.cc
-nnc_bbrz02widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_bbrz02widening2_SOURCES = bbrz02widening2.cc
-nnc_bbrz02widening2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_bbrz02widening3_SOURCES = bbrz02widening3.cc
-nnc_bbrz02widening3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_bbrz02widening5_SOURCES = bbrz02widening5.cc
-nnc_bbrz02widening5_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_bbrz02widening6_SOURCES = bbrz02widening6.cc
-nnc_bbrz02widening6_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_bbrz02widening8_SOURCES = bbrz02widening8.cc
-nnc_bbrz02widening8_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_bbrz02widening9_SOURCES = bbrz02widening9.cc
-nnc_bbrz02widening9_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_bbrz02widening10_SOURCES = bbrz02widening10.cc
-nnc_bbrz02widening10_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_bbrz02widening11_SOURCES = bbrz02widening11.cc
-nnc_bbrz02widening11_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_bbrz02widening12_SOURCES = bbrz02widening12.cc
-nnc_bbrz02widening12_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bhrz03widening1_SOURCES = bhrz03widening1.cc
+nnc_bhrz03widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bhrz03widening2_SOURCES = bhrz03widening2.cc
+nnc_bhrz03widening2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bhrz03widening3_SOURCES = bhrz03widening3.cc
+nnc_bhrz03widening3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bhrz03widening5_SOURCES = bhrz03widening5.cc
+nnc_bhrz03widening5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bhrz03widening6_SOURCES = bhrz03widening6.cc
+nnc_bhrz03widening6_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bhrz03widening8_SOURCES = bhrz03widening8.cc
+nnc_bhrz03widening8_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bhrz03widening9_SOURCES = bhrz03widening9.cc
+nnc_bhrz03widening9_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bhrz03widening10_SOURCES = bhrz03widening10.cc
+nnc_bhrz03widening10_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bhrz03widening11_SOURCES = bhrz03widening11.cc
+nnc_bhrz03widening11_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bhrz03widening12_SOURCES = bhrz03widening12.cc
+nnc_bhrz03widening12_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bounded1_SOURCES = bounded1.cc
 nnc_bounded1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -772,8 +772,8 @@ nnc_intersection10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_intersection11_SOURCES = intersection11.cc
 nnc_intersection11_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_limitedbbrz02widening1_SOURCES = limitedbbrz02widening1.cc
-nnc_limitedbbrz02widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_limitedbhrz03widening1_SOURCES = limitedbhrz03widening1.cc
+nnc_limitedbhrz03widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_limitedh79widening1_SOURCES = limitedh79widening1.cc
 nnc_limitedh79widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)

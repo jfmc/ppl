@@ -63,7 +63,7 @@ H79_widening_assign(PowerSet<Determinate<PH> >& r,
 
 template <typename PH>
 void
-BBRZ02_widening_assign(PowerSet<Determinate<PH> >& r,
+BHRZ03_widening_assign(PowerSet<Determinate<PH> >& r,
 		       const PowerSet<Determinate<PH> >& q);
 
 namespace {
@@ -210,9 +210,9 @@ H79_widening_assign(PowerSet<Determinate<PH> >& r,
 
 template <typename PH>
 void
-BBRZ02_widening_assign(PowerSet<Determinate<PH> >& r,
+BHRZ03_widening_assign(PowerSet<Determinate<PH> >& r,
 		       const PowerSet<Determinate<PH> >& q) {
-  widening_assign(r, q, &PH::BBRZ02_widening_assign);
+  widening_assign(r, q, &PH::BHRZ03_widening_assign);
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -3568,7 +3568,7 @@ PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y,
 }
 
 bool
-PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
+PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 				       const Polyhedron& y) {
   assert(x.space_dimension() == y.space_dimension());
   assert(x.constraints_are_minimized());
@@ -3589,7 +3589,7 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
     y.space_dimension() - y.con_sys.num_equalities();
   if (x_dimension > y_dimension) {
 #if 0 //#ifndef NDEBUG
-    std::cout << "BBRZ02_stabilizing: number of dimensions" << std::endl;
+    std::cout << "BHRZ03_stabilizing: number of dimensions" << std::endl;
 #endif
     return true;
   }
@@ -3606,7 +3606,7 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
   dimension_type y_num_lines = y.gen_sys.num_lines();
   if (x_num_lines > y_num_lines) {
 #if 0 //#ifndef NDEBUG
-    std::cout << "BBRZ02_stabilizing: lineality space" << std::endl;
+    std::cout << "BHRZ03_stabilizing: lineality space" << std::endl;
 #endif
     return true;
   }
@@ -3626,7 +3626,7 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
       - y_num_lines - y.gen_sys.num_rays();
     if (x_num_points < y_num_points) {
 #if 0 //#ifndef NDEBUG
-      std::cout << "BBRZ02_stabilizing: number of points" << std::endl;
+      std::cout << "BHRZ03_stabilizing: number of points" << std::endl;
 #endif
       return true;
     }
@@ -3650,7 +3650,7 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
     // the number of closure points of `y', the chain is stabilizing.
     if (x_num_closure_points < y_num_closure_points) {
 #if 0 //#ifndef NDEBUG
-      std::cout << "BBRZ02_stabilizing: number of closure points"
+      std::cout << "BHRZ03_stabilizing: number of closure points"
 		<< std::endl;
 #endif
       return true;
@@ -3699,7 +3699,7 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
       break;
     if (x_num_rays[i] < y_num_rays[i]) {
 #if 0 //#ifndef NDEBUG
-      std::cout << "BBRZ02_stabilizing: zero-coord rays" << std::endl;
+      std::cout << "BHRZ03_stabilizing: zero-coord rays" << std::endl;
 #endif
       return true;
     }
@@ -3708,7 +3708,7 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
   // Hey, wait a minute! Are they equal?
   if (x == y) {
 #if 0 //#ifndef NDEBUG
-    std::cout << "BBRZ02_stabilizing: same polyhedra" << std::endl;
+    std::cout << "BHRZ03_stabilizing: same polyhedra" << std::endl;
 #endif
     return true;
   }
@@ -3718,15 +3718,15 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
 }
 
 void
-PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
+PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("BBRZ02_widening_assign(y)", y);
+    throw_topology_incompatible("BHRZ03_widening_assign(y)", y);
   // Dimension-compatibility check.
   dimension_type x_space_dim = x.space_dim;
   if (x_space_dim != y.space_dim)
-    throw_dimension_incompatible("BBRZ02_widening_assign(y)", y);
+    throw_dimension_incompatible("BHRZ03_widening_assign(y)", y);
 
 #ifndef NDEBUG
   {
@@ -3738,7 +3738,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 #endif
 
   // If any argument is zero-dimensional or empty,
-  // the BBRZ02-widening behaves as the identity function.
+  // the BHRZ03-widening behaves as the identity function.
   if (x_space_dim == 0 || x.is_empty() || y.is_empty())
     return;
 
@@ -3766,9 +3766,9 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   }
   
   // If the iteration is stabilizing, the resulting polyhedron is `x'.
-  if (is_BBRZ02_stabilizing(x, y)) {
+  if (is_BHRZ03_stabilizing(x, y)) {
 #if 0 //#ifndef NDEBUG
-    std::cout << "BBRZ02: immediately stabilizing" << std::endl;
+    std::cout << "BHRZ03: immediately stabilizing" << std::endl;
 #endif
     assert(OK());
     return;
@@ -3922,9 +3922,9 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 
   // Check for stabilization.
   x.minimize();
-  if (is_BBRZ02_stabilizing(x, y)) {
+  if (is_BHRZ03_stabilizing(x, y)) {
 #if 0 //#ifndef NDEBUG
-    std::cout << "BBRZ02: stabilizing on 1st technique" << std::endl;
+    std::cout << "BHRZ03: stabilizing on 1st technique" << std::endl;
 #endif
     assert(OK(true));
     return;
@@ -4049,9 +4049,9 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
     x.add_generators_and_minimize(avg_ray);
   
     // Check for stabilization.
-    if (is_BBRZ02_stabilizing(x, y)) {
+    if (is_BHRZ03_stabilizing(x, y)) {
 #if 0 //#ifndef NDEBUG
-      std::cout << "BBRZ02: stabilizing on the first case of 2nd technique"
+      std::cout << "BHRZ03: stabilizing on the first case of 2nd technique"
 		<< std::endl;
 #endif
       assert(OK(true));
@@ -4066,9 +4066,9 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   x.add_generators_and_minimize(valid_rays);
 
   // Check for stabilization.
-  if (is_BBRZ02_stabilizing(x, y)) {
+  if (is_BHRZ03_stabilizing(x, y)) {
 #if 0 //#ifndef NDEBUG
-    std::cout << "BBRZ02: stabilizing on the second case of 2nd technique"
+    std::cout << "BHRZ03: stabilizing on the second case of 2nd technique"
 	      << std::endl;
 #endif
     assert(OK(true));
@@ -4175,9 +4175,9 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   x.add_generators_and_minimize(valid_modified_rays);
   
   // Check for stabilization.
-  if (is_BBRZ02_stabilizing(x, y)) {
+  if (is_BHRZ03_stabilizing(x, y)) {
 #if 0 //#ifndef NDEBUG
-    std::cout << "BBRZ02: stabilizing on 3rd technique" << std::endl;
+    std::cout << "BHRZ03: stabilizing on 3rd technique" << std::endl;
 #endif
     assert(OK(true));
     return;
@@ -4192,19 +4192,19 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   std::swap(x, ph);
   // Check for stabilization.
   x.minimize();
-  if (is_BBRZ02_stabilizing(x, y)) {
+  if (is_BHRZ03_stabilizing(x, y)) {
 #if 0 //#ifndef NDEBUG
-    std::cout << "BBRZ02: stabilizing on H79 widening" << std::endl;
+    std::cout << "BHRZ03: stabilizing on H79 widening" << std::endl;
 #endif
     assert(OK(true));
     return;
   }
 
 #if 0 //#ifndef NDEBUG
-  std::cout << "BBRZ02: NOT stabilizing!" << std::endl;
+  std::cout << "BHRZ03: NOT stabilizing!" << std::endl;
 #endif
   // FIXME: here we should abort the computation, because we have
-  // found a chain that is not stabilizing under the BBRZ02 widening.
+  // found a chain that is not stabilizing under the BHRZ03 widening.
   // Since we are still developing and debugging this operator,
   // for the moment we simply return the input polyhedron `x'.
   x = x_backup;
@@ -4212,9 +4212,9 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 }
 
 void
-PPL::Polyhedron::limited_BBRZ02_widening_assign(const Polyhedron& y,
+PPL::Polyhedron::limited_BHRZ03_widening_assign(const Polyhedron& y,
 						ConSys& cs) {
-  BBRZ02_widening_assign(y);
+  BHRZ03_widening_assign(y);
   add_constraints(cs);
 }
 

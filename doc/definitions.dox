@@ -752,7 +752,7 @@ adding \f$g\f$ to any generator system representing \f$\cP\f$
 does not change \f$\cP\f$.
 
 \anchor H79_widening
-\anchor BBRZ02_widening
+\anchor BHRZ03_widening
 <B>Widening Operators</B>
 
 The library provides widening operators for the domain of

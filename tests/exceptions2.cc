@@ -881,10 +881,10 @@ error28() {
 
   try {
     // This is an invalid use of the function
-    // `BBRZ02_widening_assign': it is illegal to
+    // `BHRZ03_widening_assign': it is illegal to
     // apply this function to a non-closed polyhedron and
     // a non-closed polyhedron.
-    ph2.BBRZ02_widening_assign(ph1);
+    ph2.BHRZ03_widening_assign(ph1);
   }
   catch(invalid_argument& e) {
 #if NOISY

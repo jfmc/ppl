@@ -1,4 +1,4 @@
-/* Test Polyhedron::BBRZ02_widening_assign().
+/* Test Polyhedron::BHRZ03_widening_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -36,39 +36,50 @@ main() {
 
   Variable A(0);
   Variable B(1);
-  Variable C(2);
 
   GenSys gs1;
-  gs1.insert(point(A));
-  gs1.insert(closure_point());
-  gs1.insert(ray(A));
-  gs1.insert(ray(B));
-  gs1.insert(ray(A + B + 2*C));
-  NNC_Polyhedron ph1(gs1);
+  gs1.insert(point());
+  gs1.insert(point(6*A - B));
+  gs1.insert(point(6*B));
+  gs1.insert(point(A + 10*B));
+  gs1.insert(ray(A + 2*B));
+  C_Polyhedron ph1(gs1);
 
   GenSys gs2;
-  gs2.insert(point(A));
-  gs2.insert(closure_point());
-  gs2.insert(ray(A));
-  gs2.insert(ray(B));
-  gs2.insert(ray(A + B + C));
-  NNC_Polyhedron ph2(gs2);
+  gs2.insert(point());
+  gs2.insert(point(6*A - B));
+  gs2.insert(point(6*B));
+  gs2.insert(point(A + 10*B));
+  gs2.insert(ray(A + B));
+  gs2.insert(ray(A + 3*B));
+  gs2.insert(point(-4*A + 3*B, 13));
+  gs2.insert(point(-2*A + B, 8));
+  gs2.insert(point(-A + 12*B, 4));
+
+  C_Polyhedron ph2(gs2);
 
 #if NOISY
+  print_generators(ph1, "*** ph1 ***");
   print_constraints(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
   print_constraints(ph2, "*** ph2 ***");
 #endif
 
-  ph1.BBRZ02_widening_assign(ph2);
+  ph2.BHRZ03_widening_assign(ph1);
+  
+  // This is the result of applying H79.
+  GenSys gs_known_result;
+  gs_known_result.insert(point(-36*A + 6*B, 25));
+  gs_known_result.insert(ray(A + 4*B));
+  gs_known_result.insert(ray(6*A - B));
 
-  NNC_Polyhedron known_result(3);
-  known_result.add_constraint(4*A + 6*B - 5*C > 0);
-  known_result.add_constraint(C >= 0);
+  C_Polyhedron known_result(gs_known_result);
 
-  int retval = (ph1 == known_result) ? 0 : 1;
+  int retval = (ph2 == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph1, "*** After BBRZ02_widening_assign ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_constraints(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   return retval;

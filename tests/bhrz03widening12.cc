@@ -1,4 +1,4 @@
-/* Test Polyhedron::BBRZ02_widening_assign(): the third technique
+/* Test Polyhedron::BHRZ03_widening_assign(): the third technique
    of this function is tested.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -53,7 +53,7 @@ test1() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
+  ph2.BHRZ03_widening_assign(ph1);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);
@@ -62,7 +62,7 @@ test1() {
   bool equal = (ph2 == known_result);
 
 #if NOISY
-  print_generators(ph2, "*** After ph2.BBRZ02_widening_assign(ph1) ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   if (!equal)
@@ -91,7 +91,7 @@ test2() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
+  ph2.BHRZ03_widening_assign(ph1);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A <= 0);
@@ -100,7 +100,7 @@ test2() {
   bool equal = (ph2 == known_result);
 
 #if NOISY
-  print_generators(ph2, "*** After ph2.BBRZ02_widening_assign(ph1) ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   if (!equal)
@@ -129,7 +129,7 @@ test3() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
+  ph2.BHRZ03_widening_assign(ph1);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A <= 0);
@@ -138,7 +138,7 @@ test3() {
   bool equal = (ph2 == known_result);
 
 #if NOISY
-  print_generators(ph2, "*** After ph2.BBRZ02_widening_assign(ph1) ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   if (!equal)
@@ -167,7 +167,7 @@ test4() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
+  ph2.BHRZ03_widening_assign(ph1);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);
@@ -176,7 +176,7 @@ test4() {
   bool equal = (ph2 == known_result);
 
 #if NOISY
-  print_generators(ph2, "*** After ph2.BBRZ02_widening_assign(ph1) ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   if (!equal)
@@ -205,7 +205,7 @@ test5() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
+  ph2.BHRZ03_widening_assign(ph1);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);
@@ -214,7 +214,7 @@ test5() {
   bool equal = (ph2 == known_result);
 
 #if NOISY
-  print_generators(ph2, "*** After ph2.BBRZ02_widening_assign(ph1) ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   if (!equal)
@@ -243,7 +243,7 @@ test6() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
+  ph2.BHRZ03_widening_assign(ph1);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A <= 0);
@@ -252,7 +252,7 @@ test6() {
   bool equal = (ph2 == known_result);
 
 #if NOISY
-  print_generators(ph2, "*** After ph2.BBRZ02_widening_assign(ph1) ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   if (!equal)
@@ -281,7 +281,7 @@ test7() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
+  ph2.BHRZ03_widening_assign(ph1);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A <= 0);
@@ -290,7 +290,7 @@ test7() {
   bool equal = (ph2 == known_result);
 
 #if NOISY
-  print_generators(ph2, "*** After ph2.BBRZ02_widening_assign(ph1) ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   if (!equal)
@@ -319,7 +319,7 @@ test8() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
+  ph2.BHRZ03_widening_assign(ph1);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);
@@ -328,7 +328,7 @@ test8() {
   bool equal = (ph2 == known_result);
 
 #if NOISY
-  print_generators(ph2, "*** After ph2.BBRZ02_widening_assign(ph1) ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   if (!equal)
@@ -357,7 +357,7 @@ test9() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
+  ph2.BHRZ03_widening_assign(ph1);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(B >= 0);
@@ -365,7 +365,7 @@ test9() {
   bool equal = (ph2 == known_result);
 
 #if NOISY
-  print_generators(ph2, "*** After ph2.BBRZ02_widening_assign(ph1) ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   if (!equal)
@@ -394,7 +394,7 @@ test10() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
+  ph2.BHRZ03_widening_assign(ph1);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A <= 0);
@@ -402,7 +402,7 @@ test10() {
   bool equal = (ph2 == known_result);
 
 #if NOISY
-  print_generators(ph2, "*** After ph2.BBRZ02_widening_assign(ph1) ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   if (!equal)
@@ -431,7 +431,7 @@ test11() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
+  ph2.BHRZ03_widening_assign(ph1);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(B <= 0);
@@ -439,7 +439,7 @@ test11() {
   bool equal = (ph2 == known_result);
 
 #if NOISY
-  print_generators(ph2, "*** After ph2.BBRZ02_widening_assign(ph1) ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   if (!equal)
@@ -468,7 +468,7 @@ test12() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
+  ph2.BHRZ03_widening_assign(ph1);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);
@@ -476,7 +476,7 @@ test12() {
   bool equal = (ph2 == known_result);
 
 #if NOISY
-  print_generators(ph2, "*** After ph2.BBRZ02_widening_assign(ph1) ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   if (!equal)
@@ -505,7 +505,7 @@ test13() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
+  ph2.BHRZ03_widening_assign(ph1);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(B >= 0);
@@ -513,7 +513,7 @@ test13() {
   bool equal = (ph2 == known_result);
 
 #if NOISY
-  print_generators(ph2, "*** After ph2.BBRZ02_widening_assign(ph1) ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   if (!equal)
@@ -542,7 +542,7 @@ test14() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
+  ph2.BHRZ03_widening_assign(ph1);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A <= 0);
@@ -550,7 +550,7 @@ test14() {
   bool equal = (ph2 == known_result);
 
 #if NOISY
-  print_generators(ph2, "*** After ph2.BBRZ02_widening_assign(ph1) ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   if (!equal)
@@ -579,7 +579,7 @@ test15() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
+  ph2.BHRZ03_widening_assign(ph1);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(B <= 0);
@@ -587,7 +587,7 @@ test15() {
   bool equal = (ph2 == known_result);
 
 #if NOISY
-  print_generators(ph2, "*** After ph2.BBRZ02_widening_assign(ph1) ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   if (!equal)
@@ -616,7 +616,7 @@ test16() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
+  ph2.BHRZ03_widening_assign(ph1);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);
@@ -624,7 +624,7 @@ test16() {
   bool equal = (ph2 == known_result);
 
 #if NOISY
-  print_generators(ph2, "*** After ph2.BBRZ02_widening_assign(ph1) ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 #endif
 
   if (!equal)

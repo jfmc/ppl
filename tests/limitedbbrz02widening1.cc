@@ -1,4 +1,4 @@
-/* Test Polyhedron::limited_BBRZ02_widening_assign().
+/* Test Polyhedron::limited_BHRZ03_widening_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -59,7 +59,7 @@ main() {
   print_constraints(cs, "*** cs ***");
 #endif
 
-  ph2.limited_BBRZ02_widening_assign(ph1, cs);
+  ph2.limited_BHRZ03_widening_assign(ph1, cs);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(B >= 0);
@@ -70,7 +70,7 @@ main() {
   int retval = (ph2 == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph2, "*** After ph2.limited_BBRZ02_widening(ph1, cs)***");
+  print_constraints(ph2, "*** After ph2.limited_BHRZ03_widening(ph1, cs)***");
 #endif
   
   return retval;

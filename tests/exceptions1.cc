@@ -992,10 +992,10 @@ error37() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::BBRZ02_widening_assign(ph2): it is illegal to apply
+    // C_Polyhedron::BHRZ03_widening_assign(ph2): it is illegal to apply
     // this function to two polyhedra that are not dimensional
     // compatible.
-    ph2.BBRZ02_widening_assign(ph1);
+    ph2.BHRZ03_widening_assign(ph1);
   }
   catch (invalid_argument& e) {
 #if NOISY
