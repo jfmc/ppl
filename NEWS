@@ -4,7 +4,7 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.4 (released date unknown)
+NEWS for version 0.4 (released on July 1, 2002)
 --------------------------------------------------------------------------
 
 New and Changed Features
@@ -37,10 +37,16 @@ o  New method Polyhedron::time_elapse_assign(const Polyhedron&):
 o  New method Polyhedron::is_bounded(): it returns true if and only
    if the polyhedron is bounded, i.e., finite.
 
-o  The library no longer calls abort(): appropriate exceptions
-   are always thrown instead.
+o  New methods Polyhedron::bounds_from_above(const LinExpression& e)
+   and Polyhedron::bounds_from_above(const LinExpression& e): they
+   return true if and only if the linear expression `e' is bounded
+   from above/below in the polyhedron.
 
-o  New, complete C interface.
+o  New, complete C interface.  As a demo, a toy solver for pure linear
+   programming problems has been implemented using this interface.
+   Notice that solving linear programming problems is completely
+   outside the scope of the library.  As a consequence the toy provided
+   as a demo is only a toy provided as a demo.
 
 o  Revised and completed Prolog interface:
    - now supporting GNU Prolog, SICStus Prolog, SWI Prolog and YAP.
@@ -101,6 +107,10 @@ o  The methods Polyhedron::widening_assign() and
      N. Halbwachs, Y.-E. Proy, and P. Roumanoff.
      Verification of real-time systems using linear relation analysis.
      Formal Methods in System Design, 11(2):157-185, 1997.
+
+o  The library no longer calls abort(): appropriate exceptions
+   are always thrown instead.
+
 
 Bugfixes
 ========
