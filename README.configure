@@ -30,7 +30,7 @@ installation process and describes the basic options of the
 `configure' script.  For a compact summary of all the available
 configuration options, run the command
 
-   $ ./configure --help
+  $ ./configure --help
 
 The PPL-specific aspects of the configuration, compilation and
 installation process are discussed in the following sections.
@@ -54,14 +54,14 @@ a C++ compiler implementing a different ABI than the compiler you
 will use to compile the PPL, the only reliable solution to points
 (1), (2) and (3) above is to visit GMP's home page at
 
-    http://www.swox.com/gmp/
+  http://www.swox.com/gmp/
 
 and download the last available version.  Then decide where to install
 it and call this place in your file system <GMP prefix>.  Then, unless
 you have special needs, you can invoke the GMP's configure script with
 the options
 
-    --prefix=/usr/local --enable-cxx
+  --prefix=/usr/local --enable-cxx
 
 If the C++ compiler you will use to compile the PPL is not the default
 on your system then, in order to satisfy point (3) above, you should
@@ -92,11 +92,41 @@ runtime (setting the environment variable `LD_LIBRARY_PATH' to "<GMP
 prefix>/lib:$LD_LIBRARY_PATH" is the most commonly used solution).
 
 
-Using the Right C++ and C Compilers
+Using the Right C and C++ Compilers
 -----------------------------------
 
-- Explain how to compile with Comeau C/C++ compiler: first compile GMP
-  configuring it with a command like
+The configure script of the PPL, as you can see by using its `--help'
+option, besides recognizing `CC', `CXX', `CFLAGS', `CXXFLAGS' and
+other environment variables, provides four switches with which you can
+select the compilers and compilers' options to use for building the
+library.  These switches are
+
+  --with-cc=xxx           use XXX as the C compiler
+  --with-cxx=xxx          use XXX as the C++ compiler
+  --with-cflags=xxx       add XXX to the options for the C compiler
+  --with-cxxflags=xxx     add XXX to the options for the C++ compiler
+ 
+Let us take the occasion to stress, once again, the fact that you
+_must_ use the same C++ compiler to compile the C++ interface of GMP,
+the PPL and your application, if you use the C++ interface of the PPL.
+
+Here is an example with the Intel C/C++ compiler version 8.0.  Assuming
+you have configure GMP with a command like
+
+  CC=icc CXX=icpc /path/to/gmp-4.1.3/configure --enable-cxx \
+        --prefix=/opt/intel_cc_80
+
+then you can configure the PPL with a command like
+
+  /path/to/ppl-x.y/configure --with-cxx=icpc --with-cc=icc \
+    --with-cxxflags="-w2 -wd177,193,279,383,444,981,1418" \
+    --with-libgmpxx-prefix=/opt/intel_cc_80
+
+Notice that the `--with-cxxflags' option is absolutely non essential
+here and is only included to show how extra compiler options can be
+passed to the configure script.
+
+
 
     CXX=como /path/to/gmp-4.1.2/configure --enable-cxx \
         --disable-shared --prefix=/usr/local/lib/como433/local 
@@ -105,19 +135,6 @@ Using the Right C++ and C Compilers
         --with-cxxflags="--remarks --strict --long_long \
         --display_error_number --diag_suppress 193,236,340,401,679" \
         --disable-shared --with-libgmpxx-prefix=/usr/local/lib/como433/local
-
-- Explain how to compile with Intel C/C++ compiler: first compile GMP
-  configuring it with a command like
-
-    CC=icc CXX=icpc /usr/local/distrib/gmp-4.1.2/configure --enable-cxx \
-        --prefix=/opt/intel_cc_80
-
-    /path/to/ppl/configure --with-cxx=icpc --with-cc=icc \
-	--with-cxxflags="-w2 -wd177,193,279,383,444,981,1418 -Xc" \
-	--with-libgmpxx-prefix=-I/opt/intel_cc_80/lib --prefix=/opt/intel_cc_80
-
-
-
 
 
 --------
