@@ -57,7 +57,7 @@ TESTS = addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
         permute \
 	randchull1 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
-	relations7 relations8 \
+	relations7 relations8 relations9 \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
 	smm1 \
 	universe1 universe2 universe3 universe4 universe5
@@ -135,6 +135,7 @@ relations5_SOURCES = relations5.cc
 relations6_SOURCES = relations6.cc
 relations7_SOURCES = relations7.cc
 relations8_SOURCES = relations8.cc
+relations9_SOURCES = relations9.cc
 
 randchull1_SOURCES = randchull1.cc
 
