@@ -137,4 +137,4 @@ operator<<(std::ostream& s, const Determinate<PH>& x) {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // _Polyhedron_inlines_hh
+#endif // _Determinate_inlines_hh
