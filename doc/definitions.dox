@@ -415,7 +415,7 @@ The following (space) <EM>dimension-compatibility</EM> rules are defined:
 - the polyhedra are dimension-compatible if and only if they have
   the same space dimension;
 - the constraint
-  \f$\langle \vect{a}, \vect{x} \rangle \mathord{\relop} b\f$
+  \f$\langle \vect{a}, \vect{x} \rangle \relop b\f$
   where \f$\mathord{\relop} \in \{ =, \geq, > \}\f$
   and \f$\vect{a}, \vect{x} \in \Rset^m\f$, is dimension-compatible
   with a polyhedron having space dimension \f$n\f$
@@ -499,7 +499,7 @@ and \f$\cC\f$ an arbitrary constraint system representing \f$\cP\f$.
 Let
 \f$
   c = \bigl(
-        \langle \vect{a}, \vect{x} \rangle \mathord{\relop} b
+        \langle \vect{a}, \vect{x} \rangle \relop b
       \bigr)
 \f$,
 be a constraint in \f$\Rset^n\f$
@@ -563,11 +563,10 @@ in <EM>Formal Methods in System Design</EM> 11(2):157--185, 1997.
 
 An <EM>interval</EM> in \f$\Rset\f$ is a pair of <EM>bounds</EM>,
 called <EM>lower</EM> and <EM>upper</EM>.
-Each bound can be <EM>closed</EM> and <EM>bounded</EM>,
-<EM>open</EM> and <EM>bounded</EM>
-or  <EM>open</EM> and <EM>unbounded</EM>.
+Each bound can be either (1) <EM>closed and bounded</EM>,
+(2) <EM>open and bounded</EM>, or
+(3) <EM>open and unbounded</EM>.
 If the bound is <EM>bounded</EM>, then it has a value in \f$\Rset\f$.
-
 An \f$n\f$-dimensional <EM>box</EM> \f$\cB\f$ in \f$\Rset^n\f$
 is a sequence of \f$n\f$ intervals in \f$\Rset\f$.
 
@@ -576,36 +575,35 @@ if \f$\cP\f$
 is described by a constraint system in \f$\Rset^n\f$ that
 consists of one constraint for each bounded bound (lower and upper)
 in an interval in \f$\cB\f$:
-Letting \f$\vect{i} = (0, \ldots, 1, \ldots, 0)\f$ be the vector in
+Letting \f$\vect{e}_i = (0, \ldots, 1, \ldots, 0)\f$ be the vector in
 \f$\Rset^n\f$ with 1 in the \f$i\f$'th position
 and zeros in every other position;
 if the lower bound of the \f$i\f$'th interval in \f$\cB\f$
- is bounded, the corresponding constraint is defined as 
-\f$\langle\vect{i},\vect{x}\rangle \mathord{\relop} b\f$ where
-\f$b\f$ is the value of the bound and \f$\mathord{\relop}\f$ is
-\f$\geq\f$ if the bound is lower and is closed
-\f$>\f$ if  the bound is lower and is open.
+is bounded, the corresponding constraint is defined as 
+\f$\langle \vect{e}_i, \vect{x} \rangle \relop b\f$,
+where \f$b\f$ is the value of the bound and
+\f$\mathord{\relop}\f$ is \f$\mathord{\geq}\f$ if the lower bound is closed,
+\f$\mathord{>}\f$ if the lower bound is open.
 Similarly,
 if the upper bound of the \f$i\f$'th interval in \f$\cB\f$ is bounded,
-the corresponding constraint is defined as 
-\f$\langle\vect{i},\vect{x}\rangle \mathord{\relop} b\f$ where
-\f$b\f$ is the value of the bound and \f$\mathord{\relop}\f$ is
-\f$\leq\f$ if it is an upper closed bound and
-\f$<\f$ if it is an upper open bound. 
+the corresponding constraint is defined as
+\f$\langle\vect{e}_i,\vect{x}\rangle \relop b\f$,
+where \f$b\f$ is the value of the bound and
+\f$\mathord{\relop}\f$ is \f$\mathord{\leq}\f$ if the upper bound is closed,
+\f$\mathord{<}\f$ if the upper bound is open. 
 
 If every bound in the intervals 
-in a box \f$\cB\f$ is either <EM>closed</EM> and <EM>bounded</EM>
-or <EM>open</EM> and <EM>unbounded</EM>, then
+in a box \f$\cB\f$ is either closed and bounded
+or open and unbounded, then
 \f$\cB\f$ represents a closed polyhedron.
 
 The <EM>bounding box</EM> of an NNC polyhedron \f$\cP\f$ is
 the smallest \f$n\f$-dimensional box
 containing \f$\cP\f$. 
 
-The library provides operations for computing the bounding box of an
-NNC polyhedron and conversely,
-for obtaining the NNC polyhedron representing a given bounding
-box.
+The library provides operations for computing the bounding box
+of an NNC polyhedron and conversely, for obtaining the NNC polyhedron
+representing a given bounding box.
 
 
 \if Implementation_Info
