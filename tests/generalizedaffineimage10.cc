@@ -122,9 +122,73 @@ test3() {
 
 #if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
-		    "(A - C, PPL_LE, B + 3) ***");
+		    "(A - C, PPL_LE, B - 1) ***");
   print_constraints(ph, "*** After ph.generalized_affine_image"
-		    "(A - C, PPL_LE, B + 3) ***");
+		    "(A - C, PPL_LE, B - 1) ***");
+#endif
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test4() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  NNC_Polyhedron ph(3);
+  ph.add_constraint(A - C == 0);
+  ph.add_constraint(A >= B);
+
+#if NOISY
+  print_constraints(ph, "*** ph ***");
+#endif
+
+  ph.generalized_affine_image(A - 2*C, PPL_LT, B - 1);
+
+  NNC_Polyhedron known_result(ph);
+  known_result.add_constraint(A - B - 2*C < 1);
+  
+  bool ok = (ph == known_result);
+
+#if NOISY
+  print_constraints(ph, "*** After ph.generalized_affine_image"
+		    "(A - 2*C, PPL_LT, B - 1) ***");
+  print_constraints(ph, "*** After ph.generalized_affine_image"
+		    "(A - 2*C, PPL_LT, B - 1) ***");
+#endif
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test5() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  NNC_Polyhedron ph(3);
+  ph.add_constraint(A - 2*C == 0);
+  ph.add_constraint(A > B - 2);
+
+#if NOISY
+  print_constraints(ph, "*** ph ***");
+#endif
+
+  ph.generalized_affine_image(A - 2*C + 3, PPL_GT, B - 1);
+
+  NNC_Polyhedron known_result(ph);
+  known_result.add_constraint(A - B - 2*C + 4 > 0);
+  
+  bool ok = (ph == known_result);
+
+#if NOISY
+  print_constraints(ph, "*** After ph.generalized_affine_image"
+		    "(A - 2*C + 3, PPL_GT, B - 1) ***");
+  print_constraints(ph, "*** After ph.generalized_affine_image"
+		    "(A - 2*C + 3, PPL_GT, B - 1) ***");
 #endif
 
   if (!ok)
@@ -138,6 +202,8 @@ main() {
   test1();
   test2();
   test3();
+  test4();
+  test5();
 
   return 0;
 }
