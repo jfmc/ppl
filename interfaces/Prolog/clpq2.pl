@@ -45,50 +45,52 @@ solve_query(Goals, VN, PolysOut) :-
     freezevars(Goals, FrozeGoals, Dims, _, VarNames, _),
     % The initial polyhedron is initialised with
     % "Dims" dimensions, the number of variables in "Goals".
-    ppl_new_Polyhedron_from_dimension(c, Dims, Poly),
+    % We use the NNC topology so that we can handle strict constraints.
+    Topology = nnc,
+    ppl_new_Polyhedron_from_dimension(Topology, Dims, Poly),
     % Try to reduce "Goals".
-    solve(FrozeGoals, [Poly], PolysOut, VarNames),
+    solve(Topology, FrozeGoals, [Poly], PolysOut, VarNames),
     % Use the last polyhedron PolyOut that has been added to the list
     % for generating the resulting set of constraints.
     PolysOut = [PolyOut|_],
     % First project onto the variables of interest
     % before getting the constraints.
-    ppl_new_Polyhedron_from_Polyhedron(c, PolyOut, c, Q),
+    ppl_new_Polyhedron_from_Polyhedron(Topology, PolyOut, Topology, Q),
     ppl_Polyhedron_remove_higher_dimensions(Q, Dims),
     ppl_Polyhedron_get_constraints(Q, CS),
     % Print the result.
     write_constraints(CS, FrozeVN),
     ppl_delete_Polyhedron(Q).
 
-solve(true, Polys, Polys, _VarNames) :-
+solve(_, true, Polys, Polys, _VarNames) :-
     % If the goal is true, we can return the input list of
     % non-empty polyhedron as output.
     % The head of the list will contain the solution to the query.
     !.
 
-solve((A, B), PolysIn, PolysOut, VarNames) :-
+solve(T, (A, B), PolysIn, PolysOut, VarNames) :-
     !,
     % conjunction is solved using the output list of non-empty
     % polyhedra from the first component for input to the second.
-    solve(A, PolysIn, Polys1, VarNames),
-    solve(B, Polys1, PolysOut, VarNames).
+    solve(T, A, PolysIn, Polys1, VarNames),
+    solve(T, B, Polys1, PolysOut, VarNames).
 
-solve((A; B), PolysIn, PolysOut, VarNames) :-
+solve(T, (A; B), PolysIn, PolysOut, VarNames) :-
     % disjunction is dealt with by making a copy of the polyhedron
     % before starting each branch.
     PolysIn = [Poly|_],
     ((ppl_copy_polyhedron(Poly,Q),
-    solve(A, [Q|PolysIn], PolysOut, VarNames));
+    solve(T, A, [Q|PolysIn], PolysOut, VarNames));
     (ppl_copy_polyhedron(Poly,Q),
-    solve(B, [Q|PolysIn], PolysOut, VarNames))).
+    solve(T, B, [Q|PolysIn], PolysOut, VarNames))).
 
-solve({}, Polys, Polys, _VarNames) :-
+solve(_, {}, Polys, Polys, _VarNames) :-
     % If the goal is an empty set of constraints, then this is
     % the same as for 'true' and we can return the input list of
     % non-empty polyhedron as output.
     !.
 
-solve({ Constraints }, [Poly|Polys], [Poly|Polys], _VarNames) :-
+solve(_, { Constraints }, [Poly|Polys], [Poly|Polys], _VarNames) :-
     !,
     % Solve the constraints using the constraint solver.
     constraints2list(Constraints, ConstraintsList),
@@ -106,7 +108,7 @@ solve({ Constraints }, [Poly|Polys], [Poly|Polys], _VarNames) :-
 % Built-ins may be added here.
 
 % read/1
-solve(read(N), Polys, Polys, VarNames) :-
+solve(_, read(N), Polys, Polys, VarNames) :-
     Polys = [Poly|_],
     meltvars(N, MeltN, VarNames),
     read(MeltN),
@@ -130,13 +132,13 @@ solve(read(N), Polys, Polys, VarNames) :-
     ).
 
 % write/1
-solve(write(Message), Polys, Polys, _VarNames) :-
+solve(_, write(Message), Polys, Polys, _VarNames) :-
     write(Message).
 % nl/0
-solve(nl, Polys, Polys, _VarNames) :-
+solve(_, nl, Polys, Polys, _VarNames) :-
     nl.
 
-solve(Atom, [Poly|Polys], PolysOut, VarNames) :-
+solve(Topology, Atom, [Poly|Polys], PolysOut, VarNames) :-
     % Here is a choicepoint: possibly different clauses
     % will be selected on backtracking.
     % NOTE: we may fail to find (another) clause,
@@ -144,7 +146,7 @@ solve(Atom, [Poly|Polys], PolysOut, VarNames) :-
     select_clause(Atom, Head, Body),
 
     % Copy the current polyhedron and work on the copy.
-    ppl_new_Polyhedron_from_Polyhedron(c, Poly, c, PolyCopy),
+    ppl_new_Polyhedron_from_Polyhedron(Topology, Poly, Topology, PolyCopy),
 
     % Rename the selected clause apart and extend the polyhedron.
     ppl_Polyhedron_space_dimension(PolyCopy, Dims),
@@ -161,7 +163,7 @@ solve(Atom, [Poly|Polys], PolysOut, VarNames) :-
     ->
     % If satisfiable, try to solve the body.
     % The input list of used polyhedra is augmented with the new copy.
-      solve(Body, [PolyCopy,Poly|Polys], PolysOut, VarNames)
+      solve(Topology, Body, [PolyCopy,Poly|Polys], PolysOut, VarNames)
     ;
     % if the parameter passing constraints are unsatisfiable,
     % first throw the empty polyhedron away and then fail.
@@ -461,6 +463,18 @@ write_constraint(Expr >= Num, VariableNames) :-
 	write(Num)
     ).
 
+write_constraint(Expr > Num, VariableNames) :-
+    (Num < 0 ->
+	negate_expr(Expr, NegExpr),
+	write_expr(NegExpr, VariableNames),
+	write(' < '),
+	NegNum is -Num,
+        write(NegNum)
+    ;
+	write_expr(Expr, VariableNames),
+	write(' > '),
+	write(Num)
+    ).
 write_constraints([], _VariableNames).
 write_constraints([C|CS], VariableNames) :-
     (write_constraint(C, VariableNames)
