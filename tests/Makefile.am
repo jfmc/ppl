@@ -82,8 +82,8 @@ ORIGINAL_TESTS = \
 	limitedh79widening3 \
 	mc91 \
 	memory1 \
-	minconstraints1 minconstraints2 \
-	mingenerators1 mingenerators2 \
+	minconstraints1 minconstraints2 minconstraints3 \
+	mingenerators1 mingenerators2 mingenerators3 \
 	onepoint \
         permute \
 	polydifference1 polydifference2 polydifference3 polydifference4 \
@@ -322,9 +322,11 @@ mc91_SOURCES = mc91.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
 minconstraints2_SOURCES = minconstraints2.cc
+minconstraints3_SOURCES = minconstraints3.cc
 
 mingenerators1_SOURCES = mingenerators1.cc
 mingenerators2_SOURCES = mingenerators2.cc
+mingenerators3_SOURCES = mingenerators3.cc
 
 onepoint_SOURCES = onepoint.cc
 
