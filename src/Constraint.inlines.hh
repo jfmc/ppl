@@ -146,7 +146,12 @@ operator>(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff;
   // Setting the \epsilon coefficient to -1.
   // NOTE: this also enforces normalization.
-  diff -= Variable(diff.space_dimension());
+  size_t e1_dim = e1.space_dimension();
+  size_t e2_dim = e2.space_dimension();
+  if (e1_dim > e2_dim)
+    diff -= Variable(e1_dim);
+  else
+    diff -= Variable(e2_dim);
   diff += e1;
   diff -= e2;
 
