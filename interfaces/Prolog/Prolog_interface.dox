@@ -717,24 +717,22 @@ referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
    <CODE>Handle_1</CODE> is included in but not
    equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_equals_Polyhedron, 2(+Handle_1, +Handle_2)</CODE></H2>
+<H2><CODE>ppl_Polyhedron_equals_Polyhedron(+Handle_1, +Handle_2)</CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle_1</CODE> is
    equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
+<H2><CODE>ppl_Polyhedron_is_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
+    </CODE></H2>
+
+   Succeeds if and only if the polyhedron referenced by
+   <CODE>Handle_1</CODE> is disjoint from
+   the polyhedron referenced by <CODE>Handle_2</CODE>.
+
 <H2><CODE>ppl_Polyhedron_get_bounding_box(+Handle,
                                           +Complexity,
-            	                          -Box)</CODE></H2>
-
-   Succeeds if and only if the bounding box
-   of the polyhedron referenced by
-   <CODE>Handle</CODE>
-   unifies with the box defined by <CODE>Box</CODE>.
-   E.g.,
-\code
-   ?- A = '$VAR'(0), B = '$VAR'(1),
-      ppl_new_Polyhedron_from_constraints(nnc, [B > 0, 4*A =< 2], X),
+            	                          -Box)</CODE></H2>4*A =< 2], X),
       ppl_Polyhedron_get_bounding_box(X, any, Box).
 
    Box = [i(o(minf), c(1/2)), i(o(0), o(pinf))].
