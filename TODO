@@ -35,9 +35,6 @@ Enhancements for PPL 0.7
   C_Polyhedron& C_Polyhedron::operator=(const NNC_Polyhedron& y)
   nor
   NNC_Polyhedron& NNC_Polyhedron::operator=(const C_Polyhedron& y).
-- Consider whether it is the case to move the definition of dimension
-  of a polyhedron in the user's manual and to refer to it in the
-  documentation of Polyhedron::dimension().
 - Allow the specification of alternative coefficient implementations.
 - Clearly explain, in the documentation, how (not) to use
   set_GMP_memory_allocation_functions().  More generally, explain how
