@@ -491,6 +491,7 @@ AC_CONFIG_FILES(Makefile
                 tests/Makefile
                 m4/Makefile
                 demos/Makefile
+		demos/ppl_lcdd/Makefile
                 doc/Makefile
                 doc/user-browse.doxyconf-latex
                 doc/devref-browse.doxyconf-latex
