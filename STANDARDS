@@ -65,14 +65,15 @@ Standards for Documenting the Project with Doxygen
 
 1) All code entities (classes, structs, enums, variables, methods,
    functions, etc.) should be provided with a brief Doxygen comment.
-   Brief comments are obtained as follows:
+   Brief comments are normally obtained as follows:
 
      //! Brief comment for class C.
      class C {
        ...
      };
 
-   or, if the comment is multi-line, as follows:
+   If the comment is multi-line, then the either one of the following
+   syntax can be adopted:
 
      //! \brief
      //! A brief comment for class C, that is a bit too long
@@ -81,7 +82,21 @@ Standards for Documenting the Project with Doxygen
        ...
      };
 
-2) When needed or useful, brief comments should be followed
+  or
+
+     /*! \brief
+         A brief comment for class C, that is a bit too long
+         to be placed in a single line.
+     */
+     class C {
+       ...
+     };
+
+2) A *friend* declaration of a function should NOT be provided with
+   a Doxygen comment. Rather, it is the very declaration of the function
+   (which should be found outside of the class) that has to be documented.
+
+3) When needed or useful, brief comments should be followed
    by detailed Doxygen comments.
 
      //! Brief comment for class C.
@@ -97,20 +112,37 @@ Standards for Documenting the Project with Doxygen
    automatically repeated just before the detailed comment,
    so that bare repetitions should be avoided.
 
-3) In the source files, detailed comments should be placed
+4) In the source files, detailed comments should be placed
    immediately after the brief ones, so that all the documentation
    pertinent to a code entity is kept in a single file
    (typically, the *.defs.hh file).
 
-3) Brief Doxygen comments should be brief (indeed).
+5) It is also possible to merge the brief and detailed comments inside
+   a single (detailed) Doxygen documentation block, as follows:
+
+     /*!
+        \brief
+        Brief comment for class C.
+
+	More details on class C.
+	Even more details.
+     */
+     class C {
+       ...
+     };
+
+   The first paragraph break (in this case, the empty line) marks the
+   separation between the brief and the detailed part. Note that
+   all the uses of \param, \result and \exception special commands
+   will automatically cause a paragraph break, therefore starting
+   the detailed part. This will happen even when using the //! style
+   documentation blocks and the \brief command.
+
+6) Brief Doxygen comments should be brief (indeed).
    If more than two lines are required, then the comment should be
    split into a brief part and a detailed part.
-   Note that, starting from Doxygen 1.2.16, all the uses of \param,
-   \result and \exception special commands will automatically turn
-   the brief comment into a detailed one (even if the special command
-   \brief is used).
 
-4) Code entities or details that should not be visible by the end-user
+7) Code entities or details that should not be visible by the end-user
    (but that are useful for the developers) should be surrounded by
 
      #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -126,7 +158,7 @@ Standards for Documenting the Project with Doxygen
       (because even the documented members of an undocumented
       class are automatically filtered out of the user manual).
 
-5) Merging multiple comment blocks is not allowed by Doxygen.
+8) Merging multiple comment blocks is not allowed by Doxygen.
    Thus, the technique described in point 4) above is useless
    when we want an end-user comment block to be integrated,
    in the developer's reference only, by further comments.
@@ -138,7 +170,7 @@ Standards for Documenting the Project with Doxygen
      // \endif
      // ... doxygen comments for both user and developer ...
 
-6) The documentation of those functions that are neither methods
+9) The documentation of those functions that are neither methods
    nor friends of a given class, but are related in some way to that
    class, should be made part of the documentation of the class.
    This is obtained by using the Doxygen \relates special command
