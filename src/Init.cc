@@ -40,10 +40,24 @@ unsigned int PPL::Init::count = 0;
 PPL::bhrz03_statistics* PPL::statistics = 0;
 #endif
 
+extern "C" void
+set_GMP_memory_allocation_functions(void)
+#if CXX_SUPPORTS_ATTRIBUTE_WEAK
+  __attribute__((weak));
+
+void
+set_GMP_memory_allocation_functions(void) {
+}
+#else
+  ;
+#endif
+
 PPL::Init::Init() {
   // Only when the first Init object is constructed...
   if (count++ == 0) {
-    // ... memory is allocated for tmp_Integer...
+    // ... the GMP memory allocation functions are set, ...
+    set_GMP_memory_allocation_functions();
+    // ... then memory is allocated for tmp_Integer, ...
     tmp_Integer = new Integer[6];
     // ... and the default output function for Variable objects is set.
     Variable::set_output_function(Variable::default_output_function);
