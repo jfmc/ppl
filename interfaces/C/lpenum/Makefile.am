@@ -26,7 +26,7 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-MPS_FILES = afiro.mps  bgprtr.mps  sample.mps
+MPS_FILES = afiro.mps bgprtr.mps ex1.mps sample.mps unboundedmin.mps
 
 EXTRA_DIST = lpenum.c $(MPS_FILES)
 
