@@ -66,10 +66,12 @@ public:
       to each constraint contained in an object of ConSys.
       
       \par Example 
-      The following code prints a system of constraints:
+      The following code prints the system of constraints
+      defining polyhedron <CODE>ph</CODE>:
       \code
       const ConSys cs = ph.constraints();
-      for (ConSys::const_iterator i = cs.begin(); i != cs.end(); ++i)
+      ConSys::const_iterator iend = cs.end();
+      for (ConSys::const_iterator i = cs.begin(); i != iend; ++i)
         cout << *i << endl;
       \endcode
   */

@@ -102,17 +102,6 @@ operator >=(const LinExpression& e1, const LinExpression& e2) {
 }
 
 INLINE Constraint
-operator >(const LinExpression& e1, const LinExpression& e2) {
-  LinExpression diff = e1 - e2;
-  // e1 > e2 is the same as e1-e2 > 0,
-  // which is the same as e1-e2+1 >= 0.
-  diff += Integer::one;
-  Constraint c(diff);
-  c.set_is_inequality();
-  return c;
-}
-
-INLINE Constraint
 operator ==(const Integer& n, const LinExpression& e) {
   LinExpression diff = n - e;
   Constraint c(diff);
@@ -123,17 +112,6 @@ operator ==(const Integer& n, const LinExpression& e) {
 INLINE Constraint
 operator >=(const Integer& n, const LinExpression& e) {
   LinExpression diff = n - e;
-  Constraint c(diff);
-  c.set_is_inequality();
-  return c;
-}
-
-INLINE Constraint
-operator >(const Integer& n, const LinExpression& e) {
-  LinExpression diff = n - e;
-  // n > e is the same as n-e > 0,
-  // which is the same as n-e+1 >= 0.
-  diff += Integer::one;
   Constraint c(diff);
   c.set_is_inequality();
   return c;
@@ -156,24 +134,8 @@ operator >=(const LinExpression& e, const Integer& n) {
 }
 
 INLINE Constraint
-operator >(const LinExpression& e, const Integer& n) {
-  LinExpression diff = e - n;
-  // e > n is the same as e-n > 0,
-  // which is the same as e-n+1 >= 0.
-  diff += Integer::one;
-  Constraint c(diff);
-  c.set_is_inequality();
-  return c;
-}
-
-INLINE Constraint
 operator <=(const LinExpression& e1, const LinExpression& e2) {
   return e2 >= e1;
-}
-
-INLINE Constraint
-operator <(const LinExpression& e1, const LinExpression& e2) {
-  return e2 > e1;
 }
 
 INLINE Constraint
@@ -182,18 +144,8 @@ operator <=(const Integer& n, const LinExpression& e) {
 }
 
 INLINE Constraint
-operator <(const Integer& n, const LinExpression& e) {
-  return e > n;
-}
-
-INLINE Constraint
 operator <=(const LinExpression& e, const Integer& n) {
   return n >= e;
-}
-
-INLINE Constraint
-operator <(const LinExpression& e, const Integer& n) {
-  return n > e;
 }
 
 } // namespace Parma_Polyhedra_Library

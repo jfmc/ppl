@@ -48,26 +48,12 @@ namespace Parma_Polyhedra_Library {
   //! Returns the constraint \p n <= \p e.
   Constraint operator <=(const Integer& n, const LinExpression& e);
 
-  //! Returns the constraint \p e1 < \p e2.
-  Constraint operator  <(const LinExpression& e1, const LinExpression& e2);
-  //! Returns the constraint \p e < \p n.
-  Constraint operator  <(const LinExpression& e, const Integer& n);
-  //! Returns the constraint \p e < \p n.
-  Constraint operator  <(const Integer& n, const LinExpression& e);
-
   //! Returns the constraint \p e1 >= \p e2.
   Constraint operator >=(const LinExpression& e1, const LinExpression& e2);
   //! Returns the constraint \p e >= \p n.
   Constraint operator >=(const LinExpression& e, const Integer& n);
   //! Returns the constraint \p n >= \p e.
   Constraint operator >=(const Integer& n, const LinExpression& e);
-
-  //! Returns the constraint \p e1 > \p e2.
-  Constraint operator  >(const LinExpression& e1, const LinExpression& e2);
-  //! Returns the constraint \p e > \p n.
-  Constraint operator  >(const LinExpression& e, const Integer& n);
-  //! Returns the constraint \p n > \p e.
-  Constraint operator  >(const Integer& n, const LinExpression& e);
 
   //! Returns the constraint \p c with variables renamed by \p offset.
   Constraint operator >>(const Constraint& c, unsigned int offset);
@@ -87,22 +73,21 @@ namespace Parma_Polyhedra_Library {
     to a pair of linear expressions.
     
     \par Example 1
-    The following code builds the inequality \f$4*x-2*y-z+13>0\f$
-    that correspondes to the constraint \f$4*x-2*y-z+14>=0\f$:
+    The following code builds the constraint \f$4x - 2y - z + 13 \geq 0\f$:
     \code
     Variable x(0);
     Variable y(1);
     Variable z(2);
-    Constraint cs(4 * x - 2 * y - z + 13 > 0);
+    Constraint cs(4 * x - 2 * y - z + 13 >= 0);
     \endcode
 
     \par Example 2
-    The following code builds the equality \f$3*x+5*y-z=0\f$:
+    The following code builds the equality \f$3x + 5y - z = 0\f$:
     \code
     Variable x(0);
     Variable y(1);
     Variable z(2);
-    ConStraint cs(3 * x + 5 * y - z == 0);
+    Constraint cs(3 * x + 5 * y - z == 0);
     \endcode
 */
 class Parma_Polyhedra_Library::Constraint : public Row {
@@ -137,26 +122,6 @@ private:
 				       const Integer& n);
   friend Constraint
   Parma_Polyhedra_Library::operator <=(const Integer& n,
-				       const LinExpression& e);
-
-  friend Constraint
-  Parma_Polyhedra_Library::operator  >(const LinExpression& e1,
-				       const LinExpression& e2);
-  friend Constraint
-  Parma_Polyhedra_Library::operator  >(const LinExpression& e,
-				       const Integer& n);
-  friend Constraint
-  Parma_Polyhedra_Library::operator  >(const Integer& n,
-				       const LinExpression& e);
-
-  friend Constraint
-  Parma_Polyhedra_Library::operator  <(const LinExpression& e1,
-				       const LinExpression& e2);
-  friend Constraint
-  Parma_Polyhedra_Library::operator  <(const LinExpression& e,
-				       const Integer& n);
-  friend Constraint
-  Parma_Polyhedra_Library::operator  <(const Integer& n,
 				       const LinExpression& e);
 
   friend Constraint
@@ -202,3 +167,6 @@ PPL_INTERNAL:
 #endif
 
 #endif
+
+
+
