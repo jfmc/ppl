@@ -28,7 +28,7 @@ using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #ifndef NOISY
-#define NOISY 1
+#define NOISY 0
 #endif
 
 Variable x(0);
@@ -80,7 +80,19 @@ int main() TRY {
   cout << "(cross - squares) inters squares = " << intersection << endl;
 #endif
 
-  // Check dimension.
+  // When using Polyhedra_Powerset<C_Polyhedron>, intersection will be
+  // empty.  When using Polyhedra_Powerset<NNC_Polyhedron>,
+  // intersection will consist of objects of dimension at most 1.
+  for (Polyhedra_Powerset<C_Polyhedron>::const_iterator
+	 i = intersection.begin(), in_end = intersection.end();
+       i != in_end; ++i)
+    if (i->element().dimension() > 1) {
+#if NOISY
+      cout << "intersection contains " << i->element() << "," << endl
+	   << "which is of dimension greater than 1" << endl;
+#endif
+      return 1;
+    }
 
   Polyhedra_Powerset<C_Polyhedron> re_union = difference;
   re_union.upper_bound_assign(squares);
