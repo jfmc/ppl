@@ -364,7 +364,11 @@ public:
 
 private:
   //! The vector of coefficients.
-  Integer vec_[PPL_FLEXIBLE_ARRAY];
+  Integer vec_[
+#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+	       1
+#endif
+  ];
 
 private:
   //! Private and unimplemented: default construction is not allowed.

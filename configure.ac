@@ -50,24 +50,6 @@ AH_TOP([
 ])
 
 AH_BOTTOM([
-
-// Neutralize relops for GCC 2.96.
-#ifndef __SGI_STL_INTERNAL_RELOPS
-#define __SGI_STL_INTERNAL_RELOPS
-#endif
-
-#if defined(__GNUC__) && __GNUC__ >= 3
-// Flexible array members at the end of a struct
-// are defined as in
-//   Type array[];
-#define PPL_FLEXIBLE_ARRAY
-#else
-// Flexible array members at the end of a struct
-// are defined as in
-//   Type array[0];
-#define PPL_FLEXIBLE_ARRAY 0
-#endif
-
 #endif // !defined(PPL_ppl_config_h)
 ])
 
@@ -90,6 +72,9 @@ AC_ARG_WITH(cxx,
 CXX=$with_cxx)
 
 AC_LANG(C++)
+
+# Check whether the C++ compiler supports flexible arrays.
+AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 
 # Checks for programs.
 AC_PROG_CC
