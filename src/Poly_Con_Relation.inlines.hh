@@ -55,7 +55,7 @@ Poly_Con_Relation::saturates() {
 
 inline bool
 Poly_Con_Relation::implies(flags_t x, flags_t y) {
-  return x & y == y;
+  return (x & y) == y;
 }
 
 inline bool
