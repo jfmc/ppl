@@ -681,7 +681,6 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   SatMatrix& sat = const_cast<SatMatrix&>(sat_c);
   dimension_type gs_rows = gs.num_rows();
   dimension_type n_lines = gs.num_lines();
-  dimension_type eps_index = gs.num_columns() - 1;
   for (dimension_type i = n_lines; i < gs_rows; )
     if (gs[i].is_point()) {
       // Compute the SatRow corresponding to the candidate point
@@ -704,18 +703,10 @@ PPL::Polyhedron::strongly_minimize_generators() const {
 	  changed = true;
 	  break;
 	}
-      if (!eps_redundant) {
-	// Let all point encodings have epsilon coordinate 1.
-	Generator& gi = gs[i];
-	if (gi[eps_index] != gi[0]) {
-	  gi[eps_index] = gi[0];
-	  // Enforce normalization.
-	  gi.normalize();
-	  changed = true;
-	}
-	// Consider next generator.
+      // Consider next generator, which is already in place
+      // if we have performed the swap.
+      if (!eps_redundant)
 	++i;
-      }
     }
     else
       // Consider next generator.
@@ -878,6 +869,16 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	}
       if (!eps_redundant) {
 	// The constraint is not eps-redudnant.
+	// Let all strict inequality encodings have epsilon coefficient -1.
+	// (this is done to later find the matching non-strict inequality,
+	// if any, in an efficient way).
+	Constraint& ci = cs[i];
+	if (ci[eps_index] != -1) {
+	  ci[eps_index] = -1;
+	  // Enforce normalization.
+	  ci.normalize();
+	  changed = true;
+	}
 	// Maintain boolean flags to later check
 	// if the eps_leq_one constraint is needed.
 	topologically_closed = false;
