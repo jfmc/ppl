@@ -42,7 +42,7 @@ main() {
 
   try {
     // This is an invalid system of generators
-    // to add to an empty polyhedron. 
+    // to add to an empty polyhedron.
     GenSys gs;
     gs.insert(ray(x + y));
     gs.insert(ray(x - y));

@@ -35,12 +35,12 @@
 % Tries to solve the query `Goals'.
 % `Variable_Name_Table' is a list of input variable names and
 % the corresponding variable.
-% 'Polyhedra' are the live polyhedra; the head of the list 
+% 'Polyhedra' are the live polyhedra; the head of the list
 % represents the result of the computation.
 
 solve_query(Goals, VN, PolysOut) :-
     % Create a table "FrozeVN" between the names of variables as
-    % input and those as used by the ppl in the polyhedra. 
+    % input and those as used by the ppl in the polyhedra.
     % Also another table "VarNames" between the ppl names of variables
     % and the actual variables.
     freezevars(VN, FrozeVN, 0, Dims, [], VarNames),
@@ -91,7 +91,7 @@ solve({}, Polys, Polys, _VarNames) :-
     % the same as for 'true' and we can return the input list of
     % non-empty polyhedron as output.
     !.
-    
+
 solve({ Constraints }, [Poly|Polys], [Poly|Polys], _VarNames) :-
     !,
     % Solve the constraints using the constraint solver.
@@ -146,7 +146,7 @@ solve(Atom, [Poly|Polys], PolysOut, VarNames) :-
     % NOTE: we may fail to find (another) clause,
     %       but we have allocated nothing yet.
     select_clause(Atom, Head, Body),
- 
+
     % Copy the current polyhedron and work on the copy.
     ppl_copy_polyhedron(Poly, PolyCopy),
 
@@ -172,7 +172,7 @@ solve(Atom, [Poly|Polys], PolysOut, VarNames) :-
      ppl_delete_polyhedron(PolyCopy),
      fail
     ).
- 
+
 parameter_passing(Atom, Head, PP_Constraints) :-
     Atom =.. [_|Actuals],
     Head =.. [_|Formals],
@@ -437,7 +437,7 @@ write_expr(E + Num*Var, VariableNames) :-
     ).
 
 write_constraint(Expr = Num, VariableNames) :-
-   (var(Num) -> 
+   (var(Num) ->
     fail
    ;
     write_expr(Expr, VariableNames),
@@ -476,8 +476,8 @@ write_constraints([C|CS], VariableNames) :-
 
 % member(?Element, +List)
 %
-% Suceeds when Element is a member of List.  It may be used to test 
-% for membership in a list, but it can also be used to enumerate all 
+% Suceeds when Element is a member of List.  It may be used to test
+% for membership in a list, but it can also be used to enumerate all
 % the elements in List.
 
 member(Element, [Head|Tail]) :-
@@ -510,7 +510,7 @@ freezevars(X, '$VAR'(NX), InN, OutN, VarNames, VarNamesOut) :-
     ).
 freezevars(Term, FrozenTerm, InN, OutN, VarNamesIn, VarNamesOut) :-
     Term =.. [F|Args],
-    (F = rat -> 
+    (F = rat ->
      Args = [FrozenTerm,_],
      OutN = InN,
      VarNamesOut = VarNamesIn
@@ -602,7 +602,7 @@ numvars_list([Arg|Args], InN, OutN) :-
     numvars(Arg, InN, TmpN),
     numvars_list(Args, TmpN, OutN).
 
-build_equality_constraints([], []). 
+build_equality_constraints([], []).
 build_equality_constraints([Var = Num|Eqs], AllEqConstrs) :-
     build_equality_constraints(Eqs, EqConstrs),
     (nonvar(Num) ->

@@ -661,7 +661,7 @@
 	* interfaces/Prolog/Prolog_interface.dox (1.10): Documentation for
 	ppl_add_consraints_and _minimize and for ppl_copy_polyhedron added.
 	 Two examples for ppl_insert_constraints added that compare with
-	examples for those for ppl_add_consraints_and_minimize. 
+	examples for those for ppl_add_consraints_and_minimize.
 	Introductory sentence added.  "To be written"  replaced by "Support
 	for XXX ...future release."
 
@@ -719,7 +719,7 @@
 2001-11-12 Monday 22:33  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* interfaces/Prolog/SICStus/clpq.pl (1.21): Fixed a bug whereby
-	original_goal_variables/1 was not retracted in some cases. 
+	original_goal_variables/1 was not retracted in some cases.
 	Multiple clauses for original_goal_variables/1 were causing the use
 	of already discarded polyhedra.
 
@@ -779,7 +779,7 @@
 
 	* src/: Constraint.defs.hh (1.27), Constraint.inlines.hh (1.11),
 	Generator.defs.hh (1.29), Generator.inlines.hh (1.15), Row.defs.hh
-	(1.14): std::swap() specialized both for Constraint and Generator. 
+	(1.14): std::swap() specialized both for Constraint and Generator.
 	Less verbose comments for such a simple operation.
 
 2001-11-11 Sunday 17:29  Roberto Bagnara <bagnara@cs.unipr.it>
@@ -813,7 +813,7 @@
 2001-11-11 Sunday 15:40  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* src/: Constraint.cc (1.9), Constraint.defs.hh (1.26):
-	Constraint::is_trivial() renamed is_trivial_true(). 
+	Constraint::is_trivial() renamed is_trivial_true().
 	Constraint::is_unsatisfiable() renamed is_trivial_false().  Both
 	now use Row::all_homogeneous_terms_are_zero().
 
@@ -1315,7 +1315,7 @@
 2001-10-31 Wednesday 22:09  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* interfaces/Prolog/SICStus/ppl_sicstus.cc (1.18): In
-	ppl_get_constraints/2, no longer treat empty polyhedra specially. 
+	ppl_get_constraints/2, no longer treat empty polyhedra specially.
 	get_generator() renamed generator_term().
 
 2001-10-31 Wednesday 21:29  Roberto Bagnara <bagnara@cs.unipr.it>
@@ -1375,7 +1375,7 @@
 
 	* src/Polyhedron.cc (1.66): In functions
 	Polyhedron::widening_assign and Polyhedron::limited_widening_assign
-	considered the case of the polyhedra in a zero-dimensional space. 
+	considered the case of the polyhedra in a zero-dimensional space.
 	In function Polyhedron::limited_widening_assign considered the case
 	of cs.space_dimension() < space_dimension().
 
@@ -1912,7 +1912,7 @@
 
 	* tests/: affinetrans.cc, error3.cc (space_dim.[2,2]): To build the
 	polyhedron that we want using the system of generators, we must
-	create the system of generators and then use Polyhedron ph(gs). 
+	create the system of generators and then use Polyhedron ph(gs).
 	(If we use Polyhedron ph(num_dim), we have the universe polyhedron
 	and then when we add the generators we do not have our polyhedron
 	but the universe one).
@@ -1940,7 +1940,7 @@
 	interfaces/Prolog/SICStus/ppl_check.pl (1.1),
 	interfaces/Prolog/SICStus/ppl_sicstus.cc (1.4),
 	interfaces/Prolog/SICStus/ppl_sicstus.pl (1.1): Check to see
-	whether `sicstus' is installed: if it is, tests can be performed. 
+	whether `sicstus' is installed: if it is, tests can be performed.
 	Some progress in the interface itself.
 
 2001-10-27 Saturday 10:58  Roberto Bagnara <bagnara@cs.unipr.it>
@@ -2020,7 +2020,7 @@
 
 	* src/Polyhedron.cc (space_dim.6): Added the dimension-consistency
 	check in the function add_constraints_lazy and add_generators.	In
-	functions add_constraints and add_generators we use 
+	functions add_constraints and add_generators we use
 	if(check_empty()) instead of  minimize() if(is_empty()) In
 	functions add_constraints and add_constraints_lazy we resize the
 	matrix of constraints that we add if  num_columns - 1 <
@@ -2108,7 +2108,7 @@
 	Added private member Polyhedron::space_dim, which stores the number
 	of dimensions of the enclosing space.  Public member
 	Polyhedron::num_dimensions() renamed into
-	Polyhedron::space_dimension() and now reads the member space_dim. 
+	Polyhedron::space_dimension() and now reads the member space_dim.
 	Started modifying methods of the class Polyhedron so that they
 	consistently use space_dimension() and space_dim.  Started guarding
 	methods by suitable dimension-compatibility checks.
@@ -2293,7 +2293,7 @@
 2001-10-23 Tuesday 14:08  Enea Zaffanella <zaffanella@cs.unipr.it>
 
 	* src/: GenSys.defs.hh (1.28), GenSys.inlines.hh (1.4): Inserting a
-	generator in a GenSys automatically adjust the dimensions. 
+	generator in a GenSys automatically adjust the dimensions.
 	Specialization of std:swap for GenSys's added.
 
 2001-10-23 Tuesday 14:07  Enea Zaffanella <zaffanella@cs.unipr.it>
@@ -2638,7 +2638,7 @@
 	* src/: Polyhedron.cc (1.27), Polyhedron.defs.hh (1.34),
 	Polyhedron.inlines.hh (1.5): Simplified the comment to the function
 	swap.  Used `v' instead of `var', `dim' instead of `add_dim'.  All
-	the ConSys are called `cs' and all the GenSys are called `gs'. 
+	the ConSys are called `cs' and all the GenSys are called `gs'.
 	Used the expression "thrown if" to introduce the comment to the
 	exceptions.  The variable is "substituted" in the function
 	substitute_variable.
@@ -2836,7 +2836,7 @@
 
 2001-10-17 Wednesday 16:56  Roberto Bagnara <bagnara@cs.unipr.it>
 
-	* tests/permute.cc (1.2): We now use the intended constraints. 
+	* tests/permute.cc (1.2): We now use the intended constraints.
 	Termination is guaranteed by using Polyhedron::widening_assign().
 
 2001-10-17 Wednesday 16:31  Elisa Ricci <ericci@cs.unipr.it>
@@ -2894,7 +2894,7 @@
 	* src/: ConSys.defs.hh (1.9), GenSys.defs.hh (1.12), Matrix.defs.hh
 	(1.4), Polyhedron.cc (1.19), Polyhedron.defs.hh (1.22),
 	SatMatrix.cc (1.3), SatMatrix.defs.hh (1.5), SatRow.defs.hh (1.4),
-	Status.defs.hh (1.4): Changed the comments in the function OK(). 
+	Status.defs.hh (1.4): Changed the comments in the function OK().
 	In function Polyhedron::OK() used "check_not_empty" instead of
 	"check_satisfiable".
 
@@ -3384,7 +3384,7 @@
 
 	* src/Polyhedron.defs.hh (1.4): Added two examples to the comment:
 	one to specify the use of add_dimensions_and_embed(..) and the
-	other to specify the use of add_dimensions_and_project(...). 
+	other to specify the use of add_dimensions_and_project(...).
 	Corrected an error in a formula: now in the comment of
 	convex_hull(...) and convex_hull_lazy(..) there is \f$\cup\f$
 	instead of \f$\union\f$ (that caused an error in Latex).
@@ -3452,7 +3452,7 @@
 	theorem" renamed to   "Minkowski's theorem.  The condition "rank(A)
 	= n" changed to   "where A is a matrix of rank n".  The note
 	following the definition is reworded so that the   conditions are
-	not bracketed.	"Linear equalities and inequalities" has been  
+	not bracketed.	"Linear equalities and inequalities" has been
 	changed to "constraints".  "positive multiples of each inequality
 	and ray" has been    changed to "positive multiples of each
 	constraint and ray".  The word "the" inserted where necessary.

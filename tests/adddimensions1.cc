@@ -58,10 +58,10 @@ main() {
   known_result.insert(vertex(x + y));
 
   int retval = (ph == known_result) ? 0 : 1;
-  
+
 #if NOISY
   print_generators(ph, "*** After add_dimensions_and_project ***");
 #endif
-  
+
   return retval;
 }

@@ -29,9 +29,9 @@ constraints(S, E, N, D, M, O, R, Y) :-
 },
 	bit(C1), bit(C2), bit(C3), bit(C4),
 
-        diff(S,E), diff(S,N), diff(S,D), diff(S,M), 
-         diff(S,O), diff(S,R), diff(S,Y), 
-        diff(E,N), diff(E,D), diff(E,M), diff(E,O), 
+        diff(S,E), diff(S,N), diff(S,D), diff(S,M),
+         diff(S,O), diff(S,R), diff(S,Y),
+        diff(E,N), diff(E,D), diff(E,M), diff(E,O),
          diff(E,R), diff(E,Y),
         diff(N,D), diff(N,M), diff(N,O), diff(N,R), diff(N,Y),
         diff(D,M), diff(D,O), diff(D,R), diff(D,Y),

@@ -770,15 +770,15 @@ EOF
 	#undef CPU
 	#undef mips
 	#undef mipsel
-	#if defined(__MIPSEL__) || defined(__MIPSEL) || defined(_MIPSEL) || defined(MIPSEL) 
-	CPU=mipsel 
+	#if defined(__MIPSEL__) || defined(__MIPSEL) || defined(_MIPSEL) || defined(MIPSEL)
+	CPU=mipsel
 	#else
-	#if defined(__MIPSEB__) || defined(__MIPSEB) || defined(_MIPSEB) || defined(MIPSEB) 
+	#if defined(__MIPSEB__) || defined(__MIPSEB) || defined(_MIPSEB) || defined(MIPSEB)
 	CPU=mips
 	#else
 	CPU=
 	#endif
-	#endif 
+	#endif
 EOF
 	eval `$CC_FOR_BUILD -E $dummy.c 2>/dev/null | grep ^CPU=`
 	rm -f $dummy.c

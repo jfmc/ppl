@@ -68,9 +68,9 @@ main() {
   gs_known_result.insert(vertex(3*x + 3*y, 2));
   gs_known_result.insert(vertex(4*x));
   gs_known_result.insert(vertex(5*x + 3*y, 2));
-  
+
   Polyhedron known_result(gs_known_result);
-  
+
   int retval = (computed_result == known_result) ? 0 : 1;
 
 #if NOISY

@@ -54,6 +54,6 @@ main() {
        << (universe ? "true" : "false")
        << endl;
 #endif
-  
+
   return !universe ? 0 : 1;
 }

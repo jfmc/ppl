@@ -32,4 +32,4 @@ R = 0
 PPL clpq ?- yes
 PPL clpq ?- X = 10
  more? yes
-PPL clpq ?- 
+PPL clpq ?-

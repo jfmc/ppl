@@ -322,7 +322,7 @@ PPL::GenSys::get(std::istream& s) {
 
 void
 PPL::GenSys::remove_invalid_lines_and_rays() {
-  // The origin of the vector space cannot be a valid line/ray. 
+  // The origin of the vector space cannot be a valid line/ray.
   GenSys& gs = *this;
   size_t num_rows = gs.num_rows();
   for (size_t i = num_rows; i-- > 0; ) {

@@ -125,7 +125,7 @@ namespace Parma_Polyhedra_Library {
   cout << "Constraint c1: " << c1 << endl;
   LinExpression e;
   for (int i = c1.space_dimension() - 1; i >= 0; i--)
-    e += c1.coefficient(Variable(i)) * Variable(i); 
+    e += c1.coefficient(Variable(i)) * Variable(i);
   e += c1.coefficient();
   Constraint c2 = c1.is_equality() ? (e >= 0) : (e == 0);
   cout << "Constraint c2: " << c2 << endl;

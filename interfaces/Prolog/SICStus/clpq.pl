@@ -89,7 +89,7 @@ solve({}, Goals, Polyhedron) :-
     !,
     % The empty set of constraints is equivalent to true.
     solve(true, Goals, Polyhedron).
-    
+
 solve({ Constraints }, Goals, Polyhedron) :-
     !,
     % Solve the constraints using the constraint solver.
@@ -427,8 +427,8 @@ write_constraints([C|CS], VariableNames) :-
 
 % member(?Element, +List)
 %
-% Suceeds when Element is a member of List.  It may be used to test 
-% for membership in a list, but it can also be used to enumerate all 
+% Suceeds when Element is a member of List.  It may be used to test
+% for membership in a list, but it can also be used to enumerate all
 % the elements in List.
 
 member(Element, [Head|Tail]) :-

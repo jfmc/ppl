@@ -46,7 +46,7 @@ main() {
   cs.insert(x >= 4);
 
 #if NOISY
-  print_constraints(cs, "*** cs ***"); 
+  print_constraints(cs, "*** cs ***");
 #endif
 
   ph.add_constraints_and_minimize(cs);

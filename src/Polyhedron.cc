@@ -1705,11 +1705,11 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
     return;
   }
 
-  // We only need that the system of generators is up-to-date. 
+  // We only need that the system of generators is up-to-date.
   if (!generators_are_up_to_date())
     minimize();
 
- 
+
   if (is_empty()) {
     // Checking if the system of generators contains a vertex.
     size_t i = 0;
@@ -1726,7 +1726,7 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
     // If needed, we extend `gs' to the right space dimension.
     if (space_dim > gs_space_dim)
       gs.add_zero_columns(space_dim - gs_space_dim);
-    
+
     // The polyhedron is no longer empty and generators are up-to-date.
     std::swap(gen_sys, gs);
     set_generators_up_to_date();
@@ -1737,7 +1737,7 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
   // Matrix::merge_row_assign() requires both matrices to be sorted.
   if (!gen_sys.is_sorted())
     gen_sys.sort_rows();
-  
+
   if (!gs.is_sorted())
     gs.sort_rows();
 
