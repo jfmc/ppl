@@ -2,10 +2,9 @@ Urgent Things
 =============
 
 - Make sure all the functionalities are available in all interfaces.
-- Document the classes ExtendedRational, Boundary, LBoundary, UBoundary,
-  and Interval.
 - Check the documentation for Polyhedron::rename_dimensions() and
   its wrappers for all the interfaces.
+- Document the classes: ExtendedRational, Boundary, LBoundary, UBoundary.
 - Finish updating the NEWS file.
 
 Efficiency Issues

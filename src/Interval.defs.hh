@@ -216,30 +216,50 @@ public:
   bool OK() const;
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*!
+  An object of this class is an interval (finite, infinite, open,
+  closed or half-closed).
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+
 class Parma_Polyhedra_Library::Interval {
 public:
   //! Construct the interval (-infinity, +infinity).
   Interval();
 
+  //! Returns <CODE>true</CODE> if and only if \p *this is empty.
   bool is_empty() const;
 
+  //! Returns a const reference to the interval's lower bound.
   const LBoundary& lower_bound() const;
 
+  //! Returns a const reference to the interval's upper bound.
   const UBoundary& upper_bound() const;
 
+  //! \brief
+  //! Raises the interval's lower bound, if \p new_lower is higher
+  //! than the current one.
   void raise_lower_bound(LBoundary new_lower);
 
+  //! \brief
+  //! Lowers the interval's upper bound, if \p new_upper is lower
+  //! than the current one.
   void lower_upper_bound(UBoundary new_upper);
 
+  //! Turn \p *this into the empty interval.
   void set_empty();
 
+  //! Checks if all the invariants are satisfied.
   bool OK() const;
 
 private:
+  //! The interval's lower bound.
   LBoundary lower;
+
+  //! The interval's upper bound.
   UBoundary upper;
 };
-
 
 #include "Interval.inlines.hh"
 
