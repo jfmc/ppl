@@ -28,9 +28,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cmath>
 #ifdef __CYGWIN__
 // Not C99 conformant
-#include <mingw/fenv.h>
+// Please do not remove the space separating `#' from `include':
+// this ensures that the directive will not be moved during the
+// procedure that automatically creates the library's include file
+// (see `Makefile.am' in the `src' directory).
+# include <mingw/fenv.h>
 #else
-#include <fenv.h>
+# include <fenv.h>
 #endif
 
 #include "float.types.hh"
