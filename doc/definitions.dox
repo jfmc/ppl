@@ -1091,8 +1091,8 @@ the calls of the lazy operator with explicit emptyness checks.
 The PPL provides the finite powerset construction; this takes a
 pre-existing domain and upgrades it to one that can represent
 disjunctive information. The construction follows the approach
-described in \ref Bag98 "[Bag98]", also summarised in \ref BHZ04
-"[BHZ04]" where there is an account of generic widenings for the
+described in \ref Bag98 "[Bag98]", also summarised in
+\ref BHZ04 "[BHZ04]" where there is an account of generic widenings for the
 powerset domain (some of which are supported in the instantiation of
 this construction by the domain of NNC polyhedra and described in
 Section \ref poly_powerset).
