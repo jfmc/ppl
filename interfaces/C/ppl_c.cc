@@ -35,6 +35,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "NNC_Polyhedron.defs.hh"
 #include "Init.defs.hh"
 #include "ppl_c.h"
+#include <stdexcept>
 
 using namespace Parma_Polyhedra_Library;
 
