@@ -133,4 +133,4 @@ trunc10.ine \
 trunc7.ine \
 tsp5.ine
 
-noinst_DATA = $(EXT_FILES) $(INE_FILES)
+dist_noinst_DATA = $(EXT_FILES) $(INE_FILES)
