@@ -82,7 +82,7 @@ test2() {
     exit(1);
 }
 
-// Test trivial expansion
+// Test trivial expansion.
 static void
 test3() {
   C_Polyhedron ph1(2);
@@ -168,7 +168,7 @@ test5() {
     exit(1);
 }
 
-// Test using constraints expanding 2 dimensions
+// Test using constraints expanding 2 dimensions.
 static void
 test6() {
   C_Polyhedron ph1(2);
@@ -198,7 +198,7 @@ test6() {
     exit(1);
 }
 
-// Test using constraints for NNC polyhedron
+// Test using constraints for NNC polyhedron.
 static void
 test7() {
 
@@ -234,7 +234,7 @@ test7() {
     exit(1);
 }
 
-// Test using constraints with equality constraint
+// Test using constraints with equality constraint.
 static void
 test8() {
   C_Polyhedron ph1(3);
@@ -269,7 +269,7 @@ test8() {
     exit(1);
 }
 
-// Test using generators for NNC polyhedron
+// Test using generators for NNC polyhedron.
 static void
 test9() {
   NNC_Polyhedron ph1(2, NNC_Polyhedron::EMPTY);
