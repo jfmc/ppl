@@ -46,8 +46,8 @@ PPL::Polyhedron::constraints() const {
   size_t space_dim = space_dimension();
   if (is_empty()) {
     if (con_sys.num_rows() == 0) {
-      // Storing in con_sys the 0-dim unsatisfiable constraint
-      // and then adjusting constraint system dimension.
+      // The 0-dim unsatisfiable constraint is extended to
+      // the appropriate dimension and then stored in `con_sys'.
       ConSys unsat_cs = ConSys::zero_dim_empty();
       unsat_cs.add_zero_columns(space_dim);
       const_cast<ConSys&>(con_sys).swap(unsat_cs);
@@ -2306,16 +2306,15 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	     << endl;
 	goto bomb;
       }
-      // A minimal system of generators is unique up to positive scaling if
-      // the cone is pointed.
-      // So, we verify if the cone is pointed (i.e. there are no lines)
-      // and after normalizing and sorting a copy of the matrix `gen_sys'
-      // of the polyhedron (we use a copy not to modify the polyhedron's
+      // A minimal system of generators is unique up to positive
+      // scaling, if the cone is pointed.  We thus verify if the cone
+      // is pointed (i.e., if there are no lines) and, after
+      // normalizing and sorting a copy of the matrix `gen_sys' of the
+      // polyhedron (we use a copy not to modify the polyhedron's
       // matrix) and the matrix `copy_of_gen_sys' that has been just
-      // minimized, we check if the two matrices are identical. If they
-      // are different it means that the generators of the polyhedron
-      // are declared minimized, but they are not: the polyhedron is not
-      // ok.
+      // minimized, we check if the two matrices are identical.  If
+      // they are different it means that the generators of the
+      // polyhedron are declared minimized, but they are not.
       if (copy_num_lines == 0) {
 	copy_of_gen_sys.strong_normalize();
 	copy_of_gen_sys.sort_rows();
