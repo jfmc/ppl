@@ -264,11 +264,7 @@ public:
 
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!
-    Seeing a powerset as a set of tuples, this method assigns to
-    \p *this all the tuples that can be obtained by concatenating,
-    in the order given, a tuple of \p *this with a tuple of \p y.
-
-    Intuitively, the result is obtained by computing the pair-wise
+    The result is obtained by computing the pairwise
     \ref concatenate "concatenation" of each polyhedron in \p *this
     with each polyhedron in \p y.
   */
