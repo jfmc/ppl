@@ -27,7 +27,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 1
+#define NOISY 0
 #endif
 
 static void
@@ -164,14 +164,21 @@ permute_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
   //                 E = [X|G], F = A, append(D,E,F),
   //                 D = H, I = G, append(H,I,J),
   //                 K = J, L = C, permute(K,L).
-  induct.add_dimensions_and_embed(12);
+  induct.add_dimensions_and_embed(6);
   induct.add_constraint(B == C + 1);
-  induct.add_constraint(E == G + 1);
   induct.add_constraint(F == A);
   C_Polyhedron ph_append;
   append_size_rel(ph_append);
   shift_rename_add(ph_append, 3, induct);
+
+#if NOISY
+  print_constraints(induct, "*** here am I ***");
+#endif
+
+  induct.add_dimensions_and_embed(4);
+  induct.add_constraint(E == G + 1);
   shift_rename_add(ph_append, 7, induct);
+  induct.add_dimensions_and_embed(2);
   induct.add_constraint(D + G == H + I);
   induct.add_constraint(D == H);
   induct.add_constraint(I == G);
