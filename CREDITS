@@ -52,6 +52,8 @@ The following people gave help that was fundamental to the project:
     systems do not share a single line of code, this is giving us
     excellent opportunities for our testing and debugging work.
 
+  + Alessandro Zaccagnini [12] is always a very valuable source of
+    mathematical advices.
 
 This work has been partly supported by the following projects:
 
@@ -59,14 +61,17 @@ This work has been partly supported by the following projects:
      ``Pure and Applied Mathematics'';
 
   2. MURST project ``Automatic Program Certification by Abstract
-     Interpretation'' [12];
+     Interpretation'' [13];
 
   3. MURST project ``Abstract Interpretation, Type Systems and
-     Control-Flow Analysis'' [13].
+     Control-Flow Analysis'' [14].
 
   4. MURST project ``Automatic Aggregate- and Number-Reasoning for
      Computing: from Decision Algorithms to Constraint Programming
-     with Multisets, Sets, and Maps'' [14].
+     with Multisets, Sets, and Maps'' [15].
+
+  5. MURST project ``Constraint Based Verification of Reactive
+     Systems'' [16].
 
 --------
 
@@ -75,12 +80,14 @@ This work has been partly supported by the following projects:
  [3] http://www.cs.unipr.it/~zaffanella/
  [4] http://www.cs.unipr.it/ppl/Documentation/chernikova.c
  [5] http://www.cs.unipr.it/ppl/Documentation/bibliography#LeVerge92
- [6] http://www.irisa.fr/prive/bjeannet/index.html
- [7] http://www.irisa.fr/prive/bjeannet/newpolka.html
+ [6] http://www.irisa.fr/prive/Bertrand.Jeannet/
+ [7] http://www.irisa.fr/prive/Bertrand.Jeannet/newpolka.html
  [8] http://www.math.unipr.it/~medori/
  [9] http://www.univ-reunion.fr/~fred/
-[10] http://www.complang.tuwien.ac.at/cti/
+[10] http://www.cs.unipr.it/cTI/
 [11] http://www.cs.unipr.it/China/
-[12] http://theory.sci.univr.it/projects/p40/
-[13] http://strudel.di.unipi.it/cofin00/
-[14] http://www.cs.unipr.it/Projects/COFIN01
+[12] http://www.math.unipr.it/~zaccagni/
+[13] http://theory.sci.univr.it/projects/p40/
+[14] http://strudel.di.unipi.it/cofin00/
+[15] http://www.cs.unipr.it/Projects/COFIN01
+[16] http://www.disi.unige.it/person/DelzannoG/cover/
