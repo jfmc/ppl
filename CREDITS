@@ -7,16 +7,20 @@ written, debugged and improved by the following people:
 
   Roberto Bagnara [1]  <bagnara@cs.unipr.it>
   Patricia M. Hill [2] <hill@comp.leeds.ac.uk>
-  Elisa Ricci          <ericci@cs.unipr.it>
   Enea Zaffanella [3]  <zaffanella@cs.unipr.it>
+
+Up to December 2002, and starting from the very beginning of the
+project, one of the driving forces behing the PPL has been
+
+  Elisa Ricci          (former student of the University of Parma)
 
 The following people took part to the first phase of the development
 of the library:
 
-  Sara Bonini
+  Sara Bonini          (former student of the University of Parma)
   Andrea Pescetti      <pescetti@prmat.math.unipr.it>
-  Angela Stazzone
-  Tatiana Zolo         <zolo@cs.unipr.it>
+  Angela Stazzone      (former student of the University of Parma)
+  Tatiana Zolo         (former student of the University of Parma)
 
 
 Thanks!
