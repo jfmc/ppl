@@ -342,9 +342,9 @@ libppl_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
 
-noinst_HEADERS = ppl.hh ppl_install.hh
+noinst_HEADERS = ppl.hh ppl_install.hh ppl_include_files.hh
 
-BUILT_SOURCES = ppl.hh ppl_install.hh
+BUILT_SOURCES = ppl.hh ppl_install.hh ppl_include_files.hh
 
 ppl.hh:	$(DOC_FILES) $(top_builddir)/src/version.hh Makefile
 	cat $(top_builddir)/src/version.hh >$@
