@@ -3667,7 +3667,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
 
 void
 PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y,
-					     ConSys& cs,
+					     const ConSys& cs,
 					     unsigned* tp) {
   Polyhedron& x = *this;
   // Topology compatibility check.
@@ -3721,24 +3721,17 @@ PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y,
     // We have just discovered that `x' is empty.
     return;
 
+  ConSys adding_cs;
+  // The constraints to be added must be satisfied by all the
+  // generators of `x'. We can disregard `y' because `y <= x'.
   const GenSys& x_gs = x.gen_sys;
-  dimension_type cs_num_rows = cs.num_rows();
-  for (dimension_type i = 0; i < cs_num_rows; )
-    // The constraints to be added must be satisfied by all the
-    // generators of `x'. We can disregard `y' because `y <= x'.
+  for (dimension_type i = 0,
+	 cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i)
     if (x_gs.satisfied_by_all_generators(cs[i]))
-      ++i;
-    else {
-      --cs_num_rows;
-      std::swap(cs[cs_num_rows], cs[i]);
-    }
-  // Erase the constraints that are not satisfied by the generators of `x'.
-  // NOTE: here `cs' has no pending constraints.
-  cs.erase_to_end(cs_num_rows);
-  cs.unset_pending_rows();
+      adding_cs.insert(cs[i]);
 
   x.H79_widening_assign(y, tp);
-  x.add_constraints(cs);
+  x.add_constraints(adding_cs);
   assert(OK());
 }
 
@@ -3781,11 +3774,13 @@ public:
 
 void
 PPL::Polyhedron::bounded_H79_widening_assign(const Polyhedron& y,
-					     ConSys& cs,
+					     const ConSys& cs,
 					     unsigned* tp) {
-  BW_Box box(cs);
+  ConSys bounding_cs;
+  BW_Box box(bounding_cs);
   shrink_bounding_box(box, ANY);
   limited_H79_widening_assign(y, cs, tp);
+  add_constraints(bounding_cs);
 }
 
 bool
@@ -4380,7 +4375,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 
 void
 PPL::Polyhedron::limited_BHRZ03_widening_assign(const Polyhedron& y,
-						ConSys& cs,
+						const ConSys& cs,
 						unsigned* tp) {
   Polyhedron& x = *this;
   // Topology compatibility check.
@@ -4435,34 +4430,29 @@ PPL::Polyhedron::limited_BHRZ03_widening_assign(const Polyhedron& y,
     // We have just discovered that `x' is empty.
     return;
 
+  ConSys adding_cs;
+  // The constraints to be added must be satisfied by all the
+  // generators of `x'. We can disregard `y' because `y <= x'.
   const GenSys& x_gs = x.gen_sys;
-  dimension_type cs_num_rows = cs.num_rows();
-  for (dimension_type i = 0; i < cs_num_rows; )
-    // The constraints to be added must be satisfied by all the
-    // generators of `x'. We can disregard `y' because `y <= x'.
+  for (dimension_type i = 0,
+	 cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i)
     if (x_gs.satisfied_by_all_generators(cs[i]))
-      ++i;
-    else {
-      --cs_num_rows;
-      std::swap(cs[cs_num_rows], cs[i]);
-    }
-  // Erase the constraints that are not satisfied by the generators of `x'.
-  // NOTE: here `cs' has no pending constraints.
-  cs.erase_to_end(cs_num_rows);
-  cs.unset_pending_rows();
+      adding_cs.insert(cs[i]);
 
   x.BHRZ03_widening_assign(y, tp);
-  x.add_constraints(cs);
+  x.add_constraints(adding_cs);
   assert(OK());
 }
 
 void
 PPL::Polyhedron::bounded_BHRZ03_widening_assign(const Polyhedron& y,
-						ConSys& cs,
+						const ConSys& cs,
 						unsigned* tp) {
-  BW_Box box(cs);
+  ConSys bounding_cs;
+  BW_Box box(bounding_cs);
   shrink_bounding_box(box, ANY);
   limited_BHRZ03_widening_assign(y, cs, tp);
+  add_constraints(bounding_cs);
 }
 
 void

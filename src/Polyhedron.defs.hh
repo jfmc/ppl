@@ -666,8 +666,7 @@ public:
     \param y                 A polyhedron that <EM>must</EM>
                              be contained in \p *this.
     \param cs                The system of constraints used to improve
-                             the widened polyhedron. It is not declared
-                             <CODE>const</CODE> because it can be modified.
+                             the widened polyhedron.
     \param tp                An optional pointer to an unsigned variable
                              storing the number of available tokens
 			     (to be used when applying the
@@ -677,7 +676,7 @@ public:
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void limited_H79_widening_assign(const Polyhedron& y, ConSys& cs,
+  void limited_H79_widening_assign(const Polyhedron& y, const ConSys& cs,
 				   unsigned* tp = 0);
 
   //! \brief
@@ -690,8 +689,7 @@ public:
     \param y                 A polyhedron that <EM>must</EM>
                              be contained in \p *this.
     \param cs                The system of constraints used to improve
-                             the widened polyhedron. It is not declared
-                             <CODE>const</CODE> because it can be modified.
+                             the widened polyhedron.
     \param tp                An optional pointer to an unsigned variable
                              storing the number of available tokens
 			     (to be used when applying the
@@ -701,7 +699,7 @@ public:
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void bounded_H79_widening_assign(const Polyhedron& y, ConSys& cs,
+  void bounded_H79_widening_assign(const Polyhedron& y, const ConSys& cs,
 				   unsigned* tp = 0);
 
   //! \brief
@@ -729,8 +727,7 @@ public:
     \param y                 A polyhedron that <EM>must</EM>
                              be contained in \p *this.
     \param cs                The system of constraints used to improve
-                             the widened polyhedron. It is not declared
-                             <CODE>const</CODE> because it can be modified.
+                             the widened polyhedron.
     \param tp                An optional pointer to an unsigned variable
                              storing the number of available tokens
                              (to be used when applying the
@@ -740,7 +737,7 @@ public:
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void limited_BHRZ03_widening_assign(const Polyhedron& y, ConSys& cs,
+  void limited_BHRZ03_widening_assign(const Polyhedron& y, const ConSys& cs,
 				      unsigned* tp = 0);
 
   //! \brief
@@ -753,8 +750,7 @@ public:
     \param y                 A polyhedron that <EM>must</EM>
                              be contained in \p *this.
     \param cs                The system of constraints used to improve
-                             the widened polyhedron. It is not declared
-                             <CODE>const</CODE> because it can be modified.
+                             the widened polyhedron.
     \param tp                An optional pointer to an unsigned variable
                              storing the number of available tokens
 			     (to be used when applying the
@@ -764,7 +760,7 @@ public:
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void bounded_BHRZ03_widening_assign(const Polyhedron& y, ConSys& cs,
+  void bounded_BHRZ03_widening_assign(const Polyhedron& y, const ConSys& cs,
 				      unsigned* tp = 0);
 
   //! \brief
