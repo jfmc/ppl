@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Row.defs.hh"
 #include "globals.hh"
 #include <algorithm>
+#include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
 
