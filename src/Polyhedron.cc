@@ -3541,7 +3541,7 @@ PPL::Polyhedron::select_CH78_constraints(const Polyhedron& y,
 }
 
 void
-PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
+PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   Topology tpl = x.topology();
@@ -3607,8 +3607,19 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
       // Let `x' be defined by the constraints in `CH78_cs'.
       Polyhedron CH78(tpl, x_space_dim, UNIVERSE);
       CH78.add_constraints(CH78_cs);
-      std::swap(x, CH78);
-      assert(x.OK());
+
+      // Check whether we are using the widening-with-tokens technique
+      // and there still are tokens available.
+      if (tp != 0 && *tp > 0) {
+	// There are tokens available. If `CH78' is not a subset of `x',
+	// then it is less precise and we use one of the available tokens.
+	if (!(CH78 <= x))
+	  --(*tp);
+      }
+      else
+	// No tokens.
+	std::swap(x, CH78);
+      assert(x.OK(true));
       return;
     }
   }
@@ -3638,25 +3649,33 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
     // We selected all of the constraints of `x',
     // thus the result of the widening is `x'.
     return;
-  else if (H79_cs.num_rows() == 0) {
-    // No constraint has been selected:
-    // return the universe polyhedron.
-    Polyhedron universe(x.topology(), x.space_dimension(), UNIVERSE);
-    std::swap(x, universe);
-  }
   else {
-    // We selected a non-empty, strict subset of the constraints of `x'.
-    // Let `x' be defined by the constraints in `H79_cs'.
+    // We selected a strict subset of the constraints of `x'.
+    // NOTE: as `x.con_sys' was not necessarily in minimal form,
+    // this does not imply that the result strictly includes `x'.
+    // Let `H79' be defined by the constraints in `H79_cs'.
     Polyhedron H79(tpl, x_space_dim, UNIVERSE);
     H79.add_constraints(H79_cs);
-    std::swap(x, H79);
+
+    // Check whether we are using the widening-with-tokens technique
+    // and there still are tokens available.
+    if (tp != 0 && *tp > 0) {
+      // There are tokens available. If `H79' is not a subset of `x',
+      // then it is less precise and we use one of the available tokens.
+      if (!(H79 <= x))
+	--(*tp);
+    }
+    else
+      // No tokens.
+      std::swap(x, H79);
+    assert(x.OK(true));
   }
-  assert(x.OK(true));
 }
 
 void
 PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y,
-					     ConSys& cs) {
+					     ConSys& cs,
+					     unsigned* tp) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.is_necessarily_closed()) {
@@ -3725,7 +3744,7 @@ PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y,
   cs.erase_to_end(cs_num_rows);
   cs.unset_pending_rows();
 
-  x.H79_widening_assign(y);
+  x.H79_widening_assign(y, tp);
   x.add_constraints(cs);
   assert(OK());
 }
@@ -3769,10 +3788,11 @@ public:
 
 void
 PPL::Polyhedron::bounded_H79_widening_assign(const Polyhedron& y,
-					     ConSys& cs) {
+					     ConSys& cs,
+					     unsigned* tp) {
   BW_Box box(cs);
   shrink_bounding_box(box, ANY);
-  limited_H79_widening_assign(y, cs);
+  limited_H79_widening_assign(y, cs, tp);
 }
 
 bool
@@ -4532,7 +4552,8 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 
 void
 PPL::Polyhedron::limited_BHRZ03_widening_assign(const Polyhedron& y,
-						ConSys& cs) {
+						ConSys& cs,
+						unsigned* tp) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.is_necessarily_closed()) {
@@ -4602,17 +4623,18 @@ PPL::Polyhedron::limited_BHRZ03_widening_assign(const Polyhedron& y,
   cs.erase_to_end(cs_num_rows);
   cs.unset_pending_rows();
 
-  x.BHRZ03_widening_assign(y);
+  x.BHRZ03_widening_assign(y, tp);
   x.add_constraints(cs);
   assert(OK());
 }
 
 void
 PPL::Polyhedron::bounded_BHRZ03_widening_assign(const Polyhedron& y,
-						ConSys& cs) {
+						ConSys& cs,
+						unsigned* tp) {
   BW_Box box(cs);
   shrink_bounding_box(box, ANY);
-  limited_BHRZ03_widening_assign(y, cs);
+  limited_BHRZ03_widening_assign(y, cs, tp);
 }
 
 void

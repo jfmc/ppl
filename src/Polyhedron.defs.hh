@@ -647,11 +647,15 @@ public:
   /*!
     \param y           A polyhedron that <EM>must</EM>
                        be contained in \p *this.
+    \param tp          An optional pointer to an unsigned variable storing
+                       the number of available tokens (to be used when
+                       applying the <EM>widening with tokens</EM> delay
+                       technique).
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void H79_widening_assign(const Polyhedron& y);
+  void H79_widening_assign(const Polyhedron& y, unsigned* tp = 0);
 
   //! \brief
   //! Improves the result of the \ref H79_widening "H79-widening"
@@ -663,11 +667,16 @@ public:
     \param cs                The system of constraints used to improve
                              the widened polyhedron. It is not declared
                              <CODE>const</CODE> because it can be modified.
+    \param tp                An optional pointer to an unsigned variable
+                             storing the number of available tokens
+			     (to be used when applying the
+			     <EM>widening with tokens</EM> delay technique).
     \exception std::invalid_argument thrown if \p *this, \p y and \p cs
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void limited_H79_widening_assign(const Polyhedron& y, ConSys& cs);
+  void limited_H79_widening_assign(const Polyhedron& y, ConSys& cs,
+				   unsigned* tp = 0);
 
   //! \brief
   //! Improves the result of the \ref H79_widening "H79-widening"
@@ -681,11 +690,16 @@ public:
     \param cs                The system of constraints used to improve
                              the widened polyhedron. It is not declared
                              <CODE>const</CODE> because it can be modified.
+    \param tp                An optional pointer to an unsigned variable
+                             storing the number of available tokens
+			     (to be used when applying the
+			     <EM>widening with tokens</EM> delay technique).
     \exception std::invalid_argument thrown if \p *this, \p y and \p cs
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void bounded_H79_widening_assign(const Polyhedron& y, ConSys& cs);
+  void bounded_H79_widening_assign(const Polyhedron& y, ConSys& cs,
+				   unsigned* tp = 0);
 
   //! \brief
   //! Assigns to \p *this the result of computing the
@@ -713,11 +727,16 @@ public:
     \param cs                The system of constraints used to improve
                              the widened polyhedron. It is not declared
                              <CODE>const</CODE> because it can be modified.
+    \param tp                An optional pointer to an unsigned variable
+                             storing the number of available tokens
+                             (to be used when applying the
+                             <EM>widening with tokens</EM> delay technique).
     \exception std::invalid_argument thrown if \p *this, \p y and \p cs
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void limited_BHRZ03_widening_assign(const Polyhedron& y, ConSys& cs);
+  void limited_BHRZ03_widening_assign(const Polyhedron& y, ConSys& cs,
+				      unsigned* tp = 0);
 
   //! \brief
   //! Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
@@ -731,11 +750,16 @@ public:
     \param cs                The system of constraints used to improve
                              the widened polyhedron. It is not declared
                              <CODE>const</CODE> because it can be modified.
+    \param tp                An optional pointer to an unsigned variable
+                             storing the number of available tokens
+			     (to be used when applying the
+			     <EM>widening with tokens</EM> delay technique).
     \exception std::invalid_argument thrown if \p *this, \p y and \p cs
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void bounded_BHRZ03_widening_assign(const Polyhedron& y, ConSys& cs);
+  void bounded_BHRZ03_widening_assign(const Polyhedron& y, ConSys& cs,
+				      unsigned* tp = 0);
 
   //! \brief
   //! Assigns to \p *this the result of computing the
