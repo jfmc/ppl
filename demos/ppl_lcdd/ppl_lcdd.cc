@@ -418,8 +418,10 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
       PPL::LinExpression e;
       for (unsigned j = num_columns-1; j-- > 0; )
 	e += coefficients[j] * PPL::Variable(j);
-      if (vertex_marker == 1)
+      if (vertex_marker == 1) {
+	assert(linearity.find(i+1) == linearity_end);
 	gs.insert(point(e));
+      }
       else if (linearity.find(i+1) != linearity_end)
 	gs.insert(line(e));
       else
@@ -507,7 +509,7 @@ write_polyhedron(std::ostream& output,
       const PPL::Constraint& c = *i;
       output << c.inhomogeneous_term();
       for (PPL::dimension_type j = 0; j < space_dim; ++j)
-	output << " " << c.coefficient(PPL::Variable(j));
+	output << " " << -c.coefficient(PPL::Variable(j));
       output << std::endl;
     }
   }
@@ -568,6 +570,7 @@ main(int argc, char* argv[]) {
 
   PPL::C_Polyhedron ph;
   Representation rep = read_polyhedron(input(), ph);
+  //write_polyhedron(std::cout, ph, rep);
 
   std::string s;
   while (input() >> s) {
