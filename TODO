@@ -5,12 +5,14 @@ To be Done Just After Merging the Strict Branch
    can result in an empty polyhedron return a boolean
    (true if the result is non-empty, false otherwise).
 
-2) Add the function swap(LinExpression&, LinExpression&).
+2) Add the swap() function for LinExpression.
 
 3) Check why we use \enum to document enums.
 
 4) Stop using <CODE> </CODE> tags.
 
+5) Rename Constraint::coefficient(void) to
+   Constraint::inhomogeneous_term(void).
 
 Minor and Not So Minor Things
 =============================
