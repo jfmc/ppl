@@ -48,7 +48,8 @@ class Polyhedron;
 namespace IO_Operators {
 }
 
-}
+} // namespace Parma_Polyhedra_Library
+
 
 //! The standard C++ namespace.
 /*!
