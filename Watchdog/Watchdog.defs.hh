@@ -36,12 +36,6 @@ site: http://www.cs.unipr.it/Software/ . */
 
 namespace Parma_Watchdog_Library {
 
-//! A base class for timeout exceptions.
-class Flag {
-public:
-  virtual int priority() const = 0;
-};
-
 //! A watchdog timer.
 class Watchdog {
 
@@ -94,19 +88,19 @@ private:
     virtual void act() const = 0;
   };
 
+  template <typename Flag_Base, typename Flag>
   class Handler_Flag : virtual public Handler {
   private:
-    const void* volatile* holder;
+    const Flag_Base* volatile* holder;
     Flag& flag;
   public:
-    Handler_Flag(const void* volatile* h, Flag& f)
+    Handler_Flag(const Flag_Base* volatile* h, Flag& f)
       : holder(h), flag(f)
     { }
     void act() const {
       if (*holder == 0
-	  || (*reinterpret_cast<const Flag* volatile*>(holder))->priority()
-	  < flag.priority())
-	  *holder = &flag;
+	  || static_cast<const Flag*>(*holder)->priority() < flag.priority())
+	*holder = &flag;
     }
   };
 
@@ -142,7 +136,9 @@ private:
 public:
   static void initialize();
 
-  Watchdog(int units, volatile void* holder, Flag& flag);
+  template <typename Flag_Base, typename Flag>
+  Watchdog(int units, const Flag_Base* volatile* holder, Flag& flag);
+
   Watchdog(int units, void (*function)());
   ~Watchdog();
 

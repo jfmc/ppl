@@ -187,24 +187,6 @@ PWL::Watchdog::remove_watchdog_event(Pending::iterator position) {
   pending.erase(position);
 }
 
-PWL::Watchdog::Watchdog(int units,
-			volatile void* holder,
-			Flag& flag)
-  : expired(false),
-    handler(new Handler_Flag(reinterpret_cast<const void* volatile*>(holder),
-			     flag)) {
-  in_critical_section = true;
-  pending_position = new_watchdog_event(units, handler, &expired);
-  in_critical_section = false;
-}
-
-PWL::Watchdog::Watchdog(int units, void (*function)())
-  : expired(false), handler(new Handler_Function(function)) {
-  in_critical_section = true;
-  pending_position = new_watchdog_event(units, handler, &expired);
-  in_critical_section = false;
-}
-
 PWL::Watchdog::~Watchdog() {
   if (!expired) {
     in_critical_section = true;

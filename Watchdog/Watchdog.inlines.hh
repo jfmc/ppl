@@ -133,4 +133,22 @@ Watchdog::reschedule() {
   set_timer(reschedule_time);
 }
 
+template <typename Flag_Base, typename Flag>
+inline
+Watchdog::Watchdog(int units, const Flag_Base* volatile* holder, Flag& flag)
+  : expired(false),
+    handler(new Handler_Flag<Flag_Base, Flag>(holder, flag)) {
+  in_critical_section = true;
+  pending_position = new_watchdog_event(units, handler, &expired);
+  in_critical_section = false;
+}
+
+inline
+Watchdog::Watchdog(int units, void (*function)())
+  : expired(false), handler(new Handler_Function(function)) {
+  in_critical_section = true;
+  pending_position = new_watchdog_event(units, handler, &expired);
+  in_critical_section = false;
+}
+
 } // namespace Parma_Watchdog_Library
