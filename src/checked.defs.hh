@@ -91,7 +91,7 @@ enum Result {
   V_NEG_OVERFLOW = 18,
 
   // Positive overflow
-  V_POS_OVERFLOW = 19,
+  V_POS_OVERFLOW = 19
 
 };
 
