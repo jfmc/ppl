@@ -232,6 +232,42 @@ ppl_ConSys_space_dimension __P((ppl_const_ConSys_t cs));
 int
 ppl_ConSys_insert_Constraint __P((ppl_ConSys_t cs, ppl_const_Constraint_t c));
 
+
+PPL_TYPE_DECLARATION(ConSys_const_iterator);
+
+//! Builds a new `const iterator' and writes an handle to it
+//! at address \p pcit.
+int
+ppl_new_ConSys_const_iterator __P((ppl_ConSys_const_iterator_t* pcit));
+
+//! Builds a const iterator system that is a copy of \p cit;
+//! writes an handle for the newly created const iterator at address \p pcit.
+int
+ppl_new_ConSys_const_iterator_from_ConSys_const_iterator
+__P((ppl_ConSys_const_iterator_t* pcit,
+     ppl_const_ConSys_const_iterator_t cit));
+
+//! Invalidates the handle \p cit: this makes sure
+//! the corresponding resources will eventually be released.
+int
+ppl_delete_ConSys_const_iterator __P((ppl_const_ConSys_const_iterator_t cit));
+
+//! Assigns an exact copy of the const iterator \p src to \p dst.
+int
+ppl_assign_ConSys_const_iterator_from_ConSys_const_iterator
+__P((ppl_ConSys_const_iterator_t dst, ppl_const_ConSys_const_iterator_t src));
+
+//! Assigns to \p cit a const iterator "pointing" to the beginning
+//! of the constraint system \p cs.
+int
+ppl_ConSys_begin __P((ppl_ConSys_t cs, ppl_ConSys_const_iterator_t cit));
+
+//! Assigns to \p cit a const iterator "pointing" past the end
+//! of the constraint system \p cs.
+int
+ppl_ConSys_end __P((ppl_ConSys_t cs, ppl_ConSys_const_iterator_t* pcit));
+
+
 #if 0
 //! Returns the singleton system containing only
 //! Constraint::zero_dim_false().

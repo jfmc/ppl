@@ -291,3 +291,58 @@ ppl_ConSys_insert_Constraint(ppl_ConSys_t cs, ppl_const_Constraint_t c) try {
   return 0;
 }
 CATCH_ALL
+
+typedef ConSys::const_iterator ConSys_const_iterator;
+DECLARE_CONVERSIONS(ConSys_const_iterator)
+
+int
+ppl_new_ConSys_const_iterator(ppl_ConSys_const_iterator_t* pcit) try {
+  *pcit = to_nonconst(new ConSys::const_iterator());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_ConSys_const_iterator_from_ConSys_const_iterator
+(ppl_ConSys_const_iterator_t* pcit,
+ ppl_const_ConSys_const_iterator_t cit)  try {
+  *pcit = to_nonconst(new ConSys::const_iterator(*to_const(cit)));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_ConSys_const_iterator(ppl_const_ConSys_const_iterator_t cit) try {
+  delete to_const(cit);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_ConSys_const_iterator_from_ConSys_const_iterator
+(ppl_ConSys_const_iterator_t dst, ppl_const_ConSys_const_iterator_t src) try {
+  const ConSys::const_iterator& ssrc = *to_const(src);
+  ConSys::const_iterator& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_ConSys_begin(ppl_ConSys_t cs, ppl_ConSys_const_iterator_t cit) try {
+  const ConSys& ccs = *to_const(cs);
+  ConSys::const_iterator& ccit = *to_nonconst(cit);
+  ccit = ccs.begin();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_ConSys_end(ppl_ConSys_t cs, ppl_ConSys_const_iterator_t cit) try {
+  const ConSys& ccs = *to_const(cs);
+  ConSys::const_iterator& ccit = *to_nonconst(cit);
+  ccit = ccs.end();
+  return 0;
+}
+CATCH_ALL
+
