@@ -148,7 +148,7 @@ c_variable_default_output_function(ppl_dimension_type var) {
   static char buffer[20];
   buffer[0] = static_cast<char>('A' + var % 26);
   if (ppl_dimension_type i = var / 26) {
-    int r = sprintf(buffer+1, "%u", i);
+    int r = sprintf(buffer+1, FORMAT, i);
     if (r < 0)
       return 0;
     else if (r >= 19) {
