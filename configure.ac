@@ -79,14 +79,16 @@ AH_TOP([
 ])
 
 AH_BOTTOM([
-// In order for the definition of `int64_t' to be seen by Comeau C/C++,
-// we must make sure <stdint.h> is included before <sys/types.hh> is
-// (even indirectly) included.
+/*
+  In order for the definition of `int64_t' to be seen by Comeau C/C++,
+  we must make sure <stdint.h> is included before <sys/types.hh> is
+  (even indirectly) included.
+*/
 #ifdef HAVE_STDINT_H 
 #include <stdint.h>
 #endif
 
-#endif // !defined(PPL_ppl_config_h)
+#endif /* !defined(PPL_ppl_config_h) */
 ])
 
 # C compiler
