@@ -376,8 +376,7 @@ Polyhedra_PowerSet<PH>::BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
 						   (const Polyhedron&,
 						    unsigned*),
 						   unsigned max_disjuncts) {
-  Widening_Function<Polyhedron> wf(wm);
-  BGP99_extrapolation_assign(y, wf, max_disjuncts);
+  BGP99_extrapolation_assign(y, widen_fun(wm), max_disjuncts);
 }
 
 template <typename PH>
@@ -390,8 +389,7 @@ limited_BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
 				    const ConSys&,
 				    unsigned*),
 				   unsigned max_disjuncts) {
-  Limited_Widening_Function<Polyhedron> lwf(lwm, cs);
-  BGP99_extrapolation_assign(y, lwf, max_disjuncts);
+  BGP99_extrapolation_assign(y, widen_fun(lwm, cs), max_disjuncts);
 }
 
 template <typename PH>
@@ -579,8 +577,7 @@ void
 Polyhedra_PowerSet<PH>::
 BHZ03_widening_assign(const Polyhedra_PowerSet& y,
 		      void (Polyhedron::*wm)(const Polyhedron&, unsigned*)) {
-  Widening_Function<Polyhedron> wf(wm);
-  BHZ03_widening_assign<BHRZ03_Certificate>(y, wf);
+  BHZ03_widening_assign<BHRZ03_Certificate>(y, widen_fun(wm));
 }
 
 template <typename PH>
@@ -591,8 +588,7 @@ limited_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
 			      void (Polyhedron::*lwm) (const Polyhedron&,
 						       const ConSys&,
 						       unsigned*)) {
-  Limited_Widening_Function<Polyhedron> lwf(lwm, cs);
-  BHZ03_widening_assign<BHRZ03_Certificate>(y, lwf);
+  BHZ03_widening_assign<BHRZ03_Certificate>(y, widen_fun(lwm, cs));
 }
 
 template <typename PH>
