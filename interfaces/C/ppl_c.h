@@ -58,7 +58,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 extern "C" {
 #endif
 
-/*!
+/*! \brief
   Defines the error code that any function can return.
 */
 enum ppl_enum_error_code {
@@ -82,56 +82,55 @@ enum ppl_enum_error_code {
   PPL_ERROR_UNEXPECTED_ERROR = -6
 };
 
-/*!
+/*! \brief
   An unsigned integral type for representing space dimensions.
 */
 typedef size_t ppl_dimension_type;
 
-/*!
-  Writes to \p m the the maximum space dimension this library can handle.
+/*! @name Initialization, Error Handling and Auxiliary Functions */
+/*!@{*/
+
+/*! \brief
+  Writes to \p m the maximum space dimension this library can handle.
 */
 int
 ppl_max_space_dimension __P((ppl_dimension_type* m));
 
-/*!
+/*! \brief
   Writes to \p m a value that does not designate a valid dimension.
 */
 int
 ppl_not_a_dimension __P((ppl_dimension_type* m));
 
-/*!
+/*! \brief
   Initializes the Parma Polyhedra Library.
   This function must be called before any other function.
 */
 int
 ppl_initialize __P((void));
 
-/*!
+/*! \brief
   Finalizes the Parma Polyhedra Library.
   This function must be called after any other function.
 */
 int
 ppl_finalize __P((void));
 
-/*!
-  Installs the user-defined error handler pointed by \p h.  The error
-  handler takes an error code and a textual description that gives
-  further information about the actual error.  The C string containing
-  the textual description is read-only and its existence it not
-  guaranteed after the handler has returned.
+/*! \brief
+  Installs the user-defined error handler pointed by \p h.
+
+  The error handler takes an error code and a textual description that
+  gives further information about the actual error.  The C string
+  containing the textual description is read-only and its existence it
+  not guaranteed after the handler has returned.
 */
 int
 ppl_set_error_handler __P((void (*h)(enum ppl_enum_error_code code,
 				     const char* description)));
-
+/*!@}*/ /* Initialization, Error Handling and Auxiliary Functions */
 
 #undef PPL_TYPE_DECLARATION
-#define PPL_TYPE_DECLARATION(Type) \
-/*! \brief Opaque pointer to Type. */ \
-typedef struct ppl_ ## Type ## _tag* ppl_ ## Type ## _t; \
-/*! \brief Opaque pointer to const Type. */ \
-typedef struct ppl_ ## Type ## _tag const* ppl_const_ ## Type ## _t
-
+#define PPL_TYPE_DECLARATION(Type) /*! \brief Opaque pointer to Type. */ typedef struct ppl_ ## Type ## _tag* ppl_ ## Type ## _t; /*! \brief Opaque pointer to const Type. */ typedef struct ppl_ ## Type ## _tag const* ppl_const_ ## Type ## _t
 
 PPL_TYPE_DECLARATION(Coefficient);
 
@@ -153,14 +152,17 @@ PPL_TYPE_DECLARATION(Polyhedron);
 
 #undef PPL_TYPE_DECLARATION
 
-/*!
+/*! @name Functions Related to Coefficients */
+/*!@{*/
+
+/*! \brief
   Creates a new coefficent with value 0 and writes an handle for the
   newly created coefficient at address \p pc.
 */
 int
 ppl_new_Coefficient __P((ppl_Coefficient_t* pc));
 
-/*!
+/*! \brief
   Creates a new coefficent with the value given by the GMP integer
   \p z and writes an handle for the newly created coefficient
   at address \p pc.
@@ -168,7 +170,7 @@ ppl_new_Coefficient __P((ppl_Coefficient_t* pc));
 int
 ppl_new_Coefficient_from_mpz_t __P((ppl_Coefficient_t* pc, mpz_t z));
 
-/*!
+/*! \brief
   Builds a coefficient that is a copy of \p c; writes an handle
   for the newly created coefficient at address \p pc.
 */
@@ -176,42 +178,45 @@ int
 ppl_new_Coefficient_from_Coefficient __P((ppl_Coefficient_t* pc,
 					  ppl_const_Coefficient_t c));
 
-/*!
+/*! \brief
   Assign to \p dst the value given by the GMP integer \p z.
 */
 int
 ppl_assign_Coefficient_from_mpz_t __P((ppl_Coefficient_t dst, mpz_t z));
 
-/*!
-  Assigns a copy of the linear expression \p src to \p dst.
+/*! \brief
+  Assigns a copy of the coefficient \p src to \p dst.
 */
 int
 ppl_assign_Coefficient_from_Coefficient __P((ppl_Coefficient_t dst,
 					     ppl_const_Coefficient_t src));
 
-/*!
+/*! \brief
   Invalidates the handle \p c: this makes sure the corresponding
   resources will eventually be released.
 */
 int
 ppl_delete_Coefficient __P((ppl_const_Coefficient_t c));
 
-/*!
+/*! \brief
   Sets the value of the GMP integer \p z to the value of \p c.
 */
 int
 ppl_Coefficient_to_mpz_t __P((ppl_const_Coefficient_t c, mpz_t z));
 
-/*!
+/*! \brief
   Returns a positive integer if \p c is well formed, i.e., if it
   satisfies all its implementation variant; returns 0 and perhaps
   make some noise if \p c is broken.  Useful for debugging purposes.
 */
 int
 ppl_Coefficient_OK __P((ppl_const_Coefficient_t c));
+/*!@}*/ /* Functions Related to Coefficients */
 
+/*! @name Functions Related to Linear Expressions */
+/*!@{*/
 
-/*!
+/*! \brief
   Creates a new linear expression corresponding to the constant 0 in a
   zero-dimensional space; writes an handle for the new linear
   expression at address \p ple.
@@ -219,7 +224,7 @@ ppl_Coefficient_OK __P((ppl_const_Coefficient_t c));
 int
 ppl_new_LinExpression __P((ppl_LinExpression_t* ple));
 
-/*!
+/*! \brief
   Creates a new linear expression corresponding to the constant 0 in a
   <TT>d</TT>-dimensional space; writes an handle for the new linear
   expression at address \p ple.
@@ -228,7 +233,7 @@ int
 ppl_new_LinExpression_with_dimension __P((ppl_LinExpression_t* ple,
 					  ppl_dimension_type d));
 
-/*!
+/*! \brief
   Builds a linear expression that is a copy of \p le; writes an handle
   for the newly created linear expression at address \p ple.
 */
@@ -236,7 +241,7 @@ int
 ppl_new_LinExpression_from_LinExpression __P((ppl_LinExpression_t* ple,
 					      ppl_const_LinExpression_t le));
 
-/*!
+/*! \brief
   Builds a linear expression corresponding to constraint \p c;
   writes an handle for the newly created linear expression at address \p ple.
 */
@@ -244,7 +249,7 @@ int
 ppl_new_LinExpression_from_Constraint __P((ppl_LinExpression_t* ple,
 					   ppl_const_Constraint_t c));
 
-/*!
+/*! \brief
   Builds a linear expression corresponding to generator \p g;
   writes an handle for the newly created linear expression at address \p ple.
 */
@@ -252,21 +257,21 @@ int
 ppl_new_LinExpression_from_Generator __P((ppl_LinExpression_t* ple,
 					  ppl_const_Generator_t g));
 
-/*!
+/*! \brief
   Invalidates the handle \p le: this makes sure the corresponding
   resources will eventually be released.
 */
 int
 ppl_delete_LinExpression __P((ppl_const_LinExpression_t le));
 
-/*!
+/*! \brief
   Assigns a copy of the linear expression \p src to \p dst.
 */
 int
 ppl_assign_LinExpression_from_LinExpression
 __P((ppl_LinExpression_t dst, ppl_const_LinExpression_t src));
 
-/*!
+/*! \brief
   Adds \p n to the coefficient of variable \p var in the linear
   expression \p le.  The space dimension is set to be the maximum
   between \p var + 1 and the old space dimension.
@@ -276,7 +281,7 @@ ppl_LinExpression_add_to_coefficient __P((ppl_LinExpression_t le,
 					  ppl_dimension_type var,
 					  ppl_const_Coefficient_t n));
 
-/*!
+/*! \brief
   Adds \p n to the inhomogeneous term of the linear expression
   \p le.
 */
@@ -284,22 +289,22 @@ int
 ppl_LinExpression_add_to_inhomogeneous __P((ppl_LinExpression_t le,
 					    ppl_const_Coefficient_t n));
 
-/*!
+/*! \brief
   Returns the space dimension of \p le.
 */
 int
 ppl_LinExpression_space_dimension __P((ppl_const_LinExpression_t le));
 
-/*!
+/*! \brief
   Returns a positive integer if \p le is well formed, i.e., if it
   satisfies all its implementation variant; returns 0 and perhaps
   make some noise if \p le is broken.  Useful for debugging purposes.
 */
 int
 ppl_LinExpression_OK __P((ppl_const_LinExpression_t le));
+/*!@}*/ /* Functions Related to Linear Expressions */
 
-
-/*!
+/*! \brief
   Describes the relations represented by a constraint.
 */
 enum ppl_enum_Constraint_Type {
@@ -316,7 +321,10 @@ enum ppl_enum_Constraint_Type {
 };
 
 
-/*!
+/*! @name Functions Related to Constraints */
+/*!@{*/
+
+/*! \brief
   Creates the new constraint `\p le \p rel 0' and writes an handle for
   it at address \p pc.  The space dimension of the new constraint is
   equal to the space dimension of \p le.
@@ -324,16 +332,16 @@ enum ppl_enum_Constraint_Type {
 int
 ppl_new_Constraint __P((ppl_Constraint_t* pc,
 			ppl_const_LinExpression_t le,
-			enum ppl_enum_Constraint_Type));
+			enum ppl_enum_Constraint_Type rel));
 
-/*!
+/*! \brief
   Creates the unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$
   and writes an handle for it at address \p pc.
 */
 int
 ppl_new_Constraint_zero_dim_false __P((ppl_Constraint_t* pc));
 
-/*!
+/*! \brief
   Creates the true (zero-dimension space) constraint \f$0 \leq 1\f$,
   also known as <EM>positivity constraint</EM>.
   An handle for the newly created constraint is written at address \p pc.
@@ -341,7 +349,7 @@ ppl_new_Constraint_zero_dim_false __P((ppl_Constraint_t* pc));
 int
 ppl_new_Constraint_zero_dim_positivity __P((ppl_Constraint_t* pc));
 
-/*!
+/*! \brief
   Builds a constraint that is a copy of \p c; writes an handle
   for the newly created constraint at address \p pc.
 */
@@ -349,33 +357,33 @@ int
 ppl_new_Constraint_from_Constraint __P((ppl_Constraint_t* pc,
 					ppl_const_Constraint_t c));
 
-/*!
+/*! \brief
   Invalidates the handle \p c: this makes sure the corresponding
   resources will eventually be released.
 */
 int
 ppl_delete_Constraint __P((ppl_const_Constraint_t c));
 
-/*!
+/*! \brief
   Assigns a copy of the constraint \p src to \p dst.
 */
 int
 ppl_assign_Constraint_from_Constraint __P((ppl_Constraint_t dst,
 					   ppl_const_Constraint_t src));
 
-/*!
+/*! \brief
   Returns the space dimension of \p c.
 */
 int
 ppl_Constraint_space_dimension __P((ppl_const_Constraint_t c));
 
-/*!
+/*! \brief
   Returns the type of constraint \p c.
 */
 int
 ppl_Constraint_type __P((ppl_const_Constraint_t c));
 
-/*!
+/*! \brief
   Copies into \p n the coefficient of variable \p var in
   constraint \p c.
 */
@@ -384,37 +392,40 @@ ppl_Constraint_coefficient __P((ppl_const_Constraint_t c,
 				ppl_dimension_type var,
 				ppl_Coefficient_t n));
 
-/*!
+/*! \brief
   Copies into \p n the inhomogeneous term of constraint \p c.
 */
 int
 ppl_Constraint_inhomogeneous_term __P((ppl_const_Constraint_t c,
 				       ppl_Coefficient_t n));
 
-/*!
+/*! \brief
   Returns a positive integer if \p c is well formed, i.e., if it
   satisfies all its implementation variant; returns 0 and perhaps
   make some noise if \p c is broken.  Useful for debugging purposes.
 */
 int
 ppl_Constraint_OK __P((ppl_const_Constraint_t c));
+/*!@}*/ /* Functions Related to Constraints */
 
+/*! @name Functions Related to Constraint Systems */
+/*!@{*/
 
-/*!
+/*! \brief
   Builds an empty system of constraints and writes an handle to it at
   address \p pcs.
 */
 int
 ppl_new_ConSys __P((ppl_ConSys_t* pcs));
 
-/*!
+/*! \brief
   Builds a zero-dimensional, unsatisfiable constraint system and
   writes an handle to it at address \p pcs.
 */
 int
 ppl_new_ConSys_zero_dim_empty __P((ppl_ConSys_t* pcs));
 
-/*!
+/*! \brief
   Builds the singleton constraint system containing only a copy of
   constraint \p c; writes an handle for the newly created system at
   address \p pcs.
@@ -423,41 +434,41 @@ int
 ppl_new_ConSys_from_Constraint __P((ppl_ConSys_t* pcs,
 				    ppl_const_Constraint_t c));
 
-/*!
+/*! \brief
   Builds a constraint system that is a copy of \p cs; writes an handle
   for the newly created system at address \p pcs.
 */
 int
 ppl_new_ConSys_from_ConSys __P((ppl_ConSys_t* pcs, ppl_const_ConSys_t cs));
 
-/*!
+/*! \brief
   Invalidates the handle \p cs: this makes sure the corresponding
   resources will eventually be released.
 */
 int
 ppl_delete_ConSys __P((ppl_const_ConSys_t cs));
 
-/*!
+/*! \brief
   Assigns a copy of the constraint system \p src to \p dst.
 */
 int
 ppl_assign_ConSys_from_ConSys __P((ppl_ConSys_t dst,
 				   ppl_const_ConSys_t src));
 
-/*!
+/*! \brief
   Returns the dimension of the vector space enclosing \p cs.
 */
 int
 ppl_ConSys_space_dimension __P((ppl_const_ConSys_t cs));
 
-/*!
+/*! \brief
   Removes all the constraints from the constraint system \p cs
   and sets its space dimension to 0.
 */
 int
 ppl_ConSys_clear __P((ppl_ConSys_t cs));
 
-/*!
+/*! \brief
   Inserts a copy of the constraint \p c into \p cs; the space
   dimension is increased, if necessary.
 */
@@ -465,7 +476,7 @@ int
 ppl_ConSys_insert_Constraint __P((ppl_ConSys_t cs,
 				  ppl_const_Constraint_t c));
 
-/*!
+/*! \brief
   Returns a positive integer if \p cs is well formed, i.e., if it
   satisfies all its implementation variant; returns 0 and perhaps
   make some noise if \p cs is broken.  Useful for debugging purposes.
@@ -474,14 +485,14 @@ int
 ppl_ConSys_OK __P((ppl_const_ConSys_t c));
 
 
-/*!
+/*! \brief
   Builds a new `const iterator' and writes an handle to it at address
   \p pcit.
 */
 int
 ppl_new_ConSys_const_iterator __P((ppl_ConSys_const_iterator_t* pcit));
 
-/*!
+/*! \brief
   Builds a const iterator system that is a copy of \p cit; writes an
   handle for the newly created const iterator at address \p pcit.
 */
@@ -490,7 +501,7 @@ ppl_new_ConSys_const_iterator_from_ConSys_const_iterator
 __P((ppl_ConSys_const_iterator_t* pcit,
      ppl_const_ConSys_const_iterator_t cit));
 
-/*!
+/*! \brief
   Invalidates the handle \p cit: this makes sure the corresponding
   resources will eventually be released.
 */
@@ -498,7 +509,7 @@ int
 ppl_delete_ConSys_const_iterator
 __P((ppl_const_ConSys_const_iterator_t cit));
 
-/*!
+/*! \brief
   Assigns a copy of the const iterator \p src to \p dst.
 */
 int
@@ -506,21 +517,21 @@ ppl_assign_ConSys_const_iterator_from_ConSys_const_iterator
 __P((ppl_ConSys_const_iterator_t dst,
      ppl_const_ConSys_const_iterator_t src));
 
-/*!
+/*! \brief
   Assigns to \p cit a const iterator "pointing" to the beginning of
   the constraint system \p cs.
 */
 int
 ppl_ConSys_begin __P((ppl_const_ConSys_t cs, ppl_ConSys_const_iterator_t cit));
 
-/*!
+/*! \brief
   Assigns to \p cit a const iterator "pointing" past the end of the
   constraint system \p cs.
 */
 int
 ppl_ConSys_end __P((ppl_const_ConSys_t cs, ppl_ConSys_const_iterator_t cit));
 
-/*!
+/*! \brief
   Dereference \p cit writing a const handle to the resulting
   constraint at address \p pc.
 */
@@ -528,13 +539,13 @@ int
 ppl_ConSys_const_iterator_dereference
 __P((ppl_const_ConSys_const_iterator_t cit, ppl_const_Constraint_t* pc));
 
-/*!
+/*! \brief
   Increment \p cit so that it "points" to the next constraint.
 */
 int
 ppl_ConSys_const_iterator_increment __P((ppl_ConSys_const_iterator_t cit));
 
-/*!
+/*! \brief
   Returns a positive integer if the iterators corresponding to \p x and
   \p y are equal; return 0 if they are different.
 */
@@ -542,9 +553,9 @@ int
 ppl_ConSys_const_iterator_equal_test
 __P((ppl_const_ConSys_const_iterator_t x,
      ppl_const_ConSys_const_iterator_t y));
+/*!@}*/ /* Functions Related to Constraint Systems */
 
-
-/*!
+/*! \brief
   Describes the different kinds of generators.
 */
 enum ppl_enum_Generator_Type {
@@ -559,7 +570,10 @@ enum ppl_enum_Generator_Type {
 };
 
 
-/*!
+/*! @name Functions Related to Generators */
+/*!@{*/
+
+/*! \brief
   Creates a new generator of direction \p le and type \p t.  If the
   generator to be created is a point or a closure point, the divisor
   \p d is applied to \p le.  For other types of generators \p d is
@@ -573,7 +587,7 @@ ppl_new_Generator __P((ppl_Generator_t* pg,
 		       enum ppl_enum_Generator_Type t,
 		       ppl_const_Coefficient_t d));
 
-/*!
+/*! \brief
   Creates the point that is the origin of the zero-dimensional space
   \f$\Rset^0\f$.  Writes an handle for the new generator at address
   \p pg.
@@ -581,7 +595,7 @@ ppl_new_Generator __P((ppl_Generator_t* pg,
 int
 ppl_new_Generator_zero_dim_point __P((ppl_Generator_t* pg));
 
-/*!
+/*! \brief
   Creates, as a closure point, the point that is the origin of the
   zero-dimensional space \f$\Rset^0\f$.  Writes an handle for the new
   generator at address \p pg.
@@ -589,7 +603,7 @@ ppl_new_Generator_zero_dim_point __P((ppl_Generator_t* pg));
 int
 ppl_new_Generator_zero_dim_closure_point __P((ppl_Generator_t* pg));
 
-/*!
+/*! \brief
   Builds a generator that is a copy of \p g; writes an handle
   for the newly created generator at address \p pg.
 */
@@ -597,33 +611,33 @@ int
 ppl_new_Generator_from_Generator __P((ppl_Generator_t* pg,
 				      ppl_const_Generator_t g));
 
-/*!
+/*! \brief
   Invalidates the handle \p g: this makes sure the corresponding
   resources will eventually be released.
 */
 int
 ppl_delete_Generator __P((ppl_const_Generator_t g));
 
-/*!
+/*! \brief
   Assigns a copy of the generator \p src to \p dst.
 */
 int
 ppl_assign_Generator_from_Generator __P((ppl_Generator_t dst,
 					 ppl_const_Generator_t src));
 
-/*!
+/*! \brief
   Returns the space dimension of \p g.
 */
 int
 ppl_Generator_space_dimension __P((ppl_const_Generator_t g));
 
-/*!
+/*! \brief
   Returns the type of generator \p g.
 */
 int
 ppl_Generator_type __P((ppl_const_Generator_t g));
 
-/*!
+/*! \brief
   Copies into \p n the coefficient of variable \p var in
   generator \p g.
 */
@@ -632,22 +646,25 @@ ppl_Generator_coefficient __P((ppl_const_Generator_t g,
 			       ppl_dimension_type var,
 			       ppl_Coefficient_t n));
 
-/*!
+/*! \brief
   If \p g is a point or a closure point assigns its divisor to \p n.
 */
 int
 ppl_Generator_divisor __P((ppl_const_Generator_t g, ppl_Coefficient_t n));
 
-/*!
+/*! \brief
   Returns a positive integer if \p g is well formed, i.e., if it
   satisfies all its implementation variant; returns 0 and perhaps
   make some noise if \p g is broken.  Useful for debugging purposes.
 */
 int
 ppl_Generator_OK __P((ppl_const_Generator_t g));
+/*!@}*/ /* Functions Related to Generators */
 
+/*! @name Functions Related to Generator Systems */
+/*!@{*/
 
-/*!
+/*! \brief
   Builds an empty system of generators and writes an handle to it at
   address \p pgs.
 */
@@ -662,7 +679,7 @@ ppl_new_GenSys __P((ppl_GenSys_t* pgs));
 int
 ppl_new_GenSys_zero_dim_univ __P((ppl_GenSys_t* pgs));
 
-/*!
+/*! \brief
   Builds the singleton generator system containing only a copy of
   generator \p g; writes an handle for the newly created system at
   address \p pgs.
@@ -671,48 +688,48 @@ int
 ppl_new_GenSys_from_Generator __P((ppl_GenSys_t* pgs,
 				   ppl_const_Generator_t g));
 
-/*!
+/*! \brief
   Builds a generator system that is a copy of \p gs; writes an handle
   for the newly created system at address \p pgs.
 */
 int
 ppl_new_GenSys_from_GenSys __P((ppl_GenSys_t* pgs, ppl_const_GenSys_t gs));
 
-/*!
+/*! \brief
   Invalidates the handle \p gs: this makes sure the corresponding
   resources will eventually be released.
 */
 int
 ppl_delete_GenSys __P((ppl_const_GenSys_t gs));
 
-/*!
+/*! \brief
   Assigns a copy of the generator system \p src to \p dst.
 */
 int
 ppl_assign_GenSys_from_GenSys __P((ppl_GenSys_t dst,
 				   ppl_const_GenSys_t src));
 
-/*!
+/*! \brief
   Returns the dimension of the vector space enclosing \p gs.
 */
 int
 ppl_GenSys_space_dimension __P((ppl_const_GenSys_t gs));
 
-/*!
+/*! \brief
   Removes all the generatorss from the generator system \p gs
   and sets its space dimension to 0.
 */
 int
 ppl_GenSys_clear __P((ppl_GenSys_t gs));
 
-/*!
+/*! \brief
   Inserts a copy of the generator \p g into \p gs; the space
   dimension is increased, if necessary.
 */
 int
 ppl_GenSys_insert_Generator __P((ppl_GenSys_t gs, ppl_const_Generator_t g));
 
-/*!
+/*! \brief
   Returns a positive integer if \p gs is well formed, i.e., if it
   satisfies all its implementation variant; returns 0 and perhaps
   make some noise if \p gs is broken.  Useful for debugging purposes.
@@ -721,14 +738,14 @@ int
 ppl_GenSys_OK __P((ppl_const_GenSys_t c));
 
 
-/*!
+/*! \brief
   Builds a new `const iterator' and writes an handle to it at address
   \p pgit.
 */
 int
 ppl_new_GenSys_const_iterator __P((ppl_GenSys_const_iterator_t* pgit));
 
-/*!
+/*! \brief
   Builds a const iterator system that is a copy of \p git; writes an
   handle for the newly created const iterator at address \p pgit.
 */
@@ -737,7 +754,7 @@ ppl_new_GenSys_const_iterator_from_GenSys_const_iterator
 __P((ppl_GenSys_const_iterator_t* pgit,
      ppl_const_GenSys_const_iterator_t git));
 
-/*!
+/*! \brief
   Invalidates the handle \p git: this makes sure the corresponding
   resources will eventually be released.
 */
@@ -745,7 +762,7 @@ int
 ppl_delete_GenSys_const_iterator
 __P((ppl_const_GenSys_const_iterator_t git));
 
-/*!
+/*! \brief
   Assigns a copy of the const iterator \p src to \p dst.
 */
 int
@@ -753,7 +770,7 @@ ppl_assign_GenSys_const_iterator_from_GenSys_const_iterator
 __P((ppl_GenSys_const_iterator_t dst,
      ppl_const_GenSys_const_iterator_t src));
 
-/*!
+/*! \brief
   Assigns to \p git a const iterator "pointing" to the beginning of
   the generator system \p gs.
 */
@@ -761,7 +778,7 @@ int
 ppl_GenSys_begin __P((ppl_const_GenSys_t gs,
 		      ppl_GenSys_const_iterator_t git));
 
-/*!
+/*! \brief
   Assigns to \p git a const iterator "pointing" past the end of the
   generator system \p gs.
 */
@@ -769,7 +786,7 @@ int
 ppl_GenSys_end __P((ppl_const_GenSys_t gs,
 		    ppl_GenSys_const_iterator_t git));
 
-/*!
+/*! \brief
   Dereference \p git writing a const handle to the resulting
   generator at address \p pg.
 */
@@ -778,13 +795,13 @@ ppl_GenSys_const_iterator_dereference
 __P((ppl_const_GenSys_const_iterator_t git,
      ppl_const_Generator_t* pg));
 
-/*!
+/*! \brief
   Increment \p git so that it "points" to the next generator.
 */
 int
 ppl_GenSys_const_iterator_increment __P((ppl_GenSys_const_iterator_t git));
 
-/*!
+/*! \brief
   Return a positive integer if the iterators corresponding to \p x and
   \p y are equal; return 0 if they are different.
 */
@@ -792,9 +809,58 @@ int
 ppl_GenSys_const_iterator_equal_test
 __P((ppl_const_GenSys_const_iterator_t x,
      ppl_const_GenSys_const_iterator_t y));
+/*!@}*/ /* Functions Related to Generator Systems */
 
+/*! \brief
+  Code of the worst-case polynomial complexity class.
+*/
+extern unsigned int PPL_COMPLEXITY_CLASS_POLYNOMIAL;
 
-/*!
+/*! \brief
+  Code of the worst-case exponential but typically polynomial
+  complexity class.
+*/
+extern unsigned int PPL_COMPLEXITY_CLASS_SIMPLEX;
+
+/*! \brief
+  Code of the universal complexity class.
+*/
+extern unsigned int PPL_COMPLEXITY_CLASS_ANY;
+
+/*! \brief
+  Individual bit saying that the polyhedron and the set of points
+  satisfying the constraint are disjoint.
+*/
+extern unsigned int PPL_POLY_CON_RELATION_IS_DISJOINT;
+
+/*! \brief
+  Individual bit saying that the polyhedron intersects the set of
+  points satisfying the constraint, but it is not included in it.
+*/
+extern unsigned int PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS;
+
+/*! \brief
+  Individual bit saying that the polyhedron is included in the set of
+  points satisfying the constraint.
+*/
+extern unsigned int PPL_POLY_CON_RELATION_IS_INCLUDED;
+
+/*! \brief
+  Individual bit saying that the polyhedron is included in the set of
+  points saturating the constraint.
+*/
+extern unsigned int PPL_POLY_CON_RELATION_SATURATES;
+
+/*! \brief
+  Individual bit saying that adding the generator would not change the
+  polyhedron.
+*/
+extern unsigned int PPL_POLY_GEN_RELATION_SUBSUMES;
+
+/*! @name Functions Related to Polyhedra */
+/*!@{*/
+
+/*! \brief
   Builds an universe closed polyhedron of dimension \p d and writes an
   handle to it at address \p pph.
 */
@@ -802,7 +868,7 @@ int
 ppl_new_C_Polyhedron_from_dimension __P((ppl_Polyhedron_t* pph,
 					 ppl_dimension_type d));
 
-/*!
+/*! \brief
   Builds an universe NNC polyhedron of dimension \p d and writes an
   handle to it at address \p pph.
 */
@@ -810,7 +876,7 @@ int
 ppl_new_NNC_Polyhedron_from_dimension __P((ppl_Polyhedron_t* pph,
 					   ppl_dimension_type d));
 
-/*!
+/*! \brief
   Builds an empty closed polyhedron of dimension \p d and writes an
   handle to it at address \p pph.
 */
@@ -818,7 +884,7 @@ int
 ppl_new_C_Polyhedron_empty_from_dimension __P((ppl_Polyhedron_t* pph,
 					       ppl_dimension_type d));
 
-/*!
+/*! \brief
   Builds an empty NNC polyhedron of dimension \p d and writes an
   handle to it at address \p pph.
 */
@@ -826,7 +892,7 @@ int
 ppl_new_NNC_Polyhedron_empty_from_dimension __P((ppl_Polyhedron_t* pph,
 					       ppl_dimension_type d));
 
-/*!
+/*! \brief
   Builds a closed polyhedron that is a copy of \p ph; writes an handle
   for the newly created polyhedron at address \p pph.
 */
@@ -834,7 +900,7 @@ int
 ppl_new_C_Polyhedron_from_C_Polyhedron __P((ppl_Polyhedron_t* pph,
 					    ppl_const_Polyhedron_t ph));
 
-/*!
+/*! \brief
   Builds a closed polyhedron that is a copy of of the NNC polyhedron
   \p ph; writes an handle for the newly created polyhedron at address
   \p pph.
@@ -843,7 +909,7 @@ int
 ppl_new_C_Polyhedron_from_NNC_Polyhedron __P((ppl_Polyhedron_t* pph,
 					      ppl_const_Polyhedron_t ph));
 
-/*!
+/*! \brief
   Builds an NNC polyhedron that is a copy of of the closed polyhedron
   \p ph; writes an handle for the newly created polyhedron at address
   \p pph.
@@ -852,7 +918,7 @@ int
 ppl_new_NNC_Polyhedron_from_C_Polyhedron __P((ppl_Polyhedron_t* pph,
 					      ppl_const_Polyhedron_t ph));
 
-/*!
+/*! \brief
   Builds an NNC polyhedron that is a copy of \p ph; writes an handle
   for the newly created polyhedron at address \p pph.
 */
@@ -860,7 +926,7 @@ int
 ppl_new_NNC_Polyhedron_from_NNC_Polyhedron __P((ppl_Polyhedron_t* pph,
 						ppl_const_Polyhedron_t ph));
 
-/*!
+/*! \brief
   Builds a new closed polyhedron from the system of constraints
   \p cs and writes an handle for the newly created polyhedron at
   address \p pph.  The new polyhedron will inherit the space dimension
@@ -870,7 +936,7 @@ int
 ppl_new_C_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph,
 				      ppl_const_ConSys_t cs));
 
-/*!
+/*! \brief
   Builds a new closed polyhedron recycling the system of constraints
   \p cs and writes an handle for the newly created polyhedron at
   address \p pph.  Since \p cs will be <EM>the</EM> system of
@@ -885,7 +951,7 @@ int
 ppl_new_C_Polyhedron_recycle_ConSys __P((ppl_Polyhedron_t* pph,
 					 ppl_ConSys_t cs));
 
-/*!
+/*! \brief
   Builds a new NNC polyhedron from the system of constraints
   \p cs and writes an handle for the newly created polyhedron at
   address \p pph.  The new polyhedron will inherit the space dimension
@@ -895,7 +961,7 @@ int
 ppl_new_NNC_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph,
 					ppl_const_ConSys_t cs));
 
-/*!
+/*! \brief
   Builds a new NNC polyhedron recycling the system of constraints
   \p cs and writes an handle for the newly created polyhedron at
   address \p pph.  Since \p cs will be <EM>the</EM> system of
@@ -910,7 +976,7 @@ int
 ppl_new_NNC_Polyhedron_recycle_ConSys __P((ppl_Polyhedron_t* pph,
 					   ppl_ConSys_t cs));
 
-/*!
+/*! \brief
   Builds a new closed polyhedron from the system of generators
   \p gs and writes an handle for the newly created polyhedron at
   address \p pph.  The new polyhedron will inherit the space dimension
@@ -920,7 +986,7 @@ int
 ppl_new_C_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph,
 				      ppl_const_GenSys_t gs));
 
-/*!
+/*! \brief
   Builds a new closed polyhedron recycling the system of generators
   \p gs and writes an handle for the newly created polyhedron at
   address \p pph.  Since \p gs will be <EM>the</EM> system of
@@ -935,7 +1001,7 @@ int
 ppl_new_C_Polyhedron_recycle_GenSys __P((ppl_Polyhedron_t* pph,
 					 ppl_GenSys_t gs));
 
-/*!
+/*! \brief
   Builds a new NNC polyhedron from the system of generators
   \p gs and writes an handle for the newly created polyhedron at
   address \p pph.  The new polyhedron will inherit the space dimension
@@ -945,7 +1011,7 @@ int
 ppl_new_NNC_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph,
 					ppl_const_GenSys_t gs));
 
-/*!
+/*! \brief
   Builds a new NNC polyhedron recycling the system of generators
   \p gs and writes an handle for the newly created polyhedron at
   address \p pph.  Since \p gs will be <EM>the</EM> system of
@@ -960,10 +1026,11 @@ int
 ppl_new_NNC_Polyhedron_recycle_GenSys __P((ppl_Polyhedron_t* pph,
 					   ppl_GenSys_t gs));
 
-/*!
+/*! \brief
   Builds a new C polyhedron corresponding to an interval-based
   bounding box, writing a handle for the newly created polyhedron at
   address \p pph.
+
   If an interval of the bounding box is provided with any finite
   but open bound, then the polyhedron is not built and the value
   <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> is returned.
@@ -1022,10 +1089,11 @@ __P((ppl_Polyhedron_t* pph,
 			    ppl_Coefficient_t d)));
 
 
-/*!
+/*! \brief
   Builds a new C polyhedron corresponding to an interval-based
   bounding box, writing a handle for the newly created polyhedron at
   address \p pph.
+
   The bounding box is accessed by using the following functions,
   passed as arguments:
     \code
@@ -1080,14 +1148,14 @@ __P((ppl_Polyhedron_t* pph,
 			    ppl_Coefficient_t n,
 			    ppl_Coefficient_t d)));
 
-/*!
+/*! \brief
   Invalidates the handle \p ph: this makes sure the corresponding
   resources will eventually be released.
 */
 int
 ppl_delete_Polyhedron __P((ppl_const_Polyhedron_t ph));
 
-/*!
+/*! \brief
   Assigns a copy of the closed polyhedron \p src to the closed
   polyhedron \p dst.
 */
@@ -1095,7 +1163,7 @@ int
 ppl_assign_C_Polyhedron_from_C_Polyhedron __P((ppl_Polyhedron_t dst,
 					       ppl_const_Polyhedron_t src));
 
-/*!
+/*! \brief
   Assigns a copy of the NNC polyhedron \p src to the NNC
   polyhedron \p dst.
 */
@@ -1103,20 +1171,20 @@ int
 ppl_assign_NNC_Polyhedron_from_NNC_Polyhedron
 __P((ppl_Polyhedron_t dst, ppl_const_Polyhedron_t src));
 
-/*!
+/*! \brief
   Returns the dimension of the vector space enclosing \p ph.
 */
 int
 ppl_Polyhedron_space_dimension __P((ppl_const_Polyhedron_t ph));
 
-/*!
+/*! \brief
   Intersects \p x with polyhedron \p y and assigns the result \p x.
 */
 int
 ppl_Polyhedron_intersection_assign __P((ppl_Polyhedron_t x,
 					ppl_const_Polyhedron_t y));
 
-/*!
+/*! \brief
   Intersects \p x with polyhedron \p y and assigns the result \p x.
   Returns a positive integer if the resulting polyhedron is non-empty;
   returns 0 if it is empty.  Upon successful return, \p x is also
@@ -1126,7 +1194,7 @@ int
 ppl_Polyhedron_intersection_assign_and_minimize
 __P((ppl_Polyhedron_t x, ppl_const_Polyhedron_t y));
 
-/*!
+/*! \brief
   Seeing a polyhedron as a set of tuples (its points), assigns
   to \p x all the tuples that can be obtained by concatenating,
   in the order given, a tuple of \p x with a tuple of \p y.
@@ -1135,7 +1203,7 @@ int
 ppl_Polyhedron_concatenate_assign __P((ppl_Polyhedron_t x,
 				       ppl_const_Polyhedron_t y));
 
-/*!
+/*! \brief
   Assigns to \p x the poly-hull of the set-theoretic union
   of \p x and \p y.
 */
@@ -1143,7 +1211,7 @@ int
 ppl_Polyhedron_poly_hull_assign __P((ppl_Polyhedron_t x,
 				     ppl_const_Polyhedron_t y));
 
-/*!
+/*! \brief
   Assigns to \p x the poly-hull of the set-theoretic union of \p x
   and \p y.  Returns a positive integer if the resulting polyhedron is
   non-empty; returns 0 if it is empty.  Upon successful return, \p x is
@@ -1152,7 +1220,7 @@ ppl_Polyhedron_poly_hull_assign __P((ppl_Polyhedron_t x,
 int
 ppl_Polyhedron_poly_hull_assign_and_minimize __P((ppl_Polyhedron_t x,
 						  ppl_const_Polyhedron_t y));
-/*!
+/*! \brief
   Assigns to \p x the poly-hull of the set-theoretic difference
   of \p x and \p y.
 */
@@ -1160,7 +1228,7 @@ int
 ppl_Polyhedron_poly_difference_assign __P((ppl_Polyhedron_t x,
 					   ppl_const_Polyhedron_t y));
 
-/*!
+/*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the BHRZ03-widening of \p x and \p y.
 */
@@ -1168,7 +1236,7 @@ int
 ppl_Polyhedron_BHRZ03_widening_assign __P((ppl_Polyhedron_t x,
 					   ppl_const_Polyhedron_t y));
 
-/*!
+/*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the BHRZ03-widening of \p x and \p y
   intersected with the constraints in \p cs that are satisfied by all
@@ -1180,7 +1248,7 @@ __P((ppl_Polyhedron_t x,
      ppl_const_Polyhedron_t y,
      ppl_const_ConSys_t cs));
 
-/*!
+/*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the BHRZ03-widening of \p x and \p y
   intersected with the constraints in \p cs that are satisfied by all
@@ -1194,7 +1262,7 @@ __P((ppl_Polyhedron_t x,
      ppl_const_Polyhedron_t y,
      ppl_const_ConSys_t cs));
 
-/*!
+/*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the H79-widening of \p x and \p y.
 */
@@ -1202,7 +1270,7 @@ int
 ppl_Polyhedron_H79_widening_assign __P((ppl_Polyhedron_t x,
 					ppl_const_Polyhedron_t y));
 
-/*!
+/*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the H79-widening of \p x and \p y
   intersected with the constraints in \p cs that are satisfied by all
@@ -1213,7 +1281,7 @@ ppl_Polyhedron_limited_H79_extrapolation_assign __P((ppl_Polyhedron_t x,
 						     ppl_const_Polyhedron_t y,
 						     ppl_const_ConSys_t cs));
 
-/*!
+/*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the H79-widening of \p x and \p y
   intersected with the constraints in \p cs that are satisfied by all
@@ -1227,7 +1295,7 @@ __P((ppl_Polyhedron_t x,
      ppl_const_Polyhedron_t y,
      ppl_const_ConSys_t cs));
 
-/*!
+/*! \brief
   Assigns to \p x the \ref time_elapse "time-elapse" between the polyhedra
   \p x and \p y.
 */
@@ -1236,7 +1304,7 @@ ppl_Polyhedron_time_elapse_assign __P((ppl_Polyhedron_t x,
 				       ppl_const_Polyhedron_t y));
 
 
-/*!
+/*! \brief
   Writes a const handle to the constraint system defining the
   polyhedron \p ph at address \p pcs.
 */
@@ -1244,7 +1312,7 @@ int
 ppl_Polyhedron_constraints __P((ppl_const_Polyhedron_t ph,
 				ppl_const_ConSys_t* pcs));
 
-/*!
+/*! \brief
   Writes a const handle to the minimized constraint system defining the
   polyhedron \p ph at address \p pcs.
 */
@@ -1252,7 +1320,7 @@ int
 ppl_Polyhedron_minimized_constraints __P((ppl_const_Polyhedron_t ph,
 				ppl_const_ConSys_t* pcs));
 
-/*!
+/*! \brief
   Writes a const handle to the generator system defining the
   polyhedron \p ph at address \p pgs.
 */
@@ -1260,7 +1328,7 @@ int
 ppl_Polyhedron_generators __P((ppl_const_Polyhedron_t ph,
 			       ppl_const_GenSys_t* pgs));
 
-/*!
+/*! \brief
   Writes a const handle to the minimized generator system defining the
   polyhedron \p ph at address \p pgs.
 */
@@ -1268,7 +1336,7 @@ int
 ppl_Polyhedron_minimized_generators __P((ppl_const_Polyhedron_t ph,
 					 ppl_const_GenSys_t* pgs));
 
-/*!
+/*! \brief
   Adds a copy of the constraint \p c to the system of constraints of
   \p ph.
 */
@@ -1276,7 +1344,7 @@ int
 ppl_Polyhedron_add_constraint __P((ppl_Polyhedron_t ph,
 				   ppl_const_Constraint_t c));
 
-/*!
+/*! \brief
   Adds a copy of the constraint \p c to the system of constraints of
   \p ph.  Returns a positive integer if the resulting polyhedron is
   non-empty; returns 0 if it is empty.  Upon successful return, \p ph
@@ -1287,7 +1355,7 @@ int
 ppl_Polyhedron_add_constraint_and_minimize __P((ppl_Polyhedron_t ph,
 						ppl_const_Constraint_t c));
 
-/*!
+/*! \brief
   Adds a copy of the generator \p g to the system of generatorss of
   \p ph.
 */
@@ -1295,7 +1363,7 @@ int
 ppl_Polyhedron_add_generator __P((ppl_Polyhedron_t ph,
 				  ppl_const_Generator_t g));
 
-/*!
+/*! \brief
   Adds a copy of the generator \p g to the system of generatorss of
   \p ph.  Returns a positive integer if the resulting polyhedron is
   non-empty; returns 0 if it is empty.  Upon successful return, \p ph
@@ -1305,7 +1373,7 @@ int
 ppl_Polyhedron_add_generator_and_minimize __P((ppl_Polyhedron_t ph,
 					       ppl_const_Generator_t g));
 
-/*!
+/*! \brief
   Adds the system of constraints \p cs to the system of constraints of
   \p ph.
 
@@ -1316,7 +1384,7 @@ ppl_Polyhedron_add_generator_and_minimize __P((ppl_Polyhedron_t ph,
 int
 ppl_Polyhedron_add_constraints __P((ppl_Polyhedron_t ph, ppl_ConSys_t cs));
 
-/*!
+/*! \brief
   Adds the system of constraints \p cs to the system of constraints of
   \p ph.  Returns a positive integer if the resulting polyhedron is
   non-empty; returns 0 if it is empty.  Upon successful return, \p ph
@@ -1330,7 +1398,7 @@ int
 ppl_Polyhedron_add_constraints_and_minimize __P((ppl_Polyhedron_t ph,
 						 ppl_ConSys_t cs));
 
-/*!
+/*! \brief
   Adds the system of generators \p gs to the system of generators of
   \p ph.
 
@@ -1341,7 +1409,7 @@ ppl_Polyhedron_add_constraints_and_minimize __P((ppl_Polyhedron_t ph,
 int
 ppl_Polyhedron_add_generators __P((ppl_Polyhedron_t ph, ppl_GenSys_t gs));
 
-/*!
+/*! \brief
   Adds the system of generators \p gs to the system of generators of
   \p ph.  Returns a positive integer if the resulting polyhedron is
   non-empty; returns 0 if it is empty.  Upon successful return, \p ph
@@ -1355,7 +1423,7 @@ int
 ppl_Polyhedron_add_generators_and_minimize __P((ppl_Polyhedron_t ph,
 						ppl_GenSys_t gs));
 
-/*!
+/*! \brief
   Adds \p d new dimensions to the space enclosing the polyhedron \p ph
   and to \p ph itself.
 */
@@ -1363,14 +1431,14 @@ int
 ppl_Polyhedron_add_dimensions_and_embed __P((ppl_Polyhedron_t ph,
 					     ppl_dimension_type d));
 
-/*!
+/*! \brief
   Adds \p d new dimensions to the space enclosing the polyhedron \p ph.
 */
 int
 ppl_Polyhedron_add_dimensions_and_project __P((ppl_Polyhedron_t ph,
 					       ppl_dimension_type d));
 
-/*!
+/*! \brief
   Removes from \p ph and its containing space the dimensions that are
   specified in first \p n positions of the array \p ds.  The presence
   of duplicates in \p ds is a waste but an innocuous one.
@@ -1380,7 +1448,7 @@ ppl_Polyhedron_remove_dimensions __P((ppl_Polyhedron_t ph,
 				      ppl_dimension_type ds[],
 				      size_t n));
 
-/*!
+/*! \brief
   Removes the higher dimensions from \p ph and its enclosing space so
   that, upon successful return, the new space dimension is \p d.
 */
@@ -1388,12 +1456,14 @@ int
 ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
 					     ppl_dimension_type d));
 
-/*!
+/*! \brief
   Renames the dimensions of a polyhedron according to a partial
   injective function.  This function is defined by means of the
-  \p maps array, which is of dimension \p n.  The function maps
-  <CODE>i</CODE> to <CODE>j</CODE> if and only if <CODE>i < n</CODE>,
-  <CODE>j != ppl_not_a_dimension</CODE>, and <CODE>maps[i] == j</CODE>.
+  \p maps array, which is of dimension \p n.
+
+  The function maps <CODE>i</CODE> to <CODE>j</CODE> if and only if
+  <CODE>i < n</CODE>, <CODE>j != ppl_not_a_dimension</CODE>, and
+  <CODE>maps[i] == j</CODE>.
   The dimensions that are not mapped (i.e., for which the partial injective
   function represented by \p maps is undefined) are projected away.
   The result is undefined if \p maps does not encode a partial
@@ -1407,7 +1477,7 @@ ppl_Polyhedron_rename_dimensions __P((ppl_Polyhedron_t ph,
 				      ppl_dimension_type maps[],
 				      size_t n));
 
-/*!
+/*! \brief
   Transforms the polyhedron \p ph, assigning an affine expression
   to the specified variable.
   \param ph  The polyhedron that is transformed.
@@ -1421,7 +1491,7 @@ ppl_Polyhedron_affine_image __P((ppl_Polyhedron_t ph,
 				 ppl_const_LinExpression_t le,
 				 ppl_const_Coefficient_t d));
 
-/*!
+/*! \brief
   Transforms the polyhedron \p ph, substituting an affine expression
   to the specified variable.
   \param ph  The polyhedron that is transformed.
@@ -1435,7 +1505,7 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
 				    ppl_const_LinExpression_t le,
 				    ppl_const_Coefficient_t d));
 
-/*!
+/*! \brief
   Assigns to \p ph the image of \p ph with respect to the
   \ref generalized_image "generalized affine transfer function"
   \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
@@ -1456,7 +1526,7 @@ __P((ppl_Polyhedron_t ph,
      ppl_const_LinExpression_t le,
      ppl_const_Coefficient_t d));
 
-/*!
+/*! \brief
   Assigns to \p ph the image of \p ph with respect to the
   \ref generalized_image "generalized affine transfer function"
   \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
@@ -1473,23 +1543,7 @@ __P((ppl_Polyhedron_t ph,
      enum ppl_enum_Constraint_Type relsym,
      ppl_const_LinExpression_t rhs));
 
-/*!
-  Code of the worst-case polynomial complexity class.
-*/
-extern unsigned int PPL_COMPLEXITY_CLASS_POLYNOMIAL;
-
-/*!
-  Code of the worst-case exponential but typically polynomial
-  complexity class.
-*/
-extern unsigned int PPL_COMPLEXITY_CLASS_SIMPLEX;
-
-/*!
-  Code of the universal complexity class.
-*/
-extern unsigned int PPL_COMPLEXITY_CLASS_ANY;
-
-/*!
+/*! \brief
   Use \p ph to shrink a generic, interval-based bounding box.
   The bounding box is abstractly provided by means of the parameters,
 
@@ -1537,33 +1591,10 @@ __P((ppl_const_Polyhedron_t ph,
 			       ppl_const_Coefficient_t n,
 			       ppl_const_Coefficient_t d)));
 
-/*!
-  Individual bit saying that the polyhedron and the set of points
-  satisfying the constraint are disjoint.
-*/
-extern unsigned int PPL_POLY_CON_RELATION_IS_DISJOINT;
+/*! \brief
+  Checks the relation between the polyhedron \p ph with the constraint \p c.
 
-/*!
-  Individual bit saying that the polyhedron intersects the set of
-  points satisfying the constraint, but it is not included in it.
-*/
-extern unsigned int PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS;
-
-/*!
-  Individual bit saying that the polyhedron is included in the set of
-  points satisfying the constraint.
-*/
-extern unsigned int PPL_POLY_CON_RELATION_IS_INCLUDED;
-
-/*!
-  Individual bit saying that the polyhedron is included in the set of
-  points saturating the constraint.
-*/
-extern unsigned int PPL_POLY_CON_RELATION_SATURATES;
-
-/*!
-  Checks the relation between the polyhedron \p ph with the constraint
-  \p c.  If successful, returns a non-negative integer that is
+  If successful, returns a non-negative integer that is
   obtained as the bitwise or of the bits (chosen among
   PPL_POLY_CON_RELATION_IS_DISJOINT
   PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS,
@@ -1575,15 +1606,10 @@ int
 ppl_Polyhedron_relation_with_Constraint __P((ppl_const_Polyhedron_t ph,
 					     ppl_const_Constraint_t c));
 
-/*!
-  Individual bit saying that adding the generator would not change the
-  polyhedron.
-*/
-extern unsigned int PPL_POLY_GEN_RELATION_SUBSUMES;
+/*! \brief
+  Checks the relation between the polyhedron \p ph with the generator \p g.
 
-/*!
-  Checks the relation between the polyhedron \p ph with the generator
-  \p g.  If successful, returns a non-negative integer that is
+  If successful, returns a non-negative integer that is
   obtained as the bitwise or of the bits (only
   PPL_POLY_GEN_RELATION_SUBSUMES, at present) that describe the
   relation between \p ph and \p g.
@@ -1592,28 +1618,28 @@ int
 ppl_Polyhedron_relation_with_Generator __P((ppl_const_Polyhedron_t ph,
 					    ppl_const_Generator_t g));
 
-/*!
+/*! \brief
   Returns a positive integer if \p ph is empty; returns 0 if \p ph is
   not empty.
 */
 int
 ppl_Polyhedron_check_empty __P((ppl_const_Polyhedron_t ph));
 
-/*!
+/*! \brief
   Returns a positive integer if \p ph is a universe polyhedron;
   returns 0 if it is not.
 */
 int
 ppl_Polyhedron_check_universe __P((ppl_const_Polyhedron_t ph));
 
-/*!
+/*! \brief
   Returns a positive integer if \p ph is bounded; returns 0 if \p ph is
   unbounded.
 */
 int
 ppl_Polyhedron_is_bounded __P((ppl_const_Polyhedron_t ph));
 
-/*!
+/*! \brief
   Returns a positive integer if \p le is bounded from above in \p ph;
   returns 0 otherwise.
 */
@@ -1621,7 +1647,7 @@ int
 ppl_Polyhedron_bounds_from_above __P((ppl_const_Polyhedron_t ph,
 				      ppl_const_LinExpression_t le));
 
-/*!
+/*! \brief
   Returns a positive integer if \p le is bounded from below in \p ph;
   returns 0 otherwise.
 */
@@ -1629,20 +1655,20 @@ int
 ppl_Polyhedron_bounds_from_below __P((ppl_const_Polyhedron_t ph,
 				      ppl_const_LinExpression_t le));
 
-/*!
+/*! \brief
   Returns a positive integer if \p ph is topologically closed;
   returns 0 if \p ph is not topologically closed.
 */
 int
 ppl_Polyhedron_is_topologically_closed __P((ppl_const_Polyhedron_t ph));
 
-/*!
+/*! \brief
   Assigns to \p ph its topological closure.
 */
 int
 ppl_Polyhedron_topological_closure_assign __P((ppl_Polyhedron_t ph));
 
-/*!
+/*! \brief
   Returns a positive integer if \p x contains or is equal to \p y;
   returns 0 if it does not.
 */
@@ -1650,7 +1676,7 @@ int
 ppl_Polyhedron_contains_Polyhedron __P((ppl_const_Polyhedron_t x,
 					ppl_const_Polyhedron_t y));
 
-/*!
+/*! \brief
   Returns a positive integer if \p x strictly contains \p y; returns 0
   if it does not.
 */
@@ -1658,7 +1684,7 @@ int
 ppl_Polyhedron_strictly_contains_Polyhedron __P((ppl_const_Polyhedron_t x,
 						 ppl_const_Polyhedron_t y));
 
-/*!
+/*! \brief
   Returns a positive integer if \p x and \p y are disjoint; returns 0
   if they are not.
 */
@@ -1666,13 +1692,14 @@ int
 ppl_Polyhedron_is_disjoint_from_Polyhedron __P((ppl_const_Polyhedron_t x,
 						ppl_const_Polyhedron_t y));
 
-/*!
+/*! \brief
   Returns a positive integer if \p ph is well formed, i.e., if it
   satisfies all its implementation variant; returns 0 and perhaps
   make some noise if \p ph is broken.  Useful for debugging purposes.
 */
 int
 ppl_Polyhedron_OK __P((ppl_const_Polyhedron_t ph));
+/*!@}*/ /* Functions Related to Polyhedra */
 
 #ifdef __cplusplus
 } /* extern "C" */
@@ -1680,6 +1707,6 @@ ppl_Polyhedron_OK __P((ppl_const_Polyhedron_t ph));
 
 #undef __P
 
-/*@}*/
+/*@}*/ /* \defgroup PPL_C_interface */
 
 #endif /* !defined(PPL_ppl_c_h) */
