@@ -2837,6 +2837,190 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
   assert(OK());
 }
 
+void
+PPL::Polyhedron::generalized_affine_image(const Variable& var,
+					  const char* relation,
+					  const LinExpression& expr,
+					  const Integer& denominator) {
+  // The denominator cannot be zero.
+  if (denominator == 0)
+    throw_generic("generalized_affine_image(v, r, e, d)", "d == 0");
+
+  // Dimension-compatibility checks.
+  // The dimension of `expr' should not be greater than the dimension
+  // of `*this'.
+  dimension_type expr_space_dim = expr.space_dimension();
+  if (space_dim < expr_space_dim)
+    throw_dimension_incompatible("generalized_affine_image(v, r, e, d)", expr);
+  // `var' should be one of the dimensions of the polyhedron.
+  dimension_type num_var = var.id() + 1;
+  if (num_var > space_dim)
+    throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
+				 var.id());
+
+  // Checking validity of the relation operator encoding.
+  bool greater_than_relation = false;
+  bool nonstrict_relation = false;
+  bool valid_relation = relation && relation[0] != 0;
+  if (valid_relation) {
+    switch (relation[0]) {
+    case '<':
+      switch (relation[1]) {
+      case '=':
+	// The relation operator is "<=".
+	greater_than_relation = false;
+	nonstrict_relation = true;
+	break;
+      case 0:
+	// The relation operator is "<".
+	greater_than_relation = false;
+	nonstrict_relation = false;
+	break;
+      default:
+	// Invalid relation operator.
+	valid_relation = false;
+	break;
+      }
+      break;
+    case '=':
+      if (relation[1] == '=')
+	// The relation operator is "==":
+	// this is just an affine image computation.
+	affine_image(var, expr, denominator);
+      else
+	// Invalid relation operator.
+	valid_relation = false;
+      break;
+    case '>':
+      switch (relation[1]) {
+      case '=':
+	// The relation operator is ">=".
+	greater_than_relation = true;
+	nonstrict_relation = true;
+	break;
+      case 0:
+	// The relation operator is ">".
+	greater_than_relation = true;
+	nonstrict_relation = false;
+	break;
+      default:
+	// Invalid relation operator.
+	valid_relation = false;
+	break;
+      }
+      break;
+    default:
+      // Invalid relation operator.
+      valid_relation = false;
+      break;
+    }
+  }
+  if (!valid_relation)
+    throw_generic("generalized_affine_image(v, r, e, d)",
+		  "r is not a valid relation operator");
+
+  // Strict relation operators are only admitted for NNC polyhedra.
+  if (!nonstrict_relation && is_necessarily_closed())
+    throw_generic("generalized_affine_image(v, r, e, d)",
+		  "r is a strict relation operator and "
+		  "*this is a C_Polyhedron");
+
+  if (is_empty())
+    return;
+
+  // CHECK ME: what if the denominator is negative ???
+  LinExpression evaluation_expr = denominator > 0 ? expr : -expr;
+  evaluation_expr -= evaluation_expr.inhomogeneous_term();
+
+  if (bounds(evaluation_expr, !greater_than_relation)) {
+    // Compute the bound for `evaluation_expr'.
+    Integer bound_numerator;
+    Integer bound_denominator;
+    const GenSys& gs = gen_sys;
+    dimension_type i =  gs.num_rows();
+    if (is_necessarily_closed()) {
+      // Find the first point in `gs'.
+      for ( ; i-- > 0; )
+	if (gs[i].is_point())
+	  break;
+      const Generator& g = gs[i];
+      // Evaluate `evaluation_expr' at point `g'.
+      tmp_Integer[0] = 0;
+      for (dimension_type j = evaluation_expr.size(); j-- > 0; ) {
+	// The following two lines optimize the computation
+	// of tmp_Integer[0] += g[j] * evaluation_expr[j].
+	tmp_Integer[1] = g[j] * evaluation_expr[j];
+	tmp_Integer[0] += tmp_Integer[1];
+      }
+      // Initialize the bound for `evaluation_expr'
+      bound_numerator = tmp_Integer[0];
+      bound_denominator = g[0];
+
+      // Start looking for better bounds.
+      for ( ; i-- > 0; ) {
+	const Generator& g = gs[i];
+	if (g.is_point()) {
+	  // Evaluate `evaluation_expr' at point `g'.
+	  tmp_Integer[0] = 0;
+	  for (dimension_type j = evaluation_expr.size(); j-- > 0; ) {
+	    // The following two lines optimize the computation
+	    // of tmp_Integer[0] += g[j] * evaluation_expr[j].
+	    tmp_Integer[1] = g[j] * evaluation_expr[j];
+	    tmp_Integer[0] += tmp_Integer[1];
+	  }
+	  // Compare the new bound with the previoius one.
+	  if (greater_than_relation) {
+	    if (tmp_Integer[0] * bound_denominator < bound_numerator * g[0]) {
+	      bound_numerator = tmp_Integer[0];
+	      bound_denominator = g[0];
+	    }
+	  }
+	  else {
+	    if (tmp_Integer[0] * bound_denominator > bound_numerator * g[0]) {
+	      bound_numerator = tmp_Integer[0];
+	      bound_denominator = g[0];
+	    }
+	  }
+	}
+      }
+      // Adjust the bound computed.
+      if (denominator > 0) {
+	bound_numerator += expr.inhomogeneous_term() * bound_denominator;
+	bound_denominator *= denominator;
+      }
+      else {
+	bound_numerator -= expr.inhomogeneous_term() * bound_denominator;
+	bound_denominator *= -denominator;
+      }
+    }
+    else {
+      // The polyhedron is not necessarily closed.
+      throw_generic("generalized_affine_image(v, r, e, d)",
+		    "*this is an NNC_Polyhedron: to be implemented");
+    }
+
+    // Add a line having direction `var'.
+    add_generator(line(var));
+    // Add the bounding constraint.
+    if (greater_than_relation)
+      if (nonstrict_relation)
+	add_constraint(bound_denominator * var >= bound_numerator);
+      else
+	add_constraint(bound_denominator * var > bound_numerator);
+    else
+      if (nonstrict_relation)
+	add_constraint(bound_denominator * var <= bound_numerator);
+      else
+	add_constraint(bound_denominator * var < bound_numerator);
+  }
+  else
+    // `expr' is not bounded in the "right" direction:
+    // simply add a line having direction `var'.
+    add_generator(line(var));
+
+  assert(OK());
+}
+
 PPL::Poly_Con_Relation
 PPL::Polyhedron::relation_with(const Constraint& c) const {
   // Dimension-compatibility check.

@@ -751,6 +751,31 @@ public:
 		       const LinExpression& expr,
 		       const Integer& denominator = Integer_one());
 
+  //! \brief
+  //! Assigns to \p *this the \ref generalized_affine_transformation
+  //! "generalized affine image" of \p *this with respect to
+  //! the relation \f$v' \relop \frac{expr}{d}\f$.
+  /*!
+    \param var           The variable with which the affine
+                         expression is compared.
+    \param relation      The relation operator: can be either one of
+                         <CODE>"<"</CODE>, <CODE>"<="</CODE>,
+			 <CODE>"=="</CODE>, <CODE>">="</CODE>,
+			 or <CODE>">"</CODE>.
+    \param expr          The numerator of the affine expression.
+    \param denominator   The denominator of the affine expression
+                         (optional argument with default value 1.)
+    \exception std::invalid_argument thrown if \p denominator is zero
+                                     or if \p expr and \p *this
+                                     are dimension-incompatible
+                                     or if \p var is not a dimension
+                                     of \p *this.
+  */
+  void generalized_affine_image(const Variable& var,
+				const char* relation,
+				const LinExpression& expr,
+				const Integer& denominator = Integer_one());
+
   //! Use \p *this to shrink a generic, interval-based bounding box.
   /*!
     \param box    The bounding box to be shrunk.
