@@ -46,6 +46,13 @@ o  The method Polyhedron::map_dimensions(const PartialFunction& pfunc)
    permutation.  A simple "renaming" of the dimensions is now
    extremely cheap.
 
+o  The function Parma_Polyhedra_Library::max_space_dimension() has been
+   given a new semantics and destiny: it returns the maximum space
+   dimension that _all_ the abstractions provided by the library can
+   handle.  Each individual abstraction provides its versions of this
+   function.  Thus, e.g., NNC_Polyhedron::max_space_dimension()
+   gives the maximum space dimensions an NNC_Polyhedron can handle.
+
 o  The type of output functions for the class Variable,
    `Variable::Output_Function_Type', has been renamed
    `Variable::output_function_type' and is now defined as
