@@ -30,8 +30,8 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #define NOISY 0
-#define C_TESTS 0
-#define NNC_TESTS 0
+#define C_TESTS 1
+#define NNC_TESTS 1
 
 class BInterval {
 private:
@@ -201,10 +201,9 @@ void test0() {
   known_box.print_box("*** test0 known ***");
 #endif
 
-  //  if (box != known_box)
-  //    exit(1);
-  if (!ph.OK())
-    exit(1);
+   if ((box != known_box))
+     exit(1);
+
 #endif //C_TESTS
 }
 
@@ -232,10 +231,9 @@ void test0a() {
   known_box.print_box("*** test0a known ***");
 #endif
 
-  //if (box != known_box)
-  //  exit(1);
-  if (!ph.OK())
+  if (box != known_box)
     exit(1);
+
 #endif //NNC_TESTS
 }
 
@@ -268,9 +266,7 @@ void test1() {
   known_box.print_box("*** test1 known ***");
 #endif
 
-  //if (ph != known_box)
-  // exit(1);
-  if (!ph.OK())
+  if (box != known_box)
     exit(1);
 
 #endif //C_TESTS
@@ -305,9 +301,7 @@ void test1a() {
   known_box.print_box("*** test1a known ***");
 #endif
 
-  //if (ph != known_box)
-  // exit(1);
-  if (!ph.OK())
+  if (box != known_box)
     exit(1);
 
 #endif //NNC_TESTS
@@ -342,9 +336,7 @@ void test2() {
   known_box.print_box("*** test2 known ***");
 #endif
 
-  // if (ph != known_box)
-  //   exit(1);
-  if (!ph.OK())
+  if (box != known_box)
     exit(1);
 
 #endif //C_TESTS
@@ -379,10 +371,8 @@ void test2a() {
   known_box.print_box("*** test2a known ***");
 #endif
 
-  // if (ph != known_box)
-  //   exit(1);
-  if (!ph.OK())
-    exit(1);
+   if (box != known_box)
+     exit(1);
 
 #endif //NNC_TESTS
 }
@@ -420,10 +410,8 @@ void test3() {
   known_box.print_box("*** test3 known ***");
 #endif
   
-  // if (ph != known_box)
-  //   exit(1);
-  if (!ph.OK())
-    exit(1);
+   if (box != known_box)
+     exit(1);
 
 #endif //C_TESTS
 }
@@ -461,10 +449,8 @@ void test3a() {
   known_box.print_box("*** test3a known ***");
 #endif
   
-  // if (ph != known_box)
-  //   exit(1);
-  if (!ph.OK())
-    exit(1);
+   if (box != known_box)
+     exit(1);
 
 #endif //NNC_TESTS
 }
@@ -489,9 +475,7 @@ void test4() {
   known_box.print_box("*** test4 known ***");
 #endif
 
-  //if (ph != known_result)
-  //  exit(1);
-  if (!ph.OK())
+  if (box != known_box)
     exit(1);
 
 #endif //C_TESTS
@@ -517,9 +501,7 @@ void test4a() {
   known_box.print_box("*** test4a known ***");
 #endif
 
-  //if (ph != known_box)
-  //  exit(1);
-  if (!ph.OK())
+  if (box != known_box)
     exit(1);
 
 #endif //NNC_TESTS
@@ -545,9 +527,7 @@ void test5() {
   known_box.print_box("*** test5 known ***");
 #endif
 
-  //if (ph != known_box)
-  // exit(1);
-  if (!ph.OK())
+  if (box != known_box)
     exit(1);
 
 #endif //C_TESTS
@@ -573,9 +553,7 @@ void test5a() {
   known_box.print_box("*** test5a known ***");
 #endif
 
-  //if (ph != known_box)
-  // exit(1);
-  if (!ph.OK())
+  if (box != known_box)
     exit(1);
 
 #endif //NNC_TESTS
@@ -604,9 +582,7 @@ void test6() {
   known_box.print_box("*** test6 known ***");
 #endif
 
-  //if (ph != known_box)
-  //  exit(1);
-  if (!ph.OK())
+  if (box != known_box)
     exit(1);
 
 #endif //C_TESTS
@@ -635,9 +611,7 @@ void test6a() {
   known_box.print_box("*** test6a known ***");
 #endif
 
-  //if (ph != known_box)
-  //  exit(1);
-  if (!ph.OK())
+  if (box != known_box)
     exit(1);
 
 #endif //NNC_TESTS
@@ -676,7 +650,7 @@ void test10() {
   known_box.print_box("*** test10 known ***");
 #endif
 
-  if (!ph.OK())
+  if (box != known_box)
     exit(1);
 
 #endif //C_TESTS
@@ -697,7 +671,6 @@ void test10a() {
   NNC_Polyhedron ph(cs);
 
 #if NOISY
-  print_constraints(ph, "*** test10a ph constraints ***");
   print_generators(ph, "*** test10a ph generators ***");
 #endif
 
@@ -715,7 +688,7 @@ void test10a() {
   known_box.print_box("*** test10a known ***");
 #endif
 
-  if (!ph.OK())
+  if (box != known_box)
     exit(1);
 
 #endif //NNC_TESTS
@@ -755,9 +728,7 @@ void test11() {
   known_box.print_box("*** test11 known ***");
 #endif
   
-  // if (ph != known_box)
-  //   exit(1);
-  if (!ph.OK())
+  if (box != known_box)
     exit(1);
 
 #endif //NNC_TESTS
@@ -794,9 +765,7 @@ void test12() {
   known_box.print_box("*** test12 known ***");
 #endif
 
-  // if (ph != known_box)
-  //   exit(1);
-  if (!ph.OK())
+  if (box != known_box)
     exit(1);
 
 #endif //NNC_TESTS
