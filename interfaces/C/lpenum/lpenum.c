@@ -120,7 +120,7 @@ get_ppl_banner() {
 }
 
 static void
-process_options(int argc, char *argv[]) {
+process_options(int argc, char* argv[]) {
   int option_index;
   int c;
   char* endptr;
