@@ -1,7 +1,7 @@
 /* Test Polyhedron::relation_with(g): the system of constraints
    of the polyhedron contains only an equality and the generator
    `g' is a point.
-   Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

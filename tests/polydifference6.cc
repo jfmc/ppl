@@ -1,7 +1,7 @@
 /* Test Polyhedron::poly_difference_assign_and_minimize(): in this
    test the second polyhedron is defined by a system of constraints
    that contains only an equality.
-   Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

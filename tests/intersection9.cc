@@ -1,7 +1,7 @@
 /* Test Polyhedron::intersection_assign_and_minimize():
    a polyhedron is zero-dimensional and the other one is
    zero-dimensional and empty.
-   Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

@@ -2,7 +2,7 @@
    described by a system of generators composed by a point,
    a line and an unmatched closure point lying on the same line of
    the point is topologically closed.
-   Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
