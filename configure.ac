@@ -623,6 +623,9 @@ then
 fi
 
 # System-dependent adjustments.
+text_md5sum="$MD5SUM -t"
+no_undefined=no
+
 case "${host_os}" in
 darwin*)
   if test x"$GCC" = xyes
@@ -632,10 +635,13 @@ darwin*)
   fi
   text_md5sum="$MD5SUM"
   ;;
+cygwin)
+  no_undefined=yes
+  ;;
 *)
-  text_md5sum="$MD5SUM -t"
   ;;
 esac
+AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)

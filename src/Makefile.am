@@ -285,7 +285,16 @@ Polyhedra_Powerset.defs.hh \
 Polyhedra_Powerset.inlines.hh \
 algorithms.hh
 
+if NO_UNDEFINED
+
+NO_UNDEFINED_FLAG = -no-undefined
+
+libppl_la_LIBADD = @extra_libraries@
+
+endif NO_UNDEFINED
+
 libppl_la_LDFLAGS = \
+$(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
 
 noinst_HEADERS = ppl.hh ppl_install.hh
