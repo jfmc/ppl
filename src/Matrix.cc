@@ -886,24 +886,41 @@ bool
 PPL::Matrix::OK() const {
   // A non-empty matrix will contain constraints or generators; in
   // both cases it must have at least one column for the inhomogeneous
-  // term.
-  if (num_rows() > 0 && num_columns() < 1) {
-    std::cerr << "A Matrix must have at least two columns!"
+  // term and, if it is non-necessarily closed, another one
+  // for the \epsilon coefficient.
+  if (num_rows() > 0) {
+    size_t min_cols = is_necessarily_closed() ? 1 : 2;
+    if (num_columns() < min_cols) {
+      std::cerr << "Matrix has fewer columns than the minimum "
+		<< "allowed by its topology:"
+		<< std::endl
+		<< "num_columns is " << num_columns()
+		<< ", minimum is " << min_cols
+		<< std::endl;
+      return false;
+    }
+  }
+
+  const Matrix& x = *this;
+  size_t n_rows = num_rows();
+  for (size_t i = 0; i < n_rows; ++i) {
+    if (!x[i].OK(row_size, row_capacity))
+      return false;
+    // Checking for topology mismatches.
+    if (x.topology() != x[i].topology()) {
+      std::cerr << "Topology mismatch between the matrix"
+		<< "and one of its rows!"
+		<< std::endl;
+      return false;
+    }
+  }
+
+  if (sorted && !check_sorted()) {
+    std::cerr << "The matrix declares itself to be sorted but it is not!"
 	      << std::endl;
     return false;
   }
 
-  const Matrix& x = *this;
-  bool is_broken = false;
-  size_t n_rows = num_rows();
-  for (size_t i = 0; i < n_rows; ++i)
-    is_broken |= !x[i].OK(row_size, row_capacity);
-
-  if (sorted && !check_sorted()) {
-    is_broken = true;
-    std::cerr << "The matrix declares itself to be sorted but it is not!"
-	      << std::endl;
-  }
-
-  return !is_broken;
+  // All checks passed.
+  return true;
 }
