@@ -129,6 +129,8 @@ Programming Kit): this is used to read linear programs in MPS format.
   For some reason, GMP up to and including version 4.1.2 requires
   <stdio.h> to be included before <gmp.h>.
 */
+/*@{*/
+
 #include <stdio.h>
 #include <gmp.h>
 #include <stddef.h>
@@ -2114,12 +2116,13 @@ ppl_Polyhedron_map_dimensions __P((ppl_Polyhedron_t ph,
 #undef PPL_DECLARE_PRINT_FUNCTIONS
 
 #define PPL_DECLARE_PRINT_FUNCTIONS(Type) \
+/*! Prints \p x to <CODE>stdout</CODE>. */ \
 int \
 ppl_io_print_ ## Type __P((ppl_const_ ## Type ## _t x)); \
  \
+/*! Prints \p x to the given output \p stream. */ \
 int \
-ppl_io_fprint_ ## Type __P((FILE* f, ppl_const_ ## Type ## _t x));
-
+ppl_io_fprint_ ## Type __P((FILE* stream, ppl_const_ ## Type ## _t x));
 
 PPL_DECLARE_PRINT_FUNCTIONS(Coefficient)
 

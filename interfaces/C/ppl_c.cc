@@ -1989,11 +1989,11 @@ ppl_io_print_ ## Type(ppl_const_ ## Type ## _t x) try { \
 CATCH_ALL \
  \
 int \
-ppl_io_fprint_ ## Type(FILE* f, ppl_const_ ## Type ## _t x) try { \
+ppl_io_fprint_ ## Type(FILE* stream, ppl_const_ ## Type ## _t x) try { \
   using namespace IO_Operators; \
   std::ostringstream s; \
   s << to_const(x); \
-  if (fputs(s.str().c_str(), f) < 0) \
+  if (fputs(s.str().c_str(), stream) < 0) \
     return PPL_STDIO_ERROR; \
   return 0; \
 } \
