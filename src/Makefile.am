@@ -99,7 +99,6 @@ BoundingBox.inlines.hh \
 Variable.defs.hh \
 Variable.inlines.hh \
 Init.defs.hh \
-Init.inlines.hh \
 initializer.hh \
 Topology.hh \
 SatRow.defs.hh \

@@ -53,6 +53,4 @@ public:
   ~Init();
 };
 
-#include "Init.inlines.hh"
-
 #endif // !defined(PPL_Init_defs_hh)
