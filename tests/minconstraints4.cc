@@ -34,13 +34,15 @@ int
 main() {
   set_handlers();
 
-  Variable x2(0), x3(1), x5(2);
-  NNC_Polyhedron poly(3, Polyhedron::UNIVERSE);
+  Variable x(0), y(1);
 
-  poly.add_constraint(x5 > x2);
-  poly.add_constraint(x3 >= x2);
-  poly.add_constraint(x2 + 1 > x3);
+  ConSys cs;
+  cs.insert(x >= 0);
+  cs.insert(x < 1);
+  cs.insert(y > x);
 
-  poly.minimized_constraints();
+  NNC_Polyhedron ph(cs);
+  ph.minimized_constraints();
+
   return 0;
 }
