@@ -497,6 +497,15 @@ Polyhedra_PowerSet<PH>::widening_assign(const Polyhedra_PowerSet& y,
 					void (Polyhedron::*wm)
 					(const Polyhedron&, unsigned*),
 					unsigned max_disjuncts) {
+#ifndef NDEBUG
+  {
+    // We assume that y is entailed by or equal to *this.
+    const Polyhedra_PowerSet<PH> x_copy = *this;
+    const Polyhedra_PowerSet<PH> y_copy = y;
+    assert(x_copy.definitely_entails(y_copy));
+  }
+#endif
+
   collapse(max_disjuncts);
   extrapolation_assign(y, wm);
 }
