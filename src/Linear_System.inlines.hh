@@ -26,6 +26,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline bool
+Linear_System::is_sorted() const {
+  // The flag `sorted' does not really reflect the sortedness status
+  // of a system (if `sorted' evaluates to `false' nothing is known).
+  // This assertion is used to ensure that the system
+  // is actualy sorted when `sorted' value is 'true'.
+  assert(!sorted || check_sorted());
+  return sorted;
+}
+
+inline void
+Linear_System::set_sorted(const bool b) {
+  sorted = b;
+}
+
 inline
 Linear_System::Linear_System(Topology topol)
   : Matrix(),
@@ -110,11 +125,6 @@ Linear_System::set_index_first_pending_row(const dimension_type i) {
 }
 
 inline void
-Linear_System::set_sorted(const bool b) {
-  sorted = b;
-}
-
-inline void
 Linear_System::set_necessarily_closed() {
   row_topology = NECESSARILY_CLOSED;
   if (num_rows() > 0)
@@ -146,16 +156,6 @@ Linear_System::operator[](const dimension_type k) const {
 inline Topology
 Linear_System::topology() const {
   return row_topology;
-}
-
-inline bool
-Linear_System::is_sorted() const {
-  // The flag `sorted' does not really reflect the sortedness status
-  // of a system (if `sorted' evaluates to `false' nothing is known).
-  // This assertion is used to ensure that the system
-  // is actualy sorted when `sorted' value is 'true'.
-  assert(!sorted || check_sorted());
-  return sorted;
 }
 
 inline dimension_type
