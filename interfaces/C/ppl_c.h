@@ -1489,6 +1489,14 @@ ppl_Polyhedron_strictly_contains_Polyhedron __P((ppl_const_Polyhedron_t x,
 						 ppl_const_Polyhedron_t y));
 
 /*!
+  Returns a positive integer if \p x and \p y are disjoint; returns 0
+  if they are not.
+*/
+int
+ppl_Polyhedron_is_disjoint_from_Polyhedron __P((ppl_const_Polyhedron_t x,
+						ppl_const_Polyhedron_t y));
+
+/*!
   Returns a positive integer if \p ph is well formed, i.e., if it
   satisfies all its implementation variant; returns 0 and perhaps
   make some noise if \p ph is broken.  Useful for debugging purposes.
