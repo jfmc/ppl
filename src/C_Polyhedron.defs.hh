@@ -164,6 +164,10 @@ public:
   //! (\p *this and \p y can be dimension-incompatible.)
   C_Polyhedron& operator=(const C_Polyhedron& y);
 
+  //! \brief
+  //! Assigns to \p *this the topological closure of the NNC polyhedron \p y.
+  C_Polyhedron& operator=(const NNC_Polyhedron& y);
+
   //! Destructor.
   ~C_Polyhedron();
 };

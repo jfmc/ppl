@@ -143,6 +143,10 @@ public:
   //! (\p *this and \p y can be dimension-incompatible.)
   NNC_Polyhedron& operator=(const NNC_Polyhedron& y);
 
+  //! \brief
+  //! Assigns to \p *this the C polyhedron \p y.
+  NNC_Polyhedron& operator=(const C_Polyhedron& y);
+
   //! Destructor.
   ~NNC_Polyhedron();
 

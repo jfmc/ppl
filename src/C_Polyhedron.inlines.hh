@@ -114,6 +114,13 @@ C_Polyhedron::operator=(const C_Polyhedron& y) {
   return *this;
 }
 
+inline C_Polyhedron&
+C_Polyhedron::operator=(const NNC_Polyhedron& y) {
+  C_Polyhedron c_y(y);
+  swap(c_y);
+  return *this;
+}
+
 inline
 C_Polyhedron::~C_Polyhedron() {
 }

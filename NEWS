@@ -31,6 +31,17 @@ o  New method
 
    assigns to `*this' the poly-difference of `*this' and `y'.
 
+o  New methods
+
+     C_Polyhedron& C_Polyhedron::operator=(const NNC_Polyhedron& y)
+
+   and
+
+     NNC_Polyhedron& NNC_Polyhedron::operator=(const C_Polyhedron& y).
+
+   The former assigns to `*this' the topological closure of `y',
+   the latter assigns `y' itself to `*this', but seen as an NNC polyhedron.
+
 o  New method dimension_type Polyhedron::affine_dimension() returns
    the affine dimension of *this (not to be confused with the dimension
    of its enclosing vector space) or 0, if *this is empty.
