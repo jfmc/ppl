@@ -549,7 +549,7 @@ is_nonnegative(const E_NIT<T>& x) {
 template <typename T>
 inline bool
 exact_neg(E_NIT<T>& to, const E_NIT<T>& x) {
-  to = x;
+  to = -x;
   return true;
 }
 
