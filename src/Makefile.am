@@ -143,7 +143,8 @@ AskTell.defs.hh \
 AskTell.inlines.hh \
 PowerSet.types.hh \
 PowerSet.defs.hh \
-PowerSet.inlines.hh
+PowerSet.inlines.hh \
+algorithms.hh
 
 libppl_la_SOURCES = \
 BoundingBox.cc \
@@ -207,7 +208,8 @@ AskTell.defs.hh \
 AskTell.inlines.hh \
 PowerSet.types.hh \
 PowerSet.defs.hh \
-PowerSet.inlines.hh
+PowerSet.inlines.hh \
+algorithms.hh
 
 libppl_la_LDFLAGS = \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
