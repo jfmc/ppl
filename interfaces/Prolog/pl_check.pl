@@ -1075,7 +1075,7 @@ checks_NNC :-
   ppl_Polyhedron_check_empty(P1),
   \+ppl_Polyhedron_check_universe(P1),
   \+ppl_Polyhedron_check_empty(P),
-  ppl_Polyhedron_add_generators_and_minimize(P1,
+  ppl_Polyhedron_add_generators(P1,
                                              [point(A + B + C)]),
   ppl_Polyhedron_is_bounded(P1),
   ppl_Polyhedron_add_generators(P1, [ray(A + B + C)]),
