@@ -283,8 +283,10 @@ AC_CHECK_PROG(SWI_PROLOG, pl, swi)
 AM_CONDITIONAL(HAVE_SWI_PROLOG, test x$SWI_PROLOG = xswi)
 AC_CHECK_PROG(GNU_PROLOG, gprolog, gnu)
 AM_CONDITIONAL(HAVE_GNU_PROLOG, test x$GNU_PROLOG = xgnu)
+AC_CHECK_PROG(XSB_PROLOG, xsb, xsb)
+AM_CONDITIONAL(HAVE_XSB_PROLOG, test x$XSB_PROLOG = xsb)
 AC_CHECK_PROG(YAP_PROLOG, yap, yap)
-AM_CONDITIONAL(HAVE_YAP_PROLOG, test x$YAP_PROLOG = yap)
+AM_CONDITIONAL(HAVE_YAP_PROLOG, test x$YAP_PROLOG = xyap)
 
 dnl Checks for header files.
 AC_CHECK_HEADER(gprolog.h,
@@ -306,6 +308,8 @@ AC_CHECK_HEADER(sicstus/sicstus.h,
                   AC_MSG_RESULT(no)))
 AC_CHECK_HEADER(Yap/c_interface.h,
                 extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} YAP")
+AC_CHECK_HEADER(cinterf.h,
+                extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} XSB")
 AC_CHECK_HEADER(glpk.h,
                 extra_if_C_subdirs="${extra_if_C_subdirs} lpenum")
 

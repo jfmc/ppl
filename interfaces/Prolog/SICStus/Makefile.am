@@ -28,11 +28,31 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
+EXTRA_DIST = ppl_sicstus.cc ppl_sicstus.pl sp_clpq.pl
+
+if HAVE_SICSTUS_PROLOG
+
 INCLUDES = -I$(top_builddir)/src @extra_includes@
 
-noinst_LIBRARIES = libpplsicstus.a
+bin_PROGRAMS = ppl_sicstus
 
-libpplsicstus_a_SOURCES = ppl_sicstus.cc
+ppl_sicstus_SOURCES = ppl_sicstus.cc
+
+ppl_sicstus$(EXEEXT): static_library $(top_builddir)/src/libppl.la
+	spld --static --main=prolog \
+		--resources=ppl_sicstus.s.o -o $@ \
+		-LD -lstdc++ \
+		-Wl,-whole-archive $(top_builddir)/src/.libs/libppl.a \
+		-Wl,-no-whole-archive \
+		@extra_libraries@
+
+static_library: ppl_sicstus.pl ppl_sicstus.o
+	splfr --verbose --static $(srcdir)/ppl_sicstus.pl ppl_sicstus.o
+	touch static_library
+
+dynamic_library: ppl_sicstus.pl ppl_sicstus.o
+	splfr --verbose $(srcdir)/ppl_sicstus.pl ppl_sicstus.o
+	touch dynamic_library
 
 CLPQ_TESTS = \
 ack.clpq \
@@ -43,22 +63,10 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
-EXTRA_DIST = ppl_sicstus.pl sp_clpq.pl
-
-if HAVE_SICSTUS_PROLOG
-check-local: pplsp ../check_script ../expected
+check-local: ppl_sicstus ../check_script ../expected
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
-	./pplsp -l $(srcdir)/sp_clpq.pl --goal "main." <$(srcdir)/../check_script >obtained
+	./ppl_sicstus -l $(srcdir)/sp_clpq.pl --goal "main." <$(srcdir)/../check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
-pplsp: ppl_sicstus.s.o $(top_builddir)/src/libppl.la
-	spld --main=prolog -S -o $@ --resources=./ppl_sicstus.s.o \
-	-LD -lstdc++ \
-	-Wl,-whole-archive $(top_builddir)/src/.libs/libppl.a -Wl,-no-whole-archive \
-	@extra_libraries@
-
-ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus.o
-	splfr -S $(srcdir)/ppl_sicstus.pl ppl_sicstus.o
-
-MOSTLYCLEANFILES = pplsp $(CLPQ_TESTS) obtained
+MOSTLYCLEANFILES = $(CLPQ_TESTS) obtained static_library dynamic_library
 endif
