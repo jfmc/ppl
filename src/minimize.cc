@@ -272,6 +272,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
     // By initial sortedness, all the rows in `source2' having indexes
     // greater than or equal to `k2' were not in `source1'.
     // We append them at the end of 'source1'.
+    // Note that add_row() sets correctly the flag `sorted'.
     for ( ; k2 < source2_num_rows; ++k2)
       source1.add_row(source2[k2]);
 
@@ -282,19 +283,13 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
     // There is nothing left to do ...
     return false;
 
-  // FIXME: add_row() already sets correctly the flag `sorted'.
-  // ... otherwise, `source1' may have lost his sortedness.
-  source1.set_sorted(false);
-
   // We have to add to `sat' the same number of rows that we added to
   // `source1'. The elements of these rows are set to zero.
   // New dimensions of `sat' are: `dest.num_rows()' rows and
   // `source1.num_rows()' columns, i.e., the rows of `sat' are
   // indexed by generators and its columns are indexed by constraints.
-  SatMatrix tmp_sat(dest.num_rows(), source1.num_rows());
-  // Copy the old `sat' into the new one.
-  for (dimension_type i = sat.num_rows(); i-- > 0; )
-    tmp_sat[i] = sat[i];
+  sat.resize(dest.num_rows(), source1.num_rows());
+
   // We compute the matrix of generators corresponding to the new
   // matrix of constraints by invoking the function conversion().
   // The `start' parameter is set to the index of the first constraint
@@ -302,7 +297,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   // to previous constraints are already in `dest'.
   dimension_type num_lines_or_equalities
     = conversion(source1, old_source1_num_rows,
-		 dest, tmp_sat,
+		 dest, sat,
 		 dest.num_lines_or_equalities());
   // conversion() may have modified the number of rows in `dest'.
   dimension_type dest_num_rows = dest.num_rows();
@@ -343,14 +338,14 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
     // A point has been found: the polyhedron is not empty.
     // Now invoking simplify() to remove all the redundant constraints
     // from the matrix `source1'.
-    // Since the saturation matrix `tmp_sat' returned by conversion()
+    // Since the saturation matrix `sat' returned by conversion()
     // has rows indexed by generators (the rows of `dest') and columns
     // indexed by constraints (the rows of `source'), we have to
     // transpose it to obtain the saturation matrix needed by simplify().
-    sat.transpose_assign(tmp_sat);
+    sat.transpose();
     simplify(source1, sat);
     // Transposing back.
-    sat.transpose_assign(sat);
+    sat.transpose();
     return false;
   }
 }
