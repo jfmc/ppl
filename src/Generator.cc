@@ -31,19 +31,49 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-void
-PPL::Generator::throw_zero_denominator_vertex() {
-  throw std::invalid_argument("Generator PPL::vertex(e, d): d == 0");
+PPL::Generator
+PPL::vertex(const LinExpression& e, const Integer& d) {
+  if (d == 0)
+    throw std::invalid_argument("Generator PPL::vertex(e, d): d == 0");    
+  LinExpression ec = e;
+  Generator g(ec);
+  g[0] = d;
+  g.set_is_ray_or_vertex();
+  return g;
 }
 
-void
-PPL::Generator::throw_zero_dim_ray() {
-  throw std::invalid_argument("Generator PPL::ray(e): dim(e) == 0");
+PPL::Generator
+PPL::ray(const LinExpression& e) {
+  // The origin of the space cannot be a ray.
+  size_t i = e.size();
+  for ( ; i-- > 1; )
+    if (e[i] != 0)
+      break;
+  if (i == 0)
+    throw std::invalid_argument("PPL::ray(e): the origin cannot be a ray");
+
+  LinExpression ec = e;
+  Generator g(ec);
+  g[0] = 0;
+  g.set_is_ray_or_vertex();
+  return g;
 }
 
-void
-PPL::Generator::throw_zero_dim_line() {
-  throw std::invalid_argument("Generator PPL::line(e): dim(e) == 0");
+PPL::Generator
+PPL::line(const LinExpression& e) {
+  // The origin of the space cannot be a line.
+  size_t i = e.size();
+  for ( ; i-- > 1; )
+    if (e[i] != 0)
+      break;
+  if (i == 0)
+    throw std::invalid_argument("PPL::line(e): the origin cannot be a line");
+
+  LinExpression ec = e;
+  Generator g(ec);
+  g[0] = 0;
+  g.set_is_line();
+  return g;
 }
 
 std::ostream&

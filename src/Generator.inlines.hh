@@ -25,58 +25,60 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "LinExpression.defs.hh"
 #include <stdexcept>
 
+namespace Parma_Polyhedra_Library {
+
 inline
-Parma_Polyhedra_Library::Generator::Generator(LinExpression& e) {
+Generator::Generator(LinExpression& e) {
   swap(e);
 }
 
 inline
-Parma_Polyhedra_Library::Generator::Generator(const Generator& g)
+Generator::Generator(const Generator& g)
   : Row(g) {
 }
 
 inline
-Parma_Polyhedra_Library::Generator::~Generator() {
+Generator::~Generator() {
 }
 
 inline bool
-Parma_Polyhedra_Library::Generator::is_line() const {
+Generator::is_line() const {
   return is_line_or_equality();
 }
 
-inline Parma_Polyhedra_Library::Generator::Type
-Parma_Polyhedra_Library::Generator::type() const {
+inline Generator::Type
+Generator::type() const {
   return is_line() ? LINE : (((*this)[0] == 0) ? RAY : VERTEX);
 }
 
 inline bool
-Parma_Polyhedra_Library::Generator::is_ray_or_vertex() const {
+Generator::is_ray_or_vertex() const {
   return is_ray_or_vertex_or_inequality();
 }
 
 inline void
-Parma_Polyhedra_Library::Generator::set_is_line() {
+Generator::set_is_line() {
   set_is_line_or_equality();
 }
 
 inline void
-Parma_Polyhedra_Library::Generator::set_is_ray_or_vertex() {
+Generator::set_is_ray_or_vertex() {
   set_is_ray_or_vertex_or_inequality();
 }
 
-inline Parma_Polyhedra_Library::Variable
-Parma_Polyhedra_Library::Generator::last_variable() const {
+inline Variable
+Generator::last_variable() const {
   assert(Row::size() >= 2);
   return Variable(size()-2);
 }
 
-inline const Parma_Polyhedra_Library::Integer&
-Parma_Polyhedra_Library::Generator::coefficient(Variable v) const {
+inline const Integer&
+Generator::coefficient(Variable v) const {
   return Row::coefficient(v.id());
 }
 
-inline const Parma_Polyhedra_Library::Integer&
-Parma_Polyhedra_Library::Generator::divisor() const {
+inline const Integer&
+Generator::divisor() const {
   const Integer& d = Row::coefficient();
   if (!is_ray_or_vertex() || d == 0)
     throw std::invalid_argument("PPL::Generator::divisor(): "
@@ -85,39 +87,10 @@ Parma_Polyhedra_Library::Generator::divisor() const {
 }
 
 
-namespace Parma_Polyhedra_Library {
-
-inline Generator
-vertex(const LinExpression& e, const Integer& d) {
-  if (d == 0)
-    Generator::throw_zero_denominator_vertex();
-  LinExpression ec = e;
-  Generator g(ec);
-  g[0] = d;
-  g.set_is_ray_or_vertex();
-  return g;
-}
-
-inline Generator
-ray(const LinExpression& e) {
-  if (e.size() == 0)
-    Generator::throw_zero_dim_ray();
-  LinExpression ec = e;
-  Generator g(ec);
-  g[0] = 0;
-  g.set_is_ray_or_vertex();
-  return g;
-}
-
-inline Generator
-line(const LinExpression& e) {
-  if (e.size() == 0)
-    Generator::throw_zero_dim_line();
-  LinExpression ec = e;
-  Generator g(ec);
-  g[0] = 0;
-  g.set_is_line();
-  return g;
+inline const Generator&
+Generator::zero_dim_vertex() {
+  static Generator zdv = vertex();
+  return zdv;
 }
 
 } // namespace Parma_Polyhedra_Library

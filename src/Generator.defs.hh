@@ -166,10 +166,6 @@ class Parma_Polyhedra_Library::Generator : PPL_INTERNAL Row {
 private:
   Generator(LinExpression& e);
 
-  static void throw_zero_denominator_vertex();
-  static void throw_zero_dim_ray();
-  static void throw_zero_dim_line();
-
   //! Returns the (bidirectional) line of direction \p e.
   friend Generator
   Parma_Polyhedra_Library::line(const LinExpression& e);
@@ -181,8 +177,9 @@ private:
   //! with default values LinExpression::zero and 1, respectively.
   //! \exception std::invalid_argument thrown if \p d is zero.
   friend Generator
-  Parma_Polyhedra_Library::vertex(const LinExpression& e = LinExpression(0),
-				  const Integer& d = Integer(1));
+  Parma_Polyhedra_Library::vertex(const LinExpression& e
+				  = LinExpression::zero(),
+				  const Integer& d = Integer::one());
 
 public:
   //! Ordinary copy-constructor.
@@ -207,6 +204,8 @@ public:
   //! If \p *this is a vertex, returns its divisor.
   //! \exception std::invalid_argument thrown if \p *this is not a vertex.
   const Integer& divisor() const;
+
+  static const Generator& zero_dim_vertex();
 
 PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if
