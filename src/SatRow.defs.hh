@@ -160,9 +160,6 @@ public:
 				     const SatRow& y,
 				     SatRow& z);
 
-  //! Returns the size of the row.
-  unsigned int size();
-
   //! Returns the index of the first set bit or -1 if no bit is set.
   int first() const;
 
