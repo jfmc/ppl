@@ -86,6 +86,7 @@ PPL::line(const LinExpression& e) {
   return g;
 }
 
+/*! \relates Parma_Polyhedra_Library::Generator */
 std::ostream&
 PPL::operator<<(std::ostream& s, const Generator& g) {
   bool vertex_with_divisor = false;

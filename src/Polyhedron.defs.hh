@@ -399,14 +399,14 @@ public:
   //! and the constraint \p c.
   //! \exception std::invalid_argument thrown if \p *this and constraint
   //!                                  \p c are dimension-incompatible.
-  Parma_Polyhedra_Library::Poly_Con_Relation
+  Poly_Con_Relation
   relation_with(const Constraint& c);
 
   //! Returns the relations holding between the polyhedron \p *this
   //! and the generator \p g.
   //! \exception std::invalid_argument thrown if \p *this and generator
   //!                                  \p g are dimension-incompatible.
-  Parma_Polyhedra_Library::Poly_Gen_Relation
+  Poly_Gen_Relation
   relation_with(const Generator& g);
 
   //! Computes the widening between \p *this and \p y and
@@ -449,7 +449,7 @@ public:
 
   //! Transforms the polyhedron \p *this, assigning an affine expression
   //! to the specified variable.
-  //! \param v             The variable to which the affine
+  //! \param var           The variable to which the affine
   //!                      expression is assigned.
   //! \param expr          The numerator of the affine expression.
   //! \param denominator   The denominator of the affine expression
@@ -457,15 +457,15 @@ public:
   //! \exception std::invalid_argument thrown if \p denominator is zero
   //!                                  or if \p expr and \p *this
   //!                                  are dimension-incompatible
-  //!                                  or if \p v is not a dimension
+  //!                                  or if \p var is not a dimension
   //!                                  of \p *this.
-  void affine_image(const Variable& v,
+  void affine_image(const Variable& var,
 		    const LinExpression& expr,
 		    const Integer& denominator = Integer_one());
   //! Transforms the polyhedrons \p *this, substituting an affine
   //! expression for the specified variable. (It is the inverse
   //! operation of <CODE>affine_image</CODE>.)
-  //! \param v             The variable to which the affine expression
+  //! \param var           The variable to which the affine expression
   //!                      is substituted.
   //! \param expr          The numerator of the affine expression.
   //! \param denominator   The denominator of the affine expression
@@ -473,9 +473,9 @@ public:
   //! \exception std::invalid_argument thrown if \p denominator is zero
   //!                                  or if \p expr and \p *this
   //!                                  are dimension-incompatible
-  //!                                  or if \p v is not a dimension
+  //!                                  or if \p var is not a dimension
   //!                                  of \p *this.
-  void affine_preimage(const Variable& v,
+  void affine_preimage(const Variable& var,
 		       const LinExpression& expr,
 		       const Integer& denominator = Integer_one());
 
@@ -585,8 +585,9 @@ public:
   //! polyhedron \p x is contained in polyhedron \p y.
   //! \exception std::invalid_argument thrown if \p x and \p y
   //!                                  are dimension-incompatible.
-  friend bool Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
-						   const Polyhedron& y);
+  friend bool
+  Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
+	     const Polyhedron& y);
 
   //! Output operator.
   friend std::ostream&

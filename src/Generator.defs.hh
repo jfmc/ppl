@@ -33,7 +33,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
   //! Output operator.
-  /*! \relates Generator */
   std::ostream&
   operator<<(std::ostream& s, const Generator& g);
 
@@ -114,7 +113,7 @@ namespace Parma_Polyhedra_Library {
   \endcode
   As is the case for lines, when specifying a ray the constant term
   of the linear expression is not relevant; also, an exception is thrown
-  when trying to built a ray from the origin of the space.
+  when trying to build a ray from the origin of the space.
 
   \par Example 3
   The following code builds the vertex

@@ -71,12 +71,10 @@ private:
 namespace Parma_Polyhedra_Library {
 
   //! Output operator.
-  /*! \relates Variable */
   std::ostream&
   operator<<(std::ostream& s, const Parma_Polyhedra_Library::Variable& v);
 
   //! Defines a total ordering on variables.
-  /*! \relates Variable */
   bool operator<(const Variable& v, const Variable& w);
 }
 

@@ -114,6 +114,7 @@ Matrix::num_rows() const {
 }
 
 
+/*! \relates SatMatrix */
 inline bool
 operator!=(const Matrix& x, const Matrix& y) {
   return !(x == y);

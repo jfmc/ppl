@@ -44,6 +44,7 @@ static const char yes = '+';
 static const char no = '-';
 static const char sep = ' ';
 
+/*! \relates Parma_Polyhedra_Library::Status */
 std::ostream&
 PPL::operator<<(std::ostream& s, const Status& u) {
   s << (u.test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
@@ -79,6 +80,7 @@ get_field(std::istream& s, const std::string&
   return str[0] == yes;
 }
 
+/*! \relates Parma_Polyhedra_Library::Status */
 std::istream&
 PPL::operator>>(std::istream& s, Status& u) {
   if (get_field(s, zero_dim_univ))

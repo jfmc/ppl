@@ -33,6 +33,7 @@ Variable::id() const {
   return varid;
 }
 
+/*! \relates Variable */
 inline bool
 operator<(const Variable& v, const Variable& w) {
   return v.id() < w.id();

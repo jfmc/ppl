@@ -172,7 +172,7 @@ PPL::SatRow::prev(int position) const {
   return -1;
 }
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+
 /*!
   Compares \p x with \p y starting from the least significant bits.
   The ordering is total and has the following property: if \p x and \p y
@@ -184,7 +184,6 @@ PPL::SatRow::prev(int position) const {
   -  0 if \p x and \p y are equal;
   -  1 if \p x comes after \p y in the ordering.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 int
 PPL::compare(const SatRow& x, const SatRow& y) {
   size_t x_size = mpz_size(x.vec);
@@ -276,6 +275,7 @@ PPL::operator<(const SatRow& x, const SatRow& y) {
   return one_diff;
 }
 
+/*! \relates Parma_Polyhedra_Library::SatRow */
 std::ostream&
 PPL::operator<<(std::ostream& s, const SatRow& r) {
   for (int i = 0, last = r.last(); i <= last; ++i)

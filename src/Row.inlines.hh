@@ -401,7 +401,6 @@ Row::coefficient(size_t k) const {
 }
 
 
-
 inline bool
 operator==(const Row& x, const Row& y) {
   return compare(x, y) == 0;
@@ -448,6 +447,9 @@ swap(Parma_Polyhedra_Library::Row& x, Parma_Polyhedra_Library::Row& y) {
 }
 
 /*!
+  Specializes <CODE>std::iter_swap</CODE>.
+*/
+/* FIXME: this was the original comment causing a doxygen bug.
   Specialize <CODE>std::iter_swap</CODE>
   for <CODE>vector<Row>::iterator</CODE>.
 */

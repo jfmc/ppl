@@ -123,8 +123,10 @@ PPL::Row::strong_normalize() {
   }
 }
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+
 /*!
+  \relates Parma_Polyhedra_Library::Row
+
   \param x    A row of coefficients.
   \param y    Another row.
 
@@ -154,8 +156,6 @@ PPL::Row::strong_normalize() {
   - +1, if \p y is smaller than \p x and they \e are parallel;
   - +2, if \p y is smaller than \p x and they are \e not parallel.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-
 int
 PPL::compare(const Row& x, const Row& y) {
   bool x_is_line_or_equality = x.is_line_or_equality();
@@ -194,6 +194,9 @@ PPL::compare(const Row& x, const Row& y) {
   return 0;
 }
 
+/*!
+  \relates Parma_Polyhedra_Library::Row
+*/
 const PPL::Integer&
 PPL::operator*(const Row& x, const Row& y) {
   // Scalar product is only defined  if `x' and `y' are

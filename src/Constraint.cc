@@ -78,6 +78,7 @@ PPL::Constraint::is_trivial_false() const {
     return (x[0] < 0);
 }
 
+/*! \relates Parma_Polyhedra_Library::Constraint */
 std::ostream&
 PPL::operator<<(std::ostream& s, const Constraint& c) {
   int num_variables = c.size()-1;

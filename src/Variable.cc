@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+/*! \relates Parma_Polyhedra_Library::Variable */
 std::ostream&
 PPL::operator<<(std::ostream& s, const Variable& v) {
   unsigned int varid = v.id();

@@ -315,6 +315,7 @@ PPL::Matrix::print(std::ostream& s) const {
     << endl;
 }
 
+/*! \relates Parma_Polyhedra_Library::Matrix */
 // A placeholder for print().
 std::ostream&
 PPL::operator<<(std::ostream& s, const Matrix& m) {
@@ -342,6 +343,7 @@ PPL::Matrix::get(std::istream& s) {
   set_sorted(tempstr == "(sorted)");
 }
 
+/*! \relates Parma_Polyhedra_Library::Matrix */
 // A placeholder for get().
 std::istream&
 PPL::operator>>(std::istream& s, Matrix& m) {
@@ -571,6 +573,7 @@ PPL::Matrix::strong_normalize() {
 }
 
 /*!
+  \relates Parma_Polyhedra_Library::Matrix
   Returns <CODE>true</CODE> if and only if \p x and
   \p y are identical.
 */

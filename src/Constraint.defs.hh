@@ -33,7 +33,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
   //! Output operator.
-  /*! \relates Constraint */
   std::ostream& operator<<(std::ostream& s, const Constraint& c);
 
   // Put them in the namespace here to declare them friend later.
