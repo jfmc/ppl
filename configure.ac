@@ -288,6 +288,9 @@ AC_LANG(C)
 AC_C_CONST
 AC_C_INLINE
 
+# Checks for C functions.
+AC_CHECK_FUNCS(ffs)
+
 # Use C++ for the remaining checks.
 AC_LANG(C++)
 
@@ -352,7 +355,6 @@ AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
 
 # Checks for programs.
-
 AC_CHECK_PROG(MD5SUM, md5sum, md5sum)
 AM_CONDITIONAL(HAVE_MD5SUM, test x$MD5SUM = xmd5sum)
 
@@ -458,11 +460,9 @@ AM_CONDITIONAL(HAVE_GLPK, test x$HAVE_GLPK_H = xyes)
 AC_LANG_POP(C)
 
 # Checks for header files.
-
 AC_CHECK_HEADERS([getopt.h signal.h sys/resource.h sys/time.h sys/types.h unistd.h])
 
 # Checks for header declarations.
-
 AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
                ,
                ,
