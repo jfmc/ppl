@@ -59,6 +59,11 @@ is the real number
   \vect{v}^\transpose \vect{w} = \sum_{i=0}^{n-1} v_i w_i.
 \f]
 
+For any \f$S_1, S_2 \sseq \Rset^n\f$, the <EM>Minkowski's sum</EM> of
+\f$S_1\f$ and \f$S_2\f$ is:
+\f$S_1 + S_2 = \{\, \vect{v}_1 + \vect{v}_2 \mid
+                \vect{v}_1 \in S_1, \vect{v}_2 \in S_2 \,\}.\f$
+
 <B>Affine hyperplanes and half-spaces</B>
 
 For each vector \f$\vect{a} \in \Rset^n\f$ and scalar \f$b \in \Rset\f$,
@@ -84,30 +89,53 @@ the constraint \f$0 \relop b\f$ is either a tautology (i.e., always true)
 or inconsistent (i.e., always false), so that it defines
 either the whole vector space \f$\Rset^n\f$ or the empty set.
 
-<B>NNC Polyhedra</B>
+<B>Convex Polyhedra</B>
 
 The set \f$\cP \sseq \Rset^n\f$ is a
 <EM>not necessarily closed convex polyhedron</EM>
-(NNC polyhedron, for short) if and only if either
+(<EM>NNC polyhedron</EM>, for short) if and only if either
 \f$\cP\f$ can be expressed as the intersection of a finite number
-of (not necessarily closed) affine half-spaces of \f$\Rset^n\f$,
+of (open or closed) affine half-spaces of \f$\Rset^n\f$
 or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
-
 The set of all NNC polyhedra on the vector space \f$\Rset^n\f$
 is denoted \f$\Pset_n\f$.
+An NNC polyhedron is called <EM>rational</EM>
+if it can be expressed as the intersection
+of a finite number of affine half-spaces with rational coefficients.
+In the sequel, we will consider only rational NNC polyhedra.
+
+The set \f$\cP  \sseq \Pset_n\f$ is a <EM>closed convex polyhedron</EM>
+(<EM>closed polyhedron</EM>, for short) if and only if either
+\f$\cP\f$ can be expressed as the intersection of a finite number
+of closed affine half-spaces of \f$\Rset^n\f$
+or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
+The set of all closed polyhedra on the vector space \f$\Rset^n\f$
+is denoted \f$\CPset_n\f$.
+
 When ordering NNC polyhedra by the set inclusion relation,
-the empty set \f$\emptyset\f$ and the vector space \f$\Rset^n\f$
-are the smallest and the biggest element of \f$\Pset_n\f$, respectively.
+ the empty set \f$\emptyset\f$ and the vector space \f$\Rset^n\f$
+are, respectively, the smallest and the biggest elements of both \f$\Pset_n\f$
+and \f$\CPset_n\f$.
 The vector space \f$\Rset^n\f$ is also called the <EM>universe</EM> polyhedron.
+
+<B>Polyhedral Intersection and Convex Hull</B>
+
 For any pair of NNC polyhedra \f$\cP_1, \cP_2 \in \Pset_n\f$,
 the set intersection \f$\cP_1 \inters \cP_2 \in \Pset_n\f$
+called the <EM>polyhedral intersection</EM> of \f$\cP_1\f$ and \f$\cP_2\f$
 is the biggest NNC polyhedron included in both \f$\cP_1\f$ and \f$\cP_2\f$;
 similarly, the NNC polyhedron \f$\cP_1 \uplus \cP_2 \in \Pset_n\f$,
 called the <EM>convex polyhedral hull</EM> of \f$\cP_1\f$ and \f$\cP_2\f$
-(poly-hull, for short),
+(<EM>poly-hull</EM>, for short),
 is the smallest NNC polyhedron including both \f$\cP_1\f$ and \f$\cP_2\f$.
-In theoretical terms, \f$\Pset_n\f$ is a <EM>lattice</EM> under set inclusion.
 
+For any pair of closed polyhedra \f$\cP_1, \cP_2 \in \CPset_n\f$,
+their intersection \f$\cP_1 \inters \cP_2 \in \CPset_n\f$
+and their poly-hull \f$\cP_1 \uplus \cP_2 \in \CPset_n\f$
+are still closed polyhedra.
+
+In theoretical terms, \f$\Pset_n\f$ is a <EM>lattice</EM> under set inclusion
+and \f$\CPset_n\f$ is a <EM>sub-lattice</EM> of \f$\Pset_n\f$.
 
 <B>Bounded Polyhedra</B>
 
@@ -123,24 +151,6 @@ if there exists a \f$\lambda \in \nonnegRset\f$ such that
       \,\bigr\}.
 \f]
 A bounded polyhedron is also called a <EM>polytope</EM>.
-
-
-<B>Closed Polyhedra</B>
-
-The set \f$\cP \sseq \Rset^n\f$ is a <EM>closed convex polyhedron</EM>
-(closed polyhedron, for short) if and only if either \f$\cP\f$ can be expressed
-as the intersection of a finite number of closed affine half-spaces
-of \f$\Rset^n\f$, or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
-
-The set of all closed polyhedra on the vector space \f$\Rset^n\f$
-is denoted \f$\CPset_n\f$.
-Clearly, \f$\CPset_n \sseq \Pset_n\f$ and both
-\f$\emptyset\f$ and \f$\Rset^n\f$ are elements of \f$\CPset_n\f$;
-for any pair of closed polyhedra \f$\cP_1, \cP_2 \in \CPset_n\f$,
-their set intersection \f$\cP_1 \inters \cP_2 \in \CPset_n\f$
-and their poly-hull \f$\cP_1 \uplus \cP_2 \in \CPset_n\f$
-are still closed polyhedra. In theoretical terms,
-\f$\CPset_n\f$ is a <EM>sub-lattice</EM> of \f$\Pset_n\f$.
 
 <B>Constraints representation</B>
 
@@ -169,7 +179,7 @@ the number of non-strict inequalities, and
 the number of strict inequalities,
 respectively.
 
-<B>Combinations, hulls and Minkowski's sum</B>
+<B>Combinations and hulls</B>
 
 Let \f$S = \{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$
 be a set of vectors.
@@ -194,17 +204,7 @@ such that \f$\lambda_j > 0\f$ for some \f$\vect{x}_j \in P\f$.
 It follows that \f$\NNChull(P, C) = \convexhull(P)\f$
 if \f$C \sseq P\f$.
 
-For any \f$S_1, S_2 \sseq \Rset^n\f$, the <EM>Minkowski's sum</EM> of
-\f$R\f$ and \f$S\f$ is:
-\f[
-  S_1 + S_2 = \{\,
-                \vect{v}_1 + \vect{v}_2
-              \mid
-                \vect{v}_1 \in S_1, \vect{v}_2 \in S_2
-              \,\}.
-\f]
-
-<B>The generators of an NNC polyhedron</B>
+<B>Points, closure points, rays and lines</B>
 
 Let \f$\cP \in \Pset_n\f$ be an NNC polyhedron. Then
 - a vector \f$\vect{p} \in \cP\f$ is called a <EM>point</EM> of \f$\cP\f$;
@@ -235,10 +235,8 @@ for all \f$\lambda \in \Rset, \lambda \geq 0\f$.
 <B>Generators representation</B>
 
 Each NNC polyhedron \f$\cP \in \Pset_n\f$ can be represented by
-a finite set \f$L\f$ of lines of \f$\cP\f$,
-a finite set \f$R\f$ of rays of \f$\cP\f$,
-a finite set \f$P\f$ of points of \f$\cP\f$, and
-a finite set \f$C\f$ of closure points of \f$\cP\f$.
+finite sets of lines \f$L\f$, rays \f$R\f$,
+points \f$P\f$ and closure points \f$C\f$ of \f$\cP\f$.
 The 4-tuple \f$\cG = (L, R, P, C)\f$ is said to be
 a <EM>generator system</EM> for \f$\cP\f$,
 in the sense that
@@ -247,21 +245,32 @@ in the sense that
 \f]
 where the symbol '\f$+\f$' denotes the Minkowski's sum.
 
-Note that \f$\cP = \emptyset\f$ if and only if \f$P = \emptyset\f$.
-Also note that \f$P\f$ must contain all the vertices of \f$\cP\f$.
-However, if \f$\cP\f$ is a non-empty polyhedron having no vertices at all,
+When \f$\cP \in \CPset_n\f$ is a closed polyhedron,
+then it can be represented by
+finite sets of lines \f$L\f$, rays \f$R\f$ and
+points \f$P\f$ of \f$\cP\f$.
+In this case, the 3-tuple \f$\cG = (L, R, P)\f$ is said to be
+a <EM>generator system</EM> for \f$\cP\f$ since we have
+\f[
+  \cP = \linearhull(L) + \conichull(R) + \convexhull(P).
+\f]
+Thus, in this case,
+every closure point of \f$\cP\f$ is a point of \f$\cP\f$.
+
+For any $\cP \in \Pset_n$ generated by \f$\cG = (L, R, P, C)\f$,
+ \f$\cP = \emptyset\f$ if and only if \f$P = \emptyset\f$.
+Also, \f$P\f$ must contain all the vertices of \f$\cP\f$,
+although, if \f$\cP\f$ is non-empty having no vertices at all,
 then \f$P\f$ necessarily contains points that are <EM>not</EM> vertices
 of \f$P\f$.
 For instance, the half-space of \f$\Rset^2\f$ corresponding to the single
 constraint \f$y \geq 0\f$ can be represented by the generator system
-\f$\cG = (L, R, P, C)\f$ such that
+\f$\cG = (L, R, P)\f$ such that
 \f$L = \bigl\{ (1, 0)^\transpose \bigr\}\f$,
-\f$R = \bigl\{ (0, 1)^\transpose \bigr\}\f$,
-\f$P = \bigl\{ (0, 0)^\transpose \bigr\}\f$, and
-\f$C = \emptyset\f$.
+\f$R = \bigl\{ (0, 1)^\transpose \bigr\}\f$, and
+\f$P = \bigl\{ (0, 0)^\transpose \bigr\}\f$.
 It is also worth noting that the only ray in \f$R\f$
 is <EM>not</EM> an extreme ray of \f$\cP\f$.
-
 
 <B>Affine transformation</B>
 
@@ -274,121 +283,55 @@ such that
 where \f$A \in \Rset^m \times \Rset^n\f$ and
 \f$\vect{b} \in \Rset^m\f$.
 
-<B>Rational polyhedron</B>
+<B>Dual representation</B>
 
-A polyhedron \f$P \sseq \Rset^n\f$ is said to be <EM>rational</EM>
-if there exists a matrix
-\f$A \in \Rset^{m'} \times \Rset^n\f$
-and a vector \f$\vect{b} \in \Rset^{m'}\f$
-with rational coefficients such that
-\f[
-  P = \{\,
-        \vect{x} \in \Rset^n
-      \mid
-        A\vect{x} \geq \vect{b}
-      \,\}.
-\f]
+A rational NNC polyhedron \f$P\f$ has <EM>dual representations</EM>.
+That is, \f$P\f$ can be represented by a constraints system
+or a generators system.
+Moreover, given one of the representations, there is an algorithm for
+computing the other.
 
-In the sequel, we will consider only rational polyhedra
-and assume that, if
-\f$\{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b}\,\}\f$
-is a system of constraints representing a polyhedron,
-then \f$A\f$ and \f$\vect{b}\f$ have rational coefficients.
+<B>Space dimension and dimension-compatibility</B>
+
+The <EM>space dimension</EM> of an NNC polyhedron \f$P \in \Pset_n\f$
+is the dimension \f$n \in \Nset\f$ of the corresponding vector space
+\f$\Rset^n\f$.
+The space dimension of constraints, generators and other objects
+of the PPL are defined similarly.
+The space dimension of objects is important because most of the
+operations defined on NNC polyhedra are well-defined if and only if
+the various arguments are space dimension-compatible.
+
+The following (space) <EM>dimension-compatibility</EM> rules are defined:
+- the NNC polyhedra \f$P \in \Pset_n\f$ and \f$Q \in \Pset_m\f$ are
+  dimension-compatible if and only if \f$n = m\f$;
+- the constraint \f$\langle \vect{a}, \vect{x} \rangle = \lambda\f$
+  (or \f$\langle \vect{a}, \vect{x} \rangle \geq \lambda\f$),
+  where \f$\vect{a}, \vect{x} \in \Rset^m\f$,
+  is dimension-compatible with an NNC polyhedron \f$P \in \Pset_n\f$
+  if and only if \f$m \leq n\f$;
+- the generator \f$\vect{x} \in \Rset^m\f$ is dimension-compatible
+  with an NNC polyhedron \f$P \in \Pset_n\f$ if and only if \f$m \leq n\f$;
+- a system of constraints (resp., generators) is dimension-compatible with
+  an NNC polyhedron if and only if all the constraints (resp., generators)
+  in the system are dimension-compatible with the NNC polyhedron.
+
+\if Implementation_Info
+
+FIXME: We should find a way to have a decent bibliography
+and also to refer to the cited papers/books as usual.
+
+The following definitions and results are taken, in addition
+to the references mentioned before, from:
+- G. B Dantzig - Linear programming and extensions - Princeton University
+  Press, New Jersey 1963.
+
+
+\section prelims Further notation and terminology
 
 <B><EM>Proposition</EM></B>
 
 A polyhedron is a convex set.
-
-<B>Polyhedron dimension</B>
-
-A non-empty polyhedron \f$P \sseq \Rset^n\f$
-is of <EM>dimension</EM> \f$k\f$,
-denoted by \f$\pdim(P) = k\f$, if the maximum number of
-affinely independent points in \f$P\f$ is \f$k + 1\f$.
-
-\note
-What is the dimension of the <EM>empty</EM> polyhedron?
-If the above definition is applied to an empty polyhedron,
-then the answer would be \f$-1\f$.
-
-<B>Cone</B>
-
-A set \f$C \sseq \Rset^n\f$ is a <EM>cone</EM> if
-\f[
-  \vect{x} \in C \Rightarrow \lambda \vect{x} \in C
-  \text{ for all } \lambda \in \Rset, \lambda \geq 0.
-\f]
-
-<B>Polyhedral cone</B>
-
-The polyhedron
-\f$P = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{0}\,\}\f$
-is a convex cone and is called <EM>polyhedral cone</EM>.
-
-A polyhedral cone is either <EM>pointed</EM>,
-having the origin as its only vertex, or has no vertices at all.
-
-<B>Lineality space</B>
-
-Given a polyhedron
-\f$P = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b}\,\}\f$,
-the <EM>lineality space</EM> of \f$P\f$ is the set
-\f[
-  \{\, \vect{x} \in P \mid A\vect{x} = \vect{0} \,\}
-\f]
-and it is denoted by \f$\linspace(P)\f$.
-
-<B>Generators representation</B>
-
-A polyhedron \f$P \sseq \Rset^n\f$ can also be represented by
-a finite set \f$V\f$ of points of \f$P\f$,
-a finite set \f$R\f$ of rays of \f$P\f$ and
-a finite set \f$L\f$ of lines of \f$P\f$.
-The elements of these three sets are the <EM>generators</EM> of \f$P\f$,
-in the sense that
-\f[
-  P = \mathcal{V} + \mathcal{R} + \mathcal{L},
-\f]
-where the symbol '\f$+\f$' denotes the Minkowski's sum and
- - \f$\mathcal{V}\f$ is the set of all the convex combinations
-   of the points in \f$V\f$;
- - \f$\mathcal{R}\f$ is the set of all the positive combinations
-   of the rays in \f$R\f$; and
- - \f$\mathcal{L}\f$ is the set of all the linear combinations
-   of the lines in \f$L\f$.
-
-Note that
-\f$\mathcal{V}\f$ is a polytope,
-\f$\mathcal{R}\f$ is a pointed cone, and
-\f$\mathcal{L}\f$ is \f$\linspace(P)\f$.
-Moreover,
-if \f$V = \emptyset\f$,
-we obtain \f$\mathcal{V} = \emptyset\f$,
-so that \f$P = \emptyset\f$.
-In contrast,
-if both \f$R = L = \emptyset\f$,
-we obtain \f$\mathcal{R} = \mathcal{L} = \{ \vect{0} \}\f$,
-so that \f$P = \mathcal{V}\f$.
-
-Also note that \f$V\f$ must contain all the vertices of \f$P\f$
-(hence the choice for its name).
-However, if \f$P\f$ is a non-empty polyhedron having no vertices at all,
-then \f$V\f$ necessarily contains points that are <EM>not</EM> vertices
-of \f$P\f$.
-For instance, the half-space of \f$\Rset^2\f$ corresponding to the single
-constraint \f$y \geq 0\f$ can be represented by taking the generators
-\f$V = \bigl\{ (0, 0)^\transpose \bigr\}\f$,
-\f$R = \bigl\{ (0, 1)^\transpose \bigr\}\f$ and
-\f$L = \bigl\{ (1, 0)^\transpose \bigr\}\f$.
-Note also that the only ray in \f$R\f$ is <EM>not</EM> an extreme ray
-of \f$P\f$.
-
-The following theorem states that,
-whenever a polyhedron \f$P\f$ has a vertex,
-there exists a decomposition such that
-- \f$V\f$ is the set of all <EM>vertices</EM> of \f$P\f$;
-- \f$R\f$ is the set of all <EM>extreme</EM> rays of \f$P\f$; and
-- \f$L = \emptyset\f$.
 
 <B>Minkowski's theorem</B>
 
@@ -403,6 +346,13 @@ Then
 \f[
   P = \mathcal{V} + \mathcal{R}.
 \f]
+
+Informally, this theorem states that,
+whenever a polyhedron \f$P\f$ has a vertex,
+there exists a decomposition such that
+- \f$V\f$ is the set of all <EM>vertices</EM> of \f$P\f$;
+- \f$R\f$ is the set of all <EM>extreme</EM> rays of \f$P\f$; and
+- \f$L = \emptyset\f$.
 
 The conditions that \f$P\f$ is not empty and \f$\prank(A) = n\f$
 are equivalent to the condition that \f$P\f$ has a vertex.
@@ -441,58 +391,53 @@ the rows of \f$A\f$ with positive combinations of the rows of \f$B\f$,
 we can think of \f$A\f$ as the matrix of vertices and \f$B\f$ as
 the matrix of rays.
 
-<B>Dual representation</B>
+<B>Polyhedron dimension</B>
 
-Thus a rational polyhedron \f$P\f$ has <EM>dual representations</EM>.
-That is, \f$P\f$ can be represented by a system of constraints
-or a system of generators.
-Moreover, given one of the representations, there is an algorithm for
-computing the other.
+A non-empty polyhedron \f$P \sseq \Rset^n\f$
+is of <EM>dimension</EM> \f$k\f$,
+denoted by \f$\pdim(P) = k\f$, if the maximum number of
+affinely independent points in \f$P\f$ is \f$k + 1\f$.
 
-<B>Space dimension and dimension-compatibility</B>
+\note
+What is the dimension of the <EM>empty</EM> polyhedron?
+If the above definition is applied to an empty polyhedron,
+then the answer would be \f$-1\f$.
 
-The <EM>space dimension</EM> of a polyhedron \f$P \sseq \Rset^n\f$
-is the dimension \f$n \in \Nset\f$ of the corresponding vector space.
-The space dimension of constraints, generators and other objects
-of the PPL are defined similarly.
-The space dimension of objects is important because most of the
-operations defined on polyhedra are well-defined if and only if
-the various arguments are space dimension-compatible.
-
-The following (space) <EM>dimension-compatibility</EM> rules are defined:
-- the polyhedra \f$P \sseq \Rset^n\f$ and \f$Q \sseq \Rset^m\f$ are
-  dimension-compatible if and only if \f$n = m\f$;
-- the constraint \f$\langle \vect{a}, \vect{x} \rangle = \lambda\f$
-  (or \f$\langle \vect{a}, \vect{x} \rangle \geq \lambda\f$),
-  where \f$\vect{a}, \vect{x} \in \Rset^m\f$,
-  is dimension-compatible with polyhedron \f$P \sseq \Rset^n\f$
-  if and only if \f$m \leq n\f$;
-- the generator \f$\vect{x} \in \Rset^m\f$ is dimension-compatible
-  with polyhedron \f$P \sseq \Rset^n\f$ if and only if \f$m \leq n\f$;
-- a system of constraints (resp., generators) is dimension-compatible with
-  a polyhedron if and only if all the constraints (resp., generators)
-  in the system are dimension-compatible with the polyhedron.
-
-Be careful not to confuse the dimension \f$k \leq n\f$ of a polyhedron
-\f$P \sseq \Rset^n\f$ with the <EM>space</EM> dimension \f$n\f$ of \f$P\f$,
+Be careful not to confuse the dimension \f$k \leq n\f$ of an NNC polyhedron
+\f$P \in \Pset_n\f$ with the <EM>space</EM> dimension \f$n\f$ of \f$P\f$,
 which is the dimension of the enclosing vector space.
 In particular, we can have \f$\pdim(P) \neq \pdim(Q)\f$ even though
 \f$P\f$ and \f$Q\f$ are dimension-compatible;
 and vice versa, \f$P\f$ and \f$Q\f$ may be dimension-incompatible polyhedra
 even though \f$\pdim(P) = \pdim(Q)\f$.
 
-\if Implementation_Info
 
-FIXME: We should find a way to have a decent bibliography
-and also to refer to the cited papers/books as usual.
+<B>Cone</B>
 
-The following definitions and results are taken, in addition
-to the references mentioned before, from:
-- G. B Dantzig - Linear programming and extensions - Princeton University
-  Press, New Jersey 1963.
+A set \f$C \sseq \Rset^n\f$ is a <EM>cone</EM> if
+\f[
+  \vect{x} \in C \Rightarrow \lambda \vect{x} \in C
+  \text{ for all } \lambda \in \Rset, \lambda \geq 0.
+\f]
 
+<B>Polyhedral cone</B>
 
-\section prelims Further notation and terminology
+The polyhedron
+\f$P = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{0}\,\}\f$
+is a convex cone and is called <EM>polyhedral cone</EM>.
+
+A polyhedral cone is either <EM>pointed</EM>,
+having the origin as its only vertex, or has no vertices at all.
+
+<B>Lineality space</B>
+
+Given a polyhedron
+\f$P = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b}\,\}\f$,
+the <EM>lineality space</EM> of \f$P\f$ is the set
+\f[
+  \{\, \vect{x} \in P \mid A\vect{x} = \vect{0} \,\}
+\f]
+and it is denoted by \f$\linspace(P)\f$.
 
 <B>Linear independence</B>
 
