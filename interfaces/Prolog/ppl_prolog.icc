@@ -43,7 +43,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <sstream>
 #include <climits>
 
-namespace PPL = Parma_Polyhedra_Library;
+using namespace Parma_Polyhedra_Library;
 
 static void
 handle_exception(const integer_out_of_range& e) {
@@ -181,7 +181,7 @@ handle_exception(const std::exception& e) {
   Prolog_raise_exception(et);
 }
 
-class timeout_exception : public PPL::Throwable {
+class timeout_exception : public Throwable {
 public:
   void throw_me() const {
     throw *this;
@@ -202,7 +202,7 @@ reset_timeout() {
   if (p_timeout_object) {
     delete p_timeout_object;
     p_timeout_object = 0;
-    PPL::abandon_exponential_computations = 0;
+    abandon_exponential_computations = 0;
   }
 }
 
@@ -359,7 +359,7 @@ static struct {
 };
 
 static Prolog_term_ref
-variable_term(PPL::dimension_type varid) {
+variable_term(dimension_type varid) {
   Prolog_term_ref v = Prolog_new_term_ref();
   Prolog_put_long(v, varid);
   Prolog_term_ref t = Prolog_new_term_ref();
@@ -399,10 +399,10 @@ term_to_polyhedron_kind(Prolog_term_ref t) {
   throw not_a_polyhedron_kind(t);
 }
 
-static PPL::LinExpression
+static LinExpression
 build_lin_expression(Prolog_term_ref t) {
   if (Prolog_is_integer(t))
-    return PPL::LinExpression(integer_term_to_Integer(t));
+    return LinExpression(integer_term_to_Integer(t));
   else if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
@@ -420,7 +420,7 @@ build_lin_expression(Prolog_term_ref t) {
 	  return -build_lin_expression(arg);
 	else if (functor == a_dollar_VAR)
 	  // Variable.
-	  return PPL::Variable(term_to_unsigned_int(arg));
+	  return Variable(term_to_unsigned_int(arg));
       }
       break;
     case 2:
@@ -459,7 +459,7 @@ build_lin_expression(Prolog_term_ref t) {
 }
 
 
-static PPL::Constraint
+static Constraint
 build_constraint(Prolog_term_ref t) {
   if (Prolog_is_compound(t)) {
     Prolog_atom functor;
@@ -516,7 +516,7 @@ build_constraint(Prolog_term_ref t) {
   throw non_linear("build_constraint", t);
 }
 
-static PPL::Generator
+static Generator
 build_generator(Prolog_term_ref t) {
   if (Prolog_is_compound(t)) {
     Prolog_atom functor;
@@ -526,13 +526,13 @@ build_generator(Prolog_term_ref t) {
       Prolog_term_ref arg = Prolog_new_term_ref();
       Prolog_get_arg(1, t, arg);
       if (functor == a_line)
-	return PPL::Generator::line(build_lin_expression(arg));
+	return Generator::line(build_lin_expression(arg));
       else if (functor == a_ray)
-	return PPL::Generator::ray(build_lin_expression(arg));
+	return Generator::ray(build_lin_expression(arg));
       else if (functor == a_point)
-	return PPL::Generator::point(build_lin_expression(arg));
+	return Generator::point(build_lin_expression(arg));
       else if (functor == a_closure_point)
-	return PPL::Generator::closure_point(build_lin_expression(arg));
+	return Generator::closure_point(build_lin_expression(arg));
     }
     else if (arity == 2) {
       Prolog_term_ref arg1 = Prolog_new_term_ref();
@@ -541,10 +541,10 @@ build_generator(Prolog_term_ref t) {
       Prolog_get_arg(2, t, arg2);
       if (Prolog_is_integer(arg2)) {
         if (functor == a_point)
-	  return PPL::Generator::point(build_lin_expression(arg1),
+	  return Generator::point(build_lin_expression(arg1),
 				       integer_term_to_Integer(arg2));
         else if (functor == a_closure_point)
-	  return PPL::Generator::closure_point(build_lin_expression(arg1),
+	  return Generator::closure_point(build_lin_expression(arg1),
 					       integer_term_to_Integer(arg2));
       }
     }
@@ -557,11 +557,11 @@ template <typename R>
 static Prolog_term_ref
 get_lin_expression(const R& r) {
   Prolog_term_ref so_far = Prolog_new_term_ref();
-  PPL::Integer coefficient;
-  PPL::dimension_type varid = 0;
-  PPL::dimension_type space_dimension = r.space_dimension();
+  Integer coefficient;
+  dimension_type varid = 0;
+  dimension_type space_dimension = r.space_dimension();
   while (varid < space_dimension
-	 && (coefficient = r.coefficient(PPL::Variable(varid))) == 0)
+	 && (coefficient = r.coefficient(Variable(varid))) == 0)
     ++varid;
   if (varid >= space_dimension) {
     Prolog_put_long(so_far, 0);
@@ -573,7 +573,7 @@ get_lin_expression(const R& r) {
     while (true) {
       ++varid;
       while (varid < space_dimension
-	     && (coefficient = r.coefficient(PPL::Variable(varid))) == 0)
+	     && (coefficient = r.coefficient(Variable(varid))) == 0)
 	++varid;
       if (varid >= space_dimension)
 	break;
@@ -593,16 +593,16 @@ get_lin_expression(const R& r) {
 }
 
 static Prolog_term_ref
-constraint_term(const PPL::Constraint& c) {
+constraint_term(const Constraint& c) {
   Prolog_atom relation = 0;
   switch (c.type()) {
-    case PPL::Constraint::EQUALITY:
+    case Constraint::EQUALITY:
       relation = a_equal;
       break;
-    case PPL::Constraint::NONSTRICT_INEQUALITY:
+    case Constraint::NONSTRICT_INEQUALITY:
       relation = a_greater_than_equal;
       break;
-    case PPL::Constraint::STRICT_INEQUALITY:
+    case Constraint::STRICT_INEQUALITY:
       relation = a_greater_than;
       break;
   default:
@@ -616,20 +616,20 @@ constraint_term(const PPL::Constraint& c) {
 }
 
 static Prolog_term_ref
-generator_term(const PPL::Generator& g) {
+generator_term(const Generator& g) {
   Prolog_term_ref t = Prolog_new_term_ref();
   Prolog_atom constructor = 0;
   switch (g.type()) {
-  case PPL::Generator::LINE:
+  case Generator::LINE:
     constructor = a_line;
     break;
-  case PPL::Generator::RAY:
+  case Generator::RAY:
     constructor = a_ray;
     break;
-  case PPL::Generator::POINT:
+  case Generator::POINT:
     {
       constructor = a_point;
-      const PPL::Integer& divisor = g.divisor();
+      const Integer& divisor = g.divisor();
       if (divisor == 1)
 	break;
       else {
@@ -639,10 +639,10 @@ generator_term(const PPL::Generator& g) {
 	return t;
       }
     }
-  case PPL::Generator::CLOSURE_POINT:
+  case Generator::CLOSURE_POINT:
     {
       constructor = a_closure_point;
-      const PPL::Integer& divisor = g.divisor();
+      const Integer& divisor = g.divisor();
       if (divisor == 1)
 	break;
       else {
@@ -659,7 +659,7 @@ generator_term(const PPL::Generator& g) {
   return t;
 }
 
-static PPL::Variable
+static Variable
 get_variable(Prolog_term_ref t) {
   if (Prolog_is_compound(t)) {
     Prolog_atom functor;
@@ -668,18 +668,18 @@ get_variable(Prolog_term_ref t) {
     if (functor == a_dollar_VAR && arity == 1) {
       Prolog_term_ref arg = Prolog_new_term_ref();
       Prolog_get_arg(1, t, arg);
-      return PPL::Variable(term_to_unsigned_int(arg));
+      return Variable(term_to_unsigned_int(arg));
     }
   }
   throw not_a_variable(t);
 }
 
-static PPL::Polyhedron*
+static Polyhedron*
 term_to_polyhedron_handle(Prolog_term_ref t_ph) {
   if (Prolog_is_address(t_ph)) {
     void* p;
     if (Prolog_get_address(t_ph, &p))
-      return static_cast<PPL::Polyhedron*>(p);
+      return static_cast<Polyhedron*>(p);
   }
   throw not_a_polyhedron_handle(t_ph);
 }
@@ -772,7 +772,7 @@ ppl_set_timeout(Prolog_term_ref t_time) {
     p_timeout_object =
       new
       Parma_Watchdog_Library::Watchdog(hundredth_secs,
-				       &PPL::abandon_exponential_computations,
+				       &abandon_exponential_computations,
 				       e);
     return PROLOG_SUCCESS;
   }
@@ -795,12 +795,12 @@ ppl_new_Polyhedron_from_dimension(Prolog_term_ref t_tp,
 				  Prolog_term_ref t_nd,
 				  Prolog_term_ref t_ph) {
   try {
-    PPL::Polyhedron* ph;
+    Polyhedron* ph;
     Prolog_atom tp = term_to_polyhedron_kind(t_tp);
     if (tp == a_c)
-      ph = new PPL::C_Polyhedron(term_to_unsigned_int(t_nd));
+      ph = new C_Polyhedron(term_to_unsigned_int(t_nd));
     else
-      ph = new PPL::NNC_Polyhedron(term_to_unsigned_int(t_nd));
+      ph = new NNC_Polyhedron(term_to_unsigned_int(t_nd));
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -819,14 +819,14 @@ ppl_new_Polyhedron_empty_from_dimension(Prolog_term_ref t_tp,
                                         Prolog_term_ref t_nd,
 					Prolog_term_ref t_ph) {
   try {
-    PPL::Polyhedron* ph;
+    Polyhedron* ph;
     Prolog_atom tp = term_to_polyhedron_kind(t_tp);
     if (tp == a_c)
-      ph = new PPL::C_Polyhedron(term_to_unsigned_int(t_nd),
-				 PPL::Polyhedron::EMPTY);
+      ph = new C_Polyhedron(term_to_unsigned_int(t_nd),
+				 Polyhedron::EMPTY);
     else
-      ph = new PPL::NNC_Polyhedron(term_to_unsigned_int(t_nd),
-				   PPL::Polyhedron::EMPTY);
+      ph = new NNC_Polyhedron(term_to_unsigned_int(t_nd),
+				   Polyhedron::EMPTY);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -846,29 +846,29 @@ ppl_new_Polyhedron_from_Polyhedron(Prolog_term_ref t_tp_source,
 				   Prolog_term_ref t_tp,
 				   Prolog_term_ref t_ph) {
   try {
-    PPL::Polyhedron* ph;
+    Polyhedron* ph;
     Prolog_atom tp_source = term_to_polyhedron_kind(t_tp_source);
     if (tp_source == a_c) {
-      const PPL::C_Polyhedron* ph_source
-	= static_cast<const PPL::C_Polyhedron*>
+      const C_Polyhedron* ph_source
+	= static_cast<const C_Polyhedron*>
 	(term_to_polyhedron_handle(t_ph_source));
       CHECK(ph_source);
       Prolog_atom tp = term_to_polyhedron_kind(t_tp);
       if (tp == a_c)
-        ph = new PPL::C_Polyhedron(*ph_source);
+        ph = new C_Polyhedron(*ph_source);
       else
-	ph = new PPL::NNC_Polyhedron(*ph_source);
+	ph = new NNC_Polyhedron(*ph_source);
     }
     else {
-      const PPL::NNC_Polyhedron* ph_source
-        = static_cast<const PPL::NNC_Polyhedron*>
+      const NNC_Polyhedron* ph_source
+        = static_cast<const NNC_Polyhedron*>
 	(term_to_polyhedron_handle(t_ph_source));
       CHECK(ph_source);
       Prolog_atom tp = term_to_polyhedron_kind(t_tp);
       if (tp == a_c)
-        ph = new PPL::C_Polyhedron(*ph_source);
+        ph = new C_Polyhedron(*ph_source);
       else
-	ph = new PPL::NNC_Polyhedron(*ph_source);
+	ph = new NNC_Polyhedron(*ph_source);
     }
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
@@ -888,19 +888,19 @@ ppl_new_Polyhedron_from_constraints(Prolog_term_ref t_tp,
 				    Prolog_term_ref t_clist,
 				    Prolog_term_ref t_ph) {
   try {
-    PPL::ConSys cs;
+    ConSys cs;
     Prolog_term_ref c = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_clist)) {
       Prolog_get_cons(t_clist, c, t_clist);
       cs.insert(build_constraint(c));
     }
-    PPL::Polyhedron* ph;
+    Polyhedron* ph;
     Prolog_atom tp = term_to_polyhedron_kind(t_tp);
     if (tp == a_c)
-      ph = new PPL::C_Polyhedron(cs);
+      ph = new C_Polyhedron(cs);
     else
-      ph = new PPL::NNC_Polyhedron(cs);
+      ph = new NNC_Polyhedron(cs);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -919,19 +919,19 @@ ppl_new_Polyhedron_from_generators(Prolog_term_ref t_tp,
 				   Prolog_term_ref t_glist,
 				   Prolog_term_ref t_ph) {
   try {
-    PPL::GenSys gs;
+    GenSys gs;
     Prolog_term_ref g = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_glist)) {
       Prolog_get_cons(t_glist, g, t_glist);
       gs.insert(build_generator(g));
     }
-    PPL::Polyhedron* ph;
+    Polyhedron* ph;
     Prolog_atom tp = term_to_polyhedron_kind(t_tp);
     if (tp == a_c)
-      ph = new PPL::C_Polyhedron(gs);
+      ph = new C_Polyhedron(gs);
     else
-      ph = new PPL::NNC_Polyhedron(gs);
+      ph = new NNC_Polyhedron(gs);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -953,7 +953,7 @@ enum Boundary_Kind {
 static bool
 term_to_boundary(Prolog_term_ref t_b, Boundary_Kind kind,
 		 bool& finite, bool& closed,
-		 PPL::Integer& n, PPL::Integer& d) {
+		 Integer& n, Integer& d) {
   if (!Prolog_is_compound(t_b))
     return false;
 
@@ -1020,7 +1020,7 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
     Prolog_term_ref t_l = Prolog_new_term_ref();
     Prolog_term_ref t_interval = Prolog_new_term_ref();
     Prolog_put_term(t_l, t_bb);
-    PPL::dimension_type dimension;
+    dimension_type dimension;
     for (dimension = 0; Prolog_is_cons(t_l); ++dimension)
       Prolog_get_cons(t_l, t_interval, t_l);
     // Check whether the list is properly terminated.
@@ -1033,9 +1033,9 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
         goto fail;
     }
 
-    PPL::BoundingBox bbox(dimension);
+    BoundingBox bbox(dimension);
     // Set bbox to reflect its Prolog representation.
-    for (PPL::dimension_type i = 0; i < dimension; ++i) {
+    for (dimension_type i = 0; i < dimension; ++i) {
       Prolog_get_cons(t_bb, t_interval, t_bb);
       // An interval is of the form i(Lower_Bound, Upper_Bound).
       if (!Prolog_is_compound(t_interval))
@@ -1048,8 +1048,8 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
 
       bool finite;
       bool closed;
-      PPL::Integer n;
-      PPL::Integer d;
+      Integer n;
+      Integer d;
       Prolog_term_ref t_bound = Prolog_new_term_ref();
 
       // Get and raise the lower bound.
@@ -1067,12 +1067,12 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
 	bbox.lower_upper_bound(i, closed, n, d);
     }
 
-    PPL::Polyhedron* ph;
+    Polyhedron* ph;
     Prolog_atom tp = term_to_polyhedron_kind(t_tp);
     if (tp == a_c)
-      ph = new PPL::C_Polyhedron(bbox, PPL::From_Bounding_Box());
+      ph = new C_Polyhedron(bbox, From_Bounding_Box());
     else
-      ph = new PPL::NNC_Polyhedron(bbox, PPL::From_Bounding_Box());
+      ph = new NNC_Polyhedron(bbox, From_Bounding_Box());
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -1091,7 +1091,7 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
 extern "C" Prolog_foreign_return_type
 ppl_delete_Polyhedron(Prolog_term_ref t_ph) {
   try {
-    const PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     UNREGISTER(ph);
     delete ph;
     return PROLOG_SUCCESS;
@@ -1103,8 +1103,8 @@ ppl_delete_Polyhedron(Prolog_term_ref t_ph) {
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   try {
-    PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
     lhs->swap(*rhs);
@@ -1117,9 +1117,9 @@ ppl_Polyhedron_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_space_dimension(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
   try {
-    const PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    PPL::dimension_type sd = ph->space_dimension();
+    dimension_type sd = ph->space_dimension();
     Prolog_term_ref tmp = Prolog_new_term_ref();
     if (sd <= LONG_MAX
 	&& Prolog_put_long(tmp, long(sd))
@@ -1134,8 +1134,8 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_intersection_assign(Prolog_term_ref t_lhs,
 				   Prolog_term_ref t_rhs) {
   try {
-    PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
     lhs->intersection_assign(*rhs);
@@ -1149,8 +1149,8 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_concatenate_assign(Prolog_term_ref t_lhs,
 				  Prolog_term_ref t_rhs) {
   try {
-    PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
     lhs->concatenate_assign(*rhs);
@@ -1164,12 +1164,12 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_intersection_assign_and_minimize(Prolog_term_ref t_lhs,
 						Prolog_term_ref t_rhs) {
   try {
-    PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
-    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
+    Polyhedron& x = *static_cast<Polyhedron*>(lhs);
+    const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
     x.intersection_assign_and_minimize(y);
     return PROLOG_SUCCESS;
   }
@@ -1181,12 +1181,12 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_poly_hull_assign(Prolog_term_ref t_lhs,
 				Prolog_term_ref t_rhs) {
   try {
-    PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
-    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
+    Polyhedron& x = *static_cast<Polyhedron*>(lhs);
+    const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
     x.poly_hull_assign(y);
     return PROLOG_SUCCESS;
   }
@@ -1198,12 +1198,12 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_poly_hull_assign_and_minimize(Prolog_term_ref t_lhs,
 					     Prolog_term_ref t_rhs) {
   try {
-    PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
-    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
+    Polyhedron& x = *static_cast<Polyhedron*>(lhs);
+    const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
     x.poly_hull_assign_and_minimize(y);
     return PROLOG_SUCCESS;
   }
@@ -1215,12 +1215,12 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_poly_difference_assign(Prolog_term_ref t_lhs,
 				      Prolog_term_ref t_rhs) {
   try {
-    PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
-    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
+    Polyhedron& x = *static_cast<Polyhedron*>(lhs);
+    const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
     x.poly_difference_assign(y);
     return PROLOG_SUCCESS;
   }
@@ -1232,12 +1232,12 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_time_elapse_assign(Prolog_term_ref t_lhs,
 				  Prolog_term_ref t_rhs) {
   try {
-    PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
-    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
+    Polyhedron& x = *static_cast<Polyhedron*>(lhs);
+    const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
     x.time_elapse_assign(y);
     return PROLOG_SUCCESS;
   }
@@ -1245,21 +1245,39 @@ ppl_Polyhedron_time_elapse_assign(Prolog_term_ref t_lhs,
   return PROLOG_FAILURE;
 }
 
-extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_BHRZ03_widening_assign(Prolog_term_ref t_lhs,
-				      Prolog_term_ref t_rhs) {
+namespace {
+
+Prolog_foreign_return_type
+widening_assign(Prolog_term_ref t_lhs,
+		Prolog_term_ref t_rhs,
+		void (Polyhedron::* widening_assign)(const Polyhedron&,
+						     unsigned* tp = 0)) {
   try {
-    PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
-    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
-    x.BHRZ03_widening_assign(y);
+    Polyhedron& x = *static_cast<Polyhedron*>(lhs);
+    const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
+    (x.*widening_assign)(y);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
   return PROLOG_FAILURE;
+}
+
+} // namespace
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_BHRZ03_widening_assign(Prolog_term_ref t_lhs,
+				      Prolog_term_ref t_rhs) {
+  return widening_assign(t_lhs, t_rhs, &Polyhedron::BHRZ03_widening_assign);
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_H79_widening_assign(Prolog_term_ref t_lhs,
+				   Prolog_term_ref t_rhs) {
+  return widening_assign(t_lhs, t_rhs, &Polyhedron::H79_widening_assign);
 }
 
 namespace {
@@ -1271,21 +1289,22 @@ unify_long(Prolog_term_ref t, long l) {
   return Prolog_unify(t, t_l);
 }
 
-} // namespace
-
-extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(Prolog_term_ref t_lhs,
-						  Prolog_term_ref t_rhs,
-						  Prolog_term_ref t_t) {
+Prolog_foreign_return_type
+widening_assign_with_tokens(Prolog_term_ref t_lhs,
+			    Prolog_term_ref t_rhs,
+			    Prolog_term_ref t_t,
+			    void (Polyhedron::*
+				  widening_assign)(const Polyhedron&,
+						   unsigned* tp = 0)) {
   try {
-    PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
-    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
+    Polyhedron& x = *static_cast<Polyhedron*>(lhs);
+    const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
     unsigned t = 1;
-    x.BHRZ03_widening_assign(y, &t);
+    (x.*widening_assign)(y, &t);
     if (unify_long(t_t, 1-t))
       return PROLOG_SUCCESS;
   }
@@ -1293,102 +1312,105 @@ ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(Prolog_term_ref t_lhs,
   return PROLOG_FAILURE;
 }
 
+} // namespace
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(Prolog_term_ref t_lhs,
+						  Prolog_term_ref t_rhs,
+						  Prolog_term_ref t_t) {
+  return widening_assign_with_tokens(t_lhs, t_rhs, t_t,
+				     &Polyhedron::BHRZ03_widening_assign);
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_H79_widening_assign_with_tokens(Prolog_term_ref t_lhs,
+					       Prolog_term_ref t_rhs,
+					       Prolog_term_ref t_t) {
+  return widening_assign_with_tokens(t_lhs, t_rhs, t_t,
+				     &Polyhedron::H79_widening_assign);
+}
+
+namespace {
+
+Prolog_foreign_return_type
+limited_extrapolation_assign(Prolog_term_ref t_lhs,
+			     Prolog_term_ref t_rhs,
+			     Prolog_term_ref t_clist,
+			     void (Polyhedron::*
+				   limited_extrap_assign)(const Polyhedron&,
+							  const ConSys&,
+							  unsigned* tp = 0)) {
+  try {
+    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    CHECK(lhs);
+    CHECK(rhs);
+    ConSys cs;
+    Prolog_term_ref c = Prolog_new_term_ref();
+
+    while (Prolog_is_cons(t_clist)) {
+      Prolog_get_cons(t_clist, c, t_clist);
+      cs.insert(build_constraint(c));
+    }
+    Polyhedron& x = *static_cast<Polyhedron*>(lhs);
+    const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
+    (x.*limited_extrap_assign)(y, cs);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+} // namespace
+
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(Prolog_term_ref t_lhs,
 						   Prolog_term_ref t_rhs,
 						   Prolog_term_ref t_clist) {
-  try {
-    PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
-    CHECK(lhs);
-    CHECK(rhs);
-    PPL::ConSys cs;
-    Prolog_term_ref c = Prolog_new_term_ref();
-
-    while (Prolog_is_cons(t_clist)) {
-      Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_constraint(c));
-    }
-    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
-    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
-    x.limited_BHRZ03_extrapolation_assign(y, cs);
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(Prolog_term_ref t_lhs,
-						   Prolog_term_ref t_rhs,
-						   Prolog_term_ref t_clist) {
-  try {
-    PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
-    CHECK(lhs);
-    CHECK(rhs);
-    PPL::ConSys cs;
-    Prolog_term_ref c = Prolog_new_term_ref();
-
-    while (Prolog_is_cons(t_clist)) {
-      Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_constraint(c));
-    }
-    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
-    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
-    x.bounded_BHRZ03_extrapolation_assign(y, cs);
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_H79_widening_assign(Prolog_term_ref t_lhs,
-				   Prolog_term_ref t_rhs) {
-  try {
-    PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
-    CHECK(lhs);
-    CHECK(rhs);
-    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
-    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
-    x.H79_widening_assign(y);
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
+  return limited_extrapolation_assign(t_lhs,
+				      t_rhs,
+				      t_clist,
+				      &Polyhedron::
+				      limited_BHRZ03_extrapolation_assign);
 }
 
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_limited_H79_extrapolation_assign(Prolog_term_ref t_lhs,
 						Prolog_term_ref t_rhs,
 						Prolog_term_ref t_clist) {
-  try {
-    PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
-    CHECK(lhs);
-    CHECK(rhs);
-    PPL::ConSys cs;
-    Prolog_term_ref c = Prolog_new_term_ref();
+  return limited_extrapolation_assign(t_lhs,
+				      t_rhs,
+				      t_clist,
+				      &Polyhedron::
+				      limited_H79_extrapolation_assign);
+}
 
-    while (Prolog_is_cons(t_clist)) {
-      Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_constraint(c));
-    }
-    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
-    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
-    x.limited_H79_extrapolation_assign(y, cs);
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(Prolog_term_ref t_lhs,
+						   Prolog_term_ref t_rhs,
+						   Prolog_term_ref t_clist) {
+  return limited_extrapolation_assign(t_lhs,
+				      t_rhs,
+				      t_clist,
+				      &Polyhedron::
+				      bounded_BHRZ03_extrapolation_assign);
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_bounded_H79_extrapolation_assign(Prolog_term_ref t_lhs,
+						   Prolog_term_ref t_rhs,
+						   Prolog_term_ref t_clist) {
+  return limited_extrapolation_assign(t_lhs,
+				      t_rhs,
+				      t_clist,
+				      &Polyhedron::
+				      bounded_H79_extrapolation_assign);
 }
 
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_topological_closure_assign(Prolog_term_ref t_ph) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     ph->topological_closure_assign();
     return PROLOG_SUCCESS;
@@ -1401,13 +1423,13 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_get_constraints(Prolog_term_ref t_ph,
 			       Prolog_term_ref t_clist) {
   try {
-    const PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
-    const PPL::ConSys& cs = ph->constraints();
-    for (PPL::ConSys::const_iterator i = cs.begin(),
+    const ConSys& cs = ph->constraints();
+    for (ConSys::const_iterator i = cs.begin(),
 	   cs_end = cs.end(); i != cs_end; ++i)
       Prolog_construct_cons(tail, constraint_term(*i), tail);
 
@@ -1422,13 +1444,13 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_get_minimized_constraints(Prolog_term_ref t_ph,
 					 Prolog_term_ref t_clist) {
   try {
-    const PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
-    const PPL::ConSys& cs = ph->minimized_constraints();
-    for (PPL::ConSys::const_iterator i = cs.begin(),
+    const ConSys& cs = ph->minimized_constraints();
+    for (ConSys::const_iterator i = cs.begin(),
 	   cs_end = cs.end(); i != cs_end; ++i)
       Prolog_construct_cons(tail, constraint_term(*i), tail);
 
@@ -1443,13 +1465,13 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_get_generators(Prolog_term_ref t_ph,
 			      Prolog_term_ref t_glist) {
   try {
-    const PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
-    const PPL::GenSys& gs = ph->generators();
-    for (PPL::GenSys::const_iterator i = gs.begin(),
+    const GenSys& gs = ph->generators();
+    for (GenSys::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i)
       Prolog_construct_cons(tail, generator_term(*i), tail);
 
@@ -1464,13 +1486,13 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_get_minimized_generators(Prolog_term_ref t_ph,
 					Prolog_term_ref t_glist) {
   try {
-    const PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
-    const PPL::GenSys& gs = ph->minimized_generators();
-    for (PPL::GenSys::const_iterator i = gs.begin(),
+    const GenSys& gs = ph->minimized_generators();
+    for (GenSys::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i)
       Prolog_construct_cons(tail, generator_term(*i), tail);
 
@@ -1484,7 +1506,7 @@ ppl_Polyhedron_get_minimized_generators(Prolog_term_ref t_ph,
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_add_constraint(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     ph->add_constraint(build_constraint(t_c));
     return PROLOG_SUCCESS;
@@ -1497,7 +1519,7 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_add_constraint_and_minimize(Prolog_term_ref t_ph,
 					   Prolog_term_ref t_c) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     if (ph->add_constraint_and_minimize(build_constraint(t_c)))
       return PROLOG_SUCCESS;
@@ -1509,7 +1531,7 @@ ppl_Polyhedron_add_constraint_and_minimize(Prolog_term_ref t_ph,
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_add_generator(Prolog_term_ref t_ph, Prolog_term_ref t_g) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     ph->add_generator(build_generator(t_g));
     return PROLOG_SUCCESS;
@@ -1522,7 +1544,7 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_add_generator_and_minimize(Prolog_term_ref t_ph,
 					  Prolog_term_ref t_g) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     if (ph->add_generator_and_minimize(build_generator(t_g)))
       return PROLOG_SUCCESS;
@@ -1535,9 +1557,9 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_add_constraints(Prolog_term_ref t_ph,
 			       Prolog_term_ref t_clist) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    PPL::ConSys cs;
+    ConSys cs;
     Prolog_term_ref c = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_clist)) {
@@ -1556,9 +1578,9 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_add_constraints_and_minimize(Prolog_term_ref t_ph,
 					    Prolog_term_ref t_clist) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    PPL::ConSys cs;
+    ConSys cs;
     Prolog_term_ref c = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_clist)) {
@@ -1577,9 +1599,9 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_add_generators(Prolog_term_ref t_ph,
 			      Prolog_term_ref t_glist) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    PPL::GenSys gs;
+    GenSys gs;
     Prolog_term_ref g = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_glist)) {
@@ -1598,9 +1620,9 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_add_generators_and_minimize(Prolog_term_ref t_ph,
 					   Prolog_term_ref t_glist) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    PPL::GenSys gs;
+    GenSys gs;
     Prolog_term_ref g = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_glist)) {
@@ -1619,7 +1641,7 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_add_dimensions_and_project(Prolog_term_ref t_ph,
 					  Prolog_term_ref t_nnd) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     ph->add_dimensions_and_project(term_to_unsigned_int(t_nnd));
     return PROLOG_SUCCESS;
@@ -1632,7 +1654,7 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_add_dimensions_and_embed(Prolog_term_ref t_ph,
 					Prolog_term_ref t_nnd) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     ph->add_dimensions_and_embed(term_to_unsigned_int(t_nnd));
     return PROLOG_SUCCESS;
@@ -1645,9 +1667,9 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_remove_dimensions(Prolog_term_ref t_ph,
 				 Prolog_term_ref t_vlist) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    PPL::Variables_Set dead_variables;
+    Variables_Set dead_variables;
     Prolog_term_ref v = Prolog_new_term_ref();
     while (Prolog_is_cons(t_vlist)) {
       Prolog_get_cons(t_vlist, v, t_vlist);
@@ -1664,7 +1686,7 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_remove_higher_dimensions(Prolog_term_ref t_ph,
 					Prolog_term_ref t_nd) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     ph->remove_higher_dimensions(term_to_unsigned_int(t_nd));
     return PROLOG_SUCCESS;
@@ -1677,8 +1699,8 @@ namespace {
 
 class PIFunc {
 private:
-  std::set<PPL::dimension_type> codomain;
-  std::vector<PPL::dimension_type> vec;
+  std::set<dimension_type> codomain;
+  std::vector<dimension_type> vec;
 
 public:
   PIFunc() {
@@ -1688,36 +1710,36 @@ public:
     return codomain.empty();
   }
 
-  PPL::dimension_type max_in_codomain() const {
+  dimension_type max_in_codomain() const {
     if (codomain.empty())
       throw unknown_interface_error("PIFunc::max_in_codomain()");
     return *codomain.end();
   }
 
-  bool maps(PPL::dimension_type i, PPL::dimension_type& j) const {
+  bool maps(dimension_type i, dimension_type& j) const {
     if (i >= vec.size())
       return false;
-    PPL::dimension_type vec_i = vec[i];
-    if (vec_i == PPL::not_a_dimension())
+    dimension_type vec_i = vec[i];
+    if (vec_i == not_a_dimension())
       return false;
     j = vec_i;
     return true;
   }
 
-  bool insert(PPL::dimension_type i, PPL::dimension_type j) {
-    std::pair<std::set<PPL::dimension_type>::iterator, bool> s
+  bool insert(dimension_type i, dimension_type j) {
+    std::pair<std::set<dimension_type>::iterator, bool> s
       = codomain.insert(j);
     if (!s.second)
       // *this is not injective!
       return false;
     if (i > vec.size())
-      vec.insert(vec.end(), i - vec.size(), PPL::not_a_dimension());
+      vec.insert(vec.end(), i - vec.size(), not_a_dimension());
     if (i == vec.size()) {
       vec.insert(vec.end(), j);
       return true;
     }
-    PPL::dimension_type& vec_i = vec[i];
-    if (vec_i != PPL::not_a_dimension())
+    dimension_type& vec_i = vec[i];
+    if (vec_i != not_a_dimension())
       // Already mapped: *this is not a function!
       return false;
     vec_i = j;
@@ -1731,8 +1753,8 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_rename_dimensions(Prolog_term_ref t_ph,
 				 Prolog_term_ref t_pifunc) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
-    PPL::dimension_type space_dim = ph->space_dimension();
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    dimension_type space_dim = ph->space_dimension();
     CHECK(ph);
     PIFunc pifunc;
     Prolog_term_ref t_pair = Prolog_new_term_ref();
@@ -1747,8 +1769,8 @@ ppl_Polyhedron_rename_dimensions(Prolog_term_ref t_ph,
       Prolog_term_ref t_j = Prolog_new_term_ref();
       Prolog_get_arg(1, t_pair, t_i);
       Prolog_get_arg(2, t_pair, t_j);
-      PPL::dimension_type i = get_variable(t_i).id();
-      PPL::dimension_type j = get_variable(t_j).id();
+      dimension_type i = get_variable(t_i).id();
+      dimension_type j = get_variable(t_j).id();
       if (i >= space_dim || !pifunc.insert(i, j))
 	goto fail;
     }
@@ -1765,7 +1787,7 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_affine_image(Prolog_term_ref t_ph, Prolog_term_ref t_v,
 			    Prolog_term_ref t_le, Prolog_term_ref t_d) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     ph->affine_image(get_variable(t_v),
 		     build_lin_expression(t_le),
@@ -1780,7 +1802,7 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_affine_preimage(Prolog_term_ref t_ph, Prolog_term_ref t_v,
 			       Prolog_term_ref t_le, Prolog_term_ref t_d) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     ph->affine_preimage(get_variable(t_v),
 			build_lin_expression(t_le),
@@ -1792,20 +1814,20 @@ ppl_Polyhedron_affine_preimage(Prolog_term_ref t_ph, Prolog_term_ref t_v,
 }
 
 static bool
-relation_symbol(Prolog_term_ref t_r, PPL::Relation_Symbol& r) {
+relation_symbol(Prolog_term_ref t_r, Relation_Symbol& r) {
   if (Prolog_is_atom(t_r)) {
     Prolog_atom ra;
       if (Prolog_get_atom_name(t_r, &ra)) {
 	if (ra == a_less_than)
-	  r = PPL::LESS_THAN;
+	  r = LESS_THAN;
 	else if (ra == a_equal_less_than)
-	  r = PPL::LESS_THAN_OR_EQUAL;
+	  r = LESS_THAN_OR_EQUAL;
 	else if (ra == a_equal)
-	  r = PPL::EQUAL;
+	  r = EQUAL;
 	else if (ra == a_greater_than_equal)
-	  r = PPL::GREATER_THAN_OR_EQUAL;
+	  r = GREATER_THAN_OR_EQUAL;
 	else if (ra == a_greater_than)
-	  r = PPL::GREATER_THAN;
+	  r = GREATER_THAN;
 	else
 	  return false;
       }
@@ -1824,9 +1846,9 @@ ppl_Polyhedron_generalized_affine_image(Prolog_term_ref t_ph,
 					Prolog_term_ref t_le,
 					Prolog_term_ref t_d) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    PPL::Relation_Symbol r;
+    Relation_Symbol r;
     if (relation_symbol(t_r, r)) {
       ph->generalized_affine_image(get_variable(t_v),
 				   r,
@@ -1845,9 +1867,9 @@ ppl_Polyhedron_generalized_affine_image_lhs_rhs(Prolog_term_ref t_ph,
 						Prolog_term_ref t_r,
 						Prolog_term_ref t_rhs) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    PPL::Relation_Symbol r;
+    Relation_Symbol r;
     if (relation_symbol(t_r, r)) {
       ph->generalized_affine_image(build_lin_expression(t_lhs),
 				   r,
@@ -1864,29 +1886,29 @@ ppl_Polyhedron_relation_with_constraint(Prolog_term_ref t_ph,
 					Prolog_term_ref t_c,
 					Prolog_term_ref t_r) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    PPL::Poly_Con_Relation r = ph->relation_with(build_constraint(t_c));
+    Poly_Con_Relation r = ph->relation_with(build_constraint(t_c));
 
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
     Prolog_term_ref t_a = Prolog_new_term_ref();
-    while (r != PPL::Poly_Con_Relation::nothing()) {
-      if (r.implies(PPL::Poly_Con_Relation::is_disjoint())) {
+    while (r != Poly_Con_Relation::nothing()) {
+      if (r.implies(Poly_Con_Relation::is_disjoint())) {
 	Prolog_put_atom(t_a, a_is_disjoint);
-	r = r - PPL::Poly_Con_Relation::is_disjoint();
+	r = r - Poly_Con_Relation::is_disjoint();
       }
-      else if (r.implies(PPL::Poly_Con_Relation::strictly_intersects())) {
+      else if (r.implies(Poly_Con_Relation::strictly_intersects())) {
 	Prolog_put_atom(t_a, a_strictly_intersects);
-	r = r - PPL::Poly_Con_Relation::strictly_intersects();
+	r = r - Poly_Con_Relation::strictly_intersects();
       }
-      else if (r.implies(PPL::Poly_Con_Relation::is_included())) {
+      else if (r.implies(Poly_Con_Relation::is_included())) {
 	Prolog_put_atom(t_a, a_is_included);
-	r = r - PPL::Poly_Con_Relation::is_included();
+	r = r - Poly_Con_Relation::is_included();
       }
-      else if (r.implies(PPL::Poly_Con_Relation::saturates())) {
+      else if (r.implies(Poly_Con_Relation::saturates())) {
 	Prolog_put_atom(t_a, a_saturates);
-	r = r - PPL::Poly_Con_Relation::saturates();
+	r = r - Poly_Con_Relation::saturates();
       }
       Prolog_construct_cons(tail, t_a, tail);
     }
@@ -1902,17 +1924,17 @@ ppl_Polyhedron_relation_with_generator(Prolog_term_ref t_ph,
 				       Prolog_term_ref t_g,
 				       Prolog_term_ref t_r) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    PPL::Poly_Gen_Relation r = ph->relation_with(build_generator(t_g));
+    Poly_Gen_Relation r = ph->relation_with(build_generator(t_g));
 
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
     Prolog_term_ref t_a = Prolog_new_term_ref();
-    while (r != PPL::Poly_Gen_Relation::nothing()) {
-      if (r.implies(PPL::Poly_Gen_Relation::subsumes())) {
+    while (r != Poly_Gen_Relation::nothing()) {
+      if (r.implies(Poly_Gen_Relation::subsumes())) {
 	Prolog_put_atom(t_a, a_subsumes);
-	r = r - PPL::Poly_Gen_Relation::subsumes();
+	r = r - Poly_Gen_Relation::subsumes();
       }
       Prolog_construct_cons(tail, t_a, tail);
     }
@@ -1926,7 +1948,7 @@ ppl_Polyhedron_relation_with_generator(Prolog_term_ref t_ph,
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_check_empty(Prolog_term_ref t_ph) {
   try {
-    const PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     if (ph->check_empty())
       return PROLOG_SUCCESS;
@@ -1938,7 +1960,7 @@ ppl_Polyhedron_check_empty(Prolog_term_ref t_ph) {
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_check_universe(Prolog_term_ref t_ph) {
   try {
-    const PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     if (ph->check_universe())
       return PROLOG_SUCCESS;
@@ -1950,7 +1972,7 @@ ppl_Polyhedron_check_universe(Prolog_term_ref t_ph) {
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_is_bounded(Prolog_term_ref t_ph) {
   try {
-    const PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     if (ph->is_bounded())
       return PROLOG_SUCCESS;
@@ -1963,9 +1985,9 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_bounds_from_above(Prolog_term_ref t_ph,
 				 Prolog_term_ref t_expr) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    PPL::LinExpression l = build_lin_expression(t_expr);
+    LinExpression l = build_lin_expression(t_expr);
     if (ph->bounds_from_above(l))
       return PROLOG_SUCCESS;
   }
@@ -1977,9 +1999,9 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_bounds_from_below(Prolog_term_ref t_ph,
 				 Prolog_term_ref t_expr) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    PPL::LinExpression l = build_lin_expression(t_expr);
+    LinExpression l = build_lin_expression(t_expr);
     if (ph->bounds_from_below(l))
       return PROLOG_SUCCESS;
   }
@@ -1990,7 +2012,7 @@ ppl_Polyhedron_bounds_from_below(Prolog_term_ref t_ph,
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_is_topologically_closed(Prolog_term_ref t_ph) {
   try {
-    const PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     if (ph->is_topologically_closed())
       return PROLOG_SUCCESS;
@@ -2003,8 +2025,8 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_contains_Polyhedron(Prolog_term_ref t_lhs,
 				   Prolog_term_ref t_rhs) {
   try {
-    const PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    const Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
     if (*lhs >= *rhs)
@@ -2018,8 +2040,8 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_strictly_contains_Polyhedron(Prolog_term_ref t_lhs,
 					    Prolog_term_ref t_rhs) {
   try {
-    const PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    const Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
     if (*lhs > *rhs)
@@ -2033,8 +2055,8 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_is_disjoint_from_Polyhedron(Prolog_term_ref t_lhs,
 				 Prolog_term_ref t_rhs) {
   try {
-    const PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    const Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
     if (are_disjoint(*lhs, *rhs))
@@ -2048,8 +2070,8 @@ extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_equals_Polyhedron(Prolog_term_ref t_lhs,
 				 Prolog_term_ref t_rhs) {
   try {
-    const PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    const Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
     if (*lhs == *rhs)
@@ -2060,7 +2082,7 @@ ppl_Polyhedron_equals_Polyhedron(Prolog_term_ref t_lhs,
 }
 
 static Prolog_term_ref
-extended_rational_term(const PPL::ExtendedRational& e) {
+extended_rational_term(const ExtendedRational& e) {
   Prolog_term_ref t = Prolog_new_term_ref();
   int d = e.direction_of_infinity();
   if (d > 0)
@@ -2068,8 +2090,8 @@ extended_rational_term(const PPL::ExtendedRational& e) {
   else if (d < 0)
     Prolog_put_atom(t, a_minf);
   else {
-    const PPL::Integer& numerator = e.numerator();
-    const PPL::Integer& denominator = e.denominator();
+    const Integer& numerator = e.numerator();
+    const Integer& denominator = e.denominator();
     if (denominator == 1)
       Prolog_put_term(t, Integer_to_integer_term(numerator));
     else
@@ -2081,13 +2103,13 @@ extended_rational_term(const PPL::ExtendedRational& e) {
 }
 
 static Prolog_term_ref
-interval_term(const PPL::Interval& i) {
+interval_term(const Interval& i) {
   Prolog_term_ref t = Prolog_new_term_ref();
   if (i.is_empty())
     Prolog_put_atom(t, a_empty);
   else {
     // Lower bound.
-    const PPL::LBoundary& l = i.lower_bound();
+    const LBoundary& l = i.lower_bound();
     Prolog_term_ref lt = Prolog_new_term_ref();
     if (l.is_closed())
       Prolog_construct_compound(lt, a_c, extended_rational_term(l.bound()));
@@ -2095,7 +2117,7 @@ interval_term(const PPL::Interval& i) {
       Prolog_construct_compound(lt, a_o, extended_rational_term(l.bound()));
 
     // Upper bound.
-    const PPL::UBoundary& u = i.upper_bound();
+    const UBoundary& u = i.upper_bound();
     Prolog_term_ref ut = Prolog_new_term_ref();
     if (u.is_closed())
       Prolog_construct_compound(ut, a_c, extended_rational_term(u.bound()));
@@ -2125,27 +2147,27 @@ ppl_Polyhedron_get_bounding_box(Prolog_term_ref t_ph,
 				Prolog_term_ref t_cc,
 				Prolog_term_ref t_bb) {
   try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
 
     Prolog_atom p_cc;
     if (!term_to_complexity_class(t_cc, p_cc)) {
       goto fail;
     }
-    PPL::Complexity_Class cc;
+    Complexity_Class cc;
     if (p_cc == a_polynomial)
-      cc = PPL::POLYNOMIAL;
+      cc = POLYNOMIAL;
     else if (p_cc == a_simplex)
-      cc = PPL::SIMPLEX;
+      cc = SIMPLEX;
     else
-      cc = PPL::ANY;
+      cc = ANY;
 
-    PPL::dimension_type dimension = ph->space_dimension();
-    PPL::BoundingBox bbox(dimension);
+    dimension_type dimension = ph->space_dimension();
+    BoundingBox bbox(dimension);
     ph->shrink_bounding_box(bbox, cc);
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
-    for (PPL::dimension_type i = dimension; i-- > 0; )
+    for (dimension_type i = dimension; i-- > 0; )
       Prolog_construct_cons(tail, interval_term(bbox[i]), tail);
     if (Prolog_unify(t_bb, tail))
       return PROLOG_SUCCESS;
