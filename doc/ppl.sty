@@ -14,13 +14,13 @@
 
 
 %% Set theory.
-\renewcommand{\emptyset}{\mathord{\varnothing}}
+\renewcommand*{\emptyset}{\mathord{\varnothing}}
 \newcommand*{\sseq}{\subseteq}
 \newcommand*{\sseqf}{\mathrel{\subseteq_\mathrm{f}}}
 \newcommand*{\sslt}{\subset}
 \newcommand*{\Sseq}{\supseteq}
 \newcommand*{\Ssgt}{\supset}
-\newcommand{\sset}[2]{{\renewcommand{\arraystretch}{1.2}
+\newcommand*{\sset}[2]{{\renewcommand*{\arraystretch}{1.2}
                       \left\{\,#1 \,\left|\,
                                \begin{array}{@{}l@{}}#2\end{array}
                       \right.   \,\right\}}}
@@ -32,21 +32,22 @@
 \newcommand*{\piff}{\mathrel{\leftrightarrow}}
 \newcommand*{\pimplies}{\mathrel{\rightarrow}}
 \newcommand*{\pimplied}{\mathrel{\leftarrow}}
-\newcommand{\st}{\mathrel{.}}
-\newcommand{\itc}{\mathrel{:}}
+\newcommand*{\st}{\mathrel{.}}
+\newcommand*{\itc}{\mathrel{:}}
 
 %% Things that hold by definition.
-\newcommand{\defrel}[1]{\mathrel{\buildrel \mathrm{def} \over {#1}}}
-\newcommand{\defeq}{\defrel{=}}
-\newcommand{\defiff}{\defrel{\Longleftrightarrow}}
+\newcommand*{\defrel}[1]{\mathrel{\buildrel \mathrm{def} \over {#1}}}
+\newcommand*{\defeq}{\defrel{=}}
+\newcommand*{\defiff}{\defrel{\Longleftrightarrow}}
 
 % Vectors.
-\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand*{\vect}[1]{\mathbf{#1}}
 
 % Matrix functions.
 \newcommand*{\transpose}{\mathrm{T}}
 
 % Polyhedron functions.
-\newcommand{\prank}{\mathop{\mathrm{rank}}}
-\newcommand{\pdim}{\mathop{\mathrm{dim}}}
-\newcommand{\linspace}{\mathop{\mathrm{lin. space}}}
+\newcommand*{\prank}{\mathop{\mathrm{rank}}}
+\newcommand*{\pdim}{\mathop{\mathrm{dim}}}
+\newcommand*{\linspace}{\mathop{\mathrm{lin.space}}}
+\newcommand*{\cone}{\mathop{\mathrm{cone}}}

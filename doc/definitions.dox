@@ -659,9 +659,9 @@ with the homogenization, then:
 -# the only <EM>minimal proper face</EM> of \f$C\f$ is
    \f$\linspace(C)\f$;
 -# let \f$\vect{y} \in C\f$ be different from \f$\vect{0}\f$ and
-   \f$\textit{cone}\{\vect{y}\}\f$ be defined as
+   \f$\cone\{\vect{y}\}\f$ be defined as
    \f$\{ \lambda \vect{y} \mid \lambda \geq 0 \}\f$. If the set
-   \f$F = \textit{cone}\{\vect{y}\} + \linspace(C)\f$ is
+   \f$F = \cone\{\vect{y}\} + \linspace(C)\f$ is
    a proper face of \f$C,\f$ then \f$\vect{y}\f$ is an <EM>extremal ray</EM>
    of \f$C.\f$
 
@@ -724,7 +724,7 @@ A constraint (i.e., an equality or an inequality) is
 
 Let \f$C \sseq \Rset^n\f$ be a polyhedral cone and
 \f$\vect{y}_1, \vect{y}_2 \in C\f$. If the sets
-\f$F_i = \textit{cone}\{\vect{y}_i\} + \linspace(C)\f$ with
+\f$F_i = \cone\{\vect{y}_i\} + \linspace(C)\f$ with
 \f$i = 1, 2\f$ are proper faces of \f$C\f$, \f$F_1\f$ is equal to \f$F_2\f$
 if and only if the set of constraints that are saturated by \f$\vect{y}_1\f$
 is equal to the set of constraints that are saturated by \f$\vect{y}_2\f$.
