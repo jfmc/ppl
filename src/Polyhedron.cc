@@ -678,6 +678,7 @@ PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
     x.set_sat_c_up_to_date();
     x.clear_sat_g_up_to_date();
   }
+  assert(x.OK());
 }
 
 /*!

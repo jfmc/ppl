@@ -703,7 +703,7 @@ PPL::Matrix::back_substitute(size_t rank) {
     size_t j = num_columns() - 1;
     while (j != 0 && rows[k][j] == 0)
       --j;
-
+    
     for (size_t i = 0; i < nrows; ++i)
       // i runs through all the rows of the matrix.
       if (i > k && i < rank)
@@ -727,6 +727,16 @@ PPL::Matrix::back_substitute(size_t rank) {
 	// rows (but these already treated above) with the
 	// k-th one such that they have a zero coefficient
 	// in position j.
+	// If we combine an equality (line), that is `rows[k], with
+	// an inequality (ray or vertex) the j-th coefficient of the
+	// equality must be positive, so we multiply the equality (line)
+	// for -1. It is necessary because otherwise the coefficient
+	// of `rows[i]' of the linear combination is negative.
+	if (rows[i].is_ray_or_vertex_or_inequality())
+	  if (rows[k][j] < 0)
+	    for (size_t h = num_columns(); h-- > 0; )
+	      rows[k][h].negate();
+	
 	rows[i].linear_combine(rows[k], j);
 
 	// Sort checking.

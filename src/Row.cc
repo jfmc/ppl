@@ -130,6 +130,23 @@ PPL::Row::normalize() {
     // Divide the coefficients by the GCD.
     for (size_t i = sz; i-- > 0; )
       x[i].exact_div_assign(tmp_Integer(1));
+  
+  // If `x' is an equality (line), we decide that the first
+  // coefficient of the row different from zero in positive.
+  if (x.is_line_or_equality()) {
+    //`first_non_zero' indicates the index of the first
+    // coefficient of the row different from zero.
+    size_t first_non_zero;
+    for (first_non_zero = 0; first_non_zero < sz; ++first_non_zero)
+      if (x[first_non_zero] != 0)
+	break;
+    if (first_non_zero < sz)
+      // If the first coefficient of the row different form zero
+      // is negative, we multiply the row for -1.
+      if (x[first_non_zero] < 0)
+	for (size_t j = first_non_zero; j < sz; ++j)
+	  x[j].negate();
+  }
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -228,6 +245,7 @@ PPL::Row::linear_combine(const Row& y, size_t k) {
   tmp_Integer(1).gcd_assign(x[k], y[k]);
   tmp_Integer(2).exact_div_assign(x[k], tmp_Integer(1));
   tmp_Integer(3).exact_div_assign(y[k], tmp_Integer(1));
+  
   for (size_t i = size(); i-- > 0; )
     if (i != k) {
       tmp_Integer(4).mul_assign(x[i], tmp_Integer(3));
