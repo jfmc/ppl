@@ -68,8 +68,10 @@ to_nonconst(Type* x) { \
 
 namespace {
 
-void (*user_error_handler)(enum ppl_enum_error_code code,
-			   const char* description) = 0;
+extern "C" typedef void
+(*error_handler_type)(enum ppl_enum_error_code code, const char* description);
+
+error_handler_type user_error_handler = 0;
 
 void
 notify_error(enum ppl_enum_error_code code, const char* description) {
@@ -80,8 +82,7 @@ notify_error(enum ppl_enum_error_code code, const char* description) {
 } // namespace
 
 int
-ppl_set_error_handler(void (*h)(enum ppl_enum_error_code code,
-				const char* description)) {
+ppl_set_error_handler(error_handler_type h) {
   user_error_handler = h;
   return 0;
 }
