@@ -119,7 +119,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   // with `dest' during the conversion.
   // NOTE: since we haven't seen any constraint yet, the relevant
   //       portion of `tmp_sat' is the sub-matrix consisting of
-  //       the first 0 rows: thus the relevant portion correctly
+  //       the first 0 columns: thus the relevant portion correctly
   //       characterizes the initial saturation information.
   SatMatrix tmp_sat(dest_num_rows, source.num_rows());
 
@@ -166,9 +166,9 @@ PPL::Polyhedron::minimize(bool con_to_gen,
     // Now invoking simplify() to remove all the redundant constraints
     // from the matrix `source'.
     // Since the saturation matrix `tmp_sat' returned by conversion()
-    // is a constraint (sat_c) saturation matrix, we have to transpose it
-    // to obtain the generator (sat_g) saturation matrix that is needed
-    // by the function simplify().
+    // has rows indexed by generators (the rows of `dest') and columns
+    // indexed by constraints (the rows of `source'), we have to
+    // transpose it to obtain the saturation matrix needed by simplify().
     sat.transpose_assign(tmp_sat);
     simplify(source, sat);
     return false;
@@ -192,9 +192,11 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   \return             <CODE>true</CODE> if the obtained polyhedron
                       is empty, <CODE>false</CODE> otherwise.
 
-  \p sat has the rows indexed by rows of \p dest and the columns
-  indexed by rows of \p source1 (on entry) and rows of the matrix
-  obtained merging \p source1 and \p source2 (on exit).
+  On entry, the rows of \p sat are indexed by the rows of \p dest
+  and its columns are indexed by the rows of \p source1.
+  On exit, the rows of \p sat are indexed by the rows of \p dest
+  and its columns are indexed by the rows of the matrix obtained
+  by merging \p source1 and \p source2.
 
   Let us suppose we want to add some constraints to a given matrix of
   constraints \p source1. This method, given a minimized double description
@@ -340,12 +342,12 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
     // Now invoking simplify() to remove all the redundant constraints
     // from the matrix `source1'.
     // Since the saturation matrix `tmp_sat' returned by conversion()
-    // is a constraint (sat_c) saturation matrix, we have to transpose it
-    // to obtain the generator (sat_g) saturation matrix that is needed
-    // by the function simplify().
+    // has rows indexed by generators (the rows of `dest') and columns
+    // indexed by constraints (the rows of `source'), we have to
+    // transpose it to obtain the saturation matrix needed by simplify().
     sat.transpose_assign(tmp_sat);
     simplify(source1, sat);
-    // We re-obtain the `sat_c'.
+    // Transposing back.
     sat.transpose_assign(sat);
     return false;
   }

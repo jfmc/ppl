@@ -37,34 +37,38 @@ namespace PPL = Parma_Polyhedra_Library;
 
   \return             The rank of \p mat.
 
-  \p mat will be modified swapping some of its rows and maybe removing
-  some of them: this is because the argument is not <CODE>const</CODE>.
+  \note On enter, it holds that all the rows of \p mat corresponding
+  to equalities (resp., lines) are placed before all the rows corresponding
+  to inequalities (resp., rays and vertices). This partial sortedness
+  condition will also hold on exit.
 
-  If \p mat is a matrix of constraints, the rows of \p sat are indexed
-  by constraints and the columns of \p sat are indexed by generators;
-  otherwise the rows indicate the generators and the columns
-  indicate the constraints.
+  \p mat may be modified by swapping some of its rows and by possibly removing
+  some of them, if they turn out to be redundant.
 
+  If \p mat is a matrix of constraints, then the rows of \p sat are
+  indexed by constraints and its columns are indexed by generators;
+  otherwise, if \p mat is a matrix of generators, then the rows of
+  \p sat are indexed by generators and its columns by constraints.
 
   Given a matrix of constraints or a matrix of generators, this function
   simplifies it using Gauss' elimination method (to remove redundant
   equalities/lines), deleting redundant inequalities/rays/vertices and
   making back-substitution.
-  Just as we did for \p conversion(), we will
-  explain it assuming that we are given a matrix of constraints,
-  since, because of duality, the case for a matrix of generators is similar.
+  The explanation that follows assumes that \p mat is a matrix of
+  constraints. For the case when \p mat is a matrix of generators,
+  a similar explanation can be obtain by applying duality.
 
-  To do this, we will use the redundancy definition (See the Introduction).
+  The explanation relies on the notion of <EM>redundancy</EM>.
+  (See the Introduction).
 
   First we make some observations that can help the reader
   in understanding the function:
 
-
   Proposition: An inequality that is saturated by all the generators
   can be transformed into an equality.
 
-  In fact, any vectors obtained combining generators that saturate
-  the constraints will also saturate the constraints:
+  In fact, by combining any number of generators that saturate the
+  constraints, we obtain a generator that saturates the constraints too:
   \f[
     \langle \vect{c}, \vect{r}_1 \rangle = 0 \land
     \langle \vect{c}, \vect{r}_2 \rangle = 0
@@ -85,113 +89,118 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   size_t num_cols_sat = sat.num_columns();
 
   // Looking for the first inequality in `mat'.
-  size_t num_equal_or_line;
-  for (num_equal_or_line = 0;
-       num_equal_or_line < num_rows;
-       ++num_equal_or_line ) {
-    if (mat[num_equal_or_line].is_ray_or_vertex_or_inequality())
-      break;
-  }
+  size_t num_equal_or_line = 0;
+  while (num_equal_or_line < num_rows
+	 && mat[num_equal_or_line].is_line_or_equality())
+    ++num_equal_or_line;
 
-  // `num_saturators' will contain, in the i-th position,
-  // the number of generators that saturate the i-th constraint.
+  // `num_saturators[i]' will contain the number of generators
+  // that saturate the constraint `mat[i]'.
   static std::vector<size_t> num_saturators;
   num_saturators.reserve(num_rows);
-  // We want to group all the equalities in the top rows of `mat':
-  // between rows indexed by `0' and `num_equal_or_line' - 1. The
-  // remaining rows (from the `num_equal_or_line'-th to the last one)
-  // will contain inequalities. Thus we start checking from the
-  // `num_equal_or_line'-th row that is the first inequality found.
-  for (size_t i = num_equal_or_line; i < num_rows; ++i) {
-    if (mat[i].is_line_or_equality() || sat[i].empty()) {
-      // Note that an inequality `mat[i]' saturated by all the generators
-      // (i.e., such that `sat[i]' contains only zeroes) can be transformed
-      // in an equality (see proposition).
+
+  // Computing the number of saturators for each inequality,
+  // possibly identifying and swapping those that happen to be
+  // equalities (see Proposition above).
+  for (size_t i = num_equal_or_line; i < num_rows; ++i)
+    // FIXME: in the following (commented out) boolean test,
+    // the condition `mat[i].is_line_or_equality()' is never met,
+    // because on entry the matrix `mat' is partially sorted.
+    //   if (mat[i].is_line_or_equality() || sat[i].empty()) {
+    // That is the reason why we use the following simpler version.
+    if (sat[i].empty()) {
+      // The inequality `mat[i]' is saturated by all the generators.
+      // Thus, it can be transformed into an equality (see proposition).
       mat[i].set_is_line_or_equality();
-      // Moving the found equality (and the corresponding row of `sat')
-      // after the ones in the top of `mat'.
+      // We also move it just after all the other equalities,
+      // so that matrix `mat' keeps its partial sortedness.
       std::swap(mat[i], mat[num_equal_or_line]);
       std::swap(sat[i], sat[num_equal_or_line]);
       std::swap(num_saturators[i], num_saturators[num_equal_or_line]);
       ++num_equal_or_line;
-      // After swapping mat is not sorted anymore.
+      // `mat' is no longer sorted (but it is partially sorted).
       mat.set_sorted(false);
     }
-    else {
-      // If `mat[i]' is not an equality or it cannot be transformed into
-      // an equality, then we store the number of generators that
-      // saturate it in `num_saturators[i]'.
+    else
+      // There exists a generator which does not saturate `mat[i]',
+      // so that `mat[i]' is indeed an inequality.
+      // We store the number of its saturators.
       num_saturators[i] = num_cols_sat - sat[i].count_ones();
-    }
-  }
-  // Now that `mat' is ordered how the function gauss() requires (i.e.,
-  // the equalities at the top), we can invoke the elimination method
-  // to simplify the system of equalities, obtaining the rank
+
+  // At this point, all the equalities of `mat' (included those
+  // inequalities that we just tranformed in to equalities) have
+  // indexes between 0 and `num_equal_or_line' - 1,
+  // which is the property needed by the function gauss().
+  // We can simplify the system of equalities, obtaining the rank
   // of `mat' as result.
   size_t rank = mat.gauss();
-  // Since Gauss' elimination works on the equalities system, the
-  // order of inequalities in `mat' is unchanged.
-  // Also, now we have irredundant equalities in the first `rank' rows
-  // (from 0-th to `rank' - 1-th) of `mat' and the redundant ones from
-  // the `rank'-th row to the `num_equal_or_line' - 1 one.
+  // Now the irredundant equalities of `mat' have indexes from 0
+  // to `rank' - 1, whereas the equalities having indexes from `rank'
+  // to `num_equal_or_line' - 1 are all redundant.
+  // (The inequalities in `mat' have been left untouched.)
   // The rows containing equalities are not sorted.
 
-  // If the rank of `mat' is `num_equal_or_line' it means that there
-  // are not redundant equalities. Otherwise, to remove redundant
-  // equalities we simply move corresponding `mat' rows to the
-  // bottom of the matrix: we will erase them later.
   if (rank < num_equal_or_line) {
-    // The index `j' runs through redundant equalities and `i'
-    // indexes the first of the rows of `mat' that will be erased.
-    // Since we decrement `i' and increment `j' at every step, we
-    // have to check two condition:
-    // - `j' has not to cross over the `num_equal_or_line' - 1 -th row,
-    // - `i' has to index an inequality row: if it is not the case
-    //    it means that the redundant equalities are already at the bottom.
-    for (size_t i = num_rows, j = rank;
-	 j < num_equal_or_line && i > num_equal_or_line; ) {
-      --i;
-      std::swap(mat[j], mat[i]);
-      std::swap(num_saturators[j], num_saturators[i]);
-      std::swap(sat[j], sat[i]);
-      // After swapping mat is not sorted anymore.
+    // We identified some redundant equalities.
+    // Moving them at the bottom of `mat':
+    // - index `redundant' runs through the redundant equalities
+    // - index `erasing' identifies the first row that should
+    //   be erased after this loop.
+    // Note that we exit the loop either because we have moved all
+    // redundant equalities or because we have moved all the
+    // inequalities.
+    for (size_t redundant = rank, erasing = num_rows;
+	 redundant < num_equal_or_line && erasing > num_equal_or_line; ) {
+      --erasing;
+      std::swap(mat[redundant], mat[erasing]);
+      std::swap(sat[redundant], sat[erasing]);
+      std::swap(num_saturators[redundant], num_saturators[erasing]);
       mat.set_sorted(false);
-      ++j;
+      ++redundant;
     }
-    // `num_equal_or_line' - `rank' is the number of redundant
-    // equalities moved to the bottom of `mat', below the inequalities.
-    // Subtracting it from the number of rows of `mat', we obtain
-    // the meaningful number of rows of `mat' (i.e., irredundant
-    // equalities plus inequalities).
+    // Adjusting the value of `num_rows' to the number of meaningful
+    // rows of `mat': `num_equal_or_line' - `rank' is the number of
+    // redundant equalities moved to the bottom of `mat', which are
+    // no longer meaningful.
     num_rows -= num_equal_or_line - rank;
-    // At this point the only equalities to consider are the irredundant
-    // ones and they are in number of rank.
+    // Adjusting the value of `num_equal_or_line'.
     num_equal_or_line = rank;
   }
-  // Now we use the redundancy definition (given in the Introduction)
+
+
+  // Now we use the definition of redundancy (given in the Introduction)
   // to remove redundant inequalities.
+
+  // First we check the saturation rule, which provides a necessary
+  // condition for an inequality to be irredundant (i.e., it provides
+  // a sufficient condition for identifying redundant inequalities).
+  // Let
+  //   num_saturators[i] = num_sat_lines[i] + num_sat_rays_or_vertices[i];
+  //   dim_lin_space = num_irred_lines;
+  //   dim_ray_space
+  //     = dim_vector_space - num_irred_equalities - dim_lin_space
+  //     = num_columns - 1 - num_equal_or_line - dim_lin_space;
+  //   min_sat_rays_or_vertices = dim_ray_space.
+  //   
+  // An inequality saturated by less than `dim_ray_space' _rays/vertices_
+  // is redundant. Thus we have the implication
+  //
+  //   (num_saturators[i] - num_sat_lines[i] < dim_ray_space)
+  //      ==>
+  //        redundant(mat[i]).
+  //
+  // Moreover, since every line saturates all inequalities, we also have
+  //     dim_lin_space = num_sat_lines[i]
+  // so that we can rewrite the condition above as follows:
+  //
+  //   (num_saturators[i] < num_columns - num_equal_or_line - 1)
+  //      ==>
+  //        redundant(mat[i]).
+  //
+  size_t min_saturators = num_columns - num_equal_or_line - 1;
   for (size_t i = num_equal_or_line; i < num_rows; ) {
-    // i runs through the inequalities.
-    if (num_saturators[i] < num_columns - num_equal_or_line - 1) {
-      // Here we check if the saturation rule holds.
-      // To be irredundant, an inequality has to be saturated by at least
-      // n rays/vertices, where n is the dimension of the ray space.
-      // Because of the dimensionality rule (see in the Introduction),
-      // the dimension of the ray space is the dimension of the space
-      // minus the number of irredundant lines, minus the number of
-      // irredundant equalities. Then an inequality is redundant if
-      //   `nb of columns' - 1 - nb of irr. lines - nb of irr. equalities
-      // 	     > nb of rays/vertices saturators.
-      // Since every line saturates all inequalities (and equalities), the
-      // number of the lines that saturate an inequality is just the
-      // number of (irredundant lines). Moreover we can write
-      //  `nb of columns' - 1 - nb of irr. equalities
-      //   > nb of irr. lines + nb of rays/vertices saturators,
-      // where nb of irr. lines + nb of rays/vertices saturators
-      // is the total number of generators that saturate the inequality,
-      // i.e., `num_saturators[i]'. This is because we use the above
-      // condition: if the i-th inequality is satisfied, then it is redundant
-      // and we can remove it.
+    if (num_saturators[i] < min_saturators) {
+      // The inequality `mat[i]' is redundant.
       --num_rows;
       std::swap(mat[i], mat[num_rows]);
       std::swap(sat[i], sat[num_rows]);
@@ -202,13 +211,15 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
       i++;
   }
 
-  // Now we check if the independence rule holds comparing each couple
-  // of inequalities.
+  // Now we check the independence rule.
   for (size_t i = num_equal_or_line; i < num_rows; ) {
-    // i run through inequalities.
     bool redundant = false;
+    // FIXME: check if it is possible to reduce the number of sat's
+    // row equality tests by letting `j' run through the indexes
+    // greater than `i'. This certainly require the addition of
+    // the reverse inclusion test `sat[i] < sat[j]'; we have to check
+    // how this can interact with the swapping of rows.
     for (size_t j = num_equal_or_line; j < num_rows; ) {
-      // j run through inequalities.
       if (i == j)
 	// Want to compare different rows of mat.
 	++j;
@@ -238,11 +249,11 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
 	  // Note that `sat[i]' == `sat[j]' means that the `i'-th
 	  // inequality is saturated by the same generators that
 	  // saturate the `j'-th one and then we can remove either one of
-	  // the two constraints: we decided to remove the `j'-th one.
+	  // the two constraints: we remove the `j'-th one.
 	  --num_rows;
 	  std::swap(mat[j], mat[num_rows]);
-	  std::swap(num_saturators[j], num_saturators[num_rows]);
 	  std::swap(sat[j], sat[num_rows]);
+	  std::swap(num_saturators[j], num_saturators[num_rows]);
 	  mat.set_sorted(false);
 	}
 	else
@@ -255,18 +266,15 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
       }
     }
     if (redundant) {
-      // This is the case, commented above, in which we can remove
-      // the `i'-th inequality as it is redundant. Thus we move it
-      // to the bottom of mat.
+      // The inequality `mat[i]' is redundant.
       --num_rows;
       std::swap(mat[i], mat[num_rows]);
-      std::swap(num_saturators[i], num_saturators[num_rows]);
       std::swap(sat[i], sat[num_rows]);
+      std::swap(num_saturators[i], num_saturators[num_rows]);
       mat.set_sorted(false);
     }
     else
-      // If the i-th inequality is not redundant we compare the next
-      // one with all the other inequalities.
+      // The inequality `mat[i]' is not redundant.
       ++i;
   }
 
@@ -274,16 +282,18 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // moved to the bottom of `mat' and the corresponding `sat' rows.
   mat.erase_to_end(num_rows);
   sat.rows_erase_to_end(num_rows);
-  // At this point the first `num_line_or_equal' rows of 'mat'
+  // At this point the first `num_equal_or_line' rows of 'mat'
   // represent the irredundant equalities, while the remaining rows
-  // (i.e., between the `num_line_or_equal' index and
-  // `num_rows' - 1 one) represent the irredundant inequalities: here we
+  // (i.e., those having indexes from `num_equal_or_line' to
+  // `num_rows' - 1) represent the irredundant inequalities: here we
   // check if the flag is set (that of the equalities is already set).
   for (size_t i = num_equal_or_line; i < num_rows; ++i)
     assert(mat[i].is_ray_or_vertex_or_inequality());
   // Here we are checking if `mat' and `sat' have the same number of rows,
   // i.e., the new number of rows obtained excluding the rows of redundant
   // inequalities.
+  // FIXME: are these assertions meaningful, given that we just invoked
+  // erase_to_end(num_rows) on both matrices ?
   assert(mat.num_rows() == num_rows);
   assert(sat.num_rows() == num_rows);
 
