@@ -269,8 +269,14 @@ public:
   //! Builds the universe polyhedron of dimension \p num_dimensions.
   explicit Polyhedron(size_t num_dimensions);
   //! Builds a polyhedron from a system of constraints.
+  //! \param cs       The system of constraints defining the polyhedron.
+  //!                 It is not declared <CODE>const</CODE> 
+  //!                 because it can be modified.
   Polyhedron(ConSys& cs);
   //! Builds a polyhedron from a system of generators.
+  //! \param gs       The system of generators definig the polyhedron. 
+  //!                 It is not declared <CODE>const</CODE>
+  //!                 because it can be modified.
   //! \exception std::invalid_argument thrown if the system of generators
   //!                                  has no vertex.
   Polyhedron(GenSys& gs);
@@ -320,7 +326,9 @@ public:
   //! \param y                 The polyhedron that <EM>must</EM>
   //!                          be contained in \p *this.
   //! \param cs                The system of constraints that limits
-  //!                          the widened polyhedron.
+  //!                          the widened polyhedron. It is not 
+  //!                          declared <CODE>const</CODE> 
+  //!                          because it can be modified.
   //! \return       <CODE>true</CODE> if the resulting polyhedron is not
   //!               empty <CODE>false</CODE> otherwise.
   //! \exception std::invalid_argument thrown if \p *this, \p y and 
@@ -417,7 +425,9 @@ public:
   void remove_dimensions(const std::set<Variable>& to_be_removed);
   //! Adds the specified constraints and computes a new polyhedron.
   //! \param  cs            The constraints that will be added to the
-  //!                       current system of constraints.
+  //!                       current system of constraints. This parameter
+  //!                       is not declared <CODE>const</CODE> because 
+  //!                       it can be modified.
   //! \return               <CODE>false</CODE> if the resulting
   //!                       polyhedron is empty.
   //! \exception std::invalid_argument thrown if \p *this and \p cs
@@ -425,13 +435,17 @@ public:
   bool add_constraints(ConSys& cs);
   //! Adds the specified constraints without minimizing.
   //! \param  cs             The constraints that will be added to the
-  //!                        current system of constraints.
+  //!                        current system of constraints. This parameter
+  //!                        is not declared <CODE>const</CODE> because 
+  //!                        it can be modified.
   //! \exception std::invalid_argument thrown if \p *this and \p cs 
   //!                                  have different dimension.
   void add_constraints_lazy(ConSys& cs);
   //! Adds the specified generators.
   //! \param  gs          The generators that will be added to the
-  //!                     current system of generators.
+  //!                     current system of generators. The parameter is 
+  //!                     not declared <CODE>const</CODE> because it 
+  //!                     can be modified.
   //! \exception std::invalid_argument thrown if \p *this and 
   //!                                  \p gs have different dimension
   void add_generators(GenSys& gs);
