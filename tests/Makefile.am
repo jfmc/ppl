@@ -1067,7 +1067,91 @@ endif # BUILD_WATCHDOG_LIBRARY
 
 TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 
-XFAIL_TESTS = addgenerators11
+XFAIL_ALWAYS = \
+addgenerators11
+
+XFAIL_WITH_INT64_T = \
+$(XFAIL_ALWAYS) \
+randphull2 \
+nnc_randphull2
+
+XFAIL_WITH_INT32_T = \
+$(XFAIL_WITH_INT64_T) \
+dualhypercubes
+
+XFAIL_WITH_INT16_T = \
+$(XFAIL_WITH_INT32_T) \
+bgp99extrapolation1 \
+nnc_bgp99extrapolation1
+
+XFAIL_WITH_INT8_T = \
+$(XFAIL_WITH_INT16_T) \
+NNCminimize2 \
+NNCminimize4 \
+bgp99extrapolation2 \
+bhrz03widening14 \
+bhrz03widening15 \
+bhrz03widening18 \
+bhz03widening1 \
+bhz03widening4 \
+bhz03widening6 \
+boundedh79extrapolation1 \
+boundingbox4 \
+foldspacedims1 \
+foldspacedims2 \
+generalizedaffineimage3 \
+generalizedaffineimage7 \
+intersection1 \
+intersection2 \
+onepoint \
+polydifference9 \
+randphull1 \
+removespacedims2 \
+mapspacedims2 \
+max_min2 \
+smm1 \
+nnc_bgp99extrapolation2 \
+nnc_boundedh79extrapolation1 \
+nnc_generalizedaffineimage3 \
+nnc_intersection1 \
+nnc_intersection2 \
+nnc_onepoint \
+nnc_polydifference9 \
+nnc_randphull1 \
+nnc_removespacedims2 \
+nnc_max_min2 \
+nnc_smm1 
+
+
+if USE_INT64_T
+
+XFAIL_SET = $(XFAIL_WITH_INT64_T)
+
+else !USE_INT64_T
+if USE_INT32_T
+
+XFAIL_SET = $(XFAIL_WITH_INT32_T)
+
+else !USE_INT32_T
+if USE_INT16_T
+
+XFAIL_SET = $(XFAIL_WITH_INT16_T)
+
+else !USE_INT16_T
+if USE_INT8_T
+
+XFAIL_SET = $(XFAIL_WITH_INT8_T)
+
+else !USE_INT8_T
+
+XFAIL_SET = $(XFAIL_ALWAYS)
+
+endif !USE_INT8_T
+endif !USE_INT16_T
+endif !USE_INT32_T
+endif !USE_INT64_T
+
+XFAIL_TESTS = $(XFAIL_SET)
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
