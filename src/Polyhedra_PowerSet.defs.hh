@@ -156,6 +156,14 @@ public:
   */
   bool add_constraints_and_minimize(const ConSys& cs);
 
+  //! \brief
+  //! Assign to \p *this the result of (recursively) merging together
+  //! the pairs of polyhedra whose poly-hull is the same as their
+  //! set-theoretical union.
+  /*!
+    On exit, for all the pairs \f$\cP\f$, \f$\cQ\f$ of different polyhedra
+    in \p *this, we have \f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
+  */
   void pairwise_reduce();
 
   //! \brief
