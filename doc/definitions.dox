@@ -118,21 +118,20 @@ are, respectively, the smallest and the biggest elements of both \f$\Pset_n\f$
 and \f$\CPset_n\f$.
 The vector space \f$\Rset^n\f$ is also called the <EM>universe</EM> polyhedron.
 
-<B>Polyhedral Intersection and Convex Hull</B>
+<B>Intersection and Convex Polyhedral Hull</B>
 
 For any pair of NNC polyhedra \f$\cP_1, \cP_2 \in \Pset_n\f$,
-the set intersection \f$\cP_1 \inters \cP_2 \in \Pset_n\f$
-called the <EM>polyhedral intersection</EM> of \f$\cP_1\f$ and \f$\cP_2\f$
+the <EM>intersection</EM> of \f$\cP_1\f$ and \f$\cP_2\f$,
+defined as the set intersection \f$\cP_1 \inters \cP_2\f$,
 is the biggest NNC polyhedron included in both \f$\cP_1\f$ and \f$\cP_2\f$;
-similarly, the NNC polyhedron \f$\cP_1 \uplus \cP_2 \in \Pset_n\f$,
-called the <EM>convex polyhedral hull</EM> of \f$\cP_1\f$ and \f$\cP_2\f$
-(<EM>poly-hull</EM>, for short),
-is the smallest NNC polyhedron including both \f$\cP_1\f$ and \f$\cP_2\f$.
+similarly, the <EM>convex polyhedral hull</EM> (or <EM>poly-hull</EM>)
+ of \f$\cP_1\f$ and \f$\cP_2\f$ and denoted by \f$\cP_1 \uplus \cP_2\f$
+is the smallest NNC polyhedron that includes both
+\f$\cP_1\f$ and \f$\cP_2\f$.
 
-For any pair of closed polyhedra \f$\cP_1, \cP_2 \in \CPset_n\f$,
-their intersection \f$\cP_1 \inters \cP_2 \in \CPset_n\f$
-and their poly-hull \f$\cP_1 \uplus \cP_2 \in \CPset_n\f$
-are still closed polyhedra.
+The intersection and poly-hull of
+any pair of closed polyhedra in \f$\CPset_n\f$
+ia also closed.
 
 In theoretical terms, \f$\Pset_n\f$ is a <EM>lattice</EM> under set inclusion
 and \f$\CPset_n\f$ is a <EM>sub-lattice</EM> of \f$\Pset_n\f$.
@@ -201,8 +200,14 @@ Let \f$P, C \sseq \Rset^n\f$ where \f$P \union C = S\f$.
 We denote by  \f$\NNChull(P, C)\f$ the set of all convex combinations
 of the vectors in \f$S\f$
 such that \f$\lambda_j > 0\f$ for some \f$\vect{x}_j \in P\f$.
-It follows that \f$\NNChull(P, C) = \convexhull(P)\f$
-if \f$C \sseq P\f$.
+Note that \f$\NNChull(P, C) = \NNChull(P, P \union C)\f$
+so that, if \f$C \sseq P\f$,
+\f[
+   \convexhull(P)
+     = \NNChull(P, \emptyset)
+     = \NNChull(P, P)
+     = \NNChull(P, C).
+\f]
 
 <B>Points, closure points, rays and lines</B>
 
@@ -307,6 +312,12 @@ if there does not exist a generator system
 for which \f$L' \sseq L\f$, \f$R' \sseq R\f$, \f$P' \sseq P\f$ and
 \f$C' \sseq C\f$.
 
+<B>Topologies and topological compatibility</B>
+
+FIXME:
+Here we should say that, in our library, the
+topological kind of polyhedra should be declared when building them and
+that topological compatibility tests are performed systematically.
 
 <B>Space dimension and dimension-compatibility</B>
 
@@ -322,9 +333,10 @@ the various arguments are space dimension-compatible.
 The following (space) <EM>dimension-compatibility</EM> rules are defined:
 - the NNC polyhedra \f$P \in \Pset_n\f$ and \f$Q \in \Pset_m\f$ are
   dimension-compatible if and only if \f$n = m\f$;
-- the constraint \f$\langle \vect{a}, \vect{x} \rangle = \lambda\f$
-  (or \f$\langle \vect{a}, \vect{x} \rangle \geq \lambda\f$),
-  where \f$\vect{a}, \vect{x} \in \Rset^m\f$,
+- the constraint
+  \f$\langle \vect{a}, \vect{x} \rangle \mathord{\relop} b\f$
+  where \f$\mathord{\relop} \in \{ =, \geq, > \}\f$
+   and \f$\vect{a}, \vect{x} \in \Rset^m\f$,
   is dimension-compatible with an NNC polyhedron \f$P \in \Pset_n\f$
   if and only if \f$m \leq n\f$;
 - the generator \f$\vect{x} \in \Rset^m\f$ is dimension-compatible
