@@ -58,9 +58,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 class Parma_Polyhedra_Library::Variable {
 
 public:
-  //! Constructor: \p id is the index of the Cartesian axis.
+  //! Constructor: \p i is the index of the Cartesian axis
+  //! associated to the variable.
   explicit Variable(unsigned int i);
-  //! Returns the index of the Cartesian axis.
+  //! Returns the index of the Cartesian axis associated to the variable.
   unsigned int id() const;
 
 private:

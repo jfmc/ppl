@@ -112,19 +112,19 @@ public:
   //! Destructor.
   virtual ~LinExpression();
 
-  //! Constructor: builds the linear expression corresponding
+  //! Builds the linear expression corresponding
   //! to the inhomogeneous term \p n.
   explicit LinExpression(const Integer& n);
 
-  //! Constructor: builds the linear expression corresponding
+  //! Builds the linear expression corresponding
   //! to the variable \p v.
   LinExpression(const Variable& v);
 
-  //! Constructor: builds the linear expression corresponding to
+  //! Builds the linear expression corresponding to
   //! the constraint \p c.
   explicit LinExpression(const Constraint& c);
 
-  //! Constructor: builds the linear expression corresponding to
+  //! Builds the linear expression corresponding to
   //! the coefficients of generator \p g. Note that,
   //! for points and closure points, the divisor is \e not copied.
   explicit LinExpression(const Generator& g);

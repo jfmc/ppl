@@ -47,8 +47,7 @@ protected:
   //! Default constructor: builds a zero-matrix.
   Matrix(Topology topol);
 
-  //! Constructor: builds a sorted matrix with \p n_rows rows
-  //! and \p n_columns columns.
+  //! Builds a sorted matrix with \p n_rows rows and \p n_columns columns.
   Matrix(Topology topol, size_t n_rows, size_t n_columns);
 
   //! Copy-constructor.

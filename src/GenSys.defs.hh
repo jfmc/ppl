@@ -262,14 +262,12 @@ private:
   Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 				      const Polyhedron& y);
 
-  //! Constructor: builds an empty system of generators
-  //! having the specified topology.
+  //! Builds an empty system of generators having the specified topology.
   GenSys(Topology topol);
 
-  //! Constructor: it builds a system of \p n_rows rays/points
-  //! on a \p n_columns - 1 dimensional space (including the
-  //! \f$\epsilon\f$ dimension, if \p topol is
-  //! <CODE>NOT_NECESSARILY_CLOSED</CODE>).
+  //! Builds a system of \p n_rows rays/points on a \p n_columns - 1
+  //! dimensional space (including the \f$\epsilon\f$ dimension, if
+  //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
   GenSys(Topology topol, size_t n_rows, size_t n_columns);
 
   //! Adjusts \p *this so that it matches the topology and
