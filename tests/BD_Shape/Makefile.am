@@ -57,7 +57,7 @@ ORIGINAL_TESTS = \
 	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
 	constraints1 constraints2 \
 	contains1 contains2 contains3 \
-	empty1 empty2 empty3 empty4 \
+	empty1 empty2 empty3 empty4 empty5 \
 	equality1 \
 	exceptions1 exceptions2 exceptions3 \
 	generalizedaffineimage1 generalizedaffineimage2 \
@@ -157,6 +157,7 @@ empty1_SOURCES = empty1.cc
 empty2_SOURCES = empty2.cc
 empty3_SOURCES = empty3.cc
 empty4_SOURCES = empty4.cc
+empty5_SOURCES = empty5.cc
 
 equality1_SOURCES = equality1.cc
 
