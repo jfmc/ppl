@@ -593,7 +593,7 @@ otherwise the result is \f$\cQ \in \Pset_m\f$ given by
 The operator <CODE>expand_dimension</CODE> provided by the library
 adds \f$m\f$ new dimensions to a polyhedron \f$\cP \in \Pset_n\f$,
 with \f$n > 0\f$, so that dimensions
-\f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$
+\f$n\f$, \f$n+1\f$, \f$\ldots\f$, \f$n+m-1\f$
 of the result \f$\cQ\f$ are exact copies of the \f$i\f$-th dimension
 of \f$\cP\f$.  More formally,
 \f[
@@ -604,9 +604,9 @@ of \f$\cP\f$.  More formally,
       }{
         \exists \vect{v}, \vect{w} \in \cP
           \st u_i = v_i \\
-          \qquad \mathord{} \land \forall j = n, n+1, \dots, n+m-1
+          \qquad \mathord{} \land \forall j = n, n+1, \ldots, n+m-1
                                      \itc u_j = w_i \\
-          \qquad \mathord{} \land \forall k = 0, \dots, n-1
+          \qquad \mathord{} \land \forall k = 0, \ldots, n-1
                                      \itc k \neq i \implies u_k = v_k = w_k
       }.
 \f]
@@ -614,11 +614,48 @@ This operation has been proposed in \ref GDMDRS04 "[GDMDRS04]".
 
 
 \anchor fold_dimensions
-<B>Folding Multiple Dimensions of the Vector Space onto One Dimension</B>
+<B>Folding Multiple Dimensions of the Vector Space into One Dimension</B>
 
-The operator <CODE>fold_dimensions</CODE> provided by the library
-TO BE CONTINUED
-
+The operator <CODE>fold_dimensions</CODE> provided by the library,
+given a polyhedron \f$\cP \in \Pset_n\f$, with \f$n > 0\f$,
+folds a set of dimensions \f$J = \{ j_0, \ldots, j_{m-1} \}\f$ into
+dimension \f$i\f$, where \f$m-1, i \leq n-1\f$ and \f$i \notin J\f$.
+More formally, the result is given by
+\f[
+  \cQ \defeq \biguplus_{d = 0}^m \cQ_d
+\f]
+where
+\f[
+  \cQ_m
+    \defeq
+      \sset{
+        \vect{u} \in \Rset^{n-m}
+      }{
+        \exists \vect{v} \in \cP
+          \st u_{i'} = v_i \\
+          \qquad \mathord{} \land \forall k = 0, \ldots, n-1
+                                     \itc k \neq i \implies u_{k'} = v_k
+      }
+\f]
+and, for \f$ d = 0 \f$, \f$ \ldots \f$, \f$ m-1 \f$,
+\f[
+  \cQ_d
+    \defeq
+      \sset{
+        \vect{u} \in \Rset^{n-m}
+      }{
+        \exists \vect{v} \in \cP
+          \st u_{i'} = v_{j_d} \\
+          \qquad \mathord{} \land \forall k = 0, \ldots, n-1
+                                     \itc k \neq i \implies u_{k'} = v_k
+      },
+\f]
+and, finally, for \f$ k = 0 \f$, \f$ \ldots \f$, \f$ n-1 \f$,
+\f[
+  k'
+    \defeq
+      k - \card \{\, j \in J \mid k > j \,\}.
+\f]
 This operation has been proposed in \ref GDMDRS04 "[GDMDRS04]".
 
 
@@ -1768,7 +1805,7 @@ the set of equations
 \f[
   \sum_{i = 1}^k \lambda_i \vect{x}_i = \vect{0}
 \f]
-implies that, for each \f$i = 1\f$, \f$\dots\f$, \f$k\f$,
+implies that, for each \f$i = 1\f$, \f$\ldots\f$, \f$k\f$,
 \f$\lambda_i = 0\f$.
 
 Note that the maximum number of linearly independent points in
