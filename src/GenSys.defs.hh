@@ -61,7 +61,7 @@ namespace Parma_Polyhedra_Library {
     (the same of the example for the system of constraints):
     \code
     Variable x(0);
-    Variable y(0);
+    Variable y(1);
     GenSys gs;
     gs.insert(0 * x + 0 * y \= 1);
     gs.insert(0 * x + 3 * y \= 1);
@@ -86,10 +86,12 @@ public:
       to each generator contained in an object of GenSys.
 
       \par Example
-      As in ConSys, the following code prints a set of generators:
+      The following code prints the set of generators
+      of the polyhedron <CODE>ph</CODE>:
       \code
       const GenSys gs = ph.generators();
-      for (GenSys::const_iterator i = gs.begin(); i != gs.end(); ++i)
+      GenSys::const_iterator iend = gs.end();
+      for (GenSys::const_iterator i = gs.begin(); i != iend; ++i)
         cout << *i << endl;
       \endcode
   */
