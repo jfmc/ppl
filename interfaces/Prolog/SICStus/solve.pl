@@ -16,15 +16,25 @@ solve((A,B),P,M,N):-
     !, 
     solve(A,P,M,M1),
     solve(B,P,M1,N).
+
 solve({Cs},P,M,N):- 
     !,
     numbervars(Cs,M,N),
     M1 is N-M,
     ppl_add_dimensions_and_embed(P, M1),
     solve_constraints(Cs,P).
+
 solve(A,P,M,N):-
-    clause(A,B), 
-    solve(B,P,M,N).
+    functor(A,Pred,Arity),
+    functor(A1,Pred,Arity),
+    clause(A1,B1),
+    A =.. [Pred|Args],
+    A1 =.. [Pred|Args1],
+    numbervars((Args,Args1),M,M1),
+    M2 is M1-M,
+    ppl_add_dimensions_and_embed(P, M2),
+    solve_equal_list(Args,Args1,P),
+    solve(B1,P,M1,N).
 
 solve_constraints((C,D),P):- 
     !,
@@ -45,6 +55,11 @@ check_constraints(X) :-
 	ppl_get_generators(X, GS),
 	write(GS), write(' ')
 	).
+    
+solve_equal_list([],[],P).
+solve_equal_list([A|As],[B|Bs],P):-
+    solve_constraints(A=B,P),
+    solve_equal_list(As,Bs,P).
 
 % ?- solve({X+Y>=3,Y>=0,X=<2}).
 
@@ -52,3 +67,11 @@ check_constraints(X) :-
 p1(A,B):- {A>=B}, p2(A,B,C).
 p2(X,Y,Z):- {X+Y=<4}.
 p3(X,Y):- {X+Y=4}.
+
+:- dynamic fib/2.
+fib(X, Y) :-
+  { X >= 0, X =< 1, Y = 1 }.
+fib(X, Y) :-
+  { X >= 2, Xm1 = X-1, Xm2 = X-2, Y = Y1+Y2 },
+  fib(Xm1, Y1),
+  fib(Xm2, Y2).                                                                 
