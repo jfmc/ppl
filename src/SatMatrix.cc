@@ -129,9 +129,10 @@ PPL::SatMatrix::clear() {
 */
 void
 PPL::SatMatrix::resize(size_t new_num_rows, size_t new_num_columns) {
+  assert(OK());
   size_t old_num_rows = num_rows();
-  size_t num_preserved_rows = min(old_num_rows, new_num_rows);
   if (new_num_columns < row_size) {
+    size_t num_preserved_rows = min(old_num_rows, new_num_rows);
     SatMatrix& x = *this;
     for (size_t i = num_preserved_rows; i-- > 0; )
       x[i].clear_from(new_num_columns);
@@ -153,6 +154,10 @@ PPL::SatMatrix::resize(size_t new_num_rows, size_t new_num_columns) {
       // Reallocation will NOT take place.
       rows.insert(rows.end(), new_num_rows - old_num_rows, SatRow());
   }
+  else if (new_num_rows < old_num_rows)
+    // Drop some rows.
+    rows.erase(rows.begin() + new_num_rows, rows.end());
+
   assert(OK());
 }
 
@@ -253,11 +258,14 @@ PPL::SatMatrix::OK() const {
 
   const SatMatrix& x = *this;
   for (size_t i = num_rows(); i-- > 1; ) {
-    const SatRow& r = x[i];
-    if (!r.OK())
+    const SatRow& row = x[i];
+    if (!row.OK())
       return false;
-    else if (r.last() >= 0 && unsigned(r.last()) >= row_size) {
-      cerr << "SatMatrix has a SatRow with too many bits!"
+    else if (row.last() >= 0 && unsigned(row.last()) >= row_size) {
+      cerr << "SatMatrix[" << i << "] is a SatRow with too many bits!"
+	   << endl
+	   << "(row_size == " << row_size
+	   << ", row.last() == " << row.last() << ")"
 	   << endl;
       return false;
     }
