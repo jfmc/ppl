@@ -49,8 +49,6 @@ static const Prolog_foreign_return_type PROLOG_FAILURE = FALSE;
 
 namespace PPL = Parma_Polyhedra_Library;
 
-static Prolog_atom a_throw;
-
 /*!
   True if and only if the Prolog engine supports unbounded integers.
 */
@@ -80,8 +78,6 @@ ppl_Prolog_sysdep_init() {
   //        on other architectures?
   Prolog_min_integer = -268435456;
   Prolog_max_integer = 268435455;
-
-  a_throw = string_find("throw", 1);
 }
 
 static void
