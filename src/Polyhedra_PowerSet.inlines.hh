@@ -173,6 +173,24 @@ Polyhedra_PowerSet<PH>::remove_higher_dimensions(dimension_type
 }
 
 template <typename PH>
+bool
+Polyhedra_PowerSet<PH>::
+semantically_contains(const Polyhedra_PowerSet& y) const {
+  for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi)
+    if (!check_containment(yi->polyhedron(), *this))
+      return false;
+  return true;
+}
+
+template <typename PH>
+bool
+Polyhedra_PowerSet<PH>::
+semantically_equals(const Polyhedra_PowerSet& y) const {
+  const Polyhedra_PowerSet& x = * this;
+  return x.semantically_contains(y) && y.semantically_contains(x);
+}
+
+template <typename PH>
 template <typename PartialFunction>
 void
 Polyhedra_PowerSet<PH>::map_dimensions(const PartialFunction& pfunc) {
@@ -697,7 +715,9 @@ Polyhedra_PowerSet<PH>
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::ascii_dump(std::ostream& s) const {
-  s << "size " << size() << std::endl;
+  s << "size " << size()
+    << "\nspace_dim " << space_dim
+    << endl;
   for (const_iterator i = begin(), send = end(); i != send; ++i)
     i->polyhedron().ascii_dump(s);
 }
@@ -715,11 +735,20 @@ Polyhedra_PowerSet<PH>::ascii_load(std::istream& s) {
   if (!(s >> sz))
     return false;
 
+  if (!(s >> str) || str != "space_dim")
+    return false;
+
+  if (!(s >> space_dim))
+    return false;
+
+  Polyhedra_PowerSet new_pps(space_dim, Polyhedron::EMPTY);
   while (sz-- > 0) {
     PH ph;
     if (!ph.ascii_load(s))
       return false;
+    new_pps.add_disjunct(ph);
   }
+  swap(new_pps);
 
   // Check for well-formedness.
   assert(OK());

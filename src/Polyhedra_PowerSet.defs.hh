@@ -142,6 +142,28 @@ public:
   */
   void remove_higher_dimensions(dimension_type new_dimension);
 
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this semantically 
+  //! (i.e., geometrically) contains \p y.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+    \warning   This may be <EM>really</EM> expensive!
+  */
+  bool semantically_contains(const Polyhedra_PowerSet& y) const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this is semantically 
+  //! (i.e., geometrically) equal to \p y.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+    \warning   This may be <EM>really</EM> expensive!
+  */
+  bool semantically_equals(const Polyhedra_PowerSet& y) const;
+
   template <typename PartialFunction>
   void map_dimensions(const PartialFunction& pfunc);
 
