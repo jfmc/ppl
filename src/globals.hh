@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 //! An array of temporaries used to avoid unnecessary memory allocation.
-extern Integer* Parma_Polyhedra_Library::tmp_Integer;
+extern Integer* tmp_Integer;
 
 //! Speculative allocation function.
 /*!
