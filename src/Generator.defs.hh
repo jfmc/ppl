@@ -398,13 +398,15 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
-  //! Shorthand for Generator Generator line(const LinExpression& e).
+  //! Shorthand for Generator Generator::line(const LinExpression& e).
   Generator line(const LinExpression& e);
 
   //! Shorthand for Generator Generator::ray(const LinExpression& e).
   Generator ray(const LinExpression& e);
 
-  //! Shorthand for Generator point(const LinExpression& e, const Integer& d).
+  //! \brief
+  //! Shorthand for Generator
+  //! Generator::point(const LinExpression& e, const Integer& d).
   Generator point(const LinExpression& e = LinExpression::zero(),
 		  const Integer& d = Integer_one());
 
