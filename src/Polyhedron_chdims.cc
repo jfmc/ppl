@@ -577,7 +577,22 @@ PPL::Polyhedron::expand_dimension(Variable var, dimension_type m) {
 void
 PPL::Polyhedron::fold_dimensions(const Variables_Set& to_be_folded,
 				 Variable var) {
-  // FIXME: add all the required checks.
+  // FIXME: this implementation is _really_ an executable specification.
+
+  // `var' should be one of the dimensions of the polyhedron.
+  if (var.id()+1 > space_dim)
+    throw_dimension_incompatible("fold_dimensions(tbf, v)", "v", var);
+
+  // All variables in `to_be_folded' should be dimensions of the polyhedron.
+  if (to_be_folded.rbegin()->id()+1 > space_dim)
+    throw_dimension_incompatible("fold_dimensions(tbf, v)",
+				 "*tbf.rbegin()",
+				 *to_be_folded.rbegin());
+
+  // Moreover, `var' should not occur in `to_be_folded'.
+  if (to_be_folded.find(var) != to_be_folded.end())
+    throw_invalid_argument("fold_dimensions(tbf, v)",
+			   "v should not occur in tbf");
 
   for (Variables_Set::const_iterator i = to_be_folded.begin(),
 	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
@@ -586,4 +601,5 @@ PPL::Polyhedron::fold_dimensions(const Variables_Set& to_be_folded,
     poly_hull_assign(copy);
   }
   remove_dimensions(to_be_folded);
+  assert(OK());
 }
