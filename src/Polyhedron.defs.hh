@@ -1486,11 +1486,13 @@ public:
     assigned to \p j and <CODE>true</CODE> is returned.
     If \f$f\f$ is undefined in \f$k\f$, then <CODE>false</CODE> is
     returned.
-    If the partial function is not total and the polyhedron is
+    If the partial function is total the method is called \f$n\f$ times
+    where \f$n\f$ is the dimension of the vector space of the domain of
+    the partial function;
+    if the partial function is not total and the polyhedron is
     empty then this method will not be called;
-    in all other cases the method is called \f$n\f$ times where
-    \f$n\f$ is the dimension of the vector space of the domain of
-    the partial function.
+    otherwise the number of times the method is called is bounded by
+    \f$n\f$ times the number of generators defining the polyhedron.
 
     The result is undefined if \p pfunc does not encode a partial
     function with the properties described in the
