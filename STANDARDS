@@ -28,7 +28,7 @@ Coding standards for documenting the project with Doxygen:
 
      //! Brief comment for class C.
      /*!
-	More detailes on class C.
+	More details on class C.
 	Even more details.
      */
      class C {
@@ -41,11 +41,11 @@ Coding standards for documenting the project with Doxygen:
 3) In the source files, detailed comments should be placed
    immediately after the brief ones, so that ALL the documentation
    pertinent to a code entity is kept in a single file
-   (tipically, the *.defs.hh file).
+   (typically, the *.defs.hh file).
 
 3) Brief Doxygen comments should be brief (indeed).
    If more than two lines are required, then the comment should be
-   splitted in a brief part and a detailed part.
+   split into a brief part and a detailed part.
    Note that, starting from Doxygen 1.2.16, all the uses of \param,
    \result and \exception special commands will automatically turn
    the brief comment into a detailed one (even if the special command
@@ -58,17 +58,17 @@ Coding standards for documenting the project with Doxygen:
 	// ... doxygen comments ...
      #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
-   so that they will only appear in the developer reference.
+   so that they will only appear in the developer's reference.
    Note that the above preprocessing flags are not necessary
    (and should therefore be avoided) when documenting:
-    - a private member of a class (because private member never
+    - a private member of a class (because private members never
       appear in the user manual);
     - a public member of a class that is NOT documented
       (because even the documented members of an undocumented
        class are automatically filtered out of the user manual).
 
 5) The documentation of those functions that are neither methods
-   nor friends of a given class, but are anyway related to that
+   nor friends of a given class, but are related in some way to that
    class, should be made part of the documentation of the class.
    This is obtained by using the Doxygen \relates special command
    as follows:
@@ -77,5 +77,5 @@ Coding standards for documenting the project with Doxygen:
 
    It seems that, in order to correctly match function declarations
    and definitions, the above command should be placed in both places.
-   Typically, this will be the only kind of Doxygen commands
+   Typically, this will be the only kind of Doxygen command
    occurring in *.inlines.hh and *.cc source files.

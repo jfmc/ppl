@@ -15,7 +15,7 @@ o  Added full support for Not Necessarily Closed (NNC) polyhedra:
      systems;
    - creation of closure points and extended generator systems;
    - added classes C_Polyhedron (for the representation of Closed
-     polyhedra) and NNC_Polyehdron (the user no longer can create
+     polyhedra) and NNC_Polyhedron (the user no longer can create
      Polyhedron objects);
    - added topology compatibility checks to avoid mixing objects of
      the two kinds;
@@ -28,7 +28,7 @@ o  Added full support for Not Necessarily Closed (NNC) polyhedra:
      descriptions, both for closed and for NNC polyhedra.
 
 o  New method Polyhedron::time_elapse_assign(const Polyhedron&):
-   it computed the time-elapse operation defined in
+   it computes the time-elapse operation defined in
 
      N. Halbwachs, Y.-E. Proy, and P. Roumanoff.
      Verification of real-time systems using linear relation analysis.
