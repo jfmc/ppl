@@ -1277,11 +1277,31 @@ ppl_Polyhedron_add_constraint(ppl_Polyhedron_t ph,
 CATCH_ALL
 
 int
+ppl_Polyhedron_add_constraint_and_minimize(ppl_Polyhedron_t ph,
+					   ppl_const_Constraint_t c) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Constraint& cc = *to_const(c);
+  pph.add_constraint_and_minimize(cc);
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_Polyhedron_add_generator(ppl_Polyhedron_t ph,
 			     ppl_const_Generator_t g) try {
   Polyhedron& pph = *to_nonconst(ph);
   const Generator& gg = *to_const(g);
   pph.add_generator(gg);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_generator_and_minimize(ppl_Polyhedron_t ph,
+					  ppl_const_Generator_t g) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Generator& gg = *to_const(g);
+  pph.add_generator_and_minimize(gg);
   return 0;
 }
 CATCH_ALL

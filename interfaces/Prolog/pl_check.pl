@@ -57,6 +57,8 @@ check_all :-
   top_close_assign,
   add_con,
   add_gen,
+  add_con_min,
+  add_gen_min,
   add_cons,
   add_gens,
   add_cons_min,
@@ -517,6 +519,24 @@ add_gen :-
   A = '$VAR'(0), B = '$VAR'(1),
   ppl_new_Polyhedron_from_dimension(c, 2, P),
   ppl_Polyhedron_add_generator(P, point(1*A + 1*B, 1)),
+  ppl_Polyhedron_get_generators(P, GS),
+  GS = [point(1*A + 1*B), point(0), line(1*A), line(1*B)],
+  ppl_delete_Polyhedron(P).
+
+% Tests ppl_Polyhedron_add_constraint_and_minimize.
+add_con_min :-
+  A = '$VAR'(0), B = '$VAR'(1),
+  ppl_new_Polyhedron_from_dimension(c, 2, P),
+  ppl_Polyhedron_add_constraint_and_minimize(P, A - B >= 1),
+  ppl_Polyhedron_get_constraints(P, CS),
+  CS = [1*A + -1*B >= 1],
+  ppl_delete_Polyhedron(P).
+
+% Tests ppl_Polyhedron_add_generator_and_minimize.
+add_gen_min :-
+  A = '$VAR'(0), B = '$VAR'(1),
+  ppl_new_Polyhedron_from_dimension(c, 2, P),
+  ppl_Polyhedron_add_generator_and_minimize(P, point(1*A + 1*B, 1)),
   ppl_Polyhedron_get_generators(P, GS),
   GS = [point(1*A + 1*B), point(0), line(1*A), line(1*B)],
   ppl_delete_Polyhedron(P).

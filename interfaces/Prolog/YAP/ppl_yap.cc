@@ -408,7 +408,9 @@ YAP_STUB_2(ppl_Polyhedron_get_minimized_constraints)
 YAP_STUB_2(ppl_Polyhedron_get_generators)
 YAP_STUB_2(ppl_Polyhedron_get_minimized_generators)
 YAP_STUB_2(ppl_Polyhedron_add_constraint)
+YAP_STUB_2(ppl_Polyhedron_add_constraint_and_minimize)
 YAP_STUB_2(ppl_Polyhedron_add_generator)
+YAP_STUB_2(ppl_Polyhedron_add_generator_and_minimize)
 YAP_STUB_2(ppl_Polyhedron_add_constraints)
 YAP_STUB_2(ppl_Polyhedron_add_constraints_and_minimize)
 YAP_STUB_2(ppl_Polyhedron_add_generators)
@@ -466,7 +468,9 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_get_generators, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_get_minimized_generators, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraint, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraint_and_minimize, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_add_generator, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_generator_and_minimize, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraints, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraints_and_minimize, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_add_generators, 2);

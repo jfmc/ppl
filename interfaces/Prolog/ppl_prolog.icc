@@ -1302,12 +1302,38 @@ ppl_Polyhedron_add_constraint(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
 }
 
 extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_add_constraint_and_minimize(Prolog_term_ref t_ph,
+					   Prolog_term_ref t_c) {
+  try {
+    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    CHECK(ph);
+    if (ph->add_constraint_and_minimize(build_constraint(t_c)))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_add_generator(Prolog_term_ref t_ph, Prolog_term_ref t_g) {
   try {
     PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     ph->add_generator(build_generator(t_g));
     return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_add_generator_and_minimize(Prolog_term_ref t_ph,
+					  Prolog_term_ref t_g) {
+  try {
+    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    CHECK(ph);
+    if (ph->add_generator_and_minimize(build_generator(t_g)))
+      return PROLOG_SUCCESS;
   }
   CATCH_ALL;
   return PROLOG_FAILURE;

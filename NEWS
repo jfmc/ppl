@@ -43,6 +43,11 @@ o  New function LinExpression& operator*=(LinExpression&, const Integer&)
 o  New function bool are_disjoint(const Polyhedron&, const Polyhedron&)
    returning true if and only if the two polyhedra are disjoint.
 
+o  New methods bool Polyhedron::add_constraint_and_minimize(const
+   Constraint&) and bool Polyhedron::add_generator_and_minimize(const
+   Generator&) to add a constraint or a generator and minimizing the
+   result at the same time.
+
 o  New methods void Polyhedron::BBRZ02_widening_assign(const Polyhedron&)
    and void Polyhedron::BBRZ02_limited_widening_assign(const Polyhedron&,
    ConSys&).  The BBRZ02 widening is a novel widening that is always more

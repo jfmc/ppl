@@ -2149,7 +2149,6 @@ PPL::Polyhedron::add_constraints_and_minimize(ConSys& cs) {
   return !empty;
 }
 
-
 void
 PPL::Polyhedron::add_constraint(const Constraint& c) {
   // Topology-compatibility check.
@@ -2200,6 +2199,13 @@ PPL::Polyhedron::add_constraint(const Constraint& c) {
   // Note: the constraint system may have become unsatisfiable, thus
   // we do not check for satisfiability.
   assert(OK());
+}
+
+bool
+PPL::Polyhedron::add_constraint_and_minimize(const Constraint& c) {
+  // FIXME: this is just an executable specification.
+  ConSys cs(c);
+  return add_constraints_and_minimize(cs);
 }
 
 void
@@ -2313,6 +2319,12 @@ PPL::Polyhedron::add_generator(const Generator& g) {
   assert(OK());
 }
 
+bool
+PPL::Polyhedron::add_generator_and_minimize(const Generator& g) {
+  // FIXME: this is just an executable specification.
+  GenSys gs(g);
+  return add_generators_and_minimize(gs);
+}
 
 void
 PPL::Polyhedron::add_constraints(ConSys& cs) {

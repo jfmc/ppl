@@ -1229,12 +1229,33 @@ ppl_Polyhedron_add_constraint __P((ppl_Polyhedron_t ph,
 				   ppl_const_Constraint_t c));
 
 /*!
+  Adds a copy of the constraint \p c to the system of constraints of
+  \p ph.  Returns a positive integer if the resulting polyhedron is
+  non-empty; returns 0 if it is empty.  Upon successful return, \p ph
+  is guaranteed to be minimized.
+
+*/
+int
+ppl_Polyhedron_add_constraint_and_minimize __P((ppl_Polyhedron_t ph,
+						ppl_const_Constraint_t c));
+
+/*!
   Adds a copy of the generator \p g to the system of generatorss of
   \p ph.
 */
 int
 ppl_Polyhedron_add_generator __P((ppl_Polyhedron_t ph,
 				  ppl_const_Generator_t g));
+
+/*!
+  Adds a copy of the generator \p g to the system of generatorss of
+  \p ph.  Returns a positive integer if the resulting polyhedron is
+  non-empty; returns 0 if it is empty.  Upon successful return, \p ph
+  is guaranteed to be minimized.
+*/
+int
+ppl_Polyhedron_add_generator_and_minimize __P((ppl_Polyhedron_t ph,
+					       ppl_const_Generator_t g));
 
 /*!
   Adds the system of constraints \p cs to the system of constraints of
@@ -1274,7 +1295,7 @@ ppl_Polyhedron_add_generators __P((ppl_Polyhedron_t ph, ppl_GenSys_t gs));
 
 /*!
   Adds the system of generators \p gs to the system of generators of
-  \p ph. Returns a positive integer if the resulting polyhedron is
+  \p ph.  Returns a positive integer if the resulting polyhedron is
   non-empty; returns 0 if it is empty.  Upon successful return, \p ph
   is guaranteed to be minimized.
 
