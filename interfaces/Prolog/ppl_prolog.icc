@@ -499,7 +499,7 @@ generator_term(const PPL::Generator& g) {
       }
     }
   default:
-    abort();
+    throw_unknown_interface_error("generator_term()");
   }
   Prolog_construct_compound(t, constructor, get_lin_expression(g));
   return t;
