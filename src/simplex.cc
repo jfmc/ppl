@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h> 
 #include "Constraint_System.defs.hh"
+#include "Constraint_System.inlines.hh"
 #include "Row.defs.hh"
 #include "Matrix.defs.hh"
 #include "Linear_Row.defs.hh"
