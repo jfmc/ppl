@@ -28,7 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
-using namespace Parma_Watchdog_Library;
 
 #define NOISY 1
 
@@ -44,10 +43,13 @@ compute_open_hypercube_generators(unsigned int dimension) {
 }
 
 class myTimeout : virtual public std::exception,
-		  public Parma_Watchdog_Library::Flag {
+		  public Parma_Polyhedra_Library::Throwable {
 public:
   const char* what() const throw() {
-    return "Yes, it's me!";
+    return "myTimeout in watchdog1.cc";
+  }
+  void throw_me() const {
+    throw *this;
   }
   int priority() const {
     return 0;
@@ -62,18 +64,21 @@ bool
 timed_compute_open_hypercube_generators(unsigned int dimension,
 					int hundredth_secs) {
   try {
-    Watchdog w(hundredth_secs, &abandon_exponential_computations, t);
+    Parma_Watchdog_Library::Watchdog
+      w(hundredth_secs, &abandon_exponential_computations, t);
     compute_open_hypercube_generators(dimension);
     abandon_exponential_computations = 0;
     return true;
   }
-  catch (const myTimeout&) {
+  catch (const myTimeout& e) {
     abandon_exponential_computations = 0;
+#if NOISY
+    cout << e.what() << endl;
+#endif
     return false;
   }
-  catch (const std::exception& e) {
-    abandon_exponential_computations = 0;
-    cout << e.what() << endl;
+  catch (...) {
+    exit(1);
     return false;
   }
 }
@@ -84,7 +89,7 @@ int
 main() {
   set_handlers();
   
-  Watchdog::initialize();
+  Parma_Watchdog_Library::Watchdog::initialize();
 
   // Find a dimension that cannot be computed with a INIT_TIME timeout.
   unsigned int dimension = 0;
