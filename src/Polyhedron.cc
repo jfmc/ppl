@@ -926,6 +926,42 @@ PPL::Polyhedron::insert(const Constraint& c) {
 }
 
 /*!
+  This function inserts a new generator \p g into the set of
+  generators of the polyhedron \p *this. The new generator
+  can be redundant.
+*/
+void
+PPL::Polyhedron::insert(const Generator& g) {
+#if DLEVEL >= 1
+  cout << "x.insert(g)" << endl
+       << "+++ x +++" << endl
+       << *this << endl
+       << "+++ g +++" << endl
+       << g << endl;
+#endif
+
+  assert(!is_zero_dim());
+
+  if (!generators_are_up_to_date())
+    update_generators();
+
+  gen_sys.insert(g);
+
+  // After adding the new generator, constraints are
+  // no more up-to-date.
+  clear_generators_minimized();
+  clear_constraints_up_to_date();
+
+#if DLEVEL >= 1
+  cout << "=== x ===" << endl
+       << *this << endl;
+#endif
+
+  assert(OK());
+}
+
+
+/*!
   Adds specified constraints to a Polyhedron without minimizing.
   If the returned value is <CODE>false</CODE> then the polyhedron is empty.
 */

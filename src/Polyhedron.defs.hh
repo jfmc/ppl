@@ -258,6 +258,9 @@ public:
   //! Insert a new constraints \p c into the system of constraints.
   void insert(const Constraint& c);
 
+  //! Insert a new generator \p g into the set of generators.
+  void insert(const Generator& g);
+
   //! Assigns an affine expression to the specified variable.
   void assign_variable(size_t var,
 		       std::vector<Integer>& coefficient,
