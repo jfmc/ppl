@@ -74,10 +74,11 @@ if BUILD_WATCHDOG_LIBRARY
 #  6. If any interfaces have been removed since the last public release,
 #     then set AGE to 0.
 #
-#	PWL release		-version-info
-#	    0.1			    0:0:0
+#	PWL release	(with PPL release)	-version-info
+#	    0.1			0.4		    0:0:0
+#	    0.2			0.5		    1:0:0
 
-LIBPWL_LT_CURRENT =  0
+LIBPWL_LT_CURRENT =  1
 LIBPWL_LT_REVISION = 0
 LIBPWL_LT_AGE =      0
 
