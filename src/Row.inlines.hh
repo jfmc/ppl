@@ -133,11 +133,7 @@ Row::Impl::Impl(const Impl& y, const dimension_type sz)
 
 inline
 Row::Impl::~Impl() {
-#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   shrink(0);
-#else
-  shrink(1);
-#endif
 }
 
 inline const Row::Flags&

@@ -47,17 +47,19 @@ PPL::Row::Impl::expand_within_capacity(const dimension_type new_size) {
 }
 
 void
-PPL::Row::Impl::shrink(const dimension_type new_size) {
-#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  assert(new_size > 0);
-#endif
+PPL::Row::Impl::shrink(dimension_type new_size) {
   assert(new_size <= size());
+  // Since ~Integer() does not throw exceptions, nothing here does.
+  set_size(new_size);
+#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  // Make sure we do not try to destroy vec_[0].
+  if (new_size == 0)
+    ++new_size;
+#endif
   // We assume construction was done "forward".
   // We thus perform destruction "backward".
   for (dimension_type i = size(); i-- > new_size; )
-    // ~Integer() does not throw exceptions.  So we do.
     vec_[i].~Integer();
-  set_size(new_size);
 }
 
 void
