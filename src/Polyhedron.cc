@@ -39,11 +39,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 
 #ifndef BHRZ03_AC_IS_SUM
-#define BHRZ03_AC_IS_SUM 0
+#define BHRZ03_AC_IS_SUM 1
 #endif
 
 #ifndef BHRZ03_AC_CHECKS_H79_BOUNDARY
-#define BHRZ03_AC_CHECKS_H79_BOUNDARY 0
+#define BHRZ03_AC_CHECKS_H79_BOUNDARY 1
 #endif
 
 #define BE_LAZY
