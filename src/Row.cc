@@ -169,40 +169,30 @@ PPL::compare(const Row& x, const Row& y) {
 }
 
 /*! \relates Parma_Polyhedra_Library::Row */
-const PPL::Integer&
-PPL::operator*(const Row& x, const Row& y) {
+void
+PPL::scalar_product_assign(Integer& z, const Row& x, const Row& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
   assert(x.size() <= y.size());
-  TEMP_INTEGER(accum);
-  TEMP_INTEGER(prod);
-  accum = 0;
-  for (dimension_type i = x.size(); i-- > 0; ) {
-    // The following two lines optimize the computation
-    // of accum += x[i] * y[i].
-    prod = x[i] * y[i];
-    accum += prod;
-  }
-  return accum;
+  z = 0;
+  for (dimension_type i = x.size(); i-- > 0; )
+    // The following line optimizes the computation
+    // of z += x[i] * y[i].
+    add_mul_assign(z, x[i], y[i]);
 }
 
 /*! \relates Parma_Polyhedra_Library::Row */
-const PPL::Integer&
-PPL::reduced_scalar_product(const Row& x, const Row& y) {
+void
+PPL::reduced_scalar_product_assign(Integer& z, const Row& x, const Row& y) {
   // The reduced scalar product is only defined
   // if the topology of `x' is NNC and `y' has enough coefficients.
   assert(!x.is_necessarily_closed());
   assert(x.size() - 1 <= y.size());
-  TEMP_INTEGER(accum);
-  TEMP_INTEGER(prod);
-  accum = 0;
-  for (dimension_type i = x.size() - 1; i-- > 0; ) {
-    // The following two lines optimize the computation
-    // of accum += x[i] * y[i].
-    prod = x[i] * y[i];
-    accum += prod;
-  }
-  return accum;
+  z = 0;
+  for (dimension_type i = x.size() - 1; i-- > 0; )
+    // The following line optimizes the computation
+    // of z += x[i] * y[i].
+    add_mul_assign(z, x[i], y[i]);
 }
 
 void

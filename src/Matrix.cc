@@ -994,7 +994,7 @@ PPL::Matrix::gram_shmidt() {
     const Row& rows_i = rows[i];
     std::vector<Integer>& mu_i = mu[i];
     for (dimension_type j = i+1; j-- > 0; )
-      mu_i[j] = rows_i * rows[j];
+      scalar_product_assign(mu_i[j], rows_i, rows[j]);
   }
 
   const dimension_type n_columns = num_columns();
@@ -1052,7 +1052,7 @@ PPL::Matrix::gram_shmidt() {
   for (dimension_type i = rank; i-- > 0; ) {
     const Row& rows_i = rows[i];
     for (dimension_type j = i; j-- > 0; )
-      if (rows_i * rows[j] != 0) {
+      if (scalar_product_sign(rows_i, rows[j]) != 0) {
 	std::cout << "Not an orthogonal base" << std::endl;
 	std::cout << "i = " << i << ", j = " << j << std::endl;
 	std::cout << "After Gram-Shmidt on the base" << std::endl;
@@ -1086,7 +1086,7 @@ PPL::Matrix::gram_shmidt() {
   Integer denominator = 1;
   for (dimension_type i = rank; i-- > 0; ) {
     const Row& rows_i = rows[i];
-    d[i] = rows_i * rows_i;
+    scalar_product_assign(d[i], rows_i, rows_i);
     denominator *= d[i];
   }
   for (dimension_type i = rank; i-- > 0; )
@@ -1098,7 +1098,7 @@ PPL::Matrix::gram_shmidt() {
     Row& w = rows[i];
     // Compute `factors' according to `w'.
     for (dimension_type j = rank; j-- > 0; ) {
-      factors[j] = w * rows[j];
+      scalar_product_assign(factors[j], w, rows[j]);
       factors[j] *= d[j];
     }
     for (dimension_type k = n_columns; k-- > 0; )
@@ -1119,7 +1119,7 @@ PPL::Matrix::gram_shmidt() {
 #ifndef NDEBUG
     // Check that w is indeed orthogonal wrt all the vectors in the base.
     for (dimension_type h = rank; h-- > 0; )
-      if (w * rows[h] != 0) {
+      if (scalar_product_sign(w, rows[h]) != 0) {
 	std::cout << "Not orthogonal" << std::endl;
 	std::cout << "i = " << i << ", h = " << h << std::endl;
 	std::cout << "After Gram-Shmidt on the whole matrix" << std::endl;

@@ -273,25 +273,25 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   // Setting `sp_fp' to the appropriate scalar product operator.
   // This also avoids problems when having _legal_ topology mismatches
   // (which could also cause a mismatch in the number of columns).
-  const Integer& (*sp_fp)(const Row&, const Row&);
+  int (*sps_fp)(const Row&, const Row&);
   if (g.is_necessarily_closed())
-    sp_fp = PPL::operator*;
+    sps_fp = PPL::scalar_product_sign;
   else
-    sp_fp = PPL::reduced_scalar_product;
+    sps_fp = PPL::reduced_scalar_product_sign;
   const ConSys& cs = *this;
 
   if (cs.is_necessarily_closed()) {
     if (g.is_line()) {
       // Lines must saturate all constraints.
       for (dimension_type i = cs.num_rows(); i-- > 0; )
-	if (sp_fp(g, cs[i]) != 0)
+	if (sps_fp(g, cs[i]) != 0)
 	  return false;
     }
     else
       // `g' is either a ray, a point or a closure point.
       for (dimension_type i = cs.num_rows(); i-- > 0; ) {
 	const Constraint& c = cs[i];
-	const int sp_sign = sgn(sp_fp(g, c));
+	const int sp_sign = sps_fp(g, c);
 	if (c.is_inequality()) {
 	  // As `cs' is necessarily closed,
 	  // `c' is a non-strict inequality.
@@ -311,7 +311,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
     case Generator::LINE:
       // Lines must saturate all constraints.
       for (dimension_type i = cs.num_rows(); i-- > 0; )
-	if (sp_fp(g, cs[i]) != 0)
+	if (sps_fp(g, cs[i]) != 0)
 	  return false;
       break;
 
@@ -320,7 +320,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
       // when dealing with a strict inequality.
       for (dimension_type i = cs.num_rows(); i-- > 0; ) {
 	const Constraint& c = cs[i];
-	const int sp_sign = sgn(sp_fp(g, c));
+	const int sp_sign = sps_fp(g, c);
 	switch (c.type()) {
 	case Constraint::EQUALITY:
 	  if (sp_sign != 0)
@@ -343,7 +343,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
     case Generator::CLOSURE_POINT:
       for (dimension_type i = cs.num_rows(); i-- > 0; ) {
 	const Constraint& c = cs[i];
-	const int sp_sign = sgn(sp_fp(g, c));
+	const int sp_sign = sps_fp(g, c);
 	if (c.is_inequality()) {
 	  // Constraint `c' is either a strict or a non-strict inequality.
 	  if (sp_sign < 0)

@@ -33,6 +33,7 @@ inline void gcd_assign(Integer& x, const Integer& y);
 inline void gcd_assign(Integer& x, const Integer& y, const Integer& z);
 inline void lcm_assign(Integer& x, const Integer& y);
 inline void lcm_assign(Integer& x, const Integer& y, const Integer& z);
+inline void add_mul_assign(Integer& x, const Integer& y, const Integer& z);
 inline void exact_div_assign(Integer& x, const Integer& y);
 inline void exact_div_assign(Integer& x, const Integer& y, const Integer& z);
 inline void sqrt_assign(Integer& x);

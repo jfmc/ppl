@@ -368,18 +368,33 @@ private:
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Computes the scalar product between \p x and \p y.
+//! Computes the scalar product between \p x and \p y and assigns it to \p z.
 /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-const Integer& operator*(const Row& x, const Row& y);
+void scalar_product_assign(Integer& z, const Row& x, const Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns the sign of the scalar product between \p x and \p y.
+/*! \relates Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+int scalar_product_sign(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
 //! Computes the \e reduced scalar product between \p x and \p y,
+//! where the \f$\epsilon\f$ coefficient of \p x is ignored,
+//! and assigns the result to \p z.
+/*! \relates Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void reduced_scalar_product_assign(Integer& z, const Row& x, const Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Returns the \e reduced scalar product between \p x and \p y,
 //! where the \f$\epsilon\f$ coefficient of \p x is ignored.
 /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-const Integer& reduced_scalar_product(const Row& x, const Row& y);
+int reduced_scalar_product_sign(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.

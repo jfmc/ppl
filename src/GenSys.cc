@@ -664,24 +664,24 @@ PPL::GenSys::satisfied_by_all_generators(const Constraint& c) const {
   // Setting `sp_fp' to the appropriate scalar product operator.
   // This also avoids problems when having _legal_ topology mismatches
   // (which could also cause a mismatch in the number of columns).
-  const Integer& (*sp_fp)(const Row&, const Row&);
+  int (*sps_fp)(const Row&, const Row&);
   if (c.is_necessarily_closed())
-    sp_fp = PPL::operator*;
+    sps_fp = PPL::scalar_product_sign;
   else
-    sp_fp = PPL::reduced_scalar_product;
+    sps_fp = PPL::reduced_scalar_product_sign;
 
   const GenSys& gs = *this;
   switch (c.type()) {
   case Constraint::EQUALITY:
     // Equalities must be saturated by all generators.
     for (dimension_type i = gs.num_rows(); i-- > 0; )
-      if (sp_fp(c, gs[i]) != 0)
+      if (sps_fp(c, gs[i]) != 0)
 	return false;
     break;
   case Constraint::NONSTRICT_INEQUALITY:
     // Non-strict inequalities must be satisfied by all generators.
     for (dimension_type i = gs.num_rows(); i-- > 0; )
-      if (sp_fp(c, gs[i]) < 0)
+      if (sps_fp(c, gs[i]) < 0)
 	return false;
     break;
   case Constraint::STRICT_INEQUALITY:
@@ -690,12 +690,12 @@ PPL::GenSys::satisfied_by_all_generators(const Constraint& c) const {
     for (dimension_type i = gs.num_rows(); i-- > 0; ) {
       const Generator& g = gs[i];
       if (g.is_point()) {
-	if (sp_fp(c, g) <= 0)
+	if (sps_fp(c, g) <= 0)
 	  return false;
       }
       else
 	// `g' is a line, ray or closure point.
-	if (sp_fp(c, g) < 0)
+	if (sps_fp(c, g) < 0)
 	  return false;
     }
     break;

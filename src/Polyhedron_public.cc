@@ -788,7 +788,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       const Generator tmp_gen = gen_sys[i];
       const SatRow tmp_sat = sat_c[i];
       for (dimension_type j = sat_c.num_columns(); j-- > 0; )
-	if (sgn(tmp_gen * con_sys[j]) != tmp_sat[j]) {
+	if (scalar_product_sign(tmp_gen, con_sys[j]) != tmp_sat[j]) {
 #ifndef NDEBUG
 	  cerr << "sat_c is declared up-to-date, but it is not!"
 	       << endl;

@@ -112,7 +112,7 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
     // all the generators of the polyhedron `y'.
     buffer.clear();
     for (dimension_type j = y.gen_sys.num_rows(); j-- > 0; ) {
-      const int sp_sgn = sgn(y.gen_sys[j] * ci);
+      const int sp_sgn = scalar_product_sign(y.gen_sys[j], ci);
       // We are assuming that `y <= x'.
       assert(sp_sgn >= 0);
       if (sp_sgn > 0)

@@ -406,7 +406,9 @@ PPL::Polyhedron::conversion(Matrix& source,
     // that does not saturate the constraint `source_k'.
     dimension_type index_non_zero = 0;
     for ( ; index_non_zero < dest_num_rows; ++index_non_zero) {
-      scalar_prod[index_non_zero] = source_k * dest[index_non_zero];
+      scalar_product_assign(scalar_prod[index_non_zero],
+			    source_k,
+			    dest[index_non_zero]);
       if (scalar_prod[index_non_zero] != 0)
 	// The generator does not saturate the constraint.
 	break;
@@ -418,7 +420,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 #endif
     }
     for (dimension_type i = index_non_zero + 1; i < dest_num_rows; ++i) {
-      scalar_prod[i] = source_k * dest[i];
+      scalar_product_assign(scalar_prod[i], source_k, dest[i]);
 #if REACTIVE_ABANDONING
       maybe_abandon();
 #endif

@@ -429,6 +429,20 @@ Row::strong_normalize() {
   sign_normalize();
 }
 
+inline int
+scalar_product_sign(const Row& x, const Row& y) {
+  TEMP_INTEGER(z);
+  scalar_product_assign(z, x, y);
+  return sgn(z);
+}
+
+inline int
+reduced_scalar_product_sign(const Row& x, const Row& y) {
+  TEMP_INTEGER(z);
+  reduced_scalar_product_assign(z, x, y);
+  return sgn(z);
+}
+
 /*! \relates Row */
 inline bool
 operator==(const Row& x, const Row& y) {
