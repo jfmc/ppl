@@ -34,7 +34,7 @@ bool
 easy_print(const Polyhedron& ph, const string& intro, ostream& s) {
   if (!intro.empty())
     s << intro << endl;
-  if (ph.space_dimension() == 0) {
+  if (ph.check_universe()) {
     s << "true" << endl;
     return true;
   }
