@@ -35,6 +35,7 @@ Matrix::swap(Matrix& y) {
   std::swap(row_topology, y.row_topology);
   std::swap(row_size, y.row_size);
   std::swap(row_capacity, y.row_capacity);
+  std::swap(index_first_pending, y.index_first_pending);
   std::swap(sorted, y.sorted);
 }
 
@@ -44,6 +45,7 @@ Matrix::Matrix(Topology topol)
     row_topology(topol),
     row_size(0),
     row_capacity(0),
+    index_first_pending(0),
     sorted(true) {
 }
 
@@ -70,6 +72,24 @@ Matrix::operator[](dimension_type k) const {
 inline dimension_type
 Matrix::num_rows() const {
   return rows.size();
+}
+
+
+inline dimension_type
+Matrix::first_pending_row() const {
+  return index_first_pending;
+}
+
+
+inline dimension_type
+Matrix::num_pending_rows() const {
+  return num_rows() - first_pending_row();
+}
+
+
+inline void
+Matrix::set_index_first_pending_row(dimension_type first_pending) {
+  index_first_pending = first_pending;
 }
 
 
@@ -153,6 +173,7 @@ Matrix::clear() {
   std::vector<Row>().swap(rows);
   row_size = 0;
   row_capacity = 0;
+  index_first_pending = 0;
   sorted = true;
 }
 

@@ -183,6 +183,9 @@ private:
   //! <CODE>Integer</CODE> objects that each row can contain.
   dimension_type row_capacity;
 
+  //! The index of the first pending row.
+  dimension_type index_first_pending;
+
   //! \brief
   //! <CODE>true</CODE> if rows are sorted in the ascending order as
   //! defined by <CODE>bool operator<(const Row& x, const Row& y)</CODE>.
@@ -204,6 +207,9 @@ public:
   
   //! Sets the topology of all rows equal to the matrix topology.
   void set_rows_topology();
+
+  //! Sets the index of the first pending row to \p first_pending.
+  void set_index_first_pending_row(dimension_type first_pending);
 
   //! Makes the matrix grow by adding more rows and/or more columns.
   /*!
@@ -285,6 +291,12 @@ public:
 
   //! Returns the number of rows in the matrix.
   dimension_type num_rows() const;
+
+  //! Returns the number of rows that built the system.
+  dimension_type first_pending_row() const;
+
+  //! Returns the number of rows that are in the pending part of the matrix.
+  dimension_type num_pending_rows() const;
 
   //! \brief
   //! Returns the number of rows in the matrix

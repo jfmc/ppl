@@ -37,6 +37,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 PPL::dimension_type
 PPL::Matrix::num_lines_or_equalities() const {
+  assert(num_pending_rows() == 0);
   dimension_type n = 0;
   for (dimension_type i = num_rows(); i != 0; )
     if (rows[--i].is_line_or_equality())
@@ -51,6 +52,7 @@ PPL::Matrix::Matrix(Topology topol,
     row_topology(topol),
     row_size(n_columns),
     row_capacity(compute_capacity(n_columns)),
+    index_first_pending(n_rows),
     sorted(false) {
   // Build the appropriate row type.
   Row::Type row_type(topol, Row::RAY_OR_POINT_OR_INEQUALITY);
@@ -65,6 +67,7 @@ PPL::Matrix::Matrix(const Matrix& y)
     row_topology(y.row_topology),
     row_size(y.row_size),
     row_capacity(compute_capacity(y.row_size)),
+    index_first_pending(y.index_first_pending),
     sorted(y.sorted) {
 }
 
@@ -75,6 +78,7 @@ PPL::Matrix::operator=(const Matrix& y) {
   row_topology = y.row_topology;
   row_size = y.row_size;
   row_capacity = compute_capacity(row_size);
+  index_first_pending = y.index_first_pending;
   sorted = y.sorted;
   return *this;
 }
@@ -291,7 +295,9 @@ PPL::Matrix::ascii_dump(std::ostream& s) const {
     << (x.is_necessarily_closed() ? "" : "NOT_")
     << "NECESSARILY_CLOSED"
     << endl;
-  s << x.num_rows() << separator << 'x' << separator
+  s << x.num_rows() << separator 
+    << "(" << x.first_pending_row() << ")" << separator
+    << 'x' << separator
     << x.num_columns() << separator
     << (x.sorted ? "(sorted)" : "(not_sorted)")
     << endl;
@@ -313,14 +319,24 @@ PPL::Matrix::ascii_load(std::istream& s) {
   }
 
   dimension_type nrows;
+  dimension_type index_pending;
   dimension_type ncols;
   if (!(s >> nrows))
+    return false;
+  if (!(s >> str))
+    return false;
+  if (!(s >> str))
+    return false;
+  if (!(s >> index_pending))
+    return false;
+  if (!(s >> str))
     return false;
   if (!(s >> str))
     return false;
   if (!(s >> ncols))
       return false;
   resize_no_copy(nrows, ncols);
+  index_first_pending = index_pending;
   
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
     return false;
@@ -334,6 +350,7 @@ void
 PPL::Matrix::merge_rows_assign(const Matrix& y) {
   assert(row_size >= y.row_size);
   assert(check_sorted() && y.check_sorted());
+  assert(index_first_pending == 0 && y.index_first_pending == 0);
 
   Matrix& x = *this;
 
@@ -381,7 +398,7 @@ PPL::Matrix::merge_rows_assign(const Matrix& y) {
 void
 PPL::Matrix::sort_rows() {
   Matrix& x = *this;
-  dimension_type n_rows = x.num_rows();
+  dimension_type n_rows = x.first_pending_row();
   Row x_i;
   for (dimension_type i = 1; i < n_rows; ) {
     x_i.assign(x[i]);
@@ -407,7 +424,7 @@ PPL::Matrix::sort_rows() {
   }
   Row null;
   x_i.assign(null);
-  rows.erase(rows.begin()+n_rows, rows.end());
+  rows.erase(rows.begin()+n_rows, rows.end() - index_first_pending);
   sorted = true;
   assert(OK());
 }
@@ -441,8 +458,11 @@ PPL::Matrix::add_row(const Row& row) {
     Row tmp(row, row_capacity);
     std::swap(*rows.insert(rows.end(), Row()), tmp);
   }
+
+  // FIXME: If the added row must become the first pending row
+  // in this way we lose the property of sortedness of the matrix.
   // Check whether the modified Matrix happens to be sorted.
-  if (was_sorted) {
+  if (was_sorted && num_pending_rows() == 0) {
     dimension_type nrows = num_rows();
     // The added row may have caused the matrix to be not sorted anymore.
     if (nrows > 1) {
@@ -518,9 +538,11 @@ PPL::Matrix::add_row(Row::Type type) {
     // Insert a new empty row at the end,
     // then construct it assigning it the given type.
     rows.insert(rows.end(), Row())->construct(type, row_size, row_capacity);
-
+  
+  // FIXME: If the added row must become the first pending row
+  // in this way we lose the property of sortedness of the matrix.
   // Check whether the modified Matrix happens to be sorted.
-  if (was_sorted) {
+  if (was_sorted && num_pending_rows() == 0) {
     dimension_type nrows = num_rows();
     // The added row may have caused the matrix to be not sorted anymore.
     if (nrows > 1) {
@@ -574,7 +596,7 @@ PPL::operator==(const Matrix& x, const Matrix& y) {
 void
 PPL::Matrix::sort_and_remove_with_sat(SatMatrix& sat) {
   Matrix& x = *this;
-  dimension_type num_kept_rows = x.num_rows();
+  dimension_type num_kept_rows = x.first_pending_row();
   assert(num_kept_rows == sat.num_rows());
   if (num_kept_rows <= 1) {
     set_sorted(true);
@@ -600,8 +622,17 @@ PPL::Matrix::sort_and_remove_with_sat(SatMatrix& sat) {
       }
     }
   }
+
+  if (num_pending_rows() > 0) {
+    // In this case, we must put the rows to erase after the 
+    // pending rows.
+    dimension_type num_rows_to_erase = x.first_pending_row() - num_kept_rows;
+    dimension_type n_rows = num_rows() - 1;
+    for (dimension_type i = 0; i < num_rows_to_erase; ++i)
+      std::swap(x[num_kept_rows + i], x[n_rows - i]);
+  }
   // Erasing the duplicated rows...
-  x.erase_to_end(num_kept_rows);
+  x.erase_to_end(num_kept_rows + num_pending_rows());
   // ... and the corresponding rows of the saturation matrix.
   sat.rows_erase_to_end(num_kept_rows);
   assert(check_sorted());
@@ -611,6 +642,7 @@ PPL::Matrix::sort_and_remove_with_sat(SatMatrix& sat) {
 
 PPL::dimension_type
 PPL::Matrix::gauss() {
+  assert(num_pending_rows() == 0);
   dimension_type rank = 0;
   // Will keep track of the variations on the matrix of equalities.
   bool changed = false;
@@ -661,6 +693,7 @@ PPL::Matrix::gauss() {
 
 void
 PPL::Matrix::back_substitute(dimension_type rank) {
+  assert(num_pending_rows() == 0);
   bool was_sorted = is_sorted();
   dimension_type nrows = num_rows();
   for (dimension_type k = rank; k-- > 0; ) {
@@ -762,6 +795,7 @@ PPL::Matrix::add_rows_and_columns(dimension_type n) {
     // and equalities, this case implies the matrix is sorted.
     set_sorted(true);
   }
+  
   else if (was_sorted)
     set_sorted(x[n-1] <= x[n]);
 
@@ -772,7 +806,7 @@ PPL::Matrix::add_rows_and_columns(dimension_type n) {
 bool
 PPL::Matrix::check_sorted() const {
   const Matrix& x = *this;
-  for (dimension_type i = num_rows(); i-- > 1; )
+  for (dimension_type i = first_pending_row(); i-- > 1; )
     if (x[i] < x[i-1])
       return false;
   return true;
