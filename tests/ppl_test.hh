@@ -123,6 +123,16 @@ add_round_down(Checked_Number<T, Policy>& to,
 
 template <typename T, typename Policy>
 inline void
+negate_round_up(Checked_Number<T, Policy>& to,
+		const Checked_Number<T, Policy>& x) {
+  Rounding_State old;
+  rounding_save_internal<T>(ROUND_UP, old);
+  to.assign_neg(x, ROUND_UP);
+  rounding_restore_internal<T>(old, ROUND_UP);
+}
+
+template <typename T, typename Policy>
+inline void
 negate_round_down(Checked_Number<T, Policy>& to,
 		  const Checked_Number<T, Policy>& x) {
   Rounding_State old;
