@@ -108,7 +108,7 @@ make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
 
 %files
 %defattr(-,root,root)
-%doc BUGS COPYING CREDITS ChangeLog NEWS README README.configure doc/README doc/*.pdf* doc/*.ps.gz doc/*.txt
+%doc BUGS COPYING CREDITS ChangeLog NEWS README README.configure doc/README.doc doc/*.pdf* doc/*.ps.gz doc/*.txt
 %{_includedir}/ppl.hh
 %{_bindir}/ppl_lcdd
 %{_libdir}/libppl.so.*
