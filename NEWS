@@ -10,6 +10,15 @@ NEWS for version 0.4 (released date unknown)
 New Features
 ============
 
+o  The methods Polyhedron::includes(g) and Polyhedron::satisfies(c)
+   have been removed, as well as the enumeration GenSys_Con_Rel.
+   They have been replaced by the new methods Polyhedron::relation_with(g)
+   and Polyhedron::relation_with(c), which return values of the new
+   enumeration types Relation_Poly_Gen and Relation_Poly_Con, resp.
+   
+	The library no longer calls abort(): appropriate exceptions
+   are always thrown instead.
+
 o  The library no longer calls abort(): appropriate exceptions
    are always thrown instead.
 

@@ -30,7 +30,8 @@ namespace Parma_Polyhedra_Library {
 
   //! Possible relations between a polyhedron and a constraint.
   enum Relation_Poly_Con {
-    //! No polyhedron point satisfies the constraint.
+    //! The polyhedron and the set of points satisfying
+    //! the constraint are disjoint.
     IS_DISJOINT,
     //! The polyhedron intersects the set of points satisfying
     //! the constraint, but it is not included in it.
