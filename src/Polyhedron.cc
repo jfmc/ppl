@@ -762,9 +762,7 @@ PPL::Polyhedron::NNC_minimize_constraints() const {
   SatMatrix& sat = const_cast<SatMatrix&>(sat_g);
   size_t n_rows = con_sys.num_rows();
   for (size_t i = 0; i < n_rows; )
-    // FIXME : the test for a non trivial inequality is just a patch
-    // to avoid considering the inequality \epsilon <= 1 redundant.
-    if (cs[i].is_strict_inequality() && !cs[i].is_trivial_true()) {
+    if (cs[i].is_strict_inequality()) {
       // Compute the SatRow corresponding to the strict inequality
       // when unmatched points are ignored.
       SatRow sat_ci;
