@@ -137,7 +137,10 @@ PPL::GenSys::add_corresponding_closure_points() {
       cp[eps_index] = 0;
       // Enforcing normalization.
       cp.normalize();
-      gs.add_row(cp);
+      if (gs.num_pending_rows() == 0)
+	gs.add_row(cp);
+      else
+	gs.add_pending_row(cp);
     }
   }
 }
@@ -160,35 +163,10 @@ PPL::GenSys::add_corresponding_points() {
       // Note: normalization is preserved.
       Generator p = g;
       p[eps_index] = p[0];
-      gs.add_row(p);
-    }
-  }
-}
-
-// TODO: would be worth to avoid adding points
-// that already are in the system of generators?
-// To do this efficiently we could sort the system and
-// perform insertions keeping its sortedness.
-void
-PPL::GenSys::add_corresponding_points(const GenSys& gs) {
-  assert(!is_necessarily_closed() && !gs.is_necessarily_closed());
-  GenSys& x_gs = *this;
-  
-  // We add to `x_gs' the points corresponding to the
-  // closure points that it contains.
-  if (x_gs.num_rows() != 0)
-    x_gs.add_corresponding_points();
-  
-  dimension_type gs_n_rows = gs.num_rows();
-  dimension_type gs_eps_index = gs.num_columns() - 1;
-  for (dimension_type i = gs_n_rows; i-- > 0; ) {
-    const Generator& g = gs[i];
-    if (g[0] > 0 && g[gs_eps_index] == 0) {
-      // `g' is a closure point: adding the point.
-      // Note: normalization is preserved.
-      Generator p = g;
-      p[gs_eps_index] = p[0];
-      x_gs.insert(p);
+      if (gs.num_pending_rows() == 0)
+	gs.add_row(p);
+      else
+	gs.add_pending_row(p);
     }
   }
 }
@@ -288,8 +266,52 @@ PPL::GenSys::insert(const Generator& g) {
     }
 }
 
+void
+PPL::GenSys::insert_pending(const Generator& g) {
+  if (topology() == g.topology())
+    Matrix::insert_pending(g);
+  else
+    // `*this' and `g' have different topologies.
+    if (is_necessarily_closed()) {
+      // Padding the matrix with the column
+      // corresponding to the epsilon coefficients:
+      // all points must have epsilon coordinate equal to 1
+      // (i.e., the epsilon coefficient is equal to the divisor);
+      // rays and lines must have epsilon coefficient equal to 0.
+      // Note: normalization is preserved.
+      dimension_type eps_index = num_columns();
+      add_zero_columns(1);
+      GenSys& gs = *this;
+      for (dimension_type i = num_rows(); i-- > 0; ) {
+	Generator& gen = gs[i];
+	if (gen[0] != 0)
+	  gen[eps_index] = gen[0];
+      }
+      set_not_necessarily_closed();
+      // Inserting the new generator.
+      Matrix::insert_pending(g);
+    }
+    else {
+      // The generator system is NOT necessarily closed:
+      // copy the generator, adding the missing dimensions
+      // and the epsilon coefficient.
+      dimension_type new_size = 2 + std::max(g.space_dimension(),
+					     space_dimension());
+      Generator tmp_g(g, new_size);
+      // If it was a point, set the epsilon coordinate to 1
+      // (i.e., set the coefficient equal to the divisor).
+      // Note: normalization is preserved.
+      if (tmp_g[0] != 0)
+	tmp_g[new_size - 1] = tmp_g[0];
+      tmp_g.set_not_necessarily_closed();
+      // Inserting the new generator.
+      Matrix::insert_pending(tmp_g);
+    }
+}
+
 PPL::dimension_type
 PPL::GenSys::num_lines() const {
+  assert(num_pending_rows() == 0);
   dimension_type n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact
   // that lines are at the top of the system.
@@ -307,6 +329,7 @@ PPL::GenSys::num_lines() const {
 
 PPL::dimension_type
 PPL::GenSys::num_rays() const {
+  assert(num_pending_rows() == 0);
   dimension_type n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact
   // that rays and points are at the bottom of the system and
@@ -753,18 +776,55 @@ PPL::GenSys::remove_invalid_lines_and_rays() {
   // The origin of the vector space cannot be a valid line/ray.
   GenSys& gs = *this;
   dimension_type n_rows = gs.num_rows();
-  for (dimension_type i = n_rows; i-- > 0; ) {
-    Generator& g = gs[i];
-    if (g[0] == 0 && g.all_homogeneous_terms_are_zero()) {
-      // An invalid line/ray has been found.
-      --n_rows;
-      std::swap(g, gs[n_rows]);
-      gs.set_sorted(false);
+  if (num_pending_rows() == 0) {
+    for (dimension_type i = n_rows; i-- > 0; ) {
+      Generator& g = gs[i];
+      if (g[0] == 0 && g.all_homogeneous_terms_are_zero()) {
+	// An invalid line/ray has been found.
+	--n_rows;
+	std::swap(g, gs[n_rows]);
+	gs.set_sorted(false);
+      }
+    }
+    set_index_first_pending_row(n_rows);
+  }
+  else {
+    // If the matrix has some pending rows, we can not
+    // swap the "normal" rows with the pending rows. So
+    // we must put at the end of the "normal" rows
+    // the invalid "normal" rows, put them at the end
+    // of the matrix, find the invalid rows in the pending
+    // part and then erase the invalid rows that now
+    // are in the bottom part of the matrix.
+    assert(num_pending_rows() > 0);
+    dimension_type first_pending = first_pending_row();
+    for (dimension_type i = first_pending; i-- > 0; ) {
+      Generator& g = gs[i];
+      if (g[0] == 0 && g.all_homogeneous_terms_are_zero()) {
+	// An invalid line/ray has been found.
+	--first_pending;
+	std::swap(g, gs[first_pending]);
+	gs.set_sorted(false);
+      }
+    }
+    dimension_type num_invalid_rows = first_pending_row() - first_pending;
+    set_index_first_pending_row(first_pending);
+    for (dimension_type i = 0; i < num_invalid_rows; ++i)
+      std::swap(gs[n_rows - i], gs[first_pending + i]);
+    n_rows -= num_invalid_rows;
+    for (dimension_type i = n_rows; i-- > first_pending; ) {
+      Generator& g = gs[i];
+      if (g[0] == 0 && g.all_homogeneous_terms_are_zero()) {
+	// An invalid line/ray has been found.
+	--n_rows;
+	std::swap(g, gs[n_rows]);
+	gs.set_sorted(false);
+      }
     }
   }
   gs.erase_to_end(n_rows);
 }
-
+  
 bool
 PPL::GenSys::OK() const {
   // A GenSys must be a valid Matrix.

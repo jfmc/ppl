@@ -42,9 +42,7 @@ Polyhedron::swap(Polyhedron& y) {
   if (topology() != y.topology())
     throw_topology_incompatible("swap(y)", y);
   std::swap(con_sys, y.con_sys);
-  std::swap(pending_cs, y.pending_cs);
   std::swap(gen_sys, y.gen_sys);
-  std::swap(pending_gs, y.pending_gs);
   std::swap(sat_c, y.sat_c);
   std::swap(sat_g, y.sat_g);
   std::swap(status, y.status);
@@ -289,9 +287,7 @@ Polyhedron::add_low_level_constraints(ConSys& cs) {
 template <typename Box>
 Polyhedron::Polyhedron(Topology topol, const Box& box)
   : con_sys(topol),
-    pending_cs(topol),
     gen_sys(topol),
-    pending_gs(topol),
     sat_c(),
     sat_g() {
   // Initialize the space dimension as indicated by the box.
@@ -372,6 +368,11 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   // Now removing the dummy constraint inserted before.
   dimension_type n_rows = con_sys.num_rows() - 1;
   con_sys[0].swap(con_sys[n_rows]);
+  // NOTE: Here we are sure that `index_first_pending' of
+  // `con_sys' is equal to `con_sys.num_rows()'.
+  // We must update `index_first_pending' of `con_sys'
+  // before calling `erase_to_end'.
+  con_sys.set_index_first_pending_row(n_rows);
   con_sys.erase_to_end(n_rows);
 
   // Constraints are up-to-date.
@@ -404,13 +405,6 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	  box.set_empty();
 	  return;
 	}
-      if (has_pending_constraints())
-	for (ConSys::const_iterator i = pending_cs.begin();
-	   i != pending_cs.end(); ++i)
-	  if ((*i).is_trivial_false()){
-	    box.set_empty();
-	    return;
-	  }
     }
   }
   else
@@ -443,16 +437,17 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     // Extract easy-to-find bounds from constraints.
     assert(constraints_are_up_to_date());
     
-    // This is ia temporary kludge: when we will have the pending
-    // constraints in the matrix that contains the system of
-    // constraints, we will only read all the matrix.
+    // We must copy the `con_sys' into a temporary matrix,
+    // because we must gauss() and back_substitute()
+    // to all the matrix and not only to the non-pending part.
     ConSys cs(con_sys);
-    if (!cs.is_sorted())
+    cs.set_index_first_pending_row(cs.num_rows());
+    if (con_sys.num_pending_rows() != 0)
       cs.sort_rows();
+    else
+      if (!cs.is_sorted())
+	cs.sort_rows();
     if (has_pending_constraints()) {
-      if (!pending_cs.is_sorted())
-	const_cast<ConSys&>(pending_cs).sort_rows();
-      cs.merge_rows_assign(pending_cs);
       cs.back_substitute(cs.gauss());
     }
     else if (!constraints_are_minimized())
@@ -525,19 +520,10 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     // or polynomial execution time is not required.
     // Get the generators for *this.
 
-    // This is ia temporary kludge: when we will have the pending
-    // constraints in the matrix that contains the system of
-    // constraints, we will only read all the matrix.
-    GenSys gs(gen_sys);
-    if (!gs.is_sorted())
-      gs.sort_rows();
-    if (has_pending_generators()) {
-      if (!pending_gs.is_sorted())
-	const_cast<GenSys&>(pending_gs).sort_rows();
-      gs.merge_rows_assign(pending_gs);
-      gs.back_substitute(gs.gauss());
-    }
-
+    // We have not to copy `gen_sys', because in this case
+    // we only read the generators.
+    const GenSys& gs = gen_sys;
+    
     const GenSys::const_iterator gs_begin = gs.begin();
     const GenSys::const_iterator gs_end = gs.end();
 

@@ -814,10 +814,16 @@ PPL::Polyhedron::conversion(Matrix& source,
   // or some redundant rays from `dest', we have to delete the useless
   // rows from the corresponding matrices.
   if (source_num_rows < source.num_rows()) {
+    // NOTE: We must update `index_first_pending' of `source'
+    // before calling `erase_to_end'.
+    source.set_index_first_pending_row(source_num_rows);
     source.erase_to_end(source_num_rows);
     sat.columns_erase_to_end(source_num_rows);
   }
   if (dest_num_rows < dest.num_rows()) {
+    // NOTE: We must update `index_first_pending' of `dest'
+    // before calling `erase_to_end'.
+    dest.set_index_first_pending_row(dest_num_rows);
     dest.erase_to_end(dest_num_rows);
     sat.rows_erase_to_end(dest_num_rows);
   }

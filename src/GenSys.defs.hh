@@ -379,16 +379,6 @@ private:
   */
   void add_corresponding_points();
 
-//! \brief
-  //! For each unmatched closure point in \p *this and \p gs,
-  //! adds the corresponding point.
-  /*!
-    \param gs              The second system of generators.
-    It is assumed that the topology of \p *this and \p gs
-    are <CODE>NOT_NECESSARILY_CLOSED</CODE>.
-  */
-  void add_corresponding_points(const GenSys& gs);
-
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! contains one or more points.
@@ -459,6 +449,12 @@ private:
     the homogeneous terms set to zero.
   */
   void remove_invalid_lines_and_rays();
+
+  //! \brief
+  //! Inserts a copy of the generator \p g into \p *this,
+  //! increasing the number of dimensions if needed.
+  //! It is a pending generator.
+  void insert_pending(const Generator& g);
 };
 
 // GenSys.inlines.hh is not included here on purpose.

@@ -1279,14 +1279,8 @@ private:
   //! The system of constraints.
   ConSys con_sys;
 
-  //! The pending system of constraints.
-  ConSys pending_cs;
-
   //! The system of generators.
   GenSys gen_sys;
-
-  //! The pending system of generators.
-  GenSys pending_gs;
 
   //! The saturation matrix having constraints on its columns.
   SatMatrix sat_c;

@@ -77,12 +77,45 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 	  was_sorted = true;
 	  cs.set_sorted(false);
 	}
-	for (dimension_type i = cs_num_rows; i-- > 0; )
-	  if (cs[i][eps_index] != 0) {
-	    --cs_num_rows;
-	    std::swap(cs[i], cs[cs_num_rows]);
-	  }
+	// If we have no pending rows, we only check if
+	// we must erase some rows.
+	if (cs.num_pending_rows() == 0) { 
+	  for (dimension_type i = cs_num_rows; i-- > 0; )
+	    if (cs[i][eps_index] != 0) {
+	      --cs_num_rows;
+	      std::swap(cs[i], cs[cs_num_rows]);
+	    }
+	  set_index_first_pending_row(cs_num_rows);
+	}
+	else {
+	  // If there are some pending rows, we can not
+	  // swap the "normal" rows with the pending rows. So
+	  // we must put at the end of the "normal" rows
+	  // the "normal" rows that must be erased,
+	  // put them at the end of the matrix, find the rows
+	  // that must be erased in the pending
+	  // part and then erase the rows that now
+	  // are in the bottom part of the matrix.
+	  dimension_type cs_first_pending = cs.first_pending_row();
+	  for (dimension_type i = cs_first_pending; i-- > 0; )
+	    if (cs[i][eps_index] != 0) {
+	      --cs_first_pending;
+	      std::swap(cs[i], cs[cs_num_rows]);
+	    }
+	  dimension_type num_invalid_rows
+	    = cs.first_pending_row() - cs_first_pending;
+	  cs.set_index_first_pending_row(cs_first_pending);
+	  for (dimension_type i = 0; i < num_invalid_rows; ++i)
+	    std::swap(cs[cs_num_rows - i], cs[cs_first_pending + i]);
+	  cs_num_rows -= num_invalid_rows;
+	  for (dimension_type i = cs_num_rows; i-- > cs_first_pending; )
+	    if (cs[i][eps_index] != 0) {
+	      --cs_num_rows;
+	      std::swap(cs[i], cs[cs_num_rows]);
+	    }
+	}
 	cs.erase_to_end(cs_num_rows);
+	
 	// If `cs' was sorted we sort it again.
 	if (was_sorted)
 	  cs.sort_rows();
@@ -170,8 +203,34 @@ PPL::ConSys::insert(const Constraint& c) {
     }
 }
 
+void
+PPL::ConSys::insert_pending(const Constraint& c) {
+  if (topology() == c.topology())
+    Matrix::insert_pending(c);
+  else
+    // `*this' and `c' have different topologies.
+    if (is_necessarily_closed()) {
+      // Padding the matrix with a columns of zeros
+      // corresponding to the epsilon coefficients.
+      add_zero_columns(1);
+      set_not_necessarily_closed();
+      Matrix::insert_pending(c);
+    }
+    else {
+      // Here `*this' is NNC and `c' is necessarily closed.
+      // Copying the constraint adding the epsilon coefficient
+      // and the missing dimensions, if any.
+      dimension_type new_size = 2 + std::max(c.space_dimension(),
+					     space_dimension());
+      Constraint tmp_c(c, new_size);
+      tmp_c.set_not_necessarily_closed();
+      Matrix::insert_pending(tmp_c);
+    }
+}
+
 PPL::dimension_type
 PPL::ConSys::num_inequalities() const {
+  assert(num_pending_rows() == 0);
   int n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact
   // that inequalities are at the bottom of the system.
@@ -188,6 +247,7 @@ PPL::ConSys::num_inequalities() const {
 
 PPL::dimension_type
 PPL::ConSys::num_equalities() const {
+  assert(num_pending_rows() == 0);
   return num_rows() - num_inequalities();
 }
 

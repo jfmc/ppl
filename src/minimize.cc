@@ -84,6 +84,9 @@ PPL::Polyhedron::minimize(bool con_to_gen,
 
   // Resizing `dest' to be the appropriate square matrix.
   dimension_type dest_num_rows = source.num_columns();
+  // Note that before calling `resize_no_copy()' we must
+  // update `index_first_pending'.
+  dest.set_index_first_pending_row(dest_num_rows);
   dest.resize_no_copy(dest_num_rows, dest_num_rows);
 
   // Initializing it to the identity matrix.

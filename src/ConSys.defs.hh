@@ -364,6 +364,12 @@ private:
 
   //! Returns the number of the inequality constraints.
   dimension_type num_inequalities() const;
+
+  //! \brief
+  //! Inserts a copy of the constraint \p c into \p *this
+  //! increasing the number of dimensions if needed. It is
+  //! a pending constraint.
+  void insert_pending(const Constraint& c);
 };
 
 // ConSys.inlines.hh is not included here on purpose.

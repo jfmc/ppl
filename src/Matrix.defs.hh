@@ -342,10 +342,18 @@ public:
   //! Adds a copy of the given row to the matrix.
   void add_row(const Row& row);
 
+  //! Adds a copy of the given row to the pending part of the matrix.
+  void add_pending_row(const Row& row);
+
   //! \brief
   //! Adds a copy of the given row to the matrix,
   //! automatically resizing the matrix or the row, if needed.
   void insert(const Row& row);
+
+  //! \brief
+  //! Adds a copy of the given row to the pending part of the matrix,
+  //! automatically resizing the matrix or the row, if needed.
+  void insert_pending(const Row& row);
 
   //! Clears the matrix deallocating all its rows.
   void clear();
