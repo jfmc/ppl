@@ -884,21 +884,30 @@ PPL::Matrix::check_sorted() const {
 
 bool
 PPL::Matrix::OK() const {
+  // An empty matrix must have num_columns() == 0.
+  if (num_rows() == 0)
+    if (num_columns() == 0)
+      // An empty matrix is ok.
+      return true;
+    else {
+      std::cerr << "Matrix has no rows but num_columns() is positive!"
+		<< std::endl;
+      return false;
+    }
+
   // A non-empty matrix will contain constraints or generators; in
   // both cases it must have at least one column for the inhomogeneous
   // term and, if it is non-necessarily closed, another one
   // for the \epsilon coefficient.
-  if (num_rows() > 0) {
-    size_t min_cols = is_necessarily_closed() ? 1 : 2;
-    if (num_columns() < min_cols) {
-      std::cerr << "Matrix has fewer columns than the minimum "
-		<< "allowed by its topology:"
-		<< std::endl
-		<< "num_columns is " << num_columns()
-		<< ", minimum is " << min_cols
-		<< std::endl;
-      return false;
-    }
+  size_t min_cols = is_necessarily_closed() ? 1 : 2;
+  if (num_columns() < min_cols) {
+    std::cerr << "Matrix has fewer columns than the minimum "
+	      << "allowed by its topology:"
+	      << std::endl
+	      << "num_columns is " << num_columns()
+	      << ", minimum is " << min_cols
+	      << std::endl;
+    return false;
   }
 
   const Matrix& x = *this;
