@@ -318,7 +318,7 @@ init() {
   YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_ConSys, 2);
   YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_ConSys, 2);
   YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_GenSys, 2);
-  //YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_GenSys, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_GenSys, 2);
   YAP_USER_C_PREDICATE(ppl_delete_Polyhedron, 1);
   YAP_USER_C_PREDICATE(ppl_space_dimension, 2);
   YAP_USER_C_PREDICATE(ppl_add_constraint, 2);
