@@ -189,6 +189,43 @@ Polyhedra_PowerSet<PH>::map_dimensions(const PartialFunction& pfunc) {
 
 template <typename PH>
 void
+Polyhedra_PowerSet<PH>::collapse(unsigned max_disjuncts) {
+  assert(max_disjuncts > 0);
+  // Omega-reduce before counting the number of disjuncts.
+  omega_reduce();
+  size_type n = size();
+  if (n > max_disjuncts) {
+    iterator sbegin = begin();
+    iterator send = end();
+
+    iterator i = sbegin;
+    // Move `i' to the last polyhedron that will survive.
+    for (unsigned m = max_disjuncts-1; m-- > 0; )
+      ++i;
+
+    // This polyhedron will be assigned the poly-hull of itself
+    // and of all the polyhedra that follow.
+    PH& ph = i->polyhedron();
+    const_iterator j = i;
+    for (++j; j != send; ++j)
+      ph.poly_hull_assign(j->polyhedron());
+
+    // Ensure omega-reduction.
+    for (iterator k = sbegin, kn = k; k != i; k = kn) {
+      ++kn;
+      if (ph.contains(k->polyhedron()))
+	erase(k);
+    }
+
+    // Erase the surplus polyhedra.
+    erase(++i, send);
+  }
+  assert(OK());
+  assert(is_omega_reduced());
+}
+
+template <typename PH>
+void
 Polyhedra_PowerSet<PH>::pairwise_reduce() {
   // It is wise to omega-reduce before pairwise-reducing.
   omega_reduce();
@@ -237,9 +274,9 @@ Polyhedra_PowerSet<PH>::pairwise_reduce() {
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::
-BHZ03_extrapolation_assign(const Polyhedra_PowerSet& y,
-			   void (Polyhedron::*wm)
-			   (const Polyhedron&, unsigned*)) {
+BGP99_heuristics_assign(const Polyhedra_PowerSet& y,
+			void (Polyhedron::*wm)
+			(const Polyhedron&, unsigned*)) {
   size_type n = size();
   Sequence new_sequence;
   std::deque<bool> marked(n, false);
@@ -269,61 +306,84 @@ BHZ03_extrapolation_assign(const Polyhedra_PowerSet& y,
 
 template <typename PH>
 void
-Polyhedra_PowerSet<PH>::extrapolation_assign(const Polyhedra_PowerSet& y,
-					     void (Polyhedron::*wm)
-					     (const Polyhedron&, unsigned*)) {
-  pairwise_reduce();
-  BHZ03_extrapolation_assign(y, wm);
-}
-
-template <typename PH>
-void
-Polyhedra_PowerSet<PH>::H79_extrapolation_assign(const Polyhedra_PowerSet& y) {
-  extrapolation_assign(y, &PH::H79_widening_assign);
-}
-
-template <typename PH>
-void
-Polyhedra_PowerSet<PH>::BHRZ03_extrapolation_assign(const
-						    Polyhedra_PowerSet& y) {
-  extrapolation_assign(y, &PH::BHRZ03_widening_assign);
-}
-
-template <typename PH>
-void
-Polyhedra_PowerSet<PH>::collapse(unsigned max_disjuncts) {
-  assert(max_disjuncts > 0);
-  // Omega-reduce before counting the number of disjuncts.
-  omega_reduce();
+Polyhedra_PowerSet<PH>::
+limited_BGP99_heuristics_assign(const Polyhedra_PowerSet& y,
+				const ConSys& cs,
+				void (Polyhedron::*wm)(const Polyhedron&,
+						       const ConSys&,
+						       unsigned*)) {
   size_type n = size();
-  if (n > max_disjuncts) {
-    iterator sbegin = begin();
-    iterator send = end();
-
-    iterator i = sbegin;
-    // Move `i' to the last polyhedron that will survive.
-    for (unsigned m = max_disjuncts-1; m-- > 0; )
-      ++i;
-
-    // This polyhedron will be assigned the poly-hull of itself
-    // and of all the polyhedra that follow.
-    PH& ph = i->polyhedron();
-    const_iterator j = i;
-    for (++j; j != send; ++j)
-      ph.poly_hull_assign(j->polyhedron());
-
-    // Ensure omega-reduction.
-    for (iterator k = sbegin, kn = k; k != i; k = kn) {
-      ++kn;
-      if (ph.contains(k->polyhedron()))
-	erase(k);
+  Sequence new_sequence;
+  std::deque<bool> marked(n, false);
+  iterator sbegin = begin();
+  iterator send = end();
+  unsigned i_index = 0;
+  for (iterator i = sbegin; i != send; ++i, ++i_index)
+    for (const_iterator j = y.begin(), y_end = y.end(); j != y_end; ++j) {
+      PH& pi = i->polyhedron();
+      const PH& pj = j->polyhedron();
+      if (pi.contains(pj)) {
+	(pi.*wm)(pj, cs, 0);
+	add_non_bottom_disjunct(new_sequence, pi);
+	marked[i_index] = true;
+      }
     }
-
-    // Erase the surplus polyhedra.
-    erase(++i, send);
-  }
+  iterator nsbegin = new_sequence.begin();
+  iterator nsend = new_sequence.end();
+  i_index = 0;
+  for (iterator i = sbegin; i != send; ++i, ++i_index)
+    if (!marked[i_index])
+      add_non_bottom_disjunct(new_sequence, *i, nsbegin, nsend);
+  std::swap(sequence, new_sequence);
   assert(OK());
   assert(is_omega_reduced());
+}
+
+template <typename PH>
+void
+Polyhedra_PowerSet<PH>::BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
+						   void (Polyhedron::*wm)
+						   (const Polyhedron&,
+						    unsigned*),
+						   unsigned max_disjuncts) {
+#ifndef NDEBUG
+  {
+    // We assume that y is entailed by or equal to *this.
+    const Polyhedra_PowerSet<PH> x_copy = *this;
+    const Polyhedra_PowerSet<PH> y_copy = y;
+    assert(y_copy.definitely_entails(x_copy));
+  }
+#endif
+
+  if (max_disjuncts != 0)
+    collapse(max_disjuncts);
+  pairwise_reduce();
+  BGP99_heuristics_assign(y, wm);
+}
+
+template <typename PH>
+void
+Polyhedra_PowerSet<PH>::
+limited_BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
+				   const ConSys& cs,
+				   void (Polyhedron::*wm)
+				   (const Polyhedron&,
+				    const ConSys&,
+				    unsigned*),
+				   unsigned max_disjuncts) {
+#ifndef NDEBUG
+  {
+    // We assume that y is entailed by or equal to *this.
+    const Polyhedra_PowerSet<PH> x_copy = *this;
+    const Polyhedra_PowerSet<PH> y_copy = y;
+    assert(y_copy.definitely_entails(x_copy));
+  }
+#endif
+
+  if (max_disjuncts != 0)
+    collapse(max_disjuncts);
+  pairwise_reduce();
+  limited_BGP99_heuristics_assign(y, cs, wm);
 }
 
 template <typename PH>
@@ -433,9 +493,9 @@ Polyhedra_PowerSet<PH>::new_widening_assign(const Polyhedra_PowerSet& y) {
       return;
   }
 
-  // Second widening technique: try the BHZ03 powerset heuristics.
+  // Second widening technique: try the BGP99 powerset heuristics.
   Polyhedra_PowerSet<PH> extrapolated_x = x;
-  extrapolated_x.BHZ03_extrapolation_assign(y, &PH::BHRZ03_widening_assign);
+  extrapolated_x.BGP99_extrapolation_assign(y, &PH::BHRZ03_widening_assign);
 
   // Compute the poly-hull of `extrapolated_x'.
   PH extrapolated_x_hull(x.space_dim, PH::EMPTY);
@@ -489,111 +549,6 @@ Polyhedra_PowerSet<PH>::new_widening_assign(const Polyhedra_PowerSet& y) {
   Polyhedra_PowerSet<PH> x_hull_singleton(x.space_dim, PH::EMPTY);
   x_hull_singleton.add_disjunct(x_hull);
   std::swap(x, x_hull_singleton);
-}
-
-template <typename PH>
-void
-Polyhedra_PowerSet<PH>::widening_assign(const Polyhedra_PowerSet& y,
-					void (Polyhedron::*wm)
-					(const Polyhedron&, unsigned*),
-					unsigned max_disjuncts) {
-#ifndef NDEBUG
-  {
-    // We assume that y is entailed by or equal to *this.
-    const Polyhedra_PowerSet<PH> x_copy = *this;
-    const Polyhedra_PowerSet<PH> y_copy = y;
-    assert(y_copy.definitely_entails(x_copy));
-  }
-#endif
-
-  collapse(max_disjuncts);
-  extrapolation_assign(y, wm);
-}
-
-template <typename PH>
-void
-Polyhedra_PowerSet<PH>::H79_widening_assign(const Polyhedra_PowerSet& y,
-					    unsigned max_disjuncts) {
-  widening_assign(y, &PH::H79_widening_assign, max_disjuncts);
-}
-
-template <typename PH>
-void
-Polyhedra_PowerSet<PH>::BHRZ03_widening_assign(const Polyhedra_PowerSet& y,
-					       unsigned max_disjuncts) {
-  widening_assign(y, &PH::BHRZ03_widening_assign, max_disjuncts);
-}
-
-template <typename PH>
-void
-Polyhedra_PowerSet<PH>::
-limited_extrapolation_assign(const Polyhedra_PowerSet& y,
-			     const ConSys& cs,
-			     void (Polyhedron::*wm)
-			     (const Polyhedron&, const ConSys&, unsigned*)) {
-  pairwise_reduce();
-  size_type n = size();
-  Sequence new_sequence;
-  std::deque<bool> marked(n, false);
-  iterator sbegin = begin();
-  iterator send = end();
-  unsigned i_index = 0;
-  for (iterator i = sbegin; i != send; ++i, ++i_index)
-    for (const_iterator j = y.begin(), y_end = y.end(); j != y_end; ++j) {
-      PH& pi = i->polyhedron();
-      const PH& pj = j->polyhedron();
-      if (pi.contains(pj)) {
-	(pi.*wm)(pj, cs, 0);
-	add_non_bottom_disjunct(new_sequence, pi);
-	marked[i_index] = true;
-      }
-    }
-  iterator nsbegin = new_sequence.begin();
-  iterator nsend = new_sequence.end();
-  i_index = 0;
-  for (iterator i = sbegin; i != send; ++i, ++i_index)
-    if (!marked[i_index])
-      add_non_bottom_disjunct(new_sequence, *i, nsbegin, nsend);
-  std::swap(sequence, new_sequence);
-  assert(OK());
-  assert(is_omega_reduced());
-}
-
-template <typename PH>
-void
-Polyhedra_PowerSet<PH>::
-limited_extrapolation_assign(const Polyhedra_PowerSet& y,
-			     const ConSys& cs,
-			     void (Polyhedron::*wm)
-			     (const Polyhedron&, const ConSys&, unsigned*),
-			     unsigned max_disjuncts) {
-  collapse(max_disjuncts);
-  limited_extrapolation_assign(y, cs, wm);
-}
-
-
-template <typename PH>
-void
-Polyhedra_PowerSet<PH>::
-limited_H79_extrapolation_assign(const Polyhedra_PowerSet& y,
-				 const ConSys& cs,
-				 unsigned max_disjuncts) {
-  limited_extrapolation_assign(y,
-			       cs,
-			       &PH::limited_H79_extrapolation_assign,
-			       max_disjuncts);
-}
-
-template <typename PH>
-void
-Polyhedra_PowerSet<PH>::
-limited_BHRZ03_extrapolation_assign(const Polyhedra_PowerSet& y,
-				    const ConSys& cs,
-				    unsigned max_disjuncts) {
-  limited_extrapolation_assign(y,
-			       cs,
-			       &PH::limited_BHRZ03_extrapolation_assign,
-			       max_disjuncts);
 }
 
 template <typename PH>

@@ -1,4 +1,5 @@
-/* Test Polyhedra_Powerset<PH>::H79_widening_assign().
+/* Test Polyhedra_Powerset<PH>::BGP99_extrapolation_assign()
+   on a chain that shows it is not a widening.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -148,7 +149,7 @@ main() TRY {
 #if NOISY
     cout << "S" << n << " = " << Sn << endl;
 #endif
-    Sn.H79_widening_assign(T, 3);
+    Sn.BGP99_extrapolation_assign(T, &Polyhedron::H79_widening_assign, 2);
 #if NOISY
     cout << "T" << n << " = " << Sn << endl;
 #endif
