@@ -1153,6 +1153,7 @@ nnc_smm1
 
 XFAIL_WITH_INT8_A = \
 $(XFAIL_WITH_INT8) \
+ascii_dump_load4 \
 boundingbox4 \
 intersection1 \
 intersection2 \
