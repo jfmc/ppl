@@ -260,7 +260,7 @@ print_clock(FILE* f) {
 }
 
 void
-set_alarm_on_cpu_time(unsigned int seconds, void (*handler)(int)) {
+set_alarm_on_cpu_time(unsigned seconds, void (*handler)(int)) {
   sigset_t mask;
   struct sigaction s;
   struct rlimit t;
@@ -290,8 +290,9 @@ set_alarm_on_cpu_time(unsigned int seconds, void (*handler)(int)) {
   }
 }
 
+#if HAVE_DECL_RLIMIT_AS
 void
-limit_virtual_memory(unsigned int bytes) {
+limit_virtual_memory(unsigned bytes) {
   struct rlimit t;
 
   if (getrlimit(RLIMIT_AS, &t) != 0)
@@ -303,6 +304,11 @@ limit_virtual_memory(unsigned int bytes) {
       fatal("setrlimit failed: %s", strerror(errno));
   }
 }
+#else
+void
+limit_virtual_memory(unsigned) {
+}
+#endif /* !HAVE_DECL_RLIMIT_AS */
 
 static void
 my_timeout(int dummy ATTRIBUTE_UNUSED) {
