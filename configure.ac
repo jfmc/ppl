@@ -322,6 +322,7 @@ AC_OUTPUT(Makefile
           doc/user-print.doxyconf-latex  doc/devref-print.doxyconf-latex
           doc/user.doxyconf-html         doc/devref.doxyconf-html
           interfaces/Makefile
+          interfaces/C/Makefile
           interfaces/Prolog/Makefile
           interfaces/Prolog/GNU/Makefile
           interfaces/Prolog/SICStus/Makefile interfaces/Prolog/SWI/Makefile

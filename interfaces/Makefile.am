@@ -26,4 +26,4 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS = Prolog
+SUBDIRS = C Prolog
