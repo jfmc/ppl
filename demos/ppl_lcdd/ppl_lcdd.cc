@@ -573,9 +573,11 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 
 #elif defined(USE_POLKA)
 
-  // Initialize polka in non-strict mode (yes, 20000 is a magic number ;-)
+  // Initialize polka in non-strict mode.
   unsigned space_dim = num_columns - 1;
-  polka_initialize(polka_false, space_dim, 20000);
+  // 25000 is a magic number: with 22500 Polka 2.0.2 dies on
+  // mit31-20.ine with the error "Chernikova: out of table space".
+  polka_initialize(polka_false, space_dim, 25000);
   // Declare and allocate a Polka matrix.
   matrix_t* mat = matrix_alloc(num_rows+1, space_dim+2, polka_false);
 
