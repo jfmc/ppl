@@ -118,6 +118,7 @@ EXPECTED3 = $(srcdir)/expected3_$(COEFFICIENT_MNEMONIC)
 endif !ASSERTIONS_ENABLED
 
 check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/check_script $(EXPECTED) xsb_clpq2.P ../tests/clpq2.pl ../tests/check_script2 $(EXPECTED2) xsb_pl_check.P ../tests/pl_check.pl
+	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_clpq.P . ; \

@@ -110,6 +110,7 @@ $(TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED)
 check-local: ppl_lcdd
 	echo $(TOUGH_EXAMPLES) >tough_examples
 	echo -n >obtained
+	LANG=C; \
 	for path in $(srcdir)/examples/*.ext $(srcdir)/examples/*.ine; \
 	do \
 	  file=`basename $$path`; \

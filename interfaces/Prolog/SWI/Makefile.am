@@ -103,6 +103,7 @@ EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)
 endif !ASSERTIONS_ENABLED
 
 check-local: pl_clpq ../tests/check_script $(EXPECTED) pl_clpq2 ../tests/check_script2 $(EXPECTED2) $(EXPECTED3)
+	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \

@@ -74,6 +74,7 @@ $(TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED)
 check-local: ppl_lpsol
 	echo $(TOUGH_EXAMPLES) >tough_examples
 	echo -n >obtained
+	LANG=C; \
 	for path in $(srcdir)/examples/*.mps; \
 	do \
 	  file=`basename $$path`; \
