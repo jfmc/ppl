@@ -66,6 +66,9 @@ public:
     \param kind
     Specifies whether a universe or an empty C polyhedron should be built.
 
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
+
     Both parameters are optional:
     by default, a 0-dimension space universe C polyhedron is built.
   */

@@ -28,10 +28,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline dimension_type
+NNC_Polyhedron::max_space_dimension() {
+  // We reserve one dimension for the epsilon dimension.
+  return C_Polyhedron::max_space_dimension() - 1;
+}
+
 inline
 NNC_Polyhedron::NNC_Polyhedron(dimension_type num_dimensions,
 			       Degenerate_Kind kind)
-  : Polyhedron(NOT_NECESSARILY_CLOSED, num_dimensions, kind) {
+  : Polyhedron(NOT_NECESSARILY_CLOSED,
+	       num_dimensions > max_space_dimension() ? 0 : num_dimensions,
+	       kind) {
+  if (num_dimensions > max_space_dimension())
+    throw std::length_error("PPL::NNC_Polyhedron::NNC_Polyhedron(n, k):\n"
+			    "n exceeds the maximum allowed space dimension.");
 }
 
 inline
@@ -72,12 +83,6 @@ NNC_Polyhedron::operator=(const NNC_Polyhedron& y) {
 
 inline
 NNC_Polyhedron::~NNC_Polyhedron() {
-}
-
-inline dimension_type
-NNC_Polyhedron::max_space_dimension() {
-  // We reserve one dimension for the epsilon dimension.
-  return C_Polyhedron::max_space_dimension() - 1;
 }
 
 } // namespace Parma_Polyhedra_Library

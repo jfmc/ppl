@@ -27,7 +27,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 1
+#define NOISY 0
 #endif
 
 static void
@@ -41,9 +41,9 @@ error1() {
     // It is an error if the exception is not thrown.
     exit(1);
   }
-  catch(invalid_argument& e) {
+  catch(length_error& e) {
 #if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
+    cout << "length_error: " << e.what() << endl << endl;
 #endif
   }
   catch (...) {
