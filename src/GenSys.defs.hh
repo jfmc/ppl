@@ -217,7 +217,7 @@ PPL_INTERNAL:
   //! Returns a constant reference to the \p k- th generator of the system.
   const Generator& operator [](size_t k) const;
   
-  //! Checks if the given constraint is satisfied by all generators
+  //! Checks if the given constraint is satisfied by all generators 
   //! in the system.
   GenSys_Con_Rel satisfy(const Constraint& c) const;
   

@@ -58,13 +58,13 @@ namespace Parma_Polyhedra_Library {
     where \f$d\f$ is the dimension of the space,
     each \f$a_i\f$ is the integer coefficient
     of the \p i -th variable \f$x_i\f$
-    and \f$b\f$ is the integer inhomogeneous term.
+    and \f$b\f$ is the integer for the inhomogeneous term.
 
     Note that the ``meaning'' of an object of the class Variable
-    is completely specified by the integer index provided to its
+    is completely specified by the integer index given to its
     constructor:
-    be careful not to be mislead by C++ language variable names.
-    For instance, in the following example the linear expressions
+    be careful not to be misled by C++ language variable names.
+    For instance, in the following example, the linear expressions
     <CODE>e1</CODE> and <CODE>e2</CODE> are equivalent,
     since the two variables <CODE>x</CODE> and <CODE>z</CODE> denote
     the same Cartesian axis.

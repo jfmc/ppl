@@ -69,10 +69,12 @@ namespace Parma_Polyhedra_Library {
     in the space \f$\Rset^n\f$.
     
     A polyhedron can be specified as either a finite system of constraints
-    or a finite set of generators (see Minkowski's theorem in definition.dox).
-    So, we have the possibility to obtain a system from the 
-    other. In fact, if we have the system of constaints we can obtain 
-    the set of generators from this and vice versa.
+    or a finite set of generators (see Minkowski's theorem in
+    the Introduction).
+    So, it is possible to obtain one system from the 
+    other. That is, if we know the system of constaints, we can obtain 
+    from this the set of generators that define the same polyhedron
+    and vice versa.
     These systems can contain some redundant members: in this case we say 
     that they are not in the minimal form.
  
@@ -108,7 +110,7 @@ namespace Parma_Polyhedra_Library {
     \endcode
 
     \par Example 2
-    The following code builds an half-strip in \f$\Rset^2\f$ 
+    The following code builds a half-strip in \f$\Rset^2\f$ 
     starting from the system of constraints:
     \code
   ConSys cs;
@@ -142,7 +144,7 @@ namespace Parma_Polyhedra_Library {
   ph.insert(1 ^ 0 * x + y);
   ph.insert(1 | x + 0 * y);
     \endcode
-    In this last case, we can note an important thing: even if this 
+    In this last case, it is important to note that: even if this 
     polyhedron has no real vertex, we must add one, because otherwise
     the polyhedron is considered empty.
 
@@ -157,8 +159,8 @@ namespace Parma_Polyhedra_Library {
     \endcode
     The starting polyhedron is a point whose abscissa is equal to \f$2\f$
     in \f$\Rset\f$. The resulting polyhedron in \f$\Rset^2\f$ 
-    is a line parallel to the axis \f$y\f$ and its intersection with the
-    axis \f$x\f$ is the point with the abscissa equal to \f$2\f$.
+    is a line parallel to the \f$y\f$ axis and its intersection with the
+    \f$x\f$ axis is the point with the abscissa equal to \f$2\f$.
   
     \par Example 5
     The following code shows the use of the function
@@ -244,7 +246,7 @@ namespace Parma_Polyhedra_Library {
 
 class Parma_Polyhedra_Library::Polyhedron {
 public:
-  //! Kinds of degenerate polyhedron.
+  //! Kinds of degenerate polyhedra.
   enum Degenerate_Kind {
     //! The full polyhedron in \f$\Rset^0\f$, i.e., a singleton.
     ZERO_DIMENSIONAL,
@@ -312,10 +314,10 @@ public:
   //! Returns the system of generators.
   const GenSys& generators() const;
 
-  //! Insert a new constraints \p c into the system of constraints.
+  //! Inserts a new constraint \p c into the system of constraints.
   void insert(const Constraint& c);
 
-  //! Insert a new generator \p g into the set of generators.
+  //! Inserts a new generator \p g into the set of generators.
   void insert(const Generator& g);
 
   //! Assigns an affine expression to the specified variable.
@@ -327,7 +329,7 @@ public:
   void assign_variable(const Variable& var, 
 		       const LinExpression& expr,
 		       Integer& denominator);
-  //! Substitute an affine expression to the specified variable.
+  //! Substitutes an affine expression for the specified variable.
   //! \param var           The variable to which the affine expression is
   //!                      assigned.
   //! \param expr          The affine expression.
@@ -339,7 +341,8 @@ public:
 
   //! Checks if all the invariants are satisfied.
   //! \param check_not_empty    <CODE>true</CODE> if it must be checked
-  //!                           whether system of constraint is satisfiable.
+  //!                           whether the system of constraint is
+  //!                           satisfiable.
   //! \return       <CODE>true</CODE> if the polyhedron satisfies
   //!               all the invariants stated in the PPL, 
   //!               <CODE>false</CODE> otherwise.
@@ -376,17 +379,17 @@ public:
   //! Removes the specified dimensions.
   //! \param to_be_remove The set of variable to remove. 
   void remove_dimensions(const std::set<Variable>& to_be_removed);
-  //! Adds given constraints to the polyhedron and compute a new polyhedron.
+  //! Adds the specified constraints and computes a new polyhedron.
   //! \param  constraints_to_add   The constraints that will be added to the 
   //!                              current system of constraints.
   //! \return                      <CODE>false</CODE> if the resulting 
   //!                              polyhedron is empty.
   bool add_constraints(ConSys& constraints_to_add);
-  //! Adds given constraints to the polyhedron without minimizing.
+  //! Adds the specified constraints without minimizing.
   //! \param  constraints_to_add   The constraints that will be added to the 
   //!                              current system of constraints
   void add_constraints_lazy(ConSys& constraints_to_add);
-  //! Adds given generators to the existing ones.
+  //! Adds the specified generators.
   //! \param  generators_to_add   The generators that will be added to the 
   //!                             current system of generators.
   void add_generators(GenSys& generators_to_add);
