@@ -115,7 +115,7 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   Constraint ineq_c(4*x \>= 2*y - 13);
   \endcode
   The corresponding strict inequality constraint
-  \f$4x \> 2y - 13\f$ is obtained as follows:
+  \f$4x > 2y - 13\f$ is obtained as follows:
   \code
   Constraint strict_ineq_c(4*x \> 2*y - 13);
   \endcode
@@ -145,9 +145,9 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   \par Example 2
   The following code shows how it is possible to access each single
   coefficient of a constraint. Given an inequality constraint
-  (in this case \f$x - 5y + 3z \<= 4\f$), we construct a new constraint
+  (in this case \f$x - 5y + 3z <= 4\f$), we construct a new constraint
   corresponding to its complement (thus, in this case we want to obtain
-  the strict inequality constraint \f$x - 5y + 3z \> 4\f$).
+  the strict inequality constraint \f$x - 5y + 3z > 4\f$).
   \code
   Constraint c1(x - 5*y + 3*z \<= 4);
   cout \<\< "Constraint c1: " \<\< c1 \<\< endl;
@@ -382,8 +382,8 @@ private:
     - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + 0 = 0\f$; or
     - a non-strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \geq 0\f$,
       where \f$b \geq 0\f$; or
-    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \> 0\f$,
-      where \f$b \> 0\f$.
+    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b > 0\f$,
+      where \f$b > 0\f$.
   */
   bool is_trivial_true() const;
 
@@ -395,8 +395,8 @@ private:
     - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + b = 0\f$,
       where \f$b \neq 0\f$; or
     - a non-strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \geq 0\f$,
-      where \f$b \< 0\f$; or
-    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \> 0\f$,
+      where \f$b < 0\f$; or
+    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b > 0\f$,
       where \f$b \leq 0\f$.
   */
   bool is_trivial_false() const;
