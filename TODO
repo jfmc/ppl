@@ -42,8 +42,13 @@ Portability
 - Explain how to compile with Comeau C/C++ compiler: first compile
   configuring it with a command like
 
-    CXX=como /usr/local/distrib/gmp-4.1.2/configure --enable-cxx \
+    CXX=como /path/to/gmp-4.1.2/configure --enable-cxx \
         --disable-shared --prefix=/usr/local/lib/como433/local 
+
+    /path/to/ppl/configure --with-cc="como --c" --with-cxx=como \
+        --with-cxxflags="--remarks --strict --long_long \
+        --display_error_number --diag_suppress 193,236,340,401,679" \
+        --disable-shared --with-libgmp-prefix=/usr/local/lib/como433/local
 
 
 Constructions on Polyhedra
