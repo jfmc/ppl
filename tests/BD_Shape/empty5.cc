@@ -41,11 +41,17 @@ main() TRY {
 
   TBD_Shape bd(5);
 
-  bd.add_constraint(x1 - x2 <= -1300000000);
-  bd.add_constraint(x2 - x3 <= -1300000000);
-  bd.add_constraint(x3 - x4 <= 1300000000);
-  bd.add_constraint(x4 - x5 <= 1300000000);
-  bd.add_constraint(x5 - x1 <= 1300000000);
+  Coefficient a;
+  if (std::numeric_limits<Coefficient>::is_bounded)
+    a = -(std::numeric_limits<Coefficient>::min()/2) + 1;
+  else
+    a = 1300000000;
+
+  bd.add_constraint(x1 - x2 <= -a);
+  bd.add_constraint(x2 - x3 <= -a);
+  bd.add_constraint(x3 - x4 <= a);
+  bd.add_constraint(x4 - x5 <= a);
+  bd.add_constraint(x5 - x1 <= a);
 
 #if NOISY
   print_constraints(bd, "*** bd ***");
