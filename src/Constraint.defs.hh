@@ -297,7 +297,7 @@ private:
   //! \brief
   //! Builds a constraint (of unspecified type) stealing
   //! the coefficients from \p e.
-  Constraint(LinExpression& e);
+  explicit Constraint(LinExpression& e);
 
   //! \brief
   //! Builds a constraint, having type \p type, which is able
