@@ -51,16 +51,15 @@ namespace Parma_Polyhedra_Library {
   Constraint operator >=(const Integer& n, const LinExpression& e);
 
   Constraint operator >>(const Constraint& c, unsigned int offset);
-
 }
 
 //! A linear equality or inequality.
 /*!
   An object of the class Constraint is either:
-  - an equality: \f$\sum_{i=0}^{d-1} a_i x_i + b = 0\f$; or
-  - an inequality: \f$\sum_{i=0}^{d-1} a_i x_i + b \geq 0\f$;
+  - an equality: \f$\sum_{i=0}^{n-1} a_i x_i + b = 0\f$; or
+  - an inequality: \f$\sum_{i=0}^{n-1} a_i x_i + b \geq 0\f$;
 
-  where \f$d\f$ is the dimension of the space.
+  where \f$n\f$ is the dimension of the space.
 
   \par How to build a constraint
   Constraints are typically built by applying a relational operator
@@ -83,16 +82,18 @@ namespace Parma_Polyhedra_Library {
     \par Example
     The following code builds the equality \f$3x + 5y - z = 0\f$:
     \code
-  Constraint equal(3 * x + 5 * y - z == 0);
+  Constraint equal(3*x + 5*y - z == 0);
     \endcode
     The following code builds the constraint \f$4x - 2y \geq z - 13\f$:
     \code
-  Constraint inequal(4 * x - 2 * y >= z - 13);
+  Constraint inequal(4*x - 2*y >= z - 13);
     \endcode
 */
 class Parma_Polyhedra_Library::Constraint : PPL_INTERNAL Row {
 private:
   Constraint(LinExpression& e);
+
+  Constraint(Row::Type type, size_t size);
 
   //! Returns the constraint \p e1 = \p e2.
   friend Constraint
@@ -139,11 +140,11 @@ private:
   Parma_Polyhedra_Library::operator <=(const Integer& n,
 				       const LinExpression& e);
 
-  //! Returns the constraint \p c with variables renamed by \p offset.
+  //! Returns the constraint \p c with variables renamed
+  //! by adding \p offset to their Cartesian axis identifier.
   friend Constraint
-  Parma_Polyhedra_Library::operator >>(const Constraint& c, unsigned int p);
-
-  Constraint(Row::Type type, size_t size);
+  Parma_Polyhedra_Library::operator >>(const Constraint& c,
+				       unsigned int offset);
 
 public:
   //! Default constructor.

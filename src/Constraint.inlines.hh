@@ -76,12 +76,12 @@ Parma_Polyhedra_Library::Constraint::set_is_inequality() {
 namespace Parma_Polyhedra_Library {
 
 INLINE Constraint
-operator >>(const Constraint& y, unsigned int p) {
+operator >>(const Constraint& y, unsigned int offset) {
   size_t y_size = y.size();
-  Constraint x(y.Row::type(), y_size+p);
+  Constraint x(y.Row::type(), y_size+offset);
   x[0] = y[0];
   for (size_t i = 1; i < y_size; ++i)
-    x[i+p] = y[i];
+    x[i+offset] = y[i];
   return x;
 }
 
