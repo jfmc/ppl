@@ -459,7 +459,7 @@ print_ext(std::ostream& os, const Type& x, const Numeric_Format& format, const R
     os << "-inf";
     break;
   case VC_PLUS_INFINITY:
-    os << "inf";
+    os << "+inf";
     break;
   default:
     os << "nan";
