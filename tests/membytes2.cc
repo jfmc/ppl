@@ -71,6 +71,48 @@ main() TRY {
   loo(ph_total_size, ph_external_size, dph_total_size, dph_external_size);
 #endif
 
+  Polyhedra_Powerset<C_Polyhedron> pph(3, Polyhedron::EMPTY);
+  pph.add_disjunct(ph);
+
+  C_Polyhedron qh(3);
+  qh.add_constraint(x >= 0);
+  qh.add_constraint(y >= 0);
+  qh.add_constraint(z >= 0);
+  qh.add_constraint(x <= 1);
+  qh.add_constraint(y <= 1);
+  qh.add_constraint(z <= 1);
+  Polyhedra_Powerset<C_Polyhedron> pqh(3);
+  pqh.add_disjunct(qh);
+
+  Polyhedra_Powerset<C_Polyhedron> prh = pqh;
+  prh.poly_difference_assign(pph);
+
+  const memory_size_type pph_total_size = pph.total_memory_in_bytes();
+  const memory_size_type pph_external_size = pph.external_memory_in_bytes();
+  const memory_size_type pqh_total_size = pqh.total_memory_in_bytes();
+  const memory_size_type pqh_external_size = pqh.external_memory_in_bytes();
+  const memory_size_type prh_total_size = prh.total_memory_in_bytes();
+  const memory_size_type prh_external_size = prh.external_memory_in_bytes();
+
+#if NOISY
+  cout << "pph.total_memory_in_bytes() = " << pph_total_size
+       << endl
+       << "pph.external_memory_in_bytes() = " << pph_external_size
+       << endl
+       << "pqh.total_memory_in_bytes() = " << pqh_total_size
+       << endl
+       << "pqh.external_memory_in_bytes() = " << pqh_external_size
+       << endl
+       << "prh.total_memory_in_bytes() = " << prh_total_size
+       << endl
+       << "prh.external_memory_in_bytes() = " << prh_external_size
+       << endl;
+#else
+  loo(pph_total_size, pph_external_size,
+      pqh_total_size, pqh_external_size,
+      prh_total_size, prh_external_size);
+#endif
+
   return 0;
 }
 CATCH

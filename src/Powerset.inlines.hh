@@ -410,6 +410,26 @@ operator<<(std::ostream& s, const Powerset<CS>& x) {
 } // namespace IO_Operators
 
 template <typename CS>
+memory_size_type
+Powerset<CS>::external_memory_in_bytes() const {
+  memory_size_type bytes = 0;
+  for (const_iterator i = begin(), send = end(); i != send; ++i) {
+    bytes += i->total_memory_in_bytes();
+    // We assume there is at least a forward and a backward link, and
+    // that the pointers implementing them are at least the size of
+    // pointers to `CS'.
+    bytes += 2*sizeof(CS*);
+  }
+  return bytes;
+}
+
+template <typename CS>
+memory_size_type
+Powerset<CS>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
+template <typename CS>
 bool
 Powerset<CS>::OK(const bool disallow_bottom) const {
   for (const_iterator i = begin(), send = end(); i != send; ++i) {

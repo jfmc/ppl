@@ -104,6 +104,16 @@ public:
   //! the empty set).
   bool is_bottom() const;
 
+  //! \brief
+  //! Returns a lower bound to the total size in bytes of the memory
+  //! occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! \brief
+  //! Returns a lower bound to the size in bytes of the memory
+  //! managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
   //! Checks if all the invariants are satisfied.
   // FIXME: document and perhaps use an enum instead of a bool.
   bool OK(bool disallow_bottom = false) const;

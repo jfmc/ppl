@@ -633,6 +633,18 @@ Polyhedra_Powerset<PH>::ascii_load(std::istream& s) {
 }
 
 template <typename PH>
+memory_size_type
+Polyhedra_Powerset<PH>::external_memory_in_bytes() const {
+  return Base::external_memory_in_bytes();
+}
+
+template <typename PH>
+memory_size_type
+Polyhedra_Powerset<PH>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
+template <typename PH>
 bool
 Polyhedra_Powerset<PH>::OK() const {
   for (const_iterator i = Base::begin(), send = Base::end(); i != send; ++i)
