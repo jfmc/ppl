@@ -130,6 +130,15 @@ Generator::divisor() const {
   return d;
 }
 
+inline memory_size_type
+Generator::external_memory_in_bytes() const {
+  return Linear_Row::external_memory_in_bytes();
+}
+
+inline memory_size_type
+Generator::total_memory_in_bytes() const {
+  return Linear_Row::total_memory_in_bytes();
+}
 
 inline const Generator&
 Generator::zero_dim_point() {

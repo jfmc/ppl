@@ -242,6 +242,13 @@ public:
   //! Returns the (zero-dimension space) constant 0.
   static const LinExpression& zero();
 
+  //! \brief
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
 private:
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;

@@ -101,6 +101,14 @@ public:
   */
   dimension_type space_dimension() const;
 
+  //! \brief
+  //! Returns the total size in bytes of the memory
+  //! occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
   //! Type of output functions.
   typedef void output_function_type(std::ostream& s, const Variable& v);
 

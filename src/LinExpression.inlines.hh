@@ -101,6 +101,16 @@ LinExpression::zero() {
   return z;
 }
 
+inline memory_size_type
+LinExpression::external_memory_in_bytes() const {
+  return Linear_Row::external_memory_in_bytes();
+}
+
+inline memory_size_type
+LinExpression::total_memory_in_bytes() const {
+  return Linear_Row::total_memory_in_bytes();
+}
+
 /*! \relates LinExpression */
 inline LinExpression
 operator+(const LinExpression& e) {
