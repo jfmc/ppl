@@ -320,7 +320,7 @@ private:
   //! \brief
   //! Builds a constraint of type \p type and topology \p topology,
   //! stealing the coefficients from \p e.
-  explicit Constraint(Linear_Expression& e, Type type, Topology topology);
+  Constraint(Linear_Expression& e, Type type, Topology topology);
 
   //! Swaps \p *this with \p y.
   void swap(Constraint& y);
