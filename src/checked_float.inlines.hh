@@ -26,7 +26,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <cassert>
 #include <cmath>
+#ifdef __CYGWIN__
+// Not C99 conformant
+#include <mingw/fenv.h>
+#else
 #include <fenv.h>
+#endif
 
 #include "float.types.hh"
 
