@@ -24,10 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Interval.defs.hh"
-
-#ifndef NDEBUG
 #include <iostream>
-#endif
 
 namespace PPL = Parma_Polyhedra_Library;
 
