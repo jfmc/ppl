@@ -370,14 +370,15 @@ protected:
   //!                                  or if the system of generators
   //!                                  is not empty but has no points.
   Polyhedron(Topology topol, GenSys& gs);
-  // Destructor
-  ~Polyhedron();
 
   //! The assignment operator.
   //! (Note that \p *this and \p y can be dimension-incompatible.)
   Polyhedron& operator=(const Polyhedron& y);
 
 public:
+  //! Destructor.
+  ~Polyhedron();
+
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
