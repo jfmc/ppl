@@ -17,4 +17,15 @@ namespace Parma_Polyhedra_Library {
   class Polyhedron;
 }
 
+//! The standard C++ namespace.
+/*!
+  The Parma Polyhedra Library conforms to the C++ standard and,
+  in particular, as far as reserved names are concerned (17.4.3.1,
+  [lib.reserved.names]).  The PPL, however, defines several
+  template specializations for the standard library templates
+  swap() and iter_swap() (25.2.2, [lib.alg.swap]).
+*/
+namespace std {
+}
+
 #endif
