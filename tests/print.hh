@@ -24,9 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _print_hh
 #define _print_hh 1
 
+#include "ppl_install.hh"
 #include <iostream>
 #include <string>
-#include "ppl_install.hh"
 
 bool
 easy_print(const Parma_Polyhedra_Library::Polyhedron& ph,
