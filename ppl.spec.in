@@ -114,9 +114,9 @@ make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
 %files gprolog
 %defattr(-,root,root)
 %{_bindir}/ppl_gprolog
+%{_libdir}/ppl/ppl_gprolog.pl
 %{_libdir}/ppl/libppl_gprolog.a
 %{_libdir}/ppl/libppl_gprolog.la
-%{_libdir}/ppl/libppl_gprolog.pl
 %{_libdir}/ppl/libppl_gprolog.so
 
 %files sicstus
