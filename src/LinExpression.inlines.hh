@@ -70,6 +70,18 @@ LinExpression::space_dimension() const {
   return size() - 1;
 }
 
+inline const Integer&
+LinExpression::coefficient(Variable v) const {
+  if (v.id() >= space_dimension())
+    return Integer_zero();
+  return Row::coefficient(v.id());
+}
+
+inline const Integer&
+LinExpression::inhomogeneous_term() const {
+  return Row::inhomogeneous_term();
+}
+
 inline const LinExpression&
 LinExpression::zero() {
   static LinExpression z = LinExpression(Integer_zero());

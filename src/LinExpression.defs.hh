@@ -168,6 +168,12 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
+  //! Returns the coefficient of \p v in \p *this.
+  const Integer& coefficient(Variable v) const;
+
+  //! Returns the inhomogeneous term of \p *this.
+  const Integer& inhomogeneous_term() const;
+
   //! Returns the (zero-dimension space) constant 0.
   static const LinExpression& zero();
 
