@@ -140,20 +140,22 @@ PowerSet<CS>::collapse(const iterator sink) {
   // Collapse onto the disjunct pointed to by `sink' all the disjuncts
   // that follow.
   CS& d = *sink;
-  const_iterator j = sink;
+  iterator j = sink;
   iterator send = end();
   for (++j; j != send; ++j)
     d.upper_bound_assign(*j);
 
+  // Erase the surplus disjuncts.
+  j = sink;
+  erase(++j, send);
+
   // Ensure omega-reduction.
-  for (iterator k = begin(), kn = k; k != sink; k = kn) {
+  send = end();
+  for (iterator k = begin(), kn = k; k != send; k = kn) {
     ++kn;
     if (k->definitely_entails(d))
       erase(k);
   }
-
-  // Erase the surplus disjuncts.
-  erase(++iterator(sink), send);
   assert(OK());
 }
 
