@@ -100,7 +100,6 @@ check-local: ciao_clpq$(EXEEXT) ../check_script ../expected ciao_clpq2$(EXEEXT) 
 		ciao_clpq \
 			<$(srcdir)/../check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
-	GLOBALSTKSIZE=1000000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
