@@ -102,7 +102,7 @@ public:
   /*!
     For a description of the methods that should be provided by
     the template class Box, see the documentation of the protected method:
-      template <class Box>
+      template <typename Box>
       Polyhedron::Polyhedron(Topology topol, const Box& box);
     \param box    The bounding box representing the polyhedron to be built.
     \param dummy  A dummy tag to syntactically differentiate this one
@@ -111,7 +111,7 @@ public:
                                      are not topologically closed (i.e.,
                                      having some finite but open bounds).
   */
-  template <class Box>
+  template <typename Box>
   C_Polyhedron(const Box& box, From_Bounding_Box dummy);
 
   //! Ordinary copy-constructor.

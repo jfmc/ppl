@@ -41,7 +41,7 @@ C_Polyhedron::C_Polyhedron(GenSys& gs)
   : Polyhedron(NECESSARILY_CLOSED, gs) {
 }
 
-template <class Box>
+template <typename Box>
 C_Polyhedron::C_Polyhedron(const Box& box, From_Bounding_Box)
   : Polyhedron(NECESSARILY_CLOSED, box) {
 }

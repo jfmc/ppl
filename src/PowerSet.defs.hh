@@ -31,27 +31,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <class CS>
+template <typename CS>
 PowerSet<CS>
 operator+(const PowerSet<CS>&, const PowerSet<CS>&);
 
-template <class CS>
+template <typename CS>
 PowerSet<CS>
 operator*(const PowerSet<CS>&, const PowerSet<CS>&);
 
-template <class CS>
+template <typename CS>
 CS
 project(const PowerSet<CS>&);
 
-template <class CS>
+template <typename CS>
 bool
 operator==(const PowerSet<CS>&, const PowerSet<CS>&);
 
-template <class CS>
+template <typename CS>
 int
 lcompare(const PowerSet<CS>&, const PowerSet<CS>&);
 
-template <class CS>
+template <typename CS>
 std::ostream&
 operator<<(std::ostream&, const PowerSet<CS>&);
 
@@ -59,7 +59,7 @@ operator<<(std::ostream&, const PowerSet<CS>&);
 
 
 //! The powerset construction on constraint systems.
-template <class CS>
+template <typename CS>
 class Parma_Polyhedra_Library::PowerSet {
 public:
   //! Creates an empty (bottom) PowerSet.

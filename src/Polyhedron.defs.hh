@@ -462,7 +462,7 @@ protected:
     \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
     corresponds to the least upper bound of \f$I\f$.
   */
-  template <class Box>
+  template <typename Box>
   Polyhedron(Topology topol, const Box& box);
 
   //! \brief
@@ -703,7 +703,7 @@ public:
     is <CODE>false</CODE>.
     The fraction \f$n/d\f$ is in canonical form.
   */
-  template <class Box>
+  template <typename Box>
   void shrink_bounding_box(Box& box) const;
 
   //! Checks if all the invariants are satisfied.

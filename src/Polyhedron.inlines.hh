@@ -221,7 +221,7 @@ Polyhedron::bounds_from_below(const LinExpression& expr) const {
   return bounds(expr, false);
 }
 
-template <class Box>
+template <typename Box>
 Polyhedron::Polyhedron(Topology topol, const Box& box)
   : con_sys(topol),
     gen_sys(topol),
@@ -312,7 +312,7 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   assert(OK());
 }
 
-template <class Box>
+template <typename Box>
 void
 Polyhedron::shrink_bounding_box(Box& box) const {
   if (check_universe())

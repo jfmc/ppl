@@ -28,41 +28,41 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <class CS>
+template <typename CS>
 typename PowerSet<CS>::iterator
 PowerSet<CS>::begin() {
   return sequence.begin();
 }
 
-template <class CS>
+template <typename CS>
 typename PowerSet<CS>::const_iterator
 PowerSet<CS>::begin() const {
   return sequence.begin();
 }
 
-template <class CS>
+template <typename CS>
 typename PowerSet<CS>::iterator
 PowerSet<CS>::end() {
   return sequence.end();
 }
 
-template <class CS>
+template <typename CS>
 typename PowerSet<CS>::const_iterator
 PowerSet<CS>::end() const {
   return sequence.end();
 }
 
-template <class CS>
+template <typename CS>
 size_t
 PowerSet<CS>::size() const {
   return sequence.size();
 }
 
-template <class CS>
+template <typename CS>
 PowerSet<CS>::PowerSet() {
 }
 
-template <class CS>
+template <typename CS>
 void PowerSet<CS>::omega_reduction() {
   iterator xi, xin, yi, yin;
   for (xi = xin = begin(); xi != end(); xi = xin) {
@@ -83,7 +83,7 @@ void PowerSet<CS>::omega_reduction() {
   }
 }
 
-template <class CS>
+template <typename CS>
 PowerSet<CS>&
 PowerSet<CS>::inject(const CS& x) {
   if (!x.is_bottom()) {
@@ -93,7 +93,7 @@ PowerSet<CS>::inject(const CS& x) {
   return *this;
 }
 
-template <class CS>
+template <typename CS>
 bool
 PowerSet<CS>::definitely_entails(const PowerSet<CS>& y) const {
   const PowerSet<CS>& x = *this;
@@ -108,13 +108,13 @@ PowerSet<CS>::definitely_entails(const PowerSet<CS>& y) const {
   return found;
 }
 
-template <class CS>
+template <typename CS>
 inline
 bool operator==(const PowerSet<CS>& x, const PowerSet<CS>& y) {
   return (x.size() == y.size() && equal(x.begin(), x.end(), y.begin()));
 }
 
-template <class CS>
+template <typename CS>
 inline
 bool operator!=(const PowerSet<CS>& x, const PowerSet<CS>& y) {
   return !(x == y);
@@ -122,7 +122,7 @@ bool operator!=(const PowerSet<CS>& x, const PowerSet<CS>& y) {
 
 // Simple tests
 
-template <class CS>
+template <typename CS>
 inline bool
 PowerSet<CS>::is_top() const {
   if (size() == 1) {
@@ -133,7 +133,7 @@ PowerSet<CS>::is_top() const {
     return false;
 }
 
-template <class CS>
+template <typename CS>
 inline bool
 PowerSet<CS>::is_bottom() const {
   return sequence.empty();
@@ -141,7 +141,7 @@ PowerSet<CS>::is_bottom() const {
 
 // Projection
 
-template <class CS>
+template <typename CS>
 CS
 project(const PowerSet<CS>& x) {
   CS ret;
@@ -159,7 +159,7 @@ project(const PowerSet<CS>& x) {
 
 // Meet operators
 
-template <class CS>
+template <typename CS>
 PowerSet<CS>
 operator*(const PowerSet<CS>& x, const PowerSet<CS>& y) {
   PowerSet<CS> z;
@@ -175,7 +175,7 @@ operator*(const PowerSet<CS>& x, const PowerSet<CS>& y) {
   return z;
 }
 
-template <class CS>
+template <typename CS>
 void
 PowerSet<CS>::meet_assign(const PowerSet<CS>& y) {
   PowerSet<CS> z;
@@ -196,7 +196,7 @@ PowerSet<CS>::meet_assign(const PowerSet<CS>& y) {
 
 // Join operator
 
-template <class CS>
+template <typename CS>
 void
 PowerSet<CS>::upper_bound_assign(const PowerSet<CS>& y) {
   std::copy(y.begin(), y.end(), back_inserter(sequence));
@@ -205,7 +205,7 @@ PowerSet<CS>::upper_bound_assign(const PowerSet<CS>& y) {
 
 // Lexicographic comparison
 
-template <class CS>
+template <typename CS>
 int
 lcompare(const PowerSet<CS>& x, const PowerSet<CS>& y) {
   typename PowerSet<CS>::const_iterator xi = x.begin();
@@ -230,7 +230,7 @@ lcompare(const PowerSet<CS>& x, const PowerSet<CS>& y) {
 
 // Output
 
-template <class CS>
+template <typename CS>
 std::ostream& operator<< (std::ostream& s, const PowerSet<CS>& x) {
   if (x.is_bottom())
     s << "false";
@@ -250,7 +250,7 @@ std::ostream& operator<< (std::ostream& s, const PowerSet<CS>& x) {
   return s;
 }
 
-template <class CS>
+template <typename CS>
 void
 PowerSet<CS>::add_dimensions_and_embed(size_t dim) {
   for (typename PowerSet<CS>::iterator i = begin(),
@@ -259,7 +259,7 @@ PowerSet<CS>::add_dimensions_and_embed(size_t dim) {
   omega_reduction();
 }
 
-template <class CS>
+template <typename CS>
 void
 PowerSet<CS>::add_dimensions_and_project(size_t dim) {
   for (typename PowerSet<CS>::iterator i = begin(),
@@ -268,7 +268,7 @@ PowerSet<CS>::add_dimensions_and_project(size_t dim) {
   omega_reduction();
 }
 
-template <class CS>
+template <typename CS>
 void
 PowerSet<CS>::remove_dimensions(const std::set<Variable>& to_be_removed) {
   for (typename PowerSet<CS>::iterator i = begin(),
@@ -277,7 +277,7 @@ PowerSet<CS>::remove_dimensions(const std::set<Variable>& to_be_removed) {
   omega_reduction();
 }
 
-template <class CS>
+template <typename CS>
 void
 PowerSet<CS>::remove_higher_dimensions(size_t new_dimension) {
   for (typename PowerSet<CS>::iterator i = begin(),

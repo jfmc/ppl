@@ -503,7 +503,7 @@ build_generator(Prolog_term_ref t) {
   throw non_linear("build_generator", t);
 }
 
-template <class R>
+template <typename R>
 static Prolog_term_ref
 get_lin_expression(const R& r) {
   Prolog_term_ref so_far = Prolog_new_term_ref();
