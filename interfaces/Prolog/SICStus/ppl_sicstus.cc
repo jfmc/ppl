@@ -191,7 +191,7 @@ static SP_atom a_minus;
 static SP_atom a_asterisk;
 
 // For constraints.
-static SP_atom a_equal_equal;
+static SP_atom a_equal;
 static SP_atom a_greater_than_equal;
 static SP_atom a_equal_less_than;
 
@@ -212,7 +212,7 @@ static struct {
   { &a_minus,              "-" },
   { &a_asterisk,           "*" },
 
-  { &a_equal_equal,        "==" },
+  { &a_equal,              "=" },
   { &a_greater_than_equal, ">=" },
   { &a_equal_less_than,    "=<" },
 
@@ -397,7 +397,7 @@ build_constraint(SP_term_ref t) {
       SP_term_ref arg2 = SP_new_term_ref();
       SP_get_arg(1, t, arg1);
       SP_get_arg(2, t, arg2);
-      if (functor == a_equal_equal)
+      if (functor == a_equal)
 	// ==
 	if (SP_is_integer(arg1))
 	  return integer_term_to_Integer(arg1) == build_lin_expression(arg2);
@@ -548,22 +548,22 @@ get_lin_expression(const R& r) {
 }
 
 static SP_term_ref
-get_false_constraint() {
+false_constraint_term() {
   SP_term_ref zero_times_x = SP_new_term_ref();
   SP_cons_functor(zero_times_x, a_asterisk, 2,
 		  integer_term(0), variable_term(0));
   SP_term_ref t = SP_new_term_ref();
-  SP_cons_functor(t, a_equal_equal, 2,
+  SP_cons_functor(t, a_equal, 2,
 		  zero_times_x, integer_term(1));
   return t;
 }
 
 static SP_term_ref
-get_constraint(const PPL::Constraint& c) {
-  SP_atom relation = c.is_equality() ? a_equal_equal : a_greater_than_equal;
+constraint_term(const PPL::Constraint& c) {
+  SP_atom relation = c.is_equality() ? a_equal : a_greater_than_equal;
   SP_term_ref t = SP_new_term_ref();
   SP_cons_functor(t, relation, 2,
-		  get_lin_expression(c), integer_term(c.coefficient()));
+		  get_lin_expression(c), integer_term(-c.coefficient()));
   return t;
 }
 
@@ -577,7 +577,7 @@ ppl_get_constraints(const void* pp, SP_term_ref constraints_list) {
 
     if (ph.check_empty()) {
       SP_term_ref new_tail = SP_new_term_ref();
-      SP_cons_list(new_tail, get_false_constraint(), tail);
+      SP_cons_list(new_tail, false_constraint_term(), tail);
       tail = new_tail;
     }
     else {
@@ -587,7 +587,7 @@ ppl_get_constraints(const void* pp, SP_term_ref constraints_list) {
       while (i != cs_end) {
 	const PPL::Constraint& c = *i++;
 	SP_term_ref new_tail = SP_new_term_ref();
-	SP_cons_list(new_tail, get_constraint(c), tail);
+	SP_cons_list(new_tail, constraint_term(c), tail);
 	tail = new_tail;
       }
     }
