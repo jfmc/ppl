@@ -41,7 +41,7 @@ See the file CREDITS for a list of people, projects and organizations
 that made the PPL a reality.
 
 Here is the contents of the PPL 0.5 source distributions
-(15 directories, 543 files):
+(15 directories, 549 files):
 
 ppl-0.5
 |-- BUGS
@@ -109,9 +109,9 @@ ppl-0.5
 |   |-- fdl.tex
 |   |-- gpl.dox
 |   |-- gpl.tex
-|   |-- ppl-user-0.5pre13-browse.pdf
-|   |-- ppl-user-0.5pre13-print.pdf
-|   |-- ppl-user-0.5pre13-print.ps.gz
+|   |-- ppl-user-0.5-browse.pdf
+|   |-- ppl-user-0.5-print.pdf
+|   |-- ppl-user-0.5-print.ps.gz
 |   |-- ppl.sty
 |   |-- user-browse.doxyconf-latex
 |   |-- user-browse.doxyconf-latex.in
@@ -144,12 +144,14 @@ ppl-0.5
 |       |   |-- Makefile.am
 |       |   |-- Makefile.in
 |       |   |-- ciao_clpq.pl
+|       |   |-- ciao_clpq2.pl
 |       |   |-- fake_main.pl
 |       |   |-- ppl_ciao.cc
 |       |   `-- ppl_ciao.pl
 |       |-- GNU
 |       |   |-- Makefile.am
 |       |   |-- Makefile.in
+|       |   |-- gnu_pl_check.pl
 |       |   |-- gp_clpq.pl
 |       |   |-- ppl_gprolog.pl
 |       |   `-- ppl_gprolog_sd.cc
@@ -188,7 +190,8 @@ ppl-0.5
 |       |   |-- ppl_yap.cc
 |       |   |-- ppl_yap.pl
 |       |   |-- yap_clpq.pl
-|       |   `-- yap_clpq2.pl
+|       |   |-- yap_clpq2.pl
+|       |   `-- yap_pl_check.pl
 |       |-- ack.clpq
 |       |-- ackn.clpq
 |       |-- check_script
@@ -198,8 +201,10 @@ ppl-0.5
 |       |-- exceptions.hh
 |       |-- expected
 |       |-- expected2
+|       |-- expected3
 |       |-- fib.clpq
 |       |-- mc91.clpq
+|       |-- pl_check.pl
 |       |-- ppl_prolog.icc
 |       |-- schedule.clpq
 |       |-- smm.clpq
@@ -330,7 +335,6 @@ ppl-0.5
     |-- CbecomesNNC1.cc
     |-- Makefile.am
     |-- Makefile.in
-    |-- NNCinclusion1.cc
     |-- NNCminimize1.cc
     |-- NNCminimize2.cc
     |-- NNCminimize3.cc
@@ -450,6 +454,10 @@ ppl-0.5
     |-- constraints3.cc
     |-- constraints4.cc
     |-- contains1.cc
+    |-- contains2.cc
+    |-- contains3.cc
+    |-- contains4.cc
+    |-- contains5.cc
     |-- disjoint1.cc
     |-- disjoint2.cc
     |-- disjoint3.cc
@@ -483,8 +491,6 @@ ppl-0.5
     |-- h79widening3.cc
     |-- h79widening4.cc
     |-- h79widening5.cc
-    |-- inclusion1.cc
-    |-- inclusion2.cc
     |-- intersection1.cc
     |-- intersection10.cc
     |-- intersection11.cc
@@ -505,6 +511,7 @@ ppl-0.5
     |-- linearpartition2.cc
     |-- linearpartition3.cc
     |-- linexpression1.cc
+    |-- mapdim1.cc
     |-- mc91.cc
     |-- memory1.cc
     |-- minconstraints1.cc
@@ -515,7 +522,6 @@ ppl-0.5
     |-- mingenerators2.cc
     |-- mingenerators3.cc
     |-- onepoint.cc
-    |-- operator1.cc
     |-- permute.cc
     |-- polydifference1.cc
     |-- polydifference2.cc
@@ -559,6 +565,7 @@ ppl-0.5
     |-- relations8.cc
     |-- relations9.cc
     |-- removedim1.cc
+    |-- removedim10.cc
     |-- removedim2.cc
     |-- removedim3.cc
     |-- removedim4.cc
@@ -567,7 +574,6 @@ ppl-0.5
     |-- removedim7.cc
     |-- removedim8.cc
     |-- removedim9.cc
-    |-- renamedim1.cc
     |-- smm1.cc
     |-- timeelapse1.cc
     |-- timeelapse2.cc
