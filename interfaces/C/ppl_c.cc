@@ -169,7 +169,7 @@ CATCH_ALL
 int
 ppl_assign_Coefficient_from_mpz_t(ppl_Coefficient_t dst, mpz_t z) try {
   Coefficient& ddst = *to_nonconst(dst);
-  ddst = z;
+  mpz_set(ddst.get_mpz_t(), z);
   return 0;
   }
 CATCH_ALL
@@ -629,7 +629,18 @@ CATCH_ALL
 
 int
 ppl_Generator_type(ppl_const_Generator_t g) try {
-  return to_const(g)->type();
+  switch (to_const(g)->type()) {
+  case Generator::LINE:
+    return PPL_GENERATOR_TYPE_LINE;
+  case Generator::RAY:
+    return PPL_GENERATOR_TYPE_RAY;
+  case Generator::POINT:
+    return PPL_GENERATOR_TYPE_POINT;
+  case Generator::CLOSURE_POINT:
+    return PPL_GENERATOR_TYPE_CLOSURE_POINT;
+  default:
+    throw std::runtime_error("ppl_Generator_type()");
+  }
 }
 CATCH_ALL
 

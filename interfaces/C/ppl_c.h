@@ -509,14 +509,14 @@ PPL_TYPE_DECLARATION(Generator);
   Describes the different kinds of generators.
 */
 enum ppl_enum_Generator_Type {
+  /*! The generator is a line. */
+  PPL_GENERATOR_TYPE_LINE,
+  /*! The generator is a ray. */
+  PPL_GENERATOR_TYPE_RAY,
   /*! The generator is a point. */
   PPL_GENERATOR_TYPE_POINT,
   /*! The generator is a closure point. */
-  PPL_GENERATOR_TYPE_CLOSURE_POINT,
-  /*! The generator is a ray. */
-  PPL_GENERATOR_TYPE_RAY,
-  /*! The generator is a line. */
-  PPL_GENERATOR_TYPE_LINE
+  PPL_GENERATOR_TYPE_CLOSURE_POINT
 };
 
 
