@@ -895,7 +895,7 @@ that their results cannot be worse than the smallest
 
 <B>A Note on the Implementation of the Operators</B>
 
-When adopting the Double Description method, the implementation of the
+When adopting the double description method, the implementation of the
 above operators on polyhedra may require an explicit conversion from
 one of the two representations into the other one, leading to
 algorithms having a worst-case exponential complexity.
