@@ -301,7 +301,7 @@ PPL::Row::OK(size_t row_size,
 #if EXTRA_ROW_DEBUG
   if (capacity_ != row_capacity) {
     cerr << "Row capacity mismatch: is " << capacity_
-	 << ", should be " << row_capacity
+	 << ", should be " << row_capacity << "."
 	 << endl;
     is_broken = true;
   }
@@ -309,7 +309,7 @@ PPL::Row::OK(size_t row_size,
   if (size() != row_size) {
 #ifndef NDEBUG
     cerr << "Row size mismatch: is " << size()
-	 << ", should be " << row_size
+	 << ", should be " << row_size << "."
 	 << endl;
 #endif
     is_broken = true;
@@ -318,7 +318,7 @@ PPL::Row::OK(size_t row_size,
   if (capacity_ < size()) {
 #ifndef NDEBUG
     cerr << "Row is completely broken: capacity is " << capacity_
-	 << ", size is " << size()
+	 << ", size is " << size() << "."
 	 << endl;
 #endif
     is_broken = true;
@@ -332,7 +332,7 @@ PPL::Row::OK(size_t row_size,
 	 << "allowed by its topology:"
 	 << endl
 	 << "size is " << size()
-	 << ", minimum is " << min_cols
+	 << ", minimum is " << min_cols << "."
 	 << endl;
 #endif
     is_broken = true;
