@@ -832,6 +832,67 @@ public:
   */
   bool add_generator_and_minimize(const Generator& g);
 
+  //! \brief Adds the constraints in \p cs to the system of constraints
+  //! of \p *this, minimizing the result.
+  /*!
+    \param  cs             The constraints that will be added to the
+                           current system of constraints. This parameter
+                           is not declared <CODE>const</CODE> because
+                           it can be modified.
+    \exception std::invalid_argument thrown if \p *this and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void add_constraints(ConSys& cs);
+
+  //! \brief
+  //! \brief Adds the constraints in \p cs to the system of constraints
+  //! of \p *this (without minimizing the result).
+  /*!
+    \return    <CODE>false</CODE> if and only if the result is empty.
+    \param     cs         The constraints that will be added to the
+                          current system of constraints. This parameter
+                          is not declared <CODE>const</CODE> because
+                          it can be modified.
+    \exception std::invalid_argument thrown if \p *this and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  bool add_constraints_and_minimize(ConSys& cs);
+
+  //! \brief Adds the generators in \p gs to the system of generators
+  //! of \p *this (without minimizing the result).
+  /*!
+    \param  gs             The generators that will be added to the
+                           current system of generators. This parameter
+                           is not declared <CODE>const</CODE> because
+			   it can be modified.
+    \exception std::invalid_argument thrown if \p *this and \p gs
+                                     are topology-incompatible
+			             or dimension-incompatible,
+				     or if \p *this is empty and
+                                     the system of generators \p gs
+                                     is not empty, but has no points.
+  */
+  void add_generators(GenSys& gs);
+
+  //! \brief Adds the generators in \p gs to the system of generators
+  //! of \p *this, minimizing the result.
+  /*!
+    \return    <CODE>false</CODE> if and only if the result is empty.
+    \param     gs       The generators that will be added to the
+                        current system of generators. The parameter is
+                        not declared <CODE>const</CODE> because it
+                        can be modified.
+    \exception std::invalid_argument thrown if \p *this and \p gs
+                                     are topology-incompatible
+                                     or dimension-incompatible,
+                                     or if \p *this is empty and the
+                                     the system of generators \p gs
+                                     is not empty, but has no points.
+  */
+  bool add_generators_and_minimize(GenSys& gs);
+
   //! \brief
   //! Assigns to \p *this the \ref affine_transformation "affine image"
   //! of \p *this under the function mapping variable \p var into the
@@ -1213,67 +1274,6 @@ public:
   */
   template <typename PartialInjectiveFunction>
   void shuffle_dimensions(const PartialInjectiveFunction& pifunc);
-
-  //! \brief Adds the constraints in \p cs to the system of constraints
-  //! of \p *this, minimizing the result.
-  /*!
-    \param  cs             The constraints that will be added to the
-                           current system of constraints. This parameter
-                           is not declared <CODE>const</CODE> because
-                           it can be modified.
-    \exception std::invalid_argument thrown if \p *this and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void add_constraints(ConSys& cs);
-
-  //! \brief
-  //! \brief Adds the constraints in \p cs to the system of constraints
-  //! of \p *this (without minimizing the result).
-  /*!
-    \return    <CODE>false</CODE> if and only if the result is empty.
-    \param     cs         The constraints that will be added to the
-                          current system of constraints. This parameter
-                          is not declared <CODE>const</CODE> because
-                          it can be modified.
-    \exception std::invalid_argument thrown if \p *this and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  bool add_constraints_and_minimize(ConSys& cs);
-
-  //! \brief Adds the generators in \p gs to the system of generators
-  //! of \p *this (without minimizing the result).
-  /*!
-    \param  gs             The generators that will be added to the
-                           current system of generators. This parameter
-                           is not declared <CODE>const</CODE> because
-			   it can be modified.
-    \exception std::invalid_argument thrown if \p *this and \p gs
-                                     are topology-incompatible
-			             or dimension-incompatible,
-				     or if \p *this is empty and
-                                     the system of generators \p gs
-                                     is not empty, but has no points.
-  */
-  void add_generators(GenSys& gs);
-
-  //! \brief Adds the generators in \p gs to the system of generators
-  //! of \p *this, minimizing the result.
-  /*!
-    \return    <CODE>false</CODE> if and only if the result is empty.
-    \param     gs       The generators that will be added to the
-                        current system of generators. The parameter is
-                        not declared <CODE>const</CODE> because it
-                        can be modified.
-    \exception std::invalid_argument thrown if \p *this and \p gs
-                                     are topology-incompatible
-                                     or dimension-incompatible,
-                                     or if \p *this is empty and the
-                                     the system of generators \p gs
-                                     is not empty, but has no points.
-  */
-  bool add_generators_and_minimize(GenSys& gs);
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is
