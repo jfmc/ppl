@@ -23,8 +23,7 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 dnl
 AC_DEFUN([AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS],
 [
-AC_LANG_SAVE
-AC_LANG_CPLUSPLUS
+AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([whether the C++ compiler supports flexible arrays])
 AC_TRY_RUN([
@@ -89,7 +88,7 @@ fi
 AC_DEFINE_UNQUOTED(CXX_SUPPORTS_FLEXIBLE_ARRAYS, $value,
   [Not zero if the C++ compiler supports flexible arrays.])
 
-AC_LANG_RESTORE
+AC_LANG_POP(C++)
 CPPFLAGS="$ac_save_CPPFLAGS"
 LIBS="$ac_save_LIBS"
 ])

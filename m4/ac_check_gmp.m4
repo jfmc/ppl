@@ -38,8 +38,7 @@ ac_save_LIBS="$LIBS"
 LIBS="${gmp_library_option} $LIBS"
 ac_save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="${gmp_includes_option} $CPPFLAGS"
-AC_LANG_SAVE
-AC_LANG_CPLUSPLUS
+AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([for the GMP library])
 AC_TRY_RUN([
@@ -129,7 +128,7 @@ AC_DEFINE_UNQUOTED(GMP_SUPPORTS_EXCEPTIONS, $value,
 
 fi
 
-AC_LANG_RESTORE
+AC_LANG_POP(C++)
 CPPFLAGS="$ac_save_CPPFLAGS"
 LIBS="$ac_save_LIBS"
 ])

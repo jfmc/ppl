@@ -37,7 +37,7 @@ AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7])
 AC_SUBST(VERSION)
 
 # Generate a configuration header file.
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADER(config.h)
 
 ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
