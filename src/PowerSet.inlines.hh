@@ -250,6 +250,42 @@ std::ostream& operator<< (std::ostream& s, const PowerSet<CS>& x) {
   return s;
 }
 
+template <class CS>
+void
+PowerSet<CS>::add_dimensions_and_embed(size_t dim) {
+  for (typename PowerSet<CS>::iterator i = begin(),
+	 xend = end(); i != xend; ++i)
+    i->add_dimensions_and_embed(dim);
+  omega_reduction();
+}
+
+template <class CS>
+void
+PowerSet<CS>::add_dimensions_and_project(size_t dim) {
+  for (typename PowerSet<CS>::iterator i = begin(),
+	 xend = end(); i != xend; ++i)
+    i->add_dimensions_and_project(dim);
+  omega_reduction();
+}
+
+template <class CS>
+void
+PowerSet<CS>::remove_dimensions(const std::set<Variable>& to_be_removed) {
+  for (typename PowerSet<CS>::iterator i = begin(),
+	 xend = end(); i != xend; ++i)
+    i->remove_dimensions(to_be_removed);
+  omega_reduction();
+}
+
+template <class CS>
+void
+PowerSet<CS>::remove_higher_dimensions(size_t new_dimension) {
+  for (typename PowerSet<CS>::iterator i = begin(),
+	 xend = end(); i != xend; ++i)
+    i->remove_higher_dimensions(new_dimension);
+  omega_reduction();
+}
+  
 } // namespace Parma_Polyhedra_Library
 
 #endif // _PowerSet_inlines_hh

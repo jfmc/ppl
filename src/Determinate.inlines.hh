@@ -133,6 +133,34 @@ operator<<(std::ostream& s, const Determinate<PH>& x) {
   return s;
 }
 
+template <typename PH>
+void
+Determinate<PH>::add_dimensions_and_embed(size_t dim) {
+  mutate();
+  prep->ph.add_dimensions_and_embed(dim);
+}
+
+template <typename PH>
+void
+Determinate<PH>::add_dimensions_and_project(size_t dim) {
+  mutate();
+  prep->ph.add_dimensions_and_project(dim);
+}
+
+template <typename PH>
+void
+Determinate<PH>::remove_dimensions(const std::set<Variable>& to_be_removed) {
+  mutate();
+  prep->ph.remove_dimensions(to_be_removed);
+}
+
+template <typename PH>
+void
+Determinate<PH>::remove_higher_dimensions(size_t new_dimension) {
+  mutate();
+  prep->ph.remove_higher_dimensions(new_dimension);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // _Determinate_inlines_hh

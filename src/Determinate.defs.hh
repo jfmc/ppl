@@ -80,13 +80,44 @@ public:
   friend Determinate operator *<>(const Determinate& x, const Determinate& y);
   friend std::ostream& operator<<<>(std::ostream& s, const Determinate& x);
 
+  //! \brief
+  //! Adds \p dim new dimensions and embeds the old polyhedron
+  //! into the new space.
+  void add_dimensions_and_embed(size_t dim);
+
+  //! \brief
+  //! Adds \p dim new dimensions to the polyhedron
+  //! and does not embed it in the new space.
+  void add_dimensions_and_project(size_t dim);
+
+  //! \brief
+  //! Removes all the specified dimensions.
+  /*!
+    \param to_be_removed  The set of Variable objects corresponding
+                          to the dimensions to be removed.
+    \exception std::invalid_argument thrown if \p *this is
+                                     dimension-incompatible with one
+				     of the Variable objects contained
+				     in \p to_be_removed.
+  */
+  void remove_dimensions(const std::set<Variable>& to_be_removed);
+
+  //! \brief
+  //! Removes the higher dimensions so that the resulting space
+  //! will have dimension \p new_dimension.
+  /*!
+    \exception std::invalid_argument thrown if \p new_dimensions is greater
+                                     than the space dimension of \p *this.
+  */
+  void remove_higher_dimensions(size_t new_dimension);
+
 private:
   class Rep {
   private:
     //! Count the number of references:
-    //! - 0: leaked, \p pph is non-const;
-    //! - 1: one reference, \p pph is non-const;
-    //! - n>1: more than one reference, \p pph is const.
+    //! -   0: leaked, \p pph is non-const;
+    //! -   1: one reference, \p pph is non-const;
+    //! - > 1: more than one reference, \p pph is const.
     mutable unsigned long references;
 
     //! Private and unimplemented.
