@@ -1,4 +1,4 @@
-/* Polyhedron class implementation: conversion().
+/* PolyBase class implementation: conversion().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -25,18 +25,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Matrix.defs.hh"
 #include "SatMatrix.defs.hh"
-#include "Polyhedron.defs.hh"
+#include "PolyBase.defs.hh"
 #include "globals.hh"
 #include <cstddef>
 
 namespace PPL = Parma_Polyhedra_Library;
 
 /*!
-  \fn static size_t PPL::Polyhedron::conversion(Matrix& source,
-                                                size_t start,
-                                                Matrix& dest,
-                                                SatMatrix& sat,
-			                        size_t num_lines_or_equalities)
+  \fn static size_t PPL::PolyBase::conversion(Matrix& source,
+                                              size_t start,
+                                              Matrix& dest,
+                                              SatMatrix& sat,
+			                      size_t num_lines_or_equalities)
 
   \param source  The matrix to use to convert \p dest: it
                  may be modified.
@@ -344,11 +344,11 @@ namespace PPL = Parma_Polyhedra_Library;
   \f$\vect{r}\f$ is redundant.
 */
 size_t
-PPL::Polyhedron::conversion(Matrix& source,
-			    size_t start,
-			    Matrix& dest,
-			    SatMatrix& sat,
-			    size_t num_lines_or_equalities) {
+PPL::PolyBase::conversion(Matrix& source,
+			  size_t start,
+			  Matrix& dest,
+			  SatMatrix& sat,
+			  size_t num_lines_or_equalities) {
   size_t source_num_rows = source.num_rows();
   size_t source_num_columns = source.num_columns();
   size_t dest_num_rows = dest.num_rows();
@@ -667,7 +667,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	      // we exploit saturation information to check if
 	      // it can be an extremal ray. To this end, we refer
 	      // to the definition of a minimal proper face
-	      // (see comments in Polyhedron.defs.hh):
+	      // (see comments in PolyBase.defs.hh):
 	      // an extremal ray saturates at least `n' - `t' - 1
 	      // constraints, where `n' is the dimension of the space
 	      // and `t' is the dimension of the lineality space.

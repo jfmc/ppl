@@ -90,6 +90,7 @@ GenSys.types.hh \
 Status.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
+PolyBase.types.hh \
 Polyhedron.types.hh \
 SatRow.defs.hh \
 SatRow.inlines.hh \
@@ -117,6 +118,8 @@ GenSys.defs.hh \
 GenSys.inlines.hh \
 Status.defs.hh \
 Status.inlines.hh \
+PolyBase.defs.hh \
+PolyBase.inlines.hh \
 Polyhedron.defs.hh \
 Polyhedron.inlines.hh
 
@@ -130,6 +133,7 @@ LinExpression.cc \
 Matrix.cc \
 Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
+PolyBase.cc \
 Polyhedron.cc \
 Row.cc \
 SatMatrix.cc \
@@ -152,6 +156,7 @@ Generator.types.hh \
 GenSys.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
+PolyBase.types.hh \
 Polyhedron.types.hh \
 Variable.defs.hh \
 LinExpression.defs.hh \
@@ -161,6 +166,7 @@ Generator.defs.hh \
 GenSys.defs.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Gen_Relation.defs.hh \
+PolyBase.defs.hh \
 Polyhedron.defs.hh
 
 libppl_la_LDFLAGS = \
