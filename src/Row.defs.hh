@@ -187,7 +187,7 @@ public:
   /*!
     In addition to the normalization performed by Row::normalize(), this
     method ensures that the first non-zero coefficient of lines and
-    equalities is negative.
+    equalities is positive.
   */
   void strong_normalize();
 
@@ -443,7 +443,7 @@ void swap(Parma_Polyhedra_Library::Row& x,
 
 #ifndef EXTRA_NORMALIZATION
 // If non-zero, lines and equalities are ALWAYS normalized so that the
-// first non-zero coefficient is negative.
+// first non-zero coefficient is positive.
 #define EXTRA_NORMALIZATION 0
 #endif
 

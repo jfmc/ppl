@@ -54,7 +54,7 @@ PPL::Matrix::Matrix(Topology topol,
     row_size(n_columns),
     row_capacity(compute_capacity(n_columns)),
     index_first_pending(n_rows),
-    sorted(false) {
+    sorted(true) {
   // Build the appropriate row type.
   Row::Type row_type(topol, Row::RAY_OR_POINT_OR_INEQUALITY);
   // Construct in direct order: will destroy in reverse order.
@@ -853,8 +853,7 @@ PPL::Matrix::sort_and_remove_with_sat(SatMatrix& sat) {
 
 PPL::dimension_type
 PPL::Matrix::gauss() {
-  // We are sure that this method is applied only to a matrix
-  // that does not contain pending rows.
+  // This method is only applied to a matrix having no pending rows.
   assert(num_pending_rows() == 0);
   dimension_type rank = 0;
   // Will keep track of the variations on the matrix of equalities.
@@ -875,6 +874,7 @@ PPL::Matrix::gauss() {
 	  // After swapping the matrix is no longer sorted.
 	  changed = true;
 	}
+#if !EXTRA_NORMALIZATION
 	// We want the pivot to be greater than zero to
 	// simplify future computing (back-substitution).
 	if (rows[rank][j] < 0) {
@@ -883,6 +883,7 @@ PPL::Matrix::gauss() {
 	  // Matrix has changed.
 	  changed = true;
 	}
+#endif
 	// Linear combining the row containing the pivot with
 	// all the ones that follow it such that all the elements
 	// on the j-th column (of these rows) become 0.
@@ -906,82 +907,93 @@ PPL::Matrix::gauss() {
 
 void
 PPL::Matrix::back_substitute(dimension_type rank) {
-  // We are sure that this method is applied only to a matrix
-  // that does not contain pending rows.
+  // This method is only applied to a matrix having no pending rows.
   assert(num_pending_rows() == 0);
+  // The matrix describes a non-empty polyhedron and thus it always
+  // contains a row which is not a line/equality (corresponding to
+  // a vertex or to a low-level constraint).
+  assert(num_rows() > rank);
   bool was_sorted = is_sorted();
   dimension_type nrows = num_rows();
   for (dimension_type k = rank; k-- > 0; ) {
     // For each row, starting from the rank-th one,
     // looks for the last non-zero element.
     // j will be the index of such a element.
+    Row& row_k = rows[k];
     dimension_type j = num_columns() - 1;
-    while (j != 0 && rows[k][j] == 0)
+    while (j != 0 && row_k[j] == 0)
       --j;
 
-    for (dimension_type i = 0; i < nrows; ++i)
-      // i runs through all the rows of the matrix.
-      if (i > k && i < rank)
-	// Coefficients on the j-th column of the rows
-	// following the one we are considering (k-th one)
-	// until the last one linearly independent, have to be
-	// be zero, as the matrix is triangular.
-	//          j
-	// .  .  .  .  .  .
-	// .  .  .  .  .  0
-	// .  .  .  .  0  0  k
-	// .  .  .  0  0  0
-	// .  .  0  0  0  0  rank
-	// .  .  .  .  .  .  inequality
-	// .  .  .  .  .  .  inequality
-	// .  .  .  .  .  .  inequality
-	assert(rows[i][j] == 0);
-      else if (rows[i][j] != 0 && i != k) {
-	// We have already a row with j-th coefficient non-zero
-	// (the k-th one), so we linear combine all the other
-	// rows (but these already treated above) with the
-	// k-th one such that they have a zero coefficient
-	// in position j.
-#if EXTRA_NORMALIZATION
-	// An inequality cannot be multiplied by a negative number.
-	// As a consequence, if we combine an equality (or a line)
-	// with an inequality (or ray or point) the "pivot" element
-	// of the equality must be positive.
-	// That is what happens here: if the pivot `rows[k][j]'
-	// is negative, the row `rows[k]' is negated before the
-	// linear combination takes place.
-	if (rows[i].is_ray_or_point_or_inequality())
-	  if (rows[k][j] < 0)
-	    for (dimension_type h = num_columns(); h-- > 0; )
-	      negate(rows[k][h]);
-#endif
-	
-	rows[i].linear_combine(rows[k], j);
-
-	// Sort checking.
+    // Go through the equalities above `row_k'.
+    for (dimension_type i = k; i-- > 0; ) {
+      Row& row_i = rows[i];
+      assert(row_i.is_line_or_equality());
+      if (row_i[j] != 0) {
+	// Combine linearly `row_i' with `row_k'
+	// so that `row_i[j]' becomes zero.
+	row_i.linear_combine(row_k, j);
+	// Trying to keep sortedness.
 	if (was_sorted) {
-	  // Keeping 'sorted' flag consistent.
-	  if (nrows <= 1)
-	    // One-row or zero-row matrix are sorted.
-	    set_sorted(true);
-	  else if (nrows == 2)
-	    set_sorted(rows[0] <= rows[1]);
+	  assert(i < k && k < nrows);
+	  // `row_i' has changed: if it still happens to be sorted
+	  // wrt the adjacent row(s), the matrix remains sorted.
+	  if (i != 0)
+	    set_sorted(rows[i-1] <= row_i && row_i <= rows[i+1]);
 	  else
-	    // i-th row is become a linear combination of others
-	    // rows, so it is changed: if it is still sorted
-	    // with respect to the adjacent one(s)
-	    // the matrix remains sorted.
-	    if (i != 0 && i != nrows-1)
-	      set_sorted(rows[i-1] <= rows[i] && rows[i] <= rows[i+1]);
-	    else if (i == 0)
-	      set_sorted(rows[0] <= rows[1]);
-	    else if (i == nrows-1)
-	      set_sorted(rows[nrows-2] <= rows[nrows-1]);
+	    set_sorted(row_i <= rows[1]);
 	  was_sorted = is_sorted();
 	}
       }
+    }
+
+#if EXTRA_NORMALIZATION
+    // Due to strong normalization during previous iterations,
+    // the pivot coefficient `row_k[j]' may now be negative.
+    // Since an inequality (or ray or point) cannot be multiplied
+    // by a negative factor, the coefficient of the pivot must be
+    // forced to be positive.
+    if (row_k[j] < 0)
+      for (dimension_type h = num_columns(); h-- > 0; )
+	PPL::negate(row_k[h]);
+#else
+    // If strong normalization is not enforced, then the pivot
+    // coefficient is always positive, because we always invoke
+    // method `gauss()' before this method.
+    assert(row_k[j] > 0);
+#endif
+    
+    // Go through all the inequalities of the matrix.
+    for (dimension_type i = rank; i < nrows; ++i) {
+      Row& row_i = rows[i];
+      if (row_i[j] != 0) {
+	// Combine linearly the `row_i' with `row_k'
+	// so that `row_i[j]' becomes zero.
+	row_i.linear_combine(row_k, j);
+	// Trying to keep sortedness.
+	if (was_sorted) {
+	  assert(k < i);
+	  // `row_i' has changed: if it still happens to be sorted
+	  // wrt the adjacent row(s), the matrix remains sorted.
+	  if (i != nrows-1)
+	    set_sorted(rows[i-1] <= row_i && row_i <= rows[i+1]);
+	  else
+	    set_sorted(rows[i-1] <= row_i);
+	  was_sorted = is_sorted();
+	}
+      }
+    }
+
+#if EXTRA_NORMALIZATION
+    // Restore strong normalization of `row_k'.
+    // TODO: provide a method to just adjust the sign,
+    // because (simple) normalization already holds.
+    // Have a better control of sortedness.
+    row_k.strong_normalize();
+    set_sorted(false);
+#endif
   }
 }
+
 
 void
 PPL::Matrix::add_rows_and_columns(dimension_type n) {
@@ -999,11 +1011,7 @@ PPL::Matrix::add_rows_and_columns(dimension_type n) {
     // of new rows and columns) is set to the specular image
     // of the identity matrix.
     Row& r = x[i];
-#if EXTRA_NORMALIZATION
-    r[c++] = -1;
-#else
     r[c++] = 1;
-#endif
     r.set_is_line_or_equality();
   }
   // If the old matrix was empty, the last row added is either

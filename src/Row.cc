@@ -114,9 +114,9 @@ PPL::Row::strong_normalize() {
       if (x[first_non_zero] != 0)
 	break;
     if (first_non_zero < sz)
-      // If the first non-zero coefficient of the row is
-      // positive, we negate the entire row.
-      if (x[first_non_zero] > 0)
+      // If the first non-zero coefficient of the row is negative,
+      // we negate the entire row.
+      if (x[first_non_zero] < 0)
 	for (dimension_type j = first_non_zero; j < sz; ++j)
 	  negate(x[j]);
   }

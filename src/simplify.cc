@@ -133,6 +133,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // We can simplify the system of equalities, obtaining the rank
   // of `mat' as result.
   dimension_type rank = mat.gauss();
+
   // Now the irredundant equalities of `mat' have indexes from 0
   // to `rank' - 1, whereas the equalities having indexes from `rank'
   // to `num_equal_or_line' - 1 are all redundant.
@@ -297,17 +298,9 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // from the last one.
   mat.back_substitute(num_equal_or_line);
 
-#if EXTRA_NORMALIZATION
-  // Restoring strong normalization, which was lost in `gauss'
-  // and `back_substitute'.
-  for (dimension_type i = num_equal_or_line; i-- > 0; )
-    mat[i].strong_normalize();
-  mat.set_sorted(false);
-  assert(mat.OK());
-#endif
-
   // The returned value is the number of irredundant equalities i.e.,
   // the rank of the sub-matrix of `mat' containing only equalities.
   // (See the Introduction for definition of lineality space dimension).
+  assert(mat.OK());
   return num_equal_or_line;
 }
