@@ -961,8 +961,9 @@ error31() {
   try {
     // This is an invalid use of the function
     // C_Polyhedron::generalized_affine_image(v, r, expr,d ):
-    // `PPL_GT' is an illegal relation for necessarily closed polyhedron.
-    ph.generalized_affine_image(A, PPL_GT, A + 1);
+    // `GREATER_THAN' is an illegal relation for necessarily closed
+    // polyhedron.
+    ph.generalized_affine_image(A, GREATER_THAN, A + 1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -986,8 +987,9 @@ error32() {
   try {
     // This is an invalid use of the function
     // C_Polyhedron::generalized_affine_image(v, expr, d):
-    // `PPL_GT' is an illegal relation for necessarily closed polyhedron.
-    ph.generalized_affine_image(A + B, PPL_GT, A - B);
+    // `GREATER_THAN' is an illegal relation for necessarily closed
+    // polyhedron.
+    ph.generalized_affine_image(A + B, GREATER_THAN, A - B);
   }
   catch (invalid_argument& e) {
 #if NOISY

@@ -47,7 +47,7 @@ test1() {
   print_generators(ph, "*** ph ***");
 #endif
 
-  ph.generalized_affine_image(A - C, PPL_EQ, B + 3);
+  ph.generalized_affine_image(A - C, EQUAL, B + 3);
 
   C_Polyhedron known_result(3);
   known_result.add_constraint(A - C == B + 3);
@@ -56,9 +56,9 @@ test1() {
 
 #if NOISY
   print_generators(ph, "*** After ph.generalized_affine_image"
-		    "(A - C, PPL_EQ, B + 3) ***");
+		    "(A - C, EQUAL, B + 3) ***");
   print_constraints(ph, "*** After ph.generalized_affine_image"
-		    "(A - C, PPL_EQ, B + 3) ***");
+		    "(A - C, EQUAL, B + 3) ***");
 #endif
 
   if (!ok)
@@ -80,7 +80,7 @@ test2() {
   print_generators(ph, "*** ph ***");
 #endif
 
-  ph.generalized_affine_image(A - C, PPL_GE, B + 3);
+  ph.generalized_affine_image(A - C, GREATER_THAN_OR_EQUAL, B + 3);
 
   C_Polyhedron known_result(3);
   known_result.add_constraint(A - B - C >= 3);
@@ -90,9 +90,9 @@ test2() {
 
 #if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
-		    "(A - C, PPL_GE, B + 3) ***");
+		    "(A - C, GREATER_THAN_OR_EQUAL, B + 3) ***");
   print_generators(ph, "*** After ph.generalized_affine_image"
-		    "(A - C, PPL_GE, B + 3) ***");
+		    "(A - C, GREATER_THAN_OR_EQUAL, B + 3) ***");
 #endif
 
   if (!ok)
@@ -113,7 +113,7 @@ test3() {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  ph.generalized_affine_image(A - C, PPL_LE, B - 1);
+  ph.generalized_affine_image(A - C, LESS_THAN_OR_EQUAL, B - 1);
 
   C_Polyhedron known_result(ph);
   known_result.add_constraint(A - B - C <= 1);
@@ -122,9 +122,9 @@ test3() {
 
 #if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
-		    "(A - C, PPL_LE, B - 1) ***");
+		    "(A - C, LESS_THAN_OR_EQUAL, B - 1) ***");
   print_constraints(ph, "*** After ph.generalized_affine_image"
-		    "(A - C, PPL_LE, B - 1) ***");
+		    "(A - C, LESS_THAN_OR_EQUAL, B - 1) ***");
 #endif
 
   if (!ok)
@@ -145,7 +145,7 @@ test4() {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  ph.generalized_affine_image(A - 2*C, PPL_LT, B - 1);
+  ph.generalized_affine_image(A - 2*C, LESS_THAN, B - 1);
 
   NNC_Polyhedron known_result(ph);
   known_result.add_constraint(A - B - 2*C < 1);
@@ -154,9 +154,9 @@ test4() {
 
 #if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
-		    "(A - 2*C, PPL_LT, B - 1) ***");
+		    "(A - 2*C, LESS_THAN, B - 1) ***");
   print_constraints(ph, "*** After ph.generalized_affine_image"
-		    "(A - 2*C, PPL_LT, B - 1) ***");
+		    "(A - 2*C, LESS_THAN, B - 1) ***");
 #endif
 
   if (!ok)
@@ -177,7 +177,7 @@ test5() {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  ph.generalized_affine_image(A - 2*C + 3, PPL_GT, B - 1);
+  ph.generalized_affine_image(A - 2*C + 3, GREATER_THAN, B - 1);
 
   NNC_Polyhedron known_result(ph);
   known_result.add_constraint(A - B - 2*C + 4 > 0);
@@ -186,9 +186,9 @@ test5() {
 
 #if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
-		    "(A - 2*C + 3, PPL_GT, B - 1) ***");
+		    "(A - 2*C + 3, GREATER_THAN, B - 1) ***");
   print_constraints(ph, "*** After ph.generalized_affine_image"
-		    "(A - 2*C + 3, PPL_GT, B - 1) ***");
+		    "(A - 2*C + 3, GREATER_THAN, B - 1) ***");
 #endif
 
   if (!ok)

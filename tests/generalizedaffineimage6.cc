@@ -51,14 +51,14 @@ main() TRY {
   C_Polyhedron known_result(2);
   known_result.add_constraint(A + B >= 1);
 
-  ph.generalized_affine_image(A + B, PPL_GE, 2*A - B + 2);
+  ph.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, 2*A - B + 2);
 
   int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
   print_generators(ph,
 		   "*** After ph.generalized_affine_image"
-		   "(A + B, PPL_GE, 2*A - B + 2) ***");
+		   "(A + B, GREATER_THAN_OR_EQUAL, 2*A - B + 2) ***");
 #endif
 
   return retval;

@@ -1021,7 +1021,7 @@ error38() {
     // applying the function with a linear expression with the denominator
     // equal to zero.
     Integer d = 0;
-    ph.generalized_affine_image(B, PPL_GE, B + 2, d);
+    ph.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, B + 2, d);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -1045,7 +1045,7 @@ error39() {
     // This is an incorrect use of function
     // C_Polyhedron::generalized_affine_image(v, r, expr, d): it is illegal to
     // use a variable in the expression that does not apper in the polyhedron.
-    ph.generalized_affine_image(A, PPL_GE, B);
+    ph.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, B);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -1070,7 +1070,7 @@ error40() {
     // C_Polyhedron::generalized_affine_image(v, r, expr, d): it is illegal to
     // apply this function to a variable that is not in the space of
     // the polyhedron.
-    ph.generalized_affine_image(B, PPL_LE, A + 1);
+    ph.generalized_affine_image(B, LESS_THAN_OR_EQUAL, A + 1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -1096,7 +1096,7 @@ error41() {
     // C_Polyhedron::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `rhs' expression that
     // does not apper in the polyhedron.
-    ph.generalized_affine_image(A + B, PPL_GE, B + C);
+    ph.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, B + C);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -1122,7 +1122,7 @@ error42() {
     // C_Polyhedron::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `lhs' expression that
     // does not apper in the polyhedron.
-    ph.generalized_affine_image(B + C, PPL_LE, A + 1);
+    ph.generalized_affine_image(B + C, LESS_THAN_OR_EQUAL, A + 1);
   }
   catch (invalid_argument& e) {
 #if NOISY

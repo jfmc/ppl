@@ -1,7 +1,7 @@
 /* Test Polyhedron::generalized_affine_image() with a linear expression
    as the left hand side: when the set of variables of left hand side
    and the set of the variable of the right hand side are not disjoint
-   and the relation is PPL_LT.
+   and the relation is LESS_THAN.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -50,7 +50,7 @@ main() TRY {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  ph.generalized_affine_image(A + B, PPL_LT, 2*A - 3*B);
+  ph.generalized_affine_image(A + B, LESS_THAN, 2*A - 3*B);
 
   NNC_Polyhedron known_result(2);
   known_result.add_constraint(A + B < 4);
@@ -59,7 +59,7 @@ main() TRY {
 
 #if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
-		    "(A + B, PPL_LT, 2*A - 3*B) ***");
+		    "(A + B, LESS_THAN, 2*A - 3*B) ***");
 #endif
 
   return retval;

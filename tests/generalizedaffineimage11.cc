@@ -43,7 +43,7 @@ test1() {
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  ph1.generalized_affine_image(A, PPL_LE, B + 1);
+  ph1.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B + 1);
 
   C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
 
@@ -51,7 +51,7 @@ test1() {
 
 #if NOISY
   print_constraints(ph1, "*** After ph1.generalized_affine_image"
-		    "(A, PPL_LE, B + 1) ***");
+		    "(A, LESS_THAN_OR_EQUAL, B + 1) ***");
 #endif
 
   if(!ok)
@@ -69,7 +69,7 @@ test2() {
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  ph1.generalized_affine_image(A + B, PPL_GE, A + B + 1);
+  ph1.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, A + B + 1);
 
   C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
 
@@ -77,7 +77,7 @@ test2() {
 
 #if NOISY
   print_constraints(ph1, "*** After ph1.generalized_affine_image"
-		    "(A + B, PPL_GE, A + B + 1) ***");
+		    "(A + B, GREATER_THAN_OR_EQUAL, A + B + 1) ***");
 #endif
 
   if(!ok)

@@ -49,7 +49,7 @@ main() TRY {
   print_generators(ph, "*** ph ***");
 #endif
 
-  ph.generalized_affine_image(B, PPL_GT, A + B + 1);
+  ph.generalized_affine_image(B, GREATER_THAN, A + B + 1);
 
   NNC_Polyhedron known_result(2);
   known_result.add_constraint(A == 1);
@@ -59,7 +59,7 @@ main() TRY {
 
 #if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
-		    "(B, PPL_GT, A + B + 1) ***");
+		    "(B, GREATER_THAN, A + B + 1) ***");
   print_generators(ph, "*** After ph.generalized_affine_image"
 		   "(B, PPLGT, A + B + 1) ***");
 #endif

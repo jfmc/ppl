@@ -46,7 +46,7 @@ main() TRY {
   print_generators(ph, "--- ph ---");
 #endif
 
-  ph.generalized_affine_image(B, PPL_LE, A-B+2, -3);
+  ph.generalized_affine_image(B, LESS_THAN_OR_EQUAL, A-B+2, -3);
 
   C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
   known_result.add_generator(point(9*A - B, 6));
@@ -57,7 +57,8 @@ main() TRY {
 
 #if NOISY
   print_generators(ph, "--- ph after "
-		   "ph.generalized_affine_image(B, PPL_LE, A-B+2, -3) ---");
+		   "ph.generalized_affine_image(B, LESS_THAN_OR_EQUAL,"
+		   " A-B+2, -3) ---");
 #endif
 
   return retval;

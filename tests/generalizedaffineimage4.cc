@@ -46,7 +46,7 @@ main() TRY {
   print_constraints(ph, "--- ph ---");
 #endif
 
-  ph.generalized_affine_image(B, PPL_LT, B+2);
+  ph.generalized_affine_image(B, LESS_THAN, B+2);
 
   NNC_Polyhedron known_result(2, NNC_Polyhedron::EMPTY);
   known_result.add_generator(point(A));
@@ -59,7 +59,7 @@ main() TRY {
 
 #if NOISY
   print_generators(ph, "--- ph after "
-		   "ph.generalized_affine_image(B, PPL_LT, B+2) ---");
+		   "ph.generalized_affine_image(B, LESS_THAN, B+2) ---");
 #endif
 
   return retval;
