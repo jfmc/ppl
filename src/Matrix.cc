@@ -1039,7 +1039,7 @@ PPL::Matrix::gram_shmidt() {
       Integer_traits::const_reference mu_jj = mu[j][j];
       for (dimension_type k = n_columns; k-- > 0; ) {
 #if NATIVE_INTEGERS || CHECKED_INTEGERS
-        row_i[k] = row_i[k] * mu_jj - mu_ij * row_j[k];
+        rows_i[k] = rows_i[k] * mu_jj - mu_ij * rows_j[k];
 #else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
         // The following fragment of code optimizes the above computation
         // by avoiding some gmp (de-)allocations.
