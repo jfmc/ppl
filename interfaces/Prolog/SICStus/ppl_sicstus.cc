@@ -293,6 +293,15 @@ ppl_new_empty_polyhedron(long num_dimensions) {
   return 0;
 }
 
+extern "C" void*
+ppl_copy_polyhedron(const void* pp) {
+  try {
+    return new PPL::Polyhedron(*static_cast<const PPL::Polyhedron*>(pp));
+  }
+  CATCH_ALL;
+  return 0;
+}
+
 extern "C" void
 ppl_delete_polyhedron(void* pp) {
   // If destructors throw it is a catastrophy.

@@ -96,12 +96,6 @@ solve_equal_list([A|As],[B|Bs],P):-
     solve_constraints(A=B,P),
     solve_equal_list(As,Bs,P).
 
-ppl_copy_polyhedron(P,Q):-
-    ppl_space_dimension(P,Dim),
-    ppl_new_polyhedron(Q,Dim),
-    ppl_get_constraints(P,Cs),
-    ppl_insert_constraints(Q,Cs).
-
 % ?- solve({X+Y>=3,Y>=0,X=<2}).
 
 :- dynamic p1/2, p2/3, p3/2, p4/2.

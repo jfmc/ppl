@@ -4,6 +4,7 @@ foreign_resource(ppl_sicstus,
 	deinit(ppl_deinit),
 	ppl_new_polyhedron,
 	ppl_new_empty_polyhedron,
+	ppl_copy_polyhedron,
 	ppl_delete_polyhedron,
 	ppl_space_dimension,
 	ppl_insert_constraint,
@@ -25,6 +26,9 @@ foreign(ppl_new_polyhedron,
 foreign(ppl_new_empty_polyhedron,
 	c,
 	ppl_new_empty_polyhedron([-address], +integer)).
+foreign(ppl_copy_polyhedron,
+	c,
+	ppl_copy_polyhedron(+address, [-address])).
 foreign(ppl_delete_polyhedron,
 	c,
 	ppl_delete_polyhedron(+address)).
