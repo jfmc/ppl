@@ -52,36 +52,46 @@ The specification uses the following grammar rules:
                 | LinExpr =< LinExpr   nonstrict inequation
                 | LinExpr >= LinExpr   nonstrict inequation
 
- Generator -->    vertex(LinExpr)      vertex
-                | vertex(LinExpr,Int)  vertex
+ Generator -->    point(LinExpr)       point
+                | point(LinExpr,Int)   point
                                        (Int is the denominator so that the
-                                       vertex is defined by Expr/Int)
+                                       point is defined by Expr/Int)
                 | ray(LinExpr)         ray
                 | line(LinExpr)        line
 \endcode
 
 
-There are a few general rules that need to be followed when
-using the PPL predicates.
+We first give some general information about the Prolog interface
+to the PPL library.
 
-- Argument positions labeled as <CODE>+Address</CODE>
-  must be addresses in memory. It is up to the programmer to ensure
-  that these addresses are valid addresses of PPL polyhedra.
-  If an argument to a PPL predicate
-  labeled as <CODE>+Address</CODE> is not the address
-  of a valid polyhedron, the predicate has undefined behavior.
-  
-- A free variable can be bound to a <EM>valid address</EM>
-  of a PPL polyhedron by using  
-  <CODE>ppl_new_polyhedron/2</CODE>,
-  <CODE>ppl_new_empty_polyhedron/2</CODE> or
-  <CODE>ppl_copy_polyhedron/2</CODE>.
-  An address becomes invalid after it has been used as an argument in 
-  <CODE>ppl_delete_polyhedron/1</CODE>.
+-  The Prolog interface provides access to the
+   PPL polyhedra by means of Prolog terms we call <EM>handles</EM>.
+   The data structure of a handle,
+   is implementation-dependent, system-dependent and
+   version-dependent, and, for this reason, deliberately left unspecified.
+   What we do guarantee is that a handle is an ordinary Prolog term
+   that can be used as such and requiring very little memory.
 
-- Memory occupied by a PPL polyhedron should be released as soon as it is
-  no longer required.
-  This can be done by executing <CODE>ppl_delete_polyhedron/1</CODE>.
+-  Only terms bound to <EM>valid handles</EM> may be used to access
+   PPL polyhedra.
+   A PPL polyhedron can be created or copied and a Prolog term
+   unified with a valid handle for accessing this polyhedron by using,
+   <CODE>ppl_new_polyhedron/2</CODE>,
+   <CODE>ppl_new_empty_polyhedron/2</CODE> or
+   <CODE>ppl_copy_polyhedron/2</CODE>.
+   On the other hand, once a handle has been used as an argument in 
+   <CODE>ppl_delete_polyhedron/1</CODE>,
+   it becomes an invalid handle.
+   Before executiing a query,
+   a valid handle is required in all argument positions
+   identified in the detailed descriptions of the predicates by
+   <CODE>+Handle</CODE>.
+   If a term in such a position is not a valid handle,
+   the behavior of the query is undefined, .
+
+- As soon as a PPL polyhedron is no longer required,
+  the memory occupied by it should be released
+  using the PPL predicate <CODE>ppl_delete_polyhedron/1</CODE>.
   To understand why this is important,
   consider a Prolog program and a variable that is bound to
   a Herbrand term.
@@ -89,46 +99,35 @@ using the PPL predicates.
   (on backtracking) the term it is bound to is amenable to garbage collection.
   But this only applies for the standard domain of the language:
   Herbrand terms.
-  In Prolog+PPL, addresses of PPL polyhedra are just integers.  
-  When variables bound to addresses (i.e. integers) die or are uninstantiated,
-  these variables will be garbage-collected, but the polyhedra to which
-  the addresses refer will not be released.
+  In Prolog+PPL, when a variable bound to a handle for a PPL Polyhedron dies
+  or is uninstantiated,
+  the handle can be garbage-collected, but the polyhedra to which
+  the handle refers will not be released.
   
 - For a PPL polyhedron with space dimension \p k,
-  the variables used for defining the constraints and the generators
-  must have the form, <CODE>'$VAR'(0), ..., '$VAR'(k-1).</CODE>
-  Note that the variable identifiers must be strictly less
-  than \p k.
-
-- When using the predicates that combine PPL polyhedra
-  or insert constraints or generators into a PPL polyhedron,
+  the identifiers used for the PPL variables in
+  the constraints and the generators
+  must lie between 0 and \f$k-1\f$.
+  Moreover, when using the predicates that combine PPL polyhedra
+  or add constraints or generators to a representation of
+  a PPL polyhedron,
   the polyhedra referenced and any constraints or generators in the call
   should follow all the rules stated in the dimension-compatibility
   paragraph in the Introduction.
-
-- Note that the vertex specified in the grammar rule for
-  <CODE>Generator</CODE> is not necessarily a vertex of a polyhedron. 
-  As observed in the Introduction, a set of generators
-  representing a polyhedron \f$P\f$ often have to include
-  points in \f$P\f$ that are <EM>not</EM> vertices of \f$P\f$.
-  Hence, it is convenient to use <EM>vertex</EM> to mean any element of
-  the set of generators \f$V\f$ even though it may not be a ``proper''
-  vertex of \f$P\f$.
 
 - There are a number of predicates whose name ends with
   <CODE>_and_minimize</CODE>.
   These are provided to help the user obtain better performance.<BR>
   For some of the operations on polyhedra in the PPL,
-  the representation of a polyhedra has to be minimized:
+  the internal representation of a polyhedra has to be <EM>minimized</EM>:
   if it is not already minimized,
-  an extra minimization operation is performed first.
-  However minimization is very costly.
-  For this reason the PPL library is lazy and avoids the
-  minimization operation as much as it can.
-  Thus it is best to use
-  a predicate without <CODE>_and_minimize</CODE> ending
-  unless a minimized representation is needed for
-  the next PPL operation.
+  an extra PPL minimization operation is performed first.
+  However this operation may be very costly
+  and, for this reason, the PPL library is lazy and avoids
+  it as much as it can.
+  For this reason, a predicate without <CODE>_and_minimize</CODE> ending
+  should be used
+  unless a minimized representation is needed for the next PPL operation.
   In that case it is more efficient to use
   the <CODE>_and_minimize</CODE> predicate.
   As an example, suppose you have to compute the convex hull of several
@@ -140,380 +139,390 @@ using the PPL predicates.
   <CODE>ppl_convex_hull_assign_and_minimize</CODE>.
 
 See the specifications of individual predicates for examples and
-more information regarding these issues. 
+more information regarding these issues.
 
-<H4><CODE>ppl_new_polyhedron(-Address, +Integer)</CODE></H4>
+<H4><CODE>ppl_new_polyhedron(-Handle, +Integer)</CODE></H4>
 
-   Creates a new universe polyhedron with <CODE>Integer</CODE> dimensions
-   with reference <CODE>Address</CODE>.
+   Creates a new universe polyhedron \f$P\f$ with <CODE>Integer</CODE>
+   dimensions.
+   <CODE>Handle</CODE> is unified with the handle for \f$P\f$.
    Thus the query
 \code
-   | ?- ppl_new_polyhedron(X, 3).
+   ?- ppl_new_polyhedron(X, 3).
 \endcode
    creates the polyhedron defining the 3-dimensional vector space
-   \f$\Rset^3\f$ with \p X, the reference address.
-   
-   The first argument must be a free  variable and
-   if it is already instantiated to an address, it will fail.
-   E.g., the following will fail:
-\code
-   | ?- ppl_new_polyhedron(X,3),
-        ppl_new_polyhedron(X,3).
-\endcode
+   \f$\Rset^3\f$ with \p X bound to a valid handle for accessing it.
 
-<H4><CODE>ppl_new_empty_polyhedron(-Address, +Integer)</CODE></H4>
+<H4><CODE>ppl_new_empty_polyhedron(-Handle, +Integer)</CODE></H4>
 
-   Creates a new empty polyhedron with <CODE>Integer</CODE> dimensions
-   with reference address <CODE>Address</CODE>.
+   Creates a new empty polyhedron \f$P\f$ with <CODE>Integer</CODE> dimensions.
+   <CODE>Handle</CODE> is unified with the handle for \f$P\f$.
    Thus the query
 \code
-   | ?- ppl_new_empty_polyhedron(X, 3).
+   ?- ppl_new_empty_polyhedron(X, 3).
 \endcode
    creates an empty polyhedron embedded in \f$\Rset^3\f$ with
-   \p X the reference address.
-   
-   The first argument must be a free  variable.
+   \p X bound to a valid handle for accessing it.
 
-<H4><CODE>ppl_copy_polyhedron(+Address1, -Address2)</CODE></H4>
+<H4><CODE>ppl_copy_polyhedron(+Handle1, -Handle2)</CODE></H4>
 
-   If <CODE>Address1</CODE> is the address of a polyhedron \f$P\f$,
-   then a copy \f$Q\f$ of \f$P\f$ is created and <CODE>Address2</CODE>
-   is unified with the reference to \f$Q\f$.
+   If <CODE>Handle1</CODE> refers to a polyhedron \f$P_1\f$,
+   then a copy \f$P_2\f$ of \f$P_1\f$ is created and <CODE>Handle2</CODE>
+   is unified with the handle for \f$P_2\f$.
 
-<H4><CODE>ppl_delete_polyhedron(+Address)</CODE></H4>
+<H4><CODE>ppl_delete_polyhedron(+Handle)</CODE></H4>
 
-   Deletes the polyhedron referenced by <CODE>Address</CODE>.
-   E.g.,
-\code
-   | ?-ppl_new_polyhedron(X,3),
-       ppl_delete_polyhedron(X).
-\endcode
-   deletes the polyhedron referenced by \p X so that, after execution,
-   \p X is no longer a valid address of a PPL polyhedron.
+   Deletes the polyhedron referenced by <CODE>Handle</CODE>.
+   After execution,
+   <CODE>Handle</CODE> is no longer a valid handle for a PPL polyhedron.
 
-<H4><CODE>ppl_space_dimension(+Address, -Integer)</CODE></H4>
+<H4><CODE>ppl_space_dimension(+Handle, -Integer)</CODE></H4>
 
-   If \f$P\f$ is the polyhedron referenced by <CODE>Address</CODE>,
+   If \f$P\f$ is the polyhedron referenced by <CODE>Handle</CODE>,
    it unifies the space dimension of \f$P\f$ with <CODE>Integer</CODE>.
 
-<H4><CODE>ppl_insert_constraint(+Address, +Constraint)</CODE></H4>
+<H4><CODE>ppl_insert_constraint(+Handle, +Constraint)</CODE></H4>
 
-   Adds the constraint <CODE>Constraint</CODE> to the polyhedron 
-   referenced by <CODE>Address</CODE>.
-    Thus after the query
+   If \f$CS\f$ is the constraint system representing
+   the polyhedron referenced by <CODE>Handle</CODE> before execution,
+   then, after execution,
+   <CODE>Handle</CODE> refers to the polyhedron
+   represented by the constraint system obtained by adding
+   <CODE>Constraint</CODE> to \f$CS\f$.
+    Thus after executing the query
 \code
-   | ?- A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
-        ppl_new_polyhedron(X, 3),
-        ppl_insert_constraint(X, 4*A + B - 2*C >= 5).
+   ?- ppl_new_polyhedron(X, 3),
+      A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+      ppl_insert_constraint(X, 4*A + B - 2*C >= 5).
 \endcode
-    the polyhedron referenced by \p X is defined to be the set of points
+    the polyhedron with handle \p X is defined to be the set of points
     in the vector space \f$\Rset^3\f$ satisfying the constraint
     \f$4x + y - 2z >= 5\f$.
 
 The constraint <CODE>Constraint</CODE> and the
-polyhedron referenced by <CODE>Address</CODE> must be dimensional compatible.
-This means that the identifiers for the variables in
+polyhedron referenced by <CODE>Handle</CODE> must be dimension compatible.
+This means that the identifiers for the PPL variables in
 <CODE>Constraint</CODE> must be strictly less than the space
 dimension of the polyhedron. 
 
-<H4><CODE>ppl_insert_generator(+Address, +Generator)</CODE></H4>
+<H4><CODE>ppl_insert_generator(+Handle, +Generator)</CODE></H4>
 
-   Adds the generator <CODE>Generator</CODE> to the polyhedron 
-   \f$P\f$ referenced by <CODE>Address</CODE>.
+   If \f$GS\f$ is the generator system representing
+   the polyhedron referenced by <CODE>Handle</CODE> before execution,
+   then, after execution,
+   <CODE>Handle</CODE> refers to the polyhedron
+   represented by the generator system obtained by adding
+   <CODE>Generator</CODE> to \f$GS\f$.
    Thus after the query
 \code
-   | ?- A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
-        ppl_new_polyhedron(X, 3),
-        ppl_insert_generator(X, vertex(-100*A - 5*B, 8)).
+   ?- ppl_new_polyhedron(X, 3),
+      A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
+      ppl_insert_generator(X, point(-100*A - 5*B, 8)).
 \endcode
-    the polyhedron referenced by \p X is defined to be single vertex 
+    the polyhedron with handle \p X is defined to be single point 
     \f$(-12.5, -0.625, 0)^\transpose\f$ in the vector space \f$\Rset^3\f$.
 
 As for <CODE>ppl_insert_constraint</CODE>, the identifiers for the
-variables in <CODE>Generator</CODE> must be strictly
+PPL variables in <CODE>Generator</CODE> must be strictly
 less than the space dimension of the polyhedron referenced
-by <CODE>Address</CODE>. 
+by <CODE>Handle</CODE>. 
 
-<H4><CODE>ppl_insert_constraints(+Address, +List_of_Constraints)</CODE></H4>
+<H4><CODE>ppl_insert_constraints(+Handle, +List_of_Constraints)</CODE></H4>
 
-   Adds the constraints in list <CODE>List_of_Constraints</CODE>
-   to the polyhedron referenced by <CODE>Address</CODE>.
+   If \f$CS\f$ is the constraint system representing
+   the polyhedron referenced by <CODE>Handle</CODE> before execution,
+   then, after execution,
+   <CODE>Handle</CODE> refers to the polyhedron
+   represented by the constraint system obtained by adding
+   the constraints in list <CODE>List_of_Constraints</CODE> to \f$CS\f$.
    E.g.,
 \code
-   | ?- A = '$VAR'(0), B = '$VAR'(1),
-        ppl_new_polyhedron(X, 2),
+   | ?- ppl_new_polyhedron(X, 2),
+        A = '$VAR'(0), B = '$VAR'(1),
         ppl_insert_constraints(X, [4*A + B >= 3, A = 1]),
-        ppl_get_constraints(X,CS).
+        ppl_get_constraints(X, CS).
  
-   A = A,
-   B = B,
-   X = -32975498,
    CS = [4*A+1*B>=3,1*A=1] ?
 \endcode  
-Note that constraints are not minimized and a query will succeed even when
+The updated polyhedron referenced by <CODE>Handle</CODE> can be empty
+and a query will succeed even when
 <CODE>List_of_Constraints</CODE> is unsatisfiable.
                                                                        
-<H4><CODE>ppl_add_constraints_and_minimize(+Address, 
+<H4><CODE>ppl_add_constraints_and_minimize(+Handle, 
                                    +List_of_Constraints)</CODE></H4>
 
-   Adds the constraints in list <CODE>List_of_Constraints</CODE>
-   to the polyhedron referenced by <CODE>Address</CODE>.
+   If \f$CS\f$ is the constraint system representing
+   the polyhedron referenced by <CODE>Handle</CODE> before execution,
+   then, after execution,
+   <CODE>Handle</CODE> refers to the polyhedron
+   represented by the constraint system obtained by adding
+   the constraints in list <CODE>List_of_Constraints</CODE> to \f$CS\f$.
    E.g.,
 \code
-   | ?- A = '$VAR'(0), B = '$VAR'(1),
-        ppl_new_polyhedron(X, 2),
-        ppl_add_constraints_and_minimize(X, [4*A + B >= 3, A = 1]),
-        ppl_get_constraints(X,CS).
+   ?- ppl_new_polyhedron(X, 2),
+      A = '$VAR'(0), B = '$VAR'(1),
+      ppl_add_constraints_and_minimize(X, [4*A + B >= 3, A = 1]),
+      ppl_get_constraints(X, CS).
 
-   A = A,
-   B = B,
-   X = -33291612,
-   CS = [1*B>= -1,1*A=1] ?
-\endcode                                                                          This will fail if the resulting polyhedron is empty.
+   CS = [1*B>= -1,1*A=1]
+\endcode                                                                          This will fail if, after adding the constraints, the polyhedron is empty.
    E.g., the following will fail,
 \code
-   | ?- A = '$VAR'(0), B = '$VAR'(1),
-       ppl_new_polyhedron(X, 2),
-       ppl_add_constraints_and_minimize(X, [4*A + B >= 3, A = 0, B =< 0]),
-       ppl_get_constraints(X,CS).
+   ?- A = '$VAR'(0), B = '$VAR'(1),
+      ppl_new_polyhedron(X, 2),
+      ppl_add_constraints_and_minimize(X, [4*A + B >= 3, A = 0, B =< 0]),
+      ppl_get_constraints(X, CS).
 \endcode                                                                              
-<H4><CODE>ppl_insert_generators(+Address, +List_of_Generators)</CODE></H4>
+<H4><CODE>ppl_insert_generators(+Handle, +List_of_Generators)</CODE></H4>
 
-   Adds the generators in list <CODE>List_of_Generators</CODE>
-   to the polyhedron referenced by <CODE>Address</CODE> in list order.
+   If \f$GS\f$ is the generator system representing
+   the polyhedron referenced by <CODE>Handle</CODE> before execution,
+   then, after execution,
+   <CODE>Handle</CODE> refers to the polyhedron
+   represented by the generator system obtained by adding
+   the generators in list <CODE>List_of_Generators</CODE> to \f$GS\f$.
 
-   Note that,
-   as explained in the paragraph on generator representation in
-   the Introduction, a non-empty polyhedron must always have a vertex as
-   as one of its generators. Thus care must be taken to ensure that
-   before calling this
-   predicate that either the polyhedron referenced by <CODE>Address</CODE>
+   If the system of generators representing a polyhedron
+   is non-empty, then it must include a point
+   (see the paragraph on generator representation in
+   the Introduction).
+   Thus care must be taken to ensure that, before calling this
+   predicate, either the polyhedron referenced by <CODE>Handle</CODE>
    is non-empty or that whenever <CODE>List_of_Generators</CODE> is
-   non-empty the first element defines a vertex.
-                                                                       
-<H4><CODE>ppl_add_generators_and_minimize(+Address, 
-                                   +List_of_Generators)</CODE></H4>
-
-   Adds the generators in list <CODE>List_of_Generators</CODE>
-   to the polyhedron referenced by <CODE>Address</CODE>.
-
-
-<H4><CODE>ppl_remove_dimensions(+Address, +List_of_PPL_Vars)</CODE></H4>
-
-   The dimensions corresponding to the identifiers of the variables in list
-   <CODE>List_of_PPL_Vars</CODE> are removed from the polyhedron 
-   referenced by <CODE>Address</CODE>.
+   non-empty the first element defines a point.
    E.g.,
 \code
-   | ?- A='$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
-        ppl_new_polyhedron(X, 3),
-        ppl_remove_dimensions(X, [B]),
-        ppl_space_dimension(X,K),
-        ppl_get_generators(X,GS). 
-   A = A,
-   B = B,
-   C = C,
-   K = 2,
-   X = -32974400,
-   GS = [vertex(0),line(1*A),line(1*B),line(0)] ?           
+   ?- ppl_new_empty_polyhedron(X, 3),
+      A='$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+      ppl_insert_generators(X, 
+        [point(1*A + 1*B + 1*C, 1), ray(1*A), ray(2*A)]),
+      ppl_get_generators(X, GS).
+
+   GS = [ray(2*A), point(1*A+1*B+1*C), ray(1*A)]
 \endcode
-Note that as can be seen from this example,
-the identifiers for the remaining variables are renumbered so that
-they are consecutive and the maximum index is less than the number of
-dimensions.
+       
+<H4><CODE>ppl_add_generators_and_minimize(+Handle, 
+                                   +List_of_Generators)</CODE></H4>
 
-<H4><CODE>ppl_remove_higher_dimensions(+Address, +Integer))</CODE></H4>
+   If \f$GS\f$ is the generator system representing
+   the polyhedron referenced by <CODE>Handle</CODE> before execution,
+   then, after execution,
+   <CODE>Handle</CODE> refers to the polyhedron
+   represented by the generator system obtained by adding
+   the generators in list <CODE>List_of_Generators</CODE> to \f$GS\f$.
 
-   Projects the polyhedron referenced by address <CODE>Address</CODE>
-   onto the first <CODE>Integer</CODE> dimensions.
+   Unlike the predicate <CODE>ppl_insert_generators</CODE>,
+   the order of the generators in
+   <CODE>List_of_Generators</CODE> is not important.
+   E.g.,
+\code
+   ?- ppl_new_empty_polyhedron(X, 3),
+      A='$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+      ppl_add_generators_and_minimize(X, 
+        [ray(1*A), ray(2*A), point(1*A + 1*B + 1*C, 1)]),
+      ppl_get_generators(X, GS).
+ 
+   GS = [point(1*A+1*B+1*C), ray(1*A)]
+\endcode
+
+<H4><CODE>ppl_remove_dimensions(+Handle, +List_of_PPL_Vars)</CODE></H4>
+
+   If, before the call is executed, <CODE>Handle</CODE>
+   refers to polyhedron \f$P\f$ then,
+   after execution, <CODE>Handle</CODE> refers to the polyhedron obtained 
+   by removing the dimensions given by the identifiers of the
+   PPL variables in list
+   <CODE>List_of_PPL_Vars</CODE> from \f$P\f$.
+   The identifiers for the remaining PPL variables are renumbered so that
+   they are consecutive and the maximum index is less than the number
+   of dimensions.
+   E.g.,
+\code
+   ?- ppl_new_polyhedron(X, 3),
+      A='$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+      ppl_remove_dimensions(X, [B]),
+      ppl_space_dimension(X, K),
+      ppl_get_generators(X, GS). 
+
+   K = 2,
+   GS = [point(0),line(1*A),line(1*B),line(0)]         
+\endcode
+
+<H4><CODE>ppl_remove_higher_dimensions(+Handle, +Integer))</CODE></H4>
+
+   If, before the call is executed, <CODE>Handle</CODE>
+   refers to polyhedron \f$P\f$ then,
+   after execution, <CODE>Handle</CODE> refers to the polyhedron obtained 
+   by projecting \f$P\f$ onto the first <CODE>Integer</CODE> dimensions.
    E.g. 
 \code
-   | ?- ppl_new_polyhedron(X,5),
-        ppl_remove_higher_dimensions(X,3),
-        ppl_space_dimension(X,K).
+   ?- ppl_new_polyhedron(X, 5),
+      ppl_remove_higher_dimensions(X, 3),
+      ppl_space_dimension(X, K).
  
    K = 3,
-   X = -33292540 ?
 \endcode
-   The polyhedron \f$P\f$ at the <CODE>Address</CODE>
+   The polyhedron \f$P\f$ referenced by <CODE>Handle</CODE>
    must have space dimension \f$k\f$ greater that or equal to
    <CODE>Integer</CODE>.
 
-<H4><CODE>ppl_add_dimensions_and_embed(+Address, +Integer)</CODE></H4>
+<H4><CODE>ppl_add_dimensions_and_embed(+Handle, +Integer)</CODE></H4>
 
-   Adds <CODE>Integer</CODE> new dimensions and embeds the old polyhedron
-   referenced by <CODE>Address</CODE> in the new space.
+   If, before the call is executed, <CODE>Handle</CODE>
+   refers to polyhedron \f$P\f$ and
+   $\f$Q\f$ is the polyhedron obtained from \f$P\f$ by
+   adding <CODE>Integer</CODE> new dimensions and embedding \f$P\f$
+   in the new space, then, after execution, <CODE>Handle</CODE>
+   refers to \f$Q\f$.
    E.g.,
 \code
-   | ?- ppl_new_polyhedron(X,0),
-        ppl_add_dimensions_and_embed(X,2),
-        ppl_get_constraints(X,CS),
-        ppl_get_generators(X,GS).
+   ?- ppl_new_polyhedron(X, 0),
+      ppl_add_dimensions_and_embed(X, 2),
+      ppl_get_constraints(X, CS),
+      ppl_get_generators(X, GS).
  
-   X = -32775690,
    CS = [],
-   GS = [vertex(0),line(1*A),line(1*B)] ?
+   GS = [point(0),line(1*A),line(1*B)]
 \endcode
     
-<H4><CODE>ppl_add_dimensions_and_project(+Address, +Integer)</CODE></H4>
+<H4><CODE>ppl_add_dimensions_and_project(+Handle, +Integer)</CODE></H4>
 
-   Adds <CODE>Integer</CODE> new dimensions and does not
-   embed the old polyhedron referenced by <CODE>Address</CODE>
-   in the new space.
+   If, before the call is executed, <CODE>Handle</CODE>
+   refers to polyhedron \f$P\f$ and
+   $\f$Q\f$ is the polyhedron obtained from \f$P\f$ by
+   adding <CODE>Integer</CODE> new dimensions and projecting \f$P\f$
+   in the new space, then, after execution, <CODE>Handle</CODE>
+   refers to \f$Q\f$.
    E.g.,
 \code
-   | ?- ppl_new_polyhedron(X,0),
-        ppl_add_dimensions_and_project(X,2),
-        ppl_get_constraints(X,CS),
-        ppl_get_generators(X,GS).
+   ?- ppl_new_polyhedron(X, 0),
+      ppl_add_dimensions_and_project(X, 2),
+      ppl_get_constraints(X, CS),
+      ppl_get_generators(X, GS).
  
-   X = -32920674,
    CS = [1*A=0,1*B=0],
-   GS = [vertex(0)] ?
+   GS = [point(0)]
 \endcode
 
-<H4><CODE>ppl_check_empty(+Address)</CODE></H4>
+<H4><CODE>ppl_check_empty(+Handle)</CODE></H4>
 
    Succeeds if and only if the polyhedron referenced by
-   <CODE>Address</CODE> is empty.
+   <CODE>Handle</CODE> is empty.
 
-<H4><CODE>ppl_check_universe(+Address)</CODE></H4>
-
-   Succeeds if and only if the polyhedron referenced by
-   <CODE>Address</CODE> is the universe.
-
-<H4><CODE>ppl_is_bounded(+Address)</CODE></H4>
+<H4><CODE>ppl_check_universe(+Handle)</CODE></H4>
 
    Succeeds if and only if the polyhedron referenced by
-   <CODE>Address</CODE> is bounded.
+   <CODE>Handle</CODE> is the universe.
 
-<H4><CODE>ppl_get_constraints(+Address, -List_of_Constraints)</CODE></H4>
+<H4><CODE>ppl_is_bounded(+Handle)</CODE></H4>
 
-   Binds <CODE>List_of_Constraints</CODE>  to the system of constraints
-   defining the polyhedron at <CODE>Address</CODE>.
-   E.g., 
-\code
-   | ?- A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
-        ppl_new_polyhedron(X, 3),
-	ppl_insert_constraint(X, 4*A+B-2*C >= 5),
-	ppl_get_constraints(X, CS).
+   Succeeds if and only if the polyhedron referenced by
+   <CODE>Handle</CODE> is bounded.
 
-   A = A,
-   B = B,
-   C = C,
-   X = -32975760,
-   CS = [4*A+1*B+ -2*C>=5] ?
-\endcode
+<H4><CODE>ppl_get_constraints(+Handle, -List_of_Constraints)</CODE></H4>
 
-<H4><CODE>ppl_get_generators(+Address, -List_of_Generators)</CODE></H4>
+   <CODE>List_of_Constraints</CODE> is unified with a list of
+   the constraints in the constraints system
+   representing the polyhedron referenced by <CODE>Handle</CODE>.
 
-   Binds <CODE>List_of_Generators</CODE> to the system of generators
-   defining the polyhedron at <CODE>Address</CODE>.
-   E.g.,
-\code
-   | ?- A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
-        ppl_new_polyhedron(X, 3),
-	ppl_insert_constraint(X, 4*A+B-2*C >= 5),
-	ppl_get_generators(X, GS).
+<H4><CODE>ppl_get_generators(+Handle, -List_of_Generators)</CODE></H4>
 
-   A = A,
-   B = B,
-   C = C,
-   X = -32975734,
-   GS = [ray(-1*C),vertex(-5*C,2),line(-2*B+ -1*C),line(-1*A+ -2*C)] ?  
-\endcode
+   <CODE>List_of_Generators</CODE> is unified with a list of
+   the generators in the generators system
+   representing the polyhedron referenced by <CODE>Handle</CODE>.
 
-<H4><CODE>ppl_intersection_assign(+Address_1, +Address_2)</CODE></H4>
+<H4><CODE>ppl_intersection_assign(+Handle_1, +Handle_2)</CODE></H4>
 
-   Computes the intersection of the polyhedra referenced by
-   <CODE>Address_1</CODE> and <CODE>Address_2</CODE> and places
-   the result at <CODE>Address_1</CODE>.
+   Computes the intersection \f$P\f$ of the polyhedra referenced by
+   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
+   After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
 
-<H4><CODE>ppl_intersection_assign_and_minimize(+Address_1,
-                     +Address_2)</CODE></H4>
+<H4><CODE>ppl_intersection_assign_and_minimize(+Handle_1,
+                     +Handle_2)</CODE></H4>
 
-   Computes the intersection of the polyhedra referenced by
-   <CODE>Address_1</CODE> and <CODE>Address_2</CODE> and places
-   the result at <CODE>Address_1</CODE>.
+   Computes the intersection \f$P\f$ of the polyhedra referenced by
+   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
+   After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
 
-<H4><CODE>ppl_convex_hull_assign(+Address_1, +Address_2)</CODE></H4>
 
-   Computes the convex hull of the polyhedra referenced by
-   <CODE>Address_1</CODE> and <CODE>Address_2</CODE> and places
-   the result at <CODE>Address_1</CODE>.
+<H4><CODE>ppl_convex_hull_assign(+Handle_1, +Handle_2)</CODE></H4>
 
-<H4><CODE>ppl_convex_hull_assign_and_minimize(+Address_1,
-               +Address_2)</CODE></H4>
+   Computes the convex hull \f$P\f$ of the polyhedra referenced by
+   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
+   After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
 
-   Computes the convex hull of the polyhedra referenced by
-   <CODE>Address_1</CODE> and <CODE>Address_2</CODE> and places
-   the result at <CODE>Address_1</CODE>.
+<H4><CODE>ppl_convex_hull_assign_and_minimize(+Handle_1,
+               +Handle_2)</CODE></H4>
 
-<H4><CODE>ppl_convex_difference_assign(+Address_1, +Address_2)</CODE></H4>
+   Computes the convex hull \f$P\f$ of the polyhedra referenced by
+   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
+   After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
 
-   Computes the convex hull of the set-theoretic difference of
+<H4><CODE>ppl_convex_difference_assign(+Handle_1, +Handle_2)</CODE></H4>
+
+   Computes the convex hull \f$P\f$ of the set-theoretic difference of
    the polyhedra referenced by
-   <CODE>Address_1</CODE> and <CODE>Address_2</CODE> and places
-   the result at <CODE>Address_1</CODE>.
+   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
+   After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
 
-<H4><CODE>ppl_convex_difference_assign_and_minimize(+Address_1,
-               +Address_2)</CODE></H4>
+<H4><CODE>ppl_convex_difference_assign_and_minimize(+Handle_1,
+               +Handle_2)</CODE></H4>
 
-   Computes the convex hull of the set-theoretic difference of
+   Computes the convex hull \f$P\f$ of the set-theoretic difference of
    the polyhedra referenced by
-   <CODE>Address_1</CODE> and <CODE>Address_2</CODE> and places
-   the result at <CODE>Address_1</CODE>.
+   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
+   After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
 
-<H4><CODE>ppl_widening_assign(+Address_1, +Address_2)</CODE></H4>
+<H4><CODE>ppl_widening_assign(+Handle_1, +Handle_2)</CODE></H4>
 
-   Computes the widening between the polyhedra referenced by
-   <CODE>Address_1</CODE> and <CODE>Address_2</CODE> and places
-   the result at <CODE>Address_1</CODE>.
+   Computes the widening \f$P\f$ between the polyhedra referenced by
+   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
+   After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
 
-<H4><CODE>ppl_limited_widening_assign(+Address_1, +Address_2,
+<H4><CODE>ppl_limited_widening_assign(+Handle_1, +Handle_2,
                +List_of_Constraints)</CODE></H4>
 
-   Limits the widening between the polyhedra referenced by
-   <CODE>Address_1</CODE> and <CODE>Address_2</CODE>
-   by <CODE>List_of_Constraints</CODE> and places
-   the result at <CODE>Address_1</CODE>.
+   Computes the widening \f$P\f$ between the polyhedra referenced by
+   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>,
+   limited by <CODE>List_of_Constraints</CODE>.
+   After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
 
-<H4><CODE>ppl_polyhedron_included_or_equal(+Address_1, +Address_2)</CODE></H4>
-
-   Succeeds if and only if the polyhedron referenced by
-   <CODE>Address_1</CODE> is included in or
-   equal to the polyhedron referenced by <CODE>Address_2</CODE>.
-
-<H4><CODE>ppl_polyhedron_equal(+Address_1, +Address_2)</CODE></H4>
+<H4><CODE>ppl_polyhedron_included_or_equal(+Handle_1, +Handle_2)</CODE></H4>
 
    Succeeds if and only if the polyhedron referenced by
-   <CODE>Address_1</CODE> is
-   equal to the polyhedron referenced by <CODE>Address_2</CODE>.
+   <CODE>Handle_1</CODE> is included in or
+   equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
-<H4><CODE>ppl_polyhedron_strictly_included(+Address_1, +Address_2)</CODE></H4>
+<H4><CODE>ppl_polyhedron_equal(+Handle_1, +Handle_2)</CODE></H4>
 
    Succeeds if and only if the polyhedron referenced by
-   <CODE>Address_1</CODE> is included in but not
-   equal to the polyhedron referenced by <CODE>Address_2</CODE>.
+   <CODE>Handle_1</CODE> is
+   equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
-<H4><CODE>ppl_affine_image(+Address, +PPL_Var,
+<H4><CODE>ppl_polyhedron_strictly_included(+Handle_1, +Handle_2)</CODE></H4>
+
+   Succeeds if and only if the polyhedron referenced by
+   <CODE>Handle_1</CODE> is included in but not
+   equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
+
+<H4><CODE>ppl_affine_image(+Handle, +PPL_Var,
                +LinExpr, +Integer)</CODE></H4>
 
-Transforms the polyhedron referenced by <CODE>Address</CODE> 
+   Transforms the polyhedron referenced by <CODE>Handle</CODE> 
    assigning the affine expression <CODE>LinExpr</CODE>/<CODE>Integer</CODE>
    to <CODE>PPL_Var</CODE>.
 
-<H4><CODE>ppl_affine_preimage(+Address, +PPL_Var,
+<H4><CODE>ppl_affine_preimage(+Handle, +PPL_Var,
                +LinExpr, +Integer)</CODE></H4>
 
 This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 
 
-<H4><CODE>ppl_relation_with_constraint(+Address, +Constraint,
+<H4><CODE>ppl_relation_with_constraint(+Handle, +Constraint,
                -Relation)</CODE></H4>
 
 Computes the relation the polyhedron \f$P\f$
-referenced by <CODE>Address</CODE>
+referenced by <CODE>Handle</CODE>
 has with <CODE>Constraint</CODE>.
 <CODE>Relation</CODE> is unified to a value as follows:
 
@@ -536,11 +545,11 @@ is included in the set of points saturating
 <CODE>nothing</CODE>, if nothing is known about the relation.
 
 
-<H4><CODE>ppl_relation_with_generator(+Address, +Generator,
+<H4><CODE>ppl_relation_with_generator(+Handle, +Generator,
                -Relation)</CODE></H4>
 
 Computes the relation the polyhedron \f$P\f$
-referenced by <CODE>Address</CODE>
+referenced by <CODE>Handle</CODE>
 has with <CODE>Generator</CODE>.
 <CODE>Relation</CODE>, is unified to a value as follows:
 
