@@ -2274,27 +2274,13 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       }
     }
     else {
-      assert(!g.is_closure_point());
       // Note: here we have a _legal_ topology mismatch, because
-      // `g' is NOT a closure point.
+      // `g' is a non-necessarily closed generator but it is a point.
       // However, by barely invoking `gen_sys.insert(g)' we would
       // cause a change in the topology of `gen_sys', which is wrong.
       // Thus, we insert a "topology corrected" copy of `g'.
       LinExpression nc_expr = LinExpression(g);
-      switch (g.type()) {
-      case Generator::LINE:
-	gen_sys.insert(Generator::line(nc_expr));
-	break;
-      case Generator::RAY:
-	gen_sys.insert(Generator::ray(nc_expr));
-	break;
-      case Generator::POINT:
-	gen_sys.insert(Generator::point(nc_expr, g.divisor()));
-	break;
-      default:
-	throw std::runtime_error("PPL::C_Polyhedron::add_generator"
-				 "(const Generator& g)");
-      }
+      gen_sys.insert(Generator::point(nc_expr, g.divisor()));
       // Since `gen_sys' was empty, after inserting `g' we have to resize
       // the system of generators to have the right dimension.
       gen_sys.adjust_topology_and_dimension(topology(), space_dim);
