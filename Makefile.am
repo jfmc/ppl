@@ -27,7 +27,12 @@ DISTCHECK_CONFIGURE_FLAGS = \
 srcdir = @srcdir@
 VPATH = @srcdir@
 
-EXTRA_DIST = configure ppl.lsm.in ppl.spec.in acinclude.m4 BUGS CREDITS
+EXTRA_DIST = \
+configure \
+ppl.lsm.in \
+ppl.spec.in \
+acinclude.m4 \
+BUGS CREDITS STANDARDS
 
 @SET_MAKE@
 
