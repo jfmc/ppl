@@ -9,10 +9,12 @@ written, debugged and improved by the following people:
   Patricia M. Hill [2] <hill@comp.leeds.ac.uk>
   Enea Zaffanella [3]  <zaffanella@cs.unipr.it>
 
+
 An important contributor to the development of the PPL, up until
 December 2002, was
 
   Elisa Ricci          (former student of the University of Parma)
+
 
 Other contributors:
 
@@ -21,15 +23,23 @@ Other contributors:
                        coefficients.
 
   Abramo Bagnara       (Opera Unica) rewrote and generalized the support
-                       for checked coefficients.
+                       for checked coefficients.  He also wrote the
+                       support for extended numbers.
 
-  Elena Mazzi          (University of Parma) Co-wrote the initial version
+  Elena Mazzi          (University of Parma) co-wrote the initial version
                        of our implementation of bounded differences and
                        octagons.
 
-  Barbara Quartieri    (University of Parma) Co-wrote the initial version
+  Barbara Quartieri    (University of Parma) co-wrote the initial version
                        of our implementation of bounded differences and
                        octagons.
+
+  Maximiliano Marchesi (University of Parma) helped to improve the
+                       documentation for bounded differences.
+
+  Andrea Cimino        (University of Parma) wrote the initial version
+                       of our primal simplex solver.
+
 
 The following people took part in the first phase of the library's
 development:
