@@ -27,22 +27,23 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Row.defs.hh"
 #include "Variable.defs.hh"
+#include "ConSys.defs.hh"
 #include "GenSys.defs.hh"
 #include "LinExpression.defs.hh"
+#include "Polyhedron.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
-  //! Output operator.
-  /*! \relates Generator */
-  std::ostream&
-  operator<<(std::ostream& s, const Generator& g);
+  // FIXME: this is repeated from Polyhedron.defs.hh
+  // and put in the namespace here to declare it friend later.
+  bool operator<=(const Polyhedron& x, const Polyhedron& y);
+}
 
-  // Put them in the namespace here to declare them friend later.
-  Generator line(const LinExpression& e);
-  Generator ray(const LinExpression& e);
-  Generator point(const LinExpression& e, const Integer& d);
-  Generator closure_point(const LinExpression& e, const Integer& d);
+namespace Parma_Polyhedra_Library {
+
+  // Put it in the namespace here to declare it friend later.
+  std::ostream& operator<<(std::ostream& s, const Generator& g);
 
 }
 
@@ -244,14 +245,14 @@ private:
   void
   throw_invalid_argument(const char* method, const char* reason) const;
 
+public:
   //! Returns the line of direction \p e.
   /*!
     \exception std::invalid_argument thrown if the homogeneous part
                                      of \p e represents the origin
                                      of the vector space.
   */
-  friend Generator
-  Parma_Polyhedra_Library::line(const LinExpression& e);
+  static Generator line(const LinExpression& e);
 
   //! Returns the ray of direction \p e.
   /*!
@@ -259,8 +260,7 @@ private:
                                      of \p e represents the origin
 				     of the vector space.
   */
-  friend Generator
-  Parma_Polyhedra_Library::ray(const LinExpression& e);
+  static Generator ray(const LinExpression& e);
 
   //! Returns the point at \p e / \p d.
   /*!
@@ -268,10 +268,8 @@ private:
     LinExpression::zero() and Integer_one(), respectively.
     \exception std::invalid_argument thrown if \p d is zero.
   */
-  friend Generator
-  Parma_Polyhedra_Library::point(const LinExpression& e
-				 = LinExpression::zero(),
-				 const Integer& d = Integer_one());
+  static Generator point(const LinExpression& e = LinExpression::zero(),
+			 const Integer& d = Integer_one());
 
   //! Returns the closure point at \p e / \p d.
   /*!
@@ -279,10 +277,9 @@ private:
     LinExpression::zero() and Integer_one(), respectively.
     \exception std::invalid_argument thrown if \p d is zero.
   */
-  friend Generator
-  Parma_Polyhedra_Library::closure_point(const LinExpression& e
-					 = LinExpression::zero(),
-					 const Integer& d = Integer_one());
+  static Generator
+  closure_point(const LinExpression& e = LinExpression::zero(),
+		const Integer& d = Integer_one());
 
 public:
   //! Ordinary copy-constructor.
@@ -353,6 +350,22 @@ private:
   friend class Parma_Polyhedra_Library::GenSys;
   friend class Parma_Polyhedra_Library::GenSys::const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
+  friend const Integer&
+  Parma_Polyhedra_Library::operator*(const Constraint& c, const Generator& g);
+  friend const Integer&
+  Parma_Polyhedra_Library::reduced_scalar_product(const Constraint& c,
+						  const Generator& g);
+  friend
+  Parma_Polyhedra_Library::LinExpression::LinExpression(const Generator& g);
+  friend bool
+  Parma_Polyhedra_Library::
+  ConSys::satisfies_all_constraints(const Generator& g) const;
+  friend bool Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
+						  const Polyhedron& y);
+
+  //! Output operator.
+  friend std::ostream&
+  Parma_Polyhedra_Library::operator<<(std::ostream& s, const Generator& g);
 
   //! Copy-constructor with given size.
   Generator(const Generator& g, size_t sz);

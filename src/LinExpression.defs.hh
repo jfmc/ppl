@@ -30,8 +30,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Row.defs.hh"
 #include "Integer.types.hh"
 #include "Variable.types.hh"
-#include "Constraint.types.hh"
-#include "Generator.types.hh"
+#include "ConSys.defs.hh"
+#include "GenSys.defs.hh"
 #include "Polyhedron.types.hh"
 #include <cstddef>
 
@@ -163,6 +163,27 @@ public:
 private:
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;
+  friend class Parma_Polyhedra_Library::Polyhedron;
+  friend void
+  Parma_Polyhedra_Library::ConSys::affine_preimage(size_t v,
+						   const LinExpression& expr,
+						   const Integer& denominator);
+  friend void
+  Parma_Polyhedra_Library::GenSys::affine_image(size_t v,
+						const LinExpression& expr,
+						const Integer& denominator);
+  /*
+  friend void
+  Parma_Polyhedra_Library::
+  Polyhedron::affine_image(size_t v,
+			   const LinExpression& expr,
+			   const Integer& denominator);
+  friend void
+  Parma_Polyhedra_Library::
+  Polyhedron::affine_preimage(size_t v,
+			      const LinExpression& expr,
+			      const Integer& denominator);
+  */
 
   //! Copy-constructor with a specified dimension.
   LinExpression(const LinExpression& e, size_t sz);

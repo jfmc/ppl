@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Row.defs.hh"
 #include "Variable.defs.hh"
-#include "LinExpression.types.hh"
+#include "LinExpression.defs.hh"
 #include "ConSys.defs.hh"
 #include "Polyhedron.types.hh"
 #include <iosfwd>
@@ -231,6 +231,13 @@ private:
   friend class Parma_Polyhedra_Library::ConSys;
   friend class Parma_Polyhedra_Library::ConSys::const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
+  friend const Integer&
+  Parma_Polyhedra_Library::operator*(const Constraint& c, const Generator& g);
+  friend const Integer&
+  Parma_Polyhedra_Library::reduced_scalar_product(const Constraint& c,
+						  const Generator& g);
+  friend
+  Parma_Polyhedra_Library::LinExpression::LinExpression(const Constraint& c);
 
   //! Default constructor: private and not implemented.
   Constraint();

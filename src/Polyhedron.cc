@@ -2027,13 +2027,13 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       LinExpression nc_expr = LinExpression(g);
       switch (g.type()) {
       case Generator::LINE:
-	gen_sys.insert(line(nc_expr));
+	gen_sys.insert(Generator::line(nc_expr));
 	break;
       case Generator::RAY:
-	gen_sys.insert(ray(nc_expr));
+	gen_sys.insert(Generator::ray(nc_expr));
 	break;
       case Generator::POINT:
-	gen_sys.insert(point(nc_expr, g.divisor()));
+	gen_sys.insert(Generator::point(nc_expr, g.divisor()));
 	break;
       default:
 	throw std::runtime_error("PPL::C_Polyhedron::add_generator"
@@ -2064,13 +2064,13 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       LinExpression nc_expr = LinExpression(g);
       switch (g.type()) {
       case Generator::LINE:
-	gen_sys.insert(line(nc_expr));
+	gen_sys.insert(Generator::line(nc_expr));
 	break;
       case Generator::RAY:
-	gen_sys.insert(ray(nc_expr));
+	gen_sys.insert(Generator::ray(nc_expr));
 	break;
       case Generator::POINT:
-	gen_sys.insert(point(nc_expr, g.divisor()));
+	gen_sys.insert(Generator::point(nc_expr, g.divisor()));
 	break;
       default:
 	throw std::runtime_error("PPL::C_Polyhedron::add_generator"

@@ -52,7 +52,7 @@ PPL::Generator::throw_invalid_argument(const char* method,
 }
 
 PPL::Generator
-PPL::point(const LinExpression& e, const Integer& d) {
+PPL::Generator::point(const LinExpression& e, const Integer& d) {
   if (d == 0)
     throw std::invalid_argument("Generator PPL::point(e, d): d == 0");
   LinExpression ec = e;
@@ -73,7 +73,7 @@ PPL::point(const LinExpression& e, const Integer& d) {
 }
 
 PPL::Generator
-PPL::closure_point(const LinExpression& e, const Integer& d) {
+PPL::Generator::closure_point(const LinExpression& e, const Integer& d) {
   if (d == 0)
     throw std::invalid_argument("Generator PPL::closure_point(e, d): d == 0");
   // Adding the \epsilon dimension with coefficient 0.
@@ -89,7 +89,7 @@ PPL::closure_point(const LinExpression& e, const Integer& d) {
 }
 
 PPL::Generator
-PPL::ray(const LinExpression& e) {
+PPL::Generator::ray(const LinExpression& e) {
   // The origin of the space cannot be a ray.
   if (e.all_homogeneous_terms_are_zero())
     throw std::invalid_argument("PPL::ray(e): the origin cannot be a ray");
@@ -104,7 +104,7 @@ PPL::ray(const LinExpression& e) {
 }
 
 PPL::Generator
-PPL::line(const LinExpression& e) {
+PPL::Generator::line(const LinExpression& e) {
   // The origin of the space cannot be a line.
   if (e.all_homogeneous_terms_are_zero())
     throw std::invalid_argument("PPL::line(e): the origin cannot be a line");
@@ -122,7 +122,6 @@ PPL::line(const LinExpression& e) {
   return g;
 }
 
-/*! \relates Parma_Polyhedra_Library::Generator */
 std::ostream&
 PPL::operator<<(std::ostream& s, const Generator& g) {
   bool needed_divisor = false;

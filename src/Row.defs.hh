@@ -218,11 +218,25 @@ namespace Parma_Polyhedra_Library {
   const Integer& operator*(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Computes the scalar product between \p c and \p g.
+  /*! \relates Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  const Integer& operator*(const Constraint& c, const Generator& g);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief Computes the \e reduced scalar product between \p x and \p y,
   //! where the \f$\epsilon\f$ coefficient of \p x is ignored.
   /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   const Integer& reduced_scalar_product(const Row& x, const Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \brief Computes the \e reduced scalar product between \p c and \p g,
+  //! where the \f$\epsilon\f$ coefficient of \p c is ignored.
+  /*! \relates Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  const Integer& reduced_scalar_product(const Constraint& c,
+					const Generator& g);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! The basic comparison function.
