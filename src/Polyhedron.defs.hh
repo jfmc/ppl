@@ -310,8 +310,14 @@ public:
   bool limited_widening_assign(const Polyhedron& y, ConSys& constraints);
 
   //! Returns the system of constraints.
+  //! \exception std::invalid_argument constraints of \p *this can not 
+  //!                                  be obtained (\p *this is empty
+  //!                                  or zero-dimensional).
   const ConSys& constraints() const;
   //! Returns the system of generators.
+  //! \exception std::invalid_argument generators of \p *this can not 
+  //!                                  be obtained (\p *this is empty
+  //!                                  or zero-dimensional). 
   const GenSys& generators() const;
 
   //! Inserts a new constraint \p c into the system of constraints.
@@ -325,7 +331,7 @@ public:
   //!                      expression is assigned.
   //! \param expr          The affine expression.
   //! \param denominator   The denominator of the affine expression.
-  //! \exception std::invalid_argument \p denominator is zero.
+  //!   \exception std::invalid_argument \p denominator is zero.
   void assign_variable(const Variable& var, 
 		       const LinExpression& expr,
 		       Integer& denominator);
@@ -374,7 +380,7 @@ public:
   void add_dimensions_and_embed(size_t add_dim);
   //! Adds new dimensions to the polyhedron 
   //! and does not embed it in the new space.
-  //! \param add_dim      The number of dimensions to add. 
+  //! \param add_dim      The number of dimensions to add.
   void add_dimensions_and_project(size_t add_dim);
   //! Removes the specified dimensions.
   //! \param to_be_remove The set of variable to remove. 
@@ -384,14 +390,20 @@ public:
   //!                              current system of constraints.
   //! \return                      <CODE>false</CODE> if the resulting 
   //!                              polyhedron is empty.
+  //! \exception std::invalid_argument \p *this and \p constraints_to_add
+  //!                                  does not have the same dimension.
   bool add_constraints(ConSys& constraints_to_add);
   //! Adds the specified constraints without minimizing.
   //! \param  constraints_to_add   The constraints that will be added to the 
-  //!                              current system of constraints
+  //!                              current system of constraints.
+  //! \exception std::invalid_argument \p *this and \p constraints_to_add
+  //!                                  does not have the same dimension
   void add_constraints_lazy(ConSys& constraints_to_add);
   //! Adds the specified generators.
   //! \param  generators_to_add   The generators that will be added to the 
   //!                             current system of generators.
+  //! \exception std::invalid_argument \p *this and \p generators_to_add
+  //!                                  does not have the same dimension
   void add_generators(GenSys& generators_to_add);
   //! Returns <CODE>true</CODE> if and only if the polyhedron is empty.
   bool check_empty() const;

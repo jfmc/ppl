@@ -759,8 +759,10 @@ PPL::Polyhedron::add_dimensions(Matrix& mat1,
 */
 void
 PPL::Polyhedron::add_dimensions_and_embed(size_t add_dim) {
-  assert(!is_empty());
-  assert(add_dim != 0);
+  // Adding dimensions to the empty polyhedron
+  // or adding no dimensions to any polyhedron is a no-op.
+  if (add_dim == 0 || is_empty())
+    return;
   if (is_zero_dim()) {
     // We must create also the column (and the row, since we add a square
     // matrix) of the inhomogeneous term.
@@ -772,7 +774,7 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t add_dim) {
   // of constraints, while it is necessary to add new generators 
   // to the matrix of generators: the vectors of the canonical basis for the 
   // added dimensions.
-  // This means to consider for each new dimensions `x_k' the line 
+  // This means to consider for each new dimensions `x[k]' the line 
   // having that direction. This is done by invoking 
   // the function add_dimension() giving the matrix of generators 
   // as second argument.
@@ -810,8 +812,10 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t add_dim) {
 */
 void
 PPL::Polyhedron::add_dimensions_and_project(size_t add_dim) {
-  assert(!is_empty());
-  assert(add_dim != 0);
+  // Adding dimensions to the empty polyhedron
+  // or adding no dimensions to any polyhedron is a no-op.
+  if (add_dim == 0 || is_empty())
+    return;
   if (is_zero_dim()) {
     // We must create also the column (and the row, since we add a square
     // matrix) of the inhomogeneous term.
@@ -889,6 +893,24 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>&
   }
 }
 
+static void
+throw_different_dimensions(const char* method,
+			   const PPL::Polyhedron& x,
+			   const PPL::Matrix& y) {
+  std::string what;
+  std::ostringstream s(what);
+  s << method << ":" << std::endl
+    << "this->num_dimensions == " << x.num_dimensions()
+    << ", y->num_dimensions == " ;
+  size_t y_num_columns = y.num_columns();
+  if (y_num_columns == 0)
+    s << y_num_columns;
+  else
+    s << y_num_columns - 1;
+  throw std::invalid_argument(s.str());
+}
+
+
 /*!
   Adds further constraints to a polyhedron and computes the new polyhedron
   satisfying all the constraints.
@@ -902,9 +924,19 @@ PPL::Polyhedron::add_constraints(ConSys& constraints_to_add) {
        << "+++ y +++" << endl
        << constraints_to_add << endl;
 #endif
-
-  assert(!is_empty());
-
+  
+  // If the polyhedrn is zero-dimensional and `constraints_to_add' has 
+  // zero columns, the resulting polyhedron is zero-dimensional too.  
+  // It is illegal for the polyhedron to be zero-dimensional and 
+  // the matrix to have some columns (or vice versa). 
+  if (is_zero_dim() || constraints_to_add.num_columns() == 0) {
+    if (!is_zero_dim() || !(constraints_to_add.num_columns() == 0))
+      throw_different_dimensions("PPL::Polyhedron::add_constraints(c)",
+				 *this, constraints_to_add);
+    else
+      return true;
+  }
+ 
   // Polyhedron::add_and_minimize() requires that
   // the matrix of constraints to add is sorted.
   if (!constraints_to_add.is_sorted())
@@ -916,7 +948,9 @@ PPL::Polyhedron::add_constraints(ConSys& constraints_to_add) {
 
   //  The system of current constraints and the one of constraints to 
   // add must have the same dimension.
-  assert(con_sys.num_columns() == constraints_to_add.num_columns());
+  if (con_sys.num_columns() != constraints_to_add.num_columns())
+    throw_different_dimensions("PPL::Polyhedron::add_constraints(c)",
+			       *this, constraints_to_add);  
 
   obtain_sorted_constraints_with_sat_c();
 
@@ -1034,7 +1068,6 @@ PPL::Polyhedron::insert(const Generator& g) {
 
 /*!
   Adds specified constraints to a Polyhedron without minimizing.
-  If the returned value is <CODE>false</CODE> then the polyhedron is empty.
 */
 void
 PPL::Polyhedron::add_constraints_lazy(ConSys& constraints_to_add) {
@@ -1046,19 +1079,33 @@ PPL::Polyhedron::add_constraints_lazy(ConSys& constraints_to_add) {
        << constraints_to_add << endl;
 #endif
 
-  assert(!is_empty());
-  assert(!is_zero_dim());
-
+  if (is_empty())
+    return;
+  
+  // If the polyhedrn is zero-dimensional and `constraints_to_add' has 
+  // zero columns, the resulting polyhedron is zero-dimensional too.  
+  // It is illegal for the polyhedron to be zero-dimensional and 
+  // the matrix to have some columns (or vice versa). 
+  if (is_zero_dim() || constraints_to_add.num_columns() == 0) {
+    if (!is_zero_dim() || !(constraints_to_add.num_columns() == 0))
+      throw_different_dimensions("PPL::Polyhedron::add_constraints_lazy(y)",
+				 *this, constraints_to_add);
+    else
+      return;
+  }
+ 
   if (!constraints_are_up_to_date())
     update_constraints();
 
   // Matrix::merge_rows_assign() requires both matrices to be sorted.
   if (!constraints_to_add.is_sorted())
     constraints_to_add.sort_rows();
-
-  // Existing constraints and new given constraints must have
-  // the same dimension.
-  assert(con_sys.num_columns() == constraints_to_add.num_columns());
+  
+  // The system of current constraints and the one of constraints to 
+  // add must have the same dimension.
+  if (con_sys.num_columns() != constraints_to_add.num_columns())
+    throw_different_dimensions("PPL::Polyhedron::add_constraints_lazy(c)",
+			       *this, constraints_to_add);  
 
   con_sys.sort_rows();
 
@@ -1082,11 +1129,25 @@ PPL::Polyhedron::add_constraints_lazy(ConSys& constraints_to_add) {
 */
 void
 PPL::Polyhedron::add_generators(GenSys& generators_to_add) {
-  assert(!is_zero_dim());
+  // If the polyhedrn is zero-dimensional and `generators_to_add' has 
+  // zero columns, the resulting polyhedron is zero-dimensional too.  
+  // It is illegal for the polyhedron to be zero-dimensional and 
+  // the matrix to have some columns (or vice versa). 
+  if (is_zero_dim() || generators_to_add.num_columns() == 0) {
+    if (!is_zero_dim() || !(generators_to_add.num_columns() == 0))
+      throw_different_dimensions("PPL::Polyhedron::add_generators(g)",
+				 *this, generators_to_add);
+    else
+      return;
+  }
+ 
   // The system of current generators and the one of generators to 
   // add must have the same dimension.
-  assert(gen_sys.num_columns() == generators_to_add.num_columns());
-  if (!generators_to_add.is_sorted())
+  if (gen_sys.num_columns() != generators_to_add.num_columns())
+    throw_different_dimensions("PPL::Polyhedron::add_generators(g)",
+			       *this, generators_to_add);  
+
+   if (!generators_to_add.is_sorted())
       generators_to_add.sort_rows();
   if (!is_empty()) {
     // add_and_minimize() requires generators_to_add to be sorted.

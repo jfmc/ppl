@@ -291,8 +291,12 @@ Parma_Polyhedra_Library::operator >(const Polyhedron& x,
 */
 INLINE const Parma_Polyhedra_Library::ConSys&
 Parma_Polyhedra_Library::Polyhedron::constraints() const {
-  assert(!is_empty());
-  assert(!is_zero_dim());
+  if (is_empty())
+    throw std::invalid_argument("PPL::Polyhedron::constraints() "
+				"*this is empty");
+   if (is_zero_dim())
+    throw std::invalid_argument("PPL::Polyhedron::constraints() "
+				"*this is zero-dimensional");
   if (!constraints_are_up_to_date())
     update_constraints();
 
@@ -323,8 +327,13 @@ Parma_Polyhedra_Library::Polyhedron::constraints() const {
 */
 INLINE const Parma_Polyhedra_Library::GenSys&
 Parma_Polyhedra_Library::Polyhedron::generators() const {
-  assert(!is_empty());
-  assert(!is_zero_dim());
+  if (is_empty())
+    throw std::invalid_argument("PPL::Polyhedron::generators() "
+				"*this is empty");
+  if (is_zero_dim())
+    throw std::invalid_argument("PPL::Polyhedron::generators() "
+				"*this is zero-dimensional");
+ 
   if (!generators_are_up_to_date()) 
     update_generators();
 
