@@ -497,7 +497,7 @@ BD_Shape<T>::is_empty() const {
     const DB_Row<T>& dbm_j = dbm[j]; 
     T& z_j = z[j];
     for (dimension_type h = 0; h <= k; ++h) {
-      add_round_down(sum2, dbm_j[h], z_j);
+      add_round_up(sum2, dbm_j[h], z_j);
       if (z[h] > sum2) {
 	Status& nstatus = const_cast<Status&>(status);
 	nstatus.set_empty();
