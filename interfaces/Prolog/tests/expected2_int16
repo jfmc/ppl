@@ -20,12 +20,11 @@ PPL clpq ?- Y = 8
  more? yes
 PPL clpq ?- yes
 PPL clpq ?- 
-'Undefined result.'
+Error: an overflow has been detected by the PPL: Undefined result.
 no
 PPL clpq ?- yes
-PPL clpq ?- 
-Error: an overflow has been detected by the PPL: Positive overflow.
-no
+PPL clpq ?- X = 10
+ more? yes
 PPL clpq ?- yes
 PPL clpq ?- X =< 5
 X > 4
