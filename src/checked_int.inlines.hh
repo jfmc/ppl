@@ -586,9 +586,9 @@ struct Larger<unsigned short> {
 
 template <>
 struct Larger<int> {
-  static const bool use_for_neg = false;
-  static const bool use_for_add = false;
-  static const bool use_for_sub = false;
+  static const bool use_for_neg = (LONG_BITS == 64);
+  static const bool use_for_add = (LONG_BITS == 64);
+  static const bool use_for_sub = (LONG_BITS == 64);
   static const bool use_for_mul = true;
   typedef int_fast64_t Type_For_Neg;
   typedef int_fast64_t Type_For_Add;
@@ -598,9 +598,9 @@ struct Larger<int> {
 
 template <>
 struct Larger<unsigned int> {
-  static const bool use_for_neg = false;
-  static const bool use_for_add = false;
-  static const bool use_for_sub = false;
+  static const bool use_for_neg = (LONG_BITS == 64);
+  static const bool use_for_add = (LONG_BITS == 64);
+  static const bool use_for_sub = (LONG_BITS == 64);
   static const bool use_for_mul = true;
   typedef int_fast64_t Type_For_Neg;
   typedef uint_fast64_t Type_For_Add;
