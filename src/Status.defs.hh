@@ -34,12 +34,13 @@ namespace Parma_Polyhedra_Library {
 //! Intersection: yields the assertions that are in \p x <EM>and</EM> \p y.
 /*! \relates Status */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-Status operator&(const Status& x, const Status& y);
+Status operator&(Status x, Status y);
+
 #if PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Union: yields the assertions that are in \p x <EM>or</EM> \p y.
 /*! \relates Status */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-Status operator|(const Status& x, const Status& y);
+Status operator|(Status x, Status y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -108,10 +109,10 @@ public:
   Status();
 
   friend Status
-  Parma_Polyhedra_Library::operator&(const Status& x, const Status& y);
+  Parma_Polyhedra_Library::operator&(Status x, Status y);
 
   friend Status
-  Parma_Polyhedra_Library::operator|(const Status& x, const Status& y);
+  Parma_Polyhedra_Library::operator|(Status x, Status y);
 
   //! \name Test, remove or add an individual assertion from the conjunction.
   //@{

@@ -38,13 +38,13 @@ Status::Status()
 
 /*! \relates Status */
 inline Status
-operator&(const Status& x, const Status& y) {
+operator&(Status x, Status y) {
   return Status(x.flags & y.flags);
 }
 
 /*! \relates Status */
 inline Status
-operator|(const Status& x, const Status& y) {
+operator|(Status x, Status y) {
   return Status(x.flags | y.flags);
 }
 
