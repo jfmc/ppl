@@ -241,6 +241,11 @@ public:
   */
   void grow(dimension_type new_n_rows, dimension_type new_n_columns);
   
+  //! \brief
+  //! Makes the matrix shrink by removing those columns having an index
+  //! greater than or equal to \p new_n_columns.
+  void remove_columns(dimension_type new_n_columns);
+
   //! Resizes the matrix without worrying about the old contents.
   /*!
     \param new_n_rows      The number of rows of the

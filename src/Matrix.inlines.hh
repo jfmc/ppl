@@ -174,6 +174,22 @@ Matrix::clear() {
   sorted = true;
 }
 
+inline void
+Matrix::remove_columns(dimension_type new_n_columns) {
+  assert(new_n_columns < num_columns());
+  // Since we are removing columns, reallocation will
+  // not take place and the old contents of the first
+  // `new_n_columns' columns will be preserved.
+  resize_no_copy(num_rows(), new_n_columns);
+  // Have to re-normalize the rows of the matrix,
+  // since we removed some coefficients.
+#if EXTRA_NORMALIZATION
+  strong_normalize();
+#else
+  normalize();
+#endif
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {

@@ -453,7 +453,7 @@ PPL::Polyhedron::remove_dimensions(const Variables_Set& to_be_removed) {
   }
   // The number of remaining columns is `dst_col'.
   // Note that resizing also calls `set_sorted(false)'.
-  gen_sys.resize_no_copy(nrows, dst_col);
+  gen_sys.remove_columns(dst_col);
   // We may have invalid line and rays now.
   gen_sys.remove_invalid_lines_and_rays();
 
@@ -512,7 +512,7 @@ PPL::Polyhedron::remove_higher_dimensions(dimension_type new_dimension) {
     ++new_num_cols;
   }
   // Note that resizing also calls `set_sorted(false)'.
-  gen_sys.resize_no_copy(gen_sys.num_rows(), new_num_cols);
+  gen_sys.remove_columns(new_num_cols);
   // We may have invalid line and rays now.
   gen_sys.remove_invalid_lines_and_rays();
 

@@ -66,7 +66,7 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
 	// Remove the epsilon column and, after that,
 	// add the missing dimensions. This ensures that
 	// non-zero epsilon coefficients will be cleared.
-	resize_no_copy(num_rows(), old_space_dim + 1);
+	remove_columns(old_space_dim + 1);
 	set_necessarily_closed();
 	add_zero_columns(cols_to_be_added);
       }
@@ -100,7 +100,7 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
 	if (has_closure_points())
 	  return false;
 	// We just remove the column of the epsilon coefficients.
-	resize_no_copy(num_rows(), old_space_dim + 1);
+	remove_columns(old_space_dim + 1);
 	set_necessarily_closed();
       }
       else {

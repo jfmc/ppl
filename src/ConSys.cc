@@ -147,7 +147,7 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 	if (has_strict_inequalities())
 	  return false;
 	// We just remove the column of the epsilon coefficients.
-	resize_no_copy(num_rows(), old_space_dim + 1);
+	remove_columns(old_space_dim + 1);
 	set_necessarily_closed();
       }
       else {
