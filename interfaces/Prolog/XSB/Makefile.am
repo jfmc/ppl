@@ -43,13 +43,13 @@ ppl_xsb_la_LDFLAGS = -no-undefined -module -avoid-version
 
 pkglib_DATA = ppl_xsb.O
 
-ppl_xsb.O: ppl_xsb.H ppl_xsb.cc
+ppl_xsb.O: ppl_xsb.H ppl_xsb.cc Makefile
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/ppl_xsb.H . ; \
 	  cp -f $(srcdir)/ppl_xsb.cc ppl_xsb.c; \
 	fi
 	echo "consult(ppl_xsb," \
-	  "[cc('g++'), cc_opts('$(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) " \
+	  "[cc('$(CXX)'), cc_opts('$(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) " \
 	    "$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)')])." \
 		| xsb
 	if [ $(abs_srcdir) != `pwd` ]; then \
