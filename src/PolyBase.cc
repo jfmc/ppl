@@ -2129,8 +2129,7 @@ PPL::PolyBase::affine_image(const Variable& var,
     throw_different_dimensions("affine_image(v, e, d)", x, expr);
   // `var' should be one of the dimensions of the polyhedron.
   size_t num_var = var.id() + 1;
-  // FIXME: is this the right test ?
-  if (num_var >= x_space_dim + 1)
+  if (num_var > x_space_dim)
     throw_dimension_incompatible("affine_image(v, e, d)", x, var.id());
 
   if (x.is_empty())
@@ -2254,8 +2253,7 @@ PPL::PolyBase::affine_preimage(const Variable& var,
     throw_different_dimensions("affine_preimage(v, e, d)", x, expr);
   // `var' should be one of the dimensions of the polyhedron.
   size_t num_var = var.id() + 1;
-  // FIXME: is this the right test ?
-  if (num_var >= x_space_dim + 1)
+  if (num_var > x_space_dim)
     throw_dimension_incompatible("affine_preimage(v, e, d)", x, var.id());
 
   if (x.is_empty())
@@ -2640,6 +2638,17 @@ PPL::PolyBase::OK(bool check_not_empty) const {
   using std::endl;
   using std::cerr;
 
+  // The expected number of columns in the constraint and generator
+  // systems, if they are not empty. 
+  size_t poly_num_columns = space_dim + (is_necessarily_closed() ? 1 : 2); 
+
+  // Check whether the topologies of `con_sys' and `gen_sys' agree.
+  if (con_sys.topology() != gen_sys.topology()) {
+    cerr << "Constraints and generators have different topologies!"
+	 << endl;
+    goto bomb;
+  }
+
   // Check whether the saturation matrices are well-formed.
   if (!sat_c.OK())
     goto bomb;
@@ -2651,9 +2660,9 @@ PPL::PolyBase::OK(bool check_not_empty) const {
     cerr << "Wrong status!" << endl;
     goto bomb;
   }
-  // An empty polyhedron is allowed if the system of constraints has
-  // no rows or if the system of constraints contains only an
-  // unsatisfiable constraint.
+
+  // An empty polyhedron is allowed if the system of constraints
+  // either has no rows or only contains an unsatisfiable constraint.
   if (is_empty())
     if (con_sys.num_rows() == 0)
       return true;
@@ -2667,7 +2676,8 @@ PPL::PolyBase::OK(bool check_not_empty) const {
 	goto bomb;
       }
       if (con_sys.num_rows() != 1) {
-	cerr << "The system of constraints has more then one row "
+	cerr << "The system of constraints for an empty polyhedron "
+	     << "has more then one row"
 	     << endl;
 	goto bomb;
       }
@@ -2702,14 +2712,15 @@ PPL::PolyBase::OK(bool check_not_empty) const {
 	 << endl;
     goto bomb;
   }
+
   // Here we check if the size of the matrices is consistent.
   // Let us suppose that all the matrices are up-to-date; this means:
-  // `con_sys' : number of constraints x space_dimension() + 1
-  // `gen_sys' : number of generators  x space_dimension() + 1
+  // `con_sys' : number of constraints x poly_num_columns
+  // `gen_sys' : number of generators  x poly_num_columns
   // `sat_c'   : number of generators  x number of constraints
-  // `sat_g'   : number of constraints x number of generators
+  // `sat_g'   : number of constraints x number of generators.
   if (constraints_are_up_to_date()) {
-    if (con_sys.num_columns() != space_dim + 1) {
+    if (con_sys.num_columns() != poly_num_columns) {
       cerr << "Incompatible size! (con_sys and space_dim)"
 	   << endl;
       goto bomb;
@@ -2735,7 +2746,7 @@ PPL::PolyBase::OK(bool check_not_empty) const {
   }
 
   if (generators_are_up_to_date()) {
-    if (gen_sys.num_columns() != space_dim + 1) {
+    if (gen_sys.num_columns() != poly_num_columns) {
       cerr << "Incompatible size! (gen_sys and space_dim)"
 	   << endl;
       goto bomb;
@@ -2759,6 +2770,15 @@ PPL::PolyBase::OK(bool check_not_empty) const {
     if (!gen_sys.OK())
       goto bomb;
 
+    // A non_empty system of generators describing a polyhedron
+    // is valid iff it contains a point.
+    if (gen_sys.num_rows() > 0 && !gen_sys.has_points()) {
+      cerr << "Non-empty generator system declared up-to-date "
+	   << "has no points!"
+	   << endl;
+      goto bomb;
+    }
+
     if (generators_are_minimized()) {
       // If the system of generators is minimized, the number of lines,
       // rays and points of the polyhedron must be the same
@@ -2780,11 +2800,16 @@ PPL::PolyBase::OK(bool check_not_empty) const {
 	     << endl;
 	goto bomb;
       }
-      // A minimal system of generators is unique up to positive
-      // scaling, if the cone is pointed.  We thus verify if the cone
-      // is pointed (i.e., if there are no lines) and, after
-      // normalizing and sorting a copy of the matrix `gen_sys' of the
-      // polyhedron (we use a copy not to modify the polyhedron's
+
+      // CHECKME : the following observation is not formally true
+      //           for a NNC_Polyhedron. But it may be true for its
+      //           representation ...
+
+      // If the corresponding polyhedral cone is _pointed_, then
+      // a minimal system of generators is unique up to positive scaling.
+      // We thus verify if the cone is pointed (i.e., there are no lines)
+      // and, after normalizing and sorting a copy of the matrix `gen_sys'
+      // of the polyhedron (we use a copy not to modify the polyhedron's
       // matrix) and the matrix `copy_of_gen_sys' that has been just
       // minimized, we check if the two matrices are identical.  If
       // they are different it means that the generators of the
@@ -2816,6 +2841,45 @@ PPL::PolyBase::OK(bool check_not_empty) const {
     // Check if the system of constraints is well-formed.
     if (!con_sys.OK())
       goto bomb;
+
+    // A non-empty system of constraints describing a polyhedron
+    // must contain a constraint with a non-zero inhomogeneous term;
+    // such a constraint corresponds to (a combination of other
+    // constraints with):
+    // -* the positivity constraint, for necessarily closed polyhedra;
+    // -* the \epsilon \leq 1 constraint, for NNC polyhedra.
+    bool no_positivity_constraint = true;
+    for (size_t i = con_sys.num_rows(); i-- > 0; )
+      if (con_sys[i][0] != 0) {
+	no_positivity_constraint = false;
+	break;
+      }
+    if (no_positivity_constraint) {
+      cerr << "Non-empty constraint system has no positivity constraint"
+	   << endl;
+      goto bomb;
+    }
+
+    if (!is_necessarily_closed()) {
+      // CHECK ME !!
+      // A non-empty system of constraints describing a NNC polyhedron
+      // must also contain a (combination of) the constraint \epsilon >= 0,
+      // i.e., a constraint with a positive \epsilon coefficient.
+      bool no_epsilon_geq_zero = true;
+      size_t eps_index = con_sys.num_columns() - 1;
+      for (size_t i = con_sys.num_rows(); i-- > 0; )
+	if (con_sys[i][eps_index] > 0) {
+	  no_epsilon_geq_zero = false;
+	  break;
+	}
+      if (no_epsilon_geq_zero) {
+	cerr << "Non-empty constraint system for NNC polyhedron "
+	     << "has no epsilon >= 0 constraint"
+	     << endl;
+	goto bomb;
+      }
+    }
+
 
     ConSys copy_of_con_sys = con_sys;
     GenSys new_gen_sys(topology());
@@ -2875,6 +2939,8 @@ PPL::PolyBase::OK(bool check_not_empty) const {
     }
   }
 
+  // CHECKME: the following condition has already been checked !
+#if 0
   // If the polyhedron has both the system of constraints and
   // the system of generators, they must have the same number of columns.
   if (constraints_are_up_to_date() && generators_are_up_to_date()
@@ -2884,6 +2950,7 @@ PPL::PolyBase::OK(bool check_not_empty) const {
 	 << endl;
     goto bomb;
   }
+#endif
 
   if (sat_c_is_up_to_date())
     for (size_t i = sat_c.num_rows(); i-- > 0; ) {
