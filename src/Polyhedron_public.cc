@@ -1710,10 +1710,13 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
   const ConSys& y_cs = y.constraints();
   for (ConSys::const_iterator i = y_cs.begin(),
 	 y_cs_end = y_cs.end(); i != y_cs_end; ++i) {
-    Polyhedron z = x;
     const Constraint& c = *i;
     assert(!c.is_trivial_true());
     assert(!c.is_trivial_false());
+    // CHECKME: is this patch really correct?
+    if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
+      continue;
+    Polyhedron z = x;
     const LinExpression e = LinExpression(c);
     switch (c.type()) {
     case Constraint::NONSTRICT_INEQUALITY:
