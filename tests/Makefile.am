@@ -56,7 +56,7 @@ ORIGINAL_TESTS = \
 	affinepreimage5 affinepreimage6 affinepreimage7 \
 	affinetrans \
         append1 append2 \
-	ascii_dump_load1 \
+	ascii_dump_load1 ascii_dump_load2 \
 	bbrz02widening1 bbrz02widening2 bbrz02widening3 bbrz02widening4 \
 	bbrz02widening5 bbrz02widening6 bbrz02widening7 bbrz02widening8 \
 	bbrz02widening9 bbrz02widening10 bbrz02widening11 bbrz02widening12 \
@@ -120,7 +120,7 @@ DERIVED_TESTS = \
 	nnc_affinepreimage7 \
 	nnc_affinetrans \
 	nnc_append1 nnc_append2 \
-	nnc_ascii_dump_load1 \
+	nnc_ascii_dump_load1 nnc_ascii_dump_load2 \
 	nnc_bbrz02widening1 nnc_bbrz02widening2 nnc_bbrz02widening3 \
 	nnc_bbrz02widening4 nnc_bbrz02widening5 nnc_bbrz02widening6 \
 	nnc_bbrz02widening7 nnc_bbrz02widening8 nnc_bbrz02widening9 \
@@ -240,6 +240,7 @@ append1_SOURCES = append1.cc
 append2_SOURCES = append2.cc
 
 ascii_dump_load1_SOURCES = ascii_dump_load1.cc
+ascii_dump_load2_SOURCES = ascii_dump_load2.cc
 
 bbrz02widening1_SOURCES = bbrz02widening1.cc
 bbrz02widening2_SOURCES = bbrz02widening2.cc
@@ -491,6 +492,8 @@ nnc_append2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 nnc_ascii_dump_load1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_ascii_dump_load2_SOURCES = ascii_dump_load2.cc
+nnc_ascii_dump_load2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bbrz02widening1_SOURCES = bbrz02widening1.cc
 nnc_bbrz02widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
