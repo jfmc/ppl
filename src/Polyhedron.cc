@@ -1114,7 +1114,7 @@ PPL::Polyhedron::obtain_sorted_constraints_with_sat_c() const {
   else {
     if (!x.sat_g_is_up_to_date()) {
       // If constraints are not sorted and sat_g is not up-to-date
-      // we obtain sat_g from sat_c (that has to be up-to-date)...
+      // we obtain sat_g from sat_c (that has to be up-to-date) ...
       x.sat_g.transpose_assign(x.sat_c);
       x.set_sat_g_up_to_date();
     }
@@ -3434,29 +3434,29 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   x.select_H79_constraints(y, common_con_sys);
   common_con_sys.sort_rows();
 
+  // The following heuristics are intrusive: to avoid problems,
+  // we backup the current value of `x'.
+  Polyhedron x_backup = x;
+
   // ****************
   // First technique.
   // ****************
 
-  // To implement the first technique of the widening proposed in
-  // BBRZ02 we must have a copy of `x'.
-  Polyhedron x1(x);
-
-  // We must choose the constraints of `x' that does not
-  // belong to the system of constraints of `y'.
+  // We must choose the constraints of `x' that do not belong to
+  // the system of constraints of `y'.
   // To choose this constraints we use `x.sat_g'
-  if (!x1.sat_g_is_up_to_date())
-    x1.update_sat_g();
+  if (!x.sat_g_is_up_to_date())
+    x.update_sat_g();
   dimension_type common_con_sys_num_rows = common_con_sys.num_rows();
-  dimension_type x1_gen_sys_num_rows = x.gen_sys.num_rows();
+  dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
   // We built a temporary saturation matrix that contains the
   // relations between the constraints of `common_con_sys' and
   // the generators of `x'.
-  SatMatrix common_sat_g(common_con_sys_num_rows, x1_gen_sys_num_rows);
+  SatMatrix common_sat_g(common_con_sys_num_rows, x_gen_sys_num_rows);
   for (dimension_type i = common_con_sys_num_rows; i-- > 0; ) {
     Constraint& c = common_con_sys[i];
-    for (dimension_type j = x1_gen_sys_num_rows; j-- > 0; ) {
-      Generator& g = x1.gen_sys[j];
+    for (dimension_type j = x_gen_sys_num_rows; j-- > 0; ) {
+      Generator& g = x.gen_sys[j];
       if (sgn(c * g) != 0)
 	common_sat_g[i].set(j);
     }
@@ -3466,11 +3466,11 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // The system of constraints `x_con_sys_minus_y_con_sys' contains
   // the constraints of `x' that does not belong also to `y'.
   ConSys x_con_sys_minus_y_con_sys;
-  dimension_type x1_con_sys_num_rows = x1.con_sys.num_rows();
-  for (dimension_type i = x1_con_sys_num_rows; i-- > 0; )
-    if (!x1.con_sys[i].is_equality())
-      if (!common_sat_g.sorted_contains(x1.sat_g[i]))
-	x_con_sys_minus_y_con_sys.insert(x1.con_sys[i]);
+  dimension_type x_con_sys_num_rows = x.con_sys.num_rows();
+  for (dimension_type i = x_con_sys_num_rows; i-- > 0; )
+    if (!x.con_sys[i].is_equality())
+      if (!common_sat_g.sorted_contains(x.sat_g[i]))
+	x_con_sys_minus_y_con_sys.insert(x.con_sys[i]);
 
   // The system of constraints of the resulting polyhedron
   // contains the constraints of `common_con_sys'.
@@ -3484,12 +3484,12 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
   for (dimension_type i = y_gen_sys_num_rows; i-- > 0; ) {
     const Generator& g = y.gen_sys[i];
-    if ((g.is_point() && x1.is_necessarily_closed())
-	|| (g.is_closure_point() && !x1.is_necessarily_closed())) {
+    if ((g.is_point() && x.is_necessarily_closed())
+	|| (g.is_closure_point() && !x.is_necessarily_closed())) {
       // We choose a constraint of `x' that saturates the point `g'
       // and that belongs to `x_con_sys_minus_y_con_sys' and we put
       // these constraints in a temporary system of constraints.
-      ConSys tmp_con_sys(x1.topology(), 0, x1.con_sys.num_columns());
+      ConSys tmp_con_sys(x.topology(), 0, x.con_sys.num_columns());
       for (dimension_type j = x_con_sys_minus_y_con_sys.num_rows();
 	   j-- > 0; ) {
 	Constraint& c = x_con_sys_minus_y_con_sys[j];
@@ -3567,18 +3567,16 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
       }
     }
   }
-  std::swap(new_con_sys, x1.con_sys);
+  std::swap(new_con_sys, x.con_sys);
   
   // The resulting polyhedron has only
   // the system of constraints up to date.
-  x1.clear_generators_up_to_date();
-  x1.clear_constraints_minimized();
-
-  x1.minimize();
-  if (is_BBRZ02_stabilizing(x1, y)) {
+  x.clear_generators_up_to_date();
+  x.clear_constraints_minimized();
+  x.minimize();
+  if (is_BBRZ02_stabilizing(x, y)) {
     // If `is_BBRZ02_stabilizing()' returns true,
-    // then the resulting polyhedron is `x1'.
-    std::swap(x, x1);
+    // then the resulting polyhedron is `x'.
 #ifndef NDEBUG
     std::cout << "BBRZ02: stabilizing on 1st technique" << std::endl;
 #endif
@@ -3590,109 +3588,104 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // Second technique.
   // *****************
 
-  // To implement the second technique of the BBRZ02 widening,
-  // we must have a copy of `x'.
-  Polyhedron x2(x);
-  dimension_type x2_gen_sys_num_rows = x2.gen_sys.num_rows();
+  // The first tecnique did not succeeded, possibly modifying `x'.
+  // Thus, we recover the backup copy of `x'.
+  x = x_backup;
   
-  for (dimension_type i = x2_gen_sys_num_rows; i-- > 0; ) {
-    Generator& g1 = x2.gen_sys[i];
-    // For C polyhedra, we choose a point of `x2.gen_sys'
+  // For each point in `x.gen_sys' that is not included in `y',
+  // this technique identifies a set of rays that subsume this point
+  // and do not violate the constraints in `common_con_sys'.
+  // All such rays are kept in `valid_rays'.
+  GenSys valid_rays;
+
+  for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
+    Generator& g1 = x.gen_sys[i];
+    // For C polyhedra, we choose a point of `x.gen_sys'
     // that is not included in `y'.
     // In the case of NNC polyhedra, we can restrict attention to
     // closure points (considering also points will only add redundancy).
-    if ((g1.is_point() && x2.is_necessarily_closed())
-	|| (g1.is_closure_point() && !x2.is_necessarily_closed())) {
-      GenSys new_rays(x2.topology(), 0, x2.gen_sys.num_columns());
+    if ((g1.is_point() && x.is_necessarily_closed())
+	|| (g1.is_closure_point() && !x.is_necessarily_closed())) {
       Poly_Gen_Relation relation = y.relation_with(g1);
       if (relation == Poly_Gen_Relation::nothing()) {
+	// Candidate rays are kept in `new_rays'.
+	GenSys new_rays;
 	// For each point (resp., closure point) `g2' in `y.gen_sys',
+	// where `g1' and `g2' are different,
 	// we built the ray `g1 - g2' and put it into `new_rays'.
 	for (dimension_type j = y_gen_sys_num_rows; j-- > 0; ) {
 	  const Generator& g2 = y.gen_sys[j];
 	  if ((g2.is_point() && y.is_necessarily_closed())
 	      || (g2.is_closure_point() && !y.is_necessarily_closed())) {
-	    Generator ray_from_g2_to_g1(g1);
+	    // Check that `g1' and `g2' are different.
+	    if (compare(g1, g2) == 0)
+	      continue;
+	    Generator ray_from_g2_to_g1 = g1;
 	    ray_from_g2_to_g1.linear_combine(g2, 0);
 	    new_rays.insert(ray_from_g2_to_g1);
-	    if (!x2.is_necessarily_closed())
-	      new_rays[new_rays.num_rows() - 1][x_space_dim + 1] = 0;
 	  }
 	}
 	// Similarly, for each point (resp., closure point) `g2'
 	// in `x.gen_sys', where `g1' and `g2' are different,
 	// we built the ray `g1 - g2' and put it into `new_rays'.
-	for (dimension_type j = x2_gen_sys_num_rows; j-- > 0; ) {
+	for (dimension_type j = x_gen_sys_num_rows; j-- > 0; ) {
+	  // Check that `g1' and `g2' are different:
+	  // since they both belong to `x.gen_sys', which is minimized,
+	  // they are equal if and only if their indexes are the same.
 	  if (i == j)
-	    // `g1' is the same as `g2'.
 	    continue;
 	  const Generator& g2 = x.gen_sys[j];
-	  if ((g2.is_point() && y.is_necessarily_closed())
-	      || (g2.is_closure_point() && !y.is_necessarily_closed())) {
+	  if ((g2.is_point() && x.is_necessarily_closed())
+	      || (g2.is_closure_point() && !x.is_necessarily_closed())) {
 	    Generator ray_from_g2_to_g1(g1);
 	    ray_from_g2_to_g1.linear_combine(g2, 0);
 	    new_rays.insert(ray_from_g2_to_g1);
-	    if (!x2.is_necessarily_closed())
-	      new_rays[new_rays.num_rows() - 1][x_space_dim + 1] = 0;
 	  }
 	}
-
 	if (new_rays.num_rows() == 1) {
-	  // `new_rays' contains one ray only.
-	  // If this ray satisfies the constraints of `common_con_sys',
-	  // then we add it to `x2.gen_sys'.
-	  bool violates = false;
+	  // `new_rays' contains one ray only: it is a valid ray
+	  // if it satisfies all of the constraints in `common_con_sys'.
+	  const Generator& new_ray = new_rays[0];
+	  bool is_valid_ray = true;
 	  for (dimension_type j = common_con_sys.num_rows(); j-- > 0; )
-	    if (new_rays[0] * common_con_sys[j] < 0) {
-	      violates = true;
+	    if (new_ray * common_con_sys[j] < 0) {
+	      is_valid_ray = false;
 	      break;
 	    }
-	  if (!violates) {
-	    x2.gen_sys.insert(new_rays[0]);
-	    x2.gen_sys.set_sorted(false);
-	  }
+	  if (is_valid_ray)
+	    valid_rays.insert(new_ray);
 	}
 	else
 	  if (new_rays.num_rows() > 1) {
-	    // `new_rays' contains more than one ray.
-	    // By adding a point of `x2' to `new_rays', we build
-	    // a temporary polyhedron and we intersect it with
-	    // the polyhedron generated by `common_con_sys':
-	    // the rays belonging to this intersection are
-	    // added to `x2.gen_sys'.
-	    dimension_type k = x2_gen_sys_num_rows - 1;
-	    while (!x2.gen_sys[k].is_point())
+	    // `new_rays' contains more than one candidate ray.
+	    // After adding a point of `x' to `new_rays',
+	    // we build the corresponding polyhedron
+	    // (a polyhedral cone having the point as apex).
+	    // We compute the intersection of this polyhedron
+	    // with the polyhedron generated by `common_con_sys':
+	    // the valid rays are those belonging to this intersection.
+	    dimension_type k = x_gen_sys_num_rows - 1;
+	    while (!x.gen_sys[k].is_point())
 	      --k;
 	    // Insert the point.
-	    new_rays.insert(x2.gen_sys[k]);
-	    Polyhedron tmp_poly(x2.topology(), new_rays);
-	    tmp_poly.add_constraints_and_minimize(common_con_sys);
-	    const GenSys& tmp_poly_gs = tmp_poly.generators();
-	    // Copy the rays of `tmp_poly' into `valid_rays',
-	    // keeping them sorted.
-	    GenSys valid_rays;
-	    dimension_type tmp_poly_gs_num_rows = tmp_poly_gs.num_rows();
-	    for (dimension_type j = 0; j < tmp_poly_gs_num_rows; j++) {
-	      const Generator& g = tmp_poly_gs[j];
+	    new_rays.insert(x.gen_sys[k]);
+	    Polyhedron ph(x.topology(), new_rays);
+	    ph.add_constraints_and_minimize(common_con_sys);
+	    const GenSys& ph_gs = ph.generators();
+	    // Copy the rays of `ph' into `valid_rays'.
+	    for (dimension_type j = ph_gs.num_rows(); j-- > 0; ) {
+	      const Generator& g = ph_gs[j];
 	      if (g.is_ray())
 		valid_rays.insert(g);
 	    }
-	    x2.add_generators(valid_rays);
 	  }
       }
     }
   }
-
-  // The resulting polyhedron has only
-  // the system of generators up to date.
-  x2.clear_generators_minimized();
-  x2.clear_constraints_up_to_date();
- 
-  x2.minimize();
-  if (is_BBRZ02_stabilizing(x2, y)) {
-    // If `is_BBRZ02_stabilizing()' returns true,
-    // then the resulting polyhedron is `x2'.
-    std::swap(x, x2);
+  // Now we add all the valid rays to `x' and
+  // check for stabilization (which requires minimization).
+  x.add_generators_and_minimize(valid_rays);
+  if (is_BBRZ02_stabilizing(x, y)) {
 #ifndef NDEBUG
     std::cout << "BBRZ02: stabilizing on 2nd technique" << std::endl;
 #endif
@@ -3700,77 +3693,73 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
     return;
   }
 
-  // ********************************************
-  // We use another technique that modifies the
-  // rays of `x'.
-  // ********************************************
+  // ****************
+  // Third technique.
+  // ****************
 
-  // To implement the this technique of the widening
-  // we must have a copy of `x'.
-  Polyhedron x3(x);
+  // The second tecnique did not succeeded, possibly modifying `x'.
+  // Thus, we recover the backup copy of `x'.
+  x = x_backup;
 
-  dimension_type x3_gen_sys_num_rows = x3.gen_sys.num_rows();
-  dimension_type x3_con_sys_num_rows = x3.con_sys.num_rows();
-  if (!x3.sat_c_is_up_to_date())
-    x3.sat_c.transpose_assign(x3.sat_g);
+  if (!x.sat_c_is_up_to_date())
+    x.sat_c.transpose_assign(x.sat_g);
 
   // We build a temporary saturation matrix in which we put the relations
-  // between the constraints of `x3' and the generators of `y'.
-  SatMatrix tmp_sat(y_gen_sys_num_rows, x3_con_sys_num_rows);
+  // between the constraints of `x' and the generators of `y'.
+  SatMatrix tmp_sat(y_gen_sys_num_rows, x_con_sys_num_rows);
   for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
-    for (dimension_type j = x3_con_sys_num_rows; j-- > 0; )
-      if (x3.con_sys[j] * y.gen_sys[i] > 0)
+    for (dimension_type j = x_con_sys_num_rows; j-- > 0; )
+      if (x.con_sys[j] * y.gen_sys[i] > 0)
         tmp_sat[i].set(j);
 
-  for (dimension_type i = x3_gen_sys_num_rows; i-- > 0; ) {
-    // We choose a ray of `x3' that doesn't belong to `y' and
+  for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
+    // We choose a ray of `x' that doesn't belong to `y' and
     // "evolved" since a ray of `y'.
-    if (x3.gen_sys[i].is_ray()) {
-      Generator x3_g = x3.gen_sys[i];
-      std::vector<bool> considered(x3.space_dim + 1);
-      Poly_Gen_Relation rel = y.relation_with(x3_g);
+    if (x.gen_sys[i].is_ray()) {
+      Generator x_g = x.gen_sys[i];
+      std::vector<bool> considered(x.space_dim + 1);
+      Poly_Gen_Relation rel = y.relation_with(x_g);
       for (dimension_type j = y_gen_sys_num_rows; j-- > 0; ) {
 	const Generator& y_g = y.gen_sys[j];
-	if (y_g.is_ray() && tmp_sat[j] > x3.sat_c[i]
+	if (y_g.is_ray() && tmp_sat[j] > x.sat_c[i]
 	    && rel == Poly_Gen_Relation::nothing()) {
-	  x3.gen_sys.set_sorted(false);
+	  x.gen_sys.set_sorted(false);
 	  Integer tmp_1;
 	  Integer tmp_2;
 	  // We modify the ray of `x' according to how it
 	  // evolve since the ray of `y'.
-	  for (dimension_type k = 1; k < x3.space_dim && !considered[k]; ++k)
+	  for (dimension_type k = 1; k < x.space_dim && !considered[k]; ++k)
 	    for (dimension_type h = k + 1;
-		 h <= x3.space_dim && !considered[h]; ++h) {
-	      tmp_1 = x3_g[k] * y_g[h];
-	      tmp_2 = x3_g[h] * y_g[k];
-	      int sp_sign = sgn(x3_g[k] * x3_g[h]);
+		 h <= x.space_dim && !considered[h]; ++h) {
+	      tmp_1 = x_g[k] * y_g[h];
+	      tmp_2 = x_g[h] * y_g[k];
+	      int sp_sign = sgn(x_g[k] * x_g[h]);
 	      if (tmp_1 != tmp_2)
 		if ((tmp_1 >= 0 && tmp_2 > tmp_1)
 		    || (tmp_2 < tmp_1 && tmp_1 <= 0)
 		    || (tmp_2 > 0 && tmp_1 < 0 && sp_sign > 0)
 		    || (tmp_1 < 0 && tmp_2 > 0 && sp_sign > 0)
 		    || (tmp_2 < 0 && tmp_1 > 0 && sp_sign < 0)) {
-		  x3_g[k] = 0;
+		  x_g[k] = 0;
 		  considered[k] = true;
 		}
 		else {
-		  x3_g[h] = 0;
+		  x_g[h] = 0;
 		  considered[h] = true;
 		}
 	    }
-	  x3_g.normalize();
-	  x3.gen_sys.insert(x3_g);
+	  x_g.normalize();
+	  x.gen_sys.insert(x_g);
 	}
       }
     }
   }
-  x3.clear_generators_minimized();
-  x3.clear_constraints_up_to_date();
-  x3.minimize();
-  if (is_BBRZ02_stabilizing(x3, y)) {
+  x.clear_generators_minimized();
+  x.clear_constraints_up_to_date();
+  x.minimize();
+  if (is_BBRZ02_stabilizing(x, y)) {
     // If `is_BBRZ02_stabilizing()' returns true,
-    // then the resulting polyhedron is `x3'.
-    std::swap(x, x3);
+    // then the resulting polyhedron is `x'.
 #ifndef NDEBUG
     std::cout << "BBRZ02: stabilizing on 3rd technique" << std::endl;
 #endif
@@ -3784,9 +3773,8 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // FIXME: here we should abort the computation, because we have
   // found a chain that is not stabilizing under the BBRZ02 widening.
   // Since we are still developing and debugging this operator,
-  // for the moment we simply return `x3'.
-  std::swap(x, x3);
-  assert(x.OK(true));
+  // for the moment we simply return `x'.
+  assert(OK(true));
 }
 
 void
