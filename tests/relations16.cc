@@ -1,4 +1,5 @@
-/* Test Polyhedron::relation_with(g) when g is a point.
+/* Test Polyhedron::relation_with(c): in this test `c' is
+   a strict inequality.  
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -30,27 +31,27 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-
 int
 main() {
   set_handlers();
+
   Variable A(0);
   Variable B(1);
 
-  NNC_Polyhedron ph(2);
-  ph.add_constraint(A - B > 0);
-  ph.add_constraint(B >= 0);
-  
-  Poly_Gen_Relation rel1 = ph.relation_with(point(B));
-  Poly_Gen_Relation rel2 = ph.relation_with(point(-B));
+  GenSys gs;
+  gs.insert(point(A));
+  gs.insert(line(B));
+  C_Polyhedron ph(gs);
+
+  Poly_Con_Relation rel = ph.relation_with(B > 0);
 
 #if NOISY
-  print_generators(ph, "*** ph ***");
-  cout << "ph.relation_with(point(B)) == " << rel1 << endl;
-  cout << "ph.relation_with(point(-B)) == " << rel2 << endl;
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+  cout << "ph.relation_with(B > 0) == " << rel << endl;
 #endif
 
-  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
-  return (rel1 == known_result && rel2 == known_result) ? 0 : 1;
+  return (rel == known_result) ? 0 : 1;
 }
