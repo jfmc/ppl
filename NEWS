@@ -36,6 +36,10 @@ o  The constructor C_Polyhedron(const NNC_Polyhedron& y) no longer
 o  Now `make check' runs a number of tests with `ppl_lcdd', comparing
    the results to expected ones.
 
+o  The `ppl_lcdd' demo is now able to parse problems produced by lrs,
+   i.e., where the number of rows of the matrix is omitted and replaced
+   by "*****" (five asterisks).
+
 
 Bugfixes
 ========

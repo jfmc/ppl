@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <stdexcept>
 
 #ifdef HAVE_GETOPT_H
@@ -442,9 +443,20 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
       in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
 
+  // Tools such as `lrs' produce "*****" instead of the number of
+  // rows.  We will accept that as valid input and compute the number
+  // of rows ourselves.
+  bool has_num_rows = false;
   unsigned num_rows;
-  if (!guarded_read(in, num_rows))
-    error("illegal or missing number of rows");
+  if (!guarded_read(in, s))
+    error("missing number of rows");
+  if (s != "*****") {
+    std::istringstream istr(s);
+    if (!guarded_read(istr, num_rows))
+      error("illegal number of rows `%s' (\"*****\" would be accepted)",
+	    s.c_str());
+    has_num_rows = true;
+  }
 
   unsigned num_columns;
   if (!guarded_read(in, num_columns))
@@ -462,23 +474,41 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
   else
     error("illegal number type `%s'", s.c_str());
 
-  if (verbose)
-    std::cerr << "Problem dimension: " << num_rows << " x " << num_columns
+  if (verbose) {
+    std::cerr << "Problem dimension: ";
+    if (has_num_rows)
+      std::cerr << num_rows;
+    else
+      std::cerr << '?';
+    std::cerr << " x " << num_columns
 	      << "; number type: " << s
 	      << std::endl;
+  }
 
   PPL::ConSys cs;
   PPL::GenSys gs;
 
+  unsigned row_index = 0;
   std::set<unsigned>::iterator linearity_end = linearity.end();
   if (rep == V) {
     std::vector<mpz_class> coefficients(num_columns-1);
     mpz_class denominator;
     bool has_a_point = false;
-    for (unsigned i = 0; i < num_rows; ++i) {
+    for (row_index = 0; !has_num_rows || row_index < num_rows; ++row_index) {
       int vertex_marker;
-      if (!guarded_read(in, vertex_marker)
-	  || vertex_marker < 0 || vertex_marker > 1)
+      if (!has_num_rows) {
+	// Must be prepared to read an "end" here.
+	if (!guarded_read(in, s))
+	  error("missing vertex marker");
+	if (s == "end")
+	  break;
+	std::istringstream istr(s);
+	if (!guarded_read(istr, vertex_marker)
+	    || vertex_marker < 0 || vertex_marker > 1)
+	  error("illegal vertex marker `%s'", s.c_str());
+      }
+      else if (!guarded_read(in, vertex_marker)
+		 || vertex_marker < 0 || vertex_marker > 1)
 	error("illegal or missing vertex marker");
       read_coefficients(in, number_type, coefficients, denominator);
       PPL::LinExpression e;
@@ -489,16 +519,21 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
 	gs.insert(point(e, denominator));
 	has_a_point = true;
       }
-      else if (linearity.find(i+1) != linearity_end)
+      else if (linearity.find(row_index+1) != linearity_end)
 	gs.insert(line(e));
       else
 	gs.insert(ray(e));
     }
     // Every non-empty generator system must have at least one point.
-    if (num_rows > 0 && !has_a_point)
+    if (row_index > 0 && !has_a_point)
       gs.insert(PPL::point());
 
     if (verbose) {
+      if (!has_num_rows)
+	std::cerr << "Problem dimension: " << row_index << " x " << num_columns
+		  << "; number type: " << s
+		  << std::endl;
+
       using namespace PPL::IO_Operators;
       std::cerr << "Generator system:\n" << gs << std::endl;
     }
@@ -507,29 +542,47 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
     assert(rep == H);
     std::vector<mpz_class> coefficients(num_columns);
     mpz_class denominator;
-    for (unsigned i = 0; i < num_rows; ++i) {
-      read_coefficients(in, number_type, coefficients, denominator);
+    for (row_index = 0; !has_num_rows || row_index < num_rows; ++row_index) {
+      if (!has_num_rows) {
+	// Must be prepared to read an "end" here.
+	std::getline(in, s);
+	if (!in)
+	  error("premature end of file while seeking "
+		"for coefficients or `end'");
+	if (s.substr(0, 2) == "end")
+	  break;
+	std::istringstream istr(s);
+	read_coefficients(istr, number_type, coefficients, denominator);
+      }
+      else
+	read_coefficients(in, number_type, coefficients, denominator);
       PPL::LinExpression e;
       for (unsigned j = num_columns; j-- > 1; )
 	e += coefficients[j] * PPL::Variable(j-1);
       e += coefficients[0];
-      if (linearity.find(i+1) != linearity_end)
+      if (linearity.find(row_index+1) != linearity_end)
 	cs.insert(e == 0);
       else
 	cs.insert(e >= 0);
     }
     if (verbose) {
+      if (!has_num_rows)
+	std::cerr << "Problem dimension: " << row_index << " x " << num_columns
+		  << "; number type: " << s
+		  << std::endl;
+
       using namespace PPL::IO_Operators;
       std::cerr << "Constraint system:\n" << cs << std::endl;
     }
   }
 
-  if (!guarded_read(in, s))
-    error("premature end of file while seeking for `end'");
+  if (has_num_rows) {
+    if (!guarded_read(in, s))
+      error("premature end of file while seeking for `end'");
 
-  if (s != "end")
-    error("`%s' found while seeking for `end'", s.c_str());
-
+    if (s != "end")
+      error("`%s' found while seeking for `end'", s.c_str());
+  }
 
   ph = rep == V ? PPL::C_Polyhedron(gs) : PPL::C_Polyhedron(cs);
 
