@@ -419,6 +419,25 @@ WARN_LOGFILE           =
 
 INPUT                  = @srcdir@/definitions.dox \
                          ../src/version.hh \
+                         @srcdir@/../src/float.types.hh \
+                         @srcdir@/../src/Checked_Number.types.hh \
+                         @srcdir@/../src/Checked_Number.defs.hh \
+                         @srcdir@/../src/Checked_Number.inlines.hh \
+                         @srcdir@/../src/GMP_Integer.types.hh \
+                         @srcdir@/../src/GMP_Integer.defs.hh \
+                         @srcdir@/../src/GMP_Integer.inlines.hh \
+                         @srcdir@/../src/Integer_macros.hh \
+                         @srcdir@/../src/Integer_traits_template.hh \
+                         @srcdir@/../src/Limits.hh \
+                         @srcdir@/../src/Native_Integer.types.hh \
+                         @srcdir@/../src/Native_Integer.defs.hh \
+                         @srcdir@/../src/Native_Integer.inlines.hh \
+                         @srcdir@/../src/checked.defs.hh \
+                         @srcdir@/../src/checked.inlines.hh \
+                         @srcdir@/../src/checked_float.inlines.hh \
+                         @srcdir@/../src/checked_int.inlines.hh \
+                         @srcdir@/../src/checked_mpq.inlines.hh \
+                         @srcdir@/../src/checked_mpz.inlines.hh \
                          @srcdir@/../src/Init.types.hh \
                          @srcdir@/../src/Init.defs.hh \
                          @srcdir@/../src/Init.cc \
