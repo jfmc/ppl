@@ -135,6 +135,7 @@ append_size_rel(C_Polyhedron& ph) {
 
 static void
 permute_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
+             C_Polyhedron& ph_append,
              dimension_type& offset, unsigned int& arity) {
   arity = 2;
   offset = 10;
@@ -167,14 +168,7 @@ permute_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
   induct.add_dimensions_and_embed(6);
   induct.add_constraint(B == C + 1);
   induct.add_constraint(F == A);
-  C_Polyhedron ph_append;
-  append_size_rel(ph_append);
   shift_rename_add(ph_append, 3, induct);
-
-#if NOISY
-  print_constraints(induct, "*** here am I ***");
-#endif
-
   induct.add_dimensions_and_embed(4);
   induct.add_constraint(E == G + 1);
   shift_rename_add(ph_append, 7, induct);
@@ -205,7 +199,9 @@ main() TRY {
   C_Polyhedron expect;
   dimension_type recursive_offset;
   unsigned int arity;
-  permute_init(start, induct, expect, recursive_offset, arity);
+  C_Polyhedron ph_append;
+  append_size_rel(ph_append);
+  permute_init(start, induct, expect, ph_append, recursive_offset, arity);
   C_Polyhedron final;
   fix_point(start, induct, final, recursive_offset, arity);
 
