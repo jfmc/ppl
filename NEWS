@@ -4,7 +4,7 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.6  (released on August xx, 2004)
+NEWS for version 0.6  (released on August 18, 2004)
 --------------------------------------------------------------------------
 
 New and Changed Features
@@ -90,8 +90,6 @@ Bugfixes
 
 o  Fixed a bug in the C interface function ppl_Polyhedron_map_dimensions() 
    whereby a wrong result was computed.
-
-o  Fixed a deadlock bug in the watchdog library.
 
 o  Fixed a bug in Polyhedron::poly_difference_assign(const Polyhedron&)
    whereby a wrong result was computed.
