@@ -334,6 +334,7 @@ public:
     EMPTY
   };
 
+protected:
   //! Ordinary copy-constructor.
   PolyBase(const PolyBase& y);
   //! Builds either the universe or the empty polyhedron of dimension
@@ -366,6 +367,7 @@ public:
   //! (Note that \p *this and \p y can be dimension-incompatible.)
   PolyBase& operator=(const PolyBase& y);
 
+public:
   //! Returns the topological kind of the polyhedron.
   Topology topology() const;
   //! Returns the dimension of the vector space enclosing \p *this.
