@@ -171,13 +171,16 @@ PowerSet<CS>::omega_reduce() const {
     return;
 
   PowerSet& ps = const_cast<PowerSet&>(*this);
+  // First remove all bottom elements.
+  for (iterator xi = ps.begin(), xin = xi; xi != ps.end(); xi = xin) {
+    ++xin;
+    if (xi->is_bottom())
+      ps.erase(xi);
+  }
+  // Then remove non-maximal elements.
   for (iterator xi = ps.begin(), xin = xi; xi != ps.end(); xi = xin) {
     ++xin;
     const CS& xv = *xi;
-    if (xv.is_bottom()) {
-      ps.erase(xi);
-      continue;
-    }
     for (iterator yi = ps.begin(), yin = yi; yi != ps.end(); yi = yin) {
       ++yin;
       if (xi == yi)
