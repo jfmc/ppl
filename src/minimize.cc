@@ -69,8 +69,6 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   assert(source.num_rows() > 0);
 
   // Sort the source matrix, if necessary.
-  // This ensures that all the equalities come before the inequalities
-  // (the correctness of simplify() relies on this hypothesis).
   if (!source.is_sorted())
     source.sort_rows();
 
@@ -129,9 +127,6 @@ PPL::Polyhedron::minimize(bool con_to_gen,
 						      dest_num_rows);
   // conversion() may have modified the number of rows in `dest'.
   dest_num_rows = dest.num_rows();
-  // NOTE: conversion() can only remove inequalities from `source'.
-  // Thus, all the equalities still come before the inequalities
-  // (the correctness of simplify() relies on this hypothesis).
 
   // Checking if the generators in `dest' represent an empty polyhedron:
   // the polyhedron is empty if there are no points
@@ -234,30 +229,27 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   dimension_type k2 = 0;
   dimension_type source2_num_rows = source2.num_rows();
   while (k1 < old_source1_num_rows && k2 < source2_num_rows) {
-    // Add to `source1' the constraints from `source2'.
-    // We exploit the property (here called `initial sortedness')
-    // that initially both `source1' and `source2' are sorted and
-    // index `k1' only scans the initial rows of `source1', so that
-    // it is not influenced by rows appended at the end of `source1'.
-    // This allows to avoid the introduction in `source1' of any
-    // duplicate constraint (which would be trivially redundant).
+    // Add to `source1' the constraints from `source2', as pending rows.
+    // We exploit the property that initially both `source1' and `source2'
+    // are sorted and index `k1' only scans the non-pending rows of `source1',
+    // so that it is not influenced by the pending rows appended to it.
+    // This way no duplicate (i.e., trivially redundant) constraint
+    // is introduced in `source1'.
     int cmp = compare(source1[k1], source2[k2]);
     if (cmp == 0) {
       // We found the same row: there is no need to add `source2[k2]'.
       ++k2;
-      // By initial sortedness, since `k1 < old_source1_num_rows',
+      // By sortedness, since `k1 < old_source1_num_rows',
       // we can increment index `k1' too.
       ++k1;
     }
     else if (cmp < 0)
-      // By initial sortedness, we can increment `k1'.
+      // By sortedness, we can increment `k1'.
       ++k1;
     else {
       // Here `cmp > 0'.
-      // By initial sortedness, `source2[k2]' cannot be in `source1'.
-      // We append it to the end of `source1', without worrying
-      // about maintaining the sortedness of `source1' (note however
-      // that `initial sortedness' is maintained).
+      // By sortedness, `source2[k2]' cannot be in `source1'.
+      // We add it as a pending row of `source1' (sortedness unaffected).
       source1.add_pending_row(source2[k2]);
       // We can increment `k2'.
       ++k2;
@@ -265,10 +257,9 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   }
   // Have we scanned all the rows in `source2'?
   if (k2 < source2_num_rows)
-    // By initial sortedness, all the rows in `source2' having indexes
+    // By sortedness, all the rows in `source2' having indexes
     // greater than or equal to `k2' were not in `source1'.
-    // We append them at the end of 'source1'.
-    // Note that add_row() sets correctly the flag `sorted'.
+    // We add them as pending rows of 'source1' (sortedness not affected).
     for ( ; k2 < source2_num_rows; ++k2)
       source1.add_pending_row(source2[k2]);
 
@@ -333,10 +324,6 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
 
   // conversion() may have modified the number of rows in `dest'.
   dimension_type dest_num_rows = dest.num_rows();
-
-  // NOTE: after `conversion()', all the equalities in `source' still
-  // come before the inequalities
-  // (the correctness of simplify() relies on this hypothesis).
 
   // Checking if the generators in `dest' represent an empty polyhedron:
   // the polyhedron is empty if there are no points

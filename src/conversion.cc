@@ -52,31 +52,26 @@ namespace PPL = Parma_Polyhedra_Library;
   \return        The number of lines of the polyhedron or the number of
 		 equality constraints in the result of conversion.
 
-  If some of the constraints in \p source (resp., some of the generators
-  in \p source, if we are converting a system of generators into a
-  system of constraints) are redundant, they will be removed.
-  This is why the parameter matrix \p source is not declared constant.
+  For simplicity, all the following comments assume we are converting a
+  constraint system \p source into a generator system \p dest;
+  the comments for the symmetric case can be obtained by duality.
+ 
+  If some of the constraints in \p source are redundant, they will be removed.
+  This is why the \p source is not declared to be a constant parameter.
 
-  \p dest is supposed to have lines from index 0 to index
-  \p num_lines_or_equalities - 1  and rays/points from index
-  \p num_lines_or_equalities to the last row.
+  If \p start is 0, then \p source is a sorted matrix; also, \p dest is
+  a generator system corresponding to an empty constraint system.
+  If otherwise \p start is greater than 0, then the two sub-matrices of
+  \p source made by the non-pending rows and the pending rows, respectively,
+  are both sorted; also, \p dest is the generator system corresponding to
+  the non-pending constraints of \p source.
 
-  \p start parameter is 0 when we have to find generators from a given
-  system of constraints.
-  However \p start may not be 0. This happens, for example, when, given
-  a system of constraints and the corresponding system of generators,
-  we add some new constraints to the previous system and we want to
-  find the new corresponding system of generators starting from the
-  previous one.
+  Independently from the value of \p start, \p dest has lines from index 0
+  to index \p num_lines_or_equalities - 1 and rays/points from index
+  \p num_lines_or_equalities to the last of its rows.
 
   Note that here the rows of \p sat are indexed by rows of \p dest
   and its columns are indexed by rows of \p source.
-
-  \p num_lines_or_equalities indicates the number of \p dest rows that
-  represent the lines of the polyhedron (in conversion from constraints
-  to generators) or the number of the equality constraints (in conversion
-  from generators to constraints). This parameter will be
-  returned at the end of the conversion.
 
   We know that polyhedra can be represented by both a system of
   constraints or a system of generators (points, rays and lines)
@@ -237,7 +232,7 @@ namespace PPL = Parma_Polyhedra_Library;
   Thus, even if the roles of \p source and \p dest can be interchanged,
   in the sequel we assume the \p source matrix will contain the constraints
   that represent the polyhedron and the \p dest matrix will contain
-  the generator that generates it. Also, we assume that \p source is sorted.
+  the generator that generates it.
 
   There are some observations that are useful to understand this function:
 
