@@ -291,6 +291,9 @@ AC_C_INLINE
 # Checks for C functions.
 AC_CHECK_FUNCS(ffs)
 
+# Checks for C type sizes.
+AC_CHECK_SIZEOF(int)
+
 # Use C++ for the remaining checks.
 AC_LANG(C++)
 
@@ -448,12 +451,10 @@ fi
 AM_CONDITIONAL(HAVE_YAP_PROLOG, test x$YAP_PROLOG = xyap)
 
 # Check for the Mercury compiler
-
 AC_CHECK_PROG(MERCURY_COMPILER, mmc, mmc)
 AM_CONDITIONAL(HAVE_MERCURY_COMPILER, test x$MERCURY_COMPILER = xmmc)
 
 # Check for the GLPK library
-
 AC_LANG_PUSH(C)
 AC_CHECK_HEADER(glpk.h, HAVE_GLPK_H=yes)
 AM_CONDITIONAL(HAVE_GLPK, test x$HAVE_GLPK_H = xyes)
