@@ -34,6 +34,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+PPL::dimension_type
+PPL::Polyhedron::dimension() const {
+  // FIXME: this implementation can be made more efficient.
+  if (is_empty())
+    return 0;
+
+  const ConSys& cs = minimized_constraints();
+  dimension_type d = space_dim;
+  for (ConSys::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i)
+    if (i->is_equality())
+      --d;
+  return d;
+}
+
 const PPL::ConSys&
 PPL::Polyhedron::constraints() const {
   if (marked_empty()) {

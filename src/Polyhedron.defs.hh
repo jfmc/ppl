@@ -512,6 +512,11 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
+  //! \brief
+  //! Returns the dimension of \p *this (not to be confused with the
+  //! dimension of its enclosing vector space) or 0, if \p *this is empty.
+  dimension_type dimension() const;
+
   //! Returns the system of constraints.
   const ConSys& constraints() const;
 

@@ -10,8 +10,13 @@ NEWS for version 0.7  (released date to be decided)
 New and Changed Features
 ========================
 
+o  New method dimension_type Polyhedron::dimension() returns the dimension
+   of *this (not to be confused with the dimension of its enclosing vector
+   space) or 0, if *this is empty.
+
 o  Now `make check' runs a number of tests with `ppl_lcdd', comparing
    the results to expected ones.
+
 
 Bugfixes
 ========
