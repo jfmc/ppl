@@ -21,7 +21,8 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-DISTCHECK_CONFIGURE_FLAGS = --enable-shared --enable-watchdog --with-cxxflags=-Wno-deprecated
+DISTCHECK_CONFIGURE_FLAGS = \
+--enable-shared --enable-watchdog --with-cxxflags=-Wno-deprecated
 
 srcdir = @srcdir@
 VPATH = @srcdir@
