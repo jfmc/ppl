@@ -232,12 +232,13 @@ public:
     \param new_n_columns   The number of columns of the
                            resized matrix.
 
-    A new matrix, with the specified dimensions, is created.
+    The matrix is expanded to the specified dimensions preserving
+    its contents and avoiding reallocation whenever possible.
     It is assumed that the dimensions of current matrix are no more
     than \p new_n_rows and \p new_n_cols
-    If reallocation takes place, the contents of the old matrix are
-    copied in the upper, left-hand corner of the new matrix, which is
-    then assigned to \p *this.
+    The contents of the original matrix will be found in the upper,
+    left-hand corner of the new matrix.
+    The newly added rows and columns contain all zeros.
   */
   void grow(dimension_type new_n_rows, dimension_type new_n_columns);
   
@@ -252,25 +253,28 @@ public:
                            resized matrix.
     \param new_n_columns   The number of columns of the
                            resized matrix.
-    
-    A new matrix, with the specified dimensions, is created
-    without copying the content of the old matrix and assigned
-    to \p *this.
+
+    The matrix is expanded to the specified dimensions avoiding
+    reallocation whenever possible.
+    The contents of the original matrix is lost.
   */
-  void resize_no_copy(dimension_type new_n_rows,
-		      dimension_type new_n_columns);
+  void resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns);
 
   //! Adds \p n columns of zeros to the matrix.
   /*!
+    \param n      The number of columns to be added:
+                  must be strictly positive.
+
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$r \times (c+n)\f$ matrix \f$(M \, 0)\f$.
   */
   void add_zero_columns(dimension_type n);
   
-  //! Adds \p n (non-zero!) rows and columns to the matrix.
+  //! Adds \p n rows and columns to the matrix.
   /*!
-    \param n      The number of rows and columns to be added.
-    
+    \param n      The number of rows and columns to be added:
+                  must be strictly positive.
+
     Turns the matrix \f$M \in \Rset^r \times \Rset^c\f$ into
     the matrix \f$N \in \Rset^{r+n} \times \Rset^{c+n}\f$
     such that \f$N = \bigl({0 \atop M}{J \atop 0}\bigr)\f$,

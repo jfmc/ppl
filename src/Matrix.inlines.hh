@@ -149,7 +149,6 @@ operator!=(const Matrix& x, const Matrix& y) {
   return !(x == y);
 }
 
-
 inline void
 Matrix::add_zero_columns(dimension_type n) {
   assert(n > 0);
