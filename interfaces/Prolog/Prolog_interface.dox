@@ -515,11 +515,10 @@ The PPL predicates provided by the Prolog interface are specified below.
 The specification uses the following grammar rules:
 \code
 
- Number      --> positive integer	ranging from 0 to an upper bound
+ Number      --> unsigned integer	ranging from 0 to an upper bound
 					depending on the actual Prolog system.
  
- C_int       --> Number | + Number | - Number
-					C integer
+ C_int       --> Number | - Number	C integer
 
  C_unsigned  --> Number			C unsigned integer	
 
@@ -543,14 +542,13 @@ The specification uses the following grammar rules:
  Topology    --> c | nnc		Polyhedral kind;
 					c is closed and nnc is NNC
 
- VarId       --> Dimension_Type | + Dimension_Type
-					variable identifier
+ VarId       --> Dimension_Type 	variable identifier
 
  PPL_Var     --> '$VAR'(VarId)		PPL variable
 
  Lin_Expr    --> PPL_Var		PPL variable
             | Coefficient			
-            | + Lin_Expr		unary plus
+            | Lin_Expr			unary plus
             | - Lin_Expr		unary minus
             | Lin_Expr + Lin_Expr	addition
             | Lin_Expr - Lin_Expr	subtraction
@@ -572,7 +570,7 @@ The specification uses the following grammar rules:
             | [Constraint | Constraint_System]
 
  Generator_Denominator --> Coefficient	must be non-zero
-	    | + Coefficient 
+	    | Coefficient 
             | - Coefficient
 
  Generator   --> point(Lin_Expr)	point
@@ -603,7 +601,7 @@ The specification uses the following grammar rules:
  Complexity  --> polynomial | simplex | any		
 
  Rational_Numerator
-	     --> Coefficient | + Coefficient | - Coefficient
+	     --> Coefficient | - Coefficient
 
  Rational_Denominator
 	     --> Coefficient		must be non-zero
@@ -690,7 +688,7 @@ and \ref operations of this manual.
 <H2><CODE> ppl_set_timeout(+C_unsigned) </CODE></H2>
 
    Computations taking exponential time will be interrupted
-   some time after <CODE>C_int</CODE> ms after that call.
+   some time after <CODE>C_unsigned</CODE> ms after that call.
    If the computation is interrupted that way, the current timeout
    exception atom will be thrown.
    <CODE>C_unsigned</CODE> must be strictly greater than zero.
