@@ -63,7 +63,6 @@ ppl-devref-@VERSION@-%.ps: devref-%.latex-dir
 	rm -rf html
 	doxygen $< && rm -rf $@ && mv -f html $@
 
-
 EXTRA_DIST= \
 Makefile \
 user-browse.doxyconf-latex \

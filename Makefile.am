@@ -11,7 +11,7 @@
 srcdir = @srcdir@
 VPATH = @srcdir@
 
-EXTRA_DIST = reconf configure ppl.lsm.in ppl.spec.in
+EXTRA_DIST = configure ppl.lsm.in ppl.spec.in
 
 @SET_MAKE@
 
