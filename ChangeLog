@@ -1,3 +1,76 @@
+2002-07-29 Monday 20:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* COPYING (1.2), INSTALL (1.4), config.guess (1.12), config.sub
+	(1.11), depcomp (1.3), install-sh (1.3), missing (1.5),
+	mkinstalldirs (1.4): Updated to the respective latest versions.
+
+2002-07-29 Monday 10:06  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.196): Added an assertions to
+	add_constraints(ConSys& cs).  Also added a test for emptyness, to
+	avoid adding constraints to a polyhedron already known to be empty.
+
+2002-07-29 Monday 07:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/pl_check.pl (1.21): Comment removed.
+
+2002-07-29 Monday 07:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/pl_check.pl (ppl-0_4-branch.1): Comment
+	removed.
+
+2002-07-29 Monday 07:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (ppl-0_4-branch.3): Mention the fixes to
+	Polyhedron::check_universe() and
+	NNC_Polyhedron::NNC_Polyhedron(ConSys& cs).
+
+2002-07-29 Monday 01:08  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/ConSys.cc, src/GenSys.cc, tests/universe6.cc,
+	src/Polyhedron.cc (ppl-0_4-branch.[1,1,1,2]): The following
+	corrections made on HEAD are now reported in the ppl-0_4-branch:  -
+	fixed a bug in ConSys/GenSys.adjust_topology_and_dimension()  -
+	fixed a bug in Polyhedron::check_universe().
+
+2002-07-29 Monday 00:49  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.195): Fixed a bug in check_universe(), which
+	was returning the wrong result when called by a zero-dim universe
+	polyhedron.
+
+2002-07-29 Monday 00:46  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: ConSys.cc (1.39), GenSys.cc (1.58): Methods
+	adjust_topology_and_dimension() now behave properly even on
+	constraint/generator systems having no rows.
+
+2002-07-29 Monday 00:43  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/universe6.cc (1.2): Added a new test, showing two bugs:  -
+	the first bug has to do with an invariant that was not fullfilled  
+	 when creating an NNC polyehdron starting from an empty constraint
+	system;    this bug was only visible when compiling with assertions
+	turned on.   - the second bug was due to the fact that
+	check_universe() returns     the wrong result when applied to a
+	zero-dim-universe polyhedron.
+
+2002-07-28 Sunday 20:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/pl_check.pl (1.20): Properly initialize and
+	finalize the library.
+
+2002-07-28 Sunday 19:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: Ciao/ppl_ciao.cc (1.13),
+	GNU/ppl_gprolog_sd.cc (1.8), SICStus/ppl_sicstus_sd.cc (1.24),
+	SWI/ppl_swiprolog.cc (1.48), YAP/ppl_yap.cc (1.40): Fixed some
+	comments and assertions.
+
+2002-07-28 Sunday 12:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (ppl-0_4-branch.2): Updated.
+
 2002-07-28 Sunday 11:57  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* README (ppl-0_4-branch.1): Updated for version 0.4.1.
