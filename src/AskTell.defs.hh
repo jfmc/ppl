@@ -56,7 +56,9 @@ operator<<(std::ostream&, const AskTell<CS>&);
 
 } // namespace Parma_Polyhedra_Library
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A pair of (ask and tell) constraints.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename CS>
 class Parma_Polyhedra_Library::AskTell_Pair {
 public:
@@ -90,11 +92,13 @@ private:
   CS t;
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The ask and tell construction on constraint systems.
 /*!
   This class offers a generic implementation of <EM>ask-and-tell
   constraint systems</EM> as defined in \ref Bag98 "[Bag98]".
 */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename CS>
 class Parma_Polyhedra_Library::AskTell {
 protected:
