@@ -305,7 +305,6 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
     // The symmetric cell is the one to be possibly modified.
     dbm_cellp = (dbm_cellp == &dbm_j_0_j_1) ? &dbm_j_1_j_0 : &dbm_j_0_j_1;
     // Compute -b/a into `d', rounding the result towards plus infinity.
-    T d;
     div_round_up(d, -b, a);
     if (*dbm_cellp > d) {
       *dbm_cellp = d;
