@@ -21,9 +21,10 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-%module ppl_c
+%module ppl_ocaml_c
 %{
 #include "ppl_c.h"
 %}
 
+%include gmp.h
 %include ppl_c.h
