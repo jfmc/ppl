@@ -305,7 +305,7 @@ template <typename PH>
 template <typename Widening>
 void
 Polyhedra_PowerSet<PH>::
-BGP99_heuristics_assign(const Polyhedra_PowerSet& y, Widening w) {
+BGP99_heuristics_assign(const Polyhedra_PowerSet& y, Widening wf) {
 #ifndef NDEBUG
   {
     // We assume that y entails *this.
@@ -328,7 +328,7 @@ BGP99_heuristics_assign(const Polyhedra_PowerSet& y, Widening w) {
       const PH& pj = j->element();
       if (pi.contains(pj)) {
 	PH pi_copy = pi;
-	w(pi_copy, pj);
+	wf(pi_copy, pj);
 	add_non_bottom_disjunct(new_sequence, pi_copy);
 	marked[i_index] = true;
       }
@@ -349,7 +349,7 @@ template <typename Widening>
 void
 Polyhedra_PowerSet<PH>::
 BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
-			   Widening w,
+			   Widening wf,
 			   unsigned max_disjuncts) {
   // `x' is the current iteration value.
   Polyhedra_PowerSet<PH>& x = *this;
@@ -366,30 +366,7 @@ BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
   x.pairwise_reduce();
   if (max_disjuncts != 0)
     x.collapse(max_disjuncts);
-  x.BGP99_heuristics_assign(y, w);
-}
-
-template <typename PH>
-inline void
-Polyhedra_PowerSet<PH>::BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
-						   void (Polyhedron::*wm)
-						   (const Polyhedron&,
-						    unsigned*),
-						   unsigned max_disjuncts) {
-  BGP99_extrapolation_assign(y, widen_fun(wm), max_disjuncts);
-}
-
-template <typename PH>
-inline void
-Polyhedra_PowerSet<PH>::
-limited_BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
-				   const ConSys& cs,
-				   void (Polyhedron::*lwm)
-				   (const Polyhedron&,
-				    const ConSys&,
-				    unsigned*),
-				   unsigned max_disjuncts) {
-  BGP99_extrapolation_assign(y, widen_fun(lwm, cs), max_disjuncts);
+  x.BGP99_heuristics_assign(y, wf);
 }
 
 template <typename PH>
@@ -412,8 +389,8 @@ template <typename Cert>
 bool
 Polyhedra_PowerSet<PH>::
 is_cert_multiset_stabilizing(const std::map<Cert, size_type,
-			                    typename Cert::Compare>&
-			     y_cert_ms) const {
+			                    typename Cert::Compare>& y_cert_ms
+			     ) const {
   typedef std::map<Cert, size_type, typename Cert::Compare> Cert_Multiset;
   Cert_Multiset x_cert_ms;
   collect_certificates(x_cert_ms);
@@ -459,7 +436,7 @@ template <typename PH>
 template <typename Cert, typename Widening>
 void
 Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
-					      Widening w) {
+					      Widening wf) {
   // `x' is the current iteration value.
   Polyhedra_PowerSet<PH>& x = *this;
 
@@ -516,7 +493,7 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
 
   // Second widening technique: try the BGP99 powerset heuristics.
   Polyhedra_PowerSet<PH> bgp99_heuristics = x;
-  bgp99_heuristics.BGP99_heuristics_assign(y, w);
+  bgp99_heuristics.BGP99_heuristics_assign(y, wf);
 
   // Compute the poly-hull of `bgp99_heuristics'.
   PH bgp99_heuristics_hull(x.space_dim, PH::EMPTY);
@@ -559,7 +536,7 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
   if (bgp99_heuristics_hull.strictly_contains(y_hull)) {
     // Compute (y_hull \widen bgp99_heuristics_hull).
     PH ph = bgp99_heuristics_hull;
-    w(ph, y_hull);
+    wf(ph, y_hull);
     // Compute the poly-difference between `ph' and `bgp99_heuristics_hull'.
     ph.poly_difference_assign(bgp99_heuristics_hull);
     x.add_disjunct(ph);
@@ -573,22 +550,11 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
 }
 
 template <typename PH>
-void
+template <typename Widening>
+inline void
 Polyhedra_PowerSet<PH>::
-BHZ03_widening_assign(const Polyhedra_PowerSet& y,
-		      void (Polyhedron::*wm)(const Polyhedron&, unsigned*)) {
-  BHZ03_widening_assign<BHRZ03_Certificate>(y, widen_fun(wm));
-}
-
-template <typename PH>
-void
-Polyhedra_PowerSet<PH>::
-limited_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
-			      const ConSys& cs,
-			      void (Polyhedron::*lwm) (const Polyhedron&,
-						       const ConSys&,
-						       unsigned*)) {
-  BHZ03_widening_assign<BHRZ03_Certificate>(y, widen_fun(lwm, cs));
+BHZ03_widening_assign(const Polyhedra_PowerSet& y, Widening wf) {
+  BHZ03_widening_assign<BHRZ03_Certificate>(y, wf);
 }
 
 template <typename PH>

@@ -43,13 +43,12 @@ template <typename PH>
 class Parma_Polyhedra_Library::Polyhedra_PowerSet
   : public Parma_Polyhedra_Library::PowerSet
 <Parma_Polyhedra_Library::Determinate<PH> > {
-private:
-  typedef Determinate<PH> CS;
-  typedef PowerSet<CS> Base;
-
 public:
   //! Returns the maximum space dimension a Polyhedra_Powerset<PH> can handle.
   static dimension_type max_space_dimension();
+
+  //! \name Constructors
+  //@{
 
   //! Builds a universe (top) or empty (bottom) Polyhedra_PowerSet.
   /*!
@@ -69,21 +68,47 @@ public:
   //! Creates a Polyhedra_PowerSet with the same information contents as \p cs.
   Polyhedra_PowerSet(const ConSys& cs);
 
-  //! \brief
-  //! The assignment operator
-  //! (\p *this and \p y can be dimension-incompatible).
-  Polyhedra_PowerSet& operator=(const Polyhedra_PowerSet& y);
+  //@} // Constructors and Destructor
 
-  //! Swaps \p *this with \p y.
-  void swap(Polyhedra_PowerSet& y);
+  //! \name Member Functions that Do Not Modify the Powerset of Polyhedra
+  //@{
 
-private:
-  //! The number of dimensions of the enclosing vector space.
-  dimension_type space_dim;
-
-public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this semantically 
+  //! (i.e., geometrically) contains \p y.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+
+    \warning
+    This may be <EM>really</EM> expensive!
+  */
+  bool semantically_contains(const Polyhedra_PowerSet& y) const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this is semantically 
+  //! (i.e., geometrically) equal to \p y.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+
+    \warning
+    This may be <EM>really</EM> expensive!
+  */
+  bool semantically_equals(const Polyhedra_PowerSet& y) const;
+
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
+  //@} // Member Functions that Do Not Modify the Powerset
+
+  //! \name Space-Dimension Preserving Member Functions that May Modify the Powerset of Polyhedra
+  //@{
 
   //! Intersects \p *this with constraint \p c.
   /*!
@@ -131,6 +156,111 @@ public:
   */
   bool add_constraints_and_minimize(const ConSys& cs);
 
+  void pairwise_reduce();
+
+  //! \brief
+  //! Assigns to \p *this the result of applying the BGP99 extrapolation
+  //! operator to \p *this and \p y, using the widening function \p wf
+  //! and the cardinality threshold \p max_disjuncts.
+  /*!
+    \param y
+    A finite powerset of polyhedra.
+    It <EM>must</EM> definitely entail \p *this;
+
+    \param wf
+    The widening function to be used on polyhedra objects. It is obtained
+    from the corresponding widening method by using the helper function
+    Parma_Polyhedra_Library::widen_fun. Legal values are, e.g.,
+    <CODE>widen_fun(&Polyhedron::H79_widening_assign)</CODE> and
+    <CODE>widen_fun(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>;
+
+    \param max_disjuncts
+    The maximum number of disjuncts occurring in the powerset \p *this
+    <EM>before</EM> starting the computation. If this number is exceeded,
+    some of the disjuncts in \p *this are collapsed (i.e., joined together).
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+
+    For a description of the extrapolation operator,
+    see \ref BGP99 "[BGP99]" and \ref BHZ03b "[BHZ03b]".
+  */
+  template <typename Widening>
+  void BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
+				  Widening wf,
+				  unsigned max_disjuncts);
+
+  //! \brief
+  //! Assigns to \p *this the result of computing the BHZ03-widening
+  //! between \p *this and \p y, using the widening function \p wf
+  //! certified by the convergence certificate \p Cert.
+  /*!
+    \param y
+    The finite powerset of polyhedra computed in the previous iteration step.
+    It <EM>must</EM> definitely entail \p *this;
+
+    \param wf
+    The widening function to be used on polyhedra objects.
+    It is obtained from the corresponding widening method by using
+    the helper function widen_fun. Legal values are, e.g.,
+    <CODE>widen_fun(&Polyhedron::H79_widening_assign)</CODE> and
+    <CODE>widen_fun(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+
+    The BHZ03 widening framework is instantiated using two extrapolation
+    heuristics: first, the least upper bound is tried; second, the BGP99
+    extrapolation operator is tried, possibly applying pairwise reduction.
+    If both heuristics fail to converge according to the certificate \p Cert,
+    then an attempt is made to apply the base-level widening \p wf to
+    the poly-hulls of \p *this and \p y, possibly improving the result
+    using Polyhedron::poly_difference_assign. For more details and
+    a justification of the overall approach, see \ref BHZ03b "[BHZ03b]"
+    and \ref BHZ04 "[BHZ04]".
+
+    \warning
+    In order to obtain a proper widening operator, the template parameter
+    \p Cert should be a finite convergence certificate for the base-level
+    widening function \p wf; otherwise, an extrapolation operator is
+    obtained.
+    For a description of the methods that should be provided
+    by \p Cert, see BHRZ03_Certificate or H79_Certificate.
+  */
+  template <typename Cert, typename Widening>
+  void BHZ03_widening_assign(const Polyhedra_PowerSet& y, Widening wf);
+
+  //! \brief
+  //! An instance of the BHZ03 framework using the widening function \p wf
+  //! certified by BHRZ03_Certificate.
+  template <typename Widening>
+  void BHZ03_widening_assign(const Polyhedra_PowerSet& y, Widening wf);
+
+  //@} // Space-Dimension Preserving Member Functions that May Modify [...]
+
+  //! \name Member Functions that May Modify the Dimension of the Vector Space
+  //@{
+
+  //! \brief
+  //! The assignment operator
+  //! (\p *this and \p y can be dimension-incompatible).
+  Polyhedra_PowerSet& operator=(const Polyhedra_PowerSet& y);
+
+  //! Swaps \p *this with \p y.
+  void swap(Polyhedra_PowerSet& y);
+
+  //! \brief
+  //! Adds \p m new dimensions and embeds the old polyhedron
+  //! in the new space.
+  void add_dimensions_and_embed(dimension_type m);
+
+  //! \brief
+  //! Adds \p m new dimensions to the polyhedron
+  //! and does not embed it in the new space.
+  void add_dimensions_and_project(dimension_type m);
+
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!
     Seeing a powerset as a set of tuples, this method assigns to
@@ -142,16 +272,6 @@ public:
     with each polyhedron in \p y.
   */
   void concatenate_assign(const Polyhedra_PowerSet& y);
-
-  //! \brief
-  //! Adds \p m new dimensions and embeds the old polyhedron
-  //! in the new space.
-  void add_dimensions_and_embed(dimension_type m);
-
-  //! \brief
-  //! Adds \p m new dimensions to the polyhedron
-  //! and does not embed it in the new space.
-  void add_dimensions_and_project(dimension_type m);
 
   //! Removes all the specified dimensions.
   /*!
@@ -175,32 +295,6 @@ public:
   void remove_higher_dimensions(dimension_type new_dimension);
 
   //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this semantically 
-  //! (i.e., geometrically) contains \p y.
-  /*!
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.
-
-    \warning
-    This may be <EM>really</EM> expensive!
-  */
-  bool semantically_contains(const Polyhedra_PowerSet& y) const;
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is semantically 
-  //! (i.e., geometrically) equal to \p y.
-  /*!
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.
-
-    \warning
-    This may be <EM>really</EM> expensive!
-  */
-  bool semantically_equals(const Polyhedra_PowerSet& y) const;
-
-  //! \brief
   //! Remaps the dimensions of the vector space according to
   //! a partial function.
   /*!
@@ -209,81 +303,13 @@ public:
   template <typename PartialFunction>
   void map_dimensions(const PartialFunction& pfunc);
 
-  void pairwise_reduce();
+  //@} // Member Functions that May Modify the Dimension of the Vector Space
 
 private:
-  template <typename Widening>
-  void BGP99_heuristics_assign(const Polyhedra_PowerSet& y, Widening w);
+  typedef Determinate<PH> CS;
+  typedef PowerSet<CS> Base;
 
-  template <typename Widening>
-  void BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
-				  Widening w,
-				  unsigned max_disjuncts);
 public:
-  void BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
-				  void (Polyhedron::*wm)(const Polyhedron&,
-							 unsigned*),
-				  unsigned max_disjuncts = 0);
-
-  void limited_BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
-					  const ConSys& cs,
-					  void (Polyhedron::*lwm)
-					  (const Polyhedron&,
-					   const ConSys&,
-					   unsigned*),
-					  unsigned max_disjuncts = 0);
-
-  //! \brief
-  //! Assigns to \p *this the result of computing the BHZ03-widening
-  //! between \p *this and \p y, using the base-level widening \p wm
-  //! certified by the convergence certificate \p Cert.
-  /*!
-    \param y
-    The finite powerset of polyhedra computed in the previous iteration step.
-    It <EM>must</EM> definitely entail \p *this;
-
-    \param wm
-    The widening method to be used on polyhedra objects.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.   
-
-    The BHZ03 widening framework is instantiated using two extrapolation
-    heuristics: first, the least upper bound is tried; second, the BGP99
-    extrapolation operator is tried, possibly applying pairwise reduction.
-    If both heuristics fail to converge according to the certificate \p Cert,
-    then an attempt is made to apply the base-level widening \p wm to
-    the poly-hulls of \p *this and \p y, possibly improving the result
-    using Polyhedron::poly_difference_assign. For more details and
-    a justification of the overall approach, see \ref BHZ03b "[BHZ03b]"
-    and \ref BHZ04 "[BHZ04]".
-
-    \note
-    The template parameter \p Cert should be a finite convergence
-    certificate for the base-level widening operator \p wm.
-    For a description of the methods that should be provided
-    by \p Cert, see BHRZ03_Certificate or H79_Certificate.
-  */
-  template <typename Cert, typename Widening>
-  void BHZ03_widening_assign(const Polyhedra_PowerSet& y, Widening w);
-
-  //! The instance of the BHZ03 framework using BHRZ03_Certificate.
-  void BHZ03_widening_assign(const Polyhedra_PowerSet& y,
-			     void (Polyhedron::*wm)(const Polyhedron&,
-						    unsigned*));
-
-  //! The limited instance of the BHZ03 framework using BHRZ03_Certificate.
-  void limited_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
-				     const ConSys& cs,
-				     void (Polyhedron::*lwm)
-				     (const Polyhedron&,
-				      const ConSys&,
-				      unsigned*));
-
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
-
   typedef typename Base::Sequence Sequence;
 
   typedef typename Sequence::size_type size_type;
@@ -310,6 +336,15 @@ public:
   bool ascii_load(std::istream& s);
 
 private:
+  //! The number of dimensions of the enclosing vector space.
+  dimension_type space_dim;
+
+  //! \brief
+  //! Assigns to \p *this the result of applying the BGP99 heuristics
+  //! to \p *this and \p y, using the widening function \p wf.
+  template <typename Widening>
+  void BGP99_heuristics_assign(const Polyhedra_PowerSet& y, Widening wf);
+
   //! Records in \p cert_ms the certificates for this set of polyhedra.
   template <typename Cert>
   void collect_certificates(std::map<Cert, size_type,
