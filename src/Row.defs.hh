@@ -150,6 +150,10 @@ public:
   //! Linearly combines \p *this with \p y such that \p *this[k] is 0.
   void linear_combine(const Row& y, size_t k);
 
+  //! Returns <CODE>true</CODE> if and only if all the homogeneous
+  //! terms of \p *this are zero.
+  bool all_homogeneous_terms_are_zero() const;
+
   //! Output operator.
   friend std::ostream&
   Parma_Polyhedra_Library::operator <<(std::ostream& s, const Row& row);

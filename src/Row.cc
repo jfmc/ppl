@@ -250,6 +250,15 @@ PPL::operator <<(std::ostream& s, const Row& row) {
 }
 
 bool
+PPL::Row::all_homogeneous_terms_are_zero() const {
+  const Row& x = *this;
+  for (size_t i = x.size(); --i > 0; )
+    if (x[i] != 0)
+      return false;
+  return true;
+}
+
+bool
 PPL::Row::OK(size_t row_size,
 	     size_t
 #ifndef NDEBUG
