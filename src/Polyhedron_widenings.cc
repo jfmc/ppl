@@ -645,6 +645,8 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
 	      strict_inequality = true;
 	    e += LinExpression(combining_cs[h]);
 	  }
+	  // Simple normalization is enough, since
+	  // `e' will not become an equality constraint.
 	  e.normalize();
 	  
 	  if (!e.all_homogeneous_terms_are_zero())

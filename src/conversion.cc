@@ -490,7 +490,11 @@ PPL::Polyhedron::conversion(Matrix& source,
 	    dest[i][c] = tmp_Integer[4] - tmp_Integer[5];
 	  }
 
+#if EXTRA_NORMALIZATION
 	  dest[i].strong_normalize();
+#else
+	  dest[i].normalize();
+#endif
 	  scalar_prod[i] = 0;
 	  // `dest' has already been set as non-sorted.
 	}
@@ -533,7 +537,11 @@ PPL::Polyhedron::conversion(Matrix& source,
 	    dest[i][c] = tmp_Integer[4] - tmp_Integer[5];
 	  }
 
+#if EXTRA_NORMALIZATION
 	  dest[i].strong_normalize();
+#else
+	  dest[i].normalize();
+#endif
 	  scalar_prod[i] = 0;
 	  // `dest' has already been set as non-sorted.
 	}
@@ -743,7 +751,11 @@ PPL::Polyhedron::conversion(Matrix& source,
 		    tmp_Integer[5] = tmp_Integer[3] * dest[i][c];
 		    new_row[c] = tmp_Integer[4] - tmp_Integer[5];
 		  }
+#if EXTRA_NORMALIZATION
 		  new_row.strong_normalize();
+#else
+		  new_row.normalize();
+#endif
 		  // Since we added a new generator to `dest',
 		  // we also add a new element to `scalar_prod';
 		  // by construction, the new ray lies on the hyper-plane

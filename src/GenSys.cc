@@ -748,7 +748,11 @@ PPL::GenSys::affine_image(dimension_type v,
   if (not_invertible)
     x.remove_invalid_lines_and_rays();
   // This also resets the sortedness flag.
+#if EXTRA_NORMALIZATION
   x.strong_normalize();
+#else
+  x.normalize();
+#endif
 }
 
 void
