@@ -288,6 +288,17 @@ Prolog_get_address(Prolog_term_ref t, void*& p) {
 }
 
 /*!
+  If \p t is a Prolog atom, return true and store its name into \p name.
+  The behavior is undefined if \p t is not a Prolog atom.
+*/
+static inline bool
+Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom& name) {
+  assert(Prolog_is_atom(t));
+  name = Rd_Atom_Check(t);
+  return true;
+}
+
+/*!
   If \p t is a Prolog compound term, return true and store its name
   and arity into \p name and \p arity, respectively.
   The behavior is undefined if \p t is not a Prolog compound term.
