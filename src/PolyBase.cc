@@ -2867,8 +2867,9 @@ PPL::PolyBase::limited_widening_assign(const PolyBase& y, ConSys& cs) {
   // Update the generators of `x': these are used to select,
   // from the constraints in `cs', those that must be added
   // to the resulting polyhedron.
-  if (!x.generators_are_up_to_date())
-    x.update_generators();
+  if (!x.generators_are_up_to_date() && !x.update_generators())
+    // We have just discovered that `x' is empty.
+    return;
 
   size_t new_cs_num_rows = 0;
   for (size_t i = 0, cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
