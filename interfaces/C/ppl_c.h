@@ -1637,11 +1637,9 @@ __P((ppl_Polyhedron_t x,
   \p x, assigns to \p x the \ref BHRZ03_widening "BHRZ03-widening" of
   \p x and \p y.
 */
-inline int
-ppl_Polyhedron_BHRZ03_widening_assign(ppl_Polyhedron_t x,
-				      ppl_const_Polyhedron_t y) {
-  return ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(x, y, 0);
-}
+int
+ppl_Polyhedron_BHRZ03_widening_assign __P((ppl_Polyhedron_t x,
+					   ppl_const_Polyhedron_t y));
 
 /*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
@@ -1664,15 +1662,11 @@ __P((ppl_Polyhedron_t x,
   \p x and \p y intersected with the constraints in \p cs that are
   satisfied by all the points of \p x.
 */
-inline int
+int
 ppl_Polyhedron_limited_BHRZ03_extrapolation_assign
 __P((ppl_Polyhedron_t x,
      ppl_const_Polyhedron_t y,
-     ppl_const_ConSys_t cs)) {
-  return
-    ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(x, y,
-								   cs, 0);
-}
+     ppl_const_ConSys_t cs));
 
 /*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
@@ -1700,15 +1694,11 @@ __P((ppl_Polyhedron_t x,
   the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
   with \f$r \in \Qset\f$, that are satisfied by all the points of \p x.
 */
-inline int
+int
 ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign
 __P((ppl_Polyhedron_t x,
      ppl_const_Polyhedron_t y,
-     ppl_const_ConSys_t cs)) {
-  return
-    ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(x, y,
-								   cs, 0);
-}
+     ppl_const_ConSys_t cs));
 
 /*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
@@ -1728,11 +1718,9 @@ __P((ppl_Polyhedron_t x,
   \p x, assigns to \p x the \ref H79_widening "H79-widening" of \p x
   and \p y.
 */
-inline int
-ppl_Polyhedron_H79_widening_assign(ppl_Polyhedron_t x,
-				   ppl_const_Polyhedron_t y) {
-  return ppl_Polyhedron_H79_widening_assign_with_tokens(x, y, 0);
-}
+int
+ppl_Polyhedron_H79_widening_assign __P((ppl_Polyhedron_t x,
+					ppl_const_Polyhedron_t y));
 
 /*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
@@ -1755,14 +1743,10 @@ __P((ppl_Polyhedron_t x,
   and \p y intersected with the constraints in \p cs that are
   satisfied by all the points of \p x.
 */
-inline int
-ppl_Polyhedron_limited_H79_extrapolation_assign
-__P((ppl_Polyhedron_t x,
-     ppl_const_Polyhedron_t y,
-     ppl_const_ConSys_t cs)) {
-  return
-    ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(x, y, cs, 0);
-}
+int
+ppl_Polyhedron_limited_H79_extrapolation_assign __P((ppl_Polyhedron_t x,
+						     ppl_const_Polyhedron_t y,
+						     ppl_const_ConSys_t cs));
 
 /*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
@@ -1791,14 +1775,10 @@ __P((ppl_Polyhedron_t x,
   with \f$r \in \Qset\f$, that are satisfied by all the points of \p
   x.
 */
-inline int
-ppl_Polyhedron_bounded_H79_extrapolation_assign
-__P((ppl_Polyhedron_t x,
-     ppl_const_Polyhedron_t y,
-     ppl_const_ConSys_t cs)) {
-  return
-    ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(x, y, cs, 0);
-}
+int
+ppl_Polyhedron_bounded_H79_extrapolation_assign __P((ppl_Polyhedron_t x,
+						     ppl_const_Polyhedron_t y,
+						     ppl_const_ConSys_t cs));
 
 /*! \brief
   Assigns to \p ph its topological closure.
