@@ -12,12 +12,11 @@ manipulating the PPL polyhedra.
 <H4>CIAO Prolog</H4>
 
 Support for CIAO Prolog is under development and will be available in 
-  a future release. 
+ a future release. 
 
 <H4>GNU Prolog</H4>
 
-Support for GNU Prolog is under development and will be available in 
-  a future release. 
+
 
 <H4>SICStus Prolog</H4>
 
@@ -28,8 +27,11 @@ load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
 
 <H4>SWI Prolog</H4>
 
-Support for SWI Prolog is under development and will be available in 
-  a future release. 
+
+ 
+<H4>YAP</H4>
+
+
 
 \subsection PI_SI_Features System-Independent Features
 
@@ -324,10 +326,26 @@ more information regarding these issues.
    the constraints in the constraints system
    representing the polyhedron referenced by <CODE>Handle</CODE>.
 
+<H4><CODE>ppl_Polyhedron_get_minimized_constraints(+Handle,
+                                                   -List_of_Constraints)
+</CODE></H4>
+
+   <CODE>List_of_Constraints</CODE> is unified with a minimized list of
+   the constraints in the constraints system
+   representing the polyhedron referenced by <CODE>Handle</CODE>.
+
 <H4><CODE>ppl_Polyhedron_get_generators(+Handle, -List_of_Generators)
 </CODE></H4>
 
    <CODE>List_of_Generators</CODE> is unified with a list of
+   the generators in the generators system
+   representing the polyhedron referenced by <CODE>Handle</CODE>.
+
+<H4><CODE>ppl_Polyhedron_get_minimized_generators(+Handle,
+                                                  -List_of_Generators)
+</CODE></H4>
+
+   <CODE>List_of_Generators</CODE> is unified with a minimized list of
    the generators in the generators system
    representing the polyhedron referenced by <CODE>Handle</CODE>.
 
