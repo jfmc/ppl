@@ -206,6 +206,10 @@ public:
   void swap(Row& y);
 
   //! Assigns the implementation of \p y to \p *this.
+  /*!
+    To be used with extra care,
+    since it may easily cause a memory leak.
+  */
   void assign(Row& y);
 
   //! Resizes the row without copying the old contents.
