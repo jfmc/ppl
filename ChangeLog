@@ -1,0 +1,1264 @@
+2001-10-22 Monday 15:18  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/: error1.cc (1.3), error2.cc (1.4), error3.cc (1.3),
+	inters2.cc (1.5), randchull1.cc (1.5): All tests updated to use the
+	new functions line, ray and vertex.
+
+2001-10-22 Monday 15:10  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: ConSys.cc (1.9), ConSys.defs.hh (1.17), GenSys.cc (1.11),
+	GenSys.defs.hh (1.26), Generator.defs.hh (1.16),
+	Generator.inlines.hh (1.7), Polyhedron.defs.hh (1.41): Operators |,
+	^, /= have now been replaced by functions `line', 'ray' and
+	'vertex'. Note that the function vertex has an _optional_ second
+	argument (the denominator), with default value 1.  Hopefully, all
+	the documentation has been changed accordingly (please check).	In
+	GenSys and ConSys, now the functions assign_variable and
+	substitute_variable take a _const_ Integer& as their third
+	argument.  The same change cannot be applied to the corresponding
+	functions defined on Polyhedron, since we perform a swap on this
+	argument, so that it cannot be const.  However, I am now seeing if
+	it is possible to have also these as "optional" arguments, with a
+	default value of 1. Alas, I need to read the C++ manual in order to
+	see how I can define a default value for a non-const argument
+	passed by reference.
+
+2001-10-22 Monday 15:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.h.in (1.6), configure.ac (1.5),
+	doc/devref-browse.doxyconf-latex.in (1.6),
+	doc/devref-print.doxyconf-latex.in (1.6),
+	doc/devref.doxyconf-html.in (1.7), src/.cvsignore (1.4),
+	src/Makefile.am (1.9), src/SatRow.cc (1.3), src/SatRow.defs.hh
+	(1.6), src/SatRow.inlines.hh (1.3): SatRow reimplemented from
+	scratch: we no longer depend on the BitSet class.
+
+2001-10-22 Monday 14:26  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.23): Changed \alpha in the definition of
+	affine transformations to \lambda.  Added a comment after the
+	definition of "Combinations" that the empty sum is the origin.
+
+2001-10-22 Monday 10:34  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.22): Changes to wording and restructuring
+	of the definition of Polyhedra.  New headings added : Constraints
+	representation and Rational polyheron.	Heading "Generators"
+	replaced by "Generators representation".  Wording in this
+	definition changed
+
+2001-10-22 Monday 10:02  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.40): In the comments, there was a
+	system of constraints called "constraints" instead of "cs" and a
+	variable called "var" instead of "v".
+
+2001-10-22 Monday 09:54  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Generator.defs.hh (1.15): Wording of comment on how to build
+	a generator changed. Also minor changes to wording in the following
+	examples.
+
+2001-10-22 Monday 09:52  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.21): I was wrong to remove the
+	"^\transpose" in Weil's theorem - restored.
+
+2001-10-22 Monday 09:25  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.39): In two examples, erased the spaces
+	between the factor and the variable.
+
+2001-10-22 Monday 09:04  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.20): Comment at the end of Weil's theorem
+	had "convex" and "positive" and "rays" and "vertices" wrong way
+	round.	Minor change to wording introducing the two theorems.  In
+	final comment of user part, "blurb" removed.
+
+2001-10-22 Monday 08:49  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.19): Removed spurious ^\transpose (^T) in
+	Weil's theorem.  Added "dual representation" as heading and
+	emphasised in text at end of user definitions.
+
+2001-10-21 Sunday 15:50  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.16), GenSys.defs.hh (1.25),
+	Generator.defs.hh (1.14), Generator.inlines.hh (1.6),
+	LinExpression.defs.hh (1.13), LinExpression.inlines.hh (1.3),
+	Polyhedron.defs.hh (1.38): Systems of constraints and generators do
+	not define polyhedra; rather, they may "correspond to" a given
+	polyhedron (the one that would be built by applying the adequate
+	constructor).  A system of generator does not need to include a
+	vertex, in general.  The vertex is needed if the system of
+	generators is meant to correspond to a non-empty polyhedron.  The
+	detailed description of class Generator changed to highlight that
+	vertices, lines and rays are represented as a type plus a direction
+	in the space.
+
+2001-10-21 Sunday 14:00  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.10): CREDITS added to the distribution.
+
+2001-10-21 Sunday 13:04  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Constraint.defs.hh (1.13), Constraint.inlines.hh (1.3): In
+	the documentation, used n to denote the dimension of the space.  In
+	the renaming operator >>, the parameter p renamed into offset,
+	consistently with the comment.	In the examples, removed spaces
+	between factor and variable when specifying a linear expression
+	(e.g., "3 * x + 4 * y" now is written "3*x + 4*y").
+
+2001-10-21 Sunday 13:01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.18): When specifying the coordinates of a
+	point, indexes should range from 0 to n-1, if n is the dimension of
+	the space.  This is to be consistent with definition of class
+	Variable.  Change applied to the definitions of scalar-product, of
+	polytope and to Weil's theorem.  Note: I do not like to say a
+	polyhedron is "open" in one direction; I prefer the terminology
+	"unbounded", so I changed it.
+
+2001-10-21 Sunday 12:09  Elisa Ricci <ericci@cs.unipr.it>
+
+	* doc/definitions.dox (1.17): Restored some mathematical changes
+	and used the notation "\vect{..}" for all the vectors (also in the
+	part that is not in the user manual).
+
+2001-10-21 Sunday 11:56  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Constraint.defs.hh (1.12), Generator.defs.hh (1.13),
+	Polyhedron.defs.hh (1.37), Variable.cc (1.2), Variable.defs.hh
+	(1.7): In the documentation of the namespace PPL, all non-friend
+	operators are now grouped consistently. I do not like very much the
+	current header of each group ("Non-friend operators on objects ..."
+	is maybe too much implementation-aware), but in any case it is
+	definitely better than the default grouping header ("Functions").
+
+2001-10-21 Sunday 11:53  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* README (1.6): Now it is in sync with the home page of the www
+	documentation.
+
+2001-10-21 Sunday 11:14  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/: definitions.dox (1.16), ppl.sty (1.4): The new macro \vect
+	inserted in ppl.sty; now the macro simply uses the latex command
+	\mathbf, but we can modify its meaning as we like.  Had a run on
+	definitions.dox to consistently use the new macro: be careful, in
+	the future, to use 0 when a scalar is meant, and \vect{0} when the
+	origin of the space is meant.  Also made small, readability related
+	changes to Minkowsky's and Weil's theorems.
+
+2001-10-20 Saturday 21:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.5): Equation -> equality.
+
+2001-10-20 Saturday 16:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.4): Almost complete: only the directory structure is
+	missing.
+
+2001-10-20 Saturday 16:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS (1.2): Just a formatting change.
+
+2001-10-20 Saturday 16:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/: definitions.dox (1.15), devref.tex (1.5), user.tex (1.6):
+	Footers fixed.	Put the blame on Doxygen.
+
+2001-10-20 Saturday 16:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* AUTHORS (1.2), CREDITS (1.1): Renamed and completed.
+
+2001-10-20 Saturday 12:22  Elisa Ricci <ericci@cs.unipr.it>
+
+	* doc/definitions.dox (1.14), src/Polyhedron.defs.hh (1.36): Moved
+	the definition of the universe polyhedron after the definition of
+	the polyhedron.
+
+2001-10-20 Saturday 11:47  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: GenSys.cc (1.10), GenSys.defs.hh (1.24), Polyhedron.cc
+	(1.28), Polyhedron.defs.hh (1.35), Status.defs.hh (1.6),
+	conversion.cc (1.5): Now, we always use `system of' instead of `set
+	of' for GenSys and ConSys.  In the comment of polyhedron added the
+	explanation of what an universal polyhedron is.  Some changes to
+	the comment of the exception: we say that they "have different
+	dimension" instead of that they "do not have the same dimension".
+
+2001-10-20 Saturday 10:26  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/LinExpression.defs.hh (1.12): In the second part of the
+	example, we can use  LinExpression e = LinExpression(14) instead of
+	  LinExpression e = LinExpression(Integer(14)).
+
+2001-10-19 Friday 20:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/: user-browse.doxyconf-latex.in (1.6),
+	user-print.doxyconf-latex.in (1.6), user.doxyconf-html.in (1.8): No
+	INTERNAL_DOCS, no INHERIT_DOCS, no FILE_PATTERNS, and no
+	EXCLUDE_PATTERNS.
+
+2001-10-19 Friday 19:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.15), GenSys.defs.hh (1.23): Use
+	PPL_INTERNAL inheritance.
+
+2001-10-19 Friday 19:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Integer/Integer.defs.hh (1.3): Short comment to swap, not
+	long comment to std.
+
+2001-10-19 Friday 18:13  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.13): Generators and associated terminology
+	now defined in the user section.  There is now some repetition of
+	definitions in the developer's section.
+
+2001-10-19 Friday 17:27  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.27), Polyhedron.defs.hh (1.34),
+	Polyhedron.inlines.hh (1.5): Simplified the comment to the function
+	swap.  Used `v' instead of `var', `dim' instead of `add_dim'.  All
+	the ConSys are called `cs' and all the GenSys are called `gs'. 
+	Used the expression "thrown if" to introduce the comment to the
+	exceptions.  The variable is "substituted" in the function
+	substitute_variable.
+
+2001-10-19 Friday 17:19  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: ConSys.cc (1.8), ConSys.defs.hh (1.14), GenSys.cc (1.9),
+	GenSys.defs.hh (1.22): The Generator is called `g' instead of `r'
+	and the number that indicates the variable is called `v' instead of
+	'var'.
+
+2001-10-19 Friday 17:12  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: Constraint.defs.hh (1.11), Generator.defs.hh (1.12):
+	Constraint and Generator are :: PPL_INTERNAL Row instead of ::
+	public Row (like LinExpression).
+
+2001-10-19 Friday 14:24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.9), depcomp (1.2), install-sh (1.2), ppl.spec.in
+	(1.6), doc/Makefile.am (1.11), doc/definitions.dox (1.12),
+	doc/devref-browse.doxyconf-latex.in (1.5),
+	doc/devref-print.doxyconf-latex.in (1.5),
+	doc/devref.doxyconf-html.in (1.6), doc/gpl.dox (1.2),
+	doc/user-browse.doxyconf-latex.in (1.5),
+	doc/user-print.doxyconf-latex.in (1.5), doc/user.doxyconf-html.in
+	(1.7), src/ConSys.cc (1.7), src/ConSys.defs.hh (1.13),
+	src/ConSys.inlines.hh (1.3), src/Constraint.defs.hh (1.10),
+	src/GenSys.cc (1.8), src/GenSys.defs.hh (1.21),
+	src/GenSys.inlines.hh (1.3), src/Generator.defs.hh (1.11),
+	src/LinExpression.defs.hh (1.11), src/Makefile.am (1.8),
+	src/Matrix.cc (1.4), src/Matrix.defs.hh (1.5),
+	src/Matrix.inlines.hh (1.2), src/Polyhedron.cc (1.26),
+	src/Polyhedron.defs.hh (1.33), src/Polyhedron.inlines.hh (1.4),
+	src/Row.cc (1.3), src/Row.inlines.hh (1.3), src/SatMatrix.cc (1.4),
+	src/SatMatrix.defs.hh (1.6), src/SatMatrix.inlines.hh (1.2),
+	src/SatRow.defs.hh (1.5), src/SatRow.inlines.hh (1.2),
+	src/Status.cc (1.3), src/Status.defs.hh (1.5), src/conversion.cc
+	(1.4), src/minimize.cc (1.3), src/simplify.cc (1.3),
+	src/Integer/Integer.inlines.hh (1.3), src/Integer/Makefile.am
+	(1.2), tests/Makefile.am (1.15), tests/append2.cc (1.3),
+	tests/error2.cc (1.3), tests/inters1.cc (1.4), tests/inters2.cc
+	(1.4), tests/permute.cc (1.6): Annoying trailing blanks removed.
+
+2001-10-19 Friday 14:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: LinExpression.defs.hh (1.10), LinExpression.inlines.hh
+	(1.2): We now have only one sizing constructor, and it is private.
+
+2001-10-19 Friday 12:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: conversion.cc (1.3), minimize.cc (1.2), simplify.cc (1.2),
+	Matrix.cc (1.3): Old junk removed.
+
+2001-10-19 Friday 12:15  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.25), Polyhedron.defs.hh (1.32): In
+	functions widening_assign and limited_widening_assign considered
+	the case of empty-polyhedron and the exception for the different
+	dimension of the polyhedra and the matrix (this for the
+	limited_widening); added some explanations for the parameters.	In
+	function assign_variable and substitute_variable considered the
+	exceptions for the variable that is not inside the polyhedron and
+	the expression that does not have the right dimension.
+
+2001-10-19 Friday 09:57  Elisa Ricci <ericci@cs.unipr.it>
+
+	* doc/definitions.dox (1.11): Some mathematical changes.
+
+2001-10-19 Friday 09:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.h.in (1.5), configure.ac (1.4): Add checks to determine
+	the size of ints and longs.
+
+2001-10-19 Friday 09:06  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Polyhedron.defs.hh (1.31): Examples 4 to 7 simplified.
+
+2001-10-19 Friday 08:56  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/: Polyhedron.defs.hh (1.30), Variable.defs.hh (1.6): Changes
+	to English.
+
+2001-10-18 Thursday 18:51  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.24), Polyhedron.defs.hh (1.29),
+	Polyhedron.inlines.hh (1.3): In function add_dimensions_and_embed
+	and add_dimensions_and_project the case of "add_dim" = 0 and the
+	case of the empty polyhedron are considered.  In functions
+	add_constraints, add_constraints_lazy, add_generators, generators
+	and constraints instead of some assertion some exceptions are
+	added.
+
+2001-10-18 Thursday 15:36  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/: GenSys.defs.hh (1.20), LinExpression.defs.hh (1.9),
+	Polyhedron.defs.hh (1.28): More improvements to the English.
+
+2001-10-18 Thursday 15:29  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/GenSys.defs.hh (1.19): The real name of the function is
+	GenSys_Con_Rel satisfy(const Constraint& c) const and not
+	GenSys_Con_Rel satisfy_constraint(const Constraint& c) const.
+
+2001-10-18 Thursday 14:01  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/GenSys.defs.hh (1.18): Just "specify" changed to "specifies".
+
+2001-10-18 Thursday 13:20  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/: ConSys.defs.hh (1.12), Constraint.defs.hh (1.9),
+	GenSys.defs.hh (1.17), Generator.defs.hh (1.10): Changes to
+	English.  In GenSys.defs.hh the explanation about a system of
+	generators changed to:	   An object of the class GenSys is a
+	system of generators,	  i.e. a container of objects of the class
+	Generator     (lines, rays and vertices).      The set of
+	generators must include at least one vertex.	  This is needed
+	since a line or ray only specify a direction	  and a point is
+	needed to indicate its position.
+
+2001-10-18 Thursday 12:40  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.23), Polyhedron.defs.hh (1.27): Now the
+	function  GenSys_Con_Rel poly_satisfies_constraint(const
+	Constraint& con) is called  GenSys_Con_Rel satisfies(const
+	Constraint& c).  Added the exception for the functions
+	convex_hull_lazy(), satisfies() and includes().
+
+2001-10-18 Thursday 12:37  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: GenSys.cc (1.7), GenSys.defs.hh (1.16): Now the function
+	PPL::GenSys::satisfy_constraint(const Constraint& c) const is
+	called PPL::GenSys::satisfy(const Constraint& c) const.
+
+2001-10-18 Thursday 11:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/ehandlers.hh (1.2): Call exit(1) instead of abort().
+
+2001-10-18 Thursday 11:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am (1.14), append1.cc (1.2), ehandlers.hh (1.1):
+	Set the handlers for unexpected and uncaught exceptions.
+
+2001-10-18 Thursday 09:38  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/GenSys.defs.hh (1.15): Small change to wording in
+	GenSys_Con_Rel comment.
+
+2001-10-18 Thursday 09:07  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/permute.cc (1.5): Now the termination conditions are
+	checked.
+
+2001-10-18 Thursday 08:32  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/permute.cc (1.4): Instead of giving the number of variables
+	explicitly, it is obtained as needed using
+	Polyhedron.num_dimensions.
+
+2001-10-18 Thursday 08:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/Makefile.am (1.10): Now `make world' also produces the
+	licenses in various formats.
+
+2001-10-17 Wednesday 20:18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.22): throw_different_dimensions() fixed.
+
+2001-10-17 Wednesday 20:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am (1.13), permute.cc (1.3): Made quiet.
+
+2001-10-17 Wednesday 20:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/error3.cc (1.2): Fixed and made quiet.
+
+2001-10-17 Wednesday 20:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/append.cc (1.4): Renamed append1.cc.
+
+2001-10-17 Wednesday 20:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: append1.cc (1.1), append2.cc (1.2): Renamed.
+
+2001-10-17 Wednesday 19:37  Elisa Ricci <ericci@cs.unipr.it>
+
+	* tests/error3.cc (1.1): Tests whether convex_hull assign throws
+	when it should.
+
+2001-10-17 Wednesday 19:33  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.21), Polyhedron.defs.hh (1.26):
+	Polyhedron::intersection_assign() and
+	Polyhedron::convex_hull_assign() now throw an exception if asked to
+	operate on polyhedra of different dimensions.
+
+2001-10-17 Wednesday 16:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/permute.cc (1.2): We now use the intended constraints. 
+	Termination is guaranteed by using Polyhedron::widening_assign().
+
+2001-10-17 Wednesday 16:31  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.11), ConSys.inlines.hh (1.2),
+	GenSys.defs.hh (1.14), GenSys.inlines.hh (1.2): Added the function
+	swap for GenSys and ConSys.
+
+2001-10-17 Wednesday 16:21  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/: Makefile.am (1.12), append2.cc (1.1), my_append.cc (1.2),
+	permute.cc (1.1): The file my_append.cc renamed to append2.cc A new
+	test program permute.cc added.	Makefile.am updated to include
+	these tests.
+
+2001-10-17 Wednesday 16:08  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.20), Polyhedron.defs.hh (1.25): Added
+	comments of the parameters to some public functions of Polyhedron.
+
+2001-10-17 Wednesday 15:27  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.10), Constraint.defs.hh (1.8),
+	GenSys.defs.hh (1.13), Polyhedron.defs.hh (1.24): Now, the
+	definitions of the variables used in the examples are before the
+	examples (they are not inside the examples).
+
+2001-10-17 Wednesday 15:03  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/my_append.cc (1.1): A modified version of append.cc where
+	code is structured into two procedures, one for the initial
+	polyhedra and one for the fix-point.
+
+2001-10-17 Wednesday 12:55  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.10): Definitions of linearly independent
+	and affinely independent improved.
+
+2001-10-17 Wednesday 12:38  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: Constraint.defs.hh (1.7), Generator.defs.hh (1.9),
+	LinExpression.defs.hh (1.8): Now, "friend" mathods are inside the
+	class documentation of these class.  In the "Detail Description" of
+	the class LinExpression there is the paragraph "How to build a
+	linear expression".
+
+2001-10-17 Wednesday 12:03  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.23): Used "check_not_empty" instead of
+	"check_satisfiable" also in the comment of function
+	Polyhedron::OK().
+
+2001-10-17 Wednesday 12:01  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.9), GenSys.defs.hh (1.12), Matrix.defs.hh
+	(1.4), Polyhedron.cc (1.19), Polyhedron.defs.hh (1.22),
+	SatMatrix.cc (1.3), SatMatrix.defs.hh (1.5), SatRow.defs.hh (1.4),
+	Status.defs.hh (1.4): Changed the comments in the function OK(). 
+	In function Polyhedron::OK() used "check_not_empty" instead of
+	"check_satisfiable".
+
+2001-10-17 Wednesday 11:05  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: ConSys.cc (1.6), ConSys.defs.hh (1.8), GenSys.cc (1.6),
+	GenSys.defs.hh (1.11), Polyhedron.cc (1.18), Polyhedron.defs.hh
+	(1.21): In function assign_variable and substitute_variable and in
+	their comments used "expr" instead of "coefficient".  Used the
+	concatenation of two strings in the argument of
+	std::invalid_argument(...).
+
+2001-10-17 Wednesday 11:03  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Generator.inlines.hh (1.5): Used the concatenation of two
+	strings in the argument of std::invalid_argument(...).
+
+2001-10-17 Wednesday 10:14  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.20): Erased the temporary debug
+	constructor of a polyhedron.
+
+2001-10-17 Wednesday 09:19  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: ConSys.cc (1.5), ConSys.defs.hh (1.7), GenSys.cc (1.5),
+	GenSys.defs.hh (1.10), Matrix.cc (1.2), Matrix.defs.hh (1.3),
+	Polyhedron.cc (1.17), Polyhedron.defs.hh (1.19), SatMatrix.cc
+	(1.2), SatMatrix.defs.hh (1.4), SatRow.cc (1.2), SatRow.defs.hh
+	(1.3), Status.cc (1.2), Status.defs.hh (1.3): Now, there is not
+	NDEBUG before the function OK.
+
+2001-10-17 Wednesday 07:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Integer/: Integer.cc (1.2), Integer.defs.hh (1.2),
+	Integer.inlines.hh (1.2), Integer.types.hh (1.2): Integer is now in
+	the PPL namespace.
+
+2001-10-17 Wednesday 07:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: ConSys.cc (1.4), GenSys.cc (1.4), Generator.inlines.hh
+	(1.4), Makefile.am (1.7), Polyhedron.cc (1.16), Row.cc (1.2),
+	Row.inlines.hh (1.2): Now Integer and BitSet are in the PPL
+	namespace.  Other namespace-related fixes.  Exception strings
+	improved.
+
+2001-10-16 Tuesday 19:05  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: Constraint.defs.hh (1.6), Generator.defs.hh (1.8): Changed
+	the place of the paragraph "How to build ...".	In the comment of
+	'Generator operator /=' used std::invalid_argument instead of
+	invalid_argument.
+
+2001-10-16 Tuesday 18:59  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.18): Used std::invalid_argument instead
+	of invalid_argument in the documentation of exception.
+
+2001-10-16 Tuesday 18:54  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/: definitions.dox (1.9), ppl.sty (1.3): More definitions
+	added to ppl.sty.
+	
+	New definitions used in definitions.dox.  Layout of formula in
+	Minkowski's theorem improved.
+
+2001-10-16 Tuesday 18:23  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.6), GenSys.defs.hh (1.9), Polyhedron.cc
+	(1.15), Polyhedron.defs.hh (1.17), Status.defs.hh (1.2),
+	conversion.cc (1.2): Used "\Rset" instead of "\mathbb{R}".
+
+2001-10-16 Tuesday 18:18  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Constraint.defs.hh (1.5), LinExpression.defs.hh (1.7),
+	Variable.defs.hh (1.5): Examples on the creation of linear
+	expressions and constraints moved to the right place. Comment about
+	variable names moved into the definition of the class Variable.
+
+2001-10-16 Tuesday 18:06  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Generator.defs.hh (1.7): The examples on how to build
+	generators moved to the right place.
+
+2001-10-16 Tuesday 17:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: error1.cc (1.2), error2.cc (1.2): There is no point in
+	including print.hh.
+
+2001-10-16 Tuesday 17:33  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/: definitions.dox (1.8), ppl.sty (1.2): Some logic notation
+	and "things that hold by definition" added to ppl.sty \mathbb{R}
+	replaced by \Rset in definitions.dox
+
+2001-10-16 Tuesday 17:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.14), src/Polyhedron.defs.hh (1.16),
+	src/Variable.defs.hh (1.4), src/Variable.inlines.hh (1.2),
+	tests/append.cc (1.3): The argument of
+	Polyhedron::remove_dimensions() has changed again.  Now it is
+	remove_dimensions(const std::set<Variable>& to_be_removed).
+
+2001-10-16 Tuesday 17:24  Elisa Ricci <ericci@cs.unipr.it>
+
+	* tests/: Makefile.am (1.11), error2.cc (1.1): Added a test for the
+	expception of Polyhedron::assign_variable.
+
+2001-10-16 Tuesday 17:12  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.15): Commented the exception for the
+	function assign_variable and substitute_variable.  Now, some
+	important puclic function are in the user manual.
+
+2001-10-16 Tuesday 17:10  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Generator.defs.hh (1.6): Commented the exception of the
+	constructor of a vertex.
+
+2001-10-16 Tuesday 17:09  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Generator.inlines.hh (1.3): A line has the inhomogeneus term
+	equal to zero (like a ray).
+
+2001-10-16 Tuesday 16:40  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/GenSys.defs.hh (1.8): Added two examples that show that at
+	least a vertex is necessary in a set of generators.
+
+2001-10-16 Tuesday 15:20  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.13): In functions assign_variable and
+	substitute_variable tha case of denominator == 0 is considered.
+
+2001-10-16 Tuesday 15:11  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: LinExpression.defs.hh (1.6), Variable.defs.hh (1.3): No
+	longer using modules (\ingroup, \addgroup, etc.).
+
+2001-10-16 Tuesday 12:26  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.12): Erased a print.
+
+2001-10-16 Tuesday 12:23  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: ConSys.cc (1.3), ConSys.defs.hh (1.5), GenSys.cc (1.3),
+	GenSys.defs.hh (1.7): Corrected my previous error.
+
+2001-10-16 Tuesday 12:09  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.11), Polyhedron.defs.hh (1.14): The
+	functions assingn_variable and substitute_variable use a Variable
+	instead od a size_t and a const LinExpression instead of a
+	vector<Integer>.  In this functions, we use a copy of the `coeff'
+	to find the inverse transformations.  Changed the example in
+	according to these changes.
+
+2001-10-16 Tuesday 12:04  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: ConSys.cc (1.2), ConSys.defs.hh (1.4): Now
+	substitute_variable uses LinExpression instead of a
+	vector<Integer>.
+
+2001-10-16 Tuesday 12:03  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: GenSys.cc (1.2), GenSys.defs.hh (1.6): Now
+	assign_variable(..) uses an LinExpression instead of a
+	vector<Integer>.
+
+2001-10-16 Tuesday 11:59  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/LinExpression.defs.hh (1.5): Now LinExpression is
+	PPL_INTERNAL Row, instead of private Row.
+
+2001-10-16 Tuesday 10:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Generator.inlines.hh (1.2), tests/Makefile.am (1.10),
+	tests/error1.cc (1.1): Throw an invalid_argument exception if
+	Generator operator /=(const LinExpression& e, const Integer& n) is
+	called with n == 0.  New test program error1.cc to test whether
+	this situation is correctly handled.
+
+2001-10-16 Tuesday 10:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.3): New incipit.
+
+2001-10-16 Tuesday 10:53  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Matrix.defs.hh (1.2), Row.defs.hh (1.2), SatMatrix.defs.hh
+	(1.3), SatRow.defs.hh (1.2): All the specializations of the
+	std::swap function related to implementation classes are now hidden
+	from the user guide.
+
+2001-10-16 Tuesday 10:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.spec.in (1.5): Summary changed.  Packager also changed in
+	view of PGP signatures.
+
+2001-10-16 Tuesday 10:20  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.13): The parameter name of the
+	"default" constructor for Polyhedron is `kind'.  Hal the comment
+	was using a different parameter name (`full').
+
+2001-10-16 Tuesday 10:15  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/GenSys.defs.hh (1.5): In the examples, replaced "\=" by "/=".
+
+2001-10-16 Tuesday 10:13  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Generator.defs.hh (1.5): In the examples for defining
+	vectors, all "\=" replaced by "/=".
+
+2001-10-16 Tuesday 08:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.lsm.in (1.2), src/Polyhedron.cc (1.10),
+	src/Polyhedron.defs.hh (1.12), tests/append.cc (1.2): New interface
+	for remove_dimensions(const std::vector<unsigned int>&
+	to_be_removed).  Note: BitSet is an implementation detail that
+	should not surface in the API.
+
+2001-10-16 Tuesday 07:38  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.spec.in (1.4): First attempt at the LSM (Linux Software Map)
+	entry form.
+
+2001-10-15 Monday 20:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am (1.9), append.cc (1.1): A first at the
+	append's analysis test.
+
+2001-10-15 Monday 20:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/randchull1.cc (1.4): Do less work.
+
+2001-10-15 Monday 20:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/empty1.cc (1.2): Must return an int, not a bool.
+
+2001-10-15 Monday 18:35  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.9): Erased the "assert(OK())" from the
+	function Polyhedron::insert(const Generator&): after an insertion
+	of a generator the polyhedron can be not OK.
+
+2001-10-15 Monday 18:24  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.11): Added a new example to show the
+	use of the function Polyhedron::insert(...).
+
+2001-10-15 Monday 18:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.8), src/Polyhedron.defs.hh (1.10),
+	tests/Makefile.am (1.8), tests/empty1.cc (1.1): It is not possible
+	to overload bool and unsigned int.  New enumeration Degenerate_Kind
+	added with vales ZERO_DIMENSIONAL and EMPTY.  The constructor
+	Polyhedron(Degenerate_Kind kind = ZERO_DIMENSIONAL) does the
+	expected thing.  The program empty1.cc exemplifies two methods of
+	obtaining an empty polyhedron.
+
+2001-10-15 Monday 18:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/Makefile.am (1.9): ppl.sty must also be distributed.
+
+2001-10-15 Monday 17:14  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.7), Polyhedron.defs.hh (1.9): Now the
+	default constructor of a polyhedron has a default argument.  If
+	`full' is false, it builds an empty polyhedron (it has the flag set
+	to empty); otherwise, if it has the default value (i.e. true), it
+	bulids a zero-dimensional polyhedron.
+
+2001-10-15 Monday 16:44  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.6): If we build a polyhedron starting from a
+	matrix of generators with no rows the polyhedron is empty.
+
+2001-10-15 Monday 16:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/Makefile.am (1.8): Use an absolute path for adding to
+	TEXINPUTS.
+
+2001-10-15 Monday 15:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: .cvsignore (1.3), Integer/.cvsignore (1.1),
+	Integer/Integer.cc (1.1), Integer/Integer.defs.hh (1.1),
+	Integer/Integer.inlines.hh (1.1), Integer/Integer.types.hh (1.1),
+	Integer/Makefile.am (1.1): Here is the Integer class again.
+
+2001-10-15 Monday 15:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.inlines.hh (1.2): Multiple inclusion guard added.
+
+2001-10-15 Monday 15:20  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.5): In the constructors of a polyhedron that
+	use a system of constraints or a set of generators these matrices
+	must be at least two columns.  In the function
+	remove_dimensions(..) if the matrix of generators does not have at
+	least two columns (i.e num_columns() <= 1) the polyhedron becomes
+	zero-dimensional and so we clear the `con_sys' and `gen_sys'.  In
+	function insert(const Constraint& c) if the polyhedron is
+	zero-dimensional we add also the positivity constraint.  In
+	functions insert(...) it is no longer necessary clear `con_sys' and
+	`gen_sys' before adding a row if the polyhedron is
+	zero-dimensional.  In function OK(), we verify if in a
+	zero-dimensional polyhedron `con_sys' and `gen_sys' have no rows.
+
+2001-10-15 Monday 15:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/: Makefile.am (1.7), devref-browse.doxyconf-latex.in (1.4),
+	devref-print.doxyconf-latex.in (1.4), devref.doxyconf-html.in
+	(1.5), devref.tex (1.4), ppl.sty (1.1),
+	user-browse.doxyconf-latex.in (1.4), user-print.doxyconf-latex.in
+	(1.4), user.doxyconf-html.in (1.6), user.tex (1.5): New LaTeX
+	commands can now be defined in ppl.sty and then freely used in the
+	doxygen and LaTeX sources.  This works also when producing HTML
+	pages.
+
+2001-10-15 Monday 13:59  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.8): Rewrite a part of the brief
+	description of the class Polyhedron.  Added some more expanation
+	for the examples 5 and 6.
+
+2001-10-15 Monday 12:19  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/SatMatrix.defs.hh (1.2): Added a briefly description for the
+	saturation matrix.
+
+2001-10-15 Monday 11:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.spec.in (1.3): Now we build a relocatable package.
+
+2001-10-15 Monday 11:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.spec.in (1.2): A first cut at a working RPM spec file.
+
+2001-10-15 Monday 09:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Makefile.am (1.6): It is now possible for the build directory
+	to be the same as the source directory.
+
+2001-10-14 Sunday 22:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* INSTALL (1.2), missing (1.2), mkinstalldirs (1.3): Updated.
+
+2001-10-14 Sunday 21:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.8), configure.ac (1.3), doc/Makefile.am (1.6),
+	m4/Makefile.am (1.2), src/Makefile.am (1.5), tests/Makefile.am
+	(1.7): Several packaging bugs have been fixed: now `make distcheck'
+	is OK.
+
+2001-10-14 Sunday 21:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/: devref-browse.doxyconf-latex.in (1.3),
+	devref-print.doxyconf-latex.in (1.3), devref.doxyconf-html.in
+	(1.4), user-browse.doxyconf-latex.in (1.3),
+	user-print.doxyconf-latex.in (1.3), user.doxyconf-html.in (1.5):
+	The sysdep directory does not exist anymore.
+
+2001-10-14 Sunday 14:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.7), doc/Makefile.am (1.5), doc/definitions.dox
+	(1.7), doc/devref-browse.doxyconf-latex.in (1.2),
+	doc/devref-print.doxyconf-latex.in (1.2),
+	doc/devref.doxyconf-html.in (1.3), doc/fdl.dox (1.1), doc/fdl.tex
+	(1.1), doc/gfdl.dox (1.2), doc/gpl.tex (1.1), doc/gpl.texi (1.2),
+	doc/gpl.texinfo (1.2), doc/texinfo.tex (1.2),
+	doc/user-browse.doxyconf-latex.in (1.2),
+	doc/user-print.doxyconf-latex.in (1.2), doc/user.doxyconf-html.in
+	(1.4): Documentation reorganized.
+
+2001-10-14 Sunday 11:46  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.4): In functions Polyhedron::insert(const
+	Constraint& c) e Polyhedron::insert(const Constraint& c) the case
+	of a zero-dimensional polyhedron is considered.
+
+2001-10-13 Saturday 21:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/Polyhedra.texinfo (1.3): Was never meant to be here.
+
+2001-10-13 Saturday 19:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.h.in (1.4), configure.ac (1.2): Configuration fixed in
+	various respects.
+	
+	Please note that:
+	
+	- debugging (-g) is ON by default; - standard optimization (-O2) is
+	THE default; - run-time assertions are OFF by default.
+
+2001-10-13 Saturday 19:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Makefile.am (1.4), ppl.cc (1.2), protect.sed (1.2),
+	restore.sed (1.2): Generation of libppl.a and ppl.hh fixed.
+
+2001-10-13 Saturday 19:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am (1.6), inters1.cc (1.3), inters2.cc (1.3),
+	randchull1.cc (1.3): Programs using the PPL need only include
+	ppl.hh.
+
+2001-10-13 Saturday 19:01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.3), tests/randchull1.cc (1.2): It is now
+	possible to insert a generator into an empty polyhedron.
+
+2001-10-13 Saturday 16:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.6), acconfig.h (1.2), acinclude.m4 (1.1),
+	config.guess (1.2), config.h.in (1.3), config.sub (1.2),
+	configure.ac (1.1), configure.in (1.5), doc/Makefile.am (1.4),
+	m4/.cvsignore (1.1), src/Makefile.am (1.3), tests/Makefile.am
+	(1.5): Upgraded to newer versions of autoconf.	Use the new checks
+	for detecting GMP.
+
+2001-10-13 Saturday 12:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.5), m4/Makefile.am (1.1),
+	m4/ac_check_gmp_exceptions.m4 (1.1), m4/ac_check_have_gmp.m4 (1.1):
+	New tests to check whether GMP is installed and, if so, whether it
+	was compiled with -fexceptions.
+
+2001-10-13 Saturday 10:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* .cvsignore (1.4), Makefile.am (1.4), Makefile.in (1.4),
+	aclocal.m4 (1.2), configure (1.5), stamp-h.in (1.2), doc/.cvsignore
+	(1.1), doc/Makefile.am (1.3), doc/Makefile.in (1.3), src/.cvsignore
+	(1.2), src/Makefile.in (1.3), tests/.cvsignore (1.1),
+	tests/Makefile.in (1.5): Automatically generated  files should not
+	be in the repository and their presence in the directory structure
+	should be ignored.
+
+2001-10-12 Friday 22:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure (1.4), configure.in (1.4), doc/Makefile.am (1.2),
+	doc/Makefile.in (1.2), doc/devref-browse.doxyconf-latex.in (1.1),
+	doc/devref-print.doxyconf-latex.in (1.1),
+	doc/devref.doxyconf-pdf.in (1.3), doc/devref.tex (1.3),
+	doc/user-browse.doxyconf-latex.in (1.1),
+	doc/user-print.doxyconf-latex.in (1.1), doc/user.doxyconf-pdf.in
+	(1.4), doc/user.tex (1.4): Several improvements to the
+	documentation.	We now produce docs for printing and docs for
+	browsing
+
+2001-10-12 Friday 18:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/: devref.doxyconf-html.in (1.2), devref.doxyconf-pdf.in
+	(1.2), user.doxyconf-html.in (1.3), user.doxyconf-pdf.in (1.3),
+	user.tex (1.3): The project name is "Parma Polyhedra Library",
+	"PPL" for short.
+
+2001-10-12 Friday 18:01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am (1.4), Makefile.in (1.4), randchull1.cc
+	(1.1): New test computing convex-hulls of random polytopes.
+
+2001-10-12 Friday 17:19  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.6): Title of document changed.  Sections
+	changed so that there are two sections, an introduction to
+	polyhedra and a more advanced section which talks about the PPL
+	implementation.  Comment about vertices differing from rays only in
+	the n+1'th  term moved to before "Valid linear inequalities"
+	paragraph.
+
+2001-10-12 Friday 17:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Makefile.am (1.2), Makefile.in (1.2): Header file ppl.hh is
+	now guarded against multiple inclusion.
+
+2001-10-12 Friday 17:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Generator.cc (1.2): Bug fixed: a vertex in the origin was
+	printed as "v()" instead of "v(0)".
+
+2001-10-12 Friday 16:51  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.2), Polyhedron.defs.hh (1.7): Added the
+	function Polyhedron::insert(const Generator& g).
+
+2001-10-12 Friday 16:36  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.6): Added other two examples: one is
+	for the use of assign_variable(...) and the other is for the use of
+	substitute_variable(...).
+
+2001-10-12 Friday 15:44  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.5): Corrected a my error: to build a
+	vertex "/=" is needed instead of "\=".
+
+2001-10-12 Friday 15:12  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.4): Added two examples to the comment:
+	one to specify the use of add_dimensions_and_embed(..) and the
+	other to specify the use of add_dimensions_and_project(...). 
+	Corrected an error in a formula: now in the comment of
+	convex_hull(...) and convex_hull_lazy(..) there is \f$\cup\f$
+	instead of \f$\union\f$ (that caused an error in Latex).
+
+2001-10-12 Friday 15:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/inters2.cc (1.2): Fixed and extended.
+
+2001-10-12 Friday 14:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am (1.3), Makefile.in (1.3), inters1.cc (1.2),
+	inters2.cc (1.1), print.hh (1.1): print.hh contains functions that
+	are useful for printing polyhedra.  inters1.cc improved.  New test
+	inters2.cc computing the intersection of a pyramid with an
+	half-space of variable height, then counting the number of vertices
+	of the resulting polytope (the empty polyhedron, a proper frustum,
+	or a singleton).
+
+2001-10-12 Friday 13:20  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.5): Section on the "equivalence of
+	homogeneous and inhomogeneous systems" (up to the paragraph called
+	"Valid linear inequalities") changed and reworded.  Title of
+	section changed to "Homogeneous systems".
+
+2001-10-12 Friday 10:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.2), doc/Polyhedra.texinfo (1.2), tests/Makefile.am
+	(1.2), tests/Makefile.in (1.2): Bump copyright year.
+
+2001-10-12 Friday 09:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.3), Makefile.in (1.3), config.h.in (1.2),
+	configure (1.3), configure.in (1.3), tests/Makefile.am (1.1),
+	tests/Makefile.in (1.1), tests/inters1.cc (1.1): Infrastructure for
+	the tests directory and `make check'.  inters1.cc is a first
+	example of how test programs could be written.
+
+2001-10-11 Thursday 17:37  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.3): Added a backslash to mathbb in the
+	second example.  Removing empty lines that were causing Examples 1
+	and 2 to end prematurely.
+
+2001-10-11 Thursday 17:00  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.2): Added two examples to the comment:
+	one is for the construction of a square using the constraints and
+	the generators. The other is for the construction of an half-strip
+	using the constraints and the generators.
+
+2001-10-11 Thursday 16:57  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/GenSys.defs.hh (1.4): Added another example for the
+	construction of a set of generators (it builds an half-strip).
+
+2001-10-11 Thursday 16:56  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/ConSys.defs.hh (1.3): Added another example for the
+	constraction of a system of constraints (it builds an half-strip).
+
+2001-10-11 Thursday 16:41  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.4): The paragraph "The Minkowski's
+	theorem" renamed to   "Minkowski's theorem.  The condition "rank(A)
+	= n" changed to   "where A is a matrix of rank n".  The note
+	following the definition is reworded so that the   conditions are
+	not bracketed.	"Linear equalities and inequalities" has been  
+	changed to "constraints".  "positive multiples of each inequality
+	and ray" has been    changed to "positive multiples of each
+	constraint and ray".  The word "the" inserted where necessary.
+	
+	The paragraph "The Weil's theorem" renamed to "Weil's theorem.
+
+2001-10-11 Thursday 16:07  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Constraint.defs.hh (1.4): In the examples, variable "cs"
+	renamed into "inequal" and "equal".
+
+2001-10-11 Thursday 15:49  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.3): In the definition of rays:  P is
+	defined before P_0;  A and b are defined;  inserted "any point"
+	before r; The comment that a ray is the direction in which P is
+	infinite, moved from within the statement of the proposition to
+	before the proposition and reworded.
+	
+	In the definition of lines, wording improved.  Comment relating
+	opposite rays with lines made into a separate paragraph. It is not
+	part of the definition.
+
+2001-10-11 Thursday 14:38  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/LinExpression.defs.hh (1.4): In the first two examples,
+	variable z now has index 2 (using index 5 was correct, but a bit
+	misleading).
+
+2001-10-11 Thursday 14:33  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Generator.defs.hh (1.4): IN the first example, variable "g"
+	renamed as "line".
+
+2001-10-11 Thursday 14:32  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Generator.defs.hh (1.3): Examples modified:  - using more
+	meaningful names (line, ray and vertex) for Generator variables;  -
+	explained that the first argument of operators | and ^ is
+	meaningless;  - explained how to use the second argument of /= to
+	obtain vertices    with non-integral coefficients.
+
+2001-10-11 Thursday 14:28  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/GenSys.defs.hh (1.3): In the first example, Variable y(0)
+	changed in Variable y(1) to avoid dimension clash with Variable
+	x(0).  In the second example, the computation of the past-the-end
+	iterator moved outside the for-loop.
+
+2001-10-11 Thursday 13:53  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.2), Constraint.defs.hh (1.3),
+	Constraint.inlines.hh (1.2): Friend members building a constraint
+	using operators < and > removed.  Example changed accordingly.	In
+	the example on the use of iterators for ConSys, the past-the-end
+	iterator is now computed only once before the for-loop.
+
+2001-10-11 Thursday 13:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/: user.doxyconf-html.in (1.2), user.doxyconf-pdf.in (1.2): Do
+	not show inheritance graphs or diagrams.  Do not show a thousands
+	times that the only PPL header file is ppl.hh.
+
+2001-10-11 Thursday 13:44  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/: devref.tex (1.2), user.tex (1.2): Tatiana's email address
+	fixed.	Better titles.
+
+2001-10-11 Thursday 13:03  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.2): In the definition of the combinations,
+	the p_1,...,p_k are changed to x_1,...,x_k.  In the definition of
+	scalar product: "vector" is changed to "vectors".  In the
+	definition of polyhedra there are a number of changes to notation,
+	the definitions of the notation and to the wording.
+
+2001-10-11 Thursday 12:38  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: LinExpression.defs.hh (1.3), Variable.defs.hh (1.2): Some
+	errors (just introduced by me) removed.  Methods of class Variable
+	added to group LinExpression.
+
+2001-10-11 Thursday 12:00  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/LinExpression.defs.hh (1.2): A few changes in the example.
+
+2001-10-11 Thursday 11:22  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Generator.defs.hh (1.2): Added three examples: one for the
+	construction of a line, one for the construction of a ray and the
+	other for the construction of a vertex.
+
+2001-10-11 Thursday 11:19  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/GenSys.defs.hh (1.2): Added an example in the comment: it is
+	useful to specify the construction of a set of generators.
+
+2001-10-11 Thursday 11:16  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Constraint.defs.hh (1.2): Added two examples in the comment:
+	one for the building of an inequality and the other for the
+	building of an equality.
+
+2001-10-11 Thursday 08:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.2), Makefile.in (1.2), configure (1.2),
+	configure.in (1.2): Disable the test directory.
+
+2001-10-11 Thursday 08:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* .cvsignore (1.3), src/.cvsignore (1.1): My mistake: BitSet and
+	Integer are subdirectories of src.
+
+2001-10-11 Thursday 08:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* .cvsignore (1.2): Ignore the BitSet and Integer subdirectories:
+	they must be here and must be ignored by CVS.
+
+2001-10-10 Wednesday 21:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* mkinstalldirs (1.2): $Id tag removed.
+
+2001-10-10 Wednesday 21:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* .cvsignore (1.1), AUTHORS (1.1), COPYING (1.1), ChangeLog (1.1),
+	INSTALL (1.1), Makefile.am (1.1), Makefile.in (1.1), NEWS (1.1),
+	README (1.1), TODO (1.1), acconfig.h (1.1), aclocal.m4 (1.1),
+	config.guess (1.1), config.h.in (1.1), config.sub (1.1), configure
+	(1.1), configure.in (1.1), depcomp (1.1), install-sh (1.1), missing
+	(1.1), mkinstalldirs (1.1), ppl.lsm.in (1.1), ppl.spec.in (1.1),
+	stamp-h.in (1.1), doc/Makefile.am (1.1), doc/Makefile.in (1.1),
+	doc/Polyhedra.texinfo (1.1), doc/definitions.dox (1.1),
+	doc/devref.doxyconf-html.in (1.1), doc/devref.doxyconf-pdf.in
+	(1.1), doc/devref.tex (1.1), doc/gfdl.dox (1.1), doc/gpl.dox (1.1),
+	doc/gpl.texi (1.1), doc/gpl.texinfo (1.1), doc/texinfo.tex (1.1),
+	doc/user.doxyconf-html.in (1.1), doc/user.doxyconf-pdf.in (1.1),
+	doc/user.tex (1.1), src/ConSys.cc (1.1), src/ConSys.defs.hh (1.1),
+	src/ConSys.inlines.hh (1.1), src/ConSys.types.hh (1.1),
+	src/Constraint.cc (1.1), src/Constraint.defs.hh (1.1),
+	src/Constraint.inlines.hh (1.1), src/Constraint.types.hh (1.1),
+	src/GenSys.cc (1.1), src/GenSys.defs.hh (1.1),
+	src/GenSys.inlines.hh (1.1), src/GenSys.types.hh (1.1),
+	src/Generator.cc (1.1), src/Generator.defs.hh (1.1),
+	src/Generator.inlines.hh (1.1), src/Generator.types.hh (1.1),
+	src/LinExpression.cc (1.1), src/LinExpression.defs.hh (1.1),
+	src/LinExpression.inlines.hh (1.1), src/LinExpression.types.hh
+	(1.1), src/Makefile.am (1.1), src/Makefile.in (1.1), src/Matrix.cc
+	(1.1), src/Matrix.defs.hh (1.1), src/Matrix.inlines.hh (1.1),
+	src/Matrix.types.hh (1.1), src/Polyhedron.cc (1.1),
+	src/Polyhedron.defs.hh (1.1), src/Polyhedron.inlines.hh (1.1),
+	src/Polyhedron.types.hh (1.1), src/Row.cc (1.1), src/Row.defs.hh
+	(1.1), src/Row.inlines.hh (1.1), src/Row.types.hh (1.1),
+	src/SatMatrix.cc (1.1), src/SatMatrix.defs.hh (1.1),
+	src/SatMatrix.inlines.hh (1.1), src/SatMatrix.types.hh (1.1),
+	src/SatRow.cc (1.1), src/SatRow.defs.hh (1.1),
+	src/SatRow.inlines.hh (1.1), src/SatRow.types.hh (1.1),
+	src/Status.cc (1.1), src/Status.defs.hh (1.1),
+	src/Status.inlines.hh (1.1), src/Status.types.hh (1.1),
+	src/Variable.cc (1.1), src/Variable.defs.hh (1.1),
+	src/Variable.inlines.hh (1.1), src/Variable.types.hh (1.1),
+	src/conversion.cc (1.1), src/globals.cc (1.1), src/globals.hh
+	(1.1), src/maxmin.hh (1.1), src/minimize.cc (1.1), src/ppl.cc
+	(1.1), src/protect.sed (1.1), src/restore.sed (1.1),
+	src/simplify.cc (1.1): Initial revision
+
+2001-10-10 Wednesday 21:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* .cvsignore (1.1.1.1), AUTHORS (1.1.1.1), COPYING (1.1.1.1),
+	ChangeLog (1.1.1.1), INSTALL (1.1.1.1), Makefile.am (1.1.1.1),
+	Makefile.in (1.1.1.1), NEWS (1.1.1.1), README (1.1.1.1), TODO
+	(1.1.1.1), acconfig.h (1.1.1.1), aclocal.m4 (1.1.1.1), config.guess
+	(1.1.1.1), config.h.in (1.1.1.1), config.sub (1.1.1.1), configure
+	(1.1.1.1), configure.in (1.1.1.1), depcomp (1.1.1.1), install-sh
+	(1.1.1.1), missing (1.1.1.1), mkinstalldirs (1.1.1.1), ppl.lsm.in
+	(1.1.1.1), ppl.spec.in (1.1.1.1), stamp-h.in (1.1.1.1),
+	doc/Makefile.am (1.1.1.1), doc/Makefile.in (1.1.1.1),
+	doc/Polyhedra.texinfo (1.1.1.1), doc/definitions.dox (1.1.1.1),
+	doc/devref.doxyconf-html.in (1.1.1.1), doc/devref.doxyconf-pdf.in
+	(1.1.1.1), doc/devref.tex (1.1.1.1), doc/gfdl.dox (1.1.1.1),
+	doc/gpl.dox (1.1.1.1), doc/gpl.texi (1.1.1.1), doc/gpl.texinfo
+	(1.1.1.1), doc/texinfo.tex (1.1.1.1), doc/user.doxyconf-html.in
+	(1.1.1.1), doc/user.doxyconf-pdf.in (1.1.1.1), doc/user.tex
+	(1.1.1.1), src/ConSys.cc (1.1.1.1), src/ConSys.defs.hh (1.1.1.1),
+	src/ConSys.inlines.hh (1.1.1.1), src/ConSys.types.hh (1.1.1.1),
+	src/Constraint.cc (1.1.1.1), src/Constraint.defs.hh (1.1.1.1),
+	src/Constraint.inlines.hh (1.1.1.1), src/Constraint.types.hh
+	(1.1.1.1), src/GenSys.cc (1.1.1.1), src/GenSys.defs.hh (1.1.1.1),
+	src/GenSys.inlines.hh (1.1.1.1), src/GenSys.types.hh (1.1.1.1),
+	src/Generator.cc (1.1.1.1), src/Generator.defs.hh (1.1.1.1),
+	src/Generator.inlines.hh (1.1.1.1), src/Generator.types.hh
+	(1.1.1.1), src/LinExpression.cc (1.1.1.1),
+	src/LinExpression.defs.hh (1.1.1.1), src/LinExpression.inlines.hh
+	(1.1.1.1), src/LinExpression.types.hh (1.1.1.1), src/Makefile.am
+	(1.1.1.1), src/Makefile.in (1.1.1.1), src/Matrix.cc (1.1.1.1),
+	src/Matrix.defs.hh (1.1.1.1), src/Matrix.inlines.hh (1.1.1.1),
+	src/Matrix.types.hh (1.1.1.1), src/Polyhedron.cc (1.1.1.1),
+	src/Polyhedron.defs.hh (1.1.1.1), src/Polyhedron.inlines.hh
+	(1.1.1.1), src/Polyhedron.types.hh (1.1.1.1), src/Row.cc (1.1.1.1),
+	src/Row.defs.hh (1.1.1.1), src/Row.inlines.hh (1.1.1.1),
+	src/Row.types.hh (1.1.1.1), src/SatMatrix.cc (1.1.1.1),
+	src/SatMatrix.defs.hh (1.1.1.1), src/SatMatrix.inlines.hh
+	(1.1.1.1), src/SatMatrix.types.hh (1.1.1.1), src/SatRow.cc
+	(1.1.1.1), src/SatRow.defs.hh (1.1.1.1), src/SatRow.inlines.hh
+	(1.1.1.1), src/SatRow.types.hh (1.1.1.1), src/Status.cc (1.1.1.1),
+	src/Status.defs.hh (1.1.1.1), src/Status.inlines.hh (1.1.1.1),
+	src/Status.types.hh (1.1.1.1), src/Variable.cc (1.1.1.1),
+	src/Variable.defs.hh (1.1.1.1), src/Variable.inlines.hh (1.1.1.1),
+	src/Variable.types.hh (1.1.1.1), src/conversion.cc (1.1.1.1),
+	src/globals.cc (1.1.1.1), src/globals.hh (1.1.1.1), src/maxmin.hh
+	(1.1.1.1), src/minimize.cc (1.1.1.1), src/ppl.cc (1.1.1.1),
+	src/protect.sed (1.1.1.1), src/restore.sed (1.1.1.1),
+	src/simplify.cc (1.1.1.1) (utags: INIT): Imported into the new
+	repository.
+
