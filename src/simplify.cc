@@ -78,14 +78,14 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   assert(mat.OK(true));
 
   dimension_type num_rows = mat.num_rows();
-  dimension_type num_columns = mat.num_columns();
-  dimension_type num_cols_sat = sat.num_columns();
+  const dimension_type num_columns = mat.num_columns();
+  const dimension_type num_cols_sat = sat.num_columns();
 
   // Looking for the first inequality in `mat'.
-  dimension_type num_equal_or_line = 0;
-  while (num_equal_or_line < num_rows
-	 && mat[num_equal_or_line].is_line_or_equality())
-    ++num_equal_or_line;
+  dimension_type num_lines_or_equalities = 0;
+  while (num_lines_or_equalities < num_rows
+	 && mat[num_lines_or_equalities].is_line_or_equality())
+    ++num_lines_or_equalities;
 
   // `num_saturators[i]' will contain the number of generators
   // that saturate the constraint `mat[i]'.
@@ -95,7 +95,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // Computing the number of saturators for each inequality,
   // possibly identifying and swapping those that happen to be
   // equalities (see Proposition above).
-  for (dimension_type i = num_equal_or_line; i < num_rows; ++i)
+  for (dimension_type i = num_lines_or_equalities; i < num_rows; ++i)
     if (sat[i].empty()) {
       // The constraint `mat[i]' is saturated by all the generators.
       // Thus, either it is already an equality or it can be transformed
@@ -105,10 +105,10 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
       mat[i].sign_normalize();
       // We also move it just after all the other equalities,
       // so that matrix `mat' keeps its partial sortedness.
-      std::swap(mat[i], mat[num_equal_or_line]);
-      std::swap(sat[i], sat[num_equal_or_line]);
-      std::swap(num_saturators[i], num_saturators[num_equal_or_line]);
-      ++num_equal_or_line;
+      std::swap(mat[i], mat[num_lines_or_equalities]);
+      std::swap(sat[i], sat[num_lines_or_equalities]);
+      std::swap(num_saturators[i], num_saturators[num_lines_or_equalities]);
+      ++num_lines_or_equalities;
       // `mat' is no longer sorted.
       mat.set_sorted(false);
     }
@@ -120,19 +120,19 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
 
   // At this point, all the equalities of `mat' (included those
   // inequalities that we just transformed into equalities) have
-  // indexes between 0 and `num_equal_or_line' - 1,
+  // indexes between 0 and `num_lines_or_equalities' - 1,
   // which is the property needed by the function gauss().
   // We can simplify the system of equalities, obtaining the rank
   // of `mat' as result.
-  dimension_type rank = mat.gauss();
+  const dimension_type rank = mat.gauss();
 
   // Now the irredundant equalities of `mat' have indexes from 0
   // to `rank' - 1, whereas the equalities having indexes from `rank'
-  // to `num_equal_or_line' - 1 are all redundant.
+  // to `num_lines_or_equalities' - 1 are all redundant.
   // (The inequalities in `mat' have been left untouched.)
   // The rows containing equalities are not sorted.
 
-  if (rank < num_equal_or_line) {
+  if (rank < num_lines_or_equalities) {
     // We identified some redundant equalities.
     // Moving them at the bottom of `mat':
     // - index `redundant' runs through the redundant equalities
@@ -141,8 +141,11 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
     // Note that we exit the loop either because we have moved all
     // redundant equalities or because we have moved all the
     // inequalities.
-    for (dimension_type redundant = rank, erasing = num_rows;
-	 redundant < num_equal_or_line && erasing > num_equal_or_line; ) {
+    for (dimension_type redundant = rank,
+	   erasing = num_rows;
+	 redundant < num_lines_or_equalities
+	   && erasing > num_lines_or_equalities;
+	 ) {
       --erasing;
       std::swap(mat[redundant], mat[erasing]);
       std::swap(sat[redundant], sat[erasing]);
@@ -151,12 +154,12 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
       ++redundant;
     }
     // Adjusting the value of `num_rows' to the number of meaningful
-    // rows of `mat': `num_equal_or_line' - `rank' is the number of
+    // rows of `mat': `num_lines_or_equalities' - `rank' is the number of
     // redundant equalities moved to the bottom of `mat', which are
     // no longer meaningful.
-    num_rows -= num_equal_or_line - rank;
-    // Adjusting the value of `num_equal_or_line'.
-    num_equal_or_line = rank;
+    num_rows -= num_lines_or_equalities - rank;
+    // Adjusting the value of `num_lines_or_equalities'.
+    num_lines_or_equalities = rank;
   }
 
   // Now we use the definition of redundancy (given in the Introduction)
@@ -170,7 +173,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   //   dim_lin_space = num_irred_lines;
   //   dim_ray_space
   //     = dim_vector_space - num_irred_equalities - dim_lin_space
-  //     = num_columns - 1 - num_equal_or_line - dim_lin_space;
+  //     = num_columns - 1 - num_lines_or_equalities - dim_lin_space;
   //   min_sat_rays_or_points = dim_ray_space.
   //
   // An inequality saturated by less than `dim_ray_space' _rays/points_
@@ -184,12 +187,12 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   //     dim_lin_space = num_sat_lines[i]
   // so that we can rewrite the condition above as follows:
   //
-  //   (num_saturators[i] < num_columns - num_equal_or_line - 1)
+  //   (num_saturators[i] < num_columns - num_lines_or_equalities - 1)
   //      ==>
   //        redundant(mat[i]).
   //
-  dimension_type min_saturators = num_columns - num_equal_or_line - 1;
-  for (dimension_type i = num_equal_or_line; i < num_rows; ) {
+  dimension_type min_saturators = num_columns - num_lines_or_equalities - 1;
+  for (dimension_type i = num_lines_or_equalities; i < num_rows; ) {
     if (num_saturators[i] < min_saturators) {
       // The inequality `mat[i]' is redundant.
       --num_rows;
@@ -203,14 +206,14 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   }
 
   // Now we check the independence rule.
-  for (dimension_type i = num_equal_or_line; i < num_rows; ) {
+  for (dimension_type i = num_lines_or_equalities; i < num_rows; ) {
     bool redundant = false;
     // NOTE: in the inner loop, index `j' runs through _all_ the
     // inequalities and we do not test `sat[i] < sat[j]'.
     // Experimentation has shown that this is faster than having
     // `j' only run through the indexes greater than `i' and
     // also doing the test `sat[i] < sat[j]'.
-    for (dimension_type j = num_equal_or_line; j < num_rows; ) {
+    for (dimension_type j = num_lines_or_equalities; j < num_rows; ) {
       if (i == j)
 	// Want to compare different rows of mat.
 	++j;
@@ -267,13 +270,13 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   mat.erase_to_end(num_rows);
   mat.unset_pending_rows();
   sat.rows_erase_to_end(num_rows);
-  // At this point the first `num_equal_or_line' rows of 'mat'
+  // At this point the first `num_lines_or_equalities' rows of 'mat'
   // represent the irredundant equalities, while the remaining rows
-  // (i.e., those having indexes from `num_equal_or_line' to
+  // (i.e., those having indexes from `num_lines_or_equalities' to
   // `num_rows' - 1) represent the irredundant inequalities.
 #ifndef NDEBUG
   // Check if the flag is set (that of the equalities is already set).
-  for (dimension_type i = num_equal_or_line; i < num_rows; ++i)
+  for (dimension_type i = num_lines_or_equalities; i < num_rows; ++i)
     assert(mat[i].is_ray_or_point_or_inequality());
 #endif
 
@@ -282,10 +285,10 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // the function back_substitute()) each variables with the
   // expression obtained considering the equalities starting
   // from the last one.
-  mat.back_substitute(num_equal_or_line);
+  mat.back_substitute(num_lines_or_equalities);
 
   // The returned value is the number of irredundant equalities i.e.,
   // the rank of the sub-matrix of `mat' containing only equalities.
   // (See the Introduction for definition of lineality space dimension).
-  return num_equal_or_line;
+  return num_lines_or_equalities;
 }

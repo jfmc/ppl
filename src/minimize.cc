@@ -57,7 +57,7 @@ namespace PPL = Parma_Polyhedra_Library;
   similar.
 */
 bool
-PPL::Polyhedron::minimize(bool con_to_gen,
+PPL::Polyhedron::minimize(const bool con_to_gen,
 			  Matrix& source, Matrix& dest, SatMatrix& sat) {
   // Topologies have to agree.
   assert(source.topology() == dest.topology());
@@ -122,9 +122,8 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   // The `start' parameter is zero (we haven't seen any constraint yet)
   // and the 5th parameter (representing the number of lines in `dest'),
   // by construction, is equal to `dest_num_rows'.
-  dimension_type num_lines_or_equalities = conversion(source, 0,
-						      dest, tmp_sat,
-						      dest_num_rows);
+  const dimension_type num_lines_or_equalities
+    = conversion(source, 0, dest, tmp_sat, dest_num_rows);
   // conversion() may have modified the number of rows in `dest'.
   dest_num_rows = dest.num_rows();
 
@@ -134,11 +133,14 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   // Points can be detected by looking at:
   // - the divisor, for necessarily closed polyhedra;
   // - the epsilon coordinate, for NNC polyhedra.
-  dimension_type checking_index = dest.is_necessarily_closed()
+  const dimension_type checking_index
+    = dest.is_necessarily_closed()
     ? 0
     : dest.num_columns() - 1;
-  dimension_type first_point = num_lines_or_equalities;
-  for ( ; first_point < dest_num_rows; ++first_point)
+  dimension_type first_point;
+  for (first_point = num_lines_or_equalities;
+       first_point < dest_num_rows;
+       ++first_point)
     if (dest[first_point][checking_index] > 0)
       break;
 
@@ -208,7 +210,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   will be added to \p source1, it is constant: it will not be modified.
 */
 bool
-PPL::Polyhedron::add_and_minimize(bool con_to_gen,
+PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
 				  Matrix& source1,
 				  Matrix& dest,
 				  SatMatrix& sat,
@@ -223,7 +225,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   assert(source2.is_sorted() && source2.num_pending_rows() == 0);
   assert(dest.num_pending_rows() == 0);
 
-  dimension_type old_source1_num_rows = source1.num_rows();
+  const dimension_type old_source1_num_rows = source1.num_rows();
   // `k1' and `k2' run through the rows of `source1' and `source2', resp.
   dimension_type k1 = 0;
   dimension_type k2 = 0;
@@ -235,7 +237,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
     // so that it is not influenced by the pending rows appended to it.
     // This way no duplicate (i.e., trivially redundant) constraint
     // is introduced in `source1'.
-    int cmp = compare(source1[k1], source2[k2]);
+    const int cmp = compare(source1[k1], source2[k2]);
     if (cmp == 0) {
       // We found the same row: there is no need to add `source2[k2]'.
       ++k2;
@@ -303,7 +305,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   of \p source.
 */
 bool
-PPL::Polyhedron::add_and_minimize(bool con_to_gen,
+PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
 				  Matrix& source,
 				  Matrix& dest,
 				  SatMatrix& sat) {
@@ -317,13 +319,13 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
 
   // Incrementally compute the new matrix of generators.
   // Parameter `start' is set to the index of the first pending constraint.
-  dimension_type num_lines_or_equalities
+  const dimension_type num_lines_or_equalities
     = conversion(source, source.first_pending_row(),
 		 dest, sat,
 		 dest.num_lines_or_equalities());
 
   // conversion() may have modified the number of rows in `dest'.
-  dimension_type dest_num_rows = dest.num_rows();
+  const dimension_type dest_num_rows = dest.num_rows();
 
   // Checking if the generators in `dest' represent an empty polyhedron:
   // the polyhedron is empty if there are no points
@@ -331,11 +333,14 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   // Points can be detected by looking at:
   // - the divisor, for necessarily closed polyhedra;
   // - the epsilon coordinate, for NNC polyhedra.
-  dimension_type checking_index = dest.is_necessarily_closed()
+  const dimension_type checking_index
+    = dest.is_necessarily_closed()
     ? 0
     : dest.num_columns() - 1;
-  dimension_type first_point = num_lines_or_equalities;
-  for ( ; first_point < dest_num_rows; ++first_point)
+  dimension_type first_point;
+  for (first_point = num_lines_or_equalities;
+       first_point < dest_num_rows;
+       ++first_point)
      if (dest[first_point][checking_index] > 0)
       break;
 

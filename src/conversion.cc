@@ -339,14 +339,14 @@ namespace PPL = Parma_Polyhedra_Library;
 */
 PPL::dimension_type
 PPL::Polyhedron::conversion(Matrix& source,
-			    dimension_type start,
+			    const dimension_type start,
 			    Matrix& dest,
 			    SatMatrix& sat,
 			    dimension_type num_lines_or_equalities) {
   dimension_type source_num_rows = source.num_rows();
-  dimension_type source_num_columns = source.num_columns();
   dimension_type dest_num_rows = dest.num_rows();
-  dimension_type dest_num_columns = dest.num_columns();
+  const dimension_type source_num_columns = source.num_columns();
+  const dimension_type dest_num_columns = dest.num_columns();
 
   // By construction, the number of columns of `sat' is the same as
   // the number of rows of `source'; also, the number of rows of `sat'
@@ -386,7 +386,7 @@ PPL::Polyhedron::conversion(Matrix& source,
     // of the constraint `source_k' and the generator `dest[i]'.
     // This product is 0 iff the generator saturates the constraint.
     static std::vector<Integer> scalar_prod;
-    int needed_space = dest_num_rows - scalar_prod.size();
+    const int needed_space = dest_num_rows - scalar_prod.size();
     if (needed_space > 0)
       scalar_prod.insert(scalar_prod.end(), needed_space, Integer_zero());
     // `index_non_zero' will indicate the first generator in `dest'
@@ -585,7 +585,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	++lines_or_equal_bound;
       dimension_type sup_bound = lines_or_equal_bound;
       while (inf_bound > sup_bound) {
-	int sp_sign = sgn(scalar_prod[sup_bound]);
+	const int sp_sign = sgn(scalar_prod[sup_bound]);
 	if (sp_sign == 0) {
 	  // This generator has to be moved in Q=.
 	  std::swap(dest[sup_bound], dest[lines_or_equal_bound]);
@@ -653,7 +653,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 
 	  // The adjacency property is necessary to have an irredundant
 	  // set of new rays (see proposition 2).
-	  dimension_type bound = dest_num_rows;
+	  const dimension_type bound = dest_num_rows;
 
 	  // In the following loop,
 	  // `i' runs through the generators in the set Q+ and
@@ -675,7 +675,8 @@ PPL::Polyhedron::conversion(Matrix& source,
 	      // Computing the number of common saturators.
 	      // NOTE: this number has to be less than `k' because
 	      // we are treating the `k'-th constraint.
-	      dimension_type num_common_satur = k - new_satrow.count_ones();
+	      const dimension_type
+		num_common_satur = k - new_satrow.count_ones();
 
 	      // Even before actually creating the new ray as a
 	      // positive combination of `dest[i]' and `dest[j]',
@@ -691,8 +692,8 @@ PPL::Polyhedron::conversion(Matrix& source,
 	      // an extremal ray saturates at least
 	      // `source_num_columns - num_lines_or_equalities - 2'
 	      // constraints.
-	      if (num_common_satur >=
-		  source_num_columns - num_lines_or_equalities - 2) {
+	      if (num_common_satur
+		  >= source_num_columns - num_lines_or_equalities - 2) {
 		// The minimal proper face rule is satisfied.
 		// Now we actually check for redundancy by computing
 		// adjacency information.
