@@ -1388,8 +1388,8 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_remove_dimensions(ppl_Polyhedron_t ph,
-				 size_t ds[],
-				 unsigned int n) try {
+				 ppl_dimension_type ds[],
+				 size_t n) try {
   Polyhedron& pph = *to_nonconst(ph);
   Variables_Set to_be_removed;
   for (ppl_dimension_type i = 0; i < n; ++i)
@@ -1404,6 +1404,73 @@ ppl_Polyhedron_remove_higher_dimensions(ppl_Polyhedron_t ph,
 					ppl_dimension_type d) try {
   Polyhedron& pph = *to_nonconst(ph);
   pph.remove_higher_dimensions(d);
+  return 0;
+}
+CATCH_ALL
+
+class PIFunc {
+private:
+  //! Holds the vector implementing the map.
+  dimension_type* vec;
+
+  //! Holds the size of \p vec.
+  size_t vec_size;
+
+  //! Cache for computing the maximum dimension in the codomain.
+  mutable dimension_type max_in_codomain_;
+
+  //! Cache for computing emptyness:
+  //! -1 if we still don't know, 0 if not empty, 1 if empty.
+  mutable int empty;
+
+public:
+  PIFunc(dimension_type* v, size_t n)
+    : vec(v), vec_size(n), max_in_codomain_(not_a_dimension()) {
+  }
+
+  bool has_empty_codomain() const {
+    if (empty < 0) {
+      empty = 1;
+      for (size_t i = vec_size; i-- > 0; )
+	if (vec[i] != not_a_dimension()) {
+	  empty = 0;
+	  break;
+	}
+    } 
+    return empty;
+  }
+
+  dimension_type max_in_codomain() const {
+    if (max_in_codomain_ == not_a_dimension()) {
+      for (size_t i = vec_size; i-- > 0; ) {
+	dimension_type vec_i = vec[i];
+	if (vec_i != not_a_dimension()
+	    && (max_in_codomain_ == not_a_dimension()
+		|| vec_i > max_in_codomain_))
+	  max_in_codomain_ = vec_i;
+      }
+    }
+    return max_in_codomain_;
+  }
+
+  bool maps(dimension_type i, dimension_type& j) const {
+    if (i >= vec_size)
+      return false;
+    dimension_type vec_i = vec[i];
+    if (vec_i == not_a_dimension())
+      return false;
+    j = vec_i;
+    return true;
+  }
+};
+
+int
+ppl_Polyhedron_shuffle_dimensions(ppl_Polyhedron_t ph,
+				  ppl_dimension_type maps[],
+				  size_t n) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  PIFunc pifunc(maps, n);
+  pph.shuffle_dimensions(pifunc);
   return 0;
 }
 CATCH_ALL

@@ -1352,6 +1352,25 @@ ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
 					     ppl_dimension_type d));
 
 /*!
+  Shuffles the dimensions of a polyhedron according to a partial
+  injective function.  This function is defined by means of the
+  \p maps array, which is of dimension \p n.  The function maps
+  <CODE>i</CODE> to <CODE>j</CODE> if and only if <CODE>i < n</CODE>,
+  <CODE>j != ppl_not_a_dimension</CODE>, and <CODE>maps[i] == j</CODE>.
+  The dimensions that are not mapped (i.e., for which the partial injective
+  function represented by \p maps is undefined) are projected away.
+  The result is undefined if \p maps does not encode a partial
+  <EM>injective</EM> function, that is, if two dimensions are mapped
+  to the same dimension (this happens when, for <CODE>i != j</CODE>,
+  <CODE>maps[i] != ppl_not_a_dimension</CODE>,
+  and <CODE>maps[i] == maps[j]</CODE>).
+*/
+int
+ppl_Polyhedron_shuffle_dimensions __P((ppl_Polyhedron_t ph,
+				      ppl_dimension_type maps[],
+				      size_t n));
+
+/*!
   Transforms the polyhedron \p ph, assigning an affine expression
   to the specified variable.
   \param ph  The polyhedron that is transformed.
