@@ -32,7 +32,7 @@ EXTRA_DIST = ppl_ciao.pl #ciao_clpq.pl
 
 if HAVE_CIAO_PROLOG
 
-INCLUDES = -I$(top_builddir)/src @extra_includes@
+AM_CPPFLAGS = -I$(top_builddir)/src @extra_includes@
 
 pkglib_LTLIBRARIES = ppl_ciao.la
 ppl_ciao_la_SOURCES = ppl_ciao.cc

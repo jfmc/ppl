@@ -28,7 +28,7 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-INCLUDES = -I$(top_srcdir)/interfaces/C @extra_includes@
+AM_CPPFLAGS = -I$(top_srcdir)/interfaces/C @extra_includes@
 
 noinst_PROGRAMS = lpenum
 lpenum_SOURCES = lpenum.c

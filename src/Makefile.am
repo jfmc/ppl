@@ -56,11 +56,11 @@ SUBDIRS =
 #	    0.3			    0:0:0
 #	    0.4			    1:0:1
 
-LIBPPL_LT_CURRENT =  0
+LIBPPL_LT_CURRENT =  1
 LIBPPL_LT_REVISION = 0
-LIBPPL_LT_AGE =      0
+LIBPPL_LT_AGE =      1
 
-INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src @extra_includes@
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/src @extra_includes@
 
 CPPFLAGS = -DPPL_INTERNAL=public -DPPL_HIDDEN=public @extra_cpp_flags@
 
@@ -176,6 +176,7 @@ Polyhedron.defs.hh \
 C_Polyhedron.defs.hh \
 NNC_Polyhedron.defs.hh \
 globals.hh
+
 libppl_la_LDFLAGS = \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
 

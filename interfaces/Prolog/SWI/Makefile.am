@@ -63,7 +63,7 @@ LIBPPLSWIPROLOG_LT_CURRENT =  0
 LIBPPLSWIPROLOG_LT_REVISION = 0
 LIBPPLSWIPROLOG_LT_AGE =      0
 
-INCLUDES = -I$(top_builddir)/src @extra_includes@
+AM_CPPFLAGS = -I$(top_builddir)/src @extra_includes@
 
 lib_LTLIBRARIES = libpplswiprolog.la
 
