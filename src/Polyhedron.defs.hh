@@ -1499,6 +1499,8 @@ public:
     \param m     The number of replica to be created.
     \exception std::invalid_argument thrown if var does not correspond
                                      to a dimension of the polyhedron.
+    \exception std::invalid_argument thrown if \p *this is
+                                     dimension-incompatible with \p var.
 
     If \p *this is \f$n\f$-dimensional, with \f$n > 0\f$,
     and \f$i < n\f$ is <CODE>var.id()</CODE>, then the \f$i\f$-th
@@ -1506,6 +1508,21 @@ public:
     \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
   */
   void expand_dimension(Variable var, dimension_type m);
+
+  //! Folds the dimensions in \p to_be_folded into \p var.
+  /*!
+    \param to_be_folded   The set of Variable objects corresponding
+                          to the dimensions to be folded.
+    \param var            The variable corresponding to the dimension
+                          that is the destination of the folding operation.
+    \exception std::invalid_argument thrown if \p *this is
+                                     dimension-incompatible with \p var
+                                     or with one of the Variable objects
+                                     contained in \p to_be_folded.
+
+    FIXME: documentation to be completed.
+  */
+  void fold_dimensions(const Variables_Set& to_be_folded, Variable var);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
