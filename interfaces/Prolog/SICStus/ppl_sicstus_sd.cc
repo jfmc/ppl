@@ -376,11 +376,13 @@ SP_STUB_2(ppl_Polyhedron_convex_difference_assign, 2)
 SP_STUB_2(ppl_Polyhedron_convex_difference_assign_and_minimize, 2)
 SP_STUB_2(ppl_Polyhedron_widening_assign, 2)
 SP_STUB_3(ppl_Polyhedron_limited_widening_assign, 3)
-SP_STUB_2(ppl_add_constraint, 2)
-SP_STUB_2(ppl_add_generator, 2)
-SP_STUB_2(ppl_add_constraints_and_minimize, 2)
-SP_STUB_2(ppl_add_generators_and_minimize, 2)
-SP_STUB_2(ppl_add_dimensions_and_constraints, 2)
+SP_STUB_2(ppl_Polyhedron_add_constraint, 2)
+SP_STUB_2(ppl_Polyhedron_add_generator, 2)
+SP_STUB_2(ppl_Polyhedron_add_constraints, 2)
+SP_STUB_2(ppl_Polyhedron_add_constraints_and_minimize, 2)
+SP_STUB_2(ppl_Polyhedron_add_generators, 2)
+SP_STUB_2(ppl_Polyhedron_add_generators_and_minimize, 2)
+SP_STUB_2(ppl_Polyhedron_add_dimensions_and_constraints, 2)
 SP_STUB_1(ppl_check_empty, 1)
 SP_STUB_1(ppl_check_universe, 1)
 SP_STUB_1(ppl_is_bounded, 1)
@@ -436,11 +438,13 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_convex_difference_assign_and_minimize, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_widening_assign, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_limited_widening_assign, 3);
-  SP_DEFINE_C_PREDICATE(ppl_add_constraint, 2);
-  SP_DEFINE_C_PREDICATE(ppl_add_generator, 2);
-  SP_DEFINE_C_PREDICATE(ppl_add_constraints_and_minimize, 2);
-  SP_DEFINE_C_PREDICATE(ppl_add_generators_and_minimize, 2);
-  SP_DEFINE_C_PREDICATE(ppl_add_dimensions_and_constraints, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_constraint, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_generator, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_constraints, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_constraints_and_minimize, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_generators, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_generators_and_minimize, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_dimensions_and_constraints, 2);
   SP_DEFINE_C_PREDICATE(ppl_check_empty, 1);
   SP_DEFINE_C_PREDICATE(ppl_check_universe, 1);
   SP_DEFINE_C_PREDICATE(ppl_is_bounded, 1);

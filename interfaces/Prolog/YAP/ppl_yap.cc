@@ -351,11 +351,13 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_convex_difference_assign_and_minimize, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_widening_assign, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_limited_widening_assign, 3);
-  YAP_USER_C_PREDICATE(ppl_add_constraint, 2);
-  YAP_USER_C_PREDICATE(ppl_add_generator, 2);
-  YAP_USER_C_PREDICATE(ppl_add_constraints_and_minimize, 2);
-  YAP_USER_C_PREDICATE(ppl_add_generators_and_minimize, 2);
-  YAP_USER_C_PREDICATE(ppl_add_dimensions_and_constraints, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraint, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_generator, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraints, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraints_and_minimize, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_generators, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_generators_and_minimize, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_dimensions_and_constraints, 2);
   YAP_USER_C_PREDICATE(ppl_check_empty, 1);
   YAP_USER_C_PREDICATE(ppl_check_universe, 1);
   YAP_USER_C_PREDICATE(ppl_is_bounded, 1);

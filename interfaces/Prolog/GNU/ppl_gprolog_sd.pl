@@ -23,11 +23,13 @@
 :- foreign(ppl_Polyhedron_convex_difference_assign_and_minimize(+term, +term)).
 :- foreign(ppl_Polyhedron_widening_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_limited_widening_assign(+term, +term)).
-:- foreign(ppl_add_constraint(+term, +term)).
-:- foreign(ppl_add_generator(+term, +term)).
-:- foreign(ppl_add_constraints_and_minimize(+term, +term)).
-:- foreign(ppl_add_generators_and_minimize(+term, +term)).
-:- foreign(ppl_add_dimensions_and_constraints(+term, +term)).
+:- foreign(ppl_Polyhedron_add_constraint(+term, +term)).
+:- foreign(ppl_Polyhedron_add_generator(+term, +term)).
+:- foreign(ppl_Polyhedron_add_constraints(+term, +term)).
+:- foreign(ppl_Polyhedron_add_constraints_and_minimize(+term, +term)).
+:- foreign(ppl_Polyhedron_add_generators(+term, +term)).
+:- foreign(ppl_Polyhedron_add_generators_and_minimize(+term, +term)).
+:- foreign(ppl_Polyhedron_add_dimensions_and_constraints(+term, +term)).
 :- foreign(ppl_check_empty(+term)).
 :- foreign(ppl_check_universe(+term)).
 :- foreign(ppl_is_bounded(+term)).

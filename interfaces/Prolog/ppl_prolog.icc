@@ -1039,7 +1039,7 @@ ppl_Polyhedron_limited_widening_assign(Prolog_term_ref t_lhs,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_add_constraint(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
+ppl_Polyhedron_add_constraint(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
   try {
     PPL::Polyhedron* ph = get_ph_pointer(t_ph);
     if (ph == 0)
@@ -1053,7 +1053,7 @@ ppl_add_constraint(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_add_generator(Prolog_term_ref t_ph, Prolog_term_ref t_g) {
+ppl_Polyhedron_add_generator(Prolog_term_ref t_ph, Prolog_term_ref t_g) {
   try {
     PPL::Polyhedron* ph = get_ph_pointer(t_ph);
     if (ph == 0)
@@ -1067,7 +1067,30 @@ ppl_add_generator(Prolog_term_ref t_ph, Prolog_term_ref t_g) {
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_add_constraints_and_minimize(Prolog_term_ref t_ph,
+ppl_Polyhedron_add_constraints(Prolog_term_ref t_ph,
+			       Prolog_term_ref t_clist) {
+  try {
+    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
+    if (ph == 0)
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    PPL::ConSys cs;
+    Prolog_term_ref c = Prolog_new_term_ref();
+
+    while (Prolog_is_cons(t_clist)) {
+      Prolog_get_cons(t_clist, c, t_clist);
+      cs.insert(build_constraint(c));
+    }
+
+    ph->add_constraints(cs);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_add_constraints_and_minimize(Prolog_term_ref t_ph,
 				 Prolog_term_ref t_clist) {
   try {
     PPL::Polyhedron* ph = get_ph_pointer(t_ph);
@@ -1090,7 +1113,53 @@ ppl_add_constraints_and_minimize(Prolog_term_ref t_ph,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_add_dimensions_and_constraints(Prolog_term_ref t_ph,
+ppl_Polyhedron_add_generators(Prolog_term_ref t_ph,
+			      Prolog_term_ref t_glist) {
+  try {
+    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
+    if (ph == 0)
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    PPL::GenSys gs;
+    Prolog_term_ref g = Prolog_new_term_ref();
+
+    while (Prolog_is_cons(t_glist)) {
+      Prolog_get_cons(t_glist, g, t_glist);
+      gs.insert(build_generator(g));
+    }
+
+    ph->add_generators(gs);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_add_generators_and_minimize(Prolog_term_ref t_ph,
+			      Prolog_term_ref t_glist) {
+  try {
+    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
+    if (ph == 0)
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    PPL::GenSys gs;
+    Prolog_term_ref g = Prolog_new_term_ref();
+
+    while (Prolog_is_cons(t_glist)) {
+      Prolog_get_cons(t_glist, g, t_glist);
+      gs.insert(build_generator(g));
+    }
+
+    if (ph->add_generators_and_minimize(gs))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_add_dimensions_and_constraints(Prolog_term_ref t_ph,
 				 Prolog_term_ref t_clist) {
   try {
     PPL::Polyhedron* ph = get_ph_pointer(t_ph);
