@@ -85,7 +85,7 @@ AC_CHECK_GMP
 
 if test x"$have_gmp" = xno
 then
-  AC_MSG_ERROR([Cannot find GMP version 4 or higher.
+  AC_MSG_ERROR([Cannot find GMP version 4.1.2 or higher.
 GMP is the GNU Multi-Precision library:
 see http://www.swox.com/gmp/ for more information.
 Do not forget to enable the C++ interface: add --enable-cxx
