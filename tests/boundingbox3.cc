@@ -38,21 +38,25 @@ void test0() {
   C_Polyhedron ph(2);
   ph.add_constraint(x - y >= 0);
 
+  BoundingBox pbox(2);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+
+  BoundingBox nbox(2);
+  ph.shrink_bounding_box(nbox);
+
+  C_Polyhedron known_nph(nbox, From_Bounding_Box());
+  C_Polyhedron known_pph(pbox, From_Bounding_Box());
+
+  known_nph.intersection_assign_and_minimize(ph);
+  known_pph.intersection_assign_and_minimize(ph);
+
 #if NOISY
   print_generators(ph, "*** test0 ph ***");
+  print_generators(known_pph, "*** test0 known_pph ***");
+  print_generators(known_nph, "*** test0 known_nph ***");
 #endif
 
-  BoundingBox box(2);
-  ph.shrink_bounding_box(box);
-
-  C_Polyhedron known_ph(box, From_Bounding_Box());
-
-#if NOISY
-  print_generators(known_ph, "*** test0 known_ph ***");
-#endif
-  known_ph.intersection_assign_and_minimize(ph);
-
-  if (ph != known_ph)
+  if (ph != known_nph || ph != known_pph)
     exit(1);
 }
 
@@ -65,21 +69,25 @@ void test1() {
   ph.add_constraint(x >= y);
   ph.add_constraint(y >= 0);
 
+  BoundingBox pbox(2);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+
+  BoundingBox nbox(2);
+  ph.shrink_bounding_box(nbox);
+
+  C_Polyhedron known_pph(pbox, From_Bounding_Box());
+  C_Polyhedron known_nph(nbox, From_Bounding_Box());
+
+  known_pph.intersection_assign_and_minimize(ph);
+  known_nph.intersection_assign_and_minimize(ph);
+
 #if NOISY
   print_generators(ph, "*** test1 ph ***");
+  print_generators(known_pph, "*** test1 known_pph ***");
+  print_generators(known_nph, "*** test1 known_nph ***");
 #endif
 
-  BoundingBox box(2);
-  ph.shrink_bounding_box(box);
-
-  C_Polyhedron known_ph(box, From_Bounding_Box());
-
-#if NOISY
-  print_generators(known_ph, "*** test1 known_ph ***");
-#endif
-  known_ph.intersection_assign_and_minimize(ph);
-
-  if (ph != known_ph)
+  if (ph != known_pph || ph != known_nph)
     exit(1);
 }
 
@@ -93,21 +101,25 @@ void test2() {
   ph.add_constraint(x <= 4);
   ph.add_constraint(y <= 4);
 
+  BoundingBox pbox(2);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+
+  BoundingBox nbox(2);
+  ph.shrink_bounding_box(nbox);
+
+  C_Polyhedron known_pph(pbox, From_Bounding_Box());
+  known_pph.intersection_assign_and_minimize(ph);
+
+  C_Polyhedron known_nph(nbox, From_Bounding_Box());
+  known_nph.intersection_assign_and_minimize(ph);
+
 #if NOISY
   print_generators(ph, "*** test2 ph ***");
+  print_generators(known_pph, "*** test2 known_pph ***");
+  print_generators(known_nph, "*** test2 known_nph ***");
 #endif
 
-  BoundingBox box(2);
-  ph.shrink_bounding_box(box);
-
-  C_Polyhedron known_ph(box, From_Bounding_Box());
-
-#if NOISY
-  print_generators(known_ph, "*** test2 known_ph ***");
-#endif
-  known_ph.intersection_assign_and_minimize(ph);
-
-  if (ph != known_ph)
+  if (ph != known_pph || ph != known_nph)
     exit(1);
 }
 
@@ -124,21 +136,25 @@ void test3() {
   ph.add_constraint(y <= 4);
   ph.add_constraint(z >= 5);
 
+  BoundingBox pbox(4);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+
+  BoundingBox nbox(4);
+  ph.shrink_bounding_box(nbox);
+
+  C_Polyhedron known_pph(pbox, From_Bounding_Box());
+  known_pph.intersection_assign_and_minimize(ph);
+
+  C_Polyhedron known_nph(nbox, From_Bounding_Box());
+  known_nph.intersection_assign_and_minimize(ph);
+
 #if NOISY
   print_generators(ph, "*** test3 ph ***");
+  print_generators(known_pph, "*** test3 known_pph ***");
+  print_generators(known_nph, "*** test3 known_nph ***");
 #endif
 
-  BoundingBox box(4);
-  ph.shrink_bounding_box(box);
-
-  C_Polyhedron known_ph(box, From_Bounding_Box());
-
-#if NOISY
-  print_generators(known_ph, "*** test3 known_ph ***");
-#endif
-  known_ph.intersection_assign_and_minimize(ph);
-
-  if (ph != known_ph)
+  if (ph != known_pph || ph != known_nph)
     exit(1);
 }
 
@@ -146,21 +162,25 @@ void test3() {
 void test4() {
   C_Polyhedron ph(2);
 
+  BoundingBox pbox(2);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+
+  BoundingBox nbox(2);
+  ph.shrink_bounding_box(nbox);
+
+  C_Polyhedron known_pph(pbox, From_Bounding_Box());
+  known_pph.intersection_assign_and_minimize(ph);
+
+  C_Polyhedron known_nph(nbox, From_Bounding_Box());
+  known_nph.intersection_assign_and_minimize(ph);
+
 #if NOISY
   print_generators(ph, "*** test4 ph ***");
+  print_generators(known_pph, "*** test4 known_pph ***");
+  print_generators(known_nph, "*** test4 known_nph ***");
 #endif
 
-  BoundingBox box(2);
-  ph.shrink_bounding_box(box);
-
-  C_Polyhedron known_ph(box, From_Bounding_Box());
-
-#if NOISY
-  print_generators(known_ph, "*** test4 known_ph ***");
-#endif
-  known_ph.intersection_assign_and_minimize(ph);
-
-  if (ph != known_ph)
+  if (ph != known_pph || ph != known_nph)
     exit(1);
 }
 
@@ -168,20 +188,22 @@ void test4() {
 void test5() {
   C_Polyhedron ph;
 
+  BoundingBox pbox(0);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+
+  BoundingBox nbox(0);
+  ph.shrink_bounding_box(nbox);
+
+  C_Polyhedron known_pph(pbox, From_Bounding_Box());
+  C_Polyhedron known_nph(nbox, From_Bounding_Box());
+
 #if NOISY
   print_generators(ph, "*** test5 ph ***");
+  print_generators(known_pph, "*** test5 known_pph ***");
+  print_generators(known_nph, "*** test5 known_nph ***");
 #endif
 
-  BoundingBox box(0);
-  ph.shrink_bounding_box(box);
-
-  C_Polyhedron known_ph(box, From_Bounding_Box());
-
-#if NOISY
-  print_generators(known_ph, "*** test5 known_ph ***");
-#endif
-
-   if (ph != known_ph)
+   if (ph != known_pph || ph != known_nph)
      exit(1);
 }
 
@@ -189,20 +211,22 @@ void test5() {
 void test6() {
   C_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
+  BoundingBox pbox(2);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+
+  BoundingBox nbox(2);
+  ph.shrink_bounding_box(nbox);
+
+  C_Polyhedron known_pph(pbox, From_Bounding_Box());
+  C_Polyhedron known_nph(nbox, From_Bounding_Box());
+
 #if NOISY
   print_constraints(ph, "*** test6 ph ***");
+  print_generators(known_pph, "*** test6 known_pph ***");
+  print_generators(known_nph, "*** test6 known_nph ***");
 #endif
 
-  BoundingBox box(2);
-  ph.shrink_bounding_box(box);
-
-  C_Polyhedron known_ph(box, From_Bounding_Box());
-
-#if NOISY
-  print_generators(known_ph, "*** test6 known_ph ***");
-#endif
-
-  if (ph != known_ph)
+  if (ph != known_pph || ph != known_nph)
     exit(1);
 }
 
@@ -215,20 +239,22 @@ void test7() {
   ph.add_constraint(x == 2);
   ph.add_constraint(y == 4);
 
+  BoundingBox pbox(2);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+
+  BoundingBox nbox(2);
+  ph.shrink_bounding_box(nbox);
+
+  C_Polyhedron known_pph(pbox, From_Bounding_Box());
+  C_Polyhedron known_nph(nbox, From_Bounding_Box());
+
 #if NOISY
   print_generators(ph, "*** test7 ph ***");
+  print_generators(known_pph, "*** test7 known_pph ***");
+  print_generators(known_nph, "*** test7 known_nph ***");
 #endif
 
-  BoundingBox box(2);
-  ph.shrink_bounding_box(box);
-
-  C_Polyhedron known_ph(box, From_Bounding_Box());
-
-#if NOISY
-  print_generators(known_ph, "*** test7 known_ph ***");
-#endif
-
-  if (ph != known_ph)
+  if (ph != known_pph || ph != known_nph)
     exit(1);
 }
 
@@ -245,20 +271,22 @@ void test8() {
 
   C_Polyhedron ph(cs);
 
+  BoundingBox pbox(2);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+
+  BoundingBox nbox(2);
+  ph.shrink_bounding_box(nbox);
+
+  C_Polyhedron known_pph(pbox, From_Bounding_Box());
+  C_Polyhedron known_nph(nbox, From_Bounding_Box());
+
 #if NOISY
   print_generators(ph, "*** test8 ph generators ***");
+  print_generators(known_pph, "*** test8 known_pph ***");
+  print_generators(known_nph, "*** test8 known_nph ***");
 #endif
 
-  BoundingBox box(2);
-  ph.shrink_bounding_box(box);
-
-  C_Polyhedron known_ph(box, From_Bounding_Box());
-
-#if NOISY
-  print_generators(known_ph, "*** test8 known_ph ***");
-#endif
-
-  if (ph != known_ph)
+  if (ph != known_pph || ph != known_nph)
     exit(1);
 }
 
@@ -275,21 +303,25 @@ void test9() {
   ph.add_constraint(y <= 4);
   ph.add_constraint(z >= 5);
 
+  BoundingBox pbox(4);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+
+  BoundingBox nbox(4);
+  ph.shrink_bounding_box(nbox);
+
+  C_Polyhedron known_pph(pbox, From_Bounding_Box());
+  C_Polyhedron known_nph(nbox, From_Bounding_Box());
+
+  known_pph.intersection_assign_and_minimize(ph);
+  known_nph.intersection_assign_and_minimize(ph);
+
 #if NOISY
   print_generators(ph, "*** test9 ph ***");
+  print_generators(known_pph, "*** test9 known_pph ***");
+  print_generators(known_nph, "*** test9 known_nph ***");
 #endif
 
-  BoundingBox box(4);
-  ph.shrink_bounding_box(box);
-
-  C_Polyhedron known_ph(box, From_Bounding_Box());
-
-#if NOISY
-  print_generators(known_ph, "*** test9 known_ph ***");
-#endif
-  known_ph.intersection_assign_and_minimize(ph);
-
-  if (ph != known_ph)
+  if (ph != known_pph || ph != known_nph)
     exit(1);
 }
 
@@ -310,6 +342,7 @@ void test10() {
 
   Variable x(0);
   Variable y(1);
+
   C_Polyhedron known_ph(2);
   known_ph.add_constraint(x >= 0);
   known_ph.add_constraint(2*x <= 1);
