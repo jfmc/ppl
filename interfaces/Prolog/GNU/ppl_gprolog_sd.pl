@@ -17,10 +17,10 @@
 :- foreign(ppl_Polyhedron_space_dimension(+term, +term)).
 :- foreign(ppl_Polyhedron_intersection_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_intersection_assign_and_minimize(+term, +term)).
-:- foreign(ppl_Polyhedron_convex_hull_assign(+term, +term)).
-:- foreign(ppl_Polyhedron_convex_hull_assign_and_minimize(+term, +term)).
-:- foreign(ppl_Polyhedron_convex_difference_assign(+term, +term)).
-:- foreign(ppl_Polyhedron_convex_difference_assign_and_minimize(+term, +term)).
+:- foreign(ppl_Polyhedron_poly_hull_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_poly_hull_assign_and_minimize(+term, +term)).
+:- foreign(ppl_Polyhedron_poly_difference_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_poly_difference_assign_and_minimize(+term, +term)).
 :- foreign(ppl_Polyhedron_widening_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_limited_widening_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_get_constraints(+term, +term)).

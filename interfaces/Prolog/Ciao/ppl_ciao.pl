@@ -22,7 +22,7 @@
 	ppl_get_constraints/2,
 	ppl_get_generators/2,
 	ppl_intersection_assign/2,
-	ppl_convex_hull_assign/2,
+	ppl_poly_hull_assign/2,
 	ppl_widening_assign/2
 ],
 [
@@ -65,7 +65,7 @@
 	ppl_get_constraints/2,
 	ppl_get_generators/2,
 	ppl_intersection_assign/2,
-	ppl_convex_hull_assign/2,
+	ppl_poly_hull_assign/2,
 	ppl_widening_assign/2
 ]).
 
@@ -149,7 +149,7 @@
              :: address * address
              +  (foreign).
 
-:- true pred ppl_convex_hull_assign(in(Polyhedron1), in(Polyhedron2))
+:- true pred ppl_poly_hull_assign(in(Polyhedron1), in(Polyhedron2))
              :: address * address
              +  (foreign).
 

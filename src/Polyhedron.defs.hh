@@ -395,32 +395,32 @@ public:
   //!                                  are topology-incompatible
   //!                                  or dimension-incompatible.
   void intersection_assign(const Polyhedron& y);
-  //! Assigns to \p *this the convex hull of the set-theoretic union
+  //! Assigns to \p *this the poly-hull of the set-theoretic union
   //! of \p *this and \p y, minimizing the result.
   //! Returns <CODE>true</CODE> if and only if the result is not empty.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are topology-incompatible
   //!                                  or dimension-incompatible.
-  bool convex_hull_assign_and_minimize(const Polyhedron& y);
-  //! Assigns to \p *this the convex hull of the set-theoretic union
+  bool poly_hull_assign_and_minimize(const Polyhedron& y);
+  //! Assigns to \p *this the polyehdral hull of the set-theoretic union
   //! \p *this and \p y.  The result is not guaranteed to be minimized.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are topology-incompatible
   //!                                  or dimension-incompatible.
-  void convex_hull_assign(const Polyhedron& y);
-  //! Assigns to \p *this the convex hull of the set-theoretic difference
+  void poly_hull_assign(const Polyhedron& y);
+  //! Assigns to \p *this the poly-hull of the set-theoretic difference
   //! \p *this and \p y, minimizing the result.
   //! Returns <CODE>true</CODE> if and only if the result is not empty.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are topology-incompatible
   //!                                  or dimension-incompatible.
-  bool convex_difference_assign_and_minimize(const Polyhedron& y);
-  //! Assigns to \p *this the convex hull of the set-theoretic difference
+  bool poly_difference_assign_and_minimize(const Polyhedron& y);
+  //! Assigns to \p *this the poly-hull of the set-theoretic difference
   //! \p *this and \p y.  The result is not guaranteed to be minimized.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are topology-incompatible
   //!                                  or dimension-incompatible.
-  void convex_difference_assign(const Polyhedron& y);
+  void poly_difference_assign(const Polyhedron& y);
 
   //! Returns the relations holding between the polyhedron \p *this
   //! and the constraint \p c.

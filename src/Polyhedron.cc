@@ -1275,24 +1275,24 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
 }
 
 /*!
-  The convex hull of the set-theoretic union of \p *this and \p y
+  The poly-hull of the set-theoretic union of \p *this and \p y
   (that are assumed to have the same dimension) is assigned to \p *this
   The representation of the resulting polyhedron is minimized:
   the return value is <CODE>true</CODE> if and only if the polyhedron
   is not empty.
 */
 bool
-PPL::Polyhedron::convex_hull_assign_and_minimize(const Polyhedron& y) {
+PPL::Polyhedron::poly_hull_assign_and_minimize(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("convex_hull_assign_and_min(y)", y);    
+    throw_topology_incompatible("poly_hull_assign_and_min(y)", y);    
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
-    throw_dimension_incompatible("convex_hull_assign_and_min(y)", y);
+    throw_dimension_incompatible("poly_hull_assign_and_min(y)", y);
 
-  // Convex hull of a polyhedron `p' with an empty polyhedron is `p'.
+  // The poly-hull of a polyhedron `p' with an empty polyhedron is `p'.
   if (y.is_empty())
     return minimize();
   if (x.is_empty()) {
@@ -1302,7 +1302,7 @@ PPL::Polyhedron::convex_hull_assign_and_minimize(const Polyhedron& y) {
 
   // If both polyhedra are zero-dimensional,
   // then at this point they are necessarily universe polyhedra,
-  // so that their convex-hull is the universe polyhedron too.
+  // so that their poly-hull is the universe polyhedron too.
   if (x_space_dim == 0)
     return true;
 
@@ -1335,22 +1335,22 @@ PPL::Polyhedron::convex_hull_assign_and_minimize(const Polyhedron& y) {
 }
 
 /*!
-  The convex hull of the set-theoretic union of \p *this and \p y
+  The poly-hull of the set-theoretic union of \p *this and \p y
   (that are assumed to have the same dimension) is assigned to \p *this.
   The result is not minimized.
 */
 void
-PPL::Polyhedron::convex_hull_assign(const Polyhedron& y) {
+PPL::Polyhedron::poly_hull_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("convex_hull_assign(y)", y);    
+    throw_topology_incompatible("poly_hull_assign(y)", y);    
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
-    throw_dimension_incompatible("convex_hull_assign(y)", y);
+    throw_dimension_incompatible("poly_hull_assign(y)", y);
 
-  // Convex hull of a polyhedron `p' with an empty polyhedron is `p'.
+  // The poly-hull of a polyhedron `p' with an empty polyhedron is `p'.
   if (y.is_empty())
     return;
   if (x.is_empty()) {
@@ -1360,7 +1360,7 @@ PPL::Polyhedron::convex_hull_assign(const Polyhedron& y) {
 
   // If both polyhedra are zero-dimensional,
   // then at this point they are necessarily universe polyhedra,
-  // so that their convex-hull is the universe polyhedron too.
+  // so that their poly-hull is the universe polyhedron too.
   if (x_space_dim == 0)
     return;
 
@@ -1389,20 +1389,20 @@ PPL::Polyhedron::convex_hull_assign(const Polyhedron& y) {
 }
 
 /*!
-  The convex hull of the set-theoretic difference of \p *this and \p y
+  The poly-hull of the set-theoretic difference of \p *this and \p y
   (that are assumed to have the same dimension) is assigned to \p *this.
   The result is not minimized.
 */
 void
-PPL::Polyhedron::convex_difference_assign(const Polyhedron& y) {
+PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("convex_difference_assign(y)", y);    
+    throw_topology_incompatible("poly_difference_assign(y)", y);    
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
-    throw_dimension_incompatible("convex_difference_assign(y)", y);
+    throw_dimension_incompatible("poly_difference_assign(y)", y);
 
   // The difference of a polyhedron `p' and an empty polyhedron is `p'.
   if (y.is_empty())
@@ -1443,7 +1443,7 @@ PPL::Polyhedron::convex_difference_assign(const Polyhedron& y) {
 	// `c' is a non-strict inequality and
 	// we do support strict ones.
 	z_cs.insert(e < 0);
-      new_polyhedron.convex_hull_assign(Polyhedron(topology(), z_cs));
+      new_polyhedron.poly_hull_assign(Polyhedron(topology(), z_cs));
     }
   }
   *this = new_polyhedron;
@@ -1452,17 +1452,17 @@ PPL::Polyhedron::convex_difference_assign(const Polyhedron& y) {
 }
 
 /*!
-  The convex hull of the set-theoretic difference of \p *this and \p y
+  The poly-hull of the set-theoretic difference of \p *this and \p y
   (that are assumed to have the same dimension) is assigned to \p *this.
   The representation of the resulting polyhedron is minimized:
   the return value is <CODE>true</CODE> if and only if the polyhedron
   is not empty.
 */
 bool
-PPL::Polyhedron::convex_difference_assign_and_minimize(const Polyhedron& y) {
+PPL::Polyhedron::poly_difference_assign_and_minimize(const Polyhedron& y) {
   // Topology and dimensions compatibility check are done
-  // inside convex_difference_assign(y).
-  convex_difference_assign(y);
+  // inside poly_difference_assign(y).
+  poly_difference_assign(y);
   bool not_empty = minimize();
   assert(OK(true));
   return not_empty;

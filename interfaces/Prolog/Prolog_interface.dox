@@ -130,13 +130,13 @@ to the PPL library.
   unless a minimized representation is needed for the next PPL operation.
   In that case it is more efficient to use
   the <CODE>_and_minimize</CODE> predicate.
-  As an example, suppose you have to compute the convex hull of several
+  As an example, suppose you have to compute the poly-hull of several
   polyhedra. Then use the
-  <CODE>ppl_convex_hull_assign</CODE>
+  <CODE>ppl_poly_hull_assign</CODE>
   for each intermediate step and
-  <CODE>ppl_convex_hull_assign_and_minimize</CODE> for the last step.
-  If you just have  to compute the convex hull of two polyhedra, then use
-  <CODE>ppl_convex_hull_assign_and_minimize</CODE>.
+  <CODE>ppl_poly_hull_assign_and_minimize</CODE> for the last step.
+  If you just have  to compute the poly-hull of two polyhedra, then use
+  <CODE>ppl_poly_hull_assign_and_minimize</CODE>.
 
 See the specifications of individual predicates for examples and
 more information regarding these issues.
@@ -445,30 +445,30 @@ and a query will succeed even when
    After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
 
 
-<H4><CODE>ppl_convex_hull_assign(+Handle_1, +Handle_2)</CODE></H4>
+<H4><CODE>ppl_poly_hull_assign(+Handle_1, +Handle_2)</CODE></H4>
 
-   Computes the convex hull \f$P\f$ of the polyhedra referenced by
+   Computes the poly-hull \f$P\f$ of the polyhedra referenced by
    <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
    After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
 
-<H4><CODE>ppl_convex_hull_assign_and_minimize(+Handle_1,
+<H4><CODE>ppl_poly_hull_assign_and_minimize(+Handle_1,
                +Handle_2)</CODE></H4>
 
-   Computes the convex hull \f$P\f$ of the polyhedra referenced by
+   Computes the poly-hull \f$P\f$ of the polyhedra referenced by
    <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
    After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
 
-<H4><CODE>ppl_convex_difference_assign(+Handle_1, +Handle_2)</CODE></H4>
+<H4><CODE>ppl_poly_difference_assign(+Handle_1, +Handle_2)</CODE></H4>
 
-   Computes the convex hull \f$P\f$ of the set-theoretic difference of
+   Computes the poly-hull \f$P\f$ of the set-theoretic difference of
    the polyhedra referenced by
    <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
    After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
 
-<H4><CODE>ppl_convex_difference_assign_and_minimize(+Handle_1,
+<H4><CODE>ppl_poly_difference_assign_and_minimize(+Handle_1,
                +Handle_2)</CODE></H4>
 
-   Computes the convex hull \f$P\f$ of the set-theoretic difference of
+   Computes the poly-hull \f$P\f$ of the set-theoretic difference of
    the polyhedra referenced by
    <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
    After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
