@@ -167,20 +167,7 @@ The Polyhedron is projected to have NewDims variables (dimensions).
 That is all variables with codes greater than NewDims are projected away.
 */
 ppl_project_dimensions(Polyhedron,NewDims):-
-    ppl_space_dimension(Polyhedron,SpaceDims),
-    make_var_list(SpaceDims,NewDims,VarList),
-    ppl_remove_dimensions(Polyhedron, VarList).
-
-/*
-Given the minimum and maximum variable codes,
-this sets up a list of variables in the right syntax for using
-ppl_remove_dimensions in the PPL.
-*/
-make_var_list(MaxCode,MaxCode,[]).
-make_var_list(MaxCode,VarCode,['$VAR'(VarCode)|VarList]):-
-    VarCode < MaxCode,
-    VarCode1 is VarCode+1,
-    make_var_list(MaxCode,VarCode1,VarList).
+    ppl_remove_higher_dimensions(Polyhedron, NewDims).
 
 /*
 Displays the constraints.
