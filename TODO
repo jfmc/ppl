@@ -2,6 +2,13 @@
 Enhancements for PPL 0.7
 ========================
 
+- The fragment
+
+    C_Polyhedron(500, Polyhedron::empty()).generators().space_dimension()
+
+  may return something unexpected to the user.  This issue
+  must be studied and dealt with in the appropriate way.
+
 - Consider performing the following renamings:
 
     Integer -> Coefficient
