@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 
 #include "LinExpression.defs.hh"
+#include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
 
@@ -77,7 +78,11 @@ Constraint::set_is_inequality() {
 
 inline const Integer&
 Constraint::coefficient(Variable v) const {
-  return Row::coefficient(v.id());
+  if (v.id() < space_dimension())
+    return Row::coefficient(v.id());
+  else
+    throw std::invalid_argument("PPL::Constraint::coefficient(v): "
+				"v.id() >= *this.space_dimension()");
 }
 
 inline const Integer&
