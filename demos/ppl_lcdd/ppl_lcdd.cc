@@ -72,9 +72,6 @@ const char* program_name = 0;
 
 unsigned long max_seconds_of_cpu_time = 0;
 unsigned long max_bytes_of_virtual_memory = 0;
-const char* input_file_name = 0;
-const char* output_file_name = 0;
-FILE* output_file = NULL;
 bool print_timings = false;
 bool verbose = false;
 
@@ -88,6 +85,62 @@ fatal(const char* format, ...) {
   va_end(ap);
   exit(1);
 }
+
+namespace {
+
+const char* input_file_name = 0;
+std::istream* input_stream_p = 0;
+
+void
+set_input(const char* file_name) {
+  if (input_stream_p && *input_stream_p != std::cin)
+    delete input_stream_p;
+
+  if (file_name) {
+    input_stream_p = new std::ifstream(input_file_name, std::ios_base::in);
+    if (!input_stream_p)
+      fatal("cannot open input file `%s'", file_name);
+    input_file_name = file_name;
+  }
+  else {
+    input_stream_p = &std::cin;
+    input_file_name = "<cin>";
+  }
+}
+
+std::istream&
+input() {
+  assert(input_stream_p);
+  return *input_stream_p;
+}
+
+const char* output_file_name = 0;
+std::ostream* output_stream_p = 0;
+
+void
+set_output(const char* file_name) {
+  if (output_stream_p && *output_stream_p != std::cout)
+    delete output_stream_p;
+
+  if (file_name) {
+    output_stream_p = new std::ofstream(output_file_name, std::ios_base::out);
+    if (!output_stream_p)
+      fatal("cannot open output file `%s'", file_name);
+    output_file_name = file_name;
+  }
+  else {
+    output_stream_p = &std::cout;
+    output_file_name = "<cout>";
+  }
+}
+
+std::ostream&
+output() {
+  assert(output_stream_p);
+  return *output_stream_p;
+}
+
+} // namespace
 
 void
 error(const char* format, ...) {
@@ -157,9 +210,11 @@ limit_virtual_memory(unsigned int bytes) {
 
 void
 timeout(int) {
-  fprintf(stderr, "TIMEOUT\n");
+  std::cerr << "TIMEOUT"
+	    << std::endl;
   if (output_file_name)
-    fprintf(output_file, "TIMEOUT\n");
+    output() << "TIMEOUT"
+	     << std::endl;
   exit(0);
 }
 
@@ -218,28 +273,20 @@ process_options(int argc, char* argv[]) {
     }
   }
 
-  if (optind >= argc) {
-    if (verbose)
-      fprintf(stderr,
-	      "Parma Polyhedra Library version:\n%s\n\n"
-	      "Parma Polyhedra Library banner:\n%s",
-	      PPL::version(),
-	      PPL::banner());
-    else
-      fatal("no input files");
-  }
-
   if (argc - optind > 1)
-    /* We have multiple input files. */
-    fatal("only one input file is accepted");
+    // We have multiple input files.
+    fatal("at most one input file is accepted");
 
-  if (output_file_name) {
-    output_file = fopen(output_file_name, "a");
-    if (output_file == NULL)
-      fatal("cannot open output file `%s'", output_file_name);
-  }
+  // We have one input files.
+  if (optind < argc)
+    input_file_name = argv[optind];
   else
-    output_file = stdout;
+    // If no input files have been specified: we will read from standard input.
+    assert(input_file_name == 0);
+
+  // Set up the input and output streams.
+  set_input(input_file_name);
+  set_output(output_file_name);
 }
 
 void
@@ -255,21 +302,21 @@ normalize(const std::vector<mpq_class>& source, std::vector<mpz_class>& dest) {
 enum Number_Type { INTEGER, RATIONAL, REAL };
 
 void
-read_coefficients(std::istream& input,
+read_coefficients(std::istream& in,
 		  Number_Type number_type,
 		  std::vector<mpz_class>& coefficients) {
   unsigned num_coefficients = coefficients.size();
   switch (number_type) {
   case INTEGER: {
     for (unsigned i = 0; i < num_coefficients; ++i)
-      if (!(input >> coefficients[i]))
+      if (!(in >> coefficients[i]))
 	error("missing or invalid integer coefficient");
     break;
   }
   case RATIONAL: {
     std::vector<mpq_class> rational_coefficients(num_coefficients);
     for (unsigned i = 0; i < num_coefficients; ++i)
-      if (!(input >> rational_coefficients[i]))
+      if (!(in >> rational_coefficients[i]))
 	error("missing or invalid rational coefficient");
     normalize(rational_coefficients, coefficients);
     break;
@@ -278,7 +325,7 @@ read_coefficients(std::istream& input,
     std::vector<mpq_class> rational_coefficients(num_coefficients);
     for (unsigned i = 0; i < num_coefficients; ++i) {
       double d;
-      if (!(input >> d))
+      if (!(in >> d))
 	error("missing or invalid real coefficient");
       rational_coefficients[i] = mpq_class(d);
     }
@@ -293,14 +340,14 @@ read_coefficients(std::istream& input,
 enum Representation { H, V };
 
 Representation
-read_polyhedron(std::istream& input, PPL::C_Polyhedron& ph) {
+read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
   // By default we have an H-representation.
   Representation rep = H;
 
   std::string s;
   std::set<unsigned> linearity;
   while (true) {
-    if (!(input >> s))
+    if (!(in >> s))
       error("premature end of file while seeking for `begin'");
 
     if (s == "V-representation")
@@ -309,11 +356,11 @@ read_polyhedron(std::istream& input, PPL::C_Polyhedron& ph) {
       rep = H;
     else if (s == "linearity") {
       unsigned num_linear;
-      if (!(input >> num_linear))
+      if (!(in >> num_linear))
 	error("missing or invalid number of linearity indexes");
       while (num_linear--) {
 	unsigned i;
-	if (!(input >> i))
+	if (!(in >> i))
 	  error("missing or invalid linearity index");
 	linearity.insert(i);
       }
@@ -329,18 +376,18 @@ read_polyhedron(std::istream& input, PPL::C_Polyhedron& ph) {
       break;
     else
       // A comment: skip to end of line.
-      input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
 
   unsigned num_rows;
-  if (!(input >> num_rows))
+  if (!(in >> num_rows))
     error("illegal or missing number of rows");
 
   unsigned num_columns;
-  if (!(input >> num_columns))
+  if (!(in >> num_columns))
     error("illegal or missing number of columns");
 
-  if (!(input >> s))
+  if (!(in >> s))
     error("missing number type");
   Number_Type number_type = INTEGER;
   if (s == "integer")
@@ -361,17 +408,20 @@ read_polyhedron(std::istream& input, PPL::C_Polyhedron& ph) {
   PPL::GenSys gs;
 
   if (rep == V) {
+    std::set<unsigned>::iterator linearity_end = linearity.end();
     std::vector<mpz_class> coefficients(num_columns-1);
     for (unsigned i = 0; i < num_rows; ++i) {
       int vertex_marker;
-      if (!(input >> vertex_marker) || vertex_marker < 0 || vertex_marker > 1)
+      if (!(in >> vertex_marker) || vertex_marker < 0 || vertex_marker > 1)
 	error("illegal or missing vertex marker");
-      read_coefficients(input, number_type, coefficients);
+      read_coefficients(in, number_type, coefficients);
       PPL::LinExpression e;
-      for (unsigned i = num_columns-1; i-- > 0; )
-	e += coefficients[i] * PPL::Variable(i);
+      for (unsigned j = num_columns-1; j-- > 0; )
+	e += coefficients[j] * PPL::Variable(j);
       if (vertex_marker == 1)
 	gs.insert(point(e));
+      else if (linearity.find(i+1) != linearity_end)
+	gs.insert(line(e));
       else
 	gs.insert(ray(e));
     }
@@ -384,7 +434,7 @@ read_polyhedron(std::istream& input, PPL::C_Polyhedron& ph) {
     assert(rep == H);
     std::vector<mpz_class> coefficients(num_columns);
     for (unsigned i = 1; i <= num_rows; ++i) {
-      read_coefficients(input, number_type, coefficients);
+      read_coefficients(in, number_type, coefficients);
       PPL::LinExpression e;
       for (unsigned i = num_columns; i-- > 1; )
 	e += coefficients[i] * PPL::Variable(i-1);
@@ -396,7 +446,7 @@ read_polyhedron(std::istream& input, PPL::C_Polyhedron& ph) {
     }
   }
 
-  if (!(input >> s))
+  if (!(in >> s))
     error("premature end of file while seeking for `end'");
 
   if (s != "end")
@@ -468,10 +518,21 @@ write_polyhedron(std::ostream& output,
     for (PPL::GenSys::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i) {
       const PPL::Generator& g = *i;
-      output << (g.is_point() ? '1' : '0');
+      if (g.is_point()) {
+	output << '1';
+	const PPL::Integer& divisor = g.divisor();
+	for (PPL::dimension_type j = 0; j < space_dim; ++j)
+	  output << " " << mpq_class(g.coefficient(PPL::Variable(j)), divisor);
+      }
+      else {
+	// `g' is a ray or a line.
+	output << '0';
+	for (PPL::dimension_type j = 0; j < space_dim; ++j)
+	  output << " " << g.coefficient(PPL::Variable(j));
+      }
+      output << std::endl;
     }
   }
-
   output << "end" << std::endl;
 }
 
@@ -487,6 +548,11 @@ main(int argc, char* argv[]) {
     fatal("was compiled with PPL version %s, but linked with version %s",
 	  PPL_VERSION, PPL::version());
 
+  if (verbose)
+    std::cerr << "Parma Polyhedra Library version:\n" << PPL::version()
+	      << "\n\nParma Polyhedra Library banner:\n" << PPL::banner()
+	      << std::endl;
+
   //if (ppl_io_set_variable_output_function(variable_output_function) < 0)
   //  fatal("cannot install the custom variable output function");
 
@@ -499,37 +565,25 @@ main(int argc, char* argv[]) {
   if (max_bytes_of_virtual_memory > 0)
     limit_virtual_memory(max_bytes_of_virtual_memory);
 
-  while (optind < argc) {
-    input_file_name = argv[optind++];
-    std::ifstream input;
-    input.open(input_file_name, std::ios_base::in);
-    if (!input)
-      fatal("cannot open input file `%s'", input_file_name);
 
-    PPL::C_Polyhedron ph;
-    Representation rep = read_polyhedron(input, ph);
+  PPL::C_Polyhedron ph;
+  Representation rep = read_polyhedron(input(), ph);
 
-    std::string s;
-    while (input >> s) {
-      warning("ignoring command `%s'", s.c_str());
-      input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
-
-    // If we are still here, we just make a conversion.
-    if (rep == V) {
-      ph.constraints();
-      write_polyhedron(std::cout, ph, H);
-    }
-    else {
-      ph.generators();
-      write_polyhedron(std::cout, ph, V);
-    }
-
+  std::string s;
+  while (input() >> s) {
+    warning("ignoring command `%s'", s.c_str());
+    input().ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
 
-  // Close output file, if any.
-  if (output_file_name)
-    fclose(output_file);
+  // If we are still here, we just make a conversion.
+  if (rep == V) {
+    ph.constraints();
+    write_polyhedron(std::cout, ph, H);
+  }
+  else {
+    ph.generators();
+    write_polyhedron(std::cout, ph, V);
+  }
 
   return 0;
 }
