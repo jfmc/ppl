@@ -27,7 +27,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "float.types.hh"
 #include <cassert>
 #include <cmath>
-#include <fenv.h>
+#ifdef __CYGWIN__
+// Cygwin does not conform to C99.
+// Please do not remove the space separating `#' from `include':
+// this ensures that the directive will not be moved during the
+// procedure that automatically creates the library's include file
+// (see `Makefile.am' in the `src' directory).
+# include <mingw/fenv.h>
+#else
+# include <fenv.h>
+#endif
 
 #define USE_FPU_ROUNDING_MODE
 #define USE_FPU_INEXACT
