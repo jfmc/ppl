@@ -22,6 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 check_all :-
+  ppl_initialize,
   incl_C,
   incl_NNC,
   strict_incl_C,
@@ -68,7 +69,11 @@ check_all :-
   embed,
   boundingbox,
   poly_from_boundingbox_C,
-  poly_from_boundingbox_NNC.
+  poly_from_boundingbox_NNC,
+  !,
+  ppl_finalize.
+check_all :-
+  ppl_finalize.
 
 % Tests new_Polyhedron_from_dimension
 % and ppl_Polyhedron_contains_Polyhedron for C Polyhedron.
@@ -661,19 +666,3 @@ boundingbox2(Box,CS) :-
   ppl_Polyhedron_get_bounding_box(P, Box),
   ppl_Polyhedron_get_constraints(P,CS), 
   ppl_delete_Polyhedron(P).
-
-/*
-bounds_from_above :-
-  A = '$VAR'(0), B = '$VAR'(1), 
-  ppl_new_Polyhedron_from_constraints(nnc,
-                                      [],
-                                     P),
-  ppl_Polyhedron_bounds_from_above(P,A),
-  ppl_delete_Polyhedron(P).
-
-?- bounds_from_above.
-Matrix has no rows but num_columns() is positive!
-ppl_pl: ../../ppl/src/ConSys.cc:98: bool Parma_Polyhedra_Library::ConSys::adjust_topology_and_dimension(Parma_Polyhedra_Library::Topology, unsigned int): Assertion `OK()' failed.
-Abort (core dumped)        
-
-*/
