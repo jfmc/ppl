@@ -37,6 +37,13 @@ o  New methods Polyhedron::BHRZ03_widening_assign() and
    is a novel widening that is always more precise than the one, by now
    standard, we call H79.
 
+o  The novel "widening with tokens" technique improves on the good old
+   widening delay technique by refraining from widening only when
+   necessary.  Precision is thus increased still guaranteeing
+   convergence.  All widening operators can now be supplied with an
+   optional argument, recording the number of available tokens, which
+   is decremented when tokens are used.
+
 o  Two new methods have been defined that compute the image of
    a polyhedron under an affine relation. The first method,
    Polyhedron::generalized_affine_image(var, relsym, expr, denom),
