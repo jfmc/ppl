@@ -208,7 +208,7 @@ PPL::Polyhedron::relation_with(const Constraint& c) const {
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
 
-    return gen_sys.relation_with(c);
+  return gen_sys.relation_with(c);
 }
 
 PPL::Poly_Gen_Relation
