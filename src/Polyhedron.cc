@@ -110,14 +110,18 @@ PPL::Polyhedron::Polyhedron(GenSys& gs)
     gen_sys(),
     sat_c(),
     sat_g() {
-  // A matrix of generators must have at least two columns:
-  // one for the inhomogeneus term and the other for a variable.
-  assert(gs.num_columns() >= 2);
-  // Note that this swap destroys the given argument `gs' because
-  // it is swapped with `gen_sys' that is created empty, i.e., with
-  // the default constructor.
-  std::swap(gen_sys, gs);
-  set_generators_up_to_date();
+  if (gs.num_rows() == 0)
+    status.set_empty();
+  else {
+    // A matrix of generators must have at least two columns:
+    // one for the inhomogeneus term and the other for a variable.
+    assert(gs.num_columns() >= 2);
+    // Note that this swap destroys the given argument `gs' because
+    // it is swapped with `gen_sys' that is created empty, i.e., with
+    // the default constructor.
+    std::swap(gen_sys, gs);
+    set_generators_up_to_date();
+  }
 }
 
 PPL::Polyhedron&
