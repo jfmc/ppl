@@ -506,6 +506,13 @@ ppl_ConSys_space_dimension(ppl_const_ConSys_t cs) try {
 CATCH_ALL
 
 int
+ppl_ConSys_clear(ppl_ConSys_t cs) try {
+  to_nonconst(cs)->clear();
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_ConSys_insert_Constraint(ppl_ConSys_t cs, ppl_const_Constraint_t c) try {
   const Constraint& cc = *to_const(c);
   ConSys& ccs = *to_nonconst(cs);
@@ -784,6 +791,13 @@ CATCH_ALL
 int
 ppl_GenSys_space_dimension(ppl_const_GenSys_t gs) try {
   return to_const(gs)->space_dimension();
+}
+CATCH_ALL
+
+int
+ppl_GenSys_clear(ppl_GenSys_t gs) try {
+  to_nonconst(gs)->clear();
+  return 0;
 }
 CATCH_ALL
 

@@ -453,6 +453,13 @@ int
 ppl_ConSys_space_dimension __P((ppl_const_ConSys_t cs));
 
 /*!
+  Removes all the constraints from the constraint system \p cs
+  and sets its space dimension to 0.
+*/
+int
+ppl_ConSys_clear __P((ppl_ConSys_t cs));
+
+/*!
   Inserts a copy of the constraint \p c into \p *this; the space
   dimension is increased, if necessary.
 */
@@ -692,6 +699,13 @@ ppl_assign_GenSys_from_GenSys __P((ppl_GenSys_t dst,
 */
 int
 ppl_GenSys_space_dimension __P((ppl_const_GenSys_t gs));
+
+/*!
+  Removes all the generatorss from the generator system \p gs
+  and sets its space dimension to 0.
+*/
+int
+ppl_GenSys_clear __P((ppl_GenSys_t gs));
 
 /*!
   Inserts a copy of the generator \p g into \p *this; the space
