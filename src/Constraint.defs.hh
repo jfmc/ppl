@@ -85,6 +85,25 @@ namespace Parma_Polyhedra_Library {
     where \f$d\f$ is the dimension of the space.
     Constraints are typically built by applying a relational operator
     to a pair of linear expressions.
+    
+    \par Example 1
+    The following code builds the inequality \f$4*x-2*y-z+13>0\f$
+    that correspondes to the constraint \f$4*x-2*y-z+14>=0\f$:
+    \code
+    Variable x(0);
+    Variable y(1);
+    Variable z(2);
+    Constraint cs(4 * x - 2 * y - z + 13 > 0);
+    \endcode
+
+    \par Example 2
+    The following code builds the equality \f$3*x+5*y-z=0\f$:
+    \code
+    Variable x(0);
+    Variable y(1);
+    Variable z(2);
+    ConStraint cs(3 * x + 5 * y - z == 0);
+    \endcode
 */
 class Parma_Polyhedra_Library::Constraint : public Row {
 private:
