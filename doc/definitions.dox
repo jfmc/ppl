@@ -283,7 +283,9 @@ where
 \f$\vect{r} \neq \lambda \vect{r}_1\f$,
 \f$\vect{r} \neq \lambda \vect{r}_2\f$ and
 \f$\vect{r}_1 \neq \lambda \vect{r}_2\f$
-for all \f$\lambda \in \Rset, \lambda \geq 0\f$.
+for all \f$\lambda \in \nonnegRset\f$
+(i.e., rays differing by a positive scalar factor are considered
+to be the same ray).
 
 
 <B>Generators Representation</B>
