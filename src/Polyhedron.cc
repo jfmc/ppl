@@ -2045,7 +2045,7 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
   Returns the relation holding between the polyhedron \p *this and
   the constraint \p c.
 */
-PPL::Relation_Poly_Con
+PPL::Poly_Con_Relation
 PPL::Polyhedron::relation_with(const Constraint& c) {
   // Dimension-compatibility check.
   if (space_dim < c.space_dimension())
@@ -2053,32 +2053,32 @@ PPL::Polyhedron::relation_with(const Constraint& c) {
 			       *this, c);
   if (is_empty())
     // FIXME: arbitrary!
-    return SATURATES;
+    return Poly_Con_Relation::saturates();
 
   if (space_dim == 0)
     if (c.is_trivial_false())
-      return IS_DISJOINT;
+      return Poly_Con_Relation::is_disjoint();
     else
       if (c.is_equality() || c[0] == 0)
-	return SATURATES;
+	return Poly_Con_Relation::saturates();
       else
 	// The zero-dim vertex does not saturate
 	// the positivity constraint. 
-	return IS_INCLUDED;
+	return Poly_Con_Relation::is_included();
 
   if (!generators_are_up_to_date())
     if (!update_generators())
-      return SATURATES;
+      return Poly_Con_Relation::saturates();
 
   return gen_sys.relation_with(c);
 }
 
 /*!
-  Returns <CODE>SUBSUMES</CODE> if the generator \p g satisfies all
-  the constraints representing \p *this;
-  otherwise, returns <CODE>DOES_NOT_SUBSUME</CODE>.
+  Returns <CODE>Poly_Gen_Relation::subsumes()</CODE> if the generator
+  \p g satisfies all the constraints representing \p *this; otherwise,
+  returns <CODE>DOES_NOT_SUBSUME</CODE>.
 */
-PPL::Relation_Poly_Gen
+PPL::Poly_Gen_Relation
 PPL::Polyhedron::relation_with(const Generator& g) {
   // Dimension-compatibility check.
   if (space_dim < g.space_dimension())
@@ -2087,16 +2087,19 @@ PPL::Polyhedron::relation_with(const Generator& g) {
 
   // Any generators is not subsumed by the empty-polyhedron.
   if (is_empty())
-    return DOES_NOT_SUBSUME;
+    return Poly_Gen_Relation::nothing();
 
   // A universe polyhedron in a zero-dimensional space subsumes
   // all the generators of a zero-dimensional space.
   if (space_dim == 0)
-    return SUBSUMES;
+    return Poly_Gen_Relation::subsumes();
   else {
     if (!constraints_are_up_to_date())
       update_constraints();
-    return con_sys.satisfies_all_constraints(g) ? SUBSUMES : DOES_NOT_SUBSUME;
+    return
+      con_sys.satisfies_all_constraints(g)
+      ? Poly_Gen_Relation::subsumes()
+      : Poly_Gen_Relation::nothing();
   }
 }
 
@@ -2287,8 +2290,9 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
       // of the greater polyhedron `x', because those of `y'
       // are points also of `x' (`y' is contained in `x') and
       // so they satisfy the chosen constraints, too.
-      Relation_Poly_Con status = x.gen_sys.relation_with(cs[i]);
-      if (status == SATURATES || status == IS_INCLUDED)
+      Poly_Con_Relation status = x.gen_sys.relation_with(cs[i]);
+      if (status == Poly_Con_Relation::saturates()
+	  || status == Poly_Con_Relation::is_included())
 	// The chosen constraints are put at the top of the
 	// matrix \p cs.
 	std::swap(cs[new_cs_num_rows], cs[i]);

@@ -1,4 +1,4 @@
-/* Relation enumerations implementation (non-inline functions).
+/* Poly_Con_Relation class implementation (non-inline functions).
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,46 +23,53 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "relations.hh"
+#include "Poly_Con_Relation.defs.hh"
 
+#include <iostream>
+#include <string>
+#include <cassert>
 
 namespace PPL = Parma_Polyhedra_Library;
 
-std::ostream&
-PPL::operator <<(std::ostream& s, Relation_Poly_Con r) {
-  const char* p = 0;
-  switch (r) {
-  case IS_DISJOINT:
-    p = "IS_DISJOINT";
-    break;
-  case STRICTLY_INTERSECTS:
-    p = "STRICTLY_INTERSECTS";
-    break;
-  case IS_INCLUDED:
-    p = "IS_INCLUDED";
-    break;
-  case SATURATES:
-    p = "SATURATES";
-    break;
+void
+PPL::Poly_Con_Relation::print(std::ostream& s) const {
+  flags_t f = flags;
+  if (f == NOTHING) {
+    s << "NOTHING";
+    return;
   }
-  assert(p != 0);
-  s << p;
+
+  while (true) {
+    if (implies(f, IS_DISJOINT)) {
+      s << "IS_DISJOINT";
+      f &= ~IS_DISJOINT;
+    }
+    else if (implies(f, STRICTLY_INTERSECTS)) {
+      s << "STRICTLY_INTERSECTS";
+      f &= ~STRICTLY_INTERSECTS;
+    }
+    else if (implies(f, IS_INCLUDED)) {
+      s << "IS_INCLUDED";
+      f &= ~IS_INCLUDED;
+    }
+    else if (implies(f, SATURATES)) {
+      s << "SATURATES";
+      f &= ~SATURATES;
+    }
+    if (f != NOTHING)
+      s << " & ";
+    else
+      break;
+  }
+}
+
+std::ostream&
+PPL::operator <<(std::ostream& s, const Poly_Con_Relation& r) {
+  r.print(s);
   return s;
 }
 
-
-std::ostream&
-PPL::operator <<(std::ostream& s, Relation_Poly_Gen r) {
-  const char* p = 0;
-  switch (r) {
-  case SUBSUMES:
-    p = "SUBSUMES";
-    break;
-  case DOES_NOT_SUBSUME:
-    p = "DOES_NOT_SUBSUME";
-    break;
-  }
-  assert(p != 0);
-  s << p;
-  return s;
+bool
+PPL::Poly_Con_Relation::OK() const {
+  return true;
 }

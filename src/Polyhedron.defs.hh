@@ -31,7 +31,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "SatMatrix.defs.hh"
 #include "Status.defs.hh"
 #include "Polyhedron.types.hh"
-#include "relations.hh"
+#include "Poly_Con_Relation.defs.hh"
+#include "Poly_Gen_Relation.defs.hh"
 #include <set>
 
 namespace Parma_Polyhedra_Library {
@@ -398,12 +399,15 @@ public:
   //! and the constraint \p c.
   //! \exception std::invalid_argument thrown if \p *this and constraint
   //!                                  \p c are dimension-incompatible.
-  Relation_Poly_Con relation_with(const Constraint& c);
+  Parma_Polyhedra_Library::Poly_Con_Relation
+  relation_with(const Constraint& c);
+
   //! Returns the relation holding between the polyhedron \p *this
   //! and the generator \p g.
   //! \exception std::invalid_argument thrown if \p *this and generator
   //!                                  \p g are dimension-incompatible.
-  Relation_Poly_Gen relation_with(const Generator& g);
+  Parma_Polyhedra_Library::Poly_Gen_Relation
+  relation_with(const Generator& g);
 
   //! Computes the widening between \p *this and \p y and
   //! assigns the result to \p *this.

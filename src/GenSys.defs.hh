@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Matrix.defs.hh"
 #include "Generator.types.hh"
 #include "Constraint.types.hh"
-#include "relations.hh"
+#include "Poly_Con_Relation.defs.hh"
 #include <cstddef>
 #include <vector>
 
@@ -237,7 +237,8 @@ PPL_INTERNAL:
 
   //! Returns the relation holding between the generator system
   //! and the constraint \p c.
-  Relation_Poly_Con relation_with(const Constraint& c) const;
+  Parma_Polyhedra_Library::Poly_Con_Relation
+  relation_with(const Constraint& c) const;
 
   //! Assigns to a given variable an affine expression.
   void affine_image(size_t v,
