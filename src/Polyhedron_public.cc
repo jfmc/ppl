@@ -2330,7 +2330,7 @@ PPL::Polyhedron::contains(const Polyhedron& y) const {
 
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
-    Polyhedron::throw_topology_incompatible("contains(y)", y);
+    Polyhedron::throw_dimension_incompatible("contains(y)", y);
 
   if (y.marked_empty())
     return true;
