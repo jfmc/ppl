@@ -710,12 +710,12 @@ Verification of real-time systems using linear relation analysis,
 
 There are a few differences between the H79-widening
 and the widenings described in the cited paper.
-In particular, the H79-widening of an NNC polyhedron \f$\cP\f$
-   using the NNC polyhedron \f$\cP'\f$:
- - allows for equalities in \f$\cP\f$ and \f$\cP'\f$
+In particular, the H79-widening of an NNC polyhedron \f$\cP \in \Pset_n\f$
+using the NNC polyhedron \f$\cQ \in \Pset_n\f$:
+ - allows for equalities in \f$\cP\f$ and \f$\cQ\f$
    (the original definition is restricted to inequalities);
- - does not require \f$\cP\f$ and \f$\cP'\f$ to be topologically closed;
- - requires as a precondition that \f$\cP' \sseq \cP\f$.
+ - does not require \f$\cP\f$ and \f$\cQ\f$ to be topologically closed;
+ - requires as a precondition that \f$\cQ \sseq \cP\f$.
 
 
 \anchor time_elapse
