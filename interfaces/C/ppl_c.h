@@ -970,12 +970,28 @@ ppl_Polyhedron_constraints __P((ppl_const_Polyhedron_t ph,
 				ppl_const_ConSys_t* pcs));
 
 /*!
+  Writes a const handle to the minimized constraint system defining the
+  polyhedron \p ph at address \p pcs.
+*/
+int
+ppl_Polyhedron_minimized_constraints __P((ppl_const_Polyhedron_t ph,
+				ppl_const_ConSys_t* pcs));
+
+/*!
   Writes a const handle to the generator system defining the
   polyhedron \p ph at address \p pgs.
 */
 int
 ppl_Polyhedron_generators __P((ppl_const_Polyhedron_t ph,
 			       ppl_const_GenSys_t* pgs));
+
+/*!
+  Writes a const handle to the minimized generator system defining the
+  polyhedron \p ph at address \p pgs.
+*/
+int
+ppl_Polyhedron_minimized_generators __P((ppl_const_Polyhedron_t ph,
+					 ppl_const_GenSys_t* pgs));
 
 /*!
   Adds a copy of the constraint \p c to the system of constraints of

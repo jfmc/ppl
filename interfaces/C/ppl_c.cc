@@ -1046,10 +1046,30 @@ ppl_Polyhedron_constraints(ppl_const_Polyhedron_t ph,
 CATCH_ALL
 
 int
+ppl_Polyhedron_minimized_constraints(ppl_const_Polyhedron_t ph,
+				     ppl_const_ConSys_t* pcs) try {
+  const Polyhedron& pph = *to_const(ph);
+  const ConSys& cs = pph.minimized_constraints();
+  *pcs = to_const(&cs);
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_Polyhedron_generators(ppl_const_Polyhedron_t ph,
 			  ppl_const_GenSys_t* pgs) try {
   const Polyhedron& pph = *to_const(ph);
   const GenSys& gs = pph.generators();
+  *pgs = to_const(&gs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_minimized_generators(ppl_const_Polyhedron_t ph,
+				    ppl_const_GenSys_t* pgs) try {
+  const Polyhedron& pph = *to_const(ph);
+  const GenSys& gs = pph.minimized_generators();
   *pgs = to_const(&gs);
   return 0;
 }
