@@ -332,7 +332,6 @@ WARN_LOGFILE           =
 INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Init.types.hh \
                          @srcdir@/../src/Init.defs.hh \
-                         @srcdir@/../src/Init.inlines.hh \
                          @srcdir@/../src/Init.cc \
                          @srcdir@/../src/initializer.hh \
                          @srcdir@/../src/globals.hh \

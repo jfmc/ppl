@@ -215,7 +215,6 @@ ppl-0.4
 |   |-- Generator.types.hh
 |   |-- Init.cc
 |   |-- Init.defs.hh
-|   |-- Init.inlines.hh
 |   |-- Init.types.hh
 |   |-- Integer.cc
 |   |-- Integer.defs.hh
