@@ -248,7 +248,49 @@
               overall simplicity."
 }
 
-@Inproceedings{BagnaraHZ03,
+@Inproceedings{BagnaraHZ03a,
+  Author = "R. Bagnara and P. M. Hill and E. Zaffanella",
+  Title = "A New Encoding and Implementation 
+           of Not Necessarily Closed Convex Polyhedra",
+  Booktitle = "Proceedings of the 3rd Workshop on Automated Verification
+               of Critical Systems",
+  Address = "Southampton, UK",
+  Editor = "M. Leuschel and S. Gruner and S. {Lo Presti}",
+  Year = 2003,
+  Pages = "161--176",
+  Note = "Published as TR Number DSSE-TR-2003-2, University of Southampton",
+  Abstract = "Convex polyhedra, commonly employed for the analysis and
+              verification of both hardware and software, may be
+              defined either by a finite set of linear inequality
+              constraints or by finite sets of generating points and
+              rays of the polyhedron.  Although most implementations
+              of the polyhedral operations assume that the polyhedra
+              are topologically closed (i.e., all the constraints
+              defining them are non-strict), several analyzers and
+              verifiers need to compute on a domain of convex
+              polyhedra that are not necessarily closed (NNC).  The
+              usual approach to implementing NNC polyhedra is to embed
+              them into closed polyhedra in a vector space having one
+              extra dimension and reuse the tools and techniques
+              already available for closed polyhedra.  Previously,
+              this embedding has been designed so that a constant
+              number of constraints and a linear number of generators
+              have to be added to the original NNC specification of
+              the polyhedron.  In this paper we explore an alternative
+              approach: while still using an extra dimension to
+              represent the NNC polyhedron by a closed polyhedron, the
+              new embedding adds a linear number of constraints and a
+              constant number of generators.  We discuss the relative
+              benefits of these two implementations and how the choice
+              of representation can affect the efficiency of the
+              polyhedral operations.  As far as the issue of providing
+              a non-redundant description of the NNC polyhedron is
+              concerned, we generalize the results established in a
+              previous paper so that they apply to both encodings.",
+  URL = "http://www.cs.unipr.it/ppl/Documentation/BagnaraHZ03a.pdf"
+}
+
+@Inproceedings{BagnaraHZ03b,
   Author = "R. Bagnara and P. M. Hill and E. Zaffanella",
   Title = "Widening Operators for Powerset Domains",
   Booktitle = "Proceedings of the Fifth International Conference on
@@ -274,7 +316,7 @@
               instantiating our widenings on powersets of convex
               polyhedra, a domain for which no non-trivial widening
               operator was previously known.",
-  URL = "http://www.cs.unipr.it/ppl/Documentation/BagnaraHZ03.pdf"
+  URL = "http://www.cs.unipr.it/ppl/Documentation/BagnaraHZ03b.pdf"
 }
 
 @InProceedings{BessonJT99,
