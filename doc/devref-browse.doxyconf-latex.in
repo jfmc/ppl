@@ -462,14 +462,14 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Linear_System.defs.hh \
                          @srcdir@/../src/Linear_System.inlines.hh \
                          @srcdir@/../src/Linear_System.cc \
-                         @srcdir@/../src/SatRow.types.hh \
-                         @srcdir@/../src/SatRow.defs.hh \
-                         @srcdir@/../src/SatRow.inlines.hh \
-                         @srcdir@/../src/SatRow.cc \
-                         @srcdir@/../src/SatMatrix.types.hh \
-                         @srcdir@/../src/SatMatrix.defs.hh \
-                         @srcdir@/../src/SatMatrix.inlines.hh \
-                         @srcdir@/../src/SatMatrix.cc \
+                         @srcdir@/../src/Saturation_Row.types.hh \
+                         @srcdir@/../src/Saturation_Row.defs.hh \
+                         @srcdir@/../src/Saturation_Row.inlines.hh \
+                         @srcdir@/../src/Saturation_Row.cc \
+                         @srcdir@/../src/Saturation_Matrix.types.hh \
+                         @srcdir@/../src/Saturation_Matrix.defs.hh \
+                         @srcdir@/../src/Saturation_Matrix.inlines.hh \
+                         @srcdir@/../src/Saturation_Matrix.cc \
                          @srcdir@/../src/Variable.types.hh \
                          @srcdir@/../src/Variable.defs.hh \
                          @srcdir@/../src/Variable.inlines.hh \

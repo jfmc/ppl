@@ -1,4 +1,4 @@
-/* SatRow class declaration.
+/* Saturation_Row class declaration.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,10 +21,10 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_SatRow_defs_hh
-#define PPL_SatRow_defs_hh 1
+#ifndef PPL_Saturation_Row_defs_hh
+#define PPL_Saturation_Row_defs_hh 1
 
-#include "SatRow.types.hh"
+#include "Saturation_Row.types.hh"
 #include "globals.defs.hh"
 #include <iosfwd>
 #include <gmp.h>
@@ -36,19 +36,19 @@ namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
-/*! \relates SatRow */
+/*! \relates Saturation_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-bool operator==(const SatRow& x, const SatRow& y);
+bool operator==(const Saturation_Row& x, const Saturation_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are not equal.
-/*! \relates SatRow */
+/*! \relates Saturation_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-bool operator!=(const SatRow& x, const SatRow& y);
+bool operator!=(const Saturation_Row& x, const Saturation_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.
-/*! \relates SatRow
+/*! \relates Saturation_Row
   Compares \p x with \p y starting from the least significant bits.
   The ordering is total and has the following property: if \p x and \p y
   are two rows seen as sets of naturals, if \p x is a strict subset
@@ -60,38 +60,38 @@ bool operator!=(const SatRow& x, const SatRow& y);
   -  1 if \p x comes after \p y in the ordering.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-int compare(const SatRow& x, const SatRow& y);
+int compare(const Saturation_Row& x, const Saturation_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Set-theoretic inclusion test.
-/*! \relates SatRow */
+/*! \relates Saturation_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-bool subset_or_equal(const SatRow& x, const SatRow& y);
+bool subset_or_equal(const Saturation_Row& x, const Saturation_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
 //! Set-theoretic inclusion test: sets \p strict_subset to a boolean
 //! indicating whether the inclusion is strict or not.
-/*! \relates SatRow */
+/*! \relates Saturation_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-bool subset_or_equal(const SatRow& x, const SatRow& y, bool& strict_subset);
+bool subset_or_equal(const Saturation_Row& x, const Saturation_Row& y, bool& strict_subset);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Set-theoretic strict inclusion test.
-/*! \relates SatRow */
+/*! \relates Saturation_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-bool strict_subset(const SatRow& x, const SatRow& y);
+bool strict_subset(const Saturation_Row& x, const Saturation_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Set-theoretic union.
-/*! \relates SatRow */
+/*! \relates Saturation_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void set_union(const SatRow& x, const SatRow& y, SatRow& z);
+void set_union(const Saturation_Row& x, const Saturation_Row& y, Saturation_Row& z);
 
 } // namespace Parma_Polyhedra_Library
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A row of a saturation matrix SatMatrix.
+//! A row of a saturation matrix.
 /*!
   An object of this class represents a single row of a saturation matrix.
   The saturation row corresponds to a constraint and a system of generators
@@ -105,22 +105,22 @@ void set_union(const SatRow& x, const SatRow& y, SatRow& z);
   if and only if the \f$i\f$-th bit is not set.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-class Parma_Polyhedra_Library::SatRow {
+class Parma_Polyhedra_Library::Saturation_Row {
 public:
   //! Default constructor.
-  SatRow();
+  Saturation_Row();
 
   //! Copy-constructor.
-  SatRow(const SatRow& y);
+  Saturation_Row(const Saturation_Row& y);
 
   //! Destructor.
-  ~SatRow();
+  ~Saturation_Row();
 
   //! Assignment operator.
-  SatRow& operator=(const SatRow& y);
+  Saturation_Row& operator=(const Saturation_Row& y);
 
   //! Swaps \p *this with \p y.
-  void swap(SatRow& y);
+  void swap(Saturation_Row& y);
 
   //! Returns the truth value corresponding to the bit in position \p k.
   bool operator[](unsigned int k) const;
@@ -138,29 +138,29 @@ public:
   void clear();
 
   friend int
-  Parma_Polyhedra_Library::compare(const SatRow& x,
-				   const SatRow& y);
+  Parma_Polyhedra_Library::compare(const Saturation_Row& x,
+				   const Saturation_Row& y);
 
   friend bool
-  Parma_Polyhedra_Library::operator==(const SatRow& x,  const SatRow& y);
+  Parma_Polyhedra_Library::operator==(const Saturation_Row& x,  const Saturation_Row& y);
 
   friend bool
-  Parma_Polyhedra_Library::operator!=(const SatRow& x, const SatRow& y);
+  Parma_Polyhedra_Library::operator!=(const Saturation_Row& x, const Saturation_Row& y);
 
   friend bool
-  Parma_Polyhedra_Library::subset_or_equal(const SatRow& x, const SatRow& y);
+  Parma_Polyhedra_Library::subset_or_equal(const Saturation_Row& x, const Saturation_Row& y);
 
   friend bool
-  Parma_Polyhedra_Library::subset_or_equal(const SatRow& x, const SatRow& y,
+  Parma_Polyhedra_Library::subset_or_equal(const Saturation_Row& x, const Saturation_Row& y,
 					   bool& strict_subset);
 
   friend bool
-  Parma_Polyhedra_Library::strict_subset(const SatRow& x, const SatRow& y);
+  Parma_Polyhedra_Library::strict_subset(const Saturation_Row& x, const Saturation_Row& y);
 
   friend void
-  Parma_Polyhedra_Library::set_union(const SatRow& x,
-				     const SatRow& y,
-				     SatRow& z);
+  Parma_Polyhedra_Library::set_union(const Saturation_Row& x,
+				     const Saturation_Row& y,
+				     Saturation_Row& z);
 
   //! Returns the index of the first set bit or -1 if no bit is set.
   int first() const;
@@ -208,21 +208,21 @@ namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::SatRow */
+/*! \relates Parma_Polyhedra_Library::Saturation_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void swap(Parma_Polyhedra_Library::SatRow& x,
-	  Parma_Polyhedra_Library::SatRow& y);
+void swap(Parma_Polyhedra_Library::Saturation_Row& x,
+	  Parma_Polyhedra_Library::Saturation_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::iter_swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::SatRow */
+/*! \relates Parma_Polyhedra_Library::Saturation_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void
-iter_swap(std::vector<Parma_Polyhedra_Library::SatRow>::iterator x,
-	  std::vector<Parma_Polyhedra_Library::SatRow>::iterator y);
+iter_swap(std::vector<Parma_Polyhedra_Library::Saturation_Row>::iterator x,
+	  std::vector<Parma_Polyhedra_Library::Saturation_Row>::iterator y);
 
 } // namespace std
 
-#include "SatRow.inlines.hh"
+#include "Saturation_Row.inlines.hh"
 
-#endif // !defined(PPL_SatRow_defs_hh)
+#endif // !defined(PPL_Saturation_Row_defs_hh)

@@ -26,7 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Matrix.types.hh"
 #include "Row.defs.hh"
-#include "SatMatrix.types.hh"
 #include "ConSys.types.hh"
 #include "GenSys.types.hh"
 #include "Integer.types.hh"

@@ -1,4 +1,4 @@
-/* SatMatrix class declaration.
+/* Saturation_Matrix class declaration.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,12 +21,12 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_SatMatrix_defs_hh
-#define PPL_SatMatrix_defs_hh 1
+#ifndef PPL_Saturation_Matrix_defs_hh
+#define PPL_Saturation_Matrix_defs_hh 1
 
-#include "SatMatrix.types.hh"
+#include "Saturation_Matrix.types.hh"
 #include "Linear_System.defs.hh"
-#include "SatRow.defs.hh"
+#include "Saturation_Row.defs.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -45,33 +45,33 @@ site: http://www.cs.unipr.it/ppl/ . */
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
-class Parma_Polyhedra_Library::SatMatrix {
+class Parma_Polyhedra_Library::Saturation_Matrix {
 public:
   //! Default constructor.
-  SatMatrix();
+  Saturation_Matrix();
 
   //! \brief
   //! Construct a saturation matrix with \p n_rows rows
   //! and \p n_columns columns.
-  SatMatrix(dimension_type n_rows, dimension_type n_columns);
+  Saturation_Matrix(dimension_type n_rows, dimension_type n_columns);
 
   //! Copy-constructor.
-  SatMatrix(const SatMatrix& y);
+  Saturation_Matrix(const Saturation_Matrix& y);
 
   //! Destructor.
-  ~SatMatrix();
+  ~Saturation_Matrix();
 
   //! Assignment operator.
-  SatMatrix& operator=(const SatMatrix& y);
+  Saturation_Matrix& operator=(const Saturation_Matrix& y);
 
   //! Swaps \p *this with \p y.
-  void swap(SatMatrix& y);
+  void swap(Saturation_Matrix& y);
 
   //! Subscript operator.
-  SatRow& operator[](dimension_type k);
+  Saturation_Row& operator[](dimension_type k);
 
   //! Constant subscript operator.
-  const SatRow& operator[](dimension_type k) const;
+  const Saturation_Row& operator[](dimension_type k) const;
 
   //! Clears the matrix deallocating all its rows.
   void clear();
@@ -80,9 +80,9 @@ public:
   void transpose();
 
   //! Makes \p *this a transposed copy of \p y.
-  void transpose_assign(const SatMatrix& y);
+  void transpose_assign(const Saturation_Matrix& y);
 
-  //! Returns the maximum number of rows of a SatMatrix.
+  //! Returns the maximum number of rows of a Saturation_Matrix.
   static dimension_type max_num_rows();
 
   //! Returns the number of columns of \p *this.
@@ -105,10 +105,10 @@ public:
     Given a sorted saturation matrix (this ensures better efficiency),
     tells whether it contains the given row.
   */
-  bool sorted_contains(const SatRow& row) const;
+  bool sorted_contains(const Saturation_Row& row) const;
 
   //! Adds \p row to \p *this.
-  void add_row(const SatRow& row);
+  void add_row(const Saturation_Row& row);
 
   //! Erases the rows from the \p first_to_erase -th to the last one.
   void rows_erase_to_end(dimension_type first_to_erase);
@@ -146,19 +146,19 @@ public:
 
 private:
   //! Contains the rows of the matrix.
-  std::vector<SatRow> rows;
+  std::vector<Saturation_Row> rows;
 
   //! Size of the initialized part of each row.
   dimension_type row_size;
 
   //! Ordering predicate (used when implementing the sort algorithm).
-  struct SatRow_Less_Than {
-    bool operator()(const SatRow& x, const SatRow& y) const;
+  struct Saturation_Row_Less_Than {
+    bool operator()(const Saturation_Row& x, const Saturation_Row& y) const;
   };
 
   friend
   void Parma_Polyhedra_Library::
-  Linear_System::sort_and_remove_with_sat(SatMatrix& sat);
+  Linear_System::sort_and_remove_with_sat(Saturation_Matrix& sat);
 
 };
 
@@ -166,13 +166,13 @@ namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::SatMatrix */
+/*! \relates Parma_Polyhedra_Library::Saturation_Matrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void swap(Parma_Polyhedra_Library::SatMatrix& x,
-	  Parma_Polyhedra_Library::SatMatrix& y);
+void swap(Parma_Polyhedra_Library::Saturation_Matrix& x,
+	  Parma_Polyhedra_Library::Saturation_Matrix& y);
 
 } // namespace std
 
-#include "SatMatrix.inlines.hh"
+#include "Saturation_Matrix.inlines.hh"
 
-#endif // !defined(PPL_SatMatrix_defs_hh)
+#endif // !defined(PPL_Saturation_Matrix_defs_hh)

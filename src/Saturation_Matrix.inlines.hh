@@ -1,4 +1,4 @@
-/* SatMatrix class implementation: inline functions.
+/* Saturation_Matrix class implementation: inline functions.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_SatMatrix_inlines_hh
-#define PPL_SatMatrix_inlines_hh 1
+#ifndef PPL_Saturation_Matrix_inlines_hh
+#define PPL_Saturation_Matrix_inlines_hh 1
 
 #include <algorithm>
 #include <cassert>
@@ -30,36 +30,36 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-SatMatrix::SatMatrix()
+Saturation_Matrix::Saturation_Matrix()
   : rows(),
     row_size(0) {
 }
 
 inline dimension_type 
-SatMatrix::max_num_rows() {
-  static const dimension_type max_nr = std::vector<SatRow>().max_size();
+Saturation_Matrix::max_num_rows() {
+  static const dimension_type max_nr = std::vector<Saturation_Row>().max_size();
   return max_nr;
 }
 
 inline
-SatMatrix::SatMatrix(const dimension_type n_rows,
+Saturation_Matrix::Saturation_Matrix(const dimension_type n_rows,
 		     const dimension_type n_columns)
   : rows(n_rows),
     row_size(n_columns) {
 }
 
 inline
-SatMatrix::SatMatrix(const SatMatrix& y)
+Saturation_Matrix::Saturation_Matrix(const Saturation_Matrix& y)
   : rows(y.rows),
     row_size(y.row_size) {
 }
 
 inline
-SatMatrix::~SatMatrix() {
+Saturation_Matrix::~Saturation_Matrix() {
 }
 
 inline void
-SatMatrix::rows_erase_to_end(const dimension_type first_to_erase) {
+Saturation_Matrix::rows_erase_to_end(const dimension_type first_to_erase) {
   // The first row to be erased cannot be greater
   // than the actual number of the rows of the matrix.
   assert(first_to_erase <= rows.size());
@@ -69,7 +69,7 @@ SatMatrix::rows_erase_to_end(const dimension_type first_to_erase) {
 }
 
 inline void
-SatMatrix::columns_erase_to_end(const dimension_type first_to_erase) {
+Saturation_Matrix::columns_erase_to_end(const dimension_type first_to_erase) {
   // The first column to be erased cannot be greater
   // than the actual number of the columns of the matrix.
   assert(first_to_erase <= row_size);
@@ -78,55 +78,56 @@ SatMatrix::columns_erase_to_end(const dimension_type first_to_erase) {
 }
 
 inline void
-SatMatrix::swap(SatMatrix& y) {
+Saturation_Matrix::swap(Saturation_Matrix& y) {
   std::swap(row_size, y.row_size);
   std::swap(rows, y.rows);
 }
 
-inline SatRow&
-SatMatrix::operator[](const dimension_type k) {
+inline Saturation_Row&
+Saturation_Matrix::operator[](const dimension_type k) {
   assert(k < rows.size());
   return rows[k];
 }
 
-inline const SatRow&
-SatMatrix::operator[](const dimension_type k) const {
+inline const Saturation_Row&
+Saturation_Matrix::operator[](const dimension_type k) const {
   assert(k < rows.size());
   return rows[k];
 }
 
 inline dimension_type
-SatMatrix::num_columns() const {
+Saturation_Matrix::num_columns() const {
   return row_size;
 }
 
 inline dimension_type
-SatMatrix::num_rows() const {
+Saturation_Matrix::num_rows() const {
   return rows.size();
 }
 
 inline void
-SatMatrix::clear() {
+Saturation_Matrix::clear() {
   // Clear `rows' and minimize its capacity.
-  std::vector<SatRow>().swap(rows);
+  std::vector<Saturation_Row>().swap(rows);
   row_size = 0;
 }
 
 inline memory_size_type
-SatMatrix::total_memory_in_bytes() const {
+Saturation_Matrix::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
 inline bool
-SatMatrix::SatRow_Less_Than::
-operator()(const SatRow& x, const SatRow& y) const {
+Saturation_Matrix::Saturation_Row_Less_Than::
+operator()(const Saturation_Row& x, const Saturation_Row& y) const {
   return compare(x, y) < 0;
 }
 
 inline bool
-SatMatrix::sorted_contains(const SatRow& row) const {
+Saturation_Matrix::sorted_contains(const Saturation_Row& row) const {
   assert(check_sorted());
-  return std::binary_search(rows.begin(), rows.end(), row, SatRow_Less_Than());
+  return std::binary_search(rows.begin(), rows.end(), row,
+			    Saturation_Row_Less_Than());
 }
 
 } // namespace Parma_Polyhedra_Library
@@ -134,13 +135,13 @@ SatMatrix::sorted_contains(const SatRow& row) const {
 
 namespace std {
 
-/*! \relates Parma_Polyhedra_Library::SatMatrix */
+/*! \relates Parma_Polyhedra_Library::Saturation_Matrix */
 inline void
-swap(Parma_Polyhedra_Library::SatMatrix& x,
-     Parma_Polyhedra_Library::SatMatrix& y) {
+swap(Parma_Polyhedra_Library::Saturation_Matrix& x,
+     Parma_Polyhedra_Library::Saturation_Matrix& y) {
   x.swap(y);
 }
 
 } // namespace std
 
-#endif // !defined(PPL_SatMatrix_inlines_hh)
+#endif // !defined(PPL_Saturation_Matrix_inlines_hh)

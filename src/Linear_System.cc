@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Integer.defs.hh"
 #include "Row.defs.hh"
 #include "globals.defs.hh"
-#include "SatMatrix.defs.hh"
+#include "Saturation_Matrix.defs.hh"
 #include <algorithm>
 #include <iostream>
 #include <string>
@@ -562,7 +562,7 @@ PPL::operator==(const Linear_System& x, const Linear_System& y) {
 }
 
 void
-PPL::Linear_System::sort_and_remove_with_sat(SatMatrix& sat) {
+PPL::Linear_System::sort_and_remove_with_sat(Saturation_Matrix& sat) {
   Linear_System& sys = *this;
   // We can only sort the non-pending part of the system.
   assert(sys.first_pending_row() == sat.num_rows());
@@ -572,11 +572,11 @@ PPL::Linear_System::sort_and_remove_with_sat(SatMatrix& sat) {
   }
 
   // First, sort `sys' (keeping `sat' consistent) without removing duplicates.
-  With_SatMatrix_iterator first(sys.rows.begin(), sat.rows.begin());
-  With_SatMatrix_iterator last = first + sat.num_rows();
+  With_Saturation_Matrix_iterator first(sys.rows.begin(), sat.rows.begin());
+  With_Saturation_Matrix_iterator last = first + sat.num_rows();
   swapping_sort(first, last, Row_Less_Than());
   // Second, move duplicates in `sys' to the end (keeping `sat' consistent).
-  With_SatMatrix_iterator new_last = swapping_unique(first, last);
+  With_Saturation_Matrix_iterator new_last = swapping_unique(first, last);
 
   const dimension_type num_duplicates = last - new_last;
   const dimension_type new_first_pending_row

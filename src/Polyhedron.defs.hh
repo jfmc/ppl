@@ -32,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ConSys.inlines.hh"
 #include "GenSys.defs.hh"
 #include "GenSys.inlines.hh"
-#include "SatMatrix.defs.hh"
+#include "Saturation_Matrix.defs.hh"
 #include "Generator.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
@@ -1665,10 +1665,10 @@ private:
   GenSys gen_sys;
 
   //! The saturation matrix having constraints on its columns.
-  SatMatrix sat_c;
+  Saturation_Matrix sat_c;
 
   //! The saturation matrix having generators on its columns.
-  SatMatrix sat_g;
+  Saturation_Matrix sat_g;
 
   // Please, do not move the following include directive:
   // `Ph_Status.idefs.hh' must be included exactly at this point.
@@ -2157,8 +2157,8 @@ private:
   */
   static void add_space_dimensions(Linear_System& mat1,
 				   Linear_System& mat2,
-				   SatMatrix& sat1,
-				   SatMatrix& sat2,
+				   Saturation_Matrix& sat1,
+				   Saturation_Matrix& sat2,
 				   dimension_type add_dim);
 
   //! \name Minimization-Related Static Member Functions
@@ -2167,7 +2167,7 @@ private:
   //! Builds and simplifies constraints from generators (or vice versa).
   // Detailed Doxygen comment to be found in file minimize.cc.
   static bool minimize(bool con_to_gen,
-		       Linear_System& source, Linear_System& dest, SatMatrix& sat);
+		       Linear_System& source, Linear_System& dest, Saturation_Matrix& sat);
 
   //! \brief
   //! Adds given constraints and builds minimized corresponding generators
@@ -2176,7 +2176,7 @@ private:
   static bool add_and_minimize(bool con_to_gen,
 			       Linear_System& source1,
 			       Linear_System& dest,
-			       SatMatrix& sat,
+			       Saturation_Matrix& sat,
 			       const Linear_System& source2);
 
   //! \brief
@@ -2186,7 +2186,7 @@ private:
   static bool add_and_minimize(bool con_to_gen,
 			       Linear_System& source,
 			       Linear_System& dest,
-			       SatMatrix& sat);
+			       Saturation_Matrix& sat);
 
   //! \brief
   //! Performs the conversion from constraints to generators and vice versa.
@@ -2194,14 +2194,14 @@ private:
   static dimension_type conversion(Linear_System& source,
 				   dimension_type start,
 				   Linear_System& dest,
-				   SatMatrix& sat,
+				   Saturation_Matrix& sat,
 				   dimension_type num_lines_or_equalities);
 
   //! \brief
   //! Uses Gauss' elimination method to simplify the result of
   //! <CODE>conversion()</CODE>.
   // Detailed Doxygen comment to be found in file simplify.cc.
-  static int simplify(Linear_System& mat, SatMatrix& sat);
+  static int simplify(Linear_System& mat, Saturation_Matrix& sat);
 
   //@} // Minimization-Related Static Member Functions
 

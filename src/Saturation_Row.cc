@@ -1,4 +1,4 @@
-/* SatRow class implementation (non-inline functions).
+/* Saturation_Row class implementation (non-inline functions).
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "SatRow.defs.hh"
+#include "Saturation_Row.defs.hh"
 #include <cassert>
 #include <climits>
 
@@ -33,7 +33,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 #if !defined(HAS_FFS) || SIZEOF_MP_LIMB_T != SIZEOF_INT
 unsigned int
-PPL::SatRow::first_one(mp_limb_t w) {
+PPL::Saturation_Row::first_one(mp_limb_t w) {
   unsigned int r = 0;
   w = w & -w;
 #if SIZEOF_MP_LIMB_T == 8
@@ -42,7 +42,7 @@ PPL::SatRow::first_one(mp_limb_t w) {
     r += 32;
   }
 #elif SIZEOF_MP_LIMB_T != 4
-#error "Size of mp_limb_t not supported by SatRow::first_one(mp_limb_t w)."
+#error "Size of mp_limb_t not supported by Saturation_Row::first_one(mp_limb_t w)."
 #endif
   if ((w & 0xffff) == 0) {
     w >>= 16;
@@ -63,7 +63,7 @@ PPL::SatRow::first_one(mp_limb_t w) {
 #endif // !defined(HAS_FFS) || SIZEOF_MP_LIMB_T != SIZEOF_INT
 
 unsigned int
-PPL::SatRow::last_one(mp_limb_t w) {
+PPL::Saturation_Row::last_one(mp_limb_t w) {
   unsigned int r = 0;
 #if SIZEOF_MP_LIMB_T == 8
   if (w & 0xffffffff00000000) {
@@ -71,7 +71,7 @@ PPL::SatRow::last_one(mp_limb_t w) {
     r += 32;
   }
 #elif SIZEOF_MP_LIMB_T != 4
-#error "Size of mp_limb_t not supported by SatRow::last_one(mp_limb_t w)."
+#error "Size of mp_limb_t not supported by Saturation_Row::last_one(mp_limb_t w)."
 #endif
   if (w & 0xffff0000) {
     w >>= 16;
@@ -95,7 +95,7 @@ PPL::SatRow::last_one(mp_limb_t w) {
 }
 
 int
-PPL::SatRow::first() const {
+PPL::Saturation_Row::first() const {
   size_t li = 0;
   size_t vec_size = mpz_size(vec);
   mp_srcptr p = vec->_mp_d;
@@ -108,7 +108,7 @@ PPL::SatRow::first() const {
 }
 
 int
-PPL::SatRow::next(int position) const {
+PPL::Saturation_Row::next(int position) const {
   assert(position >= 0);
   ++position;
 
@@ -143,7 +143,7 @@ PPL::SatRow::next(int position) const {
 }
 
 int
-PPL::SatRow::last() const {
+PPL::Saturation_Row::last() const {
   size_t li = mpz_size(vec);
   if (li == 0)
     return -1;
@@ -155,7 +155,7 @@ PPL::SatRow::last() const {
 }
 
 int
-PPL::SatRow::prev(int position) const {
+PPL::Saturation_Row::prev(int position) const {
   assert(position >= 0);
 
   if (position == 0)
@@ -196,9 +196,9 @@ PPL::SatRow::prev(int position) const {
   return -1;
 }
 
-/*! \relates Parma_Polyhedra_Library::SatRow */
+/*! \relates Parma_Polyhedra_Library::Saturation_Row */
 int
-PPL::compare(const SatRow& x, const SatRow& y) {
+PPL::compare(const Saturation_Row& x, const Saturation_Row& y) {
   const size_t x_size = mpz_size(x.vec);
   const size_t y_size = mpz_size(y.vec);
   size_t size = (x_size > y_size ? y_size : x_size);
@@ -221,9 +221,9 @@ PPL::compare(const SatRow& x, const SatRow& y) {
   return x_size == y_size ? 0 : (x_size > y_size ? 1 : -1);
 }
 
-/*! \relates Parma_Polyhedra_Library::SatRow */
+/*! \relates Parma_Polyhedra_Library::Saturation_Row */
 bool
-PPL::subset_or_equal(const SatRow& x, const SatRow& y) {
+PPL::subset_or_equal(const Saturation_Row& x, const Saturation_Row& y) {
   size_t x_size = mpz_size(x.vec);
   size_t y_size = mpz_size(y.vec);
   if (x_size > y_size)
@@ -240,9 +240,9 @@ PPL::subset_or_equal(const SatRow& x, const SatRow& y) {
   return true;
 }
 
-/*! \relates Parma_Polyhedra_Library::SatRow */
+/*! \relates Parma_Polyhedra_Library::Saturation_Row */
 bool
-PPL::subset_or_equal(const SatRow& x, const SatRow& y, bool& strict_subset) {
+PPL::subset_or_equal(const Saturation_Row& x, const Saturation_Row& y, bool& strict_subset) {
   size_t x_size = mpz_size(x.vec);
   size_t y_size = mpz_size(y.vec);
   if (x_size > y_size)
@@ -264,9 +264,9 @@ PPL::subset_or_equal(const SatRow& x, const SatRow& y, bool& strict_subset) {
   return true;
 }
 
-/*! \relates Parma_Polyhedra_Library::SatRow */
+/*! \relates Parma_Polyhedra_Library::Saturation_Row */
 bool
-PPL::strict_subset(const SatRow& x, const SatRow& y) {
+PPL::strict_subset(const Saturation_Row& x, const Saturation_Row& y) {
   size_t x_size = mpz_size(x.vec);
   size_t y_size = mpz_size(y.vec);
   if (x_size > y_size)
@@ -289,7 +289,7 @@ PPL::strict_subset(const SatRow& x, const SatRow& y) {
 }
 
 bool
-PPL::SatRow::OK() const {
+PPL::Saturation_Row::OK() const {
   // FIXME: this must be completed.
   const size_t vec_size = mpz_size(vec);
   return vec_size == 0 || mpz_getlimbn(vec, vec_size-1) != 0;

@@ -34,8 +34,8 @@ namespace PPL = Parma_Polyhedra_Library;
 void
 PPL::Polyhedron::add_space_dimensions(Linear_System& sys1,
 				      Linear_System& sys2,
-				      SatMatrix& sat1,
-				      SatMatrix& sat2,
+				      Saturation_Matrix& sat1,
+				      Saturation_Matrix& sat2,
 				      dimension_type add_dim) {
   assert(sys1.topology() == sys2.topology());
   assert(sys1.num_columns() == sys2.num_columns());

@@ -25,8 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_Row.defs.hh"
 #include "Linear_System.defs.hh"
-#include "SatRow.defs.hh"
-#include "SatMatrix.defs.hh"
+#include "Saturation_Row.defs.hh"
+#include "Saturation_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
 #include "globals.defs.hh"
 #include <cstddef>
@@ -351,7 +351,7 @@ PPL::dimension_type
 PPL::Polyhedron::conversion(Linear_System& source,
 			    const dimension_type start,
 			    Linear_System& dest,
-			    SatMatrix& sat,
+			    Saturation_Matrix& sat,
 			    dimension_type num_lines_or_equalities) {
   dimension_type source_num_rows = source.num_rows();
   dimension_type dest_num_rows = dest.num_rows();
@@ -677,7 +677,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	      // If there exist another generator that saturates
 	      // all the constraints saturated by both `dest[i]' and
 	      // `dest[j]', then they are NOT adjacent.
-	      SatRow new_satrow;
+	      Saturation_Row new_satrow;
 	      assert(sat[i].last() < 0 || unsigned(sat[i].last()) < k);
 	      assert(sat[j].last() < 0 || unsigned(sat[j].last()) < k);
 	      // Being the union of `sat[i]' and `sat[j]',

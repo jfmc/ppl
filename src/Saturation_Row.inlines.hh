@@ -1,4 +1,4 @@
-/* SatRow class implementation: inline functions.
+/* Saturation_Row class implementation: inline functions.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_SatRow_inlines_hh
-#define PPL_SatRow_inlines_hh 1
+#ifndef PPL_Saturation_Row_inlines_hh
+#define PPL_Saturation_Row_inlines_hh 1
 
 // For the declaration of ffs(3).
 #include <cstring>
@@ -30,98 +30,99 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-SatRow::SatRow() {
+Saturation_Row::Saturation_Row() {
   mpz_init(vec);
 }
 
 inline
-SatRow::SatRow(const SatRow& y) {
+Saturation_Row::Saturation_Row(const Saturation_Row& y) {
   mpz_init_set(vec, y.vec);
 }
 
 inline
-SatRow::~SatRow() {
+Saturation_Row::~Saturation_Row() {
   mpz_clear(vec);
 }
 
-inline SatRow&
-SatRow::operator=(const SatRow& y) {
+inline Saturation_Row&
+Saturation_Row::operator=(const Saturation_Row& y) {
   mpz_set(vec, y.vec);
   return *this;
 }
 
 inline bool
-SatRow::operator[](const unsigned int k) const {
+Saturation_Row::operator[](const unsigned int k) const {
   return mpz_tstbit(vec, k);
 }
 
 inline void
-SatRow::set(const unsigned int k) {
+Saturation_Row::set(const unsigned int k) {
   mpz_setbit(vec, k);
 }
 
 inline void
-SatRow::clear(const unsigned int k) {
+Saturation_Row::clear(const unsigned int k) {
   mpz_clrbit(vec, k);
 }
 
 inline void
-SatRow::clear_from(const unsigned int k) {
+Saturation_Row::clear_from(const unsigned int k) {
   mpz_tdiv_r_2exp(vec, vec, k);
 }
 
 inline unsigned int
-SatRow::count_ones() const {
+Saturation_Row::count_ones() const {
   return mpz_popcount(vec);
 }
 
 inline bool
-SatRow::empty() const {
+Saturation_Row::empty() const {
   return mpz_sgn(vec) == 0;
 }
 
 inline void
-SatRow::swap(SatRow& y) {
+Saturation_Row::swap(Saturation_Row& y) {
   mpz_swap(vec, y.vec);
 }
 
 inline void
-SatRow::clear() {
+Saturation_Row::clear() {
   mpz_set_ui(vec, 0UL);
 }
 
 inline memory_size_type
-SatRow::external_memory_in_bytes() const {
+Saturation_Row::external_memory_in_bytes() const {
   return vec[0]._mp_alloc * SIZEOF_MP_LIMB_T;
 }
 
 inline memory_size_type
-SatRow::total_memory_in_bytes() const {
+Saturation_Row::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
-/*! \relates SatRow */
+/*! \relates Saturation_Row */
 inline bool
-operator==(const SatRow& x, const SatRow& y) {
+operator==(const Saturation_Row& x, const Saturation_Row& y) {
   return mpz_cmp(x.vec, y.vec) == 0;
 }
 
-/*! \relates SatRow */
+/*! \relates Saturation_Row */
 inline bool
-operator!=(const SatRow& x, const SatRow& y) {
+operator!=(const Saturation_Row& x, const Saturation_Row& y) {
   return mpz_cmp(x.vec, y.vec) != 0;
 }
 
-/*! \relates SatRow */
+/*! \relates Saturation_Row */
 inline void
-set_union(const SatRow& x, const SatRow& y, SatRow& z) {
+set_union(const Saturation_Row& x, const Saturation_Row& y,
+	  Saturation_Row& z) {
   mpz_ior(z.vec, x.vec, y.vec);
 }
 
 #if defined(HAS_FFS) && SIZEOF_MP_LIMB_T == SIZEOF_INT
 
 inline unsigned int
-PPL::SatRow::first_one(mp_limb_t w) {
+PPL::Saturation_Row::first_one(mp_limb_t w) {
   return ffs(w)-1;
 }
 
@@ -132,20 +133,20 @@ PPL::SatRow::first_one(mp_limb_t w) {
 
 namespace std {
 
-/*! \relates Parma_Polyhedra_Library::SatRow */
+/*! \relates Parma_Polyhedra_Library::Saturation_Row */
 inline void
-swap(Parma_Polyhedra_Library::SatRow& x,
-     Parma_Polyhedra_Library::SatRow& y) {
+swap(Parma_Polyhedra_Library::Saturation_Row& x,
+     Parma_Polyhedra_Library::Saturation_Row& y) {
   x.swap(y);
 }
 
-/*! \relates Parma_Polyhedra_Library::SatRow */
+/*! \relates Parma_Polyhedra_Library::Saturation_Row */
 inline void
-iter_swap(std::vector<Parma_Polyhedra_Library::SatRow>::iterator x,
-	  std::vector<Parma_Polyhedra_Library::SatRow>::iterator y) {
+iter_swap(std::vector<Parma_Polyhedra_Library::Saturation_Row>::iterator x,
+	  std::vector<Parma_Polyhedra_Library::Saturation_Row>::iterator y) {
   swap(*x, *y);
 }
 
 } // namespace std
 
-#endif // !defined(PPL_SatRow_inlines_hh)
+#endif // !defined(PPL_Saturation_Row_inlines_hh)

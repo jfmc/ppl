@@ -81,7 +81,7 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
   // Obtain a sorted copy of `y.sat_g'.
   if (!y.sat_g_is_up_to_date())
     y.update_sat_g();
-  SatMatrix tmp_sat_g = y.sat_g;
+  Saturation_Matrix tmp_sat_g = y.sat_g;
   // Remove from `tmp_sat_g' the rows corresponding to trivially true
   // constraints (i.e., the positivity or epsilon-bounding constraints):
   // this is needed in order to widen the polyhedron and not the
@@ -114,7 +114,7 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
   // because `tmp_sat_g' is built starting from a minimized polyhedron.
 
   // The size of `buffer' will reach sat.num_columns() bit.
-  SatRow buffer;
+  Saturation_Row buffer;
   // Note: the loop index `i' goes upward to avoid reversing
   // the ordering of the chosen constraints.
   for (dimension_type i = 0, end = con_sys.num_rows(); i < end; ++i) {

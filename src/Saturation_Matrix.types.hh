@@ -9,13 +9,13 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef PPL_SatRow_types_hh
-#define PPL_SatRow_types_hh 1
+#ifndef PPL_Saturation_Matrix_types_hh
+#define PPL_Saturation_Matrix_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
-class SatRow;
+class Saturation_Matrix;
 
 }
 
-#endif // !defined(PPL_SatRow_types_hh)
+#endif // !defined(PPL_Saturation_Matrix_types_hh)

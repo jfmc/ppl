@@ -674,7 +674,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // new number of rows of `gs_without_pending'.
       gs_without_pending.erase_to_end(gen_sys.first_pending_row());
       GenSys copy_of_gen_sys = gs_without_pending;
-      SatMatrix new_sat_c;
+      Saturation_Matrix new_sat_c;
       minimize(false, copy_of_gen_sys, new_con_sys, new_sat_c);
       const dimension_type copy_num_lines = copy_of_gen_sys.num_lines();
       if (gs_without_pending.num_rows() != copy_of_gen_sys.num_rows()
@@ -783,7 +783,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     cs_without_pending.erase_to_end(con_sys.first_pending_row());
     ConSys copy_of_con_sys = cs_without_pending;
     GenSys new_gen_sys(topology());
-    SatMatrix new_sat_g;
+    Saturation_Matrix new_sat_g;
 
     if (minimize(true, copy_of_con_sys, new_gen_sys, new_sat_g)) {
       if (check_not_empty) {
@@ -846,7 +846,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   if (sat_c_is_up_to_date())
     for (dimension_type i = sat_c.num_rows(); i-- > 0; ) {
       const Generator tmp_gen = gen_sys[i];
-      const SatRow tmp_sat = sat_c[i];
+      const Saturation_Row tmp_sat = sat_c[i];
       for (dimension_type j = sat_c.num_columns(); j-- > 0; )
 	if (scalar_product_sign(tmp_gen, con_sys[j]) != tmp_sat[j]) {
 #ifndef NDEBUG
@@ -860,7 +860,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   if (sat_g_is_up_to_date())
     for (dimension_type i = sat_g.num_rows(); i-- > 0; ) {
       const Constraint tmp_con = con_sys[i];
-      const SatRow tmp_sat = sat_g[i];
+      const Saturation_Row tmp_sat = sat_g[i];
       for (dimension_type j = sat_g.num_columns(); j-- > 0; )
 	if (scalar_product_sign(tmp_con, gen_sys[j]) != tmp_sat[j]) {
 #ifndef NDEBUG

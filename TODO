@@ -13,8 +13,6 @@ Enhancements for PPL 0.7
     ConSys -> Constraint_System
     GenSys -> Generator_System
     LinExpression -> Linear_Expression
-    SatMatrix -> Saturation_Matrix
-    SatRow -> Saturation_Row
 
 - Rewrite Linear_System::sort_and_remove_with_sat() and perhaps
   Linear_System::sort_rows().
