@@ -760,15 +760,17 @@ PPL::operator<=(const PolyBase& x, const PolyBase& y) {
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
     throw_different_dimensions("operator<=(x, y)", x, y);
+
   if (x.is_empty())
     return true;
   else if (y.is_empty())
     return x.check_empty();
   else if (x_space_dim == 0)
     return true;
+
 #ifdef BE_LAZY
-  if (!x.generators_are_up_to_date())
-    x.update_generators();
+  if (!x.generators_are_up_to_date() && !x.update_generators())
+    return true;
   if (!y.constraints_are_up_to_date())
     y.update_constraints();
 #else
@@ -2392,12 +2394,11 @@ PPL::PolyBase::relation_with(const Constraint& c) {
 	// the positivity constraint. 
 	return Poly_Con_Relation::is_included();
 
-  if (!generators_are_up_to_date())
-    if (!update_generators())
-      // The polyhedron is empty.
-      return Poly_Con_Relation::saturates()
-	&& Poly_Con_Relation::is_included()
-	&& Poly_Con_Relation::is_disjoint();
+  if (!generators_are_up_to_date() && !update_generators())
+    // The polyhedron is empty.
+    return Poly_Con_Relation::saturates()
+      && Poly_Con_Relation::is_included()
+      && Poly_Con_Relation::is_disjoint();
 
   return gen_sys.relation_with(c);
 }
@@ -2662,23 +2663,39 @@ PPL::PolyBase::limited_widening_assign(const PolyBase& y, ConSys& cs) {
 
 /*!
   Returns <CODE>true</CODE> if and only if \p *this represents
-  the universal polyhedron: to be universal, \p this must contain
-  just the positivity constraint.
+  the universal polyhedron: to be universal, depending on its
+  topology, \p *this must contain either just the positivity constraint
+  or just the constraints \f$0 \leq \epsilon \leq 1\f$.
 */
 bool
 PPL::PolyBase::check_universe() const {
   if (!constraints_are_minimized())
     minimize();
-  if (con_sys.num_rows() != 1)
-    return false;
-  if (!con_sys[0].is_inequality())
-    return false;
-  if (con_sys[0][0] <= 0)
-    return false;
-  for (size_t i = con_sys.num_columns(); i-- > 1; )
-    if (con_sys[0][i] != 0)
+  if (is_necessarily_closed())
+    return (con_sys.num_rows() == 1
+	    && con_sys[0].is_inequality()
+	    && con_sys[0][0] > 0
+	    && con_sys[0].all_homogeneous_terms_are_zero());
+  else {
+    // Polyhedron NON-necessarily closed.
+    if (con_sys.num_rows() != 2
+	|| con_sys[0].is_equality()
+	|| con_sys[1].is_equality())
       return false;
-  return true;
+    obtain_sorted_constraints();
+    const Constraint& eps_leq_one = con_sys[0]; 
+    const Constraint& eps_geq_zero = con_sys[1]; 
+    size_t eps_index = num_columns() - 1;
+    if (eps_leq_one[0] <= 0
+	|| eps_leq_one[eps_index] >= 0
+	|| eps_geq_zero[0] != 0
+	|| eps_geq_zero[eps_index] <= 0)
+      return false;
+    for (size_t i = eps_index; i-- > 1; )
+      if (eps_leq_one[i] != 0 || eps_geq_zero[i] != 0)
+	return false;
+    return true;
+  }
 }
 
 /*!
@@ -2689,8 +2706,8 @@ PPL::PolyBase::check_universe() const {
 bool
 PPL::PolyBase::is_bounded() const {
   if (!generators_are_up_to_date())
-    // We use the function `minimize()', because if the polyhedro is
-    // empty or zero-dimensional, this function does nothing.
+    // We use the function `minimize()', because if the polyhedron
+    // is empty or zero-dimensional, this function does nothing.
     minimize();
   if (is_empty() || space_dim == 0)
     // An empty or a zero-dimensional polyhedron is bounded.
