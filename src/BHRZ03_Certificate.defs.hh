@@ -57,10 +57,12 @@ public:
   //! polyhedron \p ph is stricly smaller than \p *this.
   bool is_stabilizing(const Polyhedron& ph) const;
   
-  //! \brief
-  //! Binary predicate defining a total ordering on BHRZ03 certificates
-  //! which is a refinement of the BHRZ03 lgo partial order, to be used
-  //! when storing information about sets of polyhedra.
+  //! A total ordering on BHRZ03 certificates.
+  /*!
+    This binary predicate defines a total ordering on BHRZ03 certificates
+    which is a refinement of the BHRZ03 limited growth order relation.
+    The total order is used when storing information about sets of polyhedra.
+  */
   struct Compare {
     //! Returns <CODE>true</CODE> if and only if \p x comes before \p y.
     bool operator()(const BHRZ03_Certificate& x,
