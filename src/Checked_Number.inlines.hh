@@ -101,20 +101,38 @@ Checked_Number<T, Policy>::Checked_Number(const char* y) {
 
 template <typename T, typename Policy>
 inline
+Checked_Number<T, Policy>::Checked_Number(const Not_A_Number&) {
+  Policy::handle_result(Checked::set_special<Policy>(v, VC_NAN));
+}
+
+template <typename T, typename Policy>
+inline
 Checked_Number<T, Policy>::Checked_Number(const Minus_Infinity&) {
   Policy::handle_result(Checked::set_special<Policy>(v, VC_MINUS_INFINITY));
+}
+
+template <typename T, typename Policy>
+inline bool
+Checked_Number<T, Policy>::is_nan() const {
+  return Checked::is_nan<Policy>(v);
+}
+
+template <typename T, typename Policy>
+inline bool
+Checked_Number<T, Policy>::is_minf() const {
+  return Checked::is_minf<Policy>(v);
+}
+
+template <typename T, typename Policy>
+inline bool
+Checked_Number<T, Policy>::is_pinf() const {
+  return Checked::is_pinf<Policy>(v);
 }
 
 template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const Plus_Infinity&) {
   Policy::handle_result(Checked::set_special<Policy>(v, VC_PLUS_INFINITY));
-}
-
-template <typename T, typename Policy>
-inline
-Checked_Number<T, Policy>::Checked_Number(const Not_A_Number&) {
-  Policy::handle_result(Checked::set_special<Policy>(v, VC_NAN));
 }
 
 template <typename T, typename Policy>

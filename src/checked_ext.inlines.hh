@@ -27,22 +27,33 @@ namespace Checked {
 
 #define handle_ext_natively(Type) (Float<Type>::fpu_related)
 
+template <typename Policy, typename Type>
+inline Result
+sgn_ext(const Type& x) {
+  if (is_nan<Policy>(x))
+    return VC_NAN;
+  else if (is_minf<Policy>(x))
+    return V_LT;
+  else if (is_pinf<Policy>(x))
+    return V_GT;
+  else
+    return sgn<Policy>(x);
+}
+
 template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
 assign_ext(To& to, const From& from, const Rounding& mode) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
     return assign<To_Policy>(to, from, mode);
-  switch (classify<From_Policy>(from, true, true, false)) {
-  case VC_NAN:
+  if (is_nan<From_Policy>(from))
     return set_special<To_Policy>(to, VC_NAN);
-  case VC_MINUS_INFINITY:
+  else if (is_minf<From_Policy>(from))
     return set_special<To_Policy>(to, VC_MINUS_INFINITY);
-  case VC_PLUS_INFINITY:
+  else if (is_pinf<From_Policy>(from))
     return set_special<To_Policy>(to, VC_PLUS_INFINITY);
-  default:
+  else
     return assign<To_Policy>(to, from, mode);
-  }
 }
 
 template <typename To_Policy, typename From_Policy,
@@ -51,16 +62,14 @@ inline Result
 neg_ext(To& to, const From& x, const Rounding& mode) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
     return neg<To_Policy>(to, x, mode);
-  switch (classify<From_Policy>(x, true, true, false)) {
-  case VC_NAN:
+  if (is_nan<From_Policy>(x))
     return set_special<To_Policy>(to, VC_NAN);
-  case VC_MINUS_INFINITY:
+  else if (is_minf<From_Policy>(x))
     return set_special<To_Policy>(to, VC_PLUS_INFINITY);
-  case VC_PLUS_INFINITY:
+  else if (is_pinf<From_Policy>(x))
     return set_special<To_Policy>(to, VC_MINUS_INFINITY);
-  default:
+  else
     return neg<To_Policy>(to, x, mode);
-  }
 }
 
 template <typename To_Policy, typename From_Policy,
@@ -69,15 +78,12 @@ inline Result
 abs_ext(To& to, const From& x, const Rounding& mode) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
     return abs<To_Policy>(to, x, mode);
-  switch (classify<From_Policy>(x, true, true, false)) {
-  case VC_NAN:
+  if (is_nan<From_Policy>(x))
     return set_special<To_Policy>(to, VC_NAN);
-  case VC_MINUS_INFINITY:
-  case VC_PLUS_INFINITY:
+  else if (is_minf<From_Policy>(x) || is_pinf<From_Policy>(x))
     return set_special<To_Policy>(to, VC_PLUS_INFINITY);
-  default:
+  else
     return abs<To_Policy>(to, x, mode);
-  }
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -149,7 +155,7 @@ mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
   if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
     return set_special<To_Policy>(to, VC_NAN);
   if (is_minf<From1_Policy>(x)) {
-    switch (classify<From2_Policy>(y, false, false, true)) {
+    switch (sgn_ext<From2_Policy>(y)) {
     case V_LT:
       return set_special<To_Policy>(to, VC_PLUS_INFINITY);
     case V_GT:
@@ -159,7 +165,7 @@ mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
     }
   }
   else if (is_pinf<From1_Policy>(x)) {
-    switch (classify<From2_Policy>(y, false, false, true)) {
+    switch (sgn_ext<From2_Policy>(y)) {
       case V_LT:
 	return set_special<To_Policy>(to, VC_MINUS_INFINITY);
       case V_GT:
@@ -304,23 +310,18 @@ inline Result
 rem_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
   if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
     return rem<To_Policy>(to, x, y, mode);
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rx = classify<From1_Policy>(x, true, true, false)) == VC_NAN
-      || (ry = classify<From2_Policy>(y, true, true, false)) == VC_NAN)
+  if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
     return set_special<To_Policy>(to, VC_NAN);
-  else if (rx == VC_NORMAL) {
-    if (ry == VC_NORMAL)
-      return rem<To_Policy>(to, x, y, mode);
-    else {
+  else if (is_minf<From1_Policy>(x) || is_pinf<From1_Policy>(x))
+    return set_special<To_Policy>(to, V_INF_MOD);
+  else {
+    if (is_minf<From1_Policy>(y) || is_pinf<From2_Policy>(y)) {
       to = x;
       return V_EQ;
     }
+    else
+      return rem<To_Policy>(to, x, y, mode);
   }
-  else
-    return set_special<To_Policy>(to, V_INF_MOD);
-  return set_special<To_Policy>(to, r);
 }
     
 template <typename To_Policy, typename From_Policy,
@@ -329,60 +330,41 @@ inline Result
 sqrt_ext(To& to, const From& x, const Rounding& mode) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
     return sqrt<To_Policy>(to, x, mode);
-  Result r = classify<From_Policy>(x, true, true, false);
-  if (r == VC_NORMAL)
-    return sqrt<To_Policy>(to, x, mode);
-  else if (r == VC_NAN)
+  if (is_nan<From_Policy>(x))
     return set_special<To_Policy>(to, VC_NAN);
-  else if (r == VC_MINUS_INFINITY)
+  else if (is_minf<From_Policy>(x))
     return set_special<To_Policy>(to, V_SQRT_NEG);
-  else
+  else if (is_pinf<From_Policy>(x))
     return set_special<To_Policy>(to, VC_PLUS_INFINITY);
-  return set_special<To_Policy>(to, r);
+  else
+    return sqrt<To_Policy>(to, x, mode);
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
 gcd_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rx = classify<From1_Policy>(x, true, true, false)) == VC_NAN
-      || (ry = classify<From2_Policy>(y, true, true, false)) == VC_NAN)
+  if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
     return set_special<To_Policy>(to, VC_NAN);
-  else if (rx == VC_NORMAL) {
-    if (ry == VC_NORMAL)
-      return gcd<To_Policy>(to, x, y, mode);
-    else {
-      to = x;
-      return V_EQ;
-    }
-  }
-  else if (ry == VC_NORMAL) {
-    to = y;
-    return V_EQ;
-  }
+  else if (is_minf<From1_Policy>(x) || is_pinf<From1_Policy>(x))
+    return abs_ext<To_Policy, From2_Policy>(to, y, mode);
+  else if (is_minf<From2_Policy>(y) || is_pinf<From2_Policy>(y))
+    return abs_ext<To_Policy, From1_Policy>(to, x, mode);
   else
-    return set_special<To_Policy>(to, VC_PLUS_INFINITY);
-  return set_special<To_Policy>(to, r);
+    return gcd<To_Policy>(to, x, y, mode);
 }
     
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
 lcm_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rx = classify<From1_Policy>(x, true, true, false)) == VC_NAN
-      || (ry = classify<From2_Policy>(y, true, true, false)) == VC_NAN)
+  if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
     return set_special<To_Policy>(to, VC_NAN);
-  else if (rx == VC_NORMAL && ry == VC_NORMAL)
-    return lcm<To_Policy>(to, x, y, mode);
-  else
+  else if (is_minf<From1_Policy>(x) || is_pinf<From1_Policy>(x) ||
+	   is_minf<From2_Policy>(y) || is_pinf<From2_Policy>(y))
     return set_special<To_Policy>(to, VC_PLUS_INFINITY);
-  return set_special<To_Policy>(to, r);
+  else
+    return lcm<To_Policy>(to, x, y, mode);
 }
 
 template <typename Policy1, typename Policy2,
@@ -391,19 +373,19 @@ inline Result
 cmp_ext(const Type1& x, const Type2& y) {
   if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
     return cmp<Policy1>(x, y);
-  Result rx;
-  Result ry;
-  if ((rx = classify<Policy1>(x, true, true, false)) == VC_NAN
-      || (ry = classify<Policy2>(y, true, true, false)) == VC_NAN)
+  if (is_nan<Policy1>(x) || is_nan<Policy2>(y))
     return V_UNORD_COMP;
-  else if (rx == VC_NORMAL && ry == VC_NORMAL)
+  else if (is_minf<Policy1>(x))
+    return is_minf<Policy2>(y) ? V_EQ : V_LT;
+  else if (is_pinf<Policy1>(x))
+    return is_pinf<Policy2>(y) ? V_EQ : V_GT;
+  else {
+    if (is_minf<Policy2>(y))
+      return V_GT;
+    if (is_pinf<Policy2>(y))
+      return V_LT;
     return cmp<Policy1>(x, y);
-  else if (rx == ry)
-    return V_EQ;
-  else if (rx == VC_MINUS_INFINITY || ry == VC_PLUS_INFINITY)
-    return V_LT;
-  else
-    return V_GT;
+  }
 }
 
 template <typename Policy1, typename Policy2,
@@ -412,16 +394,14 @@ inline bool
 lt_ext(const Type1& x, const Type2& y) {
   if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
     return x < y;
-  Result rx;
-  Result ry;
-  if ((rx = classify<Policy1>(x, true, true, false)) == VC_NAN
-      || (ry = classify<Policy2>(y, true, true, false)) == VC_NAN)
+  if (is_nan<Policy1>(x) || is_nan<Policy2>(y))
     return false;
-  else if (rx == VC_NORMAL && ry == VC_NORMAL)
+  else if (is_pinf<Policy1>(x) || is_minf<Policy2>(y))
+    return false;
+  else if (is_minf<Policy1>(x) || is_pinf<Policy2>(y))
+    return true;
+  else
     return x < y;
-  else if (rx == ry)
-    return false;
-  return (rx == VC_MINUS_INFINITY || ry == VC_PLUS_INFINITY);
 }
 
 template <typename Policy1, typename Policy2,
@@ -430,16 +410,14 @@ inline bool
 gt_ext(const Type1& x, const Type2& y) {
   if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
     return x > y;
-  Result rx;
-  Result ry;
-  if ((rx = classify<Policy1>(x, true, true, false)) == VC_NAN
-      || (ry = classify<Policy2>(y, true, true, false)) == VC_NAN)
+  if (is_nan<Policy1>(x) || is_nan<Policy2>(y))
     return false;
-  else if (rx == VC_NORMAL && ry == VC_NORMAL)
+  else if (is_minf<Policy1>(x) || is_pinf<Policy2>(y))
+    return false;
+  else if (is_pinf<Policy1>(x) || is_minf<Policy2>(y))
+    return true;
+  else
     return x > y;
-  else if (rx == ry)
-    return false;
-  return (rx == VC_PLUS_INFINITY || ry == VC_MINUS_INFINITY);
 }
 
 template <typename Policy1, typename Policy2,
@@ -448,14 +426,14 @@ inline bool
 le_ext(const Type1& x, const Type2& y) {
   if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
     return x <= y;
-  Result rx;
-  Result ry;
-  if ((rx = classify<Policy1>(x, true, true, false)) == VC_NAN
-      || (ry = classify<Policy2>(y, true, true, false)) == VC_NAN)
+  if (is_nan<Policy1>(x) || is_nan<Policy2>(y))
     return false;
-  else if (rx == VC_NORMAL && ry == VC_NORMAL)
+  else if (is_minf<Policy1>(x) || is_pinf<Policy2>(y))
+    return true;
+  else if (is_pinf<Policy1>(x) || is_minf<Policy2>(y))
+    return false;
+  else
     return x <= y;
-  return (rx == VC_MINUS_INFINITY || ry == VC_PLUS_INFINITY);
 }
 
 template <typename Policy1, typename Policy2,
@@ -464,14 +442,14 @@ inline bool
 ge_ext(const Type1& x, const Type2& y) {
   if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
     return x >= y;
-  Result rx;
-  Result ry;
-  if ((rx = classify<Policy1>(x, true, true, false)) == VC_NAN
-      || (ry = classify<Policy2>(y, true, true, false)) == VC_NAN)
+  if (is_nan<Policy1>(x) || is_nan<Policy2>(y))
     return false;
-  else if (rx == VC_NORMAL && ry == VC_NORMAL)
+  else if (is_pinf<Policy1>(x) || is_minf<Policy2>(y))
+    return true;
+  else if (is_minf<Policy1>(x) || is_pinf<Policy2>(y))
+    return false;
+  else
     return x >= y;
-  return (rx == VC_PLUS_INFINITY || ry == VC_MINUS_INFINITY);
 }
 
 template <typename Policy1, typename Policy2,
@@ -480,14 +458,13 @@ inline bool
 eq_ext(const Type1& x, const Type2& y) {
   if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
     return x == y;
-  Result rx;
-  Result ry;
-  if ((rx = classify<Policy1>(x, true, true, false)) == VC_NAN
-      || (ry = classify<Policy2>(y, true, true, false)) == VC_NAN)
+  if (is_nan<Policy1>(x) || is_nan<Policy2>(y))
     return false;
-  else if (rx == VC_NORMAL && ry == VC_NORMAL)
-    return x == y;
-  return rx == ry;
+  if (is_minf<Policy1>(x))
+    return is_minf<Policy2>(y);
+  if (is_pinf<Policy1>(x))
+    return is_pinf<Policy2>(y);
+  return x == y;
 }
 
 template <typename Policy1, typename Policy2,
@@ -496,14 +473,13 @@ inline bool
 ne_ext(const Type1& x, const Type2& y) {
   if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
     return x != y;
-  Result rx;
-  Result ry;
-  if ((rx = classify<Policy1>(x, true, true, false)) == VC_NAN
-      || (ry = classify<Policy2>(y, true, true, false)) == VC_NAN)
+  if (is_nan<Policy1>(x) || is_nan<Policy2>(y))
     return true;
-  else if (rx == VC_NORMAL && ry == VC_NORMAL)
-    return x != y;
-  return rx != ry;
+  if (is_minf<Policy1>(x))
+    return !is_minf<Policy2>(y);
+  if (is_pinf<Policy1>(x))
+    return !is_pinf<Policy2>(y);
+  return x != y;
 }
 
 template <typename Policy, typename Type>
@@ -511,22 +487,20 @@ inline Result
 to_c_string_ext(char *str, size_t size, const Type& x, const Numeric_Format& format, const Rounding& mode) {
   if (handle_ext_natively(Type))
     return to_c_string<Policy>(str, size, x, format, mode);
-  Result rx = classify<Policy>(x, true, true, false);
-  switch (rx) {
-  case VC_NORMAL:
-    return to_c_string<Policy>(str, size, x, format, mode);
-    break;
-  case VC_MINUS_INFINITY:
-    strncpy(str, "-inf", size);
-    break;
-  case VC_PLUS_INFINITY:
-    strncpy(str, "+inf", size);
-    break;
-  default:
+  if (is_nan<Policy>(x)) {
     strncpy(str, "nan", size);
-    break;
+    return VC_NAN;
   }
-  return rx;
+  else if (is_minf<Policy>(x)) {
+    strncpy(str, "-inf", size);
+    return VC_MINUS_INFINITY;
+  }
+  else if (is_pinf<Policy>(x)) {
+    strncpy(str, "+inf", size);
+    return VC_PLUS_INFINITY;
+  }
+  else
+    return to_c_string<Policy>(str, size, x, format, mode);
 }
 
 template <typename Policy, typename Type>

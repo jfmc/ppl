@@ -37,22 +37,22 @@ typedef BD_Shape<E_Rational> TBD_Shape;
 #else
 template <typename T, typename Policy>
 bool is_plus_infinity(const Checked_Number<T, Policy>& x) {
-  return x.classify(false, true, false) == VC_PLUS_INFINITY;
+  return x.is_pinf();
 }
 
 template <typename T, typename Policy>
 bool is_nan(const Checked_Number<T, Policy>& x) {
-  return x.classify(true, false, false) == VC_NAN;
+  return x.is_nan();
 }
 
 template <typename T, typename Policy>
 bool is_negative(const Checked_Number<T, Policy>& x) {
-  return x.classify(false, false, true) == V_LT;
+  return x < 0;
 }
 
 template <typename T, typename Policy>
 bool is_nonnegative(const Checked_Number<T, Policy>& x) {
-  return x.classify(false, false, true) == V_GE;
+  return x >= 0;
 }
 
 template <typename T, typename Policy>
@@ -115,7 +115,7 @@ template <typename T, typename Policy>
 void numer_denom(const Checked_Number<T, Policy>& from,
 		 Coefficient& num, Coefficient& den) {
   // FIXME!
-  if (from.classify(true, true, false) != VC_NORMAL)
+  if (from.is_nan() || from.is_minf() || from.is_pinf())
     abort();
   mpq_class q;
   Checked::assign<Checked::Transparent_Policy>(q, raw_value(from), Rounding::IGNORE);

@@ -143,6 +143,9 @@ public:
 
   //@} // Constructors
 
+  bool is_nan() const;
+  bool is_minf() const;
+  bool is_pinf() const;
 
   //! \name Accessors and Conversions
   //@{

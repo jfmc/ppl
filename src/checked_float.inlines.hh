@@ -85,6 +85,27 @@ classify_float(const T v, bool nan, bool inf, bool sign) {
 }
 
 template <typename Policy, typename T>
+inline bool
+is_nan_float(const T v) {
+  Float<T> f(v);
+  return f.is_nan();
+}
+
+template <typename Policy, typename T>
+inline bool
+is_minf_float(const T v) {
+  Float<T> f(v);
+  return f.is_inf() < 0;
+}
+
+template <typename Policy, typename T>
+inline bool
+is_pinf_float(const T v) {
+  Float<T> f(v);
+  return f.is_inf() > 0;
+}
+
+template <typename Policy, typename T>
 inline Result
 set_special_float(T& v, Result r) {
   switch (classify(r)) {
@@ -148,17 +169,26 @@ succ_float(T& v) {
 }
 
 SPECIALIZE_CLASSIFY(float, float32_t)
+SPECIALIZE_IS_NAN(float, float32_t)
+SPECIALIZE_IS_MINF(float, float32_t)
+SPECIALIZE_IS_PINF(float, float32_t)
 SPECIALIZE_SET_SPECIAL(float, float32_t)
 SPECIALIZE_PRED(float, float32_t)
 SPECIALIZE_SUCC(float, float32_t)
 
 SPECIALIZE_CLASSIFY(float, float64_t)
+SPECIALIZE_IS_NAN(float, float64_t)
+SPECIALIZE_IS_MINF(float, float64_t)
+SPECIALIZE_IS_PINF(float, float64_t)
 SPECIALIZE_SET_SPECIAL(float, float64_t)
 SPECIALIZE_PRED(float, float64_t)
 SPECIALIZE_SUCC(float, float64_t)
 
 #ifdef FLOAT96_TYPE
 SPECIALIZE_CLASSIFY(float, float96_t)
+SPECIALIZE_IS_NAN(float, float96_t)
+SPECIALIZE_IS_MINF(float, float96_t)
+SPECIALIZE_IS_PINF(float, float96_t)
 SPECIALIZE_SET_SPECIAL(float, float96_t)
 SPECIALIZE_PRED(float, float96_t)
 SPECIALIZE_SUCC(float, float96_t)
@@ -166,6 +196,9 @@ SPECIALIZE_SUCC(float, float96_t)
 
 #ifdef FLOAT128_TYPE
 SPECIALIZE_CLASSIFY(float, float128_t)
+SPECIALIZE_IS_NAN(float, float128_t)
+SPECIALIZE_IS_MINF(float, float128_t)
+SPECIALIZE_IS_PINF(float, float128_t)
 SPECIALIZE_SET_SPECIAL(float, float128_t)
 SPECIALIZE_PRED(float, float128_t)
 SPECIALIZE_SUCC(float, float128_t)
