@@ -29,6 +29,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.hh"
 #include <cstddef>
 
+#ifndef KEEP_SOURCE_SORTEDNESS
+#define KEEP_SOURCE_SORTEDNESS 0
+#endif
+
 namespace PPL = Parma_Polyhedra_Library;
 
 // True if `abandon_exponential_computations' should be checked often,
@@ -359,9 +363,18 @@ PPL::Polyhedron::conversion(Matrix& source,
   assert(source_num_rows == sat.num_columns());
   assert(dest_num_rows == sat.num_rows());
 
+#if KEEP_SOURCE_SORTEDNESS
+  dimension_type source_index_displacement = 0;
+#endif
+
   // Converting the sub-matrix of `source' having rows with indexes
   // from `start' to the last one (i.e., `source_num_rows' - 1).
   for (dimension_type k = start; k < source_num_rows; ) {
+
+#if KEEP_SOURCE_SORTEDNESS
+    if (source_index_displacement > 0)
+      std::swap(source[k], source[k+source_index_displacement]);
+#endif
 
     // Constraints and generators must have the same dimension,
     // otherwise the scalar product below will bomb.
@@ -613,16 +626,12 @@ PPL::Polyhedron::conversion(Matrix& source,
 	    // Here it is not necessary to swap the columns of `sat',
 	    // because the `sat' columns having indexes greater than
 	    // or equal to `k' are all made of zero coefficients.
-#if 1
+#if KEEP_SOURCE_SORTEDNESS
+	    // Preserve the sortedness of `source'.
+	    ++source_index_displacement;
+#else
 	    std::swap(source[k], source[source_num_rows]);
 	    source.set_sorted(false);
-#else
-	    // Preserve the sortedness of `source'.
-	    for (dimension_type i = k; i < source_num_rows; ) {
-	      Row& source_i = source[i];
-	      ++i;
-	      std::swap(source_i, source[i]);
-	    }
 #endif
 	  }
 	  // NOTE: we continue with the next cicle of the loop
