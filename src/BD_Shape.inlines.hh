@@ -1734,8 +1734,8 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y) {
 template <typename T>
 inline void
 BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
-					     const Constraint_System& cs,
-					     unsigned* /*tp*/) {
+					       const Constraint_System& cs,
+					       unsigned* /*tp*/) {
   dimension_type space_dim = space_dimension();
   // Not strict-inequality check.
   for (Constraint_System::const_iterator i = cs.begin(),
@@ -1800,7 +1800,7 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
 	  break;
 	}
 	else
-	  non_zero_position[t++] = j+1;
+	  non_zero_position[t++] = j;
       }
     // Constraints that are not "bounded differences" are ignored.
     if (right_cons && t == 2)
@@ -1822,10 +1822,15 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
       switch (t) {
       case 2:
 	a = c.coefficient(Variable(non_zero_position[1]));
+	// In DBMs there is a +1 offset on the position of each dimension.
+	++non_zero_position[0];
+	++non_zero_position[1];
 	break;
 	
       case 1:
 	a = -c.coefficient(Variable(non_zero_position[0]));
+	// In DBMs there is a +1 offset on the position of each dimension.
+	++non_zero_position[0];
 	break;
       }
       // Select the cell to be modified for the "<=" part of the constraint,
