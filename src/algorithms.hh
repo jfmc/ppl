@@ -48,7 +48,7 @@ linear_partition_aux(const Constraint& c,
 
 //! Partitions \p q with respect to \p p.
 /*!
-  Let \p p and \p q two polyhedra such that
+  Let \p p and \p q be two polyhedra such that
   - \p p and \p q are not disjoint;
   - \p p does not contain \p q.
 
