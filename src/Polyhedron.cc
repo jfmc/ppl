@@ -1752,8 +1752,8 @@ PPL::operator >>(std::istream& s, Polyhedron& p) {
 */
 void
 PPL::Polyhedron::affine_image(const Variable& var,
-				 const LinExpression& expr,
-				 const Integer& denominator) {
+			      const LinExpression& expr,
+			      const Integer& denominator) {
   if (denominator == 0)
     throw std::invalid_argument("void PPL::Polyhedron::affine_image"
 				"(v, e, d): d == 0");
@@ -1938,15 +1938,10 @@ PPL::Polyhedron::satisfies(const Constraint& c) {
 
   if (space_dim == 0)
     return SOME_SATISFY;
-
   if (!generators_are_up_to_date())
-    if (update_generators())
-      return gen_sys.satisfy(c);
-    else
+    if (!update_generators())
       return ALL_SATURATE;
-
-  // Just to avoid a gcc warning.
-  abort();
+  return gen_sys.satisfy(c);
 }
 
 /*!

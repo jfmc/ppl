@@ -234,7 +234,7 @@ PPL::GenSys::affine_image(size_t v,
     row[v] *= expr[v];
     for (size_t j = 0; j < num_columns; ++j)
       if (j != v)
-	row[v] += row[j] * expr[j];
+	row[v] += row[j] * expr[j];	
   }
   if (denominator != 1)
     // Since we want integer elements in the matrix and the
@@ -244,6 +244,20 @@ PPL::GenSys::affine_image(size_t v,
       for (size_t j = 0; j < num_columns; ++j)
 	if( j != v)
 	  x[i][j] *= denominator;
+  for (size_t i = num_rows; i--> 0; )
+    if (x[i][0] == 0) {
+      bool is_origin = true;
+      for (size_t j = 1; j < num_columns; ++j)
+	if (x[i][j] != 0) {
+	  is_origin = false;
+	  break;
+	}
+      if (is_origin) {
+	--num_rows;
+	std::swap(x[i], x[num_rows]);
+      }
+    }
+  x.erase_to_end(num_rows);
   x.strong_normalize();
 }
 
