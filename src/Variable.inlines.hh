@@ -21,6 +21,9 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef _Variable_inlines_hh
+#define _Variable_inlines_hh 1
+
 namespace Parma_Polyhedra_Library {
 
 inline
@@ -40,3 +43,5 @@ operator<(const Variable& v, const Variable& w) {
 }
 
 } // namespace Parma_Polyhedra_Library
+
+#endif // _Variable_inlines_hh

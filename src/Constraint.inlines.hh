@@ -21,6 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef _Constraint_inlines_hh
+#define _Constraint_inlines_hh 1
 
 #include "LinExpression.defs.hh"
 
@@ -295,3 +297,5 @@ swap(Parma_Polyhedra_Library::Constraint& x,
 }
 
 } // namespace std
+
+#endif // _Constraint_inlines_hh

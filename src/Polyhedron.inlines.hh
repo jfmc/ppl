@@ -21,7 +21,6 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-
 #ifndef _Polyhedron_inlines_hh
 #define _Polyhedron_inlines_hh 1
 
@@ -494,5 +493,4 @@ std::swap(Parma_Polyhedra_Library::Polyhedron& x,
   x.swap(y);
 }
 
-
-#endif
+#endif // _Polyhedron_inlines_hh

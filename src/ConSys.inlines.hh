@@ -177,4 +177,4 @@ swap(Parma_Polyhedra_Library::ConSys& x,
 
 } // namespace std
 
-#endif
+#endif // _ConSys_inlines_hh

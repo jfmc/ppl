@@ -21,6 +21,9 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef _Poly_Con_Relation_inlines_hh
+#define _Poly_Con_Relation_inlines_hh 1
+
 namespace Parma_Polyhedra_Library {
 
 inline
@@ -89,3 +92,5 @@ operator-(const Poly_Con_Relation& x, const Poly_Con_Relation& y) {
 }
 
 } // namespace Parma_Polyhedra_Library
+
+#endif // _Poly_Con_Relation_inlines_hh

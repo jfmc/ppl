@@ -21,6 +21,9 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef _Matrix_inlines_hh
+#define _Matrix_inlines_hh 1
+
 #include <algorithm>
 #include <cassert>
 
@@ -211,3 +214,5 @@ swap(Parma_Polyhedra_Library::Matrix& x,
 }
 
 } // namespace std
+
+#endif // _Matrix_inlines_hh

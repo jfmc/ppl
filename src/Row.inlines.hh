@@ -21,6 +21,9 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef _Row_inlines_hh
+#define _Row_inlines_hh 1
+
 #include "globals.hh"
 #include <cassert>
 #include <algorithm>
@@ -548,3 +551,5 @@ iter_swap(vector<Parma_Polyhedra_Library::Row>::iterator x,
 }
 
 } // namespace std
+
+#endif // _Row_inlines_hh

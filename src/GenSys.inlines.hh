@@ -180,4 +180,4 @@ swap(Parma_Polyhedra_Library::GenSys& x,
 
 } // namespace std
 
-#endif
+#endif // _GenSys_inlines_hh

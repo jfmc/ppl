@@ -21,6 +21,9 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef _SatRow_inlines_hh
+#define _SatRow_inlines_hh 1
+
 #include <vector>
 
 namespace Parma_Polyhedra_Library {
@@ -134,8 +137,7 @@ namespace std {
   algorithm (which creates a temporary and uses assignment).
 */
 inline void
-swap(Parma_Polyhedra_Library::SatRow& x,
-	  Parma_Polyhedra_Library::SatRow& y) {
+swap(Parma_Polyhedra_Library::SatRow& x, Parma_Polyhedra_Library::SatRow& y) {
   x.swap(y);
 }
 
@@ -151,3 +153,5 @@ iter_swap(vector<Parma_Polyhedra_Library::SatRow>::iterator x,
 }
 
 } // namespace std
+
+#endif // _SatRow_inlines_hh
