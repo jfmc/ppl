@@ -46,14 +46,14 @@ main() {
   cout << "--- ph ---" << endl << ph << endl;
 #endif
  
-  GenSys gs;
-  gs.insert(ray(x + y));
+  bool include = ph.includes(ray(x + y));
 
 #if NOISY
-  cout << "--- gs ---" << endl << gs << endl;
+  cout << "--- ph.includes(ray(x + y)) ---"
+       << endl
+       << (include ? "true" : "false")
+       << endl;
 #endif
-
-  bool include = ph.includes(gs[0]);
 
   return !include;
 }

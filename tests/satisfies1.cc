@@ -45,16 +45,12 @@ main() {
   cout << "--- ph ---" << endl << ph << endl;
 #endif
  
-  ConSys cs;
-  cs.insert(A >= 0);
-
 #if NOISY
-  cout << "--- cs ---" << endl << cs << endl;
   GenSys_Con_Rel rel =
 #endif
-    ph.satisfies(cs[0]);
+    ph.satisfies(A >= 0);
 #if NOISY
-  cout << "ph.satisfies(cs[0]) == " << rel << endl;
+  cout << "ph.satisfies(A >= 0) == " << rel << endl;
 #endif
   return 0;
 }

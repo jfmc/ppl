@@ -62,9 +62,9 @@ main() try {
 #endif
   
   copy_ph.add_dimensions_and_embed(2);
-  size_t cs2_num_rows = copy_cs2.num_rows();
-  for (size_t i = 0; i < cs2_num_rows; i++)
-    copy_ph.insert(copy_cs2[i] >> 2);
+  for (ConSys::const_iterator i = copy_cs2.begin(),
+	 iend = copy_cs2.end(); i != iend; ++i )
+    copy_ph.insert(*i >> 2);
 
 #if NOISY
   print_constraints(copy_ph, "*** embed + renaming + insert ***");
