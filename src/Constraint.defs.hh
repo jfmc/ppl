@@ -239,12 +239,12 @@ public:
 
 PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is the trivial true constraint \f$0 <= n\f$,
+  //! \p *this is the trivially true constraint \f$0 <= n\f$,
   //! where \f$n \geq 0\f$.
   bool is_trivial_true() const;
 
   //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is the trifial false constraint
+  //! \p *this is the trivially false constraint
   //! (i.e., either \f$0 >= n\f$, where \f$n > 0\f$
   //! or \f$0 = n\f$, where \f$n \neq 0\f$.
   bool is_trivial_false() const;
