@@ -158,7 +158,7 @@ case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
   OPT_FLAGS="-g"
-  COMP_FLAGS="$COMP_FLAGS -pg"
+  COMP_FLAGS="$COMP_FLAGS -pg -DPROFILING=1"
   ;;
 no)
   AC_MSG_RESULT(no)
