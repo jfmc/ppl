@@ -578,28 +578,28 @@ succ_float(T& v) {
   return V_EQ;
 }
 
-SPECIALIZE_VALUE_TYPE(float, float32_t);
-SPECIALIZE_SET_SPECIAL(float, float32_t);
-SPECIALIZE_PRED(float, float32_t);
-SPECIALIZE_SUCC(float, float32_t);
+SPECIALIZE_VALUE_TYPE(float, float32_t)
+SPECIALIZE_SET_SPECIAL(float, float32_t)
+SPECIALIZE_PRED(float, float32_t)
+SPECIALIZE_SUCC(float, float32_t)
 
-SPECIALIZE_VALUE_TYPE(float, float64_t);
-SPECIALIZE_SET_SPECIAL(float, float64_t);
-SPECIALIZE_PRED(float, float64_t);
-SPECIALIZE_SUCC(float, float64_t);
+SPECIALIZE_VALUE_TYPE(float, float64_t)
+SPECIALIZE_SET_SPECIAL(float, float64_t)
+SPECIALIZE_PRED(float, float64_t)
+SPECIALIZE_SUCC(float, float64_t)
 
 #ifdef FLOAT96_TYPE
-SPECIALIZE_VALUE_TYPE(float, float96_t);
-SPECIALIZE_SET_SPECIAL(float, float96_t);
-SPECIALIZE_PRED(float, float96_t);
-SPECIALIZE_SUCC(float, float96_t);
+SPECIALIZE_VALUE_TYPE(float, float96_t)
+SPECIALIZE_SET_SPECIAL(float, float96_t)
+SPECIALIZE_PRED(float, float96_t)
+SPECIALIZE_SUCC(float, float96_t)
 #endif
 
 #ifdef FLOAT128_TYPE
-SPECIALIZE_VALUE_TYPE(float, float128_t);
-SPECIALIZE_SET_SPECIAL(float, float128_t);
-SPECIALIZE_PRED(float, float128_t);
-SPECIALIZE_SUCC(float, float128_t);
+SPECIALIZE_VALUE_TYPE(float, float128_t)
+SPECIALIZE_SET_SPECIAL(float, float128_t)
+SPECIALIZE_PRED(float, float128_t)
+SPECIALIZE_SUCC(float, float128_t)
 #endif
 
 template <typename Policy, typename Type>
