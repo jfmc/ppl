@@ -619,8 +619,9 @@ PPL::Polyhedron::minimize() const {
 
 /*!
   Performs strong minimization of generators for an NNC polyhedron.
+  Returns <CODE>false</CODE> if and only if \p *this turns out to be empty.
 */
-void
+bool
 PPL::Polyhedron::strongly_minimize_generators() const {
   assert(!is_necessarily_closed());
 
@@ -628,7 +629,9 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   Polyhedron& x = const_cast<Polyhedron&>(*this);
 
   // We need `gen_sys' (weakly) minimized and `con_sys' up-to-date.
-  minimize();
+  if (!minimize())
+    return false;
+
   // We also need `sat_c' up-to-date.
   if (!sat_c_is_up_to_date()) {
     assert(sat_g_is_up_to_date());
@@ -705,13 +708,15 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   }
 
   assert(OK());
+  return true;
 }
 
 
 /*!
   Performs strong minimization of constraints for an NNC polyhedron.
+  Returns <CODE>false</CODE> if and only if \p *this turns out to be empty.
 */
-void
+bool
 PPL::Polyhedron::strongly_minimize_constraints() const {
   assert(!is_necessarily_closed());
 
@@ -719,7 +724,9 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   Polyhedron& x = const_cast<Polyhedron&>(*this);
 
   // We need `con_sys' (weakly) minimized and `gen_sys' up-to-date.
-  minimize();
+  if (!minimize())
+    return false;
+
   // We also need `sat_g' up-to-date.
   if (!sat_g_is_up_to_date()) {
     assert(sat_c_is_up_to_date());
@@ -892,21 +899,24 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   }
 
   assert(OK());
+  return true;
 }
 
 
 /*!
   Performs strong minimization of generators and constraints
   for an NNC polyhedron.
+  Returns <CODE>false</CODE> if and only if \p *this turns out to be empty.
 */
-void
+bool
 PPL::Polyhedron::strongly_minimize() const {
   assert(!is_necessarily_closed());
 
   // We need `gen_sys' strongly minimized,
   // `con_sys' (weakly) minimized
   // and `sat_g' up-to-date.
-  strongly_minimize_generators();
+  if (!strongly_minimize_generators())
+    return false;
   minimize();
   if (!sat_g_is_up_to_date()) {
     assert(sat_c_is_up_to_date());
@@ -969,7 +979,7 @@ PPL::Polyhedron::strongly_minimize() const {
 	// It is the eps_leq_one constraint:
 	// the constraint system was already in strong minimal form.
 	assert(OK());
-	return;
+	return true;
       }
 
       // Check if `ci' is saturated by no closure points.
@@ -989,13 +999,14 @@ PPL::Polyhedron::strongly_minimize() const {
 	cs.set_sorted(false);
 	// `con_sys' is now in strong minimal form.
 	assert(OK());
-	return;
+	return true;
       }
     }
   }
   // There was no such a strict inequality:
   // the constraint system was already in strong minimal form.
   assert(OK());
+  return true;
 }
 
 
@@ -3006,36 +3017,43 @@ PPL::Polyhedron::widening_CC92_assign(const Polyhedron& y) {
   }
 #endif
 
-  // The CC92-widening between two polyhedra in a zero-dimensional space
-  // is a polyhedron in a zero-dimensional space, too.
-  if (x_space_dim == 0)
+  // If any argument is zero-dimensional or empty,
+  // the CC92-widening behaves as the identity function.
+  if (x_space_dim == 0 || x.is_empty() || y.is_empty())
     return;
 
-  if (y.is_empty())
-    return;
-  if (x.is_empty())
-    return;
+  // `y.gen_sys' should be in minimal form and
+  // `y.sat_g' should be up-to-date.
+  if (y.is_necessarily_closed()) {
+    if (!y.minimize())
+      // `y' is empty: the result is `x'.
+      return;
+  }
+  else {
+    // Dealing with a NNC polyhedron.
+    // To obtain a correct reasoning when comparing
+    // the constraints of `x' with the generators of `y',
+    // we enforce the inclusion relation holding between
+    // the two NNC polyhedra `x' and `y' (i.e., `y <= x')
+    // to also hold for the corresponding eps-representations:
+    // this is obtained by intersecting the two eps-representations.
+    Polyhedron& yy = const_cast<Polyhedron&>(y);
+    if (!yy.intersection_assign_and_minimize(x))
+      // `y' is empty: the result is `x'.
+      return;
+  }
 
-  // For this function, we need the minimal system of generators and
-  // the saturation matrix `sat_g' of the polyhedron `y'. To obtain
-  // the saturation matrix, the minimal system of constraints and
-  // the minimal system of generators are necessary.
-  if (!y.minimize())
-    // We have just discovered that `y' is empty, so that the widened
-    // polyhedron is `x'.
-    return;
-
-  // We only need that the system of constraints is up-to-date
-  // because
-  // - if the system of constraints is insoluble, this means that
-  //   also `y' is empty and so the resulting polyhedron is `x';
-  // - if some constraints are redundant, these do not influence the
-  //   resulting polyhedron.
-  //   If a constraint is a combination of other two, it can be also in
-  //   the resulting system, if the two constraints are common to both
-  //   polyhedron. The redundant constraints is `redundant' also in
-  //   the new polyhedron.
-  //   If a constraint is redundant in the sense that it does not
+  // `x.con_sys' is just required to be up-to-date, because:
+  // - if `x.con_sys' is unsatisfiable, then also `y' is empty
+  //   and so the resulting polyhedron is `x';
+  // - redundant constraints in `x.con_sys' do not influence the
+  //   computation of the widened polyhedron. This is because
+  //     CHECK ME: are the following motivations correct?
+  //   if a constraint is a combination of other two constraints,
+  //   it can be also in the resulting system, if the two constraints
+  //   are common to both polyhedron. The redundant constraints
+  //   is `redundant' also in the new polyhedron.
+  //   If otherwise a constraint is redundant in the sense that it does not
   //   satisfy the saturation rule (see in the Introduction), it can not
   //   be put into the new system, because of the way that we use to
   //   choose the constraints.
@@ -3047,14 +3065,12 @@ PPL::Polyhedron::widening_CC92_assign(const Polyhedron& y) {
   // polyhedron.
   if (!y.sat_g_is_up_to_date())
     y.update_sat_g();
-  // The saturation matrix sat_g is copied in a temporary one:
-  // in this way, the new saturation matrix can be sorted
-  // without modifying the constant polyhedron `y'.
+  // `y.sat_g' is copied in a temporary one, so that
+  // it can be sorted without affecting the constant polyhedron `y'.
   SatMatrix tmp_sat_g = y.sat_g;
   tmp_sat_g.sort_rows();
 
-  // Now, we start bulding the system of constraints of the
-  // widened polyhedron.
+  // Start bulding the system of constraints of the widened polyhedron.
   ConSys new_con_sys;
   if (is_necessarily_closed())
     // Add the positivity constraint.
@@ -3068,19 +3084,19 @@ PPL::Polyhedron::widening_CC92_assign(const Polyhedron& y) {
 
   // The size of `buffer' will reach sat.num_columns() bit.
   SatRow buffer;
-  // We choose a constraint of `x' if its behavior with the
-  // generators of `y' is the same that a constraints of `y' has.
-  // This means that we verify if the saturation row built starting
-  // from a constraint of `x' and all the generators of `y' is
-  // a row of the saturation matrix `sat_g' of `y'(if it happens,
-  // the constraint of `x' is also a constraint of `y').
-  // In this way a constraint of `x' that does not verify the
-  // saturation rule (see in the Introduction) can be put into the
-  // resulting polyhedron, because `sat_g' is built starting from
-  // a minimized polyhedron.
+  // A constraint in `x.con_sys' is placed in the new constraint
+  // system if its behavior with respect to `y.gen_sys' is the same
+  // as that of a constraint of `y.con_sys'.
+  // Namely, we check whether the saturation row `buffer'
+  // (built starting from the given constraint and `y.gen_sys')
+  // is a row of the saturation matrix `tmp_sat_g'.
+  // Note: if the considered constraint of `x.con_sys' does not
+  // satisfy the saturation rule (see the Introduction), then
+  // it will not appear in the resulting constraint system,
+  // because `tmp_sat_g' is built starting from a minimized polyhedron.
   size_t n_constraints = x.con_sys.num_rows();
-  // Note: for loop going upwards to avoid reversing the ordering
-  // of the chosen constraints.
+  // Note: the loop index `i' goes upwards to avoid reversing
+  // the ordering of the chosen constraints.
   for (size_t i = 0; i < n_constraints; ++i) {
     buffer.clear();
     // The saturation row `buffer' is built considering the `i'-th
@@ -3101,9 +3117,9 @@ PPL::Polyhedron::widening_CC92_assign(const Polyhedron& y) {
       new_con_sys.add_row(x.con_sys[i]);
   }
 
+  // Let `new_con_sys' be the constraint system of `x'
+  // and update the status of `x'.
   std::swap(x.con_sys, new_con_sys);
-
-  // Update the status of x.
   x.set_constraints_up_to_date();
   x.clear_constraints_minimized();
   x.clear_generators_up_to_date();

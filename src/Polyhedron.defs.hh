@@ -641,10 +641,6 @@ public:
   bool OK(bool check_not_empty = false) const;
 
 private:
-  //! Minimizes generators and constraints.
-  //! Returns <CODE>false</CODE> if and only if \p *this turns out to be empty.
-  bool minimize() const;
-
   //! Updates constraints starting from generators and minimizes them.
   void update_constraints() const;
 
@@ -670,17 +666,22 @@ private:
   //! Sorts the matrix of generators and updates \p sat_g.
   void obtain_sorted_generators_with_sat_g() const;
 
-  //! Applies strong minimization to both the constraint and
-  //! the generator systems of an NNC polyhedron.
-  void strongly_minimize() const;
+  //! Applies (weak) minimization to both the constraints and generators.
+  //! Returns <CODE>false</CODE> if and only if \p *this turns out to be empty.
+  bool minimize() const;
 
-  //! Applies strong minimization to the constraint system
+  //! Applies strong minimization to both the constraints and generators
   //! of an NNC polyhedron.
-  void strongly_minimize_constraints() const;
+  //! Returns <CODE>false</CODE> if and only if \p *this turns out to be empty.
+  bool strongly_minimize() const;
 
-  //! Applies strong minimization to the generator system
-  //! of an NNC polyhedron.
-  void strongly_minimize_generators() const;
+  //! Applies strong minimization to the constraints of an NNC polyhedron.
+  //! Returns <CODE>false</CODE> if and only if \p *this turns out to be empty.
+  bool strongly_minimize_constraints() const;
+
+  //! Applies strong minimization to the generators of an NNC polyhedron.
+  //! Returns <CODE>false</CODE> if and only if \p *this turns out to be empty.
+  bool strongly_minimize_generators() const;
 
 public:
   //! Adds new dimensions and embeds the old polyhedron into the new space.
