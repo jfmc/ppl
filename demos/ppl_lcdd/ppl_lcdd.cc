@@ -48,12 +48,13 @@ namespace {
 //const char* ppl_source_version = PPL_VERSION;
 
 struct option long_options[] = {
-  {"help",           no_argument,       0, 'h'},
   {"max-cpu",        required_argument, 0, 'C'},
   {"max-memory",     required_argument, 0, 'V'},
+  {"help",           no_argument,       0, 'h'},
   {"output",         required_argument, 0, 'o'},
   {"timings",        no_argument,       0, 't'},
   {"verbose",        no_argument,       0, 'v'},
+  {"check",          required_argument, 0, 'c'},
   {0, 0, 0, 0}
 };
 
@@ -64,9 +65,10 @@ static const char* usage_string
 "  -h, --help              prints this help text to stderr\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
 "  -t, --timings           prints timings to stderr\n"
-"  -v, --verbose           produces lots of output\n";
+"  -v, --verbose           produces lots of output\n"
+"  -cPATH, --check=PATH    checks if the result is equal to what is in PATH\n";
 
-#define OPTION_LETTERS "bC:V:ho:tv"
+#define OPTION_LETTERS "C:V:ho:tvc:"
 
 const char* program_name = 0;
 
@@ -74,6 +76,7 @@ unsigned long max_seconds_of_cpu_time = 0;
 unsigned long max_bytes_of_virtual_memory = 0;
 bool print_timings = false;
 bool verbose = false;
+const char* check_file_name = 0;
 
 void
 fatal(const char* format, ...) {
@@ -97,7 +100,7 @@ set_input(const char* file_name) {
     delete input_stream_p;
 
   if (file_name) {
-    input_stream_p = new std::ifstream(input_file_name, std::ios_base::in);
+    input_stream_p = new std::ifstream(file_name, std::ios_base::in);
     if (!*input_stream_p)
       fatal("cannot open input file `%s'", file_name);
     input_file_name = file_name;
@@ -123,7 +126,7 @@ set_output(const char* file_name) {
     delete output_stream_p;
 
   if (file_name) {
-    output_stream_p = new std::ofstream(output_file_name, std::ios_base::out);
+    output_stream_p = new std::ofstream(file_name, std::ios_base::out);
     if (!*output_stream_p)
       fatal("cannot open output file `%s'", file_name);
     output_file_name = file_name;
@@ -277,6 +280,10 @@ process_options(int argc, char* argv[]) {
       verbose = true;
       break;
 
+    case 'c':
+      check_file_name = optarg;
+      break;
+
     default:
       abort();
     }
@@ -292,10 +299,6 @@ process_options(int argc, char* argv[]) {
   else
     // If no input files have been specified: we will read from standard input.
     assert(input_file_name == 0);
-
-  // Set up the input and output streams.
-  set_input(input_file_name);
-  set_output(output_file_name);
 }
 
 void
@@ -393,7 +396,7 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
       rep = V;
     else if (s == "H-representation")
       rep = H;
-    else if (s == "linearity") {
+    else if (s == "linearity" || s == "equality" || s == "partial_enum") {
       unsigned num_linear;
       if (!guarded_read(in, num_linear))
 	error("missing or invalid number of linearity indexes");
@@ -639,14 +642,20 @@ main(int argc, char* argv[]) {
   if (max_bytes_of_virtual_memory > 0)
     limit_virtual_memory(max_bytes_of_virtual_memory);
 
+  // Set up the input and output streams.
+  set_input(input_file_name);
+  set_output(output_file_name);
 
   PPL::C_Polyhedron ph;
   Representation rep = read_polyhedron(input(), ph);
   //write_polyhedron(std::cout, ph, rep);
 
   std::string s;
-  while (input() >> s) {
-    warning("ignoring command `%s'", s.c_str());
+  while (guarded_read(input(), s)) {
+    if (s == "linearity" || s == "equality" || s == "partial_enum")
+      error("the `linearity' command must occur before `begin'");
+    else
+      warning("ignoring command `%s'", s.c_str());
     input().ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
 
@@ -658,6 +667,14 @@ main(int argc, char* argv[]) {
   else {
     ph.generators();
     write_polyhedron(output(), ph, V);
+  }
+
+  // Check the result, if requested to do so.
+  if (check_file_name) {
+    set_input(check_file_name);
+    // Read the polyhedron containing the expected result.
+    PPL::C_Polyhedron e_ph;
+    Representation e_rep = read_polyhedron(input(), e_ph);
   }
 
   return 0;
