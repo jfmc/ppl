@@ -608,11 +608,11 @@ main(int argc, char* argv[]) {
   // If we are still here, we just make a conversion.
   if (rep == V) {
     ph.constraints();
-    write_polyhedron(std::cout, ph, H);
+    write_polyhedron(output(), ph, H);
   }
   else {
     ph.generators();
-    write_polyhedron(std::cout, ph, V);
+    write_polyhedron(output(), ph, V);
   }
 
   return 0;
