@@ -1,4 +1,4 @@
-/* Testing Polyhedron::check_universe(): a square is not an
+/* Testing C_Polyhedron::check_universe(): a square is not an
    universal polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -38,7 +38,7 @@ main() {
   Variable x(0);
   Variable y(1);
 
-  Polyhedron ph(3);
+  C_Polyhedron ph(3);
   ph.add_constraint(x >= 1);
   ph.add_constraint(y >= 1);
   ph.add_constraint(x <= 4);

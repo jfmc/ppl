@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 
 void
-shift_rename_add(const Polyhedron& p, size_t offset, Polyhedron& q) {
+shift_rename_add(const C_Polyhedron& p, size_t offset, C_Polyhedron& q) {
   if (p.space_dimension() == 0)
     exit(1);
 
@@ -49,7 +49,7 @@ shift_rename_add(const Polyhedron& p, size_t offset, Polyhedron& q) {
 
 
 void
-append_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
+append_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
             size_t& offset, unsigned int& arity, unsigned int& num_vars) {
   offset = 3;
   arity = 3;
@@ -73,34 +73,34 @@ append_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
 
   // This is the inductive case:
   // append(A,B,C) :- A = [X|D], B = E, C = [X|F], append(D,E,F).
-  inductive.add_dimensions_and_embed(6);
-  inductive.add_constraint(A + F == C + D);
-  inductive.add_constraint(B == E);
-  inductive.add_constraint(C + D >= A);
-  inductive.add_constraint(D >= 0);
-  inductive.add_constraint(B >= 0);
-  inductive.add_constraint(A >= D + 1);
+  induct.add_dimensions_and_embed(6);
+  induct.add_constraint(A + F == C + D);
+  induct.add_constraint(B == E);
+  induct.add_constraint(C + D >= A);
+  induct.add_constraint(D >= 0);
+  induct.add_constraint(B >= 0);
+  induct.add_constraint(A >= D + 1);
 #if NOISY
-  print_constraints(inductive, "*** inductive ***");
+  print_constraints(induct, "*** inductive ***");
 #endif
 
-  expected.add_dimensions_and_embed(3);
-  expected.add_constraint(A + B == C);
-  expected.add_constraint(B >= 0);
-  expected.add_constraint(C >= B);
+  expect.add_dimensions_and_embed(3);
+  expect.add_constraint(A + B == C);
+  expect.add_constraint(B >= 0);
+  expect.add_constraint(C >= B);
 }
 
 void
-fix_point(Polyhedron& start, Polyhedron& induct, Polyhedron& finish,
+fix_point(C_Polyhedron& start, C_Polyhedron& induct, C_Polyhedron& finish,
           size_t offset, unsigned int arity, unsigned int num_vars) {
   // Initialize the fixpoint iteration.
-  Polyhedron current = start;
+  C_Polyhedron current = start;
 #if NOISY
   print_constraints(current, "*** start ***");
 #endif
 
   // Contains the polyhedron computed at the previous iteration.
-  Polyhedron previous;
+  C_Polyhedron previous;
   do {
     previous = current;
     current = induct;
@@ -129,14 +129,14 @@ int
 main() {
   set_handlers();
 
-  Polyhedron start;
-  Polyhedron induct;
-  Polyhedron expect;
+  C_Polyhedron start;
+  C_Polyhedron induct;
+  C_Polyhedron expect;
   size_t recursive_offset;
   unsigned int arity;
   unsigned int num_vars;
   append_init(start, induct, expect, recursive_offset, arity, num_vars);
-  Polyhedron final;
+  C_Polyhedron final;
   fix_point(start, induct, final, recursive_offset, arity, num_vars);
 
 #if NOISY

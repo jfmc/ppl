@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_constraints_and_minimize(): we add a system
+/* Testing C_Polyhedron::add_constraints_and_minimize(): we add a system
    of constraints to an universal polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -38,7 +38,7 @@ main() {
   Variable x(0);
   Variable y(1);
 
-  Polyhedron ph(3);
+  C_Polyhedron ph(3);
 
 #if NOISY
   print_constraints(ph, "*** ph ***");
@@ -53,7 +53,7 @@ main() {
 #endif
   ph.add_constraints_and_minimize(cs);
 
-  Polyhedron known_result(3);
+  C_Polyhedron known_result(3);
   known_result.add_constraint(x >= 4);
   known_result.add_constraint(x - y >= 0);
 

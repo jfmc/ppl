@@ -38,7 +38,7 @@ main() {
   Variable y(1);
   Variable z(2);
 
-  Polyhedron icosahedron(3);
+  C_Polyhedron icosahedron(3);
   icosahedron.add_constraint(4*x - 2*y - z + 14 >= 0);
   icosahedron.add_constraint(4*x + 2*y - z + 2 >= 0);
   icosahedron.add_constraint(x + y - 1 >= 0);
@@ -60,16 +60,16 @@ main() {
   icosahedron.add_constraint(-x - y + 5 >= 0);
   icosahedron.add_constraint(-x - y -2*z +13 >= 0);
 
-  Polyhedron column(3);
+  C_Polyhedron column(3);
   column.add_constraint(y >= 2);
   column.add_constraint(y <= 4);
   column.add_constraint(x >= 0);
   column.add_constraint(x <= 1);
 
-  Polyhedron computed_result = icosahedron;
+  C_Polyhedron computed_result = icosahedron;
   computed_result.intersection_assign_and_minimize(column);
 
-  Polyhedron known_result(3);
+  C_Polyhedron known_result(3);
   known_result.add_constraint(-4*x - 2*y + z >= -8);
   known_result.add_constraint(-4*x + 2*y + z >= 4);
   known_result.add_constraint(-2*x - y + 2*z >= -1);

@@ -1,4 +1,4 @@
-/* Testing Polyhedron::convex_difference_assign().
+/* Testing C_Polyhedron::convex_difference_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -42,7 +42,7 @@ main() {
   gs1.insert(point(4*x + 0*y));
   gs1.insert(point(2*x + 2*y));
 
-  Polyhedron ph1(gs1);
+  C_Polyhedron ph1(gs1);
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
@@ -53,13 +53,13 @@ main() {
   gs2.insert(point(4*x + 3*y));
   gs2.insert(point(2*x + 1*y));
 
-  Polyhedron ph2(gs2);
+  C_Polyhedron ph2(gs2);
 
 #if NOISY
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  Polyhedron computed_result = ph1;
+  C_Polyhedron computed_result = ph1;
 
   computed_result.convex_difference_assign(ph2);
 
@@ -69,7 +69,7 @@ main() {
   gs_known_result.insert(point(4*x));
   gs_known_result.insert(point(5*x + 3*y, 2));
 
-  Polyhedron known_result(gs_known_result);
+  C_Polyhedron known_result(gs_known_result);
 
   int retval = (computed_result == known_result) ? 0 : 1;
 

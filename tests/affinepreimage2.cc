@@ -1,4 +1,4 @@
-/* Testing Polyhedron::affine_preimage(): we apply this function to
+/* Testing C_Polyhedron::affine_preimage(): we apply this function to
    a polyhedron defined by its system of constraints.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -39,7 +39,7 @@ main() {
   Variable B(1);
   Variable C(2);
 
-  Polyhedron ph(3);
+  C_Polyhedron ph(3);
   ph.add_constraint(A + C == 0);
   ph.add_constraint(A + B >= 0);
   ph.add_constraint(A + B - 1 >= 0);
@@ -50,7 +50,7 @@ main() {
 
   ph.affine_preimage(A, A + B);
 
-  Polyhedron known_result(3);
+  C_Polyhedron known_result(3);
   known_result.add_constraint(A + B + C == 0);
   known_result.add_constraint(A + 2*B >= 0);
   known_result.add_constraint(A + 2*B -1 >= 0);

@@ -39,7 +39,7 @@ main() {
   Variable x(0);
   Variable y(1);
 
-  Polyhedron ph(2, Polyhedron::EMPTY);
+  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
 #if NOISY
   print_constraints(ph, "--- ph ---");
@@ -55,7 +55,7 @@ main() {
 
   ph.add_dimensions_and_constraints(cs);
 
-  Polyhedron known_result(4, Polyhedron::EMPTY);
+  C_Polyhedron known_result(4, C_Polyhedron::EMPTY);
 
   int retval = (ph == known_result) ? 0 : 1;
 

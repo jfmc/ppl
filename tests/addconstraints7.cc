@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_constraints_and_minimize() obtaining an empty
+/* Testing C_Polyhedron::add_constraints_and_minimize() obtaining an empty
    polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -38,7 +38,7 @@ main() {
   Variable x(0);
   Variable y(1);
 
-  Polyhedron ph(3);
+  C_Polyhedron ph(3);
   ph.add_constraint(y >= 1);
 
 #if NOISY
@@ -54,7 +54,7 @@ main() {
 #endif
   ph.add_constraints_and_minimize(cs);
 
-  Polyhedron known_result(3, Polyhedron::EMPTY);
+  C_Polyhedron known_result(3, C_Polyhedron::EMPTY);
 
   int retval = (ph == known_result) ? 0 : 1;
 

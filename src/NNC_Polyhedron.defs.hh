@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _NNC_Polyhedron_defs_hh
 #define _NNC_Polyhedron_defs_hh 1
 
-#include "Polyhedron.types.hh"
+#include "C_Polyhedron.types.hh"
 #include "NNC_Polyhedron.types.hh"
 #include "PolyBase.defs.hh"
 
@@ -36,12 +36,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
     \note
     NNC polyhedra are a generalization of necessarily closed polyhedra:
-    this means that any object of the class Polyhedron
+    this means that any object of the class C_Polyhedron
     can be converted into an object of the class NNC_Polyhedron
-    and all the methods defined for Polyhedron objects are also
+    and all the methods defined for C_Polyhedron objects are also
     available when using objects of the class NNC_Polyhedron.
     The reason for defining two different classes is that
-    necessarily closed polyhedra (i.e., objects of the class Polyhedron)
+    necessarily closed polyhedra (i.e., objects of the class C_Polyhedron)
     are characterized by a more efficient implementation,
     requiring less time and memory resources.
 */
@@ -73,8 +73,8 @@ public:
   //! Ordinary copy-constructor.
   NNC_Polyhedron(const NNC_Polyhedron& y);
 
-  //! Builds a NNC polyhedron from the Polyhedron \p y.
-  explicit NNC_Polyhedron(const Polyhedron& y);
+  //! Builds a NNC polyhedron from the C_Polyhedron \p y.
+  explicit NNC_Polyhedron(const C_Polyhedron& y);
 
   //! The assignment operator.
   //! (Note that \p *this and \p y can be dimension-incompatible.)

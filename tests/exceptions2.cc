@@ -45,7 +45,7 @@ error1() {
     // This is an invalid use of the constructor of a polyhedron:
     // it is impossible to built a closed polyhedron starting from
     // a system of constraints that contains strict-inequalities.
-    Polyhedron ph(cs);
+    C_Polyhedron ph(cs);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -74,7 +74,7 @@ error2() {
     // This is an invalid use of the constructor of a polyhedron:
     // it is impossible to built a closed polyhedron starting from
     // a system of generators that contains closure points.
-    Polyhedron ph(gs);
+    C_Polyhedron ph(gs);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -93,7 +93,7 @@ error3() {
   Variable x(0);
   Variable y(1);
 
-  Polyhedron ph(3);
+  C_Polyhedron ph(3);
   
   try {
     // This is an invalid use of the function add_constraint(c): it is
@@ -115,7 +115,7 @@ void
 error4() {
   set_handlers();
   
-  Polyhedron ph(3, Polyhedron::EMPTY);
+  C_Polyhedron ph(3, C_Polyhedron::EMPTY);
 
   try {
     // This is an incorrect use of the function add_generator(g): it
@@ -140,7 +140,7 @@ error5() {
   Variable x(0);
   Variable y(1);
 
-  Polyhedron ph(3);
+  C_Polyhedron ph(3);
   ph.add_constraint(x >= 2);
   ph.add_constraint(y >= 2);
 
@@ -171,7 +171,7 @@ error6() {
   Variable x(0);
   Variable y(1);
 
-  Polyhedron ph(3);
+  C_Polyhedron ph(3);
   ConSys cs;
   cs.insert(x > 3);
   cs.insert(x > y);
@@ -199,7 +199,7 @@ error7() {
   Variable x(0);
   Variable y(1);
 
-  Polyhedron ph(3);
+  C_Polyhedron ph(3);
 
   ConSys cs;
   cs.insert(x > 2);
@@ -229,7 +229,7 @@ error8() {
   Variable x(0);
   Variable y(1);
 
-  Polyhedron ph(3);
+  C_Polyhedron ph(3);
   GenSys gs;
   gs.insert(point());
   gs.insert(closure_point(-x));
@@ -260,7 +260,7 @@ error9() {
   Variable x(0);
   Variable y(1);
 
-  Polyhedron ph(3);
+  C_Polyhedron ph(3);
   GenSys gs;
   gs.insert(point(x));
   gs.insert(closure_point());
@@ -296,7 +296,7 @@ error10() {
   try {
     // It is impossible to built a closed polyhedron starting from
     // the system of constraints of a polyhedron that is not closed.
-    Polyhedron ph2(ph1);
+    C_Polyhedron ph2(ph1);
   }
   catch(invalid_argument& e) {
 #if NOISY

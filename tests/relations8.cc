@@ -1,4 +1,4 @@
-/* Testing Polyhedron::relation_with(c).
+/* Testing C_Polyhedron::relation_with(c).
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -41,7 +41,7 @@ main() {
   cs.insert(x + y >= 1);
   cs.insert(y >= 5);
 
-  Polyhedron ph(cs);
+  C_Polyhedron ph(cs);
 #if NOISY
   print_generators(ph, "--- ph ---");
 #endif

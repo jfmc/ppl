@@ -1,4 +1,4 @@
-/* Testing Polyhedron::intersection_assign().
+/* Testing C_Polyhedron::intersection_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -37,7 +37,7 @@ main() {
   Variable x(0);
   Variable y(1);
 
-  Polyhedron ph1(2);
+  C_Polyhedron ph1(2);
   ph1.add_constraint(x - y >= 0);
   ph1.add_constraint(x - y <= 1);
 
@@ -45,7 +45,7 @@ main() {
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  Polyhedron ph2(2);
+  C_Polyhedron ph2(2);
   ph2.add_constraint(x >= 0);
   ph2.add_constraint(y >= 0);
   ph2.add_constraint(x <= 1);
@@ -55,11 +55,11 @@ main() {
   print_constraints(ph2, "*** ph2 ***");
 #endif
 
-  Polyhedron computed_result = ph1;
+  C_Polyhedron computed_result = ph1;
 
   computed_result.intersection_assign(ph2);
 
-  Polyhedron known_result(2);
+  C_Polyhedron known_result(2);
   known_result.add_constraint(y >= 0);
   known_result.add_constraint(x - y >= 0);
   known_result.add_constraint(x <= 1);

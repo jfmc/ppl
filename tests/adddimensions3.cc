@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_dimensions_and_embed(): we apply this function
+/* Testing C_Polyhedron::add_dimensions_and_embed(): we apply this function
    to a polyhedron defined by its system of generators.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -46,7 +46,7 @@ main() {
   gs.insert(point());
   gs.insert(ray(x + y));
 
-  Polyhedron ph(gs);
+  C_Polyhedron ph(gs);
 #if NOISY
   print_generators(ph, "*** ph ***");
 #endif
@@ -59,7 +59,7 @@ main() {
 
   ph.add_dimensions_and_embed(2);
 
-  Polyhedron known_result(6, Polyhedron::EMPTY);
+  C_Polyhedron known_result(6, C_Polyhedron::EMPTY);
   known_result.add_generator(point());
   known_result.add_generator(ray(x + y));
   known_result.add_generator(line(z));

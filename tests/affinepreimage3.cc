@@ -1,4 +1,4 @@
-/* Testing Polyhedron::affine_preimage(): the transformation is not
+/* Testing C_Polyhedron::affine_preimage(): the transformation is not
    invertible and the polyhedron is defined by its system of constraints.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -38,7 +38,7 @@ main() {
   Variable A(0);
   Variable B(1);
 
-  Polyhedron ph(2);
+  C_Polyhedron ph(2);
   ph.add_constraint(A >= 0);
   ph.add_constraint(B >= 0);
   ph.add_constraint(A + B - 3 >= 0);
@@ -49,7 +49,7 @@ main() {
 
   ph.affine_preimage(A, B+1);
 
-  Polyhedron known_result(2, Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
   known_result.add_generator(point(B));
   known_result.add_generator(line(A));
   known_result.add_generator(ray(B));

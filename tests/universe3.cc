@@ -1,4 +1,4 @@
-/* Testing Polyhedron::check_universe(): a polyhedron defined by
+/* Testing C_Polyhedron::check_universe(): a polyhedron defined by
    a system of constraints containing an equality is not universal.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -37,7 +37,7 @@ main() {
   Variable x(0);
   Variable y(1);
 
-  Polyhedron ph(2);
+  C_Polyhedron ph(2);
   ph.add_constraint(y == 0);
   ph.add_constraint(x >= 1);
   ph.add_constraint(x <= 3);

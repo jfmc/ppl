@@ -1,5 +1,5 @@
-/* Testing Polyhedron::intersection_assign_and_minimize() and
-   Polyhedron::intersection_assign(): we intersect an empty
+/* Testing C_Polyhedron::intersection_assign_and_minimize() and
+   C_Polyhedron::intersection_assign(): we intersect an empty
    polyhedron with one non-empty.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -39,25 +39,25 @@ main() {
   Variable x(0);
   Variable y(1);
 
-  Polyhedron ph1(2);
+  C_Polyhedron ph1(2);
   ph1.add_constraint(x >= y);
   ph1.add_constraint(x >= 0);
 
-  Polyhedron ph2(2, Polyhedron::EMPTY);
+  C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 #endif
 
-  Polyhedron computed_result1(ph1);
+  C_Polyhedron computed_result1(ph1);
   computed_result1.intersection_assign_and_minimize(ph2);
 
   ConSys cs_computed_result2 = ph1.constraints();
-  Polyhedron computed_result2(cs_computed_result2);
+  C_Polyhedron computed_result2(cs_computed_result2);
   computed_result2.intersection_assign(ph2);
 
-  Polyhedron known_result(2, Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
 
   int retval = (computed_result1 == known_result
 		&& computed_result2 == known_result) ? 0 : 1;

@@ -1,4 +1,4 @@
-/* Testing Polyhedron::relation_with(c) when c is a strict inequality.
+/* Testing C_Polyhedron::relation_with(c) when c is a strict inequality.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 
 void test1() {
   // The zero-dim universe polyhedron.
-  Polyhedron ph;
+  C_Polyhedron ph;
   Poly_Con_Relation rel = ph.relation_with(LinExpression(0) > 0);
 
 #if NOISY
@@ -48,7 +48,7 @@ void test1() {
 
 void test2() {
   // The zero-dim universe polyhedron.
-  Polyhedron ph;
+  C_Polyhedron ph;
   Poly_Con_Relation rel = ph.relation_with(LinExpression(0) > 1);
 
 #if NOISY
@@ -64,7 +64,7 @@ void test2() {
 
 void test3() {
   // The zero-dim universe polyhedron.
-  Polyhedron ph;
+  C_Polyhedron ph;
   Poly_Con_Relation rel = ph.relation_with(LinExpression(1) > 0);
 
 #if NOISY
@@ -80,7 +80,7 @@ void test3() {
 
 void test4() {
   // An empty polyhedron.
-  Polyhedron ph(1);
+  C_Polyhedron ph(1);
   ph.add_constraint(LinExpression(0) >= 1);
   Variable A(0);
   Poly_Con_Relation rel = ph.relation_with(A > 0);
@@ -102,7 +102,7 @@ void test5() {
   Variable A(0);
   Variable B(1);
   ConSys cs(A + B == 3);
-  Polyhedron ph(cs);
+  C_Polyhedron ph(cs);
 
   Poly_Con_Relation rel = ph.relation_with(A + B > 3);
 
@@ -122,7 +122,7 @@ void test6() {
   Variable A(0);
   Variable B(1);
   ConSys cs(A + B <= 3);
-  Polyhedron ph(cs);
+  C_Polyhedron ph(cs);
 
   Poly_Con_Relation rel = ph.relation_with(A + B > 3);
 
@@ -144,7 +144,7 @@ void test7() {
   cs.insert(A >= 1);
   cs.insert(B >= 0);
   cs.insert(A + B <= 3);
-  Polyhedron ph(cs);
+  C_Polyhedron ph(cs);
 
   Poly_Con_Relation rel = ph.relation_with(A + 2*B < 10);
 
@@ -166,7 +166,7 @@ void test8() {
   cs.insert(A >= 1);
   cs.insert(B >= 0);
   cs.insert(A + B <= 3);
-  Polyhedron ph(cs);
+  C_Polyhedron ph(cs);
 
   Poly_Con_Relation rel = ph.relation_with(A + B > 1);
 

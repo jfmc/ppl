@@ -1,4 +1,4 @@
-/* Testing Polyhedron::remove_higher_dimensions(): we remove
+/* Testing C_Polyhedron::remove_higher_dimensions(): we remove
    dimensions from an empty polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -35,14 +35,14 @@ int
 main() {
   set_handlers();
 
-  Polyhedron ph(4, Polyhedron::EMPTY);
+  C_Polyhedron ph(4, C_Polyhedron::EMPTY);
 
 #if NOISY
   print_constraints(ph, "--- ph ---");
 #endif
   ph.remove_higher_dimensions(0);
 
-  Polyhedron known_result(0, Polyhedron::EMPTY);
+  C_Polyhedron known_result(0, C_Polyhedron::EMPTY);
 
   int retval = (ph == known_result) ? 0 : 1;
 

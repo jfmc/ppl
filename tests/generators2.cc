@@ -39,7 +39,7 @@ main() try {
   cs.insert(x + y >= 2);
   cs.insert(x + y <= 1);
  
-  Polyhedron ph(cs);
+  C_Polyhedron ph(cs);
 
   const GenSys& gs = ph.generators();
 

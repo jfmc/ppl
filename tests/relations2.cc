@@ -1,4 +1,4 @@
-/* Testing Polyhedron::relation_with(g): we verify that a generator
+/* Testing C_Polyhedron::relation_with(g): we verify that a generator
    is not subsumed by an empty polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -37,7 +37,7 @@ main() {
 
   Variable x(0);
 
-  Polyhedron ph(2, Polyhedron::EMPTY);
+  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
 #if NOISY
   print_constraints(ph, "--- ph ---");

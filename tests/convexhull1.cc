@@ -1,4 +1,4 @@
-/* Testing Polyhedron::convex_hull_assign().
+/* Testing C_Polyhedron::convex_hull_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -42,7 +42,7 @@ main() {
   gs1.insert(ray(x));
   gs1.insert(ray(y));
 
-  Polyhedron ph1(gs1);
+  C_Polyhedron ph1(gs1);
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
@@ -53,13 +53,13 @@ main() {
   gs2.insert(point(x + y));
   gs2.insert(point(3*x));
 
-  Polyhedron ph2(gs2);
+  C_Polyhedron ph2(gs2);
 
 #if NOISY
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  Polyhedron computed_result = ph1;
+  C_Polyhedron computed_result = ph1;
 
   computed_result.convex_hull_assign(ph2);
 
@@ -69,7 +69,7 @@ main() {
   gs_known_result.insert(ray(x));
   gs_known_result.insert(ray(y));
 
-  Polyhedron known_result(gs_known_result);
+  C_Polyhedron known_result(gs_known_result);
 
 #if NOISY
   print_generators(computed_result, "*** After convex_hull_assign ***");

@@ -41,7 +41,7 @@ main() {
 
   ConSys cs1;
   cs1.insert(LinExpression(2) >= 0);
-  Polyhedron ph(cs1);
+  C_Polyhedron ph(cs1);
 #if NOISY
   print_constraints(ph, "--- ph ---");
 #endif
@@ -55,7 +55,7 @@ main() {
 #endif
   ph.add_dimensions_and_constraints(cs);
 
-  Polyhedron known_result(2);
+  C_Polyhedron known_result(2);
   known_result.add_constraint(x - y >= 3);
   known_result.add_constraint(y >= 0);
 

@@ -69,8 +69,8 @@ main() {
   
   NNC_Polyhedron known_result(gs3);
 
-  Polyhedron closed_ph(ph);
-  Polyhedron closed_known_result(known_result);
+  C_Polyhedron closed_ph(ph);
+  C_Polyhedron closed_known_result(known_result);
 
   int retval = (ph == known_result
 		&& closed_ph == closed_known_result) ? 0 : 1;

@@ -1,4 +1,4 @@
-/* Testing Polyhedron::relation_with(g).
+/* Testing C_Polyhedron::relation_with(g).
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -40,7 +40,7 @@ main() {
   ConSys cs;
   cs.insert(2*x - y >= 0);
   cs.insert(y >= 0);
-  Polyhedron ph(cs);
+  C_Polyhedron ph(cs);
 
 #if NOISY
   print_constraints(ph, "*** ph ***");

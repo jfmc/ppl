@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_dimensions_and_project().
+/* Testing C_Polyhedron::add_dimensions_and_project().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -43,7 +43,7 @@ main() {
   gs.insert(point(y));
   gs.insert(point(x + y));
 
-  Polyhedron ph(gs);
+  C_Polyhedron ph(gs);
 
 #if NOISY
   print_generators(ph, "*** ph ***");
@@ -51,7 +51,7 @@ main() {
 
   ph.add_dimensions_and_project(1);
 
-  Polyhedron known_result(3, Polyhedron::EMPTY);
+  C_Polyhedron known_result(3, C_Polyhedron::EMPTY);
   known_result.add_generator(point());
   known_result.add_generator(point(x));
   known_result.add_generator(point(y));

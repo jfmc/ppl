@@ -1,5 +1,5 @@
-/* Testing Polyhedron::remove_higher_dimensions() and
-   Polyhedron::remove_dimensions(): we obtain a zero-dimensional
+/* Testing C_Polyhedron::remove_higher_dimensions() and
+   C_Polyhedron::remove_dimensions(): we obtain a zero-dimensional
    polyhedron removing all the dimensions.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -40,7 +40,7 @@ main() {
   Variable y(1);
   Variable z(2);
 
-  Polyhedron ph1(3);
+  C_Polyhedron ph1(3);
   ph1.add_constraint(x >= 3);
   ph1.add_constraint(x - y >= 0);
 #if NOISY
@@ -49,7 +49,7 @@ main() {
 
   GenSys gs = ph1.generators();
 
-  Polyhedron ph2(gs);
+  C_Polyhedron ph2(gs);
 #if NOISY
   print_generators(ph2, "*** ph2 ***");
 #endif

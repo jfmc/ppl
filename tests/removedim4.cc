@@ -1,4 +1,4 @@
-/* Testing Polyhedron::remove_higher_dimensions().
+/* Testing C_Polyhedron::remove_higher_dimensions().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -42,7 +42,7 @@ main() {
   GenSys gs;
   gs.insert(point(x + y + 2*z - w));
 
-  Polyhedron ph(gs);
+  C_Polyhedron ph(gs);
 #if NOISY
   print_generators(ph, "*** ph ***");
 #endif
@@ -51,7 +51,7 @@ main() {
 
   GenSys gs_known_result;
   gs_known_result.insert(point(x + y));
-  Polyhedron known_result(gs_known_result);
+  C_Polyhedron known_result(gs_known_result);
 
   int retval = (ph == known_result) ? 0 : 1;
 

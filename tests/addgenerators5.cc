@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_generators_and_minimize(): we add a system of
+/* Testing C_Polyhedron::add_generators_and_minimize(): we add a system of
    generators to a polyhedron defined by its system of constraints.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -38,7 +38,7 @@ main() {
   Variable x(0);
   Variable y(1);
 
-  Polyhedron ph(2);
+  C_Polyhedron ph(2);
   ph.add_constraint(x >= 0);
   ph.add_constraint(x <= -1);
 
@@ -59,7 +59,7 @@ main() {
   GenSys gs_known_result;
   gs_known_result.insert(point());
   gs_known_result.insert(ray(x + y));
-  Polyhedron known_result(gs_known_result);
+  C_Polyhedron known_result(gs_known_result);
 
 
   int retval = (ph == known_result) ? 0 : 1;

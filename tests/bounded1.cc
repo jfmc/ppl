@@ -1,4 +1,4 @@
-/* Testing Polyhedron::is_bounded(). We apply this function to
+/* Testing C_Polyhedron::is_bounded(). We apply this function to
    five different type of polyhedra: a non-bounded polyhedron,
    a boundend polyhedra, a zero dimensional polyhedron, a zero-dimensional
    and empty polyhedron and a empty polyhedron.
@@ -39,7 +39,7 @@ main() {
   Variable y(1);
 
   // This is a non-bounded polyhedron.
-  Polyhedron ph1(2);
+  C_Polyhedron ph1(2);
   ph1.add_constraint(x >= 0);
 
 #if NOISY
@@ -50,7 +50,7 @@ main() {
     return 1;
   
   // This is a bounded polyhedron (it is a square);
-  Polyhedron ph2(2);
+  C_Polyhedron ph2(2);
   ph2.add_constraint(x >= 2);
   ph2.add_constraint(y >= 2);
   ph2.add_constraint(x <= 4);
@@ -64,7 +64,7 @@ main() {
     return 1;
   
   // This is a universal, zero-dimensional polyhedron. 
-  Polyhedron ph3;
+  C_Polyhedron ph3;
 
 #if NOISY
   print_constraints(ph3, "*** ph3 ***");
@@ -74,7 +74,7 @@ main() {
     return 1;
   
   // This is an empty, zero-dimensional polyhedron. 
-  Polyhedron ph4;
+  C_Polyhedron ph4;
   ph4.add_constraint(LinExpression(-3) >= 0);
 
 #if NOISY
@@ -85,7 +85,7 @@ main() {
     return 1;
 
   // This is an empty polyhedron. 
-  Polyhedron ph5(4, Polyhedron::EMPTY);
+  C_Polyhedron ph5(4, C_Polyhedron::EMPTY);
 
 #if NOISY
   print_constraints(ph5, "*** ph5 ***");

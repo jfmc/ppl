@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_generators(): we add a one-dimensional
+/* Testing C_Polyhedron::add_generators(): we add a one-dimensional
    system of generators to a two-dimensional polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -41,7 +41,7 @@ main() {
   gs1.insert(ray(x + y));
   gs1.insert(point());
 
-  Polyhedron ph(gs1);
+  C_Polyhedron ph(gs1);
 
 #if NOISY
   print_generators(ph, "*** ph ***");
@@ -57,7 +57,7 @@ main() {
 
   ph.add_generators(gs2);
 
-  Polyhedron known_result(2, Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
   known_result.add_generator(point());
   known_result.add_generator(ray(x));
   known_result.add_generator(ray(x + y));

@@ -1,4 +1,4 @@
-/* Testing Polyhedron::limited_widening().
+/* Testing C_Polyhedron::limited_widening().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -42,7 +42,7 @@ main() {
   cs1.insert(y >= 0);
   cs1.insert(x - y >= 0);
 
-  Polyhedron ph1(cs1);
+  C_Polyhedron ph1(cs1);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ****");
@@ -54,7 +54,7 @@ main() {
   cs2.insert(y >= 0);
   cs2.insert(x - y >= 0);
 
-  Polyhedron ph2(cs2);
+  C_Polyhedron ph2(cs2);
 
 #if NOISY
   print_constraints(ph2, "*** ph2 ****");
@@ -70,10 +70,10 @@ main() {
   print_constraints(cs, "*** cs ****");
 #endif
 
-  Polyhedron computed_result = ph2;
+  C_Polyhedron computed_result = ph2;
   computed_result.limited_widening_assign(ph1, cs);
 
-  Polyhedron known_result(2);
+  C_Polyhedron known_result(2);
   known_result.add_constraint(x - y >= 0);
   known_result.add_constraint(y >= 0);
   known_result.add_constraint(x <= 5);

@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_constraints_and_minimize(): we add a
+/* Testing C_Polyhedron::add_constraints_and_minimize(): we add a
    zero-dimensional and empty system of constraints to a polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -36,7 +36,7 @@ main() {
   set_handlers();
   Variable x(0);
 
-  Polyhedron ph(3);
+  C_Polyhedron ph(3);
   ph.add_constraint(x >= 1);
 
 #if NOISY
@@ -45,7 +45,7 @@ main() {
 
   ConSys cs;
 
-  Polyhedron computed_result(ph);
+  C_Polyhedron computed_result(ph);
 
   computed_result.add_constraints_and_minimize(cs);
 

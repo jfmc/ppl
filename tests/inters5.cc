@@ -1,4 +1,4 @@
-/* Testing Polyhedron::intersection_assign_and_minimize(): we
+/* Testing C_Polyhedron::intersection_assign_and_minimize(): we
    intersect a polyhedron defined by its system of constraints with
    one described by its system of generators.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
@@ -39,10 +39,10 @@ main() {
   Variable x(0);
   Variable y(1);
 
-  Polyhedron ph1(2);
+  C_Polyhedron ph1(2);
   ph1.add_constraint(x >= y);
 
-  Polyhedron ph2(2, Polyhedron::EMPTY);
+  C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
   ph2.add_generator(point());
   ph2.add_generator(line(x));
   ph2.add_generator(ray(y));
@@ -54,7 +54,7 @@ main() {
 
   ph1.intersection_assign_and_minimize(ph2);
 
-  Polyhedron known_result(2);
+  C_Polyhedron known_result(2);
   known_result.add_constraint(y >= 0);
   known_result.add_constraint(x >= y);
 

@@ -38,12 +38,12 @@ using namespace Parma_Polyhedra_Library;
 //    M O N E Y
 
 void
-less_than(Polyhedron& ph, Variable X, Variable Y) {
+less_than(C_Polyhedron& ph, Variable X, Variable Y) {
   ph.add_constraint(X+1 <= Y);
 }
 
 void
-constraints(Polyhedron& ph,
+constraints(C_Polyhedron& ph,
 	    Variable S,
 	    Variable E,
 	    Variable N,
@@ -108,7 +108,7 @@ main() try {
     for (int C2 = 0; C2 <= 1; ++C2)
       for (int C3 = 0; C3 <= 1; ++C3)
 	for (int C4 = 0; C4 <= 1; ++C4) {
-	  Polyhedron ph(8);
+	  C_Polyhedron ph(8);
 	  constraints(ph,
 		      S, E, N, D, M, O, R, Y,
 		      C1, C2, C3, C4);
@@ -128,7 +128,7 @@ main() try {
 
 	    solution_found = true;
 
-	    Polyhedron expected(8);
+	    C_Polyhedron expected(8);
 	    expected.add_constraint(S == 9);
 	    expected.add_constraint(E == 5);
 	    expected.add_constraint(N == 6);

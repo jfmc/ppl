@@ -40,7 +40,7 @@ main() {
   Variable w(3);
   GenSys gs;
   gs.insert(point(0*x + y +0*z + 2*w));
-  Polyhedron ph(gs);
+  C_Polyhedron ph(gs);
 #if NOISY
   print_generators(ph, "*** ph ***");
 #endif
@@ -53,7 +53,7 @@ main() {
 
   GenSys known_result_gs;
   known_result_gs.insert(point(0*x +2*y));
-  Polyhedron known_result(known_result_gs);
+  C_Polyhedron known_result(known_result_gs);
 
   int retval = (known_result == ph) ? 0 : 1;
 

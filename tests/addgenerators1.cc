@@ -41,7 +41,7 @@ main() {
   gs1.insert(point(x));
   gs1.insert(point(y));
   gs1.insert(line(x));
-  Polyhedron ph1(gs1);
+  C_Polyhedron ph1(gs1);
 
 #if NOISY
   print_generators(ph1, "*** before ***");
@@ -52,7 +52,7 @@ main() {
 
   ph1.add_generators_and_minimize(gs2);
 
-  Polyhedron known_result(2, Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
   known_result.add_generator(point());
   known_result.add_generator(point(y));
   known_result.add_generator(line(x));

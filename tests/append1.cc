@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 
 void
-shift_rename_add(const Polyhedron& p, size_t offset, Polyhedron& q) {
+shift_rename_add(const C_Polyhedron& p, size_t offset, C_Polyhedron& q) {
   if (p.space_dimension() == 0)
     exit(1);
 
@@ -61,7 +61,7 @@ main() {
 
   // This is the base case:
   // append(A,B,C) :- A = [], B = C.
-  Polyhedron base(3);
+  C_Polyhedron base(3);
   base.add_constraint(A == 0);
   base.add_constraint(B >= 0);
   base.add_constraint(C == B);
@@ -71,7 +71,7 @@ main() {
 
   // This is the inductive case:
   // append(A,B,C) :- A = [X|D], B = E, C = [X|F], append(D,E,F).
-  Polyhedron inductive(6);
+  C_Polyhedron inductive(6);
   inductive.add_constraint(A + F == C + D);
   inductive.add_constraint(B == E);
   inductive.add_constraint(C + D >= A);
@@ -83,13 +83,13 @@ main() {
 #endif
 
   // Initialize the fixpoint iteration.
-  Polyhedron current = base;
+  C_Polyhedron current = base;
 #if NOISY
   print_constraints(current, "*** start ***");
 #endif
 
   // Contains the polyhedron computed at the previous iteration.
-  Polyhedron previous;
+  C_Polyhedron previous;
   do {
     previous = current;
     current = inductive;
@@ -114,7 +114,7 @@ main() {
 #endif
   } while (current != previous);
 
-  Polyhedron expected(3);
+  C_Polyhedron expected(3);
   expected.add_constraint(A + B == C);
   expected.add_constraint(B >= 0);
   expected.add_constraint(C >= B);

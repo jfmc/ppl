@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_generators_and_minimize(): we add a system of
+/* Testing C_Polyhedron::add_generators_and_minimize(): we add a system of
    generators to a zero-dimensional, universal polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -35,7 +35,7 @@ int
 main() {
   set_handlers();
 
-  Polyhedron ph;
+  C_Polyhedron ph;
   ph.add_generator(point());
 
 #if NOISY
@@ -51,7 +51,7 @@ main() {
 
   ph.add_generators_and_minimize(gs);
 
-  Polyhedron known_result;
+  C_Polyhedron known_result;
 
   int retval = (ph == known_result) ? 0 : 1;
 

@@ -1,4 +1,4 @@
-/* Testing Polyhedron::relation_with(c): we apply this function to
+/* Testing C_Polyhedron::relation_with(c): we apply this function to
    a zero-dimensional, universal polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -38,7 +38,7 @@ main() {
   Poly_Con_Relation rel = Poly_Con_Relation::nothing();
   Poly_Con_Relation known_result = Poly_Con_Relation::nothing();
 
-  Polyhedron ph;
+  C_Polyhedron ph;
 #if NOISY
   print_generators(ph, "--- ph ---");
 #endif

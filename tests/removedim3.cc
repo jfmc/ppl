@@ -45,11 +45,11 @@ main() {
   to_be_removed.insert(w);
 
   // A 10-dim space, empty polyhedron.
-  Polyhedron ph(10, Polyhedron::EMPTY);
+  C_Polyhedron ph(10, C_Polyhedron::EMPTY);
   ph.remove_dimensions(to_be_removed);
 
   // A 7-dim space, empty polyhedron.
-  Polyhedron known_result(7, Polyhedron::EMPTY);
+  C_Polyhedron known_result(7, C_Polyhedron::EMPTY);
 
   int retval = (known_result == ph) ? 0 : 1;
 

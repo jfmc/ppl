@@ -39,7 +39,7 @@ main() try {
   GenSys gs;
   gs.insert(point(x + y, -1));
  
-  Polyhedron ph(gs);
+  C_Polyhedron ph(gs);
 
 #if NOISY
   print_generators(ph, "*** ph ***");

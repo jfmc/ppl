@@ -1,4 +1,4 @@
-/* Testing Polyhedron::check_universe(): we apply this function
+/* Testing C_Polyhedron::check_universe(): we apply this function
    to a three-dimensional polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -35,7 +35,7 @@ int
 main() {
   set_handlers();
 
-  Polyhedron ph(3);
+  C_Polyhedron ph(3);
 
 #if NOISY
   print_constraints(ph, "--- ph ---");

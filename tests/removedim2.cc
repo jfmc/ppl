@@ -44,7 +44,7 @@ main() {
     gs.insert(point(e));
   }
 
-  Polyhedron ph(gs);
+  C_Polyhedron ph(gs);
 
 #if NOISY
   print_generators(ph, "*** before ***");
@@ -77,7 +77,7 @@ main() {
     gs.insert(point(expr));
   }
 
-  Polyhedron known_result(gs);
+  C_Polyhedron known_result(gs);
 
   int retval = (ph == known_result ? 0 : 1);
 

@@ -1,5 +1,5 @@
-/* Testing Polyhedron::convex_hull_assign() and
-   Polyhedron::convex_hull_assign_and_minimize(): we apply these
+/* Testing C_Polyhedron::convex_hull_assign() and
+   C_Polyhedron::convex_hull_assign_and_minimize(): we apply these
    functions to an empty polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -39,26 +39,26 @@ main() {
   Variable x(0);
   Variable y(1);
 
-  Polyhedron ph1(2, Polyhedron::EMPTY);
+  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
 
   GenSys gs;
   gs.insert(point());
   gs.insert(ray(x + y));
-  Polyhedron ph2(gs);
+  C_Polyhedron ph2(gs);
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  Polyhedron computed_result1(ph1);
+  C_Polyhedron computed_result1(ph1);
 
   computed_result1.convex_hull_assign_and_minimize(ph2);
 
-  Polyhedron computed_result2(ph1);
+  C_Polyhedron computed_result2(ph1);
   computed_result2.convex_hull_assign(ph2);
 
-  Polyhedron known_result(ph2);
+  C_Polyhedron known_result(ph2);
 
   int retval = (computed_result1 == known_result
 		&& computed_result2 == known_result) ? 0 : 1;

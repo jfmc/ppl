@@ -1,4 +1,4 @@
-/* Testing Polyhedron::affine_image().
+/* Testing C_Polyhedron::affine_image().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -38,7 +38,7 @@ main() {
   Variable B(1);
   Variable C(2);
 
-  Polyhedron ph(3);
+  C_Polyhedron ph(3);
   ph.add_constraint(C == -2);
   ph.add_constraint(A == 0);
 #if NOISY
@@ -47,7 +47,7 @@ main() {
 
   ph.affine_image(B, A+2, 1);
 
-  Polyhedron known_result(3, Polyhedron::EMPTY);
+  C_Polyhedron known_result(3, C_Polyhedron::EMPTY);
   known_result.add_generator(point(2*B - 2*C));
 
   int retval = (ph == known_result) ? 0 : 1;

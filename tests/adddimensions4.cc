@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_dimensions_and_project(): we apply this
+/* Testing C_Polyhedron::add_dimensions_and_project(): we apply this
    function to a zero-dimensional, universal polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -35,7 +35,7 @@ int
 main() {
   set_handlers();
 
-  Polyhedron ph1;
+  C_Polyhedron ph1;
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
@@ -46,7 +46,7 @@ main() {
   print_generators(ph1, "*** After add_dimensions_and_project(3) ***");
 #endif
 
-  Polyhedron ph2;
+  C_Polyhedron ph2;
   ConSys cs = ph2.constraints();
 
 #if NOISY

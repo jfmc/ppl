@@ -1,5 +1,5 @@
-/* Testing Polyhedron::add_dimensions_and_project() and
-   Polyhedron::add_dimensions_and_embed(): we add dimensions to an
+/* Testing C_Polyhedron::add_dimensions_and_project() and
+   C_Polyhedron::add_dimensions_and_embed(): we add dimensions to an
    empty polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -36,19 +36,19 @@ int
 main() {
   set_handlers();
 
-  Polyhedron ph(3, Polyhedron::EMPTY);
+  C_Polyhedron ph(3, C_Polyhedron::EMPTY);
 
 #if NOISY
   print_constraints(ph, "*** ph ***");
 #endif
 
-  Polyhedron computed_result1(ph);
-  Polyhedron computed_result2(ph);
+  C_Polyhedron computed_result1(ph);
+  C_Polyhedron computed_result2(ph);
 
   computed_result1.add_dimensions_and_project(4);
   computed_result2.add_dimensions_and_embed(4);
 
-  Polyhedron known_result(7, Polyhedron::EMPTY);
+  C_Polyhedron known_result(7, C_Polyhedron::EMPTY);
 
   int retval = (computed_result1 == known_result
 		&& computed_result2 == known_result) ? 0 : 1;

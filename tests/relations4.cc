@@ -1,4 +1,4 @@
-/* Testing Polyhedron::relation_with(g): the polyhedron is defined
+/* Testing C_Polyhedron::relation_with(g): the polyhedron is defined
    by its system of generators.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -42,7 +42,7 @@ main() {
   gs.insert(point());
   gs.insert(ray(y));
   gs.insert(line(x));
-  Polyhedron ph(gs);
+  C_Polyhedron ph(gs);
 
 
 #if NOISY

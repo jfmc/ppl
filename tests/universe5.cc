@@ -1,4 +1,4 @@
-/* Testing Polyhedron::check_universe(): a polyhedron defined by
+/* Testing C_Polyhedron::check_universe(): a polyhedron defined by
    a system of constraints containing a non-trivial inequality
    is not universal.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
@@ -39,7 +39,7 @@ main() {
   Variable y(1);
   Variable z(2);
 
-  Polyhedron ph(3);
+  C_Polyhedron ph(3);
   ph.add_constraint(x - y - z >= 0);
 
 #if NOISY

@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_constraints(): we add a system of constraints to
+/* Testing C_Polyhedron::add_constraints(): we add a system of constraints to
    an empty, zero-dimensional polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -35,7 +35,7 @@ int
 main() {
   set_handlers();
 
-  Polyhedron ph;
+  C_Polyhedron ph;
   ph.add_constraint(LinExpression(-2) >= 0);
 
 #if NOISY
@@ -51,7 +51,7 @@ main() {
 
   ph.add_constraints(cs);
 
-  Polyhedron known_result(0, Polyhedron::EMPTY);
+  C_Polyhedron known_result(0, C_Polyhedron::EMPTY);
 
   int retval = (known_result == ph) ? 0 : 1;
 

@@ -1,4 +1,4 @@
-/* Testing Polyhedron::affine_preimage(): we apply this function to
+/* Testing C_Polyhedron::affine_preimage(): we apply this function to
    a polyhedron defined by its system of generators.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -43,7 +43,7 @@ main() {
   gs.insert(ray(A + B));
   gs.insert(point(A));
 
-  Polyhedron ph(gs);
+  C_Polyhedron ph(gs);
 
 #if NOISY
   print_generators(ph, "--- ph ---");
@@ -56,7 +56,7 @@ main() {
   gs_known_result.insert(ray(A + B));
   gs_known_result.insert(point(-A));
 
-  Polyhedron known_result(gs_known_result);
+  C_Polyhedron known_result(gs_known_result);
 
   int retval = (ph == known_result) ? 0 : 1;
 

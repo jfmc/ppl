@@ -1,4 +1,4 @@
-/* Testing Polyhedron::affine_preimage(): the transformation is not
+/* Testing C_Polyhedron::affine_preimage(): the transformation is not
    invertible and the polyhedron is defined by its system of generators.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -43,7 +43,7 @@ main() {
   gs.insert(ray(x + 2*y));
   gs.insert(ray(x));
 
-  Polyhedron ph(gs);
+  C_Polyhedron ph(gs);
 
 #if NOISY
   print_generators(ph, "*** ph ***");
@@ -51,7 +51,7 @@ main() {
 
   ph.affine_preimage(x, y+1);
 
-  Polyhedron known_result(2);
+  C_Polyhedron known_result(2);
   known_result.add_constraint(y >= 1);
 
   int retval = (ph == known_result) ? 0 : 1;

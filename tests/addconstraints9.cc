@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_constraints(): we add a system of constraints
+/* Testing C_Polyhedron::add_constraints(): we add a system of constraints
    to a polyhedron described by its system of generators.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -43,7 +43,7 @@ main() {
   gs.insert(ray(x));
   gs.insert(ray(x + y));
 
-  Polyhedron ph(gs);
+  C_Polyhedron ph(gs);
 
 #if NOISY
   print_generators(ph, "*** ph ***");
@@ -58,7 +58,7 @@ main() {
 
   ph.add_constraints(cs);
 
-  Polyhedron known_result(2);
+  C_Polyhedron known_result(2);
   known_result.add_constraint(y >= 0);
   known_result.add_constraint(x - y >= 0);
   known_result.add_constraint(x <= 3);

@@ -40,7 +40,7 @@ main() try {
   cs1.insert(x >= 0);
   cs1.insert(y >= 0);
   cs1.insert(x - y >= 0);
-  Polyhedron ph(cs1);
+  C_Polyhedron ph(cs1);
 
 #if NOISY
   print_constraints(ph, "*** ph before ***");
@@ -52,7 +52,7 @@ main() try {
   cs2.insert(x - y >= -1);
 
   // Making copies.
-  Polyhedron copy_ph = ph;
+  C_Polyhedron copy_ph = ph;
   ConSys copy_cs2 = cs2;
 
   ph.add_dimensions_and_constraints(cs2);

@@ -36,21 +36,21 @@ main() {
 
   // For const-correctness, making a copy is required.
   ConSys cs1 = ConSys::zero_dim_empty();
-  Polyhedron ph1;
+  C_Polyhedron ph1;
   ph1.add_constraints_and_minimize(cs1);
 
   ConSys cs2;
   cs2.insert(LinExpression::zero() >= 7);
-  Polyhedron ph2;
+  C_Polyhedron ph2;
   ph2.add_constraints_and_minimize(cs2);
 
   ConSys cs3;
   cs3.insert(LinExpression::zero() >= -3);
-  Polyhedron ph3;
+  C_Polyhedron ph3;
   ph3.add_constraints_and_minimize(cs3);
 
-  Polyhedron empty_result(0, Polyhedron::EMPTY);
-  Polyhedron univ_result;
+  C_Polyhedron empty_result(0, C_Polyhedron::EMPTY);
+  C_Polyhedron univ_result;
 
   int retval = (ph1 == empty_result
 		&& ph2 == empty_result

@@ -38,7 +38,7 @@ main() {
   Variable y(1);
   Variable z(2);
 
-  Polyhedron ph(3, Polyhedron::EMPTY);
+  C_Polyhedron ph(3, C_Polyhedron::EMPTY);
   ph.add_generator(point(-1000*x - 9*y, 16));
 
 #if NOISY
@@ -46,7 +46,7 @@ main() {
   print_constraints(ph, "*** constraints ***");
 #endif
 
-  Polyhedron known_result(3);
+  C_Polyhedron known_result(3);
   known_result.add_constraint(2*x == -125);
   known_result.add_constraint(16*y == -9);
   known_result.add_constraint(z == 0);

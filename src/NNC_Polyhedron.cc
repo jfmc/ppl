@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::NNC_Polyhedron::NNC_Polyhedron(const Polyhedron& y)
+PPL::NNC_Polyhedron::NNC_Polyhedron(const C_Polyhedron& y)
   : PolyBase(NOT_NECESSARILY_CLOSED, y.space_dimension(), UNIVERSE) {
   ConSys cs = y.constraints();
   add_constraints(cs);
@@ -42,8 +42,8 @@ PPL::NNC_Polyhedron::limited_widening_assign(const NNC_Polyhedron& y,
   NNC_Polyhedron& x = *this;
   // KLUDGE.
   // Converting x and y to Polyhedron. 
-  Polyhedron nc_x = Polyhedron(x);
-  Polyhedron nc_y = Polyhedron(y);
+  C_Polyhedron nc_x = C_Polyhedron(x);
+  C_Polyhedron nc_y = C_Polyhedron(y);
   nc_x.limited_widening_assign(nc_y, cs);
   // Converting back and assigning to x.
   x = NNC_Polyhedron(nc_x);

@@ -39,7 +39,7 @@ main() try {
 
   ConSys cs;
   cs.insert(x + y >= 0);
-  Polyhedron p(cs);
+  C_Polyhedron p(cs);
 
   LinExpression e(1);
   ConSys c;

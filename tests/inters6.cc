@@ -1,4 +1,4 @@
-/* Testing Polyhedron::intersection_assign(): we intersect two
+/* Testing C_Polyhedron::intersection_assign(): we intersect two
    polyhedra defined by their system of generators.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -43,14 +43,14 @@ main() {
   gs1.insert(point(3*x));
   gs1.insert(point(3*y));
   gs1.insert(point(3*x+ 3*y));
-  Polyhedron ph1(gs1);
+  C_Polyhedron ph1(gs1);
 
   GenSys gs2;
   gs2.insert(point(x));
   gs2.insert(point(4*x));
   gs2.insert(point(x + 3*y));
   gs2.insert(point(4*x+ 3*y));
-  Polyhedron ph2(gs2);
+  C_Polyhedron ph2(gs2);
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
@@ -59,7 +59,7 @@ main() {
 
   ph1.intersection_assign(ph2);
 
-  Polyhedron known_result(2, Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
   known_result.add_generator(point(x));
   known_result.add_generator(point(3*x));
   known_result.add_generator(point(x + 3*y));

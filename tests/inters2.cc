@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 
 int
-count_points(const Polyhedron& ph) {
+count_points(const C_Polyhedron& ph) {
   if (ph.check_empty() || (ph.space_dimension() == 0))
     return 0;
 
@@ -78,7 +78,7 @@ main() {
   gs.insert(point(0*x + 2*y + 0*z));
   gs.insert(point(2*x + 2*y + 0*z));
   gs.insert(point(x + y + pyramid_height*z));
-  Polyhedron pyramid(gs);
+  C_Polyhedron pyramid(gs);
 
 #if NOISY
     print_constraints(pyramid, "*** pyramid constraints ***");
@@ -89,10 +89,10 @@ main() {
 
   for (size_t i = 0; i <= 6; ++i) {
     // Above.
-    Polyhedron hyper_space_above(3);
+    C_Polyhedron hyper_space_above(3);
     hyper_space_above.add_constraint(z >= ph_nv[i].plane_height);
 
-    Polyhedron computed_result = pyramid;
+    C_Polyhedron computed_result = pyramid;
     computed_result.intersection_assign_and_minimize(hyper_space_above);
 
     if (ok
@@ -105,7 +105,7 @@ main() {
 #endif
 
     // Below.
-    Polyhedron hyper_space_below(3);
+    C_Polyhedron hyper_space_below(3);
     hyper_space_below.add_constraint(z <= ph_nv[i].plane_height);
 
     computed_result = pyramid;
