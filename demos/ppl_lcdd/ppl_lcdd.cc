@@ -290,13 +290,17 @@ process_options(int argc, char* argv[]) {
 }
 
 void
-normalize(const std::vector<mpq_class>& source, std::vector<mpz_class>& dest) {
+normalize(const std::vector<mpq_class>& source,
+	  std::vector<mpz_class>& dest,
+	  mpz_class& denominator) {
   unsigned n = source.size();
-  mpz_class lcm = 1;
+  denominator = 1;
   for (unsigned i = 0; i < n; ++i)
-    mpz_lcm(lcm.get_mpz_t(), lcm.get_mpz_t(), source[i].get_den().get_mpz_t());
+    mpz_lcm(denominator.get_mpz_t(),
+	    denominator.get_mpz_t(),
+	    source[i].get_den().get_mpz_t());
   for (unsigned i = 0; i < n; ++i)
-    dest[i] = lcm * source[i].get_num();
+    dest[i] = denominator*source[i].get_num();
 }
 
 enum Number_Type { INTEGER, RATIONAL, REAL };
@@ -304,13 +308,15 @@ enum Number_Type { INTEGER, RATIONAL, REAL };
 void
 read_coefficients(std::istream& in,
 		  Number_Type number_type,
-		  std::vector<mpz_class>& coefficients) {
+		  std::vector<mpz_class>& coefficients,
+		  mpz_class& denominator) {
   unsigned num_coefficients = coefficients.size();
   switch (number_type) {
   case INTEGER: {
     for (unsigned i = 0; i < num_coefficients; ++i)
       if (!(in >> coefficients[i]))
 	error("missing or invalid integer coefficient");
+    denominator = 1;
     break;
   }
   case RATIONAL: {
@@ -318,7 +324,7 @@ read_coefficients(std::istream& in,
     for (unsigned i = 0; i < num_coefficients; ++i)
       if (!(in >> rational_coefficients[i]))
 	error("missing or invalid rational coefficient");
-    normalize(rational_coefficients, coefficients);
+    normalize(rational_coefficients, coefficients, denominator);
     break;
   }
   case REAL: {
@@ -329,7 +335,7 @@ read_coefficients(std::istream& in,
 	error("missing or invalid real coefficient");
       rational_coefficients[i] = mpq_class(d);
     }
-    normalize(rational_coefficients, coefficients);
+    normalize(rational_coefficients, coefficients, denominator);
     break;
   }
   default:
@@ -410,17 +416,18 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
   if (rep == V) {
     std::set<unsigned>::iterator linearity_end = linearity.end();
     std::vector<mpz_class> coefficients(num_columns-1);
+    mpz_class denominator;
     for (unsigned i = 0; i < num_rows; ++i) {
       int vertex_marker;
       if (!(in >> vertex_marker) || vertex_marker < 0 || vertex_marker > 1)
 	error("illegal or missing vertex marker");
-      read_coefficients(in, number_type, coefficients);
+      read_coefficients(in, number_type, coefficients, denominator);
       PPL::LinExpression e;
       for (unsigned j = num_columns-1; j-- > 0; )
 	e += coefficients[j] * PPL::Variable(j);
       if (vertex_marker == 1) {
 	assert(linearity.find(i+1) == linearity_end);
-	gs.insert(point(e));
+	gs.insert(point(e, denominator));
       }
       else if (linearity.find(i+1) != linearity_end)
 	gs.insert(line(e));
@@ -435,8 +442,9 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
   else {
     assert(rep == H);
     std::vector<mpz_class> coefficients(num_columns);
+    mpz_class denominator;
     for (unsigned i = 1; i <= num_rows; ++i) {
-      read_coefficients(in, number_type, coefficients);
+      read_coefficients(in, number_type, coefficients, denominator);
       PPL::LinExpression e;
       for (unsigned i = num_columns; i-- > 1; )
 	e += coefficients[i] * PPL::Variable(i-1);
