@@ -106,15 +106,15 @@ struct From_Bounding_Box {
   //! Computes the scalar product between \p c and \p g.
   /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  const Integer& operator*(const Constraint& c, const Generator& g);
+const Integer& operator*(const Constraint& c, const Generator& g);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief Computes the \e reduced scalar product between \p c and \p g,
   //! where the \f$\epsilon\f$ coefficient of \p c is ignored.
   /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  const Integer& reduced_scalar_product(const Constraint& c,
-					const Generator& g);
+const Integer& reduced_scalar_product(const Constraint& c,
+				      const Generator& g);
 
 } // namespace Parma_Polyhedra_Library
 
