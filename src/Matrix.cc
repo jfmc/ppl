@@ -155,21 +155,21 @@ PPL::Matrix::grow(size_t new_num_rows, size_t new_num_columns) {
 				     new_matrix.row_size,
 				     new_matrix.row_capacity);
       // Copy the old rows.
-	++i;
-	while (i-- > 0) {
-	  Row new_row(rows[i],
-		      new_matrix.row_size,
-		      new_matrix.row_capacity);
-	  std::swap(new_matrix.rows[i], new_row);
-	}
-	// Rows have been added: see if we are still sorted.
-	if (was_sorted)
-	  new_matrix.set_sorted(new_matrix[old_num_rows-1]
-				<= new_matrix[old_num_rows]);
-	// Put the new vector into place.
-	swap(new_matrix);
-	assert(OK());
-	return;
+      ++i;
+      while (i-- > 0) {
+	Row new_row(rows[i],
+		    new_matrix.row_size,
+		    new_matrix.row_capacity);
+	std::swap(new_matrix.rows[i], new_row);
+      }
+      // Rows have been added: see if the matrix is known to be sorted.
+      new_matrix.set_sorted(was_sorted
+			    && (new_matrix[old_num_rows-1]
+				<= new_matrix[old_num_rows]));
+      // Put the new vector into place.
+      swap(new_matrix);
+      assert(OK());
+      return;
     }
   }
   // Here we have the right number of rows.
@@ -779,16 +779,6 @@ PPL::Matrix::back_substitute(size_t rank) {
 }
 
 /*!
-  Turn the \f$r \times c\f$ matrix \f$M\f$ into
-  the \f$r \times (c+n)\f$ matrix \f$(M \, 0)\f$.
-*/
-void
-PPL::Matrix::add_zero_columns(size_t n) {
-  assert(n > 0);
-  grow(num_rows(), num_columns() + n);
-}
-
-/*!
   \param n      The number of rows and columns to be added.
 
   Turn the \f$r \times c\f$ matrix \f$M\f$ into
@@ -826,6 +816,8 @@ PPL::Matrix::add_rows_and_columns(size_t n) {
   }
   else if (was_sorted)
     set_sorted(x[n-1] <= x[n]);
+
+  assert(OK());
 }
 
 #ifndef NDEBUG
@@ -860,6 +852,12 @@ PPL::Matrix::OK() const {
   size_t nrows = num_rows();
   for (size_t i = 0; i < nrows; ++i)
     is_broken |= !x[i].OK(row_size, row_capacity);
+
+  if (sorted && !check_sorted()) {
+    is_broken = true;
+    cerr << "The matrix declares itself to be sorted but it is not!"
+	 << endl;
+  }
 
   return !is_broken;
 }

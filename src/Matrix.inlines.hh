@@ -40,18 +40,13 @@ Matrix::swap(Matrix& y) {
 
 /*!
   The default constructor initializes the rows' size and capacity to \f$0\f$.
-  FIXME: This "zero-matrix" is temporarily set to be not sorted
-         because, when we add some rows, they may not be
-         sorted and if the flag had been set to \p true we
-         would have to change it to \p false.
-	 The fact is that a matrix with no rows is sorted.
 */
 inline
 Matrix::Matrix()
   : rows(),
     row_size(0),
     row_capacity(0),
-    sorted(false) {
+    sorted(true) {
 }
 
 
@@ -125,6 +120,16 @@ operator !=(const Matrix& x, const Matrix& y) {
   return !(x == y);
 }
 
+
+/*!
+  Turn the \f$r \times c\f$ matrix \f$M\f$ into
+  the \f$r \times (c+n)\f$ matrix \f$(M \, 0)\f$.
+*/
+inline void
+Matrix::add_zero_columns(size_t n) {
+  assert(n > 0);
+  grow(num_rows(), num_columns() + n);
+}
 
 /*!
   \param first_to_erase   The row index from which start to erase.

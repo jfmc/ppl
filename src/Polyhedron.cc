@@ -1009,10 +1009,10 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
     add_dimensions(gen_sys, con_sys, sat_g, sat_c, dim);
   }
   else if (constraints_are_up_to_date())
-    // Only constraints are up-to-date: we do not need to modify generators.
+    // Only constraints are up-to-date: no need to modify the generators.
     con_sys.add_rows_and_columns(dim);
   else {
-    // Only generators are up-to-date: we do not need to modify constraints.
+    // Only generators are up-to-date: no need to modify the constraints.
     assert(generators_are_up_to_date());
     gen_sys.add_zero_columns(dim);
   }
