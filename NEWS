@@ -116,12 +116,13 @@ o  The `ppl_lcdd' demo is now able to parse problems produced by lrs,
 o  The enumeration values of enum Complexity_Class have been renamed
    POLYNOMIAL_COMPLEXITY, SIMPLEX_COMPLEXITY and ANY_COMPLEXITY.
 
-o  In the Prolog interface, the predicate
-   ppl_new_polyhedron_from_dimension/3 has been renamed
-   ppl_new_polyhedron_universe_from_space_dimension/3
-   and the predicate
-   ppl_new_polyhedron_empty_from_dimension/3 has been renamed
-   ppl_new_polyhedron_empty_from_space_dimension/3.
+o  In the Prolog interface, the predicates
+   ppl_new_polyhedron_from_dimension/3 and
+   ppl_new_polyhedron_empty_from_dimension/3 have been replaced by
+   a single predicate
+   ppl_new_polyhedron_from_space_dimension/4 where the (extra) third argument
+   indicates whether the polyhedron to be created should be the
+   universe or the empty polyhedron.
 
 Bugfixes
 ========

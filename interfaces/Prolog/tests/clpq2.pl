@@ -38,7 +38,7 @@ solve_query(Goals, VN, PolysOut) :-
   % The initial polyhedron is initialised with 0 dimensions
   % We use the NNC topology so that we can handle strict constraints.
   Topology = nnc,
-  ppl_new_Polyhedron_universe_from_space_dimension(Topology, 0, Poly),
+  ppl_new_Polyhedron_from_space_dimension(Topology, 0, universe, Poly),
   % On backtracking, clean up the unwanted polyhedron
   cleanup(Poly),
 

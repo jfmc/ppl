@@ -42,7 +42,7 @@ solve(Goals, VariableNames) :-
     assertz(original_goal_variables(VariableNames)),
     % The initial polyhedron is initialised with
     % `Dims' dimensions, the number of variables in `Goals'.
-    ppl_new_Polyhedron_universe_from_space_dimension(c, Dims, Polyhedron),
+    ppl_new_Polyhedron_from_space_dimension(c, Dims, universe, Polyhedron),
     % Try to reduce `Goals' to the empty continuation.
     (solve(Goals, true, Polyhedron) ->
 	Failed = no

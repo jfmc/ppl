@@ -83,8 +83,7 @@ on the use of the interface.
 
 -  A Prolog term can be bound to a valid handle by using:
 \code
-   ppl_new_Polyhedron_from_dimension/3,
-   ppl_new_Polyhedron_empty_from_space_dimension/3,
+   ppl_new_Polyhedron_from_space_dimension/4,
    ppl_new_Polyhedron_from_Polyhedron/4,
    ppl_new_Polyhedron_from_constraints/3,
    ppl_new_Polyhedron_from_generators/3.
@@ -98,7 +97,8 @@ on the use of the interface.
    and can be either <CODE>c</CODE> or <CODE>nnc</CODE>
    indicating a C or NNC polyhedron, respectively.
    The third argument
-   (in the case of <CODE>ppl_new_Polyhedron_from_Polyhedron/4</CODE>,
+   (in the case of <CODE>ppl_new_Polyhedron_from_Polyhedron/4</CODE>
+   and <CODE>ppl_new_Polyhedron_from_Dimension/4</CODE>,
    the fourth argument) is a Prolog term that is
    unified with a new valid handle for accessing this polyhedron.
 
@@ -202,11 +202,7 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_new_Polyhedron_universe_from_space_dimension(+Topology, +Dimension_Type, -Handle)
-</CODE>
-
-<CODE>
-  ppl_new_Polyhedron_empty_from_space_dimension(+Topology, +Dimension_Type, -Handle)
+  ppl_new_Polyhedron_from_space_dimension(+Topology, +Dimension_Type, +Atom, -Handle)
 </CODE>
 
 <CODE>
@@ -457,7 +453,7 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
   ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(+Handle_1,
                                                   +Handle_2,
 						  +Constraint_System,
-						   ?Token_Flag)
+						   ?C_unsigned)
 </CODE>
 
 <CODE>
@@ -519,25 +515,33 @@ The PPL predicates provided by the Prolog interface are specified below.
 The specification uses the following grammar rules:
 \code
 
- Number      --> number			ranging from 0 to an upper bound
+ Number      --> positive integer	ranging from 0 to an upper bound
 					depending on the actual Prolog system.
  
- C_int       --> Number			A C integer
+ C_int       --> Number | + Number | - Number
+					C integer
 
- Coefficient --> Number			the upper bound will depend on how
+ C_unsigned  --> Number			C unsigned integer	
+
+ Coefficient --> Number			used in linear expressions;
+					the upper bound will depend on how
 					the PPL has been configured
 
  Dimension_Type
-             --> Number			the upper bound will depend on the
-					maximum number of dimensions
+             --> Number			used for the number of affine and
+					space dimensions and the names of
+ 					the dimensions;
+					the upper bound will depend on
+					the maximum number of dimensions
 					allowed by the PPL
 					(see ppl_max_space_dimensions/1)
 
  Boolean     --> true | false
 
- Handle      --> Prolog term
+ Handle      --> Prolog term		used to identify a Polyhedron
 
- Topology    --> c | nnc
+ Topology    --> c | nnc		Polyhedral kind;
+					c is closed and nnc is NNC
 
  VarId       --> Dimension_Type | + Dimension_Type
 					variable identifier
@@ -616,8 +620,6 @@ The specification uses the following grammar rules:
 
  Box         --> []			list of intervals
             | [Interval | Box]
-
- Token_Flag  --> 0 | 1
 
  Vars_Pair   --> PPLVar - PPLVar        map relation
 
@@ -698,35 +700,29 @@ and \ref operations of this manual.
    Resets the timeout time so that the computation is not interrupted.
 
 <H2><CODE>
-  ppl_new_Polyhedron_universe_from_space_dimension(+Topology, +Dimension_Type, -Handle)
- </CODE></H2>
-
-   Creates a new universe C or NNC polyhedron \f$\cP\f$,
-   depending on the value of <CODE>Topology</CODE>,
-   with <CODE>Dimension_Type</CODE> dimensions.
-   <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
-   Thus the query
-\code
-   ?- ppl_new_Polyhedron_universe_from_space_dimension(c, 3, X).
-\endcode
-   creates the C polyhedron defining the 3-dimensional vector space
-   \f$\Rset^3\f$ with \p X bound to a valid handle for accessing it.
-
-<H2><CODE>
-  ppl_new_Polyhedron_empty_from_space_dimension(+Topology, +Dimension_Type, -Handle)
+  ppl_new_Polyhedron_from_space_dimension(+Topology, +Dimension_Type,
+      +Atom, -Handle)
 </CODE>
 </H2>
 
-   Creates a new empty C or NNC polyhedron \f$\cP\f$,
+   Creates a C or NNC polyhedron \f$\cP\f$,
    depending on the value of <CODE>Topology</CODE>,
-   with <CODE>Dimension_Type</CODE> dimensions.
+   with <CODE>Dimension_Type</CODE> dimensions; it is empty
+   or universe depending on <CODE>Atom</CODE>.
    <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
    Thus the query
 \code
-   ?- ppl_new_Polyhedron_empty_from_space_dimension(nnc, 3, X).
+   ?- ppl_new_Polyhedron_from_space_dimension(nnc, 3, empty, X).
 \endcode
    creates an empty NNC polyhedron embedded in \f$\Rset^3\f$ with
    \p X bound to a valid handle for accessing it.
+ 
+   Also the query
+\code
+   ?- ppl_new_Polyhedron_from_space_dimension(c, 3, universe, X).
+\endcode
+   creates the C polyhedron defining the 3-dimensional vector space
+   \f$\Rset^3\f$ with \p X bound to a valid handle for accessing it.
 
 <H2><CODE>
 ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
@@ -741,7 +737,7 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    <CODE>Handle_2</CODE> is unified with the handle for \f$\cP_2\f$.
    Thus the query
 \code
-   ?- ppl_new_Polyhedron_empty_from_space_dimension(nnc, 3, X),
+   ?- ppl_new_Polyhedron_from_space_dimension(nnc, 3, empty, X),
       ppl_new_Polyhedron_from_Polyhedron(c, X, nnc, Y).
 \endcode
    creates an empty C polyhedron embedded in \f$\Rset^3\f$
@@ -1035,7 +1031,7 @@ b
    <CODE>Constraint</CODE> to its constraint system.
    Thus, the query
 \code
-   ?- ppl_new_Polyhedron_universe_from_space_dimension(c, 3, X),
+   ?- ppl_new_Polyhedron_from_space_dimension(c, 3, universe, X),
       A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
       ppl_Polyhedron_add_constraint(X, 4*A + B - 2*C >= 5).
 \endcode
@@ -1056,7 +1052,7 @@ b
    <CODE>Generator</CODE> to its generator system.
    Thus, after the query
 \code
-   ?- ppl_new_Polyhedron_universe_from_space_dimension(c, 3, X),
+   ?- ppl_new_Polyhedron_from_space_dimension(c, 3, universe, X),
       A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
       ppl_Polyhedron_add_generator(X, point(-100*A - 5*B, 8)).
 \endcode
@@ -1071,7 +1067,7 @@ b
    <CODE>Constraint_System</CODE>.
    E.g.,
 \code
-   | ?- ppl_new_Polyhedron_universe_from_space_dimension(c, 2, X),
+   | ?- ppl_new_Polyhedron_from_space_dimension(c, 2, universe, X),
         A = '$VAR'(0), B = '$VAR'(1),
         ppl_Polyhedron_add_constraints(X, [4*A + B >= 3, A = 1]),
         ppl_Polyhedron_get_constraints(X, CS).
@@ -1090,7 +1086,7 @@ and a query will succeed even when
    <CODE>Constraint_System</CODE>.
    E.g.,
 \code
-   ?- ppl_new_Polyhedron_universe_from_space_dimension(c, 2, X),
+   ?- ppl_new_Polyhedron_from_space_dimension(c, 2, universe, X),
       A = '$VAR'(0), B = '$VAR'(1),
       ppl_Polyhedron_add_constraints_and_minimize(X, [4*A + B >= 3, A = 1]),
       ppl_Polyhedron_get_constraints(X, CS).
@@ -1100,7 +1096,7 @@ and a query will succeed even when
    E.g., the following will fail,
 \code
    ?- A = '$VAR'(0), B = '$VAR'(1),
-      ppl_new_Polyhedron_universe_from_space_dimension(c, 2, X),
+      ppl_new_Polyhedron_from_space_dimension(c, 2, universe, X),
       ppl_Polyhedron_add_constraints_and_minimize(X,
         [4*A + B >= 3, A = 0, B =< 0]),
       ppl_Polyhedron_get_constraints(X, CS).
@@ -1122,7 +1118,7 @@ and a query will succeed even when
    non-empty the first element defines a point.
    E.g.,
 \code
-   ?- ppl_new_Polyhedron_empty_from_space_dimension(c, 3, X),
+   ?- ppl_new_Polyhedron_from_space_dimension(c, 3, empty, X),
       A='$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
       ppl_Polyhedron_add_generators(X,
         [point(1*A + 1*B + 1*C, 1), ray(1*A), ray(2*A)]),
@@ -1143,7 +1139,7 @@ and a query will succeed even when
    <CODE>Generator_System</CODE> is not important.
    E.g.,
 \code
-   ?- ppl_new_Polyhedron_empty_from_space_dimension(c, 3, X),
+   ?- ppl_new_Polyhedron_from_space_dimension(c, 3, empty, X),
       A='$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
       ppl_Polyhedron_add_generators_and_minimize(X,
         [ray(1*A), ray(2*A), point(1*A + 1*B + 1*C, 1)]),
@@ -1214,11 +1210,11 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    with the polyhedron \f$\cQ\f$ referenced by <CODE>Handle_2</CODE>.
 
 <H2><CODE> ppl_Polyhedron_BHRZ03_widening_assign_with_token(+Handle_1,
-               +Handle_2, ?Token_Flag) </CODE></H2>
+               +Handle_2, ?C_unsigned) </CODE></H2>
 
    The polyhedra referenced by <CODE>Handle_1</CODE>
    and <CODE>Handle_2</CODE> are unaltered.
-   The token <CODE>Token_Flag</CODE> is 0 if
+   The token <CODE>C_unsigned</CODE> is 0 if
    a BHRZ03 widening would have changed the polyhedron referenced
    by <CODE>Handle_1</CODE> and is 1 otherwise.
 
@@ -1232,11 +1228,11 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                +Handle_1,
                +Handle_2,
                +Constraint_System,
-               ?Token_Flag) </CODE></H2>
+               ?C_unsigned) </CODE></H2>
 
    The polyhedra referenced by <CODE>Handle_1</CODE>
    and <CODE>Handle_2</CODE> are unaltered.
-   The token <CODE>Token_Flag</CODE> is 0 if
+   The token <CODE>C_unsigned</CODE> is 0 if
    a BHRZ03-widening with the polyhedron referenced by
    <CODE>Handle_2</CODE>, improved by enforcing those constraints in
    <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
@@ -1255,11 +1251,11 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                +Handle_1,
                +Handle_2,
                +Constraint_System,
-               ?Token_Flag) </CODE></H2>
+               ?C_unsigned) </CODE></H2>
 
    The polyhedra \f$\cP_1\f$ and \f$\cP_2\f$ referenced by
    <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>, respectively are unaltered.
-   The token <CODE>Token_Flag</CODE> is 0 if
+   The token <CODE>C_unsigned</CODE> is 0 if
    a BHRZ03-widening with \f$\cP_2\f$ ,
    improved by enforcing  all the constraints of
    the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
@@ -1280,11 +1276,11 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    <CODE>Constraint_System</CODE>.
 
 <H2><CODE> ppl_Polyhedron_H79_widening_assign_with_token(+Handle_1,
-               +Handle_2, ?Token_Flag) </CODE></H2>
+               +Handle_2, ?C_unsigned) </CODE></H2>
 
    The polyhedra referenced by <CODE>Handle_1</CODE>
    and <CODE>Handle_2</CODE> are unaltered.
-   The token <CODE>Token_Flag</CODE> is 0 if
+   The token <CODE>C_unsigned</CODE> is 0 if
    an H79 widening would have changed the polyhedron referenced
    by <CODE>Handle_1</CODE> and is 1 otherwise.
 
@@ -1297,11 +1293,11 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 <H2><CODE> ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(+Handle_1,
                +Handle_2,
                +Constraint_System,
-               ?Token_Flag) </CODE></H2>
+               ?C_unsigned) </CODE></H2>
 
    The polyhedra referenced by <CODE>Handle_1</CODE>
    and <CODE>Handle_2</CODE> are unaltered.
-   The token <CODE>Token_Flag</CODE> is 0 if
+   The token <CODE>C_unsigned</CODE> is 0 if
    a H79-widening with the polyhedron referenced by
   <CODE>Handle_2</CODE>, improved by enforcing those constraints in
   <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
@@ -1319,12 +1315,12 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 <H2><CODE> ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(+Handle_1,
                +Handle_2,
                +Constraint_System,
-               ?Token_Flag) </CODE></H2>
+               ?C_unsigned) </CODE></H2>
 
 
    The polyhedra \f$\cP_1\f$ and \f$\cP_2\f$ referenced by
    <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>, respectively are unaltered.
-   The token <CODE>Token_Flag</CODE> is 0 if
+   The token <CODE>C_unsigned</CODE> is 0 if
    a H79-widening with \f$\cP_2\f$ ,
    improved by enforcing  all the constraints of
    the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
@@ -1355,7 +1351,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    in a space that is enlarged by <CODE>Dimension_Type</CODE> dimensions,
    E.g.,
 \code
-   ?- ppl_new_Polyhedron_empty_from_space_dimension(c, 0, X),
+   ?- ppl_new_Polyhedron_from_space_dimension(c, 0, empty, X),
       ppl_Polyhedron_add_space_dimensions_and_embed(X, 2),
       ppl_Polyhedron_get_constraints(X, CS),
       ppl_Polyhedron_get_generators(X, GS).
@@ -1375,7 +1371,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 
    E.g.,
 \code
-   ?- ppl_new_Polyhedron_universe_from_space_dimension(nnc, 2, X),
+   ?- ppl_new_Polyhedron_from_space_dimension(nnc, 2, universe, X),
       A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
       D = '$VAR'(3), E = '$VAR'(4),
       ppl_new_Polyhedron_from_constraints(nnc, [A > 1, B >= 0, C >= 0], Y),
@@ -1393,7 +1389,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    onto a space that is enlarged by <CODE>Dimension_Type</CODE> dimensions,
    E.g.,
 \code
-   ?- ppl_new_Polyhedron_empty_from_space_dimension(c, 0, X),
+   ?- ppl_new_Polyhedron_from_space_dimension(c, 0, empty, X),
       ppl_Polyhedron_add_space_dimensions_and_project(X, 2),
       ppl_Polyhedron_get_constraints(X, CS),
       ppl_Polyhedron_get_generators(X, GS).
@@ -1413,7 +1409,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    of dimensions.
    E.g.,
 \code
-   ?- ppl_new_Polyhedron_empty_from_space_dimension(c, 3, X),
+   ?- ppl_new_Polyhedron_from_space_dimension(c, 3, empty, X),
       A='$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
       ppl_Polyhedron_remove_space_dimensions(X, [B]),
       ppl_Polyhedron_space_dimension(X, K),
@@ -1429,7 +1425,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    onto  the first <CODE>Dimension_Type</CODE> dimension.
    E.g.,
 \code
-   ?- ppl_new_Polyhedron_empty_from_space_dimension(c, 5, X),
+   ?- ppl_new_Polyhedron_from_space_dimension(c, 5, empty, X),
       ppl_Polyhedron_remove_higher_space_dimensions(X, 3),
       ppl_Polyhedron_space_dimension(X, K).
 \endcode
