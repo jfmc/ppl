@@ -986,6 +986,56 @@ since the minimization process also enforces an emptyness check.
 Note anyway that the same effect can be obtained by interleaving
 the calls of the lazy operator with explicit emptyness checks.
 
+<B>On Const-Correctness: A Warning about the Use of References
+and Iterators</B>
+
+Most operators of the library depend on one or more parameters
+that are declared ``const'', meaning that they will not be changed
+by the application of the considered operator.
+Due to the adoption of lazy computation techniques, in many cases
+such a const-correctness guarantee only holds at the semantic level,
+whereas it does not necessarily hold at the implementation level.
+For a typical example, consider the extraction from a polyhedron
+of its constraint system representation.
+While this operation is not going to change the polyhedron,
+it might actually invoke the internal conversion algorithm
+and modify the generators representation of the polyhedron object,
+e.g., by reordering the generators and removing those that are
+detected as redundant. Thus, any previously computed reference
+to the generators of the polyhedron (be it a direct reference object
+or an indirect one, such as an iterator) will no longer be valid.
+For this reason, code fragments such as the following should be
+avoided, as they may result in undefined behavior:
+\code
+// Find a reference to the first point of the non-empty polyhedron `ph'.
+const GenSys& gs = ph.generators();
+GenSys::const_iterator i = gs.begin();
+for (GenSys::const_iterator iend = gs.end(); i != iend; ++i)
+  if (i->is_point())
+    break;
+const Generator& p = *i;
+// Get the constraints of `ph'.
+const ConSys& cs = ph.constraints();
+// The const iterator `i' is no longer valid here.
+++i;
+// The reference `p' is no longer valid here.
+cout << p.divisor() << endl;
+\endcode
+As a rule of thumb, if a polyhedron plays any role in a computation
+(even as a const parameter), then any previously computed reference
+to parts of the polyhedron mayh ave been invalidated.
+Note that, in the example above, the computation of the constraint system
+could have been placed after the uses of the iterator <CODE>i</CODE>
+and the reference <CODE>p</CODE>.
+Anyway, if really needed, it is always possible to take a copy of,
+instead of a reference to, the parts of interest of the polyhedron;
+in the case above, one may have taken a copy of the generator system
+by replacing the second line of code with the following:
+\code
+GenSys gs = ph.generators();
+\endcode
+The same observations, modulo syntactic sugar, apply to the operators
+defined in the C interface of the library. 
 
 \section bibliography Bibliography
 
