@@ -45,6 +45,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library;
 
+static Prolog_atom out_of_memory_exception_atom;
+
 static void
 handle_exception(const integer_out_of_range& e) {
   Prolog_term_ref culprit = Prolog_new_term_ref();
@@ -168,9 +170,9 @@ handle_exception(const unknown_interface_error& e) {
 }
 
 static void
-handle_exception() {
+handle_exception(const std::bad_alloc&) {
   Prolog_term_ref et = Prolog_new_term_ref();
-  Prolog_put_atom_chars(et, "PPL bug: unknown exception raised");
+  Prolog_put_atom(et, out_of_memory_exception_atom);
   Prolog_raise_exception(et);
 }
 
@@ -178,6 +180,13 @@ static void
 handle_exception(const std::exception& e) {
   Prolog_term_ref et = Prolog_new_term_ref();
   Prolog_put_atom_chars(et, e.what());
+  Prolog_raise_exception(et);
+}
+
+static void
+handle_exception() {
+  Prolog_term_ref et = Prolog_new_term_ref();
+  Prolog_put_atom_chars(et, "PPL bug: unknown exception raised");
   Prolog_raise_exception(et);
 }
 
@@ -238,6 +247,9 @@ handle_exception(const timeout_exception&) {
     handle_exception(e); \
   } \
   catch (const timeout_exception& e) { \
+    handle_exception(e); \
+  } \
+  catch (const std::bad_alloc& e) { \
     handle_exception(e); \
   } \
   catch (const std::exception& e) { \
@@ -310,6 +322,9 @@ static Prolog_atom a_any;
 // Default timeout exception atom;
 static Prolog_atom a_time_out;
 
+// "Out of memory" exception atom;
+static Prolog_atom a_out_of_memory;
+
 static struct {
   Prolog_atom* p_atom;
   const char* name;
@@ -356,6 +371,7 @@ static struct {
   { &a_any,                 "any" },
 
   { &a_time_out,            "time_out" },
+  { &a_out_of_memory,       "out_of_memory" },
 };
 
 static Prolog_term_ref
@@ -697,6 +713,7 @@ ppl_initialize() {
       *prolog_atoms[i].p_atom = a;
     }
     timeout_exception_atom = a_time_out;
+    out_of_memory_exception_atom = a_out_of_memory;
     ppl_Prolog_sysdep_init();
     Prolog_interface_initialized = true;
     return PROLOG_SUCCESS;
