@@ -448,12 +448,12 @@ The specification uses the following grammar rules:
 \code
  Topology    --> c | nnc
 
- VarId       --> non-negative integer	variable identifier
+ VarId       --> number | + number	variable identifier
 
  PPL_Var     --> '$VAR'(VarId)		PPL variable
 
  LinExpr     --> PPL_Var		PPL variable
-            | number			integer
+            | number			
             | + LinExpr			unary plus
             | - LinExpr			unary minus
             | LinExpr + LinExpr		addition
@@ -462,34 +462,34 @@ The specification uses the following grammar rules:
             | LinExpr * number		multiplication
 
  Relation_Symbol
-             --> =			equals
+	     --> =			equals
             | =< 			less than or equal
             | >=			greater than or equal
             | < 			strictly less than
             | > 			strictly greater than
 
- Constraint
-             --> LinExpr Relation_Symbol LinExpr
+ Denominator --> number
+	    | + number | - number	number must be non-zero
+
+ Constraint  --> LinExpr Relation_Symbol LinExpr
 					constraint
 
  Constraint_System			list of constraints
              --> []
-            | [Constraint]
             | [Constraint | Constraint_System]
 
  Generator   --> point(LinExpr)		point
-            | point(LinExpr, number)	point
+            | point(LinExpr, Denominator)
+					point
             | closure_point(LinExpr)	closure point
-            | closure_point(LinExpr, number)
+            | closure_point(LinExpr, Denominator)
 					closure point
-              (Int is the denominator so that the point or
-               closure point is defined by Expr/Int.)
+              (the point or closure point is defined by LinExpr/Denominator.)
             | ray(LinExpr)		ray
             | line(LinExpr)		line
 
  Generator_System			list of generators
              --> []
-	    | [Generator]
 	    | [Generator | Generator_System]
 
  Atom        --> Prolog atom
@@ -501,18 +501,20 @@ The specification uses the following grammar rules:
             | subsumes			between a generator and a polyhedron
 
  Relation_List				list of relations
-             --> []
-            | [Relation]
-            | [Relation | Relation_List]
+	     --> []
+	    | [Relation | Relation_List]
+           
 
  Complexity  --> polynomial | simplex | any		
 
- Numerator   --> number | + number | - number
+ Rational_Numerator
+	     --> number | + number | - number
 
- Denominator --> number			number must be non-zero
+ Rational_Denominator
+	     --> number			number must be non-zero
 
- Rational    --> number | + number | - number
-            | Numerator/Denominator	rational number
+ Rational    --> Rational_Numerator	rational number
+	    | Rational_Numerator/Rational_Denominator
 
  Bound       --> c(Rational)		closed rational limit
             | o(Rational)		open rational limit
@@ -521,15 +523,13 @@ The specification uses the following grammar rules:
 
  Interval    --> i(Bound, Bound)	rational interval
 
- Box         --> []
-            | [Interval]
-            | [Interval | Box]		list of intervals
+ Box         --> []			list of intervals
+            | [Interval | Box]
 
  Vars_Pair   --> PPLVar - PPLVar        map relation
 
- P_Func      --> []
-            | [Vars_Pair]
-            | [Vars_Pair | P_Func]      list of maps.
+ P_Func      --> []    			list of map relations
+            | [Vars_Pair | P_Func].
 \endcode
 
 Below is a short description of each of the interface predicates.

@@ -1105,10 +1105,10 @@ add_gens(T) :-
                                 [point(A + B + C),
                                  ray(A), ray(2*A),
                                  point(A + B + C, 1),
-                                 point(-100*A - 5*B, 8)]),
+                                 point(100*A + 5*B, -8)]),
   ppl_new_Polyhedron_from_generators(T,
                                      [point(A + B + C), ray(A),
-                                      point(-100*A + -5*B, 8)],
+                                      point(100*A + 5*B, -8)],
                                      P1),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
   ppl_delete_Polyhedron(P),
@@ -1211,7 +1211,7 @@ remap_dim:-
   remap_dim(c), remap_dim(nnc).
 
 remap_dim(T) :-
-  make_vars(4, [A, B, C, D]),
+  make_vars(3, [A, B, C]),
   ppl_new_Polyhedron_from_dimension(T, 3, P),
   ppl_Polyhedron_add_constraints(P, [A >= 2, B >= 1, C >= 0]),
   ppl_Polyhedron_remap_dimensions(P, [A-B, B-C, C-A]),
