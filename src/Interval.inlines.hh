@@ -31,6 +31,7 @@ namespace Parma_Polyhedra_Library {
 inline
 ERational::ERational(const Integer& num, const Integer& den)
   : e(0), v(num, den) {
+  assert(den != 0);
   v.canonicalize();
 }
 
@@ -62,39 +63,47 @@ ERational::direction_of_infinity() const {
 
 inline const Integer&
 ERational::numerator() const {
+  assert(e == 0);
   return v.get_num();
 }
 
 inline const Integer&
 ERational::denominator() const {
+  assert(e == 0);
   return v.get_den();
 }
 
+/*! \relates ERational */
 inline bool
 operator==(const ERational& x, const ERational& y) {
   return x.e == y.e && (x.e != 0 || x.v == y.v);
 }
 
+/*! \relates ERational */
 inline bool
 operator!=(const ERational& x, const ERational& y) {
   return !(x == y);
 }
 
+/*! \relates ERational */
 inline bool
 operator<(const ERational& x, const ERational& y) {
   return x.e < y.e || (x.e == 0 && y.e == 0 && x.v < y.v);
 }
 
+/*! \relates ERational */
 inline bool
 operator>(const ERational& x, const ERational& y) {
   return y < x;
 }
 
+/*! \relates ERational */
 inline bool
 operator<=(const ERational& x, const ERational& y) {
   return x < y || x == y;
 }
 
+/*! \relates ERational */
 inline bool
 operator>=(const ERational& x, const ERational& y) {
   return y <= x;
@@ -116,18 +125,8 @@ Boundary::bound() const {
 }
 
 inline
-LBoundary::LBoundary()
-  : Boundary(ERational('-'), POS) {
-}
-
-inline
 LBoundary::LBoundary(const ERational& v, OpenClosed f)
   : Boundary(v, f == CLOSED ? ZERO : POS) {
-}
-
-inline
-UBoundary::UBoundary()
-  : Boundary(ERational('+'), NEG) {
 }
 
 inline
@@ -135,112 +134,23 @@ UBoundary::UBoundary(const ERational& v, OpenClosed f)
   : Boundary(v, f == CLOSED ? ZERO : NEG) {
 }
 
-inline bool
-operator==(const Boundary& x, const Boundary& y) {
-  return x.value == y.value && x.flag == y.flag;
-}
-
-inline bool
-operator!=(const Boundary& x, const Boundary& y) {
-  return !(x == y);
-}
-
+/*! \relates Boundary */
 inline bool
 operator<(const Boundary& x, const Boundary& y) {
   return x.value < y.value ||
     (x.value == y.value && x.flag < y.flag);
 }
 
-inline bool
-operator<(const LBoundary& x, const UBoundary& y) {
-  return x.value < y.value;
-}
-
+/*! \relates Boundary */
 inline bool
 operator>(const Boundary& x, const Boundary& y) {
-  return x.value > y.value ||
-    (x.value == y.value && x.flag > y.flag);
-}
-
-inline bool
-operator>(const UBoundary& x, const LBoundary& y) {
-  return x.value > y.value;
-}
-
-inline bool
-operator<=(const Boundary& x, const Boundary& y) {
-  return !(x > y);
-}
-
-inline bool
-operator<=(const UBoundary& x, const LBoundary& y) {
-  return !(x > y);
-}
-
-inline bool
-operator>=(const Boundary& x, const Boundary& y) {
-  return !(x < y);
-}
-
-inline bool
-operator>=(const LBoundary& x, const UBoundary& y) {
-  return !(x < y);
-}
-
-inline bool
-operator==(const Boundary& x, const ERational& y) {
-  return x.value == y && x.flag == Boundary::ZERO;
-}
-
-inline bool
-operator!=(const Boundary& x, const ERational& y) {
-  return !(x == y);
-}
-
-inline bool
-operator<(const Boundary& x, const ERational& y) {
-  return x.value < y ||
-    (x.value == y && x.flag < Boundary::ZERO);
-}
-
-inline bool
-operator<(const LBoundary& x, const ERational& y) {
-  return x.value < y;
-}
-
-inline bool
-operator>(const Boundary& x, const ERational& y) {
-  return x.value > y ||
-    (x.value == y && x.flag > Boundary::ZERO);
-}
-
-inline bool
-operator>(const UBoundary& x, const ERational& y) {
-  return x.value > y;
-}
-
-inline bool
-operator<=(const Boundary& x, const ERational& y) {
-  return !(x > y);
-}
-
-inline bool
-operator<=(const UBoundary& x, const ERational& y) {
-  return !(x > y);
-}
-
-inline bool
-operator>=(const Boundary& x, const ERational& y) {
-  return !(x < y);
-}
-
-inline bool
-operator>=(const LBoundary& x, const ERational& y) {
-  return !(x < y);
+  return y < x;
 }
 
 inline
-Interval::Interval() {
+Interval::Interval()
+  : lower(ERational('-'), LBoundary::OPEN),
+    upper(ERational('+'), UBoundary::OPEN) {
 }
 
 inline bool
