@@ -37,10 +37,10 @@ main() {
   Polyhedron ph(gs);
 
   // This is the set of the variables that we want to remove.
-  set<Variable> to_be_remove;
-  to_be_remove.insert(y);
-  to_be_remove.insert(z);
-  ph.remove_dimensions(to_be_remove);
+  set<Variable> to_be_removed;
+  to_be_removed.insert(y);
+  to_be_removed.insert(z);
+  ph.remove_dimensions(to_be_removed);
 
   GenSys known_result_gs;
   known_result_gs.insert(vertex(0*x +2*y));
