@@ -1281,17 +1281,11 @@ PPL::Polyhedron::update_sat_g() const {
 
 bool
 PPL::operator==(const Polyhedron& x, const Polyhedron& y) {
-  // Topology compatibility check.
-  if (x.topology() != y.topology())
-    Polyhedron::throw_topology_incompatible("operator==("
-					    "const Polyhedron& x, "
-					    "const Polyhedron& y)", x, y);
   dimension_type x_space_dim = x.space_dim;
-  // Dimension-compatibility check.
-  if (x_space_dim != y.space_dim)
-    Polyhedron::throw_dimension_incompatible("operator==("
-					     "const Polyhedron& x, "
-					     "const Polyhedron& y)", x, y);
+  // If the two polyhedra are topology-incompatible or dimension-incompatible,
+  // then they cannot be the same polyhedron.
+  if (x.topology() != y.topology() || x_space_dim != y.space_dim)
+    return false;
 
   if (x.is_empty())
     return y.check_empty();

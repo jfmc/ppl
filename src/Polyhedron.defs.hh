@@ -61,9 +61,8 @@ operator<<(std::ostream& s, const Polyhedron& ph);
 //! \p x and \p y are the same polyhedron.
 /*!
   \relates Polyhedron
-  \exception std::invalid_argument thrown if \p x and \p y
-  are topology-incompatible
-  or dimension-incompatible.
+  Note that \p x and \p y may be topology- and/or dimension-incompatible
+  polyhedra: in those cases, the value <CODE>false</CODE> is returned.
 */
 bool operator==(const Polyhedron& x, const Polyhedron& y);
 
@@ -72,9 +71,8 @@ bool operator==(const Polyhedron& x, const Polyhedron& y);
 //! \p x and \p y are different polyhedra.
 /*!
   \relates Polyhedron
-  \exception std::invalid_argument thrown if \p x and \p y
-  are topology-incompatible
-  or dimension-incompatible.
+  Note that \p x and \p y may be topology- and/or dimension-incompatible
+  polyhedra: in those cases, the value <CODE>true</CODE> is returned.
 */
 bool operator!=(const Polyhedron& x, const Polyhedron& y);
 
