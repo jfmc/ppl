@@ -2430,13 +2430,13 @@ ppl_Polyhedron_remove_higher_dimensions(Prolog_term_ref t_ph,
 
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_expand_dimension(Prolog_term_ref t_ph,
-				 Prolog_term_ref t_v,
-					Prolog_term_ref t_nd) {
+				Prolog_term_ref t_v,
+				Prolog_term_ref t_nd) {
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     ph->expand_dimension(term_to_Variable(t_v),
-                          term_to_unsigned<dimension_type>(t_nd));
+			 term_to_unsigned<dimension_type>(t_nd));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
