@@ -1,6 +1,11 @@
+2003-04-27 Sunday 21:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/: ChangeLog (1.4), NEWS (1.3), README (1.5): Updated for
+	release 0.2.
+
 2003-04-27 Sunday 21:01  Roberto Bagnara <bagnara@cs.unipr.it>
 
-	* TODO (1.53): Updated.
+	* TODO (1.53), ChangeLog (1.14): Updated.
 
 2003-04-27 Sunday 20:25  Roberto Bagnara <bagnara@cs.unipr.it>
 
