@@ -65,15 +65,21 @@ namespace Parma_Polyhedra_Library {
     Linear expressions are the basic blocks for defining
     both constraints (i.e., linear equalities or inequalities)
     and generators (i.e., lines, rays and vertices).
-    The following functions provide a convenient interface
-    for building a complex linear expression starting from simpler ones
-    (or even from objects of the classes Variable and Integer).
-    Available operators include unary negation,
+    A full set of functions is defined to provide a convenient interface
+    for building complex linear expressions starting from simpler ones
+    and from objects of the classes Variable and Integer:
+    available operators include unary negation,
     binary addition and subtraction,
     as well as multiplication by an Integer.
+    The space-dimension of a linear expression is defined as the maximum
+    space-dimension of the arguments used to build it:
+    in particular, the space-dimension of a Variable <CODE>x</CODE>
+    is defined as <CODE>x.id()+1</CODE>,
+    whereas all the objects of the class Integer have space-dimension zero.
 
     \par Example
-    The following code builds the linear expression \f$4x - 2y - z + 14\f$:
+    The following code builds the linear expression \f$4x - 2y - z + 14\f$,
+    having space-dimension \f$3\f$:
     \code
   LinExpression e = 4*x - 2*y - z + 14;
     \endcode
@@ -85,12 +91,15 @@ namespace Parma_Polyhedra_Library {
   LinExpression e = LinExpression(14);
   e += e1 - e2 - e3;
     \endcode
+    Note that \p e1, \p e2 and \p e3 have space-dimension 1, 2 and 3,
+    respectively; also, in the fourth line of code, \p e is created
+    with space-dimension zero and then extended to space-dimension 3. 
 */
 
 class Parma_Polyhedra_Library::LinExpression : PPL_INTERNAL Row {
 
 public:
-  //! Default constructor.
+  //! Default constructor: returns a copy of LinExpression::zero().
   LinExpression();
   //! Ordinary copy-constructor.
   LinExpression(const LinExpression& e);
@@ -104,10 +113,10 @@ public:
   //! to the variable \p v.
   LinExpression(const Variable& v);
 
-  //! Returns the dimension of the space of \p *this.
+  //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
-  // Constant.
+  //! Returns the (zero-dimension space) constant 0.
   static const LinExpression& zero();
 
 PPL_INTERNAL:

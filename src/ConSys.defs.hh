@@ -37,7 +37,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 //! A system of constraints.
 /*!
     An object of the class ConSys is a system of constraints,
-    i.e. a multiset of objects of the class Constraint.
+    i.e., a multiset of objects of the class Constraint.
     When inserting constraints in a system, dimensions are automatically
     adjusted so that all the constraints in the system are defined
     on the same vector space.
@@ -60,6 +60,10 @@ site: http://www.cs.unipr.it/ppl/ . */
   cs.insert(y >= 0);
   cs.insert(y <= 3);
     \endcode
+    Note that:
+    the constraint system is created with space dimension zero;
+    the first and third constraint insertions increases the space
+    dimension to \f$1\f$ and \f$2\f$, respectively.
 
     \par Example 2
     The following code builds a system of constraints corresponding to
@@ -70,6 +74,15 @@ site: http://www.cs.unipr.it/ppl/ . */
   cs.insert(x - y <= 0);
   cs.insert(x - y + 1 >= 0);
     \endcode
+
+    \note
+    After inserting a multiset of constraints in a constraint system,
+    there is no guarantee at all that an <EM>exact</EM> copy of them
+    can be retrieved:
+    in general, only an <EM>equivalent</EM> constraint system
+    will be available, where original constraints may have been
+    reordered, removed (if they are trivial, duplicate or
+    implied by other constraints), linearly combined, etc.
 */
 class Parma_Polyhedra_Library::ConSys : PPL_INTERNAL Matrix {
 public:
@@ -82,7 +95,7 @@ public:
   //! Destructor.
   virtual ~ConSys();
 
-  //! Returns the dimension of the space of \p *this.
+  //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
   //! Inserts a copy of the constraint \p c into \p *this,
@@ -92,7 +105,8 @@ public:
   //! Swaps \p *this with the system of constraints \p y.
   void swap(ConSys& y);
 
-  //! The singleton system containing the zero-dim false constraint.
+  //! Returns the singleton system containing only
+  //! Constraint::zero_dim_false().
   static const ConSys& zero_dim_empty();
 
   /*!

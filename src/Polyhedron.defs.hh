@@ -77,7 +77,7 @@ namespace Parma_Polyhedra_Library {
 //! A convex polyhedron.
 /*!
     An object of the class Polyhedron represents a convex polyhedron
-    in the space \f$\Rset^n\f$.
+    in the vector space \f$\Rset^n\f$.
 
     The dimension \f$n \in \Nset\f$ of the enclosing vector space
     is a key attribute of the polyhedron:
@@ -86,22 +86,23 @@ namespace Parma_Polyhedra_Library {
     - most operations working on a polyhedron and another object
       (i.e., another polyhedron, a constraint or generator,
       a set of variables, etc.) will throw an exception if
-      the polyhedron and the object are dimension-incompatible;
+      the polyhedron and the object are dimension-incompatible
+      (see the dimension-compatibility rules in the Introduction);
     - the only ways to change the space dimension of a polyhedron are:
       - <EM>explicit</EM> calls to operators provided for that purpose;
-      - standard assignment and swap operators. 
+      - standard copy, assignment and swap operators. 
 
-    Polyhedra can even be defined on the zero-dimension space \f$R^0\f$:
-    in particular, the empty polyhedron and the universe polyhedron \f$R^0\f$.
+    Note that two polyhedra can be defined on the zero-dimension space:
+    the empty polyhedron and the universe polyhedron \f$R^0\f$.
 
     A polyhedron can be specified as either a finite system of constraints
     or a finite system of generators
-    (see Minkowski's theorem in the Introduction).
-    So, it is possible to obtain one system from the
-    other. That is, if we know the system of constraints, we can obtain
+    (see Minkowski's theorem in the Introduction)
+    and it is always possible to obtain either representation.
+    That is, if we know the system of constraints, we can obtain
     from this the system of generators that define the same polyhedron
     and vice versa.
-    These systems can contain some redundant members: in this case we say
+    These systems can contain redundant members: in this case we say
     that they are not in the minimal form.
 
     \par
@@ -177,8 +178,8 @@ namespace Parma_Polyhedra_Library {
   ph.insert(line(x));
     \endcode
     Note that, even if the above polyhedron has no ``proper'' vertex,
-    we must add one, because otherwise the Minkowsky's sum would
-    result in an empty polyhedron.
+    we must add one, because otherwise the result of the Minkowsky's sum
+    would be an empty polyhedron.
     To avoid subtle errors related to the minimization process,
     it is required that the first generator inserted in an empty
     polyhedron is a vertex (otherwise, an exception is thrown).
@@ -227,7 +228,7 @@ namespace Parma_Polyhedra_Library {
   ph.insert(vertex(0*x + 3*y));
   ph.insert(vertex(3*x + 0*y));
   ph.insert(vertex(3*x + 3*y));
-  LinExpression coeff = x + 0*y + 4;
+  LinExpression coeff = x + 4;
   ph.assign_variable(x, coeff);
     \endcode
     In this example the starting polyhedron is a square in \f$\Rset^2\f$,
@@ -244,7 +245,7 @@ namespace Parma_Polyhedra_Library {
     Instead, if we do not use an invertible transformation for the same
     variable; for example, the affine expression \f$y\f$:
     \code
-  LinExpression coeff = 0*x + y;
+  LinExpression coeff = y;
     \endcode
     the resulting polyhedron is a diagonal of the square.
 
@@ -257,14 +258,13 @@ namespace Parma_Polyhedra_Library {
   ph.insert(x <= 3);
   ph.insert(y >= 0);
   ph.insert(y <= 3);
-  LinExpression coeff = x + 0*y + 4;
+  LinExpression coeff = x + 4;
   ph.substitute_variable(x, coeff);
     \endcode
     In this example the starting polyhedron, \p var and the affine
     expression and the denominator are the same as in Example 6,
-    while the resulting
-    polyhedron is again the same square but translated towards
-    left.
+    while the resulting polyhedron is again the same square,
+    but translated towards left.
     Moreover, if the affine transformation for \p x is \f$x+y\f$
     \code
   LinExpression coeff = x + y;
@@ -275,7 +275,7 @@ namespace Parma_Polyhedra_Library {
     Instead, if we do not use an invertible transformation for the same
     variable \p x, for example, the affine expression \f$y\f$:
     \code
-  LinExpression coeff = 0*x + y;
+  LinExpression coeff = y;
     \endcode
     the resulting polyhedron is a line that corresponds to the \f$y\f$ axis.
 
@@ -291,30 +291,36 @@ namespace Parma_Polyhedra_Library {
   GenSys gs;
   gs.insert(vertex(3*x + y +0*z + 2*w));
   Polyhedron ph(gs);
-  set<Variable> to_be_remove;
-  to_be_remove.insert(y);
-  to_be_remove.insert(z);
-  ph.remove_dimensions(to_be_remove);
+  set<Variable> to_be_removed;
+  to_be_removed.insert(y);
+  to_be_removed.insert(z);
+  ph.remove_dimensions(to_be_removed);
     \endcode
     The starting polyhedron is the singleton set
     \f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$, while
     the resulting polyhedron is 
     \f$\bigl\{ (3, 2)^\transpose \bigr\} \sseq \Rset^2\f$.
-    The resulting polyhedron is different if we use the following code:
+    Be careful when removing dimensions <EM>incrementally</EM>:
+    since dimensions are automatically renamed after each application
+    of the <CODE>remove_dimensions</CODE> operator, unexpected results
+    can be obtained.
+    For instance, by using the following code we would obtain
+    a different result:
     \code
-  set<Variable> to_be_remove1;
-  to_be_remove1.insert(y);
-  ph.remove_dimensions(to_be_remove1);
-  set<Variable> to_be_remove2;
-  to_be_remove2.insert(z);
-  ph.remove_dimensions(to_be_remove2);
+  set<Variable> to_be_removed1;
+  to_be_removed1.insert(y);
+  ph.remove_dimensions(to_be_removed1);
+  set<Variable> to_be_removed2;
+  to_be_removed2.insert(z);
+  ph.remove_dimensions(to_be_removed2);
     \endcode
     In this case, the result is the polyhedron
-    \f$\bigl\{(3, 0)^\transpose \bigr\} \sseq \Rset^2\f$: the second
-    removed variable is not the variable \f$z\f$ of the starting
-    polyhedron, but it is the variable \f$z\f$ of the polyhedron after
-    the first <CODE>remove_dimensions</CODE> that corresponds to the
-    variable \f$w\f$ of the starting polyhedron.
+    \f$\bigl\{(3, 0)^\transpose \bigr\} \sseq \Rset^2\f$:
+    when removing the set of dimensions \p to_be_removed2
+    we are actually removing variable \f$w\f$ of the original polyhedron.
+    For the same reason, the operator \p remove_dimensions
+    is not idempotent: removing twice the same set of dimensions
+    is never a no-op.
 */
 
 class Parma_Polyhedra_Library::Polyhedron {
@@ -355,7 +361,7 @@ public:
   //! (Note that \p *this and \p y can be dimension-incompatible.)
   Polyhedron& operator =(const Polyhedron& y);
 
-  //! Returns the number of dimensions of the vector space.
+  //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
   //! Intersects \p *this with polyhedron \p y and
   //! assigns the result to \p *this.

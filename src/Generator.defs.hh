@@ -69,9 +69,11 @@ namespace Parma_Polyhedra_Library {
   \par How to build a generator.
   Each type of generator is built by applying the corresponding
   function (<CODE>line</CODE>, <CODE>ray</CODE> or <CODE>vertex</CODE>)
-  to a linear expression, representing a direction in the space.
-  This means that a linear expression used to define a generator
-  should be homogeneous and any constant term will be ignored.
+  to a linear expression, representing a direction in the space;
+  the space-dimension of the generator is defined as the space-dimension
+  of the corresponding linear expression.
+  Linear expressions used to define a generator should be homogeneous
+  (any constant term will be simply ignored).
   When defining a vertex, an optional Integer argument can be used
   as a common <EM>denominator</EM> for all the coefficients occurring
   in the provided linear expression;
@@ -88,7 +90,8 @@ namespace Parma_Polyhedra_Library {
     \endcode
 
     \par Example 1
-    The following code builds a line with direction \f$x-y-z\f$:
+    The following code builds a line with direction \f$x-y-z\f$
+    and having space-dimension \f$3\f$:
     \code
   Generator l = line(x - y - z);
     \endcode
@@ -127,25 +130,28 @@ namespace Parma_Polyhedra_Library {
     Similarly, the origin \f$\vect{0} \in \Rset^3\f$ can be defined
     using either one of the following lines of code:
     \code
-  Generator origin1 = vertex(0*x + 0*y + 0*z);
-  Generator origin2 = vertex(0*z);
+  Generator origin3 = vertex(0*x + 0*y + 0*z);
+  Generator origin3_alt = vertex(0*z);
     \endcode
-    Note however that the following line would have defined
+    Note however that the following code would have defined
     a different vertex, namely \f$\vect{0} \in \Rset^2\f$:
     \code
-  Generator origin3 = vertex(0*y);
+  Generator origin2 = vertex(0*y);
     \endcode
-    Since the first argument is optional, the following line
-    would have defined the only vertex in the 0-dim space,
-    namely \f$\vect{0} \in \Rset^0\f$:
+    The following two lines of code both define the only vertex
+    having space-dimension zero, namely \f$\vect{0} \in \Rset^0\f$.
+    In the second case we exploit the fact that the first argument
+    of the function <CODE>vertex</CODE> is optional. 
     \code
-  Generator origin0 = vertex();
+  Generator origin0 = Generator::zero_dim_vertex();
+  Generator origin0_alt = vertex();
     \endcode
     
     \par Example 4
     The vertex \f$\vect{v}\f$ specified in Example 3 above
     can also be obtained with the following code,
-    where we provide a non-default value for the denominator argument:
+    where we provide a non-default value for the second argument
+    of the function <CODE>vertex</CODE> (the denominator):
     \code
   Generator v = vertex(2*x + 0*y + 4*z, 2);
     \endcode
@@ -165,14 +171,21 @@ private:
   Generator(LinExpression& e);
 
   //! Returns the (bidirectional) line of direction \p e.
+  //! \exception std::invalid_argument thrown if the homogeneous part
+  //!                                  of \p e represents the origin
+  //!                                  of the vector space.
   friend Generator
   Parma_Polyhedra_Library::line(const LinExpression& e);
   //! Returns the (unidirectional) ray of direction \p e.
+  //! \exception std::invalid_argument thrown if the homogeneous part
+  //!                                  of \p e represents the origin
+  //!                                  of the vector space.
   friend Generator
   Parma_Polyhedra_Library::ray(const LinExpression& e);
   //! Returns the vertex at \p e / \p d
   //! Both \p e and \p d are optional arguments,
-  //! with default values LinExpression::zero and 1, respectively.
+  //! with default values LinExpression::zero() and Integer::one(),
+  //! respectively.
   //! \exception std::invalid_argument thrown if \p d is zero.
   friend Generator
   Parma_Polyhedra_Library::vertex(const LinExpression& e
@@ -195,7 +208,7 @@ public:
   //! Returns the generator type of \p *this.
   Type type() const;
 
-  //! Returns the dimension of the space of \p *this.
+  //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
   //! Returns the coefficient of \p v in \p *this.
@@ -204,6 +217,7 @@ public:
   //! \exception std::invalid_argument thrown if \p *this is not a vertex.
   const Integer& divisor() const;
 
+  //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Generator& zero_dim_vertex();
 
 PPL_INTERNAL:

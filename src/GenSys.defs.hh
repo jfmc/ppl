@@ -57,7 +57,7 @@ namespace Parma_Polyhedra_Library {
 //! A system of generators.
 /*!
     An object of the class GenSys is a system of generators,
-    i.e. a multiset of objects of the class Generator
+    i.e., a multiset of objects of the class Generator
     (lines, rays and vertices).
     When inserting generators in a system, dimensions are automatically
     adjusted so that all the generators in the system are defined
@@ -145,6 +145,14 @@ namespace Parma_Polyhedra_Library {
   gs.insert(vertex(0*x + 1*y));
   gs.insert(ray(x - y));
     \endcode
+
+    \note
+    After inserting a multiset of generators in a generator system,
+    there is no guarantee at all that an <EM>exact</EM> copy of them
+    can be retrieved:
+    in general, only an <EM>equivalent</EM> generator system
+    will be available, where original generators may have been
+    reordered, removed (if they are duplicate or redundant), etc.
 */
 class Parma_Polyhedra_Library::GenSys : PPL_INTERNAL Matrix {
 public:
@@ -157,7 +165,7 @@ public:
   //! Destructor.
   virtual ~GenSys();
 
-  //! Returns the dimension of the space of \p *this.
+  //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
   //! Inserts a copy of the generator \p g into \p *this,
@@ -167,7 +175,8 @@ public:
   //! Swaps \p *this with the system of generators \p y.
   void swap(GenSys& y);
 
-  //! The singleton systems containing the zero-dim vertex.
+  //! Returns the singleton system containing only
+  //! Generator::zero_dim_vertex().
   static const GenSys& zero_dim_univ();
 
   /*!

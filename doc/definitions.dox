@@ -24,7 +24,7 @@
 /*! \mainpage Convex Polyhedra and the PPL
 \section introduction An Introduction to Convex Polyhedra
 
-The following definitions and results are taken from:
+Most of the following definitions and results are taken from:
 - G. L. Nemhauser and L. A. Wolsey - Integer and Combinatorial Optimization - 
   Wiley Interscience Series in Discrete Mathematics and Optimization, 1988.
 - D. K. Wilde - A library for doing polyhedral operations - IRISA Publication
@@ -439,36 +439,43 @@ the matrix of rays.
 
 <B>Dual representation</B>
 
-Thus a rational polyhedron \f$P\f$ has a <EM>dual representation</EM>.
-That is, \f$P\f$
-can be represented by a system of constraints
+Thus a rational polyhedron \f$P\f$ has <EM>dual representations</EM>.
+That is, \f$P\f$ can be represented by a system of constraints
 or a system of generators.
 Moreover, given one of the representations, there is an algorithm for
 computing the other.
 
-<B>Dimension-compatibility</B>
+<B>Space dimension and dimension-compatibility</B>
 
 The <EM>space dimension</EM> of a polyhedron \f$P \sseq \Rset^n\f$
 is the dimension \f$n \in \Nset\f$ of the corresponding vector space.
-The following <EM>dimension-compatibility</EM> rules are defined:
+The space dimension of constraints, generators and other objects
+of the PPL are defined similarly.
+The space dimension of objects is important because most of the
+operations defined on polyhedra are well-defined if and only if
+the various arguments are space dimension-compatible.
+
+The following (space) <EM>dimension-compatibility</EM> rules are defined:
 - the polyhedra \f$P \sseq \Rset^n\f$ and \f$Q \sseq \Rset^m\f$ are
-  dimension-incompatible if and only if \f$n \neq m\f$;
+  dimension-compatible if and only if \f$n = m\f$;
 - the constraint \f$\langle \vect{a}, \vect{x} \rangle = \lambda\f$
   (or \f$\langle \vect{a}, \vect{x} \rangle \geq \lambda\f$),
   where \f$\vect{a}, \vect{x} \in \Rset^m\f$,
-  is dimension-incompatible with polyhedron \f$P \sseq \Rset^n\f$
-  if and only if \f$n < m\f$;
-- the generator \f$\vect{x} \in \Rset^m\f$ is dimension-incompatible
-  with polyhedron \f$P \sseq \Rset^n\f$ if and only if \f$n < m\f$;
-- a system of constraints (generators) is dimension-incompatible with
-  a polyhedron if there exists a constraint (generator) in the system
-  which is dimension-incompatible with the polyhedron.
+  is dimension-compatible with polyhedron \f$P \sseq \Rset^n\f$
+  if and only if \f$m \leq n\f$;
+- the generator \f$\vect{x} \in \Rset^m\f$ is dimension-compatible
+  with polyhedron \f$P \sseq \Rset^n\f$ if and only if \f$m \leq n\f$;
+- a system of constraints (resp., generators) is dimension-compatible with
+  a polyhedron if and only if all the constraints (resp., generators)
+  in the system are dimension-compatible with the polyhedron.
 
-Be careful not to confuse the dimension \f$k\f$ of a polyhedron
-\f$P \sseq \Rset^n\f$ with the dimension \f$n\f$ of the enclosing
-vector space.
-Note that we can have \f$\pdim(P) = \pdim(Q)\f$ even though
-\f$P\f$ and \f$Q\f$ are dimension-incompatible.
+Be careful not to confuse the dimension \f$k \leq n\f$ of a polyhedron
+\f$P \sseq \Rset^n\f$ with the <EM>space</EM> dimension \f$n\f$ of \f$P\f$,
+which is the dimension of the enclosing vector space.
+In particular, we can have \f$\pdim(P) \neq \pdim(Q)\f$ even though
+\f$P\f$ and \f$Q\f$ are dimension-compatible;
+and vice versa, \f$P\f$ and \f$Q\f$ may be dimension-incompatible polyhedra
+even though \f$\pdim(P) = \pdim(Q)\f$.
 
 (The following spurious string of characters in the user manual
  is due to a bug in Doxygen.)

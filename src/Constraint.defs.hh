@@ -67,6 +67,8 @@ namespace Parma_Polyhedra_Library {
   and non-strict inequalities (<CODE>>=</CODE> and <CODE><=</CODE>).
   Strict inequalities (<CODE><</CODE> and <CODE>></CODE>)
   are not supported.
+  The space-dimension of a constraint is defined as the maximum
+  space-dimension of the arguments of its constructor.
 
   \par
   In the following example it is assumed that variables
@@ -79,19 +81,31 @@ namespace Parma_Polyhedra_Library {
   \endcode
 
   \par Example
-  The following code builds the equality \f$3x + 5y - z = 0\f$:
+  The following code builds the equality constraint
+  \f$3x + 5y - z = 0\f$, having space-dimension \f$3\f$:
   \code
-  Constraint equal(3*x + 5*y - z == 0);
+  Constraint eq_c(3*x + 5*y - z == 0);
   \endcode
-  The following code builds the constraint \f$4x - 2y \geq z - 13\f$:
+  The following code builds the inequality constraint
+  \f$4x \geq 2*y - 13\f$, having space-dimension \f$2\f$:
   \code
-  Constraint inequal(4*x - 2*y >= z - 13);
+  Constraint ineq_c(4*x >= 2*y - 13);
   \endcode
   The unsatisfiable constraint on the zero-dimension space \f$\Rset^0\f$
   can be specified as follows:
   \code
-  Constraint c_false(LinExpression::zero == 1);
+  Constraint false_c = Constraint::zero_dim_false();
   \endcode
+  An equivalent, but more involved way is the following:
+  \code
+  Constraint false_c(LinExpression::zero() == 1);
+  \endcode
+  In constrast, the following code defines an unsatisfiable constraint
+  having space-dimension \f$3\f$:
+  \code
+  Constraint false_c(0*z == 1);
+  \endcode
+
 */
 class Parma_Polyhedra_Library::Constraint : PPL_INTERNAL Row {
 private:
@@ -166,7 +180,7 @@ public:
   //! \p *this is an inequality constraint.
   bool is_inequality() const;
 
-  //! Returns the dimension of the space of \p *this.
+  //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
   //! Returns the coefficient of \p v in \p *this.
@@ -174,18 +188,19 @@ public:
   //! Returns the inhomogeneous term of \p *this.
   const Integer& coefficient() const;
 
-  //! The unsatisfiable zero-dim constraint 0 = 1.
+  //! The unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$.
   static const Constraint& zero_dim_false();
 
 PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is the trivial constraint 0 <= n, where \f$n \geq 0\f$.
+  //! \p *this is the trivial constraint \f$0 <= n\f$,
+  //! where \f$n \geq 0\f$.
   bool is_trivial() const;
 
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is an unsatisfiable constraint
-  //! (i.e., either <CODE>0 >= n</CODE> where \f$n > 0\f$
-  //! or <CODE>0 == n</CODE>, where \f$n \neq 0\f$.
+  //! (i.e., either \f$0 >= n\f$, where \f$n > 0\f$
+  //! or \f$0 = n\f$, where \f$n \neq 0\f$.
   bool is_unsatisfiable() const;
 
   enum Type {
