@@ -82,6 +82,18 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
   if (!y.sat_g_is_up_to_date())
     y.update_sat_g();
   SatMatrix tmp_sat_g = y.sat_g;
+  // Remove from `tmp_sat_g' the rows corresponding to trivially true
+  // constraints (i.e., the positivity or epsilon-bounding constraints):
+  // this is needed in order to widen the polyhedron and not the
+  // corresponding homogenized polyhedral cone.
+  const ConSys& y_cs = y.con_sys;
+  dimension_type num_rows = y_cs.num_rows();
+  for (dimension_type i = 0; i < num_rows; ++i)
+    if (y_cs[i].is_trivial_true()) {
+      --num_rows;
+      std::swap(tmp_sat_g[i], tmp_sat_g[num_rows]);
+    }
+  tmp_sat_g.rows_erase_to_end(num_rows);
   tmp_sat_g.sort_rows();
 
   // A constraint in `con_sys' is copied to `cs_selected'
