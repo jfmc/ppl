@@ -548,19 +548,18 @@ polydiff_assign :-
   make_vars(2, [A, B]),
   polydiff_assign(c, [point(0), point(2*A)],
                      [point(0), point(A)],
-                     [point(A), point(2*A)]).
+                     [point(A), point(2*A)]),
   polydiff_assign(nnc, [point(0), point(2*A)],
                        [point(0), point(A)],
-                       [closure_point(A), point(2*A)]).
+                       [closure_point(A), point(2*A)]),
   polydiff_assign(c, [point(0), point(B), point(A)],
                      [point(0), point(A), point(A + B)],
-                     [point(A + B, 2), point(B), point(0)]).
+                     [point(A + B, 2), point(B), point(0)]),
   polydiff_assign(nnc,[point(0), point(B), point(A)],
                       [point(0), point(A), point(A + B)],
                       [closure_point(A + B, 2), point(B), closure_point(0)]).
 
 polydiff_assign(T, GS1, GS2, GS3) :-
-  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_generators(T, GS1, P1),
   ppl_new_Polyhedron_from_generators(T, GS2, P2),
   ppl_Polyhedron_poly_difference_assign(P1, P2),
@@ -1763,9 +1762,9 @@ exceptions :-
    fail.
 exceptions :- !.
 
-% exception_prolog(+N, +V) checks exceptions thrown by the Prolog interface
-% It does not check those that are dependent on a specific Prolog system
-.
+% exception_prolog(+N, +V) checks exceptions thrown by the Prolog interface.
+% It does not check those that are dependent on a specific Prolog system.
+
 %% TEST: Prolog_unsigned_out_of_range
 exception_prolog(1, _) :-
    current_prolog_flag(bounded,false),
@@ -1892,8 +1891,8 @@ exception_sys_prolog(4, [A,B,_]) :-
   ppl_delete_Polyhedron(P).
 
 % exception_cplusplus(+N, +V) checks exceptions thrown by the C++
-% interface for the PPL
-.
+% interface for the PPL.
+
 exception_cplusplus(1, [A,B,C]) :-
   catch(ppl_new_Polyhedron_from_generators(C, [point(A + B + C, 0)], P),
           M, 
