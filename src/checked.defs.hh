@@ -72,7 +72,7 @@ inline Result name(Type& to) { \
 template <typename Policy, typename To, typename From> \
 struct FUNCTION_CLASS(name); \
 template <typename Policy, typename To, typename From> \
-inline Result name(To& to, const From from) { \
+inline Result name(To& to, const From& from) { \
   return FUNCTION_CLASS(name)<Policy, To, From>::function(to, from); \
 }
   
@@ -80,7 +80,7 @@ inline Result name(To& to, const From from) { \
 template <typename Policy, typename To, typename From> \
 struct FUNCTION_CLASS(name); \
 template <typename Policy, typename To, typename From> \
-inline Result name(To& to, const From x, const From y) { \
+inline Result name(To& to, const From& x, const From& y) { \
   return FUNCTION_CLASS(name)<Policy, To, From>::function(to, x, y); \
 }
   
@@ -111,7 +111,7 @@ struct FUNCTION_CLASS(name)<Policy, Type> { \
 #define SPECIALIZE_FUN2(name, suf, To, From) \
 template <typename Policy> \
 struct FUNCTION_CLASS(name)<Policy, To, From> { \
-  static inline Result function(To& to, const From from) { \
+  static inline Result function(To& to, const From& from) { \
     return name ## _ ## suf<Policy>(to, from); \
   } \
 };
@@ -119,7 +119,7 @@ struct FUNCTION_CLASS(name)<Policy, To, From> { \
 #define SPECIALIZE_FUN3(name, suf, To, From) \
 template <typename Policy> \
 struct FUNCTION_CLASS(name) <Policy, To, From> { \
-  static inline Result function(To& to, const From x, const From y) { \
+  static inline Result function(To& to, const From& x, const From& y) { \
     return name ## _ ## suf<Policy>(to, x, y); \
   } \
 };
