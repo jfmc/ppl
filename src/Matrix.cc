@@ -177,6 +177,8 @@ PPL::Matrix::grow(dimension_type new_n_rows, dimension_type new_n_columns) {
 		    new_matrix.row_capacity);
 	std::swap(new_matrix.rows[i], new_row);
       }
+      // We have the same number of pending rows as before.
+      new_matrix.set_index_first_pending_row(index_first_pending);
       // Rows have been added: see if the matrix is known to be sorted.
       new_matrix.set_sorted(old_n_rows == 0
 			    || (was_sorted
