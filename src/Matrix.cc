@@ -420,22 +420,19 @@ PPL::Matrix::add_pending_rows(const Matrix& y) {
   Matrix& x = *this;
   assert(x.row_size >= y.row_size);
 
-  // A temporary vector of rows.
   dimension_type x_n_rows = x.num_rows();
   dimension_type y_n_rows = y.num_rows();
-  std::vector<Row> tmp(x_n_rows + y_n_rows);
-
-  // Steal the rows of `x'.
-  for (dimension_type i = x_n_rows; i-- > 0; )
-    std::swap(x[i], tmp[i]);
+  // Grow to the required size without changing sortedness.
+  bool was_sorted = sorted;
+  grow(x_n_rows + y_n_rows, x.row_size);
+  sorted = was_sorted;
 
   // Copy the rows of `y', forcing size and capacity.
   for (dimension_type i = y_n_rows; i-- > 0; ) {
     Row copy(y[i], x.row_size, x.row_capacity);
-    std::swap(copy, tmp[x_n_rows+i]);
+    std::swap(copy, x[x_n_rows+i]);
   }
 
-  std::swap(x.rows, tmp);
   assert(OK());
 }
 
