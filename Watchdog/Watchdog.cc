@@ -44,7 +44,8 @@ site: http://www.cs.unipr.it/Software/ . */
 #endif
 
 // Cygwin only supports ITIMER_REAL.
-#ifdef __CYGWIN__
+// Profiling does not work on programs that uses the ITIMER_PROF timer.
+#if defined(__CYGWIN__) || defined(PROFILING)
 #define THE_TIMER  ITIMER_REAL
 #define THE_SIGNAL SIGALRM
 #else
