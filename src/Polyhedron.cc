@@ -625,7 +625,7 @@ throw_different_dimensions(const char* method,
 void
 PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
-
+ 
   // Dimension-compatibility check.
   if (x.space_dimension() != y.space_dimension())
     throw_different_dimensions("PPL::Polyhedron::intersection_assign(y)",
@@ -1791,24 +1791,23 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
     assert(y_copy <= x_copy);
   }
 #endif
+  size_t x_space_dim = x.space_dimension();
+  size_t y_space_dim = y.space_dimension();
+  // Dimension-compatibility check.
+  if (x_space_dim != y_space_dim)
+    throw_different_dimensions("PPL::Polyhedron::widening_assign(y)",
+			       *this, y);
 
-  // For each x, x.widening_assign(z) = z.widening_assign(x) = z,
-  // if z is a zero-dimensional polyhedron.
-  if (x.space_dimension() == 0)
+  // The widening between two polyhedra in a zero-dimensional space
+  // is a polyhedron iin a zero-dimensional space, too.
+  if (x_space_dim == 0)
     return;
-  else if (y.space_dimension() == 0) {
-    x.set_zero_dim_univ();
-    return;
-  }
+ 
   if (y.is_empty())
     return;
   if (x.is_empty())
     return;
-  // The polyhedrons must have the same dimensions if neither
-  // `x' nor `y' is zero-dimensional.
-  if (x.space_dimension() != y.space_dimension())
-    throw_different_dimensions("PPL::Polyhedron::widening_assign(y)",
-			       *this, y);
+  
   // For this function, we need the minimal system of generators and
   // the saturation matrix `sat_g' of the polyhedron `y'. To obtain
   // the saturation matrix, the minimal system of constraints and
@@ -1920,33 +1919,29 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
     assert(y_copy <= x_copy);
   }
 #endif
+  size_t x_space_dim = x.space_dimension();
+  size_t y_space_dim = y.space_dimension();
+  size_t cs_space_dim = cs.space_dimension();
+  // Dimension-compatibility check.
+  if (x_space_dim != y_space_dim)
+    throw_different_dimensions("PPL::Polyhedron::limited_widening_assign(y,c)",
+			       *this, y);
+
+  // `cs' must be dimension-compatible with the two polyhedrons.
+  if (x_space_dim < cs_space_dim)
+    throw_different_dimensions("PPL::Polyhedron::limited_widening_assign(y,c)",
+			       *this, cs);
 
   if (y.is_empty())
     return !(x.is_empty());
   if (x.is_empty())
     return false;
 
-  // For each x,
-  // x.limited_widening_assign(z,...) = z.limited_widening_assign(x,...) = z,
-  // if z is a zero-dimensional polyhedron.
-  if (x.space_dimension() == 0)
+  // The limited_widening between two polyhedra in a zero-dimensional space
+  // is a polyhedron iin a zero-dimensional space, too.
+  if (x_space_dim == 0)
     return true;
-  else if (y.space_dimension() == 0) {
-    x.set_zero_dim_univ();
-    return true;
-  }
-  // The two polyhedrons and must have the same dimension, if neither
-  // `x' nor `y' is zero-dimensional.
-  if (x.space_dimension() != y.space_dimension())
-    throw_different_dimensions("PPL::Polyhedron::limited_widening_assign(y,c)",
-			       *this, y);
-  // \p cs must be in the same space of the two polyhedrons:
-  // this means that the number of variables of \p cs
-  // is equal to the dimension of the polyhedrons.
-  if (x.space_dimension() != cs.num_columns() - 1)
-    throw_different_dimensions("PPL::Polyhedron::limited_widening_assign(y,c)",
-			       *this, cs);
-
+  
   y.minimize();
   // This function needs that the generators of `x' are up-to-date,
   // because we use these to choose which constraints of the matrix
@@ -1973,13 +1968,15 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
       ++nbrows;
     }
     x.widening_assign(y);
-
     // We erase the constraints that are not saturated or satisfied
     // by the generators of `x' and `y' and that are put at the end
     // of the matrix \p cs.
     cs.erase_to_end(nbrows);
-
+    
     cs.sort_rows();
+    if (cs.space_dimension() < space_dimension())
+      cs.add_zero_columns(space_dimension() - cs.space_dimension());
+    
     x.con_sys.sort_rows();
     // The system of constraints of the resulting polyhedron is
     // composed by the constraints of the widened polyhedron `x'
