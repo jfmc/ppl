@@ -263,6 +263,8 @@ dnl Libtool.
 # Turn off shared libraries during beta-testing, since they
 # make debugging harder and the build process take too long.
 AC_DISABLE_SHARED
+AC_LIBTOOL_DLOPEN
+AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
 
 dnl Checks for programs.
