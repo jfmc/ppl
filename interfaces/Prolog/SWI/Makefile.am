@@ -84,10 +84,18 @@ if HAVE_SWI_PROLOG
 #pplpl_SOURCES = pplpl.cc
 #pplpl_LDADD = libpplswiprolog.la $(top_builddir)/src/libppl.la /usr/local/lib/pl-5.0.2/runtime/i686-linux/libpl.a -lreadline -ldl -ltermcap @extra_libraries@
 
+noinst_PROGRAMS = pplpl pl_clpq
+
+pplpl_SOURCES = pplpl.cc
+pl_clpq_SOURCES = pl_clpq.cc
+
+pplpl$(EXEEXT): ppl_swiprolog.o pplpl.o
+	plld -pl-options,-g,main., -o $@ $+ -L$(top_builddir)/src/.libs -lppl @extra_libraries@
+
 pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../clpq.pl
 	plld -pl-options,-g,main., -o $@ $+ -L$(top_builddir)/src/.libs -lppl @extra_libraries@
 
-check-local: pl_clpq$(EXEEXT) ../check_script ../expected
+check-local: pl_clpq ../check_script ../expected
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	./pl_clpq -l $(srcdir)/clpq.pl <$(srcdir)/../check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
