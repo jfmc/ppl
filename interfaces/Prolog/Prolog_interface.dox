@@ -830,7 +830,7 @@ to be used has the following meaning:
 <H2><CODE>ppl_Polyhedron_OK(+Handle)</CODE></H2>
 
    Succeeds only if the polyhedron referenced by
-   <CODE>Handle</CODE is well formed, i.e., if it
+   <CODE>Handle</CODE> is well formed, i.e., if it
    satisfies all its implementation invariants.  Useful for debugging purposes.
 
 <H2><CODE>ppl_Polyhedron_add_constraint(+Handle, +Constraint)</CODE></H2>
