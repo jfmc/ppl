@@ -560,9 +560,9 @@ public:
   bool bounds_from_below(const LinExpression& expr) const;
 
   //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p expr is
-  //! bounded from above in \p *this, in which case the supremum
-  //! value is computed.
+  //! Returns <CODE>true</CODE> if and only if \p *this is not empty
+  //! and \p expr is bounded from above in \p *this, in which case
+  //! the supremum value is computed.
   /*!
     \param expr     The linear expression to be maximized subject to \p *this;
     \param sup_n    The numerator of the supremum value;
@@ -573,16 +573,16 @@ public:
                                      are dimension-incompatible.
 
     If \p *this is empty or \p expr is not bounded from above,
-    <CODE>false</CODE> is returned and \p sup_n, \p sup_d and \p
-    maximum are left untouched.
+    <CODE>false</CODE> is returned and \p sup_n, \p sup_d
+    and \p maximum are left untouched.
   */
   bool maximize(const LinExpression& expr,
 		Integer& sup_n, Integer& sup_d, bool& maximum) const;
 
   //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p expr is
-  //! bounded from above in \p *this, in which case the supremum
-  //! value and a point where \p expr reaches it are computed.
+  //! Returns <CODE>true</CODE> if and only if \p *this is not empty
+  //! and \p expr is bounded from above in \p *this, in which case
+  //! the supremum value and a point where \p expr reaches it are computed.
   /*!
     \param expr     The linear expression to be maximized subject to \p *this;
     \param sup_n    The numerator of the supremum value;
@@ -603,9 +603,9 @@ public:
 		Generator& point) const;
 
   //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p expr is
-  //! bounded from below in \p *this, in which case the infimum
-  //! value is computed.
+  //! Returns <CODE>true</CODE> if and only if \p *this is not empty
+  //! and \p expr is bounded from below in \p *this, in which case
+  //! the infimum value is computed.
   /*!
     \param expr     The linear expression to be minimized subject to \p *this;
     \param inf_n    The numerator of the infimum value;
@@ -616,16 +616,16 @@ public:
                                      are dimension-incompatible.
 
     If \p *this is empty or \p expr is not bounded from below,
-    <CODE>false</CODE> is returned and \p inf_n, \p inf_d and \p
-    minimum are left untouched.
+    <CODE>false</CODE> is returned and \p inf_n, \p inf_d
+    and \p minimum are left untouched.
   */
   bool minimize(const LinExpression& expr,
 		Integer& inf_n, Integer& inf_d, bool& minimum) const;
 
   //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p expr is
-  //! bounded from below in \p *this, in which case the infimum
-  //! value and a point where \p expr reaches it are computed.
+  //! Returns <CODE>true</CODE> if and only if \p *this is not empty
+  //! and \p expr is bounded from below in \p *this, in which case
+  //! the infimum value and a point where \p expr reaches it are computed.
   /*!
     \param expr     The linear expression to be minimized subject to \p *this;
     \param inf_n    The numerator of the infimum value;
