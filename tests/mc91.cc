@@ -67,13 +67,13 @@ main() TRY {
 #endif
 
   PCS p1(2);
-  p1.inject(d1);
+  p1.add_disjunct(d1);
 #if NOISY
   cout << p1 << endl;
 #endif
 
   PCS p2(2);
-  p2.inject(d2);
+  p2.add_disjunct(d2);
 #if NOISY
   cout << p2 << endl;
 #endif
