@@ -49,6 +49,7 @@ TESTS = NNCinclusion1 \
         append1 append2 \
 	bounded1 \
 	boundingbox1 \
+	inclusion1 \
 	convexhull1 convexhull2 convexhull3 convexhull4 \
 	convexdifference1 \
         empty1 \
@@ -118,6 +119,8 @@ append2_SOURCES = append2.cc
 bounded1_SOURCES = bounded1.cc
 
 boundingbox1_SOURCES = boundingbox1.cc
+
+inclusion1_SOURCES = inclusion1.cc
 
 convexhull1_SOURCES = convexhull1.cc
 convexhull2_SOURCES = convexhull2.cc
