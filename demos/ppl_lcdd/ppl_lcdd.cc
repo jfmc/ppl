@@ -428,6 +428,7 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
     std::set<unsigned>::iterator linearity_end = linearity.end();
     std::vector<mpz_class> coefficients(num_columns-1);
     mpz_class denominator;
+    bool has_a_point = false;
     for (unsigned i = 0; i < num_rows; ++i) {
       int vertex_marker;
       if (!guarded_read(in, vertex_marker)
@@ -440,12 +441,18 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
       if (vertex_marker == 1) {
 	assert(linearity.find(i+1) == linearity_end);
 	gs.insert(point(e, denominator));
+	has_a_point = true;
       }
       else if (linearity.find(i+1) != linearity_end)
 	gs.insert(line(e));
       else
 	gs.insert(ray(e));
     }
+    // Every non-empty generator system must have at least one point.
+    if (num_rows > 0 && !has_a_point)
+      // FIXME: why is the following PPL:: necessary?
+      gs.insert(PPL::point());
+
     if (verbose) {
       using namespace PPL::IO_Operators;
       std::cerr << "Generator system:\n" << gs << std::endl;
