@@ -46,11 +46,17 @@ namespace {
 
 unsigned allocated = 0;
 unsigned deallocated = 0;
+unsigned threshold = 0;
+
+void
+reset_allocators(unsigned new_threshold) {
+  allocated = deallocated = 0;
+  threshold = new_threshold;
+}
 
 extern "C" void*
 cxx_malloc(size_t size) {
-  static int k = 0;
-  if (k++ > 7) {
+  if (allocated > threshold) {
 #if NOISY
     cout << "std::bad_alloc thrown" << endl;
 #endif
@@ -75,6 +81,12 @@ cxx_realloc(void* p, size_t old_size, size_t new_size) {
     return p;
   }
   else {
+    if (allocated > threshold) {
+#if NOISY
+      cout << "std::bad_alloc thrown" << endl;
+#endif
+      throw std::bad_alloc();
+    }
     void* new_p = ::operator new(new_size);
     memcpy(new_p, p, old_size);
     ::operator delete(p);
@@ -83,6 +95,8 @@ cxx_realloc(void* p, size_t old_size, size_t new_size) {
 	 << " to " << new_size << " @ " << new_p
 	 << endl;
 #endif
+    ++allocated;
+    ++deallocated;
     return new_p;
   }
 }
@@ -96,18 +110,14 @@ cxx_free(void* p, size_t) {
   ++deallocated;
 }
 
-} // namespace
-
-int
-main() {
-  mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
-
+void
+test1() {
+  reset_allocators(7);
   try {
     Matrix* matrix = new Matrix(2, 5);
+    // We should never get here.
     delete matrix;
-
-    // Force failure everywhere until the bug is fixed.
-    return 1;
+    exit(1);
   }
   catch (const std::bad_alloc&) {
 #if NOISY
@@ -115,7 +125,23 @@ main() {
 #endif
   }
 
-  return (allocated == deallocated) ? 0 : 1;
+  if (allocated != deallocated)
+    exit(1);
 }
+
+} // namespace
+
+
+int
+main() TRY {
+  mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
+
+  set_handlers();
+
+  test1();
+
+  return 0;
+}
+CATCH
 
 #endif // GMP_SUPPORTS_EXCEPTIONS
