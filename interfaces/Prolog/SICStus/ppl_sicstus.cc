@@ -577,30 +577,22 @@ ppl_get_constraints(const void* pp, SP_term_ref constraints_list) {
     SP_put_atom(tail, a_nil);
 
     const PPL::Polyhedron& ph = *static_cast<const PPL::Polyhedron*>(pp);
+    const PPL::ConSys& cs = ph.constraints();
 
-    if (ph.check_empty()) {
+    for (PPL::ConSys::const_iterator i = cs.begin(),
+	   cs_end = cs.end(); i != cs_end; ++i) {
       SP_term_ref new_tail = SP_new_term_ref();
-      SP_cons_list(new_tail, false_constraint_term(), tail);
+      SP_cons_list(new_tail, constraint_term(*i), tail);
       tail = new_tail;
     }
-    else {
-      const PPL::ConSys& cs = ph.constraints();
-      PPL::ConSys::const_iterator i = cs.begin();
-      PPL::ConSys::const_iterator cs_end = cs.end();
-      while (i != cs_end) {
-	const PPL::Constraint& c = *i++;
-	SP_term_ref new_tail = SP_new_term_ref();
-	SP_cons_list(new_tail, constraint_term(c), tail);
-	tail = new_tail;
-      }
-    }
+
     SP_put_term(constraints_list, tail);
   }
   CATCH_ALL;
 }
 
 static SP_term_ref
-get_generator(const PPL::Generator& g) {
+generator_term(const PPL::Generator& g) {
   SP_term_ref t = SP_new_term_ref();
   SP_atom constructor;
   switch (g.type()) {
@@ -641,7 +633,7 @@ ppl_get_generators(const void* pp, SP_term_ref generators_list) {
     for (PPL::GenSys::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i) {
       SP_term_ref new_tail = SP_new_term_ref();
-      SP_cons_list(new_tail, get_generator(*i), tail);
+      SP_cons_list(new_tail, generator_term(*i), tail);
       tail = new_tail;
     }
 
