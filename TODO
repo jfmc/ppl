@@ -19,6 +19,8 @@ To be Done Just After Merging the Strict Branch
    Likewise, rename Polyhedron::insert(const Generator&)
    to Polyhedron::add_generator(const Generator&).
 
+7) Remove the parameter from Polyhedron::OK().
+
 Minor and Not So Minor Things
 =============================
 
