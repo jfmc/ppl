@@ -221,14 +221,15 @@ A set \f$C \subseteq \mathbb{R}^n\f$ is a <EM>cone</EM> if
 
 The polyhedron \f$P = \{\,x \in \mathbb{R}^n \mid Ax \geq 0\,\}\f$ 
 is a convex cone and it is called <EM>polyhedral cone</EM>. 
+
 Thus, a polyhedral cone is either <EM>pointed</EM>, having just the origin as 
 a vertex, or it has no vertices.
 
-<B>The Minkowski's theorem</B>
+<B>Minkowski's theorem</B>
 
-If \f$P = \{\,x \in \mathbb{R}^n \mid Ax \geq b\,\}\f$ is a nonempty 
-polyhedron and \f$\mathop{\mathrm{rank}}(A) = n\f$, then
-
+Let \f$P = \{\,x \in \mathbb{R}^n \mid Ax \geq b\,\}\f$ is a nonempty 
+polyhedron where \f$A\f$ is a matrix of rank \f$n\f$. 
+Then
 \f[
   P = \bigl\{\,x \in \mathbb{R}^n \mid 
     x = \sum_{k \in K} \lambda_k v_k + \sum_{j \in J} \mu_j r_j, 
@@ -241,23 +242,22 @@ where \f$\{v_k\}_{k \in K}\f$ is the set of vertices of \f$P\f$ and
 \f$\{r_j\}_{j \in J}\f$ is the set of extreme rays of \f$P\f$.
 
 \note
-The conditions (\f$P\f$ not empty and 
-\f$\mathop{\mathrm{rank}}(A) = n\f$) given in this theorem are 
+The conditions that \f$P\f$ is not empty and 
+\f$\mathop{\mathrm{rank}}(A) = n\f$ required by this theorem are 
 equivalent to the condition that \f$P\f$ has a vertex.
 (See Nemhauser and Wolsey - Integer and Combinatorial Optimization -
 propositions 4.1 and 4.2 on pages 92 and 93).
- 
 
 Thus, under the hypothesis of Minkowski's theorem, a polyhedron \f$P\f$ 
-can be represented either by a system of linear equalities and 
-inequalities or a set of vertices and rays. In this 
+can be represented either by a system of constraints or by a set of vertices
+and rays. In this 
 case both representations are unique up to positive multiples of each 
-inequality and ray. 
+constraint and ray. 
 Moreover, given either one of the representations, there is an algorithm for
 computing the other.
 
-This is useful because both forms are needed for computation of different 
-operations. For example 
+This is useful because both forms are needed for the computation of
+the different operations. For example 
 - the intersection of a set of polyhedra is a polyhedron
   that can be represented as the union of the sets of constraints
   representing the polyhedra;
@@ -269,7 +269,7 @@ There is another interesting theorem stating that starting from a
 set of vertices and rays (having rational coefficients) we can build 
 a rational polyhedron:
 
-<B>The Weil's theorem</B>
+<B>Weil's theorem</B>
 
 If \f$A\f$ is a rational \f$m_1 \times n\f$ matrix, \f$B\f$ is a rational 
 \f$m_2 \times n\f$ matrix and 
