@@ -41,6 +41,17 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 					   size_t new_space_dim) {
   assert(space_dimension() <= new_space_dim);
 
+  if (num_rows() == 0) {
+    if (topology() != new_topology)
+      if (is_necessarily_closed())
+	set_not_necessarily_closed();
+      else
+	set_necessarily_closed();
+    assert(OK());
+    return true;
+  }
+
+  // Here `num_rows() > 0'.
   size_t old_space_dim = space_dimension();
   size_t cols_to_be_added = new_space_dim - old_space_dim;
   Topology old_topology = topology();

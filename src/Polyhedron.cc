@@ -3116,6 +3116,9 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 
 bool
 PPL::Polyhedron::check_universe() const {
+  if (space_dim == 0)
+    return !is_empty();
+
   if (!constraints_are_minimized())
     minimize();
   if (is_necessarily_closed())
