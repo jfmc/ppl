@@ -80,7 +80,7 @@ handle_exception(const non_linear& e) {
 
   SP_put_term(culprit, e.term());
   SP_put_integer(arg_no, 1);
-  SP_put_string(expected_domain, "linear expression/constraint");
+  SP_put_string(expected_domain, "linear expression or constraint");
   SP_cons_functor(et, SP_atom_from_string(e.who()), 1, culprit);
   SP_cons_functor(et, SP_atom_from_string("domain_error"), 4,
 		  et, arg_no, expected_domain, culprit);
@@ -115,13 +115,23 @@ handle_exception(const std::exception& /* e */) {
   CATCH_INTERNAL  \
   CATCH_PPL
 
+// For variables.
 static SP_atom a_dollar_VAR;
+
+// For linear expressions.
 static SP_atom a_plus;
 static SP_atom a_minus;
 static SP_atom a_asterisk;
+
+// For constraints.
 static SP_atom a_equal_equal;
 static SP_atom a_greater_than_equal;
 static SP_atom a_equal_less_than;
+
+// For generators.
+static SP_atom a_line;
+static SP_atom a_ray;
+static SP_atom a_vertex;
 
 static struct {
   SP_atom* p_atom;
@@ -136,6 +146,10 @@ static struct {
   { &a_equal_equal,        "==" },
   { &a_greater_than_equal, ">=" },
   { &a_equal_less_than,    "=<" },
+
+  { &a_line,               "line" },
+  { &a_ray,                "ray" },
+  { &a_vertex,             "vertex" },
 };
 
 extern "C" void
@@ -284,6 +298,42 @@ extern "C" void
 ppl_insert_constraint(void* pp, SP_term_ref t) {
   try {
     static_cast<PPL::Polyhedron*>(pp)->insert(build_constraint(t));
+  }
+  CATCH_ALL;
+}
+
+static PPL::Generator
+build_generator(SP_term_ref t) {
+  if (SP_is_compound(t)) {
+    SP_atom functor;
+    int arity;
+    SP_get_functor(t, &functor, &arity);
+    if (arity == 1) {
+      SP_term_ref arg = SP_new_term_ref();
+      SP_get_arg(1, t, arg);
+      if (functor == a_line)
+	return line(build_lin_expression(arg));
+      else if (functor == a_ray)
+	return ray(build_lin_expression(arg));
+    }
+    else if (arity == 2) {
+      SP_term_ref arg1 = SP_new_term_ref();
+      SP_term_ref arg2 = SP_new_term_ref();
+      SP_get_arg(1, t, arg1);
+      SP_get_arg(2, t, arg2);
+      if (functor == a_vertex)
+	if (SP_is_integer(arg2))
+	  return vertex(build_lin_expression(arg1), get_integer(arg2));
+    }
+  }
+  // Invalid.
+  throw non_linear("build_generator", t);
+}
+
+extern "C" void
+ppl_insert_generator(void* pp, SP_term_ref t) {
+  try {
+    static_cast<PPL::Polyhedron*>(pp)->insert(build_generator(t));
   }
   CATCH_ALL;
 }
