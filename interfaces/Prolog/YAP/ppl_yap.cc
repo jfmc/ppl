@@ -305,8 +305,8 @@ ppl_Prolog_sysdep_init() {
 extern "C" void
 init() {
   ppl_init();
-  YAP_USER_C_PREDICATE(ppl_initialize, 0)
-  YAP_USER_C_PREDICATE(ppl_finalize, 0)
+  YAP_USER_C_PREDICATE(ppl_initialize, 0);
+  YAP_USER_C_PREDICATE(ppl_finalize, 0);
   YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_dimension, 2);
   YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_dimension, 2);
   YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_empty_from_dimension, 2);
