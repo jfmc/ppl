@@ -33,6 +33,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <sstream>
 #include <stdexcept>
 
+#define BE_LAZY
+
 namespace PPL = Parma_Polyhedra_Library;
 
 /*!
