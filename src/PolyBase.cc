@@ -1077,19 +1077,13 @@ PPL::PolyBase::convex_difference_assign(const PolyBase& y) {
     assert(!c.is_trivial_true());
     assert(!c.is_trivial_false());
     if (c.is_inequality()) {
-      LinExpression e(0 * Variable(x_space_dim-1));
-      for (int varid = x_space_dim-1; varid >= 0; --varid) {
-	const Integer& n = c.coefficient(Variable(varid));
-	if (n != 0)
-	  e += n * Variable(varid);
-      }
-      if (is_necessarily_closed())
-	z_cs.insert(e <= -c.coefficient());
+      LinExpression e = LinExpression(c);
+      if (is_necessarily_closed() || c.is_strict_inequality())
+	z_cs.insert(e <= 0);
       else
-	if (c.is_strict_inequality())
-	  z_cs.insert(e <= -c.coefficient());
-	else
-	  z_cs.insert(e < -c.coefficient());
+	// `c' is a non-strict inequality and
+	// we do support strict ones.
+	z_cs.insert(e < 0);
       new_polyhedron.convex_hull_assign(PolyBase(topology(), z_cs));
     }
   }
@@ -1582,13 +1576,8 @@ PPL::PolyBase::insert(const Constraint& c) {
     // `c' is NOT a strict inequality.
     // However, by barely invoking `con_sys.insert(c)' we would
     // cause a change in the topology of `con_sys', which is wrong.
-    // Thus, we compute a "topology corrected" copy of `c'.
-    LinExpression nc_expr;
-    // FIXME : provide a more handy way to copy the linear
-    // expression associated to a constraint (without the \eps coeff.).
-    for (size_t i = c.space_dimension(); i-- > 0; )
-      nc_expr += c.coefficient(Variable(i)) * Variable(i);
-    nc_expr += c.coefficient();
+    // Thus, we insert a "topology corrected" copy of `c'.
+    LinExpression nc_expr = LinExpression(c);
     if (c.is_equality())
       con_sys.insert(nc_expr == 0);
     else
@@ -1646,11 +1635,7 @@ PPL::PolyBase::insert(const Generator& g) {
       // However, by barely invoking `gen_sys.insert(g)' we would
       // cause a change in the topology of `gen_sys', which is wrong.
       // Thus, we compute a "topology corrected" copy of `g'.
-      LinExpression nc_expr;
-      // FIXME : provide a more handy way to copy the linear
-      // expression associated to a generator (without the \eps coeff.).
-      for (size_t i = g.space_dimension(); i-- > 0; )
-	nc_expr += g.coefficient(Variable(i)) * Variable(i);
+      LinExpression nc_expr = LinExpression(g);
       switch (g.type()) {
       case Generator::LINE:
 	gen_sys.insert(line(nc_expr));
@@ -1683,12 +1668,8 @@ PPL::PolyBase::insert(const Generator& g) {
       // `g' is NOT a closure point.
       // However, by barely invoking `gen_sys.insert(g)' we would
       // cause a change in the topology of `gen_sys', which is wrong.
-      // Thus, we compute a "topology corrected" copy of `g'.
-      LinExpression nc_expr;
-      // FIXME : provide a more handy way to copy the linear
-      // expression associated to a generator (without the \eps coeff.).
-      for (size_t i = g.space_dimension(); i-- > 0; )
-	nc_expr += g.coefficient(Variable(i)) * Variable(i);
+      // Thus, we insert a "topology corrected" copy of `g'.
+      LinExpression nc_expr = LinExpression(g);
       switch (g.type()) {
       case Generator::LINE:
 	gen_sys.insert(line(nc_expr));
