@@ -92,11 +92,16 @@ The specification uses the following grammar rules:
             | number * LinExpr		multiplication
             | LinExpr * number		multiplication
 
- Constraint  --> LinExpr = LinExpr	equation
-            | LinExpr =< LinExpr	nonstrict inequation
-            | LinExpr >= LinExpr	nonstrict inequation
-            | LinExpr < LinExpr		strict inequation
-            | LinExpr > LinExpr		strict inequation
+ Relation_Operator
+             --> =			equals
+            | =< 			less than or equal
+            | >=			greater than or equal
+            | < 			strictly less than
+            | > 			strictly greater than
+
+ Constraint 
+             --> LinExpr Relation_Operator LinExpr
+					constraint
 
  Constraint_System			list of constraints
              --> []
@@ -663,7 +668,8 @@ and a query will succeed even when
 
 <H2><CODE>ppl_Polyhedron_shuffle_dimensions(+Handle, +Shuffle_Map))</CODE></H2>
 
-   TO BE DONE   
+   Renames the dimensions of the polyhedron referred to by <CODE>Handle</CODE>
+   using the partial injection function defined by <CODE>Shuffle_Map</CODE>.
 
 <H2><CODE>ppl_Polyhedron_affine_image(+Handle, +PPL_Var,
                +LinExpr, +Integer)</CODE></H2>
@@ -676,6 +682,30 @@ and a query will succeed even when
                +LinExpr, +Integer)</CODE></H2>
 
 This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
+
+<H2><CODE>ppl_Polyhedron_generalized_affine_image(+Handle,
+               +PPL_Var,
+               +Relation_Operator
+               +LinExpr,
+               +Integer)</CODE></H2>
+
+   Transforms the polyhedron referenced by <CODE>Handle</CODE>
+   assigning the generalized
+   affine image with respect to the transfer function
+   <CODE>PPL_Var</CODE> <CODE>Relation_Operator</CODE>
+   <CODE>LinExpr</CODE>/<CODE>Integer</CODE>.
+
+
+<H2><CODE>ppl_Polyhedron_generalized_affine_image_lhs_rhs(+Handle,
+               +LinExpr1,
+               +Relation_Operator
+               +LinExpr2)</CODE></H2>
+
+   Transforms the polyhedron referenced by <CODE>Handle</CODE>
+   assigning the generalized
+   affine image with respect to the transfer function
+   <CODE>LinExpr1</CODE> <CODE>Relation_Operator</CODE>
+   <CODE>LinExpr2</CODE>.
 
 <H2><CODE>ppl_Polyhedron_relation_with_constraint(+Handle, +Constraint,
                -Relation)</CODE></H2>

@@ -88,6 +88,8 @@ check_all :-
   shuffle_dim_generators,
   affine,
   affine_pre,
+  affine_gen,
+  affine_genlr,
   rel_cons,
   rel_gens,
   checks,
@@ -932,6 +934,35 @@ affine_pre :-
   ppl_Polyhedron_equals_Polyhedron(P, P2),
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P2),
+  ppl_delete_Polyhedron(P).
+                               
+% Tests ppl_Polyhedron_generalized_affine_image
+% (using NNC Polyhedra).
+affine_gen :-
+  A = '$VAR'(0), B = '$VAR'(1),
+  ppl_new_Polyhedron_from_dimension(nnc, 2, P),
+  ppl_Polyhedron_add_constraint(P, A - B = 1),
+  ppl_Polyhedron_generalized_affine_image(P, A, =<, A + 1, 1),
+  ppl_new_Polyhedron_from_constraints(nnc,
+                                      [A - B =< 2],
+                                      P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P).
+                               
+% Tests ppl_Polyhedron_generalized_affine_image_lhs_rhs
+% (using NNC Polyhedra).
+affine_genlr :-
+  A = '$VAR'(0), B = '$VAR'(1),
+  ppl_new_Polyhedron_from_dimension(nnc, 2, P),
+  ppl_Polyhedron_add_constraint(P, A - B = 1),
+  ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, =<, A + 1),
+%  ppl_Polyhedron_get_constraints(P, CS),
+  ppl_new_Polyhedron_from_constraints(nnc,
+                                      [B - A =< 2],
+                                      P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P).
 
 % Tests ppl_Polyhedron_relation_with_constraint.
