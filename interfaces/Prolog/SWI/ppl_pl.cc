@@ -24,12 +24,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <SWI-Prolog.h>
 
 extern "C" install_t install();
+extern "C" void uninstall();
 
 int
 main(int argc, char **argv) {
-  install();
   if (!PL_initialise(argc, argv))
     PL_halt(1);
   PL_install_readline();
-  PL_halt(PL_toplevel() ? 0 : 1);
+
+  install();
+  int ret_val = PL_toplevel();
+  uninstall();
+  PL_halt(ret_val ? 0 : 1);
 }
