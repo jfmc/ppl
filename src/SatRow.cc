@@ -214,26 +214,32 @@ PPL::compare(const SatRow& x, const SatRow& y) {
 /*! \relates Parma_Polyhedra_Library::SatRow */
 bool
 PPL::subset_or_equal(const SatRow& x, const SatRow& y) {
-  const size_t x_size = mpz_size(x.vec);
-  const size_t y_size = mpz_size(y.vec);
+  size_t x_size = mpz_size(x.vec);
+  size_t y_size = mpz_size(y.vec);
   mp_srcptr xp = x.vec->_mp_d;
   mp_srcptr yp = y.vec->_mp_d;
-  size_t sz = x_size < y_size ? x_size : y_size;
-  while (sz > 0) {
-    if (*xp++ & ~*yp)
-      return false;
-    yp++;
-    sz--;
-  }
-  if (x_size > y_size) {
-    sz = x_size - y_size;
-    while (sz > 0) {
+  if (x_size <= y_size) {
+    while (x_size > 0) {
+      if (*xp++ & ~*yp)
+	return false;
+      yp++;
+      x_size--;
+    }
+  } else {
+    x_size -= y_size;
+    while (y_size > 0) {
+      if (*xp++ & ~*yp)
+	return false;
+      yp++;
+      y_size--;
+    }
+    while (x_size > 0) {
       if (*xp)
 	return false;
       xp++;
-      sz--;
+      x_size--;
     }
-  }
+  }   
   return true;
 }
 
