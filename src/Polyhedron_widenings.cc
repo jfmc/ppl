@@ -498,11 +498,9 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   }
 
   // For each i such that 0 <= i < x.space_dim, let x_num_rays[i] be
-  // the number of rays in x.gen_sys
-  // having exactly `i' coordinates equal to 0.
-  std::vector<dimension_type> x_num_rays(x.space_dim);
-  for (dimension_type i = x.space_dim; i-- > 0; )
-    x_num_rays[i] = 0;
+  // the number of rays in x.gen_sys having exactly `i' coordinates
+  // equal to 0.
+  std::vector<dimension_type> x_num_rays(x.space_dim, 0);
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; )
     if (x.gen_sys[i].is_ray()) {
       const Generator& r = x.gen_sys[i];
@@ -513,9 +511,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
       x_num_rays[num_zeroes]++;
     }
   // The same as above, this time for `y'.
-  std::vector<dimension_type> y_num_rays(y.space_dim);
-  for (dimension_type i = y.space_dim; i-- > 0; )
-    y_num_rays[i] = 0;
+  std::vector<dimension_type> y_num_rays(y.space_dim, 0);
   for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
     if (y.gen_sys[i].is_ray()) {
       const Generator& r = y.gen_sys[i];
