@@ -3754,15 +3754,46 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
       }
     }
   }
-  // Now we add all the valid rays to `x' and
-  // check for stabilization (which requires minimization).
-  x.add_generators_and_minimize(valid_rays);
-  if (is_BBRZ02_stabilizing(x, y)) {
+  
+  // We "average" the directions of all the rays that belong to
+  // `valid_rays' and then we add the new ray to the system of
+  // generators of `x'.
+  // NOTE: it is useless copy the polyhedron `x' in a temporary
+  // polyhedron, because the ray that is obtained averaging the
+  // directions of the rays of `valid_rays' is redundant in the system
+  // `valid_rays'.
+  LinExpression e(0);
+  for (dimension_type i = valid_rays.num_rows(); i-- > 0; )
+    e += LinExpression(valid_rays[i]);
+  e.normalize();
+  if (!e.all_homogeneous_terms_are_zero()) {
+    GenSys avg_ray;
+    avg_ray.insert(ray(e));
+    x.add_generators_and_minimize(avg_ray);
+
+    // Check for stabilization.
+    if (is_BBRZ02_stabilizing(x, y)) {
 #ifndef NDEBUG
-    std::cout << "BBRZ02: stabilizing on 2nd technique" << std::endl;
+      std::cout << "BBRZ02: stabilizing on the first case of 2nd technique"
+		<< std::endl;
 #endif
-    assert(OK(true));
-    return;
+      assert(OK(true));
+      return;
+    }
+  }
+  else {
+    // If there is not stabilization adding only a ray,
+    // we add all the valid rays to `x' and
+    // check for stabilization (which requires minimization).
+    x.add_generators_and_minimize(valid_rays);
+    if (is_BBRZ02_stabilizing(x, y)) {
+#ifndef NDEBUG
+      std::cout << "BBRZ02: stabilizing on the second case of 2nd technique"
+		<< std::endl;
+#endif
+      assert(OK(true));
+      return;
+    }
   }
 
   // ****************
