@@ -21,6 +21,9 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef PPL_algorithms_hh
+#define PPL_algorithms_hh 1
+
 #include "NNC_Polyhedron.defs.hh"
 #include "Polyhedra_PowerSet.defs.hh"
 #include "Constraint.defs.hh"
@@ -118,4 +121,41 @@ poly_hull_assign_if_exact(PH& p, const PH& q) {
   return true;
 }
 
+template <typename PH>
+bool
+check_containment(const PH& ph, const Polyhedra_PowerSet<PH>& ps) {
+  Polyhedra_PowerSet<NNC_Polyhedron> tmp;
+  tmp.add_disjunct(NNC_Polyhedron(ph));
+  for (typename Polyhedra_PowerSet<PH>::const_iterator i = ps.begin(),
+	 ps_end = ps.end(); i != ps_end; ++i) {
+    const NNC_Polyhedron pi(i->polyhedron());
+    for (typename Polyhedra_PowerSet<NNC_Polyhedron>::iterator j = tmp.begin(),
+	   jn = j; j != tmp.end(); j = jn) {
+      ++jn;
+      const NNC_Polyhedron& pj = j->polyhedron();
+      if (pj.contains(pi))
+	tmp.erase(j);
+    }
+    if (tmp.is_bottom())
+      return true;
+    else {
+      for (Polyhedra_PowerSet<NNC_Polyhedron>::iterator j = tmp.begin(),
+	     jn = j; j != tmp.end(); j = jn) {
+	++jn;
+	const NNC_Polyhedron& pj = j->polyhedron();
+	if (!pj.is_disjoint_from(pi)) {
+	  tmp.erase(j);
+	  std::pair<PH, Polyhedra_PowerSet<NNC_Polyhedron> >
+	    partition = linear_partition(pi, pj);
+	  tmp.add_disjunct(NNC_Polyhedron(partition.first));
+	  tmp.upper_bound_assign(partition.second);
+	}
+      }
+    }
+  }
+  return false;
+}
+
 } // namespace Parma_Polyhedra_Library
+
+#endif
