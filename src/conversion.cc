@@ -843,11 +843,16 @@ PPL::Polyhedron::conversion(Matrix& source,
     source.set_sorted(source[start - 1] <= source[start]);
   // There are no longer pending constraints in `source'.
   source.set_index_first_pending_row(source_num_rows);
-
+ 
   // We may have identified some redundant rays in `dest',
   // which have been swapped at the end of the matrix.
   if (dest_num_rows < dest.num_rows()) {
     dest.erase_to_end(dest_num_rows);
+    // FIXME: we should decide whether the functionality implemented
+    // by the following conditional would be better implemented
+    // within erase_to_end().
+    if (dest.first_pending_row() > dest_num_rows)
+      dest.unset_pending_rows();
     sat.rows_erase_to_end(dest_num_rows);
   }
   if (dest.is_sorted())
