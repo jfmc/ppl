@@ -31,7 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <limits>
 
 #ifndef PPL_STATISTICS
-#define PPL_STATISTICS 1
+#define PPL_STATISTICS 0
 #endif
 
 namespace Parma_Polyhedra_Library {
