@@ -99,19 +99,21 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // Computing the number of saturators for each inequality,
   // possibly identifying and swapping those that happen to be
   // equalities (see Proposition above).
-  for (dimension_type i = num_lines_or_equalities; i < num_rows; ++i)
+  for (dimension_type i = num_lines_or_equalities; i < num_rows; ++i) {
     if (sat[i].empty()) {
       // The constraint `mat[i]' is saturated by all the generators.
       // Thus, either it is already an equality or it can be transformed
-      // to an equality (see proposition).
+      // to an equality (see Proposition above).
       mat[i].set_is_line_or_equality();
       // Note: simple normalization already holds.
       mat[i].sign_normalize();
       // We also move it just after all the other equalities,
       // so that matrix `mat' keeps its partial sortedness.
-      std::swap(mat[i], mat[num_lines_or_equalities]);
-      std::swap(sat[i], sat[num_lines_or_equalities]);
-      std::swap(num_saturators[i], num_saturators[num_lines_or_equalities]);
+      if (i != num_lines_or_equalities) {
+	std::swap(mat[i], mat[num_lines_or_equalities]);
+	std::swap(sat[i], sat[num_lines_or_equalities]);
+	std::swap(num_saturators[i], num_saturators[num_lines_or_equalities]);
+      }
       ++num_lines_or_equalities;
       // `mat' is no longer sorted.
       mat.set_sorted(false);
@@ -121,6 +123,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
       // so that `mat[i]' is indeed an inequality.
       // We store the number of its saturators.
       num_saturators[i] = num_cols_sat - sat[i].count_ones();
+  }
 
   // At this point, all the equalities of `mat' (included those
   // inequalities that we just transformed to equalities) have
@@ -195,7 +198,8 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   //      ==>
   //        redundant(mat[i]).
   //
-  dimension_type min_saturators = num_columns - num_lines_or_equalities - 1;
+  const dimension_type min_saturators
+    = num_columns - num_lines_or_equalities - 1;
   for (dimension_type i = num_lines_or_equalities; i < num_rows; ) {
     if (num_saturators[i] < min_saturators) {
       // The inequality `mat[i]' is redundant.
@@ -222,11 +226,11 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
 	// Want to compare different rows of mat.
 	++j;
       else {
-	// Let us recall that each generator lies on a facet
-	// (see the Introduction) of the polyhedron.
-	// Given two constraints `c_1' and `c_2', if there are
-	// `m' generators lying on the hyper-plane corresponding
-	// to `c_1', the same `m' generators lie on the hyper-plane
+	// Let us recall that each generator lies on a facet of the
+	// polyhedron (see the Introduction).
+	// Given two constraints `c_1' and `c_2', if there are `m'
+	// generators lying on the hyper-plane corresponding to `c_1',
+	// the same `m' generators lie on the hyper-plane
 	// corresponding to `c_2', too, and there is another one lying
 	// on the latter but not on the former, then `c_2' is more
 	// restrictive than `c_1', i.e., `c_1' is redundant.
@@ -285,10 +289,9 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
 #endif
 
   // Finally, since now the sub-matrix (of `mat') of the irredundant
-  // equalities is in triangular form, we back substitute (using
-  // the function back_substitute()) each variables with the
-  // expression obtained considering the equalities starting
-  // from the last one.
+  // equalities is in triangular form, we back substitute each
+  // variables with the expression obtained considering the equalities
+  // starting from the last one.
   mat.back_substitute(num_lines_or_equalities);
 
   // The returned value is the number of irredundant equalities i.e.,

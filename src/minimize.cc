@@ -90,20 +90,20 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
 
   // Resizing `dest' to be the appropriate square matrix.
   dimension_type dest_num_rows = source.num_columns();
-  // Note that before calling `resize_no_copy()' we must
-  // update `index_first_pending'.
+  // Note that before calling `resize_no_copy()' we must update
+  // `index_first_pending'.
   dest.set_index_first_pending_row(dest_num_rows);
   dest.resize_no_copy(dest_num_rows, dest_num_rows);
 
-  // Initializing it to the identity matrix.
+  // Initialize `dest' to the identity matrix.
   for (dimension_type i = dest_num_rows; i-- > 0; ) {
+    Row& dest_i = dest[i];
     for (dimension_type j = dest_num_rows; j-- > 0; )
-      dest[i][j] = 0;
-    dest[i][i] = 1;
-    dest[i].set_is_line_or_equality();
+      dest_i[j] = (i == j) ? 1 : 0;
+    dest_i.set_is_line_or_equality();
   }
-  // The identity matrix `dest' is not sorted
-  // (see the sorting rules in Row.cc).
+  // The identity matrix `dest' is not sorted (see the sorting rules
+  // in Row.cc).
   dest.set_sorted(false);
 
   // NOTE: the matrix `dest', as it is now, it is not a _legal_
