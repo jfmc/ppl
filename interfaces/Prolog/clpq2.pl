@@ -220,16 +220,26 @@ query_next_solution :-
   flush_output(user_output),
   get_code(user_input, C),
   (
-    C == 59, eat_eol
+    C == 59,
+    % Get rid of the EOL character.
+    get_code(user_input, _EOL)
   ;
     C == 10
   ;
-    get_code(user_input, _EOL),
     write('Action (";" for more choices, otherwise <return>): '),
+    eat_to_eol,
     fail
   ),
   !,
   C = 10.
+
+eat_to_eol :-
+  get_code(user_input, C),
+  (C == 10 ->
+    true
+  ;
+    eat_to_eol
+  ).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% Reading Programs %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
