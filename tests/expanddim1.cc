@@ -304,7 +304,7 @@ test9() {
     exit(1);
 }
 
-// Test as given in GopanDRS02 on page 519.
+// Test as given in GopanDMDRS04 on page 519.
 static void
 test10() {
   C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
