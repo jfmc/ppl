@@ -392,9 +392,9 @@ ppl-0.6/
 |-- ppl.lsm.in
 |-- ppl.spec.in
 |-- src
-|   |-- AskTell.defs.hh
-|   |-- AskTell.inlines.hh
-|   |-- AskTell.types.hh
+|   |-- Ask_Tell.defs.hh
+|   |-- Ask_Tell.inlines.hh
+|   |-- Ask_Tell.types.hh
 |   |-- BHRZ03_Certificate.cc
 |   |-- BHRZ03_Certificate.defs.hh
 |   |-- BHRZ03_Certificate.inlines.hh

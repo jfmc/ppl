@@ -13,7 +13,6 @@ Enhancements for PPL 0.7
     BoundingBox -> Bounding_Box
     ConSys -> Constraint_System
     GenSys -> Generator_System
-    AskTell -> Ask_Tell
     LinExpression -> Linear_Expression
     SatMatrix -> Saturation_Matrix
     SatRow -> Saturation_Row
