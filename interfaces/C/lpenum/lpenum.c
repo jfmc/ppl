@@ -186,7 +186,8 @@ print_clock(FILE* f) {
   }
 }
 
-static mpz_t tmp;
+static mpz_t tmp_z;
+static mpq_t tmp_q;
 static ppl_Coefficient_t ppl_coeff;
 static LPI* lp;
 
@@ -206,22 +207,22 @@ print_constraint(ppl_const_Constraint_t c, FILE* f) {
   int first = 1;
   for (var = 0; var < dimension; ++var) {
     ppl_Constraint_coefficient(c, var, ppl_coeff);
-    ppl_Coefficient_to_mpz_t(ppl_coeff, tmp);
-    if (mpz_sgn(tmp) != 0) {
+    ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
+    if (mpz_sgn(tmp_z) != 0) {
       if (!first) {
-	if (mpz_sgn(tmp) > 0)
+	if (mpz_sgn(tmp_z) > 0)
 	  fputc('+', f);
 	else {
 	  fputc('-', f);
-	  mpz_neg(tmp, tmp);
+	  mpz_neg(tmp_z, tmp_z);
 	}
       }
       else
 	first = 0;
-      if (mpz_cmp_si(tmp, -1) == 0)
+      if (mpz_cmp_si(tmp_z, -1) == 0)
 	  fputc('-', f);
-      else if (mpz_cmp_si(tmp, 1) != 0) {
-	mpz_out_str(f, 10, tmp);
+      else if (mpz_cmp_si(tmp_z, 1) != 0) {
+	mpz_out_str(f, 10, tmp_z);
 	fputc('*', f);
       }
       print_variable(var, f);
@@ -247,9 +248,9 @@ print_constraint(ppl_const_Constraint_t c, FILE* f) {
     break;
   }
   ppl_Constraint_inhomogeneous_term(c, ppl_coeff);
-  ppl_Coefficient_to_mpz_t(ppl_coeff, tmp);
-  mpz_neg(tmp, tmp);
-  mpz_out_str(f, 10, tmp);
+  ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
+  mpz_neg(tmp_z, tmp_z);
+  mpz_out_str(f, 10, tmp_z);
 
   fflush(f);
 }
@@ -265,9 +266,9 @@ add_constraints(ppl_LinExpression_t ppl_le,
     break;
 
   case 'L':
-    mpz_mul(tmp, den_lcm, mpq_numref(rational_lb));
-    mpz_neg(tmp, tmp);
-    ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp);
+    mpz_mul(tmp_z, den_lcm, mpq_numref(rational_lb));
+    mpz_neg(tmp_z, tmp_z);
+    ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_LinExpression_add_to_inhomogeneous(ppl_le, ppl_coeff);
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL);
@@ -278,9 +279,9 @@ add_constraints(ppl_LinExpression_t ppl_le,
     break;
 
   case 'U':
-    mpz_mul(tmp, den_lcm, mpq_numref(rational_ub));
-    mpz_neg(tmp, tmp);
-    ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp);
+    mpz_mul(tmp_z, den_lcm, mpq_numref(rational_ub));
+    mpz_neg(tmp_z, tmp_z);
+    ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_LinExpression_add_to_inhomogeneous(ppl_le, ppl_coeff);
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL);
@@ -293,9 +294,9 @@ add_constraints(ppl_LinExpression_t ppl_le,
   case 'D':
     ppl_new_LinExpression_from_LinExpression(&ppl_le2, ppl_le);
 
-    mpz_mul(tmp, den_lcm, mpq_numref(rational_lb));
-    mpz_neg(tmp, tmp);
-    ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp);
+    mpz_mul(tmp_z, den_lcm, mpq_numref(rational_lb));
+    mpz_neg(tmp_z, tmp_z);
+    ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_LinExpression_add_to_inhomogeneous(ppl_le, ppl_coeff);
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL);
@@ -304,9 +305,9 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
 
-    mpz_mul(tmp, den_lcm, mpq_numref(rational_ub));
-    mpz_neg(tmp, tmp);
-    ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp);
+    mpz_mul(tmp_z, den_lcm, mpq_numref(rational_ub));
+    mpz_neg(tmp_z, tmp_z);
+    ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_LinExpression_add_to_inhomogeneous(ppl_le2, ppl_coeff);
     ppl_new_Constraint(&ppl_c, ppl_le2,
 		       PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL);
@@ -318,9 +319,9 @@ add_constraints(ppl_LinExpression_t ppl_le,
     break;
 
   case 'S':
-    mpz_mul(tmp, den_lcm, mpq_numref(rational_lb));
-    mpz_neg(tmp, tmp);
-    ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp);
+    mpz_mul(tmp_z, den_lcm, mpq_numref(rational_lb));
+    mpz_neg(tmp_z, tmp_z);
+    ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_LinExpression_add_to_inhomogeneous(ppl_le, ppl_coeff);
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_EQUAL);
@@ -331,6 +332,12 @@ add_constraints(ppl_LinExpression_t ppl_le,
     break;
   }
 }
+
+struct bounds {
+  int type;
+  mpq_t lower;
+  mpq_t upper;
+};
 
 static void
 solve(char* file_name) {
@@ -346,7 +353,9 @@ solve(char* file_name) {
   double* coefficient_value;
   mpq_t rational_lb, rational_ub;
   mpq_t* rational_coefficient;
+  mpq_t* candidate;
   mpz_t den_lcm;
+  struct bounds* variable_bounds;
 
   if (print_timings)
     start_clock();
@@ -399,8 +408,8 @@ solve(char* file_name) {
     ppl_new_LinExpression_with_dimension(&ppl_le, dimension);
 
     for (i = 1; i <= nz; ++i) {
-      mpz_mul(tmp, den_lcm, mpq_numref(rational_coefficient[i]));
-      ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp);
+      mpz_mul(tmp_z, den_lcm, mpq_numref(rational_coefficient[i]));
+      ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
       ppl_LinExpression_add_to_coefficient(ppl_le, coefficient_index[i]-1,
 					   ppl_coeff);
     }
@@ -410,17 +419,27 @@ solve(char* file_name) {
     ppl_delete_LinExpression(ppl_le);
   }
 
-  if (add_bounds) {
-    /* Set up the columns constraints, i.e., variable bounds. */
-    for (column = 1; column <= dimension; ++column) {
+  if (!add_bounds) {
+    variable_bounds
+      = (struct bounds*) malloc((dimension)*sizeof(struct bounds));
+    for (i = 0; i < dimension; ++i) {
+      mpq_init(variable_bounds[i].lower);
+      mpq_init(variable_bounds[i].upper);
+    }
+  }
+
+  /* Set up the columns constraints, i.e., variable bounds. */
+  for (column = 1; column <= dimension; ++column) {
+
+    glp_get_col_bnds(lp, column, &type, &lb, &ub);
+
+    mpq_set_d(rational_lb, lb);
+    mpq_set_d(rational_ub, ub);
+
+    if (add_bounds) {
       /* Initialize the least common multiple computation. */
       mpz_set_si(den_lcm, 1);
-
-      glp_get_col_bnds(lp, column, &type, &lb, &ub);
-
-      mpq_set_d(rational_lb, lb);
       mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_lb));
-      mpq_set_d(rational_ub, ub);
       mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_ub));
 
       ppl_new_LinExpression_with_dimension(&ppl_le, dimension);
@@ -431,7 +450,11 @@ solve(char* file_name) {
 
       ppl_delete_LinExpression(ppl_le);
     }
-    printf("\n");
+    else {
+      variable_bounds[column-1].type = type;
+      mpq_set(variable_bounds[column-1].lower, rational_lb);
+      mpq_set(variable_bounds[column-1].upper, rational_ub);
+    }
   }
 
   ppl_new_Polyhedron_from_ConSys(&ppl_ph, ppl_cs);
@@ -453,6 +476,10 @@ solve(char* file_name) {
     start_clock();
   }
 
+  candidate = (mpq_t*) malloc((dimension)*sizeof(mpq_t));
+  for (i = 0; i < dimension; ++i)
+    mpq_init(candidate[i]);
+
   ppl_new_GenSys__const_iterator(&git1);
   ppl_new_GenSys__const_iterator(&git2);
   ppl_GenSys_begin(ppl_const_gs, git1);
@@ -460,18 +487,56 @@ solve(char* file_name) {
   while (ppl_GenSys__const_iterator_equal_test(git1, git2) == 0) {
     ppl_GenSys__const_iterator_dereference(git1, &ppl_const_g);
     if (ppl_Generator_type(ppl_const_g) == PPL_GENERATOR_TYPE_POINT) {
+      ppl_Generator_divisor(ppl_const_g, ppl_coeff);
+      ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
       for (i = 0; i < dimension; ++i) {
+	mpz_set(mpq_denref(candidate[i]), tmp_z);
 	ppl_Generator_coefficient(ppl_const_g, i, ppl_coeff);
-	ppl_Coefficient_to_mpz_t(ppl_coeff, tmp);
-	mpz_out_str(stdout, 10, tmp);
-	printf(" ");
+	ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(candidate[i]));
+	if (!add_bounds) {
+	  switch (variable_bounds[i].type) {
+	  case 'F':
+	    break;
+
+	  case 'L':
+	    if (mpq_cmp(variable_bounds[i].lower, candidate[i]) > 0)
+	      goto next;
+	    break;
+
+	  case 'U':
+	    if (mpq_cmp(variable_bounds[i].upper, candidate[i]) < 0)
+	      goto next;
+	    break;
+
+	  case 'D':
+	    if (mpq_cmp(variable_bounds[i].lower, candidate[i]) > 0
+		|| mpq_cmp(variable_bounds[i].upper, candidate[i]) < 0)
+	      goto next;
+	    break;
+
+	  case 'S':
+	    if (mpq_cmp(variable_bounds[i].lower, candidate[i]) != 0)
+	      goto next;
+	    break;
+	  }
+	}
+      }
+      /* Here we have a candidate. */
+      for (i = 0; i < dimension; ++i) {
+	printf("%f ", mpq_get_d(candidate[i]));
       }
       printf("\n");
     }
     else
       printf("NOT A POINT %d\n", ppl_Generator_type(ppl_const_g));
+  next:
     ppl_GenSys__const_iterator_increment(git1);
   }
+
+  free(candidate);
+
+  if (!add_bounds)
+    free(variable_bounds);
 
   ppl_delete_Polyhedron(ppl_ph);
   glp_delete_prob(lp);
@@ -496,7 +561,8 @@ main(int argc, char* argv[]) {
   process_options(argc, argv);
 
   /* Initialize globals. */
-  mpz_init(tmp);
+  mpz_init(tmp_z);
+  mpq_init(tmp_q);
   ppl_new_Coefficient(&ppl_coeff);
 
   while (optind < argc)
@@ -504,7 +570,8 @@ main(int argc, char* argv[]) {
 
   /* Finalize globals. */
   ppl_delete_Coefficient(ppl_coeff);
-  mpz_clear(tmp);
+  mpq_clear(tmp_q);
+  mpz_clear(tmp_z);
 
   return 0;
 }
