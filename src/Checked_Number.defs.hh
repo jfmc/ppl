@@ -25,6 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Checked_Number_defs_hh 1
 
 #include <iostream>
+#include <gmpxx.h>
+#include "float.types.hh"
 #include "Checked_Number.types.hh"
 #include "checked.defs.hh"
 
@@ -34,15 +36,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-struct Checked_Number_Policy {
+struct Checked_Number_Default_Policy {
   static const int check_overflow = 1;
-  static const int check_exact = 0;
+  static const int check_inexact = 0;
   static const int check_divbyzero = 0;
   static const int check_sqrt_neg = 0;
   static const int check_normal = 0;
 };
 
-template <typename T>
+template <typename T, typename Policy>
 class Checked_Number {
 
 public:
@@ -50,13 +52,42 @@ public:
   //! Default constructor.
   Checked_Number();
 
-  Checked_Number(const T REF y);
- 
-  template <typename T1>
-  Checked_Number(const T1 REF _v);
+#if 0
+  /*
+    Don't enable this: the presence of a copy constructor (also 
+    if defined identical to default one) inhibit some optimizations
+    in gcc (verified with 3.4.1)
+  */
+  Checked_Number(const Checked_Number& y);
+#endif
 
+  Checked_Number(const int8_t y);
+  Checked_Number(const int16_t y);
+  Checked_Number(const int32_t y);
+  Checked_Number(const int64_t y);
+  Checked_Number(const u_int8_t y);
+  Checked_Number(const u_int16_t y);
+  Checked_Number(const u_int32_t y);
+  Checked_Number(const u_int64_t y);
+  Checked_Number(const float32_t y);
+  Checked_Number(const float64_t y);
+#ifdef FLOAT96_TYPE
+  Checked_Number(const float96_t y);
+#endif
+#ifdef FLOAT128_TYPE
+  Checked_Number(const float128_t y);
+#endif
+  Checked_Number(const mpq_class& y);
+  Checked_Number(const mpz_class& y);
+
+ 
   T& value();
   const T& value() const;
+
+#if 1
+  /* Temporary kludge: needed by ERational */
+  operator mpz_class() const;
+#endif
 
   Checked_Number& operator=(const Checked_Number REF y);
   Checked_Number& operator+=(const Checked_Number REF y);
@@ -77,86 +108,90 @@ private:
 
 };
 
-template <typename T>
-Checked_Number<T> operator+(const Checked_Number<T> REF x);
+template <typename T, typename Policy>
+Checked_Number<T, Policy> operator+(const Checked_Number<T, Policy> REF x);
 
-template <typename T>
-Checked_Number<T> operator-(const Checked_Number<T> REF x);
+template <typename T, typename Policy>
+Checked_Number<T, Policy> operator-(const Checked_Number<T, Policy> REF x);
 
-template <typename T>
-Checked_Number<T> operator+(const Checked_Number<T> REF x, const Checked_Number<T> REF y);
+template <typename T, typename Policy>
+Checked_Number<T, Policy> operator+(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
 
-template <typename T>
-Checked_Number<T> operator-(const Checked_Number<T> REF x, const Checked_Number<T> REF y);
+template <typename T, typename Policy>
+Checked_Number<T, Policy> operator-(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
 
-template <typename T>
-Checked_Number<T> operator*(const Checked_Number<T> REF x, const Checked_Number<T> REF y);
+template <typename T, typename Policy>
+Checked_Number<T, Policy> operator*(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
 
-template <typename T>
-Checked_Number<T> operator/(const Checked_Number<T> REF x, const Checked_Number<T> REF y);
+template <typename T, typename Policy>
+Checked_Number<T, Policy> operator/(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
 
-template <typename T>
-Checked_Number<T> operator%(const Checked_Number<T> REF x, const Checked_Number<T> REF y);
+template <typename T, typename Policy>
+Checked_Number<T, Policy> operator%(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
 
-template <typename T>
-bool operator==(const Checked_Number<T> REF x, const Checked_Number<T> REF y);
+template <typename T, typename Policy>
+bool operator==(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
 
-template <typename T>
-bool operator!=(const Checked_Number<T> REF x, const Checked_Number<T> REF y);
+template <typename T, typename Policy>
+bool operator!=(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
 
-template <typename T>
-bool operator>=(const Checked_Number<T> REF x, const Checked_Number<T> REF y);
+template <typename T, typename Policy>
+bool operator>=(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
 
-template <typename T>
-bool operator>(const Checked_Number<T> REF x, const Checked_Number<T> REF y);
+template <typename T, typename Policy>
+bool operator>(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
 
-template <typename T>
-bool operator<=(const Checked_Number<T> REF x, const Checked_Number<T> REF y);
+template <typename T, typename Policy>
+bool operator<=(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
 
-template <typename T>
-bool operator<(const Checked_Number<T> REF x, const Checked_Number<T> REF y);
+template <typename T, typename Policy>
+bool operator<(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
 
-template <typename T>
-int sgn(const Checked_Number<T> REF x);
+template <typename T, typename Policy>
+int sgn(const Checked_Number<T, Policy> REF x);
 
-template <typename T>
-int cmp(const Checked_Number<T> REF x, const Checked_Number<T> REF y);
+template <typename T, typename Policy>
+int cmp(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y);
 
-template <typename T>
-void negate(Checked_Number<T>& x);
+template <typename T, typename Policy>
+void negate(Checked_Number<T, Policy>& x);
 
-template <typename T>
-void gcd_assign(Checked_Number<T>& x, const Checked_Number<T> REF y);
+template <typename T, typename Policy>
+void gcd_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y);
 
-template <typename T>
-void gcd_assign(Checked_Number<T>& x, const Checked_Number<T> REF y, const Checked_Number<T> REF z);
+template <typename T, typename Policy>
+void gcd_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y, const Checked_Number<T, Policy> REF z);
 
-template <typename T>
-void lcm_assign(Checked_Number<T>& x, const Checked_Number<T> REF y);
+template <typename T, typename Policy>
+void lcm_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y);
 
-template <typename T>
-void lcm_assign(Checked_Number<T>& x, const Checked_Number<T> REF y, const Checked_Number<T> REF z);
+template <typename T, typename Policy>
+void lcm_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y, const Checked_Number<T, Policy> REF z);
 
-template <typename T>
-void exact_div_assign(Checked_Number<T>& x, const Checked_Number<T> REF y);
+template <typename T, typename Policy>
+void exact_div_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y);
 
-template <typename T>
-void exact_div_assign(Checked_Number<T>& x, const Checked_Number<T> REF y, const Checked_Number<T> REF z);
+template <typename T, typename Policy>
+void exact_div_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y, const Checked_Number<T, Policy> REF z);
 
-template <typename T>
-void sqrt_assign(Checked_Number<T>& x);
+template <typename T, typename Policy>
+void sqrt_assign(Checked_Number<T, Policy>& x);
 
-template <typename T>
-void sqrt_assign(Checked_Number<T>& x, const Checked_Number<T> REF y);
+template <typename T, typename Policy>
+void sqrt_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y);
 
-template <typename T>
-std::ostream& operator<<(std::ostream& os, const Checked_Number<T> REF x);
+template <typename T, typename Policy>
+std::ostream& operator<<(std::ostream& os, const Checked_Number<T, Policy> REF x);
 
-template <typename T>
-std::istream& operator>>(std::istream& is, Checked_Number<T>& x);
+template <typename T, typename Policy>
+std::istream& operator>>(std::istream& is, Checked_Number<T, Policy>& x);
 
 } // namespace Parma_Polyhedra_Library
 
+#include "checked_int.inlines.hh"
+#include "checked_float.inlines.hh"
+#include "checked_mpz.inlines.hh"
+#include "checked_mpq.inlines.hh"
 #include "Checked_Number.inlines.hh"
 
 #endif // !defined(PPL_Checked_Number_defs_hh)

@@ -49,72 +49,93 @@ check_result(Result r)
     bad_result(r);
 }
 
-template <typename T>
+template <typename T, typename Policy>
 inline
-Checked_Number<T>::Checked_Number()
+Checked_Number<T, Policy>::Checked_Number()
  : v(0) {
 }
 
-template <typename T>
-inline
-Checked_Number<T>::Checked_Number(const T REF y)
-  : v(y) {
+#define DEF_CTOR(type) \
+template <typename T, typename Policy> \
+inline \
+Checked_Number<T, Policy>::Checked_Number(const type y) { \
+  check_result(assign<Policy>(v, y)); \
 }
 
-template <typename T>
-template <typename T1>
-inline
-Checked_Number<T>::Checked_Number(const T1 REF y) {
-  check_result(assign<Checked_Number_Policy>(v, y));
-}
+DEF_CTOR(int8_t)
+DEF_CTOR(int16_t)
+DEF_CTOR(int32_t)
+DEF_CTOR(int64_t)
+DEF_CTOR(u_int8_t)
+DEF_CTOR(u_int16_t)
+DEF_CTOR(u_int32_t)
+DEF_CTOR(u_int64_t)
+DEF_CTOR(float32_t)
+DEF_CTOR(float64_t)
+#ifdef FLOAT96_TYPE
+DEF_CTOR(float96_t)
+#endif
+#ifdef FLOAT128_TYPE
+DEF_CTOR(float128_t)
+#endif
+DEF_CTOR(mpq_class&)
+DEF_CTOR(mpz_class&)
 
-template <typename T>
+template <typename T, typename Policy>
 inline T&
-Checked_Number<T>::value() {
+Checked_Number<T, Policy>::value() {
   return v;
 }
 
-template <typename T>
+template <typename T, typename Policy>
+Checked_Number<T, Policy>::operator mpz_class() const {
+  mpz_class r;
+  Checked::assign<Policy>(r, v);
+  return r;
+}
+
+template <typename T, typename Policy>
 inline const T&
-Checked_Number<T>::value() const {
+Checked_Number<T, Policy>::value() const {
   return v;
 }
 
 #define DEF_INCREMENT(f, fun) \
-template <typename T> \
-inline Checked_Number<T>& \
-Checked_Number<T>::f() { \
-  check_result(fun<Checked_Number_Policy>(v, v, T(1))); \
+template <typename T, typename Policy> \
+inline Checked_Number<T, Policy>& \
+Checked_Number<T, Policy>::f() { \
+  check_result(fun<Policy>(v, v, T(1))); \
   return *this; \
 }\
-template <typename T> \
-inline Checked_Number<T> \
-Checked_Number<T>::f(int) {\
+template <typename T, typename Policy> \
+inline Checked_Number<T, Policy> \
+Checked_Number<T, Policy>::f(int) {\
   T r = v;\
-  check_result(fun<Checked_Number_Policy>(v, v, T(1)));\
+  check_result(fun<Policy>(v, v, T(1)));\
   return r;\
 }
 
 DEF_INCREMENT(operator ++, add)
 DEF_INCREMENT(operator --, sub)
 
-template <typename T>
+template <typename T, typename Policy>
 inline void
-Checked_Number<T>::swap(Checked_Number<T>& y) {
+Checked_Number<T, Policy>::swap(Checked_Number<T, Policy>& y) {
   std::swap(v, y.v);
 }
 
-template <typename T>
-inline Checked_Number<T>&
-Checked_Number<T>::operator=(const Checked_Number<T> REF y) {
+template <typename T, typename Policy>
+inline Checked_Number<T, Policy>&
+Checked_Number<T, Policy>::operator=(const Checked_Number<T, Policy> REF y) {
   v = y.v;
+  return *this;
 }
 
 #define DEF_BINARY_ASSIGN(f, fun) \
-template <typename T> \
-inline Checked_Number<T>& \
-Checked_Number<T>::f(const Checked_Number<T> REF y) { \
-  check_result(fun<Checked_Number_Policy>(v, v, y.v)); \
+template <typename T, typename Policy> \
+inline Checked_Number<T, Policy>& \
+Checked_Number<T, Policy>::f(const Checked_Number<T, Policy> REF y) { \
+  check_result(fun<Policy>(v, v, y.v)); \
   return *this; \
 }
 
@@ -125,27 +146,11 @@ DEF_BINARY_ASSIGN(operator /=, div)
 DEF_BINARY_ASSIGN(operator %=, mod)
 
 #define DEF_BINARY(f, fun) \
-template <typename T> \
-inline Checked_Number<T> \
-f(const Checked_Number<T> REF x, const Checked_Number<T> REF y) { \
+template <typename T, typename Policy> \
+inline Checked_Number<T, Policy> \
+f(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y) { \
   T r; \
-  check_result(fun<Checked_Number_Policy>(r, x.value(), y.value())); \
-  return r; \
-} \
-template <typename T, typename T1> \
-inline Checked_Number<T> \
-f(const T1 x, const Checked_Number<T> REF y) { \
-  T r; \
-  check_result(assign<Checked_Number_Policy>(r, x)); \
-  check_result(fun<Checked_Number_Policy>(r, r, y.value())); \
-  return r; \
-} \
-template <typename T, typename T1> \
-inline Checked_Number<T> \
-f(const Checked_Number<T> REF x, const T1 y) { \
-  T r; \
-  check_result(assign<Checked_Number_Policy>(r, y)); \
-  check_result(fun<Checked_Number_Policy>(r, x.value(), r)); \
+  check_result(fun<Policy>(r, x.value(), y.value())); \
   return r; \
 }
 
@@ -155,25 +160,55 @@ DEF_BINARY(operator *, mul)
 DEF_BINARY(operator /, div)
 DEF_BINARY(operator %, mod)
 
+#define DEF_BINARY_OTHER(f, fun, type) \
+template <typename T, typename Policy> \
+inline Checked_Number<T, Policy> \
+f(const type x, const Checked_Number<T, Policy> REF y) { \
+  T r; \
+  check_result(assign<Policy>(r, x)); \
+  check_result(fun<Policy>(r, r, y.value())); \
+  return r; \
+} \
+template <typename T, typename Policy> \
+inline Checked_Number<T, Policy> \
+f(const Checked_Number<T, Policy> REF x, const type y) { \
+  T r; \
+  check_result(assign<Policy>(r, y)); \
+  check_result(fun<Policy>(r, x.value(), r)); \
+  return r; \
+}
+
+#define DEF_BINARIES_OTHER(type) \
+DEF_BINARY_OTHER(operator +, add, type) \
+DEF_BINARY_OTHER(operator -, sub, type) \
+DEF_BINARY_OTHER(operator *, mul, type) \
+DEF_BINARY_OTHER(operator /, div, type) \
+DEF_BINARY_OTHER(operator %, mod, type)
+
+DEF_BINARIES_OTHER(int8_t)
+DEF_BINARIES_OTHER(int16_t)
+DEF_BINARIES_OTHER(int32_t)
+DEF_BINARIES_OTHER(int64_t)
+DEF_BINARIES_OTHER(u_int8_t)
+DEF_BINARIES_OTHER(u_int16_t)
+DEF_BINARIES_OTHER(u_int32_t)
+DEF_BINARIES_OTHER(u_int64_t)
+DEF_BINARIES_OTHER(float32_t)
+DEF_BINARIES_OTHER(float64_t)
+#ifdef FLOAT96_TYPE
+DEF_BINARIES_OTHER(float96_t)
+#endif
+#ifdef FLOAT128_TYPE
+DEF_BINARIES_OTHER(float128_t)
+#endif
+DEF_BINARIES_OTHER(mpz_class&)
+DEF_BINARIES_OTHER(mpq_class&)
+
 #define DEF_COMPARE(f, op) \
-template <typename T> \
+template <typename T, typename Policy> \
 inline bool \
-f(const Checked_Number<T> REF x, const Checked_Number<T> REF y) { \
+f(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y) { \
   return x.value() op y.value(); \
-} \
-template <typename T, typename T1> \
-inline bool \
-f(const T1 x, const Checked_Number<T> REF y) { \
-  T r; \
-  check_result(assign<Checked_Number_Policy>(r, x)); \
-  return r op y.value(); \
-} \
-template <typename T, typename T1> \
-inline bool \
-f(const Checked_Number<T> REF x, const T1 y) { \
-  T r; \
-  check_result(assign<Checked_Number_Policy>(r, y)); \
-  return x.value() op r; \
 }
 
 DEF_COMPARE(operator ==, ==)
@@ -183,42 +218,85 @@ DEF_COMPARE(operator >, >)
 DEF_COMPARE(operator <=, <=)
 DEF_COMPARE(operator <, <)
 
-template <typename T>
-inline Checked_Number<T>
-operator+(const Checked_Number<T> REF x) {
+#define DEF_COMPARE_OTHER(f, op, type) \
+template <typename T, typename Policy> \
+inline bool \
+f(const type x, const Checked_Number<T, Policy> REF y) { \
+  T r; \
+  check_result(assign<Policy>(r, x)); \
+  return r op y.value(); \
+} \
+template <typename T, typename Policy> \
+inline bool \
+f(const Checked_Number<T, Policy> REF x, const type y) { \
+  T r; \
+  check_result(assign<Policy>(r, y)); \
+  return x.value() op r; \
+}
+
+#define DEF_COMPARES_OTHER(type) \
+DEF_COMPARE_OTHER(operator ==, ==, type) \
+DEF_COMPARE_OTHER(operator !=, !=, type) \
+DEF_COMPARE_OTHER(operator >=, >=, type) \
+DEF_COMPARE_OTHER(operator >, >, type) \
+DEF_COMPARE_OTHER(operator <=, <=, type) \
+DEF_COMPARE_OTHER(operator <, <, type)
+
+DEF_COMPARES_OTHER(int8_t)
+DEF_COMPARES_OTHER(int16_t)
+DEF_COMPARES_OTHER(int32_t)
+DEF_COMPARES_OTHER(int64_t)
+DEF_COMPARES_OTHER(u_int8_t)
+DEF_COMPARES_OTHER(u_int16_t)
+DEF_COMPARES_OTHER(u_int32_t)
+DEF_COMPARES_OTHER(u_int64_t)
+DEF_COMPARES_OTHER(float32_t)
+DEF_COMPARES_OTHER(float64_t)
+#ifdef FLOAT96_TYPE
+DEF_COMPARES_OTHER(float96_t)
+#endif
+#ifdef FLOAT128_TYPE
+DEF_COMPARES_OTHER(float128_t)
+#endif
+DEF_COMPARES_OTHER(mpz_class&)
+DEF_COMPARES_OTHER(mpq_class&)
+
+template <typename T, typename Policy>
+inline Checked_Number<T, Policy>
+operator+(const Checked_Number<T, Policy> REF x) {
   return x;
 }
 
-template <typename T>
-inline Checked_Number<T>
-operator-(const Checked_Number<T> REF x) {
+template <typename T, typename Policy>
+inline Checked_Number<T, Policy>
+operator-(const Checked_Number<T, Policy> REF x) {
   T r;
-  check_result(neg<Checked_Number_Policy>(r, x.value()));
+  check_result(neg<Policy>(r, x.value()));
   return r;
 }
 
 #define DEF_ASSIGN_FUN1(f, fun) \
-template <typename T> \
+template <typename T, typename Policy> \
 inline void \
-f(Checked_Number<T>& x) { \
-  check_result(fun<Checked_Number_Policy>(x.value(), x.value())); \
+f(Checked_Number<T, Policy>& x) { \
+  check_result(fun<Policy>(x.value(), x.value())); \
 } \
-template <typename T> \
+template <typename T, typename Policy> \
 inline void \
-f(Checked_Number<T>& x, const Checked_Number<T> REF y) { \
-  check_result(fun<Checked_Number_Policy>(x.value(), y.value())); \
+f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y) { \
+  check_result(fun<Policy>(x.value(), y.value())); \
 }
 
 #define DEF_ASSIGN_FUN2(f, fun) \
-template <typename T> \
+template <typename T, typename Policy> \
 inline void \
-f(Checked_Number<T>& x, const Checked_Number<T> REF y) { \
-  check_result(fun<Checked_Number_Policy>(x.v, x.value(), y.value())); \
+f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y) { \
+  check_result(fun<Policy>(x.value(), x.value(), y.value())); \
 } \
-template <typename T> \
+template <typename T, typename Policy> \
 inline void \
-f(Checked_Number<T>& x, const Checked_Number<T> REF y, const Checked_Number<T> REF z) { \
-  check_result(fun<Checked_Number_Policy>(x.value(), y.value(), z.value())); \
+f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y, const Checked_Number<T, Policy> REF z) { \
+  check_result(fun<Policy>(x.value(), y.value(), z.value())); \
 }
 
 DEF_ASSIGN_FUN1(sqrt_assign, sqrt)
@@ -228,29 +306,29 @@ DEF_ASSIGN_FUN2(gcd_assign, gcd)
 DEF_ASSIGN_FUN2(lcm_assign, lcm)
 
 
-template <typename T>
+template <typename T, typename Policy>
 inline int
-sgn(const Checked_Number<T> x) {
-  return sgn(x.v);
+sgn(const Checked_Number<T, Policy> REF x) {
+  return Checked::sgn(x.value());
 }
 
-template <typename T>
+template <typename T, typename Policy>
 inline int
-cmp(const Checked_Number<T> x, const Checked_Number<T> y) {
-  return cmp(x.v, y.v);
+cmp(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y) {
+  return cmp(x.value(), y.value());
 }
 
-template <typename T>
+template <typename T, typename Policy>
 inline std::ostream&
-operator<<(std::ostream& os, const Checked_Number<T> REF x)
+operator<<(std::ostream& os, const Checked_Number<T, Policy> REF x)
 {
-  return os << x.v;
+  return os << x.value();
 }
 
-template <typename T>
-inline std::istream& operator>>(std::istream& is, Checked_Number<T>& x)
+template <typename T, typename Policy>
+inline std::istream& operator>>(std::istream& is, Checked_Number<T, Policy>& x)
 {
-  return is >> x.v;
+  return is >> x.value();
 }
 
 } // namespace Parma_Polyhedra_Library
