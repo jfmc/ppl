@@ -13,7 +13,6 @@ solve(true,_Polyhedron,Dims,Dims):-
 solve(A=B,Polyhedron,InDims,OutDims):-
     solve({A=B},Polyhedron,InDims,OutDims).
 
-
 solve((A,B),Polyhedron,InDims,OutDims):- 
     !, 
     ppl_copy_polyhedron(Polyhedron,Q),
@@ -22,9 +21,8 @@ solve((A,B),Polyhedron,InDims,OutDims):-
     solve(B,Polyhedron,AOutDims,OutDims),
     (ppl_check_empty(Polyhedron)
      ->
-     ppl_renew_polyhedron(Polyhedron,InDims),
-     ppl_get_constraints(Q,QConstraints),
-     ppl_insert_constraints(Polyhedron,QConstraints),
+     ppl_project_dimensions(Polyhedron,InDims),
+     ppl_convex_hull_assign(Polyhedron,Q),
      fail
      ;
      true
@@ -57,19 +55,18 @@ solve(Atom,Polyhedron,InDims,OutDims):-
 try_clause(Args,Args1,Body1,InDims,OutDims,Polyhedron):-
     ppl_copy_polyhedron(Polyhedron,Q),
     AddedDims is 2 * (OutDims - InDims),
-    ppl_add_dimensions_and_embed(Q, AddedDims),
-    solve_equal_list(Args,Args1,Q),
+    ppl_add_dimensions_and_embed(Polyhedron, AddedDims),
+    solve_equal_list(Args,Args1,Polyhedron),
     NewInDims is InDims + AddedDims,
   (
-    (solve(Body1,Q,NewInDims,_),
-    (ppl_check_empty(Q)
+    (solve(Body1,Polyhedron,NewInDims,_),
+    (ppl_check_empty(Polyhedron)
      ->
+     ppl_project_dimensions(Polyhedron,InDims),
+     ppl_convex_hull_assign(Polyhedron,Q),
      fail
      ;
-     ppl_project_dimensions(Q,OutDims),
-     ExtraDims is OutDims - InDims,
-     ppl_add_dimensions_and_embed(Polyhedron,ExtraDims),
-     ppl_intersection_assign(Polyhedron,Q)
+     ppl_project_dimensions(Polyhedron,OutDims)
     ))
   ->
     ppl_delete_polyhedron(Q)
@@ -107,10 +104,8 @@ ppl_renew_polyhedron(Polyhedron,NewDims):-
     ppl_delete_polyhedron(Q).  
 
 ppl_project_dimensions(Polyhedron,NewDims):-
-    ppl_space_dimension(Polyhedron,CurrentDims),
-    MaxCode is CurrentDims,
-    MinCode is NewDims,
-    make_var_list(MaxCode,MinCode,VarList),
+    ppl_space_dimension(Polyhedron,SpaceDims),
+    make_var_list(SpaceDims,NewDims,VarList),
     ppl_remove_dimensions(Polyhedron, VarList).
 
 make_var_list(MaxCode,MaxCode,[]).
