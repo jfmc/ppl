@@ -49,9 +49,9 @@ main() {
   print_generator(g, "--- g ---");
 #endif
 
-  Relation_Poly_Gen rel = ph.relation_with(g);
+  Poly_Gen_Relation rel = ph.relation_with(g);
 
-  Relation_Poly_Gen known_rel = DOES_NOT_SUBSUME;
+  Poly_Gen_Relation known_rel = Poly_Gen_Relation::nothing();
   int retval = (rel == known_rel) ? 0 : 1;
 
 #if NOISY

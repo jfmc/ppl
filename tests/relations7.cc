@@ -35,7 +35,8 @@ int
 main() {
   set_handlers();
 
-  Relation_Poly_Con rel;
+  Poly_Con_Relation rel = Poly_Con_Relation::nothing();
+  Poly_Con_Relation known_result = Poly_Con_Relation::nothing();
 
   Polyhedron ph;
 #if NOISY
@@ -53,7 +54,8 @@ main() {
   cout << "ph.relation_with(c_false1) == " << rel << endl;
 #endif
 
-  if (rel != IS_DISJOINT)
+  known_result = Poly_Con_Relation::is_disjoint();
+  if (rel != known_result)
     return 1;
 
   // A false equality constraint.
@@ -67,7 +69,8 @@ main() {
   cout << "ph.relation_with(c_false2) == " << rel << endl;
 #endif
 
-  if (rel != IS_DISJOINT)
+  known_result = Poly_Con_Relation::is_disjoint();
+  if (rel != known_result)
     return 1;
 
   // A saturated inequality.
@@ -81,7 +84,9 @@ main() {
   cout << "ph.relation_with(c_saturated1) == " << rel << endl;
 #endif
 
-  if (rel != SATURATES)
+  known_result = Poly_Con_Relation::saturates()
+    && Poly_Con_Relation::is_included();
+  if (rel != known_result)
     return 1;
 
   // A saturated equality.
@@ -95,7 +100,9 @@ main() {
   cout << "ph.relation_with(c_saturated2) == " << rel << endl;
 #endif
 
-  if (rel != SATURATES)
+  known_result = Poly_Con_Relation::saturates()
+    && Poly_Con_Relation::is_included();
+  if (rel != known_result)
     return 1;
 
   // A satisfied inequality which is not saturated.
@@ -109,7 +116,8 @@ main() {
   cout << "ph.relation_with(c_satisfied) == " << rel << endl;
 #endif
 
-  if (rel != IS_INCLUDED)
+  known_result = Poly_Con_Relation::is_included();
+  if (rel != known_result)
     return 1;
 
   // All test passed.

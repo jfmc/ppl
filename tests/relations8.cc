@@ -52,11 +52,12 @@ main() {
   print_constraint(c, "--- c ---");
 #endif
 
-  Relation_Poly_Con rel = ph.relation_with(c);
+  Poly_Con_Relation rel = ph.relation_with(c);
 #if NOISY
   cout << "ph.relation_with(y == -1) == " << rel << endl;
 #endif
 
-  return rel == IS_DISJOINT ? 0 : 1;
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
+  return (rel == known_result) ? 0 : 1;
 
 }

@@ -48,9 +48,11 @@ main() {
   print_constraint(c, "--- c ---");
 #endif
 
-  Relation_Poly_Con rel = ph.relation_with(c);
+  Poly_Con_Relation rel = ph.relation_with(c);
 
-  Relation_Poly_Con known_rel = SATURATES;
+  Poly_Con_Relation known_rel = Poly_Con_Relation::saturates()
+    && Poly_Con_Relation::is_included()
+    && Poly_Con_Relation::is_disjoint();
   int retval = (rel == known_rel) ? 0 : 1;
 
 #if NOISY

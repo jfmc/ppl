@@ -45,9 +45,9 @@ main() {
   print_generators(ph, "--- ph ---");
 #endif
 
-  Relation_Poly_Con rel = ph.relation_with(A >= 0);
+  Poly_Con_Relation rel = ph.relation_with(A >= 0);
 
-  Relation_Poly_Con known_rel = IS_INCLUDED;
+  Poly_Con_Relation known_rel = Poly_Con_Relation::is_included();
   int retval = (rel == known_rel) ? 0 : 1;
 
 #if NOISY
