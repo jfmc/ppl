@@ -59,32 +59,13 @@ ppl_ciao.po: ppl_ciao.pl fake_main.pl
 	fi
 
 ciao_clpq: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../clpq.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/ciao_clpq.pl $(srcdir)/ppl_ciao.pl $(srcdir)/../clpq.pl .; \
-	fi
-	ciaoc -o $@ ciao_clpq.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ciao_clpq.pl ppl_ciao.pl clpq.pl; \
-	fi
+	ciaoc -o $@ $(srcdir)/ciao_clpq.pl
 
 ciao_clpq2: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../clpq2.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/ciao_clpq2.pl $(srcdir)/ppl_ciao.pl $(srcdir)/../clpq2.pl .; \
-	fi
-	ciaoc -o $@ ciao_clpq2.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ciao_clpq2.pl ppl_ciao.pl clpq2.pl; \
-	fi
+	ciaoc -o $@ $(srcdir)/ciao_clpq2.pl
 
 ciao_pl_check: libppl_ciao.la ppl_ciao.pl ciao_pl_check.pl ../pl_check.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/ciao_pl_check.pl $(srcdir)/ppl_ciao.pl $(srcdir)/../pl_check.pl .; \
-	fi
-	ciaoc -o $@ ciao_pl_check.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ciao_pl_check.pl ppl_ciao.pl pl_check.pl; \
-	fi
-
+	ciaoc -o $@ $(srcdir)/ciao_pl_check.pl
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \

@@ -114,7 +114,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 :- set_prolog_flag(multi_arity_warnings, off).
 
-:- include('pl_check.pl').
+:- include('../pl_check.pl').
 
 main:-
    (check_all ->
