@@ -720,6 +720,22 @@ int
 ppl_Constraint_System_insert_Constraint __P((ppl_Constraint_System_t cs,
 					     ppl_const_Constraint_t c));
 
+/* FIXME: write the documentation. */
+int
+ppl_Constraint_System_maximize __P((ppl_const_Constraint_System_t cs,
+				    ppl_const_Linear_Expression_t le,
+				    ppl_Coefficient_t sup_n,
+				    ppl_Coefficient_t sup_d,
+				    ppl_const_Generator_t* ppoint));
+
+/* FIXME: write the documentation. */
+int
+ppl_Constraint_System_minimize __P((ppl_const_Constraint_System_t cs,
+				    ppl_const_Linear_Expression_t le,
+				    ppl_Coefficient_t sup_n,
+				    ppl_Coefficient_t sup_d,
+				    ppl_const_Generator_t* ppoint));
+
 /*! \brief
   Returns a positive integer if \p cs is well formed, i.e., if it
   satisfies all its implementation invariants; returns 0 and perhaps

@@ -710,6 +710,42 @@ ppl_Constraint_System_insert_Constraint(ppl_Constraint_System_t cs,
 CATCH_ALL
 
 int
+ppl_Constraint_System_maximize(ppl_const_Constraint_System_t cs,
+			       ppl_const_Linear_Expression_t le,
+			       ppl_Coefficient_t sup_n,
+			       ppl_Coefficient_t sup_d,
+			       ppl_const_Generator_t* ppoint) try {
+  const Constraint_System& ccs = *to_const(cs);
+  const Linear_Expression& lle = *to_const(le);
+  Coefficient& ssup_n = *to_nonconst(sup_n);
+  Coefficient& ssup_d = *to_nonconst(sup_d);
+  bool ok = ppoint != 0
+    ? ccs.primal_simplex(lle, true, ssup_n, ssup_d,
+			 reinterpret_cast<const Generator** const>(ppoint))
+    : ccs.primal_simplex(lle, true, ssup_n, ssup_d);
+  return ok ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Constraint_System_minimize(ppl_const_Constraint_System_t cs,
+			       ppl_const_Linear_Expression_t le,
+			       ppl_Coefficient_t sup_n,
+			       ppl_Coefficient_t sup_d,
+			       ppl_const_Generator_t* ppoint) try {
+  const Constraint_System& ccs = *to_const(cs);
+  const Linear_Expression& lle = *to_const(le);
+  Coefficient& ssup_n = *to_nonconst(sup_n);
+  Coefficient& ssup_d = *to_nonconst(sup_d);
+  bool ok = ppoint != 0
+    ? ccs.primal_simplex(lle, false, ssup_n, ssup_d,
+			 reinterpret_cast<const Generator** const>(ppoint))
+    : ccs.primal_simplex(lle, false, ssup_n, ssup_d);
+  return ok ? 1 : 0;
+}
+CATCH_ALL
+
+int
 ppl_Constraint_System_OK(ppl_const_Constraint_System_t cs) try {
   return to_const(cs)->OK() ? 1 : 0;
 }
