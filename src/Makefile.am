@@ -15,11 +15,42 @@ VPATH = @srcdir@
 
 SUBDIRS = Integer .
 
+
+# Libtool -version-info for libppl.la and libmp.la.
+#
+#  1. Start with version information of `0:0:0' for each libtool library.
+#
+#  2. Update the version information only immediately before a public
+#     release of your software.  More frequent updates are unnecessary,
+#     and only guarantee that the current interface number gets larger
+#     faster.
+#
+#  3. If the library source code has changed at all since the last
+#     update, then increment REVISION (`C:R:A' becomes `C:r+1:A').
+#
+#  4. If any interfaces have been added, removed, or changed since the
+#     last update, increment CURRENT, and set REVISION to 0.
+#
+#  5. If any interfaces have been added since the last public release,
+#     then increment AGE.
+#
+#  6. If any interfaces have been removed since the last public release,
+#     then set AGE to 0.
+#
+#	PPL release		-version-info
+#	    0.1			    -----
+#	    0.2			    -----
+#	    0.3			    0:0:0
+
+LIBPPL_LT_CURRENT =  0
+LIBPPL_LT_REVISION = 0
+LIBPPL_LT_AGE =      0
+
 INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src -I$(top_srcdir)/src/Integer @extra_includes@
 
 CPPFLAGS = -DPPL_INTERNAL=public @extra_cpp_flags@
 
-lib_LIBRARIES = libppl.a
+lib_LTLIBRARIES = libppl.la
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
@@ -62,7 +93,7 @@ Status.inlines.hh \
 Polyhedron.defs.hh \
 Polyhedron.inlines.hh
 
-libppl_a_SOURCES = \
+libppl_la_SOURCES = \
 Constraint.cc \
 ConSys.cc \
 GenSys.cc \
@@ -97,7 +128,10 @@ Generator.defs.hh \
 GenSys.defs.hh \
 Polyhedron.defs.hh
 
-libppl_a_LIBADD = Integer/Integer.o
+libppl_la_LDFLAGS = \
+-version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
+
+libppl_la_LIBADD = Integer/Integer.o
 
 noinst_HEADERS = ppl.hh ppl_install.hh
 

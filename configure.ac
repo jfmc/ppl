@@ -12,10 +12,10 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(README)
 dnl Minimum autoconf version required.
-AC_PREREQ(2.52e)
+AC_PREREQ(2.52g)
 
 dnl Every other copy of the package version number gets its value from here
-AM_INIT_AUTOMAKE(ppl, 0.3-pre1)
+AM_INIT_AUTOMAKE(ppl, 0.3pre2)
 AC_SUBST(VERSION)
 
 AM_CONFIG_HEADER(config.h)
@@ -265,11 +265,15 @@ AC_ARG_WITH(cxxflags,
 [  --with-cxxflags=xxx     use XXX as options for the C++ compiler],
 CXXFLAGS=$with_cxxflags)
 
-dnl Checks for programs.
+dnl Libtool.
+# Turn off shared libraries during beta-testing, since they
+# make debugging harder and the build process take too long.
+AC_DISABLE_SHARED
 AC_PROG_LIBTOOL
+
+dnl Checks for programs.
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
-AC_PROG_RANLIB
 AC_CHECK_PROG(SICSTUS, sicstus, sicstus)
 AM_CONDITIONAL(HAVE_SICSTUS, test x$SICSTUS = xsicstus)
 

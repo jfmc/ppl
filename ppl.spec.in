@@ -19,17 +19,22 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}
 Prefix:		/usr
 Summary:	The Parma Polyhedra Library: a C++ library for convex polyhedra.
 %description
-A C++ library for convex polyhedra.
-@configure_input@
-Please edit ppl.spec.in to add several more lines of description
-here if appropriate, and to delete these instructions.
+The Parma Polyhedra Library (PPL) is a C++ library for the
+manipulation of convex polyhedra. The applications of convex polyhedra
+include program analysis, optimized compilation, integer and
+combinatorial optimization and statistical data-editing.  The Parma
+Polyhedra Library is user friendly (you write `x + 2*y + 5*z <= 7'
+when you mean it), fully dynamic (available virtual memory is the only
+limitation to the dimension of anything), written in standard C++,
+exception-safe, rather efficient, thoroughly documented, and free
+software.
 
 %prep
 %setup -n %{name}-%{version}
 #%patch -p1
 
 %build
-CXXFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix}
+CXXFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --enable-shared
 make
 
 %install
@@ -41,11 +46,19 @@ mkdir -p $RPM_BUILD_ROOT
 make install prefix=$RPM_BUILD_ROOT%{_prefix}
 
 %files
+%defattr(-,root,root)
 %doc README doc/*.ps* doc/*.pdf*
+%{_libdir}/*.so.*
+%{_libdir}/*.so
+%{_libdir}/*.a
+%{_libdir}/*.la
+%{_includedir}/ppl.hh
 
-%{_prefix}/include/ppl.hh
-%{_prefix}/lib/libppl.a
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-

@@ -39,10 +39,10 @@ check-local: pplsp check_script expected
 	./pplsp -l $(srcdir)/clpq.pl <$(srcdir)/check_script >obtained
 	diff -q $(srcdir)/expected obtained
 
-pplsp: ppl_sicstus.s.o $(top_builddir)/src/libppl.a
+pplsp: ppl_sicstus.s.o $(top_builddir)/src/libppl.la
 	spld --main=prolog -S -o $@ --resources=./ppl_sicstus.s.o \
 	-LD -lstdc++ \
-	-Wl,-whole-archive $(top_builddir)/src/libppl.a -Wl,-no-whole-archive \
+	-Wl,-whole-archive $(top_builddir)/src/.libs/libppl.a -Wl,-no-whole-archive \
 	@gmp_library_option@
 
 ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus.o
