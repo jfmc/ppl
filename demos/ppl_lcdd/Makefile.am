@@ -58,6 +58,30 @@ EXTRA_DIST = expected
 
 if HAVE_MD5SUM
 
+if ASSERTIONS_ENABLED
+
+TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED = \
+ccc6.ext \
+ccp6.ext \
+cut32_16.ext \
+cyclic16-10.ext \
+reg600-5_m.ext \
+cyclic17_8.ine \
+in6.ine \
+in7.ine \
+kq20_11_m.ine \
+mit31-20.ine \
+sampleh8.ine \
+trunc10.ine
+
+EXPECTED = expected_a
+
+else # !ASSERTIONS_ENABLED
+
+EXPECTED = expected
+
+endif # !ASSERTIONS_ENABLED
+
 TOUGH_EXAMPLES = \
 cp7.ext \
 cyclic25_13.ext \
@@ -68,7 +92,8 @@ mit288-281.ine \
 mit41-16.ine \
 mit708-9.ine \
 mit71-61.ine \
-mit90-86.ine
+mit90-86.ine \
+$(TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED)
 
 check-local: ppl_lcdd
 	echo $(TOUGH_EXAMPLES) >tough_examples
@@ -79,7 +104,7 @@ check-local: ppl_lcdd
 	  echo ppl_lcdd $$file; \
 	  ppl_lcdd $$file | $(MD5SUM) - >>obtained; \
 	done
-	diff -q $(srcdir)/expected obtained
+	diff -q $(srcdir)/$(EXPECTED) obtained
 
 MOSTLYCLEANFILES = \
 tough_examples \
