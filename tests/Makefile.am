@@ -47,7 +47,7 @@ ORIGINAL_TESTS = \
 	adddimensions1 adddimensions2 adddimensions3 adddimensions4 \
 	adddimensions5 adddimensions6 adddimensions7 adddimensions8 \
 	adddimensions9 adddimensions10 adddimensions11 adddimensions12 \
-	addgenerator1 addgenerator2 addgenerator3 \
+	addgenerator1 addgenerator2 addgenerator3 addgenerator4 \
 	addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
 	addgenerators5 addgenerators6 addgenerators7 addgenerators8 \
 	addgenerators9 addgenerators10 addgenerators11 \
@@ -234,6 +234,7 @@ adddimensions12_SOURCES = adddimensions12.cc
 addgenerator1_SOURCES = addgenerator1.cc
 addgenerator2_SOURCES = addgenerator2.cc
 addgenerator3_SOURCES = addgenerator3.cc
+addgenerator4_SOURCES = addgenerator4.cc
 
 addgenerators1_SOURCES = addgenerators1.cc
 addgenerators2_SOURCES = addgenerators2.cc
