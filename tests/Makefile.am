@@ -52,7 +52,7 @@ TESTS = NNCinclusion1 \
         empty1 \
 	exceptions1 exceptions2 \
 	generators1 generators2 \
-        inters1 inters2 inters3 inters4 inters5 inters6 \
+        inters1 inters2 inters3 inters4 inters5 inters6 inters7 \
 	limitedwidening1 limitedwidening2\
 	onepoint \
         permute \
@@ -130,6 +130,7 @@ inters3_SOURCES = inters3.cc
 inters4_SOURCES = inters4.cc
 inters5_SOURCES = inters5.cc
 inters6_SOURCES = inters6.cc
+inters7_SOURCES = inters7.cc
 
 limitedwidening1_SOURCES = limitedwidening1.cc
 limitedwidening2_SOURCES = limitedwidening2.cc
