@@ -486,29 +486,36 @@ PPL::PolyBase::update_generators() const {
 
 
 /*!
-  If required, updates generators from constraints or vice versa
-  and minimizes them.
+  If required, updates generators from constraints or vice versa and
+  minimizes them.  Returns <CODE>false</CODE> if and only if \p *this
+  turns out to be empty.
 */
-void
+bool
 PPL::PolyBase::minimize() const {
   // 0-dim space or empty polyhedra are already minimized.
-  if (space_dim == 0
-      || is_empty()
-      || (constraints_are_minimized() && generators_are_minimized()))
-    return;
+  if (is_empty())
+    return false;
+  else if (space_dim == 0
+	   || (constraints_are_minimized() && generators_are_minimized()))
+    return true;
   // If constraints or generators are up-to-date, invoking
   // update_generators() or update_constraints(), respectively,
   // minimizes both constraints and generators.
   // If both are up-to-date it does not matter whether we use
   // update_generators() or update_constraints():
   // both minimize constraints and generators.
-  else if (constraints_are_up_to_date())
-    update_generators();
+  else if (constraints_are_up_to_date()) {
+    // We may discover here that `*this' is empty.
+    bool ret = update_generators();
+    assert(OK());
+    return ret;
+  }
   else {
     assert(generators_are_up_to_date());
     update_constraints();
+    assert(OK());
+    return true;
   }
-  assert(OK());
 }
 
 
@@ -1198,7 +1205,11 @@ PPL::PolyBase::convex_hull_assign_and_minimize(const PolyBase& y) {
 
   // The function add_and_minimize() requires `x' to be up-to-date and
   // to have sorted generators...
-  x.minimize();
+  if (!x.minimize()) {
+    // We have just discovered that `x' is empty.
+    x = y;
+    return;
+  }
   x.obtain_sorted_generators_with_sat_g();
   // ...and `y' to have updated and sorted generators.
   if (!y.generators_are_up_to_date() && !y.update_generators())
