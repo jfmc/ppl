@@ -36,7 +36,6 @@ namespace PPL = Parma_Polyhedra_Library;
 
 PPL::dimension_type
 PPL::Polyhedron::dimension() const {
-  // FIXME: this implementation can be made more efficient.
   if (is_empty())
     return 0;
 
