@@ -377,11 +377,11 @@ bounded1_SOURCES = bounded1.cc
 
 boundedh79extrapolation1_SOURCES = boundedh79extrapolation1.cc
 
-boundingbox1_SOURCES = boundingbox1.cc BBox.cc
-boundingbox2_SOURCES = boundingbox2.cc BBox.cc
+boundingbox1_SOURCES = boundingbox1.cc
+boundingbox2_SOURCES = boundingbox2.cc
 boundingbox3_SOURCES = boundingbox3.cc
 boundingbox4_SOURCES = boundingbox4.cc
-boundingbox5_SOURCES = boundingbox5.cc BBox.cc
+boundingbox5_SOURCES = boundingbox5.cc
 
 bounds1_SOURCES = bounds1.cc
 bounds2_SOURCES = bounds2.cc
@@ -772,11 +772,11 @@ nnc_bounded1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_boundedh79extrapolation1_SOURCES = boundedh79extrapolation1.cc
 nnc_boundedh79extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_boundingbox1_SOURCES = boundingbox1.cc BBox.cc
+nnc_boundingbox1_SOURCES = boundingbox1.cc
 nnc_boundingbox1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_boundingbox3_SOURCES = boundingbox3.cc BBox.cc
+nnc_boundingbox3_SOURCES = boundingbox3.cc
 nnc_boundingbox3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_boundingbox5_SOURCES = boundingbox3.cc BBox.cc
+nnc_boundingbox5_SOURCES = boundingbox3.cc
 nnc_boundingbox5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bounds1_SOURCES = bounds1.cc
