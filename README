@@ -50,7 +50,7 @@ For any additional question you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
 Here is the contents of the PPL 0.6 source distributions
-(19 directories, 714 files):
+(19 directories, 713 files):
 
 ppl-0.6/
 |-- BUGS
@@ -494,7 +494,6 @@ ppl-0.6/
 |   |-- ppl_header.middle
 |   |-- ppl_header.top
 |   |-- simplify.cc
-|   |-- statistics.hh
 |   |-- version.cc
 |   `-- version.hh.in
 `-- tests
