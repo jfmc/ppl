@@ -815,14 +815,13 @@ private:
   //! The number of dimensions of the enclosing vector space.
   size_t space_dim;
 
-PPL_INTERNAL:
+private:
   //! Returns the topological kind of the polyhedron.
   Topology topology() const;
 
   //! Tests if the polyhedron is necessarily closed.
   bool is_necessarily_closed() const;
 
-private:
   /*! @name Private Verifiers
     Verify if individual flags are set.
   */

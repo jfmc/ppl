@@ -323,7 +323,6 @@ private:
   Parma_Polyhedra_Library::operator>>(const Constraint& c,
 				      unsigned int offset);
 
-PPL_INTERNAL:
   //! Copy-constructor with given size.
   Constraint(const Constraint& c, size_t sz);
 

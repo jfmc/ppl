@@ -34,7 +34,7 @@ if HAVE_YAP_PROLOG
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src @extra_includes@ \
--DPPL_INTERNAL=public -DPPL_HIDDEN=public @extra_cpp_flags@
+-DPPL_HIDDEN=public @extra_cpp_flags@
 
 pkglib_LTLIBRARIES = ppl_yap.la
 ppl_yap_la_SOURCES = ppl_yap.cc

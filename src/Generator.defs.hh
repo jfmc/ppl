@@ -332,7 +332,7 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-PPL_INTERNAL:
+private:
   friend class Parma_Polyhedra_Library::GenSys;
   friend class Parma_Polyhedra_Library::GenSys::const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
@@ -354,7 +354,6 @@ PPL_INTERNAL:
   //! \p *this has the same \e coordinates of the point \p p.
   bool is_matching_closure_point(const Generator& p) const;
 
-private:
   //! Default constructor: private and not implemented.
   Generator();
 };

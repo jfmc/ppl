@@ -253,7 +253,7 @@ public:
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
-PPL_INTERNAL:
+private:
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend bool
   Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
@@ -325,7 +325,6 @@ PPL_INTERNAL:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-private:
   //! Input operator.
   void get(std::istream& s);
 

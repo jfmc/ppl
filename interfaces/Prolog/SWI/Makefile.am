@@ -34,7 +34,7 @@ if HAVE_SWI_PROLOG
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src @extra_includes@ \
--DPPL_INTERNAL=public -DPPL_HIDDEN=public @extra_cpp_flags@
+-DPPL_HIDDEN=public @extra_cpp_flags@
 
 pkglib_LTLIBRARIES = libppl_swiprolog.la
 libppl_swiprolog_la_SOURCES = ppl_swiprolog.cc

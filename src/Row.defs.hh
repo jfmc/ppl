@@ -194,7 +194,6 @@ private:
   //! The capacity of the row (only available during debugging).
   size_t capacity_;
 
-PPL_INTERNAL:
   //! Returns the capacity of the row (only available during debugging).
   size_t capacity() const;
 #endif

@@ -811,7 +811,6 @@ INCLUDE_FILE_PATTERNS  =
 # omitted =1 is assumed.
 
 PREDEFINED             = PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS \
-                         PPL_INTERNAL=public \
                          PPL_HIDDEN=public \
                          "__P(protos)=protos"
 

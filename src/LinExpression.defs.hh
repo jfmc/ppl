@@ -135,11 +135,10 @@ public:
   //! Returns the (zero-dimension space) constant 0.
   static const LinExpression& zero();
 
-PPL_INTERNAL:
+private:
   //! Copy-constructor with a specified dimension.
   LinExpression(const LinExpression& e, size_t sz);
 
-private:
   //! Implementation sizing constructor.
   //! The bool parameter is just to avoid problems with
   //! the constructor LinExpression(const Integer& n).
