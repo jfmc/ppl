@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl.hh"
 #include "print.hh"
+#include "ehandlers.hh"
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
@@ -54,6 +55,8 @@ shift_rename_insert(const Polyhedron& p, size_t offset, Polyhedron& q) {
 
 int
 main() {
+  set_handlers();
+
   Variable A(0);
   Variable B(1);
   Variable C(2);

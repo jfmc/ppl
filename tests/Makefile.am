@@ -47,4 +47,4 @@ permute_SOURCES = permute.cc
 
 check_PROGRAMS = $(TESTS)
 
-noinst_HEADERS = print.hh
+noinst_HEADERS = ehandlers.hh print.hh
