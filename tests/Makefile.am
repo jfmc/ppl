@@ -115,7 +115,7 @@ ORIGINAL_TESTS = \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
 	timeelapse6 timeelapse7 timeelapse8 \
 	topclosed1 topclosed2 topclosed3 \
-	topclosure1 topclosure2 topclosure3 \
+	topclosure1 topclosure2 topclosure3 topclosure4 \
 	universe1 universe2 universe3 universe4 universe5 universe6 \
 	writeconsys1 \
 	writegensys1 writegensys2 writegensys3 \
@@ -484,6 +484,7 @@ topclosed3_SOURCES = topclosed3.cc
 topclosure1_SOURCES = topclosure1.cc
 topclosure2_SOURCES = topclosure2.cc
 topclosure3_SOURCES = topclosure3.cc
+topclosure4_SOURCES = topclosure4.cc
 
 universe1_SOURCES = universe1.cc
 universe2_SOURCES = universe2.cc
