@@ -115,7 +115,7 @@ more information regarding these issues.
    with reference <CODE>Address</CODE>.
    Thus the query
 \code
-   |?- ppl_new_polyhedron(X, 3).
+   | ?- ppl_new_polyhedron(X, 3).
 \endcode
    creates the polyhedron defining the 3-dimensional vector space
    \f$\Rset^3\f$ with \p X, the reference address.
@@ -134,7 +134,7 @@ more information regarding these issues.
    with reference address <CODE>Address</CODE>.
    Thus the query
 \code
-   |?- ppl_new_empty_polyhedron(X, 3).
+   | ?- ppl_new_empty_polyhedron(X, 3).
 \endcode
    creates an empty polyhedron embedded in \f$\Rset^3\f$ with
    \p X the reference address.
@@ -181,9 +181,9 @@ more information regarding these issues.
    referenced by <CODE>Address</CODE>.
     Thus after the query
 \code
-   |?- A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
-       ppl_new_polyhedron(X, 3),
-       ppl_insert_constraint(X, 4*A + B - 2*C >= 5).
+   | ?- A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+        ppl_new_polyhedron(X, 3),
+        ppl_insert_constraint(X, 4*A + B - 2*C >= 5).
 \endcode
     the polyhedron referenced by \p X is defined to be the set of points
     in the vector space \f$\Rset^3\f$ satisfying the constraint
@@ -208,9 +208,9 @@ E.g.,
    by <CODE>Address</CODE>.
    Thus after the query
 \code
-   |?- A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
-       ppl_new_polyhedron(X, 3),
-       ppl_insert_generator(X, vertex(-100*A - 5*B, 8)).
+   | ?- A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
+        ppl_new_polyhedron(X, 3),
+        ppl_insert_generator(X, vertex(-100*A - 5*B, 8)).
 \endcode
     the polyhedron referenced by \p X is defined to be single vertex 
     \f$(-12.5, -0.625, 0)^\transpose\f$ in the vector space \f$\Rset^3\f$.
