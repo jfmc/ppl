@@ -1052,6 +1052,31 @@ error36() {
   }
 }
 
+void
+error37() {
+  set_handlers();
+
+  C_Polyhedron ph1(5);
+  C_Polyhedron ph2(10);
+
+  try {
+    // This is an invalid use of the function
+    // C_Polyhedron::BBRZ02_widening_assign(ph2): it is illegal to apply
+    // this function to two polyhedra that are not dimensional
+    // compatible.
+    ph2.BBRZ02_widening_assign(ph1);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl; 
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+
 int
 main() {
   
@@ -1091,6 +1116,7 @@ main() {
   error34();
   error35();
   error36();
+  error37();
 
   return 0;
 }

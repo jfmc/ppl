@@ -874,6 +874,84 @@ error26() {
   }
 }
 
+void
+error27() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(A <= 2);
+  ph1.add_constraint(A - B >= 0);
+
+  NNC_Polyhedron ph2(2);
+  ph2.add_constraint(A >= 0);
+  ph2.add_constraint(A <= 4);
+  ph2.add_constraint(A - B >= 0);
+
+  ConSys cs;
+  cs.insert(A < 8);
+
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+  print_constraints(cs, "*** cs ***");
+#endif
+
+  try {
+    // This is an invalid use of the function
+    // `limited_H79_widening_assign': it is illegal to
+    // apply this function to a non-closed polyhedron,
+    // a non-closed polyhedron and a system of
+    // constraints that contains strict inequalities.
+    ph2.limited_H79_widening_assign(ph1, cs);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_constraints: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error28() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A <= 2);
+  ph1.add_constraint(B >= 0);
+  ph1.add_constraint(A - B >= 0);
+
+  NNC_Polyhedron ph2(2);
+  ph2.add_constraint(A < 5);
+  ph2.add_constraint(B >= 0);
+  ph2.add_constraint(A - B >= 0);
+
+try {
+    // This is an invalid use of the function
+    // `BBRZ02_widening_assign': it is illegal to
+    // apply this function to a non-closed polyhedron and
+    // a non-closed polyhedron.
+    ph2.BBRZ02_widening_assign(ph1);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
 int
 main() {
   
@@ -902,6 +980,8 @@ main() {
   error24();
   error25();
   error26();
+  error27();
+  error28();
 
   return 0;
 }

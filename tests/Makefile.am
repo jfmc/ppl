@@ -46,9 +46,10 @@ ORIGINAL_TESTS = \
 	adddimensions1 adddimensions2 adddimensions3 adddimensions4 \
 	adddimensions5 adddimensions6 adddimensions7 adddimensions8 \
 	adddimensions9 adddimensions10 \
+	addgenerator1 addgenerator2 \
 	addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
 	addgenerators5 addgenerators6 addgenerators7 addgenerators8 \
-	addgenerators9 \
+	addgenerators9 addgenerators10 \
 	affineimage1 affineimage2 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	affinetrans \
@@ -64,7 +65,7 @@ ORIGINAL_TESTS = \
         empty1 \
 	exceptions1 exceptions2 \
 	generators1 generators2 generators3 generators4 generators5 \
-	h79widening1 h79widening2 h79widening3 \
+	h79widening1 h79widening2 h79widening3 h79widening4 \
 	inclusion1 inclusion2 \
         intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 intersection8 \
@@ -98,7 +99,7 @@ DERIVED_TESTS = \
 	nnc_adddimensions4 nnc_adddimensions9 \
 	nnc_addgenerators1 nnc_addgenerators2 nnc_addgenerators3 \
 	nnc_addgenerators4 nnc_addgenerators5 nnc_addgenerators6 \
-	nnc_addgenerators9 \
+	nnc_addgenerators9 nnc_addgenerators10 \
 	nnc_affineimage1 nnc_affineimage2 \
 	nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
 	nnc_affinepreimage4 \
@@ -116,7 +117,7 @@ DERIVED_TESTS = \
 	nnc_exceptions1 \
 	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
 	nnc_generators5 \
-	nnc_h79widening1 nnc_h79widening2 \
+	nnc_h79widening1 nnc_h79widening2 nnc_h79widening4 \
 	nnc_inclusion1 nnc_inclusion2 \
 	nnc_intersection1 nnc_intersection2 nnc_intersection3 \
 	nnc_intersection4 nnc_intersection5 nnc_intersection6 \
@@ -180,6 +181,9 @@ adddimensions8_SOURCES = adddimensions8.cc
 adddimensions9_SOURCES = adddimensions9.cc
 adddimensions10_SOURCES = adddimensions10.cc
 
+addgenerator1_SOURCES = addgenerator1.cc
+addgenerator2_SOURCES = addgenerator2.cc
+
 addgenerators1_SOURCES = addgenerators1.cc
 addgenerators2_SOURCES = addgenerators2.cc
 addgenerators3_SOURCES = addgenerators3.cc
@@ -189,6 +193,7 @@ addgenerators6_SOURCES = addgenerators6.cc
 addgenerators7_SOURCES = addgenerators7.cc
 addgenerators8_SOURCES = addgenerators8.cc
 addgenerators9_SOURCES = addgenerators9.cc
+addgenerators10_SOURCES = addgenerators10.cc
 
 affineimage1_SOURCES = affineimage1.cc
 affineimage2_SOURCES = affineimage2.cc
@@ -244,6 +249,7 @@ generators5_SOURCES = generators5.cc
 h79widening1_SOURCES = h79widening1.cc
 h79widening2_SOURCES = h79widening2.cc
 h79widening3_SOURCES = h79widening3.cc
+h79widening4_SOURCES = h79widening4.cc
 
 inclusion1_SOURCES = inclusion1.cc
 inclusion2_SOURCES = inclusion2.cc
@@ -377,6 +383,8 @@ nnc_addgenerators6_SOURCES = addgenerators6.cc
 nnc_addgenerators6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_addgenerators9_SOURCES = addgenerators9.cc
 nnc_addgenerators9_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addgenerators10_SOURCES = addgenerators10.cc
+nnc_addgenerators10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affineimage1_SOURCES = affineimage1.cc
 nnc_affineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -464,6 +472,8 @@ nnc_h79widening1_SOURCES = h79widening1.cc
 nnc_h79widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_h79widening2_SOURCES = h79widening2.cc
 nnc_h79widening2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_h79widening4_SOURCES = h79widening4.cc
+nnc_h79widening4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_inclusion1_SOURCES = inclusion1.cc
 nnc_inclusion1_CXXFLAGS = $(DERIVED_CXXFLAGS)
