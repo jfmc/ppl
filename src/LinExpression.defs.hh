@@ -31,8 +31,52 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friend later.
+  LinExpression operator +(const LinExpression& e1, const LinExpression& e2);
+  LinExpression operator +(const Integer& n, const LinExpression& e);
+  LinExpression operator +(const LinExpression& e, const Integer& n);
 
-  /*! \name How to build a linear expression.
+  LinExpression operator -(const LinExpression& e);
+
+  LinExpression operator -(const LinExpression& e1, const LinExpression& e2);
+  LinExpression operator -(const Integer& n, const LinExpression& e);
+  LinExpression operator -(const LinExpression& e, const Integer& n);
+
+  LinExpression operator *(const Integer& n, const LinExpression& e);
+  LinExpression operator *(const LinExpression& e, const Integer& n);
+
+  LinExpression& operator +=(LinExpression& e1, const LinExpression& e2);
+  LinExpression& operator +=(LinExpression& e, const Variable& v);
+  LinExpression& operator +=(LinExpression& e, const Integer& n);
+}
+
+//! A linear expression.
+/*!
+    An object of the class LinExpression represents the linear expression 
+    \f[
+      \sum_{i=0}^{d-1} a_i x_i + b
+    \f]
+    where \f$d\f$ is the dimension of the space,
+    each \f$a_i\f$ is the integer coefficient
+    of the \p i -th variable \f$x_i\f$
+    and \f$b\f$ is the integer inhomogeneous term.
+
+    Note that the ``meaning'' of an object of the class Variable
+    is completely specified by the integer index provided to its
+    constructor:
+    be careful not to be mislead by C++ language variable names.
+    For instance, in the following example the linear expressions
+    <CODE>e1</CODE> and <CODE>e2</CODE> are equivalent,
+    since the two variables <CODE>x</CODE> and <CODE>z</CODE> denote
+    the same Cartesian axis.
+  \code
+  Variable x(0);
+  Variable y(1);
+  Variable z(0);
+  LinExpression e1 = x + y;
+  LinExpression e2 = y + z;
+  \endcode
+
+    \par How to build a linear expression.
 
     Linear expressions are the basic blocks for defining
     both constraints (i.e., linear equalities or inequalities)
@@ -59,65 +103,6 @@ namespace Parma_Polyhedra_Library {
     \endcode
     Note that, in the second definition of linear expression <CODE>e</CODE>,
     the double type-coercion is necessary. 
-  */
-  //@{
-  //! Returns the linear expression \p e1 + \p e2.
-  LinExpression operator +(const LinExpression& e1, const LinExpression& e2);
-  //! Returns the linear expression \p n + \p e.
-  LinExpression operator +(const Integer& n, const LinExpression& e);
-  //! Returns the linear expression \p e + \p n.
-  LinExpression operator +(const LinExpression& e, const Integer& n);
-
-  //! Returns the linear expression - \p e.
-  LinExpression operator -(const LinExpression& e);
-
-  //! Returns the linear expression \p e1 - \p e2.
-  LinExpression operator -(const LinExpression& e1, const LinExpression& e2);
-  //! Returns the linear expression \p n - \p e.
-  LinExpression operator -(const Integer& n, const LinExpression& e);
-  //! Returns the linear expression \p e - \p n.
-  LinExpression operator -(const LinExpression& e, const Integer& n);
-
-  //! Returns the linear expression \p n * \p e.
-  LinExpression operator *(const Integer& n, const LinExpression& e);
-  //! Returns the linear expression \p e * \p n.
-  LinExpression operator *(const LinExpression& e, const Integer& n);
-
-  //! Returns the linear expression \p e1 + \p e2 and assigns it to \p e1.
-  LinExpression& operator +=(LinExpression& e1, const LinExpression& e2);
-  //! Returns the linear expression \p e + \p v and assigns it to \p e.
-  LinExpression& operator +=(LinExpression& e, const Variable& v);
-  //! Returns the linear expression \p e + \p n and assigns it to \p e.
-  LinExpression& operator +=(LinExpression& e, const Integer& n);
-  //@}
-}
-
-//! A linear expression.
-/*!
-  An object of the class LinExpression represents the linear expression 
-  \f[
-    \sum_{i=0}^{d-1} a_i x_i + b
-  \f]
-  where \p d is the dimension of the space,
-  each \f$a_i\f$ is the integer coefficient
-  of the \p i -th variable \f$x_i\f$
-  and \p b is the integer inhomogeneous term.
-
-  Note that the ``meaning'' of an object of the class Variable
-  is completely specified by the integer index provided to its
-  constructor:
-  be careful not to be mislead by C++ language variable names.
-  For instance, in the following example the linear expressions
-  <CODE>e1</CODE> and <CODE>e2</CODE> are equivalent,
-  since the two variables <CODE>x</CODE> and <CODE>z</CODE> denote
-  the same Cartesian axis.
-  \code
-  Variable x(0);
-  Variable y(1);
-  Variable z(0);
-  LinExpression e1 = x + y;
-  LinExpression e2 = y + z;
-  \endcode
 */
 
 class Parma_Polyhedra_Library::LinExpression : PPL_INTERNAL Row {
@@ -150,39 +135,61 @@ private:
   friend class Constraint;
   friend class Generator;
 
+  //! Returns the linear expression \p e1 + \p e2.
   friend LinExpression
   Parma_Polyhedra_Library::operator +(const LinExpression& e1,
 				      const LinExpression& e2);
+  
+  //! Returns the linear expression \p n + \p e.
   friend LinExpression
   Parma_Polyhedra_Library::operator +(const Integer& n,
 				      const LinExpression& e);
+  
+  //! Returns the linear expression \p e + \p n.
   friend LinExpression
   Parma_Polyhedra_Library::operator +(const LinExpression& e,
  				      const Integer& n);
+  
+  //! Returns the linear expression - \p e.
   friend LinExpression
   Parma_Polyhedra_Library::operator -(const LinExpression& e);
+  
+  //! Returns the linear expression \p e1 - \p e2.
   friend LinExpression
   Parma_Polyhedra_Library::operator -(const LinExpression& e1,
 				      const LinExpression& e2);
+  
+  //! Returns the linear expression \p n - \p e.
   friend LinExpression
   Parma_Polyhedra_Library::operator -(const Integer& n,
 				      const LinExpression& e);
+  
+  //! Returns the linear expression \p e - \p n.
   friend LinExpression
   Parma_Polyhedra_Library::operator -(const LinExpression& e,
 				      const Integer& n);
+
+  //! Returns the linear expression \p n * \p e.
   friend LinExpression
   Parma_Polyhedra_Library::operator *(const Integer& n,
 				      const LinExpression& e);
+  
+  //! Returns the linear expression \p e * \p n.
   friend LinExpression
   Parma_Polyhedra_Library::operator *(const LinExpression& e,
 				      const Integer& n);
 
+  //! Returns the linear expression \p e1 + \p e2 and assigns it to \p e1.
   friend LinExpression&
   Parma_Polyhedra_Library::operator +=(LinExpression& e1,
 				       const LinExpression& e2);
+
+  //! Returns the linear expression \p e + \p v and assigns it to \p e.
   friend LinExpression&
   Parma_Polyhedra_Library::operator +=(LinExpression& e,
 				       const Variable& v);
+
+  //! Returns the linear expression \p e + \p n and assigns it to \p e.
   friend LinExpression&
   Parma_Polyhedra_Library::operator +=(LinExpression& e,
                                        const Integer& n);

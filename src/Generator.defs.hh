@@ -31,15 +31,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friend later.
-  //@{
-  //! Returns the (bidirectional) line of direction \p e.
   Generator operator |(int, const LinExpression& e);
-  //! Returns the (unidirectional) ray of direction \p e.
   Generator operator ^(int, const LinExpression& e);
-  //! Returns the vertex at \p e / \p n.
-  //! \exception std::invalid_argument \p n is zero.
   Generator operator /=(const LinExpression& e, const Integer& n);
-  //@}
 }
 
 //! A line, ray or vertex.
@@ -121,11 +115,15 @@ namespace Parma_Polyhedra_Library {
 class Parma_Polyhedra_Library::Generator : public Row {
 private:
   Generator(LinExpression& e);
-
+  
+  //! Returns the (bidirectional) line of direction \p e.
   friend Generator
   Parma_Polyhedra_Library::operator |(int, const LinExpression& e);
+  //! Returns the (unidirectional) ray of direction \p e.
   friend Generator
   Parma_Polyhedra_Library::operator ^(int, const LinExpression& e);
+  //! Returns the vertex at \p e / \p n.
+  //! \exception std::invalid_argument \p n is zero.
   friend Generator
   Parma_Polyhedra_Library::operator /=(const LinExpression& e,
 				       const Integer& n);

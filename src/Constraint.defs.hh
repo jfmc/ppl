@@ -31,34 +31,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friend later.
-  //@{
-  //! Returns the constraint \p e1 = \p e2.
-  Constraint operator ==(const LinExpression& e1, const LinExpression& e2);
-  //! Returns the constraint \p e = \p n.
+  Constraint operator ==(const LinExpression& e1, const LinExpression& e2); 
   Constraint operator ==(const LinExpression& e, const Integer& n);
-  //! Returns the constraint \p n = \p e.
   Constraint operator ==(const Integer& n, const LinExpression& e);
 
-  //! Returns the constraint \p e1 <= \p e2.
   Constraint operator <=(const LinExpression& e1, const LinExpression& e2);
-  //! Returns the constraint \p e <= \p n.
   Constraint operator <=(const LinExpression& e, const Integer& n);
-  //! Returns the constraint \p n <= \p e.
   Constraint operator <=(const Integer& n, const LinExpression& e);
 
-  //! Returns the constraint \p e1 >= \p e2.
   Constraint operator >=(const LinExpression& e1, const LinExpression& e2);
-  //! Returns the constraint \p e >= \p n.
   Constraint operator >=(const LinExpression& e, const Integer& n);
-  //! Returns the constraint \p n >= \p e.
   Constraint operator >=(const Integer& n, const LinExpression& e);
 
-  //! Returns the constraint \p c with variables renamed by \p offset.
   Constraint operator >>(const Constraint& c, unsigned int offset);
 
   //! Output operator.
   std::ostream& operator <<(std::ostream& s, const Constraint& c);
-  //@}
 }
 
 //! A linear equality or inequality.
@@ -90,36 +78,52 @@ class Parma_Polyhedra_Library::Constraint : public Row {
 private:
   Constraint(LinExpression& e);
 
+  //! Returns the constraint \p e1 = \p e2.
   friend Constraint
   Parma_Polyhedra_Library::operator ==(const LinExpression& e1,
 				       const LinExpression& e2);
+  
+  //! Returns the constraint \p e = \p n.
   friend Constraint
   Parma_Polyhedra_Library::operator ==(const LinExpression& e,
 				       const Integer& n);
+  
+  //! Returns the constraint \p n = \p e.
   friend Constraint
   Parma_Polyhedra_Library::operator ==(const Integer& n,
 				       const LinExpression& e);
 
+  //! Returns the constraint \p e1 >= \p e2.
   friend Constraint
   Parma_Polyhedra_Library::operator >=(const LinExpression& e1,
 				       const LinExpression& e2);
+
+  //! Returns the constraint \p e >= \p n.
   friend Constraint
   Parma_Polyhedra_Library::operator >=(const LinExpression& e,
 				       const Integer& n); 
+
+  //! Returns the constraint \p n >= \p e.
   friend Constraint
   Parma_Polyhedra_Library::operator >=(const Integer& n,
 				       const LinExpression& e);
-
+  
+  //! Returns the constraint \p e1 <= \p e2.
   friend Constraint
   Parma_Polyhedra_Library::operator <=(const LinExpression& e1,
 				       const LinExpression& e2);
+
+  //! Returns the constraint \p e <= \p n.
   friend Constraint
   Parma_Polyhedra_Library::operator <=(const LinExpression& e,
 				       const Integer& n);
+
+  //! Returns the constraint \p n <= \p e.
   friend Constraint
   Parma_Polyhedra_Library::operator <=(const Integer& n,
 				       const LinExpression& e);
 
+  //! Returns the constraint \p c with variables renamed by \p offset.
   friend Constraint
   Parma_Polyhedra_Library::operator >>(const Constraint& c, unsigned int p);
 
