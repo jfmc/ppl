@@ -16,13 +16,12 @@ static const Prolog_foreign_return_type PROLOG_FAILURE = FALSE;
 
 namespace PPL = Parma_Polyhedra_Library;
 
-#if 0
 /*!
   Return a new term reference.
 */
 static inline Prolog_term_ref
 Prolog_new_term_ref() {
-  return PL_new_term_ref();
+  return Mk_Variable();
 }
 
 /*!
@@ -30,8 +29,8 @@ Prolog_new_term_ref() {
   i.e., assign \p u to \p t.
 */
 static inline bool
-Prolog_put_term(Prolog_term_ref t, Prolog_term_ref u) {
-  PL_put_term(t, u);
+Prolog_put_term(Prolog_term_ref& t, Prolog_term_ref u) {
+  t = u;
   return true;
 }
 
@@ -40,8 +39,7 @@ Prolog_put_term(Prolog_term_ref t, Prolog_term_ref u) {
 */
 static inline bool
 Prolog_put_long(Prolog_term_ref t, long i) {
-  PL_put_integer(t, i);
-  return true;
+  return Un_Integer(i, t) != FALSE;
 }
 
 /*!
@@ -49,8 +47,8 @@ Prolog_put_long(Prolog_term_ref t, long i) {
 */
 static inline bool
 Prolog_put_atom_chars(Prolog_term_ref t, const char* s) {
-  PL_put_atom_chars(t, s);
-  return true;
+  // FIXME: the following cast is really a bug in GNU Prolog.
+  return Un_Chars(const_cast<char*>(s), t) != FALSE;
 }
 
 /*!
@@ -58,25 +56,27 @@ Prolog_put_atom_chars(Prolog_term_ref t, const char* s) {
 */
 static inline bool
 Prolog_put_atom(Prolog_term_ref t, Prolog_atom a) {
-  PL_put_atom(t, a);
-  return true;
+  return Un_Atom(a, t) != FALSE;
 }
 
 /*!
   Assign to \p t a term representing the address contained in \p p.
 */
-static inline void
+static inline bool
 Prolog_put_address(Prolog_term_ref t, void* p) {
-  PL_put_pointer(t, p);
+  return Un_Integer(reinterpret_cast<long>(p), t) != FALSE;
 }
 
 /*!
-  Return an atom whose name is given by the null-terminated sring \p s.
+  Return an atom whose name is given by the null-terminated string \p s.
 */
 Prolog_atom
 Prolog_atom_from_string(const char* s) {
-  return PL_new_atom(s);
+  // FIXME: the following cast is really a bug in GNU Prolog.
+  return Create_Allocate_Atom(const_cast<char*>(s));
 }
+
+static Prolog_term_ref args[4];
 
 /*!
   Assign to \p t a compound term whose principal functor is \p f
@@ -85,8 +85,8 @@ Prolog_atom_from_string(const char* s) {
 static inline bool
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 			  Prolog_term_ref a1) {
-  PL_cons_functor(t, PL_new_functor(f, 1), a1);
-  return true;
+  args[0] = a1;
+  return Un_Compound(f, 1, args, t) != FALSE;
 }
 
 /*!
@@ -96,8 +96,9 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 static inline bool
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2) {
-  PL_cons_functor(t, PL_new_functor(f, 2), a1, a2);
-  return true;
+  args[0] = a1;
+  args[1] = a2;
+  return Un_Compound(f, 2, args, t) != FALSE;
 }
 
 /*!
@@ -108,8 +109,10 @@ static inline bool
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3) {
-  PL_cons_functor(t, PL_new_functor(f, 3), a1, a2, a3);
-  return true;
+  args[0] = a1;
+  args[1] = a2;
+  args[2] = a3;
+  return Un_Compound(f, 3, args, t) != FALSE;
 }
 
 /*!
@@ -120,8 +123,11 @@ static inline bool
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3, Prolog_term_ref a4) {
-  PL_cons_functor(t, PL_new_functor(f, 4), a1, a2, a3, a4);
-  return true;
+  args[0] = a1;
+  args[1] = a2;
+  args[2] = a3;
+  args[3] = a4;
+  return Un_Compound(f, 4, args, t) != FALSE;
 }
 
 /*!
@@ -130,8 +136,9 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 static inline bool
 Prolog_construct_list(Prolog_term_ref l,
 		      Prolog_term_ref h, Prolog_term_ref t) {
-  PL_cons_list(l, h, t);
-  return true;
+  args[0] = h;
+  args[1] = t;
+  return Un_List(args, l) != FALSE;
 }
 
 /*!
@@ -139,7 +146,8 @@ Prolog_construct_list(Prolog_term_ref l,
 */
 static inline void
 Prolog_raise_exception(Prolog_term_ref t) {
-  (void) PL_raise_exception(t);
+  // ???
+  // (void) PL_raise_exception(t);
 }
 
 /*!
@@ -147,7 +155,7 @@ Prolog_raise_exception(Prolog_term_ref t) {
 */
 static inline bool
 Prolog_is_variable(Prolog_term_ref t) {
-  return PL_is_variable(t) != 0;
+  return Blt_Var(t) != FALSE;
 }
 
 /*!
@@ -155,7 +163,7 @@ Prolog_is_variable(Prolog_term_ref t) {
 */
 static inline bool
 Prolog_is_integer(Prolog_term_ref t) {
-  return PL_is_integer(t) != 0;
+  return Blt_Integer(t) != FALSE;
 }
 
 /*!
@@ -163,7 +171,7 @@ Prolog_is_integer(Prolog_term_ref t) {
 */
 static inline bool
 Prolog_is_address(Prolog_term_ref t) {
-  return PL_is_integer(t) != 0;
+  return Blt_Integer(t) != FALSE;
 }
 
 /*!
@@ -171,7 +179,7 @@ Prolog_is_address(Prolog_term_ref t) {
 */
 static inline bool
 Prolog_is_compound(Prolog_term_ref t) {
-  return PL_is_compound(t) != 0;
+  return Blt_Compound(t) != FALSE;
 }
 
 /*!
@@ -179,7 +187,7 @@ Prolog_is_compound(Prolog_term_ref t) {
 */
 static inline bool
 Prolog_is_list(Prolog_term_ref t) {
-  return PL_is_list(t) != 0;
+  return Blt_List(t) != FALSE;
 }
 
 /*!
@@ -191,7 +199,8 @@ Prolog_is_list(Prolog_term_ref t) {
 static inline bool
 Prolog_get_long(Prolog_term_ref t, long& v) {
   assert(Prolog_is_integer(t));
-  return PL_get_long(t, &v) != 0;
+  v = Rd_Integer(t);
+  return true;
 }
 
 /*!
@@ -200,9 +209,10 @@ Prolog_get_long(Prolog_term_ref t, long& v) {
   The behavior is undefined if \p t is not an address.
 */
 static inline bool
-Prolog_get_address(Prolog_term_ref t, void** p) {
+Prolog_get_address(Prolog_term_ref t, void*& p) {
   assert(Prolog_is_address(t));
-  return PL_get_pointer(t, p) != 0;
+  p = reinterpret_cast<void*>(Rd_Integer(t));
+  return true;
 }
 
 /*!
@@ -213,7 +223,8 @@ Prolog_get_address(Prolog_term_ref t, void** p) {
 static inline bool
 Prolog_get_name_arity(Prolog_term_ref t, Prolog_atom& name, int& arity) {
   assert(Prolog_is_compound(t));
-  return PL_get_name_arity(t, &name, &arity) != 0;
+  Rd_Compound(t, &name, &arity);
+  return true;
 }
 
 /*!
@@ -225,7 +236,10 @@ Prolog_get_name_arity(Prolog_term_ref t, Prolog_atom& name, int& arity) {
 static inline bool
 Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref a) {
   assert(Prolog_is_compound(t));
-  return PL_get_arg(i, t, a) != 0;
+  static Prolog_atom dummy_name;
+  static int dummy_arity;
+  a = Rd_Compound(t, &dummy_name, &dummy_arity)[i-1];
+  return true;
 }
 
 /*!
@@ -236,7 +250,10 @@ Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref a) {
 static inline bool
 Prolog_get_list(Prolog_term_ref l, Prolog_term_ref h, Prolog_term_ref t) {
   assert(Prolog_is_list(t));
-  return PL_get_list(l, h, t) != 0;
+  Prolog_term_ref* ht = Rd_List(l);
+  h = ht[0];
+  t = ht[1];
+  return true;
 }
 
 /*!
@@ -245,7 +262,7 @@ Prolog_get_list(Prolog_term_ref l, Prolog_term_ref h, Prolog_term_ref t) {
 */
 static inline bool
 Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
-  return PL_unify(t, u) != 0;
+  return Unify(t, u) != FALSE;
 }
 
 static PPL::Integer
@@ -259,11 +276,9 @@ integer_term_to_Integer(Prolog_term_ref t) {
 static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
   // FIXME: does SWI support unlimited precision integer?
-  Prolog_term_ref t = Prolog_new_term_ref();
   if (!n.fits_slong_p())
     throw_unknown_interface_error("Integer_to_integer_term()");
-  PL_put_integer(t, n.get_si());
-  return t;
+  return Mk_Integer(n.get_si());
 }
 
 #include "../ppl_prolog.outlines.hh"
@@ -309,7 +324,7 @@ extern "C" Prolog_foreign_return_type
 ppl_copy_polyhedron(Prolog_term_ref t_ph, Prolog_term_ref t_source) {
   try {
     void* source;
-    if (!Prolog_get_address(t_source, &source))
+    if (!Prolog_get_address(t_source, source))
       return PROLOG_FAILURE;
     CHECK(source);
     PPL::Polyhedron* ph
@@ -331,7 +346,7 @@ extern "C" Prolog_foreign_return_type
 ppl_delete_polyhedron(Prolog_term_ref t_ph) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     UNREGISTER(ph);
     delete static_cast<PPL::Polyhedron*>(ph);
@@ -345,7 +360,7 @@ extern "C" Prolog_foreign_return_type
 ppl_space_dimension(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     size_t sd = static_cast<const PPL::Polyhedron*>(ph)->space_dimension();
@@ -363,7 +378,7 @@ extern "C" Prolog_foreign_return_type
 ppl_insert_constraint(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     static_cast<PPL::Polyhedron*>(ph)->insert(build_constraint(t_c));
@@ -377,7 +392,7 @@ extern "C" Prolog_foreign_return_type
 ppl_insert_generator(Prolog_term_ref t_ph, Prolog_term_ref t_g) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     static_cast<PPL::Polyhedron*>(ph)->insert(build_generator(t_g));
@@ -392,7 +407,7 @@ ppl_add_constraints_and_minimize(Prolog_term_ref t_ph,
 				 Prolog_term_ref t_clist) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     PPL::ConSys cs;
@@ -412,7 +427,7 @@ extern "C" Prolog_foreign_return_type
 ppl_check_empty(Prolog_term_ref t_ph) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     if (static_cast<PPL::Polyhedron*>(ph)->check_empty())
@@ -427,7 +442,7 @@ ppl_intersection_assign(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   try {
     void* lhs;
     void* rhs;
-    if (!Prolog_get_address(t_lhs, &lhs) || !Prolog_get_address(t_rhs, &rhs))
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
       return PROLOG_FAILURE;
     CHECK(lhs);
     CHECK(rhs);
@@ -446,7 +461,7 @@ ppl_intersection_assign_and_minimize(Prolog_term_ref t_lhs,
   try {
     void* lhs;
     void* rhs;
-    if (!Prolog_get_address(t_lhs, &lhs) || !Prolog_get_address(t_rhs, &rhs))
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
       return PROLOG_FAILURE;
     CHECK(lhs);
     CHECK(rhs);
@@ -464,7 +479,7 @@ ppl_convex_hull_assign(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   try {
     void* lhs;
     void* rhs;
-    if (!Prolog_get_address(t_lhs, &lhs) || !Prolog_get_address(t_rhs, &rhs))
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
       return PROLOG_FAILURE;
     CHECK(lhs);
     CHECK(rhs);
@@ -483,7 +498,7 @@ ppl_convex_hull_assign_and_minimize(Prolog_term_ref t_lhs,
   try {
     void* lhs;
     void* rhs;
-    if (!Prolog_get_address(t_lhs, &lhs) || !Prolog_get_address(t_rhs, &rhs))
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
       return PROLOG_FAILURE;
     CHECK(lhs);
     CHECK(rhs);
@@ -501,7 +516,7 @@ ppl_convex_difference_assign(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   try {
     void* lhs;
     void* rhs;
-    if (!Prolog_get_address(t_lhs, &lhs) || !Prolog_get_address(t_rhs, &rhs))
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
       return PROLOG_FAILURE;
     CHECK(lhs);
     CHECK(rhs);
@@ -520,7 +535,7 @@ ppl_convex_difference_assign_and_minimize(Prolog_term_ref t_lhs,
   try {
     void* lhs;
     void* rhs;
-    if (!Prolog_get_address(t_lhs, &lhs) || !Prolog_get_address(t_rhs, &rhs))
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
       return PROLOG_FAILURE;
     CHECK(lhs);
     CHECK(rhs);
@@ -538,7 +553,7 @@ ppl_widening_assign(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   try {
     void* lhs;
     void* rhs;
-    if (!Prolog_get_address(t_lhs, &lhs) || !Prolog_get_address(t_rhs, &rhs))
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
       return PROLOG_FAILURE;
     CHECK(lhs);
     CHECK(rhs);
@@ -555,7 +570,7 @@ extern "C" Prolog_foreign_return_type
 ppl_get_constraints(Prolog_term_ref t_ph, Prolog_term_ref t_clist) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     Prolog_term_ref tail = Prolog_new_term_ref();
@@ -582,7 +597,7 @@ extern "C" Prolog_foreign_return_type
 ppl_get_generators(Prolog_term_ref t_ph, Prolog_term_ref t_glist) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     Prolog_term_ref tail = Prolog_new_term_ref();
@@ -609,7 +624,7 @@ extern "C" Prolog_foreign_return_type
 ppl_remove_dimensions(Prolog_term_ref t_ph, Prolog_term_ref t_vlist) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     std::set<PPL::Variable> dead_variables;
@@ -629,7 +644,7 @@ extern "C" Prolog_foreign_return_type
 ppl_remove_higher_dimensions(Prolog_term_ref t_ph, Prolog_term_ref t_nd) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     static_cast<PPL::Polyhedron*>(ph)
@@ -644,7 +659,7 @@ extern "C" Prolog_foreign_return_type
 ppl_add_dimensions_and_project(Prolog_term_ref t_ph, Prolog_term_ref t_nnd) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     static_cast<PPL::Polyhedron*>(ph)
@@ -659,7 +674,7 @@ extern "C" Prolog_foreign_return_type
 ppl_add_dimensions_and_embed(Prolog_term_ref t_ph, Prolog_term_ref t_nnd) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     static_cast<PPL::Polyhedron*>(ph)
@@ -670,42 +685,11 @@ ppl_add_dimensions_and_embed(Prolog_term_ref t_ph, Prolog_term_ref t_nnd) {
   return PROLOG_FAILURE;
 }
 
-#define PL_EXTENSION_ENTRY(name, arity) { #name, arity, (void*) name, 0 },
-
-static PL_extension predicates[] = {
-  PL_EXTENSION_ENTRY(ppl_new_polyhedron, 2)
-  PL_EXTENSION_ENTRY(ppl_new_empty_polyhedron, 2)
-  PL_EXTENSION_ENTRY(ppl_copy_polyhedron, 2)
-  PL_EXTENSION_ENTRY(ppl_delete_polyhedron, 1)
-  PL_EXTENSION_ENTRY(ppl_space_dimension, 2)
-  PL_EXTENSION_ENTRY(ppl_insert_constraint, 2)
-  PL_EXTENSION_ENTRY(ppl_insert_generator, 2)
-  PL_EXTENSION_ENTRY(ppl_add_constraints_and_minimize, 2)
-  PL_EXTENSION_ENTRY(ppl_check_empty, 1)
-  PL_EXTENSION_ENTRY(ppl_intersection_assign, 2)
-  PL_EXTENSION_ENTRY(ppl_intersection_assign_and_minimize, 2)
-  PL_EXTENSION_ENTRY(ppl_convex_hull_assign, 2)
-  PL_EXTENSION_ENTRY(ppl_convex_hull_assign_and_minimize, 2)
-  PL_EXTENSION_ENTRY(ppl_convex_difference_assign, 2)
-  PL_EXTENSION_ENTRY(ppl_convex_difference_assign_and_minimize, 2)
-  PL_EXTENSION_ENTRY(ppl_widening_assign, 2)
-  PL_EXTENSION_ENTRY(ppl_get_constraints, 2)
-  PL_EXTENSION_ENTRY(ppl_get_generators, 2)
-  PL_EXTENSION_ENTRY(ppl_remove_dimensions, 2)
-  PL_EXTENSION_ENTRY(ppl_remove_higher_dimensions, 2)
-  PL_EXTENSION_ENTRY(ppl_add_dimensions_and_project, 2)
-  PL_EXTENSION_ENTRY(ppl_add_dimensions_and_embed, 2)
-  { NULL, 0, NULL, 0 }
-};
-#endif
-
-#if 0
-install_t
-install() {
+extern "C" Prolog_foreign_return_type
+ppl_init() {
   for (size_t i = 0; i < sizeof(prolog_atoms)/sizeof(prolog_atoms[0]); ++i) {
     Prolog_atom a = Prolog_atom_from_string(prolog_atoms[i].name);
     *prolog_atoms[i].p_atom = a;
   }
-  PL_register_extensions(predicates);
+  return PROLOG_SUCCESS;
 }
-#endif

@@ -84,6 +84,7 @@ if HAVE_GNU_PROLOG
 #check_PROGRAMS = pplgprolog
 #pplgprolog_SOURCES = pplgprolog.cc
 #pplgprolog_LDADD = libpplgprolog.la $(top_builddir)/src/libppl.la /usr/local/lib/pl-5.0.1/runtime/i686-linux/libpl.a -lreadline -ldl -ltermcap @extra_libraries@
+#gplc -o pplgprolog ppl_gprolog.o ppl_gprolog.pl ../../../src/.libs/libppl.a /usr/local/lib/libstdc++.so /usr/local/lib/libgmp.so /usr/local/lib/libgmpxx.so
 
 #check-local: $(check_PROGRAMS) check_script expected
 #	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/$$k .; done
