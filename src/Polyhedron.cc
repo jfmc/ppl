@@ -36,6 +36,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #define BE_LAZY
 
+#ifndef NEW_LIMITED_GROWTH_ORDERING
+#define NEW_LIMITED_GROWTH_ORDERING 1
+#endif
+
 namespace PPL = Parma_Polyhedra_Library;
 
 void
@@ -3615,6 +3619,30 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   // the lineality space of the two polyhedra must have the same dimension.
   assert (x_num_lines == y_num_lines);
 
+
+#if 1
+  // Just for debugging.
+  bool stabilizing = true;
+#endif
+
+#if NEW_LIMITED_GROWTH_ORDERING
+  // If the number of constraints of `x' is smaller than the number
+  // of constraints of `y', then the chain is stabilizing. If it is
+  // bigger, the chain is not stabilizing. If they are equal, further
+  // investigation is needed.
+  dimension_type x_con_sys_num_rows = x.con_sys.num_rows();
+  dimension_type y_con_sys_num_rows = y.con_sys.num_rows();
+  if (x_con_sys_num_rows < y_con_sys_num_rows)
+    return true;
+  if (x_con_sys_num_rows > y_con_sys_num_rows)
+#if 1
+    stabilizing = false;
+#else
+    return false;
+  assert(x_con_sys_num_rows == y_con_sys_num_rows);
+#endif
+#endif // #if NEW_LIMITED_GROWTH_ORDERING
+
   dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
   dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
   if (x.is_necessarily_closed()) {
@@ -3627,6 +3655,11 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
     if (x_num_points < y_num_points) {
 #if 0 //#ifndef NDEBUG
       std::cout << "BHRZ03_stabilizing: number of points" << std::endl;
+#endif
+#if 1
+      if (!stabilizing)
+	std::cerr << "*";
+      return stabilizing;
 #endif
       return true;
     }
@@ -3652,6 +3685,11 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 #if 0 //#ifndef NDEBUG
       std::cout << "BHRZ03_stabilizing: number of closure points"
 		<< std::endl;
+#endif
+#if 1
+      if (!stabilizing)
+	std::cerr << "*";
+      return stabilizing;
 #endif
       return true;
     }
@@ -3701,6 +3739,11 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 #if 0 //#ifndef NDEBUG
       std::cout << "BHRZ03_stabilizing: zero-coord rays" << std::endl;
 #endif
+#if 1
+      if (!stabilizing)
+	std::cerr << "*";
+      return stabilizing;
+#endif
       return true;
     }
   }
@@ -3709,6 +3752,11 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   if (x == y) {
 #if 0 //#ifndef NDEBUG
     std::cout << "BHRZ03_stabilizing: same polyhedra" << std::endl;
+#endif
+#if 1
+    if (!stabilizing)
+      std::cerr << "*";
+    return stabilizing;
 #endif
     return true;
   }
@@ -4200,15 +4248,21 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
     return;
   }
 
-#if 0 //#ifndef NDEBUG
+#if 0 //ifndef NDEBUG
   std::cout << "BHRZ03: NOT stabilizing!" << std::endl;
 #endif
+#if NEW_LIMITED_GROWTH_ORDERING
+  std::cout << "BHRZ03 is not a widening!" << std::endl;
+  assert(false);
+  abort;
+#else
   // FIXME: here we should abort the computation, because we have
   // found a chain that is not stabilizing under the BHRZ03 widening.
   // Since we are still developing and debugging this operator,
   // for the moment we simply return the input polyhedron `x'.
   x = x_backup;
   assert(OK(true));
+#endif //#if NEW_LIMITED_GROWTH_ORDERING
 }
 
 void
