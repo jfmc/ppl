@@ -1,11 +1,3 @@
-To be Done Just After Merging the Strict Branch
-===============================================
-
-1) Make sure all the *_and_minimize methods that
-   can result in an empty polyhedron return a boolean
-   (true if the result is non-empty, false otherwise).
-
-
 Minor and Not So Minor Things
 =============================
 
