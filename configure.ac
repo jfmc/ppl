@@ -83,51 +83,11 @@ AC_ARG_WITH(cc,
 [  --with-cc=xxx           use XXX as the C compiler],
 CC=$with_cc)
 
-AC_LANG(C)
-
-# Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-AC_C_INLINE
-
 # C++ compiler
 
 AC_ARG_WITH(cxx,
 [  --with-cxx=xxx          use XXX as the C++ compiler],
 CXX=$with_cxx)
-
-AC_LANG(C++)
-
-# Checks for programs.
-AC_PROG_CC
-AC_PROG_CXX
-AC_PROG_CXXCPP
-AC_PROG_MAKE_SET
-AC_PROG_INSTALL
-
-# GMP library
-
-AC_CHECK_GMP
-
-if test x"$have_gmp" = xno
-then
-  AC_MSG_ERROR([Cannot find GMP version 4.1.2 or higher.
-GMP is the GNU Multi-Precision library:
-see http://www.swox.com/gmp/ for more information.
-When compiling the GMP library, do not forget to enable the C++ interface:
-add --enable-cxx to the configuration options.])
-else
-  if test x"$have_gmpxx" = xno
-  then
-    AC_MSG_ERROR([GMP compiled without enabling the C++ interface.
-GMP is the GNU Multi-Precision library:
-see http://www.swox.com/gmp/ for more information.
-When compiling the GMP library, do not forget to enable the C++ interface:
-add --enable-cxx to the configuration options.])
-  fi
-fi
-
-extra_includes="${extra_includes} ${gmp_includes_option}"
-extra_libraries="${extra_libraries} ${gmp_library_option}"
 
 # Compilation flags
 
@@ -312,11 +272,51 @@ AC_ARG_WITH(cxxflags,
 [  --with-cxxflags=xxx     add XXX to the options for the C++ compiler],
 CXXFLAGS="$CXXFLAGS $with_cxxflags")
 
+# Checks for programs.
+AC_PROG_CC
+AC_PROG_CXX
+AC_PROG_CXXCPP
+AC_PROG_MAKE_SET
+AC_PROG_INSTALL
+
+# Checks for C typedefs, structures, and compiler characteristics.
+AC_LANG(C)
+AC_C_CONST
+AC_C_INLINE
+
+# Use C++ for the remaining checks.
+AC_LANG(C++)
+
 # Check whether the C++ compiler supports flexible arrays.
 AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 
 # Check whether the C++ compiler supports __attribute__ ((weak)).
 AC_CXX_SUPPORTS_ATTRIBUTE_WEAK
+
+# GMP library
+
+AC_CHECK_GMP
+
+if test x"$have_gmp" = xno
+then
+  AC_MSG_ERROR([Cannot find GMP version 4.1.2 or higher.
+GMP is the GNU Multi-Precision library:
+see http://www.swox.com/gmp/ for more information.
+When compiling the GMP library, do not forget to enable the C++ interface:
+add --enable-cxx to the configuration options.])
+else
+  if test x"$have_gmpxx" = xno
+  then
+    AC_MSG_ERROR([GMP compiled without enabling the C++ interface.
+GMP is the GNU Multi-Precision library:
+see http://www.swox.com/gmp/ for more information.
+When compiling the GMP library, do not forget to enable the C++ interface:
+add --enable-cxx to the configuration options.])
+  fi
+fi
+
+extra_includes="${extra_includes} ${gmp_includes_option}"
+extra_libraries="${extra_libraries} ${gmp_library_option}"
 
 enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
