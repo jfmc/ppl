@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedra_PowerSet.types.hh"
 #include "ConSys.types.hh"
 #include "Constraint.types.hh"
+#include "BHRZ03_Certificate.defs.hh"
 #include "Polyhedron.defs.hh"
 #include "Variable.defs.hh"
 #include "Determinate.defs.hh"
@@ -233,16 +234,18 @@ public:
   bool ascii_load(std::istream& s);
 
 private:
-  typedef Polyhedron::BHRZ03_info base_lgo_info;
-  typedef std::map<base_lgo_info,
+  typedef BHRZ03_Certificate certificate_type;
+  typedef std::map<certificate_type,
 		   size_type,
-		   base_lgo_info::Compare> multiset_lgo_info;
-  //! Records into \p info the lgo information of this set of polyhedra.
-  void collect_multiset_lgo_info(multiset_lgo_info& info) const;
+		   certificate_type::Compare> cert_multiset_type;
+
+  //! Records into \p cert_ms the certificate for this set of polyhedra.
+  void collect_certificates(cert_multiset_type& cert_ms) const;
+
   //! \brief
   //! Returns <CODE>true</CODE> if and only if the current set of polyhedra
-  //! is satbilizing with respect to the multiset lgo information \p y_info.
-  bool is_multiset_lgo_stabilizing(const multiset_lgo_info& y_info) const;
+  //! is stabilizing with respect to the multiset of certificates \p y_cert_ms.
+  bool is_cert_multiset_stabilizing(const cert_multiset_type& y_cert_ms) const;
 };
 
 

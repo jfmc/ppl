@@ -433,32 +433,33 @@ limited_BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::
-collect_multiset_lgo_info(multiset_lgo_info& info) const {
+collect_certificates(cert_multiset_type& cert_ms) const {
   assert(Base::is_omega_reduced());
-  assert(info.size() == 0);
-  for (const_iterator i = Base::begin(), iend = Base::end(); i != iend; i++) {
-    base_lgo_info ph_info(i->polyhedron());
-    ++info[ph_info];
+  assert(cert_ms.size() == 0);
+  for (const_iterator i = Base::begin(),
+	 iend = Base::end(); i != iend; i++) {
+    certificate_type ph_cert(i->polyhedron());
+    ++cert_ms[ph_cert];
   }
 }
 
 template <typename PH>
 bool
 Polyhedra_PowerSet<PH>::
-is_multiset_lgo_stabilizing(const multiset_lgo_info& y_info) const {
-  multiset_lgo_info x_info;
-  collect_multiset_lgo_info(x_info);
-  typename multiset_lgo_info::const_iterator
-    xi = x_info.begin(),
-    xend = x_info.end(),
-    yi = y_info.begin(),
-    yend = y_info.end();
+is_cert_multiset_stabilizing(const cert_multiset_type& y_cert_ms) const {
+  cert_multiset_type x_cert_ms;
+  collect_certificates(x_cert_ms);
+  typename cert_multiset_type::const_iterator
+    xi = x_cert_ms.begin(),
+    xend = x_cert_ms.end(),
+    yi = y_cert_ms.begin(),
+    yend = y_cert_ms.end();
   while (xi != xend && yi != yend) {
-    const base_lgo_info& xi_info = xi->first;  
-    const base_lgo_info& yi_info = yi->first;
-    switch (xi_info.compare(yi_info)) {
+    const certificate_type& xi_cert = xi->first;  
+    const certificate_type& yi_cert = yi->first;
+    switch (xi_cert.compare(yi_cert)) {
     case 0:
-      // xi_info == yi_info: check the number of multiset occurrences.
+      // xi_cert == yi_cert: check the number of multiset occurrences.
       {
 	const size_type& xi_count = xi->second;
 	const size_type& yi_count = yi->second;
@@ -473,20 +474,20 @@ is_multiset_lgo_stabilizing(const multiset_lgo_info& y_info) const {
 	break;
       }
     case 1:
-      // xi_info > yi_info: it is not stabilizing.
+      // xi_cert > yi_cert: it is not stabilizing.
       return false;
 
     case -1:
-      // xi_info < yi_info: it is stabilizing.
+      // xi_cert < yi_cert: it is stabilizing.
       return true;
     }
   }
   // Here xi == xend or yi == yend.
-  // Stabilization is achieved if `y_info' still has other elements.
+  // Stabilization is achieved if `y_cert_ms' still has other elements.
   return (yi != yend);
 }
 
-// TODO: to be generalized so as to use an arbitrary lgo relation.
+// TODO: to be generalized so as to use an arbitrary certificate.
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
@@ -520,28 +521,28 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
   PH y_hull(y.space_dim, PH::EMPTY);
   for (const_iterator i = y.begin(), iend = y.end(); i != iend; ++i)
     y_hull.poly_hull_assign(i->polyhedron());
-  // Compute the base-level lgo info for `y_hull'.
-  const base_lgo_info y_hull_info(y_hull);
+  // Compute the certificate for `y_hull'.
+  const certificate_type y_hull_cert(y_hull);
 
-  // If the hull info is stabilizing, do nothing.
-  int hull_stabilization = y_hull_info.compare(x_hull);
+  // If the hull is stabilizing, do nothing.
+  int hull_stabilization = y_hull_cert.compare(x_hull);
   if (hull_stabilization == 1)
     return;
 
   // Multiset ordering is only useful when `y' is not a singleton. 
   const bool y_is_not_a_singleton = y.size() > 1;
 
-  // The multiset lgo information for `y':
+  // The multiset certificate for `y':
   // we want to be lazy about its computation.
-  multiset_lgo_info y_info;
-  bool y_info_computed = false;
+  cert_multiset_type y_cert_ms;
+  bool y_cert_ms_computed = false;
 
   if (hull_stabilization == 0 && y_is_not_a_singleton) {
-    // Collect the multiset lgo information for `y'.
-    y.collect_multiset_lgo_info(y_info);
-    y_info_computed = true;
+    // Collect the multiset certificate for `y'.
+    y.collect_certificates(y_cert_ms);
+    y_cert_ms_computed = true;
     // If multiset ordering is stabilizing, do nothing.
-    if (x.is_multiset_lgo_stabilizing(y_info))
+    if (x.is_cert_multiset_stabilizing(y_cert_ms))
       return;
   }
 
@@ -557,29 +558,29 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
   
   // Check for stabilization and, if successful,
   // commit to the result of the extrapolation.
-  hull_stabilization = y_hull_info.compare(bgp99_heuristics_hull);
+  hull_stabilization = y_hull_cert.compare(bgp99_heuristics_hull);
   if (hull_stabilization == 1) {
     // The poly-hull is stabilizing.
     std::swap(x, bgp99_heuristics);
     return;
   }
   else if (hull_stabilization == 0 && y_is_not_a_singleton) {
-    // If not already done, compute multiset lgo info for `y'.
-    if (!y_info_computed) {
-      y.collect_multiset_lgo_info(y_info);
-      y_info_computed = true;
+    // If not already done, compute multiset certificate for `y'.
+    if (!y_cert_ms_computed) {
+      y.collect_certificates(y_cert_ms);
+      y_cert_ms_computed = true;
     }
-    if (bgp99_heuristics.is_multiset_lgo_stabilizing(y_info)) {
+    if (bgp99_heuristics.is_cert_multiset_stabilizing(y_cert_ms)) {
       std::swap(x, bgp99_heuristics);
       return;
     }
     // Third widening technique: pairwise-reduction on `bgp99_heuristics'.
     // Note that pairwise-reduction does not affect the computation
     // of the poly-hulls, so that we only have to check the multiset
-    // lgo relation.
+    // certificate relation.
     Polyhedra_PowerSet<PH> reduced_bgp99_heuristics(bgp99_heuristics);
     reduced_bgp99_heuristics.pairwise_reduce();
-    if (reduced_bgp99_heuristics.is_multiset_lgo_stabilizing(y_info)) {
+    if (reduced_bgp99_heuristics.is_cert_multiset_stabilizing(y_cert_ms)) {
       std::swap(x, reduced_bgp99_heuristics);
       return;
     }
@@ -603,7 +604,7 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
   std::swap(x, x_hull_singleton);
 }
 
-// TODO: to be generalized so as to use an arbitrary lgo relation.
+// TODO: to be generalized so as to use an arbitrary certificate relation.
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>
@@ -641,28 +642,28 @@ Polyhedra_PowerSet<PH>
   PH y_hull(y.space_dim, PH::EMPTY);
   for (const_iterator i = y.begin(), iend = y.end(); i != iend; ++i)
     y_hull.poly_hull_assign(i->polyhedron());
-  // Compute the base-level lgo info for `y_hull'.
-  const base_lgo_info y_hull_info(y_hull);
+  // Compute the certificate for `y_hull'.
+  const certificate_type y_hull_cert(y_hull);
 
   // If the hull info is stabilizing, do nothing.
-  int hull_stabilization = y_hull_info.compare(x_hull);
+  int hull_stabilization = y_hull_cert.compare(x_hull);
   if (hull_stabilization == 1)
     return;
 
   // Multiset ordering is only useful when `y' is not a singleton. 
   const bool y_is_not_a_singleton = y.size() > 1;
 
-  // The multiset lgo information for `y':
+  // The multiset certificate for `y':
   // we want to be lazy about its computation.
-  multiset_lgo_info y_info;
-  bool y_info_computed = false;
+  cert_multiset_type y_cert_ms;
+  bool y_cert_ms_computed = false;
 
   if (hull_stabilization == 0 && y_is_not_a_singleton) {
-    // Collect the multiset lgo information for `y'.
-    y.collect_multiset_lgo_info(y_info);
-    y_info_computed = true;
+    // Collect the multiset certificate for `y'.
+    y.collect_certificates(y_cert_ms);
+    y_cert_ms_computed = true;
     // If multiset ordering is stabilizing, do nothing.
-    if (x.is_multiset_lgo_stabilizing(y_info))
+    if (x.is_cert_multiset_stabilizing(y_cert_ms))
       return;
   }
 
@@ -678,29 +679,29 @@ Polyhedra_PowerSet<PH>
   
   // Check for stabilization and, if successful,
   // commit to the result of the extrapolation.
-  hull_stabilization = y_hull_info.compare(bgp99_heuristics_hull);
+  hull_stabilization = y_hull_cert.compare(bgp99_heuristics_hull);
   if (hull_stabilization == 1) {
     // The poly-hull is stabilizing.
     std::swap(x, bgp99_heuristics);
     return;
   }
   else if (hull_stabilization == 0 && y_is_not_a_singleton) {
-    // If not already done, compute multiset lgo info for `y'.
-    if (!y_info_computed) {
-      y.collect_multiset_lgo_info(y_info);
-      y_info_computed = true;
+    // If not already done, compute the multiset certificate for `y'.
+    if (!y_cert_ms_computed) {
+      y.collect_certificates(y_cert_ms);
+      y_cert_ms_computed = true;
     }
-    if (bgp99_heuristics.is_multiset_lgo_stabilizing(y_info)) {
+    if (bgp99_heuristics.is_cert_multiset_stabilizing(y_cert_ms)) {
       std::swap(x, bgp99_heuristics);
       return;
     }
     // Third widening technique: pairwise-reduction on `bgp99_heuristics'.
     // Note that pairwise-reduction does not affect the computation
     // of the poly-hulls, so that we only have to check the multiset
-    // lgo relation.
+    // certificate relation.
     Polyhedra_PowerSet<PH> reduced_bgp99_heuristics(bgp99_heuristics);
     reduced_bgp99_heuristics.pairwise_reduce();
-    if (reduced_bgp99_heuristics.is_multiset_lgo_stabilizing(y_info)) {
+    if (reduced_bgp99_heuristics.is_cert_multiset_stabilizing(y_cert_ms)) {
       std::swap(x, reduced_bgp99_heuristics);
       return;
     }
