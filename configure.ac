@@ -75,6 +75,12 @@ CXX=$with_cxx)
 AC_LANG_CPLUSPLUS
 AC_PROG_CXX
 
+dnl Check for sizes of builtin integer types
+
+AC_CHECK_SIZEOF(long, 4)
+AC_CHECK_SIZEOF(int,  4)
+
+
 dnl GMP library
 
 AC_ARG_WITH(gmp-includes,
