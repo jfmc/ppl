@@ -720,58 +720,71 @@ ppl_finalize() {
 
 extern "C" Prolog_foreign_return_type
 ppl_set_timeout_exception_atom(Prolog_term_ref t_tea) {
-  if (Prolog_is_atom(t_tea)) {
-    Prolog_atom tea;
-    if (Prolog_get_atom_name(t_tea, &tea)) {
-      timeout_exception_atom = tea;
-      return PROLOG_SUCCESS;
+  try {
+    if (Prolog_is_atom(t_tea)) {
+      Prolog_atom tea;
+      if (Prolog_get_atom_name(t_tea, &tea)) {
+	timeout_exception_atom = tea;
+	return PROLOG_SUCCESS;
+      }
     }
-  }
-  Prolog_term_ref culprit = Prolog_new_term_ref();
-  Prolog_term_ref arg_no = Prolog_new_term_ref();
-  Prolog_term_ref expected_domain = Prolog_new_term_ref();
-  Prolog_term_ref et = Prolog_new_term_ref();
+    Prolog_term_ref culprit = Prolog_new_term_ref();
+    Prolog_term_ref arg_no = Prolog_new_term_ref();
+    Prolog_term_ref expected_domain = Prolog_new_term_ref();
+    Prolog_term_ref et = Prolog_new_term_ref();
 
-  Prolog_put_term(culprit, t_tea);
-  Prolog_put_long(arg_no, 1);
-  Prolog_put_atom_chars(expected_domain, "atom");
-  Prolog_construct_compound(et,
-			    Prolog_atom_from_string("ppl_set_timeout_exception_atom"),
-			    culprit);
-  Prolog_construct_compound(et, Prolog_atom_from_string("domain_error"),
-			    et, arg_no, expected_domain, culprit);
-  Prolog_raise_exception(et);
+    Prolog_put_term(culprit, t_tea);
+    Prolog_put_long(arg_no, 1);
+    Prolog_put_atom_chars(expected_domain, "atom");
+    Prolog_construct_compound(et,
+			      Prolog_atom_from_string("ppl_set_timeout_exception_atom"),
+			      culprit);
+    Prolog_construct_compound(et, Prolog_atom_from_string("domain_error"),
+			      et, arg_no, expected_domain, culprit);
+    Prolog_raise_exception(et);
+    return PROLOG_FAILURE;
+  }
+  CATCH_ALL;
   return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
 ppl_timeout_exception_atom(Prolog_term_ref t) {
-  Prolog_term_ref t_tea = Prolog_new_term_ref();
-  Prolog_put_atom(t_tea, timeout_exception_atom);
-  if (Prolog_unify(t_tea, t))
-    return PROLOG_SUCCESS;
-  else
-    return PROLOG_FAILURE;
+  try {
+    Prolog_term_ref t_tea = Prolog_new_term_ref();
+    Prolog_put_atom(t_tea, timeout_exception_atom);
+    return Prolog_unify(t_tea, t) ? PROLOG_SUCCESS : PROLOG_FAILURE;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
 ppl_set_timeout(Prolog_term_ref t_time) {
-  // In case a timeout was already set.
-  reset_timeout();
-  static timeout_exception e;
-  unsigned hundredth_secs = term_to_unsigned_int(t_time);
-  p_timeout_object =
-    new
-    Parma_Watchdog_Library::Watchdog(hundredth_secs,
-				     &PPL::abandon_exponential_computations,
-				     e);
-  return PROLOG_SUCCESS;
+  try {
+    // In case a timeout was already set.
+    reset_timeout();
+    static timeout_exception e;
+    unsigned hundredth_secs = term_to_unsigned_int(t_time);
+    p_timeout_object =
+      new
+      Parma_Watchdog_Library::Watchdog(hundredth_secs,
+				       &PPL::abandon_exponential_computations,
+				       e);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
 ppl_reset_timeout() {
-  reset_timeout();
-  return PROLOG_SUCCESS;
+  try {
+    reset_timeout();
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
