@@ -46,6 +46,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define BHRZ03_AC_CHECKS_H79_BOUNDARY 1
 #endif
 
+#ifndef BHRZ03_EP_DELAY_INTERSECTION
+#define BHRZ03_EP_DELAY_INTERSECTION 0
+#endif
+
 #define BE_LAZY
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -4179,8 +4183,11 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   // this technique tries to identify a set of rays that:
   //  - are included in polyhedron `H79';
   //  - when added to `y' will subsume the point.
+#if !BHRZ03_EP_DELAY_INTERSECTION
   // All such rays are kept in `valid_rays'.
   GenSys valid_rays;
+#endif
+  GenSys candidate_rays;
 
   dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
   dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
@@ -4191,82 +4198,84 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
     // that is not included in `y'.
     // In the case of NNC polyhedra, we can restrict attention to
     // closure points (considering also points will only add redundancy).
-    if ((g1.is_point() && closed) || (g1.is_closure_point() && !closed)) {
-      Poly_Gen_Relation relation = y.relation_with(g1);
-      if (relation == Poly_Gen_Relation::nothing()) {
-	GenSys candidate_rays;
-	// For each point (resp., closure point) `g2' in `y.gen_sys',
-	// where `g1' and `g2' are different,
-	// build the candidate ray `g1 - g2'.
-	for (dimension_type j = y_gen_sys_num_rows; j-- > 0; ) {
-	  const Generator& g2 = y.gen_sys[j];
-	  if ((g2.is_point() && closed)
-	      || (g2.is_closure_point() && !closed)) {
-	    // Check that `g1' and `g2' are different.
-	    if (compare(g1, g2) == 0)
-	      continue;
-	    Generator ray_from_g2_to_g1 = g1;
-	    ray_from_g2_to_g1.linear_combine(g2, 0);
-	    candidate_rays.insert(ray_from_g2_to_g1);
-	  }
+    if (((g1.is_point() && closed) || (g1.is_closure_point() && !closed))
+	&& y.relation_with(g1) == Poly_Gen_Relation::nothing()) {
+      candidate_rays.clear();
+      // For each point (resp., closure point) `g2' in `y.gen_sys',
+      // where `g1' and `g2' are different,
+      // build the candidate ray `g1 - g2'.
+      for (dimension_type j = y_gen_sys_num_rows; j-- > 0; ) {
+	const Generator& g2 = y.gen_sys[j];
+	if ((g2.is_point() && closed)
+	    || (g2.is_closure_point() && !closed)) {
+	  assert(compare(g1, g2) != 0);
+	  Generator ray_from_g2_to_g1 = g1;
+	  ray_from_g2_to_g1.linear_combine(g2, 0);
+	  candidate_rays.insert(ray_from_g2_to_g1);
 	}
-	// Similarly, for each point (resp., closure point) `g2'
-	// in `x.gen_sys', where `g1' and `g2' are different,
-	// build the ray `g1 - g2' and put it into `candidate_rays'.
-	for (dimension_type j = x_gen_sys_num_rows; j-- > 0; ) {
-	  // Check that `g1' and `g2' are different:
-	  // since they both belong to `x.gen_sys', which is minimized,
-	  // they are equal if and only if their indexes are the same.
-	  if (i == j)
+      }
+#if !BHRZ03_EP_DELAY_INTERSECTION
+      // Similarly, for each point (resp., closure point) `g2'
+      // in `x.gen_sys', where `g1' and `g2' are different,
+      // build the ray `g1 - g2' and put it into `candidate_rays'.
+      for (dimension_type j = x_gen_sys_num_rows; j-- > 0; ) {
+	// Check that `g1' and `g2' are different:
+	// since they both belong to `x.gen_sys', which is minimized,
+	// they are equal if and only if their indexes are the same.
+	if (i == j)
 	    continue;
-	  const Generator& g2 = x.gen_sys[j];
-	  if ((g2.is_point() && closed)
-	      || (g2.is_closure_point() && !closed)) {
+	const Generator& g2 = x.gen_sys[j];
+	if ((g2.is_point() && closed)
+	    || (g2.is_closure_point() && !closed)) {
 	    Generator ray_from_g2_to_g1(g1);
 	    ray_from_g2_to_g1.linear_combine(g2, 0);
 	    candidate_rays.insert(ray_from_g2_to_g1);
-	  }
 	}
-	if (candidate_rays.num_rows() == 1) {
-	  // `candidate_rays' contains one ray only: it is a valid ray
-	  // if it satisfies all the constraints of `H79'.
-	  const Generator& r = candidate_rays[0];
-	  if (H79.relation_with(r) == Poly_Gen_Relation::subsumes())
-	    valid_rays.insert(r);
-	}
-	else
-	  if (candidate_rays.num_rows() > 1) {
-	    // `candidate_rays' contains more than one candidate ray.
-	    // After adding a (any) point of `x' to `candidate_rays',
-	    // we build the corresponding `candidate_ph'
-	    // (a polyhedral cone having the point as apex).
-	    // We compute the intersection of this polyhedron with `H79':
-	    // the valid rays are those belonging to this intersection.
-	    dimension_type k = x_gen_sys_num_rows - 1;
-	    while (!x.gen_sys[k].is_point())
-	      --k;
-	    // Insert the point.
-	    candidate_rays.insert(x.gen_sys[k]);
-	    Polyhedron candidate_ph(x.topology(), candidate_rays);
-	    // Have to take a copy, because `H79' is a constant parameter.
-	    Polyhedron valid_ph = H79;
-	    valid_ph.intersection_assign_and_minimize(candidate_ph);
-
-	    // Copy the valid rays from `valid_ph'.
-	    const GenSys& valid_gs = valid_ph.generators();
-	    for (dimension_type j = valid_gs.num_rows(); j-- > 0; ) {
-	      const Generator& g = valid_gs[j];
-	      if (g.is_ray() || g.is_line())
-		valid_rays.insert(g);
-	    }
-	  }
       }
+      if (candidate_rays.num_rows() == 1) {
+	// `candidate_rays' contains one ray only: it is a valid ray
+	// if it satisfies all the constraints of `H79'.
+	const Generator& r = candidate_rays[0];
+	if (H79.relation_with(r) == Poly_Gen_Relation::subsumes())
+	  valid_rays.insert(r);
+      }
+      else
+	if (candidate_rays.num_rows() > 1) {
+	  // `candidate_rays' contains more than one candidate ray.
+	  // After adding a (any) point of `x' to `candidate_rays',
+	  // we build the corresponding `candidate_ph'
+	  // (a polyhedral cone having the point as apex).
+	  // We compute the intersection of this polyhedron with `H79':
+	  // the valid rays are those belonging to this intersection.
+	  dimension_type k = x_gen_sys_num_rows - 1;
+	  while (!x.gen_sys[k].is_point())
+	    --k;
+	  // Insert the point.
+	  candidate_rays.insert(x.gen_sys[k]);
+	  Polyhedron candidate_ph(x.topology(), candidate_rays);
+	  // Have to take a copy, because `H79' is a constant parameter.
+	  Polyhedron valid_ph = H79;
+	  valid_ph.intersection_assign_and_minimize(candidate_ph);
+	  
+	  // Copy the valid rays from `valid_ph'.
+	  const GenSys& valid_gs = valid_ph.generators();
+	  for (dimension_type j = valid_gs.num_rows(); j-- > 0; ) {
+	    const Generator& g = valid_gs[j];
+	    if (g.is_ray() || g.is_line())
+	      valid_rays.insert(g);
+	  }
+	}
+#endif //#if !BHRZ03_EP_DELAY_INTERSECTION
     }
   }
 
   // Be non-intrusive.
   Polyhedron result = x;
 
+#if BHRZ03_EP_DELAY_INTERSECTION
+  result.add_generators_and_minimize(candidate_rays);
+  result.intersection_assign_and_minimize(H79);
+#else //#if BHRZ03_EP_DELAY_INTERSECTION
   // We first try "averaging" the directions of all the rays
   // in `valid_rays' and add the resulting ray to `result'.
   LinExpression e(0);
@@ -4312,6 +4321,8 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   // because the only ray added so far was obtained by combining the rays
   // we are going to add now.
   result.add_generators_and_minimize(valid_rays);
+#endif //#if!BHRZ03_EP_DELAY_INTERSECTION
+
   // Check for stabilization wrt `y' and improvement over `H79'.
   if (H79 <= result || !is_BHRZ03_stabilizing(result, y))
     return false;
