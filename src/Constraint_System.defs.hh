@@ -91,7 +91,7 @@ void swap(Parma_Polyhedra_Library::Constraint_System& x,
     \endcode
     Note that:
     the constraint system is created with space dimension zero;
-    the first and third constraint insertions increases the space
+    the first and third constraint insertions increase the space
     dimension to \f$1\f$ and \f$2\f$, respectively.
 
     \par Example 2
@@ -158,7 +158,7 @@ public:
   void insert(const Constraint& c);
 
   // FIXME: write some documentation here!
-  Simplex_Status primal_simplex(const Linear_Expression& expr, 
+  Simplex_Status primal_simplex(const Linear_Expression& expr,
 				bool maximize,
 				Coefficient& ext_n, Coefficient& ext_d,
 				const Generator** const pppoint = 0) const;
@@ -365,10 +365,10 @@ private:
 		       const Linear_Expression& expr,
 		       Coefficient_traits::const_reference denominator);
 
-  //! Returns the number of the equality constraints.
+  //! Returns the number of equality constraints.
   dimension_type num_equalities() const;
 
-  //! Returns the number of the inequality constraints.
+  //! Returns the number of inequality constraints.
   dimension_type num_inequalities() const;
 
   //! \brief
