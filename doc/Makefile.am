@@ -13,6 +13,10 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
+HTML_DIRS =     \
+user.html-dir   \
+devref.html-dir
+
 ALL_TARGETS = \
 ppl-user-@VERSION@-browse.pdf    \
 ppl-user-@VERSION@-print.pdf     \
@@ -20,8 +24,7 @@ ppl-user-@VERSION@-print.ps.gz   \
 ppl-devref-@VERSION@-browse.pdf  \
 ppl-devref-@VERSION@-print.pdf   \
 ppl-devref-@VERSION@-print.ps.gz \
-user.html-dir                    \
-devref.html-dir
+$(HTML_DIRS)
 
 # We distribute some user's documentation both for browsing and for printing.
 DIST_DOCS = \
@@ -46,7 +49,13 @@ USER_STUFF = $(DOX_FILES) user.tex $(top_builddir)/src/ppl.hh
 
 DEVREF_STUFF = $(DOX_FILES) devref.tex $(PPL_SOURCE_FILES)
 
-.SECONDARY: user-browse.latex-dir user-print.latex-dir devref-browse.latex-dir devref-print.latex-dir gpl.dvi fdl.dvi
+LATEX_DIRS =            \
+user-browse.latex-dir   \
+user-print.latex-dir    \
+devref-browse.latex-dir \
+devref-print.latex-dir
+
+.SECONDARY: $(LATEX_DIRS)
 
 user-%.latex-dir: user-%.doxyconf-latex $(USER_STUFF)
 	rm -rf $@
@@ -97,3 +106,8 @@ user.tex                     \
 devref.tex                   \
 gpl.tex                      \
 fdl.tex
+
+mostlyclean-local:
+	rm -rf $(LATEX_DIRS) $(HTML_DIRS)
+
+CLEANFILES = $(DIST_DOCS)

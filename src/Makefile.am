@@ -13,9 +13,9 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS = @extra_src_subdirs@
+SUBDIRS = BitSet Integer .
 
-INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src -I$(top_srcdir)/src/sysdep -I$(top_srcdir)/src/BitSet -I$(top_srcdir)/src/Integer @extra_includes@
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src -I$(top_srcdir)/src/BitSet -I$(top_srcdir)/src/Integer @extra_includes@
 
 # See http://www.cs.unipr.it/pipermail/ppl-devel/2001-October/000281.html
 #MYCPP = cpp
@@ -23,7 +23,7 @@ MYCPP = kgcc -E
 
 CPPFLAGS = -DPPL_INTERNAL=public @extra_cpp_flags@
 
-noinst_LIBRARIES = libppl.a
+lib_LIBRARIES = libppl.a
 
 include_files = \
 Constraint.types.hh \
@@ -92,7 +92,7 @@ BUILT_SOURCES = ppl.hh
 
 include_HEADERS = ppl.hh
 
-ppl.hh:	$(include_files) $(srcdir)/ppl.cc $(srcdir)/protect.sed $(srcdir)/restore.sed
+ppl.hh:	$(include_files) ppl.cc protect.sed restore.sed
 	cp -f $(srcdir)/ppl.cc .
 	cpp -C -P -H $(INCLUDES) \
 		@debug_flag@ -DOUTLINE=0 ppl.cc >/dev/null 2>tmp.1
@@ -112,4 +112,10 @@ ppl.hh:	$(include_files) $(srcdir)/ppl.cc $(srcdir)/protect.sed $(srcdir)/restor
 	echo "#endif" >>ppl.hh
 	rm -rf tmp* ppl.cc
 
-EXTRA_DIST = protect.sed restore.sed
+# ppl.hh is not distributed.
+dist-hook:
+	rm -f $(distdir)/ppl.hh
+
+EXTRA_DIST = ppl.cc protect.sed restore.sed
+
+MOSTLYCLEANFILES = $(BUILT_SOURCES)

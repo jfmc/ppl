@@ -17,7 +17,7 @@ SUBDIRS =
 
 INCLUDES = -I$(top_builddir)/src
 
-LDADD = -L$(top_builddir)/src -lppl -lgmp
+LDADD = -L$(top_builddir)/src -lppl @gmp_library_option@
 
 CPPFLAGS = @extra_cpp_flags@
 

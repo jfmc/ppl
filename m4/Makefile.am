@@ -13,12 +13,6 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-# Install m4 macros in this directory.
-m4datadir = $(datadir)/aclocal
-
-# List your m4 macros here.
 m4macros = ac_check_have_gmp.m4 ac_check_gmp_exceptions.m4
 
-# The following is boilerplate.
-m4data_DATA = $(m4macros) 
-EXTRA_DIST = $(m4data_DATA) 
+EXTRA_DIST = $(m4macros) 

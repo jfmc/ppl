@@ -282,22 +282,19 @@ AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 
-extra_src_subdirs="BitSet Integer $extra_src_subdirs"
-extra_includes="${extra_includes} -I\$(top_srcdir)/src/Integer"
-
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(unistd.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 
+# Nothing for the time being.
+
 dnl Checks for library functions.
 
-AC_SUBST(extra_subdirs)
-AC_SUBST(extra_src_subdirs)
 AC_SUBST(extra_includes)
 AC_SUBST(extra_cpp_flags)
-AC_SUBST(extra_ld_libs)
+AC_SUBST(gmp_library_option)
 AC_SUBST(debug_flag)
 
 AC_OUTPUT(Makefile
