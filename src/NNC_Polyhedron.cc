@@ -34,17 +34,3 @@ PPL::NNC_Polyhedron::NNC_Polyhedron(const C_Polyhedron& y)
   add_constraints(cs);
   assert(OK());
 }
-
-void
-PPL::NNC_Polyhedron::limited_widening_assign(const NNC_Polyhedron& y,
-					     ConSys& cs) {
-  assert(OK());
-  NNC_Polyhedron& x = *this;
-  // KLUDGE.
-  // Converting x and y to Polyhedron. 
-  C_Polyhedron nc_x = C_Polyhedron(x);
-  C_Polyhedron nc_y = C_Polyhedron(y);
-  nc_x.limited_widening_assign(nc_y, cs);
-  // Converting back and assigning to x.
-  x = NNC_Polyhedron(nc_x);
-}

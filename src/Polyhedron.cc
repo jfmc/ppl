@@ -3125,7 +3125,7 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
   if (x.is_necessarily_closed()) {
     if (!y.is_necessarily_closed())
       throw_topology_incompatible("limited_widening_assign(y, cs)", y);
-    else if (cs.has_strict_inequalities())
+    if (cs.has_strict_inequalities())
       throw_topology_incompatible("limited_widening_assign(y, cs)", cs);
   }
   else if (y.is_necessarily_closed())
@@ -3177,19 +3177,18 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
     // because the generators of `y' can be obtained by combining
     // those of `x' (since `y' is contained in `x').
     Poly_Con_Relation relation = x.gen_sys.relation_with(cs[i]);
-    if (relation == Poly_Con_Relation::saturates()
-	|| relation == Poly_Con_Relation::is_included())
+    if (relation.implies(Poly_Con_Relation::is_included()))
       // The chosen constraints are put at the top of the
       // matrix \p cs.
       std::swap(cs[new_cs_num_rows], cs[i]);
     ++new_cs_num_rows;
   }
-  x.widening_assign(y);
   // We erase the constraints that are not saturated or satisfied
   // by the generators of `x' and `y' and that have been put to
   // the end of the matrix \p cs.
   cs.erase_to_end(new_cs_num_rows);
 
+  x.widening_assign(y);
 #if 1
   // FIXME : merge_rows_assign (in the #else branch below)
   // does not automatically adjust the topology of cs !!!
