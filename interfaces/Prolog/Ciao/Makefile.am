@@ -121,7 +121,7 @@ EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: ciao_clpq$(EXEEXT) ../tests/check_script ../$(EXPECTED) ciao_clpq2$(EXEEXT) ../tests/check_script2 ../$(EXPECTED2) ciao_pl_check$(EXEEXT) ../$(EXPECTED3)
+check-local: ciao_clpq$(EXEEXT) ../tests/check_script $(EXPECTED) ciao_clpq2$(EXEEXT) ../tests/check_script2 $(EXPECTED2) ciao_pl_check$(EXEEXT) $(EXPECTED3)
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	GLOBALSTKSIZE=1000000 \
 	$(LIBTOOL) --mode=execute \
