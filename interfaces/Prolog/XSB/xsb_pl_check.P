@@ -115,7 +115,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define user_input user
 #include "pl_check.pl"
 
-%:- ppl_initialize.
 main :-
     (check_all ->
         write('OK')
@@ -123,3 +122,5 @@ main :-
         write('FAILURE')
     ),
     nl.
+
+:- main.
