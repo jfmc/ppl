@@ -404,14 +404,22 @@ Polyhedra_PowerSet<PH>::new_widening_assign(const Polyhedra_PowerSet& y) {
   if (hull_stabilization == 1)
     return;
 
-  // Compute the multiset lgo information for `y'.
-  multiset_lgo_info y_info;
-  y.collect_multiset_lgo_info(y_info);
+  // Multiset ordering is only useful when `y' is not a singleton. 
+  bool y_is_not_a_singleton = y.size() > 1;
 
-  // If the hull info was the same and
-  // the multiset lgo ordering is stabilizing, do nothing.
-  if (hull_stabilization == 0 && x.is_multiset_lgo_stabilizing(y_info))
-    return;
+  // The multiset lgo information for `y':
+  // we want to be lazy about its computation.
+  multiset_lgo_info y_info;
+  bool y_info_computed = false;
+
+  if (hull_stabilization == 0 && y_is_not_a_singleton) {
+    // Collect the multiset lgo information for `y'.
+    y.collect_multiset_lgo_info(y_info);
+    y_info_computed = true;
+    // If multiset ordering is stabilizing, do nothing.
+    if (x.is_multiset_lgo_stabilizing(y_info))
+      return;
+  }
 
   // Second widening technique: try the BHZ03 powerset heuristics.
   Polyhedra_PowerSet<PH> extrapolated_x = x;
@@ -423,16 +431,24 @@ Polyhedra_PowerSet<PH>::new_widening_assign(const Polyhedra_PowerSet& y) {
 	 iend = extrapolated_x.end(); i != iend; ++i)
     extrapolated_x_hull.poly_hull_assign(i->polyhedron());
   
-  // If the poly-hull lgo info is stabilizing
-  // or if it is invariant, but the multiset info is stabilizing,
+  // Check for stabilization and, if successful,
   // commit to the result of the extrapolation.
-  hull_stabilization
-    = y_hull_info.compare(extrapolated_x_hull);
-  if (hull_stabilization == 1
-      || (hull_stabilization == 0
-	  && extrapolated_x.is_multiset_lgo_stabilizing(y_info))) {
+  hull_stabilization = y_hull_info.compare(extrapolated_x_hull);
+  if (hull_stabilization == 1) {
+    // The poly-hull is stabilizing.
     std::swap(x, extrapolated_x);
     return;
+  }
+  else if (hull_stabilization == 0 && y_is_not_a_singleton) {
+    // If not already done, compute multiset lgo info for `y'.
+    if (!y_info_computed) {
+      y.collect_multiset_lgo_info(y_info);
+      y_info_computed = true;
+    }
+    if (extrapolated_x.is_multiset_lgo_stabilizing(y_info)) {
+      std::swap(x, extrapolated_x);
+      return;
+    }
   }
 
   // Third widening technique: this is applicable only when
