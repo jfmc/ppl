@@ -686,10 +686,10 @@ solve(char* file_name) {
   mpz_set_si(den_lcm, 1);
 
   mpq_init(objective[0]);
-  mpq_set_d(objective[0], lpx_get_obj_c0(lp));
+  mpq_set_d(objective[0], lpx_get_obj_coef(lp, 0));
   for (i = 1; i <= dimension; ++i) {
     mpq_init(objective[i]);
-    mpq_set_d(objective[i], lpx_get_col_coef(lp, i));
+    mpq_set_d(objective[i], lpx_get_obj_coef(lp, i));
     /* Update den_lcm. */
     mpz_lcm(den_lcm, den_lcm, mpq_denref(objective[i]));
   }
