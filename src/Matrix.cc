@@ -499,36 +499,73 @@ PPL::Matrix::sort_rows(const dimension_type first_row,
   // We cannot mix pending and non-pending rows.
   assert(first_row >= first_pending_row() || last_row <= first_pending_row());
   Matrix& x = *this;
+
   // Sorting one or no rows is a no-op.
   if (first_row >= last_row - 1)
     return;
+
+  // CHECK ME.
+  // It will be often the case that we sort an almost sorted matrix.
+  // In such a context, insertion-sort may be more efficient than other,
+  // more sophisticated, sorting algorithms. We implement a variant of
+  // insertion-sort, in that we will remove duplicate rows.
+
+  // Duplicate rows will be first placed at the end of the sorted portion
+  // of the matrix and then erased. Duplicate rows will have indexes
+  // ranging from `new_last_row' to `last_row - 1' (included).
   dimension_type new_last_row = last_row;
+
+  // In the following loop, the method `Row::assign()' will be preferred
+  // to `Row::swap()' for efficiency reasons whenever the old contents
+  // of the target row are no longer needed. Care has to be taken:
+  // `assign' will cause the implemntation of rows to be shared,
+  // since it does not make a copy of the coefficients.
+
+  // A temporary Row object: it will share the implementation of `x[i]'.
   Row x_i;
   for (dimension_type i = first_row + 1; i < new_last_row; ) {
+    // Let `x_i' share the implementation of `x[i]',
+    // i.e., create the ``hole'' at index `i'.
     x_i.assign(x[i]);
-    dimension_type j;
+    // `j' indicates the current position of the hole.
+    dimension_type j = i;
     int cmp = 1;
-    for (j = i; j > first_row; --j) {
+    while (j > first_row) {
       cmp = compare(x[j-1], x_i);
       if (cmp <= 0)
 	break;
+      // Move the hole one position down.
       x[j].assign(x[j-1]);
+      --j;
     }
     if (cmp == 0) {
+      // Row `x_i' is a duplicate of `x[j-1]'.
+      // Move the hole back to position `i',
+      // preserving the sortedness of rows from `j+1' to `i'.
       for ( ; j < i; ++j)
 	x[j].assign(x[j+1]);
+      // Fill the ``hole'' with `x_i'.
       x[i].assign(x_i);
+      // Move the duplicate past the end of the portion to be sorted.
       --new_last_row;
       std::swap(x[i], x[new_last_row]);
+      // Do not increment `i', because the next row to be
+      // insertion-sorted is already positioned at index `i'.
     }
     else {
+      // Fill the ``hole'' with `x_i'.
       x[j].assign(x_i);
       ++i;
     }
   }
+  // `x_i' is going out of scope and so it will be destroyed.
+  // But `x_i' is sharing the implementation of a row in the matrix,
+  // so that its destruction will make the matrix inconsistent.
+  // To avoid this problem, assign a new and empty row to `x_i'.
   Row null;
   x_i.assign(null);
-  // The rows that we must erase are before `last_row'.
+  // Duplicate rows, that we have to erase, are those in between of
+  // indexes `new_last_row' and `last_row -1' (included).
   rows.erase(rows.begin() + new_last_row, rows.begin() + last_row);
   // NOTE: we cannot check for well-formedness of the matrix here,
   // because the caller still has to update `index_first_pending'.
