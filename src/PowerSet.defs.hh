@@ -72,17 +72,9 @@ operator<<(std::ostream&, const PowerSet<CS>&);
 
 //! The powerset construction on constraint systems.
 template <class CS>
-class Parma_Polyhedra_Library::PowerSet
-  : protected std::set<CS, LCompare<CS> > {
-private:
-  typedef LCompare<CS> Less;
-  typedef std::set<CS, Less> Base;
-  typedef typename Base::const_iterator const_iterator;
-  typedef typename Base::value_type value_type;
-  void omega();
+class Parma_Polyhedra_Library::PowerSet {
 public:
-  inline PowerSet() {
-  }
+  inline PowerSet();
 
   PowerSet& inject(const CS& x);
 
@@ -110,6 +102,25 @@ public:
   friend int lcompare<>(const PowerSet& x, const PowerSet& y);
 
   friend std::ostream& operator <<<>(std::ostream& s, const PowerSet& x);
+
+private:
+  typedef LCompare<CS> Less;
+  typedef std::set<CS, Less> Container;
+
+public:
+  typedef typename Container::const_iterator const_iterator;
+  typedef typename Container::value_type value_type;
+
+  size_t size() const;
+  const_iterator begin() const;
+  const_iterator end() const;
+
+
+  Container container;
+
+  void omega_reduction();
 };
+
+#include "PowerSet.inlines.hh"
 
 #endif // _PowerSet_defs_hh

@@ -28,16 +28,30 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-#if 0
-// Construct a bottom element.
 template <class CS>
-PowerSet<CS>::PowerSet(bool) {
+typename PowerSet<CS>::const_iterator
+PowerSet<CS>::begin() const {
+  return container.begin();
 }
-#endif
 
-// Omega reduction.
 template <class CS>
-void PowerSet<CS>::omega() {
+typename PowerSet<CS>::const_iterator
+PowerSet<CS>::end() const {
+  return container.end();
+}
+
+template <class CS>
+size_t
+PowerSet<CS>::size() const {
+  return container.size();
+}
+
+template <class CS>
+PowerSet<CS>::PowerSet() {
+}
+
+template <class CS>
+void PowerSet<CS>::omega_reduction() {
   const_iterator xi, yi, yin;
   for (xi = begin(); xi != end(); ++xi) {
     value_type xv = *xi;
@@ -45,7 +59,7 @@ void PowerSet<CS>::omega() {
       yin = yi;
       ++yin;
       if (entails(*yi, xv))
-	erase(yi);
+	container.erase(yi);
     }
   }
 }
@@ -55,8 +69,8 @@ void PowerSet<CS>::omega() {
 template <class CS>
 PowerSet<CS>& PowerSet<CS>::inject(const CS& x) {
   if (!x.is_bottom()) {
-    insert(x);
-    omega();
+    container.insert(x);
+    omega_reduction();
   }
   return *this;
 }
@@ -120,7 +134,7 @@ PowerSet<CS>::is_top() const {
 template <class CS>
 inline bool
 PowerSet<CS>::is_bottom() const {
-  return empty();
+  return container.empty();
 }
 
 // Projection
@@ -152,10 +166,10 @@ operator*(const PowerSet<CS>& x, const PowerSet<CS>& y) {
     for (yi = y.begin(); yi != y.end(); ++yi) {
       CS zi = *xi * *yi;
       if (!zi.is_bottom())
-	z.insert(zi);
+	z.container.insert(zi);
     }
   }
-  z.omega();
+  z.omega_reduction();
   return z;
 }
 
@@ -182,16 +196,16 @@ PowerSet<CS>::operator+=(const PowerSet<CS>& y) {
       if (lcompare(*xi, *yi))
 	xi++;
       else if (lcompare(*yi, *xi))
-	insert(xi, *yi++);
+	container.insert(xi, *yi++);
       else {
 	xi++;
 	yi++;
       }
     }
     while (yi != y.end())
-      insert(end(), *yi++);
+      container.insert(end(), *yi++);
   }
-  omega();
+  omega_reduction();
   return *this;
 }
 
