@@ -338,7 +338,3 @@ Many tests use this technique:
 The template find_variation_template in ppl_test.hh can be used as a
 further check.  It creates a second object from the ASCII dump of a
 given PPL object, and tests whether the two objects are equal.
-
-The check_dump function in ppl_test.hh may be useful if a test often
-compares an ASCII dump from PPL objects to a value expected of the
-dump.
