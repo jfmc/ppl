@@ -84,16 +84,16 @@ if HAVE_GNU_PROLOG
 #pplgprolog_SOURCES = ppl_gprolog.cc
 #pplgprolog_LDADD = libpplgprolog.la $(top_builddir)/src/libppl.la /usr/local/lib/pl-5.0.1/runtime/i686-linux/libpl.a -lreadline -ldl -ltermcap @extra_libraries@
 
-#pplgprolog$(EXEEXT): ppl_gprolog.o ppl_gprolog.pl
+#pplgprolog: ppl_gprolog.o ppl_gprolog.pl
 #	gplc -o $@ $+ -L '-L../../../src/.libs -lppl -lgmp -lgmpxx -lstdc++'
 
-gp_clpq$(EXEEXT): gp_clpq.pl ppl_gprolog.o ppl_gprolog.pl ../clpq.pl
+gp_clpq: gp_clpq.pl ppl_gprolog.o ppl_gprolog.pl ../clpq.pl
 	gplc -o $@ $+ -L '-L../../../src/.libs -lppl -lgmp -lgmpxx -lstdc++'
 
-check-local: gp_clpq$(EXEEXT) ../check_script ../expected
+check-local: gp_clpq ../check_script ../expected
 #	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 #	gp_clpq <$(srcdir)/../check_script >obtained
 #	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
-MOSTLYCLEANFILES = pplpl $(CLPQ_TESTS) obtained
+MOSTLYCLEANFILES = pplgprolog gp_clpq $(CLPQ_TESTS) obtained
 endif

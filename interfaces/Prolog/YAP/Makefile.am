@@ -87,12 +87,12 @@ if HAVE_GNU_PROLOG
 #pplyap$(EXEEXT): ppl_yap.o ppl_yap.pl
 #	yaplc -o $@ $+ -L '-L../../../src/.libs -lppl -lgmp -lgmpxx -lstdc++'
 
-yap_clpq$(EXEEXT): yap_clpq.pl ppl_yap.o ppl_yap.pl ../clpq.pl
-	yaplc -o $@ $+ -L '-L../../../src/.libs -lppl -lgmp -lgmpxx -lstdc++'
+#yap_clpq$(EXEEXT): yap_clpq.pl ppl_yap.o ppl_yap.pl ../clpq.pl
+#	yaplc -o $@ $+ -L '-L../../../src/.libs -lppl -lgmp -lgmpxx -lstdc++'
 
-check-local: yap_clpq$(EXEEXT) ../check_script ../expected
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
-	yap_clpq <$(srcdir)/../check_script >obtained
+#check-local: yap_clpq$(EXEEXT) ../check_script ../expected
+#	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
+#	yap_clpq <$(srcdir)/../check_script >obtained
 #	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
 MOSTLYCLEANFILES = pplpl $(CLPQ_TESTS) obtained

@@ -92,5 +92,5 @@ check-local: pl_clpq$(EXEEXT) ../check_script ../expected
 	./pl_clpq -l $(srcdir)/clpq.pl <$(srcdir)/../check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
-MOSTLYCLEANFILES = pplpl $(CLPQ_TESTS) obtained
+MOSTLYCLEANFILES = pplpl pl_clpq $(CLPQ_TESTS) obtained
 endif
