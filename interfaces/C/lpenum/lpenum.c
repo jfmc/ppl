@@ -225,7 +225,13 @@ set_alarm_on_cpu_time(unsigned int seconds, void (*handler)(int)) {
 
   s.sa_handler = handler;
   s.sa_mask = mask;
+#if defined(SA_ONESHOT)
   s.sa_flags = SA_ONESHOT;
+#elif defined(SA_RESETHAND)
+  s.sa_flags = SA_RESETHAND;
+#else
+  #error "Need either SA_ONESHOT or SA_RESETHAND to be defined."
+#endif
 
   if (sigaction(SIGXCPU, &s, 0) != 0)
     fatal("sigaction failed: %s", strerror(errno));
