@@ -101,8 +101,9 @@ if BUILD_WATCHDOG_LIBRARY
 #	PWL release	(with PPL release)	-version-info
 #	    0.1			0.4		    0:0:0
 #	    0.2			0.5		    1:0:0
+#	    0.3			0.6		    2:0:0
 
-LIBPWL_LT_CURRENT =  1
+LIBPWL_LT_CURRENT =  2
 LIBPWL_LT_REVISION = 0
 LIBPWL_LT_AGE =      0
 
