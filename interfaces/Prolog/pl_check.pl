@@ -205,7 +205,7 @@ catch_time :-
 % Tests new_Polyhedron_from_dimension
 % and ppl_delete_Polyhedron for C and NNC Polyhedron.
 new_universe :-
-  A = '$VAR'(0),
+  make_vars(1,[A]),
   new_universe(c, A >= 0), new_universe(nnc, A > 0).
 
 new_universe(T, Con) :-
@@ -244,7 +244,7 @@ copy(T1, T2) :-
   ppl_delete_Polyhedron(P1a),
   ppl_delete_Polyhedron(P2),
   ppl_delete_Polyhedron(P2a),
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+  make_vars(3, [A, B, C]),
   (T1 = c
           -> CS = [3 >= A, 4 >= A, 4*A + B - 2*C >= 5]
           ;  CS = [3 >= A, 4 >  A, 4*A + B - 2*C >= 5]
@@ -262,7 +262,7 @@ copy(T1, T2) :-
 
 % Tests ppl_new_Polyhedron_from_constraints for C and NNC Polyhedra.
 new_poly_from_cons :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), D = '$VAR'(3),
+  make_vars(4, [A, B, C, D]),
   new_poly_from_cons(c, [3 >= A, 4*A + B - 2*C >= 5, D = 1]),
   new_poly_from_cons(nnc, [3 > A, 4*A + B - 2*C >= 5, D = 1]).
 
@@ -276,7 +276,7 @@ new_poly_from_cons(T, CS) :-
 
 % Tests ppl_new_Polyhedron_from_generators for a C Polyhedron.
 new_poly_from_gens :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+  make_vars(3, [A, B, C]),
   new_poly_from_gens(c,[point(A + B + C, 1), point(A + B + C)] ),
   new_poly_from_gens(nnc,  [point(A + B + C), closure_point(A + B + C)]).
 
@@ -341,7 +341,7 @@ inters_assign :-
   inters_assign(c), inters_assign(nnc).
 
 inters_assign(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_generators(T,
                                      [point(0), point(B),
                                       point(A), point(A, 2)],
@@ -375,7 +375,7 @@ inters_assign_min :-
   inters_assign_min(c), inters_assign_min(nnc).
 
 inters_assign_min(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_generators(T,
                                      [point(0), point(B),
                                       point(A), point(A, 2)],
@@ -407,8 +407,7 @@ conc_assign :-
   conc_assign(c), conc_assign(nnc).
 
 conc_assign(T) :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
-  D = '$VAR'(3), E = '$VAR'(4),
+  make_vars(5, [A, B, C, D, E]),
   ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_new_Polyhedron_from_constraints(T, [A >= 1, B >= 0, C >= 0], Q),
   ppl_Polyhedron_concatenate_assign(P, Q),
@@ -425,7 +424,7 @@ polyhull_assign :-
   polyhull_assign(c), polyhull_assign(nnc).
 
 polyhull_assign(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_generators(T,
                                      [point(0), point(B),
                                       point(A), point(A,2)],
@@ -451,10 +450,10 @@ polyhull_assign_min :-
   polyhull_assign_min(c), polyhull_assign_min(nnc).
 
 polyhull_assign_min(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
- ppl_new_Polyhedron_empty_from_dimension(T, 2, P1),
- ppl_new_Polyhedron_empty_from_dimension(T, 2, P2),
- \+ ppl_Polyhedron_poly_hull_assign_and_minimize(P1, P2),
+  make_vars(2, [A, B]),
+  ppl_new_Polyhedron_empty_from_dimension(T, 2, P1),
+  ppl_new_Polyhedron_empty_from_dimension(T, 2, P2),
+  \+ ppl_Polyhedron_poly_hull_assign_and_minimize(P1, P2),
   ppl_Polyhedron_add_generators(P1, [point(0), point(B),
                                      point(A), point(A, 2)]),
   ppl_Polyhedron_add_generators(P2, [point(0), point(A),
@@ -473,14 +472,14 @@ polyhull_assign_min(T) :-
 
 % Tests ppl_Polyhedron_poly_difference_assign for C and NNC Polyhedra.
 polydiff_assign :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   polydiff_assign(c, [A >= 0, B >= 0, A+ B =< 1],
             [point(A + B, 2), point(B), point(A), point(0)]),
   polydiff_assign(nnc,[A >= 0, A - B < 0, A + B =< 1],
             [closure_point(A+B, 2), point(B), closure_point(0)]).
 
 polydiff_assign(T, CS,GS) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_generators(T,
                                      [point(0), point(B),
                                       point(A), point(A,2)],
@@ -508,7 +507,7 @@ time_elapse :-
 
 % Tests ppl_Polyhedron_time_elapse for C Polyhedra.
 time_elapse(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraints(P,
                           [A >= 1, A =< 3, B >= 1, B =< 3]),
@@ -528,7 +527,7 @@ time_elapse(T) :-
 % Tests ppl_Polyhedron_topological_closure_assign
 % (using NNC Polyhedra).
 top_close_assign :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+  make_vars(3, [A, B, C]),
   ppl_new_Polyhedron_from_constraints(nnc,
                                       [3 > A, 4*A + B - 2*C >= 5],
                                       P),
@@ -545,7 +544,7 @@ affine :-
   affine(c), affine(nnc).
 
 affine(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraint(P, A - B = 1),
   ppl_new_Polyhedron_from_constraints(T,
@@ -566,7 +565,7 @@ affine_pre :-
   affine_pre(c), affine_pre(nnc).
 
 affine_pre(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraint(P, A + B >= 10),
   ppl_new_Polyhedron_from_constraints(T,
@@ -588,7 +587,7 @@ affine_gen :-
   affine_gen(c), affine_gen(nnc).
 
 affine_gen(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraint(P, A - B = 1),
   ppl_Polyhedron_generalized_affine_image(P, A, =<, A + 1, 1),
@@ -605,12 +604,11 @@ affine_genlr :-
   affine_genlr(c), affine_genlr(nnc).
 
 affine_genlr(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraint(P, A - B = 1),
-\+  ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x, A + 1),
+  \+  ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x, A + 1),
   ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, =<, A + 1),
-%  ppl_Polyhedron_get_constraints(P, CS),
   ppl_new_Polyhedron_from_constraints(T,
                                       [B - A =< 2],
                                       P1),
@@ -632,7 +630,7 @@ widen_extrapolation_final(P,CS, Topology):-
 % Tests ppl_Polyhedron_BHRZ03_widening_assign for C Polyhedra.
 widen_BHRZ03_C :-
   Topology = c,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A >= 1, B >= 0],
   CS_Q = [A >= 1, B >= 1],
   widen_extrapolation_init(P, CS_P, Topology),
@@ -644,7 +642,7 @@ widen_BHRZ03_C :-
 % Tests ppl_Polyhedron_BHRZ03_widening_assign for NNC Polyhedra.
 widen_BHRZ03_NNC :-
   Topology = nnc,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A > 1, B > 0],
   CS_Q = [A > 1, B > 1],
   widen_extrapolation_init(P, CS_P, Topology),
@@ -657,12 +655,12 @@ widen_BHRZ03_NNC :-
 % Tests ppl_Polyhedron_BHRZ03_widening_assign_with_token for C Polyhedra.
 widen_BHRZ03_with_token_C :-
   Topology = c,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A >= 1],
   CS_Q = [A >= 1, B >= 1],
   widen_extrapolation_init(P, CS_P, Topology),
   widen_extrapolation_init(Q, CS_Q, Topology),
-\+  ppl_Polyhedron_BHRZ03_widening_assign_with_token(P, Q, 1),
+  \+  ppl_Polyhedron_BHRZ03_widening_assign_with_token(P, Q, 1),
   ppl_Polyhedron_BHRZ03_widening_assign_with_token(P, Q, Token),
   Token = 0,
   widen_extrapolation_final(P, [A >= 1], Topology),
@@ -670,7 +668,7 @@ widen_BHRZ03_with_token_C :-
   CS_P1 = [A >= 1, B>= 0],
   widen_extrapolation_init(P1, CS_P1, Topology),
   widen_extrapolation_init(Q1, CS_Q, Topology),
-\+  ppl_Polyhedron_BHRZ03_widening_assign_with_token(P1, Q1, 0),
+  \+  ppl_Polyhedron_BHRZ03_widening_assign_with_token(P1, Q1, 0),
   ppl_Polyhedron_BHRZ03_widening_assign_with_token(P1, Q1, Token1),
   Token1 = 1,
   widen_extrapolation_final(P1, [A >= 1, B>= 0], Topology),
@@ -679,7 +677,7 @@ widen_BHRZ03_with_token_C :-
 % Tests ppl_Polyhedron_limited_BHRZ03_extrapolation_assign for C Polyhedra.
 lim_extrapolate_BHRZ03_C :-
   Topology = c,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A >= 1, B >= 0],
   CS_Q = [A >= 2, B >= 1],
   widen_extrapolation_init(P, CS_P, Topology),
@@ -696,7 +694,7 @@ lim_extrapolate_BHRZ03_C :-
 % Tests ppl_Polyhedron_limited_BHRZ03_extrapolation_assign for NNC Polyhedra.
 lim_extrapolate_BHRZ03_NNC :-
   Topology = nnc,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A >= 1, B >= 0],
   CS_Q = [A >= 2, B >= 1],
   widen_extrapolation_init(P, CS_P, Topology),
@@ -714,7 +712,7 @@ lim_extrapolate_BHRZ03_NNC :-
 % for C Polyhedra.
 lim_extrapolate_BHRZ03_with_token_C :-
   Topology = c,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A >= 1, B >= 0],
   CS_Q = [A >= 1, B >= 1],
   widen_extrapolation_init(P, CS_P, Topology),
@@ -731,7 +729,7 @@ lim_extrapolate_BHRZ03_with_token_C :-
 % Tests ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign for C Polyhedra.
 bound_extrapolate_BHRZ03_C :-
   Topology = c,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A >= 1, B >= 0],
   CS_Q = [A >= 2, B >= 1],
   widen_extrapolation_init(P, CS_P, Topology),
@@ -749,7 +747,7 @@ bound_extrapolate_BHRZ03_C :-
 % for C Polyhedra.
 bound_extrapolate_BHRZ03_with_token_C :-
   Topology = c,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A >= 1, B >= 0],
   CS_Q = [A >= 1, B >= 1],
   widen_extrapolation_init(P, CS_P, Topology),
@@ -766,7 +764,7 @@ bound_extrapolate_BHRZ03_with_token_C :-
 % Tests ppl_Polyhedron_H79_widening_assign for C Polyhedra.
 widen_H79_C :-
   Topology = c,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A >= 1, B >= 0],
   CS_Q = [A >= 1, B >= 1],
   widen_extrapolation_init(P, CS_P, Topology),
@@ -779,7 +777,7 @@ widen_H79_C :-
 % Tests ppl_Polyhedron_H79_widening_assign for NNC Polyhedra.
 widen_H79_NNC :-
   Topology = nnc,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A > 1, B > 0],
   CS_Q = [A > 1, B > 1],
   widen_extrapolation_init(P, CS_P, Topology),
@@ -792,7 +790,7 @@ widen_H79_NNC :-
 % Tests ppl_Polyhedron_H79_widening_assign for C Polyhedra.
 widen_H79_with_token_C :-
   Topology = c,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A >= 1, B >= 0],
   CS_Q = [A >= 1, B >= 1],
   widen_extrapolation_init(P, CS_P, Topology),
@@ -807,7 +805,7 @@ widen_H79_with_token_C :-
 % Tests ppl_Polyhedron_limited_H79_extrapolation_assign for C Polyhedra.
 lim_extrapolate_H79_C :-
   Topology = c,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A >= 1, B >= 0],
   CS_Q = [A >= 2, B >= 1],
   widen_extrapolation_init(P, CS_P, Topology),
@@ -821,7 +819,7 @@ lim_extrapolate_H79_C :-
 % Tests ppl_Polyhedron_limited_H79_extrapolation_assign for NNC Polyhedra.
 lim_extrapolate_H79_NNC :-
   Topology = nnc,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A >= 1, B >= 0],
   CS_Q = [A >= 2, B >= 1],
   widen_extrapolation_init(P, CS_P, Topology),
@@ -834,7 +832,7 @@ lim_extrapolate_H79_NNC :-
 % Tests ppl_Polyhedron_H79_widening_assign for C Polyhedra.
 lim_extrapolate_H79_with_token_C :-
   Topology = c,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A >= 1, B >= 0],
   CS_Q = [A >= 1, B >= 1],
   widen_extrapolation_init(P, CS_P, Topology),
@@ -851,7 +849,7 @@ lim_extrapolate_H79_with_token_C :-
 % Tests ppl_Polyhedron_bounded_H79_extrapolation_assign for C Polyhedra.
 bound_extrapolate_H79_C :-
   Topology = c,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A >= 1, B >= 0],
   CS_Q = [A >= 2, B >= 1],
   widen_extrapolation_init(P, CS_P, Topology),
@@ -868,7 +866,7 @@ bound_extrapolate_H79_C :-
 % Tests ppl_Polyhedron_bounded_H79_extrapolation_assign for NNC Polyhedra.
 bound_extrapolate_H79_NNC :-
   Topology = nnc,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A > 1, B > 0],
   CS_Q = [A > 2, B > 1],
   widen_extrapolation_init(P, CS_P, Topology),
@@ -882,7 +880,7 @@ bound_extrapolate_H79_NNC :-
 % for C Polyhedra.
 bound_extrapolate_H79_with_token_C :-
   Topology = c,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A >= 1, B >= 0],
   CS_Q = [A >= 1, B >= 1],
   widen_extrapolation_init(P, CS_P, Topology),
@@ -899,7 +897,7 @@ bound_extrapolate_H79_with_token_C :-
 % Tests ppl_Polyhedron_H79_widening_assign for NNC Polyhedra.
 bound_extrapolate_H79_with_token_NNC :-
   Topology = nnc,
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   CS_P = [A >= 1, B >= 0],
   CS_Q = [A >= 1, B >= 1],
   widen_extrapolation_init(P, CS_P, Topology),
@@ -918,7 +916,7 @@ get_cons :-
   get_cons(c), get_cons(nnc).
 
 get_cons(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_get_constraints(P, []),
   ppl_Polyhedron_add_constraint(P, A - B >= 1),
@@ -934,7 +932,7 @@ get_min_cons :-
   get_min_cons(c), get_min_cons(nnc).
 
 get_min_cons(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_get_minimized_constraints(P, []),
   ppl_Polyhedron_add_constraints(P, [A - B >= 1, A - B >= 0]),
@@ -952,7 +950,7 @@ get_gens :-
   get_gens(c), get_gens(nnc).
 
 get_gens(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_empty_from_dimension(T, 2, P),
   ppl_Polyhedron_get_generators(P, []),
   \+ ppl_Polyhedron_get_generators(P, [_]),
@@ -968,7 +966,7 @@ get_min_gens :-
   get_min_gens(c), get_min_gens(nnc).
 
 get_min_gens(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_empty_from_dimension(T, 2, P),
   ppl_Polyhedron_add_generators(P, [point(2*A), point(A+B), point(2*B)]),
   \+ ppl_Polyhedron_get_minimized_generators(P, [_]),
@@ -983,7 +981,7 @@ add_con :-
   add_con(c), add_con(nnc).
 
 add_con(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraint(P, A - B >= 1),
   ppl_new_Polyhedron_from_constraints(T,
@@ -1008,7 +1006,7 @@ add_con_min :-
   add_con_min(c), add_con_min(nnc).
 
 add_con_min(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraint_and_minimize(P, A - B >= 1),
   ppl_new_Polyhedron_from_constraints(T,
@@ -1024,7 +1022,7 @@ add_gen :-
   add_gen(c), add_gen(nnc).
 
 add_gen(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_generator(P, point(A + B)),
   ppl_new_Polyhedron_from_generators(T,
@@ -1039,7 +1037,7 @@ add_gen_min :-
   add_gen_min(c), add_gen_min(nnc).
 
 add_gen_min(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_empty_from_dimension(T, 2, P),
   ppl_Polyhedron_add_generator(P, point(A + B)),
   ppl_Polyhedron_add_generator(P, point(0)),
@@ -1058,7 +1056,7 @@ add_cons :-
   add_cons(c), add_cons(nnc).
 
 add_cons(T) :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+  make_vars(3, [A, B, C]),
   ppl_new_Polyhedron_from_dimension(T, 3, P),
   ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0,
                                      4*A + B - 2*C >= 5]),
@@ -1078,7 +1076,7 @@ add_cons_min :-
   add_cons_min(c), add_cons_min(nnc).
 
 add_cons_min(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraints_and_minimize(P, [A >= 1, B >= 0]),
   ppl_new_Polyhedron_from_constraints(T,
@@ -1094,7 +1092,7 @@ add_gens :-
   add_gens(c), add_gens(nnc).
 
 add_gens(T) :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+  make_vars(3, [A, B, C]),
   ppl_new_Polyhedron_empty_from_dimension(T, 3, P),
   ppl_Polyhedron_add_generators(P,
                                 [point(A + B + C),
@@ -1114,9 +1112,9 @@ add_gens_min :-
   add_gens_min(c), add_gens_min(nnc).
 
 add_gens_min(T) :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+  make_vars(3, [A, B, C]),
   ppl_new_Polyhedron_empty_from_dimension(T, 3, P),
-\+  ppl_Polyhedron_add_generators_and_minimize(P, []),
+  \+  ppl_Polyhedron_add_generators_and_minimize(P, []),
   ppl_Polyhedron_add_generators_and_minimize(P,
                                              [point(A + B + C),
                                               ray(A), ray(2*A),
@@ -1133,7 +1131,7 @@ project :-
   project(c), project(nnc).
 
 project(T) :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), D = '$VAR'(3),
+  make_vars(4, [A, B, C, D]),
   ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0]),
   ppl_Polyhedron_add_dimensions_and_project(P, 2),
@@ -1150,7 +1148,7 @@ embed :-
   embed(c), embed(nnc).
 
 embed(T) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0]),
   ppl_Polyhedron_add_dimensions_and_embed(P, 2),
@@ -1165,7 +1163,7 @@ remove_dim :-
   remove_dim(c), remove_dim(nnc).
 
 remove_dim(T) :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+  make_vars(3, [A, B, C]),
   ppl_new_Polyhedron_from_dimension(T, 3, P),
   ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C >= 2]),
   ppl_Polyhedron_remove_dimensions(P,[B]),
@@ -1184,7 +1182,7 @@ remove_high_dim :-
   remove_high_dim(c), remove_high_dim(nnc).
 
 remove_high_dim(T) :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+  make_vars(3, [A, B, C]),
   ppl_new_Polyhedron_from_dimension(T, 3, P),
   ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C >= 0]),
   ppl_new_Polyhedron_from_constraints(T,
@@ -1206,7 +1204,7 @@ rename_dim:-
   rename_dim(c), rename_dim(nnc).
 
 rename_dim(T) :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+  make_vars(4, [A, B, C, D]),
   ppl_new_Polyhedron_from_dimension(T, 3, P),
   ppl_Polyhedron_add_constraints(P, [A >= 2, B >= 1, C >= 0]),
   ppl_Polyhedron_rename_dimensions(P, [A-B, B-C, C-A]),
@@ -1215,7 +1213,6 @@ rename_dim(T) :-
   ppl_Polyhedron_equals_Polyhedron(P, Q),
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q),
-  D = '$VAR'(3),
   ppl_new_Polyhedron_empty_from_dimension(T, 4, P1),
   ppl_Polyhedron_add_generators(P1, [point(2*C), line(A+B), ray(A+C)]),
   ppl_Polyhedron_rename_dimensions(P1, [A-D, C-A, B-C]),
@@ -1227,7 +1224,7 @@ rename_dim(T) :-
 
 % Tests ppl_Polyhedron_relation_with_constraint.
 rel_cons :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+  make_vars(3, [A, B, C]),
   ppl_new_Polyhedron_from_dimension(c, 3, P),
   ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C = 0]),
   \+ ppl_Polyhedron_relation_with_constraint(P, A = 0, x),
@@ -1243,7 +1240,7 @@ rel_cons :-
 
 % Tests ppl_Polyhedron_relation_with_generator.
 rel_gens :-
-  A = '$VAR'(0), B = '$VAR'(1),  C = '$VAR'(2),
+  make_vars(3, [A, B, C]),
   ppl_new_Polyhedron_empty_from_dimension(nnc, 3, P),
   ppl_Polyhedron_add_generators(P,
                                              [point(A + B + C),ray(A)]),
@@ -1263,7 +1260,7 @@ checks :-
   checks(c), checks(nnc).
 
 checks(T) :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+  make_vars(3, [A, B, C]),
   ppl_new_Polyhedron_from_dimension(T, 3, P),
   ppl_new_Polyhedron_empty_from_dimension(T, 3, P1),
   ppl_Polyhedron_check_universe(P),
@@ -1316,7 +1313,7 @@ strict_contains(T) :-
   disjoint_from(c), disjoint_from(nnc).
 
 disjoint_from(T) :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+  make_vars(3, [A, B, C]),
   ppl_new_Polyhedron_from_constraints(T,
                                       [3 >= A, 4*A + B - 2*C >= 5],
                                       P1),
@@ -1370,7 +1367,7 @@ ok(T) :-
 % Tests ppl_Polyhedron_get_bounding_box.
 
 get_bounding_box:-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   get_bounding_box(c, [B >= 0, 4*A =< 2],
                      [i(o(minf), c(1/2)), i(c(0), o(pinf))]),
   get_bounding_box(nnc,[B > 0, 4*A =< 2],
@@ -1391,7 +1388,7 @@ get_bounding_box(T, CS, Box) :-
 
 % Tests ppl_Polyhedron_bounds_from_above for an NNC polyhedron.
 bounds_from_above :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_constraints(nnc,
                                       [A > 1, B > 0,
                                        B < 1],
@@ -1403,7 +1400,7 @@ bounds_from_above :-
 
 % Tests ppl_Polyhedron_bounds_from_below for an NNC polyhedron.
 bounds_from_below :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_constraints(nnc,
                                       [B > 0,
                                        B < 1],
@@ -1425,7 +1422,7 @@ time_out :-
 
 time_out(T) :-
   ppl_initialize,
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), D = '$VAR'(3), E = '$VAR'(4), F = '$VAR'(5),
+  make_vars(6, [A, B, C, D, E, F]),
   CS = [8*A - 7*B + 4*D - E - 8*F >= -3,
         6*A + 8*B + 4*C - 6*D + 6*E + 6*F >= 5,
         6*A + 7*B - 6*C + 3*D + 3*E + 5*F >= 4,
@@ -1490,7 +1487,7 @@ time_watch(Topology, Goal, NoTimeOut, TimeOut) :-
 % and are not executed by run_all.
 
 boundingbox1(Box,CS) :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_constraints(nnc,
                                       [A > 1, B > 1,
                                        B < 1, A < 1],
@@ -1522,3 +1519,15 @@ write_all([Phrase|Phrases]):-
    write(Phrase),
    write(' '),
    write_all(Phrases).
+
+% make_var_list(+I,+Dimension,?VariableList)
+% constructs a list of variables with indices from I to Dimension - 1.
+% It is assumed that I =< Dimension.
+
+make_vars(Dim, VarList):- 
+  make_var_list(0, Dim, VarList).
+make_var_list(Dim,Dim,[]):- !.
+make_var_list(I,Dim,['$VAR'(I)|VarList]):-
+  I1 is I + 1,
+  make_var_list(I1,Dim,VarList).
+
