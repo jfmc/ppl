@@ -33,16 +33,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
+#include "track_allocation.hh"
 #include <exception>
 #include <stdexcept>
 #include <sstream>
 #include <climits>
-
-#ifndef TRACK_ALLOCATION
-#define TRACK_ALLOCATION 0
-#endif
-
-#include "track_allocation.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 

@@ -24,6 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _track_allocation_hh
 #define _track_allocation_hh
 
+#ifndef TRACK_ALLOCATION
+#define TRACK_ALLOCATION 0
+#endif
+
 #if TRACK_ALLOCATION
 
 #include <set>
