@@ -210,11 +210,21 @@ limit_virtual_memory(const unsigned bytes) {
 
 void
 timeout(int) {
-  std::cerr << "TIMEOUT"
-	    << std::endl;
-  if (output_file_name)
-    output() << "TIMEOUT"
-	     << std::endl;
+  try {
+    std::cerr << "TIMEOUT"
+	      << std::endl;
+  }
+  catch (...) {
+  }
+
+  try {
+    if (output_file_name)
+      output() << "TIMEOUT"
+	       << std::endl;
+  }
+  catch (...) {
+  }
+
   exit(0);
 }
 
@@ -311,6 +321,19 @@ guarded_read(std::istream& in, T& x) {
   catch (...) {
     return false;
   }
+}
+
+template <typename T>
+void
+guarded_write(std::ostream& out, const T& x) {
+  bool succeeded = false;
+  try {
+    succeeded = out << x;
+  }
+  catch (...) {
+  }
+  if (!succeeded)
+    fatal("cannot write to output file `%s'", output_file_name);
 }
 
 enum Number_Type { INTEGER, RATIONAL, REAL };
@@ -487,10 +510,13 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
 }
 
 void
-write_polyhedron(std::ostream& output,
+write_polyhedron(std::ostream& out,
 		 const PPL::C_Polyhedron& ph,
 		 const Representation rep) {
-  output << (rep == H ? "H" : "V") << "-representation\n";
+  if (rep == H)
+    guarded_write(out, "H-representation\n");
+  else
+    guarded_write(out, "V-representation\n");
 
   unsigned num_rows = 0;
   std::set<unsigned> linearity;
@@ -515,53 +541,76 @@ write_polyhedron(std::ostream& output,
   }
 
   if (!linearity.empty()) {
-    output << "linearity " << linearity.size();
+    guarded_write(out, "linearity ");
+    guarded_write(out, linearity.size());
     for (std::set<unsigned>::const_iterator j = linearity.begin(),
-	   linearity_end = linearity.end(); j != linearity_end; ++j)
-      output << " " << *j;
-    output << std::endl;
+	   linearity_end = linearity.end(); j != linearity_end; ++j) {
+      guarded_write(out, ' ');
+      guarded_write(out, *j);
+    }
+    guarded_write(out, '\n');
   }
 
   PPL::dimension_type space_dim = ph.space_dimension();
 
-  output << "begin\n"
-	 << num_rows << " " << space_dim+1 << " ";
+  guarded_write(out, "begin\n");
+  guarded_write(out, num_rows);
+  guarded_write(out, ' ');
+  guarded_write(out, space_dim+1);
+  guarded_write(out, ' ');
 
   if (rep == H) {
-    output << "integer\n";
+    guarded_write(out, "integer\n");
     const PPL::ConSys& cs = ph.constraints();
     for (PPL::ConSys::const_iterator i = cs.begin(),
 	   cs_end = cs.end(); i != cs_end; ++i) {
       const PPL::Constraint& c = *i;
-      output << c.inhomogeneous_term();
-      for (PPL::dimension_type j = 0; j < space_dim; ++j)
-	output << " " << -c.coefficient(PPL::Variable(j));
-      output << std::endl;
+      guarded_write(out, c.inhomogeneous_term());
+      for (PPL::dimension_type j = 0; j < space_dim; ++j) {
+	guarded_write(out, ' ');
+	guarded_write(out, -c.coefficient(PPL::Variable(j)));
+      }
+      guarded_write(out, '\n');
     }
   }
   else {
     assert(rep == V);
-    output << "rational\n";
+    guarded_write(out, "rational\n");
     const PPL::GenSys& gs = ph.generators();
     for (PPL::GenSys::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i) {
       const PPL::Generator& g = *i;
       if (g.is_point()) {
-	output << '1';
+	guarded_write(out, '1');
 	const PPL::Integer& divisor = g.divisor();
-	for (PPL::dimension_type j = 0; j < space_dim; ++j)
-	  output << " " << mpq_class(g.coefficient(PPL::Variable(j)), divisor);
+	for (PPL::dimension_type j = 0; j < space_dim; ++j) {
+	  guarded_write(out, ' ');
+	  guarded_write(out, mpq_class(g.coefficient(PPL::Variable(j)),
+				       divisor));
+	}
       }
       else {
 	// `g' is a ray or a line.
-	output << '0';
-	for (PPL::dimension_type j = 0; j < space_dim; ++j)
-	  output << " " << g.coefficient(PPL::Variable(j));
+	guarded_write(out, '0');
+	for (PPL::dimension_type j = 0; j < space_dim; ++j) {
+	  guarded_write(out, ' ');
+	  guarded_write(out, g.coefficient(PPL::Variable(j)));
+	}
       }
-      output << std::endl;
+      guarded_write(out, '\n');
     }
   }
-  output << "end" << std::endl;
+  guarded_write(out, "end\n");
+
+  // Flush `out'.
+  bool flush_succeeded = false;
+  try {
+    flush_succeeded = out.flush();
+  }
+  catch (...) {
+  }
+  if (!flush_succeeded)
+    fatal("cannot write to output file `%s'", output_file_name);
 }
 
 } // namespace
@@ -580,9 +629,6 @@ main(int argc, char* argv[]) {
     std::cerr << "Parma Polyhedra Library version:\n" << PPL::version()
 	      << "\n\nParma Polyhedra Library banner:\n" << PPL::banner()
 	      << std::endl;
-
-  //if (ppl_io_set_variable_output_function(variable_output_function) < 0)
-  //  fatal("cannot install the custom variable output function");
 
   // Process command line options.
   process_options(argc, argv);
