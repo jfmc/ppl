@@ -83,7 +83,7 @@ protected:
   Matrix(Matrix& y, dimension_type first_stolen);
 
   //! Destructor.
-  virtual ~Matrix();
+  ~Matrix();
 
   //! Assignment operator.
   Matrix& operator=(const Matrix& y);
@@ -384,24 +384,24 @@ public:
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
   /*!
-    This virtual method prints the topology, the number of rows,
-    the number of columns and the \p sorted flag.
-    The specialized methods provided by ConSys and GenSys
-    take care of properly printing the contents of the matrix.
+    Prints the topology, the number of rows, the number of columns and
+    the \p sorted flag.  The specialized methods provided by ConSys
+    and GenSys take care of properly printing the contents of the
+    matrix.
   */
-  virtual void ascii_dump(std::ostream& s) const;
+  void ascii_dump(std::ostream& s) const;
 
   //! \brief
   //! Loads from \p s an ASCII representation (as produced by \ref
   //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
   //! if successful, <CODE>false</CODE> otherwise.
   /*!
-    This virtual method is meant to read into a Matrix object
-    the information produced by the output of <CODE>ascii_dump()</CODE>.
-    The specialized methods provided by ConSys and GenSys
-    take care of properly reading the contents of the matrix.
+    Reads into a Matrix object the information produced by the output
+    of <CODE>ascii_dump()</CODE>.  The specialized methods provided by
+    ConSys and GenSys take care of properly reading the contents of
+    the matrix.
   */
-  virtual bool ascii_load(std::istream& s);
+  bool ascii_load(std::istream& s);
 
   //! \brief
   //! Erases from the matrix all the rows but those having

@@ -190,7 +190,7 @@ public:
   GenSys(const GenSys& gs);
 
   //! Destructor.
-  virtual ~GenSys();
+  ~GenSys();
 
   //! Assignment operator.
   GenSys& operator=(const GenSys& y);
@@ -248,7 +248,7 @@ public:
     const_iterator(const const_iterator& y);
 
     //! Destructor.
-    virtual ~const_iterator();
+    ~const_iterator();
 
     //! Assignment operator.
     const_iterator& operator=(const const_iterator& y);

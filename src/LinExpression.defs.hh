@@ -171,7 +171,7 @@ public:
   LinExpression(const LinExpression& e);
 
   //! Destructor.
-  virtual ~LinExpression();
+  ~LinExpression();
 
   //! \brief
   //! Builds the linear expression corresponding

@@ -137,7 +137,7 @@ public:
   ConSys(const ConSys& cs);
 
   //! Destructor.
-  virtual ~ConSys();
+  ~ConSys();
 
   //! Assignment operator.
   ConSys& operator=(const ConSys& y);
@@ -189,7 +189,7 @@ public:
     const_iterator(const const_iterator& y);
 
     //! Destructor.
-    virtual ~const_iterator();
+    ~const_iterator();
 
     //! Assignment operator.
     const_iterator& operator=(const const_iterator& y);
