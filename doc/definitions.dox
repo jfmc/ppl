@@ -42,7 +42,8 @@ We denote by \f$\Rset^n\f$ the \f$n\f$-dimensions vector space on the field
 of real numbers \f$\Rset\f$, endowed with the standard topology.
 The set of all non-negative reals is denoted by \f$\nonnegRset\f$.
 For each \f$i \in \{0, \ldots, n-1\}\f$, \f$v_i\f$ denotes
-the \f$i\f$-th component of the (column) vector \f$\vect{v} \in \Rset^n\f$.
+the \f$i\f$-th component of the (column) vector
+\f$\vect{v} = (v_0, \ldots, v_{n-1})^\transpose \in \Rset^n\f$.
 We denote by \f$\vect{0}\f$ the vector of \f$\Rset^n\f$, called <EM>the origin</EM>,
 having all components equal to zero.
 A vector \f$\vect{v} \in \Rset^n\f$ can be also interpreted
@@ -111,13 +112,41 @@ as the intersection of a finite number of closed affine half-spaces
 of \f$\Rset^n\f$, or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
 
 The set of all closed polyhedra on the vector space \f$\Rset^n\f$
-is denoted \f$\CPset_n\f$ and we have \f$\CPset_n \sseq \Pset_n\f$.
+is denoted \f$\CPset_n\f$, where \f$\CPset_n \sseq \Pset_n\f$.
 We have \f$\emptyset, \Rset^n \in \CPset_n\f$;
 for any pair of closed polyhedra \f$\cP_1, \cP_2 \in \CPset_n\f$,
 their set intersection \f$\cP_1 \inters \cP_2 \in \CPset_n\f$
 and their poly-hull \f$\cP_1 \uplus \cP_2 \in \CPset_n\f$
 are still closed polyhedra.
 In theoretical terms, \f$\CPset_n\f$ is a <EM>sub-lattice</EM> of \f$\Pset_n\f$.
+
+
+<B>Constraints representation</B>
+
+In the sequel, we will simply write ``equality'' and ``inequality''
+to mean ``linear equality'' and ``linear inequality'', respectively;
+also, we will refer to either an equality or an inequality
+as a <EM>constraint</EM>.
+
+By definition, each polyhedron \f$\cP \in \Pset_n\f$ is the set of solutions
+to a <EM>constraint system</EM>, i.e., a finite number of constraints.
+By using matrix notation, we have
+\f[
+  P = \{\,
+        \vect{x} \in \Rset^n
+      \mid
+        A_1 \vect{x} =    \vect{b}_1,
+        A_2 \vect{x} \geq \vect{b}_2,
+        A_3 \vect{x} >    \vect{b}_3
+      \,\},
+\f]
+where, for all \f$i \in \{1, 2, 3\}\f$,
+\f$A_i \in \Rset^{m_i} \times \Rset^n\f$ and \f$\vect{b}_i \in \Rset^{m_i}\f$,
+and \f$m_1, m_2, m_3 \in \Nset\f$ are
+the number of equalities,
+the number of non-strict inequalities, and
+the number of strict inequalities,
+respectively.
 
 
 <B>Combination</B>
@@ -139,17 +168,21 @@ Therefore, the origin \f$\vect{0} \in \Rset^n\f$ can always be regarded
 as a positive (but not affine) linear combination of an empty set
 of vectors.
 
-<B>Scalar product</B>
+<B>The generators of a NNC polyhedron</B>
 
-Let \f$\vect{x} = (x_0, \ldots, x_{n-1})^\transpose\f$,
-\f$\vect{y} = (y_0, \ldots, y_{n-1})^\transpose \in \Rset^n\f$.
-The <EM>scalar product</EM> of \f$\vect{x}\f$ and \f$\vect{y}\f$
-is defined as
-\f[
-   \langle \vect{x}, \vect{y} \rangle = \sum_{i=0}^{n-1} x_i y_i.
-\f]
-The vectors \f$\vect{x}\f$ and \f$\vect{y}\f$ are <EM>orthogonal</EM> if
-\f$\langle \vect{x}, \vect{y} \rangle = 0\f$.
+Let \f$\cP \in \Pset_n\f$ be an NNC polyhedron. Then
+- a vector \f$\vect{p} \in \cP\f$ is called a <EM>point</EM> of \f$\cP\f$;
+- a vector \f$\vect{c} \in \Rset^n\f$ is called a <EM>closure point</EM> of \f$\cP\f$
+  if it is a point of the topological closure of \f$\cP\f$;
+- a vector \f$\vect{r} \in \Rset^n\f$, where \f$\vect{r} \neq \vect{0}\f$,
+  is called a <EM>ray</EM> (or direction of infinity) of \f$\cP\f$ if,
+  for all point \f$\vect{p} \in \cP\f$ and all \f$\lambda \in \nonnegRset\f$,
+  it holds \f$\vect{p} + \lambda \vect{r} \in \cP\f$;
+- a vector \f$\vect{l} \in \Rset^n\f$ is called a <EM>line</EM> of \f$\cP\f$ if
+  both \f$\vect{l}\f$ and \f$-\vect{l}\f$ are rays of \f$\cP\f$.
+
+
+
 
 <B>Convex hull</B>
 
@@ -215,60 +248,6 @@ Note that linear independence implies affine independence, but the
 converse is not true. Moreover the maximum number of affinely independent
 points in \f$\Rset^n\f$ is \f$n + 1\f$
 (e.g., \f$n\f$ linearly independent points and the origin \f$\vect{0}\f$).
-
-
-<B>Polyhedron</B>
-
-A set \f$P \sseq \Rset^n\f$ is called a <EM>polyhedron</EM>
-if it is the set of solutions to a finite number of linear equalities
-and inequalities:
-\f[
-  P = \{\,
-        \vect{x} \in \Rset^n
-      \mid
-        A\vect{x} = \vect{b}, C\vect{x} \geq \vect{d}
-      \,\},
-\f]
-where, if \f$m_1\f$ is the number of linear equalities and
-\f$m_2\f$ the number of linear inequalities,
-\f$A \in \Rset^{m_1} \times \Rset^n\f$,
-\f$\vect{b} \in \Rset^{m_1}\f$,
-\f$C \in \Rset^{m_2} \times \Rset^n\f$ and
-\f$\vect{d} \in \Rset^{m_2}\f$.
-
-In the sequel, we will simply write ``equality'' and ``inequality''
-to mean ``linear equality'' and ``linear inequality'', respectively;
-also, we will refer to either an equality or an inequality
-as a <EM>constraint</EM>.
-
-<B>Constraints representation</B>
-
-By definition, any polyhedron \f$P \sseq \Rset^n\f$ can be represented
-by a <EM>system of constraints</EM>:
-namely, the system given by the union of
-the equalities specified by matrix \f$A\f$ and vector \f$\vect{b}\f$
-and
-the inequalities specified by matrix \f$C\f$ and vector \f$\vect{d}\f$.
-
-Note that,
-if \f$\vect{c}, \vect{x} \in \Rset^n\f$ and \f$\lambda \in \Rset\f$
-and the system of constraints contains the equality
-\f$\langle \vect{c}, \vect{x} \rangle = \lambda\f$,
-then this one can be replaced by the two equivalent inequalities
-\f$\langle \vect{c}, \vect{x} \rangle \geq \lambda\f$ and
-\f$\langle \vect{c}, \vect{x} \rangle \leq \lambda\f$
-(i.e., \f$\langle -\vect{c}, \vect{x} \rangle \geq -\lambda\f$).
-It follows that a polyhedron \f$P \sseq \Rset^n\f$ can always
-be represented as a system of <EM>inequality</EM> constraints
-\f[
-  P = \{\,
-        \vect{x} \in \Rset^n
-      \mid
-        A\vect{x} \geq \vect{b}
-      \,\}
-\f]
-for some matrix \f$ A \in \Rset^{m} \times \Rset^n\f$
-and vector \f$\vect{b} \in \Rset^{m}\f$.
 
 
 <B>Rational polyhedron</B>
