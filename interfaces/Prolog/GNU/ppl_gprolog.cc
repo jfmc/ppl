@@ -2,11 +2,11 @@
 #include "ppl_install.hh"
 // GNU Prolog 1.2.8 uses the C++ reserved word "template" in gprolog.h.
 // Moreover, it misses the `extern "C"' wrapper.
-#define template templ
-extern "C" {
+//#define template templ
+//extern "C" {
 #include <gprolog.h>
-}
-#undef template
+//}
+//#undef template
 #include <cassert>
 
 #define GNU 1
@@ -149,11 +149,11 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
   Assign to \p l a Prolog list whose head is \p h and tail is \p t. 
 */
 static inline bool
-Prolog_construct_cons(Prolog_term_ref& l,
+Prolog_construct_cons(Prolog_term_ref& c,
 		      Prolog_term_ref h, Prolog_term_ref t) {
   args[0] = h;
   args[1] = t;
-  l = Mk_List(args);
+  c = Mk_List(args);
   return true;
 }
 
@@ -264,9 +264,9 @@ Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref& a) {
   The behavior is undefined if \p l is not a Prolog list.
 */
 static inline bool
-Prolog_get_cons(Prolog_term_ref l, Prolog_term_ref& h, Prolog_term_ref& t) {
+Prolog_get_cons(Prolog_term_ref c, Prolog_term_ref& h, Prolog_term_ref& t) {
   assert(Prolog_is_cons(t));
-  Prolog_term_ref* ht = Rd_List_Check(l);
+  Prolog_term_ref* ht = Rd_List_Check(c);
   h = ht[0];
   t = ht[1];
   return true;
@@ -283,7 +283,7 @@ Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
 
 static PPL::Integer
 integer_term_to_Integer(Prolog_term_ref t) {
-  // FIXME: does SWI support unlimited precision integer?
+  // FIXME: does GNU Prolog support unlimited precision integer?
   long v;
   Prolog_get_long(t, v);
   return PPL::Integer(v);
@@ -291,7 +291,7 @@ integer_term_to_Integer(Prolog_term_ref t) {
 
 static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
-  // FIXME: does SWI support unlimited precision integer?
+  // FIXME: does GNU Prolog support unlimited precision integer?
   if (!n.fits_slong_p())
     throw_unknown_interface_error("Integer_to_integer_term()");
   return Mk_Integer(n.get_si());

@@ -131,9 +131,9 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
   Assign to \p l a Prolog list whose head is \p h and tail is \p t. 
 */
 static inline bool
-Prolog_construct_cons(Prolog_term_ref l,
+Prolog_construct_cons(Prolog_term_ref c,
 		      Prolog_term_ref h, Prolog_term_ref t) {
-  return SP_cons_list(l, h, t) != 0;
+  return SP_cons_list(c, h, t) != 0;
 }
 
 /*!
@@ -236,9 +236,9 @@ Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref a) {
   The behavior is undefined if \p l is not a Prolog list.
 */
 static inline bool
-Prolog_get_cons(Prolog_term_ref l, Prolog_term_ref h, Prolog_term_ref t) {
+Prolog_get_cons(Prolog_term_ref c, Prolog_term_ref h, Prolog_term_ref t) {
   assert(Prolog_is_cons(t));
-  return SP_get_list(l, h, t) != 0;
+  return SP_get_list(c, h, t) != 0;
 }
 
 /*!
