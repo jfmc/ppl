@@ -55,5 +55,5 @@ PPL::UBoundary::OK() const {
 
 bool
 PPL::Interval::OK() const {
-  return lower.OK() and upper.OK();
+  return lower.OK() && upper.OK();
 }
