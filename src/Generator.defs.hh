@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.defs.hh"
 #include "ConSys.types.hh"
 #include "GenSys.defs.hh"
-#include "LinExpression.defs.hh"
+#include "Linear_Expression.defs.hh"
 #include "Polyhedron.types.hh"
 #include <iosfwd>
 
@@ -212,7 +212,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
   \code
   if (g1.is_point()) {
     cout << "Point g1: " << g1 << endl;
-    LinExpression e;
+    Linear_Expression e;
     for (int i = g1.space_dimension() - 1; i >= 0; i--)
       e += (i + 1) * g1.coefficient(Variable(i)) * Variable(i);
     Generator g2 = closure_point(e, g1.divisor());
@@ -242,7 +242,7 @@ public:
     Thrown if the homogeneous part of \p e represents the origin of
     the vector space.
   */
-  static Generator line(const LinExpression& e);
+  static Generator line(const Linear_Expression& e);
 
   //! Returns the ray of direction \p e.
   /*!
@@ -250,29 +250,29 @@ public:
     Thrown if the homogeneous part of \p e represents the origin of
     the vector space.
   */
-  static Generator ray(const LinExpression& e);
+  static Generator ray(const Linear_Expression& e);
 
   //! Returns the point at \p e / \p d.
   /*!
     Both \p e and \p d are optional arguments, with default values
-    LinExpression::zero() and Integer_one(), respectively.
+    Linear_Expression::zero() and Integer_one(), respectively.
 
     \exception std::invalid_argument
     Thrown if \p d is zero.
   */
-  static Generator point(const LinExpression& e = LinExpression::zero(),
+  static Generator point(const Linear_Expression& e = Linear_Expression::zero(),
 			 Integer_traits::const_reference d = Integer_one());
 
   //! Returns the closure point at \p e / \p d.
   /*!
     Both \p e and \p d are optional arguments, with default values
-    LinExpression::zero() and Integer_one(), respectively.
+    Linear_Expression::zero() and Integer_one(), respectively.
 
     \exception std::invalid_argument
     Thrown if \p d is zero.
   */
   static Generator
-  closure_point(const LinExpression& e = LinExpression::zero(),
+  closure_point(const Linear_Expression& e = Linear_Expression::zero(),
 		Integer_traits::const_reference d = Integer_one());
 
   //! Ordinary copy-constructor.
@@ -355,7 +355,7 @@ private:
   //! \brief
   //! Builds a generatorof type \p type and topology \p topology,
   //! stealing the coefficients from \p e.
-  Generator(LinExpression& e, Type type, Topology topology);
+  Generator(Linear_Expression& e, Type type, Topology topology);
 
   //! Swaps \p *this with \p y.
   void swap(Generator& y);
@@ -379,7 +379,7 @@ private:
   friend class Parma_Polyhedra_Library::Polyhedron;
 
   friend
-  Parma_Polyhedra_Library::LinExpression::LinExpression(const Generator& g);
+  Parma_Polyhedra_Library::Linear_Expression::Linear_Expression(const Generator& g);
 
   // FIXME: the following friend declaration is only to grant access to
   // ConSys::satisfies_all_constraints().
@@ -420,26 +420,26 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
-//! Shorthand for Generator Generator::line(const LinExpression& e).
+//! Shorthand for Generator Generator::line(const Linear_Expression& e).
 /*! \relates Generator */
-Generator line(const LinExpression& e);
+Generator line(const Linear_Expression& e);
 
-//! Shorthand for Generator Generator::ray(const LinExpression& e).
+//! Shorthand for Generator Generator::ray(const Linear_Expression& e).
 /*! \relates Generator */
-Generator ray(const LinExpression& e);
+Generator ray(const Linear_Expression& e);
 
 //! \brief
 //! Shorthand for Generator
-//! Generator::point(const LinExpression& e, Integer_traits::const_reference d).
+//! Generator::point(const Linear_Expression& e, Integer_traits::const_reference d).
 /*! \relates Generator */
-Generator point(const LinExpression& e = LinExpression::zero(),
+Generator point(const Linear_Expression& e = Linear_Expression::zero(),
 		Integer_traits::const_reference d = Integer_one());
 
 //! \brief
 //! Shorthand for Generator
-//! Generator::closure_point(const LinExpression& e, Integer_traits::const_reference d).
+//! Generator::closure_point(const Linear_Expression& e, Integer_traits::const_reference d).
 /*! \relates Generator */
-Generator closure_point(const LinExpression& e = LinExpression::zero(),
+Generator closure_point(const Linear_Expression& e = Linear_Expression::zero(),
 			Integer_traits::const_reference d = Integer_one());
 
 } // namespace Parma_Polyhedra_Library

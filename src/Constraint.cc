@@ -45,7 +45,7 @@ PPL::Constraint::throw_dimension_incompatible(const char* method,
 
 PPL::Constraint
 PPL::Constraint::construct_epsilon_geq_zero() {
-  LinExpression e = Variable(0);
+  Linear_Expression e = Variable(0);
   Constraint c(e, Constraint::NONSTRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
   return c;
 }

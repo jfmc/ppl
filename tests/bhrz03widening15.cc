@@ -49,9 +49,9 @@ static Generator
 splitting_facet(const Generator& r1,
 		const Generator& r2,
 		unsigned magic_number) {
-  LinExpression expr;
-  expr += LinExpression(r1);
-  expr += LinExpression(r2);
+  Linear_Expression expr;
+  expr += Linear_Expression(r1);
+  expr += Linear_Expression(r2);
   // NOTE: I am not *sure* this dirty kludge of using such
   // a magic number will always succeed.
   expr *= magic_number + 1;

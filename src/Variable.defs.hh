@@ -73,8 +73,8 @@ bool less(Variable v, Variable w);
   Variable x(0);
   Variable y(1);
   Variable z(0);
-  LinExpression e1 = x + y;
-  LinExpression e2 = y + z;
+  Linear_Expression e1 = x + y;
+  Linear_Expression e2 = y + z;
   \endcode
 
 */

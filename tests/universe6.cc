@@ -38,8 +38,8 @@ main() TRY {
   NNC_Polyhedron ph2(3);
   NNC_Polyhedron ph3(3);
 
-  ph2.add_constraint(LinExpression(1) > 0);
-  ph3.add_constraint(LinExpression(1) < 0);
+  ph2.add_constraint(Linear_Expression(1) > 0);
+  ph3.add_constraint(Linear_Expression(1) < 0);
 
   ConSys cs;
   NNC_Polyhedron ph4(cs);

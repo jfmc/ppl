@@ -36,14 +36,14 @@ main() TRY {
   set_handlers();
 
   C_Polyhedron ph;
-  ph.add_constraint(LinExpression(-2) >= 0);
+  ph.add_constraint(Linear_Expression(-2) >= 0);
 
 #if NOISY
   print_constraints(ph, "*** ph ***");
 #endif
 
   ConSys cs;
-  cs.insert(LinExpression(-1) >= 0);
+  cs.insert(Linear_Expression(-1) >= 0);
 
 #if NOISY
   print_constraints(cs, "*** cs ***");

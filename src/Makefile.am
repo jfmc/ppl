@@ -116,7 +116,7 @@ Row.types.hh \
 Linear_Row.types.hh \
 Matrix.types.hh \
 Variable.types.hh \
-LinExpression.types.hh \
+Linear_Expression.types.hh \
 Linear_System.types.hh \
 Saturation_Row.types.hh \
 Saturation_Matrix.types.hh \
@@ -165,8 +165,8 @@ Saturation_Matrix.defs.hh \
 Saturation_Matrix.inlines.hh \
 ConSys.defs.hh \
 GenSys.defs.hh \
-LinExpression.defs.hh \
-LinExpression.inlines.hh \
+Linear_Expression.defs.hh \
+Linear_Expression.inlines.hh \
 Constraint.defs.hh \
 Constraint.inlines.hh \
 ConSys.inlines.hh \
@@ -212,7 +212,7 @@ Generator.cc \
 Init.cc \
 Integer.cc \
 Interval.cc \
-LinExpression.cc \
+Linear_Expression.cc \
 Linear_System.cc \
 Matrix.cc \
 Poly_Con_Relation.cc \
@@ -246,7 +246,7 @@ GMP_Integer.types.hh \
 Native_Integer.types.hh \
 Integer.types.hh \
 Variable.types.hh \
-LinExpression.types.hh \
+Linear_Expression.types.hh \
 Constraint.types.hh \
 ConSys.types.hh \
 Generator.types.hh \
@@ -259,7 +259,7 @@ Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
 Variable.defs.hh \
-LinExpression.defs.hh \
+Linear_Expression.defs.hh \
 Constraint.defs.hh \
 ConSys.defs.hh \
 Generator.defs.hh \

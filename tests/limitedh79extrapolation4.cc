@@ -106,7 +106,7 @@ test3() {
   C_Polyhedron ph2;
 
   ConSys cs;
-  cs.insert(LinExpression(2) <= 4);
+  cs.insert(Linear_Expression(2) <= 4);
 
   C_Polyhedron known_result(ph2);
 

@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_GenSys_defs_hh
 #define PPL_GenSys_defs_hh 1
 
-#include "LinExpression.types.hh"
+#include "Linear_Expression.types.hh"
 #include "GenSys.types.hh"
 #include "Linear_System.defs.hh"
 #include "Generator.types.hh"
@@ -452,7 +452,7 @@ private:
     \p expr is a constant parameter and unaltered by this computation.
   */
   void affine_image(dimension_type v,
-		    const LinExpression& expr,
+		    const Linear_Expression& expr,
 		    Integer_traits::const_reference denominator);
 
   //! Returns the number of lines of the system.

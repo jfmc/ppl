@@ -53,12 +53,12 @@ PPL::Generator::throw_invalid_argument(const char* method,
 }
 
 PPL::Generator
-PPL::Generator::point(const LinExpression& e,
+PPL::Generator::point(const Linear_Expression& e,
 		      Integer_traits::const_reference d) {
   if (d == 0)
     throw std::invalid_argument("PPL::point(e, d):\n"
 				"d == 0.");
-  LinExpression ec = e;
+  Linear_Expression ec = e;
   Generator g(ec, Generator::POINT, NECESSARILY_CLOSED);
   g[0] = d;
 
@@ -75,13 +75,13 @@ PPL::Generator::point(const LinExpression& e,
 }
 
 PPL::Generator
-PPL::Generator::closure_point(const LinExpression& e,
+PPL::Generator::closure_point(const Linear_Expression& e,
 			      Integer_traits::const_reference d) {
   if (d == 0)
     throw std::invalid_argument("PPL::closure_point(e, d):\n"
 				"d == 0.");
   // Adding the epsilon dimension with coefficient 0.
-  LinExpression ec = 0 * Variable(e.space_dimension());
+  Linear_Expression ec = 0 * Variable(e.space_dimension());
   ec += e;
   // A closure point is indeed a point in the higher dimension space.
   Generator g = point(ec, d);
@@ -93,13 +93,13 @@ PPL::Generator::closure_point(const LinExpression& e,
 }
 
 PPL::Generator
-PPL::Generator::ray(const LinExpression& e) {
+PPL::Generator::ray(const Linear_Expression& e) {
   // The origin of the space cannot be a ray.
   if (e.all_homogeneous_terms_are_zero())
     throw std::invalid_argument("PPL::ray(e):\n"
 				"e == 0, but the origin cannot be a ray.");
 
-  LinExpression ec = e;
+  Linear_Expression ec = e;
   Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
   g[0] = 0;
   // Enforce normalization.
@@ -108,13 +108,13 @@ PPL::Generator::ray(const LinExpression& e) {
 }
 
 PPL::Generator
-PPL::Generator::line(const LinExpression& e) {
+PPL::Generator::line(const Linear_Expression& e) {
   // The origin of the space cannot be a line.
   if (e.all_homogeneous_terms_are_zero())
     throw std::invalid_argument("PPL::line(e):\n"
 				"e == 0, but the origin cannot be a line.");
 
-  LinExpression ec = e;
+  Linear_Expression ec = e;
   Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
   g[0] = 0;
   // Enforce normalization.

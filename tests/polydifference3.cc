@@ -43,7 +43,7 @@ main() TRY {
 #endif
 
   ConSys cs;
-  cs.insert(LinExpression(-4) >= 0);
+  cs.insert(Linear_Expression(-4) >= 0);
   C_Polyhedron known_result(cs);
 
   ph1.poly_difference_assign(ph2);

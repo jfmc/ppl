@@ -91,7 +91,7 @@ random_polytope(C_Polyhedron& ph, unsigned dimension, unsigned num_points,
       coordinate[i] = radius;
     point_on_the_unit_n_sphere(dimension, theta, coordinate);
 
-    LinExpression le;
+    Linear_Expression le;
     for (unsigned i = dimension; i-- > 0; )
       le += Variable(i)*Integer(coordinate[i]*1000000.0);
     ph.add_generator(point(le));

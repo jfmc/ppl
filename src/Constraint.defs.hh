@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Linear_Row.defs.hh"
 #include "Variable.defs.hh"
-#include "LinExpression.defs.hh"
+#include "Linear_Expression.defs.hh"
 #include "ConSys.defs.hh"
 #include "Polyhedron.types.hh"
 #include <iosfwd>
@@ -46,64 +46,64 @@ std::ostream& operator<<(std::ostream& s, const Constraint& c);
 
 //! Returns the constraint \p e1 = \p e2.
 /*! \relates Constraint */
-Constraint operator==(const LinExpression& e1, const LinExpression& e2);
+Constraint operator==(const Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the constraint \p e = \p n.
 /*! \relates Constraint */
 Constraint
-operator==(const LinExpression& e, Integer_traits::const_reference n);
+operator==(const Linear_Expression& e, Integer_traits::const_reference n);
 //! Returns the constraint \p n = \p e.
 /*! \relates Constraint */
 Constraint
-operator==(Integer_traits::const_reference n, const LinExpression& e);
+operator==(Integer_traits::const_reference n, const Linear_Expression& e);
 
 //! Returns the constraint \p e1 \<= \p e2.
 /*! \relates Constraint */
-Constraint operator<=(const LinExpression& e1, const LinExpression& e2);
+Constraint operator<=(const Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the constraint \p e \<= \p n.
 /*! \relates Constraint */
 Constraint
-operator<=(const LinExpression& e, Integer_traits::const_reference n);
+operator<=(const Linear_Expression& e, Integer_traits::const_reference n);
 //! Returns the constraint \p n \<= \p e.
 /*! \relates Constraint */
 Constraint
-operator<=(Integer_traits::const_reference n, const LinExpression& e);
+operator<=(Integer_traits::const_reference n, const Linear_Expression& e);
 
 //! Returns the constraint \p e1 \>= \p e2.
 /*! \relates Constraint */
 Constraint
-operator>=(const LinExpression& e1, const LinExpression& e2);
+operator>=(const Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the constraint \p e \>= \p n.
 /*! \relates Constraint */
 Constraint
-operator>=(const LinExpression& e, Integer_traits::const_reference n);
+operator>=(const Linear_Expression& e, Integer_traits::const_reference n);
 //! Returns the constraint \p n \>= \p e.
 /*! \relates Constraint */
 Constraint
-operator>=(Integer_traits::const_reference n, const LinExpression& e);
+operator>=(Integer_traits::const_reference n, const Linear_Expression& e);
 
 //! Returns the constraint \p e1 \< \p e2.
 /*! \relates Constraint */
-Constraint operator<(const LinExpression& e1, const LinExpression& e2);
+Constraint operator<(const Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the constraint \p e \< \p n.
 /*! \relates Constraint */
 Constraint
-operator<(const LinExpression& e, Integer_traits::const_reference n);
+operator<(const Linear_Expression& e, Integer_traits::const_reference n);
 //! Returns the constraint \p n \< \p e.
 /*! \relates Constraint */
 Constraint
-operator<(Integer_traits::const_reference n, const LinExpression& e);
+operator<(Integer_traits::const_reference n, const Linear_Expression& e);
 
 //! Returns the constraint \p e1 \> \p e2.
 /*! \relates Constraint */
-Constraint operator>(const LinExpression& e1, const LinExpression& e2);
+Constraint operator>(const Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the constraint \p e \> \p n.
 /*! \relates Constraint */
 Constraint
-operator>(const LinExpression& e, Integer_traits::const_reference n);
+operator>(const Linear_Expression& e, Integer_traits::const_reference n);
 //! Returns the constraint \p n \> \p e.
 /*! \relates Constraint */
 Constraint
-operator>(Integer_traits::const_reference n, const LinExpression& e);
+operator>(Integer_traits::const_reference n, const Linear_Expression& e);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -170,9 +170,9 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   \endcode
   Equivalent, but more involved ways are the following:
   \code
-  Constraint false_c1(LinExpression::zero() == 1);
-  Constraint false_c2(LinExpression::zero() >= 1);
-  Constraint false_c3(LinExpression::zero() > 0);
+  Constraint false_c1(Linear_Expression::zero() == 1);
+  Constraint false_c2(Linear_Expression::zero() >= 1);
+  Constraint false_c3(Linear_Expression::zero() > 0);
   \endcode
   In contrast, the following code defines an unsatisfiable constraint
   having space dimension \f$3\f$:
@@ -198,7 +198,7 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   if (c1.is_equality())
     cout << "Constraint c1 is not an inequality." << endl;
   else {
-    LinExpression e;
+    Linear_Expression e;
     for (int i = c1.space_dimension() - 1; i >= 0; i--)
       e += c1.coefficient(Variable(i)) * Variable(i);
     e += c1.inhomogeneous_term();
@@ -303,7 +303,7 @@ private:
   friend class Parma_Polyhedra_Library::GenSys;
 
   friend
-  Parma_Polyhedra_Library::LinExpression::LinExpression(const Constraint& c);
+  Parma_Polyhedra_Library::Linear_Expression::Linear_Expression(const Constraint& c);
   friend void std::swap(Parma_Polyhedra_Library::Constraint& x,
 			Parma_Polyhedra_Library::Constraint& y);
 
@@ -313,7 +313,7 @@ private:
   //! \brief
   //! Builds a constraint of type \p type and topology \p topology,
   //! stealing the coefficients from \p e.
-  explicit Constraint(LinExpression& e, Type type, Topology topology);
+  explicit Constraint(Linear_Expression& e, Type type, Topology topology);
 
   //! Swaps \p *this with \p y.
   void swap(Constraint& y);
@@ -327,54 +327,54 @@ private:
 			       Variable v) const;
 
   friend Constraint
-  Parma_Polyhedra_Library::operator==(const LinExpression& e1,
-				      const LinExpression& e2);
+  Parma_Polyhedra_Library::operator==(const Linear_Expression& e1,
+				      const Linear_Expression& e2);
   friend Constraint
-  Parma_Polyhedra_Library::operator==(const LinExpression& e,
+  Parma_Polyhedra_Library::operator==(const Linear_Expression& e,
 				      Integer_traits::const_reference n);
   friend Constraint
   Parma_Polyhedra_Library::operator==(Integer_traits::const_reference n,
-				      const LinExpression& e);
+				      const Linear_Expression& e);
 
   friend Constraint
-  Parma_Polyhedra_Library::operator>=(const LinExpression& e1,
-				      const LinExpression& e2);
+  Parma_Polyhedra_Library::operator>=(const Linear_Expression& e1,
+				      const Linear_Expression& e2);
   friend Constraint
-  Parma_Polyhedra_Library::operator>=(const LinExpression& e,
+  Parma_Polyhedra_Library::operator>=(const Linear_Expression& e,
 				      Integer_traits::const_reference n);
   friend Constraint
   Parma_Polyhedra_Library::operator>=(Integer_traits::const_reference n,
-				      const LinExpression& e);
+				      const Linear_Expression& e);
 
   friend Constraint
-  Parma_Polyhedra_Library::operator<=(const LinExpression& e1,
-				      const LinExpression& e2);
+  Parma_Polyhedra_Library::operator<=(const Linear_Expression& e1,
+				      const Linear_Expression& e2);
   friend Constraint
-  Parma_Polyhedra_Library::operator<=(const LinExpression& e,
+  Parma_Polyhedra_Library::operator<=(const Linear_Expression& e,
 				      Integer_traits::const_reference n);
   friend Constraint
   Parma_Polyhedra_Library::operator<=(Integer_traits::const_reference n,
-				      const LinExpression& e);
+				      const Linear_Expression& e);
 
   friend Constraint
-  Parma_Polyhedra_Library::operator>(const LinExpression& e1,
-				     const LinExpression& e2);
+  Parma_Polyhedra_Library::operator>(const Linear_Expression& e1,
+				     const Linear_Expression& e2);
   friend Constraint
-  Parma_Polyhedra_Library::operator>(const LinExpression& e,
+  Parma_Polyhedra_Library::operator>(const Linear_Expression& e,
 				     Integer_traits::const_reference n);
   friend Constraint
   Parma_Polyhedra_Library::operator>(Integer_traits::const_reference n,
-				     const LinExpression& e);
+				     const Linear_Expression& e);
 
   friend Constraint
-  Parma_Polyhedra_Library::operator<(const LinExpression& e1,
-				     const LinExpression& e2);
+  Parma_Polyhedra_Library::operator<(const Linear_Expression& e1,
+				     const Linear_Expression& e2);
   friend Constraint
-  Parma_Polyhedra_Library::operator<(const LinExpression& e,
+  Parma_Polyhedra_Library::operator<(const Linear_Expression& e,
 				     Integer_traits::const_reference n);
   friend Constraint
   Parma_Polyhedra_Library::operator<(Integer_traits::const_reference n,
-				     const LinExpression& e);
+				     const Linear_Expression& e);
 
   //! Copy-constructor with given size.
   Constraint(const Constraint& c, dimension_type sz);

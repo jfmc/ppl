@@ -45,7 +45,7 @@ main() TRY {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  LinExpression e(1);
+  Linear_Expression e(1);
   ConSys cs2;
   cs2.insert(e == 0);
   ph.add_constraints(cs2);

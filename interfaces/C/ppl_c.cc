@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Integer.defs.hh"
-#include "LinExpression.defs.hh"
+#include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
 #include "ConSys.defs.hh"
 #include "Generator.defs.hh"
@@ -276,7 +276,7 @@ CATCH_ALL
 
 DECLARE_CONVERSIONS(Coefficient)
 
-DECLARE_CONVERSIONS(LinExpression)
+DECLARE_CONVERSIONS(Linear_Expression)
 
 DECLARE_CONVERSIONS(Constraint)
 
@@ -363,54 +363,53 @@ CATCH_ALL
 
 
 int
-ppl_new_LinExpression(ppl_LinExpression_t* ple) try {
-  *ple = to_nonconst(new LinExpression());
+ppl_new_Linear_Expression(ppl_Linear_Expression_t* ple) try {
+  *ple = to_nonconst(new Linear_Expression());
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_LinExpression_with_dimension(ppl_LinExpression_t* ple,
-				     ppl_dimension_type d) try {
+ppl_new_Linear_Expression_with_dimension(ppl_Linear_Expression_t* ple,
+					 ppl_dimension_type d) try {
   *ple = to_nonconst(d == 0
-		     ? new LinExpression(0)
-		     : new LinExpression(0*Variable(d-1)));
+		     ? new Linear_Expression(0)
+		     : new Linear_Expression(0*Variable(d-1)));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_LinExpression_from_LinExpression(ppl_LinExpression_t* ple,
-					 ppl_const_LinExpression_t le) try {
-  const LinExpression& lle = *to_const(le);
-  *ple = to_nonconst(new LinExpression(lle));
+ppl_new_Linear_Expression_from_Linear_Expression
+(ppl_Linear_Expression_t* ple, ppl_const_Linear_Expression_t le) try {
+  const Linear_Expression& lle = *to_const(le);
+  *ple = to_nonconst(new Linear_Expression(lle));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_delete_LinExpression(ppl_const_LinExpression_t le) try {
+ppl_delete_Linear_Expression(ppl_const_Linear_Expression_t le) try {
   delete to_const(le);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_assign_LinExpression_from_LinExpression(ppl_LinExpression_t dst,
-					    ppl_const_LinExpression_t src)
-try {
-  const LinExpression& ssrc = *to_const(src);
-  LinExpression& ddst = *to_nonconst(dst);
+ppl_assign_Linear_Expression_from_Linear_Expression
+(ppl_Linear_Expression_t dst, ppl_const_Linear_Expression_t src) try {
+  const Linear_Expression& ssrc = *to_const(src);
+  Linear_Expression& ddst = *to_nonconst(dst);
   ddst = ssrc;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_LinExpression_add_to_coefficient(ppl_LinExpression_t le,
-				     ppl_dimension_type var,
-				     ppl_const_Coefficient_t n) try {
-  LinExpression& lle = *to_nonconst(le);
+ppl_Linear_Expression_add_to_coefficient(ppl_Linear_Expression_t le,
+					 ppl_dimension_type var,
+					 ppl_const_Coefficient_t n) try {
+  Linear_Expression& lle = *to_nonconst(le);
   const Integer& nn = *to_const(n);
   lle += nn * Variable(var);
   return 0;
@@ -418,9 +417,9 @@ ppl_LinExpression_add_to_coefficient(ppl_LinExpression_t le,
 CATCH_ALL
 
 int
-ppl_LinExpression_add_to_inhomogeneous(ppl_LinExpression_t le,
-				       ppl_const_Coefficient_t n) try {
-  LinExpression& lle = *to_nonconst(le);
+ppl_Linear_Expression_add_to_inhomogeneous(ppl_Linear_Expression_t le,
+					   ppl_const_Coefficient_t n) try {
+  Linear_Expression& lle = *to_nonconst(le);
   const Integer& nn = *to_const(n);
   lle += nn;
   return 0;
@@ -428,30 +427,29 @@ ppl_LinExpression_add_to_inhomogeneous(ppl_LinExpression_t le,
 CATCH_ALL
 
 int
-ppl_add_LinExpression_to_LinExpression(ppl_LinExpression_t dst,
-				       ppl_const_LinExpression_t src) try {
-  LinExpression& ddst = *to_nonconst(dst);
-  const LinExpression& ssrc = *to_const(src);
+ppl_add_Linear_Expression_to_Linear_Expression
+(ppl_Linear_Expression_t dst, ppl_const_Linear_Expression_t src) try {
+  Linear_Expression& ddst = *to_nonconst(dst);
+  const Linear_Expression& ssrc = *to_const(src);
   ddst += ssrc;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_subtract_LinExpression_from_LinExpression(ppl_LinExpression_t dst,
-					      ppl_const_LinExpression_t src)
-  try {
-  LinExpression& ddst = *to_nonconst(dst);
-  const LinExpression& ssrc = *to_const(src);
+ppl_subtract_Linear_Expression_from_Linear_Expression
+(ppl_Linear_Expression_t dst, ppl_const_Linear_Expression_t src) try {
+  Linear_Expression& ddst = *to_nonconst(dst);
+  const Linear_Expression& ssrc = *to_const(src);
   ddst -= ssrc;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_multiply_LinExpression_by_Coefficient(ppl_LinExpression_t le,
-					  ppl_const_Coefficient_t n) try {
-  LinExpression& lle = *to_nonconst(le);
+ppl_multiply_Linear_Expression_by_Coefficient(ppl_Linear_Expression_t le,
+					      ppl_const_Coefficient_t n) try {
+  Linear_Expression& lle = *to_nonconst(le);
   const Integer& nn = *to_const(n);
   lle *= nn;
   return 0;
@@ -459,18 +457,18 @@ ppl_multiply_LinExpression_by_Coefficient(ppl_LinExpression_t le,
 CATCH_ALL
 
 int
-ppl_LinExpression_space_dimension(ppl_const_LinExpression_t le,
-				  ppl_dimension_type* m) try {
+ppl_Linear_Expression_space_dimension(ppl_const_Linear_Expression_t le,
+				      ppl_dimension_type* m) try {
   *m = to_const(le)->space_dimension();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_LinExpression_coefficient(ppl_const_LinExpression_t le,
-			      ppl_dimension_type var,
-			      ppl_Coefficient_t n) try {
-  const LinExpression& lle = *to_const(le);
+ppl_Linear_Expression_coefficient(ppl_const_Linear_Expression_t le,
+				  ppl_dimension_type var,
+				  ppl_Coefficient_t n) try {
+  const Linear_Expression& lle = *to_const(le);
   Integer& nn = *to_nonconst(n);
   nn = lle.coefficient(Variable(var));
   return 0;
@@ -478,9 +476,9 @@ ppl_LinExpression_coefficient(ppl_const_LinExpression_t le,
 CATCH_ALL
 
 int
-ppl_LinExpression_inhomogeneous_term(ppl_const_LinExpression_t le,
-				     ppl_Coefficient_t n) try {
-  const LinExpression& lle = *to_const(le);
+ppl_Linear_Expression_inhomogeneous_term(ppl_const_Linear_Expression_t le,
+					 ppl_Coefficient_t n) try {
+  const Linear_Expression& lle = *to_const(le);
   Integer& nn = *to_nonconst(n);
   nn = lle.inhomogeneous_term();
   return 0;
@@ -488,7 +486,7 @@ ppl_LinExpression_inhomogeneous_term(ppl_const_LinExpression_t le,
 CATCH_ALL
 
 int
-ppl_LinExpression_OK(ppl_const_LinExpression_t /* le */) try {
+ppl_Linear_Expression_OK(ppl_const_Linear_Expression_t /* le */) try {
   return 1;
 }
 CATCH_ALL
@@ -496,10 +494,10 @@ CATCH_ALL
 
 int
 ppl_new_Constraint(ppl_Constraint_t* pc,
-		   ppl_const_LinExpression_t le,
+		   ppl_const_Linear_Expression_t le,
 		   enum ppl_enum_Constraint_Type t) try {
   Constraint* ppc;
-  const LinExpression& lle = *to_const(le);
+  const Linear_Expression& lle = *to_const(le);
   switch(t) {
   case PPL_CONSTRAINT_TYPE_EQUAL:
     ppc = new Constraint(lle == 0);
@@ -616,10 +614,10 @@ ppl_Constraint_OK(ppl_const_Constraint_t /* c */) try {
 CATCH_ALL
 
 int
-ppl_new_LinExpression_from_Constraint(ppl_LinExpression_t* ple,
-				      ppl_const_Constraint_t c) try {
+ppl_new_Linear_Expression_from_Constraint(ppl_Linear_Expression_t* ple,
+					  ppl_const_Constraint_t c) try {
   const Constraint& cc = *to_const(c);
-  *ple = to_nonconst(new LinExpression(cc));
+  *ple = to_nonconst(new Linear_Expression(cc));
   return 0;
 }
 CATCH_ALL
@@ -789,11 +787,11 @@ CATCH_ALL
 
 int
 ppl_new_Generator(ppl_Generator_t* pg,
-		  ppl_const_LinExpression_t le,
+		  ppl_const_Linear_Expression_t le,
 		  enum ppl_enum_Generator_Type t,
 		  ppl_const_Coefficient_t d) try {
   Generator* ppg;
-  const LinExpression& lle = *to_const(le);
+  const Linear_Expression& lle = *to_const(le);
   const Coefficient& dd = *to_const(d);
   switch(t) {
   case PPL_GENERATOR_TYPE_POINT:
@@ -910,10 +908,10 @@ ppl_Generator_OK(ppl_const_Generator_t /* g */) try {
 CATCH_ALL
 
 int
-ppl_new_LinExpression_from_Generator(ppl_LinExpression_t* ple,
-				     ppl_const_Generator_t g) try {
+ppl_new_Linear_Expression_from_Generator(ppl_Linear_Expression_t* ple,
+					 ppl_const_Generator_t g) try {
   const Generator& gg = *to_const(g);
-  *ple = to_nonconst(new LinExpression(gg));
+  *ple = to_nonconst(new Linear_Expression(gg));
   return 0;
 }
 CATCH_ALL
@@ -1841,10 +1839,10 @@ CATCH_ALL
 int
 ppl_Polyhedron_affine_image(ppl_Polyhedron_t ph,
 			    ppl_dimension_type var,
-			    ppl_const_LinExpression_t le,
+			    ppl_const_Linear_Expression_t le,
 			    ppl_const_Coefficient_t d) try {
   Polyhedron& pph = *to_nonconst(ph);
-  const LinExpression& lle = *to_const(le);
+  const Linear_Expression& lle = *to_const(le);
   const Integer& dd = *to_const(d);
   pph.affine_image(Variable(var), lle, dd);
   return 0;
@@ -1854,10 +1852,10 @@ CATCH_ALL
 int
 ppl_Polyhedron_affine_preimage(ppl_Polyhedron_t ph,
 			       ppl_dimension_type var,
-			       ppl_const_LinExpression_t le,
+			       ppl_const_Linear_Expression_t le,
 			       ppl_const_Coefficient_t d) try {
   Polyhedron& pph = *to_nonconst(ph);
-  const LinExpression& lle = *to_const(le);
+  const Linear_Expression& lle = *to_const(le);
   const Integer& dd = *to_const(d);
   pph.affine_preimage(Variable(var), lle, dd);
   return 0;
@@ -1890,10 +1888,10 @@ int
 ppl_Polyhedron_generalized_affine_image(ppl_Polyhedron_t ph,
 					ppl_dimension_type var,
 					enum ppl_enum_Constraint_Type relsym,
-					ppl_const_LinExpression_t le,
+					ppl_const_Linear_Expression_t le,
 					ppl_const_Coefficient_t d) try {
   Polyhedron& pph = *to_nonconst(ph);
-  const LinExpression& lle = *to_const(le);
+  const Linear_Expression& lle = *to_const(le);
   const Integer& dd = *to_const(d);
   pph.generalized_affine_image(Variable(var), relation_symbol(relsym), lle,
 			       dd);
@@ -1904,12 +1902,12 @@ CATCH_ALL
 int
 ppl_Polyhedron_generalized_affine_image_lhs_rhs
 (ppl_Polyhedron_t ph,
- ppl_const_LinExpression_t lhs,
+ ppl_const_Linear_Expression_t lhs,
  enum ppl_enum_Constraint_Type relsym,
- ppl_const_LinExpression_t rhs) try {
+ ppl_const_Linear_Expression_t rhs) try {
   Polyhedron& pph = *to_nonconst(ph);
-  const LinExpression& llhs = *to_const(lhs);
-  const LinExpression& rrhs = *to_const(rhs);
+  const Linear_Expression& llhs = *to_const(lhs);
+  const Linear_Expression& rrhs = *to_const(rhs);
   pph.generalized_affine_image(llhs, relation_symbol(relsym), rrhs);
   return 0;
 }
@@ -2020,31 +2018,31 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_bounds_from_above(ppl_const_Polyhedron_t ph,
-				 ppl_const_LinExpression_t le) try {
+				 ppl_const_Linear_Expression_t le) try {
   const Polyhedron& pph = *to_const(ph);
-  const LinExpression& lle = *to_const(le);
+  const Linear_Expression& lle = *to_const(le);
   return pph.bounds_from_above(lle) ? 1 : 0;
 }
 CATCH_ALL
 
 int
 ppl_Polyhedron_bounds_from_below(ppl_const_Polyhedron_t ph,
-				 ppl_const_LinExpression_t le) try {
+				 ppl_const_Linear_Expression_t le) try {
   const Polyhedron& pph = *to_const(ph);
-  const LinExpression& lle = *to_const(le);
+  const Linear_Expression& lle = *to_const(le);
   return pph.bounds_from_below(lle) ? 1 : 0;
 }
 CATCH_ALL
 
 int
 ppl_Polyhedron_maximize(ppl_const_Polyhedron_t ph,
-			ppl_const_LinExpression_t le,
+			ppl_const_Linear_Expression_t le,
 			ppl_Coefficient_t sup_n,
 			ppl_Coefficient_t sup_d,
 			int* pmaximum,
 			ppl_const_Generator_t* ppoint) try {
   const Polyhedron& pph = *to_const(ph);
-  const LinExpression& lle = *to_const(le);
+  const Linear_Expression& lle = *to_const(le);
   Integer& ssup_n = *to_nonconst(sup_n);
   Integer& ssup_d = *to_nonconst(sup_d);
   bool maximum;
@@ -2060,13 +2058,13 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_minimize(ppl_const_Polyhedron_t ph,
-			ppl_const_LinExpression_t le,
+			ppl_const_Linear_Expression_t le,
 			ppl_Coefficient_t inf_n,
 			ppl_Coefficient_t inf_d,
 			int* pminimum,
 			ppl_const_Generator_t* ppoint) try {
   const Polyhedron& pph = *to_const(ph);
-  const LinExpression& lle = *to_const(le);
+  const Linear_Expression& lle = *to_const(le);
   Integer& iinf_n = *to_nonconst(inf_n);
   Integer& iinf_d = *to_nonconst(inf_d);
   bool minimum;
@@ -2180,7 +2178,7 @@ CATCH_ALL
 
 DEFINE_PRINT_FUNCTIONS(Coefficient)
 
-DEFINE_PRINT_FUNCTIONS(LinExpression)
+DEFINE_PRINT_FUNCTIONS(Linear_Expression)
 
 DEFINE_PRINT_FUNCTIONS(Constraint)
 

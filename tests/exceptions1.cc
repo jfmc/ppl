@@ -68,7 +68,7 @@ error2() {
   gs.insert(ray(x + 0*y));
   gs.insert(ray(0*x + y));
   C_Polyhedron ph(gs);
-  LinExpression coeff1 = x + y + 1;
+  Linear_Expression coeff1 = x + y + 1;
   try {
     // This is an incorrect use of function
     // C_Polyhedron::affine_image(v, expr,d): it is illegal applying
@@ -237,7 +237,7 @@ error8() {
 
   C_Polyhedron ph(2);
   ph.add_constraint(x >= y);
-  LinExpression coeff = x + y + 1;
+  Linear_Expression coeff = x + y + 1;
   try {
     // This is an incorrect use of the function
     // C_Polyhedron::affine_preimage(v, expr, d): it is illegal
@@ -1184,7 +1184,7 @@ error42() {
 static void
 error43() {
   GenSys gs;
-  LinExpression e;
+  Linear_Expression e;
   try {
     // This is an incorrect use of function
     // Generator::ray(e):
@@ -1205,7 +1205,7 @@ error43() {
 static void
 error44() {
   GenSys gs;
-  LinExpression e;
+  Linear_Expression e;
   try {
     // This is an incorrect use of function
     // Generator::line(e):

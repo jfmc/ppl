@@ -630,7 +630,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 
 #if defined(USE_PPL)
       // PPL variables have indices 0, 1, ..., space_dim-1.
-      PPL::LinExpression e;
+      PPL::Linear_Expression e;
       for (unsigned j = space_dim; j-- > 0; )
 	e += coefficients[j] * PPL::Variable(j);
 #elif defined(USE_POLKA)
@@ -753,7 +753,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 
 #if defined(USE_PPL)
       // PPL variables have indices 0, 1, ..., space_dim-1.
-      PPL::LinExpression e;
+      PPL::Linear_Expression e;
       for (unsigned j = num_columns; j-- > 1; )
 	e += coefficients[j] * PPL::Variable(j-1);
       e += coefficients[0];

@@ -9,13 +9,13 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef PPL_LinExpression_types_hh
-#define PPL_LinExpression_types_hh 1
+#ifndef PPL_Linear_Expression_types_hh
+#define PPL_Linear_Expression_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
-class LinExpression;
+class Linear_Expression;
 
 }
 
-#endif // !defined(PPL_LinExpression_types_hh)
+#endif // !defined(PPL_Linear_Expression_types_hh)

@@ -109,7 +109,7 @@ main() TRY {
        << endl;
 #endif
 
-  LinExpression le(0);
+  Linear_Expression le(0);
   memory_size_type le_total_size = le.total_memory_in_bytes();
   memory_size_type le_external_size = le.external_memory_in_bytes();
 #if NOISY

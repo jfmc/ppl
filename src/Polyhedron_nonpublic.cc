@@ -506,7 +506,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
 }
 
 bool
-PPL::Polyhedron::bounds(const LinExpression& expr,
+PPL::Polyhedron::bounds(const Linear_Expression& expr,
 			const bool from_above) const {
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
@@ -543,7 +543,7 @@ PPL::Polyhedron::bounds(const LinExpression& expr,
 }
 
 bool
-PPL::Polyhedron::max_min(const LinExpression& expr,
+PPL::Polyhedron::max_min(const Linear_Expression& expr,
 			 const bool maximize,
 			 Integer& ext_n, Integer& ext_d, bool& included,
 			 const Generator** const pppoint) const {
@@ -1423,7 +1423,7 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 					      const char* e_name,
-					      const LinExpression& e) const {
+					      const Linear_Expression& e) const {
   throw_dimension_incompatible(method, e_name, e.space_dimension());
 }
 

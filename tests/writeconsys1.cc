@@ -44,7 +44,7 @@ main() TRY {
 
   NNC_Polyhedron ph(2);
   ph.add_constraint(A - 2*B > 2);
-  ph.add_constraint(LinExpression(0) <= -1);
+  ph.add_constraint(Linear_Expression(0) <= -1);
   ph.add_constraint(A == 2);
 
   fstream f;

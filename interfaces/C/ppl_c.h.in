@@ -334,7 +334,7 @@ ppl_set_error_handler __P((void (*h)(enum ppl_enum_error_code code,
 
 PPL_TYPE_DECLARATION(Coefficient);
 
-PPL_TYPE_DECLARATION(LinExpression);
+PPL_TYPE_DECLARATION(Linear_Expression);
 
 PPL_TYPE_DECLARATION(Constraint);
 
@@ -423,7 +423,7 @@ ppl_Coefficient_OK __P((ppl_const_Coefficient_t c));
   expression at address \p ple.
 */
 int
-ppl_new_LinExpression __P((ppl_LinExpression_t* ple));
+ppl_new_Linear_Expression __P((ppl_Linear_Expression_t* ple));
 
 /*! \brief
   Creates a new linear expression corresponding to the constant 0 in a
@@ -431,46 +431,46 @@ ppl_new_LinExpression __P((ppl_LinExpression_t* ple));
   expression at address \p ple.
 */
 int
-ppl_new_LinExpression_with_dimension __P((ppl_LinExpression_t* ple,
-					  ppl_dimension_type d));
+ppl_new_Linear_Expression_with_dimension __P((ppl_Linear_Expression_t* ple,
+					      ppl_dimension_type d));
 
 /*! \brief
   Builds a linear expression that is a copy of \p le; writes an handle
   for the newly created linear expression at address \p ple.
 */
 int
-ppl_new_LinExpression_from_LinExpression __P((ppl_LinExpression_t* ple,
-					      ppl_const_LinExpression_t le));
+ppl_new_Linear_Expression_from_Linear_Expression
+__P((ppl_Linear_Expression_t* ple, ppl_const_Linear_Expression_t le));
 
 /*! \brief
   Builds a linear expression corresponding to constraint \p c;
   writes an handle for the newly created linear expression at address \p ple.
 */
 int
-ppl_new_LinExpression_from_Constraint __P((ppl_LinExpression_t* ple,
-					   ppl_const_Constraint_t c));
+ppl_new_Linear_Expression_from_Constraint __P((ppl_Linear_Expression_t* ple,
+					       ppl_const_Constraint_t c));
 
 /*! \brief
   Builds a linear expression corresponding to generator \p g;
   writes an handle for the newly created linear expression at address \p ple.
 */
 int
-ppl_new_LinExpression_from_Generator __P((ppl_LinExpression_t* ple,
-					  ppl_const_Generator_t g));
+ppl_new_Linear_Expression_from_Generator __P((ppl_Linear_Expression_t* ple,
+					      ppl_const_Generator_t g));
 
 /*! \brief
   Invalidates the handle \p le: this makes sure the corresponding
   resources will eventually be released.
 */
 int
-ppl_delete_LinExpression __P((ppl_const_LinExpression_t le));
+ppl_delete_Linear_Expression __P((ppl_const_Linear_Expression_t le));
 
 /*! \brief
   Assigns a copy of the linear expression \p src to \p dst.
 */
 int
-ppl_assign_LinExpression_from_LinExpression
-__P((ppl_LinExpression_t dst, ppl_const_LinExpression_t src));
+ppl_assign_Linear_Expression_from_Linear_Expression
+__P((ppl_Linear_Expression_t dst, ppl_const_Linear_Expression_t src));
 
 /*! \brief
   Adds \p n to the coefficient of variable \p var in the linear
@@ -478,62 +478,61 @@ __P((ppl_LinExpression_t dst, ppl_const_LinExpression_t src));
   between \p var + 1 and the old space dimension.
 */
 int
-ppl_LinExpression_add_to_coefficient __P((ppl_LinExpression_t le,
-					  ppl_dimension_type var,
-					  ppl_const_Coefficient_t n));
+ppl_Linear_Expression_add_to_coefficient __P((ppl_Linear_Expression_t le,
+					      ppl_dimension_type var,
+					      ppl_const_Coefficient_t n));
 
 /*! \brief
   Adds \p n to the inhomogeneous term of the linear expression
   \p le.
 */
 int
-ppl_LinExpression_add_to_inhomogeneous __P((ppl_LinExpression_t le,
-					    ppl_const_Coefficient_t n));
+ppl_Linear_Expression_add_to_inhomogeneous __P((ppl_Linear_Expression_t le,
+						ppl_const_Coefficient_t n));
 
 /*! \brief
   Adds the linear expression \p src to \p dst.
 */
 int
-ppl_add_LinExpression_to_LinExpression __P((ppl_LinExpression_t dst,
-					    ppl_const_LinExpression_t src));
+ppl_add_Linear_Expression_to_Linear_Expression
+__P((ppl_Linear_Expression_t dst, ppl_const_Linear_Expression_t src));
 
 /*! \brief
   Subtracts the linear expression \p src from \p dst.
 */
 int
-ppl_subtract_LinExpression_from_LinExpression
-__P((ppl_LinExpression_t dst,
-     ppl_const_LinExpression_t src));
+ppl_subtract_Linear_Expression_from_Linear_Expression
+__P((ppl_Linear_Expression_t dst, ppl_const_Linear_Expression_t src));
 
 /*! \brief
   Multiply the linear expression \p dst by \p n.
 */
 int
-ppl_multiply_LinExpression_by_Coefficient __P((ppl_LinExpression_t le,
-					       ppl_const_Coefficient_t n));
+ppl_multiply_Linear_Expression_by_Coefficient __P((ppl_Linear_Expression_t le,
+						   ppl_const_Coefficient_t n));
 
 /*! \brief
   Writes to \p m the space dimension of \p le.
 */
 int
-ppl_LinExpression_space_dimension __P((ppl_const_LinExpression_t le,
-				       ppl_dimension_type* m));
+ppl_Linear_Expression_space_dimension __P((ppl_const_Linear_Expression_t le,
+					   ppl_dimension_type* m));
 
 /*! \brief
   Copies into \p n the coefficient of variable \p var in
   the linear expression \p le.
 */
 int
-ppl_LinExpression_coefficient __P((ppl_const_LinExpression_t le,
-				   ppl_dimension_type var,
-				   ppl_Coefficient_t n));
+ppl_Linear_Expression_coefficient __P((ppl_const_Linear_Expression_t le,
+				       ppl_dimension_type var,
+				       ppl_Coefficient_t n));
 
 /*! \brief
   Copies into \p n the inhomogeneous term of linear expression \p le.
 */
 int
-ppl_LinExpression_inhomogeneous_term __P((ppl_const_LinExpression_t le,
-					  ppl_Coefficient_t n));
+ppl_Linear_Expression_inhomogeneous_term __P((ppl_const_Linear_Expression_t le,
+					      ppl_Coefficient_t n));
 
 /*! \brief
   Returns a positive integer if \p le is well formed, i.e., if it
@@ -541,7 +540,7 @@ ppl_LinExpression_inhomogeneous_term __P((ppl_const_LinExpression_t le,
   make some noise if \p le is broken.  Useful for debugging purposes.
 */
 int
-ppl_LinExpression_OK __P((ppl_const_LinExpression_t le));
+ppl_Linear_Expression_OK __P((ppl_const_Linear_Expression_t le));
 
 /*@}*/ /* Functions Related to Linear Expressions */
 
@@ -572,7 +571,7 @@ enum ppl_enum_Constraint_Type {
 */
 int
 ppl_new_Constraint __P((ppl_Constraint_t* pc,
-			ppl_const_LinExpression_t le,
+			ppl_const_Linear_Expression_t le,
 			enum ppl_enum_Constraint_Type rel));
 
 /*! \brief
@@ -828,7 +827,7 @@ enum ppl_enum_Generator_Type {
 */
 int
 ppl_new_Generator __P((ppl_Generator_t* pg,
-		       ppl_const_LinExpression_t le,
+		       ppl_const_Linear_Expression_t le,
 		       enum ppl_enum_Generator_Type t,
 		       ppl_const_Coefficient_t d));
 
@@ -1575,7 +1574,7 @@ ppl_Polyhedron_is_bounded __P((ppl_const_Polyhedron_t ph));
 */
 int
 ppl_Polyhedron_bounds_from_above __P((ppl_const_Polyhedron_t ph,
-				      ppl_const_LinExpression_t le));
+				      ppl_const_Linear_Expression_t le));
 
 /*! \brief
   Returns a positive integer if \p le is bounded from below in \p ph;
@@ -1583,7 +1582,7 @@ ppl_Polyhedron_bounds_from_above __P((ppl_const_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_bounds_from_below __P((ppl_const_Polyhedron_t ph,
-				      ppl_const_LinExpression_t le));
+				      ppl_const_Linear_Expression_t le));
 
 /*! \brief
   Returns a positive integer if  \p ph is not empty
@@ -1614,7 +1613,7 @@ ppl_Polyhedron_bounds_from_below __P((ppl_const_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_maximize __P((ppl_const_Polyhedron_t ph,
-			     ppl_const_LinExpression_t le,
+			     ppl_const_Linear_Expression_t le,
 			     ppl_Coefficient_t sup_n,
 			     ppl_Coefficient_t sup_d,
 			     int* pmaximum,
@@ -1649,7 +1648,7 @@ ppl_Polyhedron_maximize __P((ppl_const_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_minimize __P((ppl_const_Polyhedron_t ph,
-			     ppl_const_LinExpression_t le,
+			     ppl_const_Linear_Expression_t le,
 			     ppl_Coefficient_t inf_n,
 			     ppl_Coefficient_t inf_d,
 			     int* pminimum,
@@ -1889,7 +1888,7 @@ ppl_Polyhedron_poly_difference_assign __P((ppl_Polyhedron_t x,
 int
 ppl_Polyhedron_affine_image __P((ppl_Polyhedron_t ph,
 				 ppl_dimension_type var,
-				 ppl_const_LinExpression_t le,
+				 ppl_const_Linear_Expression_t le,
 				 ppl_const_Coefficient_t d));
 
 /*! \brief
@@ -1911,7 +1910,7 @@ ppl_Polyhedron_affine_image __P((ppl_Polyhedron_t ph,
 int
 ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
 				    ppl_dimension_type var,
-				    ppl_const_LinExpression_t le,
+				    ppl_const_Linear_Expression_t le,
 				    ppl_const_Coefficient_t d));
 
 /*! \brief
@@ -1941,7 +1940,7 @@ ppl_Polyhedron_generalized_affine_image
 __P((ppl_Polyhedron_t ph,
      ppl_dimension_type var,
      enum ppl_enum_Constraint_Type relsym,
-     ppl_const_LinExpression_t le,
+     ppl_const_Linear_Expression_t le,
      ppl_const_Coefficient_t d));
 
 /*! \brief
@@ -1965,9 +1964,9 @@ __P((ppl_Polyhedron_t ph,
 int
 ppl_Polyhedron_generalized_affine_image_lhs_rhs
 __P((ppl_Polyhedron_t ph,
-     ppl_const_LinExpression_t lhs,
+     ppl_const_Linear_Expression_t lhs,
      enum ppl_enum_Constraint_Type relsym,
-     ppl_const_LinExpression_t rhs));
+     ppl_const_Linear_Expression_t rhs));
 
 /*! \brief
   Assigns to \p x the \ref time_elapse "time-elapse" between the polyhedra
@@ -2253,7 +2252,7 @@ ppl_io_fprint_ ## Type __P((FILE* stream, ppl_const_ ## Type ## _t x));
 
 PPL_DECLARE_PRINT_FUNCTIONS(Coefficient)
 
-PPL_DECLARE_PRINT_FUNCTIONS(LinExpression)
+PPL_DECLARE_PRINT_FUNCTIONS(Linear_Expression)
 
 PPL_DECLARE_PRINT_FUNCTIONS(Constraint)
 

@@ -34,7 +34,7 @@ PPL::C_Polyhedron::C_Polyhedron(const NNC_Polyhedron& y)
   for (ConSys::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i) {
     const Constraint& c = *i;
-    add_constraint(c.is_strict_inequality() ? (LinExpression(c) >= 0) : c);
+    add_constraint(c.is_strict_inequality() ? (Linear_Expression(c) >= 0) : c);
   }
   assert(OK());
 }

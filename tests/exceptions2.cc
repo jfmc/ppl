@@ -119,7 +119,7 @@ error4() {
     // This is an incorrect use of the function add_generator(g): it
     // is illegal to insert a closure-point into a system of
     // generators of a closed polyhedron.
-    ph.add_generator(closure_point(LinExpression(2)));
+    ph.add_generator(closure_point(Linear_Expression(2)));
     exit(1);
   }
   catch(invalid_argument& e) {

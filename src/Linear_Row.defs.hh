@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Row.types.hh"
 #include "Row.defs.hh"
 #include "Topology.hh"
-#include "LinExpression.types.hh"
+#include "Linear_Expression.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 
@@ -115,7 +115,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   on the vector space \f$\Rset^{d+1}\f$, therefore interpreting the slack
   variable \f$\epsilon\f$ as an ordinary dimension of the vector space.
 
-  A Linear_Row object implementing a LinExpression is always of the form
+  A Linear_Row object implementing a Linear_Expression is always of the form
   \f$[0, a_0, \ldots, a_{d-1}]_{(c,=)}\f$, which represents the
   linear expression \f$\sum_{i=0}^{d-1} a_i x_i\f$.
 */
@@ -361,7 +361,7 @@ public:
   bool OK(dimension_type row_size, dimension_type row_capacity) const;
 
 private:
-  friend class Parma_Polyhedra_Library::LinExpression;
+  friend class Parma_Polyhedra_Library::Linear_Expression;
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;
 };

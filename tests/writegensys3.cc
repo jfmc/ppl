@@ -42,7 +42,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  LinExpression e1 = 2*A + 4;
+  Linear_Expression e1 = 2*A + 4;
   e1 += B;
   GenSys gs;
   gs.insert(ray(e1));

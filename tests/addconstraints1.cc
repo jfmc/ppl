@@ -40,12 +40,12 @@ main() TRY {
   ph1.add_constraints_and_minimize(cs1);
 
   ConSys cs2;
-  cs2.insert(LinExpression::zero() >= 7);
+  cs2.insert(Linear_Expression::zero() >= 7);
   C_Polyhedron ph2;
   ph2.add_constraints_and_minimize(cs2);
 
   ConSys cs3;
-  cs3.insert(LinExpression::zero() >= -3);
+  cs3.insert(Linear_Expression::zero() >= -3);
   C_Polyhedron ph3;
   ph3.add_constraints_and_minimize(cs3);
 

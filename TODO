@@ -12,7 +12,6 @@ Enhancements for PPL 0.7
     Integer -> Coefficient
     ConSys -> Constraint_System
     GenSys -> Generator_System
-    LinExpression -> Linear_Expression
 
 - Rewrite Linear_System::sort_and_remove_with_sat() and perhaps
   Linear_System::sort_rows().
@@ -70,7 +69,7 @@ Efficiency Issues
   differences.
 
 - We are being rather careless about the creation of temporaries
-  as far as the classes LinExpression, Constraint and Generator
+  as far as the classes Linear_Expression, Constraint and Generator
   are concerned.
 
 - In Polyhedron::strongly_minimize_constraints(), after the removal

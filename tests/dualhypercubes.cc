@@ -44,7 +44,7 @@ namespace {
 
 void
 closure_points_dual_hypercube(const dimension_type dims,
-			      const LinExpression& weight_center,
+			      const Linear_Expression& weight_center,
 			      const Integer& half_diagonal,
 			      GenSys& gs) {
   // An ill-formed (it has no points at all) generator system
@@ -58,18 +58,18 @@ closure_points_dual_hypercube(const dimension_type dims,
 void
 add_facets(dimension_type& to_be_added,
 	   GenSys& gs,
-	   const LinExpression& expr,
+	   const Linear_Expression& expr,
 	   const dimension_type axis,
 	   const dimension_type dims,
-	   const LinExpression& weight_center,
+	   const Linear_Expression& weight_center,
 	   const Integer& half_diagonal) {
   // Return if we have already added all facets.
   if (to_be_added == 0)
     return;
 
-  LinExpression expr1 = expr;
+  Linear_Expression expr1 = expr;
   expr1 += half_diagonal * Variable(axis);
-  LinExpression expr2 = expr;
+  Linear_Expression expr2 = expr;
   expr2 -= half_diagonal * Variable(axis);
 
   if (axis == 0) {
@@ -97,7 +97,7 @@ add_facets(dimension_type& to_be_added,
 
 NNC_Polyhedron
 NNC_dual_hypercube(const dimension_type dims,
-		   const LinExpression& weight_center,
+		   const Linear_Expression& weight_center,
 		   const Integer& half_diagonal,
 		   const int facet_percentage) {
   GenSys gs;
@@ -111,7 +111,7 @@ NNC_dual_hypercube(const dimension_type dims,
     // There has to be a point, at least.
     gs.insert(point(weight_center));
   else
-    add_facets(facets_to_be_added, gs, LinExpression(0),
+    add_facets(facets_to_be_added, gs, Linear_Expression(0),
 	       dims-1, dims, weight_center, half_diagonal);
   // Actually build the polyhedron.
   return NNC_Polyhedron(gs);
@@ -122,22 +122,22 @@ build_polyhedra(const dimension_type dims,
 		const int perc,
 		vector<NNC_Polyhedron>& ph) {
 
-  LinExpression weight_center;
+  Linear_Expression weight_center;
 
   // 1st-polyhedron.
-  weight_center = LinExpression(0);
+  weight_center = Linear_Expression(0);
   for (dimension_type axis = dims; axis-- > 0; )
     weight_center += Variable(axis);
   ph.push_back(NNC_dual_hypercube(dims, weight_center, 5, perc));
 
   // 2nd-polyhedron.
-  weight_center = LinExpression(0);
+  weight_center = Linear_Expression(0);
   for (dimension_type axis = dims; axis-- > 0; )
     weight_center += 2*Variable(axis);
   ph.push_back(NNC_dual_hypercube(dims, weight_center, 4, perc));
 
   // 3rd-polyhedron.
-  weight_center = LinExpression(0);
+  weight_center = Linear_Expression(0);
   for (dimension_type axis = dims; axis-- > 0; )
     if (axis % 2 == 0)
       weight_center += 10*Variable(axis);
@@ -146,7 +146,7 @@ build_polyhedra(const dimension_type dims,
   ph.push_back(NNC_dual_hypercube(dims, weight_center, 5, perc));
 
   // 4th-polyhedron.
-  weight_center = LinExpression(0);
+  weight_center = Linear_Expression(0);
   for (dimension_type axis = dims; axis-- > 0; )
     if (axis % 2 == 0)
       weight_center += 10*Variable(axis);

@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Generator::Generator(LinExpression& e, Type type, Topology topology) {
+Generator::Generator(Linear_Expression& e, Type type, Topology topology) {
   assert(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
   Linear_Row::swap(e);
   flags() = Flags(topology, (type == LINE
@@ -154,25 +154,25 @@ Generator::zero_dim_closure_point() {
 
 /*! \relates Generator */
 inline Generator
-line(const LinExpression& e) {
+line(const Linear_Expression& e) {
   return Generator::line(e);
 }
 
 /*! \relates Generator */
 inline Generator
-ray(const LinExpression& e) {
+ray(const Linear_Expression& e) {
   return Generator::ray(e);
 }
 
 /*! \relates Generator */
 inline Generator
-point(const LinExpression& e, Integer_traits::const_reference d) {
+point(const Linear_Expression& e, Integer_traits::const_reference d) {
   return Generator::point(e, d);
 }
 
 /*! \relates Generator */
 inline Generator
-closure_point(const LinExpression& e, Integer_traits::const_reference d) {
+closure_point(const Linear_Expression& e, Integer_traits::const_reference d) {
   return Generator::closure_point(e, d);
 }
 

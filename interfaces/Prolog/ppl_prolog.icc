@@ -30,7 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "GenSys.defs.hh"
 #include "GenSys.inlines.hh"
 #include "Variable.defs.hh"
-#include "LinExpression.defs.hh"
+#include "Linear_Expression.defs.hh"
 #include "Polyhedron.defs.hh"
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
@@ -538,10 +538,10 @@ term_to_polyhedron_kind(Prolog_term_ref t) {
   throw not_a_polyhedron_kind(t);
 }
 
-LinExpression
-build_lin_expression(Prolog_term_ref t) {
+Linear_Expression
+build_linear_expression(Prolog_term_ref t) {
   if (Prolog_is_integer(t))
-    return LinExpression(integer_term_to_Integer(t));
+    return Linear_Expression(integer_term_to_Integer(t));
   else if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
@@ -553,10 +553,10 @@ build_lin_expression(Prolog_term_ref t) {
 	Prolog_get_arg(1, t, arg);
 	if (functor == a_plus)
 	  // Unary plus.
-	  return build_lin_expression(arg);
+	  return build_linear_expression(arg);
 	else if (functor == a_minus)
 	  // Unary minus.
-	  return -build_lin_expression(arg);
+	  return -build_linear_expression(arg);
 	else if (functor == a_dollar_VAR)
 	  // Variable.
 	  return Variable(term_to_unsigned<dimension_type>(arg));
@@ -571,30 +571,30 @@ build_lin_expression(Prolog_term_ref t) {
 	if (functor == a_plus)
 	  // Plus.
 	  if (Prolog_is_integer(arg1))
-	    return integer_term_to_Integer(arg1) + build_lin_expression(arg2);
+	    return integer_term_to_Integer(arg1) + build_linear_expression(arg2);
 	  else if (Prolog_is_integer(arg2))
-	    return build_lin_expression(arg1) + integer_term_to_Integer(arg2);
+	    return build_linear_expression(arg1) + integer_term_to_Integer(arg2);
 	  else
-	    return build_lin_expression(arg1) + build_lin_expression(arg2);
+	    return build_linear_expression(arg1) + build_linear_expression(arg2);
 	else if (functor == a_minus)
 	  // Minus.
 	  if (Prolog_is_integer(arg1))
-	    return integer_term_to_Integer(arg1) - build_lin_expression(arg2);
+	    return integer_term_to_Integer(arg1) - build_linear_expression(arg2);
 	  else if (Prolog_is_integer(arg2))
-	    return build_lin_expression(arg1) - integer_term_to_Integer(arg2);
+	    return build_linear_expression(arg1) - integer_term_to_Integer(arg2);
 	  else
-	    return build_lin_expression(arg1) - build_lin_expression(arg2);
+	    return build_linear_expression(arg1) - build_linear_expression(arg2);
 	else if (functor == a_asterisk)
 	  // Times.
 	  if (Prolog_is_integer(arg1))
-	    return integer_term_to_Integer(arg1) * build_lin_expression(arg2);
+	    return integer_term_to_Integer(arg1) * build_linear_expression(arg2);
 	  else if (Prolog_is_integer(arg2))
-	    return build_lin_expression(arg1) * integer_term_to_Integer(arg2);
+	    return build_linear_expression(arg1) * integer_term_to_Integer(arg2);
       }
     }
   }
   // Invalid.
-  throw non_linear("build_lin_expression", t);
+  throw non_linear("build_linear_expression", t);
 }
 
 
@@ -612,43 +612,43 @@ build_constraint(Prolog_term_ref t) {
       if (functor == a_equal)
 	// =
 	if (Prolog_is_integer(arg1))
-	  return integer_term_to_Integer(arg1) == build_lin_expression(arg2);
+	  return integer_term_to_Integer(arg1) == build_linear_expression(arg2);
 	else if (Prolog_is_integer(arg2))
-	  return build_lin_expression(arg1) == integer_term_to_Integer(arg2);
+	  return build_linear_expression(arg1) == integer_term_to_Integer(arg2);
 	else
-	  return build_lin_expression(arg1) == build_lin_expression(arg2);
+	  return build_linear_expression(arg1) == build_linear_expression(arg2);
       else if (functor == a_equal_less_than)
 	// =<
 	if (Prolog_is_integer(arg1))
-	  return integer_term_to_Integer(arg1) <= build_lin_expression(arg2);
+	  return integer_term_to_Integer(arg1) <= build_linear_expression(arg2);
 	else if (Prolog_is_integer(arg2))
-	  return build_lin_expression(arg1) <= integer_term_to_Integer(arg2);
+	  return build_linear_expression(arg1) <= integer_term_to_Integer(arg2);
 	else
-	  return build_lin_expression(arg1) <= build_lin_expression(arg2);
+	  return build_linear_expression(arg1) <= build_linear_expression(arg2);
       else if (functor == a_greater_than_equal)
 	// >=
 	if (Prolog_is_integer(arg1))
-	  return integer_term_to_Integer(arg1) >= build_lin_expression(arg2);
+	  return integer_term_to_Integer(arg1) >= build_linear_expression(arg2);
 	else if (Prolog_is_integer(arg2))
-	  return build_lin_expression(arg1) >= integer_term_to_Integer(arg2);
+	  return build_linear_expression(arg1) >= integer_term_to_Integer(arg2);
 	else
-	  return build_lin_expression(arg1) >= build_lin_expression(arg2);
+	  return build_linear_expression(arg1) >= build_linear_expression(arg2);
       else if (functor == a_less_than)
 	// <
 	if (Prolog_is_integer(arg1))
-	  return integer_term_to_Integer(arg1) < build_lin_expression(arg2);
+	  return integer_term_to_Integer(arg1) < build_linear_expression(arg2);
 	else if (Prolog_is_integer(arg2))
-	  return build_lin_expression(arg1) < integer_term_to_Integer(arg2);
+	  return build_linear_expression(arg1) < integer_term_to_Integer(arg2);
 	else
-	  return build_lin_expression(arg1) < build_lin_expression(arg2);
+	  return build_linear_expression(arg1) < build_linear_expression(arg2);
       else if (functor == a_greater_than)
 	// >
 	if (Prolog_is_integer(arg1))
-	  return integer_term_to_Integer(arg1) > build_lin_expression(arg2);
+	  return integer_term_to_Integer(arg1) > build_linear_expression(arg2);
 	else if (Prolog_is_integer(arg2))
-	  return build_lin_expression(arg1) > integer_term_to_Integer(arg2);
+	  return build_linear_expression(arg1) > integer_term_to_Integer(arg2);
 	else
-	  return build_lin_expression(arg1) > build_lin_expression(arg2);
+	  return build_linear_expression(arg1) > build_linear_expression(arg2);
     }
   }
   // Invalid.
@@ -665,13 +665,13 @@ build_generator(Prolog_term_ref t) {
       Prolog_term_ref arg = Prolog_new_term_ref();
       Prolog_get_arg(1, t, arg);
       if (functor == a_line)
-	return Generator::line(build_lin_expression(arg));
+	return Generator::line(build_linear_expression(arg));
       else if (functor == a_ray)
-	return Generator::ray(build_lin_expression(arg));
+	return Generator::ray(build_linear_expression(arg));
       else if (functor == a_point)
-	return Generator::point(build_lin_expression(arg));
+	return Generator::point(build_linear_expression(arg));
       else if (functor == a_closure_point)
-	return Generator::closure_point(build_lin_expression(arg));
+	return Generator::closure_point(build_linear_expression(arg));
     }
     else if (arity == 2) {
       Prolog_term_ref arg1 = Prolog_new_term_ref();
@@ -680,10 +680,10 @@ build_generator(Prolog_term_ref t) {
       Prolog_get_arg(2, t, arg2);
       if (Prolog_is_integer(arg2)) {
         if (functor == a_point)
-	  return Generator::point(build_lin_expression(arg1),
+	  return Generator::point(build_linear_expression(arg1),
 				  integer_term_to_Integer(arg2));
         else if (functor == a_closure_point)
-	  return Generator::closure_point(build_lin_expression(arg1),
+	  return Generator::closure_point(build_linear_expression(arg1),
 					  integer_term_to_Integer(arg2));
       }
     }
@@ -694,7 +694,7 @@ build_generator(Prolog_term_ref t) {
 
 template <typename R>
 Prolog_term_ref
-get_lin_expression(const R& r) {
+get_linear_expression(const R& r) {
   Prolog_term_ref so_far = Prolog_new_term_ref();
   Integer coefficient;
   dimension_type varid = 0;
@@ -749,7 +749,7 @@ constraint_term(const Constraint& c) {
   }
   Prolog_term_ref t = Prolog_new_term_ref();
   Prolog_construct_compound(t, relation,
-			    get_lin_expression(c),
+			    get_linear_expression(c),
 			    Integer_to_integer_term(-c.inhomogeneous_term()));
   return t;
 }
@@ -773,7 +773,7 @@ generator_term(const Generator& g) {
 	break;
       else {
 	Prolog_construct_compound(t, constructor,
-				  get_lin_expression(g),
+				  get_linear_expression(g),
 				  Integer_to_integer_term(divisor));
 	return t;
       }
@@ -786,7 +786,7 @@ generator_term(const Generator& g) {
 	break;
       else {
 	Prolog_construct_compound(t, constructor,
-				  get_lin_expression(g),
+				  get_linear_expression(g),
 				  Integer_to_integer_term(divisor));
 	return t;
       }
@@ -794,7 +794,7 @@ generator_term(const Generator& g) {
   default:
     throw unknown_interface_error("generator_term()");
   }
-  Prolog_construct_compound(t, constructor, get_lin_expression(g));
+  Prolog_construct_compound(t, constructor, get_linear_expression(g));
   return t;
 }
 
@@ -1666,7 +1666,7 @@ ppl_Polyhedron_bounds_from_above(Prolog_term_ref t_ph,
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    LinExpression l = build_lin_expression(t_expr);
+    Linear_Expression l = build_linear_expression(t_expr);
     if (ph->bounds_from_above(l))
       return PROLOG_SUCCESS;
   }
@@ -1679,7 +1679,7 @@ ppl_Polyhedron_bounds_from_below(Prolog_term_ref t_ph,
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    LinExpression l = build_lin_expression(t_expr);
+    Linear_Expression l = build_linear_expression(t_expr);
     if (ph->bounds_from_below(l))
       return PROLOG_SUCCESS;
   }
@@ -1695,7 +1695,7 @@ ppl_Polyhedron_maximize(Prolog_term_ref t_ph,
  try {
     const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    const LinExpression le = build_lin_expression(t_le_expr);
+    const Linear_Expression le = build_linear_expression(t_le_expr);
     Integer n;
     Integer d;
     bool max;
@@ -1722,7 +1722,7 @@ ppl_Polyhedron_maximize_with_point(Prolog_term_ref t_ph,
  try {
     const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    const LinExpression le = build_lin_expression(t_le_expr);
+    const Linear_Expression le = build_linear_expression(t_le_expr);
     Integer n;
     Integer d;
     bool max;
@@ -1750,7 +1750,7 @@ ppl_Polyhedron_minimize(Prolog_term_ref t_ph,
  try {
     const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    const LinExpression le = build_lin_expression(t_le_expr);
+    const Linear_Expression le = build_linear_expression(t_le_expr);
     Integer n;
     Integer d;
     bool min;
@@ -1777,7 +1777,7 @@ ppl_Polyhedron_minimize_with_point(Prolog_term_ref t_ph,
  try {
     const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    const LinExpression le = build_lin_expression(t_le_expr);
+    const Linear_Expression le = build_linear_expression(t_le_expr);
     Integer n;
     Integer d;
     bool min;
@@ -2095,7 +2095,7 @@ ppl_Polyhedron_affine_image(Prolog_term_ref t_ph, Prolog_term_ref t_v,
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     ph->affine_image(term_to_Variable(t_v),
-		     build_lin_expression(t_le),
+		     build_linear_expression(t_le),
 		     term_to_Integer(t_d));
     return PROLOG_SUCCESS;
   }
@@ -2109,7 +2109,7 @@ ppl_Polyhedron_affine_preimage(Prolog_term_ref t_ph, Prolog_term_ref t_v,
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     ph->affine_preimage(term_to_Variable(t_v),
-			build_lin_expression(t_le),
+			build_linear_expression(t_le),
 			term_to_Integer(t_d));
     return PROLOG_SUCCESS;
   }
@@ -2159,7 +2159,7 @@ ppl_Polyhedron_generalized_affine_image(Prolog_term_ref t_ph,
     if (relation_symbol(t_r, r)) {
       ph->generalized_affine_image(term_to_Variable(t_v),
 				   r,
-				   build_lin_expression(t_le),
+				   build_linear_expression(t_le),
 				   term_to_Integer(t_d));
       return PROLOG_SUCCESS;
     }
@@ -2177,9 +2177,9 @@ ppl_Polyhedron_generalized_affine_image_lhs_rhs(Prolog_term_ref t_ph,
     CHECK(ph);
     Relation_Symbol r;
     if (relation_symbol(t_r, r)) {
-      ph->generalized_affine_image(build_lin_expression(t_lhs),
+      ph->generalized_affine_image(build_linear_expression(t_lhs),
 				   r,
-				   build_lin_expression(t_rhs));
+				   build_linear_expression(t_rhs));
       return PROLOG_SUCCESS;
     }
   }

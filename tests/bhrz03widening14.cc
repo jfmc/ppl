@@ -49,8 +49,8 @@ splitting_segment(const Generator& p1,
 		  unsigned magic_number) {
   const Integer& d1 = p1.divisor();
   const Integer& d2 = p2.divisor();
-  LinExpression expr = d2 * LinExpression(p1);
-  expr += d1 * LinExpression(p2);
+  Linear_Expression expr = d2 * Linear_Expression(p1);
+  expr += d1 * Linear_Expression(p2);
   // The divisor for the average is 2 * d1 * d2.
   // by carefully taking a smaller divisor, we obtain a point
   // that won't be redundant in the polyhedron.

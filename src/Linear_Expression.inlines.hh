@@ -1,4 +1,4 @@
-/* LinExpression class implementation: inline functions.
+/* Linear_Expression class implementation: inline functions.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_LinExpression_inlines_hh
-#define PPL_LinExpression_inlines_hh 1
+#ifndef PPL_Linear_Expression_inlines_hh
+#define PPL_Linear_Expression_inlines_hh 1
 
 #include "Variable.defs.hh"
 #include "Integer.defs.hh"
@@ -31,26 +31,26 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline dimension_type
-LinExpression::max_space_dimension() {
+Linear_Expression::max_space_dimension() {
   return Linear_Row::max_space_dimension();
 }
 
 inline
-LinExpression::LinExpression()
+Linear_Expression::Linear_Expression()
   : Linear_Row(1, Linear_Row::Flags()) {
 }
 
 inline
-LinExpression::LinExpression(dimension_type sz, bool)
+Linear_Expression::Linear_Expression(dimension_type sz, bool)
   : Linear_Row(sz, Linear_Row::Flags()) {
 }
 
 inline
-LinExpression::LinExpression(const Variable v)
+Linear_Expression::Linear_Expression(const Variable v)
   : Linear_Row(v.space_dimension() <= max_space_dimension()
 	       ? v.id() + 2
-	       : (throw std::length_error("PPL::LinExpression::"
-					  "LinExpression(v):\n"
+	       : (throw std::length_error("PPL::Linear_Expression::"
+					  "Linear_Expression(v):\n"
 					  "v exceeds the maximum allowed "
 					  "space dimension."),
 		  v.id() + 2)
@@ -59,98 +59,98 @@ LinExpression::LinExpression(const Variable v)
 }
 
 inline
-LinExpression::LinExpression(const LinExpression& e)
+Linear_Expression::Linear_Expression(const Linear_Expression& e)
   : Linear_Row(e) {
 }
 
 inline
-LinExpression::~LinExpression() {
+Linear_Expression::~Linear_Expression() {
 }
 
 inline
-LinExpression::LinExpression(const LinExpression& e, dimension_type sz)
+Linear_Expression::Linear_Expression(const Linear_Expression& e, dimension_type sz)
   : Linear_Row(e, sz, sz) {
 }
 
 inline
-LinExpression::LinExpression(Integer_traits::const_reference n)
+Linear_Expression::Linear_Expression(Integer_traits::const_reference n)
   : Linear_Row(1, Linear_Row::Flags()) {
   (*this)[0] = n;
 }
 
 inline dimension_type
-LinExpression::space_dimension() const {
+Linear_Expression::space_dimension() const {
   return size() - 1;
 }
 
 inline Integer_traits::const_reference
-LinExpression::coefficient(Variable v) const {
+Linear_Expression::coefficient(Variable v) const {
   if (v.space_dimension() > space_dimension())
     return Integer_zero();
   return Linear_Row::coefficient(v.id());
 }
 
 inline Integer_traits::const_reference
-LinExpression::inhomogeneous_term() const {
+Linear_Expression::inhomogeneous_term() const {
   return Linear_Row::inhomogeneous_term();
 }
 
-inline const LinExpression&
-LinExpression::zero() {
-  static LinExpression z = LinExpression(Integer_zero());
+inline const Linear_Expression&
+Linear_Expression::zero() {
+  static Linear_Expression z = Linear_Expression(Integer_zero());
   return z;
 }
 
 inline memory_size_type
-LinExpression::external_memory_in_bytes() const {
+Linear_Expression::external_memory_in_bytes() const {
   return Linear_Row::external_memory_in_bytes();
 }
 
 inline memory_size_type
-LinExpression::total_memory_in_bytes() const {
+Linear_Expression::total_memory_in_bytes() const {
   return Linear_Row::total_memory_in_bytes();
 }
 
-/*! \relates LinExpression */
-inline LinExpression
-operator+(const LinExpression& e) {
+/*! \relates Linear_Expression */
+inline Linear_Expression
+operator+(const Linear_Expression& e) {
   return e;
 }
 
-/*! \relates LinExpression */
-inline LinExpression
-operator+(const LinExpression& e, Integer_traits::const_reference n) {
+/*! \relates Linear_Expression */
+inline Linear_Expression
+operator+(const Linear_Expression& e, Integer_traits::const_reference n) {
   return n + e;
 }
 
-/*! \relates LinExpression */
-inline LinExpression
-operator-(const LinExpression& e, Integer_traits::const_reference n) {
+/*! \relates Linear_Expression */
+inline Linear_Expression
+operator-(const Linear_Expression& e, Integer_traits::const_reference n) {
   return -n + e;
 }
 
-/*! \relates LinExpression */
-inline LinExpression
-operator*(const LinExpression& e, Integer_traits::const_reference n) {
+/*! \relates Linear_Expression */
+inline Linear_Expression
+operator*(const Linear_Expression& e, Integer_traits::const_reference n) {
   return n * e;
 }
 
-/*! \relates LinExpression */
-inline LinExpression&
-operator+=(LinExpression& e, Integer_traits::const_reference n) {
+/*! \relates Linear_Expression */
+inline Linear_Expression&
+operator+=(Linear_Expression& e, Integer_traits::const_reference n) {
   e[0] += n;
   return e;
 }
 
-/*! \relates LinExpression */
-inline LinExpression&
-operator-=(LinExpression& e, Integer_traits::const_reference n) {
+/*! \relates Linear_Expression */
+inline Linear_Expression&
+operator-=(Linear_Expression& e, Integer_traits::const_reference n) {
   e[0] -= n;
   return e;
 }
 
 inline void
-LinExpression::swap(LinExpression& y) {
+Linear_Expression::swap(Linear_Expression& y) {
   Linear_Row::swap(y);
 }
 
@@ -159,13 +159,13 @@ LinExpression::swap(LinExpression& y) {
 
 namespace std {
 
-/*! \relates Parma_Polyhedra_Library::LinExpression */
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
 inline void
-swap(Parma_Polyhedra_Library::LinExpression& x,
-     Parma_Polyhedra_Library::LinExpression& y) {
+swap(Parma_Polyhedra_Library::Linear_Expression& x,
+     Parma_Polyhedra_Library::Linear_Expression& y) {
   x.swap(y);
 }
 
 } // namespace std
 
-#endif // !defined(PPL_LinExpression_inlines_hh)
+#endif // !defined(PPL_Linear_Expression_inlines_hh)

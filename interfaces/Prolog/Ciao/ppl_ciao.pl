@@ -588,16 +588,16 @@ ppl_Polyhedron_poly_hull_assign_and_minimize(Handle1, Handle2) :-
 :- true pred ppl_Polyhedron_generalized_affine_image_2(
                                          in(Handle),
                                          in(Var), in(Rel),
-                                         in(LinExpression),
+                                         in(Linear_Expression),
                                          in(Divisor), go(Success))
   :: any_term * any_term * any_term * any_term * any_term * int
   + (returns(Success),
       foreign(ppl_Polyhedron_generalized_affine_image)).
 
 ppl_Polyhedron_generalized_affine_image(
-                  Handle, Var, Rel, LinExpression, Divisor) :-
+                  Handle, Var, Rel, Linear_Expression, Divisor) :-
       ppl_Polyhedron_generalized_affine_image_2(
-                  Handle, Var, Rel, LinExpression, Divisor, 1).
+                  Handle, Var, Rel, Linear_Expression, Divisor, 1).
 
 :- true pred ppl_Polyhedron_generalized_affine_image_lhs_rhs_2(
                  in(Handle), in(LHS), in(Rel), in(RHS), go(Success))
@@ -1138,7 +1138,7 @@ since the above version of this is temporary.
 
 :- true pred ppl_Polyhedron_generalized_affine_image(in(Handle),
                                                      in(Var), in(Rel),
-                                                     in(LinExpression),
+                                                     in(Linear_Expression),
                                                      in(Divisor))
              :: any_term * any_term * any_term * any_term * any_term + foreign.
 

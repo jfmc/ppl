@@ -290,36 +290,36 @@ Polyhedron::is_empty() const {
 }
 
 inline bool
-Polyhedron::bounds_from_above(const LinExpression& expr) const {
+Polyhedron::bounds_from_above(const Linear_Expression& expr) const {
   return bounds(expr, true);
 }
 
 inline bool
-Polyhedron::bounds_from_below(const LinExpression& expr) const {
+Polyhedron::bounds_from_below(const Linear_Expression& expr) const {
   return bounds(expr, false);
 }
 
 inline bool
-Polyhedron::maximize(const LinExpression& expr,
+Polyhedron::maximize(const Linear_Expression& expr,
 		     Integer& sup_n, Integer& sup_d, bool& maximum) const {
   return max_min(expr, true, sup_n, sup_d, maximum);
 }
 
 inline bool
-Polyhedron::maximize(const LinExpression& expr,
+Polyhedron::maximize(const Linear_Expression& expr,
 		     Integer& sup_n, Integer& sup_d, bool& maximum,
 		     const Generator** const pppoint) const {
   return max_min(expr, true, sup_n, sup_d, maximum, pppoint);
 }
 
 inline bool
-Polyhedron::minimize(const LinExpression& expr,
+Polyhedron::minimize(const Linear_Expression& expr,
 		     Integer& inf_n, Integer& inf_d, bool& minimum) const {
   return max_min(expr, false, inf_n, inf_d, minimum);
 }
 
 inline bool
-Polyhedron::minimize(const LinExpression& expr,
+Polyhedron::minimize(const Linear_Expression& expr,
 		     Integer& inf_n, Integer& inf_d, bool& minimum,
 		     const Generator** const pppoint) const {
   return max_min(expr, false, inf_n, inf_d, minimum, pppoint);
@@ -751,7 +751,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
   for (GenSys::const_iterator i = old_gensys.begin(),
 	 old_gensys_end = old_gensys.end(); i != old_gensys_end; ++i) {
     const Generator& old_g = *i;
-    LinExpression e(0 * Variable(new_space_dimension-1));
+    Linear_Expression e(0 * Variable(new_space_dimension-1));
     bool all_zeroes = true;
     for (dimension_type j = space_dim; j-- > 0; ) {
       if (old_g.coefficient(Variable(j)) != 0

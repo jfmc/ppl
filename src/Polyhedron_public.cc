@@ -948,7 +948,7 @@ PPL::Polyhedron::add_constraint(const Constraint& c) {
     // However, by barely invoking `con_sys.insert(c)' we would
     // cause a change in the topology of `con_sys', which is wrong.
     // Thus, we insert a "topology corrected" copy of `c'.
-    LinExpression nc_expr = LinExpression(c);
+    Linear_Expression nc_expr = Linear_Expression(c);
     if (c.is_equality())
       if (adding_pending)
 	con_sys.insert_pending(nc_expr == 0);
@@ -1035,7 +1035,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       // However, by barely invoking `gen_sys.insert(g)' we would
       // cause a change in the topology of `gen_sys', which is wrong.
       // Thus, we insert a "topology corrected" copy of `g'.
-      const LinExpression nc_expr = LinExpression(g);
+      const Linear_Expression nc_expr = Linear_Expression(g);
       gen_sys.insert(Generator::point(nc_expr, g.divisor()));
       // Since `gen_sys' was empty, after inserting `g' we have to resize
       // the system of generators to have the right dimension.
@@ -1077,7 +1077,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       // However, by barely invoking `gen_sys.insert(g)' we would
       // cause a change in the topology of `gen_sys', which is wrong.
       // Thus, we insert a "topology corrected" copy of `g'.
-      const LinExpression nc_expr = LinExpression(g);
+      const Linear_Expression nc_expr = Linear_Expression(g);
       switch (g.type()) {
       case Generator::LINE:
 	if (has_pending)
@@ -1782,7 +1782,7 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
     if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
       continue;
     Polyhedron z = x;
-    const LinExpression e = LinExpression(c);
+    const Linear_Expression e = Linear_Expression(c);
     switch (c.type()) {
     case Constraint::NONSTRICT_INEQUALITY:
       if (is_necessarily_closed())
@@ -1815,7 +1815,7 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
 
 void
 PPL::Polyhedron::affine_image(const Variable var,
-			      const LinExpression& expr,
+			      const Linear_Expression& expr,
 			      Integer_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
@@ -1851,7 +1851,7 @@ PPL::Polyhedron::affine_image(const Variable var,
       // To build the inverse transformation,
       // after copying and negating `expr',
       // we exchange the roles of `expr[var_space_dim]' and `denominator'.
-      LinExpression inverse;
+      Linear_Expression inverse;
       if (expr[var_space_dim] > 0) {
 	inverse = -expr;
 	inverse[var_space_dim] = denominator;
@@ -1896,7 +1896,7 @@ PPL::Polyhedron::affine_image(const Variable var,
 void
 PPL::Polyhedron::
 affine_preimage(const Variable var,
-		const LinExpression& expr,
+		const Linear_Expression& expr,
 		Integer_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
@@ -1931,7 +1931,7 @@ affine_preimage(const Variable var,
       // To build the inverse transformation,
       // after copying and negating `expr',
       // we exchange the roles of `expr[var_space_dim]' and `denominator'.
-      LinExpression inverse;
+      Linear_Expression inverse;
       if (expr[var_space_dim] > 0) {
 	inverse = -expr;
 	inverse[var_space_dim] = denominator;
@@ -1974,7 +1974,7 @@ void
 PPL::Polyhedron::
 generalized_affine_image(const Variable var,
 			 const Relation_Symbol relsym,
-			 const LinExpression& expr,
+			 const Linear_Expression& expr,
 			 Integer_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
@@ -2057,9 +2057,9 @@ generalized_affine_image(const Variable var,
 }
 
 void
-PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
+PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
 					  const Relation_Symbol relsym,
-					  const LinExpression& rhs) {
+					  const Linear_Expression& rhs) {
   // Dimension-compatibility checks.
   // The dimension of `lhs' should not be greater than the dimension
   // of `*this'.

@@ -474,10 +474,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Variable.defs.hh \
                          @srcdir@/../src/Variable.inlines.hh \
                          @srcdir@/../src/Variable.cc \
-                         @srcdir@/../src/LinExpression.types.hh \
-                         @srcdir@/../src/LinExpression.defs.hh \
-                         @srcdir@/../src/LinExpression.inlines.hh \
-                         @srcdir@/../src/LinExpression.cc \
+                         @srcdir@/../src/Linear_Expression.types.hh \
+                         @srcdir@/../src/Linear_Expression.defs.hh \
+                         @srcdir@/../src/Linear_Expression.inlines.hh \
+                         @srcdir@/../src/Linear_Expression.cc \
                          @srcdir@/../src/Constraint.types.hh \
                          @srcdir@/../src/Constraint.defs.hh \
                          @srcdir@/../src/Constraint.inlines.hh \

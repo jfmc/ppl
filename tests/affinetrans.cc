@@ -42,7 +42,7 @@ main() TRY {
   gs.insert(point(3*x + 0*y));
   gs.insert(point(3*x + 3*y));
   C_Polyhedron ph(gs);
-  LinExpression coeff = x + 4;
+  Linear_Expression coeff = x + 4;
 
   C_Polyhedron p1(ph);
 #if NOISY

@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.types.hh"
 #include "globals.defs.hh"
 #include "Variable.defs.hh"
-#include "LinExpression.defs.hh"
+#include "Linear_Expression.defs.hh"
 #include "ConSys.defs.hh"
 #include "ConSys.inlines.hh"
 #include "GenSys.defs.hh"
@@ -249,7 +249,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   ph.add_generator(point(0*x + 3*y));
   ph.add_generator(point(3*x + 0*y));
   ph.add_generator(point(3*x + 3*y));
-  LinExpression coeff = x + 4;
+  Linear_Expression coeff = x + 4;
   ph.affine_image(x, coeff);
     \endcode
     In this example the starting polyhedron is a square in
@@ -258,7 +258,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     square translated to the right.  Moreover, if the affine
     transformation for the same variable \p x is \f$x+y\f$:
     \code
-  LinExpression coeff = x + y;
+  Linear_Expression coeff = x + y;
     \endcode
     the resulting polyhedron is a parallelogram with the height equal to
     the side of the square and the oblique sides parallel to the line
@@ -266,7 +266,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     Instead, if we do not use an invertible transformation for the same
     variable; for example, the affine expression \f$y\f$:
     \code
-  LinExpression coeff = y;
+  Linear_Expression coeff = y;
     \endcode
     the resulting polyhedron is a diagonal of the square.
 
@@ -279,7 +279,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   ph.add_constraint(x <= 3);
   ph.add_constraint(y >= 0);
   ph.add_constraint(y <= 3);
-  LinExpression coeff = x + 4;
+  Linear_Expression coeff = x + 4;
   ph.affine_preimage(x, coeff);
     \endcode
     In this example the starting polyhedron, \p var and the affine
@@ -288,7 +288,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     but translated to the left.
     Moreover, if the affine transformation for \p x is \f$x+y\f$
     \code
-  LinExpression coeff = x + y;
+  Linear_Expression coeff = x + y;
     \endcode
     the resulting polyhedron is a parallelogram with the height equal to
     the side of the square and the oblique sides parallel to the line
@@ -296,7 +296,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     Instead, if we do not use an invertible transformation for the same
     variable \p x, for example, the affine expression \f$y\f$:
     \code
-  LinExpression coeff = y;
+  Linear_Expression coeff = y;
     \endcode
     the resulting polyhedron is a line that corresponds to the \f$y\f$ axis.
 
@@ -582,7 +582,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
   */
-  bool bounds_from_above(const LinExpression& expr) const;
+  bool bounds_from_above(const Linear_Expression& expr) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p expr is
@@ -591,7 +591,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
   */
-  bool bounds_from_below(const LinExpression& expr) const;
+  bool bounds_from_below(const Linear_Expression& expr) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -617,7 +617,7 @@ public:
     <CODE>false</CODE> is returned and \p sup_n, \p sup_d
     and \p maximum are left untouched.
   */
-  bool maximize(const LinExpression& expr,
+  bool maximize(const Linear_Expression& expr,
 		Integer& sup_n, Integer& sup_d, bool& maximum) const;
 
   //! \brief
@@ -649,7 +649,7 @@ public:
     <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
     and \p pppoint are left untouched.
   */
-  bool maximize(const LinExpression& expr,
+  bool maximize(const Linear_Expression& expr,
 		Integer& sup_n, Integer& sup_d, bool& maximum,
 		const Generator** const pppoint) const;
 
@@ -677,7 +677,7 @@ public:
     <CODE>false</CODE> is returned and \p inf_n, \p inf_d
     and \p minimum are left untouched.
   */
-  bool minimize(const LinExpression& expr,
+  bool minimize(const Linear_Expression& expr,
 		Integer& inf_n, Integer& inf_d, bool& minimum) const;
 
   //! \brief
@@ -709,7 +709,7 @@ public:
     <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
     and \p pppoint are left untouched.
   */
-  bool minimize(const LinExpression& expr,
+  bool minimize(const Linear_Expression& expr,
 		Integer& inf_n, Integer& inf_d, bool& minimum,
 		const Generator** const pppoint) const;
 
@@ -1130,7 +1130,7 @@ public:
     \endif
   */
   void affine_image(Variable var,
-		    const LinExpression& expr,
+		    const Linear_Expression& expr,
 		    Integer_traits::const_reference denominator
 		      = Integer_one());
 
@@ -1221,7 +1221,7 @@ public:
     \endif
   */
   void affine_preimage(Variable var,
-		       const LinExpression& expr,
+		       const Linear_Expression& expr,
 		       Integer_traits::const_reference denominator
 		         = Integer_one());
 
@@ -1253,7 +1253,7 @@ public:
   */
   void generalized_affine_image(Variable var,
 				const Relation_Symbol relsym,
-				const LinExpression& expr,
+				const Linear_Expression& expr,
 				Integer_traits::const_reference denominator
 				  = Integer_one());
 
@@ -1277,9 +1277,9 @@ public:
     or if \p *this is a C_Polyhedron and \p relsym is a strict
     relation symbol.
   */
-  void generalized_affine_image(const LinExpression& lhs,
+  void generalized_affine_image(const Linear_Expression& lhs,
 				const Relation_Symbol relsym,
-				const LinExpression& rhs);
+				const Linear_Expression& rhs);
 
   //! \brief
   //! Assigns to \p *this the result of computing the
@@ -2053,7 +2053,7 @@ private:
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
   */
-  bool bounds(const LinExpression& expr, bool from_above) const;
+  bool bounds(const Linear_Expression& expr, bool from_above) const;
 
   //! Maximizes or minimizes \p expr subject to \p *this.
   /*!
@@ -2086,7 +2086,7 @@ private:
     direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d,
     \p included and \p *pppoint are left untouched.
   */
-  bool max_min(const LinExpression& expr,
+  bool max_min(const Linear_Expression& expr,
 	       const bool maximize,
 	       Integer& ext_n, Integer& ext_d, bool& included,
 	       const Generator** const pppoint = 0) const;
@@ -2235,7 +2235,7 @@ protected:
 				    const Polyhedron& ph) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* e_name,
-				    const LinExpression& e) const;
+				    const Linear_Expression& e) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* c_name,
 				    const Constraint& c) const;

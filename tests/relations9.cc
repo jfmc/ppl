@@ -34,7 +34,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 static void test1() {
   // The zero-dim universe polyhedron.
   C_Polyhedron ph;
-  Poly_Con_Relation rel = ph.relation_with(LinExpression(0) > 0);
+  Poly_Con_Relation rel = ph.relation_with(Linear_Expression(0) > 0);
 
 #if NOISY
   print_generators(ph, "--- ph ---");
@@ -51,7 +51,7 @@ static void test1() {
 static void test2() {
   // The zero-dim universe polyhedron.
   C_Polyhedron ph;
-  Poly_Con_Relation rel = ph.relation_with(LinExpression(0) > 1);
+  Poly_Con_Relation rel = ph.relation_with(Linear_Expression(0) > 1);
 
 #if NOISY
   print_generators(ph, "--- ph ---");
@@ -67,7 +67,7 @@ static void test2() {
 static void test3() {
   // The zero-dim universe polyhedron.
   C_Polyhedron ph;
-  Poly_Con_Relation rel = ph.relation_with(LinExpression(1) > 0);
+  Poly_Con_Relation rel = ph.relation_with(Linear_Expression(1) > 0);
 
 #if NOISY
   print_generators(ph, "--- ph ---");
@@ -83,7 +83,7 @@ static void test3() {
 static void test4() {
   // An empty polyhedron.
   C_Polyhedron ph(1);
-  ph.add_constraint(LinExpression(0) >= 1);
+  ph.add_constraint(Linear_Expression(0) >= 1);
   Variable A(0);
   Poly_Con_Relation rel = ph.relation_with(A > 0);
 

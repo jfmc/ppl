@@ -441,10 +441,10 @@ ppl-0.6/
 |   |-- Interval.defs.hh
 |   |-- Interval.inlines.hh
 |   |-- Interval.types.hh
-|   |-- LinExpression.cc
-|   |-- LinExpression.defs.hh
-|   |-- LinExpression.inlines.hh
-|   |-- LinExpression.types.hh
+|   |-- Linear_Expression.cc
+|   |-- Linear_Expression.defs.hh
+|   |-- Linear_Expression.inlines.hh
+|   |-- Linear_Expression.types.hh
 |   |-- Makefile.am
 |   |-- Makefile.in
 |   |-- Matrix.cc

@@ -1,4 +1,4 @@
-/* LinExpression class declaration.
+/* Linear_Expression class declaration.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,10 +21,10 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_LinExpression_defs_hh
-#define PPL_LinExpression_defs_hh 1
+#ifndef PPL_Linear_Expression_defs_hh
+#define PPL_Linear_Expression_defs_hh 1
 
-#include "LinExpression.types.hh"
+#include "Linear_Expression.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 #include "Linear_Row.defs.hh"
@@ -39,82 +39,82 @@ namespace Parma_Polyhedra_Library {
 // Put them in the namespace here to declare them friend later.
 
 //! Returns the linear expression \p e1 + \p e2.
-/*! \relates LinExpression */
-LinExpression operator+(const LinExpression& e1, const LinExpression& e2);
+/*! \relates Linear_Expression */
+Linear_Expression operator+(const Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the linear expression \p n + \p e.
-/*! \relates LinExpression */
-LinExpression
-operator+(Integer_traits::const_reference n, const LinExpression& e);
+/*! \relates Linear_Expression */
+Linear_Expression
+operator+(Integer_traits::const_reference n, const Linear_Expression& e);
 //! Returns the linear expression \p e + \p n.
-/*! \relates LinExpression */
-LinExpression
-operator+(const LinExpression& e, Integer_traits::const_reference n);
+/*! \relates Linear_Expression */
+Linear_Expression
+operator+(const Linear_Expression& e, Integer_traits::const_reference n);
 
 //! Returns the linear expression \p e.
-/*! \relates LinExpression */
-LinExpression operator+(const LinExpression& e);
+/*! \relates Linear_Expression */
+Linear_Expression operator+(const Linear_Expression& e);
 //! Returns the linear expression - \p e.
-/*! \relates LinExpression */
-LinExpression operator-(const LinExpression& e);
+/*! \relates Linear_Expression */
+Linear_Expression operator-(const Linear_Expression& e);
 
 //! Returns the linear expression \p e1 - \p e2.
-/*! \relates LinExpression */
-LinExpression operator-(const LinExpression& e1, const LinExpression& e2);
+/*! \relates Linear_Expression */
+Linear_Expression operator-(const Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the linear expression \p n - \p e.
-/*! \relates LinExpression */
-LinExpression
-operator-(Integer_traits::const_reference n, const LinExpression& e);
+/*! \relates Linear_Expression */
+Linear_Expression
+operator-(Integer_traits::const_reference n, const Linear_Expression& e);
 //! Returns the linear expression \p e - \p n.
-/*! \relates LinExpression */
-LinExpression
-operator-(const LinExpression& e, Integer_traits::const_reference n);
+/*! \relates Linear_Expression */
+Linear_Expression
+operator-(const Linear_Expression& e, Integer_traits::const_reference n);
 
 //! Returns the linear expression \p n * \p e.
-/*! \relates LinExpression */
-LinExpression
-operator*(Integer_traits::const_reference n, const LinExpression& e);
+/*! \relates Linear_Expression */
+Linear_Expression
+operator*(Integer_traits::const_reference n, const Linear_Expression& e);
 //! Returns the linear expression \p e * \p n.
-/*! \relates LinExpression */
-LinExpression
-operator*(const LinExpression& e, Integer_traits::const_reference n);
+/*! \relates Linear_Expression */
+Linear_Expression
+operator*(const Linear_Expression& e, Integer_traits::const_reference n);
 
 //! Returns the linear expression \p e1 + \p e2 and assigns it to \p e1.
-/*! \relates LinExpression */
-LinExpression& operator+=(LinExpression& e1, const LinExpression& e2);
+/*! \relates Linear_Expression */
+Linear_Expression& operator+=(Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the linear expression \p e + \p v and assigns it to \p e.
-/*! \relates LinExpression
+/*! \relates Linear_Expression
   \exception std::length_error
   Thrown if the space dimension of \p v exceeds
-  <CODE>LinExpression::max_space_dimension()</CODE>.
+  <CODE>Linear_Expression::max_space_dimension()</CODE>.
  */
-LinExpression& operator+=(LinExpression& e, const Variable v);
+Linear_Expression& operator+=(Linear_Expression& e, const Variable v);
 //! Returns the linear expression \p e + \p n and assigns it to \p e.
-/*! \relates LinExpression */
-LinExpression& operator+=(LinExpression& e, Integer_traits::const_reference n);
+/*! \relates Linear_Expression */
+Linear_Expression& operator+=(Linear_Expression& e, Integer_traits::const_reference n);
 
 //! Returns the linear expression \p e1 - \p e2 and assigns it to \p e1.
-/*! \relates LinExpression */
-LinExpression& operator-=(LinExpression& e1, const LinExpression& e2);
+/*! \relates Linear_Expression */
+Linear_Expression& operator-=(Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the linear expression \p e - \p v and assigns it to \p e.
-/*! \relates LinExpression
+/*! \relates Linear_Expression
   \exception std::length_error
   Thrown if the space dimension of \p v exceeds
-  <CODE>LinExpression::max_space_dimension()</CODE>.
+  <CODE>Linear_Expression::max_space_dimension()</CODE>.
  */
-LinExpression& operator-=(LinExpression& e, const Variable v);
+Linear_Expression& operator-=(Linear_Expression& e, const Variable v);
 //! Returns the linear expression \p e - \p n and assigns it to \p e.
-/*! \relates LinExpression */
-LinExpression& operator-=(LinExpression& e, Integer_traits::const_reference n);
+/*! \relates Linear_Expression */
+Linear_Expression& operator-=(Linear_Expression& e, Integer_traits::const_reference n);
 
 //! Returns the linear expression \p n * \p e and assigns it to \p e.
-/*! \relates LinExpression */
-LinExpression& operator*=(LinExpression& e, Integer_traits::const_reference n);
+/*! \relates Linear_Expression */
+Linear_Expression& operator*=(Linear_Expression& e, Integer_traits::const_reference n);
 
 namespace IO_Operators {
 
 //! Output operator.
-/*! \relates Parma_Polyhedra_Library::LinExpression */
-std::ostream& operator<<(std::ostream& s, const LinExpression& e);
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+std::ostream& operator<<(std::ostream& s, const Linear_Expression& e);
 
 } // namespace IO_Operators
 
@@ -124,15 +124,15 @@ std::ostream& operator<<(std::ostream& s, const LinExpression& e);
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::LinExpression */
-void swap(Parma_Polyhedra_Library::LinExpression& x,
-	  Parma_Polyhedra_Library::LinExpression& y);
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+void swap(Parma_Polyhedra_Library::Linear_Expression& x,
+	  Parma_Polyhedra_Library::Linear_Expression& y);
 
 } // namespace std
 
 //! A linear expression.
 /*!
-    An object of the class LinExpression represents the linear expression
+    An object of the class Linear_Expression represents the linear expression
     \f[
       \sum_{i=0}^{n-1} a_i x_i + b
     \f]
@@ -162,43 +162,43 @@ void swap(Parma_Polyhedra_Library::LinExpression& x,
     The following code builds the linear expression \f$4x - 2y - z + 14\f$,
     having space dimension \f$3\f$:
     \code
-  LinExpression e = 4*x - 2*y - z + 14;
+  Linear_Expression e = 4*x - 2*y - z + 14;
     \endcode
     Another way to build the same linear expression is:
     \code
-  LinExpression e1 = 4*x;
-  LinExpression e2 = 2*y;
-  LinExpression e3 = z;
-  LinExpression e = LinExpression(14);
+  Linear_Expression e1 = 4*x;
+  Linear_Expression e2 = 2*y;
+  Linear_Expression e3 = z;
+  Linear_Expression e = Linear_Expression(14);
   e += e1 - e2 - e3;
     \endcode
     Note that \p e1, \p e2 and \p e3 have space dimension 1, 2 and 3,
     respectively; also, in the fourth line of code, \p e is created
     with space dimension zero and then extended to space dimension 3.
 */
-class Parma_Polyhedra_Library::LinExpression : private Linear_Row {
+class Parma_Polyhedra_Library::Linear_Expression : private Linear_Row {
 public:
-  //! Default constructor: returns a copy of LinExpression::zero().
-  LinExpression();
+  //! Default constructor: returns a copy of Linear_Expression::zero().
+  Linear_Expression();
 
   //! Ordinary copy-constructor.
-  LinExpression(const LinExpression& e);
+  Linear_Expression(const Linear_Expression& e);
 
   //! Destructor.
-  ~LinExpression();
+  ~Linear_Expression();
 
   //! \brief
   //! Builds the linear expression corresponding
   //! to the inhomogeneous term \p n.
-  explicit LinExpression(Integer_traits::const_reference n);
+  explicit Linear_Expression(Integer_traits::const_reference n);
 
   //! Builds the linear expression corresponding to the variable \p v.
-  /*! \relates LinExpression
+  /*! \relates Linear_Expression
     \exception std::length_error
     Thrown if the space dimension of \p v exceeds
-    <CODE>LinExpression::max_space_dimension()</CODE>.
+    <CODE>Linear_Expression::max_space_dimension()</CODE>.
   */
-  LinExpression(const Variable v);
+  Linear_Expression(const Variable v);
 
   //! Builds the linear expression corresponding to constraint \p c.
   /*!
@@ -210,7 +210,7 @@ public:
     the built linear expression is unique up to a positive
     (resp., non-zero) factor.
   */
-  explicit LinExpression(const Constraint& c);
+  explicit Linear_Expression(const Constraint& c);
 
   //! \brief
   //! Builds the linear expression corresponding to generator \p g
@@ -225,9 +225,9 @@ public:
     the linear expression is unique up to a positive
     (resp., non-zero) factor.
   */
-  explicit LinExpression(const Generator& g);
+  explicit Linear_Expression(const Generator& g);
 
-  //! Returns the maximum space dimension a LinExpression can handle.
+  //! Returns the maximum space dimension a Linear_Expression can handle.
   static dimension_type max_space_dimension();
 
   //! Returns the dimension of the vector space enclosing \p *this.
@@ -240,7 +240,7 @@ public:
   Integer_traits::const_reference inhomogeneous_term() const;
 
   //! Returns the (zero-dimension space) constant 0.
-  static const LinExpression& zero();
+  static const Linear_Expression& zero();
 
   //! \brief
   //! Returns a lower bound to the total size in bytes of the memory
@@ -266,81 +266,81 @@ private:
   // GenSys::affine_image().
   friend class Parma_Polyhedra_Library::GenSys;
 
-  friend void std::swap(Parma_Polyhedra_Library::LinExpression& x,
-		       Parma_Polyhedra_Library::LinExpression& y);
+  friend void std::swap(Parma_Polyhedra_Library::Linear_Expression& x,
+		       Parma_Polyhedra_Library::Linear_Expression& y);
 
   //! Copy-constructor with a specified space dimension.
-  LinExpression(const LinExpression& e, dimension_type sz);
+  Linear_Expression(const Linear_Expression& e, dimension_type sz);
 
   //! Implementation sizing constructor.
   /*!
     The bool parameter is just to avoid problems with
-    the constructor LinExpression(Integer_traits::const_reference n).
+    the constructor Linear_Expression(Integer_traits::const_reference n).
   */
-  LinExpression(dimension_type sz, bool);
+  Linear_Expression(dimension_type sz, bool);
 
   //! Swaps \p *this with \p y.
-  void swap(LinExpression& y);
+  void swap(Linear_Expression& y);
 
-  friend LinExpression
-  Parma_Polyhedra_Library::operator+(const LinExpression& e1,
-				     const LinExpression& e2);
-  friend LinExpression
+  friend Linear_Expression
+  Parma_Polyhedra_Library::operator+(const Linear_Expression& e1,
+				     const Linear_Expression& e2);
+  friend Linear_Expression
   Parma_Polyhedra_Library::operator+(Integer_traits::const_reference n,
-				     const LinExpression& e);
-  friend LinExpression
-  Parma_Polyhedra_Library::operator+(const LinExpression& e,
+				     const Linear_Expression& e);
+  friend Linear_Expression
+  Parma_Polyhedra_Library::operator+(const Linear_Expression& e,
 				     Integer_traits::const_reference n);
 
-  friend LinExpression
-  Parma_Polyhedra_Library::operator-(const LinExpression& e);
+  friend Linear_Expression
+  Parma_Polyhedra_Library::operator-(const Linear_Expression& e);
 
-  friend LinExpression
-  Parma_Polyhedra_Library::operator-(const LinExpression& e1,
-				     const LinExpression& e2);
-  friend LinExpression
+  friend Linear_Expression
+  Parma_Polyhedra_Library::operator-(const Linear_Expression& e1,
+				     const Linear_Expression& e2);
+  friend Linear_Expression
   Parma_Polyhedra_Library::operator-(Integer_traits::const_reference n,
-				     const LinExpression& e);
-  friend LinExpression
-  Parma_Polyhedra_Library::operator-(const LinExpression& e,
+				     const Linear_Expression& e);
+  friend Linear_Expression
+  Parma_Polyhedra_Library::operator-(const Linear_Expression& e,
 				     Integer_traits::const_reference n);
 
-  friend LinExpression
+  friend Linear_Expression
   Parma_Polyhedra_Library::operator*(Integer_traits::const_reference n,
-				     const LinExpression& e);
-  friend LinExpression
-  Parma_Polyhedra_Library::operator*(const LinExpression& e,
+				     const Linear_Expression& e);
+  friend Linear_Expression
+  Parma_Polyhedra_Library::operator*(const Linear_Expression& e,
 				     Integer_traits::const_reference n);
 
-  friend LinExpression&
-  Parma_Polyhedra_Library::operator+=(LinExpression& e1,
-				      const LinExpression& e2);
-  friend LinExpression&
-  Parma_Polyhedra_Library::operator+=(LinExpression& e,
+  friend Linear_Expression&
+  Parma_Polyhedra_Library::operator+=(Linear_Expression& e1,
+				      const Linear_Expression& e2);
+  friend Linear_Expression&
+  Parma_Polyhedra_Library::operator+=(Linear_Expression& e,
 				      const Variable v);
-  friend LinExpression&
-  Parma_Polyhedra_Library::operator+=(LinExpression& e,
+  friend Linear_Expression&
+  Parma_Polyhedra_Library::operator+=(Linear_Expression& e,
 				      Integer_traits::const_reference n);
 
-  friend LinExpression&
-  Parma_Polyhedra_Library::operator-=(LinExpression& e1,
-				      const LinExpression& e2);
-  friend LinExpression&
-  Parma_Polyhedra_Library::operator-=(LinExpression& e,
+  friend Linear_Expression&
+  Parma_Polyhedra_Library::operator-=(Linear_Expression& e1,
+				      const Linear_Expression& e2);
+  friend Linear_Expression&
+  Parma_Polyhedra_Library::operator-=(Linear_Expression& e,
 				      const Variable v);
-  friend LinExpression&
-  Parma_Polyhedra_Library::operator-=(LinExpression& e,
+  friend Linear_Expression&
+  Parma_Polyhedra_Library::operator-=(Linear_Expression& e,
 				      Integer_traits::const_reference n);
 
-  friend LinExpression&
-  Parma_Polyhedra_Library::operator*=(LinExpression& e,
+  friend Linear_Expression&
+  Parma_Polyhedra_Library::operator*=(Linear_Expression& e,
 				      Integer_traits::const_reference n);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
-						    const LinExpression& e);
+						    const Linear_Expression& e);
 };
 
-#include "LinExpression.inlines.hh"
+#include "Linear_Expression.inlines.hh"
 
-#endif // !defined(PPL_LinExpression_defs_hh)
+#endif // !defined(PPL_Linear_Expression_defs_hh)

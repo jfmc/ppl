@@ -592,7 +592,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
 
     // Each relevant constraint results in `m' new constraints.
     for (dimension_type dst_d = old_dim; dst_d < old_dim+m; ++dst_d) {
-      LinExpression e;
+      Linear_Expression e;
       for (dimension_type j = old_dim; j-- > 0; )
 	e +=
 	  c.coefficient(Variable(j))
@@ -636,7 +636,7 @@ PPL::Polyhedron::fold_space_dimensions(const Variables_Set& to_be_folded,
   for (Variables_Set::const_iterator i = to_be_folded.begin(),
 	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
     Polyhedron copy = *this;
-    copy.affine_image(var, LinExpression(*i));
+    copy.affine_image(var, Linear_Expression(*i));
     poly_hull_assign(copy);
   }
   remove_space_dimensions(to_be_folded);

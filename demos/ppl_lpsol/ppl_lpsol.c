@@ -334,11 +334,11 @@ variable_output_function(ppl_dimension_type var) {
 }
 
 static void
-add_constraints(ppl_LinExpression_t ppl_le,
+add_constraints(ppl_Linear_Expression_t ppl_le,
 		int type, mpq_t rational_lb, mpq_t rational_ub, mpz_t den_lcm,
 		ppl_ConSys_t ppl_cs) {
   ppl_Constraint_t ppl_c;
-  ppl_LinExpression_t ppl_le2;
+  ppl_Linear_Expression_t ppl_le2;
   switch (type) {
   case LPX_FR:
     break;
@@ -348,7 +348,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
     mpz_divexact(tmp_z, tmp_z, mpq_denref(rational_lb));
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
-    ppl_LinExpression_add_to_inhomogeneous(ppl_le, ppl_coeff);
+    ppl_Linear_Expression_add_to_inhomogeneous(ppl_le, ppl_coeff);
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL);
     if (verbose) {
@@ -364,7 +364,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
     mpz_divexact(tmp_z, tmp_z, mpq_denref(rational_ub));
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
-    ppl_LinExpression_add_to_inhomogeneous(ppl_le, ppl_coeff);
+    ppl_Linear_Expression_add_to_inhomogeneous(ppl_le, ppl_coeff);
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL);
     if (verbose) {
@@ -376,13 +376,13 @@ add_constraints(ppl_LinExpression_t ppl_le,
     break;
 
   case LPX_DB:
-    ppl_new_LinExpression_from_LinExpression(&ppl_le2, ppl_le);
+    ppl_new_Linear_Expression_from_Linear_Expression(&ppl_le2, ppl_le);
 
     mpz_mul(tmp_z, den_lcm, mpq_numref(rational_lb));
     mpz_divexact(tmp_z, tmp_z, mpq_denref(rational_lb));
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
-    ppl_LinExpression_add_to_inhomogeneous(ppl_le, ppl_coeff);
+    ppl_Linear_Expression_add_to_inhomogeneous(ppl_le, ppl_coeff);
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL);
     if (verbose) {
@@ -396,10 +396,10 @@ add_constraints(ppl_LinExpression_t ppl_le,
     mpz_divexact(tmp_z, tmp_z, mpq_denref(rational_ub));
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
-    ppl_LinExpression_add_to_inhomogeneous(ppl_le2, ppl_coeff);
+    ppl_Linear_Expression_add_to_inhomogeneous(ppl_le2, ppl_coeff);
     ppl_new_Constraint(&ppl_c, ppl_le2,
 		       PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL);
-    ppl_delete_LinExpression(ppl_le2);
+    ppl_delete_Linear_Expression(ppl_le2);
     if (verbose) {
       ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
@@ -413,7 +413,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
     mpz_divexact(tmp_z, tmp_z, mpq_denref(rational_lb));
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
-    ppl_LinExpression_add_to_inhomogeneous(ppl_le, ppl_coeff);
+    ppl_Linear_Expression_add_to_inhomogeneous(ppl_le, ppl_coeff);
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_EQUAL);
     if (verbose) {
@@ -435,7 +435,7 @@ solve(char* file_name) {
   ppl_Polyhedron_t ppl_ph;
   ppl_ConSys_t ppl_cs;
   ppl_const_Generator_t ppl_const_g;
-  ppl_LinExpression_t ppl_le;
+  ppl_Linear_Expression_t ppl_le;
   int dimension, row, num_rows, column, nz, i, type;
   int* coefficient_index;
   double lb, ub;
@@ -443,7 +443,7 @@ solve(char* file_name) {
   mpq_t rational_lb, rational_ub;
   mpq_t* rational_coefficient;
   mpq_t* objective;
-  ppl_LinExpression_t ppl_objective_le;
+  ppl_Linear_Expression_t ppl_objective_le;
   ppl_Coefficient_t optimum_n;
   ppl_Coefficient_t optimum_d;
   mpq_t optimum;
@@ -504,19 +504,19 @@ solve(char* file_name) {
     mpq_set_d(rational_ub, ub);
     mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_ub));
 
-    ppl_new_LinExpression_with_dimension(&ppl_le, dimension);
+    ppl_new_Linear_Expression_with_dimension(&ppl_le, dimension);
 
     for (i = 1; i <= nz; ++i) {
       mpz_mul(tmp_z, den_lcm, mpq_numref(rational_coefficient[i]));
       mpz_divexact(tmp_z, tmp_z, mpq_denref(rational_coefficient[i]));
       ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
-      ppl_LinExpression_add_to_coefficient(ppl_le, coefficient_index[i]-1,
+      ppl_Linear_Expression_add_to_coefficient(ppl_le, coefficient_index[i]-1,
 					   ppl_coeff);
     }
 
     add_constraints(ppl_le, type, rational_lb, rational_ub, den_lcm, ppl_cs);
 
-    ppl_delete_LinExpression(ppl_le);
+    ppl_delete_Linear_Expression(ppl_le);
   }
 
   free(coefficient_value);
@@ -543,13 +543,13 @@ solve(char* file_name) {
     mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_lb));
     mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_ub));
 
-    ppl_new_LinExpression_with_dimension(&ppl_le, dimension);
+    ppl_new_Linear_Expression_with_dimension(&ppl_le, dimension);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, den_lcm);
-    ppl_LinExpression_add_to_coefficient(ppl_le, column-1, ppl_coeff);
+    ppl_Linear_Expression_add_to_coefficient(ppl_le, column-1, ppl_coeff);
 
     add_constraints(ppl_le, type, rational_lb, rational_ub, den_lcm, ppl_cs);
 
-    ppl_delete_LinExpression(ppl_le);
+    ppl_delete_Linear_Expression(ppl_le);
   }
 
   mpq_clear(rational_ub);
@@ -596,18 +596,18 @@ solve(char* file_name) {
     mpz_lcm(den_lcm, den_lcm, mpq_denref(objective[i]));
   }
 
-  /* Set the LinExpression ppl_objective_le to be the objective function. */
-  ppl_new_LinExpression_with_dimension(&ppl_objective_le, dimension);
+  /* Set the Linear_Expression ppl_objective_le to be the objective function. */
+  ppl_new_Linear_Expression_with_dimension(&ppl_objective_le, dimension);
   /* The inhomogeneous term is completely useless for our purpose. */
   for (i = 1; i <= dimension; ++i) {
     mpz_mul(tmp_z, den_lcm, mpq_numref(objective[i]));
     mpz_divexact(tmp_z, tmp_z, mpq_denref(objective[i]));
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
-    ppl_LinExpression_add_to_coefficient(ppl_objective_le, i-1, ppl_coeff);
+    ppl_Linear_Expression_add_to_coefficient(ppl_objective_le, i-1, ppl_coeff);
   }
   if (verbose) {
     fprintf(output_file, "Objective function:\n");
-    ppl_io_fprint_LinExpression(output_file, ppl_objective_le);
+    ppl_io_fprint_Linear_Expression(output_file, ppl_objective_le);
   }
 
   for (i = 0; i <= dimension; ++i)
@@ -638,7 +638,7 @@ solve(char* file_name) {
   if (unbounded) {
     fprintf(output_file, "Unbounded problem.\n");
     /* FIXME: check!!! */
-    ppl_delete_LinExpression(ppl_objective_le);
+    ppl_delete_Linear_Expression(ppl_objective_le);
     goto clean_and_return;
   }
 
@@ -653,7 +653,7 @@ solve(char* file_name) {
 			      optimum_n, optimum_d, &included,
 			      &ppl_const_g);
 
-  ppl_delete_LinExpression(ppl_objective_le);
+  ppl_delete_Linear_Expression(ppl_objective_le);
 
   if (!ok)
     fatal("internal error");

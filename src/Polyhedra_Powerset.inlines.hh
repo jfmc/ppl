@@ -681,7 +681,7 @@ void
 linear_partition_aux(const Constraint& c,
 		     PH& qq,
 		     Polyhedra_Powerset<NNC_Polyhedron>& r) {
-  LinExpression le(c);
+  Linear_Expression le(c);
   Constraint neg_c = c.is_strict_inequality() ? (le <= 0) : (le < 0);
   NNC_Polyhedron qqq(qq);
   if (qqq.add_constraint_and_minimize(neg_c))
@@ -703,7 +703,7 @@ linear_partition(const PH& p, const PH& q) {
 	 pcs_end = pcs.end(); i != pcs_end; ++i) {
     const Constraint c = *i;
     if (c.is_equality()) {
-      LinExpression le(c);
+      Linear_Expression le(c);
       linear_partition_aux(le <= 0, qq, r);
       linear_partition_aux(le >= 0, qq, r);
     }

@@ -36,7 +36,7 @@ main() TRY {
   set_handlers();
 
   C_Polyhedron ph1(0);
-  ph1.add_constraint(LinExpression::zero() == 1);
+  ph1.add_constraint(Linear_Expression::zero() == 1);
   C_Polyhedron known_result(ph1);
 
   const ConSys cs = ph1.constraints();

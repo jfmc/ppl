@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "NNC_Polyhedron.defs.hh"
 #include "Polyhedra_Powerset.defs.hh"
 #include "Constraint.defs.hh"
-#include "LinExpression.defs.hh"
+#include "Linear_Expression.defs.hh"
 #include "ConSys.defs.hh"
 #include <utility>
 #include <cassert>

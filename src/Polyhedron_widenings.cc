@@ -468,12 +468,12 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
 	  // No combination is needed.
 	  new_cs.insert(combining_cs[0]);
 	else {
-	  LinExpression e(0);
+	  Linear_Expression e(0);
 	  bool strict_inequality = false;
 	  for (dimension_type h = combining_cs_num_rows; h-- > 0; ) {
 	    if (combining_cs[h].is_strict_inequality())
 	      strict_inequality = true;
-	    e += LinExpression(combining_cs[h]);
+	    e += Linear_Expression(combining_cs[h]);
 	  }
 	  // Simple normalization is enough, since
 	  // `e' will not become an equality constraint.
