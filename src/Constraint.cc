@@ -43,16 +43,6 @@ PPL::Constraint::throw_dimension_incompatible(const char* method,
 }
 
 PPL::Constraint
-PPL::operator>>(const Constraint& y, dimension_type offset) {
-  dimension_type y_size = y.size();
-  Constraint x(y.Row::type(), y_size+offset);
-  x[0] = y[0];
-  for (dimension_type i = 1; i < y_size; ++i)
-    x[i+offset] = y[i];
-  return x;
-}
-
-PPL::Constraint
 PPL::Constraint::construct_epsilon_geq_zero() {
   LinExpression e = Variable(0);
   Constraint c = Constraint(e);

@@ -63,8 +63,6 @@ Constraint operator>(const LinExpression& e1, const LinExpression& e2);
 Constraint operator>(const LinExpression& e, const Integer& n);
 Constraint operator>(const Integer& n, const LinExpression& e);
 
-Constraint operator>>(const Constraint& c, dimension_type offset);
-
 } // namespace Parma_Polyhedra_Library
 
 
@@ -358,13 +356,6 @@ private:
   friend Constraint
   Parma_Polyhedra_Library::operator<(const Integer& n,
 				     const LinExpression& e);
-
-  //! \brief
-  //! Returns the constraint \p c with variables renamed
-  //! by adding \p offset to their Cartesian axis identifier.
-  friend Constraint
-  Parma_Polyhedra_Library::operator>>(const Constraint& c,
-				      dimension_type offset);
 
   //! Copy-constructor with given size.
   Constraint(const Constraint& c, dimension_type sz);
