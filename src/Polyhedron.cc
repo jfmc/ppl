@@ -606,9 +606,9 @@ PPL::operator <=(const Polyhedron& x, const Polyhedron& y) {
     return x.check_empty();
   else if (x.space_dimension() == 0)
     return true;
-  if (!(x.generators_are_minimized()))
+  if (!x.generators_are_minimized())
     x.minimize();
-  if (!(y.constraints_are_minimized()))
+  if (!y.constraints_are_minimized())
     y.minimize();
   // `x' is contained in `y' if and only if all the generators of `x'
   // satisfy or saturate all the inequalities and saturate all the
@@ -1692,7 +1692,7 @@ PPL::Polyhedron::affine_image(const Variable& var,
 			       x, expr);
 
   // Index of var must be in the range of the variables of generators.
-  if (!(num_var < x_space_dim + 1))
+  if (num_var >= x_space_dim + 1)
     throw_dimension_incompatible("PPL::Polyhedron::affine_image(v, e, d)",
 				 x, var.id());
   if (x.is_empty()) {
@@ -1809,7 +1809,7 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
 			       x, expr);
 
   // Index of var must be in the range of the variables of generators.
-  if (!(num_var < x_space_dim + 1))
+  if (num_var >= x_space_dim + 1)
     throw_dimension_incompatible("PPL::Polyhedron::affine_preimage(v, e, d)",
 				 x, var.id());
   
@@ -2066,7 +2066,7 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
 			       *this, cs);
 
   if (y.is_empty())
-    return !(x.is_empty());
+    return !x.is_empty();
   if (x.is_empty())
     return false;
 
@@ -2204,23 +2204,23 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	}
     }
   
-  // A zero-dimensional, non-empty polyhedron is allowed if
-  // the system of constraint `con_sys' and the system of generators
+  // A zero-dimensional, non-empty polyhedron is legal only if the
+  // system of constraint `con_sys' and the system of generators
   // `gen_sys' have no rows.
   if (space_dimension() == 0)
-    if (!(gen_sys.num_rows() == 0 && con_sys.num_rows() == 0)) {
-      cerr << "Polyhedron zero-dimensional"
+    if (con_sys.num_rows() != 0 || gen_sys.num_rows() != 0) {
+      cerr << "Zero-dimensional polyhedron with a non-empty"
 	   << endl
-	   << "and with constraints or generator not clear"
+	   << "system of constraints or generators."
 	   << endl;
       goto bomb;
     }
     else
       return true;
 
-  // A polyhedron is defined by a system of constraints or a system
-  // of generators.
-  if (!(constraints_are_up_to_date() || generators_are_up_to_date())) {
+  // A polyhedron is defined by a system of constraints
+  // or a system of generators: at least one of them must be up to date.
+  if (!constraints_are_up_to_date() && !generators_are_up_to_date()) {
     cerr << "Polyhedron not empty, not zero-dimensional"
 	 << endl
 	 << "and with neither constraints nor generators up-to-date!"
@@ -2287,9 +2287,9 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       SatMatrix new_sat_c;
       minimize(false, copy_of_gen_sys, new_con_sys, new_sat_c);
       size_t copy_num_lines = copy_of_gen_sys.num_lines();
-      if (!(gen_sys.num_rows() == copy_of_gen_sys.num_rows() &&
-	    gen_sys.num_lines() == copy_num_lines &&
-	    gen_sys.num_rays() == copy_of_gen_sys.num_rays())) {
+      if (gen_sys.num_rows() != copy_of_gen_sys.num_rows()
+	  || gen_sys.num_lines() != copy_num_lines
+	  || gen_sys.num_rays() != copy_of_gen_sys.num_rays()) {
 	cerr << "Generators are declared minimized, but they are not!"
 	     << endl
 	     << "Here is the minimized form of the generators:"
@@ -2356,8 +2356,8 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // and of inequalities of the system of the polyhedron must be
       // the same of the temporary minimized one.
       // If it does not happen, the polyhedron is not ok.
-      if (!(con_sys.num_rows() == copy_of_con_sys.num_rows() &&
-  	    con_sys.num_equalities() == copy_of_con_sys.num_equalities())) {
+      if (con_sys.num_rows() != copy_of_con_sys.num_rows()
+	  || con_sys.num_equalities() != copy_of_con_sys.num_equalities()) {
 	cerr << "Constraints are declared minimized, but they are not!"
 	     << endl
 	     << "Here is the minimized form of the constraints:"
