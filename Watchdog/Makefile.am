@@ -140,4 +140,4 @@ uninstall-local:
 
 MOSTLYCLEANFILES = $(BUILT_SOURCES)
 
-endif
+endif # BUILD_WATCHDOG_LIBRARY

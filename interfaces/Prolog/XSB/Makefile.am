@@ -144,4 +144,4 @@ ppl_xsb.xwam ppl_xsb.so \
 xsb_clpq.xwam xsb_clpq2.xwam xsb_pl_check.xwam \
 $(CLPQ_TESTS) obtained obtained2 obtained3
 
-endif
+endif # HAVE_XSB_PROLOG

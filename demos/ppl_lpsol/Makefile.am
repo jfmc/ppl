@@ -58,4 +58,4 @@ check-local: ppl_lpsol expected
 
 MOSTLYCLEANFILES = obtained
 
-endif
+endif # HAVE_GLPK

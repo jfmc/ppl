@@ -115,4 +115,4 @@ ppl_sicstus.s.o ppl_sicstus.so \
 $(CLPQ_TESTS) \
 obtained obtained2 obtained3
 
-endif
+endif # HAVE_SICSTUS_PROLOG
