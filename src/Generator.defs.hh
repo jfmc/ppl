@@ -329,6 +329,16 @@ public:
   //! the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Generator& zero_dim_closure_point();
 
+  //! \brief
+  //! Builds a new copy of the zero-dimension space ray
+  //! of direction \f$- \epsilon\f$ (used to implement NNC polyhedra).
+  static Generator construct_zero_dim_minus_epsilon_ray();
+
+  //! \brief
+  //! Returns the zero-dimension space ray
+  //! of direction \f$- \epsilon\f$ (used to implement NNC polyhedra).
+  static const Generator& zero_dim_minus_epsilon_ray();
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 

@@ -122,6 +122,14 @@ PPL::Generator::line(const LinExpression& e) {
   return g;
 }
 
+PPL::Generator
+PPL::Generator::construct_zero_dim_minus_epsilon_ray() {
+  Generator r = ray(- Variable(0));
+  r.set_not_necessarily_closed();
+  r.set_is_ray_or_point_or_inequality();
+  return r;
+}
+
 std::ostream&
 PPL::operator<<(std::ostream& s, const Generator& g) {
   bool needed_divisor = false;
@@ -260,8 +268,6 @@ PPL::Generator::OK() const {
 
   switch (g.type()) {
   case LINE:
-    // Intentionally fall through.
-  case RAY:
     if (g[0] != 0) {
 #ifndef NDEBUG
       cerr << "Lines must have a zero inhomogeneous term!"
@@ -271,11 +277,38 @@ PPL::Generator::OK() const {
     }
     if (!g.is_necessarily_closed() && g[size() - 1] != 0) {
 #ifndef NDEBUG
-      cerr << "Lines and rays must have a zero coefficient "
+      cerr << "Lines must have a zero coefficient "
 	   << "for the epsilon dimension!"
 	   << endl;
 #endif
       return false;
+    }
+    break;
+  case RAY:
+    if (g[0] != 0) {
+#ifndef NDEBUG
+      cerr << "Rays must have a zero inhomogeneous term!"
+	   << endl;
+#endif
+      return false;
+    }
+    if (!g.is_necessarily_closed() && g[size() - 1] != 0) {
+      // Check whether it is the minus_epsilon_ray.
+      bool is_minus_epsilon_ray = (g[size() - 1] < 0);
+      if (is_minus_epsilon_ray)
+	for (size_t i = size() - 1; i-- > 1; )
+	  if (g[i] != 0) {
+	    is_minus_epsilon_ray = false;
+	    break;
+	  }
+      if (!is_minus_epsilon_ray) {
+#ifndef NDEBUG
+	cerr << "Rays must have a zero coefficient "
+	     << "for the epsilon dimension!"
+	     << endl;
+#endif
+	return false;
+      }
     }
     // The following test is correct, since we already checked
     // that the epsilon coordinate is zero.
