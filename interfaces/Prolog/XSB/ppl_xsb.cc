@@ -110,7 +110,7 @@ Prolog_atom_from_string(const char* s) {
 static inline bool
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1) {
-  prolog_term new_compound = 0;
+  prolog_term new_compound = p2p_new();
   c2p_functor(f, 1, new_compound);
   p2p_unify(p2p_arg(new_compound, 1), a1);
   t = new_compound;
@@ -124,7 +124,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 static inline bool
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2) {
-  prolog_term new_compound = 0;
+  prolog_term new_compound = p2p_new();
   c2p_functor(f, 2, new_compound);
   p2p_unify(p2p_arg(new_compound, 1), a1);
   p2p_unify(p2p_arg(new_compound, 2), a2);
@@ -157,7 +157,7 @@ static inline bool
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3, Prolog_term_ref a4) {
-  prolog_term new_compound = 0;
+  prolog_term new_compound = p2p_new();
   c2p_functor(f, 4, new_compound);
   p2p_unify(p2p_arg(new_compound, 1), a1);
   p2p_unify(p2p_arg(new_compound, 2), a2);
