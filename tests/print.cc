@@ -43,12 +43,13 @@ print_constraints(const ConSys& cs, const string& intro, ostream& s) {
     s << intro << endl;
   ConSys::const_iterator i = cs.begin();
   ConSys::const_iterator cs_end = cs.end();
+  bool printed_something = i != cs_end;
   while (i != cs_end) {
     s << *i++;
     if (i != cs_end)
       s << "," << endl;
   }
-  s << "." << endl;
+  s << (printed_something ? "." : "true") << endl;
 }
 
 void
@@ -69,12 +70,13 @@ print_generators(const GenSys& gs, const string& intro, ostream& s) {
     s << intro << endl;
   GenSys::const_iterator i = gs.begin();
   GenSys::const_iterator gs_end = gs.end();
+  bool printed_something = i != gs_end;
   while (i != gs_end) {
     s << *i++;
     if (i != gs_end)
       s << "," << endl;
   }
-  s << "." << endl;
+  s << (printed_something ? "." : "false") << endl;
 }
 
 void

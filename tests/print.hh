@@ -28,11 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iostream>
 #include <string>
 
-bool
-easy_print(const Parma_Polyhedra_Library::Polyhedron& ph,
-	   const std::string& intro = "",
-	   std::ostream& s = std::cout);
-
 void
 print_constraint(const Parma_Polyhedra_Library::Constraint& c,
 		 const std::string& intro = "",
