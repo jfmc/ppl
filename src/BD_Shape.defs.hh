@@ -722,29 +722,37 @@ public:
   //! \ref CC76_extrapolation "CC76-extrapolation" between \p *this and \p y.
   //! The computation is not guarantee to be terminated.
   /*!
-    \param y                 A system of bounded differences that <EM>must</EM>
+    \param y                 A BDS that <EM>must</EM>
                              be contained in \p *this.
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are dimension-incompatible.
+
+    \note This operator is an <EM>extrapolation</EM> and not a
+          <EM>widening</EM>, since it not provide a convergence
+          guarantee for fixpoint iterations.  Use
+          CH78_widening_assign(const BD_Shape&) if such a guarantee is
+          required.
   */
   void CC76_extrapolation_assign(const BD_Shape& y);  
 
   //! \brief
-  //! Assigns to \p *this the result of computing the 
-  //! \ref CC76_extrapolation "CC76-extrapolation" between \p *this and \p y.
-  //! The computation is not guarantee to be terminated.
+  //! Assigns to \p *this the result of computing the
+  //! \ref CC76_widening "CC76-widening" between \p *this and \p y.
   /*!
-    \param y                 A system of bounded differences 
-                             that <EM>must</EM>
+    \param y                 A BDS that <EM>must</EM>
                              be contained in \p *this.
     \param first             An iterator that points to the first
-                             stop_point.
-    \param last		     An iterator that points to the last
-                             stop_point.	     
+                             stop-point.
+    \param last		     An iterator that points one past the last
+                             stop-point.	     
     \exception std::invalid_argument thrown if \p *this and \p y
-                             are dimension-incompatible.
+                                            are dimension-incompatible.
 
-    The stop points are fixed by the user.
+    \note This operator is an <EM>extrapolation</EM> and not a
+          <EM>widening</EM>, since it not provide a convergence
+          guarantee for fixpoint iterations.  Use
+          CH78_widening_assign(const BD_Shape&) if such a guarantee is
+          required.
   */
   template <typename Iterator>
   void CC76_extrapolation_assign(const BD_Shape& y,
