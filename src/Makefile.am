@@ -74,7 +74,9 @@ Integer.inlines.hh \
 Interval.types.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
-BoundingBox.hh \
+BoundingBox.types.hh \
+BoundingBox.defs.hh \
+BoundingBox.inlines.hh \
 globals.hh \
 Init.types.hh \
 Init.defs.hh \
@@ -131,6 +133,7 @@ NNC_Polyhedron.defs.hh \
 NNC_Polyhedron.inlines.hh
 
 libppl_la_SOURCES = \
+BoundingBox.cc \
 Constraint.cc \
 ConSys.cc \
 GenSys.cc \

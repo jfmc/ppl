@@ -21,11 +21,13 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "BoundingBox.hh"
+#include "BoundingBox.defs.hh"
 #include <iostream>
 
+namespace PPL = Parma_Polyhedra_Library;
+
 std::ostream&
-operator<<(std::ostream& s, const PPL::BoundingBox& bbox) {
+PPL::operator<<(std::ostream& s, const PPL::BoundingBox& bbox) {
   if (bbox.is_empty()) {
     s << "empty";
     return s;
@@ -35,18 +37,24 @@ operator<<(std::ostream& s, const PPL::BoundingBox& bbox) {
     bool closed = false;
     PPL::Integer n;
     PPL::Integer d;
-    bbox.get_lower_bound(k, closed, n, d);
-    s << (closed ? "[" : "(")
-      << n;
-    if (d != 1)
-      s << "/" << d;
-    s << ", ";
-    bbox.get_upper_bound(k, closed, n, d);
-    s << n;
-    if (d != 1)
-      s << "/" << d;
-    s << (closed ? "]" : ")")
-      << std::endl;
+    if (bbox.get_lower_bound(k, closed, n, d)) {
+      s << (closed ? "[" : "(")
+	<< n;
+      if (d != 1)
+	s << "/" << d;
+      s << ", ";
+    }
+    else
+      s << "(-inf, ";
+    if (bbox.get_upper_bound(k, closed, n, d)) {
+      s << n;
+      if (d != 1)
+	s << "/" << d;
+      s << (closed ? "]" : ")");
+    }
+    else
+      s << "+inf)";
+    s << std::endl;
   }
   return s;
 }

@@ -124,8 +124,18 @@ Boundary::bound() const {
 }
 
 inline
+LBoundary::LBoundary()
+  : Boundary(ExtendedRational('-'), POS) {
+}
+
+inline
 LBoundary::LBoundary(const ExtendedRational& v, OpenClosed f)
   : Boundary(v, f == CLOSED ? ZERO : POS) {
+}
+
+inline
+UBoundary::UBoundary()
+  : Boundary(ExtendedRational('+'), NEG) {
 }
 
 inline
@@ -238,8 +248,7 @@ operator>=(const LBoundary& x, ExtendedRational y) {
 }
 
 inline
-Interval::Interval()
-  : lower('-', LBoundary::OPEN), upper('+', UBoundary::OPEN) {
+Interval::Interval() {
 }
 
 inline bool
@@ -271,8 +280,8 @@ Interval::lower_upper_bound(UBoundary new_upper) {
 
 inline void
 Interval::set_empty() {
-  lower = LBoundary('+', LBoundary::OPEN);
-  upper = UBoundary('-', UBoundary::OPEN);
+  lower = LBoundary(ExtendedRational('+'), LBoundary::OPEN);
+  upper = UBoundary(ExtendedRational('-'), UBoundary::OPEN);
   assert(is_empty());
 }
 

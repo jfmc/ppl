@@ -51,7 +51,7 @@ public:
 
   ExtendedRational(const Integer& num, const Integer& den);
 
-  ExtendedRational(char sign);
+  explicit ExtendedRational(char sign);
 
   int direction_of_infinity() const;
 
@@ -179,7 +179,8 @@ public:
   //! Open or closed.
   enum OpenClosed { OPEN = Boundary::POS, CLOSED = Boundary::ZERO };
 
-  LBoundary(const ExtendedRational& v, OpenClosed f = CLOSED);
+  LBoundary();
+  LBoundary(const ExtendedRational& v, OpenClosed f);
 
   bool OK() const;
 };
@@ -189,7 +190,8 @@ public:
   //! Open or closed.
   enum OpenClosed { OPEN = Boundary::NEG, CLOSED = Boundary::ZERO };
 
-  UBoundary(const ExtendedRational& v, OpenClosed f = CLOSED);
+  UBoundary();
+  UBoundary(const ExtendedRational& v, OpenClosed f);
 
   bool OK() const;
 };

@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _Polyhedron_inlines_hh
 #define _Polyhedron_inlines_hh 1
 
+#include "Interval.defs.hh"
 #include <algorithm>
 
 namespace Parma_Polyhedra_Library {
@@ -395,156 +396,86 @@ Polyhedron::shrink_bounding_box(Box& box) const {
   if (space_dim == 0)
     return;
 
-  // If finite, the maximum and minimum values
-  // for each variable are used to construct constraints
-  // bounding the sides of the box.
+  // To record the lower and upper bound for each dimension.
+  std::vector<LBoundary> lower_bound(space_dim);
+  std::vector<UBoundary> upper_bound(space_dim);
 
-  // To find the max and min, we construct two vectors of size =
-  // space_dimension of *this and whose elements are pointers to the
-  // generators for *this. The vector mx records, for each variable, a
-  // generator that has the maximum value for this variable, or is
-  // unbounded in the positive direction. The vector mn records, for
-  // each variable, a generator that has the minimum value for this
-  // variable, or is unbounded in the negative direction.
-  std::vector<GenSys::const_iterator> mx(space_dim);
-  std::vector<GenSys::const_iterator> mn(space_dim);
+  for (size_t j = space_dim; j-- > 0; ) {
+    // Lower bounds are initialized to (open) plus infinity;
+    lower_bound[j] = LBoundary(ExtendedRational('+'), LBoundary::OPEN);
+    // Upper bounds are initialized to (open) minus infinity;
+    upper_bound[j] = UBoundary(ExtendedRational('-'), UBoundary::OPEN);
+  }
 
-  // Get the generators for *this
+  // Get the generators for *this.
   const GenSys& gs = generators();
   const GenSys::const_iterator gs_begin = gs.begin();
   const GenSys::const_iterator gs_end = gs.end();
 
-  // We first need a point in *this so as to initialize the maximum and
-  // minimum to the index of a point.
+  // We first need to identify those axes that are unbounded
+  // below and/or above.
   for (GenSys::const_iterator i = gs_begin; i != gs_end; ++i) {
-    if (i->is_point()) {
-      // Initialize the maximum and minimum vectors to the current point.
+    const Generator& g = *i;
+    Generator::Type g_type = g.type();
+    switch (g_type) {
+    case Generator::LINE:
+      // Any axes `j' in which the coefficient is non-zero is unbounded
+      // both below and above.
       for (size_t j = space_dim; j-- > 0; )
-	mn[j] = mx[j] = i;
+        if (g.coefficient(Variable(j)) != 0) {
+	  lower_bound[j] = LBoundary(ExtendedRational('-'), LBoundary::OPEN);
+	  upper_bound[j] = UBoundary(ExtendedRational('+'), UBoundary::OPEN);
+	}
+    break;
+    case Generator::RAY:
+      // Axes in which the coefficient is negative are unbounded below.
+      // Axes in which the coefficient is positive are unbounded above.
+      for (size_t j = space_dim; j-- > 0; ) {
+        int sign = sgn(g.coefficient(Variable(j)));
+        if (sign < 0)
+	  lower_bound[j] = LBoundary(ExtendedRational('-'), LBoundary::OPEN);
+        else if (sign > 0)
+	  upper_bound[j] = UBoundary(ExtendedRational('+'), UBoundary::OPEN);
+      }
+      break;
+    case Generator::POINT:
+    case Generator::CLOSURE_POINT:
+      {
+	const Integer& d = g.divisor();
+	for (size_t j = space_dim; j-- > 0; ) {
+	  const Integer& n = g.coefficient(Variable(j));
+	  ExtendedRational r(n, d);
+	  LBoundary lb(r,(g_type == Generator::CLOSURE_POINT
+			  ? LBoundary::OPEN
+			  : LBoundary::CLOSED));
+	  if (lb < lower_bound[j])
+	    lower_bound[j] = lb;
+	  UBoundary ub(r, (g_type == Generator::CLOSURE_POINT
+			   ? UBoundary::OPEN
+			   : UBoundary::CLOSED));
+	  if (ub > upper_bound[j])
+	    upper_bound[j] = ub;
+	}
+      }
       break;
     }
   }
 
-  // Now go through all the generators and record those with the max
-  // and min values of each coefficient divided by its divisor.
-  for (GenSys::const_iterator i = gs_begin; i != gs_end; ++i) {
-    const Generator& generator = *i;
-    if (generator.is_closure_point()) {
-      // compare the max and min with the current values
-      const Integer& div = generator.divisor();
-      for (size_t j = space_dim; j-- > 0; ) {
-        Variable v(j);
-        const Integer& coeff = generator.coefficient(v);
-        const Generator& jmx_generator = *(mx[j]);
-        const Generator& jmn_generator = *(mn[j]);
-        // if jmx_generator is a ray or line, then the upper bound
-        // remains infinite and we do nothing.
-        if ((jmx_generator.is_point() || jmx_generator.is_closure_point())  &&
-	    // Compare the product of the coefficient of the generator at
-	    // max/min index and the divisor of current generator with the
-	    // product of the coefficient of current generator and the
-	    // divisor of the generator at max/min index.
-	    coeff * jmx_generator.divisor()
-	    > jmx_generator.coefficient(v) * div)
-	  mx[j] = i;
-        // if jmn_generator is a ray or line, then the lower bound
-        // remains infinite and we do nothing.
-        if ((jmn_generator.is_point() || jmn_generator.is_closure_point()) &&
-	    // Compare the product of the coefficient of the generator at
-	    // max/min index and the divisor of current generator with the
-	    // product of the coefficient of current generator and the
-	    // divisor of the generator at max/min index.
-	    coeff * jmn_generator.divisor()
-	    < jmn_generator.coefficient(v) * div)
-	  mn[j] = i;
-      }
-    }
-    else if (generator.is_point()) {
-      // compare the max and min with the current values
-      const Integer& div = generator.divisor();
-      for (size_t j = space_dim; j-- > 0; ) {
-        Variable v(j);
-        const Integer& coeff = generator.coefficient(v);
-        const Generator& jmx_generator = *(mx[j]);
-        const Generator& jmn_generator = *(mn[j]);
-        // if jmx_generator is a ray or line, then the upper bound
-        // remains infinite and we do nothing.
-        if ((jmx_generator.is_point() || jmx_generator.is_closure_point()) &&
-	    // Compare the product of the coefficient of the generator at
-	    // max/min index and the divisor of current generator with the
-	    // product of the coefficient of current generator and the
-	    // divisor of the generator at max/min index.
-	    coeff * jmx_generator.divisor()
-	    >= jmx_generator.coefficient(v) * div)
-	  mx[j] = i;
-        // if jmn_generator is a ray or line, then the lower bound
-        // remains infinite and we do nothing.
-        if ((jmn_generator.is_point() || jmn_generator.is_closure_point()) &&
-	    // Compare the product of the coefficient of the generator at
-	    // max/min index and the divisor of current generator with the
-	    // product of the coefficient of current generator and the
-	    // divisor of the generator at max/min index.
-	    coeff * jmn_generator.divisor()
-	    <= jmn_generator.coefficient(v) * div)
-	  mn[j] = i;
-      }
-    }
-    else if (generator.is_ray()) {
-      // In this case, we consider any axes j in which the coefficient
-      // is non-zero: if the coefficient for j is positive, then the
-      // j'th element of the mx vector is updated and, if it is
-      // negative, the j'th element of the mn vector is updated
-      // with the current generator.
-      for (size_t j = space_dim; j-- > 0; ) {
-        Variable v(j);
-        const Integer& coeff = generator.coefficient(v);
-        if (coeff > 0)
-	  mx[j] = i;
-        else if (coeff < 0)
-	  mn[j] = i;
-      }
-    }
-    else {
-      assert(generator.is_line());
-      // In this case, we consider any axes j in which the coefficient
-      // is non-zero: the j'th element of the mx vector and the
-      // mn vector are updated with the current generator.
-      for (size_t j = space_dim; j-- > 0; ) {
-        Variable v(j);
-        if (generator.coefficient(v) != 0) {
-          mx[j] = i;
-          mn[j] = i;
-	}
-      }
-    }
-  }
-  
-  // To construct the bounding box.
-  // Now adjust the constraints bounding the sides of the box.
-  for (size_t j  = space_dim; j-- > 0; ) {
-    Variable v(j);
-    const Generator& jmx_generator = *(mx[j]);
-    const Generator& jmn_generator = *(mn[j]);
-    if (jmx_generator.is_closure_point()) {
-      box.lower_upper_bound(j, false,
-			    jmx_generator.coefficient(v),
-			    jmx_generator.divisor());
-    }
-    else if (jmx_generator.is_point()) {  
-      box.lower_upper_bound(j, true,
-			    jmx_generator.coefficient(v),
-			    jmx_generator.divisor());
-    } 
-    if (jmn_generator.is_closure_point()) {
-      box.raise_lower_bound(j, false,
-			    jmn_generator.coefficient(v),
-			    jmn_generator.divisor());
-    }
-    else if (jmn_generator.is_point()) {
-      box.raise_lower_bound(j, true,
-			    jmn_generator.coefficient(v),
-			    jmn_generator.divisor());
-    }
+  // Now shrink the bounded axes.
+  for (size_t j = space_dim; j-- > 0; ) {
+    // Lower bound.
+    const LBoundary& lb = lower_bound[j];
+    const ExtendedRational& lr = lb.bound();
+    if (lr.direction_of_infinity() == 0)
+      box.raise_lower_bound(j, lb.is_closed(),
+			    lr.numerator(), lr.denominator());
+
+    // Upper bound.
+    const UBoundary& ub = upper_bound[j];
+    const ExtendedRational& ur = ub.bound();
+    if (ur.direction_of_infinity() == 0)
+      box.lower_upper_bound(j, ub.is_closed(),
+			    ur.numerator(), ur.denominator());
   }
 }
 
