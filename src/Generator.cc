@@ -45,11 +45,7 @@ PPL::vertex(const LinExpression& e, const Integer& d) {
 PPL::Generator
 PPL::ray(const LinExpression& e) {
   // The origin of the space cannot be a ray.
-  size_t i = e.size();
-  for ( ; i-- > 1; )
-    if (e[i] != 0)
-      break;
-  if (i == 0)
+  if (e.all_homogeneous_terms_are_zero())
     throw std::invalid_argument("PPL::ray(e): the origin cannot be a ray");
 
   LinExpression ec = e;
@@ -62,11 +58,7 @@ PPL::ray(const LinExpression& e) {
 PPL::Generator
 PPL::line(const LinExpression& e) {
   // The origin of the space cannot be a line.
-  size_t i = e.size();
-  for ( ; i-- > 1; )
-    if (e[i] != 0)
-      break;
-  if (i == 0)
+  if (e.all_homogeneous_terms_are_zero())
     throw std::invalid_argument("PPL::line(e): the origin cannot be a line");
 
   LinExpression ec = e;
