@@ -500,7 +500,7 @@ ppl_intersection_assign(void* pp_lhs, const void* pp_rhs) {
   try {
     PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(pp_lhs);
     const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(pp_rhs);
-    x.intersection_assign_and_minimize(y);
+    x.intersection_assign(y);
   }
   CATCH_ALL;
 }
