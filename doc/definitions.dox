@@ -118,11 +118,11 @@ then we can split it into two linear inequalities (as above).
 
 It follows that a polyhedron \f$P\f$ can be always represented as 
 \f[
-  P = \{\,x \in \mathbb{R}^n \mid Ax \geq b\,\}.
+  P = \{\,x \in \mathbb{R}^n \mid Ax \geq b\,\}
 \f]
 for some 
-matrix \f$A \in \mathbb{R}^{m} \times \mathbb{R}^n\f$ and
-and vector \f$b \in \mathbb{R}^{m}\f$.
+matrix \f$ A \in \mathbb{R}^{m} \times \mathbb{R}^n\f$ and
+and vector \f$ b \in \mathbb{R}^{m}\f$.
 
 In the sequel we will refer to linear equalities and linear inequalities
 simply as equalities and inequalities respectively and 
@@ -130,8 +130,8 @@ refer to an equality or inequality as a <EM>constraint</EM>.
 
 A polyhedron \f$P\f$ is 
 said to be <EM>rational</EM> if there exists a matrix
-\f$A \in \mathbb{R}^{m'} \times \mathbb{R}^n\f$
-and vector \f$b \in \mathbb{R}^{m'}\f$ with rational coefficients such that 
+\f$ A \in \mathbb{R}^{m'} \times \mathbb{R}^n\f$
+and vector \f$ b \in \mathbb{R}^{m'}\f$ with rational coefficients such that 
 \f[
   P = \{\,x \in \mathbb{R}^n \mid A'x \geq b'\,\}.
 \f]
@@ -168,16 +168,23 @@ distinct points in \f$P\f$.
 
 <B>Rays</B>
 
-Let \f$P_0 = \{\,r \in \mathbb{R}^n \mid Ar \geq 0\,\}\f$. If 
-\f$P = \{\,x \in \mathbb{R}^n \mid Ax \geq b\,\} \neq \emptyset\f$, then 
+Let \f$P, P_0\f$ be the polyhedra
+\f[
+P= \{\,x \in \mathbb{R}^n \mid Ax \geq b\,\} \neq \emptyset \quad \text{and }
+P_0 = \{\,r \in \mathbb{R}^n \mid Ar \geq 0\,\}
+\f]
+where 
+\f$A \in \mathbb{R}^m \times \mathbb{R}^n\f$, \f$b \in \mathbb{R}^m\f$.
+Then any point
 \f$r \in P_0 \setminus \{0\}\f$ is called a <EM>ray</EM> of \f$P\f$.
+
+A ray indicates a direction in which the polyhedra is infinite (i.e. open).
 
 <B><EM>Proposition</EM></B>
 
 A point \f$r \in \mathbb{R}^n\f$ is a ray of \f$P\f$ if and only if for 
 any point \f$x \in P\f$, \f$(x + \mu r) \in P\f$ for all 
-\f$\mu \in \mathbb{R}, \mu > 0\f$. A ray is a 
-direction in which \f$P\f$ is infinite.
+\f$\mu \in \mathbb{R}, \mu > 0\f$.
 
 <B>Extreme rays</B>
 
@@ -195,10 +202,12 @@ directions in which the polyhedron is open.
 
 <B>Lines</B>
 
-A <EM>line</EM> (or <EM>bidirectional ray</EM>) of \f$P\f$ is a vector 
-\f$l\f$, such that \f$x \in P\f$ implies \f$(x + \mu l) \in P\f$ for 
-all \f$\mu\f$. It follows that two rays in exactly opposite directions
-make a line.
+A <EM>line</EM> (or <EM>bidirectional ray</EM>) of a polyhedron
+\f$P\f$ is a vector 
+\f$l\f$, such that, for all \f$x \in P\f$ and all \f$\mu \in \mathbb{R}\f$,
+\f$(x + \mu l) \in P\f$.
+
+It follows that two rays in exactly opposite directions make a line.
 
 <B>Cone</B>
 
