@@ -50,6 +50,12 @@ inline
 ConSys::~ConSys() {
 }
 
+inline ConSys&
+ConSys::operator =(const ConSys& y) {
+  Matrix::operator =(y);
+  return *this;
+}
+
 inline Constraint&
 ConSys::operator [](size_t k) {
   return static_cast<Constraint&> (Matrix::operator[](k));

@@ -50,6 +50,12 @@ inline
 GenSys::~GenSys() {
 }
 
+inline GenSys&
+GenSys::operator =(const GenSys& y) {
+  Matrix::operator =(y);
+  return *this;
+}
+
 inline size_t
 GenSys::space_dimension() const {
   return (num_columns() == 0) ? 0 : num_columns() - 1;

@@ -165,6 +165,9 @@ public:
   //! Destructor.
   virtual ~GenSys();
 
+  //! Assignment operator.
+  GenSys& operator =(const GenSys& y);
+
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 

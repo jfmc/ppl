@@ -95,6 +95,9 @@ public:
   //! Destructor.
   virtual ~ConSys();
 
+  //! Assignment operator.
+  ConSys& operator =(const ConSys& y);
+
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
