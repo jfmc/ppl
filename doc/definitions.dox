@@ -279,16 +279,6 @@ constraint \f$y \geq 0\f$ can be represented by the generator system
 It is also worth noting that the only ray in \f$R\f$
 is <EM>not</EM> an extreme ray of \f$\cP\f$.
 
-<B>Affine transformation</B>
-
-An <EM>affine transformation</EM> is a function mapping a
-point \f$\vect{x} \in \Rset^n\f$ to a point \f$\vect{x}' \in \Rset^m\f$
-such that
-\f[
-  \vect{x}' = A\vect{x} + \vect{b}
-\f]
-where \f$A \in \Rset^m \times \Rset^n\f$ and
-\f$\vect{b} \in \Rset^m\f$.
 
 <B>Dual representation</B>
 
@@ -311,6 +301,26 @@ if there does not exist a generator system
 \f$\cG' = (L', R', P', C') \neq \cG\f$ for \f$\cP\f$
 for which \f$L' \sseq L\f$, \f$R' \sseq R\f$, \f$P' \sseq P\f$ and
 \f$C' \sseq C\f$.
+
+<B>Affine images and preimages</B>
+
+The function mapping \f$\fund{\phi}{\Rset^n}{\Rset^m}\f$
+is an <EM>affine transformation</EM> if there exist
+a matrix \f$A \in \Rset^m \times \Rset^n\f$ and
+a vector \f$\vect{b} \in \Rset^m\f$ such that,
+for all \f$\vect{x} \in \Rset^n\f$, we have
+\f$\phi(\vect{x}) = A\vect{x} + \vect{b}\f$.
+If \f$n = m\f$, then the function \f$\phi\f$ is said to be
+<EM>space-dimension preserving</EM>.
+We denote by \f$\phi(S) \sseq \Rset^m\f$ the <EM>image</EM>
+under \f$\phi\f$ of the set \f$S \sseq \Rset^n\f$;
+similarly, we denote by \f$\phi^{-1}(S') \sseq \Rset^n\f$
+the <EM>preimage</EM> under \f$\phi\f$ of \f$S' \sseq \Rset^m\f$.
+
+Both \f$\Pset_n\f$ and \f$\CPset_n\f$ are closed under
+the application of any space-dimension preserving
+affine image and preimage operators.
+
 
 <B>Topologies and topological compatibility</B>
 
