@@ -1489,57 +1489,51 @@ private:
   */
   void update_sat_g() const;
 
-  //! Removes pendings otaining a minimized polyhedron. 
+  //! \brief
+  //! Processes the pending rows of either description of the polyhedron
+  //! and obtains a minimized polyhedron.
   /*!
     \return       <CODE>false</CODE> if and only if \p *this turns out
                   to be an empty polyhedron.
 
-    The resulting system of generators is only partially sorted:
-    the lines are in the upper part of the matrix,
-    while rays and points are in the lower part.
-    The resulting system of constraints is only partially sorted:
-    the equalities are in the upper part of the matrix,
-    while the inequalities in the lower part.
-    It is illegal to call this method when the Status field
-    already declares the polyhedron to be empty and not to have
-    something pending.
+    It is assumed that the polyhedron does have some constraints or
+    generators pending.
   */
-  bool remove_pending_and_minimize() const;
+  bool process_pending() const;
   
-  //! Removes pending constraints and obtains a minimized polyhedron.
+  //! Processes the pending constraints and obtains a minimized polyhedron.
   /*!
     \return       <CODE>false</CODE> if and only if \p *this turns out
                   to be an empty polyhedron.
-    It is illegal to call this method when the polyhedron
-    has not pending constraints.
+
+    It is assumed that the polyhedron does have some pending constraints.
   */
-  bool remove_pending_constraints_and_minimize() const;
-  
-  //! Removes pending generators and obtains a minimized polyhedron.
+  bool process_pending_constraints() const;
+
+  //! Processes the pending generators and obtains a minimized polyhedron.
   /*!
-    It is illegal to call this method when the polyhedron
-    has not pending generators.
+    It is assumed that the polyhedron does have some pending generators.
   */
-  void remove_pending_generators_and_minimize() const;
-  
+  void process_pending_generators() const;
+
   //! \brief
-  //! Removes pending and obtains the real system of constraints
-  //! of the polyhedron.
+  //! Lazily integrates the pending descriptions of the polyhedron
+  //! to obtain a constraint system without pending rows.
   /*!
-    It is illegal to call this method when the polyhedron
-    has not something pending.
+    It is assumed that the polyhedron does have some constraints or
+    generators pending.
   */
   void remove_pending_to_obtain_constraints() const;
-  
+
   //! \brief
-  //! Removes pending and obtains the real system of generators
-  //! of the polyhedron.
+  //! Lazily integrates the pending descriptions of the polyhedron
+  //! to obtain a generator system without pending rows.
   /*!
     \return       <CODE>false</CODE> if and only if \p *this turns out
                   to be an empty polyhedron.
 
-    It is illegal to call this method when the polyhedron
-    has not something pending.
+    It is assumed that the polyhedron does have some constraints or
+    generators pending.
   */
   bool remove_pending_to_obtain_generators() const;
 

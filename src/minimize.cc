@@ -125,8 +125,8 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   // and the 5th parameter (representing the number of lines in `dest'),
   // by construction, is equal to `dest_num_rows'.
   dimension_type num_lines_or_equalities = conversion(source, 0,
-					      dest, tmp_sat,
-					      dest_num_rows);
+						      dest, tmp_sat,
+						      dest_num_rows);
   // conversion() may have modified the number of rows in `dest'.
   dest_num_rows = dest.num_rows();
   // NOTE: conversion() can only remove inequalities from `source'.
@@ -188,6 +188,8 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   \return             <CODE>true</CODE> if the obtained polyhedron
                       is empty, <CODE>false</CODE> otherwise.
   
+  It is assumed that \p source1 and \p source2 are sorted and have
+  no pending rows. It is also assumed that \p dest has no pending rows.
   On entry, the rows of \p sat are indexed by the rows of \p dest
   and its columns are indexed by the rows of \p source1.
   On exit, the rows of \p sat are indexed by the rows of \p dest
@@ -197,19 +199,15 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   Let us suppose we want to add some constraints to a given matrix of
   constraints \p source1. This method, given a minimized double description
   pair (\p source1, \p dest) and a matrix of new constraints \p source2,
-  modified \p source1 adding to it the constraints of \p source2 that
-  are not in \p source1. Then, invoking
-  <CODE>add_and_minimize(bool, Matrix&, Matrix&, SatMatrix&)</CODE>
-  this method builds a new DD pair such that the matrix of constraints
-  is \p source1.
+  modifies \p source1 by adding to it the constraints of \p source2 that
+  are not in \p source1. Then, by invoking
+  <CODE>add_and_minimize(bool, Matrix&, Matrix&, SatMatrix&)</CODE>,
+  processes the added constraints obtaining a new DD pair.
 
   This method treats also the dual case, i.e., adding new generators to
   a previous matrix of generators. In this case \p source1 contains the
   old generators, \p source2 the new ones and \p dest is the matrix
-  of constraints in the given minimized DD pair. Like we did in
-  conversion.cc we will describe only the case in which \p source1 (and
-  then \p source2) contains constraints and \p dest contains generators.
-  \p source1 and \p source2 are assumed to be sorted.
+  of constraints in the given minimized DD pair.
 
   Since \p source2 contains the constraints (or the generators) that
   will be added to \p source1, it is constant: it will not be modified.
@@ -220,17 +218,15 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
 				  Matrix& dest,
 				  SatMatrix& sat,
 				  const Matrix& source2) {
-  // `source1' and `source2' cannot be empty: even if they are empty
-  // constraint systems, representing universe polyhedra, homogeneization
-  // has added the positive constraint. They also cannot be empty
-  // generator systems, since this function is always called starting
-  // from a pair of non-empty polyhedra.
+  // `source1' and `source2' cannot be empty.
   assert(source1.num_rows() > 0 && source2.num_rows() > 0);
   // `source1' and `source2' must have the same number of columns
   // to be merged.
   assert(source1.num_columns() == source2.num_columns());
-  assert(source1.is_sorted());
-  assert(source2.is_sorted());
+  // `source1' and `source2' are fully sorted.
+  assert(source1.is_sorted() && source1.num_pending_rows() == 0);
+  assert(source2.is_sorted() && source2.num_pending_rows() == 0);
+  assert(dest.num_pending_rows() == 0);
 
   dimension_type old_source1_num_rows = source1.num_rows();
   // `k1' and `k2' run through the rows of `source1' and `source2', resp.
@@ -274,9 +270,8 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
     // We append them at the end of 'source1'.
     for ( ; k2 < source2_num_rows; ++k2)
       source1.add_pending_row(source2[k2]);
-  
-  dimension_type new_source1_num_rows = source1.num_rows();
-  if (new_source1_num_rows == old_source1_num_rows)
+
+  if (source1.num_pending_rows() == 0)
     // No row was appended to `source1', because all the constraints
     // in `source2' were already in `source1'.
     // There is nothing left to do ...
@@ -289,9 +284,9 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   \param con_to_gen   <CODE>true</CODE> if \p source is a matrix of
                       constraints, <CODE>false</CODE> otherwise.
   \param source       The first element of the given DD pair. It also
-                      also contains the rows to add after
-		      \p source.index_first_pending.
+                      contains the pending rows to be processed.
   \param dest         The second element of the given DD pair.
+                      It cannot have pending rows.
   \param sat          The saturation matrix that bind the upper part of
                       \p source to \p dest.
 
@@ -299,46 +294,37 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
                       is empty, <CODE>false</CODE> otherwise.
 
   On entry, the rows of \p sat are indexed by the rows of \p dest
-  and its columns are indexed by the rows of the upper part of
-  \p source.
+  and its columns are indexed by the non-pending rows of \p source.
   On exit, the rows of \p sat are indexed by the rows of \p dest
   and its columns are indexed by the rows of \p source.
 
-  Let us suppose we want to add some constraints to a given matrix of
-  constraints \p source. This method, given a minimized double description
-  pair (the upper part of \p source, \p dest) and the new constraints
-  (in the lower part of \p source), builds a new DD pair such that the
-  matrix of constraints is \p source. Given the \p source, this
-  function modifies (using <CODE>conversion()</CODE>) \p dest according
-  to the constraints that are in the lower part and then simplifies
-  \p source (invoking <CODE>simplify</CODE>), erasing the redundant
-  constraints.
+  Let us suppose that \p source is a matrix of constraints.
+  This method assumes that the non-pending part of \p source and
+  matrix \p dest form a double description pair in minimal form and
+  will build a new DD pair in minimal form by processing the pending
+  constraints in \p source. To this end, it will call
+  <CODE>conversion()</CODE>) and <CODE>simplify</CODE>.
 
-  This method treats also the dual case, i.e., adding new generators to
-  a previous matrix of generators. In this case \p source contains the
-  old generators and the new ones and \p dest is the matrix
-  of constraints in the given minimized DD pair. Like we did in
-  conversion.cc we will describe only the case in which \p source
-  contains constraints and \p dest contains generators.
+  This method treats also the dual case, i.e., processing pending
+  generators. In this case \p source contains generators and \p dest
+  is the matrix of constraints corresponding to the non-pending part
+  of \p source.
 */
 bool
 PPL::Polyhedron::add_and_minimize(bool con_to_gen,
 				  Matrix& source,
 				  Matrix& dest,
 				  SatMatrix& sat) {
+  assert(source.num_pending_rows() > 0);
+  assert(source.num_columns() == dest.num_columns());
+  assert(source.is_sorted());
 
-  // We have to add to `sat' the same number of rows that we added to
-  // `source'. The elements of these rows are set to zero.
-  // New dimensions of `sat' are: `dest.num_rows()' rows and
-  // `source.num_rows()' columns, i.e., the rows of `sat' are
-  // indexed by generators and its columns are indexed by constraints.
+  // First, pad the saturation matrix with new columns (of zeroes)
+  // to accomodate for the pending rows of `source'.
   sat.resize(dest.num_rows(), source.num_rows());
 
-  // We compute the matrix of generators corresponding to the new
-  // matrix of constraints by invoking the function conversion().
-  // The `start' parameter is set to the index of the first constraint
-  // we appended to `source', because generators corresponding
-  // to previous constraints are already in `dest'.
+  // Incrementally compute the new matrix of generators.
+  // Parameter `start' is set to the index of the first pending constraint.
   dimension_type num_lines_or_equalities
     = conversion(source, source.first_pending_row(),
 		 dest, sat,
@@ -347,8 +333,8 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   // conversion() may have modified the number of rows in `dest'.
   dimension_type dest_num_rows = dest.num_rows();
 
-  // NOTE: conversion() can only remove inequalities from `source'.
-  // Thus, all the equalities still come before the inequalities
+  // NOTE: after `conversion()', all the equalities in `source' still
+  // come before the inequalities
   // (the correctness of simplify() relies on this hypothesis).
 
   // Checking if the generators in `dest' represent an empty polyhedron:
@@ -381,12 +367,12 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
       throw std::runtime_error("PPL internal error");
   else {
     // A point has been found: the polyhedron is not empty.
-    // Now invoking simplify() to remove all the redundant constraints
+    // Now invoking `simplify()' to remove all the redundant constraints
     // from the matrix `source'.
-    // Since the saturation matrix `sat' returned by conversion()
+    // Since the saturation matrix `sat' returned by `conversion()'
     // has rows indexed by generators (the rows of `dest') and columns
     // indexed by constraints (the rows of `source'), we have to
-    // transpose it to obtain the saturation matrix needed by simplify().
+    // transpose it to obtain the saturation matrix needed by `simplify()'.
     sat.transpose();
     simplify(source, sat);
     // Transposing back.
@@ -394,4 +380,3 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
     return false;
   }
 }
-
