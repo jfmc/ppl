@@ -27,6 +27,74 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+  //! \brief
+  //! Assigns to \p *this the result of computing the 
+  //! \ref CC76_widening "CC76-widening" between \p *this and \p y.
+  /*!
+    \param y                 A bounding box that <EM>must</EM>
+                             be contained in \p *this.
+    \param first             An iterator that points to the first
+                             stop-point.
+    \param last		     An iterator that points one past the last
+                             stop-point.
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                            are dimension-incompatible.
+  */
+template <typename Iterator>
+void
+PPL::Bounding_Box::CC76_widening_assign(const Bounding_Box& y,
+					Iterator first, Iterator last) {
+  for (dimension_type i = vec.size(); i-- > 0; ) {
+    Interval& x_vec_i = vec[i];
+    const Interval& y_vec_i = y.vec[i];
+
+    // Upper bound.
+    UBoundary& x_ub = x_vec_i.upper_bound();
+    ERational& x_ubb = x_ub.bound();
+    const ERational& y_ubb = y_vec_i.upper_bound().bound();
+    assert(y_ubb <= x_ubb);
+    if (y_ubb < x_ubb) {
+      Iterator k = std::lower_bound(first, last, x_ubb);
+      if (k != last) {
+	if (x_ubb < *k)
+	  x_ubb = *k;
+      }
+      else
+	x_ub = UBoundary(ERational('+'), UBoundary::OPEN);
+    }
+
+    // Lower bound.
+    LBoundary& x_lb = x_vec_i.lower_bound();
+    ERational& x_lbb = x_lb.bound();
+    const ERational& y_lbb = y_vec_i.lower_bound().bound();
+    assert(y_lbb <= x_lbb);
+    if (y_lbb < x_lbb) {
+      Iterator k = std::upper_bound(first, last, x_lbb);
+      if (k != last) {
+	if (x_lbb > *k)
+	  x_lbb = *k;
+      }
+      else
+	x_lb = LBoundary(ERational('-'), LBoundary::OPEN);
+    }
+  }
+}
+
+void
+PPL::Bounding_Box::CC76_widening_assign(const Bounding_Box& y) {
+  static ERational stop_points[] = {
+    ERational(-2, 1),
+    ERational(-1, 1),
+    ERational(0, 1),
+    ERational(1, 1),
+    ERational(2, 1)
+  };
+  CC76_widening_assign(y,
+		       stop_points,
+		       stop_points
+		       + sizeof(stop_points)/sizeof(stop_points[0]));
+}
+
 /*! \relates Parma_Polyhedra_Library::Bounding_Box */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const PPL::Bounding_Box& bbox) {

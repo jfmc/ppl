@@ -138,6 +138,35 @@ public:
 			 Coefficient_traits::const_reference n,
 			 Coefficient_traits::const_reference d);
 
+  //! \brief
+  //! Assigns to \p *this the result of computing the 
+  //! \ref CC76_widening "CC76-widening" between \p *this and \p y.
+  /*!
+    \param y                 A bounding box that <EM>must</EM>
+                             be contained in \p *this.
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are dimension-incompatible.
+  */
+  void CC76_widening_assign(const Bounding_Box& y);
+
+  //! \brief
+  //! Assigns to \p *this the result of computing the 
+  //! \ref CC76_widening "CC76-widening" between \p *this and \p y.
+  /*!
+    \param y                 A bounding box that <EM>must</EM>
+                             be contained in \p *this.
+    \param first             An iterator that points to the first
+                             stop-point.
+    \param last		     An iterator that points one past the last
+                             stop-point.
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                            are dimension-incompatible.
+  */
+  template <typename Iterator>
+  void CC76_widening_assign(const Bounding_Box& y,
+			    Iterator first, Iterator last);
+
+
 private:
   //! \brief
   //! A vector of rational intervals, one for each dimension
@@ -149,6 +178,9 @@ private:
   mutable bool empty;
   //! Tells whether or not the flag \p empty is meaningful.
   mutable bool empty_up_to_date;
+
+  //! Records the stop points for CC76_widening_assign(const Bounding_Box&).
+  static ERational default_stop_points[];
 };
 
 namespace IO_Operators {
