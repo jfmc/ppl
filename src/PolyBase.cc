@@ -408,6 +408,9 @@ PPL::PolyBase::PolyBase(Topology topology, GenSys& gs)
 	  ++n_rows;
 	}
       }
+      // FIXME: can we avoid this by cleaverly inserting
+      // closure points ?
+      gen_sys.set_sorted(false);
     }
     set_generators_up_to_date();
     // Set the space dimension.
@@ -1189,7 +1192,27 @@ PPL::PolyBase::add_dimensions(Matrix& mat1,
     size_t new_eps_index = mat1.num_columns() - 1;
     size_t old_eps_index = new_eps_index - add_dim;
     mat1.swap_columns(old_eps_index, new_eps_index);
+
+    // FIXME: the following #else branch is as efficient as
+    // the #if branch; it is more involved because it tries
+    // to preserve sortedness. Anyway, it can be coded more clearly.
+#if 0
     mat2.swap_columns(old_eps_index, new_eps_index);
+    mat2.set_sorted(false);
+#else 
+    size_t to_move = mat2.num_columns() - 1;
+    for (size_t i = 0; i < add_dim; ++i) {
+      Row& r = mat2[i];
+      std::swap(r[to_move], r[to_move - 1]);
+      --to_move;
+    }
+    size_t n_rows = mat2.num_rows();
+    for (size_t i = add_dim; i < n_rows; ++i) {
+      Row& r = mat2[i];
+      std::swap(r[to_move], r[mat2.num_columns() - 1]);
+    }      
+#endif
+
     // CHECK ME: since we swapped columns in both `mat1' and `mat2',
     // no swapping is required for `sat1' and `sat2'.
   }
@@ -1266,8 +1289,29 @@ PPL::PolyBase::add_dimensions_and_embed(size_t dim) {
     gen_sys.add_rows_and_columns(dim);
     // If the polyhedron is NON-necessarily closed,
     // move the \epsilon coefficients to the last column.
-    if (!is_necessarily_closed())
+    if (!is_necessarily_closed()) {
+
+      // FIXME: the following #else branch is as efficient as
+      // the #if branch; it is more involved because it tries
+      // to preserve sortedness. Anyway, it can be coded more clearly.
+#if 0
       gen_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
+      gen_sys.set_sorted(false);
+#else
+      size_t to_move = space_dim + 1 + dim;
+      for (size_t i = 0; i < dim; ++i) {
+	Row& g = gen_sys[i];
+	std::swap(g[to_move], g[to_move - 1]);
+	--to_move;
+      }
+      size_t n_rows = gen_sys.num_rows();
+      for (size_t i = dim; i < n_rows; ++i) {
+	Row& g = gen_sys[i];
+	std::swap(g[space_dim + 1], g[space_dim + 1 + dim]);
+      }      
+#endif
+
+    }
   }
   // Update the space dimension.
   space_dim += dim;
@@ -1341,8 +1385,29 @@ PPL::PolyBase::add_dimensions_and_project(size_t dim) {
     con_sys.add_rows_and_columns(dim);
     // If the polyhedron is NON-necessarily closed,
     // move the \epsilon coefficients to the last column.
-    if (!is_necessarily_closed())
+    if (!is_necessarily_closed()) {
+
+      // FIXME: the following #else branch is as efficient as
+      // the #if branch; it is more involved because it tries
+      // to preserve sortedness. Anyway, it can be coded more clearly.
+#if 0
       con_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
+      con_sys.set_sorted(false);
+#else
+      size_t to_move = space_dim + 1 + dim;
+      for (size_t i = 0; i < dim; ++i) {
+	Row& c = con_sys[i];
+	std::swap(c[to_move], c[to_move - 1]);
+	--to_move;
+      }
+      size_t n_rows = con_sys.num_rows();
+      for (size_t i = dim; i < n_rows; ++i) {
+	Row& c = con_sys[i];
+	std::swap(c[space_dim + 1], c[space_dim + 1 + dim]);
+      }
+#endif
+      
+    }
   }
   else {
     // Only generators are up-to-date: no need to modify the constraints.
@@ -1861,7 +1926,7 @@ PPL::PolyBase::add_dimensions_and_constraints(ConSys& cs) {
   con_sys.grow(old_num_rows + added_rows, old_num_columns + added_columns);
 
   // Move the \epsilon coefficient to the last column, if needed.
-  if (!is_necessarily_closed())
+  if (!is_necessarily_closed() && added_columns > 0)
     con_sys.swap_columns(old_num_columns - 1,
 			 old_num_columns - 1 + added_columns);
   // Steal the constraints from `cs' and put them in `con_sys'
