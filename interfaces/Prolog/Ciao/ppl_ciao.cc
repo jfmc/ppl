@@ -97,7 +97,7 @@ Prolog_put_address(Prolog_term_ref& t, void* p) {
 */
 Prolog_atom
 Prolog_atom_from_string(const char* s) {
-  return s;
+  return ciao_atom_name(ciao_atom(s));
 }
 
 static Prolog_term_ref args[4];
@@ -110,7 +110,7 @@ static inline bool
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1) {
   args[0] = a1;
-  t = ciao_structure(f, 1, args);
+  t = ciao_structure_a(f, 1, args);
   return true;
 }
 
@@ -123,7 +123,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2) {
   args[0] = a1;
   args[1] = a2;
-  t = ciao_structure(f, 2, args);
+  t = ciao_structure_a(f, 2, args);
   return true;
 }
 
@@ -138,7 +138,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
   args[0] = a1;
   args[1] = a2;
   args[2] = a3;
-  t = ciao_structure(f, 3, args);
+  t = ciao_structure_a(f, 3, args);
   return true;
 }
 
@@ -154,7 +154,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
   args[1] = a2;
   args[2] = a3;
   args[3] = a4;
-  t = ciao_structure(f, 4, args);
+  t = ciao_structure_a(f, 4, args);
   return true;
 }
 
