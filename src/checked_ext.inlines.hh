@@ -473,11 +473,11 @@ inline Result
 from_c_string_ext(Type& x, const char *str, const Rounding& mode) {
   if (handle_ext_natively(Type))
     return from_c_string<Policy>(x, str, mode);
-  if (strcmp(str, "-inf"))
+  if (strcmp(str, "-inf") == 0)
     return set_special<Policy>(x, VC_MINUS_INFINITY);
-  if (strcmp(str, "+inf"))
+  if (strcmp(str, "+inf") == 0)
     return set_special<Policy>(x, VC_PLUS_INFINITY);
-  if (strcmp(str, "nan"))
+  if (strcmp(str, "nan") == 0)
     return set_special<Policy>(x, VC_NAN);
   return from_c_string<Policy>(x, str, mode);
 }

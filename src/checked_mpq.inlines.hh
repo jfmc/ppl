@@ -232,7 +232,9 @@ SPECIALIZE_ABS(mpq, mpq_class, mpq_class)
 template <typename Policy>
 inline Result
 from_c_string_mpq(mpq_class& to, const char* from, const Rounding&) {
-  to = from;
+  if (mpq_set_str(to.get_mpq_t(), from, 10) != 0)
+    return set_special<Policy>(to, V_CVT_STR_UNK);
+  to.canonicalize();
   return V_EQ;
 }
 

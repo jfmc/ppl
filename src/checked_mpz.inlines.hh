@@ -371,7 +371,8 @@ SPECIALIZE_CMP(mp, mpq_class, mpq_class)
 template <typename Policy>
 inline Result
 from_c_string_mpz(mpz_class& to, const char* from, const Rounding&) {
-  to = from;
+  if (mpz_set_str(to.get_mpz_t(), from, 10) != 0)
+    return set_special<Policy>(to, V_CVT_STR_UNK);
   return V_EQ;
 }
 

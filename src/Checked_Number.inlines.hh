@@ -557,7 +557,11 @@ template <typename T, typename Policy>
 inline std::istream& operator>>(std::istream& is, Checked_Number<T, Policy>& x) {
   std::string str;
   is >> str;
-  Policy::handle_result(Checked::from_c_string_ext<Policy>(x.raw_value(), str.c_str(), Rounding::CURRENT));
+  Result r = Checked::from_c_string_ext<Policy>(x.raw_value(), str.c_str(), Rounding::CURRENT);
+  if (r == V_CVT_STR_UNK)
+    is.setstate(std::ios::failbit);
+  else
+    Policy::handle_result(r);
   return is;
 }
 
