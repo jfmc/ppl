@@ -724,6 +724,28 @@ ppl_Polyhedron_convex_difference_assign_and_minimize
 __P((ppl_Polyhedron_t x, ppl_const_Polyhedron_t y));
 
 /*!
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the widening of \p x and \p y.
+*/
+int
+ppl_Polyhedron_widening_assign __P((ppl_Polyhedron_t x,
+				    ppl_const_Polyhedron_t y));
+
+/*!
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the widening of \p x and \p y intersected with
+  the constraint system \p cs.
+
+  \warning
+  This function modifies the constraint system referenced by \p cs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_Polyhedron_limited_widening_assign __P((ppl_Polyhedron_t x,
+					    ppl_const_Polyhedron_t y,
+					    ppl_ConSys_t cs));
+
+/*!
   Individual bit saying that the polyhedron and the set of points
   satisfying the constraint are disjoint.
 */

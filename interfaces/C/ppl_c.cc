@@ -788,6 +788,28 @@ ppl_Polyhedron_convex_difference_assign_and_minimize
 CATCH_ALL
 
 int
+ppl_Polyhedron_widening_assign(ppl_Polyhedron_t x,
+			       ppl_const_Polyhedron_t y) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  xx.widening_assign(yy);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_limited_widening_assign(ppl_Polyhedron_t x,
+				       ppl_const_Polyhedron_t y,
+				       ppl_ConSys_t cs) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  ConSys& ccs = *to_nonconst(cs);
+  xx.limited_widening_assign(yy, ccs);
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_Polyhedron_relation_with_Constraint(ppl_const_Polyhedron_t ph,
 					ppl_const_Constraint_t c) try {
   const Polyhedron& pph = *to_const(ph);
