@@ -11,20 +11,14 @@
 srcdir = @srcdir@
 VPATH = @srcdir@
 
-EXTRA_DIST = configure ppl.lsm.in ppl.spec.in
-
 @SET_MAKE@
 
-SUBDIRS = @extra_subdirs@ src tests m4 doc
+# Install m4 macros in this directory.
+m4datadir = $(datadir)/aclocal
 
+# List your m4 macros here.
+m4macros = ac_check_have_gmp.m4 ac_check_gmp_exceptions.m4
 
-#  if you write a self-test script named `chk', uncomment the
-#  following and add `chk' to the EXTRA_DIST list
-#TESTS=chk
-
-#  build and install the .info pages
-#info_TEXINFOS = PPL.texinfo
-#ppl_TEXINFOS = gpl.texinfo
-
-#  install the man pages
-#man_MANS=ppl.1
+# The following is boilerplate.
+m4data_DATA = $(m4macros) 
+EXTRA_DIST = $(m4data_DATA) 
