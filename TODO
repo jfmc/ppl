@@ -18,6 +18,12 @@ Enhancements for PPL 0.7
 - Investigate again all XFAILS.
 - Explain the ordering of the arguments in the widening methods.
 - Implement overflow detection when manipulating space dimensions.
+- Consider renaming PowerSet::meet_assign().
+- Implement Polyhedra_PowerSet::difference_assign(): it will compute
+  a (non-redundant) set of polyhedra such that their union is the
+  difference of the unions of the polyhedra contained in its arguments.
+- Provide optimized implementations of Polyhedron::expand_dimension()
+  Polyhedron::fold_dimensions().
 
 
 Enhancements for PPL 0.8 or later versions
