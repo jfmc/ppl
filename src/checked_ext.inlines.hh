@@ -39,29 +39,6 @@ assign_ext(To& to, const From& from, const Rounding& mode) {
   return set_special<To_Policy>(to, r);
 }
 
-template <typename Policy1, typename Policy2,
-	  typename Type1, typename Type2>
-inline Result
-cmp_ext(const Type1& x, const Type2& y) {
-  if (handle_ext(Type1) && handle_ext(Type2))
-    return cmp<Policy1>(x, y);
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rx = classify<Policy1>(x, true, true, false)) == VC_NAN
-      || (ry = classify<Policy2>(y, true, true, false)) == VC_NAN)
-    r = V_UNORD_COMP;
-  else if (rx == VC_NORMAL && ry == VC_NORMAL)
-    r = cmp<Policy1>(x, y);
-  else if (rx == ry)
-    r = V_EQ;
-  else if (rx == VC_MINUS_INFINITY || ry == VC_PLUS_INFINITY)
-    r = V_LT;
-  else
-    r = V_GT;
-  return r;
-}
-
 template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
@@ -288,6 +265,127 @@ lcm_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
   else
     r = VC_PLUS_INFINITY;
   return set_special<To_Policy>(to, r);
+}
+
+template <typename Policy1, typename Policy2,
+	  typename Type1, typename Type2>
+inline Result
+cmp_ext(const Type1& x, const Type2& y) {
+  if (handle_ext(Type1) && handle_ext(Type2))
+    return cmp<Policy1>(x, y);
+  Result rx;
+  Result ry;
+  if ((rx = classify<Policy1>(x, true, true, false)) == VC_NAN
+      || (ry = classify<Policy2>(y, true, true, false)) == VC_NAN)
+    return V_UNORD_COMP;
+  else if (rx == VC_NORMAL && ry == VC_NORMAL)
+    return cmp<Policy1>(x, y);
+  else if (rx == ry)
+    return V_EQ;
+  else if (rx == VC_MINUS_INFINITY || ry == VC_PLUS_INFINITY)
+    return V_LT;
+  else
+    return V_GT;
+}
+
+template <typename Policy1, typename Policy2,
+	  typename Type1, typename Type2>
+inline bool
+lt_ext(const Type1& x, const Type2& y) {
+  if (handle_ext(Type1) && handle_ext(Type2))
+    return x < y;
+  Result rx;
+  Result ry;
+  if ((rx = classify<Policy1>(x, true, true, false)) == VC_NAN
+      || (ry = classify<Policy2>(y, true, true, false)) == VC_NAN)
+    return false;
+  else if (rx == VC_NORMAL && ry == VC_NORMAL)
+    return x < y;
+  else if (rx == ry)
+    return false;
+  return (rx == VC_MINUS_INFINITY || ry == VC_PLUS_INFINITY);
+}
+
+template <typename Policy1, typename Policy2,
+	  typename Type1, typename Type2>
+inline bool
+gt_ext(const Type1& x, const Type2& y) {
+  if (handle_ext(Type1) && handle_ext(Type2))
+    return x > y;
+  Result rx;
+  Result ry;
+  if ((rx = classify<Policy1>(x, true, true, false)) == VC_NAN
+      || (ry = classify<Policy2>(y, true, true, false)) == VC_NAN)
+    return false;
+  else if (rx == VC_NORMAL && ry == VC_NORMAL)
+    return x > y;
+  else if (rx == ry)
+    return false;
+  return (rx == VC_PLUS_INFINITY || ry == VC_MINUS_INFINITY);
+}
+
+template <typename Policy1, typename Policy2,
+	  typename Type1, typename Type2>
+inline bool
+le_ext(const Type1& x, const Type2& y) {
+  if (handle_ext(Type1) && handle_ext(Type2))
+    return x <= y;
+  Result rx;
+  Result ry;
+  if ((rx = classify<Policy1>(x, true, true, false)) == VC_NAN
+      || (ry = classify<Policy2>(y, true, true, false)) == VC_NAN)
+    return false;
+  else if (rx == VC_NORMAL && ry == VC_NORMAL)
+    return x <= y;
+  return (rx == VC_MINUS_INFINITY || ry == VC_PLUS_INFINITY);
+}
+
+template <typename Policy1, typename Policy2,
+	  typename Type1, typename Type2>
+inline bool
+ge_ext(const Type1& x, const Type2& y) {
+  if (handle_ext(Type1) && handle_ext(Type2))
+    return x >= y;
+  Result rx;
+  Result ry;
+  if ((rx = classify<Policy1>(x, true, true, false)) == VC_NAN
+      || (ry = classify<Policy2>(y, true, true, false)) == VC_NAN)
+    return false;
+  else if (rx == VC_NORMAL && ry == VC_NORMAL)
+    return x >= y;
+  return (rx == VC_PLUS_INFINITY || ry == VC_MINUS_INFINITY);
+}
+
+template <typename Policy1, typename Policy2,
+	  typename Type1, typename Type2>
+inline bool
+eq_ext(const Type1& x, const Type2& y) {
+  if (handle_ext(Type1) && handle_ext(Type2))
+    return x == y;
+  Result rx;
+  Result ry;
+  if ((rx = classify<Policy1>(x, true, true, false)) == VC_NAN
+      || (ry = classify<Policy2>(y, true, true, false)) == VC_NAN)
+    return false;
+  else if (rx == VC_NORMAL && ry == VC_NORMAL)
+    return x == y;
+  return rx == ry;
+}
+
+template <typename Policy1, typename Policy2,
+	  typename Type1, typename Type2>
+inline bool
+ne_ext(const Type1& x, const Type2& y) {
+  if (handle_ext(Type1) && handle_ext(Type2))
+    return x != y;
+  Result rx;
+  Result ry;
+  if ((rx = classify<Policy1>(x, true, true, false)) == VC_NAN
+      || (ry = classify<Policy2>(y, true, true, false)) == VC_NAN)
+    return true;
+  else if (rx == VC_NORMAL && ry == VC_NORMAL)
+    return x != y;
+  return rx != ry;
 }
 
 template <typename Policy, typename Type>

@@ -293,7 +293,13 @@ sgn_float(const Type x) {
 template <typename Policy, typename Type>
 inline Result
 cmp_float(const Type x, const Type y) {
-  return classify<Policy>(x - y, false, false, true);
+  if (x > y)
+    return V_GT;
+  if (x < y)
+    return V_LT;
+  if (x == y)
+    return V_EQ;
+  return V_UNORD_COMP;
 }
 
 template <typename Policy, typename To, typename From>

@@ -30,7 +30,7 @@ namespace Parma_Polyhedra_Library {
 
 template <typename T, typename Policy>
 inline void
-Extended_Number<T, Policy>::check_result(Result r) {
+Extended_Number<T, Policy>::check_result(Result) {
 // Reserved for future implementation according to the policy.
 }
 
@@ -199,11 +199,24 @@ DEF_BINARY_ASSIGN(operator *=, assign_mul)
 DEF_BINARY_ASSIGN(operator /=, assign_div)
 DEF_BINARY_ASSIGN(operator %=, assign_mod)
 
-#if 0
 #define DEF_BINARY(f, fun) \
-template <typename T, typename Policy, typename From1, typename From2> \
+template <typename T, typename Policy> \
 inline Extended_Number<T, Policy> \
-f(const From1& x, const From2& y) { \
+f(const Extended_Number<T, Policy>& x, const Extended_Number<T, Policy>& y) { \
+  Extended_Number<T, Policy> r; \
+  Extended_Number<T, Policy>::check_result(r.fun(x, y, Rounding(Rounding::CURRENT))); \
+  return r; \
+}\
+template <typename T, typename Policy, typename From> \
+inline Extended_Number<T, Policy> \
+f(const From& x, const Extended_Number<T, Policy>& y) { \
+  Extended_Number<T, Policy> r; \
+  Extended_Number<T, Policy>::check_result(r.fun(x, y, Rounding(Rounding::CURRENT))); \
+  return r; \
+}\
+template <typename T, typename Policy, typename From> \
+inline Extended_Number<T, Policy> \
+f(const Extended_Number<T, Policy>& x, const From& y) { \
   Extended_Number<T, Policy> r; \
   Extended_Number<T, Policy>::check_result(r.fun(x, y, Rounding(Rounding::CURRENT))); \
   return r; \
@@ -214,23 +227,33 @@ DEF_BINARY(operator -, assign_sub)
 DEF_BINARY(operator *, assign_mul)
 DEF_BINARY(operator /, assign_div)
 DEF_BINARY(operator %, assign_mod)
-#endif
 
-#if 0
-#define DEF_COMPARE(f, op) \
-template <typename T, typename Policy> \
+#define DEF_COMPARE(f, fun) \
+template <typename From1, typename From1_Policy, \
+          typename From2, typename From2_Policy> \
 inline bool \
-f(const Extended_Number<T, Policy>& x, const Extended_Number<T, Policy>& y) { \
-  return x.raw_value() op y.raw_value(); \
+f(const Extended_Number<From1, From1_Policy>& x, const Extended_Number<From2, From2_Policy>& y) { \
+  return Checked::fun<From1_Policy, From2_Policy>(x.raw_value(), y.raw_value()); \
+}\
+template <typename From1, \
+          typename From2, typename From2_Policy> \
+inline bool \
+f(const From1& x, const Extended_Number<From2, From2_Policy>& y) { \
+  return Checked::fun<Checked::Transparent_Policy, From2_Policy>(x, y.raw_value()); \
+}\
+template <typename From1, typename From1_Policy, \
+          typename From2> \
+inline bool \
+f(const Extended_Number<From1, From1_Policy>& x, const From2& y) { \
+  return Checked::fun<From1_Policy, Checked::Transparent_Policy>(x.raw_value(), y); \
 }
 
-DEF_COMPARE(operator ==, ==)
-DEF_COMPARE(operator !=, !=)
-DEF_COMPARE(operator >=, >=)
-DEF_COMPARE(operator >, >)
-DEF_COMPARE(operator <=, <=)
-DEF_COMPARE(operator <, <)
-#endif
+DEF_COMPARE(operator ==, eq_ext)
+DEF_COMPARE(operator !=, ne_ext)
+DEF_COMPARE(operator >=, ge_ext)
+DEF_COMPARE(operator >, gt_ext)
+DEF_COMPARE(operator <=, le_ext)
+DEF_COMPARE(operator <, lt_ext)
 
 /*! \relates Extended_Number */
 template <typename T, typename Policy>
