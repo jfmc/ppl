@@ -167,6 +167,7 @@ public:
 
   //@} // Member Functions that Do Not Modify the Domain Element
 
+
   //! \name Space Dimension Preserving Member Functions that May Modify the Domain Element
   //@{
 
@@ -260,6 +261,46 @@ public:
   void map_space_dimensions(const Partial_Function& pfunc);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \brief
+  //! A function adapter for the Determinate class.
+  /*!
+    It lifts a Binary_Operator_Assign function object, taking arguments
+    of type PH, producing the corresponding function object taking
+    arguments of type Determinate<PH>.
+
+    The template parameter Binary_Operator_Assign is supposed to
+    implement an <EM>apply and assign</EM> function, i.e., a function
+    having signature <CODE>void foo(PH& x, const PH& y)</CODE> that
+    applies an operator to \c x and \c y and assigns the result to \c x.
+    For instance, such a function object is obtained by
+    <CODE>std::mem_fun_ref(&C_Polyhedron::intersection_assign)</CODE>.
+  */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  template <typename Binary_Operator_Assign>
+  class Binary_Operator_Assign_Lifter {
+  public:
+    //! Explicit unary constructor.
+    explicit
+    Binary_Operator_Assign_Lifter(Binary_Operator_Assign op_assign);
+    
+    //! Function-application operator.
+    void operator()(Determinate& x, const Determinate& y) const;
+    
+  private:
+    //! The function object to be lifted.
+    Binary_Operator_Assign op_assign_;
+  };
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \brief
+  //! Helper function returning a Binary_Operator_Assign_Lifter object,
+  //! also allowing for the deduction of template arguments.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  template <typename Binary_Operator_Assign>
+  static Binary_Operator_Assign_Lifter<Binary_Operator_Assign>
+  lift_op_assign(Binary_Operator_Assign op_assign);
 
 private:
   //! The possibly shared representation of a Determinate object.
