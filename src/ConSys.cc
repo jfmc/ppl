@@ -112,7 +112,9 @@ PPL::ConSys::has_strict_inequalities() const {
   for (size_t i = num_rows(); i-- > 0; )
     // Optimized type checking: we already know the topology;
     // also, equalities have the \epsilon coefficient equal to zero.
-    if (cs[i][eps_index] < 0)
+    // NOTE : the constraint eps_leq_one should not be considered
+    //        a strict inequality.
+    if (cs[i][eps_index] < 0 && !cs[i].is_trivial_true())
       return true;
   return false;
 }
