@@ -165,8 +165,6 @@ private:
 				  const Integer& d = 1);
 
 public:
-  //! Default constructor.
-  Generator();
   //! Ordinary copy-constructor.
   Generator(const Generator& g);
   //! Destructor.
@@ -193,6 +191,11 @@ PPL_INTERNAL:
   void set_is_line();
   //! Sets the type to <CODE>RAY</CODE>.
   void set_is_ray_or_vertex();
+
+private:
+  //! Default constructor: private and not implemented.
+  Generator();
+
 };
 
 #include "Generator.inlines.hh"

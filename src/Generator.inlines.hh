@@ -25,11 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "LinExpression.defs.hh"
 
 inline
-Parma_Polyhedra_Library::Generator::Generator()
-  : Row() {
-}
-
-inline
 Parma_Polyhedra_Library::Generator::Generator(LinExpression& e) {
   swap(e);
 }
