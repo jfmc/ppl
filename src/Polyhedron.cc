@@ -1324,17 +1324,18 @@ void
 PPL::Polyhedron::insert(const Generator& g) {
   // Dimension-compatibility check:
   // the dimension of `g' can not be greater than space_dimension().
+  size_t space_dim = space_dimension();
   size_t g_space_dim = g.space_dimension();
-  if (space_dimension() < g_space_dim)
+  if (space_dim < g_space_dim)
     throw_different_dimensions("PPL::Polyhedron::insert(g)",
 			       *this, g);
 
   // Dealing with a zero-dim space polyhedron first.
-  if (space_dimension() == 0) {
+  if (space_dim == 0) {
     // For dimension-compatibility, `g' has 1 column;
     // moreover, it is not possible to create 0-dim rays or lines.
     assert(g.size() == 1 && g.type() == Generator::VERTEX);
-    set_zero_dim_univ();
+    status.set_zero_dim_univ();
     return;
   }
 
@@ -1359,8 +1360,8 @@ PPL::Polyhedron::insert(const Generator& g) {
     // `gen_sys' is empty: after inserting `g' we have to resize
     // the system of generators to have the right dimension.
     gen_sys.insert(g);
-    if (space_dimension() != g_space_dim)
-      gen_sys.add_zero_columns(space_dimension() - g_space_dim);
+    if (space_dim != g_space_dim)
+      gen_sys.add_zero_columns(space_dim - g_space_dim);
     // No longer empty, generators up-to-date and minimized.
     clear_empty();
     set_generators_minimized();
@@ -1392,7 +1393,7 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
     return;
 
   if (space_dimension() == 0) {
-    // Checking for an inconsistent constraint.
+    // Check for an inconsistent constraint.
     if (cs.begin() != cs.end())
       // Inconsistent constraint found.
       status.set_empty();
@@ -1524,7 +1525,7 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
     // Since `gs' is 0-dim and non-empty,
     // it has to contain only vertices.
     assert(gs[0].type() == Generator::VERTEX);
-    set_zero_dim_univ();
+    status.set_zero_dim_univ();
     return;
   }
 
