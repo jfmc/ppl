@@ -153,7 +153,7 @@ public:
   //! Pre-constructs a row: construction must be completed by construct().
   Row();
 
-  //! \name Post-constructors.
+  //! \name Post-constructors
   //@{
   //! Constructs properly a default-constructed element.
   /*!
@@ -172,7 +172,7 @@ public:
     constructed now.
   */
   void construct(Type t, dimension_type sz, dimension_type capacity);
-  //@}
+  //@} // Post-constructors
 
   //! Tight constructor: resizing will require reallocation.
   Row(Type t, dimension_type sz);
@@ -233,7 +233,7 @@ public:
   */
   void shrink(dimension_type new_sz);
 
-  //! \name Type inspection methods.
+  //! \name Type inspection methods
   //@{
   //! Returns the type (topological and row kind) of \p *this.
   Type type() const;
@@ -252,9 +252,9 @@ public:
   //! \brief Returns <CODE>true</CODE> if and only if \p *this row
   //! represents a ray, a point or an inequality.
   bool is_ray_or_point_or_inequality() const;
-  //@}
+  //@} // Type inspection methods
 
-  //! \name Type coercion methods.
+  //! \name Type coercion methods
   //@{
   //! Sets to \p NECESSARILY_CLOSED the topological kind of \p *this row.
   void set_necessarily_closed();
@@ -267,7 +267,7 @@ public:
 
   //! Sets to \p RAY_OR_POINT_OR_INEQUALITY the kind of \p *this row.
   void set_is_ray_or_point_or_inequality();
-  //@}
+  //@} // Type coercion methods
 
   //! Returns the size() of the largest possible Row. 
   static dimension_type max_size();
@@ -284,14 +284,14 @@ public:
   //! Returns the coefficient \f$a_n\f$.
   const Integer& coefficient(dimension_type n) const;
 
-  //! \name Subscript operators.
+  //! \name Subscript operators
   //@{
   //! Returns a reference to the element of the row indexed by \p k.
   Integer& operator[](dimension_type k);
 
   //! Returns a constant reference to the element of the row indexed by \p k.
   const Integer& operator[](dimension_type k) const;
-  //@}
+  //@} // Subscript operators
 
   //! Normalizes the modulo of coefficients so that they are mutually prime.
   /*!
@@ -409,7 +409,7 @@ const Integer& reduced_scalar_product(const Row& x, const Row& y);
 int compare(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \name Classical comparison operators.
+//! \name Classical comparison operators
 //@{
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Row */
@@ -425,7 +425,7 @@ bool operator>=(const Row& x, const Row& y);
 /*! \relates Row */
 bool operator >(const Row& x, const Row& y);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//@}
+//@} // Classical comparison operators
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
 } // namespace Parma_Polyhedra_Library
@@ -449,7 +449,7 @@ public:
   //! pieces of information.
   Type(Topology topol, Kind kind);
 
-  //! \name Testing and setting the type.
+  //! \name Testing and setting the type
   //@{
   Topology topology() const;
   bool is_necessarily_closed() const;
@@ -460,7 +460,7 @@ public:
   void set_not_necessarily_closed();
   void set_is_line_or_equality();
   void set_is_ray_or_point_or_inequality();
-  //@}
+  //@} // Testing and setting the type
 
 private:
   //! Type is implemented by means of a finite bitset.
@@ -472,11 +472,11 @@ private:
   //! This holds the current bitset.
   flags_t flags;
 
-  //! \name The bits that are currently in use.
+  //! \name The bits that are currently in use
   //@{
   static const flags_t NNC = NOT_NECESSARILY_CLOSED << 0;
   static const flags_t RPI = RAY_OR_POINT_OR_INEQUALITY << 1;
-  //@}
+  //@} // The bits that are currently in use
 
   //! Check whether <EM>all</EM> bits in \p mask are set.
   bool test_all(flags_t mask) const;
@@ -498,7 +498,7 @@ private:
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Parma_Polyhedra_Library::Row::Impl {
 public:
-  //! \name Custom allocator and deallocator.
+  //! \name Custom allocator and deallocator
   //@{
 
   /*! \brief
@@ -514,7 +514,7 @@ public:
   //! \brief Placement version:
   //! uses the standard operator delete to free the memory \p p points to.
   void operator delete(void* p, dimension_type capacity);
-  //@}
+  //@} // Custom allocator and deallocator
 
   //! Sizing constructor.
   Impl(Type t, dimension_type sz);
@@ -549,7 +549,7 @@ public:
   //! Returns the size() of the largest possible Impl. 
   static dimension_type max_size();
 
-  //! \name Size accessors.
+  //! \name Size accessors
   //@{
   //! Returns the actual size of \p this.
   dimension_type size() const;
@@ -559,16 +559,16 @@ public:
 
   //! Increment the size of \p *this by 1.
   void bump_size();
-  //@}
+  //@} // Size accessors
 
-  //! \name Subscript operators.
+  //! \name Subscript operators
   //@{
   //! Returns a reference to the element of \p *this indexed by \p k.
   Integer& operator[](dimension_type k);
 
   //! Returns a constant reference to the element of \p *this indexed by \p k.
   const Integer& operator[](dimension_type k) const;
-  //@}
+  //@} // Subscript operators
 
 private:
   friend class Parma_Polyhedra_Library::Row;

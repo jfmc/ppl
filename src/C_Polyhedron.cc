@@ -37,7 +37,7 @@ PPL::C_Polyhedron::C_Polyhedron(const NNC_Polyhedron& y)
     assert(OK());
   }
   else
-    throw std::invalid_argument("PPL::C_Polyhedron::C_Polyhedron(nnc_ph): "
-				"nnc_ph is not a topologically closed "
-				"polyhedron");
+    throw std::invalid_argument("PPL::C_Polyhedron::C_Polyhedron(nnc_ph):\n"
+ 				"nnc_ph is not a topologically closed "
+ 				"polyhedron.");
 }

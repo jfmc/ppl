@@ -34,11 +34,12 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Generator::throw_dimension_incompatible(const char* method,
+					     const char* name_var,
 					     const Variable v) const {
   std::ostringstream s;
-  s << method << ":" << std::endl
-    << "this->space_dimension() == " << this->space_dimension()
-    << ", v.id() == " << v.id() << ".";
+  s << "PPL::Generator::" << method << ":" << std::endl
+    << "this->space_dimension() == " << space_dimension()
+    << ", " << name_var << ".id() == " << v.id() << ".";
   throw std::invalid_argument(s.str());
 }
 
@@ -46,15 +47,16 @@ void
 PPL::Generator::throw_invalid_argument(const char* method,
 				       const char* reason) const {
   std::ostringstream s;
-  s << method << ":" << std::endl
-    << reason;
+  s << "PPL::Generator::" << method << ":" << std::endl
+    << reason << ".";
   throw std::invalid_argument(s.str());
 }
 
 PPL::Generator
 PPL::Generator::point(const LinExpression& e, const Integer& d) {
   if (d == 0)
-    throw std::invalid_argument("Generator PPL::point(e, d): d == 0");
+    throw std::invalid_argument("PPL::point(e, d):\n"
+				"d == 0.");
   LinExpression ec = e;
   Generator g(ec);
   g[0] = d;
@@ -75,7 +77,8 @@ PPL::Generator::point(const LinExpression& e, const Integer& d) {
 PPL::Generator
 PPL::Generator::closure_point(const LinExpression& e, const Integer& d) {
   if (d == 0)
-    throw std::invalid_argument("Generator PPL::closure_point(e, d): d == 0");
+    throw std::invalid_argument("PPL::closure_point(e, d):\n"
+				"d == 0.");
   // Adding the epsilon dimension with coefficient 0.
   LinExpression ec = 0 * Variable(e.space_dimension());
   ec += e;
@@ -92,7 +95,8 @@ PPL::Generator
 PPL::Generator::ray(const LinExpression& e) {
   // The origin of the space cannot be a ray.
   if (e.all_homogeneous_terms_are_zero())
-    throw std::invalid_argument("PPL::ray(e): the origin cannot be a ray");
+    throw std::invalid_argument("PPL::ray(e):\n"
+				"e == 0, but the origin cannot be a ray.");
 
   LinExpression ec = e;
   Generator g(ec);
@@ -107,7 +111,8 @@ PPL::Generator
 PPL::Generator::line(const LinExpression& e) {
   // The origin of the space cannot be a line.
   if (e.all_homogeneous_terms_are_zero())
-    throw std::invalid_argument("PPL::line(e): the origin cannot be a line");
+    throw std::invalid_argument("PPL::line(e):\n"
+				"e == 0, but the origin cannot be a line.");
 
   LinExpression ec = e;
   Generator g(ec);

@@ -109,7 +109,7 @@ inline const Integer&
 Generator::coefficient(const Variable v) const {
   const dimension_type v_id = v.id();
   if (v_id >= space_dimension())
-    throw_dimension_incompatible("PPL::Generator::coefficient(v)", v);
+    throw_dimension_incompatible("coefficient(v)", "v", v);
   return Row::coefficient(v_id);
 }
 
@@ -117,9 +117,8 @@ inline const Integer&
 Generator::divisor() const {
   const Integer& d = Row::inhomogeneous_term();
   if (!is_ray_or_point() || d == 0)
-    throw_invalid_argument("PPL::Generator::divisor()",
-			   "*this is is neither a point "
-			   "nor a closure point");
+    throw_invalid_argument("divisor()",
+			   "*this is neither a point nor a closure point");
   return d;
 }
 

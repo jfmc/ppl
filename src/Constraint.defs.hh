@@ -311,7 +311,9 @@ private:
   //! Throws a <CODE>std::invalid_argument</CODE> exception
   //! containing the appropriate error message.
   void
-  throw_dimension_incompatible(const char* method, Variable v) const;
+  throw_dimension_incompatible(const char* method,
+			       const char* name_var,
+			       Variable v) const;
 
   friend Constraint
   Parma_Polyhedra_Library::operator==(const LinExpression& e1,

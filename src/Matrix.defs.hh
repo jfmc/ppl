@@ -285,7 +285,7 @@ public:
   */
   void permute_columns(const std::vector<dimension_type>& cycles);
 
-  //! \name Accessors.
+  //! \name Accessors
   //@{
   //! Returns the matrix topology.
   Topology topology() const;
@@ -327,21 +327,21 @@ public:
   //! Returns the number of rows in the matrix
   //! that represent either lines or equalities.
   dimension_type num_lines_or_equalities() const;
-  //@}
+  //@} // Accessors
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is sorted,
   //! without checking for duplicates.
   bool check_sorted() const;
 
-  //! \name Subscript operators.
+  //! \name Subscript operators
   //@{
   //! Returns a reference to the \p k-th row of the matrix.
   Row& operator[](dimension_type k);
 
   //! Returns a constant reference to the \p k-th row of the matrix.
   const Row& operator[](dimension_type k) const;
-  //@}
+  //@} // Subscript operators
 
   //! Normalizes the matrix.
   void normalize();

@@ -57,7 +57,7 @@ Polyhedron::~Polyhedron() {
 inline void
 Polyhedron::swap(Polyhedron& y) {
   if (topology() != y.topology())
-    throw_topology_incompatible("swap(y)", y);
+    throw_topology_incompatible("swap(y)", "y", y);
   std::swap(con_sys, y.con_sys);
   std::swap(gen_sys, y.gen_sys);
   std::swap(sat_c, y.sat_c);

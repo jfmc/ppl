@@ -84,7 +84,7 @@ public:
   //! By default Status is the <EM>zero-dim universe</EM> assertion.
   Status();
 
-  //! \name Test, remove or add an individual assertion from the conjunction.
+  //! \name Test, remove or add an individual assertion from the conjunction
   //@{
   bool test_zero_dim_univ() const;
   void reset_zero_dim_univ();
@@ -125,7 +125,7 @@ public:
   bool test_g_pending() const;
   void reset_g_pending();
   void set_g_pending();
-  //@}
+  //@} // Test, remove or add an individual assertion from the conjunction
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -145,7 +145,7 @@ private:
   //! Status is implemented by means of a finite bitset.
   typedef unsigned int flags_t;
 
-  //! \name Bitmasks for the individual assertions.
+  //! \name Bitmasks for the individual assertions
   //@{
   static const flags_t ZERO_DIM_UNIV    = 0U;
   static const flags_t EMPTY            = 1U << 0;
@@ -157,7 +157,7 @@ private:
   static const flags_t SAT_G_UP_TO_DATE = 1U << 6;
   static const flags_t CS_PENDING       = 1U << 7;
   static const flags_t GS_PENDING       = 1U << 8;
-  //@}
+  //@} // Bitmasks for the individual assertions
 
   //! This holds the current bitset.
   flags_t flags;

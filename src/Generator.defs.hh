@@ -348,7 +348,9 @@ private:
   //! Throw a <CODE>std::invalid_argument</CODE> exception
   //! containing the appropriate error message.
   void
-  throw_dimension_incompatible(const char* method, Variable v) const;
+  throw_dimension_incompatible(const char* method,
+			       const char* name_var,
+			       Variable v) const;
 
   //! \brief
   //! Throw a <CODE>std::invalid_argument</CODE> exception

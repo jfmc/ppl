@@ -269,7 +269,7 @@ PPL::Polyhedron::add_dimensions_and_project(dimension_type m) {
 void
 PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   if (topology() != y.topology())
-    throw_topology_incompatible("concatenate_assign(y)", y);
+    throw_topology_incompatible("concatenate_assign(y)", "y", y);
 
   dimension_type added_columns = y.space_dim;
 
@@ -397,13 +397,12 @@ PPL::Polyhedron::remove_dimensions(const Variables_Set& to_be_removed) {
   }
 
   // Dimension-compatibility check: the variable having
-  // maximum cardinality is the one occurring last in the set.
-  dimension_type max_dim_to_be_removed = to_be_removed.rbegin()->id();
-  if (max_dim_to_be_removed >= space_dim)
-    throw_dimension_incompatible("remove_dimensions(vs)",
-				 max_dim_to_be_removed);
+  // maximum id() is the one occurring last in the set.
+  const dimension_type min_space_dim = to_be_removed.rbegin()->id() + 1;
+  if (space_dim < min_space_dim)
+    throw_dimension_incompatible("remove_dimensions(vs)", min_space_dim);
 
-  dimension_type new_space_dim = space_dim - to_be_removed.size();
+  const dimension_type new_space_dim = space_dim - to_be_removed.size();
 
   // We need updated generators; note that keeping pending generators
   // is useless because constraints will be dropped anyway.
@@ -471,8 +470,7 @@ PPL::Polyhedron::remove_dimensions(const Variables_Set& to_be_removed) {
 
 void
 PPL::Polyhedron::remove_higher_dimensions(dimension_type new_dimension) {
-  // Dimension-compatibility check: the variable having
-  // maximum cardinality is the one occurring last in the set.
+  // Dimension-compatibility check.
   if (new_dimension > space_dim)
     throw_dimension_incompatible("remove_higher_dimensions(nd)",
 				 new_dimension);
@@ -535,7 +533,7 @@ PPL::Polyhedron::expand_dimension(Variable var, dimension_type m) {
   const dimension_type src_d = var.id();
   // `var' should be one of the dimensions of the polyhedron.
   if (src_d+1 > space_dim)
-    throw_dimension_incompatible("expand_dimension(v, m)", src_d+1);
+    throw_dimension_incompatible("expand_dimension(v, m)", "v", var);
 
   // Nothing to do, if no dimensions must be added.
   if (m == 0)

@@ -1305,7 +1305,7 @@ public:
 					const ConSys& cs,
 					unsigned* tp = 0);
 
-  //@} Space-Dimension Preserving Member Functions that May Modify [...]
+  //@} // Space-Dimension Preserving Member Functions that May Modify [...]
 
   //! \name Member Functions that May Modify the Dimension of the Vector Space
   //@{
@@ -2039,18 +2039,27 @@ private:
   void throw_invalid_argument(const char* method, const char* reason) const;
 
   void throw_topology_incompatible(const char* method,
+				   const char* name_polyhedron,
 				   const Polyhedron& y) const;
   void throw_topology_incompatible(const char* method,
+				   const char* name_constraint,
 				   const Constraint& ) const;
   void throw_topology_incompatible(const char* method,
+				   const char* name_generator,
 				   const Generator& ) const;
   void throw_topology_incompatible(const char* method,
+				   const char* name_system,
 				   const ConSys& ) const;
   void throw_topology_incompatible(const char* method,
+				   const char* name_system,
 				   const GenSys& ) const;
 
   void throw_dimension_incompatible(const char* method,
+				    const char* name_polyhedron,
 				    const Polyhedron& y) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* name_variable,
+				    const Variable var) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* name_row,
 				    const Row& y) const;
@@ -2058,23 +2067,14 @@ private:
 				    const char* name_system,
 				    const Matrix& y) const;
   void throw_dimension_incompatible(const char* method,
-				    dimension_type required_dim) const;
+				    dimension_type required_space_dim) const;
 
-  void throw_invalid_generator(const char* method) const;
-  void throw_invalid_generators(const char* method) const;
+  void throw_invalid_generator(const char* method,
+			       const char* name_generator) const;
+  void throw_invalid_generators(const char* method,
+				const char* name_gensys) const;
 
-  //@} // Exception Throwers (non-static)
-
-  //! \name Exception Throwers
-  //@{
-  static void throw_topology_incompatible(const char* method,
-					  const Polyhedron& x,
-					  const Polyhedron& y);
-  static void throw_dimension_incompatible(const char* method,
-					   const Polyhedron& x,
-					   const Polyhedron& y);
-  //@} // Exception Throwers (static)
-
+  //@} // Exception Throwers
 
 };
 

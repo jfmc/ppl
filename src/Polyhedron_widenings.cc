@@ -133,10 +133,10 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
   // Topology compatibility check.
   const Topology tpl = x.topology();
   if (tpl != y.topology())
-    throw_topology_incompatible("H79_widening_assign(y)", y);
+    throw_topology_incompatible("H79_widening_assign(y)", "y", y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("H79_widening_assign(y)", y);
+    throw_dimension_incompatible("H79_widening_assign(y)", "y", y);
 
 #ifndef NDEBUG
   {
@@ -266,19 +266,19 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
   if (x.is_necessarily_closed()) {
     if (!y.is_necessarily_closed())
       throw_topology_incompatible("limited_H79_extrapolation_assign(y, cs)",
-				  y);
+				  "y", y);
     if (cs.has_strict_inequalities())
       throw_topology_incompatible("limited_H79_extrapolation_assign(y, cs)",
-				  cs);
+				  "cs", cs);
   }
   else if (y.is_necessarily_closed())
     throw_topology_incompatible("limited_H79_extrapolation_assign(y, cs)",
-				y);
+				"y", y);
 
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("limited_H79_extrapolation_assign(y, cs)",
-				 y);
+				 "y", y);
   // `cs' must be dimension-compatible with the two polyhedra.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (x.space_dim < cs_space_dim)
@@ -800,10 +800,10 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("BHRZ03_widening_assign(y)", y);
+    throw_topology_incompatible("BHRZ03_widening_assign(y)", "y", y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("BHRZ03_widening_assign(y)", y);
+    throw_dimension_incompatible("BHRZ03_widening_assign(y)", "y", y);
 
 #ifndef NDEBUG
   {
@@ -915,19 +915,19 @@ PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
   if (x.is_necessarily_closed()) {
     if (!y.is_necessarily_closed())
       throw_topology_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
-				  y);
+				  "y", y);
     if (cs.has_strict_inequalities())
       throw_topology_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
-				  cs);
+				  "cs", cs);
   }
   else if (y.is_necessarily_closed())
     throw_topology_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
-				y);
+				"y", y);
 
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
-				 y);
+				 "y", y);
   // `cs' must be dimension-compatible with the two polyhedra.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (x.space_dim < cs_space_dim)
