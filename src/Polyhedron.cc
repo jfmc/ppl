@@ -577,6 +577,11 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   if (!minimize())
     return false;
 
+  // If the polyhedron `*this' is zero-dimensional
+  // at this point it must be a universe polyhedron.
+  if (x.space_dim == 0)
+    return true;
+
   // We also need `sat_c' up-to-date.
   if (!sat_c_is_up_to_date()) {
     assert(sat_g_is_up_to_date());
@@ -667,6 +672,11 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   // We need `con_sys' (weakly) minimized and `gen_sys' up-to-date.
   if (!minimize())
     return false;
+
+  // If the polyhedron `*this' is zero-dimensional
+  // at this point it must be a universe polyhedron.
+  if (x.space_dim == 0)
+    return true;
 
   // We also need `sat_g' up-to-date.
   if (!sat_g_is_up_to_date()) {

@@ -59,6 +59,8 @@ TESTS = $(WATCHDOG_TESTS) \
         inters1 inters2 inters3 inters4 inters5 inters6 inters7 \
 	limitedh79widening1 limitedh79widening2\
 	memory1 \
+	minconstraints1 minconstraints2 minconstraints3 \
+	mingenerators1 mingenerators2 mingenerators3 \
 	onepoint \
         permute \
 	polydifference1 polydifference2 \
@@ -155,6 +157,14 @@ limitedh79widening1_SOURCES = limitedh79widening1.cc
 limitedh79widening2_SOURCES = limitedh79widening2.cc
 
 memory1_SOURCES = memory1.cc
+
+minconstraints1_SOURCES = minconstraints1.cc
+minconstraints2_SOURCES = minconstraints2.cc
+minconstraints3_SOURCES = minconstraints3.cc
+
+mingenerators1_SOURCES = mingenerators1.cc
+mingenerators2_SOURCES = mingenerators2.cc
+mingenerators3_SOURCES = mingenerators3.cc
 
 onepoint_SOURCES = onepoint.cc
 
