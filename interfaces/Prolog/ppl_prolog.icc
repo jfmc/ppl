@@ -1672,8 +1672,8 @@ public:
 } // namespace
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_shuffle_dimensions(Prolog_term_ref t_ph,
-				  Prolog_term_ref t_pifunc) {
+ppl_Polyhedron_rename_dimensions(Prolog_term_ref t_ph,
+				 Prolog_term_ref t_pifunc) {
   try {
     PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     PPL::dimension_type space_dim = ph->space_dimension();
@@ -1696,7 +1696,7 @@ ppl_Polyhedron_shuffle_dimensions(Prolog_term_ref t_ph,
       if (i >= space_dim || !pifunc.insert(i, j))
 	goto fail;
     }
-    ph->shuffle_dimensions(pifunc);
+    ph->rename_dimensions(pifunc);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;

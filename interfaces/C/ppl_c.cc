@@ -1512,12 +1512,12 @@ public:
 } // namespace
 
 int
-ppl_Polyhedron_shuffle_dimensions(ppl_Polyhedron_t ph,
-				  ppl_dimension_type maps[],
-				  size_t n) try {
+ppl_Polyhedron_rename_dimensions(ppl_Polyhedron_t ph,
+				 ppl_dimension_type maps[],
+				 size_t n) try {
   Polyhedron& pph = *to_nonconst(ph);
   PIFunc pifunc(maps, n);
-  pph.shuffle_dimensions(pifunc);
+  pph.rename_dimensions(pifunc);
   return 0;
 }
 CATCH_ALL

@@ -66,7 +66,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_add_dimensions_and_embed/2,
 	ppl_Polyhedron_remove_dimensions/2,
 	ppl_Polyhedron_remove_higher_dimensions/2,
-	ppl_Polyhedron_shuffle_dimensions/2,
+	ppl_Polyhedron_rename_dimensions/2,
 	ppl_Polyhedron_affine_image/4,
 	ppl_Polyhedron_affine_preimage/4,
 	ppl_Polyhedron_generalized_affine_image/5,
@@ -229,6 +229,10 @@ site: http://www.cs.unipr.it/ppl/ . */
                                                      in(Dimensions))
              :: any_term * any_term + foreign.
 
+:- true pred ppl_Polyhedron_rename_dimensions(in(Handle),
+					      in(PIFunc))
+             :: any_term * any_term + foreign.
+
 :- true pred ppl_Polyhedron_affine_image(in(Handle), in(Var),
                                          in(LinearExpression), in(Divisor))
              :: any_term * any_term * any_term * any_term + foreign.
@@ -338,7 +342,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_add_dimensions_and_embed/2,
 	ppl_Polyhedron_remove_dimensions/2,
 	ppl_Polyhedron_remove_higher_dimensions/2,
-	ppl_Polyhedron_shuffle_dimensions/2,
+	ppl_Polyhedron_rename_dimensions/2,
 	ppl_Polyhedron_affine_image/4,
 	ppl_Polyhedron_affine_preimage/4,
 	ppl_Polyhedron_generalized_affine_image/5,

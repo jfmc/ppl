@@ -1389,7 +1389,7 @@ ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
 					     ppl_dimension_type d));
 
 /*!
-  Shuffles the dimensions of a polyhedron according to a partial
+  Renames the dimensions of a polyhedron according to a partial
   injective function.  This function is defined by means of the
   \p maps array, which is of dimension \p n.  The function maps
   <CODE>i</CODE> to <CODE>j</CODE> if and only if <CODE>i < n</CODE>,
@@ -1403,7 +1403,7 @@ ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
   and <CODE>maps[i] == maps[j]</CODE>).
 */
 int
-ppl_Polyhedron_shuffle_dimensions __P((ppl_Polyhedron_t ph,
+ppl_Polyhedron_rename_dimensions __P((ppl_Polyhedron_t ph,
 				      ppl_dimension_type maps[],
 				      size_t n));
 

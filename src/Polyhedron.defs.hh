@@ -1226,7 +1226,7 @@ public:
   void remove_higher_dimensions(dimension_type new_dimension);
 
   //! \brief
-  //! Shuffles the dimensions of a polyhedron
+  //! Renames the dimensions of a polyhedron
   //! according to a partial injective function.
   /*!
     \param pifunc   The partial injective function specifyng
@@ -1264,7 +1264,7 @@ public:
     to the same dimension.
   */
   template <typename PartialInjectiveFunction>
-  void shuffle_dimensions(const PartialInjectiveFunction& pifunc);
+  void rename_dimensions(const PartialInjectiveFunction& pifunc);
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is

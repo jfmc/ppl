@@ -317,9 +317,9 @@ Determinate<PH>::remove_higher_dimensions(dimension_type new_dimension) {
 template <typename PH>
 template <typename PartialFunction>
 void
-Determinate<PH>::shuffle_dimensions(const PartialFunction& pfunc) {
+Determinate<PH>::rename_dimensions(const PartialFunction& pfunc) {
   mutate();
-  prep->ph.shuffle_dimensions(pfunc);
+  prep->ph.rename_dimensions(pfunc);
 }
 
 template <typename PH>

@@ -66,7 +66,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_add_dimensions_and_embed(+term, +term)).
 :- foreign(ppl_Polyhedron_remove_dimensions(+term, +term)).
 :- foreign(ppl_Polyhedron_remove_higher_dimensions(+term, +term)).
-:- foreign(ppl_Polyhedron_shuffle_dimensions(+term, +term)).
+:- foreign(ppl_Polyhedron_rename_dimensions(+term, +term)).
 :- foreign(ppl_Polyhedron_affine_image(+term, +term, +term, +term)).
 :- foreign(ppl_Polyhedron_affine_preimage(+term, +term, +term, +term)).
 :- foreign(ppl_Polyhedron_generalized_affine_image(+term, +term,

@@ -84,8 +84,8 @@ check_all :-
   embed,
   remove_dim,
   remove_high_dim,
-  shuffle_dim_constraints,
-  shuffle_dim_generators,
+  rename_dim_constraints,
+  rename_dim_generators,
   affine,
   affine_pre,
   affine_gen,
@@ -871,13 +871,13 @@ remove_high_dim :-
   ppl_delete_Polyhedron(P2),
   ppl_delete_Polyhedron(P).
 
-% Tests ppl_Polyhedron_shuffle_dimensions with constraints
+% Tests ppl_Polyhedron_rename_dimensions with constraints
 % (using C Polyhedra).
-shuffle_dim_constraints :-
+rename_dim_constraints :-
   A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
   ppl_new_Polyhedron_from_dimension(c, 3, P),
   ppl_Polyhedron_add_constraints(P, [A >= 2, B >= 1, C >= 0]),
-  ppl_Polyhedron_shuffle_dimensions(P, [A-B, B-C, C-A]),
+  ppl_Polyhedron_rename_dimensions(P, [A-B, B-C, C-A]),
   ppl_new_Polyhedron_from_constraints(c,
                                       [A >= 0, B >= 2, C >= 1],
                                       Q),
@@ -885,13 +885,13 @@ shuffle_dim_constraints :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
 
-% Tests ppl_Polyhedron_shuffle_dimensions with generators
+% Tests ppl_Polyhedron_rename_dimensions with generators
 % (using C Polyhedra).
-shuffle_dim_generators :-
+rename_dim_generators :-
   A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), D = '$VAR'(3),
   ppl_new_Polyhedron_empty_from_dimension(c, 4, P),
   ppl_Polyhedron_add_generators(P, [point(2*C), line(A+B), ray(A+C)]),
-  ppl_Polyhedron_shuffle_dimensions(P, [A-D, C-A, B-C]),
+  ppl_Polyhedron_rename_dimensions(P, [A-D, C-A, B-C]),
   ppl_new_Polyhedron_from_generators(c,
                                     [point(2*A), ray(1*A+1*D), line(1*C+1*D)],
                                      Q),
