@@ -160,7 +160,7 @@ the configure option
 
 where TYPE is one of
 
-  gmp               use GMP unbounded integers (default)
+  mpz               use GMP unbounded integers (default)
   checked-int8      use  8-bit checked integers
   checked-int16     use 16-bit checked integers
   checked-int32     use 32-bit checked integers
