@@ -136,18 +136,10 @@ Description: Parma Polyhedra Library: YAP interface
 Package: libppl-pwl
 Architecture: any
 Section: libs
-Depends: libppl
-Description: Parma Polyhedra Library: PWL Prolog interface
- The Parma Polyhedra Library (PPL) is a C++ library for the
- manipulation of (not necessarily closed) convex polyhedra and other
- numerical abstractions.  The applications of convex polyhedra include
- program analysis, optimized compilation, integer and combinatorial
- optimization and statistical data-editing.  The Parma Polyhedra
- Library is user friendly (you write `x + 2*y + 5*z <= 7' when you
- mean it), fully dynamic (available virtual memory is the only
- limitation to the dimension of anything), written in standard C++,
- exception-safe, rather efficient and thoroughly documented.
- .
- This package provides the PWL Prolog interface.
+Description: Parma Watchdog Library: C++ library for watchdog timers
+ The Parma Watchdog Library (PWL) provides support for multiple,
+ concurrent watchdog timers on systems providing setitimer(2).  The
+ PWL is currently distributed with the Parma Polyhedra Library (PPL),
+ but is totally independent from it.
  .
  Homepage: http://www.cs.unipr.it/ppl/
