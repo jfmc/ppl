@@ -52,6 +52,7 @@ TESTS = addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
 	error10 error11 error12 error13 error14 error15 error16 error17 \
 	error18 error19 error20 error21 error22 error23 error24 error25 \
 	error26 error27 error28 error29 \
+	generators1 \
 	includes1 includes2 includes3 includes4 \
         inters1 inters2 inters3 inters4 inters5 inters6 \
 	limitedwidening1 limitedwidening2\
@@ -137,6 +138,8 @@ error26_SOURCES = error26.cc
 error27_SOURCES = error27.cc
 error28_SOURCES = error28.cc
 error29_SOURCES = error29.cc
+
+generators1_SOURCES = generators1.cc
 
 includes1_SOURCES = includes1.cc
 includes2_SOURCES = includes2.cc
