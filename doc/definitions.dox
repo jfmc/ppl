@@ -1234,8 +1234,8 @@ is compatible with both the BHRZ03 and the H79 widenings,
 is only compatible with the latter.
 Note that using different certificates will change the results obtained,
 even when using the same base-level widening operator.
-It is also worth stressing that it is up to the user's responsibility
-to make sure that the widening operator is actually compatible with
+It is also worth stressing that it is up to the user
+to see that the widening operator is actually compatible with
 a given convergence certificate. If such a requirement is not met,
 then an extrapolation operator will be obtained.
 
