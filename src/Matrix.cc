@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Integer.defs.hh"
 #include "Row.defs.hh"
+#include "globals.hh"
 #include "SatMatrix.defs.hh"
 #include <algorithm>
 #include <iostream>
@@ -59,7 +60,7 @@ PPL::Matrix::num_lines_or_equalities() const {
 PPL::Matrix::Matrix(size_t num_rows, size_t num_columns)
   : rows(num_rows),
     row_size(num_columns),
-    row_capacity(Row::compute_capacity(num_columns)),
+    row_capacity(compute_capacity(num_columns)),
     sorted(false) {
   // Construct in direct order: will destroy in reverse order.
   for (size_t i = 0; i < num_rows; ++i)
@@ -71,7 +72,7 @@ PPL::Matrix::Matrix(size_t num_rows, size_t num_columns)
 PPL::Matrix::Matrix(const Matrix& y)
   : rows(y.rows),
     row_size(y.row_size),
-    row_capacity(Row::compute_capacity(y.row_size)),
+    row_capacity(compute_capacity(y.row_size)),
     sorted(y.sorted) {
 }
 
@@ -80,7 +81,7 @@ PPL::Matrix&
 PPL::Matrix::operator =(const Matrix& y) {
   rows = y.rows;
   row_size = y.row_size;
-  row_capacity = Row::compute_capacity(row_size);
+  row_capacity = compute_capacity(row_size);
   sorted = y.sorted;
   return *this;
 }
@@ -187,7 +188,7 @@ PPL::Matrix::resize_no_copy(size_t new_num_rows, size_t new_num_columns) {
       else {
 	// Capacity exhausted: we must reallocate the rows and
 	// make sure all the rows have the same capacity.
-	row_capacity = Row::compute_capacity(new_num_columns);
+	row_capacity = compute_capacity(new_num_columns);
 	for (size_t i = old_num_rows; i-- > 0; ) {
 	  Row new_row(Row::LINE_OR_EQUALITY, new_num_columns, row_capacity);
 	  std::swap(rows[i], new_row);
@@ -364,7 +365,7 @@ PPL::Matrix::add_row(const Row& row) {
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
     std::vector<Row> new_rows;
-    new_rows.reserve(Row::compute_capacity(new_rows_size));
+    new_rows.reserve(compute_capacity(new_rows_size));
     new_rows.resize(new_rows_size);
     // Put the new row in place.
     Row new_row(row, row_capacity);
@@ -424,7 +425,7 @@ PPL::Matrix::add_row(Row::Type type) {
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
     std::vector<Row> new_rows;
-    new_rows.reserve(Row::compute_capacity(new_rows_size));
+    new_rows.reserve(compute_capacity(new_rows_size));
     new_rows.resize(new_rows_size);
     // Put the new row in place.
     Row new_row(type, row_size, row_capacity);

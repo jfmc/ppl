@@ -21,26 +21,12 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#include "globals.hh"
 #include <cassert>
 #include <algorithm>
 #include <vector>
 
 namespace Parma_Polyhedra_Library {
-
-/*!
-  \param row_size   The number of elements we want the rows to contain.
-
-  \return           The actual capacity of the rows.
-
-  Computes the row capacity given its required size.
-  Allows speculative allocation aimed at reducing the number of
-  reallocations.
-*/
-inline size_t
-Row::compute_capacity(size_t row_size) {
-  return row_size;
-}
-
 
 /*!
   Allocates a chunk of memory able to contain \p capacity Integer objects
@@ -180,6 +166,20 @@ Row::Impl::operator [](size_t k) const {
   return vec_[k];
 }
 
+/*!
+  Returns the size of \p *this row.
+*/
+inline size_t
+Row::size() const {
+  return impl->size();
+}
+
+#ifndef NDEBUG
+inline size_t
+Row::capacity() const {
+  return capacity_;
+}
+#endif
 
 /*!
   All elements of the row are initialized to \f$0\f$.
@@ -230,27 +230,12 @@ Row::Row(Type type, size_t size) {
 inline
 Row::Row(const Row& y)
   : impl(y.impl
-	 ? new (compute_capacity(y.impl->size())) Impl(*y.impl)
+	 ? new (compute_capacity(y.size())) Impl(*y.impl)
 	 : 0) {
 #ifndef NDEBUG
-  capacity_ = y.impl ? compute_capacity(y.impl->size()) : 0;
+  capacity_ = y.impl ? compute_capacity(y.size()) : 0;
 #endif
 }
-
-/*!
-  Returns the size of \p *this row.
-*/
-inline size_t
-Row::size() const {
-  return impl->size();
-}
-
-#ifndef NDEBUG
-inline size_t
-Row::capacity() const {
-  return capacity_;
-}
-#endif
 
 /*!
   Allows to specify a capacity,

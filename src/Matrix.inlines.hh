@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 /*!
-  Swaps *this with y.
+  Swaps \p *this with \p y.
 */
 inline void
 Matrix::swap(Matrix& y) {

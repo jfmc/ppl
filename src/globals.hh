@@ -21,12 +21,33 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef _globals_hh
+#define _globals_hh 1
 
 #include "Integer.defs.hh"
 
 namespace Parma_Polyhedra_Library {
-  inline Integer& tmp_Integer(size_t n) {
-    static Integer tmp[6];
-    return tmp[n];
-  }
+
+inline Integer& tmp_Integer(size_t n) {
+  static Integer tmp[6];
+  return tmp[n];
 }
+
+//! Speculative allocation function.
+/*!
+  \param requested_size   The number of elements we need.
+
+  \return                 The actual capacity to be allocated.
+
+  Computes a capacity given a requested size.
+  Allows for speculative allocation aimed at reducing the number of
+  reallocations.
+*/
+inline size_t
+compute_capacity(size_t requested_size) {
+  return 2*(requested_size + 1);
+}
+
+} // namespace Parma_Polyhedra_Library
+
+#endif

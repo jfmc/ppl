@@ -154,11 +154,6 @@ public:
   friend std::ostream&
   Parma_Polyhedra_Library::operator <<(std::ostream& s, const Row& row);
 
-  //! Allows the capacity of the rows to be computed depending on
-  //! the required number of columns.
-  static size_t compute_capacity(size_t row_size);
-
-
   //! Checks if all the invariants are satisfied.
   bool OK(size_t capacity) const;
 

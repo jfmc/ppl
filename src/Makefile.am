@@ -23,6 +23,8 @@ lib_LIBRARIES = libppl.a
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
+globals.hh \
+maxmin.hh \
 SatRow.types.hh \
 SatMatrix.types.hh \
 Row.types.hh \
@@ -57,8 +59,6 @@ GenSys.defs.hh \
 GenSys.inlines.hh \
 Status.defs.hh \
 Status.inlines.hh \
-globals.hh \
-maxmin.hh \
 Polyhedron.defs.hh \
 Polyhedron.inlines.hh
 
