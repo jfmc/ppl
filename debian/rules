@@ -28,19 +28,30 @@ else
 	CFLAGS += -O2
 endif
 
+# FOR AUTOCONF 2.52 AND NEWER ONLY
+ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
+  confflags += --build $(DEB_HOST_GNU_TYPE)
+else
+  confflags += --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE)
+endif
+
 config.status: configure
 	dh_testdir
 #   Add here commands to configure the package.
+#   /usr/share/doc/autotools-dev/README.Debian.gz:
+#     - Call the autoconf suite using simple names ("autoconf", "autoheader", etc.)
+#     - Call the automake suite using *versioned* names ("automake-1.9", etc),
 #   FIX are all of these required?
-	aclocal -I m4 && autoheader && automake && autoconf && CFLAGS="$(CFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
+	aclocal-1.9 -I m4 && autoheader && automake-1.9 && autoconf && CFLAGS="$(CFLAGS)" ./configure $(confflags) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
+
 
 ## Architecture
 build: build-arch build-indep
 
 build-arch: build-arch-stamp
-build-arch-stamp:  config.status
+build-arch-stamp: config.status
 
-# 	Add here commands to compile the arch part of the package.
+#	Add here commands to compile the arch part of the package.
 	$(MAKE)
 	touch build-arch-stamp
 
@@ -81,7 +92,9 @@ install-indep:
 
 # 	dh_install -i
 
-DOC_DIR=debian/libppl/usr/share/doc/libppl
+# Destination directory for user manual.
+DOC_DIR=debian/libppl-dev/usr/share/doc/libppl
+# Destination directory for developer reference.
 DEV_DOC_DIR=debian/libppl-dev/usr/share/doc/libppl
 #SRC_DOC_DIR=$(CURDIR)/debian/tmp/usr/share/doc/ppl/
 SRC_DOC_DIR=$(CURDIR)/doc
@@ -95,8 +108,8 @@ install-arch:
 # 	debian/tmp.
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
 
-#   Build all the documentation, then move it into debian/tmp using
-#   version-free naming.
+#   Build all the documentation, then move it into debian/tmp
+#   directories which have fixed names.
 	mkdir -p $(DOC_DIR)/html || exit 1
 	mkdir -p $(DEV_DOC_DIR)/html || exit 1
 #FIX better way to the PPL version?
