@@ -62,6 +62,41 @@ namespace Parma_Polyhedra_Library {
   having also non-integral (rational) coordinates,
   an integer denominator \f$b\f$ is required;
   such a denominator is not needed for lines and rays.
+
+  \par Example 1
+  The following code builds a line of direction \f$x-y-z\f$:
+  \code
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Generator gs(1 | x - y -z);
+  \endcode
+
+  \par Example 2
+  The following code builds a ray with the same direction of the
+  previous direction:
+  \code
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Generator gs(1 ^ x - y -z);
+  \endcode
+
+  \par Example 3
+  The following code builds the vertex \f$[1,3,2]\f$:
+  \code
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Generator gs(x + 3 * y + 2 * z \= 1);
+  \endcode
+  The same vertex can be obtain also with the following code:
+  \code
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Generator gs(2x + 6 * y + 4 * z \= 2);
+  \endcode
 */
 
 class Parma_Polyhedra_Library::Generator : public Row {
