@@ -1740,8 +1740,7 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
     throw_dimension_incompatible("remove_dimensions(vs)",
 				 max_dim_to_be_removed);
 
-  // Update the space dimension.
-  space_dim -= to_be_removed.size();
+  size_t new_space_dim = space_dim - to_be_removed.size();
 
   if (is_empty()
       || (!generators_are_up_to_date() && !update_generators())) {
@@ -1749,13 +1748,15 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
     // we clear `con_sys' since it could have contained the
     // unsatisfiable constraint of the wrong dimension.
     con_sys.clear();
+    // Update the space dimension.
+    space_dim = new_space_dim;
     assert(OK());
     return;
   }
 
   // When removing _all_ dimensions from a non-empty polyhedron,
   // we obtain the zero-dim universe polyhedron.
-  if (space_dim == 0) {
+  if (new_space_dim == 0) {
     set_zero_dim_univ();
     return;
   }
@@ -1796,6 +1797,9 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
   clear_constraints_up_to_date();
   // Generators are no longer guaranteed to be minimized.
   clear_generators_minimized();
+
+  // Update the space dimension.
+  space_dim = new_space_dim;
 
   assert(OK(true));
 }
