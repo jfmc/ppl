@@ -1,2 +1,36 @@
 
-PPL version 0.1 has been released.
+Parma Polyhedra Library NEWS -- history of user-visible changes
+===============================================================
+
+
+--------------------------------------------------------------------------
+NEWS for version 0.2 (released on November x, 2001)
+--------------------------------------------------------------------------
+
+New Features
+============
+
+o  Massive API changes.  This would not normally be called "a feature",
+   but the old API was very wrong in a number of ways.  More API changes
+   are to be expected for the next few releases.
+
+o  All user-accessible library methods are now guarded by suitable
+   sanity checks.  Exception are thrown whenever the library is not
+   called in the intended way.
+
+o  A SICStus Prolog interface is now available.
+
+Bugfixes
+========
+
+o  Many, many more than we would like to admit.
+
+
+--------------------------------------------------------------------------
+NEWS for version 0.1 (released on October 24, 2001)
+--------------------------------------------------------------------------
+
+New Features
+============
+
+o  The library has been released under the GNU General Public License.
