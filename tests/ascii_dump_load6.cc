@@ -36,7 +36,10 @@ const char* my_file = "ascii_dump_load6.dat";
 
 void
 test1() {
-  
+#if NOISY
+  cout << "test1()" << endl;
+#endif
+
   C_Polyhedron ph1;
 
   fstream f;
@@ -57,7 +60,10 @@ test1() {
 
 void
 test2() {
-  
+#if NOISY
+  cout << "test2()" << endl;
+#endif
+
   C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
 
   fstream f;
@@ -78,6 +84,10 @@ test2() {
 
 void
 test3() {
+#if NOISY
+  cout << "test3()" << endl;
+#endif
+
   fstream f;
   open(f, my_file, ios_base::out);
   f << "space_dim 2\n"
@@ -95,7 +105,11 @@ test3() {
 
 void
 test4() {
- fstream f;
+#if NOISY
+  cout << "test4()" << endl;
+#endif
+
+  fstream f;
   open(f, my_file, ios_base::out);
   f << "space_dim 2\n"
     << "-ZE -EM";
@@ -112,7 +126,11 @@ test4() {
 
 void
 test5() {
- fstream f;
+#if NOISY
+  cout << "test5()" << endl;
+#endif
+
+  fstream f;
   open(f, my_file, ios_base::out);
   f << "space_dim 2\n"
     << "-ZE -EM  +CM";
@@ -129,7 +147,11 @@ test5() {
 
 void
 test6() {
- fstream f;
+#if NOISY
+  cout << "test6()" << endl;
+#endif
+
+  fstream f;
   open(f, my_file, ios_base::out);
   f << "space_dim 2\n"
     << "-ZE -EM  +CM +GM";
@@ -146,7 +168,11 @@ test6() {
 
 void
 test7() {
- fstream f;
+#if NOISY
+  cout << "test7()" << endl;
+#endif
+
+  fstream f;
   open(f, my_file, ios_base::out);
   f << "space_dim 2\n"
     << "-ZE -EM  +CM +GM  +CS";
@@ -163,7 +189,11 @@ test7() {
 
 void
 test8() {
- fstream f;
+#if NOISY
+  cout << "test8()" << endl;
+#endif
+
+  fstream f;
   open(f, my_file, ios_base::out);
   f << "space_dim 2\n"
     << "-ZE -EM  +CM +GM  +CS  +SC";
@@ -180,7 +210,11 @@ test8() {
 
 void
 test9() {
- fstream f;
+#if NOISY
+  cout << "test9()" << endl;
+#endif
+
+  fstream f;
   open(f, my_file, ios_base::out);
   f << "space_dim 2\n"
     << "-ZE -EM  +CM +GM  +CS  +GS";
@@ -198,7 +232,11 @@ test9() {
 
 void
 test10() {
- fstream f;
+#if NOISY
+  cout << "test10()" << endl;
+#endif
+
+  fstream f;
   open(f, my_file, ios_base::out);
   f << "space_dim 2\n"
     << "-ZE -EM  +CM +GM  +CS  +GS  -SC";

@@ -39,6 +39,10 @@ const char* my_file = "ascii_dump_load3.dat";
 
 void
 test1() {
+#if NOISY
+  cout << "test1()" << endl;
+#endif
+
   Variable A(0);
   Variable B(1);
 
@@ -71,6 +75,10 @@ test1() {
 
 void
 test2() {
+#if NOISY
+  cout << "test2()" << endl;
+#endif
+
   Variable A(0);
   Variable B(1);
 
@@ -103,6 +111,10 @@ test2() {
 
 void
 test3() {
+#if NOISY
+  cout << "test3()" << endl;
+#endif
+
   Variable A(0);
   Variable B(1);
 
@@ -135,6 +147,10 @@ test3() {
 
 void
 test4() {
+#if NOISY
+  cout << "test4()" << endl;
+#endif
+
   Variable A(0);
   Variable B(1);
 
@@ -167,6 +183,10 @@ test4() {
 
 void
 test5() {
+#if NOISY
+  cout << "test5()" << endl;
+#endif
+
   Variable A(0);
   Variable B(1);
 
@@ -199,6 +219,10 @@ test5() {
 
 void
 test6() {
+#if NOISY
+  cout << "test6()" << endl;
+#endif
+
   Variable A(0);
   Variable B(1);
 
@@ -231,6 +255,10 @@ test6() {
 
 void
 test7() {
+#if NOISY
+  cout << "test7()" << endl;
+#endif
+
   Variable A(0);
   Variable B(1);
 
@@ -263,6 +291,10 @@ test7() {
 
 void
 test8() {
+#if NOISY
+  cout << "test8()" << endl;
+#endif
+
   Variable A(0);
   Variable B(1);
 
@@ -295,6 +327,10 @@ test8() {
 
 void
 test9() {
+#if NOISY
+  cout << "test9()" << endl;
+#endif
+
   Variable A(0);
   Variable B(1);
 
@@ -327,6 +363,10 @@ test9() {
 
 void
 test10() {
+#if NOISY
+  cout << "test10()" << endl;
+#endif
+
   Variable A(0);
   Variable B(1);
 
@@ -359,6 +399,10 @@ test10() {
 
 void
 test11() {
+#if NOISY
+  cout << "test11()" << endl;
+#endif
+
   Variable A(0);
   Variable B(1);
 
@@ -391,6 +435,10 @@ test11() {
 
 void
 test12() {
+#if NOISY
+  cout << "test12()" << endl;
+#endif
+
   Variable A(0);
   Variable B(1);
 

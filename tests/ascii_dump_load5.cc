@@ -39,6 +39,9 @@ const char* my_file = "ascii_dump_load5.dat";
 
 void
 test1() {
+#if NOISY
+  cout << "test1()" << endl;
+#endif
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -61,6 +64,9 @@ test1() {
 
 void
 test2() {
+#if NOISY
+  cout << "test2()" << endl;
+#endif
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -89,6 +95,9 @@ test2() {
 
 void
 test3() {
+#if NOISY
+  cout << "test3()" << endl;
+#endif
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -111,6 +120,9 @@ test3() {
 
 void
 test4() {
+#if NOISY
+  cout << "test4()" << endl;
+#endif
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -132,6 +144,9 @@ test4() {
 
 void
 test5() {
+#if NOISY
+  cout << "test5()" << endl;
+#endif
 
   fstream f;
   open(f, my_file, ios_base::out);
