@@ -422,7 +422,7 @@ PPL::Polyhedron::conversion(Matrix& source,
       // we set it to ray/vertex.
       dest[num_lines_or_equalities].set_is_ray_or_vertex_or_inequality();
 
-      // We have modified dest so it is no more sorted.
+      // We have modified dest so it is no longer sorted.
       dest.set_sorted(false);
 
       // The new lineality space is obtained considering a set of new

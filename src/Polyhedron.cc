@@ -1313,7 +1313,7 @@ PPL::Polyhedron::insert(const Constraint& c) {
   // Here we know that the system of constraints has at least a row.
   con_sys.insert(c);
 
-  // After adding new constraints, generators are no more up-to-date.
+  // After adding new constraints, generators are no longer up-to-date.
   clear_constraints_minimized();
   clear_generators_up_to_date();
 
@@ -1450,7 +1450,7 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
   con_sys.merge_rows_assign(cs);
 #endif
 
-  // After adding new constraints, generators are no more up-to-date.
+  // After adding new constraints, generators are no longer up-to-date.
   clear_constraints_minimized();
   clear_generators_up_to_date();
 
@@ -1625,7 +1625,7 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
   // is smaller then the dimension of the space of the polyhedron.
   gen_sys.merge_rows_assign(gs);
 
-  // After adding new generators, constraints are no more up-to-date.
+  // After adding new generators, generators are no longer up-to-date.
   clear_generators_minimized();
   clear_constraints_up_to_date();
 

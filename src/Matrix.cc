@@ -662,7 +662,7 @@ PPL::Matrix::gauss() {
 	// or the same: in this case we do not swap).
 	if (i > rank) {
 	  std::swap(rows[i], rows[rank]);
-	  // After swapping the matrix is no more sorted.
+	  // After swapping the matrix is no longer sorted.
 	  changed = true;
 	}
 	// We want the pivot to be greater than zero to
