@@ -201,7 +201,7 @@ assign_float_float_exact(To& to, const From from, const Rounding&) {
   return static_cast<Result>(classify_float_<Policy>(to) | V_EQ);
 }
 
-template<typename Policy, typename To, typename From>
+template <typename Policy, typename To, typename From>
 inline Result
 assign_float_float(To& to, const From from, const Rounding& mode) {
   prepare_inexact<Policy>();
@@ -309,7 +309,7 @@ assign_float_int_exact(To& to, const From from, const Rounding&) {
   return V_EQ;
 }
 
-template<typename Policy, typename To, typename From>
+template <typename Policy, typename To, typename From>
 inline Result
 assign_float_int(To& to, const From from, const Rounding& mode) {
   prepare_inexact<Policy>();

@@ -182,7 +182,7 @@ SPECIALIZE_SET_SPECIAL(int, unsigned int)
 SPECIALIZE_SET_SPECIAL(int, unsigned long)
 SPECIALIZE_SET_SPECIAL(int, unsigned long long)
 
-template<typename Policy, typename Type>
+template <typename Policy, typename Type>
 inline Result
 pred_int(Type& to) {
   Result r = classify<Policy>(to, true, true, false);
@@ -197,7 +197,7 @@ pred_int(Type& to) {
   return VC_NORMAL;
 }
 
-template<typename Policy, typename Type>
+template <typename Policy, typename Type>
 inline Result
 succ_int(Type& to) {
   Result r = classify<Policy>(to, true, true, false);
@@ -212,7 +212,7 @@ succ_int(Type& to) {
   return VC_NORMAL;
 }
 
-template<typename Policy, typename To, typename From>
+template <typename Policy, typename To, typename From>
 inline Result
 assign_signed_int_signed_int(To& to, const From from, const Rounding& mode) {
   if (Policy::check_overflow && sizeof(To) <= sizeof(From)) {
@@ -225,7 +225,7 @@ assign_signed_int_signed_int(To& to, const From from, const Rounding& mode) {
   return V_EQ;
 }
 
-template<typename Policy, typename To, typename From>
+template <typename Policy, typename To, typename From>
 inline Result
 assign_signed_int_unsigned_int(To& to, const From from, const Rounding& mode) {
   if (Policy::check_overflow && sizeof(To) <= sizeof(From)) {
@@ -236,7 +236,7 @@ assign_signed_int_unsigned_int(To& to, const From from, const Rounding& mode) {
   return V_EQ;
 }
 
-template<typename Policy, typename To, typename From>
+template <typename Policy, typename To, typename From>
 inline Result
 assign_unsigned_int_signed_int(To& to, const From from, const Rounding& mode) {
   if (Policy::check_overflow) {
@@ -250,7 +250,7 @@ assign_unsigned_int_signed_int(To& to, const From from, const Rounding& mode) {
   return V_EQ;
 }
 
-template<typename Policy, typename To, typename From>
+template <typename Policy, typename To, typename From>
 inline Result
 assign_unsigned_int_unsigned_int(To& to, const From from, const Rounding& mode) {
   if (Policy::check_overflow && sizeof(To) <= sizeof(From)) {
@@ -338,7 +338,7 @@ ASSIGN2_SIGNED_UNSIGNED(long, unsigned long)
 ASSIGN2_SIGNED_UNSIGNED(long, unsigned long long)
 ASSIGN2_SIGNED_UNSIGNED(long long, unsigned long long)
 
-template<typename Policy, typename To, typename From>
+template <typename Policy, typename To, typename From>
 inline Result
 assign_int_float_check_min_max(To& to, const From from, const Rounding& mode) {
   if (Policy::check_overflow) {
@@ -665,7 +665,7 @@ SPECIALIZE_ASSIGN(int_mpq, unsigned long long, mpq_class)
 #endif
 
 
-template<typename T>
+template <typename T>
 struct Larger;
 
 // The following may be tuned for performance on specific architecture.

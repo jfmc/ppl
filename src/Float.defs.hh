@@ -40,7 +40,7 @@ struct Float {
   static const bool fpu_related = false;
 };
 
-template<>
+template <>
 class Float<float32_t> {
 private:
   union {
@@ -65,7 +65,7 @@ public:
   static const bool fpu_related = true;
 };
 
-template<>
+template <>
 class Float<float64_t> {
 private:
   union {
@@ -103,7 +103,7 @@ public:
 
 #ifdef FLOAT96_TYPE
 
-template<>
+template <>
 class Float<float96_t> {
 private:
   union {
@@ -144,7 +144,7 @@ public:
 
 #ifdef FLOAT128_TYPE
 
-template<>
+template <>
 class Float<float128_t> {
 private:
   union {
