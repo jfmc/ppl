@@ -57,8 +57,13 @@ The class Row allows us to build objects like these:
   So, a row can be both a constraint and a generator: it can be an
   equality, an inequality, a line, a ray or a vertex.
 
-  A vertex must have the inhomogeneous term different from zero, a line
+  A vertex must have the inhomogeneous term positive, a line
   and a ray must have the inhomogeneous term equal to zero.
+  If we introduce a vertex with a negative inhomogeneous term, 
+  it is modified so that it has a positive inhomogeneous term. 
+  The inhomogeneous term of a vertex is always positive, because even if
+  we combine a vertex with another generator, we use positive combinations.
+  
   The inhomogeneous term of a constraint can be zero or different from zero.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
