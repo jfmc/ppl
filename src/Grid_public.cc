@@ -56,6 +56,24 @@ PPL::Grid::Grid(const dimension_type num_dimensions,
   assert(OK());
 }
 
+PPL::Grid::Grid(const Grid& y)
+  : con_sys(),
+    gen_sys(y.gen_sys.topology()),
+    status(y.status),
+    space_dim(y.space_dim) {
+  // Being a protected method, we simply assert that topologies do match.
+  //assert(topology() == y.topology()); // FIX
+  if (y.congruences_are_up_to_date())
+    //con_sys.assign_with_pending(y.con_sys); // FIX
+    con_sys = y.con_sys;
+  if (y.generators_are_up_to_date())
+    gen_sys.assign_with_pending(y.gen_sys);
+  if (y.sat_c_is_up_to_date())
+    sat_c = y.sat_c;
+  if (y.sat_g_is_up_to_date())
+    sat_g = y.sat_g;
+}
+
 #if 0
 
 PPL::dimension_type
