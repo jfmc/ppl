@@ -396,7 +396,7 @@ PPL::Polyhedron::is_topologically_closed() const {
   assert(!has_something_pending());
 
   if (generators_are_minimized()) {
-    // A polyhedron is closed iff all of its (non-redundant)
+    // A polyhedron is closed if and only if all of its (non-redundant)
     // closure points are matched by a corresponding point.
     const dimension_type n_rows = gen_sys.num_rows();
     const dimension_type n_lines = gen_sys.num_lines();
@@ -626,7 +626,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     }
 
     // A non_empty system of generators describing a polyhedron
-    // is valid iff it contains a point.
+    // is valid if and only if it contains a point.
     if (gen_sys.num_rows() > 0 && !gen_sys.has_points()) {
 #ifndef NDEBUG
       cerr << "Non-empty generator system declared up-to-date "
@@ -1856,9 +1856,9 @@ PPL::Polyhedron::affine_image(const Variable var,
 	con_sys.affine_preimage(var_space_dim, inverse, expr[var_space_dim]);
       }
       else {
-	// The new denominator is negative:
-	// we negate everything once more, as Constraint_System::affine_preimage()
-	// requires the third argument to be positive.
+	// The new denominator is negative: we negate everything once
+	// more, as Constraint_System::affine_preimage() requires the
+	// third argument to be positive.
 	inverse = expr;
 	inverse[var_space_dim] = denominator;
 	negate(inverse[var_space_dim]);
