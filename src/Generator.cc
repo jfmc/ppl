@@ -176,6 +176,49 @@ PPL::operator<<(std::ostream& s, const Generator& g) {
   return s;
 }
 
+/*!
+  Returns <CODE>true</CODE> if and only if the closure point
+  \p *this has the same \e coordinates of the point \p p.
+  It is \e assumed that \p *this is a closure point, \p p is a point
+  and both topologies and space-dimensions agree.
+*/
+bool
+PPL::Generator::is_corresponding_closure_point(const Generator& p) const {
+  assert(topology() == p.topology()
+	 && space_dimension() == p.space_dimension()
+	 && type() == CLOSURE_POINT
+	 && p.type() == POINT);
+  const Generator& cp = *this;
+  if (cp[0] == p[0]) {
+    // Divisors are equal: we can simply compare coefficients
+    // (disregarding the \epsilon coefficient).
+    for (size_t i = cp.size() - 2; i > 0; --i)
+      if (cp[i] != p[i])
+	return false;
+    return true;
+  }
+  else {
+    // Divisors are different: divide them by their GCD
+    // to simplify the following computation.
+    gcd_assign(tmp_Integer[1], cp[0], p[0]);
+    bool rel_prime = (tmp_Integer[1] == 1);
+    if (!rel_prime) {
+      exact_div_assign(tmp_Integer[2], cp[0], tmp_Integer[1]);
+      exact_div_assign(tmp_Integer[3], p[0], tmp_Integer[1]);
+    }
+    const Integer& cp_div = rel_prime ? cp[0] : tmp_Integer[2];
+    const Integer& p_div = rel_prime ? p[0] : tmp_Integer[3];
+    for (size_t i = cp.size() - 2; i > 0; --i) {
+      tmp_Integer[4] = cp[i] * p_div;
+      tmp_Integer[5] = p[i] * cp_div;
+      if (tmp_Integer[4] != tmp_Integer[5])
+	return false;
+    }
+    return true;
+  }
+}
+
+
 bool
 PPL::Generator::OK() const {
   using std::endl;

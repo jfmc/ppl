@@ -541,23 +541,24 @@ PPL::PolyBase::NNC_minimize() const {
 
   // Build a SatRow where all (and only) the indexes corresponding to
   // strict inequalities are set to 1.
-  SatRow unsat_strict_ineq;
+  SatRow sat_all_but_strict_ineq;
   for (size_t i = con_sys.num_rows(); i-- > 0; )
     if (con_sys[i].is_strict_inequality())
-      unsat_strict_ineq.set(i);
+      sat_all_but_strict_ineq.set(i);
 
 #if 0
-  std::cerr << "usat_strict_ineq: "
-	    << unsat_strict_ineq
+  std::cerr << "sat_all_but_strict_ineq: "
+	    << sat_all_but_strict_ineq
 	    << std::endl;
 #endif
 
   // Scan the generator system looking for points that are
   // NOT matched by a corresponding closure point:
-  // these are the candidate NNC_redundant generators.
+  // these are the candidate NNC-redundant generators.
   size_t n_rows = gen_sys.num_rows();
+  size_t n_lines = gen_sys.num_lines();
   std::vector<bool> candidates(n_rows);
-  for (size_t i = n_rows; i-- > 0; ) {
+  for (size_t i = n_rows; i-- > n_lines; ) {
     const Generator& gi = gen_sys[i];
     if (gi.is_point()) {
       // Since `gs' is ordered, the corresponding closure point,
@@ -565,17 +566,10 @@ PPL::PolyBase::NNC_minimize() const {
       candidates[i] = true;
       for (size_t j = i; j-- > 0; ) {
 	const Generator& gj = gen_sys[j];
-	if (gj.is_closure_point()) {
-	  bool is_corresponding_closure_point = true;
-	  for (size_t k = gen_sys.num_columns() - 1; k-- > 0; )
-	    if (gi[k] != gj[k]) {
-	      is_corresponding_closure_point = false;
-	      break;
-	    }
-	  if (is_corresponding_closure_point) {
-	    candidates[i] = false;
-	    break;
-	  }
+	if (gj.is_closure_point()
+	    && gj.is_corresponding_closure_point(gi)) {
+	  candidates[i] = false;
+	  break;
 	}
       }
     }
@@ -596,12 +590,12 @@ PPL::PolyBase::NNC_minimize() const {
   // and eventually move them to the bottom part of the system.
   GenSys& gs = const_cast<GenSys&>(gen_sys);
   SatMatrix& sat = const_cast<SatMatrix&>(sat_c);
-  for (size_t i = 0; i < n_rows; )
+  for (size_t i = n_lines; i < n_rows; )
     if (candidates[i]) {
-      // Compute the SatRow (corresponding to the candidate point)
+      // Compute the SatRow corresponding to the candidate point
       // when strict inequality constraints are ignored.
       SatRow sat_gi;
-      set_union(sat[i], unsat_strict_ineq, sat_gi);
+      set_union(sat[i], sat_all_but_strict_ineq, sat_gi);
       // Check if the candidate point is actually NNC-redundant:
       // it is redundant if there exists another point that
       // saturates all the non-strict inequalities saturated

@@ -335,6 +335,10 @@ PPL_INTERNAL:
   //! Sets the Row kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
   void set_is_ray_or_point();
 
+  //! Returns <CODE>true</CODE> if and only if the closure point
+  //! \p *this has the same \e coordinates of the point \p p.
+  bool is_corresponding_closure_point(const Generator& p) const;
+
 private:
   //! Default constructor: private and not implemented.
   Generator();

@@ -66,29 +66,22 @@ PPL::NNC_Polyhedron::is_topologically_closed() const {
     // closure points are matched by a corresponding point.
     obtain_sorted_generators();
     size_t n_rows = gen_sys.num_rows();
-    size_t eps_index = gen_sys.num_columns() - 1;
-    for (size_t i = n_rows; i-- > 0; ) {
+    size_t n_lines = gen_sys.num_lines();
+    for (size_t i = n_rows; i-- > n_lines; ) {
       const Generator& gi = gen_sys[i];
       if (gi.is_closure_point()) {
-	bool gi_has_a_matching_point = false;
+	bool gi_has_no_matching_point = true;
 	// Since `gen_sys' is sorted, matching point must have
 	// an index `j' greater than `i'.
 	for (size_t j = i + 1; j < n_rows; ++j) {
 	  const Generator& gj = gen_sys[j];
-	  if (gj[eps_index] > 0) {
-	    bool gj_matches_gi = true;
-	    for (size_t k = eps_index; k-- > 0; )
-	      if (gj[k] != gi[k]) {
-		gj_matches_gi = false;
-		break;
-	      }
-	    if (gj_matches_gi) {
-	      gi_has_a_matching_point = true;
-	      break;
-	    }
+	  if (gj.is_point()
+	      && gi.is_corresponding_closure_point(gj)) {
+	    gi_has_no_matching_point = false;
+	    break;
 	  }
 	}
-	if (!gi_has_a_matching_point)
+	if (gi_has_no_matching_point)
 	  return false;
       }
     }
@@ -96,6 +89,7 @@ PPL::NNC_Polyhedron::is_topologically_closed() const {
     return true;
   }
 
+  // Both `con_sys' and `gen_sys' are not minimized.
   // A polyhedron is closed iff
   // it has no (non-redundant) strict inequalities.
   minimize();
