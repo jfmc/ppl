@@ -53,7 +53,7 @@ For any additional question you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
 Here is the contents of the PPL 0.6 source distributions
-(19 directories, 713 files):
+(19 directories, 739 files):
 
 ppl-0.6/
 |-- BUGS
@@ -65,6 +65,7 @@ ppl-0.6/
 |-- Makefile.in
 |-- NEWS
 |-- README
+|-- README.configure
 |-- STANDARDS
 |-- TODO
 |-- Watchdog
@@ -270,14 +271,19 @@ ppl-0.6/
 |   |-- devref.doxyconf-html.in
 |   |-- devref.tex
 |   |-- fdl.dox
+|   |-- fdl.pdf
+|   |-- fdl.ps.gz
 |   |-- fdl.tex
 |   |-- fdl.txt
 |   |-- gpl.dox
+|   |-- gpl.pdf
+|   |-- gpl.ps.gz
 |   |-- gpl.tex
 |   |-- gpl.txt
-|   |-- ppl-user-0.6-browse.pdf
-|   |-- ppl-user-0.6-print.pdf
-|   |-- ppl-user-0.6-print.ps.gz
+|   |-- ppl-user-0.6pre6-browse.pdf
+|   |-- ppl-user-0.6pre6-html.tar.gz
+|   |-- ppl-user-0.6pre6-print.pdf
+|   |-- ppl-user-0.6pre6-print.ps.gz
 |   |-- ppl.sty
 |   |-- user-browse.doxyconf-latex
 |   |-- user-browse.doxyconf-latex.in
@@ -420,6 +426,10 @@ ppl-0.6/
 |   |-- Generator.defs.hh
 |   |-- Generator.inlines.hh
 |   |-- Generator.types.hh
+|   |-- H79_Certificate.cc
+|   |-- H79_Certificate.defs.hh
+|   |-- H79_Certificate.inlines.hh
+|   |-- H79_Certificate.types.hh
 |   |-- Init.cc
 |   |-- Init.defs.hh
 |   |-- Init.types.hh
@@ -486,6 +496,9 @@ ppl-0.6/
 |   |-- Variable.defs.hh
 |   |-- Variable.inlines.hh
 |   |-- Variable.types.hh
+|   |-- Widening_Function.defs.hh
+|   |-- Widening_Function.inlines.hh
+|   |-- Widening_Function.types.hh
 |   |-- algorithms.hh
 |   |-- conversion.cc
 |   |-- globals.cc
@@ -588,6 +601,7 @@ ppl-0.6/
     |-- ascii_dump_load6.cc
     |-- ascii_dump_load7.cc
     |-- bgp99extrapolation1.cc
+    |-- bgp99extrapolation2.cc
     |-- bhrz03widening1.cc
     |-- bhrz03widening10.cc
     |-- bhrz03widening11.cc
@@ -609,12 +623,17 @@ ppl-0.6/
     |-- bhrz03widening9.cc
     |-- bhz03widening1.cc
     |-- bhz03widening2.cc
+    |-- bhz03widening3.cc
+    |-- bhz03widening4.cc
+    |-- bhz03widening5.cc
+    |-- bhz03widening6.cc
     |-- bounded1.cc
     |-- boundedh79extrapolation1.cc
     |-- boundingbox1.cc
     |-- boundingbox2.cc
     |-- boundingbox3.cc
     |-- boundingbox4.cc
+    |-- boundingbox5.cc
     |-- bounds1.cc
     |-- bounds2.cc
     |-- concatenate1.cc
@@ -642,8 +661,12 @@ ppl-0.6/
     |-- exceptions1.cc
     |-- exceptions2.cc
     |-- exceptions3.cc
+    |-- expanddim1.cc
+    |-- expanddim2.cc
     |-- files.cc
     |-- files.hh
+    |-- folddims1.cc
+    |-- folddims2.cc
     |-- generalizedaffineimage1.cc
     |-- generalizedaffineimage10.cc
     |-- generalizedaffineimage11.cc
@@ -712,6 +735,7 @@ ppl-0.6/
     |-- polydifference5.cc
     |-- polydifference6.cc
     |-- polydifference7.cc
+    |-- polydifference8.cc
     |-- polyhull1.cc
     |-- polyhull10.cc
     |-- polyhull2.cc
