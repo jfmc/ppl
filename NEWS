@@ -100,6 +100,10 @@ o  Fixed a bug in the Prolog interface predicate
    ppl_Polyhedron_get_bounding_box/3 whereby a wrong result was
    sometimes computed in the case of an empty polyhedron.
 
+o  Fixed a bug in the Prolog interface predicate
+   ppl_new_Polyhedron_from_bounding_box/3 whereby the predicate was
+   failing when given an empty bounding box.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.5  (released on April 28, 2003)

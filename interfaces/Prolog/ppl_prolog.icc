@@ -1248,9 +1248,21 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
     // Set bbox to reflect its Prolog representation.
     for (dimension_type i = 0; i < dimension; ++i) {
       Prolog_get_cons(t_bb, t_interval, t_bb);
-      // An interval is of the form i(Lower_Bound, Upper_Bound).
+      // An interval is either the atom empty or of the form
+      // i(Lower_Bound, Upper_Bound).
+      if (Prolog_is_atom(t_interval)) {
+	Prolog_atom name;
+	if (Prolog_get_atom_name(t_interval, &name) && name == a_empty) {
+	  bbox.set_empty();
+	  continue;
+	}	
+	else
+	  return PROLOG_FAILURE;
+      }
+
       if (!Prolog_is_compound(t_interval))
 	return PROLOG_FAILURE;
+
       Prolog_atom functor;
       int arity;
       Prolog_get_compound_name_arity(t_interval, &functor, &arity);
