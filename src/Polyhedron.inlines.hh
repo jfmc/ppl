@@ -418,7 +418,15 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
       if (index_limited_variable != space_dim) {
 	const Integer& d = c.coefficient(Variable(index_limited_variable));
 	const Integer& n = c.inhomogeneous_term();
-	// FIXME: explain this change of sign!
+	// The constraint `c' is like
+	// `Variable(index_limited_variable) + n / d rel 0', where
+	// `rel' is the symbol `==' or `>=' or `>'.
+	// When we built the upper or the lower bound for a variable,
+	// we have that this variable is greater than a value: this
+	// means that `Variable(index_limited_variable) rel_1 k', where
+	// `rel_1' is the symbol `>=' or `>' and `k' is equal
+	// to `-n / d'. For this reason we built the ExtendedRational
+	// `r' that has `-n' as numerator an `d' as denominator.
 	ExtendedRational r(-n, d);
 	Constraint::Type c_type = c.type();
 	switch (c_type) {
@@ -432,8 +440,8 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	case Constraint::STRICT_INEQUALITY:
 	  if (d > 0)
 	  // If `d' is strictly positive, we have a
-	  // constraint like `Variable(index_limited_variable) >= 0'
-	  // or `Variable(index_limited_variable) >= 0.
+	  // constraint like `Variable(index_limited_variable) >= k'
+	  // or `Variable(index_limited_variable) > k'.
 	    lower_bound[index_limited_variable]
 	      = LBoundary(r, (c_type == Constraint::NONSTRICT_INEQUALITY 
 			      ? LBoundary::CLOSED
@@ -441,8 +449,8 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	  else {
 	    // Otherwise, we are sure that `d' is strictly negative
 	    // and in this case  we have a constraint like
-	    // `Variable(index_limited_variable) >= 0'
-	    // or `Variable(index_limited_variable) >= 0.
+	    // `Variable(index_limited_variable) <= k'
+	    // or `Variable(index_limited_variable) < k'.
 	    assert(d < 0);
 	    upper_bound[index_limited_variable]
 	      = UBoundary(r, (c_type == Constraint::NONSTRICT_INEQUALITY 
