@@ -63,6 +63,11 @@ LinExpression::LinExpression(const Integer& n)
   (*this)[0] = n;
 }
 
+inline size_t
+LinExpression::space_dimension() const {
+  return size() - 1;
+}
+
 inline const LinExpression&
 LinExpression::zero() {
   static LinExpression z = LinExpression(Integer::zero());

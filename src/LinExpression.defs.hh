@@ -104,6 +104,9 @@ public:
   //! to the variable \p v.
   LinExpression(const Variable& v);
 
+  //! Returns the dimension of the space of \p *this.
+  size_t space_dimension() const;
+
   // Constant.
   static const LinExpression& zero();
 
