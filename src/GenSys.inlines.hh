@@ -52,6 +52,12 @@ Parma_Polyhedra_Library::GenSys::swap(GenSys& y) {
   Matrix::swap(y);
 }
 
+INLINE void
+std::swap(Parma_Polyhedra_Library::GenSys& x,
+	  Parma_Polyhedra_Library::GenSys& y) {
+  x.swap(y);
+}
+
 INLINE Parma_Polyhedra_Library::Generator&
 Parma_Polyhedra_Library::GenSys::operator [](size_t k) {
   return static_cast<Generator&>(Matrix::operator[](k));

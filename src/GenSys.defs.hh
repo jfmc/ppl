@@ -59,9 +59,13 @@ namespace Parma_Polyhedra_Library {
     An object of the class GenSys is a system of generators,
     i.e. a multiset of objects of the class Generator
     (lines, rays and vertices).
-    Note that a system of generators which is meant to define a polyhedron
-    must include at least one vertex, the reason being that lines and
-    rays only specify directions.
+    When inserting generators in a system, dimensions are automatically
+    adjusted so that all the generators in the system are defined
+    on the same vector space.
+    A system of generators which is meant to define a non-empty polyhedron
+    must include at least one vertex, even if the polyhedron has
+    no ``proper'' vertices: the reason is that lines and rays need
+    a supporting point (they only specify directions).
 
     \par
      In all the examples it is assumed that variables
@@ -79,13 +83,18 @@ namespace Parma_Polyhedra_Library {
   GenSys gs;
   gs.insert(line(x + 0*y));
     \endcode
-    As said above, this system of generators does not correspond
-    to a polyhedron, because the line has no supporting vertices.
+    As said above, this system of generators corresponds to
+    an empty polyhedron, because the line has no supporting point.
     To define a system of generators indeed corresponding to
     the \f$x\f$ axis, one can add the following code which
     inserts the origin of the space as a vertex:
     \code
   gs.insert(vertex(0*x + 0*y));
+    \endcode
+    Since dimensions are automatically adjusted, the following
+    code obtains the same effect:
+    \code
+  gs.insert(vertex(0*x));
     \endcode
     In contrast, if we had added the following code, we would have
     defined a line parallel to the \f$x\f$ axis and including
@@ -146,7 +155,8 @@ public:
   //! Destructor.
   virtual ~GenSys();
 
-  //! Inserts a copy of the generator \p g into \p *this.
+  //! Inserts a copy of the generator \p g into \p *this,
+  //! increasing the number of dimensions if needed.
   void insert(const Generator& g);
 
   //! Swaps \p *this with the system of generators \p y.
@@ -245,6 +255,12 @@ private:
   //! Output operator.
   void print(std::ostream& s) const;
 };
+
+namespace std {
+  //! Specialize std::swap.
+  void swap(Parma_Polyhedra_Library::GenSys& x,
+	    Parma_Polyhedra_Library::GenSys& y);
+}
 
 #if !OUTLINE
 #include "GenSys.inlines.hh"
