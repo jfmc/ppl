@@ -521,7 +521,19 @@ SPECIALIZE_ASSIGN(unsigned_long_long_c_string, unsigned long long, c_string)
 #error "Unexpected max for unsigned long"
 #endif
 
-#if ULONG_LONG_MAX == 0xffffffffffffffffULL
+// C99 defines ULLONG_MAX, but this C99 is not yet part of the C++ standard.
+// GCC defines ULONG_LONG_MAX.
+// Some compilers (such as Comeau C++ up to and including version 4.3.3)
+// define nothing.  In this last case we make a reasonable guess.
+#ifndef ULLONG_MAX
+#if defined(ULONG_LONG_MAX)
+#define ULLONG_MAX ULONG_LONG_MAX
+#elif SIZEOF_LONG_LONG == 8
+#define ULLONG_MAX 0xffffffffffffffffULL
+#endif
+#endif
+
+#if ULLONG_MAX == 0xffffffffffffffffULL
 #define LONG_LONG_BITS 64
 #else
 #error "Unexpected max for unsigned long long"
