@@ -36,13 +36,13 @@ or via some other header file, with the directive
 #include <ppl_c.h>
 \endcode
 If this directive does not work, then your compiler is unable to
-find the file <CODE>ppl_c.h</CODE>. Therefore, check that you
-actually installed the library (in which case you may want to <CODE>make
-install</CODE>, perhaps with root privileges), or you installed it in
-the wrong place (in which case you may want to reconfigure the library
-using the appropriate pathname for the <CODE>--prefix</CODE> option),
-or you forgot to tell your compiler where to install it (in which
-case you should add the path to the directory where
+find the file <CODE>ppl_c.h</CODE>. So check that the library
+is installed (if it is not installed, you may want to <CODE>make
+install</CODE>, perhaps with root privileges); that it is installed it in
+the right place (if not you may want to reconfigure the library
+using the appropriate pathname for the <CODE>--prefix</CODE> option);
+and that your compiler knew where to install it (if not
+you should add the path to the directory where
 <CODE>ppl_c.h</CODE> is located to the compiler's include file search
 path; this is usually done with the <CODE>-I</CODE> option).
 
@@ -66,8 +66,8 @@ calling the <CODE>ppl_finalize</CODE> function. After this function
 is called <EM>no other interface of the library may be used</EM>
 until the interface is re-initialized using <CODE>ppl_initialize</CODE>.
 
-Any application using the PPL should make sure that the only the
-intended version(s) of the library are used.  The version used can be
+Any application using the PPL should make sure that only the
+intended version(s) of the library are ever used.  The version used can be
 checked at compile-time thanks to the macros PPL_VERSION_MAJOR,
 PPL_VERSION_MINOR, PPL_VERSION_REVISION and PPL_VERSION_BETA, which
 give, respectively major, minor, revision and beta numbers of the PPL
