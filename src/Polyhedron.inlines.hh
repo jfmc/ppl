@@ -98,9 +98,20 @@ Polyhedron::has_pending_constraints() const {
 }
 
 inline bool
+Polyhedron::sat_c_is_up_to_date() const {
+  return status.test_sat_c_up_to_date();
+}
+
+inline bool
+Polyhedron::sat_g_is_up_to_date() const {
+  return status.test_sat_g_up_to_date();
+}
+
+inline bool
 Polyhedron::can_have_something_pending() const {
-  return (constraints_are_minimized() && generators_are_minimized()
-	  && (sat_c_is_up_to_date() || sat_g_is_up_to_date()));
+  return constraints_are_minimized()
+    && generators_are_minimized()
+    && (sat_c_is_up_to_date() || sat_g_is_up_to_date());
 }
 
 inline bool
@@ -111,16 +122,6 @@ Polyhedron::has_pending_generators() const {
 inline bool
 Polyhedron::has_something_pending() const {
   return status.test_c_pending() || status.test_g_pending();
-}
-
-inline bool
-Polyhedron::sat_c_is_up_to_date() const {
-  return status.test_sat_c_up_to_date();
-}
-
-inline bool
-Polyhedron::sat_g_is_up_to_date() const {
-  return status.test_sat_g_up_to_date();
 }
 
 inline void
