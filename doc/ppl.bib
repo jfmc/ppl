@@ -471,9 +471,9 @@
               inserted in object code. For example, in PASCAL one must
               dynamically verify that the values assigned to subrange type
               variables, or index expressions lie between two bounds, or
-              that pointers are not \emph{nil}, ... We present here a general
-              algorithm allowing most of these certifications to be done
-              at compile time.",
+              that pointers are not \texttt{nil}, ...
+              We present here a general algorithm allowing most of these
+              certifications to be done at compile time.",
   URL = "http://www.di.ens.fr/~cousot/publications.www/CousotCousot-ISOP-76-Dunod-p106--130-1976.pdf"
 }
 
@@ -489,7 +489,18 @@
   Abstract = "Semantic analysis of programs is essential in optimizing
               compilers and program verification systems. It encompasses
               data flow analysis, data type determination, generation of
-              approximate invariant assertions, etc.",
+              approximate invariant assertions, etc.
+              Several recent papers (among others Cousot \& Cousot[77a],
+              Graham & Wegman[76], Kam & Ullmann[76], Killdall[73],
+              Rosen[78], Tarjan[76], Wegbreit[75]) have introduced abstract
+              approaches to program analysis which are tantamount to the
+              use of a \emph{program analysis framework} $(A, t, \gamma)$
+              where $A$ is a lattice of (approximate) assertions,
+              $t$ is an (approximate) predicate transformer and
+              $\gamma$ is an often implicit function specifying the
+              meaning of the elements of $A$. This paper is devoted to
+              the systematic and correct design of program analysis
+              frameworks with respect to a formal semantics.",
   URL = "http://www.di.ens.fr/~cousot/publications.www/CousotCousot-POPL-79-ACM-p269--282-1979.pdf"
 }
 
@@ -920,8 +931,8 @@
               is used to design on the one hand a set of properties
               generalizing intervals and cosets on $\mathbbb{Z}$ and
               on the other hand, a generalization of trapezoids and
-              linear congruence equation systems on $\mathbbb{Z}^n$. A
-              rational abstraction of these properties is defined to
+              linear congruence equation systems on $\mathbbb{Z}^n$.
+              A rational abstraction of these properties is defined to
               get safe approximations, with a polynomial complexity in
               the number of the considered variables, of the integer
               properties operators. Those analyses, more precise than
