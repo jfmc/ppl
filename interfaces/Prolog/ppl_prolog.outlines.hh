@@ -267,7 +267,7 @@ static Prolog_atom a_vertex;
 static struct {
   Prolog_atom* p_atom;
   const char* name;
-} const sp_atoms[] = {
+} const prolog_atoms[] = {
   { &a_nil,                "[]" },
 
   { &a_dollar_VAR,         "$VAR" },
@@ -306,24 +306,28 @@ variable_term(unsigned int varid) {
 
 extern "C" void
 ppl_init(int /* when */) {
-  for (size_t i = 0; i < sizeof(sp_atoms)/sizeof(sp_atoms[0]); ++i) {
-    Prolog_atom a = Prolog_atom_from_string(sp_atoms[i].name);
+  for (size_t i = 0; i < sizeof(prolog_atoms)/sizeof(prolog_atoms[0]); ++i) {
+    Prolog_atom a = Prolog_atom_from_string(prolog_atoms[i].name);
+#ifdef SICSTUS
     if (SP_register_atom(a) == 0) {
       Prolog_term_ref et = Prolog_new_term_ref();
       Prolog_put_string(et, "Cannot initialize the PPL interface");
       Prolog_raise_exception(et);
       return;
     }
-    *sp_atoms[i].p_atom = a;
+#endif
+    *prolog_atoms[i].p_atom = a;
   }
 }
 
 extern "C" void
 ppl_deinit(int /* when */) {
-  for (size_t i = 0; i < sizeof(sp_atoms)/sizeof(sp_atoms[0]); ++i)
+#ifdef SICSTUS
+  for (size_t i = 0; i < sizeof(prolog_atoms)/sizeof(prolog_atoms[0]); ++i)
     // SP_unregister_atom can fail.
     // We ignore such failures: what else can we do?
-    (void) SP_unregister_atom(*sp_atoms[i].p_atom);
+    (void) SP_unregister_atom(*prolog_atoms[i].p_atom);
+#endif
 }
 
 static size_t
@@ -391,42 +395,27 @@ ppl_space_dimension(const void* pp) {
   return static_cast<const PPL::Polyhedron*>(pp)->space_dimension();
 }
 
-
-static PPL::Integer
-integer_term_to_Integer(Prolog_term_ref t) {
-  // FIXME: how can we get the unlimited precision integer?
-  assert(SP_is_integer(t));
-  long v;
-  if (SP_get_integer(t, &v))
-    return PPL::Integer(v);
-  else
-    throw integer_out_of_range(t);
-}
-
 static unsigned int
 term_to_varid(Prolog_term_ref t) {
-  if (SP_is_integer(t)) {
-    long v;
-    if (SP_get_integer(t, &v))
-      if (v >= 0)
-	return v;
-  }
-  throw not_unsigned_int(t);
+  if (Prolog_is_integer(t))
+    return Prolog_get_long(t);
+  else
+    throw not_unsigned_int(t);
 }
 
 static PPL::LinExpression
 build_lin_expression(Prolog_term_ref t) {
-  if (SP_is_integer(t))
+  if (Prolog_is_integer(t))
     return PPL::LinExpression(integer_term_to_Integer(t));
-  else if (SP_is_compound(t)) {
+  else if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
-    SP_get_functor(t, &functor, &arity);
+    Prolog_get_name_arity(t, functor, arity);
     switch (arity) {
     case 1:
       {
 	Prolog_term_ref arg = Prolog_new_term_ref();
-	SP_get_arg(1, t, arg);
+	Prolog_get_arg(1, t, arg);
 	if (functor == a_minus)
 	  // Unary minus.
 	  return -build_lin_expression(arg);
@@ -439,29 +428,29 @@ build_lin_expression(Prolog_term_ref t) {
       {
 	Prolog_term_ref arg1 = Prolog_new_term_ref();
 	Prolog_term_ref arg2 = Prolog_new_term_ref();
-	SP_get_arg(1, t, arg1);
-	SP_get_arg(2, t, arg2);
+	Prolog_get_arg(1, t, arg1);
+	Prolog_get_arg(2, t, arg2);
 	if (functor == a_plus)
 	  // Plus.
-	  if (SP_is_integer(arg1))
+	  if (Prolog_is_integer(arg1))
 	    return integer_term_to_Integer(arg1) + build_lin_expression(arg2);
-	  else if (SP_is_integer(arg2))
+	  else if (Prolog_is_integer(arg2))
 	    return build_lin_expression(arg1) + integer_term_to_Integer(arg2);
 	  else
 	    return build_lin_expression(arg1) + build_lin_expression(arg2);
 	else if (functor == a_minus)
 	  // Minus.
-	  if (SP_is_integer(arg1))
+	  if (Prolog_is_integer(arg1))
 	    return integer_term_to_Integer(arg1) - build_lin_expression(arg2);
-	  else if (SP_is_integer(arg2))
+	  else if (Prolog_is_integer(arg2))
 	    return build_lin_expression(arg1) - integer_term_to_Integer(arg2);
 	  else
 	    return build_lin_expression(arg1) - build_lin_expression(arg2);
 	else if (functor == a_asterisk)
 	  // Times.
-	  if (SP_is_integer(arg1))
+	  if (Prolog_is_integer(arg1))
 	    return integer_term_to_Integer(arg1) * build_lin_expression(arg2);
-	  else if (SP_is_integer(arg2))
+	  else if (Prolog_is_integer(arg2))
 	    return build_lin_expression(arg1) * integer_term_to_Integer(arg2);
       }
     }
@@ -473,36 +462,36 @@ build_lin_expression(Prolog_term_ref t) {
 
 static PPL::Constraint
 build_constraint(Prolog_term_ref t) {
-  if (SP_is_compound(t)) {
+  if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
-    SP_get_functor(t, &functor, &arity);
+    Prolog_get_name_arity(t, functor, arity);
     if (arity == 2) {
       Prolog_term_ref arg1 = Prolog_new_term_ref();
       Prolog_term_ref arg2 = Prolog_new_term_ref();
-      SP_get_arg(1, t, arg1);
-      SP_get_arg(2, t, arg2);
+      Prolog_get_arg(1, t, arg1);
+      Prolog_get_arg(2, t, arg2);
       if (functor == a_equal)
 	// =
-	if (SP_is_integer(arg1))
+	if (Prolog_is_integer(arg1))
 	  return integer_term_to_Integer(arg1) == build_lin_expression(arg2);
-	else if (SP_is_integer(arg2))
+	else if (Prolog_is_integer(arg2))
 	  return build_lin_expression(arg1) == integer_term_to_Integer(arg2);
 	else
 	  return build_lin_expression(arg1) == build_lin_expression(arg2);
       else if (functor == a_equal_less_than)
 	// =<
-	if (SP_is_integer(arg1))
+	if (Prolog_is_integer(arg1))
 	  return integer_term_to_Integer(arg1) <= build_lin_expression(arg2);
-	else if (SP_is_integer(arg2))
+	else if (Prolog_is_integer(arg2))
 	  return build_lin_expression(arg1) <= integer_term_to_Integer(arg2);
 	else
 	  return build_lin_expression(arg1) <= build_lin_expression(arg2);
       else if (functor == a_greater_than_equal)
 	// >=
-	if (SP_is_integer(arg1))
+	if (Prolog_is_integer(arg1))
 	  return integer_term_to_Integer(arg1) >= build_lin_expression(arg2);
-	else if (SP_is_integer(arg2))
+	else if (Prolog_is_integer(arg2))
 	  return build_lin_expression(arg1) >= integer_term_to_Integer(arg2);
 	else
 	  return build_lin_expression(arg1) >= build_lin_expression(arg2);
@@ -527,8 +516,8 @@ ppl_add_constraints_and_minimize(void* pp, Prolog_term_ref constraints_list) {
     CHECK(pp);
     PPL::ConSys cs;
     Prolog_term_ref c = Prolog_new_term_ref();
-    while (SP_is_list(constraints_list)) {
-      SP_get_list(constraints_list, c, constraints_list);
+    while (Prolog_is_list(constraints_list)) {
+      Prolog_get_list(constraints_list, c, constraints_list);
       cs.insert(build_constraint(c));
     }
     PPL::Polyhedron& ph = *static_cast<PPL::Polyhedron*>(pp);
@@ -540,13 +529,13 @@ ppl_add_constraints_and_minimize(void* pp, Prolog_term_ref constraints_list) {
 
 static PPL::Generator
 build_generator(Prolog_term_ref t) {
-  if (SP_is_compound(t)) {
+  if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
-    SP_get_functor(t, &functor, &arity);
+    Prolog_get_name_arity(t, functor, arity);
     if (arity == 1) {
       Prolog_term_ref arg = Prolog_new_term_ref();
-      SP_get_arg(1, t, arg);
+      Prolog_get_arg(1, t, arg);
       if (functor == a_line)
 	return line(build_lin_expression(arg));
       else if (functor == a_ray)
@@ -557,10 +546,10 @@ build_generator(Prolog_term_ref t) {
     else if (arity == 2) {
       Prolog_term_ref arg1 = Prolog_new_term_ref();
       Prolog_term_ref arg2 = Prolog_new_term_ref();
-      SP_get_arg(1, t, arg1);
-      SP_get_arg(2, t, arg2);
+      Prolog_get_arg(1, t, arg1);
+      Prolog_get_arg(2, t, arg2);
       if (functor == a_vertex)
-	if (SP_is_integer(arg2))
+	if (Prolog_is_integer(arg2))
 	  return vertex(build_lin_expression(arg1),
 			integer_term_to_Integer(arg2));
     }
@@ -676,7 +665,7 @@ ppl_get_constraints(const void* pp, Prolog_term_ref constraints_list) {
   try {
     CHECK(pp);
     Prolog_term_ref tail = Prolog_new_term_ref();
-    SP_put_atom(tail, a_nil);
+    Prolog_put_atom(tail, a_nil);
 
     const PPL::Polyhedron& ph = *static_cast<const PPL::Polyhedron*>(pp);
     const PPL::ConSys& cs = ph.constraints();
@@ -684,7 +673,7 @@ ppl_get_constraints(const void* pp, Prolog_term_ref constraints_list) {
     for (PPL::ConSys::const_iterator i = cs.begin(),
 	   cs_end = cs.end(); i != cs_end; ++i) {
       Prolog_term_ref new_tail = Prolog_new_term_ref();
-      SP_cons_list(new_tail, constraint_term(*i), tail);
+      Prolog_construct_list(new_tail, constraint_term(*i), tail);
       tail = new_tail;
     }
 
@@ -728,7 +717,7 @@ ppl_get_generators(const void* pp, Prolog_term_ref generators_list) {
   try {
     CHECK(pp);
     Prolog_term_ref tail = Prolog_new_term_ref();
-    SP_put_atom(tail, a_nil);
+    Prolog_put_atom(tail, a_nil);
 
     const PPL::Polyhedron& ph = *static_cast<const PPL::Polyhedron*>(pp);
     const PPL::GenSys& gs = ph.generators();
@@ -736,7 +725,7 @@ ppl_get_generators(const void* pp, Prolog_term_ref generators_list) {
     for (PPL::GenSys::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i) {
       Prolog_term_ref new_tail = Prolog_new_term_ref();
-      SP_cons_list(new_tail, generator_term(*i), tail);
+      Prolog_construct_list(new_tail, generator_term(*i), tail);
       tail = new_tail;
     }
 
@@ -747,13 +736,13 @@ ppl_get_generators(const void* pp, Prolog_term_ref generators_list) {
 
 static PPL::Variable
 get_variable(Prolog_term_ref t) {
-  if (SP_is_compound(t)) {
+  if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
-    SP_get_functor(t, &functor, &arity);
+    Prolog_get_name_arity(t, functor, arity);
     if (functor == a_dollar_VAR && arity == 1) {
       Prolog_term_ref arg = Prolog_new_term_ref();
-      SP_get_arg(1, t, arg);
+      Prolog_get_arg(1, t, arg);
       return PPL::Variable(term_to_varid(arg));
     }
   }
@@ -767,8 +756,8 @@ ppl_remove_dimensions(void* pp, Prolog_term_ref variables_list) {
     CHECK(pp);
     std::set<PPL::Variable> dead_variables;
     Prolog_term_ref v = Prolog_new_term_ref();
-    while (SP_is_list(variables_list)) {
-      SP_get_list(variables_list, v, variables_list);
+    while (Prolog_is_list(variables_list)) {
+      Prolog_get_list(variables_list, v, variables_list);
       dead_variables.insert(get_variable(v));
     }
     static_cast<PPL::Polyhedron*>(pp)->remove_dimensions(dead_variables);
