@@ -889,8 +889,7 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
   the set \p dims_to_remove.
 */
 void
-PPL::Polyhedron::remove_dimensions(const std::set<Variable>&
-				   to_be_removed) {
+PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
   // Removing dimensions from the empty polyhedron
   // or from the zero-dimensional polyhedron is a no-op.
   // So is the removal of no dimensions from any polyhedron.
