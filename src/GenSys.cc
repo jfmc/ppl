@@ -222,7 +222,7 @@ void
 PPL::GenSys::insert(const Generator& g) {
   if (topology() == g.topology())
     Matrix::insert(g);
-  else 
+  else
     // `*this' and `g' have different topologies.
     if (is_necessarily_closed()) {
       // Padding the matrix with the column
@@ -249,13 +249,15 @@ PPL::GenSys::insert(const Generator& g) {
       // and the epsilon coefficient.
       // NOTE: computing `gs_size = num_columns()' would provide
       //       a wrong result if the matrix has no rows.
-      size_t gs_size = space_dimension() + 2;
-      Generator tmp_g(g, gs_size);
+      size_t new_size = (g.space_dimension() > space_dimension())
+			 ? g.space_dimension() + 2
+			 : space_dimension() + 2;
+      Generator tmp_g(g, new_size);
       // If it was a point, set the epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).
       // Note: normalization is preserved.
       if (tmp_g[0] != 0)
-	tmp_g[gs_size - 1] = tmp_g[0];
+	tmp_g[new_size - 1] = tmp_g[0];
       tmp_g.set_not_necessarily_closed();
       // Inserting the new generator.
       Matrix::insert(tmp_g);
