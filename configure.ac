@@ -256,6 +256,10 @@ standard)
   AC_MSG_RESULT(standard)
   OPT_FLAGS="$OPT_FLAGS -O2"
   ;;
+mild)
+  AC_MSG_RESULT(mild)
+  OPT_FLAGS="$OPT_FLAGS -O1"
+  ;;
 yes)
   AC_MSG_RESULT(standard)
   OPT_FLAGS="$OPT_FLAGS -O2"
@@ -264,7 +268,7 @@ no)
   AC_MSG_RESULT(no)
   ;;
 *)
-  AC_MSG_ERROR([bad value ${enableval} --enable-optimization, needs sspeed, speed, size, standard, yes or no])
+  AC_MSG_ERROR([bad value ${enableval} --enable-optimization, needs sspeed, speed, size, standard, mild, yes or no])
   ;;
 esac
 

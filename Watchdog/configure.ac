@@ -166,6 +166,10 @@ standard)
   AC_MSG_RESULT(standard)
   OPT_FLAGS="$OPT_FLAGS -O2"
   ;;
+mild)
+  AC_MSG_RESULT(mild)
+  OPT_FLAGS="$OPT_FLAGS -O1"
+  ;;
 yes)
   AC_MSG_RESULT(standard)
   OPT_FLAGS="$OPT_FLAGS -O2"
