@@ -95,7 +95,7 @@ PPL::Matrix::operator =(const Matrix& y) {
   Creates a new matrix with the given dimensions and copies the content
   of the old elements to the new ones.
   If the new dimensions of the matrix are larger than the previous ones,
-  the old matrix is copied in the upper left hand side of the new
+  the old matrix is copied in the upper, left-hand corner of the new
   matrix.
 */
 void
@@ -139,6 +139,11 @@ PPL::Matrix::resize(size_t new_num_rows, size_t new_num_columns) {
 void
 PPL::Matrix::resize_no_copy(size_t new_num_rows, size_t new_num_columns) {
   size_t old_num_rows = rows.size();
+  // Note that, if we have `new_num_rows <= old_num_rows' and
+  // `new_num_columns >= row_size', the matrix will keep its sortedness.
+  // This is obvious if `new_num_columns == row_size'.
+  // If `new_num_columns > row_size', then sortedness is maintained
+  // because trailing zeroes will be added to all rows.
   if (new_num_rows > old_num_rows) {
     if (new_num_columns <= row_capacity) {
       // We can recycle the old rows.
@@ -146,6 +151,11 @@ PPL::Matrix::resize_no_copy(size_t new_num_rows, size_t new_num_columns) {
       for (size_t i = old_num_rows; i < new_num_rows; ++i)
 	rows[i].construct(Row::LINE_OR_EQUALITY,
 			  new_num_columns, row_capacity);
+      // Even though `*this' may happen to keep its sortedness,
+      // we feel checking that this is the case is not worth the effort.
+      // Moreover, it is very likely the matrix will be overwritten
+      // as soon as we return.
+      set_sorted(false);
     }
     else {
       // We cannot even recycle the old rows: allocate a new matrix and swap.
@@ -159,12 +169,15 @@ PPL::Matrix::resize_no_copy(size_t new_num_rows, size_t new_num_columns) {
     rows.resize(new_num_rows);
     old_num_rows = new_num_rows;
   }
-  // Here we are in the case `new_num_rows' = `old_num_rows'.
+  // Here we have the right number of rows.
   if (new_num_columns != row_size) {
-    if (new_num_columns < row_size)
+    if (new_num_columns < row_size) {
       // Shrink the existing rows.
       for (size_t i = old_num_rows; i-- > 0; )
 	rows[i].shrink(new_num_columns);
+      // Ditto.
+      set_sorted(false);
+    }
     else
       // We need more columns.
       if (new_num_columns <= row_capacity)
@@ -183,10 +196,6 @@ PPL::Matrix::resize_no_copy(size_t new_num_rows, size_t new_num_columns) {
     // Rows have grown or shrunk.
     row_size = new_num_columns;
   }
-  // Even though `*this' may happen to be sorted, a matrix is usually
-  // resized just before writing on it.  Thus, doing anything smarter
-  // than declaring the matrix not sorted seems unworthy.
-  set_sorted(false);
 }
 
 /*!
