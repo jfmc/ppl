@@ -134,6 +134,10 @@ CATCH_ALL
 
 int
 ppl_initialize(void) try {
+  if (init_object_ptr != 0)
+    // Already initialized: error.
+    return PPL_ERROR_INVALID_ARGUMENT;
+
   init_object_ptr = new Init();
 
   PPL_POLY_CON_RELATION_IS_DISJOINT
@@ -158,7 +162,12 @@ CATCH_ALL
 
 int
 ppl_finalize(void) try {
+  if (init_object_ptr == 0)
+    // Not initialized or already finalized: error.
+    return PPL_ERROR_INVALID_ARGUMENT;
+
   delete init_object_ptr;
+  init_object_ptr = 0;
   return 0;
 }
 CATCH_ALL

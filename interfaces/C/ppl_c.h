@@ -68,8 +68,6 @@ The application can release the resources allocated by the library
 by calling the <CODE>ppl_finalize</CODE> function.
 This function must be called <EM>after using any other interface of
 the library</EM>.
-Using a library interface before calling <CODE>ppl_initialize</CODE> or
-after calling <CODE>ppl_finalize</CODE> results in undefined behavior.
 
 TO BE CONTINUED HERE.
 
@@ -151,6 +149,8 @@ ppl_not_a_dimension __P((ppl_dimension_type* m));
 /*! \brief
   Initializes the Parma Polyhedra Library.
   This function must be called before any other function.
+  <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> is returned in case the library
+  was already initialized.
 */
 int
 ppl_initialize __P((void));
@@ -158,6 +158,8 @@ ppl_initialize __P((void));
 /*! \brief
   Finalizes the Parma Polyhedra Library.
   This function must be called after any other function.
+  <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> is returned in case the library
+  was already finalized.
 */
 int
 ppl_finalize __P((void));
