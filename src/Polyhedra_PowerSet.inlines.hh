@@ -449,9 +449,19 @@ Polyhedra_PowerSet<PH>::new_widening_assign(const Polyhedra_PowerSet& y) {
       std::swap(x, extrapolated_x);
       return;
     }
+    // Third widening technique: pairwise-reduction on `extrapolated_x'.
+    // Note that pairwise-reduction does not affect the computation
+    // of the poly-hulls, so that we only have to check the multiset
+    // lgo relation.
+    Polyhedra_PowerSet<PH> reduced_extrapolated_x(extrapolated_x);
+    reduced_extrapolated_x.pairwise_reduce();
+    if (reduced_extrapolated_x.is_multiset_lgo_stabilizing(y_info)) {
+      std::swap(x, reduced_extrapolated_x);
+      return;
+    }
   }
 
-  // Third widening technique: this is applicable only when
+  // Fourth widening technique: this is applicable only when
   // `y_hull' is a proper subset of `extrapolated_x_hull'.
   if (extrapolated_x_hull.strictly_contains(y_hull)) {
     // Compute (y_hull \widen extrapolated_x_hull).
