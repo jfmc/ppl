@@ -5,6 +5,9 @@
 #define PPL_ppl_config_h 1
 
 
+/* Not zero if the C++ compiler supports __attribute__ ((weak)). */
+#undef CXX_SUPPORTS_ATTRIBUTE_WEAK
+
 /* Not zero if the C++ compiler supports flexible arrays. */
 #undef CXX_SUPPORTS_FLEXIBLE_ARRAYS
 

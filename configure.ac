@@ -314,6 +314,9 @@ CXXFLAGS="$CXXFLAGS $with_cxxflags")
 # Check whether the C++ compiler supports flexible arrays.
 AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 
+# Check whether the C++ compiler supports __attribute__ ((weak)).
+AC_CXX_SUPPORTS_ATTRIBUTE_WEAK
+
 enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
 AC_ARG_ENABLE(watchdog,
