@@ -21,11 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
-#include "ehandlers.hh"
-#include "print.hh"
+#include "ppl_test.hh"
 #include "timings.hh"
-#include <iostream>
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
@@ -143,7 +140,7 @@ void remove_vertices(size_t &to_be_removed,
 
 void gen_nnc_hypercubes() {
   const size_t mindim = 6;
-  const size_t maxdim = 8;
+  const size_t maxdim = 9;
 
   cout << "=========================================" << endl
        << "Computing generators of NNC hypercubes" << endl
@@ -164,11 +161,17 @@ void gen_nnc_hypercubes() {
     for (size_t axis = dim; axis-- > 0; )
       num_vertices *= 2;
 
-    for (size_t quarters = 1; quarters <= 4; ++quarters) {
+    cout << dim << "-dimensional hypercubes (max ";
+    cout << num_vertices << " vertices):" << endl;
+
+    for (size_t quarters = 0; quarters <= 4; quarters++) {
       size_t to_be_removed = (num_vertices * quarters) / 4;
 
-      cout << dim << "-dimensional hypercube with ";
-      cout << (num_vertices - to_be_removed) << " vertices: ";
+      cout << "  having "
+	   << (num_vertices - to_be_removed) * 100 / num_vertices
+	   << "\% of the vertices ("
+	   << (num_vertices - to_be_removed)
+	   << "): ";
 
       // Now add strict inequality constraints
       // each one removing one vertex.
@@ -311,24 +314,34 @@ void con_dual_nnc_hypercubes() {
       gs.insert(closure_point(-ub * Variable(axis)));
       gs.insert(closure_point(ub * Variable(axis)));
     }
-    gs.insert(point());
 
     // Number of facets in the closed dual hypercube.
     size_t num_facets = 1;
     for (size_t axis = dim; axis-- > 0; )
       num_facets *= 2;
 
-    for (size_t quarters = 1; quarters <= 4; ++quarters) {
+    cout << dim << "-dimensional dual hypercubes (max ";
+    cout << num_facets << " facets):" << endl;
+
+    for (size_t quarters = 0; quarters <= 4; quarters++) {
       size_t to_be_added = (num_facets * quarters) / 4;
 
-      cout << dim << "-dimensional dual hypercube with ";
-      cout << to_be_added << " facets: ";
+      cout << "  having "
+	   << (to_be_added * 100) / num_facets
+	   << "\% of the facets ("
+	   << to_be_added
+	   << "): ";
 
       // Now add strict inequality constraints
       // each one removing one vertex.
       GenSys gs_copy = gs;
 
-      add_facets(to_be_added, LinExpression(), dim, dim-1, gs_copy);
+      if (to_be_added == 0)
+	// There has to be a point, at least.
+	gs_copy.insert(point());
+      else
+	add_facets(to_be_added, LinExpression(), dim, dim-1, gs_copy);
+
       NNC_Polyhedron ph(gs_copy);
 
 #if 0
@@ -358,11 +371,11 @@ void con_dual_nnc_hypercubes() {
 
 int
 main() {
-  gen_closed_hypercubes();
-  gen_open_hypercubes();
+  //  gen_closed_hypercubes();
+  //  gen_open_hypercubes();
   gen_nnc_hypercubes();
-  con_dual_closed_hypercubes();
-  con_dual_open_hypercubes();
+  //  con_dual_closed_hypercubes();
+  //  con_dual_open_hypercubes();
   con_dual_nnc_hypercubes();
   return 0;
 }
