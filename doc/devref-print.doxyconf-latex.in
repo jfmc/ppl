@@ -451,6 +451,12 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Determinate.inlines.hh \
                          @srcdir@/../src/PowerSet.defs.hh \
                          @srcdir@/../src/PowerSet.inlines.hh \
+                         @srcdir@/../src/AskTell.types.hh \
+			 @srcdir@/../src/AskTell.defs.hh \
+			 @srcdir@/../src/AskTell.inlines.hh \
+			 @srcdir@/../src/Polyhedra_PowerSet.types.hh \
+			 @srcdir@/../src/Polyhedra_PowerSet.defs.hh \
+			 @srcdir@/../src/Polyhedra_PowerSet.inlines.hh \
                          @srcdir@/../src/algorithms.hh \
                          ../interfaces/C/ppl_c.h \
                          @srcdir@/../interfaces/C/ppl_c.cc \
