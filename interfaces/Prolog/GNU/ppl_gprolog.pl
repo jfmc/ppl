@@ -7,7 +7,11 @@
 :- foreign(ppl_insert_constraint(+term, +term)).
 :- foreign(ppl_insert_generator(+term, +term)).
 :- foreign(ppl_add_constraints_and_minimize(+term, +term)).
+:- foreign(ppl_add_generators_and_minimize(+term, +term)).
+:- foreign(ppl_add_dimensions_and_constraints(+term, +term)).
 :- foreign(ppl_check_empty(+term)).
+:- foreign(ppl_check_universe, 1).
+:- foreign(ppl_is_bounded, 1).
 :- foreign(ppl_intersection_assign(+term, +term)).
 :- foreign(ppl_intersection_assign_and_minimize(+term, +term)).
 :- foreign(ppl_convex_hull_assign(+term, +term)).
@@ -15,6 +19,7 @@
 :- foreign(ppl_convex_difference_assign(+term, +term)).
 :- foreign(ppl_convex_difference_assign_and_minimize(+term, +term)).
 :- foreign(ppl_widening_assign(+term, +term)).
+:- foreign(ppl_limited_widening_assign(+term, +term)).
 :- foreign(ppl_get_constraints(+term, +term)).
 :- foreign(ppl_get_generators(+term, +term)).
 :- foreign(ppl_remove_dimensions(+term, +term)).
