@@ -648,6 +648,7 @@ PPL::operator <=(const Polyhedron& x, const Polyhedron& y) {
 /*!
   The intersection of \p *this with \p y (that are assumed to
   have the same dimension) is assigned to \p *this.
+  The result is minimized.
 */
 void
 PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
@@ -747,8 +748,9 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
 }
 
 /*!
-  The convex hull between \p *this and \p y (that are assumed to
-  have the same dimension) is assigned to \p *this.
+  The convex hull of the set-theoretic union of \p *this and \p y
+  (that are assumed to have the same dimension) is assigned to \p *this.
+  The result is minimized.
 */
 void
 PPL::Polyhedron::convex_hull_assign_and_minimize(const Polyhedron& y) {
@@ -759,10 +761,10 @@ PPL::Polyhedron::convex_hull_assign_and_minimize(const Polyhedron& y) {
     throw_different_dimensions("PPL::Polyhedron::con_hull_assign_and_min(y)",
 			       x, y);
 
-  // Convex hull between a polyhedron `p' and an empty polyhedron is `p'.
+  // Convex hull of a polyhedron `p' with an empty polyhedron is `p'.
   if (y.is_empty())
     return;
-  else if (x.is_empty()) {
+  if (x.is_empty()) {
     x = y;
     return;
   }
@@ -795,8 +797,8 @@ PPL::Polyhedron::convex_hull_assign_and_minimize(const Polyhedron& y) {
 }
 
 /*!
-  The convex hull between \p *this and \p y (that are assumed to
-  have the same dimension) is assigned to \p *this.
+  The convex hull of the set-theoretic union of \p *this and \p y
+  (that are assumed to have the same dimension) is assigned to \p *this.
   The result is not minimized.
 */
 void
@@ -808,11 +810,10 @@ PPL::Polyhedron::convex_hull_assign(const Polyhedron& y) {
     throw_different_dimensions("PPL::Polyhedron::convex_hull_assign(y)",
 			       x, y);
 
-  // Convex hull  between a polyhedron `p' and
-  // an empty polyhedron is `p'.
+  // Convex hull of a polyhedron `p' with an empty polyhedron is `p'.
   if (y.is_empty())
     return;
-  else if (x.is_empty()) {
+  if (x.is_empty()) {
     x = y;
     return;
   }
@@ -840,6 +841,76 @@ PPL::Polyhedron::convex_hull_assign(const Polyhedron& y) {
   x.clear_constraints_up_to_date();
   // It does not minimize the system of generators.
   x.clear_generators_minimized();
+
+  assert(OK());
+}
+
+/*!
+  The convex hull of the set-theoretic difference of \p *this and \p y
+  (that are assumed to have the same dimension) is assigned to \p *this.
+  The result is not minimized.
+*/
+void
+PPL::Polyhedron::convex_difference_assign(const Polyhedron& y) {
+  Polyhedron& x = *this;
+  size_t x_space_dim = x.space_dim;
+  // Dimension-compatibility check.
+  if (x_space_dim != y.space_dim)
+    throw_different_dimensions("PPL::Polyhedron::convex_difference_assign(y)",
+			       x, y);
+
+  // The difference of a polyhedron `p' and an empty polyhedron is `p'.
+  if (y.is_empty())
+    return;
+  // The difference of an empty polyhedron and of a polyhedron `p' is empty.
+  if (x.is_empty())
+    return;
+
+  // If both polyhedra are zero-dimensional,
+  // then at this point they are necessarily universe polyhedra,
+  // so that their difference is empty.
+  if (x_space_dim == 0) {
+    x.set_empty();
+    return;
+  }
+
+  // FIXME: This is just an executable specification.
+  Polyhedron new_polyhedron(x_space_dim, EMPTY);
+
+  const ConSys& x_cs = x.constraints();
+  const ConSys& y_cs = y.constraints();
+  for (ConSys::const_iterator i = y_cs.begin(),
+	 y_cs_end = y_cs.end(); i != y_cs_end; ++i) {
+    ConSys z_cs = x_cs;
+    const Constraint& c = *i;
+    assert(!c.is_trivial_true());
+    assert(!c.is_trivial_false());
+    LinExpression e(0 * PPL::Variable(x_space_dim-1));
+    for (int varid = c.first(); varid >= 0; varid = c.next(varid))
+      e += PPL::Variable(varid) * c.coefficient(PPL::Variable(varid));
+    z_cs.insert(e <= -c.coefficient()-1);
+    new_polyhedron.convex_hull_assign(Polyhedron(z_cs));
+    if (c.is_equality()) {
+      ConSys w_cs = x_cs;
+      w_cs.insert(e >= c.coefficient()+1);
+      new_polyhedron.convex_hull_assign(Polyhedron(w_cs));
+    }
+  }
+  *this = new_polyhedron;
+
+  assert(OK());
+}
+
+/*!
+  The convex hull of the set-theoretic difference of \p *this and \p y
+  (that are assumed to have the same dimension) is assigned to \p *this.
+  The result is minimized.
+*/
+void
+PPL::Polyhedron::convex_difference_assign_and_minimize(const Polyhedron& y) {
+  convex_difference_assign(y);
+  minimize();
+  assert(OK());
 }
 
 /*!
@@ -1979,11 +2050,9 @@ PPL::Polyhedron::includes(const Generator& g) {
   // all the generators of a zero-dimensional space.
   if (space_dim == 0)
     return true;
-
   else {
     if (!constraints_are_up_to_date())
       update_constraints();
-
     return con_sys.satisfies_all_constraints(g);
   }
 }

@@ -18,6 +18,12 @@ o  We now use the integer C++ class of GMP to represent the
    (very much inferior) Integer class.  The drawback is that we
    now require GMP 4.0.1 or higher.
 
+o  New methods Polyhedron::convex_difference_assign(const Polyhedron&) and
+   Polyhedron::convex_difference_assign_and_minimize(const Polyhedron&).
+   They assigns to *this the convex hull of the set-theoretic difference
+   of *this and the argument (possibly non minimized or minimized,
+   respectively).
+
 o  The method Polyhedron::add_generators(GenSys&) is now lazy,
    i.e., no minimization is performed.  Adding generators and
    minimizing at the same time is provided by the method

@@ -363,8 +363,8 @@ public:
 
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
-  //! Intersects \p *this with polyhedron \p y and
-  //! assigns the result to \p *this.
+  //! Intersects \p *this with polyhedron \p y and assigns the result
+  //! to \p *this.   The result is not guaranteed to be minimized.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are dimension-incompatible.
   void intersection_assign_and_minimize(const Polyhedron& y);
@@ -373,15 +373,26 @@ public:
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are dimension-incompatible.
   void intersection_assign(const Polyhedron& y);
-  //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this.
+  //! Assigns to \p *this the convex hull of the set-theoretic union
+  //! \p *this and \p y, minimizing the result.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are dimension-incompatible.
   void convex_hull_assign_and_minimize(const Polyhedron& y);
-  //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this,
-  //! without minimizing the result.
+  //! Assigns to \p *this the convex hull of the set-theoretic union
+  //! \p *this and \p y.  The result is not guaranteed to be minimized.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are dimension-incompatible.
   void convex_hull_assign(const Polyhedron& y);
+  //! Assigns to \p *this the convex hull of the set-theoretic difference
+  //! \p *this and \p y, minimizing the result.
+  //! \exception std::invalid_argument thrown if \p *this and \p y
+  //!                                  are dimension-incompatible.
+  void convex_difference_assign_and_minimize(const Polyhedron& y);
+  //! Assigns to \p *this the convex hull of the set-theoretic difference
+  //! \p *this and \p y.  The result is not guaranteed to be minimized.
+  //! \exception std::invalid_argument thrown if \p *this and \p y
+  //!                                  are dimension-incompatible.
+  void convex_difference_assign(const Polyhedron& y);
 
   //! Returns the relation between the generators of \p *this
   //! and the constraint \p c.

@@ -28,6 +28,7 @@ TESTS = addconstraints1 addconstraints2 addconstraints3 \
 	affinetrans \
         append1 append2 \
 	convexhull1 \
+	convexdifference1 \
         empty1 \
         error1 error2 error3 error4 error5 \
 	includes1 \
@@ -57,6 +58,8 @@ append1_SOURCES = append1.cc
 append2_SOURCES = append2.cc
 
 convexhull1_SOURCES = convexhull1.cc
+
+convexdifference1_SOURCES = convexdifference1.cc
 
 empty1_SOURCES = empty1.cc
 
