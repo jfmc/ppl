@@ -304,7 +304,8 @@ public:
   //! \exception std::invalid_argument thrown if\p *this and constraint 
   //!                                  \p c have different dimension.
   GenSys_Con_Rel satisfies(const Constraint& c);
-  //! Tests the inclusion of the generator \p g in a polyhedron.
+  //! Tests the inclusion of the generator \p g in the 
+  //! polyhedron \p *this.
   //! \exception std::invalid_argument thrown if \p *this and constraint 
   //!                                  \p g have different dimension.
   bool includes(const Generator& g);
@@ -316,7 +317,7 @@ public:
   //! \exception std::invalid_argument thrown if \p *this and \p y 
   //!                                  have different dimension.
   void widening_assign(const Polyhedron& y);
-  //! Limits the widening between \p *this and \p y by \p constraints
+  //! Limits the widening between \p *this and \p y by \p cs
   //! and assigns the result to \p *this.
   //! \param y                 The polyhedron that <EM>must</EM>
   //!                          be contained in \p *this.
@@ -339,21 +340,23 @@ public:
   //!                                  empty or zero-dimensional).
   const GenSys& generators() const;
 
-  //! Inserts a new constraint \p c into the system of constraints.
+  //! Inserts a new constraint \p c into the system of constraints
+  //! of \p *this.
   void insert(const Constraint& c);
 
-  //! Inserts a new generator \p g into the system of generators.
+  //! Inserts a new generator \p g into the system of generators
+  //! of \p *this.
   void insert(const Generator& g);
 
   //! Assigns an affine expression to the specified variable.
   //! \param v             The variable to which the affine
   //!                      expression is assigned.
-  //! \param expr          The numerator of theaffine expression.
+  //! \param expr          The numerator of the affine expression.
   //! \param denominator   The denominator of the affine expression.
   //! \exception std::invalid_argument thrown if \p denominator is zero or
   //!                                  if \p expr and \p *this have 
   //!                                  different dimension or if
-  //!                                  \p var is not a variable of the
+  //!                                  \p v is not a variable of the
   //!                                  polyhedron
   void assign_variable(const Variable& v,
 		       const LinExpression& expr,
@@ -366,7 +369,7 @@ public:
   //! \exception std::invalid_argument thrown if \p denominator is zero or
   //!                                  if \p expr and \p *this have 
   //!                                  different dimension or if
-  //!                                  \p var is not a variable of the
+  //!                                  \p v is not a variable of the
   //!                                  polyhedron
   void substitute_variable(const Variable& v,
 			   const LinExpression& expr,
