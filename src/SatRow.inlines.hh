@@ -132,6 +132,7 @@ set_union(const SatRow& x, const SatRow& y, SatRow& z) {
 namespace std {
 
 /*!
+  \relates Parma_Polyhedra_Library::SatRow
   Specializes <CODE>std::swap</CODE> to use the fast swap that is
   provided as a member function instead of using the default
   algorithm (which creates a temporary and uses assignment).

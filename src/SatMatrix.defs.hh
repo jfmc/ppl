@@ -123,7 +123,8 @@ public:
 namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
+  //! Specializes <CODE>std::swap</CODE>.
+  /*! \relates Parma_Polyhedra_Library::SatMatrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void swap(Parma_Polyhedra_Library::SatMatrix& x,
 	  Parma_Polyhedra_Library::SatMatrix& y);
@@ -132,24 +133,28 @@ void swap(Parma_Polyhedra_Library::SatMatrix& x,
 
 namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Returns <CODE>true</CODE> if and only if
+  //! \brief Returns <CODE>true</CODE> if and only if
   //! \p x and \p y are identical.
+  /*! \relates SatMatrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool operator==(const SatMatrix& x, const SatMatrix& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Returns <CODE>true</CODE> if and only if
+  //! \brief Returns <CODE>true</CODE> if and only if
   //! \p x and \p y are different.
+  /*! \relates SatMatrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool operator!=(const SatMatrix& x, const SatMatrix& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Input operator.
+  /*! \relates SatMatrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   std::ostream& operator<<(std::ostream& s, const SatMatrix& x);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Output operator.
+  /*! \relates SatMatrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   std::istream& operator>>(std::istream& s, SatMatrix& x);
 }

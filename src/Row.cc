@@ -194,9 +194,7 @@ PPL::compare(const Row& x, const Row& y) {
   return 0;
 }
 
-/*!
-  \relates Parma_Polyhedra_Library::Row
-*/
+/*! \relates Parma_Polyhedra_Library::Row */
 const PPL::Integer&
 PPL::operator*(const Row& x, const Row& y) {
   // Scalar product is only defined  if `x' and `y' are
@@ -213,10 +211,7 @@ PPL::operator*(const Row& x, const Row& y) {
 }
 
 
-/*!
-  Computes the \e reduced scalar product of \p x and \p y,
-  where the \f$\epsilon\f$ coefficient of \p x is ignored.
-*/
+/*! \relates Parma_Polyhedra_Library::Row */
 const PPL::Integer&
 PPL::reduced_scalar_product(const Row& x, const Row& y) {
   // The reduced scalar product is only defined

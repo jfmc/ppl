@@ -51,18 +51,18 @@ The class Row allows us to build objects like these:
     - \f$[b, a_0, \ldots, a_{d-1}]_=\f$
       represents the equality constraint
       \f$\sum_{i=0}^{d-1} a_i x_i + b = 0\f$.
-    - \f$[0, a_0, \ldots, a_{d-1}]_=\f$.
+    - \f$[0, a_0, \ldots, a_{d-1}]_=\f$
       represents the line of direction
-      \f$\sum_{i=0}^{d-1} a_i \vec{x}_i\f$.
+      \f$\sum_{i=0}^{d-1} a_i x_i\f$.
     - \f$[b, a_0, \ldots, a_{d-1}]_\geq\f$
       represents the inequality constraint
       \f$\sum_{i=0}^{d-1} a_i x_i + b \geq 0\f$.
     - \f$[0, a_0, \ldots, a_{d-1}]_\geq\f$
       represents the ray of direction
-      \f$\sum_{i=0}^{d-1} a_i \vec{x}_i\f$.
+      \f$\sum_{i=0}^{d-1} a_i x_i\f$.
     - \f$[b, a_0, \ldots, a_{d-1}]_\geq\f$, with \f$b \neq 0\f$,
       represents the point
-      \f$\sum_{i=0}^{d-1} \frac{a_i}{b} \vec{x}_i\f$.
+      \f$\sum_{i=0}^{d-1} \frac{a_i}{b} x_i\f$.
 
   So, a row can be both a constraint and a generator: it can be an
   equality, an inequality, a line, a ray or a point.
@@ -213,30 +213,38 @@ namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Computes the scalar product between \p x and \p y.
+  /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   const Integer& operator*(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Computes the \e reduced scalar product between \p x and \p y,
+  //! \brief Computes the \e reduced scalar product between \p x and \p y,
   //! where the \f$\epsilon\f$ coefficient of \p x is ignored.
+  /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   const Integer& reduced_scalar_product(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! The basic comparison function.
+  /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   int compare(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! @name Classical comparison operators.
-  /*! \relates Row */
   //@{
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \relates Row */
   bool operator==(const Row& x, const Row& y);
+  /*! \relates Row */
   bool operator!=(const Row& x, const Row& y);
+  /*! \relates Row */
   bool operator<=(const Row& x, const Row& y);
+  /*! \relates Row */
   bool operator <(const Row& x, const Row& y);
+  /*! \relates Row */
   bool operator>=(const Row& x, const Row& y);
+  /*! \relates Row */
   bool operator >(const Row& x, const Row& y);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //@}
@@ -367,7 +375,8 @@ private:
 namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
+  //! Specializes <CODE>std::swap</CODE>.
+  /*! \relates Parma_Polyhedra_Library::Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void swap(Parma_Polyhedra_Library::Row& x,
 	  Parma_Polyhedra_Library::Row& y);

@@ -30,7 +30,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friends later.
-  //! The basic comparison function.
   int compare(const SatRow& x, const SatRow& y);
   bool operator==(const SatRow& x, const SatRow& y);
   bool operator!=(const SatRow& x, const SatRow& y);
@@ -80,6 +79,7 @@ public:
   //! Clears all the bit of the row.
   void clear();
 
+  //! The basic comparison function.
   friend int
   Parma_Polyhedra_Library::compare(const SatRow& x,
 				   const SatRow& y);
@@ -141,6 +141,7 @@ public:
 namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Output operator.
+  /*! \relates SatRow */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   std::ostream& operator<<(std::ostream& s, const SatRow& r);
 }
@@ -149,7 +150,8 @@ namespace Parma_Polyhedra_Library {
 namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
+  //! Specializes <CODE>std::swap</CODE>.
+  /*! \relates Parma_Polyhedra_Library::SatRow */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void swap(Parma_Polyhedra_Library::SatRow& x,
 	  Parma_Polyhedra_Library::SatRow& y);

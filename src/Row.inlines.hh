@@ -495,32 +495,37 @@ Row::coefficient(size_t k) const {
   return (*this)[k+1];
 }
 
-
+/* \relates Row */
 inline bool
 operator==(const Row& x, const Row& y) {
   return compare(x, y) == 0;
 }
 
+/* \relates Row */
 inline bool
 operator!=(const Row& x, const Row& y) {
   return compare(x, y) != 0;
 }
 
+/* \relates Row */
 inline bool
 operator<=(const Row& x, const Row& y) {
   return compare(x, y) <= 0;
 }
 
+/* \relates Row */
 inline bool
 operator<(const Row& x, const Row& y) {
   return compare(x, y) < 0;
 }
 
+/* \relates Row */
 inline bool
 operator>=(const Row& x, const Row& y) {
   return compare(x, y) >= 0;
 }
 
+/* \relates Row */
 inline bool
 operator>(const Row& x, const Row& y) {
   return compare(x, y) > 0;
@@ -531,11 +536,7 @@ operator>(const Row& x, const Row& y) {
 
 namespace std {
 
-/*!
-  Specializes <CODE>std::swap</CODE> to use the fast swap that is
-  provided as a member function instead of using the default
-  algorithm (which creates a temporary and uses assignment).
-*/
+/*! \relates Parma_Polyhedra_Library::Row */
 inline void
 swap(Parma_Polyhedra_Library::Row& x, Parma_Polyhedra_Library::Row& y) {
   x.swap(y);

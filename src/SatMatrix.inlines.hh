@@ -119,6 +119,7 @@ SatMatrix::clear() {
   row_size = 0;
 }
 
+/*! \relates SatMatrix */
 inline bool
 operator!=(const SatMatrix& x, const SatMatrix& y) {
   return !(x == y);

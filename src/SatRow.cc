@@ -173,7 +173,7 @@ PPL::SatRow::prev(int position) const {
 }
 
 
-/*!
+/*! \relates Parma_Polyhedra_Library::SatRow
   Compares \p x with \p y starting from the least significant bits.
   The ordering is total and has the following property: if \p x and \p y
   are two rows seen as sets of naturals, if \p x is a strict subset

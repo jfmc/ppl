@@ -149,11 +149,7 @@ PPL::SatMatrix::resize(size_t new_n_rows, size_t new_n_columns) {
   assert(OK());
 }
 
-/*!
-  \relates Parma_Polyhedra_Library::SatMatrix
-  Returns <CODE>true</CODE> if and only if \p x is identical
-  to \p y.
-*/
+/*! \relates Parma_Polyhedra_Library::SatMatrix */
 bool
 PPL::operator==(const SatMatrix& x, const SatMatrix& y) {
   assert(x.OK());
@@ -193,10 +189,7 @@ PPL::SatMatrix::sorted_contains(const SatRow& row) const {
   return false;
 }
 
-/*!
-  \relates Parma_Polyhedra_Library::SatMatrix
-  Raw output function.
-*/
+/*! \relates Parma_Polyhedra_Library::SatMatrix */
 std::ostream&
 PPL::operator<<(std::ostream& s, const SatMatrix& x) {
   using std::endl;
@@ -212,10 +205,7 @@ PPL::operator<<(std::ostream& s, const SatMatrix& x) {
   return s;
 }
 
-/*!
-  \relates Parma_Polyhedra_Library::SatMatrix
-  Raw input function.
-*/
+/*! \relates Parma_Polyhedra_Library::SatMatrix */
 std::istream&
 PPL::operator>>(std::istream& s, SatMatrix& x) {
   size_t nrows;
