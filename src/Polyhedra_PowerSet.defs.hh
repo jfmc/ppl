@@ -160,9 +160,10 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
+  typedef typename Base::Sequence Sequence;
+
   typedef typename Sequence::size_type size_type;
 
-  typedef typename Base::Sequence Sequence;
   typedef typename Base::iterator iterator;
   typedef typename Base::const_iterator const_iterator;
   typedef typename Base::reverse_iterator reverse_iterator;

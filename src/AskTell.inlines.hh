@@ -27,6 +27,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <algorithm>
 #include <cassert>
 
+// Temporary!!!
+#include <iostream>
+
 namespace Parma_Polyhedra_Library {
 
 template <typename CS>
@@ -497,8 +500,8 @@ template <typename CS>
 CS
 project(const AskTell<CS>& x) {
   CS ret;
-  if (!empty() && (begin())->ask().is_top())
-    ret = (begin())->tell();
+  if (!x.empty() && (x.begin())->ask().is_top())
+    ret = (x.begin())->tell();
   return ret;
 }
 
@@ -579,8 +582,8 @@ AskTell<CS>::probe(const CS& tell, const CS& ask) const {
   while (tell_changed) {
     tell_changed = false;
     for (yi = begin(); yi != end(); ++yi) {
-      if (definitely_entails(xtell, yi->ask())
-	  && !definitely_entails(xtell, yi->tell())) {
+      if (xtell.definitely_entails(yi->ask())
+	  && !xtell.definitely_entails(yi->tell())) {
 	  xtell.meet_assign(yi->tell());
 	  if (xtell.definitely_entails(ask))
 	    return true;

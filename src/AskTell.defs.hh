@@ -264,6 +264,10 @@ public:
   reverse_iterator rend();
   const_reverse_iterator rend() const;
 
+//protected:
+  iterator erase(iterator first, iterator last) {
+    return sequence.erase(first, last);
+  }
   iterator erase(iterator position) {
     return sequence.erase(position);
   }
