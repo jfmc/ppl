@@ -1867,8 +1867,10 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
 template <typename T>
 inline void
 BD_Shape<T>::CH78_widening_assign(const BD_Shape& y) {
+  dimension_type space_dim = space_dimension();
+
   // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
+  if (space_dim != y.space_dimension())
     throw_dimension_incompatible("CH78_widening_assign(y)", y);
 
 #ifndef NDEBUG
@@ -1880,10 +1882,9 @@ BD_Shape<T>::CH78_widening_assign(const BD_Shape& y) {
   }
 #endif
 
-  dimension_type k = space_dimension();
   // If both systems of bounded differences are zero-dimensional,
   // since `*this' contains `y', we simply return `*this'.
-  if (k == 0)
+  if (space_dim == 0)
     return;
 
   closure_assign();
@@ -1898,10 +1899,10 @@ BD_Shape<T>::CH78_widening_assign(const BD_Shape& y) {
     return;
 
   // Extrapolate unstable bounds.
-  for (dimension_type i = 0; i <= k; ++i) {
+  for (dimension_type i = 0; i <= space_dim; ++i) {
     DB_Row<T>& dbm_i = dbm[i];
     const DB_Row<T>& y_dbm_i = y.dbm[i];
-    for (dimension_type j = 0; j <= k; ++j) {
+    for (dimension_type j = 0; j <= space_dim; ++j) {
       T& dbm_ij = dbm_i[j];
       const T& y_dbm_ij = y_dbm_i[j];
       // Note: in the following line the use of `!=' (as opposed to
