@@ -1,178 +1,182 @@
+% A toy, non-ground meta-interpreter for CLP(Q)
+% for testing the Parma Polyhedra Library and its Prolog interface.
+%
+% Copyright (C) 2001 Roberto Bagnara <bagnara@cs.unipr.it>
+%
+% This file is part of the Parma Polyhedra Library (PPL).
+%
+% The PPL is free software; you can redistribute it and/or modify it
+% under the terms of the GNU General Public License as published by the
+% Free Software Foundation; either version 2 of the License, or (at your
+% option) any later version.
+%
+% The PPL is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+% for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+% USA.
+%
+% For the most up-to-date information see the Parma Polyhedra Library
+% site: http://www.cs.unipr.it/ppl/ .
+
 :- ensure_loaded(ppl_sicstus).
 
-/*
-  A non-ground meta-interpreter for CLP(Q) for use with the Parma
-  Polyhedra Library.  It is based on the well-known "solve" or
-  "vanilla" interpreter.
-  At present, the object programs must be normalised.
-*/
-
-/*
-solve/1 is the top-level predicate.
-solve(+Goal).
-Goal: the goal which can be a conjunction of atoms and constraints.
-      The atoms can have rationals or variables as arguments.
-      Note that repeated variables in an atom are currently not supported.
-*/
-
-solve(Goal):-
-    numvars(Goal,0,Dims),
-         % Polyhedron: the main polyhedron is initialised with 
-         % dimensions = Dims, the number of variables in Goal.
-    ppl_new_polyhedron(Polyhedron, Dims), 
-         % A copy of Polyhedron is required by solve/7.
-    solve(Goal,Polyhedron,Dims).
-  
-solve(Goal,Polyhedron,Dims):-
-    ppl_get_generators(Polyhedron,GS),
-    solve(Goal,Polyhedron,Dims,_,GS),
-    output_constraints(Polyhedron,Dims).
-solve(_,Polyhedron,_):-
-    !,
-    ppl_delete_polyhedron(Polyhedron),
-    fail.
-
-
-/*
-output_constraints/2 prints the results.
-Before printing the results, the constraints are projected 
-onto the variables the in Goal.
-To allow for backtracking the projection is done on a
-temporary copy of Polyhedron.
-*/
-output_constraints(Polyhedron,Dims):-
-    ppl_copy_polyhedron(Polyhedron,Q),
-    ppl_remove_higher_dimensions(Q,Dims),
-    ppl_get_constraints(Q, CS),
-    write_constraints(CS),
-    ppl_delete_polyhedron(Q).
-
-/*
-solve/7 is the main meta-interpreter.
-solve(+Goal, +Polyhedron, +Integer1, -Integer2, 
-      +GS:List_of_Generators).
-Goal:       The query to be solved.
-Polyhedron: A reference to a polyhedron which 
-            represents the current set of constraints.
-Integer1:   The initial number of dimensions of the Polyhedron.
-Integer2:   The final number of dimensions of the Polyhedron.
-GS:         Generators of Polyhedron when called.
-*/
-
-%%% The base case.
-solve(true,_Polyhedron,Dims,Dims,_GS):-
-    !.
-
-%%% The case when the query is equality.
-%%% A and B must both be linear rational expressions.
-solve(A=B,Polyhedron,InDims,OutDims,GS):-
-    !, 
-         % Interpret equality as a constraint.
-    solve({A=B},Polyhedron,InDims,OutDims,GS).
-
-%%% The case when the query is a set of constraints.
-solve({Constraints},Polyhedron,InDims,InDims,GS):-
-    !,
-    recover_original_polyhedron(Polyhedron,GS,InDims),
-         % Solve the constraints using the constraint solver.
-    solve_constraints(Constraints,Polyhedron),
-         % If the Polyhedron is empty, then we fail. 
-    (
-     ppl_check_empty(Polyhedron)
-    ->
-     fail
-    ;
-     true
-    ).
-
-%%% The case when the query is a conjunction.
-solve((A,B),Polyhedron,InDims,OutDims,GS):-
-         % On backtracking, the original state must be restored.
-    recover_original_polyhedron(Polyhedron,GS,InDims),
-    solve(A,Polyhedron,InDims,AOutDims,GS),
-         % A current copy of Polyhedron is needed for the call to solve.
-    ppl_get_generators(Polyhedron,GSB), 
-    solve(B,Polyhedron,AOutDims,OutDims,GSB).
-
-%%% The remaining case when it is a user-defined atomic goal.
-solve(Atom,Polyhedron,InDims,OutDims,GS):-
-    user_clause(Atom, Body),
-         % New variables are frozen for using with the PPL.
-    numvars(Body,InDims,BOutDims),
-         % On backtracking, the original state must be restored.
-    recover_original_polyhedron(Polyhedron,GS,InDims),
-    AddedDims is BOutDims - InDims, 
-         % OutDims - InDims is the number of new variables in Args.
-         % The Polyhedron has the correct number of dimensions added.
-    ppl_add_dimensions_and_embed(Polyhedron, AddedDims),
-         % A copy of Polyhedron is needed for the call to solve.
-    ppl_get_generators(Polyhedron,GS1), 
-         % Now we can solve the body.
-    solve(Body,Polyhedron,BOutDims,OutDims,GS1).
-
-recover_original_polyhedron(Polyhedron,GS,QDims):-
-    !,
-    ppl_remove_higher_dimensions(Polyhedron,QDims),
-    insert_generators(Polyhedron,GS).
-
-insert_generators(_Polyhedron,[]).
-insert_generators(Polyhedron,GS):-
-    GS \= [],
-    find_vertex(GS,V,GS1),
-    ppl_insert_generator(Polyhedron,vertex(V)),
-    ppl_insert_generators(Polyhedron,GS1).
-
-find_vertex([vertex(V)|GS],V,GS):-
-    !.
-find_vertex([line(L)|GS],L,[line(L)|GS1]):-
-    !,
-    find_vertex(GS,L,GS1).
-find_vertex([ray(L)|GS],R,[ray(L)|GS1]):-
-    !,
-    find_vertex(GS,R,GS1).
-   
-/*
-The constraints are solved by inserting them into the polyhedron.
-*/
-solve_constraints((C,D),Polyhedron):- 
-    !,
-    solve_constraints(C,Polyhedron),
-    solve_constraints(D,Polyhedron).
-solve_constraints(C,Polyhedron):- 
-    ppl_insert_constraint(Polyhedron,C).
-
-numvars(A,InN,OutN):-
-    var(A),
-    !,
-    A = '$VAR'(InN),
-    OutN is InN + 1.
-numvars(A,InN,OutN):-
-    A =.. [_|Args],
-    numvars_list(Args,InN,OutN).
-
-numvars_list([],InN,InN).
-numvars_list([Arg|Args],InN,OutN):-
-    numvars(Arg,InN,N),
-    numvars_list(Args,N,OutN).
-
-write_constraints([]).
-write_constraints([C|CS]):-
-   write(C),
-   nl,
-   write_constraints(CS).
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Object-level clauses are stored as user_clause(Head, Body) facts.
 :- dynamic user_clause/2.
 
-write_error(Message) :-
-  write('clpq error: '),
-  write_error_aux(Message).
+% Used to store the names of variables occurring in the original goal
+% as a list of the form [ Name1 = Variable1, ... ]
+:- dynamic original_goal_variables/1.
 
-write_error_aux([]) :-
-  nl.
-write_error_aux([H|T]) :-
-  write(H),
-  write_error_aux(T).
+
+% solve(+Goals, +VariableNames)
+%
+% Tries to solve the query `Goals' and to present the results
+% to the user by referring to the original variable names
+% contained in `VariableNames'.
+
+solve(Goals, VariableNames) :-
+    numvars(Goals, 0, Dims),
+    assertz(original_goal_variables(VariableNames)),
+    % The initial polyhedron is initialised with
+    % `Dims' dimensions, the number of variables in `Goals'.
+    ppl_new_polyhedron(Polyhedron, Dims),
+    % Try to reduce `Goals' to the empty continuation.
+    solve(Goals, true, Polyhedron),
+    % The one who creates the polyhedron must delete it.
+    ppl_delete_polyhedron(Polyhedron),
+    % Further cleaning.
+    retract(original_goal_variables(_)).
+
+
+solve(true, true, Polyhedron) :-
+    !,
+    % It is time to print the result and see if the user
+    % wants to look for more solutions.
+    ppl_copy_polyhedron(Polyhedron, Q),
+    original_goal_variables(VariableNames),
+    length(VariableNames, Dims),
+    ppl_remove_higher_dimensions(Q, Dims),
+    ppl_get_constraints(Q, CS),
+    write_constraints(CS, VariableNames),
+    ppl_delete_polyhedron(Q),
+    % More?
+    % If query_next_solution succeeds,
+    % then no more solutions are required.
+    query_next_solution.
+
+solve(true, (G, Goals), Polyhedron) :-
+    !,
+    solve(G, Goals, Polyhedron).
+
+solve((A, B), Goals, Polyhedron) :-
+    !,
+    solve(A, (B, Goals), Polyhedron).
+
+solve({}, Goals, Polyhedron) :-
+    !,
+    % The empty set of constraints is equivalent to true.
+    solve(true, Goals, Polyhedron).
+    
+solve({ Constraints }, Goals, Polyhedron) :-
+    !,
+    % Solve the constraints using the constraint solver.
+    solve_constraints(Constraints, Polyhedron),
+    solve(true, Goals, Polyhedron).
+
+% Built-ins may be added here.
+
+solve(Atom, Goals, Polyhedron) :-
+    % Here is a choicepoint: possibly different clauses
+    % will be selected on backtracking.
+    % NOTE: we may fail to find (another) clause,
+    %       but we have allocated nothing yet.
+    select_clause(Atom, Head, Body),
+
+    % Copy the current polyhedron and work on the copy.
+    % NOTE: the copy is under our responsibility, i.e.,
+    %       it is our job to delete it, sooner or later.
+    ppl_copy_polyhedron(Polyhedron, PolyCopy),
+
+    % Rename the selected clause apart and extend the polyhedron.
+    ppl_space_dimension(PolyCopy, Dims),
+    numvars((Head, Body), Dims, NewDims),
+    AddedDims is NewDims - Dims,
+    ppl_add_dimensions_and_embed(PolyCopy, AddedDims),
+
+    % Parameter passing.
+    parameter_passing(Atom, Head, PP_Constraints),
+
+    % Try to solve the body augmented with the parameter passing equations.
+    (solve(PP_Constraints, (Body, Goals), PolyCopy) ->
+	true
+    ;
+	ppl_delete_polyhedron(PolyCopy),
+	fail
+    ),
+    % Our copy must be thrown anyway.
+    ppl_delete_polyhedron(PolyCopy).
+
+
+parameter_passing(Atom, Head, PP_Constraints) :-
+    Atom =.. [_|Actuals],
+    Head =.. [_|Formals],
+    (Actuals == [] ->
+	PP_Constraints = true
+    ;
+	build_pp_constraints(Actuals, Formals, Equations),
+	PP_Constraints = ({ Equations })
+    ).
+
+build_pp_constraints([A|Actuals], [F|Formals], Equations) :-
+    (Actuals == [] ->
+	Equations = (A = F)
+    ;
+	Equations = ((A = F), More_Equations),
+	build_pp_constraints(Actuals, Formals, More_Equations)
+    ).
+
+select_clause(Atom, Head, Body) :-
+    functor(Atom, F, N),
+    functor(Head, F, N),
+    user_clause(Head, Body).
+
+% The constraints are solved by inserting them into the polyhedron.
+solve_constraints(Constraints, Polyhedron) :-
+    insert_constraints(Constraints, Polyhedron),
+    \+ ppl_check_empty(Polyhedron).
+
+insert_constraints((C, D), Polyhedron) :-
+    !,
+    solve_constraints(C, Polyhedron),
+    solve_constraints(D, Polyhedron).
+insert_constraints(C, Polyhedron) :-
+    ppl_insert_constraint(Polyhedron, C).
+
+%%%%%%%%%%%%%%%%%% Query the User for More Solutions %%%%%%%%%%%%%%%%%%%
+
+query_next_solution :-
+  write(' more? '),
+  repeat,
+  flush_output(user_output),
+  get0(user_input, C),
+  (
+    C == 59, get0(user_input, _EOL)
+  ;
+    C == 10
+  ;
+    get0(user_input, _EOL),
+    write('Action (";" for more choices, otherwise <return>): '),
+    fail
+  ),
+  !,
+  C = 10.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%% Reading Programs %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 read_programs([]).
 read_programs([P|Ps]) :-
@@ -220,10 +224,22 @@ read_clauses(Stream) :-
     true
   ).
 
+%%%%%%%%%%%%%%%%%%%%% The User's Interaction Loop %%%%%%%%%%%%%%%%%%%%%%
+
+write_error(Message) :-
+  write('clpq error: '),
+  write_error_aux(Message).
+
+write_error_aux([]) :-
+  nl.
+write_error_aux([H|T]) :-
+  write(H),
+  write_error_aux(T).
+
 main_loop :-
   write('PPL clpq ?- '),
-  read(Command),
-  do_command(Command).
+  read_term(Command, [variable_names(VN)]),
+  do_command(Command, VN).
 
 clear_program :-
   retract(user_clause(_, _)),
@@ -248,56 +264,52 @@ pp(Head, Body) :-
   ),
   nl.
 
-do_command(end_of_file) :-
+do_command(end_of_file, _VN) :-
   !.
-do_command(halt) :-
+do_command(halt, _VN) :-
   !.
-do_command(trace) :-
+do_command(trace, _VN) :-
   !,
   trace,
   main_loop_yes.
-do_command(notrace) :-
+do_command(notrace, _VN) :-
   !,
   notrace,
   main_loop_yes.
-do_command(spy) :-
+do_command(spy, _VN) :-
   !,
   read(PredList),
   Spy =.. [spy|PredList],
   Spy,
   main_loop_yes.
-do_command([]) :-
+do_command([], _VN) :-
   !,
   (read_programs([]) ; true),
   main_loop_yes.
-do_command([H|T]) :-
+do_command([H|T], _VN) :-
   !,
   (read_programs([H|T]) ; true),
   main_loop_yes.
-do_command(consult(Program)) :-
+do_command(consult(Program), _VN) :-
   !,
   (read_program(Program) ; true),
   main_loop_yes.
-do_command(reconsult(Program)) :-
+do_command(reconsult(Program), _VN) :-
   !,
   clear_program,
   do_command(consult(Program)).
-do_command(listing) :-
+do_command(listing, _VN) :-
   !,
   list_program,
   main_loop_yes.
-do_command(statistics) :-
+do_command(statistics, _VN) :-
   !,
   statistics,
   main_loop_yes.
-do_command(Query) :-
-  solve(Query),
-  query_next_solution,
-      % If query_next_solution succeeds,
-      % then no more solutions are required and stack of
-      % temporary polyhedra can be removed.
+do_command(Query, VN) :-
+  solve(Query, VN),
   main_loop_yes.
-do_command(_) :-
+do_command(_, _VN) :-
   main_loop_no.
 
 main_loop_no :-
@@ -310,23 +322,107 @@ main_loop_yes :-
   nl,
   main_loop.
 
-query_next_solution :-
-  write(' more? '),
-  repeat,
-  flush_output(user_output),
-  get0(user_input, C),
-  (
-    C == 59, get0(user_input, _EOL)
-  ;
-    C == 10
-  ;
-    get0(user_input, _EOL),
-    write('Action (";" for more choices, otherwise <return>): '),
-    fail
-  ),
-  !,
-  C = 10.
+%%%%%%%%%%%%%%%%% Writing Computed Answer Constraints %%%%%%%%%%%%%%%%%%
+
+write_var(Var, VariableNames) :-
+    member(Name=Var, VariableNames),
+    !,
+    write(Name).
+
+negate_expr(Num*Var, NegExpr) :-
+    (Num < 0 ->
+	NegNum is -Num,
+	NegExpr = NegNum*Var
+    ;
+	NegExpr = Num*Var
+    ).
+negate_expr(Expr1 + Expr2, NegExpr1 + NegExpr2) :-
+    negate_expr(Expr1, NegExpr1),
+    negate_expr(Expr2, NegExpr2).
+
+write_expr(Num*Var, VariableNames) :-
+    (Num =:= 1 ->
+	true
+    ;
+	(Num =:= -1 ->
+	    write('-')
+	;
+	    write(Num),
+	    write('*')
+	)
+    ),
+    write_var(Var, VariableNames).
+write_expr(E + Num*Var, VariableNames) :-
+    write_expr(E, VariableNames),
+    (Num < 0 ->
+	write(' - '),
+	NegNum is -Num,
+        write_expr(NegNum*Var, VariableNames)
+    ;
+	write(' + '),
+        write_expr(Num*Var, VariableNames)
+    ).
+
+write_constraint(Expr = Num, VariableNames) :-
+    write_expr(Expr, VariableNames),
+    write(' = '),
+    write(Num).
+write_constraint(Expr >= Num, VariableNames) :-
+    (Num < 0 ->
+	negate_expr(Expr, NegExpr),
+	write_expr(NegExpr, VariableNames),
+	write(' =< '),
+	NegNum is -Num,
+        write(NegNum)
+    ;
+	write_expr(Expr, VariableNames),
+	write(' >= '),
+	write(Num)
+    ).
+
+write_constraints([], _VariableNames).
+write_constraints([C|CS], VariableNames) :-
+    write_constraint(C, VariableNames),
+    nl,
+    write_constraints(CS, VariableNames).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% Utility Predicates %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% member(?Element, +List)
+%
+% Suceeds when Element is a member of List.  It may be used to test 
+% for membership in a list, but it can also be used to enumerate all 
+% the elements in List.
+
+member(Element, [Head|Tail]) :-
+	member_(Tail, Head, Element).
+
+% Auxiliary to avoid the creation of a choicepoint for the last element,
+member_(_, Element, Element).
+member_([Head|Tail], _, Element) :-
+	member_(Tail, Head, Element).
+
+
+% numvars(?Term, +InN, ?OutN)
+%
+% Unifies each of the variables in Term with the special terms
+% '$VAR'(k), where k ranges from InN to OutN-1.
+
+numvars('$VAR'(InN), InN, OutN) :-
+    !,
+    OutN is InN + 1.
+numvars(Term, InN, OutN) :-
+    Term =.. [_|Args],
+    numvars_list(Args, InN, OutN).
+
+numvars_list([], InN, InN).
+numvars_list([Arg|Args], InN, OutN) :-
+    numvars(Arg, InN, TmpN),
+    numvars_list(Args, TmpN, OutN).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Startup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 :-
-  nofileerrors,
+  nofileerrors, % FIXME: this is not ISO Prolog
   main_loop.
