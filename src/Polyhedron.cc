@@ -2874,6 +2874,9 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
     if (tmp_sat_g.sorted_contains(buffer))
       new_con_sys.add_row(x.con_sys[i]);
   }
+  // CHECK ME: is this really required?
+  if (!is_necessarily_closed())
+    new_con_sys.add_corresponding_nonstrict_inequalities();
 
   // Let `new_con_sys' be the constraint system of `x'
   // and update the status of `x'.
