@@ -40,7 +40,7 @@ Install this package if you want to access the PPL via C.
 %package gprolog
 Summary:	The GNU Prolog interface of the Parma Polyhedra Library.
 Group:		Development/Libraries
-Requires:	ppl = %{version}-%{release}
+Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}
 %description gprolog
 This package adds GNU Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in GNU Prolog programs.
@@ -48,7 +48,7 @@ Install this package if you want to use the library in GNU Prolog programs.
 %package sicstus
 Summary:	The SICStus Prolog interface of the Parma Polyhedra Library.
 Group:		Development/Libraries
-Requires:	ppl = %{version}-%{release}
+Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}
 %description sicstus
 This package adds SICStus Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in SICStus Prolog programs.
@@ -56,7 +56,7 @@ Install this package if you want to use the library in SICStus Prolog programs.
 %package swi
 Summary:	The SWI Prolog interface of the Parma Polyhedra Library.
 Group:		Development/Libraries
-Requires:	ppl = %{version}-%{release}
+Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}
 %description swi
 This package adds SWI Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in SWI Prolog programs.
@@ -64,10 +64,21 @@ Install this package if you want to use the library in SWI Prolog programs.
 %package yap
 Summary:	The YAP Prolog interface of the Parma Polyhedra Library.
 Group:		Development/Libraries
-Requires:	ppl = %{version}-%{release}
+Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}
 %description yap
 This package adds YAP Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in YAP Prolog programs.
+
+%package pwl
+Summary:	The Parma Watchdog Library: a C++ library for watchdog timers.
+Group:		Development/Libraries
+Requires:	gcc-c++ >= 3.2
+%description pwl
+This package contains the Parma Watchdog Library (PWL).
+The library provides support for multiple, concurrent watchdog timers
+on systems providing the setitimer(2).
+The PWL is currently distributed with the Parma Polyhedra Library (PPL),
+but is totally independent from it.
 
 %prep
 %setup -n %{name}-%{version}
@@ -141,6 +152,15 @@ make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
 %{_libdir}/ppl/ppl_yap.la
 %{_libdir}/ppl/ppl_yap.pl
 %{_libdir}/ppl/ppl_yap.so
+
+%files pwl
+%defattr(-,root,root)
+%doc Watchdog/README
+%{_includedir}/pwl.hh
+%{_libdir}/libpwl.so.*
+%{_libdir}/libpwl.so
+%{_libdir}/libpwl.a
+%{_libdir}/libpwl.la
 
 %post
 /sbin/ldconfig
