@@ -3,14 +3,47 @@
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
 
+%% Calligraphic alphabet
+\newcommand*{\cA}{\ensuremath{\mathcal{A}}}
+\newcommand*{\cB}{\ensuremath{\mathcal{B}}}
+\newcommand*{\cC}{\ensuremath{\mathcal{C}}}
+\newcommand*{\cD}{\ensuremath{\mathcal{D}}}
+\newcommand*{\cE}{\ensuremath{\mathcal{E}}}
+\newcommand*{\cF}{\ensuremath{\mathcal{F}}}
+\newcommand*{\cG}{\ensuremath{\mathcal{G}}}
+\newcommand*{\cH}{\ensuremath{\mathcal{H}}}
+\newcommand*{\cI}{\ensuremath{\mathcal{I}}}
+\newcommand*{\cJ}{\ensuremath{\mathcal{J}}}
+\newcommand*{\cK}{\ensuremath{\mathcal{K}}}
+\newcommand*{\cL}{\ensuremath{\mathcal{L}}}
+\newcommand*{\cM}{\ensuremath{\mathcal{M}}}
+\newcommand*{\cN}{\ensuremath{\mathcal{N}}}
+\newcommand*{\cO}{\ensuremath{\mathcal{O}}}
+\newcommand*{\cP}{\ensuremath{\mathcal{P}}}
+\newcommand*{\cQ}{\ensuremath{\mathcal{Q}}}
+\newcommand*{\cR}{\ensuremath{\mathcal{R}}}
+\newcommand*{\cS}{\ensuremath{\mathcal{S}}}
+\newcommand*{\cT}{\ensuremath{\mathcal{T}}}
+\newcommand*{\cU}{\ensuremath{\mathcal{U}}}
+\newcommand*{\cV}{\ensuremath{\mathcal{V}}}
+\newcommand*{\cW}{\ensuremath{\mathcal{W}}}
+\newcommand*{\cX}{\ensuremath{\mathcal{X}}}
+\newcommand*{\cY}{\ensuremath{\mathcal{Y}}}
+\newcommand*{\cZ}{\ensuremath{\mathcal{Z}}}
+
 %% Special letters denoting sets and algebras.
 \providecommand*{\Nset}{\mathbb{N}}            % Naturals
 \newcommand*{\extNset}{\mathbb{N}_\infty}      % Extended naturals
 \providecommand*{\Oset}{\mathbb{O}}            % Ordinals
 \providecommand*{\Qset}{\mathbb{Q}}            % Rationals
 \providecommand*{\Rset}{\mathbb{R}}            % Reals
+\providecommand*{\nonnegRset}{\mathbb{R}_{\scriptscriptstyle{+}}}
+                                               % Non-negative reals
 \newcommand*{\extRset}{\Rset_\infty}           % Extended reals
 \providecommand*{\Zset}{\mathbb{Z}}            % Integers
+\providecommand*{\CPset}{\mathbb{CP}}          % Closed polyhedra
+\providecommand*{\Pset}{\mathbb{P}}            % (NNC) polyhedra
+
 
 
 %% Set theory.
@@ -20,6 +53,7 @@
 \newcommand*{\sslt}{\subset}
 \newcommand*{\Sseq}{\supseteq}
 \newcommand*{\Ssgt}{\supset}
+\newcommand*{\inters}{\cap}
 \newcommand*{\sset}[2]{{\renewcommand*{\arraystretch}{1.2}
                       \left\{\,#1 \,\left|\,
                                \begin{array}{@{}l@{}}#2\end{array}
@@ -39,6 +73,10 @@
 \newcommand*{\defrel}[1]{\mathrel{\buildrel \mathrm{def} \over {#1}}}
 \newcommand*{\defeq}{\defrel{=}}
 \newcommand*{\defiff}{\defrel{\Longleftrightarrow}}
+
+% Arbitrary relational operator.
+\newcommand*{\relop}{\mathrel{\bowtie}}
+\newcommand*{\relops}[1]{\mathrel{\bowtie_{#1}}}
 
 % Vectors.
 \newcommand*{\vect}[1]{\mathbf{#1}}

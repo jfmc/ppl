@@ -31,6 +31,94 @@ Most of the following definitions and results are taken from:
   interne n. 785, December 1993.
 - K. Fukuda - Polyhedral Computation FAQ - Swiss Federal Institute of
   Technology, Lausanne and Zurich, Switzerland, October 2000.
+- R. Bagnara, E. Ricci, E. Zaffanella, and P. M. Hill - Possibly Not Closed
+  Convex Polyhedra and the Parma Polyhedra Library - Quaderno 286 - Department of
+  Mathematics, University of Parma, Italy, May 2002.
+
+
+<B>Vectors, matrices and scalar products</B>
+
+We denote by \f$\Rset^n\f$ the \f$n\f$-dimensions vector space on the field
+of real numbers \f$\Rset\f$, endowed with the standard topology.
+The set of all non-negative reals is denoted by \f$\nonnegRset\f$.
+For each \f$i \in \{0, \ldots, n-1\}\f$, \f$v_i\f$ denotes
+the \f$i\f$-th component of the (column) vector \f$\vect{v} \in \Rset^n\f$.
+We denote by \f$\vect{0}\f$ the vector of \f$\Rset^n\f$, called <EM>the origin</EM>,
+having all components equal to zero.
+A vector \f$\vect{v} \in \Rset^n\f$ can be also interpreted
+as a matrix in \f$\Rset^{n \times 1}\f$ and manipulated accordingly
+using the usual definitions for addition, multiplication
+(both by a scalar and by another matrix), and transposition,
+denoted by \f$\vect{v}^\transpose\f$.
+The <EM>scalar product</EM> of \f$\vect{v},\vect{w} \in \Rset^n\f$,
+denoted \f$\langle \vect{v}, \vect{w} \rangle\f$,
+is the real number
+\f[
+  \vect{v}^\transpose \vect{w} = \sum_{i=0}^{n-1} v_i w_i.
+\f]
+
+
+<B>Affine hyperplanes and half-spaces</B>
+
+For each vector \f$\vect{a} \in \Rset^n\f$ and scalar \f$b \in \Rset\f$,
+where \f$\vect{a} \neq \vect{0}\f$,
+and for each relational operator \f$\mathord{\relop} \in \{ =, \geq, > \}\f$,
+the linear constraint \f$\langle \vect{a}, \vect{x} \rangle \relop b\f$
+defines:
+- an affine hyperplane if it is an equality constraint,
+  i.e., if \f$\mathord{\relop} \in \{ = \}\f$;
+- a topologically closed affine half-space if it is a non-strict inequality constraint,
+  i.e., if \f$\mathord{\relop} \in \{ \geq \}\f$;
+- a topologically open affine half-space if it is a strict inequality constraint,
+  i.e., if \f$\mathord{\relop} \in \{ > \}\f$.
+
+Note that each hyperplane \f$\langle \vect{a}, \vect{x} \rangle = b\f$
+can be defined as the intersection of the two closed affine half-spaces
+\f$\langle \vect{a}, \vect{x} \rangle \geq b\f$ and
+\f$\langle -\vect{a}, \vect{x} \rangle \geq -b\f$.
+Also note that, when \f$\vect{a} = \vect{0}\f$, the constraint \f$0 \relop b\f$
+is either a tauthology (i.e., always true) or inconsistent (i.e., always false),
+so that it defines either the whole vector space \f$\Rset^n\f$ or the empty set.
+
+<B>NNC Polyhedra</B>
+
+The set \f$\cP \sseq \Rset^n\f$ is a <EM>not necessarily closed convex polyhedron</EM>
+(NNC polyhedron, for short) if and only if either \f$\cP\f$ can be expressed
+as the intersection of a finite number of (not necessarily closed) affine half-spaces
+of \f$\Rset^n\f$, or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
+
+The set of all NNC polyhedra on the vector space \f$\Rset^n\f$
+is denoted \f$\Pset_n\f$.
+When ordering NNC polyhedra by the set inclusion relation,
+the empty set \f$\emptyset\f$ and the vector space \f$\Rset^n\f$
+are the smallest and the biggest element of \f$\Pset_n\f$, respectively.
+The vector space \f$\Rset^n\f$ is also called the <EM>universe</EM> polyhedron.
+For any pair of NNC polyhedra \f$\cP_1, \cP_2 \in \Pset_n\f$,
+the set intersection \f$\cP_1 \inters \cP_2 \in \Pset_n\f$
+is the biggest NNC polyhedron included in both \f$\cP_1\f$ and \f$\cP_2\f$;
+similarly, the NNC polyhedron \f$\cP_1 \uplus \cP_2 \in \Pset_n\f$,
+called the <EM>convex polyhedral hull</EM> of \f$\cP_1\f$ and \f$\cP_2\f$
+(poly-hull, for short),
+is the smallest NNC polyhedron including both \f$\cP_1\f$ and \f$\cP_2\f$.
+In theoretical terms, \f$\Pset_n\f$ is a <EM>lattice</EM> under set inclusion.
+
+
+<B>Closed Polyhedra</B>
+
+The set \f$\cP \sseq \Rset^n\f$ is a <EM>closed convex polyhedron</EM>
+(closed polyhedron, for short) if and only if either \f$\cP\f$ can be expressed
+as the intersection of a finite number of closed affine half-spaces
+of \f$\Rset^n\f$, or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
+
+The set of all closed polyhedra on the vector space \f$\Rset^n\f$
+is denoted \f$\CPset_n\f$ and we have \f$\CPset_n \sseq \Pset_n\f$.
+We have \f$\emptyset, \Rset^n \in \CPset_n\f$;
+for any pair of closed polyhedra \f$\cP_1, \cP_2 \in \CPset_n\f$,
+their set intersection \f$\cP_1 \inters \cP_2 \in \CPset_n\f$
+and their poly-hull \f$\cP_1 \uplus \cP_2 \in \CPset_n\f$
+are still closed polyhedra.
+In theoretical terms, \f$\CPset_n\f$ is a <EM>sub-lattice</EM> of \f$\Pset_n\f$.
+
 
 <B>Combination</B>
 
