@@ -56,9 +56,8 @@ namespace Parma_Polyhedra_Library {
     An object of the class GenSys is a system of generators,
     i.e. a container of objects of the class Generator
     (lines, rays and vertices).
-    It is necessary that the set of generators includes
-    at least one vertex.
-    This is needed since a line or ray only specify a direction
+    The set of generators must include at least one vertex.
+    This is needed since a line or ray only specifies a direction
     and a point is needed to indicate its position.
     
     \par
