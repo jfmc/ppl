@@ -34,6 +34,7 @@ AC_CONFIG_SRCDIR(src/Polyhedron_public.cc)
 
 # Use Automake.
 AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7.3])
+
 AC_SUBST(VERSION)
 
 changequote(<<, >>)dnl
