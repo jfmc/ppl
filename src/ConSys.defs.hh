@@ -192,8 +192,6 @@ public:
   const_iterator end() const;
 
 PPL_INTERNAL:
-// FIXME: this is a kludge
-public:
   //! Constructor: builds an empty system of constraints
   //! having the specified topology.
   ConSys(Topology topol);
@@ -220,8 +218,6 @@ public:
   //! Returns the \p k- th constraint of the system.
   Constraint& operator[](size_t k);
   
-// FIXME: this is a kludge
-PPL_INTERNAL:
   //! Returns a constant reference to the \p k- th constraint of the system.
   const Constraint& operator[](size_t k) const;
 

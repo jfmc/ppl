@@ -324,8 +324,6 @@ PPL_INTERNAL:
 
   static Constraint construct_epsilon_geq_zero();
 
-// FIXME: this is a kludge
-public:
   //! The zero-dimension space constraint \f$\epsilon \geq 0\f$
   //! (used to implement non-necessarily closed polyhedra).
   static const Constraint& epsilon_geq_zero();
@@ -334,8 +332,6 @@ public:
   //! (used to implement non-necessarily closed polyhedra).
   static const Constraint& epsilon_leq_one();
 
-// FIXME: this is a kludge
-PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is the trivially true constraint \f$0 <= n\f$,
   //! where \f$n \geq 0\f$.
