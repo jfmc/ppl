@@ -26,6 +26,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstdarg>
 #include <csignal>
 #include <cerrno>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
 #include <iostream>
 #include <fstream>
 
@@ -169,11 +172,9 @@ warning(const char* format, ...) {
 void
 set_alarm_on_cpu_time(const unsigned seconds, void (*handler)(int)) {
   sigset_t mask;
-  struct sigaction s;
-  struct rlimit t;
-
   sigemptyset(&mask);
 
+  struct sigaction s;
   s.sa_handler = handler;
   s.sa_mask = mask;
 #if defined(SA_ONESHOT)
@@ -187,6 +188,7 @@ set_alarm_on_cpu_time(const unsigned seconds, void (*handler)(int)) {
   if (sigaction(SIGXCPU, &s, 0) != 0)
     fatal("sigaction failed: %s", strerror(errno));
 
+  struct rlimit t;
   if (getrlimit(RLIMIT_CPU, &t) != 0)
     fatal("getrlimit failed: %s", strerror(errno));
 
