@@ -1142,7 +1142,7 @@ error40() {
 
   try {
     // This is an invalid used of the function
-    // C_Polyhedron::generalized_affine_image(v, expr, d): it is illegal to
+    // C_Polyhedron::generalized_affine_image(v, r, expr, d): it is illegal to
     // apply this function to a variable that is not in the space of
     // the polyhedron.
     ph.generalized_affine_image(B, PPL_LE, A + 1);
@@ -1150,6 +1150,62 @@ error40() {
   catch (invalid_argument& e) {
 #if NOISY
     cout << "invalid_variable: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error41() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);
+  
+  try {
+    // This is an incorrect use of function
+    // C_Polyhedron::generalized_affine_image(lhs, r, rhs):
+    // it is illegal to use a variable in the `rhs' expression that
+    // does not apper in the polyhedron.
+    ph.generalized_affine_image(A + B, PPL_GE, B + C);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_expression: " << e.what() << endl << endl;
+#endif
+  }
+ catch (...) {
+    exit(1);
+  }
+}
+
+void
+error42() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 1);
+
+  try {
+    // This is an incorrect use of function
+    // C_Polyhedron::generalized_affine_image(lhs, r, rhs):
+    // it is illegal to use a variable in the `lhs' expression that
+    // does not apper in the polyhedron.
+    ph.generalized_affine_image(B + C, PPL_LE, A + 1);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_expression: " << e.what() << endl << endl;
 #endif
   }
   catch (...) {
@@ -1200,6 +1256,8 @@ main() {
   error38();
   error39();
   error40();
+  error41();
+  error42();
 
   return 0;
 }
