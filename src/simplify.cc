@@ -74,6 +74,9 @@ namespace PPL = Parma_Polyhedra_Library;
 */
 int
 PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
+  // This method is only applied to a well-formed matrix `mat'.
+  assert(mat.OK());
+
   dimension_type num_rows = mat.num_rows();
   dimension_type num_columns = mat.num_columns();
   dimension_type num_cols_sat = sat.num_columns();
@@ -98,10 +101,8 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
       // Thus, either it is already an equality or it can be transformed
       // into an equality (see proposition).
       mat[i].set_is_line_or_equality();
-
-      // We do not enforce strong normalization here, because
-      // it would be later compromised by `gauss' and `back_substitute'.
-
+      // Note: simple normalization already holds.
+      mat[i].sign_normalize();
       // We also move it just after all the other equalities,
       // so that matrix `mat' keeps its partial sortedness.
       std::swap(mat[i], mat[num_equal_or_line]);
@@ -286,6 +287,5 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // The returned value is the number of irredundant equalities i.e.,
   // the rank of the sub-matrix of `mat' containing only equalities.
   // (See the Introduction for definition of lineality space dimension).
-  assert(mat.OK());
   return num_equal_or_line;
 }
