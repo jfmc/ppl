@@ -48,16 +48,13 @@ linear_partition_aux(const Constraint& c,
 
 //! Partitions \p q with respect to \p p.
 /*!
-  Let \p p and \p q be two polyhedra such that
-  - \p p and \p q are not disjoint;
-  - \p p does not contain \p q.
-
+  Let \p p and \p q be two polyhedra.
   The function returns an object <CODE>r</CODE> of type
   <CODE>std::pair<PH, PowerSet<Determinate<NNC_Polyhedron> > ></CODE>
   such that
   - <CODE>r.first</CODE> is the intersection of \p p and \p q;
   - <CODE>r.second</CODE> has the property that all its elements are
-    pairwise disjoint and disjoint from \p p;
+    not empty, pairwise disjoint, and disjoint from \p p;
   - the union of <CODE>r.first</CODE> with all the elements of
     <CODE>r.second</CODE> gives \p q (i.e., <CODE>r</CODE> is the
     representation of a partition of \p q).
@@ -72,9 +69,6 @@ linear_partition_aux(const Constraint& c,
 template <typename PH>
 std::pair<PH, PowerSet<Determinate<NNC_Polyhedron> > >
 linear_partition(const PH& p, const PH& q) {
-  // FIXME: we may want to do more than simply asserting the preconditions.
-  assert(!are_disjoint(p, q));
-  assert(!(p >= q));
   PowerSet<Determinate<NNC_Polyhedron> > r(p.space_dimension());
   PH qq = q;
   const ConSys& pcs = p.constraints();
