@@ -70,12 +70,15 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
+  //! @name Non-friend operators on objects of the class Variable.
+  //@{
   //! Output operator.
   std::ostream&
-  operator <<(std::ostream& s, const Parma_Polyhedra_Library::Variable& var);
+  operator <<(std::ostream& s, const Parma_Polyhedra_Library::Variable& v);
 
   //! Defines a total ordering on variables.
   bool operator <(const Variable& v, const Variable& w);
+  //@}
 }
 
 #if !OUTLINE

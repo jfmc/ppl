@@ -30,6 +30,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
+
+  //! @name Non-friend operators on objects of the class Generator.
+  //@{
+  //! Output operator.
+  std::ostream&
+  operator <<(std::ostream& s, const Generator& g);
+  //@}
+
   // Put them in the namespace here to declare them friend later.
   Generator operator |(int, const LinExpression& e);
   Generator operator ^(int, const LinExpression& e);
@@ -159,13 +167,6 @@ PPL_INTERNAL:
   //! Sets the type to either <CODE>RAY</CODE>.
   void set_is_ray_or_vertex();
 };
-
-namespace Parma_Polyhedra_Library {
-
-std::ostream&
-operator <<(std::ostream& s, const Generator& g);
-
-}
 
 #if !OUTLINE
 #include "Generator.inlines.hh"

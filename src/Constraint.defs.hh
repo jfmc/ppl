@@ -30,6 +30,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
+
+  //! @name Non-friend operators on objects of the class Constraint.
+  //@{
+  //! Output operator.
+  std::ostream& operator <<(std::ostream& s, const Constraint& c);
+  //@}
+
   // Put them in the namespace here to declare them friend later.
   Constraint operator ==(const LinExpression& e1, const LinExpression& e2);
   Constraint operator ==(const LinExpression& e, const Integer& n);
@@ -45,8 +52,6 @@ namespace Parma_Polyhedra_Library {
 
   Constraint operator >>(const Constraint& c, unsigned int offset);
 
-  //! Output operator.
-  std::ostream& operator <<(std::ostream& s, const Constraint& c);
 }
 
 //! A linear equality or inequality.

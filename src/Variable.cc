@@ -33,8 +33,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 std::ostream&
-PPL::operator <<(std::ostream& s, const Variable& var) {
-  unsigned int varid = var.id();
+PPL::operator <<(std::ostream& s, const Variable& v) {
+  unsigned int varid = v.id();
   char c = 'A' + (varid % 26);
   unsigned int i = varid / 26;
   s << c;

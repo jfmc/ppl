@@ -34,9 +34,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <set>
 
 namespace Parma_Polyhedra_Library {
-  // Put them in the namespace here to declare them friend later.
 
-  //! @name Polyhedron.
+  //! @name Non-friend operators on objects of the class Polyhedron.
   //@{
   //! Returns <CODE>true</CODE> if and only if
   //! \p x and \p y are the same polyhedron.
@@ -51,16 +50,14 @@ namespace Parma_Polyhedra_Library {
   //! \p x strictly contains \p y.
   bool operator >(const Polyhedron& x, const Polyhedron& y);
   //! Returns <CODE>true</CODE> if and only if
-  //! \p x is contained in \p y.
-  bool operator <=(const Polyhedron& x, const Polyhedron& y);
-  //! Returns <CODE>true</CODE> if and only if
   //!  \p x contains \p y.
   bool operator >=(const Polyhedron& x, const Polyhedron& y);
-  //! Output operator.
-  std::ostream& operator <<(std::ostream& s, const Polyhedron& p);
-  //! Input operator.
-  std::istream& operator >>(std::istream& s, Polyhedron& p);
   //@}
+
+  // Put them in the namespace here to declare them friend later.
+  bool operator <=(const Polyhedron& x, const Polyhedron& y);
+  std::ostream& operator <<(std::ostream& s, const Polyhedron& p);
+  std::istream& operator >>(std::istream& s, Polyhedron& p);
 }
 
 //! A convex polyhedron.
@@ -426,14 +423,16 @@ public:
   //! Returns <CODE>true</CODE> if \p *this is a universe polyhedron.
   bool check_universe() const;
 
+  //! Returns <CODE>true</CODE> if and only if
+  //! polyhedron \p x is contained in polyhedron \p y.
   friend bool Parma_Polyhedra_Library::operator <=(const Polyhedron& x,
 						   const Polyhedron& y);
 
-  //! Raw read operator.
+  //! Output operator.
   friend std::ostream&
   Parma_Polyhedra_Library::operator <<(std::ostream& s, const Polyhedron& p);
 
-  //! Raw write operator.
+  //! Input operator.
   friend std::istream&
   Parma_Polyhedra_Library::operator >>(std::istream& s, Polyhedron& p);
 
