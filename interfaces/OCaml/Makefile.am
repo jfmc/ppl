@@ -28,27 +28,89 @@ VPATH = @srcdir@
 
 if HAVE_SWIG
 
-ppl_c.ml ppl_c.mli ppl_c_wrap.c: .swig_ocaml
+SWIG_GENERATED_FILES = \
+$(srcdir)/ppl_ocaml_c.ml \
+$(srcdir)/ppl_ocaml_c.mli \
+$(srcdir)/ppl_ocaml_c_wrap.c
 
-.swig_ocaml: ppl_c.swg
+$(SWIG_GENERATED_FILES): .swig_ppl_ocaml_c
+
+.swig_ppl_ocaml_c: ppl_ocaml_c.swg
 	$(SWIG) -ocaml -I$(top_srcdir)/interfaces/C $<
 	@touch $@
 
-GENERATED_FILES = ppl_c.ml ppl_c.mli ppl_c_wrap.c
+SWIG_SUPPORT_FILES = \
+swig.mli \
+swig.ml
 
-dist-hook: $(DIST_FILES)
+$(SWIG_SUPPORT_FILES):
+	ocamlc -co $@
+
+%.cmi: %.mli
+	ocamlc -c $< -o $(top_builddir)/interfaces/OCaml/$@
+
+%.cmo: %.ml
+	ocamlc -c $< -o $(top_builddir)/interfaces/OCaml/$@
+
+
+nodist_PROGRAM = test
+
+test:	swig.cmi swig.cmo
+	ocamlc -g -c -ccopt -g -ccopt "" $(srcdir)/test.ml
+
+dist-hook: $(SWIG_GENERATED_FILES)
 
 EXTRA_DIST= \
-ppl_c.swg \
-$(GENERATED_FILES)
+ppl_ocaml_c.swg \
+$(SWIG_GENERATED_FILES)
+
+# Libtool -version-info for libppl_ocaml_c.la.
+#
+#  1. Start with version information of `0:0:0' for each libtool library.
+#
+#  2. Update the version information only immediately before a public
+#     release of your software.  More frequent updates are unnecessary,
+#     and only guarantee that the current interface number gets larger
+#     faster.
+#
+#  3. If the library source code has changed at all since the last
+#     update, then increment REVISION (`C:R:A' becomes `C:r+1:A').
+#
+#  4. If any interfaces have been added, removed, or changed since the
+#     last update, increment CURRENT, and set REVISION to 0.
+#
+#  5. If any interfaces have been added since the last public release,
+#     then increment AGE.
+#
+#  6. If any interfaces have been removed since the last public release,
+#     then set AGE to 0.
+#
+#	PPL release		-version-info
+#	    0.1			    -----
+#	    0.2			    -----
+#	    0.3			    -----
+#	    0.4			    -----
+#	    0.5			    -----
+#	    0.6			    0:0:0
+
+LIBPPL_OCAML_C_LT_CURRENT =  0
+LIBPPL_OCAML_C_LT_REVISION = 0
+LIBPPL_OCAML_C_LT_AGE =      0
+
+lib_LTLIBRARIES = libppl_ocaml_c.la
+libppl_ocaml_c_la_CFLAGS = -w
+libppl_ocaml_c_la_CPPFLAGS = -I/usr/lib/ocaml
+libppl_ocaml_c_la_SOURCES = $(srcdir)/ppl_ocaml_c_wrap.c
+libppl_ocaml_c_la_LDFLAGS = \
+-version-info $(LIBPPL_OCAML_C_LT_CURRENT):$(LIBPPL_OCAML_C_LT_REVISION):$(LIBPPL_OCAML_C_LT_AGE)
 
 #mostlyclean-local:
 #	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) *.aux *.log
 
-CLEANFILES = $(GENERATED_FILES)
+CLEANFILES = .swig_ppl_ocaml_c $(SWIG_GENERATED_FILES)
 
 else # !HAVE_SWIG
 
-EXTRA_DIST = ppl_c.swg
+EXTRA_DIST = ppl_ocaml_c.swg
 
 endif
