@@ -1,3 +1,7 @@
+2004-08-18  Release Manager
+
+	* PPL 0.6 Released.
+
 2004-08-16 Monday 08:03  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* src/Polyhedron_chdims.cc (1.14): In
