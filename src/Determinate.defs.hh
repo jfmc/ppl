@@ -167,13 +167,6 @@ public:
   friend bool
   operator!=<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
 
-#if 0
-  friend Determinate operator +<>(const Determinate& x,
-				  const Determinate& y);
-  friend Determinate operator *<>(const Determinate& x,
-				  const Determinate& y);
-#endif
-
   //! \name Space-Dimension Preserving Member Functions that May Modify the Domain Element
   //@{
 
