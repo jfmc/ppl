@@ -23,10 +23,10 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <string>
-#include <fstream>
 #include "ppl_test.hh"
 #include "files.hh"
+#include <string>
+#include <fstream>
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;

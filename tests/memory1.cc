@@ -22,7 +22,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-
 #include <new>
 #include <cstring>
 #include <cerrno>
