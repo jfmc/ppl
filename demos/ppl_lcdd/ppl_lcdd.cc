@@ -170,8 +170,10 @@ warning(const char* format, ...) {
   va_end(ap);
 }
 
+extern "C" typedef void (*sig_handler_type)(int);
+
 void
-set_alarm_on_cpu_time(const unsigned seconds, void (*handler)(int)) {
+set_alarm_on_cpu_time(const unsigned seconds, sig_handler_type handler) {
   sigset_t mask;
   sigemptyset(&mask);
 
@@ -214,7 +216,7 @@ limit_virtual_memory(const unsigned bytes) {
   }
 }
 
-void
+extern "C" void
 timeout(int) {
   try {
     std::cerr << "TIMEOUT"
