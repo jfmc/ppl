@@ -43,6 +43,13 @@ namespace PPL = Parma_Polyhedra_Library;
 static bool Prolog_has_unbounded_integers;
 
 /*!
+  If \p Prolog_has_unbounded_integers is false, holds the minimum
+  integer value representable by a Prolog integer.
+  Holds zero otherwise.
+*/
+static long Prolog_min_integer;
+
+/*!
   If \p Prolog_has_unbounded_integers is false, holds the maximum
   integer value representable by a Prolog integer.
   Holds zero otherwise.
@@ -55,6 +62,7 @@ static long Prolog_max_integer;
 static void
 ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = false;
+  Prolog_min_integer = PL_query(PL_QUERY_MIN_INTEGER);
   Prolog_max_integer = PL_query(PL_QUERY_MAX_INTEGER);
 }
 
@@ -84,14 +92,24 @@ Prolog_put_term(Prolog_term_ref t, Prolog_term_ref u) {
 }
 
 /*!
-  Assign to \p t a Prolog integer with value \p i.
+  Assign to \p t a Prolog integer with value \p l.
 */
 static inline int
-Prolog_put_long(Prolog_term_ref t, long i) {
-  if (i > Prolog_max_integer)
-    // FIXME: why unknown?
-    throw_unknown_interface_error("Prolog_put_long()");
-  PL_put_integer(t, i);
+Prolog_put_long(Prolog_term_ref t, long l) {
+  if (l < Prolog_min_integer || l > Prolog_max_integer)
+    throw_PPL_integer_out_of_range(l);
+  PL_put_integer(t, l);
+  return 1;
+}
+
+/*!
+  Assign to \p t a Prolog integer with value \p ul.
+*/
+static inline int
+Prolog_put_ulong(Prolog_term_ref t, unsigned long ul) {
+  if (ul > static_cast<unsigned long>(Prolog_max_integer))
+    throw_PPL_integer_out_of_range(ul);
+  PL_put_integer(t, ul);
   return 1;
 }
 
@@ -323,6 +341,7 @@ Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
 
 static PPL::Integer
 integer_term_to_Integer(Prolog_term_ref t) {
+  assert(Prolog_is_integer(t));
   long v;
   Prolog_get_long(t, &v);
   return PPL::Integer(v);
@@ -331,10 +350,9 @@ integer_term_to_Integer(Prolog_term_ref t) {
 static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
   if (!n.fits_slong_p())
-    // FIXME: why unknown?
-    throw_unknown_interface_error("Integer_to_integer_term()");
+    throw_PPL_integer_out_of_range(n);
   Prolog_term_ref t = Prolog_new_term_ref();
-  PL_put_integer(t, n.get_si());
+  Prolog_put_long(t, n.get_si());
   return t;
 }
 
