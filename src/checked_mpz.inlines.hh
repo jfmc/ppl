@@ -164,6 +164,15 @@ SPECIALIZE_ASSIGN(mpz_float, mpz_class, double)
 
 template <typename Policy>
 inline Result 
+assign_mpz_charp(mpz_class& to, const char* from) {
+  to = from;
+  return V_EQ;
+}
+
+SPECIALIZE_ASSIGN(mpz_charp, mpz_class, char*);
+
+template <typename Policy>
+inline Result 
 pred_mpz(mpz_class& to) {
   if (value_type<Policy>(to) != V_EQ)
     throw(0);

@@ -69,6 +69,7 @@ public:
 #endif
   Checked_Number(const mpq_class& y);
   Checked_Number(const mpz_class& y);
+  Checked_Number(const char* y);
 
   operator T() const;
   T& raw_value();

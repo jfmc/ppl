@@ -123,6 +123,15 @@ SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned int)
 SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned long)
 SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned long long)
 
+template <typename Policy>
+inline Result 
+assign_mpq_charp(mpq_class& to, const char* from) {
+  to = from;
+  return V_EQ;
+}
+
+SPECIALIZE_ASSIGN(mpq_charp, mpq_class, char*);
+
 template <typename Policy, typename To>
 inline Result
 assign_int_mpq(To& to, const mpq_class& from) {

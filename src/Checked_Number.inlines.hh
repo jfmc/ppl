@@ -82,6 +82,7 @@ DEF_CTOR(float128_t)
 #endif
 DEF_CTOR(mpq_class&)
 DEF_CTOR(mpz_class&)
+DEF_CTOR(char*)
 
 template <typename T, typename Policy>
 inline

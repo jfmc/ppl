@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_int_inlines_hh
 #define PPL_checked_int_inlines_hh 1
 
+#include <cerrno>
 #include "Limits.hh"
 #include "float.types.hh"
 
@@ -420,6 +421,89 @@ SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float128_t)
 #undef ASSIGN2_UNSIGNED_UNSIGNED
 #undef ASSIGN2_UNSIGNED_SIGNED
 #undef ASSIGN2_SIGNED_UNSIGNED
+
+template <typename Policy, typename To>
+inline Result 
+assign_signed_int_charp(To& to, const char* from) {
+  errno = 0;
+  char *end;
+  long v = strtol(from, &end, 0);
+  if (errno == ERANGE)
+    return v < 0 ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
+  if (errno || *end)
+    return V_DOMAIN;
+  return assign<Policy>(to, v);
+}
+
+template <typename Policy, typename To>
+inline Result 
+assign_unsigned_int_charp(To& to, const char* from) {
+  errno = 0;
+  char *end;
+  unsigned long v = strtoul(from, &end, 0);
+  if ((errno && errno != ERANGE) || *end)
+    return V_DOMAIN;
+  char c;
+  do {
+    c = *from++;
+  } while (isspace(c));
+  if (c == '-') {
+    if (errno || v != 0)
+      return V_NEG_OVERFLOW;
+  } else {
+    if (errno == ERANGE)
+      return V_POS_OVERFLOW;
+  }
+  return assign<Policy>(to, v);
+}
+
+template <typename Policy, typename To>
+inline Result 
+assign_long_long_charp(To& to, const char* from) {
+  errno = 0;
+  char *end;
+  long long v = strtoll(from, &end, 0);
+  if (errno == ERANGE)
+    return v < 0 ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
+  if (errno || *end)
+    return V_DOMAIN;
+  to = v;
+  return V_EQ;
+}
+
+template <typename Policy, typename To>
+inline Result 
+assign_unsigned_long_long_charp(To& to, const char* from) {
+  errno = 0;
+  char *end;
+  unsigned long long v = strtoull(from, &end, 0);
+  if ((errno && errno != ERANGE) || *end)
+    return V_DOMAIN;
+  char c;
+  do {
+    c = *from++;
+  } while (isspace(c));
+  if (c == '-') {
+    if (errno || v != 0)
+      return V_NEG_OVERFLOW;
+  } else {
+    if (errno == ERANGE)
+      return V_POS_OVERFLOW;
+  }
+  return assign<Policy>(to, v);
+}
+
+SPECIALIZE_ASSIGN(signed_int_charp, signed char, char*)
+SPECIALIZE_ASSIGN(signed_int_charp, short, char*)
+SPECIALIZE_ASSIGN(signed_int_charp, int, char*)
+SPECIALIZE_ASSIGN(signed_int_charp, long, char*)
+SPECIALIZE_ASSIGN(long_long_charp, long long, char*)
+
+SPECIALIZE_ASSIGN(unsigned_int_charp, unsigned char, char*)
+SPECIALIZE_ASSIGN(unsigned_int_charp, unsigned short, char*)
+SPECIALIZE_ASSIGN(unsigned_int_charp, unsigned int, char*)
+SPECIALIZE_ASSIGN(unsigned_int_charp, unsigned long, char*)
+SPECIALIZE_ASSIGN(unsigned_long_long_charp, unsigned long long, char*)
 
 template<typename T>
 struct Larger_Types;
