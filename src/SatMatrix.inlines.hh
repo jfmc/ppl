@@ -50,9 +50,6 @@ inline
 SatMatrix::~SatMatrix() {
 }
 
-/*!
-  Erases the rows from the \p first_to_erase -th to the last one.
-*/
 inline void
 SatMatrix::rows_erase_to_end(dimension_type first_to_erase) {
   // The first row to be erased cannot be greater
@@ -63,9 +60,6 @@ SatMatrix::rows_erase_to_end(dimension_type first_to_erase) {
   assert(OK());
 }
 
-/*!
-  Erases the columns from the \p first_to_erase -th to the last one.
-*/
 inline void
 SatMatrix::columns_erase_to_end(dimension_type first_to_erase) {
   // The first column to be erased cannot be greater
@@ -75,27 +69,18 @@ SatMatrix::columns_erase_to_end(dimension_type first_to_erase) {
   assert(OK());
 }
 
-/*!
-  Swaps \p *this with \p y.
-*/
 inline void
 SatMatrix::swap(SatMatrix& y) {
   std::swap(row_size, y.row_size);
   std::swap(rows, y.rows);
 }
 
-/*!
-  Returns a reference to the \p k -th row.
-*/
 inline SatRow&
 SatMatrix::operator[](dimension_type k) {
   assert(k < rows.size());
   return rows[k];
 }
 
-/*!
-  Returns a constant reference to the \p k -th row.
-*/
 inline const SatRow&
 SatMatrix::operator[](dimension_type k) const {
   assert(k < rows.size());

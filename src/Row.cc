@@ -32,33 +32,33 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Row::Impl::grow_no_copy(dimension_type new_size) {
+PPL::Row::Impl::grow_no_copy(dimension_type new_sz) {
   dimension_type old_size = size();
-  assert(old_size <= new_size);
+  assert(old_size <= new_sz);
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  if (old_size == 0 && new_size > 0) {
+  if (old_size == 0 && new_sz > 0) {
     ++old_size;
     bump_size();
   }
 #endif
-  for (dimension_type i = old_size; i < new_size; ++i) {
+  for (dimension_type i = old_size; i < new_sz; ++i) {
     new (&vec_[i]) Integer();
     bump_size();
   }
 }
 
 void
-PPL::Row::Impl::shrink(dimension_type new_size) {
+PPL::Row::Impl::shrink(dimension_type new_sz) {
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  assert(new_size > 0);
+  assert(new_sz > 0);
 #endif
-  assert(new_size <= size());
+  assert(new_sz <= size());
   // We assume construction was done "forward".
   // We thus perform destruction "backward".
-  for (dimension_type i = size(); i-- > new_size; )
+  for (dimension_type i = size(); i-- > new_sz; )
     // ~Integer() does not throw exceptions.  So we do.
     vec_[i].~Integer();
-  set_size(new_size);
+  set_size(new_sz);
 }
 
 void

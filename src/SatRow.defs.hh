@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.hh"
 #include <iosfwd>
 #include <gmp.h>
+#include <vector>
 
 namespace Parma_Polyhedra_Library {
 
@@ -78,7 +79,7 @@ public:
   //! Clears bits from position \p k (included) onward.
   void clear_from(unsigned int k);
 
-  //! Clears all the bit of the row.
+  //! Clears all the bits of the row.
   void clear();
 
   //! The basic comparison function.
@@ -150,11 +151,19 @@ public:
 namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Specializes <CODE>std::swap</CODE>.
-  /*! \relates Parma_Polyhedra_Library::SatRow */
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::SatRow */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void swap(Parma_Polyhedra_Library::SatRow& x,
 	  Parma_Polyhedra_Library::SatRow& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Specializes <CODE>std::iter_swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::SatRow */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void
+iter_swap(std::vector<Parma_Polyhedra_Library::SatRow>::iterator x,
+	  std::vector<Parma_Polyhedra_Library::SatRow>::iterator y);
 
 } // namespace std
 

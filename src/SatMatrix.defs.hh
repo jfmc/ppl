@@ -65,7 +65,7 @@ public:
   //! Subscript operator.
   SatRow& operator[](dimension_type k);
 
-  //! Subscript operator.
+  //! Constant subscript operator.
   const SatRow& operator[](dimension_type k) const;
 
   //! Clears the matrix deallocating all its rows.
@@ -144,8 +144,8 @@ private:
 namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Specializes <CODE>std::swap</CODE>.
-  /*! \relates Parma_Polyhedra_Library::SatMatrix */
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::SatMatrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void swap(Parma_Polyhedra_Library::SatMatrix& x,
 	  Parma_Polyhedra_Library::SatMatrix& y);

@@ -32,17 +32,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 #include <cstddef>
+#include <vector>
 
 #ifndef EXTRA_ROW_DEBUG
-// When EXTRA_ROW_DEBUG evaluates to <CODE>true</CODE>, each row
-// carries its own capacity; this enables extra consistency checks to
-// be performed.
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! When EXTRA_ROW_DEBUG evaluates to <CODE>true</CODE>, each instance
+//! of the class Row carries its own capacity; this enables extra
+//! consistency checks to be performed.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define EXTRA_ROW_DEBUG 0
 #endif
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! The base class for linear expressions, constraints and generators.
 /*!
-The class Row allows us to build objects like these:
+  The class Row allows us to build objects like these:
 
     - \f$[b, a_0, \ldots, a_{d-1}]_=\f$
       represents the equality constraint
@@ -76,44 +81,61 @@ The class Row allows us to build objects like these:
 
 class Parma_Polyhedra_Library::Row {
 public:
-  //! Returns the inhomogeneous term.
-  const Integer& inhomogeneous_term() const;
+  //! \brief
+  //! The type of the object to which the coefficients refer to,
+  //! encoding both the row topology and the row kind. 
+  class Type;
 
-  //! Returns the coefficient \f$a_n\f$.
-  const Integer& coefficient(dimension_type n) const;
-
+  //! The possible kinds of Row objects.
   enum Kind {
     LINE_OR_EQUALITY = 0,
     RAY_OR_POINT_OR_INEQUALITY = 1
   };
 
-  //! The type of the object to which the coefficients refer to.
-  class Type;
-
-  //! Tight constructor: resizing will require reallocation.
-  Row(Type t, dimension_type sz);
-
-  //! Sizing constructor with type.
-  Row(Type t, dimension_type sz, dimension_type capacity);
+  //! Pre-constructs a row: construction must be completed by construct().
+  Row();
 
   //! \name Post-constructors.
   //@{
   //! Constructs properly a default-constructed element.
+  /*!
+    Builds a row with type \p t, size \p sz and minimum capacity.
+  */
   void construct(Type t, dimension_type sz);
+
   //! Constructs properly a default-constructed element.
+  /*!
+    \param t          The type of the row that will be constructed.
+    \param sz         The size of the row that will be constructed.
+    \param capacity   The minimum capacity of the row that will be constructed.
+    
+    The row that we are constructing has a minimum capacity, i.e., it
+    can contain at least \p capacity elements, \p sz of which will be
+    constructed now.
+  */
   void construct(Type t, dimension_type sz, dimension_type capacity);
   //@}
 
-  //! Pre-constructs a row: construction must be completed by construct().
-  Row();
+  //! Tight constructor: resizing will require reallocation.
+  Row(Type t, dimension_type sz);
+
+  //! Sizing constructor with capacity.
+  Row(Type t, dimension_type sz, dimension_type capacity);
 
   //! Ordinary copy constructor.
   Row(const Row& y);
 
   //! Copy constructor with specified capacity.
+  /*!
+    It is assumed that \p capacity is greater than or equal to \p y size.
+  */
   Row(const Row& y, dimension_type capacity);
 
   //! Copy constructor with specified size and capacity.
+  /*!
+    It is assumed that \p sz is greater than or equal to the size of \p y
+    and, of course, that \p sz is less than or equal to \p capacity.
+  */
   Row(const Row& y, dimension_type sz, dimension_type capacity);
 
   //! Destructor.
@@ -129,41 +151,54 @@ public:
   void assign(Row& y);
 
   //! Resizes the row without copying the old contents.
-  void resize_no_copy(dimension_type new_size);
+  /*!
+    Shrinks the row if \p new_sz is less than <CODE>size()</CODE>;
+    otherwise grows the row without copying the old contents.
+  */
+  void resize_no_copy(dimension_type new_sz);
 
   //! Grows the row without copying the old contents.
   /*!
     Adds new positions to the implementation of the row
-    obtaining a new row with size \p new_size.
+    obtaining a new row with size \p new_sz.
   */
-  void grow_no_copy(dimension_type new_size);
+  void grow_no_copy(dimension_type new_sz);
 
   //! Shrinks the row by erasing elements at the end.
   /*!
     Destroys elements of the row implementation
-    from position \p new_size to the end.
+    from position \p new_sz to the end.
   */
-  void shrink(dimension_type new_size);
-
-  //! \name Subscript operators.
-  //@{
-  Integer& operator[](dimension_type k);
-  const Integer& operator[](dimension_type k) const;
-  //@}
+  void shrink(dimension_type new_sz);
 
   //! \name Type inspection methods.
   //@{
   Type type() const;
+
+  //! Returns the topological kind of \p *this.
   Topology topology() const;
-  bool is_line_or_equality() const;
-  bool is_ray_or_point_or_inequality() const;
+
+  //! \brief Returns <CODE>true</CODE> if and only if the topology
+  //! of \p *this row is necessarily closed.
   bool is_necessarily_closed() const;
+
+  //! \brief Returns <CODE>true</CODE> if and only if \p *this row
+  //! represents a line or an equality.
+  bool is_line_or_equality() const;
+
+  //! \brief Returns <CODE>true</CODE> if and only if \p *this row
+  //! represents a ray, a point or an inequality.
+  bool is_ray_or_point_or_inequality() const;
   //@}
 
   //! \name Type coercion methods.
   //@{
+  //! Sets to \p LINE_OR_EQUALITY the type of \p *this row.
   void set_is_line_or_equality();
+
+  //! Sets to \p RAY_OR_POINT_OR_INEQUALITY the type of \p *this row.
   void set_is_ray_or_point_or_inequality();
+
   void set_necessarily_closed();
   void set_not_necessarily_closed();
   //@}
@@ -173,6 +208,21 @@ public:
 
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
+
+  //! Returns the inhomogeneous term.
+  const Integer& inhomogeneous_term() const;
+
+  //! Returns the coefficient \f$a_n\f$.
+  const Integer& coefficient(dimension_type n) const;
+
+  //! \name Subscript operators.
+  //@{
+  //! Returns a reference to the element of the row indexed by \p k.
+  Integer& operator[](dimension_type k);
+
+  //! Returns a constant reference to the element of the row indexed by \p k.
+  const Integer& operator[](dimension_type k) const;
+  //@}
 
   //! Normalizes all the coefficients so that they are mutually prime.
   /*!
@@ -308,6 +358,11 @@ bool operator >(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The type of a Row object.
+/*!
+  This combines the information about the topology (necessarily closed
+  or not) and the kind (line/equality or ray/point/inequality)
+  of a Row object.
+*/
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Parma_Polyhedra_Library::Row::Type {
 public:
@@ -322,14 +377,14 @@ public:
   //! \name Testing and setting the type.
   //@{
   Topology topology() const;
+  bool is_necessarily_closed() const;
   bool is_line_or_equality() const;
   bool is_ray_or_point_or_inequality() const;
-  bool is_necessarily_closed() const;
 
-  void set_is_line_or_equality();
-  void set_is_ray_or_point_or_inequality();
   void set_necessarily_closed();
   void set_not_necessarily_closed();
+  void set_is_line_or_equality();
+  void set_is_ray_or_point_or_inequality();
   //@}
 
 private:
@@ -363,8 +418,23 @@ class Parma_Polyhedra_Library::Row::Impl {
 public:
   //! \name Custom allocator and deallocator.
   //@{
+
+  /*!
+    Allocates a chunk of memory able to contain \p capacity Integer objects
+    beyond the specified \p fixed_size and returns a pointer to the new
+    allocated memory.
+  */
   void* operator new(size_t fixed_size, dimension_type capacity);
+
+  /*!
+    Placement version:
+    uses the standard operator delete to free the memory \p p points to.
+  */
   void operator delete(void* p, dimension_type capacity);
+
+  /*!
+    Uses the standard operator delete to free the memory \p p points to.
+  */
   void operator delete(void* p);
   //@}
 
@@ -378,28 +448,45 @@ public:
   Impl(const Impl& y, dimension_type sz);
 
   //! Destructor.
+  /*!
+    Uses <CODE>shrink()</CODE> method with argument \f$0\f$
+    to delete all the row elements.
+  */
   ~Impl();
 
   //! Resizes without copying the old contents.
-  void resize_no_copy(dimension_type new_size);
+  /*!
+    Shrinks the real implementation of the row if \p new_sz is less
+    than <CODE>size()</CODE>; otherwise the real implementation is grown
+    without copying the old contents.
+  */
+  void resize_no_copy(dimension_type new_sz);
 
   //! Grows without copying the old contents.
-  void grow_no_copy(dimension_type new_size);
+  void grow_no_copy(dimension_type new_sz);
 
   //! Shrinks by erasing elements at the end.
-  void shrink(dimension_type new_size);
-
-  //! \name Subscript operators.
-  //@{
-  Integer& operator[](dimension_type k);
-  const Integer& operator[](dimension_type k) const;
-  //@}
+  void shrink(dimension_type new_sz);
 
   //! \name Size accessors.
   //@{
+  //! Returns the actual size of the row \p this points to.
   dimension_type size() const;
+
+  //! Sets to \p new_sz the actual size of \p *this.
   void set_size(dimension_type new_sz);
+
+  //! Increment the size of \p *this by 1.
   void bump_size();
+  //@}
+
+  //! \name Subscript operators.
+  //@{
+  //! Returns a reference to the element of \p *this indexed by \p k.
+  Integer& operator[](dimension_type k);
+
+  //! Returns a constant reference to the element of \p *this indexed by \p k.
+  const Integer& operator[](dimension_type k) const;
   //@}
 
 private:
@@ -431,11 +518,18 @@ private:
 namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Specializes <CODE>std::swap</CODE>.
-  /*! \relates Parma_Polyhedra_Library::Row */
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void swap(Parma_Polyhedra_Library::Row& x,
 	  Parma_Polyhedra_Library::Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Specializes <CODE>std::iter_swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void iter_swap(std::vector<Parma_Polyhedra_Library::Row>::iterator x,
+	       std::vector<Parma_Polyhedra_Library::Row>::iterator y);
 
 } // namespace std
 

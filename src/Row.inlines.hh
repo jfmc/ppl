@@ -27,15 +27,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.hh"
 #include <cassert>
 #include <algorithm>
-#include <vector>
 
 namespace Parma_Polyhedra_Library {
 
-/*!
-  Allocates a chunk of memory able to contain \p capacity Integer objects
-  beyond the specified \p fixed_size and returns a pointer to the new
-  allocated memory.
-*/
 inline void*
 Row::Impl::operator new(size_t fixed_size, dimension_type capacity) {
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
@@ -46,60 +40,37 @@ Row::Impl::operator new(size_t fixed_size, dimension_type capacity) {
 #endif
 }
 
-/*!
-  Uses the standard operator delete to free the memory
-  \p p points to.
-*/
 inline void
 Row::Impl::operator delete(void* p) {
   ::operator delete(p);
 }
 
-
-/*!
-  Placement version:
-  uses the standard operator delete to free the memory \p p points to.
-*/
 inline void
 Row::Impl::operator delete(void* p, dimension_type) {
   ::operator delete(p);
 }
 
-/*!
-  Returns the actual size of the row \p this points to.
-*/
 inline dimension_type
 Row::Impl::size() const {
   return size_;
 }
 
-/*!
-  Sets to \p new_size the actual size of \p *this.
-*/
 inline void
 Row::Impl::set_size(dimension_type new_sz) {
   size_ = new_sz;
 }
 
-/*!
-  Increment the size of \p *this by 1.
-*/
 inline void
 Row::Impl::bump_size() {
   ++size_;
 }
 
-/*!
-  Shrinks the real implementation of the row if
-  \p new_size is less than <CODE>size()</CODE> ,
-  otherwise it is grown without copying the old contents.
-*/
 inline void
-Row::Impl::resize_no_copy(dimension_type new_size) {
-  if (new_size < size())
-    shrink(new_size);
+Row::Impl::resize_no_copy(dimension_type new_sz) {
+  if (new_sz < size())
+    shrink(new_sz);
   else
-    grow_no_copy(new_size);
+    grow_no_copy(new_sz);
 }
 
 inline
@@ -121,10 +92,6 @@ Row::Impl::Impl(const Impl& y, dimension_type sz)
   grow_no_copy(sz);
 }
 
-/*!
-  Uses <CODE>shrink()</CODE> method with argument \f$0\f$
-  to delete all the row elements.
-*/
 inline
 Row::Impl::~Impl() {
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
@@ -132,21 +99,14 @@ Row::Impl::~Impl() {
 #else
   shrink(1);
 #endif
-
 }
 
-/*!
-  Returns a reference to the \p k-th element of \p *this.
-*/
 inline Integer&
 Row::Impl::operator[](dimension_type k) {
   assert(k < size());
   return vec_[k];
 }
 
-/*!
-  Returns a constant reference to the \p k-th element of \p *this.
-*/
 inline const Integer&
 Row::Impl::operator[](dimension_type k) const {
   assert(k < size());
@@ -223,24 +183,16 @@ Row::Type::set_not_necessarily_closed() {
   set(NNC);
 }
 
-/*!
-  Returns the size of \p *this row.
-*/
 inline dimension_type
 Row::size() const {
   return impl->size();
 }
-
 
 inline Row::Type
 Row::type() const {
   return impl->type;
 }
 
-/*!
-  Returns <CODE>true</CODE> if \p *this represents a constraint
-  or generator in a necessarily closed polyhedron.
-*/
 inline bool
 Row::is_necessarily_closed() const {
   return type().is_necessarily_closed();
@@ -261,23 +213,11 @@ Row::capacity() const {
 }
 #endif
 
-/*!
-  All elements of the row are initialized to \f$0\f$.
-*/
 inline
 Row::Row()
   : impl(0) {
 }
 
-/*!
-  \param t          The type of the row that will be constructed.
-  \param sz         The size of the row that will be constructed.
-  \param capacity   The minimum capacity of the row that will be constructed.
-
-  The row that we are constructing has a minimum capacity, i.e., it
-  can contain at least \p capacity elements, \p sz of which will be
-  constructed now.
-*/
 inline void
 Row::construct(Type t, dimension_type sz, dimension_type capacity) {
   assert(capacity >= sz);
@@ -291,9 +231,6 @@ Row::construct(Type t, dimension_type sz, dimension_type capacity) {
 #endif
 }
 
-/*!
-  Builds a row with size \p sz and minimum capacity.
-*/
 inline void
 Row::construct(Type t, dimension_type sz) {
   construct(t, sz, sz);
@@ -323,10 +260,6 @@ Row::Row(const Row& y)
 #endif
 }
 
-/*!
-  Allows to specify a capacity,
-  provided it is greater than or equal to \p y size.
-*/
 inline
 Row::Row(const Row& y, dimension_type capacity) {
   assert(capacity >= y.size());
@@ -340,11 +273,6 @@ Row::Row(const Row& y, dimension_type capacity) {
 #endif
 }
 
-/*!
-  Allows to specify size and capacity,
-  provided they are both greater then or equal to the size of \p y.
-  Of course, \p sz must also be less than or equal to \p capacity.
-*/
 inline
 Row::Row(const Row& y, dimension_type sz, dimension_type capacity) {
   assert(capacity >= sz);
@@ -364,10 +292,6 @@ Row::~Row() {
   delete impl;
 }
 
-/*!
-  Shrinks the row if \p new_sz is less than <CODE>size()</CODE> ,
-  otherwise grows the row without copying the old contents.
-*/
 inline void
 Row::resize_no_copy(dimension_type new_sz) {
   assert(impl);
@@ -377,10 +301,6 @@ Row::resize_no_copy(dimension_type new_sz) {
   impl->resize_no_copy(new_sz);
 }
 
-/*!
-  Adds new positions to \p *this row obtaining a new row having
-  size \p new_sz.
-*/
 inline void
 Row::grow_no_copy(dimension_type new_sz) {
   assert(impl);
@@ -390,10 +310,6 @@ Row::grow_no_copy(dimension_type new_sz) {
   impl->grow_no_copy(new_sz);
 }
 
-/*!
-  Delete elements of \p *this row from \p new_sz-th position to
-  the end.
-*/
 inline void
 Row::shrink(dimension_type new_sz) {
   assert(impl);
@@ -426,43 +342,26 @@ Row::operator=(const Row& y) {
   return *this;
 }
 
-/*!
-  Returns <CODE>true</CODE> if \p *this row represent a line or
-  an equality; <CODE>false</CODE> otherwise.
-*/
 inline bool
 Row::is_line_or_equality() const {
   return type().is_line_or_equality();
 }
 
-/*!
-  Returns <CODE>true</CODE> if the row represent a ray, a point or an
-  inequality; <CODE>false</CODE> otherwise.
-*/
 inline bool
 Row::is_ray_or_point_or_inequality() const {
   return type().is_ray_or_point_or_inequality();
 }
 
-/*!
-  Returns the topological kind of \p *this.
-*/
 inline Topology
 Row::topology() const {
   return type().topology();
 }
 
-/*!
-  Sets to \p LINE_OR_EQUALITY the type of \p *this row.
-*/
 inline void
 Row::set_is_line_or_equality() {
   impl->type.set_is_line_or_equality();
 }
 
-/*!
-  Sets to \p RAY_OR_POINT_OR_INEQUALITY the type of \p *this row.
-*/
 inline void
 Row::set_is_ray_or_point_or_inequality() {
   impl->type.set_is_ray_or_point_or_inequality();
@@ -478,17 +377,11 @@ Row::set_not_necessarily_closed() {
   impl->type.set_not_necessarily_closed();
 }
 
-/*!
-  Returns a reference to the element of the row indexed by \p k.
-*/
 inline Integer&
 Row::operator[](dimension_type k) {
   return (*impl)[k];
 }
 
-/*!
-  Returns a constant reference to the element of the row indexed by \p k.
-*/
 inline const Integer&
 Row::operator[](dimension_type k) const {
   return (*impl)[k];
@@ -551,10 +444,7 @@ swap(Parma_Polyhedra_Library::Row& x, Parma_Polyhedra_Library::Row& y) {
   x.swap(y);
 }
 
-/*!
-  \relates Parma_Polyhedra_Library::Row
-  Specializes <CODE>std::iter_swap</CODE>.
-*/
+/*! \relates Parma_Polyhedra_Library::Row */
 inline void
 iter_swap(std::vector<Parma_Polyhedra_Library::Row>::iterator x,
 	  std::vector<Parma_Polyhedra_Library::Row>::iterator y) {

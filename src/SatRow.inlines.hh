@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_SatRow_inlines_hh
 #define PPL_SatRow_inlines_hh 1
 
-#include <vector>
-
 namespace Parma_Polyhedra_Library {
 
 inline
@@ -69,33 +67,21 @@ SatRow::clear_from(unsigned int k) {
   mpz_tdiv_r_2exp(vec, vec, k);
 }
 
-/*!
-  Returns the number of set bits in the row.
-*/
 inline unsigned int
 SatRow::count_ones() const {
   return mpz_popcount(vec);
 }
 
-/*!
-  Returns <CODE>true</CODE> if no bit is set in the row.
-*/
 inline bool
 SatRow::empty() const {
   return mpz_sgn(vec) == 0;
 }
 
-/*!
-  Swaps \p *this with \p y.
-*/
 inline void
 SatRow::swap(SatRow& y) {
   mpz_swap(vec, y.vec);
 }
 
-/*!
-  Clears all the bit of the row.
-*/
 inline void
 SatRow::clear() {
   mpz_set_ui(vec, 0UL);
@@ -128,10 +114,7 @@ swap(Parma_Polyhedra_Library::SatRow& x,
   x.swap(y);
 }
 
-/*!
-  \relates Parma_Polyhedra_Library::SatRow
-  Specializes <CODE>std::iter_swap</CODE>.
-*/
+/*! \relates Parma_Polyhedra_Library::SatRow */
 inline void
 iter_swap(std::vector<Parma_Polyhedra_Library::SatRow>::iterator x,
 	  std::vector<Parma_Polyhedra_Library::SatRow>::iterator y) {
