@@ -63,9 +63,7 @@ SatRow::clear(size_t k) {
 
 inline void
 SatRow::clear_from(size_t k) {
-  // FIXME: we ought to provide a better implementation.
-  for (int i = k; i >= 0; i = next(i))
-    clear(i);
+  mpz_tdiv_r_2exp(vec, vec, k);
 }
 
 /*!
