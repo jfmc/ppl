@@ -29,23 +29,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Constraint::Constraint(LinExpression& e) {
-  Row::swap(e);
+Constraint::Constraint(LinExpression& e, Type type, Topology topology) {
+  assert(type != STRICT_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
+  Linear_Row::swap(e);
+  flags() = Flags(topology, (type == EQUALITY
+			     ? LINE_OR_EQUALITY
+			     : RAY_OR_POINT_OR_INEQUALITY));
 }
 
 inline
 Constraint::Constraint(const Constraint& c)
-  : Row(c) {
+  : Linear_Row(c) {
 }
 
 inline
 Constraint::Constraint(const Constraint& c, const dimension_type sz)
-  : Row(c, sz, sz) {
-}
-
-inline
-Constraint::Constraint(Row::Type t, const dimension_type sz)
-  : Row(t, sz) {
+  : Linear_Row(c, sz, sz) {
 }
 
 inline
@@ -54,13 +53,13 @@ Constraint::~Constraint() {
 
 inline Constraint&
 Constraint::operator=(const Constraint& c) {
-  Row::operator=(c);
+  Linear_Row::operator=(c);
   return *this;
 }
 
 inline dimension_type
 Constraint::space_dimension() const {
-  return Row::space_dimension();
+  return Linear_Row::space_dimension();
 }
 
 inline bool
@@ -110,20 +109,19 @@ Constraint::coefficient(const Variable v) const {
   const dimension_type v_id = v.id();
   if (v_id >= space_dimension())
     throw_dimension_incompatible("coefficient(v)", "v", v);
-  return Row::coefficient(v_id);
+  return Linear_Row::coefficient(v_id);
 }
 
 inline const Integer&
 Constraint::inhomogeneous_term() const {
-  return Row::inhomogeneous_term();
+  return Linear_Row::inhomogeneous_term();
 }
 
 /*! \relates Constraint */
 inline Constraint
 operator==(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff = e1 - e2;
-  Constraint c(diff);
-  c.set_is_equality();
+  Constraint c(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
   // Enforce normalization.
   c.strong_normalize();
   return c;
@@ -133,9 +131,8 @@ operator==(const LinExpression& e1, const LinExpression& e2) {
 inline Constraint
 operator>=(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff = e1 - e2;
-  Constraint c(diff);
-  c.set_is_inequality();
-  // Enforcing normalization.
+  Constraint c(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
+  // Enforce normalization.
   c.normalize();
   return c;
 }
@@ -155,9 +152,7 @@ operator>(const LinExpression& e1, const LinExpression& e2) {
   diff += e1;
   diff -= e2;
 
-  Constraint c(diff);
-  c.set_not_necessarily_closed();
-  c.set_is_inequality();
+  Constraint c(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
   return c;
 }
 
@@ -165,8 +160,7 @@ operator>(const LinExpression& e1, const LinExpression& e2) {
 inline Constraint
 operator==(const Integer& n, const LinExpression& e) {
   LinExpression diff = n - e;
-  Constraint c(diff);
-  c.set_is_equality();
+  Constraint c(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
   // Enforce normalization.
   c.strong_normalize();
   return c;
@@ -176,9 +170,8 @@ operator==(const Integer& n, const LinExpression& e) {
 inline Constraint
 operator>=(const Integer& n, const LinExpression& e) {
   LinExpression diff = n - e;
-  Constraint c(diff);
-  c.set_is_inequality();
-  // Enforcing normalization.
+  Constraint c(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
+  // Enforce normalization.
   c.normalize();
   return c;
 }
@@ -193,9 +186,7 @@ operator>(const Integer& n, const LinExpression& e) {
   diff += n;
   diff -= e;
 
-  Constraint c(diff);
-  c.set_not_necessarily_closed();
-  c.set_is_inequality();
+  Constraint c(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
   return c;
 }
 
@@ -203,8 +194,7 @@ operator>(const Integer& n, const LinExpression& e) {
 inline Constraint
 operator==(const LinExpression& e, const Integer& n) {
   LinExpression diff = e - n;
-  Constraint c(diff);
-  c.set_is_equality();
+  Constraint c(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
   // Enforce normalization.
   c.strong_normalize();
   return c;
@@ -214,9 +204,8 @@ operator==(const LinExpression& e, const Integer& n) {
 inline Constraint
 operator>=(const LinExpression& e, const Integer& n) {
   LinExpression diff = e - n;
-  Constraint c(diff);
-  c.set_is_inequality();
-  // Enforcing normalization.
+  Constraint c(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
+  // Enforce normalization.
   c.normalize();
   return c;
 }
@@ -231,7 +220,7 @@ operator>(const LinExpression& e, const Integer& n) {
   diff += e;
   diff -= n;
 
-  Constraint c(diff);
+  Constraint c(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
   c.set_not_necessarily_closed();
   c.set_is_inequality();
   return c;
@@ -299,7 +288,7 @@ Constraint::epsilon_leq_one() {
 
 inline void
 Constraint::swap(Constraint& y) {
-  Row::swap(y);
+  Linear_Row::swap(y);
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -31,23 +31,23 @@ namespace Parma_Polyhedra_Library {
 
 inline
 LinExpression::LinExpression()
-  : Row(Row::Type(), 1) {
+  : Linear_Row(1, Linear_Row::Flags()) {
 }
 
 inline
 LinExpression::LinExpression(dimension_type sz, bool)
-  : Row(Row::Type(), sz) {
+  : Linear_Row(sz, Linear_Row::Flags()) {
 }
 
 inline
 LinExpression::LinExpression(const Variable v)
-  : Row(Row::Type(), v.id() + 2) {
+  : Linear_Row(v.id() + 2, Linear_Row::Flags()) {
   (*this)[v.id() + 1] = 1;
 }
 
 inline
 LinExpression::LinExpression(const LinExpression& e)
-  : Row(e) {
+  : Linear_Row(e) {
 }
 
 inline
@@ -56,12 +56,12 @@ LinExpression::~LinExpression() {
 
 inline
 LinExpression::LinExpression(const LinExpression& e, dimension_type sz)
-  : Row(e, sz, sz) {
+  : Linear_Row(e, sz, sz) {
 }
 
 inline
 LinExpression::LinExpression(const Integer& n)
-  : Row(Row::Type(), 1) {
+  : Linear_Row(1, Linear_Row::Flags()) {
   (*this)[0] = n;
 }
 
@@ -74,12 +74,12 @@ inline const Integer&
 LinExpression::coefficient(Variable v) const {
   if (v.id() >= space_dimension())
     return Integer_zero();
-  return Row::coefficient(v.id());
+  return Linear_Row::coefficient(v.id());
 }
 
 inline const Integer&
 LinExpression::inhomogeneous_term() const {
-  return Row::inhomogeneous_term();
+  return Linear_Row::inhomogeneous_term();
 }
 
 inline const LinExpression&
@@ -128,7 +128,7 @@ operator-=(LinExpression& e, const Integer& n) {
 
 inline void
 LinExpression::swap(LinExpression& y) {
-  Row::swap(y);
+  Linear_Row::swap(y);
 }
 
 } // namespace Parma_Polyhedra_Library

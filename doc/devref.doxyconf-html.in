@@ -435,6 +435,14 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Matrix.defs.hh \
                          @srcdir@/../src/Matrix.inlines.hh \
                          @srcdir@/../src/Matrix.cc \
+                         @srcdir@/../src/Linear_Row.types.hh \
+                         @srcdir@/../src/Linear_Row.defs.hh \
+                         @srcdir@/../src/Linear_Row.inlines.hh \
+                         @srcdir@/../src/Linear_Row.cc \
+                         @srcdir@/../src/Linear_System.types.hh \
+                         @srcdir@/../src/Linear_System.defs.hh \
+                         @srcdir@/../src/Linear_System.inlines.hh \
+                         @srcdir@/../src/Linear_System.cc \
                          @srcdir@/../src/SatRow.types.hh \
                          @srcdir@/../src/SatRow.defs.hh \
                          @srcdir@/../src/SatRow.inlines.hh \

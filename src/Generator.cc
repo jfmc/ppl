@@ -58,7 +58,7 @@ PPL::Generator::point(const LinExpression& e, const Integer& d) {
     throw std::invalid_argument("PPL::point(e, d):\n"
 				"d == 0.");
   LinExpression ec = e;
-  Generator g(ec);
+  Generator g(ec, Generator::POINT, NECESSARILY_CLOSED);
   g[0] = d;
 
   // If the divisor is negative, we negate it as well as
@@ -68,8 +68,7 @@ PPL::Generator::point(const LinExpression& e, const Integer& d) {
     for (dimension_type i = g.size(); i-- > 0; )
       negate(g[i]);
 
-  g.set_is_ray_or_point();
-  // Enforcing normalization.
+  // Enforce normalization.
   g.normalize();
   return g;
 }
@@ -84,9 +83,9 @@ PPL::Generator::closure_point(const LinExpression& e, const Integer& d) {
   ec += e;
   // A closure point is indeed a point in the higher dimension space.
   Generator g = point(ec, d);
-  // Setting the topology kind.
+  // Fix the topology.
   g.set_not_necessarily_closed();
-  // Enforcing normalization.
+  // Enforce normalization.
   g.normalize();
   return g;
 }
@@ -99,10 +98,9 @@ PPL::Generator::ray(const LinExpression& e) {
 				"e == 0, but the origin cannot be a ray.");
 
   LinExpression ec = e;
-  Generator g(ec);
+  Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
   g[0] = 0;
-  g.set_is_ray_or_point();
-  // Enforcing normalization.
+  // Enforce normalization.
   g.normalize();
   return g;
 }
@@ -115,9 +113,8 @@ PPL::Generator::line(const LinExpression& e) {
 				"e == 0, but the origin cannot be a line.");
 
   LinExpression ec = e;
-  Generator g(ec);
+  Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
   g[0] = 0;
-  g.set_is_line();
   // Enforce normalization.
   g.strong_normalize();
   return g;
@@ -233,20 +230,29 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
 
 bool
 PPL::Generator::OK() const {
-#ifndef NDEBUG
-  using std::endl;
-  using std::cerr;
-#endif
-
   const Generator& g = *this;
 
-  // A generator has to be normalized.
+  // Topology consistency check.
+  const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
+  if (size() < min_size) {
+#ifndef NDEBUG
+    std::cerr << "Generator has fewer coefficeints than the minumum "
+	      << "allowed by its topology:"
+	      << std::endl
+	      << "size is " << size()
+	      << ", minimum is " << min_size << "."
+	      << std::endl;
+#endif
+    return false;
+  }
+
+  // Normalization check.
   Generator tmp = g;
   tmp.strong_normalize();
   if (tmp != g) {
 #ifndef NDEBUG
-    cerr << "Generators should be strongly normalized!"
-	 << endl;
+    std::cerr << "Generators should be strongly normalized!"
+	      << std::endl;
 #endif
     return false;
   }
@@ -257,16 +263,16 @@ PPL::Generator::OK() const {
   case RAY:
     if (g[0] != 0) {
 #ifndef NDEBUG
-      cerr << "Lines must have a zero inhomogeneous term!"
-	   << endl;
+      std::cerr << "Lines must have a zero inhomogeneous term!"
+		<< std::endl;
 #endif
       return false;
     }
     if (!g.is_necessarily_closed() && g[size() - 1] != 0) {
 #ifndef NDEBUG
-      cerr << "Lines and rays must have a zero coefficient "
-	   << "for the epsilon dimension!"
-	   << endl;
+      std::cerr << "Lines and rays must have a zero coefficient "
+		<< "for the epsilon dimension!"
+		<< std::endl;
 #endif
       return false;
     }
@@ -274,8 +280,8 @@ PPL::Generator::OK() const {
     // that the epsilon coordinate is zero.
     if (g.all_homogeneous_terms_are_zero()) {
 #ifndef NDEBUG
-      cerr << "The origin of the vector space cannot be a line or a ray!"
-	   << endl;
+      std::cerr << "The origin of the vector space cannot be a line or a ray!"
+		<< std::endl;
 #endif
       return false;
     }
@@ -284,16 +290,16 @@ PPL::Generator::OK() const {
   case POINT:
     if (g[0] <= 0) {
 #ifndef NDEBUG
-      cerr << "Points must have a positive divisor!"
-	   << endl;
+      std::cerr << "Points must have a positive divisor!"
+		<< std::endl;
 #endif
       return false;
     }
     if (!g.is_necessarily_closed())
       if (g[size() - 1] <= 0) {
 #ifndef NDEBUG
-	cerr << "In the NNC topology, points must have epsilon > 0"
-	     << endl;
+	std::cerr << "In the NNC topology, points must have epsilon > 0"
+		  << std::endl;
 #endif
 	return false;
       }
@@ -302,8 +308,8 @@ PPL::Generator::OK() const {
   case CLOSURE_POINT:
     if (g[0] <= 0) {
 #ifndef NDEBUG
-      cerr << "Closure points must have a positive divisor!"
-	   << endl;
+      std::cerr << "Closure points must have a positive divisor!"
+		<< std::endl;
 #endif
       return false;
     }

@@ -215,6 +215,12 @@ struct From_Bounding_Box {
 void
 normalize2(const Integer& x, const Integer& y, Integer& nx, Integer& ny);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns a mask for the lowest \p n bits,
+#endif
+template <typename T>
+T low_bits_mask(unsigned n);
+
 } // namespace Parma_Polyhedra_Library
 
 #include "globals.inlines.hh"

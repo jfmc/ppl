@@ -33,8 +33,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #error "Exactly one among USE_PPL, USE_POLKA and USE_POLYLIB must be defined."
 #endif
 
-#include <config.h>
-
 #if defined(USE_PPL)
 
 #include "ppl_install.hh"
@@ -49,6 +47,7 @@ typedef PPL::C_Polyhedron POLYHEDRON_TYPE;
 
 #elif defined(USE_POLKA)
 
+#include <config.h>
 #include <gmp.h>
 
 extern "C" {
@@ -69,6 +68,7 @@ typedef poly_t* POLYHEDRON_TYPE;
 
 #elif defined(USE_POLYLIB)
 
+#include <config.h>
 #include <gmp.h>
 
 extern "C" {

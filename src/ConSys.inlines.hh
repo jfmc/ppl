@@ -30,34 +30,29 @@ namespace Parma_Polyhedra_Library {
 
 inline
 ConSys::ConSys()
-  : Matrix(NECESSARILY_CLOSED) {
+  : Linear_System(NECESSARILY_CLOSED) {
 }
 
 inline
 ConSys::ConSys(const Constraint& c)
-  : Matrix(c.topology()) {
-  Matrix::insert(c);
+  : Linear_System(c.topology()) {
+  Linear_System::insert(c);
 }
 
 inline
 ConSys::ConSys(const ConSys& cs)
-  : Matrix(cs) {
+  : Linear_System(cs) {
 }
 
 inline
 ConSys::ConSys(const Topology topol)
-  : Matrix(topol) {
+  : Linear_System(topol) {
 }
 
 inline
 ConSys::ConSys(const Topology topol,
 	       const dimension_type n_rows, const dimension_type n_columns)
-  : Matrix(topol, n_rows, n_columns) {
-}
-
-inline
-ConSys::ConSys(ConSys& y, const dimension_type first_stolen)
-  : Matrix(y, first_stolen) {
+  : Linear_System(topol, n_rows, n_columns) {
 }
 
 inline
@@ -66,18 +61,18 @@ ConSys::~ConSys() {
 
 inline ConSys&
 ConSys::operator=(const ConSys& y) {
-  Matrix::operator=(y);
+  Linear_System::operator=(y);
   return *this;
 }
 
 inline Constraint&
 ConSys::operator[](const dimension_type k) {
-  return static_cast<Constraint&> (Matrix::operator[](k));
+  return static_cast<Constraint&>(Linear_System::operator[](k));
 }
 
 inline const Constraint&
 ConSys::operator[](const dimension_type k) const {
-  return static_cast<const Constraint&> (Matrix::operator[](k));
+  return static_cast<const Constraint&>(Linear_System::operator[](k));
 }
 
 inline dimension_type
@@ -85,30 +80,23 @@ ConSys::max_space_dimension() {
   // Column zero holds the inhomogeneous term.
   // In NNC constraint systems, the last column holds the coefficient
   // of the epsilon dimension.
-  return Matrix::max_num_columns() - 2;
+  return Linear_System::max_num_columns() - 2;
 }
 
 inline dimension_type
 ConSys::space_dimension() const {
-  return Matrix::space_dimension();
+  return Linear_System::space_dimension();
 }
 
 inline void
 ConSys::clear() {
-  Matrix::clear();
+  Linear_System::clear();
 }
 
 inline const ConSys&
 ConSys::zero_dim_empty() {
   static const ConSys zdf(Constraint::zero_dim_false());
   return zdf;
-}
-
-inline
-ConSys::const_iterator::
-const_iterator(const Parma_Polyhedra_Library::Matrix::const_iterator& iter,
-	       const ConSys& csys)
-  : i(iter), csp(&csys) {
 }
 
 inline
@@ -166,22 +154,29 @@ ConSys::const_iterator::operator!=(const const_iterator& y) const {
   return i != y.i;
 }
 
+inline
+ConSys::const_iterator::
+const_iterator(const Linear_System::const_iterator& iter,
+	       const ConSys& csys)
+  : i(iter), csp(&csys) {
+}
+
 inline ConSys::const_iterator
 ConSys::begin() const {
-  const_iterator i(Matrix::begin(), *this);
+  const_iterator i(Linear_System::begin(), *this);
   i.skip_forward();
   return i;
 }
 
 inline ConSys::const_iterator
 ConSys::end() const {
-  const const_iterator i(Matrix::end(), *this);
+  const const_iterator i(Linear_System::end(), *this);
   return i;
 }
 
 inline void
 ConSys::swap(ConSys& y) {
-  Matrix::swap(y);
+  Linear_System::swap(y);
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -25,6 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_globals_inlines_hh 1
 
 #include "Integer.defs.hh"
+#include <limits>
+#include <cassert>
 
 namespace Parma_Polyhedra_Library {
 
@@ -34,6 +36,13 @@ normalize2(const Integer& x, const Integer& y, Integer& nx, Integer& ny) {
   gcd_assign(gcd, x, y);
   exact_div_assign(nx, x, gcd);
   exact_div_assign(ny, y, gcd);
+}
+
+template <typename T>
+inline T
+low_bits_mask(unsigned n) {
+  assert(n < unsigned(std::numeric_limits<T>::digits));
+  return n == 0 ? 0 : ~(~(T(0u)) << n);
 }
 
 } // namespace Parma_Polyhedra_Library

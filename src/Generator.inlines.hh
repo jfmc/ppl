@@ -27,18 +27,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Generator::Generator(LinExpression& e) {
-  Row::swap(e);
+Generator::Generator(LinExpression& e, Type type, Topology topology) {
+  assert(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
+  Linear_Row::swap(e);
+  flags() = Flags(topology, (type == LINE
+			     ? LINE_OR_EQUALITY
+			     : RAY_OR_POINT_OR_INEQUALITY));
 }
 
 inline
 Generator::Generator(const Generator& g)
-  : Row(g) {
+  : Linear_Row(g) {
 }
 
 inline
 Generator::Generator(const Generator& g, dimension_type dimension)
-  : Row(g, dimension, dimension) {
+  : Linear_Row(g, dimension, dimension) {
 }
 
 inline
@@ -47,13 +51,13 @@ Generator::~Generator() {
 
 inline Generator&
 Generator::operator=(const Generator& g) {
-  Row::operator=(g);
+  Linear_Row::operator=(g);
   return *this;
 }
 
 inline dimension_type
 Generator::space_dimension() const {
-  return Row::space_dimension();
+  return Linear_Row::space_dimension();
 }
 
 inline bool
@@ -110,12 +114,12 @@ Generator::coefficient(const Variable v) const {
   const dimension_type v_id = v.id();
   if (v_id >= space_dimension())
     throw_dimension_incompatible("coefficient(v)", "v", v);
-  return Row::coefficient(v_id);
+  return Linear_Row::coefficient(v_id);
 }
 
 inline const Integer&
 Generator::divisor() const {
-  const Integer& d = Row::inhomogeneous_term();
+  const Integer& d = Linear_Row::inhomogeneous_term();
   if (!is_ray_or_point() || d == 0)
     throw_invalid_argument("divisor()",
 			   "*this is neither a point nor a closure point");
@@ -161,7 +165,7 @@ closure_point(const LinExpression& e, const Integer& d) {
 
 inline void
 Generator::swap(Generator& y) {
-  Row::swap(y);
+  Linear_Row::swap(y);
 }
 
 } // namespace Parma_Polyhedra_Library

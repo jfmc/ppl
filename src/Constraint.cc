@@ -46,9 +46,7 @@ PPL::Constraint::throw_dimension_incompatible(const char* method,
 PPL::Constraint
 PPL::Constraint::construct_epsilon_geq_zero() {
   LinExpression e = Variable(0);
-  Constraint c = Constraint(e);
-  c.set_not_necessarily_closed();
-  c.set_is_ray_or_point_or_inequality();
+  Constraint c(e, Constraint::NONSTRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
   return c;
 }
 
@@ -178,18 +176,27 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
 
 bool
 PPL::Constraint::OK() const {
+  // Topology consistency check.
+  const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
+  if (size() < min_size) {
 #ifndef NDEBUG
-  using std::endl;
-  using std::cerr;
+    std::cerr << "Constraint has fewer coefficients than the minumum "
+	      << "allowed by its topology:"
+	      << std::endl
+	      << "size is " << size()
+	      << ", minimum is " << min_size << "."
+	      << std::endl;
 #endif
+    return false;
+  }
 
-  // A constraint has to be normalized.
+  // Normalization check.
   Constraint tmp = *this;
   tmp.strong_normalize();
   if (tmp != *this) {
 #ifndef NDEBUG
-    cerr << "Constraints should be strongly normalized!"
-	 << endl;
+    std::cerr << "Constraint is not strongly normalized as it should be."
+	      << std::endl;
 #endif
     return false;
   }

@@ -23,7 +23,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "Matrix.defs.hh"
+#include "Linear_Row.defs.hh"
+#include "Linear_System.defs.hh"
+#include "SatRow.defs.hh"
 #include "SatMatrix.defs.hh"
 #include "Polyhedron.defs.hh"
 #include "globals.defs.hh"
@@ -42,7 +44,7 @@ namespace PPL = Parma_Polyhedra_Library;
   constraints in the result of conversion.
 
   \param source
-  The matrix to use to convert \p dest: it may be modified;
+  The system to use to convert \p dest: it may be modified;
 
   \param start
   The index of \p source row from which conversion begin;
@@ -55,7 +57,7 @@ namespace PPL = Parma_Polyhedra_Library;
   are the rows of \p dest that satisfy but do not saturate it;
 
   \param num_lines_or_equalities
-  The number of rows in the matrix \p dest that are either lines of
+  The number of rows in the system \p dest that are either lines of
   the polyhedron (when \p dest is a system of generators) or equality
   constraints (when \p dest is a system of constraints).
 
@@ -66,9 +68,9 @@ namespace PPL = Parma_Polyhedra_Library;
   If some of the constraints in \p source are redundant, they will be removed.
   This is why the \p source is not declared to be a constant parameter.
 
-  If \p start is 0, then \p source is a sorted matrix; also, \p dest is
+  If \p start is 0, then \p source is a sorted system; also, \p dest is
   a generator system corresponding to an empty constraint system.
-  If otherwise \p start is greater than 0, then the two sub-matrices of
+  If otherwise \p start is greater than 0, then the two sub-systems of
   \p source made by the non-pending rows and the pending rows, respectively,
   are both sorted; also, \p dest is the generator system corresponding to
   the non-pending constraints of \p source.
@@ -87,11 +89,11 @@ namespace PPL = Parma_Polyhedra_Library;
   we have what is called a <EM>double description</EM>
   (or <EM>DD pair</EM>) for \f$P\f$.
 
-  Here, the <EM>representation matrix</EM> refers to the matrix \f$C\f$
+  Here, the <EM>representation system</EM> refers to the system \f$C\f$
   whose rows represent the constraints that characterize \f$P\f$
-  and the <EM>generating matrix</EM>, the matrix \f$G\f$ whose rows
+  and the <EM>generating system</EM>, the system \f$G\f$ whose rows
   represent the generators of \f$P\f$.
-  We say that a pair \f$(C, G)\f$ of (real) matrices is
+  We say that a pair \f$(C, G)\f$ of (real) systems is
   a <EM>double description pair</EM> if
   \f[
     C\vect{x} \geq \vect{0}
@@ -103,7 +105,7 @@ namespace PPL = Parma_Polyhedra_Library;
   The term "double description" is quite natural in the sense that
   such a pair contains two different description of the same object.
   In fact, if we refer to the cone representation of a polyhedron \f$P\f$
-  and we call \f$C\f$ and \f$G\f$ the matrices of constraints and
+  and we call \f$C\f$ and \f$G\f$ the systems of constraints and
   rays respectively, we have
   \f[
     P = \{\, \vect{x} \in \Rset^n \mid C\vect{x} \geq \vect{0}\, \}
@@ -112,14 +114,14 @@ namespace PPL = Parma_Polyhedra_Library;
   \f]
 
   Because of the theorem of Minkowski (see Section \ref prelims),
-  we can say that, given a \f$m \times n\f$ representation matrix
+  we can say that, given a \f$m \times n\f$ representation system
   \f$C\f$ such that
   \f$\mathop{\mathrm{rank}}(C) = n = \mathit{dimension of the whole space}\f$
   for a non-empty polyhedron \f$P\f$,
-  it is always possible to find a generating matrix \f$G\f$ for \f$P\f$
+  it is always possible to find a generating system \f$G\f$ for \f$P\f$
   such that \f$(C, G)\f$ is a DD pair.
-  Conversely, Weil's theorem ensures that, for each generating matrix
-  \f$G\f$, it is possible to find a representation matrix \f$C\f$
+  Conversely, Weil's theorem ensures that, for each generating system
+  \f$G\f$, it is possible to find a representation system \f$C\f$
   such that \f$(C, G)\f$ is a DD pair.
 
   For efficiency reasons, our representation of polyhedra makes use
@@ -238,13 +240,13 @@ namespace PPL = Parma_Polyhedra_Library;
   In view of this result, the following exposition assumes, for clarity,
   that the conversion being performed is from constraints to generators.
   Thus, even if the roles of \p source and \p dest can be interchanged,
-  in the sequel we assume the \p source matrix will contain the constraints
-  that represent the polyhedron and the \p dest matrix will contain
+  in the sequel we assume the \p source system will contain the constraints
+  that represent the polyhedron and the \p dest system will contain
   the generator that generates it.
 
   There are some observations that are useful to understand this function:
 
-  Observation 1: Let \f$A\f$ be a matrix of constraints that generate
+  Observation 1: Let \f$A\f$ be a system of constraints that generate
   the polyhedron \f$P\f$ and \f$\vect{c}\f$ a new constraint that must
   be added. Suppose that there is a line \f$\vect{z}\f$ that does not
   saturate the constraint \f$\vect{c}\f$. If we combine the old lines
@@ -279,9 +281,9 @@ namespace PPL = Parma_Polyhedra_Library;
   a) \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ are adjacent extreme rays
      (see Section \ref prelims);
   b) \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ are extreme rays and the
-     rank of the matrix composed by the constraints saturated by both
+     rank of the system composed by the constraints saturated by both
      \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ is equal to
-     \f$d - 2\f$, where \f$d\f$ is the rank of the matrix of constraints.
+     \f$d - 2\f$, where \f$d\f$ is the rank of the system of constraints.
 
   In fact, let \f$F\f$ be the system of generators that saturate the
   constraints saturated by both \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$.
@@ -305,7 +307,7 @@ namespace PPL = Parma_Polyhedra_Library;
                            (or = \mu \langle \vect{c}, \vect{r}_2 \rangle).
   \f]
   So, there is no other extreme ray in \f$F\f$ and a) holds.
-  Otherwise, if b) does not hold, the rank of the matrix generated by
+  Otherwise, if b) does not hold, the rank of the system generated by
   the constraints saturated by both \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$
   is equal to \f$d - k\f$, with \p k \>= 3, the set \f$F\f$ is
   \p k -dimensional and at least \p k extreme rays are necessary
@@ -314,7 +316,7 @@ namespace PPL = Parma_Polyhedra_Library;
   a) does not hold.
 
   Proposition 2: When we build the new system of generators starting from
-  a matrix \f$A\f$ of constraints of \f$P\f$, if \f$\vect{c}\f$ is the
+  a system \f$A\f$ of constraints of \f$P\f$, if \f$\vect{c}\f$ is the
   constraint to add to \f$A\f$ and all lines of \f$P\f$ saturate
   \f$\vect{c}\f$, the new set of rays is the union of those rays that
   saturate, of those that satisfy and of a set \f$\overline Q\f$ of
@@ -327,7 +329,7 @@ namespace PPL = Parma_Polyhedra_Library;
   rays is not irredundant, in general.
 
   In fact, if \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ are not adjacent,
-  the rank of the matrix composed by the constraints saturated by both
+  the rank of the system composed by the constraints saturated by both
   \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ is different from \f$d - 2\f$
   (see the previous proposition) or neither \f$\vect{r}_1\f$ nor
   \f$\vect{r}_2\f$ are extreme rays. Since the new ray \f$\vect{r}\f$
@@ -335,7 +337,7 @@ namespace PPL = Parma_Polyhedra_Library;
   it saturates the same constraints saturated by both \f$\vect{r}_1\f$ and
   \f$\vect{r}_2\f$.
   If the rank is less than \f$d - 2\f$, the rank of
-  the matrix composed by \f$\vect{c}\f$ (that is saturated by \f$\vect{r}\f$)
+  the system composed by \f$\vect{c}\f$ (that is saturated by \f$\vect{r}\f$)
   and by the constraints of \f$A\f$ saturated by \f$\vect{r}\f$  is less
   than \f$d - 1\f$. It means that \f$r\f$ is redundant (see
   Section \ref prelims).
@@ -346,9 +348,9 @@ namespace PPL = Parma_Polyhedra_Library;
   \f$\vect{r}\f$ is redundant.
 */
 PPL::dimension_type
-PPL::Polyhedron::conversion(Matrix& source,
+PPL::Polyhedron::conversion(Linear_System& source,
 			    const dimension_type start,
-			    Matrix& dest,
+			    Linear_System& dest,
 			    SatMatrix& sat,
 			    dimension_type num_lines_or_equalities) {
   dimension_type source_num_rows = source.num_rows();
@@ -376,7 +378,7 @@ PPL::Polyhedron::conversion(Matrix& source,
   TEMP_INTEGER(normalized_sp_i);
   TEMP_INTEGER(normalized_sp_o);
 
-  // Converting the sub-matrix of `source' having rows with indexes
+  // Converting the sub-system of `source' having rows with indexes
   // from `start' to the last one (i.e., `source_num_rows' - 1).
   for (dimension_type k = start; k < source_num_rows; ) {
 
@@ -387,7 +389,7 @@ PPL::Polyhedron::conversion(Matrix& source,
       // There is no need to swap the columns of `sat' (all zeroes).
       std::swap(source[k], source[k+source_num_redundant]);
 
-    Row& source_k = source[k];
+    Linear_Row& source_k = source[k];
 
     // Constraints and generators must have the same dimension,
     // otherwise the scalar product below will bomb.
@@ -448,7 +450,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  negate(dest[index_non_zero][j]);
       }
       // Having changed a line to a ray, we set `dest' to be a
-      // non-sorted matrix, we decrement the number of lines of `dest' and,
+      // non-sorted system, we decrement the number of lines of `dest' and,
       // if necessary, we move the new ray below all the remaining lines.
       dest.set_sorted(false);
       --num_lines_or_equalities;
@@ -458,7 +460,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	std::swap(scalar_prod[index_non_zero],
 		  scalar_prod[num_lines_or_equalities]);
       }
-      const Row& dest_nle = dest[num_lines_or_equalities];
+      const Linear_Row& dest_nle = dest[num_lines_or_equalities];
 
       // Computing the new lineality space.
       // Since each line must lie on the hyper-plane corresponding to
@@ -492,7 +494,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 		     scalar_prod[num_lines_or_equalities],
 		     normalized_sp_i,
 		     normalized_sp_o);
-	  Row& dest_i = dest[i];
+	  Linear_Row& dest_i = dest[i];
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Integer& dest_i_c = dest_i[c];
 	    dest_i_c *= normalized_sp_o;
@@ -529,7 +531,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 		     scalar_prod[num_lines_or_equalities],
 		     normalized_sp_i,
 		     normalized_sp_o);
-	  Row& dest_i = dest[i];
+	  Linear_Row& dest_i = dest[i];
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Integer& dest_i_c = dest_i[c];
 	    dest_i_c *= normalized_sp_o;
@@ -716,13 +718,13 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  // saturation row to `sat'.
 		  if (dest_num_rows == dest.num_rows()) {
 		    // Make room for one more row.
-		    dest.add_pending_row(Row::Type(dest.topology(),
-						   Row::RAY_OR_POINT_OR_INEQUALITY));
+		    dest.add_pending_row(Linear_Row::Flags(dest.topology(),
+							   Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
 		    sat.add_row(new_satrow);
 		  }
 		  else
 		    sat[dest_num_rows] = new_satrow;
-		  Row& new_row = dest[dest_num_rows];
+		  Linear_Row& new_row = dest[dest_num_rows];
 		  // The following fragment optimizes the computation of
 		  //
 		  // Integer scale = scalar_prod[i];
@@ -814,26 +816,26 @@ PPL::Polyhedron::conversion(Matrix& source,
   }
 
   // We may have identified some redundant constraints in `source',
-  // which have been swapped at the end of the matrix.
+  // which have been swapped at the end of the system.
   if (source_num_redundant > 0) {
     assert(source_num_redundant == source.num_rows() - source_num_rows);
     source.erase_to_end(source_num_rows);
     sat.columns_erase_to_end(source_num_rows);
   }
   // If `start == 0', then `source' was sorted and remained so.
-  // If otherwise `start > 0', then the two sub-matrix made by the
+  // If otherwise `start > 0', then the two sub-system made by the
   // non-pending rows and the pending rows, respectively, were both sorted.
-  // Thus, the overall matrix is sorted if and only if either
-  // `start == source_num_rows' (i.e., the second sub-matrix is empty)
+  // Thus, the overall system is sorted if and only if either
+  // `start == source_num_rows' (i.e., the second sub-system is empty)
   // or the row ordering holds for the two rows at the boundary between
-  // the two sub-matrices.
+  // the two sub-systems.
   if (start > 0 && start < source_num_rows)
-    source.set_sorted(source[start - 1] <= source[start]);
+    source.set_sorted(compare(source[start - 1], source[start]) <= 0);
   // There are no longer pending constraints in `source'.
   source.unset_pending_rows();
 
   // We may have identified some redundant rays in `dest',
-  // which have been swapped at the end of the matrix.
+  // which have been swapped at the end of the system.
   if (dest_num_rows < dest.num_rows()) {
     dest.erase_to_end(dest_num_rows);
     // Be careful: we might have erased some of the non-pending rows.
@@ -846,7 +848,7 @@ PPL::Polyhedron::conversion(Matrix& source,
     // sorted, then we have to also check for the sortedness of the
     // pending generators.
     for (dimension_type i = dest.first_pending_row(); i < dest_num_rows; ++i)
-      if (dest[i - 1] > dest[i]) {
+      if (compare(dest[i - 1], dest[i]) > 0) {
 	dest.set_sorted(false);
 	break;
       }

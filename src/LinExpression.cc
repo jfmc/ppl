@@ -30,17 +30,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-
 PPL::LinExpression::LinExpression(const Constraint& c)
-  : Row(Row::Type(), c.space_dimension() + 1) {
+  : Linear_Row(c.space_dimension() + 1, Linear_Row::Flags()) {
   LinExpression& e = *this;
   for (dimension_type i = size(); i-- > 0; )
     e[i] = c[i];
 }
 
-
 PPL::LinExpression::LinExpression(const Generator& g)
-  : Row(Row::Type(), g.space_dimension() + 1) {
+  : Linear_Row(g.space_dimension() + 1, Linear_Row::Flags()) {
   LinExpression& e = *this;
   // Do not copy the divisor of `g'.
   for (dimension_type i = size(); --i > 0; )

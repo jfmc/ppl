@@ -34,16 +34,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstddef>
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! The base class for systems of constraints and generators.
+//! A 2-dimensional matrix of coefficients.
 /*!
-  An object of this class represents either a constraint system
-  or a generator system.
-  Each Matrix object can be viewed as a multiset of rows
-  (where each row implements a constraint or a generator)
-  and is characterized by the topological kind of the rows,
-  by the matrix dimensions (the number of rows and columns)
-  and by a Boolean flag that, when <CODE>true</CODE>,
-  ensures that the rows of the matrix are sorted.
+  A Matrix object is a sequence of Row objects and is characterized
+  by the matrix dimensions (the number of rows and columns).
+  All the rows in a matrix, besides having the same size (corresponding
+  to the number of columns of the matrix), are also bound to have the
+  same capacity.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
@@ -55,45 +52,29 @@ protected:
   //! Returns the maximum number of columns of a Matrix.
   static dimension_type max_num_columns();
 
-  //! Builds an empty matrix with specified topology.
+  //! Builds an empty matrix.
   /*!
     Rows' size and capacity are initialized to \f$0\f$.
   */
-  Matrix(Topology topol);
+  Matrix();
 
-  //! Builds a matrix with specified topology and dimensions.
+  //! Builds a zero matrix with specified dimensions and flags.
   /*!
-    \param topol
-    The topology of the matrix that will be created;
-
     \param n_rows
     The number of rows of the matrix that will be created;
 
     \param n_columns
     The number of columns of the matrix that will be created.
 
-    This constructor creates an unsorted \p n_rows \f$\times\f$ \p n_columns
-    matrix whose rows are all initialized to rays or points or inequalities
-    of the given topology.
+    \param row_flags
+    The flags used to build the rows of the matrix;
+    by default, the rows will have all flags unset.
   */
-  Matrix(Topology topol, dimension_type n_rows, dimension_type n_columns);
+  Matrix(dimension_type n_rows, dimension_type n_columns,
+	 Row::Flags row_flags = Row::Flags());
 
   //! Copy-constructor.
   Matrix(const Matrix& y);
-
-  //! \brief
-  //! Split-constructor: builds a matrix by stealing from \p y
-  //! the rows having index greater or equal to \p first_stolen.
-  /*!
-    \param y
-    The matrix being split. On entry, it is assumed that \p y has
-    \p first_stolen + 1 rows at least.  On exit, it will have
-    \p first_stolen rows;
-
-    \param first_stolen
-    The index where \p y is split.
-  */
-  Matrix(Matrix& y, dimension_type first_stolen);
 
   //! Destructor.
   ~Matrix();
@@ -166,74 +147,67 @@ public:
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
-private:
+  //private:
+protected:
   //! Contains the rows of the matrix.
   std::vector<Row> rows;
-
-  //! The topological kind of the rows in the matrix.
-  Topology row_topology;
 
   //! Size of the initialized part of each row.
   dimension_type row_size;
 
-  //! \brief
-  //! Capacity allocated for each row, i.e., number of
-  //! <CODE>Integer</CODE> objects that each row can contain.
+  //! Capacity allocated for each row.
   dimension_type row_capacity;
-
-  //! The index of the first pending row.
-  dimension_type index_first_pending;
-
-  //! \brief
-  //! <CODE>true</CODE> if rows are sorted in the ascending order as
-  //! defined by <CODE>bool operator<(const Row& x, const Row& y)</CODE>.
-  //! If <CODE>false</CODE> we cannot conclude that rows are not sorted.
-  bool sorted;
 
 public:
   //! Swaps \p *this with \p y.
   void swap(Matrix& y);
 
-  //! Sets the sortedness flag of the matrix to \p value.
-  void set_sorted(bool value);
-
-  //! Sets the matrix topology to <CODE>NECESSARILY_CLOSED</CODE>.
-  void set_necessarily_closed();
-
-  //! Sets the matrix topology to <CODE>NOT_NECESSARILY_CLOSED</CODE>.
-  void set_not_necessarily_closed();
-
-  //! Sets the topology of all rows equal to the matrix topology.
-  void set_rows_topology();
-
-  //! Sets the index to indicate that the matrix has no pending rows.
-  void unset_pending_rows();
-
-  //! Sets the index of the first pending row to \p first_pending.
-  void set_index_first_pending_row(dimension_type first_pending);
-
-  //! Makes the matrix grow by adding more rows and/or more columns.
+  //! Adds to the matrix \p n rows of zeroes with flags set to \p row_flags.
   /*!
-    \param new_n_rows
-    The number of rows of the resized matrix;
+    \param n
+    The number of rows to be added: must be strictly positive.
 
-    \param new_n_columns
-    The number of columns of the resized matrix.
+    \param row_flags
+    Flags for the newly added rows.
 
-    The matrix is expanded to the specified dimensions preserving
-    its contents and avoiding reallocation whenever possible.
-    It is assumed that the dimensions of current matrix are no more
-    than \p new_n_rows and \p new_n_cols
-    The contents of the original matrix will be found in the upper,
-    left-hand corner of the new matrix.
-    The newly added rows and columns contain all zeroes.
+    Turns the \f$r \times c\f$ matrix \f$M\f$ into
+    the \f$(r+n) \times c\f$ matrix \f$M \choose 0\f$.
+    The matrix is expanded avoiding reallocation whenever possible.
   */
-  void grow(dimension_type new_n_rows, dimension_type new_n_columns);
+  void add_zero_rows(dimension_type n, Row::Flags row_flags);
 
-  //! \brief
-  //! Makes the matrix shrink by removing those columns having an index
-  //! greater than or equal to \p new_n_columns.
-  void remove_columns(dimension_type new_n_columns);
+  //! Adds \p n columns of zeroes to the matrix.
+  /*!
+    \param n
+    The number of columns to be added: must be strictly positive.
+
+    Turns the \f$r \times c\f$ matrix \f$M\f$ into
+    the \f$r \times (c+n)\f$ matrix \f$(M \, 0)\f$.
+    The matrix is expanded avoiding reallocation whenever possible.
+  */
+  void add_zero_columns(dimension_type n);
+
+  //! Adds \p n rows and \p m columns of zeroes to the matrix.
+  /*!
+    \param n
+    The number of rows to be added: must be strictly positive.
+
+    \param m
+    The number of columns to be added: must be strictly positive.
+
+    \param row_flags
+    Flags for the newly added rows.
+
+    Turns the \f$r \times c\f$ matrix \f$M\f$ into
+    the \f$(r+n) \times (c+m)\f$ matrix
+    \f$\bigl({M \atop 0}{0 \atop 0}\bigr)\f$.
+    The matrix is expanded avoiding reallocation whenever possible.
+  */
+  void add_zero_rows_and_columns(dimension_type n, dimension_type m,
+				 Row::Flags row_flags);
+
+  //! Makes the matrix shrink by removing its \p n trailing columns.
+  void remove_trailing_columns(dimension_type n);
 
   //! Resizes the matrix without worrying about the old contents.
   /*!
@@ -243,35 +217,15 @@ public:
     \param new_n_columns
     The number of columns of the resized matrix.
 
+    \param row_flags
+    The flags of the rows eventually added to the matrix.
+
     The matrix is expanded to the specified dimensions avoiding
     reallocation whenever possible.
     The contents of the original matrix is lost.
   */
-  void resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns);
-
-  //! Adds \p n columns of zeroes to the matrix.
-  /*!
-    \param n
-    The number of columns to be added: must be strictly positive.
-
-    Turns the \f$r \times c\f$ matrix \f$M\f$ into
-    the \f$r \times (c+n)\f$ matrix \f$(M \, 0)\f$.
-  */
-  void add_zero_columns(dimension_type n);
-
-  //! Adds \p n rows and columns to the matrix.
-  /*!
-    \param n
-    The number of rows and columns to be added: must be strictly positive.
-
-    Turns the matrix \f$M \in \Rset^r \times \Rset^c\f$ into
-    the matrix \f$N \in \Rset^{r+n} \times \Rset^{c+n}\f$
-    such that
-    \f$N = \bigl(\genfrac{}{}{0pt}{}{0}{M}\genfrac{}{}{0pt}{}{J}{o}\bigr)\f$,
-    where \f$J\f$ is the specular image
-    of the \f$n \times n\f$ identity matrix.
-  */
-  void add_rows_and_columns(dimension_type n);
+  void resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns,
+		      Row::Flags row_flags);
 
   //! Swaps the columns having indexes \p i and \p j.
   void swap_columns(dimension_type i,  dimension_type j);
@@ -296,27 +250,6 @@ public:
 
   //! \name Accessors
   //@{
-  //! Returns the matrix topology.
-  Topology topology() const;
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! the matrix topology is <CODE>NECESSARILY_CLOSED</CODE>.
-  bool is_necessarily_closed() const;
-
-  //! Returns the value of the sortedness flag.
-  bool is_sorted() const;
-
-  //! Returns the space dimension of the rows in the matrix.
-  /*!
-    The computation of the space dimension correctly ignores
-    the column encoding the inhomogeneous terms of constraint
-    (resp., the divisors of generators);
-    if the matrix topology is <CODE>NOT_NECESSARILY_CLOSED</CODE>,
-    also the column of the \f$\epsilon\f$-dimension coefficients
-    will be ignored.
-  */
-  dimension_type space_dimension() const;
 
   //! \brief
   //! Returns the number of columns of the matrix
@@ -325,23 +258,7 @@ public:
 
   //! Returns the number of rows in the matrix.
   dimension_type num_rows() const;
-
-  //! Returns the index of the first pending row.
-  dimension_type first_pending_row() const;
-
-  //! Returns the number of rows that are in the pending part of the matrix.
-  dimension_type num_pending_rows() const;
-
-  //! \brief
-  //! Returns the number of rows in the matrix
-  //! that represent either lines or equalities.
-  dimension_type num_lines_or_equalities() const;
   //@} // Accessors
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is sorted,
-  //! without checking for duplicates.
-  bool check_sorted() const;
 
   //! \name Subscript operators
   //@{
@@ -352,88 +269,18 @@ public:
   const Row& operator[](dimension_type k) const;
   //@} // Subscript operators
 
-  //! Normalizes the matrix.
-  void normalize();
-
-  //! Strongly normalizes the matrix.
-  void strong_normalize();
-
-  //! \brief
-  //! Sorts the non-pending rows (in growing order) and eliminates
-  //! duplicated ones.
-  void sort_rows();
-
-  //! \brief
-  //! Sorts the rows (in growing order) form \p first_row to
-  //! \p last_row and eliminates duplicated ones.
-  void sort_rows(dimension_type first_row, dimension_type last_row);
-
-  //! \brief
-  //! Sorts the pending rows and eliminates those that also occur
-  //! in the non-pending part of the matrix.
-  void sort_pending_and_remove_duplicates();
-
-  //! Adds a copy of the given row to the matrix.
-  void add_row(const Row& row);
-
-  //! Adds a copy of the given row to the pending part of the matrix.
-  void add_pending_row(const Row& row);
-
-  //! Adds a new empty row to the matrix, setting only its type.
-  void add_pending_row(Row::Type type);
-
-  //! \brief
-  //! Adds a copy of the given row to the matrix,
-  //! automatically resizing the matrix or the row, if needed.
-  void insert(const Row& row);
-
-  //! \brief
-  //! Adds a copy of the given row to the pending part of the matrix,
-  //! automatically resizing the matrix or the row, if needed.
-  void insert_pending(const Row& row);
-
-  //! Adds to \p *this a copy of the rows of `y'.
-  /*!
-    It is assumed that \p *this has no pending rows.
-  */
-  void add_rows(const Matrix& y);
-
-  //! Adds a copy of the rows of `y' to the pending part of `*this'.
-  void add_pending_rows(const Matrix& y);
-
-  //! \brief
-  //! Assigns to \p *this the result of merging its rows with
-  //! those of \p y, obtaining a sorted matrix.
-  /*!
-    Duplicated rows will occur only once in the result.
-    Both matrices are assumed to be sorted on entry.
-  */
-  void merge_rows_assign(const Matrix& y);
-
   //! Clears the matrix deallocating all its rows.
   void clear();
 
   //! \brief
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
-  /*!
-    Prints the topology, the number of rows, the number of columns and
-    the \p sorted flag.  The specialized methods provided by ConSys
-    and GenSys take care of properly printing the contents of the
-    matrix.
-  */
   void ascii_dump(std::ostream& s) const;
 
   //! \brief
   //! Loads from \p s an ASCII representation (as produced by \ref
   //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
   //! if successful, <CODE>false</CODE> otherwise.
-  /*!
-    Reads into a Matrix object the information produced by the output
-    of <CODE>ascii_dump()</CODE>.  The specialized methods provided by
-    ConSys and GenSys take care of properly reading the contents of
-    the matrix.
-  */
   bool ascii_load(std::istream& s);
 
   //! \brief
@@ -441,59 +288,8 @@ public:
   //! an index less than \p first_to_erase.
   void erase_to_end(dimension_type first_to_erase);
 
-  //! \brief
-  //! Sorts the matrix, removing duplicates,
-  //! keeping the saturation matrix consistent.
-  /*!
-    \param sat
-    Saturation matrix with rows corresponding to the rows of \p *this.
-  */
-  void sort_and_remove_with_sat(SatMatrix& sat);
-
-  //! Minimizes the subsystem of equations contained in \p *this.
-  /*!
-    This method works only on the equalities of the matrix:
-    the matrix is required to be partially sorted, so that
-    all the equalities are grouped at its top.
-    The method finds a minimal system for the equalities and
-    returns its rank, i.e., the number of linearly independent equalities.
-    The result is an upper triangular submatrix of equalities:
-    for each equality, the pivot is chosen starting from
-    the right-most columns.
-  */
-  dimension_type gauss();
-
-  //! \brief
-  //! Back-substitutes the coefficients to reduce
-  //! the complexity of the matrix.
-  /*!
-    Takes an upper triangular matrix.
-    For each row, starting from the one having the minimum number of
-    coefficients different from zero, computes the expression of an element
-    as a function of the remaining ones and then substitutes this expression
-    in all the other rows.
-  */
-  void back_substitute(dimension_type rank);
-
-  //! Applies the Gram-Shmidt orthogonalization method to the matrix.
-  /*!
-    It is assumed that the matrix corresponds to a minimized representation,
-    with all lines/equalities coming first.
-  */
-  void gram_shmidt();
-
   //! Checks if all the invariants are satisfied.
-  /*!
-    \param check_strong_normalized
-    <CODE>true</CODE> if and only if the strong normalization of all
-    the rows in the matrix has to be checked.
-
-    By default, the strong normalization check is performed.
-    This check may be turned off to avoid useless repeated checking;
-    e.g., when re-checking a well-formed Matrix after the permutation
-    or deletion of some of its rows.
-  */
-  bool OK(bool check_strong_normalized = true) const;
+  bool OK() const;
 };
 
 namespace std {

@@ -674,9 +674,9 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // If the corresponding polyhedral cone is _pointed_, then
       // a minimal system of generators is unique up to positive scaling.
       // We thus verify if the cone is pointed (i.e., there are no lines)
-      // and, after normalizing and sorting a copy of the matrix `gen_sys'
+      // and, after normalizing and sorting a copy of the system `gen_sys'
       // of the polyhedron (we use a copy not to modify the polyhedron's
-      // matrix) and the matrix `copy_of_gen_sys' that has been just
+      // system) and the system `copy_of_gen_sys' that has been just
       // minimized, we check if the two matrices are identical.  If
       // they are different it means that the generators of the
       // polyhedron are declared minimized, but they are not.
@@ -794,13 +794,13 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	goto bomb;
       }
 #if !GRAM_SHMIDT
-      // The matrix `copy_of_con_sys' has the form that is obtained
+      // The system `copy_of_con_sys' has the form that is obtained
       // after the functions gauss() and back_substitute().
       // A system of constraints can be minimal even if it does not
       // have this form. So, to verify if the polyhedron is correct,
-      // we copy the matrix `con_sys' in a temporary one that then
+      // we copy the system `con_sys' in a temporary one that then
       // is modified using the functions gauss() and back_substitute().
-      // If the temporary matrix and `copy_of_con_sys' are different,
+      // If the temporary system and `copy_of_con_sys' are different,
       // the polyhedron is not OK.
       copy_of_con_sys.strong_normalize();
       copy_of_con_sys.sort_rows();
@@ -1148,7 +1148,9 @@ PPL::Polyhedron::add_recycled_constraints(ConSys& cs) {
   const dimension_type old_num_rows = con_sys.num_rows();
   const dimension_type cs_num_rows = cs.num_rows();
   const dimension_type cs_num_columns = cs.num_columns();
-  con_sys.grow(old_num_rows + cs_num_rows, con_sys.num_columns());
+  con_sys.add_zero_rows(cs_num_rows,
+			Linear_Row::Flags(topology(),
+					  Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
   for (dimension_type i = cs_num_rows; i-- > 0; ) {
     // NOTE: we cannot directly swap the rows, since they might have
     // different capacities (besides possibly having different sizes):
@@ -1198,10 +1200,8 @@ PPL::Polyhedron::add_recycled_constraints_and_minimize(ConSys& cs) {
 				 "cs", cs);
 
   // Adding no constraints: just minimize.
-  if (cs.num_rows() == 0) {
-    assert(cs.num_columns() == 0);
+  if (cs.num_rows() == 0)
     return minimize();
-  }
 
   // Dealing with zero-dimensional space polyhedra first.
   if (space_dim == 0) {
@@ -1225,7 +1225,7 @@ PPL::Polyhedron::add_recycled_constraints_and_minimize(ConSys& cs) {
     return false;
   obtain_sorted_constraints_with_sat_c();
 
-  // Fully sort the matrix of constraints to be added
+  // Fully sort the system of constraints to be added
   // (before adjusting dimensions in order to save time).
   if (cs.num_pending_rows() > 0) {
     cs.unset_pending_rows();
@@ -1322,7 +1322,9 @@ PPL::Polyhedron::add_recycled_generators(GenSys& gs) {
   const dimension_type old_num_rows = gen_sys.num_rows();
   const dimension_type gs_num_rows = gs.num_rows();
   const dimension_type gs_num_columns = gs.num_columns();
-  gen_sys.grow(old_num_rows + gs_num_rows, gen_sys.num_columns());
+  gen_sys.add_zero_rows(gs_num_rows,
+			Linear_Row::Flags(topology(), 
+					  Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
   for (dimension_type i = gs_num_rows; i-- > 0; ) {
     // NOTE: we cannot directly swap the rows, since they might have
     // different capacities (besides possibly having different sizes):
@@ -1370,10 +1372,8 @@ PPL::Polyhedron::add_recycled_generators_and_minimize(GenSys& gs) {
 				 "gs", gs);
 
   // Adding no generators is equivalent to just requiring minimization.
-  if (gs.num_rows() == 0) {
-    assert(gs.num_columns() == 0);
+  if (gs.num_rows() == 0)
     return minimize();
-  }
 
   // Adding valid generators to a zero-dimensional polyhedron
   // transform it in the zero-dimensional universe polyhedron.
@@ -2285,7 +2285,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
     x.set_generators_pending();
   }
   // Otherwise, the two systems are merged.
-  // `Matrix::merge_row_assign()' requires both matrices to be ordered.
+  // `Linear_System::merge_rows_assign()' requires both systems to be sorted.
   else {
     if (!x.gen_sys.is_sorted())
       x.gen_sys.sort_rows();

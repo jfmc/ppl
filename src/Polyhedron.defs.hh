@@ -2142,8 +2142,8 @@ private:
     constraints and that of generators (and the corresponding saturation
     matrices) in different order (see those methods for details).
   */
-  static void add_space_dimensions(Matrix& mat1,
-				   Matrix& mat2,
+  static void add_space_dimensions(Linear_System& mat1,
+				   Linear_System& mat2,
 				   SatMatrix& sat1,
 				   SatMatrix& sat2,
 				   dimension_type add_dim);
@@ -2154,29 +2154,33 @@ private:
   //! Builds and simplifies constraints from generators (or vice versa).
   // Detailed Doxygen comment to be found in file minimize.cc.
   static bool minimize(bool con_to_gen,
-		       Matrix& source, Matrix& dest, SatMatrix& sat);
+		       Linear_System& source, Linear_System& dest, SatMatrix& sat);
 
   //! \brief
   //! Adds given constraints and builds minimized corresponding generators
   //! or vice versa.
   // Detailed Doxygen comment to be found in file minimize.cc.
   static bool add_and_minimize(bool con_to_gen,
-			       Matrix& source1, Matrix& dest, SatMatrix& sat,
-			       const Matrix& source2);
+			       Linear_System& source1,
+			       Linear_System& dest,
+			       SatMatrix& sat,
+			       const Linear_System& source2);
 
   //! \brief
   //! Adds given constraints and builds minimized corresponding generators
   //! or vice versa. The given constraints are in \p source.
   // Detailed Doxygen comment to be found in file minimize.cc.
   static bool add_and_minimize(bool con_to_gen,
-			       Matrix& source, Matrix& dest, SatMatrix& sat);
+			       Linear_System& source,
+			       Linear_System& dest,
+			       SatMatrix& sat);
 
   //! \brief
   //! Performs the conversion from constraints to generators and vice versa.
   // Detailed Doxygen comment to be found in file conversion.cc.
-  static dimension_type conversion(Matrix& source,
+  static dimension_type conversion(Linear_System& source,
 				   dimension_type start,
-				   Matrix& dest,
+				   Linear_System& dest,
 				   SatMatrix& sat,
 				   dimension_type num_lines_or_equalities);
 
@@ -2184,7 +2188,7 @@ private:
   //! Uses Gauss' elimination method to simplify the result of
   //! <CODE>conversion()</CODE>.
   // Detailed Doxygen comment to be found in file simplify.cc.
-  static int simplify(Matrix& mat, SatMatrix& sat);
+  static int simplify(Linear_System& mat, SatMatrix& sat);
 
   //@} // Minimization-Related Static Member Functions
 
@@ -2211,17 +2215,29 @@ protected:
 				   const GenSys& gs) const;
 
   void throw_dimension_incompatible(const char* method,
+				    const char* other_name,
+				    dimension_type other_dim) const;
+  void throw_dimension_incompatible(const char* method,
 				    const char* ph_name,
 				    const Polyhedron& ph) const;
   void throw_dimension_incompatible(const char* method,
+				    const char* e_name,
+				    const LinExpression& e) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* c_name,
+				    const Constraint& c) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* g_name,
+				    const Generator& g) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* cs_name,
+				    const ConSys& cs) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* gs_name,
+				    const GenSys& gs) const;
+  void throw_dimension_incompatible(const char* method,
 				    const char* var_name,
 				    const Variable var) const;
-  void throw_dimension_incompatible(const char* method,
-				    const char* row_name,
-				    const Row& row) const;
-  void throw_dimension_incompatible(const char* method,
-				    const char* sys_name,
-				    const Matrix& sys) const;
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_space_dim) const;
 

@@ -30,6 +30,47 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline
+Row::Flags::Flags()
+  : bits(0) {
+}
+
+inline
+Row::Flags::Flags(base_type n)
+  : bits(n) {
+}
+
+inline Row::Flags::base_type
+Row::Flags::get_bits() const {
+  return bits;
+}
+
+inline void
+Row::Flags::set_bits(const base_type mask) {
+  bits |= mask;
+}
+
+inline void
+Row::Flags::reset_bits(const base_type mask) {
+  bits &= ~mask;
+}
+
+inline bool
+Row::Flags::test_bits(const base_type mask) const {
+  return (bits & mask) == mask;
+}
+
+inline bool
+Row::Flags::operator==(const Flags& y) const {
+  base_type mask = low_bits_mask<base_type>(first_free_bit);
+  return (get_bits() & mask) == (y.get_bits() & mask);
+}
+
+inline bool
+Row::Flags::operator!=(const Flags& y) const {
+  return !operator==(y);
+}
+
 inline void*
 Row::Impl::operator new(const size_t fixed_size,
 			const dimension_type capacity) {
@@ -62,8 +103,8 @@ Row::Impl::size() const {
 }
 
 inline void
-Row::Impl::set_size(const dimension_type new_sz) {
-  size_ = new_sz;
+Row::Impl::set_size(const dimension_type new_size) {
+  size_ = new_size;
 }
 
 inline void
@@ -71,31 +112,23 @@ Row::Impl::bump_size() {
   ++size_;
 }
 
-inline void
-Row::Impl::resize_no_copy(const dimension_type new_sz) {
-  if (new_sz < size())
-    shrink(new_sz);
-  else
-    grow_no_copy(new_sz);
-}
-
 inline
-Row::Impl::Impl(const Type t, const dimension_type sz)
-  : size_(0), type(t) {
-  grow_no_copy(sz);
+Row::Impl::Impl(const dimension_type sz, const Flags f)
+  : size_(0), flags_(f) {
+  expand_within_capacity(sz);
 }
 
 inline
 Row::Impl::Impl(const Impl& y)
-  : size_(0), type(y.type) {
+  : size_(0), flags_(y.flags_) {
   copy_construct(y);
 }
 
 inline
 Row::Impl::Impl(const Impl& y, const dimension_type sz)
-  : size_(0), type(y.type) {
+  : size_(0), flags_(y.flags_) {
   copy_construct(y);
-  grow_no_copy(sz);
+  expand_within_capacity(sz);
 }
 
 inline
@@ -105,6 +138,16 @@ Row::Impl::~Impl() {
 #else
   shrink(1);
 #endif
+}
+
+inline const Row::Flags&
+Row::Impl::flags() const {
+  return flags_;
+}
+
+inline Row::Flags&
+Row::Impl::flags() {
+  return flags_;
 }
 
 inline Integer&
@@ -119,76 +162,6 @@ Row::Impl::operator[](const dimension_type k) const {
   return vec_[k];
 }
 
-inline
-Row::Type::Type()
-  : flags(0) {
-}
-
-inline
-Row::Type::Type(const Topology topol, const Kind kind)
-  : flags(static_cast<flags_t>(topol | (kind << 1))) {
-}
-
-inline
-Row::Type::Type(const flags_t mask)
-  : flags(mask) {
-}
-
-inline bool
-Row::Type::test_all(const flags_t mask) const {
-  return (flags & mask) == mask;
-}
-
-inline void
-Row::Type::set(const flags_t mask) {
-  flags |= mask;
-}
-
-inline void
-Row::Type::reset(const flags_t mask) {
-  flags &= ~mask;
-}
-
-inline bool
-Row::Type::is_ray_or_point_or_inequality() const {
-  return test_all(RPI);
-}
-
-inline void
-Row::Type::set_is_ray_or_point_or_inequality() {
-  set(RPI);
-}
-
-inline bool
-Row::Type::is_line_or_equality() const {
-  return !is_ray_or_point_or_inequality();
-}
-
-inline void
-Row::Type::set_is_line_or_equality() {
-  reset(RPI);
-}
-
-inline Topology
-Row::Type::topology() const {
-  return test_all(NNC) ? NOT_NECESSARILY_CLOSED : NECESSARILY_CLOSED;
-}
-
-inline bool
-Row::Type::is_necessarily_closed() const {
-  return !test_all(NNC);
-}
-
-inline void
-Row::Type::set_necessarily_closed() {
-  reset(NNC);
-}
-
-inline void
-Row::Type::set_not_necessarily_closed() {
-  set(NNC);
-}
-
 inline dimension_type
 Row::max_size() {
   return Impl::max_size();
@@ -199,22 +172,14 @@ Row::size() const {
   return impl->size();
 }
 
-inline Row::Type
-Row::type() const {
-  return impl->type;
+inline const Row::Flags&
+Row::flags() const {
+  return impl->flags();
 }
 
-inline bool
-Row::is_necessarily_closed() const {
-  return type().is_necessarily_closed();
-}
-
-inline dimension_type
-Row::space_dimension() const {
-  const dimension_type sz = size();
-  return (sz == 0)
-    ? 0
-    : sz - (is_necessarily_closed() ? 1 : 2);
+inline Row::Flags&
+Row::flags() {
+  return impl->flags();
 }
 
 #if EXTRA_ROW_DEBUG
@@ -230,37 +195,37 @@ Row::Row()
 }
 
 inline void
-Row::construct(const Type t,
-	       const dimension_type sz,
+Row::construct(const dimension_type sz,
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
 	       const
 #endif
-	       dimension_type capacity) {
+	       dimension_type capacity,
+	       const Flags f) {
   assert(capacity >= sz);
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity == 0)
     ++capacity;
 #endif
-  impl = new (capacity) Impl(t, sz);
+  impl = new (capacity) Impl(sz, f);
 #if EXTRA_ROW_DEBUG
   capacity_ = capacity;
 #endif
 }
 
 inline void
-Row::construct(const Type t, const dimension_type sz) {
-  construct(t, sz, sz);
+Row::construct(const dimension_type sz, const Flags f) {
+  construct(sz, sz, f);
 }
 
 inline
-Row::Row(const Type t,
-	 const dimension_type sz, const dimension_type capacity) {
-  construct(t, sz, capacity);
+Row::Row(const dimension_type sz, const dimension_type capacity,
+	 const Flags f) {
+  construct(sz, capacity, f);
 }
 
 inline
-Row::Row(const Type t, const dimension_type sz) {
-  construct(t, sz);
+Row::Row(const dimension_type sz, const Flags f) {
+  construct(sz, f);
 }
 
 inline
@@ -319,27 +284,18 @@ Row::~Row() {
 }
 
 inline void
-Row::resize_no_copy(const dimension_type new_sz) {
+Row::expand_within_capacity(const dimension_type new_size) {
   assert(impl);
 #if EXTRA_ROW_DEBUG
-  assert(new_sz <= capacity_);
+  assert(new_size <= capacity_);
 #endif
-  impl->resize_no_copy(new_sz);
+  impl->expand_within_capacity(new_size);
 }
 
 inline void
-Row::grow_no_copy(const dimension_type new_sz) {
+Row::shrink(const dimension_type new_size) {
   assert(impl);
-#if EXTRA_ROW_DEBUG
-  assert(new_sz <= capacity_);
-#endif
-  impl->grow_no_copy(new_sz);
-}
-
-inline void
-Row::shrink(const dimension_type new_sz) {
-  assert(impl);
-  impl->shrink(new_sz);
+  impl->shrink(new_size);
 }
 
 inline void
@@ -368,41 +324,6 @@ Row::operator=(const Row& y) {
   return *this;
 }
 
-inline bool
-Row::is_line_or_equality() const {
-  return type().is_line_or_equality();
-}
-
-inline bool
-Row::is_ray_or_point_or_inequality() const {
-  return type().is_ray_or_point_or_inequality();
-}
-
-inline Topology
-Row::topology() const {
-  return type().topology();
-}
-
-inline void
-Row::set_is_line_or_equality() {
-  impl->type.set_is_line_or_equality();
-}
-
-inline void
-Row::set_is_ray_or_point_or_inequality() {
-  impl->type.set_is_ray_or_point_or_inequality();
-}
-
-inline void
-Row::set_necessarily_closed() {
-  impl->type.set_necessarily_closed();
-}
-
-inline void
-Row::set_not_necessarily_closed() {
-  impl->type.set_not_necessarily_closed();
-}
-
 inline Integer&
 Row::operator[](const dimension_type k) {
   return (*impl)[k];
@@ -413,77 +334,10 @@ Row::operator[](const dimension_type k) const {
   return (*impl)[k];
 }
 
-inline const Integer&
-Row::inhomogeneous_term() const {
-  return (*this)[0];
-}
-
-inline const Integer&
-Row::coefficient(const dimension_type k) const {
-  return (*this)[k+1];
-}
-
-inline void
-Row::strong_normalize() {
-  normalize();
-  sign_normalize();
-}
-
-inline int
-scalar_product_sign(const Row& x, const Row& y) {
-  TEMP_INTEGER(z);
-  scalar_product_assign(z, x, y);
-  return sgn(z);
-}
-
-inline int
-reduced_scalar_product_sign(const Row& x, const Row& y) {
-  TEMP_INTEGER(z);
-  reduced_scalar_product_assign(z, x, y);
-  return sgn(z);
-}
-
-inline int
-homogeneous_scalar_product_sign(const Row& x, const Row& y) {
-  TEMP_INTEGER(z);
-  homogeneous_scalar_product_assign(z, x, y);
-  return sgn(z);
-}
-
-/*! \relates Row */
-inline bool
-operator==(const Row& x, const Row& y) {
-  return compare(x, y) == 0;
-}
-
-/*! \relates Row */
+/*! \relates Row */ 
 inline bool
 operator!=(const Row& x, const Row& y) {
-  return compare(x, y) != 0;
-}
-
-/*! \relates Row */
-inline bool
-operator<=(const Row& x, const Row& y) {
-  return compare(x, y) <= 0;
-}
-
-/*! \relates Row */
-inline bool
-operator<(const Row& x, const Row& y) {
-  return compare(x, y) < 0;
-}
-
-/*! \relates Row */
-inline bool
-operator>=(const Row& x, const Row& y) {
-  return compare(x, y) >= 0;
-}
-
-/*! \relates Row */
-inline bool
-operator>(const Row& x, const Row& y) {
-  return compare(x, y) > 0;
+  return !(x == y);
 }
 
 } // namespace Parma_Polyhedra_Library

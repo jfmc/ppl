@@ -33,35 +33,32 @@ namespace PPL = Parma_Polyhedra_Library;
 namespace {
 
 // These are the keywords that indicate the individual assertions.
-const std::string zero_dim_univ = "ZE";
-const std::string empty = "EM";
-const std::string consys_min = "CM";
-const std::string gensys_min = "GM";
-const std::string consys_upd = "CS";
-const std::string gensys_upd = "GS";
-const std::string satc_upd = "SC";
-const std::string satg_upd = "SG";
-const std::string consys_pending = "CP";
-const std::string gensys_pending = "GP";
-const char yes = '+';
-const char no = '-';
-const char sep = ' ';
+const char* zero_dim_univ = "ZE";
+const char* empty = "EM";
+const char* consys_min = "CM";
+const char* gensys_min = "GM";
+const char* consys_upd = "CS";
+const char* gensys_upd = "GS";
+const char* satc_upd = "SC";
+const char* satg_upd = "SG";
+const char* consys_pending = "CP";
+const char* gensys_pending = "GP";
 
 /*! \relates Parma_Polyhedra_Library::Polyhedron::Status
-  Reads a keyword and its associated on/off flag from \p s.
+  Reads a keyword and its associated on/off, +/- flag from \p s.
   Returns <CODE>true</CODE> if the operation is successful,
   returns <CODE>false</CODE> otherwise.
   When successful, \p positive is set to <CODE>true</CODE> if the flag
   is on; it is set to <CODE>false</CODE> otherwise.
 */
 bool
-get_field(std::istream& s, const std::string& keyword, bool& positive) {
+get_field(std::istream& s, const char* keyword, bool& positive) {
   std::string str;
   if (!(s >> str)
-      || (str[0] != yes && str[0] != no)
+      || (str[0] != '+' && str[0] != '-')
       || str.substr(1) != keyword)
     return false;
-  positive = (str[0] == yes);
+  positive = (str[0] == '+');
   return true;
 }
 
@@ -69,20 +66,20 @@ get_field(std::istream& s, const std::string& keyword, bool& positive) {
 
 void
 PPL::Polyhedron::Status::ascii_dump(std::ostream& s) const {
-  s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
-    << (test_empty() ? yes : no) << empty << sep
-    << sep
-    << (test_c_minimized() ? yes : no) << consys_min << sep
-    << (test_g_minimized() ? yes : no) << gensys_min << sep
-    << sep
-    << (test_c_up_to_date() ? yes : no) << consys_upd << sep
-    << (test_g_up_to_date() ? yes : no) << gensys_upd << sep
-    << sep
-    << (test_c_pending() ? yes : no) << consys_pending << sep
-    << (test_g_pending() ? yes : no) << gensys_pending << sep
-    << sep
-    << (test_sat_c_up_to_date() ? yes : no) << satc_upd << sep
-    << (test_sat_g_up_to_date() ? yes : no) << satg_upd << sep;
+  s << (test_zero_dim_univ() ? '+' : '-') << zero_dim_univ << ' '
+    << (test_empty() ? '+' : '-') << empty << ' '
+    << ' '
+    << (test_c_minimized() ? '+' : '-') << consys_min << ' '
+    << (test_g_minimized() ? '+' : '-') << gensys_min << ' '
+    << ' '
+    << (test_c_up_to_date() ? '+' : '-') << consys_upd << ' '
+    << (test_g_up_to_date() ? '+' : '-') << gensys_upd << ' '
+    << ' '
+    << (test_c_pending() ? '+' : '-') << consys_pending << ' '
+    << (test_g_pending() ? '+' : '-') << gensys_pending << ' '
+    << ' '
+    << (test_sat_c_up_to_date() ? '+' : '-') << satc_upd << ' '
+    << (test_sat_g_up_to_date() ? '+' : '-') << satg_upd << ' ';
 }
 
 bool

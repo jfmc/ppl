@@ -78,9 +78,11 @@ Init.types.hh \
 SatRow.types.hh \
 SatMatrix.types.hh \
 Row.types.hh \
+Linear_Row.types.hh \
 Matrix.types.hh \
 Variable.types.hh \
 LinExpression.types.hh \
+Linear_System.types.hh \
 ConSys.types.hh \
 GenSys.types.hh \
 Poly_Con_Relation.types.hh \
@@ -109,8 +111,12 @@ SatMatrix.defs.hh \
 SatMatrix.inlines.hh \
 Row.defs.hh \
 Row.inlines.hh \
+Linear_Row.defs.hh \
+Linear_Row.inlines.hh \
 Matrix.defs.hh \
 Matrix.inlines.hh \
+Linear_System.defs.hh \
+Linear_System.inlines.hh \
 ConSys.defs.hh \
 GenSys.defs.hh \
 LinExpression.defs.hh \
@@ -161,6 +167,7 @@ Init.cc \
 Integer.cc \
 Interval.cc \
 LinExpression.cc \
+Linear_System.cc \
 Matrix.cc \
 Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
@@ -173,6 +180,7 @@ Polyhedron_widenings.cc \
 C_Polyhedron.cc \
 NNC_Polyhedron.cc \
 Row.cc \
+Linear_Row.cc \
 SatMatrix.cc \
 SatRow.cc \
 Ph_Status.cc \

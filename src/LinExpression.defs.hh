@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "LinExpression.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
-#include "Row.defs.hh"
+#include "Linear_Row.defs.hh"
 #include "Integer.types.hh"
 #include "Variable.types.hh"
 #include "ConSys.types.hh"
@@ -162,7 +162,7 @@ void swap(Parma_Polyhedra_Library::LinExpression& x,
     respectively; also, in the fourth line of code, \p e is created
     with space dimension zero and then extended to space dimension 3.
 */
-class Parma_Polyhedra_Library::LinExpression : private Row {
+class Parma_Polyhedra_Library::LinExpression : private Linear_Row {
 public:
   //! Default constructor: returns a copy of LinExpression::zero().
   LinExpression();

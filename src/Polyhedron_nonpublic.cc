@@ -1398,18 +1398,57 @@ PPL::Polyhedron::throw_topology_incompatible(const char* method,
 
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* other_name,
+					      dimension_type other_dim) const {
+  std::ostringstream s;
+  s << "PPL::"
+    << (is_necessarily_closed() ? "C_" : "NNC_")
+    << "Polyhedron::" << method << ":\n"
+    << "this->space_dimension() == " << space_dimension() << ", "
+    << other_name << ".space_dimension() == " << other_dim << ".";
+  throw std::invalid_argument(s.str());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 					      const char* ph_name,
 					      const Polyhedron& ph) const {
-  std::ostringstream s;
-  s << "PPL::";
-  if (is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-  s << "Polyhedron::" << method << ":" << std::endl
-    << "this->space_dimension() == " << space_dimension() << ", "
-    << ph_name << ".space_dimension() == " << ph.space_dimension() << ".";
-  throw std::invalid_argument(s.str());
+  throw_dimension_incompatible(method, ph_name, ph.space_dimension());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* e_name,
+					      const LinExpression& e) const {
+  throw_dimension_incompatible(method, e_name, e.space_dimension());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* c_name,
+					      const Constraint& c) const {
+  throw_dimension_incompatible(method, c_name, c.space_dimension());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* g_name,
+					      const Generator& g) const {
+  throw_dimension_incompatible(method, g_name, g.space_dimension());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* cs_name,
+					      const ConSys& cs) const {
+  throw_dimension_incompatible(method, cs_name, cs.space_dimension());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* gs_name,
+					      const GenSys& gs) const {
+  throw_dimension_incompatible(method, gs_name, gs.space_dimension());
 }
 
 void
@@ -1425,38 +1464,6 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
   s << "Polyhedron::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension() << ", "
     << var_name << ".id() == " << var.id() << ".";
-  throw std::invalid_argument(s.str());
-}
-
-void
-PPL::Polyhedron::throw_dimension_incompatible(const char* method,
-					      const char* row_name,
-					      const Row& row) const {
-  std::ostringstream s;
-  s << "PPL::";
-  if (is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-  s << "Polyhedron::" << method << ":" << std::endl
-    << "this->space_dimension() == " << space_dimension() << ", "
-    << row_name << ".space_dimension() == " << row.space_dimension() << ".";
-  throw std::invalid_argument(s.str());
-}
-
-void
-PPL::Polyhedron::throw_dimension_incompatible(const char* method,
-					      const char* sys_name,
-					      const Matrix& sys) const {
-  std::ostringstream s;
-  s << "PPL::";
-  if (is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-  s << "Polyhedron::" << method << ":" << std::endl
-    << "this->space_dimension() == " << space_dimension() << ", "
-    << sys_name << ".space_dimension() == " << sys.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 

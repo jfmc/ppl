@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "LinExpression.types.hh"
 #include "ConSys.types.hh"
-#include "Matrix.defs.hh"
+#include "Linear_System.defs.hh"
 #include "Generator.types.hh"
 #include "Polyhedron.types.hh"
 #include "Constraint.types.hh"
@@ -126,7 +126,7 @@ void swap(Parma_Polyhedra_Library::ConSys& x,
     reordered, removed (if they are trivial, duplicate or
     implied by other constraints), linearly combined, etc.
 */
-class Parma_Polyhedra_Library::ConSys : private Matrix {
+class Parma_Polyhedra_Library::ConSys : private Linear_System {
 public:
   //! Default constructor: builds an empty system of constraints.
   ConSys();
@@ -224,13 +224,13 @@ public:
     friend class ConSys;
 
     //! The const iterator over the matrix of constraints.
-    Parma_Polyhedra_Library::Matrix::const_iterator i;
+    Linear_System::const_iterator i;
 
     //! A const pointer to the matrix of constraints.
-    const Parma_Polyhedra_Library::Matrix* csp;
+    const Linear_System* csp;
 
     //! Constructor.
-    const_iterator(const Parma_Polyhedra_Library::Matrix::const_iterator& iter,
+    const_iterator(const Linear_System::const_iterator& iter,
 		   const ConSys& csys);
 
     //! \p *this skips to the next non-trivial constraint.
@@ -249,8 +249,8 @@ public:
   //! Checks if all the invariants are satisfied.
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*!
-    Returns <CODE>true</CODE> if and only if \p *this is a valid Matrix
-    and every row in the matrix must be a valid Constraint.
+    Returns <CODE>true</CODE> if and only if \p *this is a valid
+    Linear_System and each row in the system is a valid Constraint.
   */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool OK() const;
@@ -259,11 +259,6 @@ public:
   //! \brief
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
-  /*!
-    After invoking the <CODE>Matrix::ascii_dump()</CODE> method,
-    prints the contents of each row, specifying the type
-    of the encoded constraint.
-  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void ascii_dump(std::ostream& s) const;
 
@@ -272,11 +267,6 @@ public:
   //! Loads from \p s an ASCII representation (as produced by
   //! \ref ascii_dump) and sets \p *this accordingly.
   //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
-  /*!
-    Resizes the matrix of constraints using the numbers of rows and columns
-    read from \p s, then initializes the coefficients of each constraint
-    and its type (equality or inequality) reading the contents from \p s.
-  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
@@ -299,20 +289,6 @@ private:
   //! dimensional space (including the \f$\epsilon\f$ dimension, if
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
   ConSys(Topology topol, dimension_type n_rows, dimension_type n_columns);
-
-  //! \brief
-  //! Split-constructor: builds a system by stealing from \p y
-  //! the constraints having index greater or equal to \p first_stolen.
-  /*!
-    \param y
-    The constraint system being split. On entry, it is assumed that
-    \p y has \p first_stolen + 1 constraints at least. On exit, it will
-    have \p first_stolen constraints;
-
-    \param first_stolen
-    The index where \p y is split.
-  */
-  ConSys(ConSys& y, dimension_type first_stolen);
 
   //! Swaps \p *this with \p y.
   void swap(ConSys& y);
