@@ -99,7 +99,7 @@ catch(const std::exception& e) { \
 CATCH_STD_EXCEPTION(bad_alloc, PPL_ERROR_OUT_OF_MEMORY) \
 CATCH_STD_EXCEPTION(invalid_argument, PPL_ERROR_INVALID_ARGUMENT) \
 CATCH_STD_EXCEPTION(runtime_error, PPL_ERROR_INTERNAL_ERROR) \
-CATCH_STD_EXCEPTION(exception, PPL_ERROR_INTERNAL_ERROR) \
+CATCH_STD_EXCEPTION(exception, PPL_ERROR_UNKNOWN_STANDARD_EXCEPTION) \
 catch(...) { \
   notify_error(PPL_ERROR_UNEXPECTED_ERROR, \
 	       "completely unexpected error: a bug in the PPL"); \
