@@ -204,8 +204,6 @@ public:
 				      const ConSys&,
 				      unsigned*));
 
-  void collapse(unsigned max_disjuncts);
-
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 

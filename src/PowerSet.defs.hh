@@ -154,6 +154,8 @@ protected:
   //! non-maximal elements.
   bool is_omega_reduced() const;
 
+  void collapse(unsigned max_disjuncts);
+
 private:
   //! \brief
   //! Does the hard work of checking whether \p *this contains non-maximal
@@ -209,6 +211,9 @@ protected:
   //! Adds to \p *this the disjunct \p d,
   //! assuming \p d is not the bottom element.
   static void add_non_bottom_disjunct(Sequence& s, const CS& d);
+
+private:
+  void collapse(iterator sink);
 };
 
 

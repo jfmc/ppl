@@ -81,14 +81,32 @@ Polyhedra_PowerSet<PH>::concatenate_assign(const Polyhedra_PowerSet& y) {
   y.omega_reduce();
   Sequence new_sequence;
   const Polyhedra_PowerSet<PH>& x = *this;
-  for (const_iterator xi = x.begin(), x_end = x.end(); xi != x_end; ++xi)
-    for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi) {
+  for (const_iterator xi = x.begin(), x_end = x.end(),
+	 y_begin = y.begin(), y_end = y.end(); xi != x_end; ) {
+    for (const_iterator yi = y_begin; yi != y_end; ++yi) {
       CS zi = *xi;
       zi.concatenate_assign(*yi);
       assert(!zi.is_bottom());
       new_sequence.push_back(zi);
     }
+    ++xi;
+    if (abandon_exponential_computations && xi != x_end && y_begin != y_end) {
+      // Hurry up!
+      PH xph = xi->polyhedron();
+      for (++xi; xi != x_end; ++xi)
+	xph.poly_hull_assign(xi->polyhedron());
+      const_iterator yi = y_begin;
+      PH yph = yi->polyhedron();
+      for (++yi; yi != y_end; ++yi)
+	yph.poly_hull_assign(yi->polyhedron());
+      xph.concatenate_assign(yph);
+      std::swap(sequence, new_sequence);
+      add_disjunct(xph);
+      goto done;
+    }
+  }
   std::swap(sequence, new_sequence);
+ done:
   space_dim += y.space_dim;
   assert(OK());
 }
@@ -211,43 +229,6 @@ Polyhedra_PowerSet<PH>::map_dimensions(const PartialFunction& pfunc) {
     reduced = false;
   }
   assert(OK());
-}
-
-template <typename PH>
-void
-Polyhedra_PowerSet<PH>::collapse(unsigned max_disjuncts) {
-  assert(max_disjuncts > 0);
-  // Omega-reduce before counting the number of disjuncts.
-  omega_reduce();
-  size_type n = size();
-  if (n > max_disjuncts) {
-    iterator sbegin = begin();
-    iterator send = end();
-
-    iterator i = sbegin;
-    // Move `i' to the last polyhedron that will survive.
-    for (unsigned m = max_disjuncts-1; m-- > 0; )
-      ++i;
-
-    // This polyhedron will be assigned the poly-hull of itself
-    // and of all the polyhedra that follow.
-    PH& ph = i->polyhedron();
-    const_iterator j = i;
-    for (++j; j != send; ++j)
-      ph.poly_hull_assign(j->polyhedron());
-
-    // Ensure omega-reduction.
-    for (iterator k = sbegin, kn = k; k != i; k = kn) {
-      ++kn;
-      if (ph.contains(k->polyhedron()))
-	erase(k);
-    }
-
-    // Erase the surplus polyhedra.
-    erase(++i, send);
-  }
-  assert(OK());
-  assert(is_omega_reduced());
 }
 
 template <typename PH>

@@ -135,15 +135,39 @@ PowerSet<CS>::PowerSet()
 
 template <typename CS>
 void
+PowerSet<CS>::collapse(const iterator sink) {
+  assert(sink != end());
+  // Collapse onto the disjunct pointed to by `sink' all the disjuncts
+  // that follow.
+  CS& d = *sink;
+  const_iterator j = sink;
+  iterator send = end();
+  for (++j; j != send; ++j)
+    d.upper_bound_assign(*j);
+
+  // Ensure omega-reduction.
+  for (iterator k = begin(), kn = k; k != sink; k = kn) {
+    ++kn;
+    if (k->definitely_entails(d))
+      erase(k);
+  }
+
+  // Erase the surplus disjuncts.
+  erase(++iterator(sink), send);
+  assert(OK());
+}
+
+template <typename CS>
+void
 PowerSet<CS>::omega_reduce() const {
   if (reduced)
     return;
 
-  Sequence& s = const_cast<Sequence&>(sequence);
-  for (iterator xi = s.begin(), xin = xi; xi != s.end(); xi = xin) {
+  PowerSet& ps = const_cast<PowerSet&>(*this);
+  for (iterator xi = ps.begin(), xin = xi; xi != ps.end(); xi = xin) {
     ++xin;
     const CS& xv = *xi;
-    for (iterator yi = s.begin(), yin = yi; yi != s.end(); yi = yin) {
+    for (iterator yi = ps.begin(), yin = yi; yi != ps.end(); yi = yin) {
       ++yin;
       if (xi == yi)
 	continue;
@@ -151,16 +175,45 @@ PowerSet<CS>::omega_reduce() const {
       if (yv.definitely_entails(xv)) {
 	if (yi == xin)
 	  ++xin;
-	s.erase(yi);
+	ps.erase(yi);
       }
       else if (xv.definitely_entails(yv)) {
-	s.erase(xi);
+	ps.erase(xi);
 	break;
       }
+    }
+    if (abandon_exponential_computations && xin != ps.end()) {
+      // Hurry up!
+      ps.collapse(xin);
+      break;
     }
   }
   reduced = true;
   assert(OK());
+}
+
+template <typename CS>
+void
+PowerSet<CS>::collapse(const unsigned max_disjuncts) {
+  assert(max_disjuncts > 0);
+  // Omega-reduce before counting the number of disjuncts.
+  omega_reduce();
+  size_type n = size();
+  if (n > max_disjuncts) {
+    iterator sbegin = begin();
+    iterator send = end();
+
+    iterator i = sbegin;
+    // Move `i' to the last disjunct that will survive.
+    for (unsigned m = max_disjuncts-1; m-- > 0; )
+      ++i;
+
+    // This disjunct will be assigned an upper-bound of itself and of
+    // all the disjuncts that follow.
+    collapse(i);
+  }
+  assert(OK());
+  assert(is_omega_reduced());
 }
 
 template <typename CS>
