@@ -59,6 +59,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_remove_higher_dimensions/2,
 	ppl_Polyhedron_affine_image/4,
 	ppl_Polyhedron_affine_preimage/4,
+	ppl_Polyhedron_bounds_from_above/2,
+	ppl_Polyhedron_bounds_from_below/2,
 	ppl_Polyhedron_relation_with_constraint/3,
 	ppl_Polyhedron_relation_with_generator/3,
 	ppl_Polyhedron_check_empty/1,

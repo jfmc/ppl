@@ -1603,6 +1603,34 @@ ppl_Polyhedron_equals_Polyhedron(Prolog_term_ref t_lhs,
   return PROLOG_FAILURE;
 }
 
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_bounds_from_above(Prolog_term_ref t_ph,
+				 Prolog_term_ref t_expr) {
+  try {
+    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    CHECK(ph);
+    PPL::LinExpression l = build_lin_expression(t_expr);
+    if (ph->bounds_from_above(l))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_bounds_from_below(Prolog_term_ref t_ph,
+				 Prolog_term_ref t_expr) {
+  try {
+    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    CHECK(ph);
+    PPL::LinExpression l = build_lin_expression(t_expr);
+    if (ph->bounds_from_below(l))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
 static Prolog_term_ref
 extended_rational_term(const PPL::ExtendedRational& e) {
   Prolog_term_ref t = Prolog_new_term_ref();

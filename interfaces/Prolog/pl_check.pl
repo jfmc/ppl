@@ -59,6 +59,8 @@ check_all :-
   remove_high_dim,
   affine,
   affine_pre,
+  bounds_from_above,
+  bounds_from_below,
   rel_cons,
   rel_gens,
   checks,
@@ -618,6 +620,30 @@ poly_from_boundingbox_NNC :-
   Box = [i(o(0), o(pinf)), i(o(minf), o(1))],
   ppl_delete_Polyhedron(P).
 
+% Tests ppl_Polyhedron_bounds_from_above for an NNC polyhedron.
+bounds_from_above :-
+  A = '$VAR'(0), B = '$VAR'(1), 
+  ppl_new_Polyhedron_from_constraints(nnc,
+                                      [1*A > 1, 1*B > 0,
+                                       -1*B > -1],
+                                     P),
+  \+ ppl_Polyhedron_bounds_from_above(P, A),
+  ppl_Polyhedron_add_constraint(P, A < 2),
+  ppl_Polyhedron_bounds_from_above(P, A),
+  ppl_delete_Polyhedron(P).
+
+% Tests ppl_Polyhedron_bounds_from_below for an NNC polyhedron.
+bounds_from_below :-
+  A = '$VAR'(0), B = '$VAR'(1), 
+  ppl_new_Polyhedron_from_constraints(nnc,
+                                      [1*B > 0,
+                                       -1*B > -1],
+                                     P),
+  \+ ppl_Polyhedron_bounds_from_below(P, A),
+  ppl_Polyhedron_add_constraint(P, A > 1),
+  ppl_Polyhedron_bounds_from_below(P, A),
+  ppl_delete_Polyhedron(P).
+
 % These next 2 tests demonstrate a bug in the bounding box software.
 boundingbox1(Box,CS) :-
   A = '$VAR'(0), B = '$VAR'(1), 
@@ -635,3 +661,19 @@ boundingbox2(Box,CS) :-
   ppl_Polyhedron_get_bounding_box(P, Box),
   ppl_Polyhedron_get_constraints(P,CS), 
   ppl_delete_Polyhedron(P).
+
+/*
+bounds_from_above :-
+  A = '$VAR'(0), B = '$VAR'(1), 
+  ppl_new_Polyhedron_from_constraints(nnc,
+                                      [],
+                                     P),
+  ppl_Polyhedron_bounds_from_above(P,A),
+  ppl_delete_Polyhedron(P).
+
+?- bounds_from_above.
+Matrix has no rows but num_columns() is positive!
+ppl_pl: ../../ppl/src/ConSys.cc:98: bool Parma_Polyhedra_Library::ConSys::adjust_topology_and_dimension(Parma_Polyhedra_Library::Topology, unsigned int): Assertion `OK()' failed.
+Abort (core dumped)        
+
+*/
