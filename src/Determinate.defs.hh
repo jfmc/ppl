@@ -119,6 +119,18 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
+  //! Returns the system of constraints.
+  const ConSys& constraints() const;
+
+  //! Returns the system of constraints, with no redundant constraint.
+  const ConSys& minimized_constraints() const;
+
+  //! Returns the system of generators.
+  const GenSys& generators() const;
+
+  //! Returns the system of generators, with no redundant generator.
+  const GenSys& minimized_generators() const;
+
   //! \brief
   //! Intersects \p *this with (a copy of) constraint \p c.
   /*!
@@ -170,6 +182,41 @@ public:
   */
   void remove_higher_dimensions(size_t new_dimension);
 
+  template <typename PartialFunction>
+  void shuffle_dimensions(const PartialFunction& pfunc);
+
+  //! \brief
+  //! Assigns to \p *this the result of computing the
+  //! \ref H79_widening "H79-widening" between \p *this and \p y.
+  /*!
+    \param y           A polyhedron that <EM>must</EM>
+                       be contained in \p *this.
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void H79_widening_assign(const Determinate& y);
+
+  //! \brief
+  //! Limits the \ref H79_widening "H79-widening" computation
+  //! between \p *this and \p y by enforcing constraints \p cs
+  //! and assigns the result to \p *this.
+  /*!
+    \param y                 A polyhedron that <EM>must</EM>
+                             be contained in \p *this.
+    \param cs                The system of constraints that limits
+                             the widened polyhedron. It is not
+                             declared <CODE>const</CODE>
+                             because it can be modified.
+    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void limited_H79_widening_assign(const Determinate& y, ConSys& cs);
+
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
 private:
   class Rep {
   private:
@@ -188,50 +235,25 @@ private:
     //! A polyhedron.
     PH ph;
 
-    //! True if and only if this representation is currently shared.
-    bool is_shared() const {
-      return references > 1;
-    }
+    Rep(size_t num_dimensions, Polyhedron::Degenerate_Kind kind);
+
+    Rep(const PH& p);
+
+    //! Destructor.
+    ~Rep();
 
     //! Register a new reference.
-    void new_reference() const {
-      ++references;
-    }
+    void new_reference() const;
 
     //! Unregister a reference and return true if the representation
     //! has become unreferenced.
-    bool del_reference() const {
-      return --references == 0;
-    }
+    bool del_reference() const;
 
-    Rep(size_t num_dimensions, Polyhedron::Degenerate_Kind kind)
-      : references(0), ph(num_dimensions, kind) {
-    }
-
-    Rep(const PH& p)
-      : references(0), ph(p) {
-    }
-
-    //! Destructor.
-    ~Rep() {
-      assert(references == 0);
-    }
-
+    //! True if and only if this representation is currently shared.
+    bool is_shared() const;
   };
 
   Rep* prep;
-
-  void new_reference() const {
-    if (prep)
-      prep->new_reference();
-  }
-
-  bool del_reference() const {
-    if (prep)
-      return prep->del_reference();
-    else
-      return false;
-  }
 };
 
 #include "Determinate.inlines.hh"
