@@ -1,6 +1,7 @@
-/* Testing the function add_dimensions_and_constraints: we add a
-   two-dimensional system of constraints to an empty, two-dimensional
-   polyhedron. The result is a empty, four-dimansional polyhedron
+/* Testing Polyhedron::concatenate_assign(): we concatenate a
+   two-dimensional polyhedron to a zero-dimensional, universal
+   polyhedron. The resulting polyhedron is equal to the second
+   polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -35,32 +36,29 @@ using namespace Parma_Polyhedra_Library;
 int
 main() {
   set_handlers();
-
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
-
+  C_Polyhedron ph;
 #if NOISY
   print_constraints(ph, "--- ph ---");
 #endif
 
   ConSys cs;
-  cs.insert(x >= y);
-  cs.insert(x >= 2);
+  cs.insert(x - 3 >= y);
+  cs.insert(y >= 0);
+  C_Polyhedron qh(cs);
 
 #if NOISY
-  print_constraints(cs, "--- cs ---");
+  print_constraints(qh, "--- qh ---");
 #endif
 
-  ph.add_dimensions_and_constraints(cs);
+  ph.concatenate_assign(qh);
 
-  C_Polyhedron known_result(4, C_Polyhedron::EMPTY);
-
-  int retval = (ph == known_result) ? 0 : 1;
+  int retval = (ph == qh) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph, "--- After add_dimensions_and_constraints ---");
+  print_constraints(ph, "--- After concatenate_assign(qh) ---");
 #endif
 
   return retval;

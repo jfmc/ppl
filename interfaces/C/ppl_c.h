@@ -1048,6 +1048,20 @@ ppl_Polyhedron_intersection_assign_and_minimize
 __P((ppl_Polyhedron_t x, ppl_const_Polyhedron_t y));
 
 /*!
+  First increases the space dimension of \p ph by adding as many
+  dimensions as is the space dimension of \p cs; then adds to the
+  system of constraints of \p ph a renamed-apart version of the
+  constraints in \p cs.
+
+  \warning
+  This function modifies the constraint system referenced by \p cs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_Polyhedron_concatenate_assign __P((ppl_Polyhedron_t x,
+				       ppl_const_Polyhedron_t y));
+
+/*!
   Assigns to \p x the poly-hull of the set-theoretic union
   of \p x and \p y.
 */
@@ -1234,20 +1248,6 @@ ppl_Polyhedron_remove_dimensions __P((ppl_Polyhedron_t ph,
 int
 ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
 					     unsigned int d));
-
-/*!
-  First increases the space dimension of \p ph by adding as many
-  dimensions as is the space dimension of \p cs; then adds to the
-  system of constraints of \p ph a renamed-apart version of the
-  constraints in \p cs.
-
-  \warning
-  This function modifies the constraint system referenced by \p cs:
-  upon return, no assumption can be made on its value.
-*/
-int
-ppl_Polyhedron_add_dimensions_and_constraints __P((ppl_Polyhedron_t ph,
-						   ppl_ConSys_t cs));
 
 /*!
   Transforms the polyhedron \p ph, assigning an affine expression

@@ -205,13 +205,13 @@ error7() {
   ConSys cs;
   cs.insert(x > 2);
   cs.insert(x == y);
-  
+  NNC_Polyhedron qh(cs);
+
   try {
-    // This is an incorrect use of the function
-    // add_dimensions_and_constraints(cs): it is illegal to apply
-    // this function to a closed polyhedron with a system of constraints
-    // that contains strict-inequalities.
-    ph.add_dimensions_and_constraints(cs);
+    // This is an incorrect use of the method concatenate_assign(): it
+    // is illegal to apply this method to a closed polyhedron with a
+    // NNC Polyhedron.
+    ph.concatenate_assign(qh);
   }
   catch(invalid_argument& e) {
 #if NOISY

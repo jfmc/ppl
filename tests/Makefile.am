@@ -38,9 +38,9 @@ TESTS = $(WATCHDOG_TESTS) \
 	NNCinclusion1 \
 	NNCminimize1 NNCminimize2 NNCminimize3 NNCminimize4 NNCminimize5 \
         NNCminimize6 \
-        addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
+        addconstraints1                 addconstraints3 addconstraints4 \
 	addconstraints5 addconstraints6 addconstraints7 addconstraints8 \
-	addconstraints9 addconstraints10 addconstraints11 \
+	addconstraints9 \
 	adddimensions1 adddimensions2 adddimensions3 adddimensions4 \
 	adddimensions5 adddimensions6 adddimensions7 \
 	addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
@@ -51,6 +51,7 @@ TESTS = $(WATCHDOG_TESTS) \
         append1 append2 \
 	bounded1 \
 	boundingbox1 boundingbox2 \
+	concatenate1 concatenate2 concatenate3 \
         empty1 \
 	exceptions1 exceptions2 \
 	generators1 generators2 \
@@ -83,7 +84,7 @@ NNCminimize5_SOURCES = NNCminimize5.cc
 NNCminimize6_SOURCES = NNCminimize6.cc
 
 addconstraints1_SOURCES = addconstraints1.cc
-addconstraints2_SOURCES = addconstraints2.cc
+#addconstraints2_SOURCES = addconstraints2.cc
 addconstraints3_SOURCES = addconstraints3.cc
 addconstraints4_SOURCES = addconstraints4.cc
 addconstraints5_SOURCES = addconstraints5.cc
@@ -91,8 +92,6 @@ addconstraints6_SOURCES = addconstraints6.cc
 addconstraints7_SOURCES = addconstraints7.cc
 addconstraints8_SOURCES = addconstraints8.cc
 addconstraints9_SOURCES = addconstraints9.cc
-addconstraints10_SOURCES = addconstraints10.cc
-addconstraints11_SOURCES = addconstraints11.cc
 
 adddimensions1_SOURCES = adddimensions1.cc
 adddimensions2_SOURCES = adddimensions2.cc
@@ -128,6 +127,10 @@ bounded1_SOURCES = bounded1.cc
 
 boundingbox1_SOURCES = boundingbox1.cc
 boundingbox2_SOURCES = boundingbox2.cc
+
+concatenate1_SOURCES = concatenate1.cc
+concatenate2_SOURCES = concatenate2.cc
+concatenate3_SOURCES = concatenate3.cc
 
 empty1_SOURCES = empty1.cc
 

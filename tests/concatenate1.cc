@@ -1,7 +1,4 @@
-/* Use of the function add_dimensions_and_constraints: we add a
-   two-dimensional system of constraints to a zero-dimensional, universal
-   polyhedron. The resulting polyhedron is a two-dimensional polyhedron
-   defined by the system of constraints.
+/* Test Polyhedron::concatenate_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -27,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_install.hh"
 #include "print.hh"
 #include "ehandlers.hh"
+#include <iostream>
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
@@ -34,36 +32,48 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 
 int
-main() {
+main() try {
   set_handlers();
+
   Variable x(0);
   Variable y(1);
-
   ConSys cs1;
-  cs1.insert(LinExpression(2) >= 0);
+  cs1.insert(x >= 0);
+  cs1.insert(y >= 0);
+  cs1.insert(x - y >= 0);
   C_Polyhedron ph(cs1);
+
 #if NOISY
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph before ***");
 #endif
 
-  ConSys cs;
-  cs.insert(x - 3 >= y);
-  cs.insert(y >= 0);
+  ConSys cs2;
+  cs2.insert(x >= 1);
+  cs2.insert(y >= 1);
+  cs2.insert(x - y >= -1);
+  C_Polyhedron qh(cs2);
+
+  C_Polyhedron copy_ph = ph;
+
+  ph.concatenate_assign(qh);
+
+  copy_ph.add_dimensions_and_embed(2);
+  for (ConSys::const_iterator i = qh.constraints().begin(),
+	 iend = qh.constraints().end(); i != iend; ++i )
+    copy_ph.add_constraint(*i >> 2);
+
+  int retval = (ph == copy_ph) ? 0 : 1;
 
 #if NOISY
-  print_constraints(cs, "--- cs ---");
-#endif
-  ph.add_dimensions_and_constraints(cs);
-
-  C_Polyhedron known_result(2);
-  known_result.add_constraint(x - y >= 3);
-  known_result.add_constraint(y >= 0);
-
-  int retval = (ph == known_result) ? 0 : 1;
-
-#if NOISY
-  print_constraints(ph, "--- After add_dimensions_and_constraints ---");
+  print_constraints(ph, "*** concatenate_assign ***");
+  print_constraints(copy_ph, "*** embed + renaming + insert ***");
 #endif
 
   return retval;
+}
+catch (std::exception& e) {
+#if NOISY
+  cout << e.what() << endl;
+#endif
+  exit(1);
 }

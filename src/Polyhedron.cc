@@ -1329,6 +1329,83 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   assert(x.OK() && y.OK());
 }
 
+void
+PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
+  // FIXME: this implementation is just an executable specification.
+  ConSys cs = y.constraints();
+
+  size_t added_columns = cs.space_dimension();
+  // Topology compatibility check: we do NOT adjust dimensions.
+  if (!cs.adjust_topology_and_dimension(topology(), added_columns))
+    throw_topology_incompatible("concatenate_assign(y)", y);
+
+  // For an empty polyhedron, it is sufficient to adjust
+  // the dimension of the space.
+  if (is_empty()) {
+    space_dim += added_columns;
+    con_sys.clear();
+    return;
+  }
+
+  // For a non-empty 0-dim space polyhedron,
+  // the result is the polyhedron defined by `cs'.
+  if (space_dim == 0) {
+    Polyhedron y(topology(), cs);
+    swap(y);
+    return;
+  }
+
+  if (!constraints_are_up_to_date())
+    update_constraints();
+
+  // The matrix for the new system of constraints is obtained
+  // by leaving the old system of constraints in the upper left-hand side
+  // and placing the constraints of `cs' in the lower right-hand side.
+  // NOTE: here topologies agree, whereas dimensions may not agree.
+  size_t old_num_rows = con_sys.num_rows();
+  size_t old_num_columns = con_sys.num_columns();
+  size_t added_rows = cs.num_rows();
+
+  con_sys.grow(old_num_rows + added_rows, old_num_columns + added_columns);
+
+  // Move the epsilon coefficient to the last column, if needed.
+  if (!is_necessarily_closed() && added_columns > 0)
+    con_sys.swap_columns(old_num_columns - 1,
+			 old_num_columns - 1 + added_columns);
+  // Steal the constraints from `cs' and put them in `con_sys'
+  // using the right displacement for coefficients.
+  size_t cs_num_columns = cs.num_columns();
+  for (size_t i = added_rows; i-- > 0; ) {
+    Constraint& c_old = cs[i];
+    Constraint& c_new = con_sys[old_num_rows + i];
+    // Method `grow', by default, added inequalities.
+    if (c_old.is_equality())
+      c_new.set_is_equality();
+    // The inhomogeneous term is not displaced.
+    std::swap(c_new[0], c_old[0]);
+    // All homogeneous terms (included the epsilon coefficient,
+    // if present) are displaced by `space_dim' columns.
+    for (size_t j = 1; j < cs_num_columns; ++j)
+      std::swap(c_old[j], c_new[space_dim + j]);
+  }
+  // Update space dimension.
+  space_dim += added_columns;
+
+#ifdef BE_LAZY
+  con_sys.set_sorted(false);
+#else
+  con_sys.sort_rows();
+#endif
+  clear_constraints_minimized();
+  clear_generators_up_to_date();
+  clear_sat_g_up_to_date();
+  clear_sat_c_up_to_date();
+
+  // Note: the system of constraints may be unsatisfiable, thus we do
+  // not check for satisfiability.
+  assert(OK());
+}
+
 bool
 PPL::Polyhedron::poly_hull_assign_and_minimize(const Polyhedron& y) {
   Polyhedron& x = *this;
@@ -2207,81 +2284,6 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
 
   // Note: the constraint system may have become unsatisfiable, thus
   // we do not check for satisfiability.
-  assert(OK());
-}
-
-
-void
-PPL::Polyhedron::add_dimensions_and_constraints(ConSys& cs) {
-  size_t added_columns = cs.space_dimension();
-  // Topology compatibility check: we do NOT adjust dimensions.
-  if (!cs.adjust_topology_and_dimension(topology(), added_columns))
-    throw_topology_incompatible("add_dimensions_and_constraints(cs)", cs);
-
-  // For an empty polyhedron, it is sufficient to adjust
-  // the dimension of the space.
-  if (is_empty()) {
-    space_dim += added_columns;
-    con_sys.clear();
-    return;
-  }
-
-  // For a non-empty 0-dim space polyhedron,
-  // the result is the polyhedron defined by `cs'.
-  if (space_dim == 0) {
-    Polyhedron y(topology(), cs);
-    swap(y);
-    return;
-  }
-
-  if (!constraints_are_up_to_date())
-    update_constraints();
-
-  // The matrix for the new system of constraints is obtained
-  // by leaving the old system of constraints in the upper left-hand side
-  // and placing the constraints of `cs' in the lower right-hand side.
-  // NOTE: here topologies agree, whereas dimensions may not agree.
-  size_t old_num_rows = con_sys.num_rows();
-  size_t old_num_columns = con_sys.num_columns();
-  size_t added_rows = cs.num_rows();
-
-  con_sys.grow(old_num_rows + added_rows, old_num_columns + added_columns);
-
-  // Move the epsilon coefficient to the last column, if needed.
-  if (!is_necessarily_closed() && added_columns > 0)
-    con_sys.swap_columns(old_num_columns - 1,
-			 old_num_columns - 1 + added_columns);
-  // Steal the constraints from `cs' and put them in `con_sys'
-  // using the right displacement for coefficients.
-  size_t cs_num_columns = cs.num_columns();
-  for (size_t i = added_rows; i-- > 0; ) {
-    Constraint& c_old = cs[i];
-    Constraint& c_new = con_sys[old_num_rows + i];
-    // Method `grow', by default, added inequalities.
-    if (c_old.is_equality())
-      c_new.set_is_equality();
-    // The inhomogeneous term is not displaced.
-    std::swap(c_new[0], c_old[0]);
-    // All homogeneous terms (included the epsilon coefficient,
-    // if present) are displaced by `space_dim' columns.
-    for (size_t j = 1; j < cs_num_columns; ++j)
-      std::swap(c_old[j], c_new[space_dim + j]);
-  }
-  // Update space dimension.
-  space_dim += added_columns;
-
-#ifdef BE_LAZY
-  con_sys.set_sorted(false);
-#else
-  con_sys.sort_rows();
-#endif
-  clear_constraints_minimized();
-  clear_generators_up_to_date();
-  clear_sat_g_up_to_date();
-  clear_sat_c_up_to_date();
-
-  // Note: the system of constraints may be unsatisfiable, thus we do
-  // not check for satisfiability.
   assert(OK());
 }
 

@@ -500,6 +500,35 @@ public:
   void intersection_assign(const Polyhedron& y);
 
   //! \brief
+  //! Seeing a polyhedron as a set of tuples (its points), assigns
+  //! to \p *this all the tuples that can be obtained by concatenating,
+  //! in the order given, a tuple of \p *this with a tuple of \p y.
+  /*!
+    Let \f$P \sseq \Rset^n\f$ and \f$Q \sseq \Rset^m\f$ be the polyhedra
+    represented, on entry, by \p *this and \p y, respectively.
+    Upon successful completion, \p *this will represent the polyhedron
+    \f$R \sseq \Rset^{n+m}\f$ such that
+    \f[
+      R
+        \defeq
+          \Bigl\{\,
+            (x_1, \ldots, x_n, y_1, \ldots, y_m)^\transpose
+          \Bigm|
+            (x_1, \ldots, x_n)^\transpose \in P,
+            (y_1, \ldots, y_m)^\transpose \in Q
+          \,\Bigl\}.
+    \f]
+    Another way of seeing it is as follows: first increases the space
+    dimension of \p *this by adding \p y.space_dimension() new
+    dimensions; then adds to the system of constraints of \p *this a
+    renamed-apart version of the constraints of \p y.
+
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible.
+  */
+  void concatenate_assign(const Polyhedron& y);
+
+  //! \brief
   //! Assigns to \p *this the poly-hull of \p *this and \p y,
   //! minimizing the result.
   /*!
@@ -816,20 +845,6 @@ public:
                                      or dimension-incompatible.
   */
   void add_constraints(ConSys& cs);
-
-  //! \brief
-  //! First increases the space dimension of \p *this by adding
-  //! \p cs.space_dimension() new dimensions;
-  //! then adds to the system of constraints of \p *this
-  //! a renamed-apart version of the constraints in \p cs.
-  /*!
-    \param  cs             Specifies the constraints to be added.
-                           This parameter is not declared <CODE>const</CODE>
-                           because it can be modified.
-    \exception std::invalid_argument thrown if \p *this and \p cs
-                                     are topology-incompatible.
-  */
-  void add_dimensions_and_constraints(ConSys& cs);
 
   //! \brief
   //! Adds the specified generators and minimizes the result,

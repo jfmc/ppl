@@ -33,6 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_space_dimension(+term, +term)).
 :- foreign(ppl_Polyhedron_intersection_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_intersection_assign_and_minimize(+term, +term)).
+:- foreign(ppl_Polyhedron_concatenate_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_poly_hull_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_poly_hull_assign_and_minimize(+term, +term)).
 :- foreign(ppl_Polyhedron_poly_difference_assign(+term, +term)).
@@ -50,7 +51,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_add_constraints_and_minimize(+term, +term)).
 :- foreign(ppl_Polyhedron_add_generators(+term, +term)).
 :- foreign(ppl_Polyhedron_add_generators_and_minimize(+term, +term)).
-:- foreign(ppl_Polyhedron_add_dimensions_and_constraints(+term, +term)).
 :- foreign(ppl_Polyhedron_add_dimensions_and_project(+term, +term)).
 :- foreign(ppl_Polyhedron_add_dimensions_and_embed(+term, +term)).
 :- foreign(ppl_Polyhedron_remove_dimensions(+term, +term)).

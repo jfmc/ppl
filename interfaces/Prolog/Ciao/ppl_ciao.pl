@@ -35,6 +35,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_space_dimension/2,
 	ppl_Polyhedron_intersection_assign/2,
 	ppl_Polyhedron_intersection_assign_and_minimize/2,
+	ppl_Polyhedron_concatenate_assign/2,
 	ppl_Polyhedron_poly_hull_assign/2,
 	ppl_Polyhedron_poly_hull_assign_and_minimize/2,
 	ppl_Polyhedron_poly_difference_assign/2,
@@ -52,7 +53,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_add_constraints_and_minimize/2,
 	ppl_Polyhedron_add_generators/2,
 	ppl_Polyhedron_add_generators_and_minimize/2,
-	ppl_Polyhedron_add_dimensions_and_constraints/2,
 	ppl_Polyhedron_add_dimensions_and_project/2,
 	ppl_Polyhedron_add_dimensions_and_embed/2,
 	ppl_Polyhedron_remove_dimensions/2,
@@ -127,6 +127,9 @@ site: http://www.cs.unipr.it/ppl/ . */
                                                              in(Handle2))
              :: any_term * any_term + foreign.
 
+:- true pred ppl_Polyhedron_concatenate_assign(in(Handle1), in(Handle2))
+             :: any_term * any_term + foreign.
+
 :- true pred ppl_Polyhedron_poly_hull_assign(in(Handle1), in(Handle2))
              :: any_term * any_term + foreign.
 
@@ -179,10 +182,6 @@ site: http://www.cs.unipr.it/ppl/ . */
              :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_add_generators_and_minimize(in(Handle), in(GList))
-             :: any_term * any_term + foreign.
-
-:- true pred ppl_Polyhedron_add_dimensions_and_constraints(in(Handle),
-                                                           in(CList))
              :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_add_dimensions_and_project(in(Handle),
@@ -262,6 +261,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_space_dimension/2,
 	ppl_Polyhedron_intersection_assign/2,
 	ppl_Polyhedron_intersection_assign_and_minimize/2,
+	ppl_Polyhedron_concatenate_assign/2,
 	ppl_Polyhedron_poly_hull_assign/2,
 	ppl_Polyhedron_poly_hull_assign_and_minimize/2,
 	ppl_Polyhedron_poly_difference_assign/2,
@@ -279,7 +279,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_add_constraints_and_minimize/2,
 	ppl_Polyhedron_add_generators/2,
 	ppl_Polyhedron_add_generators_and_minimize/2,
-	ppl_Polyhedron_add_dimensions_and_constraints/2,
 	ppl_Polyhedron_add_dimensions_and_project/2,
 	ppl_Polyhedron_add_dimensions_and_embed/2,
 	ppl_Polyhedron_remove_dimensions/2,

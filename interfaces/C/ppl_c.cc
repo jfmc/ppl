@@ -1083,6 +1083,16 @@ ppl_Polyhedron_intersection_assign_and_minimize(ppl_Polyhedron_t x,
 CATCH_ALL
 
 int
+ppl_Polyhedron_concatenate_assign(ppl_Polyhedron_t x,
+				  ppl_const_Polyhedron_t y) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  xx.concatenate_assign(yy);
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_Polyhedron_poly_hull_assign(ppl_Polyhedron_t x,
 				ppl_const_Polyhedron_t y) try {
   Polyhedron& xx = *to_nonconst(x);
@@ -1274,16 +1284,6 @@ ppl_Polyhedron_remove_higher_dimensions(ppl_Polyhedron_t ph,
 					unsigned int d) try {
   Polyhedron& pph = *to_nonconst(ph);
   pph.remove_higher_dimensions(d);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_add_dimensions_and_constraints(ppl_Polyhedron_t ph,
-					      ppl_ConSys_t cs) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  ConSys& ccs = *to_nonconst(cs);
-  pph.add_dimensions_and_constraints(ccs);
   return 0;
 }
 CATCH_ALL

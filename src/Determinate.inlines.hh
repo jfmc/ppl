@@ -97,8 +97,7 @@ Determinate<PH>::concatenate_assign(const Determinate& y) {
   assert(prep);
   assert(y.prep);
   mutate();
-  ConSys cs = y.prep->ph.constraints();
-  prep->ph.add_dimensions_and_constraints(cs);
+  prep->ph.concatenate_assign(y.prep->ph);
 }
 
 template <typename PH>
@@ -194,14 +193,6 @@ Determinate<PH>::add_constraints(ConSys& cs) {
   assert(prep);
   mutate();
   prep->ph.add_constraints(cs);
-}
-
-template <typename PH>
-void
-Determinate<PH>::add_dimensions_and_constraints(ConSys& cs) {
-  assert(prep);
-  mutate();
-  prep->ph.add_dimensions_and_constraints(cs);
 }
 
 template <typename PH>

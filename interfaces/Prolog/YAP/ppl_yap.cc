@@ -406,6 +406,7 @@ YAP_STUB_1(ppl_delete_Polyhedron)
 YAP_STUB_2(ppl_Polyhedron_space_dimension)
 YAP_STUB_2(ppl_Polyhedron_intersection_assign)
 YAP_STUB_2(ppl_Polyhedron_intersection_assign_and_minimize)
+YAP_STUB_2(ppl_Polyhedron_concatenate_assign)
 YAP_STUB_2(ppl_Polyhedron_poly_hull_assign)
 YAP_STUB_2(ppl_Polyhedron_poly_hull_assign_and_minimize)
 YAP_STUB_2(ppl_Polyhedron_poly_difference_assign)
@@ -423,7 +424,6 @@ YAP_STUB_2(ppl_Polyhedron_add_constraints)
 YAP_STUB_2(ppl_Polyhedron_add_constraints_and_minimize)
 YAP_STUB_2(ppl_Polyhedron_add_generators)
 YAP_STUB_2(ppl_Polyhedron_add_generators_and_minimize)
-YAP_STUB_2(ppl_Polyhedron_add_dimensions_and_constraints)
 YAP_STUB_2(ppl_Polyhedron_add_dimensions_and_project)
 YAP_STUB_2(ppl_Polyhedron_add_dimensions_and_embed)
 YAP_STUB_2(ppl_Polyhedron_remove_dimensions)
@@ -461,6 +461,7 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_space_dimension, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_intersection_assign, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_intersection_assign_and_minimize, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_concatenate_assign, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_poly_hull_assign, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_poly_hull_assign_and_minimize, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_poly_difference_assign, 2);
@@ -478,7 +479,6 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraints_and_minimize, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_add_generators, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_add_generators_and_minimize, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_dimensions_and_constraints, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_add_dimensions_and_project, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_add_dimensions_and_embed, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_remove_dimensions, 2);
