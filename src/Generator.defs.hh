@@ -298,6 +298,9 @@ public:
 
   //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Generator& zero_dim_point();
+  //! Returns, as a closure point,
+  //! the origin of the zero-dimensional space \f$\Rset^0\f$.
+  static const Generator& zero_dim_closure_point();
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

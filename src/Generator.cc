@@ -71,6 +71,20 @@ PPL::point(const LinExpression& e, const Integer& d) {
 }
 
 PPL::Generator
+PPL::closure_point(const LinExpression& e, const Integer& d) {
+  if (d == 0)
+    throw std::invalid_argument("Generator PPL::closure_point(e, d): d == 0");
+  // Adding the \epsilon dimension with coefficient 0.
+  LinExpression ec = 0 * Variable(e.space_dimension());
+  ec += e;
+  // A closure point is indeed a point in the higher dimension space.
+  Generator g = point(ec, d);
+  // Setting the topology kind.
+  g.set_non_necessarily_closed();
+  return g;
+}
+
+PPL::Generator
 PPL::ray(const LinExpression& e) {
   // The origin of the space cannot be a ray.
   if (e.all_homogeneous_terms_are_zero())

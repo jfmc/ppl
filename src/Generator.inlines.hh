@@ -130,6 +130,12 @@ Generator::zero_dim_point() {
   return zdp;
 }
 
+inline const Generator&
+Generator::zero_dim_closure_point() {
+  static Generator zdcp = closure_point();
+  return zdcp;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
