@@ -281,7 +281,7 @@ esac
 CFLAGS="$COMP_FLAGS $OPT_FLAGS"
 CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
 
-enableval=gmp
+enableval=mpz
 AC_MSG_CHECKING([the type of integral values to use as coefficients])
 AC_ARG_ENABLE(coefficients,
 [  --enable-coefficients   select the type of the coefficients])
@@ -334,14 +334,14 @@ checked-int64)
   coefficient_type="int64_t"
   coefficient_mnemonic=int64
   ;;
-gmp)
-  AC_MSG_RESULT([GMP])
+mpz)
+  AC_MSG_RESULT([GMP mpz])
   coefficient_kind=unbounded
   coefficient_type=mpz_class
   coefficient_mnemonic=mpz
   ;;
 *)
-  AC_MSG_ERROR([bad value ${enableval} for --enable-coefficients, checked-int32, checked-int64, checked-int16, checked-int8, gmp, native-int32, native-int64, native-int16 or native-int8])
+  AC_MSG_ERROR([bad value ${enableval} for --enable-coefficients, checked-int32, checked-int64, checked-int16, checked-int8, mpz, native-int32, native-int64, native-int16 or native-int8])
   ;;
 esac
 
