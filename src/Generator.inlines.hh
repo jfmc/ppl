@@ -135,6 +135,28 @@ Generator::zero_dim_closure_point() {
   return zdcp;
 }
 
+inline Generator
+line(const LinExpression& e) {
+  return Generator::line(e);
+}
+
+inline Generator
+ray(const LinExpression& e) {
+  return Generator::ray(e);
+}
+
+inline Generator
+point(const LinExpression& e = LinExpression::zero(),
+      const Integer& d = Integer_one()) {
+  return Generator::point(e, d);
+}
+
+inline Generator
+closure_point(const LinExpression& e = LinExpression::zero(),
+	      const Integer& d = Integer_one()) {
+  return Generator::closure_point(e, d);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
