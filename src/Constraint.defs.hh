@@ -107,50 +107,33 @@ namespace Parma_Polyhedra_Library {
   \endcode
 
   \par Example 2
-  The following code prints all the coefficients of a given constraint:
+  The following code shows how it is possible to access each single
+  coefficient of a constraint. Given an arbitrary constraint
+  (in this case \f$x - 5y + 3z <= 4\f$), we construct a new constraint
+  having the same coefficients but with a different relational operator
+  (thus, in this case we want to obtain the equality constraint
+  \f$x - 5y + 3z = 4\f$).
   \code
-  size_t c_space_dim = c.space_dimension();
-  for (size_t varid = 0; varid < c_space_dim; varid++) {
-    Variable v(varid);
-    cout << "Variable " << v << " has coefficient "
-         << c.coefficient(v) << endl;
+  Constraint c(x - 5*y + 3*z <= 4);
+  cout << "Constraint c1: " << c1 << endl;
+  LinExpression e;
+  for (size_t i = c.space_dimension() - 1; i >= 0; i--)
+    e += c.coefficient(Variable(i)) * Variable(i); 
+  e += c.coefficient();
+  // FIXME: Probably we need an assignment operator on constraints,
+  // or better a full set of modifiers. 
+  if (c.is_equality()) {
+    Constraint c2(e == 0);
+    cout << "Constraint c2: " << c2 << endl;
   }
-  cout << "The inhomogeneous term is "
-       << c.coefficient() << endl;
+  else {
+    Constraint c2(e >= 0);
+    cout << "Constraint c2: " << c2 << endl;
+  }
   \endcode
-  Namely, for a constraint defined by
-  \code
-  Constraint c(2*x <= 6*z - 7);
-  \endcode
-  the output is the following:
-  \code
-  Variable A has coefficient -2
-  Variable B has coefficient 0
-  Variable C has coefficient 6
-  The inhomogeneous term is -7 
-  \endcode
-  Note the changes in the signs of the coefficients: when constraints
-  are actually built, all <CODE><=</CODE> inequalities are transformed
-  into <CODE>>=</CODE> and then all the terms are moved to
-  the left-hand side of the inequality.
-  When dealing with equalities, whose relational symbol is not provided
-  with a default direction, the actual sign of the coefficients is
-  somehow unpredictable, since they could have been (consistently)
-  negated in either way.
-  For instance, if the initial constraint was defined by
-  \code
-  Constraint c(5 == -3*y + 6*z);
-  \endcode
-  then we would have obtained the following output:
-  \code
-  Variable A has coefficient 0
-  Variable B has coefficient 3
-  Variable C has coefficient -6
-  The inhomogeneous term is 5
-  \endcode
-  Note that the implementation is allowed to transform a given
-  constraint into an equivalent one, therefore influencing the
-  particular output obtained by the code above.
+  Note that, in general, the particular output obtained can be
+  syntactically different from the (semantically equivalent)
+  constraint considered.
 */
 class Parma_Polyhedra_Library::Constraint : PPL_HIDDEN Row {
 private:
