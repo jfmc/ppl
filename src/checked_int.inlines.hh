@@ -24,9 +24,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_int_inlines_hh
 #define PPL_checked_int_inlines_hh 1
 
+// Please do not remove the space separating `#' from `include':
+// this ensures that the directive will not be moved during the
+// procedure that automatically creates the library's include file
+// (see `Makefile.am' in the `src' directory).
+# include <limits.h>
+
+#include <stdint.h>
+#include <cerrno>
 #include "Limits.hh"
 #include "float.types.hh"
-#include <cerrno>
 
 #define CHECKED_INT_POS_OVERFLOW(Type) \
 (Limits<Type>::max)
@@ -487,15 +494,47 @@ SPECIALIZE_ASSIGN(unsigned_int_c_string, unsigned int, c_string)
 SPECIALIZE_ASSIGN(unsigned_int_c_string, unsigned long, c_string)
 SPECIALIZE_ASSIGN(unsigned_long_long_c_string, unsigned long long, c_string)
 
+#if UCHAR_MAX == 0xff
+#define CHAR_BITS 8
+#else
+#error "Unexpected max for unsigned char"
+#endif
+
+#if USHRT_MAX == 0xffff
+#define SHRT_BITS 16
+#else
+#error "Unexpected max for unsigned short"
+#endif
+
+#if UINT_MAX == 0xffffffff
+#define INT_BITS 32
+#else
+#error "Unexpected max for unsigned int"
+#endif
+
+#if ULONG_MAX == 0xffffffffL
+#define LONG_BITS 32
+#elif LONG_MAX == 0xffffffffffffffffULL
+#define LONG_BITS 64
+#else
+#error "Unexpected max for unsigned long"
+#endif
+
+#if ULONG_LONG_MAX == 0xffffffffffffffffULL
+#define LONG_LONG_BITS 64
+#else
+#error "Unexpected max for unsigned long long"
+#endif
+
+
 template<typename T>
 struct Larger;
 
-// The following is architecture dependent.
-// It should be OK of ia32.
+// The following may be tuned for performance on specific architecture.
 //
-// Chosen guidelines:
-//   - avoid division where possibile (int_larger variant for mul)
-//   - use int_larger variant for types smaller than architecture bit size
+// Current guidelines:
+//   - avoid division where possibile (larger type variant for mul)
+//   - use larger type variant for types smaller than architecture bit size
 
 template <>
 struct Larger<char> {
@@ -503,10 +542,10 @@ struct Larger<char> {
   static const bool use_for_add = true;
   static const bool use_for_sub = true;
   static const bool use_for_mul = true;
-  typedef int Type_For_Neg;
-  typedef int Type_For_Add;
-  typedef int Type_For_Sub;
-  typedef int Type_For_Mul;
+  typedef int_fast16_t Type_For_Neg;
+  typedef int_fast16_t  Type_For_Add;
+  typedef int_fast16_t  Type_For_Sub;
+  typedef int_fast16_t  Type_For_Mul;
 };
 
 template <>
@@ -515,10 +554,10 @@ struct Larger<unsigned char> {
   static const bool use_for_add = true;
   static const bool use_for_sub = true;
   static const bool use_for_mul = true;
-  typedef int Type_For_Neg;
-  typedef unsigned int Type_For_Add;
-  typedef int Type_For_Sub;
-  typedef unsigned int Type_For_Mul;
+  typedef int_fast16_t Type_For_Neg;
+  typedef uint_fast16_t Type_For_Add;
+  typedef int_fast16_t Type_For_Sub;
+  typedef uint_fast16_t Type_For_Mul;
 };
 
 template <>
@@ -527,10 +566,10 @@ struct Larger<short> {
   static const bool use_for_add = true;
   static const bool use_for_sub = true;
   static const bool use_for_mul = true;
-  typedef int Type_For_Neg;
-  typedef int Type_For_Add;
-  typedef int Type_For_Sub;
-  typedef int Type_For_Mul;
+  typedef int_fast32_t Type_For_Neg;
+  typedef int_fast32_t Type_For_Add;
+  typedef int_fast32_t Type_For_Sub;
+  typedef int_fast32_t Type_For_Mul;
 };
 
 template <>
@@ -539,10 +578,10 @@ struct Larger<unsigned short> {
   static const bool use_for_add = true;
   static const bool use_for_sub = true;
   static const bool use_for_mul = true;
-  typedef int Type_For_Neg;
-  typedef unsigned int Type_For_Add;
-  typedef int Type_For_Sub;
-  typedef unsigned int Type_For_Mul;
+  typedef int_fast32_t Type_For_Neg;
+  typedef uint_fast32_t Type_For_Add;
+  typedef int_fast32_t Type_For_Sub;
+  typedef uint_fast32_t Type_For_Mul;
 };
 
 template <>
@@ -550,11 +589,11 @@ struct Larger<int> {
   static const bool use_for_neg = false;
   static const bool use_for_add = false;
   static const bool use_for_sub = false;
-  static const bool use_for_mul = false;
-  typedef long long Type_For_Neg;
-  typedef long long Type_For_Add;
-  typedef long long Type_For_Sub;
-  typedef long long Type_For_Mul;
+  static const bool use_for_mul = true;
+  typedef int_fast64_t Type_For_Neg;
+  typedef int_fast64_t Type_For_Add;
+  typedef int_fast64_t Type_For_Sub;
+  typedef int_fast64_t Type_For_Mul;
 };
 
 template <>
@@ -562,11 +601,11 @@ struct Larger<unsigned int> {
   static const bool use_for_neg = false;
   static const bool use_for_add = false;
   static const bool use_for_sub = false;
-  static const bool use_for_mul = false;
-  typedef long long Type_For_Neg;
-  typedef unsigned long long Type_For_Add;
-  typedef long long Type_For_Sub;
-  typedef unsigned long long Type_For_Mul;
+  static const bool use_for_mul = true;
+  typedef int_fast64_t Type_For_Neg;
+  typedef uint_fast64_t Type_For_Add;
+  typedef int_fast64_t Type_For_Sub;
+  typedef uint_fast64_t Type_For_Mul;
 };
 
 template <>
@@ -574,11 +613,11 @@ struct Larger<long> {
   static const bool use_for_neg = false;
   static const bool use_for_add = false;
   static const bool use_for_sub = false;
-  static const bool use_for_mul = false;
-  typedef long long Type_For_Neg;
-  typedef long long Type_For_Add;
-  typedef long long Type_For_Sub;
-  typedef long long Type_For_Mul;
+  static const bool use_for_mul = (LONG_BITS == 32);
+  typedef int_fast64_t Type_For_Neg;
+  typedef int_fast64_t Type_For_Add;
+  typedef int_fast64_t Type_For_Sub;
+  typedef int_fast64_t Type_For_Mul;
 };
 
 template <>
@@ -586,11 +625,11 @@ struct Larger<unsigned long> {
   static const bool use_for_neg = false;
   static const bool use_for_add = false;
   static const bool use_for_sub = false;
-  static const bool use_for_mul = false;
-  typedef long long Type_For_Neg;
-  typedef unsigned long long Type_For_Add;
-  typedef long long Type_For_Sub;
-  typedef unsigned long long Type_For_Mul;
+  static const bool use_for_mul = (LONG_BITS == 32);
+  typedef int_fast64_t Type_For_Neg;
+  typedef uint_fast64_t Type_For_Add;
+  typedef int_fast64_t Type_For_Sub;
+  typedef uint_fast64_t Type_For_Mul;
 };
 
 template <>
@@ -599,10 +638,10 @@ struct Larger<long long> {
   static const bool use_for_add = false;
   static const bool use_for_sub = false;
   static const bool use_for_mul = false;
-  typedef long long Type_For_Neg;
-  typedef long long Type_For_Add;
-  typedef long long Type_For_Sub;
-  typedef long long Type_For_Mul;
+  typedef int_fast64_t Type_For_Neg;
+  typedef int_fast64_t Type_For_Add;
+  typedef int_fast64_t Type_For_Sub;
+  typedef int_fast64_t Type_For_Mul;
 };
 
 template <>
@@ -611,10 +650,10 @@ struct Larger<unsigned long long> {
   static const bool use_for_add = false;
   static const bool use_for_sub = false;
   static const bool use_for_mul = false;
-  typedef long long Type_For_Neg;
-  typedef unsigned long long Type_For_Add;
-  typedef long long Type_For_Sub;
-  typedef unsigned long long Type_For_Mul;
+  typedef int_fast64_t Type_For_Neg;
+  typedef uint_fast64_t Type_For_Add;
+  typedef int_fast64_t Type_For_Sub;
+  typedef uint_fast64_t Type_For_Mul;
 };
 
 template <typename Policy, typename Type>
