@@ -293,7 +293,7 @@ PPL::Row::all_homogeneous_terms_are_zero() const {
 bool
 PPL::Row::OK(size_t row_size,
 	     size_t
-#ifndef NDEBUG
+#if EXTRA_ROW_DEBUG
 	     row_capacity
 #endif
 	     ) const {
@@ -303,7 +303,7 @@ PPL::Row::OK(size_t row_size,
 #endif
 
   bool is_broken = false;
-#ifndef NDEBUG
+#if EXTRA_ROW_DEBUG
   if (capacity_ != row_capacity) {
     cerr << "Row capacity mismatch: is " << capacity_
 	 << ", should be " << row_capacity
@@ -319,7 +319,7 @@ PPL::Row::OK(size_t row_size,
 #endif
     is_broken = true;
   }
-#ifndef NDEBUG
+#if EXTRA_ROW_DEBUG
   if (capacity_ < size()) {
 #ifndef NDEBUG
     cerr << "Row is completely broken: capacity is " << capacity_

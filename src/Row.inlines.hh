@@ -256,7 +256,7 @@ Row::space_dimension() const {
     : sz - (is_necessarily_closed() ? 1 : 2);
 }
 
-#ifndef NDEBUG
+#if EXTRA_ROW_DEBUG
 inline size_t
 Row::capacity() const {
   return capacity_;
@@ -285,7 +285,7 @@ inline void
 Row::construct(Type t, size_t sz, size_t capacity) {
   assert(capacity >= sz);
   impl = new (capacity) Impl(t, sz);
-#ifndef NDEBUG
+#if EXTRA_ROW_DEBUG
   capacity_ = capacity;
 #endif
 }
@@ -314,7 +314,7 @@ Row::Row(const Row& y)
   : impl(y.impl
 	 ? new (compute_capacity(y.size())) Impl(*y.impl)
 	 : 0) {
-#ifndef NDEBUG
+#if EXTRA_ROW_DEBUG
   capacity_ = y.impl ? compute_capacity(y.size()) : 0;
 #endif
 }
@@ -327,7 +327,7 @@ inline
 Row::Row(const Row& y, size_t capacity) {
   assert(capacity >= y.size());
   impl = y.impl ? new (capacity) Impl(*y.impl) : 0;
-#ifndef NDEBUG
+#if EXTRA_ROW_DEBUG
   capacity_ = capacity;
 #endif
 }
@@ -341,7 +341,7 @@ inline
 Row::Row(const Row& y, size_t sz, size_t capacity) {
   assert(capacity >= y.size());
   impl = y.impl ? new (capacity) Impl(*y.impl, sz) : 0;
-#ifndef NDEBUG
+#if EXTRA_ROW_DEBUG
   capacity_ = capacity;
 #endif
 }
@@ -358,7 +358,9 @@ Row::~Row() {
 inline void
 Row::resize_no_copy(size_t new_sz) {
   assert(impl);
+#if EXTRA_ROW_DEBUG
   assert(new_sz <= capacity_);
+#endif
   impl->resize_no_copy(new_sz);
 }
 
@@ -369,7 +371,9 @@ Row::resize_no_copy(size_t new_sz) {
 inline void
 Row::grow_no_copy(size_t new_sz) {
   assert(impl);
+#if EXTRA_ROW_DEBUG
   assert(new_sz <= capacity_);
+#endif
   impl->grow_no_copy(new_sz);
 }
 
@@ -386,7 +390,7 @@ Row::shrink(size_t new_sz) {
 inline void
 Row::swap(Row& y) {
   std::swap(impl, y.impl);
-#ifndef NDEBUG
+#if EXTRA_ROW_DEBUG
   std::swap(capacity_, y.capacity_);
 #endif
 }
@@ -394,7 +398,7 @@ Row::swap(Row& y) {
 inline void
 Row::assign(Row& y) {
   impl = y.impl;
-#ifndef NDEBUG
+#if EXTRA_ROW_DEBUG
   capacity_ = y.capacity_;
 #endif
 }

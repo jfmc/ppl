@@ -33,6 +33,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstddef>
 #include <iosfwd>
 
+#ifndef EXTRA_ROW_DEBUG
+//! When EXTRA_ROW_DEBUG evaluates to true, each row carries its own
+//! capacity; this enables extra consistency checks to be performed.
+#define EXTRA_ROW_DEBUG 0
+#endif
+
 namespace Parma_Polyhedra_Library {
   // Put it in the namespace here to declare it friend later.
   std::ostream& operator<<(std::ostream& s, const Row& row);
@@ -193,7 +199,7 @@ private:
   //! The real implementation, as far as memory allocation is concerned.
   Impl* impl;
 
-#ifndef NDEBUG
+#if EXTRA_ROW_DEBUG
   //! The capacity of the row (only available during debugging).
   size_t capacity_;
 
