@@ -40,6 +40,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define EVOLVING_RAYS_SATURATORS 1
 #endif
 
+#ifndef COMPARE_H79
+#define COMPARE_H79 0
+#endif
 namespace PPL = Parma_Polyhedra_Library;
 
 void
@@ -3899,6 +3902,15 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(Polyhedron& x,
   bool stabilizing = is_BHRZ03_stabilizing(x, y);
 
   if (stabilizing) {
+
+#if COMPARE_H79
+    Polyhedron H79(x.topology(), x.space_dimension(), UNIVERSE);
+    ConSys H79_copy(H79_con_sys);
+    H79.add_constraints(H79_copy);
+    if (H79 <= x)
+      return false;
+#endif
+
 #if 0 //#ifndef NDEBUG
     std::cout << "BHRZ03: stabilizing on averaging constraints"
 	      << std::endl;
@@ -4030,6 +4042,17 @@ PPL::Polyhedron::BHRZ03_evolving_points(Polyhedron& x,
     // Check for stabilization.
     bool stabilizing = is_BHRZ03_stabilizing(x, y);
     if (stabilizing) {
+
+#if COMPARE_H79
+      Polyhedron H79(x.topology(), x.space_dimension(), UNIVERSE);
+      ConSys H79_copy(H79_con_sys);
+      H79.add_constraints(H79_copy);
+      if (H79 <= x)
+	// Note: no need to check with the addition of more rays,
+	// since it would result into an even bigger `x'.
+	return false;
+#endif
+
 #if 0 //#ifndef NDEBUG
       std::cout << "BHRZ03: stabilizing on evolving points"
 		<< std::endl;
@@ -4186,6 +4209,15 @@ PPL::Polyhedron::BHRZ03_evolving_rays(Polyhedron& x,
   // Check for stabilization.
   bool stabilizing = is_BHRZ03_stabilizing(x, y);
   if (stabilizing) {
+
+#if COMPARE_H79
+    Polyhedron H79(x.topology(), x.space_dimension(), UNIVERSE);
+    ConSys H79_copy(H79_con_sys);
+    H79.add_constraints(H79_copy);
+    if (H79 <= x)
+      return false;
+#endif
+
 #if 0 //#ifndef NDEBUG
     std::cout << "BHRZ03: stabilizing on evolving rays"
 	      << std::endl;
