@@ -34,7 +34,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include <set>
-#include <vector>
 
 namespace Parma_Polyhedra_Library {
   //! Returns <CODE>true</CODE> if and only if
@@ -495,37 +494,34 @@ public:
   //! Use \p *this to shrink a generic, interval-based bounding box.
   //!
   //! \param box
-  //!   The bounding box to be shrunk.  This must be such that
-  //!   <CODE>box.size() >= this->space_dimension()</CODE>.
-  //!
-  //! \exception std::out_of_range
-  //!   thrown if <CODE>box.size() < this->space_dimension()</CODE>.
+  //!   The bounding box to be shrunk.
   /*!
     \param box
-    The bounding box to be shrunk.  This must be such that
-    <CODE>box.size() >= this->space_dimension()</CODE>.
-    The class <CODE>Interval</CODE>, to which the elements of
-    \p box belong, must provide the following methods, whose
-    return value, if any, is simply ignored:
+    The bounding box to be shrunk.  This must provide the following
+    methods, whose return value, if any, is simply ignored:
     \code
-      raise_lower_bound(bool closed, const Integer& n, const Integer& d)
+      raise_lower_bound(unsigned int k, bool closed,
+                        const Integer& n, const Integer& d)
     \endcode
-    Intersects the interval with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE>
-    is <CODE>true</CODE>, with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE>
-    is <CODE>false</CODE>.
+    intersects the interval corresponding to the <CODE>k</CODE>-th dimension
+    with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
+    with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>;
     \code
-      lower_upper_bound(bool closed, const Integer& n, const Integer& d)
+      lower_upper_bound(unsigned int k, bool closed,
+                        const Integer& n, const Integer& d)
     \endcode
-    Intersects the interval with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE>
-    is <CODE>true</CODE>, with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
-    is <CODE>false</CODE>.
+    intersects the interval corresponding to the <CODE>k</CODE>-th dimension
+    with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
+    with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
+    is <CODE>false</CODE>;
     \code
-      set_empty()
+      set_empty(unsigned int k)
     \endcode
-    Intersects the interval with \f$\emptyset\f$.
+    intersects the interval corresponding to the <CODE>k</CODE>-th dimension
+    with \f$\emptyset\f$.
   */
-  template <class Interval>
-  void shrink_bounding_box(std::vector<Interval>& box) const;
+  template <class Box>
+  void shrink_bounding_box(Box& box) const;
 
   //! Checks if all the invariants are satisfied, doing so in
   //! as non-intrusively as possible.  In case invariants are
