@@ -83,8 +83,7 @@ PPL::Row::Impl::copy_construct(const Impl& y) {
 void
 PPL::Row::normalize() {
   Row& x = *this;
-  // Compute the GCD of all the coefficients.
-  // The GCD goes into tmp_Integer(1).
+  // Compute the GCD of all the coefficients into tmp_Integer[1].
   tmp_Integer[1] = 0;
   const dimension_type sz = size();
   for (dimension_type i = sz; i-- > 0; ) {
