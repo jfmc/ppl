@@ -43,6 +43,7 @@ schedule.clpq
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
 EXTRA_DIST = \
+pl_check.pl \
 clpq.pl check_script expected \
 clpq2.pl  check_script2 expected2 \
 $(CLPQ_TESTS)
