@@ -3357,13 +3357,21 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
   if (x.is_necessarily_closed()) {
     // If the number of points of `x' is smaller than the number
     // of points of `y', then the chain is stabilizing.
-    if (x_gen_sys_num_rows - x_num_lines - x.gen_sys.num_rays() <
-	y_gen_sys_num_rows - y_num_lines - y.gen_sys.num_rays()) {
+    dimension_type x_num_points = x_gen_sys_num_rows
+      - x_num_lines - x.gen_sys.num_rays();
+    dimension_type y_num_points = y_gen_sys_num_rows
+      - y_num_lines - y.gen_sys.num_rays();
+    if (x_num_points < y_num_points) {
 #ifndef NDEBUG
       std::cout << "BBRZ02_stabilizing: number of points" << std::endl;
 #endif
       return true;
     }
+    else
+      // If the number of points of `y' is smaller than the number of
+      // points of `x', then the chain is not stabilizing.
+      if (x_num_points > y_num_points)
+	return false;
   }
   else {
     // The polyhedra are NNC.
@@ -3384,8 +3392,14 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
 #endif
       return true;
     }
+    else
+      // If the number of closure points of `y' is smaller than the
+      // number of closure points of `x', the chain is not stabilizing.
+      if (x_num_closure_points > y_num_closure_points)
+	return false;
   }
 
+  
   // For each i such that 0 <= i < x.space_dim, let x_num_rays[i] be
   // the number of rays in x.gen_sys
   // having exactly `i' coordinates equal to 0.
