@@ -149,7 +149,8 @@ Matrix::erase_to_end(size_t first_to_erase) {
 */
 inline void
 Matrix::clear() {
-  rows.clear();
+  // Clear `rows' and minimize its capacity.
+  std::vector<Row>().swap(rows);
   row_size = 0;
   row_capacity = 0;
   sorted = true;
