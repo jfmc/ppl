@@ -52,7 +52,7 @@ $(top_builddir)/interfaces/C/libppl_c.la \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
-check-local: ppl_lpsol expected
+check-local: ppl_lpsol
 	rm -f obtained
 	for k in $(srcdir)/examples/*.mps; \
 	do \
