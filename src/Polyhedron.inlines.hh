@@ -27,7 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Interval.defs.hh"
 #include "Generator.defs.hh"
 #include <algorithm>
-#include <iostream>
 
 namespace Parma_Polyhedra_Library {
 

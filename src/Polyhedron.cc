@@ -1273,8 +1273,12 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
   else if (x_space_dim == 0)
     return true;
 
-  if (x.has_pending_constraints())
-    x.remove_pending_to_obtain_generators();
+  // `x' can only have pending generators. Using
+  // `remove_pending_to_obtain_generators()' we can discover that
+  // `x' is empty.
+  if (x.has_pending_constraints() && !x.remove_pending_to_obtain_generators())
+    return true;
+  // `y' can only have pending constraints.
   if (y.has_pending_generators())
     y.remove_pending_to_obtain_constraints();
   else {
@@ -1792,6 +1796,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     if (!sat_c_is_up_to_date()) {
       sat_c.transpose_assign(sat_g);
       clear_sat_g_up_to_date();
+      set_sat_c_up_to_date();
     }
     sat_c.resize(sat_c.num_rows() + added_columns, sat_c.num_columns());
     // The old matrix is copied at the end of the new matrix.
@@ -2178,6 +2183,8 @@ PPL::Polyhedron::add_dimensions_and_embed(dimension_type m) {
     // Adds rows and/or columns to both matrices (constraints and
     // generators).
     add_dimensions(con_sys, gen_sys, sat_c, sat_g, m);
+    // `pending_cs' or `pending_gs' must have the right
+    // dimensions.
     if (has_pending_constraints()) {
       pending_cs.add_zero_columns(m);
       if (!pending_cs.is_necessarily_closed()) {
@@ -2287,6 +2294,8 @@ PPL::Polyhedron::add_dimensions_and_project(dimension_type m) {
     // Adds rows and/or columns to both matrices (constraints and
     // generators).
     add_dimensions(gen_sys, con_sys, sat_g, sat_c, m);
+    // `pending_cs' or `pending_gs' must have the right
+    // dimensions.
     if (has_pending_constraints()) {
       pending_cs.add_zero_columns(m);
       if (!pending_cs.is_necessarily_closed()) {
