@@ -22,20 +22,23 @@ LDFLAGS = @gmp_library_option@
 
 CPPFLAGS = @extra_cpp_flags@
 
-TESTS = inters1 inters2 \
-        randchull1 \
-        empty1 \
-        append1 append2 \
-        permute \
-        error1 error2 error3 error4 error5 \
+TESTS = addconstraints1 \
 	affinetrans \
-	removedim1 removedim2 removedim3 \
-	onepoint
+        append1 append2 \
+        empty1 \
+        error1 error2 error3 error4 error5 \
+        inters1 inters2 \
+	onepoint \
+        permute \
+	randchull1 \
+	removedim1 removedim2 removedim3
 
-inters1_SOURCES = inters1.cc
-inters2_SOURCES = inters2.cc
+addconstraints1_SOURCES = addconstraints1.cc
 
-randchull1_SOURCES = randchull1.cc
+affinetrans_SOURCES = affinetrans.cc
+
+append1_SOURCES = append1.cc
+append2_SOURCES = append2.cc
 
 empty1_SOURCES = empty1.cc
 
@@ -45,18 +48,18 @@ error3_SOURCES = error3.cc
 error4_SOURCES = error4.cc
 error5_SOURCES = error5.cc
 
-append1_SOURCES = append1.cc
-append2_SOURCES = append2.cc
+inters1_SOURCES = inters1.cc
+inters2_SOURCES = inters2.cc
+
+onepoint_SOURCES = onepoint.cc
 
 permute_SOURCES = permute.cc
 
-affinetrans_SOURCES = affinetrans.cc
+randchull1_SOURCES = randchull1.cc
 
 removedim1_SOURCES = removedim1.cc
 removedim2_SOURCES = removedim2.cc
 removedim3_SOURCES = removedim3.cc
-
-onepoint_SOURCES = onepoint.cc
 
 check_PROGRAMS = $(TESTS)
 
