@@ -1408,6 +1408,19 @@ int
 ppl_Polyhedron_is_bounded __P((ppl_const_Polyhedron_t ph));
 
 /*!
+  Returns a positive integer if \p ph is topologically closed;
+  returns 0 if \p ph is not topologically closed.
+*/
+int
+ppl_Polyhedron_is_topologically_closed __P((ppl_const_Polyhedron_t ph));
+
+/*!
+  Assigns to \p ph its topological closure.
+*/
+int
+ppl_Polyhedron_topological_closure_assign __P((ppl_Polyhedron_t ph));
+
+/*!
   Returns a positive integer if \p x contains or is equal to \p y;
   returns 0 if it does not.
 */

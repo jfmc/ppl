@@ -776,7 +776,7 @@ public:
   //! is a topologically closed subset of the vector space.
   bool is_topologically_closed() const;
 
-  //! Computes the topological closure of \p *this.
+  //! Assigns to \p *this its topological closure.
   void topological_closure_assign();
 
   //! Returns <CODE>true</CODE> if and only if

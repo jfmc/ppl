@@ -1415,6 +1415,21 @@ ppl_Polyhedron_is_bounded(ppl_const_Polyhedron_t ph) try {
 CATCH_ALL
 
 int
+ppl_Polyhedron_is_topologically_closed(ppl_const_Polyhedron_t ph) try {
+  const Polyhedron& pph = *to_const(ph);
+  return pph.is_topologically_closed() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_topological_closure_assign(ppl_Polyhedron_t ph) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  pph.topological_closure_assign();
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_Polyhedron_contains_Polyhedron(ppl_const_Polyhedron_t x,
 				   ppl_const_Polyhedron_t y) try {
   const Polyhedron& xx = *to_const(x);
