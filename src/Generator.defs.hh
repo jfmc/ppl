@@ -58,9 +58,10 @@ namespace Parma_Polyhedra_Library {
     \f$\vect{p} = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$;
 
   - a closure point
-    \f$\vect{cp} = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$;
+    \f$\vect{c} = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$;
 
-  where \f$n\f$ is the dimension of the space.
+  where \f$n\f$ is the dimension of the space
+  and, for points and closure points, \f$d > 0\f$ is the divisor.
 
   \par A note on terminology.
   As observed in the Introduction, there are cases when, in order to
@@ -171,9 +172,9 @@ namespace Parma_Polyhedra_Library {
   Closures points are specified in the same way we defined points,
   but invoking their specific constructor function.
   For instance, the closure point
-  \f$\vect{cp} = (1, 0, 2)^\transpose \in \Rset^3\f$ is defined by
+  \f$\vect{c} = (1, 0, 2)^\transpose \in \Rset^3\f$ is defined by
   \code
-  Generator cp = closure_point(1*x + 0*y + 2*z);
+  Generator c = closure_point(1*x + 0*y + 2*z);
   \endcode
   For the particular case of the (only) closure point
   having space-dimension zero, we can use any of the following:
@@ -222,10 +223,12 @@ namespace Parma_Polyhedra_Library {
 
 class Parma_Polyhedra_Library::Generator : PPL_HIDDEN Row {
 private:
+  //! \brief
   //! Builds a generator (of unspecified type) stealing
   //! the coefficients from \p e.
   Generator(LinExpression& e);
 
+  //! \brief
   //! Throw a <CODE>std::invalid_argument</CODE> exception
   //! containing the appropriate error message.
   //@{
@@ -235,33 +238,41 @@ private:
   throw_invalid_argument(const char* method, const char* reason) const;
   //@}
 
-  //! Returns the (bidirectional) line of direction \p e.
-  //! \exception std::invalid_argument thrown if the homogeneous part
-  //!                                  of \p e represents the origin
-  //!                                  of the vector space.
+  //! Returns the line of direction \p e.
+  /*!
+    \exception std::invalid_argument thrown if the homogeneous part
+                                     of \p e represents the origin
+                                     of the vector space.
+  */
   friend Generator
   Parma_Polyhedra_Library::line(const LinExpression& e);
 
-  //! Returns the (unidirectional) ray of direction \p e.
-  //! \exception std::invalid_argument thrown if the homogeneous part
-  //!                                  of \p e represents the origin
-  //!                                  of the vector space.
+  //! Returns the ray of direction \p e.
+  /*!
+    \exception std::invalid_argument thrown if the homogeneous part
+                                     of \p e represents the origin
+				     of the vector space.
+  */
   friend Generator
   Parma_Polyhedra_Library::ray(const LinExpression& e);
 
   //! Returns the point at \p e / \p d.
-  //! Both \p e and \p d are optional arguments, with default values
-  //! LinExpression::zero() and Integer_one(), respectively.
-  //! \exception std::invalid_argument thrown if \p d is zero.
+  /*!
+    Both \p e and \p d are optional arguments, with default values
+    LinExpression::zero() and Integer_one(), respectively.
+    \exception std::invalid_argument thrown if \p d is zero.
+  */
   friend Generator
   Parma_Polyhedra_Library::point(const LinExpression& e
 				 = LinExpression::zero(),
 				 const Integer& d = Integer_one());
 
   //! Returns the closure point at \p e / \p d.
-  //! Both \p e and \p d are optional arguments, with default values
-  //! LinExpression::zero() and Integer_one(), respectively.
-  //! \exception std::invalid_argument thrown if \p d is zero.
+  /*!
+    Both \p e and \p d are optional arguments, with default values
+    LinExpression::zero() and Integer_one(), respectively.
+    \exception std::invalid_argument thrown if \p d is zero.
+  */
   friend Generator
   Parma_Polyhedra_Library::closure_point(const LinExpression& e
 					 = LinExpression::zero(),
@@ -281,7 +292,6 @@ public:
   size_t space_dimension() const;
 
   //! The generator type.
-  /*! Describes the type of the generator. */
   enum Type {
     /*! The generator is a line. */
     LINE,
@@ -296,36 +306,36 @@ public:
   //! Returns the generator type of \p *this.
   Type type() const;
 
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a line.
+  //! Returns <CODE>true</CODE> if and only if \p *this is a line.
   bool is_line() const;
 
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a ray.
+  //! Returns <CODE>true</CODE> if and only if \p *this is a ray.
   bool is_ray() const;
 
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a point.
+  //! Returns <CODE>true</CODE> if and only if \p *this is a point.
   bool is_point() const;
 
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a closure point.
+  //! Returns <CODE>true</CODE> if and only if \p *this is a closure point.
   bool is_closure_point() const;
 
-  //! If the index of variable \p v is less than the space-dimension
-  //! of \p *this, returns the coefficient of \p v in \p *this.
-  //! \exception std::invalid_argument thrown if the index of \p v
-  //! is greater than or equal to the space-dimension of \p *this.
+  //! Returns the coefficient of \p v in \p *this.
+  /*!
+    \exception std::invalid_argument thrown if the index of \p v
+    is greater than or equal to the space-dimension of \p *this.
+  */
   const Integer& coefficient(Variable v) const;
 
   //! If \p *this is either a point or a closure point, returns its divisor.
-  //! \exception std::invalid_argument thrown if \p *this is neither a point
-  //! nor a closure point.
+  /*!
+    \exception std::invalid_argument thrown if \p *this is neither a point
+                                     nor a closure point.
+  */
   const Integer& divisor() const;
 
   //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Generator& zero_dim_point();
 
+  //! \brief
   //! Returns, as a closure point,
   //! the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Generator& zero_dim_closure_point();
@@ -341,8 +351,7 @@ private:
   //! Copy-constructor with given size.
   Generator(const Generator& g, size_t sz);
 
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is not a line.
+  //! Returns <CODE>true</CODE> if and only if \p *this is not a line.
   bool is_ray_or_point() const;
 
   //! Sets the Row kind to <CODE>LINE_OR_EQUALITY</CODE>.
@@ -351,6 +360,7 @@ private:
   //! Sets the Row kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
   void set_is_ray_or_point();
 
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if the closure point
   //! \p *this has the same \e coordinates of the point \p p.
   bool is_matching_closure_point(const Generator& p) const;

@@ -117,29 +117,41 @@ public:
   //! Destructor.
   virtual ~LinExpression();
 
+  //! \brief
   //! Builds the linear expression corresponding
   //! to the inhomogeneous term \p n.
   explicit LinExpression(const Integer& n);
 
+  //! \brief
   //! Builds the linear expression corresponding
   //! to the variable \p v.
   LinExpression(const Variable& v);
 
-  //! Given the constraint
-  //! \f$c = \bigl(\sum_{i=0}^{n-1} a_i x_i + b \relop 0\bigr)\f$,
-  //! where \f$\mathord{\relop} \in \{ =, \geq, > \}\f$,
-  //! builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i + b\f$.
-  //! If \p c is an inequality (resp., equality) constraint, then
-  //! the built linear expression is unique up to a positive
-  //! (resp., non-zero) factor.
+  //! Builds the linear expression corresponding to constraint \p c.
+  /*!
+    Given the constraint
+    \f$c = \bigl(\sum_{i=0}^{n-1} a_i x_i + b \relop 0\bigr)\f$,
+    where \f$\mathord{\relop} \in \{ =, \geq, > \}\f$,
+    builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i + b\f$.
+    If \p c is an inequality (resp., equality) constraint, then
+    the built linear expression is unique up to a positive
+    (resp., non-zero) factor.
+  */
   explicit LinExpression(const Constraint& c);
 
-  //! Builds the linear expression corresponding to
-  //! the coefficients of generator \p g (for points and closure points,
-  //! the divisor is \e not copied).
-  //! If \p g is a ray, point or closure point (resp., a line), then
-  //! the built linear expression is unique up to a positive
-  //! (resp., non-zero) factor.
+  //! \brief
+  //! Builds the linear expression corresponding to generator \p g
+  //! (for points and closure points, the divisor is not copied).
+  /*!
+    Given the generator
+    \f$g = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$
+    (where, for lines and rays, we have \f$d = 1\f$),
+    builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i\f$.
+    The inhomogeneous term of the linear expression will always be 0.
+    If \p g is a ray, point or closure point (resp., a line), then
+    the linear expression is unique up to a positive
+    (resp., non-zero) factor.
+  */
   explicit LinExpression(const Generator& g);
 
   //! Returns the dimension of the vector space enclosing \p *this.
@@ -156,8 +168,10 @@ private:
   LinExpression(const LinExpression& e, size_t sz);
 
   //! Implementation sizing constructor.
-  //! The bool parameter is just to avoid problems with
-  //! the constructor LinExpression(const Integer& n).
+  /*!
+    The bool parameter is just to avoid problems with
+    the constructor LinExpression(const Integer& n).
+  */
   LinExpression(size_t sz, bool);
 
   //! Returns the linear expression \p e1 + \p e2.
@@ -238,6 +252,7 @@ private:
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::LinExpression */
 void swap(Parma_Polyhedra_Library::LinExpression& x,
 	  Parma_Polyhedra_Library::LinExpression& y);
 

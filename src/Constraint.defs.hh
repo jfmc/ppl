@@ -174,7 +174,6 @@ public:
   size_t space_dimension() const;
 
   //! The constraint type.
-  /*! Describes the type of the constraint. */
   enum Type {
     /*! The constraint is an equality. */
     EQUALITY,
@@ -187,26 +186,31 @@ public:
   //! Returns the constraint type of \p *this.
   Type type() const;
 
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is an equality constraint.
   bool is_equality() const;
   
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is an inequality constraint (either strict or non-strict).
   bool is_inequality() const;
   
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is a non-strict inequality constraint.
   bool is_nonstrict_inequality() const;
   
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is a strict inequality constraint.
   bool is_strict_inequality() const;
 
-  //! If the index of variable \p v is less than the space-dimension
-  //! of \p *this, returns the coefficient of \p v in \p *this.
-  //! \exception std::invalid_argument thrown if the index of \p v
-  //! is greater than or equal to the space-dimension of \p *this.
+  //! Returns the coefficient of \p v in \p *this.
+  /*!
+    \exception std::invalid_argument thrown if the index of \p v
+    is greater than or equal to the space-dimension of \p *this.
+  */
   const Integer& coefficient(Variable v) const;
   
   //! Returns the inhomogeneous term of \p *this.
@@ -215,6 +219,7 @@ public:
   //! The unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$.
   static const Constraint& zero_dim_false();
 
+  //! \brief
   //! The true (zero-dimension space) constraint \f$0 \leq 1\f$,
   //! also known as <EM>positivity constraint</EM>.
   static const Constraint& zero_dim_positivity();
@@ -230,14 +235,17 @@ private:
   //! Default constructor: private and not implemented.
   Constraint();
 
+  //! \brief
   //! Builds a constraint (of unspecified type) stealing
   //! the coefficients from \p e.
   Constraint(LinExpression& e);
 
+  //! \brief
   //! Builds a constraint, having type \p type, which is able
   //! to store \p sz coefficients, whose values are left unspecified.
   Constraint(Row::Type t, size_t sz);
 
+  //! \brief
   //! Throws a <CODE>std::invalid_argument</CODE> exception
   //! containing the appropriate error message.
   void
@@ -318,6 +326,7 @@ private:
   Parma_Polyhedra_Library::operator<(const Integer& n,
 				     const LinExpression& e);
 
+  //! \brief
   //! Returns the constraint \p c with variables renamed
   //! by adding \p offset to their Cartesian axis identifier.
   friend Constraint
@@ -327,6 +336,7 @@ private:
   //! Copy-constructor with given size.
   Constraint(const Constraint& c, size_t sz);
 
+  //! \brief
   //! Builds a new copy of the zero-dimension space constraint
   //! \f$\epsilon \geq 0\f$ (used to implement NNC polyhedra).
   static Constraint construct_epsilon_geq_zero();
@@ -334,19 +344,36 @@ private:
   //! Returns the zero-dimension space constraint \f$\epsilon \geq 0\f$.
   static const Constraint& epsilon_geq_zero();
 
+  //! \brief
   //! The zero-dimension space constraint \f$\epsilon \leq 1\f$
-  //! (used to implement non-necessarily closed polyhedra).
+  //! (used to implement NNC polyhedra).
   static const Constraint& epsilon_leq_one();
 
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is the trivially true constraint \f$0 <= n\f$,
-  //! where \f$n \geq 0\f$.
+  //! \p *this is a trivially true constraint.
+  /*!
+    Trivially true constraints have either one of the following forms:
+    - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + 0 = 0\f$; or
+    - a non-strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \geq 0\f$,
+      where \f$b \geq 0\f$; or
+    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b > 0\f$,
+      where \f$b > 0\f$.
+  */
   bool is_trivial_true() const;
 
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is the trivially false constraint
-  //! (i.e., either \f$0 >= n\f$, where \f$n > 0\f$
-  //! or \f$0 = n\f$, where \f$n \neq 0\f$.
+  //! \p *this is a trivially false constraint.
+  /*!
+    Trivially false constraints have either one of the following forms:
+    - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + b = 0\f$,
+      where \f$b \neq 0\f$; or
+    - a non-strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \geq 0\f$,
+      where \f$b < 0\f$; or
+    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b > 0\f$,
+      where \f$b \leq 0\f$.
+  */
   bool is_trivial_false() const;
 
   //! Sets the constraint type to <CODE>EQUALITY</CODE>.
