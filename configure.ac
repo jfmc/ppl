@@ -592,7 +592,6 @@ fi
 
 case $host in
 *-*-cygwin* | *-*-mingw*)
-  extra_includes="${extra_includes} -I/usr/include/mingw"
   extra_libraries="${extra_libraries} -L/usr/lib/mingw -lmingwex"
   ;;
 *)
