@@ -964,9 +964,7 @@ PFunction.hh
 
 EXTRA_DIST = $(watchdog1_SRCS)
 
-BUGS = bug1
-
-bug1_SOURCES = bug1.cc
+BUGS =
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat \
