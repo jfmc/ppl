@@ -22,8 +22,36 @@
 //  site: http://www.cs.unipr.it/ppl/
 
 /*! \mainpage Convex Polyhedra and the PPL
+\section preamble A Library for Convex Polyhedra
 
-Most of the following definitions and results are taken from:
+The Parma Polyhedra Library (PPL) is a modern C++ library for the
+manipulation of convex polyhedra.
+To be more precise, the PPL can
+handle all the convex polyhedra that can be defined as the
+intersection of a finite number of closed hyperspaces, each described
+by an equality or an inequality with rational
+coefficients.
+
+The library is:
+- user friendly: you write <CODE>x + 2*y + 5*z <= 7</CODE> when you mean it; 
+- fully dynamic: available virtual memory is the only limitation to the
+  dimension of anything; 
+- written in standard C++: meant to be portable;
+- exception-safe: never leaks resources or leaves invalid object
+  fragments around;
+- rather efficient: and we hope to make it even more so; 
+- thoroughly documented: perhaps not literate programming but close enough; 
+- free software: distributed under the terms of the
+  GNU General Public License. 
+
+Informally, a convex polyhedron is a set of points
+(in some \f$n\f$-dimensional vector space) that satisfies
+a finite number of linear inequalities.
+
+In the following sections we describe the polyhedra and
+the different representations and operations 
+supported by the PPL in more detail.
+Here most of the definitions and results are taken from:
 - G. L. Nemhauser and L. A. Wolsey - Integer and Combinatorial Optimization -
   Wiley Interscience Series in Discrete Mathematics and Optimization, 1988.
 - D. K. Wilde - A library for doing polyhedral operations - IRISA Publication
@@ -36,10 +64,7 @@ Most of the following definitions and results are taken from:
 
 \section introduction An Introduction to Convex Polyhedra
 
-Informally, a convex polyhedron is a set of points
-(in some \f$n\f$-dimensional vector space) that satisfies
-a finite number of linear inequalities.
-In this section we introduce such polyhedra,
+In this section we introduce convex polyhedra,
 as considered by the library, in more detail.
 
 <B>Vectors, Matrices and Scalar Products</B>
