@@ -253,6 +253,61 @@ error8() {
   }
 }
 
+void
+error9() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+
+  Polyhedron ph(3);
+  GenSys gs;
+  gs.insert(point(x));
+  gs.insert(closure_point());
+  gs.insert(ray(x+y));
+
+  try {
+    // This is an incorrect use of the function add_generators(gs): it is
+    // impossible to add a system of generators that contains closure-points
+    // to a closed polyhedron.
+    ph.add_generators(gs);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_generators: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error10() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+  
+  NNC_Polyhedron ph1(3);
+  ph1.insert(x >= 5);
+  ph1.insert(y > x -3);
+
+  try {
+    // It is impossible to built a closed polyhedron starting from
+    // the system of constraints of a polyhedron that is not closed.
+    Polyhedron ph2(ph1);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedron: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
 int
 main() {
   
@@ -264,6 +319,8 @@ main() {
   error6();
   error7();
   error8();
+  error9();
+  error10();
 
   return 0;
 }
