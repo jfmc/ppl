@@ -77,7 +77,7 @@ Prolog_put_address(Prolog_term_ref t, void* p) {
 }
 
 /*!
-  Return an atom whose name is given by the null-terminated sring \p s.
+  Return an atom whose name is given by the null-terminated string \p s.
 */
 Prolog_atom
 Prolog_atom_from_string(const char* s) {
@@ -202,9 +202,9 @@ Prolog_get_long(Prolog_term_ref t, long& v) {
   The behavior is undefined if \p t is not an address.
 */
 static inline bool
-Prolog_get_address(Prolog_term_ref t, void** p) {
+Prolog_get_address(Prolog_term_ref t, void*& p) {
   assert(Prolog_is_address(t));
-  return SP_get_address(t, p) != 0;
+  return SP_get_address(t, &p) != 0;
 }
 
 /*!

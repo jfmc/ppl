@@ -64,13 +64,14 @@ Prolog_put_atom(Prolog_term_ref t, Prolog_atom a) {
 /*!
   Assign to \p t a term representing the address contained in \p p.
 */
-static inline void
+static inline bool
 Prolog_put_address(Prolog_term_ref t, void* p) {
   PL_put_pointer(t, p);
+  return true;
 }
 
 /*!
-  Return an atom whose name is given by the null-terminated sring \p s.
+  Return an atom whose name is given by the null-terminated string \p s.
 */
 Prolog_atom
 Prolog_atom_from_string(const char* s) {
@@ -199,9 +200,9 @@ Prolog_get_long(Prolog_term_ref t, long& v) {
   The behavior is undefined if \p t is not an address.
 */
 static inline bool
-Prolog_get_address(Prolog_term_ref t, void** p) {
+Prolog_get_address(Prolog_term_ref t, void*& p) {
   assert(Prolog_is_address(t));
-  return PL_get_pointer(t, p) != 0;
+  return PL_get_pointer(t, &p) != 0;
 }
 
 /*!
@@ -258,9 +259,9 @@ integer_term_to_Integer(Prolog_term_ref t) {
 static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
   // FIXME: does SWI support unlimited precision integer?
-  Prolog_term_ref t = Prolog_new_term_ref();
   if (!n.fits_slong_p())
     throw_unknown_interface_error("Integer_to_integer_term()");
+  Prolog_term_ref t = Prolog_new_term_ref();
   PL_put_integer(t, n.get_si());
   return t;
 }
@@ -308,7 +309,7 @@ extern "C" Prolog_foreign_return_type
 ppl_copy_polyhedron(Prolog_term_ref t_ph, Prolog_term_ref t_source) {
   try {
     void* source;
-    if (!Prolog_get_address(t_source, &source))
+    if (!Prolog_get_address(t_source, source))
       return PROLOG_FAILURE;
     CHECK(source);
     PPL::Polyhedron* ph
@@ -330,7 +331,7 @@ extern "C" Prolog_foreign_return_type
 ppl_delete_polyhedron(Prolog_term_ref t_ph) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     UNREGISTER(ph);
     delete static_cast<PPL::Polyhedron*>(ph);
@@ -344,7 +345,7 @@ extern "C" Prolog_foreign_return_type
 ppl_space_dimension(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     size_t sd = static_cast<const PPL::Polyhedron*>(ph)->space_dimension();
@@ -362,7 +363,7 @@ extern "C" Prolog_foreign_return_type
 ppl_insert_constraint(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     static_cast<PPL::Polyhedron*>(ph)->insert(build_constraint(t_c));
@@ -376,7 +377,7 @@ extern "C" Prolog_foreign_return_type
 ppl_insert_generator(Prolog_term_ref t_ph, Prolog_term_ref t_g) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     static_cast<PPL::Polyhedron*>(ph)->insert(build_generator(t_g));
@@ -391,7 +392,7 @@ ppl_add_constraints_and_minimize(Prolog_term_ref t_ph,
 				 Prolog_term_ref t_clist) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     PPL::ConSys cs;
@@ -411,7 +412,7 @@ extern "C" Prolog_foreign_return_type
 ppl_check_empty(Prolog_term_ref t_ph) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     if (static_cast<PPL::Polyhedron*>(ph)->check_empty())
@@ -426,7 +427,7 @@ ppl_intersection_assign(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   try {
     void* lhs;
     void* rhs;
-    if (!Prolog_get_address(t_lhs, &lhs) || !Prolog_get_address(t_rhs, &rhs))
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
       return PROLOG_FAILURE;
     CHECK(lhs);
     CHECK(rhs);
@@ -445,7 +446,7 @@ ppl_intersection_assign_and_minimize(Prolog_term_ref t_lhs,
   try {
     void* lhs;
     void* rhs;
-    if (!Prolog_get_address(t_lhs, &lhs) || !Prolog_get_address(t_rhs, &rhs))
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
       return PROLOG_FAILURE;
     CHECK(lhs);
     CHECK(rhs);
@@ -463,7 +464,7 @@ ppl_convex_hull_assign(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   try {
     void* lhs;
     void* rhs;
-    if (!Prolog_get_address(t_lhs, &lhs) || !Prolog_get_address(t_rhs, &rhs))
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
       return PROLOG_FAILURE;
     CHECK(lhs);
     CHECK(rhs);
@@ -482,7 +483,7 @@ ppl_convex_hull_assign_and_minimize(Prolog_term_ref t_lhs,
   try {
     void* lhs;
     void* rhs;
-    if (!Prolog_get_address(t_lhs, &lhs) || !Prolog_get_address(t_rhs, &rhs))
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
       return PROLOG_FAILURE;
     CHECK(lhs);
     CHECK(rhs);
@@ -500,7 +501,7 @@ ppl_convex_difference_assign(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   try {
     void* lhs;
     void* rhs;
-    if (!Prolog_get_address(t_lhs, &lhs) || !Prolog_get_address(t_rhs, &rhs))
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
       return PROLOG_FAILURE;
     CHECK(lhs);
     CHECK(rhs);
@@ -519,7 +520,7 @@ ppl_convex_difference_assign_and_minimize(Prolog_term_ref t_lhs,
   try {
     void* lhs;
     void* rhs;
-    if (!Prolog_get_address(t_lhs, &lhs) || !Prolog_get_address(t_rhs, &rhs))
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
       return PROLOG_FAILURE;
     CHECK(lhs);
     CHECK(rhs);
@@ -537,7 +538,7 @@ ppl_widening_assign(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   try {
     void* lhs;
     void* rhs;
-    if (!Prolog_get_address(t_lhs, &lhs) || !Prolog_get_address(t_rhs, &rhs))
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
       return PROLOG_FAILURE;
     CHECK(lhs);
     CHECK(rhs);
@@ -554,7 +555,7 @@ extern "C" Prolog_foreign_return_type
 ppl_get_constraints(Prolog_term_ref t_ph, Prolog_term_ref t_clist) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     Prolog_term_ref tail = Prolog_new_term_ref();
@@ -581,7 +582,7 @@ extern "C" Prolog_foreign_return_type
 ppl_get_generators(Prolog_term_ref t_ph, Prolog_term_ref t_glist) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     Prolog_term_ref tail = Prolog_new_term_ref();
@@ -608,7 +609,7 @@ extern "C" Prolog_foreign_return_type
 ppl_remove_dimensions(Prolog_term_ref t_ph, Prolog_term_ref t_vlist) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     std::set<PPL::Variable> dead_variables;
@@ -628,7 +629,7 @@ extern "C" Prolog_foreign_return_type
 ppl_remove_higher_dimensions(Prolog_term_ref t_ph, Prolog_term_ref t_nd) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     static_cast<PPL::Polyhedron*>(ph)
@@ -643,7 +644,7 @@ extern "C" Prolog_foreign_return_type
 ppl_add_dimensions_and_project(Prolog_term_ref t_ph, Prolog_term_ref t_nnd) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     static_cast<PPL::Polyhedron*>(ph)
@@ -658,7 +659,7 @@ extern "C" Prolog_foreign_return_type
 ppl_add_dimensions_and_embed(Prolog_term_ref t_ph, Prolog_term_ref t_nnd) {
   try {
     void* ph;
-    if (!Prolog_get_address(t_ph, &ph))
+    if (!Prolog_get_address(t_ph, ph))
       return PROLOG_FAILURE;
     CHECK(ph);
     static_cast<PPL::Polyhedron*>(ph)
