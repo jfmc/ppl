@@ -9,10 +9,10 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef PPL_Integer_types_hh
-#define PPL_Integer_types_hh 1
+#ifndef PPL_Coefficient_types_hh
+#define PPL_Coefficient_types_hh 1
 
-#include "Integer_traits_template.hh"
+#include "Coefficient_traits_template.hh"
 
 // Kludge
 #include <stdint.h>
@@ -27,22 +27,22 @@ PURPOSE. */
 namespace Parma_Polyhedra_Library {
 
 template <>
-struct Integer_traits_template<Checked_Number<int8_t> > {
+struct Coefficient_traits_template<Checked_Number<int8_t> > {
   typedef Checked_Number<int8_t> const_reference;
 };
 
 template <>
-struct Integer_traits_template<Checked_Number<int16_t> > {
+struct Coefficient_traits_template<Checked_Number<int16_t> > {
   typedef Checked_Number<int16_t> const_reference;
 };
 
 template <>
-struct Integer_traits_template<Checked_Number<int32_t> > {
+struct Coefficient_traits_template<Checked_Number<int32_t> > {
   typedef Checked_Number<int32_t> const_reference;
 };
 
 template <>
-struct Integer_traits_template<Checked_Number<int64_t> > {
+struct Coefficient_traits_template<Checked_Number<int64_t> > {
   typedef const Checked_Number<int64_t>& const_reference;
 };
 
@@ -55,10 +55,10 @@ struct Integer_traits_template<Checked_Number<int64_t> > {
 
 namespace Parma_Polyhedra_Library {
 
-typedef COEFFICIENT_TYPE Integer;
+typedef COEFFICIENT_TYPE Coefficient;
 
-typedef Integer_traits_template<Integer> Integer_traits;
+typedef Coefficient_traits_template<Coefficient> Coefficient_traits;
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Integer_types_hh)
+#endif // !defined(PPL_Coefficient_types_hh)

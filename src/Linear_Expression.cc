@@ -83,7 +83,7 @@ PPL::operator+(const Linear_Expression& e1, const Linear_Expression& e2) {
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
-PPL::operator+(Integer_traits::const_reference n, const Linear_Expression& e) {
+PPL::operator+(Coefficient_traits::const_reference n, const Linear_Expression& e) {
   Linear_Expression r(e);
   r[0] += n;
   return r;
@@ -136,7 +136,7 @@ PPL::operator-(const Linear_Expression& e1, const Linear_Expression& e2) {
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
-PPL::operator-(Integer_traits::const_reference n, const Linear_Expression& e) {
+PPL::operator-(Coefficient_traits::const_reference n, const Linear_Expression& e) {
   Linear_Expression r(e);
   for (dimension_type i = e.size(); i-- > 0; )
     negate(r[i]);
@@ -148,7 +148,7 @@ PPL::operator-(Integer_traits::const_reference n, const Linear_Expression& e) {
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
-PPL::operator*(Integer_traits::const_reference n, const Linear_Expression& e) {
+PPL::operator*(Coefficient_traits::const_reference n, const Linear_Expression& e) {
   Linear_Expression r(e);
   for (dimension_type i = e.size(); i-- > 0; )
     r[i] *= n;
@@ -227,7 +227,7 @@ PPL::operator-=(Linear_Expression& e, const Variable v) {
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression&
-PPL::operator*=(Linear_Expression& e, Integer_traits::const_reference n) {
+PPL::operator*=(Linear_Expression& e, Coefficient_traits::const_reference n) {
   dimension_type e_size = e.size();
   for (dimension_type i = e_size; i-- > 0; )
     e[i] *= n;
@@ -246,7 +246,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
   const int num_variables = e.space_dimension();
   bool first = true;
   for (int v = 0; v < num_variables; ++v) {
-    Integer ev = e[v+1];
+    Coefficient ev = e[v+1];
     if (ev != 0) {
       if (!first) {
 	if (ev > 0)
@@ -266,7 +266,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
     }
   }
   // Inhomogeneous term.
-  Integer it = e[0];
+  Coefficient it = e[0];
   if (it != 0) {
     if (!first) {
       if (it > 0)

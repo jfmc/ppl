@@ -301,26 +301,26 @@ Polyhedron::bounds_from_below(const Linear_Expression& expr) const {
 
 inline bool
 Polyhedron::maximize(const Linear_Expression& expr,
-		     Integer& sup_n, Integer& sup_d, bool& maximum) const {
+		     Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const {
   return max_min(expr, true, sup_n, sup_d, maximum);
 }
 
 inline bool
 Polyhedron::maximize(const Linear_Expression& expr,
-		     Integer& sup_n, Integer& sup_d, bool& maximum,
+		     Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
 		     const Generator** const pppoint) const {
   return max_min(expr, true, sup_n, sup_d, maximum, pppoint);
 }
 
 inline bool
 Polyhedron::minimize(const Linear_Expression& expr,
-		     Integer& inf_n, Integer& inf_d, bool& minimum) const {
+		     Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const {
   return max_min(expr, false, inf_n, inf_d, minimum);
 }
 
 inline bool
 Polyhedron::minimize(const Linear_Expression& expr,
-		     Integer& inf_n, Integer& inf_d, bool& minimum,
+		     Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
 		     const Generator** const pppoint) const {
   return max_min(expr, false, inf_n, inf_d, minimum, pppoint);
 }
@@ -366,14 +366,14 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   for (dimension_type k = space_dim; k-- > 0; ) {
     // See if we have a valid lower bound.
     bool l_closed = false;
-    Integer l_n, l_d;
+    Coefficient l_n, l_d;
     bool l_bounded = box.get_lower_bound(k, l_closed, l_n, l_d);
     if (l_bounded && topol == NECESSARILY_CLOSED && !l_closed)
       throw_invalid_argument("C_Polyhedron(const Box& box)",
 			     "box has an open lower bound");
     // See if we have a valid upper bound.
     bool u_closed = false;
-    Integer u_n, u_d;
+    Coefficient u_n, u_d;
     bool u_bounded = box.get_upper_bound(k, u_closed, u_n, u_d);
     if (u_bounded && topol == NECESSARILY_CLOSED && !u_closed)
       throw_invalid_argument("C_Polyhedron(const Box& box)",
@@ -513,8 +513,8 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	    varid = j;
       }
       if (varid != space_dim) {
-	Integer_traits::const_reference d = c.coefficient(Variable(varid));
-	Integer_traits::const_reference n = c.inhomogeneous_term();
+	Coefficient_traits::const_reference d = c.coefficient(Variable(varid));
+	Coefficient_traits::const_reference n = c.inhomogeneous_term();
 	// The constraint `c' is of the form
 	// `Variable(varid) + n / d rel 0', where
 	// `rel' is either the relation `==', `>=', or `>'.
@@ -592,9 +592,9 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
       case Generator::POINT:
       case Generator::CLOSURE_POINT:
 	{
-	  Integer_traits::const_reference d = g.divisor();
+	  Coefficient_traits::const_reference d = g.divisor();
 	  for (dimension_type j = space_dim; j-- > 0; ) {
-	    Integer_traits::const_reference n = g.coefficient(Variable(j));
+	    Coefficient_traits::const_reference n = g.coefficient(Variable(j));
 	    ERational r(n, d);
 	    LBoundary lb(r,(g_type == Generator::CLOSURE_POINT
 			    ? LBoundary::OPEN

@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 #include <sstream>
 
-#include "Integer.defs.hh"
+#include "Coefficient.defs.hh"
 #include "checked.defs.hh"
 #include "checked_int.inlines.hh"
 #include "checked_mpz.inlines.hh"
@@ -62,34 +62,34 @@ static void
 ppl_Prolog_sysdep_deinit() {
 }
 
-static PPL::Integer
-integer_term_to_Integer(Prolog_term_ref t) {
+static PPL::Coefficient
+integer_term_to_Coefficient(Prolog_term_ref t) {
   assert(SP_is_integer(t));
   long v;
   if (SP_get_integer(t, &v) != 0)
-    return PPL::Integer(v);
+    return PPL::Coefficient(v);
   else {
     char* s;
     if (SP_get_number_chars(t, &s) != 0)
-      return PPL::Integer(s);
+      return PPL::Coefficient(s);
     else
-      throw unknown_interface_error("integer_term_to_Integer");
+      throw unknown_interface_error("integer_term_to_Coefficient");
   }
 }
 
 static Prolog_term_ref
-Integer_to_integer_term(const PPL::Integer& n) {
+Coefficient_to_integer_term(const PPL::Coefficient& n) {
   Prolog_term_ref t = Prolog_new_term_ref();
   long v;
   if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, PPL::raw_value(n))
       == PPL::Checked::V_EQ) {
     if (SP_put_integer(t, v) == 0)
-      throw unknown_interface_error("Integer_to_integer_term()");
+      throw unknown_interface_error("Coefficient_to_integer_term()");
   } else {
     std::ostringstream s;
     s << n;
     if (SP_put_number_chars(t, s.str().c_str()) == 0)
-      throw unknown_interface_error("Integer_to_integer_term()");
+      throw unknown_interface_error("Coefficient_to_integer_term()");
   }
   return t;
 }

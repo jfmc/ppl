@@ -93,7 +93,7 @@ random_polytope(C_Polyhedron& ph, unsigned dimension, unsigned num_points,
 
     Linear_Expression le;
     for (unsigned i = dimension; i-- > 0; )
-      le += Variable(i)*Integer(coordinate[i]*1000000.0);
+      le += Variable(i)*Coefficient(coordinate[i]*1000000.0);
     ph.add_generator(point(le));
   }
 }

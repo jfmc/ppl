@@ -50,11 +50,11 @@ Constraint operator==(const Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the constraint \p e = \p n.
 /*! \relates Constraint */
 Constraint
-operator==(const Linear_Expression& e, Integer_traits::const_reference n);
+operator==(const Linear_Expression& e, Coefficient_traits::const_reference n);
 //! Returns the constraint \p n = \p e.
 /*! \relates Constraint */
 Constraint
-operator==(Integer_traits::const_reference n, const Linear_Expression& e);
+operator==(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
 //! Returns the constraint \p e1 \<= \p e2.
 /*! \relates Constraint */
@@ -62,11 +62,11 @@ Constraint operator<=(const Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the constraint \p e \<= \p n.
 /*! \relates Constraint */
 Constraint
-operator<=(const Linear_Expression& e, Integer_traits::const_reference n);
+operator<=(const Linear_Expression& e, Coefficient_traits::const_reference n);
 //! Returns the constraint \p n \<= \p e.
 /*! \relates Constraint */
 Constraint
-operator<=(Integer_traits::const_reference n, const Linear_Expression& e);
+operator<=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
 //! Returns the constraint \p e1 \>= \p e2.
 /*! \relates Constraint */
@@ -75,11 +75,11 @@ operator>=(const Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the constraint \p e \>= \p n.
 /*! \relates Constraint */
 Constraint
-operator>=(const Linear_Expression& e, Integer_traits::const_reference n);
+operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n);
 //! Returns the constraint \p n \>= \p e.
 /*! \relates Constraint */
 Constraint
-operator>=(Integer_traits::const_reference n, const Linear_Expression& e);
+operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
 //! Returns the constraint \p e1 \< \p e2.
 /*! \relates Constraint */
@@ -87,11 +87,11 @@ Constraint operator<(const Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the constraint \p e \< \p n.
 /*! \relates Constraint */
 Constraint
-operator<(const Linear_Expression& e, Integer_traits::const_reference n);
+operator<(const Linear_Expression& e, Coefficient_traits::const_reference n);
 //! Returns the constraint \p n \< \p e.
 /*! \relates Constraint */
 Constraint
-operator<(Integer_traits::const_reference n, const Linear_Expression& e);
+operator<(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
 //! Returns the constraint \p e1 \> \p e2.
 /*! \relates Constraint */
@@ -99,11 +99,11 @@ Constraint operator>(const Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the constraint \p e \> \p n.
 /*! \relates Constraint */
 Constraint
-operator>(const Linear_Expression& e, Integer_traits::const_reference n);
+operator>(const Linear_Expression& e, Coefficient_traits::const_reference n);
 //! Returns the constraint \p n \> \p e.
 /*! \relates Constraint */
 Constraint
-operator>(Integer_traits::const_reference n, const Linear_Expression& e);
+operator>(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -270,10 +270,10 @@ public:
     \exception std::invalid_argument thrown if the index of \p v
     is greater than or equal to the space dimension of \p *this.
   */
-  Integer_traits::const_reference coefficient(Variable v) const;
+  Coefficient_traits::const_reference coefficient(Variable v) const;
 
   //! Returns the inhomogeneous term of \p *this.
-  Integer_traits::const_reference inhomogeneous_term() const;
+  Coefficient_traits::const_reference inhomogeneous_term() const;
 
   //! The unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$.
   static const Constraint& zero_dim_false();
@@ -331,9 +331,9 @@ private:
 				      const Linear_Expression& e2);
   friend Constraint
   Parma_Polyhedra_Library::operator==(const Linear_Expression& e,
-				      Integer_traits::const_reference n);
+				      Coefficient_traits::const_reference n);
   friend Constraint
-  Parma_Polyhedra_Library::operator==(Integer_traits::const_reference n,
+  Parma_Polyhedra_Library::operator==(Coefficient_traits::const_reference n,
 				      const Linear_Expression& e);
 
   friend Constraint
@@ -341,9 +341,9 @@ private:
 				      const Linear_Expression& e2);
   friend Constraint
   Parma_Polyhedra_Library::operator>=(const Linear_Expression& e,
-				      Integer_traits::const_reference n);
+				      Coefficient_traits::const_reference n);
   friend Constraint
-  Parma_Polyhedra_Library::operator>=(Integer_traits::const_reference n,
+  Parma_Polyhedra_Library::operator>=(Coefficient_traits::const_reference n,
 				      const Linear_Expression& e);
 
   friend Constraint
@@ -351,9 +351,9 @@ private:
 				      const Linear_Expression& e2);
   friend Constraint
   Parma_Polyhedra_Library::operator<=(const Linear_Expression& e,
-				      Integer_traits::const_reference n);
+				      Coefficient_traits::const_reference n);
   friend Constraint
-  Parma_Polyhedra_Library::operator<=(Integer_traits::const_reference n,
+  Parma_Polyhedra_Library::operator<=(Coefficient_traits::const_reference n,
 				      const Linear_Expression& e);
 
   friend Constraint
@@ -361,9 +361,9 @@ private:
 				     const Linear_Expression& e2);
   friend Constraint
   Parma_Polyhedra_Library::operator>(const Linear_Expression& e,
-				     Integer_traits::const_reference n);
+				     Coefficient_traits::const_reference n);
   friend Constraint
-  Parma_Polyhedra_Library::operator>(Integer_traits::const_reference n,
+  Parma_Polyhedra_Library::operator>(Coefficient_traits::const_reference n,
 				     const Linear_Expression& e);
 
   friend Constraint
@@ -371,9 +371,9 @@ private:
 				     const Linear_Expression& e2);
   friend Constraint
   Parma_Polyhedra_Library::operator<(const Linear_Expression& e,
-				     Integer_traits::const_reference n);
+				     Coefficient_traits::const_reference n);
   friend Constraint
-  Parma_Polyhedra_Library::operator<(Integer_traits::const_reference n,
+  Parma_Polyhedra_Library::operator<(Coefficient_traits::const_reference n,
 				     const Linear_Expression& e);
 
   //! Copy-constructor with given size.

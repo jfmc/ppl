@@ -105,14 +105,14 @@ public:
 
 class PPL_integer_out_of_range {
 private:
-  Parma_Polyhedra_Library::Integer n;
+  Parma_Polyhedra_Library::Coefficient n;
 
 public:
-  explicit PPL_integer_out_of_range(const Parma_Polyhedra_Library::Integer& i)
+  explicit PPL_integer_out_of_range(const Parma_Polyhedra_Library::Coefficient& i)
     : n(i) {
   }
 
-  const Parma_Polyhedra_Library::Integer i() const {
+  const Parma_Polyhedra_Library::Coefficient i() const {
     return n;
   }
 };

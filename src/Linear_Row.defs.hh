@@ -303,10 +303,10 @@ public:
   dimension_type space_dimension() const;
 
   //! Returns the inhomogeneous term.
-  Integer_traits::const_reference inhomogeneous_term() const;
+  Coefficient_traits::const_reference inhomogeneous_term() const;
 
   //! Returns the coefficient \f$a_n\f$.
-  Integer_traits::const_reference coefficient(dimension_type n) const;
+  Coefficient_traits::const_reference coefficient(dimension_type n) const;
 
   //! Normalizes the modulo of coefficients so that they are mutually prime.
   /*!
@@ -380,7 +380,7 @@ bool operator!=(const Linear_Row& x, const Linear_Row& y);
 //! Computes the scalar product of \p x and \p y and assigns it to \p z.
 /*! \relates Linear_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void scalar_product_assign(Integer& z,
+void scalar_product_assign(Coefficient& z,
 			   const Linear_Row& x, const Linear_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -396,7 +396,7 @@ int scalar_product_sign(const Linear_Row& x, const Linear_Row& y);
 //! and assigns the result to \p z.
 /*! \relates Linear_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void reduced_scalar_product_assign(Integer& z,
+void reduced_scalar_product_assign(Coefficient& z,
 				   const Linear_Row& x, const Linear_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -414,7 +414,7 @@ int reduced_scalar_product_sign(const Linear_Row& x, const Linear_Row& y);
 //! and assigns the result to \p z.
 /*! \relates Linear_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void homogeneous_scalar_product_assign(Integer& z,
+void homogeneous_scalar_product_assign(Coefficient& z,
 				       const Linear_Row& x,
 				       const Linear_Row& y);
 

@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Linear_Expression_inlines_hh 1
 
 #include "Variable.defs.hh"
-#include "Integer.defs.hh"
+#include "Coefficient.defs.hh"
 #include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
@@ -73,7 +73,7 @@ Linear_Expression::Linear_Expression(const Linear_Expression& e, dimension_type 
 }
 
 inline
-Linear_Expression::Linear_Expression(Integer_traits::const_reference n)
+Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n)
   : Linear_Row(1, Linear_Row::Flags()) {
   (*this)[0] = n;
 }
@@ -83,21 +83,21 @@ Linear_Expression::space_dimension() const {
   return size() - 1;
 }
 
-inline Integer_traits::const_reference
+inline Coefficient_traits::const_reference
 Linear_Expression::coefficient(Variable v) const {
   if (v.space_dimension() > space_dimension())
-    return Integer_zero();
+    return Coefficient_zero();
   return Linear_Row::coefficient(v.id());
 }
 
-inline Integer_traits::const_reference
+inline Coefficient_traits::const_reference
 Linear_Expression::inhomogeneous_term() const {
   return Linear_Row::inhomogeneous_term();
 }
 
 inline const Linear_Expression&
 Linear_Expression::zero() {
-  static Linear_Expression z = Linear_Expression(Integer_zero());
+  static Linear_Expression z = Linear_Expression(Coefficient_zero());
   return z;
 }
 
@@ -119,32 +119,32 @@ operator+(const Linear_Expression& e) {
 
 /*! \relates Linear_Expression */
 inline Linear_Expression
-operator+(const Linear_Expression& e, Integer_traits::const_reference n) {
+operator+(const Linear_Expression& e, Coefficient_traits::const_reference n) {
   return n + e;
 }
 
 /*! \relates Linear_Expression */
 inline Linear_Expression
-operator-(const Linear_Expression& e, Integer_traits::const_reference n) {
+operator-(const Linear_Expression& e, Coefficient_traits::const_reference n) {
   return -n + e;
 }
 
 /*! \relates Linear_Expression */
 inline Linear_Expression
-operator*(const Linear_Expression& e, Integer_traits::const_reference n) {
+operator*(const Linear_Expression& e, Coefficient_traits::const_reference n) {
   return n * e;
 }
 
 /*! \relates Linear_Expression */
 inline Linear_Expression&
-operator+=(Linear_Expression& e, Integer_traits::const_reference n) {
+operator+=(Linear_Expression& e, Coefficient_traits::const_reference n) {
   e[0] += n;
   return e;
 }
 
 /*! \relates Linear_Expression */
 inline Linear_Expression&
-operator-=(Linear_Expression& e, Integer_traits::const_reference n) {
+operator-=(Linear_Expression& e, Coefficient_traits::const_reference n) {
   e[0] -= n;
   return e;
 }

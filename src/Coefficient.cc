@@ -1,4 +1,4 @@
-/* Integer class implementation (non-inline functions).
+/* Coefficient class implementation (non-inline functions).
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,4 +23,4 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "Integer.defs.hh"
+#include "Coefficient.defs.hh"

@@ -47,8 +47,8 @@ static Generator
 splitting_segment(const Generator& p1,
 		  const Generator& p2,
 		  unsigned magic_number) {
-  const Integer& d1 = p1.divisor();
-  const Integer& d2 = p2.divisor();
+  const Coefficient& d1 = p1.divisor();
+  const Coefficient& d2 = p2.divisor();
   Linear_Expression expr = d2 * Linear_Expression(p1);
   expr += d1 * Linear_Expression(p2);
   // The divisor for the average is 2 * d1 * d2.

@@ -1,4 +1,4 @@
-/* Integer class declaration.
+/* Coefficient class implementation: inline functions.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,32 +21,23 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Integer_defs_hh
-#define PPL_Integer_defs_hh 1
-
-#include "Integer.types.hh"
-#include <iosfwd>
-
-#ifdef NATIVE_INTEGERS
-#include "Native_Integer.defs.hh"
-#endif
-
-#ifdef CHECKED_INTEGERS
-#include "Checked_Number.defs.hh"
-#include "checked_int.inlines.hh"
-#endif
-
-#ifdef GMP_INTEGERS
-#include "GMP_Integer.defs.hh"
-#endif
+#ifndef PPL_Coefficient_inlines_hh
+#define PPL_Coefficient_inlines_hh 1
 
 namespace Parma_Polyhedra_Library {
 
-const Integer& Integer_zero();
-const Integer& Integer_one();
+inline const Coefficient&
+Coefficient_zero() {
+  static Coefficient z(0);
+  return z;
+}
+
+inline const Coefficient&
+Coefficient_one() {
+  static Coefficient o(1);
+  return o;
+}
 
 } // namespace Parma_Polyhedra_Library
 
-#include "Integer.inlines.hh"
-
-#endif // !defined(PPL_Integer_defs_hh)
+#endif // !defined(PPL_Coefficient_inlines_hh)

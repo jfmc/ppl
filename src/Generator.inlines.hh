@@ -114,16 +114,16 @@ Generator::set_is_ray_or_point() {
   set_is_ray_or_point_or_inequality();
 }
 
-inline Integer_traits::const_reference
+inline Coefficient_traits::const_reference
 Generator::coefficient(const Variable v) const {
   if (v.space_dimension() > space_dimension())
     throw_dimension_incompatible("coefficient(v)", "v", v);
   return Linear_Row::coefficient(v.id());
 }
 
-inline Integer_traits::const_reference
+inline Coefficient_traits::const_reference
 Generator::divisor() const {
-  Integer_traits::const_reference d = Linear_Row::inhomogeneous_term();
+  Coefficient_traits::const_reference d = Linear_Row::inhomogeneous_term();
   if (!is_ray_or_point() || d == 0)
     throw_invalid_argument("divisor()",
 			   "*this is neither a point nor a closure point");
@@ -166,13 +166,13 @@ ray(const Linear_Expression& e) {
 
 /*! \relates Generator */
 inline Generator
-point(const Linear_Expression& e, Integer_traits::const_reference d) {
+point(const Linear_Expression& e, Coefficient_traits::const_reference d) {
   return Generator::point(e, d);
 }
 
 /*! \relates Generator */
 inline Generator
-closure_point(const Linear_Expression& e, Integer_traits::const_reference d) {
+closure_point(const Linear_Expression& e, Coefficient_traits::const_reference d) {
   return Generator::closure_point(e, d);
 }
 

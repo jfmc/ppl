@@ -54,12 +54,12 @@ main() TRY {
   Variable z(2);
 
   // This is the height of the pyramid.
-  const Integer pyramid_height = 16;
+  const Coefficient pyramid_height = 16;
 
   // We will intersect it with the half-spaces `z <= k' and `z >= k'
   // with k = i*(height/4) for i = -1, 0, 1, ..., 5.
   struct {
-    Integer plane_height;
+    Coefficient plane_height;
     int num_points_above;
     int num_points_below;
   } ph_nv[]

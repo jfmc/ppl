@@ -74,7 +74,7 @@ error2() {
     // C_Polyhedron::affine_image(v, expr,d): it is illegal applying
     // the function with a linear expression with the denominator equal to
     // zero.
-    Integer d = 0;
+    Coefficient d = 0;
     ph.affine_image(x, coeff1, d);
     exit(1);
   }
@@ -243,7 +243,7 @@ error8() {
     // C_Polyhedron::affine_preimage(v, expr, d): it is illegal
     // to apply to a polyhedron an expression with the denominator
     // equal to zero.
-    Integer d = 0;
+    Coefficient d = 0;
     ph.affine_preimage(x, coeff, d);
     exit(1);
   }
@@ -1062,7 +1062,7 @@ error38() {
     // C_Polyhedron::generalized_affine_image(v, r, expr, d): it is illegal
     // applying the function with a linear expression with the denominator
     // equal to zero.
-    Integer d = 0;
+    Coefficient d = 0;
     ph.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, B + 2, d);
     exit(1);
   }

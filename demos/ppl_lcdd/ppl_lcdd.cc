@@ -959,7 +959,7 @@ write_polyhedron(std::ostream& out,
       const PPL::Generator& g = *i;
       if (g.is_point()) {
 	guarded_write(out, '1');
-	const PPL::Integer& divisor = g.divisor();
+	const PPL::Coefficient& divisor = g.divisor();
 	for (PPL::dimension_type j = 0; j < space_dim; ++j) {
 	  guarded_write(out, ' ');
 	  if (g.coefficient(PPL::Variable(j)) == 0)

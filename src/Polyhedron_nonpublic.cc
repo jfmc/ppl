@@ -545,7 +545,7 @@ PPL::Polyhedron::bounds(const Linear_Expression& expr,
 bool
 PPL::Polyhedron::max_min(const Linear_Expression& expr,
 			 const bool maximize,
-			 Integer& ext_n, Integer& ext_d, bool& included,
+			 Coefficient& ext_n, Coefficient& ext_d, bool& included,
 			 const Generator** const pppoint) const {
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
@@ -629,8 +629,8 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
   // The polyhedron is bounded in the right direction and we have
   // computed the extremum: write the result into the caller's structures.
   assert(!first_candidate);
-  ext_n = Integer(extremum.get_num());
-  ext_d = Integer(extremum.get_den());
+  ext_n = Coefficient(extremum.get_num());
+  ext_d = Coefficient(extremum.get_den());
   included = ext_included;
   if (pppoint != 0)
     *pppoint = &gen_sys[ext_position];

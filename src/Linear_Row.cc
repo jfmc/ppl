@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "Integer.defs.hh"
+#include "Coefficient.defs.hh"
 #include "Linear_Row.defs.hh"
 #include "globals.defs.hh"
 #include <algorithm>
@@ -39,7 +39,7 @@ PPL::Linear_Row::normalize() {
   gcd = 0;
   const dimension_type sz = size();
   for (dimension_type i = sz; i-- > 0; ) {
-    const Integer& x_i = x[i];
+    const Coefficient& x_i = x[i];
     if (x_i != 0)
       gcd_assign(gcd, x_i);
   }
@@ -121,7 +121,7 @@ PPL::compare(const Linear_Row& x, const Linear_Row& y) {
 
 /*! \relates Parma_Polyhedra_Library::Linear_Row */
 void
-PPL::scalar_product_assign(Integer& z,
+PPL::scalar_product_assign(Coefficient& z,
 			   const Linear_Row& x, const Linear_Row& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
@@ -134,7 +134,7 @@ PPL::scalar_product_assign(Integer& z,
 
 /*! \relates Parma_Polyhedra_Library::Linear_Row */
 void
-PPL::reduced_scalar_product_assign(Integer& z, const Linear_Row& x, const Linear_Row& y) {
+PPL::reduced_scalar_product_assign(Coefficient& z, const Linear_Row& x, const Linear_Row& y) {
   // The reduced scalar product is only defined
   // if the topology of `x' is NNC and `y' has enough coefficients.
   assert(!x.is_necessarily_closed());
@@ -148,7 +148,7 @@ PPL::reduced_scalar_product_assign(Integer& z, const Linear_Row& x, const Linear
 
 /*! \relates Parma_Polyhedra_Library::Linear_Row */
 void
-PPL::homogeneous_scalar_product_assign(Integer& z,
+PPL::homogeneous_scalar_product_assign(Coefficient& z,
 				       const Linear_Row& x, const Linear_Row& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
@@ -174,7 +174,7 @@ PPL::Linear_Row::linear_combine(const Linear_Row& y, const dimension_type k) {
   normalize2(x[k], y[k], normalized_x_k, normalized_y_k);
   for (dimension_type i = size(); i-- > 0; )
     if (i != k) {
-      Integer& x_i = x[i];
+      Coefficient& x_i = x[i];
       x_i *= normalized_y_k;
       sub_mul_assign(x_i, y[i], normalized_x_k);
     }

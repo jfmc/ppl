@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_System.defs.hh"
 
-#include "Integer.defs.hh"
+#include "Coefficient.defs.hh"
 #include "Row.defs.hh"
 #include "globals.defs.hh"
 #include "Saturation_Matrix.defs.hh"
@@ -618,10 +618,10 @@ PPL::Linear_System::gram_shmidt() {
   ascii_dump(std::cout);
 #endif
 
-  static std::vector<std::vector<Integer> > mu;
+  static std::vector<std::vector<Coefficient> > mu;
   mu.reserve(compute_capacity(rank, mu.max_size()));
   for (dimension_type i = mu.size(); i < rank; i++) {
-    std::vector<Integer> mu_i(i+1);
+    std::vector<Coefficient> mu_i(i+1);
     mu.push_back(mu_i);
   }
 
@@ -631,7 +631,7 @@ PPL::Linear_System::gram_shmidt() {
   // for all 0 <= j <= i < rank, storing them into `mu[i][j]'.
   for (dimension_type i = rank; i-- > 0; ) {
     const Linear_Row& x_i = x[i];
-    std::vector<Integer>& mu_i = mu[i];
+    std::vector<Coefficient>& mu_i = mu[i];
     for (dimension_type j = i+1; j-- > 0; )
       scalar_product_assign(mu_i[j], x_i, x[j]);
   }
@@ -642,11 +642,11 @@ PPL::Linear_System::gram_shmidt() {
   // Start from the second line/equality of the system.
   for (dimension_type i = 1; i < rank; i++) {
     Linear_Row& x_i = x[i];
-    std::vector<Integer>& mu_i = mu[i];
+    std::vector<Coefficient>& mu_i = mu[i];
 
     // Finish computing `mu[i][j]', for all j <= i.
     for (dimension_type j = 0; j <= i; j++) {
-      const std::vector<Integer>& mu_j = mu[j];
+      const std::vector<Coefficient>& mu_j = mu[j];
       if (j > 0)
 	mu_i[j] *= mu[j-1][j-1];
       accum = 0;
@@ -665,8 +665,8 @@ PPL::Linear_System::gram_shmidt() {
     // for all 0 <= j < i.
     for (dimension_type j = 0; j < i; j++) {
       const Linear_Row& x_j = x[j];
-      const Integer& mu_ij = mu_i[j];
-      const Integer& mu_jj = mu[j][j];
+      const Coefficient& mu_ij = mu_i[j];
+      const Coefficient& mu_jj = mu[j][j];
       for (dimension_type k = n_columns; k-- > 0; ) {
         x_i[k] *= mu_jj;
 	// The following line optimizes the computation of
@@ -712,8 +712,8 @@ PPL::Linear_System::gram_shmidt() {
   //
   // factors[j] will contain d[j] * <w, v_j>.
 
-  static std::vector<Integer> d;
-  static std::vector<Integer> factors;
+  static std::vector<Coefficient> d;
+  static std::vector<Coefficient> factors;
   d.reserve(compute_capacity(rank, d.max_size()));
   factors.reserve(compute_capacity(rank, factors.max_size()));
   if (d.size() < rank) {
@@ -723,7 +723,7 @@ PPL::Linear_System::gram_shmidt() {
   }
 
   // Computing all the factors d[0], ..., d[rank-1], and the denominator.
-  Integer denominator = 1;
+  Coefficient denominator = 1;
   for (dimension_type i = rank; i-- > 0; ) {
     const Linear_Row& x_i = x[i];
     scalar_product_assign(d[i], x_i, x_i);

@@ -401,7 +401,7 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
 void
 PPL::Constraint_System::affine_preimage(dimension_type v,
 			     const Linear_Expression& expr,
-			     Integer_traits::const_reference denominator) {
+			     Coefficient_traits::const_reference denominator) {
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
   // nor the epsilon dimension of NNC polyhedra).
@@ -418,11 +418,11 @@ PPL::Constraint_System::affine_preimage(dimension_type v,
   if (denominator != 1)
     for (dimension_type i = n_rows; i-- > 0; ) {
       Constraint& row = x[i];
-      Integer& row_v = row[v];
+      Coefficient& row_v = row[v];
       if (row_v != 0) {
 	for (dimension_type j = n_columns; j-- > 0; )
 	  if (j != v) {
-	    Integer& row_j = row[j];
+	    Coefficient& row_j = row[j];
 	    row_j *= denominator;
 	    if (j < expr_size)
 	      add_mul_assign(row_j, row_v, expr[j]);
@@ -438,7 +438,7 @@ PPL::Constraint_System::affine_preimage(dimension_type v,
     // only considering columns having indexes < expr_size.
     for (dimension_type i = n_rows; i-- > 0; ) {
       Constraint& row = x[i];
-      Integer& row_v = row[v];
+      Coefficient& row_v = row[v];
       if (row_v != 0) {
 	for (dimension_type j = expr_size; j-- > 0; )
 	  if (j != v)

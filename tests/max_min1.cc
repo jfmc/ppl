@@ -48,8 +48,8 @@ main() TRY {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  Integer num;
-  Integer den;
+  Coefficient num;
+  Coefficient den;
   bool included;
   const Generator* pg;
   bool ok = ph.maximize(x1-2*x2, num, den, included, &pg)

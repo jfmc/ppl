@@ -361,7 +361,7 @@ private:
   */
   void affine_preimage(dimension_type v,
 		       const Linear_Expression& expr,
-		       Integer_traits::const_reference denominator);
+		       Coefficient_traits::const_reference denominator);
 
   //! Returns the number of the equality constraints.
   dimension_type num_equalities() const;

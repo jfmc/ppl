@@ -30,8 +30,8 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 void
 BInterval::raise_lower_bound(bool closed,
-			     Integer_traits::const_reference c,
-			     Integer_traits::const_reference d) {
+			     Coefficient_traits::const_reference c,
+			     Coefficient_traits::const_reference d) {
   assert(d > 0 && ld >= 0);
   if ((closed && lc*d <= c*ld) || (!closed && lc*d < c*ld))  {
     lc = c;
@@ -42,8 +42,8 @@ BInterval::raise_lower_bound(bool closed,
 
 void
 BInterval::lower_upper_bound(bool closed,
-			     Integer_traits::const_reference c,
-			     Integer_traits::const_reference d) {
+			     Coefficient_traits::const_reference c,
+			     Coefficient_traits::const_reference d) {
   assert(d > 0 && ud >= 0);
   if ((!closed && uc*d >= c*ud) || (closed && uc*d > c*ud))  {
     uc = c;
@@ -62,8 +62,8 @@ BInterval::set_empty() {
 
 static void
 print_rational(std::ostream& s,
-	       Integer_traits::const_reference c,
-	       Integer_traits::const_reference d) {
+	       Coefficient_traits::const_reference c,
+	       Coefficient_traits::const_reference d) {
   s << c;
   if (d != 1)
     s << "/" << d;

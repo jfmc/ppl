@@ -24,9 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Bounding_Box_defs_hh
 #define PPL_Bounding_Box_defs_hh 1
 
-#include "Integer.types.hh"
+#include "Coefficient.types.hh"
 #include "globals.defs.hh"
-#include "Integer.defs.hh"
+#include "Coefficient.defs.hh"
 #include "Interval.defs.hh"
 #include <vector>
 #include <iosfwd>
@@ -80,7 +80,7 @@ public:
     or equal to the space dimension of \p *this.
   */
   bool get_lower_bound(dimension_type k, bool& closed,
-		       Integer& n, Integer& d) const;
+		       Coefficient& n, Coefficient& d) const;
 
   //! \brief
   //! If the <CODE>k</CODE>-th space dimension is unbounded above,
@@ -102,7 +102,7 @@ public:
     or equal to the space dimension of \p *this.
   */
   bool get_upper_bound(dimension_type k, bool& closed,
-		       Integer& n, Integer& d) const;
+		       Coefficient& n, Coefficient& d) const;
 
   //! Causes the box to become empty, i.e., to represent the empty set.
   void set_empty();
@@ -119,8 +119,8 @@ public:
     the space dimension of \p *this or if \p d is equal to zero.
   */
   void raise_lower_bound(dimension_type k, bool closed,
-			 Integer_traits::const_reference n,
-			 Integer_traits::const_reference d);
+			 Coefficient_traits::const_reference n,
+			 Coefficient_traits::const_reference d);
 
   //! \brief
   //! Lowers the upper bound of the interval corresponding
@@ -135,8 +135,8 @@ public:
     the space dimension of \p *this or if \p d is equal to zero.
   */
   void lower_upper_bound(dimension_type k, bool closed,
-			 Integer_traits::const_reference n,
-			 Integer_traits::const_reference d);
+			 Coefficient_traits::const_reference n,
+			 Coefficient_traits::const_reference d);
 
 private:
   //! \brief

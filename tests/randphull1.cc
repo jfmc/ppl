@@ -66,9 +66,9 @@ main() TRY {
   C_Polyhedron ph(3, C_Polyhedron::EMPTY);
   COUNT(ph);
   for (int n = 1; n <= 200; ++n) {
-    const Integer cx = mpz_class(rg.get_z_range(maxc));
-    const Integer cy = mpz_class(rg.get_z_range(maxc));
-    const Integer cz = mpz_class(rg.get_z_range(maxc));
+    const Coefficient cx = mpz_class(rg.get_z_range(maxc));
+    const Coefficient cy = mpz_class(rg.get_z_range(maxc));
+    const Coefficient cz = mpz_class(rg.get_z_range(maxc));
     ph.add_generator(point(cx*x + cy*y + cz*z));
     COUNT(ph);
   }

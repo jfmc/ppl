@@ -1816,7 +1816,7 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
 void
 PPL::Polyhedron::affine_image(const Variable var,
 			      const Linear_Expression& expr,
-			      Integer_traits::const_reference denominator) {
+			      Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_invalid_argument("affine_image(v, e, d)", "d == 0");
@@ -1841,7 +1841,7 @@ PPL::Polyhedron::affine_image(const Variable var,
     // pending rows, if present, are correctly handled.
     if (generators_are_up_to_date()) {
       // Generator_System::affine_image() requires the third argument
-      // to be a positive Integer.
+      // to be a positive Coefficient.
       if (denominator > 0)
 	gen_sys.affine_image(var_space_dim, expr, denominator);
       else
@@ -1877,7 +1877,7 @@ PPL::Polyhedron::affine_image(const Variable var,
       minimize();
     if (!marked_empty()) {
       // Generator_System::affine_image() requires the third argument
-      // to be a positive Integer.
+      // to be a positive Coefficient.
       if (denominator > 0)
 	gen_sys.affine_image(var_space_dim, expr, denominator);
       else
@@ -1897,7 +1897,7 @@ void
 PPL::Polyhedron::
 affine_preimage(const Variable var,
 		const Linear_Expression& expr,
-		Integer_traits::const_reference denominator) {
+		Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_invalid_argument("affine_preimage(v, e, d)", "d == 0");
@@ -1921,7 +1921,7 @@ affine_preimage(const Variable var,
     // minimality and saturators are preserved.
     if (constraints_are_up_to_date()) {
       // Constraint_System::affine_preimage() requires the third argument
-      // to be a positive Integer.
+      // to be a positive Coefficient.
       if (denominator > 0)
 	con_sys.affine_preimage(var_space_dim, expr, denominator);
       else
@@ -1956,7 +1956,7 @@ affine_preimage(const Variable var,
     else if (!constraints_are_up_to_date())
       minimize();
     // Constraint_System::affine_preimage() requires the third argument
-    // to be a positive Integer.
+    // to be a positive Coefficient.
     if (denominator > 0)
       con_sys.affine_preimage(var_space_dim, expr, denominator);
     else
@@ -1975,7 +1975,7 @@ PPL::Polyhedron::
 generalized_affine_image(const Variable var,
 			 const Relation_Symbol relsym,
 			 const Linear_Expression& expr,
-			 Integer_traits::const_reference denominator) {
+			 Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_invalid_argument("generalized_affine_image(v, r, e, d)", "d == 0");

@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 #include "Linear_Row.defs.hh"
-#include "Integer.types.hh"
+#include "Coefficient.types.hh"
 #include "Variable.types.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
@@ -44,11 +44,11 @@ Linear_Expression operator+(const Linear_Expression& e1, const Linear_Expression
 //! Returns the linear expression \p n + \p e.
 /*! \relates Linear_Expression */
 Linear_Expression
-operator+(Integer_traits::const_reference n, const Linear_Expression& e);
+operator+(Coefficient_traits::const_reference n, const Linear_Expression& e);
 //! Returns the linear expression \p e + \p n.
 /*! \relates Linear_Expression */
 Linear_Expression
-operator+(const Linear_Expression& e, Integer_traits::const_reference n);
+operator+(const Linear_Expression& e, Coefficient_traits::const_reference n);
 
 //! Returns the linear expression \p e.
 /*! \relates Linear_Expression */
@@ -63,20 +63,20 @@ Linear_Expression operator-(const Linear_Expression& e1, const Linear_Expression
 //! Returns the linear expression \p n - \p e.
 /*! \relates Linear_Expression */
 Linear_Expression
-operator-(Integer_traits::const_reference n, const Linear_Expression& e);
+operator-(Coefficient_traits::const_reference n, const Linear_Expression& e);
 //! Returns the linear expression \p e - \p n.
 /*! \relates Linear_Expression */
 Linear_Expression
-operator-(const Linear_Expression& e, Integer_traits::const_reference n);
+operator-(const Linear_Expression& e, Coefficient_traits::const_reference n);
 
 //! Returns the linear expression \p n * \p e.
 /*! \relates Linear_Expression */
 Linear_Expression
-operator*(Integer_traits::const_reference n, const Linear_Expression& e);
+operator*(Coefficient_traits::const_reference n, const Linear_Expression& e);
 //! Returns the linear expression \p e * \p n.
 /*! \relates Linear_Expression */
 Linear_Expression
-operator*(const Linear_Expression& e, Integer_traits::const_reference n);
+operator*(const Linear_Expression& e, Coefficient_traits::const_reference n);
 
 //! Returns the linear expression \p e1 + \p e2 and assigns it to \p e1.
 /*! \relates Linear_Expression */
@@ -90,7 +90,7 @@ Linear_Expression& operator+=(Linear_Expression& e1, const Linear_Expression& e2
 Linear_Expression& operator+=(Linear_Expression& e, const Variable v);
 //! Returns the linear expression \p e + \p n and assigns it to \p e.
 /*! \relates Linear_Expression */
-Linear_Expression& operator+=(Linear_Expression& e, Integer_traits::const_reference n);
+Linear_Expression& operator+=(Linear_Expression& e, Coefficient_traits::const_reference n);
 
 //! Returns the linear expression \p e1 - \p e2 and assigns it to \p e1.
 /*! \relates Linear_Expression */
@@ -104,11 +104,11 @@ Linear_Expression& operator-=(Linear_Expression& e1, const Linear_Expression& e2
 Linear_Expression& operator-=(Linear_Expression& e, const Variable v);
 //! Returns the linear expression \p e - \p n and assigns it to \p e.
 /*! \relates Linear_Expression */
-Linear_Expression& operator-=(Linear_Expression& e, Integer_traits::const_reference n);
+Linear_Expression& operator-=(Linear_Expression& e, Coefficient_traits::const_reference n);
 
 //! Returns the linear expression \p n * \p e and assigns it to \p e.
 /*! \relates Linear_Expression */
-Linear_Expression& operator*=(Linear_Expression& e, Integer_traits::const_reference n);
+Linear_Expression& operator*=(Linear_Expression& e, Coefficient_traits::const_reference n);
 
 namespace IO_Operators {
 
@@ -148,15 +148,15 @@ void swap(Parma_Polyhedra_Library::Linear_Expression& x,
     and generators (i.e., lines, rays, points and closure points).
     A full set of functions is defined to provide a convenient interface
     for building complex linear expressions starting from simpler ones
-    and from objects of the classes Variable and Integer:
+    and from objects of the classes Variable and Coefficient:
     available operators include unary negation,
     binary addition and subtraction,
-    as well as multiplication by an Integer.
+    as well as multiplication by an Coefficient.
     The space dimension of a linear expression is defined as the maximum
     space dimension of the arguments used to build it:
     in particular, the space dimension of a Variable <CODE>x</CODE>
     is defined as <CODE>x.id()+1</CODE>,
-    whereas all the objects of the class Integer have space dimension zero.
+    whereas all the objects of the class Coefficient have space dimension zero.
 
     \par Example
     The following code builds the linear expression \f$4x - 2y - z + 14\f$,
@@ -190,7 +190,7 @@ public:
   //! \brief
   //! Builds the linear expression corresponding
   //! to the inhomogeneous term \p n.
-  explicit Linear_Expression(Integer_traits::const_reference n);
+  explicit Linear_Expression(Coefficient_traits::const_reference n);
 
   //! Builds the linear expression corresponding to the variable \p v.
   /*! \relates Linear_Expression
@@ -234,10 +234,10 @@ public:
   dimension_type space_dimension() const;
 
   //! Returns the coefficient of \p v in \p *this.
-  Integer_traits::const_reference coefficient(Variable v) const;
+  Coefficient_traits::const_reference coefficient(Variable v) const;
 
   //! Returns the inhomogeneous term of \p *this.
-  Integer_traits::const_reference inhomogeneous_term() const;
+  Coefficient_traits::const_reference inhomogeneous_term() const;
 
   //! Returns the (zero-dimension space) constant 0.
   static const Linear_Expression& zero();
@@ -275,7 +275,7 @@ private:
   //! Implementation sizing constructor.
   /*!
     The bool parameter is just to avoid problems with
-    the constructor Linear_Expression(Integer_traits::const_reference n).
+    the constructor Linear_Expression(Coefficient_traits::const_reference n).
   */
   Linear_Expression(dimension_type sz, bool);
 
@@ -286,11 +286,11 @@ private:
   Parma_Polyhedra_Library::operator+(const Linear_Expression& e1,
 				     const Linear_Expression& e2);
   friend Linear_Expression
-  Parma_Polyhedra_Library::operator+(Integer_traits::const_reference n,
+  Parma_Polyhedra_Library::operator+(Coefficient_traits::const_reference n,
 				     const Linear_Expression& e);
   friend Linear_Expression
   Parma_Polyhedra_Library::operator+(const Linear_Expression& e,
-				     Integer_traits::const_reference n);
+				     Coefficient_traits::const_reference n);
 
   friend Linear_Expression
   Parma_Polyhedra_Library::operator-(const Linear_Expression& e);
@@ -299,18 +299,18 @@ private:
   Parma_Polyhedra_Library::operator-(const Linear_Expression& e1,
 				     const Linear_Expression& e2);
   friend Linear_Expression
-  Parma_Polyhedra_Library::operator-(Integer_traits::const_reference n,
+  Parma_Polyhedra_Library::operator-(Coefficient_traits::const_reference n,
 				     const Linear_Expression& e);
   friend Linear_Expression
   Parma_Polyhedra_Library::operator-(const Linear_Expression& e,
-				     Integer_traits::const_reference n);
+				     Coefficient_traits::const_reference n);
 
   friend Linear_Expression
-  Parma_Polyhedra_Library::operator*(Integer_traits::const_reference n,
+  Parma_Polyhedra_Library::operator*(Coefficient_traits::const_reference n,
 				     const Linear_Expression& e);
   friend Linear_Expression
   Parma_Polyhedra_Library::operator*(const Linear_Expression& e,
-				     Integer_traits::const_reference n);
+				     Coefficient_traits::const_reference n);
 
   friend Linear_Expression&
   Parma_Polyhedra_Library::operator+=(Linear_Expression& e1,
@@ -320,7 +320,7 @@ private:
 				      const Variable v);
   friend Linear_Expression&
   Parma_Polyhedra_Library::operator+=(Linear_Expression& e,
-				      Integer_traits::const_reference n);
+				      Coefficient_traits::const_reference n);
 
   friend Linear_Expression&
   Parma_Polyhedra_Library::operator-=(Linear_Expression& e1,
@@ -330,11 +330,11 @@ private:
 				      const Variable v);
   friend Linear_Expression&
   Parma_Polyhedra_Library::operator-=(Linear_Expression& e,
-				      Integer_traits::const_reference n);
+				      Coefficient_traits::const_reference n);
 
   friend Linear_Expression&
   Parma_Polyhedra_Library::operator*=(Linear_Expression& e,
-				      Integer_traits::const_reference n);
+				      Coefficient_traits::const_reference n);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,

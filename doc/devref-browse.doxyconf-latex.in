@@ -426,8 +426,7 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/GMP_Integer.types.hh \
                          @srcdir@/../src/GMP_Integer.defs.hh \
                          @srcdir@/../src/GMP_Integer.inlines.hh \
-                         @srcdir@/../src/Integer_macros.hh \
-                         @srcdir@/../src/Integer_traits_template.hh \
+                         @srcdir@/../src/Coefficient_traits_template.hh \
                          @srcdir@/../src/Limits.hh \
                          @srcdir@/../src/Native_Integer.types.hh \
                          @srcdir@/../src/Native_Integer.defs.hh \
@@ -596,7 +595,7 @@ EXCLUDE_SYMLINKS       = NO
 # EXCLUDE_PATTERNS tag to specify one or more wildcard patterns to exclude 
 # certain files from those directories.
 
-EXCLUDE_PATTERNS       = */Integer/*
+EXCLUDE_PATTERNS       = 
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or 
 # directories that contain example code fragments that are included (see 

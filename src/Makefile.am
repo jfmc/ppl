@@ -103,10 +103,9 @@ endif
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
 float.types.hh \
-Integer_traits_template.hh \
-Integer_macros.hh \
+Coefficient_traits_template.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
-Integer.types.hh \
+Coefficient.types.hh \
 Interval.types.hh \
 Bounding_Box.types.hh \
 Constraint.types.hh \
@@ -138,8 +137,8 @@ checked_float.inlines.hh \
 checked_mpz.inlines.hh \
 checked_mpq.inlines.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
-Integer.defs.hh \
-Integer.inlines.hh \
+Coefficient.defs.hh \
+Coefficient.inlines.hh \
 globals.defs.hh \
 globals.inlines.hh \
 Interval.defs.hh \
@@ -210,7 +209,7 @@ Constraint_System.cc \
 Generator_System.cc \
 Generator.cc \
 Init.cc \
-Integer.cc \
+Coefficient.cc \
 Interval.cc \
 Linear_Expression.cc \
 Linear_System.cc \
@@ -244,7 +243,7 @@ swapping_sort.icc
 DOC_FILES = \
 GMP_Integer.types.hh \
 Native_Integer.types.hh \
-Integer.types.hh \
+Coefficient.types.hh \
 Variable.types.hh \
 Linear_Expression.types.hh \
 Constraint.types.hh \

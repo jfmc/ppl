@@ -20,6 +20,7 @@ o  The following classes have been renamed as indicated:
      BoundingBox        -> Bounding_Box
      ConSys             -> Constraint_System
      GenSys             -> Generator_System
+     Integer            -> Coefficient
      LinExpression      -> Linear_Expression
      Polyhedra_PowerSet -> Polyhedra_Powerset
      PowerSet           -> Powerset 

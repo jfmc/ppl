@@ -25,9 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Interval_defs_hh 1
 
 #include "Interval.types.hh"
-
-#include "Integer.types.hh"
-#include "Integer.defs.hh"
+#include "Coefficient.defs.hh"
 #include <gmpxx.h>
 #include <iosfwd>
 
@@ -105,8 +103,8 @@ public:
   /*!
     An undefined behavior is obtained if \p den is equal to zero.
   */
-  ERational(Integer_traits::const_reference num,
-	    Integer_traits::const_reference den);
+  ERational(Coefficient_traits::const_reference num,
+	    Coefficient_traits::const_reference den);
 
   //! \brief
   //! Builds \f$+\infty\f$ (resp., \f$-\infty\f$)
@@ -133,16 +131,16 @@ public:
   /*!
     The result is undefined if \p *this represents an infinity.
   */
-  Integer_traits::const_reference numerator() const;
+  Coefficient_traits::const_reference numerator() const;
 
   //! Returns the denominator of the canonical form for \p *this.
   /*!
     The result is undefined if \p *this represent an infinity.
   */
-  Integer_traits::const_reference denominator() const;
+  Coefficient_traits::const_reference denominator() const;
 #else
-  void numerator(Integer& n) const;
-  void denominator(Integer& d) const;
+  void numerator(Coefficient& n) const;
+  void denominator(Coefficient& d) const;
 #endif
 
   friend bool

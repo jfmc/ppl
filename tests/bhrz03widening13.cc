@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #endif
 
 static Generator_System
-gs_square(const Integer& half_side) {
+gs_square(const Coefficient& half_side) {
   Variable A(0);
   Variable B(1);
   Generator_System gs;
@@ -44,7 +44,7 @@ gs_square(const Integer& half_side) {
 }
 
 static Generator_System
-gs_rhombus(const Integer& half_diagonal) {
+gs_rhombus(const Coefficient& half_diagonal) {
   Variable A(0);
   Variable B(1);
   Generator_System gs;
@@ -59,11 +59,11 @@ gs_rhombus(const Integer& half_diagonal) {
 static C_Polyhedron
 p(unsigned n) {
 
-  Integer half_diagonal = 2;
+  Coefficient half_diagonal = 2;
   for (unsigned i = n / 8; i-- > 0; ) {
     half_diagonal *= 2;
   }
-  Integer half_side = half_diagonal;
+  Coefficient half_side = half_diagonal;
 
   Generator_System gs;
   if (n % 8 < 4) {

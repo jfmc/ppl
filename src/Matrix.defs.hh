@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Row.defs.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
-#include "Integer.types.hh"
+#include "Coefficient.types.hh"
 #include <vector>
 #include <cstddef>
 

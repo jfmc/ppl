@@ -290,7 +290,7 @@ handle_exception(const not_an_integer& e) {
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string("term_to_Integer"));
+			    Prolog_atom_term_from_string("term_to_Coefficient"));
 
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
@@ -343,7 +343,7 @@ void
 handle_exception(const PPL_integer_out_of_range& e) {
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string("Integer_to_integer_term"));
+			    Prolog_atom_term_from_string("Coefficient_to_integer_term"));
 
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   std::ostringstream s;
@@ -518,7 +518,7 @@ term_to_unsigned(Prolog_term_ref t) {
     else
       d = v;
   else {
-    Integer vv = integer_term_to_Integer(t);
+    Coefficient vv = integer_term_to_Coefficient(t);
     if (vv < 0)
       throw not_unsigned_integer(t);
     if (Checked::assign<Check_Overflow_Policy>(d, raw_value(vv)) != Checked::V_EQ)
@@ -541,7 +541,7 @@ term_to_polyhedron_kind(Prolog_term_ref t) {
 Linear_Expression
 build_linear_expression(Prolog_term_ref t) {
   if (Prolog_is_integer(t))
-    return Linear_Expression(integer_term_to_Integer(t));
+    return Linear_Expression(integer_term_to_Coefficient(t));
   else if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
@@ -571,25 +571,25 @@ build_linear_expression(Prolog_term_ref t) {
 	if (functor == a_plus)
 	  // Plus.
 	  if (Prolog_is_integer(arg1))
-	    return integer_term_to_Integer(arg1) + build_linear_expression(arg2);
+	    return integer_term_to_Coefficient(arg1) + build_linear_expression(arg2);
 	  else if (Prolog_is_integer(arg2))
-	    return build_linear_expression(arg1) + integer_term_to_Integer(arg2);
+	    return build_linear_expression(arg1) + integer_term_to_Coefficient(arg2);
 	  else
 	    return build_linear_expression(arg1) + build_linear_expression(arg2);
 	else if (functor == a_minus)
 	  // Minus.
 	  if (Prolog_is_integer(arg1))
-	    return integer_term_to_Integer(arg1) - build_linear_expression(arg2);
+	    return integer_term_to_Coefficient(arg1) - build_linear_expression(arg2);
 	  else if (Prolog_is_integer(arg2))
-	    return build_linear_expression(arg1) - integer_term_to_Integer(arg2);
+	    return build_linear_expression(arg1) - integer_term_to_Coefficient(arg2);
 	  else
 	    return build_linear_expression(arg1) - build_linear_expression(arg2);
 	else if (functor == a_asterisk)
 	  // Times.
 	  if (Prolog_is_integer(arg1))
-	    return integer_term_to_Integer(arg1) * build_linear_expression(arg2);
+	    return integer_term_to_Coefficient(arg1) * build_linear_expression(arg2);
 	  else if (Prolog_is_integer(arg2))
-	    return build_linear_expression(arg1) * integer_term_to_Integer(arg2);
+	    return build_linear_expression(arg1) * integer_term_to_Coefficient(arg2);
       }
     }
   }
@@ -612,41 +612,41 @@ build_constraint(Prolog_term_ref t) {
       if (functor == a_equal)
 	// =
 	if (Prolog_is_integer(arg1))
-	  return integer_term_to_Integer(arg1) == build_linear_expression(arg2);
+	  return integer_term_to_Coefficient(arg1) == build_linear_expression(arg2);
 	else if (Prolog_is_integer(arg2))
-	  return build_linear_expression(arg1) == integer_term_to_Integer(arg2);
+	  return build_linear_expression(arg1) == integer_term_to_Coefficient(arg2);
 	else
 	  return build_linear_expression(arg1) == build_linear_expression(arg2);
       else if (functor == a_equal_less_than)
 	// =<
 	if (Prolog_is_integer(arg1))
-	  return integer_term_to_Integer(arg1) <= build_linear_expression(arg2);
+	  return integer_term_to_Coefficient(arg1) <= build_linear_expression(arg2);
 	else if (Prolog_is_integer(arg2))
-	  return build_linear_expression(arg1) <= integer_term_to_Integer(arg2);
+	  return build_linear_expression(arg1) <= integer_term_to_Coefficient(arg2);
 	else
 	  return build_linear_expression(arg1) <= build_linear_expression(arg2);
       else if (functor == a_greater_than_equal)
 	// >=
 	if (Prolog_is_integer(arg1))
-	  return integer_term_to_Integer(arg1) >= build_linear_expression(arg2);
+	  return integer_term_to_Coefficient(arg1) >= build_linear_expression(arg2);
 	else if (Prolog_is_integer(arg2))
-	  return build_linear_expression(arg1) >= integer_term_to_Integer(arg2);
+	  return build_linear_expression(arg1) >= integer_term_to_Coefficient(arg2);
 	else
 	  return build_linear_expression(arg1) >= build_linear_expression(arg2);
       else if (functor == a_less_than)
 	// <
 	if (Prolog_is_integer(arg1))
-	  return integer_term_to_Integer(arg1) < build_linear_expression(arg2);
+	  return integer_term_to_Coefficient(arg1) < build_linear_expression(arg2);
 	else if (Prolog_is_integer(arg2))
-	  return build_linear_expression(arg1) < integer_term_to_Integer(arg2);
+	  return build_linear_expression(arg1) < integer_term_to_Coefficient(arg2);
 	else
 	  return build_linear_expression(arg1) < build_linear_expression(arg2);
       else if (functor == a_greater_than)
 	// >
 	if (Prolog_is_integer(arg1))
-	  return integer_term_to_Integer(arg1) > build_linear_expression(arg2);
+	  return integer_term_to_Coefficient(arg1) > build_linear_expression(arg2);
 	else if (Prolog_is_integer(arg2))
-	  return build_linear_expression(arg1) > integer_term_to_Integer(arg2);
+	  return build_linear_expression(arg1) > integer_term_to_Coefficient(arg2);
 	else
 	  return build_linear_expression(arg1) > build_linear_expression(arg2);
     }
@@ -681,10 +681,10 @@ build_generator(Prolog_term_ref t) {
       if (Prolog_is_integer(arg2)) {
         if (functor == a_point)
 	  return Generator::point(build_linear_expression(arg1),
-				  integer_term_to_Integer(arg2));
+				  integer_term_to_Coefficient(arg2));
         else if (functor == a_closure_point)
 	  return Generator::closure_point(build_linear_expression(arg1),
-					  integer_term_to_Integer(arg2));
+					  integer_term_to_Coefficient(arg2));
       }
     }
   }
@@ -696,7 +696,7 @@ template <typename R>
 Prolog_term_ref
 get_linear_expression(const R& r) {
   Prolog_term_ref so_far = Prolog_new_term_ref();
-  Integer coefficient;
+  Coefficient coefficient;
   dimension_type varid = 0;
   dimension_type space_dimension = r.space_dimension();
   while (varid < space_dimension
@@ -707,7 +707,7 @@ get_linear_expression(const R& r) {
   }
   else {
     Prolog_construct_compound(so_far, a_asterisk,
-			      Integer_to_integer_term(coefficient),
+			      Coefficient_to_integer_term(coefficient),
 			      variable_term(varid));
     while (true) {
       ++varid;
@@ -719,7 +719,7 @@ get_linear_expression(const R& r) {
       else {
 	Prolog_term_ref addendum = Prolog_new_term_ref();
 	Prolog_construct_compound(addendum, a_asterisk,
-				  Integer_to_integer_term(coefficient),
+				  Coefficient_to_integer_term(coefficient),
 				  variable_term(varid));
 	Prolog_term_ref new_so_far = Prolog_new_term_ref();
 	Prolog_construct_compound(new_so_far, a_plus,
@@ -750,7 +750,7 @@ constraint_term(const Constraint& c) {
   Prolog_term_ref t = Prolog_new_term_ref();
   Prolog_construct_compound(t, relation,
 			    get_linear_expression(c),
-			    Integer_to_integer_term(-c.inhomogeneous_term()));
+			    Coefficient_to_integer_term(-c.inhomogeneous_term()));
   return t;
 }
 
@@ -768,26 +768,26 @@ generator_term(const Generator& g) {
   case Generator::POINT:
     {
       constructor = a_point;
-      const Integer& divisor = g.divisor();
+      const Coefficient& divisor = g.divisor();
       if (divisor == 1)
 	break;
       else {
 	Prolog_construct_compound(t, constructor,
 				  get_linear_expression(g),
-				  Integer_to_integer_term(divisor));
+				  Coefficient_to_integer_term(divisor));
 	return t;
       }
     }
   case Generator::CLOSURE_POINT:
     {
       constructor = a_closure_point;
-      const Integer& divisor = g.divisor();
+      const Coefficient& divisor = g.divisor();
       if (divisor == 1)
 	break;
       else {
 	Prolog_construct_compound(t, constructor,
 				  get_linear_expression(g),
-				  Integer_to_integer_term(divisor));
+				  Coefficient_to_integer_term(divisor));
 	return t;
       }
     }
@@ -813,12 +813,12 @@ term_to_Variable(Prolog_term_ref t) {
   throw not_a_variable(t);
 }
 
-Integer
-term_to_Integer(Prolog_term_ref t) {
+Coefficient
+term_to_Coefficient(Prolog_term_ref t) {
   if (Prolog_is_integer(t)) {
     long v;
     Prolog_get_long(t, &v);
-    return PPL::Integer(v);
+    return PPL::Coefficient(v);
   }
   throw not_an_integer(t);
 }
@@ -1187,7 +1187,7 @@ enum Boundary_Kind {
 bool
 term_to_boundary(Prolog_term_ref t_b, Boundary_Kind kind,
 		 bool& finite, bool& closed,
-		 Integer& n, Integer& d) {
+		 Coefficient& n, Coefficient& d) {
   if (!Prolog_is_compound(t_b))
     return false;
 
@@ -1207,7 +1207,7 @@ term_to_boundary(Prolog_term_ref t_b, Boundary_Kind kind,
     // A finite, integral limit.
     finite = true;
     closed = (open_closed_atom == a_c);
-    n = integer_term_to_Integer(t_limit);
+    n = integer_term_to_Coefficient(t_limit);
     d = 1;
   }
   else if (Prolog_is_atom(t_limit)) {
@@ -1235,8 +1235,8 @@ term_to_boundary(Prolog_term_ref t_b, Boundary_Kind kind,
     else {
       finite = true;
       closed = (open_closed_atom == a_c);
-      n = integer_term_to_Integer(t_n);
-      d = integer_term_to_Integer(t_d);
+      n = integer_term_to_Coefficient(t_n);
+      d = integer_term_to_Coefficient(t_d);
       // Catch negative denominators and divisions by zero here.
       if (d <= 0)
         return false;
@@ -1296,8 +1296,8 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
 
       bool finite;
       bool closed;
-      Integer n;
-      Integer d;
+      Coefficient n;
+      Coefficient d;
       Prolog_term_ref t_bound = Prolog_new_term_ref();
 
       // Get and raise the lower bound.
@@ -1538,16 +1538,16 @@ extended_rational_term(const ERational& e) {
   else if (d < 0)
     Prolog_put_atom(t, a_minf);
   else {
-    Integer numerator;
-    Integer denominator;
+    Coefficient numerator;
+    Coefficient denominator;
     e.numerator(numerator);
     e.denominator(denominator);
     if (denominator == 1)
-      Prolog_put_term(t, Integer_to_integer_term(numerator));
+      Prolog_put_term(t, Coefficient_to_integer_term(numerator));
     else
       Prolog_construct_compound(t, a_slash,
-				Integer_to_integer_term(numerator),
-				Integer_to_integer_term(denominator));
+				Coefficient_to_integer_term(numerator),
+				Coefficient_to_integer_term(denominator));
   }
   return t;
 }
@@ -1696,15 +1696,15 @@ ppl_Polyhedron_maximize(Prolog_term_ref t_ph,
     const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     const Linear_Expression le = build_linear_expression(t_le_expr);
-    Integer n;
-    Integer d;
+    Coefficient n;
+    Coefficient d;
     bool max;
     if (ph->maximize(le, n, d, max)) {
       Prolog_term_ref t = Prolog_new_term_ref();
       Prolog_atom a = (max ? a_true : a_false);
       Prolog_put_atom(t, a);
-      if (Prolog_unify(t_n, Integer_to_integer_term(n))
-	  && Prolog_unify(t_d, Integer_to_integer_term(d))
+      if (Prolog_unify(t_n, Coefficient_to_integer_term(n))
+	  && Prolog_unify(t_d, Coefficient_to_integer_term(d))
 	  && Prolog_unify(t_max, t))
 	return PROLOG_SUCCESS;
     }
@@ -1723,16 +1723,16 @@ ppl_Polyhedron_maximize_with_point(Prolog_term_ref t_ph,
     const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     const Linear_Expression le = build_linear_expression(t_le_expr);
-    Integer n;
-    Integer d;
+    Coefficient n;
+    Coefficient d;
     bool max;
     const Generator* pg;
     if (ph->maximize(le, n, d, max, &pg)) {
       Prolog_term_ref t = Prolog_new_term_ref();
       Prolog_atom a = (max ? a_true : a_false);
       Prolog_put_atom(t, a);
-      if (Prolog_unify(t_n, Integer_to_integer_term(n))
-	  && Prolog_unify(t_d, Integer_to_integer_term(d))
+      if (Prolog_unify(t_n, Coefficient_to_integer_term(n))
+	  && Prolog_unify(t_d, Coefficient_to_integer_term(d))
 	  && Prolog_unify(t_max, t)
 	  && Prolog_unify(t_pg, generator_term(*pg)))
 	return PROLOG_SUCCESS;
@@ -1751,15 +1751,15 @@ ppl_Polyhedron_minimize(Prolog_term_ref t_ph,
     const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     const Linear_Expression le = build_linear_expression(t_le_expr);
-    Integer n;
-    Integer d;
+    Coefficient n;
+    Coefficient d;
     bool min;
     if (ph->minimize(le, n, d, min)) {
       Prolog_term_ref t = Prolog_new_term_ref();
       Prolog_atom a = (min ? a_true : a_false);
       Prolog_put_atom(t, a);
-      if (Prolog_unify(t_n, Integer_to_integer_term(n))
-	  && Prolog_unify(t_d, Integer_to_integer_term(d))
+      if (Prolog_unify(t_n, Coefficient_to_integer_term(n))
+	  && Prolog_unify(t_d, Coefficient_to_integer_term(d))
 	  && Prolog_unify(t_min, t))
 	return PROLOG_SUCCESS;
     }
@@ -1778,16 +1778,16 @@ ppl_Polyhedron_minimize_with_point(Prolog_term_ref t_ph,
     const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     const Linear_Expression le = build_linear_expression(t_le_expr);
-    Integer n;
-    Integer d;
+    Coefficient n;
+    Coefficient d;
     bool min;
     const Generator* pg;
     if (ph->minimize(le, n, d, min, &pg)) {
       Prolog_term_ref t = Prolog_new_term_ref();
       Prolog_atom a = (min ? a_true : a_false);
       Prolog_put_atom(t, a);
-      if (Prolog_unify(t_n, Integer_to_integer_term(n))
-	  && Prolog_unify(t_d, Integer_to_integer_term(d))
+      if (Prolog_unify(t_n, Coefficient_to_integer_term(n))
+	  && Prolog_unify(t_d, Coefficient_to_integer_term(d))
 	  && Prolog_unify(t_min, t)
 	  && Prolog_unify(t_pg, generator_term(*pg)))
 	return PROLOG_SUCCESS;
@@ -2096,7 +2096,7 @@ ppl_Polyhedron_affine_image(Prolog_term_ref t_ph, Prolog_term_ref t_v,
     CHECK(ph);
     ph->affine_image(term_to_Variable(t_v),
 		     build_linear_expression(t_le),
-		     term_to_Integer(t_d));
+		     term_to_Coefficient(t_d));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -2110,7 +2110,7 @@ ppl_Polyhedron_affine_preimage(Prolog_term_ref t_ph, Prolog_term_ref t_v,
     CHECK(ph);
     ph->affine_preimage(term_to_Variable(t_v),
 			build_linear_expression(t_le),
-			term_to_Integer(t_d));
+			term_to_Coefficient(t_d));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -2160,7 +2160,7 @@ ppl_Polyhedron_generalized_affine_image(Prolog_term_ref t_ph,
       ph->generalized_affine_image(term_to_Variable(t_v),
 				   r,
 				   build_linear_expression(t_le),
-				   term_to_Integer(t_d));
+				   term_to_Coefficient(t_d));
       return PROLOG_SUCCESS;
     }
   }

@@ -9,15 +9,15 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef PPL_Integer_traits_template_hh
-#define PPL_Integer_traits_template_hh 1
+#ifndef PPL_Coefficient_traits_template_hh
+#define PPL_Coefficient_traits_template_hh 1
 
 namespace Parma_Polyhedra_Library {
 
-template <typename Integer>
-struct Integer_traits_template {
+template <typename Coefficient>
+struct Coefficient_traits_template {
 };
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Integer_traits_template_hh)
+#endif // !defined(PPL_Coefficient_traits_template_hh)

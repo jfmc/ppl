@@ -37,8 +37,8 @@ PPL::IO_Operators::operator<<(std::ostream& s, const PPL::Bounding_Box& bbox) {
   const dimension_type dimension = bbox.space_dimension();
   for (dimension_type k = 0; k < dimension; ++k) {
     bool closed = false;
-    PPL::Integer n;
-    PPL::Integer d;
+    PPL::Coefficient n;
+    PPL::Coefficient d;
     if (bbox.get_lower_bound(k, closed, n, d)) {
       s << (closed ? "[" : "(")
 	<< n;

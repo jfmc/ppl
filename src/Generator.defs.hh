@@ -92,7 +92,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
   of the corresponding linear expression.
   Linear expressions used to define a generator should be homogeneous
   (any constant term will be simply ignored).
-  When defining points and closure points, an optional Integer argument
+  When defining points and closure points, an optional Coefficient argument
   can be used as a common <EM>divisor</EM> for all the coefficients
   occurring in the provided linear expression;
   the default value for this argument is 1.
@@ -255,25 +255,25 @@ public:
   //! Returns the point at \p e / \p d.
   /*!
     Both \p e and \p d are optional arguments, with default values
-    Linear_Expression::zero() and Integer_one(), respectively.
+    Linear_Expression::zero() and Coefficient_one(), respectively.
 
     \exception std::invalid_argument
     Thrown if \p d is zero.
   */
   static Generator point(const Linear_Expression& e = Linear_Expression::zero(),
-			 Integer_traits::const_reference d = Integer_one());
+			 Coefficient_traits::const_reference d = Coefficient_one());
 
   //! Returns the closure point at \p e / \p d.
   /*!
     Both \p e and \p d are optional arguments, with default values
-    Linear_Expression::zero() and Integer_one(), respectively.
+    Linear_Expression::zero() and Coefficient_one(), respectively.
 
     \exception std::invalid_argument
     Thrown if \p d is zero.
   */
   static Generator
   closure_point(const Linear_Expression& e = Linear_Expression::zero(),
-		Integer_traits::const_reference d = Integer_one());
+		Coefficient_traits::const_reference d = Coefficient_one());
 
   //! Ordinary copy-constructor.
   Generator(const Generator& g);
@@ -323,14 +323,14 @@ public:
     Thrown if the index of \p v is greater than or equal to the
     space dimension of \p *this.
   */
-  Integer_traits::const_reference coefficient(Variable v) const;
+  Coefficient_traits::const_reference coefficient(Variable v) const;
 
   //! If \p *this is either a point or a closure point, returns its divisor.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this is neither a point nor a closure point.
   */
-  Integer_traits::const_reference divisor() const;
+  Coefficient_traits::const_reference divisor() const;
 
   //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Generator& zero_dim_point();
@@ -430,17 +430,17 @@ Generator ray(const Linear_Expression& e);
 
 //! \brief
 //! Shorthand for Generator
-//! Generator::point(const Linear_Expression& e, Integer_traits::const_reference d).
+//! Generator::point(const Linear_Expression& e, Coefficient_traits::const_reference d).
 /*! \relates Generator */
 Generator point(const Linear_Expression& e = Linear_Expression::zero(),
-		Integer_traits::const_reference d = Integer_one());
+		Coefficient_traits::const_reference d = Coefficient_one());
 
 //! \brief
 //! Shorthand for Generator
-//! Generator::closure_point(const Linear_Expression& e, Integer_traits::const_reference d).
+//! Generator::closure_point(const Linear_Expression& e, Coefficient_traits::const_reference d).
 /*! \relates Generator */
 Generator closure_point(const Linear_Expression& e = Linear_Expression::zero(),
-			Integer_traits::const_reference d = Integer_one());
+			Coefficient_traits::const_reference d = Coefficient_one());
 
 } // namespace Parma_Polyhedra_Library
 

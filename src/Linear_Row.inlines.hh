@@ -237,12 +237,12 @@ Linear_Row::set_not_necessarily_closed() {
   flags().set_not_necessarily_closed();
 }
 
-inline Integer_traits::const_reference
+inline Coefficient_traits::const_reference
 Linear_Row::inhomogeneous_term() const {
   return (*this)[0];
 }
 
-inline Integer_traits::const_reference
+inline Coefficient_traits::const_reference
 Linear_Row::coefficient(const dimension_type k) const {
   return (*this)[k+1];
 }

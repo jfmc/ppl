@@ -469,7 +469,7 @@ protected:
     <CODE>true</CODE>, none of the functions below will be called.
     \code
       bool get_lower_bound(dimension_type k, bool closed,
-                           Integer& n, Integer& d) const
+                           Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
     space dimension.  If \f$I\f$ is not bounded from below, simply return
@@ -485,7 +485,7 @@ protected:
     the unique representation for zero.
     \code
       bool get_upper_bound(dimension_type k, bool closed,
-                           Integer& n, Integer& d) const
+                           Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
     space dimension.  If \f$I\f$ is not bounded from above, simply return
@@ -618,7 +618,7 @@ public:
     and \p maximum are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-		Integer& sup_n, Integer& sup_d, bool& maximum) const;
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -650,7 +650,7 @@ public:
     and \p pppoint are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-		Integer& sup_n, Integer& sup_d, bool& maximum,
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
 		const Generator** const pppoint) const;
 
   //! \brief
@@ -678,7 +678,7 @@ public:
     and \p minimum are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-		Integer& inf_n, Integer& inf_d, bool& minimum) const;
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -710,7 +710,7 @@ public:
     and \p pppoint are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-		Integer& inf_n, Integer& inf_d, bool& minimum,
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
 		const Generator** const pppoint) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
@@ -745,8 +745,8 @@ public:
     causes the box to become empty, i.e., to represent the empty set.
     \code
       raise_lower_bound(dimension_type k, bool closed,
-                        Integer_traits::const_reference n,
-                        Integer_traits::const_reference d)
+                        Coefficient_traits::const_reference n,
+                        Coefficient_traits::const_reference d)
     \endcode
     intersects the interval corresponding to the <CODE>k</CODE>-th
     space dimension
@@ -754,8 +754,8 @@ public:
     with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
     \code
       lower_upper_bound(dimension_type k, bool closed,
-                        Integer_traits::const_reference n,
-                        Integer_traits::const_reference d)
+                        Coefficient_traits::const_reference n,
+                        Coefficient_traits::const_reference d)
     \endcode
     intersects the interval corresponding to the <CODE>k</CODE>-th
     space dimension
@@ -1131,8 +1131,8 @@ public:
   */
   void affine_image(Variable var,
 		    const Linear_Expression& expr,
-		    Integer_traits::const_reference denominator
-		      = Integer_one());
+		    Coefficient_traits::const_reference denominator
+		      = Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the \ref affine_transformation "affine preimage"
@@ -1222,8 +1222,8 @@ public:
   */
   void affine_preimage(Variable var,
 		       const Linear_Expression& expr,
-		       Integer_traits::const_reference denominator
-		         = Integer_one());
+		       Coefficient_traits::const_reference denominator
+		         = Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
@@ -1254,8 +1254,8 @@ public:
   void generalized_affine_image(Variable var,
 				const Relation_Symbol relsym,
 				const Linear_Expression& expr,
-				Integer_traits::const_reference denominator
-				  = Integer_one());
+				Coefficient_traits::const_reference denominator
+				  = Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
@@ -2088,7 +2088,7 @@ private:
   */
   bool max_min(const Linear_Expression& expr,
 	       const bool maximize,
-	       Integer& ext_n, Integer& ext_d, bool& included,
+	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
 	       const Generator** const pppoint = 0) const;
 
   //! \name Widening- and Extrapolation-Related Functions

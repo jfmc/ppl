@@ -60,7 +60,7 @@ Bounding_Box::is_empty() const {
 
 inline bool
 Bounding_Box::get_lower_bound(const dimension_type k, bool& closed,
-			     Integer& n, Integer& d) const {
+			     Coefficient& n, Coefficient& d) const {
   assert(k < vec.size());
   const LBoundary& lb = vec[k].lower_bound();
   const ERational& lr = lb.bound();
@@ -77,7 +77,7 @@ Bounding_Box::get_lower_bound(const dimension_type k, bool& closed,
 
 inline bool
 Bounding_Box::get_upper_bound(const dimension_type k, bool& closed,
-			     Integer& n, Integer& d) const {
+			     Coefficient& n, Coefficient& d) const {
   assert(k < vec.size());
   const UBoundary& ub = vec[k].upper_bound();
   const ERational& ur = ub.bound();
@@ -100,8 +100,8 @@ Bounding_Box::set_empty() {
 
 inline void
 Bounding_Box::raise_lower_bound(const dimension_type k, const bool closed,
-			       Integer_traits::const_reference n,
-			       Integer_traits::const_reference d) {
+			       Coefficient_traits::const_reference n,
+			       Coefficient_traits::const_reference d) {
   assert(k < vec.size());
   assert(d != 0);
   vec[k].raise_lower_bound(LBoundary(ERational(n, d),
@@ -113,8 +113,8 @@ Bounding_Box::raise_lower_bound(const dimension_type k, const bool closed,
 
 inline void
 Bounding_Box::lower_upper_bound(const dimension_type k, const bool closed,
-			       Integer_traits::const_reference n,
-			       Integer_traits::const_reference d) {
+			       Coefficient_traits::const_reference n,
+			       Coefficient_traits::const_reference d) {
   assert(k < vec.size());
   assert(d != 0);
   vec[k].lower_upper_bound(UBoundary(ERational(n, d),

@@ -365,8 +365,8 @@ public:
   }
 
   void raise_lower_bound(const dimension_type k, const bool closed,
-			 Integer_traits::const_reference n,
-			 Integer_traits::const_reference d) {
+			 Coefficient_traits::const_reference n,
+			 Coefficient_traits::const_reference d) {
     if (closed)
       con_sys.insert(d*Variable(k) >= n);
     else
@@ -374,8 +374,8 @@ public:
   }
 
   void lower_upper_bound(const dimension_type k, const bool closed,
-			 Integer_traits::const_reference n,
-			 Integer_traits::const_reference d) {
+			 Coefficient_traits::const_reference n,
+			 Coefficient_traits::const_reference d) {
     if (closed)
       con_sys.insert(d*Variable(k) <= n);
     else

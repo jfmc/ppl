@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "Integer.defs.hh"
+#include "Coefficient.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
 #include "Constraint_System.defs.hh"
@@ -65,9 +65,6 @@ inline ppl_ ## Type ## _t \
 to_nonconst(Type* x) { \
   return reinterpret_cast<ppl_ ## Type ## _t>(x); \
 }
-
-// FIXME: this temporary until we rename Integer to Coefficient.
-typedef Parma_Polyhedra_Library::Integer Coefficient;
 
 namespace {
 
@@ -297,7 +294,7 @@ DECLARE_CONVERSIONS(Polyhedron)
 
 int
 ppl_new_Coefficient(ppl_Coefficient_t* pc) try {
-  *pc = to_nonconst(new Integer(0));
+  *pc = to_nonconst(new Coefficient(0));
   return 0;
 }
 CATCH_ALL
@@ -305,7 +302,7 @@ CATCH_ALL
 int
 ppl_new_Coefficient_from_mpz_t(ppl_Coefficient_t* pc, mpz_t z) try {
   // FIXME: this is a kludge.
-  *pc = to_nonconst(new Integer(mpz_class(z)));
+  *pc = to_nonconst(new Coefficient(mpz_class(z)));
   return 0;
 }
 CATCH_ALL
@@ -314,7 +311,7 @@ int
 ppl_new_Coefficient_from_Coefficient(ppl_Coefficient_t* pc,
 				     ppl_const_Coefficient_t c) try {
   const Coefficient& cc = *to_const(c);
-  *pc = to_nonconst(new Integer(cc));
+  *pc = to_nonconst(new Coefficient(cc));
   return 0;
 }
 CATCH_ALL
@@ -410,7 +407,7 @@ ppl_Linear_Expression_add_to_coefficient(ppl_Linear_Expression_t le,
 					 ppl_dimension_type var,
 					 ppl_const_Coefficient_t n) try {
   Linear_Expression& lle = *to_nonconst(le);
-  const Integer& nn = *to_const(n);
+  const Coefficient& nn = *to_const(n);
   lle += nn * Variable(var);
   return 0;
 }
@@ -420,7 +417,7 @@ int
 ppl_Linear_Expression_add_to_inhomogeneous(ppl_Linear_Expression_t le,
 					   ppl_const_Coefficient_t n) try {
   Linear_Expression& lle = *to_nonconst(le);
-  const Integer& nn = *to_const(n);
+  const Coefficient& nn = *to_const(n);
   lle += nn;
   return 0;
 }
@@ -450,7 +447,7 @@ int
 ppl_multiply_Linear_Expression_by_Coefficient(ppl_Linear_Expression_t le,
 					      ppl_const_Coefficient_t n) try {
   Linear_Expression& lle = *to_nonconst(le);
-  const Integer& nn = *to_const(n);
+  const Coefficient& nn = *to_const(n);
   lle *= nn;
   return 0;
 }
@@ -469,7 +466,7 @@ ppl_Linear_Expression_coefficient(ppl_const_Linear_Expression_t le,
 				  ppl_dimension_type var,
 				  ppl_Coefficient_t n) try {
   const Linear_Expression& lle = *to_const(le);
-  Integer& nn = *to_nonconst(n);
+  Coefficient& nn = *to_nonconst(n);
   nn = lle.coefficient(Variable(var));
   return 0;
 }
@@ -479,7 +476,7 @@ int
 ppl_Linear_Expression_inhomogeneous_term(ppl_const_Linear_Expression_t le,
 					 ppl_Coefficient_t n) try {
   const Linear_Expression& lle = *to_const(le);
-  Integer& nn = *to_nonconst(n);
+  Coefficient& nn = *to_nonconst(n);
   nn = lle.inhomogeneous_term();
   return 0;
 }
@@ -591,7 +588,7 @@ ppl_Constraint_coefficient(ppl_const_Constraint_t c,
 			   ppl_dimension_type var,
 			   ppl_Coefficient_t n) try {
   const Constraint& cc = *to_const(c);
-  Integer& nn = *to_nonconst(n);
+  Coefficient& nn = *to_nonconst(n);
   nn = cc.coefficient(Variable(var));
   return 0;
 }
@@ -601,7 +598,7 @@ int
 ppl_Constraint_inhomogeneous_term(ppl_const_Constraint_t c,
 				  ppl_Coefficient_t n) try {
   const Constraint& cc = *to_const(c);
-  Integer& nn = *to_nonconst(n);
+  Coefficient& nn = *to_nonconst(n);
   nn = cc.inhomogeneous_term();
   return 0;
 }
@@ -894,7 +891,7 @@ ppl_Generator_coefficient(ppl_const_Generator_t g,
 			  ppl_dimension_type var,
 			  ppl_Coefficient_t n) try {
   const Generator& gg = *to_const(g);
-  Integer& nn = *to_nonconst(n);
+  Coefficient& nn = *to_nonconst(n);
   nn = gg.coefficient(Variable(var));
   return 0;
 }
@@ -904,7 +901,7 @@ int
 ppl_Generator_divisor(ppl_const_Generator_t g,
 		      ppl_Coefficient_t n) try {
   const Generator& gg = *to_const(g);
-  Integer& nn = *to_nonconst(n);
+  Coefficient& nn = *to_nonconst(n);
   nn = gg.divisor();
   return 0;
 }
@@ -1270,12 +1267,12 @@ public:
   }
 
   bool get_lower_bound(ppl_dimension_type k, bool closed,
-		       Integer& n, Integer& d) const {
+		       Coefficient& n, Coefficient& d) const {
     return g_l_b(k, closed, to_nonconst(&n), to_nonconst(&d)) != 0;
   }
 
   bool get_upper_bound(ppl_dimension_type k, bool closed,
-		       Integer& n, Integer& d) const {
+		       Coefficient& n, Coefficient& d) const {
     return g_u_b(k, closed, to_nonconst(&n), to_nonconst(&d)) != 0;
   }
 };
@@ -1862,7 +1859,7 @@ ppl_Polyhedron_affine_image(ppl_Polyhedron_t ph,
 			    ppl_const_Coefficient_t d) try {
   Polyhedron& pph = *to_nonconst(ph);
   const Linear_Expression& lle = *to_const(le);
-  const Integer& dd = *to_const(d);
+  const Coefficient& dd = *to_const(d);
   pph.affine_image(Variable(var), lle, dd);
   return 0;
 }
@@ -1875,7 +1872,7 @@ ppl_Polyhedron_affine_preimage(ppl_Polyhedron_t ph,
 			       ppl_const_Coefficient_t d) try {
   Polyhedron& pph = *to_nonconst(ph);
   const Linear_Expression& lle = *to_const(le);
-  const Integer& dd = *to_const(d);
+  const Coefficient& dd = *to_const(d);
   pph.affine_preimage(Variable(var), lle, dd);
   return 0;
 }
@@ -1911,7 +1908,7 @@ ppl_Polyhedron_generalized_affine_image(ppl_Polyhedron_t ph,
 					ppl_const_Coefficient_t d) try {
   Polyhedron& pph = *to_nonconst(ph);
   const Linear_Expression& lle = *to_const(le);
-  const Integer& dd = *to_const(d);
+  const Coefficient& dd = *to_const(d);
   pph.generalized_affine_image(Variable(var), relation_symbol(relsym), lle,
 			       dd);
   return 0;
@@ -1961,12 +1958,12 @@ public:
   }
 
   void raise_lower_bound(ppl_dimension_type k, bool closed,
-			 const Integer& n, const Integer& d) {
+			 const Coefficient& n, const Coefficient& d) {
     r_l_b(k, closed, to_const(&n), to_const(&d));
   }
 
   void lower_upper_bound(ppl_dimension_type k, bool closed,
-			 const Integer& n, const Integer& d) {
+			 const Coefficient& n, const Coefficient& d) {
     l_u_b(k, closed, to_const(&n), to_const(&d));
   }
 };
@@ -2062,8 +2059,8 @@ ppl_Polyhedron_maximize(ppl_const_Polyhedron_t ph,
 			ppl_const_Generator_t* ppoint) try {
   const Polyhedron& pph = *to_const(ph);
   const Linear_Expression& lle = *to_const(le);
-  Integer& ssup_n = *to_nonconst(sup_n);
-  Integer& ssup_d = *to_nonconst(sup_d);
+  Coefficient& ssup_n = *to_nonconst(sup_n);
+  Coefficient& ssup_d = *to_nonconst(sup_d);
   bool maximum;
   bool ok = ppoint != 0
     ? pph.maximize(lle, ssup_n, ssup_d, maximum,
@@ -2084,8 +2081,8 @@ ppl_Polyhedron_minimize(ppl_const_Polyhedron_t ph,
 			ppl_const_Generator_t* ppoint) try {
   const Polyhedron& pph = *to_const(ph);
   const Linear_Expression& lle = *to_const(le);
-  Integer& iinf_n = *to_nonconst(inf_n);
-  Integer& iinf_d = *to_nonconst(inf_d);
+  Coefficient& iinf_n = *to_nonconst(inf_n);
+  Coefficient& iinf_d = *to_nonconst(inf_d);
   bool minimum;
   bool ok = ppoint != 0
     ? pph.minimize(lle, iinf_n, iinf_d, minimum,

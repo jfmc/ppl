@@ -6,11 +6,6 @@ Enhancements for PPL 0.7
   the PPL user.  However, someone uses it and, apparently, this
   comes in handy.  See how to provide the same functionality the
   right way.
-
-- Consider performing the following renamings:
-
-    Integer -> Coefficient
-
 - Rewrite Linear_System::sort_and_remove_with_sat() and perhaps
   Linear_System::sort_rows().
 - Look carefully into the methods Polyhedron::obtain_sorted_constraints*()

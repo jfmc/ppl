@@ -433,10 +433,10 @@ ppl-0.6/
 |   |-- Init.cc
 |   |-- Init.defs.hh
 |   |-- Init.types.hh
-|   |-- Integer.cc
-|   |-- Integer.defs.hh
-|   |-- Integer.inlines.hh
-|   |-- Integer.types.hh
+|   |-- Coefficient.cc
+|   |-- Coefficient.defs.hh
+|   |-- Coefficient.inlines.hh
+|   |-- Coefficient.types.hh
 |   |-- Interval.cc
 |   |-- Interval.defs.hh
 |   |-- Interval.inlines.hh
