@@ -1,6 +1,4 @@
-/* Test ascii_dump() 5 ascii_load(): we read a non completed file.
-   we test these functions in the case that the file does not contain
-   the right thing.
+/* Test Status::ascii_dump() and Status::ascii_load().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -25,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 #include "files.hh"
-#include <string>
 #include <fstream>
 
 using namespace std;
@@ -35,68 +32,56 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-const char* my_file = "ascii_dump_load5.dat";
+const char* my_file = "ascii_dump_load6.dat";
 
 void
 test1() {
+  
+  C_Polyhedron ph1;
 
   fstream f;
   open(f, my_file, ios_base::out);
-  f << "space_dim 2\n"
-    << "-ZE -EM  -CM -GM  +CS -GS  -SC -SG\n"
-    << "con_sys (up-to-date)\n"
-    << "topology NECESSARILY_CLOSED\n"
-    << "3 x 3 (not_sorted)\n"
-    << "1 0 0"; 
+  ph1.ascii_dump(f);
   close(f);
-  
+
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
-  bool ok =! ph2.ascii_load(f);
+  ph2.ascii_load(f);
   close(f);
-  
+
+  bool ok = (ph1 == ph2);
+
   if (!ok)
     exit(1);
 }
 
 void
 test2() {
+  
+  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
 
   fstream f;
   open(f, my_file, ios_base::out);
-  f << "space_dim 2\n"
-    << "-ZE -EM  -CM -GM  +CS -GS  -SC -SG\n"
-    << "con_sys (up-to-date)\n"
-    << "topology NECESSARILY_CLOSED\n"
-    << "3 x 3 (not_sorted)\n"
-    << "1 0 0   >=\n"
-    << "0 1 0   >=\n"
-    << "0 0 1   >=\n\n"
-    << "gen_sys (not_up-to-date)\n"
-    << "topology NECESSARILY_CLOSED\n"
-    <<" 3 x 3 (not_sorted)\n"
-    << "1 0 0"; 
+  ph1.ascii_dump(f);
   close(f);
-  
+
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
-  bool ok =! ph2.ascii_load(f);
+  ph2.ascii_load(f);
   close(f);
-  
+
+  bool ok = (ph1 == ph2);
+
   if (!ok)
     exit(1);
 }
 
 void
 test3() {
-
-  fstream f;
+ fstream f;
   open(f, my_file, ios_base::out);
   f << "space_dim 2\n"
-    << "-ZE -EM  -CM -GM  +CS -GS  -SC -SG\n"
-    << "con_sys (up-to-date)\n"
-    << "topology NECESSARILY_CLOSED\n"
-    << "3";
+    << "-ZE";
   close(f);
   
   open(f, my_file, ios_base::in);
@@ -107,17 +92,13 @@ test3() {
   if (!ok)
     exit(1);
 }
-
 
 void
 test4() {
-
-  fstream f;
+ fstream f;
   open(f, my_file, ios_base::out);
   f << "space_dim 2\n"
-    << "-ZE -EM  -CM -GM  +CS -GS  -SC -SG\n"
-    << "con_sys (up-to-date)\n"
-    << "topology";
+    << "-ZE -EM";
   close(f);
   
   open(f, my_file, ios_base::in);
@@ -128,35 +109,14 @@ test4() {
   if (!ok)
     exit(1);
 }
-
 
 void
 test5() {
-
-  fstream f;
+ fstream f;
   open(f, my_file, ios_base::out);
-  f << "space_dim 3\n"
-    << "-ZE -EM  +CM +GM  +CS +GS  +SC -SG\n" 
-    << "con_sys (up-to-date)\n"
-    << "topology NOT_NECESSARILY_CLOSED\n"
-    << "4 x 5 (sorted)\n"
-    << "1 0 0 0 -1   >\n"
-    << "0 0 0 0 1   >=\n"
-    << "0 0 1 0 0   >=\n"
-    << "-2 1 -1 0 0   >=\n"
-    << "\n"
-    << "gen_sys (up-to-date)\n"
-    << "topology NOT_NECESSARILY_CLOSED\n"
-    << "5 x 5 (sorted)\n"
-    << "0 0 0 1 0   L\n"
-    << "0 1 0 0 0   R\n"
-    << "0 1 1 0 0   R\n"
-    << "1 2 0 0 0   C\n"
-    << "1 2 0 0 1   P\n"
-    << "\n"
-    << "sat_c\n"
-    << "5";
-    close(f);
+  f << "space_dim 2\n"
+    << "-ZE -EM  +CM";
+  close(f);
   
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
@@ -167,16 +127,69 @@ test5() {
     exit(1);
 }
 
+void
+test6() {
+ fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 2\n"
+    << "-ZE -EM  +CM +GM";
+  close(f);
+  
+  open(f, my_file, ios_base::in);
+  C_Polyhedron ph2;
+  bool ok =! ph2.ascii_load(f);
+  close(f);
+  
+  if (!ok)
+    exit(1);
+}
+
+void
+test7() {
+ fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 2\n"
+    << "-ZE -EM  +CM +GM  +CS";
+  close(f);
+  
+  open(f, my_file, ios_base::in);
+  C_Polyhedron ph2;
+  bool ok =! ph2.ascii_load(f);
+  close(f);
+  
+  if (!ok)
+    exit(1);
+}
+
+void
+test8() {
+ fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 2\n"
+    << "-ZE -EM  +CM +GM  +CS  +SC";
+  close(f);
+  
+  open(f, my_file, ios_base::in);
+  C_Polyhedron ph2;
+  bool ok =! ph2.ascii_load(f);
+  close(f);
+  
+  if (!ok)
+    exit(1);
+}
 
 int
 main() {
   set_handlers();
-  
+
   test1();
   test2();
   test3();
   test4();
   test5();
+  test6();
+  test7();
+  test8();
 
   return 0;
 }

@@ -192,7 +192,6 @@ test5() {
     exit(1);
 }
 
-
 void
 test6() {
   Variable A(0);
@@ -225,6 +224,76 @@ test6() {
     exit(1);
 }
 
+void
+test7() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);   
+  ph.add_constraint(B >= 0);   
+
+  ph.generators();
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  ph.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in | ios_base::out);
+  string str;
+  do
+    f >> str;
+  while(str != "sat_c");
+  do
+    f >> str;
+  while(str != "x");
+  f << " A";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(f);
+  close(f);
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test8() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);   
+  ph.add_constraint(B >= 0);   
+
+  ph.generators();
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  ph.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in | ios_base::out);
+  string str;
+  do
+    f >> str;
+  while(str != "sat_c");
+  f.seekp(8, ios_base::cur);
+  f << " A";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(f);
+  close(f);
+
+  if (!ok)
+    exit(1);
+}
+
 int
 main() {
   set_handlers();
@@ -235,6 +304,8 @@ main() {
   test4();
   test5();
   test6();
+  test7();
+  test8();
 
   return 0;
 }

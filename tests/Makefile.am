@@ -52,13 +52,14 @@ ORIGINAL_TESTS = \
 	addgenerators5 addgenerators6 addgenerators7 addgenerators8 \
 	addgenerators9 addgenerators10 addgenerators11 \
 	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
-	affineimage6 \
+	affineimage6 affineimage7 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	affinepreimage5 affinepreimage6 affinepreimage7 affinepreimage8 \
+	affinepreimage9 \
 	affinetrans \
         append1 append2 \
 	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
-	ascii_dump_load5 \
+	ascii_dump_load5 ascii_dump_load6 \
 	bbrz02widening1 bbrz02widening2 bbrz02widening3 bbrz02widening4 \
 	bbrz02widening5 bbrz02widening6 bbrz02widening7 bbrz02widening8 \
 	bbrz02widening9 bbrz02widening10 bbrz02widening11 bbrz02widening12 \
@@ -133,13 +134,14 @@ DERIVED_TESTS = \
 	nnc_addgenerators4 nnc_addgenerators5 nnc_addgenerators6 \
 	nnc_addgenerators9 nnc_addgenerators10 \
 	nnc_affineimage1 nnc_affineimage2 nnc_affineimage3 nnc_affineimage4 \
-	nnc_affineimage5 nnc_affineimage6 \
+	nnc_affineimage5 nnc_affineimage6 nnc_affineimage7 \
 	nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
 	nnc_affinepreimage4 nnc_affinepreimage5 nnc_affinepreimage6 \
-	nnc_affinepreimage7 nnc_affinepreimage8 \
+	nnc_affinepreimage7 nnc_affinepreimage8 nnc_affinepreimage9 \
 	nnc_affinetrans \
 	nnc_append1 nnc_append2 \
 	nnc_ascii_dump_load1 nnc_ascii_dump_load2 nnc_ascii_dump_load3 \
+	nnc_ascii_dump_load6 \
 	nnc_bbrz02widening1 nnc_bbrz02widening2 nnc_bbrz02widening3 \
 	nnc_bbrz02widening5 nnc_bbrz02widening6 \
 	nnc_bbrz02widening8 nnc_bbrz02widening9 \
@@ -258,6 +260,7 @@ affineimage3_SOURCES = affineimage3.cc
 affineimage4_SOURCES = affineimage4.cc
 affineimage5_SOURCES = affineimage5.cc
 affineimage6_SOURCES = affineimage6.cc
+affineimage7_SOURCES = affineimage7.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
@@ -267,6 +270,7 @@ affinepreimage5_SOURCES = affinepreimage5.cc
 affinepreimage6_SOURCES = affinepreimage6.cc
 affinepreimage7_SOURCES = affinepreimage7.cc
 affinepreimage8_SOURCES = affinepreimage8.cc
+affinepreimage9_SOURCES = affinepreimage9.cc
 
 affinetrans_SOURCES = affinetrans.cc
 
@@ -278,6 +282,7 @@ ascii_dump_load2_SOURCES = ascii_dump_load2.cc files.cc
 ascii_dump_load3_SOURCES = ascii_dump_load3.cc files.cc
 ascii_dump_load4_SOURCES = ascii_dump_load4.cc files.cc
 ascii_dump_load5_SOURCES = ascii_dump_load5.cc files.cc
+ascii_dump_load6_SOURCES = ascii_dump_load6.cc files.cc
 
 bbrz02widening1_SOURCES = bbrz02widening1.cc
 bbrz02widening2_SOURCES = bbrz02widening2.cc
@@ -562,6 +567,8 @@ nnc_affineimage5_SOURCES = affineimage5.cc
 nnc_affineimage5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_affineimage6_SOURCES = affineimage6.cc
 nnc_affineimage6_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affineimage7_SOURCES = affineimage7.cc
+nnc_affineimage7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affinepreimage1_SOURCES = affinepreimage1.cc
 nnc_affinepreimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -579,6 +586,8 @@ nnc_affinepreimage7_SOURCES = affinepreimage7.cc
 nnc_affinepreimage7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_affinepreimage8_SOURCES = affinepreimage8.cc
 nnc_affinepreimage8_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affinepreimage9_SOURCES = affinepreimage9.cc
+nnc_affinepreimage9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affinetrans_SOURCES = affinetrans.cc
 nnc_affinetrans_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -594,6 +603,8 @@ nnc_ascii_dump_load2_SOURCES = ascii_dump_load2.cc files.cc
 nnc_ascii_dump_load2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_ascii_dump_load3_SOURCES = ascii_dump_load3.cc files.cc
 nnc_ascii_dump_load3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_ascii_dump_load6_SOURCES = ascii_dump_load6.cc files.cc
+nnc_ascii_dump_load6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bbrz02widening1_SOURCES = bbrz02widening1.cc
 nnc_bbrz02widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -888,6 +899,7 @@ ascii_dump_load2.dat \
 ascii_dump_load3.dat \
 ascii_dump_load4.dat \
 ascii_dump_load5.dat \
+ascii_dump_load6.dat \
 writeconsys1.dat \
 writegensys1.dat \
 writegensys2.dat \
