@@ -3577,14 +3577,12 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
       return;
   }
 
-  dimension_type num_columns = x.con_sys.num_columns();
-
   // If we only have the generators of `x' and the dimensions of
   // the two polyhedra are the same, we can compute the standard
   // widening by using the specification in CousotH78, therefore
   // avoiding converting from generators to constraints.
   if (x.has_pending_generators() || !x.constraints_are_up_to_date()) {
-    ConSys CH78_cs(tpl, 0, num_columns);
+    ConSys CH78_cs;
     x.select_CH78_constraints(y, CH78_cs);
 
     if (CH78_cs.num_rows() == y.con_sys.num_rows()) {
@@ -3621,8 +3619,8 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
 
   // Copy into `H79_con_sys' the constraints of `x' that are common to `y',
   // according to the definition of the H79 widening.
-  ConSys H79_cs(tpl, 0, num_columns);
-  ConSys x_minus_H79_cs(tpl, 0, num_columns);
+  ConSys H79_cs;
+  ConSys x_minus_H79_cs;
   x.select_H79_constraints(y, H79_cs, x_minus_H79_cs);
 
   if (x_minus_H79_cs.num_rows() == 0)
@@ -4102,7 +4100,15 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(const Polyhedron& y,
   statistics->technique.combining_constraints++;
 #endif
 #if 0
-  std::cout << "BHRZ03: averaging_constraints" << std::endl;
+  std::cout << "======== BHRZ03: averaging_constraints ========" << std::endl;
+  std::cout << "x.con_sys.num_rows() = "
+	    << x.con_sys.num_rows() << std::endl;
+  std::cout << "y.con_sys.num_rows() = "
+	    << y.con_sys.num_rows() << std::endl;
+  std::cout << "H79.con_sys.num_rows() = "
+	    << H79.con_sys.num_rows() << std::endl;
+  std::cout << "result.con_sys.num_rows() = "
+	    << result.con_sys.num_rows() << std::endl;
 #endif
   std::swap(x, result);
   assert(x.OK(true));
@@ -4239,7 +4245,15 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
       statistics->technique.evolving_points++;
 #endif
 #if 0
-  std::cout << "BHRZ03: evolving points" << std::endl;
+  std::cout << "======== BHRZ03: evolving points ========" << std::endl;
+  std::cout << "x.con_sys.num_rows() = "
+	    << x.con_sys.num_rows() << std::endl;
+  std::cout << "y.con_sys.num_rows() = "
+	    << y.con_sys.num_rows() << std::endl;
+  std::cout << "H79.con_sys.num_rows() = "
+	    << H79.con_sys.num_rows() << std::endl;
+  std::cout << "result.con_sys.num_rows() = "
+	    << result.con_sys.num_rows() << std::endl;
 #endif
       std::swap(x, result);
       assert(x.OK(true));
@@ -4263,7 +4277,15 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   statistics->technique.evolving_points++;
 #endif
 #if 0
-  std::cout << "BHRZ03: evolving points" << std::endl;
+  std::cout << "======== BHRZ03: evolving points ========" << std::endl;
+  std::cout << "x.con_sys.num_rows() = "
+	    << x.con_sys.num_rows() << std::endl;
+  std::cout << "y.con_sys.num_rows() = "
+	    << y.con_sys.num_rows() << std::endl;
+  std::cout << "H79.con_sys.num_rows() = "
+	    << H79.con_sys.num_rows() << std::endl;
+  std::cout << "result.con_sys.num_rows() = "
+	    << result.con_sys.num_rows() << std::endl;
 #endif
   std::swap(x, result);
   assert(x.OK(true));
@@ -4296,8 +4318,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   GenSys candidate_rays;
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
     const Generator& x_g = x.gen_sys[i];
-    // We choose a ray of `x' that does not belong to `y' and
-    // "evolved" since a ray of `y'.
+    // We choose a ray of `x' that does not belong to `y'.
     if (x_g.is_ray() && y.relation_with(x_g) == Poly_Gen_Relation::nothing()) {
       for (dimension_type j = y_gen_sys_num_rows; j-- > 0; ) {
 	const Generator& y_g = y.gen_sys[j];
@@ -4393,7 +4414,15 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   statistics->technique.evolving_rays++;
 #endif
 #if 0
-  std::cout << "BHRZ03: evolving rays" << std::endl;
+  std::cout << "======== BHRZ03: evolving rays ========" << std::endl;
+  std::cout << "x.con_sys.num_rows() = "
+	    << x.con_sys.num_rows() << std::endl;
+  std::cout << "y.con_sys.num_rows() = "
+	    << y.con_sys.num_rows() << std::endl;
+  std::cout << "H79.con_sys.num_rows() = "
+	    << H79.con_sys.num_rows() << std::endl;
+  std::cout << "result.con_sys.num_rows() = "
+	    << result.con_sys.num_rows() << std::endl;
 #endif
   std::swap(x, result);
   assert(x.OK(true));
@@ -4510,7 +4539,13 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
   statistics->technique.h79++;
 #endif
 #if 0
-  std::cout << "BHRZ03: H79" << std::endl;
+  std::cout << "======== BHRZ03: H79 ========" << std::endl;
+  std::cout << "x.con_sys.num_rows() = "
+	    << x.con_sys.num_rows() << std::endl;
+  std::cout << "y.con_sys.num_rows() = "
+	    << y.con_sys.num_rows() << std::endl;
+  std::cout << "H79.con_sys.num_rows() = "
+	    << H79.con_sys.num_rows() << std::endl;
 #endif
   std::swap(x, H79);
   assert(x.OK(true));
