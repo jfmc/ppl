@@ -513,10 +513,11 @@ ppl_multiply_LinExpression_by_Coefficient __P((ppl_LinExpression_t le,
 					       ppl_const_Coefficient_t n));
 
 /*! \brief
-  Returns the space dimension of \p le.
+  Writes to \p m the space dimension of \p le.
 */
 int
-ppl_LinExpression_space_dimension __P((ppl_const_LinExpression_t le));
+ppl_LinExpression_space_dimension __P((ppl_const_LinExpression_t le,
+				       ppl_dimension_type* m));
 
 /*! \brief
   Copies into \p n the coefficient of variable \p var in
@@ -612,10 +613,11 @@ ppl_assign_Constraint_from_Constraint __P((ppl_Constraint_t dst,
 					   ppl_const_Constraint_t src));
 
 /*! \brief
-  Returns the space dimension of \p c.
+  Writes to \p m the space dimension of \p c.
 */
 int
-ppl_Constraint_space_dimension __P((ppl_const_Constraint_t c));
+ppl_Constraint_space_dimension __P((ppl_const_Constraint_t c,
+				    ppl_dimension_type* m));
 
 /*! \brief
   Returns the type of constraint \p c.
@@ -697,10 +699,11 @@ ppl_assign_ConSys_from_ConSys __P((ppl_ConSys_t dst,
 				   ppl_const_ConSys_t src));
 
 /*! \brief
-  Returns the dimension of the vector space enclosing \p cs.
+  Writes to \p m the dimension of the vector space enclosing \p cs.
 */
 int
-ppl_ConSys_space_dimension __P((ppl_const_ConSys_t cs));
+ppl_ConSys_space_dimension __P((ppl_const_ConSys_t cs,
+				ppl_dimension_type* m));
 
 /*! \brief
   Removes all the constraints from the constraint system \p cs
@@ -868,10 +871,11 @@ ppl_assign_Generator_from_Generator __P((ppl_Generator_t dst,
 					 ppl_const_Generator_t src));
 
 /*! \brief
-  Returns the space dimension of \p g.
+  Writes to \p m the space dimension of \p g.
 */
 int
-ppl_Generator_space_dimension __P((ppl_const_Generator_t g));
+ppl_Generator_space_dimension __P((ppl_const_Generator_t g,
+				   ppl_dimension_type* m));
 
 /*! \brief
   Returns the type of generator \p g.
@@ -953,10 +957,11 @@ ppl_assign_GenSys_from_GenSys __P((ppl_GenSys_t dst,
 				   ppl_const_GenSys_t src));
 
 /*! \brief
-  Returns the dimension of the vector space enclosing \p gs.
+  Writes to \p m the dimension of the vector space enclosing \p gs.
 */
 int
-ppl_GenSys_space_dimension __P((ppl_const_GenSys_t gs));
+ppl_GenSys_space_dimension __P((ppl_const_GenSys_t gs,
+				ppl_dimension_type* m));
 
 /*! \brief
   Removes all the generators from the generator system \p gs
@@ -1423,13 +1428,14 @@ int
 ppl_delete_Polyhedron __P((ppl_const_Polyhedron_t ph));
 
 /*! \brief
-  Returns the dimension of the vector space enclosing \p ph.
+  Writes to \p m the dimension of the vector space enclosing \p ph.
 */
 int
-ppl_Polyhedron_space_dimension __P((ppl_const_Polyhedron_t ph));
+ppl_Polyhedron_space_dimension __P((ppl_const_Polyhedron_t ph,
+				    ppl_dimension_type* m));
 
 /*! \brief
-  Returns the dimension of \p ph (not to be confused with the
+  Writes to \p m the dimension of \p ph (not to be confused with the
   dimension of its enclosing vector space) or 0, if \p ph is empty.
 */
 int

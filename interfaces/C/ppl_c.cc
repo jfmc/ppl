@@ -452,8 +452,10 @@ ppl_multiply_LinExpression_by_Coefficient(ppl_LinExpression_t le,
 CATCH_ALL
 
 int
-ppl_LinExpression_space_dimension(ppl_const_LinExpression_t le) try {
-  return to_const(le)->space_dimension();
+ppl_LinExpression_space_dimension(ppl_const_LinExpression_t le,
+				  ppl_dimension_type* m) try {
+  *m = to_const(le)->space_dimension();
+  return 0;
 }
 CATCH_ALL
 
@@ -557,8 +559,10 @@ ppl_assign_Constraint_from_Constraint(ppl_Constraint_t dst,
 CATCH_ALL
 
 int
-ppl_Constraint_space_dimension(ppl_const_Constraint_t c) try {
-  return to_const(c)->space_dimension();
+ppl_Constraint_space_dimension(ppl_const_Constraint_t c,
+			       ppl_dimension_type* m) try {
+  *m = to_const(c)->space_dimension();
+  return 0;
 }
 CATCH_ALL
 
@@ -663,8 +667,10 @@ ppl_assign_ConSys_from_ConSys(ppl_ConSys_t dst, ppl_const_ConSys_t src) try {
 CATCH_ALL
 
 int
-ppl_ConSys_space_dimension(ppl_const_ConSys_t cs) try {
-  return to_const(cs)->space_dimension();
+ppl_ConSys_space_dimension(ppl_const_ConSys_t cs,
+			   ppl_dimension_type* m) try {
+  *m = to_const(cs)->space_dimension();
+  return 0;
 }
 CATCH_ALL
 
@@ -845,8 +851,10 @@ ppl_assign_Generator_from_Generator(ppl_Generator_t dst,
 CATCH_ALL
 
 int
-ppl_Generator_space_dimension(ppl_const_Generator_t g) try {
-  return to_const(g)->space_dimension();
+ppl_Generator_space_dimension(ppl_const_Generator_t g,
+			      ppl_dimension_type* m) try {
+  *m = to_const(g)->space_dimension();
+  return 0;
 }
 CATCH_ALL
 
@@ -952,8 +960,10 @@ ppl_assign_GenSys_from_GenSys(ppl_GenSys_t dst, ppl_const_GenSys_t src) try {
 CATCH_ALL
 
 int
-ppl_GenSys_space_dimension(ppl_const_GenSys_t gs) try {
-  return to_const(gs)->space_dimension();
+ppl_GenSys_space_dimension(ppl_const_GenSys_t gs,
+			   ppl_dimension_type* m) try {
+  *m = to_const(gs)->space_dimension();
+  return 0;
 }
 CATCH_ALL
 
@@ -1317,14 +1327,18 @@ ppl_assign_NNC_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t dst,
 CATCH_ALL
 
 int
-ppl_Polyhedron_space_dimension(ppl_const_Polyhedron_t ph) try {
-  return to_const(ph)->space_dimension();
+ppl_Polyhedron_space_dimension(ppl_const_Polyhedron_t ph,
+			       ppl_dimension_type* m) try {
+  *m = to_const(ph)->space_dimension();
+  return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_dimension(ppl_const_Polyhedron_t ph) try {
-  return to_const(ph)->dimension();
+ppl_Polyhedron_dimension(ppl_const_Polyhedron_t ph,
+			 ppl_dimension_type* m) try {
+  *m = to_const(ph)->dimension();
+  return 0;
 }
 CATCH_ALL
 
