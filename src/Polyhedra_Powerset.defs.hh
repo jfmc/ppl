@@ -193,8 +193,6 @@ public:
   */
   void pairwise_reduce();
 
-  using Base::omega_reduce;
-
   //! \brief
   //! Assigns to \p *this the result of applying the
   //! \ref pps_bgp99_extrapolation "BGP99 extrapolation operator"
@@ -364,15 +362,12 @@ public:
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
 public:
-  typedef typename Base::Sequence Sequence;
-
-  typedef typename Sequence::size_type size_type;
-
+  typedef typename Base::size_type size_type;
+  typedef typename Base::value_type value_type;
   typedef typename Base::iterator iterator;
   typedef typename Base::const_iterator const_iterator;
   typedef typename Base::reverse_iterator reverse_iterator;
   typedef typename Base::const_reverse_iterator const_reverse_iterator;
-  typedef typename Base::value_type value_type;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
@@ -390,6 +385,10 @@ public:
   bool ascii_load(std::istream& s);
 
 private:
+  typedef typename Base::Sequence Sequence;
+  typedef typename Base::Sequence_iterator Sequence_iterator;
+  typedef typename Base::Sequence_const_iterator Sequence_const_iterator;
+
   //! The number of dimensions of the enclosing vector space.
   dimension_type space_dim;
 

@@ -123,6 +123,73 @@ public:
 
   //@} // Member Functions that Do Not Modify the Powerset Element
 
+protected:
+  //! A powerset is implemented as a sequence of elements.
+  /*!
+    The particular sequence employed must support efficient deletion
+    in any position and efficient back insertion.
+  */
+  typedef std::list<CS> Sequence;
+  typedef typename Sequence::iterator Sequence_iterator;
+  typedef typename Sequence::const_iterator Sequence_const_iterator;
+
+  //! The sequence container holding powerset's elements.
+  Sequence sequence;
+
+  //! If <CODE>true</CODE>, \p *this is omega-reduced.
+  mutable bool reduced;
+
+public:
+  // Sequence manipulation types, accessors and modifiers
+  typedef typename Sequence::size_type size_type;
+  typedef typename Sequence::value_type value_type;
+  class iterator;
+  class const_iterator;
+  typedef std::reverse_iterator<iterator> reverse_iterator;
+  typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+
+  //! \name Member Functions for the Direct Inspection of Disjuncts
+  //@{
+
+  //! Erase from the sequence of disjuncts all the non-maximal elements.
+  /*!
+    This method is declared <CODE>const</CODE> because, even though
+    omega-reduction may change the syntactic representation of \p *this,
+    its semantics will be unchanged.
+  */
+  void omega_reduce() const;
+
+  //! Returns the number of disjuncts.
+  size_type size() const;
+
+  //! Returns <CODE>true</CODE> if and only if there are no disjuncts.
+  bool empty() const;
+
+  //! \brief
+  //! Returns the iterator pointing to the first disjunct,
+  //! if \p *this is not empty;
+  //! otherwise, returns the past-the-end iterator.
+  iterator begin();
+
+  //! Returns the past-the-end iterator.
+  iterator end();
+
+  //! \brief
+  //! Returns the const_iterator pointing to the first disjunct,
+  //! if \p *this is not empty;
+  //! otherwise, returns the past-the-end const_iterator.
+  const_iterator begin() const;
+
+  //! Returns the past-the-end const_iterator.
+  const_iterator end() const;
+
+  reverse_iterator rbegin();
+  reverse_iterator rend();
+  const_reverse_iterator rbegin() const;
+  const_reverse_iterator rend() const;
+
+  //@} // Member Functions for the Direct Inspection of Disjuncts
+
   //! \name Member Functions that May Modify the Powerset Element
   //@{
 
@@ -131,9 +198,6 @@ public:
 
   //! Swaps \p *this with \p y.
   void swap(Powerset& y);
-
-  //! Adds to \p *this the disjunct \p d.
-  void add_disjunct(const CS& d);
 
   //! Assigns to \p *this the least upper bound of \p *this and \p y.
   void least_upper_bound_assign(const Powerset& y);
@@ -147,6 +211,20 @@ public:
   //! Assigns to \p *this the meet of \p *this and \p y.
   void meet_assign(const Powerset& y);
 
+  //! Adds to \p *this the disjunct \p d.
+  void add_disjunct(const CS& d);
+
+  //! \brief
+  //! Drops the disjunct pointed to by \p position, returning
+  //! an iterator to the disjunct following \p position.
+  iterator drop_disjunct(iterator position);
+
+  //! Drops all the disjuncts from \p first to \p last (excluded).
+  void drop_disjuncts(iterator first, iterator last);
+
+  //! Drops all the disjuncts, making \p *this an empty powerset.
+  void clear();
+
   //! \brief
   //! If \p *this is not empty (i.e., it is not the bottom element),
   //! it is reduced to a singleton obtained by computing an upper-bound
@@ -154,53 +232,6 @@ public:
   void collapse();
 
   //@} // Member Functions that May Modify the Powerset element
-
-protected:
-  //! A powerset is implemented as a sequence of elements.
-  /*!
-    The particular sequence employed must support efficient deletion
-    in any position and efficient back insertion.
-  */
-  typedef std::list<CS> Sequence;
-
-  //! The sequence container holding powerset's elements.
-  Sequence sequence;
-
-  //! If <CODE>true</CODE>, \p *this is omega-reduced.
-  mutable bool reduced;
-
-public:
-  // Sequence manipulation types, accessors and modifiers
-  typedef typename Sequence::size_type size_type;
-  typedef typename Sequence::value_type value_type;
-  typedef typename Sequence::iterator iterator;
-  typedef typename Sequence::const_iterator const_iterator;
-  typedef typename Sequence::reverse_iterator reverse_iterator;
-  typedef typename Sequence::const_reverse_iterator const_reverse_iterator;
-
-  size_type size() const;
-  bool empty() const;
-
-  iterator begin();
-  iterator end();
-  //! A const_iterator pointing to the first element in the sequence.
-  const_iterator begin() const;
-  //! The past-the-end const_iterator.
-  const_iterator end() const;
-  reverse_iterator rbegin();
-  reverse_iterator rend();
-  const_reverse_iterator rbegin() const;
-  const_reverse_iterator rend() const;
-
-  void push_back(const CS& y);
-  void pop_back();
-  iterator erase(iterator first, iterator last);
-  iterator erase(iterator position);
-  void clear();
-
-//protected:
-  //! Erase from the sequence of disjuncts all the non-maximal elements.
-  void omega_reduce() const;
 
 protected:
   //! \brief
@@ -224,15 +255,14 @@ protected:
     in the above mentioned positions that are made omega-redundant
     by the addition of \p d.
   */
-  static void add_non_bottom_disjunct(Sequence& s,
-				      const CS& d,
-				      iterator& first,
-				      iterator last);
+  iterator add_non_bottom_disjunct(const CS& d,
+				   iterator first,
+				   iterator last);
 
   //! \brief
   //! Adds to \p *this the disjunct \p d,
   //! assuming \p d is not the bottom element.
-  static void add_non_bottom_disjunct(Sequence& s, const CS& d);
+  void add_non_bottom_disjunct(const CS& d);
 
   //! \brief
   //! Assigns to \p *this the result of applying \p op_assign pairwise
@@ -255,9 +285,134 @@ private:
   //! \brief
   //! Replaces the disjunct \p *sink by an upper bound of itself and
   //! all the disjuncts following it.
-  void collapse(iterator sink);
+  void collapse(Sequence_iterator sink);
 };
 
+template <typename CS>
+class Parma_Polyhedra_Library::Powerset<CS>::const_iterator {
+protected:
+  //! The type of the underlying const_iterator.
+  typedef typename Powerset::Sequence::const_iterator Base;
+
+  //! A shorcut for naming traits.
+  typedef typename std::iterator_traits<Base> Traits;
+
+  //! A const_iterator on the sequence of elements.
+  Base base;
+
+  //! Constructs from the lower-level const_iterator.
+  const_iterator(const Base& b);
+
+  friend class Powerset;
+
+public:
+  // Same traits of the underlying const_iterator.
+  typedef typename Traits::iterator_category iterator_category;
+  typedef typename Traits::value_type value_type;
+  typedef typename Traits::difference_type difference_type;
+  typedef typename Traits::pointer pointer;
+  typedef typename Traits::reference reference;
+
+  //! Default constructor.
+  const_iterator();
+
+  //! Copy constructor.
+  const_iterator(const const_iterator& y);
+
+  //! Constructs from the corresponding non-const iterator.
+  const_iterator(const iterator& y);
+
+  //! Dereference operator.
+  reference operator*() const;
+
+  //! indirect member selector.
+  pointer operator->() const;
+
+  // Prefix increment operator.
+  const_iterator& operator++();
+
+  // Postfix increment operator.
+  const_iterator operator++(int);
+
+  // Prefix decrement operator.
+  const_iterator& operator--();
+
+  // Postfix decrement operator.
+  const_iterator operator--(int);
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this and \p y are identical.
+  bool operator==(const const_iterator& y) const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this and \p y are different.
+  bool operator!=(const const_iterator& y) const;
+};
+
+template <typename CS>
+class Parma_Polyhedra_Library::Powerset<CS>::iterator {
+protected:
+  //! The type of the underlying mutable iterator.
+  typedef typename Powerset::Sequence::iterator Base;
+
+  //! A shorcut for naming traits.
+  typedef typename
+  std::iterator_traits<typename Powerset::Sequence::const_iterator> Traits;
+
+  //! A (mutable) iterator on the sequence of elements.
+  Base base;
+
+  //! Constructs from the lower-level iterator.
+  iterator(const Base& b);
+
+  friend class Powerset;
+  friend Powerset<CS>::const_iterator::const_iterator(const iterator& y);
+
+public:
+  // Same traits of the const_iterator, therefore
+  // forbidding the direct modification of sequence elements.
+  typedef typename Traits::iterator_category iterator_category;
+  typedef typename Traits::value_type value_type;
+  typedef typename Traits::difference_type difference_type;
+  typedef typename Traits::pointer pointer;
+  typedef typename Traits::reference reference;
+
+  //! Default constructor.
+  iterator();
+
+  //! Copy constructor.
+  iterator(const iterator& y);
+
+  //! Dereference operator.
+  reference operator*() const;
+
+  //! Indirect access operator.
+  pointer operator->() const;
+
+  //! Prefix increment operator.
+  iterator& operator++();
+
+  //! Postfix increment operator.
+  iterator operator++(int);
+
+  //! Prefix decrement operator.
+  iterator& operator--();
+
+  //! Postfix decrement operator.
+  iterator operator--(int);
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this and \p y are identical.
+  bool operator==(const iterator& y) const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this and \p y are different.
+  bool operator!=(const iterator& y) const;
+};
 
 namespace std {
 
