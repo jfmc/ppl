@@ -1482,7 +1482,13 @@ private:
   //! The saturation matrix having generators on its columns.
   SatMatrix sat_g;
 
-  /* DO NOT MOVE THIS LINE */ #include "Ph_Status.idefs.hh"
+  // Please, do not move the following include directive:
+  // `Ph_Status.idefs.hh' must be included exactly at this point.
+  // And please do not remove the space separating `#' from `include':
+  // this ensures that the directive will not be moved during the
+  // procedure that automatically creates the library's include file
+  // (see `Makefile.am' in the `src' directory).
+# include "Ph_Status.idefs.hh"
 
   //! The status flags to keep track of the polyhedron's internal state.
   Status status;
