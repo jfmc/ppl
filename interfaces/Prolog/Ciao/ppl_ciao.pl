@@ -79,203 +79,172 @@ site: http://www.cs.unipr.it/ppl/ . */
 	foreign_interface
 ]).
 
-:- true pred ppl_initialize :: foreign.
+:- true pred ppl_initialize + foreign.
 
-:- true pred ppl_finalize:: foreign.
+:- true pred ppl_finalize + foreign.
 
 :- true pred ppl_new_Polyhedron_from_dimension(in(Kind),
                                                in(Dimension),
                                                in(Handle))
-             :: any_term(Kind) * any_term(Dimension) * any_term(Handle)
-              + foreign.
+             :: any_term * any_term * any_term + foreign.
 
 :- true pred ppl_new_Polyhedron_empty_from_dimension(in(Kind),
                                                      in(Dimension),
                                                      in(Handle))
-             :: any_term(Kind) * any_term(Dimension) * any_term(Handle)
-              + foreign.
+             :: any_term * any_term * any_term + foreign.
 
 :- true pred ppl_new_Polyhedron_from_Polyhedron(in(SrcKind),
                                                 in(SrcHandle),
                                                 in(DstKind),
                                                 in(DstHandle))
-             :: any_term(SrcKind) * any_term(SrcHandle)
-              * any_term(DstKind) * any_term(DstHandle)
-              + foreign.
+             :: any_term * any_term * any_term * any_term + foreign.
 
 :- true pred ppl_new_Polyhedron_from_constraints(in(Kind),
                                                  in(CList),
                                                  in(Handle))
-             :: any_term(Kind) * any_term(CList) * any_term(Handle)
-              + foreign.
+             :: any_term * any_term * any_term + foreign.
 
 :- true pred ppl_new_Polyhedron_from_generators(in(Kind),
                                                 in(GList),
                                                 in(Handle))
-             :: any_term(Kind) * any_term(GList) * any_term(Handle)
-              + foreign.
+             :: any_term * any_term * any_term + foreign.
 
 :- true pred ppl_new_Polyhedron_from_bounding_box(in(Kind),
                                                   in(BBox),
                                                   in(Handle))
-             :: any_term(Kind) * any_term(BBox) * any_term(Handle)
-              + foreign.
+             :: any_term * any_term * any_term + foreign.
 
 :- true pred ppl_delete_Polyhedron(in(Handle))
-             :: any_term(Handle)
-              + foreign.
+             :: any_term + foreign.
 
 :- true pred ppl_Polyhedron_space_dimension(in(Handle), in(Dimension))
-             :: any_term(Handle) * any_term(Dimension)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_intersection_assign(in(Handle1), in(Handle2))
-             :: any_term(Handle1) * any_term(Handle2)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_intersection_assign_and_minimize(in(Handle1),
                                                              in(Handle2))
-             :: any_term(Handle1) * any_term(Handle2)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_poly_hull_assign(in(Handle1), in(Handle2))
-             :: any_term(Handle1) * any_term(Handle2)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_poly_hull_assign_and_minimize(in(Handle1),
                                                              in(Handle2))
-             :: any_term(Handle1) * any_term(Handle2)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_poly_difference_assign(in(Handle1), in(Handle2))
-             :: any_term(Handle1) * any_term(Handle2)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_poly_difference_assign_and_minimize(in(Handle1),
                                                                 in(Handle2))
-             :: any_term(Handle1) * any_term(Handle2)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_H79_widening_assign(in(Handle1), in(Handle2))
-             :: any_term(Handle1) * any_term(Handle2)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_limited_H79_widening_assign(in(Handle1),
-                                                         in(Handle2))
-             :: any_term(Handle1) * any_term(Handle2)
-              + foreign.
+                                                        in(Handle2))
+             :: any_term * any_term + foreign.
+
+:- true pred ppl_Polyhedron_topological_closure_assign(in(Handle))
+             :: any_term + foreign.
 
 :- true pred ppl_Polyhedron_get_constraints(in(Handle), in(CList))
-             :: any_term(Handle) * any_term(CList)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_get_minimized_constraints(in(Handle), in(CList))
-             :: any_term(Handle) * any_term(CList)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_get_generators(in(Handle), in(CList))
-             :: any_term(Handle) * any_term(CList)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_get_minimized_generators(in(Handle), in(CList))
-             :: any_term(Handle) * any_term(CList)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_add_constraint(in(Handle), in(Constraint))
-             :: any_term(Handle) * any_term(Constraint)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_add_generator(in(Handle), in(Generator))
-             :: any_term(Handle) * any_term(Generator)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_add_constraints(in(Handle), in(CList))
-             :: any_term(Handle) * any_term(CList)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_add_constraints_and_minimize(in(Handle), in(CList))
-             :: any_term(Handle) * any_term(CList)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_add_generators(in(Handle), in(GList))
-             :: any_term(Handle) * any_term(GList)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_add_generators_and_minimize(in(Handle), in(GList))
-             :: any_term(Handle) * any_term(GList)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_add_dimensions_and_constraints(in(Handle),
                                                            in(CList))
-             :: any_term(Handle) * any_term(CList)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_add_dimensions_and_project(in(Handle),
                                                        in(NDimensionsToAdd))
-             :: any_term(Handle) * any_term(NDimensionsToAdd)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_add_dimensions_and_embed(in(Handle),
                                                      in(NDimensionsToAdd))
-             :: any_term(Handle) * any_term(NDimensionsToAdd)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_remove_dimensions(in(Handle), in(VList))
-             :: any_term(Handle) * any_term(VList)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_remove_higher_dimensions(in(Handle),
                                                      in(Dimensions))
-             :: any_term(Handle) * any_term(Dimensions)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_affine_image(in(Handle), in(Var),
                                          in(LinearExpression), in(Divisor))
-             :: any_term(Handle) * any_term(Var)
-	     * any_term(LinearExpression) * any_term(Divisor)
-	     + foreign.
+             :: any_term * any_term * any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_affine_preimage(in(Handle), in(Var),
                                             in(LinearExpression), in(Divisor))
-             :: any_term(Handle) * any_term(Dimensions)
-              + foreign.
+             :: any_term * any_term * any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_relation_with_constraint(in(Handle),
                                                      in(Constraint),
                                                      in(RList))
-             :: any_term(Handle) * any_term(Constraint) * any_term(RList)
-              + foreign.
+             :: any_term * any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_relation_with_generator(in(Handle),
                                                     in(Generator),
                                                     in(RList))
-             :: any_term(Handle) * any_term(Generator) * any_term(RList)
-              + foreign.
+             :: any_term * any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_check_empty(in(Handle))
-             :: any_term(Handle)
-              + foreign.
+             :: any_term + foreign.
 
-:- true pred ppl_Polyhedron_check_foreign(in(Handle))
-             :: any_term(Handle)
-              + foreign.
+:- true pred ppl_Polyhedron_check_universe(in(Handle))
+             :: any_term + foreign.
 
 :- true pred ppl_Polyhedron_is_bounded(in(Handle))
-             :: any_term(Handle)
-              + foreign.
+             :: any_term + foreign.
+
+:- true pred ppl_Polyhedron_bounds_from_above(in(Handle), in(LinearExpression))
+             :: any_term * any_term + foreign.
+
+:- true pred ppl_Polyhedron_bounds_from_below(in(Handle), in(LinearExpression))
+             :: any_term * any_term + foreign.
+
+:- true pred ppl_Polyhedron_is_topologically_closed(in(Handle))
+             :: any_term + foreign.
 
 :- true pred ppl_Polyhedron_contains_Polyhedron(in(Handle1), in(Handle2))
-             :: any_term(Handle1) * any_term(Handle2)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_strictly_contains_Polyhedron(in(Handle1),
                                                          in(Handle2))
-             :: any_term(Handle1) * any_term(Handle2)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_equals_Polyhedron(in(Handle1), in(Handle2))
-             :: any_term(Handle1) * any_term(Handle2)
-              + foreign.
+             :: any_term * any_term + foreign.
 
 :- use_foreign_library(ppl_ciao).
 
