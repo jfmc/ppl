@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _ConSys_defs_hh
 #define _ConSys_defs_hh 1
 
-#include "LinExpression.defs.hh"
+#include "LinExpression.types.hh"
 #include "ConSys.types.hh"
 #include "Matrix.defs.hh"
 #include "Generator.types.hh"
@@ -35,8 +35,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iterator>
 
 namespace Parma_Polyhedra_Library {
+  // FIXME: this is repeated from Polyhedron.defs.hh
   // Put them in the namespace here to declare them friend later.
   bool operator<=(const Polyhedron& x, const Polyhedron& y);
+  std::ostream& operator<<(std::ostream& s, const Polyhedron& p);
+  std::istream& operator>>(std::istream& s, Polyhedron& p);
 }
 
 //! A system of constraints.
@@ -218,6 +221,10 @@ private:
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend bool Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 						  const Polyhedron& y);
+  friend std::ostream&
+  Parma_Polyhedra_Library::operator<<(std::ostream& s, const Polyhedron& p);
+  friend std::istream&
+  Parma_Polyhedra_Library::operator>>(std::istream& s, Polyhedron& p);
 
   //! Builds an empty system of constraints having the specified topology.
   ConSys(Topology topol);
