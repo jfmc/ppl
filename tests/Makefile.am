@@ -21,7 +21,7 @@ LDADD = $(top_builddir)/src/libppl.a @gmp_library_option@
 
 CPPFLAGS = @extra_cpp_flags@
 
-TESTS = addconstraints1 addconstraints2 \
+TESTS = addconstraints1 addconstraints2 addconstraints3 \
 	affinetrans \
         append1 append2 \
         empty1 \
@@ -35,6 +35,7 @@ TESTS = addconstraints1 addconstraints2 \
 
 addconstraints1_SOURCES = addconstraints1.cc
 addconstraints2_SOURCES = addconstraints2.cc
+addconstraints3_SOURCES = addconstraints3.cc
 
 affinetrans_SOURCES = affinetrans.cc
 
