@@ -28,9 +28,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Row.defs.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
+#include "Congruence_System.types.hh"
 #include "Coefficient.types.hh"
+#include "Grid.types.hh"
 #include <vector>
 #include <cstddef>
+
+namespace Parma_Polyhedra_Library {
+
+// Put this in the namespace here to declare them friend later.
+
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
+/*! \relates Congruence_System */
+bool
+operator==(const Congruence_System& x, const Congruence_System& y);
+
+} // namespace Parma_Polyhedra_Library
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A 2-dimensional matrix of coefficients.
@@ -204,6 +217,19 @@ public:
   void add_zero_rows_and_columns(dimension_type n, dimension_type m,
 				 Row::Flags row_flags);
 
+  //! Adds the row \p y to the matrix.
+  /*!
+    \param y
+    The row to be added: it must have the same number of columns
+    as the matrix.
+
+    Turns the \f$r \times c\f$ matrix \f$M\f$ into
+    the \f$(r+1) \times c\f$ matrix
+    \f$\bigl({M \atop 0}\bigr)\f$.
+    The matrix is expanded avoiding reallocation whenever possible.
+  */
+  void add_row(const Row& y);
+
   //! Makes the matrix shrink by removing its \p n trailing columns.
   void remove_trailing_columns(dimension_type n);
 
@@ -294,6 +320,17 @@ public:
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
+
+  // FIX
+private:
+  // FIX For access to the size method of the rows attribute of the
+  // system (either a Congruence_System or a Generator_System) passed
+  // to Grid::le_pc_reduce.
+  friend class Parma_Polyhedra_Library::Grid;
+
+  friend bool
+  Parma_Polyhedra_Library::operator==(const Congruence_System& x,
+				      const Congruence_System& y);
 };
 
 namespace std {

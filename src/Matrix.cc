@@ -177,6 +177,38 @@ PPL::Matrix::add_zero_rows_and_columns(const dimension_type n,
 }
 
 void
+PPL::Matrix::add_row(const Row& y) {
+  // The added row must have the same number of elements
+  // of the existing rows of the system.
+  assert(y.size() == row_size);
+  const dimension_type new_rows_size = rows.size() + 1;
+  if (rows.capacity() < new_rows_size) {
+    // Reallocation will take place.
+    std::vector<Row> new_rows;
+    new_rows.reserve(compute_capacity(new_rows_size, max_num_rows()));
+    new_rows.insert(new_rows.end(), new_rows_size, Row());
+    // Put the new row in place.
+    Row new_row(y, row_capacity);
+    dimension_type i = new_rows_size-1;
+    std::swap(new_rows[i], new_row);
+    // Steal the old rows.
+    while (i-- > 0)
+      new_rows[i].swap(rows[i]);
+    // Put the new rows into place.
+    std::swap(rows, new_rows);
+  }
+  else {
+    // Reallocation will NOT take place.
+    // Inserts a new empty row at the end,
+    // then substitutes it with a copy of the given row.
+    Row tmp(y, row_capacity);
+    std::swap(*rows.insert(rows.end(), Row()), tmp);
+  }
+
+  assert(OK());
+}
+
+void
 PPL::Matrix::resize_no_copy(const dimension_type new_n_rows,
 			    const dimension_type new_n_columns,
 			    Row::Flags row_flags) {
