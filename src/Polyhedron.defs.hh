@@ -693,11 +693,15 @@ public:
   /*!
     \param y           A polyhedron that <EM>must</EM>
                        be contained in \p *this.
+    \param tp          An optional pointer to a long variable storing
+                       the number of available tokens (to be used when
+                       applying the <EM>widening with tokens</EM> delay
+                       technique).
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void BHRZ03_widening_assign(const Polyhedron& y);
+  void BHRZ03_widening_assign(const Polyhedron& y, long* tp = 0);
 
   //! \brief
   //! Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
@@ -1751,7 +1755,7 @@ private:
   */
   static bool is_BHRZ03_stabilizing(const Polyhedron& x, const Polyhedron& y);
 
-  bool BHRZ03_averaging_constraints(const Polyhedron& y,
+  bool BHRZ03_combining_constraints(const Polyhedron& y,
  				    const Polyhedron& H79,
 				    const ConSys& x_minus_H79_con_sys);
 

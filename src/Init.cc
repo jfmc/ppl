@@ -52,6 +52,7 @@ PPL::Init::Init() {
     statistics->reason.zero_coord_rays = 0;
     statistics->reason.equal = 0;
 
+    statistics->technique.delay = 0;
     statistics->technique.nop = 0;
     statistics->technique.combining_constraints = 0;
     statistics->technique.evolving_points = 0;

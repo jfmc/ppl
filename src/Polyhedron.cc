@@ -3976,7 +3976,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 
 
 bool
-PPL::Polyhedron::BHRZ03_averaging_constraints(const Polyhedron& y,
+PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
 					      const Polyhedron& H79,
 					      const ConSys& x_minus_H79_cs) {
   Polyhedron& x = *this;
@@ -3995,7 +3995,7 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(const Polyhedron& y,
 	 && H79.constraints_are_minimized() && H79.generators_are_minimized());
 
   // We will choose from `x_minus_H79_cs' many subsets of constraints,
-  // that will be collected (one at a time) into `averaging_cs'.
+  // that will be collected (one at a time) into `combining_cs'.
   // For each group collected, we compute an average constraint,
   // that will be stored into `new_cs'.
 
@@ -4007,7 +4007,7 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(const Polyhedron& y,
 
   Topology tpl = x.topology();
   dimension_type num_columns = x.con_sys.num_columns();
-  ConSys averaging_cs(tpl, 0, num_columns);
+  ConSys combining_cs(tpl, 0, num_columns);
   ConSys new_cs(tpl, 0, num_columns);
 
   // Consider the points that belong to both `x.gen_sys' and `y.gen_sys'.
@@ -4033,25 +4033,25 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(const Polyhedron& y,
 
       // Consider all the constraints in `x_minus_H79_con_sys'
       // that are saturated by the point `g'.
-      averaging_cs.clear();
+      combining_cs.clear();
       for (dimension_type j = x_minus_H79_cs_num_rows; j-- > 0; ) {
 	const Constraint& c = x_minus_H79_cs[j];
 	if (c * g == 0)
-	  averaging_cs.insert(c);
+	  combining_cs.insert(c);
       }
       // Build a new constraint by combining all the chosen constraints.
-      dimension_type averaging_cs_num_rows = averaging_cs.num_rows();
-      if (averaging_cs_num_rows > 0) {
-	if (averaging_cs_num_rows == 1)
-	  // No average is needed.
-	  new_cs.insert(averaging_cs[0]);
+      dimension_type combining_cs_num_rows = combining_cs.num_rows();
+      if (combining_cs_num_rows > 0) {
+	if (combining_cs_num_rows == 1)
+	  // No combination is needed.
+	  new_cs.insert(combining_cs[0]);
 	else {
 	  LinExpression e(0);
 	  bool strict_inequality = false;
-	  for (dimension_type h = averaging_cs_num_rows; h-- > 0; ) {
-	    if (averaging_cs[h].is_strict_inequality())
+	  for (dimension_type h = combining_cs_num_rows; h-- > 0; ) {
+	    if (combining_cs[h].is_strict_inequality())
 	      strict_inequality = true;
-	    e += LinExpression(averaging_cs[h]);
+	    e += LinExpression(combining_cs[h]);
 	  }
 	  e.normalize();
 	  
@@ -4089,7 +4089,7 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(const Polyhedron& y,
   statistics->technique.combining_constraints++;
 #endif
 #if 0
-  std::cout << "======== BHRZ03: averaging_constraints ========" << std::endl;
+  std::cout << "======== BHRZ03: combining_constraints ========" << std::endl;
   std::cout << "x.con_sys.num_rows() = "
 	    << x.con_sys.num_rows() << std::endl;
   std::cout << "y.con_sys.num_rows() = "
@@ -4388,7 +4388,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 }
 
 void
-PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
+PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, long* tp) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
@@ -4461,6 +4461,18 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
     return;
   }
 
+  // Here the iteration is not immediately stabilizing.
+  // If we are using the widening-with-tokens technique and
+  // there are tokens available, use one of them and return `x'.
+  if (tp != 0 && *tp > 0) {
+#if PPL_STATISTICS
+    statistics->technique.delay++;
+#endif
+    --(*tp);
+    assert(OK());
+    return;
+  }
+
   // Copy into `H79_cs' the constraints that are common to `x' and `y',
   // according to the definition of the H79 widening.
   // The other ones are copied into `x_minus_H79_cs'.
@@ -4480,7 +4492,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
 
   // NOTE: none of the following widening heuristics is intrusive:
   // they will modify `x' only when returning successfully.
-  if (x.BHRZ03_averaging_constraints(y, H79, x_minus_H79_cs))
+  if (x.BHRZ03_combining_constraints(y, H79, x_minus_H79_cs))
     return;
 
   assert(H79.OK() && x.OK() && y.OK());

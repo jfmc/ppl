@@ -167,6 +167,7 @@ struct bhrz03_statistics {
     int equal;
     } reason;
   struct bhrz03_technique {
+    int delay;
     int nop;
     int combining_constraints;
     int evolving_points;
