@@ -28,6 +28,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iostream>
 #include <string>
 
+#ifdef NOISY
+std::ostream& nout = std::cout;
+#else
+#define NOISY 0
+#include <fstream>
+std::ofstream nout;
+#endif
+
+#ifndef VERY_NOISY
+std::ostream& vnout = std::cout;
+#else
+#define VERY_NOISY 0
+#include <fstream>
+std::ofstream vnout;
+#endif
+
 void
 print_constraint(const Parma_Polyhedra_Library::Constraint& c,
 		 const std::string& intro = "",
