@@ -45,9 +45,9 @@ public:
 private:
   Direction dir;
   template <typename To>
-  friend void save_rounding(const Rounding& mode, Rounding_State& current);
+  void save(Rounding_State& current);
   template <typename To>
-  friend void restore_rounding(const Rounding_State& state, const Rounding& current);
+  void restore(const Rounding_State& state);
 };
 
 class Rounding_State {

@@ -47,8 +47,10 @@ Rounding::set_direction(Rounding::Direction d) {
 
 inline Rounding::Direction
 Rounding::direction() const {
-  if (dir != CURRENT)
+  if (dir != CURRENT) {
+    assert(dir == current_rounding.dir);
     return dir;
+  }
   return current_rounding.dir;
 }
 
@@ -65,18 +67,18 @@ Rounding_State::~Rounding_State()
 
 template <typename To>
 inline void
-save_rounding(const Rounding& mode, Rounding_State& current) {
-  assert(mode.dir != Rounding::CURRENT);
-  if (use_fpu_rounding(To) && mode.dir != Rounding::IGNORE)
-    current.fpu_dir = fpu_save_rounding_direction(mode.dir);
+Rounding::save(Rounding_State& current) {
+  assert(dir != Rounding::CURRENT);
+  if (use_fpu_rounding(To) && dir != Rounding::IGNORE)
+    current.fpu_dir = fpu_save_rounding_direction(dir);
   current.dir = current_rounding.dir;
-  current_rounding.dir = mode.dir;
+  current_rounding.dir = dir;
 }
 
 template <typename To>
 inline void
-restore_rounding(const Rounding_State& state, const Rounding& current) {
-  assert(current_rounding.dir == current.dir);
+Rounding::restore(const Rounding_State& state) {
+  assert(current_rounding.dir == dir);
   if (use_fpu_rounding(To))
     fpu_restore_rounding_direction(state.fpu_dir);
   current_rounding.dir = state.dir;

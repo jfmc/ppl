@@ -252,6 +252,9 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Checked_Number& y);
 
+  static void save_rounding(const Rounding& mode, Rounding_State& current);
+  static void restore_rounding(const Rounding_State& state, const Rounding& current);
+
 private:
   //! The underlying native integer value.
   T v;
