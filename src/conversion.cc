@@ -113,8 +113,9 @@ namespace PPL = Parma_Polyhedra_Library;
 
   Because of the theorem of Minkowski (see Section \ref prelims),
   we can say that, given a \f$m \times n\f$ representation matrix
-  \f$C\f$ such that \f$\mathop{\mathrm{rank}}(C) = n = dimension of
-  the whole space \f$ for a non-empty polyhedron \f$P\f$,
+  \f$C\f$ such that
+  \f$\mathop{\mathrm{rank}}(C) = n = \mathit{dimension of the whole space}\f$
+  for a non-empty polyhedron \f$P\f$,
   it is always possible to find a generating matrix \f$G\f$ for \f$P\f$
   such that \f$(C, G)\f$ is a DD pair.
   Conversely, Weil's theorem ensures that, for each generating matrix
@@ -250,7 +251,7 @@ namespace PPL = Parma_Polyhedra_Library;
   and rays that do not saturate \f$\vect{c}\f$ (except \f$\vect{z}\f$)
   with \f$\vect{z}\f$ such that the new ones saturate \f$\vect{c}\f$,
   the new lines and rays also saturate the constraints  saturated by
-  the old constraints.
+  the old lines and rays.
 
   In fact, if \f$\vect{y}_1\f$ is the old generator that does not saturate
   \f$\vect{c}\f$, \f$\vect{y}_2\f$ is the new one such that
@@ -312,8 +313,8 @@ namespace PPL = Parma_Polyhedra_Library;
   So, \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ are not adjacent and
   a) does not hold.
 
-  Proposition 2: When we build the new system of generators starting a
-  matrix \f$A\f$ of constraints of \f$P\f$, if \f$\vect{c}\f$ is the
+  Proposition 2: When we build the new system of generators starting from
+  a matrix \f$A\f$ of constraints of \f$P\f$, if \f$\vect{c}\f$ is the
   constraint to add to \f$A\f$ and all lines of \f$P\f$ saturate
   \f$\vect{c}\f$, the new set of rays is the union of those rays that
   saturate, of those that satisfy and of a set \f$\overline Q\f$ of
@@ -341,7 +342,7 @@ namespace PPL = Parma_Polyhedra_Library;
   If neither \f$\vect{r}_1\f$ nor \f$\vect{r}_2\f$ are extreme rays,
   they belong to a 2-dimensional face containing exactly two extreme rays
   of \f$P\f$.
-  These two adjacent rays built a ray equal to \f$\vect{r}\f$ and so
+  These two adjacent rays build a ray equal to \f$\vect{r}\f$ and so
   \f$\vect{r}\f$ is redundant.
 */
 PPL::dimension_type
@@ -457,6 +458,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	std::swap(scalar_prod[index_non_zero],
 		  scalar_prod[num_lines_or_equalities]);
       }
+      const Row& dest_nle = dest[num_lines_or_equalities];
 
       // Computing the new lineality space.
       // Since each line must lie on the hyper-plane corresponding to
@@ -484,7 +486,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  //   = scalar_prod[num_lines_or_equalities] / scale;
 	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	  //   dest[i][c] *= normalized_sp_n;
-	  //   dest[i][c] -= normalized_sp_i * dest[num_lines_or_equalities][c];
+	  //   dest[i][c] -= normalized_sp_i * dest_nle[c];
 	  // }
 	  normalize2(scalar_prod[i],
 		     scalar_prod[num_lines_or_equalities],
@@ -494,8 +496,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Integer& dest_i_c = dest_i[c];
 	    dest_i_c *= normalized_sp_o;
-	    sub_mul_assign(dest_i_c,
-			   normalized_sp_i, dest[num_lines_or_equalities][c]);
+	    sub_mul_assign(dest_i_c, normalized_sp_i, dest_nle[c]);
 	  }
 	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
@@ -522,7 +523,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  // = scalar_prod[num_lines_or_equalities] / scale;
 	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	  //   dest[i][c] *= normalized_sp_n;
-	  //   dest[i][c] -= normalized_sp_i * dest[num_lines_or_equalities][c];
+	  //   dest[i][c] -= normalized_sp_i * dest_nle[c];
 	  // }
 	  normalize2(scalar_prod[i],
 		     scalar_prod[num_lines_or_equalities],
@@ -532,8 +533,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Integer& dest_i_c = dest_i[c];
 	    dest_i_c *= normalized_sp_o;
-	    sub_mul_assign(dest_i_c,
-			   normalized_sp_i, dest[num_lines_or_equalities][c]);
+	    sub_mul_assign(dest_i_c, normalized_sp_i, dest_nle[c]);
 	  }
 	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
