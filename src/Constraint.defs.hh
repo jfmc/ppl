@@ -88,8 +88,8 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   Constraints are typically built by applying a relational operator
   to a pair of linear expressions.
   Available relational operators include equality (<CODE>==</CODE>),
-  non-strict inequalities (<CODE>>=</CODE> and <CODE><=</CODE>) and
-  strict inequalities (<CODE><</CODE> and <CODE>></CODE>).
+  non-strict inequalities (<CODE>\>=</CODE> and <CODE>\<=</CODE>) and
+  strict inequalities (<CODE>\<</CODE> and <CODE>\></CODE>).
   The space-dimension of a constraint is defined as the maximum
   space-dimension of the arguments of its constructor.
 

@@ -139,7 +139,7 @@ bool are_disjoint(const Polyhedron& x, const Polyhedron& y);
     These systems can contain redundant members: in this case we say
     that they are not in the minimal form.
     Most operators on polyhedra are provided with two implementations: 
-    one of these, denoted <CODE><operator-name>_and_minimize</CODE>,
+    one of these, denoted <CODE>\<operator-name\>_and_minimize</CODE>,
     also enforces the minimization of the representations,
     and returns the Boolean value <CODE>false</CODE> whenever
     the resulting polyhedron turns out to be empty.
