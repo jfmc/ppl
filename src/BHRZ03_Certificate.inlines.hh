@@ -55,7 +55,7 @@ BHRZ03_Certificate::Compare::operator()(const BHRZ03_Certificate& x,
 					const BHRZ03_Certificate& y) const {
   // For an efficient evaluation of the multiset ordering based
   // on this lgo relation, we want larger elements to come first.
-  return (x.compare(y) == 1);
+  return x.compare(y) == 1;
 }
 
 } // namespace Parma_Polyhedra_Library
