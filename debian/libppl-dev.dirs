@@ -1,4 +1,3 @@
 usr/include
-usr/lib/pkgconfig
 usr/share/doc-base
-usr/share/doc/libppl-dev/html
+usr/share/doc/libppl
