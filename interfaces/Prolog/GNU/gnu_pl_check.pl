@@ -22,7 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 main :-
-    current_output(OldStream),
+    current_output(Old_Stream),
     open(obtained3, write, Stream),
     set_output(Stream),
     (check_all ->
@@ -32,4 +32,4 @@ main :-
     ),
     nl,
     close(Stream),
-    set_output(OldStream).
+    set_output(Old_Stream).

@@ -188,23 +188,21 @@ uninstall-ps:
 # Installation and uninstallation of pure text documentation.
 install-txt:
 	$(mkinstalldirs) $(DESTDIR)$(txtdir)
-	for file in $(srcdir)/*.txt; do \
+	for file in $(srcdir)/*.txt $(srcdir)/README.doc; do \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(txtdir)/`basename $$file`; \
 	done
 	for file in BUGS COPYING CREDITS ChangeLog NEWS README README.configure ; do \
 	  $(INSTALL_DATA) $(srcdir)/../$$file $(DESTDIR)$(txtdir)/$$file; \
 	done
-	$(INSTALL_DATA) $(srcdir)/README $(DESTDIR)$(txtdir)/README.doc
 
 installdirs-txt:
 	$(mkinstalldirs) $(DESTDIR)$(txtdir)
 
 uninstall-txt:
-	rm -f $(DESTDIR)$(txtdir)/*.txt
+	rm -f $(DESTDIR)$(txtdir)/*.txt $(DESTDIR)$(txtdir)/README.doc
 	for file in BUGS COPYING CREDITS ChangeLog NEWS README README.configure ; do \
 	  rm -f $(DESTDIR)$(txtdir)/$$file; \
 	done
-	rm -f $(DESTDIR)$(txtdir)/README.doc
 
 PPL_SOURCE_FILES = $(wildcard $(srcdir)/../src/*.hh $(srcdir)/../src/*.cc)
 
@@ -311,7 +309,8 @@ gpl.tex \
 fdl.tex \
 gpl.txt \
 fdl.txt \
-ppl.sty
+ppl.sty \
+README.doc
 
 mostlyclean-local:
 	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) *.aux *.log

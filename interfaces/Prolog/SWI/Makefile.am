@@ -46,7 +46,7 @@ AM_CPPFLAGS = \
 pkglib_LTLIBRARIES = libppl_swiprolog.la
 libppl_swiprolog_la_SOURCES = ppl_swiprolog.cc
 libppl_swiprolog_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
-libppl_swiprolog_la_LDFLAGS = -no-undefined -avoid-version
+libppl_swiprolog_la_LDFLAGS = -module -avoid-version
 
 bin_PROGRAMS = ppl_pl
 ppl_pl_SOURCES = ppl_pl.cc
@@ -74,19 +74,19 @@ pl_clpq2_SOURCES = pl_clpq.cc
 # Notice: we are linking statically until we understand whether
 # and if libtool and plld can interoperate.
 ppl_pl$(EXEEXT): ppl_swiprolog.o ppl_pl.o
-	plld -cc $(CC) -c++ $(CXX) -pl-options,-g,main., -o $@ $+ \
+	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -pl-options,-g,main -o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/.libs -lpwl \
 		@extra_libraries@
 
 pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq.pl
-	plld -cc $(CC) -c++ $(CXX) -pl-options,-g,main., -o $@ $+ \
+	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -pl-options,-g,main -o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/.libs -lpwl \
 		@extra_libraries@
 
 pl_clpq2$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
-	plld -cc $(CC) -c++ $(CXX) -pl-options,-g,main., -o $@ $+ \
+	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -pl-options,-g,main -o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/.libs -lpwl \
 		@extra_libraries@

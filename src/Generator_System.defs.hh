@@ -74,8 +74,9 @@ void swap(Parma_Polyhedra_Library::Generator_System& x,
     on the same vector space.
     A system of generators which is meant to define a non-empty
     polyhedron must include at least one point: the reason is that
-    lines, rays and closure points need a supporting point (they only
-    specify directions).
+    lines, rays and closure points need a supporting point
+    (lines and rays only specify directions while closure points only
+    specify points in the topological closure of the NNC polyhedron).
 
     \par
      In all the examples it is assumed that variables

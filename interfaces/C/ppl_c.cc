@@ -68,8 +68,10 @@ to_nonconst(Type* x) { \
 
 namespace {
 
-void (*user_error_handler)(enum ppl_enum_error_code code,
-			   const char* description) = 0;
+extern "C" typedef void
+(*error_handler_type)(enum ppl_enum_error_code code, const char* description);
+
+error_handler_type user_error_handler = 0;
 
 void
 notify_error(enum ppl_enum_error_code code, const char* description) {
@@ -80,8 +82,7 @@ notify_error(enum ppl_enum_error_code code, const char* description) {
 } // namespace
 
 int
-ppl_set_error_handler(void (*h)(enum ppl_enum_error_code code,
-				const char* description)) {
+ppl_set_error_handler(error_handler_type h) {
   user_error_handler = h;
   return 0;
 }
@@ -129,6 +130,18 @@ namespace {
 
 extern "C" const char*
 c_variable_default_output_function(ppl_dimension_type var) {
+#if SIZEOF_SIZE_T == SIZEOF_UNSIGNED
+# define FORMAT "%u"
+# define CONVERSION (unsigned)
+#elif SIZEOF_SIZE_T == SIZEOF_UNSIGNED_LONG
+# define FORMAT "%lu"
+# define CONVERSION (unsigned long)
+#elif SIZEOF_SIZE_T == SIZEOF_UNSIGNED_LONG_LONG
+# define FORMAT "%llu"
+# define CONVERSION (unsigned long long)
+#else
+# error "Unsupported definition for `size_t'."
+#endif
   // On a 64-bits architecture, `var' will not be more than 2^64-1,
   // (2^64-1)/26 is written with 18 decimal digits, plus one letter,
   // plus one terminator makes 20.
@@ -138,7 +151,7 @@ c_variable_default_output_function(ppl_dimension_type var) {
   static char buffer[20];
   buffer[0] = static_cast<char>('A' + var % 26);
   if (ppl_dimension_type i = var / 26) {
-    int r = sprintf(buffer+1, "%u", i);
+    int r = sprintf(buffer+1, FORMAT, CONVERSION i);
     if (r < 0)
       return 0;
     else if (r >= 19) {
@@ -1235,7 +1248,7 @@ CATCH_ALL
 
 namespace {
 
-class CBuildBox {
+class C_Build_Box {
 private:
   ppl_dimension_type (*s_d)(void);
   int (*i_e)(void);
@@ -1247,14 +1260,14 @@ private:
 	       ppl_Coefficient_t d);
 
 public:
-  CBuildBox(ppl_dimension_type (*sd)(void),
-	    int (*ie)(void),
-	    int (*glb)(ppl_dimension_type k, int closed,
-		       ppl_Coefficient_t n,
-		       ppl_Coefficient_t d),
-	    int (*gub)(ppl_dimension_type k, int closed,
-		       ppl_Coefficient_t n,
-		       ppl_Coefficient_t d))
+  C_Build_Box(ppl_dimension_type (*sd)(void),
+	      int (*ie)(void),
+	      int (*glb)(ppl_dimension_type k, int closed,
+			 ppl_Coefficient_t n,
+			 ppl_Coefficient_t d),
+	      int (*gub)(ppl_dimension_type k, int closed,
+			 ppl_Coefficient_t n,
+			 ppl_Coefficient_t d))
     : s_d(sd), i_e(ie), g_l_b(glb), g_u_b(gub) {
   }
 
@@ -1290,8 +1303,8 @@ ppl_new_C_Polyhedron_from_bounding_box
  int (*get_upper_bound)(ppl_dimension_type k, int closed,
 			ppl_Coefficient_t n,
 			ppl_Coefficient_t d)) try {
-  CBuildBox cbbox(space_dimension, is_empty,
-		  get_lower_bound, get_upper_bound);
+  C_Build_Box cbbox(space_dimension, is_empty,
+		    get_lower_bound, get_upper_bound);
   *pph = to_nonconst(new C_Polyhedron(cbbox, From_Bounding_Box()));
   return 0;
 }
@@ -1308,8 +1321,8 @@ ppl_new_NNC_Polyhedron_from_bounding_box
  int (*get_upper_bound)(ppl_dimension_type k, int closed,
 			ppl_Coefficient_t n,
 			ppl_Coefficient_t d)) try {
-  CBuildBox cbbox(space_dimension, is_empty,
-		  get_lower_bound, get_upper_bound);
+  C_Build_Box cbbox(space_dimension, is_empty,
+		    get_lower_bound, get_upper_bound);
   *pph = to_nonconst(new NNC_Polyhedron(cbbox, From_Bounding_Box()));
   return 0;
 }
@@ -1932,7 +1945,7 @@ CATCH_ALL
 
 namespace {
 
-class CShrinkBox {
+class C_Shrink_Box {
 private:
   void (*s_e)(void);
   void (*r_l_b)(ppl_dimension_type k, int closed,
@@ -1943,13 +1956,13 @@ private:
 		ppl_const_Coefficient_t d);
 
 public:
-  CShrinkBox(void (*se)(void),
-	     void (*rlb)(ppl_dimension_type k, int closed,
-			 ppl_const_Coefficient_t n,
-			 ppl_const_Coefficient_t d),
-	     void (*lub)(ppl_dimension_type k, int closed,
-			 ppl_const_Coefficient_t n,
-			 ppl_const_Coefficient_t d))
+  C_Shrink_Box(void (*se)(void),
+	       void (*rlb)(ppl_dimension_type k, int closed,
+			   ppl_const_Coefficient_t n,
+			   ppl_const_Coefficient_t d),
+	       void (*lub)(ppl_dimension_type k, int closed,
+			   ppl_const_Coefficient_t n,
+			   ppl_const_Coefficient_t d))
     : s_e(se), r_l_b(rlb), l_u_b(lub) {
   }
 
@@ -1987,7 +2000,7 @@ ppl_Polyhedron_shrink_bounding_box
     return PPL_ERROR_INVALID_ARGUMENT;
 
   const Polyhedron& pph = *to_const(ph);
-  CShrinkBox csbox(set_empty, raise_lower_bound, lower_upper_bound);
+  C_Shrink_Box csbox(set_empty, raise_lower_bound, lower_upper_bound);
   pph.shrink_bounding_box(csbox, Complexity_Class(complexity));
   return 0;
 }

@@ -29,7 +29,7 @@ namespace Checked {
 
 template <typename Policy, typename Type>
 struct FUNCTION_CLASS(assign)<Policy, Type, Type, Rounding> {
-  static inline Result function(Type& to, const Type& from, const Rounding& mode) {
+  static inline Result function(Type& to, const Type& from, const Rounding&) {
     to = from;
     return V_EQ;
   }

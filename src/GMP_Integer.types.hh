@@ -16,10 +16,20 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
+//! Unbounded integers are implemented using the GMP library.
+/*!
+  GMP_Integer is an alias for the <CODE>mpz_class</CODE> type
+  defined in the C++ interface of the GMP library.
+  For more information, see <CODE>http://www.swox.com/gmp/</CODE>
+*/
 typedef mpz_class GMP_Integer;
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Coefficient traits specialization for unbounded integers.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <>
 struct Coefficient_traits_template<GMP_Integer> {
+  //! The type used for references to const unbounded integers.
   typedef const GMP_Integer& const_reference;
 };
 

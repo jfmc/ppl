@@ -52,8 +52,9 @@ main() TRY {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  for (Generator_System::const_iterator i = ph1.generators().begin(),
-	 gs_end = ph1.generators().end(); i != gs_end; ++i)
+  const Generator_System& gs1 = ph1.minimized_generators();
+  for (Generator_System::const_iterator i = gs1.begin(),
+	 gs1_end = gs1.end(); i != gs1_end; ++i)
     ph2.add_generator(*i);
 
   C_Polyhedron known_result(2);

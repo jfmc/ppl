@@ -130,12 +130,12 @@ Boundary::bound() const {
 }
 
 inline
-LBoundary::LBoundary(const ERational& v, OpenClosed f)
+LBoundary::LBoundary(const ERational& v, Open_Closed f)
   : Boundary(v, f == CLOSED ? ZERO : POS) {
 }
 
 inline
-UBoundary::UBoundary(const ERational& v, OpenClosed f)
+UBoundary::UBoundary(const ERational& v, Open_Closed f)
   : Boundary(v, f == CLOSED ? ZERO : NEG) {
 }
 

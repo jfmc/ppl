@@ -31,7 +31,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 #define BITS_PER_GMP_LIMB (SIZEOF_MP_LIMB_T*CHAR_BIT)
 
-#if !defined(HAS_FFS) || SIZEOF_MP_LIMB_T != SIZEOF_INT
+#if !HAVE_DECL_FFS || SIZEOF_MP_LIMB_T != SIZEOF_INT
 unsigned int
 PPL::Saturation_Row::first_one(mp_limb_t w) {
   unsigned int r = 0;
@@ -60,7 +60,7 @@ PPL::Saturation_Row::first_one(mp_limb_t w) {
     r += 1;
   return r;
 }
-#endif // !defined(HAS_FFS) || SIZEOF_MP_LIMB_T != SIZEOF_INT
+#endif // !HAVE_DECL_FFS || SIZEOF_MP_LIMB_T != SIZEOF_INT
 
 unsigned int
 PPL::Saturation_Row::last_one(mp_limb_t w) {

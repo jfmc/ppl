@@ -1,4 +1,4 @@
-/* Sorting objects for which copies cost more than swaps.
+/* Sorting objects for which copies cost more than swaps.  -*- C++ -*-
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -41,18 +41,18 @@ namespace {
   when using Linear_System::With_Saturation_Matrix_iterator.
 */
 
-template <typename ValueType, typename Compare>
-inline const ValueType&
-median(const ValueType& x, const ValueType& y, const ValueType& z,
+template <typename Value_Type, typename Compare>
+inline const Value_Type&
+median(const Value_Type& x, const Value_Type& y, const Value_Type& z,
        Compare comp) {
   return comp(x, y)
     ? (comp(y, z) ? y : (comp(x, z) ? z : x))
     : (comp(x, z) ? x : (comp(y, z) ? z : y));
 }
 
-template <typename Iter, typename ValueType, typename Compare>
+template <typename Iter, typename Value_Type, typename Compare>
 Iter
-swapping_partition(Iter first, Iter last, const ValueType& pivot,
+swapping_partition(Iter first, Iter last, const Value_Type& pivot,
 		   Compare comp) {
   for ( ; ; ) {
     while (comp(*first, pivot))
@@ -137,6 +137,6 @@ swapping_unique(Iter first, Iter last) {
   return ++current;
 }
 
-} // anonymous namespace
+} // namespace
 
 #endif // !defined(PPL_swapping_sort_icc)

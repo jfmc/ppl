@@ -1,20 +1,12 @@
-
-Enhancements for PPL 0.7
-========================
-
-- Rewrite Linear_System::sort_and_remove_with_sat() and perhaps
-  Linear_System::sort_rows().
-- Look carefully into the methods Polyhedron::obtain_sorted_constraints*()
-  and Polyhedron::obtain_sorted_generators*() and into the code that
-  uses them directly.
-- The Powerset class implementation is poorly documented.
-- Completely rewrite the handling of temporary coefficients.
-- Consider renaming Powerset::meet_assign().
-
-
 Enhancements for PPL 0.8 or later versions
 ==========================================
 
+- For the Powerset class, find a way for the user to obtain access to
+  the sequence of disjuncts, while still enforcing the class invariants.
+  What is currently missing is a clean and safe way to drop one of the
+  disjuncts in the sequence.
+- The Powerset class implementation is still poorly documented.
+- Consider renaming Powerset::meet_assign().
 - Clearly explain, in the documentation, how (not) to use
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
@@ -31,6 +23,16 @@ Enhancements for PPL 0.8 or later versions
   temporarily in algorithms.hh, more efficiently.
 - Provide optimized implementations of Polyhedron::expand_dimension()
   Polyhedron::fold_dimensions().
+- Reconsider the handling of temporary coefficients.
+- In the Prolog interface there are predicates such as
+  ppl_Polyhedron_remove_space_dimensions/2 that require an input list;
+  if the argument is not a list, in the current version, the call to
+  this predicate will fail. This needs to be changed so that an
+  exception is thrown.
+- In the Prolog interface, reconsider the functionality and names of the
+  "with_token" predicates.
+- The documentation has been read through but a more careful check,
+  particularly on the detailed descriptions, should be done.
 
 
 Constructions on Polyhedra

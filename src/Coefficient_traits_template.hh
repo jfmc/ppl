@@ -14,6 +14,7 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
+//! Coefficient traits.
 template <typename Coefficient>
 struct Coefficient_traits_template {
 };

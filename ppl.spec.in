@@ -14,10 +14,10 @@ Source:         ftp://ftp.cs.unipr.it/ppl/%{name}-%{version}.tar.gz
 Group:		Development/Libraries
 Copyright:	GPL
 #Icon:		
-Requires:	gmp >= 4.1.3, gcc-c++ == 3.4.1
+Requires:	gmp >= 4.1.3, gcc-c++ == 3.4.2
 BuildRoot:	%{_tmppath}/%{name}-%{version}
 Prefix:		/usr
-Summary:	The Parma Polyhedra Library: a C++ library for convex polyhedra.
+Summary:	The Parma Polyhedra Library: a C++ library for numerical abstractions.
 %description
 The Parma Polyhedra Library (PPL) is a C++ library for the
 manipulation of (not necessarily closed) convex polyhedra and other
@@ -76,7 +76,7 @@ Requires:	gcc-c++ == 3.4.1
 %description pwl
 This package contains the Parma Watchdog Library (PWL).
 The library provides support for multiple, concurrent watchdog timers
-on systems providing the setitimer(2).
+on systems providing setitimer(2).
 The PWL is currently distributed with the Parma Polyhedra Library (PPL),
 but is totally independent from it.
 
@@ -108,7 +108,7 @@ make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
 
 %files
 %defattr(-,root,root)
-%doc BUGS COPYING CREDITS ChangeLog NEWS README README.configure doc/README doc/*.pdf* doc/*.ps.gz doc/*.txt
+%doc BUGS COPYING CREDITS ChangeLog NEWS README README.configure doc/README.doc doc/*.pdf* doc/*.ps.gz doc/*.txt
 %{_includedir}/ppl.hh
 %{_bindir}/ppl_lcdd
 %{_libdir}/libppl.so.*

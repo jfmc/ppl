@@ -49,8 +49,6 @@ static const Prolog_foreign_return_type PROLOG_FAILURE = FALSE;
 
 namespace PPL = Parma_Polyhedra_Library;
 
-static Prolog_atom a_throw;
-
 /*!
   True if and only if the Prolog engine supports unbounded integers.
 */
@@ -80,8 +78,6 @@ ppl_Prolog_sysdep_init() {
   //        on other architectures?
   Prolog_min_integer = -268435456;
   Prolog_max_integer = 268435455;
-
-  a_throw = string_find("throw", 1);
 }
 
 static void
@@ -416,8 +412,7 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
 #define ppl_timeout_exception_atom xsb_stub_ppl_timeout_exception_atom
 #define ppl_set_timeout xsb_stub_ppl_set_timeout
 #define ppl_reset_timeout xsb_stub_ppl_reset_timeout
-#define ppl_new_Polyhedron_from_dimension xsb_stub_ppl_new_Polyhedron_from_dimension
-#define ppl_new_Polyhedron_empty_from_dimension xsb_stub_ppl_new_Polyhedron_empty_from_dimension
+#define ppl_new_Polyhedron_from_space_dimension xsb_stub_ppl_new_Polyhedron_from_space_dimension
 #define ppl_new_Polyhedron_from_Polyhedron xsb_stub_ppl_new_Polyhedron_from_Polyhedron
 #define ppl_new_Polyhedron_from_constraints xsb_stub_ppl_new_Polyhedron_from_constraints
 #define ppl_new_Polyhedron_from_generators xsb_stub_ppl_new_Polyhedron_from_generators
@@ -503,8 +498,7 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
 #undef ppl_timeout_exception_atom
 #undef ppl_set_timeout
 #undef ppl_reset_timeout
-#undef ppl_new_Polyhedron_from_dimension
-#undef ppl_new_Polyhedron_empty_from_dimension
+#undef ppl_new_Polyhedron_from_space_dimension
 #undef ppl_new_Polyhedron_from_Polyhedron
 #undef ppl_new_Polyhedron_from_constraints
 #undef ppl_new_Polyhedron_from_generators
@@ -651,8 +645,7 @@ XSB_ENTRY_1(ppl_set_timeout_exception_atom)
 XSB_ENTRY_1(ppl_timeout_exception_atom)
 XSB_ENTRY_1(ppl_set_timeout)
 XSB_ENTRY_0(ppl_reset_timeout)
-XSB_ENTRY_3(ppl_new_Polyhedron_from_dimension)
-XSB_ENTRY_3(ppl_new_Polyhedron_empty_from_dimension)
+XSB_ENTRY_4(ppl_new_Polyhedron_from_space_dimension)
 XSB_ENTRY_4(ppl_new_Polyhedron_from_Polyhedron)
 XSB_ENTRY_3(ppl_new_Polyhedron_from_constraints)
 XSB_ENTRY_3(ppl_new_Polyhedron_from_generators)

@@ -60,14 +60,19 @@ operator<<(std::ostream& s, const Powerset<CS>& x);
 /*!
   This class offers a generic implementation of <EM>powerset
   constraint systems</EM> as defined in \ref Bag98 "[Bag98]".
+  See also the description in Section \ref powerset.
 */
 template <typename CS>
 class Parma_Polyhedra_Library::Powerset {
 public:
-  //! Default constructor: builds the empty set.
+  //! \name Constructors and Destructor
+  //@{
+
+  //! Default constructor: builds the bottom of the powerset constraint
+  //! system (i.e., the empty powerset).
   Powerset();
 
-  //! Ordinary copy-constructor.
+  //! Copy constructor.
   Powerset(const Powerset& y);
 
   //! \brief
@@ -75,20 +80,13 @@ public:
   //! Builds the empty powerset otherwise.
   explicit Powerset(const CS& d);
 
-  //! The assignment operator.
-  Powerset& operator=(const Powerset& y);
+  //! Destructor.
+  ~Powerset();
 
-  //! Swaps \p *this with \p y.
-  void swap(Powerset& y);
+  //@} // Constructors and Destructor
 
-  //! Adds to \p *this the disjunct \p d.
-  void add_disjunct(const CS& d);
-
-  //! Assigns to \p *this an upper bound of \p *this and \p y.
-  void upper_bound_assign(const Powerset& y);
-
-  //! Assigns to \p *this the meet of \p *this and \p y.
-  void meet_assign(const Powerset& y);
+  //! \name Member Functions that Do Not Modify the Powerset Element
+  //@{
 
   //! \brief
   //! Returns <CODE>true</CODE> if \p *this definitely entails \p y.
@@ -123,11 +121,39 @@ public:
   // FIXME: document and perhaps use an enum instead of a bool.
   bool OK(bool disallow_bottom = false) const;
 
+  //@} // Member Functions that Do Not Modify the Powerset Element
+
+  //! \name Member Functions that May Modify the Powerset Element
+  //@{
+
+  //! The assignment operator.
+  Powerset& operator=(const Powerset& y);
+
+  //! Swaps \p *this with \p y.
+  void swap(Powerset& y);
+
+  //! Adds to \p *this the disjunct \p d.
+  void add_disjunct(const CS& d);
+
+  //! Assigns to \p *this the least upper bound of \p *this and \p y.
+  void least_upper_bound_assign(const Powerset& y);
+
+  //! Assigns to \p *this an upper bound of \p *this and \p y.
+  /*!
+    The result will be the least upper bound of \p *this and \p y.
+  */
+  void upper_bound_assign(const Powerset& y);
+
+  //! Assigns to \p *this the meet of \p *this and \p y.
+  void meet_assign(const Powerset& y);
+
   //! \brief
   //! If \p *this is not empty (i.e., it is not the bottom element),
   //! it is reduced to a singleton obtained by computing an upper-bound
   //! of all the disjuncts.
   void collapse();
+
+  //@} // Member Functions that May Modify the Powerset element
 
 protected:
   //! A powerset is implemented as a sequence of elements.
@@ -143,44 +169,27 @@ protected:
   //! If <CODE>true</CODE>, \p *this is omega-reduced.
   mutable bool reduced;
 
-  //! Erase from \p *this all the non-maximal elements.
-  void omega_reduce() const;
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this does not contain
-  //! non-maximal elements.
-  bool is_omega_reduced() const;
-
-  void collapse(unsigned max_disjuncts);
-
-private:
-  //! \brief
-  //! Does the hard work of checking whether \p *this contains non-maximal
-  //! elements and returns <CODE>true</CODE> if and only if it does not.
-  bool check_omega_reduced() const;
-
 public:
+  // Sequence manipulation types, accessors and modifiers
   typedef typename Sequence::size_type size_type;
-
-  size_type size() const;
-  bool empty() const;
-
+  typedef typename Sequence::value_type value_type;
   typedef typename Sequence::iterator iterator;
   typedef typename Sequence::const_iterator const_iterator;
   typedef typename Sequence::reverse_iterator reverse_iterator;
   typedef typename Sequence::const_reverse_iterator const_reverse_iterator;
-  typedef typename Sequence::value_type value_type;
+
+  size_type size() const;
+  bool empty() const;
 
   iterator begin();
-  const_iterator begin() const;
-
   iterator end();
+  //! A const_iterator pointing to the first element in the sequence.
+  const_iterator begin() const;
+  //! The past-the-end const_iterator.
   const_iterator end() const;
-
   reverse_iterator rbegin();
-  const_reverse_iterator rbegin() const;
-
   reverse_iterator rend();
+  const_reverse_iterator rbegin() const;
   const_reverse_iterator rend() const;
 
   void push_back(const CS& y);
@@ -189,7 +198,21 @@ public:
   iterator erase(iterator position);
   void clear();
 
+//protected:
+  //! Erase from the sequence of disjuncts all the non-maximal elements.
+  void omega_reduce() const;
+
 protected:
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this does not contain
+  //! non-maximal elements.
+  bool is_omega_reduced() const;
+
+  //! \brief
+  //! Upon return, \p *this will contain \p max_disjuncts elements at most,
+  //! by replacing all the exceeding disjuncts, if any, with their upper-bound.
+  void collapse(unsigned max_disjuncts);
+
   //! \brief
   //! Adds to \p *this the disjunct \p d,
   //! assuming \p d is not the bottom element and ensuring
@@ -211,7 +234,27 @@ protected:
   //! assuming \p d is not the bottom element.
   static void add_non_bottom_disjunct(Sequence& s, const CS& d);
 
+  //! \brief
+  //! Assigns to \p *this the result of applying \p op_assign pairwise
+  //! to the elements in \p *this and \p y.
+  /*!
+    The elements of the powerset result are obtained by applying
+    \p op_assign to each pair of elements whose components are drawn
+    from \p *this and \p y, respectively.
+  */
+  template <typename Binary_Operator_Assign>
+  void pairwise_apply_assign(const Powerset& y,
+			     Binary_Operator_Assign op_assign);
+
 private:
+  //! \brief
+  //! Does the hard work of checking whether \p *this contains non-maximal
+  //! elements and returns <CODE>true</CODE> if and only if it does not.
+  bool check_omega_reduced() const;
+
+  //! \brief
+  //! Replaces the disjunct \p *sink by an upper bound of itself and
+  //! all the disjuncts following it.
   void collapse(iterator sink);
 };
 

@@ -24,12 +24,28 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_int_inlines_hh
 #define PPL_checked_int_inlines_hh 1
 
+// Please do not remove the space separating `#' from `include':
+// this ensures that the directive will not be moved during the
+// procedure that automatically creates the library's include file
+// (see `Makefile.am' in the `src' directory).
+# include <climits>
+
+#include "Limits.hh"
+#include "float.types.hh"
 #include <stdint.h>
 #include <cerrno>
 #include <cstdlib>
 #include <gmpxx.h>
-#include "Limits.hh"
-#include "float.types.hh"
+
+#if !HAVE_DECL_STRTOLL
+long long int
+strtoll(const char* nptr, char** endptr, int base);
+#endif
+
+#if !HAVE_DECL_STRTOULL
+unsigned long long int
+strtoull(const char* nptr, char** endptr, int base);
+#endif
 
 namespace Parma_Polyhedra_Library {
 
@@ -644,7 +660,7 @@ SPECIALIZE_ASSIGN(int_mpq, unsigned long long, mpq_class)
 
 #if ULONG_MAX == 0xffffffffL
 #define LONG_BITS 32
-#elif LONG_MAX == 0xffffffffffffffffULL
+#elif ULONG_MAX == 0xffffffffffffffffULL
 #define LONG_BITS 64
 #else
 #error "Unexpected max for unsigned long"

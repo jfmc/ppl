@@ -61,7 +61,7 @@ ppl_xsb_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
 $(top_builddir)/Watchdog/libpwl.la \
 @extra_libraries@
-ppl_xsb_la_LDFLAGS = -no-undefined -module -avoid-version
+ppl_xsb_la_LDFLAGS = -module -avoid-version
 
 pkglib_DATA = ppl_xsb.xwam
 
@@ -124,6 +124,7 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/check_script $(EXPE
 	  cp -f $(srcdir)/xsb_clpq.P . ; \
 	fi
 	cp -f $(srcdir)/../tests/clpq.pl .
+	rm -f xsb_clpq.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
@@ -139,6 +140,7 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/check_script $(EXPE
 	  cp -f $(srcdir)/xsb_clpq2.P . ; \
 	fi
 	cp -f $(srcdir)/../tests/clpq2.pl .
+	rm -f xsb_clpq2.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
@@ -154,6 +156,7 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/check_script $(EXPE
 	  cp -f $(srcdir)/xsb_pl_check.P . ; \
 	fi
 	cp -f $(srcdir)/../tests/pl_check.pl .
+	rm -f xsb_pl_check.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \

@@ -52,7 +52,7 @@ pkglib_DATA = ppl_sicstus.s.o ppl_sicstus.pl
 
 noinst_LTLIBRARIES = ppl_sicstus_sd.la
 ppl_sicstus_sd_la_SOURCES = ppl_sicstus_sd.cc
-ppl_sicstus_sd_la_LDFLAGS = -no-undefined -module -avoid-version
+ppl_sicstus_sd_la_LDFLAGS = -module -avoid-version
 
 ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/libpwl.la
 	$(LIBTOOL) --mode=link --tag=CXX \

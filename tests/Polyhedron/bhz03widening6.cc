@@ -87,7 +87,7 @@ test1() {
        << "T2 = " << T2 << endl;
 #endif
 
-  PSet oldT2 = T2;
+  PSet old_T2 = T2;
   T2.BHZ03_widening_assign(T1,
 			   widen_fun_ref(&Polyhedron::H79_widening_assign));
 
@@ -108,7 +108,7 @@ test1() {
 #endif
 
   if (T2 != known_result ||
-      !T2.geometrically_covers(oldT2) || !T2.geometrically_covers(T1))
+      !T2.geometrically_covers(old_T2) || !T2.geometrically_covers(T1))
     exit(1);
 }
 
@@ -175,7 +175,7 @@ test2() {
        << "T2 = " << T2 << endl;
 #endif
 
-  PSet oldT2 = T2;
+  PSet old_T2 = T2;
   T2.BHZ03_widening_assign(T1,
 			   widen_fun_ref(&Polyhedron::H79_widening_assign));
 
@@ -183,8 +183,8 @@ test2() {
   cout << "T2.BHZ03(T1, H79)" << " = " << T2 << endl;
 #endif
 
-  if (T2 != oldT2 ||
-      !T2.geometrically_covers(oldT2) || !T2.geometrically_covers(T1))
+  if (T2 != old_T2 ||
+      !T2.geometrically_covers(old_T2) || !T2.geometrically_covers(T1))
     exit(1);
 }
 
@@ -248,7 +248,7 @@ test3() {
        << "T2 = " << T2 << endl;
 #endif
 
-  PSet oldT2 = T2;
+  PSet old_T2 = T2;
   T2.BHZ03_widening_assign(T1,
 			   widen_fun_ref(&Polyhedron::H79_widening_assign));
 
@@ -256,8 +256,8 @@ test3() {
   cout << "T2.BHZ03(T1, H79)" << " = " << T2 << endl;
 #endif
 
-  if (T2 != oldT2 ||
-      !T2.geometrically_covers(oldT2) || !T2.geometrically_covers(T1))
+  if (T2 != old_T2 ||
+      !T2.geometrically_covers(old_T2) || !T2.geometrically_covers(T1))
     exit(1);
 }
 
@@ -314,7 +314,7 @@ test4() {
        << "T2 = " << T2 << endl;
 #endif
 
-  PSet oldT2 = T2;
+  PSet old_T2 = T2;
   T2.BHZ03_widening_assign(T1,
 			   widen_fun_ref(&Polyhedron::H79_widening_assign));
 
@@ -334,7 +334,7 @@ test4() {
 #endif
 
   if (T2 != known_result ||
-      !T2.geometrically_covers(oldT2) || !T2.geometrically_covers(T1))
+      !T2.geometrically_covers(old_T2) || !T2.geometrically_covers(T1))
     exit(1);
 }
 

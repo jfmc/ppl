@@ -4,15 +4,38 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.7  (released date to be decided)
+NEWS for version 0.7  (released on December 24, 2004)
 --------------------------------------------------------------------------
 
 New and Changed Features
 ========================
 
-o  We now require GMP 4.1.3 or higher.
+o  Nothing yet.
+
+Bugfixes
+========
+
+o  None yet.
+
+
+--------------------------------------------------------------------------
+NEWS for version 0.7  (released on December 24, 2004)
+--------------------------------------------------------------------------
+
+New and Changed Features
+========================
+
+o  The new configuration option `--enable-coefficients' allows for the
+   use of alternative (integral) coefficient types.  Besides GMP
+   integers, the user can now use checked native integers (8, 16, 32
+   or 64 bits wide).  The use of such native coefficients is
+   completely safe, since systematic (yet efficient) overflow
+   detection is performed and, in case of overflow, an exception is
+   raised.  GMP coefficients are used by default.
 
 o  Significant efficiency improvements have been achieved everywhere.
+
+o  We now require GMP 4.1.3 or higher.
 
 o  The following classes have been renamed as indicated:
 
@@ -116,6 +139,16 @@ o  The `ppl_lcdd' demo is now able to parse problems produced by lrs,
 o  The enumeration values of enum Complexity_Class have been renamed
    POLYNOMIAL_COMPLEXITY, SIMPLEX_COMPLEXITY and ANY_COMPLEXITY.
 
+o  In the Prolog interface, the predicates
+   ppl_new_polyhedron_from_dimension/3 and
+   ppl_new_polyhedron_empty_from_dimension/3 have been replaced by a
+   single predicate ppl_new_polyhedron_from_space_dimension/4 where
+   the (extra) third argument indicates whether the polyhedron to be
+   created should be the universe or the empty polyhedron.
+
+o  As the unary plus operator is not in standard Prolog, '+'/1 in linear
+   expressions is no longer supported by the Prolog interface.
+
 
 Bugfixes
 ========
@@ -145,7 +178,7 @@ o  Fixed a bug in the C interface function
 o  Fixed a bug in the `ppl_lpsol' demo.
 
 o  Fixed a bug in Polyhedron::is_universe() that could manifest itself
-   when the polyhedron is described by a generator system which is
+   when the polyhedron is described by a generator system that is
    not in minimal form.
 
 

@@ -287,12 +287,15 @@ PPL::Linear_System::add_rows(const Linear_System& y) {
 
   // Check if sortedness is preserved.
   if (is_sorted())
-    if (y.is_sorted() && y.num_pending_rows() == 0) {
+    if (!y.is_sorted() || y.num_pending_rows() > 0)
+      set_sorted(false);
+    else {
+      // `y' is sorted and has no pending rows.
       const dimension_type n_rows = num_rows();
-    if (n_rows > 0)
-      set_sorted(compare((*this)[n_rows-1], y[0]) <= 0);
-  }
-
+      if (n_rows > 0)
+	set_sorted(compare((*this)[n_rows-1], y[0]) <= 0);
+    }
+  
   // Add the rows of `y' as if they were pending.
   add_pending_rows(y);
   // There are no pending_rows.

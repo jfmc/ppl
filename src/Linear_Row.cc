@@ -200,25 +200,6 @@ const char* is_rpi = "RPI";
 const char* nnc_valid = "NNC_V";
 const char* is_nnc = "NNC";
 
-// FIXME: we have identical code in Ph_Status.cc.
-/*! \relates Parma_Polyhedra_Library::Linear_Row::Flags
-  Reads a keyword and its associated on/off, +/- flag from \p s.
-  Returns <CODE>true</CODE> if the operation is successful,
-  returns <CODE>false</CODE> otherwise.
-  When successful, \p positive is set to <CODE>true</CODE> if the flag
-  is on; it is set to <CODE>false</CODE> otherwise.
-*/
-bool
-get_field(std::istream& s, const char* keyword, bool& positive) {
-  std::string str;
-  if (!(s >> str)
-      || (str[0] != '+' && str[0] != '-')
-      || str.substr(1) != keyword)
-    return false;
-  positive = (str[0] == '+');
-  return true;
-}
-
 } // namespace
 
 void

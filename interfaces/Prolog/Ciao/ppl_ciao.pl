@@ -36,8 +36,7 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_timeout_exception_atom/1,
         ppl_set_timeout/1,
         ppl_reset_timeout/0,
-        ppl_new_Polyhedron_from_dimension/3,
-        ppl_new_Polyhedron_empty_from_dimension/3,
+        ppl_new_Polyhedron_from_space_dimension/4,
         ppl_new_Polyhedron_from_Polyhedron/4,
         ppl_new_Polyhedron_from_constraints/3,
         ppl_new_Polyhedron_from_generators/3,
@@ -193,39 +192,29 @@ ppl_timeout_exception_atom(Atom) :-
 
 :- true pred ppl_reset_timeout + foreign.
 
-:- true pred ppl_new_Polyhedron_from_dimension_2(in(Kind),
+:- true pred ppl_new_Polyhedron_from_space_dimension_2(in(Kind),
                                                  in(Dimension),
+                                                 in(Atom),
                                                  in(Handle),
                                                  go(Success))
-  :: any_term * any_term * any_term * int
-  + (returns(Success), foreign(ppl_new_Polyhedron_from_dimension)).
+  :: any_term * any_term * any_term * any_term * int
+  + (returns(Success), foreign(ppl_new_Polyhedron_from_space_dimension)).
 
-ppl_new_Polyhedron_from_dimension(Kind, Dimension, Handle) :-
-   ppl_new_Polyhedron_from_dimension_2(Kind, Dimension, Handle, 1).
-
-
-:- true pred ppl_new_Polyhedron_empty_from_dimension_2(in(Kind),
-                                                       in(Dimension),
-                                                       in(Handle),
-                                                       go(Success))
-  :: any_term * any_term * any_term * int
-  + (returns(Success), foreign(ppl_new_Polyhedron_empty_from_dimension)).
-
-ppl_new_Polyhedron_empty_from_dimension(Kind, Dimension, Handle) :-
-   ppl_new_Polyhedron_empty_from_dimension_2(Kind, Dimension, Handle, 1).
+ppl_new_Polyhedron_from_space_dimension(Kind, Dimension, Atom, Handle) :-
+   ppl_new_Polyhedron_from_space_dimension_2(Kind, Dimension, Atom, Handle, 1).
 
 
-:- true pred ppl_new_Polyhedron_from_Polyhedron_2(in(SrcKind),
-                                                in(SrcHandle),
-                                                in(DstKind),
-                                                in(DstHandle),
-                                               go(Success))
+:- true pred ppl_new_Polyhedron_from_Polyhedron_2(in(Src_Kind),
+						  in(Srd_Handle),
+						  in(Dst_Kind),
+						  in(Dst_Handle),
+						  go(Success))
   :: any_term * any_term * any_term * any_term * int
   + (returns(Success), foreign(ppl_new_Polyhedron_from_Polyhedron)).
 
-ppl_new_Polyhedron_from_Polyhedron(SrcKind, SrcHandle, DstKind, DstHandle) :-
+ppl_new_Polyhedron_from_Polyhedron(Src_Kind, Src_Handle, Dst_Kind, Dst_Handle) :-
    ppl_new_Polyhedron_from_Polyhedron_2(
-               SrcKind, SrcHandle, DstKind, DstHandle, 1).
+               Src_Kind, Src_Handle, Dst_Kind, Dst_Handle, 1).
 
 :- true pred ppl_new_Polyhedron_from_constraints_2(in(Kind),
                                                in(CList),
@@ -377,25 +366,25 @@ ppl_Polyhedron_is_bounded(Handle) :-
 	ppl_Polyhedron_is_bounded_2(Handle, 1).
 
 :- true pred ppl_Polyhedron_bounds_from_above_2(in(Handle),
-                                                in(LinearExpression),
+                                                in(Linear_Expression),
                                                 go(Success))
   :: any_term * any_term * int
   + (returns(Success), foreign(ppl_Polyhedron_bounds_from_above)).
 
-ppl_Polyhedron_bounds_from_above(Handle, LinearExpression) :-
-	ppl_Polyhedron_bounds_from_above_2(Handle, LinearExpression, 1).
+ppl_Polyhedron_bounds_from_above(Handle, Linear_Expression) :-
+	ppl_Polyhedron_bounds_from_above_2(Handle, Linear_Expression, 1).
 
 :- true pred ppl_Polyhedron_bounds_from_below_2(in(Handle),
-                                                in(LinearExpression),
+                                                in(Linear_Expression),
                                                 go(Success))
   :: any_term * any_term * int
   + (returns(Success), foreign(ppl_Polyhedron_bounds_from_below)).
 
-ppl_Polyhedron_bounds_from_below(Handle, LinearExpression) :-
-	ppl_Polyhedron_bounds_from_below_2(Handle, LinearExpression, 1).
+ppl_Polyhedron_bounds_from_below(Handle, Linear_Expression) :-
+	ppl_Polyhedron_bounds_from_below_2(Handle, Linear_Expression, 1).
 
 :- true pred ppl_Polyhedron_maximize_2(in(Handle),
-                                       in(LinearExpression),
+                                       in(Linear_Expression),
                                        in(Num),
                                        in(Den),
                                        in(Max),
@@ -403,11 +392,11 @@ ppl_Polyhedron_bounds_from_below(Handle, LinearExpression) :-
   :: any_term * any_term * any_term * any_term * any_term * int
   + (returns(Success), foreign(ppl_Polyhedron_maximize)).
 
-ppl_Polyhedron_maximize(Handle, LinearExpression, Num, Den, Max) :-
-	ppl_Polyhedron_maximize_2(Handle, LinearExpression, Num, Den, Max, 1).
+ppl_Polyhedron_maximize(Handle, Linear_Expression, Num, Den, Max) :-
+	ppl_Polyhedron_maximize_2(Handle, Linear_Expression, Num, Den, Max, 1).
 
 :- true pred ppl_Polyhedron_maximize_with_point_2(in(Handle),
-                                       in(LinearExpression),
+                                       in(Linear_Expression),
                                        in(Num),
                                        in(Den),
                                        in(Max),
@@ -416,13 +405,13 @@ ppl_Polyhedron_maximize(Handle, LinearExpression, Num, Den, Max) :-
   :: any_term * any_term * any_term * any_term * any_term * any_term * int
   + (returns(Success), foreign(ppl_Polyhedron_maximize_with_point)).
 
-ppl_Polyhedron_maximize_with_point(Handle, LinearExpression,
+ppl_Polyhedron_maximize_with_point(Handle, Linear_Expression,
 				   Num, Den, Max, Point) :-
-	ppl_Polyhedron_maximize_with_point_2(Handle, LinearExpression,
+	ppl_Polyhedron_maximize_with_point_2(Handle, Linear_Expression,
 					     Num, Den, Max, Point, 1).
 
 :- true pred ppl_Polyhedron_minimize_2(in(Handle),
-                                       in(LinearExpression),
+                                       in(Linear_Expression),
                                        in(Num),
                                        in(Den),
                                        in(Min),
@@ -430,11 +419,11 @@ ppl_Polyhedron_maximize_with_point(Handle, LinearExpression,
   :: any_term * any_term * any_term * any_term * any_term * int
   + (returns(Success), foreign(ppl_Polyhedron_minimize)).
 
-ppl_Polyhedron_minimize(Handle, LinearExpression, Num, Den, Min) :-
-	ppl_Polyhedron_minimize_2(Handle, LinearExpression, Num, Den, Min, 1).
+ppl_Polyhedron_minimize(Handle, Linear_Expression, Num, Den, Min) :-
+	ppl_Polyhedron_minimize_2(Handle, Linear_Expression, Num, Den, Min, 1).
 
 :- true pred ppl_Polyhedron_minimize_with_point_2(in(Handle),
-                                       in(LinearExpression),
+                                       in(Linear_Expression),
                                        in(Num),
                                        in(Den),
                                        in(Min),
@@ -443,9 +432,9 @@ ppl_Polyhedron_minimize(Handle, LinearExpression, Num, Den, Min) :-
   :: any_term * any_term * any_term * any_term * any_term * any_term * int
   + (returns(Success), foreign(ppl_Polyhedron_minimize_with_point)).
 
-ppl_Polyhedron_minimize_with_point(Handle, LinearExpression,
+ppl_Polyhedron_minimize_with_point(Handle, Linear_Expression,
 				   Num, Den, Min, Point) :-
-	ppl_Polyhedron_minimize_with_point_2(Handle, LinearExpression,
+	ppl_Polyhedron_minimize_with_point_2(Handle, Linear_Expression,
 					     Num, Den, Min, Point, 1).
 
 :- true pred ppl_Polyhedron_is_topologically_closed_2(in(Handle),
@@ -583,11 +572,11 @@ ppl_Polyhedron_poly_hull_assign_and_minimize(Handle1, Handle2) :-
              :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_affine_image(in(Handle), in(Var),
-                                         in(LinearExpression), in(Divisor))
+                                         in(Linear_Expression), in(Divisor))
              :: any_term * any_term * any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_affine_preimage(in(Handle), in(Var),
-                                            in(LinearExpression), in(Divisor))
+                                            in(Linear_Expression), in(Divisor))
              :: any_term * any_term * any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_generalized_affine_image_2(
@@ -727,19 +716,24 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
 
 :- true pred
    ppl_Polyhedron_add_space_dimensions_and_project(in(Handle),
-                                                   in(NDimensionsToAdd))
+                                                   in(NDimensions_To_Add))
   :: any_term * any_term + foreign.
 
 :- true pred
    ppl_Polyhedron_add_space_dimensions_and_embed(in(Handle),
-                                                 in(NDimensionsToAdd))
+                                                 in(NDimensions_To_Add))
   :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_concatenate_assign(in(Handle1), in(Handle2))
   :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_remove_space_dimensions(in(Handle), in(VList))
-  :: any_term * any_term + foreign.
+ppl_Polyhedron_remove_space_dimensions(Handle, VList) :-
+	ppl_Polyhedron_remove_space_dimensions_2(Handle, VList, 1).
+
+:- true pred ppl_Polyhedron_remove_space_dimensions_2(in(Handle), in(VList),
+                                                go(Success))
+  :: any_term * any_term * int
+ + (returns(Success), foreign(ppl_Polyhedron_remove_space_dimensions)).
 
 :- true pred ppl_Polyhedron_remove_higher_space_dimensions(in(Handle),
                                                            in(Dimensions))
@@ -796,10 +790,8 @@ ppl_Polyhedron_map_space_dimensions(Handle, PIFunc) :-
         ppl_timeout_exception_atom_2/2,
         ppl_set_timeout/1,
         ppl_reset_timeout/0,
-%        ppl_new_Polyhedron_from_dimension/3,
-        ppl_new_Polyhedron_from_dimension_2/4,
-%        ppl_new_Polyhedron_empty_from_dimension/3,
-        ppl_new_Polyhedron_empty_from_dimension_2/4,
+%        ppl_new_Polyhedron_from_space_dimension/4,
+        ppl_new_Polyhedron_from_space_dimension_2/5,
 %        ppl_new_Polyhedron_from_Polyhedron/4,
         ppl_new_Polyhedron_from_Polyhedron_2/5,
 %        ppl_new_Polyhedron_from_constraints/3,
@@ -906,7 +898,8 @@ ppl_Polyhedron_map_space_dimensions(Handle, PIFunc) :-
         ppl_Polyhedron_add_space_dimensions_and_project/2,
         ppl_Polyhedron_add_space_dimensions_and_embed/2,
         ppl_Polyhedron_concatenate_assign/2,
-        ppl_Polyhedron_remove_space_dimensions/2,
+%        ppl_Polyhedron_remove_space_dimensions/2,
+        ppl_Polyhedron_remove_space_dimensions_2/3,
         ppl_Polyhedron_remove_higher_space_dimensions/2,
         ppl_Polyhedron_expand_space_dimension/3,
 %        ppl_Polyhedron_fold_space_dimensions/3,
@@ -956,20 +949,16 @@ since the above version of this is temporary.
 
 :- true pred ppl_reset_timeout + foreign.
 
-:- true pred ppl_new_Polyhedron_from_dimension(in(Kind),
+:- true pred ppl_new_Polyhedron_from_space_dimension(in(Kind),
                                                in(Dimension),
+                                               in(Atom),
                                                in(Handle))
-             :: any_term * any_term * any_term + foreign.
+             :: any_term * any_term * any_term * any_term + foreign.
 
-:- true pred ppl_new_Polyhedron_empty_from_dimension(in(Kind),
-                                                     in(Dimension),
-                                                     in(Handle))
-             :: any_term * any_term * any_term + foreign.
-
-:- true pred ppl_new_Polyhedron_from_Polyhedron(in(SrcKind),
-                                                in(SrcHandle),
-                                                in(DstKind),
-                                                in(DstHandle))
+:- true pred ppl_new_Polyhedron_from_Polyhedron(in(Src_Kind),
+                                                in(Src_Handle),
+                                                in(Dst_Kind),
+                                                in(Dst_Handle))
              :: any_term * any_term * any_term * any_term + foreign.
 
 :- true pred ppl_new_Polyhedron_from_constraints(in(Kind),
@@ -1036,21 +1025,21 @@ since the above version of this is temporary.
 :- true pred ppl_Polyhedron_is_bounded(in(Handle))
              :: any_term + foreign.
 
-:- true pred ppl_Polyhedron_bounds_from_above(in(Handle), in(LinearExpression))
+:- true pred ppl_Polyhedron_bounds_from_above(in(Handle), in(Linear_Expression))
              :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_bounds_from_below(in(Handle), in(LinearExpression))
+:- true pred ppl_Polyhedron_bounds_from_below(in(Handle), in(Linear_Expression))
              :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_maximize(in(Handle),
-                                     in(LinearExpression),
+                                     in(Linear_Expression),
                                      in(Num),
                                      in(Den),
                                      in(Max))
              :: any_term * any_term * any_term * any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_maximize_with_point(in(Handle),
-                                     in(LinearExpression),
+                                     in(Linear_Expression),
                                      in(Num),
                                      in(Den),
                                      in(Max),
@@ -1058,14 +1047,14 @@ since the above version of this is temporary.
              :: any_term * any_term * any_term * any_term * any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_minimize(in(Handle),
-                                     in(LinearExpression),
+                                     in(Linear_Expression),
                                      in(Num),
                                      in(Den),
                                      in(Min))
              :: any_term * any_term * any_term * any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_minimize_with_point(in(Handle),
-                                     in(LinearExpression),
+                                     in(Linear_Expression),
                                      in(Num),
                                      in(Den),
                                      in(Min),
@@ -1134,11 +1123,11 @@ since the above version of this is temporary.
              :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_affine_image(in(Handle), in(Var),
-                                         in(LinearExpression), in(Divisor))
+                                         in(Linear_Expression), in(Divisor))
              :: any_term * any_term * any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_affine_preimage(in(Handle), in(Var),
-                                            in(LinearExpression), in(Divisor))
+                                            in(Linear_Expression), in(Divisor))
              :: any_term * any_term * any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_generalized_affine_image(in(Handle),
@@ -1220,12 +1209,12 @@ since the above version of this is temporary.
 
 :- true pred
    ppl_Polyhedron_add_space_dimensions_and_project(in(Handle),
-                                                   in(NDimensionsToAdd))
+                                                   in(NDimensions_To_Add))
              :: any_term * any_term + foreign.
 
 :- true pred
    ppl_Polyhedron_add_space_dimensions_and_embed(in(Handle),
-                                                 in(NDimensionsToAdd))
+                                                 in(NDimensions_To_Add))
              :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_concatenate_assign(in(Handle1), in(Handle2))
@@ -1270,8 +1259,7 @@ since the above version of this is temporary.
         ppl_timeout_exception_atom/1,
         ppl_set_timeout/1,
         ppl_reset_timeout/0,
-        ppl_new_Polyhedron_from_dimension/3,
-        ppl_new_Polyhedron_empty_from_dimension/3,
+        ppl_new_Polyhedron_from_space_dimension/4,
         ppl_new_Polyhedron_from_Polyhedron/4,
         ppl_new_Polyhedron_from_constraints/3,
         ppl_new_Polyhedron_from_generators/3,

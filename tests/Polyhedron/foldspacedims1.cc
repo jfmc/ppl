@@ -120,7 +120,7 @@ test3() {
 }
 
 
-// Test as given in GopanDMDRS04 on page 519.
+// Test as given in [GopanDMDRS04] on page 519.
 static void
 test4() {
   C_Polyhedron ph1(2);
@@ -155,7 +155,7 @@ test4() {
 
 
 // Test that takes the expected result of the expand operation
-// example given in GopanDMDRS04 on page 519 and folds it to recover
+// example given in [GopanDMDRS04] on page 519 and folds it to recover
 // the unexpanded polyhedron.
 static void
 test5() {

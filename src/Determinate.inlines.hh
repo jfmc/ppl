@@ -50,18 +50,19 @@ Determinate<PH>::Rep::~Rep() {
 }
 
 template <typename PH>
-void
+inline void
 Determinate<PH>::Rep::new_reference() const {
   ++references;
 }
 
 template <typename PH>
-bool Determinate<PH>::Rep::del_reference() const {
+inline bool
+Determinate<PH>::Rep::del_reference() const {
   return --references == 0;
 }
 
 template <typename PH>
-bool
+inline bool
 Determinate<PH>::Rep::is_shared() const {
   return references > 1;
 }
@@ -137,37 +138,34 @@ Determinate<PH>::mutate() {
 }
 
 template <typename PH>
-const PH&
+inline const PH&
 Determinate<PH>::element() const {
   return prep->ph;
 }
 
 template <typename PH>
-PH&
+inline PH&
 Determinate<PH>::element() {
   mutate();
   return prep->ph;
 }
 
 template <typename PH>
-void
+inline void
 Determinate<PH>::upper_bound_assign(const Determinate& y) {
-  mutate();
-  prep->ph.poly_hull_assign(y.prep->ph);
+  element().poly_hull_assign(y.element());
 }
 
 template <typename PH>
-void
+inline void
 Determinate<PH>::meet_assign(const Determinate& y) {
-  mutate();
-  prep->ph.intersection_assign(y.prep->ph);
+  element().intersection_assign(y.element());
 }
 
 template <typename PH>
-void
+inline void
 Determinate<PH>::concatenate_assign(const Determinate& y) {
-  mutate();
-  prep->ph.concatenate_assign(y.prep->ph);
+  element().concatenate_assign(y.element());
 }
 
 template <typename PH>
@@ -319,6 +317,30 @@ void
 Determinate<PH>::map_space_dimensions(const Partial_Function& pfunc) {
   mutate();
   prep->ph.map_space_dimensions(pfunc);
+}
+
+template <typename PH>
+template <typename Binary_Operator_Assign>
+inline
+Determinate<PH>::Binary_Operator_Assign_Lifter<Binary_Operator_Assign>::
+Binary_Operator_Assign_Lifter(Binary_Operator_Assign op_assign)
+  : op_assign_(op_assign) {
+}
+
+template <typename PH>
+template <typename Binary_Operator_Assign>
+inline void
+Determinate<PH>::Binary_Operator_Assign_Lifter<Binary_Operator_Assign>::
+operator()(Determinate& x, const Determinate& y) const {
+  op_assign_(x.element(), y.element());
+}
+
+template <typename PH>
+template <typename Binary_Operator_Assign>
+inline
+Determinate<PH>::Binary_Operator_Assign_Lifter<Binary_Operator_Assign>
+Determinate<PH>::lift_op_assign(Binary_Operator_Assign op_assign) {
+  return Binary_Operator_Assign_Lifter<Binary_Operator_Assign>(op_assign);
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -33,7 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- use_module(ppl_ciao, [
 	ppl_initialize/0,
 	ppl_finalize/0,
-	ppl_new_Polyhedron_from_dimension/3,
+	ppl_new_Polyhedron_from_space_dimension/4,
 	ppl_new_Polyhedron_from_Polyhedron/4,
 	ppl_delete_Polyhedron/1,
 	ppl_Polyhedron_space_dimension/2,
@@ -48,7 +48,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 eat_eol.
 
-:- include('../clpq2.pl').
+:- include('clpq2.pl').
 
 main :-
     ppl_initialize,

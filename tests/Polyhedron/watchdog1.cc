@@ -43,11 +43,11 @@ compute_open_hypercube_generators(dimension_type dimension) {
   (void) hypercube.generators();
 }
 
-class myTimeout : virtual public exception,
-		  public Parma_Polyhedra_Library::Throwable {
+class Timeout : virtual public exception,
+		public Parma_Polyhedra_Library::Throwable {
 public:
   const char* what() const throw() {
-    return "myTimeout in watchdog1.cc";
+    return "Timeout in watchdog1.cc";
   }
   void throw_me() const {
     throw *this;
@@ -55,11 +55,11 @@ public:
   int priority() const {
     return 0;
   }
-  myTimeout() {
+  Timeout() {
   }
 };
 
-static myTimeout t;
+static Timeout t;
 
 static bool
 timed_compute_open_hypercube_generators(dimension_type dimension,
@@ -74,7 +74,7 @@ timed_compute_open_hypercube_generators(dimension_type dimension,
     abandon_expensive_computations = 0;
     return true;
   }
-  catch (const myTimeout& e) {
+  catch (const Timeout& e) {
     abandon_expensive_computations = 0;
 #if NOISY
     cout << e.what() << " after ";

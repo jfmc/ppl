@@ -24,10 +24,10 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Watchdog Library],[0.3],[bagnara@cs.unipr.it],[watchdog])
+AC_INIT([the Parma Watchdog Library],[0.4],[bagnara@cs.unipr.it],[watchdog])
 
 # Minimum autoconf version required.
-AC_PREREQ(2.57)
+AC_PREREQ(2.59)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR([Watchdog.cc])
@@ -274,6 +274,18 @@ if test x"$GXX" = xyes
 then
   CXXFLAGS="$CXXFLAGS -W -Wall"
 fi
+
+# System-dependent adjustments.
+no_undefined=no
+
+case "${host_os}" in
+cygwin)
+  no_undefined=yes
+  ;;
+*)
+  ;;
+esac
+AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 
 AC_SUBST(debug_flag)
 

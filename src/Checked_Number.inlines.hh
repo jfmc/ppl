@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+/*! \relates Checked_Number */
 static void
 bad_result(Result r) {
   switch (r) {
@@ -44,11 +45,15 @@ bad_result(Result r) {
   }
 }
 
-static inline void
+namespace {
+
+inline void
 check_result(Result r) {
   if (r != V_EQ)
     bad_result(r);
 }
+
+} // namespace
 
 template <typename T, typename Policy>
 inline
@@ -104,24 +109,28 @@ Checked_Number<T, Policy>::raw_value() const {
   return v;
 }
 
+/*! \relates Checked_Number */
 template <typename T, typename Policy>
 inline const T&
 raw_value(const Checked_Number<T, Policy>& x) {
   return x.raw_value();
 }
 
+/*! \relates Checked_Number */
 template <typename T, typename Policy>
 inline T&
 raw_value(Checked_Number<T, Policy>& x) {
   return x.raw_value();
 }
 
+/*! \relates Checked_Number */
 template <typename T, typename Policy>
 size_t
 total_memory_in_bytes(const Checked_Number<T, Policy>& x) {
   return sizeof(x);
 }
 
+/*! \relates Checked_Number */
 template <typename T, typename Policy>
 size_t
 external_memory_in_bytes(const Checked_Number<T, Policy>&) {
@@ -293,12 +302,14 @@ DEF_COMPARES_OTHER(float128_t)
 DEF_COMPARES_OTHER(mpz_class&)
 DEF_COMPARES_OTHER(mpq_class&)
 
+/*! \relates Checked_Number */
 template <typename T, typename Policy>
 inline Checked_Number<T, Policy>
 operator+(const Checked_Number<T, Policy>& x) {
   return x;
 }
 
+/*! \relates Checked_Number */
 template <typename T, typename Policy>
 inline Checked_Number<T, Policy>
 operator-(const Checked_Number<T, Policy>& x) {
@@ -356,6 +367,7 @@ DEF_ASSIGN_FUN3_2(lcm_assign, lcm)
 DEF_ASSIGN_FUN3_3(lcm_assign, lcm)
 
 
+/*! \relates Checked_Number */
 template <typename T, typename Policy>
 inline int
 sgn(const Checked_Number<T, Policy>& x) {
@@ -372,6 +384,7 @@ sgn(const Checked_Number<T, Policy>& x) {
   }
 }
 
+/*! \relates Checked_Number */
 template <typename T, typename Policy>
 inline int
 cmp(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) {
@@ -388,6 +401,7 @@ cmp(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) {
   }
 }
 
+/*! \relates Checked_Number */
 template <typename T, typename Policy>
 inline std::ostream&
 operator<<(std::ostream& os, const Checked_Number<T, Policy>& x) {
@@ -395,6 +409,7 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x) {
   return os;
 }
 
+/*! \relates Checked_Number */
 template <typename T, typename Policy>
 inline std::istream& operator>>(std::istream& is, Checked_Number<T, Policy>& x) {
   check_result(Checked::input<Policy>(is, x.raw_value(), Rounding(Rounding::IGNORE)));

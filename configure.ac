@@ -24,7 +24,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.7pre8],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.8pre1],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
@@ -393,8 +393,15 @@ AC_C_BIGENDIAN
 
 # Checks for C type sizes.
 AC_CHECK_SIZEOF(int)
+AC_CHECK_SIZEOF(long)
 AC_CHECK_SIZEOF(long long)
-
+AC_CHECK_SIZEOF(unsigned)
+AC_CHECK_SIZEOF(unsigned long)
+AC_CHECK_SIZEOF(unsigned long long)
+AC_CHECK_SIZEOF(size_t)
+AC_CHECK_SIZEOF(float)
+AC_CHECK_SIZEOF(double)
+AC_CHECK_SIZEOF(long double)
 
 # Use C++ for the remaining checks.
 AC_LANG(C++)
@@ -408,6 +415,15 @@ AC_CXX_SUPPORTS_ATTRIBUTE_WEAK
 # Check whether the C++ compiler provides long double numbers that
 # have bigger range or precision than double.
 AC_CXX_SUPPORTS_LONG_DOUBLE
+
+# Check whether C++ floats comply with IEC 559.
+AC_CXX_FLOAT_IS_IEC_559
+
+# Check whether C++ doubles comply with IEC 559.
+AC_CXX_DOUBLE_IS_IEC_559
+
+# Check whether C++ long doubles comply with IEC 559.
+AC_CXX_LONG_DOUBLE_IS_IEC_559
 
 # Check whether the C++ compiler supports long long integers.
 AC_CXX_SUPPORTS_LONG_LONG
@@ -605,11 +621,33 @@ then
   CXXFLAGS="-W -Wall $CXXFLAGS"
 fi
 
+# System-dependent adjustments.
+text_md5sum="$MD5SUM -t"
+no_undefined=no
+
+case "${host_os}" in
+darwin*)
+  if test x"$GCC" = xyes
+  then
+    CFLAGS="$CFLAGS -Wno-long-double"
+    CXXFLAGS="$CXXFLAGS -Wno-long-double"
+  fi
+  text_md5sum="$MD5SUM"
+  ;;
+cygwin)
+  no_undefined=yes
+  ;;
+*)
+  ;;
+esac
+AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
+
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(debug_flag)
 AC_SUBST(xsb_includes)
 AC_SUBST(coefficient_mnemonic)
+AC_SUBST(text_md5sum)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm ppl.spec

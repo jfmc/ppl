@@ -100,6 +100,15 @@ Saturation_Row::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
+#if HAVE_DECL_FFS && SIZEOF_MP_LIMB_T == SIZEOF_INT
+
+inline unsigned int
+Saturation_Row::first_one(mp_limb_t w) {
+  return ffs(w)-1;
+}
+
+#endif
+
 /*! \relates Saturation_Row */
 inline bool
 operator==(const Saturation_Row& x, const Saturation_Row& y) {
@@ -118,15 +127,6 @@ set_union(const Saturation_Row& x, const Saturation_Row& y,
 	  Saturation_Row& z) {
   mpz_ior(z.vec, x.vec, y.vec);
 }
-
-#if defined(HAS_FFS) && SIZEOF_MP_LIMB_T == SIZEOF_INT
-
-inline unsigned int
-PPL::Saturation_Row::first_one(mp_limb_t w) {
-  return ffs(w)-1;
-}
-
-#endif
 
 } // namespace Parma_Polyhedra_Library
 

@@ -42,8 +42,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_timeout_exception_atom/1,
 	ppl_set_timeout/1,
 	ppl_reset_timeout/0,
-	ppl_new_Polyhedron_from_dimension/3,
-	ppl_new_Polyhedron_empty_from_dimension/3,
+	ppl_new_Polyhedron_from_space_dimension/4,
 	ppl_new_Polyhedron_from_Polyhedron/4,
 	ppl_new_Polyhedron_from_constraints/3,
 	ppl_new_Polyhedron_from_generators/3,
@@ -117,7 +116,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 :- set_prolog_flag(multi_arity_warnings, off).
 
-:- include('../pl_check.pl').
+:- include('pl_check.pl').
 
 main:-
    (check_all ->

@@ -86,7 +86,7 @@ main() TRY {
        << "T2 = " << T2 << endl;
 #endif
 
-  PSet oldT2 = T2;
+  PSet old_T2 = T2;
   T2.BHZ03_widening_assign(T1,
 			   widen_fun_ref(&Polyhedron::H79_widening_assign));
 
@@ -95,7 +95,7 @@ main() TRY {
   pd.add_constraint(X <= 4);
   pd.add_constraint(X + 2*Y >= 10);
 
-  PSet known_result = oldT2;
+  PSet known_result = old_T2;
   known_result.add_disjunct(pd);
 
 #if NOISY
@@ -105,7 +105,7 @@ main() TRY {
 
   return
     (T2 == known_result
-     && T2.geometrically_covers(oldT2) && T2.geometrically_covers(T1))
+     && T2.geometrically_covers(old_T2) && T2.geometrically_covers(T1))
     ? 0
     : 1;
 }

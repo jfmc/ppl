@@ -162,7 +162,7 @@ void swap(Parma_Polyhedra_Library::Linear_Expression& x,
     and from objects of the classes Variable and Coefficient:
     available operators include unary negation,
     binary addition and subtraction,
-    as well as multiplication by an Coefficient.
+    as well as multiplication by a Coefficient.
     The space dimension of a linear expression is defined as the maximum
     space dimension of the arguments used to build it:
     in particular, the space dimension of a Variable <CODE>x</CODE>
@@ -185,7 +185,8 @@ void swap(Parma_Polyhedra_Library::Linear_Expression& x,
     \endcode
     Note that \p e1, \p e2 and \p e3 have space dimension 1, 2 and 3,
     respectively; also, in the fourth line of code, \p e is created
-    with space dimension zero and then extended to space dimension 3.
+    with space dimension zero and then extended to space dimension 3
+    in the fifth line.
 */
 class Parma_Polyhedra_Library::Linear_Expression : private Linear_Row {
 public:
@@ -216,7 +217,7 @@ public:
     Given the constraint
     \f$c = \bigl(\sum_{i=0}^{n-1} a_i x_i + b \relsym 0\bigr)\f$,
     where \f$\mathord{\relsym} \in \{ =, \geq, > \}\f$,
-    builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i + b\f$.
+    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i + b\f$.
     If \p c is an inequality (resp., equality) constraint, then
     the built linear expression is unique up to a positive
     (resp., non-zero) factor.
@@ -230,7 +231,7 @@ public:
     Given the generator
     \f$g = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$
     (where, for lines and rays, we have \f$d = 1\f$),
-    builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i\f$.
+    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i\f$.
     The inhomogeneous term of the linear expression will always be 0.
     If \p g is a ray, point or closure point (resp., a line), then
     the linear expression is unique up to a positive

@@ -31,18 +31,18 @@
 :- dynamic(original_goal_variables/1).
 
 
-% solve(+Goals, +VariableNames)
+% solve(+Goals, +Variable_Names)
 %
 % Tries to solve the query `Goals' and to present the results
 % to the user by referring to the original variable names
-% contained in `VariableNames'.
+% contained in `Variable_Names'.
 
-solve(Goals, VariableNames) :-
+solve(Goals, Variable_Names) :-
     numvars(Goals, 0, Dims),
-    assertz(original_goal_variables(VariableNames)),
+    assertz(original_goal_variables(Variable_Names)),
     % The initial polyhedron is initialised with
     % `Dims' dimensions, the number of variables in `Goals'.
-    ppl_new_Polyhedron_from_dimension(c, Dims, Polyhedron),
+    ppl_new_Polyhedron_from_space_dimension(c, Dims, universe, Polyhedron),
     % Try to reduce `Goals' to the empty continuation.
     (solve(Goals, true, Polyhedron) ->
 	Failed = no
@@ -62,11 +62,11 @@ solve(true, true, Polyhedron) :-
     % It is time to print the result and see if the user
     % wants to look for more solutions.
     ppl_new_Polyhedron_from_Polyhedron(c, Polyhedron, c, Q),
-    original_goal_variables(VariableNames),
-    length(VariableNames, Dims),
+    original_goal_variables(Variable_Names),
+    length(Variable_Names, Dims),
     ppl_Polyhedron_remove_higher_space_dimensions(Q, Dims),
     ppl_Polyhedron_get_constraints(Q, CS),
-    write_constraints(CS, VariableNames),
+    write_constraints(CS, Variable_Names),
     ppl_delete_Polyhedron(Q),
     % More?
     % If query_next_solution succeeds,
@@ -104,24 +104,24 @@ solve(Atom, Goals, Polyhedron) :-
     % Copy the current polyhedron and work on the copy.
     % NOTE: the copy is under our responsibility, i.e.,
     %       it is our job to delete it, sooner or later.
-    ppl_new_Polyhedron_from_Polyhedron(c, Polyhedron, c, PolyCopy),
+    ppl_new_Polyhedron_from_Polyhedron(c, Polyhedron, c, Poly_Copy),
 
     % Rename the selected clause apart and extend the polyhedron.
-    ppl_Polyhedron_space_dimension(PolyCopy, Dims),
-    numvars((Head, Body), Dims, NewDims),
-    AddedDims is NewDims - Dims,
-    ppl_Polyhedron_add_space_dimensions_and_embed(PolyCopy, AddedDims),
+    ppl_Polyhedron_space_dimension(Poly_Copy, Dims),
+    numvars((Head, Body), Dims, New_Dims),
+    Added_Dims is New_Dims - Dims,
+    ppl_Polyhedron_add_space_dimensions_and_embed(Poly_Copy, Added_Dims),
     % Parameter passing.
     parameter_passing(Atom, Head, PP_Constraints),
 
     % Try to solve the body augmented with the parameter passing equations.
-    (solve(PP_Constraints, (Body, Goals), PolyCopy) ->
+    (solve(PP_Constraints, (Body, Goals), Poly_Copy) ->
 	Failed = no
     ;
 	Failed = yes
     ),
     % Our copy must be thrown anyway.
-    ppl_delete_Polyhedron(PolyCopy),
+    ppl_delete_Polyhedron(Poly_Copy),
     Failed == no.
 
 
@@ -150,9 +150,9 @@ select_clause(Atom, Head, Body) :-
 
 % The constraints are solved by adding them into the polyhedron.
 solve_constraints(Constraints, Polyhedron) :-
-    listize_constraints(Constraints, ConstraintsList),
+    listize_constraints(Constraints, Constraints_List),
     % Fails if `Polyhedron' becomes empty.
-    ppl_Polyhedron_add_constraints_and_minimize(Polyhedron, ConstraintsList).
+    ppl_Polyhedron_add_constraints_and_minimize(Polyhedron, Constraints_List).
 
 listize_constraints(C, LC) :-
     listize_constraints(C, [], LC).
@@ -212,10 +212,10 @@ read_program(Program) :-
     fail
   ),
   (open_file_for_reading(Program, Stream) ->
-    FileName = Program
+    File_Name = Program
   ;
-    atom_concat(Program, '.clpq', FileName),
-    (open_file_for_reading(FileName, Stream) ->
+    atom_concat(Program, '.clpq', File_Name),
+    (open_file_for_reading(File_Name, Stream) ->
       true
     ;
       write_error(['read_program/1 - arg 1: file ',
@@ -383,23 +383,23 @@ main_loop_yes :-
 
 %%%%%%%%%%%%%%%%% Writing Computed Answer Constraints %%%%%%%%%%%%%%%%%%
 
-write_var(Var, VariableNames) :-
-  member(Name=Var, VariableNames),
+write_var(Var, Variable_Names) :-
+  member(Name=Var, Variable_Names),
   !,
   write(Name).
 
-negate_expr(Num*Var, NegExpr) :-
+negate_expr(Num*Var, Neg_Expr) :-
   (Num < 0 ->
-    NegNum is -Num,
-    NegExpr = NegNum*Var
+    Neg_Num is -Num,
+    Neg_Expr = Neg_Num*Var
   ;
-    NegExpr = Num*Var
+    Neg_Expr = Num*Var
   ).
-negate_expr(Expr1 + Expr2, NegExpr1 + NegExpr2) :-
-  negate_expr(Expr1, NegExpr1),
-  negate_expr(Expr2, NegExpr2).
+negate_expr(Expr1 + Expr2, Neg_Expr1 + Neg_Expr2) :-
+  negate_expr(Expr1, Neg_Expr1),
+  negate_expr(Expr2, Neg_Expr2).
 
-write_expr(Num*Var, VariableNames) :-
+write_expr(Num*Var, Variable_Names) :-
   (Num =:= 1 ->
     true
   ;
@@ -410,59 +410,59 @@ write_expr(Num*Var, VariableNames) :-
       write('*')
     )
   ),
-  write_var(Var, VariableNames).
-write_expr(E + Num*Var, VariableNames) :-
-  write_expr(E, VariableNames),
+  write_var(Var, Variable_Names).
+write_expr(E + Num*Var, Variable_Names) :-
+  write_expr(E, Variable_Names),
   (Num < 0 ->
     write(' - '),
-    NegNum is -Num,
-    write_expr(NegNum*Var, VariableNames)
+    Neg_Num is -Num,
+    write_expr(Neg_Num*Var, Variable_Names)
   ;
     write(' + '),
-    write_expr(Num*Var, VariableNames)
+    write_expr(Num*Var, Variable_Names)
   ).
 
-write_constraint(Expr = Num, VariableNames) :-
-  write_expr(Expr, VariableNames),
+write_constraint(Expr = Num, Variable_Names) :-
+  write_expr(Expr, Variable_Names),
   write(' = '),
   write(Num).
-write_constraint(Expr >= Num, VariableNames) :-
+write_constraint(Expr >= Num, Variable_Names) :-
   (Num < 0 ->
-    negate_expr(Expr, NegExpr),
-    write_expr(NegExpr, VariableNames),
+    negate_expr(Expr, Neg_Expr),
+    write_expr(Neg_Expr, Variable_Names),
     write(' =< '),
-    NegNum is -Num,
-    write(NegNum)
+    Neg_Num is -Num,
+    write(Neg_Num)
   ;
-    write_expr(Expr, VariableNames),
+    write_expr(Expr, Variable_Names),
     write(' >= '),
     write(Num)
   ).
 
-write_constraints([], _VariableNames).
-write_constraints([C|CS], VariableNames) :-
-  write_constraint(C, VariableNames),
+write_constraints([], _Variable_Names).
+write_constraints([C|CS], Variable_Names) :-
+  write_constraint(C, Variable_Names),
   nl,
-  write_constraints(CS, VariableNames).
+  write_constraints(CS, Variable_Names).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Utility Predicates %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% numvars(?Term, +InN, ?OutN)
+% numvars(?Term, +In_N, ?Out_N)
 %
 % Unifies each of the variables in Term with the special terms
-% '$VAR'(k), where k ranges from InN to OutN-1.
+% '$VAR'(k), where k ranges from In_N to Out_N-1.
 
-numvars('$VAR'(InN), InN, OutN) :-
+numvars('$VAR'(In_N), In_N, Out_N) :-
   !,
-  OutN is InN + 1.
-numvars(Term, InN, OutN) :-
+  Out_N is In_N + 1.
+numvars(Term, In_N, Out_N) :-
   Term =.. [_|Args],
-  numvars_list(Args, InN, OutN).
+  numvars_list(Args, In_N, Out_N).
 
-numvars_list([], InN, InN).
-numvars_list([Arg|Args], InN, OutN) :-
-  numvars(Arg, InN, TmpN),
-  numvars_list(Args, TmpN, OutN).
+numvars_list([], In_N, In_N).
+numvars_list([Arg|Args], In_N, Out_N) :-
+  numvars(Arg, In_N, Tmp_N),
+  numvars_list(Args, Tmp_N, Out_N).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Legalese %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

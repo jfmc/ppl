@@ -58,8 +58,9 @@ SUBDIRS =
 #	    0.5			    2:0:0
 #	    0.6			    3:0:0
 #	    0.7			    4:0:0
+#	    0.8			    5:0:0
 
-LIBPPL_LT_CURRENT =  4
+LIBPPL_LT_CURRENT =  5
 LIBPPL_LT_REVISION = 0
 LIBPPL_LT_AGE =      0
 
@@ -271,6 +272,7 @@ swapping_sort.icc
 # The ordering of the following list *matters*!
 DOC_FILES = \
 GMP_Integer.types.hh \
+Checked_Number.types.hh \
 Native_Integer.types.hh \
 Coefficient.types.hh \
 Variable.types.hh \
@@ -287,6 +289,10 @@ Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
 BD_Shape.types.hh \
+GMP_Integer.defs.hh \
+Checked_Number.defs.hh \
+Native_Integer.defs.hh \
+Coefficient.defs.hh \
 Variable.defs.hh \
 Linear_Expression.defs.hh \
 Constraint.defs.hh \
@@ -317,7 +323,16 @@ Polyhedra_Powerset.defs.hh \
 Polyhedra_Powerset.inlines.hh \
 algorithms.hh
 
+if NO_UNDEFINED
+
+NO_UNDEFINED_FLAG = -no-undefined
+
+libppl_la_LIBADD = @extra_libraries@
+
+endif NO_UNDEFINED
+
 libppl_la_LDFLAGS = \
+$(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
 
 noinst_HEADERS = ppl.hh ppl_install.hh
@@ -337,7 +352,7 @@ ppl_install.hh:	ppl_header.top $(top_builddir)/config.h $(top_builddir)/src/vers
 	cat $(srcdir)/ppl_header.top \
 		$(top_builddir)/src/version.hh $(top_builddir)/config.h \
 		$(srcdir)/ppl_header.middle tmp/includes >$@
-	$(CXXCPP) -I$(srcdir) -P @debug_flag@ tmp/noincludes.cc \
+	$(CXXCPP) $(CPPFLAGS) -I$(srcdir) -P @debug_flag@ tmp/noincludes.cc \
 		>>$@
 	cat $(srcdir)/ppl_header.bottom >>$@
 	rm -rf tmp

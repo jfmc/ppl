@@ -202,6 +202,7 @@ Linear_System::permute_columns(const std::vector<dimension_type>& cycles) {
   sign_normalize();
 }
 
+/*! \relates Linear_System */
 inline bool
 operator!=(const Linear_System& x, const Linear_System& y) {
   return !(x == y);
@@ -343,7 +344,7 @@ Linear_System::With_Saturation_Matrix_iterator::operator*() const {
 
 inline Linear_System::With_Saturation_Matrix_iterator::pointer
 Linear_System::With_Saturation_Matrix_iterator::operator->() const {
-  return i1.operator->();
+  return &*i1;
 }
 
 inline void

@@ -42,7 +42,7 @@ or via some other header file, with the directive
 If this directive does not work, then your compiler is unable to find
 the file <CODE>ppl_c.h</CODE>. So check that the library is installed
 (if it is not installed, you may want to <CODE>make install</CODE>,
-perhaps with root privileges); that it is installed in the right place
+perhaps with root privileges) in the right place
 (if not you may want to reconfigure the library using the appropriate
 pathname for the <CODE>--prefix</CODE> option); and that your compiler
 knows where it is installed (if not you should add the path to the
@@ -315,7 +315,7 @@ int
 ppl_finalize __P((void));
 
 /*! \brief
-  Installs the user-defined error handler pointed by \p h.
+  Installs the user-defined error handler pointed at by \p h.
 
   The error handler takes an error code and a textual description that
   gives further information about the actual error.  The C string
@@ -356,7 +356,7 @@ PPL_TYPE_DECLARATION(Polyhedron);
 /*@{*/
 
 /*! \brief
-  Creates a new coefficient with value 0 and writes an handle for the
+  Creates a new coefficient with value 0 and writes a handle for the
   newly created coefficient at address \p pc.
 */
 int
@@ -364,14 +364,14 @@ ppl_new_Coefficient __P((ppl_Coefficient_t* pc));
 
 /*! \brief
   Creates a new coefficient with the value given by the GMP integer
-  \p z and writes an handle for the newly created coefficient
+  \p z and writes a handle for the newly created coefficient
   at address \p pc.
 */
 int
 ppl_new_Coefficient_from_mpz_t __P((ppl_Coefficient_t* pc, mpz_t z));
 
 /*! \brief
-  Builds a coefficient that is a copy of \p c; writes an handle
+  Builds a coefficient that is a copy of \p c; writes a handle
   for the newly created coefficient at address \p pc.
 */
 int
@@ -419,7 +419,7 @@ ppl_Coefficient_OK __P((ppl_const_Coefficient_t c));
 
 /*! \brief
   Creates a new linear expression corresponding to the constant 0 in a
-  zero-dimensional space; writes an handle for the new linear
+  zero-dimensional space; writes a handle for the new linear
   expression at address \p ple.
 */
 int
@@ -427,7 +427,7 @@ ppl_new_Linear_Expression __P((ppl_Linear_Expression_t* ple));
 
 /*! \brief
   Creates a new linear expression corresponding to the constant 0 in a
-  <TT>d</TT>-dimensional space; writes an handle for the new linear
+  <TT>d</TT>-dimensional space; writes a handle for the new linear
   expression at address \p ple.
 */
 int
@@ -435,7 +435,7 @@ ppl_new_Linear_Expression_with_dimension __P((ppl_Linear_Expression_t* ple,
 					      ppl_dimension_type d));
 
 /*! \brief
-  Builds a linear expression that is a copy of \p le; writes an handle
+  Builds a linear expression that is a copy of \p le; writes a handle
   for the newly created linear expression at address \p ple.
 */
 int
@@ -444,7 +444,7 @@ __P((ppl_Linear_Expression_t* ple, ppl_const_Linear_Expression_t le));
 
 /*! \brief
   Builds a linear expression corresponding to constraint \p c;
-  writes an handle for the newly created linear expression at address \p ple.
+  writes a handle for the newly created linear expression at address \p ple.
 */
 int
 ppl_new_Linear_Expression_from_Constraint __P((ppl_Linear_Expression_t* ple,
@@ -452,7 +452,7 @@ ppl_new_Linear_Expression_from_Constraint __P((ppl_Linear_Expression_t* ple,
 
 /*! \brief
   Builds a linear expression corresponding to generator \p g;
-  writes an handle for the newly created linear expression at address \p ple.
+  writes a handle for the newly created linear expression at address \p ple.
 */
 int
 ppl_new_Linear_Expression_from_Generator __P((ppl_Linear_Expression_t* ple,
@@ -565,7 +565,7 @@ enum ppl_enum_Constraint_Type {
 /*@{*/
 
 /*! \brief
-  Creates the new constraint `\p le \p rel 0' and writes an handle for
+  Creates the new constraint `\p le \p rel 0' and writes a handle for
   it at address \p pc.  The space dimension of the new constraint is
   equal to the space dimension of \p le.
 */
@@ -576,7 +576,7 @@ ppl_new_Constraint __P((ppl_Constraint_t* pc,
 
 /*! \brief
   Creates the unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$
-  and writes an handle for it at address \p pc.
+  and writes a handle for it at address \p pc.
 */
 int
 ppl_new_Constraint_zero_dim_false __P((ppl_Constraint_t* pc));
@@ -584,13 +584,13 @@ ppl_new_Constraint_zero_dim_false __P((ppl_Constraint_t* pc));
 /*! \brief
   Creates the true (zero-dimension space) constraint \f$0 \leq 1\f$,
   also known as <EM>positivity constraint</EM>.
-  An handle for the newly created constraint is written at address \p pc.
+  a handle for the newly created constraint is written at address \p pc.
 */
 int
 ppl_new_Constraint_zero_dim_positivity __P((ppl_Constraint_t* pc));
 
 /*! \brief
-  Builds a constraint that is a copy of \p c; writes an handle
+  Builds a constraint that is a copy of \p c; writes a handle
   for the newly created constraint at address \p pc.
 */
 int
@@ -654,7 +654,7 @@ ppl_Constraint_OK __P((ppl_const_Constraint_t c));
 /*@{*/
 
 /*! \brief
-  Builds an empty system of constraints and writes an handle to it at
+  Builds an empty system of constraints and writes a handle to it at
   address \p pcs.
 */
 int
@@ -662,14 +662,14 @@ ppl_new_Constraint_System __P((ppl_Constraint_System_t* pcs));
 
 /*! \brief
   Builds a zero-dimensional, unsatisfiable constraint system and
-  writes an handle to it at address \p pcs.
+  writes a handle to it at address \p pcs.
 */
 int
 ppl_new_Constraint_System_zero_dim_empty __P((ppl_Constraint_System_t* pcs));
 
 /*! \brief
   Builds the singleton constraint system containing only a copy of
-  constraint \p c; writes an handle for the newly created system at
+  constraint \p c; writes a handle for the newly created system at
   address \p pcs.
 */
 int
@@ -677,7 +677,7 @@ ppl_new_Constraint_System_from_Constraint __P((ppl_Constraint_System_t* pcs,
 					       ppl_const_Constraint_t c));
 
 /*! \brief
-  Builds a constraint system that is a copy of \p cs; writes an handle
+  Builds a constraint system that is a copy of \p cs; writes a handle
   for the newly created system at address \p pcs.
 */
 int
@@ -730,7 +730,7 @@ ppl_Constraint_System_OK __P((ppl_const_Constraint_System_t c));
 
 
 /*! \brief
-  Builds a new `const iterator' and writes an handle to it at address
+  Builds a new `const iterator' and writes a handle to it at address
   \p pcit.
 */
 int
@@ -828,7 +828,7 @@ enum ppl_enum_Generator_Type {
   Creates a new generator of direction \p le and type \p t.  If the
   generator to be created is a point or a closure point, the divisor
   \p d is applied to \p le.  For other types of generators \p d is
-  simply disregarded.  An handle for the new generator is written at
+  simply disregarded.  A handle for the new generator is written at
   address \p pg.  The space dimension of the new generator is equal to
   the space dimension of \p le.
 */
@@ -840,7 +840,7 @@ ppl_new_Generator __P((ppl_Generator_t* pg,
 
 /*! \brief
   Creates the point that is the origin of the zero-dimensional space
-  \f$\Rset^0\f$.  Writes an handle for the new generator at address
+  \f$\Rset^0\f$.  Writes a handle for the new generator at address
   \p pg.
 */
 int
@@ -848,14 +848,14 @@ ppl_new_Generator_zero_dim_point __P((ppl_Generator_t* pg));
 
 /*! \brief
   Creates, as a closure point, the point that is the origin of the
-  zero-dimensional space \f$\Rset^0\f$.  Writes an handle for the new
+  zero-dimensional space \f$\Rset^0\f$.  Writes a handle for the new
   generator at address \p pg.
 */
 int
 ppl_new_Generator_zero_dim_closure_point __P((ppl_Generator_t* pg));
 
 /*! \brief
-  Builds a generator that is a copy of \p g; writes an handle
+  Builds a generator that is a copy of \p g; writes a handle
   for the newly created generator at address \p pg.
 */
 int
@@ -918,7 +918,7 @@ ppl_Generator_OK __P((ppl_const_Generator_t g));
 /*@{*/
 
 /*! \brief
-  Builds an empty system of generators and writes an handle to it at
+  Builds an empty system of generators and writes a handle to it at
   address \p pgs.
 */
 int
@@ -926,7 +926,7 @@ ppl_new_Generator_System __P((ppl_Generator_System_t* pgs));
 
 /*
   Creates the universe zero-dimensional system of generators (i.e.,
-  containing the origin only).  Writes an handle to the new system at
+  containing the origin only).  Writes a handle to the new system at
   address \p pgs.
 */
 int
@@ -934,7 +934,7 @@ ppl_new_Generator_System_zero_dim_univ __P((ppl_Generator_System_t* pgs));
 
 /*! \brief
   Builds the singleton generator system containing only a copy of
-  generator \p g; writes an handle for the newly created system at
+  generator \p g; writes a handle for the newly created system at
   address \p pgs.
 */
 int
@@ -942,7 +942,7 @@ ppl_new_Generator_System_from_Generator __P((ppl_Generator_System_t* pgs,
 					     ppl_const_Generator_t g));
 
 /*! \brief
-  Builds a generator system that is a copy of \p gs; writes an handle
+  Builds a generator system that is a copy of \p gs; writes a handle
   for the newly created system at address \p pgs.
 */
 int
@@ -995,7 +995,7 @@ ppl_Generator_System_OK __P((ppl_const_Generator_System_t c));
 
 
 /*! \brief
-  Builds a new `const iterator' and writes an handle to it at address
+  Builds a new `const iterator' and writes a handle to it at address
   \p pgit.
 */
 int
@@ -1152,7 +1152,7 @@ ppl_new_NNC_Polyhedron_empty_from_dimension __P((ppl_Polyhedron_t* pph,
 					       ppl_dimension_type d));
 
 /*! \brief
-  Builds a closed polyhedron that is a copy of \p ph; writes an handle
+  Builds a closed polyhedron that is a copy of \p ph; writes a handle
   for the newly created polyhedron at address \p pph.
 */
 int
@@ -1161,7 +1161,7 @@ ppl_new_C_Polyhedron_from_C_Polyhedron __P((ppl_Polyhedron_t* pph,
 
 /*! \brief
   Builds a closed polyhedron that is a copy of of the NNC polyhedron
-  \p ph; writes an handle for the newly created polyhedron at address
+  \p ph; writes a handle for the newly created polyhedron at address
   \p pph.
 */
 int
@@ -1170,7 +1170,7 @@ ppl_new_C_Polyhedron_from_NNC_Polyhedron __P((ppl_Polyhedron_t* pph,
 
 /*! \brief
   Builds an NNC polyhedron that is a copy of of the closed polyhedron
-  \p ph; writes an handle for the newly created polyhedron at address
+  \p ph; writes a handle for the newly created polyhedron at address
   \p pph.
 */
 int
@@ -1178,7 +1178,7 @@ ppl_new_NNC_Polyhedron_from_C_Polyhedron __P((ppl_Polyhedron_t* pph,
 					      ppl_const_Polyhedron_t ph));
 
 /*! \brief
-  Builds an NNC polyhedron that is a copy of \p ph; writes an handle
+  Builds an NNC polyhedron that is a copy of \p ph; writes a handle
   for the newly created polyhedron at address \p pph.
 */
 int
@@ -1187,7 +1187,7 @@ ppl_new_NNC_Polyhedron_from_NNC_Polyhedron __P((ppl_Polyhedron_t* pph,
 
 /*! \brief
   Builds a new closed polyhedron from the system of constraints
-  \p cs and writes an handle for the newly created polyhedron at
+  \p cs and writes a handle for the newly created polyhedron at
   address \p pph.
 
   The new polyhedron will inherit the space dimension of \p cs.
@@ -1198,7 +1198,7 @@ __P((ppl_Polyhedron_t* pph, ppl_const_Constraint_System_t cs));
 
 /*! \brief
   Builds a new closed polyhedron recycling the system of constraints
-  \p cs and writes an handle for the newly created polyhedron at
+  \p cs and writes a handle for the newly created polyhedron at
   address \p pph.
 
   Since \p cs will be <EM>the</EM> system of constraints of the new
@@ -1214,7 +1214,7 @@ __P((ppl_Polyhedron_t* pph, ppl_Constraint_System_t cs));
 
 /*! \brief
   Builds a new NNC polyhedron from the system of constraints
-  \p cs and writes an handle for the newly created polyhedron at
+  \p cs and writes a handle for the newly created polyhedron at
   address \p pph.
 
   The new polyhedron will inherit the space dimension of \p cs.
@@ -1225,7 +1225,7 @@ __P((ppl_Polyhedron_t* pph, ppl_const_Constraint_System_t cs));
 
 /*! \brief
   Builds a new NNC polyhedron recycling the system of constraints
-  \p cs and writes an handle for the newly created polyhedron at
+  \p cs and writes a handle for the newly created polyhedron at
   address \p pph.
 
   Since \p cs will be <EM>the</EM> system of constraints of the new
@@ -1241,7 +1241,7 @@ __P((ppl_Polyhedron_t* pph, ppl_Constraint_System_t cs));
 
 /*! \brief
   Builds a new closed polyhedron from the system of generators
-  \p gs and writes an handle for the newly created polyhedron at
+  \p gs and writes a handle for the newly created polyhedron at
   address \p pph.
 
   The new polyhedron will inherit the space dimension of \p gs.
@@ -1252,7 +1252,7 @@ __P((ppl_Polyhedron_t* pph, ppl_const_Generator_System_t gs));
 
 /*! \brief
   Builds a new closed polyhedron recycling the system of generators
-  \p gs and writes an handle for the newly created polyhedron at
+  \p gs and writes a handle for the newly created polyhedron at
   address \p pph.
 
   Since \p gs will be <EM>the</EM> system of generators of the new
@@ -1268,7 +1268,7 @@ ppl_new_C_Polyhedron_recycle_Generator_System __P((ppl_Polyhedron_t* pph,
 
 /*! \brief
   Builds a new NNC polyhedron from the system of generators
-  \p gs and writes an handle for the newly created polyhedron at
+  \p gs and writes a handle for the newly created polyhedron at
   address \p pph.
 
   The new polyhedron will inherit the space dimension of \p gs.
@@ -1279,7 +1279,7 @@ __P((ppl_Polyhedron_t* pph, ppl_const_Generator_System_t gs));
 
 /*! \brief
   Builds a new NNC polyhedron recycling the system of generators
-  \p gs and writes an handle for the newly created polyhedron at
+  \p gs and writes a handle for the newly created polyhedron at
   address \p pph.
 
   Since \p gs will be <EM>the</EM> system of generators of the new

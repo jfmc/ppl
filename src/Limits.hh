@@ -24,11 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Limits_hh
 #define PPL_Limits_hh 1
 
-// Please do not remove the space separating `#' from `include':
-// this ensures that the directive will not be moved during the
-// procedure that automatically creates the library's include file
-// (see `Makefile.am' in the `src' directory).
-# include <climits>
+#include <climits>
 
 // C99 defines LLONG_MIN, LLONG_MAX and ULLONG_MAX, but this part of
 // C99 is not yet included into the C++ standard.
@@ -51,15 +47,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 #endif
 
-
 #ifndef ULLONG_MAX
 #if defined(ULONG_LONG_MAX)
 #define ULLONG_MAX ULONG_LONG_MAX
-#elif SIZEOF_LONG_LONG == 8
+#elif SIZEOF_UNSIGNED_LONG_LONG == 8
 #define ULLONG_MAX 0xffffffffffffffffULL
 #endif
 #endif
-
 
 namespace Parma_Polyhedra_Library {
 

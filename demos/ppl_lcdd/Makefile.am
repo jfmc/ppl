@@ -70,6 +70,8 @@ if HAVE_MD5SUM
 
 COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
+TEXT_MD5SUM = @text_md5sum@
+
 if ASSERTIONS_ENABLED
 
 TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED = \
@@ -117,7 +119,7 @@ check-local: ppl_lcdd
 	  grep -q $$file tough_examples && continue; \
 	  echo -n $$file " " >>obtained; \
 	  echo ppl_lcdd $$path; \
-	  ./ppl_lcdd $$path | $(MD5SUM) - >>obtained; \
+	  ./ppl_lcdd $$path | $(TEXT_MD5SUM) >>obtained; \
 	done
 	diff -q $(srcdir)/$(EXPECTED) obtained
 

@@ -60,6 +60,7 @@ DEFINE_NATIVE_INTEGER_TRAITS(long long)
 //! \brief
 //! If \p x is a non negative value of a native integral type, returns the
 //! integer square root of \p x.  Returns 0 otherwise.
+/*! \relates Native_Integer */
 template <typename T>
 inline T
 uisqrt(T x) {
@@ -77,6 +78,7 @@ uisqrt(T x) {
 }
 
 //! Returns the integer square root of \p x.
+/*! \relates Native_Integer */
 template <typename T>
 inline T
 isqrt(T x) {
@@ -86,6 +88,7 @@ isqrt(T x) {
 }
 
 //! Returns the absolute value of \p x.
+/*! \relates Native_Integer */
 template <typename T>
 inline T
 abs(T x) {
@@ -93,6 +96,7 @@ abs(T x) {
 }
 
 //! Returns the greatest common divisor of \p x and \p y.
+/*! \relates Native_Integer */
 template <typename T>
 inline T
 gcd(T x,T y) {
@@ -112,6 +116,7 @@ gcd(T x,T y) {
 }
 
 //! Returns the least common multiple of \p x and \p y.
+/*! \relates Native_Integer */
 template <typename T>
 inline T
 lcm(T x, T y) {
@@ -136,8 +141,8 @@ Native_Integer<T>::Native_Integer()
 #define PPL_INTEGER_CONSTRUCT_FROM_NATIVE(native) \
 template <typename T> \
 inline \
-Native_Integer<T>::Native_Integer(native z) \
-  : v(z) { \
+Native_Integer<T>::Native_Integer(const native z) \
+  : v(static_cast<T>(z)) { \
 }
 
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(signed char)
@@ -150,6 +155,14 @@ PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned short)
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned int)
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned long)
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned long long)
+PPL_INTEGER_CONSTRUCT_FROM_NATIVE(float32_t)
+PPL_INTEGER_CONSTRUCT_FROM_NATIVE(float64_t)
+#ifdef FLOAT96_TYPE
+PPL_INTEGER_CONSTRUCT_FROM_NATIVE(float96_t)
+#endif
+#ifdef FLOAT128_TYPE
+PPL_INTEGER_CONSTRUCT_FROM_NATIVE(float128_t)
+#endif
 
 #define PPL_SIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(type) \
 template <> \
@@ -306,36 +319,42 @@ Native_Integer<T>::operator--(int) {
   return tmp;
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline const T&
 raw_value(const Native_Integer<T>& x) {
   return x.raw_value();
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline T&
 raw_value(Native_Integer<T>& x) {
   return x.raw_value();
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 size_t
 total_memory_in_bytes(const Native_Integer<T>& x) {
   return sizeof(x);
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 size_t
 external_memory_in_bytes(const Native_Integer<T>& x) {
   return 0;
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline Native_Integer<T>
 operator+(const Native_Integer<T>& x) {
   return x;
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline Native_Integer<T>
 operator-(const Native_Integer<T>& x) {
@@ -344,6 +363,7 @@ operator-(const Native_Integer<T>& x) {
   return tmp;
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline Native_Integer<T>
 operator+(const Native_Integer<T>& x, const Native_Integer<T>& y) {
@@ -352,6 +372,7 @@ operator+(const Native_Integer<T>& x, const Native_Integer<T>& y) {
   return tmp;
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline Native_Integer<T>
 operator-(const Native_Integer<T>& x, const Native_Integer<T>& y) {
@@ -360,6 +381,7 @@ operator-(const Native_Integer<T>& x, const Native_Integer<T>& y) {
   return tmp;
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline Native_Integer<T>
 operator*(const Native_Integer<T>& x, const Native_Integer<T>& y) {
@@ -368,6 +390,7 @@ operator*(const Native_Integer<T>& x, const Native_Integer<T>& y) {
   return tmp;
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline Native_Integer<T>
 operator/(const Native_Integer<T>& x, const Native_Integer<T>& y) {
@@ -376,6 +399,7 @@ operator/(const Native_Integer<T>& x, const Native_Integer<T>& y) {
   return tmp;
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline Native_Integer<T>
 operator%(const Native_Integer<T>& x, const Native_Integer<T>& y) {
@@ -384,42 +408,49 @@ operator%(const Native_Integer<T>& x, const Native_Integer<T>& y) {
   return tmp;
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline bool
 operator==(const Native_Integer<T>& x, const Native_Integer<T>& y) {
   return x.raw_value() == y.raw_value();
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline bool
 operator!=(const Native_Integer<T>& x, const Native_Integer<T>& y) {
   return x.raw_value() != y.raw_value();
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline bool
 operator>=(const Native_Integer<T>& x, const Native_Integer<T>& y) {
   return x.raw_value() >= y.raw_value();
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline bool
 operator>(const Native_Integer<T>& x, const Native_Integer<T>& y) {
   return x.raw_value() > y.raw_value();
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline bool
 operator<=(const Native_Integer<T>& x, const Native_Integer<T>& y) {
   return x.raw_value() <= y.raw_value();
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline bool
 operator<(const Native_Integer<T>& x, const Native_Integer<T>& y) {
   return x.raw_value() < y.raw_value();
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline int
 sgn(const Native_Integer<T>& x) {
@@ -431,18 +462,21 @@ sgn(const Native_Integer<T>& x) {
     return -1;
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline int
 cmp(const Native_Integer<T>& x, const Native_Integer<T>& y) {
   return sgn(x-y);
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline void
 negate(Native_Integer<T>& x) {
   x.raw_value() = -x.raw_value();
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline void
 add_mul_assign(Native_Integer<T>& x,
@@ -451,6 +485,7 @@ add_mul_assign(Native_Integer<T>& x,
   x.raw_value() += y.raw_value() * z.raw_value();
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline void
 sub_mul_assign(Native_Integer<T>& x,
@@ -459,6 +494,7 @@ sub_mul_assign(Native_Integer<T>& x,
   x.raw_value() -= y.raw_value() * z.raw_value();
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline void
 gcd_assign(Native_Integer<T>& x, const Native_Integer<T>& y) {
@@ -466,6 +502,7 @@ gcd_assign(Native_Integer<T>& x, const Native_Integer<T>& y) {
 }
 
 
+/*! \relates Native_Integer */
 template <typename T>
 inline void
 gcd_assign(Native_Integer<T>& x,
@@ -473,12 +510,14 @@ gcd_assign(Native_Integer<T>& x,
   x.raw_value() = gcd(y.raw_value(), z.raw_value());
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline void
 lcm_assign(Native_Integer<T>& x, const Native_Integer<T>& y) {
   x.raw_value() = lcm(x.raw_value(), y.raw_value());
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline void
 lcm_assign(Native_Integer<T>& x,
@@ -486,12 +525,14 @@ lcm_assign(Native_Integer<T>& x,
   x.raw_value() = lcm(y.raw_value(), z.raw_value());
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline void
 exact_div_assign(Native_Integer<T>& x, const Native_Integer<T>& y) {
   x.raw_value() /= y.raw_value();
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline void
 exact_div_assign(Native_Integer<T>& x,
@@ -499,6 +540,7 @@ exact_div_assign(Native_Integer<T>& x,
   x.raw_value() = y.raw_value() / z.raw_value();
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline void
 sqrt_assign(Native_Integer<T>& x) {
@@ -506,6 +548,7 @@ sqrt_assign(Native_Integer<T>& x) {
   x.raw_value() = isqrt(x.raw_value());
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline void
 sqrt_assign(Native_Integer<T>& x, const Native_Integer<T>& y) {
@@ -513,12 +556,14 @@ sqrt_assign(Native_Integer<T>& x, const Native_Integer<T>& y) {
   x.raw_value() = isqrt(y.raw_value());
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline std::ostream&
 operator<<(std::ostream& os, const Native_Integer<T>& x) {
   return os << x.raw_value();
 }
 
+/*! \relates Native_Integer */
 template <typename T>
 inline std::istream&
 operator>>(std::istream& is, Native_Integer<T>& x) {

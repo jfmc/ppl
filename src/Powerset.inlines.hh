@@ -31,103 +31,104 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename CS>
-typename Powerset<CS>::iterator
+inline typename Powerset<CS>::iterator
 Powerset<CS>::begin() {
   return sequence.begin();
 }
 
 template <typename CS>
-typename Powerset<CS>::const_iterator
+inline typename Powerset<CS>::const_iterator
 Powerset<CS>::begin() const {
   return sequence.begin();
 }
 
 template <typename CS>
-typename Powerset<CS>::iterator
+inline typename Powerset<CS>::iterator
 Powerset<CS>::end() {
   return sequence.end();
 }
 
 template <typename CS>
-typename Powerset<CS>::const_iterator
+inline typename Powerset<CS>::const_iterator
 Powerset<CS>::end() const {
   return sequence.end();
 }
 
 template <typename CS>
-typename Powerset<CS>::reverse_iterator
+inline typename Powerset<CS>::reverse_iterator
 Powerset<CS>::rbegin() {
   return sequence.rbegin();
 }
 
 template <typename CS>
-typename Powerset<CS>::const_reverse_iterator
+inline typename Powerset<CS>::const_reverse_iterator
 Powerset<CS>::rbegin() const {
   return sequence.rbegin();
 }
 
 template <typename CS>
-typename Powerset<CS>::reverse_iterator
+inline typename Powerset<CS>::reverse_iterator
 Powerset<CS>::rend() {
   return sequence.rend();
 }
 
 template <typename CS>
-typename Powerset<CS>::const_reverse_iterator
+inline typename Powerset<CS>::const_reverse_iterator
 Powerset<CS>::rend() const {
   return sequence.rend();
 }
 
 template <typename CS>
-typename Powerset<CS>::size_type
+inline typename Powerset<CS>::size_type
 Powerset<CS>::size() const {
   return sequence.size();
 }
 
 template <typename CS>
-bool
+inline bool
 Powerset<CS>::empty() const {
   return sequence.empty();
 }
 
 template <typename CS>
-void
+inline void
 Powerset<CS>::push_back(const CS& y) {
   sequence.push_back(y);
 }
 
 template <typename CS>
-void
+inline void
 Powerset<CS>::pop_back() {
   sequence.pop_back();
 }
 
 template <typename CS>
-typename Powerset<CS>::iterator
+inline typename Powerset<CS>::iterator
 Powerset<CS>::erase(iterator first, iterator last) {
   return sequence.erase(first, last);
 }
 
 template <typename CS>
-typename Powerset<CS>::iterator
+inline typename Powerset<CS>::iterator
 Powerset<CS>::erase(iterator position) {
   return sequence.erase(position);
 }
 
 template <typename CS>
-void
+inline void
 Powerset<CS>::clear() {
   sequence.clear();
 }
 
 template <typename CS>
-Powerset<CS>::Powerset(const Powerset<CS>& y)
+inline
+Powerset<CS>::Powerset(const Powerset& y)
   : sequence(y.sequence), reduced(y.reduced) {
 }
 
 template <typename CS>
-Powerset<CS>&
-Powerset<CS>::operator=(const Powerset<CS>& y) {
+inline Powerset<CS>&
+Powerset<CS>::operator=(const Powerset& y) {
   sequence = y.sequence;
   reduced = y.reduced;
   return *this;
@@ -141,11 +142,13 @@ Powerset<CS>::swap(Powerset& y) {
 }
 
 template <typename CS>
+inline
 Powerset<CS>::Powerset()
   : sequence(), reduced(true) {
 }
 
 template <typename CS>
+inline
 Powerset<CS>::Powerset(const CS& d)
   : sequence(), reduced(true) {
   if (!d.is_bottom())
@@ -153,11 +156,14 @@ Powerset<CS>::Powerset(const CS& d)
 }
 
 template <typename CS>
+inline
+Powerset<CS>::~Powerset() {
+}
+
+template <typename CS>
 void
 Powerset<CS>::collapse(const iterator sink) {
   assert(sink != end());
-  // Collapse onto the disjunct pointed to by `sink' all the disjuncts
-  // that follow.
   CS& d = *sink;
   iterator j = sink;
   iterator send = end();
@@ -231,11 +237,9 @@ Powerset<CS>::collapse(const unsigned max_disjuncts) {
   omega_reduce();
   size_type n = size();
   if (n > max_disjuncts) {
+    // Let `i' point to the last disjunct that will survive.
     iterator i = begin();
-    // Move `i' to the last disjunct that will survive.
-    for (unsigned m = max_disjuncts-1; m-- > 0; )
-      ++i;
-
+    std::advance(i, max_disjuncts-1);
     // This disjunct will be assigned an upper-bound of itself and of
     // all the disjuncts that follow.
     collapse(i);
@@ -293,7 +297,7 @@ Powerset<CS>::add_non_bottom_disjunct(Sequence& s,
 }
 
 template <typename CS>
-void
+inline void
 Powerset<CS>::add_non_bottom_disjunct(Sequence& s, const CS& d) {
   assert(!d.is_bottom());
   iterator s_begin = s.begin();
@@ -302,7 +306,7 @@ Powerset<CS>::add_non_bottom_disjunct(Sequence& s, const CS& d) {
 }
 
 template <typename CS>
-void
+inline void
 Powerset<CS>::add_disjunct(const CS& d) {
   if (!d.is_bottom())
     add_non_bottom_disjunct(sequence, d);
@@ -310,7 +314,7 @@ Powerset<CS>::add_disjunct(const CS& d) {
 
 template <typename CS>
 bool
-Powerset<CS>::definitely_entails(const Powerset<CS>& y) const {
+Powerset<CS>::definitely_entails(const Powerset& y) const {
   const Powerset<CS>& x = *this;
   bool found = true;
   for (const_iterator xi = x.begin(),
@@ -327,7 +331,22 @@ Powerset<CS>::definitely_entails(const Powerset<CS>& y) const {
 template <typename CS>
 inline
 bool operator==(const Powerset<CS>& x, const Powerset<CS>& y) {
-  return (x.size() == y.size() && equal(x.begin(), x.end(), y.begin()));
+  x.omega_reduce();
+  y.omega_reduce();
+  if (x.size() != y.size())
+    return false;
+  // Take a copy of `y' and work with it.
+  Powerset<CS> yy = y;
+  for (typename Powerset<CS>::const_iterator xi = x.begin(),
+	 x_end = x.end(); xi != x_end; ++xi) {
+    typename Powerset<CS>::iterator yyi = yy.begin(), yy_end = yy.end();
+    yyi = std::find(yyi, yy_end, *xi);
+    if (yyi == yy_end)
+      return false;
+    else
+      yy.erase(yyi);
+  }
+  return true;
 }
 
 /*! \relates Powerset */
@@ -363,24 +382,36 @@ Powerset<CS>::collapse() {
 }
 
 template <typename CS>
+template <typename Binary_Operator_Assign>
 void
-Powerset<CS>::meet_assign(const Powerset<CS>& y) {
-  const Powerset<CS>& x = *this;
+Powerset<CS>::pairwise_apply_assign(const Powerset& y,
+				    Binary_Operator_Assign op_assign) {
+  // Ensure omega-reduction here, since what follows has quadratic complexity.
+  omega_reduce();
+  y.omega_reduce();
   Sequence new_sequence;
-  for (const_iterator xi = x.begin(), x_end = x.end(); xi != x_end; ++xi)
-    for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi) {
+  for (const_iterator xi = begin(), x_end = end(),
+	 y_begin = y.begin(), y_end = y.end(); xi != x_end; ++xi)
+    for (const_iterator yi = y_begin; yi != y_end; ++yi) {
       CS zi = *xi;
-      zi.meet_assign(*yi);
+      op_assign(zi, *yi);
       if (!zi.is_bottom())
 	new_sequence.push_back(zi);
     }
+  // Put the new sequence in place.
   std::swap(sequence, new_sequence);
-  omega_reduce();
+  reduced = false;
+}
+
+template <typename CS>
+inline void
+Powerset<CS>::meet_assign(const Powerset& y) {
+  pairwise_apply_assign(y, std::mem_fun_ref(&CS::meet_assign));
 }
 
 template <typename CS>
 void
-Powerset<CS>::upper_bound_assign(const Powerset<CS>& y) {
+Powerset<CS>::least_upper_bound_assign(const Powerset& y) {
   // Ensure omega-reduction here, since what follows has quadratic complexity.
   omega_reduce();
   y.omega_reduce();
@@ -388,6 +419,12 @@ Powerset<CS>::upper_bound_assign(const Powerset<CS>& y) {
   iterator send = end();
   for (const_iterator i = y.begin(), y_end = y.end(); i != y_end; ++i)
     add_non_bottom_disjunct(sequence, *i, sbegin, send);
+}
+
+template <typename CS>
+inline void
+Powerset<CS>::upper_bound_assign(const Powerset& y) {
+  least_upper_bound_assign(y);
 }
 
 namespace IO_Operators {
@@ -431,7 +468,7 @@ Powerset<CS>::external_memory_in_bytes() const {
 }
 
 template <typename CS>
-memory_size_type
+inline memory_size_type
 Powerset<CS>::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
