@@ -31,6 +31,9 @@ class Parma_Watchdog_Library::Handler {
 public:
   //! Does the job.
   virtual void act() const = 0;
+
+  //! Virtual destructor.
+  virtual ~Handler();
 };
 
 //! A kind of Handler that installs a flag onto a flag-holder.
