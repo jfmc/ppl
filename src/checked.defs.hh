@@ -192,6 +192,9 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
 #define SPECIALIZE_CMP(suf, Type1, Type2) SPECIALIZE_FUN2(cmp, suf, Result, const, Type1, const, Type2)
 #define SPECIALIZE_SET_SPECIAL(suf, type) SPECIALIZE_FUN2(set_special, suf, void, , type, const, Result)
 #define SPECIALIZE_VALUE_TYPE(suf, type) SPECIALIZE_FUN1(value_type, suf, Result, const, type)
+#define SPECIALIZE_PRINT(suf, type) SPECIALIZE_FUN2(print, suf, Result, , std::ostream, const, type)
+#define SPECIALIZE_INPUT(suf, type) SPECIALIZE_FUN2(input, suf, Result, , std::istream, , type)
+
 
 DECLARE_FUN1(pred, Result, )
 DECLARE_FUN1(succ, Result, )
@@ -212,6 +215,8 @@ DECLARE_FUN1(sgn, Result, const)
 DECLARE_FUN2(cmp, Result, const, const)
 DECLARE_FUN1(value_type, Result, const)
 DECLARE_FUN2(set_special, void, , const)
+DECLARE_FUN2(print, Result, , const)
+DECLARE_FUN2(input, Result, , )
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 Result assign_ext(To& to, const From& from);

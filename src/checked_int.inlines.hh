@@ -979,6 +979,21 @@ sqrt_signed_int(Type& to, const Type from) {
   return r;
 }
 
+template <typename Policy, typename Type>
+inline Result
+print_char(std::ostream& os, const Type x) {
+  os << (int) x;
+  return V_EQ;
+}
+
+template <typename Policy, typename Type>
+inline Result
+input_char(std::istream& is, Type& x) {
+  int i;
+  is >> i;
+  return assign<Policy>(x, i);
+}
+
 SPECIALIZE_PRED(int, signed char)
 SPECIALIZE_PRED(int, short)
 SPECIALIZE_PRED(int, int)
@@ -1154,6 +1169,28 @@ SPECIALIZE_SUB_MUL(generic, unsigned short, unsigned short)
 SPECIALIZE_SUB_MUL(generic, unsigned int, unsigned int)
 SPECIALIZE_SUB_MUL(generic, unsigned long, unsigned long)
 SPECIALIZE_SUB_MUL(generic, unsigned long long, unsigned long long)
+
+SPECIALIZE_PRINT(char, signed char)
+SPECIALIZE_PRINT(generic, short)
+SPECIALIZE_PRINT(generic, int)
+SPECIALIZE_PRINT(generic, long)
+SPECIALIZE_PRINT(generic, long long)
+SPECIALIZE_PRINT(char, unsigned char)
+SPECIALIZE_PRINT(generic, unsigned short)
+SPECIALIZE_PRINT(generic, unsigned int)
+SPECIALIZE_PRINT(generic, unsigned long)
+SPECIALIZE_PRINT(generic, unsigned long long)
+
+SPECIALIZE_INPUT(char, signed char)
+SPECIALIZE_INPUT(generic, short)
+SPECIALIZE_INPUT(generic, int)
+SPECIALIZE_INPUT(generic, long)
+SPECIALIZE_INPUT(generic, long long)
+SPECIALIZE_INPUT(char, unsigned char)
+SPECIALIZE_INPUT(generic, unsigned short)
+SPECIALIZE_INPUT(generic, unsigned int)
+SPECIALIZE_INPUT(generic, unsigned long)
+SPECIALIZE_INPUT(generic, unsigned long long)
 
 } // namespace Checked
 

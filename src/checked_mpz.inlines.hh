@@ -438,7 +438,10 @@ cmp_mp(const Type& x, const Type& y) {
 }
 
 SPECIALIZE_CMP(mp, mpz_class, mpz_class)
-SPECIALIZE_CMP(mp, mpq_class, mpz_class)
+SPECIALIZE_CMP(mp, mpq_class, mpq_class)
+
+SPECIALIZE_PRINT(generic, mpz_class)
+SPECIALIZE_INPUT(generic, mpz_class)
 
 } // namespace Checked
 

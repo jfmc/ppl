@@ -811,6 +811,8 @@ SPECIALIZE_SGN(generic, float32_t)
 SPECIALIZE_CMP(generic, float32_t, float32_t)
 SPECIALIZE_ADD_MUL(generic, float32_t, float32_t)
 SPECIALIZE_SUB_MUL(float, float32_t, float32_t)
+SPECIALIZE_PRINT(generic, float32_t)
+SPECIALIZE_INPUT(generic, float32_t)
 
 SPECIALIZE_ASSIGN(float_int_exact, float64_t, int8_t)
 SPECIALIZE_ASSIGN(float_int_exact, float64_t, int16_t)
@@ -836,6 +838,8 @@ SPECIALIZE_SGN(generic, float64_t)
 SPECIALIZE_CMP(generic, float64_t, float64_t)
 SPECIALIZE_ADD_MUL(generic, float64_t, float64_t)
 SPECIALIZE_SUB_MUL(float, float64_t, float64_t)
+SPECIALIZE_PRINT(generic, float64_t)
+SPECIALIZE_INPUT(generic, float64_t)
 
 #ifdef FLOAT96_TYPE
 SPECIALIZE_ASSIGN(float_int_exact, float96_t, int8_t)
@@ -864,6 +868,8 @@ SPECIALIZE_SGN(generic, float96_t)
 SPECIALIZE_CMP(generic, float96_t, float96_t)
 SPECIALIZE_ADD_MUL(generic, float96_t, float96_t)
 SPECIALIZE_SUB_MUL(float, float96_t, float96_t)
+SPECIALIZE_PRINT(generic, float96_t)
+SPECIALIZE_INPUT(generic, float96_t)
 #endif
 
 #ifdef FLOAT128_TYPE
@@ -896,6 +902,8 @@ SPECIALIZE_SGN(generic, float128_t)
 SPECIALIZE_CMP(generic, float128_t, float128_t)
 SPECIALIZE_ADD_MUL(generic, float128_t, float128_t)
 SPECIALIZE_SUB_MUL(float, float128_t, float128_t)
+SPECIALIZE_PRINT(generic, float128_t)
+SPECIALIZE_INPUT(generic, float128_t)
 #endif
 
 #undef ASSIGN_R2

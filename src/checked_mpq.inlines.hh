@@ -265,6 +265,9 @@ abs_mpq(mpq_class& to, const mpq_class& from) {
 
 SPECIALIZE_ABS(mpq, mpq_class, mpq_class)
 
+SPECIALIZE_PRINT(generic, mpq_class)
+SPECIALIZE_INPUT(generic, mpq_class)
+
 } // namespace Checked
 
 } // namespace Parma_Polyhedra_Library
