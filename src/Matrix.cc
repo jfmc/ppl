@@ -61,7 +61,6 @@ PPL::Matrix::Matrix(const Topology topol,
   // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = 0; i < n_rows; ++i)
     rows[i].construct(row_type, n_columns, row_capacity);
-  // This will also check that `n_columns' is zero when `n_rows' is zero.
   assert(OK());
 }
 
@@ -1343,23 +1342,21 @@ PPL::Matrix::OK(const bool check_strong_normalized) const {
     return false;
   }
 
-  // An empty matrix must have num_columns() == 0.
+  // An empty matrix is OK,
+  // unless it is an NNC matrix with exactly one column.
   if (num_rows() == 0)
-    if (num_columns() == 0)
-      // An empty matrix is OK.
+    if (is_necessarily_closed() || num_columns() != 1)
       return true;
     else {
 #ifndef NDEBUG
-      cerr << "Matrix has no rows but num_columns() is nonzero!"
-	   << endl;
+      cerr << "NNC Matrix has one column" << endl;
 #endif
       return false;
     }
 
   // A non-empty matrix will contain constraints or generators; in
   // both cases it must have at least one column for the inhomogeneous
-  // term and, if it is non-necessarily closed, another one
-  // for the epsilon coefficient.
+  // term and, if it is NNC, another one for the epsilon coefficient.
   const dimension_type min_cols = is_necessarily_closed() ? 1 : 2;
   if (num_columns() < min_cols) {
 #ifndef NDEBUG

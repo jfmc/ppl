@@ -238,13 +238,9 @@ Matrix::erase_to_end(const dimension_type first_to_erase) {
 
 inline void
 Matrix::clear() {
-  // Clear `rows' and minimize its capacity.
   // Note: do NOT modify the value of `row_topology'.
-  std::vector<Row>().swap(rows);
-  row_size = 0;
-  row_capacity = 0;
-  index_first_pending = 0;
-  sorted = true;
+  Matrix new_mat(row_topology);
+  swap(new_mat);
 }
 
 inline void
