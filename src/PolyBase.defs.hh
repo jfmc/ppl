@@ -340,13 +340,13 @@ public:
   //! \p num_dimensions, either necessarily closed or not.
   explicit PolyBase(size_t num_dimensions,
 		    Degenerate_Kind kind,
-		    bool necessarily_closed);
+		    Topology topology);
   //! Builds a polyhedron from a system of constraints.
   //! The polyhedron inherits the space dimension of the constraint system.
   //! \param cs       The system of constraints defining the polyhedron.
   //!                 It is not declared <CODE>const</CODE>
   //!                 because it can be modified.
-  PolyBase(ConSys& cs, bool necessarily_closed);
+  PolyBase(ConSys& cs, Topology topology);
   //! Builds a polyhedron from a system of generators.
   //! The polyhedron inherits the space dimension of the generator system.
   //! \param gs       The system of generators defining the polyhedron.
@@ -354,7 +354,7 @@ public:
   //!                 because it can be modified.
   //! \exception std::invalid_argument thrown if the system of generators
   //!                                  is not empty but has no points.
-  PolyBase(GenSys& gs, bool necessarily_closed);
+  PolyBase(GenSys& gs, Topology topology);
   // Destructor
   ~PolyBase();
 
@@ -364,6 +364,7 @@ public:
 
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
+
   //! Intersects \p *this with polyhedron \p y and assigns the result
   //! to \p *this.   The result is not guaranteed to be minimized.
   //! \exception std::invalid_argument thrown if \p *this and \p y
@@ -602,11 +603,6 @@ public:
   void swap(PolyBase& y);
 
 private:
-  //! The flag indicating whether or not the polyhedron is necessarily
-  //! a topologically closed subset of the vector space.
-  bool necessarily_closed_;
-  //! The number of dimensions of the enclosing vector space.
-  size_t space_dim;
   //! The system of constraints.
   ConSys con_sys;
   //! The system of generators.
@@ -617,6 +613,13 @@ private:
   SatMatrix sat_g;
   //! The status flags to keep track of the polyhedron's internal state.
   Status status;
+  //! The number of dimensions of the enclosing vector space.
+  size_t space_dim;
+
+  //! Returns the topological kind of the polyhedron.
+  Topology topology() const;
+  //! Tests if the polyhedron is necessarily closed.
+  bool is_necessarily_closed() const;
 
   /*! @name Private Verifiers
     Verify if individual flags are set.
@@ -630,7 +633,6 @@ private:
   bool sat_c_is_up_to_date() const;
   bool sat_g_is_up_to_date() const;
   //@}
-
 
   /*! @name State flag setters.
     Set only the specified flags.

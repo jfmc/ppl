@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _Row_defs_hh
 #define _Row_defs_hh 1
 
+#include "Topology.hh"
 #include "Row.types.hh"
 #include "Integer.types.hh"
 #include <cstddef>
@@ -78,12 +79,7 @@ public:
 
 public:
 
-  enum PolyhedronKind {
-    NECESSARILY_CLOSED = 0,
-    NON_NECESSARILY_CLOSED = 1
-  };
-
-  enum RowKind {
+  enum Kind {
     LINE_OR_EQUALITY = 0,
     RAY_OR_POINT_OR_INEQUALITY = 1
   };
@@ -141,6 +137,7 @@ public:
   //! @name Type inspection methods.
   //@{
   Type type() const;
+  Topology topology() const;
   bool is_line_or_equality() const;
   bool is_ray_or_point_or_inequality() const;
   bool is_necessarily_closed() const;
@@ -157,6 +154,9 @@ public:
 public:
   //! Gives the number of coefficients currently in use.
   size_t size() const;
+
+  //! Returns the dimension of the vector space enclosing \p *this.
+  size_t space_dimension() const;
 
   //! Normalizes all the coefficients so that they are mutually prime.
   void normalize();
@@ -235,7 +235,7 @@ public:
 
   //! Builds the Row type by providing the two needed
   //! pieces of information.
-  Type(PolyhedronKind poly_kind, RowKind row_kind);
+  Type(Topology topology, Kind kind);
 
   //! @name The four possible types of a Row object.
   //@{
@@ -247,6 +247,7 @@ public:
 
   //! @name Testing and setting the type.
   //@{
+  Topology topology() const;
   bool is_line_or_equality() const;
   bool is_ray_or_point_or_inequality() const;
   bool is_necessarily_closed() const;

@@ -57,16 +57,14 @@ PPL::Matrix::num_lines_or_equalities() const {
   \p n_rows \f$\times\f$ \p n_columns matrix which rows are
   all initialized to rays or points or inequalities.
 */
-PPL::Matrix::Matrix(size_t n_rows, size_t n_columns, bool necessarily_closed)
+PPL::Matrix::Matrix(Topology topology, size_t n_rows, size_t n_columns)
   : rows(n_rows),
+    row_topology(topology),
     row_size(n_columns),
     row_capacity(compute_capacity(n_columns)),
     sorted(false) {
-  poly_kind = necessarily_closed
-    ? Row::NECESSARILY_CLOSED
-    : Row::NON_NECESSARILY_CLOSED;
   // Build the appropriate row type.
-  Row::Type row_type(poly_kind, Row::RAY_OR_POINT_OR_INEQUALITY);
+  Row::Type row_type(topology, Row::RAY_OR_POINT_OR_INEQUALITY);
   // Construct in direct order: will destroy in reverse order.
   for (size_t i = 0; i < n_rows; ++i)
     rows[i].construct(row_type, n_columns, row_capacity);
@@ -75,20 +73,20 @@ PPL::Matrix::Matrix(size_t n_rows, size_t n_columns, bool necessarily_closed)
 
 PPL::Matrix::Matrix(const Matrix& y)
   : rows(y.rows),
+    row_topology(y.row_topology),
     row_size(y.row_size),
     row_capacity(compute_capacity(y.row_size)),
-    sorted(y.sorted),
-    poly_kind(y.poly_kind) {
+    sorted(y.sorted) {
 }
 
 
 PPL::Matrix&
 PPL::Matrix::operator=(const Matrix& y) {
   rows = y.rows;
+  row_topology = y.row_topology;
   row_size = y.row_size;
   row_capacity = compute_capacity(row_size);
   sorted = y.sorted;
-  poly_kind = y.poly_kind;
   return *this;
 }
 
@@ -128,7 +126,7 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
 	new_rows.reserve(compute_capacity(new_n_rows));
 	new_rows.insert(new_rows.end(), new_n_rows, Row());
 	// Construct the new rows.
-	Row::Type row_type(poly_kind, Row::RAY_OR_POINT_OR_INEQUALITY);
+	Row::Type row_type(row_topology, Row::RAY_OR_POINT_OR_INEQUALITY);
 	size_t i = new_n_rows;
 	while (i-- > old_n_rows)
 	  new_rows[i].construct(row_type, new_n_columns, row_capacity);
@@ -142,21 +140,21 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
       else {
 	// Reallocation will NOT take place.
 	rows.insert(rows.end(), new_n_rows - old_n_rows, Row());
-	Row::Type row_type(poly_kind, Row::RAY_OR_POINT_OR_INEQUALITY);
+	Row::Type row_type(row_topology, Row::RAY_OR_POINT_OR_INEQUALITY);
 	for (size_t i = new_n_rows; i-- > old_n_rows; )
 	  rows[i].construct(row_type, new_n_columns, row_capacity);
       }
     }
     else {
       // We cannot even recycle the old rows.
-      Matrix new_matrix(is_necessarily_closed());
+      Matrix new_matrix(row_topology);
       new_matrix.rows.reserve(compute_capacity(new_n_rows));
       new_matrix.rows.insert(new_matrix.rows.end(), new_n_rows, Row());
       // Construct the new rows.
       new_matrix.row_size = new_n_columns;
       new_matrix.row_capacity = compute_capacity(new_n_columns);
       size_t i = new_n_rows;
-      Row::Type row_type(poly_kind, Row::RAY_OR_POINT_OR_INEQUALITY);
+      Row::Type row_type(row_topology, Row::RAY_OR_POINT_OR_INEQUALITY);
       while (i-- > old_n_rows)
 	new_matrix.rows[i].construct(row_type,
 				     new_matrix.row_size,
@@ -238,7 +236,7 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
 	new_rows.reserve(compute_capacity(new_n_rows));
 	new_rows.insert(new_rows.end(), new_n_rows, Row());
 	// Construct the new rows.
-	Row::Type row_type(poly_kind, Row::LINE_OR_EQUALITY);
+	Row::Type row_type(row_topology, Row::LINE_OR_EQUALITY);
 	size_t i = new_n_rows;
 	while (i-- > old_n_rows)
 	  new_rows[i].construct(row_type, new_n_columns, row_capacity);
@@ -252,7 +250,7 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
       else {
 	// Reallocation will NOT take place.
 	rows.insert(rows.end(), new_n_rows - old_n_rows, Row());
-	Row::Type row_type(poly_kind, Row::LINE_OR_EQUALITY);
+	Row::Type row_type(row_topology, Row::LINE_OR_EQUALITY);
 	for (size_t i = new_n_rows; i-- > old_n_rows; )
 	  rows[i].construct(row_type, new_n_columns, row_capacity);
       }
@@ -264,7 +262,7 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
     }
     else {
       // We cannot even recycle the old rows: allocate a new matrix and swap.
-      Matrix new_matrix(new_n_rows, new_n_columns, is_necessarily_closed());
+      Matrix new_matrix(row_topology, new_n_rows, new_n_columns);
       swap(new_matrix);
       return;
     }
@@ -293,7 +291,7 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
 	// Capacity exhausted: we must reallocate the rows and
 	// make sure all the rows have the same capacity.
 	size_t new_row_capacity = compute_capacity(new_n_columns);
-	Row::Type row_type(poly_kind, Row::LINE_OR_EQUALITY);
+	Row::Type row_type(row_topology, Row::LINE_OR_EQUALITY);
 	for (size_t i = old_n_rows; i-- > 0; ) {
 	  Row new_row(row_type, new_n_columns, new_row_capacity);
 	  std::swap(rows[i], new_row);
@@ -502,15 +500,43 @@ PPL::Matrix::add_row(const Row& row) {
 }
 
 /*!
-  Adds the given row to the matrix.
+  Adds the given row to the matrix, automatically resizing the
+  matrix or the row, if needed.
 */
 void
 PPL::Matrix::insert(const Row& row) {
-  if (row.size() > row_size)
-    grow(num_rows(), row.size());
+  assert(topology() == row.topology());
+
+  // Resize the matrix, if necessary.
+  if (row.size() > row_size) {
+    if (topology() == NECESSARILY_CLOSED)
+      grow(num_rows(), row.size());
+    else {
+      // Move the \epsilon coefficients of the matrix to the last column,
+      // after resizing.
+      size_t n_rows = num_rows();
+      size_t old_eps_index = row_size - 1;
+      grow(n_rows, row.size());
+      size_t new_eps_index = row_size - 1;
+      for ( ; n_rows-- > 0; ) {
+	Row& r = rows[n_rows];
+	std::swap(r[new_eps_index], r[old_eps_index]);
+      }
+    }
+  }
+
   if (row.size() < row_size)
-    add_row(Row(row, row_size, row_capacity));
+    if (topology() == NECESSARILY_CLOSED)
+      add_row(Row(row, row_size, row_capacity));
+    else {
+      // Move the \epsilon coefficient of the row to
+      // the last position, after resizing.
+      Row tmp_row = Row(row, row_size, row_capacity);
+      std::swap(tmp_row[tmp_row.size()-1], tmp_row[row.size()-1]);
+      add_row(tmp_row);
+    }
   else
+    // Here row.size() == row_size.
     add_row(row);
 }
 

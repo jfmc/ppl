@@ -36,26 +36,24 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::ConSys::insert(const Constraint& c) {
-  if (is_necessarily_closed()) {
-    if (!c.is_necessarily_closed()) {
-      // Padding the matrix with a columns o zeros
+  if (topology() == c.topology())
+    Matrix::insert(c);
+  else
+    // `*this' and `c' have different topologies.
+    if (is_necessarily_closed()) {
+      // Padding the matrix with a columns of zeros
       // corresponding to the \epsilon coefficients.
       add_zero_columns(1);
       set_non_necessarily_closed();
+      Matrix::insert(c);
     }
-    Matrix::insert(c);
-  }
-  else
-    // The constraint system is NOT necessarily closed.
-    if (c.is_necessarily_closed()) {
-      // Copying the constraint adding the \epsilon coefficient.
-      Constraint tmp_c(c, c.size() + 1);
+    else {
+      // Copying the constraint adding the missing dimensions
+      // and the \epsilon coefficient.
+      Constraint tmp_c(c, num_columns());
       tmp_c.set_non_necessarily_closed();
       Matrix::insert(tmp_c);
     }
-    else
-      // Both non-necessarily closed.
-      Matrix::insert(c);
 }
 
 size_t

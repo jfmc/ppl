@@ -159,8 +159,8 @@ Row::Type::Type()
 #include <iostream>
 
 inline
-Row::Type::Type(PolyhedronKind poly_kind, RowKind row_kind)
-  : flags(static_cast<flags_t>(poly_kind | (row_kind << 1))) {
+Row::Type::Type(Topology topology, Kind kind)
+  : flags(static_cast<flags_t>(topology | (kind << 1))) {
 }
 
 inline const Row::Type&
@@ -227,6 +227,11 @@ Row::Type::set_is_ray_or_point_or_inequality() {
   set(RPI);
 }
 
+inline Topology
+Row::Type::topology() const {
+  return test_all(NNC) ? NON_NECESSARILY_CLOSED : NECESSARILY_CLOSED;
+}
+
 inline bool
 Row::Type::is_necessarily_closed() const {
   return !test_all(NNC);
@@ -248,6 +253,14 @@ Row::Type::set_non_necessarily_closed() {
 inline size_t
 Row::size() const {
   return impl->size();
+}
+
+inline size_t
+Row::space_dimension() const {
+  size_t sz = size();
+  return (sz == 0)
+    ? 0
+    : sz - (is_necessarily_closed() ? 1 : 2);
 }
 
 #ifndef NDEBUG
@@ -437,6 +450,14 @@ Row::is_ray_or_point_or_inequality() const {
 inline bool
 Row::is_necessarily_closed() const {
   return type().is_necessarily_closed();
+}
+
+/*!
+  Returns the topological kind of \p *this.
+*/
+inline Topology
+Row::topology() const {
+  return type().topology();
 }
 
 /*!

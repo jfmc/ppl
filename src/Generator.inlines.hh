@@ -54,7 +54,7 @@ Generator::operator=(const Generator& g) {
 
 inline size_t
 Generator::space_dimension() const {
-  return size() - (is_necessarily_closed() ? 1 : 2);
+  return Row::space_dimension();
 }
 
 inline Generator::Type

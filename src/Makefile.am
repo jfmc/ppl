@@ -79,6 +79,7 @@ initializer.hh \
 maxmin.hh \
 SatRow.types.hh \
 SatMatrix.types.hh \
+Topology.hh \
 Row.types.hh \
 Matrix.types.hh \
 Variable.types.hh \
@@ -150,6 +151,7 @@ $(INCLUDE_FILES)
 DOC_FILES = \
 Variable.types.hh \
 LinExpression.types.hh \
+Topology.hh \
 Constraint.types.hh \
 ConSys.types.hh \
 Generator.types.hh \

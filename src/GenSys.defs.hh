@@ -227,9 +227,14 @@ public:
   const_iterator end() const;
 
 PPL_INTERNAL:
+  //! Constructor: builds an empty system of generators
+  //! having the specified topology.
+  GenSys(Topology topology);
   //! Constructor: it builds a system of \p n_rows rays/points
-  //! on a \p n_columns - 1 dimensional space.
-  GenSys(size_t n_rows, size_t n_columns);
+  //! on a \p n_columns - 1 dimensional space (including the
+  //! \f$\epsilon\f$ dimension, if \p topology is
+  //! <CODE>NON_NECESSARILY_CLOSED</CODE>).
+  GenSys(size_t n_rows, size_t n_columns, Topology topology);
 
   //! Returns the \p k- th generator of the system.
   Generator& operator[](size_t k);

@@ -32,24 +32,22 @@ namespace Parma_Polyhedra_Library {
 inline void
 Matrix::swap(Matrix& y) {
   std::swap(rows, y.rows);
+  std::swap(row_topology, y.row_topology);
   std::swap(row_size, y.row_size);
   std::swap(row_capacity, y.row_capacity);
   std::swap(sorted, y.sorted);
-  std::swap(poly_kind, y.poly_kind);
 }
 
 /*!
   The default constructor initializes the rows' size and capacity to \f$0\f$.
 */
 inline
-Matrix::Matrix(bool necessarily_closed)
+Matrix::Matrix(Topology topology)
   : rows(),
+    row_topology(topology),
     row_size(0),
     row_capacity(0),
     sorted(true) {
-  poly_kind = necessarily_closed
-    ? Row::NECESSARILY_CLOSED
-    : Row::NON_NECESSARILY_CLOSED;
 }
 
 
@@ -79,29 +77,29 @@ Matrix::operator[](size_t k) const {
 
 inline void
 Matrix::set_necessarily_closed() {
-  poly_kind = Row::NECESSARILY_CLOSED;
+  row_topology = NECESSARILY_CLOSED;
 }
 
 inline void
 Matrix::set_non_necessarily_closed() {
-  poly_kind = Row::NON_NECESSARILY_CLOSED;
+  row_topology = NON_NECESSARILY_CLOSED;
 }
 
 /*!
-  Returns <CODE>true</CODE> if and only if the value of \p poly_kind
+  Returns <CODE>true</CODE> if and only if the value of \p topol_kind
   is equal to <CODE>Row::NECESSARILY_CLOSED</CODE>.
 */
 inline bool
 Matrix::is_necessarily_closed() const {
-  return poly_kind == Row::NECESSARILY_CLOSED;
+  return row_topology == NECESSARILY_CLOSED;
 }
 
 /*!
-  Returns the value of \p poly_kind.
+  Returns the value of \p topol_kind.
 */
-inline Row::PolyhedronKind
-Matrix::polyhedron_kind() const {
-  return poly_kind;
+inline Topology
+Matrix::topology() const {
+  return row_topology;
 }
 
 /*!
@@ -132,6 +130,14 @@ Matrix::is_sorted() const {
 inline size_t
 Matrix::num_columns() const {
   return row_size;
+}
+
+inline size_t
+Matrix::space_dimension() const {
+  size_t n_columns = num_columns();
+  return (n_columns == 0)
+    ? 0
+    : n_columns - (is_necessarily_closed() ? 1 : 2);
 }
 
 
@@ -177,6 +183,7 @@ Matrix::erase_to_end(size_t first_to_erase) {
 inline void
 Matrix::clear() {
   // Clear `rows' and minimize its capacity.
+  // Note: do NOT modify the value of `row_topology'.
   std::vector<Row>().swap(rows);
   row_size = 0;
   row_capacity = 0;

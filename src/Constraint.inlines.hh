@@ -59,15 +59,8 @@ Constraint::operator=(const Constraint& c) {
 
 inline size_t
 Constraint::space_dimension() const {
-  return size() - (is_necessarily_closed() ? 1 : 2);
+  return Row::space_dimension();
 }
-
-  /*
-inline bool
-Constraint::is_necessarily_closed() const {
-  return Row::is_necessarily_closed();
-}
-  */
 
 inline Constraint::Type
 Constraint::type() const {
@@ -76,7 +69,9 @@ Constraint::type() const {
   if (is_necessarily_closed())
     return NONSTRICT_INEQUALITY;
   else
-    return ((*this)[size()-1] == 0) ? NONSTRICT_INEQUALITY : STRICT_INEQUALITY;
+    return ((*this)[size()-1] == 0)
+      ? NONSTRICT_INEQUALITY
+      : STRICT_INEQUALITY;
 }
 
 inline bool

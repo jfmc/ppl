@@ -31,14 +31,36 @@ namespace Parma_Polyhedra_Library {
 
 inline void
 PolyBase::swap(PolyBase& y) {
-  std::swap(space_dim, y.space_dim);
+  assert(this->is_necessarily_closed() == y.is_necessarily_closed());
   std::swap(con_sys, y.con_sys);
   std::swap(gen_sys, y.gen_sys);
   std::swap(sat_c, y.sat_c);
   std::swap(sat_g, y.sat_g);
   std::swap(status, y.status);
+  std::swap(space_dim, y.space_dim);
 }
 
+
+/*!
+  Returns the topological kind of the polyhedron.
+*/
+inline Topology
+PolyBase::topology() const {
+  // We can check either one of the two matrices.
+  // (`con_sys' is slightly better, since it is placed at offset 0.)
+  return con_sys.topology();
+}
+
+/*!
+  Returns <CODE>true</CODE> if and only if \p *this is a
+  necessarily closed polyhedron.
+*/
+inline bool
+PolyBase::is_necessarily_closed() const {
+  // We can check either one of the two matrices.
+  // (`con_sys' is slightly better, since it is placed at offset 0.)
+  return con_sys.is_necessarily_closed();
+}
 
 /*!
   Returns <CODE>true</CODE> if \p *this is definitely known to be

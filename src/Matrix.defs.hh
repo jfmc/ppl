@@ -45,10 +45,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 class Parma_Polyhedra_Library::Matrix {
 protected:
   //! Default constructor: builds a zero-matrix.
-  Matrix(bool necessarily_closed);
+  Matrix(Topology topology);
   //! Constructor: builds a sorted matrix with \p n_rows rows
   //! and \p n_columns columns.
-  Matrix(size_t n_rows, size_t n_columns, bool necessarily_closed);
+  Matrix(Topology topology, size_t n_rows, size_t n_columns);
   //! Copy-constructor.
   Matrix(const Matrix& y);
   //! Destructor.
@@ -128,6 +128,8 @@ public:
 private:
   //! Contains the rows of the matrix.
   std::vector<Row> rows;
+  //! The topological kind of the rows in the matrix.
+  Topology row_topology;
   //! Size of the initialized part of each row.
   size_t row_size;
   //! Capacity allocated for each row, i.e., number of
@@ -137,9 +139,6 @@ private:
   //! defined by <CODE>bool operator<(const Row& x, const Row& y)</CODE>.
   //! If <CODE>false</CODE> we cannot conclude that rows are not sorted.
   bool sorted;
-  //! The kind of polyhedron this matrix is describing
-  //! (either a necessarily closed or a non-necessarily closed polyhedron).
-  Row::PolyhedronKind poly_kind;
 
 public:
   //! Swaps \p *this with \p y.
@@ -148,9 +147,9 @@ public:
   //! Sets the \p sorted flag of the matrix to \p value.
   void set_sorted(bool value);
 
-  //! Sets the \p poly_kind flag to <CODE>Row::NECESSARILY_CLOSED</CODE>.
+  //! Sets \p row_topology to <CODE>NECESSARILY_CLOSED</CODE>.
   void set_necessarily_closed();
-  //! Sets the \p poly_kind flag to <CODE>Row::NON_NECESSARILY_CLOSED</CODE>.
+  //! Sets \p row_topology to <CODE>NON_NECESSARILY_CLOSED</CODE>.
   void set_non_necessarily_closed();
 
   //! Make the matrix grow adding more rows and/or more columns.
@@ -165,9 +164,10 @@ public:
 
   //! Accessors
   //@{
-  Row::PolyhedronKind polyhedron_kind() const;
+  Topology topology() const;
   bool is_necessarily_closed() const;
   bool is_sorted() const;
+  size_t space_dimension() const;
   size_t num_columns() const;
   size_t num_rows() const;
   size_t num_lines_or_equalities() const;

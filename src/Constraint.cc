@@ -67,19 +67,45 @@ PPL::Constraint::is_trivial_true() const {
     return (x[0] >= 0);
 }
 
-// CHECK ME.
+
 bool
 PPL::Constraint::is_trivial_false() const {
   assert(size() > 0);
   const Constraint& x = *this;
-  if (!x.all_homogeneous_terms_are_zero())
-    return false;
-  else if (is_equality())
-    return (x[0] != 0);
+  if (x.all_homogeneous_terms_are_zero())
+    // The inhomogeneous term is the only non-zero coefficient.
+    if (is_equality())
+      return (x[0] != 0);
+    else
+      // Non-strict inequality constraint.
+      return (x[0] < 0);
   else
-    // Inequality constraint.
-    return (x[0] < 0);
+    // There is a non-zero homogeneous coefficient.
+    if (is_necessarily_closed())
+      return false;
+    else {
+      // The constraint is NOT necessarily closed.
+      size_t eps_index = size() - 1;
+      if (x[eps_index] == 0)
+	// One of the `true' dimensions has a non-zero coefficient.
+	return false;
+      else {
+	assert(x[eps_index] < 0);
+	if (x[0] > 0)
+	  // A strict inequality such as `lhs + k > 0',
+	  // where k is a positive integer, cannot be trivially false.
+	  return false;
+	// Checking for another non-zero coefficient.
+	for (size_t i = eps_index; --i > 0; )
+	  if (x[i] != 0)
+	    return false;
+	// We have the inequality `k > 0',
+	// where k is zero or a negative integer. 
+	return true;
+      }
+    }
 }
+
 
 /*! \relates Parma_Polyhedra_Library::Constraint */
 std::ostream&
