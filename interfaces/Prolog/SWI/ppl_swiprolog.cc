@@ -237,7 +237,7 @@ using namespace std;
 */
 static inline bool
 Prolog_get_cons(Prolog_term_ref c, Prolog_term_ref h, Prolog_term_ref t) {
-  assert(Prolog_is_cons(l));
+  assert(Prolog_is_cons(c));
   return PL_get_list(c, h, t) != 0;
 }
 
