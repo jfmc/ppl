@@ -201,7 +201,7 @@ widening2_SOURCES = widening2.cc
 if BUILD_WATCHDOG_LIBRARY
 WATCHDOG_TESTS = watchdog1
 
-watchdog1_SOURCES = watchdog1.cc
+watchdog1_SOURCES = watchdog1.cc timings.cc timings.hh
 watchdog1_LDADD = $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/libpwl.la @extra_libraries@
 
 endif

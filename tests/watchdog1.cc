@@ -25,11 +25,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "pwl_install.hh"
 #include "print.hh"
 #include "ehandlers.hh"
+#include "timings.hh"
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-#define NOISY 0
+#define NOISY 1
 
 void
 compute_open_hypercube_generators(unsigned int dimension) {
@@ -66,6 +67,9 @@ timed_compute_open_hypercube_generators(unsigned int dimension,
   try {
     Parma_Watchdog_Library::Watchdog
       w(hundredth_secs, &abandon_exponential_computations, t);
+#if NOISY
+    start_clock();
+#endif
     compute_open_hypercube_generators(dimension);
     abandon_exponential_computations = 0;
     return true;
@@ -73,7 +77,9 @@ timed_compute_open_hypercube_generators(unsigned int dimension,
   catch (const myTimeout& e) {
     abandon_exponential_computations = 0;
 #if NOISY
-    cout << e.what() << endl;
+    cout << e.what() << " after ";
+    print_clock(cout);
+    cout << " s" << endl;
 #endif
     return false;
   }
