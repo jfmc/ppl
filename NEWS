@@ -4,6 +4,25 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
+NEWS for version 0.6  (released on August 20, 2004)
+--------------------------------------------------------------------------
+
+New and Changed Features
+========================
+
+o  The methods
+
+     Polyhedra_PowerSet::semantically_contains(const Polyhedra_PowerSet&) and
+     Polyhedra_PowerSet::semantically_equals(const Polyhedra_PowerSet&)
+
+   have been renamed
+
+     Polyhedra_PowerSet::geometrically_covers(const Polyhedra_PowerSet&) and
+     Polyhedra_PowerSet::geometrically_equals(const Polyhedra_PowerSet& y),
+
+   respectively.
+
+--------------------------------------------------------------------------
 NEWS for version 0.6  (released on August 18, 2004)
 --------------------------------------------------------------------------
 
@@ -233,14 +252,18 @@ o  Many portability and standard-conformance improvements: the library
    been tested on a variety of platforms.
 
 o  The functions
-   Polyhedron::operator<=(const Polyhedron&, const Polyhedron&),
-   Polyhedron::operator>=(const Polyhedron&, const Polyhedron&),
-   Polyhedron::operator<(const Polyhedron&, const Polyhedron&), and
-   Polyhedron::operator>(const Polyhedron&, const Polyhedron&)
-   have been removed.
-   The methods Polyhedron::contains(const Polyhedron&) and
-   Polyhedron::strictly_contains(const Polyhedron&) provide
-   the same functionality.
+
+     Polyhedron::operator<=(const Polyhedron&, const Polyhedron&),
+     Polyhedron::operator>=(const Polyhedron&, const Polyhedron&),
+     Polyhedron::operator<(const Polyhedron&, const Polyhedron&), and
+     Polyhedron::operator>(const Polyhedron&, const Polyhedron&)
+
+   have been removed.  The methods
+
+     Polyhedron::contains(const Polyhedron&) and
+     Polyhedron::strictly_contains(const Polyhedron&)
+
+   provide the same functionality.
 
 o  The method Polyhedron::limited_H79_widening_assign() has been renamed
    Polyhedron::limited_H79_extrapolation_assign().  From now on, the name

@@ -103,7 +103,9 @@ main() TRY {
 #endif
 
   return
-    (T2 == known_result &&
-     T2.semantically_contains(oldT2) && T2.semantically_contains(T1)) ? 0 : 1;
+    (T2 == known_result
+     && T2.geometrically_covers(oldT2) && T2.geometrically_covers(T1))
+    ? 0
+    : 1;
 }
 CATCH

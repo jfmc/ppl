@@ -82,6 +82,6 @@ main() TRY {
   cout << "P.BHZ03(Q, H79)" << " = " << P << endl;
 #endif
 
-  return (P.semantically_contains(oldP) && P.semantically_contains(Q)) ? 0 : 1;
+  return (P.geometrically_covers(oldP) && P.geometrically_covers(Q)) ? 0 : 1;
 }
 CATCH
