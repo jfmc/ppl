@@ -1,0 +1,177 @@
+Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+See below for the copying conditions.
+                           
+
+Configuration of the Parma Polyhedra Library
+============================================
+
+In an ideal situation (i.e., on a more or less standard Un*x
+environment, with the right compilers, the GMP library installed in
+a standard place and provided the user is satisfied with all the
+options we chose as defaults), a source distribution of the Parma
+Polyhedra Library (PPL) can be unpacked, configured, built and
+installed with the following, well-known procedure:
+
+  $ tar jxf ppl-x.y.tar.bz2
+  $ ./configure
+  $ make
+  $ su
+  Password: <root password>
+  $ make install
+
+After successful completion of these steps the PPL is completely installed
+on the system and can be used as expected.
+
+On the other hand, the PPL `configure' shell script provides many
+options to adjust the build and installation process for customizing
+the PPL installation.  The `INSTALL' file gives a detailed description
+of the non PPL-specific aspects of the configuration, compilation and
+installation process and describes the basic options of the
+`configure' script.  For a compact summary of all the available
+configuration options, run the command
+
+  $ ./configure --help
+
+The PPL-specific aspects of the configuration, compilation and
+installation process are discussed in the following sections.
+
+
+Using the Right Version of GMP
+------------------------------
+
+In order to use this version of the PPL you must make sure that:
+
+(1) GMP version 4.1.3 or later is installed on your system;
+(2) that this version was compiled with the C++ interface enabled;
+(3) that this C++ interface was compiled with the same compiler
+    version with which you will compile the PPL;
+(4) that your C and C++ compilers and your linker will find _that_
+   version of GMP and not others that may be present in your system.
+
+Since the binary distributions of GMP most likely contain a version
+that was compiled with the C++ interface disabled, or compiled with
+a C++ compiler implementing a different ABI than the compiler you
+will use to compile the PPL, the only reliable solution to points
+(1), (2) and (3) above is to visit GMP's home page at
+
+  http://www.swox.com/gmp/
+
+and download the last available version.  Then decide where to install
+it and call this place in your file system <GMP prefix>.  Then, unless
+you have special needs, you can invoke the GMP's configure script with
+the options
+
+  --prefix=/usr/local --enable-cxx
+
+If the C++ compiler you will use to compile the PPL is not the default
+on your system then, in order to satisfy point (3) above, you should
+set the `CXX', `CXXFLAGS' and `CXXCPP' environment variables so as to
+use the intended compiler with the intended options.  See the file
+`INSTALL.autoconf' in the GMP distribution for more on this subject.
+
+If you want to use the PPL ability to recover from out-of-memory
+situations, you should use a version of GMP compiled with GCC (which
+implies you should then compile also the PPL with GCC) using the
+`-fexceptions' option.  To build such a version, you can use the
+`CPPFLAGS' environment variable, so that it contains (among possibly
+other compiler options) `-fexceptions'.  Again, see `INSTALL.autoconf'
+in the GMP distribution for more on using environment variables to
+influence the configure script.
+
+In order to achieve point (4) above, if the directory <GMP prefix>
+is not standard for your compiler and/or for your linker, you will
+have to make sure the configure script of the PPL is invoked with,
+among others, the option
+
+  --with-libgmpxx-prefix=<GMP prefix>
+
+If you use shared libraries, consult the documentation of your
+dynamic linker/loader (`man ld.so' will do on most Un*x-like systems)
+to see how to make sure that GMP's shared library will be found at
+runtime (setting the environment variable `LD_LIBRARY_PATH' to "<GMP
+prefix>/lib:$LD_LIBRARY_PATH" is the most commonly used solution).
+
+
+Using the Right C and C++ Compilers
+-----------------------------------
+
+The configure script of the PPL, as you can see by using its `--help'
+option, besides recognizing `CC', `CXX', `CFLAGS', `CXXFLAGS' and
+other environment variables, provides four switches with which you can
+select the compilers and compilers' options to use for building the
+library.  These switches are
+
+  --with-cc=xxx           use XXX as the C compiler
+  --with-cxx=xxx          use XXX as the C++ compiler
+  --with-cflags=xxx       add XXX to the options for the C compiler
+  --with-cxxflags=xxx     add XXX to the options for the C++ compiler
+ 
+Let us take the occasion to stress, once again, the fact that you
+_must_ use the same C++ compiler to compile the C++ interface of GMP,
+the PPL and your application, if you use the C++ interface of the PPL.
+
+Here is an example with the Intel C/C++ compiler version 8.0.  Assuming
+you have configured GMP with a command like
+
+  CC=icc CXX=icpc /path/to/gmp-4.1.3/configure --enable-cxx \
+    --prefix=/opt/intel_cc_80
+
+you can configure the PPL with a command like
+
+  /path/to/ppl-x.y/configure --with-cxx=icpc --with-cc=icc \
+    --with-cxxflags="-w2 -wd177,193,279,383,444,981,1418" \
+    --with-libgmpxx-prefix=/opt/intel_cc_80
+
+Notice that the `--with-cxxflags' option is absolutely non-essential
+here and is only included to show how extra compiler options can be
+passed to the configure script.
+
+As an other example, here is how you can compile the PPL with
+Comeau C/C++ 4.3.3.  First configure GMP with a command like
+
+  CXX=como /path/to/gmp-4.1.3/configure --enable-cxx \
+    --disable-shared --prefix=/usr/local/lib/como433/local
+
+Then you can configure the PPL with a command like
+
+  /path/to/ppl/configure --with-cc="como --c" --with-cxx=como \
+    --with-cxxflags="--remarks --strict --long_long \
+    --display_error_number --diag_suppress 193,236,340,401,679" \
+    --disable-shared --with-libgmpxx-prefix=/usr/local/lib/como433/local
+
+Notice the use of the option `--disable-shared' both in the configuration
+of GMP and the configuration of the PPL.  This is due to the fact that
+Comeau C/C++ 4.3.3 does not support shared libraries.
+
+
+--------
+
+Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+The license is included, in various formats, in the `doc' subdirectory
+of each distribution of the PPL in files called `fdl.*'.
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.  The license is included, in various
+formats, in the `doc' subdirectory of each distribution of the PPL in
+files are called `gpl.*'.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+If you have not received a copy of one or both the above mentioned
+licenses along with the PPL, write to the Free Software Foundation,
+Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ .

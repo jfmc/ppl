@@ -1,0 +1,120 @@
+/* H79_Certificate class implementation
+   (non-inline member functions).
+   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
+
+#include <config.h>
+
+#include "H79_Certificate.defs.hh"
+
+#include "Polyhedron.defs.hh"
+#include <cassert>
+#include <iostream>
+
+namespace PPL = Parma_Polyhedra_Library;
+
+PPL::H79_Certificate::H79_Certificate(const Polyhedron& ph)
+  : poly_dim(0), num_constraints(0) {
+  // The dimension of the polyhedron is obtained by subtracting
+  // the number of equalities from the space dimension.
+  // When counting constraints, for a correct reasoning, we have
+  // to disregard the low-level constraints (i.e., the positivity
+  // constraint and epsilon bounds).
+  const dimension_type space_dim = ph.space_dimension();
+  poly_dim = space_dim;
+  const ConSys& cs = ph.minimized_constraints();
+  // It is assumed that `ph' is not an empty polyhedron.
+  assert(!ph.marked_empty());
+  for (ConSys::const_iterator i = cs.begin(),
+	 iend = cs.end(); i != iend; ++i) {
+    ++num_constraints;
+    if (i->is_equality())
+      --poly_dim;
+  }
+
+  // FIXME: super-kludge.
+  // For NNC polyhedra, generators might be no longer up-to-date
+  // (and hence, neither minimized) due to the strong minimization
+  // process applied to constraints when constructing the certificate.
+  // We have to reinforce the (normal) minimization of the generator
+  // system. The future, lazy implementation of the strong minimization
+  // process will solve this problem.
+  if (!ph.is_necessarily_closed())
+    ph.minimize();
+}
+
+int
+PPL::H79_Certificate::compare(const H79_Certificate& y) const {
+  if (poly_dim != y.poly_dim)
+    return poly_dim > y.poly_dim ? 1 : -1;
+  if (num_constraints != y.num_constraints)
+    return num_constraints > y.num_constraints ? 1 : -1;
+  // All components are equal.
+  return 0;
+}
+
+int
+PPL::H79_Certificate::compare(const Polyhedron& ph) const {
+  // The dimension of the polyhedron is obtained by subtracting
+  // the number of equalities from the space dimension.
+  // When counting constraints, for a correct reasoning, we have
+  // to disregard the low-level constraints (i.e., the positivity
+  // constraint and epsilon bounds).
+  const dimension_type space_dim = ph.space_dimension();
+  dimension_type ph_poly_dim = space_dim;
+  dimension_type ph_num_constraints = 0;
+  const ConSys& cs = ph.minimized_constraints();
+  // It is assumed that `ph' is a polyhedron containing the
+  // polyhedron described by `*this': hence, it cannot be empty.
+  assert(!ph.marked_empty());
+  for (ConSys::const_iterator i = cs.begin(),
+	 iend = cs.end(); i != iend; ++i) {
+    ++ph_num_constraints;
+    if (i->is_equality())
+      --ph_poly_dim;
+  }
+  // FIXME: super-kludge.
+  // For NNC polyhedra, generators might be no longer up-to-date
+  // (and hence, neither minimized) due to the strong minimization
+  // process applied to constraints when constructing the certificate.
+  // We have to reinforce the (normal) minimization of the generator
+  // system. The future, lazy implementation of the strong minimization
+  // process will solve this problem.
+  if (!ph.is_necessarily_closed())
+    ph.minimize();
+
+  // If the dimension of `ph' is increasing, the chain is stabilizing.
+  if (ph_poly_dim > poly_dim)
+    return 1;
+
+  // At this point the two polyhedra must have the same dimension.
+  assert(ph_poly_dim == poly_dim);
+
+  // If the number of constraints of `ph' is decreasing, then the chain
+  // is stabilizing. If it is increasing, the chain is not stabilizing.
+  if (ph_num_constraints != num_constraints)
+    return ph_num_constraints < num_constraints ? 1 : -1;
+
+  // All components are equal.
+  return 0;
+}
+
