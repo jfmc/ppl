@@ -107,8 +107,8 @@ main() TRY {
 #endif
 
   PSet oldP = P;
-  P.generic_BHZ03_widening_assign<H79_Certificate>
-    (Q, &Polyhedron::H79_widening_assign);
+  Widening_Function<Polyhedron> wf(&Polyhedron::H79_widening_assign);
+  P.BHZ03_widening_assign<H79_Certificate>(Q, wf);
 #if NOISY
   cout << "P.BHZ03(Q, H79)" << " = " << P << endl;
 #endif
