@@ -517,13 +517,13 @@ Box = [i(o(minf), c(+1/2)), i(c(0), o(pinf))],
 ppl_delete_Polyhedron(P).
 
 poly_from_boundingbox :-
-A = '$VAR'(0), B = '$VAR'(1), 
+%A = '$VAR'(0), B = '$VAR'(1), 
 ppl_new_Polyhedron_from_bounding_box(nnc,
-    [i(o(0), o(pinf)), i(o(minf), o(1/2))] , P),
-ppl_Polyhedron_get_constraints(P,CS), 
-%ppl_Polyhedron_get_bounding_box(P, Box),
-CS = [1*A>0, -2*B> -1],
+    [i(o(1/2), o(pinf)), i(o(minf), o(1/(2)))] , P),
+ppl_Polyhedron_get_bounding_box(P, Box),
+Box = [i(o(1/2), o(pinf)), i(o(minf), o(1/2))],
 ppl_delete_Polyhedron(P).
+
 
 % These next 2 tests demonstrate a bug in the bounding box software.
 boundingbox1(Box,CS) :-
@@ -539,13 +539,4 @@ ppl_new_Polyhedron_from_dimension(nnc, 2, P),
 ppl_Polyhedron_add_constraints(P, [0=1]),
 ppl_Polyhedron_get_bounding_box(P, Box),
 ppl_Polyhedron_get_constraints(P,CS), 
-ppl_delete_Polyhedron(P).
-
-poly_from_boundingbox(Box, CS) :-
-%A = '$VAR'(0), B = '$VAR'(1), 
-ppl_new_Polyhedron_from_bounding_box(nnc,
-    [i(o(0), o(pinf)), i(o(minf), o(1/2))] , P),
-ppl_Polyhedron_get_constraints(P,CS), 
-ppl_Polyhedron_get_bounding_box(P, Box),
-%CS = [1*A>0, -2*B> -1],
 ppl_delete_Polyhedron(P).
