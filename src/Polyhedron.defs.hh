@@ -509,6 +509,10 @@ public:
   //!                                  are dimension-incompatible.
   void add_constraints_lazy(ConSys& cs);
  
+  //! First increases the space dimension of \p *this by adding
+  //! \p cs.space_dimension() new dimensions;
+  //! then adds to the system of constraints of \p *this
+  //! a renamed-apart version of the constraints in `cs'.
   void add_dimensions_and_constraints(ConSys& cs);
  
   //! Adds the specified generators.
