@@ -71,7 +71,7 @@ namespace Parma_Polyhedra_Library {
   space-dimension of the arguments of its constructor.
 
   \par
-  In the following example it is assumed that variables
+  In the following examples it is assumed that variables
   <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE>
   are defined as follows:
   \code
@@ -80,7 +80,7 @@ namespace Parma_Polyhedra_Library {
   Variable z(2);
   \endcode
 
-  \par Example
+  \par Example 1
   The following code builds the equality constraint
   \f$3x + 5y - z = 0\f$, having space-dimension \f$3\f$:
   \code
@@ -106,6 +106,66 @@ namespace Parma_Polyhedra_Library {
   Constraint false_c(0*z == 1);
   \endcode
 
+  \par Example 2
+  The following code prints all the coefficients of a given constraint:
+  \code
+  size_t c_space_dim = c.space_dimension();
+  for (size_t varid = 0; varid < c_space_dim; varid++) {
+    Variable v(varid);
+    cout << "Variable " << v << " has coefficient "
+         << c.coefficient(v) << endl;
+  }
+  cout << "The inhomogeneous term is "
+       << c.coefficient() << endl;
+  \endcode
+  Namely, for a constraint defined by
+  \code
+  Constraint c(2*x <= 6*z - 7);
+  \endcode
+  the output is the following:
+  \code
+  Variable A has coefficient -2
+  Variable B has coefficient 0
+  Variable C has coefficient 6
+  The inhomogeneous term is -7 
+  \endcode
+  Note the changes in the signs of the coefficients: when constraints
+  are actually built, all <CODE><=</CODE> inequalities are transformed
+  into <CODE>>=</CODE> and then all the terms are moved to
+  the left-hand side of the inequality.
+  When dealing with equalities, the actual sign of the
+  coefficients is somehow unpredictable, since they could have been
+  (consistently!) negated.
+  For instance, if the initial constraint was defined by
+  \code
+  Constraint c(5 == -3*y + 6*z);
+  \endcode
+  then we would have obtained the following output:
+  \code
+  Variable A has coefficient 0
+  Variable B has coefficient 3
+  Variable C has coefficient -6
+  The inhomogeneous term is 5
+  \endcode
+  Finally, by using the following code, it is possible to
+  automatically skip all the variable coefficients that are
+  equal to zero:
+  \code
+  for (int varid = c.first(); varid >= 0; varid = c.next(varid)) {
+    Variable v(varid);
+    cout << "Variable " << v << " has coefficient "
+         << c.coefficient(v) << endl;
+  }
+  cout << "The inhomogeneous term is "
+       << c.coefficient() << endl;
+  \endcode
+  Therefore, for the last constraint defined above,
+  the output would have been:
+  \code
+  Variable B has coefficient 3
+  Variable C has coefficient -6
+  The inhomogeneous term is 5
+  \endcode
 */
 class Parma_Polyhedra_Library::Constraint : PPL_INTERNAL Row {
 private:
@@ -173,6 +233,9 @@ public:
   //! Destructor.
   ~Constraint();
 
+  //! Returns the dimension of the vector space enclosing \p *this.
+  size_t space_dimension() const;
+
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is an equality constraint.
   bool is_equality() const;
@@ -180,10 +243,10 @@ public:
   //! \p *this is an inequality constraint.
   bool is_inequality() const;
 
-  //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
-
-  //! Returns the coefficient of \p v in \p *this.
+  //! If the index of variable \p v is less than the space-dimension
+  //! of \p *this, returns the coefficient of \p v in \p *this.
+  //! \exception std::invalid_argument thrown if the index of \p v
+  //! is greater than or equal to the space-dimension of \p *this.
   const Integer& coefficient(Variable v) const;
   //! Returns the inhomogeneous term of \p *this.
   const Integer& coefficient() const;

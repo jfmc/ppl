@@ -79,91 +79,138 @@ namespace Parma_Polyhedra_Library {
   in the provided linear expression;
   the default value for this argument is 1.
 
-    \par
-    In all the following examples it is assumed that variables
-    <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE>
-    are defined as follows:
-    \code
+  \par
+  In all the following examples it is assumed that variables
+  <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE>
+  are defined as follows:
+  \code
   Variable x(0);
   Variable y(1);
   Variable z(2);
-    \endcode
+  \endcode
 
-    \par Example 1
-    The following code builds a line with direction \f$x-y-z\f$
-    and having space-dimension \f$3\f$:
-    \code
+  \par Example 1
+  The following code builds a line with direction \f$x-y-z\f$
+  and having space-dimension \f$3\f$:
+  \code
   Generator l = line(x - y - z);
-    \endcode
-    As mentioned above, the constant term of the linear expression
-    is not relevant. Thus, the following code has the same effect:
-    \code
+  \endcode
+  As mentioned above, the constant term of the linear expression
+  is not relevant. Thus, the following code has the same effect:
+  \code
   Generator l = line(x - y - z + 15);
-    \endcode
-    By definition, the origin of the space is not a line, so that
-    the following code throws an exception:
-    \code
+  \endcode
+  By definition, the origin of the space is not a line, so that
+  the following code throws an exception:
+  \code
   Generator l = line(0*x);
-    \endcode
+  \endcode
 
-
-    \par Example 2
-    The following code builds a ray with the same direction as the
-    line in Example 1:
-    \code
+  \par Example 2
+  The following code builds a ray with the same direction as the
+  line in Example 1:
+  \code
   Generator r = ray(x - y - z);
-    \endcode
-    As is the case for lines, when specifying a ray the constant term
-    of the linear expression is not relevant; also, an exception is thrown
-    when trying to built a ray from the origin of the space.
+  \endcode
+  As is the case for lines, when specifying a ray the constant term
+  of the linear expression is not relevant; also, an exception is thrown
+  when trying to built a ray from the origin of the space.
 
-    \par Example 3
-    The following code builds the vertex
-    \f$\vect{v} = (1, 0, 2)^\transpose \in \Rset^3\f$:
-    \code
+  \par Example 3
+  The following code builds the vertex
+  \f$\vect{v} = (1, 0, 2)^\transpose \in \Rset^3\f$:
+  \code
   Generator v = vertex(1*x + 0*y + 2*z);
-    \endcode
-    The same effect can be obtained by using the following code:
-    \code
+  \endcode
+  The same effect can be obtained by using the following code:
+  \code
   Generator v = vertex(x + 2*z);
-    \endcode
-    Similarly, the origin \f$\vect{0} \in \Rset^3\f$ can be defined
-    using either one of the following lines of code:
-    \code
+  \endcode
+  Similarly, the origin \f$\vect{0} \in \Rset^3\f$ can be defined
+  using either one of the following lines of code:
+  \code
   Generator origin3 = vertex(0*x + 0*y + 0*z);
   Generator origin3_alt = vertex(0*z);
-    \endcode
-    Note however that the following code would have defined
-    a different vertex, namely \f$\vect{0} \in \Rset^2\f$:
-    \code
+  \endcode
+  Note however that the following code would have defined
+  a different vertex, namely \f$\vect{0} \in \Rset^2\f$:
+  \code
   Generator origin2 = vertex(0*y);
-    \endcode
-    The following two lines of code both define the only vertex
-    having space-dimension zero, namely \f$\vect{0} \in \Rset^0\f$.
-    In the second case we exploit the fact that the first argument
-    of the function <CODE>vertex</CODE> is optional.
-    \code
+  \endcode
+  The following two lines of code both define the only vertex
+  having space-dimension zero, namely \f$\vect{0} \in \Rset^0\f$.
+  In the second case we exploit the fact that the first argument
+  of the function <CODE>vertex</CODE> is optional.
+  \code
   Generator origin0 = Generator::zero_dim_vertex();
   Generator origin0_alt = vertex();
-    \endcode
+  \endcode
 
-    \par Example 4
-    The vertex \f$\vect{v}\f$ specified in Example 3 above
-    can also be obtained with the following code,
-    where we provide a non-default value for the second argument
-    of the function <CODE>vertex</CODE> (the denominator):
-    \code
+  \par Example 4
+  The vertex \f$\vect{v}\f$ specified in Example 3 above
+  can also be obtained with the following code,
+  where we provide a non-default value for the second argument
+  of the function <CODE>vertex</CODE> (the denominator):
+  \code
   Generator v = vertex(2*x + 0*y + 4*z, 2);
-    \endcode
-    Obviously, the denominator can be usefully exploited to specify
-    vertices having some non-integer (but rational) coordinates.
-    For instance, the vertex
-    \f$\vect{w} = (-1.5, 3.2, 2.1)^\transpose \in \Rset^3\f$
-    can be specified by the following code:
-    \code
+  \endcode
+  Obviously, the denominator can be usefully exploited to specify
+  vertices having some non-integer (but rational) coordinates.
+  For instance, the vertex
+  \f$\vect{w} = (-1.5, 3.2, 2.1)^\transpose \in \Rset^3\f$
+  can be specified by the following code:
+  \code
   Generator w = vertex(-15*x + 32*y + 21*z, 10);
-    \endcode
-    If a zero denominator is provided, an exception is thrown.
+  \endcode
+  If a zero denominator is provided, an exception is thrown.
+
+  \par Example 5
+  The following code prints all the coefficients of a given generator:
+  \code
+  size_t g_space_dim = g.space_dimension();
+  for (size_t varid = 0; varid < g_space_dim; varid++) {
+    Variable v(varid);
+    cout << "Variable " << v << " has coefficient "
+         << g.coefficient(v) << endl;
+  }
+  if (g.type() == Generator::VERTEX) {
+    const Integer& d = g.divisor();
+    if (d != 1)
+      cout << "The divisor of the vertex is " << d << endl;
+  }
+  \endcode
+  Namely, for a generator defined by
+  \code
+  Generator g = vertex(2*x - z, -1);
+  \endcode
+  the output is the following:
+  \code
+  Variable A has coefficient 2
+  Variable B has coefficient 0
+  Variable C has coefficient -1
+  The divisor of the vertex is -1 
+  \endcode
+  By using the following code, it is possible to automatically skip
+  all the variable coefficients that are equal to zero:
+  \code
+  for (int varid = g.first(); varid >= 0; varid = g.next(varid)) {
+    Variable v(varid);
+    cout << "Variable " << v << " has coefficient "
+         << g.coefficient(v) << endl;
+  }
+  if (g.type() == Generator::VERTEX) {
+    const Integer& d = g.divisor();
+    if (d != 1)
+      cout << "The divisor of the vertex is " << d << endl;
+  }
+  \endcode
+  Therefore, for the generator defined above,
+  the output would have been:
+  \code
+  Variable A has coefficient 2
+  Variable C has coefficient -1
+  The divisor of the vertex is -1
+  \endcode  
 */
 
 class Parma_Polyhedra_Library::Generator : PPL_INTERNAL Row {
@@ -183,9 +230,8 @@ private:
   friend Generator
   Parma_Polyhedra_Library::ray(const LinExpression& e);
   //! Returns the vertex at \p e / \p d
-  //! Both \p e and \p d are optional arguments,
-  //! with default values LinExpression::zero() and Integer::one(),
-  //! respectively.
+  //! Both \p e and \p d are optional arguments, with default values
+  //! LinExpression::zero() and Integer_one(), respectively.
   //! \exception std::invalid_argument thrown if \p d is zero.
   friend Generator
   Parma_Polyhedra_Library::vertex(const LinExpression& e
@@ -198,6 +244,9 @@ public:
   //! Destructor.
   ~Generator();
 
+  //! Returns the dimension of the vector space enclosing \p *this.
+  size_t space_dimension() const;
+
   //! The generator type.
   enum Type {
     LINE = Row::LINE_OR_EQUALITY,
@@ -208,10 +257,10 @@ public:
   //! Returns the generator type of \p *this.
   Type type() const;
 
-  //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
-
-  //! Returns the coefficient of \p v in \p *this.
+  //! If the index of variable \p v is less than the space-dimension
+  //! of \p *this, returns the coefficient of \p v in \p *this.
+  //! \exception std::invalid_argument thrown if the index of \p v
+  //! is greater than or equal to the space-dimension of \p *this.
   const Integer& coefficient(Variable v) const;
   //! If \p *this is a vertex, returns its divisor.
   //! \exception std::invalid_argument thrown if \p *this is not a vertex.
