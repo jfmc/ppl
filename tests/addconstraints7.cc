@@ -39,7 +39,7 @@ main() {
   Variable y(1);
 
   Polyhedron ph(3);
-  ph.insert(y >= 1);
+  ph.add_constraint(y >= 1);
 
 #if NOISY
   print_constraints(ph, "*** ph ***");

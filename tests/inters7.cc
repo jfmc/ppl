@@ -56,15 +56,15 @@ main() {
   Variable y(1);
 
   Polyhedron ph1_1(2);
-  ph1_1.insert(x >= 0);
-  ph1_1.insert(y >= 0);
-  ph1_1.insert(x <= 2);
-  ph1_1.insert(y <= 2);
+  ph1_1.add_constraint(x >= 0);
+  ph1_1.add_constraint(y >= 0);
+  ph1_1.add_constraint(x <= 2);
+  ph1_1.add_constraint(y <= 2);
   Polyhedron ph1_2(ph1_1);
 
   Polyhedron ph2_1(2);
-  ph2_1.insert(x+y <= 0);
-  ph2_1.insert(x+y >= 2);
+  ph2_1.add_constraint(x+y <= 0);
+  ph2_1.add_constraint(x+y >= 2);
   Polyhedron ph2_2(ph2_1);
   Polyhedron ph2_3(ph2_1);
   Polyhedron ph2_4(ph2_1);

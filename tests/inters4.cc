@@ -40,8 +40,8 @@ main() {
   Variable y(1);
 
   Polyhedron ph1(2);
-  ph1.insert(x >= y);
-  ph1.insert(x >= 0);
+  ph1.add_constraint(x >= y);
+  ph1.add_constraint(x >= 0);
 
   Polyhedron ph2(2, Polyhedron::EMPTY);
 

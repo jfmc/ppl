@@ -60,12 +60,12 @@ main() {
   ph.add_dimensions_and_embed(2);
 
   Polyhedron known_result(6, Polyhedron::EMPTY);
-  known_result.insert(point());
-  known_result.insert(ray(x + y));
-  known_result.insert(line(z));
-  known_result.insert(line(u));
-  known_result.insert(line(v));
-  known_result.insert(line(w));
+  known_result.add_generator(point());
+  known_result.add_generator(ray(x + y));
+  known_result.add_generator(line(z));
+  known_result.add_generator(line(u));
+  known_result.add_generator(line(v));
+  known_result.add_generator(line(w));
 
   int retval = (ph == known_result) ? 0 : 1;
 

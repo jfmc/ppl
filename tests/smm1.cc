@@ -39,7 +39,7 @@ using namespace Parma_Polyhedra_Library;
 
 void
 less_than(Polyhedron& ph, Variable X, Variable Y) {
-  ph.insert(X+1 <= Y);
+  ph.add_constraint(X+1 <= Y);
 }
 
 void
@@ -56,29 +56,29 @@ constraints(Polyhedron& ph,
 	    int C2,
 	    int C3,
 	    int C4) {
-  ph.insert(S >= 0);
-  ph.insert(E >= 0);
-  ph.insert(N >= 0);
-  ph.insert(D >= 0);
-  ph.insert(M >= 0);
-  ph.insert(O >= 0);
-  ph.insert(R >= 0);
-  ph.insert(Y >= 0);
-  ph.insert(S <= 9);
-  ph.insert(E <= 9);
-  ph.insert(N <= 9);
-  ph.insert(D <= 9);
-  ph.insert(M <= 9);
-  ph.insert(O <= 9);
-  ph.insert(R <= 9);
-  ph.insert(Y <= 9);
-  ph.insert(S >= 1);
-  ph.insert(M >= 1);
-  ph.insert(M == C1);
-  ph.insert(C2 + S + M == O + C1 * 10);
-  ph.insert(C3 + E + O == N + 10 * C2);
-  ph.insert(C4 + N + R == E + 10 * C3);
-  ph.insert(D + E == Y + 10*C4);
+  ph.add_constraint(S >= 0);
+  ph.add_constraint(E >= 0);
+  ph.add_constraint(N >= 0);
+  ph.add_constraint(D >= 0);
+  ph.add_constraint(M >= 0);
+  ph.add_constraint(O >= 0);
+  ph.add_constraint(R >= 0);
+  ph.add_constraint(Y >= 0);
+  ph.add_constraint(S <= 9);
+  ph.add_constraint(E <= 9);
+  ph.add_constraint(N <= 9);
+  ph.add_constraint(D <= 9);
+  ph.add_constraint(M <= 9);
+  ph.add_constraint(O <= 9);
+  ph.add_constraint(R <= 9);
+  ph.add_constraint(Y <= 9);
+  ph.add_constraint(S >= 1);
+  ph.add_constraint(M >= 1);
+  ph.add_constraint(M == C1);
+  ph.add_constraint(C2 + S + M == O + C1 * 10);
+  ph.add_constraint(C3 + E + O == N + 10 * C2);
+  ph.add_constraint(C4 + N + R == E + 10 * C3);
+  ph.add_constraint(D + E == Y + 10*C4);
 
   less_than(ph, O, M);
   less_than(ph, M, Y);
@@ -129,14 +129,14 @@ main() try {
 	    solution_found = true;
 
 	    Polyhedron expected(8);
-	    expected.insert(S == 9);
-	    expected.insert(E == 5);
-	    expected.insert(N == 6);
-	    expected.insert(D == 7);
-	    expected.insert(M == 1);
-	    expected.insert(O == 0);
-	    expected.insert(R == 8);
-	    expected.insert(Y == 2);
+	    expected.add_constraint(S == 9);
+	    expected.add_constraint(E == 5);
+	    expected.add_constraint(N == 6);
+	    expected.add_constraint(D == 7);
+	    expected.add_constraint(M == 1);
+	    expected.add_constraint(O == 0);
+	    expected.add_constraint(R == 8);
+	    expected.add_constraint(Y == 2);
 
 	    if (ph != expected)
 	      return 1;

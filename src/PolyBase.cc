@@ -1843,7 +1843,7 @@ PPL::PolyBase::add_constraints_and_minimize(ConSys& cs) {
   constraints of the polyhedron \p *this.
 */
 void
-PPL::PolyBase::insert(const Constraint& c) {
+PPL::PolyBase::add_constraint(const Constraint& c) {
   // Dimension-compatibility check:
   // the dimension of `c' can not be greater than space_dim.
   if (space_dim < c.space_dimension())
@@ -1900,7 +1900,7 @@ PPL::PolyBase::insert(const Constraint& c) {
   can be redundant.
 */
 void
-PPL::PolyBase::insert(const Generator& g) {
+PPL::PolyBase::add_generator(const Generator& g) {
   // Dimension-compatibility check:
   // the dimension of `g' can not be greater than space_dim.
   size_t g_space_dim = g.space_dimension();

@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 
 void
-shift_rename_insert(const Polyhedron& p, size_t offset, Polyhedron& q) {
+shift_rename_add(const Polyhedron& p, size_t offset, Polyhedron& q) {
   if (p.space_dimension() == 0)
     exit(1);
 
@@ -42,9 +42,9 @@ shift_rename_insert(const Polyhedron& p, size_t offset, Polyhedron& q) {
   for (ConSys::const_iterator
 	 i = cs.begin(), cs_end = cs.end(); i != cs_end; ++i)
     if (offset > 0)
-      q.insert(*i >> offset);
+      q.add_constraint(*i >> offset);
     else
-      q.insert(*i);
+      q.add_constraint(*i);
 }
 
 
@@ -62,9 +62,9 @@ main() {
   // This is the base case:
   // append(A,B,C) :- A = [], B = C.
   Polyhedron base(3);
-  base.insert(A == 0);
-  base.insert(B >= 0);
-  base.insert(C == B);
+  base.add_constraint(A == 0);
+  base.add_constraint(B >= 0);
+  base.add_constraint(C == B);
 #if NOISY
   print_constraints(base, "*** base ***");
 #endif
@@ -72,12 +72,12 @@ main() {
   // This is the inductive case:
   // append(A,B,C) :- A = [X|D], B = E, C = [X|F], append(D,E,F).
   Polyhedron inductive(6);
-  inductive.insert(A + F == C + D);
-  inductive.insert(B == E);
-  inductive.insert(C + D >= A);
-  inductive.insert(D >= 0);
-  inductive.insert(B >= 0);
-  inductive.insert(A >= D + 1);
+  inductive.add_constraint(A + F == C + D);
+  inductive.add_constraint(B == E);
+  inductive.add_constraint(C + D >= A);
+  inductive.add_constraint(D >= 0);
+  inductive.add_constraint(B >= 0);
+  inductive.add_constraint(A >= D + 1);
 #if NOISY
   print_constraints(inductive, "*** inductive ***");
 #endif
@@ -93,9 +93,9 @@ main() {
   do {
     previous = current;
     current = inductive;
-    shift_rename_insert(previous, 3, current);
+    shift_rename_add(previous, 3, current);
 #if NOISY
-    print_constraints(current, "*** after shift_rename_insert ***");
+    print_constraints(current, "*** after shift_rename_add ***");
 #endif
     set<Variable> dimensions_to_remove;
     // Deliberately inserted out of order (!).
@@ -115,9 +115,9 @@ main() {
   } while (current != previous);
 
   Polyhedron expected(3);
-  expected.insert(A + B == C);
-  expected.insert(B >= 0);
-  expected.insert(C >= B);
+  expected.add_constraint(A + B == C);
+  expected.add_constraint(B >= 0);
+  expected.add_constraint(C >= B);
 #if NOISY
     print_constraints(expected, "*** expected ***");
 #endif

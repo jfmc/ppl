@@ -90,7 +90,7 @@ main() {
   for (size_t i = 0; i <= 6; ++i) {
     // Above.
     Polyhedron hyper_space_above(3);
-    hyper_space_above.insert(z >= ph_nv[i].plane_height);
+    hyper_space_above.add_constraint(z >= ph_nv[i].plane_height);
 
     Polyhedron computed_result = pyramid;
     computed_result.intersection_assign_and_minimize(hyper_space_above);
@@ -106,7 +106,7 @@ main() {
 
     // Below.
     Polyhedron hyper_space_below(3);
-    hyper_space_below.insert(z <= ph_nv[i].plane_height);
+    hyper_space_below.add_constraint(z <= ph_nv[i].plane_height);
 
     computed_result = pyramid;
     computed_result.intersection_assign_and_minimize(hyper_space_below);

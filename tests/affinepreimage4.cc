@@ -52,7 +52,7 @@ main() {
   ph.affine_preimage(x, y+1);
 
   Polyhedron known_result(2);
-  known_result.insert(y >= 1);
+  known_result.add_constraint(y >= 1);
 
   int retval = (ph == known_result) ? 0 : 1;
 

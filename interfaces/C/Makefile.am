@@ -26,7 +26,7 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS = @extra_if_C_subdirs@
+SUBDIRS = . @extra_if_C_subdirs@
 
 
 # Libtool -version-info for libppl_c.la.

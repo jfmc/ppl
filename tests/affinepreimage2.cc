@@ -40,9 +40,9 @@ main() {
   Variable C(2);
 
   Polyhedron ph(3);
-  ph.insert(A + C == 0);
-  ph.insert(A + B >= 0);
-  ph.insert(A + B - 1 >= 0);
+  ph.add_constraint(A + C == 0);
+  ph.add_constraint(A + B >= 0);
+  ph.add_constraint(A + B - 1 >= 0);
 
 #if NOISY
   print_constraints(ph, "--- ph ---");
@@ -51,9 +51,9 @@ main() {
   ph.affine_preimage(A, A + B);
 
   Polyhedron known_result(3);
-  known_result.insert(A + B + C == 0);
-  known_result.insert(A + 2*B >= 0);
-  known_result.insert(A + 2*B -1 >= 0);
+  known_result.add_constraint(A + B + C == 0);
+  known_result.add_constraint(A + 2*B >= 0);
+  known_result.add_constraint(A + 2*B -1 >= 0);
 
   int retval = (ph == known_result) ? 0 : 1;
 

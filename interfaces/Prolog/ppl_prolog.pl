@@ -1,9 +1,9 @@
-ppl_insert_constraints(_Polyhedron, []).
-ppl_insert_constraints(Polyhedron, [C|Constraints]) :-
-  ppl_insert_constraint(Polyhedron, C),
-  ppl_insert_constraints(Polyhedron, Constraints).
+ppl_add_constraints(_Polyhedron, []).
+ppl_add_constraints(Polyhedron, [C|Constraints]) :-
+  ppl_add_constraint(Polyhedron, C),
+  ppl_add_constraints(Polyhedron, Constraints).
 
-ppl_insert_generators(_Polyhedron, []).
-ppl_insert_generators(Polyhedron, [G|Generators]) :-
-  ppl_insert_generator(Polyhedron, G),
-  ppl_insert_generators(Polyhedron, Generators).
+ppl_add_generators(_Polyhedron, []).
+ppl_add_generators(Polyhedron, [G|Generators]) :-
+  ppl_add_generator(Polyhedron, G),
+  ppl_add_generators(Polyhedron, Generators).

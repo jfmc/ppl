@@ -66,14 +66,14 @@ main() {
   // Polyhedra born full.
   Polyhedron ph(3);
   // We need an empty one.
-  ph.insert(x <= 0);
-  ph.insert(x >= 1);
+  ph.add_constraint(x <= 0);
+  ph.add_constraint(x >= 1);
 
   COUNT(ph);
   for (int n = 1; n <= 200; ++n) {
-    ph.insert(point(rg.get_z_range(maxc)*x
-		    + rg.get_z_range(maxc)*y
-		    + rg.get_z_range(maxc)*z));
+    ph.add_generator(point(rg.get_z_range(maxc)*x
+			   + rg.get_z_range(maxc)*y
+			   + rg.get_z_range(maxc)*z));
     COUNT(ph);
   }
 

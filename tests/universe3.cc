@@ -38,9 +38,9 @@ main() {
   Variable y(1);
 
   Polyhedron ph(2);
-  ph.insert(y == 0);
-  ph.insert(x >= 1);
-  ph.insert(x <= 3);
+  ph.add_constraint(y == 0);
+  ph.add_constraint(x >= 1);
+  ph.add_constraint(x <= 3);
 
   ConSys cs = ph.constraints();
 

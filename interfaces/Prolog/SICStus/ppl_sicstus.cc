@@ -338,8 +338,8 @@ SP_STUB_2(ppl_new_empty_polyhedron, 2)
 SP_STUB_2(ppl_copy_polyhedron, 2)
 SP_STUB_1(ppl_delete_polyhedron, 1)
 SP_STUB_2(ppl_space_dimension, 2)
-SP_STUB_2(ppl_insert_constraint, 2)
-SP_STUB_2(ppl_insert_generator, 2)
+SP_STUB_2(ppl_add_constraint, 2)
+SP_STUB_2(ppl_add_generator, 2)
 SP_STUB_2(ppl_add_constraints_and_minimize, 2)
 SP_STUB_2(ppl_add_generators_and_minimize, 2)
 SP_STUB_2(ppl_add_dimensions_and_constraints, 2)
@@ -388,8 +388,8 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_copy_polyhedron, 2);
   SP_DEFINE_C_PREDICATE(ppl_delete_polyhedron, 1);
   SP_DEFINE_C_PREDICATE(ppl_space_dimension, 2);
-  SP_DEFINE_C_PREDICATE(ppl_insert_constraint, 2);
-  SP_DEFINE_C_PREDICATE(ppl_insert_generator, 2);
+  SP_DEFINE_C_PREDICATE(ppl_add_constraint, 2);
+  SP_DEFINE_C_PREDICATE(ppl_add_generator, 2);
   SP_DEFINE_C_PREDICATE(ppl_add_constraints_and_minimize, 2);
   SP_DEFINE_C_PREDICATE(ppl_add_generators_and_minimize, 2);
   SP_DEFINE_C_PREDICATE(ppl_add_dimensions_and_constraints, 2);

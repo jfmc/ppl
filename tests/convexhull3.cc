@@ -39,16 +39,16 @@ main() {
   Variable y(1);
 
   Polyhedron ph1(2);
-  ph1.insert(x >= 0);
-  ph1.insert(y >= 0);
-  ph1.insert(x <= 2);
-  ph1.insert(y <= 2);
+  ph1.add_constraint(x >= 0);
+  ph1.add_constraint(y >= 0);
+  ph1.add_constraint(x <= 2);
+  ph1.add_constraint(y <= 2);
 
   Polyhedron ph2(2);
-  ph2.insert(y >= 2);
-  ph2.insert(y <= 4);
-  ph2.insert(x >= 0);
-  ph2.insert(x <= 2);
+  ph2.add_constraint(y >= 2);
+  ph2.add_constraint(y <= 4);
+  ph2.add_constraint(x >= 0);
+  ph2.add_constraint(x <= 2);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
@@ -62,10 +62,10 @@ main() {
 #endif
 
   Polyhedron known_result(2, Polyhedron::EMPTY);
-  known_result.insert(point());
-  known_result.insert(point(2*x));
-  known_result.insert(point(4*y));
-  known_result.insert(point(2*x + 4*y));
+  known_result.add_generator(point());
+  known_result.add_generator(point(2*x));
+  known_result.add_generator(point(4*y));
+  known_result.add_generator(point(2*x + 4*y));
 
   int retval = (ph1 == known_result) ? 0 : 1;
 

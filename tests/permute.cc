@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 
 void
-shift_rename_insert(const Polyhedron& p, size_t offset, Polyhedron& q) {
+shift_rename_add(const Polyhedron& p, size_t offset, Polyhedron& q) {
   if (p.space_dimension() == 0)
     exit(1);
 
@@ -42,9 +42,9 @@ shift_rename_insert(const Polyhedron& p, size_t offset, Polyhedron& q) {
   for (ConSys::const_iterator
 	 i = cs.begin(), cs_end = cs.end(); i != cs_end; ++i)
     if (offset > 0)
-      q.insert(*i >> offset);
+      q.add_constraint(*i >> offset);
     else
-      q.insert(*i);
+      q.add_constraint(*i);
 }
 
 
@@ -63,9 +63,9 @@ append_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
   // This is the base case:
   // append(A,B,C) :- A = [], B = C.
   base.add_dimensions_and_embed(3);
-  base.insert(A == 0);
-  base.insert(B >= 0);
-  base.insert(C == B);
+  base.add_constraint(A == 0);
+  base.add_constraint(B >= 0);
+  base.add_constraint(C == B);
 #if NOISY
   print_constraints(base, "*** base ***");
 #endif
@@ -73,20 +73,20 @@ append_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
   // This is the inductive case:
   // append(A,B,C) :- A = [X|D], B = E, C = [X|F], append(D,E,F).
   inductive.add_dimensions_and_embed(6);
-  inductive.insert(A + F == C + D);
-  inductive.insert(B == E);
-  inductive.insert(C + D >= A);
-  inductive.insert(D >= 0);
-  inductive.insert(B >= 0);
-  inductive.insert(A >= D + 1);
+  inductive.add_constraint(A + F == C + D);
+  inductive.add_constraint(B == E);
+  inductive.add_constraint(C + D >= A);
+  inductive.add_constraint(D >= 0);
+  inductive.add_constraint(B >= 0);
+  inductive.add_constraint(A >= D + 1);
 #if NOISY
   print_constraints(inductive, "*** inductive ***");
 #endif
 
   expected.add_dimensions_and_embed(3);
-  expected.insert(A + B == C);
-  expected.insert(B >= 0);
-  expected.insert(C >= B);
+  expected.add_constraint(A + B == C);
+  expected.add_constraint(B >= 0);
+  expected.add_constraint(C >= B);
 }
 
 void
@@ -103,9 +103,9 @@ fix_point(Polyhedron& start, Polyhedron& induct, Polyhedron& finish,
   do {
     previous = current;
     current = induct;
-    shift_rename_insert(previous, offset, current);
+    shift_rename_add(previous, offset, current);
 #if NOISY
-    print_constraints(current, "*** after shift_rename_insert ***");
+    print_constraints(current, "*** after shift_rename_add ***");
 #endif
 
     set<Variable> dimensions_to_remove;
@@ -163,8 +163,8 @@ permute_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
   // This is the base case:
   // permute(A,B) :- A = [], B = [].
   base.add_dimensions_and_embed(2);
-  base.insert(A == 0);
-  base.insert(B == 0);
+  base.add_constraint(A == 0);
+  base.add_constraint(B == 0);
 #if NOISY
   print_constraints(base, "*** base ***");
 #endif
@@ -174,28 +174,28 @@ permute_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
   //                 D = H, I = G, append(H,I,J),
   //                 K = J, L = C, permute(K,L).
   inductive.add_dimensions_and_embed(12);
-  inductive.insert(B == C + 1);
-  inductive.insert(E == G + 1);
-  inductive.insert(F == A);
+  inductive.add_constraint(B == C + 1);
+  inductive.add_constraint(E == G + 1);
+  inductive.add_constraint(F == A);
   Polyhedron ph_append;
   append_size_rel(ph_append);
-  shift_rename_insert(ph_append, 3, inductive);
-  shift_rename_insert(ph_append, 7, inductive);
-  inductive.insert(D + G == H + I);
-  inductive.insert(D == H);
-  inductive.insert(I == G);
-  inductive.insert(K == J);
-  inductive.insert(L == C);
-  inductive.insert(A >= 0);
-  inductive.insert(C >= 0);
+  shift_rename_add(ph_append, 3, inductive);
+  shift_rename_add(ph_append, 7, inductive);
+  inductive.add_constraint(D + G == H + I);
+  inductive.add_constraint(D == H);
+  inductive.add_constraint(I == G);
+  inductive.add_constraint(K == J);
+  inductive.add_constraint(L == C);
+  inductive.add_constraint(A >= 0);
+  inductive.add_constraint(C >= 0);
 #if NOISY
   print_constraints(inductive, "*** inductive ***");
 #endif
 
   expected.add_dimensions_and_embed(2);
-  expected.insert(A == B);
-  expected.insert(A >= 0);
-  expected.insert(B >= 0);
+  expected.add_constraint(A == B);
+  expected.add_constraint(A >= 0);
+  expected.add_constraint(B >= 0);
 }
 
 int
@@ -217,10 +217,10 @@ main() {
 
   Polyhedron final1;
   final1 = induct;
-  shift_rename_insert(final, recursive_offset, final1);
+  shift_rename_add(final, recursive_offset, final1);
 
 #if NOISY
-  print_constraints(final1, "*** after shift_rename_insert ***");
+  print_constraints(final1, "*** after shift_rename_add ***");
 #endif
   Polyhedron final2;
   final2 = final1;
@@ -228,8 +228,8 @@ main() {
   Variable B(1);
   Variable K(10);
   Variable L(11);
-  final2.insert(B - L >= 1);
-  final2.insert(A - K >= 1);
+  final2.add_constraint(B - L >= 1);
+  final2.add_constraint(A - K >= 1);
 
 #if NOISY
   if (final2 == final1)

@@ -36,7 +36,7 @@ main() {
   set_handlers();
 
   Polyhedron ph;
-  ph.insert(LinExpression(-2) >= 0);
+  ph.add_constraint(LinExpression(-2) >= 0);
 
 #if NOISY
   print_constraints(ph, "*** ph ***");

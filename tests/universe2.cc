@@ -39,8 +39,8 @@ main() {
   Variable z(2);
 
   Polyhedron ph(3);
-  ph.insert(x >= z);
-  ph.insert(z == 3);
+  ph.add_constraint(x >= z);
+  ph.add_constraint(z == 3);
 
 #if NOISY
   print_constraints(ph, "--- ph ---");

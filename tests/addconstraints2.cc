@@ -60,7 +60,7 @@ main() try {
   copy_ph.add_dimensions_and_embed(2);
   for (ConSys::const_iterator i = copy_cs2.begin(),
 	 iend = copy_cs2.end(); i != iend; ++i )
-    copy_ph.insert(*i >> 2);
+    copy_ph.add_constraint(*i >> 2);
 
   int retval = (ph == copy_ph) ? 0 : 1;
 

@@ -39,10 +39,10 @@ main() {
   Variable y(1);
 
   Polyhedron ph(3);
-  ph.insert(x >= 1);
-  ph.insert(y >= 1);
-  ph.insert(x <= 4);
-  ph.insert(y <= 4);
+  ph.add_constraint(x >= 1);
+  ph.add_constraint(y >= 1);
+  ph.add_constraint(x <= 4);
+  ph.add_constraint(y <= 4);
 
   ConSys cs = ph.constraints();
 #if NOISY

@@ -36,7 +36,7 @@ main() {
   set_handlers();
 
   Polyhedron ph;
-  ph.insert(point());
+  ph.add_generator(point());
 
 #if NOISY
   print_generators(ph, "*** ph ***");

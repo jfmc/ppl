@@ -41,8 +41,8 @@ main() {
   Variable z(2);
 
   Polyhedron ph1(3);
-  ph1.insert(x >= 3);
-  ph1.insert(x - y >= 0);
+  ph1.add_constraint(x >= 3);
+  ph1.add_constraint(x - y >= 0);
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
 #endif

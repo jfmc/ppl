@@ -54,8 +54,8 @@ main() {
   ph.add_constraints_and_minimize(cs);
 
   Polyhedron known_result(3);
-  known_result.insert(x >= 4);
-  known_result.insert(x - y >= 0);
+  known_result.add_constraint(x >= 4);
+  known_result.add_constraint(x - y >= 0);
 
   int retval = (ph == known_result) ? 0 : 1;
 

@@ -81,7 +81,7 @@ void test3() {
 void test4() {
   // An empty polyhedron.
   Polyhedron ph(1);
-  ph.insert(LinExpression(0) >= 1);
+  ph.add_constraint(LinExpression(0) >= 1);
   Variable A(0);
   Poly_Con_Relation rel = ph.relation_with(A > 0);
 

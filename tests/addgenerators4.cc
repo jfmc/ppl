@@ -39,8 +39,8 @@ main() {
   Variable y(1);
 
   Polyhedron ph(2);
-  ph.insert(x >= 1);
-  ph.insert(x <= 0);
+  ph.add_constraint(x >= 1);
+  ph.add_constraint(x <= 0);
 
 #if NOISY
   print_constraints(ph, "*** ph ***");
@@ -57,8 +57,8 @@ main() {
   ph.add_generators(gs);
 
   Polyhedron known_result(2);
-  known_result.insert(y == 0);
-  known_result.insert(x >= 0);
+  known_result.add_constraint(y == 0);
+  known_result.add_constraint(x >= 0);
 
   int retval = (ph == known_result) ? 0 : 1;
 

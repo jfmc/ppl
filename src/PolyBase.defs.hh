@@ -120,10 +120,10 @@ namespace Parma_Polyhedra_Library {
     a square in \f$\Rset^2\f$, given as a system of constraints:
     \code
   ConSys cs;
-  cs.insert(x >= 0);
-  cs.insert(x <= 3);
-  cs.insert(y >= 0);
-  cs.insert(y <= 3);
+  cs.add_constraint(x >= 0);
+  cs.add_constraint(x <= 3);
+  cs.add_constraint(y >= 0);
+  cs.add_constraint(y <= 3);
   Polyhedron ph(cs);
     \endcode
     The following code builds the same polyhedron as above,
@@ -131,10 +131,10 @@ namespace Parma_Polyhedra_Library {
     the four vertices of the square:
     \code
   GenSys gs;
-  gs.insert(point(0*x + 0*y));
-  gs.insert(point(0*x + 3*y));
-  gs.insert(point(3*x + 0*y));
-  gs.insert(point(3*x + 3*y));
+  gs.add_generator(point(0*x + 0*y));
+  gs.add_generator(point(0*x + 3*y));
+  gs.add_generator(point(3*x + 0*y));
+  gs.add_generator(point(3*x + 3*y));
   Polyhedron ph(gs);
     \endcode
 
@@ -144,9 +144,9 @@ namespace Parma_Polyhedra_Library {
     given as a system of constraints:
     \code
   ConSys cs;
-  cs.insert(x >= 0);
-  cs.insert(x - y <= 0);
-  cs.insert(x - y + 1 >= 0);
+  cs.add_constraint(x >= 0);
+  cs.add_constraint(x - y <= 0);
+  cs.add_constraint(x - y + 1 >= 0);
   Polyhedron ph(cs);
     \endcode
     The following code builds the same polyhedron as above,
@@ -154,9 +154,9 @@ namespace Parma_Polyhedra_Library {
     the two vertices of the polyhedron and one ray:
     \code
   GenSys gs;
-  gs.insert(point(0*x + 0*y));
-  gs.insert(point(0*x + y));
-  gs.insert(ray(x - y));
+  gs.add_generator(point(0*x + 0*y));
+  gs.add_generator(point(0*x + y));
+  gs.add_generator(ray(x - y));
   Polyhedron ph(gs);
     \endcode
 
@@ -166,7 +166,7 @@ namespace Parma_Polyhedra_Library {
     to the universe polyhedron in \f$\Rset^2\f$:
     \code
   Polyhedron ph(2);
-  ph.insert(y >= 0);
+  ph.add_constraint(y >= 0);
     \endcode
     The following code builds the same polyhedron as above,
     but starting from the empty polyhedron in the space \f$\Rset^2\f$
@@ -174,9 +174,9 @@ namespace Parma_Polyhedra_Library {
     (a point, a ray and a line).
     \code
   Polyhedron ph(2, Polyhedron::EMPTY);
-  ph.insert(point(0*x + 0*y));
-  ph.insert(ray(y));
-  ph.insert(line(x));
+  ph.add_generator(point(0*x + 0*y));
+  ph.add_generator(ray(y));
+  ph.add_generator(line(x));
     \endcode
     Note that, even if the above polyhedron has no vertices, we must add
     one point, because otherwise the result of the Minkowsky's sum
@@ -190,7 +190,7 @@ namespace Parma_Polyhedra_Library {
     <CODE>add_dimensions_and_embed</CODE>:
     \code
   Polyhedron ph(1);
-  ph.insert(x == 2);
+  ph.add_constraint(x == 2);
   ph.add_dimensions_and_embed(1);
     \endcode
     We build the universe polyhedron in the 1-dimension space \f$\Rset\f$.
@@ -211,7 +211,7 @@ namespace Parma_Polyhedra_Library {
     <CODE>add_dimensions_and_project</CODE>:
     \code
   Polyhedron ph(1);
-  ph.insert(x == 2);
+  ph.add_constraint(x == 2);
   ph.add_dimensions_and_project(1);
     \endcode
     The first two lines of code are the same as in Example 4 for
@@ -225,10 +225,10 @@ namespace Parma_Polyhedra_Library {
     <CODE>affine_image</CODE>:
     \code
   Polyhedron ph(2, Polyhedron::EMPTY);
-  ph.insert(point(0*x + 0*y));
-  ph.insert(point(0*x + 3*y));
-  ph.insert(point(3*x + 0*y));
-  ph.insert(point(3*x + 3*y));
+  ph.add_generator(point(0*x + 0*y));
+  ph.add_generator(point(0*x + 3*y));
+  ph.add_generator(point(3*x + 0*y));
+  ph.add_generator(point(3*x + 3*y));
   LinExpression coeff = x + 4;
   ph.affine_image(x, coeff);
     \endcode
@@ -255,10 +255,10 @@ namespace Parma_Polyhedra_Library {
     <CODE>affine_preimage</CODE>:
     \code
   Polyhedron ph(2);
-  ph.insert(x >= 0);
-  ph.insert(x <= 3);
-  ph.insert(y >= 0);
-  ph.insert(y <= 3);
+  ph.add_constraint(x >= 0);
+  ph.add_constraint(x <= 3);
+  ph.add_constraint(y >= 0);
+  ph.add_constraint(y <= 3);
   LinExpression coeff = x + 4;
   ph.affine_preimage(x, coeff);
     \endcode
@@ -290,7 +290,7 @@ namespace Parma_Polyhedra_Library {
     <CODE>remove_dimensions</CODE>:
     \code
   GenSys gs;
-  gs.insert(point(3*x + y +0*z + 2*w));
+  gs.add_generator(point(3*x + y +0*z + 2*w));
   Polyhedron ph(gs);
   set<Variable> to_be_removed;
   to_be_removed.insert(y);
@@ -446,21 +446,21 @@ public:
   //! Returns the system of generators.
   const GenSys& generators() const;
 
-  //! Inserts a copy of constraint \p c into the system of constraints
+  //! Adds a copy of constraint \p c to the system of constraints
   //! of \p *this.
   //! \exception std::invalid_argument thrown if \p *this and constraint \p c
   //!                                  are dimension-incompatible
   //!                                  or topology-incompatible.
-  void insert(const Constraint& c);
+  void add_constraint(const Constraint& c);
 
-  //! Inserts a copy of generator \p g into the system of generators
+  //! Adds a copy of generator \p g to the system of generators
   //! of \p *this.
   //! \exception std::invalid_argument thrown if \p *this and generator \p g
   //!                                  are dimension-incompatible
   //!                                  or topology-incompatible,
   //!                                  or if \p *this is an empty polyhedron
   //!                                  and \p g is not a point.
-  void insert(const Generator& g);
+  void add_generator(const Generator& g);
 
   //! Transforms the polyhedron \p *this, assigning an affine expression
   //! to the specified variable.

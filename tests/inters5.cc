@@ -40,12 +40,12 @@ main() {
   Variable y(1);
 
   Polyhedron ph1(2);
-  ph1.insert(x >= y);
+  ph1.add_constraint(x >= y);
 
   Polyhedron ph2(2, Polyhedron::EMPTY);
-  ph2.insert(point());
-  ph2.insert(line(x));
-  ph2.insert(ray(y));
+  ph2.add_generator(point());
+  ph2.add_generator(line(x));
+  ph2.add_generator(ray(y));
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
@@ -55,8 +55,8 @@ main() {
   ph1.intersection_assign_and_minimize(ph2);
 
   Polyhedron known_result(2);
-  known_result.insert(y >= 0);
-  known_result.insert(x >= y);
+  known_result.add_constraint(y >= 0);
+  known_result.add_constraint(x >= y);
 
   int retval = (known_result == ph1) ? 0 : 1;
 

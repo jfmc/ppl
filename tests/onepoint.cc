@@ -39,7 +39,7 @@ main() {
   Variable z(2);
 
   Polyhedron ph(3, Polyhedron::EMPTY);
-  ph.insert(point(-1000*x - 9*y, 16));
+  ph.add_generator(point(-1000*x - 9*y, 16));
 
 #if NOISY
   print_generators(ph, "*** generators ***");
@@ -47,9 +47,9 @@ main() {
 #endif
 
   Polyhedron known_result(3);
-  known_result.insert(2*x == -125);
-  known_result.insert(16*y == -9);
-  known_result.insert(z == 0);
+  known_result.add_constraint(2*x == -125);
+  known_result.add_constraint(16*y == -9);
+  known_result.add_constraint(z == 0);
 
   int retval = (ph == known_result) ? 0 : 1;
 

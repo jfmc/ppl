@@ -556,13 +556,13 @@ ppl_space_dimension(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_insert_constraint(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
+ppl_add_constraint(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
   try {
     PPL::Polyhedron* ph = get_ph_pointer(t_ph);
     if (ph == 0)
       return PROLOG_FAILURE;
     CHECK(ph);
-    ph->insert(build_constraint(t_c));
+    ph->add_constraint(build_constraint(t_c));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -570,13 +570,13 @@ ppl_insert_constraint(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_insert_generator(Prolog_term_ref t_ph, Prolog_term_ref t_g) {
+ppl_add_generator(Prolog_term_ref t_ph, Prolog_term_ref t_g) {
   try {
     PPL::Polyhedron* ph = get_ph_pointer(t_ph);
     if (ph == 0)
       return PROLOG_FAILURE;
     CHECK(ph);
-    ph->insert(build_generator(t_g));
+    ph->add_generator(build_generator(t_g));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;

@@ -185,7 +185,7 @@ error6() {
   Variable y(1);
 
   Polyhedron ph(1);
-  ph.insert(x >= 1);
+  ph.add_constraint(x >= 1);
 
   try {
     // This is an invalid used of the function
@@ -213,8 +213,8 @@ error7() {
   Variable z(2);
   
   Polyhedron ph(2);
-  ph.insert(x >= 1);
-  ph.insert(y >= 1);
+  ph.add_constraint(x >= 1);
+  ph.add_constraint(y >= 1);
   
   try {
     // This is an invalid used of the function
@@ -241,7 +241,7 @@ error8() {
   Variable y(1);
 
   Polyhedron ph(2);
-  ph.insert(x >= y);
+  ph.add_constraint(x >= y);
   LinExpression coeff = x + y + 1;
   try {
     // This is an incorrect use of the function
@@ -331,7 +331,7 @@ error11() {
   Variable y(1);
 
   Polyhedron ph1(2);
-  ph1.insert(x >= y);
+  ph1.add_constraint(x >= y);
 
   Polyhedron ph2(3);
 
@@ -461,10 +461,10 @@ error16() {
   Polyhedron ph(1);
 
   try {
-    // This is an invalid use of the function Polyhedron::insert(c):
+    // This is an invalid use of the function Polyhedron::add_constraint(c):
     // it is impossible to insert a constraints that contains a variable
     // that is not in the space of the polyhedron.
-    ph.insert(y >= 0);
+    ph.add_constraint(y >= 0);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -549,10 +549,10 @@ error19() {
   Polyhedron ph(1, Polyhedron::EMPTY);
 
   try {
-    // This is an invalid use of the function Polyhedron::insert(g):
+    // This is an invalid use of the function Polyhedron::add_generator(g):
     // it is impossible to insert a generator that is dimensional
     // incompatible with the polyhedron.
-    ph.insert(point(x + y));
+    ph.add_generator(point(x + y));
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -708,14 +708,14 @@ error25() {
   Variable z(2);
 
   Polyhedron ph1(2);
-  ph1.insert(x - y >= 0);
-  ph1.insert(x >= 0);
-  ph1.insert(x <= 2);
+  ph1.add_constraint(x - y >= 0);
+  ph1.add_constraint(x >= 0);
+  ph1.add_constraint(x <= 2);
 
   Polyhedron ph2(2);
-  ph2.insert(x - y >= 0);
-  ph2.insert(x >= 0);
-  ph2.insert(x <= 5);
+  ph2.add_constraint(x - y >= 0);
+  ph2.add_constraint(x >= 0);
+  ph2.add_constraint(x <= 5);
 
   ConSys cs;
   cs.insert(z <= 5);
@@ -745,10 +745,10 @@ error26() {
   Variable y(1);
 
   Polyhedron ph1(3);
-  ph1.insert(x - y >= 0);
+  ph1.add_constraint(x - y >= 0);
 
   Polyhedron ph2(2);
-  ph2.insert(x - y == 0);
+  ph2.add_constraint(x - y == 0);
 
   try {
     // This is an invalid use of operator <=: it is impossible to apply
@@ -773,11 +773,11 @@ error27() {
   Polyhedron ph(2, Polyhedron::EMPTY);
 
   try {
-    // This is invalid use of function Polyhedro::insert(g): it is
-    // impossible to insert a generator that is not dimensional
+    // This is invalid use of function Polyhedron::add_generator(g):
+    // it is impossible to insert a generator that is not dimensional
     // comaptible with the polyhedron..
     Generator g(ray(x));
-    ph.insert(g);
+    ph.add_generator(g);
   }
   catch (invalid_argument& e) {
 #if NOISY

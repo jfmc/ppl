@@ -4,8 +4,8 @@
 :- foreign(ppl_copy_polyhedron(+term, +term)).
 :- foreign(ppl_delete_polyhedron(+term)).
 :- foreign(ppl_space_dimension(+term, +term)).
-:- foreign(ppl_insert_constraint(+term, +term)).
-:- foreign(ppl_insert_generator(+term, +term)).
+:- foreign(ppl_add_constraint(+term, +term)).
+:- foreign(ppl_add_generator(+term, +term)).
 :- foreign(ppl_add_constraints_and_minimize(+term, +term)).
 :- foreign(ppl_add_generators_and_minimize(+term, +term)).
 :- foreign(ppl_add_dimensions_and_constraints(+term, +term)).

@@ -50,8 +50,8 @@ main() {
   ph1.add_generators(gs);
 
   Polyhedron known_result(2, Polyhedron::EMPTY);
-  known_result.insert(point());
-  known_result.insert(line(x));
+  known_result.add_generator(point());
+  known_result.add_generator(line(x));
 
   int retval = (ph1 == known_result) ? 0 : 1;
 

@@ -58,9 +58,9 @@ main() {
   ph.add_generators(gs2);
 
   Polyhedron known_result(2, Polyhedron::EMPTY);
-  known_result.insert(point());
-  known_result.insert(ray(x));
-  known_result.insert(ray(x + y));
+  known_result.add_generator(point());
+  known_result.add_generator(ray(x));
+  known_result.add_generator(ray(x + y));
 
   int retval = (ph == known_result) ? 0 : 1;
 

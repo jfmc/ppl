@@ -525,7 +525,7 @@ build_constraint(SP_term_ref t) {
 }
 
 extern "C" void
-ppl_insert_constraint(void* pp, SP_term_ref t) {
+ppl_add_constraint(void* pp, SP_term_ref t) {
   try {
     CHECK(pp);
     static_cast<PPL::Polyhedron*>(pp)->insert(build_constraint(t));
@@ -541,7 +541,7 @@ ppl_add_constraints_and_minimize(void* pp, SP_term_ref constraints_list) {
     SP_term_ref c = SP_new_term_ref();
     while (SP_is_list(constraints_list)) {
       SP_get_list(constraints_list, c, constraints_list);
-      cs.insert(build_constraint(c));
+      cs.add_constraint(build_constraint(c));
     }
     PPL::Polyhedron& ph = *static_cast<PPL::Polyhedron*>(pp);
     return ph.add_constraints_and_minimize(cs) ? 1 : 0;
@@ -582,10 +582,10 @@ build_generator(SP_term_ref t) {
 }
 
 extern "C" void
-ppl_insert_generator(void* pp, SP_term_ref t) {
+ppl_add_generator(void* pp, SP_term_ref t) {
   try {
     CHECK(pp);
-    static_cast<PPL::Polyhedron*>(pp)->insert(build_generator(t));
+    static_cast<PPL::Polyhedron*>(pp)->add_generator(build_generator(t));
   }
   CATCH_ALL;
 }

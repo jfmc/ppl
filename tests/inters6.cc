@@ -60,10 +60,10 @@ main() {
   ph1.intersection_assign(ph2);
 
   Polyhedron known_result(2, Polyhedron::EMPTY);
-  known_result.insert(point(x));
-  known_result.insert(point(3*x));
-  known_result.insert(point(x + 3*y));
-  known_result.insert(point(3*x + 3*y));
+  known_result.add_generator(point(x));
+  known_result.add_generator(point(3*x));
+  known_result.add_generator(point(x + 3*y));
+  known_result.add_generator(point(3*x + 3*y));
 
   int retval =(ph1 == known_result) ? 0 : 1;
 

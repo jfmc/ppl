@@ -40,7 +40,7 @@ main() {
 
   // This is a non-bounded polyhedron.
   Polyhedron ph1(2);
-  ph1.insert(x >= 0);
+  ph1.add_constraint(x >= 0);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
@@ -51,10 +51,10 @@ main() {
   
   // This is a bounded polyhedron (it is a square);
   Polyhedron ph2(2);
-  ph2.insert(x >= 2);
-  ph2.insert(y >= 2);
-  ph2.insert(x <= 4);
-  ph2.insert(y <= 4);
+  ph2.add_constraint(x >= 2);
+  ph2.add_constraint(y >= 2);
+  ph2.add_constraint(x <= 4);
+  ph2.add_constraint(y <= 4);
 
 #if NOISY
   print_constraints(ph2, "*** ph2 ***");
@@ -75,7 +75,7 @@ main() {
   
   // This is an empty, zero-dimensional polyhedron. 
   Polyhedron ph4;
-  ph4.insert(LinExpression(-3) >= 0);
+  ph4.add_constraint(LinExpression(-3) >= 0);
 
 #if NOISY
   print_constraints(ph4, "*** ph4 ***");

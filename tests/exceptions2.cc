@@ -96,10 +96,10 @@ error3() {
   Polyhedron ph(3);
   
   try {
-    // This is an invalid use of the function insert(c): it is impossible
-    // to insert a strict-inequality into a system of constraints of
-    // a closed polyhedron.
-    ph.insert(x - y > 0);
+    // This is an invalid use of the function add_constraint(c): it is
+    // impossible to insert a strict-inequality into a system of
+    // constraints of a closed polyhedron.
+    ph.add_constraint(x - y > 0);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -118,10 +118,10 @@ error4() {
   Polyhedron ph(3, Polyhedron::EMPTY);
 
   try {
-    // This is an incorrect use of the function insert(g): it is impossible
-    // to insert a closure-point into a system of generators of a closed
-    // polyhedron.
-    ph.insert(closure_point(LinExpression(2)));
+    // This is an incorrect use of the function add_generator(g): it
+    // is impossible to insert a closure-point into a system of
+    // generators of a closed polyhedron.
+    ph.add_generator(closure_point(LinExpression(2)));
   }
   catch(invalid_argument& e) {
 # if NOISY
@@ -141,8 +141,8 @@ error5() {
   Variable y(1);
 
   Polyhedron ph(3);
-  ph.insert(x >= 2);
-  ph.insert(y >= 2);
+  ph.add_constraint(x >= 2);
+  ph.add_constraint(y >= 2);
 
   ConSys cs;
   cs.insert(x == y);
@@ -290,8 +290,8 @@ error10() {
   Variable y(1);
   
   NNC_Polyhedron ph1(3);
-  ph1.insert(x >= 5);
-  ph1.insert(y > x -3);
+  ph1.add_constraint(x >= 5);
+  ph1.add_constraint(y > x -3);
 
   try {
     // It is impossible to built a closed polyhedron starting from

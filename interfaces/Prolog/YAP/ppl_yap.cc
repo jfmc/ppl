@@ -306,8 +306,8 @@ init() {
   YAP_USER_C_PREDICATE(ppl_copy_polyhedron, 2);
   YAP_USER_C_PREDICATE(ppl_delete_polyhedron, 1);
   YAP_USER_C_PREDICATE(ppl_space_dimension, 2);
-  YAP_USER_C_PREDICATE(ppl_insert_constraint, 2);
-  YAP_USER_C_PREDICATE(ppl_insert_generator, 2);
+  YAP_USER_C_PREDICATE(ppl_add_constraint, 2);
+  YAP_USER_C_PREDICATE(ppl_add_generator, 2);
   YAP_USER_C_PREDICATE(ppl_add_constraints_and_minimize, 2);
   YAP_USER_C_PREDICATE(ppl_add_generators_and_minimize, 2);
   YAP_USER_C_PREDICATE(ppl_add_dimensions_and_constraints, 2);

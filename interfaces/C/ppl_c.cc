@@ -1028,7 +1028,7 @@ ppl_Polyhedron_add_constraint(ppl_Polyhedron_t ph,
 			      ppl_const_Constraint_t c) try {
   Polyhedron& pph = *to_nonconst(ph);
   const Constraint& cc = *to_const(c);
-  pph.insert(cc);
+  pph.add_constraint(cc);
   return 0;
 }
 CATCH_ALL
@@ -1038,7 +1038,7 @@ ppl_Polyhedron_add_generator(ppl_Polyhedron_t ph,
 			     ppl_const_Generator_t g) try {
   Polyhedron& pph = *to_nonconst(ph);
   const Generator& gg = *to_const(g);
-  pph.insert(gg);
+  pph.add_generator(gg);
   return 0;
 }
 CATCH_ALL

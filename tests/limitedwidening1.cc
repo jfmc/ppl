@@ -74,9 +74,9 @@ main() {
   computed_result.limited_widening_assign(ph1, cs);
 
   Polyhedron known_result(2);
-  known_result.insert(x - y >= 0);
-  known_result.insert(y >= 0);
-  known_result.insert(x <= 5);
+  known_result.add_constraint(x - y >= 0);
+  known_result.add_constraint(y >= 0);
+  known_result.add_constraint(x <= 5);
 
 #if NOISY
   print_constraints(computed_result, "*** After limited_widening_assign ****");

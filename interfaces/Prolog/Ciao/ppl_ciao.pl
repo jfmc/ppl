@@ -9,10 +9,10 @@
 	ppl_copy_polyhedron/2,
 	ppl_delete_polyhedron/1,
 	ppl_space_dimension/1,
-	ppl_insert_constraint/2,
-	ppl_insert_constraints/2,
-	ppl_insert_generator/2,
-	ppl_insert_generators/2,
+	ppl_add_constraint/2,
+	ppl_add_constraints/2,
+	ppl_add_generator/2,
+	ppl_add_generators/2,
 	ppl_add_constraints_and_minimize/2,
 	ppl_remove_dimensions/2,
 	ppl_remove_higher_dimensions/2,
@@ -54,8 +54,8 @@
 	ppl_copy_polyhedron/2,
 	ppl_delete_polyhedron/1,
 	ppl_space_dimension/1,
-	ppl_insert_constraint/2,
-	ppl_insert_generator/2,
+	ppl_add_constraint/2,
+	ppl_add_generator/2,
 	ppl_add_constraints_and_minimize/3,
 	ppl_remove_dimensions/2,
 	ppl_remove_higher_dimensions/2,
@@ -89,7 +89,7 @@
              :: address * int
              +  (foreign, returns(NumDims)).
 
-:- true pred ppl_insert_constraint(in(Polyhedron), in(Constraint))
+:- true pred ppl_add_constraint(in(Polyhedron), in(Constraint))
 %%FIXME : term ?
              :: address * term
              +  (foreign).
@@ -102,7 +102,7 @@
              :: address * term * int
              +  (foreign, returns(Empty)).
 
-:- true pred ppl_insert_generator(in(Polyhedron), in(Generator))
+:- true pred ppl_add_generator(in(Polyhedron), in(Generator))
 %%FIXME : term ?
              :: address * term
              +  (foreign).
@@ -160,15 +160,15 @@
 ppl_check_empty(Polyhedron) :-
   ppl_check_empty(Polyhedron, 1).
 
-ppl_insert_constraints(_Polyhedron, []).
-ppl_insert_constraints(Polyhedron, [C|Constraints]) :-
-  ppl_insert_constraint(Polyhedron, C),
-  ppl_insert_constraints(Polyhedron, Constraints).
+ppl_add_constraints(_Polyhedron, []).
+ppl_add_constraints(Polyhedron, [C|Constraints]) :-
+  ppl_add_constraint(Polyhedron, C),
+  ppl_add_constraints(Polyhedron, Constraints).
 
-ppl_insert_generators(_Polyhedron, []).
-ppl_insert_generators(Polyhedron, [G|Generators]) :-
-  ppl_insert_generator(Polyhedron, G),
-  ppl_insert_generators(Polyhedron, Generators).
+ppl_add_generators(_Polyhedron, []).
+ppl_add_generators(Polyhedron, [G|Generators]) :-
+  ppl_add_generator(Polyhedron, G),
+  ppl_add_generators(Polyhedron, Generators).
 
 ppl_add_constraints_and_minimize(Polyhedron, Constraints) :-
   ppl_add_constraints_and_minimize(Polyhedron, Constraints, 1).

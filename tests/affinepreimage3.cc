@@ -39,9 +39,9 @@ main() {
   Variable B(1);
 
   Polyhedron ph(2);
-  ph.insert(A >= 0);
-  ph.insert(B >= 0);
-  ph.insert(A + B - 3 >= 0);
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+  ph.add_constraint(A + B - 3 >= 0);
 
 #if NOISY
   print_constraints(ph, "--- ph ---");
@@ -50,9 +50,9 @@ main() {
   ph.affine_preimage(A, B+1);
 
   Polyhedron known_result(2, Polyhedron::EMPTY);
-  known_result.insert(point(B));
-  known_result.insert(line(A));
-  known_result.insert(ray(B));
+  known_result.add_generator(point(B));
+  known_result.add_generator(line(A));
+  known_result.add_generator(ray(B));
 
   int retval = (ph == known_result) ? 0 : 1;
 

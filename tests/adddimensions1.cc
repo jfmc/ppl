@@ -52,10 +52,10 @@ main() {
   ph.add_dimensions_and_project(1);
 
   Polyhedron known_result(3, Polyhedron::EMPTY);
-  known_result.insert(point());
-  known_result.insert(point(x));
-  known_result.insert(point(y));
-  known_result.insert(point(x + y));
+  known_result.add_generator(point());
+  known_result.add_generator(point(x));
+  known_result.add_generator(point(y));
+  known_result.add_generator(point(x + y));
 
   int retval = (ph == known_result) ? 0 : 1;
 

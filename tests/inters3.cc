@@ -38,18 +38,18 @@ main() {
   Variable y(1);
 
   Polyhedron ph1(2);
-  ph1.insert(x - y >= 0);
-  ph1.insert(x - y <= 1);
+  ph1.add_constraint(x - y >= 0);
+  ph1.add_constraint(x - y <= 1);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
   Polyhedron ph2(2);
-  ph2.insert(x >= 0);
-  ph2.insert(y >= 0);
-  ph2.insert(x <= 1);
-  ph2.insert(y <= 1);
+  ph2.add_constraint(x >= 0);
+  ph2.add_constraint(y >= 0);
+  ph2.add_constraint(x <= 1);
+  ph2.add_constraint(y <= 1);
 
 #if NOISY
   print_constraints(ph2, "*** ph2 ***");
@@ -60,9 +60,9 @@ main() {
   computed_result.intersection_assign(ph2);
 
   Polyhedron known_result(2);
-  known_result.insert(y >= 0);
-  known_result.insert(x - y >= 0);
-  known_result.insert(x <= 1);
+  known_result.add_constraint(y >= 0);
+  known_result.add_constraint(x - y >= 0);
+  known_result.add_constraint(x <= 1);
 
   int retval = (computed_result == known_result) ? 0 : 1;
 
