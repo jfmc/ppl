@@ -805,6 +805,24 @@ ppl_new_C_Polyhedron_from_C_Polyhedron __P((ppl_Polyhedron_t* pph,
 					    ppl_const_Polyhedron_t ph));
 
 /*!
+  Builds a closed polyhedron that is a copy of of the NNC polyhedron
+  \p ph; writes an handle for the newly created polyhedron at address
+  \p pph.
+*/
+int
+ppl_new_C_Polyhedron_from_NNC_Polyhedron __P((ppl_Polyhedron_t* pph,
+					      ppl_const_Polyhedron_t ph));
+
+/*!
+  Builds an NNC polyhedron that is a copy of of the closed polyhedron
+  \p ph; writes an handle for the newly created polyhedron at address
+  \p pph.
+*/
+int
+ppl_new_NNC_Polyhedron_from_C_Polyhedron __P((ppl_Polyhedron_t* pph,
+					      ppl_const_Polyhedron_t ph));
+
+/*!
   Builds an NNC polyhedron that is a copy of \p ph; writes an handle
   for the newly created polyhedron at address \p pph.
 */

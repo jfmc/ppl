@@ -895,6 +895,25 @@ ppl_new_C_Polyhedron_from_C_Polyhedron(ppl_Polyhedron_t* pph,
 CATCH_ALL
 
 int
+ppl_new_C_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t* pph,
+					 ppl_const_Polyhedron_t ph) try {
+  const NNC_Polyhedron& phh
+    = *static_cast<const NNC_Polyhedron*>(to_const(ph));
+  *pph = to_nonconst(new C_Polyhedron(phh));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_NNC_Polyhedron_from_C_Polyhedron(ppl_Polyhedron_t* pph,
+					 ppl_const_Polyhedron_t ph) try {
+  const C_Polyhedron& phh = *static_cast<const C_Polyhedron*>(to_const(ph));
+  *pph = to_nonconst(new NNC_Polyhedron(phh));
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t* pph,
 					   ppl_const_Polyhedron_t ph) try {
   const NNC_Polyhedron& phh
