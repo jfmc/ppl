@@ -202,7 +202,8 @@ public:
 				  unsigned max_disjuncts);
 
   //! \brief
-  //! Assigns to \p *this the result of computing the BHZ03-widening
+  //! Assigns to \p *this the result of computing the
+  //! \ref pps_certificate_widening "BHZ03-widening"
   //! between \p *this and \p y, using the widening function \p wf
   //! certified by the convergence certificate \p Cert.
   /*!
@@ -220,16 +221,6 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
     dimension-incompatible.
-
-    The BHZ03 widening framework is instantiated using two extrapolation
-    heuristics: first, the least upper bound is tried; second, the BGP99
-    extrapolation operator is tried, possibly applying pairwise reduction.
-    If both heuristics fail to converge according to the certificate \p Cert,
-    then an attempt is made to apply the base-level widening \p wf to
-    the poly-hulls of \p *this and \p y, possibly improving the result
-    using Polyhedron::poly_difference_assign. For more details and
-    a justification of the overall approach, see \ref BHZ03b "[BHZ03b]"
-    and \ref BHZ04 "[BHZ04]".
 
     \warning
     In order to obtain a proper widening operator, the template parameter
@@ -262,22 +253,18 @@ public:
   void swap(Polyhedra_PowerSet& y);
 
   //! \brief
-  //! Adds \p m new dimensions and embeds the old polyhedron
-  //! in the new space.
+  //! Adds \p m new dimensions to the space containing \p *this 
+  //! and embeds each polyhedron in \p *this in the new space.
   void add_dimensions_and_embed(dimension_type m);
 
   //! \brief
-  //! Adds \p m new dimensions to the polyhedron
-  //! and does not embed it in the new space.
+  //! For each polyhedron in \p *this, adds \p m new dimensions
+  //! without embedding it in the new space.
   void add_dimensions_and_project(dimension_type m);
 
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!
-    Seeing a powerset as a set of tuples, this method assigns to
-    \p *this all the tuples that can be obtained by concatenating,
-    in the order given, a tuple of \p *this with a tuple of \p y.
-
-    Intuitively, the result is obtained by computing the pair-wise
+    The result is obtained by computing the pairwise
     \ref concatenate "concatenation" of each polyhedron in \p *this
     with each polyhedron in \p y.
   */
