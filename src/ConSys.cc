@@ -65,9 +65,31 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 	if (has_strict_inequalities())
 	  return false;
 	// Since there were no strict inequalities,
-	// all epsilon coefficients are equal to zero
-	// and we do not need to clear them:
-	// we just decrement the number of columns to be added.
+	// there are only two rows with the epsilon
+	// coefficient different from zero. We erase
+	// these rows and we just decrement the number
+	// of columns to be added.
+	ConSys& cs = *this;
+	dimension_type eps_index = old_space_dim + 1;
+	dimension_type cs_num_rows = cs.num_rows();
+	bool cs_sorted = false;
+	if (cs.is_sorted())
+	  cs_sorted = true;
+	for (dimension_type i = cs_num_rows; i-- > 0; )
+	  if (cs[i][eps_index] != 0) {
+	    --cs_num_rows;
+	    // If `cs' is sorted we preserve the sortedness
+	    // of the system of constraints.
+	    if (cs_sorted)
+	      for (dimension_type j = i; j < cs_num_rows; ++j)
+		std::swap(cs[j], cs[j+1]);
+	    else
+	      // If `cs' is not sorted we only put
+	      // the rows that we want to erase in
+	      // the end of the matrix.
+	      std:: swap(cs[i], cs[cs_num_rows]);
+	  }
+	cs.erase_to_end(cs_num_rows);
 	if (--cols_to_be_added > 0)
 	  add_zero_columns(cols_to_be_added);
 	set_necessarily_closed();
