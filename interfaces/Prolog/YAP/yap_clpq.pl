@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-:- load_foreign_files(['ppl_yap'],[],init).
-:- ensure_loaded('clpq.pl').
+:- ensure_loaded('ppl_yap.pl').
+:- ensure_loaded('../clpq.pl').
 
 eat_eol.
 

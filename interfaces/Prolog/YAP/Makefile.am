@@ -50,10 +50,12 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
-#check-local: yap_clpq$(EXEEXT) ../check_script ../expected
+#check-local: yap_clpq.pl ../check_script ../expected
 #	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
-#	yap_clpq <$(srcdir)/../check_script >obtained
+#	LD_LIBRARY_PATH=$(PWD)/.libs:$(LD_LIBRARY_PATH) \
+#		yap -l $(srcdir)/yap_clpq.pl \
+#			<$(srcdir)/../check_script >obtained
 #	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
-#MOSTLYCLEANFILES = pplpl $(CLPQ_TESTS) obtained
+MOSTLYCLEANFILES = $(CLPQ_TESTS) obtained
 endif

@@ -21,4 +21,4 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-:- load_foreign_files([ppl_yap], ['-lppl','-lgmp','-lgmpxx','-lstdc++'], init).
+:- load_foreign_files(['ppl_yap'],[],init).
