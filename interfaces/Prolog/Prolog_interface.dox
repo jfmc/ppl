@@ -70,7 +70,7 @@ for more information.
 
 <H4>SICStus Prolog</H4>
 
-The SICStus Prolog interface of the library provides is available
+The SICStus Prolog interface to the PPL library is available
 both as a statically linked module or as a dynamically linked one.
 Only SICStus Prolog version 3.9.0 or later is supported.
 
