@@ -107,6 +107,20 @@ find examples of how to use several functions provided by that interface.
 */
 #define PPL_VERSION_BETA @PPL_VERSION_BETA@
 
+/*! \brief
+  A string containing the PPL version.  Let <CODE>M</CODE> and
+  <CODE>m</CODE> denote the numbers associated to PPL_VERSION_MAJOR
+  and PPL_VERSION_MINOR, respectively.  The format of
+  PPL_VERSION is <CODE>M "." m</CODE> if both
+  PPL_VERSION_REVISION (<CODE>r</CODE>) and PPL_VERSION_BETA
+  (<CODE>b</CODE>)are zero, <CODE>M "." m "pre" b</CODE> if
+  PPL_VERSION_REVISION is zero and PPL_VERSION_BETA is not zero,
+  <CODE>M "." m "." r</CODE> if PPL_VERSION_REVISION is not zero and
+  PPL_VERSION_BETA is zero, <CODE>M "." m "." r "pre" b</CODE> if
+  neither PPL_VERSION_REVISION nor PPL_VERSION_BETA are zero.
+*/
+#define PPL_VERSION "@VERSION@"
+
 /*
   For some reason, GMP up to and including version 4.1.2 requires
   <stdio.h> to be included before <gmp.h>.

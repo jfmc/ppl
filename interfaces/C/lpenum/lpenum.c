@@ -40,6 +40,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 # error "PPL version 0.6 or following is required"
 #endif
 
+static const char* ppl_source_version = PPL_VERSION;
+
 #ifdef __GNUC__
 # define ATTRIBUTE_UNUSED __attribute__ ((__unused__))
 #else
@@ -741,6 +743,10 @@ main(int argc, char* argv[]) {
 
   if (ppl_set_error_handler(error_handler) < 0)
     fatal("cannot install the custom error handler");
+
+  if (strcmp(ppl_source_version, ppl_version()) != 0)
+    fatal("was compiled with PPL version %s, but linked with version %s",
+	  ppl_source_version, ppl_version());
 
   /* Process command line options */
   process_options(argc, argv);
