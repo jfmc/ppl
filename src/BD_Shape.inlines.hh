@@ -1176,8 +1176,10 @@ BD_Shape<T>::transitive_reduction_assign() const {
 template <typename T>
 inline void
 BD_Shape<T>::poly_hull_assign(const BD_Shape& y) {
+  dimension_type space_dim = space_dimension();
+
   // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
+  if (space_dim != y.space_dimension())
     throw_dimension_incompatible("poly_hull_assign(y)", y);
 
   // The poly-hull of a polyhedron `bd' with an empty polyhedron is `bd'.
@@ -1192,12 +1194,11 @@ BD_Shape<T>::poly_hull_assign(const BD_Shape& y) {
 
   // The poly_hull consist to construct `*this' with the maximum
   // elements selected from `*this' or `y'.
-  dimension_type k = space_dimension();
-  assert(k == 0 || marked_transitively_closed());
-  for (dimension_type i = 0; i <= k; ++i) {
+  assert(space_dim == 0 || marked_transitively_closed());
+  for (dimension_type i = 0; i <= space_dim; ++i) {
     DB_Row<T>& dbm_i = dbm[i];
     const DB_Row<T>& y_dbm_i = y.dbm[i];
-    for (dimension_type j = 0; j <= k; ++j) {
+    for (dimension_type j = 0; j <= space_dim; ++j) {
       T& dbm_ij = dbm_i[j];
       const T& y_dbm_ij = y_dbm_i[j];
       if (dbm_ij < y_dbm_ij)
