@@ -29,49 +29,11 @@ load <CODE>ppl_sicstus.pl</CODE>.
 
 \subsection PI_SI_Features System-Independent Features
 
-Introduce the basic concepts here.
+The predicates provided  for the Prolog interface are specified below.
 
-<H4><CODE>ppl_new_polyhedron(-Address, +Integer)</CODE></H4>
-
-   Creates a new universe polyhedron with <CODE>Integer</CODE> dimensions
-   with reference <CODE>Address</CODE>.
-   Thus the query
-       \code
-       |?- ppl_new_polyhedron(X, 3).
-       \endcode
-   creates the polyhedron defining the 3-dimensional vector space
-   \f$\Rset^3\f$ with reference address in \p X.
-
-<H4><CODE>ppl_new_empty_polyhedron(-Address, +Integer)</CODE></H4>
-
-   Creates a new empty polyhedron with <CODE>Integer</CODE> dimensions
-   with reference address <CODE>Address</CODE>.
-   Thus the query
-       \code
-      |?- ppl_new_empty_polyhedron(X, 3).
-       \endcode
-   creates an empty polyhedron embedded in \f$\Rset^3\f$ with
-   reference address in \p X.
-
-<H4><CODE>ppl_delete_polyhedron(+Address)</CODE></H4>
-
-   Deletes the polyhedron referenced by <CODE>Address</CODE>.
-
-<H4><CODE>ppl_space_dimension(+Address, -Integer+)</CODE></H4>
-
-   There must be a polyhedron \p P referenced by <CODE>Address</CODE>.
-   Returns in <CODE>Integer</CODE> the dimension of the vector space 
-   containing \p P.
-
-<H4><CODE>ppl_insert_constraint(+Address, +Constraint)</CODE></H4>
-
-   Adds the constraint <CODE>Constraint</CODE> to the polyhedron 
-   referenced by <CODE>Address</CODE>.
-   <CODE>Constraint</CODE> is a term accepted by the grammar below.
+The specification uses the following grammar rules:
 \code
-   Constraint -->   Expr = Expr    equation
-                  | Expr =< Expr   nonstrict inequation
-                  | Expr >= Expr   nonstrict inequation
+   PPL_Var -->  '$VAR'(N)      PPL variable (N a non-negative integer)
 
    Expr   -->   PPL_Variable
               | number         floating point or integer
@@ -82,25 +44,10 @@ Introduce the basic concepts here.
               | Expr * Expr    multiplication
               | Expr / Expr    division
 
-   PPL_Var -->  '$VAR'(N)      variable (N a non-negative integer)
-\endcode
-    Thus after the query
-\code
-      |?- ppl_new_polyhedron(X, 3),
-	  ppl_check_empty(X),
-	  ppl_insert_constraint(X, 4*'$VAR'(0)+'$VAR'(1)-2*'$VAR'(2) >= 5).
-\endcode
-    the polyhedron referenced by \p X is defined to be the set of points
-    in the 3-dimensional vector space satisfying the constraint
-    \f$4x + y - 2z >= 5\f$.
+   Constraint -->   Expr = Expr    equation
+                  | Expr =< Expr   nonstrict inequation
+                  | Expr >= Expr   nonstrict inequation
 
-<H4><CODE>ppl_insert_generator(+Address, +Generator)</CODE></H4>
-
-   Adds the generator <CODE>Generator</CODE> to the polyhedron \p P referenced 
-   by <CODE>Address</CODE>.
-   <CODE>Generator</CODE> is a term accepted by the grammar below.
-
-\code
    Generator -->   vertex(Expr)      vertex
                  | vertex(Expr,Int)  vertex 
                                      (Int is the denominator so that the
@@ -109,14 +56,137 @@ Introduce the basic concepts here.
                  | line(Expr)        line
 \endcode
 
+There are a few general rules that need to be followed when
+using these predicates.
+
+- Argument positions labelled as <CODE>+Address</CODE>
+  must be addresses in memory. It is up to the programmer to ensure
+  that these addresses refer to a PPL polyhedron.
+
+- A free variable may be bound to an address of a PPL polyhedron
+  by using either
+  <CODE>ppl_new_polyhedron/2</CODE> or
+  <CODE>ppl_copy_polyhedron/2</CODE>.
+
+- Memory occupied by a PPL polyhedron should be released as soon as it is
+  no longer required.
+  This can be done by executing <CODE>ppl_delete_polyhedron/1</CODE>.
+  To understand why this is important,
+  consider a Prolog program and a variable that is bound to
+  a Herbrand term.
+  When the variable dies (goes out of scope) or is uninstantiated
+  (on backtracking) the term it is bound to is amenable to garbage collection.
+  But this only applies for the standard domain of the language:
+  Herbrand terms.
+  In Prolog+PPL, addresses of PPL polyhedra are just integers.  
+  When variables bound to addresses (i.e. integers) die or are uninstantiated,   these variables will be garbage-collected, but the polyhedra to which
+  the addresses refer will not be released.
+  
+- For a PPL polyhedron embedded in a vector space of dimension \p k,
+  the variables used for defining the constraints and the generators
+  will have the form, <CODE>'$VAR'(0), ..., '$VAR'(k-1).</CODE>
+  The (non-negative) integers  used to define the variables must be strictly
+  less than the number of space dimensions in which the polyhedron
+  is embedded.
+
+- For the predicates that combine two PPL polyhedra
+  (<CODE>ppl_intersection_assign/2</CODE>,
+   <CODE>ppl_convex_hull_assign/2</CODE> and
+   <CODE>ppl_widening_assign/2</CODE>)
+  the dimensions of the vector spaces in which the polyhedra are
+  embedded must be the same.
+
+See the specifications of individual predicates for examples and
+more information regarding these issues. 
+
+<H4><CODE>ppl_new_polyhedron(-Address, +Integer)</CODE></H4>
+
+   Creates a new universe polyhedron with <CODE>Integer</CODE> dimensions
+   with reference <CODE>Address</CODE>.
+   Thus the query
+       \code
+       |?- ppl_new_polyhedron(X, 3).
+       \endcode
+   creates the polyhedron defining the 3-dimensional vector space
+   \f$\Rset^3\f$ with \p X, the reference address.
+   
+   The first argument must be a free  variable.
+
+<H4><CODE>ppl_new_empty_polyhedron(-Address, +Integer)</CODE></H4>
+
+   Creates a new empty polyhedron with <CODE>Integer</CODE> dimensions
+   with reference address <CODE>Address</CODE>.
+   Thus the query
+       \code
+      |?- ppl_new_empty_polyhedron(X, 3).
+       \endcode
+   creates an empty polyhedron embedded in \f$\Rset^3\f$ with
+   \p X the reference address.
+   
+   The first argument must be a free  variable and
+   if it is already instantiated to an address, it will fail. e.g.
+   the following will fail:
+\code
+   | ?- ppl_new_polyhedron(X,3),
+        ppl_new_polyhedron(X,3).
+\endcode
+    
+<H4><CODE>ppl_delete_polyhedron(+Address)</CODE></H4>
+
+   Deletes the polyhedron referenced by <CODE>Address</CODE>.
+
+   If <CODE>Address</CODE> is not an address of a polyhedron,
+   execution is aborted. e.g. the following aborts:
+\code
+   | ?-ppl_new_polyhedron(X,3),
+       ppl_delete_polyhedron(X),
+       ppl_delete_polyhedron(X).
+\endcode
+
+<H4><CODE>ppl_space_dimension(+Address, -Integer+)</CODE></H4>
+
+   There must be a polyhedron \p P referenced by <CODE>Address</CODE>.
+   Returns in <CODE>Integer</CODE> the dimension of the vector space 
+   containing \p P.
+
+   If <CODE>Address</CODE> is not an address of a polyhedron,
+   execution succeeds with a large but unspecified dimension.
+   E.g. 
+\code
+   | ?- ppl_new_polyhedron(X,5),
+        ppl_delete_polyhedron(X),
+        ppl_space_dimension(X,K).
+ 
+     K = 136896952,
+     X = -32966754 ?  
+\endcode
+
+<H4><CODE>ppl_insert_constraint(+Address, +Constraint)</CODE></H4>
+
+   Adds the constraint <CODE>Constraint</CODE> to the polyhedron 
+   referenced by <CODE>Address</CODE>.
+    Thus after the query
+\code
+      |?- ppl_new_polyhedron(X, 3),
+	  ppl_check_empty(X),
+	  ppl_insert_constraint(X, 4*'$VAR'(0)+'$VAR'(1)-2*'$VAR'(2) >= 5).
+\endcode
+    the polyhedron referenced by \p X is defined to be the set of points
+    in the vector space \f$Rset^3\f$ satisfying the constraint
+    \f$4x + y - 2z >= 5\f$.
+
+<H4><CODE>ppl_insert_generator(+Address, +Generator)</CODE></H4>
+
+   Adds the generator <CODE>Generator</CODE> to the polyhedron \p P referenced 
+   by <CODE>Address</CODE>.
+   <CODE>Generator</CODE> is a term accepted by the grammar below.
    Thus after the query
 \code
      |?- ppl_new_polyhedron(X, 3),
 	 ppl_insert_generator(X, vertex(-100*'$VAR'(0) - 5*'$VAR'(1),8)).
 \endcode
     the polyhedron referenced by \p X is defined to be single vertex 
-    \f$(-12.5, -0.625, 0)^\transpose\f$ in the 3-dimensional vector space.
-
+    \f$(-12.5, -0.625, 0)^\transpose\f$ in the vector space \f$Rset^3\f$.
 
 <H4><CODE>ppl_insert_constraints(+Address, +List_of_Constraints)</CODE></H4>
 
@@ -124,7 +194,6 @@ Introduce the basic concepts here.
    to the polyhedron referenced by <CODE>Address</CODE>.
 
 <H4><CODE>ppl_insert_generators(+Address, +List_of_Generators)</CODE></H4>
-
    Adds the generators in list <CODE>List_of_Generators</CODE>
    to the polyhedron referenced by <CODE>Address</CODE>.
 
@@ -132,7 +201,46 @@ Introduce the basic concepts here.
 
    The dimensions corresponding to the variables in list
    <CODE>List_of_PPL_Vars</CODE> are removed from the polyhedron 
-   referenced by <CODE>Address</CODE>.
+   referenced by <CODE>Address</CODE>. E.G.
+\code
+   | ?- A='$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+        ppl_new_polyhedron(X, 3),
+        ppl_remove_dimensions(X, [B]),
+        ppl_space_dimension(X,K),
+        ppl_get_generators(X,GS). 
+   A = A,
+   B = B,
+   C = C,
+   K = 2,
+   X = -32974400,
+   GS = [vertex(0),line(1*A),line(1*B),line(0)] ?           
+\endcode
+Note that as can be seen from this example,
+the remaining variables are renumbered so that they are consecutive
+and the maximum index is less than the number of dimensions.
+
+<H4><CODE>ppl_remove_higher_dimensions(+Address, +Integer))</CODE></H4>
+
+   Projects the polyhedron referenced by address <CODE>Address</CODE>
+   onto the first <CODE>Integer</CODE> dimensions.
+   Thus, if the polyhedron \p P at the <CODE>Address</CODE>
+   is in the vector space of dimension \f$k\f$, <CODE>Integer</CODE>
+   must be less than or equal to \f$k\f$. E.g.
+\code
+   | ?- ppl_new_polyhedron(X,5),
+        ppl_remove_higher_dimensions(X,3),
+        ppl_space_dimension(X,K).
+ 
+   K = 3,
+   X = -33292540 ?
+
+   yes
+   | ?- ppl_new_polyhedron(X,5),
+        ppl_remove_higher_dimensions(X,6),
+        ppl_space_dimension(X,K).
+   {ERROR: 'void PPL::Polyhedron::remove_higher_dimensions(nd):
+    \nthis->space_dimension() == 5, requested dimension == 6'}
+\endcode
 
 <H4><CODE>ppl_add_dimensions_and_embed(+Address, +Integer)</CODE></H4>
 
@@ -152,13 +260,38 @@ Introduce the basic concepts here.
 
 <H4><CODE>ppl_get_constraints(+Address, -List_of_Constraints)</CODE></H4>
 
-   <CODE>List_of_Constraints</CODE> is bound to the system of constraints
-   defining the polyhedron at <CODE>Address</CODE>.
+   Binds <CODE>List_of_Constraints</CODE>  to the system of constraints
+   defining the polyhedron at <CODE>Address</CODE>. E.g.
+\code
+   | ?- A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
+        ppl_new_polyhedron(X, 3),
+	ppl_insert_constraint(X, 4*A+B-2*C >= 5),
+	ppl_get_constraints(X, CS),
+	write(CS).
+   [4*A+1*B+ -2*C>=5]
+   A = A,
+   B = B,
+   C = C,
+   X = -32975760,
+   CS = [4*A+1*B+ -2*C>=5] ?
+\endcode
 
 <H4><CODE>ppl_get_generators(+Address, -List_of_Generators)</CODE></H4>
 
-   <CODE>List_of_Generators</CODE> is bound to the system of generators
-   defining the polyhedron at <CODE>Address</CODE>.
+   Binds <CODE>List_of_Generators</CODE> to the system of generators
+   defining the polyhedron at <CODE>Address</CODE>. E.g.
+\code
+   | ?- A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
+        ppl_new_polyhedron(X, 3),
+	ppl_insert_constraint(X, 4*A+B-2*C >= 5),
+	ppl_get_generators(X, GS),
+	write(GS).
+   A = A,
+   B = B,
+   C = C,
+   X = -32975734,
+   GS = [ray(-1*C),vertex(-5*C,2),line(-2*B+ -1*C),line(-1*A+ -2*C)] ?  
+\endcode
 
 <H4><CODE>ppl_intersection_assign(+Address_1, +Address_2)</CODE></H4>
 
