@@ -34,7 +34,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -49,7 +49,7 @@ main() {
   gs.insert(ray(-B));
   gs.insert(ray(A + B));
   NNC_Polyhedron ph2(gs);
-  
+
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
@@ -67,3 +67,4 @@ main() {
 
   return retval;
 }
+CATCH

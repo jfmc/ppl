@@ -1,6 +1,6 @@
 /* Test Polyhedron::generalized_affine_image() with a linear expression
    as the left hand side: when the left hand side is a variable,
-   check whether or not the same result is obtained. 
+   check whether or not the same result is obtained.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -164,10 +164,10 @@ test5() {
 #endif
 
   C_Polyhedron ph2 = ph;
-  
+
   ph.generalized_affine_image(A, PPL_EQ, A + 2);
   ph2.generalized_affine_image(-2*A, PPL_EQ, -2*(A + 2));
-  
+
   int retval = (ph == ph2) ? 0 : 1;
 
 #if NOISY
@@ -199,7 +199,7 @@ test6() {
 
   ph.generalized_affine_image(A + B, PPL_GE, 2*A - B + 2);
   ph2.generalized_affine_image(-3*(A + B), PPL_LE, -3*(2*A - B + 2));
-  
+
   int retval = (ph == ph2) ? 0 : 1;
 
 #if NOISY
@@ -212,7 +212,7 @@ test6() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   return test1()
@@ -222,3 +222,4 @@ main() {
     || test5()
     || test6();
 }
+CATCH

@@ -32,14 +32,14 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
 
   C_Polyhedron ph(2);
   ph.add_constraint(A >= 0);
-  
+
   Poly_Gen_Relation rel = ph.relation_with(ray(-A));
 
 #if NOISY
@@ -48,6 +48,6 @@ main() {
 #endif
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
-
   return (rel == known_result) ? 0 : 1;
 }
+CATCH

@@ -45,7 +45,7 @@ test1() {
 
   BBox nbox(2);
   ph.shrink_bounding_box(nbox);
-  
+
 #if NOISY
   print_constraints(ph, "*** test1 ph ***");
   nbox.print(cout, "*** test1 nbox ***");
@@ -83,11 +83,11 @@ test2() {
   nbox.print(cout, "*** test2 nbox ***");
   pbox.print(cout, "*** test2 pbox ***");
 #endif
-  
+
   BBox known_nbox(2);
   known_nbox.raise_lower_bound(0, true, 0, 1);
   known_nbox.raise_lower_bound(1, true, 0, 1);
-  
+
   BBox known_pbox(2);
   known_pbox.raise_lower_bound(1, true, 0, 1);
 #if NOISY
@@ -153,7 +153,7 @@ test4() {
   ph.add_constraint(x <= 4);
   ph.add_constraint(y <= 4);
   ph.add_constraint(z >= 5);
-  
+
   BBox pbox(ph.space_dimension());
   ph.shrink_bounding_box(pbox, POLYNOMIAL);
 
@@ -479,7 +479,7 @@ test12() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   test1();
@@ -497,3 +497,4 @@ main() {
 
   return 0;
 }
+CATCH

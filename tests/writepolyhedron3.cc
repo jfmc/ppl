@@ -37,11 +37,11 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 static const char* my_file = "writepolyhedron3.dat";
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   NNC_Polyhedron ph1;
-  
+
   C_Polyhedron ph(ph1.constraints());
 
   fstream f;
@@ -51,4 +51,4 @@ main() {
 
   return 0;
 }
- 
+CATCH

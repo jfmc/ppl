@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable x(0);
@@ -51,7 +51,7 @@ main() {
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
 #endif
-  
+
   // Removing all the vertices using strict inequalities.
   cs.clear();
   cs.insert(x + y > 0);
@@ -82,7 +82,7 @@ main() {
   NNC_Polyhedron known_result(gs);
 
   bool equal = (ph == known_result);
-  
+
 #if NOISY
   cout << "After NNC minimization" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
@@ -99,3 +99,4 @@ main() {
 
   return equal ? 0 : 1;
 }
+CATCH

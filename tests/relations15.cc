@@ -1,4 +1,4 @@
-/* Test Polyhedron::relation_with(c): in this test `c' is an equality.  
+/* Test Polyhedron::relation_with(c): in this test `c' is an equality.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -51,15 +51,15 @@ main() {
 
   Poly_Con_Relation rel1 = ph1.relation_with(A == 0);
   Poly_Con_Relation rel2 = ph2.relation_with(A == 0);
-  
+
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
   cout << "ph1.relation_with(A == 0) == " << rel1 << endl;
   cout << "ph2.relation_with(A == 0) == " << rel2 << endl;
 #endif
-  
-  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
   return (rel1 == known_result && rel2 == known_result) ? 0 : 1;
 }
+CATCH

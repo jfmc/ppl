@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -59,6 +59,7 @@ main() {
 #if NOISY
   print_generators(ph, "*** After ph.affine_image(A, A + 1, 2) ***");
 #endif
- 
+
   return retval;
 }
+CATCH

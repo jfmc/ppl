@@ -31,9 +31,9 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
-  
+
   GenSys gs1;
   gs1.insert(point());
 
@@ -47,7 +47,7 @@ main() {
   const GenSys gs2 = ph1.generators();
 
   C_Polyhedron ph2(gs2);
-  
+
   int retval = (ph2 == known_result) ? 0 : 1;
 
 #if NOISY
@@ -56,3 +56,4 @@ main() {
 
   return retval;
 }
+CATCH

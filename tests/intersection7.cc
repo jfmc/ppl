@@ -50,7 +50,7 @@ try_intersection_assign_and_minimize(C_Polyhedron& ph1,
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable x(0);
@@ -82,3 +82,4 @@ main() {
 
   return 0;
 }
+CATCH

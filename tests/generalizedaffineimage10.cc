@@ -51,7 +51,7 @@ test1() {
 
   C_Polyhedron known_result(3);
   known_result.add_constraint(A - C == B + 3);
-  
+
   bool ok = (ph == known_result);
 
 #if NOISY
@@ -85,7 +85,7 @@ test2() {
   C_Polyhedron known_result(3);
   known_result.add_constraint(A - B - C >= 3);
 
-  
+
   bool ok = (ph == known_result);
 
 #if NOISY
@@ -117,7 +117,7 @@ test3() {
 
   C_Polyhedron known_result(ph);
   known_result.add_constraint(A - B - C <= 1);
-  
+
   bool ok = (ph == known_result);
 
 #if NOISY
@@ -149,7 +149,7 @@ test4() {
 
   NNC_Polyhedron known_result(ph);
   known_result.add_constraint(A - B - 2*C < 1);
-  
+
   bool ok = (ph == known_result);
 
 #if NOISY
@@ -181,7 +181,7 @@ test5() {
 
   NNC_Polyhedron known_result(ph);
   known_result.add_constraint(A - B - 2*C + 4 > 0);
-  
+
   bool ok = (ph == known_result);
 
 #if NOISY
@@ -196,7 +196,7 @@ test5() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   test1();
@@ -207,3 +207,4 @@ main() {
 
   return 0;
 }
+CATCH

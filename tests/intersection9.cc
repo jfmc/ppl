@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   C_Polyhedron ph1;
@@ -44,7 +44,7 @@ main() {
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 #endif
-  
+
   C_Polyhedron known_result = ph1;
 
   ph1.intersection_assign_and_minimize(ph2);
@@ -57,3 +57,4 @@ main() {
 #endif
   return retval;
 }
+CATCH

@@ -32,13 +32,13 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() try {
+main() TRY {
   Variable x(0);
   Variable y(1);
 
   GenSys gs;
   gs.insert(point(x + y, -1));
- 
+
   C_Polyhedron ph(gs);
 
 #if NOISY
@@ -60,9 +60,4 @@ main() try {
 
   return retval;
 }
-catch (invalid_argument& e) {
-#if NOISY
-  cout << "invalid_argument: " << e.what() << endl;
-#endif
-  exit(1);
-}
+CATCH

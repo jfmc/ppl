@@ -45,9 +45,9 @@ test1() {
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 #endif
-  
+
   C_Polyhedron known_result(ph1);
-  
+
   ph1.poly_hull_assign(ph2);
 
   bool ok = (ph1 == known_result);
@@ -58,7 +58,7 @@ test1() {
   if (!ok)
     exit(1);
 }
- 
+
 static void
 test2() {
   C_Polyhedron ph1;
@@ -70,9 +70,9 @@ test2() {
 #endif
 
   C_Polyhedron known_result(ph1);
-  
+
   ph1.poly_hull_assign(ph2);
-  
+
   bool ok = (ph1 == known_result);
 
 #if NOISY
@@ -83,11 +83,12 @@ test2() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
-  
+
   test1();
   test2();
 
   return 0;
 }
+CATCH

@@ -31,14 +31,14 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() try {
+main() TRY {
   Variable x(0);
   Variable y(1);
 
   ConSys cs;
   cs.insert(x + y >= 2);
   cs.insert(x + y <= 1);
- 
+
   C_Polyhedron ph(cs);
 
   const GenSys& gs = ph.generators();
@@ -49,15 +49,10 @@ main() try {
 
   if (gs.begin() != gs.end())
     exit(1);
-  
+
   if (!ph.OK())
     exit(1);
 
   return 0;
 }
-catch (invalid_argument& e) {
-#if NOISY
-  cout << "invalid_argument: " << e.what() << endl;
-#endif
-  exit(1);
-}
+CATCH

@@ -49,7 +49,7 @@ try_H79_widening_assign(C_Polyhedron& ph1, const C_Polyhedron& ph2,
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable x(0);
@@ -85,3 +85,4 @@ main() {
 
   return 0;
 }
+CATCH

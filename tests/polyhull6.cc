@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library;
 
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   C_Polyhedron ph1;
@@ -43,9 +43,9 @@ main() {
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
 #endif
-  
+
   C_Polyhedron known_result(ph1);
- 
+
   ph1.poly_hull_assign_and_minimize(ph2);
 
   int retval = (ph1 == known_result) ? 0 : 1;
@@ -57,3 +57,4 @@ main() {
 
   return retval;
 }
+CATCH

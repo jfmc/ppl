@@ -34,11 +34,11 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
-  
+
   C_Polyhedron ph(2);
   ph.add_constraint(A == 0);
 
@@ -53,3 +53,4 @@ main() {
 
   return (rel == known_result) ? 0 : 1;
 }
+CATCH

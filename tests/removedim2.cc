@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   GenSys gs;
@@ -88,3 +88,4 @@ main() {
 
   return retval;
 }
+CATCH

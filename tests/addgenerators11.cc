@@ -33,12 +33,12 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs1;
   gs1.insert(point(A + B));
   gs1.insert(closure_point());
@@ -70,7 +70,7 @@ main() {
 #if NOISY
     cout << "invalid_argument: " << e.what() << endl << endl;
 #endif
-  } 
+  }
   catch (...) {
     exit(1);
   }
@@ -86,3 +86,4 @@ main() {
 
   return retval;
 }
+CATCH

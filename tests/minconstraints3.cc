@@ -32,13 +32,13 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   NNC_Polyhedron ph1;
 
   ConSys cs = ph1.minimized_constraints();
-  
+
   NNC_Polyhedron ph2(cs);
 
   int retval = (ph1 == ph2) ? 0 : 1;
@@ -51,3 +51,4 @@ main() {
 
   return retval;
 }
+CATCH

@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -52,7 +52,7 @@ main() {
   ConSys cs;
   cs.insert(A <= 5);
   cs.insert(B <= 4);
-  
+
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
@@ -72,6 +72,7 @@ main() {
 #if NOISY
   print_constraints(ph2, "*** After ph2.limited_BHRZ03_widening(ph1, cs)***");
 #endif
-  
+
   return retval;
 }
+CATCH

@@ -100,7 +100,7 @@ random_polytope(C_Polyhedron& ph, unsigned dimension, unsigned num_points,
 
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   for (int dimension = 2; dimension <= 6; ++dimension) {
@@ -130,3 +130,4 @@ main() {
   }
   return 0;
 }
+CATCH

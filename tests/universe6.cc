@@ -31,13 +31,13 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   NNC_Polyhedron ph1(4);
   NNC_Polyhedron ph2(3);
   NNC_Polyhedron ph3(3);
-  
+
   ph2.add_constraint(LinExpression(1) > 0);
   ph3.add_constraint(LinExpression(1) < 0);
 
@@ -50,9 +50,9 @@ main() {
   print_constraints(ph3, "--- ph3 ---");
   print_constraints(ph4, "--- ph4 ---");
 #endif
-  
+
   bool universe1 = ph1.check_universe();
-  
+
 #if NOISY
   cout << "*** ph1.check_universe() ***"
        << endl
@@ -61,16 +61,16 @@ main() {
 #endif
 
   bool universe2 = ph2.check_universe();
-  
+
 #if NOISY
   cout << "*** ph2.check_universe() ***"
        << endl
        << (universe2 ? "true" : "false")
        << endl;
 #endif
-   
+
   bool universe3 = ph3.check_universe();
-  
+
 #if NOISY
   cout << "*** ph3.check_universe() ***"
        << endl
@@ -89,3 +89,4 @@ main() {
 
   return (universe1 && universe2 && !universe3 && universe4) ? 0 : 1;
 }
+CATCH

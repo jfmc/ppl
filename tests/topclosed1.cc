@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -41,7 +41,7 @@ main() {
   ph1.add_constraint(A >= 0);
 
   NNC_Polyhedron ph2(2, NNC_Polyhedron::EMPTY);
-  
+
   NNC_Polyhedron ph3;
 
   bool ok
@@ -57,3 +57,4 @@ main() {
 
   return ok ? 0 : 1;
 }
+CATCH

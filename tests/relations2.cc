@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable x(0);
@@ -59,5 +59,5 @@ main() {
   cout << "ph.relation_with(v(A)) == " << rel << endl;
 #endif
   return retval;
-
 }
+CATCH

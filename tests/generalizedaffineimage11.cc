@@ -38,13 +38,13 @@ test1() {
   Variable B(1);
 
   C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
-  
+
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  ph1.generalized_affine_image(A, PPL_LE, B + 1); 
-  
+  ph1.generalized_affine_image(A, PPL_LE, B + 1);
+
   C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
 
   bool ok = (ph1 == known_result);
@@ -64,13 +64,13 @@ test2() {
   Variable B(1);
 
   C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
-  
+
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  ph1.generalized_affine_image(A + B, PPL_GE, A + B + 1); 
-  
+  ph1.generalized_affine_image(A + B, PPL_GE, A + B + 1);
+
   C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
 
   bool ok = (ph1 == known_result);
@@ -85,7 +85,7 @@ test2() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   test1();
@@ -93,3 +93,4 @@ main() {
 
   return 0;
 }
+CATCH

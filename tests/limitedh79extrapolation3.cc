@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   Variable x(0);
 
   ConSys cs1;
@@ -70,3 +70,4 @@ main() {
 
   return (computed_result == known_result) ? 0 : 1;
 }
+CATCH

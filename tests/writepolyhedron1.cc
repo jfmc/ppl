@@ -36,7 +36,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 static const char* my_file = "writepolyhedron1.dat";
 
 int
-main() {
+main() TRY {
   set_handlers();
   Variable x1(0);
   Variable x2(1);
@@ -66,3 +66,4 @@ main() {
 
   return 0;
 }
+CATCH

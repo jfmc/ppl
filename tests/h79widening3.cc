@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   // This is the example of Figure 3 in [BagnaraRZH02TR].
@@ -54,7 +54,7 @@ main() {
   print_constraints(ph4, "*** ph4 ***");
   print_constraints(ph, "*** ph ***");
 #endif
-  
+
   NNC_Polyhedron known_result(ph4);
 
   ph.H79_widening_assign(ph4);
@@ -67,3 +67,4 @@ main() {
 
   return retval;
 }
+CATCH

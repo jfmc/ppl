@@ -36,13 +36,13 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 static const char* my_file = "writegensys2.dat";
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   C_Polyhedron ph(3, C_Polyhedron::EMPTY);
 
   GenSys gs = ph.generators();
- 
+
   fstream f;
   open(f, my_file, ios_base::out);
   f << gs << endl;
@@ -50,3 +50,4 @@ main() {
 
   return 0;
 }
+CATCH

@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -50,12 +50,13 @@ main() {
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A >= 3);
- 
+
   int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
   print_constraints(ph, "*** After ph.affine_preimage(B, A + 1, 2) ***");
 #endif
-  
+
   return retval;
 }
+CATCH

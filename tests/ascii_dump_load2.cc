@@ -37,7 +37,7 @@ using namespace Parma_Polyhedra_Library;
 static const char* my_file = "ascii_dump_load2.dat";
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -45,7 +45,7 @@ main() {
 
   C_Polyhedron ph(2);
   ph.add_constraint(A - B >= 0);
-  
+
   fstream f;
   open(f, my_file, ios_base::out);
   ph.ascii_dump(f);
@@ -57,6 +57,7 @@ main() {
   C_Polyhedron ph2;
   bool ok = !ph2.ascii_load(f);
   close(f);
- 
+
   return ok ? 0 : 1;
 }
+CATCH

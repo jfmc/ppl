@@ -32,9 +32,9 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
-  
+
   Variable A(0);
 
   C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
@@ -49,7 +49,7 @@ main() {
   C_Polyhedron known_result(ph1);
 
   ph1.intersection_assign_and_minimize(ph2);
-  
+
   int retval = (ph1 == known_result) ? 0 : 1;
 
 #if NOISY
@@ -58,3 +58,4 @@ main() {
 #endif
   return retval;
 }
+CATCH

@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable x(0);
@@ -51,7 +51,7 @@ main() {
   print_constraints(ph2, "**** ph2 ****");
 #endif
   ph1.time_elapse_assign(ph2);
-   
+
   C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
   known_result.add_generator(point(y));
   known_result.add_generator(ray(y));
@@ -65,3 +65,4 @@ main() {
 
   return retval;
 }
+CATCH

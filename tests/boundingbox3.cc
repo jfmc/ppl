@@ -366,7 +366,7 @@ test10() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   test0();
@@ -383,3 +383,4 @@ main() {
 
   return 0;
 }
+CATCH

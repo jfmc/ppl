@@ -32,14 +32,14 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
   Variable B(1);
 
   C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
-  
+
   ConSys cs;
   cs.insert(A - B >= 0);
 
@@ -60,3 +60,4 @@ main() {
 
   return retval;
 }
+CATCH

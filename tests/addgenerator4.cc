@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -54,7 +54,7 @@ main() {
 	 iend = gs.end(); i != iend; ++i)
     if (!(*i).is_closure_point())
       ph.add_generator(*i);
-  
+
   GenSys gs_known;
   gs_known.insert(point(7*A + 0*B, 4));
   gs_known.insert(ray(A - B));
@@ -66,6 +66,7 @@ main() {
   print_generators(gs, "*** gs ***");
   print_generators(ph, "*** ph ***");
 #endif
- 
+
   return retval;
 }
+CATCH

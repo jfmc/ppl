@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library;
 
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -69,6 +69,7 @@ main() {
   print_generators(ph1,
 		   "*** After ph1.poly_hull_assugn_and_minimize(ph2) ***");
 #endif
-  
+
   return retval;
 }
+CATCH

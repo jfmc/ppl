@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable x(0);
@@ -80,3 +80,4 @@ main() {
 
   return (halfline_includes_segment && !segment_includes_halfline) ? 0 : 1;
 }
+CATCH

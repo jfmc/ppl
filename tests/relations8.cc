@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable x(0);
@@ -60,5 +60,5 @@ main() {
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
   return (rel == known_result) ? 0 : 1;
-
 }
+CATCH

@@ -38,7 +38,7 @@ error1() {
   ConSys cs;
   cs.insert(x - y > 0);
   cs.insert(x >= 0);
-  
+
   try {
     // This is an invalid use of the constructor of a polyhedron:
     // it is illegal to built a closed polyhedron starting from
@@ -59,13 +59,13 @@ static void
 error2() {
   Variable x(0);
   Variable y(1);
-  
+
   GenSys gs;
   gs.insert(closure_point(x + y));
   gs.insert(point(x + y));
   gs.insert(ray(x));
   gs.insert(ray(y));
-  
+
   try {
     // This is an invalid use of the constructor of a polyhedron:
     // it is illegal to built a closed polyhedron starting from
@@ -88,7 +88,7 @@ error3() {
   Variable y(1);
 
   C_Polyhedron ph(3);
-  
+
   try {
     // This is an invalid use of the function add_constraint(c): it is
     // illegal to insert a strict-inequality into a system of
@@ -171,7 +171,7 @@ error6() {
     ph.add_constraints(cs);
   }
   catch(invalid_argument& e) {
-#if NOISY   
+#if NOISY
     cout << "invalid_argument: " << e.what() << endl << endl;
 #endif
   }
@@ -268,7 +268,7 @@ static void
 error10() {
   Variable x(0);
   Variable y(1);
-  
+
   NNC_Polyhedron ph1(3);
   ph1.add_constraint(x >= 5);
   ph1.add_constraint(y > x - 3);
@@ -293,7 +293,7 @@ static void
 error11() {
   Variable A(0);
   Variable B(1);
-  
+
   C_Polyhedron ph1(2);
   ph1.add_constraint(A >= 2);
 
@@ -325,7 +325,7 @@ static void
 error12() {
   Variable A(0);
   Variable B(1);
-  
+
   C_Polyhedron ph1(2);
   ph1.add_constraint(B >= 2);
 
@@ -374,7 +374,7 @@ error13() {
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
 #endif
-  
+
    try {
      // This is an invalid use of the function
      // `poly_hull_assign_and_minimize': it is illegal to apply
@@ -412,7 +412,7 @@ error14() {
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
 #endif
-  
+
    try {
     // This is an invalid use of the function
     // `poly_hull_assign': it is illegal to apply this function
@@ -433,7 +433,7 @@ static void
 error15() {
   Variable A(0);
   Variable B(1);
-  
+
   C_Polyhedron ph1(2);
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(A <= 4);
@@ -471,7 +471,7 @@ static void
 error16() {
   Variable A(0);
   Variable B(1);
-  
+
   C_Polyhedron ph1(2);
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(A <= 2);
@@ -501,13 +501,13 @@ error16() {
   catch (...) {
     exit(1);
   }
-}    
+}
 
 static void
 error17() {
   Variable A(0);
   Variable B(1);
-  
+
   NNC_Polyhedron ph1(2);
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(A <= 2);
@@ -542,13 +542,13 @@ error17() {
   catch (...) {
     exit(1);
   }
-}    
+}
 
 static void
 error18() {
   Variable A(0);
   Variable B(1);
-  
+
   C_Polyhedron ph1(2);
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(A <= 2);
@@ -583,7 +583,7 @@ error18() {
   catch (...) {
     exit(1);
   }
-}    
+}
 
 static void
 error19() {
@@ -621,7 +621,7 @@ error19() {
     exit(1);
   }
 }
-  
+
 static void
 error20() {
   Variable A(0);
@@ -636,7 +636,7 @@ error20() {
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 #endif
-  
+
   try {
     // This is an invalid use of the `operator<=':
     // it is illegal to apply this function to a
@@ -657,7 +657,7 @@ static void
 error21() {
   Variable A(0);
   Variable B(1);
-  
+
   NNC_Polyhedron ph1(2);
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(A - B > 0);
@@ -667,7 +667,7 @@ error21() {
 #if NOISY
   print_constraints(cs, "*** cs ***");
 #endif
-  
+
   try {
     // This is an incorrect use of the function
     // C_Polyhedron::C_Polyhedron(cs): it is illegal to built a
@@ -683,7 +683,7 @@ error21() {
   catch (...) {
     exit(1);
   }
-}   
+}
 
 static void
 error22() {
@@ -805,7 +805,7 @@ error26() {
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 #endif
-  
+
   try {
     // This is an invalid use of the `operator<=':
     // it is illegal to apply this function to a
@@ -909,7 +909,7 @@ error29() {
   try {
     // This is an invalid use of the function
     // `C_Polyhedron(NNC_Polyhedron&)': it is illegal to
-    // built a closed polyhedron starting from a 
+    // built a closed polyhedron starting from a
     // non-closed polyhedron.
     C_Polyhedron ph2(ph1);
   }
@@ -1023,7 +1023,7 @@ error33() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   error1();
@@ -1062,3 +1062,4 @@ main() {
 
   return 0;
 }
+CATCH

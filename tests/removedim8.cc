@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -50,7 +50,7 @@ main() {
 
   // This is the set of the variables that we want to remove.
   Variables_Set to_be_removed;
-  
+
   ph.remove_dimensions(to_be_removed);
 
   int retval = (ph == known_result) ? 0 : 1;
@@ -60,3 +60,4 @@ main() {
 #endif
   return retval;
 }
+CATCH

@@ -41,7 +41,7 @@ test1() {
   ph.add_constraint(B >= 0);
   ph.add_constraint(A <= 1);
   ph.add_constraint(B <= 1);
-  
+
   ph.affine_preimage(A, -A - 1, -1);
 
   C_Polyhedron known_result(2);
@@ -74,7 +74,7 @@ test2() {
 #if NOISY
   print_constraints(ph, "*** ph ***");
 #endif
-  
+
   ph.affine_preimage(B, -A - 1, -1);
 
   C_Polyhedron known_result(2);
@@ -91,7 +91,7 @@ test2() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   test1();
@@ -99,3 +99,4 @@ main() {
 
   return 0;
 }
+CATCH

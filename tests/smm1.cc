@@ -96,7 +96,7 @@ constraints(C_Polyhedron& ph,
 }
 
 int
-main() try {
+main() TRY {
   set_handlers();
 
   Variable S(0);
@@ -150,9 +150,4 @@ main() try {
 	}
   return 0;
 }
-catch (exception& e) {
-#if NOISY
-  cout << e.what() << endl;
-#endif
-  exit(1);
-}
+CATCH

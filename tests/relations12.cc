@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -52,12 +52,12 @@ main() {
 
   Poly_Con_Relation known_rel = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_included();
- 
+
   int retval = (rel == known_rel) ? 0 : 1;
 
 #if NOISY
   cout << "ph.relation_with(B == 0) == " << rel << endl;
 #endif
-
   return retval;
 }
+CATCH

@@ -33,9 +33,9 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
-  
+
   Variable A(0);
 
   C_Polyhedron ph(2);
@@ -56,3 +56,4 @@ main() {
 #endif
     return retval;
 }
+CATCH

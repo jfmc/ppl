@@ -52,7 +52,7 @@ count_points(const C_Polyhedron& ph) {
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   // Set up a random numbers' generator.
@@ -75,3 +75,4 @@ main() {
 
   return 0;
 }
+CATCH

@@ -37,12 +37,12 @@ test1() {
   Variable B(1);
 
   C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
-  
+
   C_Polyhedron ph2(2);
   ph2.add_constraint(B >= 0);
   ph2.add_constraint(A - B >= 0);
   ph2.add_constraint(A <= 2);
-  
+
   ConSys cs;
   cs.insert(B <= 4);
 
@@ -53,7 +53,7 @@ test1() {
   print_constraints(ph2, "*** ph2 ***");
   print_constraints(cs, "*** cs ***");
 #endif
-  
+
   ph2.limited_H79_extrapolation_assign(ph1, cs);
 
   bool ok = (ph2 == known_result);
@@ -72,9 +72,9 @@ test2() {
   Variable B(1);
 
   C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
-  
+
   C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
-  
+
   ConSys cs;
   cs.insert(B <= 4);
 
@@ -85,7 +85,7 @@ test2() {
   print_constraints(ph2, "*** ph2 ***");
   print_constraints(cs, "*** cs ***");
 #endif
-  
+
   ph2.limited_H79_extrapolation_assign(ph1, cs);
 
   bool ok = (ph2 == known_result);
@@ -102,9 +102,9 @@ test2() {
 static void
 test3() {
   C_Polyhedron ph1;
-  
+
   C_Polyhedron ph2;
-  
+
   ConSys cs;
   cs.insert(LinExpression(2) <= 4);
 
@@ -115,7 +115,7 @@ test3() {
   print_constraints(ph2, "*** ph2 ***");
   print_constraints(cs, "*** cs ***");
 #endif
-  
+
   ph2.limited_H79_extrapolation_assign(ph1, cs);
 
   bool ok = (ph2 == known_result);
@@ -133,7 +133,7 @@ static void
 test4() {
   Variable A(0);
   Variable B(1);
-  
+
   C_Polyhedron ph1(2);
   ph1.add_constraint(A >= 2);
   ph1.add_constraint(A <= -2);
@@ -151,7 +151,7 @@ test4() {
   print_constraints(ph2, "*** ph2 ***");
   print_constraints(cs, "*** cs ***");
 #endif
-  
+
   ph2.limited_H79_extrapolation_assign(ph1, cs);
 
   bool ok = (ph2 == known_result);
@@ -166,7 +166,7 @@ test4() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   test1();
@@ -176,3 +176,4 @@ main() {
 
   return 0;
 }
+CATCH

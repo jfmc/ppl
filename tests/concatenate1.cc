@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() try {
+main() TRY {
   set_handlers();
 
   Variable x(0);
@@ -72,9 +72,4 @@ main() try {
 
   return retval;
 }
-catch (exception& e) {
-#if NOISY
-  cout << e.what() << endl;
-#endif
-  exit(1);
-}
+CATCH

@@ -36,7 +36,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 static const char* my_file = "writeconsys1.dat";
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -51,6 +51,7 @@ main() {
   open(f, my_file, ios_base::out);
   f << ph.constraints() << endl;
   close(f);
-  
+
   return 0;
 }
+CATCH

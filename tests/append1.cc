@@ -40,7 +40,7 @@ shift_rename_add(const C_Polyhedron& p,
 }
 
 int
-main() try {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -115,9 +115,4 @@ main() try {
 
   return current == expected ? 0 : 1;
 }
-catch (const std::exception& e) {
-  cerr << "std::exception caught: "
-       << e.what() << " (type == " << typeid(e).name() << ")"
-       << endl;
-  return 1;
-}
+CATCH

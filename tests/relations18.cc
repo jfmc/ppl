@@ -1,5 +1,5 @@
 /* Test Polyhedron::relation_with(g): in this test `g' is a
-   closure point and in the polyhedron there is an equality.  
+   closure point and in the polyhedron there is an equality.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -42,7 +42,7 @@ main() {
   NNC_Polyhedron ph(2);
   ph.add_constraint(A == 0);
   ph.add_constraint(B == 0);
-  
+
   Poly_Gen_Relation rel = ph.relation_with(closure_point(A));
 
 #if NOISY
@@ -51,6 +51,6 @@ main() {
 #endif
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
-
   return (rel == known_result) ? 0 : 1;
 }
+CATCH

@@ -46,7 +46,7 @@ test1() {
 #endif
 
   ph.topological_closure_assign();
-  
+
   NNC_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A == B);
@@ -94,11 +94,12 @@ test2() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
-  
+
   test1();
   test2();
 
   return 0;
 }
+CATCH

@@ -1,4 +1,4 @@
-/* Test Polyhedron::is_topologically_closed(): a polyhedron 
+/* Test Polyhedron::is_topologically_closed(): a polyhedron
    that contains in its minimized system of generators
    non-redundant closure point that are not
    matched by a corresponding point is not topologically closed.
@@ -34,13 +34,13 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
-  
+
   NNC_Polyhedron ph1(1, NNC_Polyhedron::EMPTY);
- 
+
   GenSys gs1;
   gs1.insert(point(A));
   gs1.insert(closure_point());
@@ -55,3 +55,4 @@ main() {
 
   return ok ? 0 : 1;
 }
+CATCH

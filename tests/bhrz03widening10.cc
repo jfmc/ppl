@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   C_Polyhedron ph1;
@@ -55,3 +55,4 @@ main() {
 
   return retval;
 }
+CATCH

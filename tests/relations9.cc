@@ -138,7 +138,7 @@ static void test6() {
   if (rel != known_result)
     exit(1);
 }
-  
+
 static void test7() {
   Variable A(0);
   Variable B(1);
@@ -183,8 +183,7 @@ static void test8() {
     exit(1);
 }
 
-
-int main() {
+int main() TRY {
 
   test1();
   test2();
@@ -197,3 +196,4 @@ int main() {
 
   return 0;
 }
+CATCH

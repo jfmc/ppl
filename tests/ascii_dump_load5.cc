@@ -50,14 +50,14 @@ test1() {
     << "con_sys (up-to-date)\n"
     << "topology NECESSARILY_CLOSED\n"
     << "3 x 3 (not_sorted)\n"
-    << "1 0 0"; 
+    << "1 0 0";
   close(f);
-  
+
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
   bool ok =! ph2.ascii_load(f);
   close(f);
-  
+
   if (!ok)
     exit(1);
 }
@@ -81,14 +81,14 @@ test2() {
     << "gen_sys (not_up-to-date)\n"
     << "topology NECESSARILY_CLOSED\n"
     <<" 3 x 3 (not_sorted)\n"
-    << "1 0 0"; 
+    << "1 0 0";
   close(f);
-  
+
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
   bool ok =! ph2.ascii_load(f);
   close(f);
-  
+
   if (!ok)
     exit(1);
 }
@@ -107,12 +107,12 @@ test3() {
     << "topology NECESSARILY_CLOSED\n"
     << "3";
   close(f);
-  
+
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
   bool ok =! ph2.ascii_load(f);
   close(f);
-  
+
   if (!ok)
     exit(1);
 }
@@ -131,12 +131,12 @@ test4() {
     << "con_sys (up-to-date)\n"
     << "topology";
   close(f);
-  
+
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
   bool ok =! ph2.ascii_load(f);
   close(f);
-  
+
   if (!ok)
     exit(1);
 }
@@ -151,7 +151,7 @@ test5() {
   fstream f;
   open(f, my_file, ios_base::out);
   f << "space_dim 3\n"
-    << "-ZE -EM  +CM +GM  +CS +GS  +SC -SG\n" 
+    << "-ZE -EM  +CM +GM  +CS +GS  +SC -SG\n"
     << "con_sys (up-to-date)\n"
     << "topology NOT_NECESSARILY_CLOSED\n"
     << "4 x 5 (sorted)\n"
@@ -172,21 +172,21 @@ test5() {
     << "sat_c\n"
     << "5";
     close(f);
-  
+
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
   bool ok =! ph2.ascii_load(f);
   close(f);
-  
+
   if (!ok)
     exit(1);
 }
 
 
 int
-main() {
+main() TRY {
   set_handlers();
-  
+
   test1();
   test2();
   test3();
@@ -195,3 +195,4 @@ main() {
 
   return 0;
 }
+CATCH

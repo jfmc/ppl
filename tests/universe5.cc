@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
   Variable x(0);
   Variable y(1);
@@ -57,3 +57,4 @@ main() {
 
   return !universe ? 0 : 1;
 }
+CATCH

@@ -31,14 +31,14 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
   Variable A(0);
   Variable B(1);
 
   NNC_Polyhedron ph1(2);
   ph1.add_constraint(A >= 0);
-  ph1.add_constraint(B >= 0); 
+  ph1.add_constraint(B >= 0);
 
   ConSys cs = ph1.constraints();
 
@@ -65,3 +65,4 @@ main() {
 
   return retval;
 }
+CATCH

@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   // This is the easy way to create
@@ -53,3 +53,4 @@ main() {
 
   return retval;
 }
+CATCH

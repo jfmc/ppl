@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable x(0);
@@ -54,7 +54,7 @@ main() {
   print_constraints(ph1, "**** ph1 ****");
   print_constraints(ph2, "**** ph2 ****");
 #endif
-  
+
   ph1.time_elapse_assign(ph2);
 
   GenSys known_gs;
@@ -63,7 +63,7 @@ main() {
   known_gs.insert(point(2*y));
   known_gs.insert(ray(2*x + 3*y));
   known_gs.insert(ray(4*x + 3*y));
-   
+
   NNC_Polyhedron known_result(known_gs);
 
   int retval = (ph1 == known_result) ? 0 : 1;
@@ -74,3 +74,4 @@ main() {
 
   return retval;
 }
+CATCH

@@ -65,7 +65,7 @@ partition_ok(const C_Polyhedron& p,
 }
 
 
-int main() {
+int main() TRY {
   set_handlers();
 
   Variable x(0);
@@ -116,3 +116,4 @@ int main() {
 
   return 0;
 }
+CATCH

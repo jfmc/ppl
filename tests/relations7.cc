@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Poly_Con_Relation rel = Poly_Con_Relation::nothing();
@@ -121,6 +121,7 @@ main() {
   if (rel != known_result)
     return 1;
 
-  // All test passed.
+  // All tests passed.
   return 0;
 }
+CATCH

@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 
 int
-main() {
+main() TRY {
   set_handlers();
   Variable A(0);
   Variable B(1);
@@ -41,7 +41,7 @@ main() {
   NNC_Polyhedron ph(2);
   ph.add_constraint(A - B > 0);
   ph.add_constraint(B >= 0);
-  
+
   Poly_Gen_Relation rel1 = ph.relation_with(point(B));
   Poly_Gen_Relation rel2 = ph.relation_with(point(-B));
 
@@ -52,6 +52,6 @@ main() {
 #endif
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
-
   return (rel1 == known_result && rel2 == known_result) ? 0 : 1;
 }
+CATCH

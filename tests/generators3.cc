@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -62,7 +62,7 @@ main() {
 		&& C_Polyhedron(gs2) == C_Polyhedron(known_result2)
 		&& gs3.begin() == gs3.end()) ? 0 : 1;
 
-#if NOISY  
+#if NOISY
   print_generators(gs1, "*** gs1 ***");
   print_generators(gs2, "*** gs2 ***");
   print_generators(gs3, "*** gs3 ***");
@@ -70,3 +70,4 @@ main() {
 
   return retval;
 }
+CATCH

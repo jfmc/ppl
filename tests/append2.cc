@@ -118,7 +118,7 @@ fix_point(C_Polyhedron& start, C_Polyhedron& induct, C_Polyhedron& finish,
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   C_Polyhedron start;
@@ -136,3 +136,4 @@ main() {
 #endif
   return final == expect ? 0 : 1;
 }
+CATCH

@@ -190,7 +190,7 @@ permute_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
 }
 
 int
-main() try {
+main() TRY {
   set_handlers();
 
   C_Polyhedron start;
@@ -231,9 +231,4 @@ main() try {
 
   return final2 == final1 ? 0 : 1;
 }
-catch (const std::exception& e) {
-  cerr << "std::exception caught: "
-       << e.what() << " (type == " << typeid(e).name() << ")"
-       << endl;
-  return 1;
-}
+CATCH

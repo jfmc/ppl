@@ -93,12 +93,12 @@ test3() {
   f << "space_dim 2\n"
     << "-ZE";
   close(f);
-  
+
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
   bool ok =! ph2.ascii_load(f);
   close(f);
-  
+
   if (!ok)
     exit(1);
 }
@@ -114,12 +114,12 @@ test4() {
   f << "space_dim 2\n"
     << "-ZE -EM";
   close(f);
-  
+
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
   bool ok =! ph2.ascii_load(f);
   close(f);
-  
+
   if (!ok)
     exit(1);
 }
@@ -135,12 +135,12 @@ test5() {
   f << "space_dim 2\n"
     << "-ZE -EM  +CM";
   close(f);
-  
+
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
   bool ok =! ph2.ascii_load(f);
   close(f);
-  
+
   if (!ok)
     exit(1);
 }
@@ -156,12 +156,12 @@ test6() {
   f << "space_dim 2\n"
     << "-ZE -EM  +CM +GM";
   close(f);
-  
+
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
   bool ok =! ph2.ascii_load(f);
   close(f);
-  
+
   if (!ok)
     exit(1);
 }
@@ -177,12 +177,12 @@ test7() {
   f << "space_dim 2\n"
     << "-ZE -EM  +CM +GM  +CS";
   close(f);
-  
+
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
   bool ok =! ph2.ascii_load(f);
   close(f);
-  
+
   if (!ok)
     exit(1);
 }
@@ -198,12 +198,12 @@ test8() {
   f << "space_dim 2\n"
     << "-ZE -EM  +CM +GM  +CS  +SC";
   close(f);
-  
+
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
   bool ok =! ph2.ascii_load(f);
   close(f);
-  
+
   if (!ok)
     exit(1);
 }
@@ -219,12 +219,12 @@ test9() {
   f << "space_dim 2\n"
     << "-ZE -EM  +CM +GM  +CS  +GS";
   close(f);
-  
+
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
   bool ok =! ph2.ascii_load(f);
   close(f);
-  
+
   if (!ok)
     exit(1);
 }
@@ -241,18 +241,18 @@ test10() {
   f << "space_dim 2\n"
     << "-ZE -EM  +CM +GM  +CS  +GS  -SC";
   close(f);
-  
+
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
   bool ok =! ph2.ascii_load(f);
   close(f);
-  
+
   if (!ok)
     exit(1);
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   test1();
@@ -268,3 +268,4 @@ main() {
 
   return 0;
 }
+CATCH

@@ -35,7 +35,7 @@ error1() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
-  
+
   GenSys gs;
   try {
     // This is an incorrect use of the function Generator::point(expr, d):
@@ -43,12 +43,12 @@ error1() {
     // equal to zero.
     gs.insert(point(x + y + z, 0));
   }
-  
+
   catch (invalid_argument& e) {
 #if NOISY
     cout << "invalid_argument: " << e.what() << endl << endl;
 #endif
-  } 
+  }
   catch (...) {
     exit(1);
   }
@@ -58,7 +58,7 @@ static void
 error2() {
   Variable x(0);
   Variable y(1);
-  
+
   GenSys gs;
   gs.insert(point(x + y));
   gs.insert(ray(x + 0*y));
@@ -139,7 +139,7 @@ error5() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
-  
+
   GenSys gs;
   gs.insert(point(0*x + 1*y +2*z));
   C_Polyhedron ph(gs);
@@ -198,11 +198,11 @@ error7() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
-  
+
   C_Polyhedron ph(2);
   ph.add_constraint(x >= 1);
   ph.add_constraint(y >= 1);
-  
+
   try {
     // This is an invalid used of the function
     // C_Polyhedron::affine_image(v, expr, d): it is illegal to
@@ -450,9 +450,9 @@ static void
 error17() {
   Variable x(0);
   Variable y(1);
-  
+
   C_Polyhedron ph(1);
-  
+
   try {
     // This is an invalid use of the function
     // C_Polyhedron::add_constraints(cs): it is illegal to add a system
@@ -482,13 +482,13 @@ error18() {
   gs1.insert(ray(x));
 
   C_Polyhedron ph1(gs1);
-  
+
   GenSys gs2;
   gs2.insert(point(x));
   gs2.insert(ray(x + y));
 
   C_Polyhedron ph2(gs2);
-  
+
   try {
     // This is an invalid use of the function
     // C_Polyhedron::poly_hull_assign(ph2): it is illegal to apply
@@ -621,7 +621,7 @@ error23() {
   }
   catch (invalid_argument& e) {
 #if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl; 
+    cout << "invalid_argument: " << e.what() << endl << endl;
 #endif
   }
   catch (...) {
@@ -796,7 +796,7 @@ error29() {
 
 static void
 error30() {
-  
+
   C_Polyhedron ph1(3);
   C_Polyhedron ph2(5);
 
@@ -845,17 +845,17 @@ error32() {
   GenSys gs1;
   gs1.insert(ray(A));
   gs1.insert(line(B));
-  
+
   const GenSys gs2 = gs1;
 
 #if NOISY
   print_generators(gs2, "*** gs2 ***");
 #endif
-  
+
   try {
     // This is an incorrect use of the function
     // `C_Polyhedron::C_Polyhedron(gs)': it is illegal to built a
-    // closed polyhedron starting from a constant system of 
+    // closed polyhedron starting from a constant system of
     // generators that does not contain points.
     C_Polyhedron ph2(gs2);
   }
@@ -867,7 +867,7 @@ error32() {
   catch (...) {
     exit(1);
   }
-}  
+}
 
 static void
 error33() {
@@ -878,7 +878,7 @@ error33() {
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
 #endif
-  
+
   try {
     // This is an incorrect use of the function
     // `add_generator(g)': it is illegal to add a
@@ -893,7 +893,7 @@ error33() {
   catch (...) {
     exit(1);
   }
-} 
+}
 
 static void
 error34() {
@@ -999,7 +999,7 @@ error37() {
   }
   catch (invalid_argument& e) {
 #if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl; 
+    cout << "invalid_argument: " << e.what() << endl << endl;
 #endif
   }
   catch (...) {
@@ -1014,7 +1014,7 @@ error38() {
 
   C_Polyhedron ph(2);
   ph.add_constraint(A - B >= 0);
-  
+
   try {
     // This is an incorrect use of function
     // C_Polyhedron::generalized_affine_image(v, r, expr, d): it is illegal
@@ -1040,7 +1040,7 @@ error39() {
 
   C_Polyhedron ph(1);
   ph.add_constraint(A >= 0);
-  
+
   try {
     // This is an incorrect use of function
     // C_Polyhedron::generalized_affine_image(v, r, expr, d): it is illegal to
@@ -1052,7 +1052,7 @@ error39() {
     cout << "invalid_argument: " << e.what() << endl << endl;
 #endif
   }
- catch (...) {
+  catch (...) {
     exit(1);
   }
 }
@@ -1090,7 +1090,7 @@ error41() {
 
   C_Polyhedron ph(2);
   ph.add_constraint(A >= 0);
-  
+
   try {
     // This is an incorrect use of function
     // C_Polyhedron::generalized_affine_image(lhs, r, rhs):
@@ -1103,7 +1103,7 @@ error41() {
     cout << "invalid_argument: " << e.what() << endl << endl;
 #endif
   }
- catch (...) {
+  catch (...) {
     exit(1);
   }
 }
@@ -1248,9 +1248,9 @@ error47() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
-  
+
   error1();
   error2();
   error3();
@@ -1301,3 +1301,4 @@ main() {
 
   return 0;
 }
+CATCH

@@ -36,7 +36,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 static const char* my_file = "writegensys1.dat";
 
 int
-main() {
+main() TRY {
   set_handlers();
   Variable A(0);
   Variable B(1);
@@ -56,3 +56,4 @@ main() {
 
   return 0;
 }
+CATCH

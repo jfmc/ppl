@@ -1,5 +1,5 @@
 /* Test Polyhedron::relation_with(c): in this test `c' is
-   a strict inequality.  
+   a strict inequality.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -52,6 +52,6 @@ main() {
 #endif
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
-
   return (rel == known_result) ? 0 : 1;
 }
+CATCH

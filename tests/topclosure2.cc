@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   NNC_Polyhedron ph1;
@@ -43,9 +43,9 @@ main() {
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 #endif
-  
-  NNC_Polyhedron known_result1 = ph1; 
-  NNC_Polyhedron known_result2 = ph2; 
+
+  NNC_Polyhedron known_result1 = ph1;
+  NNC_Polyhedron known_result2 = ph2;
 
   ph1.topological_closure_assign();
   ph2.topological_closure_assign();
@@ -59,3 +59,4 @@ main() {
 
   return retval;
 }
+CATCH

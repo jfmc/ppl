@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable x(0);
@@ -58,14 +58,14 @@ main() {
 #endif
 
   NNC_Polyhedron copy_ph1(ph1);
-  
+
   int num_constraints = 0;
   for (ConSys::const_iterator i = ph1.constraints().begin(),
 	 iend = ph1.constraints().end(); i != iend; ++i)
     ++num_constraints;
 
   ph1.minimized_constraints();
-  
+
   int num_minimized_constraints = 0;
   for (ConSys::const_iterator i = ph1.constraints().begin(),
 	 iend = ph1.constraints().end(); i != iend; ++i)
@@ -85,7 +85,7 @@ main() {
       ++num_points;
 
   copy_ph1.minimized_generators();
-  
+
   int num_minimized_points = 0;
   for (GenSys::const_iterator i = copy_ph1.generators().begin(),
 	 iend = copy_ph1.generators().end(); i != iend; ++i)
@@ -103,3 +103,4 @@ main() {
   return (num_constraints == num_minimized_constraints + 1 &&
 	  num_points == num_minimized_points + 1) ? 0 : 1;
 }
+CATCH

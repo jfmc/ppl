@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -45,7 +45,7 @@ main() {
 #if NOISY
   print_constraints(ph, "*** ph ***");
 #endif
-  
+
   ph.add_constraint_and_minimize(B >= 1);
 
   C_Polyhedron known_result(2);
@@ -62,3 +62,4 @@ main() {
 
   return retval;
 }
+CATCH

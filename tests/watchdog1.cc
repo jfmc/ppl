@@ -93,9 +93,9 @@ timed_compute_open_hypercube_generators(dimension_type dimension,
 #define INIT_TIME 20
 
 int
-main() {
+main() TRY {
   set_handlers();
-  
+
   // Find a dimension that cannot be computed with a INIT_TIME timeout.
   dimension_type dimension = 0;
   do {
@@ -136,3 +136,4 @@ main() {
 
   return 0;
 }
+CATCH

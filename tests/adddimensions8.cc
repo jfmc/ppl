@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library;
 
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -62,3 +62,4 @@ main() {
 
   return retval;
 }
+CATCH

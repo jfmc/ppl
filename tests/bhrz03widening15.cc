@@ -57,7 +57,7 @@ splitting_facet(const Generator& r1,
   expr *= magic_number + 1;
   expr -= C;
   return ray(expr);
-} 
+}
 
 static GenSys
 double_generators(const GenSys& gs, unsigned magic_number) {
@@ -115,7 +115,7 @@ p(unsigned n) {
 
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   // Chain condition for widenings:
@@ -144,7 +144,7 @@ main() {
     cout << "*** Poly-hull of previous with new:" << endl;
     cout << q_i.generators() << endl;
 #endif
-   
+
     q_i.BHRZ03_widening_assign(q_i_minus_1);
 
 #if NOISY
@@ -168,3 +168,4 @@ main() {
   }
   return 1;
 }
+CATCH

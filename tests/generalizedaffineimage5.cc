@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -48,9 +48,9 @@ main() {
 #endif
 
   C_Polyhedron known_result(ph);
-  
+
   ph.generalized_affine_image(A, PPL_EQ, A + 2);
-  
+
   known_result.affine_image(A, A + 2);
 
   int retval = (ph == known_result) ? 0 : 1;
@@ -63,3 +63,4 @@ main() {
 
   return retval;
 }
+CATCH

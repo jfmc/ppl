@@ -43,7 +43,7 @@ test1() {
   cs.insert(B >= 0);
   C_Polyhedron ph1(cs);
   C_Polyhedron ph2(ph1);
-  ph2.add_constraint(A == B); 
+  ph2.add_constraint(A == B);
 
   bool ok = (ph1 >= ph2);
 
@@ -66,7 +66,7 @@ test2() {
   cs.insert(B >= 0);
   NNC_Polyhedron ph1(cs);
   NNC_Polyhedron ph2(ph1);
-  ph2.add_constraint(A > B); 
+  ph2.add_constraint(A > B);
 
   bool ok = (ph1 > ph2);
 
@@ -114,7 +114,7 @@ test4() {
   cs.insert(B >= 0);
   NNC_Polyhedron ph1(cs);
   NNC_Polyhedron ph2(ph1);
-  ph2.add_constraint(A > 0); 
+  ph2.add_constraint(A > 0);
 
   bool ok = (ph2 < ph1);
 
@@ -128,7 +128,7 @@ test4() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   test1();
@@ -138,3 +138,4 @@ main() {
 
   return 0;
 }
+CATCH

@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -54,7 +54,7 @@ main() {
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
 #endif
-  
+
   ph2.H79_widening_assign(ph1);
 
   C_Polyhedron known_result(2);
@@ -68,3 +68,4 @@ main() {
 
   return retval;
 }
+CATCH

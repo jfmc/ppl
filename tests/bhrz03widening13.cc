@@ -87,7 +87,7 @@ p(unsigned n) {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   // Chain condition for widenings:
@@ -115,7 +115,7 @@ main() {
     cout << "*** Poly-hull of previous with new:" << endl;
     cout << q_i.generators() << endl;
 #endif
-   
+
     q_i.BHRZ03_widening_assign(q_i_minus_1);
 
 #if NOISY
@@ -124,7 +124,7 @@ main() {
 #endif
     if (q_i == q_i_minus_1) {
       C_Polyhedron known_result(2);
-      
+
       int retval = (q_i == known_result) ? 0 : 1;
 
 #if NOISY
@@ -138,3 +138,4 @@ main() {
   }
   return 1;
 }
+CATCH

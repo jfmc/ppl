@@ -35,7 +35,7 @@ static void
 test1() {
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs1;
   gs1.insert(point());
   gs1.insert(ray(A));
@@ -73,7 +73,7 @@ static void
 test2() {
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs1;
   gs1.insert(point());
   gs1.insert(ray(-A));
@@ -111,7 +111,7 @@ static void
 test3() {
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs1;
   gs1.insert(point());
   gs1.insert(ray(-A));
@@ -149,7 +149,7 @@ static void
 test4() {
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs1;
   gs1.insert(point());
   gs1.insert(ray(A));
@@ -187,7 +187,7 @@ static void
 test5() {
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs1;
   gs1.insert(point());
   gs1.insert(ray(B));
@@ -225,7 +225,7 @@ static void
 test6() {
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs1;
   gs1.insert(point());
   gs1.insert(ray(B));
@@ -263,7 +263,7 @@ static void
 test7() {
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs1;
   gs1.insert(point());
   gs1.insert(ray(-B));
@@ -301,7 +301,7 @@ static void
 test8() {
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs1;
   gs1.insert(point());
   gs1.insert(ray(-B));
@@ -339,7 +339,7 @@ static void
 test9() {
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs1;
   gs1.insert(point());
   gs1.insert(ray(A));
@@ -376,7 +376,7 @@ static void
 test10() {
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs1;
   gs1.insert(point());
   gs1.insert(ray(B));
@@ -413,7 +413,7 @@ static void
 test11() {
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs1;
   gs1.insert(point());
   gs1.insert(ray(-A));
@@ -450,7 +450,7 @@ static void
 test12() {
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs1;
   gs1.insert(point());
   gs1.insert(ray(-B));
@@ -487,7 +487,7 @@ static void
 test13() {
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs1;
   gs1.insert(point());
   gs1.insert(ray(-A));
@@ -524,7 +524,7 @@ static void
 test14() {
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs1;
   gs1.insert(point());
   gs1.insert(ray(-B));
@@ -561,7 +561,7 @@ static void
 test15() {
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs1;
   gs1.insert(point());
   gs1.insert(ray(A));
@@ -598,7 +598,7 @@ static void
 test16() {
   Variable A(0);
   Variable B(1);
-  
+
   GenSys gs1;
   gs1.insert(point());
   gs1.insert(ray(B));
@@ -632,7 +632,7 @@ test16() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   test1();
@@ -654,3 +654,4 @@ main() {
 
   return 0;
 }
+CATCH

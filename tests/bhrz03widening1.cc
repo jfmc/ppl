@@ -133,7 +133,7 @@ points() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   if (!dimensions())
@@ -145,3 +145,4 @@ main() {
 
   return 0;
 }
+CATCH

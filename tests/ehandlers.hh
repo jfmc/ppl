@@ -27,4 +27,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 void
 set_handlers();
 
+#define TRY try
+
+#define CATCH \
+catch (const std::exception& e) { \
+  cerr << "std::exception caught: " \
+       << e.what() << " (type == " << typeid(e).name() << ")" \
+       << endl; \
+  exit(1); \
+}
+
 #endif // !defined(PPL_ehandlers_hh)

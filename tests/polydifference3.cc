@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   C_Polyhedron ph1;
@@ -41,7 +41,7 @@ main() {
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 #endif
-  
+
   ConSys cs;
   cs.insert(LinExpression(-4) >= 0);
   C_Polyhedron known_result(cs);
@@ -55,3 +55,4 @@ main() {
 #endif
   return retval;
 }
+CATCH

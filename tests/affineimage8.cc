@@ -92,11 +92,12 @@ test2() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
-  
+
   test1();
   test2();
-  
+
   return 0;
 }
+CATCH

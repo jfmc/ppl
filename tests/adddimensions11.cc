@@ -52,7 +52,7 @@ main() try{
   print_constraints(ph1, "*** ph1 ***");
   print_generators(ph1, "*** ph1 ***");
 #endif
-  
+
   ph1.add_dimensions_and_embed(1);
 
   NNC_Polyhedron known_result(3);
@@ -68,11 +68,4 @@ main() try{
 
   return retval;
 }
-catch(invalid_argument& e) {
-#if NOISY
-  cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
-}
-catch (...) {
-  exit(1);
-}
+CATCH

@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -66,7 +66,7 @@ main() {
 #endif
 
   ph2.BHRZ03_widening_assign(ph1);
-  
+
   // This is the result of applying H79.
   GenSys gs_known_result;
   gs_known_result.insert(point(-36*A + 6*B, 25));
@@ -84,3 +84,4 @@ main() {
 
   return retval;
 }
+CATCH

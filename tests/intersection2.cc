@@ -46,7 +46,7 @@ count_points(const C_Polyhedron& ph) {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable x(0);
@@ -122,3 +122,4 @@ main() {
   }
   return ok ? 0 : 1;
 }
+CATCH

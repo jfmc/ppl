@@ -82,7 +82,7 @@ test4() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   test1();
@@ -92,3 +92,4 @@ main() {
 
   return 0;
 }
+CATCH

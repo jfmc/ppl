@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -53,6 +53,7 @@ main() {
 #if NOISY
   print_constraints(ph, "*** After ph.add_constraint(A == B) ***");
 #endif
-  
+
   return retval;
 }
+CATCH

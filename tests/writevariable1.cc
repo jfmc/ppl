@@ -64,9 +64,9 @@ my_output_function(ostream& s, const Variable& v) {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
-  
+
 
   // Default output function: write...
   write_variables();
@@ -100,3 +100,4 @@ main() {
 
   return 0;
 }
+CATCH

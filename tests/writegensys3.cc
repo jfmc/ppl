@@ -36,7 +36,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 static const char* my_file = "writegensys3.dat";
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -47,7 +47,7 @@ main() {
   GenSys gs;
   gs.insert(ray(e1));
   gs.insert(point(3*A + B, 2));
-  
+
   fstream f;
   open(f, my_file, ios_base::out);
   f << gs << endl;
@@ -55,3 +55,4 @@ main() {
 
   return 0;
 }
+CATCH

@@ -45,7 +45,7 @@ half_strip(const Generator& p, const LinExpression& e) {
   C_Polyhedron ph(gs);
   return ph;
 }
-	    
+
 static void
 test1() {
   Variable A(0);
@@ -73,7 +73,7 @@ static void
 test2() {
   Variable A(0);
   Variable B(1);
-  
+
   C_Polyhedron ph1 = half_strip(point(A + B), B);
   C_Polyhedron ph2 = half_strip(point(4*A + B), B);
 
@@ -92,7 +92,7 @@ static void
 test3() {
   Variable A(0);
   Variable B(1);
-  
+
   C_Polyhedron ph1 = half_strip(point(A + B), B);
   C_Polyhedron ph2 = half_strip(point(A + B), -B);
 
@@ -131,7 +131,7 @@ test4() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   test1();
@@ -141,3 +141,4 @@ main() {
 
   return 0;
 }
+CATCH

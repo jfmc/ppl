@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable A(0);
@@ -52,7 +52,7 @@ main() {
 #endif
 
   ph1.concatenate_assign(ph2);
-  
+
   int retval = (ph1 == known_result) ? 0 : 1;
 
 #if NOISY
@@ -61,3 +61,4 @@ main() {
 
   return retval;
 }
+CATCH

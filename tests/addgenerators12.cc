@@ -40,7 +40,7 @@ test1() {
   ph.generators();
   ph.add_constraint(A >= 0);
   C_Polyhedron copy_ph(ph);
-  
+
   GenSys gs1;
   gs1.insert(point());
   gs1.insert(ray(-A));
@@ -101,7 +101,7 @@ test2() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   test1();
@@ -109,3 +109,4 @@ main() {
 
   return 0;
 }
+CATCH

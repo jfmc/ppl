@@ -55,9 +55,10 @@ using namespace Parma_Polyhedra_Library;
      || HAVE_DECL_RLIMIT_VMEM || HAVE_DECL_RLIMIT_AS)
 
 int
-main() {
+main() TRY {
   return 0;
 }
+CATCH
 
 #else
 
@@ -154,7 +155,7 @@ cxx_free(void* p, size_t) {
 #define INIT_MEMORY 3*1024*1024
 
 int
-main() {
+main() TRY {
 #if GMP_SUPPORTS_EXCEPTIONS
   mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
 #endif
@@ -201,5 +202,6 @@ main() {
 
   return 0;
 }
+CATCH
 
 #endif // !defined(__CYGWIN__) && (HAVE_DECL_RLIMIT_DATA || ...)

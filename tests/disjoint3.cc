@@ -52,7 +52,7 @@ half_strip(const Generator& p, const LinExpression& e, bool closed = true) {
   NNC_Polyhedron ph(gs);
   return ph;
 }
-	    
+
 static void
 test1() {
   Variable A(0);
@@ -81,7 +81,7 @@ static void
 test2() {
   Variable A(0);
   Variable B(1);
-  
+
   NNC_Polyhedron ph1 = half_strip(point(A + B), B);
   NNC_Polyhedron ph2 = half_strip(closure_point(4*A + B), B, false);
 
@@ -100,7 +100,7 @@ static void
 test3() {
   Variable A(0);
   Variable B(1);
-  
+
   NNC_Polyhedron ph1 = half_strip(point(A + B), B);
   NNC_Polyhedron ph2 = half_strip(closure_point(A + B), -B, false);
 
@@ -121,7 +121,7 @@ test4() {
   Variable B(1);
 
   NNC_Polyhedron ph1 = half_strip(point(), B);
- 
+
   NNC_Polyhedron ph2(2, NNC_Polyhedron::EMPTY);
   ph2.add_generator(point(-2*A - 2*B));
   ph2.add_generator(closure_point(2*A - 2*B));
@@ -140,7 +140,7 @@ test4() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   test1();
@@ -150,3 +150,4 @@ main() {
 
   return 0;
 }
+CATCH

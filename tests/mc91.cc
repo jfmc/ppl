@@ -36,7 +36,7 @@ typedef Determinate<C_Polyhedron> DCS;
 typedef PowerSet<DCS> PCS;
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable x(0);
@@ -96,3 +96,4 @@ main() {
 
   return 0;
 }
+CATCH

@@ -38,7 +38,7 @@ test1() {
 
   NNC_Polyhedron ph1(2, NNC_Polyhedron::EMPTY);
   ph1.add_generator(point(A + B));
-  
+
   Poly_Con_Relation rel = ph1.relation_with(A - B == 0);
   Poly_Con_Relation  known_rel = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_included();
@@ -49,7 +49,7 @@ test1() {
   print_generators(ph1, "*** ph1 ***");
   cout << "ph1.relation_with(A - B == 0) = " << rel << endl;
 #endif
-  
+
   if (!ok)
     exit(1);
 }
@@ -65,7 +65,7 @@ test2() {
   gs.insert(line(B));
 
   NNC_Polyhedron ph1(gs);
-  
+
   Poly_Con_Relation rel = ph1.relation_with(A >= 1);
   Poly_Con_Relation  known_rel = Poly_Con_Relation::strictly_intersects();
 
@@ -75,7 +75,7 @@ test2() {
   print_generators(ph1, "*** ph1 ***");
   cout << "ph1.relation_with(A >= 1) = " << rel << endl;
 #endif
-  
+
   if (!ok)
     exit(1);
 }
@@ -100,7 +100,7 @@ test3() {
   print_generators(ph1, "*** ph1 ***");
   cout << "ph1.relation_with(A > 1) = " << rel << endl;
 #endif
-  
+
   if (!ok)
     exit(1);
 }
@@ -131,7 +131,7 @@ test4() {
   print_generators(ph1, "*** ph1 ***");
   cout << "ph1.relation_with(B >= 1) = " << rel << endl;
 #endif
-  
+
   if (!ok)
     exit(1);
 }
@@ -164,7 +164,7 @@ test5() {
   print_generators(ph1, "*** ph1 ***");
   cout << "ph1.relation_with(B == 1) = " << rel << endl;
 #endif
-  
+
   if (!ok)
     exit(1);
 }
@@ -189,7 +189,7 @@ test6() {
   print_generators(ph1, "*** ph1 ***");
   cout << "ph1.relation_with(B <= 0) = " << rel << endl;
 #endif
-  
+
   if (!ok)
     exit(1);
 }
@@ -214,7 +214,7 @@ test7() {
   print_generators(ph1, "*** ph1 ***");
   cout << "ph1.relation_with(A >= 0) = " << rel << endl;
 #endif
-  
+
   if (!ok)
     exit(1);
 }
@@ -240,7 +240,7 @@ test8() {
   print_generators(ph1, "*** ph1 ***");
   cout << "ph1.relation_with(B < 0) = " << rel << endl;
 #endif
-  
+
   if (!ok)
     exit(1);
 }
@@ -266,13 +266,13 @@ test9() {
   print_generators(ph1, "*** ph1 ***");
   cout << "ph1.relation_with(A < 0) = " << rel << endl;
 #endif
-  
+
   if (!ok)
     exit(1);
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   test1();
@@ -287,3 +287,4 @@ main() {
 
   return 0;
 }
+CATCH

@@ -47,9 +47,9 @@ test1() {
   Variable B(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);   
-  ph.add_constraint(B >= 0);   
-  
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+
   fstream f;
   open(f, my_file, ios_base::out);
   ph.ascii_dump(f);
@@ -83,9 +83,9 @@ test2() {
   Variable B(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);   
-  ph.add_constraint(B >= 0);   
-  
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+
   fstream f;
   open(f, my_file, ios_base::out);
   ph.ascii_dump(f);
@@ -119,9 +119,9 @@ test3() {
   Variable B(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);   
-  ph.add_constraint(B >= 0);   
-  
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+
   fstream f;
   open(f, my_file, ios_base::out);
   ph.ascii_dump(f);
@@ -155,9 +155,9 @@ test4() {
   Variable B(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);   
-  ph.add_constraint(B >= 0);   
-  
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+
   fstream f;
   open(f, my_file, ios_base::out);
   ph.ascii_dump(f);
@@ -191,9 +191,9 @@ test5() {
   Variable B(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);   
-  ph.add_constraint(B >= 0);   
-  
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+
   fstream f;
   open(f, my_file, ios_base::out);
   ph.ascii_dump(f);
@@ -227,9 +227,9 @@ test6() {
   Variable B(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);   
-  ph.add_constraint(B >= 0);   
-  
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+
   fstream f;
   open(f, my_file, ios_base::out);
   ph.ascii_dump(f);
@@ -263,9 +263,9 @@ test7() {
   Variable B(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);   
-  ph.add_constraint(B >= 0);   
-  
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+
   fstream f;
   open(f, my_file, ios_base::out);
   ph.ascii_dump(f);
@@ -299,9 +299,9 @@ test8() {
   Variable B(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);   
-  ph.add_constraint(B >= 0);   
-  
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+
   fstream f;
   open(f, my_file, ios_base::out);
   ph.ascii_dump(f);
@@ -335,9 +335,9 @@ test9() {
   Variable B(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);   
-  ph.add_constraint(B >= 0);   
-  
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+
   fstream f;
   open(f, my_file, ios_base::out);
   ph.ascii_dump(f);
@@ -371,9 +371,9 @@ test10() {
   Variable B(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);   
-  ph.add_constraint(B >= 0);   
-  
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+
   fstream f;
   open(f, my_file, ios_base::out);
   ph.ascii_dump(f);
@@ -407,9 +407,9 @@ test11() {
   Variable B(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);   
-  ph.add_constraint(B >= 0);   
-  
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+
   fstream f;
   open(f, my_file, ios_base::out);
   ph.ascii_dump(f);
@@ -443,9 +443,9 @@ test12() {
   Variable B(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);   
-  ph.add_constraint(B >= 0);   
-  
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+
   fstream f;
   open(f, my_file, ios_base::out);
   ph.ascii_dump(f);
@@ -470,9 +470,9 @@ test12() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
-  
+
   test1();
   test2();
   test3();
@@ -488,3 +488,4 @@ main() {
 
   return 0;
 }
+CATCH

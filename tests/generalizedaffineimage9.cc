@@ -50,7 +50,7 @@ test1() {
   ph.generalized_affine_image(LinExpression(2), PPL_EQ, A + B);
 
   known_result.add_constraint(A + B == 2);
-  
+
   bool ok = (ph == known_result);
 
 #if NOISY
@@ -80,7 +80,7 @@ test2() {
   ph.generalized_affine_image(LinExpression(2), PPL_GE, A + B);
 
   known_result.add_constraint(2 >= A + B);
-  
+
   bool ok = (ph == known_result);
 
 #if NOISY
@@ -110,7 +110,7 @@ test3() {
   ph.generalized_affine_image(LinExpression(2), PPL_LE, A + B);
 
   known_result.add_constraint(2 <= A + B);
-  
+
   bool ok = (ph == known_result);
 
 #if NOISY
@@ -140,7 +140,7 @@ test4() {
   ph.generalized_affine_image(LinExpression(2), PPL_GT, A + B);
 
   known_result.add_constraint(2 > A + B);
-  
+
   bool ok = (ph == known_result);
 
 #if NOISY
@@ -170,7 +170,7 @@ test5() {
   ph.generalized_affine_image(LinExpression(2), PPL_LT, A + B);
 
   known_result.add_constraint(2 < A + B);
-  
+
   bool ok = (ph == known_result);
 
 #if NOISY
@@ -183,7 +183,7 @@ test5() {
 }
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   test1();
@@ -194,3 +194,4 @@ main() {
 
   return 0;
 }
+CATCH

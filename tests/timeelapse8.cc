@@ -32,18 +32,18 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   Variable A(0);
   Variable B(1);
 
   C_Polyhedron ph1(2);
   ph1.generators();
-  ph1.add_constraint(A == 0); 
-  ph1.add_constraint(B == 0); 
+  ph1.add_constraint(A == 0);
+  ph1.add_constraint(B == 0);
 
   C_Polyhedron ph2(2);
   ph2.generators();
-  ph2.add_constraint(A == 2); 
+  ph2.add_constraint(A == 2);
   ph2.add_constraint(B == 2);
 
 #if NOISY
@@ -52,7 +52,7 @@ main() {
 #endif
 
   ph1.time_elapse_assign(ph2);
-    
+
   C_Polyhedron ph3(2, C_Polyhedron::EMPTY);
   ph3.add_generator(point());
   ph3.constraints();
@@ -76,3 +76,4 @@ main() {
 
   return retval;
 }
+CATCH

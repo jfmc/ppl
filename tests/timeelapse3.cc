@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
+main() TRY {
   set_handlers();
 
   Variable x(0);
@@ -53,14 +53,15 @@ main() {
   print_constraints(ph1, "**** ph1 ****");
   print_generators(ph2, "**** ph2 ****");
 #endif
-  
+
   ph1.time_elapse_assign(ph2);
-   
+
   int retval = (ph1 == ph) ? 0 : 1;
 
 #if NOISY
   print_generators(ph1, "**** ph1_time_elapse_assign(ph2) ****");
 #endif
- 
+
  return retval;
 }
+CATCH
