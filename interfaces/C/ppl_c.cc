@@ -1225,10 +1225,10 @@ CATCH_ALL
 int
 ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(ppl_Polyhedron_t x,
 						   ppl_const_Polyhedron_t y,
-						   ppl_ConSys_t cs) try {
+						   ppl_const_ConSys_t cs) try {
   Polyhedron& xx = *to_nonconst(x);
   const Polyhedron& yy = *to_const(y);
-  ConSys& ccs = *to_nonconst(cs);
+  const ConSys& ccs = *to_const(cs);
   xx.limited_BHRZ03_extrapolation_assign(yy, ccs);
   return 0;
 }
@@ -1247,10 +1247,10 @@ CATCH_ALL
 int
 ppl_Polyhedron_limited_H79_extrapolation_assign(ppl_Polyhedron_t x,
 						ppl_const_Polyhedron_t y,
-						ppl_ConSys_t cs) try {
+						ppl_const_ConSys_t cs) try {
   Polyhedron& xx = *to_nonconst(x);
   const Polyhedron& yy = *to_const(y);
-  ConSys& ccs = *to_nonconst(cs);
+  const ConSys& ccs = *to_const(cs);
   xx.limited_H79_extrapolation_assign(yy, ccs);
   return 0;
 }
