@@ -78,7 +78,8 @@ ORIGINAL_TESTS = \
 	bhrz03widening9 bhrz03widening10 bhrz03widening11 bhrz03widening12 \
 	bhrz03widening13 bhrz03widening14 bhrz03widening15 bhrz03widening16 \
 	bhrz03widening17 bhrz03widening18 bhrz03widening19 \
-	bhz03widening1 bhz03widening2 bhz03widening3 \
+	bhz03widening1 bhz03widening2 bhz03widening3 bhz03widening4 \
+	bhz03widening5 \
 	bounded1 \
 	boundedh79extrapolation1 \
 	bounds1 bounds2 \
@@ -347,6 +348,8 @@ bhrz03widening19_SOURCES = bhrz03widening19.cc
 bhz03widening1_SOURCES = bhz03widening1.cc
 bhz03widening2_SOURCES = bhz03widening2.cc
 bhz03widening3_SOURCES = bhz03widening3.cc
+bhz03widening4_SOURCES = bhz03widening4.cc
+bhz03widening5_SOURCES = bhz03widening5.cc
 
 bounded1_SOURCES = bounded1.cc
 
