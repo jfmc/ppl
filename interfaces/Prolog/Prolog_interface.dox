@@ -506,7 +506,7 @@ intersects but is not included in the set of points satisfying
 is included in the set of points satisfying
  <CODE>Constraint</CODE>;
 
-<CODE>is_included</CODE>, if \f$P\f$
+<CODE>saturates</CODE>, if \f$P\f$
 is included in the set of points saturating
  <CODE>Constraint</CODE>;
 
@@ -523,8 +523,6 @@ has with <CODE>Generator</CODE>.
 
 <CODE>subsumes</CODE>, if adding <CODE>Generator</CODE>
 would not change \f$P\f$;
-
-<CODE>implies</CODE>, if \f$P\f$ implies <CODE>Generator</CODE>;
 
 <CODE>nothing</CODE>, if nothing is known about the relation.
 
