@@ -553,8 +553,8 @@ ppl_finalize() {
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_new_C_Polyhedron_from_dimension(
-         Prolog_term_ref t_nd, Prolog_term_ref t_ph) {
+ppl_new_C_Polyhedron_from_dimension(Prolog_term_ref t_nd,
+				    Prolog_term_ref t_ph) {
   try {
     PPL::Polyhedron* ph
       = new PPL::C_Polyhedron(term_to_unsigned_int(t_nd));
@@ -572,8 +572,8 @@ ppl_new_C_Polyhedron_from_dimension(
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_new_NNC_Polyhedron_from_dimension(
-         Prolog_term_ref t_nd, Prolog_term_ref t_ph) {
+ppl_new_NNC_Polyhedron_from_dimension(Prolog_term_ref t_nd,
+				      Prolog_term_ref t_ph) {
   try {
     PPL::Polyhedron* ph
       = new PPL::NNC_Polyhedron(term_to_unsigned_int(t_nd));
@@ -591,7 +591,8 @@ ppl_new_NNC_Polyhedron_from_dimension(
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_new_C_Polyhedron_empty_from_dimension(Prolog_term_ref t_nd, Prolog_term_ref t_ph) {
+ppl_new_C_Polyhedron_empty_from_dimension(Prolog_term_ref t_nd,
+					  Prolog_term_ref t_ph) {
   try {
     PPL::Polyhedron* ph
       = new PPL::C_Polyhedron(term_to_unsigned_int(t_nd),
@@ -610,7 +611,8 @@ ppl_new_C_Polyhedron_empty_from_dimension(Prolog_term_ref t_nd, Prolog_term_ref 
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_new_NNC_Polyhedron_empty_from_dimension(Prolog_term_ref t_nd, Prolog_term_ref t_ph) {
+ppl_new_NNC_Polyhedron_empty_from_dimension(Prolog_term_ref t_nd,
+					    Prolog_term_ref t_ph) {
   try {
     PPL::Polyhedron* ph
       = new PPL::NNC_Polyhedron(term_to_unsigned_int(t_nd),
@@ -629,8 +631,8 @@ ppl_new_NNC_Polyhedron_empty_from_dimension(Prolog_term_ref t_nd, Prolog_term_re
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_new_C_Polyhedron_from_C_Polyhedron(
-          Prolog_term_ref t_source, Prolog_term_ref t_ph) {
+ppl_new_C_Polyhedron_from_C_Polyhedron(Prolog_term_ref t_source,
+				       Prolog_term_ref t_ph) {
   try {
     const PPL::C_Polyhedron* source_ph
       = static_cast<const PPL::C_Polyhedron*>(get_ph_pointer(t_source));
@@ -652,8 +654,8 @@ ppl_new_C_Polyhedron_from_C_Polyhedron(
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_new_C_Polyhedron_from_NNC_Polyhedron(
-          Prolog_term_ref t_source, Prolog_term_ref t_ph) {
+ppl_new_C_Polyhedron_from_NNC_Polyhedron(Prolog_term_ref t_source,
+					 Prolog_term_ref t_ph) {
   try {
     const PPL::C_Polyhedron* source_ph
       = static_cast<const PPL::C_Polyhedron*>(get_ph_pointer(t_source));
@@ -675,8 +677,8 @@ ppl_new_C_Polyhedron_from_NNC_Polyhedron(
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_new_NNC_Polyhedron_from_C_Polyhedron(
-          Prolog_term_ref t_source, Prolog_term_ref t_ph) {
+ppl_new_NNC_Polyhedron_from_C_Polyhedron(Prolog_term_ref t_source,
+					 Prolog_term_ref t_ph) {
   try {
     const PPL::C_Polyhedron* source_ph
       = static_cast<const PPL::C_Polyhedron*>(get_ph_pointer(t_source));
@@ -698,8 +700,8 @@ ppl_new_NNC_Polyhedron_from_C_Polyhedron(
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(
-          Prolog_term_ref t_source, Prolog_term_ref t_ph) {
+ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(Prolog_term_ref t_source,
+					   Prolog_term_ref t_ph) {
   try {
     const PPL::NNC_Polyhedron* source_ph
       = static_cast<const PPL::NNC_Polyhedron*>(get_ph_pointer(t_source));
@@ -721,8 +723,8 @@ ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_new_C_Polyhedron_from_ConSys(
-         Prolog_term_ref t_clist, Prolog_term_ref t_ph) {
+ppl_new_C_Polyhedron_from_ConSys(Prolog_term_ref t_clist,
+				 Prolog_term_ref t_ph) {
   try {
     PPL::ConSys cs;
     Prolog_term_ref c = Prolog_new_term_ref();
@@ -746,8 +748,8 @@ ppl_new_C_Polyhedron_from_ConSys(
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_new_C_Polyhedron_from_GenSys(
-         Prolog_term_ref t_glist, Prolog_term_ref t_ph) {
+ppl_new_C_Polyhedron_from_GenSys(Prolog_term_ref t_glist,
+				 Prolog_term_ref t_ph) {
   try {
     PPL::GenSys gs;
     Prolog_term_ref g = Prolog_new_term_ref();
@@ -771,8 +773,8 @@ ppl_new_C_Polyhedron_from_GenSys(
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_new_NNC_Polyhedron_from_ConSys(
-         Prolog_term_ref t_clist, Prolog_term_ref t_ph) {
+ppl_new_NNC_Polyhedron_from_ConSys(Prolog_term_ref t_clist,
+				   Prolog_term_ref t_ph) {
   try {
     PPL::ConSys cs;
     Prolog_term_ref c = Prolog_new_term_ref();
@@ -796,8 +798,8 @@ ppl_new_NNC_Polyhedron_from_ConSys(
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_new_NNC_Polyhedron_from_GenSys(
-         Prolog_term_ref t_glist, Prolog_term_ref t_ph) {
+ppl_new_NNC_Polyhedron_from_GenSys(Prolog_term_ref t_glist,
+				   Prolog_term_ref t_ph) {
   try {
     PPL::GenSys gs;
     Prolog_term_ref g = Prolog_new_term_ref();
