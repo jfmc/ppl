@@ -10,6 +10,42 @@ NEWS for version 0.4 (released date unknown)
 New and Changed Features
 ========================
 
+o  Added full support for Not Necessarily Closed (NNC) polyhedra:
+   - creation of strict inequality constraints and mixed constraint
+     systems;
+   - creation of closure points and extended generator systems;
+   - added classes C_Polyhedron (for the representation of Closed
+     polyhedra) and NNC_Polyehdron (the user no longer can create
+     Polyhedron objects);
+   - added topology compatibility checks to avoid mixing objects of
+     the two kinds;
+   - added explicit constructors to create a polyhedron of a given
+     topology kind starting from a polyhedron of the other kind;
+   - added methods Polyhedron::is_topologically_closed() and
+     Polyhedron::topological_closure_assign();
+   - implemented methods Polyhedron::minimized_constraints() and
+     Polyhedron::minimized_generators() to obtain minimal
+     descriptions, both for closed and for NNC polyhedra.
+
+o  New method Polyhedron::time_elapse_assign(const Polyhedron&):
+   it computed the time-elapse operation defined in
+
+     N. Halbwachs, Y.-E. Proy, and P. Roumanoff.
+     Verification of real-time systems using linear relation analysis.
+     Formal Methods in System Design, 11(2):157-185, 1997.
+
+o  New method Polyhedron::is_bounded(): it returns true if and only
+   if the polyhedron is bounded, i.e., finite.
+
+o  The library no longer calls abort(): appropriate exceptions
+   are always thrown instead.
+
+o  The methods named convex_hull_* and convex_difference_*
+   have been renamed poly_hull_* and poly_difference_*.
+
+o  All methods named *_and_minimize() now return a boolean
+   flag that is false if the result is empty.
+
 o  All method and variable names containing the word "vertex"
    have been replaced by names containing the word "point"
    (some previous uses of the word "vertex" were not formally correct).
@@ -25,19 +61,6 @@ o  The methods Polyhedron::includes(const Generator&) and
 
 o  The method Constraint::coefficient(void) has been renamed
    to Constraint::inhomogeneous_term(void).
-
-o  The library no longer calls abort(): appropriate exceptions
-   are always thrown instead.
-
-o  New method Polyhedron::is_bounded(): it returns true if and only
-   if the polyhedron is bounded, i.e., finite.
-
-o  New methos Polyhedron::time_elapse_assign(const Polyhedron&):
-   it computed the time-elapse operation defined in
-
-     N. Halbwachs, Y.-E. Proy, and P. Roumanoff.
-     Verification of real-time systems using linear relation analysis.
-     Formal Methods in System Design, 11(2):157-185, 1997.
 
 
 Bugfixes
