@@ -118,7 +118,7 @@ SatMatrix::total_memory_in_bytes() const {
 }
 
 inline bool
-SatMatrix::SatRowLessThan::
+SatMatrix::SatRow_Less_Than::
 operator()(const SatRow& x, const SatRow& y) const {
   return compare(x, y) < 0;
 }
@@ -126,7 +126,7 @@ operator()(const SatRow& x, const SatRow& y) const {
 inline bool
 SatMatrix::sorted_contains(const SatRow& row) const {
   assert(check_sorted());
-  return std::binary_search(rows.begin(), rows.end(), row, SatRowLessThan());
+  return std::binary_search(rows.begin(), rows.end(), row, SatRow_Less_Than());
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -373,7 +373,7 @@ private:
   bool sorted;
 
   //! Ordering predicate (used when implementing the sort algorithm).
-  struct RowLessThan {
+  struct Row_Less_Than {
     bool operator()(const Row& x, const Row& y) const;
   };
 };

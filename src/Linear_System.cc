@@ -379,7 +379,7 @@ PPL::Linear_System::sort_rows(const dimension_type first_row,
   // First sort without removing duplicates.
   std::vector<Row>::iterator first = rows.begin() + first_row;
   std::vector<Row>::iterator last = rows.begin() + last_row;
-  swapping_sort(first, last, RowLessThan());
+  swapping_sort(first, last, Row_Less_Than());
   // Second, move duplicates to the end.
   std::vector<Row>::iterator new_last = swapping_unique(first, last);
   // Finally, remove duplicates.
@@ -574,7 +574,7 @@ PPL::Linear_System::sort_and_remove_with_sat(SatMatrix& sat) {
   // First, sort `sys' (keeping `sat' consistent) without removing duplicates.
   With_SatMatrix_iterator first(sys.rows.begin(), sat.rows.begin());
   With_SatMatrix_iterator last = first + sat.num_rows();
-  swapping_sort(first, last, RowLessThan());
+  swapping_sort(first, last, Row_Less_Than());
   // Second, move duplicates in `sys' to the end (keeping `sat' consistent).
   With_SatMatrix_iterator new_last = swapping_unique(first, last);
 

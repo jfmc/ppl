@@ -47,7 +47,7 @@ PPL::SatMatrix::sort_rows() {
   // Sorting without removing duplicates.
   Iter first = rows.begin();
   Iter last = rows.end();
-  swapping_sort(first, last, SatRowLessThan());
+  swapping_sort(first, last, SatRow_Less_Than());
   // Moving all the duplicate elements at the end of the vector.
   Iter new_last = swapping_unique(first, last);
   // Removing duplicates.

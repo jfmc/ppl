@@ -208,7 +208,7 @@ operator!=(const Linear_System& x, const Linear_System& y) {
 }
 
 inline bool
-Linear_System::RowLessThan::operator()(const Row& x, const Row& y) const {
+Linear_System::Row_Less_Than::operator()(const Row& x, const Row& y) const {
   return compare(static_cast<const Linear_Row&>(x),
 		 static_cast<const Linear_Row&>(y)) < 0;
 }

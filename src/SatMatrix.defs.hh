@@ -152,7 +152,7 @@ private:
   dimension_type row_size;
 
   //! Ordering predicate (used when implementing the sort algorithm).
-  struct SatRowLessThan {
+  struct SatRow_Less_Than {
     bool operator()(const SatRow& x, const SatRow& y) const;
   };
 
