@@ -130,9 +130,6 @@ swap(Parma_Polyhedra_Library::SatRow& x,
 
 /*!
   \relates Parma_Polyhedra_Library::SatRow
-  Specializes <CODE>std::iter_swap</CODE>.
-*/
-/* FIXME: this was the original comment causing a doxygen bug.
   Specializes <CODE>std::iter_swap</CODE>
   for <CODE>std::vector<SatRow>::iterator</CODE>.
 */

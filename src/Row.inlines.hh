@@ -553,9 +553,6 @@ swap(Parma_Polyhedra_Library::Row& x, Parma_Polyhedra_Library::Row& y) {
 
 /*!
   \relates Parma_Polyhedra_Library::Row
-  Specializes <CODE>std::iter_swap</CODE>.
-*/
-/* FIXME: this was the original comment causing a doxygen bug.
   Specializes <CODE>std::iter_swap</CODE>
   for <CODE>std::vector<Row>::iterator</CODE>.
 */
