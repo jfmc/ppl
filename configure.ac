@@ -84,7 +84,7 @@ AH_BOTTOM([
   we must make sure <stdint.h> is included before <sys/types.hh> is
   (even indirectly) included.
 */
-#ifdef HAVE_STDINT_H 
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif
 
@@ -657,6 +657,7 @@ AC_CONFIG_FILES(Makefile
                 tests/Makefile
                 tests/BD_Shape/Makefile
                 tests/Polyhedron/Makefile
+                tests/Grid/Makefile
                 utils/Makefile
                 m4/Makefile
                 demos/Makefile
