@@ -1278,10 +1278,8 @@ private:
 
 namespace std {
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Polyhedron */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void swap(Parma_Polyhedra_Library::Polyhedron& x,
 	  Parma_Polyhedra_Library::Polyhedron& y);
 
