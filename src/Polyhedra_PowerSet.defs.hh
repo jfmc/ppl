@@ -165,12 +165,6 @@ private:
 				     unsigned*),
 				    unsigned max_disjuncts);
 
-  typedef typename PH::BHRZ03_info base_lgo_info;
-  typedef typename std::map<base_lgo_info, syze_type,
-			    base_lgo_info::Compare> lgo_info;
-  void collect_lgo_info(lgo_info& y_info) const;
-  bool is_lgo_stabilizing(const lgo_info& info) const;
-
 public:
   void H79_extrapolation_assign(const Polyhedra_PowerSet& y);
   void BHRZ03_extrapolation_assign(const Polyhedra_PowerSet& y);
@@ -201,6 +195,12 @@ public:
   typedef typename Base::reverse_iterator reverse_iterator;
   typedef typename Base::const_reverse_iterator const_reverse_iterator;
   typedef typename Base::value_type value_type;
+
+private:
+  typedef Polyhedron::BHRZ03_info base_lgo_info;
+  typedef std::map<base_lgo_info, size_type, base_lgo_info::Compare> lgo_info;
+  void collect_lgo_info(lgo_info& y_info) const;
+  bool is_lgo_stabilizing(const lgo_info& info) const;
 };
 
 #include "Polyhedra_PowerSet.inlines.hh"
