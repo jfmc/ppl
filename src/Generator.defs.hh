@@ -213,7 +213,7 @@ namespace Parma_Polyhedra_Library {
   \endcode  
 */
 
-class Parma_Polyhedra_Library::Generator : PPL_INTERNAL Row {
+class Parma_Polyhedra_Library::Generator : PPL_HIDDEN Row {
 private:
   Generator(LinExpression& e);
 

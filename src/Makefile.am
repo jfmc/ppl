@@ -48,7 +48,7 @@ LIBPPL_LT_AGE =      0
 
 INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src @extra_includes@
 
-CPPFLAGS = -DPPL_INTERNAL=public @extra_cpp_flags@
+CPPFLAGS = -DPPL_INTERNAL=public -DPPL_HIDDEN=public @extra_cpp_flags@
 
 lib_LTLIBRARIES = libppl.la
 
@@ -146,13 +146,13 @@ BUILT_SOURCES = ppl.hh ppl_install.hh
 
 ppl.hh:	$(DOC_FILES)
 	(cd $(srcdir) ; cat $(DOC_FILES)) \
-		| sed -e "s/PPL_INTERNAL/private/g" >ppl.hh
+		| sed -f $(srcdir)/ppl_filter_doxygen.sed >ppl.hh
 
 ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCLUDE_FILES) ppl_header.bottom
 	mkdir -p tmp
 	(cd $(srcdir) ; cat $(INCLUDE_FILES)) >tmp/concat
 	grep -e "^#include <" <tmp/concat | sort -u >tmp/includes
-	sed -e "/^#include/d" -e "s/PPL_INTERNAL/public/g" <tmp/concat >tmp/noincludes.cc
+	sed -e "/^#include/d" -f $(srcdir)/ppl_filter_install.sed <tmp/concat >tmp/noincludes.cc
 	cat $(srcdir)/ppl_header.top $(top_builddir)/config.h \
 		$(srcdir)/ppl_header.middle tmp/includes >ppl_install.hh
 	$(CXXCPP) -P @debug_flag@ tmp/noincludes.cc >>ppl_install.hh
@@ -170,6 +170,8 @@ install-data-local: ppl_install.hh
 uninstall-local:
 	rm -f $(DESTDIR)$(includedir)/ppl.hh
 
-EXTRA_DIST = ppl_header.top ppl_header.middle ppl_header.bottom
+EXTRA_DIST = \
+ppl_header.top ppl_header.middle ppl_header.bottom \
+ppl_filter_doxygen.sed ppl_filter_install.sed
 
 MOSTLYCLEANFILES = $(BUILT_SOURCES)

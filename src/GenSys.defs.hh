@@ -157,7 +157,7 @@ namespace Parma_Polyhedra_Library {
     will be available, where original generators may have been
     reordered, removed (if they are duplicate or redundant), etc.
 */
-class Parma_Polyhedra_Library::GenSys : PPL_INTERNAL Matrix {
+class Parma_Polyhedra_Library::GenSys : PPL_HIDDEN Matrix {
 public:
   //! Default constructor: builds an empty system of generators.
   GenSys();

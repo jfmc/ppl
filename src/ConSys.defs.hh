@@ -84,7 +84,7 @@ site: http://www.cs.unipr.it/ppl/ . */
     reordered, removed (if they are trivial, duplicate or
     implied by other constraints), linearly combined, etc.
 */
-class Parma_Polyhedra_Library::ConSys : PPL_INTERNAL Matrix {
+class Parma_Polyhedra_Library::ConSys : PPL_HIDDEN Matrix {
 public:
   //! Default constructor: builds an empty system of constraints.
   ConSys();

@@ -167,7 +167,7 @@ namespace Parma_Polyhedra_Library {
   The inhomogeneous term is 5
   \endcode
 */
-class Parma_Polyhedra_Library::Constraint : PPL_INTERNAL Row {
+class Parma_Polyhedra_Library::Constraint : PPL_HIDDEN Row {
 private:
   //! Default constructor: private and not implemented.
   Constraint();
