@@ -55,6 +55,19 @@ namespace Parma_Polyhedra_Library {
     An object of the class GenSys is a system of generators,
     i.e. a container of objects of the class Generator
     (lines, rays and vertices).
+
+    \par Example
+    The following code builds a square in \f$\mathbb{R}^2\f$ 
+    (the same of the example for the system of constraints):
+    \code
+    Variable x(0);
+    Variable y(0);
+    GenSys gs;
+    gs.insert(0 * x + 0 * y \= 1);
+    gs.insert(0 * x + 3 * y \= 1);
+    gs.insert(3 * x + 0 * y \= 1);
+    gs.insert(3 * x + 3 * y \= 1);
+    \endcode
 */
 class Parma_Polyhedra_Library::GenSys : public Matrix {
 public:
