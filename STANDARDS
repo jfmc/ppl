@@ -67,7 +67,7 @@ Namespace indentation
 ---------------------
 
 The entire library is in its own namespace.  We sometimes specialize
-std::swap() and std::swap_iter().  Other namespaces may be involved
+std::swap() and std::iter_swap().  Other namespaces may be involved
 but only in restricted contexts.  Therefore, we have unindented
 namespace-level declarations, thus saving some precious horizontal
 space.  For example:
