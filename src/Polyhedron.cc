@@ -941,8 +941,9 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>&
   if (to_be_removed.empty())
     return;
 
-  // Checking for dimension-compatibility.
-  if (to_be_removed.begin()->id() >= space_dimension())
+  // Checking for dimension-compatibility: the variable having
+  // maximum cardinality is the one occurring last in the set.
+  if (to_be_removed.rbegin()->id() >= space_dimension())
     throw std::invalid_argument("void PPL::Polyhedron::remove_dimensions"
 				"(vs): dimension-incompatible");
 
@@ -962,25 +963,36 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>&
     return;
   }
 
-  // Columns to be preserved are moved, and their relative order is kept.
-  // The correctness of the following cycle relies on the fact that
-  // we iterate on variables considering first those having higher dimension. 
+  // For each variable to be removed, we fill the corresponding column
+  // by shifting left those columns that will not be removed.
+  std::set<Variable>::const_iterator tbr = to_be_removed.begin();
+  std::set<Variable>::const_iterator tbr_end = to_be_removed.end();
+  size_t dst_col = tbr->id() + 1;
+  size_t src_col = dst_col + 1;
   size_t nrows = gen_sys.num_rows();
-  size_t ncols = gen_sys.num_columns();
-  for (std::set<Variable>::const_iterator i = to_be_removed.begin(),
-	 tbr_end = to_be_removed.end(); i != tbr_end; ++i) {
-    // The (n+1)-th column correspond to the n-th dimension.
-    size_t c = i->id() + 1;
-    // We will have one less column.
-    --ncols;
-    for (size_t r = nrows; r-- > 0; )
-      // For each row of the matrix, the columns to be removed are
-      // moved to the last columns because then the function resize()
-      // method will exclude these columns.
-      std::swap(gen_sys[r][ncols], gen_sys[r][c]);
+  for (tbr++; tbr != tbr_end; tbr++) {
+    size_t tbr_col = tbr->id() + 1;
+    // All columns in between are moved toward left.
+    while (src_col < tbr_col) {
+      for (size_t r = nrows; r-- > 0; )
+	std::swap(gen_sys[r][dst_col], gen_sys[r][src_col]);
+      dst_col++;
+      src_col++;
+    }
+    src_col++;
   }
-  gen_sys.resize(nrows, ncols);
-  // Generators are not meaningful anymore.
+  // Moving the remaining columns.
+  size_t ncols = gen_sys.num_columns();
+  while (src_col < ncols) {
+    for (size_t r = nrows; r-- > 0; )
+      std::swap(gen_sys[r][dst_col], gen_sys[r][src_col]);
+    src_col++;
+    dst_col++;
+  }
+  // The number of remaining columns is dst_col.
+  gen_sys.resize(nrows, dst_col);
+
+  // Constraints are no longer up-to-date.
   clear_constraints_up_to_date();
 
   // Updating the space dimension.
