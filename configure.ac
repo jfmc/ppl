@@ -300,15 +300,15 @@ AC_PROG_LIBTOOL
 # Checks for Prolog systems.
 
 # Ciao Prolog
-#
-# AC_CHECK_PROG(CIAO_PROLOG, ciao, ciao)
-# if test x"$CIAO_PROLOG" = xciao
-# then
-# AC_CHECK_HEADER(ciao_prolog.h,
-#                 [],
-#                 CIAO_PROLOG="")
-# fi
-# AM_CONDITIONAL(HAVE_CIAO_PROLOG, test x$CIAO_PROLOG = xciao)
+
+AC_CHECK_PROG(CIAO_PROLOG, ciao, ciao)
+if test x"$CIAO_PROLOG" = xciao
+then
+AC_CHECK_HEADER(ciao_prolog.h,
+                [],
+                CIAO_PROLOG="")
+fi
+AM_CONDITIONAL(HAVE_CIAO_PROLOG, test x$CIAO_PROLOG = xciao)
 
 # GNU Prolog
 
@@ -420,6 +420,7 @@ AC_OUTPUT(Makefile
           interfaces/C/Makefile
           interfaces/C/lpenum/Makefile
           interfaces/Prolog/Makefile
+          interfaces/Prolog/Ciao/Makefile
           interfaces/Prolog/GNU/Makefile
           interfaces/Prolog/SICStus/Makefile
           interfaces/Prolog/SWI/Makefile
