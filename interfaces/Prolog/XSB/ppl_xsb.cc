@@ -38,6 +38,36 @@ static const Prolog_foreign_return_type PROLOG_FAILURE = FALSE;
 
 namespace PPL = Parma_Polyhedra_Library;
 
+static Prolog_atom a_throw;
+
+/*!
+  True if and only if the Prolog engine supports unbounded integers.
+*/
+static bool Prolog_has_unbounded_integers;
+
+/*!
+  If \p Prolog_has_unbounded_integers is false, holds the maximum
+  integer value representable by a Prolog integer.
+  Holds zero otherwise.
+*/
+static long Prolog_max_integer;
+
+/*!
+  Performs system-dependent initialization.
+*/
+static void
+ppl_Prolog_sysdep_init() {
+  a_throw = string_find("throw", 1);
+  Prolog_has_unbounded_integers = false;
+  // FIXME: this seems to be the maximum value on IA32 but, who knows
+  //        on other architectures?
+  Prolog_max_integer = 268435455;
+}
+
+static void
+ppl_Prolog_sysdep_deinit() {
+}
+
 /*!
   Return a new term reference.
 */
@@ -175,17 +205,6 @@ Prolog_construct_cons(Prolog_term_ref& c,
   p2p_unify(p2p_cdr(new_cons), t);
   c = new_cons;
   return 1;
-}
-
-static Prolog_atom a_throw;
-
-static void
-ppl_Prolog_sysdep_init() {
-  a_throw = string_find("throw", 1);
-}
-
-static void
-ppl_Prolog_sysdep_deinit() {
 }
 
 /*!
