@@ -82,7 +82,6 @@ SPECIALIZE_IS_PINF(mpq, mpq_class)
 template <typename Policy>
 inline Result
 set_special_mpq(mpq_class& v, Result r) {
-  int num;
   Result c = classify(r);
   if (Policy::store_nan && c == VC_NAN) {
     v.get_num() = 0;
@@ -92,11 +91,11 @@ set_special_mpq(mpq_class& v, Result r) {
     case VC_MINUS_INFINITY:
       v.get_num() = -1;
       v.get_den() = 0;
-      return V_EQ;
+      break;
     case VC_PLUS_INFINITY:
       v.get_num() = 1;
       v.get_den() = 0;
-      return V_EQ;
+      break;
     default:
       break;
     }

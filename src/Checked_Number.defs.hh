@@ -32,19 +32,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-struct Minus_Infinity {
-};
-
-struct Plus_Infinity {
-};
-
-struct Not_A_Number {
-};
-
-extern Minus_Infinity MINUS_INFINITY;
-extern Plus_Infinity PLUS_INFINITY;
-extern Not_A_Number NOT_A_NUMBER;
-
 struct Checked_Number_Default_Policy {
   static const int check_overflow = 1;
   static const int check_divbyzero = 0;
@@ -162,9 +149,12 @@ public:
 
   bool OK() const;
   Result classify(bool nan = true, bool inf = true, bool sign = true) const;
-  Result assign(const Minus_Infinity&, Rounding_Dir dir = ROUND_DEFAULT);
-  Result assign(const Plus_Infinity&, Rounding_Dir dir = ROUND_DEFAULT);
-  Result assign(const Not_A_Number&, Rounding_Dir dir = ROUND_DEFAULT);
+
+  Result assign(const Minus_Infinity& x, Rounding_Dir dir = ROUND_DEFAULT);
+  Result assign(const Plus_Infinity& x, Rounding_Dir dir = ROUND_DEFAULT);
+  Result assign(const Not_A_Number& x, Rounding_Dir dir = ROUND_DEFAULT);
+  Result assign(const char *x, Rounding_Dir dir = ROUND_DEFAULT);
+  Result assign(char *x, Rounding_Dir dir = ROUND_DEFAULT);
 
 #define FUNC1(name) \
   template <typename From> \

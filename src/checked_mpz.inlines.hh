@@ -119,10 +119,10 @@ set_special_mpz(mpz_class& v, Result r) {
     switch (c) {
     case VC_MINUS_INFINITY:
       set_mp_size(v, Limits<mp_size_t>::min);
-      return V_EQ;
+      break;
     case VC_PLUS_INFINITY:
       set_mp_size(v, Limits<mp_size_t>::max);
-      return V_EQ;
+      break;
     default:
       break;
     }
@@ -219,6 +219,43 @@ assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
 
 SPECIALIZE_ASSIGN(mpz_float, mpz_class, float)
 SPECIALIZE_ASSIGN(mpz_float, mpz_class, double)
+
+template <typename Policy, typename To>
+inline Result
+assign_mp_minf(To& to, const Minus_Infinity&, Rounding_Dir) {
+  if (Policy::store_infinity) {
+    set_special<Policy>(to, VC_MINUS_INFINITY);
+    return V_EQ;
+  }
+  return VC_MINUS_INFINITY;
+}
+
+template <typename Policy, typename To>
+inline Result
+assign_mp_pinf(To& to, const Plus_Infinity&, Rounding_Dir) {
+  if (Policy::store_infinity) {
+    set_special<Policy>(to, VC_PLUS_INFINITY);
+    return V_EQ;
+  }
+  return VC_PLUS_INFINITY;
+}
+
+template <typename Policy, typename To>
+inline Result
+assign_mp_nan(To& to, const Not_A_Number&, Rounding_Dir) {
+  if (Policy::store_nan) {
+    set_special<Policy>(to, VC_NAN);
+    return V_EQ;
+  }
+  return VC_NAN;
+}
+
+SPECIALIZE_ASSIGN(mp_minf, mpz_class, Minus_Infinity)
+SPECIALIZE_ASSIGN(mp_pinf, mpz_class, Plus_Infinity)
+SPECIALIZE_ASSIGN(mp_nan, mpz_class, Not_A_Number)
+SPECIALIZE_ASSIGN(mp_minf, mpq_class, Minus_Infinity)
+SPECIALIZE_ASSIGN(mp_pinf, mpq_class, Plus_Infinity)
+SPECIALIZE_ASSIGN(mp_nan, mpq_class, Not_A_Number)
 
 template <typename Policy>
 inline Result

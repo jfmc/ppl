@@ -315,6 +315,19 @@ Result round(To& to, Result r, Rounding_Dir dir);
 
 } // namespace Checked
 
+struct Minus_Infinity {
+};
+
+struct Plus_Infinity {
+};
+
+struct Not_A_Number {
+};
+
+extern Minus_Infinity MINUS_INFINITY;
+extern Plus_Infinity PLUS_INFINITY;
+extern Not_A_Number NOT_A_NUMBER;
+
 } // namespace Parma_Polyhedra_Library
 
 #include "checked.inlines.hh"

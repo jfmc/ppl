@@ -67,8 +67,8 @@ Checked_Number<To, To_Policy>::Checked_Number(const Checked_Number<From, From_Po
 #define DEF_CTOR(type) \
 template <typename T, typename Policy> \
 inline \
-Checked_Number<T, Policy>::Checked_Number(const type y) { \
-  Policy::handle_result(Checked::assign<Policy>(v, y, ROUND_CURRENT)); \
+Checked_Number<T, Policy>::Checked_Number(const type x) { \
+  Policy::handle_result(Checked::assign_ext<Policy, Checked::Transparent_Policy>(v, x, ROUND_CURRENT)); \
 }
 
 DEF_CTOR(signed char)
@@ -93,20 +93,26 @@ DEF_CTOR(mpz_class&)
 
 template <typename T, typename Policy>
 inline
-Checked_Number<T, Policy>::Checked_Number(const char* y) {
-  Policy::handle_result(Checked::from_c_string<Policy>(v, y, ROUND_CURRENT));
+Checked_Number<T, Policy>::Checked_Number(const char* x) {
+  Policy::handle_result(Checked::from_c_string<Policy>(v, x, ROUND_CURRENT));
 }
 
 template <typename T, typename Policy>
 inline
-Checked_Number<T, Policy>::Checked_Number(const Not_A_Number&) {
-  Policy::handle_result(Checked::set_special<Policy>(v, VC_NAN));
+Checked_Number<T, Policy>::Checked_Number(const Not_A_Number& x) {
+  Policy::handle_result(Checked::assign<Policy>(v, x, ROUND_CURRENT));
 }
 
 template <typename T, typename Policy>
 inline
-Checked_Number<T, Policy>::Checked_Number(const Minus_Infinity&) {
-  Policy::handle_result(Checked::set_special<Policy>(v, VC_MINUS_INFINITY));
+Checked_Number<T, Policy>::Checked_Number(const Minus_Infinity& x) {
+  Policy::handle_result(Checked::assign<Policy>(v, x, ROUND_CURRENT));
+}
+
+template <typename T, typename Policy>
+inline
+Checked_Number<T, Policy>::Checked_Number(const Plus_Infinity& x) {
+  Policy::handle_result(Checked::assign<Policy>(v, x, ROUND_CURRENT));
 }
 
 template <typename T, typename Policy>
@@ -125,12 +131,6 @@ template <typename T, typename Policy>
 inline bool
 Checked_Number<T, Policy>::is_pinf() const {
   return Checked::is_pinf<Policy>(v);
-}
-
-template <typename T, typename Policy>
-inline
-Checked_Number<T, Policy>::Checked_Number(const Plus_Infinity&) {
-  Policy::handle_result(Checked::set_special<Policy>(v, VC_PLUS_INFINITY));
 }
 
 template <typename T, typename Policy>
@@ -195,18 +195,30 @@ external_memory_in_bytes(const Checked_Number<T, Policy>&) {
 
 template <typename To, typename To_Policy>
 inline Result
-Checked_Number<To, To_Policy>::assign(const Minus_Infinity&, Rounding_Dir) {
-  return Checked::set_special<To_Policy>(v, VC_MINUS_INFINITY);
+Checked_Number<To, To_Policy>::assign(const Minus_Infinity& x, Rounding_Dir dir) {
+  return Checked::assign<To_Policy>(v, x, dir);
 }
 template <typename To, typename To_Policy>
 inline Result
-Checked_Number<To, To_Policy>::assign(const Plus_Infinity&, Rounding_Dir) {
-  return Checked::set_special<To_Policy>(v, VC_PLUS_INFINITY);
+Checked_Number<To, To_Policy>::assign(const Plus_Infinity& x, Rounding_Dir dir) {
+  return Checked::assign<To_Policy>(v, x, dir);
 }
 template <typename To, typename To_Policy>
 inline Result
-Checked_Number<To, To_Policy>::assign(const Not_A_Number&, Rounding_Dir) {
-  return Checked::set_special<To_Policy>(v, VC_NAN);
+Checked_Number<To, To_Policy>::assign(const Not_A_Number& x, Rounding_Dir dir) {
+  return Checked::assign<To_Policy>(v, x, dir);
+}
+
+template <typename To, typename To_Policy>
+inline Result
+Checked_Number<To, To_Policy>::assign(const char* x, Rounding_Dir dir) {
+  return Checked::from_c_string<To_Policy>(v, x, dir);
+}
+
+template <typename To, typename To_Policy>
+inline Result
+Checked_Number<To, To_Policy>::assign(char* x, Rounding_Dir dir) {
+  return Checked::from_c_string<To_Policy>(v, x, dir);
 }
 
 template <typename To, typename To_Policy>

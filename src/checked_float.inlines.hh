@@ -111,10 +111,10 @@ set_special_float(T& v, Result r) {
   switch (classify(r)) {
   case VC_MINUS_INFINITY:
     v = -HUGE_VAL;
-    return V_EQ;
+    break;
   case VC_PLUS_INFINITY:
     v = HUGE_VAL;
-    return V_EQ;
+    break;
   case VC_NAN:
     v = NAN;
     break;
@@ -520,6 +520,27 @@ to_c_string_float(char* str, size_t size, Type& from, const Numeric_Format&, Rou
   return V_EQ;
 }
 
+template <typename Policy, typename To>
+inline Result
+assign_float_minf(To& to, const Minus_Infinity&, Rounding_Dir) {
+  to = -HUGE_VAL;
+  return V_EQ;
+}
+
+template <typename Policy, typename To>
+inline Result
+assign_float_pinf(To& to, const Plus_Infinity&, Rounding_Dir) {
+  to = HUGE_VAL;
+  return V_EQ;
+}
+
+template <typename Policy, typename To>
+inline Result
+assign_float_nan(To& to, const Not_A_Number&, Rounding_Dir) {
+  to = NAN;
+  return V_EQ;
+}
+
 #define ASSIGN_R2(Smaller, Larger) \
 SPECIALIZE_ASSIGN(float_float_exact, Larger, Smaller) \
 SPECIALIZE_ASSIGN(float_float, Smaller, Larger)
@@ -578,6 +599,9 @@ ASSIGN_R2(float96_t, float128_t)
 
 #undef ASSIGN_R2
 
+SPECIALIZE_ASSIGN(float_minf, float, Minus_Infinity)
+SPECIALIZE_ASSIGN(float_pinf, float, Plus_Infinity)
+SPECIALIZE_ASSIGN(float_nan, float, Not_A_Number)
 SPECIALIZE_NEG(float, float, float)
 SPECIALIZE_ABS(float, float, float)
 SPECIALIZE_ADD(float, float, float)
@@ -595,6 +619,9 @@ SPECIALIZE_SUB_MUL(float, float, float)
 SPECIALIZE_FROM_C_STRING(float, float)
 SPECIALIZE_TO_C_STRING(float, float)
 
+SPECIALIZE_ASSIGN(float_minf, double, Minus_Infinity)
+SPECIALIZE_ASSIGN(float_pinf, double, Plus_Infinity)
+SPECIALIZE_ASSIGN(float_nan, double, Not_A_Number)
 SPECIALIZE_NEG(float, double, double)
 SPECIALIZE_ABS(float, double, double)
 SPECIALIZE_ADD(float, double, double)
@@ -612,6 +639,9 @@ SPECIALIZE_SUB_MUL(float, double, double)
 SPECIALIZE_FROM_C_STRING(float, double)
 SPECIALIZE_TO_C_STRING(float, double)
 
+SPECIALIZE_ASSIGN(float_minf, long double, Minus_Infinity)
+SPECIALIZE_ASSIGN(float_pinf, long double, Plus_Infinity)
+SPECIALIZE_ASSIGN(float_nan, long double, Not_A_Number)
 SPECIALIZE_NEG(float, long double, long double)
 SPECIALIZE_ABS(float, long double, long double)
 SPECIALIZE_ADD(float, long double, long double)
