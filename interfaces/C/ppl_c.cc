@@ -1984,7 +1984,7 @@ ppl_Polyhedron_maximize(ppl_const_Polyhedron_t ph,
   bool maximum;
   bool ok = ppoint != 0
     ? pph.maximize(lle, ssup_n, ssup_d, maximum,
-		   reinterpret_cast<const Generator** const>(ppoint))
+		   reinterpret_cast<const Generator**>(ppoint))
     : pph.maximize(lle, ssup_n, ssup_d, maximum);
   if (ok)
     *pmaximum = maximum ? 1 : 0;
@@ -2006,7 +2006,7 @@ ppl_Polyhedron_minimize(ppl_const_Polyhedron_t ph,
   bool minimum;
   bool ok = ppoint != 0
     ? pph.minimize(lle, iinf_n, iinf_d, minimum,
-		   reinterpret_cast<const Generator** const>(ppoint))
+		   reinterpret_cast<const Generator**>(ppoint))
     : pph.minimize(lle, iinf_n, iinf_d, minimum);
   if (ok)
     *pminimum = minimum ? 1 : 0;
