@@ -204,6 +204,7 @@ PPL::PolyBase::constraints() const {
 
   if (!constraints_are_up_to_date())
     update_constraints();
+
   // We insist in returning a sorted system of constraints.
   obtain_sorted_constraints();
   return con_sys;
@@ -2529,14 +2530,17 @@ PPL::PolyBase::widening_assign(const PolyBase& y) {
   // the constraint of `x' is also a constraint of `y').
   // In this way a constraint of `x' that does not verify the
   // saturation rule (see in the Introduction) can be put into the
-  // resulting polyhedron, because `sat_g' is built staring from
+  // resulting polyhedron, because `sat_g' is built starting from
   // a minimized polyhedron.
-  for (size_t i = x.con_sys.num_rows(); i-- > 0; ) {
+  size_t n_constraints = x.con_sys.num_rows();
+  // Note: for loop going upwards to avoid reversing the ordering
+  // of the chosen constraints.
+  for (size_t i = 0; i < n_constraints; ++i) {
     buffer.clear();
     // The saturation row `buffer' is built considering the `i'-th
     // constraint of the polyhedron `x' and the generators of the
     // polyhedron `y'.
-    for (size_t j = tmp_sat_g.num_columns(); j-- > 0; ) {
+    for (size_t j = y.gen_sys.num_rows(); j-- > 0; ) {
       int sp_sgn = sgn(y.gen_sys[j] * x.con_sys[i]);
       // We are assuming that y <= x.
       assert(sp_sgn >= 0);
@@ -2545,8 +2549,8 @@ PPL::PolyBase::widening_assign(const PolyBase& y) {
     }
     // We verify if `buffer' is a row of the saturation matrix
     // `sat_g' of the polyhedron `y': to do this check, we use
-    // the saturation matrix `tmp_sat_g' (that is sorted) in order to have
-    // faster comparisons.
+    // the saturation matrix `tmp_sat_g' (that is sorted)
+    // in order to have faster comparisons.
     if (tmp_sat_g.sorted_contains(buffer))
       new_con_sys.add_row(x.con_sys[i]);
   }
@@ -2657,6 +2661,7 @@ PPL::PolyBase::limited_widening_assign(const PolyBase& y, ConSys& cs) {
     x.clear_constraints_minimized();
     x.clear_generators_up_to_date();
   }
+
   assert(OK(false));
 }
 
