@@ -39,7 +39,6 @@ shift_rename_insert(const Polyhedron& p, size_t offset, Polyhedron& q) {
   if (p.is_zero_dim())
     exit(1);
 
-
   if (p.check_empty())
     exit(1);
 
@@ -53,12 +52,8 @@ shift_rename_insert(const Polyhedron& p, size_t offset, Polyhedron& q) {
 }
 
 
-void
-append_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
-            size_t& offset, unsigned int& arity, unsigned int& num_vars) {
-  offset = 3;
-  arity = 3;
-  num_vars = 6;
+int
+main() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -68,6 +63,7 @@ append_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
 
   // This is the base case:
   // append(A,B,C) :- A = [], B = C.
+  Polyhedron base;
   base.insert(A == 0);
   base.insert(B >= 0);
   base.insert(C == B);
@@ -77,6 +73,7 @@ append_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
 
   // This is the inductive case:
   // append(A,B,C) :- A = [X|D], B = E, C = [X|F], append(D,E,F).
+  Polyhedron inductive;
   inductive.insert(A + F == C + D);
   inductive.insert(B == E);
   inductive.insert(C + D >= A);
@@ -87,16 +84,8 @@ append_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
   print_constraints(inductive, "*** inductive ***");
 #endif
 
-  expected.insert(A + B == C);
-  expected.insert(B >= 0);
-  expected.insert(C >= B);
-}
-
-void
-fix_point(Polyhedron& start, Polyhedron& induct, Polyhedron& finish,
-          size_t offset, unsigned int arity, unsigned int num_vars) {
   // Initialize the fixpoint iteration.
-  Polyhedron current = start;
+  Polyhedron current = base;
 #if NOISY
   print_constraints(current, "*** start ***");
 #endif
@@ -105,17 +94,17 @@ fix_point(Polyhedron& start, Polyhedron& induct, Polyhedron& finish,
   Polyhedron previous;
   do {
     previous = current;
-    current = induct;
-    shift_rename_insert(previous, offset, current);
+    current = inductive;
+    shift_rename_insert(previous, 3, current);
 #if NOISY
     print_constraints(current, "*** after shift_rename_insert ***");
 #endif
-
     set<Variable> dimensions_to_remove;
-    for (unsigned int i = num_vars-1 ; i >= arity; --i )
-      dimensions_to_remove.insert(Variable(i));
-    current.remove_dimensions(dimensions_to_remove);                           
-
+    // Deliberately inserted out of order (!).
+    dimensions_to_remove.insert(D);
+    dimensions_to_remove.insert(F);
+    dimensions_to_remove.insert(E);
+    current.remove_dimensions(dimensions_to_remove);
 #if NOISY
     print_constraints(current, "*** after remove_dimensions ***");
 #endif
@@ -124,23 +113,14 @@ fix_point(Polyhedron& start, Polyhedron& induct, Polyhedron& finish,
     print_constraints(current, "*** after convex_hull_assign ***");
 #endif
   } while (current != previous);
-  finish = current;
-}
 
-int
-main() {
-  Polyhedron start;
-  Polyhedron induct;
-  Polyhedron expect;
-  size_t recursive_offset;
-  unsigned int arity;
-  unsigned int num_vars;
-  append_init(start, induct, expect, recursive_offset, arity, num_vars);
-  Polyhedron final;
-  fix_point(start, induct, final, recursive_offset, arity, num_vars);
-
+  Polyhedron expected;
+  expected.insert(A + B == C);
+  expected.insert(B >= 0);
+  expected.insert(C >= B);
 #if NOISY
-    print_constraints(expect, "*** expected ***");
+    print_constraints(expected, "*** expected ***");
 #endif
-  return final == expect ? 0 : 1;
+
+  return current == expected ? 0 : 1;
 }
