@@ -99,7 +99,10 @@ main() {
 #if NOISY
     print_constraints(current, "*** after shift_rename_insert ***");
 #endif
-    BitSet dimensions_to_remove(D.id(), F.id());
+    vector<unsigned int> dimensions_to_remove;
+    dimensions_to_remove.push_back(D.id());
+    dimensions_to_remove.push_back(E.id());
+    dimensions_to_remove.push_back(F.id());
     current.remove_dimensions(dimensions_to_remove);
 #if NOISY
     print_constraints(current, "*** after remove_dimensions ***");

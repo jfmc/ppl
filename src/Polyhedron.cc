@@ -813,13 +813,13 @@ PPL::Polyhedron::add_dimensions_and_project(size_t add_dim) {
   the set \p dims_to_remove.
 */
 void
-PPL::Polyhedron::remove_dimensions(const BitSet& dims_to_remove) {
-  assert(!is_empty());
-
-  if (is_zero_dim()) {
-    assert(dims_to_remove.empty());
+PPL::Polyhedron::remove_dimensions(const std::vector<unsigned int>&
+				   to_be_removed) {
+  // Removing dimensions from the empty polyhedron
+  // or from the zero-dimensional polyhedron is a no-op.
+  // So is the removal of no dimensions from any polyhedron.
+  if (is_empty() || is_zero_dim() || to_be_removed.empty())
     return;
-  }
 
   if (!generators_are_up_to_date())
     update_generators();
@@ -828,9 +828,9 @@ PPL::Polyhedron::remove_dimensions(const BitSet& dims_to_remove) {
   // order is kept.
   size_t nrows = gen_sys.num_rows();
   size_t ncols = gen_sys.num_columns();
-  for (int d = dims_to_remove.first(); d >= 0; d = dims_to_remove.next(d)) {
-    // The (i+1)-th column correspond to the i-th dimension.
-    size_t c = d+1;
+  for (size_t i = 0, tbr_size = to_be_removed.size(); i < tbr_size; ++i) {
+    // The (n+1)-th column correspond to the n-th dimension.
+    size_t c = to_be_removed[i] + 1;
     // We will have one less column.
     --ncols;
     for (size_t r = nrows; r-- > 0; )

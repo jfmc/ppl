@@ -1,21 +1,24 @@
-Begin3
-Title:		PPL
+Begin4
+Title:		ppl
 Version:	@VERSION@
 Entered-date:	@ISODATE@
-Description:	A C++ library for convex polyhedra.
-		@configure_input@
-		Please edit ppl.lsm.in to fix the Keywords and
-		Primary-site entries, add several more lines of
-		description here if appropriate, and to delete these
-		instructions.
-Keywords:	[substitute your keywords here]
-Author: 	ppl-devel@cs.unipr.it
-Maintained-by:	ppl-devel@cs.unipr.it
-Primary-site:	metlab.unc.edu pub/Linux/apps/some/directory
-		31k ppl-@VERSION@.tar.gz
+Description:	The Parma Polyhedra Library (PPL) is a C++ library
+		for the manipulation of convex polyhedra.
+Keywords:	C++ library convex polyhedra
+Author:		bagnara@cs.unipr.it (Roberto Bagnara)
+		bonini_s@libero.it (Sara Bonini)
+		hill@comp.leeds.ac.uk (Patricia M. Hill)
+		pescetti@prmat.math.unipr.it (Andrea Pescetti)
+		ericci@cs.unipr.it (Elisa Ricci)
+		angela_stazzone@tin.it (Angela Stazzone)
+		zaffanella@cs.unipr.it (Enea Zaffanella)
+		zolo@cs.unipr.it (Tatiana Zolo)
+Maintained-by:	ppl-devel@cs.unipr.it (PPL developers)
+Primary-site:	metlab.unc.edu /pub/linux/libs
+		700k ppl-@VERSION@.tar.gz
 		500  ppl.lsm
-Alternate-site: 
-Original-site:  
-Platforms:      
-Copying-policy:	GNU copyleft
+Alternate-site:	
+Original-site:	http://www.cs.unipr.it/ppl/
+Platforms:      Linux (tested on RedHat 7.1), but meant to be portable
+Copying-policy:	GPL
 End

@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "SatMatrix.defs.hh"
 #include "Status.defs.hh"
 #include "Polyhedron.types.hh"
+#include <vector>
 
 namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friend later.
@@ -367,7 +368,7 @@ public:
   // and does not embed it in the new space.
   void add_dimensions_and_project(size_t add_dim);
   // Removes the specified dimensions.
-  void remove_dimensions(const BitSet& dims_to_remove);
+  void remove_dimensions(const std::vector<unsigned int>& to_be_removed);
   //! Adds given constraints to the polyhedron and compute a new polyhedron.
   bool add_constraints(ConSys& constraints_to_add);
   //! Adds given constraints to the polyhedron without minimizing. 
