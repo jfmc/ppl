@@ -1135,7 +1135,6 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
 */
 void
 PPL::Polyhedron::remove_higher_dimensions(size_t new_dimension) {
-  size_t space_dim = space_dimension();
   // The removal of no dimensions from any polyhedron is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a polyhedron in a 0-dim space.
