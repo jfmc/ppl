@@ -55,7 +55,7 @@ ppl_xsb_la_LDFLAGS = -no-undefined -module -avoid-version
 
 pkglib_DATA = ppl_xsb.xwam
 
-ppl_xsb.xwam: ppl_xsb.H ppl_xsb.cc Makefile
+ppl_xsb.xwam: ppl_xsb.H ppl_xsb.cc ppl_xsb.la Makefile
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/ppl_xsb.H . ; \
 	fi
