@@ -46,7 +46,10 @@ if HAVE_GLPK
 AM_CPPFLAGS = -I$(top_builddir)/interfaces/C @extra_includes@
 
 noinst_PROGRAMS = ppl_lpsol
-ppl_lpsol_SOURCES = ppl_lpsol.c
+# dummy.cc serves the only purpose to force linking using the C++ compiler.
+ppl_lpsol_SOURCES = \
+ppl_lpsol.c \
+dummy.cc
 ppl_lpsol_LDADD = \
 -lglpk \
 $(top_builddir)/interfaces/C/libppl_c.la \
