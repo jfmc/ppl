@@ -28,7 +28,7 @@ namespace Parma_Polyhedra_Library {
 namespace Checked {
 
 template <typename Policy, typename Type>
-struct FUNCTION_CLASS(assign)<Policy, Type, Type, Rounding> {
+struct FUNCTION_CLASS(assign)<Policy, Type, Type> {
   static inline Result function(Type& to, const Type& from, const Rounding&) {
     to = from;
     return V_EQ;

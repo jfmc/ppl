@@ -37,7 +37,6 @@ Rounding::Rounding()
 inline
 Rounding::Rounding(Direction d)
   : dir(d) {
-  assert(d != Rounding::CURRENT);
 }
 
 inline void

@@ -25,13 +25,13 @@ namespace Parma_Polyhedra_Library {
 
 namespace Checked {
 
-#define handle_ext(Type) (Float<Type>::fpu_related)
+#define handle_ext_natively(Type) (Float<Type>::fpu_related)
 
 template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
 assign_ext(To& to, const From& from, const Rounding& mode) {
-  if (handle_ext(To) && handle_ext(From))
+  if (handle_ext_natively(To) && handle_ext_natively(From))
     return assign<To_Policy>(to, from, mode);
   Result r = classify<From_Policy>(from, true, true, false);
   if (r == VC_NORMAL)
@@ -43,7 +43,7 @@ template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
 neg_ext(To& to, const From& x, const Rounding& mode) {
-  if (handle_ext(To) && handle_ext(From))
+  if (handle_ext_natively(To) && handle_ext_natively(From))
     return neg<To_Policy>(to, x, mode);
   Result r = classify<From_Policy>(x, true, true, false);
   if (r == VC_NORMAL)
@@ -59,7 +59,7 @@ template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
 abs_ext(To& to, const From& x, const Rounding& mode) {
-  if (handle_ext(To) && handle_ext(From))
+  if (handle_ext_natively(To) && handle_ext_natively(From))
     return abs<To_Policy>(to, x, mode);
   Result r = classify<From_Policy>(x, true, true, false);
   if (r == VC_NORMAL)
@@ -73,7 +73,7 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
 add_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
-  if (handle_ext(To) && handle_ext(From1) && handle_ext(From2))
+  if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
     return add<To_Policy>(to, x, y, mode);
   Result rx;
   Result ry;
@@ -96,7 +96,7 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
 sub_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
-  if (handle_ext(To) && handle_ext(From1) && handle_ext(From2))
+  if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
     return sub<To_Policy>(to, x, y, mode);
   Result rx;
   Result ry;
@@ -119,7 +119,7 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
 mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
-  if (handle_ext(To) && handle_ext(From1) && handle_ext(From2))
+  if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
     return mul<To_Policy>(to, x, y, mode);
   Result rx;
   Result ry;
@@ -142,12 +142,69 @@ mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
   return set_special<To_Policy>(to, r);
 }
     
-	
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
+inline Result
+add_mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
+  Result rto;
+  Result rx;
+  Result ry;
+  Result r;
+  if ((rto = classify<To_Policy>(to, true, true, false)) == VC_NAN
+      || (rx = classify<From1_Policy>(x, true, true, true)) == VC_NAN
+      || (ry = classify<From2_Policy>(y, true, true, true)) == VC_NAN)
+    r = VC_NAN;
+  else if (!(is_special(rto) || is_special(rx) || is_special(ry)))
+    return add_mul<To_Policy>(to, x, y, mode);
+  else if (rx == VC_NORMAL && ry == VC_NORMAL)
+    r = rto;
+  else {
+    rx = sign(rx);
+    ry = sign(ry);
+    if (rx == V_EQ || ry == V_EQ)
+      r = V_INF_MUL_ZERO;
+    else if (rx == ry)
+      r = rto == VC_MINUS_INFINITY ? V_INF_ADD_INF : VC_PLUS_INFINITY;
+    else
+      r = rto == VC_PLUS_INFINITY ? V_INF_ADD_INF : VC_MINUS_INFINITY;
+  }
+  return set_special<To_Policy>(to, r);
+}
+
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
+inline Result
+sub_mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
+  Result rto;
+  Result rx;
+  Result ry;
+  Result r;
+  if ((rto = classify<To_Policy>(to, true, true, false)) == VC_NAN
+      || (rx = classify<From1_Policy>(x, true, true, true)) == VC_NAN
+      || (ry = classify<From2_Policy>(y, true, true, true)) == VC_NAN)
+    r = VC_NAN;
+  else if (!(is_special(rto) || is_special(rx) || is_special(ry)))
+    return sub_mul<To_Policy>(to, x, y, mode);
+  else if (rx == VC_NORMAL && ry == VC_NORMAL)
+    r = rto;
+  else {
+    rx = sign(rx);
+    ry = sign(ry);
+    if (rx == V_EQ || ry == V_EQ)
+      r = V_INF_MUL_ZERO;
+    else if (rx == ry)
+      r = rto == VC_PLUS_INFINITY ? V_INF_SUB_INF : VC_MINUS_INFINITY;
+    else
+      r = rto == VC_MINUS_INFINITY ? V_INF_SUB_INF : VC_PLUS_INFINITY;
+  }
+  return set_special<To_Policy>(to, r);
+}
+
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
 div_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
-  if (handle_ext(To) && handle_ext(From1) && handle_ext(From2))
+  if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
     return div<To_Policy>(to, x, y, mode);
   Result rx;
   Result ry;
@@ -184,7 +241,7 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
 rem_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
-  if (handle_ext(To) && handle_ext(From1) && handle_ext(From2))
+  if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
     return rem<To_Policy>(to, x, y, mode);
   Result rx;
   Result ry;
@@ -209,7 +266,7 @@ template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
 sqrt_ext(To& to, const From& x, const Rounding& mode) {
-  if (handle_ext(To) && handle_ext(From))
+  if (handle_ext_natively(To) && handle_ext_natively(From))
     return sqrt<To_Policy>(to, x, mode);
   Result r = classify<From_Policy>(x, true, true, false);
   if (r == VC_NORMAL)
@@ -271,7 +328,7 @@ template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
 inline Result
 cmp_ext(const Type1& x, const Type2& y) {
-  if (handle_ext(Type1) && handle_ext(Type2))
+  if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
     return cmp<Policy1>(x, y);
   Result rx;
   Result ry;
@@ -292,7 +349,7 @@ template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
 inline bool
 lt_ext(const Type1& x, const Type2& y) {
-  if (handle_ext(Type1) && handle_ext(Type2))
+  if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
     return x < y;
   Result rx;
   Result ry;
@@ -310,7 +367,7 @@ template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
 inline bool
 gt_ext(const Type1& x, const Type2& y) {
-  if (handle_ext(Type1) && handle_ext(Type2))
+  if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
     return x > y;
   Result rx;
   Result ry;
@@ -328,7 +385,7 @@ template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
 inline bool
 le_ext(const Type1& x, const Type2& y) {
-  if (handle_ext(Type1) && handle_ext(Type2))
+  if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
     return x <= y;
   Result rx;
   Result ry;
@@ -344,7 +401,7 @@ template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
 inline bool
 ge_ext(const Type1& x, const Type2& y) {
-  if (handle_ext(Type1) && handle_ext(Type2))
+  if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
     return x >= y;
   Result rx;
   Result ry;
@@ -360,7 +417,7 @@ template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
 inline bool
 eq_ext(const Type1& x, const Type2& y) {
-  if (handle_ext(Type1) && handle_ext(Type2))
+  if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
     return x == y;
   Result rx;
   Result ry;
@@ -376,7 +433,7 @@ template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
 inline bool
 ne_ext(const Type1& x, const Type2& y) {
-  if (handle_ext(Type1) && handle_ext(Type2))
+  if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
     return x != y;
   Result rx;
   Result ry;
@@ -391,7 +448,7 @@ ne_ext(const Type1& x, const Type2& y) {
 template <typename Policy, typename Type>
 inline Result
 print_ext(std::ostream& os, const Type& x, const Numeric_Format& format, const Rounding& mode) {
-  if (handle_ext(Type))
+  if (handle_ext_natively(Type))
     return print<Policy>(os, x, format, mode);
   Result rx = classify<Policy>(x, true, true, false);
   switch (rx) {
@@ -409,6 +466,13 @@ print_ext(std::ostream& os, const Type& x, const Numeric_Format& format, const R
     break;
   }
   return rx;
+}
+
+template <typename Policy, typename Type>
+inline Result
+input_ext(std::istream& is, Type& x, const Rounding& mode) {
+  // FIXME
+  return input<Policy>(is, x, mode);
 }
 
 } // namespace Checked

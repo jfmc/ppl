@@ -154,6 +154,7 @@ checked_int.inlines.hh \
 checked_float.inlines.hh \
 checked_mpz.inlines.hh \
 checked_mpq.inlines.hh \
+checked_ext.inlines.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
 Coefficient.defs.hh \
 Coefficient.inlines.hh \
