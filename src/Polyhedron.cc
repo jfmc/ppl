@@ -3817,21 +3817,23 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
       if (x.con_sys[j] * y.gen_sys[i] > 0)
         tmp_sat[i].set(j);
 
+  // We built a temporary system of generators in which we put
+  // the new rays.
+  GenSys modified_rays;
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
     // We choose a ray of `x' that doesn't belong to `y' and
     // "evolved" since a ray of `y'.
     if (x.gen_sys[i].is_ray()) {
-      Generator x_g = x.gen_sys[i];
       std::vector<bool> considered(x.space_dim + 1);
-      Poly_Gen_Relation rel = y.relation_with(x_g);
+      Poly_Gen_Relation rel = y.relation_with(x.gen_sys[i]);
       for (dimension_type j = y_gen_sys_num_rows; j-- > 0; ) {
 	const Generator& y_g = y.gen_sys[j];
 	if (y_g.is_ray() && tmp_sat[j] > x.sat_c[i]
 	    && rel == Poly_Gen_Relation::nothing()) {
-	  x.gen_sys.set_sorted(false);
+	  Generator x_g = x.gen_sys[i];
 	  Integer tmp_1;
 	  Integer tmp_2;
-	  // We modify the ray of `x' according to how it
+	  // We modify the ray `x_g' according to how it
 	  // evolve since the ray of `y'.
 	  for (dimension_type k = 1; k < x.space_dim && !considered[k]; ++k)
 	    for (dimension_type h = k + 1;
@@ -3854,16 +3856,16 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 		}
 	    }
 	  x_g.normalize();
-	  x.gen_sys.insert(x_g);
+	  modified_rays.insert(x_g);
 	}
       }
     }
   }
-  x.clear_generators_minimized();
-  x.clear_constraints_up_to_date();
+  // We add the new system of generators
+  // to the polyhedron `x'.
+  x.add_generators_and_minimize(modified_rays);
 
   // Check for stabilization.
-  x.minimize();
   if (is_BBRZ02_stabilizing(x, y)) {
 #ifndef NDEBUG
     std::cout << "BBRZ02: stabilizing on 3rd technique" << std::endl;
