@@ -33,36 +33,43 @@ site: http://www.cs.unipr.it/ppl/ . */
 typedef term_t Prolog_term_ref;
 typedef atom_t Prolog_atom;
 typedef foreign_t Prolog_foreign_return_type;
-static const Prolog_foreign_return_type PROLOG_SUCCESS = TRUE;
-static const Prolog_foreign_return_type PROLOG_FAILURE = FALSE;
+
+namespace {
+
+const Prolog_foreign_return_type PROLOG_SUCCESS = TRUE;
+const Prolog_foreign_return_type PROLOG_FAILURE = FALSE;
+
+} // namespace
 
 #include "../exceptions.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
+namespace {
+
 /*!
   True if and only if the Prolog engine supports unbounded integers.
 */
-static bool Prolog_has_unbounded_integers;
+bool Prolog_has_unbounded_integers;
 
 /*!
   If \p Prolog_has_unbounded_integers is false, holds the minimum
   integer value representable by a Prolog integer.
   Holds zero otherwise.
 */
-static long Prolog_min_integer;
+long Prolog_min_integer;
 
 /*!
   If \p Prolog_has_unbounded_integers is false, holds the maximum
   integer value representable by a Prolog integer.
   Holds zero otherwise.
 */
-static long Prolog_max_integer;
+long Prolog_max_integer;
 
 /*!
   Performs system-dependent initialization.
 */
-static void
+void
 ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = false;
   Prolog_min_integer = PL_query(PL_QUERY_MIN_INTEGER);
@@ -72,14 +79,14 @@ ppl_Prolog_sysdep_init() {
 /*!
   Perform system-dependent de-itialization.
 */
-static void
+void
 ppl_Prolog_sysdep_deinit() {
 }
 
 /*!
   Return a new term reference.
 */
-static inline Prolog_term_ref
+inline Prolog_term_ref
 Prolog_new_term_ref() {
   return PL_new_term_ref();
 }
@@ -88,7 +95,7 @@ Prolog_new_term_ref() {
   Make \p t be a reference to the same term referenced by \p u,
   i.e., assign \p u to \p t.
 */
-static inline int
+inline int
 Prolog_put_term(Prolog_term_ref t, Prolog_term_ref u) {
   PL_put_term(t, u);
   return 1;
@@ -97,7 +104,7 @@ Prolog_put_term(Prolog_term_ref t, Prolog_term_ref u) {
 /*!
   Assign to \p t a Prolog integer with value \p l.
 */
-static inline int
+inline int
 Prolog_put_long(Prolog_term_ref t, long l) {
   if (l < Prolog_min_integer || l > Prolog_max_integer)
     throw PPL_integer_out_of_range(l);
@@ -108,7 +115,7 @@ Prolog_put_long(Prolog_term_ref t, long l) {
 /*!
   Assign to \p t a Prolog integer with value \p ul.
 */
-static inline int
+inline int
 Prolog_put_ulong(Prolog_term_ref t, unsigned long ul) {
   if (ul > static_cast<unsigned long>(Prolog_max_integer))
     throw PPL_integer_out_of_range(ul);
@@ -120,7 +127,7 @@ Prolog_put_ulong(Prolog_term_ref t, unsigned long ul) {
   Assign to \p t an atom whose name is given
   by the null-terminated string \p s.
 */
-static inline int
+inline int
 Prolog_put_atom_chars(Prolog_term_ref t, const char* s) {
   PL_put_atom_chars(t, s);
   return 1;
@@ -129,7 +136,7 @@ Prolog_put_atom_chars(Prolog_term_ref t, const char* s) {
 /*!
   Assign to \p t the Prolog atom \p a.
 */
-static inline int
+inline int
 Prolog_put_atom(Prolog_term_ref t, Prolog_atom a) {
   PL_put_atom(t, a);
   return 1;
@@ -138,7 +145,7 @@ Prolog_put_atom(Prolog_term_ref t, Prolog_atom a) {
 /*!
   Assign to \p t a term representing the address contained in \p p.
 */
-static inline int
+inline int
 Prolog_put_address(Prolog_term_ref t, void* p) {
   PL_put_pointer(t, p);
   return 1;
@@ -156,7 +163,7 @@ Prolog_atom_from_string(const char* s) {
   Assign to \p t a compound term whose principal functor is \p f
   of arity 1 with argument \p a1.
 */
-static inline int
+inline int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 			  Prolog_term_ref a1) {
   PL_cons_functor(t, PL_new_functor(f, 1), a1);
@@ -167,7 +174,7 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
   Assign to \p t a compound term whose principal functor is \p f
   of arity 2 with arguments \p a1 and \p a2.
 */
-static inline int
+inline int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2) {
   PL_cons_functor(t, PL_new_functor(f, 2), a1, a2);
@@ -178,7 +185,7 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
   Assign to \p t a compound term whose principal functor is \p f
   of arity 3 with arguments \p a1, \p a2 and \p a3.
 */
-static inline int
+inline int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3) {
@@ -190,7 +197,7 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
   Assign to \p t a compound term whose principal functor is \p f
   of arity 4 with arguments \p a1, \p a2, \p a3 and \p a4.
 */
-static inline int
+inline int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3, Prolog_term_ref a4) {
@@ -201,7 +208,7 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 /*!
   Assign to \p c a Prolog list whose head is \p h and tail is \p t.
 */
-static inline int
+inline int
 Prolog_construct_cons(Prolog_term_ref c,
 		      Prolog_term_ref h, Prolog_term_ref t) {
   PL_cons_list(c, h, t);
@@ -211,7 +218,7 @@ Prolog_construct_cons(Prolog_term_ref c,
 /*!
   Raise a Prolog exception with \p t as the exception term.
 */
-static inline void
+inline void
 Prolog_raise_exception(Prolog_term_ref t) {
   (void) PL_raise_exception(t);
 }
@@ -219,7 +226,7 @@ Prolog_raise_exception(Prolog_term_ref t) {
 /*!
   Return true if \p t is a Prolog variable, false otherwise.
 */
-static inline int
+inline int
 Prolog_is_variable(Prolog_term_ref t) {
   return PL_is_variable(t);
 }
@@ -227,7 +234,7 @@ Prolog_is_variable(Prolog_term_ref t) {
 /*!
   Return true if \p t is a Prolog atom, false otherwise.
 */
-static inline int
+inline int
 Prolog_is_atom(Prolog_term_ref t) {
   return PL_is_atom(t);
 }
@@ -235,7 +242,7 @@ Prolog_is_atom(Prolog_term_ref t) {
 /*!
   Return true if \p t is a Prolog integer, false otherwise.
 */
-static inline int
+inline int
 Prolog_is_integer(Prolog_term_ref t) {
   return PL_is_integer(t);
 }
@@ -243,7 +250,7 @@ Prolog_is_integer(Prolog_term_ref t) {
 /*!
   Return true if \p t is the representation of an address, false otherwise.
 */
-static inline int
+inline int
 Prolog_is_address(Prolog_term_ref t) {
   return PL_is_integer(t);
 }
@@ -251,7 +258,7 @@ Prolog_is_address(Prolog_term_ref t) {
 /*!
   Return true if \p t is a Prolog compound term, false otherwise.
 */
-static inline int
+inline int
 Prolog_is_compound(Prolog_term_ref t) {
   return PL_is_compound(t);
 }
@@ -259,7 +266,7 @@ Prolog_is_compound(Prolog_term_ref t) {
 /*!
   Return true if \p t is a Prolog list, false otherwise.
 */
-static inline int
+inline int
 Prolog_is_cons(Prolog_term_ref t) {
   return !PL_is_atom(t) && PL_is_list(t);
 }
@@ -270,7 +277,7 @@ Prolog_is_cons(Prolog_term_ref t) {
   return false otherwise.  The behavior is undefined if \p t is
   not a Prolog integer.
 */
-static inline int
+inline int
 Prolog_get_long(Prolog_term_ref t, long* lp) {
   assert(Prolog_is_integer(t));
   return PL_get_long(t, lp);
@@ -281,7 +288,7 @@ Prolog_get_long(Prolog_term_ref t, long* lp) {
   true and store that address into \p v; return false otherwise.
   The behavior is undefined if \p t is not an address.
 */
-static inline int
+inline int
 Prolog_get_address(Prolog_term_ref t, void** vpp) {
   assert(Prolog_is_address(t));
   return PL_get_pointer(t, vpp);
@@ -291,7 +298,7 @@ Prolog_get_address(Prolog_term_ref t, void** vpp) {
   If \p t is a Prolog atom, return true and store its name into \p name.
   The behavior is undefined if \p t is not a Prolog atom.
 */
-static inline int
+inline int
 Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom* ap) {
   assert(Prolog_is_atom(t));
   return PL_get_atom(t, ap);
@@ -302,7 +309,7 @@ Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom* ap) {
   and arity into \p name and \p arity, respectively.
   The behavior is undefined if \p t is not a Prolog compound term.
 */
-static inline int
+inline int
 Prolog_get_compound_name_arity(Prolog_term_ref t, Prolog_atom* ap, int* ip) {
   assert(Prolog_is_compound(t));
   return PL_get_name_arity(t, ap, ip);
@@ -314,7 +321,7 @@ Prolog_get_compound_name_arity(Prolog_term_ref t, Prolog_atom* ap, int* ip) {
   i-th (principal) argument of \p t.
   The behavior is undefined if \p t is not a Prolog compound term.
 */
-static inline int
+inline int
 Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref a) {
   assert(Prolog_is_compound(t));
   return PL_get_arg(i, t, a);
@@ -327,7 +334,7 @@ using namespace std;
   tail to \p h and \p t, respectively.
   The behavior is undefined if \p c is not a Prolog cons.
 */
-static inline int
+inline int
 Prolog_get_cons(Prolog_term_ref c, Prolog_term_ref h, Prolog_term_ref t) {
   assert(Prolog_is_cons(c));
   return PL_get_list(c, h, t);
@@ -337,12 +344,12 @@ Prolog_get_cons(Prolog_term_ref c, Prolog_term_ref h, Prolog_term_ref t) {
   Unify the terms referenced by \p t and \p u and return true
   if the unification is successful; return false otherwise.
 */
-static inline int
+inline int
 Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
   return PL_unify(t, u);
 }
 
-static PPL::Coefficient
+PPL::Coefficient
 integer_term_to_Coefficient(Prolog_term_ref t) {
   assert(Prolog_is_integer(t));
   long v;
@@ -350,7 +357,7 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
   return PPL::Coefficient(v);
 }
 
-static Prolog_term_ref
+Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   long v;
   if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, PPL::raw_value(n))
@@ -361,11 +368,15 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
   return t;
 }
 
+} // namespace
+
 #include "../ppl_prolog.icc"
 
 #define PL_EXTENSION_ENTRY(name, arity) { #name, arity, (void*) name, 0 },
 
-static PL_extension predicates[] = {
+namespace {
+
+PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_version_major, 1)
   PL_EXTENSION_ENTRY(ppl_version_minor, 1)
   PL_EXTENSION_ENTRY(ppl_version_revision, 1)
@@ -455,6 +466,8 @@ static PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_Polyhedron_map_space_dimensions, 2)
   { NULL, 0, NULL, 0 }
 };
+
+} // namespace
 
 extern "C" install_t
 install() {

@@ -89,11 +89,15 @@ Poly_Tracker::remove(const void* pp) {
   }
 }
 
-static inline Poly_Tracker&
+namespace {
+
+inline Poly_Tracker&
 poly_tracker() {
   static Poly_Tracker pt;
   return pt;
 }
+
+} // namespace
 
 } // namespace Parma_Polyhedra_Library
 

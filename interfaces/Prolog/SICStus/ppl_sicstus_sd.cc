@@ -34,22 +34,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+namespace {
+
 /*!
   True if and only if the Prolog engine supports unbounded integers.
 */
-static bool Prolog_has_unbounded_integers;
+bool Prolog_has_unbounded_integers;
 
 /*!
   If \p Prolog_has_unbounded_integers is false, holds the maximum
   integer value representable by a Prolog integer.
   Holds zero otherwise.
 */
-static long Prolog_max_integer;
+long Prolog_max_integer;
 
 /*!
   Performs system-dependent initialization.
 */
-static void
+void
 ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = true;
   Prolog_max_integer = 0;
@@ -58,11 +60,11 @@ ppl_Prolog_sysdep_init() {
 /*!
   Perform system-dependent de-itialization.
 */
-static void
+void
 ppl_Prolog_sysdep_deinit() {
 }
 
-static PPL::Coefficient
+PPL::Coefficient
 integer_term_to_Coefficient(Prolog_term_ref t) {
   assert(SP_is_integer(t));
   long v;
@@ -77,7 +79,7 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
   }
 }
 
-static Prolog_term_ref
+Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   Prolog_term_ref t = Prolog_new_term_ref();
   long v;
@@ -93,6 +95,8 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
   }
   return t;
 }
+
+} // namespace
 
 #include "../ppl_prolog.icc"
 
