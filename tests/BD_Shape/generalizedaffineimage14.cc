@@ -150,6 +150,7 @@ test5() {
   TBD_Shape known_result(2);
   known_result.add_constraint(A <= 1);
   known_result.add_constraint(B <= 0);
+  known_result.add_constraint(A - B >= 1);
 
    bool ok = (bd == known_result);
 
@@ -172,7 +173,7 @@ test6() {
   bd.add_constraint(A - B == 0);
   bd.add_constraint(B <= 1);
   bd.add_constraint(C - A <= 2);
-
+ 
   bd.generalized_affine_image(2*B + C + 1, LESS_THAN_OR_EQUAL, A - 3*B + 2*C);
 
   TBD_Shape known_result(3);
@@ -187,7 +188,7 @@ test6() {
 		    "*** bd.generalized_affine_image(2*B + C + 1, "
 		    "LESS_THAN_OR_EQUAL, A - 3*B + 2*C) ***");
 #endif
-
+ 
   if (!ok)
     exit(1);
 }
@@ -232,7 +233,7 @@ test8() {
   bd.add_constraint(A - B == 0);
   bd.add_constraint(B <= 1);
   bd.add_constraint(C - A <= 2);
-  
+
   bd.generalized_affine_image(-2*A - B - 1,
 			      GREATER_THAN_OR_EQUAL, 3*A + B + 4*C - 2);
   
@@ -261,7 +262,7 @@ test9() {
   bd.add_constraint(A - B == 0);
   bd.add_constraint(B <= 1);
   bd.add_constraint(C - A <= 2);
-  
+
   bd.generalized_affine_image(-2*C + 3, LESS_THAN_OR_EQUAL, -3*B + 4);
   
   TBD_Shape known_result(3);
@@ -275,7 +276,7 @@ test9() {
   print_constraints(bd, "*** bd.generalized_affine_image(-2*C + 3, "
                         "LESS_THAN_OR_EQUAL, -3*B + 4) ***");
 #endif
-
+ 
   if (!ok)
     exit(1);
 }

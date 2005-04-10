@@ -186,11 +186,11 @@ test5() {
   known_result.add_constraint(x >= -2);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= 1);
-
+ 
   bd.affine_image(x, -2*y + 1, 2);
 
   bool ok = (bd == known_result);
-
+ 
 #if NOISY
   print_constraints(bd, "*** bd.affine_image(x, -2*y + 1, 2) ***");
 #endif
@@ -221,11 +221,12 @@ test6() {
   known_result.add_constraint(x >= 0);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= -1);
+  known_result.add_constraint(x - y <= 3);
 
   bd.affine_image(x, 2*x + y + 1);
 
   bool ok = (bd == known_result);
-
+ 
 #if NOISY
   print_constraints(bd, "*** bd.affine_image(x, 2*x + y + 1) ***");
 #endif
@@ -245,7 +246,7 @@ test7() {
   bd.add_constraint(x >= 0);
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= -1);
-
+ 
 
 #if NOISY
   print_constraints(bd, "*** bd ***");
@@ -256,11 +257,12 @@ test7() {
   known_result.add_constraint(x >= -2);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= -1);
+  known_result.add_constraint(x - y <= 1);
 
   bd.affine_image(x, -2*x + y + 1);
 
   bool ok = (bd == known_result);
-
+ 
 #if NOISY
   print_constraints(bd, "*** bd.affine_image(x, -2*x + y + 1) ***");
 #endif
@@ -280,7 +282,7 @@ test8() {
   bd.add_constraint(x >= 0);
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= -1);
-
+ 
 
 #if NOISY
   print_constraints(bd, "*** bd ***");
@@ -291,11 +293,12 @@ test8() {
   known_result.add_constraint(x >= -1);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= -1);
+  known_result.add_constraint(y - x <= 0);
 
   bd.affine_image(x, 2*x - 3*y + 1, 5);
 
   bool ok = (bd == known_result);
-
+ 
 #if NOISY
   print_constraints(bd, "*** bd.affine_image(x, 2*x - 3*y + 1, 5) ***");
 #endif
@@ -326,11 +329,12 @@ test9() {
   known_result.add_constraint(x >= -2);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= -1);
+  known_result.add_constraint(y - x <= 1);
 
   bd.affine_image(x, -2*x - 3*y + 1, 5);
 
   bool ok = (bd == known_result);
-
+ 
 #if NOISY
   print_constraints(bd, "*** bd.affine_image(x, -2*x - 3*y + 1, 5) ***");
 #endif
@@ -351,7 +355,6 @@ test10() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= -1);
 
-
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
@@ -361,6 +364,7 @@ test10() {
   known_result.add_constraint(x >= -2);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= -1);
+  known_result.add_constraint(y - x <= 1);
 
   bd.affine_image(x, 2*x - 3*y + 1, -5);
 

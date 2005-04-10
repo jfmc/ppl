@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
-using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #ifndef NOISY
 #define NOISY 0
@@ -53,6 +52,7 @@ test1() {
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= -1);
+  known_result.add_constraint(y - x <= 0);
 
   bd.affine_image(x, -2*x - 3*y + 1, -5);
 
@@ -78,7 +78,7 @@ test2() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(z >= 3);
 
-
+ 
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
@@ -87,6 +87,8 @@ test2() {
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(z <= 0);
+  known_result.add_constraint(x - z >= 1);
+  known_result.add_constraint(y - z >= 2);
  
   bd.affine_image(z, x + 2*y -3*z + 2, 4);
 
@@ -126,7 +128,7 @@ test3() {
   known_result.add_constraint(B >= 1);
   known_result.add_constraint(C <= 0);
   known_result.add_constraint(D == 3);
-
+ 
   bd.affine_image(A, -B + 2*C + 1, -3);
 
   bool ok = (bd == known_result);
@@ -134,7 +136,7 @@ test3() {
 #if NOISY
   print_constraints(bd, "*** bd.affine_image(A, -B + 2*C + 1, -3) ***");
 #endif
-
+ 
   if (!ok)
     exit(1);
 }

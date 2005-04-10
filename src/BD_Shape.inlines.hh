@@ -2390,26 +2390,26 @@ BD_Shape<T>::affine_image(const Variable var,
   dimension_type expr_space_dim = expr.space_dimension();
   if (space_dim < expr_space_dim)
     throw_dimension_incompatible("affine_image(v, e, d)", "e", expr);
-
+  
   // `var' should be one of the dimensions of the systems of bounded differences.
   dimension_type num_var = var.id() + 1;
-
+  
   if (num_var > space_dim)
     throw_dimension_incompatible("affine_image(v, e, d)", var.id());
-
+  
   // If `*this' is empty, then its image is empty.
   if (marked_empty())
     return;
-
+  
   // Index of the non-zero component of `expr'.
   dimension_type j = 0;
 
   // Number of non-zero components of `expr'.
   dimension_type t = 0;
-
+  
   // Value of the coefficient of `var' in `expr'.
   Coefficient coeff;
-
+  
   // Compute the number of the non-zero components of `expr'.
   for (dimension_type i = expr_space_dim; i-- > 0; )
     if (expr.coefficient(Variable(i)) != 0) {
@@ -2420,7 +2420,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	coeff = expr.coefficient(Variable(j));
       }
     }
-
+  
   // Now we have got a form of `expr':
   // if t == 0, expr = n, with n integer.
   // if t == 1, expr = a*z + n, where z can be `var' or another variable.
@@ -2433,7 +2433,7 @@ BD_Shape<T>::affine_image(const Variable var,
   // If `*this' is empty, then its image is empty.
   if (marked_empty())
     return;
-
+  
   if (t == 0) {
     // Case 1: expr = n.
     // We lose(remove) all constraints on `var' and we add the new constraint
@@ -2444,11 +2444,11 @@ BD_Shape<T>::affine_image(const Variable var,
     }
     add_constraint(denominator*var == b);
   }
-
+  
   else if (t == 1 && (coeff == denominator || coeff == -denominator)){
     // Case 2: expr = coeff*z + n, with denominator = +/- coeff .
     if (j == num_var - 1) {
-
+      
       // The `expr' is of the form: -denominator*var + n.
       // First we adjust the matrix, swapping x_i^+ with x_i^-.
       if (coeff != denominator) {
@@ -2463,11 +2463,11 @@ BD_Shape<T>::affine_image(const Variable var,
 	// In this case the closure is not preserved.
 	status.reset_transitively_closed();
       }
-
+      
       // If b = 0, then the image is an identity of `*this'.
       if (b == 0)
 	return;
-
+      
       else {
 	// We translate all the constraints on `var' adding or
 	// subtracting the value `n/denominator'.
@@ -2515,7 +2515,7 @@ BD_Shape<T>::affine_image(const Variable var,
       }
     }
   }
-
+  
   // General case. We have an expression of the form:
   // expr = a_1*x_1 + a_2*x_2 + ... + a_n*x_n.
   // We find the maximum value `up_sum' of `expr' and the minimum value
@@ -2524,16 +2524,19 @@ BD_Shape<T>::affine_image(const Variable var,
   // low_sum <= var,
   // up_sum  >= var.
   else {
-    // Approximations rispectively from above and from below of the
+    // Approximations respectively from above and from below of the
     // `expr'.
-    Coefficient up_sum = expr.inhomogeneous_term();
-    Coefficient low_sum = up_sum;
-
-    Coefficient dnm = 1;
-    Coefficient dnm1 = 1;
-    // Checks if in the two approximations there are an infinite value.
-    bool up_sum_ninf = true;
-    bool low_sum_ninf = true;
+    T up_sum = expr.inhomogeneous_term();
+    T low_sum;
+    negate_round_up(low_sum, up_sum);
+    
+    // Indeces of the variables with value +inf.
+    dimension_type up_var_index_inf;
+    dimension_type low_var_index_inf;
+    
+    // Number of infinite values in the two approximations. 
+    dimension_type up_num_inf = 0;
+    dimension_type low_num_inf = 0;
     for (dimension_type i = expr_space_dim; i-- > 0; ) {
       Coefficient expr_coeff_var = expr.coefficient(Variable(i));
       if (expr_coeff_var != 0) {
@@ -2543,43 +2546,31 @@ BD_Shape<T>::affine_image(const Variable var,
 	const T& dbm_k_0 = dbm[k][0];
 	if (expr_coeff_var > 0) {
 	  // Upper approximation.
-	  if (up_sum_ninf)
-	    if (!is_plus_infinity(dbm_0_k)) {
-	      Coefficient a;
-	      Coefficient b;
-	      numer_denom(dbm_0_k, a, b);
-	      if (dnm % b == 0) {
-		b = dnm/b;
-		up_sum += (a*expr_coeff_var*b);
-	      }
-	      else {
-		dnm *= b;
-		up_sum *= b;
-		up_sum += (a*expr_coeff_var*dnm);
-	      }
-	    }
-	    else
-	      up_sum_ninf = false;
+	  if (!is_plus_infinity(dbm_0_k)) {
+	    Coefficient a;
+	    Coefficient c;
+	    numer_denom(dbm_0_k, a, c);
+	    T d;
+	    div_round_up(d, a*expr_coeff_var, c);
+	    add_round_up(up_sum, up_sum, d);
+	  }
+	  else {
+	    ++up_num_inf; 
+	    up_var_index_inf = k;
+	  }
 	  // Lower approximation.
-	  if (low_sum_ninf)
-	    if (!is_plus_infinity(dbm_k_0)) {
-	      Coefficient a;
-	      Coefficient b;
-	      T c;
-	      negate_round_down(c, dbm_k_0);
-	      numer_denom(c, a, b);
-	      if (dnm1 % b == 0) {
-		b = dnm1/b;
-		low_sum += (a*expr_coeff_var*b);
-	      }
-	      else {
-		dnm1 *= b;
-		low_sum *= b;
-		low_sum += (a*expr_coeff_var*dnm1);
-	      }
-	    }
-	    else
-	      low_sum_ninf = false;
+	  if (!is_plus_infinity(dbm_k_0)) {
+	    Coefficient a;
+	    Coefficient c;
+	    numer_denom(dbm_k_0, a, c);
+	    T d;
+	    div_round_up(d, a*expr_coeff_var, c);
+	    add_round_up(low_sum, low_sum, d);
+	  }
+	  else {
+	    ++low_num_inf;
+	    low_var_index_inf = k;
+	  }
 	}
 	// The coefficient is negative, so consider the negative variable
 	// * <= -X <= *. Es.:
@@ -2587,48 +2578,32 @@ BD_Shape<T>::affine_image(const Variable var,
 	else {
 	  expr_coeff_var = -expr_coeff_var;
 	  // Upper approximation.
-	  if (up_sum_ninf)
-	    if (!is_plus_infinity(dbm_k_0)) {
-	      Coefficient a;
-	      Coefficient b;
-	      numer_denom(dbm_k_0, a, b);
-	      if (dnm % b == 0) {
-		b = dnm/b;
-		up_sum += (a*expr_coeff_var*b);
-	      }
-	      else {
-		dnm *= b;
-		up_sum *= b;
-		up_sum += (a*expr_coeff_var*dnm);
-	      }
-	    }
-	    else
-	      up_sum_ninf = false;
+	  if (!is_plus_infinity(dbm_k_0)) {
+	    Coefficient a;
+	    Coefficient c;
+	    numer_denom(dbm_k_0, a, c);
+	    T d;
+	    div_round_up(d, a*expr_coeff_var, c);
+	    add_round_up(up_sum, up_sum, d);
+	  }
+	  else {
+	    ++up_num_inf;
+	    up_var_index_inf = k;
+	  }
 	  // Lower approximation.
-	  if (low_sum_ninf)
-	    if (!is_plus_infinity(dbm_0_k)) {
-	      T c1;
-	      negate_round_down(c1, dbm_0_k);
-	      Coefficient a;
-	      Coefficient b;
-	      numer_denom(c1, a, b);
-	      // Lower bound.
-	      if (dnm1 % b == 0) {
-		b = dnm1/b;
-		low_sum += (a*expr_coeff_var*b);
-	      }
-	      else {
-		dnm1 *= b;
-		low_sum *= b;
-		low_sum += (a*expr_coeff_var*dnm1);
-	      }
-	    }
-	    else
-	      low_sum_ninf = false;
+	  if (!is_plus_infinity(dbm_0_k)) {
+	    Coefficient a;
+	    Coefficient c;
+	    numer_denom(dbm_0_k, a, c);
+	    T d;
+	    div_round_up(d, a*expr_coeff_var, c);
+	    add_round_up(low_sum, low_sum, d);
+	  }
+	  else {
+	    ++low_num_inf;
+	    low_var_index_inf = k;
+	  }
 	}
-	// If both approximations are infinite, no constraints is added.
-	if (!up_sum_ninf && !low_sum_ninf)
-	  break;
       }
     }
 
@@ -2639,14 +2614,73 @@ BD_Shape<T>::affine_image(const Variable var,
     }
 
     // Added the right constraints, if necessary.
-    if (up_sum_ninf)
-      add_constraint(denominator*dnm*var <= up_sum);
-    if (low_sum_ninf)
-      add_constraint(denominator*dnm1*var >= low_sum);
-  }
+    if (up_num_inf == 0) {
+      // Added the constraint
+      // 'var <= up_sum'.
+      Coefficient a;
+      Coefficient c;
+      numer_denom(up_sum, a, c);
+      add_constraint(denominator*c*var <= a);
+      // Deduction of the constraints
+      // 'var - var1'
+      // where var1 != var.
+      for (dimension_type h = 1; h <= space_dim; ++h)  
+	if (h != num_var) 
+	  if (expr.coefficient(Variable(h-1)) > 0) {
+	    T dbm_0_h = dbm[0][h];
+	    T negate_dbm_0_h;
+	    negate_round_up(negate_dbm_0_h, dbm_0_h);
+	    add_round_up(dbm[h][num_var], negate_dbm_0_h,dbm[0][num_var]);
+	  }
+    }
+    else if (up_num_inf == 1)  
+      if (up_var_index_inf != num_var) 
+	if (expr.coefficient(Variable(up_var_index_inf - 1)) == 1) {
+	  // Added the constraint
+	  // 'var - var1 <= up_sum'
+	  // where var1 != var.
+	  Coefficient n;
+	  Coefficient d;
+	  numer_denom(up_sum, n, d);
+	  add_constraint(d*denominator*(var - Variable(up_var_index_inf)) <= n);
+	}
+    
+    if (low_num_inf == 0) {
+      // Added the constraint
+      // 'var <= low_sum'.
+      Coefficient a;
+      Coefficient c;
+      numer_denom(low_sum, a, c);
+      add_constraint(c*denominator*(-var) <= a);
+      // Deduction of the constraints
+      // 'var1 - var'
+      // where var1 != var.
+      for (dimension_type h = 1; h <= space_dim; ++h)  
+	if (h != num_var)
+ 	  if (expr.coefficient(Variable(h-1)) < 0) {     
+	    T dbm_h_0 = dbm[h][0];
+	    T negate_dbm_h_0;
+	    negate_round_up(negate_dbm_h_0, dbm_h_0);
+	    add_round_up(dbm[num_var][h], negate_dbm_h_0, dbm[num_var][0]);
+	  }
+    }
+    else if (low_num_inf == 1)
+      if (low_var_index_inf != num_var)
+	if (expr.coefficient(Variable(low_var_index_inf - 1)) == 1) {
+	  // Added the constraint
+	  // 'var1 - var <= low_sum'
+	  // where var1 != var.
+	  Coefficient n;
+	  Coefficient d;
+	  numer_denom(low_sum, n, d);
+	  add_constraint(d*denominator*(Variable(low_var_index_inf) - var) <= n);
+	}
+    status.reset_transitively_closed();
 
+  }
+  
   assert(OK());
-}
+} 
 
 template <typename T>
 inline void
@@ -2767,11 +2801,10 @@ BD_Shape<T>::affine_preimage(const Variable var,
 
 template <typename T>
 inline void
-BD_Shape<T>::generalized_affine_image
-(const Variable var,
- const Relation_Symbol relsym,
- const Linear_Expression& expr,
- Coefficient_traits::const_reference denominator) {
+BD_Shape<T>::generalized_affine_image(const Variable var,
+				      const Relation_Symbol relsym,
+				      const Linear_Expression& expr,
+				      Coefficient_traits::const_reference denominator) {
 
   // The denominator cannot be zero.
   if (denominator == 0)
@@ -2995,12 +3028,14 @@ BD_Shape<T>::generalized_affine_image
     switch (relsym) {
     case LESS_THAN_OR_EQUAL:
       {
-	Coefficient up_sum = expr.inhomogeneous_term();
+	T up_sum = expr.inhomogeneous_term();
 
-	Coefficient dnm = 1;
-	Coefficient dnm1 = 1;
-	// Checks if in the approximation there is an infinite value.
-	bool up_sum_ninf = true;
+	 // Index of the variables with value +inf.
+	dimension_type up_var_index_inf;
+  
+	// Number of infinite values in the approximation. 
+	dimension_type up_num_inf = 0;
+	
 	for (dimension_type i = expr_space_dim; i-- > 0; ) {
 	  Coefficient expr_coeff_var = expr.coefficient(Variable(i));
 	  if (expr_coeff_var != 0) {
@@ -3010,24 +3045,18 @@ BD_Shape<T>::generalized_affine_image
 	    const T& dbm_k_0 = dbm[k][0];
 	    if (expr_coeff_var > 0) {
 	      // Upper approximation.
-	      if (up_sum_ninf)
-		if (!is_plus_infinity(dbm_0_k)) {
-		  Coefficient a;
-		  Coefficient b;
-		  numer_denom(dbm_0_k, a, b);
-		  if (dnm % b == 0) {
-		    b = dnm/b;
-		    up_sum += (a*expr_coeff_var*b);
-		  }
-		  else {
-		    dnm *= b;
-		    up_sum *= b;
-		    up_sum += (a*expr_coeff_var*dnm);
-		  }
-		}
-		else
-		  up_sum_ninf = false;
-	
+	      if (!is_plus_infinity(dbm_0_k)) {
+		Coefficient a;
+		Coefficient c;
+		numer_denom(dbm_0_k, a, c);
+		T d;
+		div_round_up(d, a*expr_coeff_var, c);
+		add_round_up(up_sum, up_sum, d);
+	      }
+	      else {
+		++up_num_inf;
+		up_var_index_inf = k;
+	      }
 	    }
 	    // The coefficient is negative, so consider the negative variable
 	    // * <= -X <= *. Es.:
@@ -3035,27 +3064,19 @@ BD_Shape<T>::generalized_affine_image
 	    else {
 	      expr_coeff_var = -expr_coeff_var;
 	      // Upper approximation.
-	      if (up_sum_ninf)
-		if (!is_plus_infinity(dbm_k_0)) {
-		  Coefficient a;
-		  Coefficient b;
-		  numer_denom(dbm_k_0, a, b);
-		  if (dnm % b == 0) {
-		    b = dnm/b;
-		    up_sum += (a*expr_coeff_var*b);
-		  }
-		  else {
-		    dnm *= b;
-		    up_sum *= b;
-		    up_sum += (a*expr_coeff_var*dnm);
-		  }
-		}
-		else
-		  up_sum_ninf = false;
+	      if (!is_plus_infinity(dbm_k_0)) {
+		Coefficient a;
+		Coefficient c;
+		numer_denom(dbm_k_0, a, c);
+		T d;
+		div_round_up(d, a*expr_coeff_var, c);
+		add_round_up(up_sum, up_sum, d);
+	      }
+	      else {
+		++up_num_inf;
+		up_var_index_inf = k;
+	      }
 	    }
-	    // If the approximation is infinite, no constraint is added.
-	    if (!up_sum_ninf)
-	      break;
 	  }
 	}
 	
@@ -3065,27 +3086,58 @@ BD_Shape<T>::generalized_affine_image
 	  dbm[i][num_var] = PLUS_INFINITY;
 	}
 	
-	// Added the right constraint, if necessary.
-	if (up_sum_ninf)
-	  add_constraint(denominator*dnm*var <= up_sum);
-
+	if (up_num_inf == 0) {
+	  // Added the constraint
+	  // 'var <= up_sum'.
+	  Coefficient a;
+	  Coefficient c;
+	  numer_denom(up_sum, a, c);
+	  add_constraint(denominator*c*var <= a);
+	  // Deduction of the constraints
+	  // 'var - var1'
+	  // where var1 != var.
+	  for (dimension_type h = 1; h <= space_dim; ++h)  
+	    if (h != num_var) 
+	      if (expr.coefficient(Variable(h-1)) > 0) {
+		T dbm_0_h = dbm[0][h];
+		T negate_dbm_0_h;
+		negate_round_up(negate_dbm_0_h, dbm_0_h);
+		add_round_up(dbm[h][num_var], negate_dbm_0_h,dbm[0][num_var]);
+	      }
+	}
+	else if (up_num_inf == 1)  
+	  if (up_var_index_inf != num_var) 
+	    if (expr.coefficient(Variable(up_var_index_inf - 1)) == 1) {
+	      // Added the constraint
+	      // 'var - var1 <= up_sum'
+	      // where var1 != var.
+	      Coefficient n;
+	      Coefficient d;
+	      numer_denom(up_sum, n, d);
+	      add_constraint(d*denominator*(var - Variable(up_var_index_inf)) <= n);
+	    }
+	
 	break;	
       }
-
+      
     case EQUAL:
       // The relation symbol is "==":
       // this is just an affine image computation.
       affine_image(var, expr, denominator);
       break;
-
+      
     case GREATER_THAN_OR_EQUAL:
       {
-	Coefficient low_sum = expr.inhomogeneous_term();
+	T term = expr.inhomogeneous_term();
+	T low_sum;
+	negate_round_up(low_sum, term);
 
-	Coefficient dnm = 1;
-	Coefficient dnm1 = 1;
-	// Checks if in the approximation there is an infinite value.
-	bool low_sum_ninf = true;
+	// Index of the variables with value +inf.
+	dimension_type low_var_index_inf;
+    
+	// Number of infinite values in the approximation. 
+	dimension_type low_num_inf = 0;
+ 
 	for (dimension_type i = expr_space_dim; i-- > 0; ) {
 	  Coefficient expr_coeff_var = expr.coefficient(Variable(i));
 	  if (expr_coeff_var != 0) {
@@ -3095,26 +3147,18 @@ BD_Shape<T>::generalized_affine_image
 	    const T& dbm_k_0 = dbm[k][0];
 	    if (expr_coeff_var > 0) {
 	      // Lower approximation.
-	      if (low_sum_ninf)
-		if (!is_plus_infinity(dbm_k_0)) {
-		  Coefficient a;
-		  Coefficient b;
-		  T c;
-		  negate_round_down(c, dbm_k_0);
-		  numer_denom(c, a, b);
-		  if (dnm1 % b == 0) {
-		    b = dnm1/b;
-		    low_sum += (a*expr_coeff_var*b);
-		  }
-		  else {
-		    dnm1 *= b;
-		    low_sum *= b;
-		    low_sum += (a*expr_coeff_var*dnm1);
-		  }
-		}
-		else
-		  low_sum_ninf = false;
-	
+	      if (!is_plus_infinity(dbm_k_0)) {
+		Coefficient a;
+		Coefficient c;
+	        numer_denom(dbm_0_k, a, c);
+		T d;
+		div_round_up(d, a*expr_coeff_var, c);
+		add_round_up(low_sum, low_sum, d);
+	      }
+	      else {
+		++low_num_inf;
+		low_var_index_inf = k;
+	      }
 	    }
 	    // The coefficient is negative, so consider the negative variable
 	    // * <= -X <= *. Es.:
@@ -3122,33 +3166,22 @@ BD_Shape<T>::generalized_affine_image
 	    else {
 	      expr_coeff_var = -expr_coeff_var;
 	      // Lower approximation.
-	      if (low_sum_ninf)
-		if (!is_plus_infinity(dbm_0_k)) {
-		  T c1;
-		  negate_round_down(c1, dbm_0_k);
-		  Coefficient a;
-		  Coefficient b;
-		  numer_denom(c1, a, b);
-		  // Lower bound.
-		  if (dnm1 % b == 0) {
-		    b = dnm1/b;
-		    low_sum += (a*expr_coeff_var*b);
-		  }
-		  else {
-		    dnm1 *= b;
-		    low_sum *= b;
-		    low_sum += (a*expr_coeff_var*dnm1);
-		  }
-		}
-		else
-		  low_sum_ninf = false;
+	      if (!is_plus_infinity(dbm_0_k)) {
+		Coefficient a;
+		Coefficient c;
+	   	numer_denom(dbm_0_k, a, c);
+		T d;
+		div_round_up(d, a*expr_coeff_var, c);
+		add_round_up(low_sum, low_sum, d);
+	      }
+	      else {
+		++low_num_inf;
+		low_var_index_inf = k;
+	      }
 	    }
-	    // If the approximation is infinite, no constraint is added.
-	    if (!low_sum_ninf)
-	      break;
 	  }
 	}
-
+	
 	// Remove all constraints with 'var'.
 	for (dimension_type i = 0; i <= space_dim; ++i) {
 	  n_v[i] = PLUS_INFINITY;
@@ -3156,11 +3189,39 @@ BD_Shape<T>::generalized_affine_image
 	}
 	
 	// Added the right constraint, if necessary.
-	if (low_sum_ninf)
-	  add_constraint(denominator*dnm1*var >= low_sum);
+	if (low_num_inf == 0) {
+	  // Added the constraint
+	  // 'var <= low_sum'.
+	  Coefficient a;
+	  Coefficient c;
+	  numer_denom(low_sum, a, c);
+	  add_constraint(c*denominator*(-var) <= a);
+	  // Deduction of the constraints
+	  // 'var1 - var'
+	  // where var1 != var.
+	  for (dimension_type h = 1; h <= space_dim; ++h)  
+	    if (h != num_var)
+	      if (expr.coefficient(Variable(h-1)) < 0) {     
+		T dbm_h_0 = dbm[h][0];
+		T negate_dbm_h_0;
+		negate_round_up(negate_dbm_h_0, dbm_h_0);
+		add_round_up(dbm[num_var][h], negate_dbm_h_0, dbm[num_var][0]);
+	      }
+	}
+	else if (low_num_inf == 1)
+	  if (low_var_index_inf != num_var)
+	    if (expr.coefficient(Variable(low_var_index_inf - 1)) == 1) {
+	      // Added the constraint
+	      // 'var1 - var <= low_sum'
+	      // where var1 != var.
+	      Coefficient n;
+	      Coefficient d;
+	      numer_denom(low_sum, n, d);
+	      add_constraint(d*denominator*(Variable(low_var_index_inf) - var) <= n);
+	    }
 	break;
       }
-
+      
     default:
       // We already dealt with the case of a strict relation symbol.
       throw std::runtime_error("PPL internal error");

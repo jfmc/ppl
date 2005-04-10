@@ -75,7 +75,7 @@ test2() {
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
-  
+
   bd.affine_preimage(A, 2*A + 3*C + 2, 2); 
  
   TBD_Shape known_result(3);
@@ -107,11 +107,11 @@ test3() {
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
-  
-  bd.affine_preimage(A, -3*A + C - 1, 2); 
+
+  bd.affine_preimage(A, 2*A + 3*C + 2, 2);
 
   TBD_Shape known_result(3);
-  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(A <= -2);
   known_result.add_constraint(B <= 0);
   known_result.add_constraint(C >= 0);
 
@@ -199,7 +199,7 @@ test6() {
   bd.add_constraint(B == 0);
   bd.add_constraint(C >= -3);
   bd.add_constraint(D <= 5);
-  
+ 
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
@@ -213,7 +213,7 @@ test6() {
   known_result.add_constraint(D <= 3);
  
   bool ok = (bd == known_result);
-
+ 
 #if NOISY
   print_constraints(bd, "*** bd.affine_preimage(D, 4*A - B + 2*C + 5*D - 1, 3) ***");
 #endif
