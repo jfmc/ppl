@@ -71,7 +71,7 @@ Time::operator+=(const Time& y) {
     r_microsecs %= 1000000;
   }
   secs = r_secs;
-  microsecs = r_secs;
+  microsecs = r_microsecs;
   assert(OK());
   return *this;
 }
