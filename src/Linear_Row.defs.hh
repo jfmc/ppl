@@ -155,11 +155,13 @@ public:
     bool is_not_necessarily_closed() const;
     bool is_line_or_equality() const;
     bool is_ray_or_point_or_inequality() const;
+    bool is_virtual() const;
 
     void set_necessarily_closed();
     void set_not_necessarily_closed();
     void set_is_line_or_equality();
     void set_is_ray_or_point_or_inequality();
+    void set_is_virtual();
     //@} // Testing and setting the type
 
     //! Returns <CODE>true</CODE> if and only if \p *this and \p y are equal.
@@ -189,12 +191,14 @@ public:
     = Row::Flags::first_free_bit + 2;
     static const unsigned nnc_bit
     = Row::Flags::first_free_bit + 3;
+    static const unsigned virtual_bit
+    = Row::Flags::first_free_bit + 4;
     //@}
 
   protected:
     //! Index of the first bit derived classes can use.
     static const unsigned first_free_bit
-    = Row::Flags::first_free_bit + 4;
+    = Row::Flags::first_free_bit + 5;
 
     friend class Parma_Polyhedra_Library::Linear_Row;
   };
@@ -264,6 +268,11 @@ public:
   //! Returns the topological kind of \p *this.
   Topology topology() const;
 
+  //! \brief Returns <CODE>true</CODE> if and only if this is a
+  //! virtual row.
+  /*! Used by Grid.  */
+  bool is_virtual() const;
+
   //! \brief Returns <CODE>true</CODE> if and only if the topology
   //! of \p *this row is not necessarily closed.
   bool is_not_necessarily_closed() const;
@@ -283,6 +292,10 @@ public:
 
   //! \name Flags coercion methods
   //@{
+  //! Mark \p *this row as virtual.
+  /*! Used by Grid.  */
+  void set_is_virtual();
+
   //! Sets to \p NECESSARILY_CLOSED the topological kind of \p *this row.
   void set_necessarily_closed();
 
