@@ -1,0 +1,68 @@
+# Automake source file for the Parma Polyhedra Library.
+# Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+#
+# This file is part of the Parma Polyhedra Library (PPL).
+#
+# The PPL is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at your
+# option) any later version.
+#
+# The PPL is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+# USA.
+#
+# For the most up-to-date information see the Parma Polyhedra Library
+# site: http://www.cs.unipr.it/ppl/ .
+
+srcdir = @srcdir@
+VPATH = @srcdir@
+
+@SET_MAKE@
+
+SUBDIRS =
+
+AM_CPPFLAGS = \
+-D NOISY \
+-I$(top_srcdir)/src -I$(top_srcdir)/tests \
+-I$(top_builddir)/src \
+-I$(top_srcdir)/utils \
+@extra_includes@
+
+LDADD = \
+$(top_builddir)/src/libppl.la \
+$(top_builddir)/utils/libppl_utils.a \
+$(top_builddir)/tests/libppl_tests.a \
+@extra_libraries@
+
+TESTS = \
+congruence1 \
+writecongruencesystem \
+congruencesystem1 \
+congruencesystem2 \
+grid1
+
+#
+# Sources for the tests
+#
+
+congruence1_SOURCES = congruence1.cc
+writecongruencesystem_SOURCES = writecongruencesystem.cc
+congruencesystem1_SOURCES = congruencesystem1.cc
+congruencesystem2_SOURCES = congruencesystem2.cc
+grid1_SOURCES = grid1.cc
+
+XFAIL_TESTS =
+
+check_PROGRAMS = $(TESTS) $(BUGS)
+
+BUGS =
+
+MOSTLYCLEANFILES = \
+writecongruencesystem.dat
