@@ -85,6 +85,19 @@ Congruence_System::clear() {
   Matrix::clear();
 }
 
+inline void
+Congruence_System::resize_no_copy(const dimension_type new_n_rows,
+				  const dimension_type new_n_columns) {
+  Matrix::resize_no_copy(new_n_rows, new_n_columns, Row::Flags());
+#if 0
+  // Even though `*this' may happen to keep its sortedness, we believe
+  // that checking such a property is not worth the effort.  In fact,
+  // it is very likely that the system will be overwritten as soon as
+  // we return.
+  set_sorted(false);
+#endif
+}
+
 #if 0
 inline const Congruence_System&
 Congruence_System::zero_dim_empty() {

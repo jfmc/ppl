@@ -347,6 +347,11 @@ public:  // FIX for testing
   //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
   bool satisfies_all_congruences(const Generator& g) const;
 
+  //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
+  // FIX details
+  bool satisfies_all_congruences(const Generator& g,
+				 const Generator& ref) const;
+
 private:
 
   //! \brief
@@ -388,6 +393,20 @@ private:
   void affine_preimage(dimension_type v,
 		       const Linear_Expression& expr,
 		       Coefficient_traits::const_reference denominator);
+
+  //! Resizes the system without worrying about the old contents.
+  /*!
+    \param new_n_rows
+    The number of rows of the resized system;
+
+    \param new_n_columns
+    The number of columns of the resized system.
+
+    The system is expanded to the specified dimensions avoiding
+    reallocation whenever possible.
+    The contents of the original system is lost.
+  */
+  void resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns);
 
 #if 0 // FIX
   //! \brief

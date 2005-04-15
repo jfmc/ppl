@@ -37,21 +37,41 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Congruence_System::normalize_moduli() {
-  if (num_rows()) {
+  // FIX Add a flag to save doing this often.  Clear the flag when
+  //     congruences are added.
+  dimension_type row = num_rows();
+  if (row) {
     // Calculate the LCM of all the moduli.
     TEMP_INTEGER(lcm);
-    lcm = operator[](0).modulus();
-    for (dimension_type row = num_rows(); row-- > 1; )
-      lcm_assign(lcm, operator[](row).modulus());
+
+    // Find first congruence.
+    while (1) {
+      lcm = operator[](--row).modulus();
+      if (lcm != 0)
+	break;
+      if (row == 0)
+	// All rows are equalities.
+	return;
+    }
+
+    while (row > 1) {
+      TEMP_INTEGER(modulus);
+      modulus = operator[](--row).modulus();
+      if (modulus != 0)
+	lcm_assign(lcm, modulus);
+    }
     std::cout << "lcm " << lcm << std::endl;
+
     dimension_type row_size = operator[](0).size();
     std::cout << "row_size " << row_size << std::endl;
     // Represent every row using the LCM as the modulus.
     for (dimension_type row = num_rows(); row-- > 0; ) {
-      if (operator[](row).modulus() == lcm)
+      TEMP_INTEGER(modulus);
+      modulus = operator[](row).modulus();
+      if (modulus == 0 || modulus == lcm)
 	continue;
       TEMP_INTEGER(factor);
-      factor = lcm / operator[](row).modulus();
+      factor = lcm / modulus;
       std::cout << "factor " << factor << std::endl;
       for (dimension_type col = row_size; col-- > 0; )
 	operator[](row)[col] *= factor;
@@ -197,6 +217,8 @@ bool
 PPL::Congruence_System::satisfies_all_congruences(const Generator& g) const {
   assert(g.space_dimension() <= space_dimension());
 
+  // Almost identical to the double-argument version below.
+
   // Setting `spa_fp' to the appropriate scalar product operator.
   // This also avoids problems when having _legal_ topology mismatches
   // (which could also cause a mismatch in the number of columns).
@@ -212,8 +234,54 @@ PPL::Congruence_System::satisfies_all_congruences(const Generator& g) const {
     // FIX is this correct?
     TEMP_INTEGER(sp);
     spa_fp(sp, g, cgs[i]);
-    if (sp % cgs[i].modulus() != 0)
-      return false;
+    if (cgs[i].is_equality()) {
+      // FIX a guess
+      if (sp != 0) {
+	std::cout << "satisfies_all_cgs... done (eq false i = " << i << ")." << std::endl;
+	return false;
+      }
+    }
+    else
+      if (sp % cgs[i].modulus() != 0) {
+	std::cout << "satisfies_all_cgs... done (false i = " << i << ")." << std::endl;
+	return false;
+      }
+  }
+  std::cout << "satisfies_all_cgs... done." << std::endl;
+  return true;
+}
+
+bool
+PPL::Congruence_System::satisfies_all_congruences(const Generator& g,
+						  const Generator& ref) const {
+  assert(g.space_dimension() <= space_dimension());
+
+  // Almost identical to the single-argument version above.
+
+  // Setting `spa_fp' to the appropriate scalar product operator.
+  // This also avoids problems when having _legal_ topology mismatches
+  // (which could also cause a mismatch in the number of columns).
+  void (*spa_fp)(Coefficient&, const Linear_Row&, const Congruence&,
+		 const Linear_Row&);
+  //if (g.type() == Generator::CLOSURE_POINT) // FIX (first, and had cases swapped)
+  if (g.is_necessarily_closed())
+    spa_fp = PPL::scalar_product_assign;
+  else
+    spa_fp = PPL::reduced_scalar_product_assign;
+
+  const Congruence_System& cgs = *this;
+  for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
+    // FIX is this correct?
+    TEMP_INTEGER(sp);
+    spa_fp(sp, g, cgs[i], ref);
+    if (cgs[i].is_equality()) {
+      // FIX a guess
+      if (sp != 0)
+	return false;
+    }
+    else
+      if (sp % cgs[i].modulus() != 0)
+	return false;
   }
   return true;
 }
@@ -303,7 +371,7 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
     return false;
   if ((s >> ncols) == false)
     return false;
-  resize_no_copy(nrows, ncols, Row::Flags());
+  resize_no_copy(nrows, ncols);
 
 #if 0
   dimension_type index;
@@ -362,6 +430,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence_System& cgs) {
   if (i == cgs_end)
     s << "true";
   else {
+    // FIX do while
     while (i != cgs_end) {
       s << *i++;
       if (i != cgs_end)
@@ -374,5 +443,16 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence_System& cgs) {
 /*! \relates Parma_Polyhedra_Library::Congruence_System */
 bool
 PPL::operator==(const Congruence_System& x, const Congruence_System& y) {
-  return static_cast<Matrix>(x) == static_cast<Matrix>(y);
+  if (x.num_columns() == y.num_columns()) {
+    dimension_type num_rows = x.num_rows();
+    if (num_rows == y.num_rows()) {
+      while (num_rows) {
+	if (x[--num_rows] == y[num_rows])
+	  continue;
+	return false;
+      }
+      return true;
+    }
+  }
+  return false;
 }
