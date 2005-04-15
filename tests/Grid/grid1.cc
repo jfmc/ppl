@@ -1,4 +1,4 @@
-/* Grid reduction and conversion tests.
+/* Grid reduction and conversion tests, which start with generators.
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -29,7 +29,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 // FIX take out all line spacing on function name tracing ("\n\ntest1")
 
-// FIX Comparing know grid failures is easire with ASCII dumps.
+// FIX Comparing known_grid failures is easier with ASCII dumps.
 
 /* add_generator_and_minimize, one variable.  */
 
@@ -51,15 +51,13 @@ test1() {
   if (find_variation(gr))
     exit(1);
 
-  // FIX need to minimize to create equivalent grid, will be same as
-  // above
-#if 0
-  Generator_System known_gs;
-  known_gs.insert(point(-A));
+  Congruence_System known_cgs;
+  known_cgs.insert(A %= 0);
 
   //Grid known_gr(known_gs); // FIX
   Grid known_gr(1, Grid::EMPTY);
-  known_gr.add_generators(known_gs);
+  known_gr.add_congruences(known_cgs);
+
   if (find_variation(known_gr))
     exit(1);
 
@@ -70,7 +68,6 @@ test1() {
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
   exit(1);
-#endif
 }
 
 /* add_generator_and_minimize, two variables.  */
@@ -129,10 +126,6 @@ test3() {
   gs.insert(point(3*A + 4*B));
   gs.insert(point(9*A + 0*B));
 
-  nout << "gs:" << endl;
-  gs.ascii_dump(std::cout);
-  nout << "create grid" << endl;
-
   Grid gr(2, Grid::EMPTY);
   gr.add_generators_and_minimize(gs);
 
@@ -177,8 +170,6 @@ test4() {
   if (find_variation(gr))
     exit(1);
 
-  gr.ascii_dump(nout);
-
   Congruence_System known_cgs;
   known_cgs.insert(( 0*A + 0*B + 0*C %= -2) / 1);
   // FIX how to create virtual rows?
@@ -192,11 +183,6 @@ test4() {
 
   if (known_gr == gr)
     return;
-
-  nout << "gr.ascii_dump(nout):" << endl;
-  gr.ascii_dump(nout);
-  nout << "known_gr.ascii_dump(nout):" << endl;
-  known_gr.ascii_dump(nout);
 
   nout << "Grid should equal known grid." << endl
        << " grid:" << endl << gr << endl
@@ -237,11 +223,6 @@ test5() {
 
   if (known_gr == gr)
     return;
-
-  nout << "gr.ascii_dump(nout):" << endl;
-  gr.ascii_dump(nout);
-  nout << "known_gr.ascii_dump(nout):" << endl;
-  known_gr.ascii_dump(nout);
 
   nout << "Grid should equal known grid." << endl
        << " grid:" << endl << gr << endl
