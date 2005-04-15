@@ -1194,7 +1194,7 @@ public:
 
   //@} // Miscellaneous Member Functions
 
-private:
+public:  //private: // FIX, for testing
 
   //! The system of congruences.
   Congruence_System con_sys;
@@ -1587,19 +1587,20 @@ private:
   //! Adds the low-level congruences to the congruence system.
   static void add_low_level_congruences(Congruence_System& cgs);
 
-  //! \name Reduction-Related Static Member Functions
+  //! \name Minimization-related Static Member Functions
   //@{
 
-  //! Builds and simplifies congruences from generators (or vice versa).
+  //! Builds and simplifies congruences from generators.
   // File Grid_minimize.cc holds the detailed Doxygen comment.
   static bool minimize(bool con_to_gen,
 		       Congruence_System& source,
 		       Linear_System& dest,
 		       Saturation_Matrix& sat);
 
-  // FIX
-  static bool minimize(const bool con_to_gen,
-		       const Linear_System& dest,
+  //! Builds and simplifies generators from congruences.
+  // File Grid_minimize.cc holds the detailed Doxygen comment.
+  static bool minimize(bool con_to_gen,
+		       Generator_System& dest,
 		       Congruence_System& source,
 		       Saturation_Matrix& sat);
 
@@ -1618,49 +1619,67 @@ private:
   //! or vice versa. The given congruences are in \p source.
   // Detailed Doxygen comment to be found in file Grid_minimize.cc.
   static bool add_and_minimize(bool con_to_gen,
-			     Congruence_System& source,
-			     Linear_System& dest,
-			     Saturation_Matrix& sat);
+			       Congruence_System& source,
+			       Linear_System& dest,
+			       Saturation_Matrix& sat);
 
   //! Adds given generators and builds reduced corresponding congruences.
   // Detailed Doxygen comment in file Grid_minimize.cc.
-  static bool add_and_minimize(Linear_System& source1,
-			     Congruence_System& dest,
-			     Saturation_Matrix& sat,
-			     const Linear_System& source2);
+  static bool add_and_minimize(Generator_System& source1,
+			       Congruence_System& dest,
+			       Saturation_Matrix& sat,
+			       const Generator_System& source2);
 
   //! \brief
   //! Adds given generators and builds reduced corresponding congruences.
   // Detailed Doxygen comment in file Grid_minimize.cc.
-  static bool add_and_minimize(Linear_System& source,
-			     Congruence_System& dest,
-			     Saturation_Matrix& sat);
+  static bool add_and_minimize(Generator_System& source,
+			       Congruence_System& dest,
+			       Saturation_Matrix& sat);
 
   //! \brief
-  //! Performs the conversion from congruences to generators and vice versa.
-  // Detailed Doxygen comment to be found in file conversion.cc.
-  static dimension_type convert(Linear_System& source,
-				dimension_type start,
-				Linear_System& dest,
-				Saturation_Matrix& sat,
-				dimension_type num_lines_or_equalities);
+  //! Converts from congruences to generators.
+  // Detailed Doxygen comment to be found in file Grid_conversion.cc.
+  static dimension_type conversion(Congruence_System& source,
+				   dimension_type start,
+				   Linear_System& dest,
+				   Saturation_Matrix& sat,
+				   dimension_type num_lines_or_equalities);
 
-private:
+  //! \brief
+  //! Converts from generators to congruences.
+  // Detailed Doxygen comment to be found in file Grid_conversion.cc.
+  static dimension_type conversion(Generator_System& source,
+				   dimension_type start,
+				   Congruence_System& dest,
+				   Saturation_Matrix& sat,
+				   dimension_type num_lines_or_equalities);
+
+public:  //private: // FIX, for testing
 
   //! Normalize the divisors in \p sys.
   /*!
     Convert \p sys to an equivalent representation in which the
     divisors of all the generators are equal.
-  */
-  static void normalize_divisors(Linear_System& sys);
 
-  //! Convert \p sys to a parameter system.
+    \p divisor is an extra divisor to include in the calculation of a
+    common divisor.  A value of 0 for \p divisor indicates to leave it
+    out of the calculation.
+  */
+  static Coefficient
+  normalize_divisors(Linear_System& sys,
+		     Coefficient_traits::const_reference divisor = 0);
+
+  //! Convert the rows in \p sys to parameters.
   /*!
-    With the first point as reference point, make all other points in
-    \p sys relative to the reference point.
+    Represent all points in \p sys relative to row \p reference_row.
+    If leave_first is true then the first row in \p sys is left in
+    tact (i.e. \p sys is turned into a parameter system).
   */
   // FIX name? relativize?
-  static void parameterize(Linear_System& sys);
+  static Generator_System& parameterize(Generator_System& sys,
+					Generator& reference_row,
+					bool leave_first = true);
 
   //! \brief
   //! FIX Uses Gauss' elimination method to simplify the result of
@@ -1672,7 +1691,7 @@ private:
   //! FIX Uses Gauss' elimination method to simplify the result of
   //! <CODE>convert()</CODE>.
   // Detailed Doxygen comment to be found in file simplify.cc.
-  static int simplify(Linear_System& mat, Saturation_Matrix& sat);
+  static int simplify(Generator_System& mat, Saturation_Matrix& sat);
 
   //! Reduce \p row_k using \p row_j.
   /*!
@@ -1712,6 +1731,14 @@ private:
   // A member of Grid for access to Matrix::rows.
   static void le_pc_reduce(Congruence& row_j, Congruence& row_k,
 			   dimension_type col, Congruence_System& sys);
+
+  // FIX docs
+  // FIX Members of Grid for access to Matrix::rows.
+  static bool virtual_row(const Congruence& row);
+  static bool virtual_row(const Linear_Row& row);
+  static bool virtual_row(const Generator& row);
+  static Congruence& mark_virtual(Congruence& row);
+  static Linear_Row& mark_virtual(Linear_Row& row);
 
   //@} // Minimization-Related Static Member Functions
 

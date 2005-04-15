@@ -31,6 +31,46 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+// FIX next 4: assume elements?, row.size() call may be saveable
+//     in context
+
+// FIX
+// Virtual rows currently "take precedence" to the other kinds.  I.e
+// the flags for the other kinds may be set at the same time as the
+// virtual flag.  So the virtual flag must always be checked first.
+// This is due to the quick Linear_Row implementation of the virtual
+// flag.
+
+inline bool
+Grid::virtual_row(const Linear_Row& row) {
+  //return row[0] == -1;
+  return row.is_virtual();
+}
+
+inline bool
+Grid::virtual_row(const Generator& row) {
+  //return row[0] == -1;
+  return row.is_virtual();
+}
+
+inline bool
+Grid::virtual_row(const Congruence& row) {
+  return row[row.size() - 1] == -1;
+}
+
+inline Linear_Row&
+Grid::mark_virtual(Linear_Row& row) {
+  //row[0] = -1;
+  row.set_is_virtual();
+  return row;
+}
+
+inline Congruence&
+Grid::mark_virtual(Congruence& row) {
+  row[row.size() - 1] = -1;
+  return row;
+}
+
 inline dimension_type
 Grid::max_space_dimension() {
   using std::min;
@@ -46,123 +86,6 @@ Grid::max_space_dimension() {
 inline void
 Grid::set_congruences_up_to_date() {
   status.set_c_up_to_date();
-}
-
-// FIX add  void construct(Congruence_System& cgs)?
-// FIX inline such a big method?
-inline void
-Grid::construct(const Congruence_System& ccgs) {
-  // Protecting against space dimension overflow is up to the caller.
-  assert(ccgs.space_dimension() <= max_space_dimension());
-
-  // TODO: this implementation is just an executable specification.
-  Congruence_System cgs = ccgs;
-
-  const dimension_type cgs_space_dim = cgs.space_dimension();
-#if 0
-  // Try to adapt `cgs' to the required topology.
-  // FIX need adjust_space_dimension? think for general constr's
-  if (!cgs.adjust_topology_and_space_dimension(topol, cgs_space_dim))
-    throw_topology_incompatible((topol == NECESSARILY_CLOSED)
-				? "C_Polyhedron(cgs)"
-				: "NNC_Polyhedron(cgs)", "cgs", cgs);
-#endif
-
-  // Set the space dimension.
-  space_dim = cgs_space_dim;
-
-  if (space_dim > 0) {
-    // Stealing the rows from `cgs'.
-    std::swap(con_sys, cgs);
-#if 0 // FIX
-    if (con_sys.num_pending_rows() > 0) {
-      // Even though `cgs' has pending constraints, since the generators
-      // of the polyhedron are not up-to-date, the polyhedron cannot
-      // have pending constraints. By integrating the pending part
-      // of `con_sys' we may loose sortedness.
-      con_sys.unset_pending_rows();
-      con_sys.set_sorted(false);
-    }
-#endif
-    add_low_level_congruences(con_sys);
-    set_congruences_up_to_date();
-  }
-  else {
-    // Here `space_dim == 0'.
-    if (cgs.num_columns() > 0)
-      // See if an inconsistent congruence has been passed.
-      for (dimension_type i = cgs.num_rows(); i-- > 0; )
-	if (cgs[i].is_trivial_false()) {
-	  // Inconsistent constraint found: the polyhedron is empty.
-	  set_empty();
-	  break;
-	}
-  }
-  assert(OK());
-}
-
-// FIX inline?
-// FIX add  void construct(Generator_System& cgs)?
-inline void
-Grid::construct(const Generator_System& cgs) {
-  // Protecting against space dimension overflow is up to the caller.
-  assert(cgs.space_dimension() <= max_space_dimension());
-
-  // TODO: this implementation is just an executable specification.
-  Generator_System gs = cgs;
-
-  // An empty set of generators defines the empty polyhedron.
-  if (gs.num_rows() == 0) {
-    space_dim = gs.space_dimension();
-    status.set_empty();
-    return;
-  }
-
-  // Non-empty valid generator systems have a supporting point, at least.
-  if (!gs.has_points())
-    throw_invalid_generators("Grid(gs)" /* FIX correct? */, "gs");
-
-  const dimension_type gs_space_dim = gs.space_dimension();
-#if 0
-  // Try to adapt `gs' to the required topology.
-  if (!gs.adjust_topology_and_space_dimension(topol, gs_space_dim))
-    throw_topology_incompatible((topol == NECESSARILY_CLOSED)
-				? "C_Polyhedron(gs)"
-				: "NNC_Polyhedron(gs)", "gs", gs);
-#endif
-
-  if (gs_space_dim > 0) {
-    // Stealing the rows from `gs'.
-    std::swap(gen_sys, gs);
-#if 0
-    // FIX how in grid?
-    // In a generator system describing a NNC polyhedron,
-    // for each point we must also have the corresponding closure point.
-    if (topol == NOT_NECESSARILY_CLOSED)
-      gen_sys.add_corresponding_closure_points();
-#endif
-    if (gen_sys.num_pending_rows() > 0) {
-      // FIX
-      // Even though `gs' has pending generators, since the constraints
-      // of the polyhedron are not up-to-date, the polyhedron cannot
-      // have pending generators. By integrating the pending part
-      // of `gen_sys' we may loose sortedness.
-      gen_sys.unset_pending_rows();
-      gen_sys.set_sorted(false);
-    }
-    // Generators are now up-to-date.
-    set_generators_up_to_date();
-
-    // Set the space dimension.
-    space_dim = gs_space_dim;
-    assert(OK());
-    return;
-  }
-
-  // Here `gs.num_rows > 0' and `gs_space_dim == 0': we have already
-  // checked for both the topology-compatibility and the supporting
-  // point.
-  space_dim = 0;
 }
 
 inline
@@ -464,13 +387,13 @@ Grid::minimize(const Linear_Expression& expr,
 	       const Generator** const pppoint) const {
   return max_min(expr, false, inf_n, inf_d, minimum, pppoint);
 }
-
+#endif
 /*! \relates Grid */
 inline bool
 operator!=(const Grid& x, const Grid& y) {
   return !(x == y);
 }
-
+#if 0
 inline bool
 Grid::strictly_contains(const Grid& y) const {
   const Grid& x = *this;

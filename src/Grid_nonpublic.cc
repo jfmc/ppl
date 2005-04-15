@@ -47,52 +47,188 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+// FIX add  void construct(Congruence_System& cgs)?
 void
-PPL::Grid::normalize_divisors(Linear_System& sys) {
-  // FIX use as ref pnt first pnt which has a value in the first col?
-  // FIX ~normalize divisor.
-  dimension_type num_rows = sys.num_rows();
-  if (num_rows > 1) {
-    TEMP_INTEGER(lcm);
-    // Calculate the LCM of all the divisors.
-    lcm = sys[0][0];		// FIX Assumes cols.
-    for (dimension_type row = 1; row < num_rows; ++row)
-      lcm_assign(lcm, sys[row][0]);
-    // Represent each generator using the LCM.
-    for (dimension_type row = 0; row < num_rows; ++row) {
-      Linear_Row& gen = sys[row];
-      TEMP_INTEGER(divisor);
-      divisor = gen[0];
-      for (dimension_type col = 1; col < gen.size(); ++col)
-	gen[col] = (lcm * gen[col]) / divisor;
-      gen[0] = lcm;
+PPL::Grid::construct(const Congruence_System& ccgs) {
+  // Protecting against space dimension overflow is up to the caller.
+  assert(ccgs.space_dimension() <= max_space_dimension());
+
+  // TODO: this implementation is just an executable specification.
+  Congruence_System cgs = ccgs;
+
+  const dimension_type cgs_space_dim = cgs.space_dimension();
+#if 0
+  // Try to adapt `cgs' to the required topology.
+  // FIX need adjust_space_dimension? think for general constr's
+  if (!cgs.adjust_topology_and_space_dimension(topol, cgs_space_dim))
+    throw_topology_incompatible((topol == NECESSARILY_CLOSED)
+				? "C_Polyhedron(cgs)"
+				: "NNC_Polyhedron(cgs)", "cgs", cgs);
+#endif
+
+  // Set the space dimension.
+  space_dim = cgs_space_dim;
+
+  if (space_dim > 0) {
+    // Stealing the rows from `cgs'.
+    std::swap(con_sys, cgs);
+    simplify(con_sys, sat_c);
+#if 0 // FIX
+    if (con_sys.num_pending_rows() > 0) {
+      // Even though `cgs' has pending constraints, since the generators
+      // of the polyhedron are not up-to-date, the polyhedron cannot
+      // have pending constraints. By integrating the pending part
+      // of `con_sys' we may loose sortedness.
+      con_sys.unset_pending_rows();
+      con_sys.set_sorted(false);
     }
-    // FIX
-    sys.set_sorted(false);
+#endif
+    add_low_level_congruences(con_sys);
+    set_congruences_up_to_date();
   }
+  else {
+    // Here `space_dim == 0'.
+    if (cgs.num_columns() > 0)
+      // See if an inconsistent congruence has been passed.
+      for (dimension_type i = cgs.num_rows(); i-- > 0; )
+	if (cgs[i].is_trivial_false()) {
+	  // Inconsistent constraint found: the polyhedron is empty.
+	  set_empty();
+	  break;
+	}
+  }
+  assert(OK());
 }
 
+// FIX add  void construct(Generator_System& cgs)?
 void
-PPL::Grid::parameterize(Linear_System& sys) {
+PPL::Grid::construct(const Generator_System& cgs) {
+  // Protecting against space dimension overflow is up to the caller.
+  assert(cgs.space_dimension() <= max_space_dimension());
+
+  // TODO: this implementation is just an executable specification.
+  Generator_System gs = cgs;
+
+  // An empty set of generators defines the empty grid.
+  if (gs.num_rows() == 0) {
+    space_dim = gs.space_dimension();
+    status.set_empty();
+    return;
+  }
+
+  // Non-empty valid generator systems have a supporting point, at least.
+  if (!gs.has_points())
+    throw_invalid_generators("Grid(gs)" /* FIX correct? */, "gs");
+
+  const dimension_type gs_space_dim = gs.space_dimension();
+#if 0
+  // Try to adapt `gs' to the required topology.
+  if (!gs.adjust_topology_and_space_dimension(topol, gs_space_dim))
+    throw_topology_incompatible((topol == NECESSARILY_CLOSED)
+				? "C_Polyhedron(gs)"
+				: "NNC_Polyhedron(gs)", "gs", gs);
+#endif
+
+  if (gs_space_dim > 0) {
+    // Stealing the rows from `gs'.
+    std::swap(gen_sys, gs);
+    simplify(gen_sys, sat_g);
+#if 0
+    // FIX how in grid?
+    // In a generator system describing a NNC polyhedron,
+    // for each point we must also have the corresponding closure point.
+    if (topol == NOT_NECESSARILY_CLOSED)
+      gen_sys.add_corresponding_closure_points();
+#endif
+    if (gen_sys.num_pending_rows() > 0) {
+      // FIX
+      // Even though `gs' has pending generators, since the constraints
+      // of the polyhedron are not up-to-date, the polyhedron cannot
+      // have pending generators. By integrating the pending part
+      // of `gen_sys' we may loose sortedness.
+      gen_sys.unset_pending_rows();
+      gen_sys.set_sorted(false);
+    }
+    // Generators are now up-to-date.
+    set_generators_up_to_date();
+
+    // Set the space dimension.
+    space_dim = gs_space_dim;
+
+    assert(OK());
+    return;
+  }
+
+  // Here `gs.num_rows > 0' and `gs_space_dim == 0': we have already
+  // checked for both the topology-compatibility and the supporting
+  // point.
+  space_dim = 0;
+}
+
+PPL::Coefficient
+PPL::Grid::normalize_divisors(Linear_System& sys,
+			      Coefficient_traits::const_reference divisor) {
+  std::cout << "Normalizing divisors..." << std::endl;
+  // FIX ~normalize divisor. (?)
+  TEMP_INTEGER(lcm);
+  lcm = divisor;
+  if (sys.num_columns()) {
+    dimension_type row = 0;
+    dimension_type num_rows = sys.num_rows();
+
+    // Move to the first point.
+    while (sys[row].is_line_or_equality())
+      if (++row == num_rows)
+	return divisor;		// All rows are lines.
+
+    if (lcm == 0) {
+      lcm = sys[row][0];
+      ++row;
+    }
+
+    // Calculate the LCM of the divisors.
+    while (row < num_rows) {
+      if (sys[row].is_ray_or_point_or_inequality())
+	lcm_assign(lcm, sys[row][0]);
+      ++row;
+    }
+
+    // Represent each point using the LCM as the divisor.
+    for (dimension_type row = 0; row < num_rows; ++row) {
+      Linear_Row& gen = sys[row];
+      if (gen.is_ray_or_point_or_inequality()) {
+	TEMP_INTEGER(divisor);
+	divisor = gen[0];
+	// FIX skip if divisor == lcm
+	for (dimension_type col = 1; col < gen.size(); ++col)
+	  gen[col] = (lcm * gen[col]) / divisor;
+	gen[0] = lcm;
+      }
+    }
+
+    sys.set_sorted(false);	// FIX
+  }
+  std::cout << "Normalizing divisors... done." << std::endl;
+  return lcm;
+}
+
+PPL::Generator_System&
+PPL::Grid::parameterize(Generator_System& sys, Generator& reference_row,
+			bool leave_first) {
   // FIX use as ref pnt first pnt which has a value in the first col?
   //         better result? then need to search for it
-  std::cout << "Normalizing divisors...";
-  normalize_divisors(sys);  // FIX
-  sys.ascii_dump(std::cout);
-  std::cout << " done." << std::endl;
 
   dimension_type num_rows = sys.num_rows();
-  if (num_rows > 1) {
+  if (num_rows > (leave_first ? 1 : 0)) {
     dimension_type row_len = sys.num_columns();
-    Linear_Row& reference_row = sys[0];
-    for (dimension_type row = 1; row < num_rows; ++row)
+    for (dimension_type row = (leave_first ? 1 : 0); row < num_rows; ++row)
       if (sys[row].is_ray_or_point_or_inequality())
-	// First column holds the divisor.
-	for (dimension_type col = 1; col < row_len; ++col)
+	for (dimension_type col = 0; col < row_len; ++col)
 	  sys[row][col] -= reference_row[col];
+    sys.set_sorted(false);	// FIX
   }
-  // FIX
-  sys.set_sorted(false);
+
+  return sys;
 }
 
 #if 0
@@ -353,6 +489,7 @@ PPL::Grid::operator=(const Grid& y) {
 #endif
 PPL::Grid::Three_Valued_Boolean
 PPL::Grid::quick_equivalence_test(const Grid& y) const {
+  std::cout << "quick_equivalence_test" << std::endl;
   // Private method: the caller must ensure the following.
   //assert(topology() == y.topology()); // FIX
   assert(space_dim == y.space_dim);
@@ -390,6 +527,7 @@ PPL::Grid::quick_equivalence_test(const Grid& y) const {
       const dimension_type x_num_lines = x.gen_sys.num_lines();
       if (x_num_lines != y.gen_sys.num_lines())
 	return Grid::TVB_FALSE;
+#if 0 // FIX requires canonical form?
       //  - and if there are no lines, the same generators.
       if (x_num_lines == 0) {
 	// Sort the two systems and check for syntactic identity.
@@ -400,18 +538,22 @@ PPL::Grid::quick_equivalence_test(const Grid& y) const {
 	else
 	  return Grid::TVB_FALSE;
       }
+#endif
     }
 
     if (css_normalized) {
       // Sort the two systems and check for identity.
-#if 0 // FIX sorted == minimized?
+#if 0
       x.obtain_sorted_congruences();
       y.obtain_sorted_congruences();
 #endif
+#if 0
+      // FIX requires sorting or a canonical form?
       if (x.con_sys == y.con_sys)
 	return Grid::TVB_TRUE;
       else
 	return Grid::TVB_FALSE;
+#endif
     }
   }
 
@@ -422,6 +564,7 @@ bool
 PPL::Grid::is_included_in(const Grid& y) const {
   // Private method: the caller must ensure the following.
   //assert(topology() == y.topology()); // FIX
+  std::cout << "is_included_in..." << std::endl;
   assert(space_dim == y.space_dim);
   assert(!marked_empty() && !y.marked_empty() && space_dim > 0);
 
@@ -449,17 +592,30 @@ PPL::Grid::is_included_in(const Grid& y) const {
   assert(x.OK());
   assert(y.OK());
 
-  std::cout << "FIX is_included_in requires conversion" << std::endl;
-#if 0 // update_* above require conversion
   const Generator_System& gs = x.gen_sys;
-  const Congruence_System& cs = y.con_sys;
+  const Congruence_System& cgs = y.con_sys;
 
-  // FIX could this be any different for NNC ph's?
-  for (dimension_type i = gs.num_rows(); i-- > 0; )
-    if (cs.satisfies_all_congruences(gs[i]) == false)
+  dimension_type num_rows = gs.num_rows();
+  // FIX Generator& gen = gs[0];
+  if (num_rows && virtual_row(gs[0]) == false)
+    // FIX could this be any different for NNC ph's? (?)
+    if (cgs.satisfies_all_congruences(gs[0]) == false) {
+      std::cout << "is_included_in... done (false 0)." << std::endl;
       return false;
-#endif
+    }
+  for (dimension_type i = num_rows; i-- > 1; )
+    // FIX gen = gs[i];
+    if (virtual_row(gs[i]) == false) {
+      // FIX could this be any different for NNC ph's? (?)
+      if ((gs[i].is_ray_or_point_or_inequality()
+	   && cgs.satisfies_all_congruences(gs[i], gs[0]) == false)
+	  || cgs.satisfies_all_congruences(gs[i]) == false) {
+	std::cout << "is_included_in... done (false i = " << i << ")." << std::endl;
+	return false;
+      }
+    }
 
+  std::cout << "is_included_in... done." << std::endl;
   // Inclusion holds.
   return true;
 }
@@ -749,6 +905,7 @@ PPL::Grid::update_congruences() const {
   assert(generators_are_up_to_date());
   // We assume the polyhedron has no pending congruences or generators.
   assert(!has_something_pending());
+  std::cout << "update_congruences" << std::endl; // FIX
 
   Grid& gr = const_cast<Grid&>(*this);
   minimize(false, gr.gen_sys, gr.con_sys, gr.sat_c); // FIX
@@ -768,6 +925,7 @@ PPL::Grid::update_generators() const {
   assert(congruences_are_up_to_date());
   // We assume the polyhedron has no pending congruences or generators.
   assert(!has_something_pending());
+  std::cout << "update_generators" << std::endl; // FIX
 
   Grid& x = const_cast<Grid&>(*this);
   // If the system of congruences is not consistent the polyhedron is
@@ -899,8 +1057,12 @@ PPL::Grid::obtain_sorted_generators() const {
   }
   else if (x.sat_g_is_up_to_date()) {
     // Obtaining `sat_c' from `sat_g' and proceeding like previous case.
+#if 0 // FIX for assertion
     x.sat_c.transpose_assign(x.sat_g);
     x.gen_sys.sort_and_remove_with_sat(x.sat_c);
+#else
+    x.gen_sys.sort_rows();
+#endif
     x.set_sat_c_up_to_date();
     x.clear_sat_g_up_to_date();
   }
@@ -970,7 +1132,7 @@ PPL::Grid::obtain_sorted_generators_with_sat_g() const {
       x.set_sat_c_up_to_date();
     }
     // ... and sort it together with generators.
-    x.gen_sys.sort_and_remove_with_sat(x.sat_c);
+    //x.gen_sys.sort_and_remove_with_sat(x.sat_c); // FIX
   }
   // Obtaining sat_g from sat_c.
   x.sat_g.transpose_assign(sat_c);
@@ -983,7 +1145,9 @@ PPL::Grid::obtain_sorted_generators_with_sat_g() const {
 
 bool
 PPL::Grid::minimize() const {
-  // 0-dim space or empty polyhedra are already minimized.
+  std::cout << "minimize()" << std::endl;
+  // 0-dim space and empty polyhedra are already minimized.
+  // FIX should they return the same val?
   if (marked_empty())
     return false;
   if (space_dim == 0)
@@ -1004,11 +1168,10 @@ PPL::Grid::minimize() const {
     return true;
 
   // If congruences or generators are up-to-date, invoking
-  // update_generators() or update_congruences(), respectively,
-  // minimizes both congruences and generators.
-  // If both are up-to-date it does not matter whether we use
-  // update_generators() or update_congruences():
-  // both minimize congruences and generators.
+  // update_generators() or update_congruences(), respectively, FIX
+  // both of which minimize both congruences and generators.  If
+  // congruences and generators are up-to-date then either function
+  // can be called.
   if (congruences_are_up_to_date()) {
     // We may discover here that `*this' is empty.
     const bool ret = update_generators();

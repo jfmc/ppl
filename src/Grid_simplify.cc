@@ -57,11 +57,15 @@ PPL::Grid::le_le_reduce(Row& row_j, Row& row_k, dimension_type column,
      adjusted matrix can be seen as follows, where ck_n and cj_n are
      coefficients and i_k and i_j are the inhomogeneous terms.
 
-     1 row_k is multiplied throughout by a_j, producing
-         a_j * ck_0 * x_0  +  a_j * ck_1 * x_1 ... a_j * i_k  =  0
+  FIX suddenly parameters and congruences are equations?
 
-     2 A copy of row_j is multiplied throughout by a_k and then
-       substituted (for zero) into row_k, producing
+     1 The row_k equation is multiplied throughout by a_j, producing
+
+         a_j * ck_0 * x_0  +  a_j * ck_1 * x_1  ... +  a_j * i_k  =  0
+
+     2 The row_j equation is multiplied throughout by a_k and then
+       substituted (for the zero) into the equation produced in (1),
+       producing
 
          a_j * ck_0 * x_0  +  a_j * ck_1 * x_1  ... +  a_j * i_k
 	     =  a_k * cj_0 * x_0  +  a_k * cj_1 * x_1  ... +  a_k * i_j
@@ -85,10 +89,8 @@ inline void
 PPL::Grid::pc_pc_reduce(Row& row_j, Row& row_k,
 			dimension_type column, dimension_type first_col){
   std::cout << "pc_pc_reduce" << std::endl;
-  // Assume the divisors or moduli of the given generators or,
-  // respectively, congruences are the same.
-  assert(first_col == 1
-	 ? row_j[0] == row_k[0] : row_j[row_j.size()-1] == row_k[row_j.size()-1]);
+  // Assume the moduli of given congruences are the same.
+  assert(first_col || row_j[row_j.size()-1] == row_k[row_j.size()-1]);
   // FIX better way than all these TEMP_..'s?
   TEMP_INTEGER(gcd);
   TEMP_INTEGER(s);
@@ -99,15 +101,15 @@ PPL::Grid::pc_pc_reduce(Row& row_j, Row& row_k,
   a_j = row_j[column] / gcd;
   a_k = row_k[column] / gcd;
   // Adjust the elements of row_k, as in le_le_reduce above.
-  for (dimension_type col = first_col;
-       col < row_j.size() - 1 /* Skip moduli or divisors.  */;
+  for (dimension_type col = 0; // first_col;  // FIX
+       col < row_j.size() /* FIX */ - !first_col /* Skip moduli.  */;
        ++col) {
     TEMP_INTEGER(c_j);
     TEMP_INTEGER(c_k);
     c_j = row_j[col];
     c_k = row_k[col];
     /* FIX Is this to lower row_j[col] to the value of gcd, and hence
-       decrease the sizes of the elements?  Could it be done in
+       lower the sizes of the elements?  Could it be done in
        le_le_reduce?  (confirm whether) NB for reducing all rows with
        only constant terms to the integrality congruence.
 
@@ -137,7 +139,7 @@ PPL::Grid::le_pc_reduce(Linear_Row& row_j, Linear_Row& row_k,
   a_k = row_k[column] / gcd;
   // FIX correct to skip divisors?
   dimension_type num_cols = sys.num_columns();
-  // FIX why?
+  // FIX why?  (row_j is a line, row_k is a param)
   for (dimension_type index = 0; index < sys.num_rows() - 1; ++index) {
     Linear_Row& row = sys[index];
     if (row.is_ray_or_point_or_inequality())
@@ -155,6 +157,7 @@ PPL::Grid::le_pc_reduce(Linear_Row& row_j, Linear_Row& row_k,
 void
 PPL::Grid::le_pc_reduce(Congruence& row_j, Congruence& row_k,
 			dimension_type column, Congruence_System& sys) {
+  std::cout << "le_pc_reduce" << std::endl;
   // Very similar to the the Linear_Row version above.  Any change
   // here may be needed there too.
   // FIX add assert
@@ -192,18 +195,30 @@ PPL::Grid::le_pc_reduce(Congruence& row_j, Congruence& row_k,
 bool
 trailing_rows_are_zero (Matrix& system,
 			dimension_type first, dimension_type row_size) {
-  while (first < system.num_rows())
+  dimension_type num_rows = system.num_rows();
+  while (first < num_rows) {
+    Row& row = system[first++];
     for (dimension_type col = 0; col < row_size; ++col)
-      if (system[first][col] != 0)
+      if (row[col] != 0)
 	return false;
+  }
   return true;
 }
 
 }
 
+// FIX rename these.  reduce?  triangulate?
+
 int
-PPL::Grid::simplify(Linear_System& sys, Saturation_Matrix& sat) {
-  // This method is only applied to a well-formed system `sys'.
+PPL::Grid::simplify(Generator_System& sys, Saturation_Matrix& sat) {
+  std::cout << "==== simplify (reduce) gs:" << std::endl; // FIX
+  std::cout << "sys:" << std::endl; // FIX
+  sys.ascii_dump(std::cout);
+  // FIX for set_index_first_pending_row's below
+  // FIX It's OK for sys to have pending rows.
+  //assert(sys.first_pending_row() == sys.num_rows());
+
+  // FIX This method is only applied to a well-formed system `sys'.
 
   // FIX use simple checks 1,2 dimensions to test
   // FIX should be using generator iterators?
@@ -212,14 +227,21 @@ PPL::Grid::simplify(Linear_System& sys, Saturation_Matrix& sat) {
 
   // FIX are all the divisors the same?
 
+  // Cross any changes here to the Congruence System version below.
+
+  // FIX at least to please assertion in linear_row::is_sorted
+  sys.set_sorted(false);
+
   // For each column col we must find or construct a row (pivot) in
   // which the value at position `col' is non-zero.
-  for (dimension_type col = 1; col < sys.row_size; ++col) {
-    std::cout << col << std::endl;
+  for (dimension_type col = 0; col < sys.row_size; ++col) {
+    std::cout << "col " << col << std::endl;
     dimension_type num_rows = sys.num_rows();
+    std::cout << "  num_rows " << num_rows << std::endl;
     // Start at the diagonal (col, col).
     // FIX when col - 1 > numb of rows?
-    dimension_type row_num = col - 1;
+    dimension_type row_num = col; // FIX rename row_index
+    std::cout << "  row_num " << row_num << std::endl;
     // Move over rows which have zero in column col.
     // FIX array access assumes row has >= 2 elements
     while (row_num < num_rows && sys[row_num][col] == 0)
@@ -227,14 +249,16 @@ PPL::Grid::simplify(Linear_System& sys, Saturation_Matrix& sat) {
     if (row_num >= num_rows) {
       // Element col is zero in all rows from the col'th, so create a
       // virtual row at index col with diagonal value 1.
-      std::cout << "Adding virtual row" << std::endl;
+      std::cout << "  Adding virtual row" << std::endl;
       /* FIX check */
-      sys.add_zero_rows(1, sys[0].flags()); // FIX assumes sys has rows
+      sys.add_zero_rows(1, Linear_Row::Flags(NECESSARILY_CLOSED,
+					     Linear_Row::LINE_OR_EQUALITY));
+      std::cout << "    accessing" << std::endl;
       Linear_Row& new_row = sys[num_rows];
+      std::cout << "    setting col" << std::endl;
       new_row[col] = 1;
-      // FIX NB is this changing the grid?
-      //        how should a generator by marked virtual?
-      new_row[sys.row_size - 1] = -1; // Mark the row as virtual.
+      mark_virtual(new_row);
+      std::cout << "    swapping" << std::endl;
       // FIX will these use the correct swap? (more below)
       std::swap(new_row, sys[col]);
     }
@@ -246,65 +270,86 @@ PPL::Grid::simplify(Linear_System& sys, Saturation_Matrix& sat) {
       std::cout << "Reducing all subsequent rows" << std::endl;
       ++row_num;
       while (row_num < num_rows) {
-	if (sys[row_num][col] != 0) {
-	  Linear_Row& row = sys[row_num];
-	  if (row.is_line_or_equality()) {
-	    if (pivot.is_line_or_equality())
-	      le_le_reduce(pivot, row, col, 1);
-	    else if (pivot.is_ray_or_point_or_inequality()) {
-	      std::swap(row, pivot);
-	      le_pc_reduce(pivot, row, col, sys);
-	    }
-	    else {
-	      // Keep the row as the new pivot.
-	      std::swap(row, pivot);
-
-#define drop_row()							\
-	      std::swap(row, sys[--num_rows]);				\
-	      sys.Matrix::resize_no_copy(num_rows, sys.row_size, Row::Flags()); \
-	      continue;
-
-	      // Free the old, virtual, pivot from sys.
-	      drop_row();
-	    }
-	  }
-	  else if (row.is_ray_or_point_or_inequality()) {
-	    if (pivot.is_line_or_equality())
-	      le_pc_reduce(pivot, row, col, sys);
-	    else if (pivot.is_ray_or_point_or_inequality())
-	      pc_pc_reduce(pivot, row, col, 1);
-	    else {
-	      // Keep the row as the new pivot.
-	      std::swap(row, pivot);
-	      // Free the virtual pivot from sys.
-	      drop_row();
-	    }
-	  }
-	  else {
-	    // Free the virtual row from sys.
-	    drop_row();
-	  }
+	if (sys[row_num][col] == 0) {
+	  ++row_num;
+	  continue;
 	}
+
+	Linear_Row& row = sys[row_num];
+	if (virtual_row(row)) { // FIX others
+
+#define free_row()							\
+	  std::swap(row, sys[--num_rows]);				\
+	  sys.Matrix::resize_no_copy(num_rows, sys.num_columns(), Row::Flags()); \
+	  continue;		/* Skip ++row_num.  */
+
+	  // Free the virtual row from sys.
+	  free_row();
+	}
+	else if (row.is_line_or_equality()) {
+	  if (virtual_row(pivot)) {
+	    // Keep the row as the new pivot.
+	    std::swap(row, pivot);
+
+	    // Free the old, virtual, pivot from sys.
+	    free_row();
+	  }
+	  else if (pivot.is_line_or_equality())
+	    le_le_reduce(pivot, row, col, 1);
+	  else if (pivot.is_ray_or_point_or_inequality()) {
+	    std::swap(row, pivot);
+	    le_pc_reduce(pivot, row, col, sys);
+	  }
+	  else
+	    throw std::runtime_error("PPL internal error: Grid simplify: failed to match row type (1).");
+	}
+	else if (row.is_ray_or_point_or_inequality()) {
+	  if (virtual_row(pivot)) {
+	    // Keep the row as the new pivot.
+	    std::swap(row, pivot);
+	    // Free the virtual pivot from sys.
+	    free_row();
+	  }
+	  else if (pivot.is_line_or_equality())
+	    le_pc_reduce(pivot, row, col, sys);
+	  else if (pivot.is_ray_or_point_or_inequality())
+	    pc_pc_reduce(pivot, row, col, 1);
+	  else
+	    throw std::runtime_error("PPL internal error: Grid simplify: failed to match row type (2).");
+	}
+	else
+	  throw std::runtime_error("PPL internal error: Grid simplify: failed to match row type (3).");
 	++row_num;
       }
-      Linear_Row& row = sys[col - 1 /* Account for the divisor. */];
+      Linear_Row& row = sys[col];
       if (row != pivot) {
 	std::cout << "swapping" << std::endl;
 	std::swap(row, pivot);
       }
     }
+    sys.ascii_dump(std::cout); // FIX
   }
-  assert(sys.num_rows() >= sys.num_columns() - 1);
+  assert(sys.num_rows() >= sys.num_columns());
   /* Clip any zero rows from the end of the matrix.  */
-  if (sys.num_rows() > sys.num_columns() - 1) {
-    assert(trailing_rows_are_zero(sys, sys.num_columns() - 1, sys.num_columns()));
-    sys.erase_to_end(sys.num_columns() - 1);
+  if (sys.num_rows() > sys.num_columns()) {
+    std::cout << "clipping trailing" << std::endl;
+    assert(trailing_rows_are_zero(sys,
+				  sys.num_columns(),
+				  sys.num_columns()));
+    sys.erase_to_end(sys.num_columns());
   }
+
+  // FIX assured that all rows have been included <ie 0 pending>?
+  sys.set_index_first_pending_row(sys.num_rows());
 
   // FIX is this psbl after parameterizing?
   //assert(sys.OK());
 
-  sys.set_sorted(false);  // FIX
+  // FIX at least to please assertion in linear_row::is_sorted
+  sys.set_sorted(false);
+
+  std::cout << "sys.num_pending_rows(): " << sys.num_pending_rows() << std::endl;  // FIX
+  std::cout << "---- simplify (reduce) done." << std::endl;
 
   return 1; // FIX
 }
@@ -322,12 +367,14 @@ PPL::Grid::simplify(Linear_System& sys, Saturation_Matrix& sat) {
 */
 int
 PPL::Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
-  std::cout << "simplify cgs:" << std::endl; // FIX
+  std::cout << "======== simplify (reduce) cgs:" << std::endl; // FIX
   sys.ascii_dump(std::cout);
 
-  // This method is only applied to a well-formed system `sys'.
+  // FIX This method is only applied to a well-formed system `sys'.
 
-  // Cross any changes to the Generator System version.
+  // Cross any changes here to the Generator System version above.
+
+  // FIX may need pending handling if pending rows are added to cgs
 
   // For each column col we must find or construct a row (pivot) in
   // which the value at position `col' is non-zero.
@@ -340,7 +387,8 @@ PPL::Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
     // FIX rename row_index
     dimension_type row_num = num_rows - col;
     std::cout << "  row_num " << row_num << std::endl;
-    dimension_type orig_row_num = (row_num ? row_num - 1 : 0);
+    // FIX check if orig_row_num can be zero
+    dimension_type orig_row_num = row_num;
     // Move over rows which have zero in column col.
     // FIX array access assumes row has >= 2 elements
     dimension_type column = sys.num_columns() - 1 /* modulus */ - 1 /* index */ - col;
@@ -359,7 +407,7 @@ PPL::Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
       std::cout << "    setting column" << std::endl;
       new_row[column] = 1;
       std::cout << "    marking virtual" << std::endl;
-      new_row[sys.num_columns() - 1] = -1; // Mark the row as virtual.
+      mark_virtual(static_cast<Congruence&>(new_row)); // FIX dodgy?
       sys.rows.insert(sys.rows.begin() + orig_row_num, new_row);
     }
     else {
@@ -368,80 +416,79 @@ PPL::Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
       // For each FIX<preceding|higher> row having a value other than
       // 0 at col, change the representation so that the value at col
       // is 0 (leaving an equivalent grid).
-      std::cout << "  Reducing all subsequent rows" << std::endl;
+      std::cout << "  Reducing all preceding rows" << std::endl;
       // FIX equiv of while (row_num-- > 0)  as row_num is always +ve
       if (row_num-- > 0)
 	while (1) { // FIX do-while?
 	  std::cout << "    row_num " << row_num << " ";
 	  if (sys[row_num][column] != 0) {
-	    Congruence& row = sys[row_num]; // FIX just accessed sys
+	    Congruence& row = sys[row_num]; // FIX just accessed this row
 	    // FIX assumes cols?
-	    if (row[sys.num_columns() - 1] == -1) {
+	    if (virtual_row(row)) {
 	      // Free the virtual row from sys.
 
-#undef drop_row
-#define drop_row()					  \
+#undef free_row
+#define free_row()					  \
 	      sys.rows.erase(sys.rows.begin() + row_num); \
-	      std::cout << "drop" << std::endl;
+	      std::cout << "drop" << std::endl;		  \
 	      --num_rows;
 
-	      drop_row();
+	      free_row();
 	    }
-	    else if (row.is_equality()) {
-	      if (pivot[sys.num_columns() - 1] == -1) {
-		// Virtual pivot.
-
+	    else if (row.is_equality())
+	      if (virtual_row(pivot)) {
 		// Keep the row as the new pivot.
 		std::swap(row, pivot);
 
 		// Free the old, virtual, pivot from sys.
-		drop_row();
+		free_row();
 	      }
 	      else if (pivot.is_equality())
 		le_le_reduce(pivot, row, column, 0);
 	      else {
-		// Pivot is ray, point or inequality.
+		// Pivot is a ray, point or inequality.
 		std::swap(row, pivot);
 		le_pc_reduce(pivot, row, column, sys);
 	      }
-	    }
-	    else {
+	    else
 	      // Row is a congruence.
-	      if (pivot[sys.num_columns() - 1] == -1) {
-		// Virtual pivot.
-
+	      if (virtual_row(pivot)) {
 		// Keep the row as the new pivot.
 		std::swap(row, pivot);
 		// Free the virtual pivot from sys.
-		drop_row();
+		free_row();
 	      }
 	      else if (pivot.is_equality())
 		le_pc_reduce(pivot, row, column, sys);
 	      else
 		// Pivot is a congruence.
 		pc_pc_reduce(pivot, row, column, 0);
-	    }
 	  }
 	  if (row_num-- == 0)
 	    break;
 	}
-      Congruence& row = sys[orig_row_num /*FIX column?*/];
+      Congruence& row = sys[orig_row_num - 1 /*FIX column?*/];
       if (row != pivot) {
 	std::cout << "swapping" << std::endl;
 	std::swap(row, pivot);
       }
-      sys.ascii_dump(std::cout);
+      sys.ascii_dump(std::cout); // FIX
     }
     ++col;
   }
   assert(sys.num_rows() >= sys.num_columns() - 1);
   /* Clip any zero rows from the end of the matrix.  */
   if (sys.num_rows() > sys.num_columns() - 1) {
-    assert(trailing_rows_are_zero(sys, sys.num_columns(), sys.num_columns() - 1));
-    sys.rows.erase(sys.rows.begin(), sys.rows.begin() + (sys.num_rows() - sys.num_columns() + 1));
+    assert(trailing_rows_are_zero(sys,
+				  sys.num_columns(),
+				  sys.num_columns() - 1));
+    sys.rows.erase(sys.rows.begin(),
+		   sys.rows.begin()
+		   + (sys.num_rows() - sys.num_columns() + 1));
   }
 
   assert(sys.OK());
 
+  std::cout << "---- simplify (reduce) done." << std::endl;
   return 1; // FIX
 }

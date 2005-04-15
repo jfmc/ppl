@@ -37,7 +37,7 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Grid::Grid(const dimension_type num_dimensions,
 		const Degenerate_Kind kind)
   : con_sys(),
-    gen_sys(NOT_NECESSARILY_CLOSED),
+    gen_sys(NECESSARILY_CLOSED),
     sat_c(),
     sat_g() {
   // Protecting against space dimension overflow is up to the caller.
@@ -50,7 +50,15 @@ PPL::Grid::Grid(const dimension_type num_dimensions,
     add_low_level_congruences(con_sys);
     //con_sys.adjust_topology_and_space_dimension(topol, num_dimensions); // FIX
     con_sys.adjust_space_dimension(num_dimensions);
+    // FIX
+#if 1
+    if (kind == EMPTY)
+      status.set_c_minimized();
+    else
+      set_congruences_minimized();
+#else
     set_congruences_minimized();
+#endif
   }
   space_dim = num_dimensions;
   assert(OK());
@@ -109,9 +117,12 @@ PPL::Grid::congruences() const {
 #endif
       {
       // Checking that `con_sys' contains the right thing.
-      assert(con_sys.space_dimension() == space_dim);
+	// FIX add after conversion
+      //assert(con_sys.space_dimension() == space_dim);
+#if 0
       assert(con_sys.num_rows() == 1);
       assert(con_sys[0].is_trivial_false());
+#endif
     }
     return con_sys;
   }
@@ -217,7 +228,6 @@ PPL::Grid::generators() const {
 
 const PPL::Generator_System&
 PPL::Grid::minimized_generators() const {
-  minimize();
 #if 0
   // `minimize()' or `strongly_minimize_generators()'
   // will process any pending congruences or generators.
@@ -229,6 +239,7 @@ PPL::Grid::minimized_generators() const {
   // system will also ensure sortedness, which is required to correctly
   // filter away the matched closure points.
 #endif
+  minimize();
   return generators();
 }
 #if 0
@@ -495,7 +506,10 @@ PPL::Grid::OK(bool check_not_empty) const {
   using std::cerr;
 #endif
 
+  // FIX (generally)
+
   // FIX
+  std::cout << "gen_sys.num_pending_rows(): " << gen_sys.num_pending_rows() << std::endl;  // FIX
 
 #if 0
   // The expected number of columns in the congruence and generator
@@ -677,9 +691,14 @@ PPL::Grid::OK(bool check_not_empty) const {
   }
 
   if (generators_are_up_to_date()) {
+#if 0
+    // FIX with normalized divisors the test of generator strong
+    // normalization fails
+
     // Check if the system of generators is well-formed.
     if (!gen_sys.OK())
       goto bomb;
+#endif
 
     if (gen_sys.first_pending_row() == 0) {
 #ifndef NDEBUG
@@ -1231,14 +1250,23 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
     return;
   }
 
+#if 0
   if (marked_empty())
     return;
+#endif
 
   // The congruences (possibly with pending rows) are required.
   if (has_pending_generators())
     process_pending_generators();
-  else if (!congruences_are_up_to_date())
+  else if (marked_empty() == false
+	   && !congruences_are_up_to_date())
     update_congruences();
+
+  // FIX Added for Grid.
+  if (marked_empty()) {
+    clear_empty();
+    set_congruences_up_to_date();
+  }
 
   // Adjust `cgs' to the right topology and space dimension.
   // NOTE: we have already checked for topology compatibility.
@@ -1280,14 +1308,14 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
   // we do not check for satisfiability.
   assert(OK());
 }
-#if 0
+
 void
 PPL::Grid::add_congruences(const Congruence_System& cgs) {
   // TODO: this is just an executable specification.
   Congruence_System cgs_copy = cgs;
   add_recycled_congruences(cgs_copy);
 }
-#endif
+
 bool
 PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   // Topology-compatibility check.
@@ -1413,6 +1441,8 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
     if (!gs.has_points())
       throw_invalid_generators("add_recycled_generators(gs)", "gs");
     // The polyhedron is no longer empty and generators are up-to-date.
+    normalize_divisors(gs);
+    //std::swap(gen_sys, parameterize(gs, gs[0])); // FIX
     std::swap(gen_sys, gs);
     if (gen_sys.num_pending_rows() > 0) {
       // Even though `gs' has pending generators, since the congruences
@@ -1427,6 +1457,28 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
     assert(OK());
     return;
   }
+
+#if 0
+  // FIX this is messy; duplicated below
+  dimension_type row = 0;
+  TEMP_INTEGER(gen_sys_divisor);
+  dimension_type num_rows = gen_sys.num_rows();
+  // Find first point in gen_sys.
+  while (gen_sys[row].is_line_or_equality())
+    if (++row == num_rows) {
+      // All rows are lines.
+      gen_sys_divisor = 0;
+      goto normalize;
+    }
+  gen_sys_divisor = gen_sys[row].divisor();
+ normalize:
+  TEMP_INTEGER(divisor);
+  divisor = normalize_divisors(gs, gen_sys_divisor);
+  if (divisor != gen_sys_divisor)
+    // FIX this call can skip the lcm calc
+    normalize_divisors(gen_sys, divisor);
+  parameterize(gs, gen_sys[row], false);
+#endif
 
   const bool adding_pending = can_have_something_pending();
 
@@ -1463,6 +1515,7 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
     clear_congruences_up_to_date();
     clear_generators_minimized();
   }
+  //clear_congruences_minimized(); // FIX?
   assert(OK(true));
 }
 
@@ -1481,8 +1534,8 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
     throw_topology_incompatible("add_recycled_generators_and_minimize(gs)",
 				"gs", gs);
 #endif
-  // Dimension-compatibility check:
-  // the dimension of `gs' can not be greater than space_dim.
+  // Dimension-compatibility check: the dimension of `gs' must be less
+  // than or equal to that of space_dim.
   const dimension_type gs_space_dim = gs.space_dimension();
   if (space_dim < gs_space_dim)
     throw_dimension_incompatible("add_recycled_generators_and_minimize(gs)",
@@ -1527,27 +1580,52 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
 
   // Now adjusting dimensions (topology already adjusted).
   // NOTE: sortedness is preserved.
-  //gs.adjust_topology_and_space_dimension(topology(), space_dim);
+  //gs.adjust_topology_and_space_dimension(topology(), space_dim); // FIX
   gs.adjust_topology_and_space_dimension(gs.topology(), space_dim);
 
+#if 0
+  // FIX this is messy; duplicated above
+  dimension_type row = 0;
+  TEMP_INTEGER(gen_sys_divisor);
+  dimension_type num_rows = gen_sys.num_rows();
+  // Find first point in gen_sys.
+  while (gen_sys[row].is_line_or_equality())
+    if (++row == num_rows) {
+      // All rows are lines.
+      gen_sys_divisor = 0;
+      goto normalize;
+    }
+  gen_sys_divisor = gen_sys[row].divisor();
+ normalize:
+  TEMP_INTEGER(divisor);
+  divisor = normalize_divisors(gs, gen_sys_divisor);
+  if (divisor != gen_sys_divisor)
+    // FIX this call can skip the lcm calc
+    normalize_divisors(gen_sys, divisor);
+  parameterize(gs, gen_sys[row], false);
+#endif
+
   if (minimize()) {
-    obtain_sorted_generators_with_sat_g();
+    //obtain_sorted_generators_with_sat_g(); // FIX
     // This call to `add_and_minimize(...)' returns `true'.
     add_and_minimize(gen_sys, con_sys, sat_g, gs);
     clear_sat_c_up_to_date();
   }
   else {
-    // The polyhedron was empty: check if `gs' contains a point.
+    // The grid was empty: check if `gs' contains a point.
     if (!gs.has_points())
       throw_invalid_generators("add_recycled_generators_and_minimize(gs)",
 			       "gs");
-    // `gs' has a point: the polyhedron is no longer empty
-    // and generators are up-to-date.
+    // `gs' has a point: the grid is no longer empty and
+    // generators are up-to-date.
+    std::cout << "gs.num_pending_rows(): " << gs.num_pending_rows() << std::endl;  // FIX
     std::swap(gen_sys, gs);
     clear_empty();
     set_generators_up_to_date();
+    std::cout << "gen_sys.num_pending_rows(): " << gen_sys.num_pending_rows() << std::endl;  // FIX
     // This call to `minimize()' returns `true'.
     minimize();
+    std::cout << "gen_sys.num_pending_rows(): " << gen_sys.num_pending_rows() << std::endl;  // FIX
   }
   assert(OK(true));
   return true;

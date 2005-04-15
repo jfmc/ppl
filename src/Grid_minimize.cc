@@ -68,12 +68,13 @@ namespace PPL = Parma_Polyhedra_Library;
 */
 
 bool
-PPL::Grid::minimize(const bool con_to_gen,
-		    const Linear_System& source,
+PPL::Grid::minimize(bool con_to_gen,
+		    Generator_System& source,
 		    Congruence_System& dest,
 		    Saturation_Matrix& sat) {
-  std::cout << "FIX 4 param minimize awaits Grid::conversion" << std::endl;
-#if 0
+  std::cout << "4 param minimize gs to cgs..." << std::endl; // FIX
+  std::cout << "source.num_pending_rows(): " << source.num_pending_rows() << std::endl;  // FIX
+  std::cout << "source.first_pending_row(): " << source.first_pending_row() << std::endl;  // FIX
   // Topologies have to agree.
   //assert(source.topology() == dest.topology()); // FIX
   // `source' cannot be empty: even if it is an empty constraint system,
@@ -87,6 +88,8 @@ PPL::Grid::minimize(const bool con_to_gen,
   if (!source.is_sorted())
     source.sort_rows();
 
+  std::cout << "source.num_pending_rows(): " << source.num_pending_rows() << std::endl;  // FIX
+
   // Initialization of the system of generators `dest'.
   // The algorithm works incrementally and we haven't seen any
   // constraint yet: as a consequence, `dest' should describe
@@ -99,19 +102,21 @@ PPL::Grid::minimize(const bool con_to_gen,
   dimension_type dest_num_rows = source.num_columns();
   // Note that before calling `resize_no_copy()' we must update
   // `index_first_pending'.
-  dest.set_index_first_pending_row(dest_num_rows);
-  dest.resize_no_copy(dest_num_rows, dest_num_rows);
+  //dest.set_index_first_pending_row(dest_num_rows); // FIX
+  dest.resize_no_copy(dest_num_rows, dest_num_rows + 1 /* moduli */);
+  // FIX init the moduli?
 
   // Initialize `dest' to the identity matrix.
   for (dimension_type i = dest_num_rows; i-- > 0; ) {
-    Linear_Row& dest_i = dest[i];
+    Congruence& dest_i = dest[i];
     for (dimension_type j = dest_num_rows; j-- > 0; )
       dest_i[j] = (i == j) ? 1 : 0;
-    dest_i.set_is_line_or_equality();
+    // Mark dest_i as an equality.
+    dest_i[dest_i.size()-1] = 0; // FIX dest_i.set_modulus(0);?
   }
   // The identity matrix `dest' is not sorted (see the sorting rules
   // in Linear_Row.cc).
-  dest.set_sorted(false);
+  //dest.set_sorted(false); // FIX
 
   // NOTE: the system `dest', as it is now, it is not a _legal_
   //       system of generators, because in the first row we have
@@ -131,6 +136,9 @@ PPL::Grid::minimize(const bool con_to_gen,
   //       characterizes the initial saturation information.
   Saturation_Matrix tmp_sat(dest_num_rows, source.num_rows());
 
+  // FIX move to conversion?
+  simplify(source, sat);	// reduce?
+
   // By invoking the function conversion(), we populate `dest' with
   // the generators characterizing the polyhedron described by all
   // the constraints in `source'.
@@ -142,6 +150,14 @@ PPL::Grid::minimize(const bool con_to_gen,
   // conversion() may have modified the number of rows in `dest'.
   dest_num_rows = dest.num_rows();
 
+#if 0
+  // FIX sort the triangular rows to please the assertions
+  // FIX this is likely to be NB, at least for performance
+  source.sort_rows();
+#endif
+
+  // FIX is there an equiv check for congruences?
+#if 0
   // Checking if the generators in `dest' represent an empty polyhedron:
   // the polyhedron is empty if there are no points
   // (because rays, lines and closure points need a supporting point).
@@ -153,10 +169,10 @@ PPL::Grid::minimize(const bool con_to_gen,
     ? 0
     : dest.num_columns() - 1;
   dimension_type first_point;
-  for (first_point = num_lines_or_equalities;
+  for (first_point = num_lines_or_equalities /* FIX why? */;
        first_point < dest_num_rows;
        ++first_point)
-    if (dest[first_point][checking_index] > 0)
+    if (dest[first_point][checking_index] != 0)
       break;
 
   if (first_point == dest_num_rows)
@@ -173,7 +189,9 @@ PPL::Grid::minimize(const bool con_to_gen,
       // and no linear combination of the constraints in `dest'
       // can reintroduce the positivity constraint.
       throw std::runtime_error("PPL internal error");
+#endif
 
+#if 0
   // A point has been found: the polyhedron is not empty.
   // Now invoking simplify() to remove all the redundant constraints
   // from the system `source'.
@@ -184,11 +202,12 @@ PPL::Grid::minimize(const bool con_to_gen,
   sat.transpose_assign(tmp_sat);
   simplify(source, sat);
 #endif
-  return false;
+  std::cout << "4 param minimize gs to cgs... done." << std::endl;
+  return false; // FIX?
 }
 
 bool
-PPL::Grid::minimize(const bool con_to_gen,
+PPL::Grid::minimize(bool con_to_gen,
 		    Congruence_System& source,
 		    Linear_System& dest,
 		    Saturation_Matrix& sat) {
@@ -202,14 +221,13 @@ PPL::Grid::minimize(const bool con_to_gen,
   // FIX should grid add single cong?
   //assert(source.num_rows() > 0);
 
-  std::cout << "FIX 4 param minimize awaits Grid::conversion" << std::endl;
-
-  return false;
+  std::cout << "4 param minimize cgs to gs" << std::endl;
 
 #if 0
   // Sort the source system, if necessary.
   if (!source.is_sorted())
     source.sort_rows();
+#endif
 
   // Initialization of the system of generators `dest'.
   // The algorithm works incrementally and we haven't seen any
@@ -220,7 +238,7 @@ PPL::Grid::minimize(const bool con_to_gen,
   // to the canonical basis of the vector space.
 
   // Resizing `dest' to be the appropriate square matrix.
-  dimension_type dest_num_rows = source.num_columns();
+  dimension_type dest_num_rows = source.num_columns() - 1 /* modulus */;
   // Note that before calling `resize_no_copy()' we must update
   // `index_first_pending'.
   dest.set_index_first_pending_row(dest_num_rows);
@@ -230,12 +248,15 @@ PPL::Grid::minimize(const bool con_to_gen,
   for (dimension_type i = dest_num_rows; i-- > 0; ) {
     Linear_Row& dest_i = dest[i];
     for (dimension_type j = dest_num_rows; j-- > 0; )
+      // FIX comparing i and j every iteration
       dest_i[j] = (i == j) ? 1 : 0;
     dest_i.set_is_line_or_equality();
+    dest_i.set_necessarily_closed();
   }
+  dest.set_necessarily_closed();
   // The identity matrix `dest' is not sorted (see the sorting rules
   // in Linear_Row.cc).
-  dest.set_sorted(false);
+  dest.set_sorted(false);  // FIX resize_no_copy does this
 
   // NOTE: the system `dest', as it is now, it is not a _legal_
   //       system of generators, because in the first row we have
@@ -255,12 +276,16 @@ PPL::Grid::minimize(const bool con_to_gen,
   //       characterizes the initial saturation information.
   Saturation_Matrix tmp_sat(dest_num_rows, source.num_rows());
 
+  // FIX move to conversion?
+  source.normalize_moduli();	// FIX necessary?
+  simplify(source, sat);	// FIX rename reduce?
+
   // By invoking the function conversion(), we populate `dest' with
   // the generators characterizing the polyhedron described by all
-  // the constraints in `source'.
-  // The `start' parameter is zero (we haven't seen any constraint yet)
+  // the congruences in `source'.
+  // The `start' parameter is zero (the next congruence will be the first)
   // and the 5th parameter (representing the number of lines in `dest'),
-  // by construction, is equal to `dest_num_rows'.
+  // by construction, is `dest_num_rows'.
   const dimension_type num_lines_or_equalities
     = conversion(source, 0, dest, tmp_sat, dest_num_rows);
   // conversion() may have modified the number of rows in `dest'.
@@ -272,31 +297,33 @@ PPL::Grid::minimize(const bool con_to_gen,
   // Points can be detected by looking at:
   // - the divisor, for necessarily closed polyhedra;
   // - the epsilon coordinate, for NNC polyhedra.
+  assert(dest.is_necessarily_closed());
   const dimension_type checking_index
     = dest.is_necessarily_closed()
     ? 0
     : dest.num_columns() - 1;
   dimension_type first_point;
-  for (first_point = num_lines_or_equalities;
+  for (first_point = num_lines_or_equalities /* FIX why? (more below) */;
        first_point < dest_num_rows;
        ++first_point)
-    if (dest[first_point][checking_index] > 0)
+    if (dest[first_point][checking_index] != 0)
       break;
 
   if (first_point == dest_num_rows)
     if (con_to_gen)
       // No point has been found: the polyhedron is empty.
       return true;
-    else
-      // Here `con_to_gen' is false: `dest' is a system of constraints.
+    else   // FIX
+      // Here `con_to_gen' is false: `dest' is a system of congruences.
       // In this case the condition `first_point == dest_num_rows'
-      // actually means that all the constraints in `dest' have their
+      // actually means that all the congruences in `dest' have their
       // inhomogeneous term equal to 0.
       // This is an ILLEGAL situation, because it implies that
       // the constraint system `dest' lacks the positivity constraint
       // and no linear combination of the constraints in `dest'
       // can reintroduce the positivity constraint.
-      throw std::runtime_error("PPL internal error");
+      throw std::runtime_error("cgs to gs converstion called w/ con_to_gen false");
+#if 0
   else {
     // A point has been found: the polyhedron is not empty.
     // Now invoking simplify() to remove all the redundant constraints
@@ -310,6 +337,7 @@ PPL::Grid::minimize(const bool con_to_gen,
     return false;
   }
 #endif
+  return false; // FIX?
 }
 
 
@@ -364,6 +392,7 @@ PPL::Grid::add_and_minimize(const bool con_to_gen,
 			    Linear_System& dest,
 			    Saturation_Matrix& sat,
 			    const Congruence_System& source2) {
+  std::cout << "add_and_minimize cgs to gs (5 param)" << std::endl;
 #if 0
   // FIX must a cgs hold equiv of equality constraint?
   // `source1' and `source2' cannot be empty.
@@ -441,7 +470,6 @@ PPL::Grid::add_and_minimize(const bool con_to_gen,
     // There is nothing left to do ...
     return false;
 
-  std::cout << "add_and_minimize pre add_and_minimize" << std::endl;
   source1.ascii_dump(std::cout);
 
   return add_and_minimize(con_to_gen, source1, dest, sat);
@@ -493,22 +521,47 @@ PPL::Grid::add_and_minimize(const bool con_to_gen,
   assert(source.num_columns() == dest.num_columns());
   assert(source.is_sorted());
 #endif
+  std::cout << "add_and_minimize cgs to gs (4 param)" << std::endl;
+
+  // FIX move to conversion?
+  source.normalize_moduli();
+  simplify(source, sat);	// reduce?
+
+  // Resizing `dest' to be the appropriate square matrix.
+  dimension_type dest_num_rows = source.num_columns() - 1 /* modulus */;
+  // Note that before calling `resize_no_copy()' we must update
+  // `index_first_pending'.
+  dest.set_index_first_pending_row(dest_num_rows);
+  dest.resize_no_copy(dest_num_rows, dest_num_rows);
+
+  // Initialize `dest' to the identity matrix.
+  for (dimension_type i = dest_num_rows; i-- > 0; ) {
+    Linear_Row& dest_i = dest[i];
+    for (dimension_type j = dest_num_rows; j-- > 0; )
+      // FIX comparing i and j every iteration
+      dest_i[j] = (i == j) ? 1 : 0;
+    dest_i.set_is_line_or_equality();
+    dest_i.set_necessarily_closed();
+  }
+  dest.set_necessarily_closed();
+
+  // The identity matrix `dest' is not sorted (see the sorting rules
+  // in Linear_Row.cc).
+  dest.set_sorted(false);  // FIX resize_no_copy does this
 
   // First, pad the saturation matrix with new columns (of zeroes)
   // to accommodate for the pending rows of `source'.
-  sat.resize(dest.num_rows(), source.num_rows());
+  sat.resize(dest_num_rows, source.num_rows());
 
-#if 0
-  // FIX is this done during reduction?
   // Incrementally compute the new system of generators.
   // Parameter `start' is set to the index of the first pending constraint.
   const dimension_type num_lines_or_equalities
-    = conversion(source, source.first_pending_row(),
+    = conversion(source, 0 /* FIX source.first_pending_row() */,
 		 dest, sat,
 		 dest.num_lines_or_equalities());
 
   // conversion() may have modified the number of rows in `dest'.
-  const dimension_type dest_num_rows = dest.num_rows();
+  dest_num_rows = dest.num_rows();
 
   // FIX will this still be required?
   // Checking if the generators in `dest' represent an empty polyhedron:
@@ -517,6 +570,7 @@ PPL::Grid::add_and_minimize(const bool con_to_gen,
   // Points can be detected by looking at:
   // - the divisor, for necessarily closed polyhedra;
   // - the epsilon coordinate, for NNC polyhedra.
+  assert(dest.is_necessarily_closed());
   const dimension_type checking_index
     = dest.is_necessarily_closed()
     ? 0
@@ -525,7 +579,7 @@ PPL::Grid::add_and_minimize(const bool con_to_gen,
   for (first_point = num_lines_or_equalities;
        first_point < dest_num_rows;
        ++first_point)
-     if (dest[first_point][checking_index] > 0)
+     if (dest[first_point][checking_index] != 0)
       break;
 
   if (first_point == dest_num_rows)
@@ -541,7 +595,8 @@ PPL::Grid::add_and_minimize(const bool con_to_gen,
       // the constraint system `dest' lacks the positivity constraint
       // and no linear combination of the constraints in `dest'
       // can reintroduce the positivity constraint.
-      throw std::runtime_error("PPL internal error");
+      throw std::runtime_error("cgs to gs converstion called w/ con_to_gen false");
+#if 0
   else {
     // A point has been found: the polyhedron is not empty.
     // Now invoking `simplify()' to remove all the redundant constraints
@@ -558,36 +613,68 @@ PPL::Grid::add_and_minimize(const bool con_to_gen,
     return false;
   }
 #endif
-  source.normalize_moduli();
-  simplify(source, sat);
   return false;
 }
 
 bool
-PPL::Grid::add_and_minimize(Linear_System& source,
+PPL::Grid::add_and_minimize(Generator_System& source,
 			    Congruence_System& dest,
 			    Saturation_Matrix& sat) {
+  std::cout << "add_and_minimize gs to cgs (3 param)" << std::endl;
   assert(source.num_pending_rows() > 0);
-  //assert(source.num_columns() == dest.num_columns()); // FIX
+#if 0
+  assert(source.num_columns() == dest.num_columns());
   assert(source.is_sorted());
+#endif
+
+  // Resizing `dest' to be the appropriate square matrix.
+  dimension_type dest_num_rows = source.num_columns();
+#if 0
+  // Note that before calling `resize_no_copy()' we must update
+  // `index_first_pending'.
+  dest.set_index_first_pending_row(dest_num_rows);
+#endif
+  dest.resize_no_copy(dest_num_rows, dest_num_rows + 1 /* moduli */);
+  // FIX init the moduli?
+
+  // Initialize `dest' to the identity matrix.
+  for (dimension_type i = dest_num_rows; i-- > 0; ) {
+    Congruence& dest_i = dest[i];
+    for (dimension_type j = dest_num_rows; j-- > 0; )
+      // FIX comparing i and j every iteration
+      dest_i[j] = (i == j) ? 1 : 0;
+    dest_i.set_is_equality();
+  }
+#if 0
+  // The identity matrix `dest' is not sorted (see the sorting rules
+  // in Linear_Row.cc).
+  dest.set_sorted(false);  // FIX resize_no_copy does this
+#endif
 
   // First, pad the saturation matrix with new columns (of zeroes)
   // to accommodate for the pending rows of `source'.
   sat.resize(dest.num_rows(), source.num_rows());
 
-#if 0
-  // FIX is this done during reduction?
+  simplify(source, sat);	// FIX reduce?
+
   // Incrementally compute the new system of generators.
   // Parameter `start' is set to the index of the first pending constraint.
   const dimension_type num_lines_or_equalities
     = conversion(source, source.first_pending_row(),
 		 dest, sat,
-		 dest.num_lines_or_equalities());
+		 dest.num_equalities());
 
   // conversion() may have modified the number of rows in `dest'.
-  const dimension_type dest_num_rows = dest.num_rows();
+  dest_num_rows = dest.num_rows();
 
-  // FIX will this still be required?
+#if 0
+  // FIX sort the triangular rows to please the assertions
+  // FIX this is likely to be NB, at least for performance
+  source.sort_rows();
+#endif
+
+  // FIX is there an equiv check for congruences?
+#if 0
   // Checking if the generators in `dest' represent an empty polyhedron:
   // the polyhedron is empty if there are no points
   // (because rays, lines and closure points need a supporting point).
@@ -602,7 +689,7 @@ PPL::Grid::add_and_minimize(Linear_System& source,
   for (first_point = num_lines_or_equalities;
        first_point < dest_num_rows;
        ++first_point)
-     if (dest[first_point][checking_index] > 0)
+     if (dest[first_point][checking_index] != 0)
       break;
 
   if (first_point == dest_num_rows)
@@ -619,6 +706,9 @@ PPL::Grid::add_and_minimize(Linear_System& source,
       // and no linear combination of the constraints in `dest'
       // can reintroduce the positivity constraint.
       throw std::runtime_error("PPL internal error");
+#endif
+
+#if 0
   else {
     // A point has been found: the polyhedron is not empty.
     // Now invoking `simplify()' to remove all the redundant constraints
@@ -635,30 +725,31 @@ PPL::Grid::add_and_minimize(Linear_System& source,
     return false;
   }
 #endif
-  std::cout << "Parameterizing...";
-  parameterize(source); // FIX
-  source.ascii_dump(std::cout);
-  std::cout << " done." << std::endl;
-  simplify(source, sat);
+
   return false;
 }
 
 bool
-PPL::Grid::add_and_minimize(Linear_System& source1,
+PPL::Grid::add_and_minimize(Generator_System& source1,
 			    Congruence_System& dest,
 			    Saturation_Matrix& sat,
-			    const Linear_System& source2) {
-  // `source1' and `source2' must contain elements.
-  assert(source1.num_rows() > 0 && source2.num_rows() > 0);
-  // `source1' and `source2' must have the same number of columns
+			    const Generator_System& csource2) {
+  std::cout << "add_and_minimize gs to cgs (4 param)" << std::endl;
+
+  // `source1' and `csource2' must contain elements.
+  assert(source1.num_rows() > 0 && csource2.num_rows() > 0);
+  // `source1' and `csource2' must have the same number of columns
   // to be merged.
-  assert(source1.num_columns() == source2.num_columns());
-  // `source1' and `source2' must be fully sorted.
+  assert(source1.num_columns() == csource2.num_columns());
+#if 0
+  // `source1' and `csource2' must be fully sorted.
   assert(source1.is_sorted() && source1.num_pending_rows() == 0);
-  assert(source2.is_sorted() && source2.num_pending_rows() == 0);
+  assert(csource2.is_sorted() && csource2.num_pending_rows() == 0);
+#endif
   //assert(dest.num_pending_rows() == 0); // FIX
 
-  bool added = false;
+  Linear_System source2 = csource2; // FIX must csource2 be const?
+  //parameterize(source2);  // FIX check all callers do this
 
   const dimension_type old_source1_num_rows = source1.num_rows();
   // `k1' and `k2' run through the rows of `source1' and `source2', resp.
@@ -689,7 +780,6 @@ PPL::Grid::add_and_minimize(Linear_System& source1,
       // By sortedness, `source2[k2]' cannot be in `source1'.
       // We add it as a pending row of `source1' (sortedness unaffected).
       source1.add_pending_row(source2[k2]);
-      //added = true, source1.add_row(source2[k2]); // FIX
       // We can increment `k2'.
       ++k2;
     }
@@ -700,11 +790,9 @@ PPL::Grid::add_and_minimize(Linear_System& source1,
     // greater than or equal to `k2' were not in `source1'.
     // We add them as pending rows of 'source1' (sortedness not affected).
     for ( ; k2 < source2_num_rows; ++k2)
-      //added = true, source1.add_row(source2[k2]); // FIX
       source1.add_pending_row(source2[k2]);
 
   if (source1.num_pending_rows() == 0)
-  //if (added == false) // FIX
     // No row was appended to `source1', because all the constraints
     // in `source2' were already in `source1'.
     // There is nothing left to do ...
