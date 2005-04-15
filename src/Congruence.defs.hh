@@ -26,7 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Congruence.types.hh"
 #include "Row.defs.hh"
-#include "Linear_Relation.defs.hh"
 #include "Grid.types.hh"
 #include "Variable.defs.hh"
 #include "Constraint.types.hh"
