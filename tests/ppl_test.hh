@@ -163,6 +163,8 @@ typedef BD_Shape<Checked_Number<int, Extended_Number_Policy> > TBD_Shape;
   via the OK method, or via a comparison between \p a and an object
   created from the ASCII dump of \p a.
 
+  It is assumed that \p a is up to date.
+
   \p T must provide:
     void ascii_dump(std::ostream& s) const;
     bool ascii_load(std::istream& s);
@@ -185,15 +187,19 @@ find_variation_template(T& a) {
   //T b;
   T b(a);
   stringstream dump;
-  a.ascii_dump(dump);
   b.ascii_load(dump);
-  if (b == a)
+  if (a == b)
     return false;
 
-  nout << "b loaded from a's ASCII dump should equal a\n"
-       << "a's ASCII dump:\n" << dump.str()
-       << "b's ASCII dump:\n";
+  nout << "`b' loaded from ASCII dump of `a' should equal `a'" << endl
+       << "ASCII dump of `a':" << endl
+       << "------------------" << endl << dump.str()
+       << "ASCII dump of `b' (after comparison):" << endl
+       << "-------------------------------------" << endl;
   b.ascii_dump(nout);
+  nout << "ASCII dump of `a' after comparison:" << endl
+       << "-----------------------------------" << endl;
+  a.ascii_dump(nout);
 
   return true;
 }
