@@ -193,8 +193,9 @@ find_variation_template(T& a) {
 
   nout << "`b' loaded from ASCII dump of `a' should equal `a'" << endl
        << "ASCII dump of `a':" << endl
-       << "------------------" << endl << dump.str()
-       << "ASCII dump of `b' (after comparison):" << endl
+       << "------------------" << endl;
+  a.ascii_dump(nout);
+  nout << "ASCII dump of `b' (after comparison):" << endl
        << "-------------------------------------" << endl;
   b.ascii_dump(nout);
   nout << "ASCII dump of `a' after comparison:" << endl
