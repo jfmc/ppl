@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.inlines.hh"
 
 #include "Constraint.defs.hh"
+#include "Grid.defs.hh"		// For virtual_row and mark_virtual.
 #include <cassert>
 #include <string>
 #include <vector>
@@ -861,6 +862,8 @@ PPL::Generator_System::ascii_dump(std::ostream& s) const {
       s << "C";
       break;
     }
+    if (x[i].is_virtual())
+      s << " (v)";
     s << std::endl;
   }
 }
@@ -913,6 +916,14 @@ PPL::Generator_System::ascii_load(std::istream& s) {
     else
       x[i].set_is_ray_or_point();
 
+    if (s >> str) {
+      if (str == "(v)") {
+	Grid::mark_virtual(x[i]);
+	continue;
+      }
+      return false;
+    }
+
     // Checking for equality of actual and declared types.
     switch (x[i].type()) {
     case Generator::LINE:
@@ -936,7 +947,7 @@ PPL::Generator_System::ascii_load(std::istream& s) {
     return false;
   }
   // Checking for well-formedness.
-  assert(OK());
+  //assert(OK());   // FIX temp, for grid
   return true;
 }
 
@@ -1024,12 +1035,13 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator_System& gs) {
   const Generator_System::const_iterator gs_end = gs.end();
   if (i == gs_end)
     s << "false";
-  else {
+  else
     while (i != gs_end) {
       s << *i++;
+      if (Grid::virtual_row(*i))
+	s << " (v)";
       if (i != gs_end)
 	s << ", ";
     }
-  }
   return s;
 }
