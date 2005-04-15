@@ -222,6 +222,32 @@ test6() {
   exit(1);
 }
 
+/* insert, including a row with all terms zero and a row with a zero
+   modulus.  */
+
+void
+test7() {
+  nout << "test7:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Congruence_System cgs0(0*A + 0*B %= -1);
+  if (find_variation(cgs0))
+    exit(1);
+
+  cgs0.insert((  A + 0*B %=  1) / 0);
+  cgs0.insert(0*A + 1*B %=  1);
+
+  if (find_variation(cgs0))
+    exit(1);
+
+  cgs0.ascii_dump(nout); // FIX
+
+  return;
+}
+
 int
 main() TRY {
   set_handlers();
@@ -232,6 +258,7 @@ main() TRY {
   test4();
   test5();
   test6();
+  test7();
 
   return 0;
 }
