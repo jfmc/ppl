@@ -176,6 +176,12 @@ Congruence::is_equality() const {
   return modulus() == 0;
 }
 
+inline void
+Congruence::set_is_equality() {
+  // FIX modulus() = 0?
+  (*this)[size()-1] = 0;
+}
+
 inline memory_size_type
 Congruence::external_memory_in_bytes() const {
   return Row::external_memory_in_bytes();

@@ -104,6 +104,17 @@ scalar_product_assign(Coefficient& z,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
+//! Computes the scalar product of \p x (FIX relative to \p ref) and
+//! \p y and assigns it to \p z.
+/*! \relates Linear_Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void
+scalar_product_assign(Coefficient& z,
+		      const Linear_Row& x, const Congruence& y,
+		      const Linear_Row& ref);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
 //! Computes the \e reduced scalar product of \p x and \p y,
 //! where the \f$\epsilon\f$ coefficient of \p x is ignored,
 //! and assigns the result to \p z.
@@ -112,6 +123,18 @@ scalar_product_assign(Coefficient& z,
 void
 reduced_scalar_product_assign(Coefficient& z,
 			      const Linear_Row& x, const Congruence& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Computes the \e reduced scalar product of \p x (FIX relative to \p
+//! ref) and \p y, where the \f$\epsilon\f$ coefficient of \p x is
+//! ignored, and assigns the result to \p z.
+/*! \relates Linear_Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void
+reduced_scalar_product_assign(Coefficient& z,
+			      const Linear_Row& x, const Congruence& y,
+			      const Linear_Row& ref);
 
 // FIX will this ever be used?
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -336,6 +359,9 @@ public:
   */
   bool is_equality() const;
 
+  //! Mark this congruence as a linear equality.
+  void set_is_equality();
+
   //! \brief
   //! Returns a lower bound to the total size in bytes of the memory
   //! occupied by \p *this.
@@ -442,9 +468,19 @@ private:
 			     const Linear_Row& x,
 			     const Congruence& y);
   friend void
+  PPL::scalar_product_assign(Coefficient& z,
+			     const Linear_Row& x,
+			     const Congruence& y,
+			     const Linear_Row& ref);
+  friend void
   PPL::reduced_scalar_product_assign(Coefficient& z,
 				     const Linear_Row& x,
 				     const Congruence& y);
+  friend void
+  PPL::reduced_scalar_product_assign(Coefficient& z,
+				     const Linear_Row& x,
+				     const Congruence& y,
+				     const Linear_Row& ref);
   friend void
   PPL::homogeneous_scalar_product_assign(Coefficient& z,
 					 const Linear_Row& x,

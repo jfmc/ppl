@@ -60,13 +60,31 @@ PPL::Congruence::sign_normalize() {
 void
 PPL::Congruence::normalize() {
   sign_normalize();
+
+  dimension_type sz = size();
+  if (sz == 0)
+    return;
+
   TEMP_INTEGER(mod);
   mod = modulus();
-  mod == 0
-    || (size() > 0
-	&& ((*this)[0] %= mod) < 0
-	// Make the inhomogeneous term positive.
-	&& (((*this)[0] += mod), true));
+  if (mod == 0)
+    return;
+
+  Congruence& row = (*this);
+  for (dimension_type col = 1; col < sz - 1 /* modulus */; ++col) {
+    if (row[col] == 0)
+      continue;
+    // Factor the modulus out of the inhomogeneous term.
+    if ((row[0] %= mod) < 0)
+      // Make the inhomogeneous term positive.
+      row[0] += mod;
+    return;
+  }
+
+  // All the coefficients are zero.  For such a row the reduction and
+  // conversion algorithms require a value in the inhomogeneous term,
+  // at least for the first row in the congruence system.
+  row[0] = mod;
 }
 
 void
@@ -184,7 +202,7 @@ PPL::Congruence::ascii_load(std::istream& s) {
     else
       col++;
 
-  if ((s >> str) == false && str.compare("m"))
+  if ((s >> str) == false || str.compare("m"))
     return false;
 
   if ((s >> x[col]) == false)
@@ -228,7 +246,8 @@ PPL::scalar_product_assign(Coefficient& z,
   assert(x.size() <= y.size() - 1);
   z = 0;
   for (dimension_type i = x.size(); i-- > 0; )
-    // The following line optimizes the computation of z += x[i] * y[i].
+    // The following line optimizes the computation of z += x[i] *
+    // y[i].
     add_mul_assign(z, x[i], y[i]);
 }
 
@@ -241,9 +260,45 @@ PPL::reduced_scalar_product_assign(Coefficient& z,
   assert(x.size() <= y.size());
   z = 0;
   for (dimension_type i = x.size() - 1; i-- > 0; )
-    // The following line optimizes the computation
-    // of z += x[i] * y[i].
+    // The following line optimizes z += x[i] * y[i].
     add_mul_assign(z, x[i], y[i]);
+}
+
+/*! \relates Parma_Polyhedra_Library::Congruence */
+void
+PPL::scalar_product_assign(Coefficient& z,
+			   const Linear_Row& x, const Congruence& y,
+			   const Linear_Row& ref) {
+  // Scalar product is only defined if `x' and `y' are
+  // dimension-compatible.
+  assert(x.size() <= y.size() - 1);
+  z = 0;
+  for (dimension_type i = x.size(); i-- > 0; ) {
+    // z += (ref[i] + x[i]) * y[i].
+    TEMP_INTEGER(ele);
+    ele = ref[i] + x[i];
+    // The following line optimizes z += ele * y[i].
+    add_mul_assign(z, ele, y[i]);
+  }
+}
+
+/*! \relates Parma_Polyhedra_Library::Congruence */
+void
+PPL::reduced_scalar_product_assign(Coefficient& z,
+				   const Linear_Row& x, const Congruence& y,
+				   const Linear_Row& ref) {
+  // The reduced scalar product is only defined
+  // if the topology of `x' is NNC and `y' has enough coefficients.
+  assert(x.size() <= y.size());
+  z = 0;
+  for (dimension_type i = x.size() - 1; i-- > 0; ) {
+    // z += (x[i] + ref[i]) * y[i].
+    TEMP_INTEGER(ele);
+    ele = x[i] + ref[i];
+    // The following line optimizes the computation
+    // of z += ele * y[i].
+    add_mul_assign(z, ele, y[i]);
+  }
 }
 
 /*! \relates Parma_Polyhedra_Library::Congruence */
