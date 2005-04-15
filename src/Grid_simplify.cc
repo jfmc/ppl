@@ -248,8 +248,12 @@ PPL::Grid::simplify(Generator_System& sys, Saturation_Matrix& sat) {
       ++row_num;
     if (row_num >= num_rows) {
       // Element col is zero in all rows from the col'th, so create a
-      // virtual row at index col with diagonal value 1.
-      std::cout << "  Adding virtual row" << std::endl;
+      // row at index col with diagonal value 1.
+      if (col)
+	std::cout << "  Adding virtual row" << std::endl;
+      else
+	std::cout << "  Adding FIX ~epsilon row" << std::endl;
+
       /* FIX check */
       sys.add_zero_rows(1, Linear_Row::Flags(NECESSARILY_CLOSED,
 					     Linear_Row::LINE_OR_EQUALITY));
@@ -257,7 +261,10 @@ PPL::Grid::simplify(Generator_System& sys, Saturation_Matrix& sat) {
       Linear_Row& new_row = sys[num_rows];
       std::cout << "    setting col" << std::endl;
       new_row[col] = 1;
-      mark_virtual(new_row);
+      if (col)
+	mark_virtual(new_row);
+      else
+	new_row.set_is_ray_or_point_or_inequality();
       std::cout << "    swapping" << std::endl;
       // FIX will these use the correct swap? (more below)
       std::swap(new_row, sys[col]);
@@ -388,7 +395,7 @@ PPL::Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
     dimension_type row_num = num_rows - col;
     std::cout << "  row_num " << row_num << std::endl;
     // FIX check if orig_row_num can be zero
-    dimension_type orig_row_num = row_num;
+    dimension_type orig_row_num = row_num;  // FIX index
     // Move over rows which have zero in column col.
     // FIX array access assumes row has >= 2 elements
     dimension_type column = sys.num_columns() - 1 /* modulus */ - 1 /* index */ - col;
@@ -398,7 +405,10 @@ PPL::Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
     if (row_num == 0) {
       // Element col is zero in all rows from the col'th, so create a
       // virtual row at index col with diagonal value 1.
-      std::cout << "  Adding virtual row" << std::endl;
+      if (orig_row_num)
+	std::cout << "  Adding virtual row" << std::endl;
+      else
+	std::cout << "  Adding FIX ~epsilon row" << std::endl;
       // FIX better way to construct virtual row?
       // FIX assumes a row
       //Congruence new_row(sys[0]);
@@ -406,8 +416,14 @@ PPL::Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
       // FIX zero garaunteed in all cols? depends on coefficient ctor?
       std::cout << "    setting column" << std::endl;
       new_row[column] = 1;
-      std::cout << "    marking virtual" << std::endl;
-      mark_virtual(static_cast<Congruence&>(new_row)); // FIX dodgy?
+      if (orig_row_num) {
+	std::cout << "    marking virtual" << std::endl;
+	mark_virtual(static_cast<Congruence&>(new_row)); // FIX dodgy?
+      }
+      else {
+	assert(sys.num_columns());
+	new_row[sys.num_columns() - 1] = 1;
+      }
       sys.rows.insert(sys.rows.begin() + orig_row_num, new_row);
     }
     else {
