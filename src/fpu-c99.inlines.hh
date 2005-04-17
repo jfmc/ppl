@@ -39,21 +39,25 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline int
+fpu_get_rounding_direction() {
+  return fegetround();
+}
+
+inline void
+fpu_set_rounding_direction(int dir) {
+  fesetround(dir);
+}
+
+inline int
 fpu_save_rounding_direction(int dir) {
-#if USE_FPU_ROUNDING
   int old = fegetround();
   fesetround(dir);
   return old;
-#else
-  return 0;
-#endif
 }
 
 inline void
 fpu_reset_inexact() {
-#if USE_FPU_INEXACT
   feclearexcept(FE_INEXACT);
-#endif
 }
 
 inline int
@@ -64,18 +68,12 @@ fpu_save_rounding_direction_reset_inexact(int dir) {
 
 inline void
 fpu_restore_rounding_direction(int dir) {
-#if USE_FPU_ROUNDING
   fesetround(dir);
-#endif
 }
 
 inline int
 fpu_check_inexact() {
-#if USE_FPU_INEXACT
   return fetestexcept(FE_INEXACT) != 0;
-#else
-  return -1;
-#endif
 }
 
 } // namespace Parma_Polyhedra_Library
