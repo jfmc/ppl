@@ -988,6 +988,20 @@
   URL = "http://www-cad.eecs.berkeley.edu/HomePages/tah/Publications/some_lessons_from_the_hytech_experience.html"
 }
 
+@Inproceedings{JaffarMSY94,
+  Author = "J. Jaffar and M. J. Maher and P. J. Stuckey and R. H. C. Yap",
+  Title = "Beyond Finite Domains",
+  Booktitle = "Principles and Practice of Constraint Programming:
+               Proceedings of the Second International Workshop",
+  Publisher = "Springer-Verlag, Berlin",
+  Editor = "A. Borning",
+  Address = "Rosario, Orcas Island, Washington, USA",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 874,
+  Pages = "86--94",
+  Year = 1994,
+}
+
 @Manual{NEW-POLKA-1-1-3c,
   Author = "B. Jeannet",
   Title = "Convex Polyhedra Library",
@@ -1326,6 +1340,47 @@
               corresponding maximization problems."
 }
 
+@Inproceedings{NelsonO77,
+  Author = "G. Nelson and D. C. Oppen",
+  Title = "Fast Decision Algorithms based on {Union} and {Find}",
+  Booktitle = "Proceedings of the 18th Annual Symposium on Foundations
+               of Computer Science (FOCS'77)",
+  Address = "Providence, RI, USA",
+  Publisher = "IEEE Computer Society Press",
+  Pages = "114--119",
+  Year = 1977,
+  Note = "The journal version of this paper is \cite{NelsonO80}"
+}
+
+@Article{NelsonO80,
+  Author = "G. Nelson and D. C. Oppen",
+  Title = "Fast Decision Procedures Based on Congruence Closure",
+  Journal = "Journal of the ACM",
+  Publisher = "ACM Press",
+  Volume = 27,
+  Number = 2,
+  Pages = "356--364",
+  Year = 1980,
+  Note = "An earlier version of this paper is \cite{NelsonO77}",
+  Abstract = "The notion of the congruence closure of a relation on a
+              graph is defined and several algorithms for computing
+              it are surveyed. A simple proof is given that the
+              congruence closure algorithm provides a decision
+              procedure for the quantifier-free theory of equality. A
+              decision procedure is then given for the
+              quantifier-free theory of LISP list structure based on
+              the congruence closure algorithm. Both decision
+              procedures determine the satisfiability of a
+              conjunction of literals of length n in average time
+              $O(n \log n)$ using the fastest known congruence closure
+              algorithm. It is also shown that if the axiomatization
+              of the theory of list structure is changed slightly,
+              the problem of determining the satisfiability of a
+              conjunction of literals becomes NP-complete. The
+              decision procedures have been implemented in the
+              authors' simplifier for the Stanford Pascal Verifier."
+}
+
 @TechReport{QuintonRR96,
   Author = "P. Quinton and S. Rajopadhye and T. Risset",
   Title = "On Manipulating {Z}-Polyhedra",
@@ -1471,6 +1526,35 @@
               (data structures, functions available)."
 }
 
+@Unpublished{Pratt77,
+  Author = "V. R. Pratt",
+  Title="Two Easy Theories whose Combination is Hard",
+  Note = "Memo sent to Nelson and Oppen
+          concerning a preprint of their paper \cite{NelsonO77}",
+  Month = sep,
+  Year = 1977,
+  Abstract = "We restrict attention to the validity problem for
+              unquantified disjunctions of literals (possibly negated
+              atomic formulae) over the domain of integers, or what is
+              just as good, the satisfiability problem for
+              unquantified conjunctions. When $=$ is the only
+              predicate symbol and all function symbols are left
+              uninterpreted, or when $\geq$ is the only predicate
+              symbol (taking its standard interpretation on the
+              integers) and the only terms are variables and integers,
+              then satisfiability is decidable in polynomial
+              time. However when $\geq$ and uninterpreted function
+              symbols are allowed to appear together, satisfiability
+              becomes an NP-complete problem. This combination of the
+              two theories can arise for example when reasoning about
+              arrays (the uninterpreted function symbols) and
+              subscript manipulation (where $\geq$ arises in
+              considering subscript bounds). These results are
+              unaffected by the presence of successor, which also
+              arises commonly in reasoning about subscript
+              manipulation."
+}
+
 @Article{Weyl35,
   Author = "H. Weyl",
   Title = "Elementare Theorie der konvexen Polyeder",
@@ -1480,6 +1564,26 @@
   Pages = "290--306",
   Year = 1935,
   Note = "English translation in \cite{Weyl50}"
+}
+
+@Article{Shostak81,
+  Author = "R. E. Shostak",
+  Title = "Deciding Linear Inequalities by Computing Loop Residues",
+  Journal = "Journal of the ACM",
+  Publisher = "ACM Press",
+  Volume = 28,
+  Number = 4,
+  Pages = "769--779",
+  Year = 1981,
+  Abstract = "V.~R.~Pratt has shown that the real and integer
+              feasibility of sets of linear inequalities of the form
+              $x \leq y + c$ can be decided quickly by examining the
+              loops in certain graphs.  Pratt's method is generalized,
+              first to real feasibility of inequalities in two
+              variables and arbitrary coefficients, and ultimately to
+              real feasibility of arbitrary sets of linear
+              inequalities.  The method is well suited to applications
+              in program verification."
 }
 
 @Incollection{Weyl50,
