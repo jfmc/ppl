@@ -1381,6 +1381,70 @@
               authors' simplifier for the Stanford Pascal Verifier."
 }
 
+@Book{NemhauserW88,
+  Author = "G. L. Nemhauser and L. A. Wolsey",
+  Title = "Integer and Combinatorial Optimization",
+  Publisher = "John Wiley \& Sons",
+  Series = "Wiley Interscience Series
+            in Discrete Mathematics and Optimization",
+  Year = 1988
+}
+
+@Techreport{NookalaR00,
+  Author = "S. P. K. Nookala and T. Risset",
+  Title = "A Library for {Z}-Polyhedral Operations",
+  Type = "\emph{Publication interne}",
+  Number = 1330,
+  Institution = "IRISA",
+  Address = "Campus de Beaulieu, Rennes, France",
+  Year = 2000,
+  Abstract = "Polyhedra are commonly used for representing iteration
+              domains of loop nests with unit stride: the iteration
+              domain of a loop is associated with the set of integer
+              points contained in a polyhedron.  ${\cal Z}$-polyhedra
+              are natural extension of polyhedra, in the sense that
+              they represent iteration domains of loop nests with
+              non-unit stride (they are polyhedra intersected with
+              integral lattices). The polyhedral library (Polylib) has
+              been developed for computing on polyhedra, it is now
+              widely used in the automatic parallelization research
+              community. This report describes the implementation of
+              the extension of Polylib to ${\cal Z}$-polyhedra. We
+              describe algorithms used for computing on lattices and
+              ${\cal Z}$-polyhedra, and we provide technical
+              documentation for the ${\cal Z}$-polyhedral library
+              (data structures, functions available)."
+}
+
+@Unpublished{Pratt77,
+  Author = "V. R. Pratt",
+  Title="Two Easy Theories whose Combination is Hard",
+  Note = "Memo sent to Nelson and Oppen
+          concerning a preprint of their paper \cite{NelsonO77}",
+  Month = sep,
+  Year = 1977,
+  Abstract = "We restrict attention to the validity problem for
+              unquantified disjunctions of literals (possibly negated
+              atomic formulae) over the domain of integers, or what is
+              just as good, the satisfiability problem for
+              unquantified conjunctions. When $=$ is the only
+              predicate symbol and all function symbols are left
+              uninterpreted, or when $\geq$ is the only predicate
+              symbol (taking its standard interpretation on the
+              integers) and the only terms are variables and integers,
+              then satisfiability is decidable in polynomial
+              time. However when $\geq$ and uninterpreted function
+              symbols are allowed to appear together, satisfiability
+              becomes an NP-complete problem. This combination of the
+              two theories can arise for example when reasoning about
+              arrays (the uninterpreted function symbols) and
+              subscript manipulation (where $\geq$ arises in
+              considering subscript bounds). These results are
+              unaffected by the presence of successor, which also
+              arises commonly in reasoning about subscript
+              manipulation."
+}
+
 @TechReport{QuintonRR96,
   Author = "P. Quinton and S. Rajopadhye and T. Risset",
   Title = "On Manipulating {Z}-Polyhedra",
@@ -1399,6 +1463,26 @@
              automatic parallelization and parallel VLSI synthesis.",
 }
 
+@Article{Shostak81,
+  Author = "R. E. Shostak",
+  Title = "Deciding Linear Inequalities by Computing Loop Residues",
+  Journal = "Journal of the ACM",
+  Publisher = "ACM Press",
+  Volume = 28,
+  Number = 4,
+  Pages = "769--779",
+  Year = 1981,
+  Abstract = "V.~R.~Pratt has shown that the real and integer
+              feasibility of sets of linear inequalities of the form
+              $x \leq y + c$ can be decided quickly by examining the
+              loops in certain graphs.  Pratt's method is generalized,
+              first to real feasibility of inequalities in two
+              variables and arbitrary coefficients, and ultimately to
+              real feasibility of arbitrary sets of linear
+              inequalities.  The method is well suited to applications
+              in program verification."
+}
+
 @Book{Schrijver99,
   Author = "A. Schrijver",
   Title = "Theory of Linear and Integer Programming",
@@ -1407,15 +1491,6 @@
             in Discrete Mathematics and Optimization",
   ISBN = "0-471-98232-6",
   Year = 1999
-}
-
-@Book{NemhauserW88,
-  Author = "G. L. Nemhauser and L. A. Wolsey",
-  Title = "Integer and Combinatorial Optimization",
-  Publisher = "John Wiley \& Sons",
-  Series = "Wiley Interscience Series
-            in Discrete Mathematics and Optimization",
-  Year = 1988
 }
 
 @Article{Srivastava93,
@@ -1500,61 +1575,6 @@
   URL = "ftp://ftp.ee.byu.edu/faculty/Wilde/Polylib/report.ps.gz"
 }
 
-@Techreport{NookalaR00,
-  Author = "S. P. K. Nookala and T. Risset",
-  Title = "A Library for {Z}-Polyhedral Operations",
-  Type = "\emph{Publication interne}",
-  Number = 1330,
-  Institution = "IRISA",
-  Address = "Campus de Beaulieu, Rennes, France",
-  Year = 2000,
-  Abstract = "Polyhedra are commonly used for representing iteration
-              domains of loop nests with unit stride: the iteration
-              domain of a loop is associated with the set of integer
-              points contained in a polyhedron.  ${\cal Z}$-polyhedra
-              are natural extension of polyhedra, in the sense that
-              they represent iteration domains of loop nests with
-              non-unit stride (they are polyhedra intersected with
-              integral lattices). The polyhedral library (Polylib) has
-              been developed for computing on polyhedra, it is now
-              widely used in the automatic parallelization research
-              community. This report describes the implementation of
-              the extension of Polylib to ${\cal Z}$-polyhedra. We
-              describe algorithms used for computing on lattices and
-              ${\cal Z}$-polyhedra, and we provide technical
-              documentation for the ${\cal Z}$-polyhedral library
-              (data structures, functions available)."
-}
-
-@Unpublished{Pratt77,
-  Author = "V. R. Pratt",
-  Title="Two Easy Theories whose Combination is Hard",
-  Note = "Memo sent to Nelson and Oppen
-          concerning a preprint of their paper \cite{NelsonO77}",
-  Month = sep,
-  Year = 1977,
-  Abstract = "We restrict attention to the validity problem for
-              unquantified disjunctions of literals (possibly negated
-              atomic formulae) over the domain of integers, or what is
-              just as good, the satisfiability problem for
-              unquantified conjunctions. When $=$ is the only
-              predicate symbol and all function symbols are left
-              uninterpreted, or when $\geq$ is the only predicate
-              symbol (taking its standard interpretation on the
-              integers) and the only terms are variables and integers,
-              then satisfiability is decidable in polynomial
-              time. However when $\geq$ and uninterpreted function
-              symbols are allowed to appear together, satisfiability
-              becomes an NP-complete problem. This combination of the
-              two theories can arise for example when reasoning about
-              arrays (the uninterpreted function symbols) and
-              subscript manipulation (where $\geq$ arises in
-              considering subscript bounds). These results are
-              unaffected by the presence of successor, which also
-              arises commonly in reasoning about subscript
-              manipulation."
-}
-
 @Article{Weyl35,
   Author = "H. Weyl",
   Title = "Elementare Theorie der konvexen Polyeder",
@@ -1564,26 +1584,6 @@
   Pages = "290--306",
   Year = 1935,
   Note = "English translation in \cite{Weyl50}"
-}
-
-@Article{Shostak81,
-  Author = "R. E. Shostak",
-  Title = "Deciding Linear Inequalities by Computing Loop Residues",
-  Journal = "Journal of the ACM",
-  Publisher = "ACM Press",
-  Volume = 28,
-  Number = 4,
-  Pages = "769--779",
-  Year = 1981,
-  Abstract = "V.~R.~Pratt has shown that the real and integer
-              feasibility of sets of linear inequalities of the form
-              $x \leq y + c$ can be decided quickly by examining the
-              loops in certain graphs.  Pratt's method is generalized,
-              first to real feasibility of inequalities in two
-              variables and arbitrary coefficients, and ultimately to
-              real feasibility of arbitrary sets of linear
-              inequalities.  The method is well suited to applications
-              in program verification."
 }
 
 @Incollection{Weyl50,
