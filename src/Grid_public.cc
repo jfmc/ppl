@@ -508,9 +508,6 @@ PPL::Grid::OK(bool check_not_empty) const {
 
   // FIX (generally)
 
-  // FIX
-  std::cout << "gen_sys.num_pending_rows(): " << gen_sys.num_pending_rows() << std::endl;  // FIX
-
 #if 0
   // The expected number of columns in the congruence and generator
   // systems, if they are not empty.
@@ -1618,14 +1615,11 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
 			       "gs");
     // `gs' has a point: the grid is no longer empty and
     // generators are up-to-date.
-    std::cout << "gs.num_pending_rows(): " << gs.num_pending_rows() << std::endl;  // FIX
     std::swap(gen_sys, gs);
     clear_empty();
     set_generators_up_to_date();
-    std::cout << "gen_sys.num_pending_rows(): " << gen_sys.num_pending_rows() << std::endl;  // FIX
     // This call to `minimize()' returns `true'.
     minimize();
-    std::cout << "gen_sys.num_pending_rows(): " << gen_sys.num_pending_rows() << std::endl;  // FIX
   }
   assert(OK(true));
   return true;

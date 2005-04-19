@@ -73,8 +73,6 @@ PPL::Grid::minimize(bool con_to_gen,
 		    Congruence_System& dest,
 		    Saturation_Matrix& sat) {
   std::cout << "4 param minimize gs to cgs..." << std::endl; // FIX
-  std::cout << "source.num_pending_rows(): " << source.num_pending_rows() << std::endl;  // FIX
-  std::cout << "source.first_pending_row(): " << source.first_pending_row() << std::endl;  // FIX
   // Topologies have to agree.
   //assert(source.topology() == dest.topology()); // FIX
   // `source' cannot be empty: even if it is an empty constraint system,
@@ -87,8 +85,6 @@ PPL::Grid::minimize(bool con_to_gen,
   // Sort the source system, if necessary.
   if (!source.is_sorted())
     source.sort_rows();
-
-  std::cout << "source.num_pending_rows(): " << source.num_pending_rows() << std::endl;  // FIX
 
   // Initialization of the system of generators `dest'.
   // The algorithm works incrementally and we haven't seen any
