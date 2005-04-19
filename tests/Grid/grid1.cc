@@ -405,7 +405,7 @@ test9() {
 
 void
 test10() {
-  nout << "\n\ntestn:" << endl;
+  nout << "\n\ntest10:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -451,6 +451,102 @@ test10() {
   exit(1);
 }
 
+/* Empty grid, one dimension.  */
+
+void
+test11() {
+  nout << "\n\ntest11:" << endl;
+
+  Grid gr(1, Grid::EMPTY);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(1, Grid::EMPTY);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (known_gr == gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+/* Empty grid, many dimensions.  */
+
+void
+test12() {
+  nout << "\n\ntest12:" << endl;
+
+  Grid gr(112, Grid::EMPTY);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(112, Grid::EMPTY);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (known_gr == gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+/* Bigger values (test7 from Chiara conversion_test2.cc).  */
+
+void
+test13() {
+  nout << "\n\ntest13:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Generator_System gs;
+  gs.insert(point(-93*A +   0*B +  39*C, 113));
+  gs.insert( line( 29*A +  23*B + 111*C));
+  gs.insert(point(117*A + 200*B +  88*C, 33));
+
+  Grid gr(3, Grid::EMPTY);
+
+  gr.add_generators_and_minimize(gs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Congruence_System known_cgs;
+  known_cgs.insert((       0*A +       0*B +      0*C %=  280730) / 280730);
+  known_cgs.insert((     -23*A +      29*B +      0*C %=   59643) / 280730);
+  known_cgs.insert((-2309489*A + 1557137*B + 280730*C %= 1997619) / 0);
+
+  //Grid known_gr(known_cgs);  // FIX
+  Grid known_gr(3, Grid::EMPTY);
+  known_gr.add_congruences(known_cgs);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (known_gr == gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -467,6 +563,9 @@ main() TRY {
   test8();
   test9();
   test10();
+  test11();
+  test12();
+  test13();
 
   return 0;
 }
