@@ -213,6 +213,8 @@ PPL::Linear_Row::Flags::ascii_dump(std::ostream& s) const {
     << nnc_valid << ' '
     << (test_bits(1 << Flags::nnc_bit) ? '+' : '-')
     << is_nnc;
+  if (test_bits(1 << Flags::virtual_bit))
+    s << " (v)";
 }
 
 void
