@@ -137,19 +137,18 @@ PPL::Grid::le_pc_reduce(Linear_Row& row_j, Linear_Row& row_k,
   TEMP_INTEGER(a_k);
   a_j = row_j[column] / gcd;
   a_k = row_k[column] / gcd;
-  // FIX correct to skip divisors?
   dimension_type num_cols = sys.num_columns();
   // FIX why?  (row_j is a line, row_k is a param)
-  for (dimension_type index = 0; index < sys.num_rows() - 1; ++index) {
+  for (dimension_type index = 0; index < sys.num_rows(); ++index) {
     Linear_Row& row = sys[index];
     if (row.is_ray_or_point_or_inequality())
-      for (dimension_type col = 1; col < num_cols; ++col)
+      for (dimension_type col = 0; col < num_cols; ++col)
         row[col] *= a_j;
   }
   /* This is like the adjustments in le_le_reduce and pc_pc_reduce
      (row_k[col] has been multiplied by a_j already, in the loop
      above).  */
-  for (dimension_type col = 1; col < num_cols; ++col)
+  for (dimension_type col = 0; col < num_cols; ++col)
     row_k[col] -= a_k * row_j[col];
 }
 
@@ -172,9 +171,9 @@ PPL::Grid::le_pc_reduce(Congruence& row_j, Congruence& row_k,
   dimension_type num_cols = sys.num_columns() - 1 /* modulus */;
   // FIX factor up every congruence, leaving equalities alone?
   // FIX why?
-  for (dimension_type index = 0; index < sys.num_rows() - 1; ++index) {
+  for (dimension_type index = 0; index < sys.num_rows(); ++index) {
     Congruence& row = sys[index];
-    if (row.is_equality() == false)
+    if (virtual_row(row) == false && row.is_equality() == false)
       for (dimension_type col = 0; col < num_cols; ++col)
         row[col] *= a_j;
   }
