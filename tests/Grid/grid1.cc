@@ -547,6 +547,72 @@ test13() {
   exit(1);
 }
 
+/* Even bigger values (test8 from Chiara conversion_test2.cc).  */
+
+void
+test14() {
+  nout << "\n\ntest14:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Generator_System gs;
+  gs.insert(point(-9933*A + 2000*B + 3953*C, 9113));
+  gs.insert(point(   29*A +   23*B + 1111*C, 1010));
+  gs.insert(point( 2394*A + 7273*B +    0*C,   30));
+  gs.insert(point(    0*A +    0*B + 8888*C, 7302));
+
+  Grid gr(3, Grid::EMPTY);
+
+  gr.add_generators_and_minimize(gs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Congruence_System known_cgs;
+
+  // Create coefficients with string constructors as they're too big
+  // for long.
+
+  // FIX are the coefficients used or copied?
+
+  Coefficient* tem1 = new Coefficient("37315344498526");
+  known_cgs.insert((     0*A +     0*B + 0*C %=        *tem1) / *tem1);
+
+  Coefficient* tem2 = new Coefficient("419950208052071972814");
+  known_cgs.insert((-*tem1*A +     0*B + 0*C %=  *tem2) / *tem1);
+  delete tem2;
+
+  tem2 = new Coefficient("-8304861576928864199088");
+  Coefficient* tem3 = new Coefficient("93463651403994354999109986832");
+  known_cgs.insert(( *tem2*A + *tem1*B + 0*C %=  *tem3) / *tem1);
+  delete tem2; delete tem3;
+
+  tem2 = new Coefficient("-1453742620492502229473");
+  tem3 = new Coefficient("6531945920270");
+  Coefficient* tem4 = new Coefficient("16360548848917233378527473980");
+  known_cgs.insert(( *tem2*A + *tem3*B - 1*C %= *tem4) / *tem1);
+  delete tem1; delete tem2; delete tem3; delete tem4;
+
+
+  //Grid known_gr(known_cgs);  // FIX
+  Grid known_gr(3, Grid::EMPTY);
+  known_gr.add_congruences(known_cgs);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (known_gr == gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -566,6 +632,7 @@ main() TRY {
   test11();
   test12();
   test13();
+  test14();
 
   return 0;
 }
