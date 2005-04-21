@@ -1439,11 +1439,15 @@ public:  //private: // FIX, for testing
 
   //! Updates congruences starting from generators and reduces them.
   /*!
+    \return
+    <CODE>false</CODE> if and only if \p *this turns out to be an
+    empty grid.
+
     The resulting system of congruences is only partially sorted:
     the equalities are in the upper part of the matrix,
     while the inequalities in the lower part.
   */
-  void update_congruences() const;
+  bool update_congruences() const;
 
   //! Updates generators starting from congruences and minimizes them.
   /*!
@@ -1685,13 +1689,13 @@ public:  //private: // FIX, for testing
   //! FIX Uses Gauss' elimination method to simplify the result of
   //! <CODE>convert()</CODE>.
   // Detailed Doxygen comment to be found in file simplify.cc.
-  static int simplify(Congruence_System& mat, Saturation_Matrix& sat);
+  static bool simplify(Congruence_System& mat, Saturation_Matrix& sat);
 
   //! \brief
   //! FIX Uses Gauss' elimination method to simplify the result of
   //! <CODE>convert()</CODE>.
   // Detailed Doxygen comment to be found in file simplify.cc.
-  static int simplify(Generator_System& mat, Saturation_Matrix& sat);
+  static bool simplify(Generator_System& mat, Saturation_Matrix& sat);
 
   //! Reduce \p row_k using \p row_j.
   /*!
