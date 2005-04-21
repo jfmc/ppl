@@ -46,7 +46,8 @@ congruence1 \
 writecongruencesystem \
 congruencesystem1 \
 congruencesystem2 \
-grid1
+grid1 \
+grid2
 
 #
 # Sources for the tests
@@ -57,6 +58,7 @@ writecongruencesystem_SOURCES = writecongruencesystem.cc
 congruencesystem1_SOURCES = congruencesystem1.cc
 congruencesystem2_SOURCES = congruencesystem2.cc
 grid1_SOURCES = grid1.cc
+grid2_SOURCES = grid2.cc
 
 XFAIL_TESTS =
 
