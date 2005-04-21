@@ -1034,14 +1034,13 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator_System& gs) {
   Generator_System::const_iterator i = gs.begin();
   const Generator_System::const_iterator gs_end = gs.end();
   if (i == gs_end)
-    s << "false";
-  else
-    while (i != gs_end) {
-      s << *i++;
-      if (Grid::virtual_row(*i))
-	s << " (v)";
-      if (i != gs_end)
-	s << ", ";
-    }
-  return s;
+    return s << "false";
+  while (1) {
+    s << *i;
+    if (Grid::virtual_row(*i++))
+      s << " (v)";
+    if (i == gs_end)
+      return s;
+    s << ", ";
+  }
 }
