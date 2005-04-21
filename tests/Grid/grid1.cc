@@ -1,4 +1,4 @@
-/* Grid reduction and conversion tests, which start with generators.
+/* Reduction and conversion tests of grids created from generators.
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -139,7 +139,7 @@ test3() {
 
   Grid known_gr(known_gs);
 
-  if (known_gr == gr)
+  if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
@@ -148,7 +148,7 @@ test3() {
   exit(1);
 }
 
-/* test0 from Chiara conversion_test.cc.  */
+/* param_test0 from Chiara conversion_test.cc.  */
 
 void
 test4() {
@@ -181,7 +181,7 @@ test4() {
   Grid known_gr(3, Grid::EMPTY);
   known_gr.add_congruences(known_cgs);
 
-  if (known_gr == gr)
+  if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
@@ -190,7 +190,7 @@ test4() {
   exit(1);
 }
 
-/* test1 from Chiara conversion_test.cc.  */
+/* param_test1 from Chiara conversion_test.cc.  */
 
 void
 test5() {
@@ -221,7 +221,7 @@ test5() {
   if (find_variation(known_gr))
     exit(1);
 
-  if (known_gr == gr)
+  if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
@@ -231,7 +231,7 @@ test5() {
   exit(1);
 }
 
-/* test2 from Chiara conversion_test.cc.  */
+/* param_test2 from Chiara conversion_test.cc.  */
 
 void
 test6() {
@@ -264,7 +264,7 @@ test6() {
   if (find_variation(known_gr))
     exit(1);
 
-  if (known_gr == gr)
+  if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
@@ -274,7 +274,7 @@ test6() {
   exit(1);
 }
 
-/* test3 from Chiara conversion_test.cc.  */
+/* param_test3 from Chiara conversion_test.cc.  */
 
 void
 test7() {
@@ -306,7 +306,7 @@ test7() {
   if (find_variation(known_gr))
     exit(1);
 
-  if (known_gr == gr)
+  if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
@@ -316,7 +316,7 @@ test7() {
   exit(1);
 }
 
-/* test4 from Chiara conversion_test.cc.  */
+/* param_test4 from Chiara conversion_test.cc.  */
 
 void
 test8() {
@@ -350,7 +350,7 @@ test8() {
   if (find_variation(known_gr))
     exit(1);
 
-  if (known_gr == gr)
+  if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
@@ -360,7 +360,7 @@ test8() {
   exit(1);
 }
 
-/* test5 from Chiara conversion_test.cc.  */
+/* param_test5 from Chiara conversion_test.cc.  */
 
 void
 test9() {
@@ -391,7 +391,7 @@ test9() {
   if (find_variation(known_gr))
     exit(1);
 
-  if (known_gr == gr)
+  if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
@@ -441,7 +441,7 @@ test10() {
   if (find_variation(known_gr))
     exit(1);
 
-  if (known_gr == gr)
+  if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
@@ -467,7 +467,7 @@ test11() {
   if (find_variation(known_gr))
     exit(1);
 
-  if (known_gr == gr)
+  if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
@@ -493,7 +493,7 @@ test12() {
   if (find_variation(known_gr))
     exit(1);
 
-  if (known_gr == gr)
+  if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
@@ -503,7 +503,7 @@ test12() {
   exit(1);
 }
 
-/* Bigger values (test7 from Chiara conversion_test2.cc).  */
+/* Bigger values (param_test7 from Chiara conversion_test2.cc).  */
 
 void
 test13() {
@@ -537,7 +537,7 @@ test13() {
   if (find_variation(known_gr))
     exit(1);
 
-  if (known_gr == gr)
+  if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
@@ -547,7 +547,7 @@ test13() {
   exit(1);
 }
 
-/* Even bigger values (test8 from Chiara conversion_test2.cc).  */
+/* Even bigger values (param_test8 from Chiara conversion_test2.cc).  */
 
 void
 test14() {
@@ -603,7 +603,7 @@ test14() {
   if (find_variation(known_gr))
     exit(1);
 
-  if (known_gr == gr)
+  if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
