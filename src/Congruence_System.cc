@@ -47,7 +47,7 @@ PPL::Congruence_System::normalize_moduli() {
     // Find first congruence.
     while (1) {
       lcm = operator[](--row).modulus();
-      if (lcm != 0)
+      if (lcm > 0)
 	break;
       if (row == 0)
 	// All rows are equalities.
@@ -57,22 +57,19 @@ PPL::Congruence_System::normalize_moduli() {
     while (row > 1) {
       TEMP_INTEGER(modulus);
       modulus = operator[](--row).modulus();
-      if (modulus != 0)
+      if (modulus > 0)
 	lcm_assign(lcm, modulus);
     }
-    std::cout << "lcm " << lcm << std::endl;
 
     dimension_type row_size = operator[](0).size();
-    std::cout << "row_size " << row_size << std::endl;
     // Represent every row using the LCM as the modulus.
     for (dimension_type row = num_rows(); row-- > 0; ) {
       TEMP_INTEGER(modulus);
       modulus = operator[](row).modulus();
-      if (modulus == 0 || modulus == lcm)
+      if (modulus <= 0 || modulus == lcm)
 	continue;
       TEMP_INTEGER(factor);
       factor = lcm / modulus;
-      std::cout << "factor " << factor << std::endl;
       for (dimension_type col = row_size; col-- > 0; )
 	operator[](row)[col] *= factor;
       operator[](row)[row_size-1] = lcm;
@@ -86,10 +83,14 @@ adjust_space_dimension(const dimension_type new_space_dim) {
   assert(space_dimension() <= new_space_dim);
 
   dimension_type cols_to_add = new_space_dim - space_dimension();
+  dimension_type old_num_cols = num_columns();
 
   if (num_rows()) {
-    if (cols_to_add)
+    if (cols_to_add) {
       add_zero_columns(cols_to_add);
+      // Move the moduli.
+      swap_columns(num_columns() - 1, old_num_cols - 1);
+    }
   }
   else
     // Empty system; possibly add modulus and constant term.
@@ -231,7 +232,7 @@ PPL::Congruence_System::satisfies_all_congruences(const Generator& g) const {
 
   const Congruence_System& cgs = *this;
   for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
-    // FIX is this correct?
+    // FIX skip virtual rows
     TEMP_INTEGER(sp);
     spa_fp(sp, g, cgs[i]);
     if (cgs[i].is_equality()) {
@@ -276,12 +277,16 @@ PPL::Congruence_System::satisfies_all_congruences(const Generator& g,
     spa_fp(sp, g, cgs[i], ref);
     if (cgs[i].is_equality()) {
       // FIX a guess
-      if (sp != 0)
+      if (sp != 0) {
+	std::cout << "satisfies_all_cgs... done (eq false i = " << i << ", sp = " << sp << ")." << std::endl;
 	return false;
+      }
     }
     else
-      if (sp % cgs[i].modulus() != 0)
+      if (sp % cgs[i].modulus() != 0) {
+	std::cout << "satisfies_all_cgs... done (false i = " << i << ")." << std::endl;
 	return false;
+      }
   }
   return true;
 }
@@ -428,16 +433,13 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence_System& cgs) {
   Congruence_System::const_iterator i = cgs.begin();
   const Congruence_System::const_iterator cgs_end = cgs.end();
   if (i == cgs_end)
-    s << "true";
-  else {
-    // FIX do while
-    while (i != cgs_end) {
-      s << *i++;
-      if (i != cgs_end)
-	s << ", ";
-    }
+    return s << "true";
+  while (1) {
+    s << *i++;
+    if (i == cgs_end)
+      return s;
+    s << ", ";
   }
-  return s;
 }
 
 /*! \relates Parma_Polyhedra_Library::Congruence_System */
