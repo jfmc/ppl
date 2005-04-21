@@ -1379,6 +1379,9 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
     // `sat_c' is up-to-date, while `sat_g' is no longer up-to-date.
     set_sat_c_up_to_date();
     clear_sat_g_up_to_date();
+    // FIX added for grid
+    set_congruences_up_to_date();
+    clear_empty();
   }
   assert(OK());
 
@@ -2558,10 +2561,7 @@ PPL::Grid::topological_closure_assign() {
 /*! \relates Parma_Polyhedra_Library::Grid */
 bool
 PPL::operator==(const Grid& x, const Grid& y) {
-  // If the two polyhedra are topology-incompatible or dimension-incompatible,
-  // then they cannot be the same polyhedron.
-  //if (x.topology() != y.topology() || x.space_dim != y.space_dim)
-  if (x.space_dim != y.space_dim) // FIX
+  if (x.space_dim != y.space_dim)
     return false;
 
   if (x.marked_empty())
@@ -2728,12 +2728,10 @@ PPL::Grid::external_memory_in_bytes() const {
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Grid& gr) {
   if (gr.is_empty())
-    // FIX could print dimension
     s << "false";
-  else {
+  else
     // FIX ph only prints min'd constraints
     s << gr.minimized_congruences() << std::endl
       << gr.minimized_generators();
-  }
   return s;
 }
