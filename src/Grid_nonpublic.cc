@@ -605,15 +605,15 @@ PPL::Grid::is_included_in(const Grid& y) const {
     }
   for (dimension_type i = num_rows; i-- > 1; )
     // FIX gen = gs[i];
-    if (virtual_row(gs[i]) == false) {
+    if (virtual_row(gs[i]) == false)
       // FIX could this be any different for NNC ph's? (?)
       if ((gs[i].is_ray_or_point_or_inequality()
+	   // FIX is adjusting the param relative to gs[0] necessary?
 	   && cgs.satisfies_all_congruences(gs[i], gs[0]) == false)
 	  || cgs.satisfies_all_congruences(gs[i]) == false) {
 	std::cout << "is_included_in... done (false i = " << i << ")." << std::endl;
 	return false;
       }
-    }
 
   std::cout << "is_included_in... done." << std::endl;
   // Inclusion holds.
@@ -840,6 +840,8 @@ PPL::Grid::process_pending_generators() const {
     return;
   }
 
+  // FIX could this return true (ie that the grid is empty)
+  // FIX if so set_empty
   add_and_minimize(x.gen_sys, x.con_sys, x.sat_g);
   assert(x.gen_sys.num_pending_rows() == 0);
 
@@ -898,7 +900,7 @@ PPL::Grid::remove_pending_to_obtain_generators() const {
 }
 #endif
 
-void
+bool
 PPL::Grid::update_congruences() const {
   assert(space_dim > 0);
   assert(!marked_empty());
@@ -908,7 +910,10 @@ PPL::Grid::update_congruences() const {
   std::cout << "update_congruences" << std::endl; // FIX
 
   Grid& gr = const_cast<Grid&>(*this);
-  minimize(false, gr.gen_sys, gr.con_sys, gr.sat_c); // FIX
+  if (minimize(false, gr.gen_sys, gr.con_sys, gr.sat_c)) {
+    gr.set_empty();
+    return false;
+  }
   // `sat_c' is the only saturation matrix up-to-date.
   gr.set_sat_c_up_to_date();
   gr.clear_sat_g_up_to_date();
@@ -916,6 +921,7 @@ PPL::Grid::update_congruences() const {
   // minimized.
   gr.set_congruences_minimized();
   gr.set_generators_minimized();
+  return true;
 }
 
 bool
@@ -930,19 +936,18 @@ PPL::Grid::update_generators() const {
   Grid& x = const_cast<Grid&>(*this);
   // If the system of congruences is not consistent the polyhedron is
   // empty.
-  const bool empty = minimize(true, x.con_sys, x.gen_sys, x.sat_g);
-  if (empty)
+  if (minimize(true, x.con_sys, x.gen_sys, x.sat_g)) {
     x.set_empty();
-  else {
-    // `sat_g' is the only saturation matrix up-to-date.
-    x.set_sat_g_up_to_date();
-    x.clear_sat_c_up_to_date();
-    // The system of congruences and the system of generators are
-    // minimized.
-    x.set_congruences_minimized();
-    x.set_generators_minimized();
+    return false;
   }
-  return !empty;
+  // `sat_g' is the only saturation matrix up-to-date.
+  x.set_sat_g_up_to_date();
+  x.clear_sat_c_up_to_date();
+  // The system of congruences and the system of generators are
+  // minimized.
+  x.set_congruences_minimized();
+  x.set_generators_minimized();
+  return true;
 }
 
 #if 0

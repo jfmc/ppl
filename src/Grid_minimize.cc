@@ -132,8 +132,8 @@ PPL::Grid::minimize(bool con_to_gen,
   //       characterizes the initial saturation information.
   Saturation_Matrix tmp_sat(dest_num_rows, source.num_rows());
 
-  // FIX move to conversion?
-  simplify(source, sat);	// reduce?
+  if (simplify(source, sat))
+    return true;
 
   // By invoking the function conversion(), we populate `dest' with
   // the generators characterizing the polyhedron described by all
@@ -199,7 +199,7 @@ PPL::Grid::minimize(bool con_to_gen,
   simplify(source, sat);
 #endif
   std::cout << "4 param minimize gs to cgs... done." << std::endl;
-  return false; // FIX?
+  return false;
 }
 
 bool
@@ -274,7 +274,8 @@ PPL::Grid::minimize(bool con_to_gen,
 
   // FIX move to conversion?
   source.normalize_moduli();	// FIX necessary?
-  simplify(source, sat);	// FIX rename reduce?
+  if (simplify(source, sat))
+    return true;
 
   // By invoking the function conversion(), we populate `dest' with
   // the generators characterizing the polyhedron described by all
@@ -333,7 +334,7 @@ PPL::Grid::minimize(bool con_to_gen,
     return false;
   }
 #endif
-  return false; // FIX?
+  return false;
 }
 
 
@@ -389,13 +390,13 @@ PPL::Grid::add_and_minimize(const bool con_to_gen,
 			    Saturation_Matrix& sat,
 			    const Congruence_System& source2) {
   std::cout << "add_and_minimize cgs to gs (5 param)" << std::endl;
+  // `source1' and `source2' must have the same number of columns
+  // to be merged.
+  assert(source1.num_columns() == source2.num_columns());
 #if 0
   // FIX must a cgs hold equiv of equality constraint?
   // `source1' and `source2' cannot be empty.
   assert(source1.num_rows() > 0 && source2.num_rows() > 0);
-  // `source1' and `source2' must have the same number of columns
-  // to be merged.
-  assert(source1.num_columns() == source2.num_columns());
 #else
   assert(source2.num_rows() > 0);
 #endif
@@ -521,7 +522,8 @@ PPL::Grid::add_and_minimize(const bool con_to_gen,
 
   // FIX move to conversion?
   source.normalize_moduli();
-  simplify(source, sat);	// reduce?
+  if (simplify(source, sat))
+    return true;
 
   // Resizing `dest' to be the appropriate square matrix.
   dimension_type dest_num_rows = source.num_columns() - 1 /* modulus */;
@@ -651,7 +653,8 @@ PPL::Grid::add_and_minimize(Generator_System& source,
   // to accommodate for the pending rows of `source'.
   sat.resize(dest.num_rows(), source.num_rows());
 
-  simplify(source, sat);	// FIX reduce?
+  if (simplify(source, sat))
+    return true;
 
   // Incrementally compute the new system of generators.
   // Parameter `start' is set to the index of the first pending constraint.

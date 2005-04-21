@@ -207,8 +207,9 @@ trailing_rows_are_zero (Matrix& system,
 }
 
 // FIX rename these.  reduce?  triangulate?
+// Return false if empty, else true.
 
-int
+bool
 PPL::Grid::simplify(Generator_System& sys, Saturation_Matrix& sat) {
   std::cout << "==== simplify (reduce) gs:" << std::endl; // FIX
   std::cout << "sys:" << std::endl; // FIX
@@ -270,6 +271,7 @@ PPL::Grid::simplify(Generator_System& sys, Saturation_Matrix& sat) {
     }
     else {
       Linear_Row& pivot = sys[row_num];
+      dimension_type pivot_num = row_num;
       // For each row having a value other than 0 at col, change the
       // matrix so that the value at col is 0 (leaving the grid itself
       // equivalent).
@@ -327,10 +329,9 @@ PPL::Grid::simplify(Generator_System& sys, Saturation_Matrix& sat) {
 	  throw std::runtime_error("PPL internal error: Grid simplify: failed to match row type (3).");
 	++row_num;
       }
-      Linear_Row& row = sys[col];
-      if (row != pivot) {
+      if (col != pivot_num) {
 	std::cout << "swapping" << std::endl;
-	std::swap(row, pivot);
+	std::swap(sys[col], pivot);
       }
     }
     sys.ascii_dump(std::cout); // FIX
@@ -354,10 +355,14 @@ PPL::Grid::simplify(Generator_System& sys, Saturation_Matrix& sat) {
   // FIX at least to please assertion in linear_row::is_sorted
   sys.set_sorted(false);
 
-  std::cout << "sys.num_pending_rows(): " << sys.num_pending_rows() << std::endl;  // FIX
-  std::cout << "---- simplify (reduce) done." << std::endl;
+  // Only consistent grids exist.
+  if (sys[0].is_ray_or_point() == false) {
+    std::cout << "---- simplify (reduce) gs done (empty)." << std::endl;
+    return true;
+  }
 
-  return 1; // FIX
+  std::cout << "---- simplify (reduce) gs done." << std::endl;
+  return false;
 }
 
 /*!
@@ -371,7 +376,7 @@ PPL::Grid::simplify(Generator_System& sys, Saturation_Matrix& sat) {
   The saturation matrix corresponding to \p sys.
 
 */
-int
+bool
 PPL::Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
   std::cout << "======== simplify (reduce) cgs:" << std::endl; // FIX
   sys.ascii_dump(std::cout);
@@ -390,7 +395,7 @@ PPL::Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
     dimension_type num_rows = sys.num_rows();
     std::cout << "  num_rows " << num_rows << std::endl;
     // Start at the diagonal (col, col).
-    // FIX rename row_index
+    // FIX rename row_index?
     dimension_type row_num = num_rows - col;
     std::cout << "  row_num " << row_num << std::endl;
     // FIX check if orig_row_num can be zero
@@ -414,20 +419,33 @@ PPL::Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
       Row new_row(sys.num_columns(), sys.row_capacity, Row::Flags() /* FIX? */);
       // FIX zero garaunteed in all cols? depends on coefficient ctor?
       std::cout << "    setting column" << std::endl;
-      new_row[column] = 1;
       if (orig_row_num) {
 	std::cout << "    marking virtual" << std::endl;
 	mark_virtual(static_cast<Congruence&>(new_row)); // FIX dodgy?
+	new_row[column] = 1;
       }
       else {
 	assert(sys.num_columns());
-	new_row[sys.num_columns() - 1] = 1;
+	TEMP_INTEGER(modulus);
+	modulus = 1;
+	/* Try find an existing modulus.  */
+	for (dimension_type r = 0; r < num_rows; ++r) {
+	  TEMP_INTEGER(mod);
+	  mod = sys[r].modulus();
+	  if (mod > 0) {
+	    modulus = mod;
+	    break;
+	  }
+	}
+	new_row[sys.num_columns() - 1] = modulus;
+	new_row[column] = modulus;
       }
       sys.rows.insert(sys.rows.begin() + orig_row_num, new_row);
     }
     else {
       --row_num;		// Now an index.
       Congruence& pivot = sys[row_num];
+      dimension_type pivot_num = row_num;
       // For each FIX<preceding|higher> row having a value other than
       // 0 at col, change the representation so that the value at col
       // is 0 (leaving an equivalent grid).
@@ -482,17 +500,17 @@ PPL::Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
 	  if (row_num-- == 0)
 	    break;
 	}
-      Congruence& row = sys[orig_row_num - 1 /*FIX column?*/];
-      if (row != pivot) {
+      /*FIX use column instd of orig_row_num (twice below)?*/
+      if (orig_row_num != pivot_num) {
 	std::cout << "swapping" << std::endl;
-	std::swap(row, pivot);
+	std::swap(sys[orig_row_num - 1], pivot);
       }
       sys.ascii_dump(std::cout); // FIX
     }
     ++col;
   }
   assert(sys.num_rows() >= sys.num_columns() - 1);
-  /* Clip any zero rows from the end of the matrix.  */
+  // Clip any zero rows from the end of the matrix.
   if (sys.num_rows() > sys.num_columns() - 1) {
     assert(trailing_rows_are_zero(sys,
 				  sys.num_columns(),
@@ -501,9 +519,21 @@ PPL::Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
 		   sys.rows.begin()
 		   + (sys.num_rows() - sys.num_columns() + 1));
   }
+  // Only consistent grids exist.
+  // FIX assumes a row
+  TEMP_INTEGER(modulus);
+  TEMP_INTEGER(it);
+  modulus = sys[0].modulus();
+  it = sys[0].inhomogeneous_term();
+  assert(modulus >= 0);
+  if ((modulus > 0 && it % modulus != 0)
+      || (modulus == 0 && it > 0)) {
+    std::cout << "---- simplify (reduce) cgs done (empty)." << std::endl;
+    return true;
+  }
 
   assert(sys.OK());
 
-  std::cout << "---- simplify (reduce) done." << std::endl;
-  return 1; // FIX
+  std::cout << "---- simplify (reduce) cgs done." << std::endl;
+  return false;
 }
