@@ -279,10 +279,10 @@ test7() {
   Variable C(2);
 
   Congruence_System cgs;
-  cgs.insert(  0*A %= -1);
-  cgs.insert(   -A %= 64);
-  cgs.insert( -6*A +   B + 0*C %= -8);
-  cgs.insert(  3*A + 2*B +   C %= -4);
+  cgs.insert( 0*A %= -1);
+  cgs.insert(  -A %= 64);
+  cgs.insert(-6*A +   B + 0*C %= -8);
+  cgs.insert( 3*A + 2*B +   C %= -4);
 
   Grid gr(3, Grid::EMPTY);
   gr.add_congruences_and_minimize(cgs);
@@ -358,10 +358,10 @@ test9() {
   Variable C(2);
 
   Congruence_System cgs;
-  cgs.insert((  0*A %= -2) / 2);
-  cgs.insert((    A %=  0) / 2);
-  cgs.insert((          B %= 0) / 2);
-  cgs.insert((    A +   B +   C %= 0) / 2);
+  cgs.insert((0*A %= -2) / 2);
+  cgs.insert((  A %=  0) / 2);
+  cgs.insert((        B %= 0) / 2);
+  cgs.insert((  A +   B +   C %= 0) / 2);
 
   Grid gr(3, Grid::EMPTY);
   gr.add_congruences_and_minimize(cgs);
@@ -374,6 +374,50 @@ test9() {
   known_gs.insert(point(2*A + 0*B - 2*C));
   known_gs.insert(point(      2*B - 2*C));
   known_gs.insert(point(            2*C));
+
+  //Grid known_gr(known_gs); // FIX
+  Grid known_gr(3, Grid::EMPTY);
+  known_gr.add_generators(known_gs);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << "grid:" << endl << gr << endl
+       << "known grid:" << endl << known_gr << endl;
+  exit(1);
+}
+
+/* cong_test4 from Chiara conversion_test2.cc.  */
+
+void
+test10() {
+  nout << "\n\ntest10:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Congruence_System cgs;
+  cgs.insert((3*A             %= -2) / 3);
+  cgs.insert((5*A + 9*B +   C %= -1) / 3);
+  cgs.insert((        B + 3*C %= -2) / 3);
+  cgs.insert((      2*B + 3*C %= -2) / 3);
+
+  Grid gr(3, Grid::EMPTY);
+  gr.add_congruences_and_minimize(cgs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Generator_System known_gs;
+  known_gs.insert(point(-2*A +  0*B +   7*C, 3));
+  known_gs.insert(point( 7*A +  0*B -  38*C, 3));
+  known_gs.insert(point(-2*A + 27*B - 236*C, 3));
+  known_gs.insert(point(-2*A +  0*B +  34*C, 3));
 
   //Grid known_gr(known_gs); // FIX
   Grid known_gr(3, Grid::EMPTY);
@@ -406,8 +450,8 @@ main() TRY {
   test7();
   test8();
   test9();
-#if 0
   test10();
+#if 0
   test11();
   test12();
   test13();
