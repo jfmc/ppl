@@ -33,15 +33,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-// FIX always include (external in globals.defs.hh?)
 // FIX Temporary tracing stream.
 #if 1
 #include <iostream>
-std::ostream& trace = std::cout;
-using std::endl;
+std::ostream& ctrace = std::cout;
 #else
 #include <fstream>
-std::ofstream trace;
+std::ofstream ctrace;
 #endif
 
 /* FIX Name this method convert and name this file Grid_convert.cc, to
@@ -86,11 +84,11 @@ PPL::Grid::conversion(Congruence_System& source,
 		      Linear_System& dest,
 		      Saturation_Matrix& sat,
 		      dimension_type num_lines_or_equalities) {
-  trace << "============= convert cgs to gs" << std::endl
+  ctrace << "============= convert cgs to gs" << std::endl
 	<< "source:" << std::endl;
-  source.ascii_dump(trace);
-  trace << "dest:" << std::endl;
-  dest.ascii_dump(trace);
+  source.ascii_dump(ctrace);
+  ctrace << "dest:" << std::endl;
+  dest.ascii_dump(ctrace);
 
   // Quite similar to the Congruence_System to Linear_System version
   // below.  Changes here may be needed there too.
@@ -108,7 +106,7 @@ PPL::Grid::conversion(Congruence_System& source,
   while (--col > 0 && diagonal_lcm != 0)
     lcm_assign(diagonal_lcm, source[col][col]);
 
-  trace << "  diagonal_lcm: " << diagonal_lcm << std::endl;
+  ctrace << "  diagonal_lcm: " << diagonal_lcm << std::endl;
 
   if (diagonal_lcm == 0)
     throw std::runtime_error("PPL internal error: Grid::conversion: source matrix singular.");
@@ -130,11 +128,11 @@ PPL::Grid::conversion(Congruence_System& source,
     ++col;
   }
 
-  trace << "dest after init:" << std::endl;
-  dest.ascii_dump(trace);
+  ctrace << "dest after init:" << std::endl;
+  dest.ascii_dump(ctrace);
 
   for (col = 0; col < num_rows; ++col) {
-    trace << "col: " << col << std::endl;
+    ctrace << "col: " << col << std::endl;
     /* Change the destination from the source rows that precede row
        `col'.
        FIX
@@ -142,12 +140,12 @@ PPL::Grid::conversion(Congruence_System& source,
     */
     TEMP_INTEGER(source_diag);
     source_diag = source[col][col];
-    trace << "  source_diag " << source_diag << std::endl;
+    ctrace << "  source_diag " << source_diag << std::endl;
     dimension_type row = col;
     while (row > 0) {
       row--;
-      trace << "  row " << row << std::endl;
-      dest.ascii_dump(trace);
+      ctrace << "  row " << row << std::endl;
+      dest.ascii_dump(ctrace);
 
       Linear_Row& gen = dest[row];
 
@@ -161,7 +159,7 @@ PPL::Grid::conversion(Congruence_System& source,
       //multiplier = source_diag / gcd(dest[row][col], source_diag);
       gcd_assign(multiplier, gen[col], source_diag);
       multiplier = source_diag / multiplier;
-      trace << "    multiplier " << multiplier << std::endl;
+      ctrace << "    multiplier " << multiplier << std::endl;
 
       /* Multiply the desination grid by the multiplier.  FIX Only
 	 multiply congruences, as equalities are equivalent under
@@ -185,8 +183,8 @@ PPL::Grid::conversion(Congruence_System& source,
 
       gen[col] /= source_diag;
     }
-    trace << "dest after processing following rows:" << std::endl;
-    dest.ascii_dump(trace);
+    ctrace << "dest after processing following rows:" << std::endl;
+    dest.ascii_dump(ctrace);
 
     /* Change the destination from the source rows that follow the
        current column.
@@ -203,14 +201,14 @@ PPL::Grid::conversion(Congruence_System& source,
     */
     // FIX (gs to cgs) ~~ index is the column/row in the source
     for (dimension_type index = col + 1; index < num_rows; ++index) {
-      trace << "  index: " << index << " col: " << col << std::endl;
+      ctrace << "  index: " << index << " col: " << col << std::endl;
       TEMP_INTEGER(source_col); // FIX name
       source_col = source[index][col];
-      trace << "  rows:" << std::endl;
+      ctrace << "  rows:" << std::endl;
       // Matrix is upper triangular so row starts at col.
       dimension_type row = col;
       while (1) {
-	trace << "       " << row << std::endl;
+	ctrace << "       " << row << std::endl;
 	Linear_Row& dest_row = dest[row];
 	if (virtual_row(dest_row) == false)
 	  dest_row[index] -= (source_col * dest_row[col]);
@@ -218,11 +216,11 @@ PPL::Grid::conversion(Congruence_System& source,
 	row--;
       }
     }
-    trace << "dest after processing preceding rows:" << std::endl;
-    dest.ascii_dump(trace);
+    ctrace << "dest after processing preceding rows:" << std::endl;
+    dest.ascii_dump(ctrace);
   }
 
-  trace << "------------------- cgs to gs conversion done." << std::endl;
+  ctrace << "------------------- cgs to gs conversion done." << std::endl;
 
   return 0; // FIX
 }
@@ -236,11 +234,11 @@ PPL::Grid::conversion(Generator_System& source,
 		      Congruence_System& dest,
 		      Saturation_Matrix& sat,
 		      dimension_type num_lines_or_equalities) {
-  trace << "============= convert gs to cgs" << std::endl
+  ctrace << "============= convert gs to cgs" << std::endl
 	<< "source:" << std::endl;
-  source.ascii_dump(trace);
-  trace << "dest:" << std::endl;
-  dest.ascii_dump(trace);
+  source.ascii_dump(ctrace);
+  ctrace << "dest:" << std::endl;
+  dest.ascii_dump(ctrace);
 
   // Quite similar to the Linear_System to Congruence_System version
   // above.  Changes here may be needed there too.
@@ -260,7 +258,7 @@ PPL::Grid::conversion(Generator_System& source,
   while (--col > 0 && diagonal_lcm != 0)
     lcm_assign(diagonal_lcm, source[col][col]);
 
-  trace << "  diagonal_lcm: " << diagonal_lcm << std::endl;
+  ctrace << "  diagonal_lcm: " << diagonal_lcm << std::endl;
 
   // The source matrix must be regular.
   if (diagonal_lcm == 0)
@@ -268,14 +266,14 @@ PPL::Grid::conversion(Generator_System& source,
 
   // Initialize destination matrix diagonal elements and row types.
   while (col < num_rows) {
-    trace << "   init col " << col << std::endl;
+    ctrace << "   init col " << col << std::endl;
     Linear_Row& row = source[col];
     if (virtual_row(row)) {
-      trace << "     virtual" << std::endl;
+      ctrace << "     virtual" << std::endl;
       dest[col][num_rows] = 0; // An equality congruence.
     }
     else if (row.is_ray_or_point_or_inequality()) {
-      trace << "     rpi" << std::endl;
+      ctrace << "     rpi" << std::endl;
       dest[col][num_rows] = 1 /* FIX */; // A congruence.
       dest[col][col] = diagonal_lcm / source[col][col];
     }
@@ -286,19 +284,19 @@ PPL::Grid::conversion(Generator_System& source,
     ++col;
   }
 
-  trace << "dest after init:" << std::endl;
-  dest.ascii_dump(trace);
+  ctrace << "dest after init:" << std::endl;
+  dest.ascii_dump(ctrace);
 
-  while (col) {  // FIX why was this --col? (added next line)
+  while (col) {  // FIX why was this --col? (added next line afterwards)
     col--;
-    trace << "col: " << col << std::endl;
+    ctrace << "col: " << col << std::endl;
     /* Change from the source rows that follow the current column.
        FIX
        FIX Matrix is upper triangular so the row starts at col+1
     */
     for (dimension_type row = col + 1; row < num_rows; ++row) {
-      trace << "  row " << row << std::endl;
-      dest.ascii_dump(trace);
+      ctrace << "  row " << row << std::endl;
+      dest.ascii_dump(ctrace);
 
       if (virtual_row(dest[row]))
 	continue;
@@ -339,8 +337,8 @@ PPL::Grid::conversion(Generator_System& source,
       // FIX skip if mult is 1 // FIX and in other
       dest[row][col] /= source_diag;
     }
-    trace << "dest after processing following rows:" << std::endl;
-    dest.ascii_dump(trace);
+    ctrace << "dest after processing following rows:" << std::endl;
+    dest.ascii_dump(ctrace);
 
     /* Change from the source rows that precede the current column.
        FIX
@@ -356,20 +354,20 @@ PPL::Grid::conversion(Generator_System& source,
     dimension_type index = col;
     while (index) {
       index--;
-      trace << "  index: " << index << " col: " << col << std::endl;
+      ctrace << "  index: " << index << " col: " << col << std::endl;
       TEMP_INTEGER(source_col); // FIX name
       source_col = source[index][col];
-      trace << "  rows:" << std::endl;
+      ctrace << "  rows:" << std::endl;
       for (dimension_type row = col; row < num_rows; ++row) {
-	trace << "       " << row << std::endl;
+	ctrace << "       " << row << std::endl;
 	// FIX use temp for dest[row]
 	if (virtual_row(dest[row]))
 	  continue;
 	dest[row][index] -= (source_col * dest[row][col]);
       }
     }
-    trace << "dest after processing preceding rows:" << std::endl;
-    dest.ascii_dump(trace);
+    ctrace << "dest after processing preceding rows:" << std::endl;
+    dest.ascii_dump(ctrace);
   }
   TEMP_INTEGER(modulus);
   modulus = dest[0][0];
@@ -379,10 +377,10 @@ PPL::Grid::conversion(Generator_System& source,
       continue;
     cg[num_rows] = modulus;
   }
-  trace << "dest after adding moduli:" << std::endl;
-  dest.ascii_dump(trace);
+  ctrace << "dest after adding moduli:" << std::endl;
+  dest.ascii_dump(ctrace);
 
-  trace << "------------------- gs to cgs conversion done." << std::endl;
+  ctrace << "------------------- gs to cgs conversion done." << std::endl;
 
   return 0; // FIX
 }
