@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Saturation_Matrix.defs.hh"
 
 // FIX Temporary tracing stream.
-#if 0
+#if 1
 #include <iostream>
 std::ostream& strace = std::cout;
 #define strace_dump(sys) sys.ascii_dump(strace)
@@ -366,7 +366,7 @@ Grid::simplify(Generator_System& sys, Saturation_Matrix& sat) {
 bool
 Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
   strace << "======== simplify (reduce) cgs:" << std::endl;
-  sys.ascii_dump(strace);
+  strace_dump(sys);
 
   // FIX This method is only applied to a well-formed system `sys'.
 
@@ -492,7 +492,7 @@ Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
 	strace << "swapping" << std::endl;
 	std::swap(sys[orig_row_num - 1], pivot);
       }
-      sys.ascii_dump(strace);
+      strace_dump(sys);
     }
     ++col;
   }

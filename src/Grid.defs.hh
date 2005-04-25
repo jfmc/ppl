@@ -1685,56 +1685,69 @@ public:  //private: // FIX, for testing
 					Generator& reference_row,
 					bool leave_first = true);
 
-  //! \brief
-  //! FIX Uses Gauss' elimination method to simplify the result of
-  //! <CODE>convert()</CODE>.
-  // Detailed Doxygen comment to be found in file simplify.cc.
+  //! Convert \p mat to upper triangular form.
+  /*!
+    Return true if system is consistent, else false.
+  */
   static bool simplify(Congruence_System& mat, Saturation_Matrix& sat);
 
-  //! \brief
-  //! FIX Uses Gauss' elimination method to simplify the result of
-  //! <CODE>convert()</CODE>.
-  // Detailed Doxygen comment to be found in file simplify.cc.
+  //! Convert \p mat to lower triangular form.
+  /*!
+    Return true if system is consistent, else false.
+  */
   static bool simplify(Generator_System& mat, Saturation_Matrix& sat);
 
-  //! Reduce \p row_k using \p row_j.
+  //! Reduce the line \p row using the line \p pivot.
   /*!
-    Use the line or equation at \p row_j to change the representation
-    of the parameter or congruence at \p row_k so that element col of
-    \p row_k is zero.
+    Use the line \p pivot to change the representation of the line \p
+    row so that element col of \p row is zero.
   */
   // A member of Grid for access to Matrix::rows.
-  static void le_le_reduce(Row& row_j, Row& row_k, dimension_type col,
-			   dimension_type first_col);
+  static void reduce_line_with_line(Row& row, Row& pivot,
+				    dimension_type col);
 
-  //! Reduce \p row_k using \p row_j.
+  //! Reduce the equality \p row using the equality \p pivot.
   /*!
-    Use the parameter or congruence at \p row_j to change the
-    representation of the parameter or congruence at \p row_k so that
-    element col of \p row_k is zero.
+    Use the equality \p pivot to change the representation of the
+    equality \p row so that element col of \p row is zero.
+  */
+  // A member of Grid for access to Matrix::rows.
+  static void reduce_equality_with_equality(Row& row, Row& pivot,
+					    dimension_type col);
+
+  //! Reduce \p row using \p pivot.
+  /*!
+    Use the parameter or congruence at \p pivot to change the
+    representation of the parameter or congruence at \p row so that
+    element col of \p row is zero.  If \p parameters is true then the
+    two rows are taken as parameters, else as congruences.
   */
   // Part of Grid for access to Matrix::rows.
-  static void pc_pc_reduce(Row& row_j, Row& row_k, dimension_type col,
-			   dimension_type first_col);
+  static void reduce_pc_with_pc(Row& row, Row& pivot, dimension_type col,
+				bool parameters = true);
 
-  //! Reduce \p row_k using \p row_j.
+  //! Reduce \p row using \p pivot.
   /*!
-    Use the line or equation at \p row_j to change the representation
-    of the parameter or congruence at \p row_k so that element col of
-    \p row_k is zero.
+    Use the line or equation at \p pivot to change the representation
+    of the parameter or congruence at \p row so that element col of \p
+    row is zero.
   */
   // A member of Grid for access to Matrix::rows.
-  static void le_pc_reduce(Linear_Row& row_j, Linear_Row& row_k,
-			   dimension_type col, Linear_System& sys);
+  static void reduce_line_with_parameter(Linear_Row& row,
+					 Linear_Row& pivot,
+					 dimension_type col,
+					 Linear_System& sys);
 
-  //! Reduce \p row_k using \p row_j.
+  //! Reduce \p row using \p pivot.
   /*!
-    Use the equality \p row_j to change the representation of the
-    congruence \p row_k so that element col of \p row_k is zero.
+    Use the equality \p pivot to change the representation of the
+    congruence \p row so that element col of \p row is zero.
   */
   // A member of Grid for access to Matrix::rows.
-  static void le_pc_reduce(Congruence& row_j, Congruence& row_k,
-			   dimension_type col, Congruence_System& sys);
+  static void reduce_equality_with_congruence(Congruence& row,
+					      Congruence& pivot,
+					      dimension_type col,
+					      Congruence_System& sys);
 
   // FIX docs
   // FIX Members of Grid for access to Matrix::rows.
