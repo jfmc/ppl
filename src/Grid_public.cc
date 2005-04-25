@@ -1371,21 +1371,22 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   //cgs.adjust_topology_and_space_dimension(topology(), space_dim); // FIX
   cgs.adjust_space_dimension(space_dim); // FIX
 
-  const bool empty = add_and_minimize(true, con_sys, gen_sys, sat_c, cgs);
-
-  if (empty)
+  if (add_and_minimize(true, con_sys, gen_sys, sat_c, cgs)) {
     set_empty();
-  else {
-    // `sat_c' is up-to-date, while `sat_g' is no longer up-to-date.
-    set_sat_c_up_to_date();
-    clear_sat_g_up_to_date();
-    // FIX added for grid
-    set_congruences_up_to_date();
-    clear_empty();
-  }
-  assert(OK());
 
-  return !empty;
+    assert(OK());
+    return false;
+  }
+
+  // `sat_c' is up-to-date, while `sat_g' is no longer up-to-date.
+  set_sat_c_up_to_date();
+  clear_sat_g_up_to_date();
+  // FIX added for grid
+  set_congruences_up_to_date();
+  clear_empty();
+
+  assert(OK());
+  return true;
 }
 
 bool
