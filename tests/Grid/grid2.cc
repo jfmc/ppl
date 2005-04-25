@@ -435,6 +435,106 @@ test10() {
   exit(1);
 }
 
+/* cong_test5 from Chiara conversion_test2.cc.  */
+
+void
+test11() {
+  nout << "\n\ntest11:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Congruence_System cgs;
+  cgs.insert((A + 2*B +   C %= -2) / 5);
+  cgs.insert((    3*B       %=  0) / 5);
+  cgs.insert((      B       %=  0) / 5);
+  cgs.insert((          3*C %= -4) / 5);
+  cgs.insert((    3*B +   C %= -3) / 5);
+
+  Grid gr(3, Grid::EMPTY);
+  gr.add_congruences_and_minimize(cgs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Generator_System known_gs;
+  known_gs.insert(point(  A       -  3*C));
+  known_gs.insert(point(6*A + 5*B - 18*C));
+  known_gs.insert(point(  A + 5*B - 18*C));
+  known_gs.insert(point(  A       +  2*C));
+
+  //Grid known_gr(known_gs); // FIX
+  Grid known_gr(3, Grid::EMPTY);
+  known_gr.add_generators(known_gs);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << "grid:" << endl << gr << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  nout << "gr.ascii_dump(nout):" << endl;
+  gr.ascii_dump(nout);
+  nout << "known_gr.ascii_dump(nout):" << endl;
+  known_gr.ascii_dump(nout);
+
+  exit(1);
+}
+
+/* cong_test6 from Chiara conversion_test2.cc.  */
+
+void
+test12() {
+  nout << "\n\ntest12:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Congruence_System cgs;
+  cgs.insert((3*A           %= -2) / 5);
+  cgs.insert((      B + 2*C %=  0) / 5);
+  cgs.insert((    2*B + 3*C %= -3) / 5);
+
+  Grid gr(3, Grid::EMPTY);
+  gr.add_congruences_and_minimize(cgs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Generator_System known_gs;
+  known_gs.insert(point(-2*A - 18*B +  9*C, 3));
+  known_gs.insert(point( 3*A - 18*B +  9*C, 3));
+  known_gs.insert(point(-2*A -  3*B -  6*C, 3));
+  known_gs.insert(point(-2*A - 18*B + 24*C, 3));
+
+  //Grid known_gr(known_gs); // FIX
+  Grid known_gr(3, Grid::EMPTY);
+  known_gr.add_generators(known_gs);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << "grid:" << endl << gr << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  nout << "gr.ascii_dump(nout):" << endl;
+  gr.ascii_dump(nout);
+  nout << "known_gr.ascii_dump(nout):" << endl;
+  known_gr.ascii_dump(nout);
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -451,9 +551,9 @@ main() TRY {
   test8();
   test9();
   test10();
-#if 0
   test11();
   test12();
+#if 0
   test13();
   test14();
 #endif
