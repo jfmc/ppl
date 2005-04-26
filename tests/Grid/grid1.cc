@@ -371,9 +371,9 @@ test9() {
   Variable C(2);
 
   Generator_System gs;
-  gs.insert(point( 0*A + 7*B + 0*C, 3));
-  gs.insert( line( 3*A + 2*B + 0*C));
-  gs.insert( line( 0*A + 0*B +   C));
+  gs.insert(point(0*A + 7*B + 0*C, 3));
+  gs.insert( line(3*A + 2*B + 0*C));
+  gs.insert( line(0*A + 0*B +   C));
 
   Grid gr(3, Grid::EMPTY);
   gr.add_generators_and_minimize(gs);
@@ -613,6 +613,48 @@ test14() {
   exit(1);
 }
 
+/* Test reduce_line_with_line (param_test9 from Chiara
+   conversion_test.cc).  */
+
+void
+test15() {
+  nout << "\n\ntest15:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Generator_System gs;
+  gs.insert(point( -A - 0*B + 3*C, 4));
+  gs.insert( line(0*A + 2*B + 0*C));
+  gs.insert( line(0*A + 4*B + 0*C));
+
+  Grid gr(3, Grid::EMPTY);
+  gr.add_generators_and_minimize(gs);
+  if (find_variation(gr))
+    exit(1);
+
+  Congruence_System known_cgs;
+  known_cgs.insert((4*A + 0*B + 0*C %= -1) / 0);
+  known_cgs.insert((0*A + 0*B + 4*C %=  3) / 0);
+
+  //Grid known_gr(known_cgs);  // FIX
+  Grid known_gr(3, Grid::EMPTY);
+  known_gr.add_congruences(known_cgs);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -633,6 +675,7 @@ main() TRY {
   test12();
   test13();
   test14();
+  test15();
 
   return 0;
 }
