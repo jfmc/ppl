@@ -597,7 +597,7 @@ PPL::Grid::is_included_in(const Grid& y) const {
 
   dimension_type num_rows = gs.num_rows();
   // FIX Generator& gen = gs[0];
-  if (num_rows && virtual_row(gs[0]) == false)
+  if (num_rows && (gs[0].is_virtual() == false))
     // FIX could this be any different for NNC ph's? (?)
     if (cgs.satisfies_all_congruences(gs[0]) == false) {
       std::cout << "is_included_in... done (false 0)." << std::endl;
@@ -605,7 +605,7 @@ PPL::Grid::is_included_in(const Grid& y) const {
     }
   for (dimension_type i = num_rows; i-- > 1; )
     // FIX gen = gs[i];
-    if (virtual_row(gs[i]) == false)
+    if (gs[i].is_virtual() == false)
       // FIX could this be any different for NNC ph's? (?)
       if ((gs[i].is_ray_or_point_or_inequality()
 	   // FIX is adjusting the param relative to gs[0] necessary?

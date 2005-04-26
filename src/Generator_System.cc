@@ -27,7 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.inlines.hh"
 
 #include "Constraint.defs.hh"
-#include "Grid.defs.hh"		// For virtual_row and mark_virtual.
 #include <cassert>
 #include <string>
 #include <vector>
@@ -918,7 +917,7 @@ PPL::Generator_System::ascii_load(std::istream& s) {
 
     if (s >> str) {
       if (str == "(v)") {
-	Grid::mark_virtual(x[i]);
+	x[i].set_is_virtual();
 	continue;
       }
       return false;
@@ -1037,7 +1036,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator_System& gs) {
     return s << "false";
   while (1) {
     s << *i;
-    if (Grid::virtual_row(*i++))
+    if ((*i++).is_virtual())
       s << " (v)";
     if (i == gs_end)
       return s;

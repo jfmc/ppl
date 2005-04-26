@@ -114,10 +114,10 @@ PPL::Grid::conversion(Congruence_System& source,
   // Initialize destination matrix diagonal elements and row types.
   while (col < num_rows) {
     Congruence& row = source[col];
-    if (virtual_row(row))
+    if (row.is_virtual())
       dest[col].set_is_line_or_equality();
     else if (row.is_equality())
-      mark_virtual(dest[col]);
+      dest[col].set_is_virtual();
     else {
       // `row' is a congruence.
       dest[col].set_is_ray_or_point_or_inequality();
@@ -149,7 +149,7 @@ PPL::Grid::conversion(Congruence_System& source,
 
       Linear_Row& gen = dest[row];
 
-      if (virtual_row(gen))
+      if (gen.is_virtual())
 	continue;
 
       TEMP_INTEGER(multiplier);
@@ -165,7 +165,7 @@ PPL::Grid::conversion(Congruence_System& source,
 	 multiply congruences, as equalities are equivalent under
 	 multiplication and the virtual rows just ensure a regular
 	 matrix.  */
-      if (virtual_row(gen) /*FIX?*/ || gen.is_line_or_equality())
+      if (gen.is_virtual() /*FIX?*/ || gen.is_line_or_equality())
 	// Multiply every element of the equality.
 	for (dimension_type column = 0; column < num_rows; ++column)
 	  gen[column] *= multiplier;
@@ -173,7 +173,7 @@ PPL::Grid::conversion(Congruence_System& source,
 	// Multiply every element of every parameter.
 	for (dimension_type index = 0; index < num_rows; ++index) {
 	  Linear_Row& generator = dest[index];
-	  if (virtual_row(generator) || generator.is_line_or_equality())
+	  if (generator.is_virtual() || generator.is_line_or_equality())
 	    continue;
 	  for (dimension_type column = 0; column < num_rows; ++column)
 	    generator[column] *= multiplier;
@@ -210,7 +210,7 @@ PPL::Grid::conversion(Congruence_System& source,
       while (1) {
 	ctrace << "       " << row << std::endl;
 	Linear_Row& dest_row = dest[row];
-	if (virtual_row(dest_row) == false)
+	if (dest_row.is_virtual() == false)
 	  dest_row[index] -= (source_col * dest_row[col]);
 	if (row == 0) break;
 	row--;
@@ -268,7 +268,7 @@ PPL::Grid::conversion(Generator_System& source,
   while (col < num_rows) {
     ctrace << "   init col " << col << std::endl;
     Linear_Row& row = source[col];
-    if (virtual_row(row)) {
+    if (row.is_virtual()) {
       ctrace << "     virtual" << std::endl;
       dest[col][num_rows] = 0; // An equality congruence.
     }
@@ -278,7 +278,7 @@ PPL::Grid::conversion(Generator_System& source,
       dest[col][col] = diagonal_lcm / source[col][col];
     }
     else if (row.is_line_or_equality())
-      mark_virtual(dest[col]);
+      dest[col].set_is_virtual();
     else
       throw std::runtime_error("PPL internal error: Grid conversion: failed to match row type.");
     ++col;
@@ -298,7 +298,7 @@ PPL::Grid::conversion(Generator_System& source,
       ctrace << "  row " << row << std::endl;
       dest.ascii_dump(ctrace);
 
-      if (virtual_row(dest[row]))
+      if (dest[row].is_virtual())
 	continue;
 
       // FIX why inside loop? perhaps source changes?
@@ -320,7 +320,7 @@ PPL::Grid::conversion(Generator_System& source,
       // FIX move up, use cg twice above and once below
       Congruence& cg = dest[row];
       // FIX skip if mult is 1 // FIX and in other
-      if (virtual_row(cg) /*FIX?*/ || cg.is_equality())
+      if (cg.is_virtual() /*FIX?*/ || cg.is_equality())
 	// Multiply every element of the equality.
 	for (dimension_type column = 0; column < num_rows; ++column)
 	  cg[column] *= multiplier;
@@ -328,7 +328,7 @@ PPL::Grid::conversion(Generator_System& source,
 	// Multiply every element of every congruence.
 	for (dimension_type index = 0; index < num_rows; ++index) {
 	  Congruence& congruence = dest[index];
-	  if (virtual_row(congruence) || congruence.is_equality())
+	  if (congruence.is_virtual() || congruence.is_equality())
 	    continue;
 	  for (dimension_type column = 0; column < num_rows; ++column)
 	    congruence[column] *= multiplier;
@@ -361,7 +361,7 @@ PPL::Grid::conversion(Generator_System& source,
       for (dimension_type row = col; row < num_rows; ++row) {
 	ctrace << "       " << row << std::endl;
 	// FIX use temp for dest[row]
-	if (virtual_row(dest[row]))
+	if (dest[row].is_virtual())
 	  continue;
 	dest[row][index] -= (source_col * dest[row][col]);
       }
@@ -373,7 +373,7 @@ PPL::Grid::conversion(Generator_System& source,
   modulus = dest[0][0];
   for (dimension_type row = 0; row < num_rows; ++row) {
     Congruence& cg = dest[row];
-    if (virtual_row(cg) || cg.is_equality())
+    if (cg.is_virtual() || cg.is_equality())
       continue;
     cg[num_rows] = modulus;
   }
