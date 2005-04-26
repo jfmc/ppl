@@ -187,7 +187,7 @@ Grid::reduce_equality_with_congruence(Congruence& row,
   // FIX why?
   for (dimension_type index = 0; index < sys.num_rows(); ++index) {
     Congruence& row = sys[index];
-    if (virtual_row(row) == false && row.is_equality() == false)
+    if (row.is_virtual() == false && row.is_equality() == false)
       for (dimension_type col = 0; col < num_cols; ++col)
         row[col] *= a_pivot;
   }
@@ -223,30 +223,27 @@ Grid::simplify(Generator_System& sys, Saturation_Matrix& sat) {
   strace << "sys:" << std::endl;
   strace_dump(sys);
 
-  // FIX should be using generator iterators?
+  // FIX use generator iterators?
 
-  // FIX congruence virtualness  -ve modulus (?)
-
-  // Cross any changes here to the Congruence System version below.
+  // Changes here may also be required in the congruence version
+  // below.
 
   // FIX at least to please assertion in linear_row::is_sorted
   sys.set_sorted(false);
 
-  // For each column col we must find or construct a row (pivot) in
-  // which the value at position `col' is non-zero.
+  // For each column col find or construct a row (pivot) in which the
+  // value at position `col' is non-zero.
   for (dimension_type col = 0; col < sys.row_size; ++col) {
     strace << "col " << col << std::endl;
     dimension_type num_rows = sys.num_rows();
     strace << "  num_rows " << num_rows << std::endl;
     // Start at the diagonal (col, col).
-    // FIX when col - 1 > numb of rows?
-    dimension_type row_num = col; // FIX rename row_index
-    strace << "  row_num " << row_num << std::endl;
+    dimension_type row_index = col;
+    strace << "  row_index " << row_index << std::endl;
     // Move over rows which have zero in column col.
-    // FIX array access assumes row has >= 2 elements
-    while (row_num < num_rows && sys[row_num][col] == 0)
-      ++row_num;
-    if (row_num >= num_rows) {
+    while (row_index < num_rows && sys[row_index][col] == 0)
+      ++row_index;
+    if (row_index >= num_rows) {
       // Element col is zero in all rows from the col'th, so create a
       // row at index col with diagonal value 1.
       if (col)
@@ -254,48 +251,43 @@ Grid::simplify(Generator_System& sys, Saturation_Matrix& sat) {
       else
 	strace << "  Adding origin" << std::endl;
 
-      /* FIX check */
       sys.add_zero_rows(1, Linear_Row::Flags(NECESSARILY_CLOSED,
 					     Linear_Row::LINE_OR_EQUALITY));
-      strace << "    accessing" << std::endl;
       Linear_Row& new_row = sys[num_rows];
-      strace << "    setting col" << std::endl;
       new_row[col] = 1;
       if (col)
-	mark_virtual(new_row);
+	new_row.set_is_virtual();
       else
 	new_row.set_is_ray_or_point_or_inequality();
-      strace << "    swapping" << std::endl;
-      // FIX will these use the correct swap? (more below)
       std::swap(new_row, sys[col]);
     }
     else {
-      Linear_Row& pivot = sys[row_num];
-      dimension_type pivot_num = row_num;
+      Linear_Row& pivot = sys[row_index];
+      dimension_type pivot_num = row_index;
       // For each row having a value other than 0 at col, change the
       // matrix so that the value at col is 0 (leaving the grid itself
       // equivalent).
       strace << "Reducing all subsequent rows" << std::endl;
-      ++row_num;
-      while (row_num < num_rows) {
-	if (sys[row_num][col] == 0) {
-	  ++row_num;
+      ++row_index;
+      while (row_index < num_rows) {
+	if (sys[row_index][col] == 0) {
+	  ++row_index;
 	  continue;
 	}
 
-	Linear_Row& row = sys[row_num];
-	if (virtual_row(row)) { // FIX others
+	Linear_Row& row = sys[row_index];
+	if (row.is_virtual()) {
 
 #define free_row()							\
 	  std::swap(row, sys[--num_rows]);				\
 	  sys.Matrix::resize_no_copy(num_rows, sys.num_columns(), Row::Flags()); \
-	  continue;		/* Skip ++row_num.  */
+	  continue;		/* Skip ++row_index.  */
 
 	  // Free the virtual row from sys.
 	  free_row();
 	}
 	else if (row.is_line_or_equality()) {
-	  if (virtual_row(pivot)) {
+	  if (pivot.is_virtual()) {
 	    // Keep the row as the new pivot.
 	    std::swap(row, pivot);
 
@@ -312,7 +304,7 @@ Grid::simplify(Generator_System& sys, Saturation_Matrix& sat) {
 	    throw std::runtime_error("PPL internal error: Grid simplify: failed to match row type (1).");
 	}
 	else if (row.is_ray_or_point_or_inequality()) {
-	  if (virtual_row(pivot)) {
+	  if (pivot.is_virtual()) {
 	    // Keep the row as the new pivot.
 	    std::swap(row, pivot);
 	    // Free the virtual pivot from sys.
@@ -327,7 +319,7 @@ Grid::simplify(Generator_System& sys, Saturation_Matrix& sat) {
 	}
 	else
 	  throw std::runtime_error("PPL internal error: Grid simplify: failed to match row type (3).");
-	++row_num;
+	++row_index;
       }
       if (col != pivot_num) {
 	strace << "swapping" << std::endl;
@@ -366,30 +358,24 @@ Grid::simplify(Generator_System& sys, Saturation_Matrix& sat) {
 bool
 Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
   strace << "======== simplify (reduce) cgs:" << std::endl;
-  strace_dump(sys);
+  assert(sys.num_rows());
 
-  // FIX This method is only applied to a well-formed system `sys'.
+  // Changes here may also be required in the generator version above.
 
-  // Cross any changes here to the Generator System version above.
-
-  // FIX may need pending handling if pending rows are added to cgs
-
-  // For each column col we must find or construct a row (pivot) in
-  // which the value at position `col' is non-zero.
+  // For each column col find or construct a row (pivot) in which the
+  // value at position `col' is non-zero.
   dimension_type col = 0;
   while (col < sys.num_columns() - 1 /* modulus */) {
     strace << "col " << col << std::endl;
     dimension_type num_rows = sys.num_rows();
     strace << "  num_rows " << num_rows << std::endl;
     // Start at the diagonal (col, col).
-    // FIX rename row_index?
     dimension_type row_num = num_rows - col;
     strace << "  row_num " << row_num << std::endl;
-    // FIX check if orig_row_num can be zero
-    dimension_type orig_row_num = row_num;  // FIX index
-    // Move over rows which have zero in column col.
-    // FIX array access assumes row has >= 2 elements
-    dimension_type column = sys.num_columns() - 1 /* modulus */ - 1 /* index */ - col;
+    dimension_type orig_row_num = row_num;
+    // Move backward over rows which have zero in the column that is
+    // col elements from the right hand side of the matrix.
+    dimension_type column = sys.num_columns() - 2 /* modulus, index */ - col;
     while (row_num > 0 && sys[row_num-1][column] == 0)
       strace << ".", --row_num;
     strace << std::endl;
@@ -400,16 +386,10 @@ Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
 	strace << "  Adding virtual row" << std::endl;
       else
 	strace << "  Adding integrality congruence" << std::endl;
-      // FIX better way to construct virtual row?
-      // FIX assumes a row
-      //Congruence new_row(sys[0]);
-      Row new_row(sys.num_columns(), sys.row_capacity, Row::Flags() /* FIX? */);
-      // FIX zero garaunteed in all cols? depends on coefficient ctor?
-      strace << "    setting column" << std::endl;
+      Row new_row(sys.num_columns(), sys.row_capacity, Row::Flags());
       if (orig_row_num) {
-	strace << "    marking virtual" << std::endl;
-	mark_virtual(static_cast<Congruence&>(new_row)); // FIX dodgy?
 	new_row[column] = 1;
+	(static_cast<Congruence&>(new_row)).set_is_virtual();
       }
       else {
 	assert(sys.num_columns());
@@ -430,64 +410,60 @@ Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
       sys.rows.insert(sys.rows.begin() + orig_row_num, new_row);
     }
     else {
-      --row_num;		// Now an index.
-      Congruence& pivot = sys[row_num];
-      dimension_type pivot_num = row_num;
-      // For each FIX<preceding|higher> row having a value other than
-      // 0 at col, change the representation so that the value at col
-      // is 0 (leaving an equivalent grid).
+      dimension_type& row_index = row_num;  // For clearer naming.
+      --row_index;
+      dimension_type pivot_num = row_index;
+      Congruence& pivot = sys[pivot_num];
+      // For each row having a lower index and a value at col other
+      // than 0, change the grid representation so that the value at
+      // col is 0 (leaving an equivalent grid).
       strace << "  Reducing all preceding rows" << std::endl;
-      // FIX equiv of while (row_num-- > 0)  as row_num is always +ve
-      if (row_num-- > 0)
-	while (1) { // FIX do-while?
-	  strace << "    row_num " << row_num << " ";
-	  Congruence& row = sys[row_num];
-	  if (row[column] != 0) {
-	    // FIX assumes cols?
-	    if (virtual_row(row)) {
-	      // Free the virtual row from sys.
+      while (row_index > 0) {
+	--row_index;
+	strace << "    row_index " << row_index << " ";
+	Congruence& row = sys[row_index];
+	if (row[column] != 0) {
+	  if (row.is_virtual()) {
+	    // Free the virtual row from sys.
 
 #undef free_row
-#define free_row()					  \
-	      sys.rows.erase(sys.rows.begin() + row_num); \
-	      strace << "drop" << std::endl;		  \
-	      --num_rows;
+#define free_row()						\
+	    sys.rows.erase(sys.rows.begin() + row_index);	\
+	    strace << "drop" << std::endl;			\
+	    --num_rows;
 
+	    free_row();
+	  }
+	  else if (row.is_equality())
+	    if (pivot.is_virtual()) {
+	      // Keep the row as the new pivot.
+	      std::swap(row, pivot);
+
+	      // Free the old, virtual, pivot from sys.
 	      free_row();
 	    }
-	    else if (row.is_equality())
-	      if (virtual_row(pivot)) {
-		// Keep the row as the new pivot.
-		std::swap(row, pivot);
-
-		// Free the old, virtual, pivot from sys.
-		free_row();
-	      }
-	      else if (pivot.is_equality())
-		reduce_equality_with_equality(row, pivot, column);
-	      else {
-		// Pivot is a ray, point or inequality.
-		std::swap(row, pivot);
-		reduce_equality_with_congruence(row, pivot, column, sys);
-	      }
+	    else if (pivot.is_equality())
+	      reduce_equality_with_equality(row, pivot, column);
+	    else {
+	      // Pivot is a congruence.
+	      std::swap(row, pivot);
+	      reduce_equality_with_congruence(row, pivot, column, sys);
+	    }
+	  else
+	    // Row is a congruence.
+	    if (pivot.is_virtual()) {
+	      // Keep the row as the new pivot.
+	      std::swap(row, pivot);
+	      // Free the virtual pivot from sys.
+	      free_row();
+	    }
+	    else if (pivot.is_equality())
+	      reduce_equality_with_congruence(row, pivot, column, sys);
 	    else
-	      // Row is a congruence.
-	      if (virtual_row(pivot)) {
-		// Keep the row as the new pivot.
-		std::swap(row, pivot);
-		// Free the virtual pivot from sys.
-		free_row();
-	      }
-	      else if (pivot.is_equality())
-		reduce_equality_with_congruence(row, pivot, column, sys);
-	      else
-		// Pivot is a congruence.
-		reduce_pc_with_pc(row, pivot, column, false);
-	  }
-	  if (row_num-- == 0)
-	    break;
+	      // Pivot is a congruence.
+	      reduce_pc_with_pc(row, pivot, column, false);
 	}
-      /*FIX use column instd of orig_row_num (twice below)?*/
+      }
       if (orig_row_num != pivot_num) {
 	strace << "swapping" << std::endl;
 	std::swap(sys[orig_row_num - 1], pivot);
@@ -506,20 +482,25 @@ Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
 		   sys.rows.begin()
 		   + (sys.num_rows() - sys.num_columns() + 1));
   }
+
+  assert(sys.OK());
+
   // Only consistent grids exist.
-  // FIX assumes a row
   TEMP_INTEGER(modulus);
   TEMP_INTEGER(it);
   modulus = sys[0].modulus();
   it = sys[0].inhomogeneous_term();
   assert(modulus >= 0);
-  if ((modulus > 0 && it % modulus != 0)
-      || (modulus == 0 && it > 0)) {
+  if (modulus > 0) {
+    if (it % modulus != 0) {
+      strace << "---- simplify (reduce) cgs done (empty)." << std::endl;
+      return true;
+    }
+  }
+  else if (it > 0) {
     strace << "---- simplify (reduce) cgs done (empty)." << std::endl;
     return true;
   }
-
-  assert(sys.OK());
 
   strace << "---- simplify (reduce) cgs done." << std::endl;
   return false;
