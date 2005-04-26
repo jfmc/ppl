@@ -73,13 +73,6 @@ PPL::Grid::minimize(bool con_to_gen,
 		    Congruence_System& dest,
 		    Saturation_Matrix& sat) {
   std::cout << "4 param minimize gs to cgs..." << std::endl; // FIX
-  // Topologies have to agree.
-  //assert(source.topology() == dest.topology()); // FIX
-  // `source' cannot be empty: even if it is an empty constraint system,
-  // representing the universe polyhedron, homogenization has added
-  // the positive constraint. It also cannot be an empty generator system,
-  // since this function is always called starting from a non-empty
-  // polyhedron.
   assert(source.num_rows() > 0);
 
   // Sort the source system, if necessary.
@@ -207,15 +200,9 @@ PPL::Grid::minimize(bool con_to_gen,
 		    Congruence_System& source,
 		    Linear_System& dest,
 		    Saturation_Matrix& sat) {
-  // Topologies have to agree.
-  //assert(source.topology() == dest.topology()); // FIX
-  // `source' cannot be empty: even if it is an empty constraint system,
-  // representing the universe polyhedron, homogenization has added
-  // the positive constraint. It also cannot be an empty generator system,
-  // since this function is always called starting from a non-empty
-  // polyhedron.
   // FIX should grid add single cong?
-  //assert(source.num_rows() > 0);
+  // FIX for simplify, at least; check callers
+  assert(source.num_rows() > 0);
 
   std::cout << "4 param minimize cgs to gs" << std::endl;
 
