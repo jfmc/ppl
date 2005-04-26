@@ -31,46 +31,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-// FIX next 4: assume elements?, row.size() call may be saveable
-//     in context
-
-// FIX
-// Virtual rows currently "take precedence" to the other kinds.  I.e
-// the flags for the other kinds may be set at the same time as the
-// virtual flag.  So the virtual flag must always be checked first.
-// This is due to the quick Linear_Row implementation of the virtual
-// flag.
-
-inline bool
-Grid::virtual_row(const Linear_Row& row) {
-  //return row[0] == -1;
-  return row.is_virtual();
-}
-
-inline bool
-Grid::virtual_row(const Generator& row) {
-  //return row[0] == -1;
-  return row.is_virtual();
-}
-
-inline bool
-Grid::virtual_row(const Congruence& row) {
-  return row[row.size() - 1] == -1;
-}
-
-inline Linear_Row&
-Grid::mark_virtual(Linear_Row& row) {
-  //row[0] = -1;
-  row.set_is_virtual();
-  return row;
-}
-
-inline Congruence&
-Grid::mark_virtual(Congruence& row) {
-  row[row.size() - 1] = -1;
-  return row;
-}
-
 inline dimension_type
 Grid::max_space_dimension() {
   using std::min;

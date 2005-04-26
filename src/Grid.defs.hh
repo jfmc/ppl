@@ -1749,14 +1749,6 @@ public:  //private: // FIX, for testing
 					      dimension_type col,
 					      Congruence_System& sys);
 
-  // FIX docs
-  // FIX Members of Grid for access to Matrix::rows.
-  static bool virtual_row(const Congruence& row);
-  static bool virtual_row(const Linear_Row& row);
-  static bool virtual_row(const Generator& row);
-  static Congruence& mark_virtual(Congruence& row);
-  static Linear_Row& mark_virtual(Linear_Row& row);
-
   //@} // Minimization-Related Static Member Functions
 
   //! \name Exception Throwers
