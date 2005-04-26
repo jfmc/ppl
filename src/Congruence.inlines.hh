@@ -144,6 +144,7 @@ Congruence::inhomogeneous_term() const {
 
 inline Coefficient_traits::const_reference
 Congruence::modulus() const {
+  assert(size() > 0);
   return (*this)[size()-1];
 }
 
@@ -178,7 +179,20 @@ Congruence::is_equality() const {
 inline void
 Congruence::set_is_equality() {
   // FIX modulus() = 0?
+  assert(size() > 0);
   (*this)[size()-1] = 0;
+}
+
+inline bool
+Congruence::is_virtual() const {
+  return modulus() == -1;
+}
+
+inline void
+Congruence::set_is_virtual() {
+  // FIX modulus() = -1?
+  assert(size() > 0);
+  (*this)[size()-1] = -1;
 }
 
 inline memory_size_type

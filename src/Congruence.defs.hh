@@ -361,6 +361,18 @@ public:
   //! Mark this congruence as a linear equality.
   void set_is_equality();
 
+  //! Returns <CODE>true</CODE> if and only if \p *this is virtual.
+  /*!
+    A modulus of negative one denotes a virtual congruence.
+  */
+  bool is_virtual() const;
+
+  //! Mark this congruence as a virtual row.
+  /*!
+    A modulus of negative one denotes a virtual congruence.
+  */
+  void set_is_virtual();
+
   //! \brief
   //! Returns a lower bound to the total size in bytes of the memory
   //! occupied by \p *this.
