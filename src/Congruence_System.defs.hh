@@ -47,7 +47,7 @@ operator<<(std::ostream& s, const Congruence_System& cgs);
 
 } // namespace IO_Operators
 
-// Put this in the namespace here to declare them friend later.
+// Put this in the namespace here to declare it a friend later.
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
 /*! \relates Congruence_System */
