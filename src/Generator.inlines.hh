@@ -80,6 +80,11 @@ Generator::is_ray() const {
   return is_ray_or_point() && ((*this)[0] == 0);
 }
 
+inline bool
+Generator::is_virtual() const {
+  return Linear_Row::is_virtual();
+}
+
 inline Generator::Type
 Generator::type() const {
   if (is_line())
