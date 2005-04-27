@@ -25,13 +25,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_Row.defs.hh"
 #include "Linear_System.defs.hh"
-#include "Saturation_Row.defs.hh"
-#include "Saturation_Matrix.defs.hh"
 #include "Grid.defs.hh"
 #include "globals.defs.hh"
 #include <cstddef>
-
-namespace PPL = Parma_Polyhedra_Library;
 
 // FIX Temporary tracing stream.
 #if 1
@@ -42,65 +38,34 @@ std::ostream& ctrace = std::cout;
 std::ofstream ctrace;
 #endif
 
-/* FIX Name this method convert and name this file Grid_convert.cc, to
-   use verbs consistently as function names.  Make the same changes to
-   the Polyhedron equivalents. */
+namespace Parma_Polyhedra_Library {
 
-/*! FIX
-  \return
-  The number of lines of the polyhedron or the number of equality
-  congruences in the result of conversion.
+/* These methods should be named convert, and this file
+   Grid_convert.cc, to use verbs consistently as function and method
+   names.  The same holds for the Polyhedron equivalents.  */
 
-  \param source
-  The system to use to convert \p dest: it may be modified;
-
-  \param start
-  The index of \p source row from which conversion begin;
-
-  \param dest
-  The result of the conversion;
-
-  \param sat
-  The saturation matrix telling us, for each row in \p source, which
-  are the rows of \p dest that satisfy but do not saturate it;
-
-  \param num_lines_or_equalities
-  The number of rows in the system \p dest that are either lines of
-  the polyhedron (when \p dest is a system of generators) or equality
-  congruences (when \p dest is a system of congruences).
-
-  For simplicity, all the following comments assume we are converting a
-  congruence system \p source to a generator system \p dest;
-  the comments for the symmetric case can be obtained by duality.
-
-  If some of the congruences...
-*/
-// FIXME: I am not sure we do enough here in avoiding unwanted
-// common factors.  -- PMH
-PPL::dimension_type
-PPL::Grid::conversion(Congruence_System& source,
-		      // FIX params
-		      const dimension_type start, // FIX
-		      Linear_System& dest,
-		      Saturation_Matrix& sat,
-		      dimension_type num_lines_or_equalities) {
+dimension_type
+Grid::conversion(Congruence_System& source, Linear_System& dest) {
   ctrace << "============= convert cgs to gs" << std::endl
 	<< "source:" << std::endl;
   source.ascii_dump(ctrace);
   ctrace << "dest:" << std::endl;
   dest.ascii_dump(ctrace);
 
-  // Quite similar to the Congruence_System to Linear_System version
-  // below.  Changes here may be needed there too.
+  // Quite similar to the congruence to parameter version below.
+  // Changes here may be needed there too.
 
-  // FIX assert source,dest square
-  // FIX assert(upper_triangular_and_regular(source));
+  assert(dest.num_rows() == source.num_rows());
+  assert(dest.num_columns() == source.num_columns() - 1);
+  // FIX may be too much
+  // FIX assert(lower_triangular(source));
+  // FIX assert(identity(dest));
 
   // Compute the LCM of the diagonals.  Use the LCM instead of the
   // determinant (which is the product of the diagonals) to produce
   // smaller numbers.
   TEMP_INTEGER(diagonal_lcm);
-  diagonal_lcm = source[0][0]; // FIX assumes elements
+  diagonal_lcm = source[0][0];
   dimension_type num_rows = source.num_rows();
   dimension_type col = num_rows;
   while (--col > 0 && diagonal_lcm != 0)
@@ -111,7 +76,7 @@ PPL::Grid::conversion(Congruence_System& source,
   if (diagonal_lcm == 0)
     throw std::runtime_error("PPL internal error: Grid::conversion: source matrix singular.");
 
-  // Initialize destination matrix diagonal elements and row types.
+  // Initialize diagonal elements and row types in `dest'.
   while (col < num_rows) {
     Congruence& row = source[col];
     if (row.is_virtual())
@@ -155,31 +120,30 @@ PPL::Grid::conversion(Congruence_System& source,
       TEMP_INTEGER(multiplier);
       // FIX multiplier like reduced source_diag (wrt assoc ele in dest row num row)
       // FIX does it hold the relationship b/w these ele's?
-      // FIX return the gcd from gcd_assign?
-      //multiplier = source_diag / gcd(dest[row][col], source_diag);
       gcd_assign(multiplier, gen[col], source_diag);
       multiplier = source_diag / multiplier;
       ctrace << "    multiplier " << multiplier << std::endl;
 
-      /* Multiply the desination grid by the multiplier.  FIX Only
+      /* Multiply the destination grid by the multiplier.  FIX Only
 	 multiply congruences, as equalities are equivalent under
 	 multiplication and the virtual rows just ensure a regular
 	 matrix.  */
-      if (gen.is_virtual() /*FIX?*/ || gen.is_line_or_equality())
-	// Multiply every element of the equality.
-	for (dimension_type column = 0; column < num_rows; ++column)
-	  gen[column] *= multiplier;
-      else if (gen.is_ray_or_point_or_inequality())
-	// Multiply every element of every parameter.
-	for (dimension_type index = 0; index < num_rows; ++index) {
-	  Linear_Row& generator = dest[index];
-	  if (generator.is_virtual() || generator.is_line_or_equality())
-	    continue;
+      if (multiplier != 1)
+	if (gen.is_virtual() /*FIX?*/ || gen.is_line_or_equality())
+	  // Multiply every element of the equality.
 	  for (dimension_type column = 0; column < num_rows; ++column)
-	    generator[column] *= multiplier;
-	}
-      else
-	throw std::runtime_error("PPL internal error: Grid conversion: failed to match row type.");
+	    gen[column] *= multiplier;
+	else if (gen.is_ray_or_point_or_inequality())
+	  // Multiply every element of every parameter.
+	  for (dimension_type index = 0; index < num_rows; ++index) {
+	    Linear_Row& generator = dest[index];
+	    if (generator.is_virtual() || generator.is_line_or_equality())
+	      continue;
+	    for (dimension_type column = 0; column < num_rows; ++column)
+	      generator[column] *= multiplier;
+	  }
+	else
+	  throw std::runtime_error("PPL internal error: Grid conversion: failed to match row type.");
 
       gen[col] /= source_diag;
     }
@@ -225,34 +189,28 @@ PPL::Grid::conversion(Congruence_System& source,
   return 0; // FIX
 }
 
-// FIXME: I am not sure we do enough here in avoiding unwanted
-// common factors.  -- PMH
-PPL::dimension_type
-PPL::Grid::conversion(Generator_System& source,
-		      // FIX params
-		      const dimension_type start,
-		      Congruence_System& dest,
-		      Saturation_Matrix& sat,
-		      dimension_type num_lines_or_equalities) {
+dimension_type
+Grid::conversion(Generator_System& source, Congruence_System& dest) {
   ctrace << "============= convert gs to cgs" << std::endl
 	<< "source:" << std::endl;
   source.ascii_dump(ctrace);
   ctrace << "dest:" << std::endl;
   dest.ascii_dump(ctrace);
 
-  // Quite similar to the Linear_System to Congruence_System version
-  // above.  Changes here may be needed there too.
+  // Quite similar to the parameter to congruence version above.
+  // Changes here may be needed there too.
 
-  // FIX assert source,dest square
-  // FIX assert dest an identity matrix
-  // FIX assert dest smaller than or same size as source
-  // FIX assert(upper_triangular_and_regular(source));
+  assert(dest.num_rows() == source.num_rows());
+  assert(dest.num_columns() - 1 == source.num_columns());
+  // FIX may be too much
+  // FIX assert(upper_triangular(source));
+  // FIX assert(identity(dest));
 
   // Compute the LCM of the diagonals.  Use the LCM instead of the
   // determinant (which is the product of the diagonals) to produce
   // smaller numbers.
   TEMP_INTEGER(diagonal_lcm);
-  diagonal_lcm = source[0][0]; // FIX assumes elements
+  diagonal_lcm = source[0][0];
   dimension_type num_rows = source.num_rows();
   dimension_type col = num_rows;
   while (--col > 0 && diagonal_lcm != 0)
@@ -270,7 +228,7 @@ PPL::Grid::conversion(Generator_System& source,
     Linear_Row& row = source[col];
     if (row.is_virtual()) {
       ctrace << "     virtual" << std::endl;
-      dest[col][num_rows] = 0; // An equality congruence.
+      dest[col][num_rows] = 0;	// An equality congruence.
     }
     else if (row.is_ray_or_point_or_inequality()) {
       ctrace << "     rpi" << std::endl;
@@ -298,7 +256,8 @@ PPL::Grid::conversion(Generator_System& source,
       ctrace << "  row " << row << std::endl;
       dest.ascii_dump(ctrace);
 
-      if (dest[row].is_virtual())
+      Congruence& cg = dest[row];
+      if (cg.is_virtual())
 	continue;
 
       // FIX why inside loop? perhaps source changes?
@@ -308,34 +267,29 @@ PPL::Grid::conversion(Generator_System& source,
       TEMP_INTEGER(multiplier);
       // FIX multiplier like reduced source_diag (wrt assoc ele in dest row num row)
       // FIX does it hold the relationship b/w these ele's?
-      // FIX return the gcd from gcd_assign?
-      //multiplier = source_diag / gcd(dest[row][col], source_diag);
-      gcd_assign(multiplier, dest[row][col], source_diag);
+      gcd_assign(multiplier, cg[col], source_diag);
       multiplier = source_diag / multiplier;
 
       /* Multiply the desination grid by the multiplier.  FIX Only
 	 multiply congruences, as equalities are equivalent under
 	 multiplication and the virtual rows just ensure a regular
 	 matrix.  */
-      // FIX move up, use cg twice above and once below
-      Congruence& cg = dest[row];
-      // FIX skip if mult is 1 // FIX and in other
-      if (cg.is_virtual() /*FIX?*/ || cg.is_equality())
-	// Multiply every element of the equality.
-	for (dimension_type column = 0; column < num_rows; ++column)
-	  cg[column] *= multiplier;
-      else
-	// Multiply every element of every congruence.
-	for (dimension_type index = 0; index < num_rows; ++index) {
-	  Congruence& congruence = dest[index];
-	  if (congruence.is_virtual() || congruence.is_equality())
-	    continue;
+      if (multiplier != 1)
+	if (cg.is_virtual() /*FIX?*/ || cg.is_equality())
+	  // Multiply every element of the equality.
 	  for (dimension_type column = 0; column < num_rows; ++column)
-	    congruence[column] *= multiplier;
-	}
+	    cg[column] *= multiplier;
+	else
+	  // Multiply every element of every congruence.
+	  for (dimension_type index = 0; index < num_rows; ++index) {
+	    Congruence& congruence = dest[index];
+	    if (congruence.is_virtual() || congruence.is_equality())
+	      continue;
+	    for (dimension_type column = 0; column < num_rows; ++column)
+	      congruence[column] *= multiplier;
+	  }
 
-      // FIX skip if mult is 1 // FIX and in other
-      dest[row][col] /= source_diag;
+      cg[col] /= source_diag;
     }
     ctrace << "dest after processing following rows:" << std::endl;
     dest.ascii_dump(ctrace);
@@ -360,10 +314,10 @@ PPL::Grid::conversion(Generator_System& source,
       ctrace << "  rows:" << std::endl;
       for (dimension_type row = col; row < num_rows; ++row) {
 	ctrace << "       " << row << std::endl;
-	// FIX use temp for dest[row]
-	if (dest[row].is_virtual())
+	Congruence& cg = dest[row];
+	if (cg.is_virtual())
 	  continue;
-	dest[row][index] -= (source_col * dest[row][col]);
+	cg[index] -= (source_col * cg[col]);
       }
     }
     ctrace << "dest after processing preceding rows:" << std::endl;
@@ -384,3 +338,5 @@ PPL::Grid::conversion(Generator_System& source,
 
   return 0; // FIX
 }
+
+} // namespace Parma_Polyhedra_Library

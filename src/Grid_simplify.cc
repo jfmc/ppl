@@ -22,11 +22,10 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
+#include <cassert>
 
 #include "Grid.defs.hh"
 #include "Linear_System.defs.hh"
-#include "Saturation_Row.defs.hh"
-#include "Saturation_Matrix.defs.hh"
 
 // FIX Temporary tracing stream.
 #if 1
@@ -41,69 +40,69 @@ std::ofstream strace;
 
 namespace Parma_Polyhedra_Library {
 
-
 inline void
-Grid::reduce_line_with_line(Row& pivot, Row& row,
+Grid::reduce_line_with_line(Row& row, Row& pivot,
 			    dimension_type column) {
   strace << "reduce_line_with_line" << std::endl;
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, pivot[column], row[column]);
-  Coefficient_traits::const_reference a_p = pivot[column] / gcd;
-  Coefficient_traits::const_reference a_r = row[column] / gcd;
-  /* Adjust the elements of row.  When `col' is the same as `column'
-     then a_r * pivot[col] equals a_p * row[col] (this results from
-     a_r and a_p being multiples of the gcd), which means that
-     row[col] is set to zero.  All elements that were originally
-     zero remain zero, and the rest change.  The equivalence of the
-  FIX ~ pivot_0 (coef) pivot_i (inh)
-     adjusted matrix can be seen as follows, where ck_n and cj_n are
-     coefficients and i_k and i_j are the inhomogeneous terms.
+  Coefficient_traits::const_reference pa = pivot[column] / gcd;
+  Coefficient_traits::const_reference ra = row[column] / gcd;
+  /* Adjust the elements of row.
 
-  FIX suddenly parameters and congruences are equations?
-  FIX and they're treated equivalently
+     ra * pivot[col] == pa * row[col], which means that in the loop
+     below row[column] is set to zero.  All elements in row that were
+     originally zero remain zero, and the rest are updated.
 
-     1 The equation row is multiplied throughout by a_p, producing
+     The equivalence of the adjusted row can be seen as follows, where
+     pn and rn are the pivot and row coefficients and pi and ri are
+     the inhomogeneous terms of the pivot and row.
 
-         a_p * ck_0 * x_0  +  a_p * ck_1 * x_1  ... +  a_p * i_k  =  0
+     FIX Is is OK to consider the parameters as equations like this?
 
-     2 The equation pivot is multiplied throughout by a_r and then
-       substituted (for the zero) into the equation produced in (1),
-       producing
+     1 The parameter or congruence relation row is multiplied
+       throughout by pa, producing
 
-         a_p * ck_0 * x_0  +  a_p * ck_1 * x_1  ... +  a_p * i_k
-	     =  a_r * cj_0 * x_0  +  a_r * cj_1 * x_1  ... +  a_r * i_j
+         pa * r0 * x0  +  pa * r1 * x1  ... +  pa * ri  ==  0
 
-       which simplifies to an equation having the new values required
-       in each element of pivot:
+     2 The relation pivot is multiplied throughout by ra and then
+       substituted for the zero in the updated row relation, resulting
+       in
 
-         a_r * cj_0 * x_0  -  a_p * ck_0 * x_0  +  a_r * cj_1 * x_1  -  a_p * ck_1 * x_1
-	     ... +  a_r * i_j  -  a_p * i_k  =  0
+         pa * r0 * x0  +  pa * r1 * x1  ... +  pa * ri
+	     ==  ra * p0 * x0  +  ra * p1 * x1  ... +  ra * pi
 
-         (a_r * cj_0  -  a_p * ck_0) * x_0  +  (a_r * cj_1  -  a_p * ck_1) * x_1 ...
-	     +  (a_r * i_j - a_p * i_k)  =  0
+     3 The row relation is simplified, below, to show that the element
+       col will be ra * pivot[col] - pa * row[col], which is zero.
+
+         ra * p0 * x0  -  pa * r0 * x0  +  ra * p1 * x1  -  pa * r1 * x1
+	     ... +  ra * pi  -  pa * ri  =  0
+
+         (ra * p0  -  pa * r0) * x0  +  (ra * p1  -  pa * r1) * x1 ...
+	     +  (ra * pi - pa * ri)  =  0
   */
   for (dimension_type col = 0; col < pivot.size(); ++col)
-    row[col] = (a_r * pivot[col]) - (a_p * row[col]);
+    row[col] = (ra * pivot[col]) - (pa * row[col]);
 }
 
 inline void
-Grid::reduce_equality_with_equality(Row& pivot, Row& row,
-					 dimension_type column) {
+Grid::reduce_equality_with_equality(Row& row, Row& pivot,
+				    dimension_type column) {
   strace << "reduce_equality_with_equality" << std::endl;
   assert(pivot[0] == 0 && row[0] == 0); // Assume two equalities.
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, pivot[column], row[column]);
-  Coefficient_traits::const_reference a_p = pivot[column] / gcd;
-  Coefficient_traits::const_reference a_r = row[column] / gcd;
+  Coefficient_traits::const_reference pa = pivot[column] / gcd;
+  Coefficient_traits::const_reference ra = row[column] / gcd;
   // Adjust the elements of row, as in reduce_line_with_line.
   for (dimension_type col = 0; col < pivot.size() - 1; ++col)
-    row[col] = (a_r * pivot[col]) - (a_p * row[col]);
+    row[col] = (ra * pivot[col]) - (pa * row[col]);
 }
 
 void
 Grid::reduce_pc_with_pc(Row& row, Row& pivot,
-			     dimension_type column,
-			     bool parameters){
+			dimension_type column,
+			bool parameters){
   strace << "reduce_pc_with_pc" << std::endl;
   // Assume moduli are equal.
   assert(parameters || row[pivot.size()-1] == pivot[pivot.size()-1]);
@@ -112,10 +111,10 @@ Grid::reduce_pc_with_pc(Row& row, Row& pivot,
   TEMP_INTEGER(t);
   gcdext_assign(gcd, pivot[column], row[column], s, t);
   // Now pivot[column] * s + row[column] * t == gcd.
-  TEMP_INTEGER(a_pivot);
-  TEMP_INTEGER(a_row);
-  a_pivot = pivot[column] / gcd;
-  a_row = row[column] / gcd;
+  TEMP_INTEGER(pivot_a);
+  TEMP_INTEGER(row_a);
+  pivot_a = pivot[column] / gcd;
+  row_a = row[column] / gcd;
   // Adjust the elements of row, as in reduce_line_with_line above.
   for (dimension_type col = 0;
        col < pivot.size() - (parameters == false) /* modulus */;
@@ -130,73 +129,71 @@ Grid::reduce_pc_with_pc(Row& row, Row& pivot,
        with only constant terms to the integrality congruence.
 
        The equivalence of the adjusted pivot can be seen as with row
-       in reduce_line_with_line above, only with a t-multiplied copy of
-       row being negated and then substituted into an s-multiplied
-       pivot.  */
+       in reduce_line_with_line above, only with a s-multiplied copy
+       of pivot being negated and then substituted into an
+       t-multiplied row.  */
     pivot[col] = (s * pivot_col) + (t * row_col);
-    row[col] = (a_pivot * row_col) - (a_row * pivot_col);
+    row[col] = (pivot_a * row_col) - (row_a * pivot_col);
   }
 }
 
 void
 Grid::reduce_line_with_parameter(Linear_Row& row,
-				      Linear_Row& pivot,
-				      dimension_type column,
-				      Linear_System& sys) {
+				 Linear_Row& pivot,
+				 dimension_type column,
+				 Linear_System& sys) {
   // Very similar to the the Congruence version below.  Any change
   // here may be needed there too.
   strace << "reduce_line_with_parameter" << std::endl;
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, pivot[column], row[column]);
-  TEMP_INTEGER(a_pivot);
-  TEMP_INTEGER(a_row);
-  a_pivot = pivot[column] / gcd;
-  a_row = row[column] / gcd;
+  TEMP_INTEGER(pivot_a);
+  TEMP_INTEGER(row_a);
+  pivot_a = pivot[column] / gcd;
+  row_a = row[column] / gcd;
   dimension_type num_cols = sys.num_columns();
-  // FIX why?  (pivot is a line, row is a param)
   for (dimension_type index = 0; index < sys.num_rows(); ++index) {
     Linear_Row& row = sys[index];
     if (row.is_ray_or_point_or_inequality())
       for (dimension_type col = 0; col < num_cols; ++col)
-        row[col] *= a_pivot;
+        row[col] *= pivot_a;
   }
   /* These are like the adjustments in reduce_line_with_line (row[col]
-     has been multiplied by a_pivot already, in the loop above).  */
+     has been multiplied by pivot_a already, in the loop above).  */
   for (dimension_type col = 0; col < num_cols; ++col)
-    row[col] -= a_row * pivot[col];
+    row[col] -= row_a * pivot[col];
 }
 
 void
 Grid::reduce_equality_with_congruence(Congruence& row,
-					   Congruence& pivot,
-					   dimension_type column,
-					   Congruence_System& sys) {
-  // Very similar to the the Linear_Row version above.  Any change
-  // here may be needed there too.
+				      Congruence& pivot,
+				      dimension_type column,
+				      Congruence_System& sys) {
+  // Very similar to the Linear_Row version above.  Any change here
+  // may be needed there too.
   strace << "reduce_equality_with_congruence" << std::endl;
   assert(pivot[pivot.size()-1] == row[pivot.size()-1]);
 
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, pivot[column], row[column]);
-  TEMP_INTEGER(a_pivot);
-  TEMP_INTEGER(a_row);
-  a_pivot = pivot[column] / gcd;
-  a_row = row[column] / gcd;
+  TEMP_INTEGER(pivot_a);
+  TEMP_INTEGER(row_a);
+  pivot_a = pivot[column] / gcd;
+  row_a = row[column] / gcd;
   dimension_type num_cols = sys.num_columns() - 1 /* modulus */;
-  // FIX factor up every congruence, leaving equalities alone?
-  // FIX why?
   for (dimension_type index = 0; index < sys.num_rows(); ++index) {
     Congruence& row = sys[index];
     if (row.is_virtual() == false && row.is_equality() == false)
       for (dimension_type col = 0; col < num_cols; ++col)
-        row[col] *= a_pivot;
+        row[col] *= pivot_a;
   }
   /* These are like the adjustments in reduce_line_with_line (row[col]
-     has been multiplied by a_pivot already, in the loop above).  */
+     has been multiplied by pivot_a already, in the loop above).  */
   for (dimension_type col = 0; col < num_cols; ++col)
-    row[col] -= a_row * pivot[col];
+    row[col] -= row_a * pivot[col];
 }
 
+#ifndef NDEBUG
 //! Check for trailing rows containing only zero terms.
 /*!
   Return <code>true</code> if all columns contain zero terms in all
@@ -216,9 +213,10 @@ trailing_rows_are_zero (Matrix& system,
   }
   return true;
 }
+#endif
 
 bool
-Grid::simplify(Generator_System& sys, Saturation_Matrix& sat) {
+Grid::simplify(Generator_System& sys) {
   strace << "==== simplify (reduce) gs:" << std::endl;
   strace << "sys:" << std::endl;
   strace_dump(sys);
@@ -356,7 +354,7 @@ Grid::simplify(Generator_System& sys, Saturation_Matrix& sat) {
 }
 
 bool
-Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
+Grid::simplify(Congruence_System& sys) {
   strace << "======== simplify (reduce) cgs:" << std::endl;
   assert(sys.num_rows());
 
@@ -407,10 +405,11 @@ Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
 	new_row[sys.num_columns() - 1] = modulus;
 	new_row[column] = modulus;
       }
+      // FIX add to end and swap instead?
       sys.rows.insert(sys.rows.begin() + orig_row_num, new_row);
     }
     else {
-      dimension_type& row_index = row_num;  // For clearer naming.
+      dimension_type& row_index = row_num; // For clearer naming.
       --row_index;
       dimension_type pivot_num = row_index;
       Congruence& pivot = sys[pivot_num];
@@ -428,6 +427,7 @@ Grid::simplify(Congruence_System& sys, Saturation_Matrix& sat) {
 
 #undef free_row
 #define free_row()						\
+	    /* FIX Slow. */					\
 	    sys.rows.erase(sys.rows.begin() + row_index);	\
 	    strace << "drop" << std::endl;			\
 	    --num_rows;

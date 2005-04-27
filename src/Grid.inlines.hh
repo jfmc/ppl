@@ -106,10 +106,6 @@ Grid::swap(Grid& y) {
 #endif
   std::swap(con_sys, y.con_sys);
   std::swap(gen_sys, y.gen_sys);
-#if 0
-  std::swap(sat_c, y.sat_c);
-  std::swap(sat_g, y.sat_g);
-#endif
   std::swap(status, y.status);
   std::swap(space_dim, y.space_dim);
 }
@@ -151,16 +147,6 @@ Grid::generators_are_minimized() const {
 }
 
 inline bool
-Grid::sat_c_is_up_to_date() const {
-  return status.test_sat_c_up_to_date();
-}
-
-inline bool
-Grid::sat_g_is_up_to_date() const {
-  return status.test_sat_g_up_to_date();
-}
-
-inline bool
 Grid::has_pending_congruences() const {
   return status.test_c_pending();
 }
@@ -178,8 +164,7 @@ Grid::has_something_pending() const {
 inline bool
 Grid::can_have_something_pending() const {
   return congruences_are_minimized()
-    && generators_are_minimized()
-    && (sat_c_is_up_to_date() || sat_g_is_up_to_date());
+    && generators_are_minimized();
 }
 
 inline void
@@ -210,16 +195,6 @@ Grid::set_generators_pending() {
 }
 
 inline void
-Grid::set_sat_c_up_to_date() {
-  status.set_sat_c_up_to_date();
-}
-
-inline void
-Grid::set_sat_g_up_to_date() {
-  status.set_sat_g_up_to_date();
-}
-
-inline void
 Grid::clear_empty() {
   status.reset_empty();
 }
@@ -245,23 +220,9 @@ Grid::clear_pending_generators() {
 }
 
 inline void
-Grid::clear_sat_c_up_to_date() {
-  status.reset_sat_c_up_to_date();
-  // Can get rid of sat_c here.
-}
-
-inline void
-Grid::clear_sat_g_up_to_date() {
-  status.reset_sat_g_up_to_date();
-  // Can get rid of sat_g here.
-}
-
-inline void
 Grid::clear_congruences_up_to_date() {
   clear_pending_congruences();
   clear_congruences_minimized();
-  clear_sat_c_up_to_date();
-  clear_sat_g_up_to_date();
   status.reset_c_up_to_date();
   // Can get rid of con_sys here.
 }
@@ -270,8 +231,6 @@ inline void
 Grid::clear_generators_up_to_date() {
   clear_pending_generators();
   clear_generators_minimized();
-  clear_sat_c_up_to_date();
-  clear_sat_g_up_to_date();
   status.reset_g_up_to_date();
   // Can get rid of gen_sys here.
 }
@@ -363,9 +322,7 @@ Grid::strictly_contains(const Grid& y) const {
 template <typename Box>
 Grid::Grid(Topology topol, const Box& box)
   : con_sys(topol),
-    gen_sys(topol),
-    sat_c(),
-    sat_g() {
+    gen_sys(topol) {
   // Initialize the space dimension as indicated by the box.
   space_dim = box.space_dimension();
 
@@ -736,9 +693,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
     if (cycles.empty())
       return;
 
-    // Permute all that is up-to-date.  Notice that the contents of
-    // the saturation matrices is unaffected by the permutation of
-    // columns: they remain valid, if they were so.
+    // Permute all that is up-to-date.
     if (congruences_are_up_to_date())
       con_sys.permute_columns(cycles);
 

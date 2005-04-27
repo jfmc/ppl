@@ -72,7 +72,7 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
   if (space_dim > 0) {
     // Stealing the rows from `cgs'.
     std::swap(con_sys, cgs);
-    simplify(con_sys, sat_c);
+    simplify(con_sys);
 #if 0 // FIX
     if (con_sys.num_pending_rows() > 0) {
       // Even though `cgs' has pending constraints, since the generators
@@ -132,7 +132,7 @@ PPL::Grid::construct(const Generator_System& cgs) {
   if (gs_space_dim > 0) {
     // Stealing the rows from `gs'.
     std::swap(gen_sys, gs);
-    simplify(gen_sys, sat_g);
+    simplify(gen_sys);
 #if 0
     // FIX how in grid?
     // In a generator system describing a NNC polyhedron,
@@ -244,17 +244,11 @@ PPL::Grid::Grid(const Grid& y)
     con_sys = y.con_sys;
   if (y.generators_are_up_to_date())
     gen_sys = y.gen_sys;
-  if (y.sat_c_is_up_to_date())
-    sat_c = y.sat_c;
-  if (y.sat_g_is_up_to_date())
-    sat_g = y.sat_g;
 }
 
 PPL::Grid::Grid(const Topology topol, const Congruence_System& ccs)
   : con_sys(topol),
-    gen_sys(topol),
-    sat_c(),
-    sat_g() {
+    gen_sys(topol) {
   // Protecting against space dimension overflow is up to the caller.
   assert(ccs.space_dimension() <= max_space_dimension());
 
@@ -301,9 +295,7 @@ PPL::Grid::Grid(const Topology topol, const Congruence_System& ccs)
 
 PPL::Grid::Grid(const Topology topol, Congruence_System& cs)
   : con_sys(topol),
-    gen_sys(topol),
-    sat_c(),
-    sat_g() {
+    gen_sys(topol) {
   // Protecting against space dimension overflow is up to the caller.
   assert(cs.space_dimension() <= max_space_dimension());
 
@@ -347,9 +339,7 @@ PPL::Grid::Grid(const Topology topol, Congruence_System& cs)
 
 PPL::Grid::Grid(const Topology topol, const Generator_System& cgs)
   : con_sys(topol),
-    gen_sys(topol),
-    sat_c(),
-    sat_g() {
+    gen_sys(topol) {
   // Protecting against space dimension overflow is up to the caller.
   assert(cgs.space_dimension() <= max_space_dimension());
 
@@ -408,9 +398,7 @@ PPL::Grid::Grid(const Topology topol, const Generator_System& cgs)
 
 PPL::Grid::Grid(const Topology topol, Generator_System& gs)
   : con_sys(topol),
-    gen_sys(topol),
-    sat_c(),
-    sat_g() {
+    gen_sys(topol) {
   // Protecting against space dimension overflow is up to the caller.
   assert(gs.space_dimension() <= max_space_dimension());
 
@@ -479,10 +467,6 @@ PPL::Grid::operator=(const Grid& y) {
       con_sys = y.con_sys;
     if (y.generators_are_up_to_date())
       gen_sys = y.gen_sys;
-    if (y.sat_c_is_up_to_date())
-      sat_c = y.sat_c;
-    if (y.sat_g_is_up_to_date())
-      sat_g = y.sat_g;
   }
   return *this;
 }
@@ -768,13 +752,9 @@ PPL::Grid::set_zero_dim_univ() {
 void
 PPL::Grid::set_empty() {
   status.set_empty();
-  // The polyhedron is empty: we can thus throw away everything.
+  // FIX The grid is empty, so throw away the descriptions.
   con_sys.clear();
   gen_sys.clear();
-#if 0
-  sat_c.clear();
-  sat_g.clear();
-#endif
 }
 
 bool
@@ -786,9 +766,6 @@ PPL::Grid::process_pending_congruences() const {
   Grid& x = const_cast<Grid&>(*this);
 
   // Integrate the pending part of the system of congruences and minimize.
-  // We need `sat_c' up-to-date and `con_sys' sorted (together with `sat_c').
-  if (!x.sat_c_is_up_to_date())
-    x.sat_c.transpose_assign(x.sat_g);
   if (!x.con_sys.is_sorted())
     x.obtain_sorted_congruences_with_sat_c();
   // We sort in place the pending congruences, erasing those congruences
@@ -808,8 +785,6 @@ PPL::Grid::process_pending_congruences() const {
     x.set_empty();
   else {
     x.clear_pending_congruences();
-    x.clear_sat_g_up_to_date();
-    x.set_sat_c_up_to_date();
   }
   assert(OK(!empty));
   return !empty;
@@ -825,11 +800,10 @@ PPL::Grid::process_pending_generators() const {
   Grid& x = const_cast<Grid&>(*this);
 
   // Integrate the pending part of the system of generators and minimize.
-  // We need `sat_g' up-to-date and `gen_sys' sorted (together with `sat_g').
-  if (!x.sat_g_is_up_to_date())
-    x.sat_g.transpose_assign(x.sat_c);
+#if 0
   if (!x.gen_sys.is_sorted())
     x.obtain_sorted_generators_with_sat_g();
+#endif
   // We sort in place the pending generators, erasing those generators
   // that also occur in the non-pending part of `gen_sys'.
   x.gen_sys.sort_pending_and_remove_duplicates();
@@ -842,12 +816,10 @@ PPL::Grid::process_pending_generators() const {
 
   // FIX could this return true (ie that the grid is empty)
   // FIX if so set_empty
-  add_and_minimize(x.gen_sys, x.con_sys, x.sat_g);
+  add_and_minimize(x.gen_sys, x.con_sys);
   assert(x.gen_sys.num_pending_rows() == 0);
 
   x.clear_pending_generators();
-  x.clear_sat_c_up_to_date();
-  x.set_sat_g_up_to_date();
 }
 #if 0
 void
@@ -907,16 +879,12 @@ PPL::Grid::update_congruences() const {
   assert(generators_are_up_to_date());
   // We assume the polyhedron has no pending congruences or generators.
   assert(!has_something_pending());
-  std::cout << "update_congruences" << std::endl; // FIX
 
   Grid& gr = const_cast<Grid&>(*this);
-  if (minimize(false, gr.gen_sys, gr.con_sys, gr.sat_c)) {
+  if (minimize(gr.gen_sys, gr.con_sys)) {
     gr.set_empty();
     return false;
   }
-  // `sat_c' is the only saturation matrix up-to-date.
-  gr.set_sat_c_up_to_date();
-  gr.clear_sat_g_up_to_date();
   // The system of congruences and the system of generators are
   // minimized.
   gr.set_congruences_minimized();
@@ -931,18 +899,14 @@ PPL::Grid::update_generators() const {
   assert(congruences_are_up_to_date());
   // We assume the polyhedron has no pending congruences or generators.
   assert(!has_something_pending());
-  std::cout << "update_generators" << std::endl; // FIX
 
   Grid& x = const_cast<Grid&>(*this);
   // If the system of congruences is not consistent the polyhedron is
   // empty.
-  if (minimize(true, x.con_sys, x.gen_sys, x.sat_g)) {
+  if (minimize(x.con_sys, x.gen_sys)) {
     x.set_empty();
     return false;
   }
-  // `sat_g' is the only saturation matrix up-to-date.
-  x.set_sat_g_up_to_date();
-  x.clear_sat_c_up_to_date();
   // The system of congruences and the system of generators are
   // minimized.
   x.set_congruences_minimized();
@@ -950,207 +914,8 @@ PPL::Grid::update_generators() const {
   return true;
 }
 
-#if 0
-void
-PPL::Grid::update_sat_c() const {
-  assert(congruences_are_minimized());
-  assert(generators_are_minimized());
-  assert(!sat_c_is_up_to_date());
-
-  // We only consider non-pending rows.
-  const dimension_type csr = con_sys.first_pending_row();
-  const dimension_type gsr = gen_sys.first_pending_row();
-  Grid& x = const_cast<Grid&>(*this);
-
-  // The columns of `sat_c' represent the congruences and
-  // its rows represent the generators: resize accordingly.
-  x.sat_c.resize(gsr, csr);
-  for (dimension_type i = gsr; i-- > 0; )
-    for (dimension_type j = csr; j-- > 0; ) {
-      const int sp_sign = scalar_product_sign(con_sys[j], gen_sys[i]);
-      // The negativity of this scalar product would mean
-      // that the generator `gen_sys[i]' violates the congruence
-      // `con_sys[j]' and it is not possible because both generators
-      // and congruences are up-to-date.
-      assert(sp_sign >= 0);
-      if (sp_sign > 0)
-	// `gen_sys[i]' satisfies (without saturate) `con_sys[j]'.
-	x.sat_c[i].set(j);
-      else
-	// `gen_sys[i]' saturates `con_sys[j]'.
-	x.sat_c[i].clear(j);
-    }
-  x.set_sat_c_up_to_date();
-}
-#endif
-void
-PPL::Grid::update_sat_g() const {
-  assert(congruences_are_minimized());
-  assert(generators_are_minimized());
-  assert(!sat_g_is_up_to_date());
-
-  // We only consider non-pending rows.
-  //const dimension_type csr = con_sys.first_pending_row();
-  const dimension_type csr = 0;
-  const dimension_type gsr = gen_sys.first_pending_row();
-  Grid& x = const_cast<Grid&>(*this);
-
-  // The columns of `sat_g' represent generators and its
-  // rows represent the congruences: resize accordingly.
-  x.sat_g.resize(csr, gsr);
-  for (dimension_type i = csr; i-- > 0; )
-    for (dimension_type j = gsr; j-- > 0; ) {
-      const int sp_sign = scalar_product_sign(gen_sys[i], con_sys[j]);
-      // The negativity of this scalar product would mean
-      // that the generator `gen_sys[j]' violates the congruence
-      // `con_sys[i]' and it is not possible because both generators
-      // and congruences are up-to-date.
-      assert(sp_sign >= 0);
-      if (sp_sign > 0)
-	// `gen_sys[j]' satisfies (without saturate) `con_sys[i]'.
-	x.sat_g[i].set(j);
-      else
-	// `gen_sys[j]' saturates `con_sys[i]'.
-	x.sat_g[i].clear(j);
-    }
-  x.set_sat_g_up_to_date();
-}
-#if 0
-void
-PPL::Grid::obtain_sorted_congruences() const {
-  assert(congruences_are_up_to_date());
-  // `con_sys' will be sorted up to `index_first_pending'.
-  Grid& x = const_cast<Grid&>(*this);
-  if (!x.con_sys.is_sorted())
-    if (x.sat_g_is_up_to_date()) {
-      // Sorting congruences keeping `sat_g' consistent.
-      x.con_sys.sort_and_remove_with_sat(x.sat_g);
-      // `sat_c' is not up-to-date anymore.
-      x.clear_sat_c_up_to_date();
-    }
-    else if (x.sat_c_is_up_to_date()) {
-      // Using `sat_c' to obtain `sat_g', then it is like previous case.
-      x.sat_g.transpose_assign(x.sat_c);
-      x.con_sys.sort_and_remove_with_sat(x.sat_g);
-      x.set_sat_g_up_to_date();
-      x.clear_sat_c_up_to_date();
-    }
-    else
-      // If neither `sat_g' nor `sat_c' are up-to-date,
-      // we just sort the congruences.
-      x.con_sys.sort_rows();
-
-  assert(con_sys.check_sorted());
-}
-#endif
-void
-PPL::Grid::obtain_sorted_generators() const {
-  assert(generators_are_up_to_date());
-
-  if (gen_sys.is_sorted())
-    return;
-
-  // `gen_sys' will be sorted up to `index_first_pending'.
-
-  Grid& x = const_cast<Grid&>(*this);
-
-  if (x.sat_c_is_up_to_date()) {
-    // Sorting generators keeping 'sat_c' consistent.
-    x.gen_sys.sort_and_remove_with_sat(x.sat_c);
-    // `sat_g' is not up-to-date anymore.
-    x.clear_sat_g_up_to_date();
-  }
-  else if (x.sat_g_is_up_to_date()) {
-    // Obtaining `sat_c' from `sat_g' and proceeding like previous case.
-#if 0 // FIX for assertion
-    x.sat_c.transpose_assign(x.sat_g);
-    x.gen_sys.sort_and_remove_with_sat(x.sat_c);
-#else
-    x.gen_sys.sort_rows();
-#endif
-    x.set_sat_c_up_to_date();
-    x.clear_sat_g_up_to_date();
-  }
-  else
-    // If neither `sat_g' nor `sat_c' are up-to-date, we just sort
-    // the generators.
-    x.gen_sys.sort_rows();
-
-  assert(gen_sys.check_sorted());
-}
-#if 0
-void
-PPL::Grid::obtain_sorted_congruences_with_sat_c() const {
-  assert(congruences_are_up_to_date());
-  assert(congruences_are_minimized());
-  // `con_sys' will be sorted up to `index_first_pending'.
-  Grid& x = const_cast<Grid&>(*this);
-  // At least one of the saturation matrices must be up-to-date.
-  if (!x.sat_c_is_up_to_date() && !x.sat_g_is_up_to_date())
-    x.update_sat_c();
-
-  if (x.con_sys.is_sorted()) {
-    if (x.sat_c_is_up_to_date())
-      // If congruences are already sorted and sat_c is up to
-      // date there is nothing to do.
-      return;
-  }
-  else {
-    if (!x.sat_g_is_up_to_date()) {
-      // If congruences are not sorted and sat_g is not up-to-date
-      // we obtain sat_g from sat_c (that has to be up-to-date)...
-      x.sat_g.transpose_assign(x.sat_c);
-      x.set_sat_g_up_to_date();
-    }
-    // ... and sort it together with congruences.
-    x.con_sys.sort_and_remove_with_sat(x.sat_g);
-  }
-  // Obtaining sat_c from sat_g.
-  x.sat_c.transpose_assign(x.sat_g);
-  x.set_sat_c_up_to_date();
-  // Congruences are sorted now.
-  x.con_sys.set_sorted(true);
-
-  assert(con_sys.check_sorted());
-}
-#endif
-void
-PPL::Grid::obtain_sorted_generators_with_sat_g() const {
-  assert(generators_are_up_to_date());
-  // `gen_sys' will be sorted up to `index_first_pending'.
-  Grid& x = const_cast<Grid&>(*this);
-  // At least one of the saturation matrices must be up-to-date.
-  if (!x.sat_c_is_up_to_date() && !x.sat_g_is_up_to_date())
-    x.update_sat_g();
-
-  if (x.gen_sys.is_sorted()) {
-    if (x.sat_g_is_up_to_date())
-      // If generators are already sorted and sat_g is up to
-      // date there is nothing to do.
-      return;
-  }
-  else {
-    if (!x.sat_c_is_up_to_date()) {
-      // If generators are not sorted and sat_c is not up-to-date
-      // we obtain sat_c from sat_g (that has to be up-to-date)...
-      x.sat_c.transpose_assign(x.sat_g);
-      x.set_sat_c_up_to_date();
-    }
-    // ... and sort it together with generators.
-    //x.gen_sys.sort_and_remove_with_sat(x.sat_c); // FIX
-  }
-  // Obtaining sat_g from sat_c.
-  x.sat_g.transpose_assign(sat_c);
-  x.set_sat_g_up_to_date();
-  // Generators are sorted now.
-  x.gen_sys.set_sorted(true);
-
-  assert(gen_sys.check_sorted());
-}
-
 bool
 PPL::Grid::minimize() const {
-  std::cout << "minimize()" << std::endl;
   // 0-dim space and empty polyhedra are already minimized.
   // FIX should they return the same val?
   if (marked_empty())
@@ -1193,9 +958,10 @@ PPL::Grid::minimize() const {
 
 bool
 PPL::Grid::strongly_minimize_congruences() const {
-  //assert(!is_necessarily_closed()); // FIX
 
-  // From the user perspective, the polyhedron will not change.
+  // FIX is this method necessary? perhaps use for strong reduc
+
+  // From the user perspective, the polyhedron stays the same.
   Grid& x = const_cast<Grid&>(*this);
 
   // We need `con_sys' (weakly) minimized and `gen_sys' up-to-date.
@@ -1203,158 +969,10 @@ PPL::Grid::strongly_minimize_congruences() const {
   if (!minimize())
     return false;
 
-  // If the grid `*this' is zero-dimensional
-  // at this point it must be a universe polyhedron.
+  // If the grid `*this' is zero-dimensional at this point it must be
+  // a universe polyhedron.
   if (x.space_dim == 0)
     return true;
-
-#if 0
-  // We also need `sat_g' up-to-date.
-  if (!sat_g_is_up_to_date()) {
-    assert(sat_c_is_up_to_date());
-    x.sat_g.transpose_assign(sat_c);
-  }
-
-  // These Saturation_Row's will be later used as masks in order to
-  // check saturation conditions restricted to particular subsets of
-  // the generator system.
-  Saturation_Row sat_all_but_rays;
-  Saturation_Row sat_all_but_points;
-  Saturation_Row sat_all_but_closure_points;
-
-  const dimension_type gs_rows = gen_sys.num_rows();
-  const dimension_type n_lines = gen_sys.num_lines();
-  for (dimension_type i = gs_rows; i-- > n_lines; )
-    switch (gen_sys[i].type()) {
-    case Generator::RAY:
-      sat_all_but_rays.set(i);
-      break;
-    case Generator::POINT:
-      sat_all_but_points.set(i);
-      break;
-    case Generator::CLOSURE_POINT:
-      sat_all_but_closure_points.set(i);
-      break;
-    default:
-      // Found a line with index i >= n_lines.
-      throw std::runtime_error("PPL internal error: "
-			       "strongly_minimize_congruences.");
-    }
-  Saturation_Row sat_lines_and_rays;
-  set_union(sat_all_but_points, sat_all_but_closure_points,
-	    sat_lines_and_rays);
-  Saturation_Row sat_lines_and_closure_points;
-  set_union(sat_all_but_rays, sat_all_but_points,
-	    sat_lines_and_closure_points);
-  Saturation_Row sat_lines;
-  set_union(sat_lines_and_rays, sat_lines_and_closure_points,
-	    sat_lines);
-
-  // These flags are maintained to later decide if we have to add the
-  // eps_leq_one congruence and whether or not the congruence system
-  // was changed.
-  bool changed = false;
-  bool found_eps_leq_one = false;
-
-  // For all the strict inequalities in `con_sys', check for
-  // eps-redundancy and eventually move them to the bottom part of the
-  // system.
-  Congruence_System& cs = x.con_sys;
-  Saturation_Matrix& sat = x.sat_g;
-  dimension_type cs_rows = cs.num_rows();
-  const dimension_type eps_index = cs.num_columns() - 1;
-  for (dimension_type i = 0; i < cs_rows; )
-    if (cs[i].is_strict_inequality()) {
-      // First, check if it is saturated by no closure points
-      Saturation_Row sat_ci;
-      set_union(sat[i], sat_lines_and_closure_points, sat_ci);
-      if (sat_ci == sat_lines) {
-	// It is saturated by no closure points.
-	if (!found_eps_leq_one) {
-	  // Check if it is the eps_leq_one congruence.
-	  const Congruence& c = cs[i];
-	  bool all_zeroes = true;
-	  for (dimension_type k = eps_index; k-- > 1; )
-	    if (c[k] != 0) {
-	      all_zeroes = false;
-	      break;
-	    }
-	  if (all_zeroes && (c[0] + c[eps_index] == 0)) {
-	    // We found the eps_leq_one congruence.
-	    found_eps_leq_one = true;
-	    // Consider next congruence.
-	    ++i;
-	    continue;
-	  }
-	}
-	// Here `cs[i]' is not the eps_leq_one congruence,
-	// so it is eps-redundant.
-	// Move it to the bottom of the congruence system,
-	// while keeping `sat_g' consistent.
-	--cs_rows;
-	std::swap(cs[i], cs[cs_rows]);
-	std::swap(sat[i], sat[cs_rows]);
-	// The congruence system is changed.
-	changed = true;
-	// Continue by considering next congruence,
-	// which is already in place due to the swap.
-	continue;
-      }
-      // Now we check if there exists another strict inequality
-      // congruence having a superset of its saturators,
-      // when disregarding points.
-      sat_ci.clear();
-      set_union(sat[i], sat_all_but_points, sat_ci);
-      bool eps_redundant = false;
-      for (dimension_type j = 0; j < cs_rows; ++j)
-	if (i != j && cs[j].is_strict_inequality()
-	    && subset_or_equal(sat[j], sat_ci)) {
-	  // Congruence `cs[i]' is eps-redundant:
-	  // move it to the bottom of the congruence system,
-	  // while keeping `sat_g' consistent.
-	  --cs_rows;
-	  std::swap(cs[i], cs[cs_rows]);
-	  std::swap(sat[i], sat[cs_rows]);
-	  eps_redundant = true;
-	  // The congruence system is changed.
-	  changed = true;
-	  break;
-	}
-      // Continue with next congruence, which is already in place
-      // due to the swap if we have found an eps-redundant congruence.
-      if (!eps_redundant)
-	++i;
-    }
-    else
-      // `cs[i]' is not a strict inequality: consider next congruence.
-      ++i;
-
-  if (changed) {
-    // If the congruence system has been changed and we haven't found the
-    // eps_leq_one congruence, insert it to force an upper bound on epsilon.
-    if (!found_eps_leq_one) {
-      // Note: we overwrite the first of the eps-redundant congruences found.
-      assert(cs_rows < cs.num_rows());
-      Congruence& eps_leq_one = cs[cs_rows];
-      eps_leq_one[0] = 1;
-      eps_leq_one[eps_index] = -1;
-      for (dimension_type k = eps_index; k-- > 1; )
-	eps_leq_one[k] = 0;
-      // Bump number of rows.
-      ++cs_rows;
-    }
-    // Erase the eps-redundant congruences, if there are any (the
-    // remaining congruences are not pending).
-    if (cs_rows < cs.num_rows()) {
-      cs.erase_to_end(cs_rows);
-      cs.unset_pending_rows();
-    }
-    // The congruence system is no longer sorted.
-    cs.set_sorted(false);
-    // The generator system is no longer up-to-date.
-    x.clear_generators_up_to_date();
-  }
-#endif
 
   assert(OK());
   return true;
@@ -1362,7 +980,8 @@ PPL::Grid::strongly_minimize_congruences() const {
 
 bool
 PPL::Grid::strongly_minimize_generators() const {
-  //assert(!is_necessarily_closed()); // FIX
+
+  // FIX is this method necessary? perhaps use for strong reduc
 
   // From the user perspective, the polyhedron will not change.
   Grid& x = const_cast<Grid&>(*this);
@@ -1377,88 +996,6 @@ PPL::Grid::strongly_minimize_generators() const {
   if (x.space_dim == 0)
     return true;
 
-#if 0
-  // We also need `sat_c' up-to-date.
-  if (!sat_c_is_up_to_date()) {
-    assert(sat_g_is_up_to_date());
-    x.sat_c.transpose_assign(sat_g);
-  }
-#endif
-
-#if 0
-  // This Saturation_Row will have all and only the indexes
-  // of strict inequalities set to 1.
-  Saturation_Row sat_all_but_strict_ineq;
-  const dimension_type cs_rows = con_sys.num_rows();
-  const dimension_type n_equals = con_sys.num_equalities();
-  for (dimension_type i = cs_rows; i-- > n_equals; )
-    if (con_sys[i].is_strict_inequality())
-      sat_all_but_strict_ineq.set(i);
-
-  // Will record whether or not we changed the generator system.
-  bool changed = false;
-
-  // For all points in the generator system, check for eps-redundancy
-  // and eventually move them to the bottom part of the system.
-  Generator_System& gs = const_cast<Generator_System&>(gen_sys);
-  Saturation_Matrix& sat = const_cast<Saturation_Matrix&>(sat_c);
-  dimension_type gs_rows = gs.num_rows();
-  const dimension_type n_lines = gs.num_lines();
-  const dimension_type eps_index = gs.num_columns() - 1;
-  for (dimension_type i = n_lines; i < gs_rows; )
-    if (gs[i].is_point()) {
-      // Compute the Saturation_Row corresponding to the candidate point
-      // when strict inequality congruences are ignored.
-      Saturation_Row sat_gi;
-      set_union(sat[i], sat_all_but_strict_ineq, sat_gi);
-      // Check if the candidate point is actually eps-redundant:
-      // namely, if there exists another point that saturates
-      // all the non-strict inequalities saturated by the candidate.
-      bool eps_redundant = false;
-      for (dimension_type j = n_lines; j < gs_rows; ++j)
-	if (i != j && gs[j].is_point() && subset_or_equal(sat[j], sat_gi)) {
-	  // Point `gs[i]' is eps-redundant:
-	  // move it to the bottom of the generator system,
-	  // while keeping `sat_c' consistent.
-	  --gs_rows;
-	  std::swap(gs[i], gs[gs_rows]);
-	  std::swap(sat[i], sat[gs_rows]);
-	  eps_redundant = true;
-	  changed = true;
-	  break;
-	}
-      if (!eps_redundant) {
-	// Let all point encodings have epsilon coordinate 1.
-	Generator& gi = gs[i];
-	if (gi[eps_index] != gi[0]) {
-	  gi[eps_index] = gi[0];
-	  // Enforce normalization.
-	  gi.normalize();
-	  changed = true;
-	}
-	// Consider next generator.
-	++i;
-      }
-    }
-    else
-      // Consider next generator.
-      ++i;
-
-  // If needed, erase the eps-redundant generators (also updating
-  // `index_first_pending').
-  if (gs_rows < gs.num_rows()) {
-    gs.erase_to_end(gs_rows);
-    gs.unset_pending_rows();
-  }
-
-  if (changed) {
-    // The generator system is no longer sorted.
-    x.gen_sys.set_sorted(false);
-    // The congruence system is no longer up-to-date.
-    x.clear_congruences_up_to_date();
-  }
-#endif
-
   assert(OK());
   return true;
 }
@@ -1466,14 +1003,7 @@ PPL::Grid::strongly_minimize_generators() const {
 void
 PPL::Grid::throw_runtime_error(const char* method) const {
   std::ostringstream s;
-  s << "PPL::";
-#if 0
-  if (is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-#endif
-  s << "Grid::" << method << "." << std::endl;
+  s << "PPL::Grid::" << method << "." << std::endl;
   throw std::runtime_error(s.str());
 }
 
@@ -1481,14 +1011,7 @@ void
 PPL::Grid::throw_invalid_argument(const char* method,
 					const char* reason) const {
   std::ostringstream s;
-  s << "PPL::";
-#if 0
-  if (is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-#endif
-  s << "Grid::" << method << ":" << std::endl
+  s << "PPL::Grid::" << method << ":" << std::endl
     << reason << ".";
   throw std::invalid_argument(s.str());
 }
@@ -1498,22 +1021,8 @@ PPL::Grid::throw_topology_incompatible(const char* method,
 				       const char* ph_name,
 				       const Grid& ph) const {
   std::ostringstream s;
-  s << "PPL::";
-#if 0
-  if (is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-#endif
-  s << "Grid::" << method << ":" << std::endl
-    << ph_name << " is a ";
-#if 0
-  if (ph.is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-#endif
-  s << "Grid." << std::endl;
+  s << "PPL::Grid::" << method << ":" << std::endl
+    << ph_name << " is a Grid." << std::endl;
   throw std::invalid_argument(s.str());
 }
 
@@ -1521,7 +1030,6 @@ void
 PPL::Grid::throw_topology_incompatible(const char* method,
 					     const char* c_name,
 					     const Congruence&) const {
-  //assert(is_necessarily_closed());  // FIX
   std::ostringstream s;
   s << "PPL::C_Grid::" << method << ":" << std::endl
     << c_name << " is a strict inequality.";
@@ -1532,7 +1040,6 @@ void
 PPL::Grid::throw_topology_incompatible(const char* method,
 					     const char* g_name,
 					     const Generator&) const {
-  //assert(is_necessarily_closed()); // FIX
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
     << g_name << " is a closure point.";
@@ -1543,7 +1050,6 @@ void
 PPL::Grid::throw_topology_incompatible(const char* method,
 					     const char* cs_name,
 					     const Congruence_System&) const {
-  //assert(is_necessarily_closed()); // FIX
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
     << cs_name << " contains strict inequalities.";
@@ -1565,9 +1071,7 @@ PPL::Grid::throw_dimension_incompatible(const char* method,
 					      const char* other_name,
 					      dimension_type other_dim) const {
   std::ostringstream s;
-  s << "PPL::"
-    //<< (is_necessarily_closed() ? "C_" : "NNC_") // FIX
-    << "Grid::" << method << ":\n"
+  s << "PPL::Grid::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension() << ", "
     << other_name << ".space_dimension() == " << other_dim << ".";
   throw std::invalid_argument(s.str());
@@ -1620,14 +1124,7 @@ PPL::Grid::throw_dimension_incompatible(const char* method,
 					      const char* var_name,
 					      const Variable var) const {
   std::ostringstream s;
-  s << "PPL::";
-#if 0
-  if (is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-#endif
-  s << "Grid::" << method << ":" << std::endl
+  s << "PPL::Grid::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension() << ", "
     << var_name << ".space_dimension() == " << var.space_dimension() << ".";
   throw std::invalid_argument(s.str());
@@ -1638,14 +1135,7 @@ PPL::Grid::
 throw_dimension_incompatible(const char* method,
 			     dimension_type required_space_dim) const {
   std::ostringstream s;
-  s << "PPL::";
-#if 0
-  if (is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-#endif
-  s << "Grid::" << method << ":" << std::endl
+  s << "PPL::Grid::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
     << ", required space dimension == " << required_space_dim << ".";
   throw std::invalid_argument(s.str());
@@ -1656,14 +1146,7 @@ PPL::Grid::throw_space_dimension_overflow(const Topology topol,
 					  const char* method,
 					  const char* reason) {
   std::ostringstream s;
-  s << "PPL::";
-#if 0
-  if (topol == NECESSARILY_CLOSED)
-    s << "C_";
-  else
-    s << "NNC_";
-#endif
-  s << "Grid::" << method << ":" << std::endl
+  s << "PPL::Grid::" << method << ":" << std::endl
     << reason << ".";
   throw std::length_error(s.str());
 }
@@ -1672,14 +1155,7 @@ void
 PPL::Grid::throw_invalid_generator(const char* method,
 					 const char* g_name) const {
   std::ostringstream s;
-  s << "PPL::";
-#if 0
-  if (is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-#endif
-  s << "Grid::" << method << ":" << std::endl
+  s << "PPL::Grid::" << method << ":" << std::endl
     << "*this is an empty polyhedron and "
     << g_name << " is not a point.";
   throw std::invalid_argument(s.str());
@@ -1689,14 +1165,7 @@ void
 PPL::Grid::throw_invalid_generators(const char* method,
 					  const char* gs_name) const {
   std::ostringstream s;
-  s << "PPL::";
-#if 0
-  if (is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-#endif
-  s << "Grid::" << method << ":" << std::endl
+  s << "PPL::Grid::" << method << ":" << std::endl
     << "*this is an empty polyhedron and" << std::endl
     << "the non-empty generator system " << gs_name << " contains no points.";
   throw std::invalid_argument(s.str());

@@ -37,9 +37,7 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Grid::Grid(const dimension_type num_dimensions,
 		const Degenerate_Kind kind)
   : con_sys(),
-    gen_sys(NECESSARILY_CLOSED),
-    sat_c(),
-    sat_g() {
+    gen_sys(NECESSARILY_CLOSED) {
   // Protecting against space dimension overflow is up to the caller.
   assert(num_dimensions <= max_space_dimension());
 
@@ -76,10 +74,6 @@ PPL::Grid::Grid(const Grid& y)
     con_sys = y.con_sys;
   if (y.generators_are_up_to_date())
     gen_sys.assign_with_pending(y.gen_sys);
-  if (y.sat_c_is_up_to_date())
-    sat_c = y.sat_c;
-  if (y.sat_g_is_up_to_date())
-    sat_g = y.sat_g;
 }
 
 #if 0
@@ -102,30 +96,8 @@ PPL::Grid::affine_dimension() const {
 
 const PPL::Congruence_System&
 PPL::Grid::congruences() const {
-  if (marked_empty()) {
-#if 0
-    // We want `con_sys' to only contain the unsatisfiable congruence
-    // of the appropriate dimension.
-    if (con_sys.num_rows() == 0) {
-      // The 0-dim unsatisfiable congruence is extended to
-      // the appropriate dimension and then stored in `con_sys'.
-      Congruence_System unsat_cs = Congruence_System::zero_dim_empty();
-      unsat_cs.adjust_topology_and_space_dimension(topology(), space_dim);
-      const_cast<Congruence_System&>(con_sys).swap(unsat_cs);
-    }
-    else
-#endif
-      {
-      // Checking that `con_sys' contains the right thing.
-	// FIX add after conversion
-      //assert(con_sys.space_dimension() == space_dim);
-#if 0
-      assert(con_sys.num_rows() == 1);
-      assert(con_sys[0].is_trivial_false());
-#endif
-    }
+  if (marked_empty())
     return con_sys;
-  }
 
   if (space_dim == 0) {
     // zero-dimensional universe.
@@ -133,6 +105,7 @@ PPL::Grid::congruences() const {
     return con_sys;
   }
 
+  // FIX
   // If the polyhedron has pending generators, we process them to obtain
   // the congruences. No processing is needed if the polyhedron has
   // pending congruences.
@@ -144,13 +117,6 @@ PPL::Grid::congruences() const {
     if (!congruences_are_up_to_date())
       update_congruences();
 
-  // FIXME: reconsider whether to really sort congruences at this stage.
-#if ENSURE_SORTEDNESS
-  // We insist on returning a sorted system of congruences, but
-  // sorting is useless if there are pending congruences.
-  if (!has_pending_congruences())
-    obtain_sorted_congruences();
-#endif
   return con_sys;
 }
 
@@ -207,22 +173,6 @@ PPL::Grid::generators() const {
   }
 #endif
 
-  // FIXME: reconsider whether to really sort generators at this stage.
-#if ENSURE_SORTEDNESS
-  // We insist in returning a sorted system of generators,
-  // but sorting is useless if there are pending generators.
-  if (!has_pending_generators())
-    obtain_sorted_generators();
-#else
-  // In the case of an NNC polyhedron, if the generator system is fully
-  // minimized (i.e., minimized and with no pending generator), then
-  // return a sorted system of generators: this is needed so that the
-  // const_iterator could correctly filter out the matched closure points.
-  //if (!is_necessarily_closed()
-  if (!gen_sys.is_necessarily_closed() // FIX
-      && generators_are_minimized() && !has_pending_generators())
-    obtain_sorted_generators();
-#endif
   return gen_sys;
 }
 
@@ -419,7 +369,6 @@ PPL::Grid::is_universe() const {
       // are not equalities, we are sure that they are
       // epsilon congruences: in this case we know that
       // the polyhedron is universe.
-      obtain_sorted_congruences();
       const Congruence& eps_leq_one = con_sys[0];
       const Congruence& eps_geq_zero = con_sys[1];
       const dimension_type eps_index = con_sys.num_columns() - 1;
@@ -523,12 +472,6 @@ PPL::Grid::OK(bool check_not_empty) const {
     goto bomb;
   }
 
-  // Check whether the saturation matrices are well-formed.
-  if (!sat_c.OK())
-    goto bomb;
-  if (!sat_g.OK())
-    goto bomb;
-
   // Check whether the status information is legal.
   if (!status.OK())
     goto bomb;
@@ -625,8 +568,6 @@ PPL::Grid::OK(bool check_not_empty) const {
   // Let us suppose that all the matrices are up-to-date; this means:
   // `con_sys' : number of congruences x poly_num_columns
   // `gen_sys' : number of generators  x poly_num_columns
-  // `sat_c'   : number of generators  x number of congruences
-  // `sat_g'   : number of congruences x number of generators.
   if (congruences_are_up_to_date()) {
     if (con_sys.num_columns() != poly_num_columns) {
 #ifndef NDEBUG
@@ -635,22 +576,6 @@ PPL::Grid::OK(bool check_not_empty) const {
 #endif
       goto bomb;
     }
-    if (sat_c_is_up_to_date())
-      if (con_sys.first_pending_row() != sat_c.num_columns()) {
-#ifndef NDEBUG
-	cerr << "Incompatible size! (con_sys and sat_c)"
-	     << endl;
-#endif
-	goto bomb;
-      }
-    if (sat_g_is_up_to_date())
-      if (con_sys.first_pending_row() != sat_g.num_rows()) {
-#ifndef NDEBUG
-	cerr << "Incompatible size! (con_sys and sat_g)"
-	     << endl;
-#endif
-	goto bomb;
-      }
     if (generators_are_up_to_date())
       if (con_sys.num_columns() != gen_sys.num_columns()) {
 #ifndef NDEBUG
@@ -669,22 +594,6 @@ PPL::Grid::OK(bool check_not_empty) const {
 #endif
       goto bomb;
     }
-    if (sat_c_is_up_to_date())
-      if (gen_sys.first_pending_row() != sat_c.num_rows()) {
-#ifndef NDEBUG
-	cerr << "Incompatible size! (gen_sys and sat_c)"
-	     << endl;
-#endif
-	goto bomb;
-      }
-    if (sat_g_is_up_to_date())
-      if (gen_sys.first_pending_row() != sat_g.num_columns()) {
-#ifndef NDEBUG
-	cerr << "Incompatible size! (gen_sys and sat_g)"
-	     << endl;
-#endif
-	goto bomb;
-      }
   }
 
   if (generators_are_up_to_date()) {
@@ -748,10 +657,10 @@ PPL::Grid::OK(bool check_not_empty) const {
 #endif
 
     if (generators_are_minimized()) {
-      // If the system of generators is minimized, the number of lines,
-      // rays and points of the polyhedron must be the same
-      // of the temporary minimized one. If it does not happen
-      // the polyhedron is not OK.
+      // If the system of generators is minimized, the number of
+      // lines, rays and points of the polyhedron must be the same as
+      // of the temporary minimized one. If it does not happen the
+      // polyhedron is not OK.
       Congruence_System new_con_sys(topology());
       Generator_System gs_without_pending = gen_sys;
       // NOTE: We can avoid to update `index_first_pending'
@@ -759,8 +668,7 @@ PPL::Grid::OK(bool check_not_empty) const {
       // new number of rows of `gs_without_pending'.
       gs_without_pending.erase_to_end(gen_sys.first_pending_row());
       Generator_System copy_of_gen_sys = gs_without_pending;
-      Saturation_Matrix new_sat_c;
-      minimize(false, copy_of_gen_sys, new_con_sys, new_sat_c);
+      minimize(copy_of_gen_sys, new_con_sys);
       const dimension_type copy_num_lines = copy_of_gen_sys.num_lines();
       if (gs_without_pending.num_rows() != copy_of_gen_sys.num_rows()
 	  || gs_without_pending.num_lines() != copy_num_lines
@@ -868,9 +776,8 @@ PPL::Grid::OK(bool check_not_empty) const {
     cs_without_pending.erase_to_end(con_sys.first_pending_row());
     Congruence_System copy_of_con_sys = cs_without_pending;
     Generator_System new_gen_sys(topology());
-    Saturation_Matrix new_sat_g;
 
-    if (minimize(true, copy_of_con_sys, new_gen_sys, new_sat_g)) {
+    if (minimize(copy_of_con_sys, new_gen_sys)) {
       if (check_not_empty) {
 	// Want to know the satisfiability of the congruences.
 #ifndef NDEBUG
@@ -925,34 +832,6 @@ PPL::Grid::OK(bool check_not_empty) const {
       }
     }
   }
-
-  if (sat_c_is_up_to_date())
-    for (dimension_type i = sat_c.num_rows(); i-- > 0; ) {
-      const Generator tmp_gen = gen_sys[i];
-      const Saturation_Row tmp_sat = sat_c[i];
-      for (dimension_type j = sat_c.num_columns(); j-- > 0; )
-	if (scalar_product_sign(tmp_gen, con_sys[j]) != tmp_sat[j]) {
-#ifndef NDEBUG
-	  cerr << "sat_c is declared up-to-date, but it is not!"
-	       << endl;
-#endif
-	  goto bomb;
-	}
-    }
-
-  if (sat_g_is_up_to_date())
-    for (dimension_type i = sat_g.num_rows(); i-- > 0; ) {
-      const Congruence tmp_con = con_sys[i];
-      const Saturation_Row tmp_sat = sat_g[i];
-      for (dimension_type j = sat_g.num_columns(); j-- > 0; )
-	if (scalar_product_sign(tmp_con, gen_sys[j]) != tmp_sat[j]) {
-#ifndef NDEBUG
-	  cerr << "sat_g is declared up-to-date, but it is not!"
-	       << endl;
-#endif
-	  goto bomb;
-	}
-    }
 
   if (has_pending_congruences()) {
     if (con_sys.num_pending_rows() == 0) {
@@ -1353,8 +1232,6 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   if (!minimize())
     // We have just discovered that `x' is empty.
     return false;
-  // Fully sort the system of congruences for `x'.
-  //obtain_sorted_congruences_with_sat_c(); // FIX
 
   // Fully sort the system of congruences to be added (before
   // adjusting dimensions, in order to save time).
@@ -1371,16 +1248,13 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   //cgs.adjust_topology_and_space_dimension(topology(), space_dim); // FIX
   cgs.adjust_space_dimension(space_dim); // FIX
 
-  if (add_and_minimize(true, con_sys, gen_sys, sat_c, cgs)) {
+  if (add_and_minimize(con_sys, gen_sys, cgs)) {
     set_empty();
 
     assert(OK());
     return false;
   }
 
-  // `sat_c' is up-to-date, while `sat_g' is no longer up-to-date.
-  set_sat_c_up_to_date();
-  clear_sat_g_up_to_date();
   // FIX added for grid
   set_congruences_up_to_date();
   clear_empty();
@@ -1606,12 +1480,9 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
   parameterize(gs, gen_sys[row], false);
 #endif
 
-  if (minimize()) {
-    //obtain_sorted_generators_with_sat_g(); // FIX
+  if (minimize())
     // This call to `add_and_minimize(...)' returns `true'.
-    add_and_minimize(gen_sys, con_sys, sat_g, gs);
-    clear_sat_c_up_to_date();
-  }
+    add_and_minimize(gen_sys, con_sys, gs);
   else {
     // The grid was empty: check if `gs' contains a point.
     if (!gs.has_points())
@@ -1731,7 +1602,6 @@ PPL::Grid::intersection_assign_and_minimize(const Grid& y) {
   if (!x.minimize())
     // We have just discovered that `x' is empty.
     return false;
-  x.obtain_sorted_congruences_with_sat_c();
 
   // `y' must have updated, possibly pending congruences.
   if (y.has_pending_generators())
@@ -1751,23 +1621,18 @@ PPL::Grid::intersection_assign_and_minimize(const Grid& y) {
       assert(OK(true));
       return true;
     }
-    empty = add_and_minimize(true, x.con_sys, x.gen_sys, x.sat_c);
+    empty = add_and_minimize(x.con_sys, x.gen_sys);
   }
-  else {
-    y.obtain_sorted_congruences();
-    empty = add_and_minimize(true, x.con_sys, x.gen_sys, x.sat_c, y.con_sys);
-  }
+  else
+    empty = add_and_minimize(x.con_sys, x.gen_sys, y.con_sys);
 
-  if (empty)
+  if (empty) {
     x.set_empty();
-  else {
-    // On exit of the function `intersection_assign_and_minimize()'
-    // the polyhedron is up-to-date and `sat_c' is meaningful.
-    x.set_sat_c_up_to_date();
-    x.clear_sat_g_up_to_date();
+    assert(x.OK(false));
+    return false;
   }
-  assert(x.OK(!empty));
-  return !empty;
+  assert(x.OK(true));
+  return true;
 }
 
 void
@@ -1868,7 +1733,7 @@ PPL::Grid::poly_hull_assign_and_minimize(const Grid& y) {
     return minimize();
   }
   // x must have `sat_g' up-to-date and sorted generators.
-  x.obtain_sorted_generators_with_sat_g();
+  //x.obtain_sorted_generators_with_sat_g();
 
   // `y' must have updated, possibly pending generators.
   if ((y.has_pending_congruences() && !y.process_pending_congruences())
@@ -1888,13 +1753,10 @@ PPL::Grid::poly_hull_assign_and_minimize(const Grid& y) {
       assert(OK(true) && y.OK());
       return true;
     }
-    add_and_minimize(false, x.gen_sys, x.con_sys, x.sat_g);
+    add_and_minimize(x.gen_sys, x.con_sys);
   }
-  else {
-    y.obtain_sorted_generators();
-    add_and_minimize(false, x.gen_sys, x.con_sys, x.sat_g, y.gen_sys);
-  }
-  x.clear_sat_c_up_to_date();
+  else
+    add_and_minimize(x.gen_sys, x.con_sys, y.gen_sys);
 
   assert(x.OK(true) && y.OK());
   return true;
@@ -2058,8 +1920,6 @@ PPL::Grid::affine_image(const Variable var,
 
       clear_congruences_up_to_date();
       clear_generators_minimized();
-      clear_sat_c_up_to_date();
-      clear_sat_g_up_to_date();
     }
   }
   assert(OK());
@@ -2137,8 +1997,6 @@ affine_preimage(const Variable var,
 
     clear_generators_up_to_date();
     clear_congruences_minimized();
-    clear_sat_c_up_to_date();
-    clear_sat_g_up_to_date();
   }
   assert(OK());
 }
@@ -2222,8 +2080,6 @@ generalized_affine_image(const Variable var,
       clear_congruences_up_to_date();
       clear_generators_minimized();
       gen_sys.set_sorted(false);
-      clear_sat_c_up_to_date();
-      clear_sat_g_up_to_date();
     }
   }
   assert(OK());
@@ -2642,17 +2498,6 @@ PPL::Grid::ascii_dump(std::ostream& s) const {
     << "up-to-date)"
     << endl;
   gen_sys.ascii_dump(s);
-#if 0
-  s << endl
-    << "sat_c"
-    << endl;
-  sat_c.ascii_dump(s);
-  s << endl
-    << "sat_g"
-    << endl;
-  sat_g.ascii_dump(s);
-#endif
-  //s << endl;  // FIX?
 }
 
 bool
@@ -2696,34 +2541,17 @@ PPL::Grid::ascii_load(std::istream& s) {
   if (str == "(up-to-date)")
     set_generators_up_to_date();
 
-#if 0
-  if (!(s >> str) || str != "sat_c")
-    return false;
-
-  if (!sat_c.ascii_load(s))
-    return false;
-
-  if (!(s >> str) || str != "sat_g")
-    return false;
-
-  if (!sat_g.ascii_load(s))
-    return false;
-#endif
   // Check for well-formedness.
   assert(OK());
   return true;
 }
 
-#if 0
 PPL::memory_size_type
 PPL::Grid::external_memory_in_bytes() const {
   return
     con_sys.external_memory_in_bytes()
-    + gen_sys.external_memory_in_bytes()
-    + sat_c.external_memory_in_bytes()
-    + sat_g.external_memory_in_bytes();
+    + gen_sys.external_memory_in_bytes();
 }
-#endif
 
 /*! \relates Parma_Polyhedra_Library::Grid */
 std::ostream&

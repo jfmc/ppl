@@ -36,7 +36,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
-#include "Saturation_Matrix.defs.hh" // FIX
 #include <vector>
 #include <iosfwd>
 
@@ -1202,9 +1201,6 @@ public:  //private: // FIX, for testing
   //! The system of generators.
   Generator_System gen_sys;
 
-  // FIX temp
-  Saturation_Matrix sat_c, sat_cg, sat_g;
-
 #if 1
   // Please, do not move the following include directive:
   // `Ph_Status.idefs.hh' must be included exactly at this point.
@@ -1286,16 +1282,6 @@ public:  //private: // FIX, for testing
   //! pending.
   bool can_have_something_pending() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if the saturation matrix \p sat_c
-  //! is up-to-date.
-  bool sat_c_is_up_to_date() const;
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if the saturation matrix \p sat_g
-  //! is up-to-date.
-  bool sat_g_is_up_to_date() const;
-
   //@} // Private Verifiers: Verify if Individual Flags are Set
 
   //! \name State Flag Setters: Set Only the Specified Flags
@@ -1330,12 +1316,6 @@ public:  //private: // FIX, for testing
   //! Sets \p status to express that generators are pending.
   void set_generators_pending();
 
-  //! Sets \p status to express that \p sat_c is up-to-date.
-  void set_sat_c_up_to_date();
-
-  //! Sets \p status to express that \p sat_g is up-to-date.
-  void set_sat_g_up_to_date();
-
   //@} // State Flag Setters: Set Only the Specified Flags
 
   //! \name State Flag Cleaners: Clear Only the Specified Flag
@@ -1344,18 +1324,10 @@ public:  //private: // FIX, for testing
   //! Clears the \p status flag indicating that the grid is empty.
   void clear_empty();
 
-  //! Sets \p status to express that congruences are no longer up-to-date.
-  /*!
-    This also implies that they are neither reduced
-    and both saturation matrices are no longer meaningful.
-  */
+  //! Sets \p status to express that congruences are out of date.
   void clear_congruences_up_to_date();
 
-  //! Sets \p status to express that generators are no longer up-to-date.
-  /*!
-    This also implies that they are neither minimized
-    and both saturation matrices are no longer meaningful.
-  */
+  //! Sets \p status to express that parameters are out of date.
   void clear_generators_up_to_date();
 
   //! Sets \p status to express that congruences are no longer reduced.
@@ -1369,12 +1341,6 @@ public:  //private: // FIX, for testing
 
   //! Sets \p status to express that there are no longer pending generators.
   void clear_pending_generators();
-
-  //! Sets \p status to express that \p sat_c is no longer up-to-date.
-  void clear_sat_c_up_to_date();
-
-  //! Sets \p status to express that \p sat_g is no longer up-to-date.
-  void clear_sat_g_up_to_date();
 
   //@} // State Flag Cleaners: Clear Only the Specified Flag
 
@@ -1463,84 +1429,6 @@ public:  //private: // FIX, for testing
   */
   bool update_generators() const;
 
-  //! Updates \p sat_c using the updated congruences and generators.
-  /*!
-    It is assumed that congruences and generators are up-to-date
-    and minimized and that the Status field does not already flag
-    \p sat_c to be up-to-date.
-    The values of the saturation matrix are computed as follows:
-    \f[
-      \begin{cases}
-        sat\_c[i][j] = 0,
-          \quad \text{if } G[i] \cdot C^\mathrm{T}[j] = 0; \\
-        sat\_c[i][j] = 1,
-          \quad \text{if } G[i] \cdot C^\mathrm{T}[j] > 0.
-      \end{cases}
-    \f]
-  */
-  void update_sat_c() const;
-
-  //! Updates \p sat_g using the updated congruences and generators.
-  /*!
-    It is assumed that congruences and generators are up-to-date
-    and minimized and that the Status field does not already flag
-    \p sat_g to be up-to-date.
-    The values of the saturation matrix are computed as follows:
-    \f[
-      \begin{cases}
-        sat\_g[i][j] = 0,
-          \quad \text{if } C[i] \cdot G^\mathrm{T}[j] = 0; \\
-        sat\_g[i][j] = 1,
-          \quad \text{if } C[i] \cdot G^\mathrm{T}[j] > 0.
-      \end{cases}
-    \f]
-  */
-  void update_sat_g() const;
-
-  //! Sorts the matrix of congruences keeping status consistency.
-  /*!
-    It is assumed that congruences are up-to-date.
-    If at least one of the saturation matrices is up-to-date,
-    then \p sat_g is kept consistent with the sorted matrix
-    of congruences.
-    The method is declared \p const because reordering
-    the congruences does not modify the grid
-    from a \e logical point of view.
-  */
-  void obtain_sorted_congruences() const;
-
-  //! Sorts the matrix of generators keeping status consistency.
-  /*!
-    It is assumed that generators are up-to-date.
-    If at least one of the saturation matrices is up-to-date,
-    then \p sat_c is kept consistent with the sorted matrix
-    of generators.
-    The method is declared \p const because reordering
-    the generators does not modify the grid
-    from a \e logical point of view.
-  */
-  void obtain_sorted_generators() const;
-
-  //! Sorts the matrix of congruences and updates \p sat_c.
-  /*!
-    It is assumed that both congruences and generators
-    are up-to-date and minimized.
-    The method is declared \p const because reordering
-    the congruences does not modify the grid
-    from a \e logical point of view.
-  */
-  void obtain_sorted_congruences_with_sat_c() const;
-
-  //! Sorts the matrix of generators and updates \p sat_g.
-  /*!
-    It is assumed that both congruences and generators
-    are up-to-date and minimized.
-    The method is declared \p const because reordering
-    the generators does not modify the grid
-    from a \e logical point of view.
-  */
-  void obtain_sorted_generators_with_sat_g() const;
-
   //@} // Updating and Sorting Matrices
 
   //! \name Weak and Strong Minimization of Descriptions
@@ -1595,71 +1483,49 @@ public:  //private: // FIX, for testing
   //@{
 
   //! Builds and simplifies congruences from generators.
-  // File Grid_minimize.cc holds the detailed Doxygen comment.
-  static bool minimize(bool con_to_gen,
-		       Congruence_System& source,
-		       Linear_System& dest,
-		       Saturation_Matrix& sat);
+  static bool minimize(Congruence_System& source,
+		       Linear_System& dest);
 
   //! Builds and simplifies generators from congruences.
-  // File Grid_minimize.cc holds the detailed Doxygen comment.
-  static bool minimize(bool con_to_gen,
-		       Generator_System& dest,
-		       Congruence_System& source,
-		       Saturation_Matrix& sat);
+  static bool minimize(Generator_System& dest,
+		       Congruence_System& source);
 
   //! \brief
   //! Adds given congruences and builds minimized corresponding generators,
   //! or vice versa.
-  // Detailed Doxygen comment to be found in file Grid_minimize.cc.
-  static bool add_and_minimize(bool con_to_gen,
-			       Congruence_System& source1,
+  static bool add_and_minimize(Congruence_System& source1,
 			       Linear_System& dest,
-			       Saturation_Matrix& sat,
 			       const Congruence_System& source2);
 
   //! \brief
   //! Adds given congruences and builds minimized corresponding generators
   //! or vice versa. The given congruences are in \p source.
-  // Detailed Doxygen comment to be found in file Grid_minimize.cc.
-  static bool add_and_minimize(bool con_to_gen,
-			       Congruence_System& source,
-			       Linear_System& dest,
-			       Saturation_Matrix& sat);
+  static bool add_and_minimize(Congruence_System& source,
+			       Linear_System& dest);
+
+  //! \brief
+  //! Adds given generators and builds reduced corresponding congruences.
+  static bool add_and_minimize(Generator_System& source,
+			       Congruence_System& dest);
 
   //! Adds given generators and builds reduced corresponding congruences.
-  // Detailed Doxygen comment in file Grid_minimize.cc.
   static bool add_and_minimize(Generator_System& source1,
 			       Congruence_System& dest,
-			       Saturation_Matrix& sat,
 			       const Generator_System& source2);
 
   //! \brief
-  //! Adds given generators and builds reduced corresponding congruences.
-  // Detailed Doxygen comment in file Grid_minimize.cc.
-  static bool add_and_minimize(Generator_System& source,
-			       Congruence_System& dest,
-			       Saturation_Matrix& sat);
-
-  //! \brief
-  //! Converts from congruences to generators.
-  // Detailed Doxygen comment to be found in file Grid_conversion.cc.
+  //! Converts parameter system \p dest to be equivalent to congruence
+  //! system \p source.
   static dimension_type conversion(Congruence_System& source,
-				   dimension_type start,
-				   Linear_System& dest,
-				   Saturation_Matrix& sat,
-				   dimension_type num_lines_or_equalities);
+				   Linear_System& dest);
 
   //! \brief
-  //! Converts from generators to congruences.
-  // Detailed Doxygen comment to be found in file Grid_conversion.cc.
+  //! Converts congruence system \p dest to be equivalent to parameter
+  //! system \p source.
   static dimension_type conversion(Generator_System& source,
-				   dimension_type start,
-				   Congruence_System& dest,
-				   Saturation_Matrix& sat,
-				   dimension_type num_lines_or_equalities);
+				   Congruence_System& dest);
 
-public:  //private: // FIX, for testing
+private:
 
   //! Normalize the divisors in \p sys.
   /*!
@@ -1685,17 +1551,17 @@ public:  //private: // FIX, for testing
 					Generator& reference_row,
 					bool leave_first = true);
 
-  //! Convert \p mat to upper triangular form.
+  //! Convert \p cgs to upper triangular form.
   /*!
-    Return true if system is consistent, else false.
+    Return true if \p cgs is consistent, else false.
   */
-  static bool simplify(Congruence_System& mat, Saturation_Matrix& sat);
+  static bool simplify(Congruence_System& cgs);
 
-  //! Convert \p mat to lower triangular form.
+  //! Convert \p gs to lower triangular form.
   /*!
-    Return true if system is consistent, else false.
+    Return true if \p gs is consistent, else false.
   */
-  static bool simplify(Generator_System& mat, Saturation_Matrix& sat);
+  static bool simplify(Generator_System& gs);
 
   //! Reduce the line \p row using the line \p pivot.
   /*!
