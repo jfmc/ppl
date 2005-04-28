@@ -55,12 +55,12 @@ private:
     uint32_t word;
   } u;
 public:
-  static const unsigned int EXPONENT_BITS = 8;
-  static const unsigned int MANTISSA_BITS = 23;
-  static const unsigned int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
-  static const unsigned int EXPONENT_BIAS = EXPONENT_MAX;
-  static const signed int EXPONENT_MIN = -EXPONENT_MAX + 1;
-  static const signed int EXPONENT_MIN_DENORM = EXPONENT_MIN - MANTISSA_BITS;
+  static const int EXPONENT_BITS = 8;
+  static const int MANTISSA_BITS = 23;
+  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_BIAS = EXPONENT_MAX;
+  static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
+  static const int EXPONENT_MIN_DENORM = EXPONENT_MIN - MANTISSA_BITS;
   Float(float32_t v);
   float32_t value();
   int is_inf() const;
@@ -98,12 +98,12 @@ private:
   static const uint32_t LSP_ZERO = 0;
   static const uint32_t LSP_MAX = 0xffffffff;
 public:
-  static const unsigned int EXPONENT_BITS = 11;
-  static const unsigned int MANTISSA_BITS = 52;
-  static const unsigned int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
-  static const unsigned int EXPONENT_BIAS = EXPONENT_MAX;
-  static const signed int EXPONENT_MIN = -EXPONENT_MAX + 1;
-  static const signed int EXPONENT_MIN_DENORM = EXPONENT_MIN - MANTISSA_BITS;
+  static const int EXPONENT_BITS = 11;
+  static const int MANTISSA_BITS = 52;
+  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_BIAS = EXPONENT_MAX;
+  static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
+  static const int EXPONENT_MIN_DENORM = EXPONENT_MIN - MANTISSA_BITS;
   Float(float64_t v);
   float64_t value();
   int is_inf() const;
@@ -144,12 +144,12 @@ private:
   static const uint64_t LSP_DMAX = 0x7fffffffffffffffULL;
   static const uint64_t LSP_NMAX = 0xffffffffffffffffULL;
 public:
-  static const unsigned int EXPONENT_BITS = 15;
-  static const unsigned int MANTISSA_BITS = 63;
-  static const unsigned int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
-  static const unsigned int EXPONENT_BIAS = EXPONENT_MAX;
-  static const signed int EXPONENT_MIN = -EXPONENT_MAX + 1;
-  static const signed int EXPONENT_MIN_DENORM = EXPONENT_MIN - MANTISSA_BITS;
+  static const int EXPONENT_BITS = 15;
+  static const int MANTISSA_BITS = 63;
+  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_BIAS = EXPONENT_MAX;
+  static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
+  static const int EXPONENT_MIN_DENORM = EXPONENT_MIN - MANTISSA_BITS;
   Float(float96_t v);
   float96_t value();
   int is_inf() const;
@@ -191,12 +191,12 @@ private:
   static const uint64_t LSP_ZERO = 0;
   static const uint64_t LSP_MAX = 0xffffffffffffffffULL;
 public:
-  static const unsigned int EXPONENT_BITS = 15;
-  static const unsigned int MANTISSA_BITS = 112;
-  static const unsigned int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
-  static const unsigned int EXPONENT_BIAS = EXPONENT_MAX;
-  static const signed int EXPONENT_MIN = -EXPONENT_MAX + 1;
-  static const signed int EXPONENT_MIN_DENORM = EXPONENT_MIN - MANTISSA_BITS;
+  static const int EXPONENT_BITS = 15;
+  static const int MANTISSA_BITS = 112;
+  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_BIAS = EXPONENT_MAX;
+  static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
+  static const int EXPONENT_MIN_DENORM = EXPONENT_MIN - MANTISSA_BITS;
   Float(float128_t v);
   float128_t value();
   int is_inf() const;
