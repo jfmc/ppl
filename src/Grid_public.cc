@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Grid.defs.hh"
+#include "Topology.hh"
 
 #include <cassert>
 #include <iostream>
@@ -34,31 +35,55 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Grid::Grid(const dimension_type num_dimensions,
-		const Degenerate_Kind kind)
-  : con_sys(),
-    gen_sys(NECESSARILY_CLOSED) {
-  // Protecting against space dimension overflow is up to the caller.
-  assert(num_dimensions <= max_space_dimension());
+PPL::Grid::Grid(dimension_type num_dimensions,
+		const Degenerate_Kind kind) {
+  if (num_dimensions > max_space_dimension())
+    throw_space_dimension_overflow("Grid(n, k)",
+				   "n exceeds the maximum "
+				   "allowed space dimension");
+
+  con_sys = Congruence_System();
+  gen_sys = Generator_System(NECESSARILY_CLOSED);
 
   if (kind == EMPTY)
     status.set_empty();
-  //else if (num_dimensions > 0) {
-  if (num_dimensions > 0) { // FIX
-    add_low_level_congruences(con_sys);
-    //con_sys.adjust_topology_and_space_dimension(topol, num_dimensions); // FIX
-    con_sys.adjust_space_dimension(num_dimensions);
-    // FIX
-#if 1
-    if (kind == EMPTY)
-      status.set_c_minimized();
-    else
-      set_congruences_minimized();
-#else
-    set_congruences_minimized();
-#endif
-  }
   space_dim = num_dimensions;
+  if (num_dimensions > 0) {
+    add_low_level_congruences(con_sys);
+    con_sys.adjust_space_dimension(num_dimensions);
+    // FIX where will gen_sys space dim be adjusted?
+    if (kind == UNIVERSE) {
+      // Initialise both systems to universe representations.
+      set_congruences_minimized();
+      set_congruences_up_to_date();
+      // FIX add gs::adjust_space_dimension?
+      //gen_sys.adjust_space_dimension(num_dimensions);
+      gen_sys.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
+						  num_dimensions);
+      set_generators_minimized();
+      con_sys.add_zero_rows(num_dimensions + 1, Row::Flags());
+      gen_sys.add_zero_rows(num_dimensions + 1,
+			    Linear_Row::Flags(NECESSARILY_CLOSED,
+					      Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+      Generator& first_g = gen_sys[0];
+      first_g[0] = 1;
+      first_g.set_is_ray_or_point();
+      Congruence& first_cg = con_sys[0];
+      first_cg[0] = 1;
+      first_cg[num_dimensions + 1] = 1; // Modulus.
+      do {
+	Generator& g = gen_sys[num_dimensions];
+	g[num_dimensions] = 1;
+	g.set_is_line();
+	Congruence& cg = con_sys[num_dimensions];
+	cg[num_dimensions] = 1;
+	cg.set_is_virtual();
+      }
+      while (num_dimensions-- > 1);
+      gen_sys.unset_pending_rows();
+      gen_sys.set_sorted(false);
+    }
+  }
   assert(OK());
 }
 
@@ -67,8 +92,6 @@ PPL::Grid::Grid(const Grid& y)
     gen_sys(y.gen_sys.topology()),
     status(y.status),
     space_dim(y.space_dim) {
-  // Being a protected method, we simply assert that topologies do match.
-  //assert(topology() == y.topology()); // FIX
   if (y.congruences_are_up_to_date())
     //con_sys.assign_with_pending(y.con_sys); // FIX
     con_sys = y.con_sys;
@@ -263,123 +286,62 @@ PPL::Grid::is_universe() const {
   if (marked_empty())
     return false;
 
+  // FIX correct?
   if (space_dim == 0)
     return true;
 
   if (!has_pending_generators() && congruences_are_up_to_date()) {
-    // Search for a congruence that is not trivially true.
-    for (dimension_type i = con_sys.num_rows(); i-- > 0; )
-      if (!con_sys[i].is_trivial_true())
+    if (has_pending_congruences())
+      process_pending_congruences();
+
+    // Compare congruences to the universe representation.
+
+    dimension_type size = con_sys.size();
+    if (size == 0)
+      return false;
+    // Check if the first row has 1 in the first and last elements,
+    // and 0 in the others.
+    Congruence& cg = con_sys[0];
+    if (cg[0] == 1 && cg[size] == 1) {
+      for (dimension_type col = 1; col < size - 1; ++col)
+	if (col != 0)
+	  return false;
+    }
+    else
+      return false;
+    // Check if all subsequent rows are virtual.
+    Congruence_System::const_iterator row = con_sys.begin();
+    while (row != con_sys.end())
+      if (row++.is_virtual() == false)
 	return false;
-    // All the congruences are trivially true.
     return true;
   }
 
   assert(!has_pending_congruences() && generators_are_up_to_date());
 
-  // Try a fast-fail test.
-  dimension_type num_lines = 0;
-  dimension_type num_rays = 0;
-  const dimension_type first_pending = gen_sys.first_pending_row();
-  for (dimension_type i = first_pending; i-- > 0; )
-    switch (gen_sys[i].type()) {
-    case Generator::RAY:
-      ++num_rays;
-      break;
-    case Generator::LINE:
-      ++num_lines;
-      break;
-    default:
-      break;
-    }
-
-  if (has_pending_generators()) {
-    // The non-pending part of `gen_sys' was minimized:
-    // a success-first test is possible in this case.
-    assert(generators_are_minimized());
-    if (num_lines == space_dim) {
-      assert(num_rays == 0);
-      return true;
-    }
-    assert(num_lines < space_dim);
-    // Now scan the pending generators.
-    dimension_type num_pending_lines = 0;
-    dimension_type num_pending_rays = 0;
-    const dimension_type gs_num_rows = gen_sys.num_rows();
-    for (dimension_type i = first_pending; i < gs_num_rows; ++i)
-      switch (gen_sys[i].type()) {
-      case Generator::RAY:
-	++num_pending_rays;
-	break;
-      case Generator::LINE:
-	++num_pending_lines;
-	break;
-      default:
-	break;
-      }
-    // If no pending rays and lines were found,
-    // then it is not the universe polyhedron.
-    if (num_pending_rays == 0 && num_pending_lines == 0)
-      return false;
-    // Factor away the lines already seen (to be on the safe side,
-    // we assume they are all linearly independent).
-    if (num_lines + num_pending_lines < space_dim) {
-      const dimension_type num_dims_missing
-	= space_dim - (num_lines + num_pending_lines);
-      // In order to span an n dimensional space (where n = num_dims_missing),
-      // at least n+1 rays are needed.
-      if (num_rays + num_pending_rays <= num_dims_missing)
-	return false;
-    }
-  }
-  else {
-    // There is nothing pending.
-    if (generators_are_minimized()) {
-      // The exact test is possible.
-      assert(num_rays == 0 || num_lines < space_dim);
-      return num_lines == space_dim;
-    }
-    else
-      // Only the fast-fail test can be computed: in order to span
-      // an n dimensional space (where n = space_dim - num_lines),
-      // at least n+1 rays are needed.
-      if (num_lines < space_dim && num_lines + num_rays <= space_dim)
-	return false;
-  }
-
-  // We need the polyhedron in minimal form.
   if (has_pending_generators())
     process_pending_generators();
-  else if (!congruences_are_minimized())
-    minimize();
-  if (is_necessarily_closed())
-    return (con_sys.num_rows() == 1
-	    && con_sys[0].is_inequality()
-	    && con_sys[0][0] > 0
-	    && con_sys[0].all_homogeneous_terms_are_zero());
-  else {
-    // Grid NOT-necessarily closed.
-    if (con_sys.num_rows() != 2
-	|| con_sys[0].is_equality()
-	|| con_sys[1].is_equality())
-      return false;
-    else {
-#ifndef NDEBUG
-      // If the system of congruences contains two rows that
-      // are not equalities, we are sure that they are
-      // epsilon congruences: in this case we know that
-      // the polyhedron is universe.
-      const Congruence& eps_leq_one = con_sys[0];
-      const Congruence& eps_geq_zero = con_sys[1];
-      const dimension_type eps_index = con_sys.num_columns() - 1;
-      assert(eps_leq_one[0] > 0 && eps_leq_one[eps_index] < 0
-	     && eps_geq_zero[0] == 0 && eps_geq_zero[eps_index] > 0);
-      for (dimension_type i = 1; i < eps_index; ++i)
-	assert(eps_leq_one[i] == 0 && eps_geq_zero[i] == 0);
-#endif
-      return true;
-    }
+
+  // Compare generators to the universe representation.
+
+  dimension_type size = gen_sys.size();
+  if (size == 0)
+    return false;
+  // Check the first row.
+  Generator& g = gen_sys[0];
+  if (g[0] == 1 && g[size] == 1) {
+    for (dimension_type col = 1; col < size - 1; ++col)
+      if (col != 0)
+	return false;
   }
+  else
+    return false;
+  // Check if all subsequent rows are virtual.
+  Generator_System::const_iterator row = gen_sys.begin();
+  while (row != con_sys.end())
+    if (row++.is_virtual() == false)
+      return false;
+  return true;
 }
 
 bool
@@ -455,35 +417,28 @@ PPL::Grid::OK(bool check_not_empty) const {
   using std::cerr;
 #endif
 
-  // FIX (generally)
-
-#if 0
-  // The expected number of columns in the congruence and generator
-  // systems, if they are not empty.
-  const dimension_type poly_num_columns
-    = space_dim + (is_necessarily_closed() ? 1 : 2);
-
   // Check whether the topologies of `con_sys' and `gen_sys' agree.
-  if (con_sys.topology() != gen_sys.topology()) {
+  if (gen_sys.topology() == NOT_NECESSARILY_CLOSED) {
 #ifndef NDEBUG
-    cerr << "Congruences and generators have different topologies!"
-	 << endl;
+    cerr << "Generator system should be necessarily closed." << endl;
 #endif
-    goto bomb;
+    goto fail;
   }
 
   // Check whether the status information is legal.
-  if (!status.OK())
-    goto bomb;
+  if (status.OK() == false)
+    goto fail;
 
   if (marked_empty()) {
     if (check_not_empty) {
-      // The caller does not want the polyhedron to be empty.
+      // The caller does not want the grid to be empty.
 #ifndef NDEBUG
       cerr << "Empty polyhedron!" << endl;
 #endif
-      goto bomb;
+      goto fail;
     }
+
+#if 0 // FIX pending
 
     // An empty polyhedron is allowed if the system of congruences
     // either has no rows or only contains an unsatisfiable congruence
@@ -493,67 +448,47 @@ PPL::Grid::OK(bool check_not_empty) const {
       cerr << "The polyhedron is empty, "
 	   << "but it has something pending" << endl;
 #endif
-      goto bomb;
+      goto fail;
     }
-    if (con_sys.num_rows() == 0)
-      return true;
-    else {
-      if (con_sys.space_dimension() != space_dim) {
+#endif // 0 FIX
+    if (con_sys.num_rows() != 0 // FIX check
+	&& con_sys.space_dimension() != space_dim) {
 #ifndef NDEBUG
-	cerr << "The polyhedron is in a space of dimension "
-	     << space_dim
-	     << " while the system of congruences is in a space of dimension "
-	     << con_sys.space_dimension()
-	     << endl;
+      cerr << "The grid is in a space of dimension " << space_dim
+	   << " while the system of congruences is in a space of dimension "
+	   << con_sys.space_dimension()
+	   << endl;
 #endif
-	goto bomb;
-      }
-      if (con_sys.num_rows() != 1) {
-#ifndef NDEBUG
-	cerr << "The system of congruences for an empty polyhedron "
-	     << "has more then one row"
-	     << endl;
-#endif
-	goto bomb;
-      }
-      if (!con_sys[0].is_trivial_false()) {
-#ifndef NDEBUG
-	cerr << "Empty polyhedron with a satisfiable system of congruences"
-	     << endl;
-#endif
-	goto bomb;
-      }
-      // Here we have only one, trivially false congruence.
-      return true;
+      goto fail;
     }
+    return true;
   }
 
-  // A zero-dimensional, non-empty polyhedron is legal only if the
-  // system of congruence `con_sys' and the system of generators
-  // `gen_sys' have no rows.
+  // A zero-dimensional, non-empty grid is legal only if the system of
+  // congruence `con_sys' and the system of generators `gen_sys' have
+  // no rows.
   if (space_dim == 0) {
     if (has_something_pending()) {
 #ifndef NDEBUG
       cerr << "Zero-dimensional polyhedron with something pending"
 	   << endl;
 #endif
-      goto bomb;
+      goto fail;
     }
     if (con_sys.num_rows() != 0 || gen_sys.num_rows() != 0) {
 #ifndef NDEBUG
-      cerr << "Zero-dimensional polyhedron with a non-empty"
+      cerr << "Zero-dimensional grid with a non-empty"
 	   << endl
 	   << "system of congruences or generators."
 	   << endl;
 #endif
-      goto bomb;
+      goto fail;
     }
-    else
-      return true;
+    return true;
   }
 
-  // A polyhedron is defined by a system of congruences
-  // or a system of generators: at least one of them must be up to date.
+  // A grid is defined by a system of congruences or a system of
+  // generators.  At least one of them must be up to date.
   if (!congruences_are_up_to_date() && !generators_are_up_to_date()) {
 #ifndef NDEBUG
     cerr << "Grid not empty, not zero-dimensional"
@@ -561,155 +496,115 @@ PPL::Grid::OK(bool check_not_empty) const {
 	 << "and with neither congruences nor generators up-to-date!"
 	 << endl;
 #endif
-    goto bomb;
+    goto fail;
   }
+
+  // The expected number of columns in the congruence and generator
+  // systems, if they are not empty.
+  const dimension_type num_columns = space_dim + 1;
 
   // Here we check if the size of the matrices is consistent.
   // Let us suppose that all the matrices are up-to-date; this means:
   // `con_sys' : number of congruences x poly_num_columns
   // `gen_sys' : number of generators  x poly_num_columns
-  if (congruences_are_up_to_date()) {
-    if (con_sys.num_columns() != poly_num_columns) {
+  if (congruences_are_up_to_date())
+    if (con_sys.num_columns() != num_columns + 1 /* moduli */) {
 #ifndef NDEBUG
       cerr << "Incompatible size! (con_sys and space_dim)"
 	   << endl;
 #endif
-      goto bomb;
+      goto fail;
     }
-    if (generators_are_up_to_date())
-      if (con_sys.num_columns() != gen_sys.num_columns()) {
-#ifndef NDEBUG
-	cerr << "Incompatible size! (con_sys and gen_sys)"
-	     << endl;
-#endif
-	goto bomb;
-      }
-  }
 
   if (generators_are_up_to_date()) {
-    if (gen_sys.num_columns() != poly_num_columns) {
+    if (gen_sys.num_columns() != num_columns) {
 #ifndef NDEBUG
       cerr << "Incompatible size! (gen_sys and space_dim)"
 	   << endl;
 #endif
-      goto bomb;
+      goto fail;
     }
-  }
 
-  if (generators_are_up_to_date()) {
-#if 0
-    // FIX with normalized divisors the test of generator strong
-    // normalization fails
 
-    // Check if the system of generators is well-formed.
-    if (!gen_sys.OK())
-      goto bomb;
+    // Check if the system of generators is well-formed.  Check by
+    // hand, as many valid characteristics of a parameter system will
+    // fail Generator_System::OK.
+    if (gen_sys.Linear_System::OK(false) == false) {
+#ifndef NDEBUG
+      cerr << "gen_sys Linear_System::OK failed." << endl;
 #endif
+      goto fail;
+    }
+    // Check each generator in the system.
+    for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
+      const Generator& g = gen_sys[i];
 
+      if (g.is_necessarily_closed() == false) {
+#ifndef NDEBUG
+	cerr << "Parameter should be necessarily closed."
+	     << endl;
+#endif
+	goto fail;
+      }
+
+      if (g.size() < 1) {
+#ifndef NDEBUG
+	cerr << "Parameter should have coefficients." << endl;
+#endif
+	goto fail;
+      }
+    }
+
+    // FIX check triangular, as in Grid_conv assert
+
+    // FIX gen_sys.f_p_r == size instead?
     if (gen_sys.first_pending_row() == 0) {
 #ifndef NDEBUG
       cerr << "Up-to-date generator system with all rows pending!"
 	   << endl;
 #endif
-      goto bomb;
+      goto fail;
     }
 
-    // A non_empty system of generators describing a polyhedron
-    // is valid iff it contains a point.
+    // A non-empty system of generators describing a grid is valid iff
+    // it contains a point.
     if (gen_sys.num_rows() > 0 && !gen_sys.has_points()) {
 #ifndef NDEBUG
       cerr << "Non-empty generator system declared up-to-date "
 	   << "has no points!"
 	   << endl;
 #endif
-      goto bomb;
+      goto fail;
     }
-
-#if 0
-    //=================================================
-    // TODO: this test is wrong in the general case.
-    // However, such an invariant does hold for a
-    // strongly-minimized Generator_System.
-    // We will activate this test as soon as the Status
-    // flags will be able to remember if a system is
-    // strongly minimized.
-
-    // Checking that the number of closure points is always
-    // grater than the number of points.
-    if (!is_necessarily_closed()) {
-      dimension_type num_points = 0;
-      dimension_type num_closure_points = 0;
-      dimension_type eps_index = gen_sys.num_columns() - 1;
-      for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
-	if (gen_sys[i][0] != 0)
-	  if (gen_sys[i][eps_index] > 0)
-	    ++num_points;
-	  else
-	    ++num_closure_points;
-      if (num_points > num_closure_points) {
-#ifndef NDEBUG
-	cerr << "# POINTS > # CLOSURE_POINTS" << endl;
-#endif
-	goto bomb;
-      }
-    }
-    //=================================================
-#endif
 
     if (generators_are_minimized()) {
-      // If the system of generators is minimized, the number of
-      // lines, rays and points of the polyhedron must be the same as
-      // of the temporary minimized one. If it does not happen the
-      // polyhedron is not OK.
-      Congruence_System new_con_sys(topology());
-      Generator_System gs_without_pending = gen_sys;
-      // NOTE: We can avoid to update `index_first_pending'
-      // of `gs_without_pending', because it is equal to the
-      // new number of rows of `gs_without_pending'.
-      gs_without_pending.erase_to_end(gen_sys.first_pending_row());
-      Generator_System copy_of_gen_sys = gs_without_pending;
-      minimize(copy_of_gen_sys, new_con_sys);
-      const dimension_type copy_num_lines = copy_of_gen_sys.num_lines();
-      if (gs_without_pending.num_rows() != copy_of_gen_sys.num_rows()
-	  || gs_without_pending.num_lines() != copy_num_lines
-	  || gs_without_pending.num_rays() != copy_of_gen_sys.num_rays()) {
+      // A reduced parameter system must be the same as a temporary
+      // reduced copy.
+      Generator_System gs = gen_sys;
+      // Leave `index_first_pending' as it is in `gs', because it is
+      // equal to the new number of rows in `gs'.
+      gs.erase_to_end(gen_sys.first_pending_row());
+      gs.unset_pending_rows();
+      Generator_System gs_copy = gs;
+      simplify(gs);
+      for (dimension_type row = 0; row < gs_copy.num_rows(); ++row) {
+	Generator& g = gs[row];
+	Generator& g_copy = gs_copy[row];
+	dimension_type col = gs_copy.num_columns();
+	if (g.type() != g_copy.type())
+	  goto message_fail;
+	while (col--) {
+	  if (g[col] == g_copy[col])
+	    continue;
+	message_fail:
 #ifndef NDEBUG
-	cerr << "Generators are declared minimized, but they are not!\n"
-	     << "Here is the minimized form of the generators:\n";
-	copy_of_gen_sys.ascii_dump(cerr);
-	cerr << endl;
+	  cerr << "Generators are declared minimized, but they change under reduction.\n"
+	       << "Here is the generator system:\n";
+	  gs_copy.ascii_dump(cerr);
+	  cerr << "and here is the minimized form of the temporary copy:\n";
+	  gs.ascii_dump(cerr);
 #endif
-	goto bomb;
-      }
-
-      // CHECKME : the following observation is not formally true
-      //           for a NNC_Polyhedron. But it may be true for its
-      //           representation ...
-
-      // If the corresponding polyhedral cone is _pointed_, then
-      // a minimal system of generators is unique up to positive scaling.
-      // We thus verify if the cone is pointed (i.e., there are no lines)
-      // and, after normalizing and sorting a copy of the system `gen_sys'
-      // of the polyhedron (we use a copy not to modify the polyhedron's
-      // system) and the system `copy_of_gen_sys' that has been just
-      // minimized, we check if the two matrices are identical.  If
-      // they are different it means that the generators of the
-      // polyhedron are declared minimized, but they are not.
-      if (copy_num_lines == 0) {
-	copy_of_gen_sys.strong_normalize();
-	copy_of_gen_sys.sort_rows();
-	gs_without_pending.strong_normalize();
-	gs_without_pending.sort_rows();
-	if (copy_of_gen_sys != gs_without_pending) {
-#ifndef NDEBUG
-	  cerr << "Generators are declared minimized, but they are not!\n"
-	       << "(we are in the case:\n"
-	       << "dimension of lineality space equal to 0)\n"
-	       << "Here is the minimized form of the generators:\n";
-	  copy_of_gen_sys.ascii_dump(cerr);
-	  cerr << endl;
-#endif
-	    goto bomb;
+	  goto fail;
 	}
       }
     }
@@ -717,156 +612,106 @@ PPL::Grid::OK(bool check_not_empty) const {
 
   if (congruences_are_up_to_date()) {
     // Check if the system of congruences is well-formed.
-    if (!con_sys.OK())
-      goto bomb;
+    if (!con_sys.OK()) {
+#ifndef NDEBUG
+      cerr << "con_sys OK failed." << endl;
+#endif
+      goto fail;
+    }
 
+#if 0 // FIX pending
     if (con_sys.first_pending_row() == 0) {
 #ifndef NDEBUG
       cerr << "Up-to-date congruence system with all rows pending!"
 	   << endl;
 #endif
-      goto bomb;
+      goto fail;
     }
-
-    // A non-empty system of congruences describing a polyhedron
-    // must contain a congruence with a non-zero inhomogeneous term;
-    // such a congruence corresponds to (a combination of other
-    // congruences with):
-    // -* the positivity congruence, for necessarily closed polyhedra;
-    // -* the epsilon <= 1 congruence, for NNC polyhedra.
-    bool no_positivity_congruence = true;
-    for (dimension_type i = con_sys.num_rows(); i-- > 0; )
-      if (con_sys[i][0] != 0) {
-	no_positivity_congruence = false;
-	break;
-      }
-    if (no_positivity_congruence) {
-#ifndef NDEBUG
-      cerr << "Non-empty congruence system has no positivity congruence"
-	   << endl;
 #endif
-      goto bomb;
-    }
 
-    if (!is_necessarily_closed()) {
-      // A non-empty system of congruences describing a NNC polyhedron
-      // must also contain a (combination of) the congruence epsilon >= 0,
-      // i.e., a congruence with a positive epsilon coefficient.
-      bool no_epsilon_geq_zero = true;
-      const dimension_type eps_index = con_sys.num_columns() - 1;
-      for (dimension_type i = con_sys.num_rows(); i-- > 0; )
-	if (con_sys[i][eps_index] > 0) {
-	  no_epsilon_geq_zero = false;
-	  break;
-	}
-      if (no_epsilon_geq_zero) {
-#ifndef NDEBUG
-	cerr << "Non-empty congruence system for NNC polyhedron "
-	     << "has no epsilon >= 0 congruence"
-	     << endl;
-#endif
-	goto bomb;
-      }
-    }
-
-    Congruence_System cs_without_pending = con_sys;
+    Congruence_System cs = con_sys;
+#if 0 // FIX pending
     // NOTE: We can avoid to update `index_first_pending'
     // of `cs_without_pending', because it is equal to the
     // new number of rows of `cs_without_pending'.
-    cs_without_pending.erase_to_end(con_sys.first_pending_row());
-    Congruence_System copy_of_con_sys = cs_without_pending;
-    Generator_System new_gen_sys(topology());
+    cs.erase_to_end(con_sys.first_pending_row());
+#endif
+    Congruence_System cs_copy = cs;
+    Generator_System new_gen_sys(NECESSARILY_CLOSED);
 
-    if (minimize(copy_of_con_sys, new_gen_sys)) {
+    if (minimize(cs_copy, new_gen_sys)) {
       if (check_not_empty) {
 	// Want to know the satisfiability of the congruences.
 #ifndef NDEBUG
 	cerr << "Insoluble system of congruences!"
 	     << endl;
 #endif
-	goto bomb;
+	goto fail;
       }
-      else
-	// The polyhedron is empty, there is nothing else to check.
-	return true;
+      // The grid is empty, all checks are done.
+      return true;
     }
 
     if (congruences_are_minimized()) {
-      // If the congruences are minimized, the number of equalities
-      // and of inequalities of the system of the polyhedron must be
-      // the same of the temporary minimized one.
-      // If it does not happen, the polyhedron is not OK.
-      if (cs_without_pending.num_rows() != copy_of_con_sys.num_rows()
-	  || cs_without_pending.num_equalities()
-	  != copy_of_con_sys.num_equalities()) {
+      // A non-empty reduced system of congruences describing a grid
+      // must contain a congruence with a non-zero inhomogeneous term.
+      for (dimension_type i = con_sys.num_rows(); i-- > 0; )
+	if (con_sys[i][0] != 0)
+	  goto found;
 #ifndef NDEBUG
-	cerr << "Congruences are declared minimized, but they are not!\n"
-	     << "Here is the minimized form of the congruences:\n";
-	copy_of_con_sys.ascii_dump(cerr);
-	cerr << endl;
+      cerr << "Non-empty congruence system with all inhomogeneous terms zero."
+	   << endl;
 #endif
-	goto bomb;
-      }
-      // The system `copy_of_con_sys' has the form that is obtained
-      // after the functions gauss() and back_substitute().
-      // A system of congruences can be minimal even if it does not
-      // have this form. So, to verify if the polyhedron is correct,
-      // we copy the system `con_sys' in a temporary one that then
-      // is modified using the functions gauss() and back_substitute().
-      // If the temporary system and `copy_of_con_sys' are different,
-      // the polyhedron is not OK.
-      copy_of_con_sys.strong_normalize();
-      copy_of_con_sys.sort_rows();
-      cs_without_pending.sort_rows();
-      cs_without_pending.back_substitute(cs_without_pending.gauss());
-      cs_without_pending.strong_normalize();
-      cs_without_pending.sort_rows();
-      if (cs_without_pending != copy_of_con_sys) {
+      goto fail;
+    found:
+
+      // If the congruences are minimized, all the elements in the
+      // congruence system must be the same as those in the temporary,
+      // minimized system `cs_copy'.
+      for (dimension_type row = 0; row < cs_copy.num_rows(); ++row)
+	for (dimension_type col = 0; col < cs_copy.num_columns(); ++col) {
+	  if (cs[row][col] == cs_copy[row][col])
+	    continue;
 #ifndef NDEBUG
-	cerr << "Congruences are declared minimized, but they are not!\n"
-	     << "Here is the minimized form of the congruences:\n";
-	copy_of_con_sys.ascii_dump(cerr);
-	cerr << endl;
+	  cerr << "Generators are declared minimized, but they change under reduction!\n"
+	       << "Here is the minimized form of the generator system:\n";
+	  cs.ascii_dump(cerr);
+	  cerr << endl;
 #endif
-	goto bomb;
-      }
+	  goto fail;
+	}
     }
   }
 
-  if (has_pending_congruences()) {
-    if (con_sys.num_pending_rows() == 0) {
+#if 0 // FIX pending
+  if (has_pending_congruences()
+      && con_sys.num_pending_rows() == 0) {
 #ifndef NDEBUG
       cerr << "The polyhedron is declared to have pending congruences, "
 	   << "but con_sys has no pending rows!"
 	   << endl;
 #endif
-      goto bomb;
+      goto fail;
     }
-  }
+#endif
 
-  if (has_pending_generators()) {
-    if (gen_sys.num_pending_rows() == 0) {
+  if (has_pending_generators()
+      && gen_sys.num_pending_rows() == 0) {
 #ifndef NDEBUG
       cerr << "The polyhedron is declared to have pending generators, "
 	   << "but gen_sys has no pending rows!"
 	   << endl;
 #endif
-      goto bomb;
     }
-  }
+  else
+    return true;
 
-#endif /* 0 */
-
-  return true;
-#if 0
- bomb:
+ fail:
 #ifndef NDEBUG
-  cerr << "Here is the guilty polyhedron:"
-       << endl;
+  cerr << "Here is the grid under check:" << endl;
   ascii_dump(cerr);
 #endif
   return false;
-#endif
 }
 
 void
@@ -1364,7 +1209,6 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
   const dimension_type gs_num_rows = gs.num_rows();
   const dimension_type gs_num_columns = gs.num_columns();
   gen_sys.add_zero_rows(gs_num_rows,
-			//Linear_Row::Flags(topology(),
 			Linear_Row::Flags(gs.topology(),
 					  Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
   for (dimension_type i = gs_num_rows; i-- > 0; ) {
@@ -2427,6 +2271,10 @@ PPL::operator==(const Grid& x, const Grid& y) {
     return x.is_empty();
   if (x.space_dim == 0)
     return true;
+#if 0 // FIX?
+  if (y.is_universe())
+    return x.is_universe();
+#endif
 
   switch (x.quick_equivalence_test(y)) {
   case Grid::TVB_TRUE:
@@ -2443,6 +2291,23 @@ PPL::operator==(const Grid& x, const Grid& y) {
     }
     return false;
   }
+}
+
+PPL::Grid&
+PPL::Grid::operator=(const Grid& y) {
+  space_dim = y.space_dim;
+  if (y.marked_empty())
+    set_empty();
+  else if (space_dim == 0)
+    set_zero_dim_univ();
+  else {
+    status = y.status;
+    if (y.congruences_are_up_to_date())
+      con_sys = y.con_sys;
+    if (y.generators_are_up_to_date())
+      gen_sys = y.gen_sys;
+  }
+  return *this;
 }
 
 #if 0
