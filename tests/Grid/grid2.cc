@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 void
 test1() {
-  nout << "\n\ntest1:" << endl;
+  nout << "test1:" << endl;
 
   Variable A(0);
 
@@ -39,6 +39,7 @@ test1() {
   cgs.insert((A %= 0) / 2);
 
   Grid gr(cgs);
+
   if (find_variation(gr))
     exit(1);
 
@@ -52,9 +53,7 @@ test1() {
   known_gs.insert(point(0*A));
   known_gs.insert(point(2*A));
 
-  //Grid known_gr(known_gs); // FIX
-  Grid known_gr(1, Grid::EMPTY);
-  known_gr.add_generators(known_gs);
+  Grid known_gr(known_gs);
 
   if (find_variation(known_gr))
     exit(1);
@@ -72,7 +71,7 @@ test1() {
 
 void
 test2() {
-  nout << "\n\ntest2:" << endl;
+  nout << "test2:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -81,6 +80,7 @@ test2() {
   cgs.insert((A - 3*B %= 4) / 5);
 
   Grid gr(cgs);
+
   if (find_variation(gr))
     exit(1);
 
@@ -95,9 +95,7 @@ test2() {
   known_gs.insert(point(  A + 59*B));
   known_gs.insert(point(0*A + 37*B));
 
-  //Grid known_gr(known_gs); // FIX
-  Grid known_gr(2, Grid::EMPTY);
-  known_gr.add_generators(known_gs);
+  Grid known_gr(known_gs);
 
   if (find_variation(known_gr))
     exit(1);
@@ -115,14 +113,14 @@ test2() {
 
 void
 test3() {
-  nout << "\n\ntest3:" << endl;
+  nout << "test3:" << endl;
 
   Variable A(0);
 
   Congruence_System cgs;
   cgs.insert((A %= 0) / 3);
 
-  Grid gr(1, Grid::EMPTY);
+  Grid gr(1);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -132,9 +130,7 @@ test3() {
   known_gs.insert(point(0*A));
   known_gs.insert(point(3*A));
 
-  //Grid known_gr(known_gs); // FIX
-  Grid known_gr(1, Grid::EMPTY);
-  known_gr.add_generators(known_gs);
+  Grid known_gr(known_gs);
 
   if (find_variation(known_gr))
     exit(1);
@@ -152,14 +148,14 @@ test3() {
 
 void
 test4() {
-  nout << "\n\ntest4:" << endl;
+  nout << "test4:" << endl;
 
   Variable A(0);
 
   Congruence_System cgs;
   cgs.insert((A %= 7) / 3);
 
-  Grid gr(1, Grid::EMPTY);
+  Grid gr(1);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -169,9 +165,7 @@ test4() {
   known_gs.insert(point(1*A));
   known_gs.insert(point(4*A));
 
-  //Grid known_gr(known_gs); // FIX
-  Grid known_gr(1, Grid::EMPTY);
-  known_gr.add_generators(known_gs);
+  Grid known_gr(known_gs);
 
   if (find_variation(known_gr))
     exit(1);
@@ -189,7 +183,7 @@ test4() {
 
 void
 test5() {
-  nout << "\n\ntest5:" << endl;
+  nout << "test5:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -197,7 +191,7 @@ test5() {
   Congruence_System cgs;
   cgs.insert((A - B %= 0) / 3);
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -208,9 +202,7 @@ test5() {
   known_gs.insert(point(A + B));
   known_gs.insert(point(3*B));
 
-  //Grid known_gr(known_gs); // FIX
-  Grid known_gr(2, Grid::EMPTY);
-  known_gr.add_generators(known_gs);
+  Grid known_gr(known_gs);
 
   if (find_variation(known_gr))
     exit(1);
@@ -228,7 +220,7 @@ test5() {
 
 void
 test6() {
-  nout << "\n\ntest6:" << endl;
+  nout << "test6:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -240,7 +232,7 @@ test6() {
   cgs.insert(  A + B %= 0);
   cgs.insert(  A + B + C %= 0);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -252,9 +244,7 @@ test6() {
   known_gs.insert(point(B - C));
   known_gs.insert(point(C));
 
-  //Grid known_gr(known_gs); // FIX
-  Grid known_gr(3, Grid::EMPTY);
-  known_gr.add_generators(known_gs);
+  Grid known_gr(known_gs);
 
   if (find_variation(known_gr))
     exit(1);
@@ -272,7 +262,7 @@ test6() {
 
 void
 test7() {
-  nout << "\n\ntest7:" << endl;
+  nout << "test7:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -284,7 +274,7 @@ test7() {
   cgs.insert(-6*A +   B + 0*C %= -8);
   cgs.insert( 3*A + 2*B +   C %= -4);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -296,9 +286,7 @@ test7() {
   known_gs.insert(point(64*A + 391*B - 970*C, -1));
   known_gs.insert(point(64*A + 392*B - 973*C, -1));
 
-  //Grid known_gr(known_gs); // FIX
-  Grid known_gr(3, Grid::EMPTY);
-  known_gr.add_generators(known_gs);
+  Grid known_gr(known_gs);
 
   if (find_variation(known_gr))
     exit(1);
@@ -317,7 +305,7 @@ test7() {
 
 void
 test8() {
-  nout << "\n\ntest8:" << endl;
+  nout << "test8:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -327,13 +315,13 @@ test8() {
   cgs.insert((0*A %= -1) / 0);
   cgs.insert((  A %= -1) / 2);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3);
 
   if (find_variation(known_gr))
     exit(1);
@@ -351,7 +339,7 @@ test8() {
 
 void
 test9() {
-  nout << "\n\ntest9:" << endl;
+  nout << "test9:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -363,7 +351,7 @@ test9() {
   cgs.insert((        B %= 0) / 2);
   cgs.insert((  A +   B +   C %= 0) / 2);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -375,9 +363,7 @@ test9() {
   known_gs.insert(point(      2*B - 2*C));
   known_gs.insert(point(            2*C));
 
-  //Grid known_gr(known_gs); // FIX
-  Grid known_gr(3, Grid::EMPTY);
-  known_gr.add_generators(known_gs);
+  Grid known_gr(known_gs);
 
   if (find_variation(known_gr))
     exit(1);
@@ -395,7 +381,7 @@ test9() {
 
 void
 test10() {
-  nout << "\n\ntest10:" << endl;
+  nout << "test10:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -407,7 +393,7 @@ test10() {
   cgs.insert((        B + 3*C %= -2) / 3);
   cgs.insert((      2*B + 3*C %= -2) / 3);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -419,9 +405,7 @@ test10() {
   known_gs.insert(point(-2*A + 27*B - 236*C, 3));
   known_gs.insert(point(-2*A +  0*B +  34*C, 3));
 
-  //Grid known_gr(known_gs); // FIX
-  Grid known_gr(3, Grid::EMPTY);
-  known_gr.add_generators(known_gs);
+  Grid known_gr(known_gs);
 
   if (find_variation(known_gr))
     exit(1);
@@ -439,7 +423,7 @@ test10() {
 
 void
 test11() {
-  nout << "\n\ntest11:" << endl;
+  nout << "test11:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -452,7 +436,7 @@ test11() {
   cgs.insert((          3*C %= -4) / 5);
   cgs.insert((    3*B +   C %= -3) / 5);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -464,9 +448,7 @@ test11() {
   known_gs.insert(point(  A + 5*B - 18*C));
   known_gs.insert(point(  A       +  2*C));
 
-  //Grid known_gr(known_gs); // FIX
-  Grid known_gr(3, Grid::EMPTY);
-  known_gr.add_generators(known_gs);
+  Grid known_gr(known_gs);
 
   if (find_variation(known_gr))
     exit(1);
@@ -478,11 +460,6 @@ test11() {
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
 
-  nout << "gr.ascii_dump(nout):" << endl;
-  gr.ascii_dump(nout);
-  nout << "known_gr.ascii_dump(nout):" << endl;
-  known_gr.ascii_dump(nout);
-
   exit(1);
 }
 
@@ -490,7 +467,7 @@ test11() {
 
 void
 test12() {
-  nout << "\n\ntest12:" << endl;
+  nout << "test12:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -501,7 +478,7 @@ test12() {
   cgs.insert((      B + 2*C %=  0) / 5);
   cgs.insert((    2*B + 3*C %= -3) / 5);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -513,9 +490,7 @@ test12() {
   known_gs.insert(point(-2*A -  3*B -  6*C, 3));
   known_gs.insert(point(-2*A - 18*B + 24*C, 3));
 
-  //Grid known_gr(known_gs); // FIX
-  Grid known_gr(3, Grid::EMPTY);
-  known_gr.add_generators(known_gs);
+  Grid known_gr(known_gs);
 
   if (find_variation(known_gr))
     exit(1);
@@ -526,11 +501,6 @@ test12() {
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
-
-  nout << "gr.ascii_dump(nout):" << endl;
-  gr.ascii_dump(nout);
-  nout << "known_gr.ascii_dump(nout):" << endl;
-  known_gr.ascii_dump(nout);
 
   exit(1);
 }
