@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_System.defs.hh"
 
 // FIX Temporary tracing stream.
-#if 1
+#if 0
 #include <iostream>
 std::ostream& strace = std::cout;
 #define strace_dump(sys) sys.ascii_dump(strace)
