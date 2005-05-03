@@ -452,24 +452,6 @@ PPL::Grid::Grid(const Topology topol, Generator_System& gs)
   space_dim = 0;
 }
 
-PPL::Grid&
-PPL::Grid::operator=(const Grid& y) {
-  // Being a protected method, we simply assert that topologies do match.
-  assert(topology() == y.topology());
-  space_dim = y.space_dim;
-  if (y.marked_empty())
-    set_empty();
-  else if (space_dim == 0)
-    set_zero_dim_univ();
-  else {
-    status = y.status;
-    if (y.congruences_are_up_to_date())
-      con_sys = y.con_sys;
-    if (y.generators_are_up_to_date())
-      gen_sys = y.gen_sys;
-  }
-  return *this;
-}
 #endif
 PPL::Grid::Three_Valued_Boolean
 PPL::Grid::quick_equivalence_test(const Grid& y) const {
@@ -759,36 +741,19 @@ PPL::Grid::set_empty() {
 
 bool
 PPL::Grid::process_pending_congruences() const {
-#if 0 // FIX
   assert(space_dim > 0 && !marked_empty());
   assert(has_pending_congruences() && !has_pending_generators());
 
   Grid& x = const_cast<Grid&>(*this);
 
-  // Integrate the pending part of the system of congruences and minimize.
-  if (!x.con_sys.is_sorted())
-    x.obtain_sorted_congruences_with_sat_c();
-  // We sort in place the pending congruences, erasing those congruences
-  // that also occur in the non-pending part of `con_sys'.
-  x.con_sys.sort_pending_and_remove_duplicates();
-  if (x.con_sys.num_pending_rows() == 0) {
-    // All pending congruences were duplicates.
-    x.clear_pending_congruences();
-    assert(OK(true));
-    return true;
-  }
-
-  const bool empty = add_and_minimize(true, x.con_sys, x.gen_sys, x.sat_c);
-  assert(x.con_sys.num_pending_rows() == 0);
-
-  if (empty)
+  // FIX should these simplify calls set_x_minimized?
+  if (x.simplify(x.con_sys)) {
     x.set_empty();
-  else {
-    x.clear_pending_congruences();
+    assert(OK(false));
+    return false;
   }
-  assert(OK(!empty));
-  return !empty;
-#endif
+  x.clear_pending_congruences();
+  assert(OK(true));
   return true;
 }
 
@@ -799,28 +764,14 @@ PPL::Grid::process_pending_generators() const {
 
   Grid& x = const_cast<Grid&>(*this);
 
-  // Integrate the pending part of the system of generators and minimize.
-#if 0
-  if (!x.gen_sys.is_sorted())
-    x.obtain_sorted_generators_with_sat_g();
-#endif
-  // We sort in place the pending generators, erasing those generators
-  // that also occur in the non-pending part of `gen_sys'.
-  x.gen_sys.sort_pending_and_remove_duplicates();
-  if (x.gen_sys.num_pending_rows() == 0) {
-    // All pending generators were duplicates.
-    x.clear_pending_generators();
-    assert(OK(true));
-    return;
-  }
-
-  // FIX could this return true (ie that the grid is empty)
+  // FIX could this return true (ie that the grid is empty)?
   // FIX if so set_empty
-  add_and_minimize(x.gen_sys, x.con_sys);
-  assert(x.gen_sys.num_pending_rows() == 0);
+  x.simplify(x.gen_sys);
 
+  assert(gen_sys.num_pending_rows() == 0);
   x.clear_pending_generators();
 }
+
 #if 0
 void
 PPL::Grid::remove_pending_to_obtain_congruences() const {
@@ -923,14 +874,12 @@ PPL::Grid::minimize() const {
   if (space_dim == 0)
     return true;
 
-#if 0
   // If the polyhedron has something pending, process it.
   if (has_something_pending()) {
     const bool not_empty = process_pending();
     assert(OK());
     return not_empty;
   }
-#endif
 
   // Here there are no pending congruences or generators.
   // Is the polyhedron already minimized?
@@ -1142,8 +1091,7 @@ throw_dimension_incompatible(const char* method,
 }
 
 void
-PPL::Grid::throw_space_dimension_overflow(const Topology topol,
-					  const char* method,
+PPL::Grid::throw_space_dimension_overflow(const char* method,
 					  const char* reason) {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
