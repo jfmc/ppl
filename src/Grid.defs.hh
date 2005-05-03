@@ -351,7 +351,6 @@ public:
     EMPTY
   };
 
-//protected: //FIX
   //! Builds a grid having the specified properties.
   /*!
     \param num_dimensions
@@ -360,12 +359,13 @@ public:
     \param kind
     Specifies whether the universe or the empty grid has to be built.
   */
-  Grid(dimension_type num_dimensions = 0, Degenerate_Kind kind = UNIVERSE);
+  Grid(dimension_type num_dimensions = 0,
+       const Degenerate_Kind kind = EMPTY);
 
   //! Ordinary copy-constructor.
   Grid(const Grid& y);
 
-  //! Builds a grid from a system of congruences.
+  //! Builds a grid from a const system of congruences.
   /*!
     The grid inherits the space dimension of the congruence system.
 
@@ -416,7 +416,6 @@ public:
   //! (\p *this and \p y can be dimension-incompatible.)
   Grid& operator=(const Grid& y);
 
-public:
   //! \name Member Functions that Do Not Modify the Grid
   //@{
 
@@ -431,13 +430,13 @@ public:
   //! Returns the system of congruences.
   const Congruence_System& congruences() const;
 
-  //! Returns the system of congruences, with no redundant congruence.
+  //! Returns the system of congruences, in reduced form.
   const Congruence_System& minimized_congruences() const;
 
   //! Returns the system of generators.
   const Generator_System& generators() const;
 
-  //! Returns the system of generators, with no redundant generator.
+  //! Returns the system of generators, in reduced form.
   const Generator_System& minimized_generators() const;
 
   //! \brief
@@ -1193,7 +1192,7 @@ public:
 
   //@} // Miscellaneous Member Functions
 
-public:  //private: // FIX, for testing
+private:
 
   //! The system of congruences.
   Congruence_System con_sys;
@@ -1273,8 +1272,8 @@ public:  //private: // FIX, for testing
   bool has_pending_generators() const;
 
   //! \brief
-  //! Returns <CODE>true</CODE> if there are
-  //! either pending congruences or pending generators.
+  //! Returns <CODE>true</CODE> if there are either pending
+  //! congruences or pending generators.
   bool has_something_pending() const;
 
   //! \brief
@@ -1525,8 +1524,6 @@ public:  //private: // FIX, for testing
   static dimension_type conversion(Generator_System& source,
 				   Congruence_System& dest);
 
-private:
-
   //! Normalize the divisors in \p sys.
   /*!
     Convert \p sys to an equivalent representation in which the
@@ -1668,8 +1665,7 @@ protected:
 
   // Note: it has to be a static method, because it can be called inside
   // constructors (before actually constructing the grid object).
-  static void throw_space_dimension_overflow(Topology topol,
-					     const char* method,
+  static void throw_space_dimension_overflow(const char* method,
 					     const char* reason);
 
   void throw_invalid_generator(const char* method,

@@ -50,21 +50,41 @@ Grid::set_congruences_up_to_date() {
 
 inline
 Grid::Grid(const Congruence_System& ccgs) {
+  if (ccgs.space_dimension() > max_space_dimension())
+    throw_space_dimension_overflow("Grid(ccgs)",
+				   "the space dimension of ccgs "
+				   "exceeds the maximum allowed "
+				   "space dimension");
   construct(ccgs);
 }
 
 inline
 Grid::Grid(Congruence_System& cgs) {
+  if (cgs.space_dimension() > max_space_dimension())
+    throw_space_dimension_overflow("Grid(cgs)",
+				   "the space dimension of cgs "
+				   "exceeds the maximum allowed "
+				   "space dimension");
   construct(cgs);
 }
 
 inline
 Grid::Grid(const Generator_System& gs) {
+  if (gs.space_dimension() > max_space_dimension())
+    throw_space_dimension_overflow("Grid(gs)",
+				   "the space dimension of gs "
+				   "exceeds the maximum allowed "
+				   "space dimension");
   construct(gs);
 }
 
 inline
 Grid::Grid(Generator_System& gs) {
+  if (gs.space_dimension() > max_space_dimension())
+    throw_space_dimension_overflow("Grid(gs)",
+				   "the space dimension of gs "
+				   "exceeds the maximum allowed "
+				   "space dimension");
   construct(gs);
 }
 
@@ -235,7 +255,6 @@ Grid::clear_generators_up_to_date() {
   // Can get rid of gen_sys here.
 }
 
-#if 0
 inline bool
 Grid::process_pending() const {
   assert(space_dim > 0 && !marked_empty());
@@ -250,7 +269,6 @@ Grid::process_pending() const {
   x.process_pending_generators();
   return true;
 }
-#endif
 
 inline void
 Grid::add_low_level_congruences(Congruence_System& cgs) {
@@ -306,7 +324,7 @@ Grid::minimize(const Linear_Expression& expr,
 	       const Generator** const pppoint) const {
   return max_min(expr, false, inf_n, inf_d, minimum, pppoint);
 }
-#endif
+#endif // 0 FIX
 /*! \relates Grid */
 inline bool
 operator!=(const Grid& x, const Grid& y) {
@@ -317,306 +335,6 @@ inline bool
 Grid::strictly_contains(const Grid& y) const {
   const Grid& x = *this;
   return x.contains(y) && !y.contains(x);
-}
-
-template <typename Box>
-Grid::Grid(Topology topol, const Box& box)
-  : con_sys(topol),
-    gen_sys(topol) {
-  // Initialize the space dimension as indicated by the box.
-  space_dim = box.space_dimension();
-
-  // Check for emptiness.
-  if (box.is_empty()) {
-    set_empty();
-    return;
-  }
-
-  // Zero-dim universe polyhedron.
-  if (space_dim == 0) {
-    set_zero_dim_univ();
-    return;
-  }
-
-  // Insert a dummy constraint of the highest dimension to avoid the
-  // need of resizing the matrix of congruences later; this constraint
-  // will be removed at the end.
-  con_sys.insert(Variable(space_dim - 1) >= 0);
-
-  for (dimension_type k = space_dim; k-- > 0; ) {
-    // See if we have a valid lower bound.
-    bool l_closed = false;
-    Coefficient l_n, l_d;
-    bool l_bounded = box.get_lower_bound(k, l_closed, l_n, l_d);
-    if (l_bounded && topol == NECESSARILY_CLOSED && !l_closed)
-      throw_invalid_argument("C_Grid(const Box& box)",
-			     "box has an open lower bound");
-    // See if we have a valid upper bound.
-    bool u_closed = false;
-    Coefficient u_n, u_d;
-    bool u_bounded = box.get_upper_bound(k, u_closed, u_n, u_d);
-    if (u_bounded && topol == NECESSARILY_CLOSED && !u_closed)
-      throw_invalid_argument("C_Grid(const Box& box)",
-			     "box has an open upper bound");
-
-    // See if we have an implicit equality constraint.
-    if (l_bounded && u_bounded
-	&& l_closed && u_closed
-	&& l_n == u_n && l_d == u_d) {
-      // Add the constraint `l_d*v_k == l_n'.
-      con_sys.insert(l_d * Variable(k) == l_n);
-    }
-    else {
-      // Check if a lower bound constraint is required.
-      if (l_bounded) {
-       if (l_closed)
-	 // Add the constraint `l_d*v_k >= l_n'.
-	 con_sys.insert(l_d * Variable(k) >= l_n);
-       else
-	 // Add the constraint `l_d*v_k > l_n'.
-	 con_sys.insert(l_d * Variable(k) > l_n);
-      }
-      // Check if an upper bound constraint is required.
-      if (u_bounded) {
-       if (u_closed)
-	 // Add the constraint `u_d*v_k <= u_n'.
-	 con_sys.insert(u_d * Variable(k) <= u_n);
-       else
-	 // Add the constraint `u_d*v_k < u_n'.
-	 con_sys.insert(u_d * Variable(k) < u_n);
-      }
-    }
-  }
-
-  // Adding the low-level congruences.
-  add_low_level_congruences(con_sys);
-  // Now removing the dummy constraint inserted before.
-  dimension_type n_rows = con_sys.num_rows() - 1;
-  con_sys[0].swap(con_sys[n_rows]);
-  con_sys.set_sorted(false);
-  // NOTE: here there are no pending congruences.
-  con_sys.set_index_first_pending_row(n_rows);
-  con_sys.erase_to_end(n_rows);
-
-  // Congruences are up-to-date.
-  set_congruences_up_to_date();
-  assert(OK());
-}
-
-template <typename Box>
-void
-Grid::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
-  bool polynomial = (complexity != ANY_COMPLEXITY);
-  if ((polynomial && !has_something_pending()
-       && congruences_are_minimized()) || !polynomial) {
-    // If the constraint system is minimized, the test `is_universe()'
-    // is not exponential.
-    if (is_universe())
-      return;
-  }
-  if (polynomial) {
-    if (marked_empty() ||
-	(generators_are_up_to_date() && gen_sys.num_rows() == 0)) {
-      box.set_empty();
-      return;
-    }
-    if (congruences_are_up_to_date()) {
-      for (Constraint_System::const_iterator i
-	     = con_sys.begin(); i != con_sys.end(); ++i)
-	if ((*i).is_trivial_false()){
-	  box.set_empty();
-	  return;
-	}
-    }
-  }
-  else
-    // The flag `polynomial' is `false'.
-    // Note that the test `is_empty()' is exponential in the worst case.
-    if (is_empty()) {
-      box.set_empty();
-      return;
-    }
-
-  if (space_dim == 0)
-    return;
-
-  // To record the lower and upper bound for each dimension.
-  // Lower bounds are initialized to open plus infinity.
-  std::vector<LBoundary>
-    lower_bound(space_dim, LBoundary(ERational('+'), LBoundary::OPEN));
-  // Upper bounds are initialized to open minus infinity.
-  std::vector<UBoundary>
-    upper_bound(space_dim, UBoundary(ERational('-'), UBoundary::OPEN));
-
-  if (!polynomial && has_something_pending())
-    process_pending();
-
-  if (polynomial &&
-       (!generators_are_up_to_date() || has_pending_congruences())) {
-    // Extract easy-to-find bounds from congruences.
-    assert(congruences_are_up_to_date());
-
-    // We must copy `con_sys' to a temporary matrix,
-    // because we must apply gauss() and back_substitute()
-    // to all the matrix and not only to the non-pending part.
-    Constraint_System cs(con_sys);
-    if (cs.num_pending_rows() > 0) {
-      cs.unset_pending_rows();
-      cs.sort_rows();
-    }
-    else if (!cs.is_sorted())
-      cs.sort_rows();
-
-    if (has_pending_congruences() || !congruences_are_minimized())
-      cs.back_substitute(cs.gauss());
-
-    const Constraint_System::const_iterator cs_begin = cs.begin();
-    const Constraint_System::const_iterator cs_end = cs.end();
-
-    for (Constraint_System::const_iterator i = cs_begin; i != cs_end; ++i) {
-      dimension_type varid = space_dim;
-      const Constraint& c = *i;
-      // After `gauss()' and `back_substitute()' some congruences can
-      // be trivially false.
-      for (dimension_type j = space_dim; j-- > 0; ) {
-	if (c.is_trivial_false()) {
-	  box.set_empty();
-	  return;
-	}
-	// We look for congruences of the form `Variable(j) == k',
-	// `Variable(j) >= k', and `Variable(j) > k'.
-	if (c.coefficient(Variable(j)) != 0)
-	  if (varid != space_dim) {
-	    varid = space_dim;
-	    break;
-	  }
-	  else
-	    varid = j;
-      }
-      if (varid != space_dim) {
-	Coefficient_traits::const_reference d = c.coefficient(Variable(varid));
-	Coefficient_traits::const_reference n = c.inhomogeneous_term();
-	// The constraint `c' is of the form
-	// `Variable(varid) + n / d rel 0', where
-	// `rel' is either the relation `==', `>=', or `>'.
-	// For the purpose of shrinking intervals, this is
-	// (morally) turned into `Variable(varid) rel  -n/d'.
-	ERational r(-n, d);
-	Constraint::Type c_type = c.type();
-	switch (c_type) {
-	case Constraint::EQUALITY:
-	  lower_bound[varid] = LBoundary(r, LBoundary::CLOSED);
-	  upper_bound[varid] = UBoundary(r, UBoundary::CLOSED);
-	  break;
-	case Constraint::NONSTRICT_INEQUALITY:
-	case Constraint::STRICT_INEQUALITY:
-	  if (d > 0)
-	  // If `d' is strictly positive, we have a constraint of the
-	  // form `Variable(varid) >= k' or `Variable(varid) > k'.
-	    lower_bound[varid]
-	      = LBoundary(r, (c_type == Constraint::NONSTRICT_INEQUALITY
-			      ? LBoundary::CLOSED
-			      : LBoundary::OPEN));
-	  else {
-	    // Otherwise, we are sure that `d' is strictly negative
-	    // and, in this case, we have a constraint of the form
-	    // `Variable(varid) <= k' or `Variable(varid) < k'.
-	    assert(d < 0);
-	    upper_bound[varid]
-	      = UBoundary(r, (c_type == Constraint::NONSTRICT_INEQUALITY
-			      ? UBoundary::CLOSED
-			      : UBoundary::OPEN));
-	  }
-	  break;
-	}
-      }
-    }
-  }
-  else {
-    // We are in the case where either the generators are up-to-date
-    // or polynomial execution time is not required.
-    // Get the generators for *this.
-
-    // We have not to copy `gen_sys', because in this case
-    // we only read the generators.
-    const Generator_System& gs = gen_sys;
-    // Using the iterator, we read also the pending part of the matrix.
-    const Generator_System::const_iterator gs_begin = gs.begin();
-    const Generator_System::const_iterator gs_end = gs.end();
-
-    // We first need to identify those axes that are unbounded
-    // below and/or above.
-    for (Generator_System::const_iterator i = gs_begin; i != gs_end; ++i) {
-      const Generator& g = *i;
-      Generator::Type g_type = g.type();
-      switch (g_type) {
-      case Generator::LINE:
-	// Any axes `j' in which the coefficient is non-zero is unbounded
-	// both below and above.
-	for (dimension_type j = space_dim; j-- > 0; )
-	  if (g.coefficient(Variable(j)) != 0) {
-	    lower_bound[j] = LBoundary(ERational('-'), LBoundary::OPEN);
-	    upper_bound[j] = UBoundary(ERational('+'), UBoundary::OPEN);
-	  }
-	break;
-      case Generator::RAY:
-	// Axes in which the coefficient is negative are unbounded below.
-	// Axes in which the coefficient is positive are unbounded above.
-	for (dimension_type j = space_dim; j-- > 0; ) {
-	  int sign = sgn(g.coefficient(Variable(j)));
-	  if (sign < 0)
-	    lower_bound[j] = LBoundary(ERational('-'), LBoundary::OPEN);
-	  else if (sign > 0)
-	    upper_bound[j] = UBoundary(ERational('+'), UBoundary::OPEN);
-	}
-	break;
-      case Generator::POINT:
-      case Generator::CLOSURE_POINT:
-	{
-	  Coefficient_traits::const_reference d = g.divisor();
-	  for (dimension_type j = space_dim; j-- > 0; ) {
-	    Coefficient_traits::const_reference n = g.coefficient(Variable(j));
-	    ERational r(n, d);
-	    LBoundary lb(r,(g_type == Generator::CLOSURE_POINT
-			    ? LBoundary::OPEN
-			    : LBoundary::CLOSED));
-	    if (lb < lower_bound[j])
-	      lower_bound[j] = lb;
-	    UBoundary ub(r, (g_type == Generator::CLOSURE_POINT
-			     ? UBoundary::OPEN
-			     : UBoundary::CLOSED));
-	    if (ub > upper_bound[j])
-	      upper_bound[j] = ub;
-	  }
-	}
-	break;
-      }
-    }
-  }
-
-  TEMP_INTEGER(n);
-  TEMP_INTEGER(d);
-
-  // Now shrink the bounded axes.
-  for (dimension_type j = space_dim; j-- > 0; ) {
-    // Lower bound.
-    const LBoundary& lb = lower_bound[j];
-    const ERational& lr = lb.bound();
-    if (lr.direction_of_infinity() == 0) {
-      lr.numerator(n);
-      lr.denominator(d);
-      box.raise_lower_bound(j, lb.is_closed(), n, d);
-    }
-
-    // Upper bound.
-    const UBoundary& ub = upper_bound[j];
-    const ERational& ur = ub.bound();
-    if (ur.direction_of_infinity() == 0) {
-      ur.numerator(n);
-      ur.denominator(d);
-      box.lower_upper_bound(j, ub.is_closed(), n, d);
-    }
-  }
 }
 
 template <typename Partial_Function>
@@ -763,7 +481,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
   assert(OK(true));
 }
 
-#endif
+#endif // 0 // FIX
 
 } // namespace Parma_Polyhedra_Library
 
