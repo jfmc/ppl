@@ -32,9 +32,8 @@ bool
 Grid::minimize(Generator_System& source, Congruence_System& dest) {
   assert(source.num_rows() > 0);
 
-  // Sort the source system, if necessary.
-  if (source.is_sorted() == false)
-    source.sort_rows();
+  if (simplify(source))
+    return true;
 
   // Resize `dest' to be the appropriate square matrix.
   dimension_type dest_num_rows = source.num_columns();
@@ -47,13 +46,13 @@ Grid::minimize(Generator_System& source, Congruence_System& dest) {
   // Initialize `dest' to the identity matrix.
   for (dimension_type i = dest_num_rows; i-- > 0; ) {
     Congruence& dest_i = dest[i];
-    for (dimension_type j = dest_num_rows; j-- > 0; )
-      // FIX i == j every time
-      dest_i[j] = (i == j) ? 1 : 0;
+    dest_i[i] = 1;
+    dimension_type j = dest_num_rows;
+    while (--j > i)
+      dest_i[j] = 0;
+    while (j > 0)
+      dest_i[--j] = 0;
   }
-
-  if (simplify(source))
-    return true;
 
   // Populate `dest' with the congruences characterizing the grid
   // described by the generators in `source'.
@@ -70,7 +69,12 @@ bool
 Grid::minimize(Congruence_System& source, Linear_System& dest) {
   // FIX should grid add single cong?
   // FIX this is for simplify, at least; check minimize callers
+  // FIX is spc_dim 0?
   assert(source.num_rows() > 0);
+
+  source.normalize_moduli();
+  if (simplify(source))
+    return true;
 
   // Resizing `dest' to be the appropriate square matrix.
   dimension_type dest_num_rows = source.num_columns() - 1 /* modulus */;
@@ -82,21 +86,20 @@ Grid::minimize(Congruence_System& source, Linear_System& dest) {
   // Initialize `dest' to the identity matrix.
   for (dimension_type i = dest_num_rows; i-- > 0; ) {
     Linear_Row& dest_i = dest[i];
-    for (dimension_type j = dest_num_rows; j-- > 0; )
-      // FIX comparing i and j every iteration
-      dest_i[j] = (i == j) ? 1 : 0;
+    dest_i[i] = 1;
     dest_i.set_is_line_or_equality();
     dest_i.set_necessarily_closed();
+    dimension_type j = dest_num_rows;
+    while (--j > i)
+      dest_i[j] = 0;
+    while (j > 0)
+      dest_i[--j] = 0;
   }
   dest.set_necessarily_closed();
-  // The identity matrix `dest' is not sorted (see the sorting rules
-  // in Linear_Row.cc).
-  dest.set_sorted(false);
 
-  // FIX move simplify into conversion? (and in other methods)
-  source.normalize_moduli();
-  if (simplify(source))
-    return true;
+  // The identity matrix `dest' is not sorted according to the sorting
+  // rules in Linear_Row.cc.
+  dest.set_sorted(false);
 
   // Populate `dest' with the generators characterizing the grid
   // described by the congruences in `source'.
@@ -214,11 +217,14 @@ Grid::add_and_minimize(Congruence_System& source,
   // Initialize `dest' to the identity matrix.
   for (dimension_type i = dest_num_rows; i-- > 0; ) {
     Linear_Row& dest_i = dest[i];
-    for (dimension_type j = dest_num_rows; j-- > 0; )
-      // FIX comparing i and j every iteration
-      dest_i[j] = (i == j) ? 1 : 0;
+    dest_i[i] = 1;
     dest_i.set_is_line_or_equality();
     dest_i.set_necessarily_closed();
+    dimension_type j = dest_num_rows;
+    while (--j > i)
+      dest_i[j] = 0;
+    while (j > 0)
+      dest_i[--j] = 0;
   }
   dest.set_necessarily_closed();
 
@@ -239,6 +245,9 @@ Grid::add_and_minimize(Generator_System& source,
   // FIX same as minimize methods
   assert(source.num_pending_rows() > 0);
 
+  if (simplify(source))
+    return true;
+
   // Resizing `dest' to be the appropriate square matrix.
   dimension_type dest_num_rows = source.num_columns();
   // FIX pending
@@ -249,14 +258,13 @@ Grid::add_and_minimize(Generator_System& source,
   // Initialize `dest' to the identity matrix.
   for (dimension_type i = dest_num_rows; i-- > 0; ) {
     Congruence& dest_i = dest[i];
-    for (dimension_type j = dest_num_rows; j-- > 0; )
-      // FIX comparing i and j every iteration
-      dest_i[j] = (i == j) ? 1 : 0;
-    dest_i.set_is_equality();
+    dest_i[i] = 1;
+    dimension_type j = dest_num_rows;
+    while (--j > i)
+      dest_i[j] = 0;
+    while (j > 0)
+      dest_i[--j] = 0;
   }
-
-  if (simplify(source))
-    return true;
 
   // Populate `dest' with the congruences characterizing the grid
   // described by the generators in `source'.
