@@ -237,13 +237,11 @@ test7() {
   if (find_variation(cgs0))
     exit(1);
 
-  cgs0.insert((  A + 0*B %=  1) / 0);
-  cgs0.insert(0*A + 1*B %=  1);
+  cgs0.insert((A + 0*B %= 1) / 0);
+  cgs0.insert(0*A + 1*B %= 1);
 
   if (find_variation(cgs0))
     exit(1);
-
-  cgs0.ascii_dump(nout); // FIX
 
   return;
 }
