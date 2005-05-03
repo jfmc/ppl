@@ -30,12 +30,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstddef>
 
 // FIX Temporary tracing stream.
-#if 1
+#if 0
 #include <iostream>
 std::ostream& ctrace = std::cout;
+#define ctrace_dump(sys) sys.ascii_dump(ctrace)
 #else
 #include <fstream>
 std::ofstream ctrace;
+#define ctrace_dump(sys)
 #endif
 
 namespace Parma_Polyhedra_Library {
@@ -48,9 +50,9 @@ dimension_type
 Grid::conversion(Congruence_System& source, Linear_System& dest) {
   ctrace << "============= convert cgs to gs" << std::endl
 	<< "source:" << std::endl;
-  source.ascii_dump(ctrace);
+  ctrace_dump(source);
   ctrace << "dest:" << std::endl;
-  dest.ascii_dump(ctrace);
+  ctrace_dump(dest);
 
   // Quite similar to the congruence to parameter version below.
   // Changes here may be needed there too.
@@ -94,7 +96,7 @@ Grid::conversion(Congruence_System& source, Linear_System& dest) {
   }
 
   ctrace << "dest after init:" << std::endl;
-  dest.ascii_dump(ctrace);
+  ctrace_dump(dest);
 
   for (col = 0; col < num_rows; ++col) {
     ctrace << "col: " << col << std::endl;
@@ -110,7 +112,7 @@ Grid::conversion(Congruence_System& source, Linear_System& dest) {
     while (row > 0) {
       row--;
       ctrace << "  row " << row << std::endl;
-      dest.ascii_dump(ctrace);
+      ctrace_dump(dest);
 
       Linear_Row& gen = dest[row];
 
@@ -124,12 +126,12 @@ Grid::conversion(Congruence_System& source, Linear_System& dest) {
       multiplier = source_diag / multiplier;
       ctrace << "    multiplier " << multiplier << std::endl;
 
-      /* Multiply the destination grid by the multiplier.  FIX Only
-	 multiply congruences, as equalities are equivalent under
-	 multiplication and the virtual rows just ensure a regular
+      /* Multiply the destination grid by the multiplier.  Only
+	 multiply parameters, as lines are equivalent under
+	 multiplication and the virtual rows just ensure a square
 	 matrix.  */
       if (multiplier != 1)
-	if (gen.is_virtual() /*FIX?*/ || gen.is_line_or_equality())
+	if (gen.is_virtual() || gen.is_line_or_equality())
 	  // Multiply every element of the equality.
 	  for (dimension_type column = 0; column < num_rows; ++column)
 	    gen[column] *= multiplier;
@@ -142,31 +144,26 @@ Grid::conversion(Congruence_System& source, Linear_System& dest) {
 	    for (dimension_type column = 0; column < num_rows; ++column)
 	      generator[column] *= multiplier;
 	  }
+#ifndef NDEBUG
 	else
 	  throw std::runtime_error("PPL internal error: Grid conversion: failed to match row type.");
+#endif
 
       gen[col] /= source_diag;
     }
     ctrace << "dest after processing following rows:" << std::endl;
-    dest.ascii_dump(ctrace);
+    ctrace_dump(dest);
 
     /* Change the destination from the source rows that follow the
        current column.
 
-    FIX
+       FIX
 
        Keep in mind square.
-
-    FIX (for gs to cs)
-       For every source col above in every row below the equiv row in
-       the dest subtract the product of the source col and the same
-       col in the destination from the dest element vertically
-       symmetrical in the dest row to that dest element.
     */
-    // FIX (gs to cgs) ~~ index is the column/row in the source
     for (dimension_type index = col + 1; index < num_rows; ++index) {
       ctrace << "  index: " << index << " col: " << col << std::endl;
-      TEMP_INTEGER(source_col); // FIX name
+      TEMP_INTEGER(source_col);
       source_col = source[index][col];
       ctrace << "  rows:" << std::endl;
       // Matrix is upper triangular so row starts at col.
@@ -181,7 +178,7 @@ Grid::conversion(Congruence_System& source, Linear_System& dest) {
       }
     }
     ctrace << "dest after processing preceding rows:" << std::endl;
-    dest.ascii_dump(ctrace);
+    ctrace_dump(dest);
   }
 
   ctrace << "------------------- cgs to gs conversion done." << std::endl;
@@ -193,9 +190,9 @@ dimension_type
 Grid::conversion(Generator_System& source, Congruence_System& dest) {
   ctrace << "============= convert gs to cgs" << std::endl
 	<< "source:" << std::endl;
-  source.ascii_dump(ctrace);
+  ctrace_dump(source);
   ctrace << "dest:" << std::endl;
-  dest.ascii_dump(ctrace);
+  ctrace_dump(dest);
 
   // Quite similar to the parameter to congruence version above.
   // Changes here may be needed there too.
@@ -232,37 +229,37 @@ Grid::conversion(Generator_System& source, Congruence_System& dest) {
     }
     else if (row.is_ray_or_point_or_inequality()) {
       ctrace << "     rpi" << std::endl;
-      dest[col][num_rows] = 1 /* FIX */; // A congruence.
+      dest[col][num_rows] = 1;	// A congruence.
       dest[col][col] = diagonal_lcm / source[col][col];
     }
     else if (row.is_line_or_equality())
       dest[col].set_is_virtual();
+#ifndef NDEBUG
     else
       throw std::runtime_error("PPL internal error: Grid conversion: failed to match row type.");
+#endif
     ++col;
   }
 
   ctrace << "dest after init:" << std::endl;
-  dest.ascii_dump(ctrace);
+  ctrace_dump(dest);
 
-  while (col) {  // FIX why was this --col? (added next line afterwards)
+  while (col) {
     col--;
     ctrace << "col: " << col << std::endl;
     /* Change from the source rows that follow the current column.
        FIX
        FIX Matrix is upper triangular so the row starts at col+1
     */
+    TEMP_INTEGER(source_diag);
+    source_diag = source[col][col];
     for (dimension_type row = col + 1; row < num_rows; ++row) {
       ctrace << "  row " << row << std::endl;
-      dest.ascii_dump(ctrace);
+      ctrace_dump(dest);
 
       Congruence& cg = dest[row];
       if (cg.is_virtual())
 	continue;
-
-      // FIX why inside loop? perhaps source changes?
-      TEMP_INTEGER(source_diag);
-      source_diag = source[col][col];
 
       TEMP_INTEGER(multiplier);
       // FIX multiplier like reduced source_diag (wrt assoc ele in dest row num row)
@@ -270,12 +267,12 @@ Grid::conversion(Generator_System& source, Congruence_System& dest) {
       gcd_assign(multiplier, cg[col], source_diag);
       multiplier = source_diag / multiplier;
 
-      /* Multiply the desination grid by the multiplier.  FIX Only
+      /* Multiply the desination grid by the multiplier.  Only
 	 multiply congruences, as equalities are equivalent under
 	 multiplication and the virtual rows just ensure a regular
 	 matrix.  */
       if (multiplier != 1)
-	if (cg.is_virtual() /*FIX?*/ || cg.is_equality())
+	if (cg.is_virtual() || cg.is_equality())
 	  // Multiply every element of the equality.
 	  for (dimension_type column = 0; column < num_rows; ++column)
 	    cg[column] *= multiplier;
@@ -292,7 +289,7 @@ Grid::conversion(Generator_System& source, Congruence_System& dest) {
       cg[col] /= source_diag;
     }
     ctrace << "dest after processing following rows:" << std::endl;
-    dest.ascii_dump(ctrace);
+    ctrace_dump(dest);
 
     /* Change from the source rows that precede the current column.
        FIX
@@ -304,12 +301,11 @@ Grid::conversion(Generator_System& source, Congruence_System& dest) {
        col in the destination from the dest element vertically
        symmetrical in the dest row to that dest element.
     */
-    // FIX ~~ index is the column/row in the source
     dimension_type index = col;
     while (index) {
       index--;
       ctrace << "  index: " << index << " col: " << col << std::endl;
-      TEMP_INTEGER(source_col); // FIX name
+      TEMP_INTEGER(source_col);
       source_col = source[index][col];
       ctrace << "  rows:" << std::endl;
       for (dimension_type row = col; row < num_rows; ++row) {
@@ -321,8 +317,9 @@ Grid::conversion(Generator_System& source, Congruence_System& dest) {
       }
     }
     ctrace << "dest after processing preceding rows:" << std::endl;
-    dest.ascii_dump(ctrace);
+    ctrace_dump(dest);
   }
+  // Set the modulus in every congruence.
   TEMP_INTEGER(modulus);
   modulus = dest[0][0];
   for (dimension_type row = 0; row < num_rows; ++row) {
@@ -331,8 +328,8 @@ Grid::conversion(Generator_System& source, Congruence_System& dest) {
       continue;
     cg[num_rows] = modulus;
   }
-  ctrace << "dest after adding moduli:" << std::endl;
-  dest.ascii_dump(ctrace);
+  ctrace << "dest after setting moduli:" << std::endl;
+  ctrace_dump(dest);
 
   ctrace << "------------------- gs to cgs conversion done." << std::endl;
 
