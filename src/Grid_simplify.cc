@@ -298,8 +298,10 @@ Grid::simplify(Generator_System& sys) {
 	    std::swap(row, pivot);
 	    reduce_line_with_parameter(row, pivot, col, sys);
 	  }
+#ifndef NDEBUG
 	  else
 	    throw std::runtime_error("PPL internal error: Grid simplify: failed to match row type (1).");
+#endif
 	}
 	else if (row.is_ray_or_point_or_inequality()) {
 	  if (pivot.is_virtual()) {
@@ -312,11 +314,15 @@ Grid::simplify(Generator_System& sys) {
 	    reduce_line_with_parameter(row, pivot, col, sys);
 	  else if (pivot.is_ray_or_point_or_inequality())
 	    reduce_pc_with_pc(row, pivot, col);
+#ifndef NDEBUG
 	  else
 	    throw std::runtime_error("PPL internal error: Grid simplify: failed to match row type (2).");
+#endif
 	}
+#ifndef NDEBUG
 	else
 	  throw std::runtime_error("PPL internal error: Grid simplify: failed to match row type (3).");
+#endif
 	++row_index;
       }
       if (col != pivot_num) {
