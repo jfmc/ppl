@@ -56,31 +56,20 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
   // TODO: this implementation is just an executable specification.
   Congruence_System cgs = ccgs;
 
-  const dimension_type cgs_space_dim = cgs.space_dimension();
-#if 0
-  // Try to adapt `cgs' to the required topology.
-  // FIX need adjust_space_dimension? think for general constr's
-  if (!cgs.adjust_topology_and_space_dimension(topol, cgs_space_dim))
-    throw_topology_incompatible((topol == NECESSARILY_CLOSED)
-				? "C_Polyhedron(cgs)"
-				: "NNC_Polyhedron(cgs)", "cgs", cgs);
-#endif
-
   // Set the space dimension.
-  space_dim = cgs_space_dim;
+  space_dim = cgs.space_dimension();
 
   if (space_dim > 0) {
     // Stealing the rows from `cgs'.
     std::swap(con_sys, cgs);
     simplify(con_sys);
-#if 0 // FIX
+#if 0 // FIX pending
     if (con_sys.num_pending_rows() > 0) {
       // Even though `cgs' has pending constraints, since the generators
       // of the polyhedron are not up-to-date, the polyhedron cannot
       // have pending constraints. By integrating the pending part
       // of `con_sys' we may loose sortedness.
       con_sys.unset_pending_rows();
-      con_sys.set_sorted(false);
     }
 #endif
     add_low_level_congruences(con_sys);
@@ -92,7 +81,7 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
       // See if an inconsistent congruence has been passed.
       for (dimension_type i = cgs.num_rows(); i-- > 0; )
 	if (cgs[i].is_trivial_false()) {
-	  // Inconsistent constraint found: the polyhedron is empty.
+	  // Inconsistent constraint found: the grid is empty.
 	  set_empty();
 	  break;
 	}
@@ -100,14 +89,14 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
   assert(OK());
 }
 
-// FIX add  void construct(Generator_System& cgs)?
+// FIX add  void construct(Generator_System& const_gs)?
 void
-PPL::Grid::construct(const Generator_System& cgs) {
+PPL::Grid::construct(const Generator_System& const_gs) {
   // Protecting against space dimension overflow is up to the caller.
-  assert(cgs.space_dimension() <= max_space_dimension());
+  assert(const_gs.space_dimension() <= max_space_dimension());
 
   // TODO: this implementation is just an executable specification.
-  Generator_System gs = cgs;
+  Generator_System gs = const_gs;
 
   // An empty set of generators defines the empty grid.
   if (gs.num_rows() == 0) {
@@ -118,28 +107,24 @@ PPL::Grid::construct(const Generator_System& cgs) {
 
   // Non-empty valid generator systems have a supporting point, at least.
   if (!gs.has_points())
-    throw_invalid_generators("Grid(gs)" /* FIX correct? */, "gs");
+    throw_invalid_generators("Grid(const_gs)", "gs");
 
   const dimension_type gs_space_dim = gs.space_dimension();
-#if 0
-  // Try to adapt `gs' to the required topology.
-  if (!gs.adjust_topology_and_space_dimension(topol, gs_space_dim))
-    throw_topology_incompatible((topol == NECESSARILY_CLOSED)
-				? "C_Polyhedron(gs)"
-				: "NNC_Polyhedron(gs)", "gs", gs);
-#endif
+
+  if (gs.is_necessarily_closed() == false) {
+    // A NOT_NECESSARILY_CLOSED generator system can be converted in
+    // to a NECESSARILY_CLOSED one only if it does not contain closure
+    // points.
+    if (gs.has_closure_points())
+      throw_topology_incompatible("Grid(const_gs)", "const_gs", gs);
+    gs.remove_trailing_columns(1); // The epsilon coefficient column.
+    gs.set_necessarily_closed();
+  }
 
   if (gs_space_dim > 0) {
     // Stealing the rows from `gs'.
     std::swap(gen_sys, gs);
     simplify(gen_sys);
-#if 0
-    // FIX how in grid?
-    // In a generator system describing a NNC polyhedron,
-    // for each point we must also have the corresponding closure point.
-    if (topol == NOT_NECESSARILY_CLOSED)
-      gen_sys.add_corresponding_closure_points();
-#endif
     if (gen_sys.num_pending_rows() > 0) {
       // FIX
       // Even though `gs' has pending generators, since the constraints
@@ -231,228 +216,6 @@ PPL::Grid::parameterize(Generator_System& sys, Generator& reference_row,
   return sys;
 }
 
-#if 0
-
-PPL::Grid::Grid(const Grid& y)
-  : con_sys(y.topology()),
-    gen_sys(y.topology()),
-    status(y.status),
-    space_dim(y.space_dim) {
-  // Being a protected method, we simply assert that topologies do match.
-  assert(topology() == y.topology());
-  if (y.congruences_are_up_to_date())
-    con_sys = y.con_sys;
-  if (y.generators_are_up_to_date())
-    gen_sys = y.gen_sys;
-}
-
-PPL::Grid::Grid(const Topology topol, const Congruence_System& ccs)
-  : con_sys(topol),
-    gen_sys(topol) {
-  // Protecting against space dimension overflow is up to the caller.
-  assert(ccs.space_dimension() <= max_space_dimension());
-
-  // TODO: this implementation is just an executable specification.
-  Congruence_System cs = ccs;
-
-  // Try to adapt `cs' to the required topology.
-  const dimension_type cs_space_dim = cs.space_dimension();
-  if (!cs.adjust_topology_and_space_dimension(topol, cs_space_dim))
-    throw_topology_incompatible((topol == NECESSARILY_CLOSED)
-				? "C_Polyhedron(cs)"
-				: "NNC_Polyhedron(cs)", "cs", cs);
-
-  // Set the space dimension.
-  space_dim = cs_space_dim;
-
-  if (space_dim > 0) {
-    // Stealing the rows from `cs'.
-    std::swap(con_sys, cs);
-    if (con_sys.num_pending_rows() > 0) {
-      // Even though `cs' has pending congruences, since the generators
-      // of the polyhedron are not up-to-date, the polyhedron cannot
-      // have pending congruences. By integrating the pending part
-      // of `con_sys' we may loose sortedness.
-      con_sys.unset_pending_rows();
-      con_sys.set_sorted(false);
-    }
-    add_low_level_congruences(con_sys);
-    set_congruences_up_to_date();
-  }
-  else {
-    // Here `space_dim == 0'.
-    if (cs.num_columns() > 0)
-      // See if an inconsistent congruence has been passed.
-      for (dimension_type i = cs.num_rows(); i-- > 0; )
-	if (cs[i].is_trivial_false()) {
-	  // Inconsistent congruence found: the polyhedron is empty.
-	  set_empty();
-	  break;
-	}
-  }
-  assert(OK());
-}
-
-PPL::Grid::Grid(const Topology topol, Congruence_System& cs)
-  : con_sys(topol),
-    gen_sys(topol) {
-  // Protecting against space dimension overflow is up to the caller.
-  assert(cs.space_dimension() <= max_space_dimension());
-
-  // Try to adapt `cs' to the required topology.
-  const dimension_type cs_space_dim = cs.space_dimension();
-  if (!cs.adjust_topology_and_space_dimension(topol, cs_space_dim))
-    throw_topology_incompatible((topol == NECESSARILY_CLOSED)
-				? "C_Polyhedron(cs)"
-				: "NNC_Polyhedron(cs)", "cs", cs);
-
-  // Set the space dimension.
-  space_dim = cs_space_dim;
-
-  if (space_dim > 0) {
-    // Stealing the rows from `cs'.
-    std::swap(con_sys, cs);
-    if (con_sys.num_pending_rows() > 0) {
-      // Even though `cs' has pending congruences, since the generators
-      // of the polyhedron are not up-to-date, the polyhedron cannot
-      // have pending congruences. By integrating the pending part
-      // of `con_sys' we may loose sortedness.
-      con_sys.unset_pending_rows();
-      con_sys.set_sorted(false);
-    }
-    add_low_level_congruences(con_sys);
-    set_congruences_up_to_date();
-  }
-  else {
-    // Here `space_dim == 0'.
-    if (cs.num_columns() > 0)
-      // See if an inconsistent congruence has been passed.
-      for (dimension_type i = cs.num_rows(); i-- > 0; )
-	if (cs[i].is_trivial_false()) {
-	  // Inconsistent congruence found: the polyhedron is empty.
-	  set_empty();
-	  break;
-	}
-  }
-  assert(OK());
-}
-
-PPL::Grid::Grid(const Topology topol, const Generator_System& cgs)
-  : con_sys(topol),
-    gen_sys(topol) {
-  // Protecting against space dimension overflow is up to the caller.
-  assert(cgs.space_dimension() <= max_space_dimension());
-
-  // TODO: this implementation is just an executable specification.
-  Generator_System gs = cgs;
-
-  // An empty set of generators defines the empty polyhedron.
-  if (gs.num_rows() == 0) {
-    space_dim = gs.space_dimension();
-    status.set_empty();
-    return;
-  }
-
-  // Non-empty valid generator systems have a supporting point, at least.
-  if (!gs.has_points())
-    throw_invalid_generators((topol == NECESSARILY_CLOSED)
-			     ? "C_Polyhedron(gs)"
-			     : "NNC_Polyhedron(gs)", "gs");
-
-  const dimension_type gs_space_dim = gs.space_dimension();
-  // Try to adapt `gs' to the required topology.
-  if (!gs.adjust_topology_and_space_dimension(topol, gs_space_dim))
-    throw_topology_incompatible((topol == NECESSARILY_CLOSED)
-				? "C_Polyhedron(gs)"
-				: "NNC_Polyhedron(gs)", "gs", gs);
-
-  if (gs_space_dim > 0) {
-    // Stealing the rows from `gs'.
-    std::swap(gen_sys, gs);
-    // In a generator system describing a NNC polyhedron,
-    // for each point we must also have the corresponding closure point.
-    if (topol == NOT_NECESSARILY_CLOSED)
-      gen_sys.add_corresponding_closure_points();
-    if (gen_sys.num_pending_rows() > 0) {
-      // Even though `gs' has pending generators, since the congruences
-      // of the polyhedron are not up-to-date, the polyhedron cannot
-      // have pending generators. By integrating the pending part
-      // of `gen_sys' we may loose sortedness.
-      gen_sys.unset_pending_rows();
-      gen_sys.set_sorted(false);
-    }
-    // Generators are now up-to-date.
-    set_generators_up_to_date();
-
-    // Set the space dimension.
-    space_dim = gs_space_dim;
-    assert(OK());
-    return;
-  }
-
-  // Here `gs.num_rows > 0' and `gs_space_dim == 0':
-  // we already checked for both the topology-compatibility
-  // and the supporting point.
-  space_dim = 0;
-}
-
-PPL::Grid::Grid(const Topology topol, Generator_System& gs)
-  : con_sys(topol),
-    gen_sys(topol) {
-  // Protecting against space dimension overflow is up to the caller.
-  assert(gs.space_dimension() <= max_space_dimension());
-
-  // An empty set of generators defines the empty polyhedron.
-  if (gs.num_rows() == 0) {
-    space_dim = gs.space_dimension();
-    status.set_empty();
-    return;
-  }
-
-  // Non-empty valid generator systems have a supporting point, at least.
-  if (!gs.has_points())
-    throw_invalid_generators((topol == NECESSARILY_CLOSED)
-			     ? "C_Polyhedron(gs)"
-			     : "NNC_Polyhedron(gs)", "gs");
-
-  const dimension_type gs_space_dim = gs.space_dimension();
-  // Try to adapt `gs' to the required topology.
-  if (!gs.adjust_topology_and_space_dimension(topol, gs_space_dim))
-    throw_topology_incompatible((topol == NECESSARILY_CLOSED)
-				? "C_Polyhedron(gs)"
-				: "NNC_Polyhedron(gs)", "gs", gs);
-
-  if (gs_space_dim > 0) {
-    // Stealing the rows from `gs'.
-    std::swap(gen_sys, gs);
-    // In a generator system describing a NNC polyhedron,
-    // for each point we must also have the corresponding closure point.
-    if (topol == NOT_NECESSARILY_CLOSED)
-      gen_sys.add_corresponding_closure_points();
-    if (gen_sys.num_pending_rows() > 0) {
-      // Even though `gs' has pending generators, since the congruences
-      // of the polyhedron are not up-to-date, the polyhedron cannot
-      // have pending generators. By integrating the pending part
-      // of `gen_sys' we may loose sortedness.
-      gen_sys.unset_pending_rows();
-      gen_sys.set_sorted(false);
-    }
-    // Generators are now up-to-date.
-    set_generators_up_to_date();
-
-    // Set the space dimension.
-    space_dim = gs_space_dim;
-    assert(OK());
-    return;
-  }
-
-  // Here `gs.num_rows > 0' and `gs_space_dim == 0':
-  // we already checked for both the topology-compatibility
-  // and the supporting point.
-  space_dim = 0;
-}
-
-#endif
 PPL::Grid::Three_Valued_Boolean
 PPL::Grid::quick_equivalence_test(const Grid& y) const {
   std::cout << "quick_equivalence_test" << std::endl;
@@ -958,7 +721,7 @@ PPL::Grid::throw_runtime_error(const char* method) const {
 
 void
 PPL::Grid::throw_invalid_argument(const char* method,
-					const char* reason) const {
+				  const char* reason) const {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
     << reason << ".";
@@ -967,28 +730,8 @@ PPL::Grid::throw_invalid_argument(const char* method,
 
 void
 PPL::Grid::throw_topology_incompatible(const char* method,
-				       const char* ph_name,
-				       const Grid& ph) const {
-  std::ostringstream s;
-  s << "PPL::Grid::" << method << ":" << std::endl
-    << ph_name << " is a Grid." << std::endl;
-  throw std::invalid_argument(s.str());
-}
-
-void
-PPL::Grid::throw_topology_incompatible(const char* method,
-					     const char* c_name,
-					     const Congruence&) const {
-  std::ostringstream s;
-  s << "PPL::C_Grid::" << method << ":" << std::endl
-    << c_name << " is a strict inequality.";
-  throw std::invalid_argument(s.str());
-}
-
-void
-PPL::Grid::throw_topology_incompatible(const char* method,
-					     const char* g_name,
-					     const Generator&) const {
+				       const char* g_name,
+				       const Generator&) const {
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
     << g_name << " is a closure point.";
@@ -997,18 +740,8 @@ PPL::Grid::throw_topology_incompatible(const char* method,
 
 void
 PPL::Grid::throw_topology_incompatible(const char* method,
-					     const char* cs_name,
-					     const Congruence_System&) const {
-  std::ostringstream s;
-  s << "PPL::C_Polyhedron::" << method << ":" << std::endl
-    << cs_name << " contains strict inequalities.";
-  throw std::invalid_argument(s.str());
-}
-
-void
-PPL::Grid::throw_topology_incompatible(const char* method,
-					     const char* gs_name,
-					     const Generator_System&) const {
+				       const char* gs_name,
+				       const Generator_System&) const {
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
     << gs_name << " contains closure points.";
@@ -1017,8 +750,8 @@ PPL::Grid::throw_topology_incompatible(const char* method,
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					      const char* other_name,
-					      dimension_type other_dim) const {
+					const char* other_name,
+					dimension_type other_dim) const {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension() << ", "
@@ -1028,50 +761,50 @@ PPL::Grid::throw_dimension_incompatible(const char* method,
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					      const char* ph_name,
-					      const Grid& ph) const {
+					const char* ph_name,
+					const Grid& ph) const {
   throw_dimension_incompatible(method, ph_name, ph.space_dimension());
 }
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					      const char* e_name,
-					      const Linear_Expression& e) const {
+					const char* e_name,
+					const Linear_Expression& e) const {
   throw_dimension_incompatible(method, e_name, e.space_dimension());
 }
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					      const char* c_name,
-					      const Congruence& c) const {
+					const char* c_name,
+					const Congruence& c) const {
   throw_dimension_incompatible(method, c_name, c.space_dimension());
 }
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					      const char* g_name,
-					      const Generator& g) const {
+					const char* g_name,
+					const Generator& g) const {
   throw_dimension_incompatible(method, g_name, g.space_dimension());
 }
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					      const char* cs_name,
-					      const Congruence_System& cs) const {
+					const char* cs_name,
+					const Congruence_System& cs) const {
   throw_dimension_incompatible(method, cs_name, cs.space_dimension());
 }
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					      const char* gs_name,
-					      const Generator_System& gs) const {
+					const char* gs_name,
+					const Generator_System& gs) const {
   throw_dimension_incompatible(method, gs_name, gs.space_dimension());
 }
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					      const char* var_name,
-					      const Variable var) const {
+					const char* var_name,
+					const Variable var) const {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension() << ", "
@@ -1101,7 +834,7 @@ PPL::Grid::throw_space_dimension_overflow(const char* method,
 
 void
 PPL::Grid::throw_invalid_generator(const char* method,
-					 const char* g_name) const {
+				   const char* g_name) const {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
     << "*this is an empty polyhedron and "
@@ -1111,7 +844,7 @@ PPL::Grid::throw_invalid_generator(const char* method,
 
 void
 PPL::Grid::throw_invalid_generators(const char* method,
-					  const char* gs_name) const {
+				    const char* gs_name) const {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
     << "*this is an empty polyhedron and" << std::endl

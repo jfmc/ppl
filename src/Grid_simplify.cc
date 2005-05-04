@@ -229,8 +229,9 @@ Grid::simplify(Generator_System& sys) {
   // FIX at least to please assertion in linear_row::is_sorted
   sys.set_sorted(false);
 
-  // For each column col find or construct a row (pivot) in which the
-  // value at position `col' is non-zero.
+  // For each column `col' find or construct a row (pivot) in which
+  // the value at position `col' is non-zero FIX and other zero such
+  // that triangular.
   for (dimension_type col = 0; col < sys.row_size; ++col) {
     strace << "col " << col << std::endl;
     dimension_type num_rows = sys.num_rows();
@@ -238,7 +239,7 @@ Grid::simplify(Generator_System& sys) {
     // Start at the diagonal (col, col).
     dimension_type row_index = col;
     strace << "  row_index " << row_index << std::endl;
-    // Move over rows which have zero in column col.
+    // Move down over rows which have zero in column col.
     while (row_index < num_rows && sys[row_index][col] == 0)
       ++row_index;
     if (row_index >= num_rows) {

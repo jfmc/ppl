@@ -372,7 +372,7 @@ public:
     \param cs
     The system of congruences defining the grid.
   */
-  Grid(const Congruence_System& cs);
+  Grid(const Congruence_System& cgs);
 
   //! Builds a grid recycling a system of congruences.
   /*!
@@ -383,7 +383,7 @@ public:
     declared <CODE>const</CODE> because its data-structures will be
     recycled to build the grid.
   */
-  Grid(Congruence_System& cs);
+  Grid(Congruence_System& cgs);
 
   //! Builds a grid from a system of generators.
   /*!
@@ -395,7 +395,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  Grid(const Generator_System& gs);
+  Grid(const Generator_System& const_gs);
 
   //! Builds a grid recycling a system of generators.
   /*!
@@ -1190,6 +1190,14 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
+#ifndef NDEBUG
+  //! If \p sys is lower triangular return true, else return false.
+  static bool lower_triangular(const Congruence_System& sys);
+
+  //! If \p sys is upper triangular return true, else return false.
+  static bool upper_triangular(const Generator_System& sys);
+#endif
+
   //@} // Miscellaneous Member Functions
 
 private:
@@ -1621,17 +1629,8 @@ protected:
   void throw_invalid_argument(const char* method, const char* reason) const;
 
   void throw_topology_incompatible(const char* method,
-				   const char* gr_name,
-				   const Grid& gr) const;
-  void throw_topology_incompatible(const char* method,
-				   const char* c_name,
-				   const Congruence& c) const;
-  void throw_topology_incompatible(const char* method,
 				   const char* g_name,
 				   const Generator& g) const;
-  void throw_topology_incompatible(const char* method,
-				   const char* cs_name,
-				   const Congruence_System& cs) const;
   void throw_topology_incompatible(const char* method,
 				   const char* gs_name,
 				   const Generator_System& gs) const;

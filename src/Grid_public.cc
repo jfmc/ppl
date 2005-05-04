@@ -42,6 +42,7 @@ PPL::Grid::Grid(dimension_type num_dimensions,
 				   "n exceeds the maximum "
 				   "allowed space dimension");
 
+  // FIX is this ok if oom/excptn?
   con_sys = Congruence_System();
   gen_sys = Generator_System(NECESSARILY_CLOSED);
 
@@ -450,7 +451,7 @@ PPL::Grid::OK(bool check_not_empty) const {
 #endif
       goto fail;
     }
-#endif // 0 FIX
+#endif // 0 FIX pending
     if (con_sys.num_rows() != 0 // FIX check
 	&& con_sys.space_dimension() != space_dim) {
 #ifndef NDEBUG
@@ -477,10 +478,8 @@ PPL::Grid::OK(bool check_not_empty) const {
     }
     if (con_sys.num_rows() != 0 || gen_sys.num_rows() != 0) {
 #ifndef NDEBUG
-      cerr << "Zero-dimensional grid with a non-empty"
-	   << endl
-	   << "system of congruences or generators."
-	   << endl;
+      cerr << "Zero-dimensional grid with a non-empty" << endl
+	   << "system of congruences or generators." << endl;
 #endif
       goto fail;
     }
@@ -525,7 +524,6 @@ PPL::Grid::OK(bool check_not_empty) const {
       goto fail;
     }
 
-
     // Check if the system of generators is well-formed.  Check by
     // hand, as many valid characteristics of a parameter system will
     // fail Generator_System::OK.
@@ -555,8 +553,6 @@ PPL::Grid::OK(bool check_not_empty) const {
       }
     }
 
-    // FIX check triangular, as in Grid_conv assert
-
     // FIX gen_sys.f_p_r == size instead?
     if (gen_sys.first_pending_row() == 0) {
 #ifndef NDEBUG
@@ -578,12 +574,21 @@ PPL::Grid::OK(bool check_not_empty) const {
     }
 
     if (generators_are_minimized()) {
-      // A reduced parameter system must be the same as a temporary
-      // reduced copy.
       Generator_System gs = gen_sys;
       // Leave `index_first_pending' as it is in `gs', because it is
       // equal to the new number of rows in `gs'.
       gs.erase_to_end(gen_sys.first_pending_row());
+
+      // A reduced parameter system must be upper triangular.
+      if (upper_triangular(gs) == false) {
+#ifndef NDEBUG
+	cerr << "Reduced parameters should be upper triangular." << endl;
+#endif
+	goto fail;
+      }
+
+      // A reduced parameter system must be the same as a temporary
+      // reduced copy.
       gs.unset_pending_rows();
       Generator_System gs_copy = gs;
       simplify(gs);
@@ -598,8 +603,8 @@ PPL::Grid::OK(bool check_not_empty) const {
 	    continue;
 	message_fail:
 #ifndef NDEBUG
-	  cerr << "Generators are declared minimized, but they change under reduction.\n"
-	       << "Here is the generator system:\n";
+	  cerr << "Parameters are declared minimized, but they change under reduction.\n"
+	       << "Here is the parameter system:\n";
 	  gs_copy.ascii_dump(cerr);
 	  cerr << "and here is the minimized form of the temporary copy:\n";
 	  gs.ascii_dump(cerr);
@@ -653,17 +658,15 @@ PPL::Grid::OK(bool check_not_empty) const {
     }
 
     if (congruences_are_minimized()) {
-      // A non-empty reduced system of congruences describing a grid
-      // must contain a congruence with a non-zero inhomogeneous term.
-      for (dimension_type i = con_sys.num_rows(); i-- > 0; )
-	if (con_sys[i][0] != 0)
-	  goto found;
+      // FIX pending  (both below) check minimized part of gs copy
+
+      // A reduced congruence system must be lower triangular.
+      if (lower_triangular(con_sys) == false) {
 #ifndef NDEBUG
-      cerr << "Non-empty congruence system with all inhomogeneous terms zero."
-	   << endl;
+	cerr << "Reduced congruences should be lower triangular." << endl;
 #endif
-      goto fail;
-    found:
+	goto fail;
+      }
 
       // If the congruences are minimized, all the elements in the
       // congruence system must be the same as those in the temporary,
@@ -673,8 +676,10 @@ PPL::Grid::OK(bool check_not_empty) const {
 	  if (cs[row][col] == cs_copy[row][col])
 	    continue;
 #ifndef NDEBUG
-	  cerr << "Generators are declared minimized, but they change under reduction!\n"
-	       << "Here is the minimized form of the generator system:\n";
+	  cerr << "Generators are declared minimized, but they change under reduction!"
+	       << endl
+	       << "Here is the minimized form of the generator system:"
+	       << endl;
 	  cs.ascii_dump(cerr);
 	  cerr << endl;
 #endif
@@ -716,11 +721,6 @@ PPL::Grid::OK(bool check_not_empty) const {
 
 void
 PPL::Grid::add_congruence(const Congruence& cg) {
-#if 0
-  // Topology-compatibility check.
-  if (cg.is_strict_inequality() && is_necessarily_closed())
-    throw_topology_incompatible("add_congruence(cg)", "cg", cg);
-#endif
   // Dimension-compatibility check: the dimension of `cg' can not be
   // greater than space_dim.
   if (space_dim < cg.space_dimension())
@@ -803,8 +803,9 @@ PPL::Grid::add_congruence_and_minimize(const Congruence& cg) {
 void
 PPL::Grid::add_generator(const Generator& g) {
   // Topology-compatibility check.
-  if (g.is_closure_point() && is_necessarily_closed())
+  if (g.is_closure_point())
     throw_topology_incompatible("add_generator(g)", "g", g);
+  // FIX handle nnc g
   // Dimension-compatibility check:
   // the dimension of `g' can not be greater than space_dim.
   const dimension_type g_space_dim = g.space_dimension();
@@ -943,11 +944,6 @@ PPL::Grid::add_generator_and_minimize(const Generator& g) {
 
 void
 PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
-#if 0
-  // Topology compatibility check.
-  if (is_necessarily_closed() && cgs.has_strict_inequalities())
-    throw_topology_incompatible("add_congruences(cgs)", "cgs", cgs);
-#endif
   // Dimension-compatibility check: the dimension of `cgs' can not be
   // greater than space_dim.
   const dimension_type cgs_space_dim = cgs.space_dimension();
@@ -1039,12 +1035,6 @@ PPL::Grid::add_congruences(const Congruence_System& cgs) {
 
 bool
 PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
-  // Topology-compatibility check.
-#if 0
-  if (is_necessarily_closed() && cgs.has_strict_inequalities())
-    throw_topology_incompatible("add_recycled_congruences_and_minimize(cgs)",
-				"cgs", cgs);
-#endif
   // Dimension-compatibility check: the dimension of `cgs' can not be
   // greater than space_dim.
   const dimension_type cgs_space_dim = cgs.space_dimension();
@@ -1117,11 +1107,10 @@ PPL::Grid::add_congruences_and_minimize(const Congruence_System& cgs) {
 
 void
 PPL::Grid::add_recycled_generators(Generator_System& gs) {
-#if 0
   // Topology compatibility check.
-  if (is_necessarily_closed() && gs.has_closure_points())
+  if (gs.has_closure_points())
     throw_topology_incompatible("add_recycled_generators(gs)", "gs", gs);
-#endif
+  // FIX handle nnc gs
   // Dimension-compatibility check:
   // the dimension of `gs' can not be greater than space_dim.
   const dimension_type gs_space_dim = gs.space_dimension();
@@ -1247,12 +1236,11 @@ PPL::Grid::add_generators(const Generator_System& gs) {
 
 bool
 PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
-#if 0
   // Topology compatibility check.
-  if (is_necessarily_closed() && gs.has_closure_points())
+  if (gs.has_closure_points())
     throw_topology_incompatible("add_recycled_generators_and_minimize(gs)",
 				"gs", gs);
-#endif
+  // FIX handle nnc gs
   // Dimension-compatibility check: the dimension of `gs' must be less
   // than or equal to that of space_dim.
   const dimension_type gs_space_dim = gs.space_dimension();
@@ -1354,9 +1342,6 @@ PPL::Grid::add_generators_and_minimize(const Generator_System& gs) {
 void
 PPL::Grid::intersection_assign(const Grid& y) {
   Grid& x = *this;
-  // Topology compatibility check.
-  if (x.topology() != y.topology())
-    throw_topology_incompatible("intersection_assign(y)", "y", y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("intersection_assign(y)", "y", y);
@@ -1418,10 +1403,6 @@ PPL::Grid::intersection_assign(const Grid& y) {
 bool
 PPL::Grid::intersection_assign_and_minimize(const Grid& y) {
   Grid& x = *this;
-  // Topology compatibility check.
-  if (x.topology() != y.topology())
-    throw_topology_incompatible("intersection_assign_and_minimize(y)",
-				"y", y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("intersection_assign_and_minimize(y)",
@@ -1482,9 +1463,6 @@ PPL::Grid::intersection_assign_and_minimize(const Grid& y) {
 void
 PPL::Grid::poly_hull_assign(const Grid& y) {
   Grid& x = *this;
-  // Topology compatibility check.
-  if (x.topology() != y.topology())
-    throw_topology_incompatible("poly_hull_assign(y)", "y", y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("poly_hull_assign(y)", "y", y);
@@ -1548,9 +1526,6 @@ PPL::Grid::poly_hull_assign(const Grid& y) {
 bool
 PPL::Grid::poly_hull_assign_and_minimize(const Grid& y) {
   Grid& x = *this;
-  // Topology compatibility check.
-  if (x.topology() != y.topology())
-    throw_topology_incompatible("poly_hull_assign_and_minimize(y)", "y", y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("poly_hull_assign_and_minimize(y)", "y", y);
@@ -1609,9 +1584,6 @@ PPL::Grid::poly_hull_assign_and_minimize(const Grid& y) {
 void
 PPL::Grid::poly_difference_assign(const Grid& y) {
   Grid& x = *this;
-  // Topology compatibility check.
-  if (x.topology() != y.topology())
-    throw_topology_incompatible("poly_difference_assign(y)", "y", y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("poly_difference_assign(y)", "y", y);
@@ -2077,9 +2049,6 @@ PPL::Grid::generalized_affine_image(const Linear_Expression& lhs,
 void
 PPL::Grid::time_elapse_assign(const Grid& y) {
   Grid& x = *this;
-  // Topology compatibility check.
-  if (x.topology() != y.topology())
-    throw_topology_incompatible("time_elapse_assign(y)", "y", y);
   // Dimension-compatibility checks.
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("time_elapse_assign(y)", "y", y);
@@ -2315,10 +2284,6 @@ PPL::Grid::operator=(const Grid& y) {
 bool
 PPL::Grid::contains(const Grid& y) const {
   const Grid& x = *this;
-
-  // Topology compatibility check.
-  if (x.topology() != y.topology())
-    throw_topology_incompatible("contains(y)", "y", y);
 
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)

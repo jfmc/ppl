@@ -42,7 +42,95 @@ std::ofstream ctrace;
 
 namespace Parma_Polyhedra_Library {
 
-/* These methods should be named convert, and this file
+#ifndef NDEBUG
+// If \p sys is the identity matrix return true, else return false.
+bool
+identity(Matrix& sys, dimension_type num_cols) {
+  dimension_type row_num = sys.num_rows();
+  if (row_num != num_cols)
+    return false;
+  while (row_num--) {
+    Row& row = sys[row_num];
+    if (row[row_num] != 1)
+      return false;
+    dimension_type col = 0;
+    while (col < row_num)
+      if (row[col++] != 0)
+	return false;
+    while (++col < num_cols)
+      if (row[col] != 0)
+	return false;
+  }
+  return true;
+}
+
+// x 0 0 0
+// x x 0 0
+// x x x 0
+// x x x x
+bool
+Grid::lower_triangular(const Congruence_System& sys) {
+  dimension_type num_cols = sys.num_columns() - 1;
+  dimension_type rowi = sys.num_rows();
+  // Check squareness.
+  if (rowi != num_cols)
+    return false;
+
+  // Check triangularity.
+  --rowi;			// Convert to index.
+  // Check diagonal element of last row.
+  if (sys[rowi][rowi] == 0)
+    return false;
+  while (rowi > 0) {
+    dimension_type col = rowi--;
+    const Congruence& row = sys[rowi];
+    // Check elements following diagonal.
+    while (col < num_cols)
+      if (row[col++] != 0)
+	return false;
+    // Check diagonal.
+    if (row[rowi] == 0)
+      return false;
+  }
+
+  return true;
+}
+
+// x x x x
+// 0 x x x
+// 0 0 x x
+// 0 0 0 x
+bool
+Grid::upper_triangular(const Generator_System& sys) {
+  dimension_type num_cols = sys.num_columns();
+  dimension_type rowi = sys.num_rows();
+  // Check squareness.
+  if (rowi != num_cols)
+    return false;
+
+  // Check triangularity.
+  --rowi;			// Convert to index.
+  // Check diagonal element of first row.
+  if (sys[0][0] == 0)
+    return false;
+  while (rowi > 0) {
+    const Generator& row = sys[rowi];
+    // Check diagonal.
+    if (row[rowi] == 0)
+      return false;
+    // Check elements preceding diagonal.
+    dimension_type col = --rowi;
+    do {
+      if (row[col] != 0)
+	return false;
+    } while (col-- > 0);
+  }
+
+  return true;
+}
+#endif
+
+/* The next two methods should be named convert, and this file
    Grid_convert.cc, to use verbs consistently as function and method
    names.  The same holds for the Polyhedron equivalents.  */
 
@@ -59,9 +147,8 @@ Grid::conversion(Congruence_System& source, Linear_System& dest) {
 
   assert(dest.num_rows() == source.num_rows());
   assert(dest.num_columns() == source.num_columns() - 1);
-  // FIX may be too much
-  // FIX assert(lower_triangular(source));
-  // FIX assert(identity(dest));
+  assert(lower_triangular(source));
+  assert(identity(dest, dest.num_columns()));
 
   // Compute the LCM of the diagonals.  Use the LCM instead of the
   // determinant (which is the product of the diagonals) to produce
@@ -199,9 +286,8 @@ Grid::conversion(Generator_System& source, Congruence_System& dest) {
 
   assert(dest.num_rows() == source.num_rows());
   assert(dest.num_columns() - 1 == source.num_columns());
-  // FIX may be too much
-  // FIX assert(upper_triangular(source));
-  // FIX assert(identity(dest));
+  assert(upper_triangular(source));
+  assert(identity(dest, dest.num_columns() - 1 /* modulus */));
 
   // Compute the LCM of the diagonals.  Use the LCM instead of the
   // determinant (which is the product of the diagonals) to produce

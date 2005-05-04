@@ -120,10 +120,6 @@ Grid::space_dimension() const {
 
 inline void
 Grid::swap(Grid& y) {
-#if 0
-  if (topology() != y.topology())
-    throw_topology_incompatible("swap(y)", "y", y);
-#endif
   std::swap(con_sys, y.con_sys);
   std::swap(gen_sys, y.gen_sys);
   std::swap(status, y.status);
@@ -271,7 +267,7 @@ Grid::process_pending() const {
 }
 
 inline void
-Grid::add_low_level_congruences(Congruence_System& cgs) {
+Grid::add_low_level_congruences(Congruence_System& /*cgs FIX*/) {
   // FIX
   //cgs.insert(Congruence::zero_dim_integrality());
 }
