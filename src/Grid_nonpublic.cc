@@ -509,13 +509,27 @@ PPL::Grid::process_pending_congruences() const {
 
   Grid& x = const_cast<Grid&>(*this);
 
-  // FIX should these simplify calls set_x_minimized?
-  if (x.simplify(x.con_sys)) {
+#if 0
+  // FIX perhaps x.con_sys.remove_pending_duplicates()
+  x.con_sys.sort_pending_and_remove_duplicates();
+  if (x.con_sys.num_pending_rows() == 0) {
+    // All pending constraints were duplicates.
+    x.clear_pending_constraints();
+    assert(OK(true));
+    return true;
+  }
+#endif
+
+  if (x.minimize(x.con_sys, x.gen_sys)) {
     x.set_empty();
     assert(OK(false));
     return false;
   }
+  assert(gen_sys.num_pending_rows() == 0);
   x.clear_pending_congruences();
+  // FIX correct?
+  x.set_congruences_minimized();
+  x.set_generators_minimized();
   assert(OK(true));
   return true;
 }
@@ -527,12 +541,27 @@ PPL::Grid::process_pending_generators() const {
 
   Grid& x = const_cast<Grid&>(*this);
 
+#if 0
+  // FIX perhaps x.gen_sys.remove_pending_duplicates()
+  x.gen_sys.sort_pending_and_remove_duplicates();
+  if (x.gen_sys.num_pending_rows() == 0) {
+    // All pending generators were duplicates.
+    x.clear_pending_generators();
+    assert(OK(true));
+    return;
+  }
+#endif
+
   // FIX could this return true (ie that the grid is empty)?
   // FIX if so set_empty
-  x.simplify(x.gen_sys);
+  x.minimize(x.gen_sys, x.con_sys);
+  x.set_generators_minimized();
 
   assert(gen_sys.num_pending_rows() == 0);
   x.clear_pending_generators();
+  // FIX correct?
+  x.set_generators_minimized();
+  x.set_congruences_minimized();
 }
 
 #if 0
@@ -611,7 +640,7 @@ PPL::Grid::update_generators() const {
   assert(space_dim > 0);
   assert(!marked_empty());
   assert(congruences_are_up_to_date());
-  // We assume the polyhedron has no pending congruences or generators.
+  // We assume the grid has no pending congruences or generators.
   assert(!has_something_pending());
 
   Grid& x = const_cast<Grid&>(*this);
