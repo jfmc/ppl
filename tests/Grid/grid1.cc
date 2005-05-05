@@ -35,7 +35,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
   known_gr.ascii_dump(nout);
 #endif
 
-/* add_generator_and_minimize, one variable.  */
+// add_generator_and_minimize, one variable.
 
 void
 test1() {
@@ -70,7 +70,7 @@ test1() {
   exit(1);
 }
 
-/* add_generator_and_minimize, two variables.  */
+// add_generator_and_minimize, two variables.
 
 void
 test2() {
@@ -109,7 +109,7 @@ test2() {
   exit(1);
 }
 
-/* add_generators_and_minimize */
+// add_generators_and_minimize
 
 void
 test3() {
@@ -146,7 +146,7 @@ test3() {
   exit(1);
 }
 
-/* param_test0 from Chiara conversion_test.cc.  */
+// param_test0 from Chiara conversion_test.cc.
 
 void
 test4() {
@@ -185,7 +185,7 @@ test4() {
   exit(1);
 }
 
-/* param_test1 from Chiara conversion_test.cc.  */
+// param_test1 from Chiara conversion_test.cc.
 
 void
 test5() {
@@ -226,7 +226,7 @@ test5() {
   exit(1);
 }
 
-/* param_test2 from Chiara conversion_test.cc.  */
+// param_test2 from Chiara conversion_test.cc.
 
 void
 test6() {
@@ -269,7 +269,7 @@ test6() {
   exit(1);
 }
 
-/* param_test3 from Chiara conversion_test.cc.  */
+// param_test3 from Chiara conversion_test.cc.
 
 void
 test7() {
@@ -311,7 +311,7 @@ test7() {
   exit(1);
 }
 
-/* param_test4 from Chiara conversion_test.cc.  */
+// param_test4 from Chiara conversion_test.cc.
 
 void
 test8() {
@@ -355,7 +355,7 @@ test8() {
   exit(1);
 }
 
-/* param_test5 from Chiara conversion_test.cc.  */
+// param_test5 from Chiara conversion_test.cc.
 
 void
 test9() {
@@ -396,7 +396,7 @@ test9() {
   exit(1);
 }
 
-/* add_generators_and_minimize, with more rows than columns.  */
+// add_generators_and_minimize, with more rows than columns.
 
 void
 test10() {
@@ -444,7 +444,7 @@ test10() {
   exit(1);
 }
 
-/* Empty grid, one dimension.  */
+// Empty grid, one dimension.
 
 void
 test11() {
@@ -470,7 +470,7 @@ test11() {
   exit(1);
 }
 
-/* Empty grid, many dimensions.  */
+// Empty grid, many dimensions.
 
 void
 test12() {
@@ -496,7 +496,7 @@ test12() {
   exit(1);
 }
 
-/* Bigger values (param_test7 from Chiara conversion_test2.cc).  */
+// Bigger values (param_test7 from Chiara conversion_test2.cc).
 
 void
 test13() {
@@ -538,7 +538,7 @@ test13() {
   exit(1);
 }
 
-/* Even bigger values (param_test8 from Chiara conversion_test2.cc).  */
+// Even bigger values (param_test8 from Chiara conversion_test2.cc).
 
 void
 test14() {
@@ -644,7 +644,7 @@ test15() {
   exit(1);
 }
 
-/* Universe grid, one dimension.  */
+// Universe grid, one dimension.
 
 void
 test16() {
@@ -670,7 +670,7 @@ test16() {
   exit(1);
 }
 
-/* Universe grid, many dimensions.  */
+// Universe grid, many dimensions.
 
 void
 test17() {
@@ -696,7 +696,7 @@ test17() {
   exit(1);
 }
 
-/* Universe grid, zero dimensions.  */
+// Universe grid, zero dimensions.
 
 void
 test18() {

@@ -27,7 +27,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #define find_variation find_variation_template<Grid>
 
-/* add_congruence_and_minimize, one dimension.  */
+// add_congruence_and_minimize, one dimension.
 
 void
 test1() {
@@ -67,7 +67,7 @@ test1() {
   exit(1);
 }
 
-/* add_congruence_and_minimize, two dimensions.  */
+// add_congruence_and_minimize, two dimensions.
 
 void
 test2() {
@@ -109,7 +109,7 @@ test2() {
   exit(1);
 }
 
-/* add_congruences_and_minimize, one dimension.  */
+// add_congruences_and_minimize, one dimension.
 
 void
 test3() {
@@ -144,7 +144,7 @@ test3() {
   exit(1);
 }
 
-/* add_congruences_and_minimize, one dimension with factors.  */
+// add_congruences_and_minimize, one dimension with factors.
 
 void
 test4() {
@@ -179,7 +179,7 @@ test4() {
   exit(1);
 }
 
-/* add_congruences_and_minimize, two dimensions.  */
+// add_congruences_and_minimize, two dimensions.
 
 void
 test5() {
@@ -216,7 +216,7 @@ test5() {
   exit(1);
 }
 
-/* cong_test0 from Chiara conversion_test2.cc.  */
+// cong_test0 from Chiara conversion_test2.cc.
 
 void
 test6() {
@@ -258,7 +258,7 @@ test6() {
   exit(1);
 }
 
-/* cong_test1 from Chiara conversion_test2.cc.  */
+// cong_test1 from Chiara conversion_test2.cc.
 
 void
 test7() {
@@ -335,7 +335,7 @@ test8() {
   exit(1);
 }
 
-/* cong_test3 from Chiara conversion_test2.cc.  */
+// cong_test3 from Chiara conversion_test2.cc.
 
 void
 test9() {
@@ -377,7 +377,7 @@ test9() {
   exit(1);
 }
 
-/* cong_test4 from Chiara conversion_test2.cc.  */
+// cong_test4 from Chiara conversion_test2.cc.
 
 void
 test10() {
@@ -419,7 +419,7 @@ test10() {
   exit(1);
 }
 
-/* cong_test5 from Chiara conversion_test2.cc.  */
+// cong_test5 from Chiara conversion_test2.cc.
 
 void
 test11() {
@@ -463,7 +463,7 @@ test11() {
   exit(1);
 }
 
-/* cong_test6 from Chiara conversion_test2.cc.  */
+// cong_test6 from Chiara conversion_test2.cc.
 
 void
 test12() {
