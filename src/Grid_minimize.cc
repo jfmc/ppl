@@ -32,6 +32,8 @@ bool
 Grid::minimize(Generator_System& source, Congruence_System& dest) {
   assert(source.num_rows() > 0);
 
+  // FIX check if source,dest minimized? prhps in callers?
+
   if (simplify(source))
     return true;
 
@@ -149,12 +151,7 @@ Grid::add_and_minimize(Congruence_System& source1,
     // is introduced in `source1'.
     //const int cmp = compare(source1[k1], source2[k2]);
     const int cmp = source1[k1] == source2[k2]; // FIX
-    std::cout << "cmp (";
-    source1[k1].ascii_dump(std::cout);
-    std::cout << " vs ";
-    source2[k2].ascii_dump(std::cout);
-    std::cout << ") returned " << cmp << std::endl;
-    //if (cmp == 0) {
+    //if (cmp == 0) { // FIX?
     if (cmp) {
       // We found the same row: there is no need to add `source2[k2]'.
       ++k2;
@@ -192,8 +189,6 @@ Grid::add_and_minimize(Congruence_System& source1,
     // in `source2' were already in `source1'.
     // There is nothing left to do ...
     return false;
-
-  source1.ascii_dump(std::cout);
 
   return add_and_minimize(source1, dest);
 }
