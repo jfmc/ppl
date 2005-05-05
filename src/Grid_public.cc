@@ -292,8 +292,14 @@ PPL::Grid::is_universe() const {
     return true;
 
   if (!has_pending_generators() && congruences_are_up_to_date()) {
-    if (has_pending_congruences())
-      process_pending_congruences();
+    if (has_pending_congruences()) {
+      Grid& x = const_cast<Grid&>(*this);
+      if (x.simplify(x.con_sys)) {
+	x.set_empty();
+	return false;
+      }
+      x.set_congruences_minimized();
+    }
 
     // Compare congruences to the universe representation.
 
@@ -320,8 +326,12 @@ PPL::Grid::is_universe() const {
 
   assert(!has_pending_congruences() && generators_are_up_to_date());
 
-  if (has_pending_generators())
-    process_pending_generators();
+  if (has_pending_generators()) {
+    Grid& x = const_cast<Grid&>(*this);
+    // FIX check return and set empty?
+    x.simplify(x.gen_sys);
+    x.set_generators_minimized();
+  }
 
   // Compare generators to the universe representation.
 
@@ -738,18 +748,15 @@ PPL::Grid::add_congruence(const Congruence& cg) {
     return;
   }
 
-#if 0
   // The congruences (possibly with pending rows) are required.
   if (has_pending_generators())
     process_pending_generators();
-  else
-#endif
- if (!congruences_are_up_to_date())
+  else if (!congruences_are_up_to_date())
     update_congruences();
 
   con_sys.insert(cg);
 
-#if 0
+#if 0 // FIX pending
   const bool adding_pending = can_have_something_pending();
 
   // Here we know that the system of congruences has at least a row.
@@ -1338,7 +1345,7 @@ PPL::Grid::add_generators_and_minimize(const Generator_System& gs) {
   Generator_System gs_copy = gs;
   return add_recycled_generators_and_minimize(gs_copy);
 }
-#if 0
+
 void
 PPL::Grid::intersection_assign(const Grid& y) {
   Grid& x = *this;
@@ -1346,7 +1353,7 @@ PPL::Grid::intersection_assign(const Grid& y) {
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("intersection_assign(y)", "y", y);
 
-  // If one of the two polyhedra is empty, the intersection is empty.
+  // If one of the two grids is empty, the intersection is empty.
   if (x.marked_empty())
     return;
   if (y.marked_empty()) {
@@ -1354,14 +1361,14 @@ PPL::Grid::intersection_assign(const Grid& y) {
     return;
   }
 
-  // If both polyhedra are zero-dimensional,
-  // then at this point they are necessarily non-empty,
-  // so that their intersection is non-empty too.
+  // If both polyhedra are zero-dimensional, then at this point they
+  // are necessarily non-empty, so that their intersection is
+  // non-empty too.
   if (x.space_dim == 0)
     return;
 
-  // Both systems of congruences have to be up-to-date,
-  // possibly having pending congruences.
+  // Both systems of congruences have to be up-to-date, possibly
+  // having pending congruences.
   if (x.has_pending_generators())
     x.process_pending_generators();
   else if (!x.congruences_are_up_to_date())
@@ -1377,29 +1384,25 @@ PPL::Grid::intersection_assign(const Grid& y) {
   assert(!x.has_pending_generators() && x.congruences_are_up_to_date());
   assert(!y.has_pending_generators() && y.congruences_are_up_to_date());
 
-  // If `x' can support pending congruences,
-  // the congruences of `y' are added as pending congruences of `x'.
+#if 0 // FIX pending
+  // If `x' can support pending congruences, the congruences of `y'
+  // are added as pending congruences of `x'.
   if (x.can_have_something_pending()) {
     x.con_sys.add_pending_rows(y.con_sys);
     x.set_congruences_pending();
   }
-  else {
+#endif // else
+  {
     // `x' cannot support pending congruences.
-    // If both congruence systems are (fully) sorted, then we can merge
-    // them; otherwise we simply adds the second to the first.
-    if (x.con_sys.is_sorted()
-	&& y.con_sys.is_sorted() && !y.has_pending_congruences())
-      x.con_sys.merge_rows_assign(y.con_sys);
-    else
-      x.con_sys.add_rows(y.con_sys);
-    // Generators are no longer up-to-date
-    // and congruences are no longer minimized.
+    x.con_sys.add_rows(y.con_sys);
+    // Generators are no longer up-to-date and congruences are no
+    // longer minimized.
     x.clear_generators_up_to_date();
     x.clear_congruences_minimized();
   }
   assert(x.OK() && y.OK());
 }
-
+#if 0
 bool
 PPL::Grid::intersection_assign_and_minimize(const Grid& y) {
   Grid& x = *this;
