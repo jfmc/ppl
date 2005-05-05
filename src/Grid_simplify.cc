@@ -196,16 +196,15 @@ Grid::reduce_equality_with_congruence(Congruence& row,
 #ifndef NDEBUG
 //! Check for trailing rows containing only zero terms.
 /*!
-  Return <code>true</code> if all columns contain zero terms in all
-  the rows of \p grid that follow row number \p first, else return
-  false.  \p row_size gives the number of columns in each row.  Used
-  in assertion below.
+  If all columns contain zero in the rows of \p system from row index
+  \p first to row \p last then return <code>true</code>, else return
+  <code>false</code>.  \p row_size gives the number of columns in each
+  row.  Used in assertion below.
 */
 bool
-trailing_rows_are_zero (Matrix& system,
-			dimension_type first, dimension_type row_size) {
-  dimension_type num_rows = system.num_rows();
-  while (first < num_rows) {
+rows_are_zero (Matrix& system, dimension_type first,
+	       dimension_type last, dimension_type row_size) {
+  while (first <= last) {
     Row& row = system[first++];
     for (dimension_type col = 0; col < row_size; ++col)
       if (row[col] != 0)
@@ -337,9 +336,10 @@ Grid::simplify(Generator_System& sys) {
   /* Clip any zero rows from the end of the matrix.  */
   if (sys.num_rows() > sys.num_columns()) {
     strace << "clipping trailing" << std::endl;
-    assert(trailing_rows_are_zero(sys,
-				  sys.num_columns(),
-				  sys.num_columns()));
+    assert(rows_are_zero(sys,
+			 sys.num_columns(),
+			 sys.num_rows() - 1,
+			 sys.num_columns()));
     sys.erase_to_end(sys.num_columns());
   }
 
@@ -437,7 +437,8 @@ Grid::simplify(Congruence_System& sys) {
 	    /* FIX Slow. */					\
 	    sys.rows.erase(sys.rows.begin() + row_index);	\
 	    strace << "drop" << std::endl;			\
-	    --num_rows;
+	    --num_rows;						\
+	    --orig_row_num;
 
 	    free_row();
 	  }
@@ -480,11 +481,12 @@ Grid::simplify(Congruence_System& sys) {
     ++col;
   }
   assert(sys.num_rows() >= sys.num_columns() - 1);
-  // Clip any zero rows from the end of the matrix.
+  // Clip any zero rows from the front of the matrix.
   if (sys.num_rows() > sys.num_columns() - 1) {
-    assert(trailing_rows_are_zero(sys,
-				  sys.num_columns(),
-				  sys.num_columns() - 1));
+    assert(rows_are_zero(sys,
+			 0,
+			 sys.num_rows() - sys.num_columns(),
+			 sys.num_columns() - 1));
     sys.rows.erase(sys.rows.begin(),
 		   sys.rows.begin()
 		   + (sys.num_rows() - sys.num_columns() + 1));
