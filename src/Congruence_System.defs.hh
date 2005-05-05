@@ -174,6 +174,9 @@ public:
   //! increasing the number of space dimensions if needed.
   void insert(const Constraint& c);
 
+  //! Add the rows in \p y to the end of the system.
+  void add_rows(const Congruence_System& y);
+
   //! Adjusts all expressions to have the same moduli.
   void normalize_moduli();
 

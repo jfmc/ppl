@@ -130,6 +130,24 @@ PPL::Congruence_System::insert(const Congruence& cg) {
   assert(OK());
 }
 
+void
+PPL::Congruence_System::add_rows(const Congruence_System& y) {
+  Congruence_System& x = *this;
+  assert(x.row_size == y.row_size);
+
+  const dimension_type x_n_rows = x.num_rows();
+  const dimension_type y_n_rows = y.num_rows();
+  // Grow to the required size.
+  add_zero_rows(y_n_rows, Row::Flags());
+
+  // Copy the rows of `y', forcing size and capacity.
+  for (dimension_type i = y_n_rows; i-- > 0; ) {
+    Row copy(y[i], x.row_size, x.row_capacity);
+    std::swap(copy, x[x_n_rows+i]);
+  }
+  assert(OK());
+}
+
 bool
 PPL::Congruence_System::has_linear_equalities() const {
   const Congruence_System& cgs = *this;
