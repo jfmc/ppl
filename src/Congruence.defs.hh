@@ -350,9 +350,14 @@ public:
   */
   bool is_trivial_false() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is a linear
-  //! equality.
+  //! Returns <CODE>true</CODE> if the modulus is greater than zero.
+  /*!
+    A modulus of zero or less denotes a linear equality or virtual
+    row.
+  */
+  bool is_congruence() const;
+
+  //! Returns <CODE>true</CODE> if \p *this is an equality.
   /*!
     A modulus of zero denotes a linear equality.
   */

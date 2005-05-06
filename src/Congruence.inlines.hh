@@ -172,6 +172,11 @@ Congruence::is_trivial_false() const {
 }
 
 inline bool
+Congruence::is_congruence() const {
+  return modulus() > 0;
+}
+
+inline bool
 Congruence::is_equality() const {
   return modulus() == 0;
 }

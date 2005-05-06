@@ -43,7 +43,6 @@ PPL::Congruence_System::normalize_moduli() {
   if (row) {
     // Calculate the LCM of all the moduli.
     TEMP_INTEGER(lcm);
-
     // Find first congruence.
     while (1) {
       lcm = operator[](--row).modulus();
@@ -53,16 +52,15 @@ PPL::Congruence_System::normalize_moduli() {
 	// All rows are equalities.
 	return;
     }
-
-    while (row > 1) {
+    while (row > 0) {
       TEMP_INTEGER(modulus);
       modulus = operator[](--row).modulus();
       if (modulus > 0)
 	lcm_assign(lcm, modulus);
     }
 
-    dimension_type row_size = operator[](0).size();
     // Represent every row using the LCM as the modulus.
+    dimension_type row_size = operator[](0).size();
     for (dimension_type row = num_rows(); row-- > 0; ) {
       TEMP_INTEGER(modulus);
       modulus = operator[](row).modulus();
