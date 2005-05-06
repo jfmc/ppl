@@ -114,6 +114,84 @@ Grid::minimize(Congruence_System& source, Linear_System& dest) {
 }
 
 bool
+Grid::add_and_minimize(Congruence_System& source,
+		       Linear_System& dest) {
+  // FIX same as minimize methods? in ph expects pending
+
+  source.normalize_moduli();
+  if (simplify(source))
+    return true;
+
+  // Resizing `dest' to be the appropriate square matrix.
+  dimension_type dest_num_rows = source.num_columns() - 1 /* modulus */;
+  // Note that before calling `resize_no_copy()' we must update
+  // `index_first_pending'.
+  dest.set_index_first_pending_row(dest_num_rows);
+  dest.resize_no_copy(dest_num_rows, dest_num_rows);
+
+  // Initialize `dest' to the identity matrix.
+  for (dimension_type i = dest_num_rows; i-- > 0; ) {
+    Linear_Row& dest_i = dest[i];
+    dest_i[i] = 1;
+    dest_i.set_is_line_or_equality();
+    dest_i.set_necessarily_closed();
+    dimension_type j = dest_num_rows;
+    while (--j > i)
+      dest_i[j] = 0;
+    while (j > 0)
+      dest_i[--j] = 0;
+  }
+  dest.set_necessarily_closed();
+
+  // The identity matrix `dest' is not sorted (see the sorting rules
+  // in Linear_Row.cc).
+  dest.set_sorted(false);
+
+  // Populate `dest' with the generators characterizing the grid
+  // described by the congruences in `source'.
+  conversion(source, dest);
+
+  return false;
+}
+
+bool
+Grid::add_and_minimize(Generator_System& source,
+		       Congruence_System& dest) {
+  // FIX same as minimize methods? in ph handles pending
+  assert(source.num_pending_rows() > 0);
+
+  if (simplify(source))
+    return true;
+
+  // Resizing `dest' to be the appropriate square matrix.
+  dimension_type dest_num_rows = source.num_columns();
+  // FIX pending
+  // Update `index_first_pending' before calling `resize_no_copy()'.
+  //dest.set_index_first_pending_row(dest_num_rows);
+  dest.resize_no_copy(dest_num_rows, dest_num_rows + 1 /* moduli */);
+
+  // Initialize `dest' to the identity matrix.
+  for (dimension_type i = dest_num_rows; i-- > 0; ) {
+    Congruence& dest_i = dest[i];
+    dest_i[i] = 1;
+    dimension_type j = dest_num_rows;
+    while (--j > i)
+      dest_i[j] = 0;
+    while (j > 0)
+      dest_i[--j] = 0;
+  }
+
+  // Populate `dest' with the congruences characterizing the grid
+  // described by the generators in `source'.
+  conversion(source, dest);
+
+  // FIX can an empty gs dest result from a consistent cgs source?
+  // FIX   if so ret according a conversion ret which indicates consistency
+
+  return false;
+}
+
+bool
 Grid::add_and_minimize(Congruence_System& source1,
 		       Linear_System& dest,
 		       const Congruence_System& source2) {
@@ -142,6 +220,7 @@ Grid::add_and_minimize(Congruence_System& source1,
   dimension_type k1 = 0;
   dimension_type k2 = 0;
   dimension_type source2_num_rows = source2.num_rows();
+  // FIX is this correct for grids, and worth it?
   while (k1 < old_source1_num_rows && k2 < source2_num_rows) {
     // Add to `source1' the constraints from `source2', as pending rows.
     // We exploit the property that initially both `source1' and `source2'
@@ -194,84 +273,6 @@ Grid::add_and_minimize(Congruence_System& source1,
 }
 
 bool
-Grid::add_and_minimize(Congruence_System& source,
-		       Linear_System& dest) {
-  // FIX same as minimize methods?
-
-  source.normalize_moduli();
-  if (simplify(source))
-    return true;
-
-  // Resizing `dest' to be the appropriate square matrix.
-  dimension_type dest_num_rows = source.num_columns() - 1 /* modulus */;
-  // Note that before calling `resize_no_copy()' we must update
-  // `index_first_pending'.
-  dest.set_index_first_pending_row(dest_num_rows);
-  dest.resize_no_copy(dest_num_rows, dest_num_rows);
-
-  // Initialize `dest' to the identity matrix.
-  for (dimension_type i = dest_num_rows; i-- > 0; ) {
-    Linear_Row& dest_i = dest[i];
-    dest_i[i] = 1;
-    dest_i.set_is_line_or_equality();
-    dest_i.set_necessarily_closed();
-    dimension_type j = dest_num_rows;
-    while (--j > i)
-      dest_i[j] = 0;
-    while (j > 0)
-      dest_i[--j] = 0;
-  }
-  dest.set_necessarily_closed();
-
-  // The identity matrix `dest' is not sorted (see the sorting rules
-  // in Linear_Row.cc).
-  dest.set_sorted(false);
-
-  // Populate `dest' with the generators characterizing the grid
-  // described by the congruences in `source'.
-  conversion(source, dest);
-
-  return false;
-}
-
-bool
-Grid::add_and_minimize(Generator_System& source,
-		       Congruence_System& dest) {
-  // FIX same as minimize methods
-  assert(source.num_pending_rows() > 0);
-
-  if (simplify(source))
-    return true;
-
-  // Resizing `dest' to be the appropriate square matrix.
-  dimension_type dest_num_rows = source.num_columns();
-  // FIX pending
-  // Update `index_first_pending' before calling `resize_no_copy()'.
-  //dest.set_index_first_pending_row(dest_num_rows);
-  dest.resize_no_copy(dest_num_rows, dest_num_rows + 1 /* moduli */);
-
-  // Initialize `dest' to the identity matrix.
-  for (dimension_type i = dest_num_rows; i-- > 0; ) {
-    Congruence& dest_i = dest[i];
-    dest_i[i] = 1;
-    dimension_type j = dest_num_rows;
-    while (--j > i)
-      dest_i[j] = 0;
-    while (j > 0)
-      dest_i[--j] = 0;
-  }
-
-  // Populate `dest' with the congruences characterizing the grid
-  // described by the generators in `source'.
-  conversion(source, dest);
-
-  // FIX can an empty gs dest result from a consistent cgs source?
-  // FIX   if so ret according a conversion ret which indicates consistency
-
-  return false;
-}
-
-bool
 Grid::add_and_minimize(Generator_System& source1,
 		       Congruence_System& dest,
 		       const Generator_System& csource2) {
@@ -297,6 +298,7 @@ Grid::add_and_minimize(Generator_System& source1,
   dimension_type k1 = 0;
   dimension_type k2 = 0;
   dimension_type source2_num_rows = source2.num_rows();
+  // FIX is this correct for grids, and worth it?
   while (k1 < old_source1_num_rows && k2 < source2_num_rows) {
     // Add to `source1' the generators from `source2', as pending rows.
     // We exploit the property that initially both `source1' and `source2'
