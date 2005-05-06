@@ -362,7 +362,7 @@ Grid::conversion(Generator_System& source, Congruence_System& dest) {
 	  // Multiply every element of every congruence.
 	  for (dimension_type index = 0; index < num_rows; ++index) {
 	    Congruence& congruence = dest[index];
-	    if (congruence.is_congrence())
+	    if (congruence.is_congruence())
 	      for (dimension_type column = 0; column < num_rows; ++column)
 		congruence[column] *= multiplier;
 	  }
