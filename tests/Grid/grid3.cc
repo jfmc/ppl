@@ -38,7 +38,7 @@ test1() {
   Variable C(2);
 
   Congruence_System cgs1;
-  cgs1.insert((C %= 0) / 2);
+  cgs1.insert((A + 0*C %= 0) / 2);
 
   Congruence_System cgs2;
   cgs2.insert((B + 0*C %= 0) / 2);
@@ -55,8 +55,54 @@ test1() {
     exit(1);
 
   Congruence_System known_cgs;
-  known_cgs.insert((C %= 0) / 2);
+  known_cgs.insert((A + 0*C %= 0) / 2);
   known_cgs.insert((B %= 0) / 2);
+
+  Grid known_gr(known_cgs);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (gr1 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// intersection_assign_and_minimize
+
+void
+test2() {
+  nout << "test2:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Congruence_System cgs1;
+  cgs1.insert((A + 0*C %= 0) / 2);
+
+  Congruence_System cgs2;
+  cgs2.insert((2*A + 0*C %= 0) / 2);
+
+  Grid gr1(cgs1);
+  Grid gr2(cgs2);
+
+  if (find_variation(gr1) || find_variation(gr2))
+    exit(1);
+
+  gr1.intersection_assign_and_minimize(gr2);
+
+  if (find_variation(gr1))
+    exit(1);
+
+  Congruence_System known_cgs;
+  known_cgs.insert((A + 0*C %= 0) / 2);
+  known_cgs.insert((2*A %= 0) / 2);
 
   Grid known_gr(known_cgs);
 
@@ -76,8 +122,8 @@ test1() {
 // join_assign
 
 void
-test2() {
-  nout << "test2:" << endl;
+test3() {
+  nout << "test3:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -95,7 +141,7 @@ test2() {
   if (find_variation(gr1) || find_variation(gr2))
     exit(1);
 
-  gr1.intersection_assign(gr2);
+  gr1.join_assign(gr2);
 
   if (find_variation(gr1))
     exit(1);
@@ -119,6 +165,53 @@ test2() {
   exit(1);
 }
 
+// join_assign_and_minimize
+
+void
+test4() {
+  nout << "test4:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Generator_System gs1;
+  gs1.insert(point(A + 0*C));
+
+  Generator_System gs2;
+  gs2.insert(point(2*A + 0*C));
+
+  Grid gr1(gs1);
+  Grid gr2(gs2);
+
+  if (find_variation(gr1) || find_variation(gr2))
+    exit(1);
+
+  gr1.join_assign_and_minimize(gr2);
+
+  if (find_variation(gr1))
+    exit(1);
+
+  Generator_System known_gs;
+  known_gs.insert(point(A + 0*C));
+  known_gs.insert(point(2*A));
+
+  Grid known_gr(known_gs);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (gr1 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+#if 0
 // add_congruences_and_minimize, one dimension.
 
 void
@@ -514,7 +607,7 @@ test12() {
 
   exit(1);
 }
-
+#endif
 int
 main() TRY {
   set_handlers();
@@ -522,10 +615,10 @@ main() TRY {
   nout << "grid3:" << endl;
 
   test1();
-#if 0
   test2();
   test3();
   test4();
+#if 0
   test5();
   test6();
   test7();
