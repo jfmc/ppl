@@ -1402,75 +1402,21 @@ PPL::Grid::intersection_assign(const Grid& y) {
   }
   assert(x.OK() && y.OK());
 }
-#if 0
+
 bool
 PPL::Grid::intersection_assign_and_minimize(const Grid& y) {
-  Grid& x = *this;
-  // Dimension-compatibility check.
-  if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("intersection_assign_and_minimize(y)",
-				 "y", y);
-
-  // If one of the two polyhedra is empty, the intersection is empty.
-  if (x.marked_empty())
-    return false;
-  if (y.marked_empty()) {
-    x.set_empty();
-    return false;
-  }
-
-  // If both polyhedra are zero-dimensional,
-  // then at this point they are necessarily non-empty,
-  // so that their intersection is non-empty too.
-  if (x.space_dim == 0)
-    return true;
-
-  // `x' must be minimized and have sorted congruences.
-  // `minimize()' will process any pending congruences or generators.
-  if (!x.minimize())
-    // We have just discovered that `x' is empty.
-    return false;
-
-  // `y' must have updated, possibly pending congruences.
-  if (y.has_pending_generators())
-    y.process_pending_generators();
-  else if (!y.congruences_are_up_to_date())
-    y.update_congruences();
-
-  bool empty;
-  if (y.con_sys.num_pending_rows() > 0) {
-    // Integrate `y.con_sys' as pending congruences of `x',
-    // sort them in place and then call `add_and_minimize()'.
-    x.con_sys.add_pending_rows(y.con_sys);
-    x.con_sys.sort_pending_and_remove_duplicates();
-    if (x.con_sys.num_pending_rows() == 0) {
-      // All pending congruences were duplicates.
-      x.clear_pending_congruences();
-      assert(OK(true));
-      return true;
-    }
-    empty = add_and_minimize(x.con_sys, x.gen_sys);
-  }
-  else
-    empty = add_and_minimize(x.con_sys, x.gen_sys, y.con_sys);
-
-  if (empty) {
-    x.set_empty();
-    assert(x.OK(false));
-    return false;
-  }
-  assert(x.OK(true));
-  return true;
+  intersection_assign(y);
+  return minimize();
 }
 
 void
-PPL::Grid::poly_hull_assign(const Grid& y) {
+PPL::Grid::join_assign(const Grid& y) {
   Grid& x = *this;
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("poly_hull_assign(y)", "y", y);
+    throw_dimension_incompatible("join_assign(y)", "y", y);
 
-  // The poly-hull of a polyhedron `p' with an empty polyhedron is `p'.
+  // The join of a grid `gr' with an empty grid is `gr'.
   if (y.marked_empty())
     return;
   if (x.marked_empty()) {
@@ -1478,14 +1424,13 @@ PPL::Grid::poly_hull_assign(const Grid& y) {
     return;
   }
 
-  // If both polyhedra are zero-dimensional,
-  // then at this point they are necessarily universe polyhedra,
-  // so that their poly-hull is the universe polyhedron too.
+  // If both grids are zero-dimensional, then they are necessarily
+  // universe grids, and so is their join.
   if (x.space_dim == 0)
     return;
 
-  // Both systems of generators have to be up-to-date,
-  // possibly having pending generators.
+  // Both systems of generators have to be up-to-date, possibly having
+  // pending generators.
   if ((x.has_pending_congruences() && !x.process_pending_congruences())
       || (!x.generators_are_up_to_date() && !x.update_generators())) {
     // Discovered `x' empty when updating generators.
@@ -1502,23 +1447,17 @@ PPL::Grid::poly_hull_assign(const Grid& y) {
   assert(!x.has_pending_congruences() && x.generators_are_up_to_date());
   assert(!y.has_pending_congruences() && y.generators_are_up_to_date());
 
-  // If `x' can support pending generators,
-  // the generators of `y' are added as pending generators of `x'.
+  // If `x' can support pending generators, the generators of `y' are
+  // added as pending generators of `x'.
   if (x.can_have_something_pending()) {
     x.gen_sys.add_pending_rows(y.gen_sys);
     x.set_generators_pending();
   }
   else {
     // `x' cannot support pending generators.
-    // If both generator systems are (fully) sorted, then we can merge
-    // them; otherwise we simply adds the second to the first.
-    if (x.gen_sys.is_sorted()
-	&& y.gen_sys.is_sorted() && !y.has_pending_generators())
-      x.gen_sys.merge_rows_assign(y.gen_sys);
-    else
-      x.gen_sys.add_rows(y.gen_sys);
-    // Congruences are no longer up-to-date
-    // and generators are no longer minimized.
+    x.gen_sys.add_rows(y.gen_sys);
+    // Congruences are no longer up-to-date and generators are no
+    // longer minimized.
     x.clear_congruences_up_to_date();
     x.clear_generators_minimized();
   }
@@ -1527,63 +1466,11 @@ PPL::Grid::poly_hull_assign(const Grid& y) {
 }
 
 bool
-PPL::Grid::poly_hull_assign_and_minimize(const Grid& y) {
-  Grid& x = *this;
-  // Dimension-compatibility check.
-  if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("poly_hull_assign_and_minimize(y)", "y", y);
-
-  // The poly-hull of a polyhedron `p' with an empty polyhedron is `p'.
-  if (y.marked_empty())
-    return minimize();
-  if (x.marked_empty()) {
-    x = y;
-    return minimize();
-  }
-
-  // If both polyhedra are zero-dimensional,
-  // then at this point they are necessarily universe polyhedra,
-  // so that their poly-hull is the universe polyhedron too.
-  if (x.space_dim == 0)
-    return true;
-
-  // `x' must have minimized congruences and generators.
-  // `minimize()' will process any pending congruences or generators.
-  if (!x.minimize()) {
-    // We have just discovered that `x' is empty.
-    x = y;
-    return minimize();
-  }
-  // x must have `sat_g' up-to-date and sorted generators.
-  //x.obtain_sorted_generators_with_sat_g();
-
-  // `y' must have updated, possibly pending generators.
-  if ((y.has_pending_congruences() && !y.process_pending_congruences())
-      || (!y.generators_are_up_to_date() && !y.update_generators()))
-    // We have just discovered that `y' is empty
-    // (and we know that `x' is not empty).
-    return true;
-
-  if (y.gen_sys.num_pending_rows() > 0) {
-    // Integrate `y.gen_sys' as pending generators of `x',
-    // sort them in place and then call `add_and_minimize()'.
-    x.gen_sys.add_pending_rows(y.gen_sys);
-    x.gen_sys.sort_pending_and_remove_duplicates();
-    if (x.gen_sys.num_pending_rows() == 0) {
-      // All pending generators were duplicates.
-      x.clear_pending_generators();
-      assert(OK(true) && y.OK());
-      return true;
-    }
-    add_and_minimize(x.gen_sys, x.con_sys);
-  }
-  else
-    add_and_minimize(x.gen_sys, x.con_sys, y.gen_sys);
-
-  assert(x.OK(true) && y.OK());
-  return true;
+PPL::Grid::join_assign_and_minimize(const Grid& y) {
+  join_assign(y);
+  return minimize();
 }
-
+#if 0
 void
 PPL::Grid::poly_difference_assign(const Grid& y) {
   Grid& x = *this;
