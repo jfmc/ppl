@@ -358,19 +358,18 @@ Grid::conversion(Generator_System& source, Congruence_System& dest) {
 	 multiplication and the virtual rows just ensure a regular
 	 matrix.  */
       if (multiplier != 1)
-	if (cg.is_virtual() || cg.is_equality())
-	  // Multiply every element of the equality.
-	  for (dimension_type column = 0; column < num_rows; ++column)
-	    cg[column] *= multiplier;
-	else
+	if (cg.is_congruence())
 	  // Multiply every element of every congruence.
 	  for (dimension_type index = 0; index < num_rows; ++index) {
 	    Congruence& congruence = dest[index];
-	    if (congruence.is_virtual() || congruence.is_equality())
-	      continue;
-	    for (dimension_type column = 0; column < num_rows; ++column)
-	      congruence[column] *= multiplier;
+	    if (congruence.is_congrence())
+	      for (dimension_type column = 0; column < num_rows; ++column)
+		congruence[column] *= multiplier;
 	  }
+	else if (cg.is_equality())
+	  // Multiply every element of the equality.
+	  for (dimension_type column = 0; column < num_rows; ++column)
+	    cg[column] *= multiplier;
 
       cg[col] /= source_diag;
     }
@@ -410,9 +409,8 @@ Grid::conversion(Generator_System& source, Congruence_System& dest) {
   modulus = dest[0][0];
   for (dimension_type row = 0; row < num_rows; ++row) {
     Congruence& cg = dest[row];
-    if (cg.is_virtual() || cg.is_equality())
-      continue;
-    cg[num_rows] = modulus;
+    if (cg.is_congruence())
+      cg[num_rows] = modulus;
   }
   ctrace << "dest after setting moduli:" << std::endl;
   ctrace_dump(dest);

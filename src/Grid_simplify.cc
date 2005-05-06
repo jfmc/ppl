@@ -183,7 +183,7 @@ Grid::reduce_equality_with_congruence(Congruence& row,
   dimension_type num_cols = sys.num_columns() - 1 /* modulus */;
   for (dimension_type index = 0; index < sys.num_rows(); ++index) {
     Congruence& row = sys[index];
-    if (row.is_virtual() == false && row.is_equality() == false)
+    if (row.is_congruence())
       for (dimension_type col = 0; col < num_cols; ++col)
         row[col] *= pivot_a;
   }
@@ -352,6 +352,16 @@ Grid::simplify(Generator_System& sys) {
 
   // Only consistent grids exist.
   if (sys[0].is_ray_or_point() == false) {
+    dimension_type row_size = sys.num_columns();
+    // Make all rows virtual, to free space.
+    // FIX is this worth the time?
+    for (dimension_type row = 0; row < sys.num_rows(); ++row) {
+      Generator& gen = sys[row];
+      for (dimension_type col = 0; col < row_size; ++col)
+	gen[col] = 0;
+      gen[row] = 1;
+      gen.set_is_virtual();
+    }
     strace << "---- simplify (reduce) gs done (empty)." << std::endl;
     return true;
   }
@@ -363,6 +373,7 @@ Grid::simplify(Generator_System& sys) {
 bool
 Grid::simplify(Congruence_System& sys) {
   strace << "======== simplify (reduce) cgs:" << std::endl;
+  strace_dump(sys);
   assert(sys.num_rows());
 
   // Changes here may also be required in the generator version above.
@@ -494,22 +505,39 @@ Grid::simplify(Congruence_System& sys) {
 
   assert(sys.OK());
 
-  // Only consistent grids exist.
   TEMP_INTEGER(modulus);
-  TEMP_INTEGER(it);
-  modulus = sys[0].modulus();
-  it = sys[0].inhomogeneous_term();
-  assert(modulus >= 0);
-  if (modulus > 0) {
-    if (it % modulus != 0) {
-      strace << "---- simplify (reduce) cgs done (empty)." << std::endl;
-      return true;
-    }
-  }
-  else if (it > 0) {
+  Congruence& first_row = sys[0];
+  modulus = first_row.modulus();
+  // If first row is false then make it the equality 1 = 0.
+  if (modulus > 0 && first_row.inhomogeneous_term() % modulus != 0) {
+    // The first row is a false congruence.
+    first_row[0] = 1;
+    first_row.set_is_equality();
     strace << "---- simplify (reduce) cgs done (empty)." << std::endl;
     return true;
   }
+  if (modulus == 0) {
+    // The first row is a false equality, as all the coefficient terms
+    // are zero while the inhomogeneous term holds a value (as a
+    // result of the reduced form).
+    first_row[0] = 1;
+    strace << "---- simplify (reduce) cgs done (empty)." << std::endl;
+    return true;
+  }
+  // Ensure that the first row is the integrality congruence.
+  dimension_type size = first_row.size() - 1;
+  if (modulus == -1) {
+    // The first row is virtual, make it the integrality congruence.
+    first_row[size] = 1;
+    // Try use an existing modulus.
+    dimension_type row = sys.num_rows();
+    while (row-- > 1)
+      if (sys[row][size] > 0) {
+	first_row[size] = sys[row][size];
+	break;
+      }
+  }
+  first_row[0] = first_row[size];
 
   strace << "---- simplify (reduce) cgs done." << std::endl;
   return false;
