@@ -62,6 +62,7 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
   if (space_dim > 0) {
     // Stealing the rows from `cgs'.
     std::swap(con_sys, cgs);
+    con_sys.normalize_moduli();
     simplify(con_sys);
 #if 0 // FIX pending
     if (con_sys.num_pending_rows() > 0) {
@@ -527,7 +528,7 @@ PPL::Grid::process_pending_congruences() const {
   }
   assert(gen_sys.num_pending_rows() == 0);
   x.clear_pending_congruences();
-  // FIX correct?
+  // FIX?
   x.set_congruences_minimized();
   x.set_generators_minimized();
   assert(OK(true));
@@ -666,7 +667,7 @@ PPL::Grid::minimize() const {
   if (space_dim == 0)
     return true;
 
-  // If the polyhedron has something pending, process it.
+  // If the grid has something pending, process it.
   if (has_something_pending()) {
     const bool not_empty = process_pending();
     assert(OK());
@@ -674,7 +675,7 @@ PPL::Grid::minimize() const {
   }
 
   // Here there are no pending congruences or generators.
-  // Is the polyhedron already minimized?
+  // Is the grid already minimized?
   if (congruences_are_minimized() && generators_are_minimized())
     return true;
 
