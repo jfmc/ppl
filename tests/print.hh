@@ -29,19 +29,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <string>
 
 #ifdef NOISY
-std::ostream& nout = std::cout;
+static std::ostream& nout = std::cout;
 #else
 #define NOISY 0
 #include <fstream>
-std::ofstream nout;
+static std::ofstream nout;
 #endif
 
 #ifndef VERY_NOISY
-std::ostream& vnout = std::cout;
+static std::ostream& vnout = std::cout;
 #else
 #define VERY_NOISY 0
 #include <fstream>
-std::ofstream vnout;
+static std::ofstream vnout;
 #endif
 
 void
