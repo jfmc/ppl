@@ -67,7 +67,7 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
 #if 0 // FIX pending
     if (con_sys.num_pending_rows() > 0) {
       // Even though `cgs' has pending constraints, since the generators
-      // of the polyhedron are not up-to-date, the polyhedron cannot
+      // of the grid are not up-to-date, the grid cannot
       // have pending constraints. By integrating the pending part
       // of `con_sys' we may loose sortedness.
       con_sys.unset_pending_rows();
@@ -129,7 +129,7 @@ PPL::Grid::construct(const Generator_System& const_gs) {
     if (gen_sys.num_pending_rows() > 0) {
       // FIX
       // Even though `gs' has pending generators, since the constraints
-      // of the polyhedron are not up-to-date, the polyhedron cannot
+      // of the grid are not up-to-date, the grid cannot
       // have pending generators. By integrating the pending part
       // of `gen_sys' we may loose sortedness.
       gen_sys.unset_pending_rows();
@@ -219,7 +219,6 @@ PPL::Grid::parameterize(Generator_System& sys, Generator& reference_row,
 
 PPL::Grid::Three_Valued_Boolean
 PPL::Grid::quick_equivalence_test(const Grid& y) const {
-  std::cout << "quick_equivalence_test" << std::endl;
   // Private method: the caller must ensure the following.
   //assert(topology() == y.topology()); // FIX
   assert(space_dim == y.space_dim);
@@ -294,7 +293,6 @@ bool
 PPL::Grid::is_included_in(const Grid& y) const {
   // Private method: the caller must ensure the following.
   //assert(topology() == y.topology()); // FIX
-  std::cout << "is_included_in..." << std::endl;
   assert(space_dim == y.space_dim);
   assert(!marked_empty() && !y.marked_empty() && space_dim > 0);
 
@@ -345,7 +343,6 @@ PPL::Grid::is_included_in(const Grid& y) const {
 	return false;
       }
 
-  std::cout << "is_included_in... done." << std::endl;
   // Inclusion holds.
   return true;
 }
@@ -361,14 +358,14 @@ PPL::Grid::bounds(const Linear_Expression& expr,
 				  ? "bounds_from_above(e)"
 				  : "bounds_from_below(e)"), "e", expr);
 
-  // A zero-dimensional or empty polyhedron bounds everything.
+  // A zero-dimensional or empty grid bounds everything.
   if (space_dim == 0
       || marked_empty()
       || (has_pending_congruences() && !process_pending_congruences())
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
 
-  // The polyhedron has updated, possibly pending generators.
+  // The grid has updated, possibly pending generators.
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
     // Only lines and rays in `*this' can cause `expr' to be unbounded.
@@ -400,13 +397,13 @@ PPL::Grid::max_min(const Linear_Expression& expr,
 				  ? "maximize(e, ...)"
 				  : "minimize(e, ...)"), "e", expr);
 
-  // For an empty polyhedron we simply return false.
+  // For an empty grid we simply return false.
   if (marked_empty()
       || (has_pending_congruences() && !process_pending_congruences())
       || (!generators_are_up_to_date() && !update_generators()))
     return false;
 
-  // The polyhedron has updated, possibly pending generators.
+  // The grid has updated, possibly pending generators.
   // The following loop will iterate through the generator
   // to find the extremum.
   mpq_class extremum;
@@ -473,7 +470,7 @@ PPL::Grid::max_min(const Linear_Expression& expr,
   Checked::assign<Check_Overflow_Policy>(n, raw_value(expr[0]));
   extremum += n;;
 
-  // The polyhedron is bounded in the right direction and we have
+  // The grid is bounded in the right direction and we have
   // computed the extremum: write the result into the caller's structures.
   assert(!first_candidate);
   ext_n = Coefficient(extremum.get_num());
@@ -572,7 +569,7 @@ PPL::Grid::remove_pending_to_obtain_congruences() const {
 
   Grid& x = const_cast<Grid&>(*this);
 
-  // If the polyhedron has pending congruences, simply unset them.
+  // If the grid has pending congruences, simply unset them.
   if (x.has_pending_congruences()) {
     // Integrate the pending congruences, which are possibly not sorted.
     x.con_sys.unset_pending_rows();
@@ -596,7 +593,7 @@ PPL::Grid::remove_pending_to_obtain_generators() const {
 
   Grid& x = const_cast<Grid&>(*this);
 
-  // If the polyhedron has pending generators, simply unset them.
+  // If the grid has pending generators, simply unset them.
   if (x.has_pending_generators()) {
     // Integrate the pending generators, which are possibly not sorted.
     x.gen_sys.unset_pending_rows();
@@ -621,7 +618,8 @@ PPL::Grid::update_congruences() const {
   assert(space_dim > 0);
   assert(!marked_empty());
   assert(generators_are_up_to_date());
-  // We assume the polyhedron has no pending congruences or generators.
+  // Assume any pending congruences or generators have already been
+  // processed.
   assert(!has_something_pending());
 
   Grid& gr = const_cast<Grid&>(*this);
@@ -645,7 +643,7 @@ PPL::Grid::update_generators() const {
   assert(!has_something_pending());
 
   Grid& x = const_cast<Grid&>(*this);
-  // If the system of congruences is not consistent the polyhedron is
+  // Either the system of congruences is consistent, or the grid is
   // empty.
   if (minimize(x.con_sys, x.gen_sys)) {
     x.set_empty();
@@ -660,8 +658,7 @@ PPL::Grid::update_generators() const {
 
 bool
 PPL::Grid::minimize() const {
-  // 0-dim space and empty polyhedra are already minimized.
-  // FIX should they return the same val?
+  // 0-dimension and empty grids are already minimized.
   if (marked_empty())
     return false;
   if (space_dim == 0)
@@ -703,7 +700,7 @@ PPL::Grid::strongly_minimize_congruences() const {
 
   // FIX is this method necessary? perhaps use for strong reduc
 
-  // From the user perspective, the polyhedron stays the same.
+  // From the user perspective, the grid stays the same.
   Grid& x = const_cast<Grid&>(*this);
 
   // We need `con_sys' (weakly) minimized and `gen_sys' up-to-date.
@@ -711,8 +708,8 @@ PPL::Grid::strongly_minimize_congruences() const {
   if (!minimize())
     return false;
 
-  // If the grid `*this' is zero-dimensional at this point it must be
-  // a universe polyhedron.
+  // If the grid `*this' is zero-dimensional at this point then it
+  // must be a universe grid.
   if (x.space_dim == 0)
     return true;
 
@@ -725,7 +722,7 @@ PPL::Grid::strongly_minimize_generators() const {
 
   // FIX is this method necessary? perhaps use for strong reduc
 
-  // From the user perspective, the polyhedron will not change.
+  // From the user perspective, the grid stays the same.
   Grid& x = const_cast<Grid&>(*this);
 
   // We need `gen_sys' (weakly) minimized and `con_sys' up-to-date.
@@ -733,8 +730,8 @@ PPL::Grid::strongly_minimize_generators() const {
   if (!minimize())
     return false;
 
-  // If the polyhedron `*this' is zero-dimensional
-  // at this point it must be a universe polyhedron.
+  // If the grid `*this' is zero-dimensional at this point it must be
+  // a universe grid.
   if (x.space_dim == 0)
     return true;
 
@@ -867,7 +864,7 @@ PPL::Grid::throw_invalid_generator(const char* method,
 				   const char* g_name) const {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
-    << "*this is an empty polyhedron and "
+    << "*this is an empty grid and "
     << g_name << " is not a point.";
   throw std::invalid_argument(s.str());
 }
@@ -877,7 +874,7 @@ PPL::Grid::throw_invalid_generators(const char* method,
 				    const char* gs_name) const {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
-    << "*this is an empty polyhedron and" << std::endl
+    << "*this is an empty grid and" << std::endl
     << "the non-empty generator system " << gs_name << " contains no points.";
   throw std::invalid_argument(s.str());
 }
