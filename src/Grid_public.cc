@@ -1472,22 +1472,21 @@ PPL::Grid::join_assign_and_minimize(const Grid& y) {
 }
 #if 0
 void
-PPL::Grid::poly_difference_assign(const Grid& y) {
+PPL::Grid::grid_difference_assign(const Grid& y) {
   Grid& x = *this;
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("poly_difference_assign(y)", "y", y);
 
-  // The difference of a polyhedron `p' and an empty polyhedron is `p'.
+  // The difference of a grid `gr' and an empty grid is `gr'.
   if (y.marked_empty())
     return;
-  // The difference of an empty polyhedron and of a polyhedron `p' is empty.
+  // The difference of an empty grid and a grid is empty.
   if (x.marked_empty())
     return;
 
-  // If both polyhedra are zero-dimensional,
-  // then at this point they are necessarily universe polyhedra,
-  // so that their difference is empty.
+  // If both grids are zero-dimensional, then they are necessarily
+  // universe polyhedra, so that their difference is empty.
   if (x.space_dim == 0) {
     x.set_empty();
     return;
@@ -1503,10 +1502,13 @@ PPL::Grid::poly_difference_assign(const Grid& y) {
 
   Grid new_polyhedron(topology(), x.space_dim, EMPTY);
 
-  // Being lazy here is only harmful.
-  // `minimize()' will process any pending congruences or generators.
+  // FIX?
+  // Being lazy here is only harmful.  `minimize()' will process any
+  // pending congruences or generators.
   x.minimize();
   y.minimize();
+
+  // FIX could now be empty?
 
   const Congruence_System& y_cgs = y.congruences();
   for (Congruence_System::const_iterator i = y_cgs.begin(),
@@ -1536,8 +1538,8 @@ PPL::Grid::poly_difference_assign(const Grid& y) {
       break;
     case Congruence::EQUALITY:
       if (is_necessarily_closed())
-	// We have already filtered out the case
-	// when `x' is included in `y': the result is `x'.
+	// We have already filtered out the case when `x' is included
+	// in `y': the result is `x'.
 	return;
       else {
 	Grid w = x;
@@ -2169,8 +2171,6 @@ PPL::Grid::operator=(const Grid& y) {
   return *this;
 }
 
-#if 0
-/*! \relates Parma_Polyhedra_Library::Grid */
 bool
 PPL::Grid::contains(const Grid& y) const {
   const Grid& x = *this;
@@ -2181,16 +2181,15 @@ PPL::Grid::contains(const Grid& y) const {
 
   if (y.marked_empty())
     return true;
-  else if (x.marked_empty())
+  if (x.marked_empty())
     return y.is_empty();
-  else if (y.space_dim == 0)
+  if (y.space_dim == 0)
     return true;
-  else if (x.quick_equivalence_test(y) == Grid::TVB_TRUE)
+  if (x.quick_equivalence_test(y) == Grid::TVB_TRUE)
     return true;
-  else
-    return y.is_included_in(x);
+  return y.is_included_in(x);
 }
-
+#if 0
 bool
 PPL::Grid::is_disjoint_from(const Grid& y) const {
   Grid z = *this;

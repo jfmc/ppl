@@ -981,15 +981,15 @@ public:
     The number of dimensions to add.
 
     \exception std::length_error
-    Thrown if adding \p m new space dimensions would cause the
-    vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
+    Thrown if adding \p m new space dimensions would cause the vector
+    space to exceed dimension <CODE>max_space_dimension()</CODE>.
 
     The new space dimensions will be those having the highest indexes
-    in the new grid, which is characterized by a system
-    of congruences in which the variables running through
-    the new dimensions are not constrained.
-    For instance, when starting from the grid \f$\cP \sseq \Rset^2\f$
-    and adding a third space dimension, the result will be the grid
+    in the new grid, which is characterized by a system of congruences
+    in which the variables which are the new dimensions can have any
+    value.  For instance, when starting from the grid \f$\cP \sseq
+    \Rset^2\f$ and adding a third space dimension, the result will be
+    the grid
     \f[
       \bigl\{\,
         (x, y, z)^\transpose \in \Rset^3
@@ -999,6 +999,29 @@ public:
     \f]
   */
   void add_space_dimensions_and_embed(dimension_type m);
+
+  //! Adds new space dimensions to the given systems.
+  /*!
+    \param cgs
+    A congruence system, to which columns are added;
+
+    \param gs
+    A generator system, to which rows and columns are added;
+
+    \param dims
+    The number of space dimensions to add.
+
+    Adds new space dimensions to the vector space modifying the given
+    systems.
+
+    This method is invoked only by
+    <CODE>add_space_dimensions_and_embed()</CODE> and
+    <CODE>add_space_dimensions_and_project()</CODE>, passing the
+    matrix of constraints and that of generators.
+  */
+  void add_space_dimensions(Congruence_System& cgs,
+			    Generator_System& gs,
+			    dimension_type dims);
 
   //! \brief
   //! Adds \p m new space dimensions to the grid
@@ -1392,6 +1415,7 @@ private:
   */
   void remove_pending_to_obtain_congruences() const;
 
+  // FIX (some) minimize methods ret true for empty while these ret false
   //! \brief
   //! Lazily integrates the pending descriptions of the grid
   //! to obtain a generator system without pending rows.
@@ -1489,6 +1513,9 @@ private:
   //! \name Minimization-related Static Member Functions
   //@{
 
+  // FIX params,returns
+  // FIX these ret true for empty while minimize() and the grid ops ret false
+
   //! Builds and simplifies congruences from generators.
   static bool minimize(Congruence_System& source,
 		       Linear_System& dest);
@@ -1583,7 +1610,7 @@ private:
     equality \p row so that element col of \p row is zero.
   */
   // A member of Grid for access to Matrix::rows.
-  static void reduce_equality_with_equality(Row& row, Row& pivot,
+  static void reduce_equality_with_equality(Congruence& row, Congruence& pivot,
 					    dimension_type col);
 
   //! Reduce \p row using \p pivot.
@@ -1604,7 +1631,7 @@ private:
     row is zero.
   */
   // A member of Grid for access to Matrix::rows.
-  static void reduce_line_with_parameter(Linear_Row& row,
+  static void reduce_parameter_with_line(Linear_Row& row,
 					 Linear_Row& pivot,
 					 dimension_type col,
 					 Linear_System& sys);
@@ -1615,7 +1642,7 @@ private:
     congruence \p row so that element col of \p row is zero.
   */
   // A member of Grid for access to Matrix::rows.
-  static void reduce_equality_with_congruence(Congruence& row,
+  static void reduce_congruence_with_equality(Congruence& row,
 					      Congruence& pivot,
 					      dimension_type col,
 					      Congruence_System& sys);

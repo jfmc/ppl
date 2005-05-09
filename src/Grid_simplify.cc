@@ -86,10 +86,11 @@ Grid::reduce_line_with_line(Row& row, Row& pivot,
 }
 
 inline void
-Grid::reduce_equality_with_equality(Row& row, Row& pivot,
+Grid::reduce_equality_with_equality(Congruence& row, Congruence& pivot,
 				    dimension_type column) {
   strace << "reduce_equality_with_equality" << std::endl;
-  assert(pivot[0] == 0 && row[0] == 0); // Assume two equalities.
+  // Assume two equalities.
+  assert(row.modulus() == 0 && pivot.modulus() == 0);
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, pivot[column], row[column]);
   Coefficient_traits::const_reference pa = pivot[column] / gcd;
@@ -138,13 +139,13 @@ Grid::reduce_pc_with_pc(Row& row, Row& pivot,
 }
 
 void
-Grid::reduce_line_with_parameter(Linear_Row& row,
+Grid::reduce_parameter_with_line(Linear_Row& row,
 				 Linear_Row& pivot,
 				 dimension_type column,
 				 Linear_System& sys) {
   // Very similar to the the Congruence version below.  Any change
   // here may be needed there too.
-  strace << "reduce_line_with_parameter" << std::endl;
+  strace << "reduce_parameter_with_line" << std::endl;
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, pivot[column], row[column]);
   TEMP_INTEGER(pivot_a);
@@ -165,14 +166,14 @@ Grid::reduce_line_with_parameter(Linear_Row& row,
 }
 
 void
-Grid::reduce_equality_with_congruence(Congruence& row,
+Grid::reduce_congruence_with_equality(Congruence& row,
 				      Congruence& pivot,
 				      dimension_type column,
 				      Congruence_System& sys) {
   // Very similar to the Linear_Row version above.  Any change here
   // may be needed there too.
-  strace << "reduce_equality_with_congruence" << std::endl;
-  assert(pivot[pivot.size()-1] == row[pivot.size()-1]);
+  strace << "reduce_congruence_with_equality" << std::endl;
+  assert(row.modulus() > 0 && pivot.modulus() == 0);
 
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, pivot[column], row[column]);
@@ -296,7 +297,7 @@ Grid::simplify(Generator_System& sys) {
 	    reduce_line_with_line(row, pivot, col);
 	  else if (pivot.is_ray_or_point_or_inequality()) {
 	    std::swap(row, pivot);
-	    reduce_line_with_parameter(row, pivot, col, sys);
+	    reduce_parameter_with_line(row, pivot, col, sys);
 	  }
 #ifndef NDEBUG
 	  else
@@ -311,7 +312,7 @@ Grid::simplify(Generator_System& sys) {
 	    free_row();
 	  }
 	  else if (pivot.is_line_or_equality())
-	    reduce_line_with_parameter(row, pivot, col, sys);
+	    reduce_parameter_with_line(row, pivot, col, sys);
 	  else if (pivot.is_ray_or_point_or_inequality())
 	    reduce_pc_with_pc(row, pivot, col);
 #ifndef NDEBUG
@@ -437,7 +438,7 @@ Grid::simplify(Congruence_System& sys) {
       strace << "  Reducing all preceding rows" << std::endl;
       while (row_index > 0) {
 	--row_index;
-	strace << "    row_index " << row_index << " ";
+	strace << "    row_index " << row_index << std::endl;
 	Congruence& row = sys[row_index];
 	if (row[column] != 0) {
 	  if (row.is_virtual()) {
@@ -466,7 +467,7 @@ Grid::simplify(Congruence_System& sys) {
 	    else {
 	      // Pivot is a congruence.
 	      std::swap(row, pivot);
-	      reduce_equality_with_congruence(row, pivot, column, sys);
+	      reduce_congruence_with_equality(row, pivot, column, sys);
 	    }
 	  else
 	    // Row is a congruence.
@@ -477,7 +478,7 @@ Grid::simplify(Congruence_System& sys) {
 	      free_row();
 	    }
 	    else if (pivot.is_equality())
-	      reduce_equality_with_congruence(row, pivot, column, sys);
+	      reduce_congruence_with_equality(row, pivot, column, sys);
 	    else
 	      // Pivot is a congruence.
 	      reduce_pc_with_pc(row, pivot, column, false);
