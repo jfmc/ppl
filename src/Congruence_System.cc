@@ -38,7 +38,7 @@ namespace PPL = Parma_Polyhedra_Library;
 void
 PPL::Congruence_System::normalize_moduli() {
   // FIX Add a flag to save doing this often.  Clear the flag when
-  //     congruences are added.
+  //     congruences are added, and set it on conversion.
   dimension_type row = num_rows();
   if (row) {
     // Calculate the LCM of all the moduli.
@@ -264,7 +264,6 @@ PPL::Congruence_System::satisfies_all_congruences(const Generator& g) const {
 	return false;
       }
   }
-  std::cout << "satisfies_all_cgs... done." << std::endl;
   return true;
 }
 

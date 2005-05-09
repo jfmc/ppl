@@ -168,12 +168,6 @@ public:
   //! increasing the number of space dimensions if needed.
   void insert(const Congruence& cg);
 
-  //! \brief
-  //! If \p c represents the constraint \f$ e_1 = e_2 \f$, inserts in
-  //! \p *this a representation of the congruence \f$ e_1 = e_2 \pmod{0}\f$,
-  //! increasing the number of space dimensions if needed.
-  void insert(const Constraint& c);
-
   //! Add the rows in \p y to the end of the system.
   void add_rows(const Congruence_System& y);
 
