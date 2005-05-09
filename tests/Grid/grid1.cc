@@ -1,4 +1,4 @@
-/* Reduction and conversion tests of grids created from generators.
+/* Test reduction and conversion of grids created from generators.
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -722,6 +722,29 @@ test18() {
   exit(1);
 }
 
+// A generator system with only a line.
+
+void
+test19() {
+  nout << "test19:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Generator_System gs;
+  gs.insert(line(0*A + 2*B + 0*C));
+
+  try {
+    Grid gr(gs);
+  }
+  catch (const std::invalid_argument& e) {
+    return;
+  }
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -746,6 +769,7 @@ main() TRY {
   test16();
   test17();
   test18();
+  test19();
 
   return 0;
 }
