@@ -1,4 +1,4 @@
-/* Reduction and conversion tests of grids created from congruences.
+/* Test reduction and conversion of grids created from congruences.
    Copyright (C) 2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -505,6 +505,41 @@ test12() {
   exit(1);
 }
 
+// An empty grid constructed with congruences.
+
+void
+test13() {
+  nout << "test13:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Congruence_System cgs;
+  cgs.insert((C %= 2) / 5);
+  cgs.insert((C %= 3) / 5);
+
+  Grid gr(3);
+  gr.add_congruences_and_minimize(cgs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(3, Grid::EMPTY);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << "grid:" << endl << gr << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -523,10 +558,7 @@ main() TRY {
   test10();
   test11();
   test12();
-#if 0
   test13();
-  test14();
-#endif
 
   return 0;
 }
