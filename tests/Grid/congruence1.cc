@@ -1,4 +1,4 @@
-/* Tests on individual congruences.
+/* Test Congruence.
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -27,7 +27,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #define find_variation find_variation_template<Congruence>
 
-/* Negative inhomogeneous term.  */
+// Negative inhomogeneous term.
 
 static void
 test1() {
@@ -56,7 +56,7 @@ test1() {
   exit(1);
 }
 
-/* Positive inhomogeneous term.  */
+// Positive inhomogeneous term.
 
 static void
 test2() {
@@ -85,7 +85,7 @@ test2() {
   exit(1);
 }
 
-/* Common factors and reducible positive inhomogeneous term.  */
+// Common factors and reducible positive inhomogeneous term.
 
 static void
 test3() {
@@ -114,7 +114,7 @@ test3() {
   exit(1);
 }
 
-/* Negative first coefficient.  */
+// Negative first coefficient.
 
 static void
 test4() {
@@ -143,7 +143,7 @@ test4() {
   exit(1);
 }
 
-/* Constructed with only the %= operator.  */
+// Constructed with only the %= operator.
 
 static void
 test5() {
@@ -175,7 +175,7 @@ test5() {
   exit(1);
 }
 
-/* Equality congruence (a modulus of 0).  */
+// Equality congruence (a modulus of 0).
 
 static void
 test6() {
@@ -204,7 +204,7 @@ test6() {
   exit(1);
 }
 
-/* Constructed from a Constraint with the `/' operator.  */
+// Constructed from a Constraint with the `/' operator.
 
 static void
 test7() {
@@ -233,7 +233,7 @@ test7() {
   exit(1);
 }
 
-/* Constructed from a Constraint.  */
+// Constructed from a Constraint.
 
 static void
 test8() {
@@ -262,7 +262,7 @@ test8() {
   exit(1);
 }
 
-/* Set modulus with `/='.  */
+// Set modulus with `/='.
 
 static void
 test9() {
@@ -293,7 +293,7 @@ test9() {
   exit(1);
 }
 
-/* Use is_trivial_true.  */
+// Use is_trivial_true.
 
 static void
 test10() {
@@ -320,7 +320,7 @@ test10() {
   }
 }
 
-/* Use is_trivial_false.  */
+// Use is_trivial_false.
 
 static void
 test11() {
@@ -348,7 +348,7 @@ test11() {
   }
 }
 
-/* Negative modulus.  */
+// Negative moduli.
 
 static void
 test12() {
@@ -377,7 +377,7 @@ test12() {
   exit(1);
 }
 
-/* Negative modulus and negative first coefficient.  */
+// Negative modulus and negative first coefficient.
 
 static void
 test13() {
@@ -408,7 +408,7 @@ test13() {
   exit(1);
 }
 
-/* Create from empty linear expression.  */
+// Create from empty linear expression.
 
 static void
 test14() {

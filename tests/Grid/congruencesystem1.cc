@@ -36,17 +36,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #define find_variation find_variation_template<Congruence_System>
 
-
-/* Public constructors. */
+// Public constructors.
 
 void
 test1() {
   nout << "test1:" << endl;
-
-  // FIX
-
-  Variable A(0);
-  Variable B(1);
 
   Congruence_System cgs0;
   if (find_variation(cgs0)) exit(1);
@@ -78,7 +72,7 @@ test1() {
   exit(1);
 }
 
-/* operator= */
+// operator=
 
 void
 test2() {
@@ -107,7 +101,7 @@ test2() {
   exit(1);
 }
 
-/* space_dimension */
+// space_dimension
 
 void
 test3() {
@@ -130,7 +124,7 @@ test3() {
   exit(1);
 }
 
-/* clear */
+// clear
 
 void
 test4() {
@@ -158,7 +152,7 @@ test4() {
   exit(1);
 }
 
-/* insert */
+// insert
 
 void
 test5() {
@@ -181,7 +175,7 @@ test5() {
   return;
 }
 
-/* num_[non_]equalities */
+// num_[non_]equalities
 
 void
 test6() {
@@ -222,8 +216,7 @@ test6() {
   exit(1);
 }
 
-/* insert, including a row with all terms zero and a row with a zero
-   modulus.  */
+// insert, including a row with all terms zero and an equality.
 
 void
 test7() {
