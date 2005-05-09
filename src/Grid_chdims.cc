@@ -1,0 +1,617 @@
+/* Grid class implementation
+   (non-inline operators that may change the dimension of the vector space).
+   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
+
+#include <config.h>
+
+#include "Grid.defs.hh"
+#include <cassert>
+
+#define BE_LAZY 1
+
+namespace PPL = Parma_Polyhedra_Library;
+
+void
+PPL::Grid::add_space_dimensions(Congruence_System& cgs,
+				Generator_System& gs,
+				dimension_type dims) {
+  assert(cgs.num_columns() - 1 == gs.num_columns());
+  assert(dims > 0);
+
+  dimension_type tem = cgs.num_columns() - 1;
+  cgs.add_zero_columns(dims);
+  // Move the moduli.
+  cgs.swap_columns(tem, tem + dims);
+  if (congruences_are_minimized()) {
+    // Add virtual rows to keep the system in reduced form.
+    cgs.add_zero_rows(dims, Row::Flags());
+    for (dimension_type row = tem + dims; row-- > tem; ) {
+      Congruence& cg = cgs[row];
+      cg[row] = 1;
+      cg.set_is_virtual();
+    }
+  }
+
+  bool has_pending = gs.first_pending_row() < gs.num_rows();
+  gs.add_zero_rows_and_columns(dims, dims,
+			       Linear_Row::Flags(NECESSARILY_CLOSED));
+  dimension_type num_rows = gs.num_rows();
+  dimension_type col_num = gs.num_columns() - dims;
+  for (dimension_type row_num = num_rows - dims;
+       row_num < num_rows; ++row_num, ++col_num) {
+    Generator& gen = gs[row_num];
+    gen.set_is_line();
+    gen[col_num] = 1;
+  }
+  if (has_pending == false)
+    gs.unset_pending_rows();
+}
+
+void
+PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
+  if (m == 0)
+    return;
+
+  // The space dimension of the resulting grid must be at most the
+  // maximum allowed space dimension.
+  if (m > max_space_dimension() - space_dimension())
+    throw_space_dimension_overflow("add_space_dimensions_and_embed(m)",
+				   "adding m new space dimensions exceeds "
+				   "the maximum allowed space dimension");
+
+  // Adding dimensions to an empty grid is obtained by adjusting
+  // `space_dim' and clearing `con_sys' (since it can contain the
+  // integrality congruence of the current dimension).
+  if (marked_empty()) {
+    space_dim += m;
+    con_sys.clear();
+    // FIX is it ok to leave the gen_sys?
+    return;
+  }
+
+  // The case of a zero-dimension space grid.
+  if (space_dim == 0) {
+    // Since it is not empty, it has to be the universe grid.
+    assert(status.test_zero_dim_univ());
+    // Swap `*this' with a newly created universe grid of dimension
+    // `m'.
+    Grid gr(m, UNIVERSE);
+    swap(gr);
+    return;
+  }
+
+  // To embed an n-dimension space grid in a (n+m)-dimension space, we
+  // just add `m' zero-columns to the rows in the system of
+  // congruences; in contrast, the system of generators needs
+  // additional rows, corresponding to the vectors of the canonical
+  // basis for the added dimensions. That is, for each new dimension
+  // we add the line having that direction. This is done by invoking
+  // the function add_space_dimensions().
+  if (congruences_are_up_to_date()) {
+    if (generators_are_up_to_date())
+      // Adds rows and/or columns to both matrices.
+      // `add_space_dimensions' correctly handles pending congruences
+      // or generators.
+      add_space_dimensions(con_sys, gen_sys, m);
+    else {
+      // Only congruences are up-to-date, so modify only them.
+      con_sys.add_zero_columns(m);
+      dimension_type size = con_sys.num_columns() - 1;
+      // Move the moduli.
+      con_sys.swap_columns(size, size + m);
+      if (congruences_are_minimized()) {
+	// Add virtual rows to keep the system in reduced form.
+	con_sys.add_zero_rows(m, Row::Flags());
+	for (dimension_type row = m + size; row-- > size; ) {
+	  Congruence& cg = con_sys[row];
+	  cg[row] = 1;
+	  cg.set_is_virtual();
+	}
+      }
+    }
+    clear_congruences_minimized();
+  }
+  else {
+    // Only generators are up-to-date, so modify only them.
+    assert(generators_are_up_to_date());
+    gen_sys.add_zero_rows_and_columns(m, m,
+				      Linear_Row::Flags(NECESSARILY_CLOSED));
+    dimension_type num_rows = gen_sys.num_rows();
+    dimension_type col_num = gen_sys.num_columns() - m;
+    for (dimension_type row_num = num_rows - m;
+	 row_num < num_rows; ++row_num, ++col_num) {
+      Generator& gen = gen_sys[row_num];
+      gen.set_is_line();
+      gen[col_num] = 1;
+    }
+    // The grid does not support pending generators.
+    gen_sys.unset_pending_rows();
+  }
+  // Update the space dimension.
+  space_dim += m;
+
+  // Note: we do not check for satisfiability, because the system of
+  // congruences may be unsatisfiable.
+  assert(OK());
+}
+#if 0
+void
+PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
+  // The space dimension of the resulting grid should not
+  // overflow the maximum allowed space dimension.
+  if (m > max_space_dimension() - space_dimension())
+    throw_space_dimension_overflow(topology(),
+				   "add_space_dimensions_and_project(m)",
+				   "adding m new space dimensions exceeds "
+				   "the maximum allowed space dimension");
+
+  // Adding no dimensions to any grid is a no-op.
+  if (m == 0)
+    return;
+
+  // Adding dimensions to an empty grid is obtained
+  // by merely adjusting `space_dim'.
+  if (marked_empty()) {
+    space_dim += m;
+    con_sys.clear();
+    return;
+  }
+
+  if (space_dim == 0) {
+    assert(status.test_zero_dim_univ() && gen_sys.num_rows() == 0);
+    // The system of generators for this grid has only
+    // the origin as a point.
+    // In an NNC grid, all points have to be accompanied
+    // by the corresponding closure points
+    // (this time, dimensions are automatically adjusted).
+    if (!is_necessarily_closed())
+      gen_sys.insert(Generator::zero_dim_closure_point());
+    gen_sys.insert(Generator::zero_dim_point());
+    gen_sys.adjust_topology_and_space_dimension(topology(), m);
+    set_generators_minimized();
+    space_dim = m;
+    assert(OK());
+    return;
+  }
+
+  // To project an n-dimension space grid in a (n+m)-dimension space,
+  // we just add to the system of generators `m' zero-columns;
+  // In contrast, in the system of constraints, new rows are needed
+  // in order to avoid embedding the old grid in the new space.
+  // Thus, for each new dimensions `x[k]', we add the constraint
+  // x[k] = 0; this is done by invoking the function add_space_dimensions()
+  // giving the system of constraints as the second argument.
+  if (constraints_are_up_to_date())
+    if (generators_are_up_to_date()) {
+      // `sat_g' must be up to date for add_space_dimensions(...).
+      if (!sat_g_is_up_to_date())
+	update_sat_g();
+      // Adds rows and/or columns to both matrices.
+      // `add_space_dimensions' correctly handles pending constraints
+      // or generators.
+      add_space_dimensions(gen_sys, con_sys, m);
+    }
+    else {
+      // Only constraints are up-to-date: no need to modify the generators.
+      con_sys.add_rows_and_columns(m);
+      // The grid does not support pending constraints.
+      con_sys.unset_pending_rows();
+      // If the grid is not necessarily closed,
+      // move the epsilon coefficients to the last column.
+      if (!is_necessarily_closed()) {
+	// Try to preserve sortedness of `con_sys'.
+	if (!con_sys.is_sorted())
+	  con_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
+	else {
+	  dimension_type old_eps_index = space_dim + 1;
+	  dimension_type new_eps_index = old_eps_index + m;
+	  for (dimension_type i = con_sys.num_rows(); i-- > m; ) {
+	    Linear_Row& r = con_sys[i];
+	    std::swap(r[old_eps_index], r[new_eps_index]);
+	  }
+	  // The upper-right corner of `con_sys' contains the J matrix:
+	  // swap coefficients to preserve sortedness.
+	  for (dimension_type i = m; i-- > 0; ++old_eps_index) {
+	    Linear_Row& r = con_sys[i];
+	    std::swap(r[old_eps_index], r[old_eps_index + 1]);
+	  }
+	}
+      }
+    }
+  else {
+    // Only generators are up-to-date: no need to modify the constraints.
+    assert(generators_are_up_to_date());
+    gen_sys.add_zero_columns(m);
+    // If the grid is not necessarily closed,
+    // move the epsilon coefficients to the last column.
+    if (!is_necessarily_closed())
+      gen_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
+  }
+  // Now we update the space dimension.
+  space_dim += m;
+
+  // Note: we do not check for satisfiability, because the system of
+  // constraints may be unsatisfiable.
+  assert(OK());
+}
+
+void
+PPL::Grid::concatenate_assign(const Grid& y) {
+  if (topology() != y.topology())
+    throw_topology_incompatible("concatenate_assign(y)", "y", y);
+
+  // The space dimension of the resulting grid should not
+  // overflow the maximum allowed space dimension.
+  if (y.space_dim > max_space_dimension() - space_dimension())
+    throw_space_dimension_overflow(topology(),
+				   "concatenate_assign(y)",
+				   "concatenation exceeds the maximum "
+				   "allowed space dimension");
+
+  const dimension_type added_columns = y.space_dim;
+
+  // If `*this' or `y' are empty polyhedra, it is sufficient to adjust
+  // the dimension of the space.
+  if (marked_empty() || y.marked_empty()) {
+    space_dim += added_columns;
+    set_empty();
+    return;
+  }
+
+  // If `y' is a non-empty 0-dim space grid, the result is `*this'.
+  if (added_columns == 0)
+    return;
+
+  // If `*this' is a non-empty 0-dim space grid, the result is `y'.
+  if (space_dim == 0) {
+    *this = y;
+    return;
+  }
+
+  // TODO: this implementation is just an executable specification.
+  Constraint_System cs = y.constraints();
+
+  // The constraints of `x' (possibly with pending rows) are required.
+  if (has_pending_generators())
+    process_pending_generators();
+  else if (!constraints_are_up_to_date())
+    update_constraints();
+
+  // The matrix for the new system of constraints is obtained
+  // by leaving the old system of constraints in the upper left-hand side
+  // and placing the constraints of `cs' in the lower right-hand side.
+  // NOTE: here topologies agree, whereas dimensions may not agree.
+  dimension_type old_num_rows = con_sys.num_rows();
+  dimension_type old_num_columns = con_sys.num_columns();
+  dimension_type added_rows = cs.num_rows();
+
+  // We already dealt with the cases of an empty or zero-dim `y' grid;
+  // also, `cs' contains the low-level constraints, at least.
+  assert(added_rows > 0 && added_columns > 0);
+
+  con_sys.add_zero_rows_and_columns(added_rows, added_columns,
+				    Linear_Row::Flags(topology(),
+						      Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+  // Move the epsilon coefficient to the last column, if needed.
+  if (!is_necessarily_closed())
+    con_sys.swap_columns(old_num_columns - 1,
+			 old_num_columns - 1 + added_columns);
+  dimension_type cs_num_columns = cs.num_columns();
+  // Steal the constraints from `cs' and put them in `con_sys'
+  // using the right displacement for coefficients.
+  for (dimension_type i = added_rows; i-- > 0; ) {
+    Constraint& c_old = cs[i];
+    Constraint& c_new = con_sys[old_num_rows + i];
+    // Method `grow', by default, added inequalities.
+    if (c_old.is_equality())
+      c_new.set_is_equality();
+    // The inhomogeneous term is not displaced.
+    std::swap(c_new[0], c_old[0]);
+    // All homogeneous terms (included the epsilon coefficient,
+    // if present) are displaced by `space_dim' columns.
+    for (dimension_type j = 1; j < cs_num_columns; ++j)
+      std::swap(c_old[j], c_new[space_dim + j]);
+  }
+
+  if (can_have_something_pending()) {
+    // If `*this' can support pending constraints, then, since we have
+    // resized the system of constraints, we must also add to the generator
+    // system those lines corresponding to the newly added dimensions,
+    // because the non-pending parts of `con_sys' and `gen_sys' must still
+    // be a DD pair in minimal form.
+    gen_sys.add_rows_and_columns(added_columns);
+    gen_sys.set_sorted(false);
+    if (!is_necessarily_closed())
+      gen_sys.swap_columns(old_num_columns - 1,
+			   old_num_columns - 1 + added_columns);
+    // The added lines are not pending.
+    gen_sys.unset_pending_rows();
+    // Since we added new lines at the beginning of `x.gen_sys',
+    // we also have to adjust the saturation matrix `sat_c'.
+    // FIXME: if `sat_c' is not up-to-date, couldn't we directly update
+    // `sat_g' by resizing it and shifting its columns?
+    if (!sat_c_is_up_to_date()) {
+      sat_c.transpose_assign(sat_g);
+      clear_sat_g_up_to_date();
+      set_sat_c_up_to_date();
+    }
+    sat_c.resize(sat_c.num_rows() + added_columns, sat_c.num_columns());
+    // The old saturation rows are copied at the end of the matrix.
+    // The newly introduced lines saturate all the non-pending constraints,
+    // thus their saturations rows are made of zeroes.
+    for (dimension_type i = sat_c.num_rows() - added_columns; i-- > 0; )
+      std::swap(sat_c[i], sat_c[i+added_columns]);
+    // Since `added_rows > 0', we now have pending constraints.
+    set_constraints_pending();
+  }
+  else {
+    // The grid cannot have pending constraints.
+    con_sys.unset_pending_rows();
+#if BE_LAZY
+    con_sys.set_sorted(false);
+#else
+    con_sys.sort_rows();
+#endif
+    clear_constraints_minimized();
+    clear_generators_up_to_date();
+    clear_sat_g_up_to_date();
+    clear_sat_c_up_to_date();
+  }
+  // Update space dimension.
+  space_dim += added_columns;
+
+  // The system of constraints may be unsatisfiable,
+  // thus we do not check for satisfiability.
+  assert(OK());
+}
+
+void
+PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
+  // The removal of no dimensions from any grid is a no-op.
+  // Note that this case also captures the only legal removal of
+  // dimensions from a grid in a 0-dim space.
+  if (to_be_removed.empty()) {
+    assert(OK());
+    return;
+  }
+
+  // Dimension-compatibility check: the variable having
+  // maximum space dimension is the one occurring last in the set.
+  const dimension_type
+    min_space_dim = to_be_removed.rbegin()->space_dimension();
+  if (space_dim < min_space_dim)
+    throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
+
+  const dimension_type new_space_dim = space_dim - to_be_removed.size();
+
+  // We need updated generators; note that keeping pending generators
+  // is useless because constraints will be dropped anyway.
+  if (marked_empty()
+      || (has_something_pending() && !remove_pending_to_obtain_generators())
+      || (!generators_are_up_to_date() && !update_generators())) {
+    // Removing dimensions from the empty grid:
+    // we clear `con_sys' since it could have contained the
+    // unsatisfiable constraint of the wrong dimension.
+    con_sys.clear();
+    // Update the space dimension.
+    space_dim = new_space_dim;
+    assert(OK());
+    return;
+  }
+
+  // When removing _all_ dimensions from a non-empty grid,
+  // we obtain the zero-dimensional universe grid.
+  if (new_space_dim == 0) {
+    set_zero_dim_univ();
+    return;
+  }
+
+  // FIXME: provide a method in Linear_System that removes a set
+  // of columns and restores strong-normalization only at the end.
+
+  // For each variable to be removed, we fill the corresponding column
+  // by shifting left those columns that will not be removed.
+  Variables_Set::const_iterator tbr = to_be_removed.begin();
+  Variables_Set::const_iterator tbr_end = to_be_removed.end();
+  dimension_type dst_col = tbr->space_dimension();
+  dimension_type src_col = dst_col + 1;
+  for (++tbr; tbr != tbr_end; ++tbr) {
+    dimension_type tbr_col = tbr->space_dimension();
+    // All columns in between are moved to the left.
+    while (src_col < tbr_col)
+      // FIXME: consider whether Linear_System must have a swap_columns()
+      // method.  If the answer is "no", remove this Matrix:: qualification.
+      gen_sys.Matrix::swap_columns(dst_col++, src_col++);
+    ++src_col;
+  }
+  // Moving the remaining columns.
+  const dimension_type gen_sys_num_columns = gen_sys.num_columns();
+  while (src_col < gen_sys_num_columns)
+    // FIXME: consider whether Linear_System must have a swap_columns()
+    // method.  If the answer is "no", remove this Matrix:: qualification.
+    gen_sys.Matrix::swap_columns(dst_col++, src_col++);
+
+  // The number of remaining columns is `dst_col'.
+  // Note that resizing also calls `set_sorted(false)'.
+  gen_sys.remove_trailing_columns(gen_sys_num_columns - dst_col);
+  // We may have invalid line and rays now.
+  gen_sys.remove_invalid_lines_and_rays();
+
+  // Constraints are not up-to-date and generators are not minimized.
+  clear_constraints_up_to_date();
+  clear_generators_minimized();
+
+  // Update the space dimension.
+  space_dim = new_space_dim;
+
+  assert(OK(true));
+}
+
+void
+PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
+  // Dimension-compatibility check.
+  if (new_dimension > space_dim)
+    throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
+				 new_dimension);
+
+  // The removal of no dimensions from any grid is a no-op.
+  // Note that this case also captures the only legal removal of
+  // dimensions from a grid in a 0-dim space.
+  if (new_dimension == space_dim) {
+    assert(OK());
+    return;
+  }
+
+  // We need updated generators; note that keeping pending generators
+  // is useless because constraints will be dropped anyway.
+  if (marked_empty()
+      || (has_something_pending() && !remove_pending_to_obtain_generators())
+      || (!generators_are_up_to_date() && !update_generators())) {
+    // Removing dimensions from the empty grid:
+    // just updates the space dimension.
+    space_dim = new_dimension;
+    con_sys.clear();
+    assert(OK());
+    return;
+  }
+
+  if (new_dimension == 0) {
+    // Removing all dimensions from a non-empty grid:
+    // just return the zero-dimensional universe grid.
+    set_zero_dim_univ();
+    return;
+  }
+
+  dimension_type new_num_cols = new_dimension + 1;
+  if (!is_necessarily_closed()) {
+    // The grid is not necessarily closed: move the column
+    // of the epsilon coefficients to its new place.
+    gen_sys.swap_columns(gen_sys.num_columns() - 1, new_num_cols);
+    // The number of remaining columns is `new_dimension + 2'.
+    ++new_num_cols;
+  }
+  // Note that resizing also calls `set_sorted(false)'.
+  gen_sys.remove_trailing_columns(space_dim - new_dimension);
+  // We may have invalid line and rays now.
+  gen_sys.remove_invalid_lines_and_rays();
+
+  // Constraints are not up-to-date and generators are not minimized.
+  clear_constraints_up_to_date();
+  clear_generators_minimized();
+
+  // Update the space dimension.
+  space_dim = new_dimension;
+
+  assert(OK(true));
+}
+
+void
+PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
+  // FIXME: this implementation is _really_ an executable specification.
+
+  // `var' should be one of the dimensions of the vector space.
+  if (var.space_dimension() > space_dim)
+    throw_dimension_incompatible("expand_space_dimension(v, m)", "v", var);
+
+  // The space dimension of the resulting grid should not
+  // overflow the maximum allowed space dimension.
+  if (m > max_space_dimension() - space_dimension())
+    throw_space_dimension_overflow(topology(),
+				   "expand_dimension(v, m)",
+				   "adding m new space dimensions exceeds "
+				   "the maximum allowed space dimension");
+
+  // Nothing to do, if no dimensions must be added.
+  if (m == 0)
+    return;
+
+  // Keep track of the dimension before adding the new ones.
+  dimension_type old_dim = space_dim;
+
+  // Add the required new dimensions.
+  add_space_dimensions_and_embed(m);
+
+  const dimension_type src_d = var.id();
+  const Constraint_System& cs = constraints();
+  Constraint_System new_constraints;
+  for(Constraint_System::const_iterator i = cs.begin(),
+	cs_end = cs.end(); i != cs_end; ++i) {
+    const Constraint& c = *i;
+
+    // If `c' does not constrain `var', skip it.
+    if(c.coefficient(var) == 0)
+      continue;
+
+    // Each relevant constraint results in `m' new constraints.
+    for (dimension_type dst_d = old_dim; dst_d < old_dim+m; ++dst_d) {
+      Linear_Expression e;
+      for (dimension_type j = old_dim; j-- > 0; )
+	e +=
+	  c.coefficient(Variable(j))
+	  * (j == src_d ? Variable(dst_d) : Variable(j));
+      e += c.inhomogeneous_term();
+      new_constraints.insert(c.is_equality()
+			     ? (e == 0)
+			     : (c.is_nonstrict_inequality()
+				? (e >= 0)
+				: (e > 0)));
+    }
+  }
+  add_constraints(new_constraints);
+  assert(OK());
+}
+
+void
+PPL::Grid::fold_space_dimensions(const Variables_Set& to_be_folded,
+				 Variable var) {
+  // FIXME: this implementation is _really_ an executable specification.
+
+  // `var' should be one of the dimensions of the grid.
+  if (var.space_dimension() > space_dim)
+    throw_dimension_incompatible("fold_space_dimensions(tbf, v)", "v", var);
+
+  // The folding of no dimensions is a no-op.
+  if (to_be_folded.empty())
+    return;
+
+  // All variables in `to_be_folded' should be dimensions of the grid.
+  if (to_be_folded.rbegin()->space_dimension() > space_dim)
+    throw_dimension_incompatible("fold_space_dimensions(tbf, v)",
+				 "*tbf.rbegin()",
+				 *to_be_folded.rbegin());
+
+  // Moreover, `var' should not occur in `to_be_folded'.
+  if (to_be_folded.find(var) != to_be_folded.end())
+    throw_invalid_argument("fold_space_dimensions(tbf, v)",
+			   "v should not occur in tbf");
+
+  for (Variables_Set::const_iterator i = to_be_folded.begin(),
+	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
+    Grid copy = *this;
+    copy.affine_image(var, Linear_Expression(*i));
+    poly_hull_assign(copy);
+  }
+  remove_space_dimensions(to_be_folded);
+  assert(OK());
+}
+#endif
