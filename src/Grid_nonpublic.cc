@@ -586,6 +586,7 @@ PPL::Grid::remove_pending_to_obtain_congruences() const {
   }
   assert(OK(true));
 }
+#endif
 
 bool
 PPL::Grid::remove_pending_to_obtain_generators() const {
@@ -611,7 +612,6 @@ PPL::Grid::remove_pending_to_obtain_generators() const {
     return x.process_pending_congruences();
   }
 }
-#endif
 
 bool
 PPL::Grid::update_congruences() const {
