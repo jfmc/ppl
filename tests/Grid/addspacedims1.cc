@@ -1,4 +1,4 @@
-/* Test Grid::add_space_dimensions_*.
+/* Test Grid::add_space_dimensions_and_emdeb.
    Copyright (C) 2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -34,9 +34,7 @@ test1() {
   nout << "test1:" << endl;
 
   Variable A(0);
-  Variable B(1);
   Variable C(2);
-  Variable D(3);
   Variable E(4);
 
   Congruence_System cgs;
@@ -116,6 +114,11 @@ test3() {
 
   if (find_variation(gr))
     exit(1);
+
+  if (gr.is_universe() == false) {
+    nout << "Grid should be universe." << endl;
+    exit(1);
+  }
 
   Grid known_gr(5, Grid::UNIVERSE);
 
