@@ -31,6 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+// Used for add_space_dimensions_and_embed.
 inline void
 PPL::Grid::add_space_dimensions(Congruence_System& cgs,
 				Generator_System& gs,
@@ -64,10 +65,10 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
     gen[col_num] = 1;
   }
   if (has_pending == false)
-    gs.unset_pending_rows(); // FIX OK (will the gs appear minimized)?
+    gs.unset_pending_rows(); // FIX OK? (~ will the gs appear minimized)?
 }
 
-// Used for project.
+// Used for add_space_dimensions_and_project.
 inline void
 PPL::Grid::add_space_dimensions(Generator_System& gs,
 				Congruence_System& cgs,
@@ -104,7 +105,7 @@ PPL::Grid::add_space_dimensions(Generator_System& gs,
   }
 #if 0 // FIX pending
   if (has_pending == false)
-    cgs.unset_pending_rows(); // FIX OK (will the cgs appear minimized)?
+    cgs.unset_pending_rows(); // FIX OK? (~ will the cgs appear minimized)?
 #endif
 
   num_cols = gs.num_columns();
@@ -153,7 +154,7 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
   if (marked_empty()) {
     space_dim += m;
     con_sys.clear();
-    // FIX is it ok to leave the gen_sys?
+    gen_sys.clear();
     return;
   }
 
@@ -240,7 +241,7 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
   if (marked_empty()) {
     space_dim += m;
     con_sys.clear();
-    // FIX is it ok to leave the gen_sys?
+    gen_sys.clear();
     return;
   }
 
@@ -534,7 +535,7 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // The number of remaining columns is `dst_col'.
   // Note that resizing also calls `set_sorted(false)'.
   gen_sys.remove_trailing_columns(gen_sys_num_columns - dst_col);
-  // We may have invalid line and rays now.
+  // We may have invalid lines and rays now.
   gen_sys.remove_invalid_lines_and_rays();
 
   // Constraints are not up-to-date and generators are not minimized.
@@ -546,7 +547,7 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
 
   assert(OK(true));
 }
-
+#endif
 void
 PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
   // Dimension-compatibility check.
@@ -563,48 +564,40 @@ PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
   }
 
   // We need updated generators; note that keeping pending generators
-  // is useless because constraints will be dropped anyway.
+  // is useless because the congruences will be dropped anyway.
   if (marked_empty()
       || (has_something_pending() && !remove_pending_to_obtain_generators())
       || (!generators_are_up_to_date() && !update_generators())) {
-    // Removing dimensions from the empty grid:
-    // just updates the space dimension.
+    // Removing dimensions from the empty grid just updates the space
+    // dimension.
     space_dim = new_dimension;
     con_sys.clear();
+    gen_sys.clear();
     assert(OK());
     return;
   }
 
   if (new_dimension == 0) {
-    // Removing all dimensions from a non-empty grid:
-    // just return the zero-dimensional universe grid.
+    // Removing all dimensions from a non-empty grid just returns the
+    // zero-dimensional universe grid.
     set_zero_dim_univ();
     return;
   }
 
-  dimension_type new_num_cols = new_dimension + 1;
-  if (!is_necessarily_closed()) {
-    // The grid is not necessarily closed: move the column
-    // of the epsilon coefficients to its new place.
-    gen_sys.swap_columns(gen_sys.num_columns() - 1, new_num_cols);
-    // The number of remaining columns is `new_dimension + 2'.
-    ++new_num_cols;
+  gen_sys.Matrix::remove_trailing_columns(space_dim - new_dimension);
+  if (generators_are_minimized()) {
+    gen_sys.erase_to_end(new_dimension + 1);
+    gen_sys.unset_pending_rows();
   }
-  // Note that resizing also calls `set_sorted(false)'.
-  gen_sys.remove_trailing_columns(space_dim - new_dimension);
-  // We may have invalid line and rays now.
-  gen_sys.remove_invalid_lines_and_rays();
 
-  // Constraints are not up-to-date and generators are not minimized.
-  clear_constraints_up_to_date();
-  clear_generators_minimized();
+  clear_congruences_up_to_date();
 
   // Update the space dimension.
   space_dim = new_dimension;
 
   assert(OK(true));
 }
-
+#if 0
 void
 PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
   // FIXME: this implementation is _really_ an executable specification.
