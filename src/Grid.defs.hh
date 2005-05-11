@@ -467,8 +467,8 @@ public:
   bool is_empty() const;
 
   //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! is a universe grid.
+  //! Returns <CODE>true</CODE> if and only if \p *this is a universe
+  //! grid.
   bool is_universe() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this and \p y are disjoint.
@@ -1015,12 +1015,31 @@ public:
     systems.
 
     This method is invoked only by
-    <CODE>add_space_dimensions_and_embed()</CODE> and
-    <CODE>add_space_dimensions_and_project()</CODE>, passing the
-    matrix of constraints and that of generators.
+    <CODE>add_space_dimensions_and_embed()</CODE>.
   */
   void add_space_dimensions(Congruence_System& cgs,
 			    Generator_System& gs,
+			    dimension_type dims);
+
+  //! Adds new space dimensions to the given systems.
+  /*!
+    \param gs
+    A generator system, to which columns are added;
+
+    \param cgs
+    A congruence system, to which rows and columns are added;
+
+    \param dims
+    The number of space dimensions to add.
+
+    Adds new space dimensions to the vector space modifying the given
+    systems.
+
+    This method is invoked only by
+    <CODE>add_space_dimensions_and_project()</CODE>.
+  */
+  void add_space_dimensions(Generator_System& gs,
+			    Congruence_System& cgs,
 			    dimension_type dims);
 
   //! \brief
