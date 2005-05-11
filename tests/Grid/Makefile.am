@@ -48,7 +48,9 @@ congruencesystem1 \
 congruencesystem2 \
 grid1 \
 grid2 \
+isuniverse1 \
 addspacedims1 \
+addspacedims2 \
 intersection1 \
 intersection2 \
 join1 \
@@ -65,10 +67,12 @@ congruencesystem2_SOURCES = congruencesystem2.cc
 grid1_SOURCES = grid1.cc
 grid2_SOURCES = grid2.cc
 addspacedims1_SOURCES = addspacedims1.cc
+addspacedims2_SOURCES = addspacedims2.cc
 intersection1_SOURCES = intersection1.cc
 intersection2_SOURCES = intersection2.cc
 join1_SOURCES = join1.cc
 join2_SOURCES = join2.cc
+isuniverse1_SOURCES = isuniverse1.cc
 
 XFAIL_TESTS =
 
