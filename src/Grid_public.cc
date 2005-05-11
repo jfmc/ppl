@@ -281,7 +281,7 @@ PPL::Grid::relation_with(const Generator& g) const {
     ? Poly_Gen_Relation::subsumes()
     : Poly_Gen_Relation::nothing();
 }
-
+#endif
 bool
 PPL::Grid::is_universe() const {
   if (marked_empty())
@@ -303,23 +303,24 @@ PPL::Grid::is_universe() const {
 
     // Compare congruences to the universe representation.
 
-    dimension_type size = con_sys.size();
+    dimension_type size = con_sys.num_columns();
     if (size == 0)
       return false;
-    // Check if the first row has 1 in the first and last elements,
+    --size;			// Index.
+    // Check that the first row has 1 in the first and last elements,
     // and 0 in the others.
-    Congruence& cg = con_sys[0];
+    const Congruence& cg = con_sys[0];
     if (cg[0] == 1 && cg[size] == 1) {
-      for (dimension_type col = 1; col < size - 1; ++col)
-	if (col != 0)
+      for (dimension_type col = 1; col < size; ++col)
+	if (cg[col] != 0)
 	  return false;
     }
     else
       return false;
-    // Check if all subsequent rows are virtual.
+    // Check that all subsequent rows are virtual.
     Congruence_System::const_iterator row = con_sys.begin();
-    while (row != con_sys.end())
-      if (row++.is_virtual() == false)
+    while (++row != con_sys.end())
+      if ((*row).is_virtual() == false)
 	return false;
     return true;
   }
@@ -335,26 +336,27 @@ PPL::Grid::is_universe() const {
 
   // Compare generators to the universe representation.
 
-  dimension_type size = gen_sys.size();
+  dimension_type size = gen_sys.num_columns();
   if (size == 0)
     return false;
+  --size;			// Index.
   // Check the first row.
-  Generator& g = gen_sys[0];
+  const Generator& g = gen_sys[0];
   if (g[0] == 1 && g[size] == 1) {
-    for (dimension_type col = 1; col < size - 1; ++col)
-      if (col != 0)
+    for (dimension_type col = 1; col < size; ++col)
+      if (g[col] != 0)
 	return false;
   }
   else
     return false;
   // Check if all subsequent rows are virtual.
   Generator_System::const_iterator row = gen_sys.begin();
-  while (row != con_sys.end())
-    if (row++.is_virtual() == false)
+  while (++row != gen_sys.end())
+    if ((*row).is_virtual() == false)
       return false;
   return true;
 }
-
+#if 0
 bool
 PPL::Grid::is_bounded() const {
   // A zero-dimensional or empty polyhedron is bounded.
@@ -589,10 +591,10 @@ PPL::Grid::OK(bool check_not_empty) const {
       // equal to the new number of rows in `gs'.
       gs.erase_to_end(gen_sys.first_pending_row());
 
-      // A reduced parameter system must be upper triangular.
+      // A reduced generator system must be upper triangular.
       if (upper_triangular(gs) == false) {
 #ifndef NDEBUG
-	cerr << "Reduced parameters should be upper triangular." << endl;
+	cerr << "Reduced generators should be upper triangular." << endl;
 #endif
 	goto fail;
       }
