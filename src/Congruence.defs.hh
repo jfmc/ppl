@@ -59,12 +59,12 @@ operator==(const Congruence& x, const Congruence& y);
 bool
 operator!=(const Congruence& x, const Congruence& y);
 
-//! Returns the congruence \f$\p e1 = \p e2 \pmod{1}\f$.
+//! Returns the congruence \f$e1 = e2 \pmod{1}\f$.
 /*! \relates Congruence */
 Congruence
 operator%=(const Linear_Expression& e1, const Linear_Expression& e2);
 
-//! Returns the congruence \f$\p e = \p n \pmod{1}\f$.
+//! Returns the congruence \f$e = n \pmod{1}\f$.
 /*! \relates Congruence */
 Congruence
 operator%=(const Linear_Expression& e,
