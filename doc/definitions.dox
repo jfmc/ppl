@@ -1364,16 +1364,21 @@ equality \f$a = b\f$.
 For each vector
 \f$\vect{a} \in \Qset^n \setdiff \{\vect{0}\}\f$ and scalars
 \f$b, f \in \Qset\f$,
-the linear <EM>congruence relation</EM> in \f$\Qset^n\f$
-\f$\bigl(\langle \vect{a}, \vect{x} \rangle \equiv_f b\bigr)\f$
+the linear <EM>congruence relation</EM>
+ \f[
+    \cg \defeq \bigl(\langle \vect{a}, \vect{x} \rangle \equiv_f b\bigr)
+ \f]
 defines the set of affine hyperplanes
-\f[
+\f$
   \big\{
     \langle \vect{a}, \vect{x} \rangle = b + \mu f
   \bigm|
     \mu \in \Zset
-  \bigr\}.
-\f]
+  \bigr\}
+\f$
+in \f$\Qset^n\f$;
+\f$f\f$ is called the <EM>frequency</EM> and
+\f$b\f$ the <EM>base value</EM> of the relation \f$\cg\f$.
 
 When \f$f = 0\f$, the congruence relation,
 is <EM>singular</EM> and defines the unique hyperplane
@@ -1402,8 +1407,18 @@ and that \f$\cC\f$ is a <EM>congruence system</EM> for \f$\cL\f$.
 
 The <EM>grid domain</EM> \f$\Gset_{n}\f$ is the set of all rational grids
 described by finite sets of congruence relations in \f$\Qset^n\f$.
-If the congruence system \f$\cC\f$ describes the grid \f$\emptyset\f$ 
+
+If the congruence system \f$\cC\f$ describes the \f$\emptyset\f$,
+the <EM>empty</EM> grid,
 then we say that \f$\cC\f$ is <EM>inconsistent</EM>.
+For example, the congruence systems
+\f$\{\langle\vect{0}, \vect{x}\rangle \equiv_0 1\}\f$
+meaning that \f$0 = 1\f$ and
+\f$\{\langle\vect{a}, \vect{x}\rangle \equiv_2 0,
+     \langle\vect{a}, \vect{x}\rangle \equiv_2 1\}\f$,
+for any \f$\vect{a} \in \Rset^n\f$,
+meaning that the value of an expression must be both even and odd
+are both inconsistent since both describe the empty grid.
 
 When ordering grids by the set inclusion relation,
 the empty set \f$\emptyset\f$ and the vector space \f$\Rset^n\f$
@@ -1412,7 +1427,7 @@ are, respectively, the smallest and the biggest elements of
 \f$\Gset_n\f$.
 The vector space \f$\Rset^n\f$ is also called the <EM>universe</EM> grid.
 
-In theoretical terms,
+In set theoretical terms,
 \f$\Gset_n\f$ is a <EM>lattice</EM> under set inclusion.
 
 \anchor integer_combinations
@@ -1511,15 +1526,16 @@ has no more than a total of \f$n+1\f$ lines, parameters and points.
 
 As parameters are not currently suppported by the user-interface to the grids,
 a minimized generator system
-\f$\bigl(L, Q, \{\vect{p}\}\bigr)\f$ is reurned to the user in the form
+\f$\bigl(L, Q, \{\vect{p}\}\bigr)\f$ is reurned to the user as the pair
 \f$\bigl(L, Q_{\vect{p}} \union \{\vect{p}\}\bigr)\f$
 where
 \f$Q_{\vect{p}} = \{ \vect{p} + \vect{q} \mid \vect{q} \in Q\}\f$.
 
 <B>Double Description for Grids</B>
 
-As for convex polyhedra, any grid can be described by using
-a congruence system \f$\cC\f$, a generator system \f$\cG\f$, or
+As for convex polyhedra, any grid \f$\cL\f$ can be described by using
+a congruence system \f$\cC\f$ for \f$\cL\f$,
+a generator system \f$\cG\f$ for \f$\cL\f$, or
 both by means of the <EM>double description pair (DD pair)</EM>
 \f$(\cC, \cG)\f$.
 The <EM>double description method</EM> for grids is a collection of
@@ -1562,7 +1578,7 @@ These are similar to those described in Section \ref operations.
 For any pair of grids \f$\cL_1, \cL_2 \in \Gset_n\f$,
 the <EM>intersection</EM> of \f$\cL_1\f$ and \f$\cL_2\f$,
 defined as the set intersection \f$\cL_1 \inters \cL_2\f$,
-is the biggest grid included in both \f$\cL_1\f$ and \f$\cL_2\f$;
+is the largest grid included in both \f$\cL_1\f$ and \f$\cL_2\f$;
 similarly, the <EM>grid join</EM>
 of \f$\cL_1\f$ and \f$\cL_2\f$, denoted by \f$\cL_1 \uplus \cL_2\f$,
 is the smallest grid that includes both
@@ -1857,9 +1873,9 @@ denoted \f$ \cL_1 \nearrow \cL_2\f$,
 is the grid
 \f[
   \bigl\{\,
-    \vect{p} + \lambda \vect{q} \in \Rset^n
+    \vect{p} + \mu \vect{q} \in \Rset^n
   \bigm|
-    \vect{p} \in \cL_1, \vect{q} \in \cL_2, \lambda \in \Zset
+    \vect{p} \in \cL_1, \vect{q} \in \cL_2, \mu \in \Zset
   \,\bigr\}.
 \f]
 
@@ -1882,7 +1898,7 @@ is a congruence relation
 with \f$\cL_{\cg} = \gcon\bigl(\{\cg\}\bigr)\f$.
 The possible relations between \f$\cL\f$ and \f$\cg\f$ are as follows.
 - \f$\cL\f$ <EM>is disjoint</EM> from \f$\cg\f$ if
-  \f$\cL \inters \cL_{\cg} = \emptyset\f$; that is, adding \f$cg\f$
+  \f$\cL \inters \cL_{\cg} = \emptyset\f$; that is, adding \f$\cg\f$
   to \f$\cC\f$ gives us the empty grid.
 - \f$\cL\f$ <EM>strictly intersects</EM> \f$\cg\f$ if
   \f$\cL \inters \cL_{\cg} \neq \emptyset\f$ and
@@ -1891,11 +1907,6 @@ The possible relations between \f$\cL\f$ and \f$\cg\f$ are as follows.
   gives us a non-empty grid strictly smaller than \f$\cL\f$.
 - \f$\cL\f$ <EM>is included</EM> in \f$\cg\f$ if \f$\cL \sseq \cL_{\cg}\f$;
   that is, adding \f$\cg\f$ to \f$\cC\f$ leaves \f$\cL\f$ unchanged.
-- \f$\cL\f$ <EM>saturates</EM> \f$\cg\f$ if \f$\cL \sseq \cH\f$,
-  where \f$\cH\f$ is the hyperplane defined by the equality
-  \f$\bigl(\langle \vect{a}, \vect{x} \rangle = b\bigr)\f$;
-  that is, adding \f$\bigl(\langle \vect{a}, \vect{x} \rangle = b\bigr)\f$
-  to \f$\cC\f$ leaves \f$\cL\f$ unchanged.
 
 A grid \f$\cL\f$ <EM>subsumes</EM> a generator \f$g\f$ if
 adding \f$g\f$ to any generator system representing \f$\cL\f$
@@ -1908,30 +1919,32 @@ Consider again the  \ref bounding_boxes "boxes" used for convex polyhedra.
 An \f$n\f$-dimensional <EM>rational box</EM> is a box
 \f$\cB\f$ in \f$\Qset^n\f$;
 that is, where the bounded bounds in the intervals are each in \f$\Qset\f$.
+We will say that an interval is <EM>bounded</EM> if both its bounds
+are bounded.
 
-An \f$n\f$-dimensional rational box \f$\cB\f$</EM>, corresponds to
-a congruence system \f$\cC\f$ in \f$\Qset^n\f$ that
-consists of at most one congruence for each interval in \f$\cB\f$.
+Each bounded interval in \f$\cB\f$ determines a congruence \f$\cg\f$
+in \f$\Qset^n\f$.
 Letting \f$\vect{e}_i = (0, \ldots, 1, \ldots, 0)^\transpose\f$
 be the vector in \f$\Rset^n\f$ with 1 in the \f$i\f$'th position
 and zeroes in every other position;
-if both the bounds of the \f$i\f$'th interval in \f$\cB\f$
-are closed and bounded, the corresponding congruence is defined as
+if both the bounds of the interval
+are closed, then the congruence \f$\cg\f$ is defined as
 \f$\bigl(\langle \vect{e}_i, \vect{x}  \rangle \equiv_f b\bigr)\f$,
 where \f$b\f$ is the value of the lower bound and
 \f$f\f$ is the (non-negative) difference between the lower and upper bounds.
-If one of the bounds is open and bounded,
-then the corresponding
-congruence is \f$\bigl(\langle \vect{0}, \vect{x}  \rangle \equiv_0 1\bigr)\f$
+If one of the bounds is open,
+then \f$\cg\f$ is the congruence
+\f$\bigl(\langle \vect{0}, \vect{x}  \rangle \equiv_0 1\bigr)\f$
 representing the inconsistent equality \f$(0 = 1)\f$.
 
-If \f$\cB\f$ corresponds to the congruence system \f$\cC\f$,
+Let \f$\cC\f$ be the set of congruences defined by
+the bounded intervals in a rational box \f$\cB\f$;
 then we say that \f$B\f$ <EM>represents</EM> the rational grid
 \f$\cL = \gcon(\cC)\f$.
 Any grid \f$\cL \in \Gset_n\f$ that can be represented by
 a box is said to be <EM>rectilinear</EM>.
 
-A <EM>covering box</EM> of a rational grid \f$\cL\f$ is a rational box
+A <EM>covering box</EM> of a grid \f$\cL\f$ is a rational box
 representing the smallest rectilinear grid that contains \f$\cL\f$.
 
 As for convex polyhedra, the library will provide
