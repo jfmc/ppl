@@ -510,118 +510,122 @@ PPL::Grid::OK(bool check_not_empty) const {
     goto fail;
   }
 
-  // The expected number of columns in the congruence and generator
-  // systems, if they are not empty.
-  const dimension_type num_columns = space_dim + 1;
+  {
+    // This block is to limit the scope of num_columns, for GCC < 3.4.
 
-  // Here we check if the size of the matrices is consistent.
-  // Let us suppose that all the matrices are up-to-date; this means:
-  // `con_sys' : number of congruences x poly_num_columns
-  // `gen_sys' : number of generators  x poly_num_columns
-  if (congruences_are_up_to_date())
-    if (con_sys.num_columns() != num_columns + 1 /* moduli */) {
-#ifndef NDEBUG
-      cerr << "Incompatible size! (con_sys and space_dim)"
-	   << endl;
-#endif
-      goto fail;
-    }
+    // The expected number of columns in the congruence and generator
+    // systems, if they are not empty.
+    const dimension_type num_columns = space_dim + 1;
 
-  if (generators_are_up_to_date()) {
-    if (gen_sys.num_columns() != num_columns) {
+    // Here we check if the size of the matrices is consistent.
+    // Let us suppose that all the matrices are up-to-date; this means:
+    // `con_sys' : number of congruences x poly_num_columns
+    // `gen_sys' : number of generators  x poly_num_columns
+    if (congruences_are_up_to_date())
+      if (con_sys.num_columns() != num_columns + 1 /* moduli */) {
 #ifndef NDEBUG
-      cerr << "Incompatible size! (gen_sys and space_dim)"
-	   << endl;
-#endif
-      goto fail;
-    }
-
-    // Check if the system of generators is well-formed.  Check by
-    // hand, as many valid characteristics of a parameter system will
-    // fail Generator_System::OK.
-    if (gen_sys.Linear_System::OK(false) == false) {
-#ifndef NDEBUG
-      cerr << "gen_sys Linear_System::OK failed." << endl;
-#endif
-      goto fail;
-    }
-    // Check each generator in the system.
-    for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
-      const Generator& g = gen_sys[i];
-
-      if (g.is_necessarily_closed() == false) {
-#ifndef NDEBUG
-	cerr << "Parameter should be necessarily closed."
+	cerr << "Incompatible size! (con_sys and space_dim)"
 	     << endl;
 #endif
 	goto fail;
       }
 
-      if (g.size() < 1) {
+    if (generators_are_up_to_date()) {
+      if (gen_sys.num_columns() != num_columns) {
 #ifndef NDEBUG
-	cerr << "Parameter should have coefficients." << endl;
-#endif
-	goto fail;
-      }
-    }
-
-    // FIX gen_sys.f_p_r == size instead?
-    if (gen_sys.first_pending_row() == 0) {
-#ifndef NDEBUG
-      cerr << "Up-to-date generator system with all rows pending!"
-	   << endl;
-#endif
-      goto fail;
-    }
-
-    // A non-empty system of generators describing a grid is valid iff
-    // it contains a point.
-    if (gen_sys.num_rows() > 0 && !gen_sys.has_points()) {
-#ifndef NDEBUG
-      cerr << "Non-empty generator system declared up-to-date "
-	   << "has no points!"
-	   << endl;
-#endif
-      goto fail;
-    }
-
-    if (generators_are_minimized()) {
-      Generator_System gs = gen_sys;
-      // Leave `index_first_pending' as it is in `gs', because it is
-      // equal to the new number of rows in `gs'.
-      gs.erase_to_end(gen_sys.first_pending_row());
-
-      // A reduced generator system must be upper triangular.
-      if (upper_triangular(gs) == false) {
-#ifndef NDEBUG
-	cerr << "Reduced generators should be upper triangular." << endl;
+	cerr << "Incompatible size! (gen_sys and space_dim)"
+	     << endl;
 #endif
 	goto fail;
       }
 
-      // A reduced parameter system must be the same as a temporary
-      // reduced copy.
-      gs.unset_pending_rows();
-      Generator_System gs_copy = gs;
-      simplify(gs);
-      for (dimension_type row = 0; row < gs_copy.num_rows(); ++row) {
-	Generator& g = gs[row];
-	Generator& g_copy = gs_copy[row];
-	dimension_type col = gs_copy.num_columns();
-	if (g.type() != g_copy.type())
-	  goto message_fail;
-	while (col--) {
-	  if (g[col] == g_copy[col])
-	    continue;
-	message_fail:
+      // Check if the system of generators is well-formed.  Check by
+      // hand, as many valid characteristics of a parameter system will
+      // fail Generator_System::OK.
+      if (gen_sys.Linear_System::OK(false) == false) {
 #ifndef NDEBUG
-	  cerr << "Parameters are declared minimized, but they change under reduction.\n"
-	       << "Here is the parameter system:\n";
-	  gs_copy.ascii_dump(cerr);
-	  cerr << "and here is the minimized form of the temporary copy:\n";
-	  gs.ascii_dump(cerr);
+	cerr << "gen_sys Linear_System::OK failed." << endl;
+#endif
+	goto fail;
+      }
+      // Check each generator in the system.
+      for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
+	const Generator& g = gen_sys[i];
+
+	if (g.is_necessarily_closed() == false) {
+#ifndef NDEBUG
+	  cerr << "Parameter should be necessarily closed."
+	       << endl;
 #endif
 	  goto fail;
+	}
+
+	if (g.size() < 1) {
+#ifndef NDEBUG
+	  cerr << "Parameter should have coefficients." << endl;
+#endif
+	  goto fail;
+	}
+      }
+
+      // FIX gen_sys.f_p_r == size instead?
+      if (gen_sys.first_pending_row() == 0) {
+#ifndef NDEBUG
+	cerr << "Up-to-date generator system with all rows pending!"
+	     << endl;
+#endif
+	goto fail;
+      }
+
+      // A non-empty system of generators describing a grid is valid iff
+      // it contains a point.
+      if (gen_sys.num_rows() > 0 && !gen_sys.has_points()) {
+#ifndef NDEBUG
+	cerr << "Non-empty generator system declared up-to-date "
+	     << "has no points!"
+	     << endl;
+#endif
+	goto fail;
+      }
+
+      if (generators_are_minimized()) {
+	Generator_System gs = gen_sys;
+	// Leave `index_first_pending' as it is in `gs', because it is
+	// equal to the new number of rows in `gs'.
+	gs.erase_to_end(gen_sys.first_pending_row());
+
+	// A reduced generator system must be upper triangular.
+	if (upper_triangular(gs) == false) {
+#ifndef NDEBUG
+	  cerr << "Reduced generators should be upper triangular." << endl;
+#endif
+	  goto fail;
+	}
+
+	// A reduced parameter system must be the same as a temporary
+	// reduced copy.
+	gs.unset_pending_rows();
+	Generator_System gs_copy = gs;
+	simplify(gs);
+	for (dimension_type row = 0; row < gs_copy.num_rows(); ++row) {
+	  Generator& g = gs[row];
+	  Generator& g_copy = gs_copy[row];
+	  dimension_type col = gs_copy.num_columns();
+	  if (g.type() != g_copy.type())
+	    goto message_fail;
+	  while (col--) {
+	    if (g[col] == g_copy[col])
+	      continue;
+	  message_fail:
+#ifndef NDEBUG
+	    cerr << "Parameters are declared minimized, but they change under reduction.\n"
+		 << "Here is the parameter system:\n";
+	    gs_copy.ascii_dump(cerr);
+	    cerr << "and here is the minimized form of the temporary copy:\n";
+	    gs.ascii_dump(cerr);
+#endif
+	    goto fail;
+	  }
 	}
       }
     }
@@ -2212,11 +2216,17 @@ PPL::Grid::ascii_dump(std::ostream& s) const {
     << "con_sys ("
     << (congruences_are_up_to_date() ? "" : "not_")
     << "up-to-date)"
+    << " ("
+    << (congruences_are_minimized() ? "" : "not_")
+    << "minimized)"
     << endl;
   con_sys.ascii_dump(s);
   s << "gen_sys ("
     << (generators_are_up_to_date() ? "" : "not_")
     << "up-to-date)"
+    << " ("
+    << (generators_are_minimized() ? "" : "not_")
+    << "minimized)"
     << endl;
   gen_sys.ascii_dump(s);
 }
