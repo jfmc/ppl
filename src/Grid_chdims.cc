@@ -465,19 +465,19 @@ PPL::Grid::concatenate_assign(const Grid& y) {
   // thus we do not check for satisfiability.
   assert(OK());
 }
-
+#endif
 void
 PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
-  // The removal of no dimensions from any grid is a no-op.
-  // Note that this case also captures the only legal removal of
-  // dimensions from a grid in a 0-dim space.
+  // The removal of no dimensions from any grid is a no-op.  This case
+  // also captures the only legal removal of dimensions from a grid in
+  // a 0-dim space.
   if (to_be_removed.empty()) {
     assert(OK());
     return;
   }
 
-  // Dimension-compatibility check: the variable having
-  // maximum space dimension is the one occurring last in the set.
+  // Dimension-compatibility check: the variable having maximum space
+  // dimension is the one occurring last in the set.
   const dimension_type
     min_space_dim = to_be_removed.rbegin()->space_dimension();
   if (space_dim < min_space_dim)
@@ -486,22 +486,21 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
   const dimension_type new_space_dim = space_dim - to_be_removed.size();
 
   // We need updated generators; note that keeping pending generators
-  // is useless because constraints will be dropped anyway.
+  // is useless because congruences will be dropped anyway.
   if (marked_empty()
       || (has_something_pending() && !remove_pending_to_obtain_generators())
       || (!generators_are_up_to_date() && !update_generators())) {
-    // Removing dimensions from the empty grid:
-    // we clear `con_sys' since it could have contained the
-    // unsatisfiable constraint of the wrong dimension.
+    // FIX?
     con_sys.clear();
+    gen_sys.clear();
     // Update the space dimension.
     space_dim = new_space_dim;
     assert(OK());
     return;
   }
 
-  // When removing _all_ dimensions from a non-empty grid,
-  // we obtain the zero-dimensional universe grid.
+  // Removing _all_ dimensions from a non-empty grid obtains the
+  // zero-dimensional universe grid.
   if (new_space_dim == 0) {
     set_zero_dim_univ();
     return;
@@ -510,22 +509,22 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // FIXME: provide a method in Linear_System that removes a set
   // of columns and restores strong-normalization only at the end.
 
-  // For each variable to be removed, we fill the corresponding column
-  // by shifting left those columns that will not be removed.
+  // For each variable to be removed, replace the corresponding column
+  // by shifting left the columns to the right that will be kept.
   Variables_Set::const_iterator tbr = to_be_removed.begin();
   Variables_Set::const_iterator tbr_end = to_be_removed.end();
   dimension_type dst_col = tbr->space_dimension();
   dimension_type src_col = dst_col + 1;
   for (++tbr; tbr != tbr_end; ++tbr) {
     dimension_type tbr_col = tbr->space_dimension();
-    // All columns in between are moved to the left.
+    // Move all columns in between to the left.
     while (src_col < tbr_col)
       // FIXME: consider whether Linear_System must have a swap_columns()
       // method.  If the answer is "no", remove this Matrix:: qualification.
       gen_sys.Matrix::swap_columns(dst_col++, src_col++);
     ++src_col;
   }
-  // Moving the remaining columns.
+  // Move any remaining columns.
   const dimension_type gen_sys_num_columns = gen_sys.num_columns();
   while (src_col < gen_sys_num_columns)
     // FIXME: consider whether Linear_System must have a swap_columns()
@@ -533,13 +532,12 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
     gen_sys.Matrix::swap_columns(dst_col++, src_col++);
 
   // The number of remaining columns is `dst_col'.
-  // Note that resizing also calls `set_sorted(false)'.
-  gen_sys.remove_trailing_columns(gen_sys_num_columns - dst_col);
-  // We may have invalid lines and rays now.
-  gen_sys.remove_invalid_lines_and_rays();
+  gen_sys.Matrix::remove_trailing_columns(gen_sys_num_columns - dst_col);
 
-  // Constraints are not up-to-date and generators are not minimized.
-  clear_constraints_up_to_date();
+  // FIX confirm OK to leave parameters that have zeros in all cols
+  // FIX confirm OK if vars include first col
+
+  clear_congruences_up_to_date();
   clear_generators_minimized();
 
   // Update the space dimension.
@@ -547,7 +545,7 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
 
   assert(OK(true));
 }
-#endif
+
 void
 PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
   // Dimension-compatibility check.
@@ -571,6 +569,7 @@ PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
     // Removing dimensions from the empty grid just updates the space
     // dimension.
     space_dim = new_dimension;
+    // FIX?
     con_sys.clear();
     gen_sys.clear();
     assert(OK());
