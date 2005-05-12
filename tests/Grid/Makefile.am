@@ -51,6 +51,7 @@ grid2 \
 isuniverse1 \
 addspacedims1 \
 addspacedims2 \
+removespacedims1 \
 removespacedims2 \
 intersection1 \
 intersection2 \
@@ -70,6 +71,7 @@ grid2_SOURCES = grid2.cc
 isuniverse1_SOURCES = isuniverse1.cc
 addspacedims1_SOURCES = addspacedims1.cc
 addspacedims2_SOURCES = addspacedims2.cc
+removespacedims1_SOURCES = removespacedims1.cc
 removespacedims2_SOURCES = removespacedims2.cc
 intersection1_SOURCES = intersection1.cc
 intersection2_SOURCES = intersection2.cc
