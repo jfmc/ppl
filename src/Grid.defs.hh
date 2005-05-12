@@ -110,10 +110,9 @@ bool operator!=(const Grid& x, const Grid& y);
       rather, there are constructors for each of the two derived classes
       that will build a new grid with the topology of that class
       from another grid from either class and any topology;
-    - the only ways in which the space dimension of a grid can
-      be changed are:
-      - <EM>explicit</EM> calls to operators provided for that purpose;
-      - standard copy, assignment and swap operators.
+    - the only ways in which the space dimension of a grid can be
+      changed are <EM>explicit</EM> calls to operators provided for
+      that purpose, and standard copy, assignment and swap operators.
 
     Note that four different grids can be defined on
     the zero-dimension space:
@@ -369,7 +368,7 @@ public:
   /*!
     The grid inherits the space dimension of the congruence system.
 
-    \param cs
+    \param cgs
     The system of congruences defining the grid.
   */
   Grid(const Congruence_System& cgs);
@@ -378,7 +377,7 @@ public:
   /*!
     The grid inherits the space dimension of the congruence system.
 
-    \param cs
+    \param cgs
     The system of congruences defining the grid.  It is not
     declared <CODE>const</CODE> because its data-structures will be
     recycled to build the grid.
@@ -389,7 +388,7 @@ public:
   /*!
     The grid inherits the space dimension of the generator system.
 
-    \param gs
+    \param const_gs
     The system of generators defining the grid.
 
     \exception std::invalid_argument
