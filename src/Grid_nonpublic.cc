@@ -154,8 +154,6 @@ PPL::Grid::construct(const Generator_System& const_gs) {
 PPL::Coefficient
 PPL::Grid::normalize_divisors(Linear_System& sys,
 			      Coefficient_traits::const_reference divisor) {
-  std::cout << "Normalizing divisors..." << std::endl;
-  // FIX ~normalize divisor. (?)
   TEMP_INTEGER(lcm);
   lcm = divisor;
   if (sys.num_columns()) {
@@ -192,9 +190,8 @@ PPL::Grid::normalize_divisors(Linear_System& sys,
       }
     }
 
-    sys.set_sorted(false);	// FIX
+    sys.set_sorted(false);
   }
-  std::cout << "Normalizing divisors... done." << std::endl;
   return lcm;
 }
 
