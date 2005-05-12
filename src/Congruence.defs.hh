@@ -163,8 +163,8 @@ swap(Parma_Polyhedra_Library::Congruence& x,
 //! A linear congruence.
 /*!
   An object of the class Congruence is either:
-  - a congruence \f$\pmod{1}\f$: \f$\sum_{i=0}^{n-1} a_i x_i + b %= 0\f$; or
-  - a congruence \f$\pmod{m}\f$: \f$\sum_{i=0}^{n-1} a_i x_i + b %= 0 / m\f$;
+  - a congruence \f$\pmod{1}\f$: \f$\sum_{i=0}^{n-1} a_i x_i + b \%= 0\f$; or
+  - a congruence \f$\pmod{m}\f$: \f$\sum_{i=0}^{n-1} a_i x_i + b \%= 0 / m\f$;
 
   where \f$n\f$ is the dimension of the space,
   \f$a_i\f$ is the integer coefficient of variable \f$x_i\f$
@@ -334,8 +334,8 @@ public:
   //! true congruence.
   /*!
     Trivially true congruences have either one of the following two forms:
-    - a congruence: \f$\sum_{i=0}^{n-1} 0 x_i + 0 %= 0 / m\f$; or
-    - a congruence: \f$\sum_{i=0}^{n-1} 0 x_i + b %= 0\f$.
+    - a congruence: \f$\sum_{i=0}^{n-1} 0 x_i + 0 \%= 0 / m\f$; or
+    - a congruence: \f$\sum_{i=0}^{n-1} 0 x_i + b \%= 0\f$.
   */
   bool is_trivial_true() const;
 
@@ -344,8 +344,8 @@ public:
   //! false congruence.
   /*!
     Trivially false congruences have one of the following two forms:
-    - a congruence: \f$\sum_{i=0}^{n-1} 0 x_i + 0 %= b / 0\f$; or
-    - a congruence: \f$\sum_{i=0}^{n-1} 0 x_i + b %= 0 / 0\f$,
+    - a congruence: \f$\sum_{i=0}^{n-1} 0 x_i + 0 \%= b / 0\f$; or
+    - a congruence: \f$\sum_{i=0}^{n-1} 0 x_i + b \%= 0 / 0\f$,
       where \f$b b \neq 0\f$.
   */
   bool is_trivial_false() const;
