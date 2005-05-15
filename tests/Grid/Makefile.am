@@ -56,7 +56,8 @@ removespacedims2 \
 intersection1 \
 intersection2 \
 join1 \
-join2
+join2 \
+concatenate1
 
 #
 # Sources for the tests
@@ -77,6 +78,7 @@ intersection1_SOURCES = intersection1.cc
 intersection2_SOURCES = intersection2.cc
 join1_SOURCES = join1.cc
 join2_SOURCES = join2.cc
+concatenate1_SOURCES = concatenate1.cc
 
 XFAIL_TESTS =
 
