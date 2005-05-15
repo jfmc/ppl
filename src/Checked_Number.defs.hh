@@ -126,10 +126,6 @@ public:
 
   //@} // Constructors
 
-  bool is_nan() const;
-  bool is_minf() const;
-  bool is_pinf() const;
-
   //! \name Accessors and Conversions
   //@{
 
@@ -146,51 +142,6 @@ public:
 
   bool OK() const;
   Result classify(bool nan = true, bool inf = true, bool sign = true) const;
-
-  Result assign(const Minus_Infinity& x, Rounding_Dir dir = ROUND_DEFAULT);
-  Result assign(const Plus_Infinity& x, Rounding_Dir dir = ROUND_DEFAULT);
-  Result assign(const Not_A_Number& x, Rounding_Dir dir = ROUND_DEFAULT);
-  Result assign(const char* x, Rounding_Dir dir = ROUND_DEFAULT);
-  Result assign(char* x, Rounding_Dir dir = ROUND_DEFAULT);
-
-#define FUNC1(name) \
-  template <typename From> \
-  Result name(const From& x, Rounding_Dir dir = ROUND_DEFAULT); \
-  template <typename From, typename From_Policy> \
-  Result name(const Checked_Number<From, From_Policy>& x, Rounding_Dir dir = ROUND_DEFAULT);
-
-  FUNC1(assign)
-  FUNC1(assign_neg)
-  FUNC1(assign_abs)
-  FUNC1(assign_sqrt)
-
-#undef FUNC1
-
-#define FUNC2(name) \
-  template <typename From1, typename From2> \
-  Result name(const From1& x, const From2& y, Rounding_Dir dir = ROUND_DEFAULT); \
-  template <typename From1, \
-	    typename From2, typename Policy2> \
-  Result name(const From1& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir = ROUND_DEFAULT); \
-  template <typename From1, typename Policy1, \
-	    typename From2> \
-  Result name(const Checked_Number<From1, Policy1>& x, const From2& y, Rounding_Dir dir = ROUND_DEFAULT); \
-  template <typename From1, typename Policy1, \
-	    typename From2, typename Policy2> \
-  Result name(const Checked_Number<From1, Policy1>& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir = ROUND_DEFAULT);
-
-  FUNC2(assign_add)
-  FUNC2(assign_sub)
-  FUNC2(assign_mul)
-  FUNC2(assign_div)
-  FUNC2(assign_rem)
-  FUNC2(assign_gcd)
-  FUNC2(assign_lcm)
-  FUNC2(assign_add_mul)
-  FUNC2(assign_sub_mul)
-
-#undef FUNC2
-
 
   //! \name Assignment Operators
   //@{
@@ -258,17 +209,71 @@ public:
 
   //@} // Increment and Decrement Operators
 
-  //! Swaps \p *this with \p y.
-  void swap(Checked_Number& y);
-
-  static void save_rounding_internal(Rounding_Dir dir, Rounding_State& old);
-  static void restore_rounding_internal(const Rounding_State& old, Rounding_Dir dir);
-
 private:
   //! The underlying native integer value.
   T v;
 
 };
+
+template <typename To, typename To_Policy>
+Result assign(Checked_Number<To, To_Policy>& to, const Minus_Infinity& x, Rounding_Dir dir = ROUND_DEFAULT);
+template <typename To, typename To_Policy>
+Result assign(Checked_Number<To, To_Policy>& to, const Plus_Infinity& x, Rounding_Dir dir = ROUND_DEFAULT);
+template <typename To, typename To_Policy>
+Result assign(Checked_Number<To, To_Policy>& to, const Not_A_Number& x, Rounding_Dir dir = ROUND_DEFAULT);
+template <typename To, typename To_Policy>
+Result assign(Checked_Number<To, To_Policy>& to, const char* x, Rounding_Dir dir = ROUND_DEFAULT);
+template <typename To, typename To_Policy>
+Result assign(Checked_Number<To, To_Policy>& to, char* x, Rounding_Dir dir = ROUND_DEFAULT);
+
+#define FUNC1(name) \
+template <typename To, typename To_Policy, \
+          typename From> \
+Result name(Checked_Number<To, To_Policy>& to, const From& x, Rounding_Dir dir = ROUND_DEFAULT); \
+template <typename To, typename To_Policy, \
+          typename From, typename From_Policy> \
+Result name(Checked_Number<To, To_Policy>& to, const Checked_Number<From, From_Policy>& x, Rounding_Dir dir = ROUND_DEFAULT);
+
+FUNC1(assign)
+FUNC1(assign_neg)
+FUNC1(assign_abs)
+FUNC1(assign_sqrt)
+
+#undef FUNC1
+
+#define FUNC2(name) \
+template <typename To, typename To_Policy, \
+          typename From1, typename From2> \
+Result name(Checked_Number<To, To_Policy>& to, const From1& x, const From2& y, Rounding_Dir dir = ROUND_DEFAULT); \
+template <typename To, typename To_Policy, \
+          typename From1, \
+          typename From2, typename Policy2> \
+Result name(Checked_Number<To, To_Policy>& to, const From1& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir = ROUND_DEFAULT); \
+template <typename To, typename To_Policy, \
+          typename From1, typename Policy1, \
+          typename From2> \
+Result name(Checked_Number<To, To_Policy>& to, const Checked_Number<From1, Policy1>& x, const From2& y, Rounding_Dir dir = ROUND_DEFAULT); \
+template <typename To, typename To_Policy, \
+          typename From1, typename Policy1, \
+          typename From2, typename Policy2> \
+Result name(Checked_Number<To, To_Policy>& to, const Checked_Number<From1, Policy1>& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir = ROUND_DEFAULT);
+
+FUNC2(assign_add)
+FUNC2(assign_sub)
+FUNC2(assign_mul)
+FUNC2(assign_div)
+FUNC2(assign_rem)
+FUNC2(assign_gcd)
+FUNC2(assign_lcm)
+FUNC2(assign_add_mul)
+FUNC2(assign_sub_mul)
+
+#undef FUNC2
+
+//! Swaps \p *this with \p y.
+template <typename T, typename Policy>
+void swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y);
+
 
 template <typename T, typename Policy>
 class Float<Checked_Number<T, Policy> > {

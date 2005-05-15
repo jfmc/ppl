@@ -665,7 +665,7 @@ BD_Shape<T>::is_empty() const {
   // Values of the minimum path, from source to all nodes.
   DB_Row<T> z(space_dim + 1);
   for (dimension_type i = 0; i <= space_dim; ++i)
-    z[i].assign(0, ROUND_IGNORE);
+    assign(z[i], 0, ROUND_IGNORE);
 
   // The relax-technique: given an arc (j,h), it tries to improve
   // the value of minimum path for h passing by j.
@@ -1217,7 +1217,7 @@ BD_Shape<T>::closure_assign() const {
 
   // Fill the diagonal with zeros.
   for (dimension_type h = 0; h <= n; ++h)
-    x.dbm[h][h].assign(0, ROUND_IGNORE);
+    assign(x.dbm[h][h], 0, ROUND_IGNORE);
 
   // Algorithm is described in the following way:
   // indicated with `m' the matrix `dbm' we have
@@ -2526,8 +2526,9 @@ BD_Shape<T>::affine_image(const Variable var,
   else {
     // Approximations respectively from above and from below of the
     // `expr'.
-    T up_sum = expr.inhomogeneous_term();
+    T up_sum;
     T low_sum;
+    up_sum = expr.inhomogeneous_term();
     negate_round_up(low_sum, up_sum);
     
     // Indeces of the variables with value +inf.
@@ -3028,7 +3029,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     switch (relsym) {
     case LESS_THAN_OR_EQUAL:
       {
-	T up_sum = expr.inhomogeneous_term();
+	T up_sum;
+	up_sum = expr.inhomogeneous_term();
 
 	 // Index of the variables with value +inf.
 	dimension_type up_var_index_inf;
@@ -3128,7 +3130,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       
     case GREATER_THAN_OR_EQUAL:
       {
-	T term = expr.inhomogeneous_term();
+	T term;
+	term = expr.inhomogeneous_term();
 	T low_sum;
 	negate_round_up(low_sum, term);
 
