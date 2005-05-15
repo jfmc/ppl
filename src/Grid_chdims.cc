@@ -270,7 +270,7 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
       // Only congruences are up-to-date so modify only them.
       dimension_type num_cols = con_sys.num_columns() - 1;
       con_sys.add_zero_rows_and_columns(m, m, Row::Flags());
-      // Move the moduli.
+      // Swap the modulus and the new last column.
       con_sys.swap_columns(num_cols, num_cols + m);
       if (is_universe())
 	// FIX confirm universe always square
@@ -335,17 +335,13 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
   // congruences may be unsatisfiable.
   assert(OK());
 }
-#if 0
+
 void
 PPL::Grid::concatenate_assign(const Grid& y) {
-  if (topology() != y.topology())
-    throw_topology_incompatible("concatenate_assign(y)", "y", y);
-
-  // The space dimension of the resulting grid should not
-  // overflow the maximum allowed space dimension.
+  // The space dimension of the resulting grid must be at most the
+  // maximum allowed space dimension.
   if (y.space_dim > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow(topology(),
-				   "concatenate_assign(y)",
+    throw_space_dimension_overflow("concatenate_assign(y)",
 				   "concatenation exceeds the maximum "
 				   "allowed space dimension");
 
@@ -370,102 +366,79 @@ PPL::Grid::concatenate_assign(const Grid& y) {
   }
 
   // TODO: this implementation is just an executable specification.
-  Constraint_System cs = y.constraints();
+  Congruence_System cgs = y.congruences();
 
-  // The constraints of `x' (possibly with pending rows) are required.
+  // The congruences of `x' (possibly with pending rows) are required.
   if (has_pending_generators())
     process_pending_generators();
-  else if (!constraints_are_up_to_date())
-    update_constraints();
+  else if (congruences_are_up_to_date() == false)
+    update_congruences();
 
-  // The matrix for the new system of constraints is obtained
-  // by leaving the old system of constraints in the upper left-hand side
-  // and placing the constraints of `cs' in the lower right-hand side.
-  // NOTE: here topologies agree, whereas dimensions may not agree.
+  // The matrix for the new system of congruences is obtained by
+  // leaving the old system in the upper left-hand side and placing
+  // the constraints of `cgs' in the lower right-hand side.
   dimension_type old_num_rows = con_sys.num_rows();
   dimension_type old_num_columns = con_sys.num_columns();
-  dimension_type added_rows = cs.num_rows();
+  dimension_type added_rows = cgs.num_rows();
 
   // We already dealt with the cases of an empty or zero-dim `y' grid;
-  // also, `cs' contains the low-level constraints, at least.
+  // also, `cgs' contains the low-level constraints, at least.
   assert(added_rows > 0 && added_columns > 0);
 
   con_sys.add_zero_rows_and_columns(added_rows, added_columns,
-				    Linear_Row::Flags(topology(),
-						      Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
-  // Move the epsilon coefficient to the last column, if needed.
-  if (!is_necessarily_closed())
-    con_sys.swap_columns(old_num_columns - 1,
-			 old_num_columns - 1 + added_columns);
-  dimension_type cs_num_columns = cs.num_columns();
-  // Steal the constraints from `cs' and put them in `con_sys'
-  // using the right displacement for coefficients.
-  for (dimension_type i = added_rows; i-- > 0; ) {
-    Constraint& c_old = cs[i];
-    Constraint& c_new = con_sys[old_num_rows + i];
-    // Method `grow', by default, added inequalities.
-    if (c_old.is_equality())
-      c_new.set_is_equality();
-    // The inhomogeneous term is not displaced.
-    std::swap(c_new[0], c_old[0]);
-    // All homogeneous terms (included the epsilon coefficient,
-    // if present) are displaced by `space_dim' columns.
-    for (dimension_type j = 1; j < cs_num_columns; ++j)
-      std::swap(c_old[j], c_new[space_dim + j]);
+				    Row::Flags());
+  dimension_type cgs_num_columns = cgs.num_columns();
+  dimension_type old_modi = old_num_columns - 1;
+  dimension_type modi = con_sys.num_columns() - 1;
+
+  // Swap the modulus and the new last column, in the old rows.
+  for (dimension_type i = 0; i < old_num_rows; ++i) {
+    Congruence& cg = con_sys[i];
+    std::swap(cg[old_modi], cg[modi]);
   }
 
+  // Move the congruences from `cgs' to `con_sys', shifting the
+  // coefficients along into the appropriate columns.
+  for (dimension_type i = added_rows; i-- > 0; ) {
+    Congruence& cg_old = cgs[i];
+    Congruence& cg_new = con_sys[old_num_rows + i];
+    // The inhomogeneous term is moved to the same column.
+    std::swap(cg_new[0], cg_old[0]);
+    // All homogeneous terms are shifted by `space_dim' columns.
+    for (dimension_type j = 1; j < cgs_num_columns; ++j)
+      std::swap(cg_old[j], cg_new[space_dim + j]);
+  }
+
+#if 0 // FIX pending
   if (can_have_something_pending()) {
-    // If `*this' can support pending constraints, then, since we have
-    // resized the system of constraints, we must also add to the generator
-    // system those lines corresponding to the newly added dimensions,
-    // because the non-pending parts of `con_sys' and `gen_sys' must still
-    // be a DD pair in minimal form.
+    // If `*this' can support pending congruences, then, since we have
+    // resized the system of congruences, we must also add to the
+    // generator system those lines corresponding to the newly added
+    // dimensions, because the non-pending parts of `con_sys' and
+    // `gen_sys' must still be a DD pair in minimal form.
     gen_sys.add_rows_and_columns(added_columns);
     gen_sys.set_sorted(false);
-    if (!is_necessarily_closed())
-      gen_sys.swap_columns(old_num_columns - 1,
-			   old_num_columns - 1 + added_columns);
     // The added lines are not pending.
     gen_sys.unset_pending_rows();
-    // Since we added new lines at the beginning of `x.gen_sys',
-    // we also have to adjust the saturation matrix `sat_c'.
-    // FIXME: if `sat_c' is not up-to-date, couldn't we directly update
-    // `sat_g' by resizing it and shifting its columns?
-    if (!sat_c_is_up_to_date()) {
-      sat_c.transpose_assign(sat_g);
-      clear_sat_g_up_to_date();
-      set_sat_c_up_to_date();
-    }
-    sat_c.resize(sat_c.num_rows() + added_columns, sat_c.num_columns());
-    // The old saturation rows are copied at the end of the matrix.
-    // The newly introduced lines saturate all the non-pending constraints,
-    // thus their saturations rows are made of zeroes.
-    for (dimension_type i = sat_c.num_rows() - added_columns; i-- > 0; )
-      std::swap(sat_c[i], sat_c[i+added_columns]);
     // Since `added_rows > 0', we now have pending constraints.
-    set_constraints_pending();
+    set_congruences_pending();
   }
   else {
-    // The grid cannot have pending constraints.
-    con_sys.unset_pending_rows();
-#if BE_LAZY
-    con_sys.set_sorted(false);
-#else
-    con_sys.sort_rows();
+      // The grid cannot have pending congruences.
+      con_sys.unset_pending_rows();
 #endif
-    clear_constraints_minimized();
+  {
+    clear_congruences_minimized();
     clear_generators_up_to_date();
-    clear_sat_g_up_to_date();
-    clear_sat_c_up_to_date();
   }
   // Update space dimension.
   space_dim += added_columns;
 
-  // The system of constraints may be unsatisfiable,
-  // thus we do not check for satisfiability.
+  // Check that the system is OK, taking into account that the system
+  // of congruences may now be empty.
   assert(OK());
 }
-#endif
+
 void
 PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // The removal of no dimensions from any grid is a no-op.  This case
