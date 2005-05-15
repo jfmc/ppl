@@ -903,10 +903,16 @@ PPL::Generator_System::ascii_load(std::istream& s) {
   set_index_first_pending_row(index);
 
   Generator_System& x = *this;
+  bool ahead = false;
   for (dimension_type i = 0; i < x.num_rows(); ++i) {
     for (dimension_type j = 0; j < x.num_columns(); ++j)
-      if (!(s >> x[i][j]))
-	return false;
+      if (ahead) {
+	x[i][j] = str;
+	ahead = false;
+      }
+      else
+	if (!(s >> x[i][j]))
+	  return false;
 
     if (!(s >> str))
       return false;
@@ -920,9 +926,10 @@ PPL::Generator_System::ascii_load(std::istream& s) {
 	x[i].set_is_virtual();
 	continue;
       }
-      return false;
+      ahead = true;
     }
 
+#if 0 // FIX temp, for grids
     // Checking for equality of actual and declared types.
     switch (x[i].type()) {
     case Generator::LINE:
@@ -944,9 +951,11 @@ PPL::Generator_System::ascii_load(std::istream& s) {
     }
     // Reaching this point means that the input was illegal.
     return false;
+#endif
   }
+
   // Checking for well-formedness.
-  //assert(OK());   // FIX temp, for grid
+  //assert(OK());  // FIX temp for grids
   return true;
 }
 
