@@ -27,7 +27,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #define find_variation find_variation_template<Grid>
 
-// add_space_dimensions_and_embed, from congruences.
+// From congruences.
 
 void
 test1() {
@@ -68,7 +68,7 @@ test1() {
   exit(1);
 }
 
-// add_space_dimensions_and_embed, an empty grid.
+// An empty grid.
 
 void
 test2() {
@@ -99,7 +99,7 @@ test2() {
   exit(1);
 }
 
-// add_space_dimensions_and_embed, the universe grid.
+// A universe grid.
 
 void
 test3() {
@@ -135,7 +135,7 @@ test3() {
   exit(1);
 }
 
-// add_space_dimensions_and_embed, from generators.
+// From generators.
 
 void
 test4() {
