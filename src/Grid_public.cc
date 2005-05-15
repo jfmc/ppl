@@ -2249,28 +2249,54 @@ PPL::Grid::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "con_sys")
     return false;
 
-  if (!(s >> str) || (str != "(not_up-to-date)" && str != "(up-to-date)"))
+  // FIX also add to ph?
+  if (s >> str) {
+    if (str == "(up-to-date)")
+      set_congruences_up_to_date();
+    else if (str != "(not_up-to-date)")
+      return false;
+  }
+  else
+    return false;
+
+  // FIX also add to ph?
+  if (s >> str) {
+    if (str == "(minimized)")
+      set_congruences_minimized();
+    else if (str != "(not_minimized)")
+      return false;
+  }
+  else
     return false;
 
   if (!con_sys.ascii_load(s))
     return false;
 
-  // FIX also add to ph?
-  if (str == "(up-to-date)")
-    set_congruences_up_to_date();
-
   if (!(s >> str) || str != "gen_sys")
     return false;
 
-  if (!(s >> str) || (str != "(not_up-to-date)" && str != "(up-to-date)"))
+  // FIX also add to ph?
+  if (s >> str) {
+    if (str == "(up-to-date)")
+      set_generators_up_to_date();
+    else if (str != "(not_up-to-date)")
+      return false;
+  }
+  else
+    return false;
+
+  // FIX also add to ph?
+  if (s >> str) {
+    if (str == "(minimized)")
+      set_generators_minimized();
+    else if (str != "(not_minimized)")
+      return false;
+  }
+  else
     return false;
 
   if (!gen_sys.ascii_load(s))
     return false;
-
-  // FIX also add to ph?
-  if (str == "(up-to-date)")
-    set_generators_up_to_date();
 
   // Check for well-formedness.
   assert(OK());
