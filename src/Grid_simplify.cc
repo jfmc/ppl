@@ -492,6 +492,7 @@ Grid::simplify(Congruence_System& sys) {
     }
     ++col;
   }
+
   assert(sys.num_rows() >= sys.num_columns() - 1);
   // Clip any zero rows from the front of the matrix.
   if (sys.num_rows() > sys.num_columns() - 1) {
@@ -502,6 +503,12 @@ Grid::simplify(Congruence_System& sys) {
     sys.rows.erase(sys.rows.begin(),
 		   sys.rows.begin()
 		   + (sys.num_rows() - sys.num_columns() + 1));
+#if EXTRA_ROW_DEBUG
+    // Vector may have relocated rows, so the row copy constructor may
+    // have used a new capacity.
+    sys.row_capacity = sys[0].capacity_;
+    // FIX check other places that do rows.erase (Linear_System...)
+#endif
   }
 
   assert(sys.OK());
