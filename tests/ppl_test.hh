@@ -158,12 +158,15 @@ typedef BD_Shape<Checked_Number<int, Extended_Number_Policy> > TBD_Shape;
 
 //! Look for variation in \p a.
 /*!
-  Return <CODE>true</CODE> if \p a contains variations from
+  Return <CODE>true</CODE> if \p a contains variation from
   consistency, else return <CODE>false</CODE>.  Variation can be found
   via the OK method, or via a comparison between \p a and an object
   created from the ASCII dump of \p a.
 
   It is assumed that \p a is up to date.
+
+  If the loading of the ASCII dump fails then an error message is
+  printed and `exit' is called.
 
   \p T must provide:
     void ascii_dump(std::ostream& s) const;
@@ -187,7 +190,12 @@ find_variation_template(T& a) {
   //T b;
   T b(a);
   stringstream dump;
-  b.ascii_load(dump);
+  a.ascii_dump(dump);
+  if (b.ascii_load(dump) == false) {
+    std::cerr << "Failed to load `b' from the ASCII dump of `a'." << endl;
+    exit(1);
+  }
+
   if (a == b)
     return false;
 
