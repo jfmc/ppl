@@ -33,7 +33,7 @@ namespace Checked {
 template <typename Policy>
 inline Result
 round_lt_mpz(mpz_class& to, Rounding_Dir dir) {
-  if (rounding_direction(dir) == ROUND_DOWN) {
+  if (dir == ROUND_DOWN) {
     to--;
     return V_GT;
   }
@@ -43,7 +43,7 @@ round_lt_mpz(mpz_class& to, Rounding_Dir dir) {
 template <typename Policy>
 inline Result
 round_gt_mpz(mpz_class& to, Rounding_Dir dir) {
-  if (rounding_direction(dir) == ROUND_UP) {
+  if (dir == ROUND_UP) {
     to++;
     return V_LT;
   }
@@ -133,26 +133,24 @@ SPECIALIZE_SET_SPECIAL(mpz, mpz_class)
 template <typename Policy>
 inline Result
 assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
-  if (want_rounding<Policy>(dir)) {
-    mpz_srcptr n = from.get_num().get_mpz_t();
-    mpz_srcptr d = from.get_den().get_mpz_t();
-    mpz_t rem;
-    mpz_init(rem);
-    mpz_tdiv_qr(to.get_mpz_t(), rem, n, d);
-    int sign = mpz_sgn(rem);
-    mpz_clear(rem);
-    switch (sign) {
-    case -1:
-      return round_lt_mpz<Policy>(to, dir);
-    case 1:
-      return round_gt_mpz<Policy>(to, dir);
-    default:
-      return V_EQ;
-    }
-  }
-  else {
+  if (dir == ROUND_IGNORE) {
     to = from;
     return V_LGE;
+  }
+  mpz_srcptr n = from.get_num().get_mpz_t();
+  mpz_srcptr d = from.get_den().get_mpz_t();
+  mpz_t rem;
+  mpz_init(rem);
+  mpz_tdiv_qr(to.get_mpz_t(), rem, n, d);
+  int sign = mpz_sgn(rem);
+  mpz_clear(rem);
+  switch (sign) {
+  case -1:
+    return round_lt_mpz<Policy>(to, dir);
+  case 1:
+    return round_gt_mpz<Policy>(to, dir);
+  default:
+    return V_EQ;
   }
 }
 
@@ -201,20 +199,18 @@ SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned long long)
 template <typename Policy, typename From>
 inline Result
 assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
-  if (want_rounding<Policy>(dir)) {
-    From n = rint(from);
-    to = n;
-    if (from < n)
-      return round_lt_mpz<Policy>(to, dir);
-    else if (from > n)
-      return round_gt_mpz<Policy>(to, dir);
-    else
-      return V_EQ;
-  }
-  else {
+  if (dir == ROUND_IGNORE) {
     to = from;
     return V_LGE;
   }
+  From n = rint(from);
+  to = n;
+  if (from < n)
+    return round_lt_mpz<Policy>(to, dir);
+  else if (from > n)
+    return round_gt_mpz<Policy>(to, dir);
+  else
+    return V_EQ;
 }
 
 SPECIALIZE_ASSIGN(mpz_float, mpz_class, float)
@@ -298,24 +294,22 @@ inline Result
 div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir dir) {
   if (Policy::check_divbyzero && ::sgn(y) == 0)
     return set_special<Policy>(to, V_DIV_ZERO);
-  if (want_rounding<Policy>(dir)) {
-    mpz_t rem;
-    mpz_init(rem);
-    mpz_tdiv_qr(to.get_mpz_t(), rem, x.get_mpz_t(), y.get_mpz_t());
-    int sign = mpz_sgn(rem);
-    mpz_clear(rem);
-    switch (sign) {
-    case -1:
-      return round_lt_mpz<Policy>(to, dir);
-    case 1:
-      return round_gt_mpz<Policy>(to, dir);
-    default:
-      return V_EQ;
-    }
-  }
-  else {
+  if (dir == ROUND_IGNORE) {
     mpz_divexact(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
     return V_LGE;
+  }
+  mpz_t rem;
+  mpz_init(rem);
+  mpz_tdiv_qr(to.get_mpz_t(), rem, x.get_mpz_t(), y.get_mpz_t());
+  int sign = mpz_sgn(rem);
+  mpz_clear(rem);
+  switch (sign) {
+  case -1:
+    return round_lt_mpz<Policy>(to, dir);
+  case 1:
+    return round_gt_mpz<Policy>(to, dir);
+  default:
+    return V_EQ;
   }
 }
 
@@ -382,17 +376,16 @@ inline Result
 sqrt_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir dir) {
   if (Policy::check_sqrt_neg && from < 0)
     return set_special<Policy>(to, V_SQRT_NEG);
-  if (want_rounding<Policy>(dir)) {
-    mpz_class r;
-    mpz_sqrtrem(to.get_mpz_t(), r.get_mpz_t(), from.get_mpz_t());
-    if (r == 0)
-      return V_EQ;
-    return round_gt_mpz<Policy>(to, dir);
-  }
-  else {
+  if (dir == ROUND_IGNORE) {
     to = sqrt(from);
     return V_GE;
   }
+  mpz_class r;
+  mpz_sqrtrem(to.get_mpz_t(), r.get_mpz_t(), from.get_mpz_t());
+  if (r == 0)
+    return V_EQ;
+  return round_gt_mpz<Policy>(to, dir);
+
 }
 
 SPECIALIZE_SQRT(mpz, mpz_class, mpz_class)

@@ -164,13 +164,6 @@ input_generic(Type& to, std::istream& is, Rounding_Dir dir) {
   return set_special<Policy>(to, r);
 }
 
-template <typename Policy>
-inline bool
-want_rounding(Rounding_Dir dir) {
-  return dir != ROUND_IGNORE &&
-    (Policy::use_corrent_rounding || dir != ROUND_CURRENT);
-}
-
 } // namespace Checked
 
 } // namespace Parma_Polyhedra_Library

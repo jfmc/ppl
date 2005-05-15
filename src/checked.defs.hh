@@ -60,8 +60,6 @@ struct Transparent_Policy {
   static const int check_divbyzero = 0;
   //! Check for attempts to take the square root of a negative number.
   static const int check_sqrt_neg = 0;
-  //! Support current rounding direction
-  static const int use_corrent_rounding = 0;
   //! Store unknown special value.
   static const int store_nan = 0;
   //! Store overflow special values.

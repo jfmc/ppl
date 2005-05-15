@@ -1,4 +1,4 @@
-/* Rounding mode.
+/* Null floating point unit related functions.
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,25 +21,38 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Rounding_defs_hh
-#define PPL_Rounding_defs_hh 1
-
-#include "Result.defs.hh"
-#include "fpu.defs.hh"
-#include "Rounding.types.hh"
-
 namespace Parma_Polyhedra_Library {
 
-enum Rounding_Dir {
-  ROUND_DOWN = FPU_DOWNWARD,
-  ROUND_UP = FPU_UPWARD,
-  ROUND_IGNORE = -1,
-  ROUND_DEFAULT = ROUND_UP,
-  ROUND_DIRECT = ROUND_UP,
-  ROUND_INVERSE = ROUND_DOWN
-};
+inline int
+fpu_get_rounding_direction() {
+  return -1;
+}
+
+inline void
+fpu_set_rounding_direction(int dir) {
+}
+
+inline int
+fpu_save_rounding_direction(int dir) {
+  return -1;
+}
+
+inline void
+fpu_reset_inexact() {
+}
+
+inline int
+fpu_save_rounding_direction_reset_inexact(int dir) {
+  return -1;
+}
+
+inline void
+fpu_restore_rounding_direction(int dir) {
+}
+
+inline int
+fpu_check_inexact() {
+  return -1;
+}
 
 } // namespace Parma_Polyhedra_Library
-
-#endif // !defined(PPL_Float_defs_hh)
-

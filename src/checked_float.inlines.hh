@@ -61,6 +61,66 @@ namespace Parma_Polyhedra_Library {
 
 namespace Checked {
 
+inline bool
+fpu_direct_rounding(Rounding_Dir dir) {
+  return dir == ROUND_DIRECT || dir == ROUND_IGNORE;
+}
+
+inline bool
+fpu_inverse_rounding(Rounding_Dir dir) {
+  return dir == ROUND_INVERSE;
+}
+
+//
+// The FPU mode is "round down".
+//
+// The result of the rounded down multiplication is thus computed directly.
+//
+//   a = 0.3
+//   b = 0.1
+//   c_i = a * b = 0.03
+//   c = c_i = 0.0
+//
+// To obtain the result of the rounded up multiplication
+// we do -(-a * b).
+//
+//   a = 0.3
+//   b = 0.1
+//   c_i = -a * b = -0.03
+//
+// Here c_i should be forced to lose excess precision, otherwise the
+// FPU will truncate using the rounding mode in force, which is "round down".
+//
+//   c_i = -c_i = 0.03
+//   c = c_i = 0.0
+//
+// Wrong result: we should have obtained c = 0.1.
+
+inline float
+limit_precision(float v) {
+  volatile float x = v;
+  return x;
+}
+
+inline volatile double
+limit_precision(double v) {
+  volatile double x = v;
+  return x;
+}
+
+inline long double
+limit_precision(long double v) {
+#if __GNUC__ >= 4
+  return v;
+#else
+  /* Not really needed for floating point operations done with maximum
+     precision available, but this avoid a bug in gcc 3.4.3 causing excessive
+     optimization compiling -(-a * b) */
+  volatile long double x = v;
+  return x;
+#endif
+}
+
 template <typename Policy, typename T>
 inline Result
 classify_float(const T v, bool nan, bool inf, bool sign) {
@@ -193,7 +253,7 @@ SPECIALIZE_SET_SPECIAL(float, float128_t)
 template <typename Policy, typename To>
 inline Result
 round_lt_float(To& to, Rounding_Dir dir) {
-  if (rounding_direction(dir) == ROUND_DOWN) {
+  if (dir == ROUND_DOWN) {
     pred_float(to);
     return V_GT;
   }
@@ -203,7 +263,7 @@ round_lt_float(To& to, Rounding_Dir dir) {
 template <typename Policy, typename To>
 inline Result
 round_gt_float(To& to, Rounding_Dir dir) {
-  if (rounding_direction(dir) == ROUND_UP) {
+  if (dir == ROUND_UP) {
     succ_float(to);
     return V_LT;
   }
@@ -220,19 +280,28 @@ prepare_inexact() {
 template <typename Policy>
 inline Result 
 result_relation(Rounding_Dir dir) {
-  if (Policy::fpu_check_inexact && !fpu_check_inexact())
-    return V_EQ;
-  else if (want_rounding<Policy>(dir)) {
-    switch (rounding_direction(dir)) {
+  if (Policy::fpu_check_inexact) {
+    if (!fpu_check_inexact())
+      return V_EQ;
+    switch (dir) {
     case ROUND_DOWN:
-      return Policy::fpu_check_inexact ? V_GT : V_GE;
+      return V_GT;
     case ROUND_UP:
-      return Policy::fpu_check_inexact ? V_LT : V_LE;
+      return V_LT;
     default:
-      return Policy::fpu_check_inexact ? V_NE : V_LGE;
+      return V_NE;
     }
-  } else
-    return Policy::fpu_check_inexact ? V_NE : V_LGE;
+  }
+  else {
+    switch (dir) {
+    case ROUND_DOWN:
+      return V_GE;
+    case ROUND_UP:
+      return V_LE;
+    default:
+      return V_LGE;
+    }
+  }
 }
 
 template <typename Policy, typename From, typename To>
@@ -246,42 +315,71 @@ template <typename Policy, typename To, typename From>
 inline Result
 assign_float_float(To& to, const From from, Rounding_Dir dir) {
   prepare_inexact<Policy>();
-  to = from;
+  if (fpu_direct_rounding(dir))
+    to = from;
+  else if (fpu_inverse_rounding(dir))
+    to = -limit_precision(-from);
+  else {
+    int old = fpu_save_rounding_direction(dir);
+    to = from;
+    fpu_restore_rounding_direction(old);
+  }
   return result_relation<Policy>(dir);
 }
 
 template <typename Policy, typename Type>
 inline Result 
-assign_result_inexact(Type& to, const Type from, Rounding_Dir dir) {
-  to = from;
-  return result_relation<Policy>(dir);
-}
-
-template <typename Policy, typename Type>
-inline Result 
-neg_float(Type& to, const Type from, Rounding_Dir dir) {
-  return assign_float_float_exact<Policy>(to, -from, dir);
+neg_float(Type& to, const Type from, Rounding_Dir) {
+  to = -from;
+  return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result 
 add_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   prepare_inexact<Policy>();
-  return assign_result_inexact<Policy>(to, x + y, dir);
+  if (fpu_direct_rounding(dir))
+    to = x + y;
+  else if (fpu_inverse_rounding(dir))
+    to = -limit_precision(-x - y);
+  else {
+    int old = fpu_save_rounding_direction(dir);
+    to = x + y;
+    fpu_restore_rounding_direction(old);
+  }
+  return result_relation<Policy>(dir);
 }
 
 template <typename Policy, typename Type>
 inline Result 
 sub_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   prepare_inexact<Policy>();
-  return assign_result_inexact<Policy>(to, x - y, dir);
+  if (fpu_direct_rounding(dir))
+    to = x - y;
+  else if (fpu_inverse_rounding(dir))
+    to = -limit_precision(y - x);
+  else {
+    int old = fpu_save_rounding_direction(dir);
+    to = x - y;
+    fpu_restore_rounding_direction(old);
+  }
+  return result_relation<Policy>(dir);
 }
 
 template <typename Policy, typename Type>
 inline Result 
 mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   prepare_inexact<Policy>();
-  return assign_result_inexact<Policy>(to, x * y, dir);
+  if (fpu_direct_rounding(dir))
+    to = x * y;
+  else if (fpu_inverse_rounding(dir))
+    to = -limit_precision(-x * y);
+  else {
+    int old = fpu_save_rounding_direction(dir);
+    to = x * y;
+    fpu_restore_rounding_direction(old);
+  }
+  return result_relation<Policy>(dir);
 }
 
 template <typename Policy, typename Type>
@@ -292,24 +390,34 @@ div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     return V_DIV_ZERO;
   }
   prepare_inexact<Policy>();
-  return assign_result_inexact<Policy>(to, x / y, dir);
+  if (fpu_direct_rounding(dir))
+    to = x / y;
+  else if (fpu_inverse_rounding(dir))
+    to = -limit_precision(-x / y);
+  else {
+    int old = fpu_save_rounding_direction(dir);
+    to = x / y;
+    fpu_restore_rounding_direction(old);
+  }
+  return result_relation<Policy>(dir);
 }
 
 template <typename Policy, typename Type>
 inline Result 
-rem_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
+rem_float(Type& to, const Type x, const Type y, Rounding_Dir) {
   if (Policy::check_divbyzero && y == 0) {
     to = NAN;
     return V_MOD_ZERO;
   }
-  prepare_inexact<Policy>();
-  return assign_result_inexact<Policy>(to, std::fmod(x, y, dir));
+  to = std::fmod(x, y);
+  return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result
-abs_float(Type& to, const Type from, Rounding_Dir dir) {
-  return assign_float_float_exact<Policy>(to, std::abs(from), dir);
+abs_float(Type& to, const Type from, Rounding_Dir) {
+  to = from < 0 ? -from : from;
+  return V_EQ;
 }
 
 template <typename Policy, typename Type>
@@ -320,7 +428,14 @@ sqrt_float(Type& to, const Type from, Rounding_Dir dir) {
     return V_SQRT_NEG;
   }
   prepare_inexact<Policy>();
-  return assign_result_inexact<Policy>(to, std::sqrt(from), dir);
+  if (fpu_direct_rounding(dir))
+    to = std::sqrt(from);
+  else {
+    int old = fpu_save_rounding_direction(dir);
+    to = std::sqrt(from);
+    fpu_restore_rounding_direction(old);
+  }
+  return result_relation<Policy>(dir);
 }
 
 template <typename Policy, typename Type>
@@ -351,15 +466,14 @@ assign_float_int_exact(To& to, const From from, Rounding_Dir) {
 template <typename Policy, typename To, typename From>
 inline Result
 assign_float_int(To& to, const From from, Rounding_Dir dir) {
-  prepare_inexact<Policy>();
-  to = from;
-  return result_relation<Policy>(dir);
+  long double v = from;
+  return assign_float_float<Policy>(to, v, dir);
 }
 
 template <typename Policy, typename Type>
 inline Result
 set_neg_overflow_float(Type& to, Rounding_Dir dir) {
-  switch (rounding_direction(dir)) {
+  switch (dir) {
   case ROUND_UP:
     {
       Float<Type> f(-HUGE_VAL);
@@ -376,7 +490,7 @@ set_neg_overflow_float(Type& to, Rounding_Dir dir) {
 template <typename Policy, typename Type>
 inline Result
 set_pos_overflow_float(Type& to, Rounding_Dir dir) {
-  switch (rounding_direction(dir)) {
+  switch (dir) {
   case ROUND_DOWN:
     {
       Float<Type> f(HUGE_VAL);
@@ -501,14 +615,32 @@ template <typename Policy, typename Type>
 inline Result 
 add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   prepare_inexact<Policy>();
-  return assign_result_inexact<Policy>(to, std::fma(to, x, y), dir);
+  if (fpu_direct_rounding(dir))
+    to = std::fma(to, x, y);
+  else if (fpu_inverse_rounding(dir))
+    to = -limit_precision(std::fma(-to, -x, y));
+  else {
+    int old = fpu_save_rounding_direction(dir);
+    to = std::fma(to, x, y);
+    fpu_restore_rounding_direction(old);
+  }
+  return result_relation<Policy>(dir);
 }
 
 template <typename Policy, typename Type>
 inline Result 
 sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   prepare_inexact<Policy>();
-  return assign_result_inexact<Policy>(to, std::fma(to, x, -y), dir);
+  if (fpu_direct_rounding(dir))
+    to = std::fma(to, x, -y);
+  else if (fpu_inverse_rounding(dir))
+    to = -limit_precision(std::fma(-to, -x, -y));
+  else {
+    int old = fpu_save_rounding_direction(dir);
+    to = std::fma(to, x, -y);
+    fpu_restore_rounding_direction(old);
+  }
+  return result_relation<Policy>(dir);
 }
 
 template <typename Policy, typename Type>
