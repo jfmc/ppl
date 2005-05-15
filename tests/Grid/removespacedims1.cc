@@ -52,13 +52,7 @@ test1() {
   if (find_variation(gr))
     exit(1);
 
-  nout << "gr.ascii_dump(nout):" << endl;
-  gr.ascii_dump(nout);
-
   gr.remove_space_dimensions(vars);
-
-  nout << "gr.ascii_dump(nout):" << endl;
-  gr.ascii_dump(nout);
 
   if (find_variation(gr))
     exit(1);
