@@ -103,9 +103,11 @@ gcd_generic(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   Result r;
   used(r);
   r = abs<Policy>(nx, x, dir);
-  assert(r == V_EQ);
+  if (r != V_EQ)
+    return r;
   r = abs<Policy>(ny, y, dir);
-  assert(r == V_EQ);
+  if (r != V_EQ)
+    return r;
   return gcd_common<Policy>(to, nx, ny, dir);
 }
 
@@ -119,9 +121,11 @@ lcm_generic(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   To nx, ny;
   Result r;
   r = abs<Policy>(nx, x, dir);
-  assert(r == V_EQ);
+  if (r != V_EQ)
+    return r;
   r = abs<Policy>(ny, y, dir);
-  assert(r == V_EQ);
+  if (r != V_EQ)
+    return r;
   To gcd;
   r = gcd_common<Policy>(gcd, nx, ny, dir);
   assert(r == V_EQ);
