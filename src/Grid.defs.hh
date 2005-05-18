@@ -77,8 +77,8 @@ bool operator!=(const Grid& x, const Grid& y);
 
 //! The class of grids.
 /*!
-    An object of the class Grid represents a convex polyhedron
-    in the vector space \f$\Rset^n\f$.
+    An object of the class Grid represents a convex grid in the vector
+    space \f$\Rset^n\f$.
 
     A grid can be specified as either a finite system of congruences
     or a finite system of generators (see Section \ref representation)
@@ -1231,13 +1231,11 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-#ifndef NDEBUG
   //! If \p sys is lower triangular return true, else return false.
   static bool lower_triangular(const Congruence_System& sys);
 
   //! If \p sys is upper triangular return true, else return false.
   static bool upper_triangular(const Generator_System& sys);
-#endif
 
   //@} // Miscellaneous Member Functions
 
