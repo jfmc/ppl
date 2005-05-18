@@ -1364,10 +1364,8 @@ equality \f$a = b\f$.
 For each vector
 \f$\vect{a} \in \Qset^n \setdiff \{\vect{0}\}\f$ and scalars
 \f$b, f \in \Qset\f$,
-the linear <EM>congruence relation</EM>
- \f[
-    \cg \defeq \bigl(\langle \vect{a}, \vect{x} \rangle \equiv_f b\bigr)
- \f]
+the <EM>linear congruence relation</EM>
+\f$\bigl(\langle \vect{a}, \vect{x} \rangle \equiv_f b\bigr)\f$
 defines the set of affine hyperplanes
 \f$
   \big\{
@@ -1378,20 +1376,20 @@ defines the set of affine hyperplanes
 \f$
 in \f$\Qset^n\f$;
 \f$f\f$ is called the <EM>frequency</EM> and
-\f$b\f$ the <EM>base value</EM> of the relation \f$\cg\f$.
+\f$b\f$ the <EM>base value</EM> of the relation.
 
-When \f$f = 0\f$, the congruence relation,
+When \f$f = 0\f$, the congruence relation
 is <EM>singular</EM> and defines the unique hyperplane
-\f$\bigl(\langle \vect{a}, \vect{x} \rangle = b \bigr)\f$.
+\f$\langle \vect{a}, \vect{x} \rangle = b\f$.
 When \f$f \neq 0\f$, the congruence relation is said to be
 <EM>non-singular</EM>
 and defines an infinite set of discrete hyperplanes.
 
 Any vector that satisfies one of the equalities
-\f$\bigl(\langle \vect{a}, \vect{x} \rangle = b + \mu f\bigr)\f$
+\f$\langle \vect{a}, \vect{x} \rangle = b + \mu f\f$
 for  any \f$\mu \in \Zset\f$ is said to
 <EM>satisfy</EM> the congruence relation
-\f$\bigl(\langle \vect{a}, \vect{x} \rangle \equiv_f b\bigr)\f$.
+\f$\langle \vect{a}, \vect{x} \rangle \equiv_f b\f$.
 
 \anchor rational_grids
 <B>Rational Grids</B>
@@ -1399,11 +1397,11 @@ for  any \f$\mu \in \Zset\f$ is said to
 The set \f$\cL  \sseq \Rset^n\f$ is a <EM>rational grid</EM>
 if and only if either \f$\cL\f$ is the set of vectors in
 \f$\Rset^n\f$ that satisfy
-a finite system of congruence relations \f$\cC\f$ in \f$\Qset^n\f$
+a finite system \f$\cC\f$ of congruence relations in \f$\Qset^n\f$
 or \f$n = 0\f$ and \f$\cL = \emptyset\f$.
 
 We also say that  <EM>\f$\cL\f$ is described by \f$\cC\f$</EM>
-and that \f$\cC\f$ is a <EM>congruence system</EM> for \f$\cL\f$.
+and that <EM>\f$\cC\f$ is a congruence system for \f$\cL\f$</EM>.
 
 The <EM>grid domain</EM> \f$\Gset_{n}\f$ is the set of all rational grids
 described by finite sets of congruence relations in \f$\Qset^n\f$.
@@ -1412,10 +1410,10 @@ If the congruence system \f$\cC\f$ describes the \f$\emptyset\f$,
 the <EM>empty</EM> grid,
 then we say that \f$\cC\f$ is <EM>inconsistent</EM>.
 For example, the congruence systems
-\f$\{\langle\vect{0}, \vect{x}\rangle \equiv_0 1\}\f$
+\f$\bigl\{\langle\vect{0}, \vect{x}\rangle \equiv_0 1\bigr\}\f$
 meaning that \f$0 = 1\f$ and
-\f$\{\langle\vect{a}, \vect{x}\rangle \equiv_2 0,
-     \langle\vect{a}, \vect{x}\rangle \equiv_2 1\}\f$,
+\f$\bigl\{\langle\vect{a}, \vect{x}\rangle \equiv_2 0,
+     \langle\vect{a}, \vect{x}\rangle \equiv_2 1\bigr\}\f$,
 for any \f$\vect{a} \in \Rset^n\f$,
 meaning that the value of an expression must be both even and odd
 are both inconsistent since both describe the empty grid.
@@ -1438,6 +1436,7 @@ be a finite set of vectors.
 For all scalars \f$\mu_1, \ldots, \mu_k \in \Zset\f$,
 the vector \f$\vect{v} = \sum_{j=1}^k \mu_j \vect{x}_j\f$
 is said to be a <EM>integer</EM> combination of the vectors in \f$S\f$.
+FIXME: define the notion of integer affine combination.
 
 We denote by \f$\inthull(S)\f$
 (resp., \f$\intaffinehull(S)\f$)
@@ -1473,7 +1472,8 @@ If \f$L, Q, P\f$ are each finite subsets of \f$\Qset^n\f$ and
   \cL = \linearhull(L) + \inthull(Q) + \intaffinehull(P)
 \f]
 where the symbol '\f$+\f$' denotes the Minkowski's sum,
-then we have shown that \f$\cL \in \Gset_n\f$ is a rational grid.
+then we have shown [FIXME: add citation]
+that \f$\cL \in \Gset_n\f$ is a rational grid.
 The 3-tuple \f$(L, Q, P)\f$
 is said to be a <EM>generator system</EM> for \f$\cL\f$
 and we write \f$\cL = \ggen(L, Q, P)\f$.
@@ -1483,9 +1483,9 @@ if and only if the set of points \f$P = \emptyset\f$.
 If \f$P \neq \emptyset\f$, then
 \f$\cL = \ggen(L, \emptyset, Q_{\vect{p}} \union P)\f$
 where, for some \f$\vect{p} \in P\f$,
-\f$Q_{\vect{p}} = \{ \vect{p} + \vect{q} \mid \vect{q} \in Q\}\f$.
+\f$Q_{\vect{p}} = \{\, \vect{p} + \vect{q} \mid \vect{q} \in Q \,\}\f$.
 
-Currently, the use interface to the library only provides support for
+Currently, the user interface to the library only provides support for
 points and lines as the generators of a grid.
 This is not a problem because, for any
 non-empty grid \f$\cL = \ggen(L, Q, P)\f$,
@@ -1500,6 +1500,7 @@ that generates the same grid.
 A <EM>minimized</EM> congruence system \f$\cC\f$ for \f$\cL\f$
 is such that, if \f$\cC'\f$ is another congruence system for \f$\cL\f$,
 then \f$\card \cC \leq \card \cC'\f$.
+[FIXME: the following should probably be moved elsewhere.]
 More precisely, a congruence system \f$\cC\f$
 is <EM>minimized</EM> if, for each variable \f$x_i\f$,
 there is at most one congruence relation
@@ -1514,6 +1515,7 @@ is such that, if \f$\cG' = (L', Q', P')\f$ is
 another generator system for \f$\cL\f$,
 then \f$\card L \leq \card L'\f$ and
 \f$\card Q + \card P \leq \card Q' + \card P'\f$.
+[FIXME: the following should probably be moved elsewhere.]
 More precisely, a generator system \f$\cG = (L, Q, P)\f$ for
 a non-empty grid \f$\cL\f$
 is <EM>minimized</EM> if \f$\card P = 1\f$,
@@ -1526,7 +1528,7 @@ has no more than a total of \f$n+1\f$ lines, parameters and points.
 
 As parameters are not currently suppported by the user-interface to the grids,
 a minimized generator system
-\f$\bigl(L, Q, \{\vect{p}\}\bigr)\f$ is reurned to the user as the pair
+\f$\bigl(L, Q, \{\vect{p}\}\bigr)\f$ is returned to the user as the pair
 \f$\bigl(L, Q_{\vect{p}} \union \{\vect{p}\}\bigr)\f$
 where
 \f$Q_{\vect{p}} = \{ \vect{p} + \vect{q} \mid \vect{q} \in Q\}\f$.
@@ -1974,7 +1976,7 @@ Then the <EM>grid widening</EM>
     \f$\cL_1 = \emptyset\f$ or if \f$\pdim(\cL_1) < \pdim(\cL_2)\f$;
 - \f$\gcon(\cC)\f$, otherwise,
 
-\noindent where
+where
 \f$
   \cC
     =
