@@ -63,6 +63,7 @@ identity(Matrix& sys, dimension_type num_cols) {
   }
   return true;
 }
+#endif
 
 // x 0 0 0
 // x x 0 0
@@ -105,30 +106,37 @@ Grid::upper_triangular(const Generator_System& sys) {
   dimension_type num_cols = sys.num_columns();
   dimension_type rowi = sys.num_rows();
   // Check squareness.
-  if (rowi != num_cols)
+  if (rowi != num_cols) {
+    std::cout << "square fail " << rowi << num_cols << std::endl;
     return false;
+  }
 
   // Check triangularity.
   --rowi;			// Convert to index.
   // Check diagonal element of first row.
-  if (sys[0][0] == 0)
+  if (sys[0][0] == 0) {
+    std::cout << "first fail" << std::endl;
     return false;
+  }
   while (rowi > 0) {
     const Generator& row = sys[rowi];
     // Check diagonal.
-    if (row[rowi] == 0)
+    if (row[rowi] == 0) {
+      std::cout << "diag " << rowi << std::endl;
       return false;
+    }
     // Check elements preceding diagonal.
     dimension_type col = --rowi;
     do {
-      if (row[col] != 0)
+      if (row[col] != 0) {
+	std::cout << "prec " << rowi << std::endl;
 	return false;
+      }
     } while (col-- > 0);
   }
 
   return true;
 }
-#endif
 
 /* The next two methods should be named convert, and this file
    Grid_convert.cc, to use verbs consistently as function and method
@@ -137,7 +145,7 @@ Grid::upper_triangular(const Generator_System& sys) {
 dimension_type
 Grid::conversion(Congruence_System& source, Linear_System& dest) {
   ctrace << "============= convert cgs to gs" << std::endl
-	<< "source:" << std::endl;
+	 << "source:" << std::endl;
   ctrace_dump(source);
   ctrace << "dest:" << std::endl;
   ctrace_dump(dest);
