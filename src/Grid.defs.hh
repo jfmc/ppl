@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
+#include "Constraint_System.defs.hh"
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
 #include "Generator_System.defs.hh"
@@ -549,7 +550,7 @@ public:
     Thrown if \p c is not an equality constraint or if \p *this and
     constraint \p c are dimension-incompatible.
   */
-  void add_congruence(const Constraint& c);
+  void add_congruences_and_minimize(const Constraint_System& cs);
 
   //! \brief
   //! If \p c is an equality constraint, adds a copy \p c, seen as a
@@ -599,6 +600,19 @@ public:
     Thrown if \p *this and \p cgs are dimension-incompatible.
   */
   void add_congruences(const Congruence_System& cgs);
+
+  // FIX temporary, for test app
+  //! \brief Adds a copy of the constraints in \p cgs to the system
+  //! of congruences of \p *this (without reducing the result).
+  /*!
+    \param cs
+    Contains the constraints that will be added to the system of
+    congruences of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  void add_congruence_and_minimize(const Constraint_System& cs);
 
   //! \brief Adds the congruences in \p cgs to the system of congruences
   //! of \p *this (without reducing the result).
