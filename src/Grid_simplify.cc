@@ -159,8 +159,8 @@ Grid::reduce_parameter_with_line(Linear_Row& row,
       for (dimension_type col = 0; col < num_cols; ++col)
         row[col] *= pivot_a;
   }
-  /* These are like the adjustments in reduce_line_with_line (row[col]
-     has been multiplied by pivot_a already, in the loop above).  */
+  // These are like the adjustments in reduce_line_with_line (row[col]
+  // has been multiplied by pivot_a already, in the loop above).
   for (dimension_type col = 0; col < num_cols; ++col)
     row[col] -= row_a * pivot[col];
 }
@@ -262,7 +262,7 @@ Grid::simplify(Generator_System& sys) {
     }
     else {
       Linear_Row& pivot = sys[row_index];
-      dimension_type pivot_num = row_index;
+      dimension_type pivot_index = row_index;
       // For each row having a value other than 0 at col, change the
       // matrix so that the value at col is 0 (leaving the grid itself
       // equivalent).
@@ -326,9 +326,9 @@ Grid::simplify(Generator_System& sys) {
 #endif
 	++row_index;
       }
-      if (col != pivot_num) {
+      if (col != pivot_index) {
 	strace << "swapping" << std::endl;
-	std::swap(sys[col], pivot);
+	std::swap(sys[col], sys[pivot_index]);
       }
     }
     strace_dump(sys);
@@ -430,12 +430,13 @@ Grid::simplify(Congruence_System& sys) {
     else {
       dimension_type& row_index = row_num; // For clearer naming.
       --row_index;
-      dimension_type pivot_num = row_index;
-      Congruence& pivot = sys[pivot_num];
+      dimension_type pivot_index = row_index;
+      Congruence& pivot = sys[pivot_index];
       // For each row having a lower index and a value at col other
       // than 0, change the grid representation so that the value at
       // col is 0 (leaving an equivalent grid).
-      strace << "  Reducing all preceding rows" << std::endl;
+      strace << "  Reducing all preceding rows" << std::endl
+	     << "    pivot_index " << pivot_index << std::endl;
       while (row_index > 0) {
 	--row_index;
 	strace << "    row_index " << row_index << std::endl;
@@ -450,7 +451,8 @@ Grid::simplify(Congruence_System& sys) {
 	    sys.rows.erase(sys.rows.begin() + row_index);	\
 	    strace << "drop" << std::endl;			\
 	    --num_rows;						\
-	    --orig_row_num;
+	    --orig_row_num;					\
+	    --pivot_index;
 
 	    free_row();
 	  }
@@ -484,9 +486,11 @@ Grid::simplify(Congruence_System& sys) {
 	      reduce_pc_with_pc(row, pivot, column, false);
 	}
       }
-      if (orig_row_num != pivot_num) {
-	strace << "swapping" << std::endl;
-	std::swap(sys[orig_row_num - 1], pivot);
+      if (orig_row_num != pivot_index) {
+	strace << "swapping row_num " << orig_row_num << " and pivot" << std::endl;
+	std::swap(sys[orig_row_num - 1], sys[pivot_index]);
+	// FIX why causes error when a virtual row has been dropped
+	//std::swap(sys[orig_row_num - 1], pivot);
       }
       strace_dump(sys);
     }
