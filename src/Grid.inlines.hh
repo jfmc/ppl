@@ -332,7 +332,7 @@ Grid::strictly_contains(const Grid& y) const {
   const Grid& x = *this;
   return x.contains(y) && !y.contains(x);
 }
-
+#endif
 template <typename Partial_Function>
 void
 Grid::map_space_dimensions(const Partial_Function& pfunc) {
@@ -340,17 +340,16 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
     return;
 
   if (pfunc.has_empty_codomain()) {
-    // All dimensions vanish: the polyhedron becomes zero_dimensional.
+    // All dimensions vanish: the grid becomes zero_dimensional.
     if (marked_empty()
-	|| (has_pending_congruences()
-	    && !remove_pending_to_obtain_generators())
 	|| (!generators_are_up_to_date() && !update_generators())) {
-      // Removing all dimensions from the empty polyhedron.
+      // Removing all dimensions from the empty grid.
       space_dim = 0;
       con_sys.clear();
+      gen_sys.clear();
     }
     else
-      // Removing all dimensions from a non-empty polyhedron.
+      // Removing all dimensions from a non-empty grid.
       set_zero_dim_univ();
 
     assert(OK());
@@ -425,9 +424,9 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
   const Generator_System& old_gensys = generators();
 
   if (old_gensys.num_rows() == 0) {
-    // The polyhedron is empty.
-    Grid new_polyhedron(topology(), new_space_dimension, EMPTY);
-    std::swap(*this, new_polyhedron);
+    // The grid is empty.
+    Grid new_grid(new_space_dimension, EMPTY);
+    std::swap(*this, new_grid);
     assert(OK());
     return;
   }
@@ -459,25 +458,25 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
 	new_gensys.insert(line(e));
       break;
     case Generator::RAY:
-      if (!all_zeroes)
-	new_gensys.insert(ray(e));
+      if (!all_zeroes) {
+	//new_gensys.insert(ray(e));
+	new_gensys.insert(point(e));
+	new_gensys[new_gensys.num_rows() - 1][0] = 0;
+      }
       break;
     case Generator::POINT:
       // A point in the origin has all zero homogeneous coefficients.
       new_gensys.insert(point(e, old_g.divisor()));
       break;
     case Generator::CLOSURE_POINT:
-      // A closure point in the origin has all zero homogeneous coefficients.
-      new_gensys.insert(closure_point(e, old_g.divisor()));
-      break;
+    default:
+      assert(0);
     }
   }
-  Grid new_polyhedron(topology(), new_gensys);
-  std::swap(*this, new_polyhedron);
+  Grid new_grid(new_gensys);
+  std::swap(*this, new_grid);
   assert(OK(true));
 }
-
-#endif // 0 // FIX
 
 } // namespace Parma_Polyhedra_Library
 
