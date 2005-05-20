@@ -57,7 +57,8 @@ intersection1 \
 intersection2 \
 join1 \
 join2 \
-concatenate1
+concatenate1 \
+mapspacedims1
 
 #
 # Sources for the tests
@@ -79,6 +80,7 @@ intersection2_SOURCES = intersection2.cc
 join1_SOURCES = join1.cc
 join2_SOURCES = join2.cc
 concatenate1_SOURCES = concatenate1.cc
+mapspacedims1_SOURCES = mapspacedims1.cc
 
 XFAIL_TESTS =
 
