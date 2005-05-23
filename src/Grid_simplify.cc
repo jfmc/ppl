@@ -342,6 +342,11 @@ Grid::simplify(Generator_System& sys) {
 			 sys.num_rows() - 1,
 			 sys.num_columns()));
     sys.erase_to_end(sys.num_columns());
+#if EXTRA_ROW_DEBUG
+    // std::vector may have relocated rows, so the row copy constructor may
+    // have used a new capacity.
+    sys.row_capacity = sys[0].capacity_;
+#endif
   }
 
   sys.set_index_first_pending_row(sys.num_rows());
@@ -426,6 +431,11 @@ Grid::simplify(Congruence_System& sys) {
       }
       // FIX add to end and swap instead?
       sys.rows.insert(sys.rows.begin() + orig_row_num, new_row);
+#if EXTRA_ROW_DEBUG
+      // std::vector may have relocated rows, so the row copy constructor
+      // may have used a new capacity.
+      sys.row_capacity = sys[0].capacity_;
+#endif
     }
     else {
       dimension_type& row_index = row_num; // For clearer naming.
@@ -445,10 +455,19 @@ Grid::simplify(Congruence_System& sys) {
 	  if (row.is_virtual()) {
 	    // Free the virtual row from sys.
 
+#if EXTRA_ROW_DEBUG
+// std::vector may have relocated rows, so the row copy constructor
+// may have used a new capacity.
+#define adjust_row_capacity() sys.row_capacity = sys[0].capacity_
+#else
+#define adjust_row_capacity()
+#endif
+
 #undef free_row
 #define free_row()						\
 	    /* FIX Slow. */					\
 	    sys.rows.erase(sys.rows.begin() + row_index);	\
+	    adjust_row_capacity();				\
 	    strace << "drop" << std::endl;			\
 	    --num_rows;						\
 	    --orig_row_num;					\
@@ -508,7 +527,7 @@ Grid::simplify(Congruence_System& sys) {
 		   sys.rows.begin()
 		   + (sys.num_rows() - sys.num_columns() + 1));
 #if EXTRA_ROW_DEBUG
-    // Vector may have relocated rows, so the row copy constructor may
+    // std::vector may have relocated rows, so the row copy constructor may
     // have used a new capacity.
     sys.row_capacity = sys[0].capacity_;
     // FIX check other places that do rows.erase (Linear_System...)
