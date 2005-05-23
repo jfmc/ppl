@@ -948,11 +948,6 @@ PPL::Grid::add_congruences_and_minimize(const Constraint_System& cs) {
       Congruence cg(*i / 0);
       cgs.insert(cg);
     }
-    else {
-      assert(0); // FIX
-      Congruence cg(*i);
-      cgs.insert(cg);
-    }
   }
   cgs.adjust_space_dimension(cs.space_dimension());
   add_congruences_and_minimize(cgs);
