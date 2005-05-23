@@ -942,15 +942,19 @@ void
 PPL::Grid::add_congruences_and_minimize(const Constraint_System& cs) {
   // FIX temp
   Congruence_System cgs;
+  bool cgs_is_not_empty = false;
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); i != cs_end; ++i) {
     if (i->is_equality()) {
       Congruence cg(*i / 0);
       cgs.insert(cg);
+      cgs_is_not_empty = true;
     }
   }
-  cgs.adjust_space_dimension(cs.space_dimension());
-  add_congruences_and_minimize(cgs);
+  if (cgs_is_not_empty) {
+    cgs.adjust_space_dimension(cs.space_dimension());
+    add_congruences_and_minimize(cgs);
+  }
 }
 
 bool
