@@ -176,28 +176,32 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
   // having that direction. This is done by invoking the function
   // add_space_dimensions().
   if (congruences_are_up_to_date()) {
-    if (generators_are_up_to_date())
+    if (generators_are_up_to_date()) {
       // Adds rows and/or columns to both matrices.
       // `add_space_dimensions' correctly handles pending congruences
       // or generators.
       add_space_dimensions(con_sys, gen_sys, m);
+      clear_congruences_minimized();
+      clear_generators_minimized();
+    }
     else {
       // Only congruences are up-to-date, so modify only them.
       con_sys.add_zero_columns(m);
       dimension_type size = con_sys.num_columns() - 1;
       // Move the moduli.
-      con_sys.swap_columns(size, size + m);
+      con_sys.swap_columns(size - m, size);
       if (congruences_are_minimized()) {
 	// Add virtual rows to keep the system in reduced form.
 	con_sys.add_zero_rows(m, Row::Flags());
-	for (dimension_type row = m + size; row-- > size; ) {
+	for (dimension_type row = size - 1; row > size - m; --row) {
 	  Congruence& cg = con_sys[row];
 	  cg[row] = 1;
 	  cg.set_is_virtual();
 	}
       }
+      else
+	clear_congruences_minimized();
     }
-    clear_congruences_minimized();
   }
   else {
     // Only generators are up-to-date, so modify only them.
@@ -215,6 +219,8 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
     }
     // The grid does not support pending generators.
     gen_sys.unset_pending_rows();
+    clear_generators_minimized();
+    // FIX if gens are min add v rows
   }
   // Update the space dimension.
   space_dim += m;
@@ -368,10 +374,8 @@ PPL::Grid::concatenate_assign(const Grid& y) {
   // TODO: this implementation is just an executable specification.
   Congruence_System cgs = y.congruences();
 
-  // The congruences of `x' (possibly with pending rows) are required.
-  if (has_pending_generators())
-    process_pending_generators();
-  else if (congruences_are_up_to_date() == false)
+  if (congruences_are_up_to_date() == false)
+    // FIX check if now empty? (also in ph?)
     update_congruences();
 
   // The matrix for the new system of congruences is obtained by
