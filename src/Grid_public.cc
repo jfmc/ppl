@@ -713,32 +713,29 @@ PPL::Grid::add_generator(const Generator& g) {
   // Topology-compatibility check.
   if (g.is_closure_point())
     throw_topology_incompatible("add_generator(g)", "g", g);
-  // FIX handle nnc g
-  // Dimension-compatibility check:
-  // the dimension of `g' can not be greater than space_dim.
+  // FIX convert nnc g to nc?
+  assert(g.is_necessarily_closed());
+
+  // The dimension of `g' must be at most space_dim.
   const dimension_type g_space_dim = g.space_dimension();
   if (space_dim < g_space_dim)
     throw_dimension_incompatible("add_generator(g)", "g", g);
 
-  // Dealing with a zero-dimensional space polyhedron first.
+  // Dealing with a zero-dimensional space grid first.
   if (space_dim == 0) {
-    // It is not possible to create 0-dim rays or lines.
-    assert(g.is_point() || g.is_closure_point());
-    // Closure points can only be inserted in non-empty polyhedra.
+    // It is only possible to create 0-dim points.
+    assert(g.is_point());
     if (marked_empty())
-      if (g.type() != Generator::POINT)
-	throw_invalid_generator("add_generator(g)", "g");
-      else
-	status.set_zero_dim_univ();
+      status.set_zero_dim_univ();
     assert(OK());
     return;
   }
 
   if (marked_empty()
-      || (has_pending_congruences() && !process_pending_congruences())
-      || (!generators_are_up_to_date() && !update_generators())) {
-    // Here the polyhedron is empty:
-    // the specification says we can only insert a point.
+      || (generators_are_up_to_date() == false
+	  && (update_generators() == false))) {
+    // Here the grid is empty: the specification says we can only
+    // insert a point.
     if (!g.is_point())
       throw_invalid_generator("add_generator(g)", "g");
     if (g.is_necessarily_closed() || !is_necessarily_closed()) {
@@ -957,8 +954,7 @@ PPL::Grid::add_congruences_and_minimize(const Constraint_System& cs) {
       cgs.insert(cg);
     }
   }
-  std::cout << "cgs.ascii_dump(std::cout):" << std::endl;
-  cgs.ascii_dump(std::cout);
+  cgs.adjust_space_dimension(cs.space_dimension());
   add_congruences_and_minimize(cgs);
 }
 
@@ -1997,7 +1993,7 @@ PPL::Grid::topological_closure_assign() {
 }
 #endif
 
-/*! \relates Parma_Polyhedra_Library::Grid */
+/*! \relates Parma_Polyhedra_Library:Grid */
 bool
 PPL::operator==(const Grid& x, const Grid& y) {
   if (x.space_dim != y.space_dim)
