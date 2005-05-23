@@ -38,6 +38,8 @@ print_function(const PFunction& function, const std::string& intro = "",
 }
 #endif
 
+// Empty grid, empty mapping.
+
 void
 test1() {
   nout << "test1:" << endl;
@@ -58,6 +60,8 @@ test1() {
        << "known grid:" << endl << known_gr << endl;
   exit(1);
 }
+
+// Mapping all dimensions.
 
 void
 test2() {
@@ -97,6 +101,8 @@ test2() {
   exit(1);
 }
 
+// Mapping all dimensions, with overlap.
+
 void
 test3() {
   nout << "test3:" << endl;
@@ -133,6 +139,8 @@ test3() {
   exit(1);
 }
 
+// Mapping more dimensions than there are in the grid.
+
 void
 test4() {
   nout << "test4:" << endl;
@@ -168,6 +176,8 @@ test4() {
   exit(1);
 }
 
+// Mapping all dimensions to themselves.
+
 void
 test5() {
   Variable A(0);
@@ -183,25 +193,22 @@ test5() {
   gs.insert(point(B));
   gs.insert(point(A + B));
 
-  C_Polyhedron ph1(gs);
-  C_Polyhedron known_result(ph1);
+  Grid gr(gs);
+  Grid known_gr(gr);
 
-#if NOISY
-  print_function(function, "*** function ***");
-  print_generators(ph1, "*** ph1 ***");
-#endif
+  gr.map_space_dimensions(function);
 
-  ph1.map_space_dimensions(function);
+  if (gr == known_gr)
+    return;
 
-  bool ok = (ph1 == known_result);
-
-#if NOISY
-  print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
-#endif
-
-  if (!ok)
-    exit(1);
+  nout << "Grid should equal known grid." << endl
+       << "grid:" << endl << gr << endl
+       << "known grid:" << endl << known_gr << endl;
+  exit(1);
 }
+
+#if 0
+// Mapping all additional dimensions (in the mapping) to themselves.
 
 void
 test6() {
@@ -220,29 +227,23 @@ test6() {
   gs.insert(point(2*B));
   gs.insert(point(A + 2*B));
 
-  C_Polyhedron ph1(gs);
+  Grid gr(gs);
 
-#if NOISY
-  print_function(function, "*** function ***");
-  print_generators(ph1, "*** ph1 ***");
-#endif
+  gr.map_space_dimensions(function);
 
-  ph1.map_space_dimensions(function);
+  Grid known_gr(4, Grid::EMPTY);
+  known_gr.add_generator(point());
+  known_gr.add_generator(point(B));
+  known_gr.add_generator(point(2*A));
+  known_gr.add_generator(point(2*A + B));
 
-  C_Polyhedron known_result(4, C_Polyhedron::EMPTY);
-  known_result.add_generator(point());
-  known_result.add_generator(point(B));
-  known_result.add_generator(point(2*A));
-  known_result.add_generator(point(2*A + B));
+  if (gr == known_gr)
+    return;
 
-  bool ok = (ph1 == known_result);
-
-#if NOISY
-  print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
-#endif
-
-  if (!ok)
-    exit(1);
+  nout << "Grid should equal known grid." << endl
+       << "grid:" << endl << gr << endl
+       << "known grid:" << endl << known_gr << endl;
+  exit(1);
 }
 
 void
@@ -270,11 +271,11 @@ test7() {
 
   ph1.map_space_dimensions(function);
 
-  C_Polyhedron known_result(3, C_Polyhedron::EMPTY);
-  known_result.add_generator(point());
-  known_result.add_generator(ray(A));
+  C_Polyhedron known_gr(3, C_Polyhedron::EMPTY);
+  known_gr.add_generator(point());
+  known_gr.add_generator(ray(A));
 
-  bool ok = (ph1 == known_result);
+  bool ok = (ph1 == known_gr);
 
 #if NOISY
   print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
@@ -299,9 +300,9 @@ test8() {
 
   ph1.map_space_dimensions(function);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_gr(2, C_Polyhedron::EMPTY);
 
-  bool ok = (ph1 == known_result);
+  bool ok = (ph1 == known_gr);
 
 #if NOISY
   print_constraints(ph1, "*** After ph1.map_space_dimensions(function) ***");
@@ -310,7 +311,7 @@ test8() {
   if (!ok)
     exit(1);
 }
-
+#endif
 } // namespace
 
 int
@@ -323,8 +324,8 @@ main() TRY {
   test2();
   test3();
   test4();
-#if 0 // FIX
   test5();
+#if 0 // FIX
   test6();
   test7();
   test8();
