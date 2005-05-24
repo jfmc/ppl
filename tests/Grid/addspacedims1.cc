@@ -27,7 +27,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #define find_variation find_variation_template<Grid>
 
-// From congruences.
+// From congruences, adding to both congruences and generators.
 
 void
 test1() {
@@ -180,6 +180,47 @@ test4() {
   exit(1);
 }
 
+// From congruences, where dimensions are only added to congruences.
+
+void
+test5() {
+  nout << "test5:" << endl;
+
+  Variable A(0);
+  Variable C(2);
+  Variable E(4);
+
+  Congruence_System cgs;
+  cgs.insert((A + 0*C %= 0) / 2);
+
+  Grid gr(cgs);
+
+  // Add space dimensions directly after creating the grid, to ensure
+  // that only the congruences are up to date.
+
+  gr.add_space_dimensions_and_embed(2);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Congruence_System known_cgs;
+  known_cgs.insert((A + 0*E %= 0) / 2);
+
+  Grid known_gr(known_cgs);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -190,6 +231,7 @@ main() TRY {
   test2();
   test3();
   test4();
+  test5();
 
   return 0;
 }
