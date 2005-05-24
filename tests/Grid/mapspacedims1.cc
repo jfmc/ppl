@@ -207,7 +207,6 @@ test5() {
   exit(1);
 }
 
-#if 0
 // Mapping all additional dimensions (in the mapping) to themselves.
 
 void
@@ -246,6 +245,8 @@ test6() {
   exit(1);
 }
 
+// Mapping new dimensions over existing ones.
+
 void
 test7() {
   Variable A(0);
@@ -259,31 +260,27 @@ test7() {
   Generator_System gs;
   gs.insert(point());
   gs.insert(point(A));
-  gs.insert(ray(B));
-  gs.insert(ray(A + B));
+  gs.insert(line(B));
+  gs.insert(line(A + B));
 
-  C_Polyhedron ph1(gs);
+  Grid gr(gs);
 
-#if NOISY
-  print_function(function, "*** function ***");
-  print_generators(ph1, "*** ph1 ***");
-#endif
+  gr.map_space_dimensions(function);
 
-  ph1.map_space_dimensions(function);
-
-  C_Polyhedron known_gr(3, C_Polyhedron::EMPTY);
+  Grid known_gr(3, Grid::EMPTY);
   known_gr.add_generator(point());
-  known_gr.add_generator(ray(A));
+  known_gr.add_generator(point(A));
 
-  bool ok = (ph1 == known_gr);
+  if (gr == known_gr)
+    return;
 
-#if NOISY
-  print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
-#endif
-
-  if (!ok)
-    exit(1);
+  nout << "Grid should equal known grid." << endl
+       << "grid:" << endl << gr << endl
+       << "known grid:" << endl << known_gr << endl;
+  exit(1);
 }
+
+// Mapping away a dimension in an empty grid.
 
 void
 test8() {
@@ -291,27 +288,21 @@ test8() {
   function.insert(0, 1);
   function.insert(1, 0);
 
-  C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
+  Grid gr(3, Grid::EMPTY);
 
-#if NOISY
-  print_function(function, "*** function ***");
-  print_constraints(ph1, "*** ph1 ***");
-#endif
+  gr.map_space_dimensions(function);
 
-  ph1.map_space_dimensions(function);
+  Grid known_gr(2, Grid::EMPTY);
 
-  C_Polyhedron known_gr(2, C_Polyhedron::EMPTY);
+  if (gr == known_gr)
+    return;
 
-  bool ok = (ph1 == known_gr);
-
-#if NOISY
-  print_constraints(ph1, "*** After ph1.map_space_dimensions(function) ***");
-#endif
-
-  if (!ok)
-    exit(1);
+  nout << "Grid should equal known grid." << endl
+       << "grid:" << endl << gr << endl
+       << "known grid:" << endl << known_gr << endl;
+  exit(1);
 }
-#endif
+
 } // namespace
 
 int
@@ -325,11 +316,9 @@ main() TRY {
   test3();
   test4();
   test5();
-#if 0 // FIX
   test6();
   test7();
   test8();
-#endif
 
   return 0;
 }
