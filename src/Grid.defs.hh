@@ -1404,63 +1404,6 @@ private:
 
   //@} // State Flag Cleaners: Clear Only the Specified Flag
 
-  //! \name The Handling of Pending Rows
-  //@{
-
-  //! \brief
-  //! Processes the pending rows of either description of the grid
-  //! and obtains a reduced grid.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if \p *this turns out to be an
-    empty grid.
-
-    It is assumed that the grid does have some congruences or
-    generators pending.
-  */
-  bool process_pending() const;
-
-  //! Processes the pending congruences and obtains a reduced grid.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if \p *this turns out to be an
-    empty grid.
-
-    It is assumed that the grid does have some pending congruences.
-  */
-  bool process_pending_congruences() const;
-
-  //! Processes the pending generators and obtains a reduced grid.
-  /*!
-    It is assumed that the grid does have some pending generators.
-  */
-  void process_pending_generators() const;
-
-  //! \brief
-  //! Lazily integrates the pending descriptions of the grid
-  //! to obtain a congruence system without pending rows.
-  /*!
-    It is assumed that the grid does have some congruences or
-    generators pending.
-  */
-  void remove_pending_to_obtain_congruences() const;
-
-  // FIX (some) minimize methods ret true for empty while these ret false
-  //! \brief
-  //! Lazily integrates the pending descriptions of the grid
-  //! to obtain a generator system without pending rows.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if \p *this turns out to be an
-    empty grid.
-
-    It is assumed that the grid does have some congruences or
-    generators pending.
-  */
-  bool remove_pending_to_obtain_generators() const;
-
-  //@} // The Handling of Pending Rows
-
   //! \name Updating and Sorting Matrices
   //@{
 

@@ -251,21 +251,6 @@ Grid::clear_generators_up_to_date() {
   // Can get rid of gen_sys here.
 }
 
-inline bool
-Grid::process_pending() const {
-  assert(space_dim > 0 && !marked_empty());
-  assert(has_something_pending());
-
-  Grid& x = const_cast<Grid&>(*this);
-
-  if (x.has_pending_congruences())
-    return x.process_pending_congruences();
-
-  assert(x.has_pending_generators());
-  x.process_pending_generators();
-  return true;
-}
-
 inline void
 Grid::add_low_level_congruences(Congruence_System& /*cgs FIX*/) {
   // FIX
@@ -279,9 +264,9 @@ Grid::is_empty() const {
   // Try a fast-fail test: if generators are up-to-date and
   // there are no pending congruences, then the generator system
   // (since it is well formed) contains a point.
-  if (generators_are_up_to_date() && !has_pending_congruences())
+  if (generators_are_up_to_date())
     return false;
-  return !minimize();
+  return minimize() == false;
 }
 
 #if 0
@@ -420,7 +405,6 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
   // If control gets here, then `pfunc' is not a permutation and some
   // dimensions must be projected away.
 
-  // If there are pending congruences, using `generators()' we process them.
   const Generator_System& old_gensys = generators();
 
   if (old_gensys.num_rows() == 0) {

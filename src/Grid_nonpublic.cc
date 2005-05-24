@@ -64,15 +64,6 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
     std::swap(con_sys, cgs);
     con_sys.normalize_moduli();
     simplify(con_sys);
-#if 0 // FIX pending
-    if (con_sys.num_pending_rows() > 0) {
-      // Even though `cgs' has pending constraints, since the generators
-      // of the grid are not up-to-date, the grid cannot
-      // have pending constraints. By integrating the pending part
-      // of `con_sys' we may loose sortedness.
-      con_sys.unset_pending_rows();
-    }
-#endif
     add_low_level_congruences(con_sys);
     set_congruences_up_to_date();
   }
@@ -127,11 +118,6 @@ PPL::Grid::construct(const Generator_System& const_gs) {
     std::swap(gen_sys, gs);
     simplify(gen_sys);
     if (gen_sys.num_pending_rows() > 0) {
-      // FIX
-      // Even though `gs' has pending generators, since the constraints
-      // of the grid are not up-to-date, the grid cannot
-      // have pending generators. By integrating the pending part
-      // of `gen_sys' we may loose sortedness.
       gen_sys.unset_pending_rows();
       gen_sys.set_sorted(false);
     }
@@ -223,64 +209,58 @@ PPL::Grid::quick_equivalence_test(const Grid& y) const {
 
   const Grid& x = *this;
 
-  //if (x.is_necessarily_closed()) {
-  { // FIX
-    if (x.has_something_pending() || y.has_something_pending())
-      return Grid::TVB_DONT_KNOW;
+  bool css_normalized = false;
 
-    bool css_normalized = false;
+  if (x.congruences_are_minimized() && y.congruences_are_minimized()) {
+    // Equivalent minimized congruence systems have:
+    //  - the same number of congruences; ...
+    if (x.con_sys.num_rows() != y.con_sys.num_rows())
+      return Grid::TVB_FALSE;
+    //  - the same number of equalities; ...
+    dimension_type x_num_equalities = x.con_sys.num_equalities();
+    if (x_num_equalities != y.con_sys.num_equalities())
+      return Grid::TVB_FALSE;
+    //  - and if there are no equalities, the same congruences.
+    //    Delay this test: try cheaper tests on generators first.
+    css_normalized = (x_num_equalities == 0);
+  }
 
-    if (x.congruences_are_minimized() && y.congruences_are_minimized()) {
-      // Equivalent minimized congruence systems have:
-      //  - the same number of congruences; ...
-      if (x.con_sys.num_rows() != y.con_sys.num_rows())
-	return Grid::TVB_FALSE;
-      //  - the same number of equalities; ...
-      dimension_type x_num_equalities = x.con_sys.num_equalities();
-      if (x_num_equalities != y.con_sys.num_equalities())
-	return Grid::TVB_FALSE;
-      //  - and if there are no equalities, the same congruences.
-      //    Delay this test: try cheaper tests on generators first.
-      css_normalized = (x_num_equalities == 0);
-    }
-
-    if (x.generators_are_minimized() && y.generators_are_minimized()) {
-      // Equivalent minimized generator systems have:
-      //  - the same number of generators; ...
-      if (x.gen_sys.num_rows() != y.gen_sys.num_rows())
-	return Grid::TVB_FALSE;
-      //  - the same number of lines; ...
-      const dimension_type x_num_lines = x.gen_sys.num_lines();
-      if (x_num_lines != y.gen_sys.num_lines())
-	return Grid::TVB_FALSE;
+  if (x.generators_are_minimized() && y.generators_are_minimized()) {
+    // Equivalent minimized generator systems have:
+    //  - the same number of generators; ...
+    if (x.gen_sys.num_rows() != y.gen_sys.num_rows())
+      return Grid::TVB_FALSE;
+    //  - the same number of lines; ...
+    const dimension_type x_num_lines = x.gen_sys.num_lines();
+    if (x_num_lines != y.gen_sys.num_lines())
+      return Grid::TVB_FALSE;
 #if 0 // FIX requires canonical form?
       //  - and if there are no lines, the same generators.
-      if (x_num_lines == 0) {
-	// Sort the two systems and check for syntactic identity.
-	x.obtain_sorted_generators();
-	y.obtain_sorted_generators();
-	if (x.gen_sys == y.gen_sys)
-	  return Grid::TVB_TRUE;
-	else
-	  return Grid::TVB_FALSE;
-      }
-#endif
-    }
-
-    if (css_normalized) {
-      // Sort the two systems and check for identity.
-#if 0
-      x.obtain_sorted_congruences();
-      y.obtain_sorted_congruences();
-#endif
-#if 0
-      // FIX requires sorting or a canonical form?
-      if (x.con_sys == y.con_sys)
+    if (x_num_lines == 0) {
+      // Sort the two systems and check for syntactic identity.
+      x.obtain_sorted_generators();
+      y.obtain_sorted_generators();
+      if (x.gen_sys == y.gen_sys)
 	return Grid::TVB_TRUE;
       else
 	return Grid::TVB_FALSE;
-#endif
     }
+#endif
+  }
+
+  if (css_normalized) {
+    // Sort the two systems and check for identity.
+#if 0
+    x.obtain_sorted_congruences();
+    y.obtain_sorted_congruences();
+#endif
+#if 0
+    // FIX requires sorting or a canonical form?
+    if (x.con_sys == y.con_sys)
+      return Grid::TVB_TRUE;
+    else
+      return Grid::TVB_FALSE;
+#endif
   }
 
   return Grid::TVB_DONT_KNOW;
@@ -294,13 +274,6 @@ PPL::Grid::is_included_in(const Grid& y) const {
   assert(!marked_empty() && !y.marked_empty() && space_dim > 0);
 
   const Grid& x = *this;
-
-  // `x' cannot have pending congruences, because we need its generators.
-  if (x.has_pending_congruences() && !x.process_pending_congruences())
-    return true;
-  // `y' cannot have pending generators, because we need its congruences.
-  if (y.has_pending_generators())
-    y.process_pending_generators();
 
 #if BE_LAZY
   if (!x.generators_are_up_to_date() && !x.update_generators())
@@ -321,21 +294,10 @@ PPL::Grid::is_included_in(const Grid& y) const {
   const Congruence_System& cgs = y.con_sys;
 
   dimension_type num_rows = gs.num_rows();
-  // FIX Generator& gen = gs[0];
-  if (num_rows && (gs[0].is_virtual() == false))
-    // FIX could this be any different for NNC ph's? (?)
-    if (cgs.satisfies_all_congruences(gs[0]) == false) {
-      std::cout << "is_included_in... done (false 0)." << std::endl;
-      return false;
-    }
   for (dimension_type i = num_rows; i-- > 1; )
-    // FIX gen = gs[i];
+    // FIX Generator& gen = gs[i];
     if (gs[i].is_virtual() == false)
-      // FIX could this be any different for NNC ph's? (?)
-      if ((gs[i].is_ray_or_point_or_inequality()
-	   // FIX is adjusting the param relative to gs[0] necessary?
-	   && cgs.satisfies_all_congruences(gs[i], gs[0]) == false)
-	  || cgs.satisfies_all_congruences(gs[i]) == false) {
+      if (cgs.satisfies_all_congruences(gs[i]) == false) {
 	std::cout << "is_included_in... done (false i = " << i << ")." << std::endl;
 	return false;
       }
@@ -358,11 +320,10 @@ PPL::Grid::bounds(const Linear_Expression& expr,
   // A zero-dimensional or empty grid bounds everything.
   if (space_dim == 0
       || marked_empty()
-      || (has_pending_congruences() && !process_pending_congruences())
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
 
-  // The grid has updated, possibly pending generators.
+  // The grid has updated generators.
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
     // Only lines and rays in `*this' can cause `expr' to be unbounded.
@@ -396,13 +357,11 @@ PPL::Grid::max_min(const Linear_Expression& expr,
 
   // For an empty grid we simply return false.
   if (marked_empty()
-      || (has_pending_congruences() && !process_pending_congruences())
       || (!generators_are_up_to_date() && !update_generators()))
     return false;
 
-  // The grid has updated, possibly pending generators.
-  // The following loop will iterate through the generator
-  // to find the extremum.
+  // The grid has updated generators.  The following loop will iterate
+  // through the generator (FIX generators?) to find the extremum.
   mpq_class extremum;
 
   // True if we have no other candidate extremum to compare with.
@@ -498,126 +457,10 @@ PPL::Grid::set_empty() {
 }
 
 bool
-PPL::Grid::process_pending_congruences() const {
-  assert(space_dim > 0 && !marked_empty());
-  assert(has_pending_congruences() && !has_pending_generators());
-
-  Grid& x = const_cast<Grid&>(*this);
-
-#if 0
-  // FIX perhaps x.con_sys.remove_pending_duplicates()
-  x.con_sys.sort_pending_and_remove_duplicates();
-  if (x.con_sys.num_pending_rows() == 0) {
-    // All pending constraints were duplicates.
-    x.clear_pending_constraints();
-    assert(OK(true));
-    return true;
-  }
-#endif
-
-  if (x.minimize(x.con_sys, x.gen_sys)) {
-    x.set_empty();
-    assert(OK(false));
-    return false;
-  }
-  assert(gen_sys.num_pending_rows() == 0);
-  x.clear_pending_congruences();
-  // FIX?
-  x.set_congruences_minimized();
-  x.set_generators_minimized();
-  assert(OK(true));
-  return true;
-}
-
-void
-PPL::Grid::process_pending_generators() const {
-  assert(space_dim > 0 && !marked_empty());
-  assert(has_pending_generators() && !has_pending_congruences());
-
-  Grid& x = const_cast<Grid&>(*this);
-
-#if 0
-  // FIX perhaps x.gen_sys.remove_pending_duplicates()
-  x.gen_sys.sort_pending_and_remove_duplicates();
-  if (x.gen_sys.num_pending_rows() == 0) {
-    // All pending generators were duplicates.
-    x.clear_pending_generators();
-    assert(OK(true));
-    return;
-  }
-#endif
-
-  // FIX could this return true (ie that the grid is empty)?
-  // FIX if so set_empty
-  x.minimize(x.gen_sys, x.con_sys);
-  x.set_generators_minimized();
-
-  assert(gen_sys.num_pending_rows() == 0);
-  x.clear_pending_generators();
-  // FIX correct?
-  x.set_generators_minimized();
-  x.set_congruences_minimized();
-}
-
-#if 0
-void
-PPL::Grid::remove_pending_to_obtain_congruences() const {
-  assert(has_something_pending());
-
-  Grid& x = const_cast<Grid&>(*this);
-
-  // If the grid has pending congruences, simply unset them.
-  if (x.has_pending_congruences()) {
-    // Integrate the pending congruences, which are possibly not sorted.
-    x.con_sys.unset_pending_rows();
-    x.con_sys.set_sorted(false);
-    x.clear_pending_congruences();
-    x.clear_congruences_minimized();
-    x.clear_generators_up_to_date();
-  }
-  else {
-    assert(x.has_pending_generators());
-    // We must process the pending generators and obtain the
-    // corresponding system of congruences.
-    x.process_pending_generators();
-  }
-  assert(OK(true));
-}
-#endif
-
-bool
-PPL::Grid::remove_pending_to_obtain_generators() const {
-  assert(has_something_pending());
-
-  Grid& x = const_cast<Grid&>(*this);
-
-  // If the grid has pending generators, simply unset them.
-  if (x.has_pending_generators()) {
-    // Integrate the pending generators, which are possibly not sorted.
-    x.gen_sys.unset_pending_rows();
-    x.gen_sys.set_sorted(false);
-    x.clear_pending_generators();
-    x.clear_generators_minimized();
-    x.clear_congruences_up_to_date();
-    assert(OK(true));
-    return true;
-  }
-  else {
-    assert(x.has_pending_congruences());
-    // We must integrate the pending congruences and obtain the
-    // corresponding system of generators.
-    return x.process_pending_congruences();
-  }
-}
-
-bool
 PPL::Grid::update_congruences() const {
   assert(space_dim > 0);
   assert(!marked_empty());
   assert(generators_are_up_to_date());
-  // Assume any pending congruences or generators have already been
-  // processed.
-  assert(!has_something_pending());
 
   Grid& gr = const_cast<Grid&>(*this);
   if (minimize(gr.gen_sys, gr.con_sys)) {
@@ -636,8 +479,6 @@ PPL::Grid::update_generators() const {
   assert(space_dim > 0);
   assert(!marked_empty());
   assert(congruences_are_up_to_date());
-  // We assume the grid has no pending congruences or generators.
-  assert(!has_something_pending());
 
   Grid& x = const_cast<Grid&>(*this);
   // Either the system of congruences is consistent, or the grid is
@@ -661,14 +502,6 @@ PPL::Grid::minimize() const {
   if (space_dim == 0)
     return true;
 
-  // If the grid has something pending, process it.
-  if (has_something_pending()) {
-    const bool not_empty = process_pending();
-    assert(OK());
-    return not_empty;
-  }
-
-  // Here there are no pending congruences or generators.
   // Is the grid already minimized?
   if (congruences_are_minimized() && generators_are_minimized())
     return true;
@@ -701,7 +534,6 @@ PPL::Grid::strongly_minimize_congruences() const {
   Grid& x = const_cast<Grid&>(*this);
 
   // We need `con_sys' (weakly) minimized and `gen_sys' up-to-date.
-  // `minimize()' will process any pending congruences or generators.
   if (!minimize())
     return false;
 
@@ -723,7 +555,6 @@ PPL::Grid::strongly_minimize_generators() const {
   Grid& x = const_cast<Grid&>(*this);
 
   // We need `gen_sys' (weakly) minimized and `con_sys' up-to-date.
-  // `minimize()' will process any pending congruences or generators.
   if (!minimize())
     return false;
 

@@ -94,10 +94,9 @@ PPL::Grid::Grid(const Grid& y)
     status(y.status),
     space_dim(y.space_dim) {
   if (y.congruences_are_up_to_date())
-    //con_sys.assign_with_pending(y.con_sys); // FIX
     con_sys = y.con_sys;
   if (y.generators_are_up_to_date())
-    gen_sys.assign_with_pending(y.gen_sys);
+    gen_sys = y.gen_sys;
 }
 
 #if 0
@@ -137,15 +136,7 @@ PPL::Grid::congruences() const {
 
 const PPL::Congruence_System&
 PPL::Grid::minimized_congruences() const {
-  // `minimize()' or `strongly_minimize_congruences()' will process
-  // any FIX pending congruences or generators.
   minimize();
-#if 0 // FIX
-  if (is_necessarily_closed())
-    minimize();
-  else
-    strongly_minimize_congruences();
-#endif
   return congruences();
 }
 
@@ -174,17 +165,6 @@ PPL::Grid::generators() const {
 
 const PPL::Generator_System&
 PPL::Grid::minimized_generators() const {
-#if 0 // FIX
-  // `minimize()' or `strongly_minimize_generators()'
-  // will process any pending congruences or generators.
-  if (is_necessarily_closed())
-    minimize();
-  else
-    strongly_minimize_generators();
-  // Note: calling generators() on a strongly minimized NNC generator
-  // system will also ensure sortedness, which is required to correctly
-  // filter away the matched closure points.
-#endif
   minimize();
   return generators();
 }
@@ -218,9 +198,9 @@ PPL::Grid::relation_with(const Congruence& c) const {
       // nor the strict positivity congruence 1 > 0.
       return Poly_Con_Relation::is_included();
 
-  if ((has_pending_congruences() && !process_pending_congruences())
-      || (!generators_are_up_to_date() && !update_generators()))
-    // The polyhedron is empty.
+  if (generators_are_up_to_date() == false
+      && update_generators() == false)
+    // The grid is empty.
     return Poly_Con_Relation::saturates()
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
@@ -243,9 +223,7 @@ PPL::Grid::relation_with(const Generator& g) const {
   if (space_dim == 0)
     return Poly_Gen_Relation::subsumes();
 
-  if (has_pending_generators())
-    process_pending_generators();
-  else if (!congruences_are_up_to_date())
+  if (congruences_are_up_to_date() == false)
     update_congruences();
 
   return
@@ -263,16 +241,7 @@ PPL::Grid::is_universe() const {
   if (space_dim == 0)
     return true;
 
-  if (!has_pending_generators() && congruences_are_up_to_date()) {
-    if (has_pending_congruences()) {
-      Grid& x = const_cast<Grid&>(*this);
-      if (x.simplify(x.con_sys)) {
-	x.set_empty();
-	return false;
-      }
-      x.set_congruences_minimized();
-    }
-
+  if (congruences_are_up_to_date()) {
     // Compare congruences to the universe representation.
 
     dimension_type size = con_sys.num_columns();
@@ -297,14 +266,7 @@ PPL::Grid::is_universe() const {
     return true;
   }
 
-  assert(!has_pending_congruences() && generators_are_up_to_date());
-
-  if (has_pending_generators()) {
-    Grid& x = const_cast<Grid&>(*this);
-    // FIX check return and set empty?
-    x.simplify(x.gen_sys);
-    x.set_generators_minimized();
-  }
+  assert(generators_are_up_to_date());
 
   // Compare generators to the universe representation.
 
@@ -334,7 +296,6 @@ PPL::Grid::is_bounded() const {
   // A zero-dimensional or empty polyhedron is bounded.
   if (space_dim == 0
       || marked_empty()
-      || (has_pending_congruences() && !process_pending_congruences())
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
 
@@ -355,12 +316,8 @@ PPL::Grid::is_topologically_closed() const {
     return true;
   // Any empty or zero-dimensional polyhedron is closed.
   if (marked_empty()
-      || space_dim == 0
-      || (has_something_pending() && !process_pending()))
+      || space_dim == 0)
      return true;
-
-  // At this point there are no pending congruences or generators.
-  assert(!has_something_pending());
 
   if (generators_are_minimized()) {
     // A polyhedron is closed iff all of its (non-redundant)
@@ -440,13 +397,6 @@ PPL::Grid::OK(bool check_not_empty) const {
   // congruence `con_sys' and the system of generators `gen_sys' have
   // no rows.
   if (space_dim == 0) {
-    if (has_something_pending()) {
-#ifndef NDEBUG
-      cerr << "Zero-dimensional polyhedron with something pending"
-	   << endl;
-#endif
-      goto fail;
-    }
     if (con_sys.num_rows() != 0 || gen_sys.num_rows() != 0) {
 #ifndef NDEBUG
       cerr << "Zero-dimensional grid with a non-empty" << endl
@@ -461,16 +411,23 @@ PPL::Grid::OK(bool check_not_empty) const {
   // generators.  At least one of them must be up to date.
   if (!congruences_are_up_to_date() && !generators_are_up_to_date()) {
 #ifndef NDEBUG
-    cerr << "Grid not empty, not zero-dimensional"
-	 << endl
+    cerr << "Grid not empty, not zero-dimensional" << endl
 	 << "and with neither congruences nor generators up-to-date!"
 	 << endl;
 #endif
     goto fail;
   }
 
+  if (has_something_pending()) {
+#ifndef NDEBUG
+    cerr << "Grid with congruences and/or generators pending." << endl;
+#endif
+    goto fail;
+  }
+
   {
-    // This block is to limit the scope of num_columns, for GCC < 3.4.
+    // This block is to limit the scope of num_columns, at least for
+    // GCC < 3.4.
 
     // The expected number of columns in the congruence and generator
     // systems, if they are not empty.
@@ -527,15 +484,6 @@ PPL::Grid::OK(bool check_not_empty) const {
 	}
       }
 
-      // FIX gen_sys.f_p_r == size instead?
-      if (gen_sys.first_pending_row() == 0) {
-#ifndef NDEBUG
-	cerr << "Up-to-date generator system with all rows pending!"
-	     << endl;
-#endif
-	goto fail;
-      }
-
       // A non-empty system of generators describing a grid is valid iff
       // it contains a point.
       if (gen_sys.num_rows() > 0 && !gen_sys.has_points()) {
@@ -549,9 +497,6 @@ PPL::Grid::OK(bool check_not_empty) const {
 
       if (generators_are_minimized()) {
 	Generator_System gs = gen_sys;
-	// Leave `index_first_pending' as it is in `gs', because it is
-	// equal to the new number of rows in `gs'.
-	gs.erase_to_end(gen_sys.first_pending_row());
 
 	// A reduced generator system must be upper triangular.
 	if (upper_triangular(gs) == false) {
@@ -563,7 +508,6 @@ PPL::Grid::OK(bool check_not_empty) const {
 
 	// A reduced parameter system must be the same as a temporary
 	// reduced copy.
-	gs.unset_pending_rows();
 	Generator_System gs_copy = gs;
 	simplify(gs);
 	for (dimension_type row = 0; row < gs_copy.num_rows(); ++row) {
@@ -587,8 +531,9 @@ PPL::Grid::OK(bool check_not_empty) const {
 	  }
 	}
       }
-    }
-  }
+
+    } // if (congruences_are_up_to_date())
+  } // scope block
 
   if (congruences_are_up_to_date()) {
     // Check if the system of congruences is well-formed.
@@ -599,12 +544,11 @@ PPL::Grid::OK(bool check_not_empty) const {
       goto fail;
     }
 
-    // FIX update now that pending out
     Congruence_System cs = con_sys;
     Congruence_System cs_copy = cs;
-    Generator_System new_gen_sys(NECESSARILY_CLOSED);
+    Generator_System tem_gen_sys(NECESSARILY_CLOSED);
 
-    if (minimize(cs_copy, new_gen_sys)) {
+    if (minimize(cs_copy, tem_gen_sys)) {
       if (check_not_empty) {
 	// Want to know the satisfiability of the congruences.
 #ifndef NDEBUG
@@ -618,8 +562,6 @@ PPL::Grid::OK(bool check_not_empty) const {
     }
 
     if (congruences_are_minimized()) {
-      // FIX pending  (both below) check minimized part of gs copy
-
       // A reduced congruence system must be lower triangular.
       if (lower_triangular(con_sys) == false) {
 #ifndef NDEBUG
@@ -648,17 +590,7 @@ PPL::Grid::OK(bool check_not_empty) const {
     }
   }
 
-  // FIX
-  if (has_pending_generators()
-      && gen_sys.num_pending_rows() == 0) {
-#ifndef NDEBUG
-      cerr << "The polyhedron is declared to have pending generators, "
-	   << "but gen_sys has no pending rows!"
-	   << endl;
-#endif
-    }
-  else
-    return true;
+  return true;
 
  fail:
 #ifndef NDEBUG
@@ -828,10 +760,8 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
     return;
 #endif
 
-  // The congruences (possibly with pending rows) are required.
-  if (has_pending_generators())
-    process_pending_generators();
-  else if (marked_empty() == false
+  // The congruences are required.
+  if (marked_empty() == false
 	   && !congruences_are_up_to_date())
     update_congruences();
 
@@ -845,9 +775,6 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
   // NOTE: we have already checked for topology compatibility.
   //cgs.adjust_topology_and_space_dimension(topology(), space_dim); // FIX
   cgs.adjust_space_dimension(space_dim);
-
-  //const bool adding_pending = can_have_something_pending();
-  const bool adding_pending = false;
 
   // _Swap_ (instead of copying) the coefficients of `cgs' (which is
   // not a const).
@@ -864,19 +791,9 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
       std::swap(new_cg[j], old_cg[j]);
   }
 
-  if (adding_pending)
-    set_congruences_pending();
-  else {
-#if 0
-    // The newly added ones are not pending congruences.
-    con_sys.unset_pending_rows();
-    // They have been simply appended.
-    con_sys.set_sorted(false);
-#endif
-    // Congruences are not minimized and generators are not up-to-date.
-    clear_congruences_minimized();
-    clear_generators_up_to_date();
-  }
+  // Congruences are not minimized and generators are not up-to-date.
+  clear_congruences_minimized();
+  clear_generators_up_to_date();
   // Note: the congruence system may have become unsatisfiable, thus
   // we do not check for satisfiability.
   assert(OK());
@@ -998,9 +915,8 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
     gs.add_corresponding_closure_points();
 #endif
 
-  // The generators (possibly with pending rows) are required.
-  if ((has_pending_congruences() && !process_pending_congruences())
-      || (!generators_are_up_to_date() && !minimize())) {
+  // The generators are required.
+  if (generators_are_up_to_date() == false && minimize() == false) {
     // We have just discovered that `*this' is empty.
     // So `gs' must contain at least one point.
     if (!gs.has_points())
@@ -1009,14 +925,6 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
     normalize_divisors(gs);
     //std::swap(gen_sys, parameterize(gs, gs[0])); // FIX
     std::swap(gen_sys, gs);
-    if (gen_sys.num_pending_rows() > 0) {
-      // Even though `gs' has pending generators, since the congruences
-      // of the polyhedron are not up-to-date, the polyhedron cannot
-      // have pending generators. By integrating the pending part
-      // of `gen_sys' we may loose sortedness.
-      gen_sys.unset_pending_rows();
-      gen_sys.set_sorted(false);
-    }
     set_generators_up_to_date();
     clear_empty();
     assert(OK());
@@ -1045,8 +953,6 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
   parameterize(gs, gen_sys[row], false);
 #endif
 
-  const bool adding_pending = can_have_something_pending();
-
   // Here we do not require `gen_sys' to be sorted.
   // also, we _swap_ (instead of copying) the coefficients of `gs'
   // (which is not a const).
@@ -1068,18 +974,12 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
       std::swap(new_g[j], old_g[j]);
   }
 
-  if (adding_pending)
-    set_generators_pending();
-  else {
-    // The newly added ones are not pending generators.
-    gen_sys.unset_pending_rows();
-    // They have been simply appended.
-    gen_sys.set_sorted(false);
-    // Congruences are not up-to-date and generators are not minimized.
-    clear_congruences_up_to_date();
-    clear_generators_minimized();
-  }
-  //clear_congruences_minimized(); // FIX?
+  // The newly added rows have been simply appended.
+  gen_sys.set_sorted(false);
+  // Congruences are out of date and generators are not minimized.
+  clear_congruences_up_to_date();
+  clear_generators_minimized();
+
   assert(OK(true));
 }
 
@@ -1133,12 +1033,7 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
     gs.add_corresponding_closure_points();
 #endif
 
-  // `gs' has to be fully sorted, thus it cannot have pending rows.
-  if (gs.num_pending_rows() > 0) {
-    gs.unset_pending_rows();
-    gs.sort_rows();
-  }
-  else if (!gs.is_sorted())
+  if (!gs.is_sorted())
     gs.sort_rows();
 
   // Now adjusting dimensions (topology already adjusted).
@@ -1324,8 +1219,7 @@ PPL::Grid::grid_difference_assign(const Grid& y) {
   Grid new_polyhedron(topology(), x.space_dim, EMPTY);
 
   // FIX?
-  // Being lazy here is only harmful.  `minimize()' will process any
-  // pending congruences or generators.
+  // Being lazy here is only harmful.
   x.minimize();
   y.minimize();
 
@@ -1435,9 +1329,7 @@ PPL::Grid::affine_image(const Variable var,
   else {
     // The transformation is not invertible.
     // We need an up-to-date system of generators.
-    if (has_something_pending())
-      remove_pending_to_obtain_generators();
-    else if (!generators_are_up_to_date())
+    if (!generators_are_up_to_date())
       minimize();
     if (!marked_empty()) {
       // Generator_System::affine_image() requires the third argument
@@ -1513,9 +1405,7 @@ affine_preimage(const Variable var,
   else {
     // The transformation is not invertible.
     // We need an up-to-date system of congruences.
-    if (has_something_pending())
-      remove_pending_to_obtain_congruences();
-    else if (!congruences_are_up_to_date())
+    if (!congruences_are_up_to_date())
       minimize();
     // Congruence_System::affine_preimage() requires the third argument
     // to be a positive Coefficient.
@@ -1775,16 +1665,13 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
 
   // If either one of `x' or `y' is empty, the result is empty too.
   if (x.marked_empty() || y.marked_empty()
-      || (x.has_pending_congruences() && !x.process_pending_congruences())
       || (!x.generators_are_up_to_date() && !x.update_generators())
-      || (y.has_pending_congruences() && !y.process_pending_congruences())
       || (!y.generators_are_up_to_date() && !y.update_generators())) {
     x.set_empty();
     return;
   }
 
-  // At this point both generator systems are up-to-date,
-  // possibly containing pending generators.
+  // At this point both generator systems are up-to-date.
   Generator_System gs = y.gen_sys;
   dimension_type gs_num_rows = gs.num_rows();
 
@@ -1848,7 +1735,6 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
   // whose role can be played by the closure points.
   // These have been previously moved to the end of `gs'.
   gs.erase_to_end(gs_num_rows);
-  gs.unset_pending_rows();
 
   // `gs' may now have no rows.
   // Namely, this happens when `y' was the singleton polyhedron
@@ -1857,23 +1743,16 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
   if (gs_num_rows == 0)
     return;
 
-  // If the polyhedron can have something pending, we add `gs'
-  // to `gen_sys' as pending rows
-  if (x.can_have_something_pending()) {
-    x.gen_sys.add_pending_rows(gs);
-    x.set_generators_pending();
-  }
-  // Otherwise, the two systems are merged.
-  // `Linear_System::merge_rows_assign()' requires both systems to be sorted.
-  else {
-    if (!x.gen_sys.is_sorted())
-      x.gen_sys.sort_rows();
-    gs.sort_rows();
-    x.gen_sys.merge_rows_assign(gs);
-    // Only the system of generators is up-to-date.
-    x.clear_congruences_up_to_date();
-    x.clear_generators_minimized();
-  }
+  // The two systems are merged.  `Linear_System::merge_rows_assign()'
+  // requires both systems to be sorted.
+  if (x.gen_sys.is_sorted() == false)
+    x.gen_sys.sort_rows();
+  gs.sort_rows();
+  x.gen_sys.merge_rows_assign(gs);
+  // Only the system of generators is up-to-date.
+  x.clear_congruences_up_to_date();
+  x.clear_generators_minimized();
+
   assert(x.OK(true) && y.OK(true));
 }
 
@@ -1887,17 +1766,9 @@ PPL::Grid::topological_closure_assign() {
     return;
 
   // The computation can be done using congruences or generators.
-  // If we use congruences, we will change them, so that having pending
-  // congruences would be useless. If we use generators, we add generators,
-  // so that having pending generators still makes sense.
 
-  // Process any pending congruences.
-  if (has_pending_congruences() && !process_pending_congruences())
-    return;
-
-  // Use congruences only if they are available and
-  // there are no pending generators.
-  if (!has_pending_generators() && congruences_are_up_to_date()) {
+  // Use congruences only if they are available.
+  if (congruences_are_up_to_date()) {
     const dimension_type eps_index = space_dim + 1;
     bool changed = false;
     // Transform all strict inequalities into non-strict ones.
@@ -1924,18 +1795,17 @@ PPL::Grid::topological_closure_assign() {
     // Here we use generators, possibly keeping congruences.
     assert(generators_are_up_to_date());
     // Add the corresponding point to each closure point.
+    // FIX adds pending
     gen_sys.add_corresponding_points();
-    if (can_have_something_pending())
-      set_generators_pending();
-    else {
-      // We cannot have pending generators; this also implies
-      // that generators may have lost their sortedness.
-      gen_sys.unset_pending_rows();
-      gen_sys.set_sorted(false);
-      // Congruences are not up-to-date and generators are not minimized.
-      clear_congruences_up_to_date();
-      clear_generators_minimized();
-    }
+#if 0
+    // We cannot have pending generators; this also implies
+    // that generators may have lost their sortedness.
+    gen_sys.unset_pending_rows();
+#endif
+    gen_sys.set_sorted(false);
+    // Congruences are not up-to-date and generators are not minimized.
+    clear_congruences_up_to_date();
+    clear_generators_minimized();
   }
   assert(OK());
 }

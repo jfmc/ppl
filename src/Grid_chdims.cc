@@ -53,7 +53,6 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
     }
   }
 
-  bool has_pending = gs.first_pending_row() < gs.num_rows();
   gs.add_zero_rows_and_columns(dims, dims,
 			       Linear_Row::Flags(NECESSARILY_CLOSED,
 						 Linear_Row::LINE_OR_EQUALITY));
@@ -64,8 +63,6 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
     Generator& gen = gs[row_num];
     gen[col_num] = 1;
   }
-  if (has_pending == false)
-    gs.unset_pending_rows(); // FIX OK? (~ will the gs appear minimized)?
 }
 
 // Used for add_space_dimensions_and_project.
@@ -80,9 +77,6 @@ PPL::Grid::add_space_dimensions(Generator_System& gs,
 
   bool universe = is_universe();
 
-#if 0 // FIX pending
-  bool has_pending = cgs.first_pending_row() < cgs.num_rows();
-#endif
   dimension_type num_cols = cgs.num_columns() - 1;
   cgs.add_zero_rows_and_columns(dims, dims, Row::Flags());
   // Move the moduli.
@@ -103,10 +97,6 @@ PPL::Grid::add_space_dimensions(Generator_System& gs,
     cg.set_is_equality();
     cg[col_num] = 1;
   }
-#if 0 // FIX pending
-  if (has_pending == false)
-    cgs.unset_pending_rows(); // FIX OK? (~ will the cgs appear minimized)?
-#endif
 
   num_cols = gs.num_columns();
   gs.add_zero_columns(dims);
@@ -131,8 +121,7 @@ PPL::Grid::add_space_dimensions(Generator_System& gs,
       gen[row] = 1;
       gen.set_is_virtual();
     }
-    if (has_pending_generators() == false)
-      gs.unset_pending_rows();
+    gs.unset_pending_rows();
   }
 }
 
@@ -178,8 +167,6 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
   if (congruences_are_up_to_date()) {
     if (generators_are_up_to_date()) {
       // Adds rows and/or columns to both matrices.
-      // `add_space_dimensions' correctly handles pending congruences
-      // or generators.
       add_space_dimensions(con_sys, gen_sys, m);
       clear_congruences_minimized();
       clear_generators_minimized();
@@ -217,7 +204,7 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
       Generator& gen = gen_sys[row_num];
       gen[col_num] = 1;
     }
-    // The grid does not support pending generators.
+    // The grid does not support pending rows.
     gen_sys.unset_pending_rows();
     clear_generators_minimized();
     // FIX if gens are min add v rows
@@ -269,8 +256,6 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
   if (congruences_are_up_to_date())
     if (generators_are_up_to_date())
       // Adds rows and/or columns to both matrices.
-      // `add_space_dimensions' correctly handles pending constraints
-      // or generators.
       add_space_dimensions(gen_sys, con_sys, m);
     else {
       // Only congruences are up-to-date so modify only them.
@@ -296,11 +281,6 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
 	cg[col_num] = 1;
       }
 
-#if 0 // FIX pending
-      // FIX this is referring to something else
-      // The grid does not support pending congruences.
-      con_sys.unset_pending_rows();
-#endif
       clear_congruences_minimized();
     }
   else {
@@ -330,8 +310,7 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
 	gen[row] = 1;
 	gen.set_is_virtual();
       }
-      if (has_pending_generators() == false)
-	gen_sys.unset_pending_rows();
+      gen_sys.unset_pending_rows();
     }
   }
   // Now update the space dimension.
@@ -413,28 +392,8 @@ PPL::Grid::concatenate_assign(const Grid& y) {
       std::swap(cg_old[j], cg_new[space_dim + j]);
   }
 
-#if 0 // FIX pending
-  if (can_have_something_pending()) {
-    // If `*this' can support pending congruences, then, since we have
-    // resized the system of congruences, we must also add to the
-    // generator system those lines corresponding to the newly added
-    // dimensions, because the non-pending parts of `con_sys' and
-    // `gen_sys' must still be a DD pair in minimal form.
-    gen_sys.add_rows_and_columns(added_columns);
-    gen_sys.set_sorted(false);
-    // The added lines are not pending.
-    gen_sys.unset_pending_rows();
-    // Since `added_rows > 0', we now have pending constraints.
-    set_congruences_pending();
-  }
-  else {
-      // The grid cannot have pending congruences.
-      con_sys.unset_pending_rows();
-#endif
-  {
-    clear_congruences_minimized();
-    clear_generators_up_to_date();
-  }
+  clear_congruences_minimized();
+  clear_generators_up_to_date();
   // Update space dimension.
   space_dim += added_columns;
 
@@ -462,12 +421,10 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
 
   const dimension_type new_space_dim = space_dim - to_be_removed.size();
 
-  // We need updated generators; note that keeping pending generators
-  // is useless because congruences will be dropped anyway.
   if (marked_empty()
-      || (has_something_pending() && !remove_pending_to_obtain_generators())
-      || (!generators_are_up_to_date() && !update_generators())) {
-    // FIX?
+      || (generators_are_up_to_date() == false
+	  && update_generators() == false)) {
+    // FIX?  mark empty? keep empty con_sys?
     con_sys.clear();
     gen_sys.clear();
     // Update the space dimension.
@@ -538,15 +495,13 @@ PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
     return;
   }
 
-  // We need updated generators; note that keeping pending generators
-  // is useless because the congruences will be dropped anyway.
   if (marked_empty()
-      || (has_something_pending() && !remove_pending_to_obtain_generators())
-      || (!generators_are_up_to_date() && !update_generators())) {
+      || (generators_are_up_to_date() == false
+	  && update_generators() == false)) {
     // Removing dimensions from the empty grid just updates the space
     // dimension.
     space_dim = new_dimension;
-    // FIX?
+    // FIX?  mark empty? keep empty con_sys?
     con_sys.clear();
     gen_sys.clear();
     assert(OK());
