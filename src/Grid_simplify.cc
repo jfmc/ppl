@@ -349,7 +349,7 @@ Grid::simplify(Generator_System& sys) {
 #endif
   }
 
-  sys.set_index_first_pending_row(sys.num_rows());
+  sys.unset_pending_rows();
 
   // FIX is this psbl after parameterizing?
   //assert(sys.OK());
