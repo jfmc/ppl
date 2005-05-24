@@ -2132,6 +2132,8 @@ std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Grid& gr) {
   if (gr.is_empty())
     s << "false";
+  else if (gr.is_universe())
+    s << "true";
   else
     // FIX ph only prints min'd constraints
     s << gr.minimized_congruences() << std::endl
