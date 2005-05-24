@@ -49,9 +49,9 @@ PPL::Grid::Grid(dimension_type num_dimensions,
   if (kind == EMPTY)
     status.set_empty();
   space_dim = num_dimensions;
+  con_sys.adjust_space_dimension(num_dimensions);
   if (num_dimensions > 0) {
     add_low_level_congruences(con_sys);
-    con_sys.adjust_space_dimension(num_dimensions);
     // FIX where will gen_sys space dim be adjusted?
     if (kind == UNIVERSE) {
       // Initialise both systems to universe representations.
@@ -936,9 +936,7 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
     return false;
   }
 
-  // Adjust `cgs' to the right topology and space dimension.
-  // NOTE: we already checked for topology compatibility.
-  //cgs.adjust_topology_and_space_dimension(topology(), space_dim); // FIX
+  // Adjust `cgs' to the current space dimension.
   cgs.adjust_space_dimension(space_dim); // FIX
 
   if (add_and_minimize(con_sys, gen_sys, cgs)) {
