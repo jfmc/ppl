@@ -34,13 +34,13 @@ test1() {
   Variable A(0);
   Variable B(1);
 
-  Grid gr(2);
+  Grid gr(2, Grid::EMPTY);
   gr.add_generator(point(-A));
 
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(2, Grid::UNIVERSE);
+  Grid known_gr(2);
   known_gr.add_congruence((A == -1) / 0);
   known_gr.add_congruence((B == 0) / 0);
 

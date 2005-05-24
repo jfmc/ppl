@@ -245,8 +245,8 @@ void
 test6() {
   nout << "test6:" << endl;
 
-  Grid gr1(0, Grid::UNIVERSE);
-  Grid gr2(0, Grid::UNIVERSE);
+  Grid gr1(0);
+  Grid gr2(0);
 
   if (find_variation(gr1) || find_variation(gr2))
     exit(1);
@@ -256,7 +256,7 @@ test6() {
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(0, Grid::UNIVERSE);
+  Grid known_gr(0);
 
   if (find_variation(known_gr))
     exit(1);

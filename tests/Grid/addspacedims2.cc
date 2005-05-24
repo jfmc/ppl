@@ -108,7 +108,7 @@ void
 test3() {
   nout << "test3:" << endl;
 
-  Grid gr(1, Grid::UNIVERSE);
+  Grid gr(1);
 
   if (find_variation(gr))
     exit(1);
@@ -151,7 +151,7 @@ void
 test4() {
   nout << "test4:" << endl;
 
-  Grid gr(1, Grid::UNIVERSE);
+  Grid gr(1);
 
   if (find_variation(gr))
     exit(1);
@@ -170,7 +170,7 @@ test4() {
   known_gs.insert(point(A));
   known_gs.insert(point(2*A));
 
-  Grid known_gr(4);
+  Grid known_gr(4, Grid::EMPTY);
   known_gr.add_generators(known_gs);
 
   if (find_variation(known_gr))

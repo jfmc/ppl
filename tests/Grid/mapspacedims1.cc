@@ -50,7 +50,7 @@ test1() {
 
   gr.map_space_dimensions(function);
 
-  Grid known_gr;
+  Grid known_gr(0, Grid::EMPTY);
 
   if (gr == known_gr)
     return;

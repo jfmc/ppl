@@ -33,7 +33,7 @@ void
 test1() {
   nout << "test1:" << endl;
 
-  Grid gr(1, Grid::UNIVERSE);
+  Grid gr(1);
 
   if (gr.is_universe())
     return;
@@ -49,7 +49,7 @@ void
 test2() {
   nout << "test2:" << endl;
 
-  Grid gr(6, Grid::UNIVERSE);
+  Grid gr(6);
 
   if (gr.is_universe())
     return;
@@ -65,7 +65,7 @@ void
 test3() {
   nout << "test3:" << endl;
 
-  Grid gr(0, Grid::UNIVERSE);
+  Grid gr(0);
 
   if (gr.is_universe())
     return;

@@ -123,7 +123,7 @@ test3() {
   gs.insert(point(3*A + 4*B));
   gs.insert(point(9*A + 0*B));
 
-  Grid gr(2);
+  Grid gr(2, Grid::EMPTY);
 
   gr.add_generators_and_minimize(gs);
 
@@ -162,7 +162,7 @@ test4() {
   gs.insert(point(4*A + 0*B + 0*C, 3));
   gs.insert(point(4*A -   B +   C, 3));
 
-  Grid gr(3);
+  Grid gr(3, Grid::EMPTY);
 
   gr.add_generators_and_minimize(gs);
 
@@ -200,7 +200,7 @@ test5() {
   gs.insert( line( 3*A + 2*B -  4*C));
   gs.insert( line( 0*A + 0*B -  2*C));
 
-  Grid gr(3);
+  Grid gr(3, Grid::EMPTY);
 
   gr.add_generators_and_minimize(gs);
 
@@ -242,7 +242,7 @@ test6() {
   gs.insert(point(-1*A + 9*B +  7*C, 2));
   gs.insert( line( 0*A + 0*B -  2*C));
 
-  Grid gr(3);
+  Grid gr(3, Grid::EMPTY);
 
   gr.add_generators_and_minimize(gs);
 
@@ -284,7 +284,7 @@ test7() {
   gs.insert( line( 2*A +   B - 2*C));
   gs.insert(point(-1*A + 9*B + 7*C, 2));
 
-  Grid gr(3);
+  Grid gr(3, Grid::EMPTY);
 
   gr.add_generators_and_minimize(gs);
 
@@ -327,7 +327,7 @@ test8() {
   gs.insert(point( 3*A + 6*B + 0*C, 4));
   gs.insert(point( 3*A +   B + 2*C, 4));
 
-  Grid gr(3);
+  Grid gr(3, Grid::EMPTY);
 
   gr.add_generators_and_minimize(gs);
 
@@ -370,7 +370,7 @@ test9() {
   gs.insert( line(3*A + 2*B + 0*C));
   gs.insert( line(0*A + 0*B +   C));
 
-  Grid gr(3);
+  Grid gr(3, Grid::EMPTY);
 
   gr.add_generators_and_minimize(gs);
 
@@ -414,7 +414,7 @@ test10() {
   gs.insert(point(3*A + 2*B +   C + 2*D));
   gs.insert(point(9*A + 0*B + 4*C +   D));
 
-  Grid gr(4);
+  Grid gr(4, Grid::EMPTY);
 
   gr.add_generators_and_minimize(gs);
 
@@ -450,12 +450,12 @@ void
 test11() {
   nout << "test11:" << endl;
 
-  Grid gr(1);
+  Grid gr(1, Grid::EMPTY);
 
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(1);
+  Grid known_gr(1, Grid::EMPTY);
 
   if (find_variation(known_gr))
     exit(1);
@@ -476,12 +476,12 @@ void
 test12() {
   nout << "test12:" << endl;
 
-  Grid gr(112);
+  Grid gr(112, Grid::EMPTY);
 
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(112);
+  Grid known_gr(112, Grid::EMPTY);
 
   if (find_variation(known_gr))
     exit(1);
@@ -511,7 +511,7 @@ test13() {
   gs.insert( line( 29*A +  23*B + 111*C));
   gs.insert(point(117*A + 200*B +  88*C, 33));
 
-  Grid gr(3);
+  Grid gr(3, Grid::EMPTY);
 
   gr.add_generators_and_minimize(gs);
 
@@ -554,7 +554,7 @@ test14() {
   gs.insert(point( 2394*A + 7273*B +    0*C,   30));
   gs.insert(point(    0*A +    0*B + 8888*C, 7302));
 
-  Grid gr(3);
+  Grid gr(3, Grid::EMPTY);
 
   gr.add_generators_and_minimize(gs);
 
@@ -618,7 +618,7 @@ test15() {
   gs.insert( line(0*A + 2*B + 0*C));
   gs.insert( line(0*A + 4*B + 0*C));
 
-  Grid gr(3);
+  Grid gr(3, Grid::EMPTY);
 
   gr.add_generators_and_minimize(gs);
 
@@ -650,12 +650,12 @@ void
 test16() {
   nout << "test16:" << endl;
 
-  Grid gr(1, Grid::UNIVERSE);
+  Grid gr(1);
 
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(1, Grid::UNIVERSE);
+  Grid known_gr(1);
 
   if (find_variation(known_gr))
     exit(1);
@@ -676,12 +676,12 @@ void
 test17() {
   nout << "test17:" << endl;
 
-  Grid gr(21, Grid::UNIVERSE);
+  Grid gr(21);
 
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(21, Grid::UNIVERSE);
+  Grid known_gr(21);
 
   if (find_variation(known_gr))
     exit(1);
@@ -702,12 +702,12 @@ void
 test18() {
   nout << "test18:" << endl;
 
-  Grid gr(0, Grid::UNIVERSE);
+  Grid gr(0);
 
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(0, Grid::UNIVERSE);
+  Grid known_gr(0);
 
   if (find_variation(known_gr))
     exit(1);

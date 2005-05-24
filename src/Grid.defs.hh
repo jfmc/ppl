@@ -360,7 +360,7 @@ public:
     Specifies whether the universe or the empty grid has to be built.
   */
   Grid(dimension_type num_dimensions = 0,
-       const Degenerate_Kind kind = EMPTY);
+       const Degenerate_Kind kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
   Grid(const Grid& y);
