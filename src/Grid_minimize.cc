@@ -195,7 +195,6 @@ bool
 Grid::add_and_minimize(Congruence_System& source1,
 		       Linear_System& dest,
 		       const Congruence_System& source2) {
-  std::cout << "add_and_minimize cgs to gs (5 param)" << std::endl;
   // `source1' and `source2' must have the same number of columns
   // to be merged.
   assert(source1.num_columns() == source2.num_columns());
@@ -276,8 +275,6 @@ bool
 Grid::add_and_minimize(Generator_System& source1,
 		       Congruence_System& dest,
 		       const Generator_System& csource2) {
-  std::cout << "add_and_minimize gs to cgs (4 param)" << std::endl;
-
   // `source1' and `csource2' must contain elements.
   assert(source1.num_rows() > 0 && csource2.num_rows() > 0);
   // `source1' and `csource2' must have the same number of columns
