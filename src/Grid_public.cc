@@ -693,6 +693,7 @@ PPL::Grid::add_congruence(const Congruence& cg) {
   con_sys.insert(cg);
 
   clear_congruences_minimized();
+  set_congruences_up_to_date();
   clear_generators_up_to_date();
 
   // Note: the congruence system may have become unsatisfiable, thus
@@ -707,14 +708,11 @@ PPL::Grid::add_congruence_and_minimize(const Congruence& cg) {
   return add_recycled_congruences_and_minimize(cgs);
 }
 
-#if 0
 void
 PPL::Grid::add_generator(const Generator& g) {
   // Topology-compatibility check.
   if (g.is_closure_point())
     throw_topology_incompatible("add_generator(g)", "g", g);
-  // FIX convert nnc g to nc?
-  assert(g.is_necessarily_closed());
 
   // The dimension of `g' must be at most space_dim.
   const dimension_type g_space_dim = g.space_dimension();
@@ -736,25 +734,10 @@ PPL::Grid::add_generator(const Generator& g) {
 	  && (update_generators() == false))) {
     // Here the grid is empty: the specification says we can only
     // insert a point.
-    if (!g.is_point())
+    if (g.is_point() == false)
       throw_invalid_generator("add_generator(g)", "g");
-    if (g.is_necessarily_closed() || !is_necessarily_closed()) {
+    if (g.is_necessarily_closed())
       gen_sys.insert(g);
-      // Since `gen_sys' was empty, after inserting `g' we have to resize
-      // the system of generators to have the right dimension.
-      gen_sys.adjust_topology_and_space_dimension(topology(), space_dim);
-      if (!is_necessarily_closed()) {
-	// In the NNC topology, each point has to be matched by
-	// a corresponding closure point:
-	// turn the just inserted point into the corresponding
-	// (normalized) closure point.
-	Generator& cp = gen_sys[gen_sys.num_rows() - 1];
-	cp[space_dim + 1] = 0;
-	cp.normalize();
-	// Re-insert the point (which is already normalized).
-	gen_sys.insert(g);
-      }
-    }
     else {
       // Note: here we have a _legal_ topology mismatch,
       // because `g' is NOT a closure point (it is a point!)
@@ -763,41 +746,21 @@ PPL::Grid::add_generator(const Generator& g) {
       // Thus, we insert a "topology corrected" copy of `g'.
       const Linear_Expression nc_expr = Linear_Expression(g);
       gen_sys.insert(Generator::point(nc_expr, g.divisor()));
-      // Since `gen_sys' was empty, after inserting `g' we have to resize
-      // the system of generators to have the right dimension.
-      gen_sys.adjust_topology_and_space_dimension(topology(), space_dim);
     }
-    // No longer empty, generators up-to-date and minimized.
+    // Since `gen_sys' was empty, resize the system of generators to
+    // the right dimension.
+    gen_sys.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
+						space_dim);
     clear_empty();
-    set_generators_minimized();
   }
   else {
     assert(generators_are_up_to_date());
-    const bool has_pending = can_have_something_pending();
-    if (g.is_necessarily_closed() || !is_necessarily_closed()) {
+    if (g.is_necessarily_closed())
       // Since `gen_sys' is not empty, the topology and space dimension
       // of the inserted generator are automatically adjusted.
-      if (has_pending)
-	gen_sys.insert_pending(g);
-      else
-	gen_sys.insert(g);
-      if (!is_necessarily_closed() && g.is_point()) {
-	// In the NNC topology, each point has to be matched by
-	// a corresponding closure point:
-	// turn the just inserted point into the corresponding
-	// (normalized) closure point.
-	Generator& cp = gen_sys[gen_sys.num_rows() - 1];
-	cp[space_dim + 1] = 0;
-	cp.normalize();
-	// Re-insert the point (which is already normalized).
-	if (has_pending)
-	  gen_sys.insert_pending(g);
-	else
-	  gen_sys.insert(g);
-      }
-    }
+      gen_sys.insert(g);
     else {
-      assert(!g.is_closure_point());
+      assert(g.is_closure_point() == false);
       // Note: here we have a _legal_ topology mismatch, because
       // `g' is NOT a closure point.
       // However, by barely invoking `gen_sys.insert(g)' we would
@@ -806,40 +769,28 @@ PPL::Grid::add_generator(const Generator& g) {
       const Linear_Expression nc_expr = Linear_Expression(g);
       switch (g.type()) {
       case Generator::LINE:
-	if (has_pending)
-	  gen_sys.insert_pending(Generator::line(nc_expr));
-	else
-	  gen_sys.insert(Generator::line(nc_expr));
+	gen_sys.insert(Generator::line(nc_expr));
 	break;
       case Generator::RAY:
-	if (has_pending)
-	  gen_sys.insert_pending(Generator::ray(nc_expr));
-	else
-	  gen_sys.insert(Generator::ray(nc_expr));
+	// FIX ok to insert ray?
+	gen_sys.insert(Generator::ray(nc_expr));
 	break;
       case Generator::POINT:
-	if (has_pending)
-	  gen_sys.insert_pending(Generator::point(nc_expr, g.divisor()));
-	else
-	  gen_sys.insert(Generator::point(nc_expr, g.divisor()));
+	gen_sys.insert(Generator::point(nc_expr, g.divisor()));
 	break;
       default:
 	throw_runtime_error("add_generator(const Generator& g)");
       }
     }
 
-    if (has_pending)
-      set_generators_pending();
-    else {
-      // After adding the new generator,
-      // congruences are no longer up-to-date.
-      clear_generators_minimized();
-      clear_congruences_up_to_date();
-    }
+    // With the added generator, congruences are out of date.
+    clear_congruences_up_to_date();
   }
+  clear_generators_minimized();
+  set_generators_up_to_date();
   assert(OK());
 }
-#endif
+
 bool
 PPL::Grid::add_generator_and_minimize(const Generator& g) {
   // TODO: this is just an executable specification.
