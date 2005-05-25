@@ -1,6 +1,9 @@
 Enhancements for PPL 0.8 or later versions
 ==========================================
 
+- The documentation for the SWI-Prolog interface claims that initialization
+  of the library is automatic: some tests conducted with  SWI-Prolog 5.4.4
+  seem to indicate otherwise.
 - The new mechanism used to build the ppl_install.hh header file
   depends on the availability of PERL.  Consider whether this
   is a new requirement we impose to the user or not (it certainly
