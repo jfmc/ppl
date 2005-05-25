@@ -507,12 +507,11 @@ PPL::Grid::OK(bool check_not_empty) const {
 
 	// A reduced parameter system must be the same as a temporary
 	// reduced copy.
-	Generator_System gs_copy = gs;
 	simplify(gs);
-	for (dimension_type row = 0; row < gs_copy.num_rows(); ++row) {
+	for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
 	  Generator& g = gs[row];
-	  Generator& g_copy = gs_copy[row];
-	  dimension_type col = gs_copy.num_columns();
+	  const Generator& g_copy = gen_sys[row];
+	  dimension_type col = gen_sys.num_columns();
 	  if (g.type() != g_copy.type())
 	    goto message_fail;
 	  while (col--) {
@@ -520,9 +519,9 @@ PPL::Grid::OK(bool check_not_empty) const {
 	      continue;
 	  message_fail:
 #ifndef NDEBUG
-	    cerr << "Parameters are declared minimized, but they change under reduction.\n"
-		 << "Here is the parameter system:\n";
-	    gs_copy.ascii_dump(cerr);
+	    cerr << "Generators are declared minimized, but they change under reduction.\n"
+		 << "Here is the generator system:\n";
+	    gen_sys.ascii_dump(cerr);
 	    cerr << "and here is the minimized form of the temporary copy:\n";
 	    gs.ascii_dump(cerr);
 #endif
@@ -580,7 +579,7 @@ PPL::Grid::OK(bool check_not_empty) const {
 	       << endl
 	       << "Here is the minimized form of the congruence system:"
 	       << endl;
-	  con_sys.ascii_dump(cerr);
+	  cs_copy.ascii_dump(cerr);
 	  cerr << endl;
 #endif
 	  goto fail;
