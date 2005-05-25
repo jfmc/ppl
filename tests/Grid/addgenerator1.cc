@@ -1,4 +1,4 @@
-/* Test Grid::add_generator().
+/* Test Grid::add_generator*().
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -200,6 +200,41 @@ test5() {
   exit(1);
 }
 
+// add_generator_and_minimize
+
+void
+test6() {
+  nout << "test6:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+
+  Grid gr(2, Grid::EMPTY);
+  gr.add_generator(point());
+  gr.add_generator(point(2*A + 2*B));
+  gr.add_generator(point(8*A + 8*B));
+
+  gr.add_generator_and_minimize(line(A));
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(2);
+  known_gr.add_congruence((B %= 0) / 2);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -211,6 +246,7 @@ main() TRY {
   test3();
   test4();
   test5();
+  test6();
 
   return 0;
 }
