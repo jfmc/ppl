@@ -39,13 +39,16 @@ if HAVE_SWI_PROLOG
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
--I$(top_builddir)/src \
 -I$(top_srcdir)/Watchdog \
+-I$(top_builddir)/src \
 @extra_includes@
 
 pkglib_LTLIBRARIES = libppl_swiprolog.la
 libppl_swiprolog_la_SOURCES = ppl_swiprolog.cc
-libppl_swiprolog_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
+libppl_swiprolog_la_LIBADD = \
+$(top_builddir)/src/libppl.la \
+$(top_builddir)/Watchdog/libpwl.la \
+@extra_libraries@
 libppl_swiprolog_la_LDFLAGS = -module -avoid-version
 
 bin_PROGRAMS = ppl_pl
