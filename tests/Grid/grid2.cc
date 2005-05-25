@@ -120,7 +120,7 @@ test3() {
   Congruence_System cgs;
   cgs.insert((A %= 0) / 3);
 
-  Grid gr(1, Grid::EMPTY);
+  Grid gr(1);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -155,7 +155,7 @@ test4() {
   Congruence_System cgs;
   cgs.insert((A %= 7) / 3);
 
-  Grid gr(1, Grid::EMPTY);
+  Grid gr(1);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -191,16 +191,17 @@ test5() {
   Congruence_System cgs;
   cgs.insert((A - B %= 0) / 3);
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
     exit(1);
 
   Generator_System known_gs;
-  known_gs.insert(point(0*A + 0*B));
-  known_gs.insert(point(A + B));
+  known_gs.insert(point());
+  known_gs.insert(point(3*A));
   known_gs.insert(point(3*B));
+  known_gs.insert(line(A + B));
 
   Grid known_gr(known_gs);
 
@@ -232,7 +233,7 @@ test6() {
   cgs.insert(  A + B %= 0);
   cgs.insert(  A + B + C %= 0);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -274,7 +275,7 @@ test7() {
   cgs.insert(-6*A +   B + 0*C %= -8);
   cgs.insert( 3*A + 2*B +   C %= -4);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -300,8 +301,8 @@ test7() {
   exit(1);
 }
 
-/* Adding a false equality (cong_test2 from Chiara
-   conversion_test2.cc).  */
+// Adding a false equality (cong_test2 from Chiara
+// conversion_test2.cc).
 
 void
 test8() {
@@ -315,7 +316,7 @@ test8() {
   cgs.insert((0*A %= -1) / 0);
   cgs.insert((  A %= -1) / 2);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -351,7 +352,7 @@ test9() {
   cgs.insert((        B %= 0) / 2);
   cgs.insert((  A +   B +   C %= 0) / 2);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -393,7 +394,7 @@ test10() {
   cgs.insert((        B + 3*C %= -2) / 3);
   cgs.insert((      2*B + 3*C %= -2) / 3);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -436,7 +437,7 @@ test11() {
   cgs.insert((          3*C %= -4) / 5);
   cgs.insert((    3*B +   C %= -3) / 5);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -478,7 +479,7 @@ test12() {
   cgs.insert((      B + 2*C %=  0) / 5);
   cgs.insert((    2*B + 3*C %= -3) / 5);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
@@ -505,7 +506,7 @@ test12() {
   exit(1);
 }
 
-// An empty grid constructed with congruences.
+// An empty grid constructed from congruences.
 
 void
 test13() {
@@ -519,7 +520,7 @@ test13() {
   cgs.insert((C %= 2) / 5);
   cgs.insert((C %= 3) / 5);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3);
   gr.add_congruences_and_minimize(cgs);
 
   if (find_variation(gr))
