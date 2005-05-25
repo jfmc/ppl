@@ -59,7 +59,8 @@ join1 \
 join2 \
 concatenate1 \
 mapspacedims1 \
-addgenerator1
+addgenerator1 \
+addcongruence1
 
 #
 # Sources for the tests
@@ -73,6 +74,7 @@ grid1_SOURCES = grid1.cc
 grid2_SOURCES = grid2.cc
 isuniverse1_SOURCES = isuniverse1.cc
 addgenerator1_SOURCES = addgenerator1.cc
+addcongruence1_SOURCES = addcongruence1.cc
 addspacedims1_SOURCES = addspacedims1.cc
 addspacedims2_SOURCES = addspacedims2.cc
 removespacedims1_SOURCES = removespacedims1.cc
