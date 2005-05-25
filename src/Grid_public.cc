@@ -50,15 +50,13 @@ PPL::Grid::Grid(dimension_type num_dimensions,
     status.set_empty();
   space_dim = num_dimensions;
   con_sys.adjust_space_dimension(num_dimensions);
+  // FIX where will gen_sys space dim be adjusted?
   if (num_dimensions > 0) {
     add_low_level_congruences(con_sys);
-    // FIX where will gen_sys space dim be adjusted?
     if (kind == UNIVERSE) {
       // Initialise both systems to universe representations.
       set_congruences_minimized();
       set_congruences_up_to_date();
-      // FIX add gs::adjust_space_dimension?
-      //gen_sys.adjust_space_dimension(num_dimensions);
       gen_sys.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
 						  num_dimensions);
       set_generators_minimized();
@@ -93,6 +91,7 @@ PPL::Grid::Grid(const Grid& y)
     gen_sys(y.gen_sys.topology()),
     status(y.status),
     space_dim(y.space_dim) {
+  // FIX check con,gen_sys dims correctly handled if out of date
   if (y.congruences_are_up_to_date())
     con_sys = y.con_sys;
   if (y.generators_are_up_to_date())
@@ -544,8 +543,7 @@ PPL::Grid::OK(bool check_not_empty) const {
       goto fail;
     }
 
-    Congruence_System cs = con_sys;
-    Congruence_System cs_copy = cs;
+    Congruence_System cs_copy = con_sys;
     Generator_System tem_gen_sys(NECESSARILY_CLOSED);
 
     if (minimize(cs_copy, tem_gen_sys)) {
@@ -575,14 +573,14 @@ PPL::Grid::OK(bool check_not_empty) const {
       // minimized system `cs_copy'.
       for (dimension_type row = 0; row < cs_copy.num_rows(); ++row)
 	for (dimension_type col = 0; col < cs_copy.num_columns(); ++col) {
-	  if (cs[row][col] == cs_copy[row][col])
+	  if (con_sys[row][col] == cs_copy[row][col])
 	    continue;
 #ifndef NDEBUG
-	  cerr << "Generators are declared minimized, but they change under reduction!"
+	  cerr << "Congruences are declared minimized, but they change under reduction!"
 	       << endl
-	       << "Here is the minimized form of the generator system:"
+	       << "Here is the minimized form of the congruence system:"
 	       << endl;
-	  cs.ascii_dump(cerr);
+	  con_sys.ascii_dump(cerr);
 	  cerr << endl;
 #endif
 	  goto fail;
@@ -755,29 +753,23 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
     return;
   }
 
-#if 0
-  if (marked_empty())
+  if (marked_empty()) {
+    assert(OK());
     return;
-#endif
+  }
 
   // The congruences are required.
-  if (marked_empty() == false
-	   && !congruences_are_up_to_date())
-    update_congruences();
-
-  // FIX Added for Grid.
-  if (marked_empty()) {
-    clear_empty();
-    set_congruences_up_to_date();
+  if (congruences_are_up_to_date() == false && update_congruences()) {
+    set_empty();
+    assert(OK());
+    return;
   }
 
   // Adjust `cgs' to the right topology and space dimension.
-  // NOTE: we have already checked for topology compatibility.
-  //cgs.adjust_topology_and_space_dimension(topology(), space_dim); // FIX
   cgs.adjust_space_dimension(space_dim);
 
-  // _Swap_ (instead of copying) the coefficients of `cgs' (which is
-  // not a const).
+  // Swap (instead of copying) the coefficients of `cgs' (which is
+  // writable).
   const dimension_type old_num_rows = con_sys.num_rows();
   const dimension_type cgs_num_rows = cgs.num_rows();
   const dimension_type cgs_num_columns = cgs.num_columns();
@@ -791,7 +783,7 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
       std::swap(new_cg[j], old_cg[j]);
   }
 
-  // Congruences are not minimized and generators are not up-to-date.
+  // Congruences may not be minimized and generators are out of date.
   clear_congruences_minimized();
   clear_generators_up_to_date();
   // Note: the congruence system may have become unsatisfiable, thus
@@ -847,25 +839,32 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
     // if and only if the system contains trivial congruences only.
     if (cgs.begin() == cgs.end())
       return true;
-    // There is a congruence, it must be inconsistent, the polyhedron
-    // is empty.
+    // There is a congruence, it must be inconsistent, the grid is
+    // empty.
     status.set_empty();
     return false;
   }
 
-  // Adjust `cgs' to the current space dimension.
-  cgs.adjust_space_dimension(space_dim); // FIX
+  if (marked_empty())
+    return false;
 
-  if (add_and_minimize(con_sys, gen_sys, cgs)) {
+  if (congruences_are_up_to_date() == false && update_congruences()) {
     set_empty();
-
     assert(OK());
     return false;
   }
 
-  // FIX added for grid
-  set_congruences_up_to_date();
+  // Adjust `cgs' to the current space dimension.
+  cgs.adjust_space_dimension(space_dim); // FIX (?)
+
+  if (add_and_minimize(con_sys, gen_sys, cgs)) {
+    set_empty();
+    assert(OK());
+    return false;
+  }
+
   clear_empty();
+  set_congruences_up_to_date();
 
   assert(OK());
   return true;
