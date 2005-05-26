@@ -36,23 +36,30 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #define find_variation find_variation_template<Congruence_System>
 
+class Test_Congruence_System : public Congruence_System {
+public:
+  Test_Congruence_System() : Congruence_System() {}
+  Test_Congruence_System(Congruence_System cgs) : Congruence_System(cgs) {}
+  Test_Congruence_System(Congruence cg) : Congruence_System(cg) {}
+};
+
 // Public constructors.
 
 void
 test1() {
   nout << "test1:" << endl;
 
-  Congruence_System cgs0;
+  Test_Congruence_System cgs0;
   if (find_variation(cgs0)) exit(1);
 
-  Congruence_System cgs1(cgs0);
+  Test_Congruence_System cgs1(cgs0);
   if (find_variation(cgs1)) exit(1);
 
   if (cgs1 == cgs0) {
     Variable A(0);
     Variable B(1);
 
-    Congruence_System cgs2((A - 3*B %= 5) / 2);
+    Test_Congruence_System cgs2((A - 3*B %= 5) / 2);
     if (find_variation(cgs2)) exit(1);
 
     if (cgs2 == cgs0) {
@@ -82,11 +89,11 @@ test2() {
   Variable B(1);
   Variable C(2);
 
-  Congruence_System cgs0;
+  Test_Congruence_System cgs0;
   if (find_variation(cgs0))
     exit(1);
 
-  Congruence_System cgs1((A - 3*B + 21*C %= 5) / 2);
+  Test_Congruence_System cgs1((A - 3*B + 21*C %= 5) / 2);
   if (find_variation(cgs1))
     exit(1);
 
@@ -111,7 +118,7 @@ test3() {
   Variable B(7);
   Variable C(4);
 
-  Congruence_System cgs0((A - 3*B + 21*C %= 55) / 21);
+  Test_Congruence_System cgs0((A - 3*B + 21*C %= 55) / 21);
   if (find_variation(cgs0))
     exit(1);
 
@@ -133,7 +140,7 @@ test4() {
   Variable A(0);
   Variable B(1);
 
-  Congruence_System cgs0((A - 3*B %= 5) / 7);
+  Test_Congruence_System cgs0((A - 3*B %= 5) / 7);
   if (find_variation(cgs0))
     exit(1);
 
@@ -163,7 +170,7 @@ test5() {
   Variable C(2);
   Variable D(3);
 
-  Congruence_System cgs0((A - 3*B + C - 18*D %= 5) / 7);
+  Test_Congruence_System cgs0((A - 3*B + C - 18*D %= 5) / 7);
   if (find_variation(cgs0))
     exit(1);
 
@@ -185,7 +192,7 @@ test6() {
   Variable B(1);
   Variable C(2);
 
-  Congruence_System cgs0((-A - B + 13*C %= 6) / 7);
+  Test_Congruence_System cgs0((-A - B + 13*C %= 6) / 7);
 
   if (find_variation(cgs0))
     exit(1);
@@ -204,13 +211,13 @@ test6() {
     exit(1);
   }
 
-#define NUM_NON_EQS 1
+#define NUM_PRPR_CGS 1
 
-  tem = cgs0.num_non_equalities();
-  if (tem == NUM_NON_EQS)
+  tem = cgs0.num_proper_congruences();
+  if (tem == NUM_PRPR_CGS)
     return;
 
-  nout << "cgs0 should have had " stringify(NUM_NON_EQS) " \"non-equalities\" (instead of "
+  nout << "cgs0 should have had " stringify(NUM_PRPR_CGS) " \"non-equalities\" (instead of "
        << tem << ")." << endl;
 
   exit(1);
@@ -226,7 +233,7 @@ test7() {
   Variable B(1);
   Variable C(2);
 
-  Congruence_System cgs0(0*A + 0*B %= -1);
+  Test_Congruence_System cgs0(0*A + 0*B %= -1);
   if (find_variation(cgs0))
     exit(1);
 
