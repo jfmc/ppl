@@ -97,13 +97,11 @@ Congruence_System::resize_no_copy(const dimension_type new_n_rows,
   Matrix::resize_no_copy(new_n_rows, new_n_columns, Row::Flags());
 }
 
-#if 0
 inline const Congruence_System&
 Congruence_System::zero_dim_empty() {
   static const Congruence_System zdf(Congruence::zero_dim_false());
   return zdf;
 }
-#endif
 
 inline
 Congruence_System::const_iterator::const_iterator()

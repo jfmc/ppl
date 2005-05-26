@@ -77,7 +77,7 @@ PPL::Congruence_System::normalize_moduli() {
 
 bool
 PPL::Congruence_System::
-adjust_space_dimension(const dimension_type new_space_dim) {
+increase_space_dimension(const dimension_type new_space_dim) {
   assert(space_dimension() <= new_space_dim);
 
   dimension_type cols_to_add = new_space_dim - space_dimension();
@@ -180,41 +180,21 @@ PPL::Congruence_System::num_equalities() const {
 }
 
 PPL::dimension_type
-PPL::Congruence_System::num_non_equalities() const {
+PPL::Congruence_System::num_proper_congruences() const {
   const Congruence_System& cgs = *this;
   dimension_type n = 0;
-  for (dimension_type i = num_rows(); i-- > 0 ; )
-    if (cgs[i].is_equality() == false)
-      ++n;
+  for (dimension_type i = num_rows(); i-- > 0 ; ) {
+    const Congruence& cg = cgs[i];
+    if (cg.is_virtual() || cg.is_equality())
+      continue;
+    ++n;
+  }
   return n;
-}
-
-bool
-PPL::Congruence_System::saturates_all_congruences(const Generator& g) const {
-  assert(g.space_dimension() <= space_dimension());
-
-  // Setting `sp_fp' to the appropriate scalar product operator.
-  // This also avoids problems when having _legal_ topology mismatches
-  // (which could also cause a mismatch in the number of columns).
-  int (*sps)(const Linear_Row&, const Congruence&);
-  if (g.is_necessarily_closed())
-    sps = PPL::scalar_product_sign;
-  else
-    sps = PPL::reduced_scalar_product_sign;
-
-  // FIX may need line special case
-  const Congruence_System& cgs = *this;
-  for (dimension_type i = cgs.num_rows(); i-- > 0; )
-    if (sps(g, cgs[i]) != 0)
-      return false;
-  return true;
 }
 
 bool
 PPL::Congruence_System::satisfies_all_congruences(const Generator& g) const {
   assert(g.space_dimension() <= space_dimension());
-
-  // Almost identical to the double-argument version below.
 
   // Setting `spa_fp' to the appropriate scalar product operator.
   // This also avoids problems when having _legal_ topology mismatches

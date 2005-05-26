@@ -176,17 +176,7 @@ public:
   */
   void insert(const Constraint& c);
 
-  // private:  // FIX?
-  //! Add the rows in \p y to the end of the system.
-  void add_rows(const Congruence_System& y);
-
-  //! Adjusts all expressions to have the same moduli.
-  void normalize_moduli();
-
-  //! \brief
-  //! Returns the singleton system containing only
-  //! Congruence::zero_dim_false().
-  // FIXME: do we want this? yes
+  //! Returns the system containing only Congruence::zero_dim_false().
   static const Congruence_System& zero_dim_empty();
 
   //! An iterator over a system of congruences.
@@ -299,25 +289,33 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  // FIX private
-
-  //! Returns the number of equality congruences.
-  // FIX num_proper_congruences
+  //! Returns the number of equalities.
   dimension_type num_equalities() const;
 
-  //! Returns the number of non-equality congruences.
-  dimension_type num_non_equalities() const;
+  //! Returns the number of proper congruences.
+  dimension_type num_proper_congruences() const;
 
-  //! Adjust \p *this to have \p new_space_dim dimensions.
-  /*!
-    \p new_space_dim must be greater than or equal to the current
-    space dimension.
-  */
-  // FIX add/change_space_dim(num_space_dim)
-  //     sensible name, maybe easier way
-  bool adjust_space_dimension(const dimension_type new_space_dim);
+protected:
+
+  // FIX details?
+  //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
+  bool satisfies_all_congruences(const Generator& g) const;
 
 private:
+
+  //! Add the rows in \p y to the end of the system.
+  void add_rows(const Congruence_System& y);
+
+  //! Adjusts all expressions to have the same moduli.
+  void normalize_moduli();
+
+  //! Increase the number of space dimensions to \p new_space_dim.
+  /*!
+    \p new_space_dim must at least equal to the current space
+    dimension.
+  */
+  bool increase_space_dimension(const dimension_type new_space_dim);
+
   friend class const_iterator;
   friend class Grid;
 
@@ -348,18 +346,6 @@ private:
 
   //! Returns a constant reference to the \p k- th congruence of the system.
   const Congruence& operator[](dimension_type k) const;
-
-public:  // FIX for testing
-  // FIX delete
-  // FIX details?
-  //! Returns <CODE>true</CODE> if \p g saturates all the congruences.
-  bool saturates_all_congruences(const Generator& g) const;
-
-  // FIX details?
-  //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
-  bool satisfies_all_congruences(const Generator& g) const;
-
-private:
 
   //! \brief
   //! Substitutes a given column of coefficients by a given
