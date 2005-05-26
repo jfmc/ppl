@@ -648,9 +648,9 @@ PPL::Grid::add_generator(const Generator& g) {
   if (space_dim < g_space_dim)
     throw_dimension_incompatible("add_generator(g)", "g", g);
 
-  // Dealing with a zero-dimensional space grid first.
+  // Deal with zero-dimension case first.
   if (space_dim == 0) {
-    // It is only possible to create 0-dim points.
+    // In dimension zero it is only possible to create points.
     assert(g.is_point());
     if (marked_empty())
       status.set_zero_dim_univ();
@@ -711,10 +711,11 @@ PPL::Grid::add_generator(const Generator& g) {
 	throw_runtime_error("add_generator(const Generator& g)");
       }
     }
-
-    // With the added generator, congruences are out of date.
-    clear_congruences_up_to_date();
   }
+
+  // With the added generator, congruences are out of date.
+  clear_congruences_up_to_date();
+
   clear_generators_minimized();
   set_generators_up_to_date();
   assert(OK());
