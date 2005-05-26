@@ -239,6 +239,55 @@ test5() {
   exit(1);
 }
 
+// From generators, where dimensions are only added to the grid's
+// generator system.
+
+void
+test6() {
+  nout << "test6:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
+
+  Generator_System gs;
+  gs.insert(point(A));
+  gs.insert(point(A + B + C));
+
+  Grid gr(gs);
+
+  // Add space dimensions directly after creating the grid, to ensure
+  // that only the generators are up to date.
+
+  gr.add_space_dimensions_and_project(2);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Congruence_System known_cgs;
+  known_cgs.insert((A == 1) / 0);
+  known_cgs.insert((B - C %= 0) / 0);
+  known_cgs.insert((B %= 0) / 1);
+  known_cgs.insert((D %= 0) / 0);
+  known_cgs.insert((E %= 0) / 0);
+
+  Grid known_gr(known_cgs);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -250,6 +299,7 @@ main() TRY {
   test3();
   test4();
   test5();
+  test6();
 
   return 0;
 }
