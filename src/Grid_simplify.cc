@@ -356,7 +356,7 @@ Grid::simplify(Generator_System& sys) {
 
   sys.set_sorted(false);
 
-  // Only consistent grids exist.
+  // Grids are either consistent or empty.
   if (sys[0].is_ray_or_point() == false) {
     dimension_type row_size = sys.num_columns();
     // Make all rows virtual, to free space.
@@ -556,19 +556,19 @@ Grid::simplify(Congruence_System& sys) {
     return true;
   }
   // Ensure that the first row is the integrality congruence.
-  dimension_type size = first_row.size() - 1;
+  dimension_type last = first_row.size() - 1;
   if (modulus == -1) {
     // The first row is virtual, make it the integrality congruence.
-    first_row[size] = 1;
+    first_row[last] = 1;
     // Try use an existing modulus.
     dimension_type row = sys.num_rows();
     while (row-- > 1)
-      if (sys[row][size] > 0) {
-	first_row[size] = sys[row][size];
+      if (sys[row][last] > 0) {
+	first_row[last] = sys[row][last];
 	break;
       }
   }
-  first_row[0] = first_row[size];
+  first_row[0] = first_row[last];
 
   strace << "---- simplify (reduce) cgs done." << std::endl;
   return false;
