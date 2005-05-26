@@ -638,6 +638,20 @@ PPL::Grid::add_congruence_and_minimize(const Congruence& cg) {
 }
 
 void
+PPL::Grid::add_congruence(const Constraint& c) {
+  // TODO: this is just an executable specification.
+  Congruence_System cgs(c);
+  return add_recycled_congruences(cgs);
+}
+
+bool
+PPL::Grid::add_congruence_and_minimize(const Constraint& c) {
+  // TODO: this is just an executable specification.
+  Congruence_System cgs(c);
+  return add_recycled_congruences_and_minimize(cgs);
+}
+
+void
 PPL::Grid::add_generator(const Generator& g) {
   // Topology-compatibility check.
   if (g.is_closure_point())
@@ -798,25 +812,6 @@ PPL::Grid::add_congruences(const Congruence_System& cgs) {
   add_recycled_congruences(cgs_copy);
 }
 
-void
-PPL::Grid::add_congruences_and_minimize(const Constraint_System& cs) {
-  // FIX temp
-  Congruence_System cgs;
-  bool cgs_is_not_empty = false;
-  for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i) {
-    if (i->is_equality()) {
-      Congruence cg(*i / 0);
-      cgs.insert(cg);
-      cgs_is_not_empty = true;
-    }
-  }
-  if (cgs_is_not_empty) {
-    cgs.adjust_space_dimension(cs.space_dimension());
-    add_congruences_and_minimize(cgs);
-  }
-}
-
 bool
 PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   // Dimension-compatibility check: the dimension of `cgs' can not be
@@ -875,6 +870,25 @@ PPL::Grid::add_congruences_and_minimize(const Congruence_System& cgs) {
   // TODO: this is just an executable specification.
   Congruence_System cgs_copy = cgs;
   return add_recycled_congruences_and_minimize(cgs_copy);
+}
+
+bool
+PPL::Grid::add_congruences_and_minimize(const Constraint_System& cs) {
+  // FIX temp?
+  // TODO: this is just an executable specification.
+  Congruence_System cgs;
+  bool cgs_is_empty = true;
+  for (Constraint_System::const_iterator i = cs.begin(),
+         cs_end = cs.end(); i != cs_end; ++i)
+    if (i->is_equality()) {
+      Congruence cg(*i / 0);
+      cgs.insert(cg);
+      cgs_is_empty = false;
+    }
+  if (cgs_is_empty)
+    return minimize();
+  else
+    return add_congruences_and_minimize(cgs);
 }
 
 void
