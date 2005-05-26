@@ -180,7 +180,8 @@ test4() {
   exit(1);
 }
 
-// From congruences, where dimensions are only added to congruences.
+// From congruences, where dimensions are only added to the grid's
+// congruence system.
 
 void
 test5() {
