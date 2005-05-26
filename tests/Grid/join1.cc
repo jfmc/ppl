@@ -27,8 +27,6 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #define find_variation find_variation_template<Grid>
 
-// join_assign
-
 void
 test1() {
   nout << "test1:" << endl;
@@ -73,6 +71,71 @@ test1() {
   exit(1);
 }
 
+// Two universe grids.
+
+void
+test2() {
+  nout << "test2:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid gr1(3);
+  Grid gr2(3);
+
+  gr1.join_assign(gr2);
+
+  if (find_variation(gr1))
+    exit(1);
+
+  Grid known_gr(3);
+
+  if (gr1 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Second grid universe.
+
+void
+test3() {
+  nout << "test3:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid gr1(3);
+
+  Generator_System gs;
+  gs.insert(point());
+  gs.insert(point(-C));
+
+  Grid gr2(gs);
+
+  gr1.join_assign(gr2);
+
+  if (find_variation(gr1))
+    exit(1);
+
+  Grid known_gr(3);
+
+  if (gr1 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -80,6 +143,8 @@ main() TRY {
   nout << "join1:" << endl;
 
   test1();
+  test2();
+  test3();
 
   return 0;
 }
