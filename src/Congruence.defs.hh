@@ -77,18 +77,12 @@ operator%=(const Linear_Expression& e,
   congruence \f$ e_1 = e_2 \pmod{mk}\f$.
   \relates Congruence
 */
-/*
-  FIXME: must decide whether a negative value for k is allowed or not.
-*/
 Congruence
 operator/(const Congruence& cg,
 	  const Coefficient_traits::const_reference k);
 
 //! Creates a congruence from \p c, with \p m as the modulus.
 /*! \relates Congruence */
-/*
-  FIXME: must decide whether a negative value of m is allowed.
-*/
 Congruence
 operator/(const Constraint& c,
 	  const Coefficient_traits::const_reference m);
@@ -212,7 +206,7 @@ swap(Parma_Polyhedra_Library::Congruence& x,
   An unsatisfiable congruence on the zero-dimension space \f$\Rset^0\f$
   can be specified as follows:
   \code
-  // FIX add zero_dim_false?
+  // FIX add zero_dim_false? yes (check sensible)
   Congruence false_cg = Congruence::zero_dim_false();
   \endcode
   Equivalent, but more involved ways are the following:
@@ -267,8 +261,12 @@ public:
   //! Ordinary copy-constructor.
   Congruence(const Congruence& cg);
 
-  //! Copy-constructs from Constraint \p c.
-  Congruence(const Constraint& c);
+  //! Copy-constructs (modulo 0) from equality constraint \p c.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p c is a relation.
+  */
+  explicit Congruence(const Constraint& c);
 
   //! Destructor.
   ~Congruence();
@@ -294,6 +292,8 @@ public:
 
   //! Returns the modulus of \p *this.
   Coefficient_traits::const_reference modulus() const;
+
+  // FIX private norm methods
 
   //! Normalizes the signs.
   /*!
@@ -323,9 +323,6 @@ public:
     \pmod{m}\f$, then it can be said that *this will be left
     representing the congruence \f$ e_1 = e_2 \pmod{mk}\f$.
   */
-  /*
-    FIXME: must decide whether a negative value for k is allowed or not.
-  */
   Congruence&
   operator/=(const Coefficient_traits::const_reference k);
 
@@ -350,11 +347,14 @@ public:
   */
   bool is_trivial_false() const;
 
+  // FIX private?
+
   //! Returns <CODE>true</CODE> if the modulus is greater than zero.
   /*!
     A modulus of zero or less denotes a linear equality or virtual
     row.
   */
+  // FIX is_proper_congruence? or alternative
   bool is_congruence() const;
 
   //! Returns <CODE>true</CODE> if \p *this is an equality.
@@ -420,9 +420,6 @@ private:
     \pmod{m}\f$, then the result can be said to represent the
     congruence \f$ e_1 = e_2 \pmod{mk}\f$.
   */
-  /*
-    FIXME: must decide whether a negative value of k is allowed.
-  */
   Congruence(const Congruence& cg, Coefficient_traits::const_reference k);
 
   //! Constructs from Linear_Expression \p le, using modulus \p m.
@@ -444,12 +441,6 @@ private:
   throw_dimension_incompatible(const char* method,
 			       const char* v_name,
 			       Variable v) const;
-
-  //! \brief
-  //! Throws a <CODE>std::invalid_argument</CODE> exception containing
-  //! the appropriate error message.
-  static void
-  throw_invalid_modulus(Coefficient_traits::const_reference m);
 
   friend Congruence
   PPL::operator%=(const Linear_Expression& e1, const Linear_Expression& e2);
@@ -479,6 +470,7 @@ private:
   friend void
   std::swap(PPL::Congruence& x, PPL::Congruence& y);
 
+  // FIX check which used
   friend void
   PPL::scalar_product_assign(Coefficient& z,
 			     const Linear_Row& x,

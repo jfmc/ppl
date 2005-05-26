@@ -140,14 +140,6 @@ PPL::Congruence::throw_dimension_incompatible(const char* method,
   throw std::invalid_argument(s.str());
 }
 
-void
-PPL::Congruence::throw_invalid_modulus(Coefficient_traits::const_reference m) {
-  std::ostringstream s;
-  s << "PPL::operator&&(c, m):" << std::endl
-    << "invalid modulus m (" << m << ") is negative.";
-  throw std::invalid_argument(s.str());
-}
-
 /*! \relates Parma_Polyhedra_Library::Congruence */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {

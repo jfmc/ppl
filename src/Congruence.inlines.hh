@@ -27,6 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.defs.hh"
 #include "Linear_Expression.defs.hh"
 
+#include <sstream>
+
 namespace Parma_Polyhedra_Library {
 
 inline
@@ -213,8 +215,16 @@ Congruence::total_memory_in_bytes() const {
 inline
 Congruence::Congruence(const Constraint& c)
   : Row(c, c.space_dimension() + 1, c.space_dimension() + 2) {
+
+  if (c.is_inequality()) {
+    std::ostringstream s;
+    s << "PPL::Congruence::Congruence(c):" << std::endl
+      << "constraint c must be an equality.";
+    throw std::invalid_argument(s.str());
+  }
+
   Row::expand_within_capacity(size()+1);
-  (*this)[size()-1] = 1;
+  (*this)[size()-1] = 0;
 }
 
 inline
