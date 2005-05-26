@@ -63,6 +63,35 @@ test1() {
   exit(1);
 }
 
+// Add to an empty grid.
+
+void
+test2() {
+  nout << "test2:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid gr(3, Grid::EMPTY);
+
+  gr.add_congruence((A + B + C %= 0) / 3);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(3, Grid::EMPTY);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -70,6 +99,7 @@ main() TRY {
   nout << "addcongruence1:" << endl;
 
   test1();
+  test2();
 
   return 0;
 }
