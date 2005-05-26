@@ -206,7 +206,6 @@ swap(Parma_Polyhedra_Library::Congruence& x,
   An unsatisfiable congruence on the zero-dimension space \f$\Rset^0\f$
   can be specified as follows:
   \code
-  // FIX add zero_dim_false? yes (check sensible)
   Congruence false_cg = Congruence::zero_dim_false();
   \endcode
   Equivalent, but more involved ways are the following:
@@ -293,30 +292,6 @@ public:
   //! Returns the modulus of \p *this.
   Coefficient_traits::const_reference modulus() const;
 
-  // FIX private norm methods
-
-  //! Normalizes the signs.
-  /*!
-    The signs of the coefficients and the inhomogeneous term are
-    normalized, leaving the first non-zero homogeneous coefficient
-    positive.
-  */
-  void sign_normalize();
-
-  //! Normalizes signs and then the inhomogeneous term.
-  /*!
-    Applies sign_normalize, then reduces the inhomogeneous term to the
-    smallest possible positive number.
-  */
-  void normalize();
-
-  //! Calls normalize, then divides out common factors.
-  /*!
-    Strongly normalized Congruences which have different syntaxes (as
-    output by operator<<) are guaranteed to have different semantics.
-  */
-  void strong_normalize();
-
   //! Multiplies \p k into the modulus of \p *this.
   /*!
     If \p *this is said to represent the congruence \f$ e_1 = e_2
@@ -347,15 +322,12 @@ public:
   */
   bool is_trivial_false() const;
 
-  // FIX private?
-
   //! Returns <CODE>true</CODE> if the modulus is greater than zero.
   /*!
-    A modulus of zero or less denotes a linear equality or virtual
-    row.
+    A congruence with a modulus below 1 is a linear equality or a
+    virtual row.
   */
-  // FIX is_proper_congruence? or alternative
-  bool is_congruence() const;
+  bool is_proper_congruence() const;
 
   //! Returns <CODE>true</CODE> if \p *this is an equality.
   /*!
@@ -363,20 +335,11 @@ public:
   */
   bool is_equality() const;
 
-  //! Mark this congruence as a linear equality.
-  void set_is_equality();
-
   //! Returns <CODE>true</CODE> if and only if \p *this is virtual.
   /*!
     A modulus of negative one denotes a virtual congruence.
   */
   bool is_virtual() const;
-
-  //! Mark this congruence as a virtual row.
-  /*!
-    A modulus of negative one denotes a virtual congruence.
-  */
-  void set_is_virtual();
 
   //! \brief
   //! Returns a lower bound to the total size in bytes of the memory
@@ -399,12 +362,51 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
+protected:
+
+  //! Normalizes the signs.
+  /*!
+    The signs of the coefficients and the inhomogeneous term are
+    normalized, leaving the first non-zero homogeneous coefficient
+    positive.
+  */
+  void sign_normalize();
+
+  //! Normalizes signs and then the inhomogeneous term.
+  /*!
+    Applies sign_normalize, then reduces the inhomogeneous term to the
+    smallest possible positive number.
+  */
+  void normalize();
+
+  //! Calls normalize, then divides out common factors.
+  /*!
+    Strongly normalized Congruences which have different syntaxes (as
+    output by operator<<) are guaranteed to have different semantics.
+  */
+  void strong_normalize();
+
 private:
+
+  //! Mark this congruence as a virtual row.
+  /*!
+    A modulus of negative one denotes a virtual congruence.
+  */
+  void set_is_virtual();
+
+  //! Mark this congruence as a linear equality.
+  void set_is_equality();
+
   //! \brief
   //! Returns a reference to the true (zero-dimension space)
   //! congruence \f$0 = 1 \pmod{1}\f$, also known as the
   //! <EM>integrality congruence</EM>.
   static const Congruence& zero_dim_integrality();
+
+  //! \brief
+  //! Returns a reference to the false (zero-dimension space)
+  //! congruence \f$0 = 1 \pmod{0}\f$.
+  static const Congruence& zero_dim_false();
 
   //! Default constructor: private and not implemented.
   Congruence();

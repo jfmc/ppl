@@ -62,6 +62,13 @@ Congruence::zero_dim_integrality() {
   return zdi;
 }
 
+inline const Congruence&
+Congruence::zero_dim_false() {
+  static const Congruence
+    zdf((Linear_Expression::zero() %= Coefficient_one()) / 0);
+  return zdf;
+}
+
 inline Congruence&
 Congruence::operator=(const Congruence& c) {
   Row::operator=(c);
@@ -174,7 +181,7 @@ Congruence::is_trivial_false() const {
 }
 
 inline bool
-Congruence::is_congruence() const {
+Congruence::is_proper_congruence() const {
   return modulus() > 0;
 }
 

@@ -184,7 +184,7 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   dimension_type num_cols = sys.num_columns() - 1 /* modulus */;
   for (dimension_type index = 0; index < sys.num_rows(); ++index) {
     Congruence& row = sys[index];
-    if (row.is_congruence())
+    if (row.is_proper_congruence())
       for (dimension_type col = 0; col < num_cols; ++col)
         row[col] *= pivot_a;
   }
