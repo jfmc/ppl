@@ -49,7 +49,7 @@ PPL::Grid::Grid(dimension_type num_dimensions,
   if (kind == EMPTY)
     status.set_empty();
   space_dim = num_dimensions;
-  con_sys.adjust_space_dimension(num_dimensions);
+  con_sys.increase_space_dimension(num_dimensions);
   // FIX where will gen_sys space dim be adjusted?
   if (num_dimensions > 0) {
     add_low_level_congruences(con_sys);
@@ -780,7 +780,7 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
   }
 
   // Adjust `cgs' to the right topology and space dimension.
-  cgs.adjust_space_dimension(space_dim);
+  cgs.increase_space_dimension(space_dim);
 
   // Swap (instead of copying) the coefficients of `cgs' (which is
   // writable).
@@ -850,7 +850,7 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   }
 
   // Adjust `cgs' to the current space dimension.
-  cgs.adjust_space_dimension(space_dim); // FIX (?)
+  cgs.increase_space_dimension(space_dim); // FIX (?)
 
   if (add_and_minimize(con_sys, gen_sys, cgs)) {
     set_empty();
