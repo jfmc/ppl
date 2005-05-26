@@ -81,10 +81,10 @@ adjust_space_dimension(const dimension_type new_space_dim) {
   assert(space_dimension() <= new_space_dim);
 
   dimension_type cols_to_add = new_space_dim - space_dimension();
-  dimension_type old_num_cols = num_columns();
 
   if (num_rows()) {
     if (cols_to_add) {
+      dimension_type old_num_cols = num_columns();
       add_zero_columns(cols_to_add);
       // Move the moduli.
       swap_columns(num_columns() - 1, old_num_cols - 1);
@@ -129,6 +129,12 @@ PPL::Congruence_System::insert(const Congruence& cg) {
 }
 
 void
+PPL::Congruence_System::insert(const Constraint& c) {
+  Congruence cg(c);
+  insert(cg);
+}
+
+void
 PPL::Congruence_System::add_rows(const Congruence_System& y) {
   Congruence_System& x = *this;
   assert(x.row_size == y.row_size);
@@ -151,11 +157,6 @@ PPL::Congruence_System::has_linear_equalities() const {
   const Congruence_System& cgs = *this;
   dimension_type modulus_index = cgs.num_columns() - 1;
   for (dimension_type i = cgs.num_rows(); i-- > 0; )
-    // FIX
-    // Optimized type checking: we already know the topology;
-    // also, equalities have the epsilon coefficient equal to zero.
-    // NOTE: the constraint eps_leq_one should not be considered
-    //       a strict inequality.
     if (cgs[i][modulus_index] == 0)
       return true;
   return false;
@@ -170,34 +171,16 @@ PPL::Congruence_System::const_iterator::skip_forward() {
 
 PPL::dimension_type
 PPL::Congruence_System::num_equalities() const {
-#if 0 // FIX
-  // We are sure that we call this method only when the matrix has no
-  // pending rows.
-  assert(num_pending_rows() == 0);
-#endif
   const Congruence_System& cgs = *this;
   dimension_type n = 0;
-#if 0 // FIX
-  // If the Matrix happens to be sorted, take advantage of the fact
-  // that FIX inequalities are at the bottom of the system.
-  if (is_sorted())
-    for (dimension_type i = num_rows(); i > 0 && cgs[--i].is_equality(); )
+  for (dimension_type i = num_rows(); i-- > 0 ; )
+    if (cgs[i].is_equality())
       ++n;
-  else
-#endif
-    for (dimension_type i = num_rows(); i-- > 0 ; )
-      if (cgs[i].is_equality())
-	++n;
   return n;
 }
 
 PPL::dimension_type
 PPL::Congruence_System::num_non_equalities() const {
-#if 0 // FIX
-  // We are sure that we call this method only when the matrix has no
-  // pending rows.
-  assert(num_pending_rows() == 0);
-#endif
   const Congruence_System& cgs = *this;
   dimension_type n = 0;
   for (dimension_type i = num_rows(); i-- > 0 ; )
@@ -206,9 +189,6 @@ PPL::Congruence_System::num_non_equalities() const {
   return n;
 }
 
-// FIX saturates_every_congruence?
-// FIX all/every_congruence/s_saturated_by?
-// FIX saturated_by?
 bool
 PPL::Congruence_System::saturates_all_congruences(const Generator& g) const {
   assert(g.space_dimension() <= space_dimension());
@@ -217,12 +197,12 @@ PPL::Congruence_System::saturates_all_congruences(const Generator& g) const {
   // This also avoids problems when having _legal_ topology mismatches
   // (which could also cause a mismatch in the number of columns).
   int (*sps)(const Linear_Row&, const Congruence&);
-  //if (g.type() == Generator::CLOSURE_POINT) // FIX (first, and had cases swapped)
   if (g.is_necessarily_closed())
     sps = PPL::scalar_product_sign;
   else
     sps = PPL::reduced_scalar_product_sign;
 
+  // FIX may need line special case
   const Congruence_System& cgs = *this;
   for (dimension_type i = cgs.num_rows(); i-- > 0; )
     if (sps(g, cgs[i]) != 0)
@@ -240,7 +220,6 @@ PPL::Congruence_System::satisfies_all_congruences(const Generator& g) const {
   // This also avoids problems when having _legal_ topology mismatches
   // (which could also cause a mismatch in the number of columns).
   void (*spa_fp)(Coefficient&, const Linear_Row&, const Congruence&);
-  //if (g.type() == Generator::CLOSURE_POINT) // FIX (first, and had cases swapped)
   if (g.is_necessarily_closed())
     spa_fp = PPL::scalar_product_assign;
   else
@@ -248,60 +227,17 @@ PPL::Congruence_System::satisfies_all_congruences(const Generator& g) const {
 
   const Congruence_System& cgs = *this;
   for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
-    // FIX skip virtual rows
+    // FIX skip virtual rows (faster)
     TEMP_INTEGER(sp);
-    spa_fp(sp, g, cgs[i]);
-    if (cgs[i].is_equality()) {
-      // FIX a guess
-      if (sp != 0) {
-	std::cout << "satisfies_all_cgs... done (eq false i = " << i << ")." << std::endl;
+    const Congruence& cg = cgs[i];
+    spa_fp(sp, g, cg);
+    //if (cg.is_equality() || g.is_line()) { // FIX
+    if (cg.is_equality()) {
+      if (sp != 0)
 	return false;
-      }
     }
-    else
-      if (sp % cgs[i].modulus() != 0) {
-	std::cout << "satisfies_all_cgs... done (false i = " << i << ")." << std::endl;
-	return false;
-      }
-  }
-  return true;
-}
-
-bool
-PPL::Congruence_System::satisfies_all_congruences(const Generator& g,
-						  const Generator& ref) const {
-  assert(g.space_dimension() <= space_dimension());
-
-  // Almost identical to the single-argument version above.
-
-  // Setting `spa_fp' to the appropriate scalar product operator.
-  // This also avoids problems when having _legal_ topology mismatches
-  // (which could also cause a mismatch in the number of columns).
-  void (*spa_fp)(Coefficient&, const Linear_Row&, const Congruence&,
-		 const Linear_Row&);
-  //if (g.type() == Generator::CLOSURE_POINT) // FIX (first, and had cases swapped)
-  if (g.is_necessarily_closed())
-    spa_fp = PPL::scalar_product_assign;
-  else
-    spa_fp = PPL::reduced_scalar_product_assign;
-
-  const Congruence_System& cgs = *this;
-  for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
-    // FIX is this correct?
-    TEMP_INTEGER(sp);
-    spa_fp(sp, g, cgs[i], ref);
-    if (cgs[i].is_equality()) {
-      // FIX a guess
-      if (sp != 0) {
-	std::cout << "satisfies_all_cgs... done (eq false i = " << i << ", sp = " << sp << ")." << std::endl;
-	return false;
-      }
-    }
-    else
-      if (sp % cgs[i].modulus() != 0) {
-	std::cout << "satisfies_all_cgs... done (false i = " << i << ")." << std::endl;
-	return false;
-      }
+    else if (sp % cg.modulus() != 0)
+      return false;
   }
   return true;
 }
@@ -369,12 +305,8 @@ PPL::Congruence_System::ascii_dump(std::ostream& s) const {
   const Congruence_System& x = *this;
   dimension_type x_num_rows = x.num_rows();
   dimension_type x_num_columns = x.num_columns();
-  s << x_num_rows << " x " << x_num_columns // << ' '
-    //<< (x.is_sorted() ? "(sorted)" : "(not_sorted)")
-    << std::endl
-    //<< "index_first_pending " << x.first_pending_row()
-    //<< std::endl
-    ;
+  s << x_num_rows << " x " << x_num_columns
+    << std::endl;
   if (x_num_rows && x_num_columns)
     for (dimension_type i = 0; i < x_num_rows; ++i)
       x[i].ascii_dump(s);
@@ -392,15 +324,6 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
   if ((s >> ncols) == false)
     return false;
   resize_no_copy(nrows, ncols);
-
-#if 0
-  dimension_type index;
-  if (!(s >> str) || str != "index_first_pending")
-    return false;
-  if (!(s >> index))
-    return false;
-  set_index_first_pending_row(index);
-#endif
 
   // FIX freeing on failure?
 

@@ -34,7 +34,13 @@ Congruence_System::Congruence_System()
 }
 
 inline
-Congruence_System::Congruence_System(const Congruence& c)
+Congruence_System::Congruence_System(const Congruence& cg)
+  : Matrix() {
+  insert(cg);
+}
+
+inline
+Congruence_System::Congruence_System(const Constraint& c)
   : Matrix() {
   insert(c);
 }

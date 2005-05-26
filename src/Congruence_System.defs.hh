@@ -129,19 +129,17 @@ public:
   //! Default constructor: builds an empty system of congruences.
   Congruence_System();
 
-#if 0 // FIX was this just a typo?
   //! Builds the singleton system containing only congruence \p cg.
   explicit Congruence_System(const Congruence& cg);
-#endif
 
   //! \brief
-  //! If \p cg represents the congruence \f$ e_1 = e_2 \f$, builds the
-  //! singleton system containing only congruence \f$ e_1 = e_2 \pmod{0}\f$.
+  //! If \p c represents the constraint \f$ e_1 = e_2 \f$, builds the
+  //! singleton system containing only constraint \f$ e_1 = e_2 \pmod{0}\f$.
   /*!
     \exception std::invalid_argument
-    Thrown if \p cg is not an equality congruence.
+    Thrown if \p c is not an equality constraint.
   */
-  explicit Congruence_System(const Congruence& cg);
+  explicit Congruence_System(const Constraint& c);
 
   //! Ordinary copy-constructor.
   Congruence_System(const Congruence_System& cs);
@@ -168,6 +166,17 @@ public:
   //! increasing the number of space dimensions if needed.
   void insert(const Congruence& cg);
 
+  //! \brief
+  //! Inserts in \p *this a copy of the equality constraint \p c, seen
+  //! as a modulo 0 congruence, increasing the number of space
+  //! dimensions if needed.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p c is a relation.
+  */
+  void insert(const Constraint& c);
+
+  // private:  // FIX?
   //! Add the rows in \p y to the end of the system.
   void add_rows(const Congruence_System& y);
 
@@ -177,7 +186,7 @@ public:
   //! \brief
   //! Returns the singleton system containing only
   //! Congruence::zero_dim_false().
-  // FIXME: do we want this?
+  // FIXME: do we want this? yes
   static const Congruence_System& zero_dim_empty();
 
   //! An iterator over a system of congruences.
@@ -290,7 +299,10 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
+  // FIX private
+
   //! Returns the number of equality congruences.
+  // FIX num_proper_congruences
   dimension_type num_equalities() const;
 
   //! Returns the number of non-equality congruences.
@@ -301,6 +313,8 @@ public:
     \p new_space_dim must be greater than or equal to the current
     space dimension.
   */
+  // FIX add/change_space_dim(num_space_dim)
+  //     sensible name, maybe easier way
   bool adjust_space_dimension(const dimension_type new_space_dim);
 
 private:
@@ -336,6 +350,7 @@ private:
   const Congruence& operator[](dimension_type k) const;
 
 public:  // FIX for testing
+  // FIX delete
   // FIX details?
   //! Returns <CODE>true</CODE> if \p g saturates all the congruences.
   bool saturates_all_congruences(const Generator& g) const;
@@ -343,11 +358,6 @@ public:  // FIX for testing
   // FIX details?
   //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
   bool satisfies_all_congruences(const Generator& g) const;
-
-  //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
-  // FIX details
-  bool satisfies_all_congruences(const Generator& g,
-				 const Generator& ref) const;
 
 private:
 
@@ -404,14 +414,6 @@ private:
     The contents of the original system is lost.
   */
   void resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns);
-
-#if 0 // FIX
-  //! \brief
-  //! Inserts in \p *this a copy of the congruence \p cg,
-  //! increasing the number of space dimensions if needed.
-  //! It is a pending congruence.
-  void insert_pending(const Congruence& cg);
-#endif
 };
 
 // Congruence_System.inlines.hh is not included here on purpose.
