@@ -564,7 +564,7 @@ test14() {
   Congruence_System known_cgs;
 
   // Create coefficients with string constructors as they're too big
-  // for long.
+  // for the long type.
 
   // FIX are the coefficients used or copied?
 
