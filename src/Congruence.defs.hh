@@ -342,6 +342,17 @@ public:
   bool is_virtual() const;
 
   //! \brief
+  //! Returns a reference to the true (zero-dimension space)
+  //! congruence \f$0 = 1 \pmod{1}\f$, also known as the
+  //! <EM>integrality congruence</EM>.
+  static const Congruence& zero_dim_integrality();
+
+  //! \brief
+  //! Returns a reference to the false (zero-dimension space)
+  //! congruence \f$0 = 1 \pmod{0}\f$.
+  static const Congruence& zero_dim_false();
+
+  //! \brief
   //! Returns a lower bound to the total size in bytes of the memory
   //! occupied by \p *this.
   memory_size_type total_memory_in_bytes() const;
@@ -396,17 +407,6 @@ private:
 
   //! Mark this congruence as a linear equality.
   void set_is_equality();
-
-  //! \brief
-  //! Returns a reference to the true (zero-dimension space)
-  //! congruence \f$0 = 1 \pmod{1}\f$, also known as the
-  //! <EM>integrality congruence</EM>.
-  static const Congruence& zero_dim_integrality();
-
-  //! \brief
-  //! Returns a reference to the false (zero-dimension space)
-  //! congruence \f$0 = 1 \pmod{0}\f$.
-  static const Congruence& zero_dim_false();
 
   //! Default constructor: private and not implemented.
   Congruence();
