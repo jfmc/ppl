@@ -135,6 +135,7 @@ PPL::Grid::congruences() const {
 
 const PPL::Congruence_System&
 PPL::Grid::minimized_congruences() const {
+  // FIX this will update generators
   minimize();
   return congruences();
 }
@@ -164,7 +165,7 @@ PPL::Grid::generators() const {
 
 const PPL::Generator_System&
 PPL::Grid::minimized_generators() const {
-  minimize();
+  minimize();  // FIX this will update cgs
   return generators();
 }
 #if 0
@@ -927,41 +928,18 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
 
   // The generators are required.
   if (!generators_are_up_to_date() && !minimize()) {
-    // We have just discovered that `*this' is empty.
-    // So `gs' must contain at least one point.
+    // `minimize' has shown that `*this' is empty.
+    // `gs' must contain at least one point.
     if (!gs.has_points())
       throw_invalid_generators("add_recycled_generators(gs)", "gs");
-    // The polyhedron is no longer empty and generators are up-to-date.
-    normalize_divisors(gs);
-    //std::swap(gen_sys, parameterize(gs, gs[0])); // FIX
+    gs.unset_pending_rows();
     std::swap(gen_sys, gs);
+    // The grid is no longer empty and generators are up-to-date.
     set_generators_up_to_date();
     clear_empty();
     assert(OK());
     return;
   }
-
-#if 0
-  // FIX this is messy; duplicated below
-  dimension_type row = 0;
-  TEMP_INTEGER(gen_sys_divisor);
-  dimension_type num_rows = gen_sys.num_rows();
-  // Find first point in gen_sys.
-  while (gen_sys[row].is_line_or_equality())
-    if (++row == num_rows) {
-      // All rows are lines.
-      gen_sys_divisor = 0;
-      goto normalize;
-    }
-  gen_sys_divisor = gen_sys[row].divisor();
- normalize:
-  TEMP_INTEGER(divisor);
-  divisor = normalize_divisors(gs, gen_sys_divisor);
-  if (divisor != gen_sys_divisor)
-    // FIX this call can skip the lcm calc
-    normalize_divisors(gen_sys, divisor);
-  parameterize(gs, gen_sys[row], false);
-#endif
 
   // Here we do not require `gen_sys' to be sorted.
   // also, we _swap_ (instead of copying) the coefficients of `gs'
@@ -1051,28 +1029,6 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
   //gs.adjust_topology_and_space_dimension(topology(), space_dim); // FIX
   gs.adjust_topology_and_space_dimension(gs.topology(), space_dim);
 
-#if 0
-  // FIX this is messy; duplicated above
-  dimension_type row = 0;
-  TEMP_INTEGER(gen_sys_divisor);
-  dimension_type num_rows = gen_sys.num_rows();
-  // Find first point in gen_sys.
-  while (gen_sys[row].is_line_or_equality())
-    if (++row == num_rows) {
-      // All rows are lines.
-      gen_sys_divisor = 0;
-      goto normalize;
-    }
-  gen_sys_divisor = gen_sys[row].divisor();
- normalize:
-  TEMP_INTEGER(divisor);
-  divisor = normalize_divisors(gs, gen_sys_divisor);
-  if (divisor != gen_sys_divisor)
-    // FIX this call can skip the lcm calc
-    normalize_divisors(gen_sys, divisor);
-  parameterize(gs, gen_sys[row], false);
-#endif
-
   if (minimize())
     // This call to `add_and_minimize(...)' returns `true'.
     add_and_minimize(gen_sys, con_sys, gs);
@@ -1081,8 +1037,9 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
     if (!gs.has_points())
       throw_invalid_generators("add_recycled_generators_and_minimize(gs)",
 			       "gs");
-    // `gs' has a point: the grid is no longer empty and
-    // generators are up-to-date.
+    gs.unset_pending_rows();
+    // `gs' has a point: the grid is no longer empty and generators
+    // are up-to-date.
     std::swap(gen_sys, gs);
     clear_empty();
     set_generators_up_to_date();
@@ -1279,8 +1236,8 @@ PPL::Grid::grid_difference_assign(const Grid& y) {
 
 void
 PPL::Grid::affine_image(const Variable var,
-			      const Linear_Expression& expr,
-			      Coefficient_traits::const_reference denominator) {
+			const Linear_Expression& expr,
+			Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_invalid_argument("affine_image(v, e, d)", "d == 0");
@@ -1512,8 +1469,8 @@ generalized_affine_image(const Variable var,
 
 void
 PPL::Grid::generalized_affine_image(const Linear_Expression& lhs,
-					  const Relation_Symbol relsym,
-					  const Linear_Expression& rhs) {
+				    const Relation_Symbol relsym,
+				    const Linear_Expression& rhs) {
   // Dimension-compatibility checks.
   // The dimension of `lhs' should not be greater than the dimension
   // of `*this'.

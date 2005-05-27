@@ -1537,30 +1537,6 @@ private:
   static dimension_type conversion(Generator_System& source,
 				   Congruence_System& dest);
 
-  //! Normalize the divisors in \p sys.
-  /*!
-    Convert \p sys to an equivalent representation in which the
-    divisors of all the generators are equal.
-
-    \p divisor is an extra divisor to include in the calculation of a
-    common divisor.  A value of 0 for \p divisor indicates to leave it
-    out of the calculation.
-  */
-  static Coefficient
-  normalize_divisors(Linear_System& sys,
-		     Coefficient_traits::const_reference divisor = 0);
-
-  //! Convert the rows in \p sys to parameters.
-  /*!
-    Represent all points in \p sys relative to row \p reference_row.
-    If leave_first is true then the first row in \p sys is left in
-    tact (i.e. \p sys is turned into a parameter system).
-  */
-  // FIX name? relativize?
-  static Generator_System& parameterize(Generator_System& sys,
-					Generator& reference_row,
-					bool leave_first = true);
-
   //! Convert \p cgs to upper triangular form.
   /*!
     Return true if \p cgs is consistent, else false.

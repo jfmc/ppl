@@ -287,7 +287,6 @@ Grid::add_and_minimize(Generator_System& source1,
   //assert(dest.num_pending_rows() == 0); // FIX
 
   Linear_System source2 = csource2; // FIX must csource2 be const?
-  //parameterize(source2);  // FIX check all callers do this
 
   const dimension_type old_source1_num_rows = source1.num_rows();
   // `k1' and `k2' run through the rows of `source1' and `source2', resp.

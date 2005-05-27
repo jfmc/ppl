@@ -63,11 +63,10 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
     // Stealing the rows from `cgs'.
     std::swap(con_sys, cgs);
     con_sys.normalize_moduli();
-    simplify(con_sys);
     add_low_level_congruences(con_sys);
     set_congruences_up_to_date();
   }
-  else {
+  else
     // Here `space_dim == 0'.
     if (cgs.num_columns() > 0)
       // See if an inconsistent congruence has been passed.
@@ -77,7 +76,7 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
 	  set_empty();
 	  break;
 	}
-  }
+
   assert(OK());
 }
 
@@ -116,11 +115,9 @@ PPL::Grid::construct(const Generator_System& const_gs) {
   if (gs_space_dim > 0) {
     // Stealing the rows from `gs'.
     std::swap(gen_sys, gs);
-    simplify(gen_sys);
-    if (gen_sys.num_pending_rows() > 0) {
-      gen_sys.unset_pending_rows();
-      gen_sys.set_sorted(false);
-    }
+    gen_sys.unset_pending_rows();
+    gen_sys.set_sorted(false);
+
     // Generators are now up-to-date.
     set_generators_up_to_date();
 
@@ -135,69 +132,6 @@ PPL::Grid::construct(const Generator_System& const_gs) {
   // checked for both the topology-compatibility and the supporting
   // point.
   space_dim = 0;
-}
-
-PPL::Coefficient
-PPL::Grid::normalize_divisors(Linear_System& sys,
-			      Coefficient_traits::const_reference divisor) {
-  TEMP_INTEGER(lcm);
-  lcm = divisor;
-  if (sys.num_columns()) {
-    dimension_type row = 0;
-    dimension_type num_rows = sys.num_rows();
-
-    // Move to the first point.
-    while (sys[row].is_line_or_equality())
-      if (++row == num_rows)
-	return divisor;		// All rows are lines.
-
-    if (lcm == 0) {
-      lcm = sys[row][0];
-      ++row;
-    }
-
-    // Calculate the LCM of the divisors.
-    while (row < num_rows) {
-      if (sys[row].is_ray_or_point_or_inequality())
-	lcm_assign(lcm, sys[row][0]);
-      ++row;
-    }
-
-    // Represent each point using the LCM as the divisor.
-    for (dimension_type row = 0; row < num_rows; ++row) {
-      Linear_Row& gen = sys[row];
-      if (gen.is_ray_or_point_or_inequality()) {
-	TEMP_INTEGER(divisor);
-	divisor = gen[0];
-	// FIX skip if divisor == lcm
-	for (dimension_type col = 1; col < gen.size(); ++col)
-	  gen[col] = (lcm * gen[col]) / divisor;
-	gen[0] = lcm;
-      }
-    }
-
-    sys.set_sorted(false);
-  }
-  return lcm;
-}
-
-PPL::Generator_System&
-PPL::Grid::parameterize(Generator_System& sys, Generator& reference_row,
-			bool leave_first) {
-  // FIX use as ref pnt first pnt which has a value in the first col?
-  //         better result? then need to search for it
-
-  dimension_type num_rows = sys.num_rows();
-  if (num_rows > (leave_first ? 1 : 0)) {
-    dimension_type row_len = sys.num_columns();
-    for (dimension_type row = (leave_first ? 1 : 0); row < num_rows; ++row)
-      if (sys[row].is_ray_or_point_or_inequality())
-	for (dimension_type col = 0; col < row_len; ++col)
-	  sys[row][col] -= reference_row[col];
-    sys.set_sorted(false);	// FIX
-  }
-
-  return sys;
 }
 
 PPL::Grid::Three_Valued_Boolean
