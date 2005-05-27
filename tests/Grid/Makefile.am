@@ -90,7 +90,10 @@ XFAIL_TESTS =
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
-BUGS =
+BUGS = bug1
+
+bug1_SOURCES = bug1.cc
+bug1_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"
 
 MOSTLYCLEANFILES = \
 writecongruencesystem.dat
