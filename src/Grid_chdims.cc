@@ -353,7 +353,7 @@ PPL::Grid::concatenate_assign(const Grid& y) {
   // TODO: this implementation is just an executable specification.
   Congruence_System cgs = y.congruences();
 
-  if (congruences_are_up_to_date() == false)
+  if (!congruences_are_up_to_date())
     // FIX check if now empty? (also in ph?)
     update_congruences();
 
@@ -422,8 +422,7 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
   const dimension_type new_space_dim = space_dim - to_be_removed.size();
 
   if (marked_empty()
-      || (generators_are_up_to_date() == false
-	  && update_generators() == false)) {
+      || (!generators_are_up_to_date() && !update_generators())) {
     // FIX?  mark empty? keep empty con_sys?
     con_sys.clear();
     gen_sys.clear();
@@ -496,8 +495,7 @@ PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
   }
 
   if (marked_empty()
-      || (generators_are_up_to_date() == false
-	  && update_generators() == false)) {
+      || (!generators_are_up_to_date() && !update_generators())) {
     // Removing dimensions from the empty grid just updates the space
     // dimension.
     space_dim = new_dimension;

@@ -266,7 +266,7 @@ Grid::is_empty() const {
   // (since it is well formed) contains a point.
   if (generators_are_up_to_date())
     return false;
-  return minimize() == false;
+  return !minimize();
 }
 
 #if 0

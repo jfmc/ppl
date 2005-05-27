@@ -297,11 +297,11 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
   std::string str;
   dimension_type nrows;
   dimension_type ncols;
-  if ((s >> nrows) == false)
+  if (!(s >> nrows))
     return false;
-  if ((s >> str) == false) // FIX == false?
+  if (!(s >> str)) // FIX `!'?
     return false;
-  if ((s >> ncols) == false)
+  if (!(s >> ncols))
     return false;
   resize_no_copy(nrows, ncols);
 

@@ -36,7 +36,7 @@ main() TRY {
 
   Congruence_System cgs;
 
-  if (cgs.OK() == false) {
+  if (!cgs.OK()) {
     nout << "cgs.OK() failed" << endl << "ASCII dump: ";
     cgs.ascii_dump(nout);
     return 1;

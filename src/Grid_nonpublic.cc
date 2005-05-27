@@ -103,7 +103,7 @@ PPL::Grid::construct(const Generator_System& const_gs) {
 
   const dimension_type gs_space_dim = gs.space_dimension();
 
-  if (gs.is_necessarily_closed() == false) {
+  if (!gs.is_necessarily_closed()) {
     // A NOT_NECESSARILY_CLOSED generator system can be converted in
     // to a NECESSARILY_CLOSED one only if it does not contain closure
     // points.
@@ -296,8 +296,7 @@ PPL::Grid::is_included_in(const Grid& y) const {
   dimension_type num_rows = gs.num_rows();
   for (dimension_type i = num_rows; i-- > 1; )
     // FIX Generator& gen = gs[i];
-    if (gs[i].is_virtual() == false)
-      if (cgs.satisfies_all_congruences(gs[i]) == false) {
+    if (!gs[i].is_virtual() && !cgs.satisfies_all_congruences(gs[i])) {
 	std::cout << "is_included_in... done (false i = " << i << ")." << std::endl;
 	return false;
       }

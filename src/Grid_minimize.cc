@@ -261,14 +261,13 @@ Grid::add_and_minimize(Congruence_System& source1,
       //source1.add_pending_row(source2[k2]);
       added = true, source1.add_row(source2[k2]); // FIX
 
-  //if (source1.num_pending_rows() == 0)
-  if (added == false)
-    // No row was appended to `source1', because all the constraints
-    // in `source2' were already in `source1'.
-    // There is nothing left to do ...
-    return false;
+  //if (source1.num_pending_rows() != 0)
+  if (added)
+    return add_and_minimize(source1, dest);
 
-  return add_and_minimize(source1, dest);
+  // No row was appended to `source1', because all the constraints
+  // in `source2' were already in `source1'.
+  return false;
 }
 
 bool

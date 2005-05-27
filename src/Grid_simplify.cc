@@ -118,7 +118,7 @@ Grid::reduce_pc_with_pc(Row& row, Row& pivot,
   row_a = row[column] / gcd;
   // Adjust the elements of row, as in reduce_line_with_line above.
   for (dimension_type col = 0;
-       col < pivot.size() - (parameters == false) /* modulus */;
+       col < pivot.size() - !parameters /* modulus */;
        ++col) {
     TEMP_INTEGER(pivot_col);
     TEMP_INTEGER(row_col);
@@ -357,7 +357,7 @@ Grid::simplify(Generator_System& sys) {
   sys.set_sorted(false);
 
   // Grids are either consistent or empty.
-  if (sys[0].is_ray_or_point() == false) {
+  if (!sys[0].is_ray_or_point()) {
     dimension_type row_size = sys.num_columns();
     // Make all rows virtual, to free space.
     // FIX is this worth the time?

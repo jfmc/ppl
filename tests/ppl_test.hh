@@ -179,7 +179,7 @@ static bool
 find_variation_template(T& a) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
 
-  if (a.OK() == false) {
+  if (!a.OK()) {
     nout << "OK() failed\nASCII dump:" << endl;
     a.ascii_dump(nout);
     return true;
@@ -191,7 +191,7 @@ find_variation_template(T& a) {
   T b(a);
   stringstream dump;
   a.ascii_dump(dump);
-  if (b.ascii_load(dump) == false) {
+  if (!b.ascii_load(dump)) {
     std::cerr << "Failed to load `b' from the ASCII dump of `a'." << endl;
     exit(1);
   }

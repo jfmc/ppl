@@ -144,7 +144,7 @@ test4() {
 
   for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
-    if ((*i).is_closure_point() == false)
+    if (!(*i).is_closure_point())
       gr.add_generator(*i);
 
   if (find_variation(gr))

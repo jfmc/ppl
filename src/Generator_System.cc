@@ -254,7 +254,7 @@ PPL::Generator_System::has_points() const {
 	return true;
     }
   else {
-    // is_necessarily_closed() == false.
+    // !is_necessarily_closed()
     const dimension_type eps_index = gs.num_columns() - 1;
     for (dimension_type i = num_rows(); i-- > 0; )
     if (gs[i][eps_index] != 0)

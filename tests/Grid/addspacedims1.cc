@@ -115,7 +115,7 @@ test3() {
   if (find_variation(gr))
     exit(1);
 
-  if (gr.is_universe() == false) {
+  if (!gr.is_universe()) {
     nout << "Grid should be universe." << endl;
     exit(1);
   }

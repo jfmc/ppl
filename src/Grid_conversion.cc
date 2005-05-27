@@ -266,7 +266,7 @@ Grid::conversion(Congruence_System& source, Linear_System& dest) {
       while (1) {
 	ctrace << "       " << row << std::endl;
 	Linear_Row& dest_row = dest[row];
-	if (dest_row.is_virtual() == false)
+	if (!dest_row.is_virtual())
 	  dest_row[index] -= (source_col * dest_row[col]);
 	if (row == 0) break;
 	row--;

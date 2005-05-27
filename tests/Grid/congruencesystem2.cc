@@ -74,7 +74,7 @@ fulfils(const Generator_System& gs,
   nout << "ASCII dump of " << cgs << ":" << endl;
   cgs.ascii_dump(nout);
 
-  return pass_expected == false;
+  return !pass_expected;
 }
 
 #define satisfies fulfils

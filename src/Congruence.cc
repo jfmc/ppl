@@ -189,15 +189,15 @@ PPL::Congruence::ascii_load(std::istream& s) {
   Congruence& x = *this;
   dimension_type col = 0;
   while (col < x.size() - 1)
-    if ((s >> x[col]) == false)
+    if (!(s >> x[col]))
       return false;
     else
       col++;
 
-  if ((s >> str) == false || str.compare("m"))
+  if (!(s >> str) || str.compare("m"))
     return false;
 
-  if ((s >> x[col]) == false)
+  if (!(s >> x[col]))
     return false;
 
 #if 0

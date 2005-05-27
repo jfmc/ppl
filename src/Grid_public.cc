@@ -197,8 +197,7 @@ PPL::Grid::relation_with(const Congruence& c) const {
       // nor the strict positivity congruence 1 > 0.
       return Poly_Con_Relation::is_included();
 
-  if (generators_are_up_to_date() == false
-      && update_generators() == false)
+  if (!generators_are_up_to_date() && !update_generators())
     // The grid is empty.
     return Poly_Con_Relation::saturates()
       && Poly_Con_Relation::is_included()
@@ -222,8 +221,7 @@ PPL::Grid::relation_with(const Generator& g) const {
   if (space_dim == 0)
     return Poly_Gen_Relation::subsumes();
 
-  if (congruences_are_up_to_date() == false)
-    update_congruences();
+  congruences_are_up_to_date() || update_congruences();
 
   return
     con_sys.satisfies_all_congruences(g)
@@ -260,7 +258,7 @@ PPL::Grid::is_universe() const {
     // Check that all subsequent rows are virtual.
     Congruence_System::const_iterator row = con_sys.begin();
     while (++row != con_sys.end())
-      if ((*row).is_virtual() == false)
+      if (!(*row).is_virtual())
 	return false;
     return true;
   }
@@ -285,7 +283,7 @@ PPL::Grid::is_universe() const {
   // Check if all subsequent rows are virtual.
   Generator_System::const_iterator row = gen_sys.begin();
   while (++row != gen_sys.end())
-    if ((*row).is_virtual() == false)
+    if (!(*row).is_virtual())
       return false;
   return true;
 }
@@ -367,7 +365,7 @@ PPL::Grid::OK(bool check_not_empty) const {
   }
 
   // Check whether the status information is legal.
-  if (status.OK() == false)
+  if (!status.OK())
     goto fail;
 
   if (marked_empty()) {
@@ -457,7 +455,7 @@ PPL::Grid::OK(bool check_not_empty) const {
       // Check if the system of generators is well-formed.  Check by
       // hand, as many valid characteristics of a parameter system will
       // fail Generator_System::OK.
-      if (gen_sys.Linear_System::OK(false) == false) {
+      if (!gen_sys.Linear_System::OK(false)) {
 #ifndef NDEBUG
 	cerr << "gen_sys Linear_System::OK failed." << endl;
 #endif
@@ -467,7 +465,7 @@ PPL::Grid::OK(bool check_not_empty) const {
       for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
 	const Generator& g = gen_sys[i];
 
-	if (g.is_necessarily_closed() == false) {
+	if (!g.is_necessarily_closed()) {
 #ifndef NDEBUG
 	  cerr << "Parameter should be necessarily closed."
 	       << endl;
@@ -498,7 +496,7 @@ PPL::Grid::OK(bool check_not_empty) const {
 	Generator_System gs = gen_sys;
 
 	// A reduced generator system must be upper triangular.
-	if (upper_triangular(gs) == false) {
+	if (!upper_triangular(gs)) {
 #ifndef NDEBUG
 	  cerr << "Reduced generators should be upper triangular." << endl;
 #endif
@@ -560,7 +558,7 @@ PPL::Grid::OK(bool check_not_empty) const {
 
     if (congruences_are_minimized()) {
       // A reduced congruence system must be lower triangular.
-      if (lower_triangular(con_sys) == false) {
+      if (!lower_triangular(con_sys)) {
 #ifndef NDEBUG
 	cerr << "Reduced congruences should be lower triangular." << endl;
 #endif
@@ -673,11 +671,10 @@ PPL::Grid::add_generator(const Generator& g) {
   }
 
   if (marked_empty()
-      || (generators_are_up_to_date() == false
-	  && (update_generators() == false))) {
+      || (!generators_are_up_to_date() && !update_generators())) {
     // Here the grid is empty: the specification says we can only
     // insert a point.
-    if (g.is_point() == false)
+    if (!g.is_point())
       throw_invalid_generator("add_generator(g)", "g");
     if (g.is_necessarily_closed())
       gen_sys.insert(g);
@@ -703,7 +700,7 @@ PPL::Grid::add_generator(const Generator& g) {
       // of the inserted generator are automatically adjusted.
       gen_sys.insert(g);
     else {
-      assert(g.is_closure_point() == false);
+      assert(!g.is_closure_point());
       // Note: here we have a _legal_ topology mismatch, because
       // `g' is NOT a closure point.
       // However, by barely invoking `gen_sys.insert(g)' we would
@@ -773,7 +770,7 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
   }
 
   // The congruences are required.
-  if (congruences_are_up_to_date() == false && update_congruences()) {
+  if (!congruences_are_up_to_date() && update_congruences()) {
     set_empty();
     assert(OK());
     return;
@@ -843,7 +840,7 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   if (marked_empty())
     return false;
 
-  if (congruences_are_up_to_date() == false && update_congruences()) {
+  if (!congruences_are_up_to_date() && update_congruences()) {
     set_empty();
     assert(OK());
     return false;
@@ -929,7 +926,7 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
 #endif
 
   // The generators are required.
-  if (generators_are_up_to_date() == false && minimize() == false) {
+  if (!generators_are_up_to_date() && !minimize()) {
     // We have just discovered that `*this' is empty.
     // So `gs' must contain at least one point.
     if (!gs.has_points())
@@ -1125,12 +1122,10 @@ PPL::Grid::intersection_assign(const Grid& y) {
     return;
 
   // The congruences must be up-to-date.
-  if (x.congruences_are_up_to_date() == false
-      && x.update_congruences())
+  if (!x.congruences_are_up_to_date() && x.update_congruences())
     // Discovered `x' empty when updating congruences.
     return;
-  if (y.congruences_are_up_to_date() == false
-      && y.update_congruences()) {
+  if (!y.congruences_are_up_to_date() && y.update_congruences()) {
     // Discovered `y' empty when updating congruences.
     x.set_empty();
     return;
@@ -1173,20 +1168,18 @@ PPL::Grid::join_assign(const Grid& y) {
     return;
 
   // The generators must be up-to-date.
-  if (x.generators_are_up_to_date() == false
-      && x.update_generators()) {
+  if (!x.generators_are_up_to_date() && x.update_generators()) {
     // Discovered `x' empty when updating generators.
     x = y;
     return;
   }
-  if (y.generators_are_up_to_date() == false
-      && y.update_generators())
+  if (!y.generators_are_up_to_date() && y.update_generators())
     // Discovered `y' empty when updating generators.
     return;
 
   x.gen_sys.add_rows(y.gen_sys);
-  // Congruences may be out of date and generators may have changed
-  // from minimal form.
+  // Congruences may be out of date and generators may have lost
+  // minimal form.
   x.clear_congruences_up_to_date();
   x.clear_generators_minimized();
 
@@ -1758,7 +1751,7 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
 
   // The two systems are merged.  `Linear_System::merge_rows_assign()'
   // requires both systems to be sorted.
-  if (x.gen_sys.is_sorted() == false)
+  if (!x.gen_sys.is_sorted())
     x.gen_sys.sort_rows();
   gs.sort_rows();
   x.gen_sys.merge_rows_assign(gs);
