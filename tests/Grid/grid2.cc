@@ -541,57 +541,6 @@ test13() {
   exit(1);
 }
 
-void
-test14() {
-  nout << "test14:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Grid gr(3);
-
-  Constraint c(2*A + 0*C == 0);
-  Congruence cg(c / 0);
-
-  gr.add_congruence(cg);
-
-  if (find_variation(gr))
-    exit(1);
-
-  gr.ascii_dump(nout);
-
-
-  Grid gr2(3);
-  gr.add_generator(point());
-  gr.add_generator(point(A));
-
-  Constraint_System cs(A + 0*C == 0);
-  cs.insert(B == 3);
-
-#if 1
-  nout << gr2 << endl
-       << cs << endl;
-#endif
-  gr2.add_congruences_and_minimize(cs);
-
-  if (find_variation(gr2))
-    exit(1);
-
-  gr2.ascii_dump(nout);
-
-
-  Grid gr3(3, Grid::EMPTY);
-  //gr3.add_generator(point(0*A, -1));  // gets converted to 1 0 0 0 p
-  gr3.add_generator(point(A));
-  gr3.add_generator(line(A));
-  gr3.add_generator(line(B));
-  gr3.add_generator(line(-C));
-
-  nout << "gr3.ascii_dump(nout):" << endl;
-  gr3.ascii_dump(nout);
-}
-
 int
 main() TRY {
   set_handlers();
@@ -611,7 +560,6 @@ main() TRY {
   test11();
   test12();
   test13();
-  test14();
 
   return 0;
 }
