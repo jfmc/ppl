@@ -13,7 +13,6 @@ index_first_pending 8
 0 1 0 1 L
 0 0 1 1 L
 0 0 0 1 L
-THIS_IS_TO_GET_AROUND_A_BUG_IN_Grid::ascii_load()
 topology NECESSARILY_CLOSED
 3 x 4 (sorted)
 index_first_pending 3

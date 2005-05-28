@@ -903,16 +903,10 @@ PPL::Generator_System::ascii_load(std::istream& s) {
   set_index_first_pending_row(index);
 
   Generator_System& x = *this;
-  bool ahead = false;
   for (dimension_type i = 0; i < x.num_rows(); ++i) {
     for (dimension_type j = 0; j < x.num_columns(); ++j)
-      if (ahead) {
-	x[i][j] = str;
-	ahead = false;
-      }
-      else
-	if (!(s >> x[i][j]))
-	  return false;
+      if (!(s >> x[i][j]))
+	return false;
 
     if (!(s >> str))
       return false;
@@ -926,7 +920,8 @@ PPL::Generator_System::ascii_load(std::istream& s) {
 	x[i].set_is_virtual();
 	continue;
       }
-      ahead = true;
+      for (std::string::size_type i = str.length(); i > 0; --i)
+	s.unget();
     }
 
 #if 0 // FIX temp, for grids
