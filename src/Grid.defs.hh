@@ -359,11 +359,8 @@ public:
     \param kind
     Specifies whether the universe or the empty grid has to be built.
   */
-  Grid(dimension_type num_dimensions = 0,
-       const Degenerate_Kind kind = UNIVERSE);
-
-  //! Ordinary copy-constructor.
-  Grid(const Grid& y);
+  explicit Grid(dimension_type num_dimensions = 0,
+		const Degenerate_Kind kind = UNIVERSE);
 
   //! Builds a grid from a const system of congruences.
   /*!
@@ -372,7 +369,7 @@ public:
     \param cgs
     The system of congruences defining the grid.
   */
-  Grid(const Congruence_System& cgs);
+  explicit Grid(const Congruence_System& cgs);
 
   //! Builds a grid recycling a system of congruences.
   /*!
@@ -383,7 +380,7 @@ public:
     declared <CODE>const</CODE> because its data-structures will be
     recycled to build the grid.
   */
-  Grid(Congruence_System& cgs);
+  explicit Grid(Congruence_System& cgs);
 
   //! Builds a grid from a system of generators.
   /*!
@@ -395,7 +392,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  Grid(const Generator_System& const_gs);
+  explicit Grid(const Generator_System& const_gs);
 
   //! Builds a grid recycling a system of generators.
   /*!
@@ -409,7 +406,10 @@ public:
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  Grid(Generator_System& gs);
+  explicit Grid(Generator_System& gs);
+
+  //! Ordinary copy-constructor.
+  Grid(const Grid& y);
 
   //! \brief
   //! The assignment operator.
