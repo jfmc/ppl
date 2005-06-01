@@ -915,16 +915,16 @@ PPL::Generator_System::ascii_load(std::istream& s) {
     else
       x[i].set_is_ray_or_point();
 
-    if (s >> str) {
-      if (str == "(v)") {
+    std::string vstr;
+    if (s >> vstr) {
+      if (vstr == "(v)") {
 	x[i].set_is_virtual();
 	continue;
       }
-      for (std::string::size_type i = str.length(); i > 0; --i)
+      for (std::string::size_type i = vstr.length(); i > 0; --i)
 	s.unget();
     }
 
-#if 0 // FIX temp, for grids
     // Checking for equality of actual and declared types.
     switch (x[i].type()) {
     case Generator::LINE:
@@ -946,11 +946,10 @@ PPL::Generator_System::ascii_load(std::istream& s) {
     }
     // Reaching this point means that the input was illegal.
     return false;
-#endif
   }
 
   // Checking for well-formedness.
-  //assert(OK());  // FIX temp for grids
+  //assert(OK());   // FIX OK requires strong normalization of gens
   return true;
 }
 
