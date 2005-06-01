@@ -696,10 +696,15 @@ PPL::Grid::add_generator(const Generator& g) {
   }
   else {
     assert(generators_are_up_to_date());
-    if (g.is_necessarily_closed())
+    if (g.is_necessarily_closed()) {
       // Since `gen_sys' is not empty, the topology and space dimension
       // of the inserted generator are automatically adjusted.
-      gen_sys.insert(g);
+      // FIX convert rays to lines for now
+      if (g.is_ray())
+	gen_sys.insert(Generator::line(Linear_Expression(g)));
+      else
+	gen_sys.insert(g);
+    }
     else {
       assert(!g.is_closure_point());
       // Note: here we have a _legal_ topology mismatch, because
@@ -713,8 +718,8 @@ PPL::Grid::add_generator(const Generator& g) {
 	gen_sys.insert(Generator::line(nc_expr));
 	break;
       case Generator::RAY:
-	// FIX ok to insert ray?
-	gen_sys.insert(Generator::ray(nc_expr));
+	// FIX should input parameter?
+	gen_sys.insert(Generator::line(nc_expr));
 	break;
       case Generator::POINT:
 	gen_sys.insert(Generator::point(nc_expr, g.divisor()));
