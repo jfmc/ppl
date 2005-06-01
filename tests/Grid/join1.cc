@@ -115,11 +115,57 @@ test3() {
 
   Generator_System gs;
   gs.insert(point());
-  gs.insert(point(-C));
+  gs.insert( line(A));
+  gs.insert( line(B));
+  gs.insert( line(-C));
 
   Grid gr2(gs);
 
   gr1.join_assign(gr2);
+
+  if (find_variation(gr1))
+    exit(1);
+
+  Grid known_gr(3);
+
+  if (gr1 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Inserting a ray.
+
+void
+test4() {
+  nout << "test4:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Generator_System gs1;
+  gs1.insert(point(0*C));
+  gs1.insert( line(A));
+  gs1.insert( line(B));
+
+  Grid gr1(gs1);
+
+  gr1.add_generator(ray(-C));
+
+  Generator_System gs2;
+  gs2.insert(point(0*C));
+
+  Grid gr2(gs2);
+
+  if (find_variation(gr2))
+    exit(1);
+
+  gr1.join_assign_and_minimize(gr2);
 
   if (find_variation(gr1))
     exit(1);
@@ -145,6 +191,7 @@ main() TRY {
   test1();
   test2();
   test3();
+  test4();
 
   return 0;
 }
