@@ -51,37 +51,34 @@ PPL::Grid::Grid(dimension_type num_dimensions,
   space_dim = num_dimensions;
   con_sys.increase_space_dimension(num_dimensions);
   // FIX where will gen_sys space dim be adjusted?
-  if (num_dimensions > 0) {
-    add_low_level_congruences(con_sys);
-    if (kind == UNIVERSE) {
-      // Initialise both systems to universe representations.
-      set_congruences_minimized();
-      set_congruences_up_to_date();
-      gen_sys.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
-						  num_dimensions);
-      set_generators_minimized();
-      con_sys.add_zero_rows(num_dimensions + 1, Row::Flags());
-      gen_sys.add_zero_rows(num_dimensions + 1,
-			    Linear_Row::Flags(NECESSARILY_CLOSED,
-					      Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
-      Generator& first_g = gen_sys[0];
-      first_g[0] = 1;
-      first_g.set_is_ray_or_point();
-      Congruence& first_cg = con_sys[0];
-      first_cg[0] = 1;
-      first_cg[num_dimensions + 1] = 1; // Modulus.
-      do {
-	Generator& g = gen_sys[num_dimensions];
-	g[num_dimensions] = 1;
-	g.set_is_line();
-	Congruence& cg = con_sys[num_dimensions];
-	cg[num_dimensions] = 1;
-	cg.set_is_virtual();
-      }
-      while (num_dimensions-- > 1);
-      gen_sys.unset_pending_rows();
-      gen_sys.set_sorted(false);
+  if (num_dimensions > 0 && kind == UNIVERSE) {
+    // Initialise both systems to universe representations.
+    set_congruences_minimized();
+    set_congruences_up_to_date();
+    gen_sys.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
+						num_dimensions);
+    set_generators_minimized();
+    con_sys.add_zero_rows(num_dimensions + 1, Row::Flags());
+    gen_sys.add_zero_rows(num_dimensions + 1,
+			  Linear_Row::Flags(NECESSARILY_CLOSED,
+					    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+    Generator& first_g = gen_sys[0];
+    first_g[0] = 1;
+    first_g.set_is_ray_or_point();
+    Congruence& first_cg = con_sys[0];
+    first_cg[0] = 1;
+    first_cg[num_dimensions + 1] = 1; // Modulus.
+    do {
+      Generator& g = gen_sys[num_dimensions];
+      g[num_dimensions] = 1;
+      g.set_is_line();
+      Congruence& cg = con_sys[num_dimensions];
+      cg[num_dimensions] = 1;
+      cg.set_is_virtual();
     }
+    while (num_dimensions-- > 1);
+    gen_sys.unset_pending_rows();
+    gen_sys.set_sorted(false);
   }
   assert(OK());
 }

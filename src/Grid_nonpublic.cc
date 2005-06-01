@@ -63,7 +63,6 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
     // Stealing the rows from `cgs'.
     std::swap(con_sys, cgs);
     con_sys.normalize_moduli();
-    add_low_level_congruences(con_sys);
     set_congruences_up_to_date();
   }
   else

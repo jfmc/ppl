@@ -1485,9 +1485,6 @@ private:
   //! Returns <CODE>true</CODE> if and only if \p *this is included in \p y.
   bool is_included_in(const Grid& y) const;
 
-  //! Adds the low-level congruences to the congruence system.
-  static void add_low_level_congruences(Congruence_System& cgs);
-
   //! \name Minimization-related Static Member Functions
   //@{
 

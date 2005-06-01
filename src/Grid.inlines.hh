@@ -251,12 +251,6 @@ Grid::clear_generators_up_to_date() {
   // Can get rid of gen_sys here.
 }
 
-inline void
-Grid::add_low_level_congruences(Congruence_System& /*cgs FIX*/) {
-  // FIX
-  //cgs.insert(Congruence::zero_dim_integrality());
-}
-
 inline bool
 Grid::is_empty() const {
   if (marked_empty())
