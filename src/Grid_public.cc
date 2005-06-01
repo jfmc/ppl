@@ -906,12 +906,12 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
   if (space_dim < gs_space_dim)
     throw_dimension_incompatible("add_recycled_generators(gs)", "gs", gs);
 
-  // Adding no generators is a no-op.
+  // Adding no generators leaves the grid the same.
   if (gs.num_rows() == 0)
     return;
 
-  // Adding valid generators to a zero-dimensional polyhedron
-  // transform it in the zero-dimensional universe polyhedron.
+  // Adding valid generators to a zero-dimensional grid transforms it
+  // to the zero-dimensional universe grid.
   if (space_dim == 0) {
     if (marked_empty() && !gs.has_points())
       throw_invalid_generators("add_recycled_generators(gs)", "gs");
@@ -939,6 +939,14 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
       throw_invalid_generators("add_recycled_generators(gs)", "gs");
     gs.unset_pending_rows();
     std::swap(gen_sys, gs);
+    // FIX for now convert rays to lines
+    for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
+      Generator& g = gen_sys[row];
+      if (g.is_ray()) {
+	g.set_is_line();
+	g.strong_normalize();
+      }
+    }
     // The grid is no longer empty and generators are up-to-date.
     set_generators_up_to_date();
     clear_empty();
@@ -963,6 +971,10 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
     Generator& old_g = gs[i];
     if (old_g.is_line())
       new_g.set_is_line();
+    if (old_g.is_ray()) {
+      new_g.set_is_line();
+      new_g.strong_normalize();
+    }
     for (dimension_type j = gs_num_columns; j-- > 0; )
       std::swap(new_g[j], old_g[j]);
   }
@@ -1036,6 +1048,7 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
 
   if (minimize())
     // This call to `add_and_minimize(...)' returns `true'.
+    // FIX add_and_minimize copies the generators (check cgs version)
     add_and_minimize(gen_sys, con_sys, gs);
   else {
     // The grid was empty: check if `gs' contains a point.
@@ -1046,6 +1059,14 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
     // `gs' has a point: the grid is no longer empty and generators
     // are up-to-date.
     std::swap(gen_sys, gs);
+    // FIX for now convert rays to lines
+    for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
+      Generator& g = gen_sys[row];
+      if (g.is_ray()) {
+	g.set_is_line();
+	g.strong_normalize();
+      }
+    }
     clear_empty();
     set_generators_up_to_date();
     // This call to `minimize()' returns `true'.

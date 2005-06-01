@@ -1503,24 +1503,15 @@ private:
 		       Congruence_System& source);
 
   //! \brief
-  //! Adds given congruences and builds minimized corresponding generators,
-  //! or vice versa.
+  //! Adds copies of given congruences and builds minimized
+  //! corresponding generators, or vice versa.
   static bool add_and_minimize(Congruence_System& source1,
 			       Linear_System& dest,
 			       const Congruence_System& source2);
 
   //! \brief
-  //! Adds given congruences and builds minimized corresponding generators
-  //! or vice versa. The given congruences are in \p source.
-  static bool add_and_minimize(Congruence_System& source,
-			       Linear_System& dest);
-
-  //! \brief
-  //! Adds given generators and builds reduced corresponding congruences.
-  static bool add_and_minimize(Generator_System& source,
-			       Congruence_System& dest);
-
-  //! Adds given generators and builds reduced corresponding congruences.
+  //! Adds copies of given generators and builds corresponding reduced
+  //! congruences.
   static bool add_and_minimize(Generator_System& source1,
 			       Congruence_System& dest,
 			       const Generator_System& source2);
