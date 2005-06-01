@@ -297,7 +297,6 @@ public:
 
 protected:
 
-  // FIX details?
   //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
   bool satisfies_all_congruences(const Generator& g) const;
 

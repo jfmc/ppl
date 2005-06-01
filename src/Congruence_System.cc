@@ -223,7 +223,6 @@ PPL::Congruence_System::satisfies_all_congruences(const Generator& g) const {
 }
 
 #if 0
-// FIX complete
 void
 PPL::Congruence_System::affine_preimage(dimension_type v,
 					const Linear_Expression& expr,
@@ -299,13 +298,11 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
   dimension_type ncols;
   if (!(s >> nrows))
     return false;
-  if (!(s >> str)) // FIX `!'?
+  if (!(s >> str))
     return false;
   if (!(s >> ncols))
     return false;
   resize_no_copy(nrows, ncols);
-
-  // FIX freeing on failure?
 
   Congruence_System& x = *this;
   for (dimension_type i = 0; i < x.num_rows(); ++i)
@@ -323,14 +320,14 @@ PPL::Congruence_System::OK() const {
     return false;
 
   if (num_rows()) {
-    if (num_columns() < 2)
-      return false;
-  }
-#if 0 // FIX
-  else
-    if (num_columns() > 2)
-      return false;
+    if (num_columns() < 2) {
+#ifndef NDEBUG
+      std::cerr << "Congruence_System has rows and fewer than two columns."
+		<< std::endl;
 #endif
+      return false;
+    }
+  }
 
   // Checking each congruence in the system.
   const Congruence_System& x = *this;
@@ -338,7 +335,6 @@ PPL::Congruence_System::OK() const {
     const Congruence& cg = x[i];
     if (!cg.OK())
       return false;
-    // FIX check that strong normalized
   }
 
   // All checks passed.
