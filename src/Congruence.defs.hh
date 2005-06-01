@@ -289,8 +289,11 @@ public:
   //! Returns the inhomogeneous term of \p *this.
   Coefficient_traits::const_reference inhomogeneous_term() const;
 
-  //! Returns the modulus of \p *this.
-  Coefficient_traits::const_reference modulus() const;
+  //! Returns a reference to the modulus of \p *this.
+  Coefficient& modulus();
+
+  //! Returns a const reference to the modulus of \p *this.
+  const Coefficient& modulus() const;
 
   //! Multiplies \p k into the modulus of \p *this.
   /*!

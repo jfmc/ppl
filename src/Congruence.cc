@@ -46,7 +46,6 @@ PPL::Congruence::sign_normalize() {
     if (x[first_non_zero] != 0)
       break;
   if (first_non_zero < sz)
-    // FIX This probably needs work for negative moduli.
     // If the first non-zero coefficient of the row is negative,
     // negate all the coefficients and the inhomogeneous term.
     if (x[first_non_zero] < 0) {
@@ -214,7 +213,7 @@ PPL::Congruence::ascii_load(std::istream& s) {
 
 bool
 PPL::Congruence::OK() const {
-#if 0 // FIX Negative moduli are currently allowed.
+#if 0 // FIX -1 currently used for virtual row.
   // Modulus check.
   if (modulus() < 0) {
 #ifndef NDEBUG
