@@ -37,8 +37,7 @@ struct number_struct {
 };
 
 inline int
-get_digit(int c, int base = 10)
-{
+get_digit(int c, int base = 10) {
   if (c >= '0' && c < '0' + (base > 10 ? 10 : base))
     return c - '0';
   if (base > 10) {
@@ -53,13 +52,13 @@ get_digit(int c, int base = 10)
 
 inline bool
 sum_sign(bool& a_neg, unsigned long& a,
-	 bool b_neg, unsigned long b)
-{
+	 bool b_neg, unsigned long b) {
   if (a_neg == b_neg) {
     if (a > ULONG_MAX - b)
       return false;
     a += b;
-  } else if (a >= b)
+  }
+  else if (a >= b)
     a -= b;
   else {
     a_neg = !a_neg;
@@ -70,8 +69,7 @@ sum_sign(bool& a_neg, unsigned long& a,
 
 
 Result
-parse_number1(std::istream& is, number_struct& num)
-{
+parse_number1(std::istream& is, number_struct& num) {
   enum { BASE, INTEGER, FRACTIONAL, EXPONENT } state = BASE;
   unsigned long max_exp_div;
   int max_exp_rem;
@@ -123,10 +121,12 @@ parse_number1(std::istream& is, number_struct& num)
       num.base = 16;
       state = INTEGER;
       c = is.get();
-    } else {
+    }
+    else {
       c = d;
     }
-  } else {
+  }
+  else {
     num.mantissa += (char) c;
     c = is.get();
   }
@@ -202,8 +202,8 @@ parse_number1(std::istream& is, number_struct& num)
       int d = get_digit(c, num.base);
       if (d >= 0) {
 	empty_exponent = false;
-	if (num.exponent > max_exp_div ||
-	    num.exponent == max_exp_div && d > max_exp_rem)
+	if (num.exponent > max_exp_div
+	    || (num.exponent == max_exp_div && d > max_exp_rem))
 	  return V_CVT_STR_UNK;
 	num.exponent = num.exponent * num.base + d;
 	break;
@@ -242,8 +242,7 @@ parse_number1(std::istream& is, number_struct& num)
 }
 
 Result
-parse_number(std::istream& is, number_struct& num, number_struct& den)
-{
+parse_number(std::istream& is, number_struct& num, number_struct& den) {
   Result r = parse_number1(is, num);
   if (r != V_EQ)
     return r;
@@ -262,7 +261,8 @@ parse_number(std::istream& is, number_struct& num, number_struct& den)
 	den.neg_exponent = false;
 	den.exponent = num.exponent;
 	num.exponent = 0;
-      } else
+      }
+      else
 	den.exponent = 0;
     }
   }
@@ -309,7 +309,8 @@ input_mpq(mpq_class& to, std::istream& is) {
       }
       mpz_clear(z);
     }
-  } else {
+  }
+  else {
     if (num_struct.neg_mantissa)
       mpz_neg(num, num);
     if (num_struct.exponent) {
