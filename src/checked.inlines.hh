@@ -21,6 +21,7 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#include "compiler.hh"
 #include <cassert>
 
 namespace Parma_Polyhedra_Library {
