@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <fenv.h>
 
+#if 0
+
 #ifdef FE_TONEAREST
 #define FPU_TONEAREST FE_TONEAREST
 #endif
@@ -34,6 +36,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 #ifdef FE_TOWARDZERO
 #define FPU_TOWARDZERO FE_TOWARDZERO
+#endif
+
+#else
+
+// FIXME
+// On Darwin the FE_* constants are not defined by means of macros.
+// Since we have no backup solution in case, e.g., FE_UPWARD is not
+// defined, it seems sensible to define our macros unconditionally.
+#define FPU_TONEAREST FE_TONEAREST
+#define FPU_UPWARD FE_UPWARD
+#define FPU_DOWNWARD FE_DOWNWARD
+#define FPU_TOWARDZERO FE_TOWARDZERO
+
 #endif
 
 namespace Parma_Polyhedra_Library {
