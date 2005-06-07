@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Row_defs_hh 1
 
 #include "Row.types.hh"
+#include "Grid.types.hh" // FIX trace (FIX rqrd when EXTRA_ROW_DEBUG)
 #include "globals.defs.hh"
 #include "Coefficient.defs.hh"
 #include <vector>
@@ -43,6 +44,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define EXTRA_ROW_DEBUG 0
 #endif
+
+// FIX trc
+namespace Parma_Polyhedra_Library {
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are the same grid.
+/*!
+  \relates Grid
+  Note that \p x and \p y may be dimension-incompatible grids: in
+  those cases, the value <CODE>false</CODE> is returned.
+*/
+bool operator==(const Grid& x, const Grid& y);
+}
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The handler of the actual Row implementation.
@@ -68,6 +80,10 @@ public:
   //! The capacity of \p impl (only available during debugging).
   dimension_type capacity_;
 #endif // EXTRA_ROW_DEBUG
+
+  // FIX trace
+  friend bool Parma_Polyhedra_Library::operator==(const Grid& x,
+						  const Grid& y);
 
 private:
   //! Private and unimplemented: copy construction is not allowed.
@@ -222,7 +238,7 @@ public:
   */
   void assign(Row& y);
 
-  //! \brief.
+  //! \brief
   //! Allocates memory for a default constructed Row object, setting
   //! flags to \p f and allowing for \p capacity coefficients at most.
   /*!
@@ -298,14 +314,21 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK(dimension_type row_size, dimension_type row_capacity) const;
 
-private:
-  //! Exception-safe copy construction mechanism for coefficients.
-  void copy_construct_coefficients(const Row& y);
+  // FIX trace
+  friend bool Parma_Polyhedra_Library::operator==(const Grid& x,
+						  const Grid& y);
 
+  // FIX public for trace
 #if EXTRA_ROW_DEBUG
   //! Returns the capacity of the row (only available during debugging).
   dimension_type capacity() const;
 #endif // EXTRA_ROW_DEBUG
+
+private:
+  //! Exception-safe copy construction mechanism for coefficients.
+  void copy_construct_coefficients(const Row& y);
+
+  friend class Grid;  // FIX trace (FIX rqrd when EXTRA_ROW_DEBUG)
 };
 
 namespace Parma_Polyhedra_Library {
