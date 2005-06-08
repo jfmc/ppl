@@ -114,6 +114,14 @@ PPL::Grid::construct(const Generator_System& const_gs) {
   if (gs_space_dim > 0) {
     // Stealing the rows from `gs'.
     std::swap(gen_sys, gs);
+    // FIX for now convert rays to lines
+    for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
+      Generator& g = gen_sys[row];
+      if (g.is_ray()) {
+	g.set_is_line();
+	g.strong_normalize();
+      }
+    }
     gen_sys.unset_pending_rows();
     gen_sys.set_sorted(false);
 
