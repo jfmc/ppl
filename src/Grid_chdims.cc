@@ -80,14 +80,15 @@ PPL::Grid::add_space_dimensions(Generator_System& gs,
   dimension_type num_cols = cgs.num_columns() - 1;
   cgs.add_zero_rows_and_columns(dims, dims, Row::Flags());
   // Move the moduli.
-  cgs.swap_columns(num_cols, num_cols + dims);
+  dimension_type last_col = num_cols + dims;
+  cgs.swap_columns(num_cols, last_col);
   if (universe)
-    // FIX check universe always square
+    // FIX check universe always square (will change with new virtual)
     // Replace the old virtual rows with congruences.
     for (dimension_type row = 1; row < num_cols; ++row) {
       Congruence& cg = cgs[row];
       cg[row] = 1;
-      cg[num_cols + dims /* FIX */] = 1;
+      cg[last_col] = 1;
     }
   dimension_type num_rows = cgs.num_rows();
   dimension_type col_num = cgs.num_columns() - dims - 1;
@@ -101,7 +102,7 @@ PPL::Grid::add_space_dimensions(Generator_System& gs,
   num_cols = gs.num_columns();
   gs.add_zero_columns(dims);
   if (universe) {
-    // FIX check universe always square
+    // FIX check universe always square (will change with new virtual)
     // Replace all the existing virtual rows with points.
     for (dimension_type row = 1; row < num_cols; ++row) {
       Generator& gen = gs[row];
