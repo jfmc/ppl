@@ -34,11 +34,10 @@ int
 main() TRY {
   Variable x(0);
   Variable y(1);
-  Variable z(2);
+  // Variable z(2);
 
   TBD_Shape bd1(4);
   TBD_Shape bd2(4);
-
 
   bd1.add_constraint(-x <= 4);
   bd1.add_constraint(y - x <= 0);
@@ -57,6 +56,5 @@ main() TRY {
 #endif
 
   return (universe1 != universe2) ? 0 : 1;
-
 }
 CATCH

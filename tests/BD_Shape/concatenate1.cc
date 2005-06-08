@@ -32,13 +32,13 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() TRY {
-  Variable x1(0);
+  // Variable x1(0);
   Variable x2(1);
   Variable x3(2);
-  Variable x4(3);
+  // Variable x4(3);
   Variable x5(4);
   Variable x6(5);
-  Variable x7(6);
+  // Variable x7(6);
   Variable x8(7);
   Variable x9(8);
 

@@ -38,7 +38,7 @@ main() TRY {
   Variable x3(2);
   Variable x4(3);
   Variable x5(4);
-  Variable x6(5);
+  // Variable x6(5);
 
   TBD_Shape bd1(6);
   TBD_Shape bd2(6);

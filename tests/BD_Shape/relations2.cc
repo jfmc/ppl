@@ -81,7 +81,7 @@ static void test3() {
 
 static void test4() {
   Variable x(0);
-  Variable y(1);
+  // Variable y(1);
 
   TBD_Shape bd(2);
   bd.add_constraint(x == 1);
