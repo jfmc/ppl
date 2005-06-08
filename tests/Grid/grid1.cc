@@ -745,6 +745,42 @@ test19() {
   exit(1);
 }
 
+// Inserting a generator system containing a ray.
+
+void
+test20() {
+  nout << "test20:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Generator_System gs1;
+  gs1.insert(point(0*C));
+  gs1.insert( line(A));
+  gs1.insert( line(B));
+  gs1.insert(  ray(-C));
+
+  Grid gr1(gs1);
+
+  if (find_variation(gr1))
+    exit(1);
+
+  nout << "gr1.ascii_dump(nout):" << endl;
+  gr1.ascii_dump(nout);
+
+  Grid known_gr(3);
+
+  if (gr1 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -770,6 +806,7 @@ main() TRY {
   test17();
   test18();
   test19();
+  test20();
 
   return 0;
 }
