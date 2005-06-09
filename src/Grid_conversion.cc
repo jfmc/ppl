@@ -138,6 +138,55 @@ Grid::upper_triangular(const Generator_System& sys) {
   return true;
 }
 
+/* Multiply the destination grid by the multiplier.  Only multiply
+   parameters, as lines are equivalent under multiplication and the
+   virtual rows just ensure a square matrix.  */
+
+inline void
+multiply_grid(const Coefficient& multiplier, Linear_Row& gen,
+	      Linear_System& dest, const dimension_type num_rows) {
+  if (multiplier != 1)
+    if (gen.is_virtual() || gen.is_line_or_equality())
+      // Multiply every element of the equality.
+      for (dimension_type column = 0; column < num_rows; ++column)
+	gen[column] *= multiplier;
+    else if (gen.is_ray_or_point_or_inequality())
+      // Multiply every element of every parameter.
+      for (dimension_type index = 0; index < num_rows; ++index) {
+	Linear_Row& generator = dest[index];
+	if (generator.is_virtual() || generator.is_line_or_equality())
+	  continue;
+	for (dimension_type column = 0; column < num_rows; ++column)
+	  generator[column] *= multiplier;
+      }
+#ifndef NDEBUG
+    else
+      throw std::runtime_error("PPL internal error: Grid conversion: failed to match row type.");
+#endif
+}
+
+/* Multiply DEST by the multiplier.  Only multiply congruences, as
+   equalities are equivalent under multiplication and the virtual rows
+   just ensure a regular matrix.  */
+
+inline void
+Grid::multiply_grid(const Coefficient& multiplier, Congruence& cg,
+		    Congruence_System& dest, const dimension_type num_rows) {
+  if (multiplier != 1)
+    if (cg.is_proper_congruence())
+      // Multiply every element of every congruence.
+      for (dimension_type index = 0; index < num_rows; ++index) {
+	Congruence& congruence = dest[index];
+	if (congruence.is_proper_congruence())
+	  for (dimension_type column = 0; column < num_rows; ++column)
+	    congruence[column] *= multiplier;
+      }
+    else if (cg.is_equality())
+      // Multiply every element of the equality.
+      for (dimension_type column = 0; column < num_rows; ++column)
+	cg[column] *= multiplier;
+}
+
 /* The next two methods should be named convert, and this file
    Grid_convert.cc, to use verbs consistently as function and method
    names.  The same holds for the Polyhedron equivalents.  */
@@ -220,30 +269,7 @@ Grid::conversion(Congruence_System& source, Linear_System& dest) {
       gcd_assign(multiplier, gen[col], source_diag);
       multiplier = source_diag / multiplier;
       ctrace << "    multiplier " << multiplier << std::endl;
-
-      /* Multiply the destination grid by the multiplier.  Only
-	 multiply parameters, as lines are equivalent under
-	 multiplication and the virtual rows just ensure a square
-	 matrix.  */
-      if (multiplier != 1)
-	if (gen.is_virtual() || gen.is_line_or_equality())
-	  // Multiply every element of the equality.
-	  for (dimension_type column = 0; column < num_rows; ++column)
-	    gen[column] *= multiplier;
-	else if (gen.is_ray_or_point_or_inequality())
-	  // Multiply every element of every parameter.
-	  for (dimension_type index = 0; index < num_rows; ++index) {
-	    Linear_Row& generator = dest[index];
-	    if (generator.is_virtual() || generator.is_line_or_equality())
-	      continue;
-	    for (dimension_type column = 0; column < num_rows; ++column)
-	      generator[column] *= multiplier;
-	  }
-#ifndef NDEBUG
-	else
-	  throw std::runtime_error("PPL internal error: Grid conversion: failed to match row type.");
-#endif
-
+      PPL::multiply_grid(multiplier, gen, dest, num_rows);
       gen[col] /= source_diag;
     }
     ctrace << "dest after processing following rows:" << std::endl;
@@ -360,25 +386,7 @@ Grid::conversion(Generator_System& source, Congruence_System& dest) {
       // FIX does it hold the relationship b/w these ele's?
       gcd_assign(multiplier, cg[col], source_diag);
       multiplier = source_diag / multiplier;
-
-      /* Multiply the desination grid by the multiplier.  Only
-	 multiply congruences, as equalities are equivalent under
-	 multiplication and the virtual rows just ensure a regular
-	 matrix.  */
-      if (multiplier != 1)
-	if (cg.is_proper_congruence())
-	  // Multiply every element of every congruence.
-	  for (dimension_type index = 0; index < num_rows; ++index) {
-	    Congruence& congruence = dest[index];
-	    if (congruence.is_proper_congruence())
-	      for (dimension_type column = 0; column < num_rows; ++column)
-		congruence[column] *= multiplier;
-	  }
-	else if (cg.is_equality())
-	  // Multiply every element of the equality.
-	  for (dimension_type column = 0; column < num_rows; ++column)
-	    cg[column] *= multiplier;
-
+      multiply_grid(multiplier, cg, dest, num_rows);
       cg[col] /= source_diag;
     }
     ctrace << "dest after processing following rows:" << std::endl;

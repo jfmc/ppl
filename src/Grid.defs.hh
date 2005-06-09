@@ -1590,6 +1590,12 @@ private:
 					      dimension_type col,
 					      Congruence_System& sys);
 
+  //! Multiply the elements of \p dest by \p multiplier.
+  // A member of Grid for access to Matrix::rows and cgs::operator[].
+  static void multiply_grid(const Coefficient& multiplier,
+			    Congruence& cg, Congruence_System& dest,
+			    const dimension_type num_rows);
+
   //@} // Minimization-Related Static Member Functions
 
   //! \name Exception Throwers
