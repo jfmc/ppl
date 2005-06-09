@@ -77,7 +77,6 @@ ppl_pl$(EXEEXT): ppl_swiprolog.o ppl_pl.o
 	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -pl-options,-g,main -o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/.libs -lpwl \
-		-lpl \
 		@extra_libraries@
 
 pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq.pl
