@@ -1012,7 +1012,7 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
 
   // FIX
   // Adding valid generators to a zero-dimensional polyhedron
-  // transform it in the zero-dimensional universe polyhedron.
+  // transforms it into the zero-dimensional universe polyhedron.
   if (space_dim == 0) {
     if (marked_empty() && !gs.has_points())
       throw_invalid_generators("add_recycled_generators_and_minimize(gs)",
