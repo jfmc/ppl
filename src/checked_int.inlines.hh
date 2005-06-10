@@ -561,22 +561,22 @@ assign_int_mpq(To& to, const mpq_class& from, Rounding_Dir dir) {
   mpz_srcptr d = from.get_den().get_mpz_t();
   mpz_class q;
   mpz_ptr _q = q.get_mpz_t();
+  if (dir == ROUND_IGNORE) {
+    mpz_tdiv_q(_q, n, d);
+    Result r = assign<Policy>(to, q, dir);
+    if (r != V_EQ)
+      return r;
+    return V_LGE;
+  }
   mpz_t rem;
   int sign;
-  if (dir != ROUND_IGNORE) {
-    mpz_init(rem);
-    mpz_tdiv_qr(_q, rem, n, d);
-    sign = mpz_sgn(rem);
-    mpz_clear(rem);
-  }
-  else {
-    mpz_tdiv_q(_q, n, d);
-  }
+  mpz_init(rem);
+  mpz_tdiv_qr(_q, rem, n, d);
+  sign = mpz_sgn(rem);
+  mpz_clear(rem);
   Result r = assign<Policy>(to, q, dir);
   if (r != V_EQ)
     return r;
-  if (dir == ROUND_IGNORE)
-    return V_LGE;
   switch (sign) {
   case -1:
     return round_lt_int<Policy>(to, dir);
