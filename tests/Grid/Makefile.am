@@ -60,7 +60,8 @@ join2 \
 concatenate1 \
 mapspacedims1 \
 addgenerator1 \
-addcongruence1
+addcongruence1 \
+bug1
 
 #
 # Sources for the tests
@@ -85,15 +86,12 @@ join1_SOURCES = join1.cc
 join2_SOURCES = join2.cc
 concatenate1_SOURCES = concatenate1.cc
 mapspacedims1_SOURCES = mapspacedims1.cc
+bug1_SOURCES = bug1.cc
+bug1_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"
 
 XFAIL_TESTS =
 
-check_PROGRAMS = $(TESTS) $(BUGS)
-
-BUGS = bug1
-
-bug1_SOURCES = bug1.cc
-bug1_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"
+check_PROGRAMS = $(TESTS)
 
 MOSTLYCLEANFILES = \
 writecongruencesystem.dat
