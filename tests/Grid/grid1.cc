@@ -766,9 +766,6 @@ test20() {
   if (find_variation(gr1))
     exit(1);
 
-  nout << "gr1.ascii_dump(nout):" << endl;
-  gr1.ascii_dump(nout);
-
   Grid known_gr(3);
 
   if (gr1 == known_gr)
