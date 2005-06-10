@@ -464,13 +464,18 @@ Grid::simplify(Congruence_System& sys) {
 #endif
 
 #undef free_row
-#define free_row()						\
-	    /* FIX Slow. */					\
-	    sys.rows.erase(sys.rows.begin() + row_index);	\
-	    adjust_row_capacity();				\
-	    strace << "drop" << std::endl;			\
-	    --num_rows;						\
-	    --orig_row_num;					\
+#define free_row()							\
+	    /* FIX Slow. */						\
+	    sys.rows.erase(sys.rows.begin() + row_index);		\
+	    /* FIX Force all the rows to have the same capacity. */	\
+	    for (dimension_type row = 0; row < sys.num_rows(); ++row) {	\
+	      Row new_row(sys[row], sys.row_capacity);			\
+	      std::swap(sys[row], new_row);				\
+	    }								\
+	    adjust_row_capacity();					\
+	    strace << "drop" << std::endl;				\
+	    --num_rows;							\
+	    --orig_row_num;						\
 	    --pivot_index;
 
 	    free_row();
