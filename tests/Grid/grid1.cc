@@ -745,7 +745,7 @@ test19() {
   exit(1);
 }
 
-// Inserting a generator system containing a ray.
+// A generator system containing a ray.
 
 void
 test20() {
