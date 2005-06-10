@@ -541,6 +541,57 @@ test13() {
   exit(1);
 }
 
+// Adding a congruence system with a capacity larger than the capacity
+// of the existing system.
+
+void
+test14() {
+  nout << "test14:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs1;
+  cgs1.insert(B %= 2);
+
+  Grid gr(2);
+  gr.add_congruences_and_minimize(cgs1);
+
+  gr.add_space_dimensions_and_embed(1);
+
+  // gr.con_sys is likely to be expanded within capacity.
+
+  Variable C(2);
+
+  Congruence_System cgs2;
+  cgs2.insert(C %= 2);
+
+  // cgs2 is likely to now have more capacity than gr.con_sys does.
+
+  gr.add_congruences_and_minimize(cgs2);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Congruence_System cgs3;
+  cgs3.insert(B %= 2);
+  cgs3.insert(C %= 2);
+
+  Grid known_gr(cgs3);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << "grid:" << endl << gr << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -560,6 +611,7 @@ main() TRY {
   test11();
   test12();
   test13();
+  test14();
 
   return 0;
 }
