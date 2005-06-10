@@ -111,6 +111,7 @@ Grid::reduce_pc_with_pc(Row& row, Row& pivot,
   TEMP_INTEGER(s);
   TEMP_INTEGER(t);
   gcdext_assign(gcd, pivot[column], row[column], s, t);
+  strace << "gcd " << gcd << ", s " << s << ", t " << t << std::endl;
   // Now pivot[column] * s + row[column] * t == gcd.
   TEMP_INTEGER(pivot_a);
   TEMP_INTEGER(row_a);
@@ -118,7 +119,7 @@ Grid::reduce_pc_with_pc(Row& row, Row& pivot,
   row_a = row[column] / gcd;
   // Adjust the elements of row, as in reduce_line_with_line above.
   for (dimension_type col = 0;
-       col < pivot.size() - !parameters /* modulus */;
+       col < pivot.size() - (parameters ? 0 : 1 /* modulus */);
        ++col) {
     TEMP_INTEGER(pivot_col);
     TEMP_INTEGER(row_col);
