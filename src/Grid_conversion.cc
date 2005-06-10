@@ -423,6 +423,10 @@ Grid::conversion(Generator_System& source, Congruence_System& dest) {
   // Set the modulus in every congruence.
   TEMP_INTEGER(modulus);
   modulus = dest[0][0];
+  if (modulus < 0) {
+    modulus = -modulus;
+    dest[0][0] = modulus;
+  }
   for (dimension_type row = 0; row < num_rows; ++row) {
     Congruence& cg = dest[row];
     if (cg.is_proper_congruence())
