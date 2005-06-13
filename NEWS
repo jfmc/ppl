@@ -29,6 +29,8 @@ o  Added to classes Constraint (resp., Generator) the method
 o  Added swap methods to classes Linear_Expression, Constraint, Generator,
    Constraint_System and Generator_System.
 
+o  Portability has been improved.
+
 
 Bugfixes
 ========
