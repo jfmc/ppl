@@ -24,8 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_PFunction_hh
 #define PPL_PFunction_hh 1
 
-#include "ppl_install.hh"
 #include <map>
+#include <iosfwd>
 
 class PFunction {
 private:

@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_BBox_hh
 #define PPL_BBox_hh 1
 
-#include "ppl_install.hh"
 #include <iosfwd>
 #include <vector>
 

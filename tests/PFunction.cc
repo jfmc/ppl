@@ -21,9 +21,14 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#include <config.h>
+
+#include "globals.defs.hh"
+#include "Variable.defs.hh"
 #include "PFunction.hh"
-#include <iostream>
+
 #include <stdexcept>
+#include <iostream>
 
 void
 PFunction::insert(dim_t x, dim_t y) {

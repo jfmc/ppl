@@ -21,10 +21,17 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "print.hh"
-#include "ppl_install.hh"
+#include <config.h>
+
+#include "Constraint.defs.hh"
+#include "Generator.defs.hh"
+#include "Constraint_System.defs.hh"
+#include "Generator_System.defs.hh"
+#include "Polyhedron.defs.hh"
+#include "BD_Shape.defs.hh"
 #include <iostream>
 #include <string>
+#include "print.hh"
 
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
