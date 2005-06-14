@@ -193,6 +193,8 @@ find_variation_template(T& a) {
   a.ascii_dump(dump);
   if (!b.ascii_load(dump)) {
     std::cerr << "Failed to load `b' from the ASCII dump of `a'." << endl;
+    std::cerr << "ASCII dump of `a':" << endl;
+    std::cerr << dump.str();
     exit(1);
   }
 
