@@ -107,12 +107,25 @@ typedef Polyhedron* POLYHEDRON_TYPE;
 #include <getopt.h>
 #endif
 
+#ifdef HAVE_UNISTD_H
+// Include this for `getopt()': especially important if we do not have
+// <getopt.h>.
+# include <unistd.h>
+#endif
+
+#ifdef HAVE_SYS_TIME_H
+# include <sys/time.h>
+#endif
+
 #ifdef HAVE_SYS_RESOURCE_H
-#include <sys/resource.h>
+// This should be included after <time.h> and <sys/time.h> so as to make
+// sure we have the definitions for, e.g., `ru_utime'.
+# include <sys/resource.h>
 #endif
 
 namespace {
 
+#ifdef HAVE_GETOPT_H
 struct option long_options[] = {
   {"max-cpu",        required_argument, 0, 'C'},
   {"max-memory",     required_argument, 0, 'V'},
@@ -125,6 +138,7 @@ struct option long_options[] = {
 #endif
   {0, 0, 0, 0}
 };
+#endif
 
 static const char* usage_string
 = "Usage: %s [OPTION]... [FILE]...\n\n"
@@ -136,6 +150,10 @@ static const char* usage_string
 "  -v, --verbose           produces lots of output\n"
 #if defined(USE_PPL)
 "  -cPATH, --check=PATH    checks if the result is equal to what is in PATH\n"
+#endif
+#ifndef HAVE_GETOPT_H
+"\n"
+"NOTE: this version does not support long options.\n"
 #endif
 ;
 
@@ -318,9 +336,14 @@ timeout(int) {
 void
 process_options(int argc, char* argv[]) {
   while (true) {
+#ifdef HAVE_GETOPT_H
     int option_index = 0;
     int c = getopt_long(argc, argv, OPTION_LETTERS, long_options,
 			&option_index);
+#else
+    int c = getopt(argc, argv, OPTION_LETTERS);
+#endif
+
     if (c == EOF)
       break;
 
