@@ -27,28 +27,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iosfwd>
 #include <vector>
 
-using Parma_Polyhedra_Library::Coefficient;
-using Parma_Polyhedra_Library::Coefficient_traits;
-
 class BInterval {
 public:
   BInterval();
-  void raise_lower_bound(bool closed,
-			 Coefficient_traits::const_reference c,
-			 Coefficient_traits::const_reference d);
-  void lower_upper_bound(bool closed,
-			 Coefficient_traits::const_reference c,
-			 Coefficient_traits::const_reference d);
+  void raise_lower_bound
+  (bool closed,
+   Parma_Polyhedra_Library::Coefficient_traits::const_reference c,
+   Parma_Polyhedra_Library::Coefficient_traits::const_reference d);
+  void lower_upper_bound
+  (bool closed,
+   Parma_Polyhedra_Library::Coefficient_traits::const_reference c,
+   Parma_Polyhedra_Library::Coefficient_traits::const_reference d);
   void set_empty();
   void print(std::ostream& s) const;
 
 private:
   bool uclosed;
-  Coefficient uc;
-  Coefficient ud;
+  Parma_Polyhedra_Library::Coefficient uc;
+  Parma_Polyhedra_Library::Coefficient ud;
   bool lclosed;
-  Coefficient lc;
-  Coefficient ld;
+  Parma_Polyhedra_Library::Coefficient lc;
+  Parma_Polyhedra_Library::Coefficient ld;
 
   friend bool operator==(const BInterval& x, const BInterval& y);
   friend bool operator<=(const BInterval& x, const BInterval& y);
@@ -64,20 +63,20 @@ operator!=(const BInterval& x, const BInterval& y) {
   return !(x == y);
 }
 
-using Parma_Polyhedra_Library::dimension_type;
-
 class BBox {
 public:
-  BBox(dimension_type dimension);
-  dimension_type space_dimension() const;
-  const BInterval& operator[](dimension_type k) const;
+  BBox(Parma_Polyhedra_Library::dimension_type dimension);
+  Parma_Polyhedra_Library::dimension_type space_dimension() const;
+  const BInterval& operator[](Parma_Polyhedra_Library::dimension_type k) const;
   void print(std::ostream& s, const std::string& intro = "") const;
-  void raise_lower_bound(dimension_type k, bool closed,
-			 Coefficient_traits::const_reference c,
-			 Coefficient_traits::const_reference d);
-  void lower_upper_bound(dimension_type k, bool closed,
-			 Coefficient_traits::const_reference c,
-			 Coefficient_traits::const_reference d);
+  void raise_lower_bound
+  (Parma_Polyhedra_Library::dimension_type k, bool closed,
+   Parma_Polyhedra_Library::Coefficient_traits::const_reference c,
+   Parma_Polyhedra_Library::Coefficient_traits::const_reference d);
+  void lower_upper_bound
+  (Parma_Polyhedra_Library::dimension_type k, bool closed,
+   Parma_Polyhedra_Library::Coefficient_traits::const_reference c,
+   Parma_Polyhedra_Library::Coefficient_traits::const_reference d);
   void set_empty();
 
 private:
@@ -85,32 +84,34 @@ private:
 };
 
 inline
-BBox::BBox(dimension_type dimension) {
+BBox::BBox(Parma_Polyhedra_Library::dimension_type dimension) {
   box.resize(dimension);
 }
 
-inline dimension_type
+inline Parma_Polyhedra_Library::dimension_type
 BBox::space_dimension() const {
   return box.size();
 }
 
 inline const BInterval&
-BBox::operator[](dimension_type k) const {
+BBox::operator[](Parma_Polyhedra_Library::dimension_type k) const {
   return box[k];
 }
 
 inline void
-BBox::raise_lower_bound(dimension_type k, bool closed,
-			Coefficient_traits::const_reference c,
-			Coefficient_traits::const_reference d) {
+BBox::raise_lower_bound
+(Parma_Polyhedra_Library::dimension_type k, bool closed,
+ Parma_Polyhedra_Library::Coefficient_traits::const_reference c,
+ Parma_Polyhedra_Library::Coefficient_traits::const_reference d) {
   assert(k < box.size());
   box[k].raise_lower_bound(closed, c, d);
 }
 
 inline void
-BBox::lower_upper_bound(dimension_type k, bool closed,
-			Coefficient_traits::const_reference c,
-			Coefficient_traits::const_reference d) {
+BBox::lower_upper_bound
+(Parma_Polyhedra_Library::dimension_type k, bool closed,
+ Parma_Polyhedra_Library::Coefficient_traits::const_reference c,
+ Parma_Polyhedra_Library::Coefficient_traits::const_reference d) {
   assert(k < box.size());
   box[k].lower_upper_bound(closed, c, d);
 }
