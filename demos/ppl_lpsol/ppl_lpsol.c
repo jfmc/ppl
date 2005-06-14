@@ -151,7 +151,9 @@ get_ppl_banner() {
 
 static void
 process_options(int argc, char* argv[]) {
+#ifdef HAVE_GETOPT_H
   int option_index;
+#endif
   int c;
   char* endptr;
   long l;
