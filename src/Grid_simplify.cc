@@ -217,7 +217,7 @@ rows_are_zero (Matrix& system, dimension_type first,
 #endif
 
 bool
-Grid::simplify(Generator_System& sys) {
+Grid::simplify(Generator_System& sys, Dimension_Kinds& dim_kinds) {
   strace << "==== simplify (reduce) gs:" << std::endl;
   strace << "sys:" << std::endl;
   strace_dump(sys);
@@ -230,10 +230,16 @@ Grid::simplify(Generator_System& sys) {
   // FIX at least to please assertion in linear_row::is_sorted
   sys.set_sorted(false);
 
+  dimension_type num_cols = sys.num_columns();
+
+  if (dim_kinds.size() != num_cols)
+    dim_kinds.resize(num_cols);
+
   // For each column `col' find or construct a row (pivot) in which
   // the value at position `col' is non-zero FIX and other zero such
   // that triangular.
-  for (dimension_type col = 0; col < sys.row_size; ++col) {
+  for (dimension_type col = 0; col < num_cols; ++col) {
+    trace_dim_kinds("  ", dim_kinds);
     strace << "col " << col << std::endl;
     dimension_type num_rows = sys.num_rows();
     strace << "  num_rows " << num_rows << std::endl;
@@ -246,10 +252,14 @@ Grid::simplify(Generator_System& sys) {
     if (row_index >= num_rows) {
       // Element col is zero in all rows from the col'th, so create a
       // row at index col with diagonal value 1.
-      if (col)
+      if (col) {
 	strace << "  Adding virtual row" << std::endl;
-      else
+	dim_kinds[col] = GEN_VIRTUAL;
+      }
+      else {
 	strace << "  Adding origin" << std::endl;
+	dim_kinds[col] = PARAMETER;
+      }
 
       sys.add_zero_rows(1, Linear_Row::Flags(NECESSARILY_CLOSED,
 					     Linear_Row::LINE_OR_EQUALITY));
@@ -331,11 +341,18 @@ Grid::simplify(Generator_System& sys) {
 	strace << "swapping" << std::endl;
 	std::swap(sys[col], sys[pivot_index]);
       }
+      Generator& g = sys[col];
+      if (g.is_ray_or_point_or_inequality())
+	dim_kinds[col] = PARAMETER;
+      else if (g.is_line())
+	dim_kinds[col] = LINE;
+      else
+	dim_kinds[col] = GEN_VIRTUAL;
     }
     strace_dump(sys);
   }
   assert(sys.num_rows() >= sys.num_columns());
-  /* Clip any zero rows from the end of the matrix.  */
+  // Clip any zero rows from the end of the matrix.
   if (sys.num_rows() > sys.num_columns()) {
     strace << "clipping trailing" << std::endl;
     assert(rows_are_zero(sys,
@@ -357,6 +374,8 @@ Grid::simplify(Generator_System& sys) {
 
   sys.set_sorted(false);
 
+  trace_dim_kinds("gs simpl end ", dim_kinds);
+
   // Grids are either consistent or empty.
   if (!sys[0].is_ray_or_point()) {
     dimension_type row_size = sys.num_columns();
@@ -368,6 +387,7 @@ Grid::simplify(Generator_System& sys) {
 	gen[col] = 0;
       gen[row] = 1;
       gen.set_is_virtual();
+      dim_kinds[row] = GEN_VIRTUAL;
     }
     strace << "---- simplify (reduce) gs done (empty)." << std::endl;
     return true;
@@ -378,18 +398,24 @@ Grid::simplify(Generator_System& sys) {
 }
 
 bool
-Grid::simplify(Congruence_System& sys) {
+Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   strace << "======== simplify (reduce) cgs:" << std::endl;
   strace_dump(sys);
   assert(sys.num_rows());
 
   // Changes here may also be required in the generator version above.
 
+  dimension_type num_cols = sys.num_columns() - 1 /* modulus */;
+
+  if (dim_kinds.size() != num_cols)
+    dim_kinds.resize(num_cols);
+
   // For each column col find or construct a row (pivot) in which the
   // value at position `col' is non-zero.
   dimension_type col = 0;
-  while (col < sys.num_columns() - 1 /* modulus */) {
+  while (col < num_cols) {
     strace << "col " << col << std::endl;
+    trace_dim_kinds("  ", dim_kinds);
     dimension_type num_rows = sys.num_rows();
     strace << "  num_rows " << num_rows << std::endl;
     // Start at the diagonal (col, col).
@@ -405,10 +431,14 @@ Grid::simplify(Congruence_System& sys) {
     if (row_num == 0) {
       // Element col is zero in all rows from the col'th, so create a
       // virtual row at index col with diagonal value 1.
-      if (orig_row_num)
+      if (orig_row_num) {
 	strace << "  Adding virtual row" << std::endl;
-      else
+	dim_kinds[column] = CON_VIRTUAL;
+      }
+      else {
 	strace << "  Adding integrality congruence" << std::endl;
+	dim_kinds[column] = PROPER_CONGRUENCE;
+      }
       Row new_row(sys.num_columns(), sys.row_capacity, Row::Flags());
       if (orig_row_num) {
 	new_row[column] = 1;
@@ -517,9 +547,17 @@ Grid::simplify(Congruence_System& sys) {
 	// FIX why causes error when a virtual row has been dropped
 	//std::swap(sys[orig_row_num - 1], pivot);
       }
-      strace_dump(sys);
+
+      Congruence& cg = sys[sys.num_rows() - col - 1];
+      if (cg.is_proper_congruence())
+	dim_kinds[column] = PROPER_CONGRUENCE;
+      else if (cg.is_equality())
+	dim_kinds[column] = EQUALITY;
+      else
+	dim_kinds[column] = CON_VIRTUAL;
     }
     ++col;
+    strace_dump(sys);
   }
 
   assert(sys.num_rows() >= sys.num_columns() - 1);
@@ -550,6 +588,8 @@ Grid::simplify(Congruence_System& sys) {
     // The first row is a false congruence.
     first_row[0] = 1;
     first_row.set_is_equality();
+    dim_kinds[0] = EQUALITY;
+    trace_dim_kinds("cgs simpl end ", dim_kinds);
     strace << "---- simplify (reduce) cgs done (empty)." << std::endl;
     return true;
   }
@@ -558,6 +598,7 @@ Grid::simplify(Congruence_System& sys) {
     // are zero while the inhomogeneous term holds a value (as a
     // result of the reduced form).
     first_row[0] = 1;
+    trace_dim_kinds("cgs simpl end ", dim_kinds);
     strace << "---- simplify (reduce) cgs done (empty)." << std::endl;
     return true;
   }
@@ -566,6 +607,7 @@ Grid::simplify(Congruence_System& sys) {
   if (modulus == -1) {
     // The first row is virtual, make it the integrality congruence.
     first_row[last] = 1;
+    dim_kinds[0] = PROPER_CONGRUENCE;
     // Try use an existing modulus.
     dimension_type row = sys.num_rows();
     while (row-- > 1)
@@ -576,6 +618,7 @@ Grid::simplify(Congruence_System& sys) {
   }
   first_row[0] = first_row[last];
 
+  trace_dim_kinds("cgs simpl end ", dim_kinds);
   strace << "---- simplify (reduce) cgs done." << std::endl;
   return false;
 }

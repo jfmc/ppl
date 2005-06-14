@@ -43,13 +43,15 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
   cgs.add_zero_columns(dims);
   // Move the moduli.
   cgs.swap_columns(tem, tem + dims);
-  if (congruences_are_minimized()) {
+  bool congs_are_minimized = congruences_are_minimized();
+  if (congs_are_minimized) {
     // Add virtual rows to keep the congruences in reduced form.
     cgs.add_zero_rows(dims, Row::Flags());
     for (dimension_type row = tem + dims; row-- > tem; ) {
       Congruence& cg = cgs[row];
       cg[row] = 1;
       cg.set_is_virtual();
+      dim_kinds.push_back(CON_VIRTUAL);
     }
   }
 
@@ -62,6 +64,8 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
        row_num < num_rows; ++row_num, ++col_num) {
     Generator& gen = gs[row_num];
     gen[col_num] = 1;
+    if (!congs_are_minimized)
+      dim_kinds.push_back(LINE);
   }
 }
 
@@ -82,6 +86,7 @@ PPL::Grid::add_space_dimensions(Generator_System& gs,
   // Move the moduli.
   dimension_type last_col = num_cols + dims;
   cgs.swap_columns(num_cols, last_col);
+  bool congs_are_minimized = congruences_are_minimized();
   if (universe)
     // FIX check universe always square (will change with new virtual)
     // Replace the old virtual rows with congruences.
@@ -89,6 +94,8 @@ PPL::Grid::add_space_dimensions(Generator_System& gs,
       Congruence& cg = cgs[row];
       cg[row] = 1;
       cg[last_col] = 1;
+      if (congs_are_minimized) // FIX psbly redundant
+	dim_kinds[row] = PROPER_CONGRUENCE;
     }
   dimension_type num_rows = cgs.num_rows();
   dimension_type col_num = cgs.num_columns() - dims - 1;
@@ -97,6 +104,8 @@ PPL::Grid::add_space_dimensions(Generator_System& gs,
     Congruence& cg = cgs[row_num];
     cg.set_is_equality();
     cg[col_num] = 1;
+    if (congs_are_minimized)
+      dim_kinds.push_back(EQUALITY);
   }
 
   num_cols = gs.num_columns();
@@ -109,6 +118,8 @@ PPL::Grid::add_space_dimensions(Generator_System& gs,
       gen[row] = 1;
       gen.set_is_ray_or_point();
       //gen[num_cols + dims - 1 /* FIX */] = 1;
+      if (!congs_are_minimized) // FIX psbly redundant
+	dim_kinds[row] = PARAMETER;
     }
     goto add_virtuals;		// FIX
   }
@@ -121,6 +132,8 @@ PPL::Grid::add_space_dimensions(Generator_System& gs,
       Generator& gen = gs[row];
       gen[row] = 1;
       gen.set_is_virtual();
+      if (!congs_are_minimized)
+	dim_kinds.push_back(EQUALITY);
     }
     gs.unset_pending_rows();
   }
@@ -169,7 +182,7 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
     if (generators_are_up_to_date()) {
       // Adds rows and/or columns to both matrices.
       add_space_dimensions(con_sys, gen_sys, m);
-      clear_congruences_minimized();
+      clear_congruences_minimized(); // FIX add_s_d keeps min'd
       clear_generators_minimized();
     }
     else {
@@ -185,6 +198,7 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
 	  Congruence& cg = con_sys[row];
 	  cg[row] = 1;
 	  cg.set_is_virtual();
+	  dim_kinds.push_back(CON_VIRTUAL);
 	}
       }
       else
@@ -271,6 +285,8 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
 	  Congruence& cg = con_sys[row];
 	  cg[row] = 1;
 	  cg[num_cols + m /* FIX */] = 1;
+	  if (congruences_are_minimized()) // FIX psbly redundant
+	    dim_kinds[row] = PROPER_CONGRUENCE;
 	}
       // Limit the added dimensions.
       dimension_type num_rows = con_sys.num_rows();
@@ -280,9 +296,11 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
 	Congruence& cg = con_sys[row_num];
 	cg.set_is_equality();
 	cg[col_num] = 1;
+	if (congruences_are_minimized())
+	  dim_kinds.push_back(EQUALITY);
       }
 
-      clear_congruences_minimized();
+      clear_congruences_minimized(); // FIX really?
     }
   else {
     // Only generators are up-to-date so modify only them.
@@ -297,6 +315,8 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
 	gen.set_is_ray_or_point();
 	gen[row] = 1;
 	//gen[num_cols + m - 1 /* FIX */] = 1;
+	if (generators_are_minimized()) // FIX psbly redundant
+	  dim_kinds[row] = PARAMETER;
       }
       goto add_virtuals;
     }
@@ -310,6 +330,7 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
 	Generator& gen = gen_sys[row];
 	gen[row] = 1;
 	gen.set_is_virtual();
+	dim_kinds.push_back(GEN_VIRTUAL);
       }
       gen_sys.unset_pending_rows();
     }
@@ -518,6 +539,7 @@ PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
   if (generators_are_minimized()) {
     gen_sys.erase_to_end(new_dimension + 1);
     gen_sys.unset_pending_rows();
+    dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
   }
 
   clear_congruences_up_to_date();

@@ -41,6 +41,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 #include <iosfwd>
 
+// Dimension kind vector tracing
+#if 0
+#define trace_dim_kinds(msg, dim_kinds)					\
+  std::cout << msg << "dim_kinds:";					\
+  for (Dimension_Kinds::iterator i = dim_kinds.begin(); i != dim_kinds.end(); ++i) \
+    std::cout << " " << *i;						\
+  std::cout << std::endl;
+#else
+#define trace_dim_kinds(msg, dim_kinds)
+#endif
+
 namespace Parma_Polyhedra_Library {
 
 namespace IO_Operators {
@@ -1019,6 +1030,8 @@ public:
   */
   void add_space_dimensions_and_embed(dimension_type m);
 
+  // FIX should next 2 be public?
+
   //! Adds new space dimensions to the given systems.
   /*!
     \param cgs
@@ -1239,6 +1252,13 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
+  //! Writes to \p s an ASCII representation of the internal
+  //! representation of \p *this to std::cerr.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  void ascii_dump() const;
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \brief
   //! Loads from \p s an ASCII representation (as produced by
   //! \ref ascii_dump) and sets \p *this accordingly.
   //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
@@ -1282,6 +1302,22 @@ private:
 
   //! The number of dimensions of the enclosing vector space.
   dimension_type space_dim;
+
+  enum Dimension_Kind {
+    PARAMETER,
+    LINE,
+    GEN_VIRTUAL,
+    PROPER_CONGRUENCE = PARAMETER,
+    CON_VIRTUAL = LINE,
+    EQUALITY = GEN_VIRTUAL
+  };
+
+  typedef std::vector<Dimension_Kind> Dimension_Kinds;
+
+  // The type of row associated with each dimension.  In a
+  // hypothetical square upper-triangle form of either system the rows
+  // will have the types given in this vector.
+  Dimension_Kinds dim_kinds;
 
   //! Builds a grid from a system of congruences.
   /*!
@@ -1494,49 +1530,57 @@ private:
 
   //! Builds and simplifies congruences from generators.
   static bool minimize(Congruence_System& source,
-		       Linear_System& dest);
+		       Linear_System& dest,
+		       Dimension_Kinds& dim_kinds);
 
   //! Builds and simplifies generators from congruences.
   static bool minimize(Generator_System& dest,
-		       Congruence_System& source);
+		       Congruence_System& source,
+		       Dimension_Kinds& dim_kinds);
 
   //! \brief
   //! Adds copies of given congruences and builds minimized
   //! corresponding generators, or vice versa.
   static bool add_and_minimize(Congruence_System& source1,
 			       Linear_System& dest,
-			       const Congruence_System& source2);
+			       const Congruence_System& source2,
+			       Dimension_Kinds& dim_kinds);
 
   //! \brief
   //! Adds copies of given generators and builds corresponding reduced
   //! congruences.
   static bool add_and_minimize(Generator_System& source1,
 			       Congruence_System& dest,
-			       const Generator_System& source2);
+			       const Generator_System& source2,
+			       Dimension_Kinds& dim_kinds);
 
   //! \brief
   //! Converts parameter system \p dest to be equivalent to congruence
   //! system \p source.
   static dimension_type conversion(Congruence_System& source,
-				   Linear_System& dest);
+				   Linear_System& dest,
+				   Dimension_Kinds& dim_kinds);
 
   //! \brief
   //! Converts congruence system \p dest to be equivalent to parameter
   //! system \p source.
   static dimension_type conversion(Generator_System& source,
-				   Congruence_System& dest);
+				   Congruence_System& dest,
+				   Dimension_Kinds& dim_kinds);
 
   //! Convert \p cgs to upper triangular form.
   /*!
     Return true if \p cgs is consistent, else false.
   */
-  static bool simplify(Congruence_System& cgs);
+  static bool simplify(Congruence_System& cgs,
+		       Dimension_Kinds& dim_kinds);
 
   //! Convert \p gs to lower triangular form.
   /*!
     Return true if \p gs is consistent, else false.
   */
-  static bool simplify(Generator_System& gs);
+  static bool simplify(Generator_System& gs,
+		       Dimension_Kinds& dim_kinds);
 
   //! Reduce the line \p row using the line \p pivot.
   /*!

@@ -55,6 +55,7 @@ PPL::Grid::Grid(dimension_type num_dimensions,
     // Initialise both systems to universe representations.
     set_congruences_minimized();
     set_congruences_up_to_date();
+    dim_kinds.resize(num_dimensions + 1);
     gen_sys.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
 						num_dimensions);
     set_generators_minimized();
@@ -68,6 +69,7 @@ PPL::Grid::Grid(dimension_type num_dimensions,
     Congruence& first_cg = con_sys[0];
     first_cg[0] = 1;
     first_cg[num_dimensions + 1] = 1; // Modulus.
+    dim_kinds[0] = PROPER_CONGRUENCE;
     do {
       Generator& g = gen_sys[num_dimensions];
       g[num_dimensions] = 1;
@@ -75,6 +77,7 @@ PPL::Grid::Grid(dimension_type num_dimensions,
       Congruence& cg = con_sys[num_dimensions];
       cg[num_dimensions] = 1;
       cg.set_is_virtual();
+      dim_kinds[num_dimensions] = CON_VIRTUAL;
     }
     while (num_dimensions-- > 1);
     gen_sys.unset_pending_rows();
@@ -493,7 +496,6 @@ PPL::Grid::OK(bool check_not_empty) const {
       if (generators_are_minimized()) {
 	Generator_System gs = gen_sys;
 
-	// A reduced generator system must be upper triangular.
 	if (!upper_triangular(gs)) {
 #ifndef NDEBUG
 	  cerr << "Reduced generators should be upper triangular." << endl;
@@ -501,9 +503,30 @@ PPL::Grid::OK(bool check_not_empty) const {
 	  goto fail;
 	}
 
-	// A reduced parameter system must be the same as a temporary
+	if (dim_kinds.size() != num_columns) {
+#ifndef NDEBUG
+	  cerr << "Size of dim_kinds should equal the number of columns." << endl;
+#endif
+	  goto fail;
+	}
+
+	// Check that dim_kinds corresponds to the row kinds in gen_sys.
+	for (dimension_type i = 0; i < gen_sys.num_rows(); ++i) {
+	  const Generator &g = gen_sys[i];
+	  if ((g.is_ray_or_point_or_inequality() && dim_kinds[i] == PARAMETER)
+	      || (g.is_line() && dim_kinds[i] == LINE)
+	      || dim_kinds[i] == GEN_VIRTUAL)
+	    continue;
+#ifndef NDEBUG
+	  cerr << "Kinds in dim_kinds should match those in gen_sys." << endl;
+#endif
+	  goto fail;
+	}
+
+	// A reduced generator system must be the same as a temporary
 	// reduced copy.
-	simplify(gs);
+	Dimension_Kinds d = dim_kinds;
+	simplify(gs, d);
 	for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
 	  Generator& g = gs[row];
 	  const Generator& g_copy = gen_sys[row];
@@ -540,8 +563,9 @@ PPL::Grid::OK(bool check_not_empty) const {
 
     Congruence_System cs_copy = con_sys;
     Generator_System tem_gen_sys(NECESSARILY_CLOSED);
+    Dimension_Kinds d = dim_kinds;
 
-    if (minimize(cs_copy, tem_gen_sys)) {
+    if (minimize(cs_copy, tem_gen_sys, d)) {
       if (check_not_empty) {
 	// Want to know the satisfiability of the congruences.
 #ifndef NDEBUG
@@ -580,6 +604,26 @@ PPL::Grid::OK(bool check_not_empty) const {
 #endif
 	  goto fail;
 	}
+
+      if (dim_kinds.size() != con_sys.num_columns() - 1 /* modulus */) {
+#ifndef NDEBUG
+	cerr << "Size of dim_kinds should equal the number of columns." << endl;
+#endif
+	goto fail;
+      }
+
+      // Check that dim_kinds corresponds to the row kinds in con_sys.
+      for (dimension_type i = 0; i < con_sys.num_rows(); ++i) {
+	const Congruence &cg = con_sys[i];
+	if ((cg.is_proper_congruence() && dim_kinds[i] == PROPER_CONGRUENCE)
+	    || (cg.is_equality() && dim_kinds[i] == EQUALITY)
+	    || dim_kinds[i] == CON_VIRTUAL)
+	  continue;
+#ifndef NDEBUG
+	cerr << "Kinds in dim_kinds should match those in con_sys." << endl;
+#endif
+	goto fail;
+      }
     }
   }
 
@@ -852,7 +896,7 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   // Adjust `cgs' to the current space dimension.
   cgs.increase_space_dimension(space_dim); // FIX (?)
 
-  if (add_and_minimize(con_sys, gen_sys, cgs)) {
+  if (add_and_minimize(con_sys, gen_sys, cgs, dim_kinds)) {
     set_empty();
     assert(OK());
     return false;
@@ -1046,7 +1090,7 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
   if (minimize())
     // This call to `add_and_minimize(...)' returns `true'.
     // FIX add_and_minimize copies the generators (check cgs version)
-    add_and_minimize(gen_sys, con_sys, gs);
+    add_and_minimize(gen_sys, con_sys, gs, dim_kinds);
   else {
     // The grid was empty: check if `gs' contains a point.
     if (!gs.has_points())
@@ -1883,7 +1927,7 @@ PPL::Grid::ascii_dump(std::ostream& s) const {
     << space_dim
     << endl;
   //status.ascii_dump(s); // FIX
-  s //<< endl // FIX
+  s // << endl // FIX
     << "con_sys ("
     << (congruences_are_up_to_date() ? "" : "not_")
     << "up-to-date)"
@@ -1900,6 +1944,19 @@ PPL::Grid::ascii_dump(std::ostream& s) const {
     << "minimized)"
     << endl;
   gen_sys.ascii_dump(s);
+  s << "dimension_kinds";
+  if ((generators_are_up_to_date() && generators_are_minimized())
+      || (congruences_are_up_to_date() && congruences_are_minimized()))
+    for (Dimension_Kinds::const_iterator i = dim_kinds.begin();
+	 i != dim_kinds.end();
+	 ++i)
+      s << " " << *i;
+  s << endl;
+}
+
+void
+PPL::Grid::ascii_dump() const {
+  ascii_dump(std::cerr);
 }
 
 bool
@@ -1920,7 +1977,6 @@ PPL::Grid::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "con_sys")
     return false;
 
-  // FIX also add to ph?
   if (s >> str) {
     if (str == "(up-to-date)")
       set_congruences_up_to_date();
@@ -1930,7 +1986,6 @@ PPL::Grid::ascii_load(std::istream& s) {
   else
     return false;
 
-  // FIX also add to ph?
   if (s >> str) {
     if (str == "(minimized)")
       set_congruences_minimized();
@@ -1946,7 +2001,6 @@ PPL::Grid::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "gen_sys")
     return false;
 
-  // FIX also add to ph?
   if (s >> str) {
     if (str == "(up-to-date)")
       set_generators_up_to_date();
@@ -1956,7 +2010,6 @@ PPL::Grid::ascii_load(std::istream& s) {
   else
     return false;
 
-  // FIX also add to ph?
   if (s >> str) {
     if (str == "(minimized)")
       set_generators_minimized();
@@ -1968,6 +2021,31 @@ PPL::Grid::ascii_load(std::istream& s) {
 
   if (!gen_sys.ascii_load(s))
     return false;
+
+
+  // FIX Move to follow status above, when status is fixed.
+
+  if (!(s >> str) || str != "dimension_kinds")
+    return false;
+
+  if (!marked_empty()
+      && ((generators_are_up_to_date() && generators_are_minimized())
+	  || (congruences_are_up_to_date() && congruences_are_minimized()))) {
+    dim_kinds.resize(space_dim + 1);
+    for (Dimension_Kinds::size_type dim = 0; dim <= space_dim; ++dim) {
+      // FIX read directly into dim_kinds[dim]?
+      unsigned int dim_kind;
+      if (!(s >> dim_kind) || (dim_kind > GEN_VIRTUAL))
+	return false;
+      switch(dim_kind) {
+      case 0: dim_kinds[dim] = PARAMETER; break;
+      case 1: dim_kinds[dim] = LINE; break;
+      case 2: dim_kinds[dim] = GEN_VIRTUAL; break;
+      default: return false;
+      }
+    }
+  }
+
 
   // Check for well-formedness.
   assert(OK());

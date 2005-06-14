@@ -403,7 +403,7 @@ PPL::Grid::update_congruences() const {
   assert(generators_are_up_to_date());
 
   Grid& gr = const_cast<Grid&>(*this);
-  if (minimize(gr.gen_sys, gr.con_sys)) {
+  if (minimize(gr.gen_sys, gr.con_sys, gr.dim_kinds)) {
     gr.set_empty();
     return false;
   }
@@ -423,7 +423,7 @@ PPL::Grid::update_generators() const {
   Grid& x = const_cast<Grid&>(*this);
   // Either the system of congruences is consistent, or the grid is
   // empty.
-  if (minimize(x.con_sys, x.gen_sys)) {
+  if (minimize(x.con_sys, x.gen_sys, x.dim_kinds)) {
     x.set_empty();
     return false;
   }

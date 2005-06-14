@@ -192,7 +192,8 @@ Grid::multiply_grid(const Coefficient& multiplier, Congruence& cg,
    names.  The same holds for the Polyhedron equivalents.  */
 
 dimension_type
-Grid::conversion(Congruence_System& source, Linear_System& dest) {
+Grid::conversion(Congruence_System& source, Linear_System& dest,
+		 Dimension_Kinds& dim_kinds) {
   ctrace << "============= convert cgs to gs" << std::endl
 	 << "source:" << std::endl;
   ctrace_dump(source);
@@ -206,6 +207,8 @@ Grid::conversion(Congruence_System& source, Linear_System& dest) {
   assert(dest.num_columns() == source.num_columns() - 1);
   assert(lower_triangular(source));
   assert(identity(dest, dest.num_columns()));
+
+  trace_dim_kinds("cgs to gs ", dim_kinds);
 
   // Compute the LCM of the diagonals.  Use the LCM instead of the
   // determinant (which is the product of the diagonals) to produce
@@ -302,18 +305,23 @@ Grid::conversion(Congruence_System& source, Linear_System& dest) {
     ctrace_dump(dest);
   }
 
+  trace_dim_kinds("cgs to gs end ", dim_kinds);
+
   ctrace << "------------------- cgs to gs conversion done." << std::endl;
 
   return 0; // FIX
 }
 
 dimension_type
-Grid::conversion(Generator_System& source, Congruence_System& dest) {
+Grid::conversion(Generator_System& source, Congruence_System& dest,
+		 Dimension_Kinds& dim_kinds) {
   ctrace << "============= convert gs to cgs" << std::endl
 	<< "source:" << std::endl;
   ctrace_dump(source);
   ctrace << "dest:" << std::endl;
   ctrace_dump(dest);
+
+  trace_dim_kinds("gs to cgs ", dim_kinds);
 
   // Quite similar to the parameter to congruence version above.
   // Changes here may be needed there too.
@@ -434,6 +442,8 @@ Grid::conversion(Generator_System& source, Congruence_System& dest) {
   }
   ctrace << "dest after setting moduli:" << std::endl;
   ctrace_dump(dest);
+
+  trace_dim_kinds("gs to cgs end ", dim_kinds);
 
   ctrace << "------------------- gs to cgs conversion done." << std::endl;
 
