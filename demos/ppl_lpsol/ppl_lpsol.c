@@ -159,8 +159,8 @@ process_options(int argc, char* argv[]) {
   long l;
 
   while (1) {
-    option_index = 0;
 #ifdef HAVE_GETOPT_H
+    option_index = 0;
     c = getopt_long(argc, argv, OPTION_LETTERS, long_options, &option_index);
 #else
     c = getopt(argc, argv, OPTION_LETTERS);
