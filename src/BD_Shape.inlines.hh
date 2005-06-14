@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_BD_Shape_inlines_hh
 #define PPL_BD_Shape_inlines_hh 1
 
+#include "C_Polyhedron.defs.hh"
 #include <cassert>
 #include <string>
 #include <iostream>
