@@ -594,7 +594,7 @@ AM_CONDITIONAL(HAVE_GLPK, test x$HAVE_GLPK_H = xyes)
 AC_LANG_POP(C)
 
 # Checks for header files.
-AC_CHECK_HEADERS([getopt.h signal.h sys/resource.h sys/time.h sys/types.h unistd.h])
+AC_CHECK_HEADERS([getopt.h signal.h sys/time.h sys/resource.h sys/time.h sys/types.h unistd.h])
 
 # Checks for header declarations.
 AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
