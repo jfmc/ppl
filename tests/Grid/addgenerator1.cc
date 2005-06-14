@@ -91,7 +91,7 @@ test2() {
   exit(1);
 }
 
-// Add many generators to two dimensions.
+// Add many generators to grid of two dimensions.
 
 void
 test3() {
