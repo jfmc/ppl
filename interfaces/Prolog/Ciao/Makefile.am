@@ -129,21 +129,21 @@ check-local: ciao_clpq$(EXEEXT) ../tests/check_script $(EXPECTED) ciao_clpq2$(EX
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		-dlopen libppl_ciao.la \
-		ciao_clpq \
+		./ciao_clpq \
 			<$(srcdir)/../tests/check_script >obtained
 	diff -u --ignore-all-space $(EXPECTED) obtained
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		-dlopen libppl_ciao.la \
-		ciao_clpq2 \
+		./ciao_clpq2 \
 			<$(srcdir)/../tests/check_script2 >obtained2
 	diff -u --ignore-all-space $(EXPECTED2) obtained2
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		-dlopen libppl_ciao.la \
-		ciao_pl_check \
+		./ciao_pl_check \
 			 >obtained3
 	diff -u --ignore-all-space $(EXPECTED3) obtained3
 
