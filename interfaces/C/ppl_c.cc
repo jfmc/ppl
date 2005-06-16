@@ -45,6 +45,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library;
 
+//! Reinterpret an mpz_t as mpz_class.
+mpz_class&
+reinterpret_mpz_class(mpz_t n) {
+  return reinterpret_cast<mpz_class&>(*n);
+}
+
 #define DECLARE_CONVERSIONS(Type) \
 inline const Type* \
 to_const(ppl_const_ ## Type ## _t x) { \
@@ -339,10 +345,11 @@ CATCH_ALL
 
 int
 ppl_Coefficient_to_mpz_t(ppl_const_Coefficient_t c, mpz_t z) try {
-  // FIXME: this is a kludge.
-  mpz_class v;
-  Checked::assign<Check_Overflow_Policy>(v, raw_value(*to_const(c)), ROUND_IGNORE);
-  mpz_set(z, v.get_mpz_t());
+  Result r = Checked::assign<Check_Overflow_Policy>(reinterpret_mpz_class(z),
+						    raw_value(*to_const(c)),
+						    ROUND_DIRECT);
+  used(r);
+  assert(r == V_EQ);
   return 0;
 }
 CATCH_ALL
