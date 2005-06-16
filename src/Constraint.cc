@@ -216,6 +216,25 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
   return s;
 }
 
+/*! \relates Parma_Polyhedra_Library::Constraint::Type */
+std::ostream&
+PPL::IO_Operators::operator<<(std::ostream& s, const Constraint::Type& t) {
+  const char* n = 0;
+  switch (t) {
+  case Constraint::EQUALITY:
+    n = "EQUALITY";
+    break;
+  case Constraint::NONSTRICT_INEQUALITY:
+    n = "NONSTRICT_INEQUALITY";
+    break;
+  case Constraint::STRICT_INEQUALITY:
+    n = "STRICT_INEQUALITY";
+    break;
+  }
+  s << n;
+  return s;
+}
+
 bool
 PPL::Constraint::OK() const {
   // Topology consistency check.

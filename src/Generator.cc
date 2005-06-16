@@ -224,6 +224,28 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   return s;
 }
 
+/*! \relates Parma_Polyhedra_Library::Generator::Type */
+std::ostream&
+PPL::IO_Operators::operator<<(std::ostream& s, const Generator::Type& t) {
+  const char* n = 0;
+  switch (t) {
+  case Generator::LINE:
+    n = "LINE";
+    break;
+  case Generator::RAY:
+    n = "RAY";
+    break;
+  case Generator::POINT:
+    n = "POINT";
+    break;
+  case Generator::CLOSURE_POINT:
+    n = "CLOSURE_POINT";
+    break;
+  }
+  s << n;
+  return s;
+}
+
 bool
 PPL::Generator::is_matching_closure_point(const Generator& p) const {
   assert(topology() == p.topology()
