@@ -121,8 +121,12 @@ main() TRY {
     for (Generator_System::const_iterator i = gs.begin(), gs_end = gs.end();
 	 i != gs_end;
 	 ++i) {
-      if (i->type() != Generator::POINT)
+      if (i->type() != Generator::POINT) {
+#if NOISY
+	cout << "i->type() == " << i->type() << endl;
+#endif
 	exit(1);
+      }
       ++num_points;
     }
 
