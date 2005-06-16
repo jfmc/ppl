@@ -89,7 +89,7 @@ ORIGINAL_TESTS = \
 	boundingbox1 boundingbox2 boundingbox3 boundingbox4 boundingbox5 \
 	bounds1 bounds2 \
 	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
-	concatenate6 \
+	concatenate6 concatenate7 \
 	constraints1 constraints2 constraints3 constraints4 constraints5 \
 	contains1 contains2 contains3 contains4 contains5 \
 	disjoint1 disjoint2 disjoint3 \
@@ -189,7 +189,7 @@ DERIVED_TESTS = \
 	nnc_boundingbox1 nnc_boundingbox3 nnc_boundingbox5 \
 	nnc_bounds1 nnc_bounds2 \
 	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 nnc_concatenate4 \
-	nnc_concatenate5 nnc_concatenate6 \
+	nnc_concatenate5 nnc_concatenate6 nnc_concatenate7 \
 	nnc_constraints1 nnc_constraints2 nnc_constraints3 nnc_constraints4 \
 	nnc_constraints5 \
 	nnc_contains1 nnc_contains2 \
@@ -398,6 +398,7 @@ concatenate3_SOURCES = concatenate3.cc
 concatenate4_SOURCES = concatenate4.cc
 concatenate5_SOURCES = concatenate5.cc
 concatenate6_SOURCES = concatenate6.cc
+concatenate7_SOURCES = concatenate7.cc
 
 constraints1_SOURCES = constraints1.cc
 constraints2_SOURCES = constraints2.cc
@@ -811,6 +812,8 @@ nnc_concatenate5_SOURCES = concatenate5.cc
 nnc_concatenate5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_concatenate6_SOURCES = concatenate6.cc
 nnc_concatenate6_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_concatenate7_SOURCES = concatenate7.cc
+nnc_concatenate7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_constraints1_SOURCES = constraints1.cc
 nnc_constraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -1224,10 +1227,7 @@ check_PROGRAMS = $(TESTS) $(BUGS)
 
 EXTRA_DIST = $(watchdog1_SRCS)
 
-BUGS = bug1 bug2
-
-bug1_SOURCES = bug1.cc
-bug1_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"
+BUGS = bug2
 
 bug2_SOURCES = bug2.cc
 bug2_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"

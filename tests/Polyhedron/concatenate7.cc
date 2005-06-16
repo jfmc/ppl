@@ -22,7 +22,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-#include <fstream>
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
@@ -32,29 +31,40 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 int
-main() {
-  ifstream s(SRCDIR "/bug1.dat");
-  if (!s) {
-    cerr << "Cannot open data file!!!" << endl;
-    exit(1);
-  }
+main() TRY {
+  set_handlers();
 
-  C_Polyhedron x;
-  x.ascii_load(s);
+  Variable A(0);
+  Variable B(1);
 
-  C_Polyhedron y;
-  y.ascii_load(s);
+  C_Polyhedron ph1(1);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(-A >= -2);
+  ph1.generators();
+  ph1.add_generator(point(0*A));
+  ph1.add_generator(point(2*A));
 
-  if (x.OK() && y.OK()) {
-    cerr << "Inputs are OK." << endl;
-  }
+  C_Polyhedron ph2(1, Polyhedron::EMPTY);
+  ph2.add_generator(point(10*A));
 
-  // Now see the program explode in unexpected and interesting ways.
-  x.concatenate_assign(y);
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+#endif
 
-  if (x.OK()) {
-    cerr << endl << "Output is not OK." << endl;
-  }
-  
-  return 0;
+  ph1.concatenate_assign(ph2);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(-A >= -2);
+  known_result.add_constraint(B == 10);
+
+  bool ok = (ph1 == known_result);
+
+#if NOISY
+  print_constraints(ph1, "*** After ph1.concatenate_assign(ph2) ***");
+#endif
+
+  return ok ? 0 : 1;
 }
+CATCH
