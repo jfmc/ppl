@@ -1,0 +1,45 @@
+space_dim 1
+-ZE -EM  +CM +GM  +CS +GS  -CP +GP  -SC +SG
+con_sys (up-to-date)
+topology NECESSARILY_CLOSED
+2 x 2 (not_sorted)
+index_first_pending 2
+0 1 >=
+2 -1 >=
+
+gen_sys (up-to-date)
+topology NECESSARILY_CLOSED
+4 x 2 (not_sorted)
+index_first_pending 2
+1 0 P
+1 2 P
+1 0 P
+1 2 P
+
+sat_c
+0 x 0
+
+sat_g
+2 x 2
+0 1
+1 0
+
+space_dim 1
+-ZE -EM  -CM -GM  -CS +GS  -CP -GP  -SC -SG
+con_sys (not_up-to-date)
+topology NECESSARILY_CLOSED
+0 x 0 (sorted)
+index_first_pending 0
+
+gen_sys (up-to-date)
+topology NECESSARILY_CLOSED
+1 x 2 (sorted)
+index_first_pending 1
+1 10 P
+
+sat_c
+0 x 0
+
+sat_g
+0 x 0
+
