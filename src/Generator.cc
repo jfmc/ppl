@@ -129,11 +129,11 @@ PPL::Generator::is_equivalent_to(const Generator& y) const {
   if (x_space_dim != y.space_dimension())
     return false;
 
-  const Generator::Type x_type = x.type();
+  const Type x_type = x.type();
   if (x_type != y.type())
     return false;
 
-  if (x_type == Generator::POINT
+  if (x_type == POINT
       && !(x.is_necessarily_closed() && y.is_necessarily_closed())) {
     // Due to the presence of epsilon-coefficients, syntactically
     // different points may actually encode the same generator.
