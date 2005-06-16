@@ -10,7 +10,7 @@ NEWS for version 0.8  (released date to be decided)
 New and Changed Features
 ========================
 
-o  New output operators in namespace IO_Operators
+o  New output operators in namespace IO_Operators:
      std::ostream& operator<<(std::ostream&, const Constraint::Type&)
    and
      std::ostream& operator<<(std::ostream&, const Generator::Type&).
