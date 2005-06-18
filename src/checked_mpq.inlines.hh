@@ -180,7 +180,7 @@ add_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_ADD(mpq, mpq_class, mpq_class)
+SPECIALIZE_ADD(mpq, mpq_class, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
@@ -189,7 +189,7 @@ sub_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_SUB(mpq, mpq_class, mpq_class)
+SPECIALIZE_SUB(mpq, mpq_class, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
@@ -198,7 +198,7 @@ mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_MUL(mpq, mpq_class, mpq_class)
+SPECIALIZE_MUL(mpq, mpq_class, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
@@ -209,7 +209,7 @@ div_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_DIV(mpq, mpq_class, mpq_class)
+SPECIALIZE_DIV(mpq, mpq_class, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
@@ -221,7 +221,33 @@ rem_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_REM(mpq, mpq_class, mpq_class)
+SPECIALIZE_REM(mpq, mpq_class, mpq_class, mpq_class)
+
+template <typename Policy>
+inline Result
+mul2exp_mpq(mpq_class& to, const mpq_class& x, int exp, Rounding_Dir dir) {
+  if (exp < 0)
+    return div2exp<Policy>(to, x, -exp, dir);
+  mpz_mul_2exp(to.get_num().get_mpz_t(), x.get_num().get_mpz_t(), exp);
+  to.get_den() = x.get_den();
+  to.canonicalize();
+  return V_EQ;
+}
+
+SPECIALIZE_MUL2EXP(mpq, mpq_class, mpq_class)
+
+template <typename Policy>
+inline Result
+div2exp_mpq(mpq_class& to, const mpq_class& x, int exp, Rounding_Dir dir) {
+  if (exp < 0)
+    return mul2exp<Policy>(to, x, -exp, dir);
+  to.get_num() = x.get_num();
+  mpz_mul_2exp(to.get_den().get_mpz_t(), x.get_den().get_mpz_t(), exp);
+  to.canonicalize();
+  return V_EQ;
+}
+
+SPECIALIZE_DIV2EXP(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result

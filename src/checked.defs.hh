@@ -150,6 +150,14 @@ inline ret_type name(qual1 type1& arg1, qual2 type2& arg2, after1 a1) { \
   return FUNCTION_CLASS(name)<Policy, type1, type2>::function(arg1, arg2, a1); \
 }
 
+#define DECLARE_FUN2_0_2(name, ret_type, qual1, type1, qual2, type2, after1, after2) \
+template <typename Policy, typename type1, typename type2> \
+struct FUNCTION_CLASS(name); \
+template <typename Policy, typename type1, typename type2> \
+inline ret_type name(qual1 type1& arg1, qual2 type2& arg2, after1 a1, after2 a2) { \
+  return FUNCTION_CLASS(name)<Policy, type1, type2>::function(arg1, arg2, a1, a2); \
+}
+
 #define DECLARE_FUN3_0_1(name, ret_type, qual1, type1, qual2, type2, qual3, type3, after1) \
 template <typename Policy, typename type1, typename type2, typename type3> \
 struct FUNCTION_CLASS(name); \
@@ -230,6 +238,14 @@ struct FUNCTION_CLASS(name)<Policy, type1, type2> { \
   } \
 };
 
+#define SPECIALIZE_FUN2_0_2(name, suf, ret_type, qual1, type1, qual2, type2, after1, after2) \
+template <typename Policy> \
+struct FUNCTION_CLASS(name)<Policy, type1, type2> { \
+  static inline ret_type function(qual1 type1& arg1, qual2 type2 &arg2, after1 a1, after2 a2) { \
+    return name ## _ ## suf<Policy>(arg1, arg2, a1, a2); \
+  } \
+};
+
 #define SPECIALIZE_FUN3_0_1(name, suf, ret_type, qual1, type1, qual2, type2, qual3, type3, after1) \
 template <typename Policy> \
 struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
@@ -262,24 +278,28 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
   SPECIALIZE_FUN2_0_1(abs, suf, Result, nonconst, To, const, From, Rounding_Dir)
 #define SPECIALIZE_SQRT(suf, To, From) \
   SPECIALIZE_FUN2_0_1(sqrt, suf, Result, nonconst, To, const, From, Rounding_Dir)
-#define SPECIALIZE_ADD(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(add, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
-#define SPECIALIZE_SUB(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(sub, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
-#define SPECIALIZE_MUL(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(mul, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
-#define SPECIALIZE_DIV(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(div, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
-#define SPECIALIZE_REM(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(rem, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
-#define SPECIALIZE_ADD_MUL(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(add_mul, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
-#define SPECIALIZE_SUB_MUL(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(sub_mul, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
-#define SPECIALIZE_GCD(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(gcd, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
-#define SPECIALIZE_LCM(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(lcm, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
+#define SPECIALIZE_ADD(suf, To, From1, From2) \
+  SPECIALIZE_FUN3_0_1(add, suf, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define SPECIALIZE_SUB(suf, To, From1, From2) \
+  SPECIALIZE_FUN3_0_1(sub, suf, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define SPECIALIZE_MUL(suf, To, From1, From2) \
+  SPECIALIZE_FUN3_0_1(mul, suf, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define SPECIALIZE_DIV(suf, To, From1, From2) \
+  SPECIALIZE_FUN3_0_1(div, suf, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define SPECIALIZE_REM(suf, To, From1, From2) \
+  SPECIALIZE_FUN3_0_1(rem, suf, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define SPECIALIZE_MUL2EXP(suf, To, From) \
+  SPECIALIZE_FUN2_0_2(mul2exp, suf, Result, nonconst, To, const, From, int, Rounding_Dir)
+#define SPECIALIZE_DIV2EXP(suf, To, From) \
+  SPECIALIZE_FUN2_0_2(div2exp, suf, Result, nonconst, To, const, From, int, Rounding_Dir)
+#define SPECIALIZE_ADD_MUL(suf, To, From1, From2) \
+  SPECIALIZE_FUN3_0_1(add_mul, suf, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define SPECIALIZE_SUB_MUL(suf, To, From1, From2) \
+  SPECIALIZE_FUN3_0_1(sub_mul, suf, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define SPECIALIZE_GCD(suf, To, From1, From2) \
+  SPECIALIZE_FUN3_0_1(gcd, suf, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define SPECIALIZE_LCM(suf, To, From1, From2) \
+  SPECIALIZE_FUN3_0_1(lcm, suf, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 #define SPECIALIZE_INPUT(suf, Type) \
   SPECIALIZE_FUN1_0_2(input, suf, Result, nonconst, Type, std::istream&, Rounding_Dir)
 #define SPECIALIZE_OUTPUT(suf, Type) \
@@ -302,6 +322,8 @@ DECLARE_FUN3_0_1(sub,         Result, nonconst, To, const, From1, const, From2, 
 DECLARE_FUN3_0_1(mul,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN3_0_1(div,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN3_0_1(rem,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+DECLARE_FUN2_0_2(mul2exp,     Result, nonconst, To, const, From, int, Rounding_Dir)
+DECLARE_FUN2_0_2(div2exp,     Result, nonconst, To, const, From, int, Rounding_Dir)
 DECLARE_FUN3_0_1(add_mul,     Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN3_0_1(sub_mul,     Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN3_0_1(gcd,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)

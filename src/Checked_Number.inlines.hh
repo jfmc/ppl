@@ -257,6 +257,25 @@ FUNC1(assign_sqrt, sqrt_ext)
 
 #undef FUNC1
 
+#define FUNC1(name, func) \
+template <typename To, typename To_Policy, \
+          typename From> \
+inline Result \
+name(Checked_Number<To, To_Policy>& to, const From& x, int exp, Rounding_Dir dir) { \
+  return Checked::func<To_Policy, Checked::Transparent_Policy>(to.raw_value(), x, exp, dir); \
+} \
+template <typename To, typename To_Policy, \
+          typename From, typename From_Policy> \
+inline Result \
+name(Checked_Number<To, To_Policy>& to, const Checked_Number<From, From_Policy>& x, int exp, Rounding_Dir dir) { \
+  return Checked::func<To_Policy, From_Policy>(to.raw_value(), x.raw_value(), exp, dir); \
+}
+
+FUNC1(assign_mul2exp, mul2exp_ext)
+FUNC1(assign_div2exp, div2exp_ext)
+
+#undef FUNC1
+
 #define FUNC2(name, func) \
 template <typename To, typename To_Policy, \
           typename From1, \

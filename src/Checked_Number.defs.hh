@@ -243,6 +243,19 @@ FUNC1(assign_sqrt)
 
 #undef FUNC1
 
+#define FUNC1(name) \
+template <typename To, typename To_Policy, \
+          typename From> \
+Result name(Checked_Number<To, To_Policy>& to, const From& x, int exp, Rounding_Dir dir); \
+template <typename To, typename To_Policy, \
+          typename From, typename From_Policy> \
+Result name(Checked_Number<To, To_Policy>& to, const Checked_Number<From, From_Policy>& x, int exp, Rounding_Dir dir);
+
+FUNC1(assign_mul2exp)
+FUNC1(assign_div2exp)
+
+#undef FUNC1
+
 #define FUNC2(name) \
 template <typename To, typename To_Policy, \
           typename From1, typename From2> \
