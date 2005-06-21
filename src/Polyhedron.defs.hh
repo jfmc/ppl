@@ -1284,6 +1284,37 @@ public:
 				const Linear_Expression& rhs);
 
   //! \brief
+  //! Assigns to \p *this the image of \p *this with respect to the
+  //! \ref generalized_image "generalized affine transfer function"
+  //! \f$\frac{\mathrm{lb_expr}}{\mathrm{denominator}}
+  //!      \leq \mathrm{var}'
+  //!      \leq \frac{\mathrm{ub_expr}}{\mathrm{denominator}}\f$.
+  /*!
+    \param var
+    The variable updated by the generalized affine transfer function;
+
+    \param lb_expr
+    The numerator of the lower bounding affine expression;
+
+    \param ub_expr
+    The numerator of the upper bounding affine expression;
+
+    \param denominator
+    The (common) denominator for the lower and upper bounding
+    affine expressions (optional argument with default value 1.)
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p lb_expr (resp., \p ub_expr)
+    and \p *this are dimension-incompatible or if \p var is not a space
+    dimension of \p *this.
+  */
+  void affine_bounds(Variable var,
+		     const Linear_Expression& lb_expr,
+		     const Linear_Expression& ub_expr,
+		     Coefficient_traits::const_reference denominator
+		     = Coefficient_one());
+
+  //! \brief
   //! Assigns to \p *this the result of computing the
   //! \ref time_elapse "time-elapse" between \p *this and \p y.
   /*!

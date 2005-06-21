@@ -1970,6 +1970,84 @@ affine_preimage(const Variable var,
 
 void
 PPL::Polyhedron::
+affine_bounds(const Variable var,
+	      const Linear_Expression& lb_expr,
+	      const Linear_Expression& ub_expr,
+	      Coefficient_traits::const_reference denominator) {
+  // The denominator cannot be zero.
+  if (denominator == 0)
+    throw_invalid_argument("affine_bounds(v, lb, ub, d)", "d == 0");
+
+  // Dimension-compatibility checks.
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
+    throw_dimension_incompatible("affine_bounds(v, lb, ub, d)", "v", var);
+  // The dimension of `lb_expr' and `ub_expr' should not be
+  // greater than the dimension of `*this'.
+  const dimension_type lb_space_dim = lb_expr.space_dimension();
+  if (space_dim < lb_space_dim)
+    throw_dimension_incompatible("affine_bounds(v, lb, ub)",
+				 "lb", lb_expr);
+  const dimension_type ub_space_dim = ub_expr.space_dimension();
+  if (space_dim < ub_space_dim)
+    throw_dimension_incompatible("affine_bounds(v, lb, ub)",
+				 "ub", ub_expr);
+
+  // Any image of an empty polyhedron is empty.
+  if (marked_empty())
+    return;
+
+  // Check whether `var' occurs in `lb_expr' and/or `ub_expr'.
+  if (lb_expr.coefficient(var) == 0) {
+    // Here `var' may only occur in `ub_expr'.
+    generalized_affine_image(var,
+			     LESS_THAN_OR_EQUAL,
+			     ub_expr,
+			     denominator);
+    if (denominator > 0)
+      add_constraint(lb_expr <= denominator*var);
+    else
+      add_constraint(denominator*var <= lb_expr);
+  }
+  else if (ub_expr.coefficient(var) == 0) {
+    // Here `var' only occur in `lb_expr'.
+    generalized_affine_image(var,
+			     GREATER_THAN_OR_EQUAL,
+			     lb_expr,
+			     denominator);
+    if (denominator > 0)
+      add_constraint(denominator*var <= ub_expr);
+    else
+      add_constraint(ub_expr <= denominator*var);
+  }
+  else {
+    // Here `var' occurs in both `lb_expr' and `ub_expr'.
+    // To ease the computation, we add and additional dimension.
+    const Variable new_var = Variable(space_dim);
+    add_space_dimensions_and_embed(1);
+    // Constrain the new dimension to be equal to `ub_expr'.
+    // (we force minimization because we will need the generators).
+    add_constraint_and_minimize(denominator*new_var == ub_expr);
+    // Apply the affine lower bound.
+    generalized_affine_image(var,
+			     GREATER_THAN_OR_EQUAL,
+			     lb_expr,
+			     denominator);
+    // Now apply the affine upper bound, as recorded in `new_var'
+    // (we force minimization because we will need the generators).
+    if (denominator > 0)
+      add_constraint_and_minimize(var <= new_var);
+    else
+      add_constraint_and_minimize(new_var <= var);
+    // Remove the temporarily added dimension.
+    remove_higher_space_dimensions(space_dim-1);
+  }
+  assert(OK());
+}
+
+void
+PPL::Polyhedron::
 generalized_affine_image(const Variable var,
 			 const Relation_Symbol relsym,
 			 const Linear_Expression& expr,
