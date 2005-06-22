@@ -2076,7 +2076,7 @@ generalized_affine_image(const Variable var,
 			   "r is a strict relation symbol");
 
   // Any image of an empty polyhedron is empty.
-  if (marked_empty())
+  if (is_empty())
     return;
 
   // First compute the affine image.
