@@ -221,9 +221,8 @@ PPL::Congruence_System::num_proper_congruences() const {
   dimension_type n = 0;
   for (dimension_type i = num_rows(); i-- > 0 ; ) {
     const Congruence& cg = cgs[i];
-    if (cg.is_virtual() || cg.is_equality())
-      continue;
-    ++n;
+    if (cg.is_proper_congruence())
+      ++n;
   }
   return n;
 }
@@ -243,7 +242,6 @@ PPL::Congruence_System::satisfies_all_congruences(const Generator& g) const {
 
   const Congruence_System& cgs = *this;
   for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
-    // FIX skip virtual rows (faster)
     TEMP_INTEGER(sp);
     const Congruence& cg = cgs[i];
     spa_fp(sp, g, cg);
@@ -325,6 +323,11 @@ PPL::Congruence_System::ascii_dump(std::ostream& s) const {
   if (x_num_rows && x_num_columns)
     for (dimension_type i = 0; i < x_num_rows; ++i)
       x[i].ascii_dump(s);
+}
+
+void
+PPL::Congruence_System::ascii_dump() const {
+  ascii_dump(std::cerr);
 }
 
 bool

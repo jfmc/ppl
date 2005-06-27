@@ -325,6 +325,13 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
+  //! Writes to std::cerr an ASCII representation of the internal
+  //! representation of \p *this.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  void ascii_dump() const;
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \brief
   //! Loads from \p s an ASCII representation (as produced by
   //! \ref ascii_dump) and sets \p *this accordingly.
   //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.

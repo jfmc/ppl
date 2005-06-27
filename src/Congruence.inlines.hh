@@ -209,16 +209,6 @@ Congruence::set_is_equality() {
   modulus() = 0;
 }
 
-inline bool
-Congruence::is_virtual() const {
-  return modulus() == -1;
-}
-
-inline void
-Congruence::set_is_virtual() {
-  modulus() = -1;
-}
-
 inline memory_size_type
 Congruence::external_memory_in_bytes() const {
   return Row::external_memory_in_bytes();

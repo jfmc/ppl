@@ -42,12 +42,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iosfwd>
 
 // Dimension kind vector tracing
-#if 0
-#define trace_dim_kinds(msg, dim_kinds)					\
+#define print_dim_kinds(msg, dim_kinds)					\
   std::cout << msg << "dim_kinds:";					\
   for (Dimension_Kinds::iterator i = dim_kinds.begin(); i != dim_kinds.end(); ++i) \
     std::cout << " " << *i;						\
   std::cout << std::endl;
+#if 0
+#define trace_dim_kinds(msg, dim_kinds) print_dim_kinds(msg, dim_kinds)
 #else
 #define trace_dim_kinds(msg, dim_kinds)
 #endif
@@ -1252,8 +1253,8 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this to std::cerr.
+  //! Writes to std::cerr an ASCII representation of the internal
+  //! representation of \p *this.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void ascii_dump() const;
 
@@ -1270,12 +1271,6 @@ public:
 
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
-
-  //! If \p sys is lower triangular return true, else return false.
-  static bool lower_triangular(const Congruence_System& sys);
-
-  //! If \p sys is upper triangular return true, else return false.
-  static bool upper_triangular(const Generator_System& sys);
 
   //@} // Miscellaneous Member Functions
 
@@ -1314,9 +1309,12 @@ private:
 
   typedef std::vector<Dimension_Kind> Dimension_Kinds;
 
-  // The type of row associated with each dimension.  In a
-  // hypothetical square upper-triangle form of either system the rows
-  // will have the types given in this vector.
+  // The type of row associated with each dimension.  If the virtual
+  // rows existed then the reduced form of the systems would be square
+  // and upper or lower triangular, and the rows in each would have
+  // the types given in this vector.  As the congruence system is
+  // reduced to an upside-down lower triangular form the ordering of
+  // the congruence types goes last to first.
   Dimension_Kinds dim_kinds;
 
   //! Builds a grid from a system of congruences.
@@ -1534,8 +1532,8 @@ private:
 		       Dimension_Kinds& dim_kinds);
 
   //! Builds and simplifies generators from congruences.
-  static bool minimize(Generator_System& dest,
-		       Congruence_System& source,
+  static bool minimize(Generator_System& source,
+		       Congruence_System& dest,
 		       Dimension_Kinds& dim_kinds);
 
   //! \brief
@@ -1638,7 +1636,16 @@ private:
   // A member of Grid for access to Matrix::rows and cgs::operator[].
   static void multiply_grid(const Coefficient& multiplier,
 			    Congruence& cg, Congruence_System& dest,
-			    const dimension_type num_rows);
+			    const dimension_type num_rows,
+			    const dimension_type num_dims);
+
+  //! If \p sys is lower triangular return true, else return false.
+  static bool lower_triangular(const Congruence_System& sys,
+			       const Dimension_Kinds& dim_kinds);
+
+  //! If \p sys is upper triangular return true, else return false.
+  static bool upper_triangular(const Generator_System& sys,
+			       const Dimension_Kinds& dim_kinds);
 
   //@} // Minimization-Related Static Member Functions
 

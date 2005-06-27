@@ -38,21 +38,6 @@ Grid::minimize(Generator_System& source, Congruence_System& dest,
   if (simplify(source, dim_kinds))
     return true;
 
-  // Resize `dest' to be the appropriate square matrix.
-  dimension_type dest_num_rows = source.num_columns();
-  dest.resize_no_copy(dest_num_rows, dest_num_rows + 1 /* moduli */);
-
-  // Initialize `dest' to the identity matrix.
-  for (dimension_type i = dest_num_rows; i-- > 0; ) {
-    Congruence& dest_i = dest[i];
-    dest_i[i] = 1;
-    dimension_type j = dest_num_rows;
-    while (--j > i)
-      dest_i[j] = 0;
-    while (j > 0)
-      dest_i[--j] = 0;
-  }
-
   // Populate `dest' with the congruences characterizing the grid
   // described by the generators in `source'.
   conversion(source, dest, dim_kinds);
@@ -75,31 +60,6 @@ Grid::minimize(Congruence_System& source, Linear_System& dest,
   source.normalize_moduli();
   if (simplify(source, dim_kinds))
     return true;
-
-  // Resizing `dest' to be the appropriate square matrix.
-  dimension_type dest_num_rows = source.num_columns() - 1 /* modulus */;
-  // Note that before calling `resize_no_copy()' we must update
-  // `index_first_pending'.
-  dest.set_index_first_pending_row(dest_num_rows);
-  dest.resize_no_copy(dest_num_rows, dest_num_rows);
-
-  // Initialize `dest' to the identity matrix.
-  for (dimension_type i = dest_num_rows; i-- > 0; ) {
-    Linear_Row& dest_i = dest[i];
-    dest_i[i] = 1;
-    dest_i.set_is_line_or_equality();
-    dest_i.set_necessarily_closed();
-    dimension_type j = dest_num_rows;
-    while (--j > i)
-      dest_i[j] = 0;
-    while (j > 0)
-      dest_i[--j] = 0;
-  }
-  dest.set_necessarily_closed();
-
-  // The identity matrix `dest' is not sorted according to the sorting
-  // rules in Linear_Row.cc.
-  dest.set_sorted(false);
 
   // Populate `dest' with the generators characterizing the grid
   // described by the congruences in `source'.

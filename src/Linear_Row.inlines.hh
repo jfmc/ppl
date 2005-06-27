@@ -65,7 +65,6 @@ Linear_Row::Flags::set_is_ray_or_point_or_inequality() {
   set_bits(1 << rpi_validity_bit);
 #endif
   set_bits(RAY_OR_POINT_OR_INEQUALITY << rpi_bit);
-  reset_bits(1 << virtual_bit);
 }
 
 inline bool
@@ -80,7 +79,6 @@ Linear_Row::Flags::set_is_line_or_equality() {
   set_bits(1 << rpi_validity_bit);
 #endif
   reset_bits(RAY_OR_POINT_OR_INEQUALITY << rpi_bit);
-  reset_bits(1 << virtual_bit);
 }
 
 inline bool
@@ -109,19 +107,6 @@ Linear_Row::Flags::set_necessarily_closed() {
   set_bits(1 << nnc_validity_bit);
 #endif
   reset_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
-}
-
-inline bool
-Linear_Row::Flags::is_virtual() const {
-  // FIX should this use a definition (instd of 1) like the others above?
-  return test_bits(1 << virtual_bit);
-}
-
-inline void
-Linear_Row::Flags::set_is_virtual() {
-  // FIX should this use a definition (instd of 1) like the others above?
-  // Virtual takes precedence over the Kind flag.
-  set_bits(1 << virtual_bit);
 }
 
 inline Topology
@@ -153,11 +138,6 @@ Linear_Row::flags() {
 inline bool
 Linear_Row::is_necessarily_closed() const {
   return flags().is_necessarily_closed();
-}
-
-inline bool
-Linear_Row::is_virtual() const {
-  return flags().is_virtual();
 }
 
 inline dimension_type
@@ -236,11 +216,6 @@ Linear_Row::is_ray_or_point_or_inequality() const {
 inline Topology
 Linear_Row::topology() const {
   return flags().topology();
-}
-
-inline void
-Linear_Row::set_is_virtual() {
-  flags().set_is_virtual();
 }
 
 inline void

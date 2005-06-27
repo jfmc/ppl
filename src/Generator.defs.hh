@@ -320,15 +320,6 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this is a closure point.
   bool is_closure_point() const;
 
-  //! Returns <CODE>true</CODE> if and only if \p *this is a virtual row.
-  /*!
-    Virtual rows currently "take precedence" over the other kinds of
-    rows, i.e. the flags for the other kinds may be set at the same
-    time as the virtual flag.  Hence the virtual flag must always be
-    checked first.
-  */
-  bool is_virtual() const;
-
   //! Returns the coefficient of \p v in \p *this.
   /*!
     \exception std::invalid_argument
@@ -406,8 +397,9 @@ private:
   // FIXME: the following friend declaration is only to grant access to
   // Constraint_System::satisfies_all_constraints().
   friend class Parma_Polyhedra_Library::Constraint_System;
+  // FIX check still needed
   // FIXME: the following friend declaration is only to grant access to
-  // Congruence_System::saturates_all_constraints().
+  // Congruence_System::satisfies_all_congruences().
   friend class Parma_Polyhedra_Library::Congruence_System;
 
   friend std::ostream&

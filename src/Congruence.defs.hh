@@ -327,8 +327,7 @@ public:
 
   //! Returns <CODE>true</CODE> if the modulus is greater than zero.
   /*!
-    A congruence with a modulus below 1 is a linear equality or a
-    virtual row.
+    A congruence with a modulus of 0 is a linear equality.
   */
   bool is_proper_congruence() const;
 
@@ -337,12 +336,6 @@ public:
     A modulus of zero denotes a linear equality.
   */
   bool is_equality() const;
-
-  //! Returns <CODE>true</CODE> if and only if \p *this is virtual.
-  /*!
-    A modulus of negative one denotes a virtual congruence.
-  */
-  bool is_virtual() const;
 
   //! \brief
   //! Returns a reference to the true (zero-dimension space)
@@ -367,6 +360,11 @@ public:
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
   void ascii_dump(std::ostream& s) const;
+
+  //! \brief
+  //! Writes to std::cerr an ASCII representation of the internal
+  //! representation of \p *this.
+  void ascii_dump() const;
 
   //! \brief
   //! Loads from \p s an ASCII representation of the internal
@@ -401,12 +399,6 @@ protected:
   void strong_normalize();
 
 private:
-
-  //! Mark this congruence as a virtual row.
-  /*!
-    A modulus of negative one denotes a virtual congruence.
-  */
-  void set_is_virtual();
 
   //! Mark this congruence as a linear equality.
   void set_is_equality();

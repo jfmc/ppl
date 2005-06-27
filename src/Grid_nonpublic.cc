@@ -236,11 +236,10 @@ PPL::Grid::is_included_in(const Grid& y) const {
 
   dimension_type num_rows = gs.num_rows();
   for (dimension_type i = num_rows; i-- > 1; )
-    // FIX Generator& gen = gs[i];
-    if (!gs[i].is_virtual() && !cgs.satisfies_all_congruences(gs[i])) {
-	std::cout << "is_included_in... done (false i = " << i << ")." << std::endl;
-	return false;
-      }
+    if (!cgs.satisfies_all_congruences(gs[i])) {
+      std::cout << "is_included_in... done (false i = " << i << ")." << std::endl;
+      return false;
+    }
 
   // Inclusion holds.
   return true;

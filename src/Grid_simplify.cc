@@ -38,17 +38,21 @@ std::ofstream strace;
 #define strace_dump(sys)
 #endif
 
+using std::endl;
+
 namespace Parma_Polyhedra_Library {
 
 inline void
 Grid::reduce_line_with_line(Row& row, Row& pivot,
 			    dimension_type column) {
-  strace << "reduce_line_with_line" << std::endl;
+  strace << "reduce_line_with_line" << endl;
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, pivot[column], row[column]);
-  Coefficient_traits::const_reference pa = pivot[column] / gcd;
-  Coefficient_traits::const_reference ra = row[column] / gcd;
-  /* Adjust the elements of row.
+  TEMP_INTEGER(pa);
+  TEMP_INTEGER(ra);
+  pa = pivot[column] / gcd;
+  ra = row[column] / gcd;
+  /* Adjust the elements of row such that row[column] is zero.
 
      ra * pivot[col] == pa * row[col], which means that in the loop
      below row[column] is set to zero.  All elements in row that were
@@ -88,13 +92,15 @@ Grid::reduce_line_with_line(Row& row, Row& pivot,
 inline void
 Grid::reduce_equality_with_equality(Congruence& row, Congruence& pivot,
 				    dimension_type column) {
-  strace << "reduce_equality_with_equality" << std::endl;
+  strace << "reduce_equality_with_equality" << endl;
   // Assume two equalities.
   assert(row.modulus() == 0 && pivot.modulus() == 0);
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, pivot[column], row[column]);
-  Coefficient_traits::const_reference pa = pivot[column] / gcd;
-  Coefficient_traits::const_reference ra = row[column] / gcd;
+  TEMP_INTEGER(pa);
+  TEMP_INTEGER(ra);
+  pa = pivot[column] / gcd;
+  ra = row[column] / gcd;
   // Adjust the elements of row, as in reduce_line_with_line.
   for (dimension_type col = 0; col < pivot.size() - 1; ++col)
     row[col] = (ra * pivot[col]) - (pa * row[col]);
@@ -104,14 +110,14 @@ void
 Grid::reduce_pc_with_pc(Row& row, Row& pivot,
 			dimension_type column,
 			bool parameters){
-  strace << "reduce_pc_with_pc" << std::endl;
+  strace << "reduce_pc_with_pc" << endl;
   // Assume moduli are equal.
   assert(parameters || row[pivot.size()-1] == pivot[pivot.size()-1]);
   TEMP_INTEGER(gcd);
   TEMP_INTEGER(s);
   TEMP_INTEGER(t);
   gcdext_assign(gcd, pivot[column], row[column], s, t);
-  strace << "gcd " << gcd << ", s " << s << ", t " << t << std::endl;
+  strace << "gcd " << gcd << ", s " << s << ", t " << t << endl;
   // Now pivot[column] * s + row[column] * t == gcd.
   TEMP_INTEGER(pivot_a);
   TEMP_INTEGER(row_a);
@@ -131,7 +137,7 @@ Grid::reduce_pc_with_pc(Row& row, Row& pivot,
        with only constant terms to the integrality congruence.
 
        The equivalence of the adjusted pivot can be seen as with row
-       in reduce_line_with_line above, only with a s-multiplied copy
+       in reduce_line_with_line above, only with an s-multiplied copy
        of pivot being negated and then substituted into an
        t-multiplied row.  */
     pivot[col] = (s * pivot_col) + (t * row_col);
@@ -146,22 +152,33 @@ Grid::reduce_parameter_with_line(Linear_Row& row,
 				 Linear_System& sys) {
   // Very similar to the the Congruence version below.  Any change
   // here may be needed there too.
-  strace << "reduce_parameter_with_line" << std::endl;
+  // FIX check if row[column] == pivot[column], as in cong version?
+  strace << "reduce_parameter_with_line" << endl;
+
+  dimension_type num_cols = sys.num_columns();
+
+  // If the elements at `column' in row and pivot are the same, then
+  // just subtract `pivot' from `row'.
+  if (row[column] == pivot[column]) {
+    for (dimension_type col = 0; col < num_cols; ++col)
+      row[col] -= pivot[col];
+    return;
+  }
+
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, pivot[column], row[column]);
   TEMP_INTEGER(pivot_a);
   TEMP_INTEGER(row_a);
   pivot_a = pivot[column] / gcd;
   row_a = row[column] / gcd;
-  dimension_type num_cols = sys.num_columns();
   for (dimension_type index = 0; index < sys.num_rows(); ++index) {
     Linear_Row& row = sys[index];
     if (row.is_ray_or_point_or_inequality())
       for (dimension_type col = 0; col < num_cols; ++col)
         row[col] *= pivot_a;
   }
-  // These are like the adjustments in reduce_line_with_line (row[col]
-  // has been multiplied by pivot_a already, in the loop above).
+  // Adjust row as in reduce_line_with_line (row[col] has been
+  // multiplied by pivot_a already, in the loop above).
   for (dimension_type col = 0; col < num_cols; ++col)
     row[col] -= row_a * pivot[col];
 }
@@ -173,8 +190,18 @@ Grid::reduce_congruence_with_equality(Congruence& row,
 				      Congruence_System& sys) {
   // Very similar to the Linear_Row version above.  Any change here
   // may be needed there too.
-  strace << "reduce_congruence_with_equality" << std::endl;
+  strace << "reduce_congruence_with_equality" << endl;
   assert(row.modulus() > 0 && pivot.modulus() == 0);
+
+  dimension_type num_cols = sys.num_columns();
+
+  // If the elements at `column' in row and pivot are the same, then
+  // just subtract `pivot' from `row'.
+  if (row[column] == pivot[column]) {
+    for (dimension_type col = 0; col < num_cols; ++col)
+      row[col] -= pivot[col];
+    return;
+  }
 
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, pivot[column], row[column]);
@@ -182,15 +209,25 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   TEMP_INTEGER(row_a);
   pivot_a = pivot[column] / gcd;
   row_a = row[column] / gcd;
-  dimension_type num_cols = sys.num_columns() - 1 /* modulus */;
+  // Ensure that `pivot_a' is positive, so that the modulus remains
+  // positive when multiplying the proper congruences below.  It's
+  // safe to swap the signs as row[column] will still come out 0.
+  if (pivot_a < 0) {
+    pivot_a = -pivot_a;
+    row_a = -row_a;
+  }
+  // Multiply `row', including the modulus, by pivot_a.  FIX To keep
+  // all the moduli the same this requires multiplying all the other
+  // proper congruences in the same way.
   for (dimension_type index = 0; index < sys.num_rows(); ++index) {
     Congruence& row = sys[index];
     if (row.is_proper_congruence())
       for (dimension_type col = 0; col < num_cols; ++col)
         row[col] *= pivot_a;
   }
-  /* These are like the adjustments in reduce_line_with_line (row[col]
-     has been multiplied by pivot_a already, in the loop above).  */
+  --num_cols;			// Modulus.
+  // Adjust row as in reduce_line_with_line (`row' has been multiplied
+  // by pivot_a already, in the loop above).
   for (dimension_type col = 0; col < num_cols; ++col)
     row[col] -= row_a * pivot[col];
 }
@@ -199,13 +236,13 @@ Grid::reduce_congruence_with_equality(Congruence& row,
 //! Check for trailing rows containing only zero terms.
 /*!
   If all columns contain zero in the rows of \p system from row index
-  \p first to row \p last then return <code>true</code>, else return
-  <code>false</code>.  \p row_size gives the number of columns in each
-  row.  Used in assertion below.
+  \p first to row index \p last then return <code>true</code>, else
+  return <code>false</code>.  \p row_size gives the number of columns
+  in each row.  Used in assertion below.
 */
 bool
-rows_are_zero (Matrix& system, dimension_type first,
-	       dimension_type last, dimension_type row_size) {
+rows_are_zero(Matrix& system, dimension_type first,
+	      dimension_type last, dimension_type row_size) {
   while (first <= last) {
     Row& row = system[first++];
     for (dimension_type col = 0; col < row_size; ++col)
@@ -218,16 +255,15 @@ rows_are_zero (Matrix& system, dimension_type first,
 
 bool
 Grid::simplify(Generator_System& sys, Dimension_Kinds& dim_kinds) {
-  strace << "==== simplify (reduce) gs:" << std::endl;
-  strace << "sys:" << std::endl;
+  strace << "==== simplify (reduce) gs:" << endl;
+  strace << "sys:" << endl;
   strace_dump(sys);
-
-  // FIX use generator iterators?
+  assert(sys.num_rows());
 
   // Changes here may also be required in the congruence version
   // below.
 
-  // FIX at least to please assertion in linear_row::is_sorted
+  // FIX At least to please assertion in linear_row::is_sorted.
   sys.set_sorted(false);
 
   dimension_type num_cols = sys.num_columns();
@@ -235,171 +271,121 @@ Grid::simplify(Generator_System& sys, Dimension_Kinds& dim_kinds) {
   if (dim_kinds.size() != num_cols)
     dim_kinds.resize(num_cols);
 
-  // For each column `col' find or construct a row (pivot) in which
-  // the value at position `col' is non-zero FIX and other zero such
-  // that triangular.
-  for (dimension_type col = 0; col < num_cols; ++col) {
-    trace_dim_kinds("  ", dim_kinds);
-    strace << "col " << col << std::endl;
-    dimension_type num_rows = sys.num_rows();
-    strace << "  num_rows " << num_rows << std::endl;
-    // Start at the diagonal (col, col).
-    dimension_type row_index = col;
-    strace << "  row_index " << row_index << std::endl;
-    // Move down over rows which have zero in column col.
-    while (row_index < num_rows && sys[row_index][col] == 0)
-      ++row_index;
-    if (row_index >= num_rows) {
-      // Element col is zero in all rows from the col'th, so create a
-      // row at index col with diagonal value 1.
-      if (col) {
-	strace << "  Adding virtual row" << std::endl;
-	dim_kinds[col] = GEN_VIRTUAL;
-      }
-      else {
-	strace << "  Adding origin" << std::endl;
-	dim_kinds[col] = PARAMETER;
-      }
+  dimension_type num_rows = sys.num_rows();
+  strace << "  num_rows " << num_rows << endl;
 
-      sys.add_zero_rows(1, Linear_Row::Flags(NECESSARILY_CLOSED,
-					     Linear_Row::LINE_OR_EQUALITY));
-      Linear_Row& new_row = sys[num_rows];
-      new_row[col] = 1;
-      if (col)
-	new_row.set_is_virtual();
-      else
-	new_row.set_is_ray_or_point_or_inequality();
-      std::swap(new_row, sys[col]);
+  // For each dimension `dim' move or construct a row into position
+  // `pivot_index' such that the row has zero in all elements
+  // preceding column `dim' and a value other than zero in column
+  // `dim'.
+  dimension_type pivot_index = 0;
+  for (dimension_type dim = 0; dim < num_cols; ++dim) {
+    strace << "dim " << dim << endl;
+    trace_dim_kinds("  ", dim_kinds);
+
+    // Consider the pivot and following rows.
+    dimension_type row_index = pivot_index;
+    strace << "  row_index " << row_index << endl;
+
+    // Move down over rows which have zero in column `dim'.
+    while (row_index < num_rows && sys[row_index][dim] == 0)
+      strace << ".", ++row_index;
+    strace << endl;
+
+    if (row_index == num_rows) {
+      // Element in column `dim' is zero in all rows from the pivot.
+      strace << "  Marking virtual row" << endl;
+      dim_kinds[dim] = GEN_VIRTUAL;
     }
     else {
-      Linear_Row& pivot = sys[row_index];
-      dimension_type pivot_index = row_index;
-      // For each row having a value other than 0 at col, change the
-      // matrix so that the value at col is 0 (leaving the grid itself
-      // equivalent).
-      strace << "Reducing all subsequent rows" << std::endl;
-      ++row_index;
-      while (row_index < num_rows) {
-	if (sys[row_index][col] == 0) {
-	  ++row_index;
-	  continue;
-	}
+      if (row_index != pivot_index)
+	std::swap(sys[row_index], sys[pivot_index]);
+      Linear_Row& pivot = sys[pivot_index];
+      bool pivot_is_line = pivot.is_line_or_equality();
+
+      // Change the matrix so that the value at `dim' in every row
+      // following `pivot_index' is 0, leaving an equivalent grid.
+      strace << "  Reducing all following rows" << endl;
+      while (row_index < num_rows - 1) {
+	++row_index;
+	strace << "    row_index " << row_index << endl;
 
 	Linear_Row& row = sys[row_index];
-	if (row.is_virtual()) {
 
-#define free_row()							\
-	  std::swap(row, sys[--num_rows]);				\
-	  sys.Matrix::resize_no_copy(num_rows, sys.num_columns(), Row::Flags()); \
-	  continue;		/* Skip ++row_index.  */
+	if (row[dim] == 0)
+	  continue;
 
-	  // Free the virtual row from sys.
-	  free_row();
-	}
-	else if (row.is_line_or_equality()) {
-	  if (pivot.is_virtual()) {
-	    // Keep the row as the new pivot.
+	if (row.is_line_or_equality())
+	  if (pivot_is_line)
+	    reduce_line_with_line(row, pivot, dim);
+	  else {
+	    assert(pivot.is_ray_or_point_or_inequality());
 	    std::swap(row, pivot);
-
-	    // Free the old, virtual, pivot from sys.
-	    free_row();
+	    pivot_is_line = true;
+	    reduce_parameter_with_line(row, pivot, dim, sys);
 	  }
-	  else if (pivot.is_line_or_equality())
-	    reduce_line_with_line(row, pivot, col);
-	  else if (pivot.is_ray_or_point_or_inequality()) {
-	    std::swap(row, pivot);
-	    reduce_parameter_with_line(row, pivot, col, sys);
+	else {
+	  assert(row.is_ray_or_point_or_inequality());
+	  if (pivot_is_line)
+	    reduce_parameter_with_line(row, pivot, dim, sys);
+	  else {
+	    assert(pivot.is_ray_or_point_or_inequality());
+	    reduce_pc_with_pc(row, pivot, dim);
 	  }
-#ifndef NDEBUG
-	  else
-	    throw std::runtime_error("PPL internal error: Grid simplify: failed to match row type (1).");
-#endif
 	}
-	else if (row.is_ray_or_point_or_inequality()) {
-	  if (pivot.is_virtual()) {
-	    // Keep the row as the new pivot.
-	    std::swap(row, pivot);
-	    // Free the virtual pivot from sys.
-	    free_row();
-	  }
-	  else if (pivot.is_line_or_equality())
-	    reduce_parameter_with_line(row, pivot, col, sys);
-	  else if (pivot.is_ray_or_point_or_inequality())
-	    reduce_pc_with_pc(row, pivot, col);
-#ifndef NDEBUG
-	  else
-	    throw std::runtime_error("PPL internal error: Grid simplify: failed to match row type (2).");
-#endif
-	}
-#ifndef NDEBUG
-	else
-	  throw std::runtime_error("PPL internal error: Grid simplify: failed to match row type (3).");
-#endif
-	++row_index;
       }
-      if (col != pivot_index) {
-	strace << "swapping" << std::endl;
-	std::swap(sys[col], sys[pivot_index]);
+
+      if (pivot_is_line)
+	dim_kinds[dim] = LINE;
+      else {
+	assert(pivot.is_ray_or_point_or_inequality());
+	dim_kinds[dim] = PARAMETER;
       }
-      Generator& g = sys[col];
-      if (g.is_ray_or_point_or_inequality())
-	dim_kinds[col] = PARAMETER;
-      else if (g.is_line())
-	dim_kinds[col] = LINE;
-      else
-	dim_kinds[col] = GEN_VIRTUAL;
+      ++pivot_index;
     }
     strace_dump(sys);
   }
-  assert(sys.num_rows() >= sys.num_columns());
-  // Clip any zero rows from the end of the matrix.
-  if (sys.num_rows() > sys.num_columns()) {
-    strace << "clipping trailing" << std::endl;
-    assert(rows_are_zero(sys,
-			 sys.num_columns(),
-			 sys.num_rows() - 1,
-			 sys.num_columns()));
-    sys.erase_to_end(sys.num_columns());
-#if EXTRA_ROW_DEBUG
-    // std::vector may have relocated rows, so the row copy constructor may
-    // have used a new capacity.
-    sys.row_capacity = sys[0].capacity_;
-#endif
-  }
-
-  sys.unset_pending_rows();
-
-  // FIX is this psbl after parameterizing?
-  //assert(sys.OK());
-
-  sys.set_sorted(false);
-
   trace_dim_kinds("gs simpl end ", dim_kinds);
 
-  // Grids are either consistent or empty.
-  if (!sys[0].is_ray_or_point()) {
-    dimension_type row_size = sys.num_columns();
-    // Make all rows virtual, to free space.
-    // FIX is this worth the time?
-    for (dimension_type row = 0; row < sys.num_rows(); ++row) {
-      Generator& gen = sys[row];
-      for (dimension_type col = 0; col < row_size; ++col)
-	gen[col] = 0;
-      gen[row] = 1;
-      gen.set_is_virtual();
-      dim_kinds[row] = GEN_VIRTUAL;
+  // Either the first row is a point, or H is empty.
+
+  if (sys[0].is_ray_or_point()) {
+    // Clip any zero rows from the end of the matrix.
+    if (num_rows > pivot_index) {
+      strace << "clipping trailing" << endl;
+      assert(rows_are_zero(sys,
+			   pivot_index,		// index of first
+			   sys.num_rows() - 1,  // index of last
+			   sys.num_columns())); // row size
+      sys.erase_to_end(pivot_index);
+#if EXTRA_ROW_DEBUG
+      // std::vector may have relocated rows, so the row copy constructor may
+      // have used a new capacity.
+      sys.row_capacity = sys[0].capacity_;
+#endif
     }
-    strace << "---- simplify (reduce) gs done (empty)." << std::endl;
-    return true;
+
+    sys.unset_pending_rows();
+
+    // FIX is this psbl after parameterizing?
+    //assert(sys.OK());
+
+    sys.set_sorted(false);
+
+    strace << "---- simplify (reduce) gs done." << endl;
+    return false;
   }
 
-  strace << "---- simplify (reduce) gs done." << std::endl;
-  return false;
+  sys.clear();
+  sys.unset_pending_rows();
+  strace << "---- simplify (reduce) gs done (empty)." << endl;
+  return true;
 }
 
 bool
 Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
-  strace << "======== simplify (reduce) cgs:" << std::endl;
+  strace << "======== simplify (reduce) cgs:" << endl;
+  strace << "sys:" << endl;
   strace_dump(sys);
   assert(sys.num_rows());
 
@@ -410,166 +396,91 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   if (dim_kinds.size() != num_cols)
     dim_kinds.resize(num_cols);
 
-  // For each column col find or construct a row (pivot) in which the
-  // value at position `col' is non-zero.
-  dimension_type col = 0;
-  while (col < num_cols) {
-    strace << "col " << col << std::endl;
+  dimension_type num_rows = sys.num_rows();
+  strace << "  num_rows " << num_rows << endl;
+
+  // For each dimension `dim' move or construct a row into position
+  // `pivot_index' such that the row has zero in all elements
+  // preceding column `dim' and a value other than zero in column
+  // `dim'.
+  dimension_type pivot_index = 0;
+  for (dimension_type dim = num_cols; dim-- > 0;) {
+    strace << "dim " << dim << endl;
     trace_dim_kinds("  ", dim_kinds);
-    dimension_type num_rows = sys.num_rows();
-    strace << "  num_rows " << num_rows << std::endl;
-    // Start at the diagonal (col, col).
-    dimension_type row_num = num_rows - col;
-    strace << "  row_num " << row_num << std::endl;
-    dimension_type orig_row_num = row_num;
-    // Move backward over rows which have zero in the column that is
-    // col elements from the right hand side of the matrix.
-    dimension_type column = sys.num_columns() - 2 /* modulus, index */ - col;
-    while (row_num > 0 && sys[row_num-1][column] == 0)
-      strace << ".", --row_num;
-    strace << std::endl;
-    if (row_num == 0) {
-      // Element col is zero in all rows from the col'th, so create a
-      // virtual row at index col with diagonal value 1.
-      if (orig_row_num) {
-	strace << "  Adding virtual row" << std::endl;
-	dim_kinds[column] = CON_VIRTUAL;
-      }
-      else {
-	strace << "  Adding integrality congruence" << std::endl;
-	dim_kinds[column] = PROPER_CONGRUENCE;
-      }
-      Row new_row(sys.num_columns(), sys.row_capacity, Row::Flags());
-      if (orig_row_num) {
-	new_row[column] = 1;
-	(static_cast<Congruence&>(new_row)).set_is_virtual();
-      }
-      else {
-	assert(sys.num_columns());
-	TEMP_INTEGER(modulus);
-	modulus = 1;
-	// Try find an existing modulus.
-	for (dimension_type r = 0; r < num_rows; ++r) {
-	  TEMP_INTEGER(mod);
-	  mod = sys[r].modulus();
-	  if (mod > 0) {
-	    modulus = mod;
-	    break;
-	  }
-	}
-	new_row[sys.num_columns() - 1] = modulus;
-	new_row[column] = modulus;
-      }
-      // FIX add to end and swap instead?
-      sys.rows.insert(sys.rows.begin() + orig_row_num, new_row);
-#if EXTRA_ROW_DEBUG
-      // std::vector may have relocated rows, so the row copy constructor
-      // may have used a new capacity.
-      sys.row_capacity = sys[0].capacity_;
-#endif
+
+    // Consider the pivot and following rows.
+    dimension_type row_index = pivot_index;
+    strace << "  row_index " << row_index << endl;
+
+    // Move down over rows which have zero in column `dim'.
+    while (row_index < num_rows && sys[row_index][dim] == 0)
+      strace << ".", ++row_index;
+    strace << endl;
+
+    if (row_index == num_rows) {
+      // Element in column `dim' is zero in all rows from the pivot.
+      strace << "  Marking virtual row" << endl;
+      dim_kinds[dim] = CON_VIRTUAL;
     }
     else {
-      dimension_type& row_index = row_num; // For clearer naming.
-      --row_index;
-      dimension_type pivot_index = row_index;
+      if (row_index != pivot_index)
+	std::swap(sys[row_index], sys[pivot_index]);
       Congruence& pivot = sys[pivot_index];
-      // For each row having a lower index and a value at col other
-      // than 0, change the grid representation so that the value at
-      // col is 0 (leaving an equivalent grid).
-      strace << "  Reducing all preceding rows" << std::endl
-	     << "    pivot_index " << pivot_index << std::endl;
-      while (row_index > 0) {
-	--row_index;
-	strace << "    row_index " << row_index << std::endl;
+      bool pivot_is_equality = pivot.is_equality();
+
+      // Change the matrix so that the value at `dim' in every row
+      // following `pivot_index' is 0, leaving an equivalent grid.
+      strace << "  Reducing all following rows" << endl;
+      while (row_index < num_rows - 1) {
+	++row_index;
+	strace << "    row_index " << row_index << endl;
+
 	Congruence& row = sys[row_index];
-	if (row[column] != 0) {
-	  if (row.is_virtual()) {
-	    // Free the virtual row from sys.
 
-#if EXTRA_ROW_DEBUG
-// std::vector may have relocated rows, so the row copy constructor
-// may have used a new capacity.
-#define adjust_row_capacity() sys.row_capacity = sys[0].capacity_
-#else
-#define adjust_row_capacity()
-#endif
+	if (row[dim] == 0)
+	  continue;
 
-#undef free_row
-#define free_row()							\
-	    /* FIX Slow. */						\
-	    sys.rows.erase(sys.rows.begin() + row_index);		\
-	    /* FIX Force all the rows to have the same capacity. */	\
-	    for (dimension_type row = 0; row < sys.num_rows(); ++row) {	\
-	      Row new_row(sys[row], sys.row_capacity);			\
-	      std::swap(sys[row], new_row);				\
-	    }								\
-	    adjust_row_capacity();					\
-	    strace << "drop" << std::endl;				\
-	    --num_rows;							\
-	    --orig_row_num;						\
-	    --pivot_index;
-
-	    free_row();
+	if (row.is_equality())
+	  if (pivot_is_equality)
+	    reduce_equality_with_equality(row, pivot, dim);
+	  else {
+	    assert(pivot.is_proper_congruence());
+	    std::swap(row, pivot);
+	    pivot_is_equality = true;
+	    reduce_congruence_with_equality(row, pivot, dim, sys);
 	  }
-	  else if (row.is_equality())
-	    if (pivot.is_virtual()) {
-	      // Keep the row as the new pivot.
-	      std::swap(row, pivot);
-
-	      // Free the old, virtual, pivot from sys.
-	      free_row();
-	    }
-	    else if (pivot.is_equality())
-	      reduce_equality_with_equality(row, pivot, column);
-	    else {
-	      // Pivot is a congruence.
-	      std::swap(row, pivot);
-	      reduce_congruence_with_equality(row, pivot, column, sys);
-	    }
-	  else
-	    // Row is a congruence.
-	    if (pivot.is_virtual()) {
-	      // Keep the row as the new pivot.
-	      std::swap(row, pivot);
-	      // Free the virtual pivot from sys.
-	      free_row();
-	    }
-	    else if (pivot.is_equality())
-	      reduce_congruence_with_equality(row, pivot, column, sys);
-	    else
-	      // Pivot is a congruence.
-	      reduce_pc_with_pc(row, pivot, column, false);
+	else {
+	  assert(row.is_proper_congruence());
+	  if (pivot_is_equality)
+	    reduce_congruence_with_equality(row, pivot, dim, sys);
+	  else {
+	    assert(pivot.is_proper_congruence());
+	    reduce_pc_with_pc(row, pivot, dim, false);
+	  }
 	}
       }
-      if (orig_row_num != pivot_index) {
-	strace << "swapping row_num " << orig_row_num << " and pivot" << std::endl;
-	std::swap(sys[orig_row_num - 1], sys[pivot_index]);
-	// FIX why causes error when a virtual row has been dropped
-	//std::swap(sys[orig_row_num - 1], pivot);
-      }
 
-      Congruence& cg = sys[sys.num_rows() - col - 1];
-      if (cg.is_proper_congruence())
-	dim_kinds[column] = PROPER_CONGRUENCE;
-      else if (cg.is_equality())
-	dim_kinds[column] = EQUALITY;
-      else
-	dim_kinds[column] = CON_VIRTUAL;
+      if (pivot_is_equality)
+	dim_kinds[dim] = EQUALITY;
+      else {
+	assert(pivot.is_proper_congruence());
+	dim_kinds[dim] = PROPER_CONGRUENCE;
+      }
+      ++pivot_index;
     }
-    ++col;
     strace_dump(sys);
   }
 
-  assert(sys.num_rows() >= sys.num_columns() - 1);
-  // Clip any zero rows from the front of the matrix.
-  if (sys.num_rows() > sys.num_columns() - 1) {
+  dimension_type& reduced_num_rows = pivot_index; // For clearer naming.
+
+  // Clip any zero rows from the end of the matrix.
+  if (num_rows > reduced_num_rows) {
+    strace << "clipping trailing" << endl;
     assert(rows_are_zero(sys,
-			 0,
-			 sys.num_rows() - sys.num_columns(),
-			 sys.num_columns() - 1));
-    sys.rows.erase(sys.rows.begin(),
-		   sys.rows.begin()
-		   + (sys.num_rows() - sys.num_columns() + 1));
+			 reduced_num_rows,    // index of first
+			 sys.num_rows() - 1,  // index of last
+			 sys.num_columns() - 1)); // row size
+    sys.erase_to_end(reduced_num_rows);
 #if EXTRA_ROW_DEBUG
     // std::vector may have relocated rows, so the row copy constructor may
     // have used a new capacity.
@@ -577,49 +488,66 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     // FIX check other places that do rows.erase (Linear_System...)
 #endif
   }
+  assert(sys.num_rows() == reduced_num_rows);
 
-  assert(sys.OK());
-
-  TEMP_INTEGER(modulus);
-  Congruence& first_row = sys[0];
-  modulus = first_row.modulus();
-  // If first row is false then make it the equality 1 = 0.
-  if (modulus > 0 && first_row.inhomogeneous_term() % modulus != 0) {
-    // The first row is a false congruence.
-    first_row[0] = 1;
-    first_row.set_is_equality();
-    dim_kinds[0] = EQUALITY;
+  // If the last row is false then make it the equality 1 = 0, and
+  // make it the only row.
+  Congruence& last_row = sys[reduced_num_rows - 1];
+  if (dim_kinds[0] == PROPER_CONGRUENCE) {
+    if (last_row.inhomogeneous_term() % last_row.modulus() != 0) {
+      // The last row is a false proper congruence.
+      last_row.set_is_equality();
+      dim_kinds[0] = EQUALITY;
+      goto return_empty;
+    }
+  }
+  else if (dim_kinds[0] == EQUALITY) {
+    // The last row is a false equality, as all the coefficient terms
+    // are zero while the inhomogeneous term (as a result of the
+    // reduced form) holds a value.
+  return_empty:
+    last_row[0] = 1;
+    dim_kinds.resize(1);
+    sys.rows.erase(sys.rows.begin(), // First.
+		   // One past last.
+		   sys.rows.begin() + reduced_num_rows - 1);
+#if EXTRA_ROW_DEBUG
+    // std::vector may have relocated rows, so the row copy constructor may
+    // have used a new capacity.
+    sys.row_capacity = sys[0].capacity_;
+#endif
     trace_dim_kinds("cgs simpl end ", dim_kinds);
-    strace << "---- simplify (reduce) cgs done (empty)." << std::endl;
+    assert(sys.OK());
+    strace << "---- simplify (reduce) cgs done (empty)." << endl;
     return true;
   }
-  if (modulus == 0) {
-    // The first row is a false equality, as all the coefficient terms
-    // are zero while the inhomogeneous term holds a value (as a
-    // result of the reduced form).
-    first_row[0] = 1;
-    trace_dim_kinds("cgs simpl end ", dim_kinds);
-    strace << "---- simplify (reduce) cgs done (empty)." << std::endl;
-    return true;
-  }
-  // Ensure that the first row is the integrality congruence.
-  dimension_type last = first_row.size() - 1;
-  if (modulus == -1) {
-    // The first row is virtual, make it the integrality congruence.
-    first_row[last] = 1;
+
+  // Ensure that the last row is the integrality congruence.
+  dimension_type mod_index = last_row.size() - 1;
+  if (dim_kinds[0] == CON_VIRTUAL) {
+    // The last row is virtual, append the integrality congruence.
     dim_kinds[0] = PROPER_CONGRUENCE;
+    sys.add_zero_rows(1, Linear_Row::Flags(NECESSARILY_CLOSED,
+					   Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+    Congruence& new_last_row = sys[reduced_num_rows];
+    new_last_row[mod_index] = 1;
     // Try use an existing modulus.
-    dimension_type row = sys.num_rows();
-    while (row-- > 1)
-      if (sys[row][last] > 0) {
-	first_row[last] = sys[row][last];
+    dimension_type row_index = reduced_num_rows;
+    while (row_index-- > 0) {
+      Congruence& row = sys[row_index];
+      if (row[mod_index] > 0) {
+	new_last_row[mod_index] = row[mod_index];
 	break;
       }
+    }
+    new_last_row[0] = new_last_row[mod_index];
   }
-  first_row[0] = first_row[last];
+  else
+    last_row[0] = last_row[mod_index];
 
   trace_dim_kinds("cgs simpl end ", dim_kinds);
-  strace << "---- simplify (reduce) cgs done." << std::endl;
+  assert(sys.OK());
+  strace << "---- simplify (reduce) cgs done." << endl;
   return false;
 }
 

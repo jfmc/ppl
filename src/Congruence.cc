@@ -182,6 +182,11 @@ PPL::Congruence::ascii_dump(std::ostream& s) const {
   s << std::endl;
 }
 
+void
+PPL::Congruence::ascii_dump() const {
+  ascii_dump(std::cerr);
+}
+
 bool
 PPL::Congruence::ascii_load(std::istream& s) {
   std::string str;
@@ -213,7 +218,6 @@ PPL::Congruence::ascii_load(std::istream& s) {
 
 bool
 PPL::Congruence::OK() const {
-#if 0 // FIX -1 currently used for virtual row.
   // Modulus check.
   if (modulus() < 0) {
 #ifndef NDEBUG
@@ -222,7 +226,6 @@ PPL::Congruence::OK() const {
 #endif
     return false;
   }
-#endif
 
   // All tests passed.
   return true;

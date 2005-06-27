@@ -59,27 +59,24 @@ PPL::Grid::Grid(dimension_type num_dimensions,
     gen_sys.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
 						num_dimensions);
     set_generators_minimized();
-    con_sys.add_zero_rows(num_dimensions + 1, Row::Flags());
+    con_sys.add_zero_rows(1, Row::Flags());
     gen_sys.add_zero_rows(num_dimensions + 1,
 			  Linear_Row::Flags(NECESSARILY_CLOSED,
-					    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+					    Linear_Row::LINE_OR_EQUALITY));
+    // Trivially true parameter.
     Generator& first_g = gen_sys[0];
     first_g[0] = 1;
     first_g.set_is_ray_or_point();
+    // Integrality congruence.
     Congruence& first_cg = con_sys[0];
     first_cg[0] = 1;
     first_cg[num_dimensions + 1] = 1; // Modulus.
     dim_kinds[0] = PROPER_CONGRUENCE;
-    do {
-      Generator& g = gen_sys[num_dimensions];
-      g[num_dimensions] = 1;
-      g.set_is_line();
-      Congruence& cg = con_sys[num_dimensions];
-      cg[num_dimensions] = 1;
-      cg.set_is_virtual();
-      dim_kinds[num_dimensions] = CON_VIRTUAL;
+    // The rest.
+    while (num_dimensions > 0) {
+      gen_sys[num_dimensions][num_dimensions] = 1;
+      dim_kinds[num_dimensions--] = CON_VIRTUAL;
     }
-    while (num_dimensions-- > 1);
     gen_sys.unset_pending_rows();
     gen_sys.set_sorted(false);
   }
@@ -90,7 +87,8 @@ PPL::Grid::Grid(const Grid& y)
   : con_sys(),
     gen_sys(y.gen_sys.topology()),
     status(y.status),
-    space_dim(y.space_dim) {
+    space_dim(y.space_dim),
+    dim_kinds(y.dim_kinds) {
   // FIX check con,gen_sys dims correctly handled if out of date
   if (y.congruences_are_up_to_date())
     con_sys = y.con_sys;
@@ -239,52 +237,23 @@ PPL::Grid::is_universe() const {
   if (space_dim == 0)
     return true;
 
-  if (congruences_are_up_to_date()) {
-    // Compare congruences to the universe representation.
-
-    dimension_type size = con_sys.num_columns();
-    if (size == 0)
-      return false;
-    --size;			// Index.
-    // Check that the first row has 1 in the first and last elements,
-    // and 0 in the others.
-    const Congruence& cg = con_sys[0];
-    if (cg[0] == 1 && cg[size] == 1) {
-      for (dimension_type col = 1; col < size; ++col)
-	if (cg[col] != 0)
-	  return false;
-    }
-    else
-      return false;
-    // Check that all subsequent rows are virtual.
-    Congruence_System::const_iterator row = con_sys.begin();
-    while (++row != con_sys.end())
-      if (!(*row).is_virtual())
-	return false;
-    return true;
-  }
-
-  assert(generators_are_up_to_date());
-
-  // Compare generators to the universe representation.
-
-  dimension_type size = gen_sys.num_columns();
-  if (size == 0)
+  if (generators_are_up_to_date() && gen_sys.num_columns() == 0)
     return false;
-  --size;			// Index.
-  // Check the first row.
-  const Generator& g = gen_sys[0];
-  if (g[0] == 1 && g[size] == 1) {
-    for (dimension_type col = 1; col < size; ++col)
-      if (g[col] != 0)
-	return false;
-  }
-  else
+
+  if (!congruences_are_up_to_date() && !update_congruences())
+    // Grid is empty.
     return false;
-  // Check if all subsequent rows are virtual.
-  Generator_System::const_iterator row = gen_sys.begin();
-  while (++row != gen_sys.end())
-    if (!(*row).is_virtual())
+
+  if (con_sys.num_columns() == 0)
+    return false;
+
+  // Test gen_sys's inclusion in a universe generator system.
+  // FIX if min cmp to single integrality cong
+  // FIX create single g'tor and modify for each iteration below
+  Grid gr(space_dim);
+  Generator_System& gs = gr.gen_sys;
+  for (dimension_type i = gs.num_rows(); i-- > 0; )
+    if (!con_sys.satisfies_all_congruences(gs[i]))
       return false;
   return true;
 }
@@ -496,29 +465,34 @@ PPL::Grid::OK(bool check_not_empty) const {
       if (generators_are_minimized()) {
 	Generator_System gs = gen_sys;
 
-	if (!upper_triangular(gs)) {
+	if (!upper_triangular(gs, dim_kinds)) {
 #ifndef NDEBUG
-	  cerr << "Reduced generators should be upper triangular." << endl;
+	  cerr << "Reduced generators should be upper triangular."
+	       << endl;
 #endif
 	  goto fail;
 	}
 
 	if (dim_kinds.size() != num_columns) {
 #ifndef NDEBUG
-	  cerr << "Size of dim_kinds should equal the number of columns." << endl;
+	  cerr << "Size of dim_kinds should equal the number of columns."
+	       << endl;
 #endif
 	  goto fail;
 	}
 
 	// Check that dim_kinds corresponds to the row kinds in gen_sys.
-	for (dimension_type i = 0; i < gen_sys.num_rows(); ++i) {
-	  const Generator &g = gen_sys[i];
-	  if ((g.is_ray_or_point_or_inequality() && dim_kinds[i] == PARAMETER)
-	      || (g.is_line() && dim_kinds[i] == LINE)
-	      || dim_kinds[i] == GEN_VIRTUAL)
+	for (dimension_type dim = 0, row = 0;
+	     dim < space_dim + 1;
+	     ++dim, assert(row <= dim)) {
+	  if (dim_kinds[dim] == GEN_VIRTUAL
+	      || (gen_sys[row++].is_ray_or_point_or_inequality()
+		  && dim_kinds[dim] == PARAMETER)
+	      || (assert(gen_sys[row-1].is_line()), dim_kinds[dim] == LINE))
 	    continue;
 #ifndef NDEBUG
-	  cerr << "Kinds in dim_kinds should match those in gen_sys." << endl;
+	  cerr << "Kinds in dim_kinds should match those in gen_sys."
+	       << endl;
 #endif
 	  goto fail;
 	}
@@ -526,6 +500,9 @@ PPL::Grid::OK(bool check_not_empty) const {
 	// A reduced generator system must be the same as a temporary
 	// reduced copy.
 	Dimension_Kinds d = dim_kinds;
+	// `gs' is minimized and marked_empty returned false, so `gs'
+	// should contain rows.
+	assert(gs.num_rows() > 0);
 	simplify(gs, d);
 	for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
 	  Generator& g = gs[row];
@@ -580,7 +557,7 @@ PPL::Grid::OK(bool check_not_empty) const {
 
     if (congruences_are_minimized()) {
       // A reduced congruence system must be lower triangular.
-      if (!lower_triangular(con_sys)) {
+      if (!lower_triangular(con_sys, dim_kinds)) {
 #ifndef NDEBUG
 	cerr << "Reduced congruences should be lower triangular." << endl;
 #endif
@@ -607,17 +584,21 @@ PPL::Grid::OK(bool check_not_empty) const {
 
       if (dim_kinds.size() != con_sys.num_columns() - 1 /* modulus */) {
 #ifndef NDEBUG
-	cerr << "Size of dim_kinds should equal the number of columns." << endl;
+	cerr << "Size of dim_kinds should equal the number of columns."
+	     << endl;
 #endif
 	goto fail;
       }
 
       // Check that dim_kinds corresponds to the row kinds in con_sys.
-      for (dimension_type i = 0; i < con_sys.num_rows(); ++i) {
-	const Congruence &cg = con_sys[i];
-	if ((cg.is_proper_congruence() && dim_kinds[i] == PROPER_CONGRUENCE)
-	    || (cg.is_equality() && dim_kinds[i] == EQUALITY)
-	    || dim_kinds[i] == CON_VIRTUAL)
+      for (dimension_type dim = 0, row = con_sys.num_rows() - 1;
+	   dim < space_dim + 1;
+	   ++dim) {
+	if (dim_kinds[dim] == CON_VIRTUAL
+	    || (con_sys[row--].is_proper_congruence()
+		&& dim_kinds[dim] == PROPER_CONGRUENCE)
+	    || (assert(con_sys[row+1].is_equality()),
+		dim_kinds[dim] == EQUALITY))
 	  continue;
 #ifndef NDEBUG
 	cerr << "Kinds in dim_kinds should match those in con_sys." << endl;
@@ -1878,6 +1859,7 @@ PPL::operator==(const Grid& x, const Grid& y) {
 PPL::Grid&
 PPL::Grid::operator=(const Grid& y) {
   space_dim = y.space_dim;
+  dim_kinds = y.dim_kinds;
   if (y.marked_empty())
     set_empty();
   else if (space_dim == 0)

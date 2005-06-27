@@ -861,10 +861,13 @@ PPL::Generator_System::ascii_dump(std::ostream& s) const {
       s << "C";
       break;
     }
-    if (x[i].is_virtual())
-      s << " (v)";
     s << std::endl;
   }
+}
+
+void
+PPL::Generator_System::ascii_dump() const {
+  ascii_dump(std::cerr);
 }
 
 bool
@@ -914,16 +917,6 @@ PPL::Generator_System::ascii_load(std::istream& s) {
       x[i].set_is_line();
     else
       x[i].set_is_ray_or_point();
-
-    std::string vstr;
-    if (s >> vstr) {
-      if (vstr == "(v)") {
-	x[i].set_is_virtual();
-	continue;
-      }
-      for (std::string::size_type i = vstr.length(); i > 0; --i)
-	s.unget();
-    }
 
     // Checking for equality of actual and declared types.
     switch (x[i].type()) {
@@ -1038,9 +1031,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator_System& gs) {
   if (i == gs_end)
     return s << "false";
   while (1) {
-    s << *i;
-    if ((*i++).is_virtual())
-      s << " (v)";
+    s << *i++;
     if (i == gs_end)
       return s;
     s << ", ";
