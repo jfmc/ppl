@@ -59,10 +59,10 @@ test1() {
 
   // FIX check
   Generator_System known_gs;
-  known_gs.insert(point(0*A, 2));
-  known_gs.insert(point(2*A - B));
+  known_gs.insert(point(0*A));
+  known_gs.insert( line(2*A - B));
   known_gs.insert(point(3*B));
-  known_gs.insert(point(2*C));
+  known_gs.insert( line(  C));
 
   Grid known_gr(known_gs);
 

@@ -51,9 +51,9 @@ test1() {
     exit(1);
 
   Generator_System known_gs;
-  known_gs.insert(point(0*A));
-  known_gs.insert(point(2*A));
-  known_gs.insert(point(2*B));	// FIX why 2?
+  known_gs.insert(point(0*B));
+  known_gs.insert( line(A));
+  known_gs.insert( line(B));
 
   Grid known_gr(known_gs);
 

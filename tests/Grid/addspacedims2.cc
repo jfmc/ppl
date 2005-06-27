@@ -158,23 +158,14 @@ test4() {
 
   gr.add_space_dimensions_and_project(3);
 
-  if (find_variation(gr))
-    exit(1);
-
   Variable A(0);
-  Variable B(1);
-  Variable C(2);
   Variable D(3);
 
   Generator_System known_gs;
-  known_gs.insert(point(A));
-  known_gs.insert(point(2*A));
+  known_gs.insert(point());
+  known_gs.insert(line(A + 0*D));
 
-  Grid known_gr(4, Grid::EMPTY);
-  known_gr.add_generators(known_gs);
-
-  if (find_variation(known_gr))
-    exit(1);
+  Grid known_gr(known_gs);
 
   if (gr == known_gr)
     return;
