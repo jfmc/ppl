@@ -30,6 +30,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline void
+negate(Row& row, dimension_type start, dimension_type end) {
+  while (start <= end)
+    negate(row[start++]);
+}
+
 inline
 Row::Flags::Flags()
   : bits(0) {

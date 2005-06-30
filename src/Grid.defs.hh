@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Grid_defs_hh
 #define PPL_Grid_defs_hh 1
 
+#define STRONG_REDUCTION
+
 #include "Grid.types.hh"
 #include "globals.defs.hh"
 #include "Variable.defs.hh"
@@ -1566,32 +1568,32 @@ private:
 				   Congruence_System& dest,
 				   Dimension_Kinds& dim_kinds);
 
-  //! Convert \p cgs to upper triangular form.
+  //! Converts \p cgs to upper triangular form.
   /*!
     Return true if \p cgs is consistent, else false.
   */
   static bool simplify(Congruence_System& cgs,
 		       Dimension_Kinds& dim_kinds);
 
-  //! Convert \p gs to lower triangular form.
+  //! Converts \p gs to lower triangular form.
   /*!
     Return true if \p gs is consistent, else false.
   */
   static bool simplify(Generator_System& gs,
 		       Dimension_Kinds& dim_kinds);
 
-  //! Reduce the line \p row using the line \p pivot.
+  //! Reduces the line \p row using the line \p pivot.
   /*!
-    Use the line \p pivot to change the representation of the line \p
+    Uses the line \p pivot to change the representation of the line \p
     row so that element col of \p row is zero.
   */
   // A member of Grid for access to Matrix::rows.
   static void reduce_line_with_line(Row& row, Row& pivot,
 				    dimension_type col);
 
-  //! Reduce the equality \p row using the equality \p pivot.
+  //! Reduces the equality \p row using the equality \p pivot.
   /*!
-    Use the equality \p pivot to change the representation of the
+    Uses the equality \p pivot to change the representation of the
     equality \p row so that element col of \p row is zero.
   */
   // A member of Grid for access to Matrix::rows.
@@ -1631,6 +1633,18 @@ private:
 					      Congruence& pivot,
 					      dimension_type col,
 					      Congruence_System& sys);
+
+  //! Reduce column \dim in rows preceding \p pivot_index in \p sys.
+  /*!
+    Only consider from index \p start to index \p end of the row at \p
+    pivot_index.  Flag \p generators indicates whether \p sys is a
+    congruence or generator system.
+  */
+  static void reduce_reduced(Matrix& sys, dimension_type dim,
+			     dimension_type pivot_index,
+			     dimension_type start, dimension_type end,
+			     Dimension_Kinds& dim_kinds,
+			     bool generators = true);
 
   //! Multiply the elements of \p dest by \p multiplier.
   // A member of Grid for access to Matrix::rows and cgs::operator[].

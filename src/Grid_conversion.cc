@@ -336,7 +336,7 @@ Grid::conversion(Generator_System& source, Congruence_System& dest,
   Congruence& cg = dest[dest_num_rows - 1];
   modulus = cg[0];
   if (modulus < 0) {
-    modulus = -modulus;
+    negate(modulus);
     cg[0] = modulus;
   }
   for (dimension_type row = 0; row < dest_num_rows; ++row) {
@@ -347,6 +347,19 @@ Grid::conversion(Generator_System& source, Congruence_System& dest,
   }
   ctrace << "dest after setting moduli:" << std::endl;
   ctrace_dump(dest);
+
+#ifdef STRONG_REDUCTION
+  for (dimension_type dim = dims, i = 0; dim-- > 0; )
+    if (dim_kinds[dim] != CON_VIRTUAL) {
+      Row& row = dest[i];
+      if (row[dim] < 0)
+	negate(row, 0, dim);
+      // Factor the "diagonal" congruence out of the preceding rows.
+      reduce_reduced(dest, dim, i++, 0, dim, dim_kinds, false);
+    }
+  ctrace << "dest after strong reduction:" << std::endl;
+  ctrace_dump(dest);
+#endif
 
   trace_dim_kinds("gs to cgs end ", dim_kinds);
 
@@ -520,6 +533,19 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
     ctrace << "dest after processing preceding rows:" << std::endl;
     ctrace_dump(dest);
   }
+
+#ifdef STRONG_REDUCTION
+  for (dimension_type dim = 0, i = 0; dim < dims; ++dim)
+    if (dim_kinds[dim] != GEN_VIRTUAL) {
+      Row& row = dest[i];
+      if (row[dim] < 0)
+	negate(row, dim, dims - 1);
+      // Factor the "diagonal" congruence out of the preceding rows.
+      reduce_reduced(dest, dim, i++, dim, dims - 1, dim_kinds);
+    }
+  ctrace << "dest after strong reduction:" << std::endl;
+  ctrace_dump(dest);
+#endif
 
   trace_dim_kinds("cgs to gs end ", dim_kinds);
 

@@ -42,6 +42,75 @@ using std::endl;
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef STRONG_REDUCTION
+void
+Grid::reduce_reduced(Matrix& sys, dimension_type dim, dimension_type pivot_index,
+		     dimension_type start, dimension_type end,
+		     Dimension_Kinds& dim_kinds, bool generators) {
+  Row& pivot = sys[pivot_index];
+
+  TEMP_INTEGER(pivot_dim);
+  pivot_dim = pivot[dim];
+
+  if (pivot_dim == 0)
+    return;
+
+  TEMP_INTEGER(pivot_dim_half);
+  pivot_dim_half = (pivot_dim + 1) / 2;
+  Dimension_Kind row_kind = dim_kinds[dim];
+  Dimension_Kind line_or_equality, virtual_kind;
+  int jump;
+  if (generators) {
+    line_or_equality = LINE;
+    virtual_kind = GEN_VIRTUAL;
+    jump = -1;
+  } else {
+    line_or_equality = EQUALITY;
+    virtual_kind = CON_VIRTUAL;
+    jump = 1;
+  }
+
+  for (dimension_type row_index = pivot_index, kinds_index = dim + jump;
+       row_index-- > 0;
+       kinds_index += jump) {
+    // Move over any virtual rows.
+    while (dim_kinds[kinds_index] == virtual_kind)
+      kinds_index += jump;
+
+    if (row_kind == line_or_equality
+	|| (row_kind == PARAMETER // a.k.a. CONGRUENCE
+	    && dim_kinds[kinds_index] == PARAMETER)) {
+      Row& row = sys[row_index];
+
+      TEMP_INTEGER(row_dim);
+      row_dim = row[dim];
+      TEMP_INTEGER(num_rows);
+      num_rows = row_dim / pivot_dim;
+
+      // Ensure that after subtracting num_rows * r_dim from row_dim,
+      // -pivot_dim_half < row_dim <= pivot_dim_half.  E.g., if pivot[dim] =
+      // 9, then after strong reduction -5 < row_dim <= 5.
+      Coefficient& row_dim_rem = row_dim;
+      row_dim_rem %= pivot_dim;
+      if (row_dim_rem < 0) {
+	if (row_dim_rem <= -pivot_dim_half)
+	  num_rows--;
+      }
+      else if (row_dim_rem > 0 && row_dim_rem > pivot_dim_half)
+	num_rows++;
+
+      // Subtract num_rows copies of pivot from row i.  Only the
+      // entries from dim need to be subtracted, as the preceding
+      // entries are all zero.
+      if (num_rows != 0)
+	for (dimension_type col = start; col <= end; ++col)
+	  row[col] -= num_rows * pivot[col];
+    }
+  }
+
+}
+#endif // STRONG_REDUCTION
+
 inline void
 Grid::reduce_line_with_line(Row& row, Row& pivot,
 			    dimension_type column) {
@@ -157,8 +226,8 @@ Grid::reduce_parameter_with_line(Linear_Row& row,
 
   dimension_type num_cols = sys.num_columns();
 
-  // If the elements at `column' in row and pivot are the same, then
-  // just subtract `pivot' from `row'.
+  // If the elements at column in row and pivot are the same, then
+  // just subtract pivot from row.
   if (row[column] == pivot[column]) {
     for (dimension_type col = 0; col < num_cols; ++col)
       row[col] -= pivot[col];
@@ -171,6 +240,15 @@ Grid::reduce_parameter_with_line(Linear_Row& row,
   TEMP_INTEGER(row_a);
   pivot_a = pivot[column] / gcd;
   row_a = row[column] / gcd;
+#ifdef STRONG_REDUCTION
+  // Ensure that the multiplier is positive, so that the preceding
+  // diagonals (including the divisor) remain positive.  It's safe to
+  // swap the signs as row[column] will still come out 0.
+  if (pivot_a < 0) {
+    negate(pivot_a);
+    negate(row_a);
+  }
+#endif
   for (dimension_type index = 0; index < sys.num_rows(); ++index) {
     Linear_Row& row = sys[index];
     if (row.is_ray_or_point_or_inequality())
@@ -213,8 +291,8 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   // positive when multiplying the proper congruences below.  It's
   // safe to swap the signs as row[column] will still come out 0.
   if (pivot_a < 0) {
-    pivot_a = -pivot_a;
-    row_a = -row_a;
+    negate(pivot_a);
+    negate(row_a);
   }
   // Multiply `row', including the modulus, by pivot_a.  FIX To keep
   // all the moduli the same this requires multiplying all the other
@@ -341,6 +419,17 @@ Grid::simplify(Generator_System& sys, Dimension_Kinds& dim_kinds) {
 	assert(pivot.is_ray_or_point_or_inequality());
 	dim_kinds[dim] = PARAMETER;
       }
+
+#ifdef STRONG_REDUCTION
+      // Ensure a positive follows the leading zeros.
+      if (pivot[dim] < 0)
+	negate(pivot, dim, num_cols - 1);
+      strace << "  rr pivot_index " << pivot_index << endl;
+      strace_dump(sys);
+      // Factor this row out of the preceding rows.
+      reduce_reduced(sys, dim, pivot_index, dim, num_cols - 1, dim_kinds);
+#endif
+
       ++pivot_index;
     }
     strace_dump(sys);
@@ -466,6 +555,15 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 	assert(pivot.is_proper_congruence());
 	dim_kinds[dim] = PROPER_CONGRUENCE;
       }
+
+#ifdef STRONG_REDUCTION
+      // Ensure a positive follows the leading zeros.
+      if (pivot[dim] < 0)
+	negate(pivot, 0, dim);
+      // Factor this row out of the preceding ones.
+      reduce_reduced(sys, dim, pivot_index, 0, dim, dim_kinds, false);
+#endif
+
       ++pivot_index;
     }
     strace_dump(sys);
@@ -541,9 +639,17 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       }
     }
     new_last_row[0] = new_last_row[mod_index];
+#ifdef STRONG_REDUCTION
+    ++reduced_num_rows;
+#endif
   }
   else
     last_row[0] = last_row[mod_index];
+
+#ifdef STRONG_REDUCTION
+  // Factor the modified integrality congruence out of the other rows.
+  reduce_reduced(sys, 0, reduced_num_rows - 1, 0, 0, dim_kinds, false);
+#endif
 
   trace_dim_kinds("cgs simpl end ", dim_kinds);
   assert(sys.OK());
