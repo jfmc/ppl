@@ -47,7 +47,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-// FIX add  void construct(Congruence_System& cgs)?
 void
 PPL::Grid::construct(const Congruence_System& ccgs) {
   // Protecting against space dimension overflow is up to the caller.
@@ -79,7 +78,6 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
   assert(OK());
 }
 
-// FIX add  void construct(Generator_System& const_gs)?
 void
 PPL::Grid::construct(const Generator_System& const_gs) {
   // Protecting against space dimension overflow is up to the caller.
@@ -114,6 +112,7 @@ PPL::Grid::construct(const Generator_System& const_gs) {
   if (gs_space_dim > 0) {
     // Stealing the rows from `gs'.
     std::swap(gen_sys, gs);
+    normalize_divisors(gen_sys);
     // FIX for now convert rays to lines
     for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
       Generator& g = gen_sys[row];
@@ -504,6 +503,71 @@ PPL::Grid::strongly_minimize_generators() const {
 
   assert(OK());
   return true;
+}
+
+void
+PPL::Grid::normalize_divisors(Generator_System& sys,
+			      Generator_System& gen_sys) {
+  dimension_type row = 0;
+  dimension_type num_rows = gen_sys.num_rows();
+  // Find first point in gen_sys.
+  while (gen_sys[row].is_line_or_equality())
+    if (++row == num_rows)
+      // All rows are lines; generators should always contain a point.
+      //abort(); // FIX instead?
+      throw std::runtime_error("PPL::Grid::normalize_divisors(sys, gen_sys).");
+  TEMP_INTEGER(gen_sys_divisor);
+  TEMP_INTEGER(divisor);
+  gen_sys_divisor = gen_sys[row].divisor();
+  divisor = normalize_divisors(sys, gen_sys_divisor);
+  if (divisor != gen_sys_divisor)
+    // FIX this call can skip the lcm calc
+    normalize_divisors(gen_sys, divisor);
+}
+
+PPL::Coefficient
+PPL::Grid::normalize_divisors(Generator_System& sys,
+			      Coefficient_traits::const_reference divisor) {
+  TEMP_INTEGER(lcm);
+  lcm = divisor;
+  if (sys.num_columns()) {
+    dimension_type row = 0;
+    dimension_type num_rows = sys.num_rows();
+
+    // Move to the first point.
+    while (!sys[row].is_point())
+      if (++row == num_rows)
+	return divisor;		// All rows are lines.
+
+    if (lcm == 0) {
+      lcm = sys[row][0];
+      ++row;
+    }
+
+    // Calculate the LCM of the divisors of the points.
+    while (row < num_rows) {
+      Generator& g = sys[row];
+      if (g.is_point())
+	lcm_assign(lcm, g[0]);
+      ++row;
+    }
+
+    // Represent each point using the LCM as the divisor.
+    for (dimension_type row = 0; row < num_rows; ++row) {
+      Generator& gen = sys[row];
+      if (gen.is_point()) {
+	TEMP_INTEGER(factor);
+	factor = lcm / gen[0];
+	// FIX skip if divisor == lcm
+	for (dimension_type col = 1; col < gen.size(); ++col)
+	  gen[col] *= factor;
+	gen[0] = lcm;
+      }
+    }
+
+    sys.set_sorted(false);
+  }
+  return lcm;
 }
 
 void

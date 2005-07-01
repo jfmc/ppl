@@ -718,6 +718,26 @@ PPL::Grid::add_generator(const Generator& g) {
   }
   else {
     assert(generators_are_up_to_date());
+    // Copy g, in all cases, in case the divisor needs to be changed
+    // when g is a point.
+    // FIX only copy when point
+    Generator tem(g);
+    Generator& g = tem;
+    // g is now a pointer
+    if (g.is_point()) {
+      // Ensure that the divisors of gen_sys and g are the same.
+      TEMP_INTEGER(gen_sys_divisor);
+      TEMP_INTEGER(divisor);
+      divisor = g.divisor();
+      gen_sys_divisor = normalize_divisors(gen_sys, divisor);
+      if (divisor != gen_sys_divisor) {
+	// Multiply g to match the gen_sys divisor.
+	g[0] = gen_sys_divisor;
+	gen_sys_divisor /= divisor;
+	for (dimension_type col = 1; col < g.size(); ++col)
+	  g[col] *= gen_sys_divisor;
+      }
+    }
     if (g.is_necessarily_closed()) {
       // Since `gen_sys' is not empty, the topology and space dimension
       // of the inserted generator are automatically adjusted.
@@ -747,6 +767,7 @@ PPL::Grid::add_generator(const Generator& g) {
 	gen_sys.insert(Generator::point(nc_expr, g.divisor()));
 	break;
       default:
+	//abort(); // FIX instead?
 	throw_runtime_error("add_generator(const Generator& g)");
       }
     }
@@ -961,6 +982,7 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
       throw_invalid_generators("add_recycled_generators(gs)", "gs");
     gs.unset_pending_rows();
     std::swap(gen_sys, gs);
+    normalize_divisors(gen_sys);
     // FIX for now convert rays to lines
     for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
       Generator& g = gen_sys[row];
@@ -975,6 +997,8 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
     assert(OK());
     return;
   }
+
+  normalize_divisors(gs, gen_sys);
 
   // Here we do not require `gen_sys' to be sorted.
   // also, we _swap_ (instead of copying) the coefficients of `gs'
@@ -1047,19 +1071,6 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
     return true;
   }
 
-#if 0
-  // Adjust `gs' to the right topology.
-  // NOTE: we already checked for topology compatibility;
-  // also, we do NOT adjust dimensions now, so that we will
-  // spend less time to sort rows.
-  gs.adjust_topology_and_space_dimension(topology(), gs_space_dim);
-
-  // For NNC polyhedra, each point must be matched by
-  // the corresponding closure point.
-  if (!is_necessarily_closed())
-    gs.add_corresponding_closure_points();
-#endif
-
   if (!gs.is_sorted())
     gs.sort_rows();
 
@@ -1068,10 +1079,12 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
   //gs.adjust_topology_and_space_dimension(topology(), space_dim); // FIX
   gs.adjust_topology_and_space_dimension(gs.topology(), space_dim);
 
-  if (minimize())
+  if (minimize()) {
+    normalize_divisors(gs, gen_sys);
     // This call to `add_and_minimize(...)' returns `true'.
     // FIX add_and_minimize copies the generators (check cgs version)
     add_and_minimize(gen_sys, con_sys, gs, dim_kinds);
+  }
   else {
     // The grid was empty: check if `gs' contains a point.
     if (!gs.has_points())
@@ -1081,6 +1094,7 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
     // `gs' has a point: the grid is no longer empty and generators
     // are up-to-date.
     std::swap(gen_sys, gs);
+    normalize_divisors(gen_sys);
     // FIX for now convert rays to lines
     for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
       Generator& g = gen_sys[row];

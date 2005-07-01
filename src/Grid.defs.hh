@@ -1554,6 +1554,28 @@ private:
 			       const Generator_System& source2,
 			       Dimension_Kinds& dim_kinds);
 
+  //! Normalize the divisors in \p sys.
+  /*!
+    Convert \p sys to an equivalent representation in which the
+    divisors of all the generators are equal.
+
+    \p divisor is an extra divisor to include in the calculation of
+    the common divisor.  A value of 0 for \p divisor indicates to
+    leave it out of the calculation.
+  */
+  static Coefficient
+  normalize_divisors(Generator_System& sys,
+		     Coefficient_traits::const_reference divisor = 0);
+
+  //! Normalize all the divisors in \p sys and \p gen_sys.
+  /*!
+    Convert \p sys and \p gen_sys to equivalent representations in
+    which a single value is used for the divisors of the generators in
+    both systems.
+  */
+  static void normalize_divisors(Generator_System& sys,
+				 Generator_System& gen_sys);
+
   //! \brief
   //! Converts parameter system \p dest to be equivalent to congruence
   //! system \p source.
