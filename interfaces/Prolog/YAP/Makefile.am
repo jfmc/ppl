@@ -47,6 +47,7 @@ endif NO_UNDEFINED
 pkglib_LTLIBRARIES = ppl_yap.la
 ppl_yap_la_SOURCES = ppl_yap.cc
 ppl_yap_la_LIBADD = \
+-lYap \
 $(top_builddir)/src/libppl.la \
 $(top_builddir)/Watchdog/libpwl.la \
 @extra_libraries@
