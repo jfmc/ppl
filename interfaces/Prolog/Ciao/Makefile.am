@@ -109,19 +109,30 @@ COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
 if ASSERTIONS_ENABLED
 
-EXPECTED = $(srcdir)/../tests/expected_$(COEFFICIENT_MNEMONIC)_a
-EXPECTED2 = $(srcdir)/../tests/expected2_$(COEFFICIENT_MNEMONIC)_a
-EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED3 = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)_a
 
 else !ASSERTIONS_ENABLED
 
-EXPECTED = $(srcdir)/../tests/expected_$(COEFFICIENT_MNEMONIC)
-EXPECTED2 = $(srcdir)/../tests/expected2_$(COEFFICIENT_MNEMONIC)
-EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)
+EXPECTED = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)
+EXPECTED2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)
+EXPECTED3 = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: ciao_clpq$(EXEEXT) ../tests/check_script $(EXPECTED) ciao_clpq2$(EXEEXT) ../tests/check_script2 $(EXPECTED2) ciao_pl_check$(EXEEXT) $(EXPECTED3)
+check-local: pl_check_test clpq_test clpq2_test
+
+pl_check_test: ciao_pl_check$(EXEEXT) $(EXPECTED_PCHK)
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen libppl_ciao.la \
+		./ciao_pl_check \
+			 >obtained_pchk
+	diff -u --ignore-all-space $(EXPECTED3) obtained_pchk
+
+clpq_test: ciao_clpq$(EXEEXT) ../tests/script_clpq $(EXPECTED_CLPQ) 
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	GLOBALSTKSIZE=1000000 \
@@ -130,27 +141,25 @@ check-local: ciao_clpq$(EXEEXT) ../tests/check_script $(EXPECTED) ciao_clpq2$(EX
 		-dlopen ../../../Watchdog/libpwl.la \
 		-dlopen libppl_ciao.la \
 		./ciao_clpq \
-			<$(srcdir)/../tests/check_script >obtained
-	diff -u --ignore-all-space $(EXPECTED) obtained
+			<$(srcdir)/../tests/script_clpq >obtained_clpq
+	diff -u --ignore-all-space $(EXPECTED) obtained_clpq
+
+clpq2_test: ciao_clpq2$(EXEEXT) ../tests/script_clpq2 $(EXPECTED_CLPQ2)
+	LANG=C; \
+	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+	GLOBALSTKSIZE=1000000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		-dlopen libppl_ciao.la \
 		./ciao_clpq2 \
-			<$(srcdir)/../tests/check_script2 >obtained2
-	diff -u --ignore-all-space $(EXPECTED2) obtained2
-	$(LIBTOOL) --mode=execute \
-		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
-		-dlopen libppl_ciao.la \
-		./ciao_pl_check \
-			 >obtained3
-	diff -u --ignore-all-space $(EXPECTED3) obtained3
+			<$(srcdir)/../tests/script_clpq2 >obtained_clpq2
+	diff -u --ignore-all-space $(EXPECTED2) obtained_clpq2
 
 MOSTLYCLEANFILES = \
 *.itf *.po *.c *.so \
 ciao_clpq ciao_clpq2 ciao_pl_check \
-obtained obtained2 obtained3\
+obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS)
 
 endif HAVE_CIAO_PROLOG
