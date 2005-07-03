@@ -41,9 +41,9 @@ AM_CPPFLAGS = \
 @extra_includes@
 
 LDADD = \
-$(top_builddir)/src/libppl.la \
 $(top_builddir)/utils/libppl_utils.a \
 $(top_builddir)/tests/libppl_tests.a \
+$(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
