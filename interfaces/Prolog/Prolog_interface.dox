@@ -1562,10 +1562,15 @@ ciaoc -o myprog prefix/lib/ppl/ppl_ciao.pl ciao_pl_check.pl \
 
 <H2>GNU Prolog</H2>
 
-The GNU Prolog interface to the PPL is available both as ``PPL
-enhanced'' GNU Prolog interpreter and as a library that can be
+The GNU Prolog interface to the PPL is available both as a
+``PPL enhanced'' GNU Prolog interpreter and as a library that can be
 linked to GNU Prolog programs.
-Only GNU Prolog versions 1.2.18 and later are supported.
+The only GNU Prolog version that is known to work is a patched
+version of the ``unstable version'' tagged
+<A HREF="ftp://ftp.inria.fr/INRIA/Projects/contraintes/gprolog/unstable/gprolog-20040608.tgz">20040608</A>
+(which unpacks to a directory called <CODE>gprolog-1.2.18</CODE>).
+The patch is contained in the
+<CODE>interfaces/Prolog/GNU/README</CODE> file of the PPL's distribution.
 
 So that it can be used with the GNU Prolog PPL interface
 (and, for that matter, with any foreign code),
