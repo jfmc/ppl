@@ -1676,7 +1676,8 @@ the library with the <CODE>--enable-shared</CODE> option.
 
 The XSB Prolog interface to the PPL is available
 as a dynamically linked module.
-Only XSB versions 2.6 and later are supported.
+Only XSB versions following 2.7.1 and CVS HEAD versions starting from
+2 July 2005 are supported.
 
 In order to dynamically load the library from XSB you should
 load the <CODE>ppl_xsb</CODE> module and import the predicates

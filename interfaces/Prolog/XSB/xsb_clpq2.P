@@ -42,36 +42,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 :- [ppl_xsb].
 
-#define user_input user
 #include "clpq2.pl"
 
 eat_eol.
 
 main :-
     common_main.
-
-
-% XSB (up to version 2.6) does not offer read_term/2.
-% We just provide the functionality we need.
-
-:- import file_read/3 from xsb_read.
-
-read_term(Term, [variable_names(VN)]) :-
-  file_read(0, Term, L),
-  convert_variable_names_list(L, VN).
-
-convert_variable_names_list(L, VN) :-
-  var(L),
-  !,
-  VN = [].
-convert_variable_names_list([A|L], [Name=Var|VN]) :-
-  A =.. [_, Name, Var],
-  convert_variable_names_list(L, VN).
-
-:- import file_flush/2 from file_io.
-
-flush_output(user_output) :-
-  file_flush(0, _).
-
 
 :- ppl_initialize, main, ppl_finalize.
