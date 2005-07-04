@@ -2076,6 +2076,7 @@ generalized_affine_image(const Variable var,
 			   "r is a strict relation symbol");
 
   // Any image of an empty polyhedron is empty.
+  // Note: DO check for emptyness here, as we may later add a ray/line.
   if (is_empty())
     return;
 
@@ -2187,6 +2188,11 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
     }
     return;
   }
+
+  // Any image of an empty polyhedron is empty.
+  // Note: DO check for emptyness here, as we will add ray/lines.
+  if (is_empty())
+    return;
 
   // Gather in `new_gs' the collections of all the lines having
   // the direction of variables occurring in `lhs'.
