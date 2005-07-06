@@ -361,7 +361,7 @@ public:
   //! Dereference operator.
   reference operator*() const;
 
-  //! indirect member selector.
+  //! Indirect member selector.
   pointer operator->() const;
 
   //! Prefix increment operator.
@@ -412,7 +412,7 @@ protected:
   //! The type of the underlying mutable iterator.
   typedef typename Powerset::Sequence::iterator Base;
 
-  //! A shortcut for naming traits.
+  //! A shortcut for naming the const_iterator traits.
   typedef typename
   std::iterator_traits<typename Powerset::Sequence::const_iterator> Traits;
 

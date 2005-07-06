@@ -25,10 +25,6 @@ Enhancements for PPL 0.8 or later versions
 - Add our implementation of bounded difference shapes.
 - Decide which interfaces should be provided for the simplex method,
   write them, and write the documentation for them.
-- For the Powerset class, find a way for the user to obtain access to
-  the sequence of disjuncts, while still enforcing the class invariants.
-  What is currently missing is a clean and safe way to drop one of the
-  disjuncts in the sequence.
 - The Powerset class implementation is still poorly documented.
 - Consider renaming Powerset::meet_assign().
 - Clearly explain, in the documentation, how (not) to use
