@@ -236,21 +236,21 @@ Standards for Documenting the Project with Doxygen
    This is obtained by using the Doxygen \relates special command
    as follows:
 
-     /*! \relates <classname> */
+     /*! \relates Classname */
 
    It seems that, in order to correctly match function declarations
    and definitions, the above command should be placed in both places.
    Typically, this will be the only kind of Doxygen command
    occurring in *.inlines.hh and *.cc source files.
 
-   If <classname> is a templatic class, the arguments of the template
+   If Classname is a templatic class, the arguments of the template
    (as well as the angle brackets) should be omitted.
    The namespace qualification of the class can be omitted, provided
    the comment block is included in the namespace scope.
 
 10)
   If the \return or \param special commands are used, then these have to
-  be placed after the brief doxygen comment.  The \result special
+  be placed after the brief doxygen comment.  The \return special
   command, if present, should come before any \param command.  The
   \exception special command, if present, should come after any \param
   command. All the parameters of the function should be provided by the
