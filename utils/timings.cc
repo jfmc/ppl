@@ -31,7 +31,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstring>
 #include <cerrno>
 
-#if HAVE_SYS_RESOURCE_H
+#ifdef HAVE_SYS_TIME_H
+# include <sys/time.h>
+#endif
+
+#ifdef HAVE_SYS_RESOURCE_H
+// This should be included after <time.h> and <sys/time.h> so as to make
+// sure we have the definitions for, e.g., `ru_utime'.
 # include <sys/resource.h>
 #endif
 

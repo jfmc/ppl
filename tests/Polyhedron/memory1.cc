@@ -35,6 +35,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 
 #ifdef HAVE_SYS_RESOURCE_H
+// This should be included after <time.h> and <sys/time.h> so as to make
+// sure we have the definitions for, e.g., `ru_utime'.
 # include <sys/resource.h>
 #endif
 
