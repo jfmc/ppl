@@ -10,6 +10,11 @@ NEWS for version 0.8  (released date to be decided)
 New and Changed Features
 ========================
 
+o  The enumeration
+     Polyhedron::Degenerate_Kind
+   has been placed outside of class Polyhedron and renamed as
+     Degenerate_Element.
+
 o  New output operators in namespace IO_Operators:
      std::ostream& operator<<(std::ostream&, const Constraint::Type&)
    and
@@ -39,6 +44,10 @@ o  Portability has been improved.
 
 Bugfixes
 ========
+
+o  Fixed a bug whereby calling the methods
+     Polyhedron::generalized_affine_image(...)
+   on an empty polyhedron could have resulted in an exception thrown.
 
 o  Fixed a bug whereby the occurrence of an `out of memory' error during
    the allocation of a row of integer coefficients could have resulted
