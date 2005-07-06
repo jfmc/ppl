@@ -230,7 +230,7 @@ private:
     //! \brief
     //! Builds a new representation by creating a domain element
     //! of the specified kind, in the specified vector space.
-    Rep(dimension_type num_dimensions, Polyhedron::Degenerate_Kind kind);
+    Rep(dimension_type num_dimensions, Degenerate_Element kind);
 
     //! Builds a new representation by copying base-level element \p p.
     Rep(const PH& p);

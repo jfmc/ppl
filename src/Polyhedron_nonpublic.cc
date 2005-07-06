@@ -49,7 +49,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Polyhedron::Polyhedron(const Topology topol,
 			    const dimension_type num_dimensions,
-			    const Degenerate_Kind kind)
+			    const Degenerate_Element kind)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),

@@ -75,9 +75,9 @@ BD_Shape<T>::init() {
 template <typename T>
 inline
 BD_Shape<T>::BD_Shape(dimension_type num_dimensions,
-		      Polyhedron::Degenerate_Kind kind)
+		      Degenerate_Element kind)
   : dbm(num_dimensions + 1), status() {
-  if (kind == Polyhedron::EMPTY)
+  if (kind == EMPTY)
     set_empty();
   else {
     init();
@@ -236,12 +236,12 @@ inline
 BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   : dbm(), status() {
   if (ph.marked_empty()) {
-    *this = BD_Shape(ph.space_dim, Polyhedron::EMPTY);
+    *this = BD_Shape(ph.space_dim, EMPTY);
     return;
   }
 
   if (ph.space_dim == 0) {
-    *this = BD_Shape(ph.space_dim, Polyhedron::UNIVERSE);
+    *this = BD_Shape(ph.space_dim, UNIVERSE);
     return;
   }
 
@@ -262,7 +262,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
     // If the constraint system of the polyhedron is minimized,
     // the test `is_universe()' has polynomial complexity.
     if (ph.is_universe()) {
-      *this = BD_Shape(ph.space_dim, Polyhedron::UNIVERSE);
+      *this = BD_Shape(ph.space_dim, UNIVERSE);
       return;
     }
   }
@@ -271,7 +271,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   for (Constraint_System::const_iterator i = ph.con_sys.begin(),
 	 cs_end = ph.con_sys.end(); i != cs_end; ++i)
     if (i->is_inconsistent()) {
-      *this = BD_Shape(ph.space_dim, Polyhedron::EMPTY);
+      *this = BD_Shape(ph.space_dim, EMPTY);
       return;
     }
 
@@ -283,7 +283,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
     Coefficient d;
     if (ph.con_sys.primal_simplex(Linear_Expression(0), true, n, d)
 	== UNFEASIBLE_PROBLEM) {
-      *this = BD_Shape(ph.space_dim, Polyhedron::EMPTY);
+      *this = BD_Shape(ph.space_dim, EMPTY);
       return;
     }
 
@@ -1424,7 +1424,7 @@ BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("poly_difference_assign(y)", y);
 
-  BD_Shape new_bdiffs(space_dim, Polyhedron::EMPTY);
+  BD_Shape new_bdiffs(space_dim, EMPTY);
 
   BD_Shape& x = *this;
 

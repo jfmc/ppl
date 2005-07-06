@@ -195,7 +195,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     and inserting the appropriate generators
     (a point, a ray and a line).
     \code
-  C_Polyhedron ph(2, Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
   ph.add_generator(point(0*x + 0*y));
   ph.add_generator(ray(y));
   ph.add_generator(line(x));
@@ -246,7 +246,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     The following code shows the use of the function
     <CODE>affine_image</CODE>:
     \code
-  C_Polyhedron ph(2, Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
   ph.add_generator(point(0*x + 0*y));
   ph.add_generator(point(0*x + 3*y));
   ph.add_generator(point(3*x + 0*y));
@@ -351,14 +351,6 @@ public:
   //! Returns the maximum space dimension all kinds of Polyhedron can handle.
   static dimension_type max_space_dimension();
 
-  //! Kinds of degenerate polyhedra.
-  enum Degenerate_Kind {
-    //! The universe polyhedron, i.e., the whole vector space.
-    UNIVERSE,
-    //! The empty polyhedron, i.e., the empty set.
-    EMPTY
-  };
-
 protected:
   //! Builds a polyhedron having the specified properties.
   /*!
@@ -373,7 +365,7 @@ protected:
   */
   Polyhedron(Topology topol,
 	     dimension_type num_dimensions,
-	     Degenerate_Kind kind);
+	     Degenerate_Element kind);
 
   //! Ordinary copy-constructor.
   Polyhedron(const Polyhedron& y);

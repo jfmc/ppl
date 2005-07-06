@@ -63,7 +63,7 @@ public:
   */
   explicit
   Polyhedra_Powerset(dimension_type num_dimensions = 0,
-		     Polyhedron::Degenerate_Kind kind = Polyhedron::UNIVERSE);
+		     Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
   Polyhedra_Powerset(const Polyhedra_Powerset& y);

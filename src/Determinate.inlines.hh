@@ -30,7 +30,7 @@ namespace Parma_Polyhedra_Library {
 
 template <typename PH>
 Determinate<PH>::Rep::Rep(dimension_type num_dimensions,
-			  Polyhedron::Degenerate_Kind kind)
+			  Degenerate_Element kind)
   : references(0), ph(num_dimensions, kind) {
 }
 

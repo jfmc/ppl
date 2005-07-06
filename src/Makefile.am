@@ -100,6 +100,7 @@ endif
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
+namespaces.hh \
 compiler.hh \
 float.types.hh \
 Coefficient_traits_template.hh \
@@ -278,6 +279,7 @@ swapping_sort.icc
 
 # The ordering of the following list *matters*!
 DOC_FILES = \
+namespaces.hh \
 GMP_Integer.types.hh \
 Checked_Number.types.hh \
 Native_Integer.types.hh \

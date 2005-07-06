@@ -72,8 +72,7 @@ check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps);
 template <typename PH>
 bool
 check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps) {
-  Polyhedra_Powerset<NNC_Polyhedron> tmp(ph.space_dimension(),
-					 Polyhedron::EMPTY);
+  Polyhedra_Powerset<NNC_Polyhedron> tmp(ph.space_dimension(), EMPTY);
   tmp.add_disjunct(NNC_Polyhedron(ph));
   for (typename Polyhedra_Powerset<PH>::const_iterator i = ps.begin(),
 	 ps_end = ps.end(); i != ps_end; ++i) {
@@ -90,7 +89,7 @@ check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps) {
       return true;
     else {
       Polyhedra_Powerset<NNC_Polyhedron> new_disjuncts(ph.space_dimension(),
-						       Polyhedron::EMPTY);
+						       EMPTY);
       for (Polyhedra_Powerset<NNC_Polyhedron>::iterator
 	     j = tmp.begin(); j != tmp.end(); ) {
 	const NNC_Polyhedron& pj = j->element();

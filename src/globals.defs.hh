@@ -40,6 +40,14 @@ typedef size_t memory_size_type;
 dimension_type
 not_a_dimension();
 
+//! Kinds of degenerate abstract elements.
+enum Degenerate_Element {
+  //! The universe element, i.e., the whole vector space.
+  UNIVERSE,
+  //! The empty element, i.e., the empty set.
+  EMPTY
+};
+
 //! Relation symbols.
 enum Relation_Symbol {
   //! Less than.

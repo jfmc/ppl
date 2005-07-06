@@ -30,7 +30,7 @@ namespace Parma_Polyhedra_Library {
 
 inline
 NNC_Polyhedron::NNC_Polyhedron(dimension_type num_dimensions,
-			       Degenerate_Kind kind)
+			       Degenerate_Element kind)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
 	       num_dimensions <= max_space_dimension()
 	       ? num_dimensions

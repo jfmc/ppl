@@ -50,10 +50,10 @@ Polyhedra_Powerset<PH>::max_space_dimension() {
 template <typename PH>
 inline
 Polyhedra_Powerset<PH>::Polyhedra_Powerset(dimension_type num_dimensions,
-					   Polyhedron::Degenerate_Kind kind)
+					   Degenerate_Element kind)
   : Base(), space_dim(num_dimensions) {
   Polyhedra_Powerset& x = *this;
-  if (kind == Polyhedron::UNIVERSE)
+  if (kind == UNIVERSE)
     x.sequence.push_back(Determinate<PH>(PH(num_dimensions, kind)));
   assert(x.OK());
 }
@@ -172,7 +172,7 @@ Polyhedra_Powerset<PH>::concatenate_assign(const Polyhedra_Powerset& y) {
   // Ensure omega-reduction here, since what follows has quadratic complexity.
   x.omega_reduce();
   y.omega_reduce();
-  Polyhedra_Powerset<PH> new_x(x.space_dim, Polyhedron::EMPTY);
+  Polyhedra_Powerset<PH> new_x(x.space_dim, EMPTY);
   const Polyhedra_Powerset<PH>& cx = *this;
   for (const_iterator xi = cx.begin(), x_end = cx.end(),
 	 y_begin = y.begin(), y_end = y.end(); xi != x_end; ) {
@@ -367,7 +367,7 @@ Polyhedra_Powerset<PH>::pairwise_reduce() {
   size_type n = x.size();
   size_type deleted;
   do {
-    Polyhedra_Powerset new_x(x.space_dim, Polyhedron::EMPTY);
+    Polyhedra_Powerset new_x(x.space_dim, EMPTY);
     std::deque<bool> marked(n, false);
     deleted = 0;
     Sequence_iterator s_begin = x.sequence.begin();
@@ -424,7 +424,7 @@ BGP99_heuristics_assign(const Polyhedra_Powerset& y, Widening wf) {
 #endif
 
   size_type n = x.size();
-  Polyhedra_Powerset new_x(x.space_dim, Polyhedron::EMPTY);
+  Polyhedra_Powerset new_x(x.space_dim, EMPTY);
   std::deque<bool> marked(n, false);
   const_iterator x_begin = x.begin();
   const_iterator x_end = x.end();
@@ -565,12 +565,12 @@ Polyhedra_Powerset<PH>::BHZ03_widening_assign(const Polyhedra_Powerset& y,
     return;
 
   // Compute the poly-hull of `x'.
-  PH x_hull(x.space_dim, PH::EMPTY);
+  PH x_hull(x.space_dim, EMPTY);
   for (const_iterator i = x.begin(), x_end = x.end(); i != x_end; ++i)
     x_hull.poly_hull_assign(i->element());
 
   // Compute the poly-hull of `y'.
-  PH y_hull(y.space_dim, PH::EMPTY);
+  PH y_hull(y.space_dim, EMPTY);
   for (const_iterator i = y.begin(), y_end = y.end(); i != y_end; ++i)
     y_hull.poly_hull_assign(i->element());
   // Compute the certificate for `y_hull'.
@@ -604,7 +604,7 @@ Polyhedra_Powerset<PH>::BHZ03_widening_assign(const Polyhedra_Powerset& y,
   bgp99_heuristics.BGP99_heuristics_assign(y, wf);
 
   // Compute the poly-hull of `bgp99_heuristics'.
-  PH bgp99_heuristics_hull(x.space_dim, PH::EMPTY);
+  PH bgp99_heuristics_hull(x.space_dim, EMPTY);
   for (const_iterator i = bgp99_heuristics.begin(),
 	 bh_end = bgp99_heuristics.end(); i != bh_end; ++i)
     bgp99_heuristics_hull.poly_hull_assign(i->element());
@@ -652,7 +652,7 @@ Polyhedra_Powerset<PH>::BHZ03_widening_assign(const Polyhedra_Powerset& y,
   }
 
   // Fall back to the computation of the poly-hull.
-  Polyhedra_Powerset<PH> x_hull_singleton(x.space_dim, PH::EMPTY);
+  Polyhedra_Powerset<PH> x_hull_singleton(x.space_dim, EMPTY);
   x_hull_singleton.add_disjunct(x_hull);
   std::swap(x, x_hull_singleton);
 }
@@ -696,7 +696,7 @@ Polyhedra_Powerset<PH>::ascii_load(std::istream& s) {
   if (!(s >> x.space_dim))
     return false;
 
-  Polyhedra_Powerset new_x(x.space_dim, Polyhedron::EMPTY);
+  Polyhedra_Powerset new_x(x.space_dim, EMPTY);
   while (sz-- > 0) {
     PH ph;
     if (!ph.ascii_load(s))
@@ -771,8 +771,7 @@ linear_partition_aux(const Constraint& c,
 template <typename PH>
 std::pair<PH, Polyhedra_Powerset<NNC_Polyhedron> >
 linear_partition(const PH& p, const PH& q) {
-  Polyhedra_Powerset<NNC_Polyhedron> r(p.space_dimension(),
-				       Polyhedron::EMPTY);
+  Polyhedra_Powerset<NNC_Polyhedron> r(p.space_dimension(), EMPTY);
   PH qq = q;
   const Constraint_System& pcs = p.constraints();
   for (Constraint_System::const_iterator i = pcs.begin(),

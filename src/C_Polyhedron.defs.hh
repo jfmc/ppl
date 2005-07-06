@@ -70,7 +70,7 @@ public:
     by default, a 0-dimension space universe C polyhedron is built.
   */
   explicit C_Polyhedron(dimension_type num_dimensions = 0,
-			Degenerate_Kind kind = UNIVERSE);
+			Degenerate_Element kind = UNIVERSE);
 
   //! Builds a C polyhedron from a system of constraints.
   /*!

@@ -43,28 +43,25 @@ namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::BD_Shape
-  Writes a textual representation of \p bd on \p s:
-  <CODE>false</CODE> is written if \p bd is an empty system of 
-  bounded differences;
-  <CODE>true</CODE> is written if \p bd is an universe system of
-  bounded differences;
-  a system of constraints defining \p bd is written otherwise,
+  Writes a textual representation of \p bds on \p s:
+  <CODE>false</CODE> is written if \p bds is an empty polyhedron;
+  <CODE>true</CODE> is written if \p bds is the universe polyhedron;
+  a system of constraints defining \p bds is written otherwise,
   all constraints separated by ", ".
 */
 template <typename T>
 std::ostream& 
-operator<<(std::ostream& s, const BD_Shape<T>& c);
+operator<<(std::ostream& s, const BD_Shape<T>& bds);
 
 } // namespace IO_Operators
 
 //! \brief
 //! Returns <CODE>true</CODE> if and only if
-//! \p x and \p y represent the same polyhedron.
+//! \p x and \p y are the same polyhedron.
 /*!
   \relates BD_Shape
-  Note that \p x and \p y may be dimension-incompatible
-  systems of bounded differences: in this case, the value <CODE>false</CODE> 
-  is returned.
+  Note that \p x and \p y may be dimension-incompatible shapes:
+  in this case, the value <CODE>false</CODE> is returned.
 */
 template <typename T>
 bool operator==(const BD_Shape<T>& x, const BD_Shape<T>& y);
@@ -408,7 +405,7 @@ public:
                             system of bounded differences has to be built.
   */
   explicit BD_Shape(dimension_type num_dimensions = 0,
-		    Polyhedron::Degenerate_Kind kind = Polyhedron::UNIVERSE);
+		    Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
   BD_Shape(const BD_Shape& x);
