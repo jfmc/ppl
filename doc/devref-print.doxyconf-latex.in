@@ -418,6 +418,7 @@ WARN_LOGFILE           =
 # with spaces.
 
 INPUT                  = @srcdir@/definitions.dox \
+                         @srcdir@/../src/namespaces.hh \
                          ../src/version.hh \
                          @srcdir@/../src/float.types.hh \
                          @srcdir@/../src/Checked_Number.types.hh \
