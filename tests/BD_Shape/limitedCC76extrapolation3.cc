@@ -35,8 +35,8 @@ test1() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(3, Polyhedron::EMPTY);
-  TBD_Shape bd2(3, Polyhedron::EMPTY);
+  TBD_Shape bd1(3, EMPTY);
+  TBD_Shape bd2(3, EMPTY);
 
 #if NOISY
   print_constraints(bd1, "*** bd1 ***");
@@ -75,7 +75,7 @@ test2() {
 
   TBD_Shape bd1(cs1);
 
-  TBD_Shape bd2(2, Polyhedron::EMPTY);
+  TBD_Shape bd2(2, EMPTY);
 
 #if NOISY
   print_constraints(bd1, "*** bd1 ***");

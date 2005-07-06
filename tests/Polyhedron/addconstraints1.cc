@@ -49,7 +49,7 @@ main() TRY {
   C_Polyhedron ph3;
   ph3.add_constraints_and_minimize(cs3);
 
-  C_Polyhedron empty_result(0, C_Polyhedron::EMPTY);
+  C_Polyhedron empty_result(0, EMPTY);
   C_Polyhedron univ_result;
 
   int retval = (ph1 == empty_result

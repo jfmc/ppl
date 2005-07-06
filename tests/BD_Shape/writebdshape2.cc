@@ -35,7 +35,7 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(0, Polyhedron::EMPTY);
+  TBD_Shape bd1(0, EMPTY);
   TBD_Shape bd2(3);
   TBD_Shape bd3(3);
 

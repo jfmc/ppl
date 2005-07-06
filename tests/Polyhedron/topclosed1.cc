@@ -40,7 +40,7 @@ main() TRY {
   C_Polyhedron ph1(1);
   ph1.add_constraint(A >= 0);
 
-  NNC_Polyhedron ph2(2, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron ph2(2, EMPTY);
 
   NNC_Polyhedron ph3;
 

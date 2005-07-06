@@ -52,7 +52,7 @@ main() TRY {
 
   ph1.add_generators_and_minimize(gs2);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point());
   known_result.add_generator(point(y));
   known_result.add_generator(line(x));

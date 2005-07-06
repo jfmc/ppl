@@ -248,7 +248,7 @@ test6() {
 // This is an empty closed polyhedron in 2D.
 void
 test7() {
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
   BBox pbox(ph.space_dimension());
   ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);

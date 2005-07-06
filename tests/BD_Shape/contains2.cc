@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library;
 int
 main() TRY {
   TBD_Shape bd1;
-  TBD_Shape bd2(0, Polyhedron::EMPTY);
+  TBD_Shape bd2(0, EMPTY);
 
 #if NOISY
   print_constraints(bd1, "*** bd1 ***");

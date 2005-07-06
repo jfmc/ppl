@@ -37,7 +37,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph(2, Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
   ph.add_generator(point());
   ph.add_generator_and_minimize(ray(A));
   ph.add_generator(ray(B));

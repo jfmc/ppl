@@ -39,7 +39,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
   ph.add_generator(point(2*A + B, 4));
 
 #if NOISY
@@ -48,7 +48,7 @@ main() TRY {
 
   ph.remove_higher_space_dimensions(1);
 
-  C_Polyhedron known_result(1, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(1, EMPTY);
   known_result.add_generator(point(A, 2));
 
   int retval = (ph == known_result) ? 0 : 1;

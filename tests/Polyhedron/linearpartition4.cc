@@ -35,7 +35,7 @@ template <typename PH>
 Polyhedra_Powerset<NNC_Polyhedron>
 complement(const PH& ph) {
   pair<PH, Polyhedra_Powerset<NNC_Polyhedron> > partition
-    = linear_partition(ph, PH(ph.space_dimension(), Polyhedron::UNIVERSE));
+    = linear_partition(ph, PH(ph.space_dimension(), UNIVERSE));
   return partition.second;
 }
 
@@ -45,7 +45,7 @@ int main() TRY {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron p(2, Polyhedron::EMPTY);
+  C_Polyhedron p(2, EMPTY);
   p.add_generator(point(x));
   p.add_generator(point(y));
   p.add_generator(point(-x));

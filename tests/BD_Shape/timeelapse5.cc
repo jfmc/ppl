@@ -50,7 +50,7 @@ main() TRY {
   oc2.add_constraint(y >= -1);
   oc2.add_constraint(z >= 2);
 
-  TBD_Shape known_result(3, Polyhedron::EMPTY);
+  TBD_Shape known_result(3, EMPTY);
 
 #if NOISY
   print_constraints(oc1, "**** oc1 ****");

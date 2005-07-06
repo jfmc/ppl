@@ -39,7 +39,7 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(2, EMPTY);
 
   Generator_System gs;
   gs.insert(point());

@@ -48,7 +48,7 @@ main() TRY {
 
   ph.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, A+2, -2);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point(-B));
   known_result.add_generator(point(4*A - 3*B));
   known_result.add_generator(ray(B));

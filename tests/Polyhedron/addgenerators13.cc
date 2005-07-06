@@ -34,7 +34,7 @@ int
 main() TRY {
   set_handlers();
 
-  C_Polyhedron ph(1, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(1, EMPTY);
   Generator_System gs(point());
 
 #if NOISY
@@ -43,7 +43,7 @@ main() TRY {
 
   ph.add_generators(gs);
 
-  C_Polyhedron known_result(1, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(1, EMPTY);
   known_result.add_generator(point());
 
   int retval = (ph == known_result) ? 0: 1;

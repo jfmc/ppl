@@ -275,7 +275,7 @@ test7() {
   print_constraints(cs, "*** cs ***");
 #endif
 
-  TBD_Shape known_result(2, Polyhedron::EMPTY);
+  TBD_Shape known_result(2, EMPTY);
 
   bd1.limited_CC76_extrapolation_assign(bd2, cs);
 

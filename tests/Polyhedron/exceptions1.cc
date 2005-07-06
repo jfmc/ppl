@@ -373,7 +373,7 @@ void
 error13() {
   Variable w(4);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
   try {
     // This is an invalid use of the function
@@ -533,7 +533,7 @@ error19() {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph(1, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(1, EMPTY);
 
   try {
     // This is an invalid use of the function C_Polyhedron::add_generator(g):
@@ -557,7 +557,7 @@ error20() {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph(1, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(1, EMPTY);
 
   try {
     // This is an invalid use of the function
@@ -754,7 +754,7 @@ void
 error27() {
   Variable x(0);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
   try {
     // This is an invalid use of method
@@ -780,7 +780,7 @@ error28() {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph(3, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(3, EMPTY);
 
   try {
     // This is an invalid use of the function
@@ -807,7 +807,7 @@ error29() {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
   try {
     // This is an invalid use of the function
@@ -912,7 +912,7 @@ void
 error33() {
   Variable A(0);
 
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(2, EMPTY);
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
@@ -967,7 +967,7 @@ error35() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
 #if NOISY
   print_constraints(ph, "*** ph ***");
@@ -1000,7 +1000,7 @@ error36() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
 #if NOISY
   print_constraints(ph, "*** ph ***");

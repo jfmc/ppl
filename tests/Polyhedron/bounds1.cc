@@ -39,7 +39,7 @@ main() TRY {
   Variable A(0);
 
   C_Polyhedron ph1;
-  C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph2(2, EMPTY);
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");

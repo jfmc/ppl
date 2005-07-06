@@ -36,7 +36,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2, Polyhedron::EMPTY);
+  TBD_Shape bd(2, EMPTY);
 
 #if NOISY
   print_constraints(bd, "*** bd ***");
@@ -44,7 +44,7 @@ main() TRY {
 
   bd.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B + 1);
 
-  TBD_Shape known_result(2, Polyhedron::EMPTY);
+  TBD_Shape known_result(2, EMPTY);
 
   int retval = (bd == known_result) ? 0 : 1;
 

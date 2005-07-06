@@ -38,7 +38,7 @@ Variable y(1);
 
 C_Polyhedron
 rectangle(int lx, int ly, int dx, int dy) {
-  C_Polyhedron ph(2, Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
   ph.add_generator(point((lx+0*dx)*x + (ly+0*dy)*y));
   ph.add_generator(point((lx+1*dx)*x + (ly+0*dy)*y));
   ph.add_generator(point((lx+1*dx)*x + (ly+1*dy)*y));
@@ -51,7 +51,7 @@ rectangle(int lx, int ly, int dx, int dy) {
 int main() TRY {
   set_handlers();
 
-  Polyhedra_Powerset<C_Polyhedron> cross(2, Polyhedron::EMPTY);
+  Polyhedra_Powerset<C_Polyhedron> cross(2, EMPTY);
   cross.add_disjunct(rectangle(0, 3, 9, 3));
   cross.add_disjunct(rectangle(3, 0, 3, 9));
 
@@ -59,7 +59,7 @@ int main() TRY {
   cout << "cross = " << cross << endl;
 #endif
 
-  Polyhedra_Powerset<C_Polyhedron> squares(2, Polyhedron::EMPTY);
+  Polyhedra_Powerset<C_Polyhedron> squares(2, EMPTY);
   squares.add_disjunct(rectangle(1, 4, 1, 1));
   squares.add_disjunct(rectangle(4, 4, 1, 1));
   squares.add_disjunct(rectangle(7, 4, 1, 1));

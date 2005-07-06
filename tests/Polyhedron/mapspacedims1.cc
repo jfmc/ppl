@@ -72,7 +72,7 @@ void
 test2() {
   PFunction function;
 
-  C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(3, EMPTY);
 
 #if NOISY
   print_function(function, "*** function ***");
@@ -81,7 +81,7 @@ test2() {
 
   ph1.map_space_dimensions(function);
 
-  C_Polyhedron known_result(0, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(0, EMPTY);
 
   bool ok = (ph1 == known_result);
 
@@ -198,7 +198,7 @@ test5() {
 
   ph1.map_space_dimensions(function);
 
-  C_Polyhedron known_result(3, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(3, EMPTY);
   known_result.add_generator(point());
 
   bool ok = (ph1 == known_result);
@@ -272,7 +272,7 @@ test7() {
 
   ph1.map_space_dimensions(function);
 
-  C_Polyhedron known_result(4, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(4, EMPTY);
   known_result.add_generator(point());
   known_result.add_generator(point(B));
   known_result.add_generator(point(2*A));
@@ -313,7 +313,7 @@ test8() {
 
   ph1.map_space_dimensions(function);
 
-  C_Polyhedron known_result(3, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(3, EMPTY);
   known_result.add_generator(point());
   known_result.add_generator(ray(A));
 
@@ -333,7 +333,7 @@ test9() {
   function.insert(0, 1);
   function.insert(1, 0);
 
-  C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(3, EMPTY);
 
 #if NOISY
   print_function(function, "*** function ***");
@@ -342,7 +342,7 @@ test9() {
 
   ph1.map_space_dimensions(function);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
 
   bool ok = (ph1 == known_result);
 

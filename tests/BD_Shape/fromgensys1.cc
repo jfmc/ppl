@@ -37,7 +37,7 @@ test1() {
   Generator_System gs;
   TBD_Shape bd(gs);
 
-  TBD_Shape known_result(0, Polyhedron::EMPTY);
+  TBD_Shape known_result(0, EMPTY);
 
   bool ok = (bd == known_result);
 
@@ -57,7 +57,7 @@ test2() {
   gs.insert(closure_point(V));
   TBD_Shape bd(gs);
 
-  TBD_Shape known_result(11, Polyhedron::EMPTY);
+  TBD_Shape known_result(11, EMPTY);
 
   bool ok = (bd == known_result);
 
@@ -77,7 +77,7 @@ test3() {
   gs.insert(ray(V));
   TBD_Shape bd(gs);
 
-  TBD_Shape known_result(11, Polyhedron::EMPTY);
+  TBD_Shape known_result(11, EMPTY);
 
   bool ok = (bd == known_result);
 

@@ -37,7 +37,7 @@ main() TRY {
   set_handlers();
 
   NNC_Polyhedron ph1;
-  NNC_Polyhedron ph2(2, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron ph2(2, EMPTY);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");

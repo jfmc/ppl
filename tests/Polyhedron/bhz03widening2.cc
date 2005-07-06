@@ -59,12 +59,12 @@ main() TRY {
   s.add_constraint(A >= 1);
   s.add_constraint(A <= 6);
   s.add_constraint(B == 1);
-  PSet P(2, Polyhedron::EMPTY);
+  PSet P(2, EMPTY);
   P.add_disjunct(p);
   P.add_disjunct(q);
   P.add_disjunct(r);
   P.add_disjunct(s);
-  PSet Q(2, Polyhedron::EMPTY);
+  PSet Q(2, EMPTY);
   Q.add_disjunct(p);
   Q.add_disjunct(q);
   Q.add_disjunct(s);

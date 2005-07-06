@@ -37,7 +37,7 @@ main() TRY {
   set_handlers();
 
   C_Polyhedron ph1;
-  C_Polyhedron ph2(0, C_Polyhedron::EMPTY);
+  C_Polyhedron ph2(0, EMPTY);
   ph2.add_generator(point());
 
 #if NOISY

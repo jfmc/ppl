@@ -33,11 +33,11 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() TRY {
-  TBD_Shape bd(10, Polyhedron::UNIVERSE);
+  TBD_Shape bd(10, UNIVERSE);
 
   bd.remove_higher_space_dimensions(5);
   bd.add_space_dimensions_and_embed(6);
 
-  return bd == TBD_Shape(11, Polyhedron::UNIVERSE) ? 0 : 1;
+  return bd == TBD_Shape(11, UNIVERSE) ? 0 : 1;
 }
 CATCH

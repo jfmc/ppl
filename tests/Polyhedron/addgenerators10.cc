@@ -35,7 +35,7 @@ int
 main() TRY {
   set_handlers();
 
-  C_Polyhedron ph(0, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(0, EMPTY);
 
 #if NOISY
   print_generators(ph, "*** ph ***");

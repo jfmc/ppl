@@ -108,7 +108,7 @@ main() TRY {
   set_handlers();
 
   for (int dimension = 2; dimension <= 6; ++dimension) {
-    C_Polyhedron ph(dimension, C_Polyhedron::EMPTY);
+    C_Polyhedron ph(dimension, EMPTY);
     random_polytope(ph, dimension, dimension*dimension);
     const Constraint_System& cs = ph.constraints();
     unsigned num_constraints = 0;

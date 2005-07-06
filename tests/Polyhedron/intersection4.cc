@@ -43,7 +43,7 @@ main() TRY {
   ph1.add_constraint(x >= y);
   ph1.add_constraint(x >= 0);
 
-  C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph2(2, EMPTY);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
@@ -57,7 +57,7 @@ main() TRY {
   C_Polyhedron computed_result2(cs_computed_result2);
   computed_result2.intersection_assign(ph2);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
 
   int retval = (computed_result1 == known_result
 		&& computed_result2 == known_result) ? 0 : 1;

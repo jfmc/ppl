@@ -35,7 +35,7 @@ int
 main() TRY {
   set_handlers();
 
-  C_Polyhedron ph(1, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(1, EMPTY);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);

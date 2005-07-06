@@ -41,7 +41,7 @@ test1() {
 
   C_Polyhedron ph1(2);
   ph1.add_constraint(A - B >= 0);
-  C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph2(2, EMPTY);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");

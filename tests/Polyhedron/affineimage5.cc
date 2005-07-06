@@ -50,7 +50,7 @@ main() TRY {
 
   ph.OK(true);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point(2*A));
   known_result.add_generator(point(2*A - B));
   known_result.add_generator(point(9*A + B, 3));

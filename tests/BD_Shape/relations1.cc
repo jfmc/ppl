@@ -34,7 +34,7 @@ static void test1() {
   Variable A(0);
   // Variable B(1);
 
-  TBD_Shape bd(2, Polyhedron::EMPTY);
+  TBD_Shape bd(2, EMPTY);
 
   Poly_Con_Relation rel = bd.relation_with(A >= 0);
 

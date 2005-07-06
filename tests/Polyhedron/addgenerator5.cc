@@ -39,7 +39,7 @@ main() TRY {
   Variable B(1);
   Variable C(2);
 
-  C_Polyhedron ph_empty(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph_empty(2, EMPTY);
   Generator_System gs1 = ph_empty.generators();
   assert(gs1.space_dimension() == ph_empty.space_dimension());
 

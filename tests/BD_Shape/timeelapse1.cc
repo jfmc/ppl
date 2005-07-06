@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() TRY {
-  TBD_Shape oc1(2, Polyhedron::EMPTY);
+  TBD_Shape oc1(2, EMPTY);
   TBD_Shape oc2(2);
 #if NOISY
   print_constraints(oc1, "**** oc1 ****");
@@ -41,7 +41,7 @@ main() TRY {
   oc1.time_elapse_assign(oc2);
 
   TBD_Shape oc3(2);
-  TBD_Shape oc4(2, Polyhedron::EMPTY);
+  TBD_Shape oc4(2, EMPTY);
 #if NOISY
   print_constraints(oc3, "**** oc3 ****");
   print_constraints(oc4, "**** oc4 ****");

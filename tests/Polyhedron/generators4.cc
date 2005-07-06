@@ -39,7 +39,7 @@ main() TRY {
 
   C_Polyhedron ph(gs);
 
-  C_Polyhedron known_result(0, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(0, EMPTY);
 
   int retval = (ph == known_result) ? 0 : 1;
 

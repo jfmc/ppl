@@ -44,7 +44,7 @@ test1() {
   print_constraints(bd, "*** bd ***");
 #endif
 
-  TBD_Shape known_result(0, Polyhedron::UNIVERSE);
+  TBD_Shape known_result(0, UNIVERSE);
 
   bd.remove_higher_space_dimensions(0);
 
@@ -83,7 +83,7 @@ test2() {
   print_constraints(bd, "*** bd.remove_higher_space_dimensions(1) ***");
 #endif
 
-  TBD_Shape known_result(1, Polyhedron::EMPTY);
+  TBD_Shape known_result(1, EMPTY);
 
 #if NOISY
   print_constraints(known_result, "*** known_result ***");

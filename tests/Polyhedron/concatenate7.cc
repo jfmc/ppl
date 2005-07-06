@@ -44,7 +44,7 @@ main() TRY {
   ph1.add_generator(point(0*A));
   ph1.add_generator(point(2*A));
 
-  C_Polyhedron ph2(1, Polyhedron::EMPTY);
+  C_Polyhedron ph2(1, EMPTY);
   ph2.add_generator(point(10*A));
 
 #if NOISY

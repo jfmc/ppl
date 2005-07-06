@@ -59,7 +59,7 @@ main() TRY {
 
   ph.add_space_dimensions_and_embed(2);
 
-  C_Polyhedron known_result(6, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(6, EMPTY);
   known_result.add_generator(point());
   known_result.add_generator(ray(x + y));
   known_result.add_generator(line(z));

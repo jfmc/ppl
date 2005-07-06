@@ -67,7 +67,7 @@ test1() {
 // Test with an empty polyhedron.
 void
 test2() {
-  C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(3, EMPTY);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
@@ -79,7 +79,7 @@ test2() {
 
   ph1.fold_space_dimensions(to_fold, B);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
 
   bool ok = (ph1 == known_result);
 
@@ -161,7 +161,7 @@ test4() {
 // the unexpanded polyhedron.
 void
 test5() {
-  C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(3, EMPTY);
   ph1.add_generator(point(A + 2*B + 2*C));
   ph1.add_generator(point(A + 2*B + 3*C));
   ph1.add_generator(point(A + 2*B + 4*C));
@@ -182,7 +182,7 @@ test5() {
 
   ph1.fold_space_dimensions(to_fold, B);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point(A + 2*B));
   known_result.add_generator(point(A + 3*B));
   known_result.add_generator(point(A + 4*B));
@@ -235,7 +235,7 @@ test6() {
 // Test fold_space_dimensions() when there are rays.
 void
 test7() {
-  C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(3, EMPTY);
   ph1.add_generator(point(A));
   ph1.add_generator(ray(A + B));
   ph1.add_generator(ray(A + 2*C));
@@ -250,7 +250,7 @@ test7() {
 
   ph1.fold_space_dimensions(to_fold, B);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point(A));
   known_result.add_generator(ray(A));
   known_result.add_generator(ray(A + B));

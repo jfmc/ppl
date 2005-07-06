@@ -53,11 +53,11 @@ main() TRY {
 
   ph1.time_elapse_assign(ph2);
 
-  C_Polyhedron ph3(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph3(2, EMPTY);
   ph3.add_generator(point());
   ph3.constraints();
 
-  C_Polyhedron ph4(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph4(2, EMPTY);
   ph4.add_generator(point(2*A + 2*B));
 
 #if NOISY

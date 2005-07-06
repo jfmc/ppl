@@ -82,7 +82,7 @@ main() TRY {
     return 1;
 
   // This is an empty polyhedron.
-  C_Polyhedron ph5(4, C_Polyhedron::EMPTY);
+  C_Polyhedron ph5(4, EMPTY);
 
 #if NOISY
   print_constraints(ph5, "*** ph5 ***");

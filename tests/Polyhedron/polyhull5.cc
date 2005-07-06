@@ -38,11 +38,11 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(2, EMPTY);
   ph1.add_generator(point(A));
   ph1.add_generator(ray(A));
   ph1.add_generator(ray(B));
-  C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph2(2, EMPTY);
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");

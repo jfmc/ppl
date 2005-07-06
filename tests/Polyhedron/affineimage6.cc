@@ -37,7 +37,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(2, EMPTY);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
@@ -45,7 +45,7 @@ main() TRY {
 
   ph1.affine_image(A, 2*A +B + 1);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
   int retval = (ph1 == known_result) ? 0 : 1;
 
 #if NOISY

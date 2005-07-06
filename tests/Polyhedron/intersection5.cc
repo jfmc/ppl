@@ -42,7 +42,7 @@ main() TRY {
   C_Polyhedron ph1(2);
   ph1.add_constraint(x >= y);
 
-  C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph2(2, EMPTY);
   ph2.add_generator(point());
   ph2.add_generator(line(x));
   ph2.add_generator(ray(y));

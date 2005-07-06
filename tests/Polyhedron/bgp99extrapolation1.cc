@@ -84,7 +84,7 @@ P(unsigned n) {
 
 PSet
 S(unsigned n) {
-  PSet s(2, Polyhedron::EMPTY);
+  PSet s(2, EMPTY);
   if (n == 0) {
 #if NOISY
     cout << "S0 = { P0 }" << endl;

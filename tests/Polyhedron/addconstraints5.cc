@@ -36,7 +36,7 @@ main() TRY {
   set_handlers();
   Variable x(0);
 
-  C_Polyhedron ph(3, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(3, EMPTY);
 
 #if NOISY
   print_constraints(ph, "*** ph ***");
@@ -51,7 +51,7 @@ main() TRY {
 
   ph.add_constraints_and_minimize(cs);
 
-  C_Polyhedron computed_result(3, C_Polyhedron::EMPTY);
+  C_Polyhedron computed_result(3, EMPTY);
 
   int retval = (ph == computed_result) ? 0 : 1;
 

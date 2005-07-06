@@ -141,7 +141,7 @@ test3() {
   Bounding_Box nbox(2);
   ph.shrink_bounding_box(nbox);
 
-  NNC_Polyhedron known_ph(2, C_Polyhedron::EMPTY);
+  NNC_Polyhedron known_ph(2, EMPTY);
   NNC_Polyhedron known_pph(pbox, From_Bounding_Box());
   NNC_Polyhedron known_nph(nbox, From_Bounding_Box());
 

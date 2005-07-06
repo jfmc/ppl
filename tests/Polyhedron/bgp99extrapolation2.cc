@@ -76,7 +76,7 @@ main() TRY {
   ps1_9.add_constraint(A - B >= -12);
   ps1_9.add_constraint(A >= 2);
 
-  PSet ps1(2, Polyhedron::EMPTY);
+  PSet ps1(2, EMPTY);
   ps1.add_disjunct(ps1_1);
   ps1.add_disjunct(ps1_2);
   ps1.add_disjunct(ps1_3);
@@ -104,7 +104,7 @@ main() TRY {
   ps2_4.add_constraint(A - B >= -16);
   ps2_4.add_constraint(A >= 3);
 
-  PSet ps2(2, Polyhedron::EMPTY);
+  PSet ps2(2, EMPTY);
   ps2.add_disjunct(ps2_1);
   ps2.add_disjunct(ps2_2);
   ps2.add_disjunct(ps2_3);
@@ -121,7 +121,7 @@ main() TRY {
   ps1.BGP99_extrapolation_assign
     (ps2, widen_fun_ref(&Polyhedron::H79_widening_assign), 7);
 
-  PSet known_result(2, Polyhedron::EMPTY);
+  PSet known_result(2, EMPTY);
   C_Polyhedron kr_1(2);
   kr_1.add_constraint(A - B >= -16);
   kr_1.add_constraint(A >= 3);

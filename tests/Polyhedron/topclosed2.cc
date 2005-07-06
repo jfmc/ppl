@@ -39,7 +39,7 @@ main() TRY {
 
   Variable A(0);
 
-  NNC_Polyhedron ph1(1, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron ph1(1, EMPTY);
 
   Generator_System gs1;
   gs1.insert(point(A));

@@ -47,7 +47,7 @@ main() TRY {
 
   ph.affine_image(B, A+2, 1);
 
-  C_Polyhedron known_result(3, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(3, EMPTY);
   known_result.add_generator(point(2*B - 2*C));
 
   int retval = (ph == known_result) ? 0 : 1;

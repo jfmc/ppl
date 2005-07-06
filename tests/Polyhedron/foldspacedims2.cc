@@ -40,7 +40,7 @@ Variable D(3);
 // Test with an empty polyhedron.
 void
 test1() {
-  NNC_Polyhedron ph1(3, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron ph1(3, EMPTY);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
@@ -52,7 +52,7 @@ test1() {
 
   ph1.fold_space_dimensions(to_fold, B);
 
-  NNC_Polyhedron known_result(2, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron known_result(2, EMPTY);
 
   bool ok = (ph1 == known_result);
 

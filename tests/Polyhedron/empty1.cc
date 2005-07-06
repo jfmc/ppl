@@ -36,7 +36,7 @@ main() TRY {
 
   // This is the easy way to create
   // the empty polyhedron in the zero-dimension space.
-  C_Polyhedron ph1(0, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(0, EMPTY);
 
   // This is a more convoluted way of doing the same thing
   // using an empty system of generators.

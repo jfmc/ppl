@@ -48,13 +48,13 @@ main() TRY {
   ph2.add_constraint(x >= 102);
   ph2.add_constraint(y == x-10);
 
-  PCS p1(2, Polyhedron::EMPTY);
+  PCS p1(2, EMPTY);
   p1.add_disjunct(ph1);
 #if NOISY
   cout << p1 << endl;
 #endif
 
-  PCS p2(2, Polyhedron::EMPTY);
+  PCS p2(2, EMPTY);
   p2.add_disjunct(ph2);
 #if NOISY
   cout << p2 << endl;

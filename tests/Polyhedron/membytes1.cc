@@ -219,7 +219,7 @@ main() TRY {
   cout << "*** Adding generators to a polyhedron ***" << endl;
 #endif
 
-  C_Polyhedron qh(3, Polyhedron::EMPTY);
+  C_Polyhedron qh(3, EMPTY);
   unsigned n = 0;
   for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i) {

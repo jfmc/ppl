@@ -55,7 +55,7 @@ main() TRY {
   print_constraints(bd2, "*** ph2 ***");
 #endif
 
-  TBD_Shape known_result(2, Polyhedron::EMPTY);
+  TBD_Shape known_result(2, EMPTY);
 
   bd1.poly_difference_assign(bd2);
 

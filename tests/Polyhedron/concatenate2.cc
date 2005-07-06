@@ -39,7 +39,7 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
 #if NOISY
   print_constraints(ph, "--- ph ---");
@@ -56,7 +56,7 @@ main() TRY {
 
   ph.concatenate_assign(qh);
 
-  C_Polyhedron known_result(4, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(4, EMPTY);
 
   int retval = (ph == known_result) ? 0 : 1;
 

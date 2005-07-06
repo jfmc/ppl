@@ -48,7 +48,7 @@ main() TRY {
   print_generators(ph1, "*** ph1 ***");
 #endif
 
-  C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph2(2, EMPTY);
   ph2.add_generator(point(-A));
 
 #if NOISY

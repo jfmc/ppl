@@ -166,7 +166,7 @@ test6() {
   print_constraints(ph, "*** test6 ph ***");
 #endif
 
-  C_Polyhedron known_ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_ph(2, EMPTY);
 
 #if NOISY
   print_constraints(known_ph, "*** test6 known_ph ***");

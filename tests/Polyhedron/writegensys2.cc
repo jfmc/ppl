@@ -43,7 +43,7 @@ int
 main() TRY {
   set_handlers();
 
-  C_Polyhedron ph(3, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(3, EMPTY);
 
   Generator_System gs = ph.generators();
 

@@ -39,7 +39,7 @@ test1() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(2, EMPTY);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
@@ -47,7 +47,7 @@ test1() {
 
   ph1.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B + 1);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
 
   bool ok = (ph1 == known_result);
 
@@ -65,7 +65,7 @@ test2() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(2, EMPTY);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
@@ -73,7 +73,7 @@ test2() {
 
   ph1.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, A + B + 1);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
 
   bool ok = (ph1 == known_result);
 

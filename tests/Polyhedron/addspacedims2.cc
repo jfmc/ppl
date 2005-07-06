@@ -36,7 +36,7 @@ int
 main() TRY {
   set_handlers();
 
-  C_Polyhedron ph(3, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(3, EMPTY);
 
 #if NOISY
   print_constraints(ph, "*** ph ***");
@@ -48,7 +48,7 @@ main() TRY {
   computed_result1.add_space_dimensions_and_project(4);
   computed_result2.add_space_dimensions_and_embed(4);
 
-  C_Polyhedron known_result(7, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(7, EMPTY);
 
   int retval = (computed_result1 == known_result
 		&& computed_result2 == known_result) ? 0 : 1;

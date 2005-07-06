@@ -38,7 +38,7 @@ main() TRY {
 
   TBD_Shape bd1(3);
   TBD_Shape bd2(3);
-  TBD_Shape known_result(3, Polyhedron::EMPTY);
+  TBD_Shape known_result(3, EMPTY);
 
   bd1.add_constraint(A - B <= 1);
   bd1.add_constraint(A - B >= 2);

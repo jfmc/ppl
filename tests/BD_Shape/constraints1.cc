@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library;
 static void
 test1() {
 
-  TBD_Shape bd1(0, Polyhedron::EMPTY);
+  TBD_Shape bd1(0, EMPTY);
 
   TBD_Shape known_result(bd1);
 
@@ -55,7 +55,7 @@ test1() {
 static void
 test2() {
 
-  TBD_Shape bd1(0, Polyhedron::UNIVERSE);
+  TBD_Shape bd1(0, UNIVERSE);
 
   TBD_Shape known_result(bd1);
 

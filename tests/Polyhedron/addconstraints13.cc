@@ -69,13 +69,13 @@ test2() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(2, EMPTY);
   ph1.add_generator(point());
   ph1.constraints();
   ph1.add_generator(line(A + B));
   C_Polyhedron copy_ph1 = ph1;
 
-  C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph2(2, EMPTY);
   ph2.add_generator(point());
   ph2.constraints();
   ph2.add_generator(ray(A));

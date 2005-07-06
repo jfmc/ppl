@@ -55,7 +55,7 @@ main() TRY {
   print_constraints(ph2, "*** ph2 ***");
 #endif
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
 
   ph1.poly_difference_assign(ph2);
 

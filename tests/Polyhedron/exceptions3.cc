@@ -199,7 +199,7 @@ error7() {
 void
 error8() {
   try {
-    C_Polyhedron ph(C_Polyhedron::max_space_dimension(), C_Polyhedron::EMPTY);
+    C_Polyhedron ph(C_Polyhedron::max_space_dimension(), EMPTY);
     // This is an invalid use of the method for concatenating polyhedra:
     // it is illegal to (try to) concatenate polyhedra if the resulting
     // vector space will have a dimension greater than

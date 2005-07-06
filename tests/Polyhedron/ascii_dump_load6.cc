@@ -66,7 +66,7 @@ test2() {
   cout << "test2()" << endl;
 #endif
 
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(2, EMPTY);
 
   fstream f;
   open(f, my_file, ios_base::out);

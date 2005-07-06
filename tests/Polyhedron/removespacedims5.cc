@@ -35,14 +35,14 @@ int
 main() TRY {
   set_handlers();
 
-  C_Polyhedron ph(4, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(4, EMPTY);
 
 #if NOISY
   print_constraints(ph, "--- ph ---");
 #endif
   ph.remove_higher_space_dimensions(0);
 
-  C_Polyhedron known_result(0, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(0, EMPTY);
 
   int retval = (ph == known_result) ? 0 : 1;
 

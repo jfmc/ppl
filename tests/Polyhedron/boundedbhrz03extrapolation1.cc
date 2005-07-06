@@ -56,7 +56,7 @@ main() TRY {
   ph.add_constraint(0 <= k);
   ph.add_constraint(k <= 1);
 
-  C_Polyhedron old_ph(3, Polyhedron::EMPTY);
+  C_Polyhedron old_ph(3, EMPTY);
 
   // Propagation.
   for (int steps = 0; steps < PROPAGATION_STEPS; ++steps) {

@@ -38,7 +38,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
 #if NOISY
   print_constraints(ph, "*** ph ***");

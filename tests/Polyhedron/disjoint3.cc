@@ -63,7 +63,7 @@ test1() {
 
   NNC_Polyhedron ph1 = half_strip(point(A + B), B);
 
-  NNC_Polyhedron ph2(2, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron ph2(2, EMPTY);
   ph2.add_generator(point(3*A + B));
   ph2.add_generator(closure_point(2*A + B));
   ph2.add_generator(closure_point(4*A + 3*B));
@@ -125,7 +125,7 @@ test4() {
 
   NNC_Polyhedron ph1 = half_strip(point(), B);
 
-  NNC_Polyhedron ph2(2, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron ph2(2, EMPTY);
   ph2.add_generator(point(-2*A - 2*B));
   ph2.add_generator(closure_point(2*A - 2*B));
   ph2.add_generator(closure_point(-2*A + 2*B));

@@ -62,7 +62,7 @@ main() TRY {
   p3.add_constraint(X <= 4);
   p3.add_constraint(Y <= 3);
 
-  PSet T1(2, Polyhedron::EMPTY);
+  PSet T1(2, EMPTY);
   T1.add_disjunct(p1);
   T1.add_disjunct(p2);
   T1.add_disjunct(p3);
@@ -73,7 +73,7 @@ main() TRY {
   p4.add_constraint(X <= 2);
   p4.add_constraint(Y <= 5);
 
-  PSet T2(2, Polyhedron::EMPTY);
+  PSet T2(2, EMPTY);
   T2.add_disjunct(p1);
   T2.add_disjunct(p2);
   T2.add_disjunct(p3);

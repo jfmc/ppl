@@ -46,7 +46,7 @@ test1() {
 void
 test2() {
   Constraint_System cs;
-  Polyhedra_Powerset<NNC_Polyhedron> nnc_ps(1, Polyhedron::EMPTY);
+  Polyhedra_Powerset<NNC_Polyhedron> nnc_ps(1, EMPTY);
 
   cs.clear();
   cs.insert(x > 0);
@@ -67,7 +67,7 @@ test2() {
 void
 test3() {
   Constraint_System cs;
-  Polyhedra_Powerset<C_Polyhedron> c_ps(1, Polyhedron::EMPTY);
+  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
 
   cs.clear();
   cs.insert(x >= 0);

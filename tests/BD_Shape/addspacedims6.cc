@@ -33,8 +33,8 @@ using namespace Parma_Polyhedra_Library;
 
 static void
 test1() {
-  TBD_Shape bd1(0, Polyhedron::UNIVERSE);
-  TBD_Shape known_result(3, Polyhedron::UNIVERSE);
+  TBD_Shape bd1(0, UNIVERSE);
+  TBD_Shape known_result(3, UNIVERSE);
 
 #if NOISY
   print_constraints(bd1, "*** bd1 ***");

@@ -51,7 +51,7 @@ main() TRY {
 
   ph.add_constraints(cs);
 
-  C_Polyhedron known_result(0, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(0, EMPTY);
 
   int retval = (known_result == ph) ? 0 : 1;
 

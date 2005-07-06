@@ -38,7 +38,7 @@ test1() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(2, EMPTY);
 
   C_Polyhedron ph2(2);
   ph2.add_constraint(B >= 0);
@@ -73,9 +73,9 @@ void
 test2() {
   Variable B(1);
 
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(2, EMPTY);
 
-  C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph2(2, EMPTY);
 
   Constraint_System cs;
   cs.insert(B <= 4);

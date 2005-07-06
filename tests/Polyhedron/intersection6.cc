@@ -59,7 +59,7 @@ main() TRY {
 
   ph1.intersection_assign(ph2);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point(x));
   known_result.add_generator(point(3*x));
   known_result.add_generator(point(x + 3*y));

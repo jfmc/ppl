@@ -35,7 +35,7 @@ test1() {
 
   TBD_Shape bd1(0);
 
-  TBD_Shape bd2(0, Polyhedron::EMPTY);
+  TBD_Shape bd2(0, EMPTY);
 
   TBD_Shape known_result(bd1);
 
@@ -60,9 +60,9 @@ test1() {
 static void
 test2() {
 
-  TBD_Shape bd1(2, Polyhedron::EMPTY);
+  TBD_Shape bd1(2, EMPTY);
 
-  TBD_Shape bd2(2, Polyhedron::EMPTY);
+  TBD_Shape bd2(2, EMPTY);
 
   TBD_Shape known_result(bd2);
 

@@ -292,7 +292,7 @@ test10() {
   bd.add_constraint(B <= 1);
   bd.add_constraint(C + A <=2);
 
-  TBD_Shape known_result(3, Polyhedron::EMPTY);
+  TBD_Shape known_result(3, EMPTY);
  
   bd.generalized_affine_image(Linear_Expression(3),
 			      GREATER_THAN_OR_EQUAL,

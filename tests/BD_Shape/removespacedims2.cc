@@ -111,7 +111,7 @@ test2() {
   print_constraints(bd1, "*** bd1.remove_space_dimensions({x1,x3,x4}) ***");
 #endif
 
- TBD_Shape known_result(1, Polyhedron::EMPTY);
+ TBD_Shape known_result(1, EMPTY);
 
 #if NOISY
   print_constraints(known_result, "*** known_result ***");

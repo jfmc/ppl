@@ -48,7 +48,7 @@ main() TRY {
   print_generators(gs, "*** gs ***");
 #endif
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
   for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)

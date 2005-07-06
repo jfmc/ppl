@@ -32,8 +32,8 @@ using namespace Parma_Polyhedra_Library;
 
 static void
 test1() {
-  TBD_Shape bd1(0, Polyhedron::EMPTY);
-  TBD_Shape known_result(3, Polyhedron::EMPTY);
+  TBD_Shape bd1(0, EMPTY);
+  TBD_Shape known_result(3, EMPTY);
 
 #if NOISY
   print_constraints(bd1, "*** bd1 ***");

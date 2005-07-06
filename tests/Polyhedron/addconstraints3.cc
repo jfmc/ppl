@@ -50,7 +50,7 @@ main() TRY {
   cs2.insert(e == 0);
   ph.add_constraints(cs2);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
 
   int retval = (ph == known_result) ? 0 : 1;
 

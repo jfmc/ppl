@@ -71,7 +71,7 @@ static void
 test2() {
   PFunction function;
 
-  TBD_Shape bd1(3, Polyhedron::EMPTY);
+  TBD_Shape bd1(3, EMPTY);
 
 #if NOISY
   print_function(function, "*** function ***");
@@ -80,7 +80,7 @@ test2() {
 
   bd1.map_space_dimensions(function);
 
-  TBD_Shape known_result(0, Polyhedron::EMPTY);
+  TBD_Shape known_result(0, EMPTY);
 
   bool ok = (bd1 == known_result);
 
@@ -98,7 +98,7 @@ test3() {
   function.insert(0, 1);
   function.insert(1, 0);
 
-  TBD_Shape bd1(3, Polyhedron::EMPTY);
+  TBD_Shape bd1(3, EMPTY);
 
 #if NOISY
   print_function(function, "*** function ***");
@@ -107,7 +107,7 @@ test3() {
 
   bd1.map_space_dimensions(function);
 
-  TBD_Shape known_result(2, Polyhedron::EMPTY);
+  TBD_Shape known_result(2, EMPTY);
 
   bool ok = (bd1 == known_result);
 

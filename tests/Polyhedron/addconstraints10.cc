@@ -38,7 +38,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(2, EMPTY);
 
   Constraint_System cs;
   cs.insert(A - B >= 0);
@@ -50,7 +50,7 @@ main() TRY {
 
   ph1.add_constraints(cs);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
 
   int retval = (ph1 == known_result) ? 0 : 1;
 

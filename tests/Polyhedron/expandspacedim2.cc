@@ -76,7 +76,7 @@ test1() {
 // Test using generators for NNC polyhedron.
 void
 test2() {
-  NNC_Polyhedron ph1(2, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron ph1(2, EMPTY);
   ph1.add_generator(point(A));
   ph1.add_generator(closure_point(A + B));
   ph1.add_generator(ray(A - B));
@@ -87,7 +87,7 @@ test2() {
 
   ph1.expand_space_dimension(A, 2);
 
-  NNC_Polyhedron known_result(4, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron known_result(4, EMPTY);
   known_result.add_generator(point(A + C + D));
   known_result.add_generator(ray(A -B + C + D));
   known_result.add_generator(closure_point(A + C + 2*D));

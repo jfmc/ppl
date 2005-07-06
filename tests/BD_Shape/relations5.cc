@@ -34,7 +34,7 @@ static void test1() {
   // We verify that a generator is not subsumed by an empty BDS.
   Variable x(0);
 
-  TBD_Shape bd(2, Polyhedron::EMPTY);
+  TBD_Shape bd(2, EMPTY);
 
   Generator g = point(x);
   Poly_Gen_Relation rel = bd.relation_with(g);

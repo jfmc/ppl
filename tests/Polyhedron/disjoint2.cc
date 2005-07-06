@@ -54,7 +54,7 @@ test1() {
 
   C_Polyhedron ph1 = half_strip(point(A + B), B);
 
-  C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph2(2, EMPTY);
   ph2.add_generator(point(2*A + B));
   ph2.add_generator(point(4*A + 3*B));
   ph2.add_generator(ray(A - B));
@@ -115,7 +115,7 @@ test4() {
 
   C_Polyhedron ph1 = half_strip(point(), B);
 
-  C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph2(2, EMPTY);
   ph2.add_generator(point(2*A - 2*B));
   ph2.add_generator(point(-2*A + 2*B));
   ph2.add_generator(ray(-A - B));

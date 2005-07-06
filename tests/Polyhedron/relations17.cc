@@ -38,7 +38,7 @@ test1() {
   Variable A(0);
   Variable B(1);
 
-  NNC_Polyhedron ph1(2, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron ph1(2, EMPTY);
   ph1.add_generator(point(A + B));
 
   Poly_Con_Relation rel = ph1.relation_with(A - B == 0);

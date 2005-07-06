@@ -68,7 +68,7 @@ test2() {
   Variable A(0);
   Variable B(1);
 
-  NNC_Polyhedron ph(2, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron ph(2, EMPTY);
   ph.add_generator(point(A));
   ph.constraints();
   ph.add_generator(closure_point());

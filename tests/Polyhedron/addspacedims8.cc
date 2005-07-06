@@ -38,7 +38,7 @@ main() TRY {
 
   Variable A(0);
 
-  NNC_Polyhedron ph(1, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron ph(1, EMPTY);
   ph.add_generator(point(A));
   ph.add_generator(closure_point());
   ph.add_generator(closure_point(3*A));

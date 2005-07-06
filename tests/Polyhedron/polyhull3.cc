@@ -61,7 +61,7 @@ main() TRY {
   print_generators(ph1, "*** After poly_hull_assign ***");
 #endif
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point());
   known_result.add_generator(point(2*x));
   known_result.add_generator(point(4*y));

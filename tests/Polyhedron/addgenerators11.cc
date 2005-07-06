@@ -57,7 +57,7 @@ main() TRY {
   print_generators(gs2, "*** gs2 ***");
 #endif
 
-  C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph2(2, EMPTY);
   ph2.add_generators_and_minimize(gs2);
 
 #if NOISY

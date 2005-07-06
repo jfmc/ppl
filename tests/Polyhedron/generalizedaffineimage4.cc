@@ -37,7 +37,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  NNC_Polyhedron ph(2, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron ph(2, EMPTY);
   ph.add_generator(point(A + B));
   ph.add_generator(closure_point(2*A));
   ph.add_generator(closure_point(2*A + 2*B));
@@ -48,7 +48,7 @@ main() TRY {
 
   ph.generalized_affine_image(B, LESS_THAN, B+2);
 
-  NNC_Polyhedron known_result(2, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point(A));
   known_result.add_generator(closure_point(A + 3*B));
   known_result.add_generator(closure_point(2*A + 4*B));

@@ -35,7 +35,7 @@ int
 main() TRY {
   set_handlers();
 
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(2, EMPTY);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");

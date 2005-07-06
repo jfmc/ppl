@@ -38,7 +38,7 @@ main() TRY {
   Variable y(1);
   Variable z(2);
 
-  C_Polyhedron ph(3, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(3, EMPTY);
   ph.add_generator(point(-1000*x - 9*y, 16));
 
 #if NOISY

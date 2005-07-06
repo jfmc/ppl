@@ -45,7 +45,7 @@ main() TRY {
 
   ph.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, A+2);
 
-  C_Polyhedron known_result(1, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(1, EMPTY);
 
   int retval = (ph == known_result) ? 0 : 1;
 

@@ -37,7 +37,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
   ph.add_generator(point(A));
 #if NOISY
   print_constraints(ph, "--- ph ---");
@@ -45,7 +45,7 @@ main() TRY {
 
   ph.affine_image(A, B+2, -3);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point(-2*A, 3));
 
   int retval = (ph == known_result) ? 0 : 1;

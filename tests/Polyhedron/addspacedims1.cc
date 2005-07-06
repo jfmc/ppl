@@ -51,7 +51,7 @@ main() TRY {
 
   ph.add_space_dimensions_and_project(1);
 
-  C_Polyhedron known_result(3, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(3, EMPTY);
   known_result.add_generator(point());
   known_result.add_generator(point(x));
   known_result.add_generator(point(y));

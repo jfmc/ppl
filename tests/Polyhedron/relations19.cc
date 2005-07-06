@@ -64,7 +64,7 @@ test2() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
   ph.add_generator(point());
   ph.constraints();
   ph.add_generator(ray(A));
