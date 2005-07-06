@@ -305,7 +305,9 @@ public:
 protected:
 
   //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
-  bool satisfies_all_congruences(const Generator& g) const;
+  bool
+  satisfies_all_congruences(const Generator& g,
+			    Coefficient_traits::const_reference divisor) const;
 
 private:
 

@@ -112,7 +112,6 @@ PPL::Grid::construct(const Generator_System& const_gs) {
   if (gs_space_dim > 0) {
     // Stealing the rows from `gs'.
     std::swap(gen_sys, gs);
-    normalize_divisors(gen_sys);
     // FIX for now convert rays to lines
     for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
       Generator& g = gen_sys[row];
@@ -121,6 +120,7 @@ PPL::Grid::construct(const Generator_System& const_gs) {
 	g.strong_normalize();
       }
     }
+    normalize_divisors(gen_sys);
     gen_sys.unset_pending_rows();
     gen_sys.set_sorted(false);
 
@@ -233,12 +233,35 @@ PPL::Grid::is_included_in(const Grid& y) const {
   const Generator_System& gs = x.gen_sys;
   const Congruence_System& cgs = y.con_sys;
 
+#if BE_LAZY
+  dimension_type num_rows = gs.num_rows();
+  if (x.generators_are_minimized()) {
+    TEMP_INTEGER(divisor);
+    divisor = gs[0][0];
+    for (dimension_type i = num_rows; i-- > 1; )
+      if (!cgs.satisfies_all_congruences(gs[i], divisor)) {
+	std::cout << "is_included_in... done (min, false i = " << i << ")." << std::endl;
+	return false;
+      }
+  }
+  else
+    for (dimension_type i = num_rows; i-- > 1; ) {
+      const Generator& g = gs[i];
+      if (!cgs.satisfies_all_congruences(g, g[0])) {
+	std::cout << "is_included_in... done (false i = " << i << ")." << std::endl;
+	return false;
+      }
+    }
+#else
+  TEMP_INTEGER(divisor);
+  divisor = gs[0][0];
   dimension_type num_rows = gs.num_rows();
   for (dimension_type i = num_rows; i-- > 1; )
-    if (!cgs.satisfies_all_congruences(gs[i])) {
+    if (!cgs.satisfies_all_congruences(gs[i], divisor)) {
       std::cout << "is_included_in... done (false i = " << i << ")." << std::endl;
       return false;
     }
+#endif
 
   // Inclusion holds.
   return true;
@@ -555,9 +578,12 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
     // Represent each point using the LCM as the divisor.
     for (dimension_type row = 0; row < num_rows; ++row) {
       Generator& gen = sys[row];
-      if (gen.is_point()) {
+      if (gen.is_ray_or_point_or_inequality()) {
 	TEMP_INTEGER(factor);
-	factor = lcm / gen[0];
+	if (gen.is_point())
+	  factor = lcm / gen[0];
+	else
+	  factor = lcm / sys[0][0];
 	// FIX skip if divisor == lcm
 	for (dimension_type col = 1; col < gen.size(); ++col)
 	  gen[col] *= factor;

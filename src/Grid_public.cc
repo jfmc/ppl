@@ -223,7 +223,7 @@ PPL::Grid::relation_with(const Generator& g) const {
   congruences_are_up_to_date() || update_congruences();
 
   return
-    con_sys.satisfies_all_congruences(g)
+    con_sys.satisfies_all_congruences(g /*, FIX divisor */)
     ? Poly_Gen_Relation::subsumes()
     : Poly_Gen_Relation::nothing();
 }
@@ -252,9 +252,11 @@ PPL::Grid::is_universe() const {
   // FIX create single g'tor and modify for each iteration below
   Grid gr(space_dim);
   Generator_System& gs = gr.gen_sys;
-  for (dimension_type i = gs.num_rows(); i-- > 0; )
-    if (!con_sys.satisfies_all_congruences(gs[i]))
+  for (dimension_type i = gs.num_rows(); i-- > 0; ) {
+    const Generator& g = gs[i];
+    if (!con_sys.satisfies_all_congruences(g, g[0]))
       return false;
+  }
   return true;
 }
 #if 0
@@ -982,7 +984,6 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
       throw_invalid_generators("add_recycled_generators(gs)", "gs");
     gs.unset_pending_rows();
     std::swap(gen_sys, gs);
-    normalize_divisors(gen_sys);
     // FIX for now convert rays to lines
     for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
       Generator& g = gen_sys[row];
@@ -991,6 +992,7 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
 	g.strong_normalize();
       }
     }
+    normalize_divisors(gen_sys);
     // The grid is no longer empty and generators are up-to-date.
     set_generators_up_to_date();
     clear_empty();
@@ -1094,7 +1096,6 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
     // `gs' has a point: the grid is no longer empty and generators
     // are up-to-date.
     std::swap(gen_sys, gs);
-    normalize_divisors(gen_sys);
     // FIX for now convert rays to lines
     for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
       Generator& g = gen_sys[row];
@@ -1103,6 +1104,7 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
 	g.strong_normalize();
       }
     }
+    normalize_divisors(gen_sys);
     clear_empty();
     set_generators_up_to_date();
     // This call to `minimize()' returns `true'.

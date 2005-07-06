@@ -32,8 +32,10 @@ public:
   Test_Congruence_System() : Congruence_System() {}
   Test_Congruence_System(Congruence_System cgs) : Congruence_System(cgs) {}
   Test_Congruence_System(Congruence cg) : Congruence_System(cg) {}
-  bool satisfies_all_congruences(const Generator& g) const {
-    return Congruence_System::satisfies_all_congruences(g);
+  bool
+  satisfies_all_congruences(const Generator& g,
+			    Coefficient_traits::const_reference d) const {
+    return Congruence_System::satisfies_all_congruences(g, d);
   }
 };
 
@@ -57,13 +59,15 @@ public:
 bool
 fulfils(const Generator_System& gs,
 	const Test_Congruence_System& cgs,
+	Coefficient_traits::const_reference divisor,
 	bool pass_expected = false,
-	bool(Test_Congruence_System::*member)(const Generator& g) const
+	bool(Test_Congruence_System::*member)(const Generator& g,
+					      Coefficient_traits::const_reference d) const
 	= &Test_Congruence_System::satisfies_all_congruences,
 	string verb = "satisfy") {
   Generator_System::const_iterator gi = gs.begin();
 
-  if ((cgs.*member)(*gi) == pass_expected)
+  if ((cgs.*member)(*gi, divisor) == pass_expected)
     return pass_expected;
 
   nout << *gi << " should ";
@@ -81,13 +85,15 @@ fulfils(const Generator_System& gs,
 
 inline bool
 fails_to_satisfy(const Generator_System& gs,
-		 const Congruence_System& cgs) {
-  return false == fulfils(gs, cgs, true,
+		 const Congruence_System& cgs,
+		 Coefficient_traits::const_reference divisor) {
+  return false == fulfils(gs, cgs, divisor, true,
 			  &Test_Congruence_System::satisfies_all_congruences,
 			  "satisfy");
 }
 
 // satisfies_all_congruences
+// FIX test with other divisors
 
 void
 test1() {
@@ -102,81 +108,82 @@ test1() {
 
   Generator_System gs0;
 
-  /* Points. */
+  // Points.
 
   gs0.insert(point());
-  if (fails_to_satisfy(gs0, cgs0))
+  if (fails_to_satisfy(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
   gs0.insert(point(A + B));
-  if (fails_to_satisfy(gs0, cgs0))
+  if (fails_to_satisfy(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
   gs0.insert(point(A + 2*B));
-  if (satisfies(gs0, cgs0))
+  if (satisfies(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
   gs0.insert(point(5*A + 2*B));
-  if (satisfies(gs0, cgs0))
+  if (satisfies(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
   gs0.insert(point(5*A - 2*B));
-  if (fails_to_satisfy(gs0, cgs0))
+  if (fails_to_satisfy(gs0, cgs0, 1))
     exit(1);
 
-  /* Closure points.  */
+  // Closure points.
 
   gs0.clear();
   gs0.insert(closure_point(2*A + B));
-  if (satisfies(gs0, cgs0))
+  if (satisfies(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
   gs0.insert(closure_point(7*A + 7*B));
-  if (fails_to_satisfy(gs0, cgs0))
+  if (fails_to_satisfy(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
   gs0.insert(closure_point(3*A - 4*B));
-  if (fails_to_satisfy(gs0, cgs0))
+  if (fails_to_satisfy(gs0, cgs0, 1))
     exit(1);
 
-  /* Rays. */
+  // FIX Rays are converted to lines.
+  // Rays.
 
   gs0.clear();
   gs0.insert(ray(3*A + 3*B));
-  if (fails_to_satisfy(gs0, cgs0))
+  if (fails_to_satisfy(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
   gs0.insert(ray(A + 14*B));
-  if (satisfies(gs0, cgs0))
+  if (satisfies(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
   gs0.insert(ray(- A + 13*B));
-  if (fails_to_satisfy(gs0, cgs0))
+  if (fails_to_satisfy(gs0, cgs0, 1))
     exit(1);
 
-  /* Lines.  */
+  // Lines.
 
   gs0.clear();
   gs0.insert(line(13*A + 13*B));
-  if (fails_to_satisfy(gs0, cgs0))
+  if (fails_to_satisfy(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
   gs0.insert(line(18*A + 14*B));
-  if (satisfies(gs0, cgs0))
+  if (satisfies(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
   gs0.insert(line(14*A - 21*B));
-  if (satisfies(gs0, cgs0))
+  if (satisfies(gs0, cgs0, 1))
     exit(1);
 
   return;

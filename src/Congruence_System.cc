@@ -228,8 +228,11 @@ PPL::Congruence_System::num_proper_congruences() const {
 }
 
 bool
-PPL::Congruence_System::satisfies_all_congruences(const Generator& g) const {
+PPL::Congruence_System::
+satisfies_all_congruences(const Generator& g,
+			  Coefficient_traits::const_reference divisor) const {
   assert(g.space_dimension() <= space_dimension());
+  assert(divisor >= 0);
 
   // Setting `spa_fp' to the appropriate scalar product operator.
   // This also avoids problems when having _legal_ topology mismatches
@@ -247,11 +250,16 @@ PPL::Congruence_System::satisfies_all_congruences(const Generator& g) const {
     spa_fp(sp, g, cg);
     //if (cg.is_equality() || g.is_line()) { // FIX
     if (cg.is_equality()) {
-      if (sp != 0)
+      if (sp != 0) {
+	std::cout << "sat's_all_cg's... done (eq, false i = " << i << ")." << std::endl;
 	return false;
+      }
     }
-    else if (sp % cg.modulus() != 0)
+    // FIX compare before loop
+    else if (sp % (divisor > 0 ? cg.modulus() * divisor : cg.modulus()) != 0) {
+      std::cout << "sat's_all_cg's... done (false i = " << i << ")." << std::endl;
       return false;
+    }
   }
   return true;
 }

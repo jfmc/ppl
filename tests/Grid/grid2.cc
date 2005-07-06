@@ -90,10 +90,11 @@ test2() {
   if (find_variation(gr))
     exit(1);
 
+  // FIX check
   Generator_System known_gs;
-  known_gs.insert(point(0*A + 17*B));
-  known_gs.insert(point(  A + 59*B));
-  known_gs.insert(point(0*A + 37*B));
+  known_gs.insert(point(0*A - 15*B, 5));
+  known_gs.insert(point(  A + 27*B, 5));
+  known_gs.insert(point(0*A + 85*B, 5));
 
   Grid known_gr(known_gs);
 
@@ -378,7 +379,7 @@ test9() {
   exit(1);
 }
 
-// cong_test4 from Chiara conversion_test2.cc.
+// cong_test4 from Chiara Convert_Test.cc.
 
 void
 test10() {
@@ -401,10 +402,10 @@ test10() {
     exit(1);
 
   Generator_System known_gs;
-  known_gs.insert(point(-2*A +  0*B +   7*C, 3));
-  known_gs.insert(point( 7*A +  0*B -  38*C, 3));
-  known_gs.insert(point(-2*A + 27*B - 236*C, 3));
-  known_gs.insert(point(-2*A +  0*B +  34*C, 3));
+  known_gs.insert(point(-2*A + 0*B +  7*C, 3));
+  known_gs.insert(point( 1*A + 0*B +    C, 3));
+  known_gs.insert(point(-2*A + 9*B +  7*C, 3));
+  known_gs.insert(point(-2*A + 0*B + 16*C, 3));
 
   Grid known_gr(known_gs);
 

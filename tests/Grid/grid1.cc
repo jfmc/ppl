@@ -146,7 +146,7 @@ test3() {
   exit(1);
 }
 
-// param_test0 from Chiara conversion_test.cc.
+// test0 from Chiara conversion_test.cc
 
 void
 test4() {
@@ -170,9 +170,9 @@ test4() {
     exit(1);
 
   Congruence_System known_cgs;
-  known_cgs.insert(( 0*A + 0*B + 0*C %= -2) / 1);
-  known_cgs.insert((-9*A + 6*B + 0*C %= 14) / 1);
-  known_cgs.insert(( 0*A - 0*B + 6*C %=  0) / 1);
+  known_cgs.insert(( 0*A + 0*B + 0*C %= -2) / 2);
+  known_cgs.insert((-9*A + 6*B + 0*C %= 14) / 2);
+  known_cgs.insert(( 0*A - 0*B + 6*C %=  0) / 2);
 
   Grid known_gr(known_cgs);
 
@@ -185,7 +185,7 @@ test4() {
   exit(1);
 }
 
-// param_test1 from Chiara conversion_test.cc.
+// test1 from Chiara conversion_test.cc.
 
 void
 test5() {
@@ -196,9 +196,9 @@ test5() {
   Variable C(2);
 
   Generator_System gs;
-  gs.insert(point(-1*A + 4*B +  3*C, 2));
-  gs.insert( line( 3*A + 2*B -  4*C));
-  gs.insert( line( 0*A + 0*B -  2*C));
+  gs.insert(point(-1*A + 4*B + 3*C, 2));
+  gs.insert( line( 3*A + 2*B - 4*C));
+  gs.insert( line( 0*A + 0*B - 2*C));
 
   Grid gr(3, Grid::EMPTY);
 
@@ -226,7 +226,7 @@ test5() {
   exit(1);
 }
 
-// param_test2 from Chiara conversion_test.cc.
+// test2 from Chiara conversion_test.cc.
 
 void
 test6() {
@@ -269,7 +269,7 @@ test6() {
   exit(1);
 }
 
-// param_test3 from Chiara conversion_test.cc.
+// test3 from Chiara conversion_test.cc.
 
 void
 test7() {
@@ -311,7 +311,7 @@ test7() {
   exit(1);
 }
 
-// param_test4 from Chiara conversion_test.cc.
+// test4 from Chiara conversion_test.cc.
 
 void
 test8() {
@@ -355,7 +355,7 @@ test8() {
   exit(1);
 }
 
-// param_test5 from Chiara conversion_test.cc.
+// test5 from Chiara conversion_test.cc.
 
 void
 test9() {
@@ -520,7 +520,9 @@ test13() {
 
   Congruence_System known_cgs;
   known_cgs.insert((       0*A +       0*B +      0*C %=  280730) / 280730);
-  known_cgs.insert((     -23*A +      29*B +      0*C %=   59643) / 280730);
+  // FIX why pass w/ both? equiv?
+  //known_cgs.insert((     -23*A +      29*B +      0*C %=   59643) / 280730); // orig
+  known_cgs.insert((  -85767*A +  108141*B +      0*C %=   70587) / 280730);
   known_cgs.insert((-2309489*A + 1557137*B + 280730*C %= 1997619) / 0);
 
   Grid known_gr(known_cgs);
@@ -550,9 +552,9 @@ test14() {
 
   Generator_System gs;
   gs.insert(point(-9933*A + 2000*B + 3953*C, 9113));
+  gs.insert(point(    0*A +    0*B + 8888*C, 7302));
   gs.insert(point(   29*A +   23*B + 1111*C, 1010));
   gs.insert(point( 2394*A + 7273*B +    0*C,   30));
-  gs.insert(point(    0*A +    0*B + 8888*C, 7302));
 
   Grid gr(3, Grid::EMPTY);
 
@@ -568,23 +570,27 @@ test14() {
 
   // FIX are the coefficients used or copied?
 
-  Coefficient* tem1 = new Coefficient("37315344498526");
-  known_cgs.insert((     0*A +     0*B + 0*C %=        *tem1) / *tem1);
+  // 37315344498526  0  0  0  congruence, modulus = 37315344498526
+  // 0  343455281759218112380  0  0  congruence, modulus = 37315344498526
+  // 0  -133815138923073144612  223892066991156  0  congruence, modulus = 37315344498526
+  // -22220  -31385495955559489171  93798931757298  18255  congruence, modulus = 37315344498526
 
-  Coefficient* tem2 = new Coefficient("419950208052071972814");
-  known_cgs.insert((-*tem1*A +     0*B + 0*C %=  *tem2) / *tem1);
+  Coefficient* tem1 = new Coefficient("37315344498526");
+  known_cgs.insert((     0*A +     0*B +     0*C %= -*tem1) / *tem1);
+
+  Coefficient* tem2 = new Coefficient("343455281759218112380");
+  known_cgs.insert(( *tem2*A +     0*B +     0*C %= 0) / *tem1);
   delete tem2;
 
-  tem2 = new Coefficient("-8304861576928864199088");
-  Coefficient* tem3 = new Coefficient("93463651403994354999109986832");
-  known_cgs.insert(( *tem2*A + *tem1*B + 0*C %=  *tem3) / *tem1);
+  tem2 = new Coefficient("-133815138923073144612");
+  Coefficient* tem3 = new Coefficient("223892066991156");
+  known_cgs.insert(( *tem2*A + *tem3*B +     0*C %= 0) / *tem1);
   delete tem2; delete tem3;
 
-  tem2 = new Coefficient("-1453742620492502229473");
-  tem3 = new Coefficient("6531945920270");
-  Coefficient* tem4 = new Coefficient("16360548848917233378527473980");
-  known_cgs.insert(( *tem2*A + *tem3*B - 1*C %= *tem4) / *tem1);
-  delete tem1; delete tem2; delete tem3; delete tem4;
+  tem2 = new Coefficient("-31385495955559489171");
+  tem3 = new Coefficient("93798931757298");
+  known_cgs.insert(( *tem2*A + *tem3*B + 18255*C %= 22220) / *tem1);
+  delete tem1; delete tem2; delete tem3;
 
 
   Grid known_gr(known_cgs);
@@ -602,7 +608,7 @@ test14() {
   exit(1);
 }
 
-/* Test reduce_line_with_line (param_test9 from Chiara
+/* Test reduce_line_with_line (test9 from Chiara
    conversion_test.cc).  */
 
 void
@@ -644,11 +650,58 @@ test15() {
   exit(1);
 }
 
-// Universe grid, one dimension.
+// Grids from a water monitor example (test10 from Chiara
+// conversion_test.cc).
 
 void
 test16() {
   nout << "test16:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Generator_System gs;
+  gs.insert(point(   A));
+  gs.insert(point( 2*A +    B));
+  gs.insert(point(12*A + 11*B));
+  gs.insert(point(10*A + 12*B));
+  gs.insert(point( 2*A + 33*B, 2));
+  gs.insert(point( 4*A + 35*B, 2));
+
+  Grid gr(3, Grid::EMPTY);
+
+  gr.add_generators_and_minimize(gs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Congruence_System known_cgs;
+  known_cgs.insert((C %= 0) / 0);
+  known_cgs.insert((-2*A + 2*B %= 1) / 3);
+  known_cgs.insert(( 3*A %= 0) / 3);
+  known_cgs.insert(( 0*A %= 3) / 3);
+
+  Grid known_gr(known_cgs);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Universe grid, one dimension.
+
+void
+test17() {
+  nout << "test17:" << endl;
 
   Grid gr(1);
 
@@ -673,8 +726,8 @@ test16() {
 // Universe grid, many dimensions.
 
 void
-test17() {
-  nout << "test17:" << endl;
+test18() {
+  nout << "test18:" << endl;
 
   Grid gr(21);
 
@@ -699,8 +752,8 @@ test17() {
 // Universe grid, zero dimensions.
 
 void
-test18() {
-  nout << "test18:" << endl;
+test19() {
+  nout << "test19:" << endl;
 
   Grid gr(0);
 
@@ -725,8 +778,8 @@ test18() {
 // A generator system with only a line.
 
 void
-test19() {
-  nout << "test19:" << endl;
+test20() {
+  nout << "test20:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -748,8 +801,8 @@ test19() {
 // A generator system containing a ray.
 
 void
-test20() {
-  nout << "test20:" << endl;
+test21() {
+  nout << "test21:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -804,6 +857,7 @@ main() TRY {
   test18();
   test19();
   test20();
+  test21();
 
   return 0;
 }
