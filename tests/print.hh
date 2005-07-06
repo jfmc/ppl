@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_print_hh
 #define PPL_print_hh 1
 
-#include "ppl_install.hh"
 #include <iostream>
 #include <string>
 

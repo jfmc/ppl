@@ -46,7 +46,7 @@ PPL::Constraint::throw_dimension_incompatible(const char* method,
 PPL::Constraint
 PPL::Constraint::construct_epsilon_geq_zero() {
   Linear_Expression e = Variable(0);
-  Constraint c(e, Constraint::NONSTRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
+  Constraint c(e, NONSTRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
   return c;
 }
 
@@ -138,7 +138,7 @@ PPL::Constraint::is_equivalent_to(const Constraint& y) const {
   if (x_space_dim != y.space_dimension())
     return false;
 
-  const Constraint::Type x_type = x.type();
+  const Type x_type = x.type();
   if (x_type != y.type()) {
     // Check for special cases.
     if (x.is_tautological())
@@ -147,7 +147,7 @@ PPL::Constraint::is_equivalent_to(const Constraint& y) const {
       return x.is_inconsistent() && y.is_inconsistent();
   }
 
-  if (x_type == Constraint::STRICT_INEQUALITY) {
+  if (x_type == STRICT_INEQUALITY) {
     // Due to the presence of epsilon-coefficients, syntactically
     // different strict inequalities may actually encode the same
     // topologically open half-space.
@@ -213,6 +213,25 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
     break;
   }
   s << relation_symbol << -c.inhomogeneous_term();
+  return s;
+}
+
+/*! \relates Parma_Polyhedra_Library::Constraint::Type */
+std::ostream&
+PPL::IO_Operators::operator<<(std::ostream& s, const Constraint::Type& t) {
+  const char* n = 0;
+  switch (t) {
+  case Constraint::EQUALITY:
+    n = "EQUALITY";
+    break;
+  case Constraint::NONSTRICT_INEQUALITY:
+    n = "NONSTRICT_INEQUALITY";
+    break;
+  case Constraint::STRICT_INEQUALITY:
+    n = "STRICT_INEQUALITY";
+    break;
+  }
+  s << n;
   return s;
 }
 

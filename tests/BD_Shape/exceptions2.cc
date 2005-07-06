@@ -283,8 +283,6 @@ error9() {
 
 static void
 error10() {
-  Variable y(1);
-
   TBD_Shape bd1(1);
   TBD_Shape bd2(2);
 
@@ -340,7 +338,6 @@ static void
 error12() {
   Variable x(0);
   Variable y(1);
-  Variable z(2);
 
   TBD_Shape bd(2);
   bd.add_constraint(x >= 1);
@@ -392,7 +389,7 @@ static void
 error14() {
   Variable x(0);
   Variable y(1);
-  Variable z(2);
+  // Variable z(2);
 
   TBD_Shape bd1(3);
 

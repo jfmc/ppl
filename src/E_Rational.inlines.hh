@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_E_Rational_inlines_hh
 #define PPL_E_Rational_inlines_hh 1
 
+#include "Checked_Number.defs.hh"
+#include "checked_mpq.inlines.hh"
 #include <iostream>
 #include <sstream>
 #include <cassert>

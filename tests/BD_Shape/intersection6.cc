@@ -32,14 +32,9 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() TRY {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-
   TBD_Shape bd1;
   TBD_Shape bd2;
   TBD_Shape known_result;
-
 
 #if NOISY
   print_constraints(bd1, "*** bd1 ***");

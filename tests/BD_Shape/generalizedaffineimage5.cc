@@ -34,7 +34,6 @@ int
 main() TRY {
   Variable x(0);
   Variable y(1);
-  Linear_Expression expr(2*x - 2);
 
   TBD_Shape bd(3);
 
@@ -50,11 +49,9 @@ main() TRY {
   TBD_Shape known_result(3);
   known_result.add_constraint(x >= 2);
   known_result.add_constraint(x <= 5);
-  known_result.add_constraint(y <= 2);
-  known_result.add_constraint(y - x <= 0);
   known_result.add_constraint(y >= x - 1);
 
-  bd.generalized_affine_image(y,GREATER_THAN_OR_EQUAL, expr, 2);
+  bd.generalized_affine_image(y,GREATER_THAN_OR_EQUAL, 2*x - 2, 2);
 
 #if NOISY
   print_constraints(bd, "*** bd.generalized_affine_image(y, "

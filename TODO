@@ -1,8 +1,24 @@
 Enhancements for PPL 0.8 or later versions
 ==========================================
 
+- Improve the documentation about shared libraries.
+  See http://www.cs.unipr.it/pipermail/ppl-devel/2005-July/006178.html.
+- Improve the documentation of Polyhedron::shrink_bounding_box().
+  See http://www.cs.unipr.it/pipermail/ppl-devel/2005-July/006191.html.
+- The documentation for the SWI-Prolog interface claims that initialization
+  of the library is automatic: some tests conducted with SWI-Prolog 5.4.4
+  seem to indicate otherwise.
+- The new mechanism used to build the ppl_install.hh header file
+  depends on the availability of PERL.  Consider whether this
+  is a new requirement we impose to the user or not (it certainly
+  is not a new requirement for the developer).  In case it is, and
+  in case we decide we don't want this extra requirement, change
+  the building procedure so that the header file is built at
+  distribution-time and needs not be rebuilt at installation-time.
 - Degenerate_Kind is something that we need globally: consider taking
   it out from class Polyhedron.
+- Moreover, code like "BD_Shape(Polyhedron::EMPTY);" should not compile,
+  whereas it currently does.
 - Move the documentation of our namespaces out of Polyhedron.types.hh.
 - Provide a single, generic implementation to replace all our status
   classes.

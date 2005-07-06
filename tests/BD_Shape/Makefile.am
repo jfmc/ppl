@@ -35,9 +35,9 @@ AM_CPPFLAGS = \
 @extra_includes@
 
 LDADD = \
-$(top_builddir)/src/libppl.la \
 $(top_builddir)/utils/libppl_utils.a \
 $(top_builddir)/tests/libppl_tests.a \
+$(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
@@ -45,8 +45,9 @@ ORIGINAL_TESTS = \
 	addspacedims1  addspacedims2 addspacedims3 addspacedims4 \
 	addspacedims5 addspacedims6 addspacedims7 \
 	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
-	affineimage6 affineimage7 \
+	affineimage6 affineimage7 affineimage8 affineimage9 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
+	affinepreimage5 \
 	ascii_dump_load1 ascii_dump_load2 \
 	cc76narrowing1 cc76narrowing2 cc76narrowing3 cc76narrowing4 \
 	cc76narrowing5 \
@@ -60,12 +61,14 @@ ORIGINAL_TESTS = \
 	empty1 empty2 empty3 empty4 empty5 \
 	equality1 \
 	exceptions1 exceptions2 exceptions3 \
+	fromgensys1 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffineimage3 generalizedaffineimage4 \
 	generalizedaffineimage5 generalizedaffineimage6 \
 	generalizedaffineimage7 generalizedaffineimage8 \
 	generalizedaffineimage9 generalizedaffineimage10 \
 	generalizedaffineimage11 generalizedaffineimage12 \
+	generalizedaffineimage13 generalizedaffineimage14 \
 	h79widening1 \
 	intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 intersection8 \
@@ -86,7 +89,7 @@ ORIGINAL_TESTS = \
 	removespacedims1 removespacedims2 removespacedims3 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
 	universe1 \
-	writebdiffs1 writebdiffs2
+	writebdshape1 writebdshape2
 
 #
 # Sources for the tests
@@ -109,11 +112,14 @@ affineimage4_SOURCES = affineimage4.cc
 affineimage5_SOURCES = affineimage5.cc
 affineimage6_SOURCES = affineimage6.cc
 affineimage7_SOURCES = affineimage7.cc
+affineimage8_SOURCES = affineimage8.cc
+affineimage9_SOURCES = affineimage9.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
 affinepreimage3_SOURCES = affinepreimage3.cc
 affinepreimage4_SOURCES = affinepreimage4.cc
+affinepreimage5_SOURCES = affinepreimage5.cc
 
 ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 ascii_dump_load2_SOURCES = ascii_dump_load2.cc
@@ -165,6 +171,8 @@ exceptions1_SOURCES = exceptions1.cc
 exceptions2_SOURCES = exceptions2.cc
 exceptions3_SOURCES = exceptions3.cc
 
+fromgensys1_SOURCES = fromgensys1.cc
+
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc 
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
 generalizedaffineimage3_SOURCES = generalizedaffineimage3.cc
@@ -177,6 +185,8 @@ generalizedaffineimage9_SOURCES = generalizedaffineimage9.cc
 generalizedaffineimage10_SOURCES = generalizedaffineimage10.cc
 generalizedaffineimage11_SOURCES = generalizedaffineimage11.cc
 generalizedaffineimage12_SOURCES = generalizedaffineimage12.cc
+generalizedaffineimage13_SOURCES = generalizedaffineimage13.cc
+generalizedaffineimage14_SOURCES = generalizedaffineimage14.cc
 
 h79widening1_SOURCES = h79widening1.cc
 
@@ -242,8 +252,8 @@ timeelapse5_SOURCES = timeelapse5.cc
 
 universe1_SOURCES = universe1.cc
 
-writebdiffs1_SOURCES = writebdiffs1.cc
-writebdiffs2_SOURCES = writebdiffs2.cc
+writebdshape1_SOURCES = writebdshape1.cc
+writebdshape2_SOURCES = writebdshape2.cc
 
 TESTS = $(ORIGINAL_TESTS)
 

@@ -41,9 +41,9 @@ AM_CPPFLAGS = \
 @extra_includes@
 
 LDADD = \
-$(top_builddir)/src/libppl.la \
 $(top_builddir)/utils/libppl_utils.a \
 $(top_builddir)/tests/libppl_tests.a \
+$(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
@@ -84,11 +84,12 @@ ORIGINAL_TESTS = \
 	bhz03widening1 bhz03widening2 bhz03widening3 bhz03widening4 \
 	bhz03widening5 bhz03widening6 \
 	bounded1 \
+	boundedbhrz03extrapolation1 \
 	boundedh79extrapolation1 \
 	boundingbox1 boundingbox2 boundingbox3 boundingbox4 boundingbox5 \
 	bounds1 bounds2 \
 	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
-	concatenate6 \
+	concatenate6 concatenate7 \
 	constraints1 constraints2 constraints3 constraints4 constraints5 \
 	contains1 contains2 contains3 contains4 contains5 \
 	disjoint1 disjoint2 disjoint3 \
@@ -104,6 +105,7 @@ ORIGINAL_TESTS = \
 	generalizedaffineimage7 generalizedaffineimage8 \
 	generalizedaffineimage9 generalizedaffineimage10 \
 	generalizedaffineimage11 generalizedaffineimage12 \
+	generalizedaffineimage13 generalizedaffineimage14 \
 	generators1 generators2 generators3 generators4 generators5 \
 	generators6 generators7 \
 	geomcovers1 \
@@ -183,11 +185,12 @@ DERIVED_TESTS = \
 	nnc_bhrz03widening8 nnc_bhrz03widening9 \
 	nnc_bhrz03widening10 nnc_bhrz03widening11 nnc_bhrz03widening12 \
 	nnc_bounded1 \
+	nnc_boundedbhrz03extrapolation1 \
 	nnc_boundedh79extrapolation1 \
 	nnc_boundingbox1 nnc_boundingbox3 nnc_boundingbox5 \
 	nnc_bounds1 nnc_bounds2 \
 	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 nnc_concatenate4 \
-	nnc_concatenate5 nnc_concatenate6 \
+	nnc_concatenate5 nnc_concatenate6 nnc_concatenate7 \
 	nnc_constraints1 nnc_constraints2 nnc_constraints3 nnc_constraints4 \
 	nnc_constraints5 \
 	nnc_contains1 nnc_contains2 \
@@ -201,6 +204,7 @@ DERIVED_TESTS = \
 	nnc_generalizedaffineimage3 \
 	nnc_generalizedaffineimage5 nnc_generalizedaffineimage6 \
 	nnc_generalizedaffineimage11 \
+        nnc_generalizedaffineimage13 nnc_generalizedaffineimage14 \
 	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
 	nnc_generators5 nnc_generators6 nnc_generators7 \
 	nnc_geomcovers1 \
@@ -377,6 +381,8 @@ bhz03widening6_SOURCES = bhz03widening6.cc
 
 bounded1_SOURCES = bounded1.cc
 
+boundedbhrz03extrapolation1_SOURCES = boundedbhrz03extrapolation1.cc
+
 boundedh79extrapolation1_SOURCES = boundedh79extrapolation1.cc
 
 boundingbox1_SOURCES = boundingbox1.cc
@@ -394,6 +400,7 @@ concatenate3_SOURCES = concatenate3.cc
 concatenate4_SOURCES = concatenate4.cc
 concatenate5_SOURCES = concatenate5.cc
 concatenate6_SOURCES = concatenate6.cc
+concatenate7_SOURCES = concatenate7.cc
 
 constraints1_SOURCES = constraints1.cc
 constraints2_SOURCES = constraints2.cc
@@ -439,6 +446,8 @@ generalizedaffineimage9_SOURCES = generalizedaffineimage9.cc
 generalizedaffineimage10_SOURCES = generalizedaffineimage10.cc
 generalizedaffineimage11_SOURCES = generalizedaffineimage11.cc
 generalizedaffineimage12_SOURCES = generalizedaffineimage12.cc
+generalizedaffineimage13_SOURCES = generalizedaffineimage13.cc
+generalizedaffineimage14_SOURCES = generalizedaffineimage14.cc
 
 generators1_SOURCES = generators1.cc
 generators2_SOURCES = generators2.cc
@@ -777,6 +786,9 @@ nnc_bhrz03widening12_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_bounded1_SOURCES = bounded1.cc
 nnc_bounded1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+nnc_boundedbhrz03extrapolation1_SOURCES = boundedbhrz03extrapolation1.cc
+nnc_boundedvhrz03extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
 nnc_boundedh79extrapolation1_SOURCES = boundedh79extrapolation1.cc
 nnc_boundedh79extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
@@ -804,6 +816,8 @@ nnc_concatenate5_SOURCES = concatenate5.cc
 nnc_concatenate5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_concatenate6_SOURCES = concatenate6.cc
 nnc_concatenate6_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_concatenate7_SOURCES = concatenate7.cc
+nnc_concatenate7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_constraints1_SOURCES = constraints1.cc
 nnc_constraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -855,6 +869,10 @@ nnc_generalizedaffineimage6_SOURCES = generalizedaffineimage6.cc
 nnc_generalizedaffineimage6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_generalizedaffineimage11_SOURCES = generalizedaffineimage11.cc
 nnc_generalizedaffineimage11_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_generalizedaffineimage13_SOURCES = generalizedaffineimage13.cc
+nnc_generalizedaffineimage13_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_generalizedaffineimage14_SOURCES = generalizedaffineimage14.cc
+nnc_generalizedaffineimage14_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_generators1_SOURCES = generators1.cc
 nnc_generators1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -1138,7 +1156,7 @@ bhrz03widening18 \
 bhz03widening1 \
 bhz03widening4 \
 bhz03widening6 \
-boundedh79extrapolation1 \
+boundedbhrz03extrapolation1 \
 foldspacedims1 \
 foldspacedims2 \
 generalizedaffineimage3 \
@@ -1152,7 +1170,7 @@ randphull1 \
 removespacedims2 \
 smm1 \
 nnc_bgp99extrapolation2 \
-nnc_boundedh79extrapolation1 \
+nnc_boundedbhrz03extrapolation1 \
 nnc_generalizedaffineimage3 \
 nnc_max_min2 \
 nnc_membytes1 \
@@ -1163,10 +1181,12 @@ nnc_smm1
 
 XFAIL_WITH_INT8_A = \
 $(XFAIL_WITH_INT8) \
+boundedh79extrapolation1 \
 boundingbox4 \
 intersection1 \
 intersection2 \
 membytes2 \
+nnc_boundedh79extrapolation1 \
 nnc_intersection1 \
 nnc_intersection2 \
 nnc_membytes2 \
@@ -1215,7 +1235,10 @@ check_PROGRAMS = $(TESTS) $(BUGS)
 
 EXTRA_DIST = $(watchdog1_SRCS)
 
-BUGS =
+BUGS = bug2
+
+bug2_SOURCES = bug2.cc
+bug2_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat \

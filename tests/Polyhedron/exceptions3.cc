@@ -40,6 +40,9 @@ error1() {
     // greater than or equal to Variable::max_space_dimension().
     Variable v(Variable::max_space_dimension());
 
+    // This is only to avoid a compiler warning.
+    (void) v.id();
+
     // It is an error if the exception is not thrown.
     exit(1);
   }

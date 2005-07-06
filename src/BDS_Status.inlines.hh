@@ -163,7 +163,7 @@ const char sep = ' ';
   When successful, \p positive is set to <CODE>true</CODE> if the flag
   is on; it is set to <CODE>false</CODE> otherwise.
 */
-bool
+inline bool
 get_field(std::istream& s, const std::string& keyword, bool& positive) {
   std::string str;
   if (!(s >> str)

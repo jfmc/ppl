@@ -1,5 +1,4 @@
-/* Test BD_Shape::constraints(): we compute the system of
-   constraints of a bdiff.
+/* Test BD_Shape::constraints().
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

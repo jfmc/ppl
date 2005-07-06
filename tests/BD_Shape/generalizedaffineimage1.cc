@@ -49,7 +49,6 @@ main() TRY {
   TBD_Shape known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A <= 4);
-  known_result.add_constraint(B <= 5);
   known_result.add_constraint(B - A >= 2);
 
   int retval = (bd == known_result) ? 0 : 1;

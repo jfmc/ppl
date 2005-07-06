@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- use_module(library(lists), [append/3, member/2]).
 
 main :-
-    ensure_loaded(pl_check),
+    ensure_loaded('pl_check.pl'),
     set_prolog_flag(language, iso),	% FIXME: this is not ISO Prolog
     nofileerrors,
     (check_all ->

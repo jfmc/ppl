@@ -54,13 +54,13 @@ enum Result {
   //! The computed result may be inexact.
   V_LGE = V_LT | V_EQ | V_GT,
 
-  //! Negative infinity result class
+  //! Negative infinity unrepresentable result class
   VC_MINUS_INFINITY = 16,
 
   //! A negative overflow occurred.
   V_NEG_OVERFLOW = VC_MINUS_INFINITY | V_GT,
 
-  //! Positive infinity result class
+  //! Positive infinity unrepresentable result class
   VC_PLUS_INFINITY = 32,
 
   //! A positive overflow occurred.

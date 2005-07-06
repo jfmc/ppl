@@ -380,13 +380,13 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     // `sat_g' by resizing it and shifting its columns?
     if (!sat_c_is_up_to_date()) {
       sat_c.transpose_assign(sat_g);
-      clear_sat_g_up_to_date();
       set_sat_c_up_to_date();
     }
+    clear_sat_g_up_to_date();
     sat_c.resize(sat_c.num_rows() + added_columns, sat_c.num_columns());
     // The old saturation rows are copied at the end of the matrix.
     // The newly introduced lines saturate all the non-pending constraints,
-    // thus their saturations rows are made of zeroes.
+    // thus their saturation rows are made of zeroes.
     for (dimension_type i = sat_c.num_rows() - added_columns; i-- > 0; )
       std::swap(sat_c[i], sat_c[i+added_columns]);
     // Since `added_rows > 0', we now have pending constraints.

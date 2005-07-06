@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library;
 
 static void test1() {
   Variable A(0);
-  Variable B(1);
+  // Variable B(1);
 
   TBD_Shape bd(2, Polyhedron::EMPTY);
 
@@ -52,7 +52,7 @@ static void test1() {
 }
 
 static void test2() {
-  Variable x(0);
+  // Variable x(0);
   Variable y(1);
   
   TBD_Shape bd(2);
@@ -74,9 +74,9 @@ static void test2() {
 }
 
 static void test3() {
-  Variable x(0);
+  // Variable x(0);
   Variable y(1);
-  Variable z(2);
+  // Variable z(2);
 
   TBD_Shape bd(3);
   bd.add_constraint(y <= 1);
@@ -98,8 +98,8 @@ static void test3() {
 }
 
 static void test4() {
-  Variable x(0);
-  Variable y(1);
+  // Variable x(0);
+  // Variable y(1);
   Variable z(2);
 
   TBD_Shape bd(3);
@@ -122,7 +122,7 @@ static void test4() {
 
 static void test5() {
   Variable x(0);
-  Variable y(1);
+  // Variable y(1);
 
   TBD_Shape bd(2);
   bd.add_constraint(x == 1);

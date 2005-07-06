@@ -43,9 +43,6 @@ print_function(const PFunction& function, const string& intro = "",
 
 int
 main() TRY {
-  Variable x(0);
-  Variable y(1);
-
   PFunction function;
   function.insert(0, 1);
   function.insert(1, 0);
@@ -58,7 +55,6 @@ main() TRY {
 #endif
 
   bd.map_space_dimensions(function);
-
 
   TBD_Shape known_result(0);
 

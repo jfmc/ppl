@@ -140,10 +140,10 @@ Float.defs.hh \
 Float.inlines.hh \
 Limits.hh \
 fpu.defs.hh \
+fpu-c99.inlines.hh \
 fpu-ia32.inlines.hh \
 Rounding.types.hh \
 Rounding.defs.hh \
-Rounding.inlines.hh \
 Result.defs.hh \
 Result.inlines.hh \
 Numeric_Format.defs.hh \
@@ -160,9 +160,6 @@ checked_numeric_limits.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
 Coefficient.defs.hh \
 Coefficient.inlines.hh \
-E_NIT.types.hh \
-E_NIT.defs.hh \
-E_NIT.inlines.hh \
 E_Rational.types.hh \
 E_Rational.defs.hh \
 E_Rational.inlines.hh \
@@ -252,6 +249,7 @@ BDS_Status.idefs.hh
 
 libppl_la_SOURCES = \
 Bounding_Box.cc \
+checked.cc \
 Checked_Number.cc \
 Constraint.cc \
 Constraint_System.cc \
@@ -370,27 +368,25 @@ libppl_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
 
-noinst_HEADERS = ppl.hh ppl_install.hh
+noinst_HEADERS = ppl.hh ppl_install.hh ppl_include_files.hh
 
-BUILT_SOURCES = ppl.hh ppl_install.hh
+BUILT_SOURCES = ppl.hh ppl_install.hh ppl_include_files.hh
 
 ppl.hh:	$(DOC_FILES) $(top_builddir)/src/version.hh Makefile
 	cat $(top_builddir)/src/version.hh >$@
 	(cd $(srcdir) ; cat $(DOC_FILES)) >>$@
 
-ppl_install.hh:	ppl_header.top $(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.middle $(INCLUDE_FILES) ppl_header.bottom Makefile
-	mkdir -p tmp
-	cat $(top_builddir)/config.h >tmp/concat
-	(cd $(srcdir) ; cat $(INCLUDE_FILES)) >>tmp/concat
-	grep "^#include <" <tmp/concat | sort -u >tmp/includes
-	sed -e "/^#include/d" <tmp/concat >tmp/noincludes.cc
-	cat $(srcdir)/ppl_header.top \
-		$(top_builddir)/src/version.hh $(top_builddir)/config.h \
-		$(srcdir)/ppl_header.middle tmp/includes >$@
-	$(CXXCPP) $(CPPFLAGS) -I$(srcdir) -P @debug_flag@ tmp/noincludes.cc \
-		>>$@
-	cat $(srcdir)/ppl_header.bottom >>$@
-	rm -rf tmp
+ppl_include_files.hh: $(INCLUDE_FILES) Makefile
+	rm -f $@
+	for file in $(INCLUDE_FILES); \
+	do \
+	  printf "#include \"%s\"\n" $$file >>$@; \
+	done
+
+ppl_install.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(NESTED_INCLUDE_FILES) Makefile $(top_srcdir)/build_header
+	$(top_srcdir)/build_header \
+		-I $(top_builddir) -I $(top_builddir)/src \
+		$(top_srcdir)/src/ppl_header.hh >$@
 
 # ppl.hh and ppl_install.hh are not distributed.
 dist-hook:
@@ -403,6 +399,6 @@ install-data-local: ppl_install.hh
 uninstall-local:
 	rm -f $(DESTDIR)$(includedir)/ppl.hh
 
-EXTRA_DIST = ppl_header.top ppl_header.middle ppl_header.bottom version.hh.in
+EXTRA_DIST = ppl_header.hh version.hh.in
 
 MOSTLYCLEANFILES = $(BUILT_SOURCES)

@@ -38,11 +38,23 @@ site: http://www.cs.unipr.it/ppl/ . */
 # include <getopt.h>
 #endif
 
+#ifdef HAVE_UNISTD_H
+/* Include this for `getopt()': especially important if we do not have
+   <getopt.h>.  */
+# include <unistd.h>
+#endif
+
 #ifdef HAVE_SIGNAL_H
 # include <signal.h>
 #endif
 
+#ifdef HAVE_SYS_TIME_H
+# include <sys/time.h>
+#endif
+
 #ifdef HAVE_SYS_RESOURCE_H
+/* This should be included after <time.h> and <sys/time.h> so as to make
+   sure we have the definitions for, e.g., `ru_utime'.  */
 # include <sys/resource.h>
 #endif
 
@@ -58,6 +70,7 @@ static const char* ppl_source_version = PPL_VERSION;
 # define ATTRIBUTE_UNUSED
 #endif
 
+#ifdef HAVE_GETOPT_H
 static struct option long_options[] = {
   {"check",          no_argument,       0, 'c'},
   {"help",           no_argument,       0, 'h'},
@@ -70,6 +83,7 @@ static struct option long_options[] = {
   {"verbose",        no_argument,       0, 'v'},
   {0, 0, 0, 0}
 };
+#endif
 
 static const char* usage_string
 = "Usage: %s [OPTION]... [FILE]...\n\n"
@@ -83,8 +97,12 @@ static const char* usage_string
 "  -s, --simplex           use the simplex method\n"
 "  -t, --timings           prints timings to stderr\n"
 "  -v, --verbose           outputs also the constraints "
-"and objective function\n";
-
+"and objective function\n"
+#ifndef HAVE_GETOPT_H
+"\n"
+"NOTE: this version does not support long options.\n"
+#endif
+;
 
 #define OPTION_LETTERS "bcmMC:V:ho:stv"
 
@@ -133,14 +151,20 @@ get_ppl_banner() {
 
 static void
 process_options(int argc, char* argv[]) {
+#ifdef HAVE_GETOPT_H
   int option_index;
+#endif
   int c;
   char* endptr;
   long l;
 
   while (1) {
+#ifdef HAVE_GETOPT_H
     option_index = 0;
     c = getopt_long(argc, argv, OPTION_LETTERS, long_options, &option_index);
+#else
+    c = getopt(argc, argv, OPTION_LETTERS);
+#endif
     if (c == EOF)
       break;
 
@@ -312,7 +336,7 @@ limit_virtual_memory(unsigned bytes) {
 }
 #else
 void
-limit_virtual_memory(unsigned) {
+limit_virtual_memory(unsigned bytes ATTRIBUTE_UNUSED) {
 }
 #endif /* !HAVE_DECL_RLIMIT_AS */
 

@@ -63,12 +63,12 @@ ppl_gprolog$(EXEEXT): libppl_gprolog.la ppl_gprolog.pl
 # This is a kludge until we understand whether and if libtool
 # and gplc can interoperate.
 gp_clpq: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../tests/clpq.pl
-	gplc --c-compiler $(CC) -o $@ \
+	gplc --c-compiler $(CXX) -o $@ \
 		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
 		$(srcdir)/../tests/clpq.pl .libs/libppl_gprolog.a \
 		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp'
 gp_clpq2: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../tests/clpq2.pl
-	gplc --c-compiler $(CC) -o $@ \
+	gplc --c-compiler $(CXX) -o $@ \
 		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
 		$(srcdir)/../tests/clpq2.pl .libs/libppl_gprolog.a \
 		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp'
@@ -87,15 +87,15 @@ schedule.clpq
 
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
-CHECK_SCRIPT= $(srcdir)/../tests/check_script
+SCRIPT_CLPQ= $(srcdir)/../tests/script_clpq
 
 if USE_INT8
 
-CHECK_SCRIPT2 = $(srcdir)/../tests/check_script2_int8
+SCRIPT_CLPQ2 = $(srcdir)/../tests/script_clpq2_int8
 
 else !USE_INT8
 
-CHECK_SCRIPT2 = $(srcdir)/../tests/check_script2
+SCRIPT_CLPQ2 = $(srcdir)/../tests/script_clpq2
 
 endif !USE_INT8
 
@@ -103,44 +103,52 @@ COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
 if ASSERTIONS_ENABLED
 
-EXPECTED = $(srcdir)/../tests/expected_$(COEFFICIENT_MNEMONIC)_a
-EXPECTED2 = $(srcdir)/../tests/expected2_$(COEFFICIENT_MNEMONIC)_a
-EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_CLPQ = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_CLPQ2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)_a
 
 else !ASSERTIONS_ENABLED
 
-EXPECTED = $(srcdir)/../tests/expected_$(COEFFICIENT_MNEMONIC)
-EXPECTED2 = $(srcdir)/../tests/expected2_$(COEFFICIENT_MNEMONIC)
-EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)
+EXPECTED_CLPQ = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)
+EXPECTED_CLPQ2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)
+EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: gp_clpq ../tests/check_script $(EXPECTED) gp_clpq2 ../tests/check_script2 $(EXPECTED2) ../tests/pl_check.pl $(EXPECTED3)
+check-local: pl_check_test clpq_test clpq2_test
+
+pl_check_test: gnu_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
+	echo "['$(srcdir)/../tests/pl_check.pl', '$(srcdir)/gnu_pl_check.pl']." \
+		>script_pchk
+	echo "main." >>script_pchk
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
+		./ppl_gprolog <script_pchk
+	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
+
+clpq_test: gp_clpq ../tests/script_clpq $(EXPECTED_CLPQ) 
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
-		./gp_clpq <$(CHECK_SCRIPT) >obtained
-	diff -u --ignore-all-space $(EXPECTED) obtained
+		./gp_clpq <$(SCRIPT_CLPQ) >obtained_clpq
+	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
+
+clpq2_test: gp_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
+	LANG=C; \
+	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
-		./gp_clpq2 <$(CHECK_SCRIPT2) >obtained2
-	diff -u --ignore-all-space $(EXPECTED2) obtained2
-	echo "['$(srcdir)/../tests/pl_check.pl', '$(srcdir)/gnu_pl_check.pl']." \
-		>check_script3
-	echo "main." >>check_script3
-	$(LIBTOOL) --mode=execute \
-		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
-		./ppl_gprolog <check_script3
-	diff -u --ignore-all-space $(EXPECTED3) obtained3
+		./gp_clpq2 <$(SCRIPT_CLPQ2) >obtained_clpq2
+	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
 MOSTLYCLEANFILES = \
 gp_clpq gp_clpq2 \
-obtained obtained2 obtained3 \
+obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS) \
-check_script3
+script_pchk
 
 endif HAVE_GNU_PROLOG

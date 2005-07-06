@@ -1284,18 +1284,12 @@ private:
   //! The system of generators.
   Generator_System gen_sys;
 
-#if 1
-  // Please, do not move the following include directive:
-  // `Ph_Status.idefs.hh' must be included exactly at this point.
-  // And please do not remove the space separating `#' from `include':
-  // this ensures that the directive will not be moved during the
-  // procedure that automatically creates the library's include file
-  // (see `Makefile.am' in the `src' directory).
-# include "Grid_Status.idefs.hh"
+#define PPL_IN_Grid_CLASS
+#include "Grid_Status.idefs.hh"
+#undef PPL_IN_Grid_CLASS
 
   //! The status flags to keep track of the grid's internal state.
   Status status;
-#endif
 
   //! The number of dimensions of the enclosing vector space.
   dimension_type space_dim;

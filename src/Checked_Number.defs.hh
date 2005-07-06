@@ -24,26 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Checked_Number_defs_hh
 #define PPL_Checked_Number_defs_hh 1
 
-#include "float.types.hh"
 #include "Checked_Number.types.hh"
 #include "checked.defs.hh"
-#include <gmpxx.h>
-#include <iostream>
 
 namespace Parma_Polyhedra_Library {
-
-struct Minus_Infinity {
-};
-
-struct Plus_Infinity {
-};
-
-struct Not_A_Number {
-};
-
-extern Minus_Infinity MINUS_INFINITY;
-extern Plus_Infinity PLUS_INFINITY;
-extern Not_A_Number NOT_A_NUMBER;
 
 struct Checked_Number_Default_Policy {
   static const int check_overflow = 1;
@@ -53,8 +37,8 @@ struct Checked_Number_Default_Policy {
   static const int store_nan = 0;
   static const int store_infinity = 0;
   static const int convertible = 1;
-  static const int fpu_classify = 0;
   static const int fpu_check_inexact = 0;
+  static const Rounding_Dir ROUND_DEFAULT = ROUND_IGNORE;
   static void handle_result(Result r);
 };
 
@@ -65,8 +49,8 @@ struct Extended_Number_Policy {
   static const int use_corrent_rounding = 1;
   static const int store_nan = 1;
   static const int store_infinity = 1;
-  static const int fpu_classify = 0;
   static const int fpu_check_inexact = 0;
+  static const Rounding_Dir ROUND_DEFAULT = ROUND_UP;
   static void handle_result(Result r);
 };
 
@@ -103,13 +87,13 @@ public:
   //! Direct initialization from a signed char value.
   Checked_Number(const signed char y);
   //! Direct initialization from a signed short value.
-  Checked_Number(const short y);
+  Checked_Number(const signed short y);
   //! Direct initialization from a signed int value.
-  Checked_Number(const int y);
+  Checked_Number(const signed int y);
   //! Direct initialization from a signed long value.
-  Checked_Number(const long y);
+  Checked_Number(const signed long y);
   //! Direct initialization from a signed long long value.
-  Checked_Number(const long long y);
+  Checked_Number(const signed long long y);
 
   //! Direct initialization from an unsigned char value.
   Checked_Number(const unsigned char y);
@@ -144,10 +128,6 @@ public:
 
   //@} // Constructors
 
-  bool is_nan() const;
-  bool is_minf() const;
-  bool is_pinf() const;
-
   //! \name Accessors and Conversions
   //@{
 
@@ -164,48 +144,6 @@ public:
 
   bool OK() const;
   Result classify(bool nan = true, bool inf = true, bool sign = true) const;
-  Result assign(const Minus_Infinity&, Rounding_Dir dir = ROUND_CURRENT);
-  Result assign(const Plus_Infinity&, Rounding_Dir dir = ROUND_CURRENT);
-  Result assign(const Not_A_Number&, Rounding_Dir dir = ROUND_CURRENT);
-
-#define FUNC1(name) \
-  template <typename From> \
-  Result name(const From& x, Rounding_Dir dir = ROUND_CURRENT); \
-  template <typename From, typename From_Policy> \
-  Result name(const Checked_Number<From, From_Policy>& x, Rounding_Dir dir = ROUND_CURRENT);
-
-  FUNC1(assign)
-  FUNC1(assign_neg)
-  FUNC1(assign_abs)
-  FUNC1(assign_sqrt)
-
-#undef FUNC1
-
-#define FUNC2(name) \
-  template <typename From1, typename From2> \
-  Result name(const From1& x, const From2& y, Rounding_Dir dir = ROUND_CURRENT); \
-  template <typename From1, \
-	    typename From2, typename Policy2> \
-  Result name(const From1& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir = ROUND_CURRENT); \
-  template <typename From1, typename Policy1, \
-	    typename From2> \
-  Result name(const Checked_Number<From1, Policy1>& x, const From2& y, Rounding_Dir dir = ROUND_CURRENT); \
-  template <typename From1, typename Policy1, \
-	    typename From2, typename Policy2> \
-  Result name(const Checked_Number<From1, Policy1>& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir = ROUND_CURRENT);
-
-  FUNC2(assign_add)
-  FUNC2(assign_sub)
-  FUNC2(assign_mul)
-  FUNC2(assign_div)
-  FUNC2(assign_rem)
-  FUNC2(assign_gcd)
-  FUNC2(assign_lcm)
-  FUNC2(assign_add_mul)
-  FUNC2(assign_sub_mul)
-
-#undef FUNC2
-
 
   //! \name Assignment Operators
   //@{
@@ -273,14 +211,84 @@ public:
 
   //@} // Increment and Decrement Operators
 
-  //! Swaps \p *this with \p y.
-  void swap(Checked_Number& y);
-
 private:
   //! The underlying native integer value.
   T v;
 
 };
+
+template <typename To, typename To_Policy>
+Result assign(Checked_Number<To, To_Policy>& to, const Minus_Infinity& x, Rounding_Dir dir = ROUND_IGNORE);
+template <typename To, typename To_Policy>
+Result assign(Checked_Number<To, To_Policy>& to, const Plus_Infinity& x, Rounding_Dir dir = ROUND_IGNORE);
+template <typename To, typename To_Policy>
+Result assign(Checked_Number<To, To_Policy>& to, const Not_A_Number& x, Rounding_Dir dir = ROUND_IGNORE);
+template <typename To, typename To_Policy>
+Result assign(Checked_Number<To, To_Policy>& to, const char* x, Rounding_Dir dir);
+template <typename To, typename To_Policy>
+Result assign(Checked_Number<To, To_Policy>& to, char* x, Rounding_Dir dir);
+
+#define FUNC1(name) \
+template <typename To, typename To_Policy, \
+          typename From> \
+Result name(Checked_Number<To, To_Policy>& to, const From& x, Rounding_Dir dir); \
+template <typename To, typename To_Policy, \
+          typename From, typename From_Policy> \
+Result name(Checked_Number<To, To_Policy>& to, const Checked_Number<From, From_Policy>& x, Rounding_Dir dir);
+
+FUNC1(assign)
+FUNC1(assign_neg)
+FUNC1(assign_abs)
+FUNC1(assign_sqrt)
+
+#undef FUNC1
+
+#define FUNC1(name) \
+template <typename To, typename To_Policy, \
+          typename From> \
+Result name(Checked_Number<To, To_Policy>& to, const From& x, int exp, Rounding_Dir dir); \
+template <typename To, typename To_Policy, \
+          typename From, typename From_Policy> \
+Result name(Checked_Number<To, To_Policy>& to, const Checked_Number<From, From_Policy>& x, int exp, Rounding_Dir dir);
+
+FUNC1(assign_mul2exp)
+FUNC1(assign_div2exp)
+
+#undef FUNC1
+
+#define FUNC2(name) \
+template <typename To, typename To_Policy, \
+          typename From1, typename From2> \
+Result name(Checked_Number<To, To_Policy>& to, const From1& x, const From2& y, Rounding_Dir dir); \
+template <typename To, typename To_Policy, \
+          typename From1, \
+          typename From2, typename Policy2> \
+Result name(Checked_Number<To, To_Policy>& to, const From1& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir); \
+template <typename To, typename To_Policy, \
+          typename From1, typename Policy1, \
+          typename From2> \
+Result name(Checked_Number<To, To_Policy>& to, const Checked_Number<From1, Policy1>& x, const From2& y, Rounding_Dir dir); \
+template <typename To, typename To_Policy, \
+          typename From1, typename Policy1, \
+          typename From2, typename Policy2> \
+Result name(Checked_Number<To, To_Policy>& to, const Checked_Number<From1, Policy1>& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir);
+
+FUNC2(assign_add)
+FUNC2(assign_sub)
+FUNC2(assign_mul)
+FUNC2(assign_div)
+FUNC2(assign_rem)
+FUNC2(assign_gcd)
+FUNC2(assign_lcm)
+FUNC2(assign_add_mul)
+FUNC2(assign_sub_mul)
+
+#undef FUNC2
+
+//! Swaps \p *this with \p y.
+template <typename T, typename Policy>
+void swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y);
+
 
 template <typename T, typename Policy>
 class Float<Checked_Number<T, Policy> > {
@@ -322,14 +330,6 @@ external_memory_in_bytes(const Checked_Number<T, Policy>& x);
 
 //@} // Memory Size Inspection Functions
 
-template <typename T1, typename Policy1, typename T2, typename Policy2>
-struct Checked_Pair;
-
-template <typename T, typename Policy>
-struct Checked_Pair<T, Policy, T, Policy> {
-  typedef Checked_Number<T, Policy> Checked_Result;
-};
-
 //! \name Arithmetic Operators
 //@{
 
@@ -344,46 +344,6 @@ operator+(const Checked_Number<T, Policy>& x);
 template <typename T, typename Policy>
 Checked_Number<T, Policy>
 operator-(const Checked_Number<T, Policy>& x);
-
-//! Addition operator.
-/*! \relates Checked_Number */
-template <typename T1, typename Policy1,
-	  typename T2, typename Policy2>
-typename Checked_Pair<T1, Policy1, T2, Policy2>::Checked_Result
-operator+(const Checked_Number<T1, Policy1>& x,
-	  const Checked_Number<T2, Policy2>& y);
-
-//! Subtraction operator.
-/*! \relates Checked_Number */
-template <typename T1, typename Policy1,
-	  typename T2, typename Policy2>
-typename Checked_Pair<T1, Policy1, T2, Policy2>::Checked_Result
-operator-(const Checked_Number<T1, Policy1>& x,
-	  const Checked_Number<T2, Policy2>& y);
-
-//! Multiplication operator.
-/*! \relates Checked_Number */
-template <typename T1, typename Policy1,
-	  typename T2, typename Policy2>
-typename Checked_Pair<T1, Policy1, T2, Policy2>::Checked_Result
-operator*(const Checked_Number<T1, Policy1>& x,
-	  const Checked_Number<T2, Policy2>& y);
-
-//! Integer division operator.
-/*! \relates Checked_Number */
-template <typename T1, typename Policy1,
-	  typename T2, typename Policy2>
-typename Checked_Pair<T1, Policy1, T2, Policy2>::Checked_Result
-operator/(const Checked_Number<T1, Policy1>& x,
-	  const Checked_Number<T2, Policy2>& y);
-
-//! Modulus operator.
-/*! \relates Checked_Number */
-template <typename T1, typename Policy1,
-	  typename T2, typename Policy2>
-typename Checked_Pair<T1, Policy1, T2, Policy2>::Checked_Result
-operator%(const Checked_Number<T1, Policy1>& x,
-	  const Checked_Number<T2, Policy2>& y);
 
 //! Assigns to \p x its negation.
 /*! \relates Checked_Number */

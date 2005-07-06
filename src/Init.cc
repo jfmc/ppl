@@ -26,10 +26,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Init.defs.hh"
 #include "globals.defs.hh"
 #include "Variable.defs.hh"
+#include "Rounding.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
 unsigned int PPL::Init::count = 0;
+int PPL::Init::old_rounding_direction = -1;
 
 extern "C" void
 set_GMP_memory_allocation_functions(void)
@@ -50,12 +52,14 @@ PPL::Init::Init() {
     set_GMP_memory_allocation_functions();
     // ... and the default output function for Variable objects is set.
     Variable::set_output_function(Variable::default_output_function);
+    old_rounding_direction = fpu_get_rounding_direction();
+    fpu_set_rounding_direction(ROUND_DIRECT);
   }
 }
 
 PPL::Init::~Init() {
   // Only when the last Init object is destroyed...
-  if (--count == 0)
-    // ... well, there is nothing to do, at the moment.
-    ;
+  if (--count == 0) {
+    fpu_set_rounding_direction(old_rounding_direction);
+  }
 }

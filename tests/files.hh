@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_files_hh 1
 
 #include <iostream>
+#include <fstream>
 
 void
 open(std::fstream& s, const char* path, std::ios_base::openmode mode);

@@ -24,9 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_mpq_inlines_hh
 #define PPL_checked_mpq_inlines_hh 1
 
-#include "checked_mpz.inlines.hh"
-#include <gmpxx.h>
-
 namespace Parma_Polyhedra_Library {
 
 namespace Checked {
@@ -82,46 +79,28 @@ SPECIALIZE_IS_PINF(mpq, mpq_class)
 template <typename Policy>
 inline Result
 set_special_mpq(mpq_class& v, Result r) {
-  int num;
-  Result t = classify(r);
-  if (Policy::store_nan && t == VC_NAN)
-    num = 0;
-  else if (Policy::store_infinity) {
-    switch (t) {
+  Result c = classify(r);
+  if (Policy::store_nan && c == VC_NAN) {
+    v.get_num() = 0;
+    v.get_den() = 0;
+  } else if (Policy::store_infinity) {
+    switch (c) {
     case VC_MINUS_INFINITY:
-      num = -1;
+      v.get_num() = -1;
+      v.get_den() = 0;
       break;
     case VC_PLUS_INFINITY:
-      num = 1;
+      v.get_num() = 1;
+      v.get_den() = 0;
       break;
     default:
-      return r;
+      break;
     }
   }
-  else
-    return r;
-  v.get_num() = num;
-  v.get_den() = 0;
   return r;
 }
 
 SPECIALIZE_SET_SPECIAL(mpq, mpq_class)
-
-template <typename Policy>
-inline Result
-pred_mpq(mpq_class&) {
-  throw 0;
-}
-
-SPECIALIZE_PRED(mpq, mpq_class)
-
-template <typename Policy>
-inline Result
-succ_mpq(mpq_class&) {
-  throw 0;
-}
-
-SPECIALIZE_SUCC(mpq, mpq_class)
 
 template <typename Policy>
 inline Result
@@ -135,8 +114,8 @@ SPECIALIZE_ASSIGN(mpq_mpz, mpq_class, mpz_class)
 template <typename Policy, typename From>
 inline Result
 assign_mpq_signed_int(mpq_class& to, const From from, Rounding_Dir) {
-  if (sizeof(From) <= sizeof(long))
-    to = static_cast<long>(from);
+  if (sizeof(From) <= sizeof(signed long))
+    to = static_cast<signed long>(from);
   else {
     mpz_ptr m = to.get_num().get_mpz_t();
     if (from >= 0)
@@ -152,10 +131,10 @@ assign_mpq_signed_int(mpq_class& to, const From from, Rounding_Dir) {
 }
 
 SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed char)
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, short)
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, int)
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, long)
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, long long)
+SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed short)
+SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed int)
+SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed long)
+SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed long long)
 
 template <typename Policy, typename From>
 inline Result
@@ -201,7 +180,7 @@ add_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_ADD(mpq, mpq_class, mpq_class)
+SPECIALIZE_ADD(mpq, mpq_class, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
@@ -210,7 +189,7 @@ sub_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_SUB(mpq, mpq_class, mpq_class)
+SPECIALIZE_SUB(mpq, mpq_class, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
@@ -219,7 +198,7 @@ mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_MUL(mpq, mpq_class, mpq_class)
+SPECIALIZE_MUL(mpq, mpq_class, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
@@ -230,7 +209,7 @@ div_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_DIV(mpq, mpq_class, mpq_class)
+SPECIALIZE_DIV(mpq, mpq_class, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
@@ -242,7 +221,33 @@ rem_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_REM(mpq, mpq_class, mpq_class)
+SPECIALIZE_REM(mpq, mpq_class, mpq_class, mpq_class)
+
+template <typename Policy>
+inline Result
+mul2exp_mpq(mpq_class& to, const mpq_class& x, int exp, Rounding_Dir dir) {
+  if (exp < 0)
+    return div2exp<Policy>(to, x, -exp, dir);
+  mpz_mul_2exp(to.get_num().get_mpz_t(), x.get_num().get_mpz_t(), exp);
+  to.get_den() = x.get_den();
+  to.canonicalize();
+  return V_EQ;
+}
+
+SPECIALIZE_MUL2EXP(mpq, mpq_class, mpq_class)
+
+template <typename Policy>
+inline Result
+div2exp_mpq(mpq_class& to, const mpq_class& x, int exp, Rounding_Dir dir) {
+  if (exp < 0)
+    return mul2exp<Policy>(to, x, -exp, dir);
+  to.get_num() = x.get_num();
+  mpz_mul_2exp(to.get_den().get_mpz_t(), x.get_den().get_mpz_t(), exp);
+  to.canonicalize();
+  return V_EQ;
+}
+
+SPECIALIZE_DIV2EXP(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
@@ -255,23 +260,24 @@ SPECIALIZE_ABS(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-from_c_string_mpq(mpq_class& to, const char* from, Rounding_Dir) {
-  if (mpq_set_str(to.get_mpq_t(), from, 10) != 0)
-    return set_special<Policy>(to, V_CVT_STR_UNK);
-  to.canonicalize();
-  return V_EQ;
+input_mpq(mpq_class& to, std::istream& is, Rounding_Dir dir) {
+  Result r = input_mpq(to, is);
+  if (r == VC_MINUS_INFINITY)
+    return assign<Policy>(to, MINUS_INFINITY, dir);
+  if (r == VC_PLUS_INFINITY)
+    return assign<Policy>(to, PLUS_INFINITY, dir);
+  return set_special<Policy>(to, r);
 }
 
 template <typename Policy>
 inline Result
-to_c_string_mpq(char* str, size_t size, const mpq_class& from, const Numeric_Format&, Rounding_Dir) {
-  std::string s = from.get_str();
-  strncpy(str, s.c_str(), size);
+output_mpq(std::ostream& os, const mpq_class& from, const Numeric_Format&, Rounding_Dir) {
+  os << from;
   return V_EQ;
 }
 
-SPECIALIZE_FROM_C_STRING(mpq, mpq_class)
-SPECIALIZE_TO_C_STRING(mpq, mpq_class)
+SPECIALIZE_INPUT(mpq, mpq_class)
+SPECIALIZE_OUTPUT(mpq, mpq_class)
 
 } // namespace Checked
 

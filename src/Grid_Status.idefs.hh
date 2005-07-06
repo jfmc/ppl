@@ -1,4 +1,4 @@
-/* Polyhedron::Status class declaration.
+/* Grid::Status class declaration.
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,12 +21,12 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Grid_defs_hh
-#error "Do not include Ph_Status.idefs.hh directly; use Grid.defs.hh instead."
-#endif
-
 #ifndef PPL_Grid_Status_defs_hh
 #define PPL_Grid_Status_defs_hh 1
+
+#ifndef PPL_IN_Grid_CLASS
+#error "Do not include Grid_Status.idefs.hh directly; use Grid.defs.hh instead."
+#endif
 
 //! A conjunctive assertion about a FIX polyhedron.
 /*!

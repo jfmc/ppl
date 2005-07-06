@@ -178,6 +178,9 @@ class Throwable {
 public:
   //! Throws the user defined exception object.
   virtual void throw_me() const = 0;
+
+  //! Virtual destructor.
+  virtual ~Throwable();
 };
 
 //! This pointer, which is initialized to zero, is repeatedly checked

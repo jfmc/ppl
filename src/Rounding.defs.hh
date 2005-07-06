@@ -34,34 +34,11 @@ enum Rounding_Dir {
   ROUND_DOWN = FPU_DOWNWARD,
   ROUND_UP = FPU_UPWARD,
   ROUND_IGNORE = -1,
-  ROUND_CURRENT = -2
+  ROUND_DIRECT = ROUND_UP,
+  ROUND_INVERSE = ROUND_DOWN
 };
-
-class Rounding_State {
-public:
-  Rounding_Dir dir;
-  int fpu_dir;
-};
-
-Rounding_Dir rounding_direction(Rounding_Dir dir);
-
-template <typename To>
-void rounding_install_internal(Rounding_Dir dir);
-template <typename To>
-void rounding_save_internal(Rounding_Dir dir, Rounding_State& old);
-template <typename To>
-void rounding_restore_internal(const Rounding_State& old, Rounding_Dir dir);
-
-template <typename To>
-void rounding_install(Rounding_Dir dir);
-template <typename To>
-void rounding_save(Rounding_Dir dir, Rounding_State& old);
-template <typename To>
-void rounding_restore(const Rounding_State& old, Rounding_Dir dir);
 
 } // namespace Parma_Polyhedra_Library
-
-#include "Rounding.inlines.hh"
 
 #endif // !defined(PPL_Float_defs_hh)
 

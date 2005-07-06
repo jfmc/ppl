@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 main :-
     current_output(Old_Stream),
-    open(obtained3, write, Stream),
+    open(obtained_pchk, write, Stream),
     set_output(Stream),
     (check_all ->
 	write('OK')

@@ -34,14 +34,12 @@ int
 main() TRY {
   Variable x(0);
   Variable y(1);
-  Linear_Expression expr(2*x);
 
   TBD_Shape bd1(3);
 
   bd1.add_constraint(x <= 2);
   bd1.add_constraint(x - y <= 3);
   bd1.add_constraint(y <= 2);
-
 
 #if NOISY
   print_constraints(bd1, "*** bd1 ***");
@@ -51,7 +49,7 @@ main() TRY {
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(y - x == 0);
 
-  bd1.affine_image(y, expr, 2);
+  bd1.affine_image(y, 2*x, 2);
 
 #if NOISY
   print_constraints(bd1, "*** bd1.affine_image(y, 2*x, 2) ***");

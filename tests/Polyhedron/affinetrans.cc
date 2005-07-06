@@ -42,19 +42,19 @@ main() TRY {
   gs.insert(point(3*x + 0*y));
   gs.insert(point(3*x + 3*y));
   C_Polyhedron ph(gs);
-  Linear_Expression coeff = x + 4;
+  Linear_Expression expr = x + 4;
 
   C_Polyhedron p1(ph);
 #if NOISY
   print_generators(p1, "*** p1 ***");
 #endif
-  p1.affine_image(x, coeff);
+  p1.affine_image(x, expr);
 
   C_Polyhedron p2(ph);
 #if NOISY
   print_generators(p2, "*** p2 ***");
 #endif
-  p2.affine_preimage(x, coeff);
+  p2.affine_preimage(x, expr);
 
   Generator_System gs1_known_result;
   gs1_known_result.insert(point(4*x + 0*y));

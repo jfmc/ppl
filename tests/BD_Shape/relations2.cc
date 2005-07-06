@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 static void test1() {
-  // The zero-dim universe bdiff.
+  // The zero-dim universe BDS.
   TBD_Shape bd(0);
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) >= 0);
 
@@ -48,7 +48,7 @@ static void test1() {
 }
 
 static void test2() {
-  // The zero-dim universe bdiff.
+  // The zero-dim universe BDS.
   TBD_Shape bd(0);
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) >= 1);
 
@@ -64,7 +64,7 @@ static void test2() {
 }
 
 static void test3() {
-  // The zero-dim universe bdiff.
+  // The zero-dim universe BDS.
   TBD_Shape bd;
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(1) >= 0);
 
@@ -81,7 +81,7 @@ static void test3() {
 
 static void test4() {
   Variable x(0);
-  Variable y(1);
+  // Variable y(1);
 
   TBD_Shape bd(2);
   bd.add_constraint(x == 1);

@@ -38,6 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.defs.hh"
 #include "BHRZ03_Certificate.types.hh"
 #include "H79_Certificate.types.hh"
+#include "BD_Shape.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -250,8 +251,8 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   ph.add_generator(point(0*x + 3*y));
   ph.add_generator(point(3*x + 0*y));
   ph.add_generator(point(3*x + 3*y));
-  Linear_Expression coeff = x + 4;
-  ph.affine_image(x, coeff);
+  Linear_Expression expr = x + 4;
+  ph.affine_image(x, expr);
     \endcode
     In this example the starting polyhedron is a square in
     \f$\Rset^2\f$, the considered variable is \f$x\f$ and the affine
@@ -259,7 +260,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     square translated to the right.  Moreover, if the affine
     transformation for the same variable \p x is \f$x+y\f$:
     \code
-  Linear_Expression coeff = x + y;
+  Linear_Expression expr = x + y;
     \endcode
     the resulting polyhedron is a parallelogram with the height equal to
     the side of the square and the oblique sides parallel to the line
@@ -267,7 +268,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     Instead, if we do not use an invertible transformation for the same
     variable; for example, the affine expression \f$y\f$:
     \code
-  Linear_Expression coeff = y;
+  Linear_Expression expr = y;
     \endcode
     the resulting polyhedron is a diagonal of the square.
 
@@ -280,8 +281,8 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   ph.add_constraint(x <= 3);
   ph.add_constraint(y >= 0);
   ph.add_constraint(y <= 3);
-  Linear_Expression coeff = x + 4;
-  ph.affine_preimage(x, coeff);
+  Linear_Expression expr = x + 4;
+  ph.affine_preimage(x, expr);
     \endcode
     In this example the starting polyhedron, \p var and the affine
     expression and the denominator are the same as in Example 6,
@@ -289,7 +290,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     but translated to the left.
     Moreover, if the affine transformation for \p x is \f$x+y\f$
     \code
-  Linear_Expression coeff = x + y;
+  Linear_Expression expr = x + y;
     \endcode
     the resulting polyhedron is a parallelogram with the height equal to
     the side of the square and the oblique sides parallel to the line
@@ -297,7 +298,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     Instead, if we do not use an invertible transformation for the same
     variable \p x, for example, the affine expression \f$y\f$:
     \code
-  Linear_Expression coeff = y;
+  Linear_Expression expr = y;
     \endcode
     the resulting polyhedron is a line that corresponds to the \f$y\f$ axis.
 
@@ -1283,6 +1284,37 @@ public:
 				const Linear_Expression& rhs);
 
   //! \brief
+  //! Assigns to \p *this the image of \p *this with respect to the
+  //! \ref generalized_image "generalized affine transfer function"
+  //! \f$\frac{\mathrm{lb_expr}}{\mathrm{denominator}}
+  //!      \leq \mathrm{var}'
+  //!      \leq \frac{\mathrm{ub_expr}}{\mathrm{denominator}}\f$.
+  /*!
+    \param var
+    The variable updated by the generalized affine transfer function;
+
+    \param lb_expr
+    The numerator of the lower bounding affine expression;
+
+    \param ub_expr
+    The numerator of the upper bounding affine expression;
+
+    \param denominator
+    The (common) denominator for the lower and upper bounding
+    affine expressions (optional argument with default value 1.)
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p lb_expr (resp., \p ub_expr)
+    and \p *this are dimension-incompatible or if \p var is not a space
+    dimension of \p *this.
+  */
+  void affine_bounds(Variable var,
+		     const Linear_Expression& lb_expr,
+		     const Linear_Expression& ub_expr,
+		     Coefficient_traits::const_reference denominator
+		     = Coefficient_one());
+
+  //! \brief
   //! Assigns to \p *this the result of computing the
   //! \ref time_elapse "time-elapse" between \p *this and \p y.
   /*!
@@ -1671,13 +1703,9 @@ private:
   //! The saturation matrix having generators on its columns.
   Saturation_Matrix sat_g;
 
-  // Please, do not move the following include directive:
-  // `Ph_Status.idefs.hh' must be included exactly at this point.
-  // And please do not remove the space separating `#' from `include':
-  // this ensures that the directive will not be moved during the
-  // procedure that automatically creates the library's include file
-  // (see `Makefile.am' in the `src' directory).
-# include "Ph_Status.idefs.hh"
+#define PPL_IN_Polyhedron_CLASS
+#include "Ph_Status.idefs.hh"
+#undef PPL_IN_Polyhedron_CLASS
 
   //! The status flags to keep track of the polyhedron's internal state.
   Status status;
@@ -2109,9 +2137,6 @@ private:
 			      Constraint_System& cs_selected,
 			      Constraint_System& cs_not_selected) const;
 
-  friend class Parma_Polyhedra_Library::BHRZ03_Certificate;
-  friend class Parma_Polyhedra_Library::H79_Certificate;
-
   bool BHRZ03_combining_constraints(const Polyhedron& y,
 				    const BHRZ03_Certificate& y_cert,
  				    const Polyhedron& H79,
@@ -2205,6 +2230,11 @@ private:
   static int simplify(Linear_System& mat, Saturation_Matrix& sat);
 
   //@} // Minimization-Related Static Member Functions
+
+  template <typename T> friend class Parma_Polyhedra_Library::BD_Shape;
+  friend class Parma_Polyhedra_Library::BHRZ03_Certificate;
+  friend class Parma_Polyhedra_Library::H79_Certificate;
+
 
   //! \name Exception Throwers
   //@{

@@ -129,11 +129,11 @@ PPL::Generator::is_equivalent_to(const Generator& y) const {
   if (x_space_dim != y.space_dimension())
     return false;
 
-  const Generator::Type x_type = x.type();
+  const Type x_type = x.type();
   if (x_type != y.type())
     return false;
 
-  if (x_type == Generator::POINT
+  if (x_type == POINT
       && !(x.is_necessarily_closed() && y.is_necessarily_closed())) {
     // Due to the presence of epsilon-coefficients, syntactically
     // different points may actually encode the same generator.
@@ -221,6 +221,28 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   if (needed_divisor)
     s << "/" << g[0];
   s << ")";
+  return s;
+}
+
+/*! \relates Parma_Polyhedra_Library::Generator::Type */
+std::ostream&
+PPL::IO_Operators::operator<<(std::ostream& s, const Generator::Type& t) {
+  const char* n = 0;
+  switch (t) {
+  case Generator::LINE:
+    n = "LINE";
+    break;
+  case Generator::RAY:
+    n = "RAY";
+    break;
+  case Generator::POINT:
+    n = "POINT";
+    break;
+  case Generator::CLOSURE_POINT:
+    n = "CLOSURE_POINT";
+    break;
+  }
+  s << n;
   return s;
 }
 

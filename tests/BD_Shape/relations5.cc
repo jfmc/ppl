@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 static void test1() {
-  // We verify that a generator is not subsumed by an empty bdiff.
+  // We verify that a generator is not subsumed by an empty BDS.
   Variable x(0);
 
   TBD_Shape bd(2, Polyhedron::EMPTY);
@@ -53,7 +53,7 @@ static void test1() {
 
 static void test2() {
   // We verify that a zero-dimensional generator is subsumed 
-  // by a zero-dimensional, universal bdiff.
+  // by a zero-dimensional, universal BDS.
   TBD_Shape bd;
 
   Generator g = point();
@@ -72,7 +72,7 @@ static void test2() {
 }
 
 static void test3() {
-  // The system of constraints of the bdiff contains only 
+  // The system of constraints of the BDS contains only 
   // an equality and the generator `g' is a point.
   Variable A(0);
 

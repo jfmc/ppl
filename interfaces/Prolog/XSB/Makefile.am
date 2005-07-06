@@ -117,7 +117,7 @@ EXPECTED3 = $(srcdir)/expected3_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/check_script $(EXPECTED) xsb_clpq2.P ../tests/clpq2.pl ../tests/check_script2 $(EXPECTED2) xsb_pl_check.P ../tests/pl_check.pl
+check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clpq2.P ../tests/clpq2.pl ../tests/script_clpq2 pl_check_test 
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	if [ $(abs_srcdir) != `pwd` ]; then \
@@ -130,7 +130,7 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/check_script $(EXPE
 		-dlopen ../../../Watchdog/libpwl.la \
 		-dlopen ppl_xsb.la \
 		xsb xsb_clpq \
-			<$(srcdir)/../tests/check_script >obtained
+			<$(srcdir)/../tests/script_clpq >obtained
 	rm -f clpq.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_clpq.P; \
@@ -146,12 +146,14 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/check_script $(EXPE
 		-dlopen ../../../Watchdog/libpwl.la \
 		-dlopen ppl_xsb.la \
 		xsb xsb_clpq2 \
-			<$(srcdir)/../tests/check_script2 >obtained2
+			<$(srcdir)/../tests/script_clpq2 >obtained2
 	rm -f clpq2.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_clpq2.P; \
 	fi
 	diff -u --ignore-all-space $(EXPECTED2) obtained2
+
+pl_check_test: ppl_xsb.la ppl_xsb.xwam xsb_pl_check.P ../tests/pl_check.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_pl_check.P . ; \
 	fi

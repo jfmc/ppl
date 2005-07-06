@@ -25,6 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_ehandlers_hh 1
 
 #include <stdexcept>
+#include <iostream>
+#include <cstdlib>
 
 void
 set_handlers();
@@ -33,14 +35,14 @@ set_handlers();
 
 #define CATCH \
 catch (const std::overflow_error& e) { \
-  cerr << "arithmetic overflow (" << e.what() << ")" \
-       << endl; \
+  std::cerr << "arithmetic overflow (" << e.what() << ")" \
+            << std::endl; \
   exit(1); \
 } \
 catch (const std::exception& e) { \
-  cerr << "std::exception caught: " \
-       << e.what() << " (type == " << typeid(e).name() << ")" \
-       << endl; \
+  std::cerr << "std::exception caught: " \
+            << e.what() << " (type == " << typeid(e).name() << ")" \
+            << std::endl; \
   exit(1); \
 }
 

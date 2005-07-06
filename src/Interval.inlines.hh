@@ -129,6 +129,11 @@ Boundary::bound() const {
   return value;
 }
 
+inline ERational&
+Boundary::bound() {
+  return value;
+}
+
 inline
 LBoundary::LBoundary(const ERational& v, Open_Closed f)
   : Boundary(v, f == CLOSED ? ZERO : POS) {
@@ -168,8 +173,18 @@ Interval::lower_bound() const {
   return lower;
 }
 
+inline LBoundary&
+Interval::lower_bound() {
+  return lower;
+}
+
 inline const UBoundary&
 Interval::upper_bound() const {
+  return upper;
+}
+
+inline UBoundary&
+Interval::upper_bound() {
   return upper;
 }
 

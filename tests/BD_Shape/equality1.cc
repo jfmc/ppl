@@ -32,10 +32,9 @@ using namespace Parma_Polyhedra_Library;
 
 static void
 test1() {
-
   Variable x(0);
   Variable y(1);
-  Variable z(2);
+  // Variable z(2);
 
   TBD_Shape bd1(3);
   TBD_Shape bd2(2);

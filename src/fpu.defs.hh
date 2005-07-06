@@ -26,7 +26,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+/* -1 unknown */
 int fpu_get_rounding_direction();
+void fpu_set_rounding_direction(int dir);
 int fpu_save_rounding_direction(int dir);
 int fpu_save_rounding_direction_reset_inexact(int dir);
 void fpu_restore_rounding_direction(int dir);
@@ -39,8 +41,6 @@ int fpu_check_inexact();
 #if i386
 #include "fpu-ia32.inlines.hh"
 #else
-#define USE_FPU_ROUNDING 1
-#define USE_FPU_INEXACT 1
 #include "fpu-c99.inlines.hh"
 #endif
 

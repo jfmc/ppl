@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ .*/
 #define PPL_DB_Row_defs_hh 1
 
 #include "DB_Row.types.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include "Ptr_Iterator.defs.hh"
 #include <cstddef>
 #include <vector>

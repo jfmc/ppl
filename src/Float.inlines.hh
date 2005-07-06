@@ -24,13 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Float_inlines_hh
 #define PPL_Float_inlines_hh 1
 
-#include "Float.defs.hh"
-
-// Please do not remove the space separating `#' from `include':
-// this ensures that the directive will not be moved during the
-// procedure that automatically creates the library's include file
-// (see `Makefile.am' in the `src' directory).
-# include <climits>
+#include <climits>
 
 namespace Parma_Polyhedra_Library {
 
@@ -91,7 +85,7 @@ inline void
 Float<float32_t>::build(bool negative, mpz_t mantissa, int exponent) {
   unsigned long m = mpz_get_ui(mantissa);
   u.word = negative ? SGN_MASK : 0;
-  u.word |= static_cast<uint32_t>(exponent + (1 << (EXPONENT_BITS - 1)) - 1) << MANTISSA_BITS;
+  u.word |= static_cast<uint32_t>(exponent + EXPONENT_BIAS) << MANTISSA_BITS;
   u.word |= m & ((1UL << MANTISSA_BITS) - 1);
 }
 
@@ -166,7 +160,7 @@ Float<float64_t>::inc() {
 inline void
 Float<float64_t>::build(bool negative, mpz_t mantissa, int exponent) {
   u.parts.msp = (negative ? MSP_SGN_MASK : 0);
-  u.parts.msp |= static_cast<uint32_t>(exponent + (1 << (EXPONENT_BITS - 1)) - 1) << (MANTISSA_BITS - 32);
+  u.parts.msp |= static_cast<uint32_t>(exponent + EXPONENT_BIAS) << (MANTISSA_BITS - 32);
 #if ULONG_MAX == 0xffffffffUL
   u.parts.lsp = mpz_get_ui(mantissa);
   mpz_tdiv_q_2exp(mantissa, mantissa, 32);
@@ -254,7 +248,7 @@ Float<float96_t>::inc() {
 inline void
 Float<float96_t>::build(bool negative, mpz_t mantissa, int exponent) {
   u.parts.msp = (negative ? MSP_SGN_MASK : 0);
-  u.parts.msp |= static_cast<uint32_t>(exponent + (1 << (EXPONENT_BITS - 1)) - 1);
+  u.parts.msp |= static_cast<uint32_t>(exponent + EXPONENT_BIAS);
 #if ULONG_MAX == 0xffffffffUL
   mpz_export(&u.parts.lsp, 0, 1, 8, 0, 0, mantissa);
 #else
@@ -338,7 +332,7 @@ inline void
 Float<float128_t>::build(bool negative, mpz_t mantissa, int exponent) {
   unsigned long m = mpz_get_ui(mantissa);
   u.parts.msp = (negative ? MSP_SGN_MASK : 0);
-  u.parts.msp |= static_cast(uint64_t)(exponent + (1 << (EXPONENT_BITS - 1)) - 1) << (MANTISSA_BITS - 64);
+  u.parts.msp |= static_cast(uint64_t)(exponent + EXPONENT_BIAS) << (MANTISSA_BITS - 64);
   u.parts.msp |= ;
 #if ULONG_MAX == 0xffffffffUL
   mpz_export(&u.parts.lsp, 0, 1, 8, 0, 0, mantissa)

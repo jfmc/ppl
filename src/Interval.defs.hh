@@ -218,6 +218,9 @@ public:
 
   //! Returns a const reference to the value of the bound.
   const ERational& bound() const;
+
+  //! Returns a reference to the value of the bound.
+  ERational& bound();
 };
 
 
@@ -287,8 +290,14 @@ public:
   //! Returns a const reference to the interval's lower bound.
   const LBoundary& lower_bound() const;
 
+  //! Returns a reference to the interval's lower bound.
+  LBoundary& lower_bound();
+
   //! Returns a const reference to the interval's upper bound.
   const UBoundary& upper_bound() const;
+
+  //! Returns a reference to the interval's upper bound.
+  UBoundary& upper_bound();
 
   //! \brief
   //! Raises the interval's lower bound, if \p new_lower is higher

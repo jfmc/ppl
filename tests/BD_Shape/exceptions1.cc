@@ -58,11 +58,7 @@ error1() {
 
 static void
 error2() {
-  Variable x(0);
-  Variable y(1);
-
   TBD_Shape bd1(7);
-
   TBD_Shape bd2(15);
 
   try {
@@ -426,7 +422,6 @@ static void
 error16() {
   Variable x(0);
   Variable y(1);
-  Variable z(2);
 
   TBD_Shape bd1(2);
   bd1.add_constraint(x - y >= 0);
@@ -461,7 +456,6 @@ error16() {
 static void
 error17() {
   Variable x(0);
-  Variable y(1);
 
   TBD_Shape bd1(1);
   bd1.add_constraint(x == 1);

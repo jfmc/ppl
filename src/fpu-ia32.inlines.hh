@@ -38,7 +38,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define FPU_TOWARDZERO   0xc00
 
 #define FPU_ROUNDING_MASK 0xc00
+#ifndef FPU_CONTROL_DEFAULT
 #define FPU_CONTROL_DEFAULT 0x37f
+#endif
 
 #ifndef HIJACK_FPU
 #define HIJACK_FPU 1
@@ -77,9 +79,9 @@ fpu_set_control(unsigned short cw) {
 
 inline int
 fpu_get_status() {
-  int temp;
-  __asm__ __volatile__ ("fnstsw %0" : "=a" (temp));
-  return temp;
+  int sw;
+  __asm__ __volatile__ ("fnstsw %0" : "=a" (sw));
+  return sw;
 }
 
 inline void
@@ -99,6 +101,16 @@ fpu_clear_exceptions() {
 inline int
 fpu_get_rounding_direction() {
   return fpu_get_control() & FPU_ROUNDING_MASK;
+}
+
+inline void
+fpu_set_rounding_direction(int dir) {
+#if HIJACK_FPU
+  fpu_set_control(FPU_CONTROL_DEFAULT | dir);
+#else
+  int old = fpu_get_control();
+  fpu_set_control((old & ~FPU_ROUNDING_MASK) | dir);
+#endif
 }
 
 inline int

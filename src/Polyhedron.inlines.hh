@@ -426,31 +426,45 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
 template <typename Box>
 void
 Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
-  bool polynomial = (complexity != ANY_COMPLEXITY);
-  if ((polynomial && !has_something_pending()
-       && constraints_are_minimized()) || !polynomial) {
+  bool reduce_complexity = (complexity != ANY_COMPLEXITY);
+  if (!reduce_complexity
+      || (!has_something_pending() && constraints_are_minimized())) {
     // If the constraint system is minimized, the test `is_universe()'
     // is not exponential.
     if (is_universe())
       return;
   }
-  if (polynomial) {
-    if (marked_empty() ||
-	(generators_are_up_to_date() && gen_sys.num_rows() == 0)) {
+  if (reduce_complexity) {
+    if (marked_empty()
+	|| (generators_are_up_to_date() && gen_sys.num_rows() == 0)) {
       box.set_empty();
       return;
     }
-    if (constraints_are_up_to_date()) {
+    else if (constraints_are_up_to_date()) {
+      // See if there is at least one inconsistent constraint in `con_sys'.
       for (Constraint_System::const_iterator i = con_sys.begin(),
 	     cs_end = con_sys.end(); i != cs_end; ++i)
-	if (i->is_inconsistent()){
+	if (i->is_inconsistent()) {
 	  box.set_empty();
 	  return;
 	}
+#if 0
+      // If `complexity' allows it, use simplex to determine whether or not
+      // the polyhedron is empty.
+      if (complexity == SIMPLEX_COMPLEXITY) {
+	Coefficient n;
+	Coefficient d;
+	if (con_sys.primal_simplex(Linear_Expression(0), true, n, d)
+	    == UNFEASIBLE_PROBLEM) {
+	  box.set_empty();
+	  return;
+	}
+      }
+#endif
     }
   }
   else
-    // The flag `polynomial' is `false'.
+    // The flag `reduce_complexity' is `false'.
     // Note that the test `is_empty()' is exponential in the worst case.
     if (is_empty()) {
       box.set_empty();
@@ -468,10 +482,13 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
   std::vector<UBoundary>
     upper_bound(space_dim, UBoundary(ERational('-'), UBoundary::OPEN));
 
-  if (!polynomial && has_something_pending())
+  if (!reduce_complexity && has_something_pending())
     process_pending();
 
-  if (polynomial &&
+  // TODO: use simplex to derive variable bounds, if the complexity
+  // is SIMPLEX_COMPLEXITY.
+
+  if (reduce_complexity &&
        (!generators_are_up_to_date() || has_pending_constraints())) {
     // Extract easy-to-find bounds from constraints.
     assert(constraints_are_up_to_date());
@@ -554,19 +571,18 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
   }
   else {
     // We are in the case where either the generators are up-to-date
-    // or polynomial execution time is not required.
+    // or reduced complexity is not required.
     // Get the generators for *this.
 
     // We have not to copy `gen_sys', because in this case
     // we only read the generators.
     const Generator_System& gs = gen_sys;
-    // Using the iterator, we read also the pending part of the matrix.
-    const Generator_System::const_iterator gs_begin = gs.begin();
-    const Generator_System::const_iterator gs_end = gs.end();
 
-    // We first need to identify those axes that are unbounded
-    // below and/or above.
-    for (Generator_System::const_iterator i = gs_begin; i != gs_end; ++i) {
+    // We first need to identify those axes that are unbounded below
+    // and/or above.
+    for (Generator_System::const_iterator i = gs.begin(),
+	   gs_end = gs.end(); i != gs_end; ++i) {
+      // Note: using an iterator, we read also the pending part of the matrix.
       const Generator& g = *i;
       Generator::Type g_type = g.type();
       switch (g_type) {

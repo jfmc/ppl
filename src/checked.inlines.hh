@@ -21,6 +21,7 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#include "compiler.hh"
 #include <cassert>
 
 namespace Parma_Polyhedra_Library {
@@ -103,9 +104,11 @@ gcd_generic(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   Result r;
   used(r);
   r = abs<Policy>(nx, x, dir);
-  assert(r == V_EQ);
+  if (r != V_EQ)
+    return r;
   r = abs<Policy>(ny, y, dir);
-  assert(r == V_EQ);
+  if (r != V_EQ)
+    return r;
   return gcd_common<Policy>(to, nx, ny, dir);
 }
 
@@ -119,9 +122,11 @@ lcm_generic(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   To nx, ny;
   Result r;
   r = abs<Policy>(nx, x, dir);
-  assert(r == V_EQ);
+  if (r != V_EQ)
+    return r;
   r = abs<Policy>(ny, y, dir);
-  assert(r == V_EQ);
+  if (r != V_EQ)
+    return r;
   To gcd;
   r = gcd_common<Policy>(gcd, nx, ny, dir);
   assert(r == V_EQ);
@@ -150,11 +155,18 @@ cmp_generic(const Type& x, const Type& y) {
   return V_EQ;
 }
 
-template <typename Policy>
-inline bool
-want_rounding(Rounding_Dir dir) {
-  return dir != ROUND_IGNORE &&
-    (Policy::use_corrent_rounding || dir != ROUND_CURRENT);
+template <typename Policy, typename Type>
+inline Result
+input_generic(Type& to, std::istream& is, Rounding_Dir dir) {
+  mpq_class q;
+  Result r = input_mpq(q, is);
+  if (r == VC_MINUS_INFINITY)
+    return assign<Policy>(to, MINUS_INFINITY, dir);
+  if (r == VC_PLUS_INFINITY)
+    return assign<Policy>(to, PLUS_INFINITY, dir);
+  if (r == V_EQ)
+    return assign<Policy>(to, q, dir);
+  return set_special<Policy>(to, r);
 }
 
 } // namespace Checked

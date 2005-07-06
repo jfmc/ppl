@@ -34,7 +34,6 @@ int
 main() TRY {
   Variable x(0);
   Variable y(1);
-  Linear_Expression expr(x);
 
   TBD_Shape bd1(3);
 
@@ -49,7 +48,7 @@ main() TRY {
 
   TBD_Shape known_result(bd1);
 
-  bd1.affine_image(x, expr);
+  bd1.affine_image(x, x);
 
 #if NOISY
   print_constraints(bd1, "*** bd1.affine_image(x, x) ***");

@@ -44,6 +44,7 @@ class Parma_Polyhedra_Library::Init {
 private:
   //! Count the number of objects created.
   static unsigned int count;
+  static int old_rounding_direction;
 
 public:
   //! Initializes the PPL.

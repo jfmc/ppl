@@ -10,6 +10,11 @@ NEWS for version 0.8  (released date to be decided)
 New and Changed Features
 ========================
 
+o  New output operators in namespace IO_Operators:
+     std::ostream& operator<<(std::ostream&, const Constraint::Type&)
+   and
+     std::ostream& operator<<(std::ostream&, const Generator::Type&).
+
 o  One of the possible values for the configuration option
    `--enable-coefficients' has been renamed from `gmp' to `mpz'.
 
@@ -28,6 +33,8 @@ o  Added to classes Constraint (resp., Generator) the method
 
 o  Added swap methods to classes Linear_Expression, Constraint, Generator,
    Constraint_System and Generator_System.
+
+o  Portability has been improved.
 
 
 Bugfixes

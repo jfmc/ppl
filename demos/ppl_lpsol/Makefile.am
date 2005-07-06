@@ -92,7 +92,7 @@ check-local: ppl_lpsol
 	do \
 	  file=`basename $$path`; \
 	  grep -q $$file tough_examples && continue; \
-	  for m in --min --max; \
+	  for m in -m -M; \
 	  do \
 	    echo "*** ppl_lpsol -v $$m -oobtained $$file" >>obtained; \
 	    ./ppl_lpsol -v $$m -oobtained $$path >/dev/null; \

@@ -26,6 +26,10 @@ http://www.cs.unipr.it/Software/ . */
 
 namespace Parma_Watchdog_Library {
 
+inline
+Handler::~Handler() {
+}
+
 template <typename Flag_Base, typename Flag>
 Handler_Flag<Flag_Base, Flag>::Handler_Flag(const Flag_Base* volatile& holder,
 					    Flag& flag)

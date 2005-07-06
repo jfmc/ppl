@@ -47,6 +47,7 @@ endif NO_UNDEFINED
 pkglib_LTLIBRARIES = ppl_yap.la
 ppl_yap_la_SOURCES = ppl_yap.cc
 ppl_yap_la_LIBADD = \
+-lYap \
 $(top_builddir)/src/libppl.la \
 $(top_builddir)/Watchdog/libpwl.la \
 @extra_libraries@
@@ -73,51 +74,59 @@ COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
 if ASSERTIONS_ENABLED
 
-EXPECTED = $(srcdir)/../tests/expected_$(COEFFICIENT_MNEMONIC)_a
-EXPECTED2 = $(srcdir)/../tests/expected2_$(COEFFICIENT_MNEMONIC)_a
-EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_CLPQ = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_CLPQ2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)_a
 
 else !ASSERTIONS_ENABLED
 
-EXPECTED = $(srcdir)/../tests/expected_$(COEFFICIENT_MNEMONIC)
-EXPECTED2 = $(srcdir)/../tests/expected2_$(COEFFICIENT_MNEMONIC)
-EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)
+EXPECTED_CLPQ = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)
+EXPECTED_CLPQ2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)
+EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: yap_clpq.pl ../tests/check_script $(EXPECTED) yap_clpq2.pl ../tests/check_script2 $(EXPECTED2) ppl_yap.pl ../tests/pl_check.pl $(EXPECTED3)
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
-	echo "main." >check_script
-	cat $(srcdir)/../tests/check_script >>check_script
-	$(LIBTOOL) --mode=execute \
-		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
-		-dlopen ppl_yap.la \
-		yap -l $(srcdir)/yap_clpq.pl \
-			<check_script >obtained
-	diff -u --ignore-all-space $(EXPECTED) obtained
-	echo "main." >check_script2
-	cat $(srcdir)/../tests/check_script2 >>check_script2
-	$(LIBTOOL) --mode=execute \
-		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
-		-dlopen ppl_yap.la \
-		yap -l $(srcdir)/yap_clpq2.pl \
-			<check_script2 >obtained2
-	diff -u --ignore-all-space $(EXPECTED2) obtained2
-	echo "main." >check_script3
+check-local: pl_check_test clpq_test clpq2_test
+
+pl_check_test: yap_pl_check.pl ppl_yap.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
+	echo "main." >script_pchk
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		-dlopen ppl_yap.la \
 		yap -l $(srcdir)/yap_pl_check.pl \
-			<check_script3 >obtained3
-	diff -u --ignore-all-space $(EXPECTED3) obtained3
+			<script_pchk >obtained_pchk
+	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
+
+clpq_test: yap_clpq.pl ppl_yap.pl ../tests/clpq.pl ../tests/script_clpq $(EXPECTED_CLPQ)
+	LANG=C; \
+	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+	echo "main." >script_clpq
+	cat $(srcdir)/../tests/script_clpq >>script_clpq
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ppl_yap.la \
+		yap -l $(srcdir)/yap_clpq.pl \
+			<script_clpq >obtained_clpq
+	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
+
+clpq2_test: yap_clpq2.pl ppl_yap.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EXPECTED_CLPQ2)
+	LANG=C; \
+	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+	echo "main." >script_clpq2
+	cat $(srcdir)/../tests/script_clpq2 >>script_clpq2
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ppl_yap.la \
+		yap -l $(srcdir)/yap_clpq2.pl \
+			<script_clpq2 >obtained_clpq2
+	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
 MOSTLYCLEANFILES = \
-check_script check_script2 check_script3 \
-obtained obtained2 obtained3 \
+script_clpq script_clpq2 script_pchk \
+obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS)
 
 endif HAVE_YAP_PROLOG

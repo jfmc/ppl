@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 
 #include "BHRZ03_Certificate.defs.hh"
+#include "Bounding_Box.defs.hh"
 #include <cassert>
 #include <iostream>
 #include <stdexcept>
@@ -274,6 +275,14 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
 						  const Constraint_System& cs,
 						  unsigned* tp) {
   Polyhedron& x = *this;
+
+  dimension_type cs_num_rows = cs.num_rows();
+  // If `cs' is empty, we fall back to ordinary, non-limited widening.
+  if (cs_num_rows == 0) {
+    x.H79_widening_assign(y, tp);
+    return;
+  }
+
   // Topology compatibility check.
   if (x.is_necessarily_closed()) {
     if (!y.is_necessarily_closed())
@@ -335,8 +344,7 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
   const Generator_System& x_gen_sys = x.gen_sys;
   // Iterate upwards here so as to keep the relative ordering of constraints.
   // Not really an issue: just aesthetics.
-  for (dimension_type i = 0,
-	 cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
+  for (dimension_type i = 0; i < cs_num_rows; ++i) {
     const Constraint& c = cs[i];
     if (x_gen_sys.satisfied_by_all_generators(c))
       new_cs.insert(c);
@@ -346,56 +354,21 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
   assert(OK());
 }
 
-namespace {
-
-using namespace PPL;
-
-class BW_Box {
-private:
-  Constraint_System& con_sys;
-
-public:
-
-  BW_Box(Constraint_System& cs)
-    : con_sys(cs) {
-  }
-
-  void set_empty() {
-    throw std::runtime_error("PPL internal error");
-  }
-
-  void raise_lower_bound(const dimension_type k, const bool closed,
-			 Coefficient_traits::const_reference n,
-			 Coefficient_traits::const_reference d) {
-    if (closed)
-      con_sys.insert(d*Variable(k) >= n);
-    else
-      con_sys.insert(d*Variable(k) > n);
-  }
-
-  void lower_upper_bound(const dimension_type k, const bool closed,
-			 Coefficient_traits::const_reference n,
-			 Coefficient_traits::const_reference d) {
-    if (closed)
-      con_sys.insert(d*Variable(k) <= n);
-    else
-      con_sys.insert(d*Variable(k) < n);
-  }
-};
-
-} // namespace
-
 void
 PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
 						  const Constraint_System& cs,
 						  unsigned* tp) {
-  Constraint_System bounding_cs;
-  BW_Box box(bounding_cs);
-  shrink_bounding_box(box, ANY_COMPLEXITY);
+  dimension_type space_dim = space_dimension();
+  Bounding_Box x_box(space_dim);
+  Bounding_Box y_box(space_dim);
+  shrink_bounding_box(x_box, ANY_COMPLEXITY);
+  y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
+  x_box.CC76_widening_assign(y_box);
   limited_H79_extrapolation_assign(y, cs, tp);
-  add_recycled_constraints(bounding_cs);
+  // FIXME: see if come copies can be avoided.
+  // add_recycled_constraints(x_box.constraints());
+  add_constraints(x_box.constraints());
 }
-
 
 bool
 PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
@@ -788,10 +761,19 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 }
 
 void
-PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
-						     const Constraint_System& cs,
-						     unsigned* tp) {
+PPL::Polyhedron::limited_BHRZ03_extrapolation_assign
+(const Polyhedron& y,
+ const Constraint_System& cs,
+ unsigned* tp) {
   Polyhedron& x = *this;
+
+  dimension_type cs_num_rows = cs.num_rows();
+  // If `cs' is empty, we fall back to ordinary, non-limited widening.
+  if (cs_num_rows == 0) {
+    x.BHRZ03_widening_assign(y, tp);
+    return;
+  }
+
   // Topology compatibility check.
   if (x.is_necessarily_closed()) {
     if (!y.is_necessarily_closed())
@@ -853,8 +835,7 @@ PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
   const Generator_System& x_gen_sys = x.gen_sys;
   // Iterate upwards here so as to keep the relative ordering of constraints.
   // Not really an issue: just aesthetics.
-  for (dimension_type i = 0,
-	 cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
+  for (dimension_type i = 0; i < cs_num_rows; ++i) {
     const Constraint& c = cs[i];
     if (x_gen_sys.satisfied_by_all_generators(c))
       new_cs.insert(c);
@@ -868,9 +849,14 @@ void
 PPL::Polyhedron::bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
 						     const Constraint_System& cs,
 						     unsigned* tp) {
-  Constraint_System bounding_cs;
-  BW_Box box(bounding_cs);
-  shrink_bounding_box(box, ANY_COMPLEXITY);
+  dimension_type space_dim = space_dimension();
+  Bounding_Box x_box(space_dim);
+  Bounding_Box y_box(space_dim);
+  shrink_bounding_box(x_box, ANY_COMPLEXITY);
+  y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
+  x_box.CC76_widening_assign(y_box);
   limited_BHRZ03_extrapolation_assign(y, cs, tp);
-  add_recycled_constraints(bounding_cs);
+  // FIXME: see if come copies can be avoided.
+  // add_recycled_constraints(x_box.constraints());
+  add_constraints(x_box.constraints());
 }

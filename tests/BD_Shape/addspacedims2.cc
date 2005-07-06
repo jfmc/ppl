@@ -34,7 +34,7 @@ using namespace Parma_Polyhedra_Library;
 int
 main() TRY {
   Variable x(0);
-  Variable y(1);
+  //Variable y(1);
   Variable z(2);
   Variable w(3);
 

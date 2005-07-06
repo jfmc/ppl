@@ -46,7 +46,6 @@ std::ostream& operator<<(std::ostream& s, const Generator& g);
 
 } // namespace Parma_Polyhedra_Library
 
-
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
@@ -465,6 +464,15 @@ bool operator==(const Generator& x, const Generator& y);
 //! Returns <CODE>true</CODE> if and only if \p x is not equivalent to \p y.
 /*! \relates Generator */
 bool operator!=(const Generator& x, const Generator& y);
+
+
+namespace IO_Operators {
+
+//! Output operator.
+/*! \relates Parma_Polyhedra_Library::Generator::Type */
+std::ostream& operator<<(std::ostream& s, const Generator::Type& t);
+
+} // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 

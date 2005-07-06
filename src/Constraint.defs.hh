@@ -34,14 +34,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-namespace IO_Operators {
-
-//! Output operator.
-/*! \relates Parma_Polyhedra_Library::Constraint */
-std::ostream& operator<<(std::ostream& s, const Constraint& c);
-
-} // namespace IO_Operators
-
 // Put them in the namespace here to declare them friend later.
 
 //! Returns <CODE>true</CODE> if and only if \p x is equivalent to \p y.
@@ -450,6 +442,22 @@ private:
   //! Sets the constraint type to <CODE>INEQUALITY</CODE>.
   void set_is_inequality();
 };
+
+namespace Parma_Polyhedra_Library {
+
+namespace IO_Operators {
+
+//! Output operator.
+/*! \relates Parma_Polyhedra_Library::Constraint */
+std::ostream& operator<<(std::ostream& s, const Constraint& c);
+
+//! Output operator.
+/*! \relates Parma_Polyhedra_Library::Constraint::Type */
+std::ostream& operator<<(std::ostream& s, const Constraint::Type& t);
+
+} // namespace IO_Operators
+
+} // namespace Parma_Polyhedra_Library
 
 #include "Constraint.inlines.hh"
 

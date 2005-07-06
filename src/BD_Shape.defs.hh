@@ -1,4 +1,4 @@
-/* BD_Shape class implementation (non inline functions).
+/* BD_Shape class declaration.
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -29,6 +29,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "DB_Row.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
+#include "Polyhedron.types.hh"
+#include "globals.defs.hh"
 #include <vector>
 #include <cstddef>
 #include <climits>
@@ -406,22 +408,40 @@ public:
                             system of bounded differences has to be built.
   */
   explicit BD_Shape(dimension_type num_dimensions = 0,
-		  Polyhedron::Degenerate_Kind kind = Polyhedron::UNIVERSE);
+		    Polyhedron::Degenerate_Kind kind = Polyhedron::UNIVERSE);
 
   //! Ordinary copy-constructor.
   BD_Shape(const BD_Shape& x);
 
-  //! Builds a system of bounded differences from a system of constraints.
+  //! Builds a BDS from the system of constraints \p cs.
   /*!
-    The system of bounded differences inherits the space dimension 
-    of system of constraints.
-    \param cs       The system of constraints defining the system 
-                    of bounded differences.
+    The system of bounded differences inherits the space dimension of \p cs.
+    \param cs       A system of constraints: constraints that are not in
+                    \ref bounded_difference_form "bounded differences form"
+                    are ignored (even though they may have contributed
+                    to the space dimension).
     \exception std::invalid_argument thrown if the system of constraints \p cs
                                      contains strict inequalities.
   */
   BD_Shape(const Constraint_System& cs);
- 
+
+  //! Builds a BDS from the system of generators \p gs.
+  /*!
+    Builds the smallest BDS containing the polyhedron defined by \p gs.
+    The built BDS inherits its space dimension from the space dimension
+    of \p gs.
+  */
+  BD_Shape(const Generator_System& gs);
+
+  //! Builds a BDS from the polyhedron \p ph.
+  /*!
+    Builds a BDS containing \p ph using algorithms whose complexity
+    does not exceed the one specified by \p complexity.  If
+    \p complexity is \p ANY_COMPLEXITY, then the BDS built is the
+    smallest one containing \p ph.
+  */
+  BD_Shape(const Polyhedron& ph, Complexity_Class complexity = ANY_COMPLEXITY);
+
   //! \brief
   //! The assignment operator
   //! (\p *this and \p y can be dimension-incompatible).
@@ -577,23 +597,12 @@ public:
                                      or if \p expr and \p *this
                                      are dimension-incompatible
                                      or if \p var is not a dimension
-                                     of \p *this or if \p expr is in
-                                     two or plus variables
-				     or if the value of coefficient 
-				     of the single variable in \p expr 
-				     is different from value of 
-				     \p denominator.
-
-    Note that, only the linear expressions of the form
-    \f[
-      ax_i + c
-    \f]  
-    with  \f$a \in \{0,\f$ denominator \f$ \}\f$ and \f$c\f$ belong to class T 
-    are accepted.
+                                     of \p *this.
   */
   void affine_image(Variable var,
 		    const Linear_Expression& expr,
-		    const Coefficient& denominator = Coefficient_one());
+		    Coefficient_traits::const_reference denominator
+		    = Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the \ref affine_transformation "affine preimage"
@@ -608,23 +617,12 @@ public:
                                      or if \p expr and \p *this
                                      are dimension-incompatible
                                      or if \p var is not a dimension
-                                     of \p *this or if \p expr is in 
-                                     two or plus variables
-				     or if the value of coefficient 
-				     of the single variable in \p expr 
-				     is different from value of 
-				     \p denominator.
-  
-    Note that, only the linear expressions of the form
-    \f[
-      ax_i + c
-    \f]  
-    with  \f$a \in \{0,\f$ denominator \f$ \}\f$ and \f$c\f$ belong to class T 
-    are accepted.
+                                     of \p *this.
   */
   void affine_preimage(Variable var,
 		       const Linear_Expression& expr,
-		       const Coefficient& denominator = Coefficient_one());
+		       Coefficient_traits::const_reference denominator
+		       = Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
@@ -645,25 +643,13 @@ public:
                                      are dimension-incompatible
                                      or if \p var is not a dimension
                                      of \p *this or if \p relsym is 
-                                     a strict relation symbol
-                                     or if \p expr is in two or plus
-				     variables or if the value of 
-                                     coefficient of the single variable 
-                                     in \p expr is different from value of 
-				     \p denominator.
-
-    Note that, only the linear expressions of the form
-    \f[
-      ax_i + c
-    \f]  
-    with  \f$a \in \{0,\f$ denominator \f$ \}\f$ and \f$c\f$ belong to class T 
-    are accepted.
+                                     a strict relation symbol.
   */
-
   void generalized_affine_image(Variable var,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& expr,
-				const Coefficient& denominator = Coefficient_one());
+				Coefficient_traits::const_reference denominator
+				= Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
@@ -678,14 +664,10 @@ public:
                                      dimension-incompatible with
                                      \p lhs or \p rhs
 				     or if \p relsym is a strict relation
-				     symbol
-                                     or if \p lhs and \p rhs are in two
-                                     or plus variables, or both 
-                                     are constants. 
-                    
+				     symbol.
   */
   void generalized_affine_image(const Linear_Expression& lhs,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& rhs);
 
   //! \brief
@@ -702,29 +684,37 @@ public:
   //! \ref CC76_extrapolation "CC76-extrapolation" between \p *this and \p y.
   //! The computation is not guarantee to be terminated.
   /*!
-    \param y                 A system of bounded differences that <EM>must</EM>
+    \param y                 A BDS that <EM>must</EM>
                              be contained in \p *this.
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are dimension-incompatible.
+
+    \note This operator is an <EM>extrapolation</EM> and not a
+          <EM>widening</EM>, since it not provide a convergence
+          guarantee for fixpoint iterations.  Use
+          CH78_widening_assign(const BD_Shape&) if such a guarantee is
+          required.
   */
   void CC76_extrapolation_assign(const BD_Shape& y);  
 
   //! \brief
-  //! Assigns to \p *this the result of computing the 
-  //! \ref CC76_extrapolation "CC76-extrapolation" between \p *this and \p y.
-  //! The computation is not guarantee to be terminated.
+  //! Assigns to \p *this the result of computing the
+  //! \ref CC76_widening "CC76-widening" between \p *this and \p y.
   /*!
-    \param y                 A system of bounded differences 
-                             that <EM>must</EM>
+    \param y                 A BDS that <EM>must</EM>
                              be contained in \p *this.
     \param first             An iterator that points to the first
-                             stop_point.
-    \param last		     An iterator that points to the last
-                             stop_point.	     
+                             stop-point.
+    \param last		     An iterator that points one past the last
+                             stop-point.	     
     \exception std::invalid_argument thrown if \p *this and \p y
-                             are dimension-incompatible.
+                                            are dimension-incompatible.
 
-    The stop points are fixed by the user.
+    \note This operator is an <EM>extrapolation</EM> and not a
+          <EM>widening</EM>, since it not provide a convergence
+          guarantee for fixpoint iterations.  Use
+          CH78_widening_assign(const BD_Shape&) if such a guarantee is
+          required.
   */
   template <typename Iterator>
   void CC76_extrapolation_assign(const BD_Shape& y,
@@ -829,8 +819,11 @@ public:
 
   //@} Space-Dimension Preserving Member Functions that May Modify [...]
 
-  //! Returns the system of constraints.
+  //! Returns a system of constraints corresponding to \p *this.
   Constraint_System constraints() const;
+
+  //! Returns a minimized system of constraints corresponding to \p *this.
+  Constraint_System minimized_constraints() const;
 
   //! \name Member Functions that May Modify the Dimension of the Vector Space
   //@{
@@ -1010,13 +1003,9 @@ private:
   //! The matrix that represents the system of bounded differences.
   DB_Matrix<T> dbm;
 
-  // Please, do not move the following include directive:
-  // `BD_Status.idefs.hh' must be included exactly at this point.
-  // And please do not remove the space separating `#' from `include':
-  // this ensures that the directive will not be moved during the
-  // procedure that automatically creates the library's include file
-  // (see `Makefile.am' in the `src' directory).
-# include "BDS_Status.idefs.hh"
+#define PPL_IN_BD_Shape_CLASS
+#include "BDS_Status.idefs.hh"
+#undef PPL_IN_BD_Shape_CLASS
 
   //! \brief  
   //! The status flags to keep track of the internal state,
@@ -1100,9 +1089,6 @@ private:
 
   void throw_generic(const char* method, const char* reason) const;
   //@} // Exception Throwers  
-
-  static T default_stop_points[];
-
  };
 
 
