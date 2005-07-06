@@ -1156,7 +1156,7 @@ CATCH_ALL
 int
 ppl_new_C_Polyhedron_from_dimension(ppl_Polyhedron_t* pph,
 				    ppl_dimension_type d) try {
-  *pph = to_nonconst(new C_Polyhedron(d, Polyhedron::UNIVERSE));
+  *pph = to_nonconst(new C_Polyhedron(d, UNIVERSE));
   return 0;
 }
 CATCH_ALL
@@ -1164,7 +1164,7 @@ CATCH_ALL
 int
 ppl_new_NNC_Polyhedron_from_dimension(ppl_Polyhedron_t* pph,
 				      ppl_dimension_type d) try {
-  *pph = to_nonconst(new NNC_Polyhedron(d, Polyhedron::UNIVERSE));
+  *pph = to_nonconst(new NNC_Polyhedron(d, UNIVERSE));
   return 0;
 }
 CATCH_ALL
@@ -1172,7 +1172,7 @@ CATCH_ALL
 int
 ppl_new_C_Polyhedron_empty_from_dimension(ppl_Polyhedron_t* pph,
 					  ppl_dimension_type d) try {
-  *pph = to_nonconst(new C_Polyhedron(d, Polyhedron::EMPTY));
+  *pph = to_nonconst(new C_Polyhedron(d, EMPTY));
   return 0;
 }
 CATCH_ALL
@@ -1180,7 +1180,7 @@ CATCH_ALL
 int
 ppl_new_NNC_Polyhedron_empty_from_dimension(ppl_Polyhedron_t* pph,
 					    ppl_dimension_type d) try {
-  *pph = to_nonconst(new NNC_Polyhedron(d, Polyhedron::EMPTY));
+  *pph = to_nonconst(new NNC_Polyhedron(d, EMPTY));
   return 0;
 }
 CATCH_ALL
