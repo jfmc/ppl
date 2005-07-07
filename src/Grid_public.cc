@@ -1198,7 +1198,11 @@ PPL::Grid::join_assign(const Grid& y) {
     // Discovered `y' empty when updating generators.
     return;
 
-  x.gen_sys.add_rows(y.gen_sys);
+  // Match the divisors of the x and y generator systems.
+  // FIX this makes a copy of which add_rows makes a copy
+  Generator_System gs(y.gen_sys);
+  normalize_divisors(x.gen_sys, gs);
+  x.gen_sys.add_rows(gs);
   // Congruences may be out of date and generators may have lost
   // minimal form.
   x.clear_congruences_up_to_date();
