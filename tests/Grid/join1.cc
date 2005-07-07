@@ -165,12 +165,55 @@ test4() {
   if (find_variation(gr2))
     exit(1);
 
-  gr1.join_assign_and_minimize(gr2);
+  gr1.join_assign(gr2);
 
   if (find_variation(gr1))
     exit(1);
 
   Grid known_gr(3);
+
+  if (gr1 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Divisor normalization.
+
+void
+test5() {
+  nout << "test5:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Generator_System gs1;
+  gs1.insert(point(0*C));
+  gs1.insert( line(A));
+  gs1.insert( line(B));
+
+  Grid gr1(gs1);
+
+  Generator_System gs2;
+  gs2.insert(point());
+  gs2.insert(point(C, 3));
+
+  Grid gr2(gs2);
+
+  gr1.join_assign_and_minimize(gr2);
+
+  if (find_variation(gr1))
+    exit(1);
+
+  Congruence_System known_cgs;
+  known_cgs.insert((3*C %= 0) / 1);
+
+  Grid known_gr(known_cgs);
 
   if (gr1 == known_gr)
     return;
@@ -192,6 +235,7 @@ main() TRY {
   test2();
   test3();
   test4();
+  test5();
 
   return 0;
 }
