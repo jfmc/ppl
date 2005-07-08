@@ -248,8 +248,7 @@ satisfies_all_congruences(const Generator& g,
     TEMP_INTEGER(sp);
     const Congruence& cg = cgs[i];
     spa_fp(sp, g, cg);
-    //if (cg.is_equality() || g.is_line()) { // FIX
-    if (cg.is_equality()) {
+    if (cg.is_equality() || g.is_line()) {
       if (sp != 0) {
 	std::cout << "sat's_all_cg's... done (eq, false i = " << i << ")." << std::endl;
 	return false;
