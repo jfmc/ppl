@@ -39,8 +39,8 @@ public:
   }
 };
 
-// FIX fulfils was for testing both saturate and satisfies, now there
-//     is only satisfies.
+// FIX Fulfils was for testing saturate and satisfies with one
+//     function; now there is only satisfies.
 
 /* If PASS_EXPECTED is true:
      If the first generator in GS saturates/satifies (whichever is
@@ -54,6 +54,8 @@ public:
 
    FIX If Generator::ascii_dump was public this could take a
    Generator.
+
+   FIX mention DIVISOR
 */
 
 bool
@@ -183,6 +185,13 @@ test1() {
 
   gs0.clear();
   gs0.insert(line(14*A - 21*B));
+  if (satisfies(gs0, cgs0, 1))
+    exit(1);
+
+  cgs0.clear();
+  cgs0.insert((A %= 0) / 2);
+  gs0.clear();
+  gs0.insert(line(3*A));
   if (satisfies(gs0, cgs0, 1))
     exit(1);
 
