@@ -111,7 +111,7 @@ test3() {
     exit(1);
 
   Grid known_gr(2);
-  known_gr.add_congruence(A %= 0);
+  known_gr.add_congruence(B %= 0);
 
   if (find_variation(known_gr))
     exit(1);
