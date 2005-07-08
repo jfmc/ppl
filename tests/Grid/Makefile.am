@@ -42,50 +42,66 @@ $(top_builddir)/tests/libppl_tests.a \
 @extra_libraries@
 
 TESTS = \
-congruence1 \
-writecongruencesystem \
-congruencesystem1 \
-congruencesystem2 \
-grid1 \
-grid2 \
-isuniverse1 \
-addspacedims1 \
-addspacedims2 \
-removespacedims1 \
-removespacedims2 \
-intersection1 \
-intersection2 \
-join1 \
-join2 \
-concatenate1 \
-mapspacedims1 \
-addgenerator1 \
-addcongruence1 \
-bug1
+	congruence1 \
+	writecongruencesystem \
+	congruencesystem1 \
+	congruencesystem2 \
+	grid1 \
+	grid2 \
+	isuniverse1 \
+	addspacedims1 \
+	addspacedims2 \
+	removespacedims1 \
+	removespacedims2 \
+	intersection1 \
+	intersection2 \
+	join1 \
+	join2 \
+	concatenate1 \
+	mapspacedims1 \
+	addgenerator1 \
+	addcongruence1 \
+	equals1 \
+	bug1
 
 #
 # Sources for the tests
 #
 
 congruence1_SOURCES = congruence1.cc
+
 writecongruencesystem_SOURCES = writecongruencesystem.cc
+
 congruencesystem1_SOURCES = congruencesystem1.cc
 congruencesystem2_SOURCES = congruencesystem2.cc
+
 grid1_SOURCES = grid1.cc
 grid2_SOURCES = grid2.cc
+
 isuniverse1_SOURCES = isuniverse1.cc
+
 addgenerator1_SOURCES = addgenerator1.cc
+
 addcongruence1_SOURCES = addcongruence1.cc
+
 addspacedims1_SOURCES = addspacedims1.cc
 addspacedims2_SOURCES = addspacedims2.cc
+
 removespacedims1_SOURCES = removespacedims1.cc
 removespacedims2_SOURCES = removespacedims2.cc
+
 intersection1_SOURCES = intersection1.cc
 intersection2_SOURCES = intersection2.cc
+
 join1_SOURCES = join1.cc
 join2_SOURCES = join2.cc
+
 concatenate1_SOURCES = concatenate1.cc
+
 mapspacedims1_SOURCES = mapspacedims1.cc
+
+equals1_SOURCES = equals1.cc
+
 bug1_SOURCES = bug1.cc
 bug1_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"
 
