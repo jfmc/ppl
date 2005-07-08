@@ -180,6 +180,8 @@ test4() {
 
 void
 test5() {
+  nout << "test5:" << endl;
+
   Variable A(0);
   Variable B(1);
 
@@ -211,6 +213,8 @@ test5() {
 
 void
 test6() {
+  nout << "test6:" << endl;
+
   Variable A(0);
   Variable B(1);
 
@@ -249,6 +253,8 @@ test6() {
 
 void
 test7() {
+  nout << "test7:" << endl;
+
   Variable A(0);
   Variable B(1);
 
@@ -269,7 +275,7 @@ test7() {
 
   Grid known_gr(3, Grid::EMPTY);
   known_gr.add_generator(point());
-  known_gr.add_generator(point(A));
+  known_gr.add_generator( line(A));
 
   if (gr == known_gr)
     return;
@@ -284,6 +290,8 @@ test7() {
 
 void
 test8() {
+  nout << "test8:" << endl;
+
   PFunction function;
   function.insert(0, 1);
   function.insert(1, 0);
