@@ -900,7 +900,10 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   // Adjust `cgs' to the current space dimension.
   cgs.increase_space_dimension(space_dim); // FIX (?)
 
-  if (add_and_minimize(con_sys, gen_sys, cgs, dim_kinds)) {
+  for (dimension_type row = 0; row < cgs.num_rows(); ++row)
+    con_sys.add_row(cgs[row]);
+
+  if (minimize(con_sys, gen_sys, dim_kinds)) {
     set_empty();
     assert(OK());
     return false;
@@ -1083,9 +1086,19 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
 
   if (minimize()) {
     normalize_divisors(gs, gen_sys);
-    // This call to `add_and_minimize(...)' returns `true'.
-    // FIX add_and_minimize copies the generators (check cgs version)
-    add_and_minimize(gen_sys, con_sys, gs, dim_kinds);
+
+    for (dimension_type row = 0; row < gs.num_rows(); ++row) {
+      const Generator& g = gs[row];
+      // FIX for now convert rays to lines
+      if (g.is_ray())
+	gen_sys.insert(Generator::line(Linear_Expression(g)));
+      else
+	gen_sys.add_row(g);
+    }
+
+    // This call to minimize returns true.
+    // FIX minimize copies the generators (check cgs version)
+    minimize(gen_sys, con_sys, dim_kinds);
   }
   else {
     // The grid was empty: check if `gs' contains a point.

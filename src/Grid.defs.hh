@@ -1532,22 +1532,6 @@ private:
 		       Congruence_System& dest,
 		       Dimension_Kinds& dim_kinds);
 
-  //! \brief
-  //! Adds copies of given congruences and builds minimized
-  //! corresponding generators, or vice versa.
-  static bool add_and_minimize(Congruence_System& source1,
-			       Linear_System& dest,
-			       const Congruence_System& source2,
-			       Dimension_Kinds& dim_kinds);
-
-  //! \brief
-  //! Adds copies of given generators and builds corresponding reduced
-  //! congruences.
-  static bool add_and_minimize(Generator_System& source1,
-			       Congruence_System& dest,
-			       const Generator_System& source2,
-			       Dimension_Kinds& dim_kinds);
-
   //! Normalize the divisors in \p sys.
   /*!
     Convert \p sys to an equivalent representation in which the

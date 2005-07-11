@@ -71,41 +71,4 @@ Grid::minimize(Congruence_System& source, Linear_System& dest,
   return false;
 }
 
-bool
-Grid::add_and_minimize(Congruence_System& source1,
-		       Linear_System& dest,
-		       const Congruence_System& source2,
-		       Dimension_Kinds& dim_kinds) {
-  assert(source1.num_rows() > 0 && source2.num_rows() > 0);
-  // `source1' and `source2' must have the same number of columns
-  // to be merged.
-  assert(source1.num_columns() == source2.num_columns());
-
-  for (dimension_type row = 0; row < source2.num_rows(); ++row)
-    source1.add_row(source2[row]);
-
-  return minimize(source1, dest, dim_kinds);
-}
-
-bool
-Grid::add_and_minimize(Generator_System& source1,
-		       Congruence_System& dest,
-		       const Generator_System& source2,
-		       Dimension_Kinds& dim_kinds) {
-  assert(source1.num_rows() > 0 && source2.num_rows() > 0);
-  // `source1' and `source2' must have the same number of columns
-  // to be merged.
-  assert(source1.num_columns() == source2.num_columns());
-
-  for (dimension_type row = 0; row < source2.num_rows(); ++row) {
-    const Generator& g = source2[row];
-    if (g.is_ray())
-      source1.insert(Generator::line(Linear_Expression(g)));
-    else
-      source1.add_row(g);
-  }
-
-  return minimize(source1, dest, dim_kinds);
-}
-
 } // namespace Parma_Polyhedra_Library
