@@ -10,6 +10,15 @@ NEWS for version 0.8  (released date to be decided)
 New and Changed Features
 ========================
 
+o  Added to class Polyhedron the method
+     void bounded_affine_image(Variable v,
+                               const Linear_Expression& lb,
+                               const Linear_Expression& ub,
+	                       Coefficient_traits::const_reference d
+                                 = Coefficient_one());
+   computing the image of the polyhedron according to the
+   transfer relation lb/d <= v' <= ub/d.
+
 o  The enumeration
      Polyhedron::Degenerate_Kind
    has been placed outside of class Polyhedron and renamed as
