@@ -48,14 +48,16 @@ main() TRY {
   print_constraints(ph, "--- ph ---");
 #endif
 
+  C_Polyhedron kr1 = ph;
+  C_Polyhedron kr2 = ph;
+
   ph.bounded_affine_image(A, 7-B, B+3);
 
-  C_Polyhedron known_result(2, EMPTY);
-  known_result.add_generator(point(3*A + 4*B));
-  known_result.add_generator(point(7*A + 4*B));
-  known_result.add_generator(point(5*A + 4*B));
+  kr1.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, 7-B);
+  kr2.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B+3);
+  kr1.intersection_assign(kr2);
 
-  int retval = (ph == known_result) ? 0 : 1;
+  int retval = (ph == kr1) ? 0 : 1;
 
 #if NOISY
   print_generators(ph, "--- ph after "
