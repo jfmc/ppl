@@ -30,8 +30,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-/* Turn token S into a string: stringify(x + y) => "x + y"  */
+// Turn token S into a string: stringify(x + y) => "x + y".
 #define stringify(s) #s
+
+#define dump_grids(grid,known_grid)			\
+  nout << endl << "ASCII dump of grid:" << endl;	\
+  grid.ascii_dump(nout);				\
+  nout << "ASCII dump of known grid:" << endl;		\
+  known_grid.ascii_dump(nout);
 
 #ifdef DERIVED_TEST
 #define C_Polyhedron NNC_Polyhedron
