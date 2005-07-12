@@ -1,5 +1,5 @@
 /* Test reduction and conversion of grids created from congruences.
-   Copyright (C) 2005 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -46,17 +46,11 @@ test1() {
   Congruence cg(A %= 0);
   gr.add_congruence_and_minimize(cg);
 
-  if (find_variation(gr))
-    exit(1);
-
   Generator_System known_gs;
   known_gs.insert(point(0*A));
   known_gs.insert(point(2*A));
 
   Grid known_gr(known_gs);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr == known_gr)
     return;
@@ -64,6 +58,9 @@ test1() {
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
   exit(1);
 }
 
@@ -98,15 +95,15 @@ test2() {
 
   Grid known_gr(known_gs);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
   exit(1);
 }
 
@@ -133,15 +130,15 @@ test3() {
 
   Grid known_gr(known_gs);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
   exit(1);
 }
 
@@ -168,15 +165,15 @@ test4() {
 
   Grid known_gr(known_gs);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
   exit(1);
 }
 
@@ -206,15 +203,15 @@ test5() {
 
   Grid known_gr(known_gs);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
   exit(1);
 }
 
@@ -229,10 +226,9 @@ test6() {
   Variable C(2);
 
   Congruence_System cgs;
-  cgs.insert(0*A %= -1);
-  cgs.insert(  A %= 0);
-  cgs.insert(  A + B %= 0);
-  cgs.insert(  A + B + C %= 0);
+  cgs.insert(A %= 0);
+  cgs.insert(A + B %= 0);
+  cgs.insert(A + B + C %= 0);
 
   Grid gr(3);
   gr.add_congruences_and_minimize(cgs);
@@ -248,15 +244,15 @@ test6() {
 
   Grid known_gr(known_gs);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
   exit(1);
 }
 
@@ -271,7 +267,6 @@ test7() {
   Variable C(2);
 
   Congruence_System cgs;
-  cgs.insert( 0*A %= -1);
   cgs.insert(  -A %= 64);
   cgs.insert(-6*A +   B + 0*C %= -8);
   cgs.insert( 3*A + 2*B +   C %= -4);
@@ -290,15 +285,15 @@ test7() {
 
   Grid known_gr(known_gs);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
   exit(1);
 }
 
@@ -324,15 +319,15 @@ test8() {
 
   Grid known_gr(3, Grid::EMPTY);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
   exit(1);
 }
 
@@ -347,10 +342,9 @@ test9() {
   Variable C(2);
 
   Congruence_System cgs;
-  cgs.insert((0*A %= -2) / 2);
-  cgs.insert((  A %=  0) / 2);
-  cgs.insert((        B %= 0) / 2);
-  cgs.insert((  A +   B +   C %= 0) / 2);
+  cgs.insert((A         %= 0) / 2);
+  cgs.insert((    B     %= 0) / 2);
+  cgs.insert((A + B + C %= 0) / 2);
 
   Grid gr(3);
   gr.add_congruences_and_minimize(cgs);
@@ -366,15 +360,15 @@ test9() {
 
   Grid known_gr(known_gs);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
   exit(1);
 }
 
@@ -408,15 +402,15 @@ test10() {
 
   Grid known_gr(known_gs);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
   exit(1);
 }
 
@@ -451,15 +445,14 @@ test11() {
 
   Grid known_gr(known_gs);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
 
   exit(1);
 }
@@ -493,8 +486,43 @@ test12() {
 
   Grid known_gr(known_gs);
 
-  if (find_variation(known_gr))
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << "grid:" << endl << gr << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
+  exit(1);
+}
+
+// cong_test7 from Chiara Convert_Test.cc.
+
+void
+test13() {
+  nout << "test13:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Congruence_System cgs;
+  cgs.insert((A %= 1) / 0);
+  cgs.insert((B %= 1) / 0);
+  cgs.insert((C %= 1) / 0);
+
+  Grid gr(3);
+  gr.add_congruences_and_minimize(cgs);
+
+  if (find_variation(gr))
     exit(1);
+
+  Generator_System known_gs;
+  known_gs.insert(point(A + B + C));
+
+  Grid known_gr(known_gs);
 
   if (gr == known_gr)
     return;
@@ -503,14 +531,55 @@ test12() {
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
 
+  dump_grids(gr, known_gr);
+
+  exit(1);
+}
+
+// cong_test8 from Chiara Convert_Test.cc.
+
+void
+test14() {
+  nout << "test14:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Congruence_System cgs;
+  cgs.insert((A %= 1) / 0);
+  cgs.insert(B %= 1);
+  cgs.insert((C %= 1) / 0);
+
+  Grid gr(3);
+  gr.add_congruences_and_minimize(cgs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Generator_System known_gs;
+  known_gs.insert(point(A + C));
+  known_gs.insert(point(A + B + C));
+
+  Grid known_gr(known_gs);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << "grid:" << endl << gr << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
   exit(1);
 }
 
 // An empty grid constructed from congruences.
 
 void
-test13() {
-  nout << "test13:" << endl;
+test15() {
+  nout << "test15:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -528,15 +597,14 @@ test13() {
 
   Grid known_gr(3, Grid::EMPTY);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
 
   exit(1);
 }
@@ -545,8 +613,8 @@ test13() {
 // of the existing system.
 
 void
-test14() {
-  nout << "test14:" << endl;
+test16() {
+  nout << "test16:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -579,15 +647,14 @@ test14() {
 
   Grid known_gr(cgs3);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr == known_gr)
     return;
 
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
 
   exit(1);
 }
@@ -612,6 +679,8 @@ main() TRY {
   test12();
   test13();
   test14();
+  test15();
+  test16();
 
   return 0;
 }
