@@ -355,7 +355,7 @@ test8() {
   exit(1);
 }
 
-// test5 from Chiara conversion_test.cc.
+// param_test5 from Chiara Convert_Test.cc.
 
 void
 test9() {
@@ -496,7 +496,7 @@ test12() {
   exit(1);
 }
 
-// Bigger values (param_test7 from Chiara conversion_test2.cc).
+// Bigger values (param_test7a from Chiara Convert_Test.cc).
 
 void
 test13() {
@@ -520,8 +520,6 @@ test13() {
 
   Congruence_System known_cgs;
   known_cgs.insert((       0*A +       0*B +      0*C %=  280730) / 280730);
-  // FIX why pass w/ both? equiv?
-  //known_cgs.insert((     -23*A +      29*B +      0*C %=   59643) / 280730); // orig
   known_cgs.insert((  -85767*A +  108141*B +      0*C %=   70587) / 280730);
   known_cgs.insert((-2309489*A + 1557137*B + 280730*C %= 1997619) / 0);
 
@@ -540,7 +538,7 @@ test13() {
   exit(1);
 }
 
-// Even bigger values (param_test8 from Chiara conversion_test2.cc).
+// Even bigger values (param_test8 from Chiara Convert_Test.cc).
 
 void
 test14() {
@@ -608,8 +606,7 @@ test14() {
   exit(1);
 }
 
-/* Test reduce_line_with_line (test9 from Chiara
-   conversion_test.cc).  */
+// Test reduce_line_with_line (param_test9 from Chiara Convert_Test.cc).
 
 void
 test15() {
@@ -620,7 +617,7 @@ test15() {
   Variable C(2);
 
   Generator_System gs;
-  gs.insert(point( -A - 0*B + 3*C, 4));
+  gs.insert(point( -A + 0*B + 3*C, 4));
   gs.insert( line(0*A + 2*B + 0*C));
   gs.insert( line(0*A + 4*B + 0*C));
 
@@ -650,8 +647,8 @@ test15() {
   exit(1);
 }
 
-// Grids from a water monitor example (test10 from Chiara
-// conversion_test.cc).
+// Grids from a water monitor example (from param_test10 from Chiara
+// Convert_test.cc).
 
 void
 test16() {

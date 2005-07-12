@@ -218,7 +218,7 @@ test5() {
   exit(1);
 }
 
-// cong_test0 from Chiara conversion_test2.cc.
+// cong_test0 from Chiara Convert_Test.cc.
 
 void
 test6() {
@@ -242,8 +242,8 @@ test6() {
 
   Generator_System known_gs;
   known_gs.insert(point());
-  known_gs.insert(point(A - B));
-  known_gs.insert(point(B - C));
+  known_gs.insert(point(A));
+  known_gs.insert(point(B));
   known_gs.insert(point(C));
 
   Grid known_gr(known_gs);
@@ -260,7 +260,7 @@ test6() {
   exit(1);
 }
 
-// cong_test1 from Chiara conversion_test2.cc.
+// cong_test1 from Chiara Convert_Test.cc.
 
 void
 test7() {
@@ -283,10 +283,10 @@ test7() {
     exit(1);
 
   Generator_System known_gs;
-  known_gs.insert(point(64*A + 392*B - 972*C, -1));
-  known_gs.insert(point(65*A + 398*B - 987*C, -1));
-  known_gs.insert(point(64*A + 391*B - 970*C, -1));
-  known_gs.insert(point(64*A + 392*B - 973*C, -1));
+  known_gs.insert(point());
+  known_gs.insert(point(A));
+  known_gs.insert(point(B));
+  known_gs.insert(point(C));
 
   Grid known_gr(known_gs);
 
@@ -302,8 +302,7 @@ test7() {
   exit(1);
 }
 
-// Adding a false equality (cong_test2 from Chiara
-// conversion_test2.cc).
+// Adding a false equality (cong_test2 from Chiara Convert_Test.cc).
 
 void
 test8() {
@@ -337,7 +336,7 @@ test8() {
   exit(1);
 }
 
-// cong_test3 from Chiara conversion_test2.cc.
+// cong_test3 from Chiara Convert_Test.cc.
 
 void
 test9() {
@@ -360,10 +359,10 @@ test9() {
     exit(1);
 
   Generator_System known_gs;
-  known_gs.insert(point(0*A + 0*B + 0*C));
-  known_gs.insert(point(2*A + 0*B - 2*C));
-  known_gs.insert(point(      2*B - 2*C));
-  known_gs.insert(point(            2*C));
+  known_gs.insert(point());
+  known_gs.insert(point(2*A));
+  known_gs.insert(point(2*B));
+  known_gs.insert(point(2*C));
 
   Grid known_gr(known_gs);
 
@@ -421,7 +420,7 @@ test10() {
   exit(1);
 }
 
-// cong_test5 from Chiara conversion_test2.cc.
+// cong_test5 from Chiara Convert_Test.cc.
 
 void
 test11() {
@@ -445,10 +444,10 @@ test11() {
     exit(1);
 
   Generator_System known_gs;
-  known_gs.insert(point(  A       -  3*C));
-  known_gs.insert(point(6*A + 5*B - 18*C));
-  known_gs.insert(point(  A + 5*B - 18*C));
-  known_gs.insert(point(  A       +  2*C));
+  known_gs.insert(point(  A       - 3*C));
+  known_gs.insert(point(6*A       - 3*C));
+  known_gs.insert(point(  A + 5*B - 3*C));
+  known_gs.insert(point(  A       + 2*C));
 
   Grid known_gr(known_gs);
 
@@ -465,7 +464,7 @@ test11() {
   exit(1);
 }
 
-// cong_test6 from Chiara conversion_test2.cc.
+// cong_test6 from Chiara Convert_Test.cc.
 
 void
 test12() {
@@ -487,10 +486,10 @@ test12() {
     exit(1);
 
   Generator_System known_gs;
-  known_gs.insert(point(-2*A - 18*B +  9*C, 3));
-  known_gs.insert(point( 3*A - 18*B +  9*C, 3));
-  known_gs.insert(point(-2*A -  3*B -  6*C, 3));
-  known_gs.insert(point(-2*A - 18*B + 24*C, 3));
+  known_gs.insert(point(-2*A -  3*B - 6*C, 3));
+  known_gs.insert(point( 3*A -  3*B - 6*C, 3));
+  known_gs.insert(point(-2*A + 12*B - 6*C, 3));
+  known_gs.insert(point(-2*A -  3*B + 9*C, 3));
 
   Grid known_gr(known_gs);
 
