@@ -826,11 +826,13 @@ defined by the matrix and vector
 where the \f$a_i\f$ (resp., \f$b\f$) occurs in the \f$(k+1)\f$st row
 in \f$A\f$
 (resp., position in \f$\vect{b}\f$).
-Thus \f$\phi\f$ transforms any point \f$(x_0, \ldots, x_{n-1})^\transpose\f$
+Thus \f$\phi\f$,
+which is also denoted as \f$x'_k = \mathrm{expr}\f$,
+transforms any point \f$(v_0, \ldots, v_{n-1})^\transpose\f$
 in the polyhedron \f$\cP\f$ to
 \f[
-   \Bigl(x_0, \ldots, \bigl(\textstyle{\sum_{i=0}^{n-1}} a_i x_i + b\bigr),
-                   \ldots, x_{n-1}\Bigr)^\transpose.
+   \Bigl(v_0, \ldots, \bigl(\textstyle{\sum_{i=0}^{n-1}} a_i v_i + b\bigr),
+                   \ldots, v_{n-1}\Bigr)^\transpose.
 \f]
 
 The affine image operator computes the affine image
@@ -885,16 +887,41 @@ in the linear expression is non-zero, the affine transformation is invertible.
 \anchor generalized_image
 <B>Generalized Affine Images</B>
 
-The library provides another operator
-which is a generalization of the affine image operator.
+The library also provides generalizations of the affine image operator
+that are able to model the mapping of a polyhedron according to
+certain kinds of nondeterministic transfer relations.
 Given a polyhedron \f$\cP \in \Pset_n\f$,
-an affine expression \f$\mathrm{lhs} = \sum_{i=0}^{n-1} a'_i x_i + b'\f$,
-a relation symbol \f$\mathord{\relsym} \in \{ <, \leq, =, \geq, > \}\f$,
-and an affine expression
-\f$\mathrm{rhs} = \sum_{i=0}^{n-1} a_i x_i + b\f$,
-the image of \f$\cP\f$ with respect to the transfer function
-\f$\mathrm{lhs} \relsym \mathrm{rhs}\f$ is defined as
-  \f[
+a (primed) variable \f$x_k\f$ and
+a pair of (non-primed) linear expressions
+\f$\mathrm{lb} = \sum_{i=0}^{n-1} a_i x_i + b\f$ and
+\f$\mathrm{ub} = \sum_{i=0}^{n-1} c_i x_i + d\f$,
+the <EM>bounded affine image</EM> operator computes
+the image of \f$\cP\f$ with respect to the transfer relation
+\f$\mathrm{lb} \leq x'_k \leq \mathrm{ub}\f$; the resulting polyhedron
+is defined as
+\f[
+  \cQ \defeq
+    \sset{
+      (w_0, \ldots, w_{n-1})^\transpose \in \Rset^n
+    }{
+      (v_0, \ldots, v_{n-1})^\transpose \in \cP, \\
+      \bigl(
+        i \in \{0, \ldots, n-1\} \land i \neq k
+          \implies
+            w_i = v_i
+      \bigr), \\
+      \sum_{i=0}^{n-1} a_i v_i + b \leq w_k \leq \sum_{i=0}^{n-1} c_i v_i + d
+    }.
+\f]
+Similarly, the <EM>generalized affine image</EM> operator computes
+the image of polyhedron \f$\cP\f$ with respect to the transfer relation
+\f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
+\f$\mathrm{lhs} = \sum_{i=0}^{n-1} a_i x_i + b\f$ and
+\f$\mathrm{rhs} = \sum_{i=0}^{n-1} c_i x_i + d\f$ are linear expressions and
+\f$\mathord{\relsym} \in \{ <, \leq, =, \geq, > \}\f$ is a relation symbol;
+in this case the result is defined as
+\f[
+  \cQ \defeq
     \sset{
       (w_0, \ldots, w_{n-1})^\transpose \in \Rset^n
     }{
@@ -904,15 +931,21 @@ the image of \f$\cP\f$ with respect to the transfer function
           \implies
             w_i = v_i
       \bigr), \\
-      \sum_{i=0}^{n-1} a'_i w_i + b' \relsym \sum_{i=0}^{n-1} a_i v_i + b
+      \sum_{i=0}^{n-1} a_i w_i + b \relsym \sum_{i=0}^{n-1} c_i v_i + d
     }.
-  \f]
-Note that, when \f$\mathrm{lhs} = x_k\f$ and
-\f$\mathord{\relsym} \in \{ = \}\f$, then the above operator
-is equivalent to the application of the standard affine image
-of \f$\cP\f$ with respect to the variable \f$x_k\f$ and the
-affine expression \f$\mathrm{rhs}\f$
-(hence the name given to this operator).
+\f]
+When \f$\mathrm{lhs} = x_k\f$ and \f$\mathord{\relsym} \in \{ = \}\f$,
+then the above operator is equivalent to the application of
+the standard affine image of \f$\cP\f$ with respect to
+\f$x'_k = \mathrm{rhs}\f$ (hence the name given to this operator).
+It is worth stressing that the operator is not symmetric, because
+the variables occurring in expression \f$\mathrm{lhs}\f$ are interpreted
+as <EM>primed</EM> variables, whereas those occurring in \f$\mathrm{rhs}\f$
+are non-primed; for instance, the transfer relations
+\f$\mathrm{lhs}' \leq \mathrm{rhs}\f$ and
+\f$\mathrm{rhs}' \geq \mathrm{lhs}\f$ 
+are not equivalent in general.
+
 
 \anchor time_elapse
 <B>Time-Elapse Operator</B>

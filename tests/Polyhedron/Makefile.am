@@ -84,6 +84,7 @@ ORIGINAL_TESTS = \
 	bhz03widening1 bhz03widening2 bhz03widening3 bhz03widening4 \
 	bhz03widening5 bhz03widening6 \
 	bounded1 \
+	boundedaffineimage1 boundedaffineimage2 \
 	boundedbhrz03extrapolation1 \
 	boundedh79extrapolation1 \
 	boundingbox1 boundingbox2 boundingbox3 boundingbox4 boundingbox5 \
@@ -185,6 +186,7 @@ DERIVED_TESTS = \
 	nnc_bhrz03widening8 nnc_bhrz03widening9 \
 	nnc_bhrz03widening10 nnc_bhrz03widening11 nnc_bhrz03widening12 \
 	nnc_bounded1 \
+	nnc_boundedaffineimage1 nnc_boundedaffineimage2 \
 	nnc_boundedbhrz03extrapolation1 \
 	nnc_boundedh79extrapolation1 \
 	nnc_boundingbox1 nnc_boundingbox3 nnc_boundingbox5 \
@@ -380,6 +382,9 @@ bhz03widening5_SOURCES = bhz03widening5.cc
 bhz03widening6_SOURCES = bhz03widening6.cc
 
 bounded1_SOURCES = bounded1.cc
+
+boundedaffineimage1_SOURCES = boundedaffineimage1.cc
+boundedaffineimage2_SOURCES = boundedaffineimage2.cc
 
 boundedbhrz03extrapolation1_SOURCES = boundedbhrz03extrapolation1.cc
 
@@ -785,6 +790,11 @@ nnc_bhrz03widening12_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bounded1_SOURCES = bounded1.cc
 nnc_bounded1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_boundedaffineimage1_SOURCES = boundedaffineimage1.cc
+nnc_boundedaffineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_boundedaffineimage2_SOURCES = boundedaffineimage2.cc
+nnc_boundedaffineimage2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_boundedbhrz03extrapolation1_SOURCES = boundedbhrz03extrapolation1.cc
 nnc_boundedvhrz03extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)

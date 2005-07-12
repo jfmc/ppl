@@ -83,6 +83,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_poly_difference_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_affine_image(+term, +term, +term, +term)).
 :- foreign(ppl_Polyhedron_affine_preimage(+term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_bounded_affine_image(+term, +term,
+                                               +term, +term, +term)).
 :- foreign(ppl_Polyhedron_generalized_affine_image(+term, +term,
 						   +term, +term, +term)).
 :- foreign(ppl_Polyhedron_generalized_affine_image_lhs_rhs(+term, +term,

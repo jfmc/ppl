@@ -1940,6 +1940,21 @@ ppl_Polyhedron_affine_preimage(ppl_Polyhedron_t ph,
 }
 CATCH_ALL
 
+int
+ppl_Polyhedron_bounded_affine_image(ppl_Polyhedron_t ph,
+				    ppl_dimension_type var,
+				    ppl_const_Linear_Expression_t lb,
+				    ppl_const_Linear_Expression_t ub,
+				    ppl_const_Coefficient_t d) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Linear_Expression& llb = *to_const(lb);
+  const Linear_Expression& uub = *to_const(ub);
+  const Coefficient& dd = *to_const(d);
+  pph.bounded_affine_image(Variable(var), llb, uub, dd);
+  return 0;
+}
+CATCH_ALL
+
 namespace {
 
 inline Relation_Symbol

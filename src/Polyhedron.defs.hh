@@ -1221,13 +1221,13 @@ public:
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_image "generalized affine transfer function"
+  //! \ref generalized_image "generalized affine transfer relation"
   //! \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
   //! where \f$\mathord{\relsym}\f$ is the relation symbol encoded
   //! by \p relsym.
   /*!
     \param var
-    The left hand side variable of the generalized affine transfer function;
+    The left hand side variable of the generalized affine transfer relation;
 
     \param relsym
     The relation symbol;
@@ -1253,7 +1253,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_image "generalized affine transfer function"
+  //! \ref generalized_image "generalized affine transfer relation"
   //! \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
   //! \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
   /*!
@@ -1277,13 +1277,13 @@ public:
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_image "generalized affine transfer function"
+  //! \ref generalized_image "generalized affine transfer relation"
   //! \f$\frac{\mathrm{lb_expr}}{\mathrm{denominator}}
   //!      \leq \mathrm{var}'
   //!      \leq \frac{\mathrm{ub_expr}}{\mathrm{denominator}}\f$.
   /*!
     \param var
-    The variable updated by the generalized affine transfer function;
+    The variable updated by the generalized affine transfer relation;
 
     \param lb_expr
     The numerator of the lower bounding affine expression;
@@ -1300,11 +1300,11 @@ public:
     and \p *this are dimension-incompatible or if \p var is not a space
     dimension of \p *this.
   */
-  void affine_bounds(Variable var,
-		     const Linear_Expression& lb_expr,
-		     const Linear_Expression& ub_expr,
-		     Coefficient_traits::const_reference denominator
-		     = Coefficient_one());
+  void bounded_affine_image(Variable var,
+			    const Linear_Expression& lb_expr,
+			    const Linear_Expression& ub_expr,
+			    Coefficient_traits::const_reference denominator
+			    = Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the result of computing the

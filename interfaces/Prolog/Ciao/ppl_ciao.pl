@@ -82,6 +82,7 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_Polyhedron_poly_difference_assign/2,
         ppl_Polyhedron_affine_image/4,
         ppl_Polyhedron_affine_preimage/4,
+        ppl_Polyhedron_bounded_affine_image/5,
         ppl_Polyhedron_generalized_affine_image/5,
         ppl_Polyhedron_generalized_affine_image_lhs_rhs/4,
         ppl_Polyhedron_time_elapse_assign/2,
@@ -579,6 +580,12 @@ ppl_Polyhedron_poly_hull_assign_and_minimize(Handle1, Handle2) :-
                                             in(Linear_Expression), in(Divisor))
              :: any_term * any_term * any_term * any_term + foreign.
 
+:- true pred ppl_Polyhedron_bounded_affine_image(in(Handle), in(Var),
+                                                 in(Lower_Bound),
+                                                 in(Upper_Bound),
+                                                 in(Divisor))
+  :: any_term * any_term * any_term * any_term * any_term + foreign.
+
 :- true pred ppl_Polyhedron_generalized_affine_image_2(
                                          in(Handle),
                                          in(Var), in(Rel),
@@ -871,6 +878,7 @@ ppl_Polyhedron_map_space_dimensions(Handle, PIFunc) :-
         ppl_Polyhedron_poly_difference_assign/2,
         ppl_Polyhedron_affine_image/4,
         ppl_Polyhedron_affine_preimage/4,
+        ppl_Polyhedron_bounded_affine_image/5,
 %        ppl_Polyhedron_generalized_affine_image/5,
         ppl_Polyhedron_generalized_affine_image_2/6,
 %        ppl_Polyhedron_generalized_affine_image_lhs_rhs/4,
@@ -1130,6 +1138,12 @@ since the above version of this is temporary.
                                             in(Linear_Expression), in(Divisor))
              :: any_term * any_term * any_term * any_term + foreign.
 
+:- true pred ppl_Polyhedron_bounded_affine_image(in(Handle), in(Var),
+                                                 in(Lower_Bound),
+                                                 in(Upper_Bound),
+                                                 in(Divisor))
+             :: any_term * any_term * any_term * any_term * any_term + foreign.
+
 :- true pred ppl_Polyhedron_generalized_affine_image(in(Handle),
                                                      in(Var), in(Rel),
                                                      in(Linear_Expression),
@@ -1305,6 +1319,7 @@ since the above version of this is temporary.
         ppl_Polyhedron_poly_difference_assign/2,
         ppl_Polyhedron_affine_image/4,
         ppl_Polyhedron_affine_preimage/4,
+        ppl_Polyhedron_bounded_affine_image/5,
         ppl_Polyhedron_generalized_affine_image/5,
         ppl_Polyhedron_generalized_affine_image_lhs_rhs/4,
         ppl_Polyhedron_time_elapse_assign/2,

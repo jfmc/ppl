@@ -437,6 +437,7 @@ PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_Polyhedron_poly_difference_assign, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_affine_image, 4)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_affine_preimage, 4)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_bounded_affine_image, 5)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_generalized_affine_image, 5)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_generalized_affine_image_lhs_rhs, 4)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_time_elapse_assign, 2)

@@ -2232,8 +2232,26 @@ ppl_Polyhedron_affine_preimage(Prolog_term_ref t_ph, Prolog_term_ref t_v,
   CATCH_ALL;
 }
 
-namespace {
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_bounded_affine_image(Prolog_term_ref t_ph,
+				    Prolog_term_ref t_v,
+				    Prolog_term_ref t_lb_le,
+				    Prolog_term_ref t_ub_le,
+				    Prolog_term_ref t_d) {
+  try {
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    CHECK(ph);
+    ph->bounded_affine_image(term_to_Variable(t_v),
+			     build_linear_expression(t_lb_le),
+			     build_linear_expression(t_ub_le),
+			     term_to_Coefficient(t_d));
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
 
+
+namespace {
 
 Prolog_atom
 term_to_relation(Prolog_term_ref t) {

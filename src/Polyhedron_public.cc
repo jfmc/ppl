@@ -1970,28 +1970,29 @@ affine_preimage(const Variable var,
 
 void
 PPL::Polyhedron::
-affine_bounds(const Variable var,
-	      const Linear_Expression& lb_expr,
-	      const Linear_Expression& ub_expr,
-	      Coefficient_traits::const_reference denominator) {
+bounded_affine_image(const Variable var,
+		     const Linear_Expression& lb_expr,
+		     const Linear_Expression& ub_expr,
+		     Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_invalid_argument("affine_bounds(v, lb, ub, d)", "d == 0");
+    throw_invalid_argument("bounded_affine_image(v, lb, ub, d)", "d == 0");
 
   // Dimension-compatibility checks.
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
   if (space_dim < var_space_dim)
-    throw_dimension_incompatible("affine_bounds(v, lb, ub, d)", "v", var);
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
+				 "v", var);
   // The dimension of `lb_expr' and `ub_expr' should not be
   // greater than the dimension of `*this'.
   const dimension_type lb_space_dim = lb_expr.space_dimension();
   if (space_dim < lb_space_dim)
-    throw_dimension_incompatible("affine_bounds(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
 				 "lb", lb_expr);
   const dimension_type ub_space_dim = ub_expr.space_dimension();
   if (space_dim < ub_space_dim)
-    throw_dimension_incompatible("affine_bounds(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
 				 "ub", ub_expr);
 
   // Any image of an empty polyhedron is empty.
