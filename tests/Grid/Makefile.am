@@ -59,6 +59,7 @@ TESTS = \
 	join2 \
 	concatenate1 \
 	mapspacedims1 \
+	expandspacedim1 \
 	addgenerator1 \
 	addcongruence1 \
 	equals1 \
@@ -99,6 +100,8 @@ join2_SOURCES = join2.cc
 concatenate1_SOURCES = concatenate1.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
+
+expandspacedim1_SOURCES = expandspacedim1.cc
 
 equals1_SOURCES = equals1.cc
 
