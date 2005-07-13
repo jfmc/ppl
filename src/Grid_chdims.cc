@@ -465,63 +465,57 @@ PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
 
   assert(OK(true));
 }
-#if 0
+
 void
 PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
   // FIXME: this implementation is _really_ an executable specification.
 
-  // `var' should be one of the dimensions of the vector space.
+  // `var' must be one of the dimensions of the vector space.
   if (var.space_dimension() > space_dim)
     throw_dimension_incompatible("expand_space_dimension(v, m)", "v", var);
 
-  // The space dimension of the resulting grid should not
-  // overflow the maximum allowed space dimension.
-  if (m > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow(topology(),
-				   "expand_dimension(v, m)",
-				   "adding m new space dimensions exceeds "
-				   "the maximum allowed space dimension");
-
-  // Nothing to do, if no dimensions must be added.
+  // Adding 0 dimensions leaves the same grid.
   if (m == 0)
     return;
 
-  // Keep track of the dimension before adding the new ones.
+  // The resulting space dimension must be at most the maximum.
+  if (m > max_space_dimension() - space_dimension())
+    throw_space_dimension_overflow("expand_dimension(v, m)",
+				   "adding m new space dimensions exceeds "
+				   "the maximum allowed space dimension");
+
+  // Save the number of dimensions before adding new ones.
   dimension_type old_dim = space_dim;
 
   // Add the required new dimensions.
   add_space_dimensions_and_embed(m);
 
   const dimension_type src_d = var.id();
-  const Constraint_System& cs = constraints();
-  Constraint_System new_constraints;
-  for(Constraint_System::const_iterator i = cs.begin(),
-	cs_end = cs.end(); i != cs_end; ++i) {
-    const Constraint& c = *i;
+  const Congruence_System& cgs = congruences();
+  Congruence_System new_congruences;
+  for (Congruence_System::const_iterator i = cgs.begin(),
+	 cgs_end = cgs.end(); i != cgs_end; ++i) {
+    const Congruence& cg = *i;
 
-    // If `c' does not constrain `var', skip it.
-    if(c.coefficient(var) == 0)
+    // Only consider congruences that constrain `var'.
+    if (cg.coefficient(var) == 0)
       continue;
 
-    // Each relevant constraint results in `m' new constraints.
+    // Each relevant congruence results in `m' new congruences.
     for (dimension_type dst_d = old_dim; dst_d < old_dim+m; ++dst_d) {
       Linear_Expression e;
       for (dimension_type j = old_dim; j-- > 0; )
 	e +=
-	  c.coefficient(Variable(j))
+	  cg.coefficient(Variable(j))
 	  * (j == src_d ? Variable(dst_d) : Variable(j));
-      e += c.inhomogeneous_term();
-      new_constraints.insert(c.is_equality()
-			     ? (e == 0)
-			     : (c.is_nonstrict_inequality()
-				? (e >= 0)
-				: (e > 0)));
+      new_congruences.insert_verbatim((e + cg.inhomogeneous_term() %= 0)
+				      / cg.modulus());
     }
   }
-  add_constraints(new_constraints);
+  add_congruences(new_congruences);
   assert(OK());
 }
-
+#if 0
 void
 PPL::Grid::fold_space_dimensions(const Variables_Set& to_be_folded,
 				 Variable var) {
