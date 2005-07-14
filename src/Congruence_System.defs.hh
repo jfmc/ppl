@@ -305,6 +305,10 @@ public:
 protected:
 
   //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
+  /*!
+    If \p divisor is greater than zero then it is used as \p g's
+    divisor, otherwise a value of one is assumed.
+  */
   bool
   satisfies_all_congruences(const Generator& g,
 			    Coefficient_traits::const_reference divisor) const;
@@ -326,6 +330,14 @@ private:
     dimension.
   */
   bool increase_space_dimension(const dimension_type new_space_dim);
+
+  //! \brief
+  //! Inserts in \p *this an exact copy of the congruence \p cg,
+  //! increasing the number of space dimensions if needed.
+  /*!
+    FIX ref insert also does minimization.
+  */
+  void insert_verbatim(const Congruence& cg);
 
   friend class const_iterator;
   friend class Grid;

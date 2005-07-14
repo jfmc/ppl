@@ -99,7 +99,7 @@ increase_space_dimension(const dimension_type new_space_dim) {
 }
 
 void
-PPL::Congruence_System::insert(const Congruence& cg) {
+PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
   const dimension_type old_num_rows = num_rows();
   const dimension_type old_num_columns = num_columns();
   const dimension_type cg_size = cg.size();
@@ -122,9 +122,12 @@ PPL::Congruence_System::insert(const Congruence& cg) {
   else
     // Here cg_size == old_num_columns.
     add_row(cg);
+}
 
+void
+PPL::Congruence_System::insert(const Congruence& cg) {
+  insert_verbatim(cg);
   static_cast<Congruence&>(operator[](rows.size()-1)).strong_normalize();
-
   assert(OK());
 }
 
