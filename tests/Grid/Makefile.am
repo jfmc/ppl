@@ -63,6 +63,8 @@ TESTS = \
 	addgenerator1 \
 	addcongruence1 \
 	equals1 \
+	relations1 \
+	relations2 \
 	bug1
 
 #
@@ -104,6 +106,9 @@ mapspacedims1_SOURCES = mapspacedims1.cc
 expandspacedim1_SOURCES = expandspacedim1.cc
 
 equals1_SOURCES = equals1.cc
+
+relations1_SOURCES = relations1.cc
+relations2_SOURCES = relations2.cc
 
 bug1_SOURCES = bug1.cc
 bug1_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"
