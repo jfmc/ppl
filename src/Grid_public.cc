@@ -29,10 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cassert>
 #include <iostream>
 
-#ifndef ENSURE_SORTEDNESS
-#define ENSURE_SORTEDNESS 0
-#endif
-
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Grid::Grid(dimension_type num_dimensions,
@@ -166,68 +162,140 @@ PPL::Grid::minimized_generators() const {
   minimize();  // FIX this will update cgs
   return generators();
 }
-#if 0
+
 PPL::Poly_Con_Relation
-PPL::Grid::relation_with(const Congruence& c) const {
+PPL::Grid::relation_with(const Congruence& cg) const {
   // Dimension-compatibility check.
-  if (space_dim < c.space_dimension())
-    throw_dimension_incompatible("relation_with(c)", "c", c);
+  if (space_dim < cg.space_dimension())
+    throw_dimension_incompatible("relation_with(cg)", "cg", cg);
 
   if (marked_empty())
-    return Poly_Con_Relation::saturates()
-      && Poly_Con_Relation::is_included()
+    return Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
 
   if (space_dim == 0)
-    if (c.is_trivial_false())
-      if (c.is_strict_inequality() && c[0] == 0)
-	// The congruence 0 > 0 implicitly defines the hyperplane 0 = 0;
-	// thus, the zero-dimensional point also saturates it.
-	return Poly_Con_Relation::saturates()
-	  && Poly_Con_Relation::is_disjoint();
-      else
-	return Poly_Con_Relation::is_disjoint();
-    else if (c.is_equality() || c[0] == 0)
-      return Poly_Con_Relation::saturates()
-	&& Poly_Con_Relation::is_included();
-    else
-      // The zero-dimensional point saturates
-      // neither the positivity congruence 1 >= 0,
-      // nor the strict positivity congruence 1 > 0.
+    if (cg.is_trivial_false())
+      // FIX
+      // The congruence 0 %= 1 mod 0 implicitly defines the hyperplane
+      // 0 = 0; thus, the zero-dimensional point also saturates it.
+      return Poly_Con_Relation::is_disjoint();
+    else if (cg.is_equality() || cg[0] == 0)
       return Poly_Con_Relation::is_included();
+    else if (cg[0] % cg.modulus() == 0)
+      return Poly_Con_Relation::is_included();
+    else
+      // cg is false.
+      return Poly_Con_Relation::is_disjoint();
 
   if (!generators_are_up_to_date() && !update_generators())
     // The grid is empty.
-    return Poly_Con_Relation::saturates()
-      && Poly_Con_Relation::is_included()
+    return Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
 
-    return gen_sys.relation_with(c);
+  // Return one of the relations
+  // 'strictly_intersects'   share at least one point
+  // 'is_included'	     share all points (of grid?)
+  // 'is_disjoint'	     the other case, intersection fails
+
+  // FIX
+  if (!generators_are_minimized()) {
+    Grid& x = const_cast<Grid&>(*this);
+    x.simplify(x.gen_sys, x.dim_kinds);
+    x.set_generators_minimized();
+  }
+
+  // There is always a point.  There is only ever one point, as
+  // generators have been parameterized before this.  The point always
+  // precedes the parameters.
+
+  // FIX if there are ever params at the user interface then params
+  //     may precede the point and the RAY case below will need work
+
+  // Scalar product of the point and the congruence.
+  TEMP_INTEGER(point_sp);
+
+  TEMP_INTEGER(modulus);
+  modulus = cg.modulus();
+
+  for (Generator_System::const_iterator g = gen_sys.begin(),
+         gen_sys_end = gen_sys.end(); g != gen_sys_end; ++g) {
+    TEMP_INTEGER(sp);
+    PPL::scalar_product_assign(sp, *g, cg);
+    sp %= modulus;
+
+    switch (g->type()) {
+
+    case Generator::POINT:
+      point_sp = sp;
+      break;
+
+    case Generator::LINE:
+      // If line g satisfies the cg (i.e. if sp is 0) then the
+      // relation depends entirely on the other generators.
+      if (sp == 0)
+	break;
+      // FIX this assumes that the point will/does satisfy the grid?
+      // FIX should clear maybe_saturates?
+      return Poly_Con_Relation::strictly_intersects();
+
+    case Generator::RAY:	// PARAMETER
+      // If parameter g satisfies the cg (i.e. if sp is 0) then the
+      // relation depends entirely on the other generators.
+      if (sp == 0)
+	break;
+
+      if (point_sp == 0)
+	// The point satisfies cg.  However, the sum of the point and
+	// the parameter g fails to satisfy cg (due to g).
+	return Poly_Con_Relation::strictly_intersects();
+
+      // Check if the combination of the point and generator g
+      // satisfies cg.
+      if (point_sp % sp == 0)
+	return Poly_Con_Relation::strictly_intersects();
+
+      break;
+
+    case Generator::CLOSURE_POINT:
+      // FIX?
+      break;
+    }
+  }
+
+  if (point_sp == 0)
+    // The point, every parameter, and the combination of the point
+    // and each parameter satisfied cg.
+    return Poly_Con_Relation::is_included();
+
+  // The point, every parameter, and the combination of the point
+  // and each parameter failed to satisfy cg.
+  return Poly_Con_Relation::is_disjoint();
 }
 
 PPL::Poly_Gen_Relation
-PPL::Grid::relation_with(const Generator& g) const {
+PPL::Grid::relation_with(const Generator& g,
+			 Coefficient_traits::const_reference divisor) const {
   // Dimension-compatibility check.
   if (space_dim < g.space_dimension())
     throw_dimension_incompatible("relation_with(g)", "g", g);
 
-  // The empty polyhedron cannot subsume a generator.
+  // The empty grid cannot subsume a generator.
   if (marked_empty())
     return Poly_Gen_Relation::nothing();
 
-  // A universe polyhedron in a zero-dimensional space subsumes
-  // all the generators of a zero-dimensional space.
+  // A universe grid in a zero-dimensional space subsumes all the
+  // generators of a zero-dimensional space.
   if (space_dim == 0)
     return Poly_Gen_Relation::subsumes();
 
   congruences_are_up_to_date() || update_congruences();
 
   return
-    con_sys.satisfies_all_congruences(g /*, FIX divisor */)
+    con_sys.satisfies_all_congruences(g, divisor == 0 ? g.divisor() : divisor)
     ? Poly_Gen_Relation::subsumes()
     : Poly_Gen_Relation::nothing();
 }
-#endif
+
 bool
 PPL::Grid::is_universe() const {
   if (marked_empty())
@@ -1324,12 +1392,11 @@ PPL::Grid::affine_image(const Variable var,
     throw_invalid_argument("affine_image(v, e, d)", "d == 0");
 
   // Dimension-compatibility checks.
-  // The dimension of `expr' should not be greater than the dimension
-  // of `*this'.
+  // The dimension of `expr' must be at most the dimension of `*this'.
   const dimension_type expr_space_dim = expr.space_dimension();
   if (space_dim < expr_space_dim)
     throw_dimension_incompatible("affine_image(v, e, d)", "e", expr);
-  // `var' should be one of the dimensions of the polyhedron.
+  // `var' must be one of the dimensions of the grid.
   const dimension_type var_space_dim = var.space_dimension();
   if (space_dim < var_space_dim)
     throw_dimension_incompatible("affine_image(v, e, d)", "v", var);

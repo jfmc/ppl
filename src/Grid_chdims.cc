@@ -525,17 +525,17 @@ PPL::Grid::fold_space_dimensions(const Variables_Set& to_be_folded,
   if (var.space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(tbf, v)", "v", var);
 
-  // The folding of no dimensions is a no-op.
+  // Folding only has effect if dimensions are given.
   if (to_be_folded.empty())
     return;
 
-  // All variables in `to_be_folded' should be dimensions of the grid.
+  // All variables in `to_be_folded' must be dimensions of the grid.
   if (to_be_folded.rbegin()->space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(tbf, v)",
 				 "*tbf.rbegin()",
 				 *to_be_folded.rbegin());
 
-  // Moreover, `var' should not occur in `to_be_folded'.
+  // Moreover, `var' must not occur in `to_be_folded'.
   if (to_be_folded.find(var) != to_be_folded.end())
     throw_invalid_argument("fold_space_dimensions(tbf, v)",
 			   "v should not occur in tbf");

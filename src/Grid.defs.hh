@@ -470,11 +470,16 @@ public:
   //! Returns the relations holding between the grid \p *this
   //! and the generator \p g.
   /*!
+    If \p divisor is zero then the divisor of \p g is used in finding
+    the relation, otherwise \p divisor is used.
+
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible.
   */
   // FIXME: see the comment for Poly_Con_Relation above.
-  Poly_Gen_Relation relation_with(const Generator& g) const;
+  Poly_Gen_Relation
+  relation_with(const Generator& g,
+		Coefficient_traits::const_reference divisor = 0) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is
