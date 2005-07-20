@@ -1009,14 +1009,14 @@ b
 <H2><CODE> ppl_Polyhedron_contains_Polyhedron(+Handle_1, +Handle_2) </CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
-   <CODE>Handle_1</CODE> is included in or
-   equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
+   <CODE>Handle_2</CODE> is included in or
+   equal to the polyhedron referenced by <CODE>Handle_1</CODE>.
 
 <H2><CODE> ppl_Polyhedron_strictly_contains_Polyhedron(+Handle_1, +Handle_2) </CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
-   <CODE>Handle_1</CODE> is included in but not
-   equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
+   <CODE>Handle_2</CODE> is included in but not
+   equal to the polyhedron referenced by <CODE>Handle_1</CODE>.
 
 <H2><CODE> ppl_Polyhedron_is_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
      </CODE></H2>
