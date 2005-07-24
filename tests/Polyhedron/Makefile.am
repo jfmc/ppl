@@ -1166,6 +1166,7 @@ bhrz03widening18 \
 bhz03widening1 \
 bhz03widening4 \
 bhz03widening6 \
+boundedaffineimage2 \
 boundedbhrz03extrapolation1 \
 foldspacedims1 \
 foldspacedims2 \
@@ -1180,6 +1181,7 @@ randphull1 \
 removespacedims2 \
 smm1 \
 nnc_bgp99extrapolation2 \
+nnc_boundedaffineimage2 \
 nnc_boundedbhrz03extrapolation1 \
 nnc_generalizedaffineimage3 \
 nnc_max_min2 \
