@@ -197,64 +197,106 @@ PPL::Grid::relation_with(const Congruence& cg) const {
   // 'is_included'	     share all points (of grid?)
   // 'is_disjoint'	     the other case, intersection fails
 
-  // FIX
-  if (!generators_are_minimized()) {
-    Grid& x = const_cast<Grid&>(*this);
-    x.simplify(x.gen_sys, x.dim_kinds);
-    x.set_generators_minimized();
-  }
+  // There is always a point.
 
-  // There is always a point.  There is only ever one point, as
-  // generators have been parameterized before this.  The point always
-  // precedes the parameters.
-
-  // FIX if there are ever params at the user interface then params
-  //     may precede the point and the RAY case below will need work
-
-  // Scalar product of the point and the congruence.
+  // Scalar product of the congruence and the first point that
+  // satisfies the congruence.
   TEMP_INTEGER(point_sp);
+  point_sp = 0;
 
   TEMP_INTEGER(modulus);
   modulus = cg.modulus();
+
+  TEMP_INTEGER(div);
+  div = 0;
+
+  bool known_to_intersect = false;
 
   for (Generator_System::const_iterator g = gen_sys.begin(),
          gen_sys_end = gen_sys.end(); g != gen_sys_end; ++g) {
     TEMP_INTEGER(sp);
     PPL::scalar_product_assign(sp, *g, cg);
-    sp %= modulus;
+    if (cg.is_proper_congruence())
+      sp %= modulus;
 
     switch (g->type()) {
 
     case Generator::POINT:
-      point_sp = sp;
+      if (sp == 0)
+	// The point satisfies the congruence.
+	if (point_sp == 0)
+	  // Any previous points satisfied the congruence.
+	  known_to_intersect = true;
+	else
+	  return Poly_Con_Relation::strictly_intersects();
+      else
+	if (point_sp == 0) {
+	  if (known_to_intersect)
+	    return Poly_Con_Relation::strictly_intersects();
+	  // Assign `sp' to `point_sp' as `sp' is the scalar product
+	  // of cg and a point g and is non-zero.
+	  point_sp = sp;
+	}
+	else {
+	  // A previously considered point p failed to satisfy cg such that
+	  // `point_sp' = `scalar_prod(p,cg)'
+	  // so, if we consider the parameter g-p instead of g, we have
+	  // scalar_prod(g-p, cg) = scalar_prod(g,cg) - scalar_prod(p,cg)
+	  //                      = sp - point_sp
+	  sp -= point_sp;
+
+	  if (sp != 0) {
+	    // Find the GCD between sp and the previous GCD.
+	    gcd_assign(div, sp);
+	    if (point_sp % div == 0)
+	      // There is a point in the grid satisfying cg.
+	      return Poly_Con_Relation::strictly_intersects();
+	  }
+	}
+      break;
+
+    case Generator::RAY:	// PARAMETER
+      if (sp == 0)
+	// Parameter g satisfies the cg so the relation depends
+	// entirely on the other generators.
+	break;
+
+      if (known_to_intersect)
+	// At least one point satisfies cg.  However, the sum of such
+	// a point and the parameter g fails to satisfy cg (due to g).
+	return Poly_Con_Relation::strictly_intersects();
+
+      // Find the GCD between sp and the previous GCD.
+      gcd_assign(div, sp);
+      if (point_sp != 0)
+	// At least one of any previously encountered points fails to
+	// satisfy cg.
+	if (point_sp == div)
+	  // There is also a grid point that satisfies cg.
+	  return Poly_Con_Relation::strictly_intersects();
+
       break;
 
     case Generator::LINE:
-      // If line g satisfies the cg (i.e. if sp is 0) then the
-      // relation depends entirely on the other generators.
       if (sp == 0)
+	// Line g satisfies the cg so the relation depends entirely on
+	// the other generators.
 	break;
-      // FIX this assumes that the point will/does satisfy the grid?
-      // FIX should clear maybe_saturates?
+
+      // Line g intersects the congruence.
+      //
+      // There is a point p in the grid.  Suppose <p*cg> = p_sp.  Then
+      // (-p_sp/sp)*g + p is a point that satisfies cg: <((-p_sp/sp)*g
+      // + p).cg> = -(p_sp/sp)*sp + p_sp) = 0.  If p does not satisfy
+      // `cg' and hence is not in the grid defined by `cg', the grid
+      // `*this' strictly intersects the `cg' grid.  On the other
+      // hand, if `p' is in the grid defined by `cg' so that p_sp = 0,
+      // then <p+g.cg> = p_sp + sp != 0; thus `p+g' is a point in
+      // *this that does not satisfy `cg' and hence `p+g' is a point
+      // in *this not in the grid defined by `cg'; therefore `*this'
+      // strictly intersects the `cg' grid.
+
       return Poly_Con_Relation::strictly_intersects();
-
-    case Generator::RAY:	// PARAMETER
-      // If parameter g satisfies the cg (i.e. if sp is 0) then the
-      // relation depends entirely on the other generators.
-      if (sp == 0)
-	break;
-
-      if (point_sp == 0)
-	// The point satisfies cg.  However, the sum of the point and
-	// the parameter g fails to satisfy cg (due to g).
-	return Poly_Con_Relation::strictly_intersects();
-
-      // Check if the combination of the point and generator g
-      // satisfies cg.
-      if (point_sp % sp == 0)
-	return Poly_Con_Relation::strictly_intersects();
-
-      break;
 
     case Generator::CLOSURE_POINT:
       // FIX?
@@ -263,12 +305,10 @@ PPL::Grid::relation_with(const Congruence& cg) const {
   }
 
   if (point_sp == 0)
-    // The point, every parameter, and the combination of the point
-    // and each parameter satisfied cg.
+    // Every generator satisfied the cg.
     return Poly_Con_Relation::is_included();
 
-  // The point, every parameter, and the combination of the point
-  // and each parameter failed to satisfy cg.
+  assert(!known_to_intersect);
   return Poly_Con_Relation::is_disjoint();
 }
 
