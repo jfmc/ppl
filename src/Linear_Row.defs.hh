@@ -357,6 +357,11 @@ public:
   //! representation of \p *this.
   void ascii_dump(std::ostream& s) const;
 
+  //! \brief
+  //! Writes to std::cerr an ASCII representation of the internal
+  //! representation of \p *this.
+  void ascii_dump() const;
+
   //! Checks if all the invariants are satisfied.
   bool OK(dimension_type row_size, dimension_type row_capacity) const;
 

@@ -226,6 +226,11 @@ PPL::Linear_Row::ascii_dump(std::ostream& s) const {
   s << std::endl;
 }
 
+void
+PPL::Linear_Row::ascii_dump() const {
+  ascii_dump(std::cerr);
+}
+
 bool
 PPL::Linear_Row::OK(const dimension_type row_size,
 		    const dimension_type row_capacity) const {
