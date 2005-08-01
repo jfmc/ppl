@@ -580,14 +580,15 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
       Generator& gen = sys[row];
       if (gen.is_ray_or_point_or_inequality()) {
 	TEMP_INTEGER(factor);
-	if (gen.is_point())
+	if (gen.is_point()) {
 	  factor = lcm / gen[0];
+	  gen[0] = lcm;
+	}
 	else
 	  factor = lcm / sys[0][0];
 	// FIX skip if divisor == lcm
 	for (dimension_type col = 1; col < gen.size(); ++col)
 	  gen[col] *= factor;
-	gen[0] = lcm;
       }
     }
 
