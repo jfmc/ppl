@@ -65,6 +65,7 @@ TESTS = \
 	equals1 \
 	relations1 \
 	relations2 \
+	affineimage1 \
 	bug1
 
 #
@@ -109,6 +110,8 @@ equals1_SOURCES = equals1.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
+
+affineimage1_SOURCES = affineimage1.cc
 
 bug1_SOURCES = bug1.cc
 bug1_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"
