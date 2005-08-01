@@ -359,7 +359,12 @@ public:
   bool is_equivalent_to(const Generator& y) const;
 
   //! Checks if all the invariants are satisfied.
-  bool OK() const;
+  /*!
+      \param check_normalization
+      If true normalization of generators is checked in the OK
+      assertion.
+  */
+  bool OK(bool check_normalization = true) const;
 
   //! Swaps \p *this with \p y.
   void swap(Generator& y);

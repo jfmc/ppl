@@ -281,7 +281,8 @@ PPL::Generator_System::const_iterator::skip_forward() {
 }
 
 void
-PPL::Generator_System::insert(const Generator& g) {
+PPL::Generator_System::insert(const Generator& g,
+			      bool check_normalization) {
   // We are sure that the matrix has no pending rows
   // and that the new row is not a pending generator.
   assert(num_pending_rows() == 0);
@@ -324,7 +325,7 @@ PPL::Generator_System::insert(const Generator& g) {
       // Inserting the new generator.
       Linear_System::insert(tmp_g);
     }
-  assert(OK());
+  assert(OK(check_normalization));
 }
 
 void
@@ -789,8 +790,9 @@ PPL::Generator_System::satisfied_by_all_generators(const Constraint& c) const {
 
 void
 PPL::Generator_System::affine_image(dimension_type v,
-			  const Linear_Expression& expr,
-			  Coefficient_traits::const_reference denominator) {
+				    const Linear_Expression& expr,
+				    Coefficient_traits::const_reference denominator,
+				    bool grid) {
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
   // nor the epsilon dimension of NNC polyhedra).
@@ -820,6 +822,9 @@ PPL::Generator_System::affine_image(dimension_type v,
 	if (j != v)
 	  x[i][j] *= denominator;
   }
+
+  if (grid)
+    return;
 
   // If the mapping is not invertible we may have transformed
   // valid lines and rays into the origin of the space.
@@ -1005,7 +1010,7 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
 }
 
 bool
-PPL::Generator_System::OK() const {
+PPL::Generator_System::OK(bool check_normalization) const {
   // A Generator_System must be a valid Linear_System; do not check for
   // strong normalization, since this will be done when
   // checking each individual generator.
@@ -1015,7 +1020,7 @@ PPL::Generator_System::OK() const {
   // Checking each generator in the system.
   for (dimension_type i = num_rows(); i-- > 0; ) {
     const Generator& g = (*this)[i];
-    if (!g.OK())
+    if (!g.OK(check_normalization))
       return false;
   }
 

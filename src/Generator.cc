@@ -289,7 +289,7 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
 
 
 bool
-PPL::Generator::OK() const {
+PPL::Generator::OK(bool check_normalization) const {
   const Generator& g = *this;
 
   // Topology consistency check.
@@ -307,14 +307,16 @@ PPL::Generator::OK() const {
   }
 
   // Normalization check.
-  Generator tmp = g;
-  tmp.strong_normalize();
-  if (tmp != g) {
+  if (check_normalization) {
+    Generator tmp = g;
+    tmp.strong_normalize();
+    if (tmp != g) {
 #ifndef NDEBUG
-    std::cerr << "Generators should be strongly normalized!"
-	      << std::endl;
+      std::cerr << "Generators should be strongly normalized!"
+		<< std::endl;
 #endif
-    return false;
+      return false;
+    }
   }
 
   switch (g.type()) {

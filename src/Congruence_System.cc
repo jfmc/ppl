@@ -266,14 +266,13 @@ satisfies_all_congruences(const Generator& g,
   return true;
 }
 
-#if 0
 void
-PPL::Congruence_System::affine_preimage(dimension_type v,
-					const Linear_Expression& expr,
-					Coefficient_traits::const_reference denominator) {
-  // `v' is the index of a column corresponding to
-  // a "user" variable (i.e., it cannot be the inhomogeneous term,
-  // nor the epsilon dimension of NNC polyhedra).
+PPL::Congruence_System::
+affine_preimage(dimension_type v,
+		const Linear_Expression& expr,
+		Coefficient_traits::const_reference denominator) {
+  // `v' is the index of a column corresponding to a "user" variable
+  // (i.e., it cannot be the inhomogeneous term).
   assert(v > 0 && v <= space_dimension());
   assert(expr.space_dimension() <= space_dimension());
   assert(denominator > 0);
@@ -284,7 +283,23 @@ PPL::Congruence_System::affine_preimage(dimension_type v,
   const bool not_invertible = (v >= expr_size || expr[v] == 0);
   Congruence_System& x = *this;
 
-  if (denominator != 1)
+  if (denominator == 1)
+    // Optimized computation only considering columns having indexes <
+    // expr_size.
+    for (dimension_type i = n_rows; i-- > 0; ) {
+      Congruence& row = x[i];
+      Coefficient& row_v = row[v];
+      if (row_v != 0) {
+	for (dimension_type j = expr_size; j-- > 0; )
+	  if (j != v)
+	    add_mul_assign(row[j], row_v, expr[j]);
+	if (not_invertible)
+	  row_v = 0;
+	else
+	  row_v *= expr[v];
+      }
+    }
+  else
     for (dimension_type i = n_rows; i-- > 0; ) {
       Congruence& row = x[i];
       Coefficient& row_v = row[v];
@@ -302,26 +317,7 @@ PPL::Congruence_System::affine_preimage(dimension_type v,
 	  row_v *= expr[v];
       }
     }
-  else
-    // Here `denominator' == 1: optimized computation
-    // only considering columns having indexes < expr_size.
-    for (dimension_type i = n_rows; i-- > 0; ) {
-      Congruence& row = x[i];
-      Coefficient& row_v = row[v];
-      if (row_v != 0) {
-	for (dimension_type j = expr_size; j-- > 0; )
-	  if (j != v)
-	    add_mul_assign(row[j], row_v, expr[j]);
-	if (not_invertible)
-	  row_v = 0;
-	else
-	  row_v *= expr[v];
-      }
-    }
-  // Strong normalization also resets the sortedness flag.
-  x.strong_normalize();
 }
-#endif
 
 void
 PPL::Congruence_System::ascii_dump(std::ostream& s) const {

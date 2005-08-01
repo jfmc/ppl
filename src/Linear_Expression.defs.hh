@@ -33,7 +33,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.types.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
+#include "Congruence_System.types.hh"
 #include "Polyhedron.types.hh"
+#include "Grid.types.hh"
 #include <cstddef>
 
 namespace Parma_Polyhedra_Library {
@@ -282,8 +284,9 @@ public:
 private:
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;
-  friend class Parma_Polyhedra_Library::Polyhedron;
   friend class Parma_Polyhedra_Library::Congruence;
+  friend class Parma_Polyhedra_Library::Polyhedron;
+  friend class Parma_Polyhedra_Library::Grid;
 
   // FIXME: the following friend declaration is only to grant access to
   // Constraint_System::affine_preimage().
@@ -292,6 +295,10 @@ private:
   // FIXME: the following friend declaration is only to grant access to
   // Generator_System::affine_image().
   friend class Parma_Polyhedra_Library::Generator_System;
+
+  // FIXME: the following friend declaration is only to grant access to
+  // Congruence_System::affine_image().
+  friend class Parma_Polyhedra_Library::Congruence_System;
 
   friend void std::swap(Parma_Polyhedra_Library::Linear_Expression& x,
 			Parma_Polyhedra_Library::Linear_Expression& y);

@@ -211,7 +211,12 @@ public:
   //! \brief
   //! Inserts in \p *this a copy of the generator \p g,
   //! increasing the number of space dimensions if needed.
-  void insert(const Generator& g);
+  /*!
+      \param check_normalization
+      If true normalization of generators is checked in the OK
+      assertion.
+  */
+  void insert(const Generator& g, bool check_normalization = true);
 
   //! \brief
   //! Returns the singleton system containing only
@@ -312,8 +317,12 @@ public:
   /*!
     Returns <CODE>true</CODE> if and only if \p *this is a valid
     Linear_System and each row in the system is a valid Generator.
+
+    \param check_normalization
+    If true normalization of generators is checked in the OK
+    assertion.
   */
-  bool OK() const;
+  bool OK(bool check_normalization = true) const;
 
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -460,7 +469,8 @@ private:
   */
   void affine_image(dimension_type v,
 		    const Linear_Expression& expr,
-		    Coefficient_traits::const_reference denominator);
+		    Coefficient_traits::const_reference denominator,
+		    bool grid = false);
 
   //! Returns the number of lines of the system.
   dimension_type num_lines() const;
