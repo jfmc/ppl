@@ -41,7 +41,7 @@ test1() {
   gr.add_congruence((C == -2) / 0);
   gr.add_congruence((A ==  0) / 0);
 
-  gr.affine_image(B, A+2, 1);
+  gr.affine_image(B, A + 2, 1);
 
   if (find_variation(gr))
     exit(1);
@@ -67,7 +67,7 @@ test2() {
   gr.add_congruence((A - B %= 0) / 0);
   gr.add_congruence((A %= 0) / 3);
 
-  gr.affine_image(A, A+B+1);
+  gr.affine_image(A, A + B + 1);
 
   if (find_variation(gr))
     exit(1);
@@ -342,7 +342,7 @@ test9() {
     // Up-to-date congruences.
 
     gr = Grid(2);
-    gr.add_congruence(A == 0);
+    gr.add_congruence((A %= 0) / 3);
     gr.add_congruence((B %= 0) / 3);
 
     gr.affine_image(A, B);
