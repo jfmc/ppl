@@ -1510,7 +1510,6 @@ PPL::Grid::affine_image(const Variable var,
   assert(OK());
 }
 
-#if 0
 void
 PPL::Grid::
 affine_preimage(const Variable var,
@@ -1535,8 +1534,7 @@ affine_preimage(const Variable var,
     return;
 
   if (var_space_dim <= expr_space_dim && expr[var_space_dim] != 0) {
-    // The transformation is invertible:
-    // minimality and saturators are preserved.
+    // The transformation is invertible.
     if (congruences_are_up_to_date()) {
       // Congruence_System::affine_preimage() requires the third argument
       // to be a positive Coefficient.
@@ -1544,6 +1542,7 @@ affine_preimage(const Variable var,
 	con_sys.affine_preimage(var_space_dim, expr, denominator);
       else
 	con_sys.affine_preimage(var_space_dim, -expr, -denominator);
+      clear_congruences_minimized();
     }
     if (generators_are_up_to_date()) {
       // To build the inverse transformation,
@@ -1553,7 +1552,7 @@ affine_preimage(const Variable var,
       if (expr[var_space_dim] > 0) {
 	inverse = -expr;
 	inverse[var_space_dim] = denominator;
-	gen_sys.affine_image(var_space_dim, inverse, expr[var_space_dim]);
+	gen_sys.affine_image(var_space_dim, inverse, expr[var_space_dim], true);
       }
       else {
 	// The new denominator is negative:
@@ -1562,8 +1561,9 @@ affine_preimage(const Variable var,
 	inverse = expr;
 	inverse[var_space_dim] = denominator;
 	negate(inverse[var_space_dim]);
-	gen_sys.affine_image(var_space_dim, inverse, -expr[var_space_dim]);
+	gen_sys.affine_image(var_space_dim, inverse, -expr[var_space_dim], true);
       }
+      clear_generators_minimized();
     }
   }
   else {
@@ -1584,6 +1584,7 @@ affine_preimage(const Variable var,
   assert(OK());
 }
 
+#if 0
 void
 PPL::Grid::
 generalized_affine_image(const Variable var,
