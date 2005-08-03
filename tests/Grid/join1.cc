@@ -1,4 +1,4 @@
-/* Test Grid::join_assign.
+/* Test Grid::join_assign().
    Copyright (C) 2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -225,6 +225,94 @@ test5() {
   exit(1);
 }
 
+// Out-of-date generators in the first grid.
+
+void
+test6() {
+  nout << "test6:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid gr1(3);
+  gr1.add_congruence(A == 0);
+  gr1.add_congruence(B == 0);
+  gr1.add_congruence(C == 0);
+
+  Generator_System gs2;
+  gs2.insert(point(B + 0*C));
+
+  Grid gr2(gs2);
+
+  gr1.join_assign(gr2);
+
+  if (find_variation(gr1))
+    exit(1);
+
+  Generator_System known_gs;
+  known_gs.insert(point());
+  known_gs.insert(point(B + 0*C));
+
+  Grid known_gr(known_gs);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (gr1 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Out-of-date generators in the second grid.
+
+void
+test7() {
+  nout << "test7:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Generator_System gs;
+  gs.insert(point(B + 0*C));
+
+  Grid gr1(gs);
+
+  Grid gr2(3);
+  gr2.add_congruence(A == 0);
+  gr2.add_congruence(B == 0);
+  gr2.add_congruence(C == 0);
+
+  gr1.join_assign(gr2);
+
+  if (find_variation(gr1))
+    exit(1);
+
+  Generator_System known_gs;
+  known_gs.insert(point());
+  known_gs.insert(point(B + 0*C));
+
+  Grid known_gr(known_gs);
+
+  if (find_variation(known_gr))
+    exit(1);
+
+  if (gr1 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -236,6 +324,8 @@ main() TRY {
   test3();
   test4();
   test5();
+  test6();
+  test7();
 
   return 0;
 }
