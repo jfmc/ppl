@@ -1316,12 +1316,12 @@ PPL::Grid::join_assign(const Grid& y) {
     return;
 
   // The generators must be up-to-date.
-  if (!x.generators_are_up_to_date() && x.update_generators()) {
+  if (!x.generators_are_up_to_date() && !x.update_generators()) {
     // Discovered `x' empty when updating generators.
     x = y;
     return;
   }
-  if (!y.generators_are_up_to_date() && y.update_generators())
+  if (!y.generators_are_up_to_date() && !y.update_generators())
     // Discovered `y' empty when updating generators.
     return;
 
