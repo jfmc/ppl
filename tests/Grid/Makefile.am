@@ -68,6 +68,7 @@ TESTS = \
 	affineimage1 \
 	affinepreimage1 \
 	foldspacedims1 \
+	generalizedaffineimage1 \
 	bug1
 
 #
@@ -118,6 +119,8 @@ affineimage1_SOURCES = affineimage1.cc
 affinepreimage1_SOURCES = affinepreimage1.cc
 
 foldspacedims1_SOURCES = foldspacedims1.cc
+
+generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 
 bug1_SOURCES = bug1.cc
 bug1_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"
