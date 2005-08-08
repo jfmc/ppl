@@ -823,14 +823,15 @@ PPL::Generator_System::affine_image(dimension_type v,
 	  x[i][j] *= denominator;
   }
 
-  if (grid)
-    return;
-
   // If the mapping is not invertible we may have transformed
   // valid lines and rays into the origin of the space.
   const bool not_invertible = (v > expr.space_dimension() || expr[v] == 0);
   if (not_invertible)
     x.remove_invalid_lines_and_rays();
+
+  if (grid)
+    return;
+
   // Strong normalization also resets the sortedness flag.
   x.strong_normalize();
 }
