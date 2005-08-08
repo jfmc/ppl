@@ -180,12 +180,12 @@ bool operator!=(const Grid& x, const Grid& y);
     \endcode
     The following code builds the same grid as above,
     but starting from the system of generators specifying
-    the two vertices of the grid and one ray:
+    the two vertices of the grid and one ray: FIX
     \code
   Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(point(0*x + y));
-  gs.insert(ray(x - y));
+  gs.insert(ray(x - y));  FIX
   C_Grid gr(gs);
     \endcode
 
@@ -200,11 +200,11 @@ bool operator!=(const Grid& x, const Grid& y);
     The following code builds the same grid as above,
     but starting from the empty grid in the space \f$\Rset^2\f$
     and inserting the appropriate generators
-    (a point, a ray and a line).
+    (a point, a ray and a line).  FIX
     \code
   C_Grid gr(2, Grid::EMPTY);
   gr.add_generator(point(0*x + 0*y));
-  gr.add_generator(ray(y));
+  gr.add_generator(ray(y)); FIX
   gr.add_generator(line(x));
     \endcode
     Note that, although the above grid has no vertices, we must add
@@ -904,7 +904,7 @@ public:
   void affine_image(Variable var,
 		    const Linear_Expression& expr,
 		    Coefficient_traits::const_reference denominator
-		      = Coefficient_one());
+		    = Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the \ref affine_transformation "affine preimage"
@@ -996,6 +996,65 @@ public:
 		       const Linear_Expression& expr,
 		       Coefficient_traits::const_reference denominator
 		         = Coefficient_one());
+
+  //! \brief
+  //! Assigns to \p *this the image of \p *this with respect to the
+  //! \ref generalized_image "generalized affine transfer function"
+  //! \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
+  //! \pmod{\mathrm{modulus}}\f$.
+  /*!
+    \param var
+    The left hand side variable of the generalized affine transfer function;
+
+    \param expr
+    The numerator of the right hand side affine expression;
+
+    \param denominator
+    The denominator of the right hand side affine expression (optional
+    argument with default value 1.)
+
+    \param modulus
+    The modulus of the congruence lhs %= rhs.  A modulus of zero
+    indicates lhs == rhs.  Optional argument which defaults to one.
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p expr and \p *this are
+    dimension-incompatible or if \p var is not a space dimension of \p *this
+    or if \p *this is a C_Polyhedron and \p relsym is a strict
+    relation symbol.
+  */
+  void generalized_affine_image(Variable var,
+				const Linear_Expression& expr,
+				Coefficient_traits::const_reference denominator
+				= Coefficient_one(),
+				Coefficient_traits::const_reference modulus
+				= Coefficient_one());
+
+  //! \brief
+  //! Assigns to \p *this the image of \p *this with respect to the
+  //! \ref grid_generalized_image "generalized affine transfer function"
+  //! \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
+  //! \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
+  /*!
+    \param lhs
+    The left hand side affine expression;
+
+    \param rhs
+    The right hand side affine expression.
+
+    \param modulus
+    The modulus of the congruence lhs %= rhs.  A modulus of zero
+    indicates lhs == rhs.  Optional argument which defaults to one.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with \p lhs or \p rhs
+    or if \p *this is a C_Polyhedron and \p relsym is a strict
+    relation symbol.
+  */
+  void generalized_affine_image(const Linear_Expression& lhs,
+				const Linear_Expression& rhs,
+				Coefficient_traits::const_reference modulus
+				= Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the result of computing the
@@ -1548,7 +1607,8 @@ private:
   */
   static Coefficient
   normalize_divisors(Generator_System& sys,
-		     Coefficient_traits::const_reference divisor = 0);
+		     Coefficient_traits::const_reference divisor
+		     = Coefficient_one());
 
   //! Normalize all the divisors in \p sys and \p gen_sys.
   /*!

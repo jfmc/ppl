@@ -1584,13 +1584,12 @@ affine_preimage(const Variable var,
   assert(OK());
 }
 
-#if 0
 void
 PPL::Grid::
 generalized_affine_image(const Variable var,
-			 const Relation_Symbol relsym,
 			 const Linear_Expression& expr,
-			 Coefficient_traits::const_reference denominator) {
+			 Coefficient_traits::const_reference denominator,
+			 Coefficient_traits::const_reference modulus) {
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_invalid_argument("generalized_affine_image(v, r, e, d)", "d == 0");
@@ -1602,73 +1601,47 @@ generalized_affine_image(const Variable var,
   if (space_dim < expr_space_dim)
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
 				 "e", expr);
-  // `var' should be one of the dimensions of the polyhedron.
+  // `var' should be one of the dimensions of the grid.
   const dimension_type var_space_dim = var.space_dimension();
   if (space_dim < var_space_dim)
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
 				 "v", var);
 
-  // Strict relation symbols are only admitted for NNC polyhedra.
-  if (is_necessarily_closed()
-      && (relsym == LESS_THAN || relsym == GREATER_THAN))
-    throw_invalid_argument("generalized_affine_image(v, r, e, d)",
-			   "r is a strict relation symbol");
-
-  // Any image of an empty polyhedron is empty.
+  // Any image of an empty grid is empty.
   if (marked_empty())
     return;
 
-  // First compute the affine image.
   affine_image(var, expr, denominator);
-  switch (relsym) {
-  case LESS_THAN_OR_EQUAL:
-    add_generator(ray(-var));
-    break;
-  case EQUAL:
-    // The relation symbol is "==":
-    // this is just an affine image computation.
-    break;
-  case GREATER_THAN_OR_EQUAL:
-    add_generator(ray(var));
-    break;
-  case LESS_THAN:
-  // Intentionally fall through.
-  case GREATER_THAN:
-    {
-      // The relation symbol is strict.
-      assert(!is_necessarily_closed());
-      // While adding the ray, we minimize the generators
-      // in order to avoid adding too many redundant generators later.
-      // FIXME: why not using add_generator_and_minimize() here?
-      Generator_System gs;
-      gs.insert(ray(relsym == GREATER_THAN ? var : -var), false);
-      add_recycled_generators_and_minimize(gs);
-      // We split each point of the generator system into two generators:
-      // a closure point, having the same coordinates of the given point,
-      // and another point, having the same coordinates for all but the
-      // `var' dimension, which is displaced along the direction of the
-      // newly introduced ray.
-      const dimension_type eps_index = space_dim + 1;
-      for (dimension_type i =  gen_sys.num_rows(); i-- > 0; )
-	if (gen_sys[i].is_point()) {
-	  Generator& g = gen_sys[i];
-	  // Add a `var'-displaced copy of `g' to the generator system.
-	  gen_sys.add_row(g);
-	  if (relsym == GREATER_THAN)
-	    ++gen_sys[gen_sys.num_rows()-1][var_space_dim];
-	  else
-	    --gen_sys[gen_sys.num_rows()-1][var_space_dim];
-	  // Transform `g' into a closure point.
-	  g[eps_index] = 0;
-	}
-      clear_congruences_up_to_date();
-      clear_generators_minimized();
-      gen_sys.set_sorted(false);
-    }
-  }
+
+  if (modulus == 0)
+    return;
+
+  // Modulate dimension `var' according to `modulus'.
+
+  generators_are_up_to_date() || minimize();
+
+  // Test if minimization, possibly in affine_image, found an empty
+  // grid.
+  if (marked_empty())
+    return;
+
+  // Insert a strongly-normalized point that will pass assertions.
+  gen_sys.insert(point(), false);
+  // Update the inserted point to the required parameter.
+  Generator& inserted_g = gen_sys[gen_sys.num_rows()-1];
+  inserted_g[0] = 0;		// Set inserted_g to a ray.
+  if (modulus < 0)
+    inserted_g[var.space_dimension()] = -modulus;
+  else
+    inserted_g[var.space_dimension()] = modulus;
+
+  clear_generators_minimized();
+  clear_congruences_up_to_date();
+
   assert(OK());
 }
 
+#if 0
 void
 PPL::Grid::generalized_affine_image(const Linear_Expression& lhs,
 				    const Relation_Symbol relsym,
