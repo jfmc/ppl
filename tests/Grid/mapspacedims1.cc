@@ -26,6 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
+#define find_variation find_variation_template<Grid>
+
 namespace {
 
 #if NOISY
@@ -58,6 +60,9 @@ test1() {
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr,known_gr);
+
   exit(1);
 }
 
@@ -98,6 +103,9 @@ test2() {
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr,known_gr);
+
   exit(1);
 }
 
@@ -136,6 +144,9 @@ test3() {
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr,known_gr);
+
   exit(1);
 }
 
@@ -173,6 +184,9 @@ test4() {
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr,known_gr);
+
   exit(1);
 }
 
@@ -206,6 +220,9 @@ test5() {
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr,known_gr);
+
   exit(1);
 }
 
@@ -246,6 +263,9 @@ test6() {
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr,known_gr);
+
   exit(1);
 }
 
@@ -283,6 +303,9 @@ test7() {
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr,known_gr);
+
   exit(1);
 }
 
@@ -308,6 +331,50 @@ test8() {
   nout << "Grid should equal known grid." << endl
        << "grid:" << endl << gr << endl
        << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr,known_gr);
+
+  exit(1);
+}
+
+// A minimized grid in which the point contains factors and the
+// divisor is greater than one.
+
+void
+test9() {
+  nout << "test9:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  PFunction function;
+  function.insert(0, 1);
+  function.insert(1, 0);
+
+  Grid gr(3, Grid::EMPTY);
+  gr.add_generator(point(4*A, 2));
+  gr.add_generator(point(4*A + B, 2));
+
+  // Force normalization.
+  if (find_variation(gr))
+    exit(1);
+
+  gr.map_space_dimensions(function);
+
+  Grid known_gr(2, Grid::EMPTY);
+  known_gr.add_generator(point(4*B, 2));
+  known_gr.add_generator(point(4*B + A, 2));
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << "grid:" << endl << gr << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr,known_gr);
+
   exit(1);
 }
 
@@ -327,6 +394,7 @@ main() TRY {
   test6();
   test7();
   test8();
+  test9();
 
   return 0;
 }
