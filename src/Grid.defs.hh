@@ -421,7 +421,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  explicit Grid(Generator_System& gs);
+  explicit Grid(Generator_System& gs, const bool convert_rays_to_lines = true);
 
   //! Ordinary copy-constructor.
   Grid(const Grid& y);
@@ -1392,8 +1392,17 @@ private:
 
     \param gs
     The system of generators defining the grid.
+
+    \param convert_rays_to_lines
+    If true then rays in gs are converted to lines, else they are left
+    as rays (which is the internal representation of parameters).
+    Rays should only occur in gs when gs comes from another domain
+    (e.g. Polyhedron), in which case it makes more sense to convert
+    the rays to lines.  A value of false is used internally.
   */
-  void construct(const Generator_System& gs);
+  // FIX the convert_rays_to_lines description above
+  void construct(const Generator_System& gs,
+		 const bool convert_rays_to_lines = true);
 
   //! \name Private Verifiers: Verify if Individual Flags are Set
   //@{

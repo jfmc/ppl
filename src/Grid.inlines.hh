@@ -79,13 +79,14 @@ Grid::Grid(const Generator_System& gs) {
 }
 
 inline
-Grid::Grid(Generator_System& gs) {
+Grid::Grid(Generator_System& gs,
+	   const bool convert_rays_to_lines) {
   if (gs.space_dimension() > max_space_dimension())
     throw_space_dimension_overflow("Grid(gs)",
 				   "the space dimension of gs "
 				   "exceeds the maximum allowed "
 				   "space dimension");
-  construct(gs);
+  construct(gs, convert_rays_to_lines);
 }
 
 inline
@@ -437,22 +438,28 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
       break;
     case Generator::RAY:
       if (!all_zeroes) {
-	//new_gensys.insert(ray(e));
-	new_gensys.insert(point(e));
-	new_gensys[new_gensys.num_rows() - 1][0] = 0;
+	// Inserting a point is safe, even with the normalization in
+	// `point', as the divisor is 1.
+	new_gensys.insert(point(e), false);
+	new_gensys[new_gensys.num_rows()-1][0] = 0;
       }
       break;
     case Generator::POINT:
       // A point in the origin has all zero homogeneous coefficients.
-      new_gensys.insert(point(e, old_g.divisor()));
+      // Inserting the point is safe, even with the normalization in
+      // `point', as the divisor is 1.
+      new_gensys.insert(point(e));
+      new_gensys[new_gensys.num_rows()-1][0] = old_g.divisor();
       break;
     case Generator::CLOSURE_POINT:
     default:
       assert(0);
     }
   }
-  Grid new_grid(new_gensys);
+
+  Grid new_grid(new_gensys, false);
   std::swap(*this, new_grid);
+
   assert(OK(true));
 }
 
