@@ -356,7 +356,7 @@ test9() {
   gr.add_generator(point(4*A, 2));
   gr.add_generator(point(4*A + B, 2));
 
-  // Force normalization.
+  // Force minimization.
   if (find_variation(gr))
     exit(1);
 
