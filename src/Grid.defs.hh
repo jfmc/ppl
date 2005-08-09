@@ -1394,11 +1394,11 @@ private:
     The system of generators defining the grid.
 
     \param convert_rays_to_lines
-    If true then rays in gs are converted to lines, else they are left
-    as rays (which is the internal representation of parameters).
-    Rays should only occur in gs when gs comes from another domain
-    (e.g. Polyhedron), in which case it makes more sense to convert
-    the rays to lines.  A value of false is used internally.
+    If true then rays in \p gs are converted to lines, else they are
+    left as rays (which is the internal representation of parameters).
+    Rays should only occur in \p gs when \p gs comes from another
+    domain (e.g. Polyhedron), in which case it makes more sense to
+    convert the rays to lines.  A value of false is used internally.
   */
   // FIX the convert_rays_to_lines description above
   void construct(const Generator_System& gs,
