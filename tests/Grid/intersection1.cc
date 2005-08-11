@@ -337,9 +337,6 @@ test8() {
   Grid gr2(3, Grid::EMPTY);
   gr2.add_generators(gs2);
 
-  if (find_variation(gr1) || find_variation(gr2))
-    exit(1);
-
   gr1.intersection_assign(gr2);
 
   if (find_variation(gr1))
