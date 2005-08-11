@@ -935,7 +935,7 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
   }
 
   // The congruences are required.
-  if (!congruences_are_up_to_date() && update_congruences()) {
+  if (!congruences_are_up_to_date() && !update_congruences()) {
     set_empty();
     assert(OK());
     return;
@@ -1005,7 +1005,7 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   if (marked_empty())
     return false;
 
-  if (!congruences_are_up_to_date() && update_congruences()) {
+  if (!congruences_are_up_to_date() && !update_congruences()) {
     set_empty();
     assert(OK());
     return false;
@@ -1270,10 +1270,10 @@ PPL::Grid::intersection_assign(const Grid& y) {
     return;
 
   // The congruences must be up-to-date.
-  if (!x.congruences_are_up_to_date() && x.update_congruences())
+  if (!x.congruences_are_up_to_date() && !x.update_congruences())
     // Discovered `x' empty when updating congruences.
     return;
-  if (!y.congruences_are_up_to_date() && y.update_congruences()) {
+  if (!y.congruences_are_up_to_date() && !y.update_congruences()) {
     // Discovered `y' empty when updating congruences.
     x.set_empty();
     return;
@@ -1641,116 +1641,81 @@ generalized_affine_image(const Variable var,
   assert(OK());
 }
 
-#if 0
 void
-PPL::Grid::generalized_affine_image(const Linear_Expression& lhs,
-				    const Relation_Symbol relsym,
-				    const Linear_Expression& rhs) {
+PPL::Grid::
+generalized_affine_image(const Linear_Expression& lhs,
+			 const Linear_Expression& rhs,
+			 Coefficient_traits::const_reference modulus) {
   // Dimension-compatibility checks.
-  // The dimension of `lhs' should not be greater than the dimension
-  // of `*this'.
+  // The dimension of `lhs' should be at most the dimension of
+  // `*this'.
   dimension_type lhs_space_dim = lhs.space_dimension();
   if (space_dim < lhs_space_dim)
     throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
 				 "e1", lhs);
-  // The dimension of `rhs' should not be greater than the dimension
-  // of `*this'.
+  // The dimension of `rhs' should be at most the dimension of
+  // `*this'.
   const dimension_type rhs_space_dim = rhs.space_dimension();
   if (space_dim < rhs_space_dim)
     throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
 				 "e2", rhs);
 
-  // Strict relation symbols are only admitted for NNC polyhedra.
-  if (is_necessarily_closed()
-      && (relsym == LESS_THAN || relsym == GREATER_THAN))
-    throw_invalid_argument("generalized_affine_image(e1, r, e2)",
-			   "r is a strict relation symbol");
-
-  // Any image of an empty polyhedron is empty.
+  // Any image of an empty grid is empty.
   if (marked_empty())
     return;
+
+  TEMP_INTEGER(mod);
+  if (modulus < 0)
+    mod = -modulus;
+  else
+    mod = modulus;
 
   // Compute the actual space dimension of `lhs',
   // i.e., the highest dimension having a non-zero coefficient in `lhs'.
   for ( ; lhs_space_dim > 0; lhs_space_dim--)
     if (lhs.coefficient(Variable(lhs_space_dim - 1)) != 0)
       break;
-  // If all variables have a zero coefficient, then `lhs' is a constant:
-  // we can simply add the congruence `lhs relsym rhs'.
   if (lhs_space_dim == 0) {
-    switch (relsym) {
-    case LESS_THAN:
-      add_congruence(lhs < rhs);
-      break;
-    case LESS_THAN_OR_EQUAL:
-      add_congruence(lhs <= rhs);
-      break;
-    case EQUAL:
-      add_congruence(lhs == rhs);
-      break;
-    case GREATER_THAN_OR_EQUAL:
-      add_congruence(lhs >= rhs);
-      break;
-    case GREATER_THAN:
-      add_congruence(lhs > rhs);
-      break;
-    }
+    // All variables have zero coefficients, so `lhs' is a constant.
+    add_congruence((lhs %= rhs) / mod);
     return;
   }
 
-  // Gather in `new_gs' the collections of all the lines having
-  // the direction of variables occurring in `lhs'.
-  // While at it, check whether or not there exists a variable
-  // occurring in both `lhs' and `rhs'.
+  // Gather in `new_gs' the collections of all the lines having the
+  // direction of variables occurring in `lhs'.  While at it, check
+  // whether there exists a variable occurring in both `lhs' and
+  // `rhs'.
   Generator_System new_lines;
-  bool lhs_vars_intersects_rhs_vars = false;
+  bool lhs_vars_intersect_rhs_vars = false;
   for (dimension_type i = lhs_space_dim; i-- > 0; )
     if (lhs.coefficient(Variable(i)) != 0) {
       new_lines.insert(line(Variable(i)), false);
       if (rhs.coefficient(Variable(i)) != 0)
-	lhs_vars_intersects_rhs_vars = true;
+	lhs_vars_intersect_rhs_vars = true;
     }
 
-  if (lhs_vars_intersects_rhs_vars) {
+  if (lhs_vars_intersect_rhs_vars) {
     // Some variables in `lhs' also occur in `rhs'.
-    // To ease the computation, we add and additional dimension.
+    // To ease the computation, add an additional dimension.
     const Variable new_var = Variable(space_dim);
     add_space_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to the right hand side.
-    // (we force minimization because we will need the generators).
-    // FIXME: why not use add_congruence_and_minimize() here?
-    Congruence_System new_cgs1;
-    new_cgs1.insert(new_var == rhs);
-    add_recycled_congruences_and_minimize(new_cgs1);
+    // TODO: use add_congruence_and_minimize() when it has been updated
+    Congruence_System new_cgs1(new_var == rhs);
+    if (add_recycled_congruences_and_minimize(new_cgs1)) {
+      // The grid still contains points.
 
-    // Cylindrificate on all the variables occurring in the left hand side
-    // (we force minimization because we will need the congruences).
-    add_recycled_generators_and_minimize(new_lines);
+      // Cylindrificate on all the variables occurring in the left
+      // hand side expression.
+      add_recycled_generators(new_lines);
 
-    // Constrain the new dimension so that it is related to
-    // the left hand side as dictated by `relsym'
-    // (we force minimization because we will need the generators).
-    // FIXME: why not use add_congruence_and_minimize() here?
-    Congruence_System new_cgs2;
-    switch (relsym) {
-    case LESS_THAN:
-      new_cgs2.insert(lhs < new_var);
-      break;
-    case LESS_THAN_OR_EQUAL:
-      new_cgs2.insert(lhs <= new_var);
-      break;
-    case EQUAL:
-      new_cgs2.insert(lhs == new_var);
-      break;
-    case GREATER_THAN_OR_EQUAL:
-      new_cgs2.insert(lhs >= new_var);
-      break;
-    case GREATER_THAN:
-      new_cgs2.insert(lhs > new_var);
-      break;
+      // Constrain the new dimension so that it is congruent to the left
+      // hand side expression modulo `mod'.
+      // TODO: use add_congruence() when it has been updated
+      Congruence_System new_cgs2((lhs %= new_var) / mod);
+      add_recycled_congruences(new_cgs2);
     }
-    add_recycled_congruences_and_minimize(new_cgs2);
 
     // Remove the temporarily added dimension.
     remove_higher_space_dimensions(space_dim-1);
@@ -1759,34 +1724,19 @@ PPL::Grid::generalized_affine_image(const Linear_Expression& lhs,
     // `lhs' and `rhs' variables are disjoint:
     // there is no need to add a further dimension.
 
-    // Cylindrificate on all the variables occurring in the left hand side
-    // (we force minimization because we will need the congruences).
-    add_recycled_generators_and_minimize(new_lines);
+    // Cylindrificate on all the variables occurring in the left hand
+    // side expression.
+    add_recycled_generators(new_lines);
 
-    // Constrain the left hand side expression so that it is related to
-    // the right hand side expression as dictated by `relsym'.
-    switch (relsym) {
-    case LESS_THAN:
-      add_congruence(lhs < rhs);
-      break;
-    case LESS_THAN_OR_EQUAL:
-      add_congruence(lhs <= rhs);
-      break;
-    case EQUAL:
-      add_congruence(lhs == rhs);
-      break;
-    case GREATER_THAN_OR_EQUAL:
-      add_congruence(lhs >= rhs);
-      break;
-    case GREATER_THAN:
-      add_congruence(lhs > rhs);
-      break;
-    }
+    // Constrain the left hand side expression so that it is congruent to
+    // the right hand side expression modulo `mod'.
+    add_congruence((lhs %= rhs) / mod);
   }
 
   assert(OK());
 }
 
+#if 0
 void
 PPL::Grid::time_elapse_assign(const Grid& y) {
   Grid& x = *this;
