@@ -46,9 +46,6 @@ test1() {
   Grid gr1(cgs1);
   Grid gr2(cgs2);
 
-  if (find_variation(gr1) || find_variation(gr2))
-    exit(1);
-
   gr1.intersection_assign_and_minimize(gr2);
 
   if (find_variation(gr1))
@@ -59,9 +56,6 @@ test1() {
   known_cgs.insert((2*A %= 0) / 2);
 
   Grid known_gr(known_cgs);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr1 == known_gr)
     return;
@@ -89,18 +83,12 @@ test2() {
   Grid gr1(3, Grid::EMPTY);
   Grid gr2(cgs);
 
-  if (find_variation(gr1) || find_variation(gr2))
-    exit(1);
-
   gr1.intersection_assign_and_minimize(gr2);
 
   if (find_variation(gr1))
     exit(1);
 
   Grid known_gr(3, Grid::EMPTY);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr1 == known_gr)
     return;
@@ -128,18 +116,12 @@ test3() {
   Grid gr1(cgs);
   Grid gr2(3, Grid::EMPTY);
 
-  if (find_variation(gr1) || find_variation(gr2))
-    exit(1);
-
   gr1.intersection_assign_and_minimize(gr2);
 
   if (find_variation(gr1))
     exit(1);
 
   Grid known_gr(3, Grid::EMPTY);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr1 == known_gr)
     return;
@@ -168,10 +150,7 @@ test4() {
   Grid gr1(3, Grid::UNIVERSE);
   Grid gr2(cgs);
 
-  if (find_variation(gr1) || find_variation(gr2))
-    exit(1);
-
-  gr1.intersection_assign(gr2);
+  gr1.intersection_assign_and_minimize(gr2);
 
   if (find_variation(gr1))
     exit(1);
@@ -181,9 +160,6 @@ test4() {
   known_cgs.insert((5*A + 3*B + C %= 7) / 9);
 
   Grid known_gr(known_cgs);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr1 == known_gr)
     return;
@@ -212,10 +188,7 @@ test5() {
   Grid gr1(cgs);
   Grid gr2(3, Grid::UNIVERSE);
 
-  if (find_variation(gr1) || find_variation(gr2))
-    exit(1);
-
-  gr1.intersection_assign(gr2);
+  gr1.intersection_assign_and_minimize(gr2);
 
   if (find_variation(gr1))
     exit(1);
@@ -225,9 +198,6 @@ test5() {
   known_cgs.insert((2*B %= 1) / 3);
 
   Grid known_gr(known_cgs);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr1 == known_gr)
     return;
@@ -248,18 +218,12 @@ test6() {
   Grid gr1(0);
   Grid gr2(0);
 
-  if (find_variation(gr1) || find_variation(gr2))
-    exit(1);
-
-  gr1.intersection_assign(gr2);
+  gr1.intersection_assign_and_minimize(gr2);
 
   if (find_variation(gr1))
     exit(1);
 
   Grid known_gr(0);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr1 == known_gr)
     return;
@@ -296,9 +260,6 @@ test7() {
   Grid gr2(3, Grid::EMPTY);
   gr2.add_generators(gs2);
 
-  if (find_variation(gr1) || find_variation(gr2))
-    exit(1);
-
   gr1.intersection_assign_and_minimize(gr2);
 
   if (find_variation(gr1))
@@ -310,9 +271,6 @@ test7() {
   known_cgs.insert((B == 0) / 0);
 
   Grid known_gr(known_cgs);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr1 == known_gr)
     return;
