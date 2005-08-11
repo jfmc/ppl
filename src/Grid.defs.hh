@@ -1010,12 +1010,13 @@ public:
     The numerator of the right hand side affine expression;
 
     \param denominator
-    The denominator of the right hand side affine expression (optional
-    argument with default value 1.)
+    The denominator of the right hand side affine expression.
+    Optional argument with an automatic value of one.
 
     \param modulus
     The modulus of the congruence lhs %= rhs.  A modulus of zero
-    indicates lhs == rhs.  Optional argument which defaults to one.
+    indicates lhs == rhs.  Optional argument with an automatic value
+    of one.
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
@@ -1033,18 +1034,18 @@ public:
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
   //! \ref grid_generalized_image "generalized affine transfer function"
-  //! \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
-  //! \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
+  //! \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
   /*!
     \param lhs
-    The left hand side affine expression;
+    The left hand side affine expression.
 
     \param rhs
     The right hand side affine expression.
 
     \param modulus
     The modulus of the congruence lhs %= rhs.  A modulus of zero
-    indicates lhs == rhs.  Optional argument which defaults to one.
+    indicates lhs == rhs.  Optional argument with an automatic value
+    of one.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with \p lhs or \p rhs
