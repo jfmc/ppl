@@ -688,6 +688,28 @@ test21() {
   exit(1);
 }
 
+void
+test22() {
+  nout << "test22:" << endl;
+
+  Grid gr(2);
+  gr.add_congruence(A - B == 0);
+
+  gr.generalized_affine_image(2*A - 2*B, A - B, 5);
+
+  Grid known_gr(2);
+  known_gr.add_congruence((2*A - 2*B %= 0) / 5);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -717,6 +739,7 @@ main() TRY {
   test19();
   test20();
   test21();
+  test22();
 
   return 0;
 }
