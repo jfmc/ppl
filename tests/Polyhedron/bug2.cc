@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
+using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #ifndef NOISY
 #define NOISY 1
@@ -48,6 +49,7 @@ main() TRY {
        i != cs_end;
        ++i)
     ++num_constraints;
+  ph.ascii_dump(cout);
   const Generator_System& gs = ph.generators();
   unsigned num_points = 0;
   for (Generator_System::const_iterator i = gs.begin(), gs_end = gs.end();
