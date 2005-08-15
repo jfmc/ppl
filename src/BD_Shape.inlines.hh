@@ -34,6 +34,39 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+template <typename T, typename Policy>
+inline void
+numer_denom(const Checked_Number<T, Policy>& from,
+	    Coefficient& num, Coefficient& den) {
+  assert(!is_not_a_number(from)
+	 && !is_minus_infinity(from)
+	 && !is_plus_infinity(from));
+  mpq_class q;
+  Checked::assign<Checked::Transparent_Policy>(q, raw_value(from),
+					       ROUND_IGNORE);
+  q.canonicalize();
+  num = q.get_num();
+  den = q.get_den();
+}
+
+//! Divides \p x by \p y into \p to, rounding the result towards plus infinity.
+template <typename T, typename Policy>
+inline void
+div_round_up(Checked_Number<T, Policy>& to,
+	     const Coefficient& x,
+	     const Coefficient& y) {
+  Coefficient q;
+  Result r = Checked::div<Check_Overflow_Policy>(raw_value(q),
+						 raw_value(x),
+						 raw_value(y),
+						 ROUND_UP);
+  if (r == V_POS_OVERFLOW) {
+    to = PLUS_INFINITY;
+    return;
+  }
+  assign(to, q, ROUND_UP);
+}
+
 //! Assigns to \p x the minimum between \p x and \p y.
 template <typename T>
 inline void
@@ -676,7 +709,7 @@ BD_Shape<T>::is_empty() const {
       const DB_Row<T>& dbm_j = dbm[j];
       T& z_j = z[j];
       for (dimension_type h = 0; h <= space_dim; ++h) {
-	add_round_up(sum1, dbm_j[h], z_j);
+	assign_add(sum1, dbm_j[h], z_j, ROUND_UP);
 	min_assign(z[h], sum1);
       }
     }
@@ -690,7 +723,7 @@ BD_Shape<T>::is_empty() const {
     const DB_Row<T>& dbm_j = dbm[j];
     T& z_j = z[j];
     for (dimension_type h = 0; h <= space_dim; ++h) {
-      add_round_up(sum2, dbm_j[h], z_j);
+      assign_add(sum2, dbm_j[h], z_j, ROUND_UP);
       if (z[h] > sum2) {
 	Status& nstatus = const_cast<Status&>(status);
 	nstatus.set_empty();
@@ -757,8 +790,8 @@ BD_Shape<T>::is_transitively_reduced() const {
     const DB_Row<T>& dbm_i = x_copy.dbm[i];
     for (dimension_type j = i + 1; j <= space_dim; ++j) {
       T negated_dbm_ji;
-      if (exact_neg(negated_dbm_ji, x_copy.dbm[j][i]) &&
-	  negated_dbm_ji == dbm_i[j])
+      if (assign_neg(negated_dbm_ji, x_copy.dbm[j][i], ROUND_IGNORE) == V_EQ
+	  && negated_dbm_ji == dbm_i[j])
 	// Two equivalent variables have got the same leader
 	// (the smaller variable).
 	leader[j] = leader[i];
@@ -782,7 +815,7 @@ BD_Shape<T>::is_transitively_reduced() const {
 	    if (leader[j] == j) {
 	      const T& x_i_j = x_i[j];
 	      if (!is_plus_infinity(x_i_j)) {
-		add_round_up(c, x_i_k, x_k[j]);
+		assign_add(c, x_i_k, x_k[j], ROUND_UP);
 		if (x_i_j >= c)
 		  return false;
 	      }
@@ -1108,7 +1141,7 @@ BD_Shape<T>::relation_with(const Generator& g) const {
       T dbm_j_i = dbm[j][i];
       T negated_dbm_ji;
       const bool is_equality
-	= exact_neg(negated_dbm_ji, dbm_j_i)
+	= assign_neg(negated_dbm_ji, dbm_j_i, ROUND_IGNORE) == V_EQ
 	&& negated_dbm_ji == dbm_i_j;
       const bool dbm_i_j_is_infinity = is_plus_infinity(dbm_i_j);
       const bool dbm_j_i_is_infinity = is_plus_infinity(dbm_j_i);
@@ -1246,7 +1279,7 @@ BD_Shape<T>::closure_assign() const {
 	    //
 	    // But if the number 3.21 doesn't exist and we round downward to
 	    // 3.2, we get for x1 a point and not a interval.(3.2 <= x1 <= 3.21).
-	    add_round_up(sum, xdbm_i_k, xdbm_k_j);
+	    assign_add(sum, xdbm_i_k, xdbm_k_j, ROUND_UP);
 	    min_assign(xdbm_i[j], sum);
 	  }
 	}
@@ -1260,7 +1293,7 @@ BD_Shape<T>::closure_assign() const {
     // We can check the emptiness of the system of bounded differences.
     // If the system of bounded differences is empty
     // on the diagonal there is a negative value.
-    if (is_negative(xdbm_h_h))
+    if (xdbm_h_h < 0)
       x.status.set_empty();
     // Fill the diagonal with plus_infinity.
     xdbm_h_h = PLUS_INFINITY;
@@ -1294,8 +1327,8 @@ BD_Shape<T>::transitive_reduction_assign() const {
     const DB_Row<T>& dbm_i = dbm[i];
     for (dimension_type j = i + 1; j <= space_dim; ++j) {
       T negated_dbm_ji;
-      if (exact_neg(negated_dbm_ji, dbm[j][i]) &&
-	  negated_dbm_ji == dbm_i[j])
+      if (assign_neg(negated_dbm_ji, dbm[j][i], ROUND_IGNORE) == V_EQ
+	  && negated_dbm_ji == dbm_i[j])
 	// When there are two equivalent variables, the greater one has
 	// got the other variable as leader.
 	leader[j] = i;
@@ -1318,7 +1351,7 @@ BD_Shape<T>::transitive_reduction_assign() const {
 	  T& x_i_k = x_i[k];
 	  for (dimension_type j = 0; j <= space_dim; ++j) {
 	    if (leader[j] == j) {
-	      add_round_up(c, x_i_k, x_k[j]);
+	      assign_add(c, x_i_k, x_k[j], ROUND_UP);
 	      T& x_i_j = x_i[j];
 	      if (x_i_j >= c)
 		x_i_j = PLUS_INFINITY;
@@ -2479,8 +2512,8 @@ BD_Shape<T>::affine_image(const Variable var,
 	for (dimension_type i = 0; i <= space_dim; ++i) {
 	  T& dbm_v_i = dbm[num_var][i];
 	  T& dbm_i_v = dbm[i][num_var];
-	  add_round_up(dbm_v_i, dbm_v_i, c);
-	  add_round_up(dbm_i_v, dbm_i_v, d);
+	  assign_add(dbm_v_i, dbm_v_i, c, ROUND_UP);
+	  assign_add(dbm_i_v, dbm_i_v, d, ROUND_UP);
 	}
       }
     }
@@ -2506,11 +2539,11 @@ BD_Shape<T>::affine_image(const Variable var,
 	T c;
 	div_round_up(c, -b, denominator);
 	if (!is_plus_infinity(dbm_j_0)) {
-	  add_round_up(dbm_0_v, dbm_j_0, d);
+	  assign_add(dbm_0_v, dbm_j_0, d, ROUND_UP);
 	  status.reset_transitively_closed();
 	}
 	if (!is_plus_infinity(dbm_0_j)) {
-	  add_round_up(dbm_v_0, dbm_0_j, c);
+	  assign_add(dbm_v_0, dbm_0_j, c, ROUND_UP);
 	  status.reset_transitively_closed();
 	}
       }
@@ -2530,7 +2563,7 @@ BD_Shape<T>::affine_image(const Variable var,
     T up_sum;
     T low_sum;
     up_sum = expr.inhomogeneous_term();
-    negate_round_up(low_sum, up_sum);
+    assign_neg(low_sum, up_sum, ROUND_UP);
     
     // Indeces of the variables with value +inf.
     dimension_type up_var_index_inf;
@@ -2554,7 +2587,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	    numer_denom(dbm_0_k, a, c);
 	    T d;
 	    div_round_up(d, a*expr_coeff_var, c);
-	    add_round_up(up_sum, up_sum, d);
+	    assign_add(up_sum, up_sum, d, ROUND_UP);
 	  }
 	  else {
 	    ++up_num_inf; 
@@ -2567,7 +2600,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	    numer_denom(dbm_k_0, a, c);
 	    T d;
 	    div_round_up(d, a*expr_coeff_var, c);
-	    add_round_up(low_sum, low_sum, d);
+	    assign_add(low_sum, low_sum, d, ROUND_UP);
 	  }
 	  else {
 	    ++low_num_inf;
@@ -2586,7 +2619,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	    numer_denom(dbm_k_0, a, c);
 	    T d;
 	    div_round_up(d, a*expr_coeff_var, c);
-	    add_round_up(up_sum, up_sum, d);
+	    assign_add(up_sum, up_sum, d, ROUND_UP);
 	  }
 	  else {
 	    ++up_num_inf;
@@ -2599,7 +2632,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	    numer_denom(dbm_0_k, a, c);
 	    T d;
 	    div_round_up(d, a*expr_coeff_var, c);
-	    add_round_up(low_sum, low_sum, d);
+	    assign_add(low_sum, low_sum, d, ROUND_UP);
 	  }
 	  else {
 	    ++low_num_inf;
@@ -2627,13 +2660,13 @@ BD_Shape<T>::affine_image(const Variable var,
       // 'var - var1'
       // where var1 != var.
       for (dimension_type h = 1; h <= space_dim; ++h)  
-	if (h != num_var) 
-	  if (expr.coefficient(Variable(h-1)) > 0) {
-	    T dbm_0_h = dbm[0][h];
-	    T negate_dbm_0_h;
-	    negate_round_up(negate_dbm_0_h, dbm_0_h);
-	    add_round_up(dbm[h][num_var], negate_dbm_0_h,dbm[0][num_var]);
-	  }
+	if (h != num_var && expr.coefficient(Variable(h-1)) > 0) {
+	  T dbm_0_h = dbm[0][h];
+	  T negate_dbm_0_h;
+	  assign_neg(negate_dbm_0_h, dbm_0_h, ROUND_UP);
+	  assign_add(dbm[h][num_var], negate_dbm_0_h, dbm[0][num_var],
+		     ROUND_UP);
+	}
     }
     else if (up_num_inf == 1)  
       if (up_var_index_inf != num_var) 
@@ -2662,8 +2695,9 @@ BD_Shape<T>::affine_image(const Variable var,
  	  if (expr.coefficient(Variable(h-1)) < 0) {     
 	    T dbm_h_0 = dbm[h][0];
 	    T negate_dbm_h_0;
-	    negate_round_up(negate_dbm_h_0, dbm_h_0);
-	    add_round_up(dbm[num_var][h], negate_dbm_h_0, dbm[num_var][0]);
+	    assign_neg(negate_dbm_h_0, dbm_h_0, ROUND_UP);
+	    assign_add(dbm[num_var][h], negate_dbm_h_0, dbm[num_var][0],
+		       ROUND_UP);
 	  }
     }
     else if (low_num_inf == 1)
@@ -2926,7 +2960,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	  for (dimension_type i = 0; i <= space_dim; ++i) {
 	    n_v[i] = PLUS_INFINITY;
 	    T& dbm_i_v = dbm[i][num_var];
-	    add_round_up(dbm_i_v, dbm_i_v, d);
+	    assign_add(dbm_i_v, dbm_i_v, d, ROUND_UP);
 	  }
 	}
       }
@@ -2947,7 +2981,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	  T d;
 	  div_round_up(d, b, denominator);
 	  if (!is_plus_infinity(dbm_j_0)) {
-	    add_round_up(dbm_0_v, dbm_j_0, d);
+	    assign_add(dbm_0_v, dbm_j_0, d, ROUND_UP);
 	    status.reset_transitively_closed();
 	  }
 	}
@@ -2987,7 +3021,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	  div_round_up(c, -b, denominator);
 	  for (dimension_type i = 0; i <= space_dim; ++i) {
 	    T& dbm_v_i = n_v[i];
-	    add_round_up(dbm_v_i, dbm_v_i, c);
+	    assign_add(dbm_v_i, dbm_v_i, c, ROUND_UP);
 	    dbm[i][num_var] = PLUS_INFINITY;
 	  }
 	}
@@ -3008,7 +3042,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	  T c;
 	  div_round_up(c, -b, denominator);
 	  if (!is_plus_infinity(dbm_0_j)) {
-	    add_round_up(dbm_v_0, dbm_0_j, c);
+	    assign_add(dbm_v_0, dbm_0_j, c, ROUND_UP);
 	    status.reset_transitively_closed();
 	  }
 	}
@@ -3054,7 +3088,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 		numer_denom(dbm_0_k, a, c);
 		T d;
 		div_round_up(d, a*expr_coeff_var, c);
-		add_round_up(up_sum, up_sum, d);
+		assign_add(up_sum, up_sum, d, ROUND_UP);
 	      }
 	      else {
 		++up_num_inf;
@@ -3073,7 +3107,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 		numer_denom(dbm_k_0, a, c);
 		T d;
 		div_round_up(d, a*expr_coeff_var, c);
-		add_round_up(up_sum, up_sum, d);
+		assign_add(up_sum, up_sum, d, ROUND_UP);
 	      }
 	      else {
 		++up_num_inf;
@@ -3100,13 +3134,13 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	  // 'var - var1'
 	  // where var1 != var.
 	  for (dimension_type h = 1; h <= space_dim; ++h)  
-	    if (h != num_var) 
-	      if (expr.coefficient(Variable(h-1)) > 0) {
-		T dbm_0_h = dbm[0][h];
-		T negate_dbm_0_h;
-		negate_round_up(negate_dbm_0_h, dbm_0_h);
-		add_round_up(dbm[h][num_var], negate_dbm_0_h,dbm[0][num_var]);
-	      }
+	    if (h != num_var && expr.coefficient(Variable(h-1)) > 0) {
+	      T dbm_0_h = dbm[0][h];
+	      T negate_dbm_0_h;
+	      assign_neg(negate_dbm_0_h, dbm_0_h, ROUND_UP);
+	      assign_add(dbm[h][num_var], negate_dbm_0_h, dbm[0][num_var],
+			 ROUND_UP);
+	    }
 	}
 	else if (up_num_inf == 1)  
 	  if (up_var_index_inf != num_var) 
@@ -3134,7 +3168,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	T term;
 	term = expr.inhomogeneous_term();
 	T low_sum;
-	negate_round_up(low_sum, term);
+	assign_neg(low_sum, term, ROUND_UP);
 
 	// Index of the variables with value +inf.
 	dimension_type low_var_index_inf;
@@ -3157,7 +3191,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	        numer_denom(dbm_0_k, a, c);
 		T d;
 		div_round_up(d, a*expr_coeff_var, c);
-		add_round_up(low_sum, low_sum, d);
+		assign_add(low_sum, low_sum, d, ROUND_UP);
 	      }
 	      else {
 		++low_num_inf;
@@ -3176,7 +3210,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	   	numer_denom(dbm_0_k, a, c);
 		T d;
 		div_round_up(d, a*expr_coeff_var, c);
-		add_round_up(low_sum, low_sum, d);
+		assign_add(low_sum, low_sum, d, ROUND_UP);
 	      }
 	      else {
 		++low_num_inf;
@@ -3208,8 +3242,9 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	      if (expr.coefficient(Variable(h-1)) < 0) {     
 		T dbm_h_0 = dbm[h][0];
 		T negate_dbm_h_0;
-		negate_round_up(negate_dbm_h_0, dbm_h_0);
-		add_round_up(dbm[num_var][h], negate_dbm_h_0, dbm[num_var][0]);
+		assign_neg(negate_dbm_h_0, dbm_h_0, ROUND_UP);
+		assign_add(dbm[num_var][h], negate_dbm_h_0, dbm[num_var][0],
+			   ROUND_UP);
 	      }
 	}
 	else if (low_num_inf == 1)
@@ -3529,8 +3564,8 @@ BD_Shape<T>::constraints() const {
 	T dbm_i_j = dbm[i][j];
 	T dbm_j_i = dbm[j][i];
 	T negated_dbm_ji;
-	if (exact_neg(negated_dbm_ji, dbm_j_i) &&
-	    negated_dbm_ji == dbm_i_j) {
+	if (assign_neg(negated_dbm_ji, dbm_j_i, ROUND_IGNORE) == V_EQ
+	    && negated_dbm_ji == dbm_i_j) {
 	  // We have one equality constraint.
 	  Coefficient a;
 	  Coefficient b;
@@ -3616,8 +3651,8 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	  const T& c_i_j = c.dbm[i][j];
 	  const T& c_j_i = c.dbm[j][i];
 	  T negated_c_ji;
-	  if (exact_neg(negated_c_ji, c_j_i) &&
-	      negated_c_ji == c_i_j) {
+	  if (assign_neg(negated_c_ji, c_j_i, ROUND_IGNORE) == V_EQ
+	      && negated_c_ji == c_i_j) {
 	    // We will print an equality.
 	    if (first)
 	      first = false;
@@ -3655,7 +3690,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 		// We have got a constraint with an only Variable.
 		s << Variable(j - 1);
 		T v;
-		negate_round_down(v, c_j_i);
+		assign_neg(v, c_j_i, ROUND_DOWN);
 		s << " >= " << v;
 	      }
 	      else {
@@ -3671,7 +3706,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 		  s << " - ";
 		  s << Variable(i - 1);
 		  T v;
-		  negate_round_down(v, c_j_i);
+		  assign_neg(v, c_j_i, ROUND_DOWN);
 		  s << " >= " << v;
 		}
 	      }
@@ -3699,7 +3734,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 		  s << " - ";
 		  s << Variable(j - 1);
 		  T v;
-		  negate_round_down(v, c_i_j);
+		  assign_neg(v, c_i_j, ROUND_DOWN);
 		  s << " >= " << v;
 		}
 	      }

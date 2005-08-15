@@ -153,9 +153,9 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
   represents the ``not a number'' value.
   
   \code
-    bool is_negative() const
+    bool operator<(const T& x, int y)
   \endcode
-  returns <CODE>true</CODE> if and only if \p *this is negative.
+  returns <CODE>true</CODE> if and only if \p x is less than \p y.
   
   \code
     bool is_nonnegative() const

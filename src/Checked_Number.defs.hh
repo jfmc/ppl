@@ -457,7 +457,7 @@ template <typename T1, typename Policy1,
 	  typename T2, typename Policy2>
 bool
 operator>(const Checked_Number<T1, Policy1>& x,
-	   const Checked_Number<T2, Policy2>& y);
+	  const Checked_Number<T2, Policy2>& y);
 
 //! Less than or equal to operator.
 /*! \relates Checked_Number */
@@ -473,7 +473,7 @@ template <typename T1, typename Policy1,
 	  typename T2, typename Policy2>
 bool
 operator<(const Checked_Number<T1, Policy1>& x,
-	   const Checked_Number<T2, Policy2>& y);
+	  const Checked_Number<T2, Policy2>& y);
 
 //! \brief
 //! Returns \f$-1\f$, \f$0\f$ or \f$1\f$ depending on whether the value
