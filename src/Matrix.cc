@@ -288,7 +288,7 @@ PPL::Matrix::ascii_load(std::istream& s) {
 }
 
 void
-PPL::Matrix::swap_columns(const dimension_type i,  const dimension_type j) {
+PPL::Matrix::swap_columns(const dimension_type i, const dimension_type j) {
   assert(i != j && i < num_columns() && j < num_columns());
   for (dimension_type k = num_rows(); k-- > 0; ) {
     Row& rows_k = rows[k];
