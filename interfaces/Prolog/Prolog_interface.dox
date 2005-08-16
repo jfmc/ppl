@@ -74,33 +74,34 @@ on the use of the interface.
   this will result in enhanced portability at a cost that is, by all means,
   negligible.
 
--  A PPL polyhedron can only be accessed by means of a Prolog term
-   called a <EM>handle</EM>.
-   Note, however, that the data structure of a handle,
-   is implementation-dependent, system-dependent and
-   version-dependent, and, for this reason, deliberately left unspecified.
-   What we do guarantee is that the handle requires very little memory.
+- A PPL polyhedron can only be accessed by means of a Prolog term
+  called a <EM>handle</EM>.
+  Note, however, that the data structure of a handle,
+  is implementation-dependent, system-dependent and
+  version-dependent, and, for this reason, deliberately left unspecified.
+  What we do guarantee is that the handle requires very little memory.
 
--  A Prolog term can be bound to a valid handle by using
-\ref predicates
-   ppl_new_Polyhedron_from_space_dimension/4,
-   ppl_new_Polyhedron_from_Polyhedron/4,
-   ppl_new_Polyhedron_from_constraints/3,
-   ppl_new_Polyhedron_from_generators/3.
-   ppl_new_Polyhedron_from_bounding_box/3.
+- A Prolog term can be bound to a valid handle by using
+  predicates
+\code
+  ppl_new_Polyhedron_from_space_dimension/4,
+  ppl_new_Polyhedron_from_Polyhedron/4,
+  ppl_new_Polyhedron_from_constraints/3,
+  ppl_new_Polyhedron_from_generators/3.
+  ppl_new_Polyhedron_from_bounding_box/3.
 \endcode
-   These predicates will create or copy a PPL polyhedron
-   and construct a valid handle for referencing it.
-   The first argument
-   (in the case of <CODE>ppl_new_Polyhedron_from_Polyhedron/4</CODE>,
-   the first and third arguments) denotes the topology
-   and can be either <CODE>c</CODE> or <CODE>nnc</CODE>
-   indicating a C or NNC polyhedron, respectively.
-   The third argument
-   (in the case of <CODE>ppl_new_Polyhedron_from_Polyhedron/4</CODE>
-   and <CODE>ppl_new_Polyhedron_from_Dimension/4</CODE>,
-   the fourth argument) is a Prolog term that is
-   unified with a new valid handle for accessing this polyhedron.
+  These predicates will create or copy a PPL polyhedron
+  and construct a valid handle for referencing it.
+  The first argument
+  (in the case of <CODE>ppl_new_Polyhedron_from_Polyhedron/4</CODE>,
+  the first and third arguments) denotes the topology
+  and can be either <CODE>c</CODE> or <CODE>nnc</CODE>
+  indicating a C or NNC polyhedron, respectively.
+  The third argument
+  (in the case of <CODE>ppl_new_Polyhedron_from_Polyhedron/4</CODE>
+  and <CODE>ppl_new_Polyhedron_from_Dimension/4</CODE>,
+  the fourth argument) is a Prolog term that is
+  unified with a new valid handle for accessing this polyhedron.
 
 - As soon as a PPL polyhedron is no longer required,
   the memory occupied by it should be released
@@ -137,17 +138,17 @@ on the use of the interface.
   topological compatibility rules stated in Section \ref representation.
 
 - Any application using the PPL should make sure that only the
-intended version(s) of the library are ever used.
-Predicates
+  intended version(s) of the library are ever used.
+  Predicates
 \code
-ppl_version_major/1,
-ppl_version_minor/1,
-ppl_version_revision/1,
-ppl_version_beta/1,
-ppl_version/1,
-ppl_banner.
+  ppl_version_major/1,
+  ppl_version_minor/1,
+  ppl_version_revision/1,
+  ppl_version_beta/1,
+  ppl_version/1,
+  ppl_banner.
 \endcode
-allow run-time checking of information about the version being used.
+  allow run-time checking of information about the version being used.
 
 <H2>PPL Predicate List</H2>
 
