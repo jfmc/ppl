@@ -2396,32 +2396,31 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
 
     // Constrain the new dimension to be equal to the right hand side.
     // (check for emptiness because we will add lines).
-    if (!add_constraint_and_minimize(new_var == rhs))
-      return;
+    if (add_constraint_and_minimize(new_var == rhs)) {
+      // Cylindrificate on all the variables occurring in the left hand side
+      // (we force minimization because we will need the constraints).
+      add_recycled_generators_and_minimize(new_lines);
 
-    // Cylindrificate on all the variables occurring in the left hand side
-    // (we force minimization because we will need the constraints).
-    add_recycled_generators_and_minimize(new_lines);
-
-    // Constrain the new dimension so that it is related to
-    // the left hand side as dictated by `relsym'
-    // (we force minimization because we will need the generators).
-    switch (relsym) {
-    case LESS_THAN:
-      add_constraint_and_minimize(lhs < new_var);
-      break;
-    case LESS_THAN_OR_EQUAL:
-      add_constraint_and_minimize(lhs <= new_var);
-      break;
-    case EQUAL:
-      add_constraint_and_minimize(lhs == new_var);
-      break;
-    case GREATER_THAN_OR_EQUAL:
-      add_constraint_and_minimize(lhs >= new_var);
-      break;
-    case GREATER_THAN:
-      add_constraint_and_minimize(lhs > new_var);
-      break;
+      // Constrain the new dimension so that it is related to
+      // the left hand side as dictated by `relsym'
+      // (we force minimization because we will need the generators).
+      switch (relsym) {
+      case LESS_THAN:
+	add_constraint_and_minimize(lhs < new_var);
+	break;
+      case LESS_THAN_OR_EQUAL:
+	add_constraint_and_minimize(lhs <= new_var);
+	break;
+      case EQUAL:
+	add_constraint_and_minimize(lhs == new_var);
+	break;
+      case GREATER_THAN_OR_EQUAL:
+	add_constraint_and_minimize(lhs >= new_var);
+	break;
+      case GREATER_THAN:
+	add_constraint_and_minimize(lhs > new_var);
+	break;
+      }
     }
     // Remove the temporarily added dimension.
     remove_higher_space_dimensions(space_dim-1);
@@ -2524,32 +2523,31 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
 
     // Constrain the new dimension to be equal to `lhs'
     // (also check for emptiness because we have to add lines).
-    if (!add_constraint_and_minimize(new_var == lhs))
-      return;
+    if (add_constraint_and_minimize(new_var == lhs)) {
+      // Cylindrificate on all the variables occurring in the left hand side
+      // (we force minimization because we will need the constraints).
+      add_recycled_generators_and_minimize(new_lines);
 
-    // Cylindrificate on all the variables occurring in the left hand side
-    // (we force minimization because we will need the constraints).
-    add_recycled_generators_and_minimize(new_lines);
-
-    // Constrain the new dimension so that it is related to
-    // the right hand side as dictated by `relsym'
-    // (we force minimization because we will need the generators).
-    switch (relsym) {
-    case LESS_THAN:
-      add_constraint_and_minimize(new_var < rhs);
-      break;
-    case LESS_THAN_OR_EQUAL:
-      add_constraint_and_minimize(new_var <= rhs);
-      break;
-    case EQUAL:
-      add_constraint_and_minimize(new_var == rhs);
-      break;
-    case GREATER_THAN_OR_EQUAL:
-      add_constraint_and_minimize(new_var >= rhs);
-      break;
-    case GREATER_THAN:
-      add_constraint_and_minimize(new_var > rhs);
-      break;
+      // Constrain the new dimension so that it is related to
+      // the right hand side as dictated by `relsym'
+      // (we force minimization because we will need the generators).
+      switch (relsym) {
+      case LESS_THAN:
+	add_constraint_and_minimize(new_var < rhs);
+	break;
+      case LESS_THAN_OR_EQUAL:
+	add_constraint_and_minimize(new_var <= rhs);
+	break;
+      case EQUAL:
+	add_constraint_and_minimize(new_var == rhs);
+	break;
+      case GREATER_THAN_OR_EQUAL:
+	add_constraint_and_minimize(new_var >= rhs);
+	break;
+      case GREATER_THAN:
+	add_constraint_and_minimize(new_var > rhs);
+	break;
+      }
     }
     // Remove the temporarily added dimension.
     remove_higher_space_dimensions(space_dim-1);
