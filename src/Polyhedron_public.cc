@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Polyhedron.defs.hh"
+#include "../tests/PFunction.hh"
 
 #include <cassert>
 #include <iostream>
@@ -1812,9 +1813,10 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
 }
 
 void
-PPL::Polyhedron::affine_image(const Variable var,
-			      const Linear_Expression& expr,
-			      Coefficient_traits::const_reference denominator) {
+PPL::Polyhedron::
+affine_image(const Variable var,
+	     const Linear_Expression& expr,
+	     Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_invalid_argument("affine_image(v, e, d)", "d == 0");
@@ -1959,7 +1961,7 @@ affine_preimage(const Variable var,
       con_sys.affine_preimage(var_space_dim, expr, denominator);
     else
       con_sys.affine_preimage(var_space_dim, -expr, -denominator);
-
+    // Generators, minimality and saturators are no longer valid.
     clear_generators_up_to_date();
     clear_constraints_minimized();
     clear_sat_c_up_to_date();
@@ -2012,7 +2014,7 @@ bounded_affine_image(const Variable var,
       add_constraint(denominator*var <= lb_expr);
   }
   else if (ub_expr.coefficient(var) == 0) {
-    // Here `var' only occur in `lb_expr'.
+    // Here `var' only occurs in `lb_expr'.
     generalized_affine_image(var,
 			     GREATER_THAN_OR_EQUAL,
 			     lb_expr,
@@ -2024,7 +2026,7 @@ bounded_affine_image(const Variable var,
   }
   else {
     // Here `var' occurs in both `lb_expr' and `ub_expr'.
-    // To ease the computation, we add and additional dimension.
+    // To ease the computation, we add an additional dimension.
     const Variable new_var = Variable(space_dim);
     add_space_dimensions_and_embed(1);
     // Constrain the new dimension to be equal to `ub_expr'.
@@ -2041,6 +2043,83 @@ bounded_affine_image(const Variable var,
       add_constraint_and_minimize(var <= new_var);
     else
       add_constraint_and_minimize(new_var <= var);
+    // Remove the temporarily added dimension.
+    remove_higher_space_dimensions(space_dim-1);
+  }
+  assert(OK());
+}
+
+void
+PPL::Polyhedron::
+bounded_affine_preimage(const Variable var,
+			const Linear_Expression& lb_expr,
+			const Linear_Expression& ub_expr,
+			Coefficient_traits::const_reference denominator) {
+  // The denominator cannot be zero.
+  if (denominator == 0)
+    throw_invalid_argument("bounded_affine_preimage(v, lb, ub, d)", "d == 0");
+
+  // Dimension-compatibility checks.
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
+				 "v", var);
+  // The dimension of `lb_expr' and `ub_expr' should not be
+  // greater than the dimension of `*this'.
+  const dimension_type lb_space_dim = lb_expr.space_dimension();
+  if (space_dim < lb_space_dim)
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+				 "lb", lb_expr);
+  const dimension_type ub_space_dim = ub_expr.space_dimension();
+  if (space_dim < ub_space_dim)
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+				 "ub", ub_expr);
+
+  // Any preimage of an empty polyhedron is empty.
+  if (marked_empty())
+    return;
+
+  // Check whether `var' occurs in neither `lb_expr' nor `ub_expr'.
+  if (lb_expr.coefficient(var) == 0 && ub_expr.coefficient(var) == 0) {
+    if (denominator > 0) {
+      add_constraint(lb_expr <= denominator*var);
+      add_constraint(denominator*var <= ub_expr);
+    }
+    else {
+      add_constraint(ub_expr <= denominator*var);
+      add_constraint(denominator*var <= lb_expr);
+    }
+    // Any image of an empty polyhedron is empty.
+    // Note: DO check for emptyness here, as we will later add a line.
+    if (is_empty())
+      return;
+    add_generator(line(var));
+  }
+  else {
+    // Here `var' occurs in `lb_expr' or `ub_expr'.
+    // To ease the computation, add an additional dimension.
+    const Variable new_var = Variable(space_dim);
+    add_space_dimensions_and_embed(1);
+    // Swap dimensions `var' and `new_var'.
+    std::vector<dimension_type> swapping_cycle;
+    swapping_cycle.push_back(var_space_dim);
+    swapping_cycle.push_back(space_dim);
+    swapping_cycle.push_back(0);
+    if (constraints_are_up_to_date())
+      con_sys.permute_columns(swapping_cycle);
+    if (generators_are_up_to_date())
+      gen_sys.permute_columns(swapping_cycle);
+    // Constrain the new dimension as dictated by `lb_expr' and `ub_expr'.
+    // (we force minimization because we will need the generators).
+    if (denominator > 0) {
+      add_constraint(lb_expr <= denominator*new_var);
+      add_constraint(denominator*new_var <= ub_expr);
+    }
+    else {
+      add_constraint(ub_expr <= denominator*new_var);
+      add_constraint(denominator*new_var <= lb_expr);
+    }
     // Remove the temporarily added dimension.
     remove_higher_space_dimensions(space_dim-1);
   }
@@ -2076,20 +2155,21 @@ generalized_affine_image(const Variable var,
     throw_invalid_argument("generalized_affine_image(v, r, e, d)",
 			   "r is a strict relation symbol");
 
+  // First compute the affine image.
+  affine_image(var, expr, denominator);
+
+  if (relsym == EQUAL)
+    // The affine relation is indeed an affine function.
+    return;
+
   // Any image of an empty polyhedron is empty.
-  // Note: DO check for emptyness here, as we may later add a ray/line.
+  // Note: DO check for emptyness here, as we will later add a ray.
   if (is_empty())
     return;
 
-  // First compute the affine image.
-  affine_image(var, expr, denominator);
   switch (relsym) {
   case LESS_THAN_OR_EQUAL:
     add_generator(ray(-var));
-    break;
-  case EQUAL:
-    // The relation symbol is "==":
-    // this is just an affine image computation.
     break;
   case GREATER_THAN_OR_EQUAL:
     add_generator(ray(var));
@@ -2102,10 +2182,7 @@ generalized_affine_image(const Variable var,
       assert(!is_necessarily_closed());
       // While adding the ray, we minimize the generators
       // in order to avoid adding too many redundant generators later.
-      // FIXME: why not using add_generator_and_minimize() here?
-      Generator_System gs;
-      gs.insert(ray(relsym == GREATER_THAN ? var : -var));
-      add_recycled_generators_and_minimize(gs);
+      add_generator_and_minimize(ray(relsym == GREATER_THAN ? var : -var));
       // We split each point of the generator system into two generators:
       // a closure point, having the same coordinates of the given point,
       // and another point, having the same coordinates for all but the
@@ -2130,7 +2207,115 @@ generalized_affine_image(const Variable var,
       clear_sat_c_up_to_date();
       clear_sat_g_up_to_date();
     }
+    break;
+  case EQUAL:
+    // This case was already dealt with before.
+    throw std::runtime_error("PPL internal error");
   }
+  assert(OK());
+}
+
+void
+PPL::Polyhedron::
+generalized_affine_preimage(const Variable var,
+			    const Relation_Symbol relsym,
+			    const Linear_Expression& expr,
+			    Coefficient_traits::const_reference denominator) {
+  // The denominator cannot be zero.
+  if (denominator == 0)
+    throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
+			   "d == 0");
+
+  // Dimension-compatibility checks.
+  // The dimension of `expr' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type expr_space_dim = expr.space_dimension();
+  if (space_dim < expr_space_dim)
+    throw_dimension_incompatible("generalized_affine_preimage(v, r, e, d)",
+				 "e", expr);
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
+    throw_dimension_incompatible("generalized_affine_preimage(v, r, e, d)",
+				 "v", var);
+
+  // Strict relation symbols are only admitted for NNC polyhedra.
+  if (is_necessarily_closed()
+      && (relsym == LESS_THAN || relsym == GREATER_THAN))
+    throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
+			   "r is a strict relation symbol");
+
+  // Check whether the affine relation is indeed an affine function.
+  if (relsym == EQUAL) {
+    affine_preimage(var, expr, denominator);
+    return;
+  }
+
+  // Compute the reversed relation symbol to simplify later coding.
+  Relation_Symbol reversed_relsym;
+  switch (relsym) {
+  case LESS_THAN:
+    reversed_relsym = GREATER_THAN;
+    break;
+  case LESS_THAN_OR_EQUAL:
+    reversed_relsym = GREATER_THAN_OR_EQUAL;
+    break;
+  case GREATER_THAN_OR_EQUAL:
+    reversed_relsym = LESS_THAN_OR_EQUAL;
+    break;
+  case GREATER_THAN:
+    reversed_relsym = LESS_THAN;
+    break;
+  default:
+    // The EQUAL case has been already dealt with.
+    throw std::runtime_error("PPL internal error");
+    break;
+  }
+
+  // Check whether the preimage of this affine relation can be easily
+  // computed as the image of its inverse relation.
+  Coefficient_traits::const_reference var_coefficient = expr.coefficient(var);
+  if (var_space_dim <= expr_space_dim && var_coefficient != 0) {
+    Linear_Expression inverse_expr
+      = expr - (denominator + var_coefficient) * var;
+    Coefficient inverse_denominator = - var_coefficient;
+    Relation_Symbol inverse_relsym
+      = (sgn(denominator) == sgn(inverse_denominator))
+      ? relsym : reversed_relsym; 
+    generalized_affine_image(var, inverse_relsym, inverse_expr,
+			     inverse_denominator);
+    return;
+  }
+
+  // Here `var_coefficient == 0', so that the preimage cannot
+  // be easily computed by inverting the affine relation.
+  // Shrink the polyhedron by adding the constraint induced
+  // by the affine relation.
+  const Relation_Symbol corrected_relsym
+    = (denominator > 0) ? relsym : reversed_relsym;
+  switch (corrected_relsym) {
+  case LESS_THAN:
+    add_constraint(denominator*var < expr);
+    break;
+  case LESS_THAN_OR_EQUAL:
+    add_constraint(denominator*var <= expr);
+    break;
+  case GREATER_THAN_OR_EQUAL:
+    add_constraint(denominator*var >= expr);
+    break;
+  case GREATER_THAN:
+    add_constraint(denominator*var > expr);
+    break;
+  case EQUAL:
+    // We already dealt with this case.
+    throw std::runtime_error("PPL internal error");
+    break;
+  }
+  // If the shrunk polyhedron is empty, its preimage is empty too.
+  // Note: DO check for emptyness here, as we will later add a line.
+  if (is_empty())
+    return;
+  add_generator(line(var));
   assert(OK());
 }
 
@@ -2190,12 +2375,7 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
     return;
   }
 
-  // Any image of an empty polyhedron is empty.
-  // Note: DO check for emptyness here, as we will add ray/lines.
-  if (is_empty())
-    return;
-
-  // Gather in `new_gs' the collections of all the lines having
+  // Gather in `new_lines' the collections of all the lines having
   // the direction of variables occurring in `lhs'.
   // While at it, check whether or not there exists a variable
   // occurring in both `lhs' and `rhs'.
@@ -2210,16 +2390,14 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
 
   if (lhs_vars_intersects_rhs_vars) {
     // Some variables in `lhs' also occur in `rhs'.
-    // To ease the computation, we add and additional dimension.
+    // To ease the computation, we add an additional dimension.
     const Variable new_var = Variable(space_dim);
     add_space_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to the right hand side.
-    // (we force minimization because we will need the generators).
-    // FIXME: why not use add_constraint_and_minimize() here?
-    Constraint_System new_cs1;
-    new_cs1.insert(new_var == rhs);
-    add_recycled_constraints_and_minimize(new_cs1);
+    // (check for emptiness because we will add lines).
+    if (!add_constraint_and_minimize(new_var == rhs))
+      return;
 
     // Cylindrificate on all the variables occurring in the left hand side
     // (we force minimization because we will need the constraints).
@@ -2228,33 +2406,34 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
     // Constrain the new dimension so that it is related to
     // the left hand side as dictated by `relsym'
     // (we force minimization because we will need the generators).
-    // FIXME: why not use add_constraint_and_minimize() here?
-    Constraint_System new_cs2;
     switch (relsym) {
     case LESS_THAN:
-      new_cs2.insert(lhs < new_var);
+      add_constraint_and_minimize(lhs < new_var);
       break;
     case LESS_THAN_OR_EQUAL:
-      new_cs2.insert(lhs <= new_var);
+      add_constraint_and_minimize(lhs <= new_var);
       break;
     case EQUAL:
-      new_cs2.insert(lhs == new_var);
+      add_constraint_and_minimize(lhs == new_var);
       break;
     case GREATER_THAN_OR_EQUAL:
-      new_cs2.insert(lhs >= new_var);
+      add_constraint_and_minimize(lhs >= new_var);
       break;
     case GREATER_THAN:
-      new_cs2.insert(lhs > new_var);
+      add_constraint_and_minimize(lhs > new_var);
       break;
     }
-    add_recycled_constraints_and_minimize(new_cs2);
-
     // Remove the temporarily added dimension.
     remove_higher_space_dimensions(space_dim-1);
   }
   else {
     // `lhs' and `rhs' variables are disjoint:
     // there is no need to add a further dimension.
+
+    // Any image of an empty polyhedron is empty.
+    // Note: DO check for emptyness here, as we will add lines.
+    if (is_empty())
+      return;
 
     // Cylindrificate on all the variables occurring in the left hand side
     // (we force minimization because we will need the constraints).
@@ -2280,7 +2459,131 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
       break;
     }
   }
+  assert(OK());
+}
 
+void
+PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
+					     const Relation_Symbol relsym,
+					     const Linear_Expression& rhs) {
+  // Dimension-compatibility checks.
+  // The dimension of `lhs' should not be greater than the dimension
+  // of `*this'.
+  dimension_type lhs_space_dim = lhs.space_dimension();
+  if (space_dim < lhs_space_dim)
+    throw_dimension_incompatible("generalized_affine_preimage(e1, r, e2)",
+				 "e1", lhs);
+  // The dimension of `rhs' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type rhs_space_dim = rhs.space_dimension();
+  if (space_dim < rhs_space_dim)
+    throw_dimension_incompatible("generalized_affine_preimage(e1, r, e2)",
+				 "e2", rhs);
+
+  // Strict relation symbols are only admitted for NNC polyhedra.
+  if (is_necessarily_closed()
+      && (relsym == LESS_THAN || relsym == GREATER_THAN))
+    throw_invalid_argument("generalized_affine_preimage(e1, r, e2)",
+			   "r is a strict relation symbol");
+
+  // Any preimage of an empty polyhedron is empty.
+  if (marked_empty())
+    return;
+
+  // Compute the actual space dimension of `lhs',
+  // i.e., the highest dimension having a non-zero coefficient in `lhs'.
+  for ( ; lhs_space_dim > 0; lhs_space_dim--)
+    if (lhs.coefficient(Variable(lhs_space_dim - 1)) != 0)
+      break;
+
+  // If all variables have a zero coefficient, then `lhs' is a constant:
+  // in this case, preimage and image happen to be the same.
+  if (lhs_space_dim == 0) {
+    generalized_affine_image(lhs, relsym, rhs);
+    return;
+  }
+
+  // Gather in `new_lines' the collections of all the lines having
+  // the direction of variables occurring in `lhs'.
+  // While at it, check whether or not there exists a variable
+  // occurring in both `lhs' and `rhs'.
+  Generator_System new_lines;
+  bool lhs_vars_intersects_rhs_vars = false;
+  for (dimension_type i = lhs_space_dim; i-- > 0; )
+    if (lhs.coefficient(Variable(i)) != 0) {
+      new_lines.insert(line(Variable(i)));
+      if (rhs.coefficient(Variable(i)) != 0)
+	lhs_vars_intersects_rhs_vars = true;
+    }
+
+  if (lhs_vars_intersects_rhs_vars) {
+    // Some variables in `lhs' also occur in `rhs'.
+    // To ease the computation, we add an additional dimension.
+    const Variable new_var = Variable(space_dim);
+    add_space_dimensions_and_embed(1);
+
+    // Constrain the new dimension to be equal to `lhs'
+    // (also check for emptiness because we have to add lines).
+    if (!add_constraint_and_minimize(new_var == lhs))
+      return;
+
+    // Cylindrificate on all the variables occurring in the left hand side
+    // (we force minimization because we will need the constraints).
+    add_recycled_generators_and_minimize(new_lines);
+
+    // Constrain the new dimension so that it is related to
+    // the right hand side as dictated by `relsym'
+    // (we force minimization because we will need the generators).
+    switch (relsym) {
+    case LESS_THAN:
+      add_constraint_and_minimize(new_var < rhs);
+      break;
+    case LESS_THAN_OR_EQUAL:
+      add_constraint_and_minimize(new_var <= rhs);
+      break;
+    case EQUAL:
+      add_constraint_and_minimize(new_var == rhs);
+      break;
+    case GREATER_THAN_OR_EQUAL:
+      add_constraint_and_minimize(new_var >= rhs);
+      break;
+    case GREATER_THAN:
+      add_constraint_and_minimize(new_var > rhs);
+      break;
+    }
+    // Remove the temporarily added dimension.
+    remove_higher_space_dimensions(space_dim-1);
+  }
+  else {
+    // `lhs' and `rhs' variables are disjoint:
+    // there is no need to add a further dimension.
+
+    // Constrain the left hand side expression so that it is related to
+    // the right hand side expression as dictated by `relsym'.
+    switch (relsym) {
+    case LESS_THAN:
+      add_constraint(lhs < rhs);
+      break;
+    case LESS_THAN_OR_EQUAL:
+      add_constraint(lhs <= rhs);
+      break;
+    case EQUAL:
+      add_constraint(lhs == rhs);
+      break;
+    case GREATER_THAN_OR_EQUAL:
+      add_constraint(lhs >= rhs);
+      break;
+    case GREATER_THAN:
+      add_constraint(lhs > rhs);
+      break;
+    }
+    // Any image of an empty polyhedron is empty.
+    // Note: DO check for emptyness here, as we will add lines.
+    if (is_empty())
+      return;
+    // Cylindrificate on all the variables occurring in `lhs'.
+    add_recycled_generators(new_lines);
+  }
   assert(OK());
 }
 

@@ -314,7 +314,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   Generator_System gs;
   gs.insert(point(3*x + y +0*z + 2*w));
   C_Polyhedron ph(gs);
-  set<Variable> to_be_removed;
+  Variables_Set to_be_removed;
   to_be_removed.insert(y);
   to_be_removed.insert(z);
   ph.remove_space_dimensions(to_be_removed);
@@ -1036,7 +1036,7 @@ public:
   void poly_difference_assign(const Polyhedron& y);
 
   //! \brief
-  //! Assigns to \p *this the \ref affine_transformation "affine image"
+  //! Assigns to \p *this the \ref affine_function "affine image"
   //! of \p *this under the function mapping variable \p var to the
   //! affine expression specified by \p expr and \p denominator.
   /*!
@@ -1129,7 +1129,7 @@ public:
 		      = Coefficient_one());
 
   //! \brief
-  //! Assigns to \p *this the \ref affine_transformation "affine preimage"
+  //! Assigns to \p *this the \ref affine_function "affine preimage"
   //! of \p *this under the function mapping variable \p var to the
   //! affine expression specified by \p expr and \p denominator.
   /*!
@@ -1221,13 +1221,13 @@ public:
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_image "generalized affine transfer relation"
+  //! \ref generalized_affine_relation "generalized affine relation"
   //! \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
   //! where \f$\mathord{\relsym}\f$ is the relation symbol encoded
   //! by \p relsym.
   /*!
     \param var
-    The left hand side variable of the generalized affine transfer relation;
+    The left hand side variable of the generalized affine relation;
 
     \param relsym
     The relation symbol;
@@ -1252,8 +1252,41 @@ public:
 				  = Coefficient_one());
 
   //! \brief
+  //! Assigns to \p *this the preimage of \p *this with respect to the
+  //! \ref generalized_affine_relation "generalized affine relation"
+  //! \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
+  //! where \f$\mathord{\relsym}\f$ is the relation symbol encoded
+  //! by \p relsym.
+  /*!
+    \param var
+    The left hand side variable of the generalized affine relation;
+
+    \param relsym
+    The relation symbol;
+
+    \param expr
+    The numerator of the right hand side affine expression;
+
+    \param denominator
+    The denominator of the right hand side affine expression (optional
+    argument with default value 1.)
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p expr and \p *this are
+    dimension-incompatible or if \p var is not a space dimension of \p *this
+    or if \p *this is a C_Polyhedron and \p relsym is a strict
+    relation symbol.
+  */
+  void
+  generalized_affine_preimage(Variable var,
+			      const Relation_Symbol relsym,
+			      const Linear_Expression& expr,
+			      Coefficient_traits::const_reference denominator
+			      = Coefficient_one());
+
+  //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_image "generalized affine transfer relation"
+  //! \ref generalized_affine_relation "generalized affine relation"
   //! \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
   //! \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
   /*!
@@ -1276,14 +1309,38 @@ public:
 				const Linear_Expression& rhs);
 
   //! \brief
+  //! Assigns to \p *this the preimage of \p *this with respect to the
+  //! \ref generalized_affine_relation "generalized affine relation"
+  //! \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
+  //! \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
+  /*!
+    \param lhs
+    The left hand side affine expression;
+
+    \param relsym
+    The relation symbol;
+
+    \param rhs
+    The right hand side affine expression.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with \p lhs or \p rhs
+    or if \p *this is a C_Polyhedron and \p relsym is a strict
+    relation symbol.
+  */
+  void generalized_affine_preimage(const Linear_Expression& lhs,
+				   const Relation_Symbol relsym,
+				   const Linear_Expression& rhs);
+
+  //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_image "generalized affine transfer relation"
+  //! \ref bounded_affine_relation "bounded affine relation"
   //! \f$\frac{\mathrm{lb_expr}}{\mathrm{denominator}}
   //!      \leq \mathrm{var}'
   //!      \leq \frac{\mathrm{ub_expr}}{\mathrm{denominator}}\f$.
   /*!
     \param var
-    The variable updated by the generalized affine transfer relation;
+    The variable updated by the affine relation;
 
     \param lb_expr
     The numerator of the lower bounding affine expression;
@@ -1305,6 +1362,37 @@ public:
 			    const Linear_Expression& ub_expr,
 			    Coefficient_traits::const_reference denominator
 			    = Coefficient_one());
+
+  //! \brief
+  //! Assigns to \p *this the preimage of \p *this with respect to the
+  //! \ref bounded_affine_relation "bounded affine relation"
+  //! \f$\frac{\mathrm{lb_expr}}{\mathrm{denominator}}
+  //!      \leq \mathrm{var}'
+  //!      \leq \frac{\mathrm{ub_expr}}{\mathrm{denominator}}\f$.
+  /*!
+    \param var
+    The variable updated by the affine relation;
+
+    \param lb_expr
+    The numerator of the lower bounding affine expression;
+
+    \param ub_expr
+    The numerator of the upper bounding affine expression;
+
+    \param denominator
+    The (common) denominator for the lower and upper bounding
+    affine expressions (optional argument with default value 1.)
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p lb_expr (resp., \p ub_expr)
+    and \p *this are dimension-incompatible or if \p var is not a space
+    dimension of \p *this.
+  */
+  void bounded_affine_preimage(Variable var,
+			       const Linear_Expression& lb_expr,
+			       const Linear_Expression& ub_expr,
+			       Coefficient_traits::const_reference denominator
+			       = Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the result of computing the
