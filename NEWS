@@ -10,6 +10,10 @@ NEWS for version 0.8  (released date to be decided)
 New and Changed Features
 ========================
 
+o  The two generalized_affine_image() methods of class Polyhedron
+   are now matched by corresponding methods for computing preimages
+   of affine relations.
+
 o  Added to class Polyhedron the method
      void bounded_affine_image(Variable v,
                                const Linear_Expression& lb,
@@ -18,6 +22,7 @@ o  Added to class Polyhedron the method
                                  = Coefficient_one());
    computing the image of the polyhedron according to the
    transfer relation lb/d <= v' <= ub/d.
+   Also added the corresponding method for computing preimages.
 
 o  The enumeration
      Polyhedron::Degenerate_Kind
