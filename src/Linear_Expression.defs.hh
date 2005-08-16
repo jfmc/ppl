@@ -252,6 +252,14 @@ public:
   */
   explicit Linear_Expression(const Generator& g);
 
+  //! Builds the linear expression corresponding to congruence \p cg.
+  /*!
+    Given the congruence
+    \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
+    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i + b\f$.
+  */
+  explicit Linear_Expression(const Congruence& cg);
+
   //! Returns the maximum space dimension a Linear_Expression can handle.
   static dimension_type max_space_dimension();
 

@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
 #include "Generator.defs.hh"
+#include "Congruence.defs.hh"
 #include <stdexcept>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -44,6 +45,13 @@ PPL::Linear_Expression::Linear_Expression(const Generator& g)
   // Do not copy the divisor of `g'.
   for (dimension_type i = size(); --i > 0; )
     e[i] = g[i];
+}
+
+PPL::Linear_Expression::Linear_Expression(const Congruence& cg)
+  : Linear_Row(cg.space_dimension() + 1, Linear_Row::Flags()) {
+  Linear_Expression& e = *this;
+  for (dimension_type i = size(); i-- > 0; )
+    e[i] = cg[i];
 }
 
 
