@@ -804,10 +804,12 @@ public:
   bool join_assign_and_minimize(const Grid& y);
 
   //! \brief
-  //! Assigns to \p *this the FIX \ref grid_difference
-  //! "grid-difference" of \p *this and \p y. The result is not
-  //! guaranteed to be reduced.
+  //! Assigns to \p *this the \ref grid_difference "grid-difference"
+  //! of \p *this and \p y.
   /*!
+    The grid difference between grids x and y is the smallest grid
+    containing all the points from x and y that are only in x.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */

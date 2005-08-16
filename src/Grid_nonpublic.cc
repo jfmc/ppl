@@ -414,7 +414,7 @@ PPL::Grid::set_zero_dim_univ() {
 void
 PPL::Grid::set_empty() {
   status.set_empty();
-  // FIX The grid is empty, so throw away the descriptions.
+  // FIX The grid is empty, so clear the descriptions.
   con_sys.clear();
   gen_sys.clear();
 }

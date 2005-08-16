@@ -941,7 +941,7 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
     return;
   }
 
-  // Adjust `cgs' to the right topology and space dimension.
+  // Adjust `cgs' to the right space dimension.
   cgs.increase_space_dimension(space_dim);
 
   // Swap (instead of copying) the coefficients of `cgs' (which is
@@ -1086,18 +1086,13 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
   // NOTE: we already checked for topology compatibility.
   //gs.adjust_topology_and_space_dimension(topology(), space_dim);
   gs.adjust_topology_and_space_dimension(gs.topology(), space_dim); // FIX
-#if 0
-  // For NNC polyhedra, each point must be matched by
-  // the corresponding closure point.
-  if (!is_necessarily_closed())
-    gs.add_corresponding_closure_points();
-#endif
 
   // The generators are required.
   if (!generators_are_up_to_date() && !minimize()) {
     // `minimize' has shown that `*this' is empty.
     // `gs' must contain at least one point.
     if (!gs.has_points())
+      // FIX should this return an empty flag?
       throw_invalid_generators("add_recycled_generators(gs)", "gs");
     gs.unset_pending_rows();
     std::swap(gen_sys, gs);
@@ -1344,7 +1339,7 @@ PPL::Grid::join_assign_and_minimize(const Grid& y) {
   join_assign(y);
   return minimize();
 }
-#if 0
+
 void
 PPL::Grid::grid_difference_assign(const Grid& y) {
   Grid& x = *this;
@@ -1352,83 +1347,65 @@ PPL::Grid::grid_difference_assign(const Grid& y) {
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("poly_difference_assign(y)", "y", y);
 
-  // The difference of a grid `gr' and an empty grid is `gr'.
-  if (y.marked_empty())
-    return;
-  // The difference of an empty grid and a grid is empty.
-  if (x.marked_empty())
+  if (y.marked_empty() || x.marked_empty())
     return;
 
   // If both grids are zero-dimensional, then they are necessarily
-  // universe polyhedra, so that their difference is empty.
+  // universe grids, so the result is empty.
   if (x.space_dim == 0) {
     x.set_empty();
     return;
   }
-
-  // TODO: This is just an executable specification.
-  //       Have to find a more efficient method.
 
   if (y.contains(x)) {
     x.set_empty();
     return;
   }
 
-  Grid new_polyhedron(topology(), x.space_dim, EMPTY);
-
-  // FIX?
-  // Being lazy here is only harmful.
-  x.minimize();
-  y.minimize();
-
-  // FIX could now be empty?
+  Grid new_grid(x.space_dim, EMPTY);
 
   const Congruence_System& y_cgs = y.congruences();
   for (Congruence_System::const_iterator i = y_cgs.begin(),
 	 y_cgs_end = y_cgs.end(); i != y_cgs_end; ++i) {
-    const Congruence& c = *i;
-    assert(!c.is_trivial_true());
-    assert(!c.is_trivial_false());
-    // If the polyhedron `x' is included in the polyhedron defined by
-    // `c', then `c' can be skipped, as adding its complement to `x'
-    // would result in the empty polyhedron.  Moreover, if we operate
-    // on C-polyhedra and `c' is a non-strict inequality, c _must_ be
-    // skipped for otherwise we would obtain a result that is less
-    // precise than the poly-difference.
-    if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
+    const Congruence& cg = *i;
+
+    // The 2-complement cg2 of cg = ((e %= 0) / m) is the congruence
+    // defining the sets of points exactly half-way between successive
+    // hyperplanes e = km and e = (k+1)m, for any integer k; that is,
+    // the hyperplanes defined by 2e = (2k + 1)m, for any integer k.
+    // Thus `cg2' is the congruence ((2e %= m) / 2m).
+
+    // As the grid difference must be a grid, only add the
+    // 2-complement congruence to x if the resulting grid includes all
+    // the points in x that did not satisfy `cg'.
+
+    // The 2-complement of cg can be included in the result only if x
+    // holds points other than those in cg.
+    if (x.relation_with(cg).implies(Poly_Con_Relation::is_included()))
       continue;
-    Grid z = x;
-    const Linear_Expression e = Linear_Expression(c);
-    switch (c.type()) {
-    case Congruence::NONSTRICT_INEQUALITY:
-      if (is_necessarily_closed())
-	z.add_congruence(e <= 0);
-      else
-	z.add_congruence(e < 0);
-      break;
-    case Congruence::STRICT_INEQUALITY:
-      z.add_congruence(e <= 0);
-      break;
-    case Congruence::EQUALITY:
-      if (is_necessarily_closed())
-	// We have already filtered out the case when `x' is included
-	// in `y': the result is `x'.
-	return;
-      else {
-	Grid w = x;
-	w.add_congruence(e < 0);
-	new_polyhedron.poly_hull_assign(w);
-	z.add_congruence(e > 0);
+
+    if (cg.is_proper_congruence()) {
+      const Linear_Expression e = Linear_Expression(cg);
+      // Congruence cg is ((e %= 0) / m).
+      Coefficient_traits::const_reference m = cg.modulus();
+      // If x is included in the grid defined by the congruences cg
+      // and its 2-complement (i.e. the grid defined by the congruence
+      // (2e %= 0) / m) then add the 2-complement to the potential
+      // result.
+      if (x.relation_with((2*e %= 0) / m).implies(Poly_Con_Relation::is_included())) {
+	Grid z = x;
+	z.add_congruence((2*e %= m) / (2*m));
+	new_grid.join_assign(z);
+	continue;
       }
-      break;
     }
-    new_polyhedron.poly_hull_assign(z);
+    return;
   }
-  *this = new_polyhedron;
+
+  *this = new_grid;
 
   assert(OK());
 }
-#endif
 
 void
 PPL::Grid::affine_image(const Variable var,
@@ -1708,6 +1685,7 @@ generalized_affine_image(const Linear_Expression& lhs,
 
       // Cylindrificate on all the variables occurring in the left
       // hand side expression.
+      // FIX this will do a redundant minimized check
       add_recycled_generators(new_lines);
 
       // Constrain the new dimension so that it is congruent to the left
