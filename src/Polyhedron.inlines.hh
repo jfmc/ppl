@@ -679,7 +679,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
     return;
   }
 
-  dimension_type new_space_dimension = pfunc.max_in_codomain() + 1;
+  const dimension_type new_space_dimension = pfunc.max_in_codomain() + 1;
 
   if (new_space_dimension == space_dim) {
     // The partial function `pfunc' is indeed total and thus specifies
