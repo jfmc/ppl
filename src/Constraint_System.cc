@@ -402,9 +402,10 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
 
 
 void
-PPL::Constraint_System::affine_preimage(dimension_type v,
-			     const Linear_Expression& expr,
-			     Coefficient_traits::const_reference denominator) {
+PPL::Constraint_System::
+affine_preimage(dimension_type v,
+		const Linear_Expression& expr,
+		Coefficient_traits::const_reference denominator) {
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
   // nor the epsilon dimension of NNC polyhedra).
