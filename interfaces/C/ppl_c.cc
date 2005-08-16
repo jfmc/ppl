@@ -1955,6 +1955,21 @@ ppl_Polyhedron_bounded_affine_image(ppl_Polyhedron_t ph,
 }
 CATCH_ALL
 
+int
+ppl_Polyhedron_bounded_affine_preimage(ppl_Polyhedron_t ph,
+				       ppl_dimension_type var,
+				       ppl_const_Linear_Expression_t lb,
+				       ppl_const_Linear_Expression_t ub,
+				       ppl_const_Coefficient_t d) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Linear_Expression& llb = *to_const(lb);
+  const Linear_Expression& uub = *to_const(ub);
+  const Coefficient& dd = *to_const(d);
+  pph.bounded_affine_preimage(Variable(var), llb, uub, dd);
+  return 0;
+}
+CATCH_ALL
+
 namespace {
 
 inline Relation_Symbol
@@ -1993,6 +2008,22 @@ ppl_Polyhedron_generalized_affine_image(ppl_Polyhedron_t ph,
 CATCH_ALL
 
 int
+ppl_Polyhedron_generalized_affine_preimage
+(ppl_Polyhedron_t ph,
+ ppl_dimension_type var,
+ enum ppl_enum_Constraint_Type relsym,
+ ppl_const_Linear_Expression_t le,
+ ppl_const_Coefficient_t d) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Linear_Expression& lle = *to_const(le);
+  const Coefficient& dd = *to_const(d);
+  pph.generalized_affine_preimage(Variable(var), relation_symbol(relsym), lle,
+				  dd);
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_Polyhedron_generalized_affine_image_lhs_rhs
 (ppl_Polyhedron_t ph,
  ppl_const_Linear_Expression_t lhs,
@@ -2002,6 +2033,20 @@ ppl_Polyhedron_generalized_affine_image_lhs_rhs
   const Linear_Expression& llhs = *to_const(lhs);
   const Linear_Expression& rrhs = *to_const(rhs);
   pph.generalized_affine_image(llhs, relation_symbol(relsym), rrhs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_generalized_affine_preimage_lhs_rhs
+(ppl_Polyhedron_t ph,
+ ppl_const_Linear_Expression_t lhs,
+ enum ppl_enum_Constraint_Type relsym,
+ ppl_const_Linear_Expression_t rhs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Linear_Expression& llhs = *to_const(lhs);
+  const Linear_Expression& rrhs = *to_const(rhs);
+  pph.generalized_affine_preimage(llhs, relation_symbol(relsym), rrhs);
   return 0;
 }
 CATCH_ALL
