@@ -70,6 +70,7 @@ TESTS = \
 	foldspacedims1 \
 	generalizedaffineimage1 \
 	generalizedaffineimage2 \
+	griddifference1 \
 	bug1
 
 #
@@ -123,6 +124,8 @@ foldspacedims1_SOURCES = foldspacedims1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
+
+griddifference1_SOURCES = griddifference1.cc
 
 bug1_SOURCES = bug1.cc
 bug1_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"
