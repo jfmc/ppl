@@ -70,7 +70,7 @@ ORIGINAL_TESTS = \
 	affineimage6 affineimage7 affineimage8 affineimage9 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	affinepreimage5 affinepreimage6 affinepreimage7 affinepreimage8 \
-	affinepreimage9 affinepreimage10 \
+	affinepreimage9 affinepreimage10 affinepreimage11 \
 	affinetrans \
         append1 append2 \
 	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
@@ -84,7 +84,8 @@ ORIGINAL_TESTS = \
 	bhz03widening1 bhz03widening2 bhz03widening3 bhz03widening4 \
 	bhz03widening5 bhz03widening6 \
 	bounded1 \
-	boundedaffineimage1 boundedaffineimage2 \
+	boundedaffineimage1 boundedaffineimage2 boundedaffineimage3 \
+	boundedaffinepreimage1 boundedaffinepreimage2 boundedaffinepreimage3 \
 	boundedbhrz03extrapolation1 \
 	boundedh79extrapolation1 \
 	boundingbox1 boundingbox2 boundingbox3 boundingbox4 boundingbox5 \
@@ -107,6 +108,8 @@ ORIGINAL_TESTS = \
 	generalizedaffineimage9 generalizedaffineimage10 \
 	generalizedaffineimage11 generalizedaffineimage12 \
 	generalizedaffineimage13 generalizedaffineimage14 \
+	generalizedaffinepreimage1 generalizedaffinepreimage2 \
+	generalizedaffinepreimage3 generalizedaffinepreimage4 \
 	generators1 generators2 generators3 generators4 generators5 \
 	generators6 generators7 \
 	geomcovers1 \
@@ -175,7 +178,7 @@ DERIVED_TESTS = \
 	nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
 	nnc_affinepreimage4 nnc_affinepreimage5 nnc_affinepreimage6 \
 	nnc_affinepreimage7 nnc_affinepreimage8 nnc_affinepreimage9 \
-	nnc_affinepreimage10 \
+	nnc_affinepreimage10 nnc_affinepreimage11 \
 	nnc_affinetrans \
 	nnc_append1 nnc_append2 \
 	nnc_ascii_dump_load1 nnc_ascii_dump_load2 nnc_ascii_dump_load3 \
@@ -187,6 +190,9 @@ DERIVED_TESTS = \
 	nnc_bhrz03widening10 nnc_bhrz03widening11 nnc_bhrz03widening12 \
 	nnc_bounded1 \
 	nnc_boundedaffineimage1 nnc_boundedaffineimage2 \
+	nnc_boundedaffineimage3 \
+	nnc_boundedaffinepreimage1 nnc_boundedaffinepreimage2 \
+	nnc_boundedaffinepreimage3 \
 	nnc_boundedbhrz03extrapolation1 \
 	nnc_boundedh79extrapolation1 \
 	nnc_boundingbox1 nnc_boundingbox3 nnc_boundingbox5 \
@@ -207,6 +213,8 @@ DERIVED_TESTS = \
 	nnc_generalizedaffineimage5 nnc_generalizedaffineimage6 \
 	nnc_generalizedaffineimage11 \
         nnc_generalizedaffineimage13 nnc_generalizedaffineimage14 \
+	nnc_generalizedaffinepreimage1 nnc_generalizedaffinepreimage2 \
+	nnc_generalizedaffinepreimage3 \
 	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
 	nnc_generators5 nnc_generators6 nnc_generators7 \
 	nnc_geomcovers1 \
@@ -337,6 +345,7 @@ affinepreimage7_SOURCES = affinepreimage7.cc
 affinepreimage8_SOURCES = affinepreimage8.cc
 affinepreimage9_SOURCES = affinepreimage9.cc
 affinepreimage10_SOURCES = affinepreimage10.cc
+affinepreimage11_SOURCES = affinepreimage11.cc
 
 affinetrans_SOURCES = affinetrans.cc
 
@@ -385,6 +394,11 @@ bounded1_SOURCES = bounded1.cc
 
 boundedaffineimage1_SOURCES = boundedaffineimage1.cc
 boundedaffineimage2_SOURCES = boundedaffineimage2.cc
+boundedaffineimage3_SOURCES = boundedaffineimage3.cc
+
+boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
+boundedaffinepreimage2_SOURCES = boundedaffinepreimage2.cc
+boundedaffinepreimage3_SOURCES = boundedaffinepreimage3.cc
 
 boundedbhrz03extrapolation1_SOURCES = boundedbhrz03extrapolation1.cc
 
@@ -453,6 +467,11 @@ generalizedaffineimage11_SOURCES = generalizedaffineimage11.cc
 generalizedaffineimage12_SOURCES = generalizedaffineimage12.cc
 generalizedaffineimage13_SOURCES = generalizedaffineimage13.cc
 generalizedaffineimage14_SOURCES = generalizedaffineimage14.cc
+
+generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
+generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
+generalizedaffinepreimage3_SOURCES = generalizedaffinepreimage3.cc
+generalizedaffinepreimage4_SOURCES = generalizedaffinepreimage4.cc
 
 generators1_SOURCES = generators1.cc
 generators2_SOURCES = generators2.cc
@@ -742,6 +761,8 @@ nnc_affinepreimage9_SOURCES = affinepreimage9.cc
 nnc_affinepreimage9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_affinepreimage10_SOURCES = affinepreimage10.cc
 nnc_affinepreimage10_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affinepreimage11_SOURCES = affinepreimage11.cc
+nnc_affinepreimage11_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affinetrans_SOURCES = affinetrans.cc
 nnc_affinetrans_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -795,6 +816,15 @@ nnc_boundedaffineimage1_SOURCES = boundedaffineimage1.cc
 nnc_boundedaffineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_boundedaffineimage2_SOURCES = boundedaffineimage2.cc
 nnc_boundedaffineimage2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_boundedaffineimage3_SOURCES = boundedaffineimage3.cc
+nnc_boundedaffineimage3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
+nnc_boundedaffinepreimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_boundedaffinepreimage2_SOURCES = boundedaffinepreimage2.cc
+nnc_boundedaffinepreimage2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_boundedaffinepreimage3_SOURCES = boundedaffinepreimage3.cc
+nnc_boundedaffinepreimage3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_boundedbhrz03extrapolation1_SOURCES = boundedbhrz03extrapolation1.cc
 nnc_boundedvhrz03extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -883,6 +913,13 @@ nnc_generalizedaffineimage13_SOURCES = generalizedaffineimage13.cc
 nnc_generalizedaffineimage13_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_generalizedaffineimage14_SOURCES = generalizedaffineimage14.cc
 nnc_generalizedaffineimage14_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
+nnc_generalizedaffinepreimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
+nnc_generalizedaffinepreimage2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_generalizedaffinepreimage3_SOURCES = generalizedaffinepreimage3.cc
+nnc_generalizedaffinepreimage3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_generators1_SOURCES = generators1.cc
 nnc_generators1_CXXFLAGS = $(DERIVED_CXXFLAGS)
