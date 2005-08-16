@@ -32,8 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 void
 PFunction::insert(dim_t x, dim_t y) {
- std::pair<Map::iterator, bool> stat
-   = map.insert(Map::value_type(x, y));
+ std::pair<Map::iterator, bool> stat = map.insert(Map::value_type(x, y));
  if (!stat.second)
    throw std::runtime_error("PFunction::insert(x, y) called"
 			    " with `x' already in domain");
