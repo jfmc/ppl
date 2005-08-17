@@ -1204,11 +1204,13 @@ bhz03widening1 \
 bhz03widening4 \
 bhz03widening6 \
 boundedaffineimage2 \
+boundedaffinepreimage2 \
 boundedbhrz03extrapolation1 \
 foldspacedims1 \
 foldspacedims2 \
 generalizedaffineimage3 \
 generalizedaffineimage7 \
+generalizedaffinepreimage3 \
 mapspacedims2 \
 max_min2 \
 membytes1 \
@@ -1219,8 +1221,10 @@ removespacedims2 \
 smm1 \
 nnc_bgp99extrapolation2 \
 nnc_boundedaffineimage2 \
+nnc_boundedaffinepreimage2 \
 nnc_boundedbhrz03extrapolation1 \
 nnc_generalizedaffineimage3 \
+nnc_generalizedaffinepreimage3 \
 nnc_max_min2 \
 nnc_membytes1 \
 nnc_onepoint \
