@@ -543,14 +543,7 @@ AM_CONDITIONAL(HAVE_SICSTUS_PROLOG, test x$SICSTUS_PROLOG = xsicstus)
 
 # SWI Prolog
 
-AC_CHECK_PROG(SWI_PROLOG, pl, pl)
-if test x"$SWI_PROLOG" = xpl
-then
-AC_CHECK_HEADER(SWI-Prolog.h,
-                [],
-                SWI_PROLOG="")
-fi
-AM_CONDITIONAL(HAVE_SWI_PROLOG, test x$SWI_PROLOG = xpl)
+AC_CHECK_SWI_PROLOG
 
 # XSB
 
