@@ -546,7 +546,7 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
   gen_sys_divisor = gen_sys[row].divisor();
   divisor = normalize_divisors(sys, gen_sys_divisor);
   if (divisor != gen_sys_divisor)
-    // FIX this call can skip the lcm calc
+    // FIX here normalize_divisors can skip the lcm calc
     normalize_divisors(gen_sys, divisor);
 }
 
