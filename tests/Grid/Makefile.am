@@ -70,6 +70,8 @@ TESTS = \
 	foldspacedims1 \
 	generalizedaffineimage1 \
 	generalizedaffineimage2 \
+	generalizedaffinepreimage1 \
+	generalizedaffinepreimage2 \
 	griddifference1 \
 	bug1
 
@@ -124,6 +126,9 @@ foldspacedims1_SOURCES = foldspacedims1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
+
+generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
+generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
 
 griddifference1_SOURCES = griddifference1.cc
 
