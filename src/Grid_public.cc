@@ -1763,7 +1763,9 @@ generalized_affine_image(const Linear_Expression& lhs,
     // `lhs' and `rhs' variables are disjoint:
     // there is no need to add a further dimension.
 
-    // FIX if (is_empty()) return;
+    // Only add the lines and congruence if there are points.
+    if (is_empty())
+      return;
 
     // Cylindrificate on all the variables occurring in the left hand
     // side expression.
