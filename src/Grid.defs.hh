@@ -1034,6 +1034,40 @@ public:
 				= Coefficient_one());
 
   //! \brief
+  //! Assigns to \p *this the preimage of \p *this with respect to the
+  //! \ref generalized_image "generalized affine transfer function"
+  //! \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
+  //! \pmod{\mathrm{modulus}}\f$.
+  /*!
+    \param var
+    The left hand side variable of the generalized affine transfer function;
+
+    \param expr
+    The numerator of the right hand side affine expression;
+
+    \param denominator
+    The denominator of the right hand side affine expression.
+    Optional argument with an automatic value of one.
+
+    \param modulus
+    The modulus of the congruence lhs %= rhs.  A modulus of zero
+    indicates lhs == rhs.  Optional argument with an automatic value
+    of one.
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p expr and \p *this are
+    dimension-incompatible or if \p var is not a space dimension of \p *this
+    or if \p *this is a C_Polyhedron and \p relsym is a strict
+    relation symbol.
+  */
+  void generalized_affine_preimage(Variable var,
+				   const Linear_Expression& expr,
+				   Coefficient_traits::const_reference denominator
+				   = Coefficient_one(),
+				   Coefficient_traits::const_reference modulus
+				   = Coefficient_one());
+
+  //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
   //! \ref grid_generalized_image "generalized affine transfer function"
   //! \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
@@ -1058,6 +1092,33 @@ public:
 				const Linear_Expression& rhs,
 				Coefficient_traits::const_reference modulus
 				= Coefficient_one());
+
+  //! \brief
+  //! Assigns to \p *this the preimage of \p *this with respect to the
+  //! \ref grid_generalized_image "generalized affine transfer
+  //! function" \f$\mathrm{lhs}' = \mathrm{rhs}
+  //! \pmod{\mathrm{modulus}}\f$.
+  /*!
+    \param lhs
+    The left hand side affine expression.
+
+    \param rhs
+    The right hand side affine expression.
+
+    \param modulus
+    The modulus of the congruence lhs %= rhs.  A modulus of zero
+    indicates lhs == rhs.  Optional argument with an automatic value
+    of one.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with \p lhs or \p rhs
+    or if \p *this is a C_Polyhedron and \p relsym is a strict
+    relation symbol.
+  */
+  void generalized_affine_preimage(const Linear_Expression& lhs,
+				   const Linear_Expression& rhs,
+				   Coefficient_traits::const_reference modulus
+				   = Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the result of computing the

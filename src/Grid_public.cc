@@ -1618,6 +1618,67 @@ generalized_affine_image(const Variable var,
   assert(OK());
 }
 
+void PPL::Grid::
+generalized_affine_preimage(const Variable var,
+			    const Linear_Expression& expr,
+			    Coefficient_traits::const_reference denominator,
+			    Coefficient_traits::const_reference modulus) {
+  // The denominator cannot be zero.
+  if (denominator == 0)
+    throw_invalid_argument("generalized_affine_preimage(v, e, d, m)",
+			   "d == 0");
+
+  // The dimension of `expr' should be at most the dimension of
+  // `*this'.
+  const dimension_type expr_space_dim = expr.space_dimension();
+  if (space_dim < expr_space_dim)
+    throw_dimension_incompatible("generalized_affine_preimage(v, e, d, m)",
+				 "e", expr);
+  // `var' should be one of the dimensions of the grid.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
+    throw_dimension_incompatible("generalized_affine_preimage(v, e, d, m)",
+				 "v", var);
+
+  // Check whether the affine relation is an affine function.
+  if (modulus == 0) {
+    affine_preimage(var, expr, denominator);
+    return;
+  }
+
+  // Check whether the preimage of this affine relation can be easily
+  // computed as the image of its inverse relation.
+  Coefficient_traits::const_reference var_coefficient = expr.coefficient(var);
+  if (var_space_dim <= expr_space_dim && var_coefficient != 0) {
+    Linear_Expression inverse_expr
+      = expr - (denominator + var_coefficient) * var;
+    Coefficient inverse_denominator = - var_coefficient;
+    // FIX include modulus in the inverse properly
+    if (modulus < 0)
+      generalized_affine_image(var, inverse_expr, inverse_denominator,
+			       - modulus);
+    else
+      generalized_affine_image(var, inverse_expr, inverse_denominator,
+			       modulus);
+    return;
+  }
+
+  // Here `var_coefficient == 0', so that the preimage cannot be
+  // easily computed by inverting the affine relation.  Add the
+  // congruence induced by the affine relation.
+  if (modulus < 0)
+    add_congruence((denominator*var %= expr) / denominator /= - modulus);
+  else
+    add_congruence((denominator*var %= expr) / denominator /= modulus);
+
+  // If the resulting grid is empty, its preimage is empty too.
+  // Note: DO check for emptyness here, as we will later add a line.
+  if (is_empty())
+    return;
+  add_generator(line(var));
+  assert(OK());
+}
+
 void
 PPL::Grid::
 generalized_affine_image(const Linear_Expression& lhs,
@@ -1658,7 +1719,7 @@ generalized_affine_image(const Linear_Expression& lhs,
     return;
   }
 
-  // Gather in `new_gs' the collections of all the lines having the
+  // Gather in `new_lines' the collections of all the lines having the
   // direction of variables occurring in `lhs'.  While at it, check
   // whether there exists a variable occurring in both `lhs' and
   // `rhs'.
@@ -1702,6 +1763,8 @@ generalized_affine_image(const Linear_Expression& lhs,
     // `lhs' and `rhs' variables are disjoint:
     // there is no need to add a further dimension.
 
+    // FIX if (is_empty()) return;
+
     // Cylindrificate on all the variables occurring in the left hand
     // side expression.
     add_recycled_generators(new_lines);
@@ -1711,6 +1774,104 @@ generalized_affine_image(const Linear_Expression& lhs,
     add_congruence((lhs %= rhs) / mod);
   }
 
+  assert(OK());
+}
+
+void PPL::Grid::
+generalized_affine_preimage(const Linear_Expression& lhs,
+			    const Linear_Expression& rhs,
+			    Coefficient_traits::const_reference modulus) {
+  // The dimension of `lhs' must be at most the dimension of `*this'.
+  dimension_type lhs_space_dim = lhs.space_dimension();
+  if (space_dim < lhs_space_dim)
+    throw_dimension_incompatible("generalized_affine_preimage(e1, e2, m)",
+				 "lhs", lhs);
+  // The dimension of `rhs' must be at most the dimension of `*this'.
+  const dimension_type rhs_space_dim = rhs.space_dimension();
+  if (space_dim < rhs_space_dim)
+    throw_dimension_incompatible("generalized_affine_preimage(e1, e2, m)",
+				 "e2", rhs);
+
+  // Any preimage of an empty polyhedron is empty.
+  if (marked_empty())
+    return;
+
+  // Compute the actual space dimension of `lhs',
+  // i.e., the highest dimension having a non-zero coefficient in `lhs'.
+  for ( ; lhs_space_dim > 0; lhs_space_dim--)
+    if (lhs.coefficient(Variable(lhs_space_dim - 1)) != 0)
+      break;
+
+  TEMP_INTEGER(mod);
+  if (modulus < 0)
+    mod = -modulus;
+  else
+    mod = modulus;
+
+  // If all variables have a zero coefficient, then `lhs' is a constant:
+  // in this case, preimage and image happen to be the same.
+  // FIX really?
+  if (lhs_space_dim == 0) {
+    generalized_affine_image(lhs, rhs, mod);
+    return;
+  }
+
+  // Gather in `new_lines' the collections of all the lines having
+  // the direction of variables occurring in `lhs'.
+  // While at it, check whether or not there exists a variable
+  // occurring in both `lhs' and `rhs'.
+  Generator_System new_lines;
+  bool lhs_vars_intersects_rhs_vars = false;
+  for (dimension_type i = lhs_space_dim; i-- > 0; )
+    if (lhs.coefficient(Variable(i)) != 0) {
+      new_lines.insert(line(Variable(i)));
+      if (rhs.coefficient(Variable(i)) != 0)
+	lhs_vars_intersects_rhs_vars = true;
+    }
+
+  if (lhs_vars_intersects_rhs_vars) {
+    // FIX this case is identical to same case in gen_affine_image
+    // Some variables in `lhs' also occur in `rhs'.
+    // To ease the computation, add an additional dimension.
+    const Variable new_var = Variable(space_dim);
+    add_space_dimensions_and_embed(1);
+
+    // Constrain the new dimension to be equal to `lhs'
+    // TODO: use add_congruence_and_minimize() when it has been updated
+    Congruence_System new_cgs1(new_var == rhs);
+    if (add_recycled_congruences_and_minimize(new_cgs1)) {
+      // The grid still contains points.
+
+      // Cylindrificate on all the variables occurring in the left hand side
+      add_recycled_generators(new_lines);
+
+      // Constrain the new dimension so that it is related to
+      // the right hand side modulo `mod'.
+      // TODO: use add_congruence() when it has been updated
+      Congruence_System new_cgs2((lhs %= new_var) / mod);
+      add_recycled_congruences(new_cgs2);
+    }
+
+    // Remove the temporarily added dimension.
+    remove_higher_space_dimensions(space_dim-1);
+  }
+  else {
+    // `lhs' and `rhs' variables are disjoint:
+    // there is no need to add a further dimension.
+
+    // Constrain the left hand side expression so that it is congruent to
+    // the right hand side expression modulo `mod'.
+    add_congruence((lhs %= rhs) / mod);
+
+    // Any image of an empty grid is empty.
+    if (is_empty())
+      return;
+
+    // FIX why does this follow the add_congruence, whereas in the
+    //     branch above (and in affine_image) it comes first
+    // Cylindrificate on all the variables occurring in `lhs'.
+    add_recycled_generators(new_lines);
+  }
   assert(OK());
 }
 
