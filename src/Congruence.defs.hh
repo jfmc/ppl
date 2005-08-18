@@ -463,6 +463,7 @@ private:
   friend class PPL::Congruence_System;
   friend class PPL::Congruence_System::const_iterator;
   friend class PPL::Grid;
+  friend class PPL::Linear_Expression;
 
   friend void
   std::swap(PPL::Congruence& x, PPL::Congruence& y);
