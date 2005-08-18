@@ -321,6 +321,42 @@ test9() {
   exit(1);
 }
 
+// Simpler example where the resulting grid contains points.
+
+void
+test10() {
+  nout << "test10:" << endl;
+
+  Grid gr1(2, Grid::EMPTY);
+  gr1.add_generator(point());
+  gr1.add_generator(point(A));
+  gr1.add_generator(point(B));
+
+  Grid gr2(2);
+  gr2.add_congruence((A - B %= 0) / 2);
+  gr2.add_congruence(A %= 0);
+
+  gr1.grid_difference_assign(gr2);
+
+  Grid known_gr(2);
+  known_gr.add_congruence((A - B %= 1) / 2);
+  known_gr.add_congruence(A %= 0);
+
+  if (find_variation(gr1))
+    exit(1);
+
+  if (gr1 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr1, known_gr);
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -338,6 +374,7 @@ main() TRY {
   test7();
   test8();
   test9();
+  test10();
 
   return 0;
 }
