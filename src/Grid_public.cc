@@ -1877,15 +1877,14 @@ generalized_affine_preimage(const Linear_Expression& lhs,
   assert(OK());
 }
 
-#if 0
 void
 PPL::Grid::time_elapse_assign(const Grid& y) {
   Grid& x = *this;
-  // Dimension-compatibility checks.
+  // Check dimension-compatibility.
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("time_elapse_assign(y)", "y", y);
 
-  // Dealing with the zero-dimensional case.
+  // Deal with the zero-dimensional case.
   if (x.space_dim == 0) {
     if (y.marked_empty())
       x.set_empty();
@@ -1893,7 +1892,9 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
   }
 
   // If either one of `x' or `y' is empty, the result is empty too.
-  if (x.marked_empty() || y.marked_empty()
+  if (x.marked_empty())
+    return;
+  if (y.marked_empty()
       || (!x.generators_are_up_to_date() && !x.update_generators())
       || (!y.generators_are_up_to_date() && !y.update_generators())) {
     x.set_empty();
@@ -1904,87 +1905,53 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
   Generator_System gs = y.gen_sys;
   dimension_type gs_num_rows = gs.num_rows();
 
-  if (!x.is_necessarily_closed())
-    // `x' and `y' are NNC polyhedra.
-    for (dimension_type i = gs_num_rows; i-- > 0; )
-      switch (gs[i].type()) {
-      case Generator::POINT:
-	// The points of `gs' can be erased,
-	// since their role can be played by closure points.
-	--gs_num_rows;
-	std::swap(gs[i], gs[gs_num_rows]);
-	break;
-      case Generator::CLOSURE_POINT:
-	{
-	  Generator& cp = gs[i];
-	  // If it is the origin, erase it.
-	  if (cp.all_homogeneous_terms_are_zero()) {
-	    --gs_num_rows;
-	    std::swap(cp, gs[gs_num_rows]);
-	  }
-	  // Otherwise, transform the closure point into a ray.
-	  else {
-	    cp[0] = 0;
-	    // Enforce normalization.
-	    cp.normalize();
-	  }
-	}
-	break;
-      default:
-	// For rays and lines, nothing to be done.
-	break;
-      }
-  else
-    // `x' and `y' are C polyhedra.
-    for (dimension_type i = gs_num_rows; i-- > 0; )
-      switch (gs[i].type()) {
-      case Generator::POINT:
-	{
-	  Generator& p = gs[i];
-	  // If it is the origin, erase it.
-	  if (p.all_homogeneous_terms_are_zero()) {
-	    --gs_num_rows;
-	    std::swap(p, gs[gs_num_rows]);
-	  }
-	  // Otherwise, transform the point into a ray.
-	  else {
-	    p[0] = 0;
-	    // Enforce normalization.
-	    p.normalize();
-	  }
-	}
-	break;
-      default:
-	// For rays and lines, nothing to be done.
-	break;
-      }
-  // If it was present, erase the origin point or closure point,
-  // which cannot be transformed into a valid ray or line.
-  // For NNC polyhedra, also erase all the points of `gs',
-  // whose role can be played by the closure points.
-  // These have been previously moved to the end of `gs'.
-  gs.erase_to_end(gs_num_rows);
+  normalize_divisors(gs, gen_sys);
 
-  // `gs' may now have no rows.
-  // Namely, this happens when `y' was the singleton polyhedron
-  // having the origin as the one and only point.
-  // In such a case, the resulting polyhedron is equal to `x'.
+  for (dimension_type i = gs_num_rows; i-- > 0; ) {
+    Generator& g = gs[i];
+    if (g.is_point())
+      // Either erase the origin.
+      if (g.all_homogeneous_terms_are_zero()) {
+	--gs_num_rows;
+	std::swap(g, gs[gs_num_rows]);
+      }
+      // Or transform the point into a parameter.
+      else
+	g[0] = 0;
+  }
+
   if (gs_num_rows == 0)
+    // `y' was the grid containing a single point at the origin, so
+    // the result is `x'.
     return;
 
-  // The two systems are merged.  `Linear_System::merge_rows_assign()'
-  // requires both systems to be sorted.
-  if (!x.gen_sys.is_sorted())
-    x.gen_sys.sort_rows();
-  gs.sort_rows();
-  x.gen_sys.merge_rows_assign(gs);
-  // Only the system of generators is up-to-date.
+  // If it is present, erase the origin point.
+  gs.erase_to_end(gs_num_rows);
+
+  // Append `gs' to the generators of `x'.
+
+  const dimension_type old_num_rows = gen_sys.num_rows();
+  const dimension_type gs_num_columns = gs.num_columns();
+  gen_sys.add_zero_rows(gs_num_rows,
+			Linear_Row::Flags(gs.topology(),
+					  Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+  for (dimension_type i = gs_num_rows; i-- > 0; ) {
+    // Steal one coefficient at a time, to ensure that the row
+    // capacities are all the same.
+    Generator& new_g = gen_sys[old_num_rows + i];
+    Generator& old_g = gs[i];
+    if (old_g.is_line())
+      new_g.set_is_line();
+    for (dimension_type j = gs_num_columns; j-- > 0; )
+      std::swap(new_g[j], old_g[j]);
+  }
+
   x.clear_congruences_up_to_date();
   x.clear_generators_minimized();
 
   assert(x.OK(true) && y.OK(true));
 }
-
+#if 0
 void
 PPL::Grid::topological_closure_assign() {
   // Necessarily closed polyhedra are trivially closed.
