@@ -73,6 +73,7 @@ TESTS = \
 	generalizedaffinepreimage1 \
 	generalizedaffinepreimage2 \
 	griddifference1 \
+	timeelapse1 \
 	bug1
 
 #
@@ -131,6 +132,8 @@ generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
 
 griddifference1_SOURCES = griddifference1.cc
+
+timeelapse1_SOURCES = timeelapse1.cc
 
 bug1_SOURCES = bug1.cc
 bug1_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"
