@@ -357,6 +357,44 @@ test10() {
   exit(1);
 }
 
+// Where the 2-complements of more than one congruence are added to
+// the result.
+
+void
+test11() {
+  nout << "test11:" << endl;
+
+  Grid gr1(3);
+  gr1.add_congruence((A %= 0) / 2);
+  gr1.add_congruence(B == 0);
+  gr1.add_congruence(C == 0);
+
+  Grid gr2(3);
+  gr2.add_congruence((A + C %= 0) / 4);
+  gr2.add_congruence((A + B %= 0) / 4);
+
+  gr1.grid_difference_assign(gr2);
+
+  Grid known_gr(3);
+  known_gr.add_congruence((A %= 2) / 4);
+  known_gr.add_congruence(B == 0);
+  known_gr.add_congruence(C == 0);
+
+  if (find_variation(gr1))
+    exit(1);
+
+  if (gr1 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr1, known_gr);
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -375,6 +413,7 @@ main() TRY {
   test8();
   test9();
   test10();
+  test11();
 
   return 0;
 }
