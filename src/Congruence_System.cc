@@ -292,6 +292,7 @@ affine_preimage(dimension_type v,
       if (row_v != 0) {
 	for (dimension_type j = expr_size; j-- > 0; )
 	  if (j != v)
+	    // row[j] = row[j] + row_v * expr[j]
 	    add_mul_assign(row[j], row_v, expr[j]);
 	if (not_invertible)
 	  row_v = 0;
