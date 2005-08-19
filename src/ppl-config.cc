@@ -90,6 +90,7 @@ bool required_version_major = false;
 bool required_version_minor = false;
 bool required_version_revision = false;
 bool required_version_beta = false;
+bool required_banner = false;
 bool required_libs = false;
 bool required_includes = false;
 bool required_cppflags = false;
@@ -118,6 +119,7 @@ struct option long_options[] = {
   {"version-minor",     no_argument,       0, 'N'},
   {"version-revision",  no_argument,       0, 'R'},
   {"version-beta",      no_argument,       0, 'B'},
+  {"banner",            no_argument,       0, 'E'},
   {"libs",              no_argument,       0, 'L'},
   {"includes",          no_argument,       0, 'I'},
   {"cppflags",          no_argument,       0, 'P'},
@@ -150,7 +152,7 @@ static const char* usage_string
 #endif
 ;
 
-#define OPTION_LETTERS "laf:peOVMNRBLIPCXDncbrA"
+#define OPTION_LETTERS "laf:peOVMNRBELIPCXDncbrA"
 
 const char* program_name = 0;
 
@@ -264,6 +266,11 @@ process_options(int argc, char* argv[]) {
 
     case 'B':
       required_version_beta = true;
+      ++num_required_items;
+      break;
+
+    case 'E':
+      required_banner = true;
       ++num_required_items;
       break;
 
@@ -433,6 +440,9 @@ main(int argc, char* argv[]) try {
 
   if (required_version_beta)
     portray("VERSION_BETA", long(PPL_VERSION_BETA));
+
+  if (required_banner)
+    portray("BANNER", PPL::banner());
 
   if (required_libs)
     ;
