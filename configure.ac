@@ -61,6 +61,10 @@ AC_SUBST(PPL_VERSION_MINOR)
 AC_SUBST(PPL_VERSION_REVISION)
 AC_SUBST(PPL_VERSION_BETA)
 
+AC_DEFINE_UNQUOTED(PPL_CONFIGURE_OPTIONS, "$ac_configure_args", [This contains the options with which `configure' was invoked.])
+PPL_CONFIGURE_OPTIONS="\"$ac_configure_args\""
+AC_SUBST(PPL_CONFIGURE_OPTIONS)
+
 # Installation directories.
 AC_SUBST([docdir], ['${datadir}/doc/ppl'])
 
