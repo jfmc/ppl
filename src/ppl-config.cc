@@ -26,8 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-#if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 6
-#error "PPL version 0.6 or following is required"
+#if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 8
+#error "PPL version 0.8 or following is required"
 #endif
 
 #include <cstdarg>
@@ -80,6 +80,7 @@ bool required_application = false;
 bool required_library = false;
 bool required_prefix = false;
 bool required_exec_prefix = false;
+bool required_configure_options = false;
 bool required_version = false;
 bool required_version_major = false;
 bool required_version_minor = false;
@@ -101,28 +102,29 @@ unsigned num_required_items = 0;
 
 #ifdef HAVE_GETOPT_H
 struct option long_options[] = {
-  {"format",           required_argument, 0, 'f'},
-  {"interface",        required_argument, 0, 'i'},
-  {"application",      no_argument,       0, 'a'},
-  {"library",          no_argument,       0, 'l'},
-  {"prefix",           optional_argument, 0, 'p'},
-  {"exec-prefix",      optional_argument, 0, 'e'},
-  {"version",          no_argument,       0, 'V'},
-  {"version-major",    no_argument,       0, 'M'},
-  {"version-minor",    no_argument,       0, 'N'},
-  {"version-revision", no_argument,       0, 'R'},
-  {"version-beta",     no_argument,       0, 'B'},
-  {"libs",             no_argument,       0, 'L'},
-  {"includes",         no_argument,       0, 'I'},
-  {"cppflags",         no_argument,       0, 'P'},
-  {"cflags",           no_argument,       0, 'C'},
-  {"cxxflags",         no_argument,       0, 'X'},
-  {"ldflags",          no_argument,       0, 'D'},
-  {"license",          no_argument,       0, 'n'},
-  {"copying",          no_argument,       0, 'c'},
-  {"bugs",             no_argument,       0, 'b'},
-  {"credits",          no_argument,       0, 'r'},
-  {"all",              no_argument,       0, 'A'},
+  {"format",            required_argument, 0, 'f'},
+  {"interface",         required_argument, 0, 'i'},
+  {"application",       no_argument,       0, 'a'},
+  {"library",           no_argument,       0, 'l'},
+  {"prefix",            optional_argument, 0, 'p'},
+  {"exec-prefix",       optional_argument, 0, 'e'},
+  {"configure-options", no_argument,       0, 'O'},
+  {"version",           no_argument,       0, 'V'},
+  {"version-major",     no_argument,       0, 'M'},
+  {"version-minor",     no_argument,       0, 'N'},
+  {"version-revision",  no_argument,       0, 'R'},
+  {"version-beta",      no_argument,       0, 'B'},
+  {"libs",              no_argument,       0, 'L'},
+  {"includes",          no_argument,       0, 'I'},
+  {"cppflags",          no_argument,       0, 'P'},
+  {"cflags",            no_argument,       0, 'C'},
+  {"cxxflags",          no_argument,       0, 'X'},
+  {"ldflags",           no_argument,       0, 'D'},
+  {"license",           no_argument,       0, 'n'},
+  {"copying",           no_argument,       0, 'c'},
+  {"bugs",              no_argument,       0, 'b'},
+  {"credits",           no_argument,       0, 'r'},
+  {"all",               no_argument,       0, 'A'},
   {0, 0, 0, 0}
 };
 #endif
@@ -144,7 +146,7 @@ static const char* usage_string
 #endif
 ;
 
-#define OPTION_LETTERS "laf:p::e::VMNRBLIPCXDncbrA"
+#define OPTION_LETTERS "laf:p::e::OVMNRBLIPCXDncbrA"
 
 const char* program_name = 0;
 
@@ -229,6 +231,11 @@ process_options(int argc, char* argv[]) {
 
     case 'V':
       required_version = true;
+      ++num_required_items;
+      break;
+
+    case 'O':
+      required_configure_options = true;
       ++num_required_items;
       break;
 
@@ -391,6 +398,9 @@ main(int argc, char* argv[]) try {
 
   // Process command line options.
   process_options(argc, argv);
+
+  if (required_configure_options)
+    portray("CONFIGURE_OPTIONS", PPL_CONFIGURE_OPTIONS);
 
   if (required_version)
     portray("VERSION", PPL_VERSION);
