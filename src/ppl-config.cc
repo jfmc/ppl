@@ -50,7 +50,8 @@ namespace PPL = Parma_Polyhedra_Library;
 namespace {
 
 enum Format {
-  RAW,
+  PLAIN,
+  MAKEFILE,
   SH,
   CSH
 };
@@ -68,7 +69,7 @@ enum Interface {
   JAVA
 };
 
-Format required_format = RAW;
+Format required_format = PLAIN;
 
 Interface required_interface = CXX;
 
@@ -207,15 +208,17 @@ process_options(int argc, char* argv[]) {
       break;
 
     case 'f':
-      if (strcmp(optarg, "raw") == 0)
-	required_format = RAW;
+      if (strcmp(optarg, "plain") == 0)
+	required_format = PLAIN;
+      else if (strcmp(optarg, "makefile") == 0)
+	required_format = MAKEFILE;
       else if (strcmp(optarg, "sh") == 0)
 	required_format = SH;
       else if (strcmp(optarg, "csh") == 0)
 	required_format = CSH;
       else
 	fatal("invalid argument `%s' to --format: "
-	      "must be `raw', `sh' or `csh'",
+	      "must be `plain', `makefile', `sh' or `csh'",
 	      optarg);
       break;
 
@@ -334,9 +337,12 @@ process_options(int argc, char* argv[]) {
 void
 portray_name(const char* name) {
   switch (required_format) {
-  case RAW:
+  case PLAIN:
     if (num_required_items > 1)
       std::cout << variable_prefix << name << ": ";
+    break;
+  case MAKEFILE:
+    std::cout << variable_prefix << name << '=';
     break;
   case SH:
     std::cout << "export " << variable_prefix << name << '=';
