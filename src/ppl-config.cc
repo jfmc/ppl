@@ -76,6 +76,9 @@ const char* variable_prefix = "PPL_";
 
 #define PPL_LICENSE "GNU GENERAL PUBLIC LICENSE, Version 2"
 
+const char* prefix = PREFIX;
+const char* exec_prefix = EXEC_PREFIX;
+
 bool required_application = false;
 bool required_library = false;
 bool required_prefix = false;
@@ -106,8 +109,8 @@ struct option long_options[] = {
   {"interface",         required_argument, 0, 'i'},
   {"application",       no_argument,       0, 'a'},
   {"library",           no_argument,       0, 'l'},
-  {"prefix",            optional_argument, 0, 'p'},
-  {"exec-prefix",       optional_argument, 0, 'e'},
+  {"prefix",            no_argument,       0, 'p'},
+  {"exec-prefix",       no_argument,       0, 'e'},
   {"configure-options", no_argument,       0, 'O'},
   {"version",           no_argument,       0, 'V'},
   {"version-major",     no_argument,       0, 'M'},
@@ -146,7 +149,7 @@ static const char* usage_string
 #endif
 ;
 
-#define OPTION_LETTERS "laf:p::e::OVMNRBLIPCXDncbrA"
+#define OPTION_LETTERS "laf:peOVMNRBLIPCXDncbrA"
 
 const char* program_name = 0;
 
@@ -223,10 +226,12 @@ process_options(int argc, char* argv[]) {
 
     case 'p':
       required_prefix = true;
+      ++num_required_items;
       break;
 
     case 'e':
       required_exec_prefix = true;
+      ++num_required_items;
       break;
 
     case 'V':
@@ -398,6 +403,12 @@ main(int argc, char* argv[]) try {
 
   // Process command line options.
   process_options(argc, argv);
+
+  if (required_prefix)
+    portray("PREFIX", prefix);
+
+  if (required_exec_prefix)
+    portray("EXEC_PREFIX", exec_prefix);
 
   if (required_configure_options)
     portray("CONFIGURE_OPTIONS", PPL_CONFIGURE_OPTIONS);
