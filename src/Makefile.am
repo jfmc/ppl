@@ -68,6 +68,27 @@ AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/src @extra_includes@
 
 lib_LTLIBRARIES = libppl.la
 
+bin_PROGRAMS = ppl-config
+ppl_config_SOURCES = \
+ppl-config.cc \
+BUGS.cc \
+COPYING.cc \
+CREDITS.cc
+
+ppl_config_LDADD = \
+libppl.la \
+@extra_libraries@
+
+BUGS.cc:	$(top_srcdir)/utils/text2cxxarray $(top_srcdir)/BUGS
+	$(top_srcdir)/utils/text2cxxarray --name=BUGS_array \
+		$(top_srcdir)/BUGS >$@
+COPYING.cc:	$(top_srcdir)/utils/text2cxxarray $(top_srcdir)/COPYING
+	$(top_srcdir)/utils/text2cxxarray --name=COPYING_array \
+		$(top_srcdir)/COPYING >$@
+CREDITS.cc:	$(top_srcdir)/utils/text2cxxarray $(top_srcdir)/CREDITS
+	$(top_srcdir)/utils/text2cxxarray --name=CREDITS_array \
+		$(top_srcdir)/CREDITS >$@
+
 if USE_NATIVE_INTEGERS
 
 COEFFICIENT_TYPES_INCLUDE_FILES = \
