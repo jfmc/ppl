@@ -76,8 +76,8 @@ Interface required_interface = CXX;
 
 #define PPL_LICENSE "GNU GENERAL PUBLIC LICENSE, Version 2"
 
-std::string prefix = "@prefix@";
-std::string exec_prefix = "@exec_prefix@";
+std::string prefix;
+std::string exec_prefix;
 
 const char* variable_prefix = "PPL_";
 
@@ -96,6 +96,8 @@ bool required_version_beta = false;
 bool required_banner = false;
 bool required_libs = false;
 bool required_includedir = false;
+bool required_bindir = false;
+bool required_libdir = false;
 bool required_cppflags = false;
 bool required_cflags = false;
 bool required_cxxflags = false;
@@ -110,10 +112,10 @@ unsigned num_required_items = 0;
 
 #ifdef HAVE_GETOPT_H
 struct option long_options[] = {
-  {"format",            required_argument, 0, 'f'},
-  {"interface",         required_argument, 0, 'i'},
-  {"application",       no_argument,       0, 'a'},
-  {"library",           no_argument,       0, 'l'},
+  {"format",            required_argument, 0, 'F'},
+  {"interface",         required_argument, 0, 'I'},
+  {"application",       no_argument,       0, 'A'},
+  {"library",           no_argument,       0, 'L'},
   {"prefix",            optional_argument, 0, 'p'},
   {"exec-prefix",       optional_argument, 0, 'e'},
   {"configure-options", no_argument,       0, 'O'},
@@ -123,17 +125,19 @@ struct option long_options[] = {
   {"version-revision",  no_argument,       0, 'R'},
   {"version-beta",      no_argument,       0, 'B'},
   {"banner",            no_argument,       0, 'E'},
-  {"libs",              no_argument,       0, 'L'},
-  {"includedir",        no_argument,       0, 'I'},
+  {"libs",              no_argument,       0, 'S'},
+  {"includedir",        no_argument,       0, 'i'},
+  {"bindir",            no_argument,       0, 'b'},
+  {"libdir",            no_argument,       0, 'l'},
   {"cppflags",          no_argument,       0, 'P'},
   {"cflags",            no_argument,       0, 'C'},
   {"cxxflags",          no_argument,       0, 'X'},
   {"ldflags",           no_argument,       0, 'D'},
   {"license",           no_argument,       0, 'n'},
   {"copying",           no_argument,       0, 'c'},
-  {"bugs",              no_argument,       0, 'b'},
+  {"bugs",              no_argument,       0, 'u'},
   {"credits",           no_argument,       0, 'r'},
-  {"all",               no_argument,       0, 'A'},
+  {"all",               no_argument,       0, 'Z'},
   {0, 0, 0, 0}
 };
 #endif
@@ -155,7 +159,7 @@ static const char* usage_string
 #endif
 ;
 
-#define OPTION_LETTERS "laf:p::e::OVMNRBELIPCXDncbrA"
+#define OPTION_LETTERS "F:I:ALp::e::OVMNRBESiblPCXDncurZ"
 
 const char* program_name = 0;
 
@@ -204,15 +208,8 @@ process_options(int argc, char* argv[]) {
       exit(0);
       break;
 
-    case 'l':
-      required_library = true;
-      break;
-
-    case 'a':
-      required_application = true;
-      break;
-
-    case 'f':
+      // --format
+    case 'F':
       if (strcmp(optarg, "plain") == 0)
 	required_format = PLAIN;
       else if (strcmp(optarg, "makefile") == 0)
@@ -227,11 +224,23 @@ process_options(int argc, char* argv[]) {
 	      optarg);
       break;
 
-    case 'i':
+      // --interface
+    case 'I':
       // FIXME
       required_interface = CXX;
       break;
 
+      // --application
+    case 'A':
+      required_application = true;
+      break;
+
+      // --library
+    case 'L':
+      required_library = true;
+      break;
+
+      // --prefix
     case 'p':
       if (optarg) {
 	prefix = optarg;
@@ -246,6 +255,7 @@ process_options(int argc, char* argv[]) {
       }
       break;
 
+      // --exec_prefix
     case 'e':
       if (optarg) {
 	exec_prefix = optarg;
@@ -257,92 +267,122 @@ process_options(int argc, char* argv[]) {
       }
       break;
 
-    case 'V':
-      required_version = true;
-      ++num_required_items;
-      break;
-
+      // --configure-options
     case 'O':
       required_configure_options = true;
       ++num_required_items;
       break;
 
+      // --version
+    case 'V':
+      required_version = true;
+      ++num_required_items;
+      break;
+
+      // --version-major
     case 'M':
       required_version_major = true;
       ++num_required_items;
       break;
 
+      // --version-minor
     case 'N':
       required_version_minor = true;
       ++num_required_items;
       break;
 
+      // --version-revision
     case 'R':
       required_version_revision = true;
       ++num_required_items;
       break;
 
+      // --version-beta
     case 'B':
       required_version_beta = true;
       ++num_required_items;
       break;
 
+      // --banner
     case 'E':
       required_banner = true;
       ++num_required_items;
       break;
 
-    case 'L':
+      // --libs
+    case 'S':
       required_libs = true;
       ++num_required_items;
       break;
 
-    case 'I':
+      // --includedir
+    case 'i':
       required_includedir = true;
       ++num_required_items;
       break;
 
+      // --bindir
+    case 'b':
+      required_bindir = true;
+      ++num_required_items;
+      break;
+
+      // --libdir
+    case 'l':
+      required_libdir = true;
+      ++num_required_items;
+      break;
+
+      // --cppflags
     case 'P':
       required_cppflags = true;
       ++num_required_items;
       break;
 
+      // --cflags
     case 'C':
       required_cflags = true;
       ++num_required_items;
       break;
 
+      // --cxxflags
     case 'X':
       required_cxxflags = true;
       ++num_required_items;
       break;
 
+      // --ldflags
     case 'D':
       required_ldflags = true;
       ++num_required_items;
       break;
 
+      // --license
     case 'n':
       required_license = true;
       ++num_required_items;
       break;
 
+      // --copying
     case 'c':
       required_copying = true;
       ++num_required_items;
       break;
 
-    case 'b':
+      // --bugs
+    case 'u':
       required_bugs = true;
       ++num_required_items;
       break;
 
+      // --credits
     case 'r':
       required_credits = true;
       ++num_required_items;
       break;
 
-    case 'A':
+      // --all
+    case 'Z':
       required_all = true;
       break;
 
@@ -460,12 +500,11 @@ main(int argc, char* argv[]) try {
     fatal("was compiled with PPL version %s, but linked with version %s",
 	  PPL_VERSION, PPL::version());
 
-#if 0
-  if (verbose)
-    std::cerr << "Parma Polyhedra Library version:\n" << PPL::version()
-	      << "\n\nParma Polyhedra Library banner:\n" << PPL::banner()
-	      << std::endl;
-#endif
+  // Initialize prefixes.
+  prefix = "@prefix@";
+  exec_prefix = "@exec_prefix@";
+  replace_prefixes(prefix);
+  replace_prefixes(exec_prefix);
 
   // Process command line options.
   process_options(argc, argv);
@@ -503,15 +542,27 @@ main(int argc, char* argv[]) try {
   if (required_includedir)
     portray_with_prefixes("INCLUDEDIR", "@includedir@");
 
+  if (required_bindir)
+    portray_with_prefixes("BINDIR", "@bindir@");
+
+  if (required_libdir)
+    portray_with_prefixes("LIBDIR", "@libdir@");
+
   if (required_cppflags) {
     if (required_application) {
+      std::string cppflags = "@CPPFLAGS@";
       std::string s = "@includedir@";
       replace_prefixes(s);
+      // `/usr/include' is the standard include directory:
+      // thus it needs not be specified.
       if (s == "/usr/include")
-	s = "@CPPFLAGS@";
+	s = cppflags;
       else {
 	s = "-I" + s;
-	if (strlen("@CPPFLAGS@") > 0)
+	// Avoid duplicating the -I options.
+	if (cppflags.find(s) != std::string::npos)
+	  s = "";
+	if (s.length() > 0 && strlen("@CPPFLAGS@") > 0)
 	  s += ' ';
 	s += "@CPPFLAGS@";
       }
@@ -531,7 +582,30 @@ main(int argc, char* argv[]) try {
     portray("CXXFLAGS", "@CXXFLAGS@");
 
   if (required_ldflags)
-    portray("LDFLAGS", "@LDFLAGS@");
+    if (required_application) {
+      std::string ldflags = "@LDFLAGS@";
+      std::string s = "@libdir@";
+      replace_prefixes(s);
+      // `/usr/lib' is the standard library directory:
+      // thus it needs not be specified.
+      if (s == "/usr/lib")
+	s = ldflags;
+      else {
+	s = "-L" + s;
+	// Avoid duplicating the -L options.
+	if (ldflags.find(s) != std::string::npos)
+	  s = "";
+	if (s.length() > 0 && strlen("@LDFLAGS@") > 0)
+	  s += ' ';
+	s += "@LDFLAGS@";
+      }
+      if (s.length() > 0 && strlen("@extra_libraries@") > 0)
+	  s += ' ';
+      s += "@extra_libraries@";
+      portray("LDFLAGS", s);
+    }
+    else
+      portray("LDFLAGS", "@LDFLAGS@");
 
   if (required_license)
     portray("LICENSE", PPL_LICENSE);
