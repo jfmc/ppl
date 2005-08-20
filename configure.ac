@@ -462,8 +462,8 @@ add --enable-cxx to the configuration options.])
   fi
 fi
 
-extra_includes="${extra_includes} ${gmp_includes_option}"
-extra_libraries="${extra_libraries} ${gmp_library_option}"
+extra_includes="${extra_includes}${extra_includes:+ }${gmp_includes_option}"
+extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_option}"
 
 enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
@@ -649,10 +649,11 @@ AC_SUBST(text_md5sum)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm ppl.spec
-				debian/libppl.copyright
-				debian/libppl-pwl.copyright
+		debian/libppl.copyright
+		debian/libppl-pwl.copyright
                 src/Makefile
                 src/version.hh
+                src/ppl-config.cc
                 tests/Makefile
                 tests/BD_Shape/Makefile
                 tests/Polyhedron/Makefile

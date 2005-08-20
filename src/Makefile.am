@@ -69,10 +69,6 @@ AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/src @extra_includes@
 lib_LTLIBRARIES = libppl.la
 
 bin_PROGRAMS = ppl-config
-ppl_config_CPPFLAGS = \
--DPREFIX=\"@prefix@\" \
--DEXEC_PREFIX=\"@exec_prefix@\" \
--DINCLUDEDIR=\"@includedir@\"
 ppl_config_SOURCES = \
 ppl-config.cc \
 BUGS.cc \
@@ -400,6 +396,6 @@ install-data-local: ppl_install.hh
 uninstall-local:
 	rm -f $(DESTDIR)$(includedir)/ppl.hh
 
-EXTRA_DIST = ppl_header.hh version.hh.in
+EXTRA_DIST = ppl_header.hh ppl-config.cc.in version.hh.in
 
 MOSTLYCLEANFILES = $(BUILT_SOURCES)

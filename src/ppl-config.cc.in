@@ -1,4 +1,4 @@
-/* A program to enquire about the configuration of the PPL
+/* A program to enquire about the configuration of the PPL  -*- C++ -*-
    and of the applications using it.
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -36,6 +36,7 @@ namespace PPL = Parma_Polyhedra_Library;
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
+#include <string>
 
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
@@ -73,12 +74,14 @@ Format required_format = PLAIN;
 
 Interface required_interface = CXX;
 
-const char* variable_prefix = "PPL_";
-
 #define PPL_LICENSE "GNU GENERAL PUBLIC LICENSE, Version 2"
 
-const char* prefix = PREFIX;
-const char* exec_prefix = EXEC_PREFIX;
+std::string prefix = "@prefix@";
+std::string exec_prefix = "@exec_prefix@";
+
+const char* variable_prefix = "PPL_";
+
+bool exec_prefix_set = false;
 
 bool required_application = false;
 bool required_library = false;
@@ -92,7 +95,7 @@ bool required_version_revision = false;
 bool required_version_beta = false;
 bool required_banner = false;
 bool required_libs = false;
-bool required_includes = false;
+bool required_includedir = false;
 bool required_cppflags = false;
 bool required_cflags = false;
 bool required_cxxflags = false;
@@ -111,8 +114,8 @@ struct option long_options[] = {
   {"interface",         required_argument, 0, 'i'},
   {"application",       no_argument,       0, 'a'},
   {"library",           no_argument,       0, 'l'},
-  {"prefix",            no_argument,       0, 'p'},
-  {"exec-prefix",       no_argument,       0, 'e'},
+  {"prefix",            optional_argument, 0, 'p'},
+  {"exec-prefix",       optional_argument, 0, 'e'},
   {"configure-options", no_argument,       0, 'O'},
   {"version",           no_argument,       0, 'V'},
   {"version-major",     no_argument,       0, 'M'},
@@ -121,7 +124,7 @@ struct option long_options[] = {
   {"version-beta",      no_argument,       0, 'B'},
   {"banner",            no_argument,       0, 'E'},
   {"libs",              no_argument,       0, 'L'},
-  {"includes",          no_argument,       0, 'I'},
+  {"includedir",        no_argument,       0, 'I'},
   {"cppflags",          no_argument,       0, 'P'},
   {"cflags",            no_argument,       0, 'C'},
   {"cxxflags",          no_argument,       0, 'X'},
@@ -152,7 +155,7 @@ static const char* usage_string
 #endif
 ;
 
-#define OPTION_LETTERS "laf:peOVMNRBELIPCXDncbrA"
+#define OPTION_LETTERS "laf:p::e::OVMNRBELIPCXDncbrA"
 
 const char* program_name = 0;
 
@@ -230,13 +233,28 @@ process_options(int argc, char* argv[]) {
       break;
 
     case 'p':
-      required_prefix = true;
-      ++num_required_items;
+      if (optarg) {
+	prefix = optarg;
+	if (!exec_prefix_set) {
+	  exec_prefix = optarg;
+	  exec_prefix_set = true;
+	}
+      }
+      else {
+	required_prefix = true;
+	++num_required_items;
+      }
       break;
 
     case 'e':
-      required_exec_prefix = true;
-      ++num_required_items;
+      if (optarg) {
+	exec_prefix = optarg;
+	exec_prefix_set = true;
+      }
+      else {
+	required_exec_prefix = true;
+	++num_required_items;
+      }
       break;
 
     case 'V':
@@ -280,7 +298,7 @@ process_options(int argc, char* argv[]) {
       break;
 
     case 'I':
-      required_includes = true;
+      required_includedir = true;
       ++num_required_items;
       break;
 
@@ -339,6 +357,9 @@ process_options(int argc, char* argv[]) {
 
   if (required_application && required_library)
     fatal("the --application and --library are mutually exclusive");
+
+  if (!required_application && !required_library)
+    required_application = true;
 }
 
 void
@@ -391,10 +412,42 @@ portray(const char* name, const char* string) {
 }
 
 void
+portray(const char* name, std::string s) {
+  portray(name, s.c_str());
+}
+
+void
 portray(const char* name, long n) {
   portray_name(name);
   portray(n);
   std::cout << std::endl;
+}
+
+void
+replace(std::string& s,
+	const std::string& pattern, const std::string& replacement) {
+  std::string::size_type pos = 0;
+  while (true) {
+    pos = s.find(pattern, pos);
+    if (pos == std::string::npos)
+      break;
+    s.replace(pos, pattern.size(), replacement);
+    pos += replacement.length();
+  }
+}
+
+void
+replace_prefixes(std::string& s) {
+  static const std::string prefix_reference = "${prefix}";
+  static const std::string exec_prefix_reference = "${exec_prefix}";
+  replace(s, prefix_reference, prefix);
+  replace(s, exec_prefix_reference, exec_prefix);
+}
+
+void
+portray_with_prefixes(const char* name, std::string s) {
+  replace_prefixes(s);
+  portray(name, s);
 }
 
 } // namespace
@@ -447,20 +500,38 @@ main(int argc, char* argv[]) try {
   if (required_libs)
     ;
 
-  if (required_includes)
-    ;
+  if (required_includedir)
+    portray_with_prefixes("INCLUDEDIR", "@includedir@");
 
-  if (required_cppflags)
-    ;
+  if (required_cppflags) {
+    if (required_application) {
+      std::string s = "@includedir@";
+      replace_prefixes(s);
+      if (s == "/usr/include")
+	s = "@CPPFLAGS@";
+      else {
+	s = "-I" + s;
+	if (strlen("@CPPFLAGS@") > 0)
+	  s += ' ';
+	s += "@CPPFLAGS@";
+      }
+      if (s.length() > 0 && strlen("@extra_includes@") > 0)
+	  s += ' ';
+      s += "@extra_includes@";
+      portray("CPPFLAGS", s);
+    }
+    else
+      portray("CPPFLAGS", "@CPPFLAGS@");
+  }
 
   if (required_cflags)
-    ;
+    portray("CFLAGS", "@CFLAGS@");
 
   if (required_cxxflags)
-    ;
+    portray("CXXFLAGS", "@CXXFLAGS@");
 
   if (required_ldflags)
-    ;
+    portray("LDFLAGS", "@LDFLAGS@");
 
   if (required_license)
     portray("LICENSE", PPL_LICENSE);
