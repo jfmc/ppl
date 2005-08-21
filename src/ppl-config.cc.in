@@ -94,6 +94,7 @@ bool required_version_minor = false;
 bool required_version_revision = false;
 bool required_version_beta = false;
 bool required_banner = false;
+bool required_coefficients = false;
 bool required_libs = false;
 bool required_includedir = false;
 bool required_bindir = false;
@@ -125,6 +126,7 @@ struct option long_options[] = {
   {"version-revision",  no_argument,       0, 'R'},
   {"version-beta",      no_argument,       0, 'B'},
   {"banner",            no_argument,       0, 'E'},
+  {"coefficients",      no_argument,       0, 'n'},
   {"libs",              no_argument,       0, 'S'},
   {"includedir",        no_argument,       0, 'i'},
   {"bindir",            no_argument,       0, 'b'},
@@ -133,7 +135,7 @@ struct option long_options[] = {
   {"cflags",            no_argument,       0, 'C'},
   {"cxxflags",          no_argument,       0, 'X'},
   {"ldflags",           no_argument,       0, 'D'},
-  {"license",           no_argument,       0, 'n'},
+  {"license",           no_argument,       0, 'g'},
   {"copying",           no_argument,       0, 'c'},
   {"bugs",              no_argument,       0, 'u'},
   {"credits",           no_argument,       0, 'r'},
@@ -159,7 +161,7 @@ static const char* usage_string
 #endif
 ;
 
-#define OPTION_LETTERS "F:I:ALp::e::OVMNRBESiblPCXDncurZ"
+#define OPTION_LETTERS "F:I:ALp::e::OVMNRBEnSiblPCXDgcurZ"
 
 const char* program_name = 0;
 
@@ -309,6 +311,12 @@ process_options(int argc, char* argv[]) {
       ++num_required_items;
       break;
 
+      // --coefficients
+    case 'n':
+      required_coefficients = true;
+      ++num_required_items;
+      break;
+
       // --libs
     case 'S':
       required_libs = true;
@@ -358,7 +366,7 @@ process_options(int argc, char* argv[]) {
       break;
 
       // --license
-    case 'n':
+    case 'g':
       required_license = true;
       ++num_required_items;
       break;
@@ -535,6 +543,9 @@ main(int argc, char* argv[]) try {
 
   if (required_banner)
     portray("BANNER", PPL::banner());
+
+  if (required_coefficients)
+    portray("COEFFICIENTS", "@coefficient_mnemonic@");
 
   if (required_libs)
     ;
