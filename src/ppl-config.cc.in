@@ -98,7 +98,6 @@ bool required_version_revision = false;
 bool required_version_beta = false;
 bool required_banner = false;
 bool required_coefficients = false;
-bool required_libs = false;
 bool required_includedir = false;
 bool required_bindir = false;
 bool required_libdir = false;
@@ -130,7 +129,6 @@ struct option long_options[] = {
   {"version-beta",      no_argument,       0, 'B'},
   {"banner",            no_argument,       0, 'E'},
   {"coefficients",      no_argument,       0, 'n'},
-  {"libs",              no_argument,       0, 'S'},
   {"includedir",        no_argument,       0, 'i'},
   {"bindir",            no_argument,       0, 'b'},
   {"libdir",            no_argument,       0, 'l'},
@@ -357,12 +355,6 @@ process_options(int argc, char* argv[]) {
       // --coefficients
     case 'n':
       required_coefficients = true;
-      ++num_required_items;
-      break;
-
-      // --libs
-    case 'S':
-      required_libs = true;
       ++num_required_items;
       break;
 
@@ -597,9 +589,6 @@ main(int argc, char* argv[]) try {
 
   if (required_coefficients)
     portray("COEFFICIENTS", "@coefficient_mnemonic@");
-
-  if (required_libs)
-    ;
 
   if (required_includedir)
     portray_with_prefixes("INCLUDEDIR", "@includedir@");
