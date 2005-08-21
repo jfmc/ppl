@@ -32,6 +32,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 #include <cstdarg>
 #include <cstring>
+#include <cctype>
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
@@ -188,6 +189,22 @@ warning(const char* format, ...) {
   va_end(ap);
 }
 
+void internal_error() {
+  fatal("internal error: please submit a bug report to ppl-devel@cs.unipr.it");
+}
+
+bool
+strcaseeq(const char* s1, const char* s2) {
+  while (*s1 && *s2
+	 && tolower(static_cast<unsigned char>(*s1))
+	 == tolower(static_cast<unsigned char>(*s2))) {
+    ++s1;
+    ++s2;
+  }
+  return tolower(static_cast<unsigned char>(*s1))
+    == tolower(static_cast<unsigned char>(*s2));
+}
+
 void
 process_options(int argc, char* argv[]) {
   while (true) {
@@ -214,13 +231,13 @@ process_options(int argc, char* argv[]) {
 
       // --format
     case 'F':
-      if (strcmp(optarg, "plain") == 0)
+      if (strcaseeq(optarg, "plain"))
 	required_format = PLAIN;
-      else if (strcmp(optarg, "makefile") == 0)
+      else if (strcaseeq(optarg, "makefile"))
 	required_format = MAKEFILE;
-      else if (strcmp(optarg, "sh") == 0)
+      else if (strcaseeq(optarg, "sh"))
 	required_format = SH;
-      else if (strcmp(optarg, "csh") == 0)
+      else if (strcaseeq(optarg, "csh"))
 	required_format = CSH;
       else
 	fatal("invalid argument `%s' to --format: "
@@ -230,25 +247,25 @@ process_options(int argc, char* argv[]) {
 
       // --interface
     case 'I':
-      if (strcmp(optarg, "C++") == 0)
+      if (strcaseeq(optarg, "C++"))
 	required_interface = CXX;
-      else if (strcmp(optarg, "C") == 0)
+      else if (strcaseeq(optarg, "C"))
 	required_interface = C;
-      else if (strcmp(optarg, "Ciao-Prolog") == 0)
+      else if (strcaseeq(optarg, "Ciao-Prolog"))
 	required_interface = CIAO_PROLOG;
-      else if (strcmp(optarg, "GNU-Prolog") == 0)
+      else if (strcaseeq(optarg, "GNU-Prolog"))
 	required_interface = GNU_PROLOG;
-      else if (strcmp(optarg, "SICStus-Prolog") == 0)
+      else if (strcaseeq(optarg, "SICStus-Prolog"))
 	required_interface = GNU_PROLOG;
-      else if (strcmp(optarg, "SWI-Prolog") == 0)
+      else if (strcaseeq(optarg, "SWI-Prolog"))
 	required_interface = GNU_PROLOG;
-      else if (strcmp(optarg, "XSB-Prolog") == 0)
+      else if (strcaseeq(optarg, "XSB-Prolog"))
 	required_interface = GNU_PROLOG;
-      else if (strcmp(optarg, "YAP-Prolog") == 0)
+      else if (strcaseeq(optarg, "YAP-Prolog"))
 	required_interface = GNU_PROLOG;
-      else if (strcmp(optarg, "OCaml") == 0)
+      else if (strcaseeq(optarg, "OCaml"))
 	required_interface = OCAML;
-      else if (strcmp(optarg, "Java") == 0)
+      else if (strcaseeq(optarg, "Java"))
 	required_interface = JAVA;
       else
 	fatal("invalid argument `%s' to --interface: "
@@ -458,6 +475,8 @@ portray_name(const char* name) {
   case CSH:
     std::cout << "setenv " << variable_prefix << name << ' ';
     break;
+  default:
+    internal_error();
   }
 }
 
@@ -679,6 +698,5 @@ catch(const std::overflow_error& e) {
   exit(1);
 }
 catch(...) {
-  fatal("internal error: please submit a bug report to ppl-devel@cs.unipr.it");
-  exit(1);
+  internal_error();
 }
