@@ -51,6 +51,7 @@ namespace PPL = Parma_Polyhedra_Library;
 namespace {
 
 enum Format {
+  NO_FORMAT,
   PLAIN,
   MAKEFILE,
   SH,
@@ -58,6 +59,7 @@ enum Format {
 };
 
 enum Interface {
+  NO_INTERFACE,
   CXX,
   C,
   CIAO_PROLOG,
@@ -70,9 +72,9 @@ enum Interface {
   JAVA
 };
 
-Format required_format = PLAIN;
+Format required_format = NO_FORMAT;
 
-Interface required_interface = CXX;
+Interface required_interface = NO_INTERFACE;
 
 #define PPL_LICENSE "GNU GENERAL PUBLIC LICENSE, Version 2"
 
@@ -228,8 +230,32 @@ process_options(int argc, char* argv[]) {
 
       // --interface
     case 'I':
-      // FIXME
-      required_interface = CXX;
+      if (strcmp(optarg, "C++") == 0)
+	required_interface = CXX;
+      else if (strcmp(optarg, "C") == 0)
+	required_interface = C;
+      else if (strcmp(optarg, "Ciao-Prolog") == 0)
+	required_interface = CIAO_PROLOG;
+      else if (strcmp(optarg, "GNU-Prolog") == 0)
+	required_interface = GNU_PROLOG;
+      else if (strcmp(optarg, "SICStus-Prolog") == 0)
+	required_interface = GNU_PROLOG;
+      else if (strcmp(optarg, "SWI-Prolog") == 0)
+	required_interface = GNU_PROLOG;
+      else if (strcmp(optarg, "XSB-Prolog") == 0)
+	required_interface = GNU_PROLOG;
+      else if (strcmp(optarg, "YAP-Prolog") == 0)
+	required_interface = GNU_PROLOG;
+      else if (strcmp(optarg, "OCaml") == 0)
+	required_interface = OCAML;
+      else if (strcmp(optarg, "Java") == 0)
+	required_interface = JAVA;
+      else
+	fatal("invalid argument `%s' to --interface: "
+	      "must be `C++', `C', `Ciao-Prolog', `GNU-Prolog', "
+              "`SICStus-Prolog', `SWI-Prolog', `XSB-Prolog', `YAP-Prolog', "
+	      "`OCaml' or `Java'",
+	      optarg);
       break;
 
       // --application
@@ -408,6 +434,12 @@ process_options(int argc, char* argv[]) {
 
   if (!required_application && !required_library)
     required_application = true;
+
+  if (required_format == NO_FORMAT)
+    required_format = PLAIN;
+
+  if (required_interface == NO_INTERFACE)
+    required_interface = CXX;
 }
 
 void
