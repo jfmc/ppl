@@ -575,17 +575,17 @@ PPL::Grid::OK(bool check_not_empty) const {
       if (generators_are_minimized()) {
 	Generator_System gs = gen_sys;
 
-	if (!upper_triangular(gs, dim_kinds)) {
+	if (dim_kinds.size() != num_columns) {
 #ifndef NDEBUG
-	  cerr << "Reduced generators should be upper triangular."
+	  cerr << "Size of dim_kinds should equal the number of columns."
 	       << endl;
 #endif
 	  goto fail;
 	}
 
-	if (dim_kinds.size() != num_columns) {
+	if (!upper_triangular(gs, dim_kinds)) {
 #ifndef NDEBUG
-	  cerr << "Size of dim_kinds should equal the number of columns."
+	  cerr << "Reduced generators should be upper triangular."
 	       << endl;
 #endif
 	  goto fail;
