@@ -1129,6 +1129,25 @@ public:
   */
   void time_elapse_assign(const Grid& y);
 
+  //! \brief
+  //! Assigns to \p *this the result of computing the
+  //! \ref grid_widening Grid widening between \p *this and \p y.
+  /*!
+    \param y
+    A grid that <EM>must</EM> be contained in \p *this;
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref widening_with_tokens "widening with tokens" delay technique).
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  void widening_assign(const Grid& y, unsigned* tp = NULL);
+
+
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
 
   //! \name Member Functions that May Modify the Dimension of the Vector Space
@@ -1652,6 +1671,16 @@ private:
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is included in \p y.
   bool is_included_in(const Grid& y) const;
+
+  //! \name Widening- and Extrapolation-Related Functions
+  //@{
+
+  //! \brief
+  //! Copies a widened selection of congruences from \p y to \p selected_cgs.
+  void select_wider_congruences(const Grid& y,
+				Congruence_System& selected_cgs) const;
+
+  //@} // Widening- and Extrapolation-Related Functions
 
   //! \name Minimization-related Static Member Functions
   //@{
