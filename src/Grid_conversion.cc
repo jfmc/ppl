@@ -95,7 +95,7 @@ Grid::upper_triangular(const Generator_System& sys,
 
   // Check triangularity.
   while (num_cols > 0) {
-    num_cols--;
+    --num_cols;
     if (dim_kinds[num_cols] == GEN_VIRTUAL)
       continue;
     const Generator& gen = sys[--row];
@@ -431,9 +431,9 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
     }
     else {
       Linear_Row& g = dest[dest_index];
-      for (dimension_type j = 0; j < dim; j++)
+      for (dimension_type j = 0; j < dim; ++j)
 	g[j] = 0;
-      for (dimension_type j = dim + 1; j < dims; j++)
+      for (dimension_type j = dim + 1; j < dims; ++j)
 	g[j] = 0;
 
       if (dim_kinds[dim] == CON_VIRTUAL) {

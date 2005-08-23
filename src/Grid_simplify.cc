@@ -94,7 +94,7 @@ Grid::reduce_reduced(Matrix& sys, dimension_type dim, dimension_type pivot_index
       row_dim_rem %= pivot_dim;
       if (row_dim_rem < 0) {
 	if (row_dim_rem <= -pivot_dim_half)
-	  num_rows--;
+	  --num_rows;
       }
       else if (row_dim_rem > 0 && row_dim_rem > pivot_dim_half)
 	num_rows++;
