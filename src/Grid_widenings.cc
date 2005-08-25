@@ -160,3 +160,68 @@ PPL::Grid::widening_assign(const Grid& const_y, unsigned* tp) {
 
   assert(x.OK(true));
 }
+
+void
+PPL::Grid::limited_extrapolation_assign(const Grid& y,
+					const Congruence_System& cgs,
+					unsigned* tp) {
+  Grid& x = *this;
+
+  dimension_type cgs_num_rows = cgs.num_rows();
+  // If `cgs' is empty, fall back to ordinary widening.
+  if (cgs_num_rows == 0) {
+    x.widening_assign(y, tp);
+    return;
+  }
+
+  // Check dimension compatibility.
+  if (x.space_dim != y.space_dim)
+    throw_dimension_incompatible("limited_extrapolation_assign(y, cgs)",
+				 "y", y);
+  // `cgs' must be dimension-compatible with the two polyhedra.
+  const dimension_type cgs_space_dim = cgs.space_dimension();
+  if (x.space_dim < cgs_space_dim)
+    throw_dimension_incompatible("limited_extrapolation_assign(y, cgs)",
+				 "cgs", cgs);
+
+#ifndef NDEBUG
+  {
+    // Assume that y is contained in or equal to x.
+    const Grid x_copy = x;
+    const Grid y_copy = y;
+    assert(x_copy.contains(y_copy));
+  }
+#endif
+
+  if (y.marked_empty())
+    return;
+  if (x.marked_empty())
+    return;
+
+  // The limited widening between two grids in a zero-dimensional
+  // space is also a grid in a zero-dimensional space.
+  if (x.space_dim == 0)
+    return;
+
+  // Update the generators of `x': these are used to select, from the
+  // congruences in `cgs', those that must be added to the widened
+  // grid.
+  if (!x.generators_are_up_to_date() && !x.update_generators())
+    // `x' is empty.
+    return;
+
+  Congruence_System new_cgs;
+  // The congruences to be added need only be satisfied by all the
+  // generators of `x', as `y <= x'.  Iterate upwards here, to keep
+  // the relative ordering of congruences (just for aesthetics).
+  for (dimension_type i = 0; i < cgs_num_rows; ++i) {
+    const Congruence& cg = cgs[i];
+    if (x.relation_with(cg) == Poly_Con_Relation::is_included())
+      new_cgs.insert(cg);
+  }
+  x.widening_assign(y, tp);
+  // FIX If x is the same (due to tp) then adding new_cgs is
+  //     redundant.
+  x.add_congruences(new_cgs);
+  assert(OK());
+}

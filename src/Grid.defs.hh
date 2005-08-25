@@ -456,15 +456,15 @@ public:
 
   //! \brief
   //! Returns the relations holding between the grid \p *this
-  //! and the congruence \p c.
+  //! and the congruence \p cg.
   /*!
     \exception std::invalid_argument
-    Thrown if \p *this and congruence \p c are dimension-incompatible.
+    Thrown if \p *this and congruence \p cg are dimension-incompatible.
   */
   // FIXME: Poly_Con_Relation seems to encode exactly what we want
   // here.  We must find a new name for that class.  Temporarily,
   // we keep using it without changing the name.
-  Poly_Con_Relation relation_with(const Congruence& c) const;
+  Poly_Con_Relation relation_with(const Congruence& cg) const;
 
   //! \brief
   //! Returns the relations holding between the grid \p *this
@@ -1147,6 +1147,29 @@ public:
   */
   void widening_assign(const Grid& y, unsigned* tp = NULL);
 
+  //! \brief
+  //! Improves the result of the \ref grid_widening Grid widening
+  //! computation by also enforcing those congruences in \p cgs that
+  //! are satisfied by all the points of \p *this.
+  /*!
+    \param y
+    A grid that <EM>must</EM> be contained in \p *this;
+
+    \param cgs
+    The system of congruences used to improve the widened grid;
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref widening_with_tokens "widening with tokens" delay technique).
+
+    \exception std::invalid_argument
+    Thrown if \p *this, \p y and \p cs are topology-incompatible or
+    dimension-incompatible.
+  */
+  void limited_extrapolation_assign(const Grid& y,
+				    const Congruence_System& cgs,
+				    unsigned* tp = NULL);
 
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
 
@@ -1453,11 +1476,11 @@ private:
   typedef std::vector<Dimension_Kind> Dimension_Kinds;
 
   // The type of row associated with each dimension.  If the virtual
-  // rows existed then the reduced form of the systems would be square
-  // and upper or lower triangular, and the rows in each would have
-  // the types given in this vector.  As the congruence system is
-  // reduced to an upside-down lower triangular form the ordering of
-  // the congruence types goes last to first.
+  // rows existed then the reduced systems would be square and upper
+  // or lower triangular, and the rows in each would have the types
+  // given in this vector.  As the congruence system is reduced to an
+  // upside-down lower triangular form the ordering of the congruence
+  // types is last to first.
   Dimension_Kinds dim_kinds;
 
   //! Builds a grid from a system of congruences.
