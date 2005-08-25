@@ -194,7 +194,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
 
   // Return one of the relations
   // 'strictly_intersects'   share at least one point
-  // 'is_included'	     share all points (of grid?)
+  // 'is_included'	     share all points (FIX of grid?)
   // 'is_disjoint'	     the other case, intersection fails
 
   // There is always a point.
@@ -216,12 +216,13 @@ PPL::Grid::relation_with(const Congruence& cg) const {
          gen_sys_end = gen_sys.end(); g != gen_sys_end; ++g) {
     TEMP_INTEGER(sp);
     PPL::scalar_product_assign(sp, *g, cg);
-    if (cg.is_proper_congruence())
-      sp %= modulus;
 
     switch (g->type()) {
 
     case Generator::POINT:
+      if (cg.is_proper_congruence())
+	// FIX include the divisor?
+	sp %= modulus;
       if (sp == 0)
 	// The point satisfies the congruence.
 	if (point_sp == 0)
@@ -256,6 +257,9 @@ PPL::Grid::relation_with(const Congruence& cg) const {
       break;
 
     case Generator::RAY:	// PARAMETER
+      if (cg.is_proper_congruence())
+	// FIX include the divisor?
+	sp %= modulus;
       if (sp == 0)
 	// Parameter g satisfies the cg so the relation depends
 	// entirely on the other generators.
@@ -299,7 +303,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
       return Poly_Con_Relation::strictly_intersects();
 
     case Generator::CLOSURE_POINT:
-      // FIX?
+      // FIX
       break;
     }
   }
