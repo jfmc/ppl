@@ -171,8 +171,8 @@ test5() {
   gr1.add_congruence(C %= 0);
 
   Grid gr2(3);
-  gr1.add_congruence((A %= 0) / 2);
-  gr1.add_congruence(C %= 0);
+  gr2.add_congruence((A %= 0) / 2);
+  gr2.add_congruence(C %= 0);
 
   Grid known_gr = gr2;
 
@@ -291,7 +291,7 @@ test8() {
   exit(1);
 }
 
-// To universe.
+// Widening when increasing to universe.
 
 void
 test9() {
@@ -343,15 +343,16 @@ test10() {
     exit(1);
 
 #define TOKEN_MSG "`tokens' should be 3."
+#define TOKENS 3
 
   if (gr2 == known_gr)
-    if (tokens == 3)
+    if (tokens == TOKENS)
       return;
     else
       nout << TOKEN_MSG << endl;
   else {
     nout << "Grid should equal known grid." << endl;
-    tokens == 3 || nout << TOKEN_MSG << endl;
+    tokens == TOKENS || nout << TOKEN_MSG << endl;
   }
 
   nout << " grid:" << endl << gr2 << endl
@@ -517,16 +518,6 @@ main() TRY {
   test12();
   test13();
   test14();
-#if 0
-  test15();
-  test16();
-  test17();
-  test18();
-  test19();
-  test20();
-  test21();
-  test22();
-#endif
 
   return 0;
 }
