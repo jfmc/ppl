@@ -178,9 +178,6 @@ checked_numeric_limits.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
 Coefficient.defs.hh \
 Coefficient.inlines.hh \
-E_Rational.types.hh \
-E_Rational.defs.hh \
-E_Rational.inlines.hh \
 globals.defs.hh \
 globals.inlines.hh \
 Interval.defs.hh \
