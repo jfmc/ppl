@@ -125,6 +125,7 @@ Grid::swap(Grid& y) {
   std::swap(gen_sys, y.gen_sys);
   std::swap(status, y.status);
   std::swap(space_dim, y.space_dim);
+  std::swap(dim_kinds, y.dim_kinds);
 }
 
 } // namespace Parma_Polyhedra_Library
