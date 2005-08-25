@@ -75,6 +75,7 @@ TESTS = \
 	griddifference1 \
 	timeelapse1 \
 	widening1 \
+	limitedextrapolation1 \
 	bug1
 
 #
@@ -137,6 +138,8 @@ griddifference1_SOURCES = griddifference1.cc
 timeelapse1_SOURCES = timeelapse1.cc
 
 widening1_SOURCES = widening1.cc
+
+limitedextrapolation1_SOURCES = limitedextrapolation1.cc
 
 bug1_SOURCES = bug1.cc
 bug1_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"
