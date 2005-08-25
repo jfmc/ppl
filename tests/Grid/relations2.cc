@@ -30,6 +30,7 @@ namespace {
 Variable A(0);
 Variable B(1);
 Variable C(2);
+Variable D(3);
 
 // A proper congruence and a disjoint point.
 
@@ -54,7 +55,7 @@ test2() {
 
   Grid gr(1, Grid::EMPTY);
   gr.add_generator(point());
-  gr.add_generator(point(2*A));
+  gr.add_generator(point(4*A));
 
   if (gr.relation_with((A %= 0) / 2) == Poly_Con_Relation::is_included())
     return;
@@ -171,6 +172,21 @@ test8() {
   exit(1);
 }
 
+// A congruence and a disjoint grid.
+
+void
+test9() {
+  nout << "test9:" << endl;
+
+  Grid gr(4);
+
+  if (gr.relation_with(A - 2*D %= 0)
+      == Poly_Con_Relation::strictly_intersects())
+    return;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -187,6 +203,7 @@ main() TRY {
   test6();
   test7();
   test8();
+  test9();
 
   return 0;
 }
