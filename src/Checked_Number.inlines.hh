@@ -118,8 +118,26 @@ Checked_Number<T, Policy>::Checked_Number(const Plus_Infinity& x) {
 
 template <typename T, typename Policy>
 inline bool
-is_not_a_number(const Checked_Number<T, Policy>& x) {
-  return Checked::is_nan<Policy>(x.raw_value());
+is_minus_infinity(const T& x) {
+  return Checked::is_minf<Checked::Transparent_Policy>(x);
+}
+
+template <typename T, typename Policy>
+inline bool
+is_plus_infinity(const T& x) {
+  return Checked::is_pinf<Checked::Transparent_Policy>(x);
+}
+
+template <typename T, typename Policy>
+inline bool
+is_not_a_number(const T& x) {
+  return Checked::is_nan<Checked::Transparent_Policy>(x);
+}
+
+template <typename T, typename Policy>
+inline bool
+is_integer(const T& x) {
+  return Checked::is_int<Checked::Transparent_Policy>(x);
 }
 
 template <typename T, typename Policy>
@@ -132,6 +150,18 @@ template <typename T, typename Policy>
 inline bool
 is_plus_infinity(const Checked_Number<T, Policy>& x) {
   return Checked::is_pinf<Policy>(x.raw_value());
+}
+
+template <typename T, typename Policy>
+inline bool
+is_not_a_number(const Checked_Number<T, Policy>& x) {
+  return Checked::is_nan<Policy>(x.raw_value());
+}
+
+template <typename T, typename Policy>
+inline bool
+is_integer(const Checked_Number<T, Policy>& x) {
+  return Checked::is_int<Policy>(x.raw_value());
 }
 
 template <typename T, typename Policy>
