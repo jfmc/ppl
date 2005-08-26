@@ -30,25 +30,35 @@ namespace Parma_Polyhedra_Library {
 
 struct Checked_Number_Default_Policy {
   static const int check_overflow = 1;
-  static const int check_divbyzero = 0;
+  static const int check_inf_add_inf = 0;
+  static const int check_inf_sub_inf = 0;
+  static const int check_inf_mul_zero = 0;
+  static const int check_div_zero = 0;
+  static const int check_inf_div_inf = 0;
+  static const int check_inf_mod = 0;
   static const int check_sqrt_neg = 0;
-  static const int use_corrent_rounding = 0;
   static const int store_nan = 0;
   static const int store_infinity = 0;
   static const int convertible = 1;
   static const int fpu_check_inexact = 0;
+  static const int check_nan_args = 1;
   static const Rounding_Dir ROUND_DEFAULT = ROUND_IGNORE;
   static void handle_result(Result r);
 };
 
 struct Extended_Number_Policy {
   static const int check_overflow = 1;
-  static const int check_divbyzero = 0;
+  static const int check_inf_add_inf = 0;
+  static const int check_inf_sub_inf = 0;
+  static const int check_inf_mul_zero = 0;
+  static const int check_div_zero = 0;
+  static const int check_inf_div_inf = 0;
+  static const int check_inf_mod = 0;
   static const int check_sqrt_neg = 0;
-  static const int use_corrent_rounding = 1;
   static const int store_nan = 1;
   static const int store_infinity = 1;
   static const int fpu_check_inexact = 0;
+  static const int check_nan_args = 1;
   static const Rounding_Dir ROUND_DEFAULT = ROUND_UP;
   static void handle_result(Result r);
 };
