@@ -76,6 +76,14 @@ is_pinf_mpq(const mpq_class& v) {
 SPECIALIZE_IS_PINF(mpq, mpq_class)
 
 template <typename Policy>
+inline bool
+is_int_mpq(const mpq_class& v) {
+  return !is_nan<Policy>(v) && v.get_den() == 1;
+}
+
+SPECIALIZE_IS_INT(mpq, mpq_class)
+
+template <typename Policy>
 inline Result
 set_special_mpq(mpq_class& v, Result r) {
   Result c = classify(r);
@@ -202,7 +210,7 @@ SPECIALIZE_MUL(mpq, mpq_class, mpq_class, mpq_class)
 template <typename Policy>
 inline Result
 div_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
-  if (Policy::check_divbyzero && sgn(y) == 0)
+  if (CHECK_P(Policy::check_div_zero, sgn(y) == 0))
     return set_special<Policy>(to, V_DIV_ZERO);
   to = x / y;
   return V_EQ;
@@ -213,7 +221,7 @@ SPECIALIZE_DIV(mpq, mpq_class, mpq_class, mpq_class)
 template <typename Policy>
 inline Result
 rem_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
-  if (Policy::check_divbyzero && sgn(y) == 0)
+  if (CHECK_P(Policy::check_div_zero, sgn(y) == 0))
     return set_special<Policy>(to, V_MOD_ZERO);
   to = x / y;
   to.get_num() %= to.get_den();

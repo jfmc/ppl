@@ -35,13 +35,18 @@ namespace Parma_Polyhedra_Library {
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Check_Overflow_Policy {
   static const int check_overflow = 1;
-  static const int check_divbyzero = 0;
+  static const int check_inf_add_inf = 0;
+  static const int check_inf_sub_inf = 0;
+  static const int check_inf_mul_zero = 0;
+  static const int check_div_zero = 0;
+  static const int check_inf_div_inf = 0;
+  static const int check_inf_mod = 0;
   static const int check_sqrt_neg = 0;
-  static const int use_corrent_rounding = 0;
   static const int store_nan = 0;
   static const int store_infinity = 0;
   static const int convertible = 1;
   static const int fpu_check_inexact = 0;
+  static const int check_nan_args = 1;
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -55,8 +60,18 @@ namespace Checked {
 struct Transparent_Policy {
   //! Check for overflowed result.
   static const int check_overflow = 0;
+  //! Check for attempts to add infinities with different sign.
+  static const int check_inf_add_inf = 0;
+  //! Check for attempts to sub infinities with same sign.
+  static const int check_inf_sub_inf = 0;
+  //! Check for attempts to mul infinities by zero.
+  static const int check_inf_mul_zero = 0;
   //! Check for attempts to divide by zero.
-  static const int check_divbyzero = 0;
+  static const int check_div_zero = 0;
+  //! Check for attempts to divide infinities.
+  static const int check_inf_div_inf = 0;
+  //! Check for attempts to compute remainder of infinities.
+  static const int check_inf_mod = 0;
   //! Check for attempts to take the square root of a negative number.
   static const int check_sqrt_neg = 0;
   //! Store unknown special value.
@@ -67,6 +82,8 @@ struct Transparent_Policy {
   static const int convertible = 1;
   //! Check for FPU inexact result.
   static const int fpu_check_inexact = 0;
+  //! Check for NaN arguments
+  static const int check_nan_args = 1;
 };
 
 
@@ -269,6 +286,8 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
   SPECIALIZE_FUN1_0_0(is_minf, suf, bool, const, Type)
 #define SPECIALIZE_IS_PINF(suf, Type) \
   SPECIALIZE_FUN1_0_0(is_pinf, suf, bool, const, Type)
+#define SPECIALIZE_IS_INT(suf, Type) \
+  SPECIALIZE_FUN1_0_0(is_int, suf, bool, const, Type)
 #define SPECIALIZE_ASSIGN(suf, To, From) \
   SPECIALIZE_FUN2_0_1(assign, suf, Result, nonconst, To, const, From, Rounding_Dir)
 #define SPECIALIZE_NEG(suf, To, From) \
@@ -312,6 +331,7 @@ DECLARE_FUN1_0_3(classify,    Result, const, Type, bool, bool, bool)
 DECLARE_FUN1_0_0(is_nan,      bool, const, Type)
 DECLARE_FUN1_0_0(is_minf,     bool, const, Type)
 DECLARE_FUN1_0_0(is_pinf,     bool, const, Type)
+DECLARE_FUN1_0_0(is_int,      bool, const, Type)
 DECLARE_FUN2_0_1(assign,      Result, nonconst, To, const, From, Rounding_Dir)
 DECLARE_FUN2_0_1(neg,         Result, nonconst, To, const, From, Rounding_Dir)
 DECLARE_FUN2_0_1(abs,         Result, nonconst, To, const, From, Rounding_Dir)
@@ -351,6 +371,9 @@ extern Plus_Infinity PLUS_INFINITY;
 extern Not_A_Number NOT_A_NUMBER;
 
 } // namespace Parma_Polyhedra_Library
+
+
+#define CHECK_P(cond, check) ((cond) ? (check) : (assert(!(check)), false))
 
 #include "checked.inlines.hh"
 #include "checked_int.inlines.hh"
