@@ -376,8 +376,8 @@ ppl_include_files.hh: $(INCLUDE_FILES) Makefile
 	  printf "#include \"%s\"\n" $$file >>$@; \
 	done
 
-ppl_install.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(NESTED_INCLUDE_FILES) Makefile $(top_srcdir)/build_header
-	$(top_srcdir)/build_header \
+ppl_install.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(NESTED_INCLUDE_FILES) Makefile $(top_srcdir)/utils/build_header
+	$(top_srcdir)/utils/build_header \
 		-I $(top_builddir) -I $(top_builddir)/src \
 		$(top_srcdir)/src/ppl_header.hh >$@
 

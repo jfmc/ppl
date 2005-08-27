@@ -31,7 +31,6 @@ VPATH = @srcdir@
 
 EXTRA_DIST = \
 configure \
-build_header \
 ppl.lsm.in \
 ppl.spec.in \
 BUGS CREDITS README.configure STANDARDS
