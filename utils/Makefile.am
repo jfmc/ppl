@@ -33,3 +33,5 @@ noinst_LIBRARIES = libppl_utils.a
 libppl_utils_a_SOURCES = \
 timings.hh \
 timings.cc
+
+noinst_SCRIPTS = text2cxxarray
