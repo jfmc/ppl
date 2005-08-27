@@ -631,31 +631,44 @@ main(int argc, char* argv[]) try {
   if (required_cxxflags)
     portray("CXXFLAGS", "@CXXFLAGS@");
 
-  if (required_ldflags)
-    if (required_application) {
-      std::string ldflags = "@LDFLAGS@";
-      std::string s = "@libdir@";
-      replace_prefixes(s);
-      // `/usr/lib' is the standard library directory:
-      // thus it needs not be specified.
-      if (s == "/usr/lib")
-	s = ldflags;
-      else {
-	s = "-L" + s;
-	// Avoid duplicating the -L options.
-	if (ldflags.find(s) != std::string::npos)
-	  s = "";
-	if (s.length() > 0 && strlen("@LDFLAGS@") > 0)
-	  s += ' ';
-	s += "@LDFLAGS@";
-      }
-      if (s.length() > 0 && strlen("@extra_libraries@") > 0)
-	  s += ' ';
-      s += "@extra_libraries@";
-      portray("LDFLAGS", s);
+  if (required_ldflags) {
+    std::string s = "@libdir@";
+    replace_prefixes(s);
+    const std::string ldflags = "@LDFLAGS@";
+    // `/usr/lib' is the standard library directory:
+    // thus it needs not be specified.
+    if (s == "/usr/lib")
+      s = ldflags;
+    else {
+      s = "-L" + s;
+      // Avoid duplicating the -L options.
+      if (ldflags.find(s) != std::string::npos)
+	s = "";
+      if (s.length() > 0 && ldflags.length() > 0)
+	s += ' ';
+      s += ldflags;
     }
-    else
-      portray("LDFLAGS", "@LDFLAGS@");
+    if (required_library) {
+      if (s.length() > 0 && strlen("@extra_libraries@") > 0)
+	s += ' ';
+      s += "@extra_libraries@";
+    }
+    else {
+      assert(required_application);
+      if (s.length() > 0)
+	s += ' ';
+      s += "-lppl";
+      switch (required_interface) {
+      case C:
+	s += " -lppl_c";
+	break;
+      default:
+	break;
+      }
+      s += " -lgmpxx -lgmp";
+    }
+    portray("LDFLAGS", s);
+  }
 
   if (required_license)
     portray("LICENSE", PPL_LICENSE);
