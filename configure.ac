@@ -434,7 +434,7 @@ AC_CXX_SUPPORTS_LONG_LONG
 # Checks for the availability of C library functions in C++.
 AC_CHECK_DECLS([ffs], , , [#include <strings.h>])
 AC_CHECK_DECLS([strtof,strtod,strtold,strtoll,strtoull], , , [#include <cstdlib>])
-AC_CHECK_DECLS([fma,fmaf,fmal], , , [#include <cmath>])
+AC_CHECK_DECLS([fma,fmaf,fmal,rintl], , , [#include <cmath>])
 
 # Must link everything with libm.
 extra_libraries="${extra_libraries} -lm"

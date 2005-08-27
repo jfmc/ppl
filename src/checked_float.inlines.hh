@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_checked_float_inlines_hh 1
 
 #include "Float.defs.hh"
+#include <cmath>
 
 namespace std {
 
@@ -64,10 +65,12 @@ rint(double x) {
   return ::rint(x);
 }
 
+#if HAVE_DECL_RINTL
 inline long double
 rint(long double x) {
   return ::rintl(x);
 }
+#endif
 
 }
 
