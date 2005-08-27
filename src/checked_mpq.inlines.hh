@@ -54,7 +54,9 @@ SPECIALIZE_CLASSIFY(mpq, mpq_class)
 template <typename Policy>
 inline bool
 is_nan_mpq(const mpq_class& v) {
-  return Policy::store_nan && ::sgn(v.get_den()) == 0 && ::sgn(v.get_num()) == 0;
+  return Policy::store_nan
+    && ::sgn(v.get_den()) == 0
+    && ::sgn(v.get_num()) == 0;
 }
 
 SPECIALIZE_IS_NAN(mpq, mpq_class)
@@ -62,7 +64,9 @@ SPECIALIZE_IS_NAN(mpq, mpq_class)
 template <typename Policy>
 inline bool
 is_minf_mpq(const mpq_class& v) {
-  return Policy::store_infinity && ::sgn(v.get_den()) == 0 && ::sgn(v.get_num()) < 0;
+  return Policy::store_infinity
+    && ::sgn(v.get_den()) == 0
+    && ::sgn(v.get_num()) < 0;
 }
 
 SPECIALIZE_IS_MINF(mpq, mpq_class)
@@ -70,7 +74,9 @@ SPECIALIZE_IS_MINF(mpq, mpq_class)
 template <typename Policy>
 inline bool
 is_pinf_mpq(const mpq_class& v) {
-  return Policy::store_infinity && ::sgn(v.get_den()) == 0 && ::sgn(v.get_num()) > 0;
+  return Policy::store_infinity
+    && ::sgn(v.get_den()) == 0
+    && ::sgn(v.get_num()) > 0;
 }
 
 SPECIALIZE_IS_PINF(mpq, mpq_class)
@@ -90,7 +96,8 @@ set_special_mpq(mpq_class& v, Result r) {
   if (Policy::store_nan && c == VC_NAN) {
     v.get_num() = 0;
     v.get_den() = 0;
-  } else if (Policy::store_infinity) {
+  }
+  else if (Policy::store_infinity) {
     switch (c) {
     case VC_MINUS_INFINITY:
       v.get_num() = -1;
@@ -278,7 +285,10 @@ input_mpq(mpq_class& to, std::istream& is, Rounding_Dir dir) {
 
 template <typename Policy>
 inline Result
-output_mpq(std::ostream& os, const mpq_class& from, const Numeric_Format&, Rounding_Dir) {
+output_mpq(std::ostream& os,
+	   const mpq_class& from,
+	   const Numeric_Format&,
+	   Rounding_Dir) {
   os << from;
   return V_EQ;
 }
@@ -289,6 +299,5 @@ SPECIALIZE_OUTPUT(mpq, mpq_class)
 } // namespace Checked
 
 } // namespace Parma_Polyhedra_Library
-
 
 #endif // !defined(PPL_checked_mpq_inlines_hh)

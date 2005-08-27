@@ -62,7 +62,7 @@ PPL::Bounding_Box::CC76_widening_assign(const Bounding_Box& y,
 	  x_ubb = *k;
       }
       else
-	x_ub = UBoundary(ERational('+'), UBoundary::OPEN);
+	x_ub = UBoundary(ERational(PLUS_INFINITY), UBoundary::OPEN);
     }
 
     // Lower bound.
@@ -77,7 +77,7 @@ PPL::Bounding_Box::CC76_widening_assign(const Bounding_Box& y,
 	  if (k != first)
 	    x_lbb = *--k;
 	  else
-	    x_lb = LBoundary(ERational('-'), LBoundary::OPEN);
+	    x_lb = LBoundary(ERational(MINUS_INFINITY), LBoundary::OPEN);
       }
       else
 	x_lbb = *--k;
@@ -88,11 +88,11 @@ PPL::Bounding_Box::CC76_widening_assign(const Bounding_Box& y,
 void
 PPL::Bounding_Box::CC76_widening_assign(const Bounding_Box& y) {
   static ERational stop_points[] = {
-    ERational(-2, 1),
-    ERational(-1, 1),
-    ERational(0, 1),
-    ERational(1, 1),
-    ERational(2, 1)
+    ERational(-2),
+    ERational(-1),
+    ERational(0),
+    ERational(1),
+    ERational(2)
   };
   CC76_widening_assign(y,
 		       stop_points,

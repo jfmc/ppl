@@ -27,18 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-/*! \relates Parma_Polyhedra_Library::ERational */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const ERational& x) {
-  if (x.e < 0)
-    s << "-infty";
-  else if (x.e > 0)
-    s << "+infty";
-  else
-    s << x.v;
-  return s;
-}
-
 bool
 PPL::LBoundary::OK() const {
   if (flag != POS && flag != ZERO) {

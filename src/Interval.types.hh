@@ -14,7 +14,6 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-class ERational;
 class Boundary;
 class LBoundary;
 class UBoundary;

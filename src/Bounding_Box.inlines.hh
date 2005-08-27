@@ -59,17 +59,17 @@ Bounding_Box::is_empty() const {
 
 inline bool
 Bounding_Box::get_lower_bound(const dimension_type k, bool& closed,
-			     Coefficient& n, Coefficient& d) const {
+			      Coefficient& n, Coefficient& d) const {
   assert(k < vec.size());
   const LBoundary& lb = vec[k].lower_bound();
   const ERational& lr = lb.bound();
 
-  if (lr.direction_of_infinity() != 0)
+  if (is_plus_infinity(lr) || is_minus_infinity(lr))
     return false;
 
   closed = lb.is_closed();
-  lr.numerator(n);
-  lr.denominator(d);
+  n = raw_value(lr).get_num();
+  d = raw_value(lr).get_den();
 
   return true;
 }
@@ -81,12 +81,13 @@ Bounding_Box::get_upper_bound(const dimension_type k, bool& closed,
   const UBoundary& ub = vec[k].upper_bound();
   const ERational& ur = ub.bound();
 
-  if (ur.direction_of_infinity() != 0)
+  if (is_plus_infinity(ur) || is_minus_infinity(ur))
     return false;
 
   closed = ub.is_closed();
-  ur.numerator(n);
-  ur.denominator(d);
+  n = raw_value(ur).get_num();
+  d = raw_value(ur).get_den();
+
   return true;
 }
 
@@ -103,7 +104,9 @@ Bounding_Box::raise_lower_bound(const dimension_type k, const bool closed,
 			       Coefficient_traits::const_reference d) {
   assert(k < vec.size());
   assert(d != 0);
-  vec[k].raise_lower_bound(LBoundary(ERational(n, d),
+  mpq_class q(n, d);
+  q.canonicalize();
+  vec[k].raise_lower_bound(LBoundary(ERational(q),
 				     (closed
 				      ? LBoundary::CLOSED
 				      : LBoundary::OPEN)));
@@ -116,7 +119,9 @@ Bounding_Box::lower_upper_bound(const dimension_type k, const bool closed,
 			       Coefficient_traits::const_reference d) {
   assert(k < vec.size());
   assert(d != 0);
-  vec[k].lower_upper_bound(UBoundary(ERational(n, d),
+  mpq_class q(n, d);
+  q.canonicalize();
+  vec[k].lower_upper_bound(UBoundary(ERational(q),
 				     (closed
 				      ? UBoundary::CLOSED
 				      : UBoundary::OPEN)));

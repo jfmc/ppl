@@ -30,90 +30,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-ERational::ERational(Coefficient_traits::const_reference num,
-		     Coefficient_traits::const_reference den)
-  : e(0) {
-  assert(den != 0);
-  Checked::assign<Checked::Transparent_Policy>(v.get_num(), raw_value(num), ROUND_IGNORE);
-  Checked::assign<Checked::Transparent_Policy>(v.get_den(), raw_value(den), ROUND_IGNORE);
-  v.canonicalize();
-}
-
-inline
-ERational::ERational(char sign)
-  : e(sign == '+' ? 1 : -1) {
-  assert(sign == '+' || sign == '-');
-}
-
-inline
-ERational::ERational(const ERational& y)
-  : e(y.e) {
-  if (e == 0)
-    v = y.v;
-}
-
-inline ERational&
-ERational::operator=(const ERational& y) {
-  e = y.e;
-  if (e == 0)
-    v = y.v;
-  return *this;
-}
-
-inline int
-ERational::direction_of_infinity() const {
-  return e;
-}
-
-inline void
-ERational::numerator(Coefficient& n) const {
-  assert(e == 0);
-  n = v.get_num();
-}
-
-inline void
-ERational::denominator(Coefficient& d) const {
-  assert(e == 0);
-  d = v.get_den();
-}
-
-/*! \relates ERational */
-inline bool
-operator==(const ERational& x, const ERational& y) {
-  return x.e == y.e && (x.e != 0 || x.v == y.v);
-}
-
-/*! \relates ERational */
-inline bool
-operator!=(const ERational& x, const ERational& y) {
-  return !(x == y);
-}
-
-/*! \relates ERational */
-inline bool
-operator<(const ERational& x, const ERational& y) {
-  return x.e < y.e || (x.e == 0 && y.e == 0 && x.v < y.v);
-}
-
-/*! \relates ERational */
-inline bool
-operator>(const ERational& x, const ERational& y) {
-  return y < x;
-}
-
-/*! \relates ERational */
-inline bool
-operator<=(const ERational& x, const ERational& y) {
-  return x < y || x == y;
-}
-
-/*! \relates ERational */
-inline bool
-operator>=(const ERational& x, const ERational& y) {
-  return y <= x;
-}
-
-inline
 Boundary::Boundary(const ERational& v, Flag f)
   : value(v), flag(f) {
 }
@@ -158,8 +74,8 @@ operator>(const Boundary& x, const Boundary& y) {
 
 inline
 Interval::Interval()
-  : lower(ERational('-'), LBoundary::OPEN),
-    upper(ERational('+'), UBoundary::OPEN) {
+  : lower(ERational(MINUS_INFINITY), LBoundary::OPEN),
+    upper(ERational(PLUS_INFINITY), UBoundary::OPEN) {
 }
 
 inline bool
@@ -201,8 +117,8 @@ Interval::lower_upper_bound(UBoundary new_upper) {
 
 inline void
 Interval::set_empty() {
-  lower = LBoundary(ERational('+'), LBoundary::OPEN);
-  upper = UBoundary(ERational('-'), UBoundary::OPEN);
+  lower = LBoundary(ERational(PLUS_INFINITY), LBoundary::OPEN);
+  upper = UBoundary(ERational(MINUS_INFINITY), UBoundary::OPEN);
   assert(is_empty());
 }
 

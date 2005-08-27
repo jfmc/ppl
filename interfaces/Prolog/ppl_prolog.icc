@@ -1652,16 +1652,13 @@ namespace {
 Prolog_term_ref
 extended_rational_term(const ERational& e) {
   Prolog_term_ref t = Prolog_new_term_ref();
-  int d = e.direction_of_infinity();
-  if (d > 0)
+  if (is_plus_infinity(e))
     Prolog_put_atom(t, a_pinf);
-  else if (d < 0)
+  else if (is_minus_infinity(e))
     Prolog_put_atom(t, a_minf);
   else {
-    Coefficient numerator;
-    Coefficient denominator;
-    e.numerator(numerator);
-    e.denominator(denominator);
+    Coefficient numerator = raw_value(e).get_num();
+    Coefficient denominator = raw_value(e).get_den();
     if (denominator == 1)
       Prolog_put_term(t, Coefficient_to_integer_term(numerator));
     else
