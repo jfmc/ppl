@@ -29,8 +29,10 @@ DISTCHECK_CONFIGURE_FLAGS = \
 srcdir = @srcdir@
 VPATH = @srcdir@
 
+dist_noinst_SCRIPTS = \
+configure
+
 EXTRA_DIST = \
-configure \
 ppl.lsm.in \
 ppl.spec.in \
 BUGS CREDITS README.configure STANDARDS

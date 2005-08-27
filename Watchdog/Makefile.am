@@ -66,10 +66,12 @@ DOC_FILES = \
 Watchdog.types.hh \
 Watchdog.defs.hh
 
+dist_noinst_SCRIPTS = \
+configure
+
 EXTRA_DIST = \
 $(SOURCE_FILES) \
 pwl_header.hh \
-configure \
 BUGS \
 CREDITS
 
