@@ -84,10 +84,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_affine_preimage(+term, +term, +term, +term)).
 :- foreign(ppl_Polyhedron_bounded_affine_image(+term, +term,
                                                +term, +term, +term)).
+:- foreign(ppl_Polyhedron_bounded_affine_preimage(+term, +term,
+                                                  +term, +term, +term)).
 :- foreign(ppl_Polyhedron_generalized_affine_image(+term, +term,
 						   +term, +term, +term)).
+:- foreign(ppl_Polyhedron_generalized_affine_preimage(+term, +term,
+						      +term, +term, +term)).
 :- foreign(ppl_Polyhedron_generalized_affine_image_lhs_rhs(+term, +term,
 							   +term, +term)).
+:- foreign(ppl_Polyhedron_generalized_affine_preimage_lhs_rhs(+term, +term,
+							      +term, +term)).
 :- foreign(ppl_Polyhedron_time_elapse_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_topological_closure_assign(+term)).
 :- foreign(ppl_Polyhedron_BHRZ03_widening_assign_with_token(+term,

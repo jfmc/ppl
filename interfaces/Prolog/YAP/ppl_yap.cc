@@ -507,8 +507,11 @@ YAP_STUB_2(ppl_Polyhedron_poly_difference_assign)
 YAP_STUB_4(ppl_Polyhedron_affine_image)
 YAP_STUB_4(ppl_Polyhedron_affine_preimage)
 YAP_STUB_5(ppl_Polyhedron_bounded_affine_image)
+YAP_STUB_5(ppl_Polyhedron_bounded_affine_preimage)
 YAP_STUB_5(ppl_Polyhedron_generalized_affine_image)
+YAP_STUB_5(ppl_Polyhedron_generalized_affine_preimage)
 YAP_STUB_4(ppl_Polyhedron_generalized_affine_image_lhs_rhs)
+YAP_STUB_4(ppl_Polyhedron_generalized_affine_preimage_lhs_rhs)
 YAP_STUB_2(ppl_Polyhedron_time_elapse_assign)
 YAP_STUB_1(ppl_Polyhedron_topological_closure_assign)
 YAP_STUB_3(ppl_Polyhedron_BHRZ03_widening_assign_with_token)
@@ -598,8 +601,11 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_affine_image, 4);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_affine_preimage, 4);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_bounded_affine_image, 5);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_bounded_affine_preimage, 5);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_generalized_affine_image, 5);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_generalized_affine_preimage, 5);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_generalized_affine_image_lhs_rhs, 4);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_generalized_affine_preimage_lhs_rhs, 4);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_time_elapse_assign, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_topological_closure_assign, 1);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_BHRZ03_widening_assign_with_token, 3);

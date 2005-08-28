@@ -2228,25 +2228,6 @@ ppl_Polyhedron_affine_preimage(Prolog_term_ref t_ph, Prolog_term_ref t_v,
   CATCH_ALL;
 }
 
-extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_bounded_affine_image(Prolog_term_ref t_ph,
-				    Prolog_term_ref t_v,
-				    Prolog_term_ref t_lb_le,
-				    Prolog_term_ref t_ub_le,
-				    Prolog_term_ref t_d) {
-  try {
-    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
-    CHECK(ph);
-    ph->bounded_affine_image(term_to_Variable(t_v),
-			     build_linear_expression(t_lb_le),
-			     build_linear_expression(t_ub_le),
-			     term_to_Coefficient(t_d));
-      return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-}
-
-
 namespace {
 
 Prolog_atom
@@ -2301,6 +2282,25 @@ ppl_Polyhedron_generalized_affine_image(Prolog_term_ref t_ph,
 }
 
 extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_generalized_affine_preimage(Prolog_term_ref t_ph,
+					   Prolog_term_ref t_v,
+					   Prolog_term_ref t_r,
+					   Prolog_term_ref t_le,
+					   Prolog_term_ref t_d) {
+  try {
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    CHECK(ph);
+    Relation_Symbol r = term_to_relation_symbol(t_r);
+    ph->generalized_affine_preimage(term_to_Variable(t_v),
+				    r,
+				    build_linear_expression(t_le),
+				    term_to_Coefficient(t_d));
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_generalized_affine_image_lhs_rhs(Prolog_term_ref t_ph,
 						Prolog_term_ref t_lhs,
 						Prolog_term_ref t_r,
@@ -2313,6 +2313,59 @@ ppl_Polyhedron_generalized_affine_image_lhs_rhs(Prolog_term_ref t_ph,
 				 r,
 				 build_linear_expression(t_rhs));
     return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_generalized_affine_preimage_lhs_rhs(Prolog_term_ref t_ph,
+						   Prolog_term_ref t_lhs,
+						   Prolog_term_ref t_r,
+						   Prolog_term_ref t_rhs) {
+  try {
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    CHECK(ph);
+    Relation_Symbol r = term_to_relation_symbol(t_r);
+    ph->generalized_affine_preimage(build_linear_expression(t_lhs),
+				    r,
+				    build_linear_expression(t_rhs));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_bounded_affine_image(Prolog_term_ref t_ph,
+				    Prolog_term_ref t_v,
+				    Prolog_term_ref t_lb_le,
+				    Prolog_term_ref t_ub_le,
+				    Prolog_term_ref t_d) {
+  try {
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    CHECK(ph);
+    ph->bounded_affine_image(term_to_Variable(t_v),
+			     build_linear_expression(t_lb_le),
+			     build_linear_expression(t_ub_le),
+			     term_to_Coefficient(t_d));
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_bounded_affine_preimage(Prolog_term_ref t_ph,
+				       Prolog_term_ref t_v,
+				       Prolog_term_ref t_lb_le,
+				       Prolog_term_ref t_ub_le,
+				       Prolog_term_ref t_d) {
+  try {
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    CHECK(ph);
+    ph->bounded_affine_preimage(term_to_Variable(t_v),
+				build_linear_expression(t_lb_le),
+				build_linear_expression(t_ub_le),
+				term_to_Coefficient(t_d));
+      return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }

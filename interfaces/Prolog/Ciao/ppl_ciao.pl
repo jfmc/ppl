@@ -82,8 +82,11 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_Polyhedron_affine_image/4,
         ppl_Polyhedron_affine_preimage/4,
         ppl_Polyhedron_bounded_affine_image/5,
+        ppl_Polyhedron_bounded_affine_preimage/5,
         ppl_Polyhedron_generalized_affine_image/5,
+        ppl_Polyhedron_generalized_affine_preimage/5,
         ppl_Polyhedron_generalized_affine_image_lhs_rhs/4,
+        ppl_Polyhedron_generalized_affine_preimage_lhs_rhs/4,
         ppl_Polyhedron_time_elapse_assign/2,
         ppl_Polyhedron_topological_closure_assign/1,
         ppl_Polyhedron_BHRZ03_widening_assign_with_token/3,
@@ -217,9 +220,9 @@ ppl_new_Polyhedron_from_Polyhedron(Src_Kind, Src_Handle, Dst_Kind, Dst_Handle) :
                Src_Kind, Src_Handle, Dst_Kind, Dst_Handle, 1).
 
 :- true pred ppl_new_Polyhedron_from_constraints_2(in(Kind),
-                                               in(CList),
-                                               in(Handle),
-                                               go(Success))
+                                                   in(CList),
+                                                   in(Handle),
+                                                   go(Success))
   :: any_term * any_term * any_term * int
   + (returns(Success), foreign(ppl_new_Polyhedron_from_constraints)).
 
@@ -227,9 +230,9 @@ ppl_new_Polyhedron_from_constraints(Kind, CList, Handle) :-
    ppl_new_Polyhedron_from_constraints_2(Kind, CList, Handle, 1).
 
 :- true pred ppl_new_Polyhedron_from_generators_2(in(Kind),
-                                               in(GList),
-                                               in(Handle),
-                                               go(Success))
+                                                  in(GList),
+                                                  in(Handle),
+                                                  go(Success))
   :: any_term * any_term * any_term * int
   + (returns(Success), foreign(ppl_new_Polyhedron_from_generators)).
 
@@ -350,7 +353,7 @@ ppl_Polyhedron_is_empty(Handle) :-
 	ppl_Polyhedron_is_empty_2(Handle, 1).
 
 :- true pred ppl_Polyhedron_is_universe_2(in(Handle),
-                                             go(Success))
+                                          go(Success))
   :: any_term * int
   + (returns(Success), foreign(ppl_Polyhedron_is_universe)).
 
@@ -358,7 +361,7 @@ ppl_Polyhedron_is_universe(Handle) :-
 	ppl_Polyhedron_is_universe_2(Handle, 1).
 
 :- true pred ppl_Polyhedron_is_bounded_2(in(Handle),
-                                            go(Success))
+                                         go(Success))
   :: any_term * int
   + (returns(Success), foreign(ppl_Polyhedron_is_bounded)).
 
@@ -438,7 +441,7 @@ ppl_Polyhedron_minimize_with_point(Handle, Linear_Expression,
 					     Num, Den, Min, Point, 1).
 
 :- true pred ppl_Polyhedron_is_topologically_closed_2(in(Handle),
-                                                         go(Success))
+                                                      go(Success))
   :: any_term * int
   + (returns(Success), foreign(ppl_Polyhedron_is_topologically_closed)).
 
@@ -465,24 +468,24 @@ ppl_Polyhedron_contains_Polyhedron(Handle1, Handle2) :-
 ppl_Polyhedron_strictly_contains_Polyhedron(Handle1, Handle2) :-
 	ppl_Polyhedron_strictly_contains_Polyhedron_2(Handle1, Handle2, 1).
 
-ppl_Polyhedron_is_disjoint_from_Polyhedron(Handle1, Handle2) :-
-	ppl_Polyhedron_is_disjoint_from_Polyhedron_2(Handle1, Handle2, 1).
-
-
 :- true pred ppl_Polyhedron_is_disjoint_from_Polyhedron_2(in(Handle1),
-                                                             in(Handle2),
-                                                             go(Success))
+                                                          in(Handle2),
+                                                          go(Success))
   :: any_term * any_term * int
   + (returns(Success), foreign(ppl_Polyhedron_is_disjoint_from_Polyhedron)).
 
-ppl_Polyhedron_equals_Polyhedron(Handle1, Handle2) :-
-	ppl_Polyhedron_equals_Polyhedron_2(Handle1, Handle2, 1).
+ppl_Polyhedron_is_disjoint_from_Polyhedron(Handle1, Handle2) :-
+	ppl_Polyhedron_is_disjoint_from_Polyhedron_2(Handle1, Handle2, 1).
+
 
 :- true pred ppl_Polyhedron_equals_Polyhedron_2(in(Handle1),
                                                 in(Handle2),
                                                 go(Success))
   :: any_term * any_term * int
   + (returns(Success), foreign(ppl_Polyhedron_equals_Polyhedron)).
+
+ppl_Polyhedron_equals_Polyhedron(Handle1, Handle2) :-
+	ppl_Polyhedron_equals_Polyhedron_2(Handle1, Handle2, 1).
 
 :- true pred ppl_Polyhedron_OK_2(in(Handle),
                                  go(Success))
@@ -508,10 +511,9 @@ ppl_Polyhedron_add_constraint_and_minimize(Handle, Constraint) :-
 :- true pred ppl_Polyhedron_add_generator(in(Handle), in(Generator))
              :: any_term * any_term + foreign.
 
-
 :- true pred ppl_Polyhedron_add_generator_and_minimize_2(in(Handle),
-                                                          in(Generator),
-                                                          go(Success))
+                                                         in(Generator),
+                                                         go(Success))
   :: any_term * any_term * int
   + (returns(Success), foreign(ppl_Polyhedron_add_generator_and_minimize)).
 
@@ -585,29 +587,31 @@ ppl_Polyhedron_poly_hull_assign_and_minimize(Handle1, Handle2) :-
                                                  in(Divisor))
   :: any_term * any_term * any_term * any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_generalized_affine_image_2(
-                                         in(Handle),
-                                         in(Var), in(Rel),
-                                         in(Linear_Expression),
-                                         in(Divisor), go(Success))
-  :: any_term * any_term * any_term * any_term * any_term * int
-  + (returns(Success),
-      foreign(ppl_Polyhedron_generalized_affine_image)).
+:- true pred ppl_Polyhedron_bounded_affine_preimage(in(Handle), in(Var),
+                                                    in(Lower_Bound),
+                                                    in(Upper_Bound),
+                                                    in(Divisor))
+  :: any_term * any_term * any_term * any_term * any_term + foreign.
 
-ppl_Polyhedron_generalized_affine_image(
-                  Handle, Var, Rel, Linear_Expression, Divisor) :-
-      ppl_Polyhedron_generalized_affine_image_2(
-                  Handle, Var, Rel, Linear_Expression, Divisor, 1).
+:- true pred ppl_Polyhedron_generalized_affine_image(in(Handle),
+                                                     in(Var), in(Rel),
+                                                     in(Linear_Expression),
+                                                     in(Divisor))
+  :: any_term * any_term * any_term * any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_generalized_affine_image_lhs_rhs_2(
-                 in(Handle), in(LHS), in(Rel), in(RHS), go(Success))
-  :: any_term * any_term * any_term * any_term * int
-  + (returns(Success),
-      foreign(ppl_Polyhedron_generalized_affine_image_lhs_rhs)).
+:- true pred ppl_Polyhedron_generalized_affine_preimage(in(Handle),
+                                                        in(Var), in(Rel),
+                                                        in(Linear_Expression),
+                                                        in(Divisor))
+  :: any_term * any_term * any_term * any_term * any_term + foreign.
 
-ppl_Polyhedron_generalized_affine_image_lhs_rhs(Handle, LHS, Rel, RHS) :-
-      ppl_Polyhedron_generalized_affine_image_lhs_rhs_2(
-                  Handle, LHS, Rel, RHS, 1).
+:- true pred ppl_Polyhedron_generalized_affine_image_lhs_rhs(
+                 in(Handle), in(LHS), in(Rel), in(RHS))
+  :: any_term * any_term * any_term * any_term + foreign.
+
+:- true pred ppl_Polyhedron_generalized_affine_preimage_lhs_rhs(
+                 in(Handle), in(LHS), in(Rel), in(RHS))
+  :: any_term * any_term * any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_time_elapse_assign(in(Handle1), in(Handle2))
              :: any_term * any_term + foreign.
@@ -878,10 +882,11 @@ ppl_Polyhedron_map_space_dimensions(Handle, PIFunc) :-
         ppl_Polyhedron_affine_image/4,
         ppl_Polyhedron_affine_preimage/4,
         ppl_Polyhedron_bounded_affine_image/5,
-%        ppl_Polyhedron_generalized_affine_image/5,
-        ppl_Polyhedron_generalized_affine_image_2/6,
-%        ppl_Polyhedron_generalized_affine_image_lhs_rhs/4,
-        ppl_Polyhedron_generalized_affine_image_lhs_rhs_2/5,
+        ppl_Polyhedron_bounded_affine_preimage/5,
+        ppl_Polyhedron_generalized_affine_image/5,
+        ppl_Polyhedron_generalized_affine_preimage/5,
+        ppl_Polyhedron_generalized_affine_image_lhs_rhs/4,
+        ppl_Polyhedron_generalized_affine_preimage_lhs_rhs/4,
         ppl_Polyhedron_time_elapse_assign/2,
         ppl_Polyhedron_topological_closure_assign/1,
 %        ppl_Polyhedron_BHRZ03_widening_assign_with_token/3,
@@ -1143,15 +1148,33 @@ since the above version of this is temporary.
                                                  in(Divisor))
              :: any_term * any_term * any_term * any_term * any_term + foreign.
 
+:- true pred ppl_Polyhedron_bounded_affine_preimage(in(Handle), in(Var),
+                                                    in(Lower_Bound),
+                                                    in(Upper_Bound),
+                                                    in(Divisor))
+             :: any_term * any_term * any_term * any_term * any_term + foreign.
+
 :- true pred ppl_Polyhedron_generalized_affine_image(in(Handle),
                                                      in(Var), in(Rel),
                                                      in(Linear_Expression),
                                                      in(Divisor))
              :: any_term * any_term * any_term * any_term * any_term + foreign.
 
+:- true pred ppl_Polyhedron_generalized_affine_preimage(in(Handle),
+                                                        in(Var), in(Rel),
+                                                        in(Linear_Expression),
+                                                        in(Divisor))
+             :: any_term * any_term * any_term * any_term * any_term + foreign.
+
 :- true pred ppl_Polyhedron_generalized_affine_image_lhs_rhs(in(Handle),
                                                              in(LHS),
                                                              in(Rel), in(RHS))
+             :: any_term * any_term * any_term * any_term + foreign.
+
+:- true pred ppl_Polyhedron_generalized_affine_preimage_lhs_rhs(in(Handle),
+                                                                in(LHS),
+                                                                in(Rel),
+                                                                in(RHS))
              :: any_term * any_term * any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_time_elapse_assign(in(Handle1), in(Handle2))
@@ -1319,8 +1342,11 @@ since the above version of this is temporary.
         ppl_Polyhedron_affine_image/4,
         ppl_Polyhedron_affine_preimage/4,
         ppl_Polyhedron_bounded_affine_image/5,
+        ppl_Polyhedron_bounded_affine_preimage/5,
         ppl_Polyhedron_generalized_affine_image/5,
+        ppl_Polyhedron_generalized_affine_preimage/5,
         ppl_Polyhedron_generalized_affine_image_lhs_rhs/4,
+        ppl_Polyhedron_generalized_affine_preimage_lhs_rhs/4,
         ppl_Polyhedron_time_elapse_assign/2,
         ppl_Polyhedron_topological_closure_assign/1,
         ppl_Polyhedron_BHRZ03_widening_assign_with_token/3,
