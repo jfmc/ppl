@@ -100,11 +100,13 @@ Bounding_Box::set_empty() {
 
 inline void
 Bounding_Box::raise_lower_bound(const dimension_type k, const bool closed,
-			       Coefficient_traits::const_reference n,
-			       Coefficient_traits::const_reference d) {
+				Coefficient_traits::const_reference n,
+				Coefficient_traits::const_reference d) {
   assert(k < vec.size());
   assert(d != 0);
-  mpq_class q(n, d);
+  // FIXME: this seems like a waste!
+  mpz_class zn = n;
+  mpq_class q(zn, d);
   q.canonicalize();
   vec[k].raise_lower_bound(LBoundary(ERational(q),
 				     (closed
@@ -115,11 +117,13 @@ Bounding_Box::raise_lower_bound(const dimension_type k, const bool closed,
 
 inline void
 Bounding_Box::lower_upper_bound(const dimension_type k, const bool closed,
-			       Coefficient_traits::const_reference n,
-			       Coefficient_traits::const_reference d) {
+				Coefficient_traits::const_reference n,
+				Coefficient_traits::const_reference d) {
   assert(k < vec.size());
   assert(d != 0);
-  mpq_class q(n, d);
+  // FIXME: this seems like a waste!
+  mpz_class zn = n;
+  mpq_class q(zn, d);
   q.canonicalize();
   vec[k].lower_upper_bound(UBoundary(ERational(q),
 				     (closed
