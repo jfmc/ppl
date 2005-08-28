@@ -536,9 +536,11 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	// `Variable(varid) + n / d rel 0', where
 	// `rel' is either the relation `==', `>=', or `>'.
 	// For the purpose of shrinking intervals, this is
-	// (morally) turned into `Variable(varid) rel  -n/d'.
-	mpq_class q(-n, d);
+	// (morally) turned into `Variable(varid) rel -n/d'.
+	mpq_class q(raw_value(n), raw_value(d));
 	q.canonicalize();
+	// Turn `n/d' into `-n/d'.
+	q = -q;
 	const ERational r(q);
 	const Constraint::Type c_type = c.type();
 	switch (c_type) {
@@ -613,7 +615,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	  Coefficient_traits::const_reference d = g.divisor();
 	  for (dimension_type j = space_dim; j-- > 0; ) {
 	    Coefficient_traits::const_reference n = g.coefficient(Variable(j));
-	    mpq_class q(n, d);
+	    mpq_class q(raw_value(n), raw_value(d));
 	    q.canonicalize();
 	    const ERational r(q);
 	    LBoundary lb(r,(g_type == Generator::CLOSURE_POINT

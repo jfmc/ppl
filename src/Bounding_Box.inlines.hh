@@ -104,9 +104,7 @@ Bounding_Box::raise_lower_bound(const dimension_type k, const bool closed,
 				Coefficient_traits::const_reference d) {
   assert(k < vec.size());
   assert(d != 0);
-  // FIXME: this seems like a waste!
-  mpz_class zn = n;
-  mpq_class q(zn, d);
+  mpq_class q(raw_value(n), raw_value(d));
   q.canonicalize();
   vec[k].raise_lower_bound(LBoundary(ERational(q),
 				     (closed
@@ -121,9 +119,7 @@ Bounding_Box::lower_upper_bound(const dimension_type k, const bool closed,
 				Coefficient_traits::const_reference d) {
   assert(k < vec.size());
   assert(d != 0);
-  // FIXME: this seems like a waste!
-  mpz_class zn = n;
-  mpq_class q(zn, d);
+  mpq_class q(raw_value(n), raw_value(d));
   q.canonicalize();
   vec[k].lower_upper_bound(UBoundary(ERational(q),
 				     (closed
