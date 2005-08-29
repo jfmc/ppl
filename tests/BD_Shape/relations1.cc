@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
+using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #ifndef NOISY
 #define NOISY 0
@@ -31,7 +32,6 @@ using namespace Parma_Polyhedra_Library;
 
 static void test1() {
   Variable A(0);
-  // Variable B(1);
 
   TBD_Shape bd(2, EMPTY);
 
