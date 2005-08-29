@@ -43,7 +43,6 @@ numer_denom(const Checked_Number<T, Policy>& from,
   mpq_class q;
   Checked::assign<Checked::Transparent_Policy>(q, raw_value(from),
 					       ROUND_IGNORE);
-  q.canonicalize();
   num = q.get_num();
   den = q.get_den();
 }
@@ -3664,7 +3663,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	    }
 	    else {
 	      // We have got a equality constraint with two Variables.
-	      if (is_nonnegative(c_i_j)) {
+	      if (c_i_j >= 0) {
 		s << Variable(j - 1);
 		s << " - ";
 		s << Variable(i - 1);
@@ -3694,7 +3693,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	      }
 	      else {
 		// We have got a constraint with two Variables.
-		if (is_nonnegative(c_j_i)) {
+		if (c_j_i >= 0) {
 		  s << Variable(i - 1);
 		  s << " - ";
 		  s << Variable(j - 1);
@@ -3722,7 +3721,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	      }
 	      else {
 		// We have got a constraint with two Variables.
-		if (is_nonnegative(c_i_j)) {
+		if (c_i_j >= 0) {
 		  s << Variable(j - 1);
 		  s << " - ";
 		  s << Variable(i - 1);
