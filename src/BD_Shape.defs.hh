@@ -70,9 +70,8 @@ bool operator==(const BD_Shape<T>& x, const BD_Shape<T>& y);
 //! \p x and \p y aren't the same polyhedron.
 /*!
  \relates BD_Shape
-  Note that \p x and \p y may be dimension-incompatible
-  systems of bounded differences: in this case, the value <CODE>true</CODE> 
-  is returned.
+  Note that \p x and \p y may be dimension-incompatible shapes:
+  in this case, the value <CODE>true</CODE> is returned.
 */
 template <typename T>
 bool operator!=(const BD_Shape<T>& x, const BD_Shape<T>& y);
@@ -91,22 +90,22 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
 
 //! \brief
 //! A class representing a restricted kind of convex polyhedra called
-//! <EM>bounded differences</EM> (bdiffs).
+//! <EM>bounded difference shapes</EM> (BDSs).
 /*!
-  The templatic class BD_Shape<T> allow the efficient representation of
-  a restricted kind of <EM>closed</EM> convex polyhedra called
-  <EM>bounded differences</EM>.  The name comes from fact that the
-  closed affine half-spaces that characterize the polyhedron can be
-  expressed by constraints of the form
+  The templatic class BD_Shape<T> allows for the efficient representation
+  of a restricted kind of <EM>topologically closed</EM> convex polyhedra
+  called <EM>bounded difference shapes</EM>.  The name comes from fact
+  that the closed affine half-spaces that characterize the polyhedron
+  can be expressed by constraints of the form
   \f[
     ax_i - bx_j \leq c
   \f]  
   Where \f$a, b \in \{0, 1\}\f$ and \f$c\f$ belongs to some family of
   extended numbers that is provided by the template argument \p T.
   This family of extended numbers must provide representation for
-   \f$ -\infty \f$, \f$ 0 \f$, \f$ +\infty \f$ and for <EM>nan</EM>, not 
+  \f$-\infty\f$, \f$0\f$, \f$+\infty\f$ and for <EM>nan</EM>, not 
   a number, since this arises as the ''result'' of undefined sums like 
-  \f$ +\infty + (-\infty) \f$, and of course, must be closed with 
+  \f$+\infty + (-\infty)\f$, and of course, must be closed with 
   respect to the operations specified below.
   
   The class T must provide the following methods:
@@ -247,7 +246,8 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
 
   \code
   template <>
-    T div_round_up<T>(const Coefficient& x, const Coefficient& y)
+    T div_round_up<T>(Coefficient_traits::const_reference x,
+                      Coefficient_traits::const_reference y)
   \endcode
   returns an approximation from above of the division of \p x by \p y.
   
@@ -285,8 +285,8 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
   \endcode
 
   \par Example 1
-  The following code builds a <EM>bounded differences</EM> corresponding 
-  to a cube in \f$\Rset^3\f$, given as a system of constraints:
+  The following code builds a BDS corresponding to a cube in \f$\Rset^3\f$,
+  given as a system of constraints:
   \code
     Constraint_System cs;
     cs.insert(x >= 0);
@@ -297,9 +297,9 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
     cs.insert(z <= 1);
     BD_Shape<T> bd(cs);
   \endcode
-  Remark that only constraints of the form of 
+  Remark that only constraints having the syntactic form of 
   <EM>bounded differences</EM> are inserted.
-  The following code builds the same bdiffs as above,
+  The following code builds the same BDS as above,
   in fact the only inserted constraints must be of the form
   \f[
     ax_i + bx_j \leq c
@@ -341,8 +341,8 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
 
     bd1.CH78_widening_assign(bd2);
   \endcode
-  In this example the starting bdiffs \p bd1 is the fourth quadrant
-  and \p bd2 is an half-plane in \f$\Rset^2\f$. The resulting bdiffs
+  In this example the starting BDS \p bd1 is the fourth quadrant
+  and \p bd2 is an half-plane in \f$\Rset^2\f$. The resulting BDS
   is the half-plane \f$y >= 0\f$.
 
   \par Example 3
@@ -581,7 +581,7 @@ public:
   void poly_difference_assign(const BD_Shape& y);
 
   //! \brief
-  //! Assigns to \p *this the \ref affine_transformation "affine image"
+  //! Assigns to \p *this the \ref affine_function "affine image"
   //! of \p *this under the function mapping variable \p var into the
   //! affine expression specified by \p expr and \p denominator.
   /*!
@@ -602,7 +602,7 @@ public:
 		    = Coefficient_one());
 
   //! \brief
-  //! Assigns to \p *this the \ref affine_transformation "affine preimage"
+  //! Assigns to \p *this the \ref affine_function "affine preimage"
   //! of \p *this under the function mapping variable \p var into the
   //! affine expression specified by \p expr and \p denominator.
   /*!
@@ -623,7 +623,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_image "generalized affine transfer function"
+  //! \ref generalized_affine_relation "affine relation"
   //! \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
   //! where \f$\mathord{\relsym}\f$ is the relation symbol encoded
   //! by \p relsym.
@@ -650,7 +650,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_image "generalized affine transfer function"
+  //! \ref generalized_affine_relation "affine relation"
   //! \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
   //! \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
   /*!
