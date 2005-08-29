@@ -157,10 +157,11 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
   returns <CODE>true</CODE> if and only if \p x is less than \p y.
   
   \code
-    bool is_nonnegative() const
+    bool operator>=(const T& x, int y)
   \endcode
-  returns <CODE>true</CODE> if and only if \p *this is non-negative.
-
+  returns <CODE>true</CODE> if and only if \p x is greater than
+  or equal to \p y.
+  
   \code
     bool is_zero() const 
   \endcode
