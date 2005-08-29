@@ -25,10 +25,16 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
+# M4 macro files to be used by the client applications with Autoconf.
+m4datadir = $(datadir)/aclocal
+m4data_DATA = ppl.m4
+
+# M4 macro files for internal use.
 m4macros = \
 ac_check_gmp.m4 \
 ac_cxx_flexible_arrays.m4 \
 ac_cxx_long_double.m4 \
 ac_cxx_long_long.m4
 
-EXTRA_DIST = $(m4macros)
+EXTRA_DIST = $(m4macros) $(m4data_DATA)
+
