@@ -67,7 +67,8 @@ compute_capacity(const dimension_type requested_size) {
 }
 
 inline void
-normalize2(const Coefficient& x, const Coefficient& y,
+normalize2(Coefficient_traits::const_reference x,
+	   Coefficient_traits::const_reference y,
 	   Coefficient& nx, Coefficient& ny) {
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, x, y);

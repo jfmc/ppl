@@ -38,7 +38,7 @@ PPL::Linear_Row::normalize() {
   gcd = 0;
   const dimension_type sz = size();
   for (dimension_type i = sz; i-- > 0; ) {
-    const Coefficient& x_i = x[i];
+    Coefficient_traits::const_reference x_i = x[i];
     if (x_i != 0)
       gcd_assign(gcd, x_i);
   }

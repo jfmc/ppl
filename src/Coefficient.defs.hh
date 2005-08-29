@@ -41,8 +41,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-const Coefficient& Coefficient_zero();
-const Coefficient& Coefficient_one();
+Coefficient_traits::const_reference Coefficient_zero();
+Coefficient_traits::const_reference Coefficient_one();
 
 } // namespace Parma_Polyhedra_Library
 

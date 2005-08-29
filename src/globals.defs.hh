@@ -237,7 +237,8 @@ struct From_Bounding_Box {
 */
 #endif
 void
-normalize2(const Coefficient& x, const Coefficient& y,
+normalize2(Coefficient_traits::const_reference x,
+	   Coefficient_traits::const_reference y,
 	   Coefficient& nx, Coefficient& ny);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

@@ -25,13 +25,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-inline const Coefficient&
+inline Coefficient_traits::const_reference
 Coefficient_zero() {
   static Coefficient z(0);
   return z;
 }
 
-inline const Coefficient&
+inline Coefficient_traits::const_reference
 Coefficient_one() {
   static Coefficient o(1);
   return o;
