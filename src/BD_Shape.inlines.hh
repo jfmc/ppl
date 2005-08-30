@@ -2547,8 +2547,9 @@ BD_Shape<T>::affine_image(const Variable var,
   // on `var' and add back `low_sum <= var <= up_sum'.
 
   // Approximationg `expr' from above and from below.
-  T up_sum = expr.inhomogeneous_term();
+  T up_sum;
   T low_sum;
+  up_sum = expr.inhomogeneous_term();
   assign_neg(low_sum, up_sum, ROUND_UP);
   // Indices of the variables with value +inf.
   dimension_type up_var_index_inf;
