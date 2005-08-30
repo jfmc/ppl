@@ -208,22 +208,7 @@ namespace IO_Operators {
 template <typename PH>
 std::ostream&
 operator<<(std::ostream& s, const Determinate<PH>& x) {
-  if (x.is_top())
-    s << "true";
-  else if (x.is_bottom())
-    s << "false";
-  else {
-    const Constraint_System& cs = x.constraints();
-    Constraint_System::const_iterator i = cs.begin();
-    Constraint_System::const_iterator cs_end = cs.end();
-    s << "{ ";
-    while (i != cs_end) {
-      s << *i++;
-      if (i != cs_end)
-	s << ", ";
-    }
-    s << " }";
-  }
+  s << x.element();
   return s;
 }
 
