@@ -1,7 +1,8 @@
 space_dim 3
-con_sys (not_up-to-date) (not_minimized)
+-ZE -EM  -CM -GM  -CS +GS  -CP -GP  -SC -SG
+con_sys (not_up-to-date)
 0 x 0
-gen_sys (up-to-date) (not_minimized)
+gen_sys (up-to-date)
 topology NECESSARILY_CLOSED
 8 x 4 (not_sorted)
 index_first_pending 8

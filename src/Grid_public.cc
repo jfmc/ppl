@@ -2097,22 +2097,15 @@ PPL::Grid::ascii_dump(std::ostream& s) const {
   s << "space_dim "
     << space_dim
     << endl;
-  //status.ascii_dump(s); // FIX
-  s // << endl // FIX
-    << "con_sys ("
+  status.ascii_dump(s);
+  s << "con_sys ("
     << (congruences_are_up_to_date() ? "" : "not_")
     << "up-to-date)"
-    << " ("
-    << (congruences_are_minimized() ? "" : "not_")
-    << "minimized)"
     << endl;
   con_sys.ascii_dump(s);
   s << "gen_sys ("
     << (generators_are_up_to_date() ? "" : "not_")
     << "up-to-date)"
-    << " ("
-    << (generators_are_minimized() ? "" : "not_")
-    << "minimized)"
     << endl;
   gen_sys.ascii_dump(s);
   s << "dimension_kinds";
@@ -2140,10 +2133,8 @@ PPL::Grid::ascii_load(std::istream& s) {
   if (!(s >> space_dim))
     return false;
 
-#if 0
   if (!status.ascii_load(s))
     return false;
-#endif
 
   if (!(s >> str) || str != "con_sys")
     return false;
@@ -2152,15 +2143,6 @@ PPL::Grid::ascii_load(std::istream& s) {
     if (str == "(up-to-date)")
       set_congruences_up_to_date();
     else if (str != "(not_up-to-date)")
-      return false;
-  }
-  else
-    return false;
-
-  if (s >> str) {
-    if (str == "(minimized)")
-      set_congruences_minimized();
-    else if (str != "(not_minimized)")
       return false;
   }
   else
@@ -2176,15 +2158,6 @@ PPL::Grid::ascii_load(std::istream& s) {
     if (str == "(up-to-date)")
       set_generators_up_to_date();
     else if (str != "(not_up-to-date)")
-      return false;
-  }
-  else
-    return false;
-
-  if (s >> str) {
-    if (str == "(minimized)")
-      set_generators_minimized();
-    else if (str != "(not_minimized)")
       return false;
   }
   else
