@@ -1,4 +1,4 @@
-/* Polyhedron::Status class implementation (non-inline functions).
+/* Grid::Status class implementation (non-inline functions).
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -79,7 +79,8 @@ PPL::Grid::Status::ascii_dump(std::ostream& s) const {
     << (test_g_pending() ? '+' : '-') << gensys_pending << ' '
     << ' '
     << (test_sat_c_up_to_date() ? '+' : '-') << satc_upd << ' '
-    << (test_sat_g_up_to_date() ? '+' : '-') << satg_upd << ' ';
+    << (test_sat_g_up_to_date() ? '+' : '-') << satg_upd << ' '
+    << std::endl;
 }
 
 bool
@@ -173,13 +174,12 @@ PPL::Grid::Status::OK() const {
     copy.reset_empty();
     if (copy.test_zero_dim_univ())
       return true;
-    else {
 #ifndef NDEBUG
-      cerr << "The empty flag is incompatible with any other one."
-	   << endl;
+    cerr << "The empty flag is incompatible with any other one."
+	 << endl << "Flags:" << endl;
+    ascii_dump(cerr);
 #endif
-      return false;
-    }
+    return false;
   }
 
   if ((test_sat_c_up_to_date() || test_sat_g_up_to_date())
