@@ -277,6 +277,7 @@ NNC_Polyhedron.cc \
 Grid_nonpublic.cc \
 Grid_public.cc \
 Grid_chdims.cc \
+Grid_widenings.cc \
 Row.cc \
 Linear_Row.cc \
 Saturation_Matrix.cc \
