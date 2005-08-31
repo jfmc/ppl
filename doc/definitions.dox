@@ -1478,7 +1478,7 @@ The 3-tuple \f$(L, Q, P)\f$
 is said to be a <EM>generator system</EM> for \f$\cL\f$
 and we write \f$\cL = \ggen(L, Q, P)\f$.
 
-Note that the grid \f$\cL = \ggen(L, Q, P) = \emptyset\f$ 
+Note that the grid \f$\cL = \ggen(L, Q, P) = \emptyset\f$
 if and only if the set of points \f$P = \emptyset\f$.
 If \f$P \neq \emptyset\f$, then
 \f$\cL = \ggen(L, \emptyset, Q_{\vect{p}} \union P)\f$
@@ -1558,7 +1558,7 @@ is the dimension
 The space dimension of congruence relations, generators and other objects
 of the library is defined similarly.
 
-\anchor affine_dimension
+\anchor grid_affine_dimension
 <B>Affine Independence and Affine Dimension for Grids</B>
 
 A <EM>non-empty</EM> grid \f$\cL \in \Gset_n\f$ has
