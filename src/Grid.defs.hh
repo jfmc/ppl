@@ -1824,7 +1824,7 @@ private:
 					      dimension_type col,
 					      Congruence_System& sys);
 
-  //! Reduce column \dim in rows preceding \p pivot_index in \p sys.
+  //! Reduce column \p dim in rows preceding \p pivot_index in \p sys.
   /*!
     Only consider from index \p start to index \p end of the row at \p
     pivot_index.  Flag \p generators indicates whether \p sys is a
