@@ -2016,7 +2016,7 @@ congruence relations that can occur in this additional parameter.
 The <EM>bounded</EM> extrapolation operators further enhance each one
 of the limited extrapolation operators described above, by ensuring
 that their results cannot be worse than the smallest
-\ref rectilinear_grid "rectilinear grid" that contains the two argument grids.
+\ref rectilinear_grids "rectilinear grid" that contains the two argument grids.
 
 \section use_of_library Using the Library
 
