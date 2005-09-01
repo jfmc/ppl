@@ -272,10 +272,8 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
       exact_div_assign(cp_0_scaled, cp[0], gcd);
       exact_div_assign(p_0_scaled, p[0], gcd);
     }
-    Coefficient_traits::const_reference
-      cp_div = rel_prime ? cp[0] : cp_0_scaled;
-    Coefficient_traits::const_reference
-      p_div = rel_prime ? p[0] : p_0_scaled;
+    const Coefficient& cp_div = rel_prime ? cp[0] : cp_0_scaled;
+    const Coefficient& p_div = rel_prime ? p[0] : p_0_scaled;
     TEMP_INTEGER(prod1);
     TEMP_INTEGER(prod2);
     for (dimension_type i = cp.size() - 2; i > 0; --i) {
