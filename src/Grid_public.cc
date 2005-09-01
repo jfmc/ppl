@@ -90,6 +90,8 @@ PPL::Grid::Grid(const Grid& y)
     con_sys = y.con_sys;
   if (y.generators_are_up_to_date())
     gen_sys = y.gen_sys;
+  else
+    gen_sys.set_sorted(false);
 }
 
 #if 0
@@ -440,10 +442,18 @@ PPL::Grid::OK(bool check_not_empty) const {
   using std::cerr;
 #endif
 
-  // Check whether the topologies of `con_sys' and `gen_sys' agree.
+  // Check the topology of `gen_sys'.
   if (gen_sys.topology() == NOT_NECESSARILY_CLOSED) {
 #ifndef NDEBUG
     cerr << "Generator system should be necessarily closed." << endl;
+#endif
+    goto fail;
+  }
+
+  // Check the sortedness of `gen_sys'.
+  if (gen_sys.is_sorted()) {
+#ifndef NDEBUG
+    cerr << "Generator system is marked as sorted." << endl;
 #endif
     goto fail;
   }
@@ -456,7 +466,7 @@ PPL::Grid::OK(bool check_not_empty) const {
     if (check_not_empty) {
       // The caller does not want the grid to be empty.
 #ifndef NDEBUG
-      cerr << "Empty polyhedron!" << endl;
+      cerr << "Empty grid!" << endl;
 #endif
       goto fail;
     }
