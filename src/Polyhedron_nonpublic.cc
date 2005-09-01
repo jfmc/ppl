@@ -1207,6 +1207,11 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
     cs.set_sorted(false);
     // The generator system is no longer up-to-date.
     x.clear_generators_up_to_date();
+    // If we have added an upper bound on epsilon,
+    // then it may have been redundant,
+    // so that low-level minimization is not preserved.
+    if (!found_eps_leq_one)
+      x.clear_constraints_minimized();
   }
 
   assert(OK());
