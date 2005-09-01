@@ -74,8 +74,8 @@ PPL::Grid::Grid(dimension_type num_dimensions,
       dim_kinds[num_dimensions--] = CON_VIRTUAL;
     }
     gen_sys.unset_pending_rows();
-    gen_sys.set_sorted(false);
   }
+  gen_sys.set_sorted(false);
   assert(OK());
 }
 
@@ -1100,6 +1100,7 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
       throw_invalid_generators("add_recycled_generators(gs)", "gs");
     gs.unset_pending_rows();
     std::swap(gen_sys, gs);
+    gen_sys.set_sorted(false);
     // FIX for now convert rays to lines
     for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
       Generator& g = gen_sys[row];
@@ -1143,8 +1144,6 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
       std::swap(new_g[j], old_g[j]);
   }
 
-  // The newly added rows have been simply appended.
-  gen_sys.set_sorted(false);
   // Congruences are out of date and generators are not minimized.
   clear_congruences_up_to_date();
   clear_generators_minimized();
@@ -1189,9 +1188,6 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
     return true;
   }
 
-  if (!gs.is_sorted())
-    gs.sort_rows();
-
   // Now adjusting dimensions (topology already adjusted).
   // NOTE: sortedness is preserved.
   //gs.adjust_topology_and_space_dimension(topology(), space_dim); // FIX
@@ -1222,6 +1218,7 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
     // `gs' has a point: the grid is no longer empty and generators
     // are up-to-date.
     std::swap(gen_sys, gs);
+    gen_sys.set_sorted(false);
     // FIX for now convert rays to lines
     for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
       Generator& g = gen_sys[row];

@@ -140,6 +140,7 @@ PPL::Grid::construct(const Generator_System& const_gs,
   // checked for both the topology-compatibility and the supporting
   // point.
   space_dim = 0;
+  gen_sys.set_sorted(false);
 }
 
 PPL::Grid::Three_Valued_Boolean
@@ -593,8 +594,6 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
 	  gen[col] *= factor;
       }
     }
-
-    sys.set_sorted(false);
   }
   return lcm;
 }
