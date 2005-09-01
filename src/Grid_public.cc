@@ -1834,15 +1834,15 @@ generalized_affine_preimage(const Linear_Expression& lhs,
   // While at it, check whether or not there exists a variable
   // occurring in both `lhs' and `rhs'.
   Generator_System new_lines;
-  bool lhs_vars_intersects_rhs_vars = false;
+  bool lhs_vars_intersect_rhs_vars = false;
   for (dimension_type i = lhs_space_dim; i-- > 0; )
     if (lhs.coefficient(Variable(i)) != 0) {
-      new_lines.insert(line(Variable(i)));
+      new_lines.insert(line(Variable(i)), false);
       if (rhs.coefficient(Variable(i)) != 0)
-	lhs_vars_intersects_rhs_vars = true;
+	lhs_vars_intersect_rhs_vars = true;
     }
 
-  if (lhs_vars_intersects_rhs_vars) {
+  if (lhs_vars_intersect_rhs_vars) {
     // FIX this case is identical to same case in gen_affine_image
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, add an additional dimension.
