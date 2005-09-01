@@ -420,6 +420,8 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
   }
 
   Generator_System new_gensys;
+  // Set sortedness, for the assertion met via gs::insert.
+  new_gensys.set_sorted(false);
   for (Generator_System::const_iterator i = old_gensys.begin(),
 	 old_gensys_end = old_gensys.end(); i != old_gensys_end; ++i) {
     const Generator& old_g = *i;
