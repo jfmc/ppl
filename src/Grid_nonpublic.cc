@@ -242,28 +242,22 @@ PPL::Grid::is_included_in(const Grid& y) const {
     TEMP_INTEGER(divisor);
     divisor = gs[0][0];
     for (dimension_type i = num_rows; i-- > 1; )
-      if (!cgs.satisfies_all_congruences(gs[i], divisor)) {
-	std::cout << "is_included_in... done (min, false i = " << i << ")." << std::endl;
+      if (!cgs.satisfies_all_congruences(gs[i], divisor))
 	return false;
-      }
   }
   else
     for (dimension_type i = num_rows; i-- > 1; ) {
       const Generator& g = gs[i];
-      if (!cgs.satisfies_all_congruences(g, g[0])) {
-	std::cout << "is_included_in... done (false i = " << i << ")." << std::endl;
+      if (!cgs.satisfies_all_congruences(g, g[0]))
 	return false;
-      }
     }
 #else
   TEMP_INTEGER(divisor);
   divisor = gs[0][0];
   dimension_type num_rows = gs.num_rows();
   for (dimension_type i = num_rows; i-- > 1; )
-    if (!cgs.satisfies_all_congruences(gs[i], divisor)) {
-      std::cout << "is_included_in... done (false i = " << i << ")." << std::endl;
+    if (!cgs.satisfies_all_congruences(gs[i], divisor))
       return false;
-    }
 #endif
 
   // Inclusion holds.
