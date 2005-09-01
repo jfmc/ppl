@@ -70,10 +70,12 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
       // See if an inconsistent congruence has been passed.
       for (dimension_type i = cgs.num_rows(); i-- > 0; )
 	if (cgs[i].is_trivial_false()) {
-	  // Inconsistent constraint found: the grid is empty.
+	  // Inconsistent congruence found: the grid is empty.
 	  set_empty();
 	  break;
 	}
+
+  gen_sys.set_sorted(false);
 
   assert(OK());
 }
@@ -91,6 +93,7 @@ PPL::Grid::construct(const Generator_System& const_gs,
   if (gs.num_rows() == 0) {
     space_dim = gs.space_dimension();
     status.set_empty();
+    gen_sys.set_sorted(false);
     return;
   }
 
@@ -404,6 +407,7 @@ PPL::Grid::set_zero_dim_univ() {
   space_dim = 0;
   con_sys.clear();
   gen_sys.clear();
+  gen_sys.set_sorted(false);
 }
 
 void
@@ -412,6 +416,7 @@ PPL::Grid::set_empty() {
   // FIX The grid is empty, so clear the descriptions.
   con_sys.clear();
   gen_sys.clear();
+  gen_sys.set_sorted(false);
 }
 
 bool
