@@ -389,11 +389,15 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
       return;
 
     // Permute all that is up-to-date.
-    if (congruences_are_up_to_date())
+    if (congruences_are_up_to_date()) {
       con_sys.permute_columns(cycles);
+      clear_congruences_minimized();
+    }
 
-    if (generators_are_up_to_date())
+    if (generators_are_up_to_date()) {
       gen_sys.permute_columns(cycles);
+      clear_generators_minimized();
+    }
 
     assert(OK());
     return;
@@ -438,7 +442,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
     switch (old_g.type()) {
     case Generator::LINE:
       if (!all_zeroes)
-	new_gensys.insert(line(e));
+	new_gensys.insert(line(e), false);
       break;
     case Generator::RAY:
       if (!all_zeroes) {
@@ -452,7 +456,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
       // A point in the origin has all zero homogeneous coefficients.
       // Inserting the point is safe, even with the normalization in
       // `point', as the divisor is 1.
-      new_gensys.insert(point(e));
+      new_gensys.insert(point(e), false);
       new_gensys[new_gensys.num_rows()-1][0] = old_g.divisor();
       break;
     case Generator::CLOSURE_POINT:
