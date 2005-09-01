@@ -1627,10 +1627,6 @@ private:
     \return
     <CODE>false</CODE> if and only if \p *this turns out to be an
     empty grid.
-
-    The resulting system of congruences is only partially sorted:
-    the equalities are in the upper part of the matrix,
-    while the inequalities in the lower part.
   */
   bool update_congruences() const;
 
@@ -1640,11 +1636,8 @@ private:
     <CODE>false</CODE> if and only if \p *this turns out to be an
     empty grid.
 
-    The resulting system of generators is only partially sorted:
-    the lines are in the upper part of the matrix,
-    while rays and points are in the lower part.
-    It is illegal to call this method when the Status field
-    already declares the grid to be empty.
+    It is illegal to call this method when the Status field already
+    declares the grid to be empty.
   */
   bool update_generators() const;
 
