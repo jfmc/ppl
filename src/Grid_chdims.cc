@@ -117,6 +117,7 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
     space_dim += m;
     con_sys.clear();
     gen_sys.clear();
+    gen_sys.set_sorted(false);
     return;
   }
 
@@ -203,6 +204,7 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
     space_dim += m;
     con_sys.clear();
     gen_sys.clear();
+    gen_sys.set_sorted(false);
     return;
   }
 
@@ -364,6 +366,7 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
     // FIX?  mark empty? keep empty con_sys?
     con_sys.clear();
     gen_sys.clear();
+    gen_sys.set_sorted(false);
     // Update the space dimension.
     space_dim = new_space_dim;
     assert(OK());
@@ -440,6 +443,7 @@ PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
     // FIX?  mark empty? keep empty con_sys?
     con_sys.clear();
     gen_sys.clear();
+    gen_sys.set_sorted(false);
     assert(OK());
     return;
   }

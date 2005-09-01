@@ -341,9 +341,6 @@ Grid::simplify(Generator_System& sys, Dimension_Kinds& dim_kinds) {
   // Changes here may also be required in the congruence version
   // below.
 
-  // FIX At least to please assertion in linear_row::is_sorted.
-  sys.set_sorted(false);
-
   dimension_type num_cols = sys.num_columns();
 
   if (dim_kinds.size() != num_cols)
@@ -459,13 +456,12 @@ Grid::simplify(Generator_System& sys, Dimension_Kinds& dim_kinds) {
     // FIX is this psbl after parameterizing?
     //assert(sys.OK());
 
-    sys.set_sorted(false);
-
     strace << "---- simplify (reduce) gs done." << endl;
     return false;
   }
 
   sys.clear();
+  sys.set_sorted(false);
   sys.unset_pending_rows();
   strace << "---- simplify (reduce) gs done (empty)." << endl;
   return true;

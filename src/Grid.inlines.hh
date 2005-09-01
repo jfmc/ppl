@@ -328,6 +328,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
       space_dim = 0;
       con_sys.clear();
       gen_sys.clear();
+      gen_sys.set_sorted(false);
     }
     else
       // Removing all dimensions from a non-empty grid.
