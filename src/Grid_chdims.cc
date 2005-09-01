@@ -97,7 +97,7 @@ PPL::Grid::add_space_dimensions(Generator_System& gs,
 //                      |   |   |
 // o---o---o-- x        |---|---|-- x
 // 0 1 2 3 4 5          0 1 2 3 4 5
-//     Q^1                   Q^2
+//     R^1                   R^2
 void
 PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
   if (m == 0)
@@ -184,7 +184,7 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
 //
 // o---o---o-- x        o---o---o-- x
 // 0 1 2 3 4 5          0 1 2 3 4 5
-//     Q^1                   Q^2
+//     R^1                   R^2
 void
 PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
   if (m == 0)
