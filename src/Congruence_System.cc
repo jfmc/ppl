@@ -252,16 +252,12 @@ satisfies_all_congruences(const Generator& g,
     const Congruence& cg = cgs[i];
     spa_fp(sp, g, cg);
     if (cg.is_equality() || g.is_line()) {
-      if (sp != 0) {
-	std::cout << "sat's_all_cg's... done (eq, false i = " << i << ")." << std::endl;
+      if (sp != 0)
 	return false;
-      }
     }
     // FIX compare before loop
-    else if (sp % (divisor > 0 ? cg.modulus() * divisor : cg.modulus()) != 0) {
-      std::cout << "sat's_all_cg's... done (false i = " << i << ")." << std::endl;
+    else if (sp % (divisor > 0 ? cg.modulus() * divisor : cg.modulus()) != 0)
       return false;
-    }
   }
   return true;
 }
