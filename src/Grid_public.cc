@@ -2218,8 +2218,6 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid& gr) {
   else if (gr.is_universe())
     s << "true";
   else
-    // FIX ph only prints min'd constraints
-    s << gr.minimized_congruences() << std::endl
-      << gr.minimized_generators();
+    s << gr.minimized_congruences();
   return s;
 }
