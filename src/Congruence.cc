@@ -166,8 +166,9 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {
   }
   if (first)
     s << "0";
-  s << " == " << -c.inhomogeneous_term()
-    << " (mod " << c.modulus() << ")";
+  s << " = " << -c.inhomogeneous_term();
+  if (c.is_proper_congruence())
+    s << " (mod " << c.modulus() << ")";
   return s;
 }
 
@@ -249,8 +250,8 @@ PPL::scalar_product_assign(Coefficient& z,
 void
 PPL::reduced_scalar_product_assign(Coefficient& z,
 				   const Linear_Row& x, const Congruence& y) {
-  // The reduced scalar product is only defined
-  // if the topology of `x' is NNC and `y' has enough coefficients.
+  // FIX The reduced scalar product is only defined if the topology of
+  // `x' is NNC and `y' has enough coefficients.
   assert(x.size() <= y.size());
   z = 0;
   for (dimension_type i = x.size() - 1; i-- > 0; )
