@@ -32,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Grid::Grid(dimension_type num_dimensions,
-		const Degenerate_Kind kind) {
+		const Degenerate_Element kind) {
   if (num_dimensions > max_space_dimension())
     throw_space_dimension_overflow("Grid(n, k)",
 				   "n exceeds the maximum "

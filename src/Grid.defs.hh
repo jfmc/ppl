@@ -358,14 +358,6 @@ public:
   //! Returns the maximum space dimension all kinds of Grid can handle.
   static dimension_type max_space_dimension();
 
-  //! Kinds of degenerate grids.
-  enum Degenerate_Kind {
-    //! The universe grid, i.e., the whole vector space.
-    UNIVERSE,
-    //! The empty grid, i.e., the empty set.
-    EMPTY
-  };
-
   //! Builds a grid having the specified properties.
   /*!
     \param num_dimensions
@@ -375,7 +367,7 @@ public:
     Specifies whether the universe or the empty grid has to be built.
   */
   explicit Grid(dimension_type num_dimensions = 0,
-		const Degenerate_Kind kind = UNIVERSE);
+		const Degenerate_Element kind = UNIVERSE);
 
   //! Builds a grid from a const system of congruences.
   /*!
