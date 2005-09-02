@@ -44,7 +44,7 @@ PPL::Congruence_System::normalize_moduli() {
     // Calculate the LCM of all the moduli.
     TEMP_INTEGER(lcm);
     // Find first congruence.
-    while (1) {
+    while (true) {
       lcm = operator[](--row).modulus();
       if (lcm > 0)
 	break;
@@ -390,7 +390,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence_System& cgs) {
   const Congruence_System::const_iterator cgs_end = cgs.end();
   if (i == cgs_end)
     return s << "true";
-  while (1) {
+  while (true) {
     s << *i++;
     if (i == cgs_end)
       return s;
