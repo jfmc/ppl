@@ -94,6 +94,20 @@ PPL::Grid::Grid(const Grid& y)
     gen_sys.set_sorted(false);
 }
 
+PPL::Grid::Grid(const Constraint_System& ccs) {
+  if (ccs.space_dimension() > max_space_dimension())
+    throw_space_dimension_overflow("Grid(ccs)",
+				   "the space dimension of ccs "
+				   "exceeds the maximum allowed "
+				   "space dimension");
+  Congruence_System cgs;
+  for (Constraint_System::const_iterator i = ccs.begin(),
+         ccs_end = ccs.end(); i != ccs_end; ++i)
+    if (i->is_equality())
+      cgs.insert(*i);
+  construct(cgs);
+}
+
 #if 0
 
 PPL::dimension_type
@@ -1053,8 +1067,10 @@ PPL::Grid::add_congruences_and_minimize(const Congruence_System& cgs) {
 
 bool
 PPL::Grid::add_congruences_and_minimize(const Constraint_System& cs) {
-  // FIX temp?
   // TODO: this is just an executable specification.
+  // The dimension of `cs' must be at most `space_dim'.
+  if (space_dim < cs.space_dimension())
+    throw_dimension_incompatible("add_congruences_and_minimize(cs)", "cs", cs);
   Congruence_System cgs;
   bool cgs_is_empty = true;
   for (Constraint_System::const_iterator i = cs.begin(),
@@ -1062,12 +1078,36 @@ PPL::Grid::add_congruences_and_minimize(const Constraint_System& cs) {
     if (i->is_equality()) {
       Congruence cg(*i / 0);
       cgs.insert(cg);
+      //cgs.insert(*i);
       cgs_is_empty = false;
     }
   if (cgs_is_empty)
     return minimize();
-  else
-    return add_congruences_and_minimize(cgs);
+  return add_congruences_and_minimize(cgs);
+}
+
+void
+PPL::Grid::add_constraint(const Constraint& c) {
+  // The dimension of `c' must be at most `space_dim'.
+  if (space_dim < c.space_dimension())
+    throw_dimension_incompatible("add_constraint(c)", "c", c);
+  if (c.is_equality()) {
+    Congruence cg(c);
+    add_congruence(cg);
+  }
+}
+
+void
+PPL::Grid::add_constraints(const Constraint_System& cs) {
+  // The dimension of `cs' must be at most `space_dim'.
+  if (space_dim < cs.space_dimension())
+    throw_dimension_incompatible("add_constraints(cs)", "cs", cs);
+  Congruence_System cgs;
+  for (Constraint_System::const_iterator i = cs.begin(),
+         cs_end = cs.end(); i != cs_end; ++i)
+    if (i->is_equality())
+      cgs.insert(*i);
+  return add_congruences(cgs);
 }
 
 void

@@ -491,7 +491,7 @@ PPL::Grid::minimize() const {
 bool
 PPL::Grid::strongly_minimize_congruences() const {
 
-  // FIX is this method necessary? perhaps use for strong reduc
+  // FIX is this (private) method necessary? perhaps use for strong reduc
 
   // From the user perspective, the grid stays the same.
   Grid& x = const_cast<Grid&>(*this);
@@ -660,8 +660,15 @@ PPL::Grid::throw_dimension_incompatible(const char* method,
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
+					const char* cg_name,
+					const Congruence& cg) const {
+  throw_dimension_incompatible(method, cg_name, cg.space_dimension());
+}
+
+void
+PPL::Grid::throw_dimension_incompatible(const char* method,
 					const char* c_name,
-					const Congruence& c) const {
+					const Constraint& c) const {
   throw_dimension_incompatible(method, c_name, c.space_dimension());
 }
 
@@ -674,8 +681,15 @@ PPL::Grid::throw_dimension_incompatible(const char* method,
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
+					const char* cgs_name,
+					const Congruence_System& cgs) const {
+  throw_dimension_incompatible(method, cgs_name, cgs.space_dimension());
+}
+
+void
+PPL::Grid::throw_dimension_incompatible(const char* method,
 					const char* cs_name,
-					const Congruence_System& cs) const {
+					const Constraint_System& cs) const {
   throw_dimension_incompatible(method, cs_name, cs.space_dimension());
 }
 

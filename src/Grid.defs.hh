@@ -397,6 +397,15 @@ public:
   */
   explicit Grid(Congruence_System& cgs);
 
+  //! Builds a grid from a system of constraints.
+  /*!
+    The grid inherits the space dimension of the constraint system.
+
+    \param cs
+    The system of constraints defining the grid.
+  */
+  explicit Grid(const Constraint_System& cs);
+
   //! Builds a grid from a system of generators.
   /*!
     The grid inherits the space dimension of the generator system.
@@ -609,8 +618,8 @@ public:
   */
   bool add_generator_and_minimize(const Generator& g);
 
-  //! \brief Adds a copy of the congruences in \p cgs to the system
-  //! of congruences of \p *this (without reducing the result).
+  //! \brief Adds a copy of the congruences in \p cgs to the system of
+  //! congruences of \p *this (without reducing the result).
   /*!
     \param cgs
     Contains the congruences that will be added to the system of
@@ -653,7 +662,6 @@ public:
   */
   bool add_congruences_and_minimize(const Congruence_System& cgs);
 
-  // FIX temp?
   //! \brief
   //! Adds a copy of the equality constraints in \p cs, seen as modulo
   //! 0 congruences, to the system of congruences of \p *this,
@@ -690,6 +698,20 @@ public:
     exceptional return is that it can be safely destroyed.
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
+
+  //! \brief Adds to *this a congruence equivalent to constraint \p c.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  void add_constraint(const Constraint& c);
+
+  //! \brief Adds to *this congruences equivlent to the constraints in \p cs.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  void add_constraints(const Constraint_System& cs);
 
   //! \brief Adds a copy of the generators in \p gs to the system
   //! of generators of \p *this (without reducing the result).
@@ -1869,14 +1891,20 @@ protected:
 				    const char* e_name,
 				    const Linear_Expression& e) const;
   void throw_dimension_incompatible(const char* method,
+				    const char* cg_name,
+				    const Congruence& cg) const;
+  void throw_dimension_incompatible(const char* method,
 				    const char* c_name,
-				    const Congruence& c) const;
+				    const Constraint& c) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* g_name,
 				    const Generator& g) const;
   void throw_dimension_incompatible(const char* method,
+				    const char* cgs_name,
+				    const Congruence_System& cgs) const;
+  void throw_dimension_incompatible(const char* method,
 				    const char* cs_name,
-				    const Congruence_System& cs) const;
+				    const Constraint_System& cs) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* gs_name,
 				    const Generator_System& gs) const;
