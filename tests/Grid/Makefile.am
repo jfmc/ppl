@@ -62,6 +62,7 @@ TESTS = \
 	expandspacedim1 \
 	addgenerator1 \
 	addcongruence1 \
+	addconstraints1 \
 	equals1 \
 	relations1 \
 	relations2 \
@@ -97,6 +98,8 @@ isuniverse1_SOURCES = isuniverse1.cc
 addgenerator1_SOURCES = addgenerator1.cc
 
 addcongruence1_SOURCES = addcongruence1.cc
+
+addconstraints1_SOURCES = addconstraints1.cc
 
 addspacedims1_SOURCES = addspacedims1.cc
 addspacedims2_SOURCES = addspacedims2.cc
