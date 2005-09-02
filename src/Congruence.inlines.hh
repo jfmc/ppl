@@ -222,7 +222,8 @@ Congruence::total_memory_in_bytes() const {
 
 inline
 Congruence::Congruence(const Constraint& c)
-  : Row(c, c.space_dimension() + 1, c.space_dimension() + 2) {
+  : Row(c, c.size(), c.size() + 2) {
+  // FIX calc reasonable capacity above?
 
   if (c.is_inequality()) {
     std::ostringstream s;
@@ -231,7 +232,9 @@ Congruence::Congruence(const Constraint& c)
     throw std::invalid_argument(s.str());
   }
 
-  Row::expand_within_capacity(size()+1);
+  // NOT_NECESSARILY_CLOSED constraints already have an extra element.
+  if (c.is_necessarily_closed())
+    Row::expand_within_capacity(size()+1);
   (*this)[size()-1] = 0;
 }
 
