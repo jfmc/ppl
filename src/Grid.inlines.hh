@@ -257,9 +257,8 @@ inline bool
 Grid::is_empty() const {
   if (marked_empty())
     return true;
-  // Try a fast-fail test: if generators are up-to-date and
-  // there are no pending congruences, then the generator system
-  // (since it is well formed) contains a point.
+  // Try a fast-fail test: if generators are up-to-date then the
+  // generator system (since it is well formed) contains a point.
   if (generators_are_up_to_date())
     return false;
   return !minimize();
