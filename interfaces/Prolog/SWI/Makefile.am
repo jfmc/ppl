@@ -14,9 +14,8 @@
 # for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-# USA.
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
@@ -41,6 +40,7 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
 -I$(top_srcdir)/Watchdog \
 -I$(top_builddir)/src \
+-I$(SWI_PROLOG_INCLUDE_DIRECTORY) \
 @extra_includes@
 
 pkglib_LTLIBRARIES = libppl_swiprolog.la
@@ -77,19 +77,19 @@ pl_clpq2_SOURCES = pl_clpq.cc
 # Notice: we are linking statically until we understand whether
 # and if libtool and plld can interoperate.
 ppl_pl$(EXEEXT): ppl_swiprolog.o ppl_pl.o
-	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -pl-options,-g,main -o $@ $+ \
+	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/.libs -lpwl \
 		@extra_libraries@
 
 pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq.pl
-	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -pl-options,-g,main -o $@ $+ \
+	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/.libs -lpwl \
 		@extra_libraries@
 
 pl_clpq2$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
-	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -pl-options,-g,main -o $@ $+ \
+	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/.libs -lpwl \
 		@extra_libraries@

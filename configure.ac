@@ -14,9 +14,8 @@
 # for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-# USA.
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
@@ -24,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.8pre4],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.8pre5],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
@@ -60,6 +59,10 @@ AC_SUBST(PPL_VERSION_MAJOR)
 AC_SUBST(PPL_VERSION_MINOR)
 AC_SUBST(PPL_VERSION_REVISION)
 AC_SUBST(PPL_VERSION_BETA)
+
+AC_DEFINE_UNQUOTED(PPL_CONFIGURE_OPTIONS, "$ac_configure_args", [This contains the options with which `configure' was invoked.])
+PPL_CONFIGURE_OPTIONS="\"$ac_configure_args\""
+AC_SUBST(PPL_CONFIGURE_OPTIONS)
 
 # Installation directories.
 AC_SUBST([docdir], ['${datadir}/doc/ppl'])
@@ -431,7 +434,7 @@ AC_CXX_SUPPORTS_LONG_LONG
 # Checks for the availability of C library functions in C++.
 AC_CHECK_DECLS([ffs], , , [#include <strings.h>])
 AC_CHECK_DECLS([strtof,strtod,strtold,strtoll,strtoull], , , [#include <cstdlib>])
-AC_CHECK_DECLS([fma,fmaf,fmal], , , [#include <cmath>])
+AC_CHECK_DECLS([fma,fmaf,fmal,rintl], , , [#include <cmath>])
 
 # Must link everything with libm.
 extra_libraries="${extra_libraries} -lm"
@@ -458,8 +461,8 @@ add --enable-cxx to the configuration options.])
   fi
 fi
 
-extra_includes="${extra_includes} ${gmp_includes_option}"
-extra_libraries="${extra_libraries} ${gmp_library_option}"
+extra_includes="${extra_includes}${extra_includes:+ }${gmp_includes_option}"
+extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_option}"
 
 enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
@@ -543,14 +546,7 @@ AM_CONDITIONAL(HAVE_SICSTUS_PROLOG, test x$SICSTUS_PROLOG = xsicstus)
 
 # SWI Prolog
 
-AC_CHECK_PROG(SWI_PROLOG, pl, pl)
-if test x"$SWI_PROLOG" = xpl
-then
-AC_CHECK_HEADER(SWI-Prolog.h,
-                [],
-                SWI_PROLOG="")
-fi
-AM_CONDITIONAL(HAVE_SWI_PROLOG, test x$SWI_PROLOG = xpl)
+AC_CHECK_SWI_PROLOG
 
 # XSB
 
@@ -652,10 +648,11 @@ AC_SUBST(text_md5sum)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm ppl.spec
-				debian/libppl.copyright
-				debian/libppl-pwl.copyright
+		debian/libppl.copyright
+		debian/libppl-pwl.copyright
                 src/Makefile
                 src/version.hh
+                src/ppl-config.cc
                 tests/Makefile
                 tests/BD_Shape/Makefile
                 tests/Polyhedron/Makefile

@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -45,11 +44,11 @@ main() TRY {
   to_be_removed.insert(w);
 
   // A 10-dim space, empty polyhedron.
-  C_Polyhedron ph(10, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(10, EMPTY);
   ph.remove_space_dimensions(to_be_removed);
 
   // A 7-dim space, empty polyhedron.
-  C_Polyhedron known_result(7, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(7, EMPTY);
 
   int retval = (known_result == ph) ? 0 : 1;
 

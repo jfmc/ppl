@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -49,7 +48,7 @@ main() TRY {
   ph2.add_constraint(x == -1);
   ph2.add_constraint(y == -1);
 
-  Polyhedra_Powerset<C_Polyhedron> ps1(2, Polyhedron::EMPTY);
+  Polyhedra_Powerset<C_Polyhedron> ps1(2, EMPTY);
   ps1.add_disjunct(ph1);
   ps1.add_disjunct(ph2);
 
@@ -59,7 +58,7 @@ main() TRY {
   ph3.add_constraint(x <= 4);
   ph3.add_constraint(y == 3);
 
-  Polyhedra_Powerset<C_Polyhedron> ps2(2, Polyhedron::EMPTY);
+  Polyhedra_Powerset<C_Polyhedron> ps2(2, EMPTY);
   ps2.add_disjunct(ph3);
 
 #if NOISY
@@ -84,7 +83,7 @@ main() TRY {
   known_gs.insert(ray(4*x + 3*y));
   C_Polyhedron known_ph2(known_gs);
 
-  Polyhedra_Powerset<C_Polyhedron> known_result(2, Polyhedron::EMPTY);
+  Polyhedra_Powerset<C_Polyhedron> known_result(2, EMPTY);
   // Inserting out of order on purpose.
   known_result.add_disjunct(known_ph2);
   known_result.add_disjunct(known_ph1);

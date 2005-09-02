@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -106,6 +105,14 @@ is_pinf_mpz(const mpz_class& v) {
 }
 
 SPECIALIZE_IS_PINF(mpz, mpz_class)
+
+template <typename Policy>
+inline bool
+is_int_mpz(const mpz_class& v) {
+  return !is_nan<Policy>(v);
+}
+
+SPECIALIZE_IS_INT(mpz, mpz_class)
 
 template <typename Policy>
 inline Result
@@ -289,7 +296,7 @@ SPECIALIZE_MUL(mpz, mpz_class, mpz_class, mpz_class)
 template <typename Policy>
 inline Result
 div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir dir) {
-  if (Policy::check_divbyzero && ::sgn(y) == 0)
+  if (CHECK_P(Policy::check_div_zero, ::sgn(y) == 0))
     return set_special<Policy>(to, V_DIV_ZERO);
   mpz_srcptr n = x.get_mpz_t();
   mpz_srcptr d = y.get_mpz_t();
@@ -314,7 +321,7 @@ SPECIALIZE_DIV(mpz, mpz_class, mpz_class, mpz_class)
 template <typename Policy>
 inline Result
 rem_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir) {
-  if (Policy::check_divbyzero && ::sgn(y) == 0)
+  if (CHECK_P(Policy::check_div_zero, ::sgn(y) == 0))
     return set_special<Policy>(to, V_MOD_ZERO);
   to = x % y;
   return V_EQ;
@@ -405,7 +412,7 @@ SPECIALIZE_LCM(mpz, mpz_class, mpz_class, mpz_class)
 template <typename Policy>
 inline Result
 sqrt_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir dir) {
-  if (Policy::check_sqrt_neg && from < 0)
+  if (CHECK_P(Policy::check_sqrt_neg, from < 0))
     return set_special<Policy>(to, V_SQRT_NEG);
   if (dir == ROUND_IGNORE) {
     to = sqrt(from);

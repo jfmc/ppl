@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -141,7 +140,7 @@ test3() {
   Bounding_Box nbox(2);
   ph.shrink_bounding_box(nbox);
 
-  NNC_Polyhedron known_ph(2, C_Polyhedron::EMPTY);
+  NNC_Polyhedron known_ph(2, EMPTY);
   NNC_Polyhedron known_pph(pbox, From_Bounding_Box());
   NNC_Polyhedron known_nph(nbox, From_Bounding_Box());
 

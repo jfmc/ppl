@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -32,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() TRY {
-  TBD_Shape oc1(2, Polyhedron::EMPTY);
+  TBD_Shape oc1(2, EMPTY);
   TBD_Shape oc2(2);
 #if NOISY
   print_constraints(oc1, "**** oc1 ****");
@@ -41,7 +40,7 @@ main() TRY {
   oc1.time_elapse_assign(oc2);
 
   TBD_Shape oc3(2);
-  TBD_Shape oc4(2, Polyhedron::EMPTY);
+  TBD_Shape oc4(2, EMPTY);
 #if NOISY
   print_constraints(oc3, "**** oc3 ****");
   print_constraints(oc4, "**** oc4 ****");

@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -38,7 +37,7 @@ Variable y(1);
 
 C_Polyhedron
 rectangle(int lx, int ly, int dx, int dy) {
-  C_Polyhedron ph(2, Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
   ph.add_generator(point((lx+0*dx)*x + (ly+0*dy)*y));
   ph.add_generator(point((lx+1*dx)*x + (ly+0*dy)*y));
   ph.add_generator(point((lx+1*dx)*x + (ly+1*dy)*y));
@@ -51,7 +50,7 @@ rectangle(int lx, int ly, int dx, int dy) {
 int main() TRY {
   set_handlers();
 
-  Polyhedra_Powerset<C_Polyhedron> cross(2, Polyhedron::EMPTY);
+  Polyhedra_Powerset<C_Polyhedron> cross(2, EMPTY);
   cross.add_disjunct(rectangle(0, 3, 9, 3));
   cross.add_disjunct(rectangle(3, 0, 3, 9));
 
@@ -59,7 +58,7 @@ int main() TRY {
   cout << "cross = " << cross << endl;
 #endif
 
-  Polyhedra_Powerset<C_Polyhedron> squares(2, Polyhedron::EMPTY);
+  Polyhedra_Powerset<C_Polyhedron> squares(2, EMPTY);
   squares.add_disjunct(rectangle(1, 4, 1, 1));
   squares.add_disjunct(rectangle(4, 4, 1, 1));
   squares.add_disjunct(rectangle(7, 4, 1, 1));

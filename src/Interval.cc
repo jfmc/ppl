@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -27,18 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
-
-/*! \relates Parma_Polyhedra_Library::ERational */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const ERational& x) {
-  if (x.e < 0)
-    s << "-infty";
-  else if (x.e > 0)
-    s << "+infty";
-  else
-    s << x.v;
-  return s;
-}
 
 bool
 PPL::LBoundary::OK() const {

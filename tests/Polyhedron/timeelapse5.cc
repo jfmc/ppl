@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -34,7 +33,7 @@ int
 main() TRY {
   set_handlers();
 
-  C_Polyhedron ph1(0, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(0, EMPTY);
   C_Polyhedron ph2;
 
 #if NOISY
@@ -43,7 +42,7 @@ main() TRY {
 #endif
   ph1.time_elapse_assign(ph2);
 
-  C_Polyhedron ph3(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph3(2, EMPTY);
   C_Polyhedron ph4(2);
 #if NOISY
   print_constraints(ph3, "**** ph3 ****");
@@ -52,7 +51,7 @@ main() TRY {
   ph3.time_elapse_assign(ph4);
 
   C_Polyhedron ph5(2);
-  C_Polyhedron ph6(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph6(2, EMPTY);
 #if NOISY
   print_constraints(ph5, "**** ph5 ****");
   print_constraints(ph6, "**** ph6 ****");

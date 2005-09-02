@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -115,7 +114,7 @@ error3() {
 
 void
 error4() {
-  C_Polyhedron ph(3, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(3, EMPTY);
 
   try {
     // This is an incorrect use of the function add_generator(g): it
@@ -745,7 +744,7 @@ error22() {
 
 void
 error23() {
-  NNC_Polyhedron ph(0, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron ph(0, EMPTY);
 
   try {
     // This is an incorrect use of the function
@@ -766,7 +765,7 @@ error23() {
 
 void
 error24() {
-  NNC_Polyhedron ph(0, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron ph(0, EMPTY);
 
 #if NOISY
   print_constraints(ph, "*** ph ***");
@@ -795,7 +794,7 @@ error24() {
 
 void
 error25() {
-  NNC_Polyhedron ph(0, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron ph(0, EMPTY);
 
 #if NOISY
   print_constraints(ph, "*** ph ***");

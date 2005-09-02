@@ -14,9 +14,8 @@
 # for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-# USA.
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
@@ -68,6 +67,27 @@ AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/src @extra_includes@
 
 lib_LTLIBRARIES = libppl.la
 
+bin_PROGRAMS = ppl-config
+ppl_config_SOURCES = \
+ppl-config.cc \
+BUGS.cc \
+COPYING.cc \
+CREDITS.cc
+
+ppl_config_LDADD = \
+libppl.la \
+@extra_libraries@
+
+BUGS.cc:	$(top_srcdir)/utils/text2cxxarray $(top_srcdir)/BUGS
+	$(top_srcdir)/utils/text2cxxarray --name=BUGS_array \
+		$(top_srcdir)/BUGS >$@
+COPYING.cc:	$(top_srcdir)/utils/text2cxxarray $(top_srcdir)/COPYING
+	$(top_srcdir)/utils/text2cxxarray --name=COPYING_array \
+		$(top_srcdir)/COPYING >$@
+CREDITS.cc:	$(top_srcdir)/utils/text2cxxarray $(top_srcdir)/CREDITS
+	$(top_srcdir)/utils/text2cxxarray --name=CREDITS_array \
+		$(top_srcdir)/CREDITS >$@
+
 if USE_NATIVE_INTEGERS
 
 COEFFICIENT_TYPES_INCLUDE_FILES = \
@@ -100,6 +120,7 @@ endif
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
+namespaces.hh \
 compiler.hh \
 float.types.hh \
 Coefficient_traits_template.hh \
@@ -160,9 +181,6 @@ checked_numeric_limits.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
 Coefficient.defs.hh \
 Coefficient.inlines.hh \
-E_Rational.types.hh \
-E_Rational.defs.hh \
-E_Rational.inlines.hh \
 globals.defs.hh \
 globals.inlines.hh \
 Interval.defs.hh \
@@ -299,6 +317,7 @@ swapping_sort.icc
 
 # The ordering of the following list *matters*!
 DOC_FILES = \
+namespaces.hh \
 GMP_Integer.types.hh \
 Checked_Number.types.hh \
 Native_Integer.types.hh \
@@ -384,8 +403,8 @@ ppl_include_files.hh: $(INCLUDE_FILES) Makefile
 	  printf "#include \"%s\"\n" $$file >>$@; \
 	done
 
-ppl_install.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(NESTED_INCLUDE_FILES) Makefile $(top_srcdir)/build_header
-	$(top_srcdir)/build_header \
+ppl_install.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(NESTED_INCLUDE_FILES) Makefile $(top_srcdir)/utils/build_header
+	$(top_srcdir)/utils/build_header \
 		-I $(top_builddir) -I $(top_builddir)/src \
 		$(top_srcdir)/src/ppl_header.hh >$@
 
@@ -400,6 +419,6 @@ install-data-local: ppl_install.hh
 uninstall-local:
 	rm -f $(DESTDIR)$(includedir)/ppl.hh
 
-EXTRA_DIST = ppl_header.hh version.hh.in
+EXTRA_DIST = ppl_header.hh ppl-config.cc.in version.hh.in
 
 MOSTLYCLEANFILES = $(BUILT_SOURCES)

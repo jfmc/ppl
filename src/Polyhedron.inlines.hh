@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -477,10 +476,10 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
   // To record the lower and upper bound for each dimension.
   // Lower bounds are initialized to open plus infinity.
   std::vector<LBoundary>
-    lower_bound(space_dim, LBoundary(ERational('+'), LBoundary::OPEN));
+    lower_bound(space_dim, LBoundary(ERational(PLUS_INFINITY), LBoundary::OPEN));
   // Upper bounds are initialized to open minus infinity.
   std::vector<UBoundary>
-    upper_bound(space_dim, UBoundary(ERational('-'), UBoundary::OPEN));
+    upper_bound(space_dim, UBoundary(ERational(MINUS_INFINITY), UBoundary::OPEN));
 
   if (!reduce_complexity && has_something_pending())
     process_pending();
@@ -537,8 +536,12 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	// `Variable(varid) + n / d rel 0', where
 	// `rel' is either the relation `==', `>=', or `>'.
 	// For the purpose of shrinking intervals, this is
-	// (morally) turned into `Variable(varid) rel  -n/d'.
-	const ERational r(-n, d);
+	// (morally) turned into `Variable(varid) rel -n/d'.
+	mpq_class q(raw_value(n), raw_value(d));
+	q.canonicalize();
+	// Turn `n/d' into `-n/d'.
+	q = -q;
+	const ERational r(q);
 	const Constraint::Type c_type = c.type();
 	switch (c_type) {
 	case Constraint::EQUALITY:
@@ -591,8 +594,8 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	// both below and above.
 	for (dimension_type j = space_dim; j-- > 0; )
 	  if (g.coefficient(Variable(j)) != 0) {
-	    lower_bound[j] = LBoundary(ERational('-'), LBoundary::OPEN);
-	    upper_bound[j] = UBoundary(ERational('+'), UBoundary::OPEN);
+	    lower_bound[j] = LBoundary(ERational(MINUS_INFINITY), LBoundary::OPEN);
+	    upper_bound[j] = UBoundary(ERational(PLUS_INFINITY), UBoundary::OPEN);
 	  }
 	break;
       case Generator::RAY:
@@ -601,9 +604,9 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	for (dimension_type j = space_dim; j-- > 0; ) {
 	  int sign = sgn(g.coefficient(Variable(j)));
 	  if (sign < 0)
-	    lower_bound[j] = LBoundary(ERational('-'), LBoundary::OPEN);
+	    lower_bound[j] = LBoundary(ERational(MINUS_INFINITY), LBoundary::OPEN);
 	  else if (sign > 0)
-	    upper_bound[j] = UBoundary(ERational('+'), UBoundary::OPEN);
+	    upper_bound[j] = UBoundary(ERational(PLUS_INFINITY), UBoundary::OPEN);
 	}
 	break;
       case Generator::POINT:
@@ -612,7 +615,9 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	  Coefficient_traits::const_reference d = g.divisor();
 	  for (dimension_type j = space_dim; j-- > 0; ) {
 	    Coefficient_traits::const_reference n = g.coefficient(Variable(j));
-	    ERational r(n, d);
+	    mpq_class q(raw_value(n), raw_value(d));
+	    q.canonicalize();
+	    const ERational r(q);
 	    LBoundary lb(r,(g_type == Generator::CLOSURE_POINT
 			    ? LBoundary::OPEN
 			    : LBoundary::CLOSED));
@@ -638,18 +643,18 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     // Lower bound.
     const LBoundary& lb = lower_bound[j];
     const ERational& lr = lb.bound();
-    if (lr.direction_of_infinity() == 0) {
-      lr.numerator(n);
-      lr.denominator(d);
+    if (!is_plus_infinity(lr) && !is_minus_infinity(lr)) {
+      n = raw_value(lr).get_num();
+      d = raw_value(lr).get_den();
       box.raise_lower_bound(j, lb.is_closed(), n, d);
     }
 
     // Upper bound.
     const UBoundary& ub = upper_bound[j];
     const ERational& ur = ub.bound();
-    if (ur.direction_of_infinity() == 0) {
-      ur.numerator(n);
-      ur.denominator(d);
+    if (!is_plus_infinity(ur) && !is_minus_infinity(ur)) {
+      n = raw_value(ur).get_num();
+      d = raw_value(ur).get_den();
       box.lower_upper_bound(j, ub.is_closed(), n, d);
     }
   }
@@ -679,7 +684,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
     return;
   }
 
-  dimension_type new_space_dimension = pfunc.max_in_codomain() + 1;
+  const dimension_type new_space_dimension = pfunc.max_in_codomain() + 1;
 
   if (new_space_dimension == space_dim) {
     // The partial function `pfunc' is indeed total and thus specifies

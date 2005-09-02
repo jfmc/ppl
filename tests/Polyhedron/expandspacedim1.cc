@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -64,7 +63,7 @@ test1() {
 // Test with an empty polyhedron.
 void
 test2() {
-  C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(3, EMPTY);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
@@ -72,7 +71,7 @@ test2() {
 
   ph1.expand_space_dimension(B, 1);
 
-  C_Polyhedron known_result(4, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(4, EMPTY);
 
   bool ok = (ph1 == known_result);
 
@@ -114,7 +113,7 @@ test3() {
 // Test with given generators.
 void
 test4() {
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(2, EMPTY);
   ph1.add_generator(point(A));
   ph1.add_generator(point(A + B));
   ph1.add_generator(point(B));
@@ -125,7 +124,7 @@ test4() {
 
   ph1.expand_space_dimension(A, 1);
 
-  C_Polyhedron known_result(3, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(3, EMPTY);
   known_result.add_generator(point(A + C));
   known_result.add_generator(point(A + B));
   known_result.add_generator(point(A + B + C));
@@ -240,7 +239,7 @@ test7() {
 // Test as given in [GopanDMDRS04] on page 519.
 void
 test8() {
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(2, EMPTY);
   ph1.add_generator(point(A + 2*B));
   ph1.add_generator(point(A + 3*B));
   ph1.add_generator(point(A + 4*B));
@@ -251,7 +250,7 @@ test8() {
 
   ph1.expand_space_dimension(B, 1);
 
-  C_Polyhedron known_result(3, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(3, EMPTY);
   known_result.add_generator(point(A + 2*B + 2*C));
   known_result.add_generator(point(A + 2*B + 3*C));
   known_result.add_generator(point(A + 2*B + 4*C));

@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -264,8 +263,12 @@ SP_STUB_2(ppl_Polyhedron_poly_hull_assign_and_minimize)
 SP_STUB_2(ppl_Polyhedron_poly_difference_assign)
 SP_STUB_4(ppl_Polyhedron_affine_image)
 SP_STUB_4(ppl_Polyhedron_affine_preimage)
+SP_STUB_5(ppl_Polyhedron_bounded_affine_image)
+SP_STUB_5(ppl_Polyhedron_bounded_affine_preimage)
 SP_STUB_5(ppl_Polyhedron_generalized_affine_image)
+SP_STUB_5(ppl_Polyhedron_generalized_affine_preimage)
 SP_STUB_4(ppl_Polyhedron_generalized_affine_image_lhs_rhs)
+SP_STUB_4(ppl_Polyhedron_generalized_affine_preimage_lhs_rhs)
 SP_STUB_2(ppl_Polyhedron_time_elapse_assign)
 SP_STUB_1(ppl_Polyhedron_topological_closure_assign)
 SP_STUB_3(ppl_Polyhedron_BHRZ03_widening_assign_with_token)
@@ -362,8 +365,12 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_poly_difference_assign, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_affine_image, 4);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_affine_preimage, 4);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_bounded_affine_image, 5);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_bounded_affine_preimage, 5);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_generalized_affine_image, 5);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_generalized_affine_preimage, 5);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_generalized_affine_image_lhs_rhs, 4);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_generalized_affine_preimage_lhs_rhs, 4);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_time_elapse_assign, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_topological_closure_assign, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_BHRZ03_widening_assign_with_token, 3);

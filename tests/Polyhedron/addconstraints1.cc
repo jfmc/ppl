@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -49,7 +48,7 @@ main() TRY {
   C_Polyhedron ph3;
   ph3.add_constraints_and_minimize(cs3);
 
-  C_Polyhedron empty_result(0, C_Polyhedron::EMPTY);
+  C_Polyhedron empty_result(0, EMPTY);
   C_Polyhedron univ_result;
 
   int retval = (ph1 == empty_result

@@ -15,9 +15,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -108,7 +107,7 @@ main() TRY {
   set_handlers();
 
   for (int dimension = 2; dimension <= 6; ++dimension) {
-    C_Polyhedron ph(dimension, C_Polyhedron::EMPTY);
+    C_Polyhedron ph(dimension, EMPTY);
     random_polytope(ph, dimension, dimension*dimension);
     const Constraint_System& cs = ph.constraints();
     unsigned num_constraints = 0;

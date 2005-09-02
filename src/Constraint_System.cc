@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -402,9 +401,10 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
 
 
 void
-PPL::Constraint_System::affine_preimage(dimension_type v,
-			     const Linear_Expression& expr,
-			     Coefficient_traits::const_reference denominator) {
+PPL::Constraint_System::
+affine_preimage(dimension_type v,
+		const Linear_Expression& expr,
+		Coefficient_traits::const_reference denominator) {
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
   // nor the epsilon dimension of NNC polyhedra).

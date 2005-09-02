@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -74,33 +73,34 @@ on the use of the interface.
   this will result in enhanced portability at a cost that is, by all means,
   negligible.
 
--  A PPL polyhedron can only be accessed by means of a Prolog term
-   called a <EM>handle</EM>.
-   Note, however, that the data structure of a handle,
-   is implementation-dependent, system-dependent and
-   version-dependent, and, for this reason, deliberately left unspecified.
-   What we do guarantee is that the handle requires very little memory.
+- A PPL polyhedron can only be accessed by means of a Prolog term
+  called a <EM>handle</EM>.
+  Note, however, that the data structure of a handle,
+  is implementation-dependent, system-dependent and
+  version-dependent, and, for this reason, deliberately left unspecified.
+  What we do guarantee is that the handle requires very little memory.
 
--  A Prolog term can be bound to a valid handle by using
-\ref predicates
-   ppl_new_Polyhedron_from_space_dimension/4,
-   ppl_new_Polyhedron_from_Polyhedron/4,
-   ppl_new_Polyhedron_from_constraints/3,
-   ppl_new_Polyhedron_from_generators/3.
-   ppl_new_Polyhedron_from_bounding_box/3.
+- A Prolog term can be bound to a valid handle by using
+  predicates
+\code
+  ppl_new_Polyhedron_from_space_dimension/4,
+  ppl_new_Polyhedron_from_Polyhedron/4,
+  ppl_new_Polyhedron_from_constraints/3,
+  ppl_new_Polyhedron_from_generators/3.
+  ppl_new_Polyhedron_from_bounding_box/3.
 \endcode
-   These predicates will create or copy a PPL polyhedron
-   and construct a valid handle for referencing it.
-   The first argument
-   (in the case of <CODE>ppl_new_Polyhedron_from_Polyhedron/4</CODE>,
-   the first and third arguments) denotes the topology
-   and can be either <CODE>c</CODE> or <CODE>nnc</CODE>
-   indicating a C or NNC polyhedron, respectively.
-   The third argument
-   (in the case of <CODE>ppl_new_Polyhedron_from_Polyhedron/4</CODE>
-   and <CODE>ppl_new_Polyhedron_from_Dimension/4</CODE>,
-   the fourth argument) is a Prolog term that is
-   unified with a new valid handle for accessing this polyhedron.
+  These predicates will create or copy a PPL polyhedron
+  and construct a valid handle for referencing it.
+  The first argument
+  (in the case of <CODE>ppl_new_Polyhedron_from_Polyhedron/4</CODE>,
+  the first and third arguments) denotes the topology
+  and can be either <CODE>c</CODE> or <CODE>nnc</CODE>
+  indicating a C or NNC polyhedron, respectively.
+  The third argument
+  (in the case of <CODE>ppl_new_Polyhedron_from_Polyhedron/4</CODE>
+  and <CODE>ppl_new_Polyhedron_from_Dimension/4</CODE>,
+  the fourth argument) is a Prolog term that is
+  unified with a new valid handle for accessing this polyhedron.
 
 - As soon as a PPL polyhedron is no longer required,
   the memory occupied by it should be released
@@ -137,17 +137,17 @@ on the use of the interface.
   topological compatibility rules stated in Section \ref representation.
 
 - Any application using the PPL should make sure that only the
-intended version(s) of the library are ever used.
-Predicates
+  intended version(s) of the library are ever used.
+  Predicates
 \code
-ppl_version_major/1,
-ppl_version_minor/1,
-ppl_version_revision/1,
-ppl_version_beta/1,
-ppl_version/1,
-ppl_banner.
+  ppl_version_major/1,
+  ppl_version_minor/1,
+  ppl_version_revision/1,
+  ppl_version_beta/1,
+  ppl_version/1,
+  ppl_banner.
 \endcode
-allow run-time checking of information about the version being used.
+  allow run-time checking of information about the version being used.
 
 <H2>PPL Predicate List</H2>
 
@@ -224,7 +224,7 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_swap(+Handle1, +Handle2)
+  ppl_Polyhedron_swap(+Handle_1, +Handle_2)
 </CODE>
 
 <CODE>
@@ -390,6 +390,14 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
+  ppl_Polyhedron_bounded_affine_image(+Handle,
+                                      +PPL_Var,
+                                      +Lin_Expr_1,
+                                      +Lin_Expr_2,
+                                      +Coefficient)
+</CODE>
+
+<CODE>
   ppl_Polyhedron_generalized_affine_image(+Handle,
 					  +PPL_Var,
 					  +Relation_Symbol,
@@ -399,9 +407,9 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 
 <CODE>
   ppl_Polyhedron_generalized_affine_image_lhs_rhs(+Handle,
-						  +Lin_Expr1,
+						  +Lin_Expr_1,
 						  +Relation_Symbol,
-						  +Lin_Expr2)
+						  +Lin_Expr_2)
 </CODE>
 
 <CODE>
@@ -487,7 +495,7 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_concatenate_assign(+Handle1, +Handle2)
+  ppl_Polyhedron_concatenate_assign(+Handle_1, +Handle_2)
 </CODE>
 
 <CODE>
@@ -754,11 +762,12 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    When using <CODE>ppl_new_Polyhedron_from_Polyhedron/2</CODE>,
    when the source polyhedron is NNC and the copy is C,
    care must be taken that the source polyhedron referenced by
-   <CODE>Handle1</CODE> is topologically closed.
+   <CODE>Handle_1</CODE> is topologically closed.
 
 <H2><CODE>
    ppl_new_Polyhedron_from_constraints(+Topology,
-                   +Constraint_System, -Handle)
+                                       +Constraint_System,
+                                       -Handle)
  </CODE></H2>
 
    Creates a polyhedron \f$\cP\f$ represented by
@@ -789,10 +798,10 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    can be included in an interval in <CODE>Box</CODE>
    only if <CODE>Topology</CODE> is <CODE>nnc</CODE>.
 
-<H2><CODE> ppl_Polyhedron_swap(+Handle1, +Handle2) </CODE></H2>
+<H2><CODE> ppl_Polyhedron_swap(+Handle_1, +Handle_2) </CODE></H2>
 
-   Swaps the polyhedron referenced by <CODE>Handle1</CODE>
-   with the one referenced by <CODE>Handle2</CODE>.
+   Swaps the polyhedron referenced by <CODE>Handle_1</CODE>
+   with the one referenced by <CODE>Handle_2</CODE>.
    The polyhedra \f$\cP\f$ and \f$\cQ\f$ must have the same topology.
 
 <H2><CODE> ppl_delete_Polyhedron(+Handle) </CODE></H2>
@@ -927,32 +936,33 @@ b
 
 
 <H3><CODE>
-  ppl_Polyhedron_maximize(+Handle, +Lin_Expr, ?Coefficient1,
-  			?Coefficient2, ?Boolean)
+  ppl_Polyhedron_maximize(+Handle, +Lin_Expr, ?Coefficient_1,
+  			  ?Coefficient_2, ?Boolean)
  </CODE></H3>
 
   Succeeds if and only if the polyhedron \f$P\f$ referenced by
   <CODE>Handle</CODE> is not empty
   and <CODE>Lin_Expr</CODE> is bounded from above in \f$P\f$.
 
-  <CODE>Coefficient1</CODE> is unified with the numerator of the supremum value
-  and <CODE>Coefficient2</CODE> with the denominator of the supremum value.
+  <CODE>Coefficient_1</CODE> is unified with the numerator of
+  the supremum value and <CODE>Coefficient_2</CODE> with the denominator
+  of the supremum value.
   If the supremum is also the maximum,
   <CODE>Boolean</CODE> is unified with the atom <CODE>true</CODE>
   and, otherwise, unified with the atom <CODE>false</CODE>.
 
 <H2><CODE>
-  ppl_Polyhedron_maximize_with_point(+Handle, +Lin_Expr, ?Coefficient1,
-  			?Coefficient2, ?Boolean, ?Point)
+  ppl_Polyhedron_maximize_with_point(+Handle, +Lin_Expr, ?Coefficient_1,
+  			             ?Coefficient_2, ?Boolean, ?Point)
  </CODE></H2>
 
   Succeeds if and only if the polyhedron \f$P\f$ referenced by
   <CODE>Handle</CODE> is not empty
   and <CODE>Lin_Expr</CODE> is bounded from above in \f$P\f$.
 
-  <CODE>Coefficient1</CODE> is unified with the numerator of
+  <CODE>Coefficient_1</CODE> is unified with the numerator of
   the supremum value,
-  <CODE>Coefficient2</CODE> with the denominator of the supremum value,
+  <CODE>Coefficient_2</CODE> with the denominator of the supremum value,
   and <CODE>Point</CODE> with a point or closure point where
   <CODE>Lin_Expr</CODE> reaches this value.
   If the supremum is also the maximum,
@@ -960,33 +970,33 @@ b
   and, otherwise, unified with the atom <CODE>false</CODE>.
 
 <H2><CODE>
-  ppl_Polyhedron_minimize(+Handle, +Lin_Expr, ?Coefficient1,
-			?Coefficient2, ?Boolean)
+  ppl_Polyhedron_minimize(+Handle, +Lin_Expr, ?Coefficient_1,
+			  ?Coefficient_2, ?Boolean)
 </CODE></H2>
 
   Succeeds if and only if the polyhedron \f$P\f$ referenced by
   <CODE>Handle</CODE> is not empty
   and <CODE>Lin_Expr</CODE> is bounded from below in \f$P\f$.
 
-  <CODE>Coefficient1</CODE> is unified with the numerator of the infimum value
-  and <CODE>Coefficient2</CODE> with the denominator of the infimum value.
+  <CODE>Coefficient_1</CODE> is unified with the numerator of the infimum value
+  and <CODE>Coefficient_2</CODE> with the denominator of the infimum value.
   If the infimum is also the minimum,
   <CODE>Boolean</CODE> is unified with the atom <CODE>true</CODE>
   and, otherwise, unified with the atom <CODE>false</CODE>.
 
 <H2><CODE>
-  ppl_Polyhedron_minimize_with_point(+Handle, +Lin_Expr, ?Coefficient1,
-  			?Coefficient2, ?Boolean, ?Point)
+  ppl_Polyhedron_minimize_with_point(+Handle, +Lin_Expr, ?Coefficient_1,
+  			             ?Coefficient_2, ?Boolean, ?Point)
 </CODE></H2>
 
   Succeeds if and only if the polyhedron \f$P\f$ referenced by
   <CODE>Handle</CODE> is not empty
   and <CODE>Lin_Expr</CODE> is bounded from below in \f$P\f$.
 
-  <CODE>Coefficient1</CODE> is unified with the numerator of the infimum value,
-  <CODE>Coefficient2</CODE> with the denominator of the infimum value,
-  and <CODE>Point</CODE> with  a point or closure point where
-  <CODE>Lin_Expr</CODE> reaches this value.
+  <CODE>Coefficient_1</CODE> is unified with the numerator of the
+  infimum value, <CODE>Coefficient_2</CODE> with the denominator of
+  the infimum value, and <CODE>Point</CODE> with  a point or
+  closure point where <CODE>Lin_Expr</CODE> reaches this value.
   If the infimum is also the minimum,
   <CODE>Boolean</CODE> is unified with the atom <CODE>true</CODE>
   and, otherwise, unified with the atom <CODE>false</CODE>.
@@ -999,14 +1009,14 @@ b
 <H2><CODE> ppl_Polyhedron_contains_Polyhedron(+Handle_1, +Handle_2) </CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
-   <CODE>Handle_1</CODE> is included in or
-   equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
+   <CODE>Handle_2</CODE> is included in or
+   equal to the polyhedron referenced by <CODE>Handle_1</CODE>.
 
 <H2><CODE> ppl_Polyhedron_strictly_contains_Polyhedron(+Handle_1, +Handle_2) </CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
-   <CODE>Handle_1</CODE> is included in but not
-   equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
+   <CODE>Handle_2</CODE> is included in but not
+   equal to the polyhedron referenced by <CODE>Handle_1</CODE>.
 
 <H2><CODE> ppl_Polyhedron_is_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
      </CODE></H2>
@@ -1176,13 +1186,23 @@ and a query will succeed even when
                +Lin_Expr, +Coefficient) </CODE></H2>
 
    Transforms the polyhedron referenced by <CODE>Handle</CODE>
-   assigning the affine expression <CODE>Lin_Expr</CODE>/<CODE>Coefficient</CODE>
-   to <CODE>PPL_Var</CODE>.
+   assigning the affine expression
+   <CODE>Lin_Expr</CODE>/<CODE>Coefficient</CODE> to <CODE>PPL_Var</CODE>.
 
 <H2><CODE> ppl_Polyhedron_affine_preimage(+Handle, +PPL_Var,
                +Lin_Expr, +Coefficient) </CODE></H2>
 
 This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
+
+<H2><CODE> ppl_Polyhedron_bounded_affine_image(+Handle,
+               +PPL_Var,
+               +Lin_Expr_1,
+               +Lin_Expr_2,
+               +Coefficient) </CODE></H2>
+
+   Transforms the polyhedron referenced by <CODE>Handle</CODE>
+   assigning the image with respect to the transfer relation
+   <CODE>Lin_Expr_1/Coefficient <= PPL_Var <= Lin_Expr_2/Coefficient</CODE>.
 
 <H2><CODE> ppl_Polyhedron_generalized_affine_image(+Handle,
                +PPL_Var,
@@ -1198,15 +1218,15 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 
 
 <H2><CODE> ppl_Polyhedron_generalized_affine_image_lhs_rhs(+Handle,
-               +Lin_Expr1,
+               +Lin_Expr_1,
                +Relation_Symbol
-               +Lin_Expr2) </CODE></H2>
+               +Lin_Expr_2) </CODE></H2>
 
    Transforms the polyhedron referenced by <CODE>Handle</CODE>
    assigning the generalized
    affine image with respect to the transfer function
-   <CODE>Lin_Expr1</CODE> <CODE>Relation_Symbol</CODE>
-   <CODE>Lin_Expr2</CODE>.
+   <CODE>Lin_Expr_1</CODE> <CODE>Relation_Symbol</CODE>
+   <CODE>Lin_Expr_2</CODE>.
 
 <H2><CODE> ppl_Polyhedron_time_elapse_assign(+Handle_1, +Handle_2) </CODE></H2>
 
@@ -1388,12 +1408,12 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    GS = [point(0),line(1*A),line(1*B)]
 \endcode
 
-<H2><CODE> ppl_Polyhedron_concatenate_assign(+Handle1, +Handle2) </CODE></H2>
+<H2><CODE> ppl_Polyhedron_concatenate_assign(+Handle_1, +Handle_2) </CODE></H2>
 
-   Updates the polyhedron \f$\cP_1\f$ referenced  by <CODE>Handle1</CODE>
+   Updates the polyhedron \f$\cP_1\f$ referenced  by <CODE>Handle_1</CODE>
    by first embedding \f$\cP_1\f$ in a new space enlarged by
    the space dimensions
-   of the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle2</CODE>,
+   of the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>,
    and then adds to its system of constraints
    a renamed-apart version of the constraints of  \f$\cP_2\f$.
 

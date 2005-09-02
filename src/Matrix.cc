@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -320,7 +319,7 @@ PPL::Matrix::ascii_load(std::istream& s) {
 }
 
 void
-PPL::Matrix::swap_columns(const dimension_type i,  const dimension_type j) {
+PPL::Matrix::swap_columns(const dimension_type i, const dimension_type j) {
   assert(i != j && i < num_columns() && j < num_columns());
   for (dimension_type k = num_rows(); k-- > 0; ) {
     Row& rows_k = rows[k];

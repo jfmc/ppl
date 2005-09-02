@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -31,25 +30,35 @@ namespace Parma_Polyhedra_Library {
 
 struct Checked_Number_Default_Policy {
   static const int check_overflow = 1;
-  static const int check_divbyzero = 0;
+  static const int check_inf_add_inf = 0;
+  static const int check_inf_sub_inf = 0;
+  static const int check_inf_mul_zero = 0;
+  static const int check_div_zero = 0;
+  static const int check_inf_div_inf = 0;
+  static const int check_inf_mod = 0;
   static const int check_sqrt_neg = 0;
-  static const int use_corrent_rounding = 0;
   static const int store_nan = 0;
   static const int store_infinity = 0;
   static const int convertible = 1;
   static const int fpu_check_inexact = 0;
+  static const int check_nan_args = 1;
   static const Rounding_Dir ROUND_DEFAULT = ROUND_IGNORE;
   static void handle_result(Result r);
 };
 
 struct Extended_Number_Policy {
   static const int check_overflow = 1;
-  static const int check_divbyzero = 0;
+  static const int check_inf_add_inf = 0;
+  static const int check_inf_sub_inf = 0;
+  static const int check_inf_mul_zero = 0;
+  static const int check_div_zero = 0;
+  static const int check_inf_div_inf = 0;
+  static const int check_inf_mod = 0;
   static const int check_sqrt_neg = 0;
-  static const int use_corrent_rounding = 1;
   static const int store_nan = 1;
   static const int store_infinity = 1;
   static const int fpu_check_inexact = 0;
+  static const int check_nan_args = 1;
   static const Rounding_Dir ROUND_DEFAULT = ROUND_UP;
   static void handle_result(Result r);
 };
@@ -457,7 +466,7 @@ template <typename T1, typename Policy1,
 	  typename T2, typename Policy2>
 bool
 operator>(const Checked_Number<T1, Policy1>& x,
-	   const Checked_Number<T2, Policy2>& y);
+	  const Checked_Number<T2, Policy2>& y);
 
 //! Less than or equal to operator.
 /*! \relates Checked_Number */
@@ -473,7 +482,7 @@ template <typename T1, typename Policy1,
 	  typename T2, typename Policy2>
 bool
 operator<(const Checked_Number<T1, Policy1>& x,
-	   const Checked_Number<T2, Policy2>& y);
+	  const Checked_Number<T2, Policy2>& y);
 
 //! \brief
 //! Returns \f$-1\f$, \f$0\f$ or \f$1\f$ depending on whether the value

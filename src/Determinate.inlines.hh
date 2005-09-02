@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -30,7 +29,7 @@ namespace Parma_Polyhedra_Library {
 
 template <typename PH>
 Determinate<PH>::Rep::Rep(dimension_type num_dimensions,
-			  Polyhedron::Degenerate_Kind kind)
+			  Degenerate_Element kind)
   : references(0), ph(num_dimensions, kind) {
 }
 
@@ -209,22 +208,7 @@ namespace IO_Operators {
 template <typename PH>
 std::ostream&
 operator<<(std::ostream& s, const Determinate<PH>& x) {
-  if (x.is_top())
-    s << "true";
-  else if (x.is_bottom())
-    s << "false";
-  else {
-    const Constraint_System& cs = x.constraints();
-    Constraint_System::const_iterator i = cs.begin();
-    Constraint_System::const_iterator cs_end = cs.end();
-    s << "{ ";
-    while (i != cs_end) {
-      s << *i++;
-      if (i != cs_end)
-	s << ", ";
-    }
-    s << " }";
-  }
+  s << x.element();
   return s;
 }
 

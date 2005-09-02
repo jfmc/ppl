@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -61,7 +60,7 @@ test1() {
   p4.add_constraint(X <= 2);
   p4.add_constraint(Y <= 5);
 
-  PSet T1(2, Polyhedron::EMPTY);
+  PSet T1(2, EMPTY);
   T1.add_disjunct(p1);
   T1.add_disjunct(p3);
   T1.add_disjunct(p4);
@@ -72,7 +71,7 @@ test1() {
   p2.add_constraint(X <= 1);
   p2.add_constraint(Y <= 3);
 
-  PSet T2(2, Polyhedron::EMPTY);
+  PSet T2(2, EMPTY);
   T2.add_disjunct(p1);
   T2.add_disjunct(p2);
   T2.add_disjunct(p3);
@@ -97,7 +96,7 @@ test1() {
   phull_T2.add_constraint(X - 2*Y <= 2);
   phull_T2.add_constraint(X + Y <= 7);
 
-  PSet known_result(2, Polyhedron::EMPTY);
+  PSet known_result(2, EMPTY);
   known_result.add_disjunct(phull_T2);
 
 #if NOISY
@@ -137,7 +136,7 @@ test2() {
   p4.add_constraint(X <= 4);
   p4.add_constraint(Y <= 3);
 
-  PSet T1(2, Polyhedron::EMPTY);
+  PSet T1(2, EMPTY);
   T1.add_disjunct(p1);
   T1.add_disjunct(p2);
   T1.add_disjunct(p3);
@@ -161,7 +160,7 @@ test2() {
   q3.add_constraint(X <= 6);
   q3.add_constraint(Y <= 2);
 
-  PSet T2(2, Polyhedron::EMPTY);
+  PSet T2(2, EMPTY);
   T2.add_disjunct(q1);
   T2.add_disjunct(q2);
   T2.add_disjunct(q3);
@@ -211,7 +210,7 @@ test3() {
   p3.add_constraint(X <= 7);
   p3.add_constraint(Y <= 3);
 
-  PSet T1(2, Polyhedron::EMPTY);
+  PSet T1(2, EMPTY);
   T1.add_disjunct(p1);
   T1.add_disjunct(p2);
   T1.add_disjunct(p3);
@@ -234,7 +233,7 @@ test3() {
   q3.add_constraint(X <= 12);
   q3.add_constraint(Y <= 4);
 
-  PSet T2(2, Polyhedron::EMPTY);
+  PSet T2(2, EMPTY);
   T2.add_disjunct(q1);
   T2.add_disjunct(q2);
   T2.add_disjunct(q3);
@@ -287,7 +286,7 @@ test4() {
   p4.add_constraint(X <= 8);
   p4.add_constraint(Y <= 5);
 
-  PSet T1(2, Polyhedron::EMPTY);
+  PSet T1(2, EMPTY);
   T1.add_disjunct(p1);
   T1.add_disjunct(p2);
   T1.add_disjunct(p3);
@@ -299,7 +298,7 @@ test4() {
   q1.add_constraint(Y - X <= 2);
   q1.add_constraint(X + Y <= 8);
 
-  PSet T2(2, Polyhedron::EMPTY);
+  PSet T2(2, EMPTY);
   T2.add_disjunct(q1);
   T2.add_disjunct(p2);
   T2.add_disjunct(p3);
@@ -321,7 +320,7 @@ test4() {
   r1.add_constraint(Y - X <= 2);
   r1.add_constraint(X + Y <= 8);
 
-  PSet known_result(2, Polyhedron::EMPTY);
+  PSet known_result(2, EMPTY);
   known_result.add_disjunct(r1);
   known_result.add_disjunct(p2);
   known_result.add_disjunct(p3);

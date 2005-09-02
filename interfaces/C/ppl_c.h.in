@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -1967,8 +1966,68 @@ ppl_Polyhedron_affine_preimage PPL_PROTO((ppl_Polyhedron_t ph,
 
 /*! \brief
   Assigns to \p ph the image of \p ph with respect to the
-  \ref generalized_image "generalized affine transfer function"
-  \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
+  \ref generalized_affine_relation "generalized affine transfer relation"
+  \f$\frac{\mathrm{lb}}{\mathrm{d}}
+       \leq \mathrm{var}'
+         \leq \frac{\mathrm{ub}}{\mathrm{d}}\f$.
+
+  \param ph
+  The polyhedron that is transformed;
+
+  \param var
+  The variable bounded by the generalized affine transfer relation;
+
+  \param lb
+  The numerator of the lower bounding affine expression;
+
+  \param ub
+  The numerator of the upper bounding affine expression;
+
+  \param d
+  The (common) denominator of the lower and upper bounding affine expressions.
+*/
+int
+ppl_Polyhedron_bounded_affine_image
+PPL_PROTO((ppl_Polyhedron_t ph,
+	   ppl_dimension_type var,
+	   ppl_const_Linear_Expression_t lb,
+	   ppl_const_Linear_Expression_t ub,
+	   ppl_const_Coefficient_t d));
+
+/*! \brief
+  Assigns to \p ph the preimage of \p ph with respect to the
+  \ref generalized_affine_relation "generalized affine transfer relation"
+  \f$\frac{\mathrm{lb}}{\mathrm{d}}
+       \leq \mathrm{var}'
+         \leq \frac{\mathrm{ub}}{\mathrm{d}}\f$.
+
+  \param ph
+  The polyhedron that is transformed;
+
+  \param var
+  The variable bounded by the generalized affine transfer relation;
+
+  \param lb
+  The numerator of the lower bounding affine expression;
+
+  \param ub
+  The numerator of the upper bounding affine expression;
+
+  \param d
+  The (common) denominator of the lower and upper bounding affine expressions.
+*/
+int
+ppl_Polyhedron_bounded_affine_preimage
+PPL_PROTO((ppl_Polyhedron_t ph,
+	   ppl_dimension_type var,
+	   ppl_const_Linear_Expression_t lb,
+	   ppl_const_Linear_Expression_t ub,
+	   ppl_const_Coefficient_t d));
+
+/*! \brief
+  Assigns to \p ph the image of \p ph with respect to the
+  \ref generalized_affine_relation "generalized affine transfer relation"
+  \f$\mathrm{var}' \relsym \frac{\mathrm{le}}{\mathrm{d}}\f$,
   where \f$\mathord{\relsym}\f$ is the relation symbol encoded
   by \p relsym.
 
@@ -1976,7 +2035,7 @@ ppl_Polyhedron_affine_preimage PPL_PROTO((ppl_Polyhedron_t ph,
   The polyhedron that is transformed;
 
   \param var
-  The left hand side variable of the generalized affine transfer function;
+  The left hand side variable of the generalized affine transfer relation;
 
   \param relsym
   The relation symbol;
@@ -1996,8 +2055,38 @@ PPL_PROTO((ppl_Polyhedron_t ph,
 	   ppl_const_Coefficient_t d));
 
 /*! \brief
+  Assigns to \p ph the preimage of \p ph with respect to the
+  \ref generalized_affine_relation "generalized affine transfer relation"
+  \f$\mathrm{var}' \relsym \frac{\mathrm{le}}{\mathrm{d}}\f$,
+  where \f$\mathord{\relsym}\f$ is the relation symbol encoded
+  by \p relsym.
+
+  \param ph
+  The polyhedron that is transformed;
+
+  \param var
+  The left hand side variable of the generalized affine transfer relation;
+
+  \param relsym
+  The relation symbol;
+
+  \param le
+  The numerator of the right hand side affine expression;
+
+  \param d
+  The denominator of the right hand side affine expression.
+*/
+int
+ppl_Polyhedron_generalized_affine_preimage
+PPL_PROTO((ppl_Polyhedron_t ph,
+	   ppl_dimension_type var,
+	   enum ppl_enum_Constraint_Type relsym,
+	   ppl_const_Linear_Expression_t le,
+	   ppl_const_Coefficient_t d));
+
+/*! \brief
   Assigns to \p ph the image of \p ph with respect to the
-  \ref generalized_image "generalized affine transfer function"
+  \ref generalized_affine_relation "generalized affine transfer relation"
   \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
   \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
 
@@ -2015,6 +2104,31 @@ PPL_PROTO((ppl_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_generalized_affine_image_lhs_rhs
+PPL_PROTO((ppl_Polyhedron_t ph,
+	   ppl_const_Linear_Expression_t lhs,
+	   enum ppl_enum_Constraint_Type relsym,
+	   ppl_const_Linear_Expression_t rhs));
+
+/*! \brief
+  Assigns to \p ph the preimage of \p ph with respect to the
+  \ref generalized_affine_relation "generalized affine transfer relation"
+  \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
+  \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
+
+  \param ph
+  The polyhedron that is transformed;
+
+  \param lhs
+  The left hand side affine expression;
+
+  \param relsym
+  The relation symbol;
+
+  \param rhs
+  The right hand side affine expression.
+*/
+int
+ppl_Polyhedron_generalized_affine_preimage_lhs_rhs
 PPL_PROTO((ppl_Polyhedron_t ph,
 	   ppl_const_Linear_Expression_t lhs,
 	   enum ppl_enum_Constraint_Type relsym,

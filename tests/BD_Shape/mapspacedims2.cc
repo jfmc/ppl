@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -71,7 +70,7 @@ static void
 test2() {
   PFunction function;
 
-  TBD_Shape bd1(3, Polyhedron::EMPTY);
+  TBD_Shape bd1(3, EMPTY);
 
 #if NOISY
   print_function(function, "*** function ***");
@@ -80,7 +79,7 @@ test2() {
 
   bd1.map_space_dimensions(function);
 
-  TBD_Shape known_result(0, Polyhedron::EMPTY);
+  TBD_Shape known_result(0, EMPTY);
 
   bool ok = (bd1 == known_result);
 
@@ -98,7 +97,7 @@ test3() {
   function.insert(0, 1);
   function.insert(1, 0);
 
-  TBD_Shape bd1(3, Polyhedron::EMPTY);
+  TBD_Shape bd1(3, EMPTY);
 
 #if NOISY
   print_function(function, "*** function ***");
@@ -107,7 +106,7 @@ test3() {
 
   bd1.map_space_dimensions(function);
 
-  TBD_Shape known_result(2, Polyhedron::EMPTY);
+  TBD_Shape known_result(2, EMPTY);
 
   bool ok = (bd1 == known_result);
 

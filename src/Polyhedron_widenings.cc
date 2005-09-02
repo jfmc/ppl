@@ -15,9 +15,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -365,7 +364,7 @@ PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
   y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
   x_box.CC76_widening_assign(y_box);
   limited_H79_extrapolation_assign(y, cs, tp);
-  // FIXME: see if come copies can be avoided.
+  // FIXME: see if some copies can be avoided.
   // add_recycled_constraints(x_box.constraints());
   add_constraints(x_box.constraints());
 }
@@ -856,7 +855,7 @@ PPL::Polyhedron::bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
   y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
   x_box.CC76_widening_assign(y_box);
   limited_BHRZ03_extrapolation_assign(y, cs, tp);
-  // FIXME: see if come copies can be avoided.
+  // FIXME: see if some copies can be avoided.
   // add_recycled_constraints(x_box.constraints());
   add_constraints(x_box.constraints());
 }

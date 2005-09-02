@@ -15,20 +15,11 @@ Enhancements for PPL 0.8 or later versions
   in case we decide we don't want this extra requirement, change
   the building procedure so that the header file is built at
   distribution-time and needs not be rebuilt at installation-time.
-- Degenerate_Kind is something that we need globally: consider taking
-  it out from class Polyhedron.
-- Moreover, code like "BD_Shape(Polyhedron::EMPTY);" should not compile,
-  whereas it currently does.
-- Move the documentation of our namespaces out of Polyhedron.types.hh.
 - Provide a single, generic implementation to replace all our status
   classes.
 - Add our implementation of bounded difference shapes.
 - Decide which interfaces should be provided for the simplex method,
   write them, and write the documentation for them.
-- For the Powerset class, find a way for the user to obtain access to
-  the sequence of disjuncts, while still enforcing the class invariants.
-  What is currently missing is a clean and safe way to drop one of the
-  disjuncts in the sequence.
 - The Powerset class implementation is still poorly documented.
 - Consider renaming Powerset::meet_assign().
 - Clearly explain, in the documentation, how (not) to use

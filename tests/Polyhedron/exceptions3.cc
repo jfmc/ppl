@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -199,7 +198,7 @@ error7() {
 void
 error8() {
   try {
-    C_Polyhedron ph(C_Polyhedron::max_space_dimension(), C_Polyhedron::EMPTY);
+    C_Polyhedron ph(C_Polyhedron::max_space_dimension(), EMPTY);
     // This is an invalid use of the method for concatenating polyhedra:
     // it is illegal to (try to) concatenate polyhedra if the resulting
     // vector space will have a dimension greater than

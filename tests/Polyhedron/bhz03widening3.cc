@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -62,7 +61,7 @@ main() TRY {
   p3.add_constraint(X <= 4);
   p3.add_constraint(Y <= 3);
 
-  PSet T1(2, Polyhedron::EMPTY);
+  PSet T1(2, EMPTY);
   T1.add_disjunct(p1);
   T1.add_disjunct(p2);
   T1.add_disjunct(p3);
@@ -73,7 +72,7 @@ main() TRY {
   p4.add_constraint(X <= 2);
   p4.add_constraint(Y <= 5);
 
-  PSet T2(2, Polyhedron::EMPTY);
+  PSet T2(2, EMPTY);
   T2.add_disjunct(p1);
   T2.add_disjunct(p2);
   T2.add_disjunct(p3);

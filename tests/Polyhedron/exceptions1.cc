@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -373,7 +372,7 @@ void
 error13() {
   Variable w(4);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
   try {
     // This is an invalid use of the function
@@ -533,7 +532,7 @@ error19() {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph(1, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(1, EMPTY);
 
   try {
     // This is an invalid use of the function C_Polyhedron::add_generator(g):
@@ -557,7 +556,7 @@ error20() {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph(1, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(1, EMPTY);
 
   try {
     // This is an invalid use of the function
@@ -754,7 +753,7 @@ void
 error27() {
   Variable x(0);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
   try {
     // This is an invalid use of method
@@ -780,7 +779,7 @@ error28() {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph(3, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(3, EMPTY);
 
   try {
     // This is an invalid use of the function
@@ -807,7 +806,7 @@ error29() {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
   try {
     // This is an invalid use of the function
@@ -912,7 +911,7 @@ void
 error33() {
   Variable A(0);
 
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(2, EMPTY);
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
@@ -967,7 +966,7 @@ error35() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
 #if NOISY
   print_constraints(ph, "*** ph ***");
@@ -1000,7 +999,7 @@ error36() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
 #if NOISY
   print_constraints(ph, "*** ph ***");
@@ -1299,6 +1298,110 @@ error47() {
   }
 }
 
+void
+error48() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A - B >= 0);
+
+  try {
+    // This is an incorrect use of function
+    // C_Polyhedron::bounded_affine_image(v, lb_expr, ub_expr, d):
+    // any call with a denominator equal to zero is illegal.
+    Coefficient d = 0;
+    ph.bounded_affine_image(B, A - 7, B + 2, d);
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_argument: " << e.what() << endl << endl;
+#endif
+  }
+ catch (...) {
+    exit(1);
+  }
+}
+
+void
+error49() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(1);
+  ph.add_constraint(A >= 0);
+
+  try {
+    // This is an incorrect use of function
+    // C_Polyhedron::bounded_affine_image(v, lb_expr, ub_expr, d):
+    // it is illegal to use a variable in the lower bounding expression
+    // that does not appear in the polyhedron.
+    ph.bounded_affine_image(A, B, A + 7);
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_argument: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error50() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(1);
+  ph.add_constraint(A >= 0);
+
+  try {
+    // This is an incorrect use of function
+    // C_Polyhedron::bounded_affine_image(v, lb_expr, ub_expr, d):
+    // it is illegal to use a variable in the upper bounding expression
+    // that does not appear in the polyhedron.
+    ph.bounded_affine_image(A, A + 7, B);
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_argument: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error51() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(1);
+  ph.add_constraint(A >= 1);
+
+  try {
+    // This is an incorrect use of function
+    // C_Polyhedron::bounded_affine_image(v, lb_expr, ub_expr, d):
+    // it is illegal to bound a variable not occurring in the
+    // vector space embedding the polyhedron.
+    ph.bounded_affine_image(B, A - 7, 2*A - 2);
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_argument: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
 } // namespace
 
 int
@@ -1352,6 +1455,10 @@ main() TRY {
   error45();
   error46();
   error47();
+  error48();
+  error49();
+  error50();
+  error51();
 
   return 0;
 }

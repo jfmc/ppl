@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -55,7 +54,9 @@ SPECIALIZE_CLASSIFY(mpq, mpq_class)
 template <typename Policy>
 inline bool
 is_nan_mpq(const mpq_class& v) {
-  return Policy::store_nan && ::sgn(v.get_den()) == 0 && ::sgn(v.get_num()) == 0;
+  return Policy::store_nan
+    && ::sgn(v.get_den()) == 0
+    && ::sgn(v.get_num()) == 0;
 }
 
 SPECIALIZE_IS_NAN(mpq, mpq_class)
@@ -63,7 +64,9 @@ SPECIALIZE_IS_NAN(mpq, mpq_class)
 template <typename Policy>
 inline bool
 is_minf_mpq(const mpq_class& v) {
-  return Policy::store_infinity && ::sgn(v.get_den()) == 0 && ::sgn(v.get_num()) < 0;
+  return Policy::store_infinity
+    && ::sgn(v.get_den()) == 0
+    && ::sgn(v.get_num()) < 0;
 }
 
 SPECIALIZE_IS_MINF(mpq, mpq_class)
@@ -71,10 +74,20 @@ SPECIALIZE_IS_MINF(mpq, mpq_class)
 template <typename Policy>
 inline bool
 is_pinf_mpq(const mpq_class& v) {
-  return Policy::store_infinity && ::sgn(v.get_den()) == 0 && ::sgn(v.get_num()) > 0;
+  return Policy::store_infinity
+    && ::sgn(v.get_den()) == 0
+    && ::sgn(v.get_num()) > 0;
 }
 
 SPECIALIZE_IS_PINF(mpq, mpq_class)
+
+template <typename Policy>
+inline bool
+is_int_mpq(const mpq_class& v) {
+  return !is_nan<Policy>(v) && v.get_den() == 1;
+}
+
+SPECIALIZE_IS_INT(mpq, mpq_class)
 
 template <typename Policy>
 inline Result
@@ -83,7 +96,8 @@ set_special_mpq(mpq_class& v, Result r) {
   if (Policy::store_nan && c == VC_NAN) {
     v.get_num() = 0;
     v.get_den() = 0;
-  } else if (Policy::store_infinity) {
+  }
+  else if (Policy::store_infinity) {
     switch (c) {
     case VC_MINUS_INFINITY:
       v.get_num() = -1;
@@ -203,7 +217,7 @@ SPECIALIZE_MUL(mpq, mpq_class, mpq_class, mpq_class)
 template <typename Policy>
 inline Result
 div_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
-  if (Policy::check_divbyzero && sgn(y) == 0)
+  if (CHECK_P(Policy::check_div_zero, sgn(y) == 0))
     return set_special<Policy>(to, V_DIV_ZERO);
   to = x / y;
   return V_EQ;
@@ -214,7 +228,7 @@ SPECIALIZE_DIV(mpq, mpq_class, mpq_class, mpq_class)
 template <typename Policy>
 inline Result
 rem_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
-  if (Policy::check_divbyzero && sgn(y) == 0)
+  if (CHECK_P(Policy::check_div_zero, sgn(y) == 0))
     return set_special<Policy>(to, V_MOD_ZERO);
   to = x / y;
   to.get_num() %= to.get_den();
@@ -271,7 +285,10 @@ input_mpq(mpq_class& to, std::istream& is, Rounding_Dir dir) {
 
 template <typename Policy>
 inline Result
-output_mpq(std::ostream& os, const mpq_class& from, const Numeric_Format&, Rounding_Dir) {
+output_mpq(std::ostream& os,
+	   const mpq_class& from,
+	   const Numeric_Format&,
+	   Rounding_Dir) {
   os << from;
   return V_EQ;
 }
@@ -282,6 +299,5 @@ SPECIALIZE_OUTPUT(mpq, mpq_class)
 } // namespace Checked
 
 } // namespace Parma_Polyhedra_Library
-
 
 #endif // !defined(PPL_checked_mpq_inlines_hh)

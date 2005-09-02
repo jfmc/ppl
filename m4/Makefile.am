@@ -14,9 +14,8 @@
 # for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-# USA.
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
@@ -26,10 +25,16 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
+# M4 macro files to be used by the client applications with Autoconf.
+m4datadir = $(datadir)/aclocal
+m4data_DATA = ppl.m4
+
+# M4 macro files for internal use.
 m4macros = \
 ac_check_gmp.m4 \
 ac_cxx_flexible_arrays.m4 \
 ac_cxx_long_double.m4 \
 ac_cxx_long_long.m4
 
-EXTRA_DIST = $(m4macros)
+EXTRA_DIST = $(m4macros) $(m4data_DATA)
+

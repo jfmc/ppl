@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -40,7 +39,7 @@ typedef Polyhedra_Powerset<C_Polyhedron> PSet;
 
 PSet
 S(unsigned n) {
-  PSet s(2, Polyhedron::EMPTY);
+  PSet s(2, EMPTY);
   n += 3;
   if (n % 2 == 0) {
     C_Polyhedron p(2);
@@ -89,12 +88,12 @@ main() TRY {
   s.add_constraint(A >= 1);
   s.add_constraint(A <= 6);
   s.add_constraint(B == 1);
-  PSet P(2, Polyhedron::EMPTY);
+  PSet P(2, EMPTY);
   P.add_disjunct(p);
   P.add_disjunct(q);
   P.add_disjunct(r);
   P.add_disjunct(s);
-  PSet Q(2, Polyhedron::EMPTY);
+  PSet Q(2, EMPTY);
   Q.add_disjunct(p);
   Q.add_disjunct(q);
   Q.add_disjunct(s);

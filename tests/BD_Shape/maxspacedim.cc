@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -32,17 +31,10 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() TRY {
-#if 0
-  BD_Shape<E_Rational> bd1(1);
-  BD_Shape<E_NIT<long> > bd2(1);
-  BD_Shape<E_NIT<int> > bd3(1);
-  BD_Shape<E_NIT<signed char> > bd4(1);
-#else
   BD_Shape<Checked_Number<mpq_class, Extended_Number_Policy> > bd1(1);
   BD_Shape<Checked_Number<long, Extended_Number_Policy> > bd2(1);
   BD_Shape<Checked_Number<int, Extended_Number_Policy> > bd3(1);
   BD_Shape<Checked_Number<signed char, Extended_Number_Policy> > bd4(1);
-#endif
 
   dimension_type max_spacedim1 = bd1.max_space_dimension();
   dimension_type max_spacedim2 = bd2.max_space_dimension();
@@ -52,24 +44,36 @@ main() TRY {
 
 #if NOISY
   cout << endl
-       << "The maximum space-dimension of a system of bounded differences " << endl
+       << "The maximum space-dimension of a system of bounded differences "
+       << endl
        << "of Rational is: "
-       << endl << max_spacedim1 << endl; 
+       << endl
+       << max_spacedim1
+       << endl; 
 
   cout << endl
-       << "The maximum space-dimension of a system of bounded differences " << endl
+       << "The maximum space-dimension of a system of bounded differences "
+       << endl
        << "of long: "
-       << endl << max_spacedim2 << endl; 
+       << endl
+       << max_spacedim2
+       << endl; 
 
   cout << endl
-       << "The maximum space-dimension of a system of bounded differences " << endl
+       << "The maximum space-dimension of a system of bounded differences "
+       << endl
        << "of int: "
-       << endl << max_spacedim3 << endl; 
+       << endl
+       << max_spacedim3
+       << endl; 
 
   cout << endl
-       << "The maximum space-dimension of a system of bounded differences " << endl
+       << "The maximum space-dimension of a system of bounded differences "
+       << endl
        << "of signed char"
-       << endl << max_spacedim4 << endl;
+       << endl
+       << max_spacedim4
+       << endl;
 #endif
 
 

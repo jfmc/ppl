@@ -10,6 +10,25 @@ NEWS for version 0.8  (released date to be decided)
 New and Changed Features
 ========================
 
+o  The two generalized_affine_image() methods of class Polyhedron
+   are now matched by corresponding methods for computing preimages
+   of affine relations.
+
+o  Added to class Polyhedron the method
+     void bounded_affine_image(Variable v,
+                               const Linear_Expression& lb,
+                               const Linear_Expression& ub,
+	                       Coefficient_traits::const_reference d
+                                 = Coefficient_one());
+   computing the image of the polyhedron according to the
+   transfer relation lb/d <= v' <= ub/d.
+   Also added the corresponding method for computing preimages.
+
+o  The enumeration
+     Polyhedron::Degenerate_Kind
+   has been placed outside of class Polyhedron and renamed as
+     Degenerate_Element.
+
 o  New output operators in namespace IO_Operators:
      std::ostream& operator<<(std::ostream&, const Constraint::Type&)
    and
@@ -39,6 +58,10 @@ o  Portability has been improved.
 
 Bugfixes
 ========
+
+o  Fixed a bug whereby calling the methods
+     Polyhedron::generalized_affine_image(...)
+   on an empty polyhedron could have resulted in an exception thrown.
 
 o  Fixed a bug whereby the occurrence of an `out of memory' error during
    the allocation of a row of integer coefficients could have resulted

@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -63,7 +62,7 @@ PPL::Bounding_Box::CC76_widening_assign(const Bounding_Box& y,
 	  x_ubb = *k;
       }
       else
-	x_ub = UBoundary(ERational('+'), UBoundary::OPEN);
+	x_ub = UBoundary(ERational(PLUS_INFINITY), UBoundary::OPEN);
     }
 
     // Lower bound.
@@ -78,7 +77,7 @@ PPL::Bounding_Box::CC76_widening_assign(const Bounding_Box& y,
 	  if (k != first)
 	    x_lbb = *--k;
 	  else
-	    x_lb = LBoundary(ERational('-'), LBoundary::OPEN);
+	    x_lb = LBoundary(ERational(MINUS_INFINITY), LBoundary::OPEN);
       }
       else
 	x_lbb = *--k;
@@ -89,11 +88,11 @@ PPL::Bounding_Box::CC76_widening_assign(const Bounding_Box& y,
 void
 PPL::Bounding_Box::CC76_widening_assign(const Bounding_Box& y) {
   static ERational stop_points[] = {
-    ERational(-2, 1),
-    ERational(-1, 1),
-    ERational(0, 1),
-    ERational(1, 1),
-    ERational(2, 1)
+    ERational(-2),
+    ERational(-1),
+    ERational(0),
+    ERational(1),
+    ERational(2)
   };
   CC76_widening_assign(y,
 		       stop_points,

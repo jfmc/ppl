@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -553,7 +552,7 @@ void
 PPL::Linear_System::gram_shmidt() {
   assert(num_pending_rows() == 0);
 
-  // The first part of this algorithm is is an adaptation of the one
+  // The first part of this algorithm is an adaptation of the one
   // proposed in a 1996 TR by Erlingsson, Kaltofen, and Musser
   // "Generic Gram-Shmidt Orthogonalization by Exact Division".
 
@@ -571,10 +570,8 @@ PPL::Linear_System::gram_shmidt() {
 
   static std::vector<std::vector<Coefficient> > mu;
   mu.reserve(compute_capacity(rank, mu.max_size()));
-  for (dimension_type i = mu.size(); i < rank; i++) {
-    std::vector<Coefficient> mu_i(i+1);
-    mu.push_back(mu_i);
-  }
+  for (dimension_type i = mu.size(); i < rank; ++i)
+    mu.push_back(std::vector<Coefficient>(i+1));
 
   Linear_System& x = *this;
 
@@ -591,17 +588,17 @@ PPL::Linear_System::gram_shmidt() {
 
   TEMP_INTEGER(accum);
   // Start from the second line/equality of the system.
-  for (dimension_type i = 1; i < rank; i++) {
+  for (dimension_type i = 1; i < rank; ++i) {
     Linear_Row& x_i = x[i];
     std::vector<Coefficient>& mu_i = mu[i];
 
     // Finish computing `mu[i][j]', for all j <= i.
-    for (dimension_type j = 0; j <= i; j++) {
+    for (dimension_type j = 0; j <= i; ++j) {
       const std::vector<Coefficient>& mu_j = mu[j];
       if (j > 0)
 	mu_i[j] *= mu[j-1][j-1];
       accum = 0;
-      for (dimension_type h = 0; h < j; h++) {
+      for (dimension_type h = 0; h < j; ++h) {
         accum *= mu[h][h];
 	// The following line optimizes the computation of
 	// accum += mu_i[h] * mu_j[h].
@@ -614,10 +611,10 @@ PPL::Linear_System::gram_shmidt() {
 
     // Let the `i'-th line become orthogonal with respect to the `j'-th line,
     // for all 0 <= j < i.
-    for (dimension_type j = 0; j < i; j++) {
+    for (dimension_type j = 0; j < i; ++j) {
       const Linear_Row& x_j = x[j];
-      const Coefficient& mu_ij = mu_i[j];
-      const Coefficient& mu_jj = mu[j][j];
+      Coefficient_traits::const_reference mu_ij = mu_i[j];
+      Coefficient_traits::const_reference mu_jj = mu[j][j];
       for (dimension_type k = n_columns; k-- > 0; ) {
         x_i[k] *= mu_jj;
 	// The following line optimizes the computation of
@@ -685,7 +682,7 @@ PPL::Linear_System::gram_shmidt() {
 
   // Orthogonalize the rows that are not lines/equalities.
   const dimension_type n_rows = num_rows();
-  for (dimension_type i = rank; i < n_rows; i++) {
+  for (dimension_type i = rank; i < n_rows; ++i) {
     Linear_Row& w = x[i];
     // Compute `factors' according to `w'.
     for (dimension_type j = rank; j-- > 0; ) {

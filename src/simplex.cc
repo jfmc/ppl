@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -60,7 +59,7 @@ normalize_row(Row& x) {
   gcd = 0;
   const dimension_type sz = x.size();
   for (dimension_type i = sz; i-- > 0; ) {
-    const Coefficient& x_i = x[i];
+    Coefficient_traits::const_reference x_i = x[i];
     if (x_i != 0)
       gcd_assign(gcd, x_i);
   }
@@ -129,7 +128,9 @@ insert_row_in_matrix(Matrix& matrix, const Row& row) {
 
 //! Append \p k elements to \p r, each with value \p n.
 void
-add_elements_to_row(Row& r, const dimension_type k, const Coefficient& n) {
+add_elements_to_row(Row& r,
+		    const dimension_type k,
+		    Coefficient_traits::const_reference n) {
   dimension_type r_size = r.size();
   dimension_type s_size = r_size + k;
   Row s(r, s_size, s_size);

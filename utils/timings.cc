@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -31,7 +30,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstring>
 #include <cerrno>
 
-#if HAVE_SYS_RESOURCE_H
+#ifdef HAVE_SYS_TIME_H
+# include <sys/time.h>
+#endif
+
+#ifdef HAVE_SYS_RESOURCE_H
+// This should be included after <time.h> and <sys/time.h> so as to make
+// sure we have the definitions for, e.g., `ru_utime'.
 # include <sys/resource.h>
 #endif
 
@@ -65,14 +70,16 @@ print_clock(ostream& s) {
     time_t saved_usecs = saved_ru_utime.tv_usec;
     time_t secs;
     time_t hsecs;
+    secs = current_secs - saved_secs;
     if (current_usecs < saved_usecs) {
       hsecs = (((1000000 + current_usecs) - saved_usecs) + 5000) / 10000;
-      secs = (current_secs - saved_secs) -1;
+      if (hsecs < 100)
+	--secs;
+      else
+	hsecs = 0;
     }
-    else {
+    else
       hsecs = ((current_usecs - saved_usecs) + 5000) / 10000;
-      secs = current_secs - saved_secs;
-    }
     assert(hsecs >= 0 && hsecs < 100 && secs >= 0);
     int fill_char = s.fill();
     s << secs << "." << setfill('0') << setw(2) << hsecs;

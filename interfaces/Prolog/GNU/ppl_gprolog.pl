@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -83,10 +82,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_poly_difference_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_affine_image(+term, +term, +term, +term)).
 :- foreign(ppl_Polyhedron_affine_preimage(+term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_bounded_affine_image(+term, +term,
+                                               +term, +term, +term)).
+:- foreign(ppl_Polyhedron_bounded_affine_preimage(+term, +term,
+                                                  +term, +term, +term)).
 :- foreign(ppl_Polyhedron_generalized_affine_image(+term, +term,
 						   +term, +term, +term)).
+:- foreign(ppl_Polyhedron_generalized_affine_preimage(+term, +term,
+						      +term, +term, +term)).
 :- foreign(ppl_Polyhedron_generalized_affine_image_lhs_rhs(+term, +term,
 							   +term, +term)).
+:- foreign(ppl_Polyhedron_generalized_affine_preimage_lhs_rhs(+term, +term,
+							      +term, +term)).
 :- foreign(ppl_Polyhedron_time_elapse_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_topological_closure_assign(+term)).
 :- foreign(ppl_Polyhedron_BHRZ03_widening_assign_with_token(+term,

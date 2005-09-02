@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -564,7 +563,7 @@ DB_Row<T>::OK(const dimension_type row_size,
     const T& element = x[i];
     // Not OK is bad.
     // In addition, nans should never occur.
-    if (!element.OK() || is_nan(element)) {
+    if (!element.OK() || is_not_a_number(element)) {
       is_broken = true;
       break;
     }

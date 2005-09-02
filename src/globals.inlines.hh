@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -68,7 +67,8 @@ compute_capacity(const dimension_type requested_size) {
 }
 
 inline void
-normalize2(const Coefficient& x, const Coefficient& y,
+normalize2(Coefficient_traits::const_reference x,
+	   Coefficient_traits::const_reference y,
 	   Coefficient& nx, Coefficient& ny) {
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, x, y);

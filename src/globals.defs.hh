@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -39,6 +38,14 @@ typedef size_t memory_size_type;
 //! Returns a value that does not designate a valid dimension.
 dimension_type
 not_a_dimension();
+
+//! Kinds of degenerate abstract elements.
+enum Degenerate_Element {
+  //! The universe element, i.e., the whole vector space.
+  UNIVERSE,
+  //! The empty element, i.e., the empty set.
+  EMPTY
+};
 
 //! Relation symbols.
 enum Relation_Symbol {
@@ -230,7 +237,8 @@ struct From_Bounding_Box {
 */
 #endif
 void
-normalize2(const Coefficient& x, const Coefficient& y,
+normalize2(Coefficient_traits::const_reference x,
+	   Coefficient_traits::const_reference y,
 	   Coefficient& nx, Coefficient& ny);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

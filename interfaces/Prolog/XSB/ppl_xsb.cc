@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -467,8 +466,12 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
 #define ppl_Polyhedron_poly_difference_assign xsb_stub_ppl_Polyhedron_poly_difference_assign
 #define ppl_Polyhedron_affine_image xsb_stub_ppl_Polyhedron_affine_image
 #define ppl_Polyhedron_affine_preimage xsb_stub_ppl_Polyhedron_affine_preimage
+#define ppl_Polyhedron_bounded_affine_image xsb_stub_ppl_Polyhedron_bounded_affine_image
+#define ppl_Polyhedron_bounded_affine_preimage xsb_stub_ppl_Polyhedron_bounded_affine_preimage
 #define ppl_Polyhedron_generalized_affine_image xsb_stub_ppl_Polyhedron_generalized_affine_image
+#define ppl_Polyhedron_generalized_affine_preimage xsb_stub_ppl_Polyhedron_generalized_affine_preimage
 #define ppl_Polyhedron_generalized_affine_image_lhs_rhs xsb_stub_ppl_Polyhedron_generalized_affine_image_lhs_rhs
+#define ppl_Polyhedron_generalized_affine_preimage_lhs_rhs xsb_stub_ppl_Polyhedron_generalized_affine_preimage_lhs_rhs
 #define ppl_Polyhedron_time_elapse_assign xsb_stub_ppl_Polyhedron_time_elapse_assign
 #define ppl_Polyhedron_topological_closure_assign xsb_stub_ppl_Polyhedron_topological_closure_assign
 #define ppl_Polyhedron_BHRZ03_widening_assign_with_token xsb_stub_ppl_Polyhedron_BHRZ03_widening_assign_with_token
@@ -553,8 +556,12 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
 #undef ppl_Polyhedron_poly_difference_assign
 #undef ppl_Polyhedron_affine_image
 #undef ppl_Polyhedron_affine_preimage
+#undef ppl_Polyhedron_bounded_affine_image
+#undef ppl_Polyhedron_bounded_affine_preimage
 #undef ppl_Polyhedron_generalized_affine_image
+#undef ppl_Polyhedron_generalized_affine_preimage
 #undef ppl_Polyhedron_generalized_affine_image_lhs_rhs
+#undef ppl_Polyhedron_generalized_affine_preimage_lhs_rhs
 #undef ppl_Polyhedron_time_elapse_assign
 #undef ppl_Polyhedron_topological_closure_assign
 #undef ppl_Polyhedron_BHRZ03_widening_assign_with_token
@@ -700,8 +707,12 @@ XSB_ENTRY_2(ppl_Polyhedron_poly_hull_assign_and_minimize)
 XSB_ENTRY_2(ppl_Polyhedron_poly_difference_assign)
 XSB_ENTRY_4(ppl_Polyhedron_affine_image)
 XSB_ENTRY_4(ppl_Polyhedron_affine_preimage)
+XSB_ENTRY_5(ppl_Polyhedron_bounded_affine_image)
+XSB_ENTRY_5(ppl_Polyhedron_bounded_affine_preimage)
 XSB_ENTRY_5(ppl_Polyhedron_generalized_affine_image)
+XSB_ENTRY_5(ppl_Polyhedron_generalized_affine_preimage)
 XSB_ENTRY_4(ppl_Polyhedron_generalized_affine_image_lhs_rhs)
+XSB_ENTRY_4(ppl_Polyhedron_generalized_affine_preimage_lhs_rhs)
 XSB_ENTRY_2(ppl_Polyhedron_time_elapse_assign)
 XSB_ENTRY_1(ppl_Polyhedron_topological_closure_assign)
 XSB_ENTRY_3(ppl_Polyhedron_BHRZ03_widening_assign_with_token)

@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -361,7 +360,7 @@ public:
   //! Dereference operator.
   reference operator*() const;
 
-  //! indirect member selector.
+  //! Indirect member selector.
   pointer operator->() const;
 
   //! Prefix increment operator.
@@ -412,7 +411,7 @@ protected:
   //! The type of the underlying mutable iterator.
   typedef typename Powerset::Sequence::iterator Base;
 
-  //! A shortcut for naming traits.
+  //! A shortcut for naming the const_iterator traits.
   typedef typename
   std::iterator_traits<typename Powerset::Sequence::const_iterator> Traits;
 

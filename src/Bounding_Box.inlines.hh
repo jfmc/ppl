@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -60,17 +59,17 @@ Bounding_Box::is_empty() const {
 
 inline bool
 Bounding_Box::get_lower_bound(const dimension_type k, bool& closed,
-			     Coefficient& n, Coefficient& d) const {
+			      Coefficient& n, Coefficient& d) const {
   assert(k < vec.size());
   const LBoundary& lb = vec[k].lower_bound();
   const ERational& lr = lb.bound();
 
-  if (lr.direction_of_infinity() != 0)
+  if (is_plus_infinity(lr) || is_minus_infinity(lr))
     return false;
 
   closed = lb.is_closed();
-  lr.numerator(n);
-  lr.denominator(d);
+  n = raw_value(lr).get_num();
+  d = raw_value(lr).get_den();
 
   return true;
 }
@@ -82,12 +81,13 @@ Bounding_Box::get_upper_bound(const dimension_type k, bool& closed,
   const UBoundary& ub = vec[k].upper_bound();
   const ERational& ur = ub.bound();
 
-  if (ur.direction_of_infinity() != 0)
+  if (is_plus_infinity(ur) || is_minus_infinity(ur))
     return false;
 
   closed = ub.is_closed();
-  ur.numerator(n);
-  ur.denominator(d);
+  n = raw_value(ur).get_num();
+  d = raw_value(ur).get_den();
+
   return true;
 }
 
@@ -100,11 +100,13 @@ Bounding_Box::set_empty() {
 
 inline void
 Bounding_Box::raise_lower_bound(const dimension_type k, const bool closed,
-			       Coefficient_traits::const_reference n,
-			       Coefficient_traits::const_reference d) {
+				Coefficient_traits::const_reference n,
+				Coefficient_traits::const_reference d) {
   assert(k < vec.size());
   assert(d != 0);
-  vec[k].raise_lower_bound(LBoundary(ERational(n, d),
+  mpq_class q(raw_value(n), raw_value(d));
+  q.canonicalize();
+  vec[k].raise_lower_bound(LBoundary(ERational(q),
 				     (closed
 				      ? LBoundary::CLOSED
 				      : LBoundary::OPEN)));
@@ -113,11 +115,13 @@ Bounding_Box::raise_lower_bound(const dimension_type k, const bool closed,
 
 inline void
 Bounding_Box::lower_upper_bound(const dimension_type k, const bool closed,
-			       Coefficient_traits::const_reference n,
-			       Coefficient_traits::const_reference d) {
+				Coefficient_traits::const_reference n,
+				Coefficient_traits::const_reference d) {
   assert(k < vec.size());
   assert(d != 0);
-  vec[k].lower_upper_bound(UBoundary(ERational(n, d),
+  mpq_class q(raw_value(n), raw_value(d));
+  q.canonicalize();
+  vec[k].lower_upper_bound(UBoundary(ERational(q),
 				     (closed
 				      ? UBoundary::CLOSED
 				      : UBoundary::OPEN)));

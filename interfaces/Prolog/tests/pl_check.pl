@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -38,6 +37,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 check_all :-
    make_quiet,
    catch(run_all, Exception, (print_exception_term(Exception), fail)).
+
+% check_noisy
+% This alo executes all the test predicates but also prints some messages
+% including the banner, version numbers and expected output from
+% the exception tests.
 
 check_noisy :-
    make_noisy,
@@ -172,8 +176,12 @@ transform_polys :-
    ppl_initialize,
    affine_image,
    affine_preimage,
-   affine_gen,
-   affine_genlr,
+   bounded_affine_image,
+   bounded_affine_preimage,
+   affine_image_gen,
+   affine_preimage_gen,
+   affine_image_genlr,
+%   affine_preimage_genlr,
    !,
    ppl_finalize.
 
@@ -810,11 +818,61 @@ affine_preimage(T) :-
   ppl_delete_Polyhedron(P2),
   ppl_delete_Polyhedron(P).
 
-% Tests ppl_Polyhedron_generalized_affine_image/5.
-affine_gen :-
-  affine_gen(c), affine_gen(nnc).
+% Tests ppl_Polyhedron_bounded_affine_image/5
+bounded_affine_image :-
+  bounded_affine_image(c), bounded_affine_image(nnc).
 
-affine_gen(T) :-
+bounded_affine_image(T) :-
+  make_vars(2, [A, B]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
+  ppl_Polyhedron_add_constraint(P, A - B = 1),
+  ppl_Polyhedron_bounded_affine_image(P, B, A - 1, A + 1, 2),
+  clean_ppl_new_Polyhedron_from_constraints(T,
+                                      [A - 2*B =< 1, 2*B - A =< 1],
+                                      P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  !,
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P).
+
+% Tests ppl_Polyhedron_bounded_affine_preimage/5
+bounded_affine_preimage :-
+  bounded_affine_preimage(c), bounded_affine_preimage(nnc).
+
+bounded_affine_preimage(T) :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_Polyhedron_from_constraints(T,
+            [A >= 0, A =< 4, B >= 0, B =< 4, A - B =< 2, A - B >= -2],
+            P),
+  clean_ppl_new_Polyhedron_from_Polyhedron(T, P, T, P1),
+  ppl_Polyhedron_add_space_dimensions_and_embed(P1, 1),
+  ppl_Polyhedron_bounded_affine_preimage(P, B, 7 - A, A + 3, 1),
+  ppl_Polyhedron_add_constraint(P1, 7 - A =< B),
+  ppl_Polyhedron_add_constraint(P1, B =< A + 3),
+  ppl_Polyhedron_remove_space_dimensions(P1, [B]),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  !,
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P),
+  clean_ppl_new_Polyhedron_from_constraints(T,
+            [A >= 0, A =< 4, B >= 0, B =< 4, A - B =< 2, A - B >= -2],
+            Q),
+  clean_ppl_new_Polyhedron_from_Polyhedron(T, Q, T, Q1),
+  ppl_Polyhedron_add_space_dimensions_and_embed(Q1, 1),
+  ppl_Polyhedron_bounded_affine_preimage(Q, B, 7 - 3*A + 2*B, B + 5*A - 3, 1),
+  ppl_Polyhedron_add_constraint(Q1, 7 - 3*A + 2*C =< B),
+  ppl_Polyhedron_add_constraint(Q1, B =< C + 5*A - 3),
+  ppl_Polyhedron_remove_space_dimensions(Q1, [B]),
+  ppl_Polyhedron_equals_Polyhedron(Q, Q1),
+  !,
+  ppl_delete_Polyhedron(Q1),
+  ppl_delete_Polyhedron(Q).
+
+% Tests ppl_Polyhedron_generalized_affine_image/5.
+affine_image_gen :-
+  affine_image_gen(c), affine_image_gen(nnc).
+
+affine_image_gen(T) :-
   make_vars(2, [A, B]),
   clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
   ppl_Polyhedron_add_constraint(P, A - B = 1),
@@ -827,15 +885,31 @@ affine_gen(T) :-
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P).
 
-% Tests ppl_Polyhedron_generalized_affine_image_lhs_rhs/4.
-affine_genlr :-
-  make_vars(2, [A, B]),
-  affine_genlr(c, =<, [B - A =< 2], [A,B]),
-  affine_genlr(c, =, [B - A = 2], [A,B]),
-  affine_genlr(nnc, <, [B - A < 2], [A,B]),
-  affine_genlr(nnc, =<, [B - A =< 2], [A,B]).
+% Tests ppl_Polyhedron_generalized_affine_preimage/5.
+affine_preimage_gen :-
+  affine_preimage_gen(c), affine_preimage_gen(nnc).
 
-affine_genlr(T, R, CS, [A,B]) :-
+affine_preimage_gen(T) :-
+  make_vars(2, [A, B]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
+  ppl_Polyhedron_add_constraints(P, [A >= 0, A =< 4, B =< 5, A =< B]),
+  ppl_Polyhedron_generalized_affine_preimage(P, B, >=, A+2, 1),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P1),
+  ppl_Polyhedron_add_constraints(P1, [A >= 0, A =< 3]),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  !,
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P).
+
+% Tests ppl_Polyhedron_generalized_affine_image_lhs_rhs/4.
+affine_image_genlr :-
+  make_vars(2, [A, B]),
+  affine_image_genlr(c, =<, [B - A =< 2], [A,B]),
+  affine_image_genlr(c, =, [B - A = 2], [A,B]),
+  affine_image_genlr(nnc, <, [B - A < 2], [A,B]),
+  affine_image_genlr(nnc, =<, [B - A =< 2], [A,B]).
+
+affine_image_genlr(T, R, CS, [A,B]) :-
   clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
   ppl_Polyhedron_add_constraint(P, A - B = 1),
   ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, R, A + 1),
@@ -844,6 +918,24 @@ affine_genlr(T, R, CS, [A,B]) :-
   !,
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P).
+
+% % Tests ppl_Polyhedron_generalized_affine_preimage_lhs_rhs/4.
+% affine_preimage_genlr :-
+%   make_vars(2, [A, B]),
+%   affine_preimage_genlr(c, =<, [B - A =< 2], [A,B]),
+%   affine_preimage_genlr(c, =, [B - A = 2], [A,B]),
+%   affine_preimage_genlr(nnc, <, [B - A < 2], [A,B]),
+%   affine_preimage_genlr(nnc, =<, [B - A =< 2], [A,B]).
+
+% affine_preimage_genlr(T, R, CS, [A,B]) :-
+%   clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
+%   ppl_Polyhedron_add_constraint(P, A - B = 1),
+%   ppl_Polyhedron_generalized_preaffine_image_lhs_rhs(P, B - 1, R, A + 1),
+%   clean_ppl_new_Polyhedron_from_constraints(T, CS, P1),
+%   ppl_Polyhedron_equals_Polyhedron(P, P1),
+%   !,
+%   ppl_delete_Polyhedron(P1),
+%   ppl_delete_Polyhedron(P).
 
 %%%%%%%%%%%%%%%%%% Widen and Extrapolation Operators %%%%%%%%%%%%%%%%%%%
 
@@ -1574,7 +1666,7 @@ map_dim:-
   map_dim(c), map_dim(nnc).
 
 map_dim(T) :-
-  make_vars(4, [A, B, C, D]),
+  make_vars(7, [A, B, C, D, E, F, G]),
   clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
   ppl_Polyhedron_add_constraints(P, [A >= 2, B >= 1, C >= 0]),
   \+  ppl_Polyhedron_map_space_dimensions(P, x),
@@ -1592,6 +1684,7 @@ map_dim(T) :-
   \+ppl_Polyhedron_map_space_dimensions(P0, [D-A, C-A, B-B]), % D not dimension
   \+ppl_Polyhedron_map_space_dimensions(P0, [B-A, C-A, B-B]), % not injective
   \+ppl_Polyhedron_map_space_dimensions(P0, [B-A, C-A, B-C]), % not function
+  ppl_delete_Polyhedron(P0),
   clean_ppl_new_Polyhedron_from_space_dimension(T, 4, empty, P1),
   ppl_Polyhedron_add_generators(P1, [point(2*C), line(A+B), ray(A+C)]),
   ppl_Polyhedron_map_space_dimensions(P1, [A-C, C-A, B-B]),
@@ -1600,7 +1693,18 @@ map_dim(T) :-
   ppl_Polyhedron_equals_Polyhedron(P1, Q1),
   !,
   ppl_delete_Polyhedron(P1),
-  ppl_delete_Polyhedron(Q1).
+  ppl_delete_Polyhedron(Q1),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 5, universe, P2),
+  ppl_Polyhedron_add_constraints(P2, [B = 2, E = 8]),
+  ppl_Polyhedron_add_space_dimensions_and_embed(P2, 2),
+  ppl_Polyhedron_map_space_dimensions(P2, [A-A, B-B, C-E, D-F, E-G, F-C, G-D]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 7, universe, Q2),
+  ppl_Polyhedron_add_constraints(Q2, [B = 2, G = 8]),
+  ppl_Polyhedron_equals_Polyhedron(P2, Q2),
+  !,
+  ppl_delete_Polyhedron(P2),
+  ppl_delete_Polyhedron(Q2).
+
 
 
 %%%%%%%%%%%%%%%%%% Polyhedral Relations %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1623,6 +1727,11 @@ rel_cons(T, CS, [A, B, C]) :-
   R2 = [is_included],
   ppl_Polyhedron_relation_with_constraint(P, C >= 0, R3),
   (R3 = [is_included, saturates] ; R3 = [saturates, is_included]),
+  ppl_Polyhedron_relation_with_constraint(P, A = B, R4),
+  R4 = [strictly_intersects],
+  ppl_Polyhedron_add_constraint(P, A = B),
+  ppl_Polyhedron_relation_with_constraint(P, A = B, R5),
+  (R5 = [is_included, saturates] ; R5 = [saturates, is_included]),
   !,
   ppl_delete_Polyhedron(P).
 

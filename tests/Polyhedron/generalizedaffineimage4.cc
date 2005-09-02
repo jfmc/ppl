@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -37,7 +36,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  NNC_Polyhedron ph(2, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron ph(2, EMPTY);
   ph.add_generator(point(A + B));
   ph.add_generator(closure_point(2*A));
   ph.add_generator(closure_point(2*A + 2*B));
@@ -48,7 +47,7 @@ main() TRY {
 
   ph.generalized_affine_image(B, LESS_THAN, B+2);
 
-  NNC_Polyhedron known_result(2, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point(A));
   known_result.add_generator(closure_point(A + 3*B));
   known_result.add_generator(closure_point(2*A + 4*B));

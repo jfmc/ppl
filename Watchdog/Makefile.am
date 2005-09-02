@@ -14,9 +14,8 @@
 # for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-# USA.
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
 # For the most up-to-date information see the CS@Parma software
 # site: http://www.cs.unipr.it/Software/ . */
@@ -25,6 +24,8 @@ srcdir = @srcdir@
 VPATH = @srcdir@
 
 @SET_MAKE@
+
+SUBDIRS = utils
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
@@ -65,10 +66,14 @@ DOC_FILES = \
 Watchdog.types.hh \
 Watchdog.defs.hh
 
+dist_noinst_SCRIPTS = \
+configure
+
 EXTRA_DIST = \
 $(SOURCE_FILES) \
-configure BUGS CREDITS \
-pwl_header.top pwl_header.middle pwl_header.bottom
+pwl_header.hh \
+BUGS \
+CREDITS
 
 # pwl.hh and pwl_install.hh are not distributed.
 dist-hook:
@@ -127,16 +132,17 @@ BUILT_SOURCES = pwl.hh pwl_install.hh
 pwl.hh:	$(DOC_FILES)
 	(cd $(srcdir) ; cat $(DOC_FILES)) >pwl.hh
 
-pwl_install.hh:	pwl_header.top $(top_builddir)/config.h pwl_header.middle $(INCLUDE_FILES) pwl_header.bottom Makefile
-	mkdir -p tmp
-	(cd $(srcdir) ; cat $(INCLUDE_FILES)) >tmp/concat
-	grep "^#include <" <tmp/concat | sort -u >tmp/includes
-	sed -e "/^#include/d" <tmp/concat >tmp/noincludes.cc
-	cat $(srcdir)/pwl_header.top $(top_builddir)/config.h \
-		$(srcdir)/pwl_header.middle tmp/includes >pwl_install.hh
-	$(CXXCPP) -P @debug_flag@ tmp/noincludes.cc >>pwl_install.hh
-	cat $(srcdir)/pwl_header.bottom >>pwl_install.hh
-	rm -rf tmp*
+pwl_include_files.hh: $(INCLUDE_FILES) Makefile
+	rm -f $@
+	for file in $(INCLUDE_FILES); \
+	do \
+	  printf "#include \"%s\"\n" $$file >>$@; \
+	done
+
+pwl_install.hh:	$(top_builddir)/config.h pwl_header.hh pwl_include_files.hh Makefile $(top_srcdir)/utils/build_header
+	$(top_srcdir)/utils/build_header \
+		-I $(top_builddir) -I $(top_builddir)/Watchdog \
+		$(top_srcdir)/pwl_header.hh >$@
 
 install-data-local: pwl_install.hh
 	$(mkinstalldirs) $(DESTDIR)$(includedir)

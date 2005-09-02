@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -44,11 +43,11 @@ main(void) {
   cs3.insert(x <= 5);
   C_Polyhedron ph1(cs1), ph2(cs2), ph3(cs3);
 
-  Polyhedra_Powerset<C_Polyhedron> ps12(2, Polyhedron::EMPTY);
+  Polyhedra_Powerset<C_Polyhedron> ps12(2, EMPTY);
   ps12.add_disjunct(ph1);
   ps12.add_disjunct(ph2);
 
-  Polyhedra_Powerset<C_Polyhedron> ps3(2, Polyhedron::EMPTY);
+  Polyhedra_Powerset<C_Polyhedron> ps3(2, EMPTY);
   ps3.add_disjunct(ph3);
 
 #if NOISY

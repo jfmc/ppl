@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -119,8 +118,26 @@ Checked_Number<T, Policy>::Checked_Number(const Plus_Infinity& x) {
 
 template <typename T, typename Policy>
 inline bool
-is_not_a_number(const Checked_Number<T, Policy>& x) {
-  return Checked::is_nan<Policy>(x.raw_value());
+is_minus_infinity(const T& x) {
+  return Checked::is_minf<Checked::Transparent_Policy>(x);
+}
+
+template <typename T, typename Policy>
+inline bool
+is_plus_infinity(const T& x) {
+  return Checked::is_pinf<Checked::Transparent_Policy>(x);
+}
+
+template <typename T, typename Policy>
+inline bool
+is_not_a_number(const T& x) {
+  return Checked::is_nan<Checked::Transparent_Policy>(x);
+}
+
+template <typename T, typename Policy>
+inline bool
+is_integer(const T& x) {
+  return Checked::is_int<Checked::Transparent_Policy>(x);
 }
 
 template <typename T, typename Policy>
@@ -133,6 +150,18 @@ template <typename T, typename Policy>
 inline bool
 is_plus_infinity(const Checked_Number<T, Policy>& x) {
   return Checked::is_pinf<Policy>(x.raw_value());
+}
+
+template <typename T, typename Policy>
+inline bool
+is_not_a_number(const Checked_Number<T, Policy>& x) {
+  return Checked::is_nan<Policy>(x.raw_value());
+}
+
+template <typename T, typename Policy>
+inline bool
+is_integer(const Checked_Number<T, Policy>& x) {
+  return Checked::is_int<Policy>(x.raw_value());
 }
 
 template <typename T, typename Policy>

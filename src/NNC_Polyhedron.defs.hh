@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -59,7 +58,7 @@ public:
     by default, a 0-dimension space universe NNC polyhedron is built.
   */
   explicit NNC_Polyhedron(dimension_type num_dimensions = 0,
-			  Degenerate_Kind kind = UNIVERSE);
+			  Degenerate_Element kind = UNIVERSE);
 
   //! Builds an NNC polyhedron from a system of constraints.
   /*!

@@ -16,9 +16,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -36,7 +35,7 @@ int
 main() TRY {
   set_handlers();
 
-  C_Polyhedron ph(3, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(3, EMPTY);
 
 #if NOISY
   print_constraints(ph, "*** ph ***");
@@ -48,7 +47,7 @@ main() TRY {
   computed_result1.add_space_dimensions_and_project(4);
   computed_result2.add_space_dimensions_and_embed(4);
 
-  C_Polyhedron known_result(7, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(7, EMPTY);
 
   int retval = (computed_result1 == known_result
 		&& computed_result2 == known_result) ? 0 : 1;
