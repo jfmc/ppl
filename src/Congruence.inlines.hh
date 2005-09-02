@@ -222,8 +222,7 @@ Congruence::total_memory_in_bytes() const {
 
 inline
 Congruence::Congruence(const Constraint& c)
-  : Row(c, c.size(), c.size() + 2) {
-  // FIX calc reasonable capacity above?
+  : Row(c, c.size(), compute_capacity(c.size() + 1, Row::max_size())) {
 
   if (c.is_inequality()) {
     std::ostringstream s;
