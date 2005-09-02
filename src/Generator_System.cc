@@ -1036,7 +1036,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator_System& gs) {
   const Generator_System::const_iterator gs_end = gs.end();
   if (i == gs_end)
     return s << "false";
-  while (1) {
+  while (true) {
     s << *i++;
     if (i == gs_end)
       return s;
