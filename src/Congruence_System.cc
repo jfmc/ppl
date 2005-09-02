@@ -391,7 +391,9 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence_System& cgs) {
   if (i == cgs_end)
     return s << "true";
   while (true) {
-    s << *i++;
+    Congruence cg = *i++;
+    cg.strong_normalize();
+    s << cg;
     if (i == cgs_end)
       return s;
     s << ", ";

@@ -40,10 +40,18 @@ namespace Parma_Polyhedra_Library {
 
 namespace IO_Operators {
 
-//! Output operator.
+//! Output operators.
+
 /*! \relates Parma_Polyhedra_Library::Congruence */
 std::ostream&
 operator<<(std::ostream& s, const Congruence& c);
+
+// Put this in the namespace here to declare it a friend later.
+
+/*! \relates Parma_Polyhedra_Library::Congruence_System */
+std::ostream&
+operator<<(std::ostream& s, const Congruence_System& cgs);
+
 
 } // namespace IO_Operators
 
@@ -459,6 +467,10 @@ private:
 
   friend bool
   PPL::operator!=(const Congruence& x, const Congruence& y);
+
+  friend std::ostream&
+  PPL::IO_Operators::operator<<(std::ostream& s,
+				const Congruence_System& cgs);
 
   friend class PPL::Congruence_System;
   friend class PPL::Congruence_System::const_iterator;
