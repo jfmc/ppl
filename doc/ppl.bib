@@ -223,11 +223,30 @@
   Booktitle = "Static Analysis:
                Proceedings of the 12th International Symposium",
   Address = "London, UK",
-  Editor = "C. Hankin",
+  Editor = "C. Hankin and I. Silveroni",
   Publisher = "Springer-Verlag, Berlin",
   Series = "Lecture Notes in Computer Science",
+  Volume = 3672,
   Year = 2005,
-  Type = "To appear",
+  Pages = "3--18",
+  Abstract = "We discuss the construction of proper widening operators
+              on several weakly-relational numeric abstractions. Our
+              proposal differs from previous ones in that we actually
+              consider the semantic abstract domains, whose elements are
+              \emph{geometric shapes}, instead of the (more concrete)
+              syntactic abstract domains of constraint networks and
+              matrices. Since the closure by entailment operator preserves
+              geometric shapes, but not their syntactic expressions, our
+              widenings are immune from the divergence issues that could
+              be faced by the previous approaches when interleaving the
+              applications of widening and closure. The new widenings,
+              which are variations of the \emph{standard widening} for
+              convex polyhedra defined by Cousot and Halbwachs, can be
+              made as precise as the previous proposals working on the
+              syntactic domains. The implementation of each new widening
+              relies on the availability of an effective reduction procedure
+              for the considered constraint description: we provide such an
+              algorithm for the domain of \emph{octagonal shapes}.",
 }
 
 @Inproceedings{BagnaraRZH02,
@@ -487,15 +506,40 @@
   Title = "Not Necessarily Closed Convex Polyhedra
            and the Double Description Method",
   Journal = "Formal Aspects of Computing",
+  Publisher = "Springer-Verlag, London",
+  Volume = "17",
+  Number = "2",
+  Pages = "222--257",
   Year = 2005,
-  Note = "To appear",
+  ISSN = "0934-5043",
+  Abstract = "Since the seminal work of Cousot and Halbwachs, the domain
+              of convex polyhedra has been employed in several systems
+              for the analysis and verification of hardware and software
+              components. Although most implementations of the polyhedral
+              operations assume that the polyhedra are topologically
+              closed (i.e., all the constraints defining them are
+              non-strict), several analyzers and verifiers need to
+              compute on a domain of convex polyhedra that are not
+              necessarily closed (NNC). The usual approach to
+              implementing NNC polyhedra is to embed them into closed
+              polyhedra in a higher dimensional vector space and reuse
+              the tools and techniques already available for closed
+              polyhedra. In this work we highlight and discuss the issues
+              underlying such an embedding for those implementations that
+              are based on the \emph{double description} method, where a
+              polyhedron may be described by a system of linear
+              constraints or by a system of generating rays and points.
+              Two major achievements are the definition of a
+              theoretically clean, high-level user interface and the
+              specification of an efficient procedure for removing
+              redundancies from the descriptions of NNC polyhedra.",
 }
 
 @Article{BagnaraHZ05STTT,
   Author = "R. Bagnara and P. M. Hill and E. Zaffanella",
   Title = "Widening Operators for Powerset Domains",
   Journal = "Software Tools for Technology Transfer",
-  Publisher = springer,
+  Publisher = "Springer-Verlag, Berlin",
   Year = 2005,
   Note = "To appear",
 }
