@@ -1453,6 +1453,19 @@ BD_Shape<T>::upper_bound_assign(const BD_Shape& y) {
 }
 
 template <typename T>
+inline bool
+BD_Shape<T>::bds_hull_assign_if_exact(const BD_Shape&) {
+  // FIXME: this must be properly implemented.
+  return false;
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::upper_bound_assign_if_exact(const BD_Shape& y) {
+  return bds_hull_assign_if_exact(y);
+}
+
+template <typename T>
 inline void
 BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
   const dimension_type space_dim = space_dimension();
