@@ -55,7 +55,7 @@ main() TRY {
   if (find_variation(cgs))
     exit(1);
 
-#define OUTPUT "A - 2*B == 0 (mod 1), 2*A == 0 (mod 1)"
+#define OUTPUT "A - 2*B = 0 (mod 1), 2*A = 0 (mod 1)"
 
   ss.str("");
   ss << cgs;
