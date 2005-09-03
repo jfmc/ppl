@@ -170,12 +170,12 @@ public:
   //! Destructor.
   ~C_Polyhedron();
 
-  //! \brief If the poly-hull of \p p and \p q is exact it is assigned
-  //! to \p p and <CODE>true</CODE> is returned,
+  //! \brief If the poly-hull of \p *this and \p y is exact it is assigned
+  //! to \p *this and <CODE>true</CODE> is returned,
   //! otherwise <CODE>false</CODE> is returned.
   bool poly_hull_assign_if_exact(const C_Polyhedron& y);
 
-  //! Same as poly_hull_assign_if_exact(q).
+  //! Same as poly_hull_assign_if_exact(y).
   bool upper_bound_assign_if_exact(const C_Polyhedron& y);
 };
 
