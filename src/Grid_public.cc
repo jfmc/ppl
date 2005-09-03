@@ -101,6 +101,7 @@ PPL::Grid::Grid(const Constraint_System& ccs) {
 				   "exceeds the maximum allowed "
 				   "space dimension");
   Congruence_System cgs;
+  cgs.insert(0*Variable(ccs.space_dimension() - 1) %= 1);
   for (Constraint_System::const_iterator i = ccs.begin(),
          ccs_end = ccs.end(); i != ccs_end; ++i)
     if (i->is_equality())
