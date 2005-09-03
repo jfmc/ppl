@@ -61,6 +61,8 @@ test1() {
        << " grid:" << endl << gr << endl
        << "known:" << endl << known_gr << endl;
 
+  dump_grids(gr, known_gr);
+
   exit(1);
 }
 
@@ -86,6 +88,8 @@ test2() {
   nout << "Grid should equal known grid." << endl
        << " grid:" << endl << gr << endl
        << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
 
   exit(1);
 }
@@ -118,6 +122,101 @@ test3() {
        << " grid:" << endl << gr << endl
        << "known:" << endl << known_gr << endl;
 
+  dump_grids(gr, known_gr);
+
+  exit(1);
+}
+
+// add_constraints, resulting grid empty
+
+void
+test4() {
+  nout << "test4:" << endl;
+
+  Constraint_System cs;
+  cs.insert(B < 0);
+  cs.insert(A >= 0);
+  cs.insert(C > 0);
+
+  Grid gr(3);
+
+  gr.add_constraints(cs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(3);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
+  exit(1);
+}
+
+// Grid(cs)
+
+void
+test5() {
+  nout << "test5:" << endl;
+
+  Constraint_System cs;
+  cs.insert(B == 0);
+  cs.insert(A >= 0);
+  cs.insert(C > 0);
+
+  Grid gr(cs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(3);
+  known_gr.add_congruence(B == 0);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
+  exit(1);
+}
+
+// Grid(cs), resulting grid empty
+
+void
+test6() {
+  nout << "test6:" << endl;
+
+  Constraint_System cs;
+  cs.insert(B < 0);
+  cs.insert(A >= 0);
+  cs.insert(C > 0);
+
+  Grid gr(cs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(3);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
   exit(1);
 }
 
@@ -132,6 +231,9 @@ main() TRY {
   test1();
   test2();
   test3();
+  test4();
+  test5();
+  test6();
 
   return 0;
 }
