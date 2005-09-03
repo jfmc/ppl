@@ -1022,6 +1022,9 @@ public:
   */
   bool poly_hull_assign_and_minimize(const Polyhedron& y);
 
+  //! Same as poly_hull_assign(y).
+  void upper_bound_assign(const Polyhedron& y);
+
   //! \brief
   //! Assigns to \p *this the \ref poly_difference "poly-difference" of
   //! \p *this and \p y. The result is not guaranteed to be minimized.

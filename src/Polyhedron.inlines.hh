@@ -66,6 +66,11 @@ Polyhedron::space_dimension() const {
   return space_dim;
 }
 
+inline void
+Polyhedron::upper_bound_assign(const Polyhedron& y) {
+  poly_hull_assign(y);
+}
+
 inline
 Polyhedron::~Polyhedron() {
 }
