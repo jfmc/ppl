@@ -42,42 +42,41 @@ $(top_builddir)/tests/libppl_tests.a \
 @extra_libraries@
 
 TESTS = \
-	congruence1 \
-	writecongruencesystem \
-	congruencesystem1 \
-	congruencesystem2 \
-	grid1 \
-	grid2 \
-	isuniverse1 \
-	addspacedims1 \
-	addspacedims2 \
-	removespacedims1 \
-	removespacedims2 \
-	intersection1 \
-	intersection2 \
-	join1 \
-	join2 \
-	concatenate1 \
-	mapspacedims1 \
-	expandspacedim1 \
-	addgenerator1 \
-	addcongruence1 \
-	addconstraints1 \
-	equals1 \
-	relations1 \
-	relations2 \
-	affineimage1 \
-	affinepreimage1 \
-	foldspacedims1 \
-	generalizedaffineimage1 \
-	generalizedaffineimage2 \
-	generalizedaffinepreimage1 \
-	generalizedaffinepreimage2 \
-	griddifference1 \
-	timeelapse1 \
-	widening1 \
-	limitedextrapolation1 \
-	bug1
+addcongruence1 \
+addconstraints1 \
+addgenerator1 \
+addspacedims1 \
+addspacedims2 \
+affineimage1 \
+affinepreimage1 \
+concatenate1 \
+congruence1 \
+congruencesystem1 \
+congruencesystem2 \
+equals1 \
+expandspacedim1 \
+foldspacedims1 \
+generalizedaffineimage1 \
+generalizedaffineimage2 \
+generalizedaffinepreimage1 \
+generalizedaffinepreimage2 \
+grid1 \
+grid2 \
+griddifference1 \
+intersection1 \
+intersection2 \
+isuniverse1 \
+join1 \
+join2 \
+limitedextrapolation1 \
+mapspacedims1 \
+relations1 \
+relations2 \
+removespacedims1 \
+removespacedims2 \
+timeelapse1 \
+widening1 \
+writecongruencesystem
 
 #
 # Sources for the tests
@@ -143,9 +142,6 @@ timeelapse1_SOURCES = timeelapse1.cc
 widening1_SOURCES = widening1.cc
 
 limitedextrapolation1_SOURCES = limitedextrapolation1.cc
-
-bug1_SOURCES = bug1.cc
-bug1_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"
 
 XFAIL_TESTS =
 
