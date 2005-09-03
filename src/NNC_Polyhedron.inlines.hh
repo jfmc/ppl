@@ -123,6 +123,11 @@ inline
 NNC_Polyhedron::~NNC_Polyhedron() {
 }
 
+inline bool
+NNC_Polyhedron::upper_bound_assign_if_exact(const NNC_Polyhedron& y) {
+  return poly_hull_assign_if_exact(y);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_NNC_Polyhedron_inlines_hh)
