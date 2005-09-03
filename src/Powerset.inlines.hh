@@ -590,17 +590,13 @@ operator<<(std::ostream& s, const Powerset<CS>& x) {
     s << "false";
   else if (x.is_top())
     s << "true";
-  else {
-    s << "{ ";
-    typename Powerset<CS>::const_iterator i = x.begin();
-    typename Powerset<CS>::const_iterator x_end = x.end();
-    while (i != x_end) {
-      s << *i++;
+  else
+    for (typename Powerset<CS>::const_iterator i = x.begin(),
+	   x_end = x.end(); i != x_end; ++i) {
+      s << "{ " << *i << " }";
       if (i != x_end)
 	s << ", ";
     }
-    s << " }";
-  }
   return s;
 }
 
