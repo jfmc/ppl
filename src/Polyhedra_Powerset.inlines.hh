@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Polyhedra_Powerset_inlines_hh 1
 
 #include "BHRZ03_Certificate.types.hh"
+#include "Constraint.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
 #include "Widening_Function.defs.hh"
@@ -186,11 +187,11 @@ Polyhedra_Powerset<PH>::concatenate_assign(const Polyhedra_Powerset& y) {
       // Hurry up!
       PH xph = xi->element();
       for (++xi; xi != x_end; ++xi)
-	xph.poly_hull_assign(xi->element());
+	xph.upper_bound_assign(xi->element());
       const_iterator yi = y_begin;
       PH yph = yi->element();
       for (++yi; yi != y_end; ++yi)
-	yph.poly_hull_assign(yi->element());
+	yph.upper_bound_assign(yi->element());
       xph.concatenate_assign(yph);
       std::swap(x.sequence, new_x.sequence);
       x.add_disjunct(xph);
@@ -264,7 +265,7 @@ Polyhedra_Powerset<PH>::add_space_dimensions_and_embed(dimension_type m) {
   Polyhedra_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->add_space_dimensions_and_embed(m);
+    si->element().add_space_dimensions_and_embed(m);
   x.space_dim += m;
   assert(x.OK());
 }
@@ -275,7 +276,7 @@ Polyhedra_Powerset<PH>::add_space_dimensions_and_project(dimension_type m) {
   Polyhedra_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->add_space_dimensions_and_project(m);
+    si->element().add_space_dimensions_and_project(m);
   x.space_dim += m;
   assert(x.OK());
 }
@@ -289,7 +290,7 @@ remove_space_dimensions(const Variables_Set& to_be_removed) {
   if (num_removed > 0) {
     for (Sequence_iterator si = x.sequence.begin(),
 	   s_end = x.sequence.end(); si != s_end; ++si) {
-      si->remove_space_dimensions(to_be_removed);
+      si->element().remove_space_dimensions(to_be_removed);
       x.reduced = false;
     }
     x.space_dim -= num_removed;
@@ -305,7 +306,7 @@ Polyhedra_Powerset<PH>::remove_higher_space_dimensions(dimension_type
   if (new_dimension < x.space_dim) {
     for (Sequence_iterator si = x.sequence.begin(),
 	   s_end = x.sequence.end(); si != s_end; ++si) {
-      si->remove_higher_space_dimensions(new_dimension);
+      si->element().remove_higher_space_dimensions(new_dimension);
       x.reduced = false;
     }
     x.space_dim = new_dimension;
@@ -349,8 +350,8 @@ Polyhedra_Powerset<PH>::map_space_dimensions(const Partial_Function& pfunc) {
     Sequence_iterator s_begin = x.sequence.begin();
     for (Sequence_iterator si = s_begin,
 	   s_end = x.sequence.end(); si != s_end; ++si)
-      si->map_space_dimensions(pfunc);
-    x.space_dim = s_begin->space_dimension();
+      si->element().map_space_dimensions(pfunc);
+    x.space_dim = s_begin->element().space_dimension();
     x.reduced = false;
   }
   assert(x.OK());
@@ -382,7 +383,7 @@ Polyhedra_Powerset<PH>::pairwise_reduce() {
 	if (marked[sj_index])
 	  continue;
 	const PH& pj = sj->element();
-	if (poly_hull_assign_if_exact(pi, pj)) {
+	if (pi.upper_bound_assign_if_exact(pj)) {
 	  marked[si_index] = marked[sj_index] = true;
 	  new_x.add_non_bottom_disjunct(pi);
 	  ++deleted;
@@ -566,12 +567,12 @@ Polyhedra_Powerset<PH>::BHZ03_widening_assign(const Polyhedra_Powerset& y,
   // Compute the poly-hull of `x'.
   PH x_hull(x.space_dim, EMPTY);
   for (const_iterator i = x.begin(), x_end = x.end(); i != x_end; ++i)
-    x_hull.poly_hull_assign(i->element());
+    x_hull.upper_bound_assign(i->element());
 
   // Compute the poly-hull of `y'.
   PH y_hull(y.space_dim, EMPTY);
   for (const_iterator i = y.begin(), y_end = y.end(); i != y_end; ++i)
-    y_hull.poly_hull_assign(i->element());
+    y_hull.upper_bound_assign(i->element());
   // Compute the certificate for `y_hull'.
   const Cert y_hull_cert(y_hull);
 
@@ -606,7 +607,7 @@ Polyhedra_Powerset<PH>::BHZ03_widening_assign(const Polyhedra_Powerset& y,
   PH bgp99_heuristics_hull(x.space_dim, EMPTY);
   for (const_iterator i = bgp99_heuristics.begin(),
 	 bh_end = bgp99_heuristics.end(); i != bh_end; ++i)
-    bgp99_heuristics_hull.poly_hull_assign(i->element());
+    bgp99_heuristics_hull.upper_bound_assign(i->element());
 
   // Check for stabilization and, if successful,
   // commit to the result of the extrapolation.

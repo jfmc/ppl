@@ -146,7 +146,7 @@ clpq_test: ciao_clpq$(EXEEXT) ../tests/script_clpq $(EXPECTED_CLPQ)
 clpq2_test: ciao_clpq2$(EXEEXT) ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
-	GLOBALSTKSIZE=1000000 \
+	GLOBALSTKSIZE=100000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \

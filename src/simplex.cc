@@ -654,21 +654,19 @@ first_phase(Matrix& tableau,
                         The "positive" one is represented again by Variable(i),
 	                and the "negative" one is represented by Variable(j).
 */
-bool
+Simplex_Status
 compute_tableau(const Linear_System& cs,
 		Row& cost_function,
 		Matrix& tableau,
-		std::map<dimension_type, dimension_type>& map) {
+		std::map<dimension_type, dimension_type>& dim_map) {
   assert(tableau.num_rows() == 0);
-  // In the zero-dimensional case there is little to do:
-  // the maximum/minimum is simply the inhomogeneous term of the expression.
-  if (cs.space_dimension() == 0)
-    return false;
-  
-  typedef std::map<dimension_type, dimension_type>::value_type map_value_type;
-  dimension_type cs_num_rows = cs.num_rows();
-  dimension_type cs_num_columns = cs.num_columns();
-  dimension_type cs_space_dim = cs.space_dimension();
+  assert(dim_map.size() == 0);
+  const dimension_type cs_num_rows = cs.num_rows();
+  const dimension_type cs_num_columns = cs.num_columns();
+  // Note: we disregard the topology of the constraint system.
+  // Namely, in an NNC constraint system, the epsilon dimension
+  // is interpreted as a normal dimension.
+  const dimension_type cs_space_dim = cs_num_columns-1;
   
   // Phase 1:
   // determine variables that are constrained to be nonnegative,
@@ -680,16 +678,15 @@ compute_tableau(const Linear_System& cs,
   std::deque<bool> nonnegative_variable(cs_space_dim, false);
   
   // On exit, `trivially_true_constraint[j]' will be true if and only if
-  // the row of index 'j' is trivially true: it will not be inserted in
-  // the tableau.
+  // `cs[j]' is trivially true: it will not be inserted in the tableau.
   std::deque<bool> trivially_true_constraint(cs_num_rows, false);
 
   // On exit, this will hold the number of nonnegative variables.
   dimension_type num_nonnegative = 0;
   
   // On exit, `nonnegativity_constraint[i]' will be true if and only if
-  // the row of index `i' in `cs' contains a constraint that only
-  // expresses the non-negativity of one variable.
+  // `cs[i]' contains a constraint that only expresses the non-negativity
+  // of one variable.
   std::deque<bool> nonnegativity_constraint(cs_num_rows, false);
   dimension_type nonnegativity_constraint_number = 0;
   
@@ -700,120 +697,102 @@ compute_tableau(const Linear_System& cs,
   dimension_type num_inequalities_left = 0;
   
   // Process each row of the `cs' matrix.
-  for (dimension_type i = cs.num_rows(); i-- > 0; ) { 
+  for (dimension_type i = cs_num_rows; i-- > 0; ) { 
     const Linear_Row& cs_i = cs[i];
-    bool found_nonzero_coeff = false;   
+    bool found_a_nonzero_coeff = false;
+    bool found_many_nonzero_coeffs = false;
     dimension_type nonzero_coeff_column_index = 0;
     for (dimension_type j = cs_num_columns; j-- > 1; ) {
       if (cs_i[j] != 0)
-	if (found_nonzero_coeff) {
-	  // Now we check if we have to insert a slack variable
-	  // for this constraint.
-	  if (! cs_i.is_line_or_equality())
+	if (found_a_nonzero_coeff) {
+	  found_many_nonzero_coeffs = true;
+	  if (cs_i.is_ray_or_point_or_inequality())
 	    ++num_inequalities_left;
-	  goto skip;
+	  break;
 	}
 	else {
 	  nonzero_coeff_column_index = j;
-	  found_nonzero_coeff = true;
+	  found_a_nonzero_coeff = true;
 	}
     }
-    if (!found_nonzero_coeff) {  
-      // All coefficients were 0.  Either the constraint is trivially
-      // true (like 1 >= 0), in which case it must be ignored, or it
-      // is trivially false (like -1 >= 0), in which case there is no
-      // solution and we return false to the caller.
-      
-      if ((cs_i.is_ray_or_point_or_inequality() && cs_i[0] >= 0)
-	  || (cs_i.is_line_or_equality() && cs_i[0] == 0)) {
-	// The constraint is trivially true.
-	trivially_true_constraint[i] = true;
-	goto skip;
+    // If more than one coefficient is nonzero,
+    // continue with next constraint. 
+    if (found_many_nonzero_coeffs)
+      continue;
+
+    if (!found_a_nonzero_coeff) {
+      // All coefficients are 0.
+      // The constraint is either trivially true or trivially false.
+      if (cs_i.is_ray_or_point_or_inequality()) {
+	if (cs_i[0] < 0)
+	  // A constraint such as -1 >= 0 is trivially false.
+	  return UNFEASIBLE_PROBLEM;
       }
       else
-	// The constraint is trivially false: the problem is thus empty.
-	return false;
+	// The constraint is an equality.
+	if (cs_i[0] != 0)
+	  // A constraint such as 1 == 0 is trivially false.
+	  return UNFEASIBLE_PROBLEM;
+      // Here the constraint is trivially true.
+      trivially_true_constraint[i] = true;
+      continue;
     }
-    // We can now check if the variable represented by 
-    // non_zero_coeff_column_index can be split or not
-    // and if a constraint is non-negativity constraint.
     else {
+      // Here we have only one nonzero coefficient.
       /* 
 	 
-      We have the following cases:
-      1) The variable will be split and the constraint will 
-         be inserted in the tableau.
-      2) The variable will not be split and the constraint will be 
-         inserted in the tableau.
-      3) The variable will not be split and the constraint will not 
-         be inserted in the tableau.
+      We have the following methods:
+      A) Do split the variable and do add the constraint in the tableau.
+      B) Don't split the variable and do add the constraint in the tableau.
+      C) Don't split the variable and don't add the constraint in the tableau.
 	    
-	            
-	 These are the 12 possible combinations we can have: 
-               a |  b | constraint type   | case
-      where a represents the coefficient of the variable of the constraint, 
-      b represents the inhomogeneous term.
-	    
-      1)       >0 | >0 |         >=        |   1
-      2)       >0 | =0 |         >=        |   3
-      3)       <0 | >0 |         >=        |   1
-      4)       <0 | =0 |         >=        |   1
-      5)       >0 | >0 |          =        |   1
-      6)       >0 | =0 |          =        |   2
-      7)       <0 | >0 |          =        |   2
-      8)       <0 | =0 |          =        |   2
-      9)       >0 | <0 |         >=        |   2
-      10)      >0 | <0 |         >=        |   1
-      11)      <0 | <0 |          =        |   2
-      12)      <0 | <0 |          =        |   1
+      Let the constraint be (a*v + b relsym 0).            
+      These are the 12 possible combinations we can have: 
+                a |  b | relsym | method
+      ----------------------------------	    
+      1)       >0 | >0 |   >=   |   A
+      2)       >0 | >0 |   ==   |   A
+      3)       <0 | <0 |   >=   |   A
+      4)       >0 | =0 |   ==   |   B
+      5)       >0 | <0 |   ==   |   B
+      Note:    <0 | >0 |   ==   | impossible by strong normalization
+      Note:    <0 | =0 |   ==   | impossible by strong normalization
+      Note:    <0 | <0 |   ==   | impossible by strong normalization
+      6)       >0 | <0 |   >=   |   B
+      7)       >0 | =0 |   >=   |   C
+      8)       <0 | >0 |   >=   |   A
+      9)       <0 | =0 |   >=   |   A
        
-      The next lines will cover these 3 cases.
+      The next lines will apply the correct method to each case.
       */     
-    
-      // We now look for the signs non_zero_coeff_column_index and the
-      // inhomogeneous term.
       
-      int sgn_a = sgn(cs_i[nonzero_coeff_column_index]);
-      int sgn_b = sgn(cs_i[0]);
-     
       // The variable index is not equal to the column index.
       dimension_type nonzero_var_index = nonzero_coeff_column_index - 1;
  
-      // Case 1 (1)(5)(10)(12): 
-      // If this case succeeds, we have to insert the constraint 
-      // to the problem, splitting the variable represented by
-      // nonzero_coeff_column_index.
+      int sgn_a = sgn(cs_i[nonzero_coeff_column_index]);
+      int sgn_b = sgn(cs_i[0]);     
+      // Cases 1-3: apply method A. 
       if (sgn_a == sgn_b) {
-	if (!cs_i.is_line_or_equality()){
+	if (cs_i.is_ray_or_point_or_inequality())
 	  ++num_inequalities_left;
-	}
-	else { 
-	}
       }
-      
-      // Case 2: (6)(7)(8)(9)(11) 
-      // In this case, we find a non_negative variable, but the
-      // constraint must be inserted in our new LP problem.
-      else if (cs_i.is_line_or_equality() || sgn_b < 0){
-      
-	// Before increasing num_nonnegative, we have to check if this
-	// coefficient was already successfully checked.
+      // Cases 4-5: apply method B. 
+      else if (cs_i.is_line_or_equality()) {
 	if (!nonnegative_variable[nonzero_var_index]) {
 	  nonnegative_variable[nonzero_var_index] = true;
 	  ++num_nonnegative;
 	}
-	if (!cs_i.is_line_or_equality())
-	  ++num_inequalities_left;
       }
-      
-      // Case 3: (2)
-      // In this case we find a non_negative_variable expressed by
-      // a nonnegativity constraint. We will not insert this constraint 
-      // in the tableau.
+      // Case 6: apply method B.
+      else if (sgn_b < 0) {
+	if (!nonnegative_variable[nonzero_var_index]) {
+	  nonnegative_variable[nonzero_var_index] = true;
+	  ++num_nonnegative;
+	}
+	++num_inequalities_left;
+      }
+      // Case 7: apply method C.
       else if (sgn_a > 0) {
-	
-	// Before increasing num_nonnegative, we have to check if this
-	// coefficient was already successfully checked.
 	if (!nonnegative_variable[nonzero_var_index]) {
 	  nonnegative_variable[nonzero_var_index] = true;
 	  ++num_nonnegative;
@@ -821,34 +800,29 @@ compute_tableau(const Linear_System& cs,
 	nonnegativity_constraint[i] = true;
 	++nonnegativity_constraint_number;
       }
-      
-      // Case 1: (3)(4)
-      // Last case, we have to split the variable and insert the constraint.
-      // So we have nothing to do.(We have surely an inequality constraint now)
-      else 
+      // Cases 8-9: apply method A.
+      else
 	++num_inequalities_left;
     }
-  skip: ;
-    
   }
+
   // Now we can fill the map.
-  int j = nonnegative_variable.size();
-  for (dimension_type i = 0; i < nonnegative_variable.size(); ++i) {
+  for (dimension_type i = 0, j = nonnegative_variable.size(),
+	 nnv_size = j; i < nnv_size; ++i)
     if (!nonnegative_variable[i]) {
-      map.insert(map_value_type(i, j));
+      dim_map.insert(std::make_pair(i, j));
       ++j;
     }
-  }
   // Phase 2: 
   // set the dimension for the tableau and insert the (possibly transformed)
   // cost function as the first row.
 
   // This will be the new size of the rows that will be inserted in the 
   // tableau. The size is computed in this way:
-  dimension_type new_row_size = 2*cs_num_columns - num_nonnegative +
-    num_inequalities_left - 1; 
+  const dimension_type new_row_size
+    = 2*cs_num_columns - num_nonnegative + num_inequalities_left - 1; 
    
-  // We have to resize the cost function to 'new_row_size'.
+  // We have to resize the cost function to `new_row_size'.
   Row resized_cost_function(cost_function, new_row_size, new_row_size);
   cost_function.swap(resized_cost_function);
   
@@ -867,35 +841,35 @@ compute_tableau(const Linear_System& cs,
   tableau.add_zero_columns(new_row_size);
   
   // Insertion of the constraints the tableau.
-  for(dimension_type i = 0; i < cs.num_rows(); ++i) {
+  for (dimension_type i = 0, iend = cs.num_rows(); i < iend; ++i) {
     // We are going to insert only constraints that are not trivially true
     // (5 > 3) and that are not nonnegativity_constraints (X > 0).
-    if (!nonnegativity_constraint[i] && !trivially_true_constraint[i]){
-      insert_row_in_matrix(tableau, cs[i]);
-      // Here we also add a slack variable to the constraint, if we need it.
-      if (!cs[i].is_line_or_equality()) {
-	tableau[tableau.num_rows() - 1][slack_pos_index] = -1;
-	++slack_pos_index;
-      } 
-    }
+    if (nonnegativity_constraint[i] || trivially_true_constraint[i])
+      continue;
+    insert_row_in_matrix(tableau, cs[i]);
+    // Here we also add a slack variable to the constraint, if we need it.
+    if (cs[i].is_ray_or_point_or_inequality()) {
+      tableau[tableau.num_rows() - 1][slack_pos_index] = -1;
+      ++slack_pos_index;
+    } 
   }
- 
-  dimension_type tableau_num_rows = tableau.num_rows();
   // Last step: we proceed splitting variables in the tableau.
-  std::map<dimension_type, dimension_type>::iterator map_itr = map.begin();
-  while (map_itr != map.end()) {
+  const dimension_type tableau_num_rows = tableau.num_rows();
+  typedef std::map<dimension_type, dimension_type> dim_map_type;
+  for (dim_map_type::const_iterator map_itr = dim_map.begin(),
+	 map_end = dim_map.end(); map_itr != map_end; ++map_itr) {
     for (dimension_type i = tableau_num_rows; i-- > 0; ) 
       tableau[i][(map_itr->second) +1] = -tableau[i][(map_itr->first) + 1];
     cost_function[(map_itr->second) +1] = -cost_function[(map_itr->first) + 1];
-    ++map_itr;
   }
-  // If the computed tableau is empty the problem is unbounded or the origin
-  // is a point of maximum/minimum.
+  // If the computed tableau is empty, then the whole nonnegative
+  // orthant is feasible, so that the problem is either unbounded or
+  // has a maximum in the origin. We return anyway UNBOUNDED_PROBLEM
+  // (the caller has to figure out which situation applies).
   if (tableau.num_rows() == 0) 
-    return false;
-  
+    return UNBOUNDED_PROBLEM;
   assert(tableau.num_columns() != 0);
-  return true;
+  return SOLVED_PROBLEM;
 }
 
 //! \brief
@@ -922,27 +896,25 @@ is_in_base(const std::vector<dimension_type>& base,
 }
 
 //! \brief
-//! Computes the generator that will be given on exit of primal_simplex, if
+//! Computes the generator that will be given on exit of primal_simplex,
 //! the problem has an optimality point.
 /*!
-  \return                   The computed generator.                 
-  \param tableau            A matrix containing the constraints 
+  \return                   The computed generator.
+  \param tableau            A matrix containing the constraints
                             of the solved problem.
-  \param base               The base of the LP problem
+  \param base               The base of the LP problem.
   \param map                Contains all the pairs (i, j) such that Variable(i)
                             (that was not found to be constrained in sign)
                             has been split into two nonnegative variables.
-                            The "positive" one is represented again by 
+                            The "positive" one is represented again by
                             Variable(i), and the "negative" one is represented
                             by Variable(j).
   \param original_space_dim The original space dimension of the LP problem.
- 
 */
-
 Generator
 compute_generator(const Matrix& tableau,
 		  const std::vector<dimension_type>& base,
-		  std::map<dimension_type, dimension_type>& map,
+		  const std::map<dimension_type, dimension_type>& dim_map,
 		  const dimension_type original_space_dim) {
   // We will store in num[] and in den[] the numerators and
   // the denominators of every variable of the original problem.
@@ -951,37 +923,33 @@ compute_generator(const Matrix& tableau,
   dimension_type row = 0;
 
   // We start to compute num[] and den[].
+  typedef std::map<dimension_type, dimension_type> dim_map_type;
+  dim_map_type::const_iterator map_end = dim_map.end();
+
   for (dimension_type i = original_space_dim; i-- > 0; ) {
-    // If the variable was not split, we have simply to check the 
-    // value of that variable in the computed matrix.
-    if(map.find(i) == map.end()) {
-       
-      // If the variable is in base we look at its value.
+    // Check whether the variable was split.
+    dim_map_type::const_iterator map_iter = dim_map.find(i);
+    if (map_iter == map_end)
+      // The variable was not split: get its value from the tableau
+      // (if it is not in the base, the value is 0).
       if (is_in_base(base, i+1, row)) {
 	num[i]= -tableau[row][0];
 	den[i]= tableau[row][base[row]];
       }
-       
-      // If is not in base, its value is surely 0/1.
       else {
 	num[i] = 0;
 	den[i] = 1;
       }
-    }
-     
-    // If the original variable was split, we have to find the its value.
-    // The value of the original variable is expressed by the difference
-    // between the original variable and the second one we introduced 
-    // (the index of this one in the tableau is known by the map).
-    // map[i] + 1 is the index in the tableau that express the location
-    // of the extra variable that we have introduced.
     else {
+      // The variable was split: its value is the difference
+      // between the positive and the negative components.
+      // (The negative component has index map[i] + 1.)
       Coefficient split_num[2];
       Coefficient split_den[2];
     
       for (dimension_type j = 0; j < 2; ++j){
 	// Like before, we he have to check if the variable is in base.
-	if (is_in_base(base, j == 0 ? i+1 : map[i]+1, row)) {
+	if (is_in_base(base, j == 0 ? i+1 : map_iter->second+1, row)) {
 	  split_num[j] = - tableau[row][0];
 	  split_den[j] =  tableau[row][base[row]];
 	}
@@ -1034,13 +1002,66 @@ compute_generator(const Matrix& tableau,
   Generator g = point(my_generator, lcm);
   return g;
 }
-}//namespace
+
+Simplex_Status
+primal_simplex(const Linear_System& cs,
+	       Row& cost_function,
+	       Generator& maximizing_point) {
+  assert(cost_function.size() <= cs.num_columns());
+
+  Matrix tableau(0,0);
+  std::map<dimension_type, dimension_type> dim_map;
+  Simplex_Status status
+    = compute_tableau(cs, cost_function, tableau, dim_map);
+
+  switch (status) {
+  case UNFEASIBLE_PROBLEM:
+    break;
+  case UNBOUNDED_PROBLEM:
+    // There are no constraints in the tableau, apart from those
+    // stating nonnegativity of the variables. Therefore, the problem
+    // will be unbounded as soon as the cost function has a variable
+    // with a positive coefficient.
+    for (dimension_type i = cost_function.size(); i-- > 1; )
+      if (cost_function[i] > 0)
+	return UNBOUNDED_PROBLEM;
+    // Otherwise a maximizing solution is the origin. 
+    maximizing_point = point();
+    status = SOLVED_PROBLEM;
+    break;
+  case SOLVED_PROBLEM:
+    {
+      // Find a feasible solution.
+      std::vector<dimension_type> base(tableau.num_rows());
+      status = first_phase(tableau, cost_function, base);
+      if (status == SOLVED_PROBLEM) {
+	// If the constraint system is NNC, the epsilon dimension
+	// has to be interpreted as a normal dimension.
+	const dimension_type space_dim = cs.num_columns() - 1;
+	maximizing_point = compute_generator(tableau, base,
+					     dim_map, space_dim);
+      }
+    }
+    break;
+  }
+  return status;
+}
+
+} // namespace
+
+
+Simplex_Status
+PPL::Constraint_System::primal_simplex(Linear_Expression& cost_function,
+				       Generator& maximizing_point) const {
+  return ::primal_simplex(*this, cost_function, maximizing_point);
+}
+
 
 Simplex_Status
 PPL::Constraint_System::primal_simplex(const Linear_Expression& expression,
 				       const bool maximize,
 				       Coefficient& ext_n, Coefficient& ext_d,
-				       const Generator** const pppoint) const {
+				       Generator& maximizing_point) const {
   // FIXME: putting this declaration at the beginning of the file
   // does not work.  A GCC bug?
   using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -1051,8 +1072,8 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expression,
 				"strict inequality constraints "
 				"are not supported.");
 
-  dimension_type space_dim = space_dimension();
-  dimension_type expr_space_dim = expression.space_dimension();
+  const dimension_type space_dim = space_dimension();
+  const dimension_type expr_space_dim = expression.space_dimension();
   
   // Make sure the dimension of the expression to maximize is not greater
   // than the dimension of the constraint system.
@@ -1060,76 +1081,37 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expression,
     std::ostringstream s;
     s << "PPL::Constraint_System::primal_simplex():" << std::endl
       << "this->space_dimension() == " << space_dim
-      //      << ", " << expression << "->space_dimension() == "
+      << ", " << "cost_function->space_dimension() == "
       << expr_space_dim << ".";
     throw std::invalid_argument(s.str());
   }
 
-  // This will be processed by compute_tableau.
-  Matrix tableau(0,0);
- 
   // We will work with a copy of the cost function.
   Linear_Expression cost_function = expression;
  
-  // We start computing the tableau.
-  std::map<dimension_type,dimension_type> map;
-  
   // To compute minimization, we have just to negate the coefficients of cost
   // function.
   if (!maximize) 
     for (dimension_type i = cost_function.size(); i-- > 0; ) 
       negate(cost_function[i]);
-  
-  if (!compute_tableau(*this, cost_function, tableau, map)) {
-    // The tableau was not successfully built: there are 2 cases to analyze.
-    // If a coefficient of variable of the cost function is > 0 the problem
-    // is unbounded.
-    for (dimension_type i = cost_function.size(); i-- > 1; )
-      if (cost_function[i] > 0)
-	return UNBOUNDED_PROBLEM;
-    // Else a feasible solution to our LP problem is the origin. 
-    ext_n = cost_function.inhomogeneous_term();
-    ext_d = 1;
-    Generator g = point();
-    Generator* gen = new Generator(g);
-    if (pppoint != 0) 
-      *pppoint = gen;
-    return SOLVED_PROBLEM;
-  }
-   
-   
-  // At this moment we can call only first_phase() to solve our LP problem
-  // since we don't have a feasible base.
-  std::vector<dimension_type> base(tableau.num_rows()); 
-  Simplex_Status return_value = first_phase(tableau, cost_function, base);
-  
-  if (return_value == UNBOUNDED_PROBLEM || return_value == UNFEASIBLE_PROBLEM)
-    return return_value;
-  else {
-    Generator g = compute_generator(tableau, base, map, space_dim);
-    // To use pppoint we need dynamic memory allocation.
-    // FIXME: Here we have a memory leak! 
-    Generator* gen = new Generator(g);
-    if(pppoint != 0) 
-      *pppoint = gen;    
-    
-    // Here we recompute the value of the cost function substituting the
-    // value of the Generator g in the cost function.
-    Coefficient max = expression.inhomogeneous_term();
-    for (dimension_type i = g.space_dimension(); i-- > 0; )  
-      max += g.coefficient(Variable(i))*expression.coefficient(Variable(i));
-    
+
+  Simplex_Status status = primal_simplex(cost_function, maximizing_point);
+  if (status == SOLVED_PROBLEM) {
+    // Compute the optimal value of the cost function.
+    ext_n = expression.inhomogeneous_term();
+    for (dimension_type i = maximizing_point.space_dimension(); i-- > 0; )  
+      ext_n += maximizing_point.coefficient(Variable(i))
+	       * expression.coefficient(Variable(i));
+
     // We want numerator and denominator to be coprime.
     Coefficient gcd = 0;
-    Coefficient g_divisor = g.divisor();
-    gcd_assign(gcd, max, g_divisor);
-    max /= gcd;
-    g_divisor /= gcd;
-    ext_n = max;
-    ext_d = g_divisor;
+    ext_d = maximizing_point.divisor();
+    gcd_assign(gcd, ext_n, ext_d);
+    ext_n /= gcd;
+    ext_d /= gcd;
     
     // We check our computed generator.
-    assert(this->satisfies_all_constraints(g));  
-    return SOLVED_PROBLEM; 
+    assert(this->satisfies_all_constraints(maximizing_point));  
   }
+  return status;
 }

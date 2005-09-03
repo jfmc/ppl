@@ -464,17 +464,15 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
 		      ppl_const_Linear_Expression_t ppl_objective_le,
 		      ppl_Coefficient_t optimum_n,
 		      ppl_Coefficient_t optimum_d,
-		      ppl_Generator_t* ppoint) {
+		      ppl_Generator_t point) {
   ppl_Polyhedron_t ppl_ph;  
   int empty;  
   int unbounded; 
   int included;    
-  int ok; 
-  ppl_const_Generator_t p_ph_point; 
+  int ok;
   
-  /* Create the polyhedron and get rid of the constraint system. */
+  /* Create the polyhedron. */
   ppl_new_C_Polyhedron_from_Constraint_System(&ppl_ph, ppl_cs);
-  ppl_delete_Constraint_System(ppl_cs);
 
   if (print_timings) {
     fprintf(stderr, "Time to create a PPL polyhedron: ");
@@ -519,15 +517,14 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
   ok = maximize
     ? ppl_Polyhedron_maximize(ppl_ph, ppl_objective_le,
 			      optimum_n, optimum_d, &included,
-			      &p_ph_point)
+			      point)
     : ppl_Polyhedron_minimize(ppl_ph, ppl_objective_le,
 			      optimum_n, optimum_d, &included,
-			      &p_ph_point);
+			      point);
 
   if (!ok)
     fatal("internal error");
   
-  ppl_new_Generator_from_Generator(ppoint, p_ph_point);
   ppl_delete_Polyhedron(ppl_ph);
 
   if (print_timings) {
@@ -548,15 +545,14 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 		   ppl_const_Linear_Expression_t objective,
 		   ppl_Coefficient_t optimum_n,
 		   ppl_Coefficient_t optimum_d,
-		   ppl_Generator_t* ppoint) {
+		   ppl_Generator_t point) {
   int status;
-  ppl_const_Generator_t p_ph_point;
   
   status = maximize
     ? ppl_Constraint_System_maximize(cs, objective,
-				     optimum_n, optimum_d, &p_ph_point)
+				     optimum_n, optimum_d, point)
     : ppl_Constraint_System_minimize(cs, objective,
-				     optimum_n, optimum_d, &p_ph_point);
+				     optimum_n, optimum_d, point);
 
   if (print_timings) {
     fprintf(stderr, "Time to find the optimum: ");
@@ -575,10 +571,8 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     /* FIXME: check!!! */
     return 0;
   }
-  else {
-    ppl_new_Generator_from_Generator(ppoint, p_ph_point);
+  else
     return 1;
-  }
 }
 
 static void
@@ -747,20 +741,21 @@ solve(char* file_name) {
 
   ppl_new_Coefficient(&optimum_n);
   ppl_new_Coefficient(&optimum_d);
+  ppl_new_Generator_zero_dim_point(&optimum_value);
 
   optimum_found = use_simplex
     ? solve_with_simplex(ppl_cs,
 			 ppl_objective_le,
 			 optimum_n,
 			 optimum_d,
-			 &optimum_value)
+			 optimum_value)
     : solve_with_generators(ppl_cs,
 			    ppl_objective_le,
 			    optimum_n,
 			    optimum_d,
-			    &optimum_value);
-  
-  
+			    optimum_value);
+
+  ppl_delete_Constraint_System(ppl_cs);
   ppl_delete_Linear_Expression(ppl_objective_le);
 
   if (print_timings) {
@@ -777,8 +772,6 @@ solve(char* file_name) {
     ppl_Coefficient_to_mpz_t(optimum_d, tmp_z);
     mpz_mul(tmp_z, tmp_z, den_lcm);
     mpq_set_den(optimum, tmp_z);
-    ppl_delete_Coefficient(optimum_d);
-    ppl_delete_Coefficient(optimum_n);
     fprintf(output_file, "Optimum value:\n%.10g\n", mpq_get_d(optimum));
     mpq_clear(optimum);
     fprintf(output_file, "Optimum location:\n");
@@ -792,6 +785,10 @@ solve(char* file_name) {
       fprintf(output_file, " = %.10g\n", mpq_get_d(tmp1_q));
     }
   }
+
+  ppl_delete_Coefficient(optimum_d);
+  ppl_delete_Coefficient(optimum_n);
+  ppl_delete_Generator(optimum_value);
 
   lpx_delete_prob(lp);
 }

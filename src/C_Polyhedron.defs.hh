@@ -169,6 +169,19 @@ public:
 
   //! Destructor.
   ~C_Polyhedron();
+
+  //! \brief
+  //! If the poly-hull of \p *this and \p y is exact it is assigned
+  //! to \p *this and <CODE>true</CODE> is returned,
+  //! otherwise <CODE>false</CODE> is returned.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are dimension-incompatible.
+  */
+  bool poly_hull_assign_if_exact(const C_Polyhedron& y);
+
+  //! Same as poly_hull_assign_if_exact(y).
+  bool upper_bound_assign_if_exact(const C_Polyhedron& y);
 };
 
 #include "C_Polyhedron.inlines.hh"

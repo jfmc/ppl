@@ -85,7 +85,7 @@ main() TRY {
   print_constraints(cs, "*** cs ***");
 #endif
 
-  bd1.poly_hull_assign(bd2);
+  bd1.bds_hull_assign(bd2);
 
   bd1.limited_CC76_extrapolation_assign(bd2, cs);
 

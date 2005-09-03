@@ -122,9 +122,9 @@ unsigned int PPL_COMPLEXITY_CLASS_POLYNOMIAL;
 unsigned int PPL_COMPLEXITY_CLASS_SIMPLEX;
 unsigned int PPL_COMPLEXITY_CLASS_ANY;
 
-unsigned int PPL_SIMPLEX_STATUS_UNFEASIBLE;
-unsigned int PPL_SIMPLEX_STATUS_UNBOUNDED;
-unsigned int PPL_SIMPLEX_STATUS_SOLVED;
+int PPL_SIMPLEX_STATUS_UNFEASIBLE;
+int PPL_SIMPLEX_STATUS_UNBOUNDED;
+int PPL_SIMPLEX_STATUS_SOLVED;
 
 namespace {
 
@@ -728,32 +728,28 @@ ppl_Constraint_System_maximize(ppl_const_Constraint_System_t cs,
 			       ppl_const_Linear_Expression_t le,
 			       ppl_Coefficient_t sup_n,
 			       ppl_Coefficient_t sup_d,
-			       ppl_const_Generator_t* ppoint) try {
+			       ppl_Generator_t point) try {
   const Constraint_System& ccs = *to_const(cs);
   const Linear_Expression& lle = *to_const(le);
   Coefficient& ssup_n = *to_nonconst(sup_n);
   Coefficient& ssup_d = *to_nonconst(sup_d);
-  return (ppoint != 0)
-    ? ccs.primal_simplex(lle, true, ssup_n, ssup_d,
-			 reinterpret_cast<const Generator**>(ppoint))
-    : ccs.primal_simplex(lle, true, ssup_n, ssup_d);
+  Generator& ppoint = *to_nonconst(point);
+  return ccs.primal_simplex(lle, true, ssup_n, ssup_d, ppoint);
 }
 CATCH_ALL
 
 int
 ppl_Constraint_System_minimize(ppl_const_Constraint_System_t cs,
 			       ppl_const_Linear_Expression_t le,
-			       ppl_Coefficient_t sup_n,
-			       ppl_Coefficient_t sup_d,
-			       ppl_const_Generator_t* ppoint) try {
+			       ppl_Coefficient_t inf_n,
+			       ppl_Coefficient_t inf_d,
+			       ppl_Generator_t point) try {
   const Constraint_System& ccs = *to_const(cs);
   const Linear_Expression& lle = *to_const(le);
-  Coefficient& ssup_n = *to_nonconst(sup_n);
-  Coefficient& ssup_d = *to_nonconst(sup_d);
-  return (ppoint != 0)
-    ? ccs.primal_simplex(lle, false, ssup_n, ssup_d,
-			 reinterpret_cast<const Generator**>(ppoint))
-    : ccs.primal_simplex(lle, false, ssup_n, ssup_d);
+  Coefficient& iinf_n = *to_nonconst(inf_n);
+  Coefficient& iinf_d = *to_nonconst(inf_d);
+  Generator& ppoint = *to_nonconst(point);
+  return ccs.primal_simplex(lle, false, iinf_n, iinf_d, ppoint);
 }
 CATCH_ALL
 
@@ -2177,16 +2173,14 @@ ppl_Polyhedron_maximize(ppl_const_Polyhedron_t ph,
 			ppl_Coefficient_t sup_n,
 			ppl_Coefficient_t sup_d,
 			int* pmaximum,
-			ppl_const_Generator_t* ppoint) try {
+			ppl_Generator_t point) try {
   const Polyhedron& pph = *to_const(ph);
   const Linear_Expression& lle = *to_const(le);
   Coefficient& ssup_n = *to_nonconst(sup_n);
   Coefficient& ssup_d = *to_nonconst(sup_d);
+  Generator& ppoint = *to_nonconst(point);
   bool maximum;
-  bool ok = ppoint != 0
-    ? pph.maximize(lle, ssup_n, ssup_d, maximum,
-		   reinterpret_cast<const Generator**>(ppoint))
-    : pph.maximize(lle, ssup_n, ssup_d, maximum);
+  bool ok = pph.maximize(lle, ssup_n, ssup_d, maximum, ppoint);
   if (ok)
     *pmaximum = maximum ? 1 : 0;
   return ok ? 1 : 0;
@@ -2199,16 +2193,14 @@ ppl_Polyhedron_minimize(ppl_const_Polyhedron_t ph,
 			ppl_Coefficient_t inf_n,
 			ppl_Coefficient_t inf_d,
 			int* pminimum,
-			ppl_const_Generator_t* ppoint) try {
+			ppl_Generator_t point) try {
   const Polyhedron& pph = *to_const(ph);
   const Linear_Expression& lle = *to_const(le);
   Coefficient& iinf_n = *to_nonconst(inf_n);
   Coefficient& iinf_d = *to_nonconst(inf_d);
+  Generator& ppoint = *to_nonconst(point);
   bool minimum;
-  bool ok = ppoint != 0
-    ? pph.minimize(lle, iinf_n, iinf_d, minimum,
-		   reinterpret_cast<const Generator**>(ppoint))
-    : pph.minimize(lle, iinf_n, iinf_d, minimum);
+  bool ok = pph.minimize(lle, iinf_n, iinf_d, minimum, ppoint);
   if (ok)
     *pminimum = minimum ? 1 : 0;
   return ok ? 1 : 0;

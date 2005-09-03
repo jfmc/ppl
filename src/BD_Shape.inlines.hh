@@ -312,7 +312,8 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   if (complexity == SIMPLEX_COMPLEXITY) {
     Coefficient n;
     Coefficient d;
-    if (ph.con_sys.primal_simplex(Linear_Expression(0), true, n, d)
+    Generator g(point());
+    if (ph.con_sys.primal_simplex(Linear_Expression(0), true, n, d, g)
 	== UNFEASIBLE_PROBLEM) {
       *this = BD_Shape(ph.space_dim, EMPTY);
       return;
@@ -1402,12 +1403,12 @@ BD_Shape<T>::transitive_reduction_assign() const {
 
 template <typename T>
 inline void
-BD_Shape<T>::poly_hull_assign(const BD_Shape& y) {
+BD_Shape<T>::bds_hull_assign(const BD_Shape& y) {
   dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
   if (space_dim != y.space_dimension())
-    throw_dimension_incompatible("poly_hull_assign(y)", y);
+    throw_dimension_incompatible("bds_hull_assign(y)", y);
 
   // The poly-hull of a polyhedron `bd' with an empty polyhedron is `bd'.
   y.closure_assign();
@@ -1419,8 +1420,8 @@ BD_Shape<T>::poly_hull_assign(const BD_Shape& y) {
     return;
   }
 
-  // The poly_hull consist to construct `*this' with the maximum
-  // elements selected from `*this' or `y'.
+  // The bds-hull consists in constructing `*this' with the maximum
+  // elements selected from `*this' and `y'.
   assert(space_dim == 0 || marked_transitively_closed());
   for (dimension_type i = 0; i <= space_dim; ++i) {
     DB_Row<T>& dbm_i = dbm[i];
@@ -1438,13 +1439,31 @@ BD_Shape<T>::poly_hull_assign(const BD_Shape& y) {
 
 template <typename T>
 inline bool
-BD_Shape<T>::poly_hull_assign_and_minimize(const BD_Shape& y) {
-  poly_hull_assign(y);
+BD_Shape<T>::bds_hull_assign_and_minimize(const BD_Shape& y) {
+  bds_hull_assign(y);
   assert(marked_empty()
 	 || space_dimension() == 0 || marked_transitively_closed());
   return !marked_empty();
 }
 
+template <typename T>
+inline void
+BD_Shape<T>::upper_bound_assign(const BD_Shape& y) {
+  bds_hull_assign(y);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::bds_hull_assign_if_exact(const BD_Shape&) {
+  // FIXME: this must be properly implemented.
+  return false;
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::upper_bound_assign_if_exact(const BD_Shape& y) {
+  return bds_hull_assign_if_exact(y);
+}
 
 template <typename T>
 inline void
@@ -1500,15 +1519,15 @@ BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
     if (c.is_equality()) {
       BD_Shape w = x;
       if (w.add_constraint_and_minimize(e <= 0))
-	new_bdiffs.poly_hull_assign(w);
+	new_bdiffs.bds_hull_assign(w);
       change = z.add_constraint_and_minimize(e >= 0);
     }
     if (change)
-      new_bdiffs.poly_hull_assign(z);
+      new_bdiffs.bds_hull_assign(z);
   }
   *this = new_bdiffs;
   // The result is still transitively closed, because both
-  // poly_hull_assign() and add_constraint_and_minimize()
+  // bds_hull_assign() and add_constraint_and_minimize()
   // preserve the transitive closure.
   assert(OK());
 }

@@ -160,7 +160,7 @@ public:
   Simplex_Status primal_simplex(const Linear_Expression& expr,
 				bool maximize,
 				Coefficient& ext_n, Coefficient& ext_d,
-				const Generator** const pppoint = 0) const;
+				Generator& maximising_point) const;
 
   //! \brief
   //! Returns the singleton system containing only
@@ -375,6 +375,10 @@ private:
   //! increasing the number of space dimensions if needed.
   //! It is a pending constraint.
   void insert_pending(const Constraint& c);
+
+  // FIXME: write documentation.
+  Simplex_Status primal_simplex(Linear_Expression& cost_function,
+				Generator& maximizing_point) const;
 };
 
 // Constraint_System.inlines.hh is not included here on purpose.

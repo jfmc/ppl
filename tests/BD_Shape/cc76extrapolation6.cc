@@ -79,7 +79,7 @@ main() TRY {
     m_i_next = n(++i);
     TBD_Shape::base_type* no_stop_points = 0;
     m_i_next.CC76_extrapolation_assign(m_i, no_stop_points, no_stop_points);
-    m_i_next.poly_hull_assign(m_i);
+    m_i_next.bds_hull_assign(m_i);
     // Force closure.
     (void) (m_i_next == m_i_next);
     if (m_i == m_i_next) {

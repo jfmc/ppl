@@ -145,7 +145,7 @@ Determinate<PH>::element() {
 template <typename PH>
 inline void
 Determinate<PH>::upper_bound_assign(const Determinate& y) {
-  element().poly_hull_assign(y.element());
+  element().upper_bound_assign(y.element());
 }
 
 template <typename PH>

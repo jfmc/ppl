@@ -50,37 +50,37 @@ main() TRY {
   Coefficient num;
   Coefficient den;
   bool included;
-  const Generator* pg;
-  bool ok = ph.maximize(x1-2*x2, num, den, included, &pg)
+  Generator g(point());
+  bool ok = ph.maximize(x1-2*x2, num, den, included, g)
     && num == 5 && den == 2 && included
-    && pg->is_point()
-    && pg->coefficient(x1) == 5 && pg->coefficient(x2) == 0
-    && pg->divisor() == 2;
+    && g.is_point()
+    && g.coefficient(x1) == 5 && g.coefficient(x2) == 0
+    && g.divisor() == 2;
 
 #if NOISY
   cout << (included ? "maximum" : "supremum") << " = " << num;
   if (den != 1)
     cout << "/" << den;
   cout << " @ ";
-  print_generator(*pg);
+  print_generator(g);
   cout << endl;
 #endif
 
   if (!ok)
     return 1;
 
-  ok = ph.minimize(x1-2*x2, num, den, included, &pg)
+  ok = ph.minimize(x1-2*x2, num, den, included, g)
     && num == -15 && den == 4 && included
-    && pg->is_point()
-    && pg->coefficient(x1) == 5 && pg->coefficient(x2) == 10
-    && pg->divisor() == 4;
+    && g.is_point()
+    && g.coefficient(x1) == 5 && g.coefficient(x2) == 10
+    && g.divisor() == 4;
 
 #if NOISY
   cout << (included ? "minimum" : "infimum") << " = " << num;
   if (den != 1)
     cout << "/" << den;
   cout << " @ ";
-  print_generator(*pg);
+  print_generator(g);
   cout << endl;
 #endif
 

@@ -559,7 +559,7 @@ public:
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are dimension-incompatible.
   */
-  void poly_hull_assign(const BD_Shape& y);
+  void bds_hull_assign(const BD_Shape& y);
 
   //! \brief
   //! Assigns to \p *this the smallest BD_Shape that contains the convex 
@@ -569,7 +569,23 @@ public:
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are dimension-incompatible.
   */
-  bool poly_hull_assign_and_minimize(const BD_Shape& y);
+  bool bds_hull_assign_and_minimize(const BD_Shape& y);
+
+  //! Same as bds_hull_assign(y).
+  void upper_bound_assign(const BD_Shape& y);
+
+  //! \brief
+  //! If the bds-hull of \p *this and \p y is exact it is assigned
+  //! to \p *this and <CODE>true</CODE> is returned,
+  //! otherwise <CODE>false</CODE> is returned.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are dimension-incompatible.
+  */
+  bool bds_hull_assign_if_exact(const BD_Shape& y);
+
+  //! Same as bds_hull_assign_if_exact(y).
+  bool upper_bound_assign_if_exact(const BD_Shape& y);
 
   //! \brief
   //! Assigns to \p *this the \ref poly_difference "poly-difference" of
