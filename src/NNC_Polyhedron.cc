@@ -35,6 +35,6 @@ PPL::NNC_Polyhedron::NNC_Polyhedron(const C_Polyhedron& y)
 }
 
 bool
-PPL::NNC_Polyhedron::poly_hull_assign_if_exact(const NNC_Polyhedron& q) {
-  return PPL::poly_hull_assign_if_exact(*this, q);
+PPL::NNC_Polyhedron::poly_hull_assign_if_exact(const NNC_Polyhedron& y) {
+  return PPL::poly_hull_assign_if_exact(*this, y);
 }

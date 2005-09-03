@@ -151,10 +151,10 @@ public:
 
   //! to \p p and <CODE>true</CODE> is returned,
   //! otherwise <CODE>false</CODE> is returned.
-  bool poly_hull_assign_if_exact(const NNC_Polyhedron& q);
+  bool poly_hull_assign_if_exact(const NNC_Polyhedron& y);
 
   //! Same as poly_hull_assign_if_exact(q).
-  bool upper_bound_assign_if_exact(const NNC_Polyhedron& q);
+  bool upper_bound_assign_if_exact(const NNC_Polyhedron& y);
 };
 
 #include "NNC_Polyhedron.inlines.hh"
