@@ -124,6 +124,11 @@ inline
 C_Polyhedron::~C_Polyhedron() {
 }
 
+inline bool
+C_Polyhedron::upper_bound_assign_if_exact(const C_Polyhedron& q) {
+  return poly_hull_assign_if_exact(q);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_C_Polyhedron_inlines_hh)

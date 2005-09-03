@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
+#include "algorithms.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -36,4 +37,9 @@ PPL::C_Polyhedron::C_Polyhedron(const NNC_Polyhedron& y)
     add_constraint(c.is_strict_inequality() ? (Linear_Expression(c) >= 0) : c);
   }
   assert(OK());
+}
+
+bool
+PPL::C_Polyhedron::poly_hull_assign_if_exact(const C_Polyhedron& q) {
+  return PPL::poly_hull_assign_if_exact(*this, q);
 }
