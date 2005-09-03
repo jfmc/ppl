@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -85,7 +84,7 @@ void
 test2() {
   nout << "test2:" << endl;
 
-  Grid gr(4, Grid::EMPTY);
+  Grid gr(4, EMPTY);
 
   if (find_variation(gr))
     exit(1);
@@ -100,7 +99,7 @@ test2() {
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
 
   if (find_variation(known_gr))
     exit(1);
@@ -121,7 +120,7 @@ void
 test3() {
   nout << "test3:" << endl;
 
-  Grid gr(7, Grid::UNIVERSE);
+  Grid gr(7, UNIVERSE);
 
   if (find_variation(gr))
     exit(1);
@@ -138,7 +137,7 @@ test3() {
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(5, Grid::UNIVERSE);
+  Grid known_gr(5, UNIVERSE);
 
   if (find_variation(known_gr))
     exit(1);
