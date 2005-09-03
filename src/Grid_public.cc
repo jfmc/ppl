@@ -1391,6 +1391,12 @@ PPL::Grid::join_assign_and_minimize(const Grid& y) {
   return minimize();
 }
 
+bool
+PPL::Grid::join_assign_if_exact(const Grid& y) {
+  // FIXME: join_assign(y) if join is exact
+  return false;
+}
+
 void
 PPL::Grid::grid_difference_assign(const Grid& y) {
   Grid& x = *this;

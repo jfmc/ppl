@@ -804,6 +804,22 @@ public:
   */
   void join_assign(const Grid& y);
 
+  //! Same as join_assign(y).
+  void upper_bound_assign(const Grid& y);
+
+  //! \brief
+  //! If the join of \p *this and \p y is exact it is assigned
+  //! to \p *this and <CODE>true</CODE> is returned,
+  //! otherwise <CODE>false</CODE> is returned.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  bool join_assign_if_exact(const Grid& y);
+
+  //! Same as join_assign_if_exact(y).
+  bool upper_bound_assign_if_exact(const Grid& y);
+
   //! \brief
   //! Assigns to \p *this the join of \p *this and \p y,
   //! reducing the result.

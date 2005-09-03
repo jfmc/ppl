@@ -119,6 +119,16 @@ Grid::space_dimension() const {
 }
 
 inline void
+Grid::upper_bound_assign(const Grid& y) {
+  join_assign(y);
+}
+
+inline bool
+Grid::upper_bound_assign_if_exact(const Grid& y) {
+  return join_assign_if_exact(y);
+}
+
+inline void
 Grid::swap(Grid& y) {
   std::swap(con_sys, y.con_sys);
   std::swap(gen_sys, y.gen_sys);
