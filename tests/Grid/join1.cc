@@ -1,4 +1,4 @@
-/* Test Grid::join_assign().
+/* Test Grid::join_assign() (a.k.a. Grid::upper_bound_assign()).
    Copyright (C) 2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -83,7 +83,7 @@ test2() {
   Grid gr1(3);
   Grid gr2(3);
 
-  gr1.join_assign(gr2);
+  gr1.upper_bound_assign(gr2);
 
   if (find_variation(gr1))
     exit(1);
@@ -164,7 +164,7 @@ test4() {
   if (find_variation(gr2))
     exit(1);
 
-  gr1.join_assign(gr2);
+  gr1.upper_bound_assign(gr2);
 
   if (find_variation(gr1))
     exit(1);
@@ -288,7 +288,7 @@ test7() {
   gr2.add_congruence(B == 0);
   gr2.add_congruence(C == 0);
 
-  gr1.join_assign(gr2);
+  gr1.upper_bound_assign(gr2);
 
   if (find_variation(gr1))
     exit(1);
