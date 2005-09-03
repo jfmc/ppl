@@ -41,6 +41,9 @@ template <typename PH>
 class Parma_Polyhedra_Library::Polyhedra_Powerset
   : public Parma_Polyhedra_Library::Powerset
 <Parma_Polyhedra_Library::Determinate<PH> > {
+public:
+  typedef PH element_type;
+
 private:
   typedef Determinate<PH> CS;
   typedef Powerset<CS> Base;
