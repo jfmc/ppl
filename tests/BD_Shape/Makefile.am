@@ -48,6 +48,7 @@ ORIGINAL_TESTS = \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	affinepreimage5 \
 	ascii_dump_load1 ascii_dump_load2 \
+	bdshull1 bdshull2 bdshull3 bdshull4 \
 	cc76narrowing1 cc76narrowing2 cc76narrowing3 cc76narrowing4 \
 	cc76narrowing5 \
 	cc76extrapolation1 cc76extrapolation2 cc76extrapolation3 \
@@ -83,7 +84,6 @@ ORIGINAL_TESTS = \
 	maxspacedim \
 	polydifference1 polydifference2 polydifference3 polydifference4 \
 	polydifference5 polydifference6 \
-	polyhull1 polyhull2 polyhull3 polyhull4 \
 	relations1 relations2 relations3 relations4 relations5 \
 	removespacedims1 removespacedims2 removespacedims3 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
@@ -122,6 +122,11 @@ affinepreimage5_SOURCES = affinepreimage5.cc
 
 ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 ascii_dump_load2_SOURCES = ascii_dump_load2.cc
+
+bdshull1_SOURCES = bdshull1.cc
+bdshull2_SOURCES = bdshull2.cc
+bdshull3_SOURCES = bdshull3.cc
+bdshull4_SOURCES = bdshull4.cc
 
 cc76narrowing1_SOURCES = cc76narrowing1.cc
 cc76narrowing2_SOURCES = cc76narrowing2.cc
@@ -227,11 +232,6 @@ polydifference3_SOURCES = polydifference3.cc
 polydifference4_SOURCES = polydifference4.cc
 polydifference5_SOURCES = polydifference5.cc
 polydifference6_SOURCES = polydifference6.cc
-
-polyhull1_SOURCES = polyhull1.cc
-polyhull2_SOURCES = polyhull2.cc
-polyhull3_SOURCES = polyhull3.cc
-polyhull4_SOURCES = polyhull4.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc

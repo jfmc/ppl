@@ -77,7 +77,7 @@ main() TRY {
 	 << m_i << endl;
 #endif
     m_i_next = n(++i);
-    m_i_next.poly_hull_assign(m_i);
+    m_i_next.bds_hull_assign(m_i);
     m_i_next.CH78_widening_assign(m_i);
     // Force closure.
     (void) (m_i_next == m_i_next);

@@ -1,4 +1,4 @@
-/* Test BD_Shape::poly_hull_assign().
+/* Test BD_Shape::bds_hull_assign().
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -31,42 +31,46 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() TRY {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
 
 
-  TBD_Shape bd1(3);
-  TBD_Shape bd2(3);
-  TBD_Shape known_result(3);
+  TBD_Shape bd1(2);
+  TBD_Shape bd2(2);
+  TBD_Shape known_result(2);
 
-  bd1.add_constraint(x <= 4);
-  bd1.add_constraint(-x <= -1);
-  bd1.add_constraint(y <= 3);
-  bd1.add_constraint(-y <= -1);
-  bd1.add_constraint(x - y <= 1);
+  bd1.add_constraint(A <= 4);
+  bd1.add_constraint(A >= 1);
+  bd1.add_constraint(B <= 3);
+  bd1.add_constraint(-B <= -1);
+  bd1.add_constraint(A - B <= 1);
 
 
-  bd2.add_constraint(y - x <= -1);
-  bd2.add_constraint(x <= 3);
-  bd2.add_constraint(-y <= 5);
+  bd2.add_constraint(B - A <= -1);
+  bd2.add_constraint(A <= 3);
+  bd2.add_constraint(-B <= 5);
 
 #if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 #endif
 
-  bd1.poly_hull_assign(bd2);
+  if (bd1.bds_hull_assign_and_minimize(bd2)) {
 
 #if NOISY
-  print_constraints(bd1, "*** bd1.poly_hull_assign(bd2) ***");
+    print_constraints(bd1, "*** bd1.bds_hull_assign_and_minimize(bd2) ***");
 #endif
 
-  known_result.add_constraint(x <= 4);
-  known_result.add_constraint(y >= -5);
-  known_result.add_constraint(x >= -4);
-  known_result.add_constraint(y <= 3);
-  known_result.add_constraint(x - y <= 8);
-  known_result.add_constraint(y - x <= 2);
+  }
+  else
+    cout << endl << "The two BD_Shape are empty." << endl;
+
+  known_result.add_constraint(A <= 4);
+  known_result.add_constraint(B >= -5);
+  known_result.add_constraint(A >= -4);
+  known_result.add_constraint(B <= 3);
+  known_result.add_constraint(A - B <= 8);
+  known_result.add_constraint(B - A <= 2);
 
   int retval = (bd1 == known_result) ? 0 : 1;
 

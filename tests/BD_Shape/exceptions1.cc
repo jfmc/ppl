@@ -316,7 +316,7 @@ error12() {
     // This is an incorrect use of function
     // BD_Shape::poly_hull_assign(bd2): it is impossible to apply
     // this function to two polyhedra of different dimensions.
-    bd1.poly_hull_assign(bd2);
+    bd1.bds_hull_assign(bd2);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -340,9 +340,9 @@ error13() {
 
   try {
     // This is an invalid use of function
-    // BD_Shape::poly_hull_assign_and_minimize(bd2): it is illegal
+    // BD_Shape::bds_hull_assign_and_minimize(bd2): it is illegal
     // to apply this function to two polyhedra of different dimensions.
-    bd1.poly_hull_assign_and_minimize(bd2);
+    bd1.bds_hull_assign_and_minimize(bd2);
   }
   catch (invalid_argument& e) {
 #if NOISY
