@@ -46,7 +46,7 @@ test1() {
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
   known_gr.add_generator(point(2*B - 2*C));
 
   if (gr == known_gr)
@@ -72,7 +72,7 @@ test2() {
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
   known_gr.add_generator(point(A));
   known_gr.add_generator(point(7*A + 3*B));
   known_gr.add_generator( line(C));
@@ -102,7 +102,7 @@ test3() {
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
   known_gr.add_generator(point(2*A + 2*B));
   known_gr.add_generator(line(C));
 
@@ -132,7 +132,7 @@ test4() {
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
   known_gr.add_generator(point(4*A + 6*B, 3));
   known_gr.add_generator(point(9*A + 6*B, 3));
   known_gr.add_generator(line(C));
@@ -153,14 +153,14 @@ void
 test5() {
   nout << "test5:" << endl;
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3, EMPTY);
   gr.add_generator(point(3*A + 2*B));
   gr.add_generator(point(8*A + 2*B));
   gr.add_generator(line(C));
 
   gr.affine_image(A, A + 1, 3);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
   known_gr.add_generator(point(4*A + 6*B, 3));
   known_gr.add_generator(point(9*A + 6*B, 3));
   known_gr.add_generator(line(C));
@@ -199,7 +199,7 @@ void
 test6() {
   nout << "test6:" << endl;
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
   gr.add_generator(point());
   gr.add_generator(point(A));
   gr.add_generator(point(B));
@@ -208,7 +208,7 @@ test6() {
 
   gr.affine_image(A, 3*A + 2*B + 4);
 
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
   known_gr.add_generator(point(4*A));
   known_gr.add_generator(point(7*A));
   known_gr.add_generator(point(6*A + B));
@@ -240,7 +240,7 @@ void
 test7() {
   nout << "test7:" << endl;
 
-  Grid gr(1, Grid::EMPTY);
+  Grid gr(1, EMPTY);
   gr.add_generator(point());
   gr.add_generator(point(A));
 
@@ -278,7 +278,7 @@ void
 test8() {
   nout << "test8:" << endl;
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
   gr.add_generator(point());
   gr.add_generator(point(3*A));
   gr.add_generator(point(3*B));
@@ -287,7 +287,7 @@ test8() {
 
   gr.affine_image(A, 3*A + 2*B + 1);
 
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
   known_gr.add_generator(point(A));
   known_gr.add_generator(point(7*A + 3*B));
   known_gr.add_generator(point(10*A));
@@ -324,7 +324,7 @@ void
 test9() {
   nout << "test9:" << endl;
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
   gr.add_generator(point());
   gr.add_generator(point(3*A));
   gr.add_generator(point(3*B));
@@ -333,7 +333,7 @@ test9() {
 
   gr.affine_image(A, B);
 
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
   known_gr.add_generator(point());
   known_gr.add_generator(point(3*A + 3*B));
 
@@ -375,7 +375,7 @@ test10() {
   // All divisors should change, even when the coefficient of A is 0.
   gr.affine_image(A, 2*A, 5);
 
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
   known_gr.add_generator(point());
   known_gr.add_generator(point(2*A, 15));
   known_gr.add_generator(point(5*B, 10));
@@ -396,12 +396,12 @@ void
 test11() {
   nout << "test11:" << endl;
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
   gr.add_generator(point(A));
 
   gr.affine_image(A, B + 2, -3);
 
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
   known_gr.add_generator(point(-2*A, 3));
 
   if (gr == known_gr)
@@ -420,11 +420,11 @@ void
 test12() {
   nout << "test12:" << endl;
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
 
   gr.affine_image(A, 2*A + B + 1);
 
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
 
   if (gr == known_gr)
     return;

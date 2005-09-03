@@ -50,7 +50,7 @@ test1() {
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(1, Grid::EMPTY);
+  Grid known_gr(1, EMPTY);
   known_gr.add_generator(point(A));
   known_gr.add_generator(point(3*A));
 
@@ -80,7 +80,7 @@ test2() {
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(0, Grid::EMPTY);
+  Grid known_gr(0, EMPTY);
 
   if (gr1 == known_gr)
     return;
@@ -113,7 +113,7 @@ test3() {
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
 
   if (gr1 == known_gr)
     return;
@@ -168,7 +168,7 @@ test5() {
   Grid gr1(2);
   gr1.add_congruence(A + 2*B %= 0);
 
-  Grid gr2(2, Grid::EMPTY);
+  Grid gr2(2, EMPTY);
 
   Grid known_gr(gr1);
 
@@ -195,7 +195,7 @@ void
 test6() {
   nout << "test6:" << endl;
 
-  Grid gr1(2, Grid::EMPTY);
+  Grid gr1(2, EMPTY);
 
   Grid gr2(2);
   gr2.add_congruence(A + 2*B %= 0);
@@ -205,7 +205,7 @@ test6() {
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
 
   if (gr1 == known_gr)
     return;
@@ -225,12 +225,12 @@ void
 test7() {
   nout << "test7:" << endl;
 
-  Grid gr1(3, Grid::EMPTY);
+  Grid gr1(3, EMPTY);
   gr1.add_generator(point());
   gr1.add_generator(point(A - 2*C));
   gr1.add_generator(point(3*B));
 
-  Grid gr2(3, Grid::EMPTY);
+  Grid gr2(3, EMPTY);
   gr2.add_generator(point(A));
   gr2.add_generator(point(A + 2*C));
   gr2.add_generator(point(3*A));
@@ -273,7 +273,7 @@ test8() {
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(0, Grid::EMPTY);
+  Grid known_gr(0, EMPTY);
 
   if (gr1 == known_gr)
     return;
@@ -294,7 +294,7 @@ void
 test9() {
   nout << "test9:" << endl;
 
-  Grid gr1(2, Grid::EMPTY);
+  Grid gr1(2, EMPTY);
   gr1.add_generator(point());
   gr1.add_generator( line(A));
   gr1.add_generator(point(B));
@@ -327,7 +327,7 @@ void
 test10() {
   nout << "test10:" << endl;
 
-  Grid gr1(2, Grid::EMPTY);
+  Grid gr1(2, EMPTY);
   gr1.add_generator(point());
   gr1.add_generator(point(A));
   gr1.add_generator(point(B));

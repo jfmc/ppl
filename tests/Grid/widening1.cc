@@ -39,7 +39,7 @@ void
 test1() {
   nout << "test1:" << endl;
 
-  Grid gr1(2, Grid::EMPTY);
+  Grid gr1(2, EMPTY);
 
   Grid gr2(2);
   gr2.add_congruence(A %= 0);
@@ -105,7 +105,7 @@ test3() {
   gr1.add_congruence(A == 0);
   gr1.add_congruence(A == 1);
 
-  Grid gr2(1, Grid::EMPTY);
+  Grid gr2(1, EMPTY);
 
   Grid known_gr = gr2;
 
@@ -467,11 +467,11 @@ void
 test14() {
   nout << "test14:" << endl;
 
-  Grid gr1(3, Grid::EMPTY);
+  Grid gr1(3, EMPTY);
   gr1.add_generator(point(C, 3));
   gr1.add_generator(point(C + A - 2*B, 3));
 
-  Grid gr2(3, Grid::EMPTY);
+  Grid gr2(3, EMPTY);
   gr2.add_generator(point(C, 3));
   gr2.add_generator(point(2*C + A - 2*B, 6));
 
@@ -480,7 +480,7 @@ test14() {
   if (find_variation(gr2))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
   known_gr.add_generator(point(C, 3));
   known_gr.add_generator( line(A - 2*B));
 

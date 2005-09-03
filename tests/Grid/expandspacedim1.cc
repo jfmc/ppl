@@ -68,11 +68,11 @@ void
 test2() {
   nout << "test2:" << endl;
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3, EMPTY);
 
   gr.expand_space_dimension(B, 1);
 
-  Grid known_gr(4, Grid::EMPTY);
+  Grid known_gr(4, EMPTY);
 
   if (gr == known_gr)
     return;
@@ -123,7 +123,7 @@ void
 test4() {
   nout << "test4:" << endl;
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
   gr.add_generator(point(A));
   gr.add_generator(point(A + 2*B));
   gr.add_generator(point());
@@ -133,7 +133,7 @@ test4() {
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
   known_gr.add_generator(point());
   known_gr.add_generator(point(A));
   known_gr.add_generator(point(A + 2*B));

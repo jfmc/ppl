@@ -48,11 +48,11 @@ test1() {
 
   PFunction function;
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3, EMPTY);
 
   gr.map_space_dimensions(function);
 
-  Grid known_gr(0, Grid::EMPTY);
+  Grid known_gr(0, EMPTY);
 
   if (gr == known_gr)
     return;
@@ -251,7 +251,7 @@ test6() {
 
   gr.map_space_dimensions(function);
 
-  Grid known_gr(4, Grid::EMPTY);
+  Grid known_gr(4, EMPTY);
   known_gr.add_generator(point());
   known_gr.add_generator(point(B));
   known_gr.add_generator(point(2*A));
@@ -293,7 +293,7 @@ test7() {
 
   gr.map_space_dimensions(function);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
   known_gr.add_generator(point());
   known_gr.add_generator( line(A));
 
@@ -319,11 +319,11 @@ test8() {
   function.insert(0, 1);
   function.insert(1, 0);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3, EMPTY);
 
   gr.map_space_dimensions(function);
 
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
 
   if (gr == known_gr)
     return;
@@ -352,7 +352,7 @@ test9() {
   function.insert(0, 1);
   function.insert(1, 0);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3, EMPTY);
   gr.add_generator(point(4*A, 2));
   gr.add_generator(point(4*A + B, 2));
 
@@ -362,7 +362,7 @@ test9() {
 
   gr.map_space_dimensions(function);
 
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
   known_gr.add_generator(point(4*B, 2));
   known_gr.add_generator(point(4*B + A, 2));
 

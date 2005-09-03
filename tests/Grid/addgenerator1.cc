@@ -37,7 +37,7 @@ test1() {
 
   Variable A(0);
 
-  Grid gr(1, Grid::EMPTY);
+  Grid gr(1, EMPTY);
   gr.add_generator(point(-A));
 
   if (find_variation(gr))
@@ -68,7 +68,7 @@ test2() {
   Variable A(0);
   Variable B(1);
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
   gr.add_generator(point(A + B));
 
   if (find_variation(gr))
@@ -100,7 +100,7 @@ test3() {
   Variable A(0);
   Variable B(1);
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
   gr.add_generator(point());
   gr.add_generator(point(A + 2*B));
   gr.add_generator(point(A + B));
@@ -140,7 +140,7 @@ test4() {
   gs.insert(point(7*A, 4));
   gs.insert(line(A - B));
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
 
   for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
@@ -177,7 +177,7 @@ test5() {
   Variable C(2);
   Variable D(3);
 
-  Grid gr(4, Grid::EMPTY);
+  Grid gr(4, EMPTY);
   gr.add_generator(point(7*A, 3));
   gr.add_generator(line(A - B));
 
@@ -211,7 +211,7 @@ test6() {
   Variable A(0);
   Variable B(1);
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
   gr.add_generator(point());
   gr.add_generator(point(2*A + 2*B));
   gr.add_generator(point(8*A + 8*B));

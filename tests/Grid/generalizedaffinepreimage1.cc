@@ -51,7 +51,7 @@ test1() {
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
   known_gr.add_generator(point());
   known_gr.add_generator(point(A));
   known_gr.add_generator( line(B));
@@ -94,7 +94,7 @@ test2() {
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
   known_gr.add_generator(point());
   known_gr.add_generator(point(A));
   known_gr.add_generator( line(B));
@@ -139,7 +139,7 @@ test3() {
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
   known_gr.add_generator(point());
   known_gr.add_generator(point(2*A));  // FIX why 2?
   known_gr.add_generator( line(B));
@@ -188,7 +188,7 @@ test4() {
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
   known_gr.add_generator(point());
   known_gr.add_generator(point(4*A));  // FIX why 4?
   known_gr.add_generator( line(B));
@@ -237,7 +237,7 @@ test5() {
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
   known_gr.add_generator(point());
   known_gr.add_generator(point(4*A));  // FIX why 4?
   known_gr.add_generator( line(B));
@@ -283,7 +283,7 @@ test6() {
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
   known_gr.add_generator(point(2*A));
   known_gr.add_generator(point(2*A + 3*B));
   known_gr.add_generator( line(A + C));
@@ -317,7 +317,7 @@ test7() {
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
   known_gr.add_generator(point(2*A));
   known_gr.add_generator(point(2*A + 3*B));
   known_gr.add_generator( line(A + C));
@@ -353,14 +353,14 @@ void
 test8() {
   nout << "test8:" << endl;
 
-  Grid gr(5, Grid::EMPTY);
+  Grid gr(5, EMPTY);
 
   gr.generalized_affine_preimage(A, A - 2*C + 3, 4, 7);
 
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(5, Grid::EMPTY);
+  Grid known_gr(5, EMPTY);
 
   if (gr == known_gr)
     return;
@@ -389,7 +389,7 @@ test9() {
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(1, Grid::EMPTY);
+  Grid known_gr(1, EMPTY);
 
   if (gr == known_gr)
     return;

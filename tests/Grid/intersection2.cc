@@ -80,7 +80,7 @@ test2() {
   Congruence_System cgs;
   cgs.insert((A + B + C %= 0) / 2);
 
-  Grid gr1(3, Grid::EMPTY);
+  Grid gr1(3, EMPTY);
   Grid gr2(cgs);
 
   gr1.intersection_assign_and_minimize(gr2);
@@ -88,7 +88,7 @@ test2() {
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
 
   if (gr1 == known_gr)
     return;
@@ -114,14 +114,14 @@ test3() {
   cgs.insert((A + B + C %= 0) / 2);
 
   Grid gr1(cgs);
-  Grid gr2(3, Grid::EMPTY);
+  Grid gr2(3, EMPTY);
 
   gr1.intersection_assign_and_minimize(gr2);
 
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
 
   if (gr1 == known_gr)
     return;
@@ -147,7 +147,7 @@ test4() {
   cgs.insert((  A +   B + C %= 7) / 9);
   cgs.insert((5*A + 3*B + C %= 7) / 9);
 
-  Grid gr1(3, Grid::UNIVERSE);
+  Grid gr1(3, UNIVERSE);
   Grid gr2(cgs);
 
   gr1.intersection_assign_and_minimize(gr2);
@@ -186,7 +186,7 @@ test5() {
   cgs.insert((2*B %= 1) / 3);
 
   Grid gr1(cgs);
-  Grid gr2(3, Grid::UNIVERSE);
+  Grid gr2(3, UNIVERSE);
 
   gr1.intersection_assign_and_minimize(gr2);
 
@@ -257,7 +257,7 @@ test7() {
 
   Grid gr1(gs1);
 
-  Grid gr2(3, Grid::EMPTY);
+  Grid gr2(3, EMPTY);
   gr2.add_generators(gs2);
 
   gr1.intersection_assign_and_minimize(gr2);

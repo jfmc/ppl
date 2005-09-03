@@ -317,7 +317,7 @@ test8() {
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
 
   if (gr == known_gr)
     return;
@@ -595,7 +595,7 @@ test15() {
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
 
   if (gr == known_gr)
     return;

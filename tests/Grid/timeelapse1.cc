@@ -69,14 +69,14 @@ test2() {
   nout << "test2:" << endl;
 
   Grid gr1(0);
-  Grid gr2(0, Grid::EMPTY);
+  Grid gr2(0, EMPTY);
 
   gr1.time_elapse_assign(gr2);
 
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(0, Grid::EMPTY);
+  Grid known_gr(0, EMPTY);
 
   if (gr1 == known_gr)
     return;
@@ -96,7 +96,7 @@ void
 test3() {
   nout << "test3:" << endl;
 
-  Grid gr1(4, Grid::EMPTY);
+  Grid gr1(4, EMPTY);
 
   Grid gr2(4);
   gr2.add_congruence(A %= 3);
@@ -106,7 +106,7 @@ test3() {
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(4, Grid::EMPTY);
+  Grid known_gr(4, EMPTY);
 
   if (gr1 == known_gr)
     return;
@@ -129,14 +129,14 @@ test4() {
   Grid gr1(4);
   gr1.add_congruence(A %= 3);
 
-  Grid gr2(4, Grid::EMPTY);
+  Grid gr2(4, EMPTY);
 
   gr1.time_elapse_assign(gr2);
 
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(4, Grid::EMPTY);
+  Grid known_gr(4, EMPTY);
 
   if (gr1 == known_gr)
     return;
@@ -159,7 +159,7 @@ test5() {
   Grid gr1(2);
   gr1.add_congruence(A + 2*B %= 0);
 
-  Grid gr2(2, Grid::EMPTY);
+  Grid gr2(2, EMPTY);
   gr2.add_generator(point());
 
   Grid known_gr(gr1);
@@ -284,11 +284,11 @@ void
 test9() {
   nout << "test9:" << endl;
 
-  Grid gr1(3, Grid::EMPTY);
+  Grid gr1(3, EMPTY);
   gr1.add_generator(point());
   gr1.add_generator(point(A + 2*B - 3*C, 3));
 
-  Grid gr2(3, Grid::EMPTY);
+  Grid gr2(3, EMPTY);
   gr2.add_generator(point(3*A - B + 4*C, 7));
 
   gr1.time_elapse_assign(gr2);
@@ -296,7 +296,7 @@ test9() {
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
   known_gr.add_generator(point());
   known_gr.add_generator(point(A + 2*B - 3*C, 3));
   known_gr.add_generator(point(3*A - B + 4*C, 7));
@@ -319,13 +319,13 @@ void
 test10() {
   nout << "test10:" << endl;
 
-  Grid gr1(4, Grid::EMPTY);
+  Grid gr1(4, EMPTY);
   gr1.add_generator(point());
   gr1.add_generator(point(2*A));
   gr1.add_generator(point(4*A));
   gr1.add_generator(point(D));
 
-  Grid gr2(4, Grid::EMPTY);
+  Grid gr2(4, EMPTY);
   gr2.add_generator(point(A));
 
   gr1.time_elapse_assign(gr2);
@@ -333,7 +333,7 @@ test10() {
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(4, Grid::EMPTY);
+  Grid known_gr(4, EMPTY);
   known_gr.add_generator(point());
   known_gr.add_generator(point(A));
   known_gr.add_generator(point(D));

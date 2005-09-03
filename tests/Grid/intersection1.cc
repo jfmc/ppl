@@ -129,7 +129,7 @@ test3() {
   Congruence_System cgs;
   cgs.insert((B + 0*C %= 0) / 2);
 
-  Grid gr1(3, Grid::EMPTY);
+  Grid gr1(3, EMPTY);
   Grid gr2(cgs);
 
   if (find_variation(gr1) || find_variation(gr2))
@@ -140,7 +140,7 @@ test3() {
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
 
   if (find_variation(known_gr))
     exit(1);
@@ -169,7 +169,7 @@ test4() {
   cgs.insert((B + 0*C %= 0) / 2);
 
   Grid gr1(cgs);
-  Grid gr2(3, Grid::EMPTY);
+  Grid gr2(3, EMPTY);
 
   if (find_variation(gr1) || find_variation(gr2))
     exit(1);
@@ -179,7 +179,7 @@ test4() {
   if (find_variation(gr1))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
 
   if (find_variation(known_gr))
     exit(1);
@@ -207,7 +207,7 @@ test5() {
   Congruence_System cgs;
   cgs.insert((5*A + 3*B + C %= 7) / 9);
 
-  Grid gr1(3, Grid::UNIVERSE);
+  Grid gr1(3, UNIVERSE);
   Grid gr2(cgs);
 
   if (find_variation(gr1) || find_variation(gr2))
@@ -250,7 +250,7 @@ test6() {
   cgs.insert((2*B + 2*C %= 1) / 3);
 
   Grid gr1(cgs);
-  Grid gr2(3, Grid::UNIVERSE);
+  Grid gr2(3, UNIVERSE);
 
   if (find_variation(gr1) || find_variation(gr2))
     exit(1);
@@ -289,7 +289,7 @@ test7() {
   cgs.insert((le %= le) / 1);	// (0 %= 0) / 1
 
   Grid gr1(cgs);
-  Grid gr2(0, Grid::UNIVERSE);
+  Grid gr2(0, UNIVERSE);
 
   if (find_variation(gr1) || find_variation(gr2))
     exit(1);
@@ -334,7 +334,7 @@ test8() {
 
   Grid gr1(gs1);
 
-  Grid gr2(3, Grid::EMPTY);
+  Grid gr2(3, EMPTY);
   gr2.add_generators(gs2);
 
   gr1.intersection_assign(gr2);

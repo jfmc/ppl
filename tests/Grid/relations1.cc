@@ -35,7 +35,7 @@ void
 test1() {
   nout << "test1:" << endl;
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
 
   if (gr.relation_with(point(A)) == Poly_Gen_Relation::nothing())
     return;

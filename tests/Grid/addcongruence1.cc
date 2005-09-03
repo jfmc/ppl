@@ -73,14 +73,14 @@ test2() {
   Variable B(1);
   Variable C(2);
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3, EMPTY);
 
   gr.add_congruence((A + B + C %= 0) / 3);
 
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
 
   if (gr == known_gr)
     return;

@@ -51,7 +51,7 @@ test14() {
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
   known_gr.add_generator(point());
   known_gr.add_generator(point(A));
   known_gr.add_generator( line(B));
@@ -83,7 +83,7 @@ test15() {
     exit(1);
 
   // FIX check
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
   known_gr.add_generator(point());
   known_gr.add_generator(point(A + B));
   known_gr.add_generator(point(5*A));
@@ -115,7 +115,7 @@ test16() {
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(3, Grid::EMPTY);
+  Grid known_gr(3, EMPTY);
   known_gr.add_generator(point());
   known_gr.add_generator(line(A));
   known_gr.add_generator(line(B));
@@ -179,7 +179,7 @@ test18() {
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(2, Grid::EMPTY);
+  Grid known_gr(2, EMPTY);
   known_gr.add_generator(point(A));
   known_gr.add_generator(point(B));
   known_gr.add_generator(line(2*A - B));

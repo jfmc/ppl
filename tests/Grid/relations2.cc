@@ -38,7 +38,7 @@ void
 test1() {
   nout << "test1:" << endl;
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
   gr.add_generator(point(A - B));
 
   if (gr.relation_with((A - B %= 1) / 2) == Poly_Con_Relation::is_disjoint())
@@ -53,7 +53,7 @@ void
 test2() {
   nout << "test2:" << endl;
 
-  Grid gr(1, Grid::EMPTY);
+  Grid gr(1, EMPTY);
   gr.add_generator(point());
   gr.add_generator(point(4*A));
 
@@ -69,7 +69,7 @@ void
 test3() {
   nout << "test3:" << endl;
 
-  Grid gr(3, Grid::EMPTY);
+  Grid gr(3, EMPTY);
   gr.add_generator(point());
   gr.add_generator(point(2*A));
 
@@ -85,7 +85,7 @@ void
 test4() {
   nout << "test4:" << endl;
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
   gr.add_generator(point());
   gr.add_generator(line(A));
 
@@ -102,7 +102,7 @@ void
 test5() {
   nout << "test5:" << endl;
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
   gr.add_generator(point(A + B));
 
   if (gr.relation_with(A + 0*B %= 0) == Poly_Con_Relation::is_included())
@@ -117,7 +117,7 @@ void
 test6() {
   nout << "test6:" << endl;
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
 
   if (gr.relation_with((B %= 0) / 2)
       == (Poly_Con_Relation::is_included()
@@ -161,7 +161,7 @@ void
 test8() {
   nout << "test8:" << endl;
 
-  Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
   gr.add_generator(point());
   gr.add_generator(point(2*A + 5*B));
 
