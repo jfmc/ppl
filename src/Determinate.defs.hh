@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Determinate.types.hh"
 #include "Constraint_System.types.hh"
+#include "Congruence_System.types.hh"
 #include "Variable.defs.hh"
 #include "globals.defs.hh"
 #include <iosfwd>
@@ -74,6 +75,11 @@ public:
   //! Injection operator: builds the determinate constraint system element
   //! corresponding to the base-level element represented by \p cs.
   Determinate(const Constraint_System& cs);
+
+  //! \brief
+  //! Injection operator: builds the determinate constraint system element
+  //! corresponding to the base-level element represented by \p cgs.
+  Determinate(const Congruence_System& cgs);
 
   //! Copy constructor.
   Determinate(const Determinate& y);
@@ -236,6 +242,9 @@ private:
 
     //! Builds a new representation by copying the constraints in \p cs.
     Rep(const Constraint_System& cs);
+
+    //! Builds a new representation by copying the constraints in \p cgs.
+    Rep(const Congruence_System& cgs);
 
     //! Destructor.
     ~Rep();

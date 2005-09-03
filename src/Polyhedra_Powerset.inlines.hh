@@ -27,6 +27,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
+#include "Congruence.defs.hh"
+#include "Congruence_System.defs.hh"
+#include "Congruence_System.inlines.hh"
 #include "Widening_Function.defs.hh"
 #include <algorithm>
 #include <deque>
@@ -118,6 +121,19 @@ Polyhedra_Powerset<PH>::Polyhedra_Powerset(const Constraint_System& cs)
   : Base(), space_dim(cs.space_dimension()) {
   Polyhedra_Powerset& x = *this;
   x.sequence.push_back(Determinate<PH>(cs));
+  x.reduced = false;
+  assert(OK());
+}
+
+template <typename PH>
+inline
+Polyhedra_Powerset<PH>::Polyhedra_Powerset(const Congruence_System& cgs)
+  // FIXME: calling Base(Determinate<PH>(cgs)) will automatically handle
+  // the flag `reduced', but it will also force a non-emptiness test
+  // on the congruence system `cgs'.
+  : Base(), space_dim(cgs.space_dimension()) {
+  Polyhedra_Powerset& x = *this;
+  x.sequence.push_back(Determinate<PH>(cgs));
   x.reduced = false;
   assert(OK());
 }
