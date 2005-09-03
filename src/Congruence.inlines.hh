@@ -150,22 +150,14 @@ Congruence::inhomogeneous_term() const {
   return (*this)[0];
 }
 
-#if 0
 inline Coefficient_traits::const_reference
 Congruence::modulus() const {
   assert(size() > 0);
   return (*this)[size()-1];
 }
-#endif
 
 inline Coefficient&
 Congruence::modulus() {
-  assert(size() > 0);
-  return (*this)[size()-1];
-}
-
-inline const Coefficient&
-Congruence::modulus() const {
   assert(size() > 0);
   return (*this)[size()-1];
 }

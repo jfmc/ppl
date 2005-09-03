@@ -300,7 +300,7 @@ public:
   Coefficient& modulus();
 
   //! Returns a const reference to the modulus of \p *this.
-  const Coefficient& modulus() const;
+  Coefficient_traits::const_reference modulus() const;
 
   //! Multiplies \p k into the modulus of \p *this.
   /*!
