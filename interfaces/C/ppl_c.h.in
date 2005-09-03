@@ -730,15 +730,15 @@ ppl_Constraint_System_maximize PPL_PROTO((ppl_const_Constraint_System_t cs,
 					  ppl_const_Linear_Expression_t le,
 					  ppl_Coefficient_t sup_n,
 					  ppl_Coefficient_t sup_d,
-					  ppl_const_Generator_t* ppoint));
+					  ppl_Generator_t point));
 
 /* FIXME: write the documentation. */
 int
 ppl_Constraint_System_minimize PPL_PROTO((ppl_const_Constraint_System_t cs,
 					  ppl_const_Linear_Expression_t le,
-					  ppl_Coefficient_t sup_n,
-					  ppl_Coefficient_t sup_d,
-					  ppl_const_Generator_t* ppoint));
+					  ppl_Coefficient_t inf_n,
+					  ppl_Coefficient_t inf_d,
+					  ppl_Generator_t point));
 
 /*! \brief
   Returns a positive integer if \p cs is well formed, i.e., if it
@@ -1114,17 +1114,17 @@ extern unsigned int PPL_COMPLEXITY_CLASS_ANY;
 /*! \brief
   Code of the "unfeasible problem" simplex status.
 */
-extern unsigned int PPL_SIMPLEX_STATUS_UNFEASIBLE;
+extern int PPL_SIMPLEX_STATUS_UNFEASIBLE;
 
 /*! \brief
   Code of the "unbounded problem" simplex status.
 */
-extern unsigned int PPL_SIMPLEX_STATUS_UNBOUNDED;
+extern int PPL_SIMPLEX_STATUS_UNBOUNDED;
 
 /*! \brief
   Code of the "solved problem" simplex status.
 */
-extern unsigned int PPL_SIMPLEX_STATUS_SOLVED;
+extern int PPL_SIMPLEX_STATUS_SOLVED;
 
 /*! \brief
   Individual bit saying that the polyhedron and the set of points
@@ -1636,7 +1636,7 @@ ppl_Polyhedron_bounds_from_below PPL_PROTO((ppl_const_Polyhedron_t ph,
 					    ppl_const_Linear_Expression_t le));
 
 /*! \brief
-  Returns a positive integer if  \p ph is not empty
+  Returns a positive integer if \p ph is not empty
   and \p le is bounded from above in \p ph, in which case
   the supremum value and a point where \p le reaches it are computed.
 
@@ -1656,11 +1656,13 @@ ppl_Polyhedron_bounds_from_below PPL_PROTO((ppl_const_Polyhedron_t ph,
   Will store 1 in this location if the supremum is also the maximum,
   will store 0 otherwise;
 
-  \param ppoint
-  When nonzero, a point or closure point where \p le reaches the
-  extremum value will be stored here. If \p ph is empty or \p le is
-  not bounded from above, 0 is returned and \p sup_n, \p sup_d,
-  \p *pmaximum and \p *ppoint are left untouched.
+  \param point
+  Will be assigned the point or closure point where \p le reaches the
+  extremum value.
+
+  If \p ph is empty or \p le is not bounded from above,
+  0 will be returned and \p sup_n, \p sup_d, \p *pmaximum and \p point
+  will be left untouched.
 */
 int
 ppl_Polyhedron_maximize PPL_PROTO((ppl_const_Polyhedron_t ph,
@@ -1668,7 +1670,7 @@ ppl_Polyhedron_maximize PPL_PROTO((ppl_const_Polyhedron_t ph,
 				   ppl_Coefficient_t sup_n,
 				   ppl_Coefficient_t sup_d,
 				   int* pmaximum,
-				   ppl_const_Generator_t* ppoint));
+				   ppl_Generator_t point));
 
 /*! \brief
   Returns a positive integer if  \p ph is not empty
@@ -1691,11 +1693,13 @@ ppl_Polyhedron_maximize PPL_PROTO((ppl_const_Polyhedron_t ph,
   Will store 1 in this location if the infimum is also the minimum,
   will store 0 otherwise;
 
-  \param ppoint
-  When nonzero, a point or closure point where \p le reaches the
-  extremum value will be stored here.  If \p ph is empty or \p le is
-  not bounded from below, 0 is returned and \p inf_n, \p inf_d,
-  \p *pminimum and \p *ppoint are left untouched.
+  \param point
+  Will be assigned the point or closure point where \p le reaches the
+  extremum value.
+
+  If \p ph is empty or \p le is not bounded from below,
+  0 will be returned and \p sup_n, \p sup_d, \p *pmaximum and \p point
+  will be left untouched.
 */
 int
 ppl_Polyhedron_minimize PPL_PROTO((ppl_const_Polyhedron_t ph,
@@ -1703,7 +1707,7 @@ ppl_Polyhedron_minimize PPL_PROTO((ppl_const_Polyhedron_t ph,
 				   ppl_Coefficient_t inf_n,
 				   ppl_Coefficient_t inf_d,
 				   int* pminimum,
-				   ppl_const_Generator_t* ppoint));
+				   ppl_Generator_t point));
 
 /*! \brief
   Returns a positive integer if \p ph is topologically closed;
