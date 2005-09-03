@@ -630,21 +630,20 @@ public:
     \param maximum
     <CODE>true</CODE> if and only if the supremum is also the maximum value;
 
-    \param pppoint
-    When nonzero and maximization succeeds, a pointer to a point or
-    closure point where \p expr reaches its supremum value will be
-    written at this address.
+    \param point
+    When maximization succeeds, will be assigned the point or
+    closure point where \p expr reaches its supremum value.
 
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
 
     If \p *this is empty or \p expr is not bounded from above,
     <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
-    and \p pppoint are left untouched.
+    and \p point are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
 		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		const Generator** const pppoint) const;
+		Generator& point) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -690,21 +689,20 @@ public:
     \param minimum
     <CODE>true</CODE> if and only if the infimum is also the minimum value;
 
-    \param pppoint
-    When nonzero and minimization succeeds, a pointer to a point or
-    closure point where \p expr reaches its infimum value will be
-    written at this address.
+    \param point
+    When minimization succeeds, will be assigned a point or
+    closure point where \p expr reaches its infimum value.
 
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
 
     If \p *this is empty or \p expr is not bounded from below,
     <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
-    and \p pppoint are left untouched.
+    and \p point are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
 		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		const Generator** const pppoint) const;
+		Generator& point) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -2182,22 +2180,22 @@ private:
     <CODE>true</CODE> if and only if the extremum of \p expr can
     actually be reached in \p * this;
 
-    \param pppoint
-    When nonzero and maximization or minimization succeeds, a pointer
-    to a point or closure point where \p expr reaches the
-    corresponding extremum value will be written at this address.
+    \param point
+    When maximization or minimization succeeds, will be assigned
+    a point or closure point where \p expr reaches the
+    corresponding extremum value.
 
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
 
     If \p *this is empty or \p expr is not bounded in the appropriate
     direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d,
-    \p included and \p *pppoint are left untouched.
+    \p included and \p point are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
 	       const bool maximize,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
-	       const Generator** const pppoint = 0) const;
+	       Generator& point) const;
 
   //! \name Widening- and Extrapolation-Related Functions
   //@{

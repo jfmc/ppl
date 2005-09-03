@@ -312,7 +312,8 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   if (complexity == SIMPLEX_COMPLEXITY) {
     Coefficient n;
     Coefficient d;
-    if (ph.con_sys.primal_simplex(Linear_Expression(0), true, n, d)
+    Generator g(point());
+    if (ph.con_sys.primal_simplex(Linear_Expression(0), true, n, d, g)
 	== UNFEASIBLE_PROBLEM) {
       *this = BD_Shape(ph.space_dim, EMPTY);
       return;

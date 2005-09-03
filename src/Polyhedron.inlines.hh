@@ -300,28 +300,32 @@ Polyhedron::bounds_from_below(const Linear_Expression& expr) const {
 
 inline bool
 Polyhedron::maximize(const Linear_Expression& expr,
-		     Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const {
-  return max_min(expr, true, sup_n, sup_d, maximum);
+		     Coefficient& sup_n, Coefficient& sup_d,
+		     bool& maximum) const {
+  Generator g(point());
+  return max_min(expr, true, sup_n, sup_d, maximum, g);
 }
 
 inline bool
 Polyhedron::maximize(const Linear_Expression& expr,
 		     Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		     const Generator** const pppoint) const {
-  return max_min(expr, true, sup_n, sup_d, maximum, pppoint);
+		     Generator& g) const {
+  return max_min(expr, true, sup_n, sup_d, maximum, g);
 }
 
 inline bool
 Polyhedron::minimize(const Linear_Expression& expr,
-		     Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const {
-  return max_min(expr, false, inf_n, inf_d, minimum);
+		     Coefficient& inf_n, Coefficient& inf_d,
+		     bool& minimum) const {
+  Generator g(point());
+  return max_min(expr, false, inf_n, inf_d, minimum, g);
 }
 
 inline bool
 Polyhedron::minimize(const Linear_Expression& expr,
 		     Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		     const Generator** const pppoint) const {
-  return max_min(expr, false, inf_n, inf_d, minimum, pppoint);
+		     Generator& g) const {
+  return max_min(expr, false, inf_n, inf_d, minimum, g);
 }
 
 /*! \relates Polyhedron */
@@ -453,7 +457,8 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
       if (complexity == SIMPLEX_COMPLEXITY) {
 	Coefficient n;
 	Coefficient d;
-	if (con_sys.primal_simplex(Linear_Expression(0), true, n, d)
+	Generator g(point());
+	if (con_sys.primal_simplex(Linear_Expression(0), true, n, d, g)
 	    == UNFEASIBLE_PROBLEM) {
 	  box.set_empty();
 	  return;

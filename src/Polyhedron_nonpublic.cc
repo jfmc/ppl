@@ -544,8 +544,9 @@ PPL::Polyhedron::bounds(const Linear_Expression& expr,
 bool
 PPL::Polyhedron::max_min(const Linear_Expression& expr,
 			 const bool maximize,
-			 Coefficient& ext_n, Coefficient& ext_d, bool& included,
-			 const Generator** const pppoint) const {
+			 Coefficient& ext_n, Coefficient& ext_d,
+			 bool& included,
+			 Generator& point) const {
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
   const dimension_type expr_space_dim = expr.space_dimension();
@@ -633,8 +634,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
   ext_n = Coefficient(extremum.get_num());
   ext_d = Coefficient(extremum.get_den());
   included = ext_included;
-  if (pppoint != 0)
-    *pppoint = &gen_sys[ext_position];
+  point = gen_sys[ext_position];
 
   return true;
 }
@@ -1184,34 +1184,31 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       ++i;
 
   if (changed) {
-    // If the constraint system has been changed and we haven't found the
-    // eps_leq_one constraint, insert it to force an upper bound on epsilon.
-    if (!found_eps_leq_one) {
-      // Note: we overwrite the first of the eps-redundant constraints found.
-      assert(cs_rows < cs.num_rows());
-      Constraint& eps_leq_one = cs[cs_rows];
-      eps_leq_one[0] = 1;
-      eps_leq_one[eps_index] = -1;
-      for (dimension_type k = eps_index; k-- > 1; )
-	eps_leq_one[k] = 0;
-      // Bump number of rows.
-      ++cs_rows;
-    }
-    // Erase the eps-redundant constraints, if there are any (the
-    // remaining constraints are not pending).
-    if (cs_rows < cs.num_rows()) {
-      cs.erase_to_end(cs_rows);
-      cs.unset_pending_rows();
-    }
+    // If the constraint system has been changed, we have to erase
+    // the epsilon-redundant constraints.
+    assert(cs_rows < cs.num_rows());
+    cs.erase_to_end(cs_rows);
+    // The remaining constraints are not pending.
+    cs.unset_pending_rows();
     // The constraint system is no longer sorted.
     cs.set_sorted(false);
     // The generator system is no longer up-to-date.
     x.clear_generators_up_to_date();
-    // If we have added an upper bound on epsilon,
-    // then it may have been redundant,
-    // so that low-level minimization is not preserved.
-    if (!found_eps_leq_one)
-      x.clear_constraints_minimized();
+
+    // If we haven't found an upper bound for the epsilon dimension,
+    // then we have to check whether such an upper bound is implied
+    // by the remaining constraints.
+    if (!found_eps_leq_one) {
+      Generator g(point());
+      // The cost function is `epsilon'.
+      Linear_Expression cost_function = Variable(x.space_dim);
+      Simplex_Status status = cs.primal_simplex(cost_function, g);
+      assert(status != UNFEASIBLE_PROBLEM);
+      // If the epsilon dimension is actually unbounded,
+      // then add the eps_leq_one constraint.
+      if (status == UNBOUNDED_PROBLEM)
+	cs.insert(Constraint::epsilon_leq_one());
+    }
   }
 
   assert(OK());
