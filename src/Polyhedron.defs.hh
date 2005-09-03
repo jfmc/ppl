@@ -2273,7 +2273,9 @@ private:
   //! Builds and simplifies constraints from generators (or vice versa).
   // Detailed Doxygen comment to be found in file minimize.cc.
   static bool minimize(bool con_to_gen,
-		       Linear_System& source, Linear_System& dest, Saturation_Matrix& sat);
+		       Linear_System& source,
+		       Linear_System& dest,
+		       Saturation_Matrix& sat);
 
   //! \brief
   //! Adds given constraints and builds minimized corresponding generators
