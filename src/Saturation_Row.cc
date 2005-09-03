@@ -339,8 +339,9 @@ PPL::operator!=(const Saturation_Row& x, const Saturation_Row& y) {
 
 bool
 PPL::Saturation_Row::OK() const {
-  // FIXME: this must be completed.
   const mp_size_t vec_size = vec->_mp_size;
+  const mp_size_t vec_alloc = vec->_mp_alloc;
   return vec_size >= 0
+    && vec_alloc >= vec_size
     && (vec_size == 0 || mpz_getlimbn(vec, vec_size-1) != 0);
 }
