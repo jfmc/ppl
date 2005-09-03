@@ -383,7 +383,7 @@ Polyhedra_Powerset<PH>::pairwise_reduce() {
 	if (marked[sj_index])
 	  continue;
 	const PH& pj = sj->element();
-	if (upper_bound_assign_if_exact(pi, pj)) {
+	if (pi.upper_bound_assign_if_exact(pj)) {
 	  marked[si_index] = marked[sj_index] = true;
 	  new_x.add_non_bottom_disjunct(pi);
 	  ++deleted;
