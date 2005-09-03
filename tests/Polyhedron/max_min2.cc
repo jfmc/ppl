@@ -53,41 +53,41 @@ main() TRY {
   Coefficient num;
   Coefficient den;
   bool included;
-  const Generator* pg;
-  bool ok = ph.maximize(-10*x1-6*x2-4*x3+4, num, den, included, &pg)
+  Generator g(point());
+  bool ok = ph.maximize(-10*x1-6*x2-4*x3+4, num, den, included, g)
     && num == 4 && den == 1 && included
-    && pg->is_point()
-    && pg->coefficient(x1) == 0
-    && pg->coefficient(x2) == 0
-    && pg->coefficient(x3) == 0
-    && pg->divisor() == 1;
+    && g.is_point()
+    && g.coefficient(x1) == 0
+    && g.coefficient(x2) == 0
+    && g.coefficient(x3) == 0
+    && g.divisor() == 1;
 
 #if NOISY
   cout << (included ? "maximum" : "supremum") << " = " << num;
   if (den != 1)
     cout << "/" << den;
   cout << " @ ";
-  print_generator(*pg);
+  print_generator(g);
   cout << endl;
 #endif
 
   if (!ok)
     return 1;
 
-  ok = ph.minimize(-10*x1-6*x2-4*x3+4, num, den, included, &pg)
+  ok = ph.minimize(-10*x1-6*x2-4*x3+4, num, den, included, g)
     && num == -2188 && den == 3 && included
-    && pg->is_point()
-    && pg->coefficient(x1) == 100
-    && pg->coefficient(x2) == 200
-    && pg->coefficient(x3) == 0
-    && pg->divisor() == 3;
+    && g.is_point()
+    && g.coefficient(x1) == 100
+    && g.coefficient(x2) == 200
+    && g.coefficient(x3) == 0
+    && g.divisor() == 3;
 
 #if NOISY
   cout << (included ? "minimum" : "infimum") << " = " << num;
   if (den != 1)
     cout << "/" << den;
   cout << " @ ";
-  print_generator(*pg);
+  print_generator(g);
   cout << endl;
 #endif
 
