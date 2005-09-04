@@ -26,13 +26,15 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #define find_variation find_variation_template<Grid>
 
+namespace {
+
+Variable A(0);
+Variable B(1);
+Variable C(2);
+
 void
 test1() {
   nout << "test1:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Generator_System gs1;
   gs1.insert(point(A + 0*C));
@@ -42,9 +44,6 @@ test1() {
 
   Grid gr1(gs1);
   Grid gr2(gs2);
-
-  if (find_variation(gr1) || find_variation(gr2))
-    exit(1);
 
   gr1.join_assign_and_minimize(gr2);
 
@@ -56,9 +55,6 @@ test1() {
   known_gs.insert(point(2*A));
 
   Grid known_gr(known_gs);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr1 == known_gr)
     return;
@@ -75,10 +71,6 @@ test1() {
 void
 test2() {
   nout << "test2:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Grid gr1(3);
   Grid gr2(3);
@@ -99,6 +91,8 @@ test2() {
 
   exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {

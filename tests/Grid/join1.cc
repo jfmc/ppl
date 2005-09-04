@@ -26,13 +26,15 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #define find_variation find_variation_template<Grid>
 
+namespace {
+
+Variable A(0);
+Variable B(1);
+Variable C(2);
+
 void
 test1() {
   nout << "test1:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Generator_System gs1;
   gs1.insert(point(C));
@@ -42,9 +44,6 @@ test1() {
 
   Grid gr1(gs1);
   Grid gr2(gs2);
-
-  if (find_variation(gr1) || find_variation(gr2))
-    exit(1);
 
   gr1.join_assign(gr2);
 
@@ -56,9 +55,6 @@ test1() {
   known_gs.insert(point(B));
 
   Grid known_gr(known_gs);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr1 == known_gr)
     return;
@@ -75,10 +71,6 @@ test1() {
 void
 test2() {
   nout << "test2:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Grid gr1(3);
   Grid gr2(3);
@@ -105,10 +97,6 @@ test2() {
 void
 test3() {
   nout << "test3:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Grid gr1(3);
 
@@ -143,10 +131,6 @@ void
 test4() {
   nout << "test4:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Generator_System gs1;
   gs1.insert(point(0*C));
   gs1.insert( line(A));
@@ -160,9 +144,6 @@ test4() {
   gs2.insert(point(0*C));
 
   Grid gr2(gs2);
-
-  if (find_variation(gr2))
-    exit(1);
 
   gr1.upper_bound_assign(gr2);
 
@@ -186,10 +167,6 @@ test4() {
 void
 test5() {
   nout << "test5:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Generator_System gs1;
   gs1.insert(point(0*C));
@@ -230,10 +207,6 @@ void
 test6() {
   nout << "test6:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Grid gr1(3);
   gr1.add_congruence(A == 0);
   gr1.add_congruence(B == 0);
@@ -255,9 +228,6 @@ test6() {
 
   Grid known_gr(known_gs);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr1 == known_gr)
     return;
 
@@ -273,10 +243,6 @@ test6() {
 void
 test7() {
   nout << "test7:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Generator_System gs;
   gs.insert(point(B + 0*C));
@@ -299,9 +265,6 @@ test7() {
 
   Grid known_gr(known_gs);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr1 == known_gr)
     return;
 
@@ -311,6 +274,8 @@ test7() {
 
   exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {
