@@ -459,7 +459,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	std::swap(scalar_prod[index_non_zero],
 		  scalar_prod[num_lines_or_equalities]);
       }
-      const Linear_Row& dest_nle = dest[num_lines_or_equalities];
+      Linear_Row& dest_nle = dest[num_lines_or_equalities];
 
       // Computing the new lineality space.
       // Since each line must lie on the hyper-plane corresponding to
@@ -470,34 +470,28 @@ PPL::Polyhedron::conversion(Linear_System& source,
       // We have to consider the remaining lines, having indexes
       // between `index_non_zero' and `num_lines_or_equalities' - 1.
       // Each line that does not saturate the constraint has to be
-      // linearly combined with generator `dest[num_lines_or_equalities]'
-      // so that the resulting new line saturates the constraint.
+      // linearly combined with generator `dest_nle' so that the
+      // resulting new line saturates the constraint.
       // Note that, by Observation 1 above, the resulting new line
       // will still saturate all the constraints that were saturated by
       // the old line.
-#if 0
-      // FIXME: this fragment was to avoid code duplication
-      // and should be carefully reinstated.
-      Coefficient_traits::const_reference
-	scalar_prod_nle = scalar_prod[num_lines_or_equalities];
-      const Row& dest_nle = dest[num_lines_or_equalities];
-#endif
+
+      Coefficient& scalar_prod_nle = scalar_prod[num_lines_or_equalities];
       for (dimension_type
 	     i = index_non_zero; i < num_lines_or_equalities; ++i) {
 	if (scalar_prod[i] != 0) {
 	  // The following fragment optimizes the computation of
 	  //
 	  // Coefficient scale = scalar_prod[i];
-	  // scale.gcd_assign(scalar_prod[num_lines_or_equalities]);
+	  // scale.gcd_assign(scalar_prod_nle);
 	  // Coefficient normalized_sp_i = scalar_prod[i] / scale;
-	  // Coefficient normalized_sp_n
-	  //   = scalar_prod[num_lines_or_equalities] / scale;
+	  // Coefficient normalized_sp_n = scalar_prod_nle / scale;
 	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	  //   dest[i][c] *= normalized_sp_n;
 	  //   dest[i][c] -= normalized_sp_i * dest_nle[c];
 	  // }
 	  normalize2(scalar_prod[i],
-		     scalar_prod[num_lines_or_equalities],
+		     scalar_prod_nle,
 		     normalized_sp_i,
 		     normalized_sp_o);
 	  Linear_Row& dest_i = dest[i];
@@ -516,25 +510,24 @@ PPL::Polyhedron::conversion(Linear_System& source,
       // Similarly to what we have done during the computation of
       // the lineality space, we consider all the remaining rays
       // (having indexes strictly greater than `num_lines_or_equalities')
-      // that do not saturate the constraint `source_k'. These rays are
-      // positively combined with the ray `dest[num_lines_or_equalities]'
-      // so that the resulting new rays saturate the constraint.
+      // that do not saturate the constraint `source_k'. These rays
+      // are positively combined with the ray `dest_nle' so that the
+      // resulting new rays saturate the constraint.
       for (dimension_type
 	     i = num_lines_or_equalities + 1; i < dest_num_rows; ++i) {
 	if (scalar_prod[i] != 0) {
 	  // The following fragment optimizes the computation of
 	  //
 	  // Coefficient scale = scalar_prod[i];
-	  // scale.gcd_assign(scalar_prod[num_lines_or_equalities]);
+	  // scale.gcd_assign(scalar_prod_nle);
 	  // Coefficient normalized_sp_i = scalar_prod[i] / scale;
-	  // Coefficient normalized_sp_n
-	  // = scalar_prod[num_lines_or_equalities] / scale;
+	  // Coefficient normalized_sp_n = scalar_prod_nle / scale;
 	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	  //   dest[i][c] *= normalized_sp_n;
 	  //   dest[i][c] -= normalized_sp_i * dest_nle[c];
 	  // }
 	  normalize2(scalar_prod[i],
-		     scalar_prod[num_lines_or_equalities],
+		     scalar_prod_nle,
 		     normalized_sp_i,
 		     normalized_sp_o);
 	  Linear_Row& dest_i = dest[i];
@@ -551,23 +544,21 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	maybe_abandon();
 #endif
       }
-      // Since the `scalar_prod[num_lines_or_equalities]' is positive
-      // (by construction), it does not saturate the constraint `source_k'.
-      // Therefore, if the constraint is an inequality,
-      // we set to 1 the corresponding element of `sat' ...
+      // Since the `scalar_prod_nle' is positive (by construction), it
+      // does not saturate the constraint `source_k'.  Therefore, if
+      // the constraint is an inequality, we set to 1 the
+      // corresponding element of `sat' ...
+      Saturation_Row& sat_nle = sat[num_lines_or_equalities];
       if (source_k.is_ray_or_point_or_inequality())
-	sat[num_lines_or_equalities].set(k);
+	sat_nle.set(k);
       // ... otherwise, the constraint is an equality which is
-      // violated by the generator `dest[num_lines_or_equalities]':
-      // the generator has to be removed from `dest'.
+      // violated by the generator `dest_nle': the generator has to be
+      // removed from `dest'.
       else {
 	--dest_num_rows;
-	std::swap(dest[num_lines_or_equalities],
-		  dest[dest_num_rows]);
-	std::swap(scalar_prod[dest_num_rows],
-		  scalar_prod[num_lines_or_equalities]);
-	std::swap(sat[num_lines_or_equalities],
-		  sat[dest_num_rows]);
+	std::swap(dest_nle, dest[dest_num_rows]);
+	std::swap(scalar_prod_nle, scalar_prod[dest_num_rows]);
+	std::swap(sat_nle, sat[dest_num_rows]);
 	// `dest' has already been set as non-sorted.
       }
       // We continue with the next constraint.
