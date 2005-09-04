@@ -1393,7 +1393,29 @@ PPL::Grid::join_assign_and_minimize(const Grid& y) {
 
 bool
 PPL::Grid::join_assign_if_exact(const Grid& y) {
-  // FIXME: join_assign(y) if join is exact
+  Grid& x = *this;
+
+  // Dimension-compatibility check.
+  if (x.space_dim != y.space_dim)
+    throw_dimension_incompatible("join_assign_if_exact(y)", "y", y);
+
+  if (x.marked_empty()
+      || y.marked_empty()
+      || x.space_dim == 0
+      || x.is_included_in(y)
+      || y.is_included_in(x)) {
+    join_assign(y);
+    return true;
+  }
+
+  Grid x_copy = x;
+  x_copy.join_assign(y);
+  x_copy.grid_difference_assign(y);
+  if (x_copy.is_included_in(x)) {
+    join_assign(y);
+    return true;
+  }
+
   return false;
 }
 
