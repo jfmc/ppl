@@ -68,10 +68,12 @@ intersection2 \
 isuniverse1 \
 join1 \
 join2 \
+join3 \
 limitedextrapolation1 \
 mapspacedims1 \
 relations1 \
 relations2 \
+contains1 \
 removespacedims1 \
 removespacedims2 \
 timeelapse1 \
@@ -111,6 +113,7 @@ intersection2_SOURCES = intersection2.cc
 
 join1_SOURCES = join1.cc
 join2_SOURCES = join2.cc
+join3_SOURCES = join3.cc
 
 concatenate1_SOURCES = concatenate1.cc
 
@@ -122,6 +125,8 @@ equals1_SOURCES = equals1.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
+
+contains1_SOURCES = contains1.cc
 
 affineimage1_SOURCES = affineimage1.cc
 
