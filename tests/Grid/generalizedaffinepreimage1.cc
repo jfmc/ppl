@@ -138,15 +138,16 @@ test3() {
   if (find_variation(gr1))
     exit(1);
 
+  // FIX check
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator(point(2*A));  // FIX why 2?
+  known_gr.add_generator(point(-1*A));
+  known_gr.add_generator(point(A));
   known_gr.add_generator( line(B));
 
   if (gr1 == known_gr) {
 
     // FIX known_gr should be same for gr1 and gr2?
-    known_gr.add_generator(point(A));
+    known_gr.add_generator(point());
 
     // Congruence expression.
     gr2.generalized_affine_preimage(B, A + 1, 1, -7);
@@ -187,15 +188,16 @@ test4() {
   if (find_variation(gr1))
     exit(1);
 
+  // FIX check
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator(point(4*A));  // FIX why 4?
+  known_gr.add_generator(point(-3*A));
+  known_gr.add_generator(point(A));
   known_gr.add_generator( line(B));
 
   if (gr1 == known_gr) {
 
     // FIX known_gr should be same for gr1 and gr2?
-    known_gr.add_generator(point(2*A));
+    known_gr.add_generator(point(-A));
 
     // Congruence expression.
     gr2.generalized_affine_preimage(B, A + 1, 2, 3);
@@ -236,15 +238,16 @@ test5() {
   if (find_variation(gr1))
     exit(1);
 
+  // FIX check
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator(point(4*A));  // FIX why 4?
+  known_gr.add_generator(point(-2*A));
+  known_gr.add_generator(point(2*A));
   known_gr.add_generator( line(B));
 
   if (gr1 == known_gr) {
 
     // FIX known_gr should be same for gr1 and gr2?
-    known_gr.add_generator(point(2*A));
+    known_gr.add_generator(point());
 
     // Congruence expression.
     gr2.generalized_affine_preimage(B, A + 2, -2);
