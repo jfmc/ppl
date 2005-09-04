@@ -219,7 +219,7 @@ test6() {
   exit(1);
 }
 
-}
+} // namespace
 
 int
 main() TRY {
