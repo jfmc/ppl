@@ -176,6 +176,7 @@ test5() {
     gr.add_congruence((3*A %= 4) / 5);
     gr.add_congruence((B %= 2) / 0);
 
+    // Minimize the congruences.
     if (find_variation(gr))
       exit(1);
 
@@ -228,9 +229,13 @@ test6() {
 
     if (gr == known_gr)
       return;
-  }
 
-  nout << "Grid should equal known grid." << endl
+    nout << "Up-to-date cgs";
+  }
+  else
+    nout << "Out-of-date cgs";
+
+  nout << " grid should equal known grid." << endl
        << " grid:" << endl << gr << endl
        << "known:" << endl << known_gr << endl;
 
@@ -266,9 +271,13 @@ test7() {
 
     if (gr == known_gr)
       return;
-  }
 
-  nout << "Grid should equal known grid." << endl
+    nout << "Up-to-date cgs";
+  }
+  else
+    nout << "Out-of-date cgs";
+
+  nout << " grid should equal known grid." << endl
        << " grid:" << endl << gr << endl
        << "known:" << endl << known_gr << endl;
 
@@ -304,7 +313,7 @@ test8() {
     gr.add_congruence((3*A - 6*B %= 3) / 9);
     gr.add_congruence((B %= 0) / 3);
 
-    // find_variation will minimize the congruences.
+    // Minimize the congruences.
     if (find_variation(gr))
       exit(1);
 
@@ -312,9 +321,13 @@ test8() {
 
     if (gr == known_gr)
       return;
-  }
 
-  nout << "Grid should equal known grid." << endl
+    nout << "Up-to-date cgs";
+  }
+  else
+    nout << "Out-of-date cgs";
+
+  nout << " grid should equal known grid." << endl
        << " grid:" << endl << gr << endl
        << "known:" << endl << known_gr << endl;
 
@@ -353,9 +366,13 @@ test9() {
 
     if (gr == known_gr)
       return;
-  }
 
-  nout << "Grid should equal known grid." << endl
+    nout << "Up-to-date cgs";
+  }
+  else
+    nout << "Out-of-date cgs";
+
+  nout << " grid should equal known grid." << endl
        << " grid:" << endl << gr << endl
        << "known:" << endl << known_gr << endl;
 
@@ -456,7 +473,7 @@ test13() {
   gr.affine_preimage(B, A - B, -1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point(-A + 4*B, 7));
+  known_gr.add_generator(point(5*A + 9*B, 7));
 
   if (gr == known_gr) {
 
@@ -466,13 +483,17 @@ test13() {
     gr.add_congruence((7*A == 5) / 0);
     gr.add_congruence((7*B == 4) / 0);
 
-    gr.affine_preimage(A, A - B, -1);
+    gr.affine_preimage(B, A - B, -1);
 
     if (gr == known_gr)
       return;
-  }
 
-  nout << "Grid should equal known grid." << endl
+    nout << "Up-to-date cgs";
+  }
+  else
+    nout << "Out-of-date cgs";
+
+  nout << " grid should equal known grid." << endl
        << " grid:" << endl << gr << endl
        << "known:" << endl << known_gr << endl;
 
