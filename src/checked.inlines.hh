@@ -130,7 +130,11 @@ lcm_generic(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   r = gcd_common<Policy>(gcd, nx, ny, dir);
   assert(r == V_EQ);
   r = div<Policy>(to, nx, gcd, dir);
-  assert(r == V_EQ);
+  // FIXME: this was assert(r == V_EQ), and the analysis that
+  // brought us to change it is incomplete/unsatisfactory.
+  // Maybe the assertion can be removed altogether, if we can prove
+  // that x / gcd(x, y) is always exact.  (Is it with floats?)
+  assert(r == V_EQ || dir == ROUND_IGNORE);
   return mul<Policy>(to, to, ny, dir);
 }
 
