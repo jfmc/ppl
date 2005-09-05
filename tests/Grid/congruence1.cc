@@ -41,7 +41,7 @@ test1() {
   Variable y(1);
   Variable z(2);
 
-  nout << "test1" << endl;
+  nout << "test1:" << endl;
 
   Test_Congruence a((x + 2*y + 3*z %= 5) / 7);
   if (find_variation(a))
@@ -70,7 +70,7 @@ test2() {
   Variable y(1);
   Variable z(2);
 
-  nout << "test2" << endl;
+  nout << "test2:" << endl;
 
   Test_Congruence a((x + 2*y + 3*z %= -5) / 7);
   if (find_variation(a))
@@ -99,7 +99,7 @@ test3() {
   Variable y(1);
   Variable z(2);
 
-  nout << "test3" << endl;
+  nout << "test3:" << endl;
 
   Test_Congruence a((16*x + 2*y + 8*z + 64 %= 0) / 4);
   if (find_variation(a))
@@ -128,7 +128,7 @@ test4() {
   Variable y(1);
   Variable z(2);
 
-  nout << "test4" << endl;
+  nout << "test4:" << endl;
 
   Test_Congruence a((- x + 2*y + 3*z %= 5) / 7);
   if (find_variation(a))
@@ -157,7 +157,7 @@ test5() {
   Variable y(1);
   Variable z(2);
 
-  nout << "test5" << endl;
+  nout << "test5:" << endl;
 
   Test_Congruence c(x + 4*y + 3*z %= 5);
   Test_Congruence a(c);
@@ -189,7 +189,7 @@ test6() {
   Variable y(1);
   Variable z(2);
 
-  nout << "test6" << endl;
+  nout << "test6:" << endl;
 
   Test_Congruence a((3*x + 24*y + 3*z %= -19) / 0);
   if (find_variation(a))
@@ -218,7 +218,7 @@ test7() {
   Variable y(1);
   Variable z(2);
 
-  nout << "test7" << endl;
+  nout << "test7:" << endl;
 
   Test_Congruence a((x + 4*y + 3*z == 17) / 3);
   if (find_variation(a))
@@ -247,7 +247,7 @@ test8() {
   Variable y(1);
   Variable z(2);
 
-  nout << "test8" << endl;
+  nout << "test8:" << endl;
 
   Test_Congruence a(x + 4*y + 3*z == 17);
   if (find_variation(a))
@@ -276,7 +276,7 @@ test9() {
   Variable y(1);
   Variable z(2);
 
-  nout << "test9" << endl;
+  nout << "test9:" << endl;
 
   Test_Congruence a(x + 4*y + 3*z == 17);
   a /= 3;
@@ -307,7 +307,7 @@ test10() {
   Variable y(1);
   Variable z(2);
 
-  nout << "test10" << endl;
+  nout << "test10:" << endl;
 
   Test_Congruence a(0*x + 0*y + 0*z %= 17);
   if (find_variation(a))
@@ -333,7 +333,7 @@ test11() {
   Variable x(0);
   Variable y(1);
 
-  nout << "test11" << endl;
+  nout << "test11:" << endl;
 
   Test_Congruence a(0*x + 0*y %= 17);
   a /= 0;
@@ -362,7 +362,7 @@ test12() {
   Variable y(1);
   Variable z(2);
 
-  nout << "test12" << endl;
+  nout << "test12:" << endl;
 
   Test_Congruence a((x + 4*y + 3*z %= -4) / -3);
   a.strong_normalize();
@@ -393,7 +393,7 @@ test13() {
   Variable x3(3);
   Variable x4(4);
 
-  nout << "test13" << endl;
+  nout << "test13:" << endl;
 
   Test_Congruence a((-x0 + 4*x1 + 3*x2 + 17*x3 + 2*x4 %= -4) / -3);
   if (find_variation(a))
@@ -418,7 +418,7 @@ test13() {
 
 static void
 test14() {
-  nout << "test14" << endl;
+  nout << "test14:" << endl;
 
   Linear_Expression le;
   Test_Congruence a(le %= le);
