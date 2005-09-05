@@ -39,16 +39,16 @@ operator()(PH& x, const PH& y, unsigned* tp) const {
   (x.*w_method)(y, tp);
 }
 
-template <typename PH>
-Limited_Widening_Function<PH>::
+template <typename PH, typename CS>
+Limited_Widening_Function<PH, CS>::
 Limited_Widening_Function(Limited_Widening_Method lwm,
-			  const Constraint_System& cs)
+			  const CS& cs)
   : lw_method(lwm), limiting_cs(cs) {
 }
 
-template <typename PH>
+template <typename PH, typename CS>
 inline void
-Limited_Widening_Function<PH>::
+Limited_Widening_Function<PH, CS>::
 operator()(PH& x, const PH& y, unsigned* tp) const {
   (x.*lw_method)(y, limiting_cs, tp);
 }
@@ -61,11 +61,11 @@ widen_fun_ref(void (PH::* wm)(const PH&, unsigned*)) {
 }
 
 /*! \relates Polyhedra_Powerset */
-template <typename PH>
-inline Limited_Widening_Function<PH>
-widen_fun_ref(void (PH::* lwm)(const PH&, const Constraint_System&, unsigned*),
-	      const Constraint_System& cs) {
-  return Limited_Widening_Function<PH>(lwm, cs);
+template <typename PH, typename CS>
+inline Limited_Widening_Function<PH, CS>
+widen_fun_ref(void (PH::* lwm)(const PH&, const CS&, unsigned*),
+	      const CS& cs) {
+  return Limited_Widening_Function<PH, CS>(lwm, cs);
 }
 
 } // namespace Parma_Polyhedra_Library

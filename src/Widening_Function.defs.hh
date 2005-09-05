@@ -55,12 +55,12 @@ private:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Wraps a limited widening method into a function object.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename PH>
+template <typename PH, typename CS>
 class Parma_Polyhedra_Library::Limited_Widening_Function {
 public:
   //! The (parametric) type of a limited widening method.
   typedef void (PH::* Limited_Widening_Method)(const PH&,
-					       const Constraint_System&,
+					       const CS&,
 					       unsigned*);
 
   //! Constructor.
@@ -72,7 +72,7 @@ public:
     The constraint system limiting the widening.
   */
   Limited_Widening_Function(Limited_Widening_Method lwm,
-			    const Constraint_System& cs);
+			    const CS& cs);
 
   //! Function-application operator.
   /*!
@@ -86,7 +86,7 @@ private:
   //! The limited widening method.
   Limited_Widening_Method lw_method;
   //! A constant reference to the constraint system limiting the widening.
-  const Constraint_System& limiting_cs;
+  const CS& limiting_cs;
 };
 
 namespace Parma_Polyhedra_Library {
@@ -112,10 +112,10 @@ widen_fun_ref(void (PH::* wm)(const PH&, unsigned*));
   \param cs
   The constraint system limiting the widening.
 */
-template <typename PH>
-Limited_Widening_Function<PH>
-widen_fun_ref(void (PH::* lwm)(const PH&, const Constraint_System&, unsigned*),
-	      const Constraint_System& cs);
+template <typename PH, typename CS>
+Limited_Widening_Function<PH, CS>
+widen_fun_ref(void (PH::* lwm)(const PH&, const CS&, unsigned*),
+	      const CS& cs);
 
 } // namespace Parma_Polyhedra_Library
 

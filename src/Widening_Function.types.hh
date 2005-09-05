@@ -17,7 +17,7 @@ namespace Parma_Polyhedra_Library {
 template <typename PH>
 class Widening_Function;
 
-template <typename PH>
+template <typename PH, typename CS>
 class Limited_Widening_Function;
 
 }
