@@ -103,6 +103,14 @@ scalar_product_assign(Coefficient& z,
 		      const Linear_Row& x, const Congruence& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Computes the scalar product of \p x and \p y and assigns it to \p z.
+/*! \relates Linear_Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void
+scalar_product_assign(Coefficient& z,
+		      const Congruence& x, const Linear_Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
 //! Computes the scalar product of \p x (FIX relative to \p ref) and
 //! \p y and assigns it to \p z.
@@ -484,6 +492,10 @@ private:
   PPL::scalar_product_assign(Coefficient& z,
 			     const Linear_Row& x,
 			     const Congruence& y);
+  friend void
+  PPL::scalar_product_assign(Coefficient& z,
+			     const Congruence& x,
+			     const Linear_Row& y);
   friend void
   PPL::scalar_product_assign(Coefficient& z,
 			     const Linear_Row& x,
