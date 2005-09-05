@@ -49,6 +49,7 @@ addspacedims1 \
 addspacedims2 \
 affineimage1 \
 affinepreimage1 \
+bhz03widening1 \
 concatenate1 \
 congruence1 \
 congruencesystem1 \
@@ -84,53 +85,33 @@ writecongruencesystem
 # Sources for the tests
 #
 
-congruence1_SOURCES = congruence1.cc
-
-writecongruencesystem_SOURCES = writecongruencesystem.cc
-
-congruencesystem1_SOURCES = congruencesystem1.cc
-congruencesystem2_SOURCES = congruencesystem2.cc
-
-grid1_SOURCES = grid1.cc
-grid2_SOURCES = grid2.cc
-
-isuniverse1_SOURCES = isuniverse1.cc
-
-addgenerator1_SOURCES = addgenerator1.cc
-
 addcongruence1_SOURCES = addcongruence1.cc
 
 addconstraints1_SOURCES = addconstraints1.cc
 
+addgenerator1_SOURCES = addgenerator1.cc
+
 addspacedims1_SOURCES = addspacedims1.cc
 addspacedims2_SOURCES = addspacedims2.cc
-
-removespacedims1_SOURCES = removespacedims1.cc
-removespacedims2_SOURCES = removespacedims2.cc
-
-intersection1_SOURCES = intersection1.cc
-intersection2_SOURCES = intersection2.cc
-
-join1_SOURCES = join1.cc
-join2_SOURCES = join2.cc
-join3_SOURCES = join3.cc
-
-concatenate1_SOURCES = concatenate1.cc
-
-mapspacedims1_SOURCES = mapspacedims1.cc
-
-expandspacedim1_SOURCES = expandspacedim1.cc
-
-equals1_SOURCES = equals1.cc
-
-relations1_SOURCES = relations1.cc
-relations2_SOURCES = relations2.cc
-
-contains1_SOURCES = contains1.cc
 
 affineimage1_SOURCES = affineimage1.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
+
+bhz03widening1_SOURCES = bhz03widening1.cc
+
+concatenate1_SOURCES = concatenate1.cc
+
+congruence1_SOURCES = congruence1.cc
+
+congruencesystem1_SOURCES = congruencesystem1.cc
+congruencesystem2_SOURCES = congruencesystem2.cc
+
+contains1_SOURCES = contains1.cc
+
+equals1_SOURCES = equals1.cc
+
+expandspacedim1_SOURCES = expandspacedim1.cc
 
 foldspacedims1_SOURCES = foldspacedims1.cc
 
@@ -140,13 +121,35 @@ generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
 generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
 
+grid1_SOURCES = grid1.cc
+grid2_SOURCES = grid2.cc
+
 griddifference1_SOURCES = griddifference1.cc
+
+intersection1_SOURCES = intersection1.cc
+intersection2_SOURCES = intersection2.cc
+
+isuniverse1_SOURCES = isuniverse1.cc
+
+join1_SOURCES = join1.cc
+join2_SOURCES = join2.cc
+join3_SOURCES = join3.cc
+
+limitedextrapolation1_SOURCES = limitedextrapolation1.cc
+
+mapspacedims1_SOURCES = mapspacedims1.cc
+
+relations1_SOURCES = relations1.cc
+relations2_SOURCES = relations2.cc
+
+removespacedims1_SOURCES = removespacedims1.cc
+removespacedims2_SOURCES = removespacedims2.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
 
 widening1_SOURCES = widening1.cc
 
-limitedextrapolation1_SOURCES = limitedextrapolation1.cc
+writecongruencesystem_SOURCES = writecongruencesystem.cc
 
 XFAIL_TESTS =
 
