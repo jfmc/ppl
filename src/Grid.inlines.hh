@@ -129,6 +129,11 @@ Grid::upper_bound_assign_if_exact(const Grid& y) {
 }
 
 inline void
+PPL::Grid::difference_assign(const Grid& y) {
+  grid_difference_assign(y);
+}
+
+inline void
 Grid::swap(Grid& y) {
   std::swap(con_sys, y.con_sys);
   std::swap(gen_sys, y.gen_sys);
@@ -315,13 +320,13 @@ inline bool
 operator!=(const Grid& x, const Grid& y) {
   return !(x == y);
 }
-#if 0
+
 inline bool
 Grid::strictly_contains(const Grid& y) const {
   const Grid& x = *this;
   return x.contains(y) && !y.contains(x);
 }
-#endif
+
 template <typename Partial_Function>
 void
 Grid::map_space_dimensions(const Partial_Function& pfunc) {

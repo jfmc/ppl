@@ -39,6 +39,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
+#include "Grid_Certificate.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -844,6 +845,9 @@ public:
   */
   void grid_difference_assign(const Grid& y);
 
+  //! Same as grid_difference_assign(y).
+  void difference_assign(const Grid& y);
+
   //! \brief
   //! Assigns to \p *this the \ref affine_transformation "affine image"
   //! of \p *this under the function mapping variable \p var to the
@@ -1429,6 +1433,8 @@ public:
 
   friend bool Parma_Polyhedra_Library::operator==(const Grid& x,
 						  const Grid& y);
+
+  friend class Parma_Polyhedra_Library::Grid_Certificate;
 
   //! \name Miscellaneous Member Functions
   //@{

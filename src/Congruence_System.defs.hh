@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence.types.hh"
 #include "Generator.types.hh"
 #include "Matrix.defs.hh"
+#include "Grid_Certificate.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -340,6 +341,7 @@ private:
 
   friend class const_iterator;
   friend class Grid;
+  friend class Grid_Certificate;
 
   friend void std::swap(Parma_Polyhedra_Library::Congruence_System& x,
 			Parma_Polyhedra_Library::Congruence_System& y);

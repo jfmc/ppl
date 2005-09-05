@@ -31,6 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Grid.types.hh"
+#include "Grid_Certificate.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -364,6 +365,7 @@ private:
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend class Parma_Polyhedra_Library::Grid;
+  friend class Parma_Polyhedra_Library::Grid_Certificate;
 
   friend bool
   Parma_Polyhedra_Library::operator==(const Polyhedron& x,
