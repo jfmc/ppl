@@ -429,8 +429,7 @@ PPL::Grid::update_congruences() const {
     gr.set_empty();
     return false;
   }
-  // The system of congruences and the system of generators are
-  // minimized.
+  // Both systems are minimized.
   gr.set_congruences_minimized();
   gr.set_generators_minimized();
   return true;
@@ -449,8 +448,7 @@ PPL::Grid::update_generators() const {
     x.set_empty();
     return false;
   }
-  // The system of congruences and the system of generators are
-  // minimized.
+  // Both systems are minimized.
   x.set_congruences_minimized();
   x.set_generators_minimized();
   return true;
