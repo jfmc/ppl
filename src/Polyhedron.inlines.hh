@@ -71,6 +71,11 @@ Polyhedron::upper_bound_assign(const Polyhedron& y) {
   poly_hull_assign(y);
 }
 
+inline void
+Polyhedron::difference_assign(const Polyhedron& y) {
+  poly_difference_assign(y);
+}
+
 inline
 Polyhedron::~Polyhedron() {
 }

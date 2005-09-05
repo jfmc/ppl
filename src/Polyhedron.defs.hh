@@ -1036,6 +1036,10 @@ public:
   void poly_difference_assign(const Polyhedron& y);
 
   //! \brief
+  //! Same as poly_difference_assign(y).
+  void difference_assign(const Polyhedron& y);
+
+  //! \brief
   //! Assigns to \p *this the \ref affine_function "affine image"
   //! of \p *this under the function mapping variable \p var to the
   //! affine expression specified by \p expr and \p denominator.

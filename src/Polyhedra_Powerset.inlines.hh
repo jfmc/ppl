@@ -645,8 +645,8 @@ Polyhedra_Powerset<PH>::BHZ03_widening_assign(const Polyhedra_Powerset& y,
     // Compute (y_hull \widen bgp99_heuristics_hull).
     PH ph = bgp99_heuristics_hull;
     wf(ph, y_hull);
-    // Compute the poly-difference between `ph' and `bgp99_heuristics_hull'.
-    ph.poly_difference_assign(bgp99_heuristics_hull);
+    // Compute the difference between `ph' and `bgp99_heuristics_hull'.
+    ph.difference_assign(bgp99_heuristics_hull);
     x.add_disjunct(ph);
     return;
   }
