@@ -34,6 +34,8 @@ Variable A(0);
 Variable B(1);
 Variable C(2);
 
+// Joins of grids in powersets shows that series is stabilising.
+
 void
 test1() {
   nout << "test1:" << endl;
@@ -67,6 +69,51 @@ test1() {
   exit(1);
 }
 
+// Widening falls back to a singleton join of the grids in the larger
+// grid set.
+
+void
+test2() {
+  nout << "test2:" << endl;
+
+  GSet grs1(2, EMPTY);
+  Grid gr1(2);
+  gr1.add_congruence(A - B %= 0);
+  Grid gr2(2);
+  gr2.add_congruence((A %= 0) / 2);
+  grs1.add_disjunct(gr1);
+  grs1.add_disjunct(gr2);
+
+  GSet grs2(2, EMPTY);
+  Grid gr3(2);
+  gr3.add_congruence(A - B %= 0);
+  Grid gr4(2);
+  gr4.add_congruence((A %= 0) / 2);
+  grs2.add_disjunct(gr3);
+  grs2.add_disjunct(gr4);
+
+  Grid known_gr = gr3;
+  known_gr.upper_bound_assign(gr4);
+
+  grs2.BHZ03_widening_assign<Grid_Certificate>
+    (grs1, widen_fun_ref(&Grid::widening_assign));
+
+  if (find_variation(grs2))
+    exit(1);
+
+  GSet known_grs(2, EMPTY);
+  known_grs.add_disjunct(known_gr);
+
+  if (grs2 == known_grs)
+    return;
+
+  nout << "Grid set should equal known grid set." << endl
+       << " grid:" << endl << grs2 << endl
+       << "known:" << endl << known_grs << endl;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -76,21 +123,7 @@ main() TRY {
   nout << "bhz03widening1:" << endl;
 
   test1();
-#if 0
   test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  test10();
-  test11();
-  test12();
-  test13();
-  test14();
-#endif
 
   return 0;
 }
