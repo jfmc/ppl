@@ -148,8 +148,9 @@ PPL::Grid::widening_assign(const Grid& const_y, unsigned* tp) {
   // Check whether we are using the widening-with-tokens technique
   // and there are still tokens available.
   if (tp && *tp > 0) {
-    // There are tokens available. If `result' is not a subset of `x',
-    // then it is less precise and we use one of the available tokens.
+    // There are tokens available.  If `result' is not a subset of
+    // `x', then it is less precise and we use one of the available
+    // tokens.
     if (!x.contains(result))
       --(*tp);
   }
