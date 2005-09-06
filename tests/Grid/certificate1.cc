@@ -75,9 +75,7 @@ test2() {
   gr2.add_generator(point(3*B + A));
   gr2.add_generator(point(3*B + A + C));
 
-  Grid_Certificate grc2(gr2);
-
-  if (grc1.compare(grc2) == -1)
+  if (grc1.compare(gr2) == -1)
     return;
 
   nout << "gr1 should compare less than gr2." << endl
@@ -107,7 +105,13 @@ test3() {
   Grid_Certificate grc2(gr2);
 
   if (grc1.compare(grc2) == 0)
-    return;
+    if (grc1.is_stabilizing(gr2))
+      nout << "gr1 is stabilizing with respect to gr2." << endl;
+    else
+      return;
+  else
+    nout << "gr1 should be stabilising with respect to gr2." << endl;
+
 
   nout << "gr1 should compare equal to gr2." << endl
        << "gr1:" << endl << gr1 << endl
@@ -132,13 +136,15 @@ test4() {
   gr2.add_congruence(A + C %= 0);
   gr2.add_congruence(B == 3);
 
-  Grid_Certificate grc2(gr2);
+  if (grc1.compare(gr2) == 1)
+    if (grc1.is_stabilizing(gr2))
+      return;
+    else
+      nout << "gr1 should be stabilising with respect to gr2." << endl;
+  else
+    nout << "gr1 should compare greater than gr2." << endl;
 
-  if (grc1.compare(grc2) == 1)
-    return;
-
-  nout << "gr2 should compare greater than gr1." << endl
-       << "gr1:" << endl << gr1 << endl
+  nout << "gr1:" << endl << gr1 << endl
        << "gr2:" << endl << gr2 << endl;
 
   exit(1);
@@ -164,11 +170,17 @@ test5() {
 
   Grid_Certificate grc2(gr2);
 
-  if (grc1.compare(grc2) == 1)
-    return;
+  Grid_Certificate::Compare cmp;
 
-  nout << "gr2 should compare greater than gr1." << endl
-       << "gr1:" << endl << gr1 << endl
+  if (cmp(grc1, grc2))
+    if (grc1.is_stabilizing(gr2))
+      return;
+    else
+      nout << "gr1 should be stabilising with respect to gr2." << endl;
+  else
+    nout << "gr1 should compare greater than gr2." << endl;
+
+  nout << "gr1:" << endl << gr1 << endl
        << "gr2:" << endl << gr2 << endl;
 
   exit(1);
