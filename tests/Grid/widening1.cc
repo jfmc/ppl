@@ -495,6 +495,41 @@ test14() {
   exit(1);
 }
 
+// FIX An example to show problems with using a direct equivalent of
+// the Halbwachs polyhedron widening for Grids.
+
+void
+test15() {
+  nout << "test15:" << endl;
+
+  Grid gr1(2);
+  gr1.add_congruence((A %= 0) / 2);
+  gr1.add_congruence((B %= 0) / 2);
+
+  Grid gr2(2);
+  gr2.add_congruence(A %= 0);
+  gr2.add_congruence((2*A + B %= 0) / 2);
+
+  gr2.widening_assign(gr1);
+
+  if (find_variation(gr2))
+    exit(1);
+
+  Grid known_gr(2);
+  known_gr.add_congruence((B %= 0) / 2);
+
+  if (gr2 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr2 << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr2, known_gr);
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -517,6 +552,7 @@ main() TRY {
   test12();
   test13();
   test14();
+  test15();
 
   return 0;
 }
