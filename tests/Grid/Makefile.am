@@ -54,6 +54,8 @@ concatenate1 \
 congruence1 \
 congruencesystem1 \
 congruencesystem2 \
+contains1 \
+contains2 \
 equals1 \
 expandspacedim1 \
 foldspacedims1 \
@@ -74,7 +76,6 @@ limitedextrapolation1 \
 mapspacedims1 \
 relations1 \
 relations2 \
-contains1 \
 removespacedims1 \
 removespacedims2 \
 timeelapse1 \
@@ -108,6 +109,7 @@ congruencesystem1_SOURCES = congruencesystem1.cc
 congruencesystem2_SOURCES = congruencesystem2.cc
 
 contains1_SOURCES = contains1.cc
+contains2_SOURCES = contains2.cc
 
 equals1_SOURCES = equals1.cc
 
