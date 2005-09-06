@@ -70,7 +70,7 @@ test2() {
   Grid gr2(gs);
 
   if (gr1.contains(gr2)) {
-    nout << "gr1 contains gr2." << endl
+    nout << "gr1 should fail to contain gr2." << endl
 	 << "gr1:" << endl << gr1 << endl
 	 << "gr2:" << endl << gr2 << endl;
 
@@ -178,7 +178,7 @@ test7() {
   gr2.add_congruence(C %= 0);
 
   if (gr1.contains(gr2)) {
-    nout << "gr1 contains gr2." << endl
+    nout << "gr1 should fail to contain gr2." << endl
 	 << "gr1:" << endl << gr1 << endl
 	 << "gr2:" << endl << gr2 << endl;
 
@@ -205,7 +205,7 @@ test8() {
     exit(1);
 
   if (gr1.contains(gr2)) {
-    nout << "gr1 contains gr2." << endl
+    nout << "gr1 should fail to contain gr2." << endl
 	 << "gr1:" << endl << gr1 << endl
 	 << "gr2:" << endl << gr2 << endl;
 
