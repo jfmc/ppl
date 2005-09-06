@@ -50,6 +50,7 @@ addspacedims2 \
 affineimage1 \
 affinepreimage1 \
 bhz03widening1 \
+certificate1 \
 concatenate1 \
 congruence1 \
 congruencesystem1 \
@@ -100,6 +101,8 @@ affineimage1_SOURCES = affineimage1.cc
 affinepreimage1_SOURCES = affinepreimage1.cc
 
 bhz03widening1_SOURCES = bhz03widening1.cc
+
+certificate1_SOURCES = certificate1.cc
 
 concatenate1_SOURCES = concatenate1.cc
 
