@@ -30,7 +30,7 @@ SUBDIRS =
 
 EXTRA_DIST = ppl_ciao.pl ciao_clpq.pl ciao_clpq2.pl ciao_pl_check.pl
 
-if HAVE_CIAO_PROLOG
+if BUILD_CIAO_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
@@ -161,4 +161,4 @@ ciao_clpq ciao_clpq2 ciao_pl_check \
 obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS)
 
-endif HAVE_CIAO_PROLOG
+endif BUILD_CIAO_PROLOG_INTERFACE

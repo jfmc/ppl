@@ -29,7 +29,7 @@ SUBDIRS =
 
 EXTRA_DIST = ppl_yap.pl yap_clpq.pl yap_clpq2.pl yap_pl_check.pl
 
-if HAVE_YAP_PROLOG
+if BUILD_YAP_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
@@ -128,4 +128,4 @@ script_clpq script_clpq2 script_pchk \
 obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS)
 
-endif HAVE_YAP_PROLOG
+endif BUILD_YAP_PROLOG_INTERFACE

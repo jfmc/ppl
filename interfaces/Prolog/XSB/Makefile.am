@@ -45,7 +45,7 @@ expected_int16_a expected2_int16_a expected3_int16_a \
 expected_int32_a expected2_int32_a expected3_int32_a \
 expected_int64_a expected2_int64_a expected3_int64_a
 
-if HAVE_XSB_PROLOG
+if BUILD_XSB_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
@@ -175,4 +175,4 @@ ppl_xsb.xwam ppl_xsb.so \
 xsb_clpq.xwam xsb_clpq2.xwam xsb_pl_check.xwam \
 $(CLPQ_TESTS) obtained obtained2 obtained3
 
-endif HAVE_XSB_PROLOG
+endif BUILD_XSB_PROLOG_INTERFACE

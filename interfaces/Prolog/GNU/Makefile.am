@@ -29,7 +29,7 @@ SUBDIRS =
 
 EXTRA_DIST = ppl_gprolog_sd.cc ppl_gprolog.pl gp_clpq.pl gnu_pl_check.pl
 
-if HAVE_GNU_PROLOG
+if BUILD_GNU_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
@@ -150,4 +150,4 @@ obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS) \
 script_pchk
 
-endif HAVE_GNU_PROLOG
+endif BUILD_GNU_PROLOG_INTERFACE

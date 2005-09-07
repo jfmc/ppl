@@ -34,7 +34,7 @@ pl_clpq.cc \
 pl_clpq.pl \
 swi_pl_check.pl
 
-if HAVE_SWI_PROLOG
+if BUILD_SWI_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
@@ -150,4 +150,4 @@ obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS) \
 script_pchk
 
-endif HAVE_SWI_PROLOG
+endif BUILD_SWI_PROLOG_INTERFACE

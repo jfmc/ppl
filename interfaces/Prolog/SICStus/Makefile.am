@@ -36,7 +36,7 @@ ppl_sicstus.pl \
 sp_clpq.pl \
 sp_pl_check.pl
 
-if HAVE_SICSTUS_PROLOG
+if BUILD_SICSTUS_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
@@ -144,4 +144,4 @@ ppl_sicstus.s.o ppl_sicstus.so \
 $(CLPQ_TESTS) \
 obtained_clpq obtained_clpq2 obtained_pchk
 
-endif HAVE_SICSTUS_PROLOG
+endif BUILD_SICSTUS_PROLOG_INTERFACE
