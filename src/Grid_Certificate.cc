@@ -54,7 +54,9 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr) {
 #ifndef NDEBUG
 	Grid::simplify(gr.con_sys, gr.dim_kinds);
 #else
-	assert(Grid::simplify(gr.con_sys, gr.dim_kinds));
+	bool contains_points = Grid::simplify(gr.con_sys, gr.dim_kinds);
+	used(contains_points);	// Quiet compiler warning.
+	assert(contains_points);
 #endif
 	gr.set_congruences_minimized();
 
@@ -68,7 +70,9 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr) {
 #ifndef NDEBUG
       Grid::simplify(gr.gen_sys, gr.dim_kinds);
 #else
-      assert(Grid::simplify(gr.gen_sys, gr.dim_kinds));
+      bool contains_points = Grid::simplify(gr.gen_sys, gr.dim_kinds);
+      used(contains_points);	// Quiet compiler warning.
+      assert(contains_points);
 #endif
       gr.set_generators_minimized();
     }
