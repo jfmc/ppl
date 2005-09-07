@@ -485,6 +485,77 @@ AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
 # Enabled or not, the Watchdog subdirectory must be configured.
 AC_CONFIG_SUBDIRS(Watchdog)
 
+# This is the list of available interfaces: lowercase and blank-separated.
+available_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog"
+
+# Define here which interfaces are enabled by default.
+cxx_interface_enabled_by_default=yes
+c_interface_enabled_by_default=yes
+ciao_prolog_interface_enabled_by_default=no
+gnu_prolog_interface_enabled_by_default=no
+sicstus_prolog_interface_enabled_by_default=no
+swi_prolog_interface_enabled_by_default=no
+xsb_prolog_interface_enabled_by_default=no
+yap_prolog_interface_enabled_by_default=no
+
+enableval=all
+AC_MSG_CHECKING([which interfaces are enabled])
+AC_ARG_ENABLE(interfaces,
+[  --enable-interfaces   enable some or all the library interfaces])
+case x"${enableval}" in
+xyes | x)
+  AC_MSG_ERROR([--enable-interfaces needs at least one argument chosen among ${enableval}, none and all])
+  ;;
+xnone | xno)
+  for interface in ${available_interfaces}
+  do
+    eval ${interface}_interface_enabled=no
+  done
+  AC_MSG_RESULT(none)
+  ;;
+xall)
+  for interface in ${available_interfaces}
+  do
+    eval ${interface}_interface_enabled=yes
+  done
+  AC_MSG_RESULT([${available_interfaces}])
+  ;;
+*)
+  # Make the list blank-separated and lowercase; turn "c++" into "cxx".
+  enabled_interfaces=`echo "${enableval}" | sed -e 's/[[ 	,]]*/ /g' -e 's/c++/cxx/g' | tr '[[:upper:]]' '[[:lower:]]'`
+  # Check that the specified interfaces exist.
+  for interface in ${enabled_interfaces}
+  do
+    case " ${available_interfaces} " in
+    *\ ${interface}\ *)
+      ;;
+    *)
+      AC_MSG_ERROR([unknown interface ${interface}: must be one of ${available_interfaces}])
+      ;;
+    esac
+  done
+  # Initialize the enabled variable for each interface.
+  for interface in ${available_interfaces}
+  do
+    case ,${enabled_interfaces}, in
+    *,${interface},*)
+      eval ${interface}_interface_enabled=yes
+      ;;
+    *)
+      enabled_by_default_variable=${interface}_enabled_by_default
+      if test x${!enabled_by_default_variable} = xyes
+      then
+        eval ${interface}_interface_enabled=yes
+      else
+        eval ${interface}_interface_enabled=no
+      fi
+    esac
+  done
+  AC_MSG_RESULT([${enabled_interfaces}])
+  ;;
+esac
+#######################
+
 # Libtool.
 # Turn off shared libraries during beta-testing, since they
 # make debugging harder and the build process takes too long.
