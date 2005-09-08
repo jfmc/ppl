@@ -488,18 +488,11 @@ AC_CONFIG_SUBDIRS(Watchdog)
 # This is the list of available interfaces: lowercase and blank-separated.
 available_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog"
 
-# Define here which interfaces are enabled by default.
-cxx_interface_enabled_by_default=yes
-c_interface_enabled_by_default=yes
-ciao_prolog_interface_enabled_by_default=no
-gnu_prolog_interface_enabled_by_default=no
-sicstus_prolog_interface_enabled_by_default=no
-swi_prolog_interface_enabled_by_default=no
-xsb_prolog_interface_enabled_by_default=no
-yap_prolog_interface_enabled_by_default=no
+# This is the list of interfaces that are enabled by default.
+#default_interfaces="cxx c swi_prolog"
+default_interfaces=${available_interfaces}
 
-#enableval=not_specified
-enableval=all
+enableval=not_specified
 AC_MSG_CHECKING([which interfaces are enabled])
 AC_ARG_ENABLE(interfaces,
 [  --enable-interfaces   enable some or all the library interfaces])
@@ -524,7 +517,7 @@ xall)
 *)
   if test x"${enableval}" = xnot_specified
   then
-    enableval=
+    enableval=${default_interfaces}
   fi
   # Make the list blank-separated and lowercase; turn "c++" into "cxx".
   required_interfaces=`echo "${enableval}" | sed -e 's/-/_/g' -e 's/[[ 	,]][[ 	,]]*/ /g' -e 's/c++/cxx/g' | tr '[[:upper:]]' '[[:lower:]]'`
@@ -548,14 +541,8 @@ xall)
       enabled_interfaces="${enabled_interfaces}${enabled_interfaces:+ }${interface}"
       ;;
     *)
-      enabled_by_default_variable=${interface}_interface_enabled_by_default
-      if test x${!enabled_by_default_variable} = xyes
-      then
-        eval ${interface}_interface_enabled=yes
-        enabled_interfaces="${enabled_interfaces}${enabled_interfaces:+ }${interface}"
-      else
-        eval ${interface}_interface_enabled=no
-      fi
+      eval ${interface}_interface_enabled=no
+      ;;
     esac
   done
   AC_MSG_RESULT([${enabled_interfaces}])
