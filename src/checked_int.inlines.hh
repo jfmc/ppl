@@ -661,7 +661,7 @@ assign_int_pinf(To& to, const Plus_Infinity&, Rounding_Dir dir) {
 
 template <typename Policy, typename To>
 inline Result
-assign_int_nan(To& to, const Not_A_Number&, Rounding_Dir dir) {
+assign_int_nan(To& to, const Not_A_Number&, Rounding_Dir) {
   if (Policy::store_nan) {
     to = not_a_number_int<Policy, To>();
     return V_EQ;
