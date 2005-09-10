@@ -119,6 +119,8 @@ limit_precision(float v) {
   return x;
 }
 
+// FIXME: Comeau compiler says that the type qualifier "volatile"
+// on return type is meaningless.
 inline volatile double
 limit_precision(double v) {
   volatile double x = v;
