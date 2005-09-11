@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.defs.hh"
 #include "Polyhedron.types.hh"
 #include "globals.defs.hh"
+#include "Checked_Number.defs.hh"
 #include <vector>
 #include <cstddef>
 #include <climits>
@@ -384,17 +385,26 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
 */
 
 template <typename T>
-class Parma_Polyhedra_Library::BD_Shape {   
+class Parma_Polyhedra_Library::BD_Shape {
+private:
+  //! \brief
+  //! The (extended) numeric type of the inhomogeneous terms of the
+  //! inequalities defining a bounded difference shape.
+  typedef Checked_Number<T, Extended_Number_Policy> N;
+
 public:
+  //! The numeric base type upon which bounded differences are built.
+  typedef T base_type;
+
+  //! \brief
+  //! The (extended) numeric type of the inhomogeneous terms of the
+  //! inequalities defining a bounded difference shape.
+  typedef N coefficient_type;
+
   //! \brief
   //! Returns the maximum space dimension that a system 
   //! of bounded differences can handle.
   static dimension_type max_space_dimension();
-
-  //! \brief
-  //! The type upon which bounded differences are built, that is,
-  //! the type of their inhomogeneous terms.
-  typedef T base_type;
 
   //! Builds a universe or empty system of bounded differences.
   /*!
@@ -1004,7 +1014,7 @@ public:
 
   //@} // Miscellaneous Member Functions
 
-  friend bool Parma_Polyhedra_Library::operator==<T>(const BD_Shape<T>& x, 
+  friend bool Parma_Polyhedra_Library::operator==<T>(const BD_Shape<T>& x,
 						     const BD_Shape<T>& y);
 
   //! \brief
@@ -1012,9 +1022,8 @@ public:
   bool OK() const;
 
 private:
-
   //! The matrix that represents the system of bounded differences.
-  DB_Matrix<T> dbm;
+  DB_Matrix<N> dbm;
 
 #define PPL_IN_BD_Shape_CLASS
 #include "BDS_Status.idefs.hh"
