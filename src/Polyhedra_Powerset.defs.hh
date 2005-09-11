@@ -261,12 +261,6 @@ public:
   template <typename Cert, typename Widening>
   void BHZ03_widening_assign(const Polyhedra_Powerset& y, Widening wf);
 
-  //! \brief
-  //! An instance of the BHZ03 framework using the widening function \p wf
-  //! certified by BHRZ03_Certificate.
-  template <typename Widening>
-  void BHZ03_widening_assign(const Polyhedra_Powerset& y, Widening wf);
-
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
 
   //! \name Member Functions that May Modify the Dimension of the Vector Space

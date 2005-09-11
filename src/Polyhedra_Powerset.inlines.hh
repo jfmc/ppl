@@ -658,14 +658,6 @@ Polyhedra_Powerset<PH>::BHZ03_widening_assign(const Polyhedra_Powerset& y,
 }
 
 template <typename PH>
-template <typename Widening>
-inline void
-Polyhedra_Powerset<PH>::
-BHZ03_widening_assign(const Polyhedra_Powerset& y, Widening wf) {
-  BHZ03_widening_assign<BHRZ03_Certificate>(y, wf);
-}
-
-template <typename PH>
 void
 Polyhedra_Powerset<PH>::ascii_dump(std::ostream& s) const {
   const Polyhedra_Powerset& x = *this;
