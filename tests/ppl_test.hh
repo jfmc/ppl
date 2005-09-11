@@ -30,7 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-//typedef BD_Shape<Checked_Number<mpq_class, Extended_Number_Policy> > TBD_Shape;
-typedef BD_Shape<Checked_Number<int, Extended_Number_Policy> > TBD_Shape;
+//typedef BD_Shape<mpq_class> TBD_Shape;
+typedef BD_Shape<int> TBD_Shape;
 
 }
