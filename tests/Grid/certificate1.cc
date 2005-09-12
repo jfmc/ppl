@@ -110,11 +110,9 @@ test3() {
     else
       return;
   else
-    nout << "gr1 should be stabilising with respect to gr2." << endl;
+    nout << "gr1 should compare equal to gr2." << endl;
 
-
-  nout << "gr1 should compare equal to gr2." << endl
-       << "gr1:" << endl << gr1 << endl
+  nout << "gr1:" << endl << gr1 << endl
        << "gr2:" << endl << gr2 << endl;
 
   exit(1);
@@ -186,6 +184,32 @@ test5() {
   exit(1);
 }
 
+// Compare certificates for zero dimension universe grids.
+
+void
+test6() {
+  nout << "test6:" << endl;
+
+  Grid gr1(0);
+
+  Grid_Certificate grc1(gr1);
+
+  Grid gr2(0);
+
+  Grid_Certificate grc2(gr2);
+
+  if (grc1.compare(grc2) == 0)
+    return;
+
+  nout << "gr1 should compare equal to gr2." << endl
+       << "gr1:" << endl << gr1 << endl
+       << "gr2:" << endl << gr2 << endl;
+
+  dump_grids(gr1, gr2);
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -199,6 +223,7 @@ main() TRY {
   test3();
   test4();
   test5();
+  test6();
 
   return 0;
 }
