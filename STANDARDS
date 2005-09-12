@@ -120,6 +120,36 @@ If you use emacs, you may want to put the following two lines in your
 (c-set-offset 'innamespace 0)
 
 
+Negation
+--------
+
+Use `!' to negate a value.
+
+For example, use
+
+	if (!ph.is_empty())
+	   std::cout << "ph contains at least one point" << endl;
+
+instead of
+
+	if (ph.is_empty() == false)
+	   std::cout << "ph contains at least one point" << endl;
+
+
+Comparison with zero
+--------------------
+
+Be explicit when comparing a value with zero in a conditional context.
+
+For example, use
+
+	assert(sys.num_rows() != 0);
+
+instead of
+
+	assert(sys.num_rows());
+
+
 Standards for Documenting the Project with Doxygen
 ==================================================
 
