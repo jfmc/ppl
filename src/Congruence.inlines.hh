@@ -212,23 +212,6 @@ Congruence::total_memory_in_bytes() const {
 }
 
 inline
-Congruence::Congruence(const Constraint& c)
-  : Row(c, c.size(), compute_capacity(c.size() + 1, Row::max_size())) {
-
-  if (c.is_inequality()) {
-    std::ostringstream s;
-    s << "PPL::Congruence::Congruence(c):" << std::endl
-      << "constraint c must be an equality.";
-    throw std::invalid_argument(s.str());
-  }
-
-  // NOT_NECESSARILY_CLOSED constraints already have an extra element.
-  if (c.is_necessarily_closed())
-    Row::expand_within_capacity(size()+1);
-  (*this)[size()-1] = 0;
-}
-
-inline
 Congruence::Congruence(Linear_Expression& le,
 		       Coefficient_traits::const_reference m) {
   Row::swap(static_cast<Row&>(le));

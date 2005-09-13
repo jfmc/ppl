@@ -33,6 +33,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+PPL::Congruence::Congruence(const Constraint& c)
+  : Row(c, c.size(), compute_capacity(c.size() + 1, Row::max_size())) {
+
+  if (c.is_inequality()) {
+    std::ostringstream s;
+    s << "PPL::Congruence::Congruence(c):" << std::endl
+      << "constraint c must be an equality.";
+    throw std::invalid_argument(s.str());
+  }
+
+  // NOT_NECESSARILY_CLOSED Constraints already have an extra element,
+  // for the epsilon coefficient.
+  if (c.is_necessarily_closed())
+    Row::expand_within_capacity(size()+1);
+
+  (*this)[size()-1] = 0;
+}
+
 void
 PPL::Congruence::sign_normalize() {
   Row& x = *this;
