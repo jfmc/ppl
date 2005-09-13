@@ -45,40 +45,29 @@ TESTS = \
 addcongruence1 \
 addconstraints1 \
 addgenerator1 \
-addspacedims1 \
-addspacedims2 \
+addspacedims1 addspacedims2 \
 affineimage1 \
 affinepreimage1 \
 bhz03widening1 \
 certificate1 \
 concatenate1 \
 congruence1 \
-congruencesystem1 \
-congruencesystem2 \
-contains1 \
-contains2 \
+congruencesystem1 congruencesystem2 \
+contains1 contains2 \
 equals1 \
 expandspacedim1 \
 foldspacedims1 \
-generalizedaffineimage1 \
-generalizedaffineimage2 \
-generalizedaffinepreimage1 \
-generalizedaffinepreimage2 \
-grid1 \
-grid2 \
+generalizedaffineimage1 generalizedaffineimage2 \
+generalizedaffinepreimage1 generalizedaffinepreimage2 \
+grid1 grid2 \
 griddifference1 \
-intersection1 \
-intersection2 \
+intersection1 intersection2 \
 isuniverse1 \
-join1 \
-join2 \
-join3 \
+join1 join2 join3 \
 limitedextrapolation1 \
 mapspacedims1 \
-relations1 \
-relations2 \
-removespacedims1 \
-removespacedims2 \
+relations1 relations2 \
+removespacedims1 removespacedims2 \
 timeelapse1 \
 widening1 \
 writecongruencesystem
