@@ -339,6 +339,11 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Constraint& y);
 
+  //! \brief
+  //! Writes to \p s an ASCII representation of the internal
+  //! representation of \p *this.
+  void ascii_dump(std::ostream& s) const;
+
 private:
   friend class Parma_Polyhedra_Library::Congruence;
   friend class Parma_Polyhedra_Library::Constraint_System;

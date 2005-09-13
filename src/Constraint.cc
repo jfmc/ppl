@@ -234,6 +234,11 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint::Type& t) {
   return s;
 }
 
+void
+PPL::Constraint::ascii_dump(std::ostream& s) const {
+  Linear_Row::ascii_dump(s);
+}
+
 bool
 PPL::Constraint::OK() const {
   // Topology consistency check.
