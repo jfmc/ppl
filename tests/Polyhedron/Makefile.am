@@ -51,6 +51,8 @@ NNCbecomesC1 \
 NNCminimize1 NNCminimize2 NNCminimize3 NNCminimize4 NNCminimize5 \
 NNCminimize6 \
 addcongruence1 addcongruence2 addcongruence3 addcongruence4 addcongruence5 \
+addcongruences1 addcongruences2 addcongruences3 addcongruences4 \
+addcongruences5 \
 addconstraint1 addconstraint2 addconstraint3 \
 addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
 addconstraints5 addconstraints6 addconstraints7 addconstraints8 \
@@ -279,6 +281,12 @@ addcongruence2_SOURCES = addcongruence2.cc
 addcongruence3_SOURCES = addcongruence3.cc
 addcongruence4_SOURCES = addcongruence4.cc
 addcongruence5_SOURCES = addcongruence5.cc
+
+addcongruences1_SOURCES = addcongruences1.cc
+addcongruences2_SOURCES = addcongruences2.cc
+addcongruences3_SOURCES = addcongruences3.cc
+addcongruences4_SOURCES = addcongruences4.cc
+addcongruences5_SOURCES = addcongruences5.cc
 
 addconstraint1_SOURCES = addconstraint1.cc
 addconstraint2_SOURCES = addconstraint2.cc
