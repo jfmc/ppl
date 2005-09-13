@@ -972,6 +972,32 @@ PPL::Polyhedron::add_constraint(const Constraint& c) {
   assert(OK());
 }
 
+void
+PPL::Polyhedron::add_congruence(const Congruence& cg) {
+  // Dimension-compatibility check:
+  // the dimension of `c' can not be greater than space_dim.
+  if (space_dim < cg.space_dimension())
+    throw_dimension_incompatible("add_congruence(cg)", "cg", cg);
+
+  // Adding a new congruence to an empty polyhedron results in an
+  // empty polyhedron.
+  if (marked_empty())
+    return;
+
+  // Dealing with a zero-dimensional space polyhedron first.
+  if (space_dim == 0) {
+    if (!cg.is_trivial_true())
+      set_empty();
+    return;
+  }
+
+  if (cg.is_equality()) {
+    Linear_Expression le(cg);
+    Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
+    add_constraint(c);
+  }
+}
+
 bool
 PPL::Polyhedron::add_constraint_and_minimize(const Constraint& c) {
   // TODO: this is just an executable specification.
@@ -1566,6 +1592,7 @@ PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
 
   bool empty;
   if (y.con_sys.num_pending_rows() > 0) {
+    // FIX why add to x (instd of calling a_and_m(t, x.cg, x.gs, sat, y.cg))?
     // Integrate `y.con_sys' as pending constraints of `x',
     // sort them in place and then call `add_and_minimize()'.
     x.con_sys.add_pending_rows(y.con_sys);
@@ -2280,7 +2307,7 @@ generalized_affine_preimage(const Variable var,
     Coefficient inverse_denominator = - var_coefficient;
     Relation_Symbol inverse_relsym
       = (sgn(denominator) == sgn(inverse_denominator))
-      ? relsym : reversed_relsym; 
+      ? relsym : reversed_relsym;
     generalized_affine_image(var, inverse_relsym, inverse_expr,
 			     inverse_denominator);
     return;

@@ -33,6 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.inlines.hh"
 #include "Saturation_Matrix.defs.hh"
 #include "Generator.types.hh"
+#include "Congruence.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include "BHRZ03_Certificate.types.hh"
@@ -837,6 +838,16 @@ public:
     \p g is not a point.
   */
   bool add_generator_and_minimize(const Generator& g);
+
+  //! \brief
+  //! Adds a copy of congruence \p cg to the system of congruences of
+  //! \p *this (without minimizing the result).
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p cg are topology-incompatible
+    or dimension-incompatible.
+  */
+  void add_congruence(const Congruence& cg);
 
   //! \brief Adds a copy of the constraints in \p cs to the system
   //! of constraints of \p *this (without minimizing the result).
@@ -2359,6 +2370,9 @@ protected:
   void throw_dimension_incompatible(const char* method,
 				    const char* g_name,
 				    const Generator& g) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* cg_name,
+				    const Congruence& cg) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* cs_name,
 				    const Constraint_System& cs) const;
