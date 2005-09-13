@@ -165,6 +165,10 @@ writerelation1 \
 writevariable1
 
 DERIVED_TESTS = \
+nnc_addcongruence1 nnc_addcongruence2 nnc_addcongruence3 \
+nnc_addcongruence4 nnc_addcongruence5 \
+nnc_addcongruences1 nnc_addcongruences2 nnc_addcongruences3 \
+nnc_addcongruences4 nnc_addcongruences5 \
 nnc_addconstraint2 nnc_addconstraint3 \
 nnc_addconstraints1 nnc_addconstraints2 nnc_addconstraints3 \
 nnc_addconstraints4 nnc_addconstraints5 nnc_addconstraints6 \
@@ -677,6 +681,28 @@ writevariable1_SOURCES = writevariable1.cc
 #
 
 DERIVED_CXXFLAGS = -DDERIVED_TEST $(AM_CXXFLAGS)
+
+nnc_addcongruence1_SOURCES = addcongruence1.cc
+nnc_addcongruence1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addcongruence2_SOURCES = addcongruence2.cc
+nnc_addcongruence2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addcongruence3_SOURCES = addcongruence3.cc
+nnc_addcongruence3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addcongruence4_SOURCES = addcongruence4.cc
+nnc_addcongruence4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addcongruence5_SOURCES = addcongruence5.cc
+nnc_addcongruence5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_addcongruences1_SOURCES = addcongruences1.cc
+nnc_addcongruences1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addcongruences2_SOURCES = addcongruences2.cc
+nnc_addcongruences2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addcongruences3_SOURCES = addcongruences3.cc
+nnc_addcongruences3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addcongruences4_SOURCES = addcongruences4.cc
+nnc_addcongruences4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addcongruences5_SOURCES = addcongruences5.cc
+nnc_addcongruences5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_addconstraint2_SOURCES = addconstraint2.cc
 nnc_addconstraint2_CXXFLAGS = $(DERIVED_CXXFLAGS)
