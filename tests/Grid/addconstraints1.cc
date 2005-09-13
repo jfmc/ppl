@@ -126,7 +126,7 @@ test3() {
   exit(1);
 }
 
-// add_constraints, resulting grid empty
+// add_constraints, resulting grid empty.
 
 void
 test4() {
@@ -189,7 +189,7 @@ test5() {
   exit(1);
 }
 
-// Grid(cs), resulting grid empty
+// Grid(cs), resulting grid empty.
 
 void
 test6() {
@@ -219,6 +219,39 @@ test6() {
   exit(1);
 }
 
+// Add an NNC constraint with add_constraint.
+
+void
+test7() {
+  nout << "test7:" << endl;
+
+  Constraint_System cs;
+  cs.insert(B + 0*C == 0);
+
+  NNC_Polyhedron ph(cs);
+
+  Grid gr(3);
+
+  gr.add_constraint(*ph.constraints().begin());
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(3);
+  known_gr.add_congruence(B == 0);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -233,6 +266,7 @@ main() TRY {
   test4();
   test5();
   test6();
+  test7();
 
   return 0;
 }
