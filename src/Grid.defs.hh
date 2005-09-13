@@ -610,7 +610,8 @@ public:
   */
   bool add_generator_and_minimize(const Generator& g);
 
-  //! \brief Adds a copy of the congruences in \p cgs to the system of
+  //! \brief
+  //! Adds a copy of the congruences in \p cgs to the system of
   //! congruences of \p *this (without reducing the result).
   /*!
     \param cgs
@@ -622,8 +623,9 @@ public:
   */
   void add_congruences(const Congruence_System& cgs);
 
-  //! \brief Adds the congruences in \p cgs to the system of congruences
-  //! of \p *this (without reducing the result).
+  //! \brief
+  //! Adds the congruences in \p cgs to the system of congruences of
+  //! \p *this (without reducing the result).
   /*!
     \param cgs
     The congruence system that will be recycled, adding its
@@ -691,22 +693,23 @@ public:
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
 
-  //! \brief Adds to *this a congruence equivalent to constraint \p c.
+  //! Adds to *this a congruence equivalent to constraint \p c.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and \p cgs are dimension-incompatible.
   */
   void add_constraint(const Constraint& c);
 
-  //! \brief Adds to *this congruences equivlent to the constraints in \p cs.
+  //! Adds to *this congruences equivlent to the constraints in \p cs.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and \p cgs are dimension-incompatible.
   */
   void add_constraints(const Constraint_System& cs);
 
-  //! \brief Adds a copy of the generators in \p gs to the system
-  //! of generators of \p *this (without reducing the result).
+  //! \brief
+  //! Adds a copy of the generators in \p gs to the system of
+  //! generators of \p *this (without reducing the result).
   /*!
     \param gs
     Contains the generators that will be added to the system of
@@ -719,8 +722,9 @@ public:
   */
   void add_generators(const Generator_System& gs);
 
-  //! \brief Adds the generators in \p gs to the system of generators
-  //! of \p *this (without reducing the result).
+  //! \brief
+  //! Adds the generators in \p gs to the system of generators of \p
+  //! *this (without reducing the result).
   /*!
     \param gs
     The generator system that will be recycled, adding its generators
@@ -737,8 +741,9 @@ public:
   */
   void add_recycled_generators(Generator_System& gs);
 
-  //! \brief Adds a copy of the generators in \p gs to the system
-  //! of generators of \p *this, reducing the result.
+  //! \brief
+  //! Adds a copy of the generators in \p gs to the system of
+  //! generators of \p *this, reducing the result.
   /*!
     \return
     <CODE>false</CODE> if and only if the result is empty.
@@ -754,8 +759,9 @@ public:
   */
   bool add_generators_and_minimize(const Generator_System& gs);
 
-  //! \brief Adds the generators in \p gs to the system of generators
-  //! of \p *this, reducing the result.
+  //! \brief
+  //! Adds the generators in \p gs to the system of generators of \p
+  //! *this, reducing the result.
   /*!
     \return
     <CODE>false</CODE> if and only if the result is empty.
