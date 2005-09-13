@@ -975,7 +975,7 @@ PPL::Polyhedron::add_constraint(const Constraint& c) {
 void
 PPL::Polyhedron::add_congruence(const Congruence& cg) {
   // Dimension-compatibility check:
-  // the dimension of `c' can not be greater than space_dim.
+  // the dimension of `cg' can not be greater than space_dim.
   if (space_dim < cg.space_dimension())
     throw_dimension_incompatible("add_congruence(cg)", "cg", cg);
 
@@ -1485,6 +1485,30 @@ PPL::Polyhedron::add_generators_and_minimize(const Generator_System& gs) {
   // TODO: this is just an executable specification.
   Generator_System gs_copy = gs;
   return add_recycled_generators_and_minimize(gs_copy);
+}
+
+void
+PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
+  // Dimension-compatibility check:
+  // the dimension of `cgs' can not be greater than space_dim.
+  if (space_dim < cgs.space_dimension())
+    throw_dimension_incompatible("add_congruences(cgs)", "cgs", cgs);
+
+  Constraint_System cs;
+  bool inserted = false;
+  for (Congruence_System::const_iterator i = cgs.begin(),
+         cgs_end = cgs.end(); i != cgs_end; ++i)
+    if (i->is_equality()) {
+      Linear_Expression le(*i);
+      Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
+      // FIX insert *i directly into cs, instead of creating c.
+      cs.insert(c);
+      inserted = true;
+    }
+  // Only add cgs if congruences were inserted into cgs, as the
+  // dimension of cs must be at most that of the polyhedron.
+  if (inserted)
+    add_recycled_constraints(cs);
 }
 
 void

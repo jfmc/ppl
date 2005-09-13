@@ -1467,6 +1467,13 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* cgs_name,
+					      const Congruence_System& cgs) const {
+  throw_dimension_incompatible(method, cgs_name, cgs.space_dimension());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 					      const char* var_name,
 					      const Variable var) const {
   std::ostringstream s;

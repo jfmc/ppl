@@ -31,6 +31,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.inlines.hh"
 #include "Generator_System.defs.hh"
 #include "Generator_System.inlines.hh"
+#include "Congruence_System.defs.hh"
+#include "Congruence_System.inlines.hh"
 #include "Saturation_Matrix.defs.hh"
 #include "Generator.types.hh"
 #include "Congruence.defs.hh"
@@ -986,6 +988,20 @@ public:
     exceptional return is that it can be safely destroyed.
   */
   bool add_recycled_generators_and_minimize(Generator_System& gs);
+
+  //! \brief
+  //! Adds to \p *this constraints equivalent to the congruences in \p
+  //! cgs (without minimizing the result).
+  /*!
+    \param cgs
+    Contains the congruences that will be added to the system of
+    constraints of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are topology-incompatible or
+    dimension-incompatible.
+  */
+  void add_congruences(const Congruence_System& cgs);
 
   //! \brief
   //! Assigns to \p *this the intersection of \p *this and \p y.
@@ -2379,6 +2395,9 @@ protected:
   void throw_dimension_incompatible(const char* method,
 				    const char* gs_name,
 				    const Generator_System& gs) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* cgs_name,
+				    const Congruence_System& cgs) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* var_name,
 				    const Variable var) const;
