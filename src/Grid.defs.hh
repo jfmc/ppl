@@ -696,14 +696,16 @@ public:
   //! Adds to *this a congruence equivalent to constraint \p c.
   /*!
     \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible.
+    Thrown if \p *this and \p c are dimension-incompatible.
   */
   void add_constraint(const Constraint& c);
 
-  //! Adds to *this congruences equivlent to the constraints in \p cs.
+  //! \brief
+  //! Adds to \p *this congruences equivalent to the constraints in \p
+  //! cs.
   /*!
     \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible.
+    Thrown if \p *this and \p cs are dimension-incompatible.
   */
   void add_constraints(const Constraint_System& cs);
 
