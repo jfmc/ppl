@@ -1103,11 +1103,17 @@ PPL::Grid::add_constraints(const Constraint_System& cs) {
   if (space_dim < cs.space_dimension())
     throw_dimension_incompatible("add_constraints(cs)", "cs", cs);
   Congruence_System cgs;
+  bool inserted = false;
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); i != cs_end; ++i)
-    if (i->is_equality())
+    if (i->is_equality()) {
       cgs.insert(*i);
-  return add_congruences(cgs);
+      inserted = true;
+    }
+  // Only add cgs if congruences were inserted into cgs, as the
+  // dimension of cgs must be at most that of the grid.
+  if (inserted)
+    add_congruences(cgs);
 }
 
 void
