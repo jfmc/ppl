@@ -1,5 +1,5 @@
 /* Test Polyhedron::add_congruence(): add equality and proper
-   congruences to an NNC polyhedron.
+   congruences to a closed polyhedron.
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -37,12 +37,12 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  NNC_Polyhedron ph(2);
+  C_Polyhedron ph(2);
 
   ph.add_congruence((A + B %= 3) / 4);
   ph.add_congruence((A == -1) / 0);
 
-  NNC_Polyhedron known_result(2);
+  C_Polyhedron known_result(2);
   known_result.add_constraint(A == -1);
 
   int retval = (ph == known_result) ? 0 : 1;
