@@ -59,6 +59,11 @@ print_constraints(const Parma_Polyhedra_Library::Constraint_System& cs,
 		  std::ostream& s = std::cout);
 
 void
+print_constraints(const Parma_Polyhedra_Library::Congruence_System& cgs,
+		  const std::string& intro = "",
+		  std::ostream& s = std::cout);
+
+void
 print_constraints(const Parma_Polyhedra_Library::Polyhedron& ph,
 		  const std::string& intro = "",
 		  std::ostream& s = std::cout);

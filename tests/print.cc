@@ -60,6 +60,22 @@ print_constraints(const Constraint_System& cs,
 }
 
 void
+print_constraints(const Congruence_System& cs,
+		  const string& intro, ostream& s) {
+  if (!intro.empty())
+    s << intro << endl;
+  Congruence_System::const_iterator i = cs.begin();
+  Congruence_System::const_iterator cs_end = cs.end();
+  bool printed_something = i != cs_end;
+  while (i != cs_end) {
+    s << *i++;
+    if (i != cs_end)
+      s << "," << endl;
+  }
+  s << (printed_something ? "." : "true.") << endl;
+}
+
+void
 print_constraints(const Polyhedron& ph, const string& intro, ostream& s) {
   print_constraints(ph.constraints(), intro, s);
 }
