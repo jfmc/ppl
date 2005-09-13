@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence.types.hh"
 #include "Row.defs.hh"
 #include "Grid.types.hh"
+#include "Polyhedron.types.hh"
 #include "Variable.defs.hh"
 #include "Constraint.types.hh"
 #include "Linear_Expression.types.hh"
@@ -483,6 +484,8 @@ private:
   friend class PPL::Congruence_System::const_iterator;
   friend class PPL::Grid;
   friend class PPL::Linear_Expression;
+  // For Polyhedron::add_congruence.
+  friend class PPL::Polyhedron;
 
   friend void
   std::swap(PPL::Congruence& x, PPL::Congruence& y);
