@@ -125,6 +125,29 @@ public:
   */
   explicit C_Polyhedron(Generator_System& gs);
 
+  //! Builds a C polyhedron from a system of congruences.
+  /*!
+    The polyhedron inherits the space dimension of the congruence system.
+
+    \param cgs
+    The system of congruences defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures will be
+    recycled to build the polyhedron.
+  */
+  explicit C_Polyhedron(const Congruence_System& cgs);
+
+  //! Builds an C polyhedron recycling a system of congruences.
+  /*!
+    The polyhedron inherits the space dimension of the congruence
+    system.
+
+    \param cgs
+    The system of congruences defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures will be
+    recycled to build the polyhedron.
+  */
+  explicit C_Polyhedron(Congruence_System& cgs);
+
   //! \brief
   //! Builds a C polyhedron representing the topological closure
   //! of the NNC polyhedron \p y.

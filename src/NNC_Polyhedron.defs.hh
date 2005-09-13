@@ -110,6 +110,29 @@ public:
   */
   explicit NNC_Polyhedron(Generator_System& gs);
 
+  //! Builds an NNC polyhedron from a system of congruences.
+  /*!
+    The polyhedron inherits the space dimension of the congruence system.
+
+    \param cgs
+    The system of congruences defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures will be
+    recycled to build the polyhedron.
+  */
+  explicit NNC_Polyhedron(const Congruence_System& cgs);
+
+  //! Builds an NNC polyhedron recycling a system of congruences.
+  /*!
+    The polyhedron inherits the space dimension of the congruence
+    system.
+
+    \param cgs
+    The system of congruences defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures will be
+    recycled to build the polyhedron.
+  */
+  explicit NNC_Polyhedron(Congruence_System& cgs);
+
   //! Builds an NNC polyhedron from the C polyhedron \p y.
   explicit NNC_Polyhedron(const C_Polyhedron& y);
 
