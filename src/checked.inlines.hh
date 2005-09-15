@@ -99,16 +99,11 @@ gcd_generic(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
     return abs<Policy>(to, y, dir);
   if (y == 0)
     return abs<Policy>(to, x, dir);
-  To nx, ny;
   Result r;
   used(r);
-  r = abs<Policy>(nx, x, dir);
-  if (r != V_EQ)
-    return r;
-  r = abs<Policy>(ny, y, dir);
-  if (r != V_EQ)
-    return r;
-  return gcd_common<Policy>(to, nx, ny, dir);
+  r = gcd_common<Policy>(to, x, y, dir);
+  assert(r == V_EQ);
+  return abs<Policy>(to, to, dir);
 }
 
 template <typename Policy, typename To, typename From1, typename From2>
