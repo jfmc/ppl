@@ -549,12 +549,12 @@ PPL::Linear_System::sort_and_remove_with_sat(Saturation_Matrix& sat) {
 }
 
 void
-PPL::Linear_System::gram_shmidt() {
+PPL::Linear_System::gram_schmidt() {
   assert(num_pending_rows() == 0);
 
   // The first part of this algorithm is an adaptation of the one
   // proposed in a 1996 TR by Erlingsson, Kaltofen, and Musser
-  // "Generic Gram-Shmidt Orthogonalization by Exact Division".
+  // "Generic Gram-Schmidt Orthogonalization by Exact Division".
 
   // It is assumed that the lines/equalities come first in the system,
   // which contains no redundant row.
@@ -564,7 +564,7 @@ PPL::Linear_System::gram_shmidt() {
     return;
 
 #if 0
-  std::cout << "+++ Before Gram-Shmidt +++" << std::endl;
+  std::cout << "+++ Before Gram-Schmidt +++" << std::endl;
   ascii_dump(std::cout);
 #endif
 
@@ -631,7 +631,7 @@ PPL::Linear_System::gram_shmidt() {
     x[i].strong_normalize();
 
 #if 0
-  std::cout << "+++ After Gram-Shmidt on the base +++" << std::endl;
+  std::cout << "+++ After Gram-Schmidt on the base +++" << std::endl;
   ascii_dump(std::cout);
 #endif
 
@@ -643,7 +643,7 @@ PPL::Linear_System::gram_shmidt() {
       if (scalar_product_sign(x_i, x[j]) != 0) {
 	std::cout << "Not an orthogonal base" << std::endl;
 	std::cout << "i = " << i << ", j = " << j << std::endl;
-	std::cout << "After Gram-Shmidt on the base" << std::endl;
+	std::cout << "After Gram-Schmidt on the base" << std::endl;
 	ascii_dump(std::cout);
 	assert(false);
       }
@@ -700,7 +700,7 @@ PPL::Linear_System::gram_shmidt() {
     w.normalize();
 
 #if 0
-  std::cout << "+++ After Gram-Shmidt on the whole system +++" << std::endl;
+  std::cout << "+++ After Gram-Schmidt on the whole system +++" << std::endl;
   ascii_dump(std::cout);
 #endif
 
@@ -711,7 +711,7 @@ PPL::Linear_System::gram_shmidt() {
       if (scalar_product_sign(w, x[h]) != 0) {
 	std::cout << "Not orthogonal" << std::endl;
 	std::cout << "i = " << i << ", h = " << h << std::endl;
-	std::cout << "After Gram-Shmidt on the whole system" << std::endl;
+	std::cout << "After Gram-Schmidt on the whole system" << std::endl;
 	ascii_dump(std::cout);
 	assert(false);
       }

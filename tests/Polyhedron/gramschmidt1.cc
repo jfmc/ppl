@@ -1,4 +1,4 @@
-/* Test Constraint_System::gram_shmidt().
+/* Test Constraint_System::gram_schmidt().
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -53,10 +53,10 @@ main() TRY {
   print_constraints(cs1, "*** cs1 ***");
 #endif
 
-  cs1.gram_shmidt();
+  cs1.gram_schmidt();
 
 #if NOISY
-  print_constraints(cs1, "*** after cs1.gram_shmidt() ***");
+  print_constraints(cs1, "*** after cs1.gram_schmidt() ***");
 #endif
 
   return 0; //retval;
