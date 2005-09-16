@@ -39,9 +39,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <deque>
 
 namespace PPL = Parma_Polyhedra_Library;
-using namespace PPL;
 
 namespace {
+
+using namespace PPL;
 
 //! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
 /*!
@@ -55,7 +56,8 @@ the element of index \p k equal to \f$0\f$. Then it assigns
 the resulting Linear_Row to \p x and normalizes it.
 */
 
-void linear_combine(Row& x, const Row& y, const dimension_type k) {
+void
+linear_combine(Row& x, const Row& y, const dimension_type k) {
   assert(x.size() == y.size());
   assert(y[k] != 0 && x[k] != 0);
   // Let g be the GCD between `x[k]' and `y[k]'.
