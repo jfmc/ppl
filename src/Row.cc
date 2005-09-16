@@ -91,8 +91,24 @@ PPL::Row::normalize() {
   TEMP_INTEGER(gcd);
   gcd = 0;
   const dimension_type sz = size();
-  for (dimension_type i = sz; i-- > 0; ) {
-    Coefficient_traits::const_reference x_i = x[i];
+  dimension_type i = sz;
+  while (i > 0) {
+    --i;
+    const Coefficient& x_i = x[i];
+    const int x_i_sign = sgn(x_i);
+    if (x_i_sign > 0) {
+      gcd = x_i;
+      break;
+    }
+    else if (x_i_sign < 0) {
+      gcd = x_i;
+      negate(gcd);
+      break;
+    }
+  }
+  while (i > 0) {
+    --i;
+    const Coefficient& x_i = x[i];
     if (x_i != 0)
       gcd_assign(gcd, x_i);
   }
