@@ -95,10 +95,6 @@ gcd_common(To& to, const From& x, const From& y, Rounding_Dir dir) {
 template <typename Policy, typename To, typename From1, typename From2>
 inline Result
 gcd_generic(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
-  if (x == 0)
-    return abs<Policy>(to, y, dir);
-  if (y == 0)
-    return abs<Policy>(to, x, dir);
   Result r;
   used(r);
   r = gcd_common<Policy>(to, x, y, dir);
