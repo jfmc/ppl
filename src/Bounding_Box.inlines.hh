@@ -104,7 +104,9 @@ Bounding_Box::raise_lower_bound(const dimension_type k, const bool closed,
 				Coefficient_traits::const_reference d) {
   assert(k < vec.size());
   assert(d != 0);
-  mpq_class q(raw_value(n), raw_value(d));
+  mpq_class q;
+  Checked::assign<Checked::Transparent_Policy>(q.get_num(), raw_value(n), ROUND_IGNORE);
+  Checked::assign<Checked::Transparent_Policy>(q.get_den(), raw_value(d), ROUND_IGNORE);
   q.canonicalize();
   vec[k].raise_lower_bound(LBoundary(ERational(q),
 				     (closed
@@ -119,7 +121,9 @@ Bounding_Box::lower_upper_bound(const dimension_type k, const bool closed,
 				Coefficient_traits::const_reference d) {
   assert(k < vec.size());
   assert(d != 0);
-  mpq_class q(raw_value(n), raw_value(d));
+  mpq_class q;
+  Checked::assign<Checked::Transparent_Policy>(q.get_num(), raw_value(n), ROUND_IGNORE);
+  Checked::assign<Checked::Transparent_Policy>(q.get_den(), raw_value(d), ROUND_IGNORE);
   q.canonicalize();
   vec[k].lower_upper_bound(UBoundary(ERational(q),
 				     (closed
