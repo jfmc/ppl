@@ -43,34 +43,6 @@ using namespace PPL;
 
 namespace {
 
-//! Normalizes the modulo of coefficients of a row so that they are 
-//  mutually prime.
-/*!
-
- \param x  The row to be normalized
- 
- Computes the Greatest Common Divisor (GCD) among the elements of
- the row and normalizes them by the GCD itself.
-*/
-void
-normalize_row(Row& x) {
-  // Compute the GCD of all the coefficients into gcd.
-  TEMP_INTEGER(gcd);
-  gcd = 0;
-  const dimension_type sz = x.size();
-  for (dimension_type i = sz; i-- > 0; ) {
-    Coefficient_traits::const_reference x_i = x[i];
-    if (x_i != 0)
-      gcd_assign(gcd, x_i);
-  }
-  if (gcd > 1)
-    // Divide the coefficients by the GCD.
-    for (dimension_type i = sz; i-- > 0; )
-      exact_div_assign(x[i], gcd);
-}
-
-
-
 //! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
 /*!
   
@@ -99,7 +71,7 @@ void linear_combine(Row& x, const Row& y, const dimension_type k) {
       sub_mul_assign(x_i, y[i], normalized_x_k);
     }
   x[k] = 0;
-  normalize_row(x);
+  x.normalize();
 } 
 
 //! Inserts a row in a matrix.
