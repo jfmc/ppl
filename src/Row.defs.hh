@@ -269,6 +269,13 @@ public:
   Coefficient_traits::const_reference operator[](dimension_type k) const;
   //@} // Subscript operators
 
+  //! Normalizes the modulo of coefficients so that they are mutually prime.
+  /*!
+    Computes the Greatest Common Divisor (GCD) among the elements of
+    the row and normalizes them by the GCD itself.
+  */
+  void normalize();
+
   //! \brief
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.

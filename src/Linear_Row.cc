@@ -31,24 +31,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Linear_Row::normalize() {
-  Linear_Row& x = *this;
-  // Compute the GCD of all the coefficients into gcd.
-  TEMP_INTEGER(gcd);
-  gcd = 0;
-  const dimension_type sz = size();
-  for (dimension_type i = sz; i-- > 0; ) {
-    Coefficient_traits::const_reference x_i = x[i];
-    if (x_i != 0)
-      gcd_assign(gcd, x_i);
-  }
-  if (gcd > 1)
-    // Divide the coefficients by the GCD.
-    for (dimension_type i = sz; i-- > 0; )
-      exact_div_assign(x[i], gcd);
-}
-
-void
 PPL::Linear_Row::sign_normalize() {
   if (is_line_or_equality()) {
     Linear_Row& x = *this;

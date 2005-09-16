@@ -307,13 +307,6 @@ public:
   //! Returns the coefficient \f$a_n\f$.
   Coefficient_traits::const_reference coefficient(dimension_type n) const;
 
-  //! Normalizes the modulo of coefficients so that they are mutually prime.
-  /*!
-    Computes the Greatest Common Divisor (GCD) among the elements of
-    the row and normalizes them by the GCD itself.
-  */
-  void normalize();
-
   //! \brief
   //! Normalizes the sign of the coefficients so that the first non-zero
   //! (homogeneous) coefficient of a line-or-equality is positive.
