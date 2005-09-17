@@ -87,32 +87,31 @@ PPL::Row_Impl_Handler::Impl::copy_construct_coefficients(const Impl& y) {
 void
 PPL::Row::normalize() {
   Row& x = *this;
-  // Compute the GCD of all the coefficients into gcd.
-  TEMP_INTEGER(gcd);
-  gcd = 0;
+  // Compute the GCD of all the coefficients.
   const dimension_type sz = size();
   dimension_type i = sz;
+  TEMP_INTEGER(gcd);
   while (i > 0) {
-    --i;
-    const Coefficient& x_i = x[i];
-    const int x_i_sign = sgn(x_i);
-    if (x_i_sign > 0) {
+    const Coefficient& x_i = x[--i];
+    if (const int x_i_sign = sgn(x_i)) {
       gcd = x_i;
-      break;
-    }
-    else if (x_i_sign < 0) {
-      gcd = x_i;
-      negate(gcd);
-      break;
+      if (x_i_sign < 0)
+	negate(gcd);
+      goto compute_gcd;
     }
   }
-  while (i > 0) {
-    --i;
-    const Coefficient& x_i = x[i];
+  // We reach this point only if all the coefficients were zero.
+  return;
+
+ compute_gcd:
+  while (i > 0 && gcd > 1) {
+    const Coefficient& x_i = x[--i];
     if (x_i != 0)
       gcd_assign(gcd, x_i);
   }
-  if (gcd > 1)
+  // Note: the `i == 0' test is here only to make sure
+  // the test `gcd > 1' is not re-evaluated unnecessarily.
+  if (i == 0 && gcd > 1)
     // Divide the coefficients by the GCD.
     for (dimension_type i = sz; i-- > 0; )
       exact_div_assign(x[i], gcd);
