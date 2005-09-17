@@ -84,6 +84,7 @@ PPL::Row_Impl_Handler::Impl::copy_construct_coefficients(const Impl& y) {
 #endif
 }
 
+#if 0
 void
 PPL::Row::normalize() {
   Row& x = *this;
@@ -104,6 +105,41 @@ PPL::Row::normalize() {
   return;
 
  compute_gcd:
+  if (gcd == 1)
+    return;
+  while (i > 0) {
+    const Coefficient& x_i = x[--i];
+    if (x_i != 0) {
+      gcd_assign(gcd, x_i);
+      if (gcd == 1)
+	return;
+    }
+  }
+  // Divide the coefficients by the GCD.
+  for (dimension_type i = sz; i-- > 0; )
+    exact_div_assign(x[i], gcd);
+}
+#else
+void
+PPL::Row::normalize() {
+  Row& x = *this;
+  // Compute the GCD of all the coefficients.
+  const dimension_type sz = size();
+  dimension_type i = sz;
+  TEMP_INTEGER(gcd);
+  while (i > 0) {
+    const Coefficient& x_i = x[--i];
+    if (const int x_i_sign = sgn(x_i)) {
+      gcd = x_i;
+      if (x_i_sign < 0)
+    negate(gcd);
+      goto compute_gcd;
+    }
+  }
+  // We reach this point only if all the coefficients were zero.
+  return;
+
+ compute_gcd:
   while (i > 0 && gcd > 1) {
     const Coefficient& x_i = x[--i];
     if (x_i != 0)
@@ -116,6 +152,7 @@ PPL::Row::normalize() {
     for (dimension_type i = sz; i-- > 0; )
       exact_div_assign(x[i], gcd);
 }
+#endif
 
 void
 PPL::Row::Flags::ascii_dump(std::ostream& s) const {
