@@ -49,9 +49,6 @@ test1() {
   Grid known_gr(2);
   known_gr.add_congruence((A + B %= 0) / 6);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr == known_gr)
     return;
 
