@@ -347,6 +347,27 @@ FUNC2(assign_sub_mul, sub_mul_ext)
 
 #undef FUNC2
 
+#define FUNC4(name, func)						\
+template <typename To, typename To_Policy,				\
+          typename From1, typename Policy1,				\
+          typename From2, typename Policy2,				\
+          typename From3, typename Policy3,				\
+	  typename From4, typename Policy4>				\
+inline Result								\
+name(Checked_Number<To, To_Policy>& to,					\
+     const Checked_Number<From1, Policy1>& x,				\
+     const Checked_Number<From2, Policy2>& y,				\
+     Checked_Number<From3, Policy3>& s,					\
+     Checked_Number<From4, Policy4>& t, Rounding_Dir dir) {		\
+  return Checked::func<To_Policy, Policy1, Policy2>			\
+    (to.raw_value(), x.raw_value(), y.raw_value(),			\
+     s.raw_value(), t.raw_value(), dir);				\
+}
+
+FUNC4(assign_gcdext, gcdext_ext)
+
+#undef FUNC4
+
 #define DEF_INCREMENT(f, fun) \
 template <typename T, typename Policy> \
 inline Checked_Number<T, Policy>& \
@@ -566,6 +587,23 @@ f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, const Checke
   Policy::handle_result(fun(x, y, z, Policy::ROUND_DEFAULT)); \
 }
 
+#define DEF_ASSIGN_FUN5_4(f, fun)				    \
+template <typename T, typename Policy>			    	    \
+inline void							    \
+f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, \
+  Checked_Number<T, Policy>& s, Checked_Number<T, Policy>& t) {	    \
+  Policy::handle_result(fun(x, x, y, s, t, Policy::ROUND_DEFAULT)); \
+}
+
+#define DEF_ASSIGN_FUN5_5(f, fun)				    \
+template <typename T, typename Policy>			    	    \
+inline void							    \
+f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, \
+  const Checked_Number<T, Policy>& z,				    \
+  Checked_Number<T, Policy>& s, Checked_Number<T, Policy>& t) {	    \
+  Policy::handle_result(fun(x, y, z, s, t, Policy::ROUND_DEFAULT)); \
+}
+
 DEF_ASSIGN_FUN2_1(sqrt_assign, assign_sqrt)
 DEF_ASSIGN_FUN2_2(sqrt_assign, assign_sqrt)
 
@@ -581,6 +619,9 @@ DEF_ASSIGN_FUN3_3(sub_mul_assign, assign_sub_mul)
 
 DEF_ASSIGN_FUN3_2(gcd_assign, assign_gcd)
 DEF_ASSIGN_FUN3_3(gcd_assign, assign_gcd)
+
+DEF_ASSIGN_FUN5_4(gcdext_assign, assign_gcdext)
+DEF_ASSIGN_FUN5_5(gcdext_assign, assign_gcdext)
 
 DEF_ASSIGN_FUN3_2(lcm_assign, assign_lcm)
 DEF_ASSIGN_FUN3_3(lcm_assign, assign_lcm)
