@@ -22,6 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
+#include "Congruence_System.defs.hh"
 #include "Constraint.defs.hh"
 #include "Generator.defs.hh"
 #include "Constraint_System.defs.hh"
