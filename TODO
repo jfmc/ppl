@@ -1,6 +1,7 @@
 Enhancements for PPL 0.8 or later versions
 ==========================================
 
+- Check and update the links in the CREDITS file.
 - Improve the documentation about shared libraries.
   See http://www.cs.unipr.it/pipermail/ppl-devel/2005-July/006178.html.
 - Improve the documentation of Polyhedron::shrink_bounding_box().
