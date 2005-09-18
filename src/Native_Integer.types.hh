@@ -12,6 +12,8 @@ PURPOSE. */
 #ifndef PPL_Native_Integer_types_hh
 #define PPL_Native_Integer_types_hh 1
 
+#include "Coefficient_traits_template.hh"
+
 namespace Parma_Polyhedra_Library {
 
 template <typename T>
