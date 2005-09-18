@@ -408,6 +408,25 @@ gcd_assign(Native_Integer<T>& x,
 	   const Native_Integer<T>& y,
 	   const Native_Integer<T>& z);
 
+//! \brief
+//! Assigns to \p x the GCD of \p x and \p y, setting \p s and \p t
+//! such that s*x + t*y = gcd(x, y).
+/*! \relates Native_Integer */
+template <typename T>
+inline void
+gcdext_assign(Native_Integer<T>& x, const Native_Integer<T>& y,
+	      Native_Integer<T>& s, Native_Integer<T>& t);
+
+//! \brief
+//! Assigns to \p x the GCD of \p y and \p z, setting \p s and \p t
+//! such that s*y + t*z = x = gcd(y, z).
+/*! \relates Native_Integer */
+template <typename T>
+inline void
+gcdext_assign(Native_Integer<T>& x,
+	      const Native_Integer<T>& y, const Native_Integer<T>& z,
+	      Native_Integer<T>& s, Native_Integer<T>& t);
+
 //! Assigns to \p x the least common multiple of \p x and \p y.
 /*! \relates Native_Integer */
 template <typename T>

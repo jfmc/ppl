@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Native_Integer_inlines_hh
 #define PPL_Native_Integer_inlines_hh 1
 
+#include "compiler.hh"
 #include <iostream>
 #include <limits>
 #include <cassert>
@@ -111,6 +112,77 @@ gcd(T x,T y) {
     x = y;
     y = r;
   }
+  return x;
+}
+
+//! \brief
+//! Returns the GCD of \p x and \p y and sets \p s and \p t such that
+//! s*x + t*y = gcd(x, y).
+/*! \relates Native_Integer */
+template <typename T>
+inline T
+gcdext(T x,T y,T& s,T& t) {
+  if (y == 0) {
+    if (x == 0) {
+      s = 0;
+      t = 1;
+    }
+    else {
+      if (x < 0)
+	s = -1;
+      else
+	s = 1;
+      x = abs(x);
+      t = 0;
+    }
+    return x;
+  }
+
+  s = 1;
+  t = 0;
+  bool negative_x = x < 0;
+  bool negative_y = y < 0;
+  x = abs(x);
+  y = abs(y);
+
+#define COPY_GMP
+#ifdef COPY_GMP
+  if (x == y) {
+    // FIX This is to favour s, as GMP does.
+    t = 0;
+    goto sign_check;
+  }
+#endif
+
+  {
+    T v1 = 0;
+    T v2 = 1;
+    T v3 = y;
+    while (true) {
+      T q = x / v3;
+      // Remainder, next candidate GCD.
+      T t3 = x - q*v3;
+      T t1 = s - q*v1;
+      T t2 = t - q*v2;
+      s = v1;
+      t = v2;
+      x = v3;
+      if (t3 == 0)
+	break;
+      v1 = t1;
+      v2 = t2;
+      v3 = t3;
+    }
+  }
+
+#ifdef COPY_GMP
+ sign_check:
+#endif
+  // FIX will these produce in-place negations (vs using a temp)?
+  if (negative_x)
+    s = -s;
+  if (negative_y)
+    t = -t;
   return x;
 }
 
@@ -343,6 +415,7 @@ total_memory_in_bytes(const Native_Integer<T>& x) {
 template <typename T>
 size_t
 external_memory_in_bytes(const Native_Integer<T>& x) {
+  used(x);
   return 0;
 }
 
@@ -500,13 +573,31 @@ gcd_assign(Native_Integer<T>& x, const Native_Integer<T>& y) {
   x.raw_value() = gcd(x.raw_value(), y.raw_value());
 }
 
-
 /*! \relates Native_Integer */
 template <typename T>
 inline void
 gcd_assign(Native_Integer<T>& x,
 	   const Native_Integer<T>& y, const Native_Integer<T>& z) {
   x.raw_value() = gcd(y.raw_value(), z.raw_value());
+}
+
+/*! \relates Native_Integer */
+template <typename T>
+inline void
+gcdext_assign(Native_Integer<T>& x, const Native_Integer<T>& y,
+	      Native_Integer<T>& s, Native_Integer<T>& t) {
+  x.raw_value() = gcdext<T>(x.raw_value(), y.raw_value(),
+			    s.raw_value(), t.raw_value());
+}
+
+/*! \relates Native_Integer */
+template <typename T>
+inline void
+gcdext_assign(Native_Integer<T>& x,
+	      const Native_Integer<T>& y, const Native_Integer<T>& z,
+	      Native_Integer<T>& s, Native_Integer<T>& t) {
+  x.raw_value() = gcdext<T>(y.raw_value(), z.raw_value(),
+			    s.raw_value(), t.raw_value());
 }
 
 /*! \relates Native_Integer */
