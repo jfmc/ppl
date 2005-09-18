@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Native_Integer_inlines_hh
 #define PPL_Native_Integer_inlines_hh 1
 
+#include "compiler.hh"
 #include <iostream>
 #include <limits>
 #include <cassert>
@@ -343,6 +344,7 @@ total_memory_in_bytes(const Native_Integer<T>& x) {
 template <typename T>
 size_t
 external_memory_in_bytes(const Native_Integer<T>& x) {
+  used(x);
   return 0;
 }
 
