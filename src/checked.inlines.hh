@@ -111,6 +111,77 @@ gcd_generic(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   return gcd_common<Policy>(to, nx, ny, dir);
 }
 
+template <typename Policy, typename To,
+	  typename From1, typename From2, typename From3, typename From4>
+inline Result
+gcdext_generic(To& to, const From1& x, const From2& y, From3& s, From4& t,
+	       Rounding_Dir dir) {
+  if (y == 0) {
+    if (x == 0) {
+      s = 0;
+      t = 1;
+      return V_EQ;
+    }
+    else {
+      if (x < 0)
+	s = -1;
+      else
+	s = 1;
+      t = 0;
+      return abs<Policy>(to, x, dir);
+    }
+  }
+
+  s = 1;
+  t = 0;
+  bool negative_x = x < 0;
+  bool negative_y = y < 0;
+  // FIX returns
+  abs<Policy>(to, x, dir);
+  From2 ay;
+  abs<Policy>(ay, y, dir);
+
+#define COPY_GMP
+#ifdef COPY_GMP
+  if (to == ay) {
+    // FIX This is to favour s, as GMP does.
+    t = 0;
+    goto sign_check;
+  }
+#endif
+
+  {
+    From3 v1 = 0;
+    From4 v2 = 1;
+    To v3 = static_cast<To>(ay);
+    while (true) {
+      To q = to / v3;
+      // Remainder, next candidate GCD.
+      To t3 = to - q*v3;
+      From3 t1 = s - static_cast<From3>(q)*v1;
+      From4 t2 = t - static_cast<From4>(q)*v2;
+      s = v1;
+      t = v2;
+      to = v3;
+      if (t3 == 0)
+	break;
+      v1 = t1;
+      v2 = t2;
+      v3 = t3;
+    }
+  }
+
+#ifdef COPY_GMP
+ sign_check:
+#endif
+  if (negative_x)
+    // FIX how to combine this result with the result of the neg below?
+    neg<Policy>(s, -s, dir);
+  if (negative_y)
+    return neg<Policy>(t, -t, dir);
+  return V_EQ;
+}
+
 template <typename Policy, typename To, typename From1, typename From2>
 inline Result
 lcm_generic(To& to, const From1& x, const From2& y, Rounding_Dir dir) {

@@ -181,7 +181,25 @@ template <typename Policy, typename type1, typename type2, typename type3> \
 inline ret_type name(qual1 type1& arg1, qual2 type2& arg2, qual3 type3& arg3, after1 a1) { \
   return FUNCTION_CLASS(name)<Policy, type1, type2, type3>::function(arg1, arg2, arg3, a1); \
 }
-  
+
+#define DECLARE_FUN5_0_1(name, ret_type,				\
+			 qual1, type1, qual2, type2, qual3, type3,	\
+			 qual4, type4, qual5, type5,			\
+			 after1)					\
+template <typename Policy,						\
+	  typename type1, typename type2, typename type3,		\
+	  typename type4, typename type5>				\
+struct FUNCTION_CLASS(name);						\
+template <typename Policy,						\
+	  typename type1, typename type2, typename type3,		\
+	  typename type4, typename type5>				\
+inline ret_type name(qual1 type1& arg1, qual2 type2& arg2,		\
+		     qual3 type3& arg3, qual4 type4& arg4,		\
+		     qual5 type5& arg5,	after1 a1) {			\
+  return FUNCTION_CLASS(name)<Policy, type1, type2, type3, type4, type5> \
+    ::function(arg1, arg2, arg3, arg4, arg5, a1);			\
+}
+
 #define SPECIALIZE_FUN1_0_0(name, suf, ret_type, qual, type) \
 template <typename Policy> \
 struct FUNCTION_CLASS(name)<Policy, type> { \
@@ -270,6 +288,19 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
   } \
 };
 
+#define SPECIALIZE_FUN5_0_1(name, suf, ret_type,			\
+			    qual1, type1, qual2, type2, qual3, type3,	\
+			    qual4, type4, qual5, type5, after1)		\
+template <typename Policy>						\
+struct FUNCTION_CLASS(name) <Policy,					\
+			     type1, type2, type3, type4, type5> {	\
+  static inline Result							\
+  function(qual1 type1& arg1, qual2 type2 &arg2, qual3 type3 &arg3,	\
+	   qual4 type4 &arg4, qual5 type5 &arg5, after1 a1) {		\
+    return name ## _ ## suf<Policy>(arg1, arg2, arg3, arg4, arg5, a1);	\
+  }									\
+};
+
 #define nonconst
 
 #define SPECIALIZE_SGN(suf, From) \
@@ -316,6 +347,9 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
   SPECIALIZE_FUN3_0_1(sub_mul, suf, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 #define SPECIALIZE_GCD(suf, To, From1, From2) \
   SPECIALIZE_FUN3_0_1(gcd, suf, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define SPECIALIZE_GCDEXT(suf, To, From1, From2, From3, From4)		\
+  SPECIALIZE_FUN5_0_1(gcdext, suf, Result, nonconst, To,		\
+		      const, From1, const, From2, nonconst, From3, nonconst, From4, Rounding_Dir)
 #define SPECIALIZE_LCM(suf, To, From1, From2) \
   SPECIALIZE_FUN3_0_1(lcm, suf, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 #define SPECIALIZE_INPUT(suf, Type) \
@@ -346,6 +380,8 @@ DECLARE_FUN2_0_2(div2exp,     Result, nonconst, To, const, From, int, Rounding_D
 DECLARE_FUN3_0_1(add_mul,     Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN3_0_1(sub_mul,     Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN3_0_1(gcd,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+DECLARE_FUN5_0_1(gcdext,      Result, nonconst, To, const, From1, const, From2,
+		 nonconst, From3, nonconst, From4, Rounding_Dir)
 DECLARE_FUN3_0_1(lcm,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN1_0_2(input, Result, nonconst, Type, std::istream&, Rounding_Dir)
 DECLARE_FUN1_1_2(output, Result, std::ostream&, const, Type, const Numeric_Format&, Rounding_Dir)

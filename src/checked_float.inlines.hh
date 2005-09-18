@@ -308,7 +308,7 @@ prepare_inexact() {
 }
 
 template <typename Policy>
-inline Result 
+inline Result
 result_relation(Rounding_Dir dir) {
   if (Policy::fpu_check_inexact) {
     if (!fpu_check_inexact())
@@ -335,7 +335,7 @@ result_relation(Rounding_Dir dir) {
 }
 
 template <typename Policy, typename From, typename To>
-inline Result 
+inline Result
 assign_float_float_exact(To& to, const From from, Rounding_Dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(from)))
     return VC_NAN;
@@ -362,7 +362,7 @@ assign_float_float(To& to, const From from, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 neg_float(Type& to, const Type from, Rounding_Dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(from)))
     return VC_NAN;
@@ -371,7 +371,7 @@ neg_float(Type& to, const Type from, Rounding_Dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 add_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
@@ -391,7 +391,7 @@ add_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 sub_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
@@ -411,7 +411,7 @@ sub_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
@@ -432,7 +432,7 @@ mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
@@ -456,7 +456,7 @@ div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 rem_float(Type& to, const Type x, const Type y, Rounding_Dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
@@ -471,7 +471,7 @@ rem_float(Type& to, const Type x, const Type y, Rounding_Dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 mul2exp_float(Type& to, const Type x, int exp, Rounding_Dir dir) {
   if (exp < 0)
     return div2exp<Policy>(to, x, -exp, dir);
@@ -480,7 +480,7 @@ mul2exp_float(Type& to, const Type x, int exp, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 div2exp_float(Type& to, const Type x, int exp, Rounding_Dir dir) {
   if (exp < 0)
     return mul2exp<Policy>(to, x, -exp, dir);
@@ -536,7 +536,7 @@ cmp_float(const Type x, const Type y) {
 }
 
 template <typename Policy, typename To, typename From>
-inline Result 
+inline Result
 assign_float_int_exact(To& to, const From from, Rounding_Dir) {
   to = from;
   return V_EQ;
@@ -691,7 +691,7 @@ assign_float_mpq(Type& to, const mpq_class& from, Rounding_Dir dir)
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(to)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
@@ -709,7 +709,7 @@ add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(to)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
@@ -833,6 +833,7 @@ SPECIALIZE_MUL2EXP(float, float, float)
 SPECIALIZE_DIV2EXP(float, float, float)
 SPECIALIZE_SQRT(float, float, float)
 SPECIALIZE_GCD(generic, float, float, float)
+SPECIALIZE_GCDEXT(generic, float, float, float, float, float)
 SPECIALIZE_LCM(generic, float, float, float)
 SPECIALIZE_SGN(float, float)
 SPECIALIZE_CMP(float, float, float)
@@ -856,6 +857,7 @@ SPECIALIZE_MUL2EXP(float, double, double)
 SPECIALIZE_DIV2EXP(float, double, double)
 SPECIALIZE_SQRT(float, double, double)
 SPECIALIZE_GCD(generic, double, double, double)
+SPECIALIZE_GCDEXT(generic, double, double, double, double, double)
 SPECIALIZE_LCM(generic, double, double, double)
 SPECIALIZE_SGN(float, double)
 SPECIALIZE_CMP(float, double, double)
@@ -879,6 +881,7 @@ SPECIALIZE_MUL2EXP(float, long double, long double)
 SPECIALIZE_DIV2EXP(float, long double, long double)
 SPECIALIZE_SQRT(float, long double, long double)
 SPECIALIZE_GCD(generic, long double, long double, long double)
+SPECIALIZE_GCDEXT(generic, long double, long double, long double, long double, long double)
 SPECIALIZE_LCM(generic, long double, long double, long double)
 SPECIALIZE_SGN(float, long double)
 SPECIALIZE_CMP(float, long double, long double)

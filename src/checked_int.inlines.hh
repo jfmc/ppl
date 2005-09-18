@@ -61,8 +61,8 @@ minus_infinity_int() {
 template <typename Policy, typename Type>
 inline Type
 not_a_number_int() {
-  return Limits<Type>::min >= 0 
-	  ? Limits<Type>::max - Policy::store_infinity * 2 
+  return Limits<Type>::min >= 0
+	  ? Limits<Type>::max - Policy::store_infinity * 2
 	  : Limits<Type>::min + Policy::store_infinity;
 }
 
@@ -1075,7 +1075,7 @@ rem_int(Type& to, const Type x, const Type y, Rounding_Dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 div2exp_unsigned_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
   if (exp < 0)
     return mul2exp<Policy>(to, x, -exp, dir);
@@ -1097,7 +1097,7 @@ div2exp_unsigned_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 div2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
   if (exp < 0)
     return mul2exp<Policy>(to, x, -exp, dir);
@@ -1108,7 +1108,7 @@ div2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
       return V_LGE;
     if (x < 0)
       return round_lt_int_no_overflow<Policy>(to, dir);
-    else if (x > 0) 
+    else if (x > 0)
       return round_gt_int_no_overflow<Policy>(to, dir);
     else
       return V_EQ;
@@ -1143,7 +1143,7 @@ div2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 mul2exp_unsigned_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
   if (exp < 0)
     return div2exp<Policy>(to, x, -exp, dir);
@@ -1168,7 +1168,7 @@ mul2exp_unsigned_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 mul2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
   if (exp < 0)
     return div2exp<Policy>(to, x, -exp, dir);
@@ -1422,6 +1422,17 @@ SPECIALIZE_GCD(generic, unsigned short, unsigned short, unsigned short)
 SPECIALIZE_GCD(generic, unsigned int, unsigned int, unsigned int)
 SPECIALIZE_GCD(generic, unsigned long, unsigned long, unsigned long)
 SPECIALIZE_GCD(generic, unsigned long long, unsigned long long, unsigned long long)
+
+SPECIALIZE_GCDEXT(generic, signed char, signed char, signed char, signed char, signed char)
+SPECIALIZE_GCDEXT(generic, signed short, signed short, signed short, signed short, signed short)
+SPECIALIZE_GCDEXT(generic, signed int, signed int, signed int, signed int, signed int)
+SPECIALIZE_GCDEXT(generic, signed long, signed long, signed long, signed long, signed long)
+SPECIALIZE_GCDEXT(generic, signed long long, signed long long, signed long long, signed long long, signed long long)
+SPECIALIZE_GCDEXT(generic, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char)
+SPECIALIZE_GCDEXT(generic, unsigned short, unsigned short, unsigned short, unsigned short, unsigned short)
+SPECIALIZE_GCDEXT(generic, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)
+SPECIALIZE_GCDEXT(generic, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long)
+SPECIALIZE_GCDEXT(generic, unsigned long long, unsigned long long, unsigned long long, unsigned long long, unsigned long long)
 
 SPECIALIZE_LCM(generic, signed char, signed char, signed char)
 SPECIALIZE_LCM(generic, signed short, signed short, signed short)
