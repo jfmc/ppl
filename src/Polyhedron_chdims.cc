@@ -453,9 +453,6 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& to_be_removed) {
     return;
   }
 
-  // FIXME: provide a method in Linear_System that removes a set
-  // of columns and restores strong-normalization only at the end.
-
   // For each variable to be removed, we fill the corresponding column
   // by shifting left those columns that will not be removed.
   Variables_Set::const_iterator tbr = to_be_removed.begin();
@@ -466,16 +463,12 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& to_be_removed) {
     dimension_type tbr_col = tbr->space_dimension();
     // All columns in between are moved to the left.
     while (src_col < tbr_col)
-      // FIXME: consider whether Linear_System must have a swap_columns()
-      // method.  If the answer is "no", remove this Matrix:: qualification.
       gen_sys.Matrix::swap_columns(dst_col++, src_col++);
     ++src_col;
   }
   // Moving the remaining columns.
   const dimension_type gen_sys_num_columns = gen_sys.num_columns();
   while (src_col < gen_sys_num_columns)
-    // FIXME: consider whether Linear_System must have a swap_columns()
-    // method.  If the answer is "no", remove this Matrix:: qualification.
     gen_sys.Matrix::swap_columns(dst_col++, src_col++);
 
   // The number of remaining columns is `dst_col'.
