@@ -3061,7 +3061,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     switch (relsym) {
     case LESS_THAN_OR_EQUAL:
       {
-	N up_sum(expr.inhomogeneous_term());
+	N up_sum = raw_value(expr.inhomogeneous_term());
 
 	 // Index of the variables with value +inf.
 	dimension_type up_var_index_inf;
