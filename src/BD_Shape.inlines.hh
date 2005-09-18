@@ -62,7 +62,7 @@ div_round_up(Checked_Number<T, Policy>& to,
     to = PLUS_INFINITY;
     return;
   }
-  assign(to, q, ROUND_UP);
+  assign(to, raw_value(q), ROUND_UP);
 }
 
 //! Assigns to \p x the minimum between \p x and \p y.
@@ -2566,7 +2566,7 @@ BD_Shape<T>::affine_image(const Variable var,
   // on `var' and add back `low_sum <= var <= up_sum'.
 
   // Approximationg `expr' from above and from below.
-  N up_sum(expr.inhomogeneous_term());
+  N up_sum = raw_value(expr.inhomogeneous_term());
   N low_sum;
   assign_neg(low_sum, up_sum, ROUND_UP);
   // Indices of the variables with value +inf.
