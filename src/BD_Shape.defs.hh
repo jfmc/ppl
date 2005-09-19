@@ -713,7 +713,7 @@ public:
                                      are dimension-incompatible.
 
     \note This operator is an <EM>extrapolation</EM> and not a
-          <EM>widening</EM>, since it not provide a convergence
+          <EM>widening</EM>, since it does not provide a convergence
           guarantee for fixpoint iterations.  Use
           CH78_widening_assign(const BD_Shape&) if such a guarantee is
           required.
@@ -734,7 +734,7 @@ public:
                                             are dimension-incompatible.
 
     \note This operator is an <EM>extrapolation</EM> and not a
-          <EM>widening</EM>, since it not provide a convergence
+          <EM>widening</EM>, since it does not provide a convergence
           guarantee for fixpoint iterations.  Use
           CH78_widening_assign(const BD_Shape&) if such a guarantee is
           required.
