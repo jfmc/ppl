@@ -49,9 +49,9 @@ ORIGINAL_TESTS = \
 	CbecomesNNC1 \
 	NNCbecomesC1 \
 	NNCminimize1 NNCminimize2 NNCminimize3 NNCminimize4 NNCminimize5 \
-        NNCminimize6 \
+	NNCminimize6 \
 	addconstraint1 addconstraint2 addconstraint3 \
-        addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
+	addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
 	addconstraints5 addconstraints6 addconstraints7 addconstraints8 \
 	addconstraints9 addconstraints10 addconstraints11 \
 	addconstraints12 addconstraints13 \
@@ -71,7 +71,7 @@ ORIGINAL_TESTS = \
 	affinepreimage5 affinepreimage6 affinepreimage7 affinepreimage8 \
 	affinepreimage9 affinepreimage10 affinepreimage11 \
 	affinetrans \
-        append1 append2 \
+	append1 append2 \
 	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
 	ascii_dump_load5 ascii_dump_load6 ascii_dump_load7 \
 	bgp99extrapolation1 bgp99extrapolation2 \
@@ -114,7 +114,7 @@ ORIGINAL_TESTS = \
 	geomcovers1 \
 	h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
 	h79widening6 h79widening7 h79widening8 \
-        intersection1 intersection2 intersection3 intersection4 \
+	intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 intersection8 \
 	intersection9 intersection10 intersection11 \
 	limitedbhrz03extrapolation1 \
@@ -132,7 +132,7 @@ ORIGINAL_TESTS = \
 	minconstraints1 minconstraints2 minconstraints3 minconstraints4 \
 	mingenerators1 mingenerators2 mingenerators3 \
 	onepoint \
-        permute \
+	permute \
 	polydifference1 polydifference2 polydifference3 polydifference4 \
 	polydifference5 polydifference6 polydifference7 polydifference8 \
 	polydifference9 \
@@ -212,14 +212,14 @@ DERIVED_TESTS = \
 	nnc_generalizedaffineimage3 \
 	nnc_generalizedaffineimage5 nnc_generalizedaffineimage6 \
 	nnc_generalizedaffineimage11 \
-        nnc_generalizedaffineimage13 nnc_generalizedaffineimage14 \
+	nnc_generalizedaffineimage13 nnc_generalizedaffineimage14 \
 	nnc_generalizedaffinepreimage1 nnc_generalizedaffinepreimage2 \
 	nnc_generalizedaffinepreimage3 \
 	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
 	nnc_generators5 nnc_generators6 nnc_generators7 \
 	nnc_geomcovers1 \
 	nnc_h79widening1 nnc_h79widening2 nnc_h79widening4 nnc_h79widening5 \
-        nnc_h79widening6 nnc_h79widening7 nnc_h79widening8 \
+	nnc_h79widening6 nnc_h79widening7 nnc_h79widening8 \
 	nnc_intersection1 nnc_intersection2 nnc_intersection3 \
 	nnc_intersection4 nnc_intersection5 nnc_intersection6 \
 	nnc_intersection7 nnc_intersection8 nnc_intersection9 \
