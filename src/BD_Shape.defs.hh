@@ -24,12 +24,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_BD_Shape_defs_hh 1
 
 #include "BD_Shape.types.hh"
+#include "globals.types.hh"
 #include "DB_Matrix.defs.hh"
 #include "DB_Row.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include "Polyhedron.types.hh"
-//#include "globals.defs.hh"
 #include "Checked_Number.defs.hh"
 #include <vector>
 #include <cstddef>

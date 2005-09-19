@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Row.defs.hh"
 #include "Coefficient.defs.hh"
-//#include "globals.defs.hh"
 #include <iostream>
 #include <iomanip>
 #include <cassert>
