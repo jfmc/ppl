@@ -1034,8 +1034,9 @@ PPL::Constraint_System::primal_simplex(Linear_Expression& cost_function,
 Simplex_Status
 PPL::Constraint_System::primal_simplex(const Linear_Expression& expression,
 				       const bool maximize,
-				       Coefficient& ext_n, Coefficient& ext_d,
-				       Generator& maximizing_point) const {
+				       Coefficient& ext_n,
+				       Coefficient& ext_d,
+				       Generator& optimizing_point) const {
   // FIXME: putting this declaration at the beginning of the file
   // does not work.  A GCC bug?
   using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -1069,23 +1070,23 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expression,
     for (dimension_type i = cost_function.size(); i-- > 0; ) 
       negate(cost_function[i]);
 
-  Simplex_Status status = primal_simplex(cost_function, maximizing_point);
+  Simplex_Status status = primal_simplex(cost_function, optimizing_point);
   if (status == SOLVED_PROBLEM) {
     // Compute the optimal value of the cost function.
     ext_n = expression.inhomogeneous_term();
-    for (dimension_type i = maximizing_point.space_dimension(); i-- > 0; )  
-      ext_n += maximizing_point.coefficient(Variable(i))
+    for (dimension_type i = optimizing_point.space_dimension(); i-- > 0; )  
+      ext_n += optimizing_point.coefficient(Variable(i))
 	       * expression.coefficient(Variable(i));
 
     // We want numerator and denominator to be coprime.
     Coefficient gcd = 0;
-    ext_d = maximizing_point.divisor();
+    ext_d = optimizing_point.divisor();
     gcd_assign(gcd, ext_n, ext_d);
     ext_n /= gcd;
     ext_d /= gcd;
     
     // We check our computed generator.
-    assert(this->satisfies_all_constraints(maximizing_point));  
+    assert(this->satisfies_all_constraints(optimizing_point));  
   }
   return status;
 }
