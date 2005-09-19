@@ -2236,9 +2236,6 @@ private:
 
   //@} // Widening- and Extrapolation-Related Functions
 
-  //! Adds the low-level constraints to the constraint system.
-  static void add_low_level_constraints(Constraint_System& cs);
-
   //! Adds new space dimensions to the given matrices.
   /*!
     \param mat1

@@ -172,6 +172,18 @@ Constraint_System::end() const {
 }
 
 inline void
+Constraint_System::add_low_level_constraints() {
+  if (is_necessarily_closed())
+    // The positivity constraint.
+    insert(Constraint::zero_dim_positivity());
+  else {
+    // Add the epsilon constraints.
+    insert(Constraint::epsilon_leq_one());
+    insert(Constraint::epsilon_geq_zero());
+  }
+}
+
+inline void
 Constraint_System::swap(Constraint_System& y) {
   Linear_System::swap(y);
 }

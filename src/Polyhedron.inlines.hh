@@ -274,18 +274,6 @@ Polyhedron::process_pending() const {
   return true;
 }
 
-inline void
-Polyhedron::add_low_level_constraints(Constraint_System& cs) {
-  if (cs.is_necessarily_closed())
-    // The positivity constraint.
-    cs.insert(Constraint::zero_dim_positivity());
-  else {
-    // Add the epsilon constraints.
-    cs.insert(Constraint::epsilon_leq_one());
-    cs.insert(Constraint::epsilon_geq_zero());
-  }
-}
-
 inline bool
 Polyhedron::is_empty() const {
   if (marked_empty())
@@ -422,7 +410,7 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   }
 
   // Adding the low-level constraints.
-  add_low_level_constraints(con_sys);
+  con_sys.add_low_level_constraints();
   // Now removing the dummy constraint inserted before.
   dimension_type n_rows = con_sys.num_rows() - 1;
   con_sys[0].swap(con_sys[n_rows]);

@@ -60,7 +60,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
     status.set_empty();
   else
     if (num_dimensions > 0) {
-      add_low_level_constraints(con_sys);
+      con_sys.add_low_level_constraints();
       con_sys.adjust_topology_and_space_dimension(topol, num_dimensions);
       set_constraints_minimized();
     }
@@ -117,7 +117,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& ccs)
       con_sys.unset_pending_rows();
       con_sys.set_sorted(false);
     }
-    add_low_level_constraints(con_sys);
+    con_sys.add_low_level_constraints();
     set_constraints_up_to_date();
   }
   else {
@@ -163,7 +163,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, Constraint_System& cs)
       con_sys.unset_pending_rows();
       con_sys.set_sorted(false);
     }
-    add_low_level_constraints(con_sys);
+    con_sys.add_low_level_constraints();
     set_constraints_up_to_date();
   }
   else {

@@ -410,6 +410,9 @@ private:
   //! It is a pending constraint.
   void insert_pending(const Constraint& c);
 
+  //! Adds low-level constraints to the constraint system.
+  void add_low_level_constraints();
+
   //! \brief
   //! Applies the primal simplex algorithm so as to maximize the value
   //! of \p cost_function on the system of constraints.
