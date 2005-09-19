@@ -42,6 +42,17 @@ int scalar_product_sign(const Constraint& x, const Generator& y);
 // This is commented in scalar_product.defs.hh.
 int reduced_scalar_product_sign(const Constraint& x, const Generator& y);
 
+// This is commented in scalar_product.defs.hh.
+void
+homogeneous_scalar_product_assign(Coefficient& z,
+				  const Linear_Expression& x,
+				  const Generator& y);
+
+// This is commented in scalar_product.defs.hh.
+int
+homogeneous_scalar_product_sign(const Linear_Expression& x,
+				const Generator& y);
+
 namespace IO_Operators {
 
 //! Output operator.
@@ -404,6 +415,14 @@ private:
   friend int
   Parma_Polyhedra_Library::reduced_scalar_product_sign(const Constraint& x,
 						       const Generator& y);
+  friend void
+  homogeneous_scalar_product_assign(Coefficient& z,
+				    const Linear_Expression& x,
+				    const Generator& y);
+  friend int
+  homogeneous_scalar_product_sign(const Linear_Expression& x,
+				  const Generator& y);
+
 
   // FIXME: the following friend declaration is only to grant access to
   // Constraint_System::satisfies_all_constraints().

@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_scalar_products_inlines_hh 1
 
 #include "Linear_Row.defs.hh"
+#include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
 #include "Generator.defs.hh"
 
@@ -58,6 +59,22 @@ scalar_product_sign(const Constraint& x, const Generator& y) {
 
 inline int
 reduced_scalar_product_sign(const Constraint& x, const Generator& y) {
+  return reduced_scalar_product_sign(static_cast<const Linear_Row&>(x),
+				     static_cast<const Linear_Row&>(y));
+}
+
+inline void
+homogeneous_scalar_product_assign(Coefficient& z,
+				  const Linear_Expression& x,
+				  const Generator& y) {
+  reduced_scalar_product_assign(z,
+				static_cast<const Linear_Row&>(x),
+				static_cast<const Linear_Row&>(y));
+}
+
+inline int
+homogeneous_scalar_product_sign(const Linear_Expression& x,
+				const Generator& y) {
   return reduced_scalar_product_sign(static_cast<const Linear_Row&>(x),
 				     static_cast<const Linear_Row&>(y));
 }

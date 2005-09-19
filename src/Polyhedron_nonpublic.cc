@@ -625,7 +625,8 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
 
   // Add in the constant term in `expr'.
   mpz_class n;
-  Checked::assign<Checked::Transparent_Policy>(n, raw_value(expr[0]), ROUND_IGNORE);
+  Checked::assign<Checked::Transparent_Policy>
+    (n, raw_value(expr.inhomogeneous_term()), ROUND_IGNORE);
   extremum += n;;
 
   // The polyhedron is bounded in the right direction and we have

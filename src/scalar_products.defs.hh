@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_Row.types.hh"
 #include "Coefficient.types.hh"
+#include "Linear_Expression.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 
@@ -85,6 +86,24 @@ void homogeneous_scalar_product_assign(Coefficient& z,
 //! where the inhomogeneous terms are ignored,
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 int homogeneous_scalar_product_sign(const Linear_Row& x, const Linear_Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Computes the \e homogeneous scalar product of \p x and \p y,
+//! where the inhomogeneous terms are ignored,
+//! and assigns the result to \p z.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void homogeneous_scalar_product_assign(Coefficient& z,
+				       const Linear_Expression& x,
+				       const Generator& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Returns the sign of the \e homogeneous scalar product of \p x and \p y,
+//! where the inhomogeneous terms are ignored,
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+int homogeneous_scalar_product_sign(const Linear_Expression& x,
+				    const Generator& y);
 
 } // namespace Parma_Polyhedra_Library
 
