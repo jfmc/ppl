@@ -97,10 +97,10 @@ ORIGINAL_TESTS = \
 addconstraints1_SOURCES = addconstraints1.cc
 
 addspacedims1_SOURCES = addspacedims1.cc
-addspacedims2_SOURCES = addspacedims2.cc 
-addspacedims3_SOURCES = addspacedims3.cc 
-addspacedims4_SOURCES = addspacedims4.cc 
-addspacedims5_SOURCES = addspacedims5.cc 
+addspacedims2_SOURCES = addspacedims2.cc
+addspacedims3_SOURCES = addspacedims3.cc
+addspacedims4_SOURCES = addspacedims4.cc
+addspacedims5_SOURCES = addspacedims5.cc
 addspacedims6_SOURCES = addspacedims6.cc
 addspacedims7_SOURCES = addspacedims7.cc
 
@@ -177,7 +177,7 @@ exceptions3_SOURCES = exceptions3.cc
 
 fromgensys1_SOURCES = fromgensys1.cc
 
-generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc 
+generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
 generalizedaffineimage3_SOURCES = generalizedaffineimage3.cc
 generalizedaffineimage4_SOURCES = generalizedaffineimage4.cc
