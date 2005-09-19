@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Saturation_Row_inlines_hh
 #define PPL_Saturation_Row_inlines_hh 1
 
+#include <cassert>
 // For the declaration of ffs(3).
 #include <cstring>
 
