@@ -3161,7 +3161,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       
     case GREATER_THAN_OR_EQUAL:
       {
-	N term(expr.inhomogeneous_term());
+	N term = raw_value(expr.inhomogeneous_term());
 	N low_sum;
 	assign_neg(low_sum, term, ROUND_UP);
 

@@ -71,6 +71,7 @@ inline int cmp(const GMP_Integer& x, const GMP_Integer& y);
 
 //! Returns a const reference to \p x.
 inline const mpz_class& raw_value(const GMP_Integer& x);
+
 //! Returns a reference to \p x.
 inline mpz_class& raw_value(GMP_Integer& x);
 
