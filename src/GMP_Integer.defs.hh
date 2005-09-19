@@ -29,60 +29,91 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-//! \name Functions Operating on Unbounded Integer Coefficients
+//! \name Accessor Functions
+//@{
+
+//! Returns a const reference to the underlying integer value.
+/*! \relates GMP_Integer */
+inline const mpz_class& raw_value(const GMP_Integer& x);
+
+//! Returns a reference to the underlying integer value.
+/*! \relates GMP_Integer */
+inline mpz_class& raw_value(GMP_Integer& x);
+
+//@} // Accessor Functions
+
+//! \name Memory Size Inspection Functions
+//@{
+
+//! Returns the total size in bytes of the memory occupied by \p x.
+/*! \relates GMP_Integer */
+inline memory_size_type total_memory_in_bytes(const GMP_Integer& x);
+
+//! Returns the size in bytes of the memory managed by \p x.
+/*! \relates GMP_Integer */
+inline memory_size_type external_memory_in_bytes(const GMP_Integer& x);
+
+//@} // Memory Size Inspection Functions
+
+//! \name Arithmetic Operators
 //@{
 
 //! Assigns to \p x its negation.
+/*! \relates GMP_Integer */
 inline void negate(GMP_Integer& x);
 
 //! Assigns to \p x the greatest common divisor of \p x and \p y.
+/*! \relates GMP_Integer */
 inline void gcd_assign(GMP_Integer& x, const GMP_Integer& y);
+
 //! Assigns to \p x the greatest common divisor of \p y and \p z.
+/*! \relates GMP_Integer */
 inline void gcd_assign(GMP_Integer& x,
 		       const GMP_Integer& y, const GMP_Integer& z);
 
 //! Assigns to \p x the least common multiple of \p x and \p y.
+/*! \relates GMP_Integer */
 inline void lcm_assign(GMP_Integer& x, const GMP_Integer& y);
+
 //! Assigns to \p x the least common multiple of \p y and \p z.
+/*! \relates GMP_Integer */
 inline void lcm_assign(GMP_Integer& x,
 		       const GMP_Integer& y, const GMP_Integer& z);
 
 //! Assigns to \p x the value <CODE>x + y * z</CODE>.
+/*! \relates GMP_Integer */
 inline void add_mul_assign(GMP_Integer& x,
 			   const GMP_Integer& y, const GMP_Integer& z);
+
 //! Assigns to \p x the value <CODE>x - y * z</CODE>.
+/*! \relates GMP_Integer */
 inline void sub_mul_assign(GMP_Integer& x,
 			   const GMP_Integer& y, const GMP_Integer& z);
 
 //! Assigns to \p x the quotient of the integer division of \p x by \p y.
+/*! \relates GMP_Integer */
 inline void exact_div_assign(GMP_Integer& x, const GMP_Integer& y);
+
 //! Assigns to \p x the quotient of the integer division of \p y by \p z.
+/*! \relates GMP_Integer */
 inline void exact_div_assign(GMP_Integer& x,
 			     const GMP_Integer& y, const GMP_Integer& z);
 
 //! Assigns to \p x its integer square root.
+/*! \relates GMP_Integer */
 inline void sqrt_assign(GMP_Integer& x);
+
 //! Assigns to \p x the integer square root of \p y.
+/*! \relates GMP_Integer */
 inline void sqrt_assign(GMP_Integer& x, const GMP_Integer& y);
 
 //! \brief
 //! Returns a negative, zero or positive value depending on whether
 //! \p x is lower than, equal to or greater than \p y, respectively.
+/*! \relates GMP_Integer */
 inline int cmp(const GMP_Integer& x, const GMP_Integer& y);
 
-//! Returns a const reference to \p x.
-inline const mpz_class& raw_value(const GMP_Integer& x);
-
-//! Returns a reference to \p x.
-inline mpz_class& raw_value(GMP_Integer& x);
-
-//! Returns the total size in bytes of the memory occupied by \p x.
-inline memory_size_type total_memory_in_bytes(const GMP_Integer& x);
-
-//! Returns the size in bytes of the memory managed by \p x.
-inline memory_size_type external_memory_in_bytes(const GMP_Integer& x);
-
-//@} // Functions Operating on Unbounded Integer Coefficients
+//@} // Arithmetic Operators
 
 } // namespace Parma_Polyhedra_Library
 
