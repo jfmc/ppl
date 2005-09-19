@@ -127,6 +127,7 @@ Coefficient_traits_template.hh \
 Checked_Number.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Coefficient.types.hh \
+globals.types.hh \
 Interval.types.hh \
 Bounding_Box.types.hh \
 Constraint.types.hh \
@@ -301,6 +302,7 @@ GMP_Integer.types.hh \
 Checked_Number.types.hh \
 Native_Integer.types.hh \
 Coefficient.types.hh \
+globals.defs.hh \
 Variable.types.hh \
 Linear_Expression.types.hh \
 Constraint.types.hh \

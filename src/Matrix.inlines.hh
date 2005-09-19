@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Matrix_inlines_hh
 #define PPL_Matrix_inlines_hh 1
 
+#include "globals.defs.hh"
 #include <algorithm>
 #include <cassert>
 

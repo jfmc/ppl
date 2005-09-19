@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include "Polyhedron.types.hh"
-#include "globals.defs.hh"
+//#include "globals.defs.hh"
 #include "Checked_Number.defs.hh"
 #include <vector>
 #include <cstddef>

@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_GMP_Integer_defs_hh 1
 
 #include "GMP_Integer.types.hh"
+#include "globals.types.hh"
 #include <cstddef>
 
 namespace Parma_Polyhedra_Library {
@@ -76,10 +77,10 @@ inline const mpz_class& raw_value(const GMP_Integer& x);
 inline mpz_class& raw_value(GMP_Integer& x);
 
 //! Returns the total size in bytes of the memory occupied by \p x.
-inline size_t total_memory_in_bytes(const GMP_Integer& x);
+inline memory_size_type total_memory_in_bytes(const GMP_Integer& x);
 
 //! Returns the size in bytes of the memory managed by \p x.
-inline size_t external_memory_in_bytes(const GMP_Integer& x);
+inline memory_size_type external_memory_in_bytes(const GMP_Integer& x);
 
 //@} // Functions Operating on Unbounded Integer Coefficients
 

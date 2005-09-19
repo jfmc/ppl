@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Coefficient.defs.hh"
 #include "Linear_Row.defs.hh"
-#include "globals.defs.hh"
+//#include "globals.defs.hh"
 #include <algorithm>
 #include <iostream>
 

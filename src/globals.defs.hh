@@ -23,63 +23,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_globals_defs_hh
 #define PPL_globals_defs_hh 1
 
+#include "globals.types.hh"
 #include "Coefficient.defs.hh"
 #include <exception>
-#include <cstddef>
 
 namespace Parma_Polyhedra_Library {
-
-//! An unsigned integral type for representing space dimensions.
-typedef size_t dimension_type;
-
-//! An unsigned integral type for representing memory size in bytes.
-typedef size_t memory_size_type;
 
 //! Returns a value that does not designate a valid dimension.
 dimension_type
 not_a_dimension();
-
-//! Kinds of degenerate abstract elements.
-enum Degenerate_Element {
-  //! The universe element, i.e., the whole vector space.
-  UNIVERSE,
-  //! The empty element, i.e., the empty set.
-  EMPTY
-};
-
-//! Relation symbols.
-enum Relation_Symbol {
-  //! Less than.
-  LESS_THAN,
-  //! Less than or equal to.
-  LESS_THAN_OR_EQUAL,
-  //! Equal to.
-  EQUAL,
-  //! Greater than or equal to.
-  GREATER_THAN_OR_EQUAL,
-  //! Greater than.
-  GREATER_THAN
-};
-
-//! Complexity pseudo-classes.
-enum Complexity_Class {
-  //! Worst-case polynomial complexity.
-  POLYNOMIAL_COMPLEXITY,
-  //! Worst-case exponential complexity but typically polynomial behavior.
-  SIMPLEX_COMPLEXITY,
-  //! Any complexity.
-  ANY_COMPLEXITY
-};
-
-//! Possible outcomes of a simplex solver.
-enum Simplex_Status {
-  //! The problem is unfeasible.
-  UNFEASIBLE_PROBLEM,
-  //! The problem is unbounded.
-  UNBOUNDED_PROBLEM,
-  //! The problem has been solved.
-  SOLVED_PROBLEM
-};
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A node of the list of available coefficients.

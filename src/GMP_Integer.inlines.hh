@@ -95,12 +95,12 @@ raw_value(GMP_Integer& x) {
   return x;
 }
 
-inline size_t
+inline memory_size_type
 external_memory_in_bytes(const GMP_Integer& x) {
   return x.get_mpz_t()[0]._mp_alloc * SIZEOF_MP_LIMB_T;
 }
 
-inline size_t
+inline memory_size_type
 total_memory_in_bytes(const GMP_Integer& x) {
   return sizeof(x) + external_memory_in_bytes(x);
 }

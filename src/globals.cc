@@ -22,7 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "globals.defs.hh"
+//#include "globals.defs.hh"
 #include "Constraint.defs.hh"
 #include "Generator.defs.hh"
 

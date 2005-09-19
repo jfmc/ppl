@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Matrix.defs.hh"
 #include "Row.defs.hh"
-#include "globals.defs.hh"
+//#include "globals.defs.hh"
 #include <algorithm>
 #include <iostream>
 #include <string>

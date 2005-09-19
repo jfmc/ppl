@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h> 
+#include "globals.types.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
 #include "Row.defs.hh"
@@ -29,7 +30,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_System.defs.hh"
 #include "Generator.defs.hh"
 #include "Linear_Expression.defs.hh"
-#include "globals.defs.hh"
 #include <cstddef>
 #include <iostream>
 #include <string>

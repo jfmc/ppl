@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Coefficient.defs.hh"
 #include "Row.defs.hh"
-#include "globals.defs.hh"
+//#include "globals.defs.hh"
 #include "Saturation_Matrix.defs.hh"
 #include <algorithm>
 #include <iostream>

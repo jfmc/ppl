@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Row_defs_hh 1
 
 #include "Row.types.hh"
-#include "globals.defs.hh"
+//#include "globals.defs.hh"
 #include "Coefficient.defs.hh"
 #include <vector>
 #include <limits>
