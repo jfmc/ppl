@@ -283,8 +283,8 @@ public:
   class With_Saturation_Matrix_iterator;
 
   //! \brief
-  //! Sorts the system, removing duplicates,
-  //! keeping the saturation matrix consistent.
+  //! Sorts the system, removing duplicates, keeping the saturation
+  //! matrix consistent.
   /*!
     \param sat
     Saturation matrix with rows corresponding to the rows of \p *this.
