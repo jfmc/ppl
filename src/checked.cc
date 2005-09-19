@@ -69,9 +69,7 @@ sum_sign(bool& a_neg, unsigned long& a,
 
 Result
 parse_number1(std::istream& is, number_struct& num) {
-  enum { BASE, INTEGER, FRACTIONAL, EXPONENT } state = BASE;
-  unsigned long max_exp_div;
-  int max_exp_rem;
+  enum { BASE, INTEGER, FRACTIONAL } state = BASE;
   bool empty_exponent = true;
   long exponent_offset = 0;
   num.base = 10;
@@ -184,9 +182,6 @@ parse_number1(std::istream& is, number_struct& num) {
 	if (c != '^')
 	  goto error;
       exp:
-	state = EXPONENT;
-	max_exp_div = LONG_MAX / num.base;
-	max_exp_rem = LONG_MAX % num.base;
 	c = is.get();
 	if (c == '-') {
 	  num.neg_exponent = true;
@@ -194,21 +189,20 @@ parse_number1(std::istream& is, number_struct& num) {
 	}
 	if (c == '+')
 	  break;
-	continue;
+	// Parse exponent.
+	int d = get_digit(c, num.base);
+	if (d >= 0) {
+	  unsigned long max_exp_div = LONG_MAX / num.base;
+	  empty_exponent = false;
+	  if (num.exponent > max_exp_div
+	      || (num.exponent == max_exp_div && d > LONG_MAX % num.base))
+	    return V_CVT_STR_UNK;
+	  num.exponent = num.exponent * num.base + d;
+	  break;
+	}
+	if (empty_exponent)
+	  goto error;
       }
-      goto ok;
-    case EXPONENT:
-      int d = get_digit(c, num.base);
-      if (d >= 0) {
-	empty_exponent = false;
-	if (num.exponent > max_exp_div
-	    || (num.exponent == max_exp_div && d > max_exp_rem))
-	  return V_CVT_STR_UNK;
-	num.exponent = num.exponent * num.base + d;
-	break;
-      }
-      if (empty_exponent)
-	goto error;
       goto ok;
     }
     c = is.get();
