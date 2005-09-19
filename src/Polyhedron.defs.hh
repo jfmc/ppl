@@ -2208,7 +2208,7 @@ private:
   //@{
 
   //! \brief
-  //! Copies to \p cs_selection the constraints of `y' corresponding
+  //! Copies to \p cs_selection the constraints of \p y corresponding
   //! to the definition of the CH78-widening of \p *this and \p y.
   void select_CH78_constraints(const Polyhedron& y,
 			       Constraint_System& cs_selected) const;
