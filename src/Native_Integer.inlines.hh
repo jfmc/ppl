@@ -100,19 +100,12 @@ abs(T x) {
 template <typename T>
 inline T
 gcd(T x,T y) {
-  if (x == 0)
-    return abs(y);
-  else if (y == 0)
-         return abs(x);
-  x = abs(x);
-  y = abs(y);
-  T r = 0;
   while (y != 0) {
-    r = x % y;
+    T r = x % y;
     x = y;
     y = r;
   }
-  return x;
+  return abs(x);
 }
 
 //! Returns the least common multiple of \p x and \p y.
