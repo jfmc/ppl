@@ -236,7 +236,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
   else if (!x.constraints_are_up_to_date())
     x.update_constraints();
 
-  // Copy into `H79_con_sys' the constraints of `x' that are common to `y',
+  // Copy into `H79_cs' the constraints of `x' that are common to `y',
   // according to the definition of the H79 widening.
   Constraint_System H79_cs(tpl);
   Constraint_System x_minus_H79_cs(tpl);
@@ -425,7 +425,7 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
       if (lies_on_the_boundary_of_H79)
 	continue;
 
-      // Consider all the constraints in `x_minus_H79_con_sys'
+      // Consider all the constraints in `x_minus_H79_cs'
       // that are saturated by the point `g'.
       combining_cs.clear();
       for (dimension_type j = x_minus_H79_cs_num_rows; j-- > 0; ) {
