@@ -369,56 +369,6 @@ bool operator==(const Linear_Row& x, const Linear_Row& y);
 bool operator!=(const Linear_Row& x, const Linear_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Computes the scalar product of \p x and \p y and assigns it to \p z.
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void scalar_product_assign(Coefficient& z,
-			   const Linear_Row& x, const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Returns the sign of the scalar product between \p x and \p y.
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-int scalar_product_sign(const Linear_Row& x, const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Computes the \e reduced scalar product of \p x and \p y,
-//! where the \f$\epsilon\f$ coefficient of \p x is ignored,
-//! and assigns the result to \p z.
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void reduced_scalar_product_assign(Coefficient& z,
-				   const Linear_Row& x, const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Returns the sign of the \e reduced scalar product of \p x and \p y,
-//! where the \f$\epsilon\f$ coefficient of \p x is ignored.
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-int reduced_scalar_product_sign(const Linear_Row& x, const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Computes the \e homogeneous scalar product of \p x and \p y,
-//! where the inhomogeneous terms are ignored,
-//! and assigns the result to \p z.
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void homogeneous_scalar_product_assign(Coefficient& z,
-				       const Linear_Row& x,
-				       const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Returns the sign of the \e homogeneous scalar product of \p x and \p y,
-//! where the inhomogeneous terms are ignored,
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-int homogeneous_scalar_product_sign(const Linear_Row& x, const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.
 /*! \relates Linear_Row
   \return

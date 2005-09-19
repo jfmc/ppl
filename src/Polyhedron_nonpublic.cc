@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Polyhedron.defs.hh"
-
+#include "scalar_products.defs.hh"
 #include <cassert>
 #include <string>
 #include <iostream>

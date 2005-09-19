@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Saturation_Row.defs.hh"
 #include "Saturation_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
+#include "scalar_products.defs.hh"
 #include <cstddef>
 
 namespace PPL = Parma_Polyhedra_Library;

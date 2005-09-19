@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "BHRZ03_Certificate.defs.hh"
 #include "Bounding_Box.defs.hh"
+#include "scalar_products.defs.hh"
 #include <cassert>
 #include <iostream>
 #include <stdexcept>
