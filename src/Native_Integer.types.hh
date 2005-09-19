@@ -52,7 +52,7 @@ struct Coefficient_traits_template<Native_Integer<int32_t> > {
 template <>
 struct Coefficient_traits_template<Native_Integer<int64_t> > {
   //! The type used for references to const native integers.
-  typedef Native_Integer<int64_t>& const_reference;
+  typedef const Native_Integer<int64_t>& const_reference;
 };
 
 } // namespace Parma_Polyhedra_Library
