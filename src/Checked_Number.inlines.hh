@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Checked_Number_inlines_hh
 #define PPL_Checked_Number_inlines_hh 1
 
+#include "globals.types.hh"
 #include <stdexcept>
 #include <sstream>
 
@@ -209,19 +210,55 @@ Checked_Number<T, Policy>::classify(bool nan, bool inf, bool sign) const {
   return Checked::classify<Policy>(v, nan, inf, sign);
 }
 
+namespace Checked {
+
+inline memory_size_type
+external_memory_in_bytes(const mpz_class& x) {
+  return x.get_mpz_t()[0]._mp_alloc * SIZEOF_MP_LIMB_T;
+}
+
+inline memory_size_type
+total_memory_in_bytes(const mpz_class& x) {
+  return sizeof(x) + external_memory_in_bytes(x);
+}
+
+inline memory_size_type
+external_memory_in_bytes(const mpq_class& x) {
+  return external_memory_in_bytes(x.get_num())
+    + external_memory_in_bytes(x.get_den());
+}
+
+inline memory_size_type
+total_memory_in_bytes(const mpq_class& x) {
+  return sizeof(x) + external_memory_in_bytes(x);
+}
+
+template <typename T>
+inline memory_size_type
+external_memory_in_bytes(T) {
+  return 0;
+}
+
+template <typename T>
+inline memory_size_type
+total_memory_in_bytes(T) {
+  return sizeof(T);
+}
+
+} // namespace Checked
+
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
-size_t
+inline memory_size_type
 total_memory_in_bytes(const Checked_Number<T, Policy>& x) {
-  // FIXME
-  return sizeof(x);
+  return Checked::total_memory_in_bytes(raw_value(x));
 }
 
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
-size_t
-external_memory_in_bytes(const Checked_Number<T, Policy>&) {
-  return 0;
+inline memory_size_type
+external_memory_in_bytes(const Checked_Number<T, Policy>& x) {
+  return Checked::external_memory_in_bytes(raw_value(x));
 }
 
 template <typename To, typename To_Policy>
