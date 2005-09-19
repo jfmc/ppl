@@ -24,10 +24,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_scalar_products_inlines_hh 1
 
 #include "Linear_Row.defs.hh"
+#include "Constraint.defs.hh"
+#include "Generator.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
-/*! \relates Linear_Row */
 inline int
 scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
   TEMP_INTEGER(z);
@@ -35,7 +36,6 @@ scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
   return sgn(z);
 }
 
-/*! \relates Linear_Row */
 inline int
 reduced_scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
   TEMP_INTEGER(z);
@@ -43,12 +43,23 @@ reduced_scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
   return sgn(z);
 }
 
-/*! \relates Linear_Row */
 inline int
 homogeneous_scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
   TEMP_INTEGER(z);
   homogeneous_scalar_product_assign(z, x, y);
   return sgn(z);
+}
+
+inline int
+scalar_product_sign(const Constraint& x, const Generator& y) {
+  return scalar_product_sign(static_cast<const Linear_Row&>(x),
+			     static_cast<const Linear_Row&>(y));
+}
+
+inline int
+reduced_scalar_product_sign(const Constraint& x, const Generator& y) {
+  return reduced_scalar_product_sign(static_cast<const Linear_Row&>(x),
+				     static_cast<const Linear_Row&>(y));
 }
 
 } // namespace Parma_Polyhedra_Library

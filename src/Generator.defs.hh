@@ -34,6 +34,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+// Put them in the namespace here to declare them friend later.
+
+// This is commented in scalar_product.defs.hh.
+int scalar_product_sign(const Constraint& x, const Generator& y);
+
+// This is commented in scalar_product.defs.hh.
+int reduced_scalar_product_sign(const Constraint& x, const Generator& y);
+
 namespace IO_Operators {
 
 //! Output operator.
@@ -384,11 +392,18 @@ private:
 
   friend class Parma_Polyhedra_Library::Generator_System;
   friend class Parma_Polyhedra_Library::Generator_System::const_iterator;
+  // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
 
   friend
-  Parma_Polyhedra_Library::
-  Linear_Expression::Linear_Expression(const Generator& g);
+  Parma_Polyhedra_Library
+  ::Linear_Expression::Linear_Expression(const Generator& g);
+  friend int
+  Parma_Polyhedra_Library::scalar_product_sign(const Constraint& x,
+					       const Generator& y);
+  friend int
+  Parma_Polyhedra_Library::reduced_scalar_product_sign(const Constraint& x,
+						       const Generator& y);
 
   // FIXME: the following friend declaration is only to grant access to
   // Constraint_System::satisfies_all_constraints().

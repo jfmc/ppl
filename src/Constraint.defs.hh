@@ -110,6 +110,12 @@ operator>(const Linear_Expression& e, Coefficient_traits::const_reference n);
 Constraint
 operator>(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
+// This is commented in scalar_product.defs.hh.
+int scalar_product_sign(const Constraint& x, const Generator& y);
+
+// This is commented in scalar_product.defs.hh.
+int reduced_scalar_product_sign(const Constraint& x, const Generator& y);
+
 } // namespace Parma_Polyhedra_Library
 
 
@@ -348,8 +354,15 @@ private:
   // Generator_System::satisfied_by_all_generators().
   friend class Parma_Polyhedra_Library::Generator_System;
 
-  friend Parma_Polyhedra_Library::
-  Linear_Expression::Linear_Expression(const Constraint& c);
+  friend
+  Parma_Polyhedra_Library
+  ::Linear_Expression::Linear_Expression(const Constraint& c);
+  friend int
+  Parma_Polyhedra_Library::scalar_product_sign(const Constraint& x,
+					       const Generator& y);
+  friend int
+  Parma_Polyhedra_Library::reduced_scalar_product_sign(const Constraint& x,
+						       const Generator& y);
 
   //! Default constructor: private and not implemented.
   Constraint();
