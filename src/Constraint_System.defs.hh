@@ -156,11 +156,45 @@ public:
   //! increasing the number of space dimensions if needed.
   void insert(const Constraint& c);
 
-  // FIXME: write some documentation here!
+  //! \brief
+  //! Applies the primal simplex algorithm so as to optimize the value
+  //! of the objective function \p expr on the system of constraints.
+  /*!
+    \return
+    A Simplex_Status flag indicating the outcome of the optimization
+    attempt (unfeasible, unbounded or solved problem).
+
+    \param expr
+    The objective function to be optimized.
+
+    \param maximize
+    The kind of optimization requested. If <CODE>true</CODE>, the
+    objective function will be maximized; if <CODE>false</CODE>, the
+    objective function will be minimized.
+
+    \param ext_n
+    On exit, if the problem has been solved, will contain the numerator
+    of the optimal value for \p expr.
+
+    \param ext_d
+    On exit, if the problem has been solved, will contain the denominator
+    of the optimal value for \p expr.
+
+    \param optimizing_point
+    On exit, if the problem has been solved, will contain a feasible
+    point on which \p expr takes the optimal value.
+
+    \exception std::invalid_argument
+    Thrown if the constraint system contains any strict inequality.
+
+    If the optimization problem is unfeasible or unbounded,
+    the parameters \p ext_n, \p ext_d and \p optimizing_point
+    will be left untouched.
+  */
   Simplex_Status primal_simplex(const Linear_Expression& expr,
 				bool maximize,
 				Coefficient& ext_n, Coefficient& ext_d,
-				Generator& maximising_point) const;
+				Generator& optimizing_point) const;
 
   //! \brief
   //! Returns the singleton system containing only
@@ -376,7 +410,27 @@ private:
   //! It is a pending constraint.
   void insert_pending(const Constraint& c);
 
-  // FIXME: write documentation.
+  //! \brief
+  //! Applies the primal simplex algorithm so as to maximize the value
+  //! of \p cost_function on the system of constraints.
+  /*!
+    \return
+    A Simplex_Status flag indicating the outcome of the maximization
+    attempt (unfeasible, unbounded or solved problem).
+
+    \param cost_function
+    The cost function to be maximized. It could be modified
+    during the call.
+
+    \param maximizing_point
+    On exit, if the problem has been solved, will contain a feasible
+    point on which \p cost_function takes the maximal value.
+
+    If the optimization problem is unfeasible or unbounded,
+    the parameter \p maximizing_point will be left untouched.
+    It is assumed that the constraint system contains
+    no strict inequalities.
+  */
   Simplex_Status primal_simplex(Linear_Expression& cost_function,
 				Generator& maximizing_point) const;
 };
