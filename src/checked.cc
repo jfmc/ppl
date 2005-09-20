@@ -193,9 +193,11 @@ parse_number1(std::istream& is, number_struct& num) {
 	int d = get_digit(c, num.base);
 	if (d >= 0) {
 	  unsigned long max_exp_div = LONG_MAX / num.base;
+	  int max_exp_rem = LONG_MAX % num.base;
 	  empty_exponent = false;
 	  if (num.exponent > max_exp_div
-	      || (num.exponent == max_exp_div && d > LONG_MAX % num.base))
+	      || (num.exponent == max_exp_div
+		  && d > max_exp_rem))
 	    return V_CVT_STR_UNK;
 	  num.exponent = num.exponent * num.base + d;
 	  break;
