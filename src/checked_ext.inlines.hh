@@ -44,15 +44,17 @@ template <typename To_Policy, typename From_Policy,
 inline Result
 assign_ext(To& to, const From& from, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
-    return assign<To_Policy>(to, from, dir);
+    goto native;
   if (CHECK_P(From_Policy::check_nan_args, is_nan<From_Policy>(from)))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From_Policy>(from))
     return assign<To_Policy>(to, MINUS_INFINITY, dir);
   else if (is_pinf<From_Policy>(from))
     return assign<To_Policy>(to, PLUS_INFINITY, dir);
-  else
+  else {
+  native:
     return assign<To_Policy>(to, from, dir);
+  }
 }
 
 template <typename To_Policy, typename From_Policy,
@@ -60,15 +62,17 @@ template <typename To_Policy, typename From_Policy,
 inline Result
 neg_ext(To& to, const From& x, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
-    return neg<To_Policy>(to, x, dir);
+    goto native;
   if (CHECK_P(From_Policy::check_nan_args, is_nan<From_Policy>(x)))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From_Policy>(x))
     return assign<To_Policy>(to, PLUS_INFINITY, dir);
   else if (is_pinf<From_Policy>(x))
     return assign<To_Policy>(to, MINUS_INFINITY, dir);
-  else
+  else {
+  native:
     return neg<To_Policy>(to, x, dir);
+  }
 }
 
 template <typename To_Policy, typename From_Policy,
@@ -76,13 +80,15 @@ template <typename To_Policy, typename From_Policy,
 inline Result
 abs_ext(To& to, const From& x, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
-    return abs<To_Policy>(to, x, dir);
+    goto native;
   if (CHECK_P(From_Policy::check_nan_args, is_nan<From_Policy>(x)))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From_Policy>(x) || is_pinf<From_Policy>(x))
     return assign<To_Policy>(to, PLUS_INFINITY, dir);
-  else
+  else {
+  native:
     return abs<To_Policy>(to, x, dir);
+  }
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -90,28 +96,36 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 inline Result
 add_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
-    return add<To_Policy>(to, x, y, dir);
+    goto native;
   if (CHECK_P(From1_Policy::check_nan_args, is_nan<From1_Policy>(x)) || CHECK_P(From2_Policy::check_nan_args, is_nan<From2_Policy>(y)))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From1_Policy>(x)) {
     if (CHECK_P(To_Policy::check_inf_add_inf, is_pinf<From2_Policy>(y)))
-      return set_special<To_Policy>(to, V_INF_ADD_INF);
+      goto inf_add_inf;
     else
-      return assign<To_Policy>(to, MINUS_INFINITY, dir);
+      goto minf;
   }
   else if (is_pinf<From1_Policy>(x)) {
-    if (CHECK_P(To_Policy::check_inf_add_inf, is_minf<From2_Policy>(y)))
+    if (CHECK_P(To_Policy::check_inf_add_inf, is_minf<From2_Policy>(y))) {
+    inf_add_inf:
       return set_special<To_Policy>(to, V_INF_ADD_INF);
+    }
     else
-      return assign<To_Policy>(to, PLUS_INFINITY, dir);
+      goto pinf;
   }
   else {
-    if (is_minf<From2_Policy>(y))
+    if (is_minf<From2_Policy>(y)) {
+    minf:
       return assign<To_Policy>(to, MINUS_INFINITY, dir);
-    else if (is_pinf<From2_Policy>(y)) 
+    }
+    else if (is_pinf<From2_Policy>(y)) {
+    pinf:
       return assign<To_Policy>(to, PLUS_INFINITY, dir);
-    else
+    }
+    else {
+    native:
       return add<To_Policy>(to, x, y, dir);
+    }
   }
 }
     
@@ -120,28 +134,36 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 inline Result
 sub_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
-    return sub<To_Policy>(to, x, y, dir);
+    goto native;
   if (CHECK_P(From1_Policy::check_nan_args, is_nan<From1_Policy>(x)) || CHECK_P(From2_Policy::check_nan_args, is_nan<From2_Policy>(y)))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From1_Policy>(x)) {
     if (CHECK_P(To_Policy::check_inf_sub_inf, is_minf<From2_Policy>(y)))
-      return set_special<To_Policy>(to, V_INF_SUB_INF);
+      goto inf_sub_inf;
     else
-      return assign<To_Policy>(to, MINUS_INFINITY, dir);
+      goto minf;
   }
   else if (is_pinf<From1_Policy>(x)) {
-    if (CHECK_P(To_Policy::check_inf_sub_inf, is_pinf<From2_Policy>(y)))
+    if (CHECK_P(To_Policy::check_inf_sub_inf, is_pinf<From2_Policy>(y))) {
+    inf_sub_inf:
       return set_special<To_Policy>(to, V_INF_SUB_INF);
+    }
     else
-      return assign<To_Policy>(to, PLUS_INFINITY, dir);
+      goto pinf;
   }
   else {
-    if (is_minf<From2_Policy>(y))
+    if (is_minf<From2_Policy>(y)) {
+    minf:
       return assign<To_Policy>(to, PLUS_INFINITY, dir);
-    else if (is_pinf<From2_Policy>(y)) 
+    }
+    else if (is_pinf<From2_Policy>(y)) {
+    pinf:
       return assign<To_Policy>(to, MINUS_INFINITY, dir);
-    else
+    }
+    else {
+    native:
       return sub<To_Policy>(to, x, y, dir);
+    }
   }
 }
     
@@ -150,120 +172,214 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 inline Result
 mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
-    return mul<To_Policy>(to, x, y, dir);
+    goto native;
   if (CHECK_P(From1_Policy::check_nan_args, is_nan<From1_Policy>(x)) || CHECK_P(From2_Policy::check_nan_args, is_nan<From2_Policy>(y)))
     return set_special<To_Policy>(to, VC_NAN);
   if (is_minf<From1_Policy>(x)) {
     switch (sgn_ext<From2_Policy>(y)) {
     case V_LT:
-      return assign<To_Policy>(to, PLUS_INFINITY, dir);
+      goto pinf;
     case V_GT:
-      return assign<To_Policy>(to, MINUS_INFINITY, dir);
+      goto minf;
     default:
-      assert(To_Policy::check_inf_mul_zero);
-      return set_special<To_Policy>(to, V_INF_MUL_ZERO);
+      goto inf_mul_zero;
     }
   }
   else if (is_pinf<From1_Policy>(x)) {
     switch (sgn_ext<From2_Policy>(y)) {
-      case V_LT:
-	return assign<To_Policy>(to, MINUS_INFINITY, dir);
-      case V_GT:
-	return assign<To_Policy>(to, PLUS_INFINITY, dir);
-      default:
-	assert(To_Policy::check_inf_mul_zero);
-	return set_special<To_Policy>(to, V_INF_MUL_ZERO);
+    case V_LT:
+      goto minf;
+    case V_GT:
+      goto pinf;
+    default:
+      goto inf_mul_zero;
     }
   }
   else {
     if (is_minf<From2_Policy>(y)) {
       switch (sgn<From1_Policy>(x)) {
       case V_LT:
-	return assign<To_Policy>(to, PLUS_INFINITY, dir);
+	goto pinf;
       case V_GT:
-	return assign<To_Policy>(to, MINUS_INFINITY, dir);
+	goto minf;
       default:
-	assert(To_Policy::check_inf_mul_zero);
-	return set_special<To_Policy>(to, V_INF_MUL_ZERO);
+	goto inf_mul_zero;
       }
     } else if (is_pinf<From2_Policy>(y)) {
       switch (sgn<From1_Policy>(x)) {
       case V_LT:
+      minf:
 	return assign<To_Policy>(to, MINUS_INFINITY, dir);
       case V_GT:
+      pinf:
 	return assign<To_Policy>(to, PLUS_INFINITY, dir);
+	goto pinf;
       default:
+      inf_mul_zero:
 	assert(To_Policy::check_inf_mul_zero);
 	return set_special<To_Policy>(to, V_INF_MUL_ZERO);
       }
     }
-    else
+    else {
+    native:
       return mul<To_Policy>(to, x, y, dir);
+    }
   }
 }
+
     
-// FIXME: optimize, remove classify, permit specialization of set_special
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
 add_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
-    return add_mul<To_Policy>(to, x, y, dir);
-  Result rto;
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rto = classify<To_Policy>(to, true, true, false)) == VC_NAN
-      || (rx = classify<From1_Policy>(x, true, true, true)) == VC_NAN
-      || (ry = classify<From2_Policy>(y, true, true, true)) == VC_NAN)
+    goto native;
+  if (CHECK_P(To_Policy::check_nan_args, is_nan<To_Policy>(to)) ||
+      CHECK_P(From1_Policy::check_nan_args, is_nan<From1_Policy>(x)) ||
+      CHECK_P(From2_Policy::check_nan_args, is_nan<From2_Policy>(y)))
     return set_special<To_Policy>(to, VC_NAN);
-  else if (!(is_special(rto) || is_special(rx) || is_special(ry)))
-    return add_mul<To_Policy>(to, x, y, dir);
-  else if (rx == VC_NORMAL && ry == VC_NORMAL)
-    r = rto;
-  else {
-    rx = sign(rx);
-    ry = sign(ry);
-    if (rx == V_EQ || ry == V_EQ)
-      return set_special<To_Policy>(to, V_INF_MUL_ZERO);
-    else if (rx == ry)
-      r = rto == VC_MINUS_INFINITY ? V_INF_ADD_INF : VC_PLUS_INFINITY;
-    else
-      r = rto == VC_PLUS_INFINITY ? V_INF_ADD_INF : VC_MINUS_INFINITY;
+  if (is_minf<From1_Policy>(x)) {
+    switch (sgn_ext<From2_Policy>(y)) {
+    case V_LT:
+      goto a_pinf;
+    case V_GT:
+      goto a_minf;
+    default:
+      goto inf_mul_zero;
+    }
   }
-  return set_special<To_Policy>(to, r);
+  else if (is_pinf<From1_Policy>(x)) {
+    switch (sgn_ext<From2_Policy>(y)) {
+    case V_LT:
+      goto a_minf;
+    case V_GT:
+      goto a_pinf;
+    default:
+      goto inf_mul_zero;
+    }
+  }
+  else {
+    if (is_minf<From2_Policy>(y)) {
+      switch (sgn<From1_Policy>(x)) {
+      case V_LT:
+	goto a_pinf;
+      case V_GT:
+	goto a_minf;
+      default:
+	goto inf_mul_zero;
+      }
+    } else if (is_pinf<From2_Policy>(y)) {
+      switch (sgn<From1_Policy>(x)) {
+      case V_LT:
+      a_minf:
+	if (CHECK_P(To_Policy::check_inf_add_inf, is_pinf<To_Policy>(to)))
+	  goto inf_add_inf;
+	else
+	  goto minf;
+      case V_GT:
+      a_pinf:
+	if (CHECK_P(To_Policy::check_inf_add_inf, is_minf<To_Policy>(to))) {
+	inf_add_inf:
+	  return set_special<To_Policy>(to, V_INF_ADD_INF);
+	}
+	else
+	  goto pinf;
+      default:
+      inf_mul_zero:
+	assert(To_Policy::check_inf_mul_zero);
+	return set_special<To_Policy>(to, V_INF_MUL_ZERO);
+      }
+    }
+    else {
+      if (is_minf<To_Policy>(to)) {
+      minf:
+	return assign<To_Policy>(to, MINUS_INFINITY, dir);
+      }
+      if (is_pinf<To_Policy>(to)) {
+      pinf:
+	return assign<To_Policy>(to, PLUS_INFINITY, dir);
+      }
+    native:
+      return add_mul<To_Policy>(to, x, y, dir);
+    }
+  }
 }
 
-// FIXME: optimize, remove classify, permit specialization of set_special
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
 sub_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
-    return sub_mul<To_Policy>(to, x, y, dir);
-  Result rto;
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rto = classify<To_Policy>(to, true, true, false)) == VC_NAN
-      || (rx = classify<From1_Policy>(x, true, true, true)) == VC_NAN
-      || (ry = classify<From2_Policy>(y, true, true, true)) == VC_NAN)
+    goto native;
+  if (CHECK_P(To_Policy::check_nan_args, is_nan<To_Policy>(to)) ||
+      CHECK_P(From1_Policy::check_nan_args, is_nan<From1_Policy>(x)) ||
+      CHECK_P(From2_Policy::check_nan_args, is_nan<From2_Policy>(y)))
     return set_special<To_Policy>(to, VC_NAN);
-  else if (!(is_special(rto) || is_special(rx) || is_special(ry)))
-    return sub_mul<To_Policy>(to, x, y, dir);
-  else if (rx == VC_NORMAL && ry == VC_NORMAL)
-    r = rto;
-  else {
-    rx = sign(rx);
-    ry = sign(ry);
-    if (rx == V_EQ || ry == V_EQ)
-      return set_special<To_Policy>(to, V_INF_MUL_ZERO);
-    else if (rx == ry)
-      r = rto == VC_PLUS_INFINITY ? V_INF_SUB_INF : VC_MINUS_INFINITY;
-    else
-      r = rto == VC_MINUS_INFINITY ? V_INF_SUB_INF : VC_PLUS_INFINITY;
+  if (is_minf<From1_Policy>(x)) {
+    switch (sgn_ext<From2_Policy>(y)) {
+    case V_LT:
+      goto a_pinf;
+    case V_GT:
+      goto a_minf;
+    default:
+      goto inf_mul_zero;
+    }
   }
-  return set_special<To_Policy>(to, r);
+  else if (is_pinf<From1_Policy>(x)) {
+    switch (sgn_ext<From2_Policy>(y)) {
+    case V_LT:
+      goto a_minf;
+    case V_GT:
+      goto a_pinf;
+    default:
+      goto inf_mul_zero;
+    }
+  }
+  else {
+    if (is_minf<From2_Policy>(y)) {
+      switch (sgn<From1_Policy>(x)) {
+      case V_LT:
+	goto a_pinf;
+      case V_GT:
+	goto a_minf;
+      default:
+	goto inf_mul_zero;
+      }
+    } else if (is_pinf<From2_Policy>(y)) {
+      switch (sgn<From1_Policy>(x)) {
+      case V_LT:
+      a_minf:
+	if (CHECK_P(To_Policy::check_inf_sub_inf, is_minf<To_Policy>(to)))
+	  goto inf_sub_inf;
+	else
+	  goto pinf;
+      case V_GT:
+      a_pinf:
+	if (CHECK_P(To_Policy::check_inf_sub_inf, is_pinf<To_Policy>(to))) {
+	inf_sub_inf:
+	  return set_special<To_Policy>(to, V_INF_SUB_INF);
+	}
+	else
+	  goto minf;
+      default:
+      inf_mul_zero:
+	assert(To_Policy::check_inf_mul_zero);
+	return set_special<To_Policy>(to, V_INF_MUL_ZERO);
+      }
+    }
+    else {
+      if (is_minf<To_Policy>(to)) {
+      minf:
+	return assign<To_Policy>(to, MINUS_INFINITY, dir);
+      }
+      if (is_pinf<To_Policy>(to)) {
+      pinf:
+	return assign<To_Policy>(to, PLUS_INFINITY, dir);
+      }
+    native:
+      return sub_mul<To_Policy>(to, x, y, dir);
+    }
+  }
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -271,34 +387,38 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 inline Result
 div_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
-    return div<To_Policy>(to, x, y, dir);
+    goto native;
   if (CHECK_P(From1_Policy::check_nan_args, is_nan<From1_Policy>(x)) || CHECK_P(From2_Policy::check_nan_args, is_nan<From2_Policy>(y)))
     return set_special<To_Policy>(to, VC_NAN);
   if (is_minf<From1_Policy>(x)) {
     if (CHECK_P(To_Policy::check_inf_div_inf, is_minf<From2_Policy>(y) || is_pinf<From2_Policy>(y)))
-      return set_special<To_Policy>(to, V_INF_DIV_INF);
+      goto inf_div_inf;
     else {
       switch (sgn<From2_Policy>(y)) {
       case V_LT:
-	return assign<To_Policy>(to, PLUS_INFINITY, dir);
+	goto pinf;
       case V_GT:
-	return assign<To_Policy>(to, MINUS_INFINITY, dir);
+	goto minf;
       default:
-	assert(To_Policy::check_div_zero);
-	return set_special<To_Policy>(to, V_DIV_ZERO);
+	goto div_zero;
       }
     }
   }
   else if (is_pinf<From1_Policy>(x)) {
-    if (is_minf<From2_Policy>(y) || is_pinf<From2_Policy>(y))
+    if (CHECK_P(To_Policy::check_inf_div_inf, is_minf<From2_Policy>(y) || is_pinf<From2_Policy>(y))) {
+    inf_div_inf:
       return set_special<To_Policy>(to, V_INF_DIV_INF);
+    }
     else {
       switch (sgn<From2_Policy>(y)) {
       case V_LT:
+      minf:
 	return assign<To_Policy>(to, MINUS_INFINITY, dir);
       case V_GT:
+      pinf:
 	return assign<To_Policy>(to, PLUS_INFINITY, dir);
       default:
+      div_zero:
 	assert(To_Policy::check_div_zero);
 	return set_special<To_Policy>(to, V_DIV_ZERO);
       }
@@ -309,8 +429,10 @@ div_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
       to = 0;
       return V_EQ;
     }
-    else
+    else {
+    native:
       return div<To_Policy>(to, x, y, dir);
+    }
   }
 }
     
@@ -320,7 +442,7 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 inline Result
 rem_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
-    return rem<To_Policy>(to, x, y, dir);
+    goto native;
   if (CHECK_P(From1_Policy::check_nan_args, is_nan<From1_Policy>(x)) || CHECK_P(From2_Policy::check_nan_args, is_nan<From2_Policy>(y)))
     return set_special<To_Policy>(to, VC_NAN);
   else if (CHECK_P(To_Policy::check_inf_mod, is_minf<From1_Policy>(x) || is_pinf<From1_Policy>(x)))
@@ -330,8 +452,10 @@ rem_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
       to = x;
       return V_EQ;
     }
-    else
+    else {
+    native:
       return rem<To_Policy>(to, x, y, dir);
+    }
   }
 }
     
@@ -340,15 +464,17 @@ template <typename To_Policy, typename From_Policy,
 inline Result
 mul2exp_ext(To& to, const From& x, int exp, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
-    return mul2exp<To_Policy>(to, x, exp, dir);
+    goto native;
   if (CHECK_P(From_Policy::check_nan_args, is_nan<From_Policy>(x)))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From_Policy>(x))
     return assign<To_Policy>(to, MINUS_INFINITY, dir);
   else if (is_pinf<From_Policy>(x))
     return assign<To_Policy>(to, PLUS_INFINITY, dir);
-  else
+  else {
+  native:
     return mul2exp<To_Policy>(to, x, exp, dir);
+  }
 }
 
 template <typename To_Policy, typename From_Policy,
@@ -356,15 +482,17 @@ template <typename To_Policy, typename From_Policy,
 inline Result
 div2exp_ext(To& to, const From& x, int exp, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
-    return div2exp<To_Policy>(to, x, exp, dir);
+    goto native;
   if (CHECK_P(From_Policy::check_nan_args, is_nan<From_Policy>(x)))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From_Policy>(x))
     return assign<To_Policy>(to, MINUS_INFINITY, dir);
   else if (is_pinf<From_Policy>(x))
     return assign<To_Policy>(to, PLUS_INFINITY, dir);
-  else
+  else {
+  native:
     return div2exp<To_Policy>(to, x, exp, dir);
+  }
 }
 
 template <typename To_Policy, typename From_Policy,
@@ -372,15 +500,17 @@ template <typename To_Policy, typename From_Policy,
 inline Result
 sqrt_ext(To& to, const From& x, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
-    return sqrt<To_Policy>(to, x, dir);
+    goto native;
   if (CHECK_P(From_Policy::check_nan_args, is_nan<From_Policy>(x)))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From_Policy>(x))
     return set_special<To_Policy>(to, V_SQRT_NEG);
   else if (is_pinf<From_Policy>(x))
     return assign<To_Policy>(to, PLUS_INFINITY, dir);
-  else
+  else {
+  native:
     return sqrt<To_Policy>(to, x, dir);
+  }
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -415,7 +545,7 @@ template <typename Policy1, typename Policy2,
 inline Result
 cmp_ext(const Type1& x, const Type2& y) {
   if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
-    return cmp<Policy1>(x, y);
+    goto native;
   if (CHECK_P(Policy1::check_nan_args, is_nan<Policy1>(x)) || CHECK_P(Policy2::check_nan_args, is_nan<Policy2>(y)))
     return V_UNORD_COMP;
   else if (is_minf<Policy1>(x))
@@ -427,6 +557,7 @@ cmp_ext(const Type1& x, const Type2& y) {
       return V_GT;
     if (is_pinf<Policy2>(y))
       return V_LT;
+  native:
     return cmp<Policy1>(x, y);
   }
 }
@@ -436,15 +567,15 @@ template <typename Policy1, typename Policy2,
 inline bool
 lt_ext(const Type1& x, const Type2& y) {
   if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
-    return x < y;
+    goto native;
   if (CHECK_P(Policy1::check_nan_args, is_nan<Policy1>(x)) || CHECK_P(Policy2::check_nan_args, is_nan<Policy2>(y)))
     return false;
-  else if (is_pinf<Policy1>(x) || is_minf<Policy2>(y))
+  if (is_pinf<Policy1>(x) || is_minf<Policy2>(y))
     return false;
-  else if (is_minf<Policy1>(x) || is_pinf<Policy2>(y))
+  if (is_minf<Policy1>(x) || is_pinf<Policy2>(y))
     return true;
-  else
-    return x < y;
+ native:
+  return x < y;
 }
 
 template <typename Policy1, typename Policy2,
@@ -452,15 +583,15 @@ template <typename Policy1, typename Policy2,
 inline bool
 gt_ext(const Type1& x, const Type2& y) {
   if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
-    return x > y;
+    goto native;
   if (CHECK_P(Policy1::check_nan_args, is_nan<Policy1>(x)) || CHECK_P(Policy2::check_nan_args, is_nan<Policy2>(y)))
     return false;
-  else if (is_minf<Policy1>(x) || is_pinf<Policy2>(y))
+  if (is_minf<Policy1>(x) || is_pinf<Policy2>(y))
     return false;
-  else if (is_pinf<Policy1>(x) || is_minf<Policy2>(y))
+  if (is_pinf<Policy1>(x) || is_minf<Policy2>(y))
     return true;
-  else
-    return x > y;
+ native:
+  return x > y;
 }
 
 template <typename Policy1, typename Policy2,
@@ -468,15 +599,15 @@ template <typename Policy1, typename Policy2,
 inline bool
 le_ext(const Type1& x, const Type2& y) {
   if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
-    return x <= y;
+    goto native;
   if (CHECK_P(Policy1::check_nan_args, is_nan<Policy1>(x)) || CHECK_P(Policy2::check_nan_args, is_nan<Policy2>(y)))
     return false;
-  else if (is_minf<Policy1>(x) || is_pinf<Policy2>(y))
+  if (is_minf<Policy1>(x) || is_pinf<Policy2>(y))
     return true;
-  else if (is_pinf<Policy1>(x) || is_minf<Policy2>(y))
+  if (is_pinf<Policy1>(x) || is_minf<Policy2>(y))
     return false;
-  else
-    return x <= y;
+ native:
+  return x <= y;
 }
 
 template <typename Policy1, typename Policy2,
@@ -484,15 +615,15 @@ template <typename Policy1, typename Policy2,
 inline bool
 ge_ext(const Type1& x, const Type2& y) {
   if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
-    return x >= y;
+    goto native;
   if (CHECK_P(Policy1::check_nan_args, is_nan<Policy1>(x)) || CHECK_P(Policy2::check_nan_args, is_nan<Policy2>(y)))
     return false;
-  else if (is_pinf<Policy1>(x) || is_minf<Policy2>(y))
+  if (is_pinf<Policy1>(x) || is_minf<Policy2>(y))
     return true;
-  else if (is_minf<Policy1>(x) || is_pinf<Policy2>(y))
+  if (is_minf<Policy1>(x) || is_pinf<Policy2>(y))
     return false;
-  else
-    return x >= y;
+ native:
+  return x >= y;
 }
 
 template <typename Policy1, typename Policy2,
@@ -500,13 +631,14 @@ template <typename Policy1, typename Policy2,
 inline bool
 eq_ext(const Type1& x, const Type2& y) {
   if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
-    return x == y;
+    goto native;
   if (CHECK_P(Policy1::check_nan_args, is_nan<Policy1>(x)) || CHECK_P(Policy2::check_nan_args, is_nan<Policy2>(y)))
     return false;
   if (is_minf<Policy1>(x))
     return is_minf<Policy2>(y);
   if (is_pinf<Policy1>(x))
     return is_pinf<Policy2>(y);
+ native:
   return x == y;
 }
 
@@ -515,13 +647,14 @@ template <typename Policy1, typename Policy2,
 inline bool
 ne_ext(const Type1& x, const Type2& y) {
   if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
-    return x != y;
+    goto native;
   if (CHECK_P(Policy1::check_nan_args, is_nan<Policy1>(x)) || CHECK_P(Policy2::check_nan_args, is_nan<Policy2>(y)))
     return true;
   if (is_minf<Policy1>(x))
     return !is_minf<Policy2>(y);
   if (is_pinf<Policy1>(x))
     return !is_pinf<Policy2>(y);
+ native:
   return x != y;
 }
 
@@ -529,21 +662,21 @@ template <typename Policy, typename Type>
 inline Result
 output_ext(std::ostream& os, const Type& x, const Numeric_Format& format, Rounding_Dir dir) {
   if (handle_ext_natively(Type))
-    return output<Policy>(os, x, format, dir);
+    goto native;
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x))) {
     os << "nan";
     return VC_NAN;
   }
-  else if (is_minf<Policy>(x)) {
+  if (is_minf<Policy>(x)) {
     os << "-inf";
     return V_EQ;
   }
-  else if (is_pinf<Policy>(x)) {
+  if (is_pinf<Policy>(x)) {
     os << "+inf";
     return V_EQ;
   }
-  else
-    return output<Policy>(os, x, format, dir);
+ native:
+  return output<Policy>(os, x, format, dir);
 }
 
 template <typename To_Policy, typename To>
