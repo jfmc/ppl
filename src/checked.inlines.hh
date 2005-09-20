@@ -143,11 +143,9 @@ gcdext_generic(To& to, const From1& x, const From2& y, From3& s, From4& t,
 
 #define COPY_GMP
 #ifdef COPY_GMP
-  if (to == ay) {
+  if (to == ay)
     // FIX This is to favour s, as GMP does.
-    t = 0;
     goto sign_check;
-  }
 #endif
 
   {
