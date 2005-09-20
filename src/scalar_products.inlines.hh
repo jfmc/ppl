@@ -67,16 +67,16 @@ inline void
 homogeneous_scalar_product_assign(Coefficient& z,
 				  const Linear_Expression& x,
 				  const Generator& y) {
-  reduced_scalar_product_assign(z,
-				static_cast<const Linear_Row&>(x),
-				static_cast<const Linear_Row&>(y));
+  homogeneous_scalar_product_assign(z,
+				    static_cast<const Linear_Row&>(x),
+				    static_cast<const Linear_Row&>(y));
 }
 
 inline int
 homogeneous_scalar_product_sign(const Linear_Expression& x,
 				const Generator& y) {
-  return reduced_scalar_product_sign(static_cast<const Linear_Row&>(x),
-				     static_cast<const Linear_Row&>(y));
+  return homogeneous_scalar_product_sign(static_cast<const Linear_Row&>(x),
+					 static_cast<const Linear_Row&>(y));
 }
 
 } // namespace Parma_Polyhedra_Library
