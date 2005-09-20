@@ -108,7 +108,18 @@ PPL::Row::normalize() {
   while (i > 0) {
     const Coefficient& x_i = x[--i];
     if (x_i != 0) {
-      gcd_assign(gcd, x_i);
+      // Note: we use the ternary version instead of a more concise
+      // gcd_assign(gcd, x_i, gcd) to take advantage of the fact that
+      // `gcd' will decrease very rapidly (see D. Knuth, The Art of
+      // Computer Programming, second edition, Section 4.5.2,
+      // Algorithm C, and the discussion following it).  Our
+      // implementation of gcd_assign(x, y, z) for checked numbers is
+      // optimized for the case where `z' is smaller than `y', so that
+      // on checked numbers we gain.  On the other hand, for the
+      // implementation of gcd_assign(x, y, z) on GMP's unbounded
+      // integers we cannot make any assumption, so here we draw.
+      // Overall, we win.
+      gcd_assign(gcd, x_i, gcd);
       if (gcd == 1)
 	return;
     }
