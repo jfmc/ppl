@@ -37,7 +37,8 @@ PPL::Grid::Grid(dimension_type num_dimensions,
 				   "n exceeds the maximum "
 				   "allowed space dimension");
 
-  // FIX is this ok if oom/excptn?
+  // FIX is this ok if an ~out-of-memory excptn is thrown below?
+  //     ie what will free these con_sys and gen_sys?
   con_sys = Congruence_System();
   gen_sys = Generator_System(NECESSARILY_CLOSED);
 
