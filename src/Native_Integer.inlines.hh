@@ -147,11 +147,9 @@ gcdext(T x,T y,T& s,T& t) {
 
 #define COPY_GMP
 #ifdef COPY_GMP
-  if (x == y) {
+  if (x == y)
     // FIX This is to favour s, as GMP does.
-    t = 0;
     goto sign_check;
-  }
 #endif
 
   {
