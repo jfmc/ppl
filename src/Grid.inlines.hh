@@ -327,6 +327,55 @@ Grid::strictly_contains(const Grid& y) const {
   return x.contains(y) && !y.contains(x);
 }
 
+template <typename Box>
+Grid::Grid(const Box& box, From_Bounding_Box dummy)
+  : con_sys(),
+    gen_sys(NECESSARILY_CLOSED) {
+  used(dummy);
+
+  // Initialize the space dimension as indicated by the box.
+  space_dim = box.space_dimension();
+
+  con_sys.increase_space_dimension(space_dim);
+
+  if (box.is_empty()) {
+    // Empty grid.
+    status.set_empty();
+    if (space_dim == 0)
+      status.set_zero_dim_univ();
+  }
+  else
+    if (space_dim == 0)
+      status.set_zero_dim_univ();
+    else {
+      // Add integrality congruence.
+      con_sys.insert(Linear_Expression::zero() %= 1);
+      // Add congruences according to `box'.
+      TEMP_INTEGER(l_n);
+      TEMP_INTEGER(l_d);
+      TEMP_INTEGER(u_n);
+      TEMP_INTEGER(u_d);
+      TEMP_INTEGER(d);
+      for (dimension_type k = space_dim; k-- > 0; ) {
+	bool closed;
+	// FIX also add generators
+	if (box.get_lower_bound(k, closed, l_n, l_d)
+	    && box.get_upper_bound(k, closed, u_n, u_d)) {
+	  lcm_assign(d, l_d, u_d);
+	  // FIX division by l_d and u_d repeats some of lcm_assign (use gcd instd)
+	  l_n *= (d / l_d);
+	  con_sys.insert((d * Variable(k) %= l_n) / ((u_n * (d / u_d)) - l_n));
+	}
+      }
+      set_congruences_up_to_date();
+    }
+
+  gen_sys.set_sorted(false);
+  gen_sys.unset_pending_rows();
+
+  assert(OK());
+}
+
 template <typename Partial_Function>
 void
 Grid::map_space_dimensions(const Partial_Function& pfunc) {

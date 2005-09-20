@@ -424,6 +424,64 @@ public:
   */
   explicit Grid(Generator_System& gs, const bool convert_rays_to_lines = true);
 
+  //! Builds a grid out of a generic, interval-based bounding box.
+  /*!
+    \param box
+    The bounding box representing the grid to be built.
+
+    \param dummy
+    A dummy tag to make this constructor syntactically unique.
+
+    \exception std::invalid_argument
+    Thrown if \p box has intervals that are incompatible with \p topol.
+
+    The template class Box must provide the following methods.
+    \code
+      dimension_type space_dimension() const
+    \endcode
+    returns the dimension of the vector space enclosing the grid
+    represented by the bounding box.
+    \code
+      bool is_empty() const
+    \endcode
+    returns <CODE>true</CODE> if and only if the bounding box
+    describes the empty set.
+    The <CODE>is_empty()</CODE> method will always be called before the
+    methods below.  However, if <CODE>is_empty()</CODE> returns
+    <CODE>true</CODE>, none of the functions below will be called.
+    \code
+      bool get_lower_bound(dimension_type k, bool closed,
+                           Coefficient& n, Coefficient& d) const
+    \endcode
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    space dimension.  If \f$I\f$ is not bounded from below, simply return
+    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
+    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
+    is set to <CODE>true</CODE> if the the lower boundary of \f$I\f$
+    is closed and is set to <CODE>false</CODE> otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
+    corresponds to the greatest lower bound of \f$I\f$.  The fraction
+    \f$n/d\f$ is in canonical form if and only if \f$n\f$ and \f$d\f$
+    have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
+    the unique representation for zero.
+    \code
+      bool get_upper_bound(dimension_type k, bool closed,
+                           Coefficient& n, Coefficient& d) const
+    \endcode
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    space dimension.  If \f$I\f$ is not bounded from above, simply return
+    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
+    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
+    is set to <CODE>true</CODE> if the the upper boundary of \f$I\f$
+    is closed and is set to <CODE>false</CODE> otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
+    corresponds to the least upper bound of \f$I\f$.
+  */
+  template <typename Box>
+  Grid(const Box& box, From_Bounding_Box dummy);
+
   //! Ordinary copy-constructor.
   Grid(const Grid& y);
 
@@ -1063,9 +1121,8 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
-    dimension-incompatible or if \p var is not a space dimension of \p *this
-    or if \p *this is a C_Polyhedron and \p relsym is a strict
-    relation symbol.
+    dimension-incompatible or if \p var is not a space dimension of \p
+    *this.
   */
   void generalized_affine_image(Variable var,
 				const Linear_Expression& expr,
@@ -1097,9 +1154,8 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
-    dimension-incompatible or if \p var is not a space dimension of \p *this
-    or if \p *this is a C_Polyhedron and \p relsym is a strict
-    relation symbol.
+    dimension-incompatible or if \p var is not a space dimension of \p
+    *this.
   */
   void generalized_affine_preimage(Variable var,
 				   const Linear_Expression& expr,
@@ -1125,9 +1181,8 @@ public:
     of one.
 
     \exception std::invalid_argument
-    Thrown if \p *this is dimension-incompatible with \p lhs or \p rhs
-    or if \p *this is a C_Polyhedron and \p relsym is a strict
-    relation symbol.
+    Thrown if \p *this is dimension-incompatible with \p lhs or \p
+    rhs.
   */
   void generalized_affine_image(const Linear_Expression& lhs,
 				const Linear_Expression& rhs,
@@ -1152,9 +1207,8 @@ public:
     of one.
 
     \exception std::invalid_argument
-    Thrown if \p *this is dimension-incompatible with \p lhs or \p rhs
-    or if \p *this is a C_Polyhedron and \p relsym is a strict
-    relation symbol.
+    Thrown if \p *this is dimension-incompatible with \p lhs or \p
+    rhs.
   */
   void generalized_affine_preimage(const Linear_Expression& lhs,
 				   const Linear_Expression& rhs,
@@ -1386,6 +1440,7 @@ public:
     function with the properties described in the
     \ref map_space_dimensions "specification of the mapping operator".
   */
+  // FIX note above that dimensions may be erased
   template <typename Partial_Function>
   void map_space_dimensions(const Partial_Function& pfunc);
 
