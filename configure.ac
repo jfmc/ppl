@@ -771,8 +771,8 @@ AC_SUBST(text_md5sum)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm ppl.spec
-		debian/libppl.copyright
-		debian/libppl-pwl.copyright
+                debian/libppl.copyright
+                debian/libppl-pwl.copyright
                 src/Makefile
                 src/version.hh
                 src/ppl-config.cc
