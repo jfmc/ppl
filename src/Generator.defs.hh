@@ -416,12 +416,14 @@ private:
   Parma_Polyhedra_Library::reduced_scalar_product_sign(const Constraint& x,
 						       const Generator& y);
   friend void
-  homogeneous_scalar_product_assign(Coefficient& z,
-				    const Linear_Expression& x,
-				    const Generator& y);
+  Parma_Polyhedra_Library
+  ::homogeneous_scalar_product_assign(Coefficient& z,
+				      const Linear_Expression& x,
+				      const Generator& y);
   friend int
-  homogeneous_scalar_product_sign(const Linear_Expression& x,
-				  const Generator& y);
+  Parma_Polyhedra_Library
+  ::homogeneous_scalar_product_sign(const Linear_Expression& x,
+				    const Generator& y);
 
 
   // FIXME: the following friend declaration is only to grant access to

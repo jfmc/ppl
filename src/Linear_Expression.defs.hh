@@ -293,12 +293,14 @@ private:
   friend class Parma_Polyhedra_Library::Generator_System;
 
   friend void
-  homogeneous_scalar_product_assign(Coefficient& z,
-				    const Linear_Expression& x,
-				    const Generator& y);
+  Parma_Polyhedra_Library
+  ::homogeneous_scalar_product_assign(Coefficient& z,
+				      const Linear_Expression& x,
+				      const Generator& y);
   friend int
-  homogeneous_scalar_product_sign(const Linear_Expression& x,
-				  const Generator& y);
+  Parma_Polyhedra_Library
+  ::homogeneous_scalar_product_sign(const Linear_Expression& x,
+				    const Generator& y);
 
   //! Copy-constructor with a specified space dimension.
   Linear_Expression(const Linear_Expression& e, dimension_type sz);
