@@ -149,7 +149,7 @@ PPL::Linear_System::ascii_load(std::istream& s) {
   if (!(s >> str))
     return false;
   if (!(s >> ncols))
-      return false;
+    return false;
   resize_no_copy(nrows, ncols);
 
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
@@ -370,8 +370,8 @@ PPL::Linear_System::add_row(const Linear_Row& r) {
     std::swap(*rows.insert(rows.end(), Row()), tmp);
   }
 
-  //  We update `index_first_pending', because it must
-  // equal to `num_rows()'.
+  //  We update `index_first_pending', because it must be equal to
+  // `num_rows()'.
   set_index_first_pending_row(num_rows());
 
   if (was_sorted) {
@@ -882,9 +882,9 @@ PPL::Linear_System::add_rows_and_columns(const dimension_type n) {
   for (dimension_type i = old_n_rows; i-- > 0; )
     std::swap(x[i], x[i + n]);
   for (dimension_type i = n, c = old_n_columns; i-- > 0; ) {
-    // The top right-hand sub-system (i.e., the system made
-    // of new rows and columns) is set to the specular image
-    // of the identity matrix.
+    // The top right-hand sub-system (i.e., the system made of new
+    // rows and columns) is set to the specular image of the identity
+    // matrix.
     Linear_Row& r = x[i];
     r[c++] = 1;
     r.set_is_line_or_equality();
@@ -977,7 +977,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
   using std::cerr;
 #endif
 
-  // `index_first_pending' must be less then or equal to `num_rows()'.
+  // `index_first_pending' must be less than or equal to `num_rows()'.
   if (first_pending_row() > num_rows()) {
 #ifndef NDEBUG
     cerr << "Linear_System has a negative number of pending rows!"
