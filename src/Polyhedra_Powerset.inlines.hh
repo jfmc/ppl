@@ -151,6 +151,22 @@ Polyhedra_Powerset<PH>::operator=(const Polyhedra_Powerset<QH>& y) {
 
 template <typename PH>
 inline void
+Polyhedra_Powerset<PH>::add_disjunct(const PH& ph) {
+  Polyhedra_Powerset& x = *this;
+  if (x.space_dimension() != ph.space_dimension()) {
+    std::ostringstream s;
+    s << "PPL::Polyhedra_Powerset<PH>::add_disjunct(ph):\n"
+      << "this->space_dimension() == " << x.space_dimension() << ", "
+      << "ph.space_dimension() == " << ph.space_dimension() << ".";
+    throw std::invalid_argument(s.str());
+  }
+  x.sequence.push_back(Determinate<PH>(ph));
+  x.reduced = false;
+  assert(OK());
+}
+
+template <typename PH>
+inline void
 Polyhedra_Powerset<PH>::intersection_assign(const Polyhedra_Powerset& y) {
   Polyhedra_Powerset& x = *this;
   x.pairwise_apply_assign

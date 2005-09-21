@@ -139,6 +139,13 @@ public:
   //! \name Space Dimension Preserving Member Functions that May Modify the Powerset of Polyhedra
   //@{
 
+  //! Adds to \p *this the disjunct \p ph.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p ph are dimension-incompatible.
+  */
+  void add_disjunct(const PH& ph);
+
   //! Intersects \p *this with constraint \p c.
   /*!
     \exception std::invalid_argument
