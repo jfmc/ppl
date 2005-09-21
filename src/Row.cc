@@ -131,11 +131,27 @@ PPL::Row::normalize() {
 
 void
 PPL::Row::Flags::ascii_dump(std::ostream& s) const {
-  s << "0x"
-    << std::hex
-    << std::setw(2*sizeof(Flags::base_type))
-    << std::setfill('0')
-    << bits;
+  s << "0x";
+  std::istream::fmtflags f = s.setf(std::istream::hex);
+  std::streamsize sz = s.width(2*sizeof(Flags::base_type));
+  std::ostream::char_type ch = s.fill('0');
+  s << bits;
+  s.fill(ch);
+  s.width(sz);
+  s.flags(f);
+}
+
+bool
+PPL::Row::Flags::ascii_load(std::istream& s) {
+  std::string str;
+  std::streamsize sz = s.width(2);
+  if (!(s >> str) || (str.compare("0x") != 0))
+    return false;
+  s.width(sz);
+  std::istream::fmtflags f = s.setf(std::istream::hex);
+  bool r = s >> bits;
+  s.flags(f);
+  return r;
 }
 
 void
@@ -147,6 +163,19 @@ PPL::Row::ascii_dump(std::ostream& s) const {
   s << "f ";
   flags().ascii_dump(s);
   s << std::endl;
+}
+
+bool
+PPL::Row::ascii_load(std::istream& s) {
+  Row& x = *this;
+  std::string str;
+  const dimension_type x_size = x.size();
+  for (dimension_type col = 0; col < x_size; ++col)
+    if (!(s >> x[col]))
+      return false;
+  if (!(s >> str) || (str.compare("f") != 0))
+    return false;
+  return flags().ascii_load(s);
 }
 
 PPL::memory_size_type

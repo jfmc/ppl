@@ -102,6 +102,13 @@ public:
     //! representation of \p *this.
     void ascii_dump(std::ostream& s) const;
 
+    //! Uses the ASCII Flags representation from \p s to recreate *this.
+    /*!
+      Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
+      otherwise.  The ASCII representation is as output by ascii_dump.
+    */
+    bool ascii_load(std::istream& s);
+
   protected:
     //! A native integral type holding the bits that encode the flags.
     typedef unsigned int base_type;
@@ -280,6 +287,13 @@ public:
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
   void ascii_dump(std::ostream& s) const;
+
+  //! Uses the ASCII Row representation at \p s to recreate *this.
+  /*!
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
+    otherwise.  The ASCII representation is as output by ascii_dump.
+  */
+  bool ascii_load(std::istream& s);
 
   //! \brief
   //! Returns a lower bound to the total size in bytes of the memory
