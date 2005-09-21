@@ -43,11 +43,11 @@ main(void) {
   cs3.insert(x <= 5);
   C_Polyhedron ph1(cs1), ph2(cs2), ph3(cs3);
 
-  Polyhedra_Powerset<C_Polyhedron> ps12(2, EMPTY);
+  Polyhedra_Powerset<C_Polyhedron> ps12(1, EMPTY);
   ps12.add_disjunct(ph1);
   ps12.add_disjunct(ph2);
 
-  Polyhedra_Powerset<C_Polyhedron> ps3(2, EMPTY);
+  Polyhedra_Powerset<C_Polyhedron> ps3(1, EMPTY);
   ps3.add_disjunct(ph3);
 
 #if NOISY
