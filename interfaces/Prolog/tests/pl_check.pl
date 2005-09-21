@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 % noisy(F)
 % When F = 1, a message is displayed if a time out occurs
-% when running the `timeout' predicate.
+% when running the `timeout'` predicate.
 % Also, the values of the PPL versions and banner are displayed.
 % When F = 0, no 'time out' message or versions are displayed.
 % When F = 2, if a test fails and the backtracking returns to a polyhedron
@@ -144,6 +144,26 @@ run_one(basic_operators) :-
    time_elapse,
    top_close_assign.
 
+run_one(add_to_system) :-
+   add_con,
+   add_con_min,
+   add_gen,
+   add_gen_min,
+   add_cons,
+   add_cons_min,
+   add_gens,
+   add_gens_min.
+
+run_one(revise_dimensions) :-
+   project,
+   embed,
+   conc_assign,
+   remove_dim,
+   remove_high_dim,
+   expand_dim,
+   map_dim,
+   fold_dims.
+
 run_one(transform_polyhedron) :-
    affine_image,
    affine_preimage,
@@ -173,26 +193,6 @@ run_one(get_system) :-
    get_min_cons,
    get_gens,
    get_min_gens.
-
-run_one(add_to_system) :-
-   add_con,
-   add_con_min,
-   add_gen,
-   add_gen_min,
-   add_cons,
-   add_cons_min,
-   add_gens,
-   add_gens_min.
-
-run_one(revise_dimensions) :-
-   project,
-   embed,
-   conc_assign,
-   remove_dim,
-   remove_high_dim,
-   expand_dim,
-   map_dim,
-   fold_dims.
 
 run_one(check_polyhedron) :-
    rel_cons,
@@ -345,7 +345,6 @@ new_polyhedron_from_bounding_box(T, Box) :-
   clean_ppl_new_Polyhedron_from_bounding_box(T, Box1, P1),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
   \+ ppl_new_Polyhedron_from_bounding_box(T, Box, 0),
-  \+ ppl_new_Polyhedron_from_bounding_box(T, 0, 0),
   \+ ppl_new_Polyhedron_from_bounding_box(T,
              [i(x, c(1/2)), i(c(0), o(pinf))], _),
   \+ ppl_new_Polyhedron_from_bounding_box(T,
@@ -364,10 +363,6 @@ new_polyhedron_from_bounding_box(T, Box) :-
              [i(c(minf), c(2/d)), i(c(0), o(pinf))], _),
   \+ ppl_new_Polyhedron_from_bounding_box(T,
              [i(c(minf), c(2/1)), i(c(n), o(pinf))], _),
-  \+ ppl_new_Polyhedron_from_bounding_box(T,
-             [i(c(minf), c(2/1)), i(c(n), o(pinf))|d], _),
-  \+ ppl_new_Polyhedron_from_bounding_box(T,
-             [i(c(minf), c(2/1)), i(c(n), o(pinf))|_], _),
   \+ ppl_new_Polyhedron_from_bounding_box(T,
              [i(e), i(c(n), o(pinf))], _),
   \+ ppl_new_Polyhedron_from_bounding_box(T,
@@ -707,6 +702,371 @@ top_close_assign(T, consys, CS, CS_close) :-
   !,
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Pa).
+
+
+%%%%%%%%%%%%%%%%%% Add Constraints or Generators %%%%%%%%%%%%%%%%%%%
+
+% Tests ppl_Polyhedron_add_constraint/2.
+add_con :-
+  add_con(c), add_con(nnc).
+
+add_con(T) :-
+  make_vars(2, [A, B]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
+  ppl_Polyhedron_add_constraint(P, A - B >= 1),
+  clean_ppl_new_Polyhedron_from_constraints(T,
+                                      [A - B >= 1],
+                                      Pa),
+  ppl_Polyhedron_equals_Polyhedron(P, Pa),
+  ppl_Polyhedron_add_constraint(P, A = 0),
+  clean_ppl_new_Polyhedron_from_constraints(T,
+                                      [A = 0, B =< -1],
+                                      Pb),
+  ppl_Polyhedron_equals_Polyhedron(P, Pb),
+  ppl_Polyhedron_add_constraint(P, A = 1),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, empty, Pc),
+  ppl_Polyhedron_equals_Polyhedron(P, Pc),
+  !,
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(Pa),
+  ppl_delete_Polyhedron(Pb),
+  ppl_delete_Polyhedron(Pc).
+
+% Tests ppl_Polyhedron_add_constraint_and_minimize/2.
+add_con_min :-
+  add_con_min(c), add_con_min(nnc).
+
+add_con_min(T) :-
+  make_vars(2, [A, B]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
+  ppl_Polyhedron_add_constraint_and_minimize(P, A - B >= 1),
+  clean_ppl_new_Polyhedron_from_constraints(T,
+                                      [A - B >= 1],
+                                      P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  \+ ppl_Polyhedron_add_constraint_and_minimize(P, A - B =< 0),
+  !,
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(P1).
+
+% Tests ppl_Polyhedron_add_generator/2.
+add_gen :-
+  add_gen(c), add_gen(nnc).
+
+add_gen(T) :-
+  make_vars(2, [A, B]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
+  ppl_Polyhedron_add_generator(P, point(A + B)),
+  clean_ppl_new_Polyhedron_from_generators(T,
+                                     [point(A + B), point(0),
+                                      line(A), line(B)], P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  !,
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(P1).
+
+% Tests ppl_Polyhedron_add_generator_and_minimize/2.
+add_gen_min :-
+  add_gen_min(c), add_gen_min(nnc).
+
+add_gen_min(T) :-
+  make_vars(2, [A, B]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, empty, P),
+  ppl_Polyhedron_add_generator(P, point(A + B)),
+  ppl_Polyhedron_add_generator(P, point(0)),
+  ppl_Polyhedron_add_generator_and_minimize(P, point(2*A + 2*B, 1)),
+  ppl_Polyhedron_get_generators(P,[_G1,_G2]),
+  clean_ppl_new_Polyhedron_from_generators(T,
+                                     [point(2*A + 2*B), point(0)],
+                                     P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  !,
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(P1).
+
+% Tests ppl_Polyhedron_add_constraints/2.
+add_cons :-
+  make_vars(3, [A, B, C]),
+  add_cons(c, [A >= 1, B >= 0, 4*A + B - 2*C >= 5], [A =< 0]),
+  add_cons(nnc, [A > 1, B >= 0, 4*A + B - 2*C > 5], [A < 0]).
+
+add_cons(T, CS, CS1) :-
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
+  ppl_Polyhedron_add_constraints(P, CS),
+  clean_ppl_new_Polyhedron_from_constraints(T, CS, P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  ppl_Polyhedron_add_constraints(P, CS1),
+  ppl_Polyhedron_is_empty(P),
+  !,
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(P1).
+
+% Tests ppl_Polyhedron_add_constraints_and_minimize/2.
+add_cons_min :-
+  make_vars(2, [A, B]),
+  add_cons_min(c, [A >= 1, B >= 0], [A + B =< 0]),
+  add_cons_min(nnc, [A > 1, B >= 0], [A < 0]).
+
+add_cons_min(T, CS, CS1) :-
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
+  ppl_Polyhedron_add_constraints_and_minimize(P, CS),
+  clean_ppl_new_Polyhedron_from_constraints(T, CS, P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  \+ppl_Polyhedron_add_constraints_and_minimize(P, CS1),
+  !,
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(P1).
+
+% Tests ppl_Polyhedron_add_generators/2.
+add_gens :-
+  make_vars(3, [A, B, C]),
+  add_gens(c, [point(A + B + C), ray(A), ray(2*A), point(A + B + C, 1),
+               point(100*A + 5*B, -8)]),
+  add_gens(nnc, [point(A + B + C), ray(A), ray(2*A), point(A + B + C, 1),
+                 closure_point(100*A + 5*B, -8)]).
+
+add_gens(T, GS) :-
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, empty, P),
+  ppl_Polyhedron_add_generators(P, GS),
+  clean_ppl_new_Polyhedron_from_generators(T, GS, P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  !,
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(P1).
+
+% Tests ppl_Polyhedron_add_generators_and_minimize/2.
+add_gens_min :-
+  make_vars(3, [A, B, C]),
+  add_gens_min(c, [point(A + B + C), ray(A), ray(2*A), point(A + B + C)]),
+  add_gens_min(nnc, [point(A + B + C), ray(A), ray(2*A),
+                     closure_point(A + B + C)]).
+
+add_gens_min(T, GS) :-
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, empty, P),
+  \+  ppl_Polyhedron_add_generators_and_minimize(P, []),
+  ppl_Polyhedron_add_generators_and_minimize(P, GS),
+  clean_ppl_new_Polyhedron_from_generators(T, GS, P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  !,
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(P1).
+
+%%%%%%%%%%%%%%%%%% Change Dimensions %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tests ppl_Polyhedron_add_space_dimensions_and_project/2.
+project :-
+  project(c), project(nnc).
+
+project(T) :-
+  make_vars(4, [A, B, C, D]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
+  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0]),
+  ppl_Polyhedron_add_space_dimensions_and_project(P, 0),
+  clean_ppl_new_Polyhedron_from_constraints(T,
+                                      [A >= 1, B >= 0],
+                                      P0),
+  ppl_Polyhedron_equals_Polyhedron(P, P0),
+  ppl_delete_Polyhedron(P0),
+  ppl_Polyhedron_add_space_dimensions_and_project(P, 2),
+  clean_ppl_new_Polyhedron_from_constraints(T,
+                                      [A >= 1, B >= 0, C = 0, D = 0],
+                                      P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  !,
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P).
+
+% Tests ppl_Polyhedron_add_space_dimensions_and_embed/2.
+embed :-
+  embed(c), embed(nnc).
+
+embed(T) :-
+  make_vars(2, [A, B]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
+  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0]),
+  ppl_Polyhedron_add_space_dimensions_and_embed(P, 0),
+  clean_ppl_new_Polyhedron_from_constraints(T,
+                                      [A >= 1, B >= 0],
+                                      P0),
+  ppl_Polyhedron_equals_Polyhedron(P, P0),
+  ppl_delete_Polyhedron(P0),
+  ppl_Polyhedron_add_space_dimensions_and_embed(P, 2),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 4, universe, P1),
+  ppl_Polyhedron_add_constraints(P1, [A >= 1, B >= 0]),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  !,
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P).
+
+% Tests ppl_Polyhedron_remove_space_dimensions/2.
+remove_dim :-
+  remove_dim(c), remove_dim(nnc).
+
+remove_dim(T) :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
+  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C >= 2]),
+  ppl_Polyhedron_remove_space_dimensions(P, []),
+  clean_ppl_new_Polyhedron_from_constraints(T,
+                                      [A >= 1, B >= 0, C >= 2],
+                                      P0),
+  ppl_Polyhedron_equals_Polyhedron(P, P0),
+  ppl_delete_Polyhedron(P0),
+  ppl_Polyhedron_remove_space_dimensions(P,[B]),
+  clean_ppl_new_Polyhedron_from_constraints(T,
+                                      [A >= 1, B >= 2],
+                                      P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  ppl_delete_Polyhedron(P1),
+  % Note: now 'B' refers to the old 'C' variable.
+  ppl_Polyhedron_remove_space_dimensions(P,[A, B]),
+  ppl_Polyhedron_space_dimension(P, 0),
+  !,
+  ppl_delete_Polyhedron(P).
+
+% Tests ppl_Polyhedron_remove_higher_space_dimensions/2.
+remove_high_dim :-
+  remove_high_dim(c), remove_high_dim(nnc).
+
+remove_high_dim(T) :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
+  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C >= 0]),
+  clean_ppl_new_Polyhedron_from_constraints(T,
+                                      [A >= 1, B >= 0, C >= 0],
+                                      P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  ppl_Polyhedron_remove_higher_space_dimensions(P, 1),
+  clean_ppl_new_Polyhedron_from_constraints(T,
+                                      [A >= 1],
+                                      P2),
+  ppl_Polyhedron_equals_Polyhedron(P, P2),
+  ppl_Polyhedron_remove_higher_space_dimensions(P, 1),
+  ppl_Polyhedron_equals_Polyhedron(P, P2),
+  ppl_Polyhedron_remove_higher_space_dimensions(P, 0),
+  ppl_Polyhedron_space_dimension(P, 0),
+  !,
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P2),
+  ppl_delete_Polyhedron(P).
+
+% Tests ppl_Polyhedron_expand_space_dimension/3.
+expand_dim :-
+  expand_dim(c), expand_dim(nnc).
+
+expand_dim(T) :-
+  make_vars(4, [A, B, C, D]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
+  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C >= 2]),
+  ppl_Polyhedron_expand_space_dimension(P, B, 1),
+  ppl_Polyhedron_space_dimension(P, 4),
+  clean_ppl_new_Polyhedron_from_constraints(T,
+                                      [A >= 1, B >= 0, C >= 2, D >= 0],
+                                      P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  ppl_delete_Polyhedron(P1),
+  ppl_Polyhedron_remove_higher_space_dimensions(P, 2),
+  ppl_Polyhedron_expand_space_dimension(P, A, 2),
+  clean_ppl_new_Polyhedron_from_constraints(T,
+                                      [D >= 1, C >= 1, A >= 1, B >= 0],
+                                      P2),
+  ppl_Polyhedron_equals_Polyhedron(P, P2),
+  ppl_delete_Polyhedron(P2),
+  ppl_Polyhedron_space_dimension(P, 4),
+  !,
+  ppl_delete_Polyhedron(P),
+% Example taken from [GopanDMDRS04], page 519.
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, empty, Ptacas),
+  ppl_Polyhedron_add_generators(Ptacas,
+       [point(A + 2*B), point(A + 3*B), point(A + 4*B)]),
+  ppl_Polyhedron_expand_space_dimension(Ptacas, B, 1),
+  ppl_Polyhedron_space_dimension(Ptacas, 3),
+  clean_ppl_new_Polyhedron_from_generators(T,
+       [point(A + 2*B + 2*C), point(A + 2*B + 3*C), point(A + 2*B + 4*C),
+        point(A + 3*B + 2*C), point(A + 3*B + 3*C), point(A + 3*B + 4*C),
+        point(A + 4*B + 2*C), point(A + 4*B + 3*C), point(A + 4*B + 4*C)],
+                                      Ptacas1),
+  ppl_Polyhedron_equals_Polyhedron(Ptacas, Ptacas1),
+  !,
+  ppl_delete_Polyhedron(Ptacas1),
+  ppl_delete_Polyhedron(Ptacas).
+
+% Tests ppl_Polyhedron_fold_space_dimension/3.
+fold_dims :-
+  fold_dims(c), fold_dims(nnc).
+
+fold_dims(T) :-
+  make_vars(4, [A, B, C, D]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 4, universe, P),
+  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C >= 2, D >= 0]),
+  ppl_Polyhedron_fold_space_dimensions(P, [D], B),
+  ppl_Polyhedron_space_dimension(P, 3),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P1),
+  ppl_Polyhedron_add_constraints(P1, [A >= 1, B >= 0, C >= 2]),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  !,
+  ppl_delete_Polyhedron(P1),
+  ppl_Polyhedron_fold_space_dimensions(P, [A, C], B),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 1, universe, P2),
+  ppl_Polyhedron_add_constraints(P2, [A >= 0]),
+  ppl_Polyhedron_equals_Polyhedron(P, P2),
+  ppl_delete_Polyhedron(P2),
+  ppl_Polyhedron_space_dimension(P, 1),
+  !,
+  ppl_delete_Polyhedron(P),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, Ptacas),
+  ppl_Polyhedron_add_constraints(Ptacas, [A >= 1, A =< 3, B >= 7, B =< 12]),
+  ppl_Polyhedron_fold_space_dimensions(Ptacas, [A], B),
+  ppl_Polyhedron_space_dimension(Ptacas, 1),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 1, universe, Ptacas1),
+  ppl_Polyhedron_add_constraints(Ptacas1, [A >= 1, A =< 12]),
+  ppl_Polyhedron_equals_Polyhedron(Ptacas, Ptacas1),
+  !,
+  ppl_delete_Polyhedron(Ptacas1),
+  ppl_delete_Polyhedron(Ptacas).
+
+% Tests ppl_Polyhedron_map_space_dimensions/2.
+map_dim:-
+  map_dim(c), map_dim(nnc).
+
+map_dim(T) :-
+  make_vars(7, [A, B, C, D, E, F, G]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
+  ppl_Polyhedron_add_constraints(P, [A >= 2, B >= 1, C >= 0]),
+  ppl_Polyhedron_map_space_dimensions(P, [A-B, B-C, C-A]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, Q),
+  ppl_Polyhedron_add_constraints(Q, [A >= 0, B >= 2, C >= 1]),
+  ppl_Polyhedron_equals_Polyhedron(P, Q),
+  !,
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(Q),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 4, empty, P0),
+  ppl_Polyhedron_add_generators(P0, [point(2*C), line(A+B), ray(A+C)]),
+  \+ppl_Polyhedron_map_space_dimensions(P0, [A+C, C-A, B-B]), % A+C not map
+  \+ppl_Polyhedron_map_space_dimensions(P0, [A, C-A, B-B]),   % A not map
+  \+ppl_Polyhedron_map_space_dimensions(P0, [D-A, C-A, B-B]), % D not dimension
+  \+ppl_Polyhedron_map_space_dimensions(P0, [B-A, C-A, B-B]), % not injective
+  \+ppl_Polyhedron_map_space_dimensions(P0, [B-A, C-A, B-C]), % not function
+  ppl_delete_Polyhedron(P0),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 4, empty, P1),
+  ppl_Polyhedron_add_generators(P1, [point(2*C), line(A+B), ray(A+C)]),
+  ppl_Polyhedron_map_space_dimensions(P1, [A-C, C-A, B-B]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, empty, Q1),
+  ppl_Polyhedron_add_generators(Q1, [point(2*A), ray(A+C), line(B+C)]),
+  ppl_Polyhedron_equals_Polyhedron(P1, Q1),
+  !,
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(Q1),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 5, universe, P2),
+  ppl_Polyhedron_add_constraints(P2, [B = 2, E = 8]),
+  ppl_Polyhedron_add_space_dimensions_and_embed(P2, 2),
+  ppl_Polyhedron_map_space_dimensions(P2, [A-A, B-B, C-E, D-F, E-G, F-C, G-D]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 7, universe, Q2),
+  ppl_Polyhedron_add_constraints(Q2, [B = 2, G = 8]),
+  ppl_Polyhedron_equals_Polyhedron(P2, Q2),
+  !,
+  ppl_delete_Polyhedron(P2),
+  ppl_delete_Polyhedron(Q2).
 
 
 %%%%%%%%%%%%%%%%%% Affine Transformations %%%%%%%%%%%%%%%%%%%
@@ -1280,374 +1640,6 @@ get_min_gens(T) :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
 
-%%%%%%%%%%%%%%%%%% Add Constraints or Generators %%%%%%%%%%%%%%%%%%%
-
-% Tests ppl_Polyhedron_add_constraint/2.
-add_con :-
-  add_con(c), add_con(nnc).
-
-add_con(T) :-
-  make_vars(2, [A, B]),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
-  ppl_Polyhedron_add_constraint(P, A - B >= 1),
-  clean_ppl_new_Polyhedron_from_constraints(T,
-                                      [A - B >= 1],
-                                      Pa),
-  ppl_Polyhedron_equals_Polyhedron(P, Pa),
-  ppl_Polyhedron_add_constraint(P, A = 0),
-  clean_ppl_new_Polyhedron_from_constraints(T,
-                                      [A = 0, B =< -1],
-                                      Pb),
-  ppl_Polyhedron_equals_Polyhedron(P, Pb),
-  ppl_Polyhedron_add_constraint(P, A = 1),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, empty, Pc),
-  ppl_Polyhedron_equals_Polyhedron(P, Pc),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(Pa),
-  ppl_delete_Polyhedron(Pb),
-  ppl_delete_Polyhedron(Pc).
-
-% Tests ppl_Polyhedron_add_constraint_and_minimize/2.
-add_con_min :-
-  add_con_min(c), add_con_min(nnc).
-
-add_con_min(T) :-
-  make_vars(2, [A, B]),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
-  ppl_Polyhedron_add_constraint_and_minimize(P, A - B >= 1),
-  clean_ppl_new_Polyhedron_from_constraints(T,
-                                      [A - B >= 1],
-                                      P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  \+ ppl_Polyhedron_add_constraint_and_minimize(P, A - B =< 0),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1).
-
-% Tests ppl_Polyhedron_add_generator/2.
-add_gen :-
-  add_gen(c), add_gen(nnc).
-
-add_gen(T) :-
-  make_vars(2, [A, B]),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
-  ppl_Polyhedron_add_generator(P, point(A + B)),
-  clean_ppl_new_Polyhedron_from_generators(T,
-                                     [point(A + B), point(0),
-                                      line(A), line(B)], P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1).
-
-% Tests ppl_Polyhedron_add_generator_and_minimize/2.
-add_gen_min :-
-  add_gen_min(c), add_gen_min(nnc).
-
-add_gen_min(T) :-
-  make_vars(2, [A, B]),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, empty, P),
-  ppl_Polyhedron_add_generator(P, point(A + B)),
-  ppl_Polyhedron_add_generator(P, point(0)),
-  ppl_Polyhedron_add_generator_and_minimize(P, point(2*A + 2*B, 1)),
-  ppl_Polyhedron_get_generators(P,[_G1,_G2]),
-  clean_ppl_new_Polyhedron_from_generators(T,
-                                     [point(2*A + 2*B), point(0)],
-                                     P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1).
-
-% Tests ppl_Polyhedron_add_constraints/2.
-add_cons :-
-  make_vars(3, [A, B, C]),
-  add_cons(c, [A >= 1, B >= 0, 4*A + B - 2*C >= 5], [A =< 0]),
-  add_cons(nnc, [A > 1, B >= 0, 4*A + B - 2*C > 5], [A < 0]).
-
-add_cons(T, CS, CS1) :-
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
-  ppl_Polyhedron_add_constraints(P, CS),
-  clean_ppl_new_Polyhedron_from_constraints(T, CS, P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  ppl_Polyhedron_add_constraints(P, CS1),
-  ppl_Polyhedron_is_empty(P),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1).
-
-% Tests ppl_Polyhedron_add_constraints_and_minimize/2.
-add_cons_min :-
-  make_vars(2, [A, B]),
-  add_cons_min(c, [A >= 1, B >= 0], [A + B =< 0]),
-  add_cons_min(nnc, [A > 1, B >= 0], [A < 0]).
-
-add_cons_min(T, CS, CS1) :-
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
-  ppl_Polyhedron_add_constraints_and_minimize(P, CS),
-  clean_ppl_new_Polyhedron_from_constraints(T, CS, P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  \+ppl_Polyhedron_add_constraints_and_minimize(P, CS1),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1).
-
-% Tests ppl_Polyhedron_add_generators/2.
-add_gens :-
-  make_vars(3, [A, B, C]),
-  add_gens(c, [point(A + B + C), ray(A), ray(2*A), point(A + B + C, 1),
-               point(100*A + 5*B, -8)]),
-  add_gens(nnc, [point(A + B + C), ray(A), ray(2*A), point(A + B + C, 1),
-                 closure_point(100*A + 5*B, -8)]).
-
-add_gens(T, GS) :-
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, empty, P),
-  ppl_Polyhedron_add_generators(P, GS),
-  clean_ppl_new_Polyhedron_from_generators(T, GS, P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1).
-
-% Tests ppl_Polyhedron_add_generators_and_minimize/2.
-add_gens_min :-
-  make_vars(3, [A, B, C]),
-  add_gens_min(c, [point(A + B + C), ray(A), ray(2*A), point(A + B + C)]),
-  add_gens_min(nnc, [point(A + B + C), ray(A), ray(2*A),
-                     closure_point(A + B + C)]).
-
-add_gens_min(T, GS) :-
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, empty, P),
-  \+  ppl_Polyhedron_add_generators_and_minimize(P, []),
-  ppl_Polyhedron_add_generators_and_minimize(P, GS),
-  clean_ppl_new_Polyhedron_from_generators(T, GS, P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1).
-
-%%%%%%%%%%%%%%%%%% Change Dimensions %%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Tests ppl_Polyhedron_add_space_dimensions_and_project/2.
-project :-
-  project(c), project(nnc).
-
-project(T) :-
-  make_vars(4, [A, B, C, D]),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
-  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0]),
-  ppl_Polyhedron_add_space_dimensions_and_project(P, 0),
-  clean_ppl_new_Polyhedron_from_constraints(T,
-                                      [A >= 1, B >= 0],
-                                      P0),
-  ppl_Polyhedron_equals_Polyhedron(P, P0),
-  ppl_delete_Polyhedron(P0),
-  ppl_Polyhedron_add_space_dimensions_and_project(P, 2),
-  clean_ppl_new_Polyhedron_from_constraints(T,
-                                      [A >= 1, B >= 0, C = 0, D = 0],
-                                      P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  !,
-  ppl_delete_Polyhedron(P1),
-  ppl_delete_Polyhedron(P).
-
-% Tests ppl_Polyhedron_add_space_dimensions_and_embed/2.
-embed :-
-  embed(c), embed(nnc).
-
-embed(T) :-
-  make_vars(2, [A, B]),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
-  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0]),
-  ppl_Polyhedron_add_space_dimensions_and_embed(P, 0),
-  clean_ppl_new_Polyhedron_from_constraints(T,
-                                      [A >= 1, B >= 0],
-                                      P0),
-  ppl_Polyhedron_equals_Polyhedron(P, P0),
-  ppl_delete_Polyhedron(P0),
-  ppl_Polyhedron_add_space_dimensions_and_embed(P, 2),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 4, universe, P1),
-  ppl_Polyhedron_add_constraints(P1, [A >= 1, B >= 0]),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  !,
-  ppl_delete_Polyhedron(P1),
-  ppl_delete_Polyhedron(P).
-
-% Tests ppl_Polyhedron_remove_space_dimensions/2.
-remove_dim :-
-  remove_dim(c), remove_dim(nnc).
-
-remove_dim(T) :-
-  make_vars(3, [A, B, C]),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
-  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C >= 2]),
-  \+ ppl_Polyhedron_remove_space_dimensions(P, x),
-  ppl_Polyhedron_remove_space_dimensions(P, []),
-  clean_ppl_new_Polyhedron_from_constraints(T,
-                                      [A >= 1, B >= 0, C >= 2],
-                                      P0),
-  ppl_Polyhedron_equals_Polyhedron(P, P0),
-  ppl_delete_Polyhedron(P0),
-  ppl_Polyhedron_remove_space_dimensions(P,[B]),
-  clean_ppl_new_Polyhedron_from_constraints(T,
-                                      [A >= 1, B >= 2],
-                                      P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  ppl_delete_Polyhedron(P1),
-  % Note: now 'B' refers to the old 'C' variable.
-  ppl_Polyhedron_remove_space_dimensions(P,[A, B]),
-  ppl_Polyhedron_space_dimension(P, 0),
-  !,
-  ppl_delete_Polyhedron(P).
-
-% Tests ppl_Polyhedron_remove_higher_space_dimensions/2.
-remove_high_dim :-
-  remove_high_dim(c), remove_high_dim(nnc).
-
-remove_high_dim(T) :-
-  make_vars(3, [A, B, C]),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
-  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C >= 0]),
-  clean_ppl_new_Polyhedron_from_constraints(T,
-                                      [A >= 1, B >= 0, C >= 0],
-                                      P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  ppl_Polyhedron_remove_higher_space_dimensions(P, 1),
-  clean_ppl_new_Polyhedron_from_constraints(T,
-                                      [A >= 1],
-                                      P2),
-  ppl_Polyhedron_equals_Polyhedron(P, P2),
-  ppl_Polyhedron_remove_higher_space_dimensions(P, 1),
-  ppl_Polyhedron_equals_Polyhedron(P, P2),
-  ppl_Polyhedron_remove_higher_space_dimensions(P, 0),
-  ppl_Polyhedron_space_dimension(P, 0),
-  !,
-  ppl_delete_Polyhedron(P1),
-  ppl_delete_Polyhedron(P2),
-  ppl_delete_Polyhedron(P).
-
-% Tests ppl_Polyhedron_expand_space_dimension/3.
-expand_dim :-
-  expand_dim(c), expand_dim(nnc).
-
-expand_dim(T) :-
-  make_vars(4, [A, B, C, D]),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
-  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C >= 2]),
-  ppl_Polyhedron_expand_space_dimension(P, B, 1),
-  ppl_Polyhedron_space_dimension(P, 4),
-  clean_ppl_new_Polyhedron_from_constraints(T,
-                                      [A >= 1, B >= 0, C >= 2, D >= 0],
-                                      P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  ppl_delete_Polyhedron(P1),
-  ppl_Polyhedron_remove_higher_space_dimensions(P, 2),
-  ppl_Polyhedron_expand_space_dimension(P, A, 2),
-  clean_ppl_new_Polyhedron_from_constraints(T,
-                                      [D >= 1, C >= 1, A >= 1, B >= 0],
-                                      P2),
-  ppl_Polyhedron_equals_Polyhedron(P, P2),
-  ppl_delete_Polyhedron(P2),
-  ppl_Polyhedron_space_dimension(P, 4),
-  !,
-  ppl_delete_Polyhedron(P),
-% Example taken from [GopanDMDRS04], page 519.
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, empty, Ptacas),
-  ppl_Polyhedron_add_generators(Ptacas,
-       [point(A + 2*B), point(A + 3*B), point(A + 4*B)]),
-  ppl_Polyhedron_expand_space_dimension(Ptacas, B, 1),
-  ppl_Polyhedron_space_dimension(Ptacas, 3),
-  clean_ppl_new_Polyhedron_from_generators(T,
-       [point(A + 2*B + 2*C), point(A + 2*B + 3*C), point(A + 2*B + 4*C),
-        point(A + 3*B + 2*C), point(A + 3*B + 3*C), point(A + 3*B + 4*C),
-        point(A + 4*B + 2*C), point(A + 4*B + 3*C), point(A + 4*B + 4*C)],
-                                      Ptacas1),
-  ppl_Polyhedron_equals_Polyhedron(Ptacas, Ptacas1),
-  !,
-  ppl_delete_Polyhedron(Ptacas1),
-  ppl_delete_Polyhedron(Ptacas).
-
-% Tests ppl_Polyhedron_fold_space_dimension/3.
-fold_dims :-
-  fold_dims(c), fold_dims(nnc).
-
-fold_dims(T) :-
-  make_vars(4, [A, B, C, D]),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 4, universe, P),
-  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C >= 2, D >= 0]),
-  \+ ppl_Polyhedron_fold_space_dimensions(P, x, B),
-  ppl_Polyhedron_fold_space_dimensions(P, [D], B),
-  ppl_Polyhedron_space_dimension(P, 3),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P1),
-  ppl_Polyhedron_add_constraints(P1, [A >= 1, B >= 0, C >= 2]),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  !,
-  ppl_delete_Polyhedron(P1),
-  ppl_Polyhedron_fold_space_dimensions(P, [A, C], B),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 1, universe, P2),
-  ppl_Polyhedron_add_constraints(P2, [A >= 0]),
-  ppl_Polyhedron_equals_Polyhedron(P, P2),
-  ppl_delete_Polyhedron(P2),
-  ppl_Polyhedron_space_dimension(P, 1),
-  !,
-  ppl_delete_Polyhedron(P),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, Ptacas),
-  ppl_Polyhedron_add_constraints(Ptacas, [A >= 1, A =< 3, B >= 7, B =< 12]),
-  ppl_Polyhedron_fold_space_dimensions(Ptacas, [A], B),
-  ppl_Polyhedron_space_dimension(Ptacas, 1),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 1, universe, Ptacas1),
-  ppl_Polyhedron_add_constraints(Ptacas1, [A >= 1, A =< 12]),
-  ppl_Polyhedron_equals_Polyhedron(Ptacas, Ptacas1),
-  !,
-  ppl_delete_Polyhedron(Ptacas1),
-  ppl_delete_Polyhedron(Ptacas).
-
-% Tests ppl_Polyhedron_map_space_dimensions/2.
-map_dim:-
-  map_dim(c), map_dim(nnc).
-
-map_dim(T) :-
-  make_vars(7, [A, B, C, D, E, F, G]),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
-  ppl_Polyhedron_add_constraints(P, [A >= 2, B >= 1, C >= 0]),
-  \+  ppl_Polyhedron_map_space_dimensions(P, x),
-  ppl_Polyhedron_map_space_dimensions(P, [A-B, B-C, C-A]),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, Q),
-  ppl_Polyhedron_add_constraints(Q, [A >= 0, B >= 2, C >= 1]),
-  ppl_Polyhedron_equals_Polyhedron(P, Q),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(Q),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 4, empty, P0),
-  ppl_Polyhedron_add_generators(P0, [point(2*C), line(A+B), ray(A+C)]),
-  \+ppl_Polyhedron_map_space_dimensions(P0, [A+C, C-A, B-B]), % A+C not map
-  \+ppl_Polyhedron_map_space_dimensions(P0, [A, C-A, B-B]),   % A not map
-  \+ppl_Polyhedron_map_space_dimensions(P0, [D-A, C-A, B-B]), % D not dimension
-  \+ppl_Polyhedron_map_space_dimensions(P0, [B-A, C-A, B-B]), % not injective
-  \+ppl_Polyhedron_map_space_dimensions(P0, [B-A, C-A, B-C]), % not function
-  ppl_delete_Polyhedron(P0),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 4, empty, P1),
-  ppl_Polyhedron_add_generators(P1, [point(2*C), line(A+B), ray(A+C)]),
-  ppl_Polyhedron_map_space_dimensions(P1, [A-C, C-A, B-B]),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, empty, Q1),
-  ppl_Polyhedron_add_generators(Q1, [point(2*A), ray(A+C), line(B+C)]),
-  ppl_Polyhedron_equals_Polyhedron(P1, Q1),
-  !,
-  ppl_delete_Polyhedron(P1),
-  ppl_delete_Polyhedron(Q1),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 5, universe, P2),
-  ppl_Polyhedron_add_constraints(P2, [B = 2, E = 8]),
-  ppl_Polyhedron_add_space_dimensions_and_embed(P2, 2),
-  ppl_Polyhedron_map_space_dimensions(P2, [A-A, B-B, C-E, D-F, E-G, F-C, G-D]),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 7, universe, Q2),
-  ppl_Polyhedron_add_constraints(Q2, [B = 2, G = 8]),
-  ppl_Polyhedron_equals_Polyhedron(P2, Q2),
-  !,
-  ppl_delete_Polyhedron(P2),
-  ppl_delete_Polyhedron(Q2).
-
-
 
 %%%%%%%%%%%%%%%%%% Polyhedral Relations %%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1962,7 +1954,6 @@ time_out :-
   time_out(c), time_out(nnc).
 
 time_out(T) :-
-  ppl_initialize,
   make_vars(6, [A, B, C, D, E, F]),
   CS = [8*A - 7*B + 4*D - E - 8*F >= -3,
         6*A + 8*B + 4*C - 6*D + 6*E + 6*F >= 5,
@@ -2063,7 +2054,7 @@ exceptions :-
 % It does not check those that are dependent on a specific Prolog system.
 
 exception_prolog(V) :-
-   exception_prolog1(11, V).
+   exception_prolog1(12, V).
 
 exception_prolog1(0, _) :- !.
 exception_prolog1(N, V) :-
@@ -2151,6 +2142,48 @@ exception_prolog(11, [A, B, _]) :-
      ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x, A + 1)),
   must_catch(
      ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x + y, A + 1)).
+
+%% TEST: not_a_nil_terminated_list
+exception_prolog(12, [A, B, C]) :-
+  must_catch(ppl_new_Polyhedron_from_generators(c,
+     [point(A + B + C, 1) | not_a_list], _)),
+  must_catch(ppl_new_Polyhedron_from_constraints(c,
+     [A = 0, B >= C | not_a_list], _)),
+  must_catch(ppl_new_Polyhedron_from_bounding_box(c, 0, 0)),
+  must_catch(ppl_new_Polyhedron_from_bounding_box(nnc,
+             [i(c(minf), c(2/1)), i(c(n), o(pinf)) | d], _)),
+  must_catch(ppl_new_Polyhedron_from_bounding_box(c,
+             [i(c(minf), c(2/1)), i(c(n), o(pinf)) | _], _)),
+  clean_ppl_new_Polyhedron_from_space_dimension(nnc, 3, universe, P),
+  must_catch(ppl_Polyhedron_add_constraints(P, _)),
+  must_catch(ppl_Polyhedron_add_constraints(P, not_a_list)),
+  must_catch(ppl_Polyhedron_add_constraints_and_minimize(P, not_a_list)),
+  must_catch(ppl_Polyhedron_add_generators(P, not_a_list)),
+  must_catch(ppl_Polyhedron_add_generators(P, _)),
+  must_catch(ppl_Polyhedron_add_generators_and_minimize(P, _)),
+  clean_ppl_new_Polyhedron_from_space_dimension(c, 3, empty, Q),
+  must_catch(ppl_Polyhedron_map_space_dimensions(Q, not_a_list)),
+  must_catch(ppl_Polyhedron_fold_space_dimensions(Q, not_a_list, B)),
+  must_catch(ppl_Polyhedron_remove_space_dimensions(Q, not_a_list)),
+  must_catch(ppl_Polyhedron_limited_H79_extrapolation_assign(
+             Q, P, not_a_list)),
+  must_catch(ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(
+             Q, P, not_a_list)),
+  must_catch(ppl_Polyhedron_bounded_H79_extrapolation_assign(
+             Q, P, not_a_list)),
+  must_catch(ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(
+             Q, P, not_a_list)),
+  must_catch(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(
+             Q, P, not_a_list)),
+  must_catch(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(
+             Q, P, not_a_list)),
+  must_catch(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(
+             Q, P, not_a_list)),
+  must_catch(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(
+             Q, P, not_a_list)),
+  !,
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(Q).
 
 % exception_sys_prolog(+N, +V) checks exceptions thrown by Prolog interfaces
 % that are dependent on a specific Prolog system.
@@ -2510,6 +2543,7 @@ group_predicates(new_polyhedron_from_dimension,
 
 group_predicates(new_polyhedron_from_polyhedron,
   [ppl_new_Polyhedron_from_Polyhedrom/4,
+   ppl_new_Polyhedron_from_constraints/3,
    ppl_Polyhedron_equals_Polyhedron/2
   ]).
 
@@ -2535,6 +2569,26 @@ group_predicates(basic_operators,
    ppl_Polyhedron_poly_difference_assign/2,
    ppl_Polyhedron_time_elapse_assign/2,
    ppl_Polyhedron_topological_closure_assign/1
+  ]).
+
+group_predicates(add_to_system,
+  [ppl_Polyhedron_add_constraint/2,
+   ppl_Polyhedron_add_constraint_and_minimize/2,
+   ppl_Polyhedron_add_generator/2,
+   ppl_Polyhedron_add_generator_and_minimize/2,
+   ppl_Polyhedron_add_constraints/2,
+   ppl_Polyhedron_add_constraints_and_minimize/2,
+   ppl_Polyhedron_add_generators/2,
+   ppl_Polyhedron_add_generators_and_minimize/2
+  ]).
+
+group_predicates(revise_dimensions,
+  [ppl_Polyhedron_remove_space_dimensions/2,
+   ppl_Polyhedron_remove_higher_space_dimensions/2,
+   ppl_Polyhedron_expand_space_dimension/3,
+   ppl_Polyhedron_fold_space_dimensions/3,
+   ppl_Polyhedron_map_space_dimensions/2,
+   ppl_Polyhedron_concatenate_assign/2
   ]).
 
 group_predicates(transform_polyhedron,
@@ -2568,26 +2622,6 @@ group_predicates(get_system,
    ppl_Polyhedron_get_minimized_constraints/2,
    ppl_Polyhedron_get_generators/2,
    ppl_Polyhedron_get_minimized_generators/2
-  ]).
-
-group_predicates(add_to_system,
-  [ppl_Polyhedron_add_constraint/2,
-   ppl_Polyhedron_add_constraint_and_minimize/2,
-   ppl_Polyhedron_add_generator/2,
-   ppl_Polyhedron_add_generator_and_minimize/2,
-   ppl_Polyhedron_add_constraints/2,
-   ppl_Polyhedron_add_constraints_and_minimize/2,
-   ppl_Polyhedron_add_generators/2,
-   ppl_Polyhedron_add_generators_and_minimize/2
-  ]).
-
-group_predicates(revise_dimensions,
-  [ppl_Polyhedron_remove_space_dimensions/2,
-   ppl_Polyhedron_remove_higher_space_dimensions/2,
-   ppl_Polyhedron_expand_space_dimension/3,
-   ppl_Polyhedron_fold_space_dimensions/3,
-   ppl_Polyhedron_map_space_dimensions/2,
-   ppl_Polyhedron_concatenate_assign/2
   ]).
 
 group_predicates(check_polyhedron,
