@@ -21,10 +21,6 @@ Enhancements for PPL 0.8
 - Clearly explain, in the documentation, how (not) to use
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
-- The check_containment() function is not officially available to
-  the PPL user.  However, someone uses it and, apparently, this
-  comes in handy.  See how to provide the same functionality the
-  right way.
 - Reconsider the handling of temporary coefficients.
 - In the Prolog interface, reconsider the functionality and names of the
   "with_token" predicates.
