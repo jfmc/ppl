@@ -777,7 +777,6 @@ AC_CONFIG_FILES(Makefile
                 src/version.hh
                 src/ppl-config.cc
                 tests/Makefile
-                tests/Matrix/Makefile
                 tests/BD_Shape/Makefile
                 tests/Polyhedron/Makefile
                 utils/Makefile
