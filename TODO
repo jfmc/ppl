@@ -26,11 +26,6 @@ Enhancements for PPL 0.8
   comes in handy.  See how to provide the same functionality the
   right way.
 - Reconsider the handling of temporary coefficients.
-- In the Prolog interface there are predicates such as
-  ppl_Polyhedron_remove_space_dimensions/2 that require an input list;
-  if the argument is not a list, in the current version, the call to
-  this predicate will fail. This needs to be changed so that an
-  exception is thrown.
 - In the Prolog interface, reconsider the functionality and names of the
   "with_token" predicates.
 - The documentation has been read through but a more careful check,
