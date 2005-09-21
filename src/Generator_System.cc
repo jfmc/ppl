@@ -788,8 +788,8 @@ PPL::Generator_System::satisfied_by_all_generators(const Constraint& c) const {
 
 void
 PPL::Generator_System::affine_image(dimension_type v,
-			  const Linear_Expression& expr,
-			  Coefficient_traits::const_reference denominator) {
+				    const Linear_Expression& expr,
+				    Coefficient_traits::const_reference denominator) {
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
   // nor the epsilon dimension of NNC polyhedra).
