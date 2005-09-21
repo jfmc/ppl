@@ -347,29 +347,7 @@ PPL::Linear_System::add_row(const Linear_Row& r) {
 
   const bool was_sorted = is_sorted();
 
-  const dimension_type new_rows_size = rows.size() + 1;
-  if (rows.capacity() < new_rows_size) {
-    // Reallocation will take place.
-    std::vector<Row> new_rows;
-    new_rows.reserve(compute_capacity(new_rows_size, max_num_rows()));
-    new_rows.insert(new_rows.end(), new_rows_size, Row());
-    // Put the new row in place.
-    Row new_row(r, row_capacity);
-    dimension_type i = new_rows_size-1;
-    std::swap(new_rows[i], new_row);
-    // Steal the old rows.
-    while (i-- > 0)
-      new_rows[i].swap(rows[i]);
-    // Put the new rows into place.
-    std::swap(rows, new_rows);
-  }
-  else {
-    // Reallocation will NOT take place.
-    // Inserts a new empty row at the end, then substitutes it with a
-    // copy of the given row.
-    Row tmp(r, row_capacity);
-    std::swap(*rows.insert(rows.end(), Row()), tmp);
-  }
+  Matrix::add_row(r);
 
   //  We update `index_first_pending', because it must
   // equal to `num_rows()'.

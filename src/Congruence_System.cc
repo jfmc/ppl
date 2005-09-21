@@ -155,42 +155,6 @@ PPL::Congruence_System::add_rows(const Congruence_System& y) {
   assert(OK());
 }
 
-void
-PPL::Congruence_System::add_row(const Congruence& r) {
-  // The added row must be strongly normalized and have the same
-  // number of elements as the existing rows of the system.
-  //assert(r.check_strong_normalized()); // FIX
-  assert(r.size() == row_size);
-
-  const dimension_type new_rows_size = rows.size() + 1;
-  if (rows.capacity() < new_rows_size) {
-    // Reallocation will take place.
-    std::vector<Row> new_rows;
-    new_rows.reserve(compute_capacity(new_rows_size, max_num_rows()));
-    new_rows.insert(new_rows.end(), new_rows_size, Row());
-    // Put the new row in place.
-    Row new_row(r, row_capacity);
-    dimension_type i = new_rows_size-1;
-    std::swap(new_rows[i], new_row);
-    // Steal the old rows.
-    while (i-- > 0)
-      new_rows[i].swap(rows[i]);
-    // Put the new rows into place.
-    std::swap(rows, new_rows);
-  }
-  else {
-    // Reallocation will NOT take place.
-    // Inserts a new empty row at the end, then substitutes it with a
-    // copy of the given row.
-    Row tmp(r, row_capacity);
-    std::swap(*rows.insert(rows.end(), Row()), tmp);
-  }
-
-  // Do not check for strong normalization, because no modification of
-  // rows has occurred.
-  assert(OK());
-}
-
 bool
 PPL::Congruence_System::has_linear_equalities() const {
   const Congruence_System& cgs = *this;

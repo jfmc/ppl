@@ -318,9 +318,6 @@ private:
   //! Add the rows in \p y to the end of the system.
   void add_rows(const Congruence_System& y);
 
-  //! Add row \p r to the end of the system.
-  void add_row(const Congruence& r);
-
   //! Adjusts all expressions to have the same moduli.
   void normalize_moduli();
 
