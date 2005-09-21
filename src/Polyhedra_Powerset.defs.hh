@@ -28,6 +28,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BHRZ03_Certificate.types.hh"
 #include "Constraint_System.types.hh"
 #include "Constraint.types.hh"
+#include "C_Polyhedron.types.hh"
+#include "NNC_Polyhedron.types.hh"
 #include "Polyhedron.defs.hh"
 #include "Variable.defs.hh"
 #include "Determinate.defs.hh"
@@ -441,6 +443,50 @@ namespace Parma_Polyhedra_Library {
 template <typename PH>
 std::pair<PH, Polyhedra_Powerset<NNC_Polyhedron> >
 linear_partition(const PH& p, const PH& q);
+
+//! \brief
+//! Returns <CODE>true</CODE> if and only if the union of
+//! the NNC polyhedra in \p ps contains the NNC polyhedron \p ph.
+/*! \relates Polyhedra_Powerset */
+bool
+check_containment(const NNC_Polyhedron& ph,
+		  const Polyhedra_Powerset<NNC_Polyhedron>& ps);
+
+//! \brief
+//! Returns <CODE>true</CODE> if and only if the union of
+//! the objects in \p ps contains \p ph.
+/*!
+  \relates Polyhedra_Powerset
+  \note
+  It is assumed that the template parameter PH can be converted
+  without precision loss into an NNC_Polyhedron; otherwise,
+  an incorrect result might be obtained.
+*/
+template <typename PH>
+bool
+check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps);
+
+// Non-inline full specializations should be declared here
+// so as to inhibit multiple instantiations of the generic template.
+template <>
+template <>
+Polyhedra_Powerset<NNC_Polyhedron>
+::Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y);
+
+template <>
+template <>
+Polyhedra_Powerset<C_Polyhedron>
+::Polyhedra_Powerset(const Polyhedra_Powerset<NNC_Polyhedron>& y);
+
+template <>
+void
+Polyhedra_Powerset<NNC_Polyhedron>
+::poly_difference_assign(const Polyhedra_Powerset& y);
+
+template <>
+bool
+Polyhedra_Powerset<NNC_Polyhedron>
+::geometrically_covers(const Polyhedra_Powerset& y) const;
 
 } // namespace Parma_Polyhedra_Library
 

@@ -283,6 +283,7 @@ Polyhedron_chdims.cc \
 Polyhedron_widenings.cc \
 C_Polyhedron.cc \
 NNC_Polyhedron.cc \
+Polyhedra_Powerset.cc \
 Row.cc \
 Linear_Row.cc \
 Saturation_Matrix.cc \
