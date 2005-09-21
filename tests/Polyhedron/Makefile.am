@@ -124,6 +124,7 @@ ORIGINAL_TESTS = \
 	linearpartition3 linearpartition4 \
 	linexpression1 \
 	mapspacedims1 mapspacedims2 mapspacedims3  mapspacedims4 \
+	matasciidumpload1 \
 	max_min1 max_min2 \
 	maxspacedim1 \
 	mc91 \
@@ -522,6 +523,8 @@ mapspacedims1_SOURCES = mapspacedims1.cc
 mapspacedims2_SOURCES = mapspacedims2.cc
 mapspacedims3_SOURCES = mapspacedims3.cc
 mapspacedims4_SOURCES = mapspacedims4.cc
+
+matasciidumpload1_SOURCES = matasciidumpload1.cc
 
 max_min1_SOURCES = max_min1.cc
 max_min2_SOURCES = max_min2.cc
