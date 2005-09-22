@@ -54,14 +54,13 @@ main() TRY {
   TEMP_INTEGER(tem);
   for (dimension_type row = 0; row < ROWS; ++row)
     for (dimension_type col = 0; col < COLS; ++col) {
-#ifdef NATIVE_INTEGERS
-      tem = rand() % std::numeric_limits<Native_Integers>::max();
-#else
-#ifdef CHECKED_INTEGERS
-      tem = rand() % std::numeric_limits<Checked_Integers>::max();
+#if defined(NATIVE_INTEGERS) || defined(CHECKED_INTEGERS)
+      if (std::numeric_limits<COEFFICIENT_TYPE>::max() == 0)
+	tem = 0;
+      else
+	tem = rand() % std::numeric_limits<COEFFICIENT_TYPE>::max();
 #else
       tem = rand();
-#endif
 #endif
       m1[row][col] = tem;
     }
