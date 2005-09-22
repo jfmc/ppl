@@ -66,8 +66,15 @@ public: \
 
 SPECIALIZE_LIMITS_INT(signed char)
 SPECIALIZE_LIMITS_INT(signed short)
+SPECIALIZE_LIMITS_INT(signed int)
 SPECIALIZE_LIMITS_INT(signed long)
 SPECIALIZE_LIMITS_INT(signed long long)
+
+SPECIALIZE_LIMITS_INT(unsigned char)
+SPECIALIZE_LIMITS_INT(unsigned short)
+SPECIALIZE_LIMITS_INT(unsigned int)
+SPECIALIZE_LIMITS_INT(unsigned long)
+SPECIALIZE_LIMITS_INT(unsigned long long)
 
 #define SPECIALIZE_LIMITS_FLOAT(T) \
 template <typename Policy> \
