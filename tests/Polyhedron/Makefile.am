@@ -1306,6 +1306,7 @@ ascii_dump_load4.dat \
 ascii_dump_load5.dat \
 ascii_dump_load6.dat \
 ascii_dump_load7.dat \
+matasciidumpload1.dat \
 writeconsys1.dat \
 writegensys1.dat \
 writegensys2.dat \

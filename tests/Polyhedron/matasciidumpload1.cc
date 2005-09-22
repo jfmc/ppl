@@ -34,7 +34,7 @@ using namespace Parma_Polyhedra_Library;
 
 namespace {
 
-const char* data_file = "ascii_dump_load1.dat";
+const char* data_file = "matasciidumpload1.dat";
 
 } // namespace
 
@@ -54,7 +54,15 @@ main() TRY {
   TEMP_INTEGER(tem);
   for (dimension_type row = 0; row < ROWS; ++row)
     for (dimension_type col = 0; col < COLS; ++col) {
+#ifdef NATIVE_INTEGERS
+      tem = rand() % std::numeric_limits<Native_Integers>::max();
+#else
+#ifdef CHECKED_INTEGERS
+      tem = rand() % std::numeric_limits<Checked_Integers>::max();
+#else
       tem = rand();
+#endif
+#endif
       m1[row][col] = tem;
     }
 
