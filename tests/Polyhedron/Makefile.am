@@ -123,6 +123,7 @@ ORIGINAL_TESTS = \
 	linearpartition1 linearpartition2 \
 	linearpartition3 linearpartition4 \
 	linexpression1 \
+	linsysasciidumpload1 \
 	mapspacedims1 mapspacedims2 mapspacedims3  mapspacedims4 \
 	matasciidumpload1 \
 	max_min1 max_min2 \
@@ -518,6 +519,8 @@ linearpartition3_SOURCES = linearpartition3.cc
 linearpartition4_SOURCES = linearpartition4.cc
 
 linexpression1_SOURCES = linexpression1.cc
+
+linsysasciidumpload1_SOURCES = linsysasciidumpload1.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 mapspacedims2_SOURCES = mapspacedims2.cc
@@ -1307,6 +1310,7 @@ ascii_dump_load5.dat \
 ascii_dump_load6.dat \
 ascii_dump_load7.dat \
 matasciidumpload1.dat \
+linsysasciidumpload1.dat \
 writeconsys1.dat \
 writegensys1.dat \
 writegensys2.dat \
