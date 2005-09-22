@@ -137,6 +137,7 @@ const char* rpi_valid = "RPI_V";
 const char* is_rpi = "RPI";
 const char* nnc_valid = "NNC_V";
 const char* is_nnc = "NNC";
+const char* bit_names[] = {rpi_valid, is_rpi, nnc_valid, is_nnc};
 
 } // namespace
 
@@ -153,6 +154,26 @@ PPL::Linear_Row::Flags::ascii_dump(std::ostream& s) const {
     << is_nnc;
 }
 
+bool
+PPL::Linear_Row::Flags::ascii_load(std::istream& s) {
+  std::string str;
+  // Assume that the bits are used in sequence.
+  reset_bits(std::numeric_limits<base_type>::max());
+  for (unsigned int bit = 0;
+       bit < (sizeof(bit_names) / sizeof(char*));
+       ++bit) {
+    if (!(s >> str))
+      return false;
+    if (str[0] == '+')
+      set_bits(1 << Row::Flags::first_free_bit + bit);
+    else if (str[0] != '-')
+      return false;
+    if (str.compare(1, strlen(bit_names[bit]), bit_names[bit]) != 0)
+      return false;
+  }
+  return true;
+}
+
 void
 PPL::Linear_Row::ascii_dump(std::ostream& s) const {
   const Row& x = *this;
@@ -162,6 +183,19 @@ PPL::Linear_Row::ascii_dump(std::ostream& s) const {
   s << "f ";
   flags().ascii_dump(s);
   s << std::endl;
+}
+
+bool
+PPL::Linear_Row::ascii_load(std::istream& s) {
+  Row& x = *this;
+  std::string str;
+  const dimension_type x_size = x.size();
+  for (dimension_type col = 0; col < x_size; ++col)
+    if (!(s >> x[col]))
+      return false;
+  if (!(s >> str) || (str.compare("f") != 0))
+    return false;
+  return flags().ascii_load(s);
 }
 
 bool

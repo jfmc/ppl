@@ -174,12 +174,20 @@ public:
     //! representation of \p *this.
     void ascii_dump(std::ostream& s) const;
 
+    //! Uses the ASCII Flags representation from \p s to recreate *this.
+    /*!
+      Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
+      otherwise.  The ASCII representation is as output by ascii_dump.
+    */
+    bool ascii_load(std::istream& s);
+
   private:
     //! Builds the type from a bit-mask.
     explicit Flags(base_type mask);
 
     //! \name The bits that are currently in use
     //@{
+    // NB: ascii_load assumes that these are sequential.
     static const unsigned rpi_validity_bit
     = Row::Flags::first_free_bit + 0;
     static const unsigned rpi_bit
@@ -348,6 +356,13 @@ public:
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
   void ascii_dump(std::ostream& s) const;
+
+  //! Uses the ASCII Linear_Row representation from \p s to recreate *this.
+  /*!
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
+    otherwise.  The ASCII representation is as output by ascii_dump.
+  */
+  bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
   bool OK(dimension_type row_size, dimension_type row_capacity) const;

@@ -162,7 +162,10 @@ PPL::Linear_System::ascii_load(std::istream& s) {
     return false;
   set_index_first_pending_row(index);
 
-  // FIXME: must be completed.
+  Linear_System& x = *this;
+  for (dimension_type row = 0; row < nrows; ++row)
+    if (!x[row].ascii_load(s))
+      return false;
 
   // Check for well-formedness.
   assert(OK(true));
