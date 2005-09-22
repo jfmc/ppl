@@ -728,8 +728,8 @@ public:
     \param complexity
     The complexity class of the algorithm to be used.
 
-    The template class Box must provide the following
-    methods, whose return value, if any, is simply ignored.
+    The template class Box must provide the following methods, whose
+    return values, if any, are simply ignored.
     \code
       set_empty()
     \endcode
