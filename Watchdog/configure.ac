@@ -29,7 +29,7 @@ AC_INIT([the Parma Watchdog Library],[0.4],[bagnara@cs.unipr.it],[watchdog])
 AC_PREREQ(2.59)
 
 # Make sure the sources are there.
-AC_CONFIG_SRCDIR([Watchdog.cc])
+AC_CONFIG_SRCDIR(src/Watchdog.cc)
 
 # Use Automake.
 AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7.3])
@@ -294,5 +294,6 @@ AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 AC_SUBST(debug_flag)
 
 AC_CONFIG_FILES(Makefile
+                src/Makefile
                 utils/Makefile)
 AC_OUTPUT
