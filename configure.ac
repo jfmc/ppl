@@ -703,14 +703,14 @@ AC_PROG_LIBTOOL
 AC_CHECK_PROG(MD5SUM, md5sum, md5sum)
 AM_CONDITIONAL(HAVE_MD5SUM, test x$MD5SUM = xmd5sum)
 
-# Check for the GLPK library
+# Check for the GLPK library.
 AC_LANG_PUSH(C)
 AC_CHECK_HEADER(glpk.h, HAVE_GLPK_H=yes)
 AM_CONDITIONAL(HAVE_GLPK, test x$HAVE_GLPK_H = xyes)
 AC_LANG_POP(C)
 
 # Checks for header files.
-AC_CHECK_HEADERS([getopt.h signal.h sys/resource.h sys/time.h sys/types.h time.h unistd.h])
+AC_CHECK_HEADERS([getopt.h signal.h sys/resource.h sys/time.h sys/types.h unistd.h])
 
 # Checks for header declarations.
 AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
