@@ -1,6 +1,6 @@
 #! @PERL@
 # -*- Perl -*-
-# @configure_input@
+# @generated_automatically@
 
 eval 'case $# in 0) exec @PERL@ -S "$0";; *) exec @PERL@ -S "$0" "$@";; esac'
     if 0;

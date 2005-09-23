@@ -785,8 +785,6 @@ AC_CONFIG_FILES(Makefile
                 tests/BD_Shape/Makefile
                 tests/Polyhedron/Makefile
                 utils/Makefile
-                utils/build_header
-                utils/text2cxxarray
                 m4/Makefile
                 demos/Makefile
                 demos/ppl_lcdd/Makefile

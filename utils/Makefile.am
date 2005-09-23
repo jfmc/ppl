@@ -38,16 +38,22 @@ dist_noinst_SCRIPTS = \
 build_header.in \
 text2cxxarray.in
 
-bin_SCRIPTS = \
+noinst_SCRIPTS = \
 build_header \
 text2cxxarray
 
-CLEANFILES = $(bin_SCRIPTS)
+generated_automatically = Generated automatically: \
+do not modify; modify the .in file instead.
 
-.PHONY: zchmods
+do_subst = sed -e 's,[@]PERL[@],$(PERL),g' \
+	-e 's,[@]generated_automatically[@],$(generated_automatically),g'
 
-bin_SCRIPTS += zchmods
-
-zchmods:
+build_header: build_header.in Makefile
+	$(do_subst) < $(srcdir)/build_header.in > build_header
 	chmod +x build_header
+
+text2cxxarray: text2cxxarray.in Makefile
+	$(do_subst) < $(srcdir)/text2cxxarray.in > text2cxxarray
 	chmod +x text2cxxarray
+
+CLEANFILES = $(noinst_SCRIPTS)
