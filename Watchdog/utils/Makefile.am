@@ -26,4 +26,7 @@ VPATH = @srcdir@
 @SET_MAKE@
 
 dist_noinst_SCRIPTS = \
-build_header
+build_header.in
+
+all:
+	chmod +x build_header

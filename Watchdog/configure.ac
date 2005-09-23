@@ -294,5 +294,6 @@ AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 AC_SUBST(debug_flag)
 
 AC_CONFIG_FILES(Makefile
-                utils/Makefile)
+                utils/Makefile
+		utils/build_header)
 AC_OUTPUT

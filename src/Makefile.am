@@ -78,14 +78,14 @@ ppl_config_LDADD = \
 libppl.la \
 @extra_libraries@
 
-BUGS.cc:	$(top_srcdir)/utils/text2cxxarray $(top_srcdir)/BUGS
-	$(top_srcdir)/utils/text2cxxarray --name=BUGS_array \
+BUGS.cc:	$(top_builddir)/utils/text2cxxarray $(top_srcdir)/BUGS
+	$(top_builddir)/utils/text2cxxarray --name=BUGS_array \
 		$(top_srcdir)/BUGS >$@
-COPYING.cc:	$(top_srcdir)/utils/text2cxxarray $(top_srcdir)/COPYING
-	$(top_srcdir)/utils/text2cxxarray --name=COPYING_array \
+COPYING.cc:	$(top_builddir)/utils/text2cxxarray $(top_srcdir)/COPYING
+	$(top_builddir)/utils/text2cxxarray --name=COPYING_array \
 		$(top_srcdir)/COPYING >$@
-CREDITS.cc:	$(top_srcdir)/utils/text2cxxarray $(top_srcdir)/CREDITS
-	$(top_srcdir)/utils/text2cxxarray --name=CREDITS_array \
+CREDITS.cc:	$(top_builddir)/utils/text2cxxarray $(top_srcdir)/CREDITS
+	$(top_builddir)/utils/text2cxxarray --name=CREDITS_array \
 		$(top_srcdir)/CREDITS >$@
 
 if USE_NATIVE_INTEGERS
@@ -382,8 +382,8 @@ ppl_include_files.hh: $(INCLUDE_FILES) Makefile
 	  printf "#include \"%s\"\n" $$file >>$@; \
 	done
 
-ppl_install.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(NESTED_INCLUDE_FILES) Makefile $(top_srcdir)/utils/build_header
-	$(top_srcdir)/utils/build_header \
+ppl_install.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(NESTED_INCLUDE_FILES) Makefile $(top_builddir)/utils/build_header
+	$(top_builddir)/utils/build_header \
 		-I $(top_builddir) -I $(top_builddir)/src \
 		$(top_srcdir)/src/ppl_header.hh >$@
 

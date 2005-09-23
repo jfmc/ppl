@@ -1,4 +1,10 @@
-#!/usr/bin/perl
+#! @PERL@
+# -*- Perl -*-
+# @configure_input@
+
+eval 'case $# in 0) exec @PERL@ -S "$0";; *) exec @PERL@ -S "$0" "$@";; esac'
+    if 0;
+
 # Convert an ASCII text into the declaration of a C++ array.
 # Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 #

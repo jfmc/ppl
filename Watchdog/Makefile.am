@@ -25,7 +25,7 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS = utils
+SUBDIRS = utils .
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
@@ -139,8 +139,8 @@ pwl_include_files.hh: $(INCLUDE_FILES) Makefile
 	  printf "#include \"%s\"\n" $$file >>$@; \
 	done
 
-pwl_install.hh:	$(top_builddir)/config.h pwl_header.hh pwl_include_files.hh Makefile $(top_srcdir)/utils/build_header
-	$(top_srcdir)/utils/build_header \
+pwl_install.hh:	$(top_builddir)/config.h pwl_header.hh pwl_include_files.hh Makefile $(top_builddir)/utils/build_header
+	$(top_builddir)/utils/build_header \
 		-I $(top_builddir) -I $(top_builddir)/Watchdog \
 		$(top_srcdir)/pwl_header.hh >$@
 

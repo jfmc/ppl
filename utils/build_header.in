@@ -1,4 +1,10 @@
-#!/usr/bin/perl
+#! @PERL@
+# -*- Perl -*-
+# @configure_input@
+
+eval 'case $# in 0) exec @PERL@ -S "$0";; *) exec @PERL@ -S "$0" "$@";; esac'
+    if 0;
+
 # Builds a self-contained C++ header file by performing recursive inclusion.
 # Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 #

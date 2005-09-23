@@ -35,5 +35,9 @@ timings.hh \
 timings.cc
 
 dist_noinst_SCRIPTS = \
-build_header \
-text2cxxarray
+build_header.in \
+text2cxxarray.in
+
+all:
+	chmod +x build_header
+	chmod +x text2cxxarray
