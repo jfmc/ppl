@@ -125,7 +125,7 @@ ORIGINAL_TESTS = \
 	linexpression1 \
 	linsysasciidumpload1 \
 	mapspacedims1 mapspacedims2 mapspacedims3  mapspacedims4 \
-	matasciidumpload1 \
+	matrix1 \
 	max_min1 max_min2 \
 	maxspacedim1 \
 	mc91 \
@@ -527,7 +527,7 @@ mapspacedims2_SOURCES = mapspacedims2.cc
 mapspacedims3_SOURCES = mapspacedims3.cc
 mapspacedims4_SOURCES = mapspacedims4.cc
 
-matasciidumpload1_SOURCES = matasciidumpload1.cc
+matrix1_SOURCES = matrix1.cc
 
 max_min1_SOURCES = max_min1.cc
 max_min2_SOURCES = max_min2.cc
@@ -1309,7 +1309,7 @@ ascii_dump_load4.dat \
 ascii_dump_load5.dat \
 ascii_dump_load6.dat \
 ascii_dump_load7.dat \
-matasciidumpload1.dat \
+matrix1.dat \
 linsysasciidumpload1.dat \
 writeconsys1.dat \
 writegensys1.dat \
