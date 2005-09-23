@@ -388,6 +388,11 @@ AC_PROG_CXXCPP
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
+# Check for Perl.
+AC_PATH_PROG([PERL], perl, no)
+AC_SUBST([PERL])
+AM_CONDITIONAL(HAVE_PERL, test x"$PERL" != xno)
+
 # Checks for C typedefs, structures, compiler and architecture characteristics.
 AC_LANG(C)
 AC_C_CONST
