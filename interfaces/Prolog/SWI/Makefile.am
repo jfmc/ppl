@@ -38,7 +38,7 @@ if BUILD_SWI_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
--I$(top_srcdir)/Watchdog \
+-I$(top_srcdir)/Watchdog/src \
 -I$(top_builddir)/src \
 -I$(SWI_PROLOG_INCLUDE_DIRECTORY) \
 @extra_includes@
@@ -47,7 +47,7 @@ pkglib_LTLIBRARIES = libppl_swiprolog.la
 libppl_swiprolog_la_SOURCES = ppl_swiprolog.cc
 libppl_swiprolog_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
-$(top_builddir)/Watchdog/libpwl.la \
+$(top_builddir)/Watchdog/src/libpwl.la \
 @extra_libraries@
 libppl_swiprolog_la_LDFLAGS = -module -avoid-version
 
@@ -79,19 +79,19 @@ pl_clpq2_SOURCES = pl_clpq.cc
 ppl_pl$(EXEEXT): ppl_swiprolog.o ppl_pl.o
 	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
-		-L$(top_builddir)/Watchdog/.libs -lpwl \
+		-L$(top_builddir)/Watchdog/src/.libs -lpwl \
 		@extra_libraries@
 
 pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq.pl
 	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
-		-L$(top_builddir)/Watchdog/.libs -lpwl \
+		-L$(top_builddir)/Watchdog/src/.libs -lpwl \
 		@extra_libraries@
 
 pl_clpq2$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
 	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
-		-L$(top_builddir)/Watchdog/.libs -lpwl \
+		-L$(top_builddir)/Watchdog/src/.libs -lpwl \
 		@extra_libraries@
 
 COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
@@ -119,7 +119,7 @@ pl_check_test: swi_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
         echo "ensure_loaded('$(srcdir)/swi_pl_check'). main." > script_pchk
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
                 ./ppl_pl < script_pchk
 	if [ $(srcdir) != `pwd` ]; then \
 	  rm -f pl_check.pl; \
@@ -131,7 +131,7 @@ clpq_test: pl_clpq ../tests/script_clpq $(EXPECTED_CLPQ)
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
 		./pl_clpq <$(srcdir)/../tests/script_clpq >obtained_clpq
 	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
 
@@ -140,7 +140,7 @@ clpq2_test: pl_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
 		./pl_clpq2 <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 

@@ -35,14 +35,14 @@ if BUILD_CIAO_PROLOG_INTERFACE
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
 -I$(top_builddir)/src \
--I$(top_srcdir)/Watchdog \
+-I$(top_srcdir)/Watchdog/src \
 @extra_includes@
 
 pkglib_LTLIBRARIES = libppl_ciao.la
 libppl_ciao_la_SOURCES = ppl_ciao.cc
 libppl_ciao_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
-$(top_builddir)/Watchdog/libpwl.la \
+$(top_builddir)/Watchdog/src/libpwl.la \
 @extra_libraries@
 libppl_ciao_la_LDFLAGS = -module -avoid-version
 
@@ -125,7 +125,7 @@ check-local: pl_check_test clpq_test clpq2_test
 pl_check_test: ciao_pl_check$(EXEEXT) $(EXPECTED_PCHK)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
 		-dlopen libppl_ciao.la \
 		./ciao_pl_check \
 			 >obtained_pchk
@@ -137,7 +137,7 @@ clpq_test: ciao_clpq$(EXEEXT) ../tests/script_clpq $(EXPECTED_CLPQ)
 	GLOBALSTKSIZE=1000000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
 		-dlopen libppl_ciao.la \
 		./ciao_clpq \
 			<$(srcdir)/../tests/script_clpq >obtained_clpq
@@ -149,7 +149,7 @@ clpq2_test: ciao_clpq2$(EXEEXT) ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 	GLOBALSTKSIZE=100000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
 		-dlopen libppl_ciao.la \
 		./ciao_clpq2 \
 			<$(srcdir)/../tests/script_clpq2 >obtained_clpq2
