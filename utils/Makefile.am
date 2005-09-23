@@ -38,6 +38,16 @@ dist_noinst_SCRIPTS = \
 build_header.in \
 text2cxxarray.in
 
-all:
+bin_SCRIPTS = \
+build_header \
+text2cxxarray
+
+CLEANFILES = $(bin_SCRIPTS)
+
+.PHONY: zchmods
+
+bin_SCRIPTS += zchmods
+
+zchmods:
 	chmod +x build_header
 	chmod +x text2cxxarray
