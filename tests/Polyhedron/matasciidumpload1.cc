@@ -23,7 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_test.hh"
 #include "files.hh"
 #include <fstream>
-#include <cstdlib>
+#include <ctime>
+#include <gmpxx.h>
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
@@ -44,25 +45,29 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
+  gmp_randclass r(gmp_randinit_default);
   // Seed the random number generator.
-  srand(time(0));
+  r.seed((unsigned long) time(0));
 
 #define ROWS 3
 #define COLS 4
 
+  mpz_class cmin = 0;
+  mpz_class range = 0;
+  if (std::numeric_limits<COEFFICIENT_TYPE>::is_bounded) {
+    cmin = raw_value(std::numeric_limits<COEFFICIENT_TYPE>::min());
+    range = raw_value(std::numeric_limits<COEFFICIENT_TYPE>::max()) - cmin + 1;
+  }
+
   Matrix m1(ROWS, COLS);
-  TEMP_INTEGER(tem);
+  mpz_class n;
   for (dimension_type row = 0; row < ROWS; ++row)
     for (dimension_type col = 0; col < COLS; ++col) {
-#if defined(NATIVE_INTEGERS) || defined(CHECKED_INTEGERS)
-      if (std::numeric_limits<COEFFICIENT_TYPE>::max() == 0)
-	tem = 0;
+      if (std::numeric_limits<COEFFICIENT_TYPE>::is_bounded)
+	n = cmin + r.get_z_range(range);
       else
-	tem = rand() % std::numeric_limits<COEFFICIENT_TYPE>::max();
-#else
-      tem = rand();
-#endif
-      m1[row][col] = tem;
+	n = r.get_z_bits(512);
+      m1[row][col] = n;
     }
 
   fstream f;
