@@ -13,8 +13,6 @@ config.log
 config.status
 configure
 libtool
-pwl.hh
-pwl_install.hh
 stamp-h
 stamp-h.in
 stamp-h1
