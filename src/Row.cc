@@ -109,7 +109,7 @@ PPL::Row::normalize() {
     const Coefficient& x_i = x[--i];
     if (x_i != 0) {
       // Note: we use the ternary version instead of a more concise
-      // gcd_assign(gcd, x_i, gcd) to take advantage of the fact that
+      // gcd_assign(gcd, x_i) to take advantage of the fact that
       // `gcd' will decrease very rapidly (see D. Knuth, The Art of
       // Computer Programming, second edition, Section 4.5.2,
       // Algorithm C, and the discussion following it).  Our
