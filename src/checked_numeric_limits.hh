@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Checked_Number.defs.hh"
 #include "checked_int.inlines.hh"
+#include "mp_numeric_limits.hh"
 #include <limits>
 
 namespace std {
@@ -89,49 +90,14 @@ SPECIALIZE_LIMITS_FLOAT(long double)
 
 template <typename Policy>
 class
-numeric_limits<Parma_Polyhedra_Library::Checked_Number<mpz_class, Policy> > {
+numeric_limits<Parma_Polyhedra_Library::Checked_Number<mpz_class, Policy> >
+  : public numeric_limits<mpz_class> {
 private:
   typedef Parma_Polyhedra_Library::Checked_Number<mpz_class, Policy> Type;
 
 public:
-  static const bool is_specialized = false;
-  static const int digits = 0;
-  static const int digits10 = 0;
-  static const bool is_signed = false;
-  static const bool is_integer = true;
-  static const bool is_exact = true;
-  static const int radix = 2;
-  static const int min_exponent = 0;
-  static const int min_exponent10 = 0;
-  static const int max_exponent = 0;
-  static const int max_exponent10 = 0;
   static const bool has_infinity = Policy::store_infinity;
   static const bool has_quiet_NaN =  Policy::store_nan;
-  static const bool has_signaling_NaN = false;
-  static const float_denorm_style has_denorm = denorm_absent;
-  static const bool has_denorm_loss = false;
-  static const bool is_iec559 = false;
-  static const bool is_bounded = false;
-  static const bool is_modulo = false;
-  static const bool traps = false;
-  static const bool tinyness_before = false;
-  static const float_round_style round_style = round_toward_zero;
-
-  static Type min() {
-    return static_cast<Type>(0);
-  }
-
-  static Type max() {
-    return static_cast<Type>(0);
-  }
-
-  static Type epsilon() {
-    return static_cast<Type>(1);
-  }
-
-  static Type round_error() {
-    return static_cast<Type>(1);
-  }
 
   static Type infinity() {
     return
@@ -145,58 +111,19 @@ public:
       Policy::store_nan
       ? Parma_Polyhedra_Library::NOT_A_NUMBER
       : static_cast<Type>(0);
-  }
-
-  static Type denorm_min() {
-    return static_cast<Type>(1);
   }
 };
 
 template <typename Policy>
 class
-numeric_limits<Parma_Polyhedra_Library::Checked_Number<mpq_class, Policy> > {
+numeric_limits<Parma_Polyhedra_Library::Checked_Number<mpq_class, Policy> >
+: numeric_limits<mpq_class> {
 private:
   typedef Parma_Polyhedra_Library::Checked_Number<mpq_class, Policy> Type;
 
 public:
-  static const bool is_specialized = false;
-  static const int digits = 0;
-  static const int digits10 = 0;
-  static const bool is_signed = false;
-  static const bool is_integer = false;
-  static const bool is_exact = true;
-  static const int radix = 2;
-  static const int min_exponent = 0;
-  static const int min_exponent10 = 0;
-  static const int max_exponent = 0;
-  static const int max_exponent10 = 0;
   static const bool has_infinity = Policy::store_infinity;
   static const bool has_quiet_NaN =  Policy::store_nan;
-  static const bool has_signaling_NaN = false;
-  static const float_denorm_style has_denorm = denorm_absent;
-  static const bool has_denorm_loss = false;
-  static const bool is_iec559 = false;
-  static const bool is_bounded = false;
-  static const bool is_modulo = false;
-  static const bool traps = false;
-  static const bool tinyness_before = false;
-  static const float_round_style round_style = round_toward_zero;
-
-  static Type min() {
-    return static_cast<Type>(0);
-  }
-
-  static Type max() {
-    return static_cast<Type>(0);
-  }
-
-  static Type epsilon() {
-    return static_cast<Type>(0);
-  }
-
-  static Type round_error() {
-    return static_cast<Type>(0);
-  }
 
   static Type infinity() {
     return
@@ -210,10 +137,6 @@ public:
       Policy::store_nan
       ? Parma_Polyhedra_Library::NOT_A_NUMBER
       : static_cast<Type>(0);
-  }
-
-  static Type denorm_min() {
-    return static_cast<Type>(0);
   }
 };
 
