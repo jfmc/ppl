@@ -21,12 +21,12 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
-#include <sstream>
 
 #include "Coefficient.defs.hh"
 #include "Checked_Number.defs.hh"
 #include <ciao_prolog.h>
 #include <cassert>
+#include <sstream>
 
 typedef ciao_term Prolog_term_ref;
 typedef const char* Prolog_atom;

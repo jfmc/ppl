@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_install.hh"
 #include "print.hh"
 #include "ehandlers.hh"
+#include "Random_Number_Generator.defs.hh"
 
 #ifdef DERIVED_TEST
 #define C_Polyhedron NNC_Polyhedron

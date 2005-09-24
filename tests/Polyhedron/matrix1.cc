@@ -41,30 +41,14 @@ void
 ascii_dump_load() {
   Variable A(0);
   Variable B(1);
-
-  gmp_randclass r(gmp_randinit_default);
-  // Seed the random number generator.
-  r.seed((unsigned long) time(0));
-
-  mpz_class cmin = 0;
-  mpz_class range = 0;
-  if (std::numeric_limits<COEFFICIENT_TYPE>::is_bounded) {
-    cmin = raw_value(std::numeric_limits<COEFFICIENT_TYPE>::min());
-    range = raw_value(std::numeric_limits<COEFFICIENT_TYPE>::max()) - cmin + 1;
-  }
+  Random_Number_Generator r;
 
   for (dimension_type num_rows = 0; num_rows <= 3; ++num_rows)
     for (dimension_type num_cols = 0; num_cols <= 3; ++num_cols) {
       Matrix m1(num_rows, num_cols);
       for (dimension_type row = 0; row < num_rows; ++row)
-	for (dimension_type col = 0; col < num_cols; ++col) {
-	  mpz_class n;
-	  if (std::numeric_limits<COEFFICIENT_TYPE>::is_bounded)
-	    n = cmin + r.get_z_range(range);
-	  else
-	    n = r.get_z_bits(512);
-	  m1[row][col] = n;
-	}
+	for (dimension_type col = 0; col < num_cols; ++col)
+	  r.get(m1[row][col], 0);
 
       fstream f;
       open(f, data_file, ios_base::out);
