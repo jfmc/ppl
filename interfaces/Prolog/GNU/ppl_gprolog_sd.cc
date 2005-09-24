@@ -23,9 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Coefficient.defs.hh"
-#include "checked.defs.hh"
-#include "checked_int.inlines.hh"
-#include "checked_mpz.inlines.hh"
+#include "Checked_Number.defs.hh"
 #include <gprolog.h>
 #include <cassert>
 
