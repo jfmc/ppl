@@ -37,6 +37,7 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/utils \
 -I$(top_srcdir)/tests \
 -I$(top_builddir)/Watchdog \
+-I$(top_builddir)/Watchdog/src \
 @extra_includes@
 
 LDADD = \
@@ -1176,7 +1177,7 @@ if BUILD_WATCHDOG_LIBRARY
 WATCHDOG_TESTS = watchdog1
 
 watchdog1_SOURCES = $(watchdog1_SRCS)
-watchdog1_LDADD = $(LDADD) $(top_builddir)/Watchdog/libpwl.la
+watchdog1_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
 
 endif BUILD_WATCHDOG_LIBRARY
 
