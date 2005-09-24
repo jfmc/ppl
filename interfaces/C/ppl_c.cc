@@ -344,9 +344,9 @@ CATCH_ALL
 
 int
 ppl_Coefficient_to_mpz_t(ppl_const_Coefficient_t c, mpz_t z) try {
-  Result r = Checked::assign<Check_Overflow_Policy>(reinterpret_mpz_class(z),
-						    raw_value(*to_const(c)),
-						    ROUND_DIRECT);
+  Result r = assign(reinterpret_mpz_class(z),
+		    raw_value(*to_const(c)),
+		    ROUND_DIRECT);
   used(r);
   assert(r == V_EQ);
   return 0;

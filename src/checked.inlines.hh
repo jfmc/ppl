@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "compiler.hh"
+#include "globals.types.hh"
 #include <cassert>
 
 namespace Parma_Polyhedra_Library {
@@ -155,6 +156,18 @@ input_generic(Type& to, std::istream& is, Rounding_Dir dir) {
   if (r == V_EQ)
     return assign<Policy>(to, q, dir);
   return set_special<Policy>(to, r);
+}
+
+template <typename T>
+inline memory_size_type
+external_memory_in_bytes(T) {
+  return 0;
+}
+
+template <typename T>
+inline memory_size_type
+total_memory_in_bytes(T& x) {
+  return sizeof(x) + external_memory_in_bytes(x);
 }
 
 } // namespace Checked

@@ -41,8 +41,7 @@ numer_denom(const Checked_Number<T, Policy>& from,
 	 && !is_minus_infinity(from)
 	 && !is_plus_infinity(from));
   mpq_class q;
-  Checked::assign<Checked::Transparent_Policy>(q, raw_value(from),
-					       ROUND_IGNORE);
+  assign(q, raw_value(from), ROUND_IGNORE);
   num = q.get_num();
   den = q.get_den();
 }
@@ -54,10 +53,7 @@ div_round_up(Checked_Number<T, Policy>& to,
 	     Coefficient_traits::const_reference x,
 	     Coefficient_traits::const_reference y) {
   Coefficient q;
-  Result r = Checked::div<Check_Overflow_Policy>(raw_value(q),
-						 raw_value(x),
-						 raw_value(y),
-						 ROUND_UP);
+  Result r = assign_div(raw_value(q), raw_value(x), raw_value(y), ROUND_UP);
   if (r == V_POS_OVERFLOW) {
     to = PLUS_INFINITY;
     return;

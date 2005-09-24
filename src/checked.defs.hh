@@ -31,25 +31,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A policy checking for overflows.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-struct Check_Overflow_Policy {
-  static const int check_overflow = 1;
-  static const int check_inf_add_inf = 0;
-  static const int check_inf_sub_inf = 0;
-  static const int check_inf_mul_zero = 0;
-  static const int check_div_zero = 0;
-  static const int check_inf_div_inf = 0;
-  static const int check_inf_mod = 0;
-  static const int check_sqrt_neg = 0;
-  static const int store_nan = 0;
-  static const int store_infinity = 0;
-  static const int convertible = 1;
-  static const int fpu_check_inexact = 0;
-  static const int check_nan_args = 1;
-};
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Types and functions implementing checked numbers.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 namespace Checked {
@@ -86,6 +67,24 @@ struct Transparent_Policy {
   static const int check_nan_args = 1;
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! A policy checking for overflows.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+struct Check_Overflow_Policy {
+  static const int check_overflow = 1;
+  static const int check_inf_add_inf = 0;
+  static const int check_inf_sub_inf = 0;
+  static const int check_inf_mul_zero = 0;
+  static const int check_div_zero = 0;
+  static const int check_inf_div_inf = 0;
+  static const int check_inf_mod = 0;
+  static const int check_sqrt_neg = 0;
+  static const int store_nan = 0;
+  static const int store_infinity = 0;
+  static const int convertible = 1;
+  static const int fpu_check_inexact = 0;
+  static const int check_nan_args = 1;
+};
 
 // It is a pity that function partial specialization is not permitted
 // by C++.  To (partly) overcome this limitation, we use class

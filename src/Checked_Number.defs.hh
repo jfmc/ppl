@@ -28,6 +28,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+typedef Checked::Check_Overflow_Policy Default_To_Policy;
+typedef Checked::Transparent_Policy Default_From_Policy;
+
 struct Checked_Number_Default_Policy {
   static const int check_overflow = 1;
   static const int check_inf_add_inf = 0;
@@ -240,6 +243,8 @@ template <typename To, typename To_Policy>
 Result assign(Checked_Number<To, To_Policy>& to, char* x, Rounding_Dir dir);
 
 #define FUNC1(name) \
+template <typename To, typename From> \
+Result name(To& to, const From& x, Rounding_Dir dir); \
 template <typename To, typename To_Policy, \
           typename From> \
 Result name(Checked_Number<To, To_Policy>& to, const From& x, Rounding_Dir dir); \
@@ -255,12 +260,17 @@ FUNC1(assign_sqrt)
 #undef FUNC1
 
 #define FUNC1(name) \
+template <typename To, typename From> \
+Result name(To& to, const From& x, int exp, Rounding_Dir dir); \
 template <typename To, typename To_Policy, \
           typename From> \
 Result name(Checked_Number<To, To_Policy>& to, const From& x, int exp, Rounding_Dir dir); \
 template <typename To, typename To_Policy, \
           typename From, typename From_Policy> \
-Result name(Checked_Number<To, To_Policy>& to, const Checked_Number<From, From_Policy>& x, int exp, Rounding_Dir dir);
+Result name(Checked_Number<To, To_Policy>& to, const Checked_Number<From, From_Policy>& x, int exp, Rounding_Dir dir); \
+template <typename To, \
+          typename From, typename From_Policy> \
+Result name(To& to, const Checked_Number<From, From_Policy>& x, int exp, Rounding_Dir dir);
 
 FUNC1(assign_mul2exp)
 FUNC1(assign_div2exp)
@@ -268,17 +278,32 @@ FUNC1(assign_div2exp)
 #undef FUNC1
 
 #define FUNC2(name) \
+template <typename To, \
+          typename From1, typename From2> \
+Result name(To& to, const From1& x, const From2& y, Rounding_Dir dir); \
 template <typename To, typename To_Policy, \
           typename From1, typename From2> \
 Result name(Checked_Number<To, To_Policy>& to, const From1& x, const From2& y, Rounding_Dir dir); \
+template <typename To, \
+          typename From1, \
+          typename From2, typename Policy2> \
+Result name(To& to, const From1& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir); \
 template <typename To, typename To_Policy, \
           typename From1, \
           typename From2, typename Policy2> \
 Result name(Checked_Number<To, To_Policy>& to, const From1& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir); \
+template <typename To, \
+          typename From1, typename Policy1, \
+          typename From2> \
+Result name(To& to, const Checked_Number<From1, Policy1>& x, const From2& y, Rounding_Dir dir); \
 template <typename To, typename To_Policy, \
           typename From1, typename Policy1, \
           typename From2> \
 Result name(Checked_Number<To, To_Policy>& to, const Checked_Number<From1, Policy1>& x, const From2& y, Rounding_Dir dir); \
+template <typename To, \
+          typename From1, typename Policy1, \
+          typename From2, typename Policy2> \
+Result name(To& to, const Checked_Number<From1, Policy1>& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir); \
 template <typename To, typename To_Policy, \
           typename From1, typename Policy1, \
           typename From2, typename Policy2> \

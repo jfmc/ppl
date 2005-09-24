@@ -597,10 +597,8 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the extremum as soon as we find it.
       mpq_class candidate;
-      Checked::assign<Checked::Transparent_Policy>(candidate.get_num(),
-						   raw_value(sp), ROUND_IGNORE);
-      Checked::assign<Checked::Transparent_Policy>(candidate.get_den(),
-						   raw_value(g[0]), ROUND_IGNORE);
+      assign(candidate.get_num(), raw_value(sp), ROUND_IGNORE);
+      assign(candidate.get_den(), raw_value(g[0]), ROUND_IGNORE);
       candidate.canonicalize();
       const bool g_is_point = g.is_point();
       if (first_candidate
@@ -625,8 +623,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
 
   // Add in the constant term in `expr'.
   mpz_class n;
-  Checked::assign<Checked::Transparent_Policy>
-    (n, raw_value(expr.inhomogeneous_term()), ROUND_IGNORE);
+  assign(n, raw_value(expr.inhomogeneous_term()), ROUND_IGNORE);
   extremum += n;;
 
   // The polyhedron is bounded in the right direction and we have

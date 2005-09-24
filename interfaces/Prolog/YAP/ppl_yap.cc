@@ -374,8 +374,7 @@ Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   // FIXME: does YAP support unlimited precision integer?
   long v;
-  if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, PPL::raw_value(n), PPL::ROUND_IGNORE)
-      != PPL::V_EQ)
+  if (PPL::assign(v, PPL::raw_value(n), PPL::ROUND_IGNORE) != PPL::V_EQ)
     throw unknown_interface_error("Coefficient_to_integer_term()");
   return YAP_MkIntTerm(v);
 }
