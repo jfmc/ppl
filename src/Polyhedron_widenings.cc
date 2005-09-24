@@ -365,7 +365,7 @@ PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
   y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
   x_box.CC76_widening_assign(y_box);
   limited_H79_extrapolation_assign(y, cs, tp);
-  // FIXME: see if some copies can be avoided.
+  // TODO: see if some copies can be avoided.
   // add_recycled_constraints(x_box.constraints());
   add_constraints(x_box.constraints());
 }
@@ -856,7 +856,7 @@ PPL::Polyhedron::bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
   y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
   x_box.CC76_widening_assign(y_box);
   limited_BHRZ03_extrapolation_assign(y, cs, tp);
-  // FIXME: see if some copies can be avoided.
+  // TODO: see if some copies can be avoided.
   // add_recycled_constraints(x_box.constraints());
   add_constraints(x_box.constraints());
 }

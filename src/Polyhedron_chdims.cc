@@ -547,7 +547,7 @@ PPL::Polyhedron::remove_higher_space_dimensions(dimension_type new_dimension) {
 
 void
 PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
-  // FIXME: this implementation is _really_ an executable specification.
+  // TODO: this implementation is _really_ an executable specification.
 
   // `var' should be one of the dimensions of the vector space.
   if (var.space_dimension() > space_dim)
@@ -604,7 +604,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
 void
 PPL::Polyhedron::fold_space_dimensions(const Variables_Set& to_be_folded,
 				       Variable var) {
-  // FIXME: this implementation is _really_ an executable specification.
+  // TODO: this implementation is _really_ an executable specification.
 
   // `var' should be one of the dimensions of the polyhedron.
   if (var.space_dimension() > space_dim)
