@@ -415,6 +415,12 @@ private:
   bool is_cert_multiset_stabilizing(const std::map<Cert, size_type,
                                                    typename Cert::Compare>&
 				    y_cert_ms) const;
+
+  // FIXME: The following is an overkill, since it should be enough
+  // to declare friend the templatic constructor
+  //   template <typename QH>
+  //   Polyhedra_Powerset(const Polyhedra_Powerset<QH>&);
+  friend class Parma_Polyhedra_Library::Polyhedra_Powerset<NNC_Polyhedron>;
 };
 
 

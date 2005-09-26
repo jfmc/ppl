@@ -85,10 +85,7 @@ Polyhedra_Powerset<NNC_Polyhedron>
     x.sequence.push_back(Determinate<NNC_Polyhedron>(
                            NNC_Polyhedron(i->element().constraints()))
 			 );
-  // FIXME: provide a way to test the `reduced' flag of `y'.
-  // If `y' is known to be omega-reduced, then this is omega-reduced too.
-  // x.reduced = y.reduced;
-  x.reduced = false;
+  x.reduced = y.reduced;
   assert(x.OK());
 }
 
