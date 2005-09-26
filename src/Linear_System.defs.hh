@@ -501,7 +501,7 @@ namespace std {
 //! Specializes <CODE>std::iter_swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Linear_System::With_Saturation_Matrix_iterator */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-inline void
+void
 iter_swap(Parma_Polyhedra_Library
 	  ::Linear_System::With_Saturation_Matrix_iterator x,
 	  Parma_Polyhedra_Library
