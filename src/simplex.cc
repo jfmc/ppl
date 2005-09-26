@@ -38,24 +38,25 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <map>
 #include <deque>
 
-namespace PPL = Parma_Polyhedra_Library;
-
 namespace {
 
-using namespace PPL;
+using namespace Parma_Polyhedra_Library;
 
 //! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
 /*!
-  
-\param x  The Row that will be combined with \p y object;
-\param y  The Row that will be combined with \p x object;
-\param k  The position of \p *this that have to be \f$0\f$.
+  \param x
+  The Row that will be combined with \p y object.
 
-Computes a linear combination of \p x and \p y having
-the element of index \p k equal to \f$0\f$. Then it assigns
-the resulting Linear_Row to \p x and normalizes it.
+  \param y
+  The Row that will be combined with \p x object.
+
+  \param k
+  The position of \p *this that have to be \f$0\f$.
+
+  Computes a linear combination of \p x and \p y having
+  the element of index \p k equal to \f$0\f$. Then it assigns
+  the resulting Linear_Row to \p x and normalizes it.
 */
-
 void
 linear_combine(Row& x, const Row& y, const dimension_type k) {
   assert(x.size() == y.size());
@@ -80,10 +81,11 @@ linear_combine(Row& x, const Row& y, const dimension_type k) {
 //! This has the same effects of Linear_System.insert()
 //! The Matrix grows if the Row has more columns than the Matrix ones.
 /*!
-  
-\param matrix The Matrix in which will be inserted the Row;
-\param row    The Row that will be inserted with in the \p x Matrix;
-  
+  \param matrix
+  The Matrix in which will be inserted the Row;
+
+  \param row
+  The Row that will be inserted with in the \p x Matrix;
 */
 void
 insert_row_in_matrix(Matrix& matrix, const Row& row) {
@@ -115,12 +117,16 @@ add_elements_to_row(Row& r,
 
 //! \brief
 //! Creates a copy of a column of a matrix.
-/*| 
-  \param tableau   The matrix that contains the column to be extracted.
-  \param index     The index of the column to be extracted.
-  \param column    A vector where will be stored the column.
-*/
+/*!
+  \param tableau
+  The matrix that contains the column to be extracted.
 
+  \param index
+  The index of the column to be extracted.
+
+  \param column
+  A vector where will be stored the column.
+*/
 inline void 
 copy_column(const Matrix& tableau,
 	    const dimension_type index,
@@ -138,15 +144,19 @@ copy_column(const Matrix& tableau,
 //! Swaps two variables in base during the simplex algorithm, doing the 
 //! right linear combinations.
 /*!
-  \param tableau       The matrix representing the constraints
-                       of the LP problem.
-  \param expressions   The matrix representing the cost function/s
-                       of the LP problem.			
-  \param inside_var    The index of the column of the matrix representing
-                       the variable that has to be inside the base.
-  \param outside_row   The index of the row that has to be outside the base.
-*/
+  \param tableau
+  The matrix representing the constraints of the LP problem.
 
+  \param expressions
+  The matrix representing the cost function/s of the LP problem.
+
+  \param inside_var
+  The index of the column of the matrix representing the variable that
+  has to be inside the base.
+
+  \param outside_row
+  The index of the row that has to be outside the base.
+*/
 void
 swap_base(Matrix& tableau,
 	  Matrix& expressions,
@@ -172,13 +182,16 @@ swap_base(Matrix& tableau,
 //!  If this condition is not satisfied, chooses the variable to
 //!  put in the base. Implemented with anti-cycling rule.
 /*!
-  \return              <CODE>true</CODE> if and if only the algorithm finds
-                       the optimum condition.
-  \param expressions   The matrix that contains the cost function/s.
-  \param index_in      The index of the matrix representing the variable that
-                       has to go in base, if needed.
-*/
+  \return
+  <CODE>true</CODE> if and if only the algorithm finds the optimum condition.
 
+  \param expressions
+  The matrix that contains the cost function/s.
+
+  \param index_in
+  The index of the matrix representing the variable that has to go in base,
+  if needed.
+*/
 inline bool
 check_optimality(const Matrix& expressions,
 		 dimension_type& index_in) {  
@@ -207,21 +220,29 @@ check_optimality(const Matrix& expressions,
 //! Chooses the variable to put out of the base of the LP problem.
 //! Implemented with anti-cycling rules.
 /*!
-  \return                   An integer representing the row that refers to the
-                            variable that has to go out of the base.
-  \param tableau            The matrix that has to be checked.
-  \param index_will_be_in   The index of the matrix that represents the
-                            variable that has to go out from the base.
-  \param base               The array that stores the variables in base.
-  \param unbounded          Bool that will be set to <CODE>true<\CODE>
-                            if and only if the LP problem is unbounded.
-*/
+  \return
+  An integer representing the row that refers to the variable that
+  has to go out of the base.
 
+  \param tableau
+  The matrix that has to be checked.
+
+  \param index_will_be_in
+  The index of the matrix that represents the variable that has to go
+  out from the base.
+
+  \param base
+  The array that stores the variables in base.
+
+  \param unbounded
+  Bool that will be set to <CODE>true<\CODE> if and only if the LP problem
+  is unbounded.
+*/
 inline int
 choose_out_var(const Matrix& tableau,  
 	       const int index_will_be_in,
 	       std::vector<dimension_type>& base,
-	       bool& unbounded){  
+	       bool& unbounded) {
   // To choose the variable that has to go out from the base, we must 
   // look for the row such that row[index_will_be_in]/row[inhomogeneous_term]
   // is the smallest, but > 0, in all the rows of the tableau.
@@ -291,7 +312,7 @@ choose_out_var(const Matrix& tableau,
   // with the first one.
   for (dimension_type i = 0; i < candidate_constraints_size; ++i) {
     dimension_type checked_index = candidate_constraints[i]; {
-      if (abs(inhomogeneous[checked_index]) < var_value){
+      if (abs(inhomogeneous[checked_index]) < var_value) {
 	var_value = abs(inhomogeneous[checked_index]); 
 	out_var_row = checked_index;
       }
@@ -315,46 +336,50 @@ choose_out_var(const Matrix& tableau,
 //! \brief
 //! The simplex algorithm.
 /*! 
-  \return            <CODE>true</CODE> if and if only the algorithm computes
-                     a solution. It`s a point of the Constraint_System.
-  \param tableau     The matrix containing the constraints of the LP problem.
-  \param expressions The matrix that contains the cost function-s to be
-                     maximized/minimized. 
-  \param base        The vector containing the elements in the base
-                     of the LP problem.
+  \return
+  <CODE>true</CODE> if and if only the algorithm computes
+  a solution. It`s a point of the Constraint_System.
 
-To solve the LP problem compute_simplex must receive the problem in this way:
+  \param tableau
+  The matrix containing the constraints of the LP problem.
 
-1) Linear Expressions:
-k + x_1 + x_2 + ... + x_n + s (with s > 0)
-where k is the inhomogeneous term, x_i are the coefficients of the variables
-and s is a special variable that stands for the sign of the cost function.
-In this way is possible to know if the cost function was reversed during 
-the linear combinations. Reasoning in a "PPL way" we can think that this 
-row stands for k + x_1 + x_2 + s = 0, so -s = k + x_1 + x_2 + ...  + x_n.
-We use a matrix instead of a row because in this way is very simple to have
-the cost function of the second_phase. The old objective cost function, if
-compute_simplex is called by first_phase, is stored in the second row.
+  \param expressions
+  The matrix that contains the cost function-s to be maximized/minimized. 
 
-2) Constraints:
-These are the standard "PPL rows", so there should not be special 
-problems to understand what's in this matrix.
+  \param base
+  The vector containing the elements in the base of the LP problem.
 
-We must assure that the two matrices have the same space dimension!
+  To solve the LP problem compute_simplex must receive the problem in this way:
+
+  1) Linear Expressions:
+  k + x_1 + x_2 + ... + x_n + s (with s > 0)
+  where k is the inhomogeneous term, x_i are the coefficients of the variables
+  and s is a special variable that stands for the sign of the cost function.
+  In this way is possible to know if the cost function was reversed during 
+  the linear combinations. Reasoning in a "PPL way" we can think that this 
+  row stands for k + x_1 + x_2 + s = 0, so -s = k + x_1 + x_2 + ...  + x_n.
+  We use a matrix instead of a row because in this way is very simple to have
+  the cost function of the second_phase. The old objective cost function, if
+  compute_simplex is called by first_phase, is stored in the second row.
+  
+  2) Constraints:
+  These are the standard "PPL rows", so there should not be special 
+  problems to understand what's in this matrix.
+  
+  We must assure that the two matrices have the same space dimension!
 */
-
 bool
 compute_simplex(Matrix& tableau,
 		Matrix& expressions,
-		std::vector<dimension_type>& base){ 
+		std::vector<dimension_type>& base) { 
   while (true) {
     // In this one will be stored the variable that will go in base
     // if and only if the optimality condition is not satisfied.
     dimension_type index_will_be_in;
-    if (check_optimality(expressions, index_will_be_in)){
+    if (check_optimality(expressions, index_will_be_in)) {
       // If we are in the 1st phase, we have to express the old cost function
       // terms of the computed base.
-      if (expressions.num_rows() == 2){
+      if (expressions.num_rows() == 2) {
 	for (dimension_type i = tableau.num_rows(); i-- > 0; ) 
 	  if (expressions[1][base[i]] != 0)
 	    linear_combine(expressions[1],tableau[i], base[i]);
@@ -385,17 +410,20 @@ compute_simplex(Matrix& tableau,
 //! inserts the "sign" to the cost functions, and makes the
 //! necessary swaps to express the problem with the 1st phase base.
 /*!
-  \param tableau   The matrix containing the LP problem.
-  \param obj       The row containing the original cost function.
-  \param base      The vector that stores the variables in the base of
-                   the LP problem.
+  \param tableau
+  The matrix containing the LP problem.
+
+  \param obj
+  The row containing the original cost function.
+
+  \param base
+  The vector that stores the variables in the base of the LP problem.
 */
 void   
 prepare_for_1st_ph_simplex(Matrix& tableau,
 			   Row& old_obj,
 			   Row& new_obj,
 			   std::vector<dimension_type>& base) {
-  
   // We negate the row if tableau[i][0] <= 0 to get the inhomogeneous term > 0.
   // This simplifies the insertion of the slack variables: the value of the 
   // slack variable of every constraint will be 1.
@@ -443,12 +471,14 @@ prepare_for_1st_ph_simplex(Matrix& tableau,
 //! Deletes the non necessary slack variables from the matrix
 //! and makes the last necessary swaps to let start the 2nd phase.
 /*!
-  \param tableau      The matrix containing the constraints of the LP problem.
-  \param expressions  The matrix containing the cost functions.
-  \param base         The array that stores the variables in base of
-                      a LP problem.
-*/
+  \param tableau
+  The matrix containing the constraints of the LP problem.
 
+  \param expressions
+  The matrix containing the cost functions.
+  \param base
+  The array that stores the variables in base of a LP problem.
+*/
 void erase_slacks(Matrix& tableau,
 		  Matrix& expressions,
 		  std::vector<dimension_type>& base) {
@@ -459,7 +489,7 @@ void erase_slacks(Matrix& tableau,
   std::vector<dimension_type> redundant_rows;
   
   // Step 1: We try to put out from the base all the remaining slack variables:
-  for (dimension_type i = tableau_n_rows; i-- > 0; ){
+  for (dimension_type i = tableau_n_rows; i-- > 0; ) {
     bool transformed = false;
     if (base[i] >= first_slack_index) {
       // We search for an element != 0, this will go in base.
@@ -502,7 +532,7 @@ void erase_slacks(Matrix& tableau,
   for (dimension_type i = 0; i < tableau_n_rows; ++i)
     // We will insert the constraint if and if only is not redundant.
     if (std::find(redundant_rows.begin(), redundant_rows.end(), i) ==
-	redundant_rows.end()){
+	redundant_rows.end()) {
 
       // We will create a new row: this will be inserted in the matrix.
       Row new_row(new_tableau_columns, Row::Flags());
@@ -546,16 +576,18 @@ void erase_slacks(Matrix& tableau,
 //! First phase of the simplex algorithm. Computes a feasible base and, if 
 //! possible, solves also the second phase.
 /*!
-  \return         (FIXME: wrong comment) <CODE>true</CODE> if and if only the problem has a feasible
-                  base.
-  \param tableau  The matrix containing the constraints of the LP problem, 
-                  given in the "compute_tableau" way.
-  \param base     The vector that stores the variables in the base of a LP 
-                  problem.
+  \return
+  <CODE>SOLVED_PROBLEM></CODE> if the optimization problem is both
+  feasible and bounded;
+  <CODE>UNFEASIBLE_PROBLEM</CODE> if the problem has no feasible solution;
+  <CODE>UNBOUNDED_PROBLEM</CODE> if the problem is feasible but unbounded.
 
-   To do this, will be inserted the necessary slack variables, the signs to 
-   the cost functions and the new problem will be expressed by the slack 
-   variables that will be in base at first.
+  \param tableau
+  The matrix containing the constraints of the LP problem, given in
+  the "compute_tableau" way.
+
+  \param base
+  The vector that stores the variables in the base of a LP problem.
 */ 
 Simplex_Status
 first_phase(Matrix& tableau,
@@ -593,8 +625,9 @@ first_phase(Matrix& tableau,
   
   if (ok && tableau_expressions[0][0] == 0) {
     erase_slacks(tableau_constraints, tableau_expressions, base);
-    bool result = compute_simplex(tableau_constraints, tableau_expressions, 
-				 base);
+    bool result = compute_simplex(tableau_constraints,
+				  tableau_expressions, 
+				  base);
     tableau.swap(tableau_constraints); 
 
     // Now if (result == true) we have an optimum, else
@@ -613,20 +646,30 @@ first_phase(Matrix& tableau,
 //! \brief
 //! Assigns to \p tableau a simplex tableau representing the problem
 //! given by the constraints in \p cs and the cost function \p expr,
-//! inserting to \p map the informations that are required to go
+//! inserting into \p map the informations that are required to go
 //! back to the original problem.
 /*!
-  \return               <CODE>false</CODE> if the problem is trivially empty,
-                        in which case the tableau is not built;
-                        <CODE>true</CODE> otherwise.
-  \param cs             A matrix containing the constraints of the problem.
-  \param cost_function  The cost function of the problem.
-  \param tableau        A matrix where to store the resulting tableau.
-  \param map            Contains all the pairs (i, j) such that Variable(i)
-                        (that was not found to be constrained in sign)
-                        has been split into two nonnegative variables.
-                        The "positive" one is represented again by Variable(i),
-	                and the "negative" one is represented by Variable(j).
+  \return
+  <CODE>UNFEASIBLE_PROBLEM</CODE> if the constraint system contains
+  any trivially unfeasible constraint (tableau was not computed);
+  <CODE>UNBOUNDED_PROBLEM</CODE> if an empty tableau was computed
+  (the problem may be actually bounded, depending on the cost function);
+  <CODE>SOLVED_PROBLEM></CODE> if a non-empty tableau was computed.
+
+  \param cs
+  A matrix containing the constraints of the problem.
+
+  \param cost_function
+  The cost function of the problem.
+
+  \param tableau
+  A matrix where to store the resulting tableau.
+
+  \param map
+  Contains all the pairs (i, j) such that Variable(i) (that was not found
+  to be constrained in sign) has been split into two nonnegative variables.
+  The "positive" one is represented again by Variable(i), and
+  the "negative" one is represented by Variable(j).
 */
 Simplex_Status
 compute_tableau(const Linear_System& cs,
@@ -921,7 +964,7 @@ compute_generator(const Matrix& tableau,
       Coefficient split_num[2];
       Coefficient split_den[2];
     
-      for (dimension_type j = 0; j < 2; ++j){
+      for (dimension_type j = 0; j < 2; ++j) {
 	// Like before, we he have to check if the variable is in base.
 	if (is_in_base(base, j == 0 ? i+1 : map_iter->second+1, row)) {
 	  split_num[j] = - tableau[row][0];
@@ -952,7 +995,7 @@ compute_generator(const Matrix& tableau,
   // In this way we get the (a/b) rational representation, with b > 0 and 
   // a free in sign.
   for (dimension_type i = original_space_dim; i-- > 0; )
-    if (den[i] < 0 ){
+    if (den[i] < 0 ) {
       negate(num[i]);
       negate(den[i]);
     }
@@ -1024,6 +1067,8 @@ primal_simplex(const Linear_System& cs,
 } // namespace
 
 
+namespace PPL = Parma_Polyhedra_Library;
+
 Simplex_Status
 PPL::Constraint_System::primal_simplex(Linear_Expression& cost_function,
 				       Generator& maximizing_point) const {
@@ -1037,10 +1082,6 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expression,
 				       Coefficient& ext_n,
 				       Coefficient& ext_d,
 				       Generator& optimizing_point) const {
-  // FIXME: putting this declaration at the beginning of the file
-  // does not work.  A GCC bug?
-  using namespace Parma_Polyhedra_Library::IO_Operators;
-
   // Strict inequality constraints are not supported.
   if (topology() == NOT_NECESSARILY_CLOSED)
     throw std::invalid_argument("PPL::Constraint_System::primal_simplex(): "
