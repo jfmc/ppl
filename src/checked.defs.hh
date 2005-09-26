@@ -180,7 +180,7 @@ template <typename Policy, typename type1, typename type2, typename type3> \
 inline ret_type name(qual1 type1& arg1, qual2 type2& arg2, qual3 type3& arg3, after1 a1) { \
   return FUNCTION_CLASS(name)<Policy, type1, type2, type3>::function(arg1, arg2, arg3, a1); \
 }
-  
+
 #define SPECIALIZE_FUN1_0_0(name, suf, ret_type, qual, type) \
 template <typename Policy> \
 struct FUNCTION_CLASS(name)<Policy, type> { \
@@ -346,8 +346,8 @@ DECLARE_FUN3_0_1(add_mul,     Result, nonconst, To, const, From1, const, From2, 
 DECLARE_FUN3_0_1(sub_mul,     Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN3_0_1(gcd,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN3_0_1(lcm,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-DECLARE_FUN1_0_2(input, Result, nonconst, Type, std::istream&, Rounding_Dir)
-DECLARE_FUN1_1_2(output, Result, std::ostream&, const, Type, const Numeric_Format&, Rounding_Dir)
+DECLARE_FUN1_0_2(input,       Result, nonconst, Type, std::istream&, Rounding_Dir)
+DECLARE_FUN1_1_2(output,      Result, std::ostream&, const, Type, const Numeric_Format&, Rounding_Dir)
 
 template <typename Policy, typename To>
 Result round(To& to, Result r, Rounding_Dir dir);
