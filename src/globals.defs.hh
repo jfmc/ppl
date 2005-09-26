@@ -120,12 +120,12 @@ Temp_Coefficient_Holder temp_Coefficient_holder_ ## id = (id)
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 dimension_type
-compute_capacity(const dimension_type requested_size,
-		 const dimension_type maximum_size);
+compute_capacity(dimension_type requested_size,
+		 dimension_type maximum_size);
 
 // FIXME!!!
-inline dimension_type
-compute_capacity(const dimension_type requested_size);
+dimension_type
+compute_capacity(dimension_type requested_size);
 
 //! User objects' the PPL can throw.
 /*!
