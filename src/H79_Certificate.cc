@@ -50,7 +50,7 @@ PPL::H79_Certificate::H79_Certificate(const Polyhedron& ph)
       --affine_dim;
   }
 
-  // FIXME: super-kludge.
+  // TODO: this is an inefficient workaround.
   // For NNC polyhedra, generators might be no longer up-to-date
   // (and hence, neither minimized) due to the strong minimization
   // process applied to constraints when constructing the certificate.
@@ -91,7 +91,7 @@ PPL::H79_Certificate::compare(const Polyhedron& ph) const {
     if (i->is_equality())
       --ph_affine_dim;
   }
-  // FIXME: super-kludge.
+  // TODO: this is an inefficient workaround.
   // For NNC polyhedra, generators might be no longer up-to-date
   // (and hence, neither minimized) due to the strong minimization
   // process applied to constraints when constructing the certificate.
