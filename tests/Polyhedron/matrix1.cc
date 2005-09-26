@@ -1,4 +1,4 @@
-/* Test some functionalities of class Matrix.
+/* Test some functionality of class Matrix.
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -65,7 +65,7 @@ ascii_dump_load() {
 	m1.ascii_dump(cout);
 	cout << "m2.ascii_dump() gives" << endl;
 	m2.ascii_dump(cout);
-#endif 
+#endif
 	exit(1);
       }
     }
