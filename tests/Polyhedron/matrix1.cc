@@ -23,8 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_test.hh"
 #include "files.hh"
 #include <fstream>
-#include <ctime>
-#include <gmpxx.h>
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
