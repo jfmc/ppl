@@ -193,7 +193,8 @@ public:
   */
   Simplex_Status primal_simplex(const Linear_Expression& expr,
 				bool maximize,
-				Coefficient& ext_n, Coefficient& ext_d,
+				Coefficient& ext_n,
+				Coefficient& ext_d,
 				Generator& optimizing_point) const;
 
   //! \brief
