@@ -22,17 +22,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h> 
 #include "globals.types.hh"
-#include "Constraint_System.defs.hh"
-#include "Constraint_System.inlines.hh"
+#include "globals.defs.hh"
 #include "Row.defs.hh"
 #include "Matrix.defs.hh"
 #include "Linear_Row.defs.hh"
 #include "Linear_System.defs.hh"
-#include "Generator.defs.hh"
 #include "Linear_Expression.defs.hh"
-#include <cstddef>
-#include <iostream>
-#include <string>
+#include "Constraint_System.defs.hh"
+#include "Constraint_System.inlines.hh"
+#include "Generator.defs.hh"
 #include <stdexcept>
 #include <sstream>
 #include <map>
@@ -78,14 +76,15 @@ linear_combine(Row& x, const Row& y, const dimension_type k) {
 } 
 
 //! Inserts a row in a matrix.
-//! This has the same effects of Linear_System.insert()
-//! The Matrix grows if the Row has more columns than the Matrix ones.
 /*!
   \param matrix
   The Matrix in which will be inserted the Row;
 
   \param row
   The Row that will be inserted with in the \p x Matrix;
+
+  This has the same effects of Linear_System.insert()
+  The Matrix grows if the Row has more columns than the Matrix ones.
 */
 void
 insert_row_in_matrix(Matrix& matrix, const Row& row) {
@@ -131,7 +130,7 @@ inline void
 copy_column(const Matrix& tableau,
 	    const dimension_type index,
 	    std::vector<Coefficient>& column) {
-  dimension_type tableau_num_rows = tableau.num_rows();
+  const dimension_type tableau_num_rows = tableau.num_rows();
   // Used to avoid memory reallocation during column.push_back().
   column.reserve(tableau_num_rows);
   for (dimension_type i = 0; i < tableau_num_rows; ++i)
@@ -141,39 +140,36 @@ copy_column(const Matrix& tableau,
 // See pag 42-43 of Papadimitriou. 
 
 //! \brief
-//! Swaps two variables in base during the simplex algorithm, doing the 
-//! right linear combinations.
+//! Swaps two variables in base during the simplex algorithm,
+//! performing the needed linear combinations.
 /*!
   \param tableau
-  The matrix representing the constraints of the LP problem.
+  The constraints of the LP problem.
 
-  \param expressions
-  The matrix representing the cost function/s of the LP problem.
+  \param cost_function
+  The cost function of the LP problem.
 
   \param inside_var
-  The index of the column of the matrix representing the variable that
-  has to be inside the base.
+  The index of the variable entering the base.
 
   \param outside_row
-  The index of the row that has to be outside the base.
+  The index of the variable exiting the base.
 */
 void
 swap_base(Matrix& tableau,
-	  Matrix& expressions,
+	  Row& cost_function,
 	  const dimension_type inside_var,
 	  const dimension_type outside_row) {
-  dimension_type tableau_num_rows = tableau.num_rows();
-  
-  // First we combine the constraints.
-  for (dimension_type i = tableau_num_rows; i-- > 0; )
+  // Linearly combine the constraints.
+  for (dimension_type i = tableau.num_rows(); i-- > 0; )
     if (i != outside_row && tableau[i][inside_var] != 0)
-      linear_combine(tableau[i],tableau[outside_row], inside_var);
-  
-  // Now we combine the cost function.  
-  if (expressions[0][inside_var] != 0)
-    linear_combine(expressions[0], tableau[outside_row], inside_var);
-  
+      linear_combine(tableau[i], tableau[outside_row], inside_var);
+
+  // Linearly combine the cost function.
+  if (cost_function[inside_var] != 0)
+    linear_combine(cost_function, tableau[outside_row], inside_var);
 }
+
 
 // See pag. 47 of Papadimitriou.
 
@@ -264,14 +260,14 @@ choose_out_var(const Matrix& tableau,
   // special way) tableau[index_will_be_in][i] < 0 && tableau[i][base[i]] < 0
   // we will be sure that the solution is not unbounded.
   unbounded = true;
-  dimension_type tableau_num_rows = tableau.num_rows();
   
   // We want to insert in candidate_constraints the indexes of the rows such
   // that tableau[index_will_be_in][i] > 0 && tableau[i][base[i]] > 0
   // or tableau[index_will_be_in][i] < 0 && tableau[i][base[i]] < 0.
-  for (dimension_type i = tableau_num_rows; i-- > 0; ) {
-    int sgn_a = sgn(tableau[i][index_will_be_in]);
-    if (sgn_a != 0 && sgn_a == sgn(tableau[i][base[i]])) {
+  for (dimension_type i = tableau.num_rows(); i-- > 0; ) {
+    const Row& tableau_i = tableau[i];
+    const int sgn_a = sgn(tableau_i[index_will_be_in]);
+    if (sgn_a != 0 && sgn_a == sgn(tableau_i[base[i]])) {
       candidate_constraints.push_back(i);
       unbounded = false;
     }
@@ -296,7 +292,7 @@ choose_out_var(const Matrix& tableau,
   
   // We proceed computing the right representation of inhomogeneous terms.
   for (dimension_type i = candidate_constraints_size; i-- > 0; ) {  
-    dimension_type index = candidate_constraints[i];
+    const dimension_type& index = candidate_constraints[i];
     inhomogeneous[index] *= abs(lcm / tableau[index][index_will_be_in]);
   }
   // On exit this will contain the column index of tableau of the variable
@@ -311,19 +307,18 @@ choose_out_var(const Matrix& tableau,
   // Now we proceed comparing the other rows indexed by candidate_constraints
   // with the first one.
   for (dimension_type i = 0; i < candidate_constraints_size; ++i) {
-    dimension_type checked_index = candidate_constraints[i]; {
-      if (abs(inhomogeneous[checked_index]) < var_value) {
-	var_value = abs(inhomogeneous[checked_index]); 
-	out_var_row = checked_index;
-      }
-      // But if we find a variable with the same value of the inhomogeneous
-      // term of the last one chosen, but its index is smaller, we choose
-      // that one. (Anti-cycling Rule)
-      else
-	if (abs(inhomogeneous[checked_index]) == var_value
-	    && base[checked_index] < base[out_var_row])
-	  out_var_row = checked_index;
+    const dimension_type& checked_index = candidate_constraints[i];
+    const Coefficient abs_checked = abs(inhomogeneous[checked_index]);
+    if (abs_checked < var_value) {
+      var_value = abs_checked; 
+      out_var_row = checked_index;
     }
+    // But if we find a variable with the same value of the inhomogeneous
+    // term of the last one chosen, but its index is smaller, we choose
+    // that one. (Anti-cycling Rule)
+    else if (abs_checked == var_value
+	     && base[checked_index] < base[out_var_row])
+	out_var_row = checked_index;
   }
   
   // Now we can set the "base" vector with the new computed base.
@@ -337,17 +332,17 @@ choose_out_var(const Matrix& tableau,
 //! The simplex algorithm.
 /*! 
   \return
-  <CODE>true</CODE> if and if only the algorithm computes
-  a solution. It`s a point of the Constraint_System.
+  <CODE>true</CODE> if and if only the algorithm successfully computed
+  a feasible solution.
 
   \param tableau
-  The matrix containing the constraints of the LP problem.
+  The constraints of the LP problem.
 
   \param expressions
   The matrix that contains the cost function-s to be maximized/minimized. 
 
   \param base
-  The vector containing the elements in the base of the LP problem.
+  The variables in the base of the LP problem.
 
   To solve the LP problem compute_simplex must receive the problem in this way:
 
@@ -366,12 +361,14 @@ choose_out_var(const Matrix& tableau,
   These are the standard "PPL rows", so there should not be special 
   problems to understand what's in this matrix.
   
-  We must assure that the two matrices have the same space dimension!
+  It is assumed that \p tableau and \p expressions have the same
+  number of columns (i.e., the same space dimension).
 */
 bool
 compute_simplex(Matrix& tableau,
 		Matrix& expressions,
-		std::vector<dimension_type>& base) { 
+		std::vector<dimension_type>& base) {
+  assert(tableau.num_columns() == expressions.num_columns());
   while (true) {
     // In this one will be stored the variable that will go in base
     // if and only if the optimality condition is not satisfied.
@@ -382,7 +379,7 @@ compute_simplex(Matrix& tableau,
       if (expressions.num_rows() == 2) {
 	for (dimension_type i = tableau.num_rows(); i-- > 0; ) 
 	  if (expressions[1][base[i]] != 0)
-	    linear_combine(expressions[1],tableau[i], base[i]);
+	    linear_combine(expressions[1], tableau[i], base[i]);
       }
       return true;
     }
@@ -400,9 +397,10 @@ compute_simplex(Matrix& tableau,
     
     // We have not reached the optimality or unbounded condition.
     // So we have to reach another vertex of the Polyhedron.
-    swap_base(tableau, expressions, index_will_be_in, out_var_row);
+    swap_base(tableau, expressions[0], index_will_be_in, out_var_row);
   }
 }
+
 // See pag 28  Papadimitriou.
 
 //! \brief
@@ -469,105 +467,76 @@ prepare_for_1st_ph_simplex(Matrix& tableau,
 
 //! \brief
 //! Deletes the non necessary slack variables from the matrix
-//! and makes the last necessary swaps to let start the 2nd phase.
+//! and prepares for the 2nd phase.
 /*!
   \param tableau
   The matrix containing the constraints of the LP problem.
 
-  \param expressions
+  \param costs
   The matrix containing the cost functions.
+
   \param base
-  The array that stores the variables in base of a LP problem.
+  The variables in base of the LP problem.
 */
 void erase_slacks(Matrix& tableau,
-		  Matrix& expressions,
+		  Matrix& costs,
 		  std::vector<dimension_type>& base) {
-  dimension_type tableau_n_col = tableau.num_columns();
-  dimension_type tableau_last_index = tableau.num_columns()-1;
+  const dimension_type tableau_last_index = tableau.num_columns() - 1;
   dimension_type tableau_n_rows = tableau.num_rows();
-  dimension_type first_slack_index = tableau_n_col - tableau_n_rows -1;
-  std::vector<dimension_type> redundant_rows;
-  
-  // Step 1: We try to put out from the base all the remaining slack variables:
-  for (dimension_type i = tableau_n_rows; i-- > 0; ) {
-    bool transformed = false;
+  const dimension_type first_slack_index = tableau_last_index - tableau_n_rows;
+
+  // Step 1: try to remove from the base all the remaining slack variables.
+  for (dimension_type i = 0; i < tableau_n_rows; ++i)
     if (base[i] >= first_slack_index) {
-      // We search for an element != 0, this will go in base.
-      for (dimension_type j = first_slack_index; j-- > 1; ) {
-	if (tableau[i][j] != 0) { 
-	  swap_base(tableau, expressions, j, i);
-	  // So we adjust the base.
+      // Search for a non-zero element to enter the base.
+      Row& tableau_i = tableau[i];
+      bool redundant = true;
+      for (dimension_type j = first_slack_index; j-- > 1; )
+	if (tableau_i[j] != 0) {
+	  swap_base(tableau, costs[0], j, i);
+	  // Adjust the base.
 	  base[i] = j;
-	  transformed = true;
+	  redundant = false;
 	  break;
 	}
+      if (redundant) {
+	// No original variable entered the base:
+	// the constraint is redundant and should be deleted.
+	--tableau_n_rows;
+	if (i < tableau_n_rows) {
+	  // Replace the redundant row with the last one,
+	  // taking care of adjusting the iteration index.
+	  tableau_i.swap(tableau[tableau_n_rows]);
+	  base[i] = base[tableau_n_rows];
+	  --i;
+	}
+	tableau.erase_to_end(tableau_n_rows);
+	base.pop_back();
       }
-      // If we reach this point of the code, we did not successfully find 
-      // an original variable to put in base, this means that this constraint
-      // is redundant: we have to delete this one from the tableau.
-      if (!transformed)
-	redundant_rows.push_back(i);
     }
-  }
 
-  // Step 2: Creation the new constraints tableau and the new expression 
-  //         tableau; adjust base vector.
+  // Step 2: Adjust data structures so as to enter phase 2 of the simplex.
   
-  // We set the dimensions of the new constraints_tableau...
-  dimension_type new_tableau_columns = first_slack_index + 1;
- 
-  // This one will be the new matrix that will represent the 2nd phase problem.
-  Matrix new_constraint_tableau(0, 0);
- 
-  // ...and here the ones of the expressions tableau, but this time we will
-  // have only one cost function.  
-  Matrix new_expression_tableau(1, new_tableau_columns);
- 
-  dimension_type new_tableau_last_index = new_tableau_columns - 1; 
-  
-  // This one will represent the new base.
-  std::vector<dimension_type> new_base;
-  
-  // Now we can fill the new matrices, without the redundant constraints.
-  for (dimension_type i = 0; i < tableau_n_rows; ++i)
-    // We will insert the constraint if and if only is not redundant.
-    if (std::find(redundant_rows.begin(), redundant_rows.end(), i) ==
-	redundant_rows.end()) {
+  // Compute the dimensions of the new tableau.
+  const dimension_type new_tableau_n_cols = first_slack_index + 1;
+  const dimension_type new_tableau_last_index = first_slack_index;
+   
+  // Adjust the number of columns of `tableau'.
+  tableau.remove_trailing_columns(tableau.num_columns() - new_tableau_n_cols);
+  // Zero the last column of the tableau.
+  for (dimension_type i = tableau_n_rows; i-- > 0; )
+    tableau[i][new_tableau_last_index] = 0;
 
-      // We will create a new row: this will be inserted in the matrix.
-      Row new_row(new_tableau_columns, Row::Flags());
-      
-      // We start copying the row from the beginning (inhomogeneous term)
-      // until the last original variable index. 
-      for(dimension_type j = 0; j < first_slack_index; ++j)
-	new_row[j] = tableau[i][j];
-      
-      // Last step, we must copy the last element of the row, be we know
-      // is a zero! (it's the special variable used to know the sign of the
-      // cost function.
-      new_row[new_tableau_last_index] = 0;
-      assert(tableau[i][tableau_last_index] == 0);
-      
-      // Insertion of the row in the new matrix.
-      insert_row_in_matrix(new_constraint_tableau, new_row);
-      
-      // We have to set also the base value.
-      new_base.push_back(base[i]);
-    }
-  
-  // We can set the new expression tableau.
-  for(dimension_type j = 0; j < first_slack_index; ++j)
-    new_expression_tableau[0][j] = expressions[1][j];
-  
-  // Last step, we must copy the last element of the row.
-  new_expression_tableau[0][new_tableau_last_index] =
-    expressions[1][tableau_last_index];
-  
-  // Well done, let's start swapping the old tableau
-  // and the base with the new ones!
-  expressions.swap(new_expression_tableau);
-  tableau.swap(new_constraint_tableau);
-  base.swap(new_base);
+  // Set the new cost function:
+  // first let the second expression become the only one; ...
+  Row& cost_function = costs[0];
+  cost_function.swap(costs[1]);
+  costs.erase_to_end(1);
+  // ... then properly set the element in the (new) last column,
+  // encoding the kind of optimization; ...
+  cost_function[new_tableau_last_index] = cost_function[tableau_last_index];
+  // ... and finally remove redundant columns.
+  costs.remove_trailing_columns(tableau_last_index - new_tableau_last_index);
 }
 
 // See pag 55 of Papadimitriou.
@@ -606,16 +575,20 @@ first_phase(Matrix& tableau,
     
   // This code will build a matrix where will be stored only
   // the constraints of the LP problem.
+#if 0
   Matrix tableau_constraints(0,0);
   for (dimension_type i = 0; i < tableau.num_rows(); ++i)
    insert_row_in_matrix(tableau_constraints, tableau[i]);              
-  
+#else
+  Matrix& tableau_constraints = tableau;
+#endif
+
   // Here we will build a matrix that will store the new cost function in the
   // first row, and the old cost function in the second.
   Matrix tableau_expressions(0,0);
   insert_row_in_matrix(tableau_expressions, new_obj_function); 
   insert_row_in_matrix(tableau_expressions, old_obj_function);
-  
+
   // Now we can start solving the first phase problem.
   bool ok = compute_simplex(tableau_constraints, tableau_expressions, base); 
   
@@ -628,7 +601,9 @@ first_phase(Matrix& tableau,
     bool result = compute_simplex(tableau_constraints,
 				  tableau_expressions, 
 				  base);
+#if 0
     tableau.swap(tableau_constraints); 
+#endif
 
     // Now if (result == true) we have an optimum, else
     // the problem is unbounded.
@@ -784,10 +759,10 @@ compute_tableau(const Linear_System& cs,
       */     
       
       // The variable index is not equal to the column index.
-      dimension_type nonzero_var_index = nonzero_coeff_column_index - 1;
+      const dimension_type nonzero_var_index = nonzero_coeff_column_index - 1;
  
-      int sgn_a = sgn(cs_i[nonzero_coeff_column_index]);
-      int sgn_b = sgn(cs_i[0]);     
+      const int sgn_a = sgn(cs_i[nonzero_coeff_column_index]);
+      const int sgn_b = sgn(cs_i[0]);     
       // Cases 1-3: apply method A. 
       if (sgn_a == sgn_b) {
 	if (cs_i.is_ray_or_point_or_inequality())
@@ -872,8 +847,8 @@ compute_tableau(const Linear_System& cs,
   }
   // Last step: we proceed splitting variables in the tableau.
   const dimension_type tableau_num_rows = tableau.num_rows();
-  typedef std::map<dimension_type, dimension_type> dim_map_type;
-  for (dim_map_type::const_iterator map_itr = dim_map.begin(),
+  typedef std::map<dimension_type, dimension_type>::const_iterator iter;
+  for (iter map_itr = dim_map.begin(),
 	 map_end = dim_map.end(); map_itr != map_end; ++map_itr) {
     for (dimension_type i = tableau_num_rows; i-- > 0; ) 
       tableau[i][(map_itr->second) +1] = -tableau[i][(map_itr->first) + 1];
@@ -916,17 +891,23 @@ is_in_base(const std::vector<dimension_type>& base,
 //! Computes the generator that will be given on exit of primal_simplex,
 //! the problem has an optimality point.
 /*!
-  \return                   The computed generator.
-  \param tableau            A matrix containing the constraints
-                            of the solved problem.
-  \param base               The base of the LP problem.
-  \param map                Contains all the pairs (i, j) such that Variable(i)
-                            (that was not found to be constrained in sign)
-                            has been split into two nonnegative variables.
-                            The "positive" one is represented again by
-                            Variable(i), and the "negative" one is represented
-                            by Variable(j).
-  \param original_space_dim The original space dimension of the LP problem.
+  \return
+  The computed generator.
+
+  \param tableau
+  A matrix containing the constraints of the solved problem.
+
+  \param base
+  The base of the LP problem.
+
+  \param map
+  Contains all the pairs (i, j) such that Variable(i) (that was not found
+  to be constrained in sign) has been split into two nonnegative variables.
+  The "positive" one is represented again by Variable(i), and the "negative"
+  one is represented by Variable(j).
+
+  \param original_space_dim
+  The space dimension of the original LP problem.
 */
 Generator
 compute_generator(const Matrix& tableau,
@@ -940,12 +921,12 @@ compute_generator(const Matrix& tableau,
   dimension_type row = 0;
 
   // We start to compute num[] and den[].
-  typedef std::map<dimension_type, dimension_type> dim_map_type;
-  dim_map_type::const_iterator map_end = dim_map.end();
+  typedef std::map<dimension_type, dimension_type>::const_iterator iter;
+  iter map_end = dim_map.end();
 
   for (dimension_type i = original_space_dim; i-- > 0; ) {
     // Check whether the variable was split.
-    dim_map_type::const_iterator map_iter = dim_map.find(i);
+    iter map_iter = dim_map.find(i);
     if (map_iter == map_end)
       // The variable was not split: get its value from the tableau
       // (if it is not in the base, the value is 0).
@@ -1077,7 +1058,7 @@ PPL::Constraint_System::primal_simplex(Linear_Expression& cost_function,
 
 
 Simplex_Status
-PPL::Constraint_System::primal_simplex(const Linear_Expression& expression,
+PPL::Constraint_System::primal_simplex(const Linear_Expression& expr,
 				       const bool maximize,
 				       Coefficient& ext_n,
 				       Coefficient& ext_d,
@@ -1088,46 +1069,39 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expression,
 				"strict inequality constraints "
 				"are not supported.");
 
-  const dimension_type space_dim = space_dimension();
-  const dimension_type expr_space_dim = expression.space_dimension();
-  
-  // Make sure the dimension of the expression to maximize is not greater
-  // than the dimension of the constraint system.
-  if (space_dim < expr_space_dim) {
+  // Make sure the dimension of `expr' is not greater than
+  // the dimension of the constraint system.
+  if (space_dimension() < expr.space_dimension()) {
     std::ostringstream s;
     s << "PPL::Constraint_System::primal_simplex():" << std::endl
-      << "this->space_dimension() == " << space_dim
+      << "this->space_dimension() == " << space_dimension()
       << ", " << "cost_function->space_dimension() == "
-      << expr_space_dim << ".";
+      << expr.space_dimension() << ".";
     throw std::invalid_argument(s.str());
   }
 
-  // We will work with a copy of the cost function.
-  Linear_Expression cost_function = expression;
- 
-  // To compute minimization, we have just to negate the coefficients of cost
-  // function.
+  // Work with a copy of `expr', since it may be modified.
+  Linear_Expression cost_function = expr;
+
+  // Minimization is obtained by negating the cost_function.
   if (!maximize) 
     for (dimension_type i = cost_function.size(); i-- > 0; ) 
       negate(cost_function[i]);
 
-  Simplex_Status status = primal_simplex(cost_function, optimizing_point);
+  Simplex_Status status
+    = ::primal_simplex(*this, cost_function, optimizing_point);
+
   if (status == SOLVED_PROBLEM) {
     // Compute the optimal value of the cost function.
-    ext_n = expression.inhomogeneous_term();
+    ext_n = expr.inhomogeneous_term();
     for (dimension_type i = optimizing_point.space_dimension(); i-- > 0; )  
       ext_n += optimizing_point.coefficient(Variable(i))
-	       * expression.coefficient(Variable(i));
-
-    // We want numerator and denominator to be coprime.
-    Coefficient gcd = 0;
-    ext_d = optimizing_point.divisor();
-    gcd_assign(gcd, ext_n, ext_d);
-    ext_n /= gcd;
-    ext_d /= gcd;
+	       * expr.coefficient(Variable(i));
+    // Numerator and denominator should be coprime.
+    normalize2(ext_n, optimizing_point.divisor(), ext_n, ext_d);
     
-    // We check our computed generator.
-    assert(this->satisfies_all_constraints(optimizing_point));  
+    // Check the computed generator for feasibility.
+    assert(satisfies_all_constraints(optimizing_point));  
   }
   return status;
 }
