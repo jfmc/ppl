@@ -411,56 +411,53 @@ compute_simplex(Matrix& tableau,
   \param tableau
   The matrix containing the LP problem.
 
-  \param obj
-  The row containing the original cost function.
+  \param costs
+  The matrix containing the original and the adapted cost functions.
 
   \param base
   The vector that stores the variables in the base of the LP problem.
 */
 void   
 prepare_for_1st_ph_simplex(Matrix& tableau,
-			   Row& old_obj,
-			   Row& new_obj,
+			   Matrix& costs,
 			   std::vector<dimension_type>& base) {
   // We negate the row if tableau[i][0] <= 0 to get the inhomogeneous term > 0.
   // This simplifies the insertion of the slack variables: the value of the 
   // slack variable of every constraint will be 1.
-  for (dimension_type i = tableau.num_rows(); i-- > 0 ; ) 
-    if (tableau[i][0] > 0)
-      for (dimension_type j = tableau.num_columns(); j-- > 0; )
-	negate(tableau[i][j]);
-  // Insertion of the slack variables.
-  for (dimension_type i = 0; i < tableau.num_rows(); ++i) {
-    tableau.add_zero_columns(1);
-    tableau[i][tableau.num_columns()-1] = 1;
-    base[i] = tableau.num_columns()-1;
+  const dimension_type tableau_old_n_cols = tableau.num_columns();
+  for (dimension_type i = tableau.num_rows(); i-- > 0 ; ) {
+    Row& tableau_i = tableau[i];
+    if (tableau_i[0] > 0)
+      for (dimension_type j = tableau_old_n_cols; j-- > 0; )
+	negate(tableau_i[j]);
   }
-  
-  // We add the extra-coefficient (sign) for the cost function to the tableau.
-  // This is done to keep track of the possible sign`s inversion.
-  // We have to resize the old and the new cost function row and add the
-  // extra-coefficient also to the old cost function.
 
-  // Here we set the 1st phase cost function: if the first slack variable has 
-  // index n+1 and the space dimension is n+m, the new cost function is:
-  // k = - x_n+1 - x_n+2 - ... - x_n+m.  
-  add_elements_to_row(new_obj, tableau.num_rows(), -1);
+  // Add the columns for all the slack variables, plus an additional
+  // column for the sign of the cost function.
+  tableau.add_zero_columns(tableau.num_rows() + 1);
+  costs.add_zero_columns(tableau.num_rows() + 1);
+  // Modify the tableau and the new cost function by adding
+  // the slack variables (which enter the base).
+  // As for the cost function, all the slack variables should have
+  // coefficient -1.
+  Row& old_obj = costs[0];
+  Row& new_obj = costs[1];
+  for (dimension_type i = 0; i < tableau.num_rows(); ++i) {
+    const dimension_type j = tableau_old_n_cols + i;
+    tableau[i][j] = 1;
+    new_obj[j] = -1;
+    base[i] = j;
+  }
 
-  // We have also to resize the old cost function.
-  add_elements_to_row(old_obj, tableau.num_rows(), 0);
- 
-  // Extra variable insertion (sign).
-  add_elements_to_row(new_obj, 1, 1);
-  add_elements_to_row(old_obj, 1, 1);
+  // Set the extra-coefficient of the cost functions to record its sign.
+  // This is done to keep track of the possible sign's inversion.
+  const dimension_type last_obj_index = old_obj.size() - 1;
+  old_obj[last_obj_index] = 1;
+  new_obj[last_obj_index] = 1;
   
-  // We have to add another column to the tableau to allow linear combinations:
-  // the rows must have the same space dimension.
-  tableau.add_zero_columns(1);
-  
-  // Now we express the problem in terms of the variable in base.
-  for (dimension_type i = tableau.num_rows(); i-- > 0; ) 
-   linear_combine(new_obj, tableau[i], base[i]);              
-  
+  // Express the problem in terms of the variables in base.
+  for (dimension_type i = tableau.num_rows(); i-- > 0; )
+    linear_combine(new_obj, tableau[i], base[i]);
 }
 
 // See pag 55-56 Papadimitriou.
@@ -563,57 +560,24 @@ first_phase(Matrix& tableau,
 	    Row& old_obj_function,
 	    std::vector<dimension_type>& base) {
   // This will contain the new cost function of the 1st phase problem.
-  Row new_obj_function(old_obj_function);
-  
-  // We need to clean this row setting all the values to 0.
-  for (dimension_type i = new_obj_function.size(); i-- > 0; )  
-    new_obj_function[i] = 0;
+  Matrix costs(2, old_obj_function.size());
+  costs[1] = old_obj_function;
   
   // Adds the necessary slack variables to get the 1st phase problem.
-  prepare_for_1st_ph_simplex(tableau, old_obj_function,
-			     new_obj_function, base);
-    
-  // This code will build a matrix where will be stored only
-  // the constraints of the LP problem.
-#if 0
-  Matrix tableau_constraints(0,0);
-  for (dimension_type i = 0; i < tableau.num_rows(); ++i)
-   insert_row_in_matrix(tableau_constraints, tableau[i]);              
-#else
-  Matrix& tableau_constraints = tableau;
-#endif
+  prepare_for_1st_ph_simplex(tableau, costs, base);
 
-  // Here we will build a matrix that will store the new cost function in the
-  // first row, and the old cost function in the second.
-  Matrix tableau_expressions(0,0);
-  insert_row_in_matrix(tableau_expressions, new_obj_function); 
-  insert_row_in_matrix(tableau_expressions, old_obj_function);
-
-  // Now we can start solving the first phase problem.
-  bool ok = compute_simplex(tableau_constraints, tableau_expressions, base); 
-  
-  // If the first phase problem succeeds and the optimum value is zero,
-  // we proceed erasing the slack variables we introduced and solve the
-  // problem with the base computed by the 1st phase.
-  
-  if (ok && tableau_expressions[0][0] == 0) {
-    erase_slacks(tableau_constraints, tableau_expressions, base);
-    bool result = compute_simplex(tableau_constraints,
-				  tableau_expressions, 
-				  base);
-#if 0
-    tableau.swap(tableau_constraints); 
-#endif
-
-    // Now if (result == true) we have an optimum, else
-    // the problem is unbounded.
-    if (result)
+  // Solve the first phase problem.
+  if (compute_simplex(tableau, costs, base) && costs[0][0] == 0) {
+    // If the first phase problem succeeded and the optimum value is zero,
+    // we erase the slack variables and solve the problem with the base
+    // computed by the 1st phase.
+    erase_slacks(tableau, costs, base);
+    if (compute_simplex(tableau, costs, base))
       return SOLVED_PROBLEM;
     else
       return UNBOUNDED_PROBLEM;
   }
   else
-    // No feasible base found.
     return UNFEASIBLE_PROBLEM;
 }
 
@@ -1007,7 +971,7 @@ primal_simplex(const Linear_System& cs,
 	       Generator& maximizing_point) {
   assert(cost_function.size() <= cs.num_columns());
 
-  Matrix tableau(0,0);
+  Matrix tableau(0, 0);
   std::map<dimension_type, dimension_type> dim_map;
   Simplex_Status status
     = compute_tableau(cs, cost_function, tableau, dim_map);
@@ -1036,8 +1000,8 @@ primal_simplex(const Linear_System& cs,
 	// If the constraint system is NNC, the epsilon dimension
 	// has to be interpreted as a normal dimension.
 	const dimension_type space_dim = cs.num_columns() - 1;
-	maximizing_point = compute_generator(tableau, base,
-					     dim_map, space_dim);
+	maximizing_point
+	  = compute_generator(tableau, base, dim_map, space_dim);
       }
     }
     break;
