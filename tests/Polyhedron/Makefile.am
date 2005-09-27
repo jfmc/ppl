@@ -134,6 +134,7 @@ ORIGINAL_TESTS = \
 	memory1 memory2 \
 	minconstraints1 minconstraints2 minconstraints3 minconstraints4 \
 	mingenerators1 mingenerators2 mingenerators3 \
+	numberinput1 \
 	onepoint \
 	permute \
 	polydifference1 polydifference2 polydifference3 polydifference4 \
@@ -551,6 +552,8 @@ minconstraints4_SOURCES = minconstraints4.cc
 mingenerators1_SOURCES = mingenerators1.cc
 mingenerators2_SOURCES = mingenerators2.cc
 mingenerators3_SOURCES = mingenerators3.cc
+
+numberinput1_SOURCES = numberinput1.cc
 
 onepoint_SOURCES = onepoint.cc
 
