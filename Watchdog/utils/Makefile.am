@@ -31,6 +31,12 @@ build_header.in
 noinst_SCRIPTS = \
 build_header
 
+# Even if the scripts listed in noinst_SCRIPTS are not distributed
+# (only the corresponding *.in files are), we need them to actually
+# generating the distribution.  Using dist-hook is the best solution
+# we came up with to obtain this effect.
+dist-hook: $(noinst_SCRIPTS)
+
 generated_automatically = Generated automatically: \
 do not modify; modify the .in file instead.
 
