@@ -591,9 +591,10 @@ first_phase(Matrix& tableau,
   \return
   <CODE>UNFEASIBLE_PROBLEM</CODE> if the constraint system contains
   any trivially unfeasible constraint (tableau was not computed);
-  <CODE>UNBOUNDED_PROBLEM</CODE> if an empty tableau was computed
-  (the problem may be actually bounded, depending on the cost function);
-  <CODE>SOLVED_PROBLEM></CODE> if a non-empty tableau was computed.
+  <CODE>UNBOUNDED_PROBLEM</CODE> if the problem is trivially unbounded
+  (the computed tableau contains no constraints);
+  <CODE>SOLVED_PROBLEM></CODE> if the problem is neither trivially
+  unfeasible nor trivially unbounded (the tableau was computed successfully).
 
   \param cs
   A matrix containing the constraints of the problem.
@@ -799,7 +800,7 @@ compute_tableau(const Linear_System& cs,
   // Insertion of the constraints the tableau.
   for (dimension_type i = 0, iend = cs.num_rows(); i < iend; ++i) {
     // We are going to insert only constraints that are not trivially true
-    // (5 > 3) and that are not nonnegativity_constraints (X > 0).
+    // (5 > 3) and that are not nonnegativity constraints (X > 0).
     if (nonnegativity_constraint[i] || trivially_true_constraint[i])
       continue;
     insert_row_in_matrix(tableau, cs[i]);
@@ -818,13 +819,19 @@ compute_tableau(const Linear_System& cs,
       tableau[i][(map_itr->second) +1] = -tableau[i][(map_itr->first) + 1];
     cost_function[(map_itr->second) +1] = -cost_function[(map_itr->first) + 1];
   }
-  // If the computed tableau is empty, then the whole nonnegative
-  // orthant is feasible, so that the problem is either unbounded or
-  // has a maximum in the origin. We return anyway UNBOUNDED_PROBLEM
-  // (the caller has to figure out which situation applies).
-  if (tableau.num_rows() == 0) 
-    return UNBOUNDED_PROBLEM;
-  assert(tableau.num_columns() != 0);
+
+  // If there is no constraint in the tableau, then the feasible region
+  // is only delimited by non-negativity constraints. Therefore,
+  // the problem is unbounded as soon as the cost function has
+  // a variable with a positive coefficient.
+  if (tableau.num_rows() == 0)
+    for (dimension_type i = cost_function.size(); i-- > 1; )
+      if (cost_function[i] > 0)
+	return UNBOUNDED_PROBLEM;
+
+  // The problem is neither trivially unfeasible nor trivially unbounded.
+  // The tableau was successfull computed and the caller has to figure
+  // out which case applies.
   return SOLVED_PROBLEM;
 }
 
@@ -976,35 +983,29 @@ primal_simplex(const Linear_System& cs,
   Simplex_Status status
     = compute_tableau(cs, cost_function, tableau, dim_map);
 
-  switch (status) {
-  case UNFEASIBLE_PROBLEM:
-    break;
-  case UNBOUNDED_PROBLEM:
-    // There are no constraints in the tableau, apart from those
-    // stating nonnegativity of the variables. Therefore, the problem
-    // will be unbounded as soon as the cost function has a variable
-    // with a positive coefficient.
-    for (dimension_type i = cost_function.size(); i-- > 1; )
-      if (cost_function[i] > 0)
-	return UNBOUNDED_PROBLEM;
-    // Otherwise a maximizing solution is the origin. 
-    maximizing_point = point();
-    status = SOLVED_PROBLEM;
-    break;
-  case SOLVED_PROBLEM:
-    {
-      // Find a feasible solution.
-      std::vector<dimension_type> base(tableau.num_rows());
-      status = first_phase(tableau, cost_function, base);
-      if (status == SOLVED_PROBLEM) {
-	// If the constraint system is NNC, the epsilon dimension
-	// has to be interpreted as a normal dimension.
-	const dimension_type space_dim = cs.num_columns() - 1;
-	maximizing_point
-	  = compute_generator(tableau, base, dim_map, space_dim);
-      }
-    }
-    break;
+  // Return immediately if the problem is either trivially unfeasible
+  // or trivially unbounded. 
+  if (status != SOLVED_PROBLEM)
+    return status;
+
+  // The space dimension of the solution to be computed.
+  // Note: here we can not use method Constraint_System::space_dimension(),
+  // because if the constraint system is NNC, then even the epsilon
+  // dimension has to be interpreted as a normal dimension.
+  const dimension_type space_dim = cs.num_columns() - 1;
+
+  // Check for the special case of an empty tableau,
+  // in which case a maximizing solution is the origin.
+  if (tableau.num_rows() == 0)
+    // Ensure the right space dimension is obtained.
+    maximizing_point = point(0*Variable(space_dim-1));
+  else {
+    // Actually solve the LP problem.
+    std::vector<dimension_type> base(tableau.num_rows());
+    status = first_phase(tableau, cost_function, base);
+    if (status == SOLVED_PROBLEM)
+      maximizing_point
+	= compute_generator(tableau, base, dim_map, space_dim);
   }
   return status;
 }
