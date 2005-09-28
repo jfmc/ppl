@@ -68,10 +68,6 @@ EXTRA_DIST = \
 $(SOURCE_FILES) \
 pwl_header.hh
 
-# pwl.hh and pwl_install.hh are not distributed.
-dist-hook:
-	rm -f $(distdir)/pwl.hh $(distdir)/pwl_install.hh
-
 if BUILD_WATCHDOG_LIBRARY
 
 # Libtool -version-info for libpwl.la.
@@ -132,10 +128,25 @@ pwl_include_files.hh: $(INCLUDE_FILES) Makefile
 	  printf "#include \"%s\"\n" $$file >>$@; \
 	done
 
+if HAVE_PERL
+
 pwl_install.hh:	$(top_builddir)/config.h pwl_header.hh pwl_include_files.hh Makefile $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
 		-I $(top_builddir) -I $(top_builddir)/src \
 		$(top_srcdir)/src/pwl_header.hh >$@
+
+else !HAVE_PERL
+
+pwl_install.hh:	pwl_install.hh.dist
+	cp -f $< $@
+
+endif !HAVE_PERL
+
+# pwl.hh and pwl_install.hh are not distributed.
+# pwl_install.hh.dist, which is distributed, is a copy of pwl_install.hh.
+dist-hook:
+	mv -f $(distdir)/pwl_install.hh $(distdir)/pwl_install.hh.dist
+	rm -f $(distdir)/pwl.hh
 
 install-data-local: pwl_install.hh
 	$(mkinstalldirs) $(DESTDIR)$(includedir)
