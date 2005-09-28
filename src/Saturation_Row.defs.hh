@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Saturation_Row_defs_hh 1
 
 #include "Saturation_Row.types.hh"
-#include "globals.defs.hh"
+#include "globals.types.hh"
 #include <iosfwd>
 #include <gmp.h>
 #include <vector>

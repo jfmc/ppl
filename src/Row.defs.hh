@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifdef EXTRA_ROW_DEBUG
 #include "Grid.types.hh"
 #endif
-#include "globals.defs.hh"
+#include "globals.types.hh"
 #include "Coefficient.defs.hh"
 #include <vector>
 #include <limits>
@@ -104,6 +104,13 @@ public:
     //! Writes to \p s an ASCII representation of the internal
     //! representation of \p *this.
     void ascii_dump(std::ostream& s) const;
+
+    //! Uses the ASCII Flags representation from \p s to recreate *this.
+    /*!
+      Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
+      otherwise.  The ASCII representation is as output by ascii_dump.
+    */
+    bool ascii_load(std::istream& s);
 
   protected:
     //! A native integral type holding the bits that encode the flags.
@@ -272,10 +279,24 @@ public:
   Coefficient_traits::const_reference operator[](dimension_type k) const;
   //@} // Subscript operators
 
+  //! Normalizes the modulo of coefficients so that they are mutually prime.
+  /*!
+    Computes the Greatest Common Divisor (GCD) among the elements of
+    the row and normalizes them by the GCD itself.
+  */
+  void normalize();
+
   //! \brief
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
   void ascii_dump(std::ostream& s) const;
+
+  //! Uses the ASCII Row representation at \p s to recreate *this.
+  /*!
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
+    otherwise.  The ASCII representation is as output by ascii_dump.
+  */
+  bool ascii_load(std::istream& s);
 
   //! \brief
   //! Returns a lower bound to the total size in bytes of the memory

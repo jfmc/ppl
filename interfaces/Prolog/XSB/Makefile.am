@@ -45,12 +45,12 @@ expected_int16_a expected2_int16_a expected3_int16_a \
 expected_int32_a expected2_int32_a expected3_int32_a \
 expected_int64_a expected2_int64_a expected3_int64_a
 
-if HAVE_XSB_PROLOG
+if BUILD_XSB_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
 -I$(top_builddir)/src \
--I$(top_srcdir)/Watchdog \
+-I$(top_srcdir)/Watchdog/src \
 @extra_includes@ \
 @xsb_includes@
 
@@ -58,7 +58,7 @@ pkglib_LTLIBRARIES = ppl_xsb.la
 ppl_xsb_la_SOURCES = ppl_xsb.cc
 ppl_xsb_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
-$(top_builddir)/Watchdog/libpwl.la \
+$(top_builddir)/Watchdog/src/libpwl.la \
 @extra_libraries@
 ppl_xsb_la_LDFLAGS = -module -avoid-version
 
@@ -74,7 +74,7 @@ ppl_xsb.xwam: ppl_xsb.H ppl_xsb.cc ppl_xsb.la Makefile
 	    "$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)')])." \
 		| $(LIBTOOL) --mode=execute \
 			-dlopen ../../../src/libppl.la \
-			-dlopen ../../../Watchdog/libpwl.la \
+			-dlopen ../../../Watchdog/src/libpwl.la \
 			xsb
 	rm -f ppl_xsb.c
 	if [ $(abs_srcdir) != `pwd` ]; then \
@@ -126,7 +126,7 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clp
 	rm -f xsb_clpq.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
 		-dlopen ppl_xsb.la \
 		xsb xsb_clpq \
 			<$(srcdir)/../tests/script_clpq >obtained
@@ -142,7 +142,7 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clp
 	rm -f xsb_clpq2.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
 		-dlopen ppl_xsb.la \
 		xsb xsb_clpq2 \
 			<$(srcdir)/../tests/script_clpq2 >obtained2
@@ -160,7 +160,7 @@ pl_check_test: ppl_xsb.la ppl_xsb.xwam xsb_pl_check.P ../tests/pl_check.pl
 	rm -f xsb_pl_check.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
 		-dlopen ppl_xsb.la \
 		xsb xsb_pl_check \
 			>obtained3
@@ -175,4 +175,4 @@ ppl_xsb.xwam ppl_xsb.so \
 xsb_clpq.xwam xsb_clpq2.xwam xsb_pl_check.xwam \
 $(CLPQ_TESTS) obtained obtained2 obtained3
 
-endif HAVE_XSB_PROLOG
+endif BUILD_XSB_PROLOG_INTERFACE

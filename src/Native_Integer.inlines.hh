@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Native_Integer_inlines_hh 1
 
 #include "compiler.hh"
+#include "globals.types.hh"
 #include <iostream>
 #include <limits>
 #include <cassert>
@@ -100,19 +101,12 @@ abs(T x) {
 template <typename T>
 inline T
 gcd(T x,T y) {
-  if (x == 0)
-    return abs(y);
-  else if (y == 0)
-         return abs(x);
-  x = abs(x);
-  y = abs(y);
-  T r = 0;
   while (y != 0) {
-    r = x % y;
+    T r = x % y;
     x = y;
     y = r;
   }
-  return x;
+  return abs(x);
 }
 
 //! \brief
@@ -404,14 +398,14 @@ raw_value(Native_Integer<T>& x) {
 
 /*! \relates Native_Integer */
 template <typename T>
-size_t
+memory_size_type
 total_memory_in_bytes(const Native_Integer<T>& x) {
   return sizeof(x);
 }
 
 /*! \relates Native_Integer */
 template <typename T>
-size_t
+memory_size_type
 external_memory_in_bytes(const Native_Integer<T>& x) {
   used(x);
   return 0;

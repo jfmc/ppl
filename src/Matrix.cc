@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Matrix.defs.hh"
 #include "Row.defs.hh"
-#include "globals.defs.hh"
 #include <algorithm>
 #include <iostream>
 #include <string>
@@ -300,18 +299,22 @@ PPL::Matrix::ascii_dump(std::ostream& s) const {
 
 bool
 PPL::Matrix::ascii_load(std::istream& s) {
+  Matrix& x = *this;
   std::string str;
-  dimension_type nrows;
-  dimension_type ncols;
-  if (!(s >> nrows))
+  dimension_type x_num_rows;
+  dimension_type x_num_cols;
+  if (!(s >> x_num_rows))
     return false;
-  if (!(s >> str))
+  if (!(s >> str) || (str.compare("x") != 0))
     return false;
-  if (!(s >> ncols))
-      return false;
-  resize_no_copy(nrows, ncols, Row::Flags());
+  if (!(s >> x_num_cols))
+    return false;
 
-  // FIXME: must be completed.
+  resize_no_copy(x_num_rows, x_num_cols, Row::Flags());
+
+  for (dimension_type row = 0; row < x_num_rows; ++row)
+    if (!x[row].ascii_load(s))
+      return false;
 
   // Check for well-formedness.
   assert(OK());

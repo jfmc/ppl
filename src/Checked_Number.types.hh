@@ -12,6 +12,8 @@ PURPOSE. */
 #ifndef PPL_Checked_Number_types_hh
 #define PPL_Checked_Number_types_hh 1
 
+#include "Coefficient_traits_template.hh"
+
 namespace Parma_Polyhedra_Library {
 
 struct Checked_Number_Default_Policy;

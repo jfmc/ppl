@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Polyhedron.defs.hh"
-
+#include "scalar_products.defs.hh"
 #include <cassert>
 #include <string>
 #include <iostream>
@@ -60,7 +60,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
     status.set_empty();
   else
     if (num_dimensions > 0) {
-      add_low_level_constraints(con_sys);
+      con_sys.add_low_level_constraints();
       con_sys.adjust_topology_and_space_dimension(topol, num_dimensions);
       set_constraints_minimized();
     }
@@ -117,7 +117,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& ccs)
       con_sys.unset_pending_rows();
       con_sys.set_sorted(false);
     }
-    add_low_level_constraints(con_sys);
+    con_sys.add_low_level_constraints();
     set_constraints_up_to_date();
   }
   else {
@@ -163,7 +163,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, Constraint_System& cs)
       con_sys.unset_pending_rows();
       con_sys.set_sorted(false);
     }
-    add_low_level_constraints(con_sys);
+    con_sys.add_low_level_constraints();
     set_constraints_up_to_date();
   }
   else {
@@ -597,10 +597,8 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the extremum as soon as we find it.
       mpq_class candidate;
-      Checked::assign<Checked::Transparent_Policy>(candidate.get_num(),
-						   raw_value(sp), ROUND_IGNORE);
-      Checked::assign<Checked::Transparent_Policy>(candidate.get_den(),
-						   raw_value(g[0]), ROUND_IGNORE);
+      assign(candidate.get_num(), raw_value(sp), ROUND_IGNORE);
+      assign(candidate.get_den(), raw_value(g[0]), ROUND_IGNORE);
       candidate.canonicalize();
       const bool g_is_point = g.is_point();
       if (first_candidate
@@ -625,7 +623,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
 
   // Add in the constant term in `expr'.
   mpz_class n;
-  Checked::assign<Checked::Transparent_Policy>(n, raw_value(expr[0]), ROUND_IGNORE);
+  assign(n, raw_value(expr.inhomogeneous_term()), ROUND_IGNORE);
   extremum += n;;
 
   // The polyhedron is bounded in the right direction and we have

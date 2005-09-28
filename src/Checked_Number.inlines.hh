@@ -68,7 +68,7 @@ Checked_Number<T, Policy>::Checked_Number(const Checked_Number<From, From_Policy
 template <typename T, typename Policy> \
 inline \
 Checked_Number<T, Policy>::Checked_Number(const type x) { \
-  Policy::handle_result(Checked::assign_ext<Policy, Checked::Transparent_Policy>(v, x, Policy::ROUND_DEFAULT)); \
+  Policy::handle_result(Checked::assign_ext<Policy, Default_From_Policy>(v, x, Policy::ROUND_DEFAULT)); \
 }
 
 DEF_CTOR(signed char)
@@ -116,28 +116,28 @@ Checked_Number<T, Policy>::Checked_Number(const Plus_Infinity& x) {
   Policy::handle_result(Checked::assign<Policy>(v, x, Policy::ROUND_DEFAULT));
 }
 
-template <typename T, typename Policy>
+template <typename T>
 inline bool
 is_minus_infinity(const T& x) {
-  return Checked::is_minf<Checked::Transparent_Policy>(x);
+  return Checked::is_minf<Default_From_Policy>(x);
 }
 
-template <typename T, typename Policy>
+template <typename T>
 inline bool
 is_plus_infinity(const T& x) {
-  return Checked::is_pinf<Checked::Transparent_Policy>(x);
+  return Checked::is_pinf<Default_From_Policy>(x);
 }
 
-template <typename T, typename Policy>
+template <typename T>
 inline bool
 is_not_a_number(const T& x) {
-  return Checked::is_nan<Checked::Transparent_Policy>(x);
+  return Checked::is_nan<Default_From_Policy>(x);
 }
 
-template <typename T, typename Policy>
+template <typename T>
 inline bool
 is_integer(const T& x) {
-  return Checked::is_int<Checked::Transparent_Policy>(x);
+  return Checked::is_int<Default_From_Policy>(x);
 }
 
 template <typename T, typename Policy>
@@ -211,17 +211,16 @@ Checked_Number<T, Policy>::classify(bool nan, bool inf, bool sign) const {
 
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
-size_t
+inline memory_size_type
 total_memory_in_bytes(const Checked_Number<T, Policy>& x) {
-  // FIXME
-  return sizeof(x);
+  return Checked::total_memory_in_bytes(raw_value(x));
 }
 
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
-size_t
-external_memory_in_bytes(const Checked_Number<T, Policy>&) {
-  return 0;
+inline memory_size_type
+external_memory_in_bytes(const Checked_Number<T, Policy>& x) {
+  return Checked::external_memory_in_bytes(raw_value(x));
 }
 
 template <typename To, typename To_Policy>
@@ -253,25 +252,30 @@ assign(Checked_Number<To, To_Policy>& to, char* x, Rounding_Dir dir) {
   return assign(to, const_cast<const char *>(x), dir);
 }
 
-template <typename To, typename To_Policy,
-	  typename From>
+template <typename To>
 inline Result
-assign(Checked_Number<To, To_Policy>& to, const From& x, Rounding_Dir dir) {
-  return Checked::assign_ext<To_Policy, Checked::Transparent_Policy>(to.raw_value(), x, dir);
-}
-template <typename To, typename To_Policy,
-	  typename From, typename From_Policy>
-inline Result
-assign(Checked_Number<To, To_Policy>& to, const Checked_Number<From, From_Policy>& x, Rounding_Dir dir) {
-  return Checked::assign_ext<To_Policy, From_Policy>(to.raw_value(), x.raw_value(), dir);
+assign(To& to, const char* x, Rounding_Dir dir) {
+  std::istringstream s(x);
+  return Checked::input<Default_To_Policy>(to, s, dir);
 }
 
 #define FUNC1(name, func) \
+template <typename To, typename From> \
+inline Result \
+name(To& to, const From& x, Rounding_Dir dir) { \
+  return Checked::func<Default_To_Policy, Default_From_Policy>(to, x, dir); \
+} \
 template <typename To, typename To_Policy, \
           typename From> \
 inline Result \
 name(Checked_Number<To, To_Policy>& to, const From& x, Rounding_Dir dir) { \
-  return Checked::func<To_Policy, Checked::Transparent_Policy>(to.raw_value(), x, dir); \
+  return Checked::func<To_Policy, Default_From_Policy>(to.raw_value(), x, dir); \
+} \
+template <typename To, \
+          typename From, typename From_Policy> \
+inline Result \
+name(To& to, const Checked_Number<From, From_Policy>& x, Rounding_Dir dir) { \
+  return Checked::func<Default_To_Policy, From_Policy>(to, x.raw_value(), dir); \
 } \
 template <typename To, typename To_Policy, \
           typename From, typename From_Policy> \
@@ -280,6 +284,7 @@ name(Checked_Number<To, To_Policy>& to, const Checked_Number<From, From_Policy>&
   return Checked::func<To_Policy, From_Policy>(to.raw_value(), x.raw_value(), dir); \
 }
 
+FUNC1(assign, assign_ext)
 FUNC1(assign_neg, neg_ext)
 FUNC1(assign_abs, abs_ext)
 FUNC1(assign_sqrt, sqrt_ext)
@@ -287,11 +292,22 @@ FUNC1(assign_sqrt, sqrt_ext)
 #undef FUNC1
 
 #define FUNC1(name, func) \
+template <typename To, typename From> \
+inline Result \
+name(To& to, const From& x, int exp, Rounding_Dir dir) { \
+  return Checked::func<Default_To_Policy, Default_From_Policy>(to, x, exp, dir); \
+} \
 template <typename To, typename To_Policy, \
           typename From> \
 inline Result \
 name(Checked_Number<To, To_Policy>& to, const From& x, int exp, Rounding_Dir dir) { \
-  return Checked::func<To_Policy, Checked::Transparent_Policy>(to.raw_value(), x, exp, dir); \
+  return Checked::func<To_Policy, Default_From_Policy>(to.raw_value(), x, exp, dir); \
+} \
+template <typename To, \
+          typename From, typename From_Policy> \
+inline Result \
+name(To& to, const Checked_Number<From, From_Policy>& x, int exp, Rounding_Dir dir) { \
+  return Checked::func<Default_To_Policy, From_Policy>(to, x.raw_value(), exp, dir); \
 } \
 template <typename To, typename To_Policy, \
           typename From, typename From_Policy> \
@@ -306,26 +322,54 @@ FUNC1(assign_div2exp, div2exp_ext)
 #undef FUNC1
 
 #define FUNC2(name, func) \
+template <typename To, \
+          typename From1, \
+	  typename From2> \
+inline Result \
+name(To& to, const From1& x, const From2& y, Rounding_Dir dir) { \
+  return Checked::func<Default_To_Policy, Default_From_Policy, Default_From_Policy>(to, x, y, dir); \
+} \
 template <typename To, typename To_Policy, \
           typename From1, \
 	  typename From2> \
 inline Result \
 name(Checked_Number<To, To_Policy>& to, const From1& x, const From2& y, Rounding_Dir dir) { \
-  return Checked::func<To_Policy, Checked::Transparent_Policy, Checked::Transparent_Policy>(to.raw_value(), x, y, dir); \
+  return Checked::func<To_Policy, Default_From_Policy, Default_From_Policy>(to.raw_value(), x, y, dir); \
+} \
+template <typename To, \
+          typename From1, \
+	  typename From2, typename Policy2> \
+inline Result \
+name(To& to, const From1& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir) { \
+  return Checked::func<Default_To_Policy, Default_From_Policy, Policy2>(to, x, y.raw_value(), dir); \
 } \
 template <typename To, typename To_Policy, \
           typename From1, \
 	  typename From2, typename Policy2> \
 inline Result \
 name(Checked_Number<To, To_Policy>& to, const From1& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir) { \
-  return Checked::func<To_Policy, Checked::Transparent_Policy, Policy2>(to.raw_value(), x, y.raw_value(), dir); \
+  return Checked::func<To_Policy, Default_From_Policy, Policy2>(to.raw_value(), x, y.raw_value(), dir); \
+} \
+template <typename To, \
+          typename From1, typename Policy1, \
+	  typename From2> \
+inline Result \
+name(To& to, const Checked_Number<From1, Policy1>& x, const From2& y, Rounding_Dir dir) { \
+  return Checked::func<Default_To_Policy, Policy1, Default_From_Policy>(to, x.raw_value(), y, dir); \
 } \
 template <typename To, typename To_Policy, \
           typename From1, typename Policy1, \
 	  typename From2> \
 inline Result \
 name(Checked_Number<To, To_Policy>& to, const Checked_Number<From1, Policy1>& x, const From2& y, Rounding_Dir dir) { \
-  return Checked::func<To_Policy, Policy1, Checked::Transparent_Policy>(to.raw_value(), x.raw_value(), y, dir); \
+  return Checked::func<To_Policy, Policy1, Default_From_Policy>(to.raw_value(), x.raw_value(), y, dir); \
+} \
+template <typename To, \
+          typename From1, typename Policy1, \
+	  typename From2, typename Policy2> \
+inline Result \
+name(To& to, const Checked_Number<From1, Policy1>& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir) { \
+  return Checked::func<Default_To_Policy, Policy1, Policy2>(to, x.raw_value(), y.raw_value(), dir); \
 } \
 template <typename To, typename To_Policy, \
           typename From1, typename Policy1, \
@@ -501,12 +545,12 @@ DEF_BINARY_OP(operator %, assign_rem)
 template <typename From, typename From_Policy> \
 inline bool \
 f(const Type x, const Checked_Number<From, From_Policy>& y) { \
-  return Checked::fun<Checked::Transparent_Policy, From_Policy>(x, y.raw_value()); \
+  return Checked::fun<Default_From_Policy, From_Policy>(x, y.raw_value()); \
 } \
 template <typename From, typename From_Policy> \
 inline bool \
 f(const Checked_Number<From, From_Policy>& x, const Type y) { \
-  return Checked::fun<From_Policy, Checked::Transparent_Policy>(x.raw_value(), y); \
+  return Checked::fun<From_Policy, Default_From_Policy>(x.raw_value(), y); \
 }
 
 #define DEF_COMPARE(f, fun) \

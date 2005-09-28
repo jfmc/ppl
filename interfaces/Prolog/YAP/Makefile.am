@@ -29,12 +29,12 @@ SUBDIRS =
 
 EXTRA_DIST = ppl_yap.pl yap_clpq.pl yap_clpq2.pl yap_pl_check.pl
 
-if HAVE_YAP_PROLOG
+if BUILD_YAP_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
 -I$(top_builddir)/src \
--I$(top_srcdir)/Watchdog \
+-I$(top_srcdir)/Watchdog/src \
 @extra_includes@
 
 if NO_UNDEFINED
@@ -48,7 +48,7 @@ ppl_yap_la_SOURCES = ppl_yap.cc
 ppl_yap_la_LIBADD = \
 -lYap \
 $(top_builddir)/src/libppl.la \
-$(top_builddir)/Watchdog/libpwl.la \
+$(top_builddir)/Watchdog/src/libpwl.la \
 @extra_libraries@
 
 ppl_yap_la_LDFLAGS = $(NO_UNDEFINED_FLAG) -module -avoid-version
@@ -91,7 +91,7 @@ pl_check_test: yap_pl_check.pl ppl_yap.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 	echo "main." >script_pchk
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
 		-dlopen ppl_yap.la \
 		yap -l $(srcdir)/yap_pl_check.pl \
 			<script_pchk >obtained_pchk
@@ -104,7 +104,7 @@ clpq_test: yap_clpq.pl ppl_yap.pl ../tests/clpq.pl ../tests/script_clpq $(EXPECT
 	cat $(srcdir)/../tests/script_clpq >>script_clpq
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
 		-dlopen ppl_yap.la \
 		yap -l $(srcdir)/yap_clpq.pl \
 			<script_clpq >obtained_clpq
@@ -117,7 +117,7 @@ clpq2_test: yap_clpq2.pl ppl_yap.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EX
 	cat $(srcdir)/../tests/script_clpq2 >>script_clpq2
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
 		-dlopen ppl_yap.la \
 		yap -l $(srcdir)/yap_clpq2.pl \
 			<script_clpq2 >obtained_clpq2
@@ -128,4 +128,4 @@ script_clpq script_clpq2 script_pchk \
 obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS)
 
-endif HAVE_YAP_PROLOG
+endif BUILD_YAP_PROLOG_INTERFACE

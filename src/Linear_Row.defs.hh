@@ -174,12 +174,20 @@ public:
     //! representation of \p *this.
     void ascii_dump(std::ostream& s) const;
 
+    //! Uses the ASCII Flags representation from \p s to recreate *this.
+    /*!
+      Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
+      otherwise.  The ASCII representation is as output by ascii_dump.
+    */
+    bool ascii_load(std::istream& s);
+
   private:
     //! Builds the type from a bit-mask.
     explicit Flags(base_type mask);
 
     //! \name The bits that are currently in use
     //@{
+    // NB: ascii_load assumes that these are sequential.
     static const unsigned rpi_validity_bit
     = Row::Flags::first_free_bit + 0;
     static const unsigned rpi_bit
@@ -307,13 +315,6 @@ public:
   //! Returns the coefficient \f$a_n\f$.
   Coefficient_traits::const_reference coefficient(dimension_type n) const;
 
-  //! Normalizes the modulo of coefficients so that they are mutually prime.
-  /*!
-    Computes the Greatest Common Divisor (GCD) among the elements of
-    the row and normalizes them by the GCD itself.
-  */
-  void normalize();
-
   //! \brief
   //! Normalizes the sign of the coefficients so that the first non-zero
   //! (homogeneous) coefficient of a line-or-equality is positive.
@@ -361,6 +362,13 @@ public:
   //! representation of \p *this.
   void ascii_dump() const;
 
+  //! Uses the ASCII Linear_Row representation from \p s to recreate *this.
+  /*!
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
+    otherwise.  The ASCII representation is as output by ascii_dump.
+  */
+  bool ascii_load(std::istream& s);
+
   //! Checks if all the invariants are satisfied.
   bool OK(dimension_type row_size, dimension_type row_capacity) const;
 
@@ -379,56 +387,6 @@ bool operator==(const Linear_Row& x, const Linear_Row& y);
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
 /*! \relates Linear_Row */
 bool operator!=(const Linear_Row& x, const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Computes the scalar product of \p x and \p y and assigns it to \p z.
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void scalar_product_assign(Coefficient& z,
-			   const Linear_Row& x, const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Returns the sign of the scalar product between \p x and \p y.
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-int scalar_product_sign(const Linear_Row& x, const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Computes the \e reduced scalar product of \p x and \p y,
-//! where the \f$\epsilon\f$ coefficient of \p x is ignored,
-//! and assigns the result to \p z.
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void reduced_scalar_product_assign(Coefficient& z,
-				   const Linear_Row& x, const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Returns the sign of the \e reduced scalar product of \p x and \p y,
-//! where the \f$\epsilon\f$ coefficient of \p x is ignored.
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-int reduced_scalar_product_sign(const Linear_Row& x, const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Computes the \e homogeneous scalar product of \p x and \p y,
-//! where the inhomogeneous terms are ignored,
-//! and assigns the result to \p z.
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void homogeneous_scalar_product_assign(Coefficient& z,
-				       const Linear_Row& x,
-				       const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Returns the sign of the \e homogeneous scalar product of \p x and \p y,
-//! where the inhomogeneous terms are ignored,
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-int homogeneous_scalar_product_sign(const Linear_Row& x, const Linear_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.

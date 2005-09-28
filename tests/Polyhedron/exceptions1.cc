@@ -1402,6 +1402,32 @@ error51() {
   }
 }
 
+void
+error52() {
+  Variable A(0);
+
+  C_Polyhedron ph(1);
+  ph.add_constraint(A >= 1);
+
+  Polyhedra_Powerset<C_Polyhedron> ps(2, EMPTY);
+
+  try {
+    // This is an incorrect use of function
+    // Polyhedra_Powerset::add_disjunct(ph): the powerset and
+    // the added disjunct should have the same space dimension.
+    ps.add_disjunct(ph);
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_argument: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
 } // namespace
 
 int
@@ -1459,6 +1485,7 @@ main() TRY {
   error49();
   error50();
   error51();
+  error52();
 
   return 0;
 }

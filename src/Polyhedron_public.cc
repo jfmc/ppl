@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Polyhedron.defs.hh"
-#include "../tests/PFunction.hh"
+#include "scalar_products.defs.hh"
 
 #include <cassert>
 #include <iostream>
@@ -83,7 +83,7 @@ PPL::Polyhedron::constraints() const {
   else if (!constraints_are_up_to_date())
     update_constraints();
 
-  // FIXME: reconsider whether to really sort constraints at this stage.
+  // TODO: reconsider whether to really sort constraints at this stage.
 #if ENSURE_SORTEDNESS
   // We insist in returning a sorted system of constraints,
   // but sorting is useless if there are pending constraints.
@@ -140,7 +140,7 @@ PPL::Polyhedron::generators() const {
     return gen_sys;
   }
 
-  // FIXME: reconsider whether to really sort generators at this stage.
+  // TODO: reconsider whether to really sort generators at this stage.
 #if ENSURE_SORTEDNESS
   // We insist in returning a sorted system of generators,
   // but sorting is useless if there are pending generators.

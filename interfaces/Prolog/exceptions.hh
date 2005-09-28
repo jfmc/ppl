@@ -123,6 +123,13 @@ public:
   }
 };
 
+class not_a_nil_terminated_list : public internal_exception {
+public:
+  explicit not_a_nil_terminated_list(Prolog_term_ref t)
+    : internal_exception(t) {
+  }
+};
+
 class PPL_integer_out_of_range {
 private:
   Parma_Polyhedra_Library::Coefficient n;

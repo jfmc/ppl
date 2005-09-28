@@ -24,12 +24,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_BD_Shape_defs_hh 1
 
 #include "BD_Shape.types.hh"
+#include "globals.types.hh"
 #include "DB_Matrix.defs.hh"
 #include "DB_Row.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include "Polyhedron.types.hh"
-#include "globals.defs.hh"
+#include "Checked_Number.defs.hh"
 #include <vector>
 #include <cstddef>
 #include <climits>
@@ -49,7 +50,7 @@ namespace IO_Operators {
   all constraints separated by ", ".
 */
 template <typename T>
-std::ostream& 
+std::ostream&
 operator<<(std::ostream& s, const BD_Shape<T>& bds);
 
 } // namespace IO_Operators
@@ -64,7 +65,7 @@ operator<<(std::ostream& s, const BD_Shape<T>& bds);
 */
 template <typename T>
 bool operator==(const BD_Shape<T>& x, const BD_Shape<T>& y);
-  
+
 //! \brief
 //! Returns <CODE>true</CODE> if and only if
 //! \p x and \p y aren't the same polyhedron.
@@ -99,160 +100,19 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
   can be expressed by constraints of the form
   \f[
     ax_i - bx_j \leq c
-  \f]  
+  \f]
   Where \f$a, b \in \{0, 1\}\f$ and \f$c\f$ belongs to some family of
   extended numbers that is provided by the template argument \p T.
   This family of extended numbers must provide representation for
-  \f$-\infty\f$, \f$0\f$, \f$+\infty\f$ and for <EM>nan</EM>, not 
-  a number, since this arises as the ''result'' of undefined sums like 
-  \f$+\infty + (-\infty)\f$, and of course, must be closed with 
+  \f$-\infty\f$, \f$0\f$, \f$+\infty\f$ and for <EM>nan</EM>, not
+  a number, since this arises as the ''result'' of undefined sums like
+  \f$+\infty + (-\infty)\f$, and of course, must be closed with
   respect to the operations specified below.
-  
-  The class T must provide the following methods:
-  
-  \code
-    T()
-  \endcode
-  is the default constructor: no assumption is made on the particular
-  object constructed, provided <CODE>T().OK()</CODE> gives <CODE>true</CODE>
-  (see below).
-  
-  \code
-    T(int y)
-  \endcode
-  constructs the object that best approximates \p y, from below, 
-  if \f$ y < 0 \f$ and from above, if \f$ y > 0 \f$ .
 
-  \code
-    ~T()
-  \endcode
-  is the destructor.
-    
-  \code
-    T(const T& y)
-  \endcode
-  is the ordinary copy constructor.
-    
-  \code
-   static const T& plus_infinity()
-  \endcode
-  returns a representation for \f$ +\infty \f$.
+  The class T should be one of the following: FIXME!
 
-  \code
-    bool is_plus_infinity() const 
-  \endcode  
-  returns <CODE>true</CODE> if and only if \p *this
-  represents \f$ +\infty \f$.
-  
-  \code
-    bool is_nan() const      
-  \endcode
-  returns <CODE>true</CODE> if and only if \p *this
-  represents the ``not a number'' value.
-  
-  \code
-    bool operator<(const T& x, int y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x is less than \p y.
-  
-  \code
-    bool operator>=(const T& x, int y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x is greater than
-  or equal to \p y.
-  
-  \code
-    bool is_zero() const 
-  \endcode
-  returns <CODE>true</CODE> if and only if \p *this is zero.
-  
-  \code
-    bool OK() const 
-  \endcode
-  returns <CODE>true</CODE> if and only if \p *this satisfied all its invariants.
-
-  \code
-    T& operator=(const T&) 
-  \endcode
-  is the ordinary assignment operator.
-  
-  \code
-    void numer_denom(Coefficient& num, Coefficient& den) const
-  \endcode
-  sets \p num and \p den to numerator and denominator 
-  of \p *this, where \p *this must be a finite value.
-
-  \code
-    std::ostream& operator<<(std::ostream& s, const T& x)
-  \endcode
-  writes a textual representation of \p x to \p s.
-  
-  \code  
-    std::istream& operator>>(std::istream& s, T& x)
-  \endcode
-  reads a textual representation for \p x from \p s.
-
-  \code
-    bool operator==(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x is equal to \p y.
- 
-  \code
-    bool operator!=(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x and \p y are different.
-  
-  \code
-    bool operator>(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x is greater than \p y.  
-
-  \code
-    bool operator>=(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x is greater than
-  or equal to \p y.  
-
-  \code
-    bool operator<(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x is less than \p y.
-
-  \code
-    bool operator<=(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x is less than 
-  or equal to \p y.
-  
-  \code
-    T add_round_up(const T& x, const T& y)
-  \endcode
-  returns an approximation from above of the sum of \p x and \p y. 
-  
-  \code
-    T add_round_down(const T& x, const T& y)
-  \endcode
-  returns an approximation from below of the sum of \p x and \p y. 
-
-  \code
-    T negate_round_down(const T& x)
-  \endcode
-  returns an approximation from below of the opposite of \p x . 
-
-  \code
-    T negate_round_up(const T& x)
-  \endcode
-  returns an approximation from above of the opposite of \p x . 
-
-  \code
-  template <>
-    T div_round_up<T>(Coefficient_traits::const_reference x,
-                      Coefficient_traits::const_reference y)
-  \endcode
-  returns an approximation from above of the division of \p x by \p y.
-  
   Now we specify the approximations, applied by methods that add
-  constraints to <EM>bounded differences</EM>. 
+  constraints to <EM>bounded differences</EM>.
   If the constraint is in the form \f$ ax_i - bx_j \leq c \f$
   we have the following approximation:
           \f[
@@ -264,19 +124,19 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
             \begin{cases}
               ax_i - bx_j = c, & \text{if } c = c\uparrow
               = c\downarrow; \\
-              ax_i - bx_j \geq c\downarrow \text{ and } ax_i - bx_j 
-              \leq c\uparrow,  & \text{otherwise}. 
-            \end{cases} 
+              ax_i - bx_j \geq c\downarrow \text{ and } ax_i - bx_j
+              \leq c\uparrow,  & \text{otherwise}.
+            \end{cases}
           \f]
   with \f$a, b \in \{0, 1\}\f$, where \f$\uparrow\f$ is used to indicate
-  an approximation from above and \f$\downarrow\f$ 
+  an approximation from above and \f$\downarrow\f$
   is used to indicate an approximations from below.
-  Moreover the constraints actually inserted depend on the expressive 
+  Moreover the constraints actually inserted depend on the expressive
   power of T.
 
   \par
-  In all the examples it is assumed the class T is defined as above 
-  and that variables <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE>  
+  In all the examples it is assumed the class T is defined as above
+  and that variables <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE>
   are defined (where they are used) as follows:
   \code
     Variable x(0);
@@ -297,13 +157,13 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
     cs.insert(z <= 1);
     BD_Shape<T> bd(cs);
   \endcode
-  Remark that only constraints having the syntactic form of 
+  Remark that only constraints having the syntactic form of
   <EM>bounded differences</EM> are inserted.
   The following code builds the same BDS as above,
   in fact the only inserted constraints must be of the form
   \f[
     ax_i + bx_j \leq c
-  \f]  
+  \f]
   or
   \f[
     ax_i + bx_j = c
@@ -318,7 +178,7 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
     cs.insert(y >= 0);
     cs.insert(y <= 1);
     cs.insert(z >= 0);
-    cs.insert(z <= 1);          
+    cs.insert(z <= 1);
     cs.insert(x + y <= 0);      // 7
     cs.insert(x - z + x >= 0);  // 8
     cs.insert(3*z - y <= 1);    // 9
@@ -358,11 +218,11 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
     bd2.add_constraint(x <= -1);
     bd2.add_constraint(y >= 0);
     bd2.add_constraint(x - y <= 0);
-    
+
     bd1.CC76_extrapolation_assign(bd2);
   \endcode
   In this example the starting bdiffs \p bd1 is the fourth quadrant
-  and \p bd2 is an half-plane in \f$\Rset^2\f$. The resulting bdiffs 
+  and \p bd2 is an half-plane in \f$\Rset^2\f$. The resulting bdiffs
   is still \p bd1.
 
   \par Example 4
@@ -379,22 +239,31 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
     bd1.CC76_narrowing_assign(bd2);
   \endcode
   In this example the starting bdiffs \p bd1 is universe
-  and \p bd2 is non-negative half-lines. The resulting bdiffs 
+  and \p bd2 is non-negative half-lines. The resulting bdiffs
   is the same \p bd2.
 */
 
 template <typename T>
-class Parma_Polyhedra_Library::BD_Shape {   
-public:
+class Parma_Polyhedra_Library::BD_Shape {
+private:
   //! \brief
-  //! Returns the maximum space dimension that a system 
-  //! of bounded differences can handle.
-  static dimension_type max_space_dimension();
+  //! The (extended) numeric type of the inhomogeneous terms of the
+  //! inequalities defining a bounded difference shape.
+  typedef Checked_Number<T, Extended_Number_Policy> N;
+
+public:
+  //! The numeric base type upon which bounded differences are built.
+  typedef T base_type;
 
   //! \brief
-  //! The type upon which bounded differences are built, that is,
-  //! the type of their inhomogeneous terms.
-  typedef T base_type;
+  //! The (extended) numeric type of the inhomogeneous terms of the
+  //! inequalities defining a bounded difference shape.
+  typedef N coefficient_type;
+
+  //! \brief
+  //! Returns the maximum space dimension that a system
+  //! of bounded differences can handle.
+  static dimension_type max_space_dimension();
 
   //! Builds a universe or empty system of bounded differences.
   /*!
@@ -458,7 +327,7 @@ public:
   bool is_universe() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
-  /* 
+  /*
     exception std::invalid_argument thrown if \p *this and \p y
                                      are dimension-incompatible.
   */
@@ -553,7 +422,7 @@ public:
   bool intersection_assign_and_minimize(const BD_Shape& y);
 
   //! \brief
-  //! Assigns to \p *this the smallest BD_Shape that contains the convex 
+  //! Assigns to \p *this the smallest BD_Shape that contains the convex
   //! union of \p *this and \p y.
   /*!
     \exception std::invalid_argument thrown if \p *this and \p y
@@ -562,7 +431,7 @@ public:
   void bds_hull_assign(const BD_Shape& y);
 
   //! \brief
-  //! Assigns to \p *this the smallest BD_Shape that contains the convex 
+  //! Assigns to \p *this the smallest BD_Shape that contains the convex
   //! union of \p *this and \p y.
   /*!
     \return    <CODE>false</CODE> if and only if the result is empty.
@@ -605,7 +474,7 @@ public:
                          expression is assigned.
     \param expr          The numerator of the affine expression.
     \param denominator   The denominator of the affine expression
-                         
+
     \exception std::invalid_argument thrown if \p denominator is zero
                                      or if \p expr and \p *this
                                      are dimension-incompatible
@@ -655,7 +524,7 @@ public:
                                      or if \p expr and \p *this
                                      are dimension-incompatible
                                      or if \p var is not a dimension
-                                     of \p *this or if \p relsym is 
+                                     of \p *this or if \p relsym is
                                      a strict relation symbol.
   */
   void generalized_affine_image(Variable var,
@@ -693,7 +562,7 @@ public:
   void time_elapse_assign(const BD_Shape& y);
 
   //! \brief
-  //! Assigns to \p *this the result of computing the 
+  //! Assigns to \p *this the result of computing the
   //! \ref CC76_extrapolation "CC76-extrapolation" between \p *this and \p y.
   //! The computation is not guarantee to be terminated.
   /*!
@@ -703,12 +572,12 @@ public:
                                      are dimension-incompatible.
 
     \note This operator is an <EM>extrapolation</EM> and not a
-          <EM>widening</EM>, since it not provide a convergence
+          <EM>widening</EM>, since it does not provide a convergence
           guarantee for fixpoint iterations.  Use
           CH78_widening_assign(const BD_Shape&) if such a guarantee is
           required.
   */
-  void CC76_extrapolation_assign(const BD_Shape& y);  
+  void CC76_extrapolation_assign(const BD_Shape& y);
 
   //! \brief
   //! Assigns to \p *this the result of computing the
@@ -719,12 +588,12 @@ public:
     \param first             An iterator that points to the first
                              stop-point.
     \param last		     An iterator that points one past the last
-                             stop-point.	     
+                             stop-point.
     \exception std::invalid_argument thrown if \p *this and \p y
                                             are dimension-incompatible.
 
     \note This operator is an <EM>extrapolation</EM> and not a
-          <EM>widening</EM>, since it not provide a convergence
+          <EM>widening</EM>, since it does not provide a convergence
           guarantee for fixpoint iterations.  Use
           CH78_widening_assign(const BD_Shape&) if such a guarantee is
           required.
@@ -734,21 +603,21 @@ public:
 				 Iterator first, Iterator last);
 
   //! \brief
-  //! Assigns to \p *this the result of computing the 
+  //! Assigns to \p *this the result of computing the
   //! \ref CH78_widening "CH78-widening"
   //! of \p *this and \p y.
   /*!
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are dimension-incompatible.
-  */ 
-  void CH78_widening_assign(const BD_Shape& y); 
-  
+  */
+  void CH78_widening_assign(const BD_Shape& y);
+
   //! \brief
   //! Improves the result of the \ref CH78_widening "CH78-widening"
   //! computation by also enforcing those constraints in \p cs that are
   //! satisfied by all the points of \p *this.
   /*!
-    \param y                 A system of bounded differences that 
+    \param y                 A system of bounded differences that
                              <EM>must</EM> be contained in \p *this.
     \param cs                The system of constraints used to improve
                              the widened system of bounded differences.
@@ -758,22 +627,22 @@ public:
 			     \ref widening_with_tokens "widening with tokens"
 			     delay technique).
     \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                             are dimension-incompatible or if there is 
+                             are dimension-incompatible or if there is
                              in \p cs a strict inequality.
   */
   void limited_CH78_extrapolation_assign(const BD_Shape& y,
 					 const Constraint_System& cs,
 					 unsigned* tp = 0);
-    
+
   //! \brief
   //! Restores from \p y, the constraints of \p *this, lost by
-  //! \ref CC76_extrapolation "CC76-extrapolation" applications. 
+  //! \ref CC76_extrapolation "CC76-extrapolation" applications.
   /*!
-    \param y                 A system of bounded differences that 
+    \param y                 A system of bounded differences that
                              <EM>must</EM> be contained in \p *this.
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are dimension-incompatible.
-  */ 
+  */
   void CC76_narrowing_assign(const BD_Shape& y);
 
   //! \brief
@@ -781,7 +650,7 @@ public:
   //! computation by also enforcing those constraints in \p cs that are
   //! satisfied by all the points of \p *this.
   /*!
-    \param y                 A system of bounded differences that 
+    \param y                 A system of bounded differences that
                              <EM>must</EM> be contained in \p *this.
     \param cs                The system of constraints used to improve
                              the widened system of bounded differences.
@@ -791,13 +660,13 @@ public:
 			     \ref widening_with_tokens "widening with tokens"
 			     delay technique).
     \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                             are dimension-incompatible or if there is in 
+                             are dimension-incompatible or if there is in
                              \p cs a strict inequality.
   */
   void limited_CC76_extrapolation_assign(const BD_Shape& y,
 					 const Constraint_System& cs,
 					 unsigned* tp = 0);
-  
+
   //! \brief
   //! Assigns to \p *this the result of computing the
   //! \ref H79_widening "H79-widening" between \p *this and \p y.
@@ -807,8 +676,8 @@ public:
     \exception std::invalid_argument thrown if \p *this and \p y
                        are dimension-incompatible.
   */
-  void H79_widening_assign(const BD_Shape& y);  
- 
+  void H79_widening_assign(const BD_Shape& y);
+
   //! \brief
   //! Improves the result of the \ref H79_widening "H79-widening"
   //! computation by also enforcing those constraints in \p cs that are
@@ -848,11 +717,11 @@ public:
     \param m      The number of dimensions to add.
 
     The new dimensions will be those having the highest indexes
-    in the new system of bounded differences, which is characterized 
+    in the new system of bounded differences, which is characterized
     by a system of constraints in which the variables running through
     the new dimensions are not constrained.
     For instance, when starting from the system of bounded differences
-    \f$\cB \sseq \Rset^2\f$ and adding a third dimension, 
+    \f$\cB \sseq \Rset^2\f$ and adding a third dimension,
     the result will be the system of bounded differences
     \f[
       \bigl\{\,
@@ -871,11 +740,11 @@ public:
     \param m      The number of dimensions to add.
 
     The new dimensions will be those having the highest indexes
-    in the new system of bounded differences, which is characterized 
+    in the new system of bounded differences, which is characterized
     by a system of constraints in which the variables running through
     the new dimensions are all constrained to be equal to 0.
     For instance, when starting from the system of bounded differences
-    \f$\cB \sseq \Rset^2\f$ and adding a third dimension, 
+    \f$\cB \sseq \Rset^2\f$ and adding a third dimension,
     the result will be the system of bounded differences
     \f[
       \bigl\{\,
@@ -888,14 +757,14 @@ public:
   void add_space_dimensions_and_project(dimension_type m);
 
   //! \brief
-  //! Seeing a system of bounded differences as a set of tuples (its points), 
+  //! Seeing a system of bounded differences as a set of tuples (its points),
   //! assigns to \p *this all the tuples that can be obtained by concatenating,
   //! in the order given, a tuple of \p *this with a tuple of \p y.
   /*!
-    Let \f$B \sseq \Rset^n\f$ and \f$D \sseq \Rset^m\f$ be the systems 
-    of bounded differences represented, on entry, by \p *this and 
+    Let \f$B \sseq \Rset^n\f$ and \f$D \sseq \Rset^m\f$ be the systems
+    of bounded differences represented, on entry, by \p *this and
     \p y, respectively.
-    Upon successful completion, \p *this will represent the system 
+    Upon successful completion, \p *this will represent the system
     of bounded differences
     \f$R \sseq \Rset^{n+m}\f$ such that
     \f[
@@ -1004,7 +873,7 @@ public:
 
   //@} // Miscellaneous Member Functions
 
-  friend bool Parma_Polyhedra_Library::operator==<T>(const BD_Shape<T>& x, 
+  friend bool Parma_Polyhedra_Library::operator==<T>(const BD_Shape<T>& x,
 						     const BD_Shape<T>& y);
 
   //! \brief
@@ -1012,15 +881,14 @@ public:
   bool OK() const;
 
 private:
-
   //! The matrix that represents the system of bounded differences.
-  DB_Matrix<T> dbm;
+  DB_Matrix<N> dbm;
 
 #define PPL_IN_BD_Shape_CLASS
 #include "BDS_Status.idefs.hh"
 #undef PPL_IN_BD_Shape_CLASS
 
-  //! \brief  
+  //! \brief
   //! The status flags to keep track of the internal state,
   //! flags can be \p zero, \p zero-dim-univ or \p closed.
   Status status;
@@ -1047,7 +915,7 @@ private:
   void set_empty();
 
   //! \brief
-  //! Turns \p *this into an zero-dimensional universe 
+  //! Turns \p *this into an zero-dimensional universe
   //! system of bounded differences.
   void set_zero_dim_univ();
 
@@ -1084,7 +952,7 @@ private:
 
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_dim) const;
-  
+
   void throw_dimension_incompatible(const char* method,
 				    const Constraint& c) const;
 
@@ -1093,7 +961,7 @@ private:
 
   void throw_dimension_incompatible(const char* method,
 				    const char* name_row,
-				    const Linear_Expression& y) const;     
+				    const Linear_Expression& y) const;
 
   void throw_constraint_incompatible(const char* method) const;
 
@@ -1101,7 +969,7 @@ private:
 				    const Linear_Expression& e) const;
 
   void throw_generic(const char* method, const char* reason) const;
-  //@} // Exception Throwers  
+  //@} // Exception Throwers
  };
 
 

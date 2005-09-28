@@ -22,9 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 #include "Coefficient.defs.hh"
-#include "checked.defs.hh"
-#include "checked_int.inlines.hh"
-#include "checked_mpz.inlines.hh"
+#include "Checked_Number.defs.hh"
 #include <cinterf.h>
 
 // In XSB 2.6, <error_xsb.h> does not come with the extern "C" wrapper.
@@ -397,8 +395,7 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   long v;
-  if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, PPL::raw_value(n), PPL::ROUND_IGNORE)
-      != PPL::V_EQ)
+  if (PPL::assign(v, PPL::raw_value(n), PPL::ROUND_IGNORE) != PPL::V_EQ)
     throw PPL_integer_out_of_range(n);
   Prolog_term_ref t = p2p_new();
   Prolog_put_long(t, v);

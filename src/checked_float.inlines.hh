@@ -119,6 +119,8 @@ limit_precision(float v) {
   return x;
 }
 
+// FIXME: Comeau compiler says that the type qualifier "volatile"
+// on return type is meaningless.
 inline volatile double
 limit_precision(double v) {
   volatile double x = v;
@@ -302,8 +304,8 @@ round_gt_float(To& to, Rounding_Dir dir) {
 
 template <typename Policy>
 inline void
-prepare_inexact() {
-  if (Policy::fpu_check_inexact)
+prepare_inexact(Rounding_Dir dir) {
+  if (Policy::fpu_check_inexact && dir != ROUND_IGNORE)
     fpu_reset_inexact();
 }
 
@@ -348,7 +350,7 @@ inline Result
 assign_float_float(To& to, const From from, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(from)))
     return VC_NAN;
-  prepare_inexact<Policy>();
+  prepare_inexact<Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = from;
   else if (fpu_inverse_rounding(dir))
@@ -377,7 +379,7 @@ add_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     return VC_NAN;
   if (CHECK_P(Policy::check_inf_add_inf, is_inf_float(x) && x == -y))
     return V_INF_ADD_INF;
-  prepare_inexact<Policy>();
+  prepare_inexact<Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = x + y;
   else if (fpu_inverse_rounding(dir))
@@ -397,7 +399,7 @@ sub_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     return VC_NAN;
   if (CHECK_P(Policy::check_inf_sub_inf, is_inf_float(x) && x == y))
     return V_INF_SUB_INF;
-  prepare_inexact<Policy>();
+  prepare_inexact<Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = x - y;
   else if (fpu_inverse_rounding(dir))
@@ -418,7 +420,7 @@ mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_inf_mul_zero, (x == 0 && is_inf_float(y)) ||
 	    (y == 0 && is_inf_float(x))))
       return V_INF_MUL_ZERO;
-  prepare_inexact<Policy>();
+  prepare_inexact<Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = x * y;
   else if (fpu_inverse_rounding(dir))
@@ -442,7 +444,7 @@ div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     to = NAN;
     return V_DIV_ZERO;
   }
-  prepare_inexact<Policy>();
+  prepare_inexact<Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = x / y;
   else if (fpu_inverse_rounding(dir))
@@ -506,7 +508,7 @@ sqrt_float(Type& to, const Type from, Rounding_Dir dir) {
     to = NAN;
     return V_SQRT_NEG;
   }
-  prepare_inexact<Policy>();
+  prepare_inexact<Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = std::sqrt(from);
   else {
@@ -695,7 +697,7 @@ inline Result
 add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(to)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
-  prepare_inexact<Policy>();
+  prepare_inexact<Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = std::fma(to, x, y);
   else if (fpu_inverse_rounding(dir))
@@ -713,7 +715,7 @@ inline Result
 sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(to)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
-  prepare_inexact<Policy>();
+  prepare_inexact<Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = std::fma(to, x, -y);
   else if (fpu_inverse_rounding(dir))
@@ -832,9 +834,9 @@ SPECIALIZE_REM(float, float, float, float)
 SPECIALIZE_MUL2EXP(float, float, float)
 SPECIALIZE_DIV2EXP(float, float, float)
 SPECIALIZE_SQRT(float, float, float)
-SPECIALIZE_GCD(generic, float, float, float)
+SPECIALIZE_GCD(exact, float, float, float)
 SPECIALIZE_GCDEXT(generic, float, float, float, float, float)
-SPECIALIZE_LCM(generic, float, float, float)
+SPECIALIZE_LCM(gcd_exact, float, float, float)
 SPECIALIZE_SGN(float, float)
 SPECIALIZE_CMP(float, float, float)
 SPECIALIZE_ADD_MUL(float, float, float, float)
@@ -856,9 +858,9 @@ SPECIALIZE_REM(float, double, double, double)
 SPECIALIZE_MUL2EXP(float, double, double)
 SPECIALIZE_DIV2EXP(float, double, double)
 SPECIALIZE_SQRT(float, double, double)
-SPECIALIZE_GCD(generic, double, double, double)
+SPECIALIZE_GCD(exact, double, double, double)
 SPECIALIZE_GCDEXT(generic, double, double, double, double, double)
-SPECIALIZE_LCM(generic, double, double, double)
+SPECIALIZE_LCM(gcd_exact, double, double, double)
 SPECIALIZE_SGN(float, double)
 SPECIALIZE_CMP(float, double, double)
 SPECIALIZE_ADD_MUL(float, double, double, double)
@@ -880,9 +882,9 @@ SPECIALIZE_REM(float, long double, long double, long double)
 SPECIALIZE_MUL2EXP(float, long double, long double)
 SPECIALIZE_DIV2EXP(float, long double, long double)
 SPECIALIZE_SQRT(float, long double, long double)
-SPECIALIZE_GCD(generic, long double, long double, long double)
+SPECIALIZE_GCD(exact, long double, long double, long double)
 SPECIALIZE_GCDEXT(generic, long double, long double, long double, long double, long double)
-SPECIALIZE_LCM(generic, long double, long double, long double)
+SPECIALIZE_LCM(gcd_exact, long double, long double, long double)
 SPECIALIZE_SGN(float, long double)
 SPECIALIZE_CMP(float, long double, long double)
 SPECIALIZE_ADD_MUL(float, long double, long double, long double)

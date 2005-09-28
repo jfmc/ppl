@@ -39,4 +39,4 @@ BUGS CREDITS README.configure STANDARDS
 
 @SET_MAKE@
 
-SUBDIRS = src Watchdog utils tests interfaces demos doc m4
+SUBDIRS = utils src Watchdog tests interfaces demos doc m4

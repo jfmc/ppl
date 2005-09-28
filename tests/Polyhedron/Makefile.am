@@ -37,6 +37,7 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/utils \
 -I$(top_srcdir)/tests \
 -I$(top_builddir)/Watchdog \
+-I$(top_builddir)/Watchdog/src \
 @extra_includes@
 
 LDADD = \
@@ -46,226 +47,229 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
-CbecomesNNC1 \
-NNCbecomesC1 \
-NNCminimize1 NNCminimize2 NNCminimize3 NNCminimize4 NNCminimize5 \
-NNCminimize6 \
-addcongruence1 addcongruence2 addcongruence3 addcongruence4 addcongruence5 \
-addcongruences1 addcongruences2 addcongruences3 addcongruences4 \
-addcongruences5 \
-addconstraint1 addconstraint2 addconstraint3 \
-addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
-addconstraints5 addconstraints6 addconstraints7 addconstraints8 \
-addconstraints9 addconstraints10 addconstraints11 \
-addconstraints12 addconstraints13 \
-addgenerator1 addgenerator2 addgenerator3 addgenerator4 \
-addgenerator5 \
-addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
-addgenerators5 addgenerators6 addgenerators7 addgenerators8 \
-addgenerators9 addgenerators10 addgenerators11 addgenerators12 \
-addgenerators13 \
-addspacedims1 addspacedims2 addspacedims3 addspacedims4 \
-addspacedims5 addspacedims6 addspacedims7 addspacedims8 \
-addspacedims9 addspacedims10 addspacedims11 addspacedims12 \
-addspacedims13 \
-affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
-affineimage6 affineimage7 affineimage8 affineimage9 \
-affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
-affinepreimage5 affinepreimage6 affinepreimage7 affinepreimage8 \
-affinepreimage9 affinepreimage10 affinepreimage11 \
-affinetrans \
-append1 append2 \
-ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
-ascii_dump_load5 ascii_dump_load6 ascii_dump_load7 \
-bgp99extrapolation1 bgp99extrapolation2 \
-bhrz03widening1 bhrz03widening2 bhrz03widening3 bhrz03widening4 \
-bhrz03widening5 bhrz03widening6 bhrz03widening7 bhrz03widening8 \
-bhrz03widening9 bhrz03widening10 bhrz03widening11 bhrz03widening12 \
-bhrz03widening13 bhrz03widening14 bhrz03widening15 bhrz03widening16 \
-bhrz03widening17 bhrz03widening18 bhrz03widening19 \
-bhz03widening1 bhz03widening2 bhz03widening3 bhz03widening4 \
-bhz03widening5 bhz03widening6 \
-bounded1 \
-boundedaffineimage1 boundedaffineimage2 boundedaffineimage3 \
-boundedaffinepreimage1 boundedaffinepreimage2 boundedaffinepreimage3 \
-boundedbhrz03extrapolation1 \
-boundedh79extrapolation1 \
-boundingbox1 boundingbox2 boundingbox3 boundingbox4 boundingbox5 \
-bounds1 bounds2 \
-concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
-concatenate6 concatenate7 \
-congruences1 \
-constraints1 constraints2 constraints3 constraints4 constraints5 \
-contains1 contains2 contains3 contains4 contains5 \
-disjoint1 disjoint2 disjoint3 \
-dualhypercubes \
-empty1 \
-equals1 \
-exceptions1 exceptions2  exceptions3 \
-expandspacedim1 expandspacedim2 \
-foldspacedims1 foldspacedims2 \
-generalizedaffineimage1 generalizedaffineimage2 \
-generalizedaffineimage3 generalizedaffineimage4 \
-generalizedaffineimage5 generalizedaffineimage6 \
-generalizedaffineimage7 generalizedaffineimage8 \
-generalizedaffineimage9 generalizedaffineimage10 \
-generalizedaffineimage11 generalizedaffineimage12 \
-generalizedaffineimage13 generalizedaffineimage14 \
-generalizedaffinepreimage1 generalizedaffinepreimage2 \
-generalizedaffinepreimage3 generalizedaffinepreimage4 \
-generators1 generators2 generators3 generators4 generators5 \
-generators6 generators7 \
-geomcovers1 \
-h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
-h79widening6 h79widening7 h79widening8 \
-intersection1 intersection2 intersection3 intersection4 \
-intersection5 intersection6 intersection7 intersection8 \
-intersection9 intersection10 intersection11 \
-limitedbhrz03extrapolation1 \
-limitedh79extrapolation1 limitedh79extrapolation2 \
-limitedh79extrapolation3 limitedh79extrapolation4 \
-linearpartition1 linearpartition2 \
-linearpartition3 linearpartition4 \
-linexpression1 \
-mapspacedims1 mapspacedims2 mapspacedims3  mapspacedims4 \
-max_min1 max_min2 \
-maxspacedim1 \
-mc91 \
-membytes1 membytes2 \
-memory1 memory2 \
-minconstraints1 minconstraints2 minconstraints3 minconstraints4 \
-mingenerators1 mingenerators2 mingenerators3 \
-onepoint \
-permute \
-polydifference1 polydifference2 polydifference3 polydifference4 \
-polydifference5 polydifference6 polydifference7 polydifference8 \
-polydifference9 \
-polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
-polyhull7 polyhull8 polyhull9 polyhull10 polyhull11 \
-polypowerset1 \
-primalsimplex1 \
-randphull1 randphull2 \
-relations1 relations2 relations3 relations4 relations5 relations6 \
-relations7 relations8 relations9 relations10 relations11 \
-relations12 relations13 relations14 relations15 relations16 \
-relations17 relations18 relations19 \
-removespacedims1 removespacedims2 removespacedims3 removespacedims4 \
-removespacedims5 removespacedims6 removespacedims7 removespacedims8 \
-removespacedims9 removespacedims10 \
-smm1 \
-timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
-timeelapse6 timeelapse7 timeelapse8 timeelapse9 \
-topclosed1 topclosed2 topclosed3 \
-topclosure1 topclosure2 topclosure3 topclosure4 \
-universe1 universe2 universe3 universe4 universe5 universe6 universe7 \
-writeconsys1 \
-writegensys1 writegensys2 writegensys3 \
-writepolyhedron1 writepolyhedron2 writepolyhedron3 \
-writerelation1 \
-writevariable1
+	CbecomesNNC1 \
+	NNCbecomesC1 \
+	NNCminimize1 NNCminimize2 NNCminimize3 NNCminimize4 NNCminimize5 \
+	NNCminimize6 \
+	addcongruence1 addcongruence2 addcongruence3 addcongruence4 addcongruence5 \
+	addcongruences1 addcongruences2 addcongruences3 addcongruences4 \
+	addcongruences5 \
+	addconstraint1 addconstraint2 addconstraint3 \
+	addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
+	addconstraints5 addconstraints6 addconstraints7 addconstraints8 \
+	addconstraints9 addconstraints10 addconstraints11 \
+	addconstraints12 addconstraints13 \
+	addgenerator1 addgenerator2 addgenerator3 addgenerator4 \
+	addgenerator5 \
+	addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
+	addgenerators5 addgenerators6 addgenerators7 addgenerators8 \
+	addgenerators9 addgenerators10 addgenerators11 addgenerators12 \
+	addgenerators13 \
+	addspacedims1 addspacedims2 addspacedims3 addspacedims4 \
+	addspacedims5 addspacedims6 addspacedims7 addspacedims8 \
+	addspacedims9 addspacedims10 addspacedims11 addspacedims12 \
+	addspacedims13 \
+	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
+	affineimage6 affineimage7 affineimage8 affineimage9 \
+	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
+	affinepreimage5 affinepreimage6 affinepreimage7 affinepreimage8 \
+	affinepreimage9 affinepreimage10 affinepreimage11 \
+	affinetrans \
+	append1 append2 \
+	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
+	ascii_dump_load5 ascii_dump_load6 ascii_dump_load7 \
+	bgp99extrapolation1 bgp99extrapolation2 \
+	bhrz03widening1 bhrz03widening2 bhrz03widening3 bhrz03widening4 \
+	bhrz03widening5 bhrz03widening6 bhrz03widening7 bhrz03widening8 \
+	bhrz03widening9 bhrz03widening10 bhrz03widening11 bhrz03widening12 \
+	bhrz03widening13 bhrz03widening14 bhrz03widening15 bhrz03widening16 \
+	bhrz03widening17 bhrz03widening18 bhrz03widening19 \
+	bhz03widening1 bhz03widening2 bhz03widening3 bhz03widening4 \
+	bhz03widening5 bhz03widening6 \
+	bounded1 \
+	boundedaffineimage1 boundedaffineimage2 boundedaffineimage3 \
+	boundedaffinepreimage1 boundedaffinepreimage2 boundedaffinepreimage3 \
+	boundedbhrz03extrapolation1 \
+	boundedh79extrapolation1 \
+	boundingbox1 boundingbox2 boundingbox3 boundingbox4 boundingbox5 \
+	bounds1 bounds2 \
+	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
+	concatenate6 concatenate7 \
+	congruences1 \
+	constraints1 constraints2 constraints3 constraints4 constraints5 \
+	contains1 contains2 contains3 contains4 contains5 \
+	disjoint1 disjoint2 disjoint3 \
+	dualhypercubes \
+	empty1 \
+	equals1 \
+	exceptions1 exceptions2  exceptions3 \
+	expandspacedim1 expandspacedim2 \
+	foldspacedims1 foldspacedims2 \
+	generalizedaffineimage1 generalizedaffineimage2 \
+	generalizedaffineimage3 generalizedaffineimage4 \
+	generalizedaffineimage5 generalizedaffineimage6 \
+	generalizedaffineimage7 generalizedaffineimage8 \
+	generalizedaffineimage9 generalizedaffineimage10 \
+	generalizedaffineimage11 generalizedaffineimage12 \
+	generalizedaffineimage13 generalizedaffineimage14 \
+	generalizedaffinepreimage1 generalizedaffinepreimage2 \
+	generalizedaffinepreimage3 generalizedaffinepreimage4 \
+	generators1 generators2 generators3 generators4 generators5 \
+	generators6 generators7 \
+	geomcovers1 \
+	h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
+	h79widening6 h79widening7 h79widening8 \
+	intersection1 intersection2 intersection3 intersection4 \
+	intersection5 intersection6 intersection7 intersection8 \
+	intersection9 intersection10 intersection11 \
+	limitedbhrz03extrapolation1 \
+	limitedh79extrapolation1 limitedh79extrapolation2 \
+	limitedh79extrapolation3 limitedh79extrapolation4 \
+	linearpartition1 linearpartition2 \
+	linearpartition3 linearpartition4 \
+	linexpression1 \
+	linearsystem1 \
+	mapspacedims1 mapspacedims2 mapspacedims3  mapspacedims4 \
+	matrix1 \
+	max_min1 max_min2 \
+	maxspacedim1 \
+	mc91 \
+	membytes1 membytes2 \
+	memory1 memory2 \
+	minconstraints1 minconstraints2 minconstraints3 minconstraints4 \
+	mingenerators1 mingenerators2 mingenerators3 \
+	numberinput1 \
+	onepoint \
+	permute \
+	polydifference1 polydifference2 polydifference3 polydifference4 \
+	polydifference5 polydifference6 polydifference7 polydifference8 \
+	polydifference9 \
+	polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
+	polyhull7 polyhull8 polyhull9 polyhull10 polyhull11 \
+	polypowerset1 \
+	primalsimplex1 \
+	randphull1 randphull2 \
+	relations1 relations2 relations3 relations4 relations5 relations6 \
+	relations7 relations8 relations9 relations10 relations11 \
+	relations12 relations13 relations14 relations15 relations16 \
+	relations17 relations18 relations19 \
+	removespacedims1 removespacedims2 removespacedims3 removespacedims4 \
+	removespacedims5 removespacedims6 removespacedims7 removespacedims8 \
+	removespacedims9 removespacedims10 \
+	smm1 \
+	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
+	timeelapse6 timeelapse7 timeelapse8 timeelapse9 \
+	topclosed1 topclosed2 topclosed3 \
+	topclosure1 topclosure2 topclosure3 topclosure4 \
+	universe1 universe2 universe3 universe4 universe5 universe6 universe7 \
+	writeconsys1 \
+	writegensys1 writegensys2 writegensys3 \
+	writepolyhedron1 writepolyhedron2 writepolyhedron3 \
+	writerelation1 \
+	writevariable1
 
 DERIVED_TESTS = \
-nnc_addcongruence1 nnc_addcongruence2 nnc_addcongruence3 \
-nnc_addcongruence4 nnc_addcongruence5 \
-nnc_addcongruences1 nnc_addcongruences2 nnc_addcongruences3 \
-nnc_addcongruences4 nnc_addcongruences5 \
-nnc_addconstraint2 nnc_addconstraint3 \
-nnc_addconstraints1 nnc_addconstraints2 nnc_addconstraints3 \
-nnc_addconstraints4 nnc_addconstraints5 nnc_addconstraints6 \
-nnc_addconstraints7 nnc_addconstraints8 nnc_addconstraints9 \
-nnc_addconstraints10 nnc_addconstraints13 \
-nnc_addgenerator3 nnc_addgenerator5 \
-nnc_addgenerators1 nnc_addgenerators2 nnc_addgenerators3 \
-nnc_addgenerators4 nnc_addgenerators5 nnc_addgenerators6 \
-nnc_addgenerators9 nnc_addgenerators10 nnc_addgenerators12 \
-nnc_addgenerators13 \
-nnc_addspacedims1 nnc_addspacedims2 nnc_addspacedims3 \
-nnc_addspacedims4 nnc_addspacedims9 nnc_addspacedims12 \
-nnc_affineimage1 nnc_affineimage2 nnc_affineimage3 nnc_affineimage4 \
-nnc_affineimage5 nnc_affineimage6 nnc_affineimage7 nnc_affineimage8 \
-nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
-nnc_affinepreimage4 nnc_affinepreimage5 nnc_affinepreimage6 \
-nnc_affinepreimage7 nnc_affinepreimage8 nnc_affinepreimage9 \
-nnc_affinepreimage10 nnc_affinepreimage11 \
-nnc_affinetrans \
-nnc_append1 nnc_append2 \
-nnc_ascii_dump_load1 nnc_ascii_dump_load2 nnc_ascii_dump_load3 \
-nnc_ascii_dump_load6 nnc_ascii_dump_load7 \
-nnc_bgp99extrapolation1 nnc_bgp99extrapolation2 \
-nnc_bhrz03widening1 nnc_bhrz03widening2 nnc_bhrz03widening3 \
-nnc_bhrz03widening5 nnc_bhrz03widening6 \
-nnc_bhrz03widening8 nnc_bhrz03widening9 \
-nnc_bhrz03widening10 nnc_bhrz03widening11 nnc_bhrz03widening12 \
-nnc_bounded1 \
-nnc_boundedaffineimage1 nnc_boundedaffineimage2 \
-nnc_boundedaffineimage3 \
-nnc_boundedaffinepreimage1 nnc_boundedaffinepreimage2 \
-nnc_boundedaffinepreimage3 \
-nnc_boundedbhrz03extrapolation1 \
-nnc_boundedh79extrapolation1 \
-nnc_boundingbox1 nnc_boundingbox3 nnc_boundingbox5 \
-nnc_bounds1 nnc_bounds2 \
-nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 nnc_concatenate4 \
-nnc_concatenate5 nnc_concatenate6 nnc_concatenate7 \
-nnc_congruences1 \
-nnc_constraints1 nnc_constraints2 nnc_constraints3 nnc_constraints4 \
-nnc_constraints5 \
-nnc_contains1 nnc_contains2 \
-nnc_disjoint1 nnc_disjoint2 \
-nnc_empty1 \
-nnc_equals1 \
-nnc_exceptions1 nnc_exceptions3 \
-nnc_expandspacedim1 \
-nnc_foldspacedims1 \
-nnc_generalizedaffineimage1 nnc_generalizedaffineimage2 \
-nnc_generalizedaffineimage3 \
-nnc_generalizedaffineimage5 nnc_generalizedaffineimage6 \
-nnc_generalizedaffineimage11 \
-nnc_generalizedaffineimage13 nnc_generalizedaffineimage14 \
-nnc_generalizedaffinepreimage1 nnc_generalizedaffinepreimage2 \
-nnc_generalizedaffinepreimage3 \
-nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
-nnc_generators5 nnc_generators6 nnc_generators7 \
-nnc_geomcovers1 \
-nnc_h79widening1 nnc_h79widening2 nnc_h79widening4 nnc_h79widening5 \
-nnc_h79widening6 nnc_h79widening7 nnc_h79widening8 \
-nnc_intersection1 nnc_intersection2 nnc_intersection3 \
-nnc_intersection4 nnc_intersection5 nnc_intersection6 \
-nnc_intersection7 nnc_intersection8 nnc_intersection9 \
-nnc_intersection10 nnc_intersection11 \
-nnc_limitedbhrz03extrapolation1 \
-nnc_limitedh79extrapolation1 nnc_limitedh79extrapolation2 \
-nnc_limitedh79extrapolation3 nnc_limitedh79extrapolation4 \
-nnc_linearpartition1 nnc_linearpartition2 \
-nnc_linearpartition3 nnc_linearpartition4 \
-nnc_mapspacedims1 nnc_mapspacedims2 nnc_mapspacedims3 \
-nnc_mapspacedims4 \
-nnc_max_min1 nnc_max_min2 \
-nnc_mc91 \
-nnc_membytes1 nnc_membytes2 \
-nnc_minconstraints1 nnc_minconstraints2 \
-nnc_mingenerators1 nnc_mingenerators2 \
-nnc_onepoint \
-nnc_permute \
-nnc_polydifference1 nnc_polydifference3 nnc_polydifference4 \
-nnc_polydifference6 nnc_polydifference7 nnc_polydifference9 \
-nnc_polyhull1 nnc_polyhull2 nnc_polyhull3 nnc_polyhull4 \
-nnc_polyhull5 nnc_polyhull6 nnc_polyhull7 nnc_polyhull8 \
-nnc_polyhull9 nnc_polyhull10 \
-nnc_randphull1 nnc_randphull2 \
-nnc_relations1 nnc_relations2 nnc_relations3 nnc_relations4 \
-nnc_relations5 nnc_relations6 nnc_relations7 nnc_relations8 \
-nnc_relations9 nnc_relations10 nnc_relations12 nnc_relations13 \
-nnc_relations14 nnc_relations15 nnc_relations16 nnc_relations19 \
-nnc_removespacedims1 nnc_removespacedims2 nnc_removespacedims3 \
-nnc_removespacedims4 nnc_removespacedims5 nnc_removespacedims6 \
-nnc_removespacedims8 nnc_removespacedims9 nnc_removespacedims10 \
-nnc_smm1 \
-nnc_timeelapse2 nnc_timeelapse5 nnc_timeelapse6 nnc_timeelapse7 \
-nnc_timeelapse8 nnc_timeelapse9 \
-nnc_universe1 nnc_universe2 nnc_universe3 nnc_universe4 \
-nnc_universe5 nnc_universe7 \
-nnc_writepolyhedron2 nnc_writepolyhedron3
+	nnc_addcongruence1 nnc_addcongruence2 nnc_addcongruence3 \
+	nnc_addcongruence4 nnc_addcongruence5 \
+	nnc_addcongruences1 nnc_addcongruences2 nnc_addcongruences3 \
+	nnc_addcongruences4 nnc_addcongruences5 \
+	nnc_addconstraint2 nnc_addconstraint3 \
+	nnc_addconstraints1 nnc_addconstraints2 nnc_addconstraints3 \
+	nnc_addconstraints4 nnc_addconstraints5 nnc_addconstraints6 \
+	nnc_addconstraints7 nnc_addconstraints8 nnc_addconstraints9 \
+	nnc_addconstraints10 nnc_addconstraints13 \
+	nnc_addgenerator3 nnc_addgenerator5 \
+	nnc_addgenerators1 nnc_addgenerators2 nnc_addgenerators3 \
+	nnc_addgenerators4 nnc_addgenerators5 nnc_addgenerators6 \
+	nnc_addgenerators9 nnc_addgenerators10 nnc_addgenerators12 \
+	nnc_addgenerators13 \
+	nnc_addspacedims1 nnc_addspacedims2 nnc_addspacedims3 \
+	nnc_addspacedims4 nnc_addspacedims9 nnc_addspacedims12 \
+	nnc_affineimage1 nnc_affineimage2 nnc_affineimage3 nnc_affineimage4 \
+	nnc_affineimage5 nnc_affineimage6 nnc_affineimage7 nnc_affineimage8 \
+	nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
+	nnc_affinepreimage4 nnc_affinepreimage5 nnc_affinepreimage6 \
+	nnc_affinepreimage7 nnc_affinepreimage8 nnc_affinepreimage9 \
+	nnc_affinepreimage10 nnc_affinepreimage11 \
+	nnc_affinetrans \
+	nnc_append1 nnc_append2 \
+	nnc_ascii_dump_load1 nnc_ascii_dump_load2 nnc_ascii_dump_load3 \
+	nnc_ascii_dump_load6 nnc_ascii_dump_load7 \
+	nnc_bgp99extrapolation1 nnc_bgp99extrapolation2 \
+	nnc_bhrz03widening1 nnc_bhrz03widening2 nnc_bhrz03widening3 \
+	nnc_bhrz03widening5 nnc_bhrz03widening6 \
+	nnc_bhrz03widening8 nnc_bhrz03widening9 \
+	nnc_bhrz03widening10 nnc_bhrz03widening11 nnc_bhrz03widening12 \
+	nnc_bounded1 \
+	nnc_boundedaffineimage1 nnc_boundedaffineimage2 \
+	nnc_boundedaffineimage3 \
+	nnc_boundedaffinepreimage1 nnc_boundedaffinepreimage2 \
+	nnc_boundedaffinepreimage3 \
+	nnc_boundedbhrz03extrapolation1 \
+	nnc_boundedh79extrapolation1 \
+	nnc_boundingbox1 nnc_boundingbox3 nnc_boundingbox5 \
+	nnc_bounds1 nnc_bounds2 \
+	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 nnc_concatenate4 \
+	nnc_concatenate5 nnc_concatenate6 nnc_concatenate7 \
+	nnc_congruences1 \
+	nnc_constraints1 nnc_constraints2 nnc_constraints3 nnc_constraints4 \
+	nnc_constraints5 \
+	nnc_contains1 nnc_contains2 \
+	nnc_disjoint1 nnc_disjoint2 \
+	nnc_empty1 \
+	nnc_equals1 \
+	nnc_exceptions1 nnc_exceptions3 \
+	nnc_expandspacedim1 \
+	nnc_foldspacedims1 \
+	nnc_generalizedaffineimage1 nnc_generalizedaffineimage2 \
+	nnc_generalizedaffineimage3 \
+	nnc_generalizedaffineimage5 nnc_generalizedaffineimage6 \
+	nnc_generalizedaffineimage11 \
+	nnc_generalizedaffineimage13 nnc_generalizedaffineimage14 \
+	nnc_generalizedaffinepreimage1 nnc_generalizedaffinepreimage2 \
+	nnc_generalizedaffinepreimage3 \
+	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
+	nnc_generators5 nnc_generators6 nnc_generators7 \
+	nnc_geomcovers1 \
+	nnc_h79widening1 nnc_h79widening2 nnc_h79widening4 nnc_h79widening5 \
+	nnc_h79widening6 nnc_h79widening7 nnc_h79widening8 \
+	nnc_intersection1 nnc_intersection2 nnc_intersection3 \
+	nnc_intersection4 nnc_intersection5 nnc_intersection6 \
+	nnc_intersection7 nnc_intersection8 nnc_intersection9 \
+	nnc_intersection10 nnc_intersection11 \
+	nnc_limitedbhrz03extrapolation1 \
+	nnc_limitedh79extrapolation1 nnc_limitedh79extrapolation2 \
+	nnc_limitedh79extrapolation3 nnc_limitedh79extrapolation4 \
+	nnc_linearpartition1 nnc_linearpartition2 \
+	nnc_linearpartition3 nnc_linearpartition4 \
+	nnc_mapspacedims1 nnc_mapspacedims2 nnc_mapspacedims3 \
+	nnc_mapspacedims4 \
+	nnc_max_min1 nnc_max_min2 \
+	nnc_mc91 \
+	nnc_membytes1 nnc_membytes2 \
+	nnc_minconstraints1 nnc_minconstraints2 \
+	nnc_mingenerators1 nnc_mingenerators2 \
+	nnc_onepoint \
+	nnc_permute \
+	nnc_polydifference1 nnc_polydifference3 nnc_polydifference4 \
+	nnc_polydifference6 nnc_polydifference7 nnc_polydifference9 \
+	nnc_polyhull1 nnc_polyhull2 nnc_polyhull3 nnc_polyhull4 \
+	nnc_polyhull5 nnc_polyhull6 nnc_polyhull7 nnc_polyhull8 \
+	nnc_polyhull9 nnc_polyhull10 \
+	nnc_randphull1 nnc_randphull2 \
+	nnc_relations1 nnc_relations2 nnc_relations3 nnc_relations4 \
+	nnc_relations5 nnc_relations6 nnc_relations7 nnc_relations8 \
+	nnc_relations9 nnc_relations10 nnc_relations12 nnc_relations13 \
+	nnc_relations14 nnc_relations15 nnc_relations16 nnc_relations19 \
+	nnc_removespacedims1 nnc_removespacedims2 nnc_removespacedims3 \
+	nnc_removespacedims4 nnc_removespacedims5 nnc_removespacedims6 \
+	nnc_removespacedims8 nnc_removespacedims9 nnc_removespacedims10 \
+	nnc_smm1 \
+	nnc_timeelapse2 nnc_timeelapse5 nnc_timeelapse6 nnc_timeelapse7 \
+	nnc_timeelapse8 nnc_timeelapse9 \
+	nnc_universe1 nnc_universe2 nnc_universe3 nnc_universe4 \
+	nnc_universe5 nnc_universe7 \
+	nnc_writepolyhedron2 nnc_writepolyhedron3
 
 #
 # Sources for the tests
@@ -541,10 +545,14 @@ linearpartition4_SOURCES = linearpartition4.cc
 
 linexpression1_SOURCES = linexpression1.cc
 
+linearsystem1_SOURCES = linearsystem1.cc
+
 mapspacedims1_SOURCES = mapspacedims1.cc
 mapspacedims2_SOURCES = mapspacedims2.cc
 mapspacedims3_SOURCES = mapspacedims3.cc
 mapspacedims4_SOURCES = mapspacedims4.cc
+
+matrix1_SOURCES = matrix1.cc
 
 max_min1_SOURCES = max_min1.cc
 max_min2_SOURCES = max_min2.cc
@@ -567,6 +575,8 @@ minconstraints4_SOURCES = minconstraints4.cc
 mingenerators1_SOURCES = mingenerators1.cc
 mingenerators2_SOURCES = mingenerators2.cc
 mingenerators3_SOURCES = mingenerators3.cc
+
+numberinput1_SOURCES = numberinput1.cc
 
 onepoint_SOURCES = onepoint.cc
 
@@ -1218,7 +1228,7 @@ if BUILD_WATCHDOG_LIBRARY
 WATCHDOG_TESTS = watchdog1
 
 watchdog1_SOURCES = $(watchdog1_SRCS)
-watchdog1_LDADD = $(LDADD) $(top_builddir)/Watchdog/libpwl.la
+watchdog1_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
 
 endif BUILD_WATCHDOG_LIBRARY
 
@@ -1351,6 +1361,8 @@ ascii_dump_load4.dat \
 ascii_dump_load5.dat \
 ascii_dump_load6.dat \
 ascii_dump_load7.dat \
+matrix1.dat \
+linearsystem1.dat \
 writeconsys1.dat \
 writegensys1.dat \
 writegensys2.dat \

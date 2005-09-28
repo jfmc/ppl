@@ -661,7 +661,7 @@ assign_int_pinf(To& to, const Plus_Infinity&, Rounding_Dir dir) {
 
 template <typename Policy, typename To>
 inline Result
-assign_int_nan(To& to, const Not_A_Number&, Rounding_Dir dir) {
+assign_int_nan(To& to, const Not_A_Number&, Rounding_Dir) {
   if (Policy::store_nan) {
     to = not_a_number_int<Policy, To>();
     return V_EQ;
@@ -1412,16 +1412,16 @@ SPECIALIZE_ABS(generic, unsigned int, unsigned int)
 SPECIALIZE_ABS(generic, unsigned long, unsigned long)
 SPECIALIZE_ABS(generic, unsigned long long, unsigned long long)
 
-SPECIALIZE_GCD(generic, signed char, signed char, signed char)
-SPECIALIZE_GCD(generic, signed short, signed short, signed short)
-SPECIALIZE_GCD(generic, signed int, signed int, signed int)
-SPECIALIZE_GCD(generic, signed long, signed long, signed long)
-SPECIALIZE_GCD(generic, signed long long, signed long long, signed long long)
-SPECIALIZE_GCD(generic, unsigned char, unsigned char, unsigned char)
-SPECIALIZE_GCD(generic, unsigned short, unsigned short, unsigned short)
-SPECIALIZE_GCD(generic, unsigned int, unsigned int, unsigned int)
-SPECIALIZE_GCD(generic, unsigned long, unsigned long, unsigned long)
-SPECIALIZE_GCD(generic, unsigned long long, unsigned long long, unsigned long long)
+SPECIALIZE_GCD(exact, signed char, signed char, signed char)
+SPECIALIZE_GCD(exact, signed short, signed short, signed short)
+SPECIALIZE_GCD(exact, signed int, signed int, signed int)
+SPECIALIZE_GCD(exact, signed long, signed long, signed long)
+SPECIALIZE_GCD(exact, signed long long, signed long long, signed long long)
+SPECIALIZE_GCD(exact, unsigned char, unsigned char, unsigned char)
+SPECIALIZE_GCD(exact, unsigned short, unsigned short, unsigned short)
+SPECIALIZE_GCD(exact, unsigned int, unsigned int, unsigned int)
+SPECIALIZE_GCD(exact, unsigned long, unsigned long, unsigned long)
+SPECIALIZE_GCD(exact, unsigned long long, unsigned long long, unsigned long long)
 
 SPECIALIZE_GCDEXT(generic, signed char, signed char, signed char, signed char, signed char)
 SPECIALIZE_GCDEXT(generic, signed short, signed short, signed short, signed short, signed short)
@@ -1434,16 +1434,16 @@ SPECIALIZE_GCDEXT(generic, unsigned int, unsigned int, unsigned int, unsigned in
 SPECIALIZE_GCDEXT(generic, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long)
 SPECIALIZE_GCDEXT(generic, unsigned long long, unsigned long long, unsigned long long, unsigned long long, unsigned long long)
 
-SPECIALIZE_LCM(generic, signed char, signed char, signed char)
-SPECIALIZE_LCM(generic, signed short, signed short, signed short)
-SPECIALIZE_LCM(generic, signed int, signed int, signed int)
-SPECIALIZE_LCM(generic, signed long, signed long, signed long)
-SPECIALIZE_LCM(generic, signed long long, signed long long, signed long long)
-SPECIALIZE_LCM(generic, unsigned char, unsigned char, unsigned char)
-SPECIALIZE_LCM(generic, unsigned short, unsigned short, unsigned short)
-SPECIALIZE_LCM(generic, unsigned int, unsigned int, unsigned int)
-SPECIALIZE_LCM(generic, unsigned long, unsigned long, unsigned long)
-SPECIALIZE_LCM(generic, unsigned long long, unsigned long long, unsigned long long)
+SPECIALIZE_LCM(gcd_exact, signed char, signed char, signed char)
+SPECIALIZE_LCM(gcd_exact, signed short, signed short, signed short)
+SPECIALIZE_LCM(gcd_exact, signed int, signed int, signed int)
+SPECIALIZE_LCM(gcd_exact, signed long, signed long, signed long)
+SPECIALIZE_LCM(gcd_exact, signed long long, signed long long, signed long long)
+SPECIALIZE_LCM(gcd_exact, unsigned char, unsigned char, unsigned char)
+SPECIALIZE_LCM(gcd_exact, unsigned short, unsigned short, unsigned short)
+SPECIALIZE_LCM(gcd_exact, unsigned int, unsigned int, unsigned int)
+SPECIALIZE_LCM(gcd_exact, unsigned long, unsigned long, unsigned long)
+SPECIALIZE_LCM(gcd_exact, unsigned long long, unsigned long long, unsigned long long)
 
 SPECIALIZE_SGN(generic, signed char)
 SPECIALIZE_SGN(generic, signed short)

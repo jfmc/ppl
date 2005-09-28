@@ -78,7 +78,7 @@ normalize2(Coefficient_traits::const_reference x,
 
 template <typename T>
 inline T
-low_bits_mask(unsigned n) {
+low_bits_mask(const unsigned n) {
   assert(n < unsigned(std::numeric_limits<T>::digits));
   return n == 0 ? 0 : ~(~(T(0u)) << n);
 }

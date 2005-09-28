@@ -150,12 +150,11 @@ assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
     mpz_fdiv_q(to.get_mpz_t(), n, d);
     return mpz_divisible_p(n, d) ? V_EQ : V_GT;
   }
-  else if (dir == ROUND_UP) {
+  else {
+    assert(dir == ROUND_UP);
     mpz_cdiv_q(to.get_mpz_t(), n, d);
     return mpz_divisible_p(n, d) ? V_EQ : V_LT;
   }
-  else
-    assert(0);
 }
 
 SPECIALIZE_ASSIGN(mpz_mpq, mpz_class, mpq_class)
@@ -308,12 +307,11 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir dir)
     mpz_fdiv_q(to.get_mpz_t(), n, d);
     return mpz_divisible_p(n, d) ? V_EQ : V_GT;
   }
-  else if (dir == ROUND_UP) {
+  else {
+    assert(dir == ROUND_UP);
     mpz_cdiv_q(to.get_mpz_t(), n, d);
     return mpz_divisible_p(n, d) ? V_EQ : V_LT;
   }
-  else
-    assert(0);
 }
 
 SPECIALIZE_DIV(mpz, mpz_class, mpz_class, mpz_class)
@@ -354,12 +352,11 @@ div2exp_mpz(mpz_class& to, const mpz_class& x, int exp, Rounding_Dir dir) {
     mpz_fdiv_q_2exp(to.get_mpz_t(), n, exp);
     return mpz_divisible_2exp_p(n, exp) ? V_EQ : V_GT;
   }
-  else if (dir == ROUND_UP) {
+  else {
+    assert(dir == ROUND_UP);
     mpz_cdiv_q_2exp(to.get_mpz_t(), n, exp);
     return mpz_divisible_2exp_p(n, exp) ? V_EQ : V_LT;
   }
-  else
-    assert(0);
 }
 
 SPECIALIZE_DIV2EXP(mpz, mpz_class, mpz_class)
@@ -465,6 +462,11 @@ output_mpz(std::ostream& os, const mpz_class& from, const Numeric_Format&, Round
 
 SPECIALIZE_INPUT(generic, mpz_class)
 SPECIALIZE_OUTPUT(mpz, mpz_class)
+
+inline memory_size_type
+external_memory_in_bytes(const mpz_class& x) {
+  return x.get_mpz_t()[0]._mp_alloc * SIZEOF_MP_LIMB_T;
+}
 
 } // namespace Checked
 

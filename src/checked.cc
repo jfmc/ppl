@@ -129,7 +129,7 @@ parse_number1(std::istream& is, number_struct& num) {
     num.mantissa += (char) c;
     c = is.get();
   }
-  while (1) {
+  while (true) {
     switch (state) {
     case BASE:
       if (get_digit(c, 10) >= 0) {
@@ -197,7 +197,7 @@ parse_number1(std::istream& is, number_struct& num) {
 	continue;
       }
       goto ok;
-    case EXPONENT: 
+    case EXPONENT:
       int d = get_digit(c, num.base);
       if (d >= 0) {
 	empty_exponent = false;

@@ -24,9 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <sstream>
 
 #include "Coefficient.defs.hh"
-#include "checked.defs.hh"
-#include "checked_int.inlines.hh"
-#include "checked_mpz.inlines.hh"
+#include "Checked_Number.defs.hh"
 #include "sicstus_cfli.h"
 #include "../exceptions.hh"
 #include <cassert>
@@ -82,8 +80,7 @@ Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   Prolog_term_ref t = Prolog_new_term_ref();
   long v;
-  if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, PPL::raw_value(n), PPL::ROUND_IGNORE)
-      == PPL::V_EQ) {
+  if (PPL::assign(v, PPL::raw_value(n), PPL::ROUND_IGNORE) == PPL::V_EQ) {
     if (SP_put_integer(t, v) == 0)
       throw unknown_interface_error("Coefficient_to_integer_term()");
   } else {

@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Saturation_Matrix.defs.hh"
-
 #include "globals.defs.hh"
 #include <iostream>
 #include <string>

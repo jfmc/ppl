@@ -12,18 +12,47 @@ PURPOSE. */
 #ifndef PPL_Native_Integer_types_hh
 #define PPL_Native_Integer_types_hh 1
 
+#include "Coefficient_traits_template.hh"
+
 namespace Parma_Polyhedra_Library {
 
 template <typename T>
 class Native_Integer;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Coefficient traits partial specialization for unchecked native integers.
+//! Coefficient traits partial specialization for 8 bits unchecked integers.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename T>
-struct Coefficient_traits_template<Native_Integer<T> > {
+template <>
+struct Coefficient_traits_template<Native_Integer<int8_t> > {
   //! The type used for references to const native integers.
-  typedef Native_Integer<T> const_reference;
+  typedef Native_Integer<int8_t> const_reference;
+};
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Coefficient traits partial specialization for 16 bits unchecked integers.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <>
+struct Coefficient_traits_template<Native_Integer<int16_t> > {
+  //! The type used for references to const native integers.
+  typedef Native_Integer<int16_t> const_reference;
+};
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Coefficient traits partial specialization for 32 bits unchecked integers.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <>
+struct Coefficient_traits_template<Native_Integer<int32_t> > {
+  //! The type used for references to const native integers.
+  typedef Native_Integer<int32_t> const_reference;
+};
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Coefficient traits partial specialization for 64 bits unchecked integers.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <>
+struct Coefficient_traits_template<Native_Integer<int64_t> > {
+  //! The type used for references to const native integers.
+  typedef const Native_Integer<int64_t>& const_reference;
 };
 
 } // namespace Parma_Polyhedra_Library

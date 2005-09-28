@@ -36,12 +36,12 @@ ppl_sicstus.pl \
 sp_clpq.pl \
 sp_pl_check.pl
 
-if HAVE_SICSTUS_PROLOG
+if BUILD_SICSTUS_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
 -I$(top_builddir)/src \
--I$(top_srcdir)/Watchdog \
+-I$(top_srcdir)/Watchdog/src \
 @extra_includes@
 
 bin_PROGRAMS = ppl_sicstus
@@ -53,22 +53,22 @@ noinst_LTLIBRARIES = ppl_sicstus_sd.la
 ppl_sicstus_sd_la_SOURCES = ppl_sicstus_sd.cc
 ppl_sicstus_sd_la_LDFLAGS = -module -avoid-version
 
-ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/libpwl.la
+ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/src/libpwl.la
 	$(LIBTOOL) --mode=link --tag=CXX \
 	spld --main=prolog \
 		--resources=ppl_sicstus.s.o -o $@ \
 		$(top_builddir)/src/libppl.la \
-		$(top_builddir)/Watchdog/libpwl.la \
+		$(top_builddir)/Watchdog/src/libpwl.la \
 		@extra_libraries@
 
 ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus_sd.o
 	splfr --static $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o
 
-ppl_sicstus.so: ppl_sicstus.pl ppl_sicstus_sd.o $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/libpwl.la
+ppl_sicstus.so: ppl_sicstus.pl ppl_sicstus_sd.o $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/src/libpwl.la
 	$(LIBTOOL) --mode=link --tag=CXX \
 	splfr $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o -o $@ \
 		$(top_builddir)/src/libppl.la \
-		$(top_builddir)/Watchdog/libpwl.la \
+		$(top_builddir)/Watchdog/src/libpwl.la \
 		@extra_libraries@
 
 install-data-local: ppl_sicstus.so
@@ -144,4 +144,4 @@ ppl_sicstus.s.o ppl_sicstus.so \
 $(CLPQ_TESTS) \
 obtained_clpq obtained_clpq2 obtained_pchk
 
-endif HAVE_SICSTUS_PROLOG
+endif BUILD_SICSTUS_PROLOG_INTERFACE

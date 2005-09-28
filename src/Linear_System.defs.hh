@@ -283,8 +283,8 @@ public:
   class With_Saturation_Matrix_iterator;
 
   //! \brief
-  //! Sorts the system, removing duplicates,
-  //! keeping the saturation matrix consistent.
+  //! Sorts the system, removing duplicates, keeping the saturation
+  //! matrix consistent.
   /*!
     \param sat
     Saturation matrix with rows corresponding to the rows of \p *this.
@@ -316,12 +316,12 @@ public:
   */
   void back_substitute(dimension_type rank);
 
-  //! Applies the Gram-Shmidt orthogonalization method to the system.
+  //! Applies the Gram-Schmidt orthogonalization method to the system.
   /*!
     It is assumed that the system corresponds to a minimized representation,
     with all lines/equalities coming first.
   */
-  void gram_shmidt();
+  void gram_schmidt();
 
   //! Normalizes the system by dividing each row for the GCD of the
   //! row's elements.
@@ -501,7 +501,7 @@ namespace std {
 //! Specializes <CODE>std::iter_swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Linear_System::With_Saturation_Matrix_iterator */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-inline void
+void
 iter_swap(Parma_Polyhedra_Library
 	  ::Linear_System::With_Saturation_Matrix_iterator x,
 	  Parma_Polyhedra_Library

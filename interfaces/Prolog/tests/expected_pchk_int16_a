@@ -1,3 +1,6 @@
 
 Error: an overflow has been detected by the PPL: Negative overflow.
+Error occurred while performing test catch_time which checks predicates: 
+[ppl_set_timeout_exception_atom/1,ppl_timeout_exception_atom/1,ppl_set_timeout/1,ppl_reset_timeout/0] 
+Prolog interface checks failed. 
 FAILURE

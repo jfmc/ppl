@@ -296,6 +296,12 @@ output_mpq(std::ostream& os,
 SPECIALIZE_INPUT(mpq, mpq_class)
 SPECIALIZE_OUTPUT(mpq, mpq_class)
 
+inline memory_size_type
+external_memory_in_bytes(const mpq_class& x) {
+  return external_memory_in_bytes(x.get_num())
+    + external_memory_in_bytes(x.get_den());
+}
+
 } // namespace Checked
 
 } // namespace Parma_Polyhedra_Library

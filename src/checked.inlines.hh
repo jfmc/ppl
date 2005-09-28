@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "compiler.hh"
+#include "globals.types.hh"
 #include <cassert>
 
 namespace Parma_Polyhedra_Library {
@@ -76,39 +77,27 @@ sub(Result r1, Result r2) {
 }
 
 template <typename Policy, typename To, typename From>
-inline Result
-gcd_common(To& to, const From& x, const From& y, Rounding_Dir dir) {
+inline void
+gcd_exact_noabs(To& to, const From& x, const From& y) {
   To nx = x;
   To ny = y;
   To rm;
   while (ny != 0) {
-    Result r = rem<Policy>(rm, nx, ny, dir);
-    used(r);
-    assert(r == V_EQ);
+    /* The following is derived from the assumption that x % y
+       is always representable. This is true for both native integers
+       and iec559 floating point numbers */
+    rem<Policy>(rm, nx, ny, ROUND_IGNORE);
     nx = ny;
     ny = rm;
   }
   to = nx;
-  return V_EQ;
 }
 
 template <typename Policy, typename To, typename From1, typename From2>
 inline Result
-gcd_generic(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
-  if (x == 0)
-    return abs<Policy>(to, y, dir);
-  if (y == 0)
-    return abs<Policy>(to, x, dir);
-  To nx, ny;
-  Result r;
-  used(r);
-  r = abs<Policy>(nx, x, dir);
-  if (r != V_EQ)
-    return r;
-  r = abs<Policy>(ny, y, dir);
-  if (r != V_EQ)
-    return r;
-  return gcd_common<Policy>(to, nx, ny, dir);
+gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
+  gcd_exact_noabs<Policy>(to, x, y);
+  return abs<Policy>(to, to, dir);
 }
 
 template <typename Policy, typename To,
@@ -182,7 +171,7 @@ gcdext_generic(To& to, const From1& x, const From2& y, From3& s, From4& t,
 
 template <typename Policy, typename To, typename From1, typename From2>
 inline Result
-lcm_generic(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
+lcm_gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (x == 0 || y == 0) {
     to = 0;
     return V_EQ;
@@ -196,10 +185,11 @@ lcm_generic(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (r != V_EQ)
     return r;
   To gcd;
-  r = gcd_common<Policy>(gcd, nx, ny, dir);
-  assert(r == V_EQ);
-  r = div<Policy>(to, nx, gcd, dir);
-  assert(r == V_EQ);
+  gcd_exact_noabs<Policy>(gcd, nx, ny);
+  /* The following is derived from the assumption that x / gcd(x, y)
+     is always representable. This is true for both native integers
+     and iec559 floating point numbers */
+  div<Policy>(to, nx, gcd, ROUND_IGNORE);
   return mul<Policy>(to, to, ny, dir);
 }
 
@@ -235,6 +225,18 @@ input_generic(Type& to, std::istream& is, Rounding_Dir dir) {
   if (r == V_EQ)
     return assign<Policy>(to, q, dir);
   return set_special<Policy>(to, r);
+}
+
+template <typename T>
+inline memory_size_type
+external_memory_in_bytes(T) {
+  return 0;
+}
+
+template <typename T>
+inline memory_size_type
+total_memory_in_bytes(T& x) {
+  return sizeof(x) + external_memory_in_bytes(x);
 }
 
 } // namespace Checked

@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Polyhedron_defs_hh 1
 
 #include "Polyhedron.types.hh"
-#include "globals.defs.hh"
+#include "globals.types.hh"
 #include "Variable.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint_System.defs.hh"
@@ -731,8 +731,8 @@ public:
     \param complexity
     The complexity class of the algorithm to be used.
 
-    The template class Box must provide the following
-    methods, whose return value, if any, is simply ignored.
+    The template class Box must provide the following methods, whose
+    return values, if any, are simply ignored.
     \code
       set_empty()
     \endcode
@@ -2235,7 +2235,7 @@ private:
   //@{
 
   //! \brief
-  //! Copies to \p cs_selection the constraints of `y' corresponding
+  //! Copies to \p cs_selection the constraints of \p y corresponding
   //! to the definition of the CH78-widening of \p *this and \p y.
   void select_CH78_constraints(const Polyhedron& y,
 			       Constraint_System& cs_selected) const;
@@ -2262,9 +2262,6 @@ private:
 			    const Polyhedron& H79);
 
   //@} // Widening- and Extrapolation-Related Functions
-
-  //! Adds the low-level constraints to the constraint system.
-  static void add_low_level_constraints(Constraint_System& cs);
 
   //! Adds new space dimensions to the given matrices.
   /*!

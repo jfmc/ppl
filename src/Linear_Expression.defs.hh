@@ -133,6 +133,17 @@ operator-=(Linear_Expression& e, Coefficient_traits::const_reference n);
 Linear_Expression&
 operator*=(Linear_Expression& e, Coefficient_traits::const_reference n);
 
+// This is commented in scalar_product.defs.hh.
+void
+homogeneous_scalar_product_assign(Coefficient& z,
+				  const Linear_Expression& x,
+				  const Generator& y);
+
+// This is commented in scalar_product.defs.hh.
+int
+homogeneous_scalar_product_sign(const Linear_Expression& x,
+				const Generator& y);
+
 namespace IO_Operators {
 
 //! Output operator.
@@ -292,6 +303,7 @@ private:
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;
   friend class Parma_Polyhedra_Library::Congruence;
+  // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend class Parma_Polyhedra_Library::Grid;
 
@@ -307,8 +319,15 @@ private:
   // Congruence_System::affine_image().
   friend class Parma_Polyhedra_Library::Congruence_System;
 
-  friend void std::swap(Parma_Polyhedra_Library::Linear_Expression& x,
-			Parma_Polyhedra_Library::Linear_Expression& y);
+  friend void
+  Parma_Polyhedra_Library
+  ::homogeneous_scalar_product_assign(Coefficient& z,
+				      const Linear_Expression& x,
+				      const Generator& y);
+  friend int
+  Parma_Polyhedra_Library
+  ::homogeneous_scalar_product_sign(const Linear_Expression& x,
+				    const Generator& y);
 
   //! Copy-constructor with a specified space dimension.
   Linear_Expression(const Linear_Expression& e, dimension_type sz);

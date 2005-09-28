@@ -78,14 +78,14 @@ ppl_config_LDADD = \
 libppl.la \
 @extra_libraries@
 
-BUGS.cc:	$(top_srcdir)/utils/text2cxxarray $(top_srcdir)/BUGS
-	$(top_srcdir)/utils/text2cxxarray --name=BUGS_array \
+BUGS.cc:	$(top_builddir)/utils/text2cxxarray $(top_srcdir)/BUGS
+	$(top_builddir)/utils/text2cxxarray --name=BUGS_array \
 		$(top_srcdir)/BUGS >$@
-COPYING.cc:	$(top_srcdir)/utils/text2cxxarray $(top_srcdir)/COPYING
-	$(top_srcdir)/utils/text2cxxarray --name=COPYING_array \
+COPYING.cc:	$(top_builddir)/utils/text2cxxarray $(top_srcdir)/COPYING
+	$(top_builddir)/utils/text2cxxarray --name=COPYING_array \
 		$(top_srcdir)/COPYING >$@
-CREDITS.cc:	$(top_srcdir)/utils/text2cxxarray $(top_srcdir)/CREDITS
-	$(top_srcdir)/utils/text2cxxarray --name=CREDITS_array \
+CREDITS.cc:	$(top_builddir)/utils/text2cxxarray $(top_srcdir)/CREDITS
+	$(top_builddir)/utils/text2cxxarray --name=CREDITS_array \
 		$(top_srcdir)/CREDITS >$@
 
 if USE_NATIVE_INTEGERS
@@ -127,6 +127,7 @@ Coefficient_traits_template.hh \
 Checked_Number.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Coefficient.types.hh \
+globals.types.hh \
 Interval.types.hh \
 Bounding_Box.types.hh \
 Constraint.types.hh \
@@ -178,6 +179,7 @@ checked_mpq.inlines.hh \
 checked_ext.inlines.hh \
 Checked_Number.defs.hh \
 Checked_Number.inlines.hh \
+mp_numeric_limits.hh \
 checked_numeric_limits.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
 Coefficient.defs.hh \
@@ -219,6 +221,8 @@ Congruence.defs.hh \
 Congruence.inlines.hh \
 Generator_System.inlines.hh \
 Congruence_System.inlines.hh \
+scalar_products.defs.hh \
+scalar_products.inlines.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Con_Relation.inlines.hh \
 Poly_Gen_Relation.defs.hh \
@@ -285,6 +289,7 @@ Interval.cc \
 Linear_Expression.cc \
 Linear_System.cc \
 Matrix.cc \
+scalar_products.cc \
 Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
 BHRZ03_Certificate.cc \
@@ -300,6 +305,7 @@ Grid_nonpublic.cc \
 Grid_public.cc \
 Grid_chdims.cc \
 Grid_widenings.cc \
+Polyhedra_Powerset.cc \
 Row.cc \
 Linear_Row.cc \
 Saturation_Matrix.cc \
@@ -326,6 +332,7 @@ GMP_Integer.types.hh \
 Checked_Number.types.hh \
 Native_Integer.types.hh \
 Coefficient.types.hh \
+globals.defs.hh \
 Variable.types.hh \
 Linear_Expression.types.hh \
 Constraint.types.hh \
@@ -409,8 +416,8 @@ ppl_include_files.hh: $(INCLUDE_FILES) Makefile
 	  printf "#include \"%s\"\n" $$file >>$@; \
 	done
 
-ppl_install.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(NESTED_INCLUDE_FILES) Makefile $(top_srcdir)/utils/build_header
-	$(top_srcdir)/utils/build_header \
+ppl_install.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(NESTED_INCLUDE_FILES) Makefile $(top_builddir)/utils/build_header
+	$(top_builddir)/utils/build_header \
 		-I $(top_builddir) -I $(top_builddir)/src \
 		$(top_srcdir)/src/ppl_header.hh >$@
 

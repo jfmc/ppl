@@ -235,7 +235,7 @@ size)
   OPT_FLAGS="$OPT_FLAGS -Os"
   arch=yes
   ;;
-standard)
+standard | yes)
   AC_MSG_RESULT(standard)
   OPT_FLAGS="$OPT_FLAGS -O2"
   ;;
@@ -243,15 +243,15 @@ mild)
   AC_MSG_RESULT(mild)
   OPT_FLAGS="$OPT_FLAGS -O1"
   ;;
-yes)
-  AC_MSG_RESULT(standard)
-  OPT_FLAGS="$OPT_FLAGS -O2"
+zero)
+  AC_MSG_RESULT(zero)
+  OPT_FLAGS="$OPT_FLAGS -O0"
   ;;
 no)
   AC_MSG_RESULT(no)
   ;;
 *)
-  AC_MSG_ERROR([bad value ${enableval} for --enable-optimization, needs sspeed, speed, size, standard, mild, yes or no])
+  AC_MSG_ERROR([bad value ${enableval} for --enable-optimization, needs sspeed, speed, size, standard, mild, zero, yes or no])
   ;;
 esac
 
@@ -388,6 +388,11 @@ AC_PROG_CXXCPP
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
+# Check for Perl.
+AC_PATH_PROG([PERL], perl, no)
+AC_SUBST([PERL])
+AM_CONDITIONAL(HAVE_PERL, test x"$PERL" != xno)
+
 # Checks for C typedefs, structures, compiler and architecture characteristics.
 AC_LANG(C)
 AC_C_CONST
@@ -485,6 +490,212 @@ AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
 # Enabled or not, the Watchdog subdirectory must be configured.
 AC_CONFIG_SUBDIRS(Watchdog)
 
+# This is the list of available interfaces: lowercase and blank-separated.
+available_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog"
+
+# This is the list of interfaces that are enabled by default.
+#default_interfaces="cxx c swi_prolog"
+default_interfaces=${available_interfaces}
+
+enableval=not_specified
+AC_MSG_CHECKING([which interfaces are enabled])
+AC_ARG_ENABLE(interfaces,
+[  --enable-interfaces   enable some or all the library interfaces])
+case x"${enableval}" in
+xyes | x)
+  AC_MSG_ERROR([--enable-interfaces needs at least one argument chosen among ${available_interfaces}, none and all])
+  ;;
+xnone | xno)
+  for interface in ${available_interfaces}
+  do
+    eval ${interface}_interface_enabled=no
+  done
+  AC_MSG_RESULT(none)
+  ;;
+xall)
+  for interface in ${available_interfaces}
+  do
+    eval ${interface}_interface_enabled=yes
+  done
+  AC_MSG_RESULT([${available_interfaces}])
+  ;;
+*)
+  if test x"${enableval}" = xnot_specified
+  then
+    enableval=${default_interfaces}
+  fi
+  # Make the list blank-separated and lowercase; turn "c++" into "cxx".
+  required_interfaces=`echo "${enableval}" | sed -e 's/-/_/g' -e 's/[[ 	,]][[ 	,]]*/ /g' -e 's/c++/cxx/g' | tr '[[:upper:]]' '[[:lower:]]'`
+  # Check that the specified interfaces exist.
+  for interface in ${required_interfaces}
+  do
+    case " ${available_interfaces} " in
+    *\ ${interface}\ *)
+      ;;
+    *)
+      AC_MSG_ERROR([unknown interface ${interface}: must be one of ${available_interfaces}])
+      ;;
+    esac
+  done
+  # Initialize the enabled variable for each interface.
+  for interface in ${available_interfaces}
+  do
+    case " ${required_interfaces} " in
+    *\ ${interface}\ *)
+      eval ${interface}_interface_enabled=yes
+      enabled_interfaces="${enabled_interfaces}${enabled_interfaces:+ }${interface}"
+      ;;
+    *)
+      eval ${interface}_interface_enabled=no
+      ;;
+    esac
+  done
+  AC_MSG_RESULT([${enabled_interfaces}])
+  ;;
+esac
+
+# Checks for Prolog systems for which the interface is enabled.
+
+# Ciao Prolog
+if test x${ciao_prolog_interface_enabled} = xyes
+then
+  AC_CHECK_PROG(CIAO_PROLOG, ciao, ciao)
+  if test x"$CIAO_PROLOG" = xciao
+  then
+  AC_CHECK_HEADER(ciao_prolog.h,
+                  [],
+                  CIAO_PROLOG="")
+  fi
+fi
+AM_CONDITIONAL(BUILD_CIAO_PROLOG_INTERFACE, test x$CIAO_PROLOG = xciao)
+
+# GNU Prolog
+if test x${gnu_prolog_interface_enabled} = xyes
+then
+  AC_CHECK_PROG(GNU_PROLOG, gprolog, gprolog)
+  if test x"$GNU_PROLOG" = xgprolog
+  then
+    AC_CHECK_HEADER(gprolog.h,
+                    [],
+                    GNU_PROLOG="")
+  fi
+fi
+AM_CONDITIONAL(BUILD_GNU_PROLOG_INTERFACE, test x$GNU_PROLOG = xgprolog)
+
+# SICStus
+if test x${sicstus_prolog_interface_enabled} = xyes
+then
+  AC_CHECK_PROG(SICSTUS_PROLOG, sicstus, sicstus)
+  if test x"$SICSTUS_PROLOG" = xsicstus
+  then
+    # We require SICStus Prolog 3.9.1 or later.
+    AC_CHECK_HEADER(sicstus/sicstus.h,
+                    AC_MSG_CHECKING([for SICStus version 3.9.1 or later])
+                    AC_EGREP_CPP(yes,
+                      [
+                        #include <sicstus/sicstus.h>
+                        #if SICSTUS_MAJOR_VERSION > 3 || (SICSTUS_MAJOR_VERSION == 3 && SICSTUS_MINOR_VERSION > 9) || (SICSTUS_MAJOR_VERSION == 3 && SICSTUS_MINOR_VERSION == 9 && SICSTUS_REVISION_VERSION >= 1)
+                        yes
+                        #endif
+                      ],
+                    AC_MSG_RESULT(yes),
+                    SICSTUS_PROLOG=""
+                    AC_MSG_RESULT(no)
+                  ),
+                  SICSTUS_PROLOG="")
+  fi
+fi
+AM_CONDITIONAL(BUILD_SICSTUS_PROLOG_INTERFACE, test x$SICSTUS_PROLOG = xsicstus)
+
+# SWI Prolog
+if test x${swi_prolog_interface_enabled} = xyes
+then
+  AC_CHECK_SWI_PROLOG
+fi
+AM_CONDITIONAL(BUILD_SWI_PROLOG_INTERFACE, test x$have_swi_prolog = xyes)
+
+# XSB
+if test x${xsb_prolog_interface_enabled} = xyes
+then
+  AC_CHECK_PROG(XSB_PROLOG, xsb, xsb)
+  # The foreign language interface include file is `cinterf.h',
+  # but this resides in the emulator directory and is not installed
+  # in any standard place.
+  if test x"$XSB_PROLOG" = xxsb
+  then
+    xsb_emu_dir=`xsb --nobanner --quietload --noprompt \
+                  -e "write('emudir='), \
+                    xsb_configuration(emudir, X), write(X), nl, halt." \
+                      2>/dev/null | sed "s/^emudir=//g"`
+    xsb_config_dir=`xsb --nobanner --quietload --noprompt \
+                     -e "write('config_dir='), \
+                       xsb_configuration(config_dir,X), write(X), nl, halt." \
+                         2>/dev/null | sed "s/^config_dir=//g"`
+    xsb_includes="-I${xsb_emu_dir} -I${xsb_config_dir}"
+  fi
+fi
+AM_CONDITIONAL(BUILD_XSB_PROLOG_INTERFACE, test x$XSB_PROLOG = xxsb)
+
+# YAP
+if test x${yap_prolog_interface_enabled} = xyes
+then
+  AC_CHECK_PROG(YAP_PROLOG, yap, yap)
+  if test x"$YAP_PROLOG" = xyap
+  then
+    AC_CHECK_HEADER(Yap/c_interface.h,
+                    [],
+                    YAP_PROLOG="")
+  fi
+fi
+AM_CONDITIONAL(BUILD_YAP_PROLOG_INTERFACE, test x$YAP_PROLOG = xyap)
+
+# This is the list of interfaces that are enabled by default.
+# Different instantiations are separated by a '@' character.
+default_instantiations="Polyhedron @ BD_Shape<int8_t>"
+
+enableval=not_specified
+AC_MSG_CHECKING([which instantiations are enabled])
+AC_ARG_ENABLE(instantiations,
+[  --enable-instantiations   enable instantiations for the non-C++ interfaces])
+case x"${enableval}" in
+xyes | x)
+  AC_MSG_ERROR([--enable-instantiations needs at least one argument])
+  ;;
+xno | xnone)
+  enabled_instantiations=
+  AC_MSG_RESULT(none)
+  ;;
+*)
+  if test x"${enableval}" = xnot_specified
+  then
+    enableval=${default_instantiations}
+  fi
+  # Make the list blank-separated.
+  required_instantiations=`echo "${enableval}" | sed -e 's/[[ 	]][[ 	]]*//g' -e 's/@/ /g' -e 's/[[ 	]][[ 	]]*/ /g'`
+  # Check the specified instantiations for validity.
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS -I${srcdir}"
+  for instantiation in ${required_instantiations}
+  do
+    AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include "instchk.hh"
+
+using namespace Parma_Polyhedra_Library;
+
+bool valid = ${instantiation}::valid_instantiation();
+]])],
+      valid_instantiation=yes,
+      valid_instantiation=no)
+    if test x${valid_instantiation} != xyes
+    then
+      AC_MSG_ERROR([invalid instantiation ${instantiation}])
+    fi
+  done
+  CPPFLAGS="$ac_save_CPPFLAGS"
+  AC_MSG_RESULT([${required_instantiations}])
+  ;;
+esac
+
 # Libtool.
 # Turn off shared libraries during beta-testing, since they
 # make debugging harder and the build process takes too long.
@@ -497,100 +708,14 @@ AC_PROG_LIBTOOL
 AC_CHECK_PROG(MD5SUM, md5sum, md5sum)
 AM_CONDITIONAL(HAVE_MD5SUM, test x$MD5SUM = xmd5sum)
 
-# Checks for Prolog systems.
-
-# Ciao Prolog
-
-AC_CHECK_PROG(CIAO_PROLOG, ciao, ciao)
-if test x"$CIAO_PROLOG" = xciao
-then
-AC_CHECK_HEADER(ciao_prolog.h,
-                [],
-                CIAO_PROLOG="")
-fi
-AM_CONDITIONAL(HAVE_CIAO_PROLOG, test x$CIAO_PROLOG = xciao)
-
-# GNU Prolog
-
-AC_CHECK_PROG(GNU_PROLOG, gprolog, gprolog)
-if test x"$GNU_PROLOG" = xgprolog
-then
-AC_CHECK_HEADER(gprolog.h,
-                [],
-                GNU_PROLOG="")
-fi
-AM_CONDITIONAL(HAVE_GNU_PROLOG, test x$GNU_PROLOG = xgprolog)
-
-# SICStus
-
-AC_CHECK_PROG(SICSTUS_PROLOG, sicstus, sicstus)
-if test x"$SICSTUS_PROLOG" = xsicstus
-then
-# We require SICStus Prolog 3.9.1 or later.
-AC_CHECK_HEADER(sicstus/sicstus.h,
-                AC_MSG_CHECKING([for SICStus version 3.9.1 or later])
-                AC_EGREP_CPP(yes,
-                  [
-                    #include <sicstus/sicstus.h>
-                    #if SICSTUS_MAJOR_VERSION > 3 || (SICSTUS_MAJOR_VERSION == 3 && SICSTUS_MINOR_VERSION > 9) || (SICSTUS_MAJOR_VERSION == 3 && SICSTUS_MINOR_VERSION == 9 && SICSTUS_REVISION_VERSION >= 1)
-                      yes
-                    #endif
-                  ],
-                  AC_MSG_RESULT(yes),
-                  SICSTUS_PROLOG=""
-                  AC_MSG_RESULT(no)
-                ),
-                SICSTUS_PROLOG="")
-fi
-AM_CONDITIONAL(HAVE_SICSTUS_PROLOG, test x$SICSTUS_PROLOG = xsicstus)
-
-# SWI Prolog
-
-AC_CHECK_SWI_PROLOG
-
-# XSB
-
-AC_CHECK_PROG(XSB_PROLOG, xsb, xsb)
-# The foreign language interface include file is `cinterf.h',
-# but this resides in the emulator directory and is not installed
-# in any standard place.
-if test x"$XSB_PROLOG" = xxsb
-then
-xsb_emu_dir=`xsb --nobanner --quietload --noprompt \
-                 -e "write('emudir='), \
-                     xsb_configuration(emudir, X), write(X), nl, halt." \
-                 2>/dev/null | sed "s/^emudir=//g"`
-xsb_config_dir=`xsb --nobanner --quietload --noprompt \
-                    -e "write('config_dir='), \
-                        xsb_configuration(config_dir,X), write(X), nl, halt." \
-                    2>/dev/null | sed "s/^config_dir=//g"`
-xsb_includes="-I${xsb_emu_dir} -I${xsb_config_dir}"
-fi
-AM_CONDITIONAL(HAVE_XSB_PROLOG, test x$XSB_PROLOG = xxsb)
-
-# YAP
-
-AC_CHECK_PROG(YAP_PROLOG, yap, yap)
-if test x"$YAP_PROLOG" = xyap
-then
-AC_CHECK_HEADER(Yap/c_interface.h,
-                [],
-                YAP_PROLOG="")
-fi
-AM_CONDITIONAL(HAVE_YAP_PROLOG, test x$YAP_PROLOG = xyap)
-
-# Check for the Mercury compiler
-AC_CHECK_PROG(MERCURY_COMPILER, mmc, mmc)
-AM_CONDITIONAL(HAVE_MERCURY_COMPILER, test x$MERCURY_COMPILER = xmmc)
-
-# Check for the GLPK library
+# Check for the GLPK library.
 AC_LANG_PUSH(C)
 AC_CHECK_HEADER(glpk.h, HAVE_GLPK_H=yes)
 AM_CONDITIONAL(HAVE_GLPK, test x$HAVE_GLPK_H = xyes)
 AC_LANG_POP(C)
 
 # Checks for header files.
-AC_CHECK_HEADERS([getopt.h signal.h sys/time.h sys/resource.h sys/time.h sys/types.h unistd.h])
+AC_CHECK_HEADERS([getopt.h signal.h sys/resource.h sys/time.h sys/types.h unistd.h])
 
 # Checks for header declarations.
 AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
@@ -619,7 +744,10 @@ then
 fi
 
 # System-dependent adjustments.
-text_md5sum="$MD5SUM -t"
+
+# On Debian the md5sum from package "dpkg" lacks -t.
+AC_TRY_RUN([md5sum -t], [text_md5sum="$MD5SUM -t"], [text_md5sum="$MD5SUM"])
+
 no_undefined=no
 
 case "${host_os}" in
@@ -648,8 +776,8 @@ AC_SUBST(text_md5sum)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm ppl.spec
-		debian/libppl.copyright
-		debian/libppl-pwl.copyright
+                debian/libppl.copyright
+                debian/libppl-pwl.copyright
                 src/Makefile
                 src/version.hh
                 src/ppl-config.cc
@@ -688,8 +816,10 @@ if test x"$gmp_supports_exceptions" = xno
 then
   AC_MSG_WARN([CANNOT PROPAGATE EXCEPTIONS BACK FROM GMP:
 *** MEMORY EXHAUSTION MAY RESULT IN ABRUPT TERMINATION.
-*** If you are using g++, make sure you use version 4.1.3 or higher
-*** and use a version of GMP compiled with the option -fexceptions.
+*** This is OK, if you do not plan to use the bounded memory capabilities
+*** offered by the PPL.  Otherwise, if you are using GCC or the Intel C/C++
+*** compiler, please make sure you use a version of GMP compiled with the
+*** `-fexceptions' compiler option.
 *** To build such a version, you can configure GMP as follows:
 *** CPPFLAGS=-fexceptions ./configure --enable-cxx --prefix=/usr/local])
 fi

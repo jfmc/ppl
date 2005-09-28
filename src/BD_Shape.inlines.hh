@@ -41,8 +41,7 @@ numer_denom(const Checked_Number<T, Policy>& from,
 	 && !is_minus_infinity(from)
 	 && !is_plus_infinity(from));
   mpq_class q;
-  Checked::assign<Checked::Transparent_Policy>(q, raw_value(from),
-					       ROUND_IGNORE);
+  assign(q, raw_value(from), ROUND_IGNORE);
   num = q.get_num();
   den = q.get_den();
 }
@@ -54,29 +53,26 @@ div_round_up(Checked_Number<T, Policy>& to,
 	     Coefficient_traits::const_reference x,
 	     Coefficient_traits::const_reference y) {
   Coefficient q;
-  Result r = Checked::div<Check_Overflow_Policy>(raw_value(q),
-						 raw_value(x),
-						 raw_value(y),
-						 ROUND_UP);
+  Result r = assign_div(raw_value(q), raw_value(x), raw_value(y), ROUND_UP);
   if (r == V_POS_OVERFLOW) {
     to = PLUS_INFINITY;
     return;
   }
-  assign(to, q, ROUND_UP);
+  assign(to, raw_value(q), ROUND_UP);
 }
 
 //! Assigns to \p x the minimum between \p x and \p y.
-template <typename T>
+template <typename N>
 inline void
-min_assign(T& x, const T& y) {
+min_assign(N& x, const N& y) {
   if (x > y)
     x = y;
 }
 
 //! Assigns to \p x the maximum between \p x and \p y.
-template <typename T>
+template <typename N>
 inline void
-max_assign(T& x, const T& y) {
+max_assign(N& x, const N& y) {
   if (x < y)
     x = y;
 }
@@ -87,7 +83,7 @@ BD_Shape<T>::max_space_dimension() {
   using std::min;
   // One dimension is reserved to have a value of type dimension_type
   // that does not represent a legal dimension.
-  return min(DB_Matrix<T>::max_num_rows() - 1, DB_Matrix<T>::max_num_columns() - 1);
+  return min(DB_Matrix<N>::max_num_rows() - 1, DB_Matrix<N>::max_num_columns() - 1);
 }
 
 template <typename T>
@@ -97,7 +93,7 @@ BD_Shape<T>::init() {
   // The matrix `dbm' is initialized a plus infinity to
   // haven't any constraints.
   for (dimension_type i = 0; i <= space_dim; ++i) {
-    DB_Row<T>& dbm_i = dbm[i];
+    DB_Row<N>& dbm_i = dbm[i];
     for (dimension_type j = 0; j <= space_dim; ++j)
       dbm_i[j] = PLUS_INFINITY;
   }
@@ -149,7 +145,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
   dimension_type space_dim = space_dimension();
   const Generator_System::const_iterator gs_begin = gs.begin();
   const Generator_System::const_iterator gs_end = gs.end();
-  T tmp;
+  N tmp;
 
   bool dbm_initialized = false;
   bool point_seen = false;
@@ -166,7 +162,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 	  // When the first point is handled, we initialize the DBM.
 	  dbm_initialized = true;
 	  for (dimension_type i = space_dim; i > 0; --i) {
-	    DB_Row<T>& dbm_i = dbm[i];
+	    DB_Row<N>& dbm_i = dbm[i];
 	    for (dimension_type j = space_dim; j > 0; --j)
 	      if (i != j)
 		div_round_up(dbm_i[j],
@@ -175,7 +171,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 			     d);
 	    div_round_up(dbm_i[0], -g.coefficient(Variable(i-1)), d);
 	  }
-	  DB_Row<T>& dbm_0 = dbm[0];
+	  DB_Row<N>& dbm_0 = dbm[0];
 	  for (dimension_type j = space_dim; j > 0; --j)
 	    div_round_up(dbm_0[j], g.coefficient(Variable(j-1)), d);
 	}
@@ -183,7 +179,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 	  // This is not the first point: the DBM already contains
 	  // valid values and we must compute maxima.
 	  for (dimension_type i = space_dim; i > 0; --i) {
-	    DB_Row<T>& dbm_i = dbm[i];
+	    DB_Row<N>& dbm_i = dbm[i];
 	    for (dimension_type j = space_dim; j > 0; --j)
 	      if (i != j) {
 		div_round_up(tmp,
@@ -195,7 +191,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 	    div_round_up(tmp, -g.coefficient(Variable(i-1)), d);
 	    max_assign(dbm_i[0], tmp);
 	  }
-	  DB_Row<T>& dbm_0 = dbm[0];
+	  DB_Row<N>& dbm_0 = dbm[0];
 	  for (dimension_type j = space_dim; j > 0; --j) {
 	    div_round_up(tmp, g.coefficient(Variable(j-1)), d);
 	    max_assign(dbm_0[j], tmp);
@@ -221,7 +217,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
     case Generator::LINE:
       {
 	for (dimension_type i = space_dim; i > 0; --i) {
-	  DB_Row<T>& dbm_i = dbm[i];
+	  DB_Row<N>& dbm_i = dbm[i];
 	  for (dimension_type j = space_dim; j > 0; --j)
 	    if (i != j
 		&& (g.coefficient(Variable(j-1))
@@ -230,7 +226,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 	  if (g.coefficient(Variable(i-1)) != 0)
 	    dbm_i[0] = PLUS_INFINITY;
 	}
-	DB_Row<T>& dbm_0 = dbm[0];
+	DB_Row<N>& dbm_0 = dbm[0];
 	for (dimension_type j = space_dim; j > 0; --j)
 	  if (g.coefficient(Variable(j-1)) != 0)
 	    dbm_0[j] = PLUS_INFINITY;
@@ -239,7 +235,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
     case Generator::RAY:
       {
 	for (dimension_type i = space_dim; i > 0; --i) {
-	  DB_Row<T>& dbm_i = dbm[i];
+	  DB_Row<N>& dbm_i = dbm[i];
 	  for (dimension_type j = space_dim; j > 0; --j)
 	    if (i != j
 		&& (g.coefficient(Variable(j-1))
@@ -248,7 +244,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 	  if (g.coefficient(Variable(i-1)) < 0)
 	    dbm_i[0] = PLUS_INFINITY;
 	}
-	DB_Row<T>& dbm_0 = dbm[0];
+	DB_Row<N>& dbm_0 = dbm[0];
 	for (dimension_type j = space_dim; j > 0; --j)
 	  if (g.coefficient(Variable(j-1)) > 0)
 	    dbm_0[j] = PLUS_INFINITY;
@@ -511,17 +507,17 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
 
   // Select the cell to be modified for the "<=" part of the constraint,
   // and set `a' to the absolute value of itself.
-  T& dbm_j_0_j_1 = dbm[non_zero_position[0]][non_zero_position[1]];
-  T& dbm_j_1_j_0 = dbm[non_zero_position[1]][non_zero_position[0]];
-  T& x = (a < 0) ? dbm_j_0_j_1 : dbm_j_1_j_0;
+  N& dbm_j_0_j_1 = dbm[non_zero_position[0]][non_zero_position[1]];
+  N& dbm_j_1_j_0 = dbm[non_zero_position[1]][non_zero_position[0]];
+  N& x = (a < 0) ? dbm_j_0_j_1 : dbm_j_1_j_0;
   // The element `y' is the symmetric of `x'.
-  T& y = (a < 0) ? dbm_j_1_j_0 : dbm_j_0_j_1;
+  N& y = (a < 0) ? dbm_j_1_j_0 : dbm_j_0_j_1;
   if (a < 0)
     a = -a;
 
   bool check_change = false;
   // Compute b/a into `d', rounding the result towards plus infinity.
-  T d;
+  N d;
   div_round_up(d, b, a);
   if (x > d) {
     x = d;
@@ -570,7 +566,7 @@ BD_Shape<T>::add_constraints_and_minimize(const Constraint_System& cs) {
 
 template <typename T>
 inline void
-BD_Shape<T>::concatenate_assign(const BD_Shape<T>& y) {
+BD_Shape<T>::concatenate_assign(const BD_Shape& y) {
   assert(OK());
   assert(y.OK());
 
@@ -600,7 +596,7 @@ BD_Shape<T>::concatenate_assign(const BD_Shape<T>& y) {
   // placed in the right position on the new matrix.
   add_space_dimensions_and_embed(y_space_dim);
   for (dimension_type i = space_dim + 1; i <= space_dim + y_space_dim; ++i) {
-    DB_Row<T>& dbm_i = dbm[i];
+    DB_Row<N>& dbm_i = dbm[i];
     dbm_i[0] = y.dbm[i-space_dim][0];
     dbm[0][i] = y.dbm[0][i-space_dim];
     for (dimension_type j = space_dim + 1; j <= space_dim + y_space_dim; ++j)
@@ -696,17 +692,17 @@ BD_Shape<T>::is_empty() const {
   // zero-weight arcs.
 
   // Values of the minimum path, from source to all nodes.
-  DB_Row<T> z(space_dim + 1);
+  DB_Row<N> z(space_dim + 1);
   for (dimension_type i = 0; i <= space_dim; ++i)
     assign(z[i], 0, ROUND_IGNORE);
 
   // The relax-technique: given an arc (j,h), it tries to improve
   // the value of minimum path for h passing by j.
-  T sum1;
+  N sum1;
   for (dimension_type i = 0; i <= space_dim; ++i)
     for (dimension_type j = 0; j <= space_dim; ++j) {
-      const DB_Row<T>& dbm_j = dbm[j];
-      T& z_j = z[j];
+      const DB_Row<N>& dbm_j = dbm[j];
+      N& z_j = z[j];
       for (dimension_type h = 0; h <= space_dim; ++h) {
 	assign_add(sum1, dbm_j[h], z_j, ROUND_UP);
 	min_assign(z[h], sum1);
@@ -717,10 +713,10 @@ BD_Shape<T>::is_empty() const {
   // with a negative weight.
   // This happens when vector `z' don't contain really the
   // smaller values of minimum path, from source to all nodes.
-  T sum2;
+  N sum2;
   for (dimension_type j = 0; j <= space_dim; ++j) {
-    const DB_Row<T>& dbm_j = dbm[j];
-    T& z_j = z[j];
+    const DB_Row<N>& dbm_j = dbm[j];
+    N& z_j = z[j];
     for (dimension_type h = 0; h <= space_dim; ++h) {
       assign_add(sum2, dbm_j[h], z_j, ROUND_UP);
       if (z[h] > sum2) {
@@ -753,7 +749,7 @@ BD_Shape<T>::is_universe() const {
   // An universe system of bounded differences has not constraints:
   // in all the cells of matrix `dbm' must have `plus infinity'.
   for (dimension_type i = 0; i <= space_dim; ++i) {
-    const DB_Row<T>& dbm_i = dbm[i];
+    const DB_Row<N>& dbm_i = dbm[i];
     for (dimension_type j = 0; j <= space_dim; ++j)
       if (!is_plus_infinity(dbm_i[j]))
 	return false;
@@ -786,9 +782,9 @@ BD_Shape<T>::is_transitively_reduced() const {
   // The variable(i-1) and variable(j-1) are equivalent if and only if
   // m_i_j == -(m_j_i).
   for (dimension_type i = 0; i < space_dim; ++i) {
-    const DB_Row<T>& dbm_i = x_copy.dbm[i];
+    const DB_Row<N>& dbm_i = x_copy.dbm[i];
     for (dimension_type j = i + 1; j <= space_dim; ++j) {
-      T negated_dbm_ji;
+      N negated_dbm_ji;
       if (assign_neg(negated_dbm_ji, x_copy.dbm[j][i], ROUND_IGNORE) == V_EQ
 	  && negated_dbm_ji == dbm_i[j])
 	// Two equivalent variables have got the same leader
@@ -802,17 +798,17 @@ BD_Shape<T>::is_transitively_reduced() const {
   // A constraint `c' is redundant, when there are two constraints such that
   // their sum is the same constraint with the inhomogeneous term
   // less than or equal to the `c' one.
-  T c;
+  N c;
   for (dimension_type k = 0; k <= space_dim; ++k) {
     if (leader[k] == k) {
-      const DB_Row<T>& x_k = dbm[k];
+      const DB_Row<N>& x_k = dbm[k];
       for (dimension_type i = 0; i <= space_dim; ++i) {
 	if (leader[i] == i) {
-	  const DB_Row<T>& x_i = dbm[i];
-	  const T& x_i_k = x_i[k];
+	  const DB_Row<N>& x_i = dbm[i];
+	  const N& x_i_k = x_i[k];
 	  for (dimension_type j = 0; j <= space_dim; ++j) {
 	    if (leader[j] == j) {
-	      const T& x_i_j = x_i[j];
+	      const N& x_i_j = x_i[j];
 	      if (!is_plus_infinity(x_i_j)) {
 		assign_add(c, x_i_k, x_k[j], ROUND_UP);
 		if (x_i_j >= c)
@@ -839,7 +835,7 @@ BD_Shape<T>::is_transitively_reduced() const {
   // a- each leader could be connected with only zero-equivalent one,
   // b- each no-leader with only another zero-equivalent one.
   for (dimension_type i = 0; i <= space_dim; ++i) {
-    const DB_Row<T>& x_i = dbm[i];
+    const DB_Row<N>& x_i = dbm[i];
     // It count with how many variables the selected variable is
     // connected.
     dimension_type t = 0;
@@ -1024,13 +1020,13 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
 
   // Select the cell to be checked for the "<=" part of the constraint,
   // and set `a' to the absolute value of itself.
-  const T& dbm_j_0_j_1 = dbm[non_zero_position[0]][non_zero_position[1]];
-  const T& dbm_j_1_j_0 = dbm[non_zero_position[1]][non_zero_position[0]];
+  const N& dbm_j_0_j_1 = dbm[non_zero_position[0]][non_zero_position[1]];
+  const N& dbm_j_1_j_0 = dbm[non_zero_position[1]][non_zero_position[0]];
   if (a < 0) {
     a = -a;
-    T d;
+    N d;
     div_round_up(d, b, a);
-    T d1;
+    N d1;
     div_round_up(d1, -b, a);
     if (c.is_equality()) {
       if (d == dbm_j_0_j_1 && d1 == dbm_j_1_j_0)
@@ -1065,9 +1061,9 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
     }
   }
   else {
-    T d;
+    N d;
     div_round_up(d, b, a);
-    T d1;
+    N d1;
     div_round_up(d1, -b, a);
     if (c.is_equality()) {
       if (d == dbm_j_1_j_0 && d1 == dbm_j_0_j_1)
@@ -1136,9 +1132,9 @@ BD_Shape<T>::relation_with(const Generator& g) const {
     for (dimension_type j = i + 1; j <= space_dim; ++j) {
       const Variable x(j - 1);
       const bool x_dimension_incompatible = x.space_dimension() > g_space_dim;
-      T dbm_i_j = dbm[i][j];
-      T dbm_j_i = dbm[j][i];
-      T negated_dbm_ji;
+      N dbm_i_j = dbm[i][j];
+      N dbm_j_i = dbm[j][i];
+      N negated_dbm_ji;
       const bool is_equality
 	= assign_neg(negated_dbm_ji, dbm_j_i, ROUND_IGNORE) == V_EQ
 	&& negated_dbm_ji == dbm_i_j;
@@ -1256,15 +1252,15 @@ BD_Shape<T>::closure_assign() const {
   // indicated with `m' the matrix `dbm' we have
   // m_i_j = min(m_i_j,
   //             m_i_k + m_k_j).
-  T sum;
+  N sum;
   for (dimension_type k = 0; k <= n; ++k) {
-    DB_Row<T>& xdbm_k = x.dbm[k];
+    DB_Row<N>& xdbm_k = x.dbm[k];
     for (dimension_type i = 0; i <= n; ++i) {
-      DB_Row<T>& xdbm_i = x.dbm[i];
-      T& xdbm_i_k = xdbm_i[k];
+      DB_Row<N>& xdbm_i = x.dbm[i];
+      N& xdbm_i_k = xdbm_i[k];
       if (!is_plus_infinity(xdbm_i_k)) {
 	for (dimension_type j = 0; j <= n; j++) {
-	  T& xdbm_k_j = xdbm_k[j];
+	  N& xdbm_k_j = xdbm_k[j];
 	  if (!is_plus_infinity(xdbm_k_j)) {
 	    // Round upward. In fact, for example, we take this system:
 	    // x3      <= 2.5
@@ -1288,7 +1284,7 @@ BD_Shape<T>::closure_assign() const {
 
   x.status.set_transitively_closed();
   for (dimension_type h = 0; h <= n; ++h) {
-    T& xdbm_h_h = x.dbm[h][h];
+    N& xdbm_h_h = x.dbm[h][h];
     // We can check the emptiness of the system of bounded differences.
     // If the system of bounded differences is empty
     // on the diagonal there is a negative value.
@@ -1323,9 +1319,9 @@ BD_Shape<T>::transitive_reduction_assign() const {
   // The variable(i-1) and variable(j-1) are equivalent if and only if
   // m_i_j == -(m_j_i).
   for (dimension_type i = 0; i < space_dim; ++i) {
-    const DB_Row<T>& dbm_i = dbm[i];
+    const DB_Row<N>& dbm_i = dbm[i];
     for (dimension_type j = i + 1; j <= space_dim; ++j) {
-      T negated_dbm_ji;
+      N negated_dbm_ji;
       if (assign_neg(negated_dbm_ji, dbm[j][i], ROUND_IGNORE) == V_EQ
 	  && negated_dbm_ji == dbm_i[j])
 	// When there are two equivalent variables, the greater one has
@@ -1339,19 +1335,19 @@ BD_Shape<T>::transitive_reduction_assign() const {
   // A constraint `c' is redundant when there are two constraints such that
   // their sum is the same constraint with the inhomogeneous term
   // less than or equal to the `c' one.
-  T c;
+  N c;
   BD_Shape<T>& x = const_cast<BD_Shape<T>&>(*this);
   for (dimension_type k = 0; k <= space_dim; ++k) {
     if (leader[k] == k) {
-      DB_Row<T>& x_k = x.dbm[k];
+      DB_Row<N>& x_k = x.dbm[k];
       for (dimension_type i = 0; i <= space_dim; ++i) {
 	if (leader[i] == i) {
-	  DB_Row<T>& x_i = x.dbm[i];
-	  T& x_i_k = x_i[k];
+	  DB_Row<N>& x_i = x.dbm[i];
+	  N& x_i_k = x_i[k];
 	  for (dimension_type j = 0; j <= space_dim; ++j) {
 	    if (leader[j] == j) {
 	      assign_add(c, x_i_k, x_k[j], ROUND_UP);
-	      T& x_i_j = x_i[j];
+	      N& x_i_j = x_i[j];
 	      if (x_i_j >= c)
 		x_i_j = PLUS_INFINITY;
 	    }
@@ -1367,7 +1363,7 @@ BD_Shape<T>::transitive_reduction_assign() const {
   // all the equivalent variables.
   for (dimension_type i = 2; i <= space_dim; ++i) {
     dimension_type ld_i = leader[i];
-    DB_Row<T>& x_i = x.dbm[i];
+    DB_Row<N>& x_i = x.dbm[i];
     if (ld_i == i) {
       // When we have a leader, we remove all constraints
       // that this variable has got with the no-leaders variables
@@ -1424,11 +1420,11 @@ BD_Shape<T>::bds_hull_assign(const BD_Shape& y) {
   // elements selected from `*this' and `y'.
   assert(space_dim == 0 || marked_transitively_closed());
   for (dimension_type i = 0; i <= space_dim; ++i) {
-    DB_Row<T>& dbm_i = dbm[i];
-    const DB_Row<T>& y_dbm_i = y.dbm[i];
+    DB_Row<N>& dbm_i = dbm[i];
+    const DB_Row<N>& y_dbm_i = y.dbm[i];
     for (dimension_type j = 0; j <= space_dim; ++j) {
-      T& dbm_ij = dbm_i[j];
-      const T& y_dbm_ij = y_dbm_i[j];
+      N& dbm_ij = dbm_i[j];
+      const N& y_dbm_ij = y_dbm_i[j];
       if (dbm_ij < y_dbm_ij)
 	dbm_ij = y_dbm_ij;
     }
@@ -1551,13 +1547,13 @@ BD_Shape<T>::add_space_dimensions_and_embed(dimension_type m) {
   dbm.grow(new_space_dim + 1);
   // Fill top-right corner of the matrix with plus infinity.
   for (dimension_type i = 0; i <= space_dim; ++i) {
-    DB_Row<T>& dbm_i = dbm[i];
+    DB_Row<N>& dbm_i = dbm[i];
     for (dimension_type j = space_dim + 1; j <= new_space_dim; ++j)
       dbm_i[j] = PLUS_INFINITY;
   }
   // Fill bottom of the matrix with plus infinity.
   for (dimension_type i = space_dim + 1; i <= new_space_dim; ++i) {
-    DB_Row<T>& dbm_i = dbm[i];
+    DB_Row<N>& dbm_i = dbm[i];
     for (dimension_type j = 0; j <= new_space_dim; ++j)
       dbm_i[j] = PLUS_INFINITY;
   }
@@ -1605,13 +1601,13 @@ BD_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
 
   // Fill top-right corner of the matrix with plus_infinity.
   for (dimension_type i = 1; i <= space_dim; ++i){
-    DB_Row<T>& dbm_i = dbm[i];
+    DB_Row<N>& dbm_i = dbm[i];
     for (dimension_type j = space_dim + 1; j <= new_space_dim; ++j)
       dbm_i[j] = PLUS_INFINITY;
   }
   // Bottom of the matrix and first row.
   for (dimension_type i = space_dim + 1; i <= new_space_dim; ++i) {
-    DB_Row<T>& dbm_i = dbm[i];
+    DB_Row<N>& dbm_i = dbm[i];
     dbm_i[0] = 0;
     dbm[0][i] = 0;
     for (dimension_type j = 1; j <= new_space_dim; ++j)
@@ -1692,7 +1688,7 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
     while (src < tbr_next) {
       dbm[dst] = dbm[src];
       for (dimension_type i = 0; i <= old_space_dim; ++i) {
-	DB_Row<T>& dbm_i = dbm[i];
+	DB_Row<N>& dbm_i = dbm[i];
 	dbm_i[dst] = dbm_i[src];
       }
       ++dst;
@@ -1705,7 +1701,7 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
   while (src <= old_space_dim) {
     dbm[dst] = dbm[src];
     for (dimension_type i = 0; i <= old_space_dim; ++i) {
-      DB_Row<T>& dbm_i = dbm[i];
+      DB_Row<N>& dbm_i = dbm[i];
       dbm_i[dst] = dbm_i[src];
     }
     ++src;
@@ -1783,17 +1779,17 @@ BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
   }
 
   // We create a new matrix with the new space dimension.
-  DB_Matrix<T> x(new_space_dim+1);
+  DB_Matrix<N> x(new_space_dim+1);
   // First of all we must map the unary constraints, because
   // there is the fictitious variable `zero', that can't be mapped
   // at all.
   for (dimension_type i = new_space_dim + 1; i-- > 0; )
     x[i][i] = PLUS_INFINITY;
-  DB_Row<T>& dbm_0 = dbm[0];
-  DB_Row<T>& x_0 = x[0];
+  DB_Row<N>& dbm_0 = dbm[0];
+  DB_Row<N>& x_0 = x[0];
   for (dimension_type j = 1; j <= space_dim; ++j) {
-    T& dbm_0_j = dbm_0[j];
-    T& dbm_j_0 = dbm[j][0];
+    N& dbm_0_j = dbm_0[j];
+    N& dbm_j_0 = dbm[j][0];
     dimension_type new_j;
     if (pfunc.maps(j - 1, new_j)) {
       x_0[new_j + 1] = dbm_0_j;
@@ -1804,9 +1800,9 @@ BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
   for (dimension_type i = 1; i <= space_dim; ++i) {
     dimension_type new_i;
     if (pfunc.maps(i - 1, new_i)) {
-      DB_Row<T>& dbm_i = dbm[i];
+      DB_Row<N>& dbm_i = dbm[i];
       ++new_i;
-      DB_Row<T>& x_new_i = x[new_i];
+      DB_Row<N>& x_new_i = x[new_i];
       for (dimension_type j = i+1; j <= space_dim; ++j) {
 	dimension_type new_j;
 	if (pfunc.maps(j - 1, new_j)) {
@@ -1850,11 +1846,11 @@ BD_Shape<T>::intersection_assign(const BD_Shape& y) {
   // the constraints and we choose the less values.
   bool changed = false;
   for (dimension_type i = 0; i <= space_dim; ++i) {
-    DB_Row<T>& dbm_i = dbm[i];
-    const DB_Row<T>& y_dbm_i = y.dbm[i];
+    DB_Row<N>& dbm_i = dbm[i];
+    const DB_Row<N>& y_dbm_i = y.dbm[i];
     for (dimension_type j = 0; j <= space_dim; ++j) {
-      T& dbm_ij = dbm_i[j];
-      const T& y_dbm_ij = y_dbm_i[j];
+      N& dbm_ij = dbm_i[j];
+      const N& y_dbm_ij = y_dbm_i[j];
       if (dbm_ij > y_dbm_ij) {
 	dbm_ij = y_dbm_ij;
 	changed = true;
@@ -1947,11 +1943,11 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
   // or equal to the value of the constraint, we take this value,
   // otherwise we remove this constraint.
   for (dimension_type i = 0; i <= space_dim; ++i) {
-    DB_Row<T>& dbm_i = dbm[i];
-    const DB_Row<T>& y_dbm_i = y.dbm[i];
+    DB_Row<N>& dbm_i = dbm[i];
+    const DB_Row<N>& y_dbm_i = y.dbm[i];
     for (dimension_type j = 0; j <= space_dim; ++j) {
-      T& dbm_ij = dbm_i[j];
-      const T& y_dbm_ij = y_dbm_i[j];
+      N& dbm_ij = dbm_i[j];
+      const N& y_dbm_ij = y_dbm_i[j];
       if (y_dbm_ij < dbm_ij) {
 	Iterator k = std::lower_bound(first, last, dbm_ij);
 	if (k != last) {
@@ -1970,12 +1966,12 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
 template <typename T>
 inline void
 BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y) {
-  static T stop_points[] = {
-    T(-2),
-    T(-1),
-    T(0),
-    T(1),
-    T(2)
+  static N stop_points[] = {
+    N(-2),
+    N(-1),
+    N(0),
+    N(1),
+    N(2)
   };
   CC76_extrapolation_assign(y,
 			    stop_points,
@@ -2028,7 +2024,7 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
   if (y.marked_empty())
     return;
 
-  T d;
+  N d;
   Constraint_System add_cons;
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i) {
@@ -2087,11 +2083,11 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
       }
       // Select the cell to be modified for the "<=" part of the constraint,
       // and set `a' to the absolute value of itself.
-      T& dbm_j_0_j_1 = dbm[non_zero_position[0]][non_zero_position[1]];
-      T& dbm_j_1_j_0 = dbm[non_zero_position[1]][non_zero_position[0]];
-      T& x = (a < 0) ? dbm_j_0_j_1 : dbm_j_1_j_0;
+      N& dbm_j_0_j_1 = dbm[non_zero_position[0]][non_zero_position[1]];
+      N& dbm_j_1_j_0 = dbm[non_zero_position[1]][non_zero_position[0]];
+      N& x = (a < 0) ? dbm_j_0_j_1 : dbm_j_1_j_0;
       // The element `y' is the symmetric of `x'.
-      T& y = (a < 0) ? dbm_j_1_j_0 : dbm_j_0_j_1;
+      N& y = (a < 0) ? dbm_j_1_j_0 : dbm_j_0_j_1;
       if (a < 0)
 	a = -a;
 
@@ -2150,11 +2146,11 @@ BD_Shape<T>::CH78_widening_assign(const BD_Shape& y) {
 
   // Extrapolate unstable bounds.
   for (dimension_type i = 0; i <= space_dim; ++i) {
-    DB_Row<T>& dbm_i = dbm[i];
-    const DB_Row<T>& y_dbm_i = y.dbm[i];
+    DB_Row<N>& dbm_i = dbm[i];
+    const DB_Row<N>& y_dbm_i = y.dbm[i];
     for (dimension_type j = 0; j <= space_dim; ++j) {
-      T& dbm_ij = dbm_i[j];
-      const T& y_dbm_ij = y_dbm_i[j];
+      N& dbm_ij = dbm_i[j];
+      const N& y_dbm_ij = y_dbm_i[j];
       // Note: in the following line the use of `!=' (as opposed to
       // the use of `<' that would seem -but is not- equivalent) is
       // intentional.
@@ -2211,7 +2207,7 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
   if (y.marked_empty())
     return;
 
-  T d;
+  N d;
   Constraint_System add_cons;
   for (Constraint_System::const_iterator i = cs.begin(); i != iend; ++i) {
     const Constraint& c = *i;
@@ -2270,11 +2266,11 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
       }
       // Select the cell to be modified for the "<=" part of the constraint,
       // and set `a' to the absolute value of itself.
-      T& dbm_j_0_j_1 = dbm[non_zero_position[0]][non_zero_position[1]];
-      T& dbm_j_1_j_0 = dbm[non_zero_position[1]][non_zero_position[0]];
-      T& x = (a < 0) ? dbm_j_0_j_1 : dbm_j_1_j_0;
+      N& dbm_j_0_j_1 = dbm[non_zero_position[0]][non_zero_position[1]];
+      N& dbm_j_1_j_0 = dbm[non_zero_position[1]][non_zero_position[0]];
+      N& x = (a < 0) ? dbm_j_0_j_1 : dbm_j_1_j_0;
       // The element `y' is the symmetric of `x'.
-      T& y = (a < 0) ? dbm_j_1_j_0 : dbm_j_0_j_1;
+      N& y = (a < 0) ? dbm_j_1_j_0 : dbm_j_0_j_1;
       if (a < 0)
 	a = -a;
 
@@ -2383,11 +2379,11 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
   // constraint of `y'.
   bool changed = false;
   for (dimension_type i = 0; i <= space_dim; ++i) {
-    DB_Row<T>& dbm_i = dbm[i];
-    const DB_Row<T>& y_dbm_i = y.dbm[i];
+    DB_Row<N>& dbm_i = dbm[i];
+    const DB_Row<N>& y_dbm_i = y.dbm[i];
     for (dimension_type j = 0; j <= space_dim; ++j) {
-      T& dbm_ij = dbm_i[j];
-      const T& y_dbm_ij = y_dbm_i[j];
+      N& dbm_ij = dbm_i[j];
+      const N& y_dbm_ij = y_dbm_i[j];
       if (is_plus_infinity(dbm_ij)) {
 	dbm_ij = y_dbm_ij;
 	changed = true;
@@ -2510,14 +2506,14 @@ BD_Shape<T>::affine_image(const Variable var,
 	else {
 	  // We translate all the constraints on `var' adding or
 	  // subtracting the value `b/denominator'.
-	  T d;
+	  N d;
 	  div_round_up(d, b, denominator);
-	  T c;
+	  N c;
 	  div_round_up(c, -b, denominator);
 	  for (dimension_type i = 0; i <= space_dim; ++i) {
-	    T& dbm_v_i = dbm[num_var][i];
+	    N& dbm_v_i = dbm[num_var][i];
 	    assign_add(dbm_v_i, dbm_v_i, c, ROUND_UP);
-	    T& dbm_i_v = dbm[i][num_var];
+	    N& dbm_i_v = dbm[i][num_var];
 	    assign_add(dbm_i_v, dbm_i_v, d, ROUND_UP);
 	  }
 	}
@@ -2534,13 +2530,13 @@ BD_Shape<T>::affine_image(const Variable var,
 	if (sgn(coeff) == sgn(denominator))
 	  add_constraint(denominator*var - denominator*Variable(j) == b);
 	else {
-	  T& dbm_v_0 = dbm[num_var][0];
-	  T& dbm_0_v = dbm[0][num_var];
-	  const T& dbm_j_0 = dbm[j+1][0];
-	  const T& dbm_0_j = dbm[0][j+1];
-	  T d;
+	  N& dbm_v_0 = dbm[num_var][0];
+	  N& dbm_0_v = dbm[0][num_var];
+	  const N& dbm_j_0 = dbm[j+1][0];
+	  const N& dbm_0_j = dbm[0][j+1];
+	  N d;
 	  div_round_up(d, b, denominator);
-	  T c;
+	  N c;
 	  div_round_up(c, -b, denominator);
 	  if (!is_plus_infinity(dbm_j_0)) {
 	    assign_add(dbm_0_v, dbm_j_0, d, ROUND_UP);
@@ -2566,8 +2562,8 @@ BD_Shape<T>::affine_image(const Variable var,
   // on `var' and add back `low_sum <= var <= up_sum'.
 
   // Approximationg `expr' from above and from below.
-  T up_sum(expr.inhomogeneous_term());
-  T low_sum;
+  N up_sum = raw_value(expr.inhomogeneous_term());
+  N low_sum;
   assign_neg(low_sum, up_sum, ROUND_UP);
   // Indices of the variables with value +inf.
   dimension_type up_var_index_inf;
@@ -2582,15 +2578,15 @@ BD_Shape<T>::affine_image(const Variable var,
     if (expr_coeff_var != 0) {
       const dimension_type k = i + 1;
       // Select the cells to be added in the two sums.
-      const T& dbm_0_k = dbm[0][k];
-      const T& dbm_k_0 = dbm[k][0];
+      const N& dbm_0_k = dbm[0][k];
+      const N& dbm_k_0 = dbm[k][0];
       if (expr_coeff_var > 0) {
 	// Upper approximation.
 	if (!is_plus_infinity(dbm_0_k)) {
 	  Coefficient a;
 	  Coefficient c;
 	  numer_denom(dbm_0_k, a, c);
-	  T d;
+	  N d;
 	  div_round_up(d, a*expr_coeff_var, c);
 	  assign_add(up_sum, up_sum, d, ROUND_UP);
 	}
@@ -2603,7 +2599,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	  Coefficient a;
 	  Coefficient c;
 	  numer_denom(dbm_k_0, a, c);
-	  T d;
+	  N d;
 	  div_round_up(d, a*expr_coeff_var, c);
 	  assign_add(low_sum, low_sum, d, ROUND_UP);
 	}
@@ -2623,7 +2619,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	  Coefficient a;
 	  Coefficient c;
 	  numer_denom(dbm_k_0, a, c);
-	  T d;
+	  N d;
 	  div_round_up(d, a*minus_expr_coeff_var, c);
 	  assign_add(up_sum, up_sum, d, ROUND_UP);
 	}
@@ -2636,7 +2632,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	  Coefficient a;
 	  Coefficient c;
 	  numer_denom(dbm_0_k, a, c);
-	  T d;
+	  N d;
 	  div_round_up(d, a*minus_expr_coeff_var, c);
 	  assign_add(low_sum, low_sum, d, ROUND_UP);
 	}
@@ -2665,8 +2661,8 @@ BD_Shape<T>::affine_image(const Variable var,
     // where var1 != var.
     for (dimension_type h = 1; h <= space_dim; ++h)  
       if (h != num_var && expr.coefficient(Variable(h-1)) > 0) {
-	T dbm_0_h = dbm[0][h];
-	T negate_dbm_0_h;
+	N dbm_0_h = dbm[0][h];
+	N negate_dbm_0_h;
 	assign_neg(negate_dbm_0_h, dbm_0_h, ROUND_UP);
 	assign_add(dbm[h][num_var], negate_dbm_0_h, dbm[0][num_var],
 		   ROUND_UP);
@@ -2694,8 +2690,8 @@ BD_Shape<T>::affine_image(const Variable var,
     for (dimension_type h = 1; h <= space_dim; ++h)  
       if (h != num_var)
 	if (expr.coefficient(Variable(h-1)) < 0) {     
-	  T dbm_h_0 = dbm[h][0];
-	  T negate_dbm_h_0;
+	  N dbm_h_0 = dbm[h][0];
+	  N negate_dbm_h_0;
 	  assign_neg(negate_dbm_h_0, dbm_h_0, ROUND_UP);
 	  assign_add(dbm[num_var][h], negate_dbm_h_0, dbm[num_var][0],
 		     ROUND_UP);
@@ -2770,7 +2766,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
   // or -denominator.
   // If t > 1, `expr' is general.
   Coefficient b = expr.inhomogeneous_term();
-  DB_Row<T>& dbm_nv = dbm[num_var];
+  DB_Row<N>& dbm_nv = dbm[num_var];
   if (t == 0) {
     closure_assign();
     // If `*this' is empty, then its image is empty.
@@ -2895,7 +2891,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   // In the second case the coefficient of `var'is equal to denominator
   // or -denominator.
   // If t > 1, `expr' is general.
-  DB_Row<T>& n_v = dbm[num_var];
+  DB_Row<N>& n_v = dbm[num_var];
   Coefficient b = expr.inhomogeneous_term();
   if (t == 0) {
     // Case 1: expr = n.
@@ -2936,8 +2932,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       // We have got an expression of the following form: var + n.
       if (j == num_var - 1) {
 	if (coeff != denominator) {
-	  T& dbm_v_0 = n_v[0];
-	  T& dbm_0_v = dbm[0][num_var];
+	  N& dbm_v_0 = n_v[0];
+	  N& dbm_0_v = dbm[0][num_var];
 	  std::swap(dbm_0_v, dbm_v_0);
 	  // We remove the other constraints on 'var'.
 	  for (dimension_type i = 1; i <= space_dim; ++i) {
@@ -2952,11 +2948,11 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	else {
 	  // We translate all the constraints of the form `var (- var1) <= const'
 	  // adding the value `n/denominator'.
-	  T d;
+	  N d;
 	  div_round_up(d, b, denominator);
 	  for (dimension_type i = 0; i <= space_dim; ++i) {
 	    n_v[i] = PLUS_INFINITY;
-	    T& dbm_i_v = dbm[i][num_var];
+	    N& dbm_i_v = dbm[i][num_var];
 	    assign_add(dbm_i_v, dbm_i_v, d, ROUND_UP);
 	  }
 	}
@@ -2973,9 +2969,9 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	  add_constraint(denominator*var - denominator*Variable(j) <= b);
 	
 	else {
-	  T& dbm_0_v = dbm[0][num_var];
-	  const T& dbm_j_0 = dbm[j+1][0];
-	  T d;
+	  N& dbm_0_v = dbm[0][num_var];
+	  const N& dbm_j_0 = dbm[j+1][0];
+	  N d;
 	  div_round_up(d, b, denominator);
 	  if (!is_plus_infinity(dbm_j_0)) {
 	    assign_add(dbm_0_v, dbm_j_0, d, ROUND_UP);
@@ -2997,8 +2993,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       // We have got an expression of the following form: var + n.
       if (j == num_var - 1) {
 	if (coeff != denominator) {
-	  T& dbm_v_0 = n_v[0];
-	  T& dbm_0_v = dbm[0][num_var];
+	  N& dbm_v_0 = n_v[0];
+	  N& dbm_0_v = dbm[0][num_var];
 	  std::swap(dbm_0_v, dbm_v_0);
 	  // We remove the other constraints on 'var'.
 	  for (dimension_type i = 1; i <= space_dim; ++i) {
@@ -3014,10 +3010,10 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	else {
 	  // We translate all the constraints of the form
 	  // `var (- var1) >= const' subtracting the value `n/denominator'.
-	  T c;
+	  N c;
 	  div_round_up(c, -b, denominator);
 	  for (dimension_type i = 0; i <= space_dim; ++i) {
-	    T& dbm_v_i = n_v[i];
+	    N& dbm_v_i = n_v[i];
 	    assign_add(dbm_v_i, dbm_v_i, c, ROUND_UP);
 	    dbm[i][num_var] = PLUS_INFINITY;
 	  }
@@ -3034,9 +3030,9 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	    || (expr.coefficient(Variable(j)) < 0 && denominator < 0))
 	  add_constraint(denominator*var - denominator*Variable(j) >= b);
 	else {
-	  T& dbm_v_0 = n_v[0];
-	  const T& dbm_0_j = dbm[0][j+1];
-	  T c;
+	  N& dbm_v_0 = n_v[0];
+	  const N& dbm_0_j = dbm[0][j+1];
+	  N c;
 	  div_round_up(c, -b, denominator);
 	  if (!is_plus_infinity(dbm_0_j)) {
 	    assign_add(dbm_v_0, dbm_0_j, c, ROUND_UP);
@@ -3061,7 +3057,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     switch (relsym) {
     case LESS_THAN_OR_EQUAL:
       {
-	T up_sum(expr.inhomogeneous_term());
+	N up_sum = raw_value(expr.inhomogeneous_term());
 
 	 // Index of the variables with value +inf.
 	dimension_type up_var_index_inf;
@@ -3074,15 +3070,15 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	  if (expr_coeff_var != 0) {
 	    dimension_type k = i + 1;
 	    // Select the cells to be added in the sum.
-	    const T& dbm_0_k = dbm[0][k];
-	    const T& dbm_k_0 = dbm[k][0];
+	    const N& dbm_0_k = dbm[0][k];
+	    const N& dbm_k_0 = dbm[k][0];
 	    if (expr_coeff_var > 0) {
 	      // Upper approximation.
 	      if (!is_plus_infinity(dbm_0_k)) {
 		Coefficient a;
 		Coefficient c;
 		numer_denom(dbm_0_k, a, c);
-		T d;
+		N d;
 		div_round_up(d, a*expr_coeff_var, c);
 		assign_add(up_sum, up_sum, d, ROUND_UP);
 	      }
@@ -3101,7 +3097,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 		Coefficient a;
 		Coefficient c;
 		numer_denom(dbm_k_0, a, c);
-		T d;
+		N d;
 		div_round_up(d, a*expr_coeff_var, c);
 		assign_add(up_sum, up_sum, d, ROUND_UP);
 	      }
@@ -3131,8 +3127,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	  // where var1 != var.
 	  for (dimension_type h = 1; h <= space_dim; ++h)  
 	    if (h != num_var && expr.coefficient(Variable(h-1)) > 0) {
-	      T dbm_0_h = dbm[0][h];
-	      T negate_dbm_0_h;
+	      N dbm_0_h = dbm[0][h];
+	      N negate_dbm_0_h;
 	      assign_neg(negate_dbm_0_h, dbm_0_h, ROUND_UP);
 	      assign_add(dbm[h][num_var], negate_dbm_0_h, dbm[0][num_var],
 			 ROUND_UP);
@@ -3161,8 +3157,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       
     case GREATER_THAN_OR_EQUAL:
       {
-	T term(expr.inhomogeneous_term());
-	T low_sum;
+	N term = raw_value(expr.inhomogeneous_term());
+	N low_sum;
 	assign_neg(low_sum, term, ROUND_UP);
 
 	// Index of the variables with value +inf.
@@ -3176,15 +3172,15 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	  if (expr_coeff_var != 0) {
 	    dimension_type k = i + 1;
 	    // Select the cells to be added in the sum.
-	    const T& dbm_0_k = dbm[0][k];
-	    const T& dbm_k_0 = dbm[k][0];
+	    const N& dbm_0_k = dbm[0][k];
+	    const N& dbm_k_0 = dbm[k][0];
 	    if (expr_coeff_var > 0) {
 	      // Lower approximation.
 	      if (!is_plus_infinity(dbm_k_0)) {
 		Coefficient a;
 		Coefficient c;
 	        numer_denom(dbm_0_k, a, c);
-		T d;
+		N d;
 		div_round_up(d, a*expr_coeff_var, c);
 		assign_add(low_sum, low_sum, d, ROUND_UP);
 	      }
@@ -3203,7 +3199,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 		Coefficient a;
 		Coefficient c;
 	   	numer_denom(dbm_0_k, a, c);
-		T d;
+		N d;
 		div_round_up(d, a*expr_coeff_var, c);
 		assign_add(low_sum, low_sum, d, ROUND_UP);
 	      }
@@ -3235,8 +3231,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	  for (dimension_type h = 1; h <= space_dim; ++h)  
 	    if (h != num_var)
 	      if (expr.coefficient(Variable(h-1)) < 0) {     
-		T dbm_h_0 = dbm[h][0];
-		T negate_dbm_h_0;
+		N dbm_h_0 = dbm[h][0];
+		N negate_dbm_h_0;
 		assign_neg(negate_dbm_h_0, dbm_h_0, ROUND_UP);
 		assign_add(dbm[num_var][h], negate_dbm_h_0, dbm[num_var][0],
 			   ROUND_UP);
@@ -3556,9 +3552,9 @@ BD_Shape<T>::constraints() const {
     for (dimension_type i = 0; i <= space_dim; ++i) {
       for (dimension_type j = i + 1; j <= space_dim; ++j) {
 	Variable x(j - 1);
-	T dbm_i_j = dbm[i][j];
-	T dbm_j_i = dbm[j][i];
-	T negated_dbm_ji;
+	N dbm_i_j = dbm[i][j];
+	N dbm_j_i = dbm[j][i];
+	N negated_dbm_ji;
 	if (assign_neg(negated_dbm_ji, dbm_j_i, ROUND_IGNORE) == V_EQ
 	    && negated_dbm_ji == dbm_i_j) {
 	  // We have one equality constraint.
@@ -3632,6 +3628,7 @@ BD_Shape<T>::ascii_load(std::istream& s) {
 template <typename T>
 inline std::ostream&
 IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
+  typedef typename BD_Shape<T>::coefficient_type N;
   if (c.is_universe())
     s << "true";
   else {
@@ -3643,9 +3640,9 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
       bool first = true;
       for (dimension_type i = 0; i <= n; ++i)
 	for (dimension_type j = i + 1; j <= n; ++j) {
-	  const T& c_i_j = c.dbm[i][j];
-	  const T& c_j_i = c.dbm[j][i];
-	  T negated_c_ji;
+	  const N& c_i_j = c.dbm[i][j];
+	  const N& c_j_i = c.dbm[j][i];
+	  N negated_c_ji;
 	  if (assign_neg(negated_c_ji, c_j_i, ROUND_IGNORE) == V_EQ
 	      && negated_c_ji == c_i_j) {
 	    // We will print an equality.
@@ -3684,7 +3681,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	      if (i == 0) {
 		// We have got a constraint with an only Variable.
 		s << Variable(j - 1);
-		T v;
+		N v;
 		assign_neg(v, c_j_i, ROUND_DOWN);
 		s << " >= " << v;
 	      }
@@ -3700,7 +3697,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 		  s << Variable(j - 1);
 		  s << " - ";
 		  s << Variable(i - 1);
-		  T v;
+		  N v;
 		  assign_neg(v, c_j_i, ROUND_DOWN);
 		  s << " >= " << v;
 		}
@@ -3728,7 +3725,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 		  s << Variable(i - 1);
 		  s << " - ";
 		  s << Variable(j - 1);
-		  T v;
+		  N v;
 		  assign_neg(v, c_i_j, ROUND_DOWN);
 		  s << " >= " << v;
 		}
@@ -3838,7 +3835,6 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 template <typename T>
 inline void
 BD_Shape<T>::throw_constraint_incompatible(const char* method) const {
-
   std::ostringstream s;
   s << "PPL::BD_Shape::" << method << ":" << std::endl
     << "the constraint is incompatible.";

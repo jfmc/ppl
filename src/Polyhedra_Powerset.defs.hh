@@ -24,16 +24,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Polyhedra_Powerset_defs_hh
 
 #include "Polyhedra_Powerset.types.hh"
+#include "globals.types.hh"
 #include "BHRZ03_Certificate.types.hh"
 #include "Constraint.types.hh"
 #include "Constraint_System.types.hh"
 #include "Congruence.types.hh"
 #include "Congruence_System.types.hh"
+#include "C_Polyhedron.types.hh"
+#include "NNC_Polyhedron.types.hh"
 #include "Polyhedron.defs.hh"
 #include "Variable.defs.hh"
 #include "Determinate.defs.hh"
 #include "Powerset.defs.hh"
-#include "globals.defs.hh"
 #include <iosfwd>
 #include <list>
 #include <map>
@@ -144,6 +146,13 @@ public:
 
   //! \name Space Dimension Preserving Member Functions that May Modify the Powerset of Polyhedra
   //@{
+
+  //! Adds to \p *this the disjunct \p ph.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p ph are dimension-incompatible.
+  */
+  void add_disjunct(const PH& ph);
 
   //! Intersects \p *this with constraint \p c.
   /*!
@@ -265,12 +274,6 @@ public:
     by \p Cert, see BHRZ03_Certificate or H79_Certificate.
   */
   template <typename Cert, typename Widening>
-  void BHZ03_widening_assign(const Polyhedra_Powerset& y, Widening wf);
-
-  //! \brief
-  //! An instance of the BHZ03 framework using the widening function \p wf
-  //! certified by BHRZ03_Certificate.
-  template <typename Widening>
   void BHZ03_widening_assign(const Polyhedra_Powerset& y, Widening wf);
 
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
@@ -418,6 +421,12 @@ private:
   bool is_cert_multiset_stabilizing(const std::map<Cert, size_type,
                                                    typename Cert::Compare>&
 				    y_cert_ms) const;
+
+  // FIXME: The following is an overkill, since it should be enough
+  // to declare friend the templatic constructor
+  //   template <typename QH>
+  //   Polyhedra_Powerset(const Polyhedra_Powerset<QH>&);
+  friend class Parma_Polyhedra_Library::Polyhedra_Powerset<NNC_Polyhedron>;
 };
 
 
@@ -446,6 +455,50 @@ namespace Parma_Polyhedra_Library {
 template <typename PH>
 std::pair<PH, Polyhedra_Powerset<NNC_Polyhedron> >
 linear_partition(const PH& p, const PH& q);
+
+//! \brief
+//! Returns <CODE>true</CODE> if and only if the union of
+//! the NNC polyhedra in \p ps contains the NNC polyhedron \p ph.
+/*! \relates Polyhedra_Powerset */
+bool
+check_containment(const NNC_Polyhedron& ph,
+		  const Polyhedra_Powerset<NNC_Polyhedron>& ps);
+
+//! \brief
+//! Returns <CODE>true</CODE> if and only if the union of
+//! the objects in \p ps contains \p ph.
+/*!
+  \relates Polyhedra_Powerset
+  \note
+  It is assumed that the template parameter PH can be converted
+  without precision loss into an NNC_Polyhedron; otherwise,
+  an incorrect result might be obtained.
+*/
+template <typename PH>
+bool
+check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps);
+
+// Non-inline full specializations should be declared here
+// so as to inhibit multiple instantiations of the generic template.
+template <>
+template <>
+Polyhedra_Powerset<NNC_Polyhedron>
+::Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y);
+
+template <>
+template <>
+Polyhedra_Powerset<C_Polyhedron>
+::Polyhedra_Powerset(const Polyhedra_Powerset<NNC_Polyhedron>& y);
+
+template <>
+void
+Polyhedra_Powerset<NNC_Polyhedron>
+::poly_difference_assign(const Polyhedra_Powerset& y);
+
+template <>
+bool
+Polyhedra_Powerset<NNC_Polyhedron>
+::geometrically_covers(const Polyhedra_Powerset& y) const;
 
 } // namespace Parma_Polyhedra_Library
 

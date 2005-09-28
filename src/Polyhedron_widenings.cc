@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "BHRZ03_Certificate.defs.hh"
 #include "Bounding_Box.defs.hh"
+#include "scalar_products.defs.hh"
 #include <cassert>
 #include <iostream>
 #include <stdexcept>
@@ -236,7 +237,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
   else if (!x.constraints_are_up_to_date())
     x.update_constraints();
 
-  // Copy into `H79_con_sys' the constraints of `x' that are common to `y',
+  // Copy into `H79_cs' the constraints of `x' that are common to `y',
   // according to the definition of the H79 widening.
   Constraint_System H79_cs(tpl);
   Constraint_System x_minus_H79_cs(tpl);
@@ -364,7 +365,7 @@ PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
   y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
   x_box.CC76_widening_assign(y_box);
   limited_H79_extrapolation_assign(y, cs, tp);
-  // FIXME: see if some copies can be avoided.
+  // TODO: see if some copies can be avoided.
   // add_recycled_constraints(x_box.constraints());
   add_constraints(x_box.constraints());
 }
@@ -425,7 +426,7 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
       if (lies_on_the_boundary_of_H79)
 	continue;
 
-      // Consider all the constraints in `x_minus_H79_con_sys'
+      // Consider all the constraints in `x_minus_H79_cs'
       // that are saturated by the point `g'.
       combining_cs.clear();
       for (dimension_type j = x_minus_H79_cs_num_rows; j-- > 0; ) {
@@ -855,7 +856,7 @@ PPL::Polyhedron::bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
   y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
   x_box.CC76_widening_assign(y_box);
   limited_BHRZ03_extrapolation_assign(y, cs, tp);
-  // FIXME: see if some copies can be avoided.
+  // TODO: see if some copies can be avoided.
   // add_recycled_constraints(x_box.constraints());
   add_constraints(x_box.constraints());
 }

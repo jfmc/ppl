@@ -12,8 +12,6 @@ PURPOSE. */
 #ifndef PPL_Coefficient_types_hh
 #define PPL_Coefficient_types_hh 1
 
-#include "Coefficient_traits_template.hh"
-
 #ifdef NATIVE_INTEGERS
 #include "Native_Integer.types.hh"
 #endif

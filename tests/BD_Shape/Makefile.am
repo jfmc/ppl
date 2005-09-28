@@ -69,6 +69,7 @@ ORIGINAL_TESTS = \
 	generalizedaffineimage9 generalizedaffineimage10 \
 	generalizedaffineimage11 generalizedaffineimage12 \
 	generalizedaffineimage13 generalizedaffineimage14 \
+	geomcovers1 \
 	h79widening1 \
 	intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 intersection8 \
@@ -97,10 +98,10 @@ ORIGINAL_TESTS = \
 addconstraints1_SOURCES = addconstraints1.cc
 
 addspacedims1_SOURCES = addspacedims1.cc
-addspacedims2_SOURCES = addspacedims2.cc 
-addspacedims3_SOURCES = addspacedims3.cc 
-addspacedims4_SOURCES = addspacedims4.cc 
-addspacedims5_SOURCES = addspacedims5.cc 
+addspacedims2_SOURCES = addspacedims2.cc
+addspacedims3_SOURCES = addspacedims3.cc
+addspacedims4_SOURCES = addspacedims4.cc
+addspacedims5_SOURCES = addspacedims5.cc
 addspacedims6_SOURCES = addspacedims6.cc
 addspacedims7_SOURCES = addspacedims7.cc
 
@@ -177,7 +178,7 @@ exceptions3_SOURCES = exceptions3.cc
 
 fromgensys1_SOURCES = fromgensys1.cc
 
-generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc 
+generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
 generalizedaffineimage3_SOURCES = generalizedaffineimage3.cc
 generalizedaffineimage4_SOURCES = generalizedaffineimage4.cc
@@ -191,6 +192,8 @@ generalizedaffineimage11_SOURCES = generalizedaffineimage11.cc
 generalizedaffineimage12_SOURCES = generalizedaffineimage12.cc
 generalizedaffineimage13_SOURCES = generalizedaffineimage13.cc
 generalizedaffineimage14_SOURCES = generalizedaffineimage14.cc
+
+geomcovers1_SOURCES = geomcovers1.cc
 
 h79widening1_SOURCES = h79widening1.cc
 

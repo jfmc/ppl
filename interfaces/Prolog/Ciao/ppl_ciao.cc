@@ -21,14 +21,12 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
-#include <sstream>
 
 #include "Coefficient.defs.hh"
-#include "checked.defs.hh"
-#include "checked_int.inlines.hh"
-#include "checked_mpz.inlines.hh"
+#include "Checked_Number.defs.hh"
 #include <ciao_prolog.h>
 #include <cassert>
+#include <sstream>
 
 typedef ciao_term Prolog_term_ref;
 typedef const char* Prolog_atom;
@@ -379,8 +377,7 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   long v;
-  if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, PPL::raw_value(n), PPL::ROUND_IGNORE)
-      == PPL::V_EQ)
+  if (PPL::assign(v, PPL::raw_value(n), PPL::ROUND_IGNORE) == PPL::V_EQ)
     return ciao_integer(v);
   else {
     std::ostringstream s;

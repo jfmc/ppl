@@ -51,5 +51,10 @@ then
   AC_SUBST(SWI_PROLOG_INCLUDE_DIRECTORY)
 fi
 
-AM_CONDITIONAL(HAVE_SWI_PROLOG, test x$swi_prolog != x)
+if test x$swi_prolog != x
+then
+  have_swi_prolog=yes
+else
+  have_swi_prolog=no
+fi
 ])

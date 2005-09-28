@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_install.hh"
 #include "print.hh"
 #include "ehandlers.hh"
+#include "Random_Number_Generator.defs.hh"
 #include <stdexcept>
 #include <sstream>
 
@@ -38,8 +39,8 @@ using namespace Parma_Polyhedra_Library;
 
 namespace Parma_Polyhedra_Library {
 
-//typedef BD_Shape<Checked_Number<mpq_class, Extended_Number_Policy> > TBD_Shape;
-typedef BD_Shape<Checked_Number<int, Extended_Number_Policy> > TBD_Shape;
+//typedef BD_Shape<mpq_class> TBD_Shape;
+typedef BD_Shape<int> TBD_Shape;
 
 //! Look for variation in \p a.
 /*!

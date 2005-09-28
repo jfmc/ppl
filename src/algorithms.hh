@@ -63,56 +63,6 @@ poly_hull_assign_if_exact(PH& p, const PH& q) {
   return true;
 }
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Returns <CODE>true</CODE> if and only if the union of the polyhedra
-//! in \p ps contains the polyhedron \p ph.
-/*! \relates Polyhedra_Powerset */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename PH>
-bool
-check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps);
-
-/*! \relates Polyhedra_Powerset */
-template <typename PH>
-bool
-check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps) {
-  Polyhedra_Powerset<NNC_Polyhedron> tmp(ph.space_dimension(), EMPTY);
-  tmp.add_disjunct(NNC_Polyhedron(ph));
-  for (typename Polyhedra_Powerset<PH>::const_iterator i = ps.begin(),
-	 ps_end = ps.end(); i != ps_end; ++i) {
-    const NNC_Polyhedron pi(i->element());
-    for (typename Polyhedra_Powerset<NNC_Polyhedron>::iterator
-	   j = tmp.begin(); j != tmp.end(); ) {
-      const NNC_Polyhedron& pj = j->element();
-      if (pi.contains(pj))
-	j = tmp.drop_disjunct(j);
-      else
-	++j;
-    }
-    if (tmp.empty())
-      return true;
-    else {
-      Polyhedra_Powerset<NNC_Polyhedron> new_disjuncts(ph.space_dimension(),
-						       EMPTY);
-      for (Polyhedra_Powerset<NNC_Polyhedron>::iterator
-	     j = tmp.begin(); j != tmp.end(); ) {
-	const NNC_Polyhedron& pj = j->element();
-	if (pj.is_disjoint_from(pi))
-	  ++j;
-	else {
-	  std::pair<NNC_Polyhedron, Polyhedra_Powerset<NNC_Polyhedron> >
-	    partition = linear_partition(pi, pj);
-	  new_disjuncts.upper_bound_assign(partition.second);
-	  j = tmp.drop_disjunct(j);
-	}
-      }
-      tmp.upper_bound_assign(new_disjuncts);
-    }
-  }
-  return false;
-}
-
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_algorithms_hh)

@@ -31,10 +31,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
 #include "Widening_Function.defs.hh"
+#include "C_Polyhedron.defs.hh"
+#include "NNC_Polyhedron.defs.hh"
 #include <algorithm>
 #include <deque>
 #include <string>
 #include <iostream>
+#include <sstream>
+#include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
 
@@ -74,35 +78,30 @@ Polyhedra_Powerset<PH>::Polyhedra_Powerset(const PH& ph)
 }
 
 template <>
-template <>
-inline
+template <typename QH>
 Polyhedra_Powerset<NNC_Polyhedron>
-::Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y)
+::Polyhedra_Powerset(const Polyhedra_Powerset<QH>& y)
   : Base(), space_dim(y.space_dimension()) {
   Polyhedra_Powerset& x = *this;
-  for (Polyhedra_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
+  for (typename Polyhedra_Powerset<QH>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
     x.sequence.push_back(Determinate<NNC_Polyhedron>(
-                           NNC_Polyhedron(i->element()))
+                           NNC_Polyhedron(i->element().constraints()))
 			 );
-  // FIXME: provide a way to test the `reduced' flag of `y'.
-  // If `y' is known to be omega-reduced, then this is omega-reduced too.
-  // x.reduced = y.reduced;
-  x.reduced = false;
+  x.reduced = y.reduced;
   assert(x.OK());
 }
 
 template <>
-template <>
-inline
+template <typename QH>
 Polyhedra_Powerset<C_Polyhedron>
-::Polyhedra_Powerset(const Polyhedra_Powerset<NNC_Polyhedron>& y)
+::Polyhedra_Powerset(const Polyhedra_Powerset<QH>& y)
   : Base(), space_dim(y.space_dimension()) {
   Polyhedra_Powerset& x = *this;
-  for (Polyhedra_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),
+  for (typename Polyhedra_Powerset<QH>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
     x.sequence.push_back(Determinate<C_Polyhedron>(
-                           C_Polyhedron(i->element()))
+                           C_Polyhedron(i->element().constraints()))
 			 );
   // Note: this might be non-reduced even when `y' is known to be
   // omega-reduced, because the constructor of C_Polyhedron, by
@@ -163,6 +162,22 @@ Polyhedra_Powerset<PH>::operator=(const Polyhedra_Powerset<QH>& y) {
   Polyhedra_Powerset<PH> pps(y);
   x.swap(pps);
   return x;
+}
+
+template <typename PH>
+inline void
+Polyhedra_Powerset<PH>::add_disjunct(const PH& ph) {
+  Polyhedra_Powerset& x = *this;
+  if (x.space_dimension() != ph.space_dimension()) {
+    std::ostringstream s;
+    s << "PPL::Polyhedra_Powerset<PH>::add_disjunct(ph):\n"
+      << "this->space_dimension() == " << x.space_dimension() << ", "
+      << "ph.space_dimension() == " << ph.space_dimension() << ".";
+    throw std::invalid_argument(s.str());
+  }
+  x.sequence.push_back(Determinate<PH>(ph));
+  x.reduced = false;
+  assert(OK());
 }
 
 template <typename PH>
@@ -331,19 +346,27 @@ Polyhedra_Powerset<PH>::remove_higher_space_dimensions(dimension_type
 }
 
 template <typename PH>
-bool
-Polyhedra_Powerset<PH>::
-geometrically_covers(const Polyhedra_Powerset& y) const {
-  for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi)
-    if (!check_containment(yi->element(), *this))
-      return false;
-  return true;
+inline bool
+Polyhedra_Powerset<PH>
+::geometrically_covers(const Polyhedra_Powerset& y) const {
+  const Polyhedra_Powerset<NNC_Polyhedron> xx(*this);
+  const Polyhedra_Powerset<NNC_Polyhedron> yy(y);
+  return xx.geometrically_covers(yy);
 }
 
 template <typename PH>
-bool
-Polyhedra_Powerset<PH>::
-geometrically_equals(const Polyhedra_Powerset& y) const {
+inline bool
+Polyhedra_Powerset<PH>
+::geometrically_equals(const Polyhedra_Powerset& y) const {
+  const Polyhedra_Powerset<NNC_Polyhedron> xx(*this);
+  const Polyhedra_Powerset<NNC_Polyhedron> yy(y);
+  return xx.geometrically_covers(yy) && yy.geometrically_covers(xx);
+}
+
+template <>
+inline bool
+Polyhedra_Powerset<NNC_Polyhedron>
+::geometrically_equals(const Polyhedra_Powerset& y) const {
   const Polyhedra_Powerset& x = *this;
   return x.geometrically_covers(y) && y.geometrically_covers(x);
 }
@@ -674,14 +697,6 @@ Polyhedra_Powerset<PH>::BHZ03_widening_assign(const Polyhedra_Powerset& y,
 }
 
 template <typename PH>
-template <typename Widening>
-inline void
-Polyhedra_Powerset<PH>::
-BHZ03_widening_assign(const Polyhedra_Powerset& y, Widening wf) {
-  BHZ03_widening_assign<BHRZ03_Certificate>(y, wf);
-}
-
-template <typename PH>
 void
 Polyhedra_Powerset<PH>::ascii_dump(std::ostream& s) const {
   const Polyhedra_Powerset& x = *this;
@@ -806,39 +821,30 @@ linear_partition(const PH& p, const PH& q) {
 
 template <>
 inline void
-Polyhedra_Powerset<NNC_Polyhedron>
-::poly_difference_assign(const Polyhedra_Powerset& y) {
-  Polyhedra_Powerset& x = *this;
-  // Ensure omega-reduction.
-  x.omega_reduce();
-  y.omega_reduce();
-  Sequence new_sequence = x.sequence;
-  for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi) {
-    const NNC_Polyhedron& py = yi->element();
-    Sequence tmp_sequence;
-    for (Sequence_const_iterator nsi = new_sequence.begin(),
-	   ns_end = new_sequence.end(); nsi != ns_end; ++nsi) {
-      std::pair<NNC_Polyhedron, Polyhedra_Powerset<NNC_Polyhedron> > partition
-	= linear_partition(py, nsi->element());
-      const Polyhedra_Powerset<NNC_Polyhedron>& residues = partition.second;
-      // Append the contents of `residues' to `tmp_sequence'.
-      std::copy(residues.begin(), residues.end(), back_inserter(tmp_sequence));
-    }
-    std::swap(tmp_sequence, new_sequence);
-  }
-  std::swap(x.sequence, new_sequence);
-  x.reduced = false;
-  assert(x.OK());
-}
-
-template <>
-inline void
 Polyhedra_Powerset<C_Polyhedron>
 ::poly_difference_assign(const Polyhedra_Powerset& y) {
   Polyhedra_Powerset<NNC_Polyhedron> nnc_this(*this);
   Polyhedra_Powerset<NNC_Polyhedron> nnc_y(y);
   nnc_this.poly_difference_assign(nnc_y);
   *this = nnc_this;
+}
+
+/*! \relates Polyhedra_Powerset */
+template <typename PH>
+inline bool
+check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps) {
+  const NNC_Polyhedron pph = NNC_Polyhedron(ph.constraints());
+  const Polyhedra_Powerset<NNC_Polyhedron> pps(ps);
+  return check_containment(pph, pps);
+}
+
+/*! \relates Polyhedra_Powerset */
+template <>
+inline bool
+check_containment(const C_Polyhedron& ph,
+		  const Polyhedra_Powerset<C_Polyhedron>& ps) {
+  return check_containment(NNC_Polyhedron(ph),
+			   Polyhedra_Powerset<NNC_Polyhedron>(ps));
 }
 
 } // namespace Parma_Polyhedra_Library

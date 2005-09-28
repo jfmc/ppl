@@ -40,6 +40,7 @@ Other contributors:
   Andrea Cimino        (University of Parma) wrote the initial version
                        of our primal simplex solver.
 
+  Matthew Mundell      (University of Leeds) 
 
 The following people took part in the first phase of the library's
 development:
@@ -104,13 +105,19 @@ This work has been partly supported by the following projects:
 
   4. MURST project ``Automatic Aggregate- and Number-Reasoning for
      Computing: from Decision Algorithms to Constraint Programming
-     with Multisets, Sets, and Maps'' [16].
+     with Multisets, Sets, and Maps'' [15].
 
   5. MURST project ``Constraint Based Verification of Reactive
-     Systems'' [17].
+     Systems'' [16].
 
   6. MURST project ``AIDA - Abstract Interpretation: Design and
-     Applications'' [18].
+     Applications'' [17].
+
+  7. Royal Society Joint project 2004/R1-EU (UK-Italy)
+     ``Automatic Detection of Unstable Numerical Computations''.
+
+  8. EPSRC (UK) project EP/C520726/1
+    ``Numerical Domains for Software Analysis'' [18].
 
 --------
 
@@ -127,8 +134,8 @@ This work has been partly supported by the following projects:
 [11] http://www.cs.unipr.it/China/
 [12] http://www.math.unipr.it/~zaccagni/
 [13] http://www.haible.de/bruno/
-[14] http://theory.sci.univr.it/projects/p40/
-[15] http://strudel.di.unipi.it/cofin00/
-[16] http://www.cs.unipr.it/Projects/COFIN01
-[17] http://www.disi.unige.it/person/DelzannoG/cover/
-[18] http://www.cs.unipr.it/Projects/AIDA/
+[14] http://theory.sci.univr.it/p40/
+[15] http://www.cs.unipr.it/Projects/COFIN01
+[16] http://www.disi.unige.it/person/DelzannoG/cover/
+[17] http://www.cs.unipr.it/Projects/AIDA/
+[18] http://www.comp.leeds.ac.uk/hill/linda/

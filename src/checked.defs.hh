@@ -31,25 +31,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A policy checking for overflows.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-struct Check_Overflow_Policy {
-  static const int check_overflow = 1;
-  static const int check_inf_add_inf = 0;
-  static const int check_inf_sub_inf = 0;
-  static const int check_inf_mul_zero = 0;
-  static const int check_div_zero = 0;
-  static const int check_inf_div_inf = 0;
-  static const int check_inf_mod = 0;
-  static const int check_sqrt_neg = 0;
-  static const int store_nan = 0;
-  static const int store_infinity = 0;
-  static const int convertible = 1;
-  static const int fpu_check_inexact = 0;
-  static const int check_nan_args = 1;
-};
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Types and functions implementing checked numbers.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 namespace Checked {
@@ -86,6 +67,24 @@ struct Transparent_Policy {
   static const int check_nan_args = 1;
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! A policy checking for overflows.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+struct Check_Overflow_Policy {
+  static const int check_overflow = 1;
+  static const int check_inf_add_inf = 0;
+  static const int check_inf_sub_inf = 0;
+  static const int check_inf_mul_zero = 0;
+  static const int check_div_zero = 0;
+  static const int check_inf_div_inf = 0;
+  static const int check_inf_mod = 0;
+  static const int check_sqrt_neg = 0;
+  static const int store_nan = 0;
+  static const int store_infinity = 0;
+  static const int convertible = 1;
+  static const int fpu_check_inexact = 0;
+  static const int check_nan_args = 1;
+};
 
 // It is a pity that function partial specialization is not permitted
 // by C++.  To (partly) overcome this limitation, we use class
@@ -383,8 +382,8 @@ DECLARE_FUN3_0_1(gcd,         Result, nonconst, To, const, From1, const, From2, 
 DECLARE_FUN5_0_1(gcdext,      Result, nonconst, To, const, From1, const, From2,
 		 nonconst, From3, nonconst, From4, Rounding_Dir)
 DECLARE_FUN3_0_1(lcm,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-DECLARE_FUN1_0_2(input, Result, nonconst, Type, std::istream&, Rounding_Dir)
-DECLARE_FUN1_1_2(output, Result, std::ostream&, const, Type, const Numeric_Format&, Rounding_Dir)
+DECLARE_FUN1_0_2(input,       Result, nonconst, Type, std::istream&, Rounding_Dir)
+DECLARE_FUN1_1_2(output,      Result, std::ostream&, const, Type, const Numeric_Format&, Rounding_Dir)
 
 template <typename Policy, typename To>
 Result round(To& to, Result r, Rounding_Dir dir);

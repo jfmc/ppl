@@ -24,8 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
-
 #include "Generator.defs.hh"
+#include "scalar_products.defs.hh"
 #include <cassert>
 #include <string>
 #include <vector>
@@ -276,7 +276,7 @@ PPL::Constraint_System::num_inequalities() const {
   // the matrix has no pending rows.
   assert(num_pending_rows() == 0);
   const Constraint_System& cs = *this;
-  int n = 0;
+  dimension_type n = 0;
   // If the Linear_System happens to be sorted, take advantage of the fact
   // that inequalities are at the bottom of the system.
   if (is_sorted())

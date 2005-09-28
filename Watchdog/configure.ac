@@ -29,7 +29,7 @@ AC_INIT([the Parma Watchdog Library],[0.4],[bagnara@cs.unipr.it],[watchdog])
 AC_PREREQ(2.59)
 
 # Make sure the sources are there.
-AC_CONFIG_SRCDIR([Watchdog.cc])
+AC_CONFIG_SRCDIR(src/Watchdog.cc)
 
 # Use Automake.
 AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7.3])
@@ -63,6 +63,11 @@ AC_PROG_CXX
 AC_PROG_CXXCPP
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
+
+# Check for Perl.
+AC_PATH_PROG([PERL], perl, no)
+AC_SUBST([PERL])
+AM_CONDITIONAL(HAVE_PERL, test x"$PERL" != xno)
 
 # Compilation flags
 
@@ -157,11 +162,11 @@ speed)
   arch=yes
   ;;
 size)
-  AC_MSG_RESULT(speed)
+  AC_MSG_RESULT(size)
   OPT_FLAGS="$OPT_FLAGS -Os"
   arch=yes
   ;;
-standard)
+standard | yes)
   AC_MSG_RESULT(standard)
   OPT_FLAGS="$OPT_FLAGS -O2"
   ;;
@@ -169,15 +174,15 @@ mild)
   AC_MSG_RESULT(mild)
   OPT_FLAGS="$OPT_FLAGS -O1"
   ;;
-yes)
-  AC_MSG_RESULT(standard)
-  OPT_FLAGS="$OPT_FLAGS -O2"
+zero)
+  AC_MSG_RESULT(zero)
+  OPT_FLAGS="$OPT_FLAGS -O0"
   ;;
 no)
   AC_MSG_RESULT(no)
   ;;
 *)
-  AC_MSG_ERROR([bad value ${enableval} --enable-optimization, needs sspeed, speed, size, standard, yes or no])
+  AC_MSG_ERROR([bad value ${enableval} for --enable-optimization, needs sspeed, speed, size, standard, mild, zero, yes or no])
   ;;
 esac
 
@@ -289,5 +294,6 @@ AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 AC_SUBST(debug_flag)
 
 AC_CONFIG_FILES(Makefile
+                src/Makefile
                 utils/Makefile)
 AC_OUTPUT

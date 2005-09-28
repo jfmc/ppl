@@ -24,8 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Generator_System.defs.hh"
 #include "Generator_System.inlines.hh"
-
 #include "Constraint.defs.hh"
+#include "scalar_products.defs.hh"
 #include <cassert>
 #include <string>
 #include <vector>
@@ -48,12 +48,11 @@ adjust_topology_and_space_dimension(const Topology new_topology,
   if (num_rows() == 0) {
     if (num_columns() == 0)
       if (new_topology == NECESSARILY_CLOSED) {
-	add_zero_columns(++cols_to_be_added);
+	add_zero_columns(cols_to_be_added + 1);
 	set_necessarily_closed();
       }
       else {
-	cols_to_be_added += 2;
-	add_zero_columns(cols_to_be_added);
+	add_zero_columns(cols_to_be_added + 2);
 	set_not_necessarily_closed();
       }
     else
@@ -68,21 +67,20 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	    // Nothing to do.
 	    break;
 	  default:
-	    add_zero_columns(--cols_to_be_added);
+	    add_zero_columns(cols_to_be_added - 1);
 	  }
 	  set_necessarily_closed();
 	}
 	else {
 	  // Here old_topology == NECESSARILY_CLOSED
 	  //  and new_topology == NOT_NECESSARILY_CLOSED.
-	  add_zero_columns(++cols_to_be_added);
+	  add_zero_columns(cols_to_be_added + 1);
 	  set_not_necessarily_closed();
 	}
-      else {
+      else
 	// Here topologies agree.
 	if (cols_to_be_added > 0)
 	  add_zero_columns(cols_to_be_added);
-      }
     assert(OK());
     return true;
   }
@@ -135,7 +133,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	// a NOT_NECESSARILY_CLOSED one by adding a further column
 	// and setting the epsilon coordinate of all points to 1.
 	// Note: normalization is preserved.
-	add_zero_columns(++cols_to_be_added);
+	add_zero_columns(cols_to_be_added + 1);
 	Generator_System& gs = *this;
 	const dimension_type eps_index = new_space_dim + 1;
 	for (dimension_type i = num_rows(); i-- > 0; )

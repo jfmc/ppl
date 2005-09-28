@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Row.defs.hh"
 #include "Coefficient.defs.hh"
-#include "globals.defs.hh"
 #include <iostream>
 #include <iomanip>
 #include <cassert>
@@ -85,12 +84,74 @@ PPL::Row_Impl_Handler::Impl::copy_construct_coefficients(const Impl& y) {
 }
 
 void
+PPL::Row::normalize() {
+  Row& x = *this;
+  // Compute the GCD of all the coefficients.
+  const dimension_type sz = size();
+  dimension_type i = sz;
+  TEMP_INTEGER(gcd);
+  while (i > 0) {
+    const Coefficient& x_i = x[--i];
+    if (const int x_i_sign = sgn(x_i)) {
+      gcd = x_i;
+      if (x_i_sign < 0)
+	negate(gcd);
+      goto compute_gcd;
+    }
+  }
+  // We reach this point only if all the coefficients were zero.
+  return;
+
+ compute_gcd:
+  if (gcd == 1)
+    return;
+  while (i > 0) {
+    const Coefficient& x_i = x[--i];
+    if (x_i != 0) {
+      // Note: we use the ternary version instead of a more concise
+      // gcd_assign(gcd, x_i) to take advantage of the fact that
+      // `gcd' will decrease very rapidly (see D. Knuth, The Art of
+      // Computer Programming, second edition, Section 4.5.2,
+      // Algorithm C, and the discussion following it).  Our
+      // implementation of gcd_assign(x, y, z) for checked numbers is
+      // optimized for the case where `z' is smaller than `y', so that
+      // on checked numbers we gain.  On the other hand, for the
+      // implementation of gcd_assign(x, y, z) on GMP's unbounded
+      // integers we cannot make any assumption, so here we draw.
+      // Overall, we win.
+      gcd_assign(gcd, x_i, gcd);
+      if (gcd == 1)
+	return;
+    }
+  }
+  // Divide the coefficients by the GCD.
+  for (dimension_type i = sz; i-- > 0; )
+    exact_div_assign(x[i], gcd);
+}
+
+void
 PPL::Row::Flags::ascii_dump(std::ostream& s) const {
-  s << "0x"
-    << std::hex
-    << std::setw(2*sizeof(Flags::base_type))
-    << std::setfill('0')
-    << bits;
+  s << "0x";
+  std::istream::fmtflags f = s.setf(std::istream::hex);
+  std::streamsize sz = s.width(2*sizeof(Flags::base_type));
+  std::ostream::char_type ch = s.fill('0');
+  s << bits;
+  s.fill(ch);
+  s.width(sz);
+  s.flags(f);
+}
+
+bool
+PPL::Row::Flags::ascii_load(std::istream& s) {
+  std::string str;
+  std::streamsize sz = s.width(2);
+  if (!(s >> str) || (str.compare("0x") != 0))
+    return false;
+  s.width(sz);
+  std::istream::fmtflags f = s.setf(std::istream::hex);
+  bool r = s >> bits;
+  s.flags(f);
+  return r;
 }
 
 void
@@ -102,6 +163,19 @@ PPL::Row::ascii_dump(std::ostream& s) const {
   s << "f ";
   flags().ascii_dump(s);
   s << std::endl;
+}
+
+bool
+PPL::Row::ascii_load(std::istream& s) {
+  Row& x = *this;
+  std::string str;
+  const dimension_type x_size = x.size();
+  for (dimension_type col = 0; col < x_size; ++col)
+    if (!(s >> x[col]))
+      return false;
+  if (!(s >> str) || (str.compare("f") != 0))
+    return false;
+  return flags().ascii_load(s);
 }
 
 PPL::memory_size_type

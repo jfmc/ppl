@@ -23,11 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Linear_System.defs.hh"
-
 #include "Coefficient.defs.hh"
 #include "Row.defs.hh"
-#include "globals.defs.hh"
 #include "Saturation_Matrix.defs.hh"
+#include "scalar_products.defs.hh"
 #include <algorithm>
 #include <iostream>
 #include <string>
@@ -150,7 +149,7 @@ PPL::Linear_System::ascii_load(std::istream& s) {
   if (!(s >> str))
     return false;
   if (!(s >> ncols))
-      return false;
+    return false;
   resize_no_copy(nrows, ncols);
 
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
@@ -163,7 +162,10 @@ PPL::Linear_System::ascii_load(std::istream& s) {
     return false;
   set_index_first_pending_row(index);
 
-  // FIXME: must be completed.
+  Linear_System& x = *this;
+  for (dimension_type row = 0; row < nrows; ++row)
+    if (!x[row].ascii_load(s))
+      return false;
 
   // Check for well-formedness.
   assert(OK(true));
@@ -349,8 +351,8 @@ PPL::Linear_System::add_row(const Linear_Row& r) {
 
   Matrix::add_row(r);
 
-  //  We update `index_first_pending', because it must
-  // equal to `num_rows()'.
+  //  We update `index_first_pending', because it must be equal to
+  // `num_rows()'.
   set_index_first_pending_row(num_rows());
 
   if (was_sorted) {
@@ -527,12 +529,12 @@ PPL::Linear_System::sort_and_remove_with_sat(Saturation_Matrix& sat) {
 }
 
 void
-PPL::Linear_System::gram_shmidt() {
+PPL::Linear_System::gram_schmidt() {
   assert(num_pending_rows() == 0);
 
   // The first part of this algorithm is an adaptation of the one
   // proposed in a 1996 TR by Erlingsson, Kaltofen, and Musser
-  // "Generic Gram-Shmidt Orthogonalization by Exact Division".
+  // "Generic Gram-Schmidt Orthogonalization by Exact Division".
 
   // It is assumed that the lines/equalities come first in the system,
   // which contains no redundant row.
@@ -542,7 +544,7 @@ PPL::Linear_System::gram_shmidt() {
     return;
 
 #if 0
-  std::cout << "+++ Before Gram-Shmidt +++" << std::endl;
+  std::cout << "+++ Before Gram-Schmidt +++" << std::endl;
   ascii_dump(std::cout);
 #endif
 
@@ -609,7 +611,7 @@ PPL::Linear_System::gram_shmidt() {
     x[i].strong_normalize();
 
 #if 0
-  std::cout << "+++ After Gram-Shmidt on the base +++" << std::endl;
+  std::cout << "+++ After Gram-Schmidt on the base +++" << std::endl;
   ascii_dump(std::cout);
 #endif
 
@@ -621,7 +623,7 @@ PPL::Linear_System::gram_shmidt() {
       if (scalar_product_sign(x_i, x[j]) != 0) {
 	std::cout << "Not an orthogonal base" << std::endl;
 	std::cout << "i = " << i << ", j = " << j << std::endl;
-	std::cout << "After Gram-Shmidt on the base" << std::endl;
+	std::cout << "After Gram-Schmidt on the base" << std::endl;
 	ascii_dump(std::cout);
 	assert(false);
       }
@@ -678,7 +680,7 @@ PPL::Linear_System::gram_shmidt() {
     w.normalize();
 
 #if 0
-  std::cout << "+++ After Gram-Shmidt on the whole system +++" << std::endl;
+  std::cout << "+++ After Gram-Schmidt on the whole system +++" << std::endl;
   ascii_dump(std::cout);
 #endif
 
@@ -689,7 +691,7 @@ PPL::Linear_System::gram_shmidt() {
       if (scalar_product_sign(w, x[h]) != 0) {
 	std::cout << "Not orthogonal" << std::endl;
 	std::cout << "i = " << i << ", h = " << h << std::endl;
-	std::cout << "After Gram-Shmidt on the whole system" << std::endl;
+	std::cout << "After Gram-Schmidt on the whole system" << std::endl;
 	ascii_dump(std::cout);
 	assert(false);
       }
@@ -861,9 +863,9 @@ PPL::Linear_System::add_rows_and_columns(const dimension_type n) {
   for (dimension_type i = old_n_rows; i-- > 0; )
     std::swap(x[i], x[i + n]);
   for (dimension_type i = n, c = old_n_columns; i-- > 0; ) {
-    // The top right-hand sub-system (i.e., the system made
-    // of new rows and columns) is set to the specular image
-    // of the identity matrix.
+    // The top right-hand sub-system (i.e., the system made of new
+    // rows and columns) is set to the specular image of the identity
+    // matrix.
     Linear_Row& r = x[i];
     r[c++] = 1;
     r.set_is_line_or_equality();
@@ -956,7 +958,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
   using std::cerr;
 #endif
 
-  // `index_first_pending' must be less then or equal to `num_rows()'.
+  // `index_first_pending' must be less than or equal to `num_rows()'.
   if (first_pending_row() > num_rows()) {
 #ifndef NDEBUG
     cerr << "Linear_System has a negative number of pending rows!"

@@ -1,3 +1,6 @@
 
 Error: an overflow has been detected by the PPL: Negative overflow.
+Error occurred while performing test transform_polyhedron which checks predicates: 
+[ppl_Polyhedron_affine_image / 4,ppl_Polyhedron_affine_preimage / 4,ppl_Polyhedron_bounded_affine_image / 5,ppl_Polyhedron_bounded_affine_preimage / 5,ppl_Polyhedron_generalized_affine_image / 5,ppl_Polyhedron_generalized_affine_preimage / 5,ppl_Polyhedron_generalized_affine_image_lhs_rhs / 4,ppl_Polyhedron_generalized_affine_preimage_lhs_rhs / 4] 
+Prolog interface checks failed. 
 FAILURE

@@ -42,7 +42,7 @@ main() TRY {
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  ph1.affine_image(A, 2*A +B + 1);
+  ph1.affine_image(A, 2*A + B + 1);
 
   C_Polyhedron known_result(2, EMPTY);
   int retval = (ph1 == known_result) ? 0 : 1;

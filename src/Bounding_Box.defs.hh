@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Bounding_Box_defs_hh 1
 
 #include "Coefficient.types.hh"
-#include "globals.defs.hh"
+#include "globals.types.hh"
 #include "Coefficient.defs.hh"
 #include "Interval.defs.hh"
 #include "Constraint_System.defs.hh"

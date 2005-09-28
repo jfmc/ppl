@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Variable.types.hh"
 #include "Init.types.hh"
-#include "globals.defs.hh"
+#include "globals.types.hh"
 #include <iosfwd>
 #include <set>
 
