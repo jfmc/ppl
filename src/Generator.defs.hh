@@ -498,7 +498,7 @@ bool operator!=(const Generator& x, const Generator& y);
 namespace IO_Operators {
 
 //! Output operator.
-/*! \relates Parma_Polyhedra_Library::Generator::Type */
+/*! \relates Parma_Polyhedra_Library::Generator */
 std::ostream& operator<<(std::ostream& s, const Generator::Type& t);
 
 } // namespace IO_Operators

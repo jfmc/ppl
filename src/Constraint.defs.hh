@@ -462,7 +462,7 @@ namespace IO_Operators {
 std::ostream& operator<<(std::ostream& s, const Constraint& c);
 
 //! Output operator.
-/*! \relates Parma_Polyhedra_Library::Constraint::Type */
+/*! \relates Parma_Polyhedra_Library::Constraint */
 std::ostream& operator<<(std::ostream& s, const Constraint::Type& t);
 
 } // namespace IO_Operators
