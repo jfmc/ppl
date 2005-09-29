@@ -40,19 +40,6 @@ dump_mpz_ptr(mpz_ptr& num) {
 using std::cout;
 using std::endl;
 
-/*
-From Roberto:
-    Ideally, a more refined test should check all the main
-    instantiations, perhaps using a table where you have one strings
-    per row and one checked type per column.  Any cell should contain
-    the expected result (the number read and the portion of input not
-    consumed or the exception thrown).  One could generate the table
-    automatically, using an helper C++ program, and then inspect it to
-    see if the results make sense.  Corner cases should also be
-    checked more systematically (things like base-1 numbers, maximum
-    base numbers, 'e' not followed by an exponent, ...).
-*/
-
 int ret;
 
 struct Test_Extended_Number_Policy {
@@ -79,54 +66,53 @@ Test_Extended_Number_Policy::handle_result(Result r) {
   Extended_Number_Policy::handle_result(r);
 }
 
-template <typename T>
 void
-test_template (string number, string expected, string expected_residual) {
+test (string number, string expected, string expected_residual,
+      Result expected_result) {
   stringstream f(number);
 
-  // Convert `number' to checked number cn1.
+  // Convert `number' to checked number q1.
   cout << f.str() << ": ";
-  Checked_Number<T, Test_Extended_Number_Policy> cn1;
-  f >> cn1;
+  Checked_Number<mpq_class, Test_Extended_Number_Policy> q1;
+  Result result = Parma_Polyhedra_Library::input<mpq_class, Test_Extended_Number_Policy>(q1, f, ROUND_UP);
   string residual;
   f >> residual;
-  cout << cn1 << endl;
+  cout << q1 << endl;
 
-  // Read cn2 from string output of cn1.
-  stringstream out;
-  out << cn1;
-  Checked_Number<T, Test_Extended_Number_Policy> cn2;
-  out >> cn2;
+  // Read q2 from string output of q1.
+  stringstream ss1;
+  ss1 << q1;
+  Checked_Number<mpq_class, Test_Extended_Number_Policy> q2;
+  ss1 >> q2;
   // Check for a residual.
   string resid;
-  out >> resid;
+  ss1 >> resid;
   if (resid.compare("")) {
-    cout << "Residual after reading cn1 output into cn2 (\""
+    cout << "Residual after reading q1 output into q2 (\""
 	 << resid << "\")." << endl
-	 << "cn1: " << cn1 << endl
-	 << "cn2: " << cn2 << endl;
+	 << "q1: " << q1 << endl
+	 << "q2: " << q2 << endl;
     ret = 1;
     return;
   }
 
-  // Check that cn1 equals cn2.
-  if (!((cn1.classify() & VC_MASK) == VC_NAN
-	&& (cn2.classify() & VC_MASK) == VC_NAN)
-      && cn1 != cn2) {
-    cout << "cn1 should equal cn2 (which was created from cn1 output)."
+  // Check that q1 equals q2.
+  if (!(is_not_a_number(q1) && is_not_a_number(q2))
+      && q1 != q2) {
+    cout << "q1 should equal q2 (which was created from q1 output)."
 	 << endl;
     ret = 1;
     return;
   }
 
-  // Compare the output of cn2 and the expected string.
-  stringstream ss;
-  ss << cn2;
-  if (ss.str().compare(expected)) {
-    cout << "cn2 output is \"" << ss.str()
+  // Compare the output of q2 and the expected string.
+  stringstream ss2;
+  ss2 << q2;
+  if (ss2.str().compare(expected)) {
+    cout << "q2 output is \"" << ss2.str()
 	 << "\" (expected \"" << expected << "\")."
 	 << endl
-	 << "cn2: " << cn2 << endl;
+	 << "q2: " << q2 << endl;
     ret = 1;
     return;
   }
@@ -139,7 +125,13 @@ test_template (string number, string expected, string expected_residual) {
     return;
   }
 
-  // FIX If switch to mpq, compare result and expected result.
+  // Compare result of initial conversion and expected result.
+  if (result == expected_result)
+    return;
+
+  cout << "Result from conversion " << result
+       << " (expected " << expected_result << ")" << endl;
+  ret = 1;
 }
 
 int
@@ -148,238 +140,132 @@ main() TRY {
   ret = 0;
 
 #if 1
-#define fix(a,b,c)
+#define fix(a,b,c,d)
 #else
-#define fix(a,b,c) test(a,b,c)
+#define fix(a,b,c,d) test(a,b,c)
 #endif
-
-#define test test_template<int>
-
-  // Checked int.
-
-  stringstream min;
-  min << min_int<Test_Extended_Number_Policy, int>();
-
-  cout << "Testing checked int:" << endl;
-
-  test("inf", "+inf", "");
-  fix("INF", "+inf", "");
-  test("+inF", "+inf", "");
-  test("-InF", "-inf", "");
-
-  test("nan", "nan", "");
-  test("NAN", "nan", "");
-  test("Nan", "nan", "");
-
-  test("nan/-3", "nan", "/-3");
-  test("inf/3", "+inf", "/3");
-  test("inf/-3", "+inf", "/-3");
-  test("-inf/-3", "-inf", "/-3");
-
-  // Integer.
-
-  test("15", "15", "");
-  test("34976098", "34976098", "");
-  test("34976098349760983497609834976098", "+inf", "");
-  fix("3/-inf", "3", "/-inf");
-  test("+77", "77", "");
-  test("-77", "-77", "");
-  test("-777777777", "-777777777", "");
-  test("-7777777777", min.str(), "");
-  test("7777777777", "+inf", "");
-  test("-7777777777777777777777777", min.str(), "");
-  // Fraction.
-  test("71.3", "72", "");
-  test("0.123456", "1", "");
-  test("12345678910111213141516.12345678910111213141516", "+inf", "");
-  // Exponent.
-  test("15e1", "150", "");
-  test("15*^8", "1500000000", "");
-  test("1*^009", "1000000000", "");
-  test("15*^111", "+inf", "");
-  test("151515e+1", "1515150", "");
-  test("151515151515151515e+1", "+inf", "");
-  test("9200e-2", "92", "");
-  // Exponent and fraction.
-  test("5.3e3", "5300", "");
-  test("2.2e-1", "1", "");
-
-  // Hexadecimal.
-
-  test("0x0.f", "1", "");
-  fix("0x.f", "0", "");
-  test("0x.f*^1", "15", "");
-  fix("0x-f", "0", "x-f");
-  test("0xfa", "250", "");
-  test("-0xfa", "-250", "");
-  // Fraction.
-  test("0xfa.a", "251", "");
-  // Exponent.
-  test("0x1e2", "482", "");
-  test("0x1*^2", "256", "");
-  // Fraction and exponent.
-  test("0x0.1*^3", "256", "");
-  test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-2", "-2147483646", "");
-  test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-20b", "0", "");
-  //test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-20b3029", "0", "");  // FIX segfs
-
-  // Base.
-
-  test("3^^", "0", "");
-  test("^^3", "nan", "");
-  test("3^^1", "1", "");
-  test("2^^0", "0", "");
-  test("2^^1", "1", "");
-  test("2^^10", "2", "");
-  test("2^^11", "3", "");
-  test("36^^z", "35", "");
-  test("36^^yz", "1259", "");
-  test("36^^xyz", "44027", "");
-  test("37^^2", "nan", "");
-  // Fraction.
-  test("2^^11.1", "4", "");
-  // Exponent.
-  test("10^^2e3", "2000", "");
-  test("8^^2e3", "1024", "");
-  // Fraction and exponent.
-  test("8^^2.1e3", "1088", "");
-  test("8^^20402543.120347e7", "+inf", "");
-
-  // Denominator.
-
-  //test("15/0", "nan", "");
-  test("15/1", "15", "");
-  test("15/3", "5", "");
-  fix("15/-3", "15", "/-3");
-  // Exponent.
-  test("15/30e-1", "5", "");
-  test("27e3/30e-1", "9000", "");
-  // Fraction.
-  test("27.9/3.1", "9", "");
-  // Exponent and fraction.
-  test("27.9e3/30e-1", "9300", "");
-  // Hexadecimal.
-  test("0xf/0x3", "5", "");
-  test("3048227.23429e3/0x230abc43", "6", "");
-  // Base.
-  test("16^^f/4^^3.0e0", "5", "");
-
-  // Erroneous input.
-
-  fix(".333", "nan", ".333");
-
-  cout << endl;
-
-
-  // Checked mpq_class.
-
-#undef test
-#define test test_template<mpq_class>
 
   cout << "Testing checked mpq_class:" << endl;
 
-  test("inf", "+inf", "");
-  fix("INF", "+inf", "");
-  test("+inF", "+inf", "");
-  test("-InF", "-inf", "");
+  test("inf", "+inf", "", V_EQ);
+  fix("INF", "+inf", "", V_EQ);
+  test("+inF", "+inf", "", V_EQ);
+  test("-InF", "-inf", "", V_EQ);
 
-  test("nan", "nan", "");
-  test("NAN", "nan", "");
-  test("Nan", "nan", "");
+  test("nan", "nan", "", VC_NAN);
+  test("NAN", "nan", "", VC_NAN);
+  test("Nan", "nan", "", VC_NAN);
 
-  test("nan/-3", "nan", "/-3");
-  test("inf/3", "+inf", "/3");
-  test("inf/-3", "+inf", "/-3");
-  test("-inf/-3", "-inf", "/-3");
+  test("nan/-3", "nan", "/-3", VC_NAN);
+  test("inf/3", "+inf", "/3", V_EQ);
+  test("inf/-3", "+inf", "/-3", V_EQ);
+  test("-inf/-3", "-inf", "/-3", V_EQ);
 
   // Integer.
 
-  test("15", "15", "");
-  test("34976098", "34976098", "");
-  test("34976098349760983497609834976098", "34976098349760983497609834976098", "");
-  fix("3/-inf", "3", "/-inf");
-  test("+77", "77", "");
-  test("-77", "-77", "");
-  test("-7777777777777777777777777", "-7777777777777777777777777", "");
+  test("15", "15", "", V_EQ);
+  test("34976098", "34976098", "", V_EQ);
+  test("34976098349760983497609834976098",
+       "34976098349760983497609834976098", "", V_EQ);
+  fix("3/-inf", "3", "/-inf", V_EQ);
+  test("+77", "77", "", V_EQ);
+  test("-77", "-77", "", V_EQ);
+  test("-7777777777777777777777777",
+       "-7777777777777777777777777", "", V_EQ);
   // Fraction.
-  test("71.3", "713/10", "");
-  test("0.123456", "1929/15625", "");
-  test("12345678910111213141516.12345678910111213141516", "308641972752780328537903086419727527803285379/25000000000000000000000", "");
+  test("71.3", "713/10", "", V_EQ);
+  test("0.123456", "1929/15625", "", V_EQ);
+  test("12345678910111213141516.12345678910111213141516",
+       "308641972752780328537903086419727527803285379/25000000000000000000000",
+       "", V_EQ);
   // Exponent.
-  test("15e1", "150", "");
-  test("15*^8", "1500000000", "");
-  test("1*^009", "1000000000", "");
-  test("15*^111", "15000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "");
-  test("151515e+1", "1515150", "");
-  test("151515151515151515e+1", "1515151515151515150", "");
-  test("9200e-2", "92", "");
+  test("15e1", "150", "", V_EQ);
+  test("15*^8", "1500000000", "", V_EQ);
+  test("1*^009", "1000000000", "", V_EQ);
+  test("15*^111",
+       "15000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+       "", V_EQ);
+  test("151515e+1", "1515150", "", V_EQ);
+  test("151515151515151515e+1", "1515151515151515150", "", V_EQ);
+  test("9200e-2", "92", "", V_EQ);
   // Exponent and fraction.
-  test("5.3e3", "5300", "");
-  test("2.2e-1", "11/50", "");
+  test("5.3e3", "5300", "", V_EQ);
+  test("2.2e-1", "11/50", "", V_EQ);
 
   // Hexadecimal.
 
-  test("0x0.f", "15/16", "");
-  fix("0x.f", "0", "");
-  test("0x.f*^1", "15", "");
-  fix("0x-f", "0", "x-f");
-  test("0xfa", "250", "");
-  test("-0xfa", "-250", "");
+  test("0x0.f", "15/16", "", V_EQ);
+  fix("0x.f", "0", "", V_EQ);
+  test("0x.f*^1", "15", "", V_EQ);
+  fix("0x-f", "0", "x-f", V_EQ);
+  test("0xfa", "250", "", V_EQ);
+  test("-0xfa", "-250", "", V_EQ);
   // Fraction.
-  test("0xfa.a", "2005/8", "");
+  test("0xfa.a", "2005/8", "", V_EQ);
   // Exponent.
-  test("0x1e2", "482", "");
-  test("0x1*^2", "256", "");
+  test("0x1e2", "482", "", V_EQ);
+  test("0x1*^2", "256", "", V_EQ);
   // Fraction and exponent.
-  test("0x0.1*^3", "256", "");
-  test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-2", "-493504168323155221903720496056512238754896365637429427/590295810358705651712", "");
-  test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-20b", "-493504168323155221903720496056512238754896365637429427/1310933508604055428645639323137378916605714125627786059833620428064344929699983798856350724770249351343264006014785110634052203016928447702417826694914166499203532724061309761600565421336997063991815557515680099256435208755020866043671114406449028627331696698190741203965924596719013282704476143226108174949247429837123641776308586821274746853953307040976937411766310985422056170406984474085761281737469468808976890729698039324009144871950806544374270234375377739131156048222163582026729343976248181187638137223873724172759146299690233903325378612205820465841687984250694283465351797146791878992198286281436600229186585471120819282194789204326612992", "");
-  //test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-20b3029", "256", "");  // FIX segf
+  test("0x0.1*^3", "256", "", V_EQ);
+  test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-2",
+       "-493504168323155221903720496056512238754896365637429427/590295810358705651712",
+       "", V_EQ);
+  test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-20b",
+       "-493504168323155221903720496056512238754896365637429427/1310933508604055428645639323137378916605714125627786059833620428064344929699983798856350724770249351343264006014785110634052203016928447702417826694914166499203532724061309761600565421336997063991815557515680099256435208755020866043671114406449028627331696698190741203965924596719013282704476143226108174949247429837123641776308586821274746853953307040976937411766310985422056170406984474085761281737469468808976890729698039324009144871950806544374270234375377739131156048222163582026729343976248181187638137223873724172759146299690233903325378612205820465841687984250694283465351797146791878992198286281436600229186585471120819282194789204326612992",
+       "", V_EQ);
+  // FIX segf
+  //test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-20b3029",
+  //     "256", "", V_EQ);
 
   // Base.
 
-  test("3^^", "0", "");
-  test("^^3", "nan", "");
-  test("3^^1", "1", "");
-  test("2^^0", "0", "");
-  test("2^^1", "1", "");
-  test("2^^10", "2", "");
-  test("2^^11", "3", "");
-  test("36^^z", "35", "");
-  test("36^^yz", "1259", "");
-  test("36^^xyz", "44027", "");
-  test("37^^2", "nan", "");
+  test("3^^", "0", "", V_EQ);	// FIX "3", "^^", V_EQ
+  test("^^3", "nan", "^^3", V_CVT_STR_UNK);
+  test("3^^1", "1", "", V_EQ);
+  test("2^^0", "0", "", V_EQ);
+  test("2^^1", "1", "", V_EQ);
+  test("2^^10", "2", "", V_EQ);
+  test("2^^11", "3", "", V_EQ);
+  test("36^^z", "35", "", V_EQ);
+  test("36^^yz", "1259", "", V_EQ);
+  test("36^^xyz", "44027", "", V_EQ);
+  test("37^^2", "nan", "^2", V_CVT_STR_UNK); // FIX "37", "^^2", V_EQ
   // Fraction.
-  test("2^^11.1", "7/2", "");
+  test("2^^11.1", "7/2", "", V_EQ);
   // Exponent.
-  test("10^^2e3", "2000", "");
-  test("8^^2e3", "1024", "");
+  test("10^^2e3", "2000", "", V_EQ);
+  test("8^^2e3", "1024", "", V_EQ);
   // Fraction and exponent.
-  test("8^^2.1e3", "1088", "");
-  test("8^^20402543.120347e7", "9073863231288", "");
+  test("8^^2.1e3", "1088", "", V_EQ);
+  test("8^^20402543.120347e7", "9073863231288", "", V_EQ);
 
   // Denominator.
 
-  test("15/0", "nan", "");
-  test("15/1", "15", "");
-  test("15/3", "5", "");
-  fix("15/-3", "15", "/-3");
+  test("15/0", "nan", "", VC_NAN);
+  test("15/1", "15", "", V_EQ);
+  test("15/3", "5", "", V_EQ);
+  fix("15/-3", "15", "/-3", V_EQ);
   // Exponent.
-  test("15/30e-1", "5", "");
-  test("27e3/30e-1", "9000", "");
+  test("15/30e-1", "5", "", V_EQ);
+  test("27e3/30e-1", "9000", "", V_EQ);
   // Fraction.
-  test("27.9/3.1", "9", "");
+  test("27.9/3.1", "9", "", V_EQ);
   // Exponent and fraction.
-  test("27.9e3/30e-1", "9300", "");
+  test("27.9e3/30e-1", "9300", "", V_EQ);
   // Hexadecimal.
-  test("0xf/0x3", "5", "");
-  test("3048227.23429e3/0x230abc43", "304822723429/58790611500", "");
+  test("0xf/0x3", "5", "", V_EQ);
+  test("3048227.23429e3/0x230abc43",
+       "304822723429/58790611500", "", V_EQ);
   // Base.
-  test("16^^f/4^^3.0e0", "5", "");
+  test("16^^f/4^^3.0e0", "5", "", V_EQ);
 
   // Erroneous input.
 
-  fix(".333", "nan", ".333");
+  fix(".333", "nan", ".333", V_EQ);
+
+  // FIX check corner cases more systematically (things like base-1
+  // numbers, maximum base numbers, 'e' not followed by an exponent,
+  // ...).
 
   return ret;
 }
