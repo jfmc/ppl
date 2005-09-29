@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "scalar_products.defs.hh"
 #include "Coefficient.defs.hh"
+#include "Congruence.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -38,6 +39,52 @@ PPL::scalar_product_assign(Coefficient& z,
   for (dimension_type i = x.size(); i-- > 0; )
     // The following line optimizes the computation of z += x[i] * y[i].
     add_mul_assign(z, x[i], y[i]);
+}
+
+/*! \relates Parma_Polyhedra_Library::Congruence */
+void
+PPL::scalar_product_assign(Coefficient& z,
+			   const Linear_Row& x, const Congruence& y) {
+  // Scalar product is only defined if `x' and `y' are
+  // dimension-compatible.
+  assert(x.size() <= y.size() - 1);
+  z = 0;
+  for (dimension_type i = x.size(); i-- > 0; )
+    // The following line optimizes the computation of z += x[i] *
+    // y[i].
+    add_mul_assign(z, x[i], y[i]);
+}
+
+/*! \relates Parma_Polyhedra_Library::Congruence */
+void
+PPL::scalar_product_assign(Coefficient& z,
+			   const Congruence& x, const Linear_Row& y) {
+  // Scalar product is only defined if `x' and `y' are
+  // dimension-compatible.
+  assert(x.size() - 1 <= y.size());
+  z = 0;
+  for (dimension_type i = x.size() - 1; i-- > 0; )
+    // The following line optimizes the computation of z += x[i] *
+    // y[i].
+    add_mul_assign(z, x[i], y[i]);
+}
+
+/*! \relates Parma_Polyhedra_Library::Congruence */
+void
+PPL::scalar_product_assign(Coefficient& z,
+			   const Linear_Row& x, const Congruence& y,
+			   const Linear_Row& ref) {
+  // Scalar product is only defined if `x' and `y' are
+  // dimension-compatible.
+  assert(x.size() <= y.size() - 1);
+  z = 0;
+  for (dimension_type i = x.size(); i-- > 0; ) {
+    // z += (ref[i] + x[i]) * y[i].
+    TEMP_INTEGER(ele);
+    ele = ref[i] + x[i];
+    // The following line optimizes z += ele * y[i].
+    add_mul_assign(z, ele, y[i]);
+  }
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Row */
@@ -56,6 +103,38 @@ PPL::reduced_scalar_product_assign(Coefficient& z,
     add_mul_assign(z, x[i], y[i]);
 }
 
+/*! \relates Parma_Polyhedra_Library::Congruence */
+void
+PPL::reduced_scalar_product_assign(Coefficient& z,
+				   const Linear_Row& x, const Congruence& y) {
+  // FIX The reduced scalar product is only defined if the topology of
+  // `x' is NNC and `y' has enough coefficients.
+  assert(x.size() <= y.size());
+  z = 0;
+  for (dimension_type i = x.size() - 1; i-- > 0; )
+    // The following line optimizes z += x[i] * y[i].
+    add_mul_assign(z, x[i], y[i]);
+}
+
+/*! \relates Parma_Polyhedra_Library::Congruence */
+void
+PPL::reduced_scalar_product_assign(Coefficient& z,
+				   const Linear_Row& x, const Congruence& y,
+				   const Linear_Row& ref) {
+  // The reduced scalar product is only defined
+  // if the topology of `x' is NNC and `y' has enough coefficients.
+  assert(x.size() <= y.size());
+  z = 0;
+  for (dimension_type i = x.size() - 1; i-- > 0; ) {
+    // z += (x[i] + ref[i]) * y[i].
+    TEMP_INTEGER(ele);
+    ele = x[i] + ref[i];
+    // The following line optimizes the computation
+    // of z += ele * y[i].
+    add_mul_assign(z, ele, y[i]);
+  }
+}
+
 /*! \relates Parma_Polyhedra_Library::Linear_Row */
 void
 PPL::homogeneous_scalar_product_assign(Coefficient& z,
@@ -66,6 +145,20 @@ PPL::homogeneous_scalar_product_assign(Coefficient& z,
   assert(x.size() <= y.size());
   z = 0;
     // Note the pre-decrement of `i': last iteration should be for `i == 1'.
+  for (dimension_type i = x.size(); --i > 0; )
+    // The following line optimizes the computation of z += x[i] * y[i].
+    add_mul_assign(z, x[i], y[i]);
+}
+
+/*! \relates Parma_Polyhedra_Library::Congruence */
+void
+PPL::homogeneous_scalar_product_assign(Coefficient& z,
+				       const Linear_Row& x, const Congruence& y) {
+  // Scalar product is only defined if `x' and `y' are
+  // dimension-compatible.
+  assert(x.size() <= y.size() - 1);
+  z = 0;
+  // Note the pre-decrement of `i': last iteration should be for `i == 1'.
   for (dimension_type i = x.size(); --i > 0; )
     // The following line optimizes the computation of z += x[i] * y[i].
     add_mul_assign(z, x[i], y[i]);

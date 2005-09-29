@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
+#include "Congruence.types.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -36,6 +37,30 @@ namespace Parma_Polyhedra_Library {
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void scalar_product_assign(Coefficient& z,
 			   const Linear_Row& x, const Linear_Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Computes the scalar product of \p x and \p y and assigns it to \p z.
+/*! \relates Linear_Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void scalar_product_assign(Coefficient& z,
+			   const Linear_Row& x, const Congruence& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Computes the scalar product of \p x and \p y and assigns it to \p z.
+/*! \relates Linear_Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void scalar_product_assign(Coefficient& z,
+			   const Congruence& x, const Linear_Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Computes the scalar product of \p x (FIX relative to \p ref) and
+//! \p y and assigns it to \p z.
+/*! \relates Linear_Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void scalar_product_assign(Coefficient& z,
+			   const Linear_Row& x, const Congruence& y,
+			   const Linear_Row& ref);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns the sign of the scalar product between \p x and \p y.
@@ -48,6 +73,12 @@ int scalar_product_sign(const Linear_Row& x, const Linear_Row& y);
 int scalar_product_sign(const Constraint& x, const Generator& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns the sign of the scalar product between \p x and \p y.
+/*! \relates Linear_Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+int scalar_product_sign(const Linear_Row& x, const Congruence& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
 //! Computes the \e reduced scalar product of \p x and \p y,
 //! where the \f$\epsilon\f$ coefficient of \p x is ignored,
@@ -55,6 +86,27 @@ int scalar_product_sign(const Constraint& x, const Generator& y);
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void reduced_scalar_product_assign(Coefficient& z,
 				   const Linear_Row& x, const Linear_Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Computes the \e reduced scalar product of \p x and \p y,
+//! where the \f$\epsilon\f$ coefficient of \p x is ignored,
+//! and assigns the result to \p z.
+/*! \relates Linear_Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void reduced_scalar_product_assign(Coefficient& z,
+				   const Linear_Row& x, const Congruence& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Computes the \e reduced scalar product of \p x (FIX relative to \p
+//! ref) and \p y, where the \f$\epsilon\f$ coefficient of \p x is
+//! ignored, and assigns the result to \p z.
+/*! \relates Linear_Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void reduced_scalar_product_assign(Coefficient& z,
+				   const Linear_Row& x, const Congruence& y,
+				   const Linear_Row& ref);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
@@ -72,6 +124,14 @@ int reduced_scalar_product_sign(const Constraint& x, const Generator& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
+//! Returns the sign of the \e reduced scalar product of \p x and \p y,
+//! where the \f$\epsilon\f$ coefficient of \p x is ignored.
+/*! \relates Linear_Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+int reduced_scalar_product_sign(const Linear_Row& x, const Congruence& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
 //! Computes the \e homogeneous scalar product of \p x and \p y,
 //! where the inhomogeneous terms are ignored,
 //! and assigns the result to \p z.
@@ -79,6 +139,18 @@ int reduced_scalar_product_sign(const Constraint& x, const Generator& y);
 void homogeneous_scalar_product_assign(Coefficient& z,
 				       const Linear_Row& x,
 				       const Linear_Row& y);
+
+// FIX will this ever be used?
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Computes the \e homogeneous scalar product of \p x and \p y,
+//! where the inhomogeneous terms are ignored,
+//! and assigns the result to \p z.
+/*! \relates Linear_Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void homogeneous_scalar_product_assign(Coefficient& z,
+				       const Linear_Row& x,
+				       const Congruence& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
@@ -104,6 +176,15 @@ void homogeneous_scalar_product_assign(Coefficient& z,
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 int homogeneous_scalar_product_sign(const Linear_Expression& x,
 				    const Generator& y);
+
+// FIX will this ever be used?
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Returns the sign of the \e homogeneous scalar product of \p x and \p y,
+//! where the inhomogeneous terms are ignored,
+/*! \relates Linear_Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+int homogeneous_scalar_product_sign(const Linear_Row& x, const Congruence& y);
 
 } // namespace Parma_Polyhedra_Library
 

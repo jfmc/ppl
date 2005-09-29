@@ -38,6 +38,13 @@ scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
 }
 
 inline int
+scalar_product_sign(const Linear_Row& x, const Congruence& y) {
+  TEMP_INTEGER(z);
+  scalar_product_assign(z, x, y);
+  return sgn(z);
+}
+
+inline int
 reduced_scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
   TEMP_INTEGER(z);
   reduced_scalar_product_assign(z, x, y);
@@ -45,7 +52,21 @@ reduced_scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
 }
 
 inline int
+reduced_scalar_product_sign(const Linear_Row& x, const Congruence& y) {
+  TEMP_INTEGER(z);
+  reduced_scalar_product_assign(z, x, y);
+  return sgn(z);
+}
+
+inline int
 homogeneous_scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
+  TEMP_INTEGER(z);
+  homogeneous_scalar_product_assign(z, x, y);
+  return sgn(z);
+}
+
+inline int
+homogeneous_scalar_product_sign(const Linear_Row& x, const Congruence& y) {
   TEMP_INTEGER(z);
   homogeneous_scalar_product_assign(z, x, y);
   return sgn(z);

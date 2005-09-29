@@ -227,30 +227,6 @@ Congruence::swap(Congruence& y) {
   Row::swap(y);
 }
 
-/*! \relates Congruence */
-inline int
-scalar_product_sign(const Linear_Row& x, const Congruence& y) {
-  TEMP_INTEGER(z);
-  scalar_product_assign(z, x, y);
-  return sgn(z);
-}
-
-/*! \relates Congruence */
-inline int
-reduced_scalar_product_sign(const Linear_Row& x, const Congruence& y) {
-  TEMP_INTEGER(z);
-  reduced_scalar_product_assign(z, x, y);
-  return sgn(z);
-}
-
-/*! \relates Congruence */
-inline int
-homogeneous_scalar_product_sign(const Linear_Row& x, const Congruence& y) {
-  TEMP_INTEGER(z);
-  homogeneous_scalar_product_assign(z, x, y);
-  return sgn(z);
-}
-
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
