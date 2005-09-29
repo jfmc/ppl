@@ -103,8 +103,8 @@ gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
 template <typename Policy, typename To,
 	  typename From1, typename From2, typename From3, typename From4>
 inline Result
-gcdext_generic(To& to, const From1& x, const From2& y, From3& s, From4& t,
-	       Rounding_Dir dir) {
+gcdext_exact(To& to, const From1& x, const From2& y, From3& s, From4& t,
+	     Rounding_Dir dir) {
   if (y == 0) {
     if (x == 0) {
       s = 0;
