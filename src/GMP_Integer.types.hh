@@ -23,6 +23,7 @@ namespace Parma_Polyhedra_Library {
   defined in the C++ interface of the GMP library.
   For more information, see <CODE>http://www.swox.com/gmp/</CODE>
 */
+//! \class GMP_Integer
 typedef mpz_class GMP_Integer;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
