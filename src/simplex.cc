@@ -75,68 +75,6 @@ linear_combine(Row& x, const Row& y, const dimension_type k) {
   x.normalize();
 } 
 
-//! Inserts a row in a matrix.
-/*!
-  \param matrix
-  The Matrix in which will be inserted the Row;
-
-  \param row
-  The Row that will be inserted with in the \p x Matrix;
-
-  This has the same effects of Linear_System.insert()
-  The Matrix grows if the Row has more columns than the Matrix ones.
-*/
-void
-insert_row_in_matrix(Matrix& matrix, const Row& row) {
-  dimension_type row_size = row.size();
-  dimension_type matrix_num_columns = matrix.num_columns();
-  
-  if (matrix_num_columns < row_size)
-    matrix.add_zero_columns(row_size - matrix_num_columns);
-  
-  matrix.add_zero_rows(1, Row::Flags());
-  dimension_type matrix_num_rows = matrix.num_rows();
-  
-  for (dimension_type i = 0; i < row_size; ++i) 
-    matrix[matrix_num_rows - 1][i] = row[i];
-}
-
-//! Append \p k elements to \p r, each with value \p n.
-void
-add_elements_to_row(Row& r,
-		    const dimension_type k,
-		    Coefficient_traits::const_reference n) {
-  dimension_type r_size = r.size();
-  dimension_type s_size = r_size + k;
-  Row s(r, s_size, s_size);
-  for (dimension_type i = r_size; i < s_size; ++i) 
-    s[i] = n;  
-  r.swap(s);
-}
-
-//! \brief
-//! Creates a copy of a column of a matrix.
-/*!
-  \param tableau
-  The matrix that contains the column to be extracted.
-
-  \param index
-  The index of the column to be extracted.
-
-  \param column
-  A vector where will be stored the column.
-*/
-inline void 
-copy_column(const Matrix& tableau,
-	    const dimension_type index,
-	    std::vector<Coefficient>& column) {
-  const dimension_type tableau_num_rows = tableau.num_rows();
-  // Used to avoid memory reallocation during column.push_back().
-  column.reserve(tableau_num_rows);
-  for (dimension_type i = 0; i < tableau_num_rows; ++i)
-    column.push_back(tableau[i][index]);
-}
-
 // See pag 42-43 of Papadimitriou. 
 
 //! \brief
@@ -153,177 +91,133 @@ copy_column(const Matrix& tableau,
   The index of the variable entering the base.
 
   \param outside_row
-  The index of the variable exiting the base.
+  The index of the row exiting the base.
 */
-void
+inline void
 swap_base(Matrix& tableau,
 	  Row& cost_function,
 	  const dimension_type inside_var,
 	  const dimension_type outside_row) {
+  const Row& tableau_out = tableau[outside_row];
   // Linearly combine the constraints.
-  for (dimension_type i = tableau.num_rows(); i-- > 0; )
-    if (i != outside_row && tableau[i][inside_var] != 0)
-      linear_combine(tableau[i], tableau[outside_row], inside_var);
-
+  for (dimension_type i = tableau.num_rows(); i-- > 0; ) {
+    Row& tableau_i = tableau[i];
+    if (i != outside_row && tableau_i[inside_var] != 0)
+      linear_combine(tableau_i, tableau_out, inside_var);
+  }
   // Linearly combine the cost function.
   if (cost_function[inside_var] != 0)
-    linear_combine(cost_function, tableau[outside_row], inside_var);
+    linear_combine(cost_function, tableau_out, inside_var);
 }
 
 
 // See pag. 47 of Papadimitriou.
 
 //! \brief
-//!  Checks for the optimality condition of the LP problem.
-//!  If this condition is not satisfied, chooses the variable to
-//!  put in the base. Implemented with anti-cycling rule.
+//! Checks for optimality and, if it does not hold, computes the column
+//! index of the variable entering the base of the LP problem.
+//! Implemented with anti-cycling rule.
 /*!
   \return
-  <CODE>true</CODE> if and if only the algorithm finds the optimum condition.
+  The column index of the variable that enters the base. If no such
+  variable exists, optimality was achieved and <CODE>0</CODE> is retuned.
 
-  \param expressions
-  The matrix that contains the cost function/s.
-
-  \param index_in
-  The index of the matrix representing the variable that has to go in base,
-  if needed.
+  \param cost function
+  The expression to be optimized.
 */
-inline bool
-check_optimality(const Matrix& expressions,
-		 dimension_type& index_in) {  
-  // If all the coefficients of the cost function are greater or equal
-  // than 0, we have reached the optimality condition.
-  // The last coefficient represents the sign, so we don't have
-  // to check this one. If the optimality condition is not satisfied,
-  // we have to choose the variable with the smallest index.
-  dimension_type last_column_index = expressions.num_columns()-1;
-  
-  // We have to remember the "sign" of the cost function:
-  // we will use 'sign_value' to get this info. We need this to check the 
-  // optimality condition.
-  bool sign_value = expressions[0][last_column_index] > 0;
-  for (dimension_type i = 1; i < last_column_index; ++i)
-    if (sign_value ? expressions[0][i] > 0 : expressions[0][i] < 0) {
-      index_in = i;
-      return false;
-    }
-  return true;
+inline dimension_type
+get_entering_index(const Row& cost_function) {
+  // The variable that has to enter the base is the first one
+  // having a coefficient with the same sign as the cost function.
+  // If no such variable exists, then we met the optimality condition
+  // (and return 0 to the caller).
+
+  // Get the "sign" of the cost function.
+  const dimension_type cost_sign_index = cost_function.size() - 1;
+  const int cost_sign = sgn(cost_function[cost_sign_index]);
+  assert(cost_sign != 0);
+  for (dimension_type i = 1; i < cost_sign_index; ++i)
+    if (sgn(cost_function[i]) == cost_sign)
+      return i;
+  // No variable has to enter the base:
+  // the cost function was optimized.
+  return 0;
 }
 
 // See pag. 47 + 50 of Papadimitriou.  
 
 //! \brief
-//! Chooses the variable to put out of the base of the LP problem.
-//! Implemented with anti-cycling rules.
+//! Computes the row index of the variable exiting the base
+//! of the LP problem. Implemented with anti-cycling rules.
 /*!
   \return
-  An integer representing the row that refers to the variable that
-  has to go out of the base.
+  The row index of the variable exiting the base.
 
   \param tableau
-  The matrix that has to be checked.
+  The constraint tableau for the LP problem.
 
-  \param index_will_be_in
-  The index of the matrix that represents the variable that has to go
-  out from the base.
+  \param entering_index
+  The column index of the variable entering the base.
 
   \param base
-  The array that stores the variables in base.
+  The base of the LP problem.
 
   \param unbounded
-  Bool that will be set to <CODE>true<\CODE> if and only if the LP problem
+  Will be set to <CODE>true<\CODE> if and only if the LP problem
   is unbounded.
 */
-inline int
-choose_out_var(const Matrix& tableau,  
-	       const int index_will_be_in,
-	       std::vector<dimension_type>& base,
-	       bool& unbounded) {
-  // To choose the variable that has to go out from the base, we must 
-  // look for the row such that row[index_will_be_in]/row[inhomogeneous_term]
-  // is the smallest, but > 0, in all the rows of the tableau.
-  
-  // To compute the variable that has to go out from the base, we simply need
-  // these 2 columns: inhomogeneous terms, variable that has to get in the
-  // base(previously computed).
-  
-  std::vector<Coefficient> inhomogeneous;
-  copy_column(tableau, 0, inhomogeneous);
-  
-  // This one will contain the row indexes of the tableau that will be
-  // considered to compute the variable that has to go out from the base.
-  std::vector<dimension_type> candidate_constraints;
-  
-  // We must suppose at this moment that the solution to the LP is unbounded,
-  // but if we will find a row such that tableau[index_will_be_in][i] > 0  
-  // && tableau[i][base[i]] > 0 or (since we don't store the constraints in a 
-  // special way) tableau[index_will_be_in][i] < 0 && tableau[i][base[i]] < 0
-  // we will be sure that the solution is not unbounded.
-  unbounded = true;
-  
-  // We want to insert in candidate_constraints the indexes of the rows such
-  // that tableau[index_will_be_in][i] > 0 && tableau[i][base[i]] > 0
-  // or tableau[index_will_be_in][i] < 0 && tableau[i][base[i]] < 0.
-  for (dimension_type i = tableau.num_rows(); i-- > 0; ) {
-    const Row& tableau_i = tableau[i];
-    const int sgn_a = sgn(tableau_i[index_will_be_in]);
-    if (sgn_a != 0 && sgn_a == sgn(tableau_i[base[i]])) {
-      candidate_constraints.push_back(i);
-      unbounded = false;
+inline dimension_type
+get_exiting_index(const Matrix& tableau,  
+		  const dimension_type entering_index,
+		  std::vector<dimension_type>& base) {
+  // The variable exiting the base should be associated to a tableau
+  // constraint such that the ratio
+  //   tableau[i][entering_index] / tableau[i][base[i]]
+  // is strictly positive and minimal.
+
+  // Find the first tableau constraint `c' having a positive value for
+  //   tableau[i][entering_index] / tableau[i][base[i]]
+  const dimension_type tableau_num_rows = tableau.num_rows();
+  dimension_type exiting_index = tableau_num_rows;
+  for (dimension_type i = 0; i < tableau_num_rows; ++i) {
+    const Row& t_i = tableau[i];
+    const int num_sign = sgn(t_i[entering_index]);
+    if (num_sign != 0 && num_sign == sgn(t_i[base[i]])) {
+      exiting_index = i;
+      break;
     }
   }
- 
-  // If the problem is unbounded we have finished: in this case the return 
-  // value is not important, the calling function will look to the "unbounded"
-  // variable first.
-  if (unbounded)
-    return 0;
-  
-  // Now we are sure that we can compute the out_variable_row index.
-  // So we start computing the lcm of the var_in_column rows in the candidate
-  // constraints.
-  dimension_type candidate_constraints_size = candidate_constraints.size();
-  Coefficient lcm = 1;
-  
-  // We are not interested about the sign of 'lcm'. We will work with 
-  // an absolute value later.
-  for (dimension_type i = candidate_constraints_size; i-- > 0; )
-    lcm_assign(lcm, tableau[candidate_constraints[i]][index_will_be_in]);
-  
-  // We proceed computing the right representation of inhomogeneous terms.
-  for (dimension_type i = candidate_constraints_size; i-- > 0; ) {  
-    const dimension_type& index = candidate_constraints[i];
-    inhomogeneous[index] *= abs(lcm / tableau[index][index_will_be_in]);
-  }
-  // On exit this will contain the column index of tableau of the variable
-  // that has to go out from the base. At the begin we suppose that the first
-  // row indexed by candidate_constraints.
-  dimension_type out_var_row = candidate_constraints[0];  
-  
-  // This is used to store the value of the inhomogeneous term of the row
-  // that express the variable that has to go out from the base.
-  Coefficient var_value = abs(inhomogeneous[candidate_constraints[0]]);
-  
-  // Now we proceed comparing the other rows indexed by candidate_constraints
-  // with the first one.
-  for (dimension_type i = 0; i < candidate_constraints_size; ++i) {
-    const dimension_type& checked_index = candidate_constraints[i];
-    const Coefficient abs_checked = abs(inhomogeneous[checked_index]);
-    if (abs_checked < var_value) {
-      var_value = abs_checked; 
-      out_var_row = checked_index;
+  // Check for unboundedness.
+  if (exiting_index == tableau_num_rows)
+    return tableau_num_rows;
+
+  // Reaching this point means that a variable will definitely exit the base.
+  TEMP_INTEGER(lcm);
+  TEMP_INTEGER(current_min);
+  TEMP_INTEGER(challenger);
+  for (dimension_type i = exiting_index + 1; i < tableau_num_rows; ++i) {
+    const Row& t_i = tableau[i];
+    const Coefficient& t_ie = t_i[entering_index];
+    const Coefficient& t_ib = t_i[base[i]];
+    const int t_ie_sign = sgn(t_ie);
+    if (t_ie_sign != 0 && t_ie_sign == sgn(t_ib)) {
+      const Row& t_e = tableau[exiting_index];
+      const Coefficient& t_ee = t_e[entering_index];
+      lcm_assign(lcm, t_ee, t_ie);
+      exact_div_assign(current_min, lcm, t_ee);
+      current_min *= t_e[0];
+      current_min = abs(current_min);
+      exact_div_assign(challenger, lcm, t_ie);
+      challenger *= t_i[0];
+      challenger = abs(challenger);
+      current_min -= challenger;
+      const int sign = sgn(current_min);
+      if (sign > 0
+	  || (sign == 0 && base[i] < base[exiting_index]))
+	exiting_index = i;
     }
-    // But if we find a variable with the same value of the inhomogeneous
-    // term of the last one chosen, but its index is smaller, we choose
-    // that one. (Anti-cycling Rule)
-    else if (abs_checked == var_value
-	     && base[checked_index] < base[out_var_row])
-	out_var_row = checked_index;
   }
-  
-  // Now we can set the "base" vector with the new computed base.
-  base[out_var_row] = index_will_be_in;
-  return out_var_row;
+  return exiting_index;
 }
 
 // See pag 49 of Papadimitriou.
@@ -336,7 +230,7 @@ choose_out_var(const Matrix& tableau,
   a feasible solution.
 
   \param tableau
-  The constraints of the LP problem.
+  The constraint tableau for the LP problem.
 
   \param expressions
   The matrix that contains the cost function-s to be maximized/minimized. 
@@ -366,38 +260,42 @@ choose_out_var(const Matrix& tableau,
 */
 bool
 compute_simplex(Matrix& tableau,
-		Matrix& expressions,
+		Matrix& costs,
 		std::vector<dimension_type>& base) {
-  assert(tableau.num_columns() == expressions.num_columns());
+  assert(tableau.num_columns() == costs.num_columns());
+  const dimension_type tableau_num_rows = tableau.num_rows();
+
   while (true) {
-    // In this one will be stored the variable that will go in base
-    // if and only if the optimality condition is not satisfied.
-    dimension_type index_will_be_in;
-    if (check_optimality(expressions, index_will_be_in)) {
+    // Choose the index of the variable entering the base, if any.
+    const dimension_type entering_index = get_entering_index(costs[0]);
+    // If no entering index was computed, the problem is solved.
+    if (entering_index == 0) {
       // If we are in the 1st phase, we have to express the old cost function
-      // terms of the computed base.
-      if (expressions.num_rows() == 2) {
-	for (dimension_type i = tableau.num_rows(); i-- > 0; ) 
-	  if (expressions[1][base[i]] != 0)
-	    linear_combine(expressions[1], tableau[i], base[i]);
+      // in terms of the computed base.
+      const bool first_phase = (costs.num_rows() == 2);
+      if (first_phase) {
+	Row& old_cost = costs[1];
+	for (dimension_type i = tableau_num_rows; i-- > 0; ) {
+	  const dimension_type base_i = base[i];
+	  if (old_cost[base_i] != 0)
+	    linear_combine(old_cost, tableau[i], base_i);
+	}
       }
       return true;
     }
     
-    // We have to choose the row the contains the variable to get out
-    // from the base.
-    bool unbounded = false;
-    dimension_type out_var_row;
-    out_var_row = choose_out_var(tableau, index_will_be_in, base, unbounded);
-    
-    // During the search of the variable that has to get out from the base,
-    // we can know if the problem is unbounded or not.
-    if (unbounded) 
+    // Choose the index of the row exiting the base.
+    const dimension_type
+      exiting_index = get_exiting_index(tableau, entering_index, base);
+    // If no exiting index was computed, the problem is unbounded.
+    if (exiting_index == tableau_num_rows) 
       return false;
-    
-    // We have not reached the optimality or unbounded condition.
-    // So we have to reach another vertex of the Polyhedron.
-    swap_base(tableau, expressions[0], index_will_be_in, out_var_row);
+
+    // We have not reached the optimality or unbounded condition:
+    // compute the new base and the corresponding vertex of the
+    // feasible region.
+    base[exiting_index] = entering_index;
+    swap_base(tableau, costs[0], entering_index, exiting_index);
   }
 }
 
@@ -618,40 +516,29 @@ compute_tableau(const Linear_System& cs,
 		std::map<dimension_type, dimension_type>& dim_map) {
   assert(tableau.num_rows() == 0);
   assert(dim_map.size() == 0);
+
   const dimension_type cs_num_rows = cs.num_rows();
-  const dimension_type cs_num_columns = cs.num_columns();
-  // Note: we disregard the topology of the constraint system.
-  // Namely, in an NNC constraint system, the epsilon dimension
-  // is interpreted as a normal dimension.
-  const dimension_type cs_space_dim = cs_num_columns-1;
+  const dimension_type cs_num_cols = cs.num_columns();
   
-  // Phase 1:
+  // Step 1:
   // determine variables that are constrained to be nonnegative,
-  // detect nonnegativity constraints that will not be part of the
-  // tableau and count the number of inequalities.
+  // detect (non-negativity or tautology) constraints that will not
+  // be part of the tableau and count the number of slack variables.
   
+  // Counters determining the dimensions of the tableau:
+  // initialized here, they will be updated while examining `cs'.
+  dimension_type tableau_num_rows = cs_num_rows;
+  dimension_type tableau_num_cols = 2*cs_num_cols - 1;
+  dimension_type num_slack_variables = 0;
+
+  // On exit, `is_tableau_constraint[i]' will be true if and only if
+  // `cs[i]' is neither a tautology (e.g., 1 >= 0) nor a non-negativity
+  // constraint (e.g., X >= 0).
+  std::deque<bool> is_tableau_constraint(cs_num_rows, true);
+
   // On exit, `nonnegative_variable[j]' will be true if and only if
   // Variable(j) is bound to be nonnegative in `cs'.
-  std::deque<bool> nonnegative_variable(cs_space_dim, false);
-  
-  // On exit, `trivially_true_constraint[j]' will be true if and only if
-  // `cs[j]' is trivially true: it will not be inserted in the tableau.
-  std::deque<bool> trivially_true_constraint(cs_num_rows, false);
-
-  // On exit, this will hold the number of nonnegative variables.
-  dimension_type num_nonnegative = 0;
-  
-  // On exit, `nonnegativity_constraint[i]' will be true if and only if
-  // `cs[i]' contains a constraint that only expresses the non-negativity
-  // of one variable.
-  std::deque<bool> nonnegativity_constraint(cs_num_rows, false);
-  dimension_type nonnegativity_constraint_number = 0;
-  
-  // On exit, `num_inequalities_left' will contain the number of
-  // inequalities that convey more than the non-negativity of one
-  // variables.  For each one of these inequalities we will have to
-  // introduce a slack variable.
-  dimension_type num_inequalities_left = 0;
+  std::deque<bool> nonnegative_variable(cs_num_cols - 1, false);
   
   // Process each row of the `cs' matrix.
   for (dimension_type i = cs_num_rows; i-- > 0; ) { 
@@ -659,12 +546,12 @@ compute_tableau(const Linear_System& cs,
     bool found_a_nonzero_coeff = false;
     bool found_many_nonzero_coeffs = false;
     dimension_type nonzero_coeff_column_index = 0;
-    for (dimension_type j = cs_num_columns; j-- > 1; ) {
+    for (dimension_type j = cs_num_cols; j-- > 1; ) {
       if (cs_i[j] != 0)
 	if (found_a_nonzero_coeff) {
 	  found_many_nonzero_coeffs = true;
 	  if (cs_i.is_ray_or_point_or_inequality())
-	    ++num_inequalities_left;
+	    ++num_slack_variables;
 	  break;
 	}
 	else {
@@ -691,7 +578,8 @@ compute_tableau(const Linear_System& cs,
 	  // A constraint such as 1 == 0 is trivially false.
 	  return UNFEASIBLE_PROBLEM;
       // Here the constraint is trivially true.
-      trivially_true_constraint[i] = true;
+      is_tableau_constraint[i] = false;
+      --tableau_num_rows;
       continue;
     }
     else {
@@ -731,38 +619,41 @@ compute_tableau(const Linear_System& cs,
       // Cases 1-3: apply method A. 
       if (sgn_a == sgn_b) {
 	if (cs_i.is_ray_or_point_or_inequality())
-	  ++num_inequalities_left;
+	  ++num_slack_variables;
       }
       // Cases 4-5: apply method B. 
       else if (cs_i.is_line_or_equality()) {
 	if (!nonnegative_variable[nonzero_var_index]) {
 	  nonnegative_variable[nonzero_var_index] = true;
-	  ++num_nonnegative;
+	  --tableau_num_cols;
 	}
       }
       // Case 6: apply method B.
       else if (sgn_b < 0) {
 	if (!nonnegative_variable[nonzero_var_index]) {
 	  nonnegative_variable[nonzero_var_index] = true;
-	  ++num_nonnegative;
+	  --tableau_num_cols;
 	}
-	++num_inequalities_left;
+	++num_slack_variables;
       }
       // Case 7: apply method C.
       else if (sgn_a > 0) {
 	if (!nonnegative_variable[nonzero_var_index]) {
 	  nonnegative_variable[nonzero_var_index] = true;
-	  ++num_nonnegative;
+	  --tableau_num_cols;
 	}
-	nonnegativity_constraint[i] = true;
-	++nonnegativity_constraint_number;
+	is_tableau_constraint[i] = false;
+	--tableau_num_rows;
       }
       // Cases 8-9: apply method A.
       else
-	++num_inequalities_left;
+	++num_slack_variables;
     }
   }
 
+  // The slack variables will be columns in the tableau.
+  tableau_num_cols += num_slack_variables;
+   
   // Now we can fill the map.
   for (dimension_type i = 0, j = nonnegative_variable.size(),
 	 nnv_size = j; i < nnv_size; ++i)
@@ -770,18 +661,15 @@ compute_tableau(const Linear_System& cs,
       dim_map.insert(std::make_pair(i, j));
       ++j;
     }
-  // Phase 2: 
-  // set the dimension for the tableau and insert the (possibly transformed)
-  // cost function as the first row.
 
-  // This will be the new size of the rows that will be inserted in the 
-  // tableau. The size is computed in this way:
-  const dimension_type new_row_size
-    = 2*cs_num_columns - num_nonnegative + num_inequalities_left - 1; 
-   
-  // We have to resize the cost function to `new_row_size'.
-  Row resized_cost_function(cost_function, new_row_size, new_row_size);
-  cost_function.swap(resized_cost_function);
+  // Step 2: 
+  // set the dimensions for the tableau and the cost function.
+  if (tableau_num_rows > 0)
+    tableau.add_zero_rows_and_columns(tableau_num_rows,
+				      tableau_num_cols,
+				      Row::Flags());
+  Row tmp(cost_function, tableau_num_cols, tableau_num_cols);
+  cost_function.swap(tmp);
   
   // Phase 3:
   // insert all the (possibly transformed) constraints that are not
@@ -789,43 +677,39 @@ compute_tableau(const Linear_System& cs,
   // the variable splitting (for variables that are unconstrained
   // in sign) and the addition of slack variables (for inequalities
   // in the original problem).
-  
-  // This is the index in the matrix where we will begin to work
-  // with the slack variables.
-  dimension_type slack_pos_index = new_row_size - num_inequalities_left; 
-  
-  // We must set the new size of the rows of tableau (at the moment is a 0x0).
-  tableau.add_zero_columns(new_row_size);
-  
-  // Insertion of the constraints the tableau.
-  for (dimension_type i = 0, iend = cs.num_rows(); i < iend; ++i) {
-    // We are going to insert only constraints that are not trivially true
-    // (5 > 3) and that are not nonnegativity constraints (X > 0).
-    if (nonnegativity_constraint[i] || trivially_true_constraint[i])
-      continue;
-    insert_row_in_matrix(tableau, cs[i]);
-    // Here we also add a slack variable to the constraint, if we need it.
-    if (cs[i].is_ray_or_point_or_inequality()) {
-      tableau[tableau.num_rows() - 1][slack_pos_index] = -1;
-      ++slack_pos_index;
-    } 
-  }
-  // Last step: we proceed splitting variables in the tableau.
-  const dimension_type tableau_num_rows = tableau.num_rows();
+
+  for (dimension_type k = tableau_num_rows, slack_index = tableau_num_cols,
+	 i = cs_num_rows; i-- > 0; )
+    if (is_tableau_constraint[i]) {
+      // Copy the original constraint in the tableau.
+      Row& tableau_k = tableau[--k];
+      const Linear_Row& cs_i = cs[i];
+      for (dimension_type j = cs_num_cols; j-- > 0; )
+	tableau_k[j] = cs_i[j];
+      // Add the slack variable, if needed.
+      if (cs_i.is_ray_or_point_or_inequality())
+	tableau_k[--slack_index] = -1;
+    }
+
+  // Split the variables in the tableau and cost function.
   typedef std::map<dimension_type, dimension_type>::const_iterator iter;
   for (iter map_itr = dim_map.begin(),
 	 map_end = dim_map.end(); map_itr != map_end; ++map_itr) {
-    for (dimension_type i = tableau_num_rows; i-- > 0; ) 
-      tableau[i][(map_itr->second) +1] = -tableau[i][(map_itr->first) + 1];
-    cost_function[(map_itr->second) +1] = -cost_function[(map_itr->first) + 1];
+    const dimension_type original_var = (map_itr->first) + 1;
+    const dimension_type split_var = (map_itr->second) + 1;
+    for (dimension_type i = tableau_num_rows; i-- > 0; ) {
+      Row& tableau_i = tableau[i];
+      tableau_i[split_var] = -tableau_i[original_var];
+    }
+    cost_function[split_var] = -cost_function[original_var];
   }
 
   // If there is no constraint in the tableau, then the feasible region
   // is only delimited by non-negativity constraints. Therefore,
   // the problem is unbounded as soon as the cost function has
   // a variable with a positive coefficient.
-  if (tableau.num_rows() == 0)
-    for (dimension_type i = cost_function.size(); i-- > 1; )
+  if (tableau_num_rows == 0)
+    for (dimension_type i = tableau_num_cols; i-- > 1; )
       if (cost_function[i] > 0)
 	return UNBOUNDED_PROBLEM;
 
