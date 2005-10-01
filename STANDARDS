@@ -150,6 +150,70 @@ instead of
 	assert(sys.num_rows());
 
 
+Macros
+------
+
+Macros should be used only if really needed (in many cases, macros can
+be replaced by inline functions).
+
+If macros are used, their scope should be minimized as much as possible.
+In particular, all macros that are not meant to be directly accessible
+by the user should be #undef'ed as soon as possible in the source file
+they are defined in.
+
+Macros should be given conspicuous names starting with "PPL_".
+
+
+Standards for Structuring the Source Code in Files
+==================================================
+
+Source code should be organized so as to ensure that:
+  - the contents of a file are strongly related;
+  - each file is of manageable size.
+
+As a rule of thumb, each type (class, struct, class template, etc.)
+named "Xtype" that is relevant on its own for the user or the
+developer of the library should be provided with a set of source files
+whose filenames start with "Xtype". The source files for such a type
+should be named and populated as follows:
+
+a) Xtype.types.hh
+Contains the forward declarations of type names (in particular, the
+one for "Xtype") and other useful typedef's.
+
+b) Xtype.defs.hh
+Contains the definition of the type, togheter with the declaration of
+any function that, even though not being formally part of the type, is
+nonetheless related to it and should therefore be considered part of
+its interface.
+
+c) Xtype.inlines.hh
+Contains the definitions of inline functions.
+Temporarily, also contains the non-inline definitions of all class
+template members and all (member or non-member) function templates
+that are not fully specialized. Eventually, these will be systematically
+moved in other files called Xtype.templates.hh.
+
+d) Xtype.cc
+Contains the definitions of non-inline functions, including non-inline
+full specializations of templates;
+
+e) When appropriate, further *.cc files can be used to split huge
+source files into more manageable components (e.g., see the files
+Polyhedron_public.cc, Polyhedron_nonpublic.cc, Polyhedron_chdims.cc
+and Polyhedron_widenings.cc, or even conversion.cc, minimize.cc, etc.).
+
+Note that:
+  - all interface functions should be declared in Xtype.defs.hh;
+  - no function definition should be placed in Xtype.defs.hh;
+  - bare declarations should not be declared inline (i.e., inline directives
+    should be placed only in front of the definition of the functions);
+  - inner classes are usually kept in the same files as the outer class;
+  - functions having the anonymous namespace scope can be (and usually are)
+    only declared and defined in file Xtype.cc, regardless of whether or not
+    the inline directive is specified.
+
+
 Standards for Documenting the Project with Doxygen
 ==================================================
 
