@@ -143,6 +143,7 @@ ORIGINAL_TESTS = \
 	polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
 	polyhull7 polyhull8 polyhull9 polyhull10 polyhull11 \
 	polypowerset1 \
+	powerset1 \
 	primalsimplex1 primalsimplex2 \
 	randphull1 randphull2 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
@@ -582,6 +583,8 @@ polyhull10_SOURCES = polyhull10.cc
 polyhull11_SOURCES = polyhull11.cc
 
 polypowerset1_SOURCES = polypowerset1.cc
+
+powerset1_SOURCES = powerset1.cc
 
 primalsimplex1_SOURCES = primalsimplex1.cc
 primalsimplex2_SOURCES = primalsimplex2.cc
