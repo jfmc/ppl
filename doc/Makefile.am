@@ -58,14 +58,12 @@ ppl-user-@VERSION@-html.tar.gz \
 ppl-devref-@VERSION@-html.tar.gz
 
 PDF_MANUALS = \
-ppl-user-@VERSION@-browse.pdf \
-ppl-user-@VERSION@-print.pdf \
-ppl-devref-@VERSION@-browse.pdf \
-ppl-devref-@VERSION@-print.pdf
+ppl-user-@VERSION@.pdf \
+ppl-devref-@VERSION@.pdf
 
 PS_MANUALS = \
-ppl-user-@VERSION@-print.ps.gz \
-ppl-devref-@VERSION@-print.ps.gz
+ppl-user-@VERSION@.ps.gz \
+ppl-devref-@VERSION@.ps.gz
 
 MANUALS = \
 $(HTML_MANUALS) \
@@ -81,18 +79,16 @@ ppl-user-@VERSION@-html.tar.gz
 
 DIST_PDF_DOCS = \
 $(PDF_LICENSES) \
-ppl-user-@VERSION@-browse.pdf \
-ppl-user-@VERSION@-print.pdf
+ppl-user-@VERSION@.pdf
 
 DIST_PS_DOCS = \
 $(PS_LICENSES) \
-ppl-user-@VERSION@-print.ps.gz
+ppl-user-@VERSION@.ps.gz
 
 DIST_TXT_DOCS = \
 $(TXT_LICENSES)
 
-# We distribute some preprocessed user's documentation, both for
-# browsing and for printing.
+# We distribute some preprocessed user's documentation.
 DIST_DOCS = \
 $(DIST_HTML_DOCS) \
 $(DIST_PDF_DOCS) \
@@ -109,7 +105,7 @@ $(MANUALS)
 # Do nothing by default.
 all:
 
-user-browse: ppl-user-@VERSION@-browse.pdf
+user: ppl-user-@VERSION@.pdf
 
 world: $(ALL_TARGETS)
 
@@ -224,53 +220,31 @@ ppl.sty \
 $(PPL_SOURCE_FILES)
 
 LATEX_DIRS = \
-user-browse.pdf-dir \
-user-print.pdf-dir \
-devref-browse.pdf-dir \
-devref-print.pdf-dir \
-user-print.ps-dir \
-devref-print.ps-dir
+user.latex-dir \
+devref.latex-dir
 
 TEX_ENV = TEXINPUTS=$(abs_srcdir):$(TEXINPUTS)
 
 .SECONDARY: $(LATEX_DIRS)
 
-%.doxyconf-pdf: %.doxyconf-latex
-	sed -e "s/^USE_PDFLATEX[ ]*=.*$$/USE_PDFLATEX           = YES/g" \
-	    -e "s/latex-dir$$/pdf-dir/g" \
-		$< >$@
-
-%.doxyconf-ps: %.doxyconf-latex
-	sed -e "s/^USE_PDFLATEX[ ]*=.*$$/USE_PDFLATEX           = NO/g" \
-	    -e "s/latex-dir$$/ps-dir/g" \
-		$< >$@
-
-user-%.pdf-dir: user-%.doxyconf-pdf $(USER_STUFF)
+user.latex-dir: user.doxyconf-latex $(USER_STUFF)
 	rm -rf $@
 	$(TEX_ENV) $(DOXYGEN) $<
 
-devref-%.pdf-dir: devref-%.doxyconf-pdf $(DEVREF_STUFF)
+devref.latex-dir: devref.doxyconf-latex $(DEVREF_STUFF)
 	rm -rf $@
 	$(TEX_ENV) $(DOXYGEN) $<
 
-user-%.ps-dir: user-%.doxyconf-ps $(USER_STUFF)
-	rm -rf $@
-	$(TEX_ENV) $(DOXYGEN) $<
-
-devref-%.ps-dir: devref-%.doxyconf-ps $(DEVREF_STUFF)
-	rm -rf $@
-	$(TEX_ENV) $(DOXYGEN) $<
-
-ppl-user-@VERSION@-%.pdf: user-%.pdf-dir
+ppl-user-@VERSION@.pdf: user.latex-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
 
-ppl-devref-@VERSION@-%.pdf: devref-%.pdf-dir
+ppl-devref-@VERSION@.pdf: devref.latex-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
 
-ppl-user-@VERSION@-%.ps: user-%.ps-dir
+ppl-user-@VERSION@.ps: user.latex-dir
 	$(TEX_ENV) make -C $< refman.ps && mv -f $</refman.ps $@
 
-ppl-devref-@VERSION@-%.ps: devref-%.ps-dir
+ppl-devref-@VERSION@.ps: devref.latex-dir
 	$(TEX_ENV) make -C $< refman.ps && mv -f $</refman.ps $@
 
 ppl-%-@VERSION@-html: %.doxyconf-html $(DEVREF_STUFF)
@@ -295,10 +269,8 @@ ppl-%-@VERSION@-html: %.doxyconf-html $(DEVREF_STUFF)
 EXTRA_DIST= \
 $(DIST_DOCS) \
 $(DOX_FILES) \
-user-browse.doxyconf-latex \
-devref-browse.doxyconf-latex \
-user-print.doxyconf-latex \
-devref-print.doxyconf-latex \
+user.doxyconf-latex \
+devref.doxyconf-latex \
 user.doxyconf-html \
 devref.doxyconf-html \
 user.tex \

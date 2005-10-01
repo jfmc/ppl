@@ -792,10 +792,8 @@ AC_CONFIG_FILES(Makefile
                 demos/ppl_lpsol/Makefile
                 demos/ppl_lpsol/examples/Makefile
                 doc/Makefile
-                doc/user-browse.doxyconf-latex
-                doc/devref-browse.doxyconf-latex
-                doc/user-print.doxyconf-latex
-                doc/devref-print.doxyconf-latex
+                doc/user.doxyconf-latex
+                doc/devref.doxyconf-latex
                 doc/user.doxyconf-html
                 doc/devref.doxyconf-html
                 interfaces/Makefile
