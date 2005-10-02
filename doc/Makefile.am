@@ -28,7 +28,6 @@ VPATH = @srcdir@
 
 # All the documentation in docdir.
 docdir = @docdir@
-dvidir = $(docdir)
 htmldir = $(docdir)
 pdfdir = $(docdir)
 psdir = $(docdir)
@@ -241,12 +240,6 @@ ppl-user-@VERSION@.pdf: user.latex-dir
 ppl-devref-@VERSION@.pdf: devref.latex-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
 
-ppl-user-@VERSION@.ps: user.latex-dir
-	$(TEX_ENV) make -C $< refman.ps && mv -f $</refman.ps $@
-
-ppl-devref-@VERSION@.ps: devref.latex-dir
-	$(TEX_ENV) make -C $< refman.ps && mv -f $</refman.ps $@
-
 ppl-%-@VERSION@-html: %.doxyconf-html $(DEVREF_STUFF)
 	rm -rf html
 	$(TEX_ENV) $(DOXYGEN) $< && rm -rf $@ && mv -f html $@
@@ -260,11 +253,8 @@ ppl-%-@VERSION@-html: %.doxyconf-html $(DEVREF_STUFF)
 %.pdf: %.tex
 	$(TEX_ENV) pdflatex $<
 
-%.dvi: %.tex
-	$(TEX_ENV) latex $<
-
-%.ps:	%.dvi
-	dvips -o $@ $<
+%.ps:	%.pdf
+	pdftops $< $@
 
 EXTRA_DIST= \
 $(DIST_DOCS) \
