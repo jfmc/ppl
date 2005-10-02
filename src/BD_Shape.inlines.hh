@@ -89,9 +89,9 @@ BD_Shape<T>::max_space_dimension() {
 template <typename T>
 inline void
 BD_Shape<T>::init() {
-  dimension_type space_dim = space_dimension();
-  // The matrix `dbm' is initialized a plus infinity to
-  // haven't any constraints.
+  const dimension_type space_dim = space_dimension();
+  // All elements of `dbm' are set to plus infinity:
+  // this corresponds to an empty set of constraints.
   for (dimension_type i = 0; i <= space_dim; ++i) {
     DB_Row<N>& dbm_i = dbm[i];
     for (dimension_type j = 0; j <= space_dim; ++j)
