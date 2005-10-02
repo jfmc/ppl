@@ -77,6 +77,9 @@ public:
     std::swap(x, z);
   }
 
+  bool OK() const {
+    return true;
+  }
 };
 
 std::ostream&
