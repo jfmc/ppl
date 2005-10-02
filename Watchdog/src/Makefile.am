@@ -114,9 +114,10 @@ libpwl_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPWL_LT_CURRENT):$(LIBPWL_LT_REVISION):$(LIBPWL_LT_AGE)
 
-noinst_HEADERS = pwl.hh pwl_install.hh
-
-BUILT_SOURCES = pwl.hh pwl_install.hh
+noinst_HEADERS = \
+pwl.hh \
+pwl_include_files.hh \
+pwl_install.hh
 
 pwl.hh:	$(DOC_FILES)
 	(cd $(srcdir) ; cat $(DOC_FILES)) >pwl.hh
@@ -141,6 +142,9 @@ pwl_install.hh:	pwl_install.hh.dist
 	cp -f $< $@
 
 endif !HAVE_PERL
+
+BUILT_SOURCES = \
+$(noinst_HEADERS)
 
 # pwl.hh and pwl_install.hh are not distributed.
 # pwl_install.hh.dist, which is distributed, is a copy of pwl_install.hh.

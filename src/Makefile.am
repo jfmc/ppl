@@ -358,9 +358,10 @@ libppl_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
 
-noinst_HEADERS = ppl.hh ppl_install.hh ppl_include_files.hh
-
-BUILT_SOURCES = ppl.hh ppl_install.hh ppl_include_files.hh
+noinst_HEADERS = \
+ppl.hh \
+ppl_include_files.hh \
+ppl_install.hh
 
 ppl.hh:	$(DOC_FILES) $(top_builddir)/src/version.hh Makefile
 	cat $(top_builddir)/src/version.hh >$@
@@ -403,6 +404,12 @@ CREDITS.cc:	CREDITS.cc.dist
 	cp -f $< $@
 
 endif !HAVE_PERL
+
+BUILT_SOURCES = \
+$(noinst_HEADERS) \
+BUGS.cc \
+COPYING.cc \
+CREDITS.cc
 
 # ppl.hh and ppl_install.hh are not distributed.
 # ppl_install.hh.dist, which is distributed, is a copy of ppl_install.hh;
