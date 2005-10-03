@@ -829,7 +829,7 @@ then
 *** to build the PPL without modifying the sources and without trying to
 *** build a distribution out of a CVS working copy.  If this is not the case,
 *** then you need to add Perl to your development environment:
-*** see http://www.perl.org for more information.])
+*** see http://www.perl.org/ for more information.])
 fi
 
 if test x"$coefficient_kind" = xnative
