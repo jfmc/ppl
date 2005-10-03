@@ -338,8 +338,8 @@ prepare_for_1st_ph_simplex(Matrix& tableau,
   // the slack variables (which enter the base).
   // As for the cost function, all the slack variables should have
   // coefficient -1.
-  Row& old_obj = costs[0];
-  Row& new_obj = costs[1];
+  Row& new_obj = costs[0];
+  Row& old_obj = costs[1];
   for (dimension_type i = 0; i < tableau.num_rows(); ++i) {
     const dimension_type j = tableau_old_n_cols + i;
     tableau[i][j] = 1;
