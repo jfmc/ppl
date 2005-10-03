@@ -62,6 +62,7 @@ Random_Number_Generator::Random_Number_Generator()
 template <typename T>
 inline void
 Random_Number_Generator::get(T& x, unsigned int info) {
+  used(info);
   static Random_Number_Generator_Aux<T> aux(max_bits);
   mpz_class n;
   if (std::numeric_limits<T>::is_bounded) {
@@ -71,7 +72,8 @@ Random_Number_Generator::get(T& x, unsigned int info) {
     n = rand.get_z_bits(max_bits);
   }
   n += aux.zmin;
-  assign(x, n, ROUND_IGNORE);
+  T tem(n);
+  x = tem;
 }
 
 } // namespace Parma_Polyhedra_Library
