@@ -43,6 +43,10 @@ public:
   H79_Certificate();
 
   //! Constructor: computes the certificate for \p ph.
+  template <typename PH>
+  H79_Certificate(const PH& ph);
+
+  //! Constructor: computes the certificate for \p ph.
   H79_Certificate(const Polyhedron& ph);
 
   //! Copy constructor.
@@ -62,6 +66,10 @@ public:
     H79 widening.
   */
   int compare(const H79_Certificate& y) const;
+
+  //! Compares \p *this with the certificate for polyhedron \p ph.
+  template <typename PH>
+  int compare(const PH& ph) const;
 
   //! Compares \p *this with the certificate for polyhedron \p ph.
   int compare(const Polyhedron& ph) const;
