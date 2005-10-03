@@ -80,10 +80,10 @@ max_assign(N& x, const N& y) {
 template <typename T>
 inline dimension_type
 BD_Shape<T>::max_space_dimension() {
-  using std::min;
   // One dimension is reserved to have a value of type dimension_type
   // that does not represent a legal dimension.
-  return min(DB_Matrix<N>::max_num_rows() - 1, DB_Matrix<N>::max_num_columns() - 1);
+  return std::min(DB_Matrix<N>::max_num_rows() - 1,
+		  DB_Matrix<N>::max_num_columns() - 1);
 }
 
 template <typename T>
@@ -136,7 +136,6 @@ BD_Shape<T>::BD_Shape(const Constraint_System& cs)
 }
 
 template <typename T>
-inline
 BD_Shape<T>::BD_Shape(const Generator_System& gs)
   : dbm(gs.space_dimension() + 1) {
   // FIXME: this is a waste of computation time!
@@ -259,7 +258,6 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 }
 
 template <typename T>
-inline
 BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   : dbm(), status() {
   if (ph.marked_empty()) {
@@ -426,7 +424,7 @@ BD_Shape<T>::set_zero_dim_univ() {
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::add_constraint(const Constraint& c) {
   /*
      This method not preserve the closure.
@@ -478,8 +476,8 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   //   a*x       <=/= b, if t == 1;
   //   a*x - a*y <=/= b, if t == 2.
   //
-  // In addition,non_zero_position[0] and (if t >= 1)non_zero_position[1] will contain the indices
-  // of the cell(s) of `dbm' to be modified.
+  // In addition, non_zero_position[0] and (if t >= 1) non_zero_position[1]
+  // will contain the indices of the cell(s) of `dbm' to be modified.
   Coefficient a;
   Coefficient b = c.inhomogeneous_term();
   switch (t) {
@@ -549,7 +547,7 @@ template <typename T>
 inline void
 BD_Shape<T>::add_constraints(const Constraint_System& cs) {
   // This method not preserve closure.
-  // Seen add_constraint().
+  // See add_constraint().
   Constraint_System::const_iterator iend = cs.end();
   for (Constraint_System::const_iterator i = cs.begin(); i != iend; ++i)
     add_constraint(*i);
@@ -565,7 +563,7 @@ BD_Shape<T>::add_constraints_and_minimize(const Constraint_System& cs) {
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::concatenate_assign(const BD_Shape& y) {
   assert(OK());
   assert(y.OK());
@@ -610,6 +608,13 @@ BD_Shape<T>::concatenate_assign(const BD_Shape& y) {
 
 template <typename T>
 inline bool
+BD_Shape<T>::strictly_contains(const BD_Shape& y) const {
+  const BD_Shape<T>& x = *this;
+  return x.contains(y) && !y.contains(x);
+}
+
+template <typename T>
+bool
 BD_Shape<T>::contains(const BD_Shape& y) const {
   dimension_type space_dim = space_dimension();
 
@@ -667,7 +672,7 @@ BD_Shape<T>::contains(const BD_Shape& y) const {
 }
 
 template <typename T>
-inline bool
+bool
 BD_Shape<T>::is_empty() const {
   // If `*this' is already empty, then returns "true".
   if (marked_empty())
@@ -731,7 +736,7 @@ BD_Shape<T>::is_empty() const {
 }
 
 template <typename T>
-inline bool
+bool
 BD_Shape<T>::is_universe() const {
 
   // If system of bounded differences is empty
@@ -758,7 +763,7 @@ BD_Shape<T>::is_universe() const {
 }
 
 template <typename T>
-inline bool
+bool
 BD_Shape<T>::is_transitively_reduced() const {
   // If system of bounded differences is already empty
   // is transitively reduced.
@@ -924,7 +929,7 @@ BD_Shape<T>::is_transitively_reduced() const {
 }
 
 template <typename T>
-inline Poly_Con_Relation
+Poly_Con_Relation
 BD_Shape<T>::relation_with(const Constraint& c) const {
   dimension_type c_space_dim = c.space_dimension();
   dimension_type space_dim = space_dimension();
@@ -981,8 +986,8 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   //   a*x       <=/= b, if t == 1;
   //   a*x - a*y <=/= b, if t == 2.
   //
-  // In addition, non_zero_position[0] and (if t >= 1) non_zero_position[1] will contain the indices
-  // of the cell(s) of `dbm' to be checked.
+  // In addition, non_zero_position[0] and (if t >= 1) non_zero_position[1]
+  // will contain the indices of the cell(s) of `dbm' to be checked.
   Coefficient a;
   Coefficient b = c.inhomogeneous_term();
   switch (t) {
@@ -1101,7 +1106,7 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
 }
 
 template <typename T>
-inline Poly_Gen_Relation
+Poly_Gen_Relation
 BD_Shape<T>::relation_with(const Generator& g) const {
   dimension_type space_dim = space_dimension();
   dimension_type g_space_dim = g.space_dimension();
@@ -1227,7 +1232,7 @@ BD_Shape<T>::relation_with(const Generator& g) const {
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::closure_assign() const {
 
   // If system of bounded differences is already empty
@@ -1296,7 +1301,7 @@ BD_Shape<T>::closure_assign() const {
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::transitive_reduction_assign() const {
   dimension_type space_dim = space_dimension();
 
@@ -1398,7 +1403,7 @@ BD_Shape<T>::transitive_reduction_assign() const {
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::bds_hull_assign(const BD_Shape& y) {
   dimension_type space_dim = space_dimension();
 
@@ -1462,7 +1467,7 @@ BD_Shape<T>::upper_bound_assign_if_exact(const BD_Shape& y) {
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
   const dimension_type space_dim = space_dimension();
 
@@ -1486,8 +1491,8 @@ BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
     return;
 
   // If both systems of bounded differences are zero-dimensional,
-  // then at this point they are necessarily universe system of bounded differences,
-  // so that their difference is empty.
+  // then at this point they are necessarily universe system of
+  // bounded differences, so that their difference is empty.
   if (space_dim == 0) {
     x.set_empty();
     return;
@@ -1530,6 +1535,12 @@ BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
 
 template <typename T>
 inline void
+BD_Shape<T>::difference_assign(const BD_Shape& y) {
+  poly_difference_assign(y);
+}
+
+template <typename T>
+void
 BD_Shape<T>::add_space_dimensions_and_embed(dimension_type m) {
   // Adding no dimensions to any system of bounded differences is
   // a no-op.
@@ -1567,7 +1578,7 @@ BD_Shape<T>::add_space_dimensions_and_embed(dimension_type m) {
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
   // Adding no dimensions to any system of bounded differences is
   // a no-op.
@@ -1620,7 +1631,7 @@ BD_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // The removal of no dimensions from any polyhedron is a no-op.
   // Note that this case also captures the only legal removal of
@@ -1725,7 +1736,7 @@ BD_Shape<T>::remove_higher_space_dimensions(dimension_type new_dimension) {
   // The removal of no dimensions from any polyhedron is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a system of bounded differences in a 0-dim space.
-  if(new_dimension == space_dimension()) {
+  if (new_dimension == space_dimension()) {
     assert(OK());
     return;
   }
@@ -1743,7 +1754,7 @@ BD_Shape<T>::remove_higher_space_dimensions(dimension_type new_dimension) {
 
 template <typename T>
 template <typename PartialFunction>
-inline void
+void
 BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
   const dimension_type space_dim = space_dimension();
   // TODO: this implementation is just an executable specification.
@@ -1770,8 +1781,8 @@ BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
   if (new_space_dim < space_dim)
     closure_assign();
 
-  // If we have got an empty system of bounded differences,
-  // then we must only adjust the dimension of the system of bounded differences,
+  // If we have got an empty system of bounded differences, then we must
+  // only adjust the dimension of the system of bounded differences,
   // but it must remain empty.
   if (marked_empty()) {
     remove_higher_space_dimensions(new_space_dim);
@@ -1819,7 +1830,7 @@ BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::intersection_assign(const BD_Shape& y) {
   const dimension_type space_dim = space_dimension();
 
@@ -1874,7 +1885,7 @@ BD_Shape<T>::intersection_assign_and_minimize(const BD_Shape& y) {
 
 template <typename T>
 template <typename Iterator>
-inline void
+void
 BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
 				       Iterator first, Iterator last) {
   dimension_type space_dim = space_dimension();
@@ -1980,7 +1991,7 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y) {
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
 					       const Constraint_System& cs,
 					       unsigned* /*tp*/) {
@@ -2052,7 +2063,8 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
       }
     // Constraints that are not "bounded differences" are ignored.
     if (right_cons && t == 2)
-      if (c.coefficient(Variable(non_zero_position[1])) != -c.coefficient(Variable(non_zero_position[0])))
+      if (c.coefficient(Variable(non_zero_position[1]))
+	  != -c.coefficient(Variable(non_zero_position[0])))
 	  right_cons = false;
 
     // We will now make sure `c' has one of the following forms:
@@ -2111,8 +2123,8 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
 }
 
 template <typename T>
-inline void
-BD_Shape<T>::CH78_widening_assign(const BD_Shape& y) {
+void
+BD_Shape<T>::CH78_widening_assign(const BD_Shape& y, unsigned* /*tp*/) {
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
@@ -2163,7 +2175,7 @@ BD_Shape<T>::CH78_widening_assign(const BD_Shape& y) {
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
 					       const Constraint_System& cs,
 					       unsigned* /*tp*/) {
@@ -2294,7 +2306,7 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
   const dimension_type space_dim = space_dimension();
 
@@ -2397,11 +2409,11 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
 
 template <typename T>
 inline void
-BD_Shape<T>::H79_widening_assign(const BD_Shape& y) {
-  // Seen the polyhedra documentation.
+BD_Shape<T>::H79_widening_assign(const BD_Shape& y, unsigned* tp) {
+  // See the polyhedra documentation.
   C_Polyhedron px(constraints());
   C_Polyhedron py(y.constraints());
-  px.H79_widening_assign(py);
+  px.H79_widening_assign(py, tp);
   BD_Shape x(px);
   swap(x);
   assert(OK());
@@ -2422,7 +2434,7 @@ BD_Shape<T>::limited_H79_extrapolation_assign(const BD_Shape& y,
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::affine_image(const Variable var,
 			  const Linear_Expression& expr,
 			  Coefficient_traits::const_reference denominator) {
@@ -2712,7 +2724,7 @@ BD_Shape<T>::affine_image(const Variable var,
 } 
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::affine_preimage(const Variable var,
 			     const Linear_Expression& expr,
 			     Coefficient_traits::const_reference denominator) {
@@ -2829,11 +2841,12 @@ BD_Shape<T>::affine_preimage(const Variable var,
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::generalized_affine_image(const Variable var,
 				      const Relation_Symbol relsym,
 				      const Linear_Expression& expr,
-				      Coefficient_traits::const_reference denominator) {
+				      Coefficient_traits::const_reference
+				      denominator) {
 
   // The denominator cannot be zero.
   if (denominator == 0)
@@ -2845,12 +2858,14 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   dimension_type space_dim = space_dimension();
   dimension_type expr_space_dim = expr.space_dimension();
   if (space_dim < expr_space_dim)
-    throw_dimension_incompatible("generalized_affine_image(v, r, e, d)", "e", expr);
+    throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
+				 "e", expr);
 
-  // `var' should be one of the dimensions of the system of bounded differences.
+  // `var' should be one of the dimensions of the BDS.
   dimension_type num_var = var.id() + 1;
   if (num_var > space_dim)
-    throw_dimension_incompatible("generalized_affine_image(v, r, e, d)", var.id());
+    throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
+				 var.id());
 
   // The relation symbol cannot be a strict relation symbol.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
@@ -2946,7 +2961,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	if (b == 0)
 	  return;
 	else {
-	  // We translate all the constraints of the form `var (- var1) <= const'
+	  // Translate all the constraints of the form `var (- var1) <= const'
 	  // adding the value `n/denominator'.
 	  N d;
 	  div_round_up(d, b, denominator);
@@ -3262,7 +3277,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 				      const Relation_Symbol relsym,
 				      const Linear_Expression& rhs) {
@@ -3281,7 +3296,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
   if (space_dim < rhs_space_dim)
     throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
 				 "e2", rhs);
-  // Strict relation symbols are not admitted for system of bounded differences.
+  // Strict relation symbols are not admitted for BDSs.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
     throw_generic("generalized_affine_image(e1, r, e2)",
 		  "r is a strict relation symbol and "
@@ -3533,7 +3548,7 @@ BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
 }
 
 template <typename T>
-inline Constraint_System
+Constraint_System
 BD_Shape<T>::constraints() const {
   Constraint_System cs;
   dimension_type space_dim = space_dimension();
@@ -3626,7 +3641,7 @@ BD_Shape<T>::ascii_load(std::istream& s) {
 
 /*! \relates Parma_Polyhedra_Library::BD_Shape */
 template <typename T>
-inline std::ostream&
+std::ostream&
 IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
   typedef typename BD_Shape<T>::coefficient_type N;
   if (c.is_universe())
@@ -3739,7 +3754,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 }
 
 template <typename T>
-inline bool
+bool
 BD_Shape<T>::OK() const {
   // Check whether the difference-bound matrix is well-formed.
   if (!dbm.OK())
@@ -3785,7 +3800,7 @@ BD_Shape<T>::OK() const {
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
 					  const BD_Shape& y) const {
   std::ostringstream s;
@@ -3797,7 +3812,7 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
 					  dimension_type required_dim) const {
   std::ostringstream s;
@@ -3809,7 +3824,7 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
 					  const Constraint& c) const {
   std::ostringstream s;
@@ -3821,7 +3836,7 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
 					  const Generator& g) const {
   std::ostringstream s;
@@ -3833,7 +3848,7 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::throw_constraint_incompatible(const char* method) const {
   std::ostringstream s;
   s << "PPL::BD_Shape::" << method << ":" << std::endl
@@ -3842,7 +3857,7 @@ BD_Shape<T>::throw_constraint_incompatible(const char* method) const {
 }
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::throw_expression_too_complex(const char* method,
 					  const Linear_Expression& e) const {
   using namespace IO_Operators;
@@ -3854,7 +3869,7 @@ BD_Shape<T>::throw_expression_too_complex(const char* method,
 
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
 					  const char* name_row,
 					  const Linear_Expression& y) const {
@@ -3869,7 +3884,7 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::throw_generic(const char* method,
 			   const char* reason) const {
   std::ostringstream s;

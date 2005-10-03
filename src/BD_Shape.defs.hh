@@ -333,6 +333,9 @@ public:
   */
   bool contains(const BD_Shape& y) const;
 
+  //! Returns <CODE>true</CODE> if and only if \p *this strictly contains \p y.
+  bool strictly_contains(const BD_Shape& y) const;
+
   //! \brief
   //! Returns the relations holding between the BD_Shape \p *this
   //! and the constraint \p c.
@@ -464,6 +467,9 @@ public:
                                      are dimension-incompatible.
   */
   void poly_difference_assign(const BD_Shape& y);
+
+  //! Same as poly_difference_assign(y).
+  void difference_assign(const BD_Shape& y);
 
   //! \brief
   //! Assigns to \p *this the \ref affine_function "affine image"
@@ -607,10 +613,17 @@ public:
   //! \ref CH78_widening "CH78-widening"
   //! of \p *this and \p y.
   /*!
+    \param y                 A system of bounded differences that
+                             <EM>must</EM> be contained in \p *this.
+    \param tp                An optional pointer to an unsigned variable
+                             storing the number of available tokens
+                             (to be used when applying the
+			     \ref widening_with_tokens "widening with tokens"
+			     delay technique).
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are dimension-incompatible.
   */
-  void CH78_widening_assign(const BD_Shape& y);
+  void CH78_widening_assign(const BD_Shape& y, unsigned* tp = 0);
 
   //! \brief
   //! Improves the result of the \ref CH78_widening "CH78-widening"
@@ -673,10 +686,15 @@ public:
   /*!
     \param y           A system of bounded differences that <EM>must</EM>
                        be contained in \p *this.
+    \param tp                An optional pointer to an unsigned variable
+                             storing the number of available tokens
+			     (to be used when applying the
+			     \ref widening_with_tokens "widening with tokens"
+			     delay technique).
     \exception std::invalid_argument thrown if \p *this and \p y
                        are dimension-incompatible.
   */
-  void H79_widening_assign(const BD_Shape& y);
+  void H79_widening_assign(const BD_Shape& y, unsigned* tp = 0);
 
   //! \brief
   //! Improves the result of the \ref H79_widening "H79-widening"
