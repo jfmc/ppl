@@ -530,8 +530,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
       goto bomb;
     }
-    else
-      return true;
+    return true;
   }
 
   // A polyhedron is defined by a system of constraints
@@ -610,9 +609,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
 	goto bomb;
       }
-  }
 
-  if (generators_are_up_to_date()) {
     // Check if the system of generators is well-formed.
     if (!gen_sys.OK())
       goto bomb;
@@ -625,7 +622,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       goto bomb;
     }
 
-    // A non_empty system of generators describing a polyhedron
+    // A non-empty system of generators describing a polyhedron
     // is valid if and only if it contains a point.
     if (gen_sys.num_rows() > 0 && !gen_sys.has_points()) {
 #ifndef NDEBUG
@@ -646,7 +643,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     // strongly minimized.
 
     // Checking that the number of closure points is always
-    // grater than the number of points.
+    // greater than the number of points.
     if (!is_necessarily_closed()) {
       dimension_type num_points = 0;
       dimension_type num_closure_points = 0;
@@ -668,9 +665,9 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
 
     if (generators_are_minimized()) {
-      // If the system of generators is minimized, the number of lines,
-      // rays and points of the polyhedron must be the same
-      // of the temporary minimized one. If it does not happen
+      // If the system of generators is minimized, the number of
+      // lines, rays and points of the polyhedron must be the same as
+      // of a temporary, minimized one. If this does not happen then
       // the polyhedron is not OK.
       Constraint_System new_con_sys(topology());
       Generator_System gs_without_pending = gen_sys;
@@ -795,9 +792,8 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
 	goto bomb;
       }
-      else
-	// The polyhedron is empty, there is nothing else to check.
-	return true;
+      // The polyhedron is empty, there is nothing else to check.
+      return true;
     }
 
     if (constraints_are_minimized()) {
@@ -1510,15 +1506,15 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   }
   else {
     // `x' cannot support pending constraints.
-    // If both constraint systems are (fully) sorted, then we can merge
-    // them; otherwise we simply adds the second to the first.
+    // If both constraint systems are (fully) sorted, then we can
+    // merge them; otherwise we simply add the second to the first.
     if (x.con_sys.is_sorted()
 	&& y.con_sys.is_sorted() && !y.has_pending_constraints())
       x.con_sys.merge_rows_assign(y.con_sys);
     else
       x.con_sys.add_rows(y.con_sys);
-    // Generators are no longer up-to-date
-    // and constraints are no longer minimized.
+    // Generators are no longer up-to-date and constraints are no
+    // longer minimized.
     x.clear_generators_up_to_date();
     x.clear_constraints_minimized();
   }
@@ -1646,7 +1642,7 @@ PPL::Polyhedron::poly_hull_assign(const Polyhedron& y) {
   else {
     // `x' cannot support pending generators.
     // If both generator systems are (fully) sorted, then we can merge
-    // them; otherwise we simply adds the second to the first.
+    // them; otherwise we simply add the second to the first.
     if (x.gen_sys.is_sorted()
 	&& y.gen_sys.is_sorted() && !y.has_pending_generators())
       x.gen_sys.merge_rows_assign(y.gen_sys);
@@ -2280,7 +2276,7 @@ generalized_affine_preimage(const Variable var,
     Coefficient inverse_denominator = - var_coefficient;
     Relation_Symbol inverse_relsym
       = (sgn(denominator) == sgn(inverse_denominator))
-      ? relsym : reversed_relsym; 
+      ? relsym : reversed_relsym;
     generalized_affine_image(var, inverse_relsym, inverse_expr,
 			     inverse_denominator);
     return;
@@ -2801,7 +2797,6 @@ PPL::operator==(const Polyhedron& x, const Polyhedron& y) {
   }
 }
 
-/*! \relates Parma_Polyhedra_Library::Polyhedron */
 bool
 PPL::Polyhedron::contains(const Polyhedron& y) const {
   const Polyhedron& x = *this;
