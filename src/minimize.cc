@@ -109,13 +109,13 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
   // in Linear_Row.cc).
   dest.set_sorted(false);
 
-  // NOTE: the system `dest', as it is now, it is not a _legal_
-  //       system of generators, because in the first row we have
-  // a line with a non-zero divisor (which should only happen for
-  // points). However, this is NOT a problem, because `source'
-  // necessarily contains the positivity constraint (or a combination
-  // of it with another constraint) which will restore things as they
-  // should be.
+  // NOTE: the system `dest', as it is now, is not a _legal_ system of
+  //       generators, because in the first row we have a line with a
+  //       non-zero divisor (which should only happen for
+  //       points). However, this is NOT a problem, because `source'
+  //       necessarily contains the positivity constraint (or a
+  //       combination of it with another constraint) which will
+  //       restore things as they should be.
 
 
   // Building a saturation matrix and initializing it by setting
