@@ -867,7 +867,10 @@ compute_generator(const Matrix& tableau,
 	exact_div_assign(split_den, lcm, split_den);
 	num_i *= den_i;
 	sub_mul_assign(num_i, split_num, split_den);
-	den_i = (num_i == 0) ? 1 : lcm;
+	if (num_i == 0)
+	  den_i = 1;
+	else
+	  den_i = lcm;
       }
       // Note: if the negative component was not in base, then
       // it has value zero and there is nothing left to do.
