@@ -69,7 +69,7 @@ void gcd_assign(GMP_Integer& x, const GMP_Integer& y);
 //! Assigns to \p x the greatest common divisor of \p y and \p z.
 /*! \relates GMP_Integer */
 void gcd_assign(GMP_Integer& x,
-		       const GMP_Integer& y, const GMP_Integer& z);
+		const GMP_Integer& y, const GMP_Integer& z);
 
 //! Assigns to \p x the least common multiple of \p x and \p y.
 /*! \relates GMP_Integer */
@@ -78,17 +78,17 @@ void lcm_assign(GMP_Integer& x, const GMP_Integer& y);
 //! Assigns to \p x the least common multiple of \p y and \p z.
 /*! \relates GMP_Integer */
 void lcm_assign(GMP_Integer& x,
-		       const GMP_Integer& y, const GMP_Integer& z);
+		const GMP_Integer& y, const GMP_Integer& z);
 
 //! Assigns to \p x the value <CODE>x + y * z</CODE>.
 /*! \relates GMP_Integer */
 void add_mul_assign(GMP_Integer& x,
-			   const GMP_Integer& y, const GMP_Integer& z);
+		    const GMP_Integer& y, const GMP_Integer& z);
 
 //! Assigns to \p x the value <CODE>x - y * z</CODE>.
 /*! \relates GMP_Integer */
 void sub_mul_assign(GMP_Integer& x,
-			   const GMP_Integer& y, const GMP_Integer& z);
+		    const GMP_Integer& y, const GMP_Integer& z);
 
 //! Assigns to \p x the quotient of the integer division of \p x by \p y.
 /*! \relates GMP_Integer */
@@ -97,7 +97,7 @@ void exact_div_assign(GMP_Integer& x, const GMP_Integer& y);
 //! Assigns to \p x the quotient of the integer division of \p y by \p z.
 /*! \relates GMP_Integer */
 void exact_div_assign(GMP_Integer& x,
-			     const GMP_Integer& y, const GMP_Integer& z);
+		      const GMP_Integer& y, const GMP_Integer& z);
 
 //! Assigns to \p x its integer square root.
 /*! \relates GMP_Integer */

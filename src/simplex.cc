@@ -36,7 +36,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <map>
 #include <deque>
 
+#ifndef PPL_NOISY_SIMPLEX
+#define PPL_NOISY_SIMPLEX 1
+#endif
+
+#ifdef PPL_NOISY_SIMPLEX
+#include <iostream>
+#endif
+
 namespace {
+
+#if PPL_NOISY_SIMPLEX
+unsigned num_iterations = 0;
+#endif
 
 using namespace Parma_Polyhedra_Library;
 
@@ -127,8 +139,8 @@ swap_base(Matrix& tableau,
 */
 inline dimension_type
 get_entering_index(const Row& cost_function) {
-  // The variable that has to enter the base is the first one
-  // having a coefficient with the same sign as the cost function.
+  // The variable entering the base is the first one whose coefficient
+  // in the cost function has the same sign the cost function itself.
   // If no such variable exists, then we met the optimality condition
   // (and return 0 to the caller).
 
@@ -288,8 +300,15 @@ compute_simplex(Matrix& tableau,
     const dimension_type
       exiting_index = get_exiting_index(tableau, entering_index, base);
     // If no exiting index was computed, the problem is unbounded.
-    if (exiting_index == tableau_num_rows) 
+    if (exiting_index == tableau_num_rows)
       return false;
+
+#if PPL_NOISY_SIMPLEX
+    ++num_iterations;
+    if (num_iterations % 200 == 0)
+      std::cout << "Primal Simplex: iteration "
+		<< num_iterations << "." << std::endl;
+#endif
 
     // We have not reached the optimality or unbounded condition:
     // compute the new base and the corresponding vertex of the
@@ -464,13 +483,31 @@ first_phase(Matrix& tableau,
   // Adds the necessary slack variables to get the 1st phase problem.
   prepare_for_1st_ph_simplex(tableau, costs, base);
 
+#if PPL_NOISY_SIMPLEX
+  num_iterations = 0;
+#endif
+
+  bool first_phase_successful = compute_simplex(tableau, costs, base);
+
+#if PPL_NOISY_SIMPLEX
+  std::cout << "Primal Simplex: 1st phase ended at iteration "
+	    << num_iterations << "." << std::endl;
+#endif
+
   // Solve the first phase problem.
-  if (compute_simplex(tableau, costs, base) && costs[0][0] == 0) {
+  if (first_phase_successful && costs[0][0] == 0) {
     // If the first phase problem succeeded and the optimum value is zero,
     // we erase the slack variables and solve the problem with the base
     // computed by the 1st phase.
     erase_slacks(tableau, costs, base);
-    if (compute_simplex(tableau, costs, base))
+    bool second_phase_successful = compute_simplex(tableau, costs, base);
+
+#if PPL_NOISY_SIMPLEX
+    std::cout << "Primal Simplex: 2nd phase ended at iteration "
+	      << num_iterations << "." << std::endl;
+#endif
+
+    if (second_phase_successful)
       return SOLVED_PROBLEM;
     else
       return UNBOUNDED_PROBLEM;
@@ -720,40 +757,44 @@ compute_tableau(const Linear_System& cs,
 }
 
 //! \brief
-//  FIXME: This comment sucks!
-//  Checks if a variable is in base and assigns to 'row' the row index of which
-//  is base.
+//!  Checks whether variable is in base and assigns to 'row'
+//! the row index of which is base.
 /*!
-  \return              <CODE>true</CODE> if and if only a is in base
-  \param base          The base of the LP problem.
-  \param var_to_check  The variable that has to be checked if is in base.
-  \param row           Here will be written the index of the
-                       row of which var_to_check is base.
+  \return
+  <CODE>true</CODE> if and only if variable of index \p var_index
+  is one of the variables in \p base.
+
+  \param base
+  The base of the LP problem.
+
+  \param var_index
+  The index of the variable that has to be checked.
+
+  \param row_index
+  If <CODE>true</CODE> is returned, it will store the index of the
+  tableau constraint corresponding to variable \p var_index.
 */ 
-bool
+inline bool
 is_in_base(const std::vector<dimension_type>& base,
-	   const dimension_type var_to_check,
-	   dimension_type& row ) {
-  for (dimension_type i = base.size(); i-- > 0; )
-    if (base[i] == var_to_check) {
-      row = i;
+	   const dimension_type var_index,
+	   dimension_type& row_index ) {
+  for (row_index = base.size(); row_index-- > 0; )
+    if (base[row_index] == var_index)
       return true;
-    }
   return false;
 }
 
 //! \brief
-//! Computes the generator that will be given on exit of primal_simplex,
-//! the problem has an optimality point.
+//! Computes the generator on which the cost function has its optimal value.
 /*!
   \return
-  The computed generator.
+  The computed generator providing an optimal cost.
 
   \param tableau
-  A matrix containing the constraints of the solved problem.
+  The constraints of the solved LP problem.
 
   \param base
-  The base of the LP problem.
+  The optimal base of the LP problem.
 
   \param map
   Contains all the pairs (i, j) such that Variable(i) (that was not found
@@ -780,80 +821,76 @@ compute_generator(const Matrix& tableau,
   iter map_end = dim_map.end();
 
   for (dimension_type i = original_space_dim; i-- > 0; ) {
-    // Check whether the variable was split.
-    iter map_iter = dim_map.find(i);
-    if (map_iter == map_end)
-      // The variable was not split: get its value from the tableau
-      // (if it is not in the base, the value is 0).
-      if (is_in_base(base, i+1, row)) {
-	num[i]= -tableau[row][0];
-	den[i]= tableau[row][base[row]];
+    Coefficient& num_i = num[i];
+    Coefficient& den_i = den[i];
+    // Get the value of the variable from the tableau
+    // (if it is not a basic variable, the value is 0).
+    if (is_in_base(base, i+1, row)) {
+      const Row& t_row = tableau[row];
+      if (t_row[i+1] > 0) {
+	num_i= -t_row[0];
+	den_i= t_row[i+1];
       }
       else {
-	num[i] = 0;
-	den[i] = 1;
+	num_i= t_row[0];
+	den_i= -t_row[i+1];
       }
+    }
     else {
-      // The variable was split: its value is the difference
-      // between the positive and the negative components.
-      // (The negative component has index map[i] + 1.)
-      Coefficient split_num[2];
-      Coefficient split_den[2];
-    
-      for (dimension_type j = 0; j < 2; ++j) {
-	// Like before, we he have to check if the variable is in base.
-	if (is_in_base(base, j == 0 ? i+1 : map_iter->second+1, row)) {
-	  split_num[j] = - tableau[row][0];
-	  split_den[j] =  tableau[row][base[row]];
+      num_i = 0;
+      den_i = 1;
+    }
+    // Check whether the variable was split.
+    iter map_iter = dim_map.find(i);
+    if (map_iter != map_end) {
+      // The variable was split: get the value for the negative component,
+      // having index map[i] + 1.
+      const dimension_type split_i = map_iter->second;
+      // Like before, we he have to check if the variable is in base.
+      if (is_in_base(base, split_i+1, row)) {
+	const Row& t_row = tableau[row];
+	TEMP_INTEGER(split_num);
+	TEMP_INTEGER(split_den);
+	if (t_row[split_i+1] > 0) {
+	  split_num = -t_row[0];
+	  split_den = t_row[split_i+1];
 	}
 	else {
-	  split_num[j] = 0;
-	  split_den[j] = 1;
+	  split_num = t_row[0];
+	  split_den = -t_row[split_i+1];
 	}
+	// We compute the lcm to compute subsequently the difference
+	// between the 2 variables.
+	TEMP_INTEGER(lcm);
+	lcm_assign(lcm, den_i, split_den);
+	exact_div_assign(den_i, lcm, den_i);
+	exact_div_assign(split_den, lcm, split_den);
+	num_i *= den_i;
+	sub_mul_assign(num_i, split_num, split_den);
+	den_i = (num_i == 0) ? 1 : lcm;
       }
-      // We compute the lcm to compute subsequently the difference
-      // between the 2 variables.
-      Coefficient lcm;
-      lcm_assign(lcm, split_den[0], split_den[1]);
-      split_num[0] *= lcm/split_den[0];
-      split_num[1] *= lcm/split_den[1];
-      num[i] = split_num[0] - split_num[1];
-      den[i] = lcm;
-      
-      // If the numerator is 0, is better to keep the denominator to 1,
-      // this to increase the speed of the computation of the lcm.
-      if (num[i] == 0)
-	den[i] = 1;
+      // Note: if the negative component was not in base, then
+      // it has value zero and there is nothing left to do.
     }
   }
-
-  // Before computing the generator, we need to have all the denominators > 0.
-  // In this way we get the (a/b) rational representation, with b > 0 and 
-  // a free in sign.
-  for (dimension_type i = original_space_dim; i-- > 0; )
-    if (den[i] < 0 ) {
-      negate(num[i]);
-      negate(den[i]);
-    }
   
-  // To compute the generator we have to get the common denominator
-  // of all the values stored in denominators[].
-  Coefficient lcm = 1;
-  for (dimension_type i = original_space_dim; i-- > 0; ) 
-    lcm_assign(lcm, den[i]);
+  // Compute the lcm of all denominators.
+  TEMP_INTEGER(lcm);
+  lcm = den[0];
+  for (dimension_type i = 1; i < original_space_dim; ++i) 
+    lcm_assign(lcm, den[i]);  
+  // Use the denominators to store the numerators' multipliers
+  // and then compute the normalized numerators.
+  for (dimension_type i = original_space_dim; i-- > 0; ) {
+    exact_div_assign(den[i], lcm, den[i]);
+    num[i] *= den[i];
+  }
   
-  // So we multiply the numerators.
+  // Finally, build the generator.
+  Linear_Expression expr;
   for (dimension_type i = original_space_dim; i-- > 0; )
-   num[i] *= lcm/den[i];
-  
-  // At last we can build our generator.
-  Linear_Expression my_generator;
-  for (dimension_type i = original_space_dim; i-- > 0; )
-    my_generator += Variable(i)*num[i];
-
-  // We proceed returning g.
-  Generator g = point(my_generator, lcm);
-  return g;
+    expr += num[i] * Variable(i);
+  return point(expr, lcm);
 }
 
 Simplex_Status
