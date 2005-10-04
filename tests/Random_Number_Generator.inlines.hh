@@ -72,8 +72,7 @@ Random_Number_Generator::get(T& x, unsigned int info) {
     n = rand.get_z_bits(max_bits);
   }
   n += aux.zmin;
-  T tem(n);
-  x = tem;
+  assign(x, n, ROUND_IGNORE);
 }
 
 } // namespace Parma_Polyhedra_Library
