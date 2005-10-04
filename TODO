@@ -6,7 +6,6 @@ Enhancements for PPL 0.8
   See http://www.cs.unipr.it/pipermail/ppl-devel/2005-July/006178.html.
 - Improve the documentation of Polyhedron::shrink_bounding_box().
   See http://www.cs.unipr.it/pipermail/ppl-devel/2005-July/006191.html.
-- Check that a PPL distribution is compilable on environments lacking Perl.
 - Add our implementation of bounded difference shapes.
 - Decide which interfaces should be provided for the simplex method,
   write them, and write the documentation for them.
