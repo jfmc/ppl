@@ -183,13 +183,12 @@ Polyhedra_Powerset<PH>::time_elapse_assign(const Polyhedra_Powerset& y) {
 template <typename PH>
 void
 Polyhedra_Powerset<PH>::concatenate_assign(const Polyhedra_Powerset& y) {
-  Polyhedra_Powerset& x = *this;
+  const Polyhedra_Powerset& x = *this;
   // Ensure omega-reduction here, since what follows has quadratic complexity.
   x.omega_reduce();
   y.omega_reduce();
-  Polyhedra_Powerset<PH> new_x(x.space_dim + y.space_dim, EMPTY);
-  const Polyhedra_Powerset<PH>& cx = *this;
-  for (const_iterator xi = cx.begin(), x_end = cx.end(),
+  Polyhedra_Powerset<PH> new_x(space_dim + y.space_dim, EMPTY);
+  for (const_iterator xi = x.begin(), x_end = x.end(),
 	 y_begin = y.begin(), y_end = y.end(); xi != x_end; ) {
     for (const_iterator yi = y_begin; yi != y_end; ++yi) {
       CS zi = *xi;
@@ -208,15 +207,14 @@ Polyhedra_Powerset<PH>::concatenate_assign(const Polyhedra_Powerset& y) {
       for (++yi; yi != y_end; ++yi)
 	yph.upper_bound_assign(yi->element());
       xph.concatenate_assign(yph);
-      std::swap(x.sequence, new_x.sequence);
-      x.add_disjunct(xph);
-      goto done;
+      swap(new_x);
+      add_disjunct(xph);
+      assert(OK());
+      return;
     }
   }
-  std::swap(x.sequence, new_x.sequence);
- done:
-  x.space_dim += y.space_dim;
-  assert(x.OK());
+  swap(new_x);
+  assert(OK());
 }
 
 template <typename PH>
