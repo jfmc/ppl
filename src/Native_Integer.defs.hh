@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Native_Integer_defs_hh 1
 
 #include "Native_Integer.types.hh"
+#include "Rounding.defs.hh"
 #include "float.types.hh"
 #include <gmpxx.h>
 #include <limits>
@@ -515,6 +516,17 @@ int
 cmp(const Native_Integer<T>& x, const Native_Integer<T>& y);
 
 //@} // Relational Operators and Comparison Functions
+
+//! \name Assignment Functions
+//@{
+
+//! Assigns \p from to \p to.
+/*! \relates Native_Integer */
+template <typename To>
+Native_Integer<To>&
+assign(Native_Integer<To>& to, const mpz_class& from, Rounding_Dir dir);
+
+//@} // Assignment Functions
 
 //! \name Input-Output Operators
 //@{
