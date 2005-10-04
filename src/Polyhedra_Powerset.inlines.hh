@@ -187,7 +187,7 @@ Polyhedra_Powerset<PH>::concatenate_assign(const Polyhedra_Powerset& y) {
   // Ensure omega-reduction here, since what follows has quadratic complexity.
   x.omega_reduce();
   y.omega_reduce();
-  Polyhedra_Powerset<PH> new_x(x.space_dim, EMPTY);
+  Polyhedra_Powerset<PH> new_x(x.space_dim + y.space_dim, EMPTY);
   const Polyhedra_Powerset<PH>& cx = *this;
   for (const_iterator xi = cx.begin(), x_end = cx.end(),
 	 y_begin = y.begin(), y_end = y.end(); xi != x_end; ) {
