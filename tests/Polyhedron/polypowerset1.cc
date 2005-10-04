@@ -86,14 +86,6 @@ test3() {
     exit(1);
 }
 
-class Timeout : public Throwable {
-  void throw_me() const {
-    throw *this;
-  }
-};
-
-Timeout timeout;
-
 void
 test4() {
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
@@ -108,15 +100,10 @@ test4() {
   cs.insert(x <= 3);
   c_ps.add_disjunct(C_Polyhedron(cs));
 
-  try {
-    abandon_expensive_computations = &timeout;
-    c_ps.concatenate_assign(c_ps);
-    abandon_expensive_computations = 0;
-  }
-  catch (...) {
-    abandon_expensive_computations = 0;
+  c_ps.concatenate_assign(c_ps);
+
+  if (!c_ps.OK())
     exit(1);
-  }
 }
 
 } // namespace
