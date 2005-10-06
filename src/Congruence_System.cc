@@ -219,8 +219,8 @@ satisfies_all_congruences(const Generator& g,
       if (sp != 0)
 	return false;
     }
-    // FIX compare before loop
-    else if (sp % (divisor > 0 ? cg.modulus() * divisor : cg.modulus()) != 0)
+    // FIX compare divisor before loop
+    else if (sp % (divisor > 1 ? cg.modulus() * divisor : cg.modulus()) != 0)
       return false;
   }
   return true;
