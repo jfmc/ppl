@@ -163,9 +163,9 @@ gcdext_exact(To& to, const From1& x, const From2& y, From3& s, From4& t,
 #endif
   if (negative_x)
     // FIX how to combine this result with the result of the neg below?
-    neg<Policy>(s, -s, dir);
+    neg<Policy>(s, s, dir);
   if (negative_y)
-    return neg<Policy>(t, -t, dir);
+    return neg<Policy>(t, t, dir);
   return V_EQ;
 }
 
