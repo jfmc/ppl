@@ -35,6 +35,13 @@ using namespace Parma_Polyhedra_Library::Checked;
 using std::cout;
 using std::endl;
 
+// Adds slow, memory-heavy large exponent tests.
+//#define TEST_LARGE_EXPONENTS
+
+#ifdef TEST_LARGE_EXPONENTS
+#include <sys/resource.h>
+#endif
+
 int ret;
 
 struct Test_Extended_Number_Policy {
@@ -219,13 +226,10 @@ test_integers() {
   stringstream ss2;
   ss2 << "1e" << (LONG_MAX / 10) << (LONG_MAX % 10) + 1;
   test(ss2.str(), "nan", "", V_CVT_STR_UNK);
+#ifdef TEST_LARGE_EXPONENTS
   stringstream ss3;
   ss3 << "1e" << (LONG_MAX / 10) << (LONG_MAX % 10);
-#if 0
-  // FIX segf in GMP
-  //     similarly, a simple program will segf if it does
-  //       mpz_ui_pow_ui(z, 10, 123456789);
-  test(ss3.str(), "nan", "", V_CVT_STR_UNK);
+  test(ss3.str(), "nan", "10[...]0", V_CVT_STR_UNK);
 #endif
 
   // Exponent and fraction.
@@ -239,9 +243,9 @@ inline void
 test_hexadecimals() {
 
   test("0x0.f", "15/16", "", V_EQ);
-  test("0x.f", "15/16", "", V_EQ); // FIX "0", ".f", V_EQ
-  test("0x.f*^1", "15", "", V_EQ);
-  test("0x-f", "0", "-f", V_EQ);
+  test("0x.f", "15/16", "", V_EQ); // FIX "nan", ".f", V_CVT_STR_UNK
+  test("0x.f*^1", "15", "", V_EQ); // FIX "nan", ".f*^1", V_CVT_STR_UNK
+  test("0x-f", "0", "-f", V_EQ);   // FIX "nan", "-f", V_CVT_STR_UNK
   test("0xfa", "250", "", V_EQ);
   test("-0xfa", "-250", "", V_EQ);
   test("-0x000000000000000000000000fa", "-250", "", V_EQ);
@@ -267,17 +271,18 @@ test_hexadecimals() {
   test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-20b",
        "-493504168323155221903720496056512238754896365637429427/1310933508604055428645639323137378916605714125627786059833620428064344929699983798856350724770249351343264006014785110634052203016928447702417826694914166499203532724061309761600565421336997063991815557515680099256435208755020866043671114406449028627331696698190741203965924596719013282704476143226108174949247429837123641776308586821274746853953307040976937411766310985422056170406984474085761281737469468808976890729698039324009144871950806544374270234375377739131156048222163582026729343976248181187638137223873724172759146299690233903325378612205820465841687984250694283465351797146791878992198286281436600229186585471120819282194789204326612992",
        "", V_EQ);
-  // FIX segf
-  //test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-20b3029",
-  //     "256", "", V_EQ);
+#ifdef TEST_LARGE_EXPONENTS
+  test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-20b3029",
+       "256", "", V_EQ);
+#endif
   test("0x0.1*^3   -0", "256", "-0", V_EQ);
 }
 
 inline void
 test_bases() {
 
-  test("3^^", "0", "", V_EQ);	// FIX "nan"?, "", V_CVT_STR_UNK
-  test("3^^z", "0", "z", V_EQ);	// FIX "nan"?, "z", V_CVT_STR_UNK
+  test("3^^", "0", "", V_EQ);	// FIX "nan", "", V_CVT_STR_UNK
+  test("3^^z", "0", "z", V_EQ);	// FIX "nan", "z", V_CVT_STR_UNK
   test("^^3", "nan", "^^3", V_CVT_STR_UNK);
   test("3^^1", "1", "", V_EQ);
   test("2^^0", "0", "", V_EQ);
@@ -291,6 +296,7 @@ test_bases() {
   test("37^^1.1", "nan", "^1.1", V_CVT_STR_UNK);
   test("2^^113", "3", "3", V_EQ);
   test("2^^11 3", "3", "3", V_EQ);
+  test("3^^e3", "nan", "3", V_CVT_STR_UNK); // FIX "nan", "e3", V_CVT_STR_UNK
 
   // Fraction.
   test("2^^11.1", "7/2", "", V_EQ);
@@ -356,6 +362,18 @@ int
 main() TRY {
   set_handlers();
   ret = 0;
+
+#ifdef TEST_LARGE_EXPONENTS
+  struct rlimit rl;
+  rl.rlim_cur = RLIM_INFINITY;
+  rl.rlim_max = RLIM_INFINITY;
+  if (setrlimit(RLIMIT_STACK, &rl) == -1) {
+#if NOISY
+    cout << "Failed to set stack limit." << endl;
+#endif
+    exit(0);
+  }
+#endif
 
   test_symbols();
   test_integers();
