@@ -454,13 +454,13 @@ PPL::Linear_System::add_pending_row(const Linear_Row::Flags flags) {
     // Put the new vector into place.
     std::swap(rows, new_rows);
   }
-  else
+  else {
     // Reallocation will NOT take place.
-    // Insert a new empty row at the end,
-    // then construct it assigning it the given type.
-    // FIXME: this is a kludge
-    static_cast<Linear_Row&>(*rows.insert(rows.end(), Row()))
-      .construct(row_size, row_capacity, flags);
+    // Insert a new empty row at the end, then construct it assigning
+    // it the given type.
+    Row& new_row = *rows.insert(rows.end(), Row());
+    static_cast<Linear_Row&>(new_row).construct(row_size, row_capacity, flags);
+  }
 
   // The added row was a pending row.
   assert(num_pending_rows() > 0);
