@@ -74,6 +74,50 @@ Polyhedra_Powerset<PH>::Polyhedra_Powerset(const PH& ph)
   : Base(ph), space_dim(ph.space_dimension()) {
 }
 
+// FIXME: This full specialization is declared inline and placed here
+// just as a workaround to a bug in gcc 3.3.3. In principle, it should
+// not be declared inline and moved in Polyhedra_Powerset.cc.
+// See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=13635.
+template <>
+template <>
+inline
+Polyhedra_Powerset<NNC_Polyhedron>
+::Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y)
+  : Base(), space_dim(y.space_dimension()) {
+  Polyhedra_Powerset& x = *this;
+  for (Polyhedra_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i)
+    x.sequence.push_back(Determinate<NNC_Polyhedron>(
+                           NNC_Polyhedron(i->element()))
+			 );
+  x.reduced = y.reduced;
+  assert(x.OK());
+}
+
+// FIXME: This full specialization is declared inline and placed here
+// just as a workaround to a bug in gcc 3.3.3. In principle, it should
+// not be declared inline and moved in Polyhedra_Powerset.cc.
+// See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=13635.
+template <>
+template <>
+inline
+Polyhedra_Powerset<C_Polyhedron>
+::Polyhedra_Powerset(const Polyhedra_Powerset<NNC_Polyhedron>& y)
+  : Base(), space_dim(y.space_dimension()) {
+  Polyhedra_Powerset& x = *this;
+  for (Polyhedra_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i)
+    x.sequence.push_back(Determinate<C_Polyhedron>(
+                           C_Polyhedron(i->element()))
+			 );
+  // Note: this might be non-reduced even when `y' is known to be
+  // omega-reduced, because the constructor of C_Polyhedron, by
+  // enforcing topological closure, may have made different elements
+  // comparable.
+  x.reduced = false;
+  assert(x.OK());
+}
+
 template <>
 template <typename QH>
 Polyhedra_Powerset<NNC_Polyhedron>

@@ -26,39 +26,43 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-template <>
-template <>
-PPL::Polyhedra_Powerset<PPL::NNC_Polyhedron>
-::Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y)
-  : Base(), space_dim(y.space_dimension()) {
-  Polyhedra_Powerset& x = *this;
-  for (Polyhedra_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
-	 y_end = y.end(); i != y_end; ++i)
-    x.sequence.push_back(Determinate<NNC_Polyhedron>(
-                           NNC_Polyhedron(i->element()))
-			 );
-  x.reduced = y.reduced;
-  assert(x.OK());
-}
+// FIXME: Commented out so as to avoid a bug in gcc 3.3.3.
+// See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=13635.
+// template <>
+// template <>
+// PPL::Polyhedra_Powerset<PPL::NNC_Polyhedron>
+// ::Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y)
+//   : Base(), space_dim(y.space_dimension()) {
+//   Polyhedra_Powerset& x = *this;
+//   for (Polyhedra_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
+// 	 y_end = y.end(); i != y_end; ++i)
+//     x.sequence.push_back(Determinate<NNC_Polyhedron>(
+//                            NNC_Polyhedron(i->element()))
+// 			 );
+//   x.reduced = y.reduced;
+//   assert(x.OK());
+// }
 
-template <>
-template <>
-PPL::Polyhedra_Powerset<PPL::C_Polyhedron>
-::Polyhedra_Powerset(const Polyhedra_Powerset<NNC_Polyhedron>& y)
-  : Base(), space_dim(y.space_dimension()) {
-  Polyhedra_Powerset& x = *this;
-  for (Polyhedra_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),
-	 y_end = y.end(); i != y_end; ++i)
-    x.sequence.push_back(Determinate<C_Polyhedron>(
-                           C_Polyhedron(i->element()))
-			 );
-  // Note: this might be non-reduced even when `y' is known to be
-  // omega-reduced, because the constructor of C_Polyhedron, by
-  // enforcing topological closure, may have made different elements
-  // comparable.
-  x.reduced = false;
-  assert(x.OK());
-}
+// FIXME: Commented out so as to avoid a bug in gcc 3.3.3.
+// See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=13635.
+// template <>
+// template <>
+// PPL::Polyhedra_Powerset<PPL::C_Polyhedron>
+// ::Polyhedra_Powerset(const Polyhedra_Powerset<NNC_Polyhedron>& y)
+//   : Base(), space_dim(y.space_dimension()) {
+//   Polyhedra_Powerset& x = *this;
+//   for (Polyhedra_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),
+// 	 y_end = y.end(); i != y_end; ++i)
+//     x.sequence.push_back(Determinate<C_Polyhedron>(
+//                            C_Polyhedron(i->element()))
+// 			 );
+//   // Note: this might be non-reduced even when `y' is known to be
+//   // omega-reduced, because the constructor of C_Polyhedron, by
+//   // enforcing topological closure, may have made different elements
+//   // comparable.
+//   x.reduced = false;
+//   assert(x.OK());
+// }
 
 template <>
 void
