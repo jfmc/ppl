@@ -37,7 +37,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <deque>
 
 #ifndef PPL_NOISY_SIMPLEX
-#define PPL_NOISY_SIMPLEX 1
+#define PPL_NOISY_SIMPLEX 0
 #endif
 
 #ifdef PPL_NOISY_SIMPLEX
