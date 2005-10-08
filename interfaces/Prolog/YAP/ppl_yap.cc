@@ -26,6 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Checked_Number.defs.hh"
 #include <Yap/YapInterface.h>
 #include <cassert>
+#include <cassert>
+#include <climits>
 
 typedef YAP_Term Prolog_term_ref;
 typedef YAP_Atom Prolog_atom;
@@ -108,8 +110,12 @@ Prolog_put_long(Prolog_term_ref& t, long l) {
 */
 inline int
 Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
-  // FIXME!
-  t = YAP_MkIntTerm(ul);
+  if (ul < LONG_MAX)
+    t = YAP_MkIntTerm(ul);
+  else {
+    static mpz_class m = ul;
+    t = YAP_MkBigNumTerm(m.get_mpz_t());
+  }
   return 1;
 }
 
@@ -362,19 +368,33 @@ Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
 
 PPL::Coefficient
 integer_term_to_Coefficient(Prolog_term_ref t) {
-  // FIXME: does YAP support unlimited precision integer?
-  long v;
-  Prolog_get_long(t, &v);
-  return PPL::Coefficient(v);
+  PPL::Coefficient n;
+  // FIXME: the "false &&" below is there because of the problem outlined in
+  // http://sourceforge.net/mailarchive/forum.php?thread_id=8471263&forum_id=2080
+  if (false && YAP_IsBigNumTerm(t) != FALSE)
+    PPL::assign(n,
+		*static_cast<mpz_class*>(YAP_BigNumOfTerm(t)),
+		PPL::ROUND_IGNORE);
+  else {
+    long l;
+    Prolog_get_long(t, &l);
+    n = l;
+  }
+  return n;
 }
 
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
-  // FIXME: does YAP support unlimited precision integer?
-  long v;
-  if (PPL::assign(v, PPL::raw_value(n), PPL::ROUND_IGNORE) != PPL::V_EQ)
-    throw unknown_interface_error("Coefficient_to_integer_term()");
-  return YAP_MkIntTerm(v);
+  if (n < LONG_MAX) {
+    long l;
+    PPL::assign(l, n, PPL::ROUND_IGNORE);
+    return YAP_MkIntTerm(l);
+  }
+  else {
+    static mpz_class m;
+    PPL::assign(m, n, PPL::ROUND_IGNORE);
+    return YAP_MkBigNumTerm(m.get_mpz_t());
+  }
 }
 
 } // namespace
