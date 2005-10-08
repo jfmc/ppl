@@ -105,7 +105,7 @@ linear_combine(Row& x, const Row& y, const dimension_type k) {
   \param outside_row
   The index of the row exiting the base.
 */
-inline void
+void
 swap_base(Matrix& tableau,
 	  Row& cost_function,
 	  const dimension_type inside_var,
@@ -137,7 +137,7 @@ swap_base(Matrix& tableau,
   \param cost function
   The expression to be optimized.
 */
-inline dimension_type
+dimension_type
 get_entering_index(const Row& cost_function) {
   // The variable entering the base is the first one whose coefficient
   // in the cost function has the same sign the cost function itself.
@@ -178,7 +178,7 @@ get_entering_index(const Row& cost_function) {
   Will be set to <CODE>true<\CODE> if and only if the LP problem
   is unbounded.
 */
-inline dimension_type
+dimension_type
 get_exiting_index(const Matrix& tableau,  
 		  const dimension_type entering_index,
 		  std::vector<dimension_type>& base) {
@@ -774,7 +774,7 @@ compute_tableau(const Linear_System& cs,
   If <CODE>true</CODE> is returned, it will store the index of the
   tableau constraint corresponding to variable \p var_index.
 */ 
-inline bool
+bool
 is_in_base(const std::vector<dimension_type>& base,
 	   const dimension_type var_index,
 	   dimension_type& row_index ) {
