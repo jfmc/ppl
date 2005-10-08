@@ -185,14 +185,14 @@ PPL::Polyhedron::relation_with(const Constraint& c) const {
 
   if (space_dim == 0)
     if (c.is_inconsistent())
-      if (c.is_strict_inequality() && c[0] == 0)
+      if (c.is_strict_inequality() && c.inhomogeneous_term() == 0)
 	// The constraint 0 > 0 implicitly defines the hyperplane 0 = 0;
 	// thus, the zero-dimensional point also saturates it.
 	return Poly_Con_Relation::saturates()
 	  && Poly_Con_Relation::is_disjoint();
       else
 	return Poly_Con_Relation::is_disjoint();
-    else if (c.is_equality() || c[0] == 0)
+    else if (c.is_equality() || c.inhomogeneous_term() == 0)
       return Poly_Con_Relation::saturates()
 	&& Poly_Con_Relation::is_included();
     else
@@ -334,20 +334,20 @@ PPL::Polyhedron::is_universe() const {
   if (is_necessarily_closed())
     return (con_sys.num_rows() == 1
 	    && con_sys[0].is_inequality()
-	    && con_sys[0][0] > 0
+	    && con_sys[0].inhomogeneous_term() > 0
 	    && con_sys[0].all_homogeneous_terms_are_zero());
   else {
-    // Polyhedron NOT-necessarily closed.
+    // NNC polyhedron.
     if (con_sys.num_rows() != 2
 	|| con_sys[0].is_equality()
 	|| con_sys[1].is_equality())
       return false;
     else {
-#ifndef NDEBUG
       // If the system of constraints contains two rows that
       // are not equalities, we are sure that they are
       // epsilon constraints: in this case we know that
       // the polyhedron is universe.
+#ifndef NDEBUG
       obtain_sorted_constraints();
       const Constraint& eps_leq_one = con_sys[0];
       const Constraint& eps_geq_zero = con_sys[1];
@@ -371,7 +371,7 @@ PPL::Polyhedron::is_bounded() const {
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
 
-   for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
+  for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
     if (gen_sys[i][0] == 0)
       // A line or a ray is found: the polyhedron is not bounded.
       return false;
@@ -743,7 +743,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     // -* the epsilon <= 1 constraint, for NNC polyhedra.
     bool no_positivity_constraint = true;
     for (dimension_type i = con_sys.num_rows(); i-- > 0; )
-      if (con_sys[i][0] != 0) {
+      if (con_sys[i].inhomogeneous_term() != 0) {
 	no_positivity_constraint = false;
 	break;
       }
@@ -843,7 +843,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       const Generator tmp_gen = gen_sys[i];
       const Saturation_Row tmp_sat = sat_c[i];
       for (dimension_type j = sat_c.num_columns(); j-- > 0; )
-	if (scalar_product_sign(tmp_gen, con_sys[j]) != tmp_sat[j]) {
+	if (scalar_product_sign(con_sys[j], tmp_gen) != tmp_sat[j]) {
 #ifndef NDEBUG
 	  cerr << "sat_c is declared up-to-date, but it is not!"
 	       << endl;
@@ -1819,8 +1819,7 @@ affine_image(const Variable var,
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
-  const dimension_type expr_space_dim = expr.space_dimension();
-  if (space_dim < expr_space_dim)
+  if (space_dim < expr.space_dimension())
     throw_dimension_incompatible("affine_image(v, e, d)", "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
@@ -1830,7 +1829,7 @@ affine_image(const Variable var,
   if (marked_empty())
     return;
 
-  if (var_space_dim <= expr_space_dim && expr[var_space_dim] != 0) {
+  if (expr.coefficient(var) != 0) {
     // The transformation is invertible:
     // minimality and saturators are preserved, so that
     // pending rows, if present, are correctly handled.
@@ -1900,8 +1899,7 @@ affine_preimage(const Variable var,
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
-  const dimension_type expr_space_dim = expr.space_dimension();
-  if (space_dim < expr_space_dim)
+  if (space_dim < expr.space_dimension())
     throw_dimension_incompatible("affine_preimage(v, e, d)", "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
@@ -1911,7 +1909,7 @@ affine_preimage(const Variable var,
   if (marked_empty())
     return;
 
-  if (var_space_dim <= expr_space_dim && expr[var_space_dim] != 0) {
+  if (expr.coefficient(var) != 0) {
     // The transformation is invertible:
     // minimality and saturators are preserved.
     if (constraints_are_up_to_date()) {
@@ -2134,8 +2132,7 @@ generalized_affine_image(const Variable var,
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
-  const dimension_type expr_space_dim = expr.space_dimension();
-  if (space_dim < expr_space_dim)
+  if (space_dim < expr.space_dimension())
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
 				 "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
@@ -2224,8 +2221,7 @@ generalized_affine_preimage(const Variable var,
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
-  const dimension_type expr_space_dim = expr.space_dimension();
-  if (space_dim < expr_space_dim)
+  if (space_dim < expr.space_dimension())
     throw_dimension_incompatible("generalized_affine_preimage(v, r, e, d)",
 				 "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
@@ -2269,8 +2265,8 @@ generalized_affine_preimage(const Variable var,
 
   // Check whether the preimage of this affine relation can be easily
   // computed as the image of its inverse relation.
-  Coefficient_traits::const_reference var_coefficient = expr.coefficient(var);
-  if (var_space_dim <= expr_space_dim && var_coefficient != 0) {
+  const Coefficient& var_coefficient = expr.coefficient(var);
+  if (var_coefficient != 0) {
     Linear_Expression inverse_expr
       = expr - (denominator + var_coefficient) * var;
     Coefficient inverse_denominator = - var_coefficient;
