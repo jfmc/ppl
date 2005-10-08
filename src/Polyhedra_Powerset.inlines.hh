@@ -75,7 +75,7 @@ Polyhedra_Powerset<PH>::Polyhedra_Powerset(const PH& ph)
 }
 
 // FIXME: This full specialization is declared inline and placed here
-// just as a workaround to a bug in gcc 3.3.3. In principle, it should
+// just as a workaround to a bug in GCC 3.3.3. In principle, it should
 // not be declared inline and moved in Polyhedra_Powerset.cc.
 // See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=13635.
 template <>
@@ -95,7 +95,7 @@ Polyhedra_Powerset<NNC_Polyhedron>
 }
 
 // FIXME: This full specialization is declared inline and placed here
-// just as a workaround to a bug in gcc 3.3.3. In principle, it should
+// just as a workaround to a bug in GCC 3.3.3. In principle, it should
 // not be declared inline and moved in Polyhedra_Powerset.cc.
 // See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=13635.
 template <>

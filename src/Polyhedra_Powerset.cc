@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-// FIXME: Commented out so as to avoid a bug in gcc 3.3.3.
+// FIXME: Commented out so as to avoid a bug in GCC 3.3.3.
 // See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=13635.
 // template <>
 // template <>
@@ -43,7 +43,7 @@ namespace PPL = Parma_Polyhedra_Library;
 //   assert(x.OK());
 // }
 
-// FIXME: Commented out so as to avoid a bug in gcc 3.3.3.
+// FIXME: Commented out so as to avoid a bug in GCC 3.3.3.
 // See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=13635.
 // template <>
 // template <>
