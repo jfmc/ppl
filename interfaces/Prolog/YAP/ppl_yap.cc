@@ -110,7 +110,7 @@ Prolog_put_long(Prolog_term_ref& t, long l) {
 */
 inline int
 Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
-  if (ul < LONG_MAX)
+  if (ul <= LONG_MAX)
     t = YAP_MkIntTerm(ul);
   else {
     static mpz_class m = ul;
@@ -385,7 +385,7 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
 
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
-  if (n < LONG_MAX) {
+  if (n <= LONG_MAX) {
     long l;
     PPL::assign(l, n, PPL::ROUND_IGNORE);
     return YAP_MkIntTerm(l);
