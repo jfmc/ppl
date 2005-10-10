@@ -242,6 +242,8 @@ test_integers() {
 inline void
 test_hexadecimals() {
 
+  test("0x", "0", "", V_EQ);	// FIX "nan", "", V_CVT_STR_UNK
+  test("0xx", "0", "x", V_EQ);	// FIX "nan", "x", V_CVT_STR_UNK
   test("0x0.f", "15/16", "", V_EQ);
   test("0x.f", "15/16", "", V_EQ); // FIX "nan", ".f", V_CVT_STR_UNK
   test("0x.f*^1", "15", "", V_EQ); // FIX "nan", ".f*^1", V_CVT_STR_UNK
@@ -296,7 +298,7 @@ test_bases() {
   test("37^^1.1", "nan", "^1.1", V_CVT_STR_UNK);
   test("2^^113", "3", "3", V_EQ);
   test("2^^11 3", "3", "3", V_EQ);
-  test("3^^e3", "nan", "3", V_CVT_STR_UNK); // FIX "nan", "e3", V_CVT_STR_UNK
+  test("3^^e2", "0", "", V_EQ); // FIX "nan", "e2", V_CVT_STR_UNK
 
   // Fraction.
   test("2^^11.1", "7/2", "", V_EQ);
