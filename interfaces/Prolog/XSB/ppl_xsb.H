@@ -109,4 +109,4 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_fold_space_dimensions/3,
 	ppl_Polyhedron_map_space_dimensions/2.
 
-:- ldoption('-L../../../src/.libs -lppl -L../../../Watchdog/.libs -lpwl -lgmp -lgmpxx').
+:- ldoption('-L../../../src/.libs -lppl -L../../../Watchdog/src/.libs -lpwl -lgmp -lgmpxx').
