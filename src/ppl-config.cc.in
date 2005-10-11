@@ -114,6 +114,7 @@ unsigned num_required_items = 0;
 
 #ifdef HAVE_GETOPT_H
 struct option long_options[] = {
+  {"help",              no_argument,       0, 'h'},
   {"format",            required_argument, 0, 'F'},
   {"interface",         required_argument, 0, 'I'},
   {"application",       no_argument,       0, 'A'},
@@ -145,23 +146,46 @@ struct option long_options[] = {
 #endif
 
 static const char* usage_string
-= "Usage: %s [OPTION]... [FILE]...\n\n"
-"  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
-"  -VMB, --max-memory=MB   limits memory usage to MB megabytes\n"
-"  -h, --help              prints this help text to stderr\n"
-"  -oPATH, --output=PATH   appends output to PATH\n"
-"  -t, --timings           prints timings to stderr\n"
-"  -v, --verbose           produces lots of output\n"
-#if defined(USE_PPL)
-"  -cPATH, --check=PATH    checks if the result is equal to what is in PATH\n"
-#endif
+= "Usage: %s [OPTION]...\n\n"
+"  -h, --help               prints this help text\n"
+"  -FFMT, --format=FMT      sets the output format to FMT\n"
+"                           (one of `plain', `makefile', `sh' or `csh')\n"
+"  -IINT, --interface=INT   selects a library interface (one of `C++', `C',\n"
+"                           `Ciao-Prolog', `GNU-Prolog', `SICStus-Prolog',\n"
+"                           `SWI-Prolog', `XSB-Prolog', `YAP-Prolog',\n"
+"                           `OCaml' or `Java')\n"
+"  -A, --application        selects output for building an application\n"
+"  -L, --library            selects output for building a library\n"
+"  -p[PFX], --prefix[=PFX]  prints or sets library prefix information\n"
+"  -e[PFX], --exec-prefix[=PFX]\n"
+"                           prints or sets library exec-prefix information\n"
+"  -O, --configure-options  prints configuration options\n"
+"  -V, --version            prints version information\n"
+"  -M, --version-major      prints version major number\n"
+"  -N, --version-minor      prints version minor number\n"
+"  -R, --version-revision   prints version revision number\n"
+"  -B, --version-beta       prints version beta number\n"
+"  -E, --banner             prints library banner\n"
+"  -n, --coefficients       prints type of library coefficients\n"
+"  -i, --includedir         prints include files directory\n"
+"  -b, --bindir             prints binary executables directory\n"
+"  -l, --libdir             prints library files directory\n"
+"  -P, --cppflags           prints preprocessor flags\n"
+"  -C, --cflags             prints C compiler flags\n"
+"  -X, --cxxflags           prints C++ compiler flags\n"
+"  -D, --ldflags            prints linker flags\n"
+"  -g, --license            prints synthetic licensing information\n"
+"  -c, --copying            prints detailed licensing information\n"
+"  -u, --bugs               prints bug reporting information\n"
+"  -r, --credits            prints credits\n"
+"  -Z, --all                prints all information available\n"
 #ifndef HAVE_GETOPT_H
 "\n"
 "NOTE: this version does not support long options.\n"
 #endif
 ;
 
-#define OPTION_LETTERS "F:I:ALp::e::OVMNRBEnSiblPCXDgcurZ"
+#define OPTION_LETTERS "hF:I:ALp::e::OVMNRBEniblPCXDgcurZ"
 
 const char* program_name = 0;
 
