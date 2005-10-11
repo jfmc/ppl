@@ -46,21 +46,21 @@ PPL::Polyhedron::add_space_dimensions(Linear_System& sys1,
   // The added rows are in the non-pending part.
   sys2.set_index_first_pending_row(old_index + add_dim);
 
-  // The resulting saturation matrix will be the follow:
+  // The resulting saturation matrix will be as follows:
   // from row    0    to      add_dim-1       : only zeroes
   //          add_dim     add_dim+num_rows-1  : old saturation matrix
 
   // In fact all the old generators saturate all the new constraints
   // because the polyhedron has not been embedded in the new space.
   sat1.resize(sat1.num_rows() + add_dim, sat1.num_columns());
-  // The old matrix is copied at the end of the new matrix.
+  // The old matrix is moved to the end of the new matrix.
   for (dimension_type i = sat1.num_rows() - add_dim; i-- > 0; )
     std::swap(sat1[i], sat1[i+add_dim]);
   // Computes the "sat_c", too.
   sat2.transpose_assign(sat1);
 
   if (!sys1.is_necessarily_closed()) {
-    // Moving the epsilon coefficients in the last column.
+    // Moving the epsilon coefficients to the new last column.
     dimension_type new_eps_index = sys1.num_columns() - 1;
     dimension_type old_eps_index = new_eps_index - add_dim;
     // This swap preserves sortedness of `sys1'.
@@ -349,7 +349,8 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   for (dimension_type i = added_rows; i-- > 0; ) {
     Constraint& c_old = cs[i];
     Constraint& c_new = con_sys[old_num_rows + i];
-    // Method `grow', by default, added inequalities.
+    // Method `add_zero_rows_and_columns', by default, added
+    // inequalities.
     if (c_old.is_equality())
       c_new.set_is_equality();
     // The inhomogeneous term is not displaced.
@@ -432,7 +433,7 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& to_be_removed) {
   const dimension_type new_space_dim = space_dim - to_be_removed.size();
 
   // We need updated generators; note that keeping pending generators
-  // is useless because constraints will be dropped anyway.
+  // is useless because the constraints will be dropped anyway.
   if (marked_empty()
       || (has_something_pending() && !remove_pending_to_obtain_generators())
       || (!generators_are_up_to_date() && !update_generators())) {
@@ -474,7 +475,7 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // The number of remaining columns is `dst_col'.
   // Note that resizing also calls `set_sorted(false)'.
   gen_sys.remove_trailing_columns(gen_sys_num_columns - dst_col);
-  // We may have invalid line and rays now.
+  // We may have invalid lines and rays now.
   gen_sys.remove_invalid_lines_and_rays();
 
   // Constraints are not up-to-date and generators are not minimized.
@@ -532,7 +533,7 @@ PPL::Polyhedron::remove_higher_space_dimensions(dimension_type new_dimension) {
   }
   // Note that resizing also calls `set_sorted(false)'.
   gen_sys.remove_trailing_columns(space_dim - new_dimension);
-  // We may have invalid line and rays now.
+  // We may have invalid lines and rays now.
   gen_sys.remove_invalid_lines_and_rays();
 
   // Constraints are not up-to-date and generators are not minimized.
@@ -574,12 +575,12 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
   const dimension_type src_d = var.id();
   const Constraint_System& cs = constraints();
   Constraint_System new_constraints;
-  for(Constraint_System::const_iterator i = cs.begin(),
-	cs_end = cs.end(); i != cs_end; ++i) {
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i) {
     const Constraint& c = *i;
 
     // If `c' does not constrain `var', skip it.
-    if(c.coefficient(var) == 0)
+    if (c.coefficient(var) == 0)
       continue;
 
     // Each relevant constraint results in `m' new constraints.

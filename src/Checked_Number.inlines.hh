@@ -713,16 +713,30 @@ cmp(const Checked_Number<T1, Policy1>& x,
 
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
+inline Result
+output(std::ostream& os, const Checked_Number<T, Policy>& x, const Numeric_Format& fmt, Rounding_Dir dir) {
+  return Checked::output_ext<Policy>(os, x.raw_value(), fmt, dir);
+}
+
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
 inline std::ostream&
 operator<<(std::ostream& os, const Checked_Number<T, Policy>& x) {
-  Policy::handle_result(Checked::output_ext<Policy>(os, x.raw_value(), Numeric_Format(), Policy::ROUND_DEFAULT));
+  Policy::handle_result(output(os, x, Numeric_Format(), Policy::ROUND_DEFAULT));
   return os;
 }
 
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
+inline Result
+input(Checked_Number<T, Policy>& x, std::istream& is, Rounding_Dir dir) {
+  return Checked::input_ext<Policy>(x.raw_value(), is, dir);
+}
+
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
 inline std::istream& operator>>(std::istream& is, Checked_Number<T, Policy>& x) {
-  Result r = Checked::input_ext<Policy>(x.raw_value(), is, Policy::ROUND_DEFAULT);
+  Result r = input(x, is, Policy::ROUND_DEFAULT);
   if (r == V_CVT_STR_UNK)
     is.setstate(std::ios::failbit);
   else

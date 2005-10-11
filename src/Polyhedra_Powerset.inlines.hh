@@ -77,6 +77,50 @@ Polyhedra_Powerset<PH>::Polyhedra_Powerset(const PH& ph)
   : Base(ph), space_dim(ph.space_dimension()) {
 }
 
+// FIXME: This full specialization is declared inline and placed here
+// just as a workaround to a bug in GCC 3.3.3. In principle, it should
+// not be declared inline and moved in Polyhedra_Powerset.cc.
+// See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=13635.
+template <>
+template <>
+inline
+Polyhedra_Powerset<NNC_Polyhedron>
+::Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y)
+  : Base(), space_dim(y.space_dimension()) {
+  Polyhedra_Powerset& x = *this;
+  for (Polyhedra_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i)
+    x.sequence.push_back(Determinate<NNC_Polyhedron>(
+                           NNC_Polyhedron(i->element()))
+			 );
+  x.reduced = y.reduced;
+  assert(x.OK());
+}
+
+// FIXME: This full specialization is declared inline and placed here
+// just as a workaround to a bug in GCC 3.3.3. In principle, it should
+// not be declared inline and moved in Polyhedra_Powerset.cc.
+// See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=13635.
+template <>
+template <>
+inline
+Polyhedra_Powerset<C_Polyhedron>
+::Polyhedra_Powerset(const Polyhedra_Powerset<NNC_Polyhedron>& y)
+  : Base(), space_dim(y.space_dimension()) {
+  Polyhedra_Powerset& x = *this;
+  for (Polyhedra_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i)
+    x.sequence.push_back(Determinate<C_Polyhedron>(
+                           C_Polyhedron(i->element()))
+			 );
+  // Note: this might be non-reduced even when `y' is known to be
+  // omega-reduced, because the constructor of C_Polyhedron, by
+  // enforcing topological closure, may have made different elements
+  // comparable.
+  x.reduced = false;
+  assert(x.OK());
+}
+
 template <>
 template <typename QH>
 Polyhedra_Powerset<NNC_Polyhedron>
@@ -199,13 +243,12 @@ Polyhedra_Powerset<PH>::time_elapse_assign(const Polyhedra_Powerset& y) {
 template <typename PH>
 void
 Polyhedra_Powerset<PH>::concatenate_assign(const Polyhedra_Powerset& y) {
-  Polyhedra_Powerset& x = *this;
+  const Polyhedra_Powerset& x = *this;
   // Ensure omega-reduction here, since what follows has quadratic complexity.
   x.omega_reduce();
   y.omega_reduce();
-  Polyhedra_Powerset<PH> new_x(x.space_dim, EMPTY);
-  const Polyhedra_Powerset<PH>& cx = *this;
-  for (const_iterator xi = cx.begin(), x_end = cx.end(),
+  Polyhedra_Powerset<PH> new_x(space_dim + y.space_dim, EMPTY);
+  for (const_iterator xi = x.begin(), x_end = x.end(),
 	 y_begin = y.begin(), y_end = y.end(); xi != x_end; ) {
     for (const_iterator yi = y_begin; yi != y_end; ++yi) {
       CS zi = *xi;
@@ -224,15 +267,14 @@ Polyhedra_Powerset<PH>::concatenate_assign(const Polyhedra_Powerset& y) {
       for (++yi; yi != y_end; ++yi)
 	yph.upper_bound_assign(yi->element());
       xph.concatenate_assign(yph);
-      std::swap(x.sequence, new_x.sequence);
-      x.add_disjunct(xph);
-      goto done;
+      swap(new_x);
+      add_disjunct(xph);
+      assert(OK());
+      return;
     }
   }
-  std::swap(x.sequence, new_x.sequence);
- done:
-  x.space_dim += y.space_dim;
-  assert(x.OK());
+  swap(new_x);
+  assert(OK());
 }
 
 template <typename PH>

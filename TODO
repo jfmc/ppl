@@ -6,13 +6,6 @@ Enhancements for PPL 0.8
   See http://www.cs.unipr.it/pipermail/ppl-devel/2005-July/006178.html.
 - Improve the documentation of Polyhedron::shrink_bounding_box().
   See http://www.cs.unipr.it/pipermail/ppl-devel/2005-July/006191.html.
-- The new mechanism used to build the ppl_install.hh header file
-  depends on the availability of PERL.  Consider whether this
-  is a new requirement we impose to the user or not (it certainly
-  is not a new requirement for the developer).  In case it is, and
-  in case we decide we don't want this extra requirement, change
-  the building procedure so that the header file is built at
-  distribution-time and needs not be rebuilt at installation-time.
 - Add our implementation of bounded difference shapes.
 - Decide which interfaces should be provided for the simplex method,
   write them, and write the documentation for them.
@@ -79,11 +72,6 @@ Efficiency Issues
 - We are being rather careless about the creation of temporaries
   as far as the classes Linear_Expression, Constraint and Generator
   are concerned.
-
-- In Polyhedron::strongly_minimize_constraints(), after the removal
-  of eps-redundant constraints, find an efficient way to test whether
-  or not the eps_leq_one constraint is needed to obtain an upper bound
-  on the epsilon dimension.
 
 
 Cutting-Plane Methods

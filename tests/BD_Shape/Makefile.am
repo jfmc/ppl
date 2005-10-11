@@ -49,6 +49,8 @@ ORIGINAL_TESTS = \
 	affinepreimage5 \
 	ascii_dump_load1 ascii_dump_load2 \
 	bdshull1 bdshull2 bdshull3 bdshull4 \
+	bgp99extrapolation1 \
+	bhz03widening1 \
 	cc76narrowing1 cc76narrowing2 cc76narrowing3 cc76narrowing4 \
 	cc76narrowing5 \
 	cc76extrapolation1 cc76extrapolation2 cc76extrapolation3 \
@@ -128,6 +130,10 @@ bdshull1_SOURCES = bdshull1.cc
 bdshull2_SOURCES = bdshull2.cc
 bdshull3_SOURCES = bdshull3.cc
 bdshull4_SOURCES = bdshull4.cc
+
+bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
+
+bhz03widening1_SOURCES = bhz03widening1.cc
 
 cc76narrowing1_SOURCES = cc76narrowing1.cc
 cc76narrowing2_SOURCES = cc76narrowing2.cc

@@ -652,6 +652,21 @@ operator>>(std::istream& is, Native_Integer<T>& x) {
   return is >> x.raw_value();
 }
 
+template <typename To>
+inline Native_Integer<To>&
+assign(Native_Integer<To>& to, const mpz_class& from, Rounding_Dir dir) {
+  used(dir);
+  To& raw_value = to.raw_value();
+  if (sizeof(To) <= sizeof(long))
+    raw_value = from.get_si();
+  else {
+    mpz_export(&raw_value, 0, 1, sizeof(To), 0, 0, from.get_mpz_t());
+    if (sgn(from) < 0)
+      raw_value = -raw_value;
+  }
+  return to;
+}
+
 PPL_INTEGER_DEFINE_NON_MEMBERS(Native_Integer)
 
 } // namespace Parma_Polyhedra_Library

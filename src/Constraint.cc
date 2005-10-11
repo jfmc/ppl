@@ -215,7 +215,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
   return s;
 }
 
-/*! \relates Parma_Polyhedra_Library::Constraint::Type */
+/*! \relates Parma_Polyhedra_Library::Constraint */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Constraint::Type& t) {
   const char* n = 0;

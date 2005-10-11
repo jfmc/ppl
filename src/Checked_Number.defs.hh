@@ -556,11 +556,20 @@ cmp(const Checked_Number<T1, Policy1>& x, const Checked_Number<T2, Policy2>& y);
 //! \name Input-Output Operators
 //@{
 
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+Result
+output(std::ostream& os, const Checked_Number<T, Policy>& x, const Numeric_Format& fmt, Rounding_Dir dir);
+
 //! Output operator.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
 std::ostream&
 operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
+
+template <typename T, typename Policy>
+Result
+input(std::istream& is, Checked_Number<T, Policy>& x, Rounding_Dir dir);
 
 //! Input operator.
 /*! \relates Checked_Number */

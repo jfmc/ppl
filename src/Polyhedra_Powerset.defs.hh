@@ -422,11 +422,15 @@ private:
                                                    typename Cert::Compare>&
 				    y_cert_ms) const;
 
-  // FIXME: The following is an overkill, since it should be enough
-  // to declare friend the templatic constructor
+  // FIXME: here it should be enough to befriend the templatic constructor
   //   template <typename QH>
-  //   Polyhedra_Powerset(const Polyhedra_Powerset<QH>&);
-  friend class Parma_Polyhedra_Library::Polyhedra_Powerset<NNC_Polyhedron>;
+  //   Polyhedra_Powerset(const Polyhedra_Powerset<QH>&)
+  // but, apparently, this cannot be done.
+  // As a workaround, we could use
+  //   friend class Polyhedra_Powerset<NNC_Polyhedron>
+  // but GCC 3.3.3 has a bug that causes its rejection.
+  // So, temporarily, we make all Polyhedra_Powerset's friends of each other.
+  template <typename QH> friend class Polyhedra_Powerset; 
 };
 
 

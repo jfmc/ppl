@@ -115,7 +115,7 @@ LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(libpwl_la_SOURCES)
 DIST_SOURCES = $(am__libpwl_la_SOURCES_DIST)
-am__noinst_HEADERS_DIST = pwl.hh pwl_install.hh
+am__noinst_HEADERS_DIST = pwl.hh pwl_include_files.hh pwl_install.hh
 HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -314,8 +314,14 @@ pwl_header.hh
 @BUILD_WATCHDOG_LIBRARY_TRUE@$(NO_UNDEFINED_FLAG) \
 @BUILD_WATCHDOG_LIBRARY_TRUE@-version-info $(LIBPWL_LT_CURRENT):$(LIBPWL_LT_REVISION):$(LIBPWL_LT_AGE)
 
-@BUILD_WATCHDOG_LIBRARY_TRUE@noinst_HEADERS = pwl.hh pwl_install.hh
-@BUILD_WATCHDOG_LIBRARY_TRUE@BUILT_SOURCES = pwl.hh pwl_install.hh
+@BUILD_WATCHDOG_LIBRARY_TRUE@noinst_HEADERS = \
+@BUILD_WATCHDOG_LIBRARY_TRUE@pwl.hh \
+@BUILD_WATCHDOG_LIBRARY_TRUE@pwl_include_files.hh \
+@BUILD_WATCHDOG_LIBRARY_TRUE@pwl_install.hh
+
+@BUILD_WATCHDOG_LIBRARY_TRUE@BUILT_SOURCES = \
+@BUILD_WATCHDOG_LIBRARY_TRUE@$(noinst_HEADERS)
+
 @BUILD_WATCHDOG_LIBRARY_TRUE@MOSTLYCLEANFILES = $(BUILT_SOURCES)
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -470,6 +476,7 @@ GTAGS:
 
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
+@BUILD_WATCHDOG_LIBRARY_FALSE@dist-hook:
 
 distdir: $(DISTFILES)
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
@@ -606,10 +613,6 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES \
 
 @SET_MAKE@
 
-# pwl.hh and pwl_install.hh are not distributed.
-dist-hook:
-	rm -f $(distdir)/pwl.hh $(distdir)/pwl_install.hh
-
 @BUILD_WATCHDOG_LIBRARY_TRUE@pwl.hh:	$(DOC_FILES)
 @BUILD_WATCHDOG_LIBRARY_TRUE@	(cd $(srcdir) ; cat $(DOC_FILES)) >pwl.hh
 
@@ -620,10 +623,19 @@ dist-hook:
 @BUILD_WATCHDOG_LIBRARY_TRUE@	  printf "#include \"%s\"\n" $$file >>$@; \
 @BUILD_WATCHDOG_LIBRARY_TRUE@	done
 
-@BUILD_WATCHDOG_LIBRARY_TRUE@pwl_install.hh:	$(top_builddir)/config.h pwl_header.hh pwl_include_files.hh Makefile $(top_builddir)/utils/build_header
-@BUILD_WATCHDOG_LIBRARY_TRUE@	$(top_builddir)/utils/build_header \
-@BUILD_WATCHDOG_LIBRARY_TRUE@		-I $(top_builddir) -I $(top_builddir)/src \
-@BUILD_WATCHDOG_LIBRARY_TRUE@		$(top_srcdir)/src/pwl_header.hh >$@
+@BUILD_WATCHDOG_LIBRARY_TRUE@@HAVE_PERL_TRUE@pwl_install.hh:	$(top_builddir)/config.h pwl_header.hh pwl_include_files.hh Makefile $(top_builddir)/utils/build_header
+@BUILD_WATCHDOG_LIBRARY_TRUE@@HAVE_PERL_TRUE@	$(top_builddir)/utils/build_header \
+@BUILD_WATCHDOG_LIBRARY_TRUE@@HAVE_PERL_TRUE@		-I $(top_builddir) -I $(top_builddir)/src \
+@BUILD_WATCHDOG_LIBRARY_TRUE@@HAVE_PERL_TRUE@		$(top_srcdir)/src/pwl_header.hh >$@
+
+@BUILD_WATCHDOG_LIBRARY_TRUE@@HAVE_PERL_FALSE@pwl_install.hh:	pwl_install.hh.dist
+@BUILD_WATCHDOG_LIBRARY_TRUE@@HAVE_PERL_FALSE@	cp -f $< $@
+
+# pwl.hh and pwl_install.hh are not distributed.
+# pwl_install.hh.dist, which is distributed, is a copy of pwl_install.hh.
+@BUILD_WATCHDOG_LIBRARY_TRUE@dist-hook:
+@BUILD_WATCHDOG_LIBRARY_TRUE@	mv -f $(distdir)/pwl_install.hh $(distdir)/pwl_install.hh.dist
+@BUILD_WATCHDOG_LIBRARY_TRUE@	rm -f $(distdir)/pwl.hh
 
 @BUILD_WATCHDOG_LIBRARY_TRUE@install-data-local: pwl_install.hh
 @BUILD_WATCHDOG_LIBRARY_TRUE@	$(mkinstalldirs) $(DESTDIR)$(includedir)

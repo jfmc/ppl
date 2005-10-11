@@ -32,6 +32,9 @@ VPATH = @srcdir@
 dist_noinst_SCRIPTS = \
 configure
 
+dist_noinst_HEADERS = \
+instchk.hh
+
 EXTRA_DIST = \
 ppl.lsm.in \
 ppl.spec.in \

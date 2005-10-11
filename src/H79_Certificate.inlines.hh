@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_H79_Certificate_inlines_hh
 #define PPL_H79_Certificate_inlines_hh 1
 
+#include "Polyhedron.defs.hh"
+
 namespace Parma_Polyhedra_Library {
 
 inline
@@ -46,6 +48,21 @@ H79_Certificate::Compare::operator()(const H79_Certificate& x,
   // For an efficient evaluation of the multiset ordering based
   // on this lgo relation, we want larger elements to come first.
   return (x.compare(y) == 1);
+}
+
+template <typename PH>
+inline
+H79_Certificate::H79_Certificate(const PH& ph)
+  : affine_dim(0), num_constraints(0) {
+  H79_Certificate cert(Polyhedron(NECESSARILY_CLOSED, ph.constraints()));
+  affine_dim = cert.affine_dim;
+  num_constraints = cert.num_constraints;
+}
+
+template <typename PH>
+inline int
+H79_Certificate::compare(const PH& ph) const {
+  return this->compare(Polyhedron(NECESSARILY_CLOSED, ph.constraints()));
 }
 
 } // namespace Parma_Polyhedra_Library

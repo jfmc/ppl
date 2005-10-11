@@ -223,7 +223,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   return s;
 }
 
-/*! \relates Parma_Polyhedra_Library::Generator::Type */
+/*! \relates Parma_Polyhedra_Library::Generator */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Generator::Type& t) {
   const char* n = 0;

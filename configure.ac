@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.8pre5],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.8pre6],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
@@ -793,10 +793,8 @@ AC_CONFIG_FILES(Makefile
                 demos/ppl_lpsol/Makefile
                 demos/ppl_lpsol/examples/Makefile
                 doc/Makefile
-                doc/user-browse.doxyconf-latex
-                doc/devref-browse.doxyconf-latex
-                doc/user-print.doxyconf-latex
-                doc/devref-print.doxyconf-latex
+                doc/user.doxyconf-latex
+                doc/devref.doxyconf-latex
                 doc/user.doxyconf-html
                 doc/devref.doxyconf-html
                 interfaces/Makefile
@@ -822,6 +820,17 @@ then
 *** `-fexceptions' compiler option.
 *** To build such a version, you can configure GMP as follows:
 *** CPPFLAGS=-fexceptions ./configure --enable-cxx --prefix=/usr/local])
+fi
+
+if test x"$PERL" = xno
+then
+  AC_MSG_WARN([PERL UNAVAILABLE:
+***  CANNOT REBUILD SOME FILES IF SOURCES ARE CHANGED.
+*** Perl could not be found on your system.  This is OK, if you only plan
+*** to build the PPL without modifying the sources and without trying to
+*** build a distribution out of a CVS working copy.  If this is not the case,
+*** then you need to add Perl to your development environment:
+*** see http://www.perl.org/ for more information.])
 fi
 
 if test x"$coefficient_kind" = xnative

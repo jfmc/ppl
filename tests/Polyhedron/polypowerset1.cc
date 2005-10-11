@@ -86,6 +86,26 @@ test3() {
     exit(1);
 }
 
+void
+test4() {
+  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Constraint_System cs;
+
+  cs.insert(x >= 0);
+  cs.insert(x <= 2);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  cs.clear();
+  cs.insert(x >= 1);
+  cs.insert(x <= 3);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  c_ps.concatenate_assign(c_ps);
+
+  if (!c_ps.OK())
+    exit(1);
+}
+
 } // namespace
 
 int main() TRY {
@@ -94,6 +114,7 @@ int main() TRY {
   test1();
   test2();
   test3();
+  test4();
 
   return 0;
 }

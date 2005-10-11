@@ -117,7 +117,7 @@ libraries) in the
 HOWTO</A>.
 
 For examples on how to use the functions provided by the C interface,
-you are referred to the <CODE>interfaces/C/lpenum/</CODE> directory in
+you are referred to the directory <CODE>demos/ppl_lpsol/</CODE> in
 the source distribution.  It contains a toy <EM>Linear Programming</EM>
 solver written in C.  In order to use this solver you will need to install
 <A HREF="http://www.gnu.org/software/glpk/">GLPK</A> (the GNU Linear

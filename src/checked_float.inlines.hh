@@ -119,9 +119,7 @@ limit_precision(float v) {
   return x;
 }
 
-// FIXME: Comeau compiler says that the type qualifier "volatile"
-// on return type is meaningless.
-inline volatile double
+inline double
 limit_precision(double v) {
   volatile double x = v;
   return x;
@@ -132,9 +130,11 @@ limit_precision(long double v) {
 #if __GNUC__ >= 4
   return v;
 #else
-  /* Not really needed for floating point operations done with maximum
-     precision available, but this avoid a bug in gcc 3.4.3 causing excessive
-     optimization compiling -(-a * b) */
+  // Not really needed for floating point operations done with the
+  // maximum available precision, but this avoids a bug in GCC 3.4.3
+  // that causes excessive optimization compiling -(-a * b).
+  // See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=21032
+  // and http://gcc.gnu.org/bugzilla/show_bug.cgi?id=21067.
   volatile long double x = v;
   return x;
 #endif

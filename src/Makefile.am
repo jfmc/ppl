@@ -78,16 +78,6 @@ ppl_config_LDADD = \
 libppl.la \
 @extra_libraries@
 
-BUGS.cc:	$(top_builddir)/utils/text2cxxarray $(top_srcdir)/BUGS
-	$(top_builddir)/utils/text2cxxarray --name=BUGS_array \
-		$(top_srcdir)/BUGS >$@
-COPYING.cc:	$(top_builddir)/utils/text2cxxarray $(top_srcdir)/COPYING
-	$(top_builddir)/utils/text2cxxarray --name=COPYING_array \
-		$(top_srcdir)/COPYING >$@
-CREDITS.cc:	$(top_builddir)/utils/text2cxxarray $(top_srcdir)/CREDITS
-	$(top_builddir)/utils/text2cxxarray --name=CREDITS_array \
-		$(top_srcdir)/CREDITS >$@
-
 if USE_NATIVE_INTEGERS
 
 COEFFICIENT_TYPES_INCLUDE_FILES = \
@@ -401,9 +391,10 @@ libppl_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
 
-noinst_HEADERS = ppl.hh ppl_install.hh ppl_include_files.hh
-
-BUILT_SOURCES = ppl.hh ppl_install.hh ppl_include_files.hh
+noinst_HEADERS = \
+ppl.hh \
+ppl_include_files.hh \
+ppl_install.hh
 
 ppl.hh:	$(DOC_FILES) $(top_builddir)/src/version.hh Makefile
 	cat $(top_builddir)/src/version.hh >$@
@@ -416,14 +407,52 @@ ppl_include_files.hh: $(INCLUDE_FILES) Makefile
 	  printf "#include \"%s\"\n" $$file >>$@; \
 	done
 
+if HAVE_PERL
+
 ppl_install.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(NESTED_INCLUDE_FILES) Makefile $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
 		-I $(top_builddir) -I $(top_builddir)/src \
 		$(top_srcdir)/src/ppl_header.hh >$@
 
+BUGS.cc:	$(top_builddir)/utils/text2cxxarray $(top_srcdir)/BUGS
+	$(top_builddir)/utils/text2cxxarray --name=BUGS_array \
+		$(top_srcdir)/BUGS >$@
+COPYING.cc:	$(top_builddir)/utils/text2cxxarray $(top_srcdir)/COPYING
+	$(top_builddir)/utils/text2cxxarray --name=COPYING_array \
+		$(top_srcdir)/COPYING >$@
+CREDITS.cc:	$(top_builddir)/utils/text2cxxarray $(top_srcdir)/CREDITS
+	$(top_builddir)/utils/text2cxxarray --name=CREDITS_array \
+		$(top_srcdir)/CREDITS >$@
+
+else !HAVE_PERL
+
+ppl_install.hh:	ppl_install.hh.dist
+	cp -f $< $@
+
+BUGS.cc:	BUGS.cc.dist
+	cp -f $< $@
+COPYING.cc:	COPYING.cc.dist
+	cp -f $< $@
+CREDITS.cc:	CREDITS.cc.dist
+	cp -f $< $@
+
+endif !HAVE_PERL
+
+BUILT_SOURCES = \
+$(noinst_HEADERS) \
+BUGS.cc \
+COPYING.cc \
+CREDITS.cc
+
 # ppl.hh and ppl_install.hh are not distributed.
+# ppl_install.hh.dist, which is distributed, is a copy of ppl_install.hh;
+# likewise for BUGS.cc.dist, COPYING.cc.dist and CREDITS.cc.dist.
 dist-hook:
-	rm -f $(distdir)/ppl.hh $(distdir)/ppl_install.hh
+	mv -f $(distdir)/ppl_install.hh $(distdir)/ppl_install.hh.dist
+	mv -f $(distdir)/BUGS.cc $(distdir)/BUGS.cc.dist
+	mv -f $(distdir)/COPYING.cc $(distdir)/COPYING.cc.dist
+	mv -f $(distdir)/CREDITS.cc $(distdir)/CREDITS.cc.dist
+	rm -f $(distdir)/ppl.hh
 
 install-data-local: ppl_install.hh
 	$(mkinstalldirs) $(DESTDIR)$(includedir)
