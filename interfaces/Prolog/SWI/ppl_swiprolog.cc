@@ -440,21 +440,21 @@ PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_Polyhedron_generalized_affine_image_lhs_rhs, 4)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_generalized_affine_preimage_lhs_rhs, 4)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_time_elapse_assign, 2)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_BHRZ03_widening_assign_with_token, 3)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_BHRZ03_widening_assign_with_tokens, 4)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_BHRZ03_widening_assign, 2)
   PL_EXTENSION_ENTRY(
-           ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token, 4)
+           ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens, 5)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign, 3)
   PL_EXTENSION_ENTRY(
-           ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token, 4)
+           ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens, 5)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign, 3)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_H79_widening_assign_with_token, 3)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_H79_widening_assign_with_tokens, 4)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_H79_widening_assign, 2)
   PL_EXTENSION_ENTRY(
-           ppl_Polyhedron_limited_H79_extrapolation_assign_with_token, 4)
+           ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens, 5)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_limited_H79_extrapolation_assign, 3)
   PL_EXTENSION_ENTRY(
-           ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token, 4)
+           ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens, 5)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_bounded_H79_extrapolation_assign, 3)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_add_space_dimensions_and_project, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_add_space_dimensions_and_embed, 2)
