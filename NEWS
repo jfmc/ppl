@@ -85,6 +85,11 @@ o  Added swap methods to classes Linear_Expression, Constraint, Generator,
 
 o  Portability has been improved.
 
+o  In the Prolog interface, the names and arities of the "with_token"
+   widening and extrapolation predicates have been revised to
+   "with_tokens" with an extra argument and the functionality has been 
+   revised to match more closely the corresponding C++ interface operators.
+
 
 Bugfixes
 ========

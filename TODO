@@ -15,8 +15,6 @@ Enhancements for PPL 0.8
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
 - Reconsider the handling of temporary coefficients.
-- In the Prolog interface, reconsider the functionality and names of the
-  "with_token" predicates.
 - The documentation has been read through but a more careful check,
   particularly on the detailed descriptions, should be done.
 
