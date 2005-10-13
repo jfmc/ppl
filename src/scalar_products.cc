@@ -1,4 +1,4 @@
-/* Definition of various scalar product functions (non-inline functions).
+/* Scalar_Products class implementation (non-inline functions).
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -27,10 +27,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-/*! \relates Parma_Polyhedra_Library::Linear_Row */
 void
-PPL::scalar_product_assign(Coefficient& z,
-			   const Linear_Row& x, const Linear_Row& y) {
+PPL::Scalar_Products::assign(Coefficient& z,
+			     const Linear_Row& x, const Linear_Row& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
   assert(x.size() <= y.size());
@@ -40,11 +39,10 @@ PPL::scalar_product_assign(Coefficient& z,
     add_mul_assign(z, x[i], y[i]);
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Row */
 void
-PPL::reduced_scalar_product_assign(Coefficient& z,
-				   const Linear_Row& x,
-				   const Linear_Row& y) {
+PPL::Scalar_Products::reduced_assign(Coefficient& z,
+				     const Linear_Row& x,
+				     const Linear_Row& y) {
   // The reduced scalar product is only defined
   // if the topology of `x' is NNC and `y' has enough coefficients.
   assert(!x.is_necessarily_closed());
@@ -56,11 +54,10 @@ PPL::reduced_scalar_product_assign(Coefficient& z,
     add_mul_assign(z, x[i], y[i]);
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Row */
 void
-PPL::homogeneous_scalar_product_assign(Coefficient& z,
-				       const Linear_Row& x,
-				       const Linear_Row& y) {
+PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
+					 const Linear_Row& x,
+					 const Linear_Row& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
   assert(x.size() <= y.size());

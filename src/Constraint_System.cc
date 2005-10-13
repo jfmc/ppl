@@ -308,28 +308,24 @@ bool
 PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
   assert(g.space_dimension() <= space_dimension());
 
-  // Setting `sp_fp' to the appropriate scalar product operator.
+  // Setting `sps' to the appropriate scalar product sign operator.
   // This also avoids problems when having _legal_ topology mismatches
   // (which could also cause a mismatch in the number of columns).
-  int (*sps_fp)(const Linear_Row&, const Linear_Row&);
-  if (g.is_necessarily_closed())
-    sps_fp = PPL::scalar_product_sign;
-  else
-    sps_fp = PPL::reduced_scalar_product_sign;
-  const Constraint_System& cs = *this;
+  Topology_Adjusted_Scalar_Product_Sign sps(g);
 
+  const Constraint_System& cs = *this;
   if (cs.is_necessarily_closed()) {
     if (g.is_line()) {
       // Lines must saturate all constraints.
       for (dimension_type i = cs.num_rows(); i-- > 0; )
-	if (sps_fp(g, cs[i]) != 0)
+	if (sps(g, cs[i]) != 0)
 	  return false;
     }
     else
       // `g' is either a ray, a point or a closure point.
       for (dimension_type i = cs.num_rows(); i-- > 0; ) {
 	const Constraint& c = cs[i];
-	const int sp_sign = sps_fp(g, c);
+	const int sp_sign = sps(g, c);
 	if (c.is_inequality()) {
 	  // As `cs' is necessarily closed,
 	  // `c' is a non-strict inequality.
@@ -349,7 +345,7 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
     case Generator::LINE:
       // Lines must saturate all constraints.
       for (dimension_type i = cs.num_rows(); i-- > 0; )
-	if (sps_fp(g, cs[i]) != 0)
+	if (sps(g, cs[i]) != 0)
 	  return false;
       break;
 
@@ -358,7 +354,7 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
       // when dealing with a strict inequality.
       for (dimension_type i = cs.num_rows(); i-- > 0; ) {
 	const Constraint& c = cs[i];
-	const int sp_sign = sps_fp(g, c);
+	const int sp_sign = sps(g, c);
 	switch (c.type()) {
 	case Constraint::EQUALITY:
 	  if (sp_sign != 0)
@@ -381,7 +377,7 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
     case Generator::CLOSURE_POINT:
       for (dimension_type i = cs.num_rows(); i-- > 0; ) {
 	const Constraint& c = cs[i];
-	const int sp_sign = sps_fp(g, c);
+	const int sp_sign = sps(g, c);
 	if (c.is_inequality()) {
 	  // Constraint `c' is either a strict or a non-strict inequality.
 	  if (sp_sign < 0)
@@ -401,22 +397,22 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
 
 
 void
-PPL::Constraint_System::
-affine_preimage(dimension_type v,
-		const Linear_Expression& expr,
-		Coefficient_traits::const_reference denominator) {
+PPL::Constraint_System
+::affine_preimage(const dimension_type v,
+		  const Linear_Expression& expr,
+		  Coefficient_traits::const_reference denominator) {
+  Constraint_System& x = *this;
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
   // nor the epsilon dimension of NNC polyhedra).
-  assert(v > 0 && v <= space_dimension());
-  assert(expr.space_dimension() <= space_dimension());
+  assert(v > 0 && v <= x.space_dimension());
+  assert(expr.space_dimension() <= x.space_dimension());
   assert(denominator > 0);
 
-  const dimension_type n_columns = num_columns();
-  const dimension_type n_rows = num_rows();
+  const dimension_type n_columns = x.num_columns();
+  const dimension_type n_rows = x.num_rows();
   const dimension_type expr_size = expr.size();
   const bool not_invertible = (v >= expr_size || expr[v] == 0);
-  Constraint_System& x = *this;
 
   if (denominator != 1)
     for (dimension_type i = n_rows; i-- > 0; ) {
@@ -459,8 +455,8 @@ affine_preimage(dimension_type v,
 void
 PPL::Constraint_System::ascii_dump(std::ostream& s) const {
   const Constraint_System& x = *this;
-  dimension_type x_num_rows = x.num_rows();
-  dimension_type x_num_columns = x.num_columns();
+  const dimension_type x_num_rows = x.num_rows();
+  const dimension_type x_num_columns = x.num_columns();
   s << "topology " << (is_necessarily_closed()
 		       ? "NECESSARILY_CLOSED"
 		       : "NOT_NECESSARILY_CLOSED")
@@ -470,10 +466,11 @@ PPL::Constraint_System::ascii_dump(std::ostream& s) const {
     << std::endl
     << "index_first_pending " << x.first_pending_row()
     << std::endl;
-  for (dimension_type i = 0; i < x.num_rows(); ++i) {
-    for (dimension_type j = 0; j < x.num_columns(); ++j)
-      s << x[i][j] << ' ';
-    switch (x[i].type()) {
+  for (dimension_type i = 0; i < x_num_rows; ++i) {
+    const Constraint& c = x[i];
+    for (dimension_type j = 0; j < x_num_columns; ++j)
+      s << c[j] << ' ';
+    switch (c.type()) {
     case Constraint::EQUALITY:
       s << "=";
       break;
@@ -569,11 +566,9 @@ PPL::Constraint_System::OK() const {
 
   // Checking each constraint in the system.
   const Constraint_System& x = *this;
-  for (dimension_type i = num_rows(); i-- > 0; ) {
-    const Constraint& c = x[i];
-    if (!c.OK())
+  for (dimension_type i = num_rows(); i-- > 0; )
+    if (!x[i].OK())
       return false;
-  }
 
   // All checks passed.
   return true;

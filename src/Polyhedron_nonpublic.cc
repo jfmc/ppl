@@ -429,7 +429,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
       if (c.is_inequality()) {
 	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
-	  const int sp_sign = scalar_product_sign(c, g);
+	  const int sp_sign = Scalar_Products::sign(c, g);
 	  if (g.is_line()) {
 	    if (sp_sign != 0)
 	      return false;
@@ -443,21 +443,20 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
       else {
 	// `c' is an equality.
 	for (dimension_type j = gs.num_rows(); j-- > 0; )
-	  if (scalar_product_sign(c, gs[j]) != 0)
+	  if (Scalar_Products::sign(c, gs[j]) != 0)
 	    return false;
       }
     }
   else {
-    // Here we have a NON-necessarily closed polyhedron: using the
-    // reduced scalar product, which ignores the epsilon coefficient.
-    const dimension_type eps_index = x.space_dim + 1;
+    // Here we have an NNC polyhedron: using the reduced scalar product,
+    // which ignores the epsilon coefficient.
     for (dimension_type i = cs.num_rows(); i-- > 0; ) {
       const Constraint& c = cs[i];
       switch (c.type()) {
       case Constraint::NONSTRICT_INEQUALITY:
 	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
-	  const int sp_sign = reduced_scalar_product_sign(c, g);
+	  const int sp_sign = Scalar_Products::reduced_sign(c, g);
 	  if (g.is_line()) {
 	    if (sp_sign != 0)
 	      return false;
@@ -470,30 +469,34 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
 	break;
       case Constraint::EQUALITY:
 	for (dimension_type j = gs.num_rows(); j-- > 0; )
-	  if (reduced_scalar_product_sign(c, gs[j]) != 0)
+	  if (Scalar_Products::reduced_sign(c, gs[j]) != 0)
 	    return false;
 	break;
       case Constraint::STRICT_INEQUALITY:
 	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
-	  const int sp_sign = reduced_scalar_product_sign(c, g);
-	  if (g[eps_index] > 0) {
-	    // Generator `g' is a point.
+	  const int sp_sign = Scalar_Products::reduced_sign(c, g);
+	  switch (g.type()) {
+	  case Generator::POINT:
 	    // If a point violates or saturates a strict inequality
 	    // (when ignoring the epsilon coefficients) then it is
 	    // not included in the polyhedron.
 	    if (sp_sign <= 0)
 	      return false;
-	  }
-	  else if (g.is_line()) {
+	    break;
+	  case Generator::LINE:
 	    // Lines have to saturate all constraints.
 	    if (sp_sign != 0)
 	      return false;
-	  }
-	  else
+	    break;
+	  case Generator::RAY:
+	    // Intentionally fall through.
+	  case Generator::CLOSURE_POINT:
 	    // The generator is a ray or closure point: usual test.
 	    if (sp_sign < 0)
 	      return false;
+	    break;
+	  }
 	}
 	break;
       }
@@ -526,8 +529,8 @@ PPL::Polyhedron::bounds(const Linear_Expression& expr,
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
     // Only lines and rays in `*this' can cause `expr' to be unbounded.
-    if (g[0] == 0) {
-      const int sp_sign = homogeneous_scalar_product_sign(expr, g);
+    if (g.is_line_or_ray()) {
+      const int sp_sign = Scalar_Products::homogeneous_sign(expr, g);
       if (sp_sign != 0
 	  && (g.is_line()
 	      || (from_above && sp_sign > 0)
@@ -580,9 +583,9 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
   TEMP_INTEGER(sp);
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
-    homogeneous_scalar_product_assign(sp, expr, g);
+    Scalar_Products::homogeneous_assign(sp, expr, g);
     // Lines and rays in `*this' can cause `expr' to be unbounded.
-    if (g[0] == 0) {
+    if (g.is_line_or_ray()) {
       const int sp_sign = sgn(sp);
       if (sp_sign != 0
 	  && (g.is_line()
@@ -833,7 +836,7 @@ PPL::Polyhedron::update_sat_c() const {
   x.sat_c.resize(gsr, csr);
   for (dimension_type i = gsr; i-- > 0; )
     for (dimension_type j = csr; j-- > 0; ) {
-      const int sp_sign = scalar_product_sign(con_sys[j], gen_sys[i]);
+      const int sp_sign = Scalar_Products::sign(con_sys[j], gen_sys[i]);
       // The negativity of this scalar product would mean
       // that the generator `gen_sys[i]' violates the constraint
       // `con_sys[j]' and it is not possible because both generators
@@ -865,7 +868,7 @@ PPL::Polyhedron::update_sat_g() const {
   x.sat_g.resize(csr, gsr);
   for (dimension_type i = csr; i-- > 0; )
     for (dimension_type j = gsr; j-- > 0; ) {
-      const int sp_sign = scalar_product_sign(con_sys[i], gen_sys[j]);
+      const int sp_sign = Scalar_Products::sign(con_sys[i], gen_sys[j]);
       // The negativity of this scalar product would mean
       // that the generator `gen_sys[j]' violates the constraint
       // `con_sys[i]' and it is not possible because both generators

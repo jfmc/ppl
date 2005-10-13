@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Constraint_defs_hh 1
 
 #include "Constraint.types.hh"
+#include "scalar_products.types.hh"
 #include "Linear_Row.defs.hh"
 #include "Variable.defs.hh"
 #include "Linear_Expression.defs.hh"
@@ -109,12 +110,6 @@ operator>(const Linear_Expression& e, Coefficient_traits::const_reference n);
 /*! \relates Constraint */
 Constraint
 operator>(Coefficient_traits::const_reference n, const Linear_Expression& e);
-
-// This is commented in scalar_product.defs.hh.
-int scalar_product_sign(const Constraint& x, const Generator& y);
-
-// This is commented in scalar_product.defs.hh.
-int reduced_scalar_product_sign(const Constraint& x, const Generator& y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -346,23 +341,16 @@ public:
   void swap(Constraint& y);
 
 private:
+  friend class Parma_Polyhedra_Library::Scalar_Products;
+  friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;
   friend class Parma_Polyhedra_Library::Constraint_System;
   friend class Parma_Polyhedra_Library::Constraint_System::const_iterator;
   // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
-  // FIXME: the following friend declaration is only to grant access to
-  // Generator_System::satisfied_by_all_generators().
-  friend class Parma_Polyhedra_Library::Generator_System;
 
   friend
   Parma_Polyhedra_Library
   ::Linear_Expression::Linear_Expression(const Constraint& c);
-  friend int
-  Parma_Polyhedra_Library::scalar_product_sign(const Constraint& x,
-					       const Generator& y);
-  friend int
-  Parma_Polyhedra_Library::reduced_scalar_product_sign(const Constraint& x,
-						       const Generator& y);
 
   //! Default constructor: private and not implemented.
   Constraint();

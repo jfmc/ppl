@@ -583,7 +583,7 @@ PPL::Linear_System::gram_schmidt() {
     const Linear_Row& x_i = x[i];
     std::vector<Coefficient>& mu_i = mu[i];
     for (dimension_type j = i+1; j-- > 0; )
-      scalar_product_assign(mu_i[j], x_i, x[j]);
+      Scalar_Products::assign(mu_i[j], x_i, x[j]);
   }
 
   const dimension_type n_columns = num_columns();
@@ -642,7 +642,7 @@ PPL::Linear_System::gram_schmidt() {
   for (dimension_type i = rank; i-- > 0; ) {
     const Linear_Row& x_i = x[i];
     for (dimension_type j = i; j-- > 0; )
-      if (scalar_product_sign(x_i, x[j]) != 0) {
+      if (Scalar_Products::sign(x_i, x[j]) != 0) {
 	std::cout << "Not an orthogonal base" << std::endl;
 	std::cout << "i = " << i << ", j = " << j << std::endl;
 	std::cout << "After Gram-Schmidt on the base" << std::endl;
@@ -676,7 +676,7 @@ PPL::Linear_System::gram_schmidt() {
   Coefficient denominator = 1;
   for (dimension_type i = rank; i-- > 0; ) {
     const Linear_Row& x_i = x[i];
-    scalar_product_assign(d[i], x_i, x_i);
+    Scalar_Products::assign(d[i], x_i, x_i);
     denominator *= d[i];
   }
   for (dimension_type i = rank; i-- > 0; )
@@ -688,7 +688,7 @@ PPL::Linear_System::gram_schmidt() {
     Linear_Row& w = x[i];
     // Compute `factors' according to `w'.
     for (dimension_type j = rank; j-- > 0; ) {
-      scalar_product_assign(factors[j], w, x[j]);
+      Scalar_Products::assign(factors[j], w, x[j]);
       factors[j] *= d[j];
     }
     for (dimension_type k = n_columns; k-- > 0; )
@@ -710,7 +710,7 @@ PPL::Linear_System::gram_schmidt() {
     // Check that w is indeed orthogonal with respect to all the
     // vectors in the base.
     for (dimension_type h = rank; h-- > 0; )
-      if (scalar_product_sign(w, x[h]) != 0) {
+      if (Scalar_Products::sign(w, x[h]) != 0) {
 	std::cout << "Not orthogonal" << std::endl;
 	std::cout << "i = " << i << ", h = " << h << std::endl;
 	std::cout << "After Gram-Schmidt on the whole system" << std::endl;

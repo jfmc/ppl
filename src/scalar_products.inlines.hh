@@ -1,4 +1,4 @@
-/* Definition of various scalar product functions (inline functions).
+/* Scalar_Products class implementation (inline functions).
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -31,52 +31,102 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline int
-scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
+Scalar_Products::sign(const Linear_Row& x, const Linear_Row& y) {
   TEMP_INTEGER(z);
-  scalar_product_assign(z, x, y);
+  assign(z, x, y);
   return sgn(z);
 }
 
 inline int
-reduced_scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
+Scalar_Products::reduced_sign(const Linear_Row& x, const Linear_Row& y) {
   TEMP_INTEGER(z);
-  reduced_scalar_product_assign(z, x, y);
+  reduced_assign(z, x, y);
   return sgn(z);
 }
 
 inline int
-homogeneous_scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
+Scalar_Products::homogeneous_sign(const Linear_Row& x, const Linear_Row& y) {
   TEMP_INTEGER(z);
-  homogeneous_scalar_product_assign(z, x, y);
+  homogeneous_assign(z, x, y);
   return sgn(z);
 }
 
 inline int
-scalar_product_sign(const Constraint& x, const Generator& y) {
-  return scalar_product_sign(static_cast<const Linear_Row&>(x),
-			     static_cast<const Linear_Row&>(y));
+Scalar_Products::sign(const Constraint& c, const Generator& g) {
+  return sign(static_cast<const Linear_Row&>(c),
+	      static_cast<const Linear_Row&>(g));
 }
 
 inline int
-reduced_scalar_product_sign(const Constraint& x, const Generator& y) {
-  return reduced_scalar_product_sign(static_cast<const Linear_Row&>(x),
-				     static_cast<const Linear_Row&>(y));
+Scalar_Products::sign(const Generator& g, const Constraint& c) {
+  return sign(static_cast<const Linear_Row&>(g),
+	      static_cast<const Linear_Row&>(c));
+}
+
+inline int
+Scalar_Products::reduced_sign(const Constraint& c, const Generator& g) {
+  return reduced_sign(static_cast<const Linear_Row&>(c),
+		      static_cast<const Linear_Row&>(g));
+}
+
+inline int
+Scalar_Products::reduced_sign(const Generator& g, const Constraint& c) {
+  return reduced_sign(static_cast<const Linear_Row&>(g),
+		      static_cast<const Linear_Row&>(c));
 }
 
 inline void
-homogeneous_scalar_product_assign(Coefficient& z,
-				  const Linear_Expression& x,
-				  const Generator& y) {
-  homogeneous_scalar_product_assign(z,
-				    static_cast<const Linear_Row&>(x),
-				    static_cast<const Linear_Row&>(y));
+Scalar_Products::homogeneous_assign(Coefficient& z,
+				    const Linear_Expression& e,
+				    const Generator& g) {
+  homogeneous_assign(z,
+		     static_cast<const Linear_Row&>(e),
+		     static_cast<const Linear_Row&>(g));
 }
 
 inline int
-homogeneous_scalar_product_sign(const Linear_Expression& x,
-				const Generator& y) {
-  return homogeneous_scalar_product_sign(static_cast<const Linear_Row&>(x),
-					 static_cast<const Linear_Row&>(y));
+Scalar_Products::homogeneous_sign(const Linear_Expression& e,
+				  const Generator& g) {
+  return homogeneous_sign(static_cast<const Linear_Row&>(e),
+			  static_cast<const Linear_Row&>(g));
+}
+
+inline
+Topology_Adjusted_Scalar_Product_Sign
+::Topology_Adjusted_Scalar_Product_Sign(const Constraint& c)
+  : sps_fp(c.is_necessarily_closed()
+	   ? static_cast<SPS_type>(&Scalar_Products::sign)
+	   : static_cast<SPS_type>(&Scalar_Products::reduced_sign)) {
+}
+
+inline
+Topology_Adjusted_Scalar_Product_Sign
+::Topology_Adjusted_Scalar_Product_Sign(const Generator& g)
+  : sps_fp(g.is_necessarily_closed()
+	   ? static_cast<SPS_type>(&Scalar_Products::sign)
+	   : static_cast<SPS_type>(&Scalar_Products::reduced_sign)) {
+}
+
+inline int
+Topology_Adjusted_Scalar_Product_Sign::operator()(const Constraint& c,
+						  const Generator& g) const {
+  assert(c.space_dimension() <= g.space_dimension());
+  assert(sps_fp == (c.is_necessarily_closed()
+		    ? static_cast<SPS_type>(&Scalar_Products::sign)
+		    : static_cast<SPS_type>(&Scalar_Products::reduced_sign)));
+  return sps_fp(static_cast<const Linear_Row&>(c),
+		static_cast<const Linear_Row&>(g));
+}
+
+inline int
+Topology_Adjusted_Scalar_Product_Sign::operator()(const Generator& g,
+						  const Constraint& c) const {
+  assert(g.space_dimension() <= c.space_dimension());
+  assert(sps_fp == (g.is_necessarily_closed()
+		    ? static_cast<SPS_type>(&Scalar_Products::sign)
+		    : static_cast<SPS_type>(&Scalar_Products::reduced_sign)));
+  return sps_fp(static_cast<const Linear_Row&>(g),
+		static_cast<const Linear_Row&>(c));
 }
 
 } // namespace Parma_Polyhedra_Library

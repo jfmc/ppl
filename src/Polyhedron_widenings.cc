@@ -36,8 +36,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Polyhedron::select_CH78_constraints(const Polyhedron& y,
-					 Constraint_System& cs_selection) const {
+PPL::Polyhedron
+::select_CH78_constraints(const Polyhedron& y,
+			  Constraint_System& cs_selection) const {
   // Private method: the caller must ensure the following conditions.
   assert(topology() == y.topology()
 	 && topology() == cs_selection.topology()
@@ -62,9 +63,10 @@ PPL::Polyhedron::select_CH78_constraints(const Polyhedron& y,
 }
 
 void
-PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
-					Constraint_System& cs_selected,
-					Constraint_System& cs_not_selected) const {
+PPL::Polyhedron
+::select_H79_constraints(const Polyhedron& y,
+			 Constraint_System& cs_selected,
+			 Constraint_System& cs_not_selected) const {
   // Private method: the caller must ensure the following conditions
   // (beside the inclusion `y <= x').
   assert(topology() == y.topology()
@@ -125,7 +127,7 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
     // all the generators of the polyhedron `y'.
     buffer.clear();
     for (dimension_type j = y.gen_sys.num_rows(); j-- > 0; ) {
-      const int sp_sgn = scalar_product_sign(y.gen_sys[j], ci);
+      const int sp_sgn = Scalar_Products::sign(ci, y.gen_sys[j]);
       // We are assuming that `y <= x'.
       assert(sp_sgn >= 0);
       if (sp_sgn > 0)
@@ -276,7 +278,7 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
 						  unsigned* tp) {
   Polyhedron& x = *this;
 
-  dimension_type cs_num_rows = cs.num_rows();
+  const dimension_type cs_num_rows = cs.num_rows();
   // If `cs' is empty, we fall back to ordinary, non-limited widening.
   if (cs_num_rows == 0) {
     x.H79_widening_assign(y, tp);
@@ -358,7 +360,7 @@ void
 PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
 						  const Constraint_System& cs,
 						  unsigned* tp) {
-  dimension_type space_dim = space_dimension();
+  const dimension_type space_dim = space_dimension();
   Bounding_Box x_box(space_dim);
   Bounding_Box y_box(space_dim);
   shrink_bounding_box(x_box, ANY_COMPLEXITY);
@@ -371,10 +373,11 @@ PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
 }
 
 bool
-PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
-					      const BHRZ03_Certificate& y_cert,
-					      const Polyhedron& H79,
-					      const Constraint_System& x_minus_H79_cs) {
+PPL::Polyhedron
+::BHRZ03_combining_constraints(const Polyhedron& y,
+			       const BHRZ03_Certificate& y_cert,
+			       const Polyhedron& H79,
+			       const Constraint_System& x_minus_H79_cs) {
   Polyhedron& x = *this;
   // It is assumed that `y <= x <= H79'.
   assert(x.topology() == y.topology()
@@ -418,7 +421,7 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
       const Constraint_System& H79_cs = H79.con_sys;
       for (dimension_type j = H79_cs.num_rows(); j-- > 0; ) {
 	const Constraint& c = H79_cs[j];
-	if (c.is_inequality() && scalar_product_sign(c, g) == 0) {
+	if (c.is_inequality() && Scalar_Products::sign(c, g) == 0) {
 	  lies_on_the_boundary_of_H79 = true;
 	  break;
 	}
@@ -431,7 +434,7 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
       combining_cs.clear();
       for (dimension_type j = x_minus_H79_cs_num_rows; j-- > 0; ) {
 	const Constraint& c = x_minus_H79_cs[j];
-	if (scalar_product_sign(c, g) == 0)
+	if (Scalar_Products::sign(c, g) == 0)
 	  combining_cs.insert(c);
       }
       // Build a new constraint by combining all the chosen constraints.
@@ -448,9 +451,6 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
 	      strict_inequality = true;
 	    e += Linear_Expression(combining_cs[h]);
 	  }
-	  // Simple normalization is enough, since
-	  // `e' will not become an equality constraint.
-	  e.normalize();
 
 	  if (!e.all_homogeneous_terms_are_zero())
 	    if (strict_inequality)
@@ -605,7 +605,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 		  const int clockwise
 		    = sgn(tmp);
 		  const int first_or_third_quadrant
-		    = sgn(x_g[k])*sgn(x_g[h]);
+		    = sgn(x_g[k]) * sgn(x_g[h]);
 		  switch (clockwise * first_or_third_quadrant) {
 		  case -1:
 		    new_ray[k] = 0;
@@ -761,13 +761,12 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 }
 
 void
-PPL::Polyhedron::limited_BHRZ03_extrapolation_assign
-(const Polyhedron& y,
- const Constraint_System& cs,
- unsigned* tp) {
+PPL::Polyhedron
+::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
+				      const Constraint_System& cs,
+				      unsigned* tp) {
   Polyhedron& x = *this;
-
-  dimension_type cs_num_rows = cs.num_rows();
+  const dimension_type cs_num_rows = cs.num_rows();
   // If `cs' is empty, we fall back to ordinary, non-limited widening.
   if (cs_num_rows == 0) {
     x.BHRZ03_widening_assign(y, tp);
@@ -846,10 +845,11 @@ PPL::Polyhedron::limited_BHRZ03_extrapolation_assign
 }
 
 void
-PPL::Polyhedron::bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
-						     const Constraint_System& cs,
-						     unsigned* tp) {
-  dimension_type space_dim = space_dimension();
+PPL::Polyhedron
+::bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
+				      const Constraint_System& cs,
+				      unsigned* tp) {
+  const dimension_type space_dim = space_dimension();
   Bounding_Box x_box(space_dim);
   Bounding_Box y_box(space_dim);
   shrink_bounding_box(x_box, ANY_COMPLEXITY);

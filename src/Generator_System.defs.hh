@@ -421,6 +421,18 @@ private:
   //! Returns <CODE>true</CODE> if all the generators satisfy \p c.
   bool satisfied_by_all_generators(const Constraint& c) const;
 
+  //! Returns <CODE>true</CODE> if all the generators satisfy \p c.
+  /*!
+    It is assumed that <CODE>c.is_necessarily_closed()</CODE> holds.
+  */
+  bool satisfied_by_all_generators_C(const Constraint& c) const;
+
+  //! Returns <CODE>true</CODE> if all the generators satisfy \p c.
+  /*!
+    It is assumed that <CODE>c.is_necessarily_closed()</CODE> does not hold.
+  */
+  bool satisfied_by_all_generators_NNC(const Constraint& c) const;
+
   //! Assigns to a given variable an affine expression.
   /*!
     \param v

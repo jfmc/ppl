@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Linear_Expression_defs_hh 1
 
 #include "Linear_Expression.types.hh"
+#include "scalar_products.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 #include "Linear_Row.defs.hh"
@@ -119,17 +120,6 @@ operator-=(Linear_Expression& e, Coefficient_traits::const_reference n);
 /*! \relates Linear_Expression */
 Linear_Expression&
 operator*=(Linear_Expression& e, Coefficient_traits::const_reference n);
-
-// This is commented in scalar_product.defs.hh.
-void
-homogeneous_scalar_product_assign(Coefficient& z,
-				  const Linear_Expression& x,
-				  const Generator& y);
-
-// This is commented in scalar_product.defs.hh.
-int
-homogeneous_scalar_product_sign(const Linear_Expression& x,
-				const Generator& y);
 
 namespace IO_Operators {
 
@@ -279,6 +269,7 @@ public:
   void swap(Linear_Expression& y);
 
 private:
+  friend class Parma_Polyhedra_Library::Scalar_Products;
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;
   // FIXME: the following friend declaration should be avoided.
@@ -291,16 +282,6 @@ private:
   // FIXME: the following friend declaration is only to grant access to
   // Generator_System::affine_image().
   friend class Parma_Polyhedra_Library::Generator_System;
-
-  friend void
-  Parma_Polyhedra_Library
-  ::homogeneous_scalar_product_assign(Coefficient& z,
-				      const Linear_Expression& x,
-				      const Generator& y);
-  friend int
-  Parma_Polyhedra_Library
-  ::homogeneous_scalar_product_sign(const Linear_Expression& x,
-				    const Generator& y);
 
   //! Copy-constructor with a specified space dimension.
   Linear_Expression(const Linear_Expression& e, dimension_type sz);
