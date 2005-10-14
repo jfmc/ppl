@@ -787,7 +787,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       if (check_not_empty) {
 	// Want to know the satisfiability of the constraints.
 #ifndef NDEBUG
-	cerr << "Insoluble system of constraints!"
+	cerr << "Unsatisfiable system of constraints!"
 	     << endl;
 #endif
 	goto bomb;
