@@ -813,17 +813,17 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	goto bomb;
       }
       // The system `copy_of_con_sys' has the form that is obtained
-      // after the functions gauss() and back_substitute().
+      // after applying methods gauss() and back_substitute().
       // A system of constraints can be minimal even if it does not
       // have this form. So, to verify if the polyhedron is correct,
-      // we copy the system `con_sys' in a temporary one that then
-      // is modified using the functions gauss() and back_substitute().
+      // we copy the system `con_sys' in a temporary one and then
+      // modify it using method simplify() (which calls both gauss()
+      // and back_substitute()).
       // If the temporary system and `copy_of_con_sys' are different,
       // the polyhedron is not OK.
       copy_of_con_sys.strong_normalize();
       copy_of_con_sys.sort_rows();
-      cs_without_pending.sort_rows();
-      cs_without_pending.back_substitute(cs_without_pending.gauss());
+      cs_without_pending.simplify();
       cs_without_pending.strong_normalize();
       cs_without_pending.sort_rows();
       if (cs_without_pending != copy_of_con_sys) {

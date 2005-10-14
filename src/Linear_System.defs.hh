@@ -295,26 +295,32 @@ public:
   /*!
     This method works only on the equalities of the system:
     the system is required to be partially sorted, so that
-    all the equalities are grouped at its top.
+    all the equalities are grouped at its top; it is assumed that
+    the number of equalities is exactly \p n_lines_or_equalities.
     The method finds a minimal system for the equalities and
     returns its rank, i.e., the number of linearly independent equalities.
     The result is an upper triangular subsystem of equalities:
     for each equality, the pivot is chosen starting from
     the right-most columns.
   */
-  dimension_type gauss();
+  dimension_type gauss(dimension_type n_lines_or_equalities);
 
   //! \brief
   //! Back-substitutes the coefficients to reduce
   //! the complexity of the system.
   /*!
-    Takes an upper triangular system.
+    Takes an upper triangular system having \p n_lines_or_equalities rows.
     For each row, starting from the one having the minimum number of
     coefficients different from zero, computes the expression of an element
     as a function of the remaining ones and then substitutes this expression
     in all the other rows.
   */
-  void back_substitute(dimension_type rank);
+  void back_substitute(dimension_type n_lines_or_equalities);
+
+  //! \brief
+  //! Applies Gaussian's elimination and back-substitution so as to
+  //! simplify the linear system.
+  void simplify();
 
   //! Applies the Gram-Schmidt orthogonalization method to the system.
   /*!

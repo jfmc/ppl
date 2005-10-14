@@ -453,11 +453,9 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
       // If `complexity' allows it, use simplex to determine whether or not
       // the polyhedron is empty.
       if (complexity == SIMPLEX_COMPLEXITY) {
-	Coefficient n;
-	Coefficient d;
+	Linear_Expression obj = Linear_Expression::zero();
 	Generator g(point());
-	if (con_sys.primal_simplex(Linear_Expression(0), true, n, d, g)
-	    == UNFEASIBLE_PROBLEM) {
+	if (con_sys.primal_simplex(obj, g) == UNFEASIBLE_PROBLEM) {
 	  box.set_empty();
 	  return;
 	}
@@ -476,13 +474,16 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
   if (space_dim == 0)
     return;
 
-  // To record the lower and upper bound for each dimension.
+  // The following vectors will store the lower and upper bound
+  // for each dimension.
   // Lower bounds are initialized to open plus infinity.
   std::vector<LBoundary>
-    lower_bound(space_dim, LBoundary(ERational(PLUS_INFINITY), LBoundary::OPEN));
+    lower_bound(space_dim,
+		LBoundary(ERational(PLUS_INFINITY), LBoundary::OPEN));
   // Upper bounds are initialized to open minus infinity.
   std::vector<UBoundary>
-    upper_bound(space_dim, UBoundary(ERational(MINUS_INFINITY), UBoundary::OPEN));
+    upper_bound(space_dim,
+		UBoundary(ERational(MINUS_INFINITY), UBoundary::OPEN));
 
   if (!reduce_complexity && has_something_pending())
     process_pending();
@@ -496,18 +497,13 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     assert(constraints_are_up_to_date());
 
     // We must copy `con_sys' to a temporary matrix,
-    // because we must apply gauss() and back_substitute()
-    // to all the matrix and not only to the non-pending part.
+    // as we need to simplify all of the matrix
+    // (not just the non-pending part of it).
     Constraint_System cs(con_sys);
-    if (cs.num_pending_rows() > 0) {
+    if (cs.num_pending_rows() > 0)
       cs.unset_pending_rows();
-      cs.sort_rows();
-    }
-    else if (!cs.is_sorted())
-      cs.sort_rows();
-
     if (has_pending_constraints() || !constraints_are_minimized())
-      cs.back_substitute(cs.gauss());
+      cs.simplify();
 
     const Constraint_System::const_iterator cs_begin = cs.begin();
     const Constraint_System::const_iterator cs_end = cs.end();
@@ -515,8 +511,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     for (Constraint_System::const_iterator i = cs_begin; i != cs_end; ++i) {
       dimension_type varid = space_dim;
       const Constraint& c = *i;
-      // After `gauss()' and `back_substitute()' some constraints
-      // may have become inconsistent.
+      // After `simplify()' some constraints may have become inconsistent.
       if (c.is_inconsistent()) {
 	box.set_empty();
 	return;
@@ -599,8 +594,10 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	// both below and above.
 	for (dimension_type j = space_dim; j-- > 0; )
 	  if (g.coefficient(Variable(j)) != 0) {
-	    lower_bound[j] = LBoundary(ERational(MINUS_INFINITY), LBoundary::OPEN);
-	    upper_bound[j] = UBoundary(ERational(PLUS_INFINITY), UBoundary::OPEN);
+	    lower_bound[j] = LBoundary(ERational(MINUS_INFINITY),
+				       LBoundary::OPEN);
+	    upper_bound[j] = UBoundary(ERational(PLUS_INFINITY),
+				       UBoundary::OPEN);
 	  }
 	break;
       case Generator::RAY:
@@ -609,9 +606,11 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	for (dimension_type j = space_dim; j-- > 0; ) {
 	  int sign = sgn(g.coefficient(Variable(j)));
 	  if (sign < 0)
-	    lower_bound[j] = LBoundary(ERational(MINUS_INFINITY), LBoundary::OPEN);
+	    lower_bound[j] = LBoundary(ERational(MINUS_INFINITY),
+				       LBoundary::OPEN);
 	  else if (sign > 0)
-	    upper_bound[j] = UBoundary(ERational(PLUS_INFINITY), UBoundary::OPEN);
+	    upper_bound[j] = UBoundary(ERational(PLUS_INFINITY),
+				       UBoundary::OPEN);
 	}
 	break;
       case Generator::POINT:
