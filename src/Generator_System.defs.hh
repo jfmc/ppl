@@ -478,6 +478,14 @@ private:
   void remove_invalid_lines_and_rays();
 
   //! \brief
+  //! Applies Gaussian's elimination and back-substitution so as
+  //! to provide a partial simplification of the system of generators.
+  /*!
+    It is assumed that the system has no pending generators.
+  */
+  void simplify();
+
+  //! \brief
   //! Inserts in \p *this a copy of the generator \p g,
   //! increasing the number of space dimensions if needed.
   //! It is a pending generator.

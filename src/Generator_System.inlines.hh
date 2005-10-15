@@ -189,6 +189,12 @@ Generator_System::total_memory_in_bytes() const {
   return Linear_System::total_memory_in_bytes();
 }
 
+inline void
+Generator_System::simplify() {
+  Linear_System::simplify();
+  remove_invalid_lines_and_rays();
+}
+
 } // namespace Parma_Polyhedra_Library
 
 

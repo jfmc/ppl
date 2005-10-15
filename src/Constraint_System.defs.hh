@@ -406,6 +406,14 @@ private:
   dimension_type num_inequalities() const;
 
   //! \brief
+  //! Applies Gaussian's elimination and back-substitution so as
+  //! to provide a partial simplification of the system of constraints.
+  /*!
+    It is assumed that the system has no pending constraints.
+  */
+  void simplify();
+
+  //! \brief
   //! Inserts in \p *this a copy of the constraint \p c,
   //! increasing the number of space dimensions if needed.
   //! It is a pending constraint.
