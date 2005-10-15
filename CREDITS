@@ -5,137 +5,218 @@ Authors
 The Parma Polyhedra Library and its documentation is being designed,
 written, debugged and improved by the following people:
 
-  Roberto Bagnara [1]  <bagnara@cs.unipr.it>
-  Patricia M. Hill [2] <hill@comp.leeds.ac.uk>
-  Enea Zaffanella [3]  <zaffanella@cs.unipr.it>
+
+Current core development team:
+------------------------------
+
+  Roberto Bagnara       [1] (University of Parma)
+  Patricia M. Hill      [2] (University of Leeds)
+  Enea Zaffanella       [3] (University of Parma)
 
 
-An important contributor to the development of the PPL, up until
-December 2002, was
+Former members of the core development team:
+--------------------------------------------
 
-  Elisa Ricci          (former student of the University of Parma)
+  Elisa Ricci           (former student of the University of Parma) has
+                        been a major contributor to the development of
+                        the PPL, up until December 2002.
 
 
-Other contributors:
+Current contributors:
+---------------------
 
-  Giordano Fracasso    (University of Parma) wrote the initial version
-                       of the support for native and checked integer
-                       coefficients.
+  Abramo Bagnara        (Opera Unica) rewrote and generalized the
+                        support for checked coefficients.  He also
+                        wrote the support for extended numbers and is
+                        currently writing a new implementation of
+                        intervals.  He also helps on other design and
+                        implementation issues.
 
-  Abramo Bagnara       (Opera Unica) rewrote and generalized the support
-                       for checked coefficients.  He also wrote the
-                       support for extended numbers.
+  Andrea Cimino         (University of Parma) wrote the initial version
+                        of our primal simplex solver.  He is still
+                        working on its refinement and optimization.
 
-  Elena Mazzi          (University of Parma) co-wrote the initial version
-                       of our implementation of bounded differences and
-                       octagons.
+  Katy Dobson           [4] (University of Leeds) is working on the
+                        formalization and definition of algorithms
+                        for rational grids.
 
-  Barbara Quartieri    (University of Parma) co-wrote the initial version
-                       of our implementation of bounded differences and
-                       octagons.
+  Elena Mazzi           (University of Parma) has been working on our
+                        first implementation of bounded differences
+                        and octagons.  She also participated in the
+                        theoretical and practical work concerning
+                        widening operators for weakly relational
+                        domains.  She is still working on this.
 
-  Maximiliano Marchesi (University of Parma) helped to improve the
-                       documentation for bounded differences.
+  David Merchat         [5] (University of Parma) is helping us with
+                        the generation of the library's documentation
+                        using Doxygen.
 
-  Andrea Cimino        (University of Parma) wrote the initial version
-                       of our primal simplex solver.
+  Matthew Mundell       [6] (University of Leeds) is working on the
+                        implementation of rational grids.  He also
+                        helps on other implementation issues.
 
-  Matthew Mundell      (University of Leeds) 
+  Andrea Pescetti       (University of Parma) is helping with the
+                        library's documentation.  Andrea was also one
+                        of the four students with which the PPL
+                        project started.
 
-The following people took part in the first phase of the library's
-development:
+  Barbara Quartieri     (University of Parma) is working on the
+                        implementation of bounded differences
+                        and octagons.
 
-  Sara Bonini          (former student of the University of Parma)
-  Andrea Pescetti      (University of Parma)
-  Angela Stazzone      (former student of the University of Parma)
-  Tatiana Zolo         (former student of the University of Parma)
+  Alessandro Zaccagnini [7] (University of Parma) has helped with
+                        the efficient implementation of GCD and LCM
+                        for checked numbers.  He is now working on the
+                        definitions of interval arithmetic operations.
+                        Alessandro is always a very valuable source of
+                        mathematical advice.
+
+
+Past contributors:
+------------------
+
+  Irene Bacchi          (University of Parma) worked on a development
+                        branch where she implemented several variants of
+                        algorithms, checking whether or not the set-union
+                        of two polyhedra is the same as their poly-hull.
+
+  Danilo Bonardi        (University of Parma) worked on a development
+                        branch where he experimented with the use of
+                        metaprogramming techniques based on
+                        "expression templates".  The objective of this
+                        work was to check the effectiveness of these
+                        techniques for moving computations from
+                        run-time to compile-time.
+
+  Sara Bonini           (former student of the University of Parma) is
+                        one of the four students with which the PPL
+                        project started.
+
+  Giordano Fracasso     (University of Parma) wrote the initial version
+                        of the support for native and checked integer
+                        coefficients.
+
+  Maximiliano Marchesi  (University of Parma) helped to improve the
+                        documentation for bounded differences.
+
+  Angela Stazzone       (former student of the University of Parma)
+                        worked on the library's documentation.
+
+
+  Fabio Trabucchi       (University of Parma) worked on a development
+                        branch where he added serializers for all the
+                        objects of the PPL.  Support for serialization
+                        based on Fabio's work, will be available in a
+                        future release of the library.
+
+  Claudio Trento        (University of Pisa) worked on an experimental
+                        OCaml interface for the PPL.
+
+  Tatiana Zolo          (former student of the University of Parma) is
+                        one of the four students with which the PPL
+                        project started.
 
 
 Thanks!
 =======
 
-The following people have given help that has been fundamental to the
-project:
+The following people have given important help to the project:
 
-  + Herve' Le Verge (r.i.p.) wrote and published an implementation [4]
-    of the Chernikova's algorithm [5] that has set the stage for
-    subsequent implementation work, including our own.
+  Lucia Alessandrini    (University of Parma) provided 4 hour-long
+                        lectures on convex polyhedra for the Italian
+                        authors.  This was crucial for us to acquire
+                        and/or refresh the notions needed for
+                        developing the PPL library.
 
-  + Bertrand Jeannet [6] wrote the New Polka library [7] and made
-    it available.
+  Marco Comini          [8] (University of Udine) allowed us to use his
+                        Mac OS X machine to work on portability to
+                        that platform.
 
-  + Lucia Alessandrini <lucia.alessandrini@unipr.it> provided
-    4 hour-long lectures on convex polyhedra for the Italian authors.
-    This was crucial for us to acquire and/or refresh the notions
-    needed for developing the PPL library.
+  Bruno Haible          [9] (ILOG) made it possible (by writing the
+                        AC_LIB_LINKFLAGS macro and explaining how
+                        to use it) to allow the use of versions of the
+                        GMP library installed into nonstandard places.
 
-  + Costantino Medori [8] helped and continues to help us with
-    mathematical aspects of the development.
+  Bertrand Jeannet      [10] (IRISA) wrote the New Polka library [11]
+                        and made it available.
 
-  + Fred Mesnard [9], the main author of cTI [10], has given us access
-    to a version of cTI's data-flow analyzer.  The cTI system pioneered
-    the concept of termination inference, a new kind of program analysis.
-    When does a logic program terminate? cTI has been the _first_ system
-    to answer this question with a compact formula, called termination
-    condition.  cTI's analyzer performs a linear size relation analysis
-    using a domain of convex polyhedra.
-    The China data-flow analyzer [11] uses the Parma Polyhedra Library
-    to perform the same analysis.  We run the two systems against each
-    other, using them to analyze the same Prolog programs.  Since the
-    systems do not share a single line of code, this is giving us
-    excellent opportunities for our testing and debugging work.
+  Herve' Le Verge       (r.i.p.) wrote and published an implementation
+                        [12] of the Chernikova's algorithm [13] that
+                        has set the stage for subsequent
+                        implementation work, including our own.
 
-  + Alessandro Zaccagnini [12] is always a very valuable source of
-    mathematical advice.
+  Francesco Logozzo     [14] (Ecole Polytechnique) helped us straighten
+                        out some portability issues on Cygwin.
 
-  + Bruno Haible [13] made it possible (by writing the AC_LIB_LINKFLAGS
-    macro and explaining how to use it) to allow the use of versions of
-    the GMP library installed into nonstandard places.
+  Costantino Medori     [15] (University of Parma) helped us on the
+                        mathematical aspects of the development.
 
-This work has been partly supported by the following projects:
+  Fred Mesnard          [16] (University of La Reunion), the main author
+                        of cTI [17], has worked with us at one of the
+                        first applications of the PPL: the "cTI"
+                        data-flow analyzer, which performs a linear
+                        size relation analysis using a domain of
+                        convex polyhedra.  The China data-flow
+                        analyzer [18] uses the Parma Polyhedra Library
+                        to perform the same analysis.  We have been
+                        running China against an old version of cTI
+                        that did not use the PPL, using them to
+                        analyze the same Prolog programs.  Since that
+                        systems did not share a single line of code,
+                        this gave us excellent opportunities for our
+                        initial testing and debugging work.
+
+
+This work has been partly supported by the following projects and
+organizations:
 
   1. University of Parma's FIL scientific research project (ex 60%)
      ``Pure and Applied Mathematics'';
 
   2. MURST project ``Automatic Program Certification by Abstract
-     Interpretation'' [14];
+     Interpretation'' [19];
 
   3. MURST project ``Abstract Interpretation, Type Systems and
-     Control-Flow Analysis'' [15].
+     Control-Flow Analysis''.
 
   4. MURST project ``Automatic Aggregate- and Number-Reasoning for
      Computing: from Decision Algorithms to Constraint Programming
-     with Multisets, Sets, and Maps'' [15].
+     with Multisets, Sets, and Maps'' [20].
 
   5. MURST project ``Constraint Based Verification of Reactive
-     Systems'' [16].
+     Systems'' [21].
 
   6. MURST project ``AIDA - Abstract Interpretation: Design and
-     Applications'' [17].
+     Applications'' [22].
 
   7. Royal Society Joint project 2004/R1-EU (UK-Italy)
      ``Automatic Detection of Unstable Numerical Computations''.
 
   8. EPSRC (UK) project EP/C520726/1
-    ``Numerical Domains for Software Analysis'' [18].
+     ``Numerical Domains for Software Analysis'' [23].
 
 --------
 
  [1] http://www.cs.unipr.it/~bagnara/
  [2] http://www.comp.leeds.ac.uk/hill/
  [3] http://www.cs.unipr.it/~zaffanella/
- [4] http://www.cs.unipr.it/ppl/Documentation/chernikova.c
- [5] http://www.cs.unipr.it/ppl/Documentation/bibliography#LeVerge92
- [6] http://www.irisa.fr/prive/Bertrand.Jeannet/
- [7] http://www.irisa.fr/prive/Bertrand.Jeannet/newpolka.html
- [8] http://www.math.unipr.it/~medori/
- [9] http://www.univ-reunion.fr/~fred/
-[10] http://www.cs.unipr.it/cTI/
-[11] http://www.cs.unipr.it/China/
-[12] http://www.math.unipr.it/~zaccagni/
-[13] http://www.haible.de/bruno/
-[14] http://theory.sci.univr.it/p40/
-[15] http://www.cs.unipr.it/Projects/COFIN01
-[16] http://www.disi.unige.it/person/DelzannoG/cover/
-[17] http://www.cs.unipr.it/Projects/AIDA/
-[18] http://www.comp.leeds.ac.uk/hill/linda/
+ [4] http://www.comp.leeds.ac.uk/katyd/
+ [5] http://www.cs.unipr.it/~merchat/
+ [6] http://www.mundell.ukfsn.org/
+ [7] http://www.math.unipr.it/~zaccagni/
+ [8] http://www.dimi.uniud.it/~comini/
+ [9] http://www.haible.de/bruno/
+ [10] http://www.irisa.fr/prive/Bertrand.Jeannet/
+[11] http://www.irisa.fr/prive/Bertrand.Jeannet/newpolka.html
+[12] http://www.cs.unipr.it/ppl/Documentation/chernikova.c
+[13] http://www.cs.unipr.it/ppl/Documentation/bibliography#LeVerge92
+[14] http://www.enseignement.polytechnique.fr/profs/informatique/Francesco.Logozzo/
+[15] http://www.math.unipr.it/~medori/
+[16] http://www.univ-reunion.fr/~fred/
+[17] http://www.cs.unipr.it/cTI/
+[18] http://www.cs.unipr.it/China/
+[19] http://theory.sci.univr.it/p40/
+[20] http://www.cs.unipr.it/Projects/COFIN01
+[21] http://www.disi.unige.it/person/DelzannoG/cover/
+[22] http://www.cs.unipr.it/Projects/AIDA/
+[23] http://www.comp.leeds.ac.uk/hill/linda/
