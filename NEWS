@@ -20,20 +20,27 @@ o  Added Polyhedron methods difference_assign() and join_assign(),
 o  The helper function widen_fun_ref() building a limited widening
    function is now templatic even on the second argument (i.e., the
    limiting constraint system). The templatic widening method
+
      Polyhedra_Powerset<PH>::BHZ03_widening_assign()
+
    no longer has a default value for the certificate parameter.
 
 o  The signatures of Polyhedron methods maximize() and minimize()
    have been greatly simplified.
 
 o  The function template
+
      template <typename PH>
      bool check_containment(const PH&, const Polyhedra_Powerset<PH>&)
+
    now works whenever there exists a lossless conversion mapping an
    object of tyoe PH into an NNC_Polyhedron (e.g., when PH = BD_Shape).
    The same holds for methods     
+
      bool Polyhedra_Powerset<PH>::geometrically_covers()
+
    and
+
      bool Polyhedra_Powerset<PH>::geometrically_equals().
 
 o  Method Polyhedra_Powerset<PH>::add_disjunct() now throws an
@@ -45,37 +52,51 @@ o  The two generalized_affine_image() methods of class Polyhedron
    of affine relations.
 
 o  Added to class Polyhedron the method
+
      void bounded_affine_image(Variable v,
                                const Linear_Expression& lb,
                                const Linear_Expression& ub,
 	                       Coefficient_traits::const_reference d
                                  = Coefficient_one());
+
    computing the image of the polyhedron according to the
    transfer relation lb/d <= v' <= ub/d.
    Also added the corresponding method for computing preimages.
 
 o  The enumeration
+
      Polyhedron::Degenerate_Kind
+
    has been placed outside of class Polyhedron and renamed as
+
      Degenerate_Element.
 
 o  New output operators in namespace IO_Operators:
+
      std::ostream& operator<<(std::ostream&, const Constraint::Type&)
+
    and
+
      std::ostream& operator<<(std::ostream&, const Generator::Type&).
 
 o  One of the possible values for the configuration option
    `--enable-coefficients' has been renamed from `gmp' to `mpz'.
 
 o  Added to class Constraint the methods
+
      bool is_tautological() const;
+
    and
+
      bool is_inconsistent() const;
+
    returning true when the constraint is always or never satisfied,
    respectively.
 
 o  Added to classes Constraint (resp., Generator) the method
+
      bool is_equivalent_to(const Constraint& y) const;
+
    (resp., bool is_equivalent_to(const Generator& y) const;)
    checking for semantic equivalence of corresponding class instances.
    Also made available the (semantic) comparison operators == and !=.
@@ -97,11 +118,15 @@ Bugfixes
 o  Corrected a memory leak bug in the demo ppl_lpsol.
 
 o  Corrected a bug in method
+
      NNC_Polyhedron::minimized_constraints()
+
    whereby an internal assertion might have been violated.
 
 o  Fixed a bug whereby calling the methods
+
      Polyhedron::generalized_affine_image()
+
    on an empty polyhedron could have resulted in an exception thrown.
 
 o  Fixed a bug whereby the occurrence of an `out of memory' error during
@@ -109,15 +134,21 @@ o  Fixed a bug whereby the occurrence of an `out of memory' error during
    in a memory leak.
 
 o  Fixed a bug affecting the specialized constructors
+
      Polyhedra_Powerset<NNC_Polyhedron>::
      Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y);
+
    and
+
      Polyhedra_Powerset<C_Polyhedron>::
      Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y);
+
    whereby the newly built Polyhedra_Powerset object could have been
    flagged as non-redundant even though it was containing redundant
    disjuncts. Fixed a similar bug in generic constructor
+
      Polyhedra_Powerset(const Constraint_System& cs);
+
    that manifests when `cs' is denoting an empty polyhedron.
 
 --------------------------------------------------------------------------
