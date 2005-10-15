@@ -852,7 +852,7 @@ nnc_boundingbox1_SOURCES = boundingbox1.cc
 nnc_boundingbox1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_boundingbox3_SOURCES = boundingbox3.cc
 nnc_boundingbox3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_boundingbox5_SOURCES = boundingbox3.cc
+nnc_boundingbox5_SOURCES = boundingbox5.cc
 nnc_boundingbox5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bounds1_SOURCES = bounds1.cc
