@@ -218,7 +218,7 @@ PPL::Generator_System::add_corresponding_points() {
   const dimension_type eps_index = gs.num_columns() - 1;
   for (dimension_type i = 0; i < n_rows; i++) {
     const Generator& g = gs[i];
-    if (g[0] > 0 && g[eps_index] == 0) {
+    if (!g.is_line_or_ray() && g[eps_index] == 0) {
       // `g' is a closure point: adding the point.
       // Note: normalization is preserved.
       Generator p = g;
@@ -247,7 +247,7 @@ PPL::Generator_System::has_points() const {
   // Avoiding the repeated tests on topology.
   if (is_necessarily_closed())
     for (dimension_type i = num_rows(); i-- > 0; ) {
-      if (gs[i][0] != 0)
+      if (!gs[i].is_line_or_ray())
 	return true;
     }
   else {
@@ -298,7 +298,7 @@ PPL::Generator_System::insert(const Generator& g) {
       Generator_System& gs = *this;
       for (dimension_type i = num_rows(); i-- > 0; ) {
 	Generator& gen = gs[i];
-	if (gen[0] != 0)
+	if (!gen.is_line_or_ray())
 	  gen[eps_index] = gen[0];
       }
       set_not_necessarily_closed();
@@ -315,7 +315,7 @@ PPL::Generator_System::insert(const Generator& g) {
       // If it was a point, set the epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).
       // Note: normalization is preserved.
-      if (tmp_g[0] != 0)
+      if (!tmp_g.is_line_or_ray())
 	tmp_g[new_size - 1] = tmp_g[0];
       tmp_g.set_not_necessarily_closed();
       // Inserting the new generator.
@@ -342,7 +342,7 @@ PPL::Generator_System::insert_pending(const Generator& g) {
       Generator_System& gs = *this;
       for (dimension_type i = num_rows(); i-- > 0; ) {
 	Generator& gen = gs[i];
-	if (gen[0] != 0)
+	if (!gen.is_line_or_ray())
 	  gen[eps_index] = gen[0];
       }
       set_not_necessarily_closed();
@@ -359,7 +359,7 @@ PPL::Generator_System::insert_pending(const Generator& g) {
       // If it was a point, set the epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).
       // Note: normalization is preserved.
-      if (tmp_g[0] != 0)
+      if (!tmp_g.is_line_or_ray())
 	tmp_g[new_size - 1] = tmp_g[0];
       tmp_g.set_not_necessarily_closed();
       // Inserting the new generator.
@@ -401,15 +401,13 @@ PPL::Generator_System::num_rays() const {
   // rays have the inhomogeneous term equal to zero.
   if (is_sorted()) {
     for (dimension_type i = num_rows(); i != 0 && gs[--i].is_ray_or_point(); )
-      if (gs[i][0] == 0)
+      if (gs[i].is_line_or_ray())
 	++n;
   }
   else
-    for (dimension_type i = num_rows(); i-- > 0 ; ) {
-      const Generator& g = gs[i];
-      if (g.is_ray_or_point() && g[0] == 0)
+    for (dimension_type i = num_rows(); i-- > 0 ; )
+      if (gs[i].is_ray())
 	++n;
-    }
   return n;
 }
 
@@ -948,7 +946,7 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
   if (num_pending_rows() == 0) {
     for (dimension_type i = n_rows; i-- > 0; ) {
       Generator& g = gs[i];
-      if (g[0] == 0 && g.all_homogeneous_terms_are_zero()) {
+      if (g.is_line_or_ray() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/ray has been found.
 	--n_rows;
 	std::swap(g, gs[n_rows]);
@@ -969,7 +967,7 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
     dimension_type first_pending = first_pending_row();
     for (dimension_type i = first_pending; i-- > 0; ) {
       Generator& g = gs[i];
-      if (g[0] == 0 && g.all_homogeneous_terms_are_zero()) {
+      if (g.is_line_or_ray() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/ray has been found.
 	--first_pending;
 	std::swap(g, gs[first_pending]);
@@ -984,7 +982,7 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
     n_rows -= num_invalid_rows;
     for (dimension_type i = n_rows; i-- > first_pending; ) {
       Generator& g = gs[i];
-      if (g[0] == 0 && g.all_homogeneous_terms_are_zero()) {
+      if (g.is_line_or_ray() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/ray has been found.
 	--n_rows;
 	std::swap(g, gs[n_rows]);

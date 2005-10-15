@@ -75,27 +75,28 @@ Generator::is_ray_or_point() const {
 }
 
 inline bool
-Generator::is_ray() const {
-  return is_ray_or_point() && ((*this)[0] == 0);
+Generator::is_line_or_ray() const {
+  return (*this)[0] == 0;
 }
 
 inline bool
-Generator::is_line_or_ray() const {
-  return (*this)[0] == 0;
+Generator::is_ray() const {
+  return is_ray_or_point() && is_line_or_ray();
 }
 
 inline Generator::Type
 Generator::type() const {
   if (is_line())
     return LINE;
-  const Generator& g = *this;
-  if (g[0] == 0)
+  if (is_line_or_ray())
     return RAY;
   if (is_necessarily_closed())
     return POINT;
-  else
+  else {
     // Checking the value of the epsilon coefficient.
+    const Generator& g = *this;
     return (g[size() - 1] == 0) ? CLOSURE_POINT : POINT;
+  }
 }
 
 inline bool
