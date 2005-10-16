@@ -20,8 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_scalar_products_inlines_hh
-#define PPL_scalar_products_inlines_hh 1
+#ifndef PPL_Scalar_Products_inlines_hh
+#define PPL_Scalar_Products_inlines_hh 1
 
 #include "Linear_Row.defs.hh"
 #include "Linear_Expression.defs.hh"
@@ -131,4 +131,4 @@ Topology_Adjusted_Scalar_Product_Sign::operator()(const Generator& g,
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_scalar_products_inlines_hh)
+#endif // !defined(PPL_Scalar_Products_inlines_hh)

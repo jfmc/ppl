@@ -9,8 +9,8 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef PPL_scalar_products_types_hh
-#define PPL_scalar_products_types_hh 1
+#ifndef PPL_Scalar_Products_types_hh
+#define PPL_Scalar_Products_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
@@ -19,4 +19,4 @@ class Topology_Adjusted_Scalar_Product_Sign;
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_scalar_products_types_hh)
+#endif // !defined(PPL_Scalar_Products_types_hh)

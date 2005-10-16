@@ -20,10 +20,10 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_scalar_products_defs_hh
-#define PPL_scalar_products_defs_hh 1
+#ifndef PPL_Scalar_Products_defs_hh
+#define PPL_Scalar_Products_defs_hh 1
 
-#include "scalar_products.types.hh"
+#include "Scalar_Products.types.hh"
 #include "Linear_Row.types.hh"
 #include "Coefficient.types.hh"
 #include "Linear_Expression.types.hh"
@@ -134,6 +134,6 @@ private:
   SPS_type sps_fp;
 };
 
-#include "scalar_products.inlines.hh"
+#include "Scalar_Products.inlines.hh"
 
-#endif // !defined(PPL_scalar_products_defs_hh)
+#endif // !defined(PPL_Scalar_Products_defs_hh)

@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Linear_Expression_defs_hh 1
 
 #include "Linear_Expression.types.hh"
-#include "scalar_products.types.hh"
+#include "Scalar_Products.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 #include "Linear_Row.defs.hh"

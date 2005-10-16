@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Generator_defs_hh 1
 
 #include "Generator.types.hh"
-#include "scalar_products.types.hh"
+#include "Scalar_Products.types.hh"
 #include "Row.defs.hh"
 #include "Variable.defs.hh"
 #include "Constraint_System.types.hh"

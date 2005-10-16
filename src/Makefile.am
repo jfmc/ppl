@@ -203,8 +203,8 @@ Constraint_System.inlines.hh \
 Generator.defs.hh \
 Generator.inlines.hh \
 Generator_System.inlines.hh \
-scalar_products.defs.hh \
-scalar_products.inlines.hh \
+Scalar_Products.defs.hh \
+Scalar_Products.inlines.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Con_Relation.inlines.hh \
 Poly_Gen_Relation.defs.hh \
@@ -263,7 +263,7 @@ Interval.cc \
 Linear_Expression.cc \
 Linear_System.cc \
 Matrix.cc \
-scalar_products.cc \
+Scalar_Products.cc \
 Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
 BHRZ03_Certificate.cc \

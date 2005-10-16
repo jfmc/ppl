@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
 #include "Generator.defs.hh"
-#include "scalar_products.defs.hh"
+#include "Scalar_Products.defs.hh"
 #include <cassert>
 #include <string>
 #include <vector>
