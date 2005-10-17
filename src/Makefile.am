@@ -133,6 +133,7 @@ Saturation_Row.types.hh \
 Saturation_Matrix.types.hh \
 Constraint_System.types.hh \
 Generator_System.types.hh \
+Scalar_Products.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
