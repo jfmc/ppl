@@ -1,4 +1,4 @@
-# Doxyfile 1.4.4-20050927
+# Doxyfile 1.4.5
 
 # This file describes the settings to be used by the documentation system
 # doxygen (www.doxygen.org) for a project
@@ -536,6 +536,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Generator_System.types.hh \
                          @srcdir@/../src/Generator_System.inlines.hh \
                          @srcdir@/../src/Generator_System.cc \
+                         @srcdir@/../src/Scalar_Products.types.hh \
+                         @srcdir@/../src/Scalar_Products.defs.hh \
+                         @srcdir@/../src/Scalar_Products.inlines.hh \
+                         @srcdir@/../src/Scalar_Products.cc \
                          @srcdir@/../src/Ph_Status.idefs.hh \
                          @srcdir@/../src/Ph_Status.inlines.hh \
                          @srcdir@/../src/Ph_Status.cc \
