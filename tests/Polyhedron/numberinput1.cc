@@ -201,6 +201,7 @@ test_symbols() {
 inline void
 test_integers() {
 
+  test("  -  2", "nan", "  2", V_CVT_STR_UNK);
   test("15", "15", "", V_EQ);
   test("34976098", "34976098", "", V_EQ);
   test("34976098349760983497609834976098",
