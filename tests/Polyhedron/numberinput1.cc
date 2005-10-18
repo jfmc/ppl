@@ -76,8 +76,15 @@ test(string number, string expected, string expected_residual,
   // Convert `number' to checked number q1.
   Checked_Number<mpq_class, Test_Extended_Number_Policy> q1;
   Result result = input(q1, f, ROUND_UP);
-  string residual;
-  f >> residual;
+  stringstream::char_type *residual = (stringstream::char_type*) calloc(f.rdbuf()->in_avail(),
+									sizeof(stringstream::char_type));
+  if (residual == NULL) {
+#if NOISY
+    cout << "Failed to allocate `residual'." << endl;
+#endif
+    exit(1);
+  }
+  f.readsome(residual, f.rdbuf()->in_avail());
 
   // Read q2 from string output of q1.
   stringstream ss1;
@@ -85,9 +92,17 @@ test(string number, string expected, string expected_residual,
   Checked_Number<mpq_class, Test_Extended_Number_Policy> q2;
   ss1 >> q2;
   // Check for a residual.
-  string resid;
-  ss1 >> resid;
-  if (resid.compare("")) {
+  stringstream::char_type *resid = (stringstream::char_type*) calloc(ss1.rdbuf()->in_avail(),
+								     sizeof(stringstream::char_type));
+  if (resid == NULL) {
+#if NOISY
+    cout << "Failed to allocate `resid'." << endl;
+#endif
+    free(residual);
+    exit(1);
+  }
+  ss1.readsome(resid, ss1.rdbuf()->in_avail());
+  if (string("").compare(resid)) {
 #if NOISY
     cout << "Residual left after reading q1 output into q2 (\""
 	 << resid << "\")." << endl
@@ -101,6 +116,8 @@ test(string number, string expected, string expected_residual,
 	 << endl;
 #endif
     ret = 1;
+    free(resid);
+    free(residual);
     return;
   }
 
@@ -137,8 +154,11 @@ test(string number, string expected, string expected_residual,
   }
 
   // Compare result of initial conversion and expected result.
-  if (result == expected_result)
+  if (result == expected_result) {
+    free(resid);
+    free(residual);
     return;
+  }
 
 #if NOISY
   cout << "Result from conversion: " << result
@@ -190,10 +210,11 @@ test_integers() {
   test("-77", "-77", "", V_EQ);
   test("-7777777777777777777777777",
        "-7777777777777777777777777", "", V_EQ);
-  test("-77 ", "-77", "", V_EQ);
-  test("-77   ", "-77", "", V_EQ);
+  test("-77 ", "-77", " ", V_EQ);
+  test("-77   ", "-77", "   ", V_EQ);
   test("-77ab", "-77", "ab", V_EQ);
   test("-77,33", "-77", ",33", V_EQ);
+  test(" -  2", "nan", "  2", V_CVT_STR_UNK);
 
   // Fraction.
   test("71.3", "713/10", "", V_EQ);
@@ -201,9 +222,9 @@ test_integers() {
   test("12345678910111213141516.12345678910111213141516",
        "308641972752780328537903086419727527803285379/25000000000000000000000",
        "", V_EQ);
-  test("0.123456 101", "1929/15625", "101", V_EQ);
-  test("0.123456   101", "1929/15625", "101", V_EQ);
-  test("0.123456     ", "1929/15625", "", V_EQ);
+  test("0.123456 101", "1929/15625", " 101", V_EQ);
+  test("0.123456   101", "1929/15625", "   101", V_EQ);
+  test("0.123456     ", "1929/15625", "     ", V_EQ);
   test(".333", "nan", ".333", V_CVT_STR_UNK);
 
   // Exponent.
@@ -239,7 +260,7 @@ test_integers() {
   test("5.3e3", "5300", "", V_EQ);
   test("2.2e-1", "11/50", "", V_EQ);
   test("7.e", "nan", "e", V_CVT_STR_UNK);
-  test("7.0 e3", "7", "e3", V_EQ);
+  test("7.0 e3", "7", " e3", V_EQ);
 }
 
 inline void
@@ -255,7 +276,7 @@ test_hexadecimals() {
   test("-0xfa", "-250", "", V_EQ);
   test("-0x000000000000000000000000fa", "-250", "", V_EQ);
   test("-0xfaz", "-250", "z", V_EQ);
-  test("-0xfa .", "-250", ".", V_EQ);
+  test("-0xfa .", "-250", " .", V_EQ);
   test("0xfa0xfa", "4000", "xfa", V_EQ);
 
   // Fraction.
@@ -280,7 +301,7 @@ test_hexadecimals() {
   test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-20b3029",
        "256", "", V_EQ);
 #endif
-  test("0x0.1*^3   -0", "256", "-0", V_EQ);
+  test("0x0.1*^3   -0", "256", "   -0", V_EQ);
 }
 
 inline void
@@ -300,14 +321,14 @@ test_bases() {
   test("37^^2", "nan", "^2", V_CVT_STR_UNK);
   test("37^^1.1", "nan", "^1.1", V_CVT_STR_UNK);
   test("2^^113", "3", "3", V_EQ);
-  test("2^^11 3", "3", "3", V_EQ);
+  test("2^^11 3", "3", " 3", V_EQ);
   test("3^^e2", "0", "", V_EQ); // FIX "nan", "e2", V_CVT_STR_UNK
 
   // Fraction.
   test("2^^11.1", "7/2", "", V_EQ);
   test("2^^11.1a", "7/2", "a", V_EQ);
   test("2^^11.1.", "7/2", ".", V_EQ);
-  test("2^^11.1   ", "7/2", "", V_EQ);
+  test("2^^11.1   ", "7/2", "   ", V_EQ);
 
   // Exponent.
   test("10^^2e3", "2000", "", V_EQ);
@@ -376,7 +397,7 @@ main() TRY {
 #if NOISY
     cout << "Failed to set stack limit." << endl;
 #endif
-    exit(0);
+    exit(1);
   }
 #endif
 
