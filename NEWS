@@ -13,6 +13,10 @@ New and Changed Features
 o  New method Constraint_System::primal_simplex() provides a textbook
    implementation of the primal simplex algorithm.
 
+o  Method
+     bool Constraint_System::has_strict_inequalities() const;
+   is now publicly accessible.
+
 o  Added Polyhedron methods difference_assign() and join_assign(),
    behaving as poly_difference_assign() and poly_hull_assign(),
    so as to have more uniform interfaces.
