@@ -710,6 +710,14 @@ ppl_Constraint_System_space_dimension
 PPL_PROTO((ppl_const_Constraint_System_t cs, ppl_dimension_type* m));
 
 /*! \brief
+  Returns a positive integer if \p cs contains any (non-trivial) strict
+  inequality; returns 0 otherwise.
+*/
+int
+ppl_Constraint_System_has_strict_inequalities
+PPL_PROTO((ppl_const_Constraint_System_t cs));
+
+/*! \brief
   Removes all the constraints from the constraint system \p cs
   and sets its space dimension to 0.
 */

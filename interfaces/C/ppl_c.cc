@@ -707,6 +707,14 @@ ppl_Constraint_System_space_dimension(ppl_const_Constraint_System_t cs,
 CATCH_ALL
 
 int
+ppl_Constraint_System_has_strict_inequalities
+(ppl_const_Constraint_System_t cs) try {
+  const Constraint_System& ccs = *to_const(cs);
+  return ccs.has_strict_inequalities() ? 1 : 0;
+}
+CATCH_ALL
+
+int
 ppl_Constraint_System_clear(ppl_Constraint_System_t cs) try {
   to_nonconst(cs)->clear();
   return 0;
