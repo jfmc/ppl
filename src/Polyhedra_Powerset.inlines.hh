@@ -162,7 +162,7 @@ Polyhedra_Powerset<PH>::Polyhedra_Powerset(const Constraint_System& cs)
   Polyhedra_Powerset& x = *this;
   x.sequence.push_back(Determinate<PH>(cs));
   x.reduced = false;
-  assert(OK());
+  assert(x.OK());
 }
 
 template <typename PH>
@@ -205,7 +205,7 @@ Polyhedra_Powerset<PH>::add_disjunct(const PH& ph) {
   }
   x.sequence.push_back(Determinate<PH>(ph));
   x.reduced = false;
-  assert(OK());
+  assert(x.OK());
 }
 
 template <typename PH>
@@ -227,11 +227,11 @@ Polyhedra_Powerset<PH>::time_elapse_assign(const Polyhedra_Powerset& y) {
 template <typename PH>
 void
 Polyhedra_Powerset<PH>::concatenate_assign(const Polyhedra_Powerset& y) {
-  const Polyhedra_Powerset& x = *this;
+  Polyhedra_Powerset& x = *this;
   // Ensure omega-reduction here, since what follows has quadratic complexity.
   x.omega_reduce();
   y.omega_reduce();
-  Polyhedra_Powerset<PH> new_x(space_dim + y.space_dim, EMPTY);
+  Polyhedra_Powerset<PH> new_x(x.space_dim + y.space_dim, EMPTY);
   for (const_iterator xi = x.begin(), x_end = x.end(),
 	 y_begin = y.begin(), y_end = y.end(); xi != x_end; ) {
     for (const_iterator yi = y_begin; yi != y_end; ++yi) {
@@ -251,14 +251,14 @@ Polyhedra_Powerset<PH>::concatenate_assign(const Polyhedra_Powerset& y) {
       for (++yi; yi != y_end; ++yi)
 	yph.upper_bound_assign(yi->element());
       xph.concatenate_assign(yph);
-      swap(new_x);
-      add_disjunct(xph);
-      assert(OK());
+      x.swap(new_x);
+      x.add_disjunct(xph);
+      assert(x.OK());
       return;
     }
   }
-  swap(new_x);
-  assert(OK());
+  x.swap(new_x);
+  assert(x.OK());
 }
 
 template <typename PH>
@@ -801,7 +801,6 @@ Polyhedra_Powerset<PH>::OK() const {
 namespace {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
 //! Partitions polyhedron \p qq according to constraint \p c.
 /*! \relates Polyhedra_Powerset
   On exit, the intersection of \p qq and constraint \p c is stored
