@@ -953,7 +953,7 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expr,
 				       Coefficient& ext_d,
 				       Generator& optimizing_point) const {
   // Strict inequality constraints are not supported.
-  if (topology() == NOT_NECESSARILY_CLOSED)
+  if (has_strict_inequalities())
     throw std::invalid_argument("PPL::Constraint_System::primal_simplex(): "
 				"strict inequality constraints "
 				"are not supported.");
