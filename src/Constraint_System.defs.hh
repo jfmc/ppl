@@ -147,6 +147,11 @@ public:
   dimension_type space_dimension() const;
 
   //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this
+  //! contains one or more strict inequality constraints.
+  bool has_strict_inequalities() const;
+
+  //! \brief
   //! Removes all the constraints from the constraint system
   //! and sets its space dimension to 0.
   void clear();
@@ -344,11 +349,6 @@ private:
   //! contains strict inequalities.
   bool adjust_topology_and_space_dimension(Topology topol,
 					   dimension_type num_dimensions);
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! contains one or more strict inequality constraints.
-  bool has_strict_inequalities() const;
 
   //! Returns the \p k- th constraint of the system.
   Constraint& operator[](dimension_type k);
