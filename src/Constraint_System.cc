@@ -198,7 +198,7 @@ PPL::Constraint_System::has_strict_inequalities() const {
   if (is_necessarily_closed())
     return false;
   const Constraint_System& cs = *this;
-  dimension_type eps_index = cs.num_columns() - 1;
+  const dimension_type eps_index = cs.num_columns() - 1;
   // We verify if the system has strict inequalities
   // also in the pending part.
   for (dimension_type i = cs.num_rows(); i-- > 0; ) {
