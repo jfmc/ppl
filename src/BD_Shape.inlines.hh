@@ -24,7 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_BD_Shape_inlines_hh 1
 
 #include "C_Polyhedron.defs.hh"
+#include "Poly_Con_Relation.defs.hh"
+#include "Poly_Gen_Relation.defs.hh"
 #include <cassert>
+#include <vector>
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -33,6 +36,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+namespace {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Extract the numerator and denominator components of \p from.
+/*! \relates Parma_Polyhedra_Library::BD_Shape */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T, typename Policy>
 inline void
 numer_denom(const Checked_Number<T, Policy>& from,
@@ -46,7 +55,10 @@ numer_denom(const Checked_Number<T, Policy>& from,
   den = q.get_den();
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Divides \p x by \p y into \p to, rounding the result towards plus infinity.
+/*! \relates Parma_Polyhedra_Library::BD_Shape */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T, typename Policy>
 inline void
 div_round_up(Checked_Number<T, Policy>& to,
@@ -61,7 +73,10 @@ div_round_up(Checked_Number<T, Policy>& to,
   assign(to, raw_value(q), ROUND_UP);
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Assigns to \p x the minimum between \p x and \p y.
+/*! \relates Parma_Polyhedra_Library::BD_Shape */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename N>
 inline void
 min_assign(N& x, const N& y) {
@@ -69,13 +84,19 @@ min_assign(N& x, const N& y) {
     x = y;
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Assigns to \p x the maximum between \p x and \p y.
+/*! \relates Parma_Polyhedra_Library::BD_Shape */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename N>
 inline void
 max_assign(N& x, const N& y) {
   if (x < y)
     x = y;
 }
+
+} // namespace
+
 
 template <typename T>
 inline dimension_type
@@ -90,28 +111,27 @@ template <typename T>
 inline void
 BD_Shape<T>::init() {
   const dimension_type space_dim = space_dimension();
-  // All elements of `dbm' are set to plus infinity:
-  // this corresponds to an empty set of constraints.
-  for (dimension_type i = 0; i <= space_dim; ++i) {
+  // All elements of `dbm' are set to plus infinity: this corresponds to
+  // an empty set of constraints, i.e., a universe BDS.
+  for (dimension_type i = space_dim+1; i-- > 0; ) {
     DB_Row<N>& dbm_i = dbm[i];
-    for (dimension_type j = 0; j <= space_dim; ++j)
+    for (dimension_type j = space_dim+1; j-- > 0; )
       dbm_i[j] = PLUS_INFINITY;
   }
 }
 
 template <typename T>
 inline
-BD_Shape<T>::BD_Shape(dimension_type num_dimensions,
-		      Degenerate_Element kind)
+BD_Shape<T>::BD_Shape(const dimension_type num_dimensions,
+		      const Degenerate_Element kind)
   : dbm(num_dimensions + 1), status() {
   if (kind == EMPTY)
     set_empty();
   else {
     init();
     if (num_dimensions > 0)
-      // A (non zero-dim) universe system of bounded differences
-      // is transitively closed.
-      status.set_transitively_closed();
+      // A (non zero-dim) universe BDS is closed.
+      status.set_shortest_path_closed();
   }
   assert(OK());
 }
@@ -125,207 +145,20 @@ BD_Shape<T>::BD_Shape(const BD_Shape& y)
 template <typename T>
 inline
 BD_Shape<T>::BD_Shape(const Constraint_System& cs)
-  : dbm(cs.space_dimension() + 1) {
+  : dbm(cs.space_dimension() + 1), status() {
   init();
   if (cs.space_dimension() > 0)
-    // A (non zero-dim) universe system of bounded differences
-    // is transitively closed.
-    status.set_transitively_closed();
+    // A (non zero-dim) universe BDS is shortest-path closed.
+    status.set_shortest_path_closed();
   add_constraints(cs);
   assert(OK());
 }
 
 template <typename T>
-BD_Shape<T>::BD_Shape(const Generator_System& gs)
-  : dbm(gs.space_dimension() + 1) {
-  // FIXME: this is a waste of computation time!
-  init();
-
-  dimension_type space_dim = space_dimension();
-  const Generator_System::const_iterator gs_begin = gs.begin();
-  const Generator_System::const_iterator gs_end = gs.end();
-  N tmp;
-
-  bool dbm_initialized = false;
-  bool point_seen = false;
-  for (Generator_System::const_iterator i = gs_begin; i != gs_end; ++i) {
-    const Generator& g = *i;
-    switch (g.type()) {
-    case Generator::POINT:
-      point_seen = true;
-      // Intentionally fall through.
-    case Generator::CLOSURE_POINT:
-      {
-	Coefficient_traits::const_reference d = g.divisor();
-	if (!dbm_initialized) {
-	  // When the first point is handled, we initialize the DBM.
-	  dbm_initialized = true;
-	  for (dimension_type i = space_dim; i > 0; --i) {
-	    DB_Row<N>& dbm_i = dbm[i];
-	    for (dimension_type j = space_dim; j > 0; --j)
-	      if (i != j)
-		div_round_up(dbm_i[j],
-			     g.coefficient(Variable(j-1))
-			     -g.coefficient(Variable(i-1)),
-			     d);
-	    div_round_up(dbm_i[0], -g.coefficient(Variable(i-1)), d);
-	  }
-	  DB_Row<N>& dbm_0 = dbm[0];
-	  for (dimension_type j = space_dim; j > 0; --j)
-	    div_round_up(dbm_0[j], g.coefficient(Variable(j-1)), d);
-	}
-	else {
-	  // This is not the first point: the DBM already contains
-	  // valid values and we must compute maxima.
-	  for (dimension_type i = space_dim; i > 0; --i) {
-	    DB_Row<N>& dbm_i = dbm[i];
-	    for (dimension_type j = space_dim; j > 0; --j)
-	      if (i != j) {
-		div_round_up(tmp,
-			     g.coefficient(Variable(j-1))
-			     -g.coefficient(Variable(i-1)),
-			     d);
-		max_assign(dbm_i[j], tmp);
-	      }
-	    div_round_up(tmp, -g.coefficient(Variable(i-1)), d);
-	    max_assign(dbm_i[0], tmp);
-	  }
-	  DB_Row<N>& dbm_0 = dbm[0];
-	  for (dimension_type j = space_dim; j > 0; --j) {
-	    div_round_up(tmp, g.coefficient(Variable(j-1)), d);
-	    max_assign(dbm_0[j], tmp);
-	  }
-	}
-      }
-      break;
-    default:
-      break;
-    }
-  }
-
-  if (!point_seen) {
-    // If no point was found in `gs', the corresponding polyhedron is empty.
-    set_empty();
-    assert(OK());
-    return;
-  }
-
-  for (Generator_System::const_iterator i = gs_begin; i != gs_end; ++i) {
-    const Generator& g = *i;
-    switch (g.type()) {
-    case Generator::LINE:
-      {
-	for (dimension_type i = space_dim; i > 0; --i) {
-	  DB_Row<N>& dbm_i = dbm[i];
-	  for (dimension_type j = space_dim; j > 0; --j)
-	    if (i != j
-		&& (g.coefficient(Variable(j-1))
-		    != g.coefficient(Variable(i-1))))
-	      dbm_i[j] = PLUS_INFINITY;
-	  if (g.coefficient(Variable(i-1)) != 0)
-	    dbm_i[0] = PLUS_INFINITY;
-	}
-	DB_Row<N>& dbm_0 = dbm[0];
-	for (dimension_type j = space_dim; j > 0; --j)
-	  if (g.coefficient(Variable(j-1)) != 0)
-	    dbm_0[j] = PLUS_INFINITY;
-      }
-      break;
-    case Generator::RAY:
-      {
-	for (dimension_type i = space_dim; i > 0; --i) {
-	  DB_Row<N>& dbm_i = dbm[i];
-	  for (dimension_type j = space_dim; j > 0; --j)
-	    if (i != j
-		&& (g.coefficient(Variable(j-1))
-		    > g.coefficient(Variable(i-1))))
-	      dbm_i[j] = PLUS_INFINITY;
-	  if (g.coefficient(Variable(i-1)) < 0)
-	    dbm_i[0] = PLUS_INFINITY;
-	}
-	DB_Row<N>& dbm_0 = dbm[0];
-	for (dimension_type j = space_dim; j > 0; --j)
-	  if (g.coefficient(Variable(j-1)) > 0)
-	    dbm_0[j] = PLUS_INFINITY;
-      }
-      break;
-    default:
-      break;
-    }
-  }
-  status.set_transitively_closed();
-  assert(OK());
-}
-
-template <typename T>
-BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
-  : dbm(), status() {
-  if (ph.marked_empty()) {
-    *this = BD_Shape(ph.space_dim, EMPTY);
-    return;
-  }
-
-  if (ph.space_dim == 0) {
-    *this = BD_Shape(ph.space_dim, UNIVERSE);
-    return;
-  }
-
-  // Build from generators when we do not care about complexity
-  // or when the process has polynomial complexity.
-  if (complexity == ANY_COMPLEXITY
-      || (!ph.has_pending_constraints() && ph.generators_are_up_to_date())) {
-    *this = BD_Shape(ph.generators());
-    return;
-  }
-
-  // We cannot affort exponential complexity, we do not have a complete set
-  // of generators for the polyhedron, and the polyhedron is not trivially
-  // empty or zero-dimensional.  Constraints, however, are up to date.
-  assert(ph.constraints_are_up_to_date());
-
-  if (!ph.has_something_pending() && ph.constraints_are_minimized()) {
-    // If the constraint system of the polyhedron is minimized,
-    // the test `is_universe()' has polynomial complexity.
-    if (ph.is_universe()) {
-      *this = BD_Shape(ph.space_dim, UNIVERSE);
-      return;
-    }
-  }
-
-  // See if there is at least one inconsistent constraint in `ph.con_sys'.
-  for (Constraint_System::const_iterator i = ph.con_sys.begin(),
-	 cs_end = ph.con_sys.end(); i != cs_end; ++i)
-    if (i->is_inconsistent()) {
-      *this = BD_Shape(ph.space_dim, EMPTY);
-      return;
-    }
-
-  // If `complexity' allows it, use simplex to determine whether or not
-  // the polyhedron is empty.
-  // FIXME: we must topologically close the constraint system here!
-  if (complexity == SIMPLEX_COMPLEXITY) {
-    Coefficient n;
-    Coefficient d;
-    Generator g(point());
-    if (ph.con_sys.primal_simplex(Linear_Expression(0), true, n, d, g)
-	== UNFEASIBLE_PROBLEM) {
-      *this = BD_Shape(ph.space_dim, EMPTY);
-      return;
-    }
-
-    // TODO: use simplex to derive the exact (modulo the fact that
-    // our BDSs are topologically closed) variable bounds.
-  }
-
-  // Extract easy-to-find bounds from constraints.
-  *this = BD_Shape(ph.con_sys);
-}
-
-template <typename T>
 inline BD_Shape<T>&
 BD_Shape<T>::operator=(const BD_Shape& y) {
-  status = y.status;
   dbm = y.dbm;
+  status = y.status;
   return *this;
 }
 
@@ -337,8 +170,8 @@ BD_Shape<T>::~BD_Shape() {
 template <typename T>
 inline void
 BD_Shape<T>::swap(BD_Shape& y) {
-  std::swap(status, y.status);
   std::swap(dbm, y.dbm);
+  std::swap(status, y.status);
 }
 
 template <typename T>
@@ -349,8 +182,8 @@ BD_Shape<T>::marked_empty() const {
 
 template <typename T>
 inline bool
-BD_Shape<T>::marked_transitively_closed() const {
-  return status.test_transitively_closed();
+BD_Shape<T>::marked_shortest_path_closed() const {
+  return status.test_shortest_path_closed();
 }
 
 template <typename T>
@@ -362,44 +195,30 @@ BD_Shape<T>::space_dimension() const {
 template <typename T>
 inline bool
 operator==(const BD_Shape<T>& x, const BD_Shape<T>& y) {
+  const dimension_type x_space_dim = x.space_dimension();
   // Dimension-compatibility check.
-  if (x.space_dimension() != y.space_dimension())
+  if (x_space_dim != y.space_dimension())
     return false;
 
-  // Two zero-dim polyhedra are equal if and only if they are
-  // both empty or universe.
-  if (x.space_dimension() == 0) {
+  // Zero-dim BDSs are equal if and only if they are both empty or universe.
+  if (x_space_dim == 0)
     if (x.marked_empty())
       return y.marked_empty();
     else
       return !y.marked_empty();
-  }
 
-  /*
-     The two systems of bounded differences need be closed.
-     In fact if, for example, in `x' we have the constraints:
+  // The exact equivalence test requires shortest-path closure.
+  x.shortest_path_closure_assign();
+  y.shortest_path_closure_assign();
 
-     x1 - x2 <= 1;
-     x2      <= 2;
-
-     and in `y' we have the constraints:
-
-     x1 - x2 <= 1;
-     x2      <= 2;
-     x1      <= 3;
-
-     without closure it returns "false" instead of "true".
- */
-  x.closure_assign();
-  y.closure_assign();
-
-  // If one of two polyhedron is empty, then they are equal if and only if
-  // also other polyhedron is empty.
+  // If one of two BDSs is empty, then they are equal
+  // if and only if the other BDS is empty too.
   if (x.marked_empty())
     return y.marked_empty();
   if (y.marked_empty())
     return false;
-
+  // Check for syntactic equivalence of the two (shortest-path closed)
+  // systems of bounded differences.
   return x.dbm == y.dbm;
 }
 
@@ -424,33 +243,398 @@ BD_Shape<T>::set_zero_dim_univ() {
 }
 
 template <typename T>
+inline bool
+BD_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
+  add_constraint(c);
+  shortest_path_closure_assign();
+  return !marked_empty();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::add_constraints(const Constraint_System& cs) {
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 iend = cs.end(); i != iend; ++i)
+    add_constraint(*i);
+  assert(OK());
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::add_constraints_and_minimize(const Constraint_System& cs) {
+  add_constraints(cs);
+  shortest_path_closure_assign();
+  return !marked_empty();
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::strictly_contains(const BD_Shape& y) const {
+  const BD_Shape<T>& x = *this;
+  return x.contains(y) && !y.contains(x);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::bds_hull_assign_and_minimize(const BD_Shape& y) {
+  bds_hull_assign(y);
+  assert(marked_empty()
+	 || space_dimension() == 0 || marked_shortest_path_closed());
+  return !marked_empty();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::upper_bound_assign(const BD_Shape& y) {
+  bds_hull_assign(y);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::bds_hull_assign_if_exact(const BD_Shape&) {
+  // FIXME: this must be properly implemented.
+  return false;
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::upper_bound_assign_if_exact(const BD_Shape& y) {
+  return bds_hull_assign_if_exact(y);
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::difference_assign(const BD_Shape& y) {
+  poly_difference_assign(y);
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::remove_higher_space_dimensions(dimension_type new_dimension) {
+  // Dimension-compatibility check: the variable having
+  // maximum cardinality is the one occurring last in the set.
+  if (new_dimension > space_dimension())
+    throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
+				 new_dimension);
+
+  // The removal of no dimensions from any polyhedron is a no-op.
+  // Note that this case also captures the only legal removal of
+  // dimensions from a system of bounded differences in a 0-dim space.
+  if (new_dimension == space_dimension()) {
+    assert(OK());
+    return;
+  }
+
+  // The closure is necessary as in remove_space_dimensions().
+  shortest_path_closure_assign();
+  dbm.resize_no_copy(new_dimension + 1);
+
+  // When we remove _all_ dimensions from a not-empty polyhedron,
+  // we obtain the zero-dimensional universe system of bounded differences.
+  if (new_dimension == 0 && !marked_empty())
+    set_zero_dim_univ();
+  assert(OK());
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::intersection_assign_and_minimize(const BD_Shape& y) {
+  intersection_assign(y);
+  shortest_path_closure_assign();
+  return !marked_empty();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y) {
+  static N stop_points[] = {
+    N(-2),
+    N(-1),
+    N(0),
+    N(1),
+    N(2)
+  };
+  CC76_extrapolation_assign(y,
+			    stop_points,
+			    stop_points
+			    + sizeof(stop_points)/sizeof(stop_points[0]));
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::H79_widening_assign(const BD_Shape& y, unsigned* tp) {
+  // See the polyhedra documentation.
+  C_Polyhedron px(constraints());
+  C_Polyhedron py(y.constraints());
+  px.H79_widening_assign(py, tp);
+  BD_Shape x(px);
+  swap(x);
+  assert(OK());
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::limited_H79_extrapolation_assign(const BD_Shape& y,
+					      const Constraint_System& cs,
+					      unsigned* tp) {
+  // Seen the polyhedra documentation.
+  C_Polyhedron px(constraints());
+  C_Polyhedron py(y.constraints());
+  px.limited_H79_extrapolation_assign(py, cs, tp);
+  BD_Shape x(px);
+  swap(x);
+  assert(OK());
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
+  // Dimension-compatibility check.
+  if (space_dimension() != y.space_dimension())
+    throw_dimension_incompatible("time_elapse_assign(y)", y);
+  // Seen the polyhedra documentation.
+  C_Polyhedron px(constraints());
+  C_Polyhedron py(y.constraints());
+  px.time_elapse_assign(py);
+  BD_Shape x(px);
+  swap(x);
+  assert(OK());
+}
+
+template <typename T>
+inline Constraint_System
+BD_Shape<T>::minimized_constraints() const {
+  shortest_path_reduction_assign();
+  return constraints();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::ascii_dump(std::ostream& s) const {
+  status.ascii_dump(s);
+  s << std::endl;
+  dbm.ascii_dump(s);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::ascii_load(std::istream& s) {
+  if(!status.ascii_load(s))
+    return false;
+  if(!dbm.ascii_load(s))
+    return false;
+  return true;
+}
+
+
+// From here onwards, there should be no inline methods/function,
+// but only non-inline member/function templates.
+
+template <typename T>
+BD_Shape<T>::BD_Shape(const Generator_System& gs)
+  : dbm(gs.space_dimension() + 1) {
+  const dimension_type space_dim = space_dimension();
+  const Generator_System::const_iterator gs_begin = gs.begin();
+  const Generator_System::const_iterator gs_end = gs.end();
+  DB_Row<N>& dbm_0 = dbm[0];
+  N tmp;
+
+  bool dbm_initialized = false;
+  bool point_seen = false;
+  // Going through all the points and closure points.
+  for (Generator_System::const_iterator i = gs_begin; i != gs_end; ++i) {
+    const Generator& g = *i;
+    switch (g.type()) {
+    case Generator::POINT:
+      point_seen = true;
+      // Intentionally fall through.
+    case Generator::CLOSURE_POINT:
+      if (!dbm_initialized) {
+	// When the first (closure) point is handled, we initialize the DBM.
+	dbm_initialized = true;
+	const Coefficient& d = g.divisor();
+	for (dimension_type i = space_dim; i > 0; --i) {
+	  const Coefficient& g_i = g.coefficient(Variable(i-1));
+	  DB_Row<N>& dbm_i = dbm[i];
+	  for (dimension_type j = space_dim; j > 0; --j)
+	    if (i != j)
+	      div_round_up(dbm_i[j], g.coefficient(Variable(j-1)) - g_i, d);
+	    else
+	      // Initialize the main diagonal.
+	      dbm_i[i] = PLUS_INFINITY;
+	  div_round_up(dbm_i[0], -g_i, d);
+	}
+	for (dimension_type j = space_dim; j > 0; --j)
+	  div_round_up(dbm_0[j], g.coefficient(Variable(j-1)), d);
+	// Initialize the main diagonal.
+	dbm_0[0] = PLUS_INFINITY;
+      }
+      else {
+	// This is not the first point: the DBM already contains
+	// valid values and we must compute maxima.
+	const Coefficient& d = g.divisor();
+	for (dimension_type i = space_dim; i > 0; --i) {
+	  const Coefficient& g_i = g.coefficient(Variable(i-1));
+	  DB_Row<N>& dbm_i = dbm[i];
+	  for (dimension_type j = space_dim; j > 0; --j)
+	    if (i != j) {
+	      div_round_up(tmp, g.coefficient(Variable(j-1)) - g_i, d);
+	      max_assign(dbm_i[j], tmp);
+	    }
+	  div_round_up(tmp, -g_i, d);
+	  max_assign(dbm_i[0], tmp);
+	}
+	for (dimension_type j = space_dim; j > 0; --j) {
+	  div_round_up(tmp, g.coefficient(Variable(j-1)), d);
+	  max_assign(dbm_0[j], tmp);
+	}
+      }
+      break;
+    default:
+      // Lines and rays temporarily ignored.
+      break;
+    }
+  }
+
+  if (!point_seen) {
+    // If no point was found in `gs', the corresponding polyhedron is empty.
+    set_empty();
+    assert(OK());
+    return;
+  }
+
+  // Going through all the lines and rays.
+  for (Generator_System::const_iterator i = gs_begin; i != gs_end; ++i) {
+    const Generator& g = *i;
+    switch (g.type()) {
+    case Generator::LINE:
+      for (dimension_type i = space_dim; i > 0; --i) {
+	const Coefficient& g_i = g.coefficient(Variable(i-1));
+	DB_Row<N>& dbm_i = dbm[i];
+	for (dimension_type j = space_dim; j > 0; --j)
+	  if (i != j && g_i != g.coefficient(Variable(j-1)))
+	    dbm_i[j] = PLUS_INFINITY;
+	if (g_i != 0)
+	  dbm_i[0] = PLUS_INFINITY;
+      }
+      for (dimension_type j = space_dim; j > 0; --j)
+	if (g.coefficient(Variable(j-1)) != 0)
+	  dbm_0[j] = PLUS_INFINITY;
+      break;
+    case Generator::RAY:
+      for (dimension_type i = space_dim; i > 0; --i) {
+	const Coefficient& g_i = g.coefficient(Variable(i-1));
+	DB_Row<N>& dbm_i = dbm[i];
+	for (dimension_type j = space_dim; j > 0; --j)
+	  if (i != j && g_i < g.coefficient(Variable(j-1)))
+	    dbm_i[j] = PLUS_INFINITY;
+	if (g_i < 0)
+	  dbm_i[0] = PLUS_INFINITY;
+      }
+      for (dimension_type j = space_dim; j > 0; --j)
+	if (g.coefficient(Variable(j-1)) > 0)
+	  dbm_0[j] = PLUS_INFINITY;
+      break;
+    default:
+      // Points and closure points already dealt with.
+      break;
+    }
+  }
+  status.set_shortest_path_closed();
+  assert(OK());
+}
+
+template <typename T>
+BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
+  : dbm(), status() {
+  const dimension_type num_dimensions = ph.space_dimension();
+
+  if (ph.marked_empty()) {
+    *this = BD_Shape(num_dimensions, EMPTY);
+    return;
+  }
+
+  if (num_dimensions == 0) {
+    *this = BD_Shape(num_dimensions, UNIVERSE);
+    return;
+  }
+
+  // Build from generators when we do not care about complexity
+  // or when the process has polynomial complexity.
+  if (complexity == ANY_COMPLEXITY
+      || (!ph.has_pending_constraints() && ph.generators_are_up_to_date())) {
+    *this = BD_Shape(ph.generators());
+    return;
+  }
+
+  // We cannot afford exponential complexity, we do not have a complete set
+  // of generators for the polyhedron, and the polyhedron is not trivially
+  // empty or zero-dimensional.  Constraints, however, are up to date.
+  assert(ph.constraints_are_up_to_date());
+
+  if (!ph.has_something_pending() && ph.constraints_are_minimized()) {
+    // If the constraint system of the polyhedron is minimized,
+    // the test `is_universe()' has polynomial complexity.
+    if (ph.is_universe()) {
+      *this = BD_Shape(num_dimensions, UNIVERSE);
+      return;
+    }
+  }
+
+  // See if there is at least one inconsistent constraint in `ph.con_sys'.
+  for (Constraint_System::const_iterator i = ph.con_sys.begin(),
+	 cs_end = ph.con_sys.end(); i != cs_end; ++i)
+    if (i->is_inconsistent()) {
+      *this = BD_Shape(num_dimensions, EMPTY);
+      return;
+    }
+
+  // If `complexity' allows it, use simplex to determine whether or not
+  // the polyhedron is empty.
+  // FIXME: we must topologically close the constraint system here!
+  if (complexity == SIMPLEX_COMPLEXITY) {
+    Coefficient n;
+    Coefficient d;
+    Generator g(point());
+    Simplex_Status status;
+    if (ph.con_sys.has_strict_inequalities())
+       status = ph.con_sys.primal_simplex(Linear_Expression(0), true, n, d, g);
+    else {
+      // Building a topologically closed version of `ph.con_sys'.
+      Constraint_System cs;
+      for (Constraint_System::const_iterator i = ph.con_sys.begin(),
+	     iend = ph.con_sys.end(); i != iend; ++i) {
+	const Constraint& c = *i;
+	if (c.is_strict_inequality())
+	  cs.insert(Linear_Expression(c) >= 0);
+	else
+	  cs.insert(c);
+      }
+      status = cs.primal_simplex(Linear_Expression(0), true, n, d, g);
+    }
+
+    if (status == UNFEASIBLE_PROBLEM) {
+      *this = BD_Shape(num_dimensions, EMPTY);
+      return;
+    }
+
+    // TODO: use simplex to derive the exact (modulo the fact that
+    // our BDSs are topologically closed) variable bounds.
+  }
+
+  // Extract easy-to-find bounds from constraints.
+  *this = BD_Shape(ph.con_sys);
+}
+
+template <typename T>
 void
 BD_Shape<T>::add_constraint(const Constraint& c) {
-  /*
-     This method not preserve the closure.
-     If we consider a closed system of bounded differences bd(2)
-     with these constraint:
-
-     x - y <= 2
-     x     <= 8
-
-     and then we add a new constraint:
-
-     y     <= 3
-
-     it is not longer closed.
-     Its closure is:
-
-     x - y <= 2
-     y     <= 3
-     x     <= 5.
-  */
-  dimension_type c_space_dim = c.space_dimension();
+  const dimension_type c_space_dim = c.space_dimension();
 
   // Dimension-compatibility check.
   if (c_space_dim > space_dimension())
     throw_dimension_incompatible("add_constraint(c)", c);
-  // Not strict-inequality check.
+  // Strict inequalities are not allowed.
   if (c.is_strict_inequality())
     throw_constraint_incompatible("add_constraint(c)");
 
@@ -462,14 +646,13 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
 
   // Collect the non-zero components of `c'.
   for (dimension_type i = c_space_dim; i-- > 0; )
-    if (c.coefficient(Variable(i)) != 0) {
+    if (c.coefficient(Variable(i)) != 0)
       if (t >= 2)
 	// Constraints that are not "bounded differences" are ignored.
 	return;
       else
 	non_zero_position[t++] = i;
-    }
-
+  
   // We will now make sure `c' has one of the following forms:
   //
   //           0 <=/= b, if t == 0;
@@ -530,36 +713,11 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
       check_change = true;
     }
   }
-  if (check_change && marked_transitively_closed())
-    status.reset_transitively_closed();
+  // In general, adding a constraint does not preserve the shortest-path
+  // closure of the system of bounded differences.
+  if (check_change && marked_shortest_path_closed())
+    status.reset_shortest_path_closed();
   assert(OK());
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
-  add_constraint(c);
-  closure_assign();
-  return !marked_empty();
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::add_constraints(const Constraint_System& cs) {
-  // This method not preserve closure.
-  // See add_constraint().
-  Constraint_System::const_iterator iend = cs.end();
-  for (Constraint_System::const_iterator i = cs.begin(); i != iend; ++i)
-    add_constraint(*i);
-  assert(OK());
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::add_constraints_and_minimize(const Constraint_System& cs) {
-  add_constraints(cs);
-  closure_assign();
-  return !marked_empty();
 }
 
 template <typename T>
@@ -601,16 +759,9 @@ BD_Shape<T>::concatenate_assign(const BD_Shape& y) {
       dbm_i[j] = y.dbm[i-space_dim][j-space_dim];
   }
 
-  if (marked_transitively_closed())
-    status.reset_transitively_closed();
+  if (marked_shortest_path_closed())
+    status.reset_shortest_path_closed();
   assert(OK());
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::strictly_contains(const BD_Shape& y) const {
-  const BD_Shape<T>& x = *this;
-  return x.contains(y) && !y.contains(x);
 }
 
 template <typename T>
@@ -655,7 +806,7 @@ BD_Shape<T>::contains(const BD_Shape& y) const {
 
     and so we obtain the right result "true".
   */
-  y.closure_assign();
+  y.shortest_path_closure_assign();
 
   // If `y' is empty, then it is always contained by
   // every polyhedra.
@@ -679,7 +830,7 @@ BD_Shape<T>::is_empty() const {
     return true;
 
   // If `*this' is close, then it is never empty.
-  if (marked_transitively_closed())
+  if (marked_shortest_path_closed())
     return false;
 
   dimension_type space_dim = space_dimension();
@@ -764,16 +915,15 @@ BD_Shape<T>::is_universe() const {
 
 template <typename T>
 bool
-BD_Shape<T>::is_transitively_reduced() const {
-  // If system of bounded differences is already empty
-  // is transitively reduced.
+BD_Shape<T>::is_shortest_path_reduced() const {
+  // If the BDS is empty, it is also reduced.
   if (marked_empty())
     return true;
 
   dimension_type space_dim = space_dimension();
 
   const BD_Shape x_copy = *this;
-  x_copy.closure_assign();
+  x_copy.shortest_path_closure_assign();
 
   // The vector `leader' is used to indicate which variables are equivalent.
   std::vector<dimension_type> leader(space_dim + 1);
@@ -931,14 +1081,14 @@ BD_Shape<T>::is_transitively_reduced() const {
 template <typename T>
 Poly_Con_Relation
 BD_Shape<T>::relation_with(const Constraint& c) const {
-  dimension_type c_space_dim = c.space_dimension();
-  dimension_type space_dim = space_dimension();
+  const dimension_type c_space_dim = c.space_dimension();
+  const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
   if (c_space_dim > space_dim)
     throw_dimension_incompatible("relation_with(c)", c);
 
-  closure_assign();
+  shortest_path_closure_assign();
 
   if (marked_empty())
     return Poly_Con_Relation::saturates()
@@ -1233,11 +1383,11 @@ BD_Shape<T>::relation_with(const Generator& g) const {
 
 template <typename T>
 void
-BD_Shape<T>::closure_assign() const {
+BD_Shape<T>::shortest_path_closure_assign() const {
 
   // If system of bounded differences is already empty
-  // or closed, then the closure_assign is not necessary.
-  if (marked_empty() || marked_transitively_closed())
+  // or closed, then the shortest_path_closure_assign is not necessary.
+  if (marked_empty() || marked_shortest_path_closed())
     return;
   dimension_type n = space_dimension();
 
@@ -1287,7 +1437,7 @@ BD_Shape<T>::closure_assign() const {
     }
   }
 
-  x.status.set_transitively_closed();
+  x.status.set_shortest_path_closed();
   for (dimension_type h = 0; h <= n; ++h) {
     N& xdbm_h_h = x.dbm[h][h];
     // We can check the emptiness of the system of bounded differences.
@@ -1302,11 +1452,11 @@ BD_Shape<T>::closure_assign() const {
 
 template <typename T>
 void
-BD_Shape<T>::transitive_reduction_assign() const {
+BD_Shape<T>::shortest_path_reduction_assign() const {
   dimension_type space_dim = space_dimension();
 
   // We close for find tighter constraints.
-  closure_assign();
+  shortest_path_closure_assign();
 
   // If `*this' is empty, then this operation is not necessary.
   if (marked_empty())
@@ -1361,7 +1511,7 @@ BD_Shape<T>::transitive_reduction_assign() const {
       }
     }
   }
-  x.status.reset_transitively_closed();
+  x.status.reset_shortest_path_closed();
 
   // Step 3: we remove all the redundant constraints in 0-cycles.
   // Each equivalence class must have an only cycle that connected
@@ -1399,7 +1549,7 @@ BD_Shape<T>::transitive_reduction_assign() const {
     }
   }
 
-  assert(is_transitively_reduced());
+  assert(is_shortest_path_reduced());
 }
 
 template <typename T>
@@ -1412,10 +1562,10 @@ BD_Shape<T>::bds_hull_assign(const BD_Shape& y) {
     throw_dimension_incompatible("bds_hull_assign(y)", y);
 
   // The poly-hull of a polyhedron `bd' with an empty polyhedron is `bd'.
-  y.closure_assign();
+  y.shortest_path_closure_assign();
   if (y.marked_empty())
     return;
-  closure_assign();
+  shortest_path_closure_assign();
   if (marked_empty()) {
     *this = y;
     return;
@@ -1423,7 +1573,7 @@ BD_Shape<T>::bds_hull_assign(const BD_Shape& y) {
 
   // The bds-hull consists in constructing `*this' with the maximum
   // elements selected from `*this' and `y'.
-  assert(space_dim == 0 || marked_transitively_closed());
+  assert(space_dim == 0 || marked_shortest_path_closed());
   for (dimension_type i = 0; i <= space_dim; ++i) {
     DB_Row<N>& dbm_i = dbm[i];
     const DB_Row<N>& y_dbm_i = y.dbm[i];
@@ -1434,36 +1584,8 @@ BD_Shape<T>::bds_hull_assign(const BD_Shape& y) {
 	dbm_ij = y_dbm_ij;
     }
   }
-  // The result is still transitively closed.
+  // The result is still closed.
   assert(OK());
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::bds_hull_assign_and_minimize(const BD_Shape& y) {
-  bds_hull_assign(y);
-  assert(marked_empty()
-	 || space_dimension() == 0 || marked_transitively_closed());
-  return !marked_empty();
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::upper_bound_assign(const BD_Shape& y) {
-  bds_hull_assign(y);
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::bds_hull_assign_if_exact(const BD_Shape&) {
-  // FIXME: this must be properly implemented.
-  return false;
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::upper_bound_assign_if_exact(const BD_Shape& y) {
-  return bds_hull_assign_if_exact(y);
 }
 
 template <typename T>
@@ -1479,12 +1601,12 @@ BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
 
   BD_Shape& x = *this;
 
-  x.closure_assign();
+  x.shortest_path_closure_assign();
   // The difference of an empty system of bounded differences
   // and of a system of bounded differences `p' is empty.
   if (x.marked_empty())
     return;
-  y.closure_assign();
+  y.shortest_path_closure_assign();
   // The difference of a system of bounded differences `p'
   // and an empty system of bounded differences is `p'.
   if (y.marked_empty())
@@ -1527,16 +1649,9 @@ BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
       new_bdiffs.bds_hull_assign(z);
   }
   *this = new_bdiffs;
-  // The result is still transitively closed, because both
-  // bds_hull_assign() and add_constraint_and_minimize()
-  // preserve the transitive closure.
+  // The result is still closed, because both bds_hull_assign() and
+  // add_constraint_and_minimize() preserve closure.
   assert(OK());
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::difference_assign(const BD_Shape& y) {
-  poly_difference_assign(y);
 }
 
 template <typename T>
@@ -1572,7 +1687,7 @@ BD_Shape<T>::add_space_dimensions_and_embed(dimension_type m) {
   // If `*this' was zero-dim-universe, since a non zero-dim universe polyhedron
   // is always closed, we must set the flag.
   if (was_zero_dim_univ)
-    status.set_transitively_closed();
+    status.set_shortest_path_closed();
 
   assert(OK());
 }
@@ -1596,7 +1711,7 @@ BD_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
     if (!marked_empty()) {
       for (dimension_type i = 0; i <= m; ++i)
 	dbm[i][i] = PLUS_INFINITY;
-      status.set_transitively_closed();
+      status.set_shortest_path_closed();
     }
     assert(OK());
     return;
@@ -1625,8 +1740,8 @@ BD_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
       dbm_i[j] = PLUS_INFINITY;
   }
 
-  if (marked_transitively_closed())
-    status.reset_transitively_closed();
+  if (marked_shortest_path_closed())
+    status.reset_shortest_path_closed();
   assert(OK());
 }
 
@@ -1672,7 +1787,7 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
 
      x1 <= 3;
    */
-  closure_assign();
+  shortest_path_closure_assign();
   // When removing _all_ dimensions from a system of bounded differences,
   // we obtain the zero-dimensional system of bounded differences.
   if (new_space_dim == 0) {
@@ -1725,34 +1840,6 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
 }
 
 template <typename T>
-inline void
-BD_Shape<T>::remove_higher_space_dimensions(dimension_type new_dimension) {
-  // Dimension-compatibility check: the variable having
-  // maximum cardinality is the one occurring last in the set.
-  if (new_dimension > space_dimension())
-    throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
-				 new_dimension);
-
-  // The removal of no dimensions from any polyhedron is a no-op.
-  // Note that this case also captures the only legal removal of
-  // dimensions from a system of bounded differences in a 0-dim space.
-  if (new_dimension == space_dimension()) {
-    assert(OK());
-    return;
-  }
-
-  // The closure is necessary as in remove_space_dimensions().
-  closure_assign();
-  dbm.resize_no_copy(new_dimension + 1);
-
-  // When we remove _all_ dimensions from a not-empty polyhedron,
-  // we obtain the zero-dimensional universe system of bounded differences.
-  if (new_dimension == 0 && !marked_empty())
-    set_zero_dim_univ();
-  assert(OK());
-}
-
-template <typename T>
 template <typename PartialFunction>
 void
 BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
@@ -1779,7 +1866,7 @@ BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
   // x --> x.
   // If we don't close, we loose the constraint: x <= 3.
   if (new_space_dim < space_dim)
-    closure_assign();
+    shortest_path_closure_assign();
 
   // If we have got an empty system of bounded differences, then we must
   // only adjust the dimension of the system of bounded differences,
@@ -1869,19 +1956,10 @@ BD_Shape<T>::intersection_assign(const BD_Shape& y) {
     }
   }
 
-  if (changed && marked_transitively_closed())
-    status.reset_transitively_closed();
+  if (changed && marked_shortest_path_closed())
+    status.reset_shortest_path_closed();
   assert(OK());
 }
-
-template <typename T>
-inline bool
-BD_Shape<T>::intersection_assign_and_minimize(const BD_Shape& y) {
-  intersection_assign(y);
-  closure_assign();
-  return !marked_empty();
-}
-
 
 template <typename T>
 template <typename Iterator>
@@ -1908,11 +1986,11 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
   if (space_dim == 0)
     return;
 
-  closure_assign();
+  shortest_path_closure_assign();
   // If `*this' is empty, since `*this' contains `y', `y' is empty too.
   if (marked_empty())
     return;
-  y.closure_assign();
+  y.shortest_path_closure_assign();
   // If `y' is empty, we return.
   if (y.marked_empty())
     return;
@@ -1970,24 +2048,8 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
       }
     }
   }
-  status.reset_transitively_closed();
+  status.reset_shortest_path_closed();
   assert(OK());
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y) {
-  static N stop_points[] = {
-    N(-2),
-    N(-1),
-    N(0),
-    N(1),
-    N(2)
-  };
-  CC76_extrapolation_assign(y,
-			    stop_points,
-			    stop_points
-			    + sizeof(stop_points)/sizeof(stop_points[0]));
 }
 
 template <typename T>
@@ -2145,13 +2207,13 @@ BD_Shape<T>::CH78_widening_assign(const BD_Shape& y, unsigned* /*tp*/) {
   if (space_dim == 0)
     return;
 
-  closure_assign();
+  shortest_path_closure_assign();
   // If `*this' is empty, since `*this' contains `y', `y' is empty too.
   if (marked_empty())
     return;
 
   // Minimize `y'.
-  y.transitive_reduction_assign();
+  y.shortest_path_reduction_assign();
   // If `y' is empty, we return.
   if (y.marked_empty())
     return;
@@ -2170,7 +2232,7 @@ BD_Shape<T>::CH78_widening_assign(const BD_Shape& y, unsigned* /*tp*/) {
 	dbm_ij = PLUS_INFINITY;
     }
   }
-  status.reset_transitively_closed();
+  status.reset_shortest_path_closed();
   assert(OK());
 }
 
@@ -2328,11 +2390,11 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
   if (space_dim == 0)
     return;
 
-  closure_assign();
+  shortest_path_closure_assign();
   // If `*this' is empty, since `*this' contains `y', `y' is empty too.
   if (marked_empty())
     return;
-  y.closure_assign();
+  y.shortest_path_closure_assign();
   // If `y' is empty, we return.
   if (y.marked_empty())
     return;
@@ -2402,34 +2464,8 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
       }
     }
   }
-  if (changed && marked_transitively_closed())
-    status.reset_transitively_closed();
-  assert(OK());
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::H79_widening_assign(const BD_Shape& y, unsigned* tp) {
-  // See the polyhedra documentation.
-  C_Polyhedron px(constraints());
-  C_Polyhedron py(y.constraints());
-  px.H79_widening_assign(py, tp);
-  BD_Shape x(px);
-  swap(x);
-  assert(OK());
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::limited_H79_extrapolation_assign(const BD_Shape& y,
-					      const Constraint_System& cs,
-					      unsigned* tp) {
-  // Seen the polyhedra documentation.
-  C_Polyhedron px(constraints());
-  C_Polyhedron py(y.constraints());
-  px.limited_H79_extrapolation_assign(py, cs, tp);
-  BD_Shape x(px);
-  swap(x);
+  if (changed && marked_shortest_path_closed())
+    status.reset_shortest_path_closed();
   assert(OK());
 }
 
@@ -2454,7 +2490,7 @@ BD_Shape<T>::affine_image(const Variable var,
   if (num_var > space_dim)
     throw_dimension_incompatible("affine_image(v, e, d)", var.id());
   
-  closure_assign();
+  shortest_path_closure_assign();
   // If `*this' is empty, then its image is empty.
   if (marked_empty())
     return;
@@ -2510,7 +2546,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	    dbm[i][num_var] = PLUS_INFINITY;
 	  }
 	  // In this case the closure is not preserved.
-	  status.reset_transitively_closed();
+	  status.reset_shortest_path_closed();
 	}
 	// If b = 0, then the image is an identity of `*this'.
 	if (b == 0)
@@ -2552,11 +2588,11 @@ BD_Shape<T>::affine_image(const Variable var,
 	  div_round_up(c, -b, denominator);
 	  if (!is_plus_infinity(dbm_j_0)) {
 	    assign_add(dbm_0_v, dbm_j_0, d, ROUND_UP);
-	    status.reset_transitively_closed();
+	    status.reset_shortest_path_closed();
 	  }
 	  if (!is_plus_infinity(dbm_0_j)) {
 	    assign_add(dbm_v_0, dbm_0_j, c, ROUND_UP);
-	    status.reset_transitively_closed();
+	    status.reset_shortest_path_closed();
 	  }
 	}
       }
@@ -2719,7 +2755,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	numer_denom(low_sum, n, d);
 	add_constraint(d*denominator*(Variable(low_var_index_inf) - var) <= n);
       }
-  status.reset_transitively_closed();
+  status.reset_shortest_path_closed();
   assert(OK());
 } 
 
@@ -2780,7 +2816,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
   Coefficient b = expr.inhomogeneous_term();
   DB_Row<N>& dbm_nv = dbm[num_var];
   if (t == 0) {
-    closure_assign();
+    shortest_path_closure_assign();
     // If `*this' is empty, then its image is empty.
     if (marked_empty())
       return;
@@ -2795,7 +2831,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
   }
   else if (t == 1 && (coeff == denominator || coeff == -denominator)) {
     // Case 2: expr = a*z + n.
-    closure_assign();
+    shortest_path_closure_assign();
     // If `*this' is empty, then its image is empty.
     if (marked_empty())
       return;
@@ -2895,7 +2931,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     }
 
   // We need the closure.
-  closure_assign();
+  shortest_path_closure_assign();
   // If `*this' is empty, then its image is empty.
   if (marked_empty())
     return;
@@ -2956,7 +2992,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	    dbm[i][num_var] = PLUS_INFINITY;
 	  }
 	  // In this case the closure is not preserved.
-	  status.reset_transitively_closed();
+	  status.reset_shortest_path_closed();
 	}
 	if (b == 0)
 	  return;
@@ -2990,7 +3026,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	  div_round_up(d, b, denominator);
 	  if (!is_plus_infinity(dbm_j_0)) {
 	    assign_add(dbm_0_v, dbm_j_0, d, ROUND_UP);
-	    status.reset_transitively_closed();
+	    status.reset_shortest_path_closed();
 	  }
 	}
 	for (dimension_type i = 0; i <= space_dim; ++i)
@@ -3017,7 +3053,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	    dbm[i][num_var] = PLUS_INFINITY;
 	  }
 	  // In this case the closure is not preserved.
-	  status.reset_transitively_closed();
+	  status.reset_shortest_path_closed();
 	}
 	
 	if (b == 0)
@@ -3051,7 +3087,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	  div_round_up(c, -b, denominator);
 	  if (!is_plus_infinity(dbm_0_j)) {
 	    assign_add(dbm_v_0, dbm_0_j, c, ROUND_UP);
-	    status.reset_transitively_closed();
+	    status.reset_shortest_path_closed();
 	  }
 	}
 	for (dimension_type i = 0; i <= space_dim; ++i)
@@ -3303,7 +3339,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 		  "*this is a BD_Shape");
 
   // We need the closure.
-  closure_assign();
+  shortest_path_closure_assign();
   // Any image of an empty system of bounded differences is empty.
   if (marked_empty())
     return;
@@ -3533,21 +3569,6 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 }
 
 template <typename T>
-inline void
-BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
-  // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
-    throw_dimension_incompatible("time_elapse_assign(y)", y);
-  // Seen the polyhedra documentation.
-  C_Polyhedron px(constraints());
-  C_Polyhedron py(y.constraints());
-  px.time_elapse_assign(py);
-  BD_Shape x(px);
-  swap(x);
-  assert(OK());
-}
-
-template <typename T>
 Constraint_System
 BD_Shape<T>::constraints() const {
   Constraint_System cs;
@@ -3612,31 +3633,6 @@ BD_Shape<T>::constraints() const {
     }
   }
   return cs;
-}
-
-template <typename T>
-inline Constraint_System
-BD_Shape<T>::minimized_constraints() const {
-  transitive_reduction_assign();
-  return constraints();
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::ascii_dump(std::ostream& s) const {
-  status.ascii_dump(s);
-  s << std::endl;
-  dbm.ascii_dump(s);
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::ascii_load(std::istream& s) {
-  if(!status.ascii_load(s))
-    return false;
-  if(!dbm.ascii_load(s))
-    return false;
-  return true;
 }
 
 /*! \relates Parma_Polyhedra_Library::BD_Shape */
@@ -3764,12 +3760,12 @@ BD_Shape<T>::OK() const {
   if (!status.OK())
     return false;
 
-  // If `*this' is empty bdiffs are OK.
+  // An empty BDS is OK.
   if (marked_empty())
     return true;
 
-  // On the diagonal we must have plus infinity.
-  for (dimension_type i = dbm.num_rows(); i-- > 0;) {
+  // On the main diagonal we must have plus infinity.
+  for (dimension_type i = dbm.num_rows(); i-- > 0; )
     if (!is_plus_infinity(dbm[i][i])) {
 #ifndef NDEBUG
       using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -3779,16 +3775,15 @@ BD_Shape<T>::OK() const {
 #endif
       return false;
     }
-  }
 
   // Check whether the closure information is legal.
-  if (marked_transitively_closed()) {
+  if (marked_shortest_path_closed()) {
     BD_Shape x = *this;
-    x.status.reset_transitively_closed();
-    x.closure_assign();
+    x.status.reset_shortest_path_closed();
+    x.shortest_path_closure_assign();
     if (x.dbm != dbm) {
 #ifndef NDEBUG
-      std::cerr << "BD_Shape is marked as transitively closed but is it not!"
+      std::cerr << "BD_Shape is marked as closed but it is not!"
 		<< std::endl;
 #endif
       return false;

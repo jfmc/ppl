@@ -103,20 +103,20 @@ BD_Shape<T>::Status::set_empty() {
 
 template <typename T>
 inline bool
-BD_Shape<T>::Status::test_transitively_closed() const {
-  return test_any(TRANSITIVELY_CLOSED);
+BD_Shape<T>::Status::test_shortest_path_closed() const {
+  return test_any(SHORTEST_PATH_CLOSED);
 }
 
 template <typename T>
 inline void
-BD_Shape<T>::Status::reset_transitively_closed() {
-  reset(TRANSITIVELY_CLOSED);
+BD_Shape<T>::Status::reset_shortest_path_closed() {
+  reset(SHORTEST_PATH_CLOSED);
 }
 
 template <typename T>
 inline void
-BD_Shape<T>::Status::set_transitively_closed() {
-  set(TRANSITIVELY_CLOSED);
+BD_Shape<T>::Status::set_shortest_path_closed() {
+  set(SHORTEST_PATH_CLOSED);
 }
 
 template <typename T>
@@ -150,7 +150,7 @@ namespace {
 // These are the keywords that indicate the individual assertions.
 const std::string zero_dim_univ = "ZE";
 const std::string empty = "EM";
-const std::string trans_closed = "TC";
+const std::string sp_closed = "SPC";
 const char yes = '+';
 const char no = '-';
 const char sep = ' ';
@@ -181,7 +181,7 @@ BD_Shape<T>::Status::ascii_dump(std::ostream& s) const {
   s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
     << (test_empty() ? yes : no) << empty << sep
     << sep
-    << (test_transitively_closed() ? yes : no) << trans_closed << sep;
+    << (test_shortest_path_closed() ? yes : no) << sp_closed << sep;
 }
 
 template <typename T>
@@ -199,12 +199,12 @@ BD_Shape<T>::Status::ascii_load(std::istream& s) {
   if (positive)
     set_empty();
 
-  if (!get_field(s, trans_closed, positive))
+  if (!get_field(s, sp_closed, positive))
     return false;
   if (positive)
-    set_transitively_closed();
+    set_shortest_path_closed();
   else
-    reset_transitively_closed();
+    reset_shortest_path_closed();
 
   // Check for well-formedness.
   assert(OK());

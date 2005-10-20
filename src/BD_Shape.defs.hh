@@ -25,15 +25,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "BD_Shape.types.hh"
 #include "globals.types.hh"
+#include "Poly_Con_Relation.types.hh"
+#include "Poly_Gen_Relation.types.hh"
+#include "Polyhedron.types.hh"
 #include "DB_Matrix.defs.hh"
 #include "DB_Row.defs.hh"
-#include "Poly_Con_Relation.defs.hh"
-#include "Poly_Gen_Relation.defs.hh"
-#include "Polyhedron.types.hh"
 #include "Checked_Number.defs.hh"
-#include <vector>
 #include <cstddef>
-#include <climits>
 #include <iosfwd>
 
 
@@ -57,7 +55,7 @@ operator<<(std::ostream& s, const BD_Shape<T>& bds);
 
 //! \brief
 //! Returns <CODE>true</CODE> if and only if
-//! \p x and \p y are the same polyhedron.
+//! \p x and \p y are the same BDS.
 /*!
   \relates BD_Shape
   Note that \p x and \p y may be dimension-incompatible shapes:
@@ -68,7 +66,7 @@ bool operator==(const BD_Shape<T>& x, const BD_Shape<T>& y);
 
 //! \brief
 //! Returns <CODE>true</CODE> if and only if
-//! \p x and \p y aren't the same polyhedron.
+//! \p x and \p y aren't the same BDS.
 /*!
  \relates BD_Shape
   Note that \p x and \p y may be dimension-incompatible shapes:
@@ -79,37 +77,23 @@ bool operator!=(const BD_Shape<T>& x, const BD_Shape<T>& y);
 
 } // namespace Parma_Polyhedra_Library
 
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::BD_Shape */
-template <typename T>
-void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
-	  Parma_Polyhedra_Library::BD_Shape<T>& y);
-
-} // namespace std
-
-//! \brief
-//! A class representing a restricted kind of convex polyhedra called
-//! <EM>bounded difference shapes</EM> (BDSs).
+//! A bounded difference shape.
 /*!
-  The templatic class BD_Shape<T> allows for the efficient representation
+  The class template BD_Shape<T> allows for the efficient representation
   of a restricted kind of <EM>topologically closed</EM> convex polyhedra
-  called <EM>bounded difference shapes</EM>.  The name comes from fact
-  that the closed affine half-spaces that characterize the polyhedron
-  can be expressed by constraints of the form
+  called <EM>bounded difference shapes</EM> (BDSs, for short).
+  The name comes from fact that the closed affine half-spaces that
+  characterize the polyhedron can be expressed by constraints of the form
   \f[
     ax_i - bx_j \leq c
   \f]
-  Where \f$a, b \in \{0, 1\}\f$ and \f$c\f$ belongs to some family of
+  where \f$a, b \in \{0, 1\}\f$ and \f$c\f$ belongs to some family of
   extended numbers that is provided by the template argument \p T.
-  This family of extended numbers must provide representation for
-  \f$-\infty\f$, \f$0\f$, \f$+\infty\f$ and for <EM>nan</EM>, not
-  a number, since this arises as the ''result'' of undefined sums like
-  \f$+\infty + (-\infty)\f$, and of course, must be closed with
-  respect to the operations specified below.
+  This family of extended numbers must provide a representation for
+  \f$+\infty\f$ and, of course, must be closed with respect to the
+  operations specified below.
 
-  The class T should be one of the following: FIXME!
+  FIXME!
 
   Now we specify the approximations, applied by methods that add
   constraints to <EM>bounded differences</EM>.
@@ -242,13 +226,12 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
   and \p bd2 is non-negative half-lines. The resulting bdiffs
   is the same \p bd2.
 */
-
 template <typename T>
 class Parma_Polyhedra_Library::BD_Shape {
 private:
   //! \brief
-  //! The (extended) numeric type of the inhomogeneous terms of the
-  //! inequalities defining a bounded difference shape.
+  //! The (extended) numeric type of the inhomogeneous term of
+  //! the inequalities defining a BDS.
   typedef Checked_Number<T, Extended_Number_Policy> N;
 
 public:
@@ -256,22 +239,20 @@ public:
   typedef T base_type;
 
   //! \brief
-  //! The (extended) numeric type of the inhomogeneous terms of the
-  //! inequalities defining a bounded difference shape.
+  //! The (extended) numeric type of the inhomogeneous term of the
+  //! inequalities defining a BDS.
   typedef N coefficient_type;
 
-  //! \brief
-  //! Returns the maximum space dimension that a system
-  //! of bounded differences can handle.
+  //! Returns the maximum space dimension that a BDS can handle.
   static dimension_type max_space_dimension();
 
-  //! Builds a universe or empty system of bounded differences.
+  //! Builds a universe or empty BDS of the specified space dimension.
   /*!
-    \param num_dimensions   The number of dimensions of the vector
-                            space enclosing the system of bounded differences.
+    \param num_dimensions
+    The number of dimensions of the vector space enclosing the BDS;
 
-    \param kind             Specifies whether the universe or the empty
-                            system of bounded differences has to be built.
+    \param kind
+    Specifies whether the universe or the empty BDS has to be built.
   */
   explicit BD_Shape(dimension_type num_dimensions = 0,
 		    Degenerate_Element kind = UNIVERSE);
@@ -281,21 +262,23 @@ public:
 
   //! Builds a BDS from the system of constraints \p cs.
   /*!
-    The system of bounded differences inherits the space dimension of \p cs.
-    \param cs       A system of constraints: constraints that are not in
-                    \ref bounded_difference_form "bounded differences form"
-                    are ignored (even though they may have contributed
-                    to the space dimension).
-    \exception std::invalid_argument thrown if the system of constraints \p cs
-                                     contains strict inequalities.
+    The BDS inherits the space dimension of \p cs.
+
+    \param cs
+    A system of constraints: constraints that are not in
+    \ref bounded_difference_form "bounded differences form"
+    are ignored (even though they may have contributed
+    to the space dimension).
+
+    \exception std::invalid_argument
+    Thrown if the system of constraints \p cs contains strict inequalities.
   */
   BD_Shape(const Constraint_System& cs);
 
   //! Builds a BDS from the system of generators \p gs.
   /*!
     Builds the smallest BDS containing the polyhedron defined by \p gs.
-    The built BDS inherits its space dimension from the space dimension
-    of \p gs.
+    The BDS inherits the space dimension of \p gs.
   */
   BD_Shape(const Generator_System& gs);
 
@@ -316,40 +299,36 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is
-  //! an empty system of bounded differences.
+  //! Returns <CODE>true</CODE> if and only if \p *this is an empty BDS.
   bool is_empty() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! is an universe system of bounded differences.
+  //! Returns <CODE>true</CODE> if and only if \p *this is a universe BDS.
   bool is_universe() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
-  /*
-    exception std::invalid_argument thrown if \p *this and \p y
-                                     are dimension-incompatible.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
   bool contains(const BD_Shape& y) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this strictly contains \p y.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
   bool strictly_contains(const BD_Shape& y) const;
 
-  //! \brief
-  //! Returns the relations holding between the BD_Shape \p *this
-  //! and the constraint \p c.
+  //! Returns the relations holding between \p *this and the constraint \p c.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible
-                                       or if \p c is a strict inequality
-				       or if \p c is not a bounded difference.
+    or if \p c is a strict inequality or if \p c is not a bounded
+    difference constraint.
   */
   Poly_Con_Relation relation_with(const Constraint& c) const;
 
-  //! \brief
-  //! Returns the relations holding between the BD_Shape \p *this
-  //! and the generator \p g.
+  //! Returns the relations holding between \p *this and the generator \p g.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible.
@@ -906,9 +885,7 @@ private:
 #include "BDS_Status.idefs.hh"
 #undef PPL_IN_BD_Shape_CLASS
 
-  //! \brief
-  //! The status flags to keep track of the internal state,
-  //! flags can be \p zero, \p zero-dim-univ or \p closed.
+  //! The status flags to keep track of the internal state.
   Status status;
 
   //! \brief
@@ -922,12 +899,12 @@ private:
 
   //! \brief
   //! Returns <CODE>true</CODE> if the system of bounded differences
-  //! is known to be closed.
+  //! is known to be shortest-path closed.
   /*!
     The return value <CODE>false</CODE> does not necessarily
-    implies that \p *this is non-closed.
+    implies that \p *this is not shortest-path closed.
   */
-  bool marked_transitively_closed()const;
+  bool marked_shortest_path_closed()const;
 
   //! Turns \p *this into an empty system of bounded differences.
   void set_empty();
@@ -938,15 +915,15 @@ private:
   void set_zero_dim_univ();
 
  //! Adds to \p *this all implicit constraints and computes the tighter ones.
-  void closure_assign() const;
+  void shortest_path_closure_assign() const;
 
-  //! Remove the redundant constraints.
-  void transitive_reduction_assign() const;
+  //! Removes the redundant constraints.
+  void shortest_path_reduction_assign() const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! is a reduced system of bounded differences.
-  bool is_transitively_reduced() const;
+  bool is_shortest_path_reduced() const;
 
   //! Initializes \p *this without constraints.
   void init();
@@ -988,8 +965,17 @@ private:
 
   void throw_generic(const char* method, const char* reason) const;
   //@} // Exception Throwers
- };
+};
 
+namespace std {
+
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::BD_Shape */
+template <typename T>
+void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
+	  Parma_Polyhedra_Library::BD_Shape<T>& y);
+
+} // namespace std
 
 #include "BDS_Status.inlines.hh"
 #include "BD_Shape.inlines.hh"

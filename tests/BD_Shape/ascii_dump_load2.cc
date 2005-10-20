@@ -128,7 +128,7 @@ test3() {
   string str;
   do
     f >> str;
-  while(str != "-TC");
+  while(str != "-SPC");
   f.seekp(0, ios_base::cur);
   f << "A";
   close(f);

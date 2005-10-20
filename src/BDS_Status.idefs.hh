@@ -24,17 +24,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_BD_Status_defs_hh 1
 
 #ifndef PPL_IN_BD_Shape_CLASS
-#error "Do not include Ph_Status.idefs.hh directly; use Polyhedron.defs.hh instead."
+#error "Do not include BDS_Status.idefs.hh directly; use BD_Shape.defs.hh instead."
 #endif
 
 //! A conjunctive assertion about a BD_Shape<T> object.
 /*!
   The assertions supported are:
-  - <EM>zero-dim universe</EM>: the polyhedron is the zero-dimension
+  - <EM>zero-dim universe</EM>: the BDS is the zero-dimension
     vector space \f$\Rset^0 = \{\cdot\}\f$;
-  - <EM>empty</EM>: the polyhedron is the empty set;
-  - <EM>transitively closed</EM>: the BD_Shape object is transitively
-    closed, so that all the constraints are as tight as possible.
+  - <EM>empty</EM>: the BDS is the empty set;
+  - <EM>shortest-path closed</EM>: the BDS is represented by a shortest-path
+    closed system of bounded differences, so that all the constraints are
+    as tight as possible.
 
   Not all the conjunctions of these elementary assertions constitute
   a legal Status.  In fact:
@@ -56,9 +57,9 @@ public:
   void reset_empty();
   void set_empty();
 
-  bool test_transitively_closed() const;
-  void reset_transitively_closed();
-  void set_transitively_closed();
+  bool test_shortest_path_closed() const;
+  void reset_shortest_path_closed();
+  void set_shortest_path_closed();
   //@}
 
   //! Checks if all the invariants are satisfied.
@@ -70,9 +71,9 @@ public:
   void ascii_dump(std::ostream& s) const;
 
   //! \brief
-  //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
-  //! if successful, <CODE>false</CODE> otherwise.
+  //! Loads from \p s an ASCII representation (as produced by
+  //! \ref ascii_dump) and sets \p *this accordingly.
+  //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   bool ascii_load(std::istream& s);
 
 private:
@@ -81,9 +82,9 @@ private:
 
   //! \name Bit-masks for the individual assertions.
   //@{
-  static const flags_t ZERO_DIM_UNIV       = 0U;
-  static const flags_t EMPTY               = 1U << 0;
-  static const flags_t TRANSITIVELY_CLOSED = 1U << 1;
+  static const flags_t ZERO_DIM_UNIV        = 0U;
+  static const flags_t EMPTY                = 1U << 0;
+  static const flags_t SHORTEST_PATH_CLOSED = 1U << 1;
   //@}
 
   //! This holds the current bitset.
