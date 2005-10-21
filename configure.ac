@@ -585,27 +585,9 @@ AM_CONDITIONAL(BUILD_GNU_PROLOG_INTERFACE, test x$GNU_PROLOG = xgprolog)
 # SICStus
 if test x${sicstus_prolog_interface_enabled} = xyes
 then
-  AC_CHECK_PROG(SICSTUS_PROLOG, sicstus, sicstus)
-  if test x"$SICSTUS_PROLOG" = xsicstus
-  then
-    # We require SICStus Prolog 3.9.1 or later.
-    AC_CHECK_HEADER(sicstus/sicstus.h,
-                    AC_MSG_CHECKING([for SICStus version 3.9.1 or later])
-                    AC_EGREP_CPP(yes,
-                      [
-                        #include <sicstus/sicstus.h>
-                        #if SICSTUS_MAJOR_VERSION > 3 || (SICSTUS_MAJOR_VERSION == 3 && SICSTUS_MINOR_VERSION > 9) || (SICSTUS_MAJOR_VERSION == 3 && SICSTUS_MINOR_VERSION == 9 && SICSTUS_REVISION_VERSION >= 1)
-                        yes
-                        #endif
-                      ],
-                    AC_MSG_RESULT(yes),
-                    SICSTUS_PROLOG=""
-                    AC_MSG_RESULT(no)
-                  ),
-                  SICSTUS_PROLOG="")
-  fi
+  AC_CHECK_SICSTUS_PROLOG
 fi
-AM_CONDITIONAL(BUILD_SICSTUS_PROLOG_INTERFACE, test x$SICSTUS_PROLOG = xsicstus)
+AM_CONDITIONAL(BUILD_SICSTUS_PROLOG_INTERFACE, test x$have_sicstus_prolog = xyes)
 
 # SWI Prolog
 if test x${swi_prolog_interface_enabled} = xyes
