@@ -1,4 +1,4 @@
-dnl A function to check for the existence and usability of GMP.
+dnl A function to check for the existence and usability of SWI-Prolog.
 dnl Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
