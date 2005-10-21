@@ -376,6 +376,123 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
   assert(OK());
 }
 
+template <typename Box>
+void
+Grid::get_covering_box(Box& box) const {
+  // Dimension-compatibility check.
+  if (space_dim > box.space_dimension())
+    throw_dimension_incompatible("get_covering_box(box)", "box",
+				 box.space_dimension());
+
+  Box new_box(box.space_dimension());
+
+  if (marked_empty()) {
+    box = new_box;
+    return;
+  }
+  if (generators_are_up_to_date()) {
+    if (gen_sys.num_rows() == 0) {
+      box = new_box;
+      return;
+    }
+    Grid& gr = const_cast<Grid&>(*this);
+    // Ensure generators are minimized.
+    if (!generators_are_minimized()) {
+      if (simplify(gr.gen_sys, gr.dim_kinds)) {
+	// FIX empty result possible?
+	gr.set_empty();
+	box = new_box;
+	return;
+      }
+      gr.set_generators_minimized();
+    }
+  }
+  else if (!update_generators()) {
+    // Updating found the grid empty.
+    box = new_box;
+    return;
+  }
+
+  assert(gen_sys.num_rows() > 0);
+
+  dimension_type num_dims = gen_sys.num_columns() - 1;
+  dimension_type num_rows = gen_sys.num_rows();
+  const Generator& point = gen_sys[0];
+  TEMP_INTEGER(divisor);
+  divisor = point[0];
+
+  // The covering box of a single point has only lower bounds.
+  if (num_rows > 1) {
+    Row gcds(num_dims, Row::Flags());
+    dimension_type& last_index = num_rows;
+    last_index--;
+
+    // Store in `gcds', for each column (that is, for each dimension),
+    // the GCD of the coefficients that are in parameter rows.
+
+    const Generator& last_gen = gen_sys[last_index];
+    // Initialise `gcds' according to the final parameter row.
+    dimension_type dim = num_dims - 1;
+    if (last_gen.is_line_or_equality()) {
+      if (last_gen[num_dims] != 0) {
+	// Empty interval, set both bounds for dimension `dim' to
+	// zero.
+	new_box.lower_upper_bound(dim, false, 0, 1);
+	new_box.raise_lower_bound(dim, false, 0, 1);
+      }
+      gcds[dim] = 0;
+    }
+    else
+      gcds[dim] = last_gen[num_dims];
+    // Coefficients before the last are zero, due to minimal form.
+    while (dim-- > 0)
+      gcds[dim] = 0;
+    last_index--;
+    // Include the preceding parameter rows into `gcds'.
+    for (dimension_type dim = num_dims; dim-- > 1; ) {
+      // `dim_kinds' is indexed one higher than `gcds', as it starts
+      // with the generator system's point.
+      switch (dim_kinds[dim]) {
+      case PARAMETER:
+	{
+	  const Generator& gen = gen_sys[last_index];
+	  for (dimension_type col = dim; col <= num_dims; ++col)
+	    gcd_assign(gcds[col-1], gen[col]);
+	  last_index--;
+	}
+	break;
+      case LINE:
+	{
+	  const Generator& gen = gen_sys[last_index];
+	  for (dimension_type col = dim; col <= num_dims; ++col) {
+	    if (gen[col] != 0) {
+	      // Empty interval, set both bounds for dimension `dim' to
+	      // zero.
+	      new_box.lower_upper_bound(col-1, false, 0, 1);
+	      new_box.raise_lower_bound(col-1, false, 0, 1);
+	    }
+	  }
+	  last_index--;
+	}
+	break;
+      case GEN_VIRTUAL:
+	break;
+      }
+    }
+
+    // Set each interval of the upper bound to the addition of the
+    // point and GCD values associated with the interval's dimension.
+    for (dimension_type dim = 0; dim < num_dims; ++dim)
+      new_box.lower_upper_bound(dim, false, gcds[dim] + point[dim+1], divisor);
+  }
+
+  // Make the point the lower bound.
+  for (dimension_type dim = 0; dim < num_dims; ++dim)
+    new_box.raise_lower_bound(dim, false, point[dim+1], divisor);
+
+  box = new_box;
+}
+
 template <typename Partial_Function>
 void
 Grid::map_space_dimensions(const Partial_Function& pfunc) {

@@ -575,6 +575,45 @@ public:
   */
   bool strictly_contains(const Grid& y) const;
 
+  //! Write the covering box for \p *this into \p box.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p box are dimension-incompatible.
+
+    The template class Box must provide the following methods, whose
+    return values, if any, are simply ignored.
+    \code
+      raise_lower_bound(dimension_type k, bool closed,
+                        Coefficient_traits::const_reference n,
+                        Coefficient_traits::const_reference d)
+    \endcode
+    intersects the interval corresponding to the <CODE>k</CODE>-th
+    space dimension
+    with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
+    with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
+    \code
+      lower_upper_bound(dimension_type k, bool closed,
+                        Coefficient_traits::const_reference n,
+                        Coefficient_traits::const_reference d)
+    \endcode
+    intersects the interval corresponding to the <CODE>k</CODE>-th
+    space dimension
+    with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
+    with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
+    is <CODE>false</CODE>.
+
+    FIX check
+    The function <CODE>raise_lower_bound(k, closed, n, d)</CODE>
+    will be called at most once for each possible value for <CODE>k</CODE>
+    and for all such calls the fraction \f$n/d\f$ will be in canonical form,
+    that is, \f$n\f$ and \f$d\f$ have no common factors and \f$d\f$
+    is positive, \f$0/1\f$ being the unique representation for zero.
+    The same guarantee is offered for the function
+    <CODE>lower_upper_bound(k, closed, n, d)</CODE>.
+  */
+  template <typename Box>
+  void get_covering_box(Box& box) const;
+
   //! Checks if all the invariants are satisfied.
   /*!
     \return
