@@ -476,6 +476,24 @@ template <typename PH>
 bool
 check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps);
 
+// CHECK ME: according to the Intel compiler, the declaration of the
+// following specialization (of the class template parameter) should come
+// before the declaration of the corresponding full specialization
+// (where the member template parameter is specialized too).
+template <>
+template <typename QH>
+Polyhedra_Powerset<NNC_Polyhedron>
+::Polyhedra_Powerset(const Polyhedra_Powerset<QH>& y);
+
+// CHECK ME: according to the Intel compiler, the declaration of the
+// following specialization (of the class template parameter) should come
+// before the declaration of the corresponding full specialization
+// (where the member template parameter is specialized too).
+template <>
+template <typename QH>
+Polyhedra_Powerset<C_Polyhedron>
+::Polyhedra_Powerset(const Polyhedra_Powerset<QH>& y);
+
 // Non-inline full specializations should be declared here
 // so as to inhibit multiple instantiations of the generic template.
 template <>
