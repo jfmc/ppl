@@ -46,8 +46,8 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
     }
     else
       if (gr.generators_are_up_to_date() && gr.generators_are_minimized()) {
-	// FIX Calculate number of congruences from generators.
-	num_proper_congruences = gr.gen_sys.num_rays() + 1 /* Integrality cg. */;
+	// Calculate number of congruences from generators.
+ 	num_proper_congruences = gr.gen_sys.num_rays() + 1 /* Integrality cg. */;
 	num_equalities = gr.space_dimension() + 1 - gr.gen_sys.num_rows();
       }
       else {
@@ -81,7 +81,7 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
 #endif
       gr.set_generators_minimized();
     }
-    // FIX Calculate number of congruences from generators.
+    // Calculate number of congruences from generators.
     num_proper_congruences = gr.gen_sys.num_rays() + 1 /* Integrality cg. */;
     num_equalities = gr.space_dimension() + 1 - gr.gen_sys.num_rows();
   }
