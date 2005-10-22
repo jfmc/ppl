@@ -25,7 +25,10 @@ AC_DEFUN([AC_CHECK_SICSTUS_PROLOG],
 AC_PATH_PROG(sicstus_prolog, sicstus)
 if test x$sicstus_prolog != x
 then
-  sicstus_prolog_base=$(dirname $(dirname $sicstus_prolog))
+  dnl The following would fail to find the real base `sicstus'
+  dnl is a symbolic link.
+  dnl sicstus_prolog_base=$(dirname $(dirname $sicstus_prolog))
+  sicstus_prolog_base=$(dirname $($sicstus_prolog -f --goal "use_module(library(system)), environ('SP_APP_DIR', X), write(X), nl, halt."))
   SICSTUS_PROLOG_INCLUDE_DIRECTORY="$sicstus_prolog_base/include"
   ac_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS -I$SICSTUS_PROLOG_INCLUDE_DIRECTORY"
