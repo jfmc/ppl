@@ -29,9 +29,9 @@ then
   dnl is a symbolic link.
   dnl sicstus_prolog_base=$(dirname $(dirname $sicstus_prolog))
   sicstus_prolog_base=$(dirname $($sicstus_prolog -f --goal "use_module(library(system)), environ('SP_APP_DIR', X), write(X), nl, halt."))
-  SICSTUS_PROLOG_INCLUDE_DIRECTORY="$sicstus_prolog_base/include"
+  SICSTUS_PROLOG_INCLUDE_OPTIONS="-I${sicstus_prolog_base}/include"
   ac_save_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$CPPFLAGS -I$SICSTUS_PROLOG_INCLUDE_DIRECTORY"
+  CPPFLAGS="$CPPFLAGS $SICSTUS_PROLOG_INCLUDE_OPTIONS"
   AC_LANG_PUSH(C++)
   # We require SICStus Prolog 3.9.1 or later.
   AC_CHECK_HEADER(sicstus/sicstus.h,
@@ -50,7 +50,7 @@ then
                   sicstus_prolog="")
   AC_LANG_POP(C++)
   CPPFLAGS="$ac_save_CPPFLAGS"
-  AC_SUBST(SICSTUS_PROLOG_INCLUDE_DIRECTORY)
+  AC_SUBST(SICSTUS_PROLOG_INCLUDE_OPTIONS)
 fi
 
 if test x$sicstus_prolog != x

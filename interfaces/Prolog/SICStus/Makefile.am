@@ -42,7 +42,7 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
 -I$(top_srcdir)/Watchdog/src \
 -I$(top_builddir)/src \
--I$(SICSTUS_PROLOG_INCLUDE_DIRECTORY) \
+$(SICSTUS_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
 bin_PROGRAMS = ppl_sicstus

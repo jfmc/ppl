@@ -599,24 +599,9 @@ AM_CONDITIONAL(BUILD_SWI_PROLOG_INTERFACE, test x$have_swi_prolog = xyes)
 # XSB
 if test x${xsb_prolog_interface_enabled} = xyes
 then
-  AC_CHECK_PROG(XSB_PROLOG, xsb, xsb)
-  # The foreign language interface include file is `cinterf.h',
-  # but this resides in the emulator directory and is not installed
-  # in any standard place.
-  if test x"$XSB_PROLOG" = xxsb
-  then
-    xsb_emu_dir=`xsb --nobanner --quietload --noprompt \
-                  -e "write('emudir='), \
-                    xsb_configuration(emudir, X), write(X), nl, halt." \
-                      2>/dev/null | sed "s/^emudir=//g"`
-    xsb_config_dir=`xsb --nobanner --quietload --noprompt \
-                     -e "write('config_dir='), \
-                       xsb_configuration(config_dir,X), write(X), nl, halt." \
-                         2>/dev/null | sed "s/^config_dir=//g"`
-    xsb_includes="-I${xsb_emu_dir} -I${xsb_config_dir}"
-  fi
+  AC_CHECK_XSB_PROLOG
 fi
-AM_CONDITIONAL(BUILD_XSB_PROLOG_INTERFACE, test x$XSB_PROLOG = xxsb)
+AM_CONDITIONAL(BUILD_XSB_PROLOG_INTERFACE, test x$have_xsb_prolog = xyes)
 
 # YAP
 if test x${yap_prolog_interface_enabled} = xyes
@@ -752,7 +737,6 @@ AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(debug_flag)
-AC_SUBST(xsb_includes)
 AC_SUBST(coefficient_mnemonic)
 AC_SUBST(text_md5sum)
 

@@ -41,14 +41,14 @@ then
 
   dnl Version checks should be inserted here, if necessary.
 
-  SWI_PROLOG_INCLUDE_DIRECTORY="$swi_prolog_base/include"
+  SWI_PROLOG_INCLUDE_OPTIONS="-I${swi_prolog_base}/include"
   ac_save_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$CPPFLAGS -I$SWI_PROLOG_INCLUDE_DIRECTORY"
+  CPPFLAGS="$CPPFLAGS $SWI_PROLOG_INCLUDE_OPTIONS"
   AC_LANG_PUSH(C++)
   AC_CHECK_HEADER(SWI-Prolog.h, [], swi_prolog="")
   AC_LANG_POP(C++)
   CPPFLAGS="$ac_save_CPPFLAGS"
-  AC_SUBST(SWI_PROLOG_INCLUDE_DIRECTORY)
+  AC_SUBST(SWI_PROLOG_INCLUDE_OPTIONS)
 fi
 
 if test x$swi_prolog != x

@@ -49,10 +49,10 @@ if BUILD_XSB_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
--I$(top_builddir)/src \
 -I$(top_srcdir)/Watchdog/src \
-@extra_includes@ \
-@xsb_includes@
+-I$(top_builddir)/src \
+$(XSB_PROLOG_INCLUDE_OPTIONS) \
+@extra_includes@
 
 pkglib_LTLIBRARIES = ppl_xsb.la
 ppl_xsb_la_SOURCES = ppl_xsb.cc
