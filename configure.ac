@@ -711,7 +711,7 @@ then
 fi
 
 # System-dependent adjustments.
-
+text_md5sum="$MD5SUM -t"
 no_undefined=no
 
 case "${host_os}" in
