@@ -948,7 +948,7 @@ PPL::Constraint_System::primal_simplex(Linear_Expression& cost_function,
 
 Simplex_Status
 PPL::Constraint_System::primal_simplex(const Linear_Expression& expr,
-				       const bool maximize,
+				       const Optimization_Kind kind,
 				       Coefficient& ext_n,
 				       Coefficient& ext_d,
 				       Generator& optimizing_point) const {
@@ -973,7 +973,7 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expr,
   Linear_Expression cost_function = expr;
 
   // Minimization is obtained by negating the cost_function.
-  if (!maximize) 
+  if (kind == MINIMIZATION)
     for (dimension_type i = cost_function.size(); i-- > 0; ) 
       negate(cost_function[i]);
 
@@ -990,7 +990,8 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expr,
     normalize2(ext_n, optimizing_point.divisor(), ext_n, ext_d);
     
     // Check the computed generator for feasibility.
-    assert(satisfies_all_constraints(optimizing_point));  
+    assert(satisfies_all_constraints(optimizing_point));
   }
   return status;
 }
+

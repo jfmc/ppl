@@ -742,7 +742,7 @@ ppl_Constraint_System_maximize(ppl_const_Constraint_System_t cs,
   Coefficient& ssup_n = *to_nonconst(sup_n);
   Coefficient& ssup_d = *to_nonconst(sup_d);
   Generator& ppoint = *to_nonconst(point);
-  return ccs.primal_simplex(lle, true, ssup_n, ssup_d, ppoint);
+  return ccs.primal_simplex(lle, MAXIMIZATION, ssup_n, ssup_d, ppoint);
 }
 CATCH_ALL
 
@@ -757,7 +757,7 @@ ppl_Constraint_System_minimize(ppl_const_Constraint_System_t cs,
   Coefficient& iinf_n = *to_nonconst(inf_n);
   Coefficient& iinf_d = *to_nonconst(inf_d);
   Generator& ppoint = *to_nonconst(point);
-  return ccs.primal_simplex(lle, false, iinf_n, iinf_d, ppoint);
+  return ccs.primal_simplex(lle, MINIMIZATION, iinf_n, iinf_d, ppoint);
 }
 CATCH_ALL
 
