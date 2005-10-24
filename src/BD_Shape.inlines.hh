@@ -177,6 +177,52 @@ BD_Shape<T>::BD_Shape(const Constraint_System& cs)
 }
 
 template <typename T>
+inline dimension_type
+BD_Shape<T>::affine_dimension() const {
+  const dimension_type space_dim = space_dimension();
+
+  // Closure is necessary to detect emptiness and all (possibly
+  // implicit) equalities.
+  shortest_path_closure_assign();
+  if (marked_empty())
+    return 0;
+
+  // The vector `leader' is used to represent equivalence classes:
+  // `leader[i] == j' if and only if "variable" `i' is in the equivalence
+  // class whose smallest member is `j'.
+  std::vector<dimension_type> leader(space_dim + 1);
+
+  // Initially we have all the singleton classes.
+  for (dimension_type i = space_dim + 1; i-- > 0; )
+    leader[i] = i;
+
+  dimension_type num_equivalence_classes = 0;
+  for (dimension_type i = 0; i <= space_dim; ++i)
+    // If `i' is not a leader, then it belongs to an equivalence class
+    // whose leader is less than `i';  hence this leader has already
+    // been counted.
+    if (leader[i] == i) {
+      // `i' is a leader: count it.
+      ++num_equivalence_classes;
+      // Find and mark all the dimensions that are equivalent to the
+      // `i'-th one.
+      const DB_Row<N>& dbm_i = dbm[i];
+      for (dimension_type j = i+1; j <= space_dim; ++j) {
+	// Dimension `j' is equivalent to dimension `i' if and only if
+	// m_i_j == -m_j_i.
+	N negated_dbm_ji;
+	if (assign_neg(negated_dbm_ji, dbm[j][i], ROUND_IGNORE) == V_EQ
+	    && negated_dbm_ji == dbm_i[j]) 
+	  leader[j] = i;
+      }
+    }
+  
+  // Due to the fictitious variable `0', the affine dimension is one
+  // less the the number of equivalence classes we have just computed.
+  return num_equivalence_classes-1;
+}
+
+template <typename T>
 inline BD_Shape<T>&
 BD_Shape<T>::operator=(const BD_Shape& y) {
   dbm = y.dbm;

@@ -43,6 +43,7 @@ ORIGINAL_TESTS = \
 	addconstraints1 \
 	addspacedims1  addspacedims2 addspacedims3 addspacedims4 \
 	addspacedims5 addspacedims6 addspacedims7 \
+	affinedimension1 \
 	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
 	affineimage6 affineimage7 affineimage8 affineimage9 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
@@ -106,6 +107,8 @@ addspacedims4_SOURCES = addspacedims4.cc
 addspacedims5_SOURCES = addspacedims5.cc
 addspacedims6_SOURCES = addspacedims6.cc
 addspacedims7_SOURCES = addspacedims7.cc
+
+affinedimension1_SOURCES = affinedimension1.cc
 
 affineimage1_SOURCES = affineimage1.cc
 affineimage2_SOURCES = affineimage2.cc

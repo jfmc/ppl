@@ -299,6 +299,11 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
+  //! \brief
+  //! Returns \f$0\f$, if \p *this is empty; otherwise, returns the
+  //! \ref affine_dimension "affine dimension" of \p *this.
+  dimension_type affine_dimension() const;
+
   //! Returns <CODE>true</CODE> if and only if \p *this is an empty BDS.
   bool is_empty() const;
 
