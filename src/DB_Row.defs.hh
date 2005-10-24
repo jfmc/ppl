@@ -34,7 +34,7 @@ site: http://www.cs.unipr.it/ppl/ .*/
 //! \brief
 //! When EXTRA_ROW_DEBUG evaluates to <CODE>true</CODE>, each instance
 //! of the class DB_Row carries its own capacity; this enables extra
-//! consistency checks to 5 be performed.
+//! consistency checks to be performed.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define EXTRA_ROW_DEBUG 0
 #endif
@@ -77,8 +77,8 @@ private:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The base class for the single rows of matrices.
 /*!
-  The templatic class DB_Row<T> allow the efficient representation of
-  the single rows of a matrix. It contains elements of type T stored 
+  The class template DB_Row<T> allows for the efficient representation of
+  the single rows of a DB_Matrix. It contains elements of type T stored 
   as a vector. The class T is a family of extended numbers that
   must provide representation for 
   \f$ -\infty \f$, \f$0\f$,\f$ +\infty \f$ (and, consequently for <EM>nan</EM>,
@@ -126,8 +126,11 @@ public:
 
   //! Constructs properly a default-constructed element.
   /*!
-    \param sz         The size of the row that will be constructed.
-    \param capacity   The minimum capacity of the row that will be constructed.
+    \param sz
+    The size of the row that will be constructed.
+
+    \param capacity
+    The minimum capacity of the row that will be constructed.
     
     The row that we are constructing has a minimum capacity, i.e., it
     can contain at least \p capacity elements, \p sz of which will be
@@ -155,6 +158,7 @@ public:
   /*!
     It is assumed that \p sz is greater than or equal to the size of \p y
     and, of course, that \p sz is less than or equal to \p capacity.
+    Any new position is initialized to \f$+\infty\f$.
   */
   DB_Row(const DB_Row& y, dimension_type sz, dimension_type capacity);
 
@@ -185,7 +189,8 @@ public:
     Adds new positions to the implementation of the row
     obtaining a new row with size \p new_size.
     It is assumed that \p new_size is between the current size
-    and capacity of the row.
+    and capacity of the row. The new positions are initialized
+    to \f$+\infty\f$.
   */
   void expand_within_capacity(dimension_type new_size);
 
@@ -283,18 +288,18 @@ public:
   //! \name Custom allocator and deallocator.
   //@{
 
-  /*! \brief
-    Allocates a chunk of memory able to contain \p capacity T objects
-    beyond the specified \p fixed_size and returns a pointer to the new
-    allocated memory.
-  */
+  //! \brief
+  //! Allocates a chunk of memory able to contain \p capacity T objects
+  //! beyond the specified \p fixed_size and returns a pointer to the new
+  //! allocated memory.
   static void* operator new(size_t fixed_size, dimension_type capacity);
 
   //! Uses the standard delete operator to free the memory \p p points to.
   static void operator delete(void* p);
 
-  //! \brief Placement version:
-  //! uses the standard operator delete to free the memory \p p points to.
+  //! \brief
+  //! Placement version: uses the standard operator delete to free
+  //! the memory \p p points to.
   static void operator delete(void* p, dimension_type capacity);
   //@}
 
@@ -334,7 +339,7 @@ public:
   //! Sets to \p new_sz the actual size of \p *this.
   void set_size(dimension_type new_sz);
 
-  //! Increment the size of \p *this by 1.
+  //! Increments the size of \p *this by 1.
   void bump_size();
   //@}
 
@@ -391,12 +396,6 @@ void iter_swap(typename std::vector<Parma_Polyhedra_Library::DB_Row<T> >
 	       ::iterator y);
 
 } // namespace std
-
-#ifndef EXTRA_NORMALIZATION
-// If non-zero, lines and equalities are ALWAYS normalized so that the
-// first non-zero coefficient is positive.
-#define EXTRA_NORMALIZATION 0
-#endif
 
 #include "DB_Row.inlines.hh"
 
