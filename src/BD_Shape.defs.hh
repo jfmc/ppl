@@ -952,9 +952,6 @@ private:
   //! is a shortest-path reduced system of bounded differences.
   bool is_shortest_path_reduced() const;
 
-  //! Initializes \p *this to the universe BDS.
-  void init();
-
 #if !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<<>(std::ostream& s,

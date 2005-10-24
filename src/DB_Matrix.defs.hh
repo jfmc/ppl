@@ -134,7 +134,8 @@ public:
   public:
     typedef std::forward_iterator_tag iterator_category;
     typedef typename std::iterator_traits<Iter>::value_type value_type;
-    typedef typename std::iterator_traits<Iter>::difference_type difference_type;
+    typedef typename std::iterator_traits<Iter>::difference_type
+    difference_type;
     typedef typename std::iterator_traits<Iter>::pointer pointer;
     typedef typename std::iterator_traits<Iter>::reference reference;
 
@@ -188,7 +189,6 @@ private:
   //! Contains the rows of the matrix.
   std::vector<DB_Row<T> > rows;
 
-
   //! Size of the initialized part of each row.
   dimension_type row_size;
 
@@ -223,21 +223,6 @@ public:
     to \p *this.
   */
   void resize_no_copy(dimension_type new_n_rows);
-
-  //! Adds \p n non-zero rows and columns to the matrix.
-  /*!
-    \param n      The number of rows and columns to be added.
-
-    Turn the \f$r \times c\f$ matrix \f$M\f$ into
-    the \f$(r+n) \times (c+n)\f$ matrix
-    \f$\bigl({0 \atop M}{J \atop 0}\bigr)\f$,
-    where \f$J\f$ is the specular image
-    of the \f$n \times n\f$ identity matrix.
-  */
-  void add_rows_and_columns(dimension_type n);
-
-  //! Returns the space-dimension of the rows in the matrix.
-  dimension_type space_dimension() const;
 
   //! Returns the number of rows in the matrix.
   dimension_type num_rows() const;

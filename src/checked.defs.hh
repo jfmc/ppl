@@ -36,7 +36,9 @@ namespace Parma_Polyhedra_Library {
 namespace Checked {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A policy that specifies a total adherence to behavior of the underlying type.
+//! \brief
+//! A policy that specifies a total adherence to behavior
+//! of the underlying type.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Transparent_Policy {
   //! Check for overflowed result.

@@ -203,9 +203,9 @@ DB_Matrix<T>::operator=(const DB_Matrix& y) {
 }
 
 template <typename T>
-inline void
+void
 DB_Matrix<T>::grow(const dimension_type new_n_rows) {
-  dimension_type old_n_rows = rows.size();
+  const dimension_type old_n_rows = rows.size();
   assert(new_n_rows >= old_n_rows);
 
   if (new_n_rows > old_n_rows) {
@@ -269,7 +269,7 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
     else {
       // Capacity exhausted: we must reallocate the rows and
       // make sure all the rows have the same capacity.
-      dimension_type new_row_capacity = compute_capacity(new_n_rows);
+      const dimension_type new_row_capacity = compute_capacity(new_n_rows);
       for (dimension_type i = old_n_rows; i-- > 0; ) {
 	DB_Row<T> new_row(rows[i], new_n_rows, new_row_capacity);
 	std::swap(rows[i], new_row);
@@ -282,7 +282,7 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
 }
 
 template <typename T>
-inline void
+void
 DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
   dimension_type old_n_rows = rows.size();
 
@@ -341,8 +341,7 @@ DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
     else {
       // Capacity exhausted: we must reallocate the rows and
       // make sure all the rows have the same capacity.
-      const dimension_type new_row_capacity
-	= compute_capacity(new_n_rows);
+      const dimension_type new_row_capacity = compute_capacity(new_n_rows);
       for (dimension_type i = old_n_rows; i-- > 0; ) {
 	DB_Row<T> new_row(new_n_rows, new_row_capacity);
 	std::swap(rows[i], new_row);
@@ -355,39 +354,35 @@ DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
 }
 
 template <typename T>
-inline void
+void
 DB_Matrix<T>::ascii_dump(std::ostream& s) const {
-  using std::endl;
-
   const DB_Matrix<T>& x = *this;
   const char separator = ' ';
-  dimension_type nrows = x.num_rows();
-  s << nrows << separator
-    << endl;
+  const dimension_type nrows = x.num_rows();
+  s << nrows << separator << std::endl;
   for (dimension_type i = 0; i < nrows;  ++i) {
     for (dimension_type j = 0; j < nrows; ++j) {
       using namespace IO_Operators;
       s << x[i][j] << separator;
     }
-    s << endl;
+    s << std::endl;
   }
 }
 
 template <typename T>
-inline bool
+bool
 DB_Matrix<T>::ascii_load(std::istream& s) {
   dimension_type nrows;
    if (!(s >> nrows))
     return false;
   resize_no_copy(nrows);
   DB_Matrix& x = *this;
-  for (dimension_type i = 0; i < nrows;  ++i) {
+  for (dimension_type i = 0; i < nrows;  ++i)
     for (dimension_type j = 0; j < nrows; ++j) {
       using namespace IO_Operators;
       if (!(s >> x[i][j]))
 	return false;
     }
-  }
   // Check for well-formedness.
   assert(OK());
   return true;
@@ -398,7 +393,7 @@ DB_Matrix<T>::ascii_load(std::istream& s) {
 template <typename T>
 inline bool
 operator==(const DB_Matrix<T>& x, const DB_Matrix<T>& y) {
-  dimension_type x_num_rows = x.num_rows();
+  const dimension_type x_num_rows = x.num_rows();
   if (x_num_rows != y.num_rows())
     return false;
   for (dimension_type i = x_num_rows; i-- > 0; )
@@ -408,17 +403,7 @@ operator==(const DB_Matrix<T>& x, const DB_Matrix<T>& y) {
 }
 
 template <typename T>
-inline void
-DB_Matrix<T>::add_rows_and_columns(const dimension_type n) {
-  assert(n > 0);
-  const dimension_type old_n_rows = num_rows();
-  grow(old_n_rows + n);
-  assert(OK());
-}
-
-
-template <typename T>
-inline bool
+bool
 DB_Matrix<T>::OK() const {
 #ifndef NDEBUG
   using std::endl;
@@ -437,7 +422,7 @@ DB_Matrix<T>::OK() const {
   }
 
   const DB_Matrix& x = *this;
-  dimension_type n_rows = num_rows();
+  const dimension_type n_rows = x.num_rows();
   for (dimension_type i = 0; i < n_rows; ++i) {
     if (!x[i].OK(row_size, row_capacity))
       return false;
@@ -449,13 +434,12 @@ DB_Matrix<T>::OK() const {
 
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */  //FIXME!!
 template <typename T>
-inline std::ostream&
+std::ostream&
 IO_Operators::operator<<(std::ostream& s, const DB_Matrix<T>& c) {
-  dimension_type n = c.num_rows();
+  const dimension_type n = c.num_rows();
   for (dimension_type i = 0; i < n; ++i) {
-    for (dimension_type j = 0; j < n; ++j) {
+    for (dimension_type j = 0; j < n; ++j)
       s << c[i][j] << " ";
-    }
     s << std::endl;
   }
   return s;

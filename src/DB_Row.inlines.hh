@@ -104,47 +104,6 @@ DB_Row_Impl_Handler<T>::~DB_Row_Impl_Handler() {
   delete impl;
 }
 
-// template <typename T>
-// inline void
-// DB_Row<T>::Impl::resize_no_copy(const dimension_type new_sz) {
-//   if (new_sz < size())
-//     shrink(new_sz);
-//   else
-//     grow_no_copy(new_sz);
-// }
-
-// template <typename T>
-// inline
-// DB_Row<T>::Impl::Impl(const dimension_type sz)
-//   : size_(0) {
-//   grow_no_copy(sz);
-// }
-
-// template <typename T>
-// inline
-// DB_Row<T>::Impl::Impl(const Impl& y)
-//   : size_(0) {
-//   copy_construct(y);
-// }
-
-// template <typename T>
-// inline
-// DB_Row<T>::Impl::Impl(const Impl& y, const dimension_type sz)
-//   : size_(0) {
-//   copy_construct(y);
-//   grow_no_copy(sz);
-// }
-
-// template <typename T>
-// inline
-// DB_Row<T>::Impl::~Impl() {
-// #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
-//   shrink(0);
-// #else
-//   shrink(1);
-// #endif
-// }
-
 template <typename T>
 inline T&
 DB_Row_Impl_Handler<T>::Impl::operator[](const dimension_type k) {
@@ -296,26 +255,6 @@ inline
 DB_Row<T>::~DB_Row() {
 }
 
-// template <typename T>
-// inline void
-// DB_Row<T>::resize_no_copy(const dimension_type new_sz) {
-//   assert(impl);
-// #if EXTRA_ROW_DEBUG
-//   assert(new_sz <= capacity_);
-// #endif
-//   impl->resize_no_copy(new_sz);
-// }
-
-// template <typename T>
-// inline void
-// DB_Row<T>::grow_no_copy(const dimension_type new_sz) {
-//   assert(impl);
-// #if EXTRA_ROW_DEBUG
-//   assert(new_sz <= capacity_);
-// #endif
-//   impl->grow_no_copy(new_sz);
-// }
-
 template <typename T>
 inline void
 DB_Row<T>::shrink(const dimension_type new_size) {
@@ -369,21 +308,6 @@ DB_Row<T>::operator[](const dimension_type k) const {
   return (*x.impl)[k];
 }
 
-// template <typename T>
-// inline void
-// DB_Row<T>::Impl::grow_no_copy(const dimension_type new_sz) {
-//   assert(new_sz >= size());
-// #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
-//   // vec[0] is already constructed.
-//   if (size() == 0 && new_sz > 0)
-//     bump_size();
-// #endif
-//   for (dimension_type i = size(); i < new_sz; ++i) {
-//     new (&vec_[i]) T();
-//     bump_size();
-//   }
-// }
-
 template <typename T>
 inline void
 DB_Row_Impl_Handler<T>::
@@ -395,7 +319,7 @@ Impl::expand_within_capacity(const dimension_type new_size) {
     bump_size();
 #endif
   for (dimension_type i = size(); i < new_size; ++i) {
-    new (&vec_[i]) T();
+    new (&vec_[i]) T(PLUS_INFINITY);
     bump_size();
   }
 }
@@ -439,43 +363,6 @@ DB_Row_Impl_Handler<T>::Impl::copy_construct_coefficients(const Impl& y) {
   }
 #endif
 }
-
-// template <typename T>
-// inline void
-// DB_Row<T>::Impl::shrink(const dimension_type new_sz) {
-// #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
-//   assert(new_sz > 0);
-// #endif
-//   assert(new_sz <= size());
-//   // We assume construction was done "forward".
-//   // We thus perform destruction "backward".
-//   for (dimension_type i = size(); i-- > new_sz; )
-//     // ~T() does not throw exceptions.  So we do.
-//     vec_[i].~T();
-//   set_size(new_sz);
-// }
-
-// template <typename T>
-// inline void
-// DB_Row<T>::Impl::copy_construct(const Impl& y) {
-//   dimension_type y_size = y.size();
-// #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
-//   for (dimension_type i = 0; i < y_size; ++i) {
-//     new (&vec_[i]) T(y.vec_[i]);
-//     bump_size();
-//   }
-// #else
-//   assert(y_size > 0);
-//   if (y_size > 0) {
-//     vec_[0] = y.vec_[0];
-//     bump_size();
-//     for (dimension_type i = 1; i < y_size; ++i) {
-//       new (&vec_[i]) T(y.vec_[i]);
-//       bump_size();
-//     }
-//   }
-// #endif
-// }
 
 template <typename T>
 typename DB_Row<T>::iterator
@@ -571,6 +458,7 @@ DB_Row<T>::OK(const dimension_type row_size,
 
   return !is_broken;
 }
+
 
 /*! \relates DB_Row */
 template <typename T>
