@@ -222,10 +222,8 @@ test6() {
 
     gr.affine_image(A, 3*A + 2*B + 4);
 
-    if (gr == known_gr) {
-      dump_grids(gr, known_gr); // FIX
+    if (gr == known_gr)
       return;
-    }
   }
 
   nout << "Grid should equal known grid." << endl

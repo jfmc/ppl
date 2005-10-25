@@ -242,18 +242,15 @@ Result assign(Checked_Number<To, To_Policy>& to, const char* x, Rounding_Dir dir
 template <typename To, typename To_Policy>
 Result assign(Checked_Number<To, To_Policy>& to, char* x, Rounding_Dir dir);
 
-#define FUNC1(name)						\
-  template <typename To, typename From>				\
-  Result name(To& to, const From& x, Rounding_Dir dir);		\
-  template <typename To, typename To_Policy,			\
-	    typename From>					\
-  Result name(Checked_Number<To, To_Policy>& to, const From& x,	\
-	      Rounding_Dir dir);				\
-  template <typename To, typename To_Policy,			\
-	    typename From, typename From_Policy>		\
-  Result name(Checked_Number<To, To_Policy>& to,		\
-	      const Checked_Number<From, From_Policy>& x,	\
-	      Rounding_Dir dir);
+#define FUNC1(name) \
+template <typename To, typename From> \
+Result name(To& to, const From& x, Rounding_Dir dir); \
+template <typename To, typename To_Policy, \
+          typename From> \
+Result name(Checked_Number<To, To_Policy>& to, const From& x, Rounding_Dir dir); \
+template <typename To, typename To_Policy, \
+          typename From, typename From_Policy> \
+Result name(Checked_Number<To, To_Policy>& to, const Checked_Number<From, From_Policy>& x, Rounding_Dir dir);
 
 FUNC1(assign)
 FUNC1(assign_neg)

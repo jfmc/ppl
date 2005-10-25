@@ -191,8 +191,7 @@ Grid::reduce_pc_with_pc(Row& row, Row& pivot,
   TEMP_INTEGER(row_a);
   pivot_a = pivot[column] / gcd;
   row_a = row[column] / gcd;
-  // Adjust the elements of row and pivot, similarly to
-  // reduce_line_with_line above.
+  // Adjust the elements of row, as in reduce_line_with_line above.
   for (dimension_type col = 0;
        col < pivot.size() - (parameters ? 0 : 1 /* modulus */);
        ++col) {
@@ -207,9 +206,8 @@ Grid::reduce_pc_with_pc(Row& row, Row& pivot,
 
        The equivalence of the adjusted pivot can be seen as with row
        in reduce_line_with_line above, only with an s-multiplied copy
-       of pivot being negated and then substituted into a t-multiplied
-       row.  */
-    // FIX when col == column pivot[col] becomes gcd, row[col] becomes 0
+       of pivot being negated and then substituted into an
+       t-multiplied row.  */
     pivot[col] = (s * pivot_col) + (t * row_col);
     row[col] = (pivot_a * row_col) - (row_a * pivot_col);
   }
@@ -490,7 +488,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   // preceding column `dim' and a value other than zero in column
   // `dim'.
   dimension_type pivot_index = 0;
-  for (dimension_type dim = num_cols; dim-- > 0; ) {
+  for (dimension_type dim = num_cols; dim-- > 0;) {
     strace << "dim " << dim << endl;
     trace_dim_kinds("  ", dim_kinds);
 

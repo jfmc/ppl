@@ -745,6 +745,9 @@ fi
 
 # System-dependent adjustments.
 
+# On Debian the md5sum from package "dpkg" lacks -t.
+AC_TRY_RUN([md5sum -t], [text_md5sum="$MD5SUM -t"], [text_md5sum="$MD5SUM"])
+
 no_undefined=no
 
 case "${host_os}" in

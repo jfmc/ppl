@@ -1,4 +1,4 @@
-/* Grid class implementation: minimize()
+/* Grid class implementation: minimize() and add_and_minimize().
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
+#include "Linear_Row.defs.hh"
 #include "Linear_System.defs.hh"
 #include "Grid.defs.hh"
 
@@ -34,7 +35,6 @@ Grid::minimize(Generator_System& source, Congruence_System& dest,
   // FIX check if source,dest minimized? prhps in callers?
 
   if (simplify(source, dim_kinds))
-    // FIX empty result possible?
     return true;
 
   // Populate `dest' with the congruences characterizing the grid

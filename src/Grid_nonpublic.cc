@@ -227,10 +227,8 @@ PPL::Grid::is_included_in(const Grid& y) const {
     y.update_congruences();
 #else
   if (!x.generators_are_minimized())
-    // FIX just call simplify?
     x.minimize();
   if (!y.congruences_are_minimized())
-    // FIX just call simplify?
     y.minimize();
 #endif
 

@@ -74,25 +74,15 @@ ppl-user-@VERSION@-html \
 ppl-devref-@VERSION@-html
 
 DIST_HTML_DOCS = \
-ppl-devref-@VERSION@-html.tar.gz
-
-#ppl-user-@VERSION@-html.tar.gz
-
-# DIST_PDF_DOCS = \
-# $(PDF_LICENSES) \
-# ppl-user-@VERSION@-browse.pdf \
-# ppl-user-@VERSION@-print.pdf
+ppl-user-@VERSION@-html.tar.gz
 
 DIST_PDF_DOCS = \
-ppl-user-@VERSION@-browse.pdf \
-ppl-user-@VERSION@-print.pdf
-
-# DIST_PS_DOCS = \
-# $(PS_LICENSES) \
-# ppl-user-@VERSION@-print.ps.gz
+$(PDF_LICENSES) \
+ppl-user-@VERSION@.pdf
 
 DIST_PS_DOCS = \
-ppl-user-@VERSION@-print.ps.gz
+$(PS_LICENSES) \
+ppl-user-@VERSION@.ps.gz
 
 DIST_TXT_DOCS = \
 $(TXT_LICENSES)
@@ -118,27 +108,23 @@ user: ppl-user-@VERSION@.pdf
 
 world: $(ALL_TARGETS)
 
-install-data-local: install-html # install-pdf install-ps install-txt
-installdirs-local: installdirs-html # installdirs-pdf installdirs-ps installdirs-txt
-uninstall-local: uninstall-html # uninstall-pdf uninstall-ps uninstall-txt
+install-data-local: \
+install-html \
+install-pdf \
+install-ps \
+install-txt
 
-# install-data-local: \
-# install-html \
-# install-pdf \
-# install-ps \
-# install-txt
+installdirs-local: \
+installdirs-html \
+installdirs-pdf \
+installdirs-ps \
+installdirs-txt
 
-# installdirs-local: \
-# installdirs-html \
-# installdirs-pdf \
-# installdirs-ps \
-# installdirs-txt
-
-# uninstall-local: \
-# uninstall-html \
-# uninstall-pdf \
-# uninstall-ps \
-# uninstall-txt
+uninstall-local: \
+uninstall-html \
+uninstall-pdf \
+uninstall-ps \
+uninstall-txt
 
 # Installation and uninstallation of HTML documentation.
 install-html:

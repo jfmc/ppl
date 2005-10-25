@@ -29,8 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstddef>
 
 // FIX Temporary tracing stream.
-// FIX replace with #define TRACE(x) [x]
-//     usage: TRACE(cout << "tracing" << endl);
 #if 0
 #include <iostream>
 std::ostream& ctrace = std::cout;
@@ -168,7 +166,7 @@ dimension_type
 Grid::conversion(Generator_System& source, Congruence_System& dest,
 		 Dimension_Kinds& dim_kinds) {
   ctrace << "============= convert gs to cgs" << std::endl
-	 << "source:" << std::endl;
+	<< "source:" << std::endl;
   ctrace_dump(source);
   ctrace << "dest:" << std::endl;
   ctrace_dump(dest);

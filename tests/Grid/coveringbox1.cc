@@ -91,8 +91,8 @@ test2() {
   BBox known_box(SPACE_DIM);
   known_box.raise_lower_bound(0, false, 0, 1);
   known_box.lower_upper_bound(0, false, 1, 1);
-  known_box.raise_lower_bound(1, false, 0, 1);
-  known_box.lower_upper_bound(1, false, 1, 1);
+  known_box.raise_lower_bound(1, false, -1, 1);
+  known_box.lower_upper_bound(1, false, 0, 1);
 
   if (box == known_box)
     return;
@@ -385,8 +385,8 @@ test10() {
 #undef SPACE_DIM
 #define SPACE_DIM 4
 
-// A grid where, for a particular dimension (D), many coefficients
-// between the first and last rows contribute towards the size of the
+// A grid where, for a particular dimension, many coefficients between
+// the first and last rows contribute towards the size of the
 // resulting interval.
 
 void
@@ -427,45 +427,6 @@ test11() {
   exit(1);
 }
 
-// A grid where all the points have the same value in one of the
-// dimensions (B).
-
-void
-test12() {
-  nout << "test12:" << endl;
-
-  BBox box(SPACE_DIM);
-
-  Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(point());
-  gr.add_generator(point(A));
-  gr.add_generator(point(C));
-  gr.add_generator(point(D));
-
-  gr.get_covering_box(box);
-
-  if (find_variation(gr))
-    exit(1);
-
-  BBox known_box(SPACE_DIM);
-  known_box.raise_lower_bound(0, false, 0, 1);
-  known_box.lower_upper_bound(0, false, 1, 1);
-  known_box.raise_lower_bound(1, false, 0, 1);
-  known_box.raise_lower_bound(2, false, 0, 1);
-  known_box.lower_upper_bound(2, false, 1, 1);
-  known_box.raise_lower_bound(3, false, 0, 1);
-  known_box.lower_upper_bound(3, false, 1, 1);
-
-  if (box == known_box)
-    return;
-
-  nout << "Box should equal known box." << endl;
-  box.print(nout, "  box:");
-  known_box.print(nout, "known:");
-
-  exit(1);
-}
-
 } // namespace
 
 int
@@ -485,7 +446,6 @@ main() TRY {
   test9();
   test10();
   test11();
-  test12();
 
   return 0;
 }
