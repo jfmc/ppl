@@ -3693,4 +3693,6 @@ BD_Shape<T>::throw_generic(const char* method,
   throw std::invalid_argument(s.str());
 }
 
+} // namespace Parma_Polyhedra_Library
+
 #endif // !defined(PPL_BD_Shape_inlines_hh)
