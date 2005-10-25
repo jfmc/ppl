@@ -126,10 +126,60 @@ forget_binary_constraints_on_var(DB_Matrix<N>& x,
   assert(x_space_dim == x.num_rows() - 1);
   assert(0 < var_index && var_index <= x_space_dim);
   DB_Row<N>& x_v = x[var_index];
-  for (dimension_type i = 1; i <= x_space_dim; ++i) {
+  for (dimension_type i = x_space_dim; i > 0; --i) {
     x_v[i] = PLUS_INFINITY;
     x[i][var_index] = PLUS_INFINITY;
   } 
+}
+
+inline bool
+extract_bounded_difference(const Constraint& c,
+			   const dimension_type c_space_dim,
+			   dimension_type& c_num_vars,
+			   dimension_type& c_first_var,
+			   dimension_type& c_second_var,
+			   Coefficient& c_coeff) {
+  // Check for preconditions.
+  assert(c.space_dimension() == c_space_dim);
+  assert(c_num_vars == 0 && c_first_var == 0 && c_second_var == 0);
+  // Store the indices of the non-zero components of `c',
+  dimension_type non_zero_index[2] = { 0, 0 };
+  // Collect the non-zero components of `c'.
+  for (dimension_type i = c_space_dim; i-- > 0; )
+    if (c.coefficient(Variable(i)) != 0)
+      if (c_num_vars <= 1)
+	non_zero_index[c_num_vars++] = i + 1;
+      else
+	// Constraint `c' is not a bounded difference.
+	return false;
+  
+  // Make sure that `c' is indeed a bounded difference,
+  // i.e., it has one of the following forms:
+  //           0 <=/= b, if c_num_vars == 0;
+  //   a*x       <=/= b, if c_num_vars == 1;
+  //   a*x - a*y <=/= b, if c_num_vars == 2.
+  switch (c_num_vars) {
+  case 2:
+    {
+      const Coefficient& c0 = c.coefficient(Variable(non_zero_index[0]-1));
+      const Coefficient& c1 = c.coefficient(Variable(non_zero_index[1]-1));
+      if (sgn(c0) == sgn(c1) || c0 != -c1)
+	// Constraint `c' is not a bounded difference.
+	return false;
+      c_coeff = c1;
+    }
+    c_first_var = non_zero_index[0];
+    c_second_var = non_zero_index[1];
+    break;
+  case 1:
+    c_coeff = -c.coefficient(Variable(non_zero_index[0]-1));
+    c_first_var = non_zero_index[0];
+    break;
+  default:
+    assert(c_num_vars == 0);
+    break;
+  }
+  return true;
 }
 
 } // namespace
@@ -393,7 +443,7 @@ BD_Shape<T>::remove_higher_space_dimensions(const dimension_type new_dim) {
     return;
   }
 
-  // The closure is necessary as in remove_space_dimensions().
+  // Shortest-path closure is necessary as in remove_space_dimensions().
   shortest_path_closure_assign();
   dbm.resize_no_copy(new_dim + 1);
 
@@ -494,9 +544,24 @@ BD_Shape<T>::ascii_load(std::istream& s) {
   return true;
 }
 
+} // namespace Parma_Polyhedra_Library
 
-// From here onwards, there should be no inline methods/function,
+namespace std {
+
+/*! \relates Parma_Polyhedra_Library::BD_Shape */
+template <typename T>
+inline void
+swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
+     Parma_Polyhedra_Library::BD_Shape<T>& y) {
+  x.swap(y);
+}
+
+} // namespace std
+
+// From here onwards, there should be no inline methods/functions,
 // but only non-inline member/function templates.
+
+namespace Parma_Polyhedra_Library {
 
 template <typename T>
 BD_Shape<T>::BD_Shape(const Generator_System& gs)
@@ -657,7 +722,6 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
 
   // If `complexity' allows it, use simplex to determine whether or not
   // the polyhedron is empty.
-  // FIXME: we must topologically close the constraint system here!
   if (complexity == SIMPLEX_COMPLEXITY) {
     Linear_Expression obj = Linear_Expression::zero();
     Coefficient n;
@@ -697,7 +761,6 @@ template <typename T>
 void
 BD_Shape<T>::add_constraint(const Constraint& c) {
   const dimension_type c_space_dim = c.space_dimension();
-
   // Dimension-compatibility check.
   if (c_space_dim > space_dimension())
     throw_dimension_incompatible("add_constraint(c)", c);
@@ -705,84 +768,49 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   if (c.is_strict_inequality())
     throw_constraint_incompatible("add_constraint(c)");
 
-  // Store the indices of the non-zero components of `c',
-  dimension_type non_zero_position[2] = { 0, 0 };
+  dimension_type num_vars = 0;
+  dimension_type i = 0;
+  dimension_type j = 0;
+  Coefficient coeff;
+  // Constraints that are not bounded differences are ignored.
+  if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
+    return;
 
-  // Number of non-zero components of `c'.
-  dimension_type t = 0;
-
-  // Collect the non-zero components of `c'.
-  for (dimension_type i = c_space_dim; i-- > 0; )
-    if (c.coefficient(Variable(i)) != 0)
-      if (t >= 2)
-	// Constraints that are not "bounded differences" are ignored.
-	return;
-      else
-	non_zero_position[t++] = i;
-  
-  // We will now make sure `c' has one of the following forms:
-  //
-  //           0 <=/= b, if t == 0;
-  //   a*x       <=/= b, if t == 1;
-  //   a*x - a*y <=/= b, if t == 2.
-  //
-  // In addition, non_zero_position[0] and (if t >= 1) non_zero_position[1]
-  // will contain the indices of the cell(s) of `dbm' to be modified.
-  Coefficient a;
-  Coefficient b = c.inhomogeneous_term();
-  switch (t) {
-  case 2:
-    a = c.coefficient(Variable(non_zero_position[1]));
-    if (a != -c.coefficient(Variable(non_zero_position[0])))
-      // Constraints that are not "bounded differences" are ignored.
-      return;
-    // In DBMs there is a +1 offset on the position of each dimension.
-    ++non_zero_position[1];
-    ++non_zero_position[0];
-    break;
-
-  case 1:
-    a = -c.coefficient(Variable(non_zero_position[0]));
-    // In DBMs there is a +1 offset on the position of each dimension.
-    ++non_zero_position[0];
-    break;
-
-  case 0:
-    if (b < 0)
+  if (num_vars == 0) {
+    // Dealing with a trivial constraint.
+    if (c.inhomogeneous_term() < 0)
       set_empty();
     return;
   }
 
   // Select the cell to be modified for the "<=" part of the constraint,
-  // and set `a' to the absolute value of itself.
-  N& dbm_j_0_j_1 = dbm[non_zero_position[0]][non_zero_position[1]];
-  N& dbm_j_1_j_0 = dbm[non_zero_position[1]][non_zero_position[0]];
-  N& x = (a < 0) ? dbm_j_0_j_1 : dbm_j_1_j_0;
-  // The element `y' is the symmetric of `x'.
-  N& y = (a < 0) ? dbm_j_1_j_0 : dbm_j_0_j_1;
-  if (a < 0)
-    a = -a;
+  // and set `coeff' to the absolute value of itself.
+  N& x = (coeff < 0) ? dbm[i][j] : dbm[j][i];
+  N& y = (coeff < 0) ? dbm[j][i] : dbm[i][j];
+  if (coeff < 0)
+    coeff = -coeff;
 
-  bool check_change = false;
-  // Compute b/a into `d', rounding the result towards plus infinity.
+  bool changed = false;
+  // Compute the bound for `x', rounding towards plus infinity.
   N d;
-  div_round_up(d, b, a);
+  div_round_up(d, c.inhomogeneous_term(), coeff);
   if (x > d) {
     x = d;
-    check_change = true;
+    changed = true;
   }
 
   if (c.is_equality()) {
-    // Compute -b/a into `d', rounding the result towards plus infinity.
-    div_round_up(d, -b, a);
+    // Also compute the bound for `y', rounding towards plus infinity.
+    div_round_up(d, -c.inhomogeneous_term(), coeff);
     if (y > d) {
       y = d;
-      check_change = true;
+      changed = true;
     }
   }
+
   // In general, adding a constraint does not preserve the shortest-path
   // closure of the system of bounded differences.
-  if (check_change && marked_shortest_path_closed())
+  if (changed && marked_shortest_path_closed())
     status.reset_shortest_path_closed();
   assert(OK());
 }
@@ -843,12 +871,10 @@ BD_Shape<T>::contains(const BD_Shape& y) const {
   if (x_space_dim != y.space_dimension())
     throw_dimension_incompatible("contains(y)", y);
 
-  // The zero-dimensional universal system of bounded differences
-  // always contains a zero-dimensional universal system of
-  // bounded differences and a zero-dimensional empty system
-  // of bounded differences.
-  // The zero-dimensional empty system of bounded differences
-  // only contains a zero-dimensional empty system of bounded differences.
+  // The zero-dimensional universe shape contains any other
+  // dimension-compatible shape.
+  // The zero-dimensional empty shape only contains another
+  // zero-dimensional empty shape.
   if (x_space_dim == 0) {
     if (!marked_empty())
       return true;
@@ -878,17 +904,16 @@ BD_Shape<T>::contains(const BD_Shape& y) const {
   */
   y.shortest_path_closure_assign();
 
-  // If `y' is empty, then it is always contained by
-  // every polyhedra.
+  // An empty shape is contained in any other dimension-compatible shapes.
   if (y.marked_empty())
     return true;
 
   // `*this' contains `y' if and only if every cell of `dbm'
   // is greater than or equal to the correspondent one of `y.dbm'.
-  for (dimension_type i = x_space_dim+1; i-- > 0; ) {
+  for (dimension_type i = x_space_dim + 1; i-- > 0; ) {
     const DB_Row<N>& x_dbm_i = x.dbm[i];
     const DB_Row<N>& y_dbm_i = y.dbm[i];
-    for (dimension_type j = x_space_dim+1; j-- > 0; )
+    for (dimension_type j = x_space_dim + 1; j-- > 0; )
       if (x_dbm_i[j] < y_dbm_i[j])
 	return false;
   }
@@ -919,7 +944,7 @@ BD_Shape<T>::is_empty() const {
 
   // Values of the minimum path, from source to all nodes.
   DB_Row<N> z(space_dim + 1);
-  for (dimension_type i = 0; i <= space_dim; ++i)
+  for (dimension_type i = space_dim + 1; i-- > 0; )
     assign(z[i], 0, ROUND_IGNORE);
 
   // The relax-technique: given an arc (j,h), it tries to improve
@@ -969,7 +994,7 @@ BD_Shape<T>::is_universe() const {
 
   // A system of bounded differences defining the universe BDS can only
   // contain trivial constraints.
-  for (dimension_type i = space_dim+1; i-- > 0; ) {
+  for (dimension_type i = space_dim + 1; i-- > 0; ) {
     const DB_Row<N>& dbm_i = dbm[i];
     for (dimension_type j = space_dim + 1; j-- > 0; )
       if (!is_plus_infinity(dbm_i[j]))
@@ -1176,145 +1201,74 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
       return Poly_Con_Relation::is_included();
   }
 
-  // Store the indices of the non-zero components of `c',
-  dimension_type non_zero_position[2] = { 0, 0 };
+  dimension_type num_vars = 0;
+  dimension_type i = 0;
+  dimension_type j = 0;
+  Coefficient coeff;
+  // Constraints that are not bounded differences are not compatible.
+  if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
+    throw_constraint_incompatible("relation_with(c)");
 
-  // Number of non-zero components of `c'.
-  dimension_type t = 0;
-
-  // Collect the non-zero components of `c'.
-  for (dimension_type i = c_space_dim; i-- > 0; )
-    if (c.coefficient(Variable(i)) != 0) {
-      if (t >= 2)
-	throw_constraint_incompatible("relation_with(c)");
-
-      else
-	non_zero_position[t++] = i;
-    }
-
-  // We will now make sure `c' has one of the following forms:
-  //
-  //           0 <=/= b, if t == 0;
-  //   a*x       <=/= b, if t == 1;
-  //   a*x - a*y <=/= b, if t == 2.
-  //
-  // In addition, non_zero_position[0] and (if t >= 1) non_zero_position[1]
-  // will contain the indices of the cell(s) of `dbm' to be checked.
-  Coefficient a;
-  Coefficient b = c.inhomogeneous_term();
-  switch (t) {
-  case 2:
-    a = c.coefficient(Variable(non_zero_position[1]));
-    if (a != -c.coefficient(Variable(non_zero_position[0])))
-      throw_constraint_incompatible("relation_with(c)");
-    // In DBMs there is a +1 offset on the position of each dimension.
-    ++non_zero_position[1];
-    ++non_zero_position[0];
-    break;
-
-  case 1:
-    a = -c.coefficient(Variable(non_zero_position[0]));
-    // In DBMs there is a +1 offset on the position of each dimension.
-    ++non_zero_position[0];
-    break;
-
-  case 0:
-    if (b < 0)
+  if (num_vars == 0) {
+    // Dealing with a trivial constraint.
+    switch (sgn(c.inhomogeneous_term())) {
+    case -1:
       return Poly_Con_Relation::is_disjoint();
-    else if (b == 0) {
+    case 0:
       if (c.is_strict_inequality())
 	return Poly_Con_Relation::saturates()
 	  && Poly_Con_Relation::is_disjoint();
       else
 	return Poly_Con_Relation::saturates()
 	  && Poly_Con_Relation::is_included();
-    }
-    else
+    case 1:
       return Poly_Con_Relation::is_included();
-    break;
+    }
   }
-
 
   // Select the cell to be checked for the "<=" part of the constraint,
-  // and set `a' to the absolute value of itself.
-  const N& dbm_j_0_j_1 = dbm[non_zero_position[0]][non_zero_position[1]];
-  const N& dbm_j_1_j_0 = dbm[non_zero_position[1]][non_zero_position[0]];
-  if (a < 0) {
-    a = -a;
-    N d;
-    div_round_up(d, b, a);
-    N d1;
-    div_round_up(d1, -b, a);
-    if (c.is_equality()) {
-      if (d == dbm_j_0_j_1 && d1 == dbm_j_1_j_0)
-	return Poly_Con_Relation::saturates()
-	  && Poly_Con_Relation::is_included();
-      else if (d < dbm_j_1_j_0 && d1 > dbm_j_0_j_1)
-	return Poly_Con_Relation::is_disjoint();
-      else
-	return Poly_Con_Relation::strictly_intersects();
-    }
-    else if (c.is_nonstrict_inequality()) {
-      if (d >= dbm_j_0_j_1 && d1 >= dbm_j_1_j_0)
-	return Poly_Con_Relation::saturates()
-	  && Poly_Con_Relation::is_included();
-      else if (d >= dbm_j_0_j_1)
-	return Poly_Con_Relation::is_included();
-      else if (d < dbm_j_0_j_1 && d1 > dbm_j_1_j_0)
-	return Poly_Con_Relation::is_disjoint();
-      else
-	return Poly_Con_Relation::strictly_intersects();
-    }
-    else {
-      if (d >= dbm_j_0_j_1 && d1 >= dbm_j_1_j_0)
-	return Poly_Con_Relation::saturates()
-	  && Poly_Con_Relation::is_disjoint();
-      else if (d > dbm_j_0_j_1)
-	return Poly_Con_Relation::is_included();
-      else if (d <= dbm_j_0_j_1 && d1 >= dbm_j_1_j_0)
-	return Poly_Con_Relation::is_disjoint();
-      else
-	return Poly_Con_Relation::strictly_intersects();
-    }
-  }
-  else {
-    N d;
-    div_round_up(d, b, a);
-    N d1;
-    div_round_up(d1, -b, a);
-    if (c.is_equality()) {
-      if (d == dbm_j_1_j_0 && d1 == dbm_j_0_j_1)
-	return Poly_Con_Relation::saturates()
-	  && Poly_Con_Relation::is_included();
-      else if (d < dbm_j_0_j_1 && d1 > dbm_j_1_j_0)
-	return Poly_Con_Relation::is_disjoint();
-      else
-	return Poly_Con_Relation::strictly_intersects();
-    }
+  // and set `coeff' to the absolute value of itself.
+  const N& x = (coeff < 0) ? dbm[i][j] : dbm[j][i];
+  const N& y = (coeff < 0) ? dbm[j][i] : dbm[i][j];
+  if (coeff < 0)
+    coeff = -coeff;
+  N d;
+  div_round_up(d, c.inhomogeneous_term(), coeff);
+  N d1;
+  div_round_up(d1, -c.inhomogeneous_term(), coeff);
+
+  switch (c.type()) {
+  case Constraint::EQUALITY:
+    if (d == x && d1 == y)
+      return Poly_Con_Relation::saturates()
+	&& Poly_Con_Relation::is_included();
+    else if (d < y && d1 > x)
+      return Poly_Con_Relation::is_disjoint();
     else
-      if (c.is_nonstrict_inequality()) {
-	if (d >= dbm_j_1_j_0 && d1 >= dbm_j_0_j_1)
-	  return Poly_Con_Relation::saturates()
-	    && Poly_Con_Relation::is_included();
-	else if (d >= dbm_j_1_j_0)
-	  return Poly_Con_Relation::is_included();
-	else if (d < dbm_j_1_j_0 && d1 > dbm_j_0_j_1)
-	  return Poly_Con_Relation::is_disjoint();
-	else
-	  return Poly_Con_Relation::strictly_intersects();
-      }
-      else {
-	if (d >= dbm_j_1_j_0 && d1 >= dbm_j_0_j_1)
-	  return Poly_Con_Relation::saturates()
-	    && Poly_Con_Relation::is_disjoint();
-	else if (d > dbm_j_1_j_0)
-	  return Poly_Con_Relation::is_included();
-	else if (d <= dbm_j_1_j_0 && d1 >= dbm_j_0_j_1)
-	  return Poly_Con_Relation::is_disjoint();
-	else
-	  return Poly_Con_Relation::strictly_intersects();
-      }
+      return Poly_Con_Relation::strictly_intersects();
+  case Constraint::NONSTRICT_INEQUALITY:
+    if (d >= x && d1 >= y)
+      return Poly_Con_Relation::saturates()
+	&& Poly_Con_Relation::is_included();
+    else if (d >= x)
+      return Poly_Con_Relation::is_included();
+    else if (d < x && d1 > y)
+      return Poly_Con_Relation::is_disjoint();
+    else
+      return Poly_Con_Relation::strictly_intersects();
+  case Constraint::STRICT_INEQUALITY:
+    if (d >= x && d1 >= y)
+      return Poly_Con_Relation::saturates()
+	&& Poly_Con_Relation::is_disjoint();
+    else if (d > x)
+      return Poly_Con_Relation::is_included();
+    else if (d <= x && d1 >= y)
+      return Poly_Con_Relation::is_disjoint();
+    else
+      return Poly_Con_Relation::strictly_intersects();
   }
+  // Quiet a compiler warning: this program point is unreachable.
+  throw std::runtime_error("PPL internal error");
 }
 
 template <typename T>
@@ -1552,7 +1506,7 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
       leaders.push_back(i);
   const dimension_type num_leaders = leaders.size();
 
-  // FIXME: temporary kludge. We build a matrix of boolean values
+  // TODO: temporary kludge. We build a matrix of boolean values
   // recording whether or not an entry in `dbm' is redundant.
   std::deque<bool> redundant_row(space_dim + 1, true);
   std::vector<std::deque<bool> > redundant(space_dim + 1, redundant_row);
@@ -1786,8 +1740,8 @@ BD_Shape<T>::add_space_dimensions_and_project(const dimension_type m) {
   // Bottom of the matrix and first row.
   DB_Row<N>& dbm_0 = dbm[0];
   for (dimension_type i = space_dim + 1; i <= new_space_dim; ++i) {
-    dbm[i][0] = 0;
-    dbm_0[i] = 0;
+    assign(dbm[i][0], 0, ROUND_IGNORE);
+    assign(dbm_0[i], 0, ROUND_IGNORE);
   }
 
   if (marked_shortest_path_closed())
@@ -2078,6 +2032,44 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
 
 template <typename T>
 void
+BD_Shape<T>::get_limiting_constraints(const Constraint_System& cs,
+				      Constraint_System& limiting_cons) const {
+  const dimension_type cs_space_dim = cs.space_dimension();
+  // Private method: the caller has to ensure the following.
+  assert(cs_space_dim <= space_dimension());
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 iend = cs.end(); i != iend; ++i) {
+    const Constraint& c = *i;
+    dimension_type num_vars = 0;
+    dimension_type i = 0;
+    dimension_type j = 0;
+    Coefficient coeff;
+    // Constraints that are not bounded differences are ignored.
+    if (extract_bounded_difference(c, cs_space_dim, num_vars, i, j, coeff)) {
+      // Select the cell to be modified for the "<=" part of the constraint,
+      // and set `coeff' to the absolute value of itself.
+      const N& x = (coeff < 0) ? dbm[i][j] : dbm[j][i];
+      const N& y = (coeff < 0) ? dbm[j][i] : dbm[i][j];
+      if (coeff < 0)
+	coeff = -coeff;
+      // Compute the bound for `x', rounding towards plus infinity.
+      N d;
+      div_round_up(d, c.inhomogeneous_term(), coeff);
+      if (x <= d)
+	if (c.is_inequality())
+	  limiting_cons.insert(c);
+	else {
+	  // Compute the bound for `y', rounding towards plus infinity.
+	  div_round_up(d, -c.inhomogeneous_term(), coeff);
+	  if (y <= d)
+	    limiting_cons.insert(c);
+	}
+    }
+  }
+}
+
+template <typename T>
+void
 BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
 					       const Constraint_System& cs,
 					       unsigned* /*tp*/) {
@@ -2119,90 +2111,10 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
   if (y.marked_empty())
     return;
 
-  N d;
-  Constraint_System add_cons;
-  for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i) {
-    const Constraint& c = *i;
-
-    // Store the indices of the non-zero components of `c',
-    dimension_type non_zero_position[2] = { 0, 0 };
-
-    // Number of non-zero components of `c'.
-    dimension_type t = 0;
-
-    // Controlled if the constraint must be to add.
-    bool right_cons = true;
-
-    // Collect the non-zero components of `c'.
-    for (dimension_type j = cs_space_dim; j-- > 0; )
-      if (c.coefficient(Variable(j)) != 0) {
-	if (t >= 2) {
-	  // Constraints that are not "bounded differences" are ignored.
-	  right_cons = false;
-	  break;
-	}
-	else
-	  non_zero_position[t++] = j;
-      }
-    // Constraints that are not "bounded differences" are ignored.
-    if (right_cons && t == 2)
-      if (c.coefficient(Variable(non_zero_position[1]))
-	  != -c.coefficient(Variable(non_zero_position[0])))
-	  right_cons = false;
-
-    // We will now make sure `c' has one of the following forms:
-    //
-    //           0 <=/= b, if t == 0;
-    //   a*x       <=/= b, if t == 1;
-    //   a*x - a*y <=/= b, if t == 2.
-    //
-    // In addition, non_zero_position[0] and (if t >= 1)
-    // non_zero_position[1] will contain the indices of the cell(s) of
-    // `dbm' to be modified.
-    if (right_cons && t != 0) {
-      Coefficient a;
-      Coefficient b = c.inhomogeneous_term();
-      switch (t) {
-      case 2:
-	a = c.coefficient(Variable(non_zero_position[1]));
-	// In DBMs there is a +1 offset on the position of each dimension.
-	++non_zero_position[0];
-	++non_zero_position[1];
-	break;
-	
-      case 1:
-	a = -c.coefficient(Variable(non_zero_position[0]));
-	// In DBMs there is a +1 offset on the position of each dimension.
-	++non_zero_position[0];
-	break;
-      }
-      // Select the cell to be modified for the "<=" part of the constraint,
-      // and set `a' to the absolute value of itself.
-      N& dbm_j_0_j_1 = dbm[non_zero_position[0]][non_zero_position[1]];
-      N& dbm_j_1_j_0 = dbm[non_zero_position[1]][non_zero_position[0]];
-      N& x = (a < 0) ? dbm_j_0_j_1 : dbm_j_1_j_0;
-      // The element `y' is the symmetric of `x'.
-      N& y = (a < 0) ? dbm_j_1_j_0 : dbm_j_0_j_1;
-      if (a < 0)
-	a = -a;
-
-      // Compute b/a into `d', rounding the result towards plus infinity.
-      div_round_up(d, b, a);
-      if (x <= d) {
-	if (c.is_inequality())
-	  add_cons.insert(c);
-	else {
-	  // Compute -b/a into `d', rounding the result towards plus infinity.
-	  div_round_up(d, -b, a);
-	  if (y <= d)
-	    add_cons.insert(c);
-	}
-      }
-    }
-  }
+  Constraint_System limiting_cs;
+  get_limiting_constraints(cs, limiting_cs);
   CC76_extrapolation_assign(y);
-  add_constraints(add_cons);
+  add_constraints(limiting_cs);
   assert(OK());
 }
 
@@ -2300,90 +2212,10 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
   if (y.marked_empty())
     return;
 
-  N d;
-  Constraint_System add_cons;
-  for (Constraint_System::const_iterator i = cs.begin(),
-	 iend = cs.end(); i != iend; ++i) {
-    const Constraint& c = *i;
-
-    // Store the indices of the non-zero components of `c',
-    dimension_type non_zero_position[2] = { 0, 0 };
-
-    // Number of non-zero components of `c'.
-    dimension_type t = 0;
-
-    // Controlled if the constraint must be to add.
-    bool right_cons = true;
-
-    // Collect the non-zero components of `c'.
-    for (dimension_type j = cs_space_dim; j-- > 0; )
-      if (c.coefficient(Variable(j)) != 0) {
-	if (t >= 2) {
-	  // Constraints that are not "bounded differences" are ignored.
-	  right_cons = false;
-	  break;
-	}
-	else
-	  non_zero_position[t++] = j;
-      }
-    // Constraints that are not "bounded differences" are ignored.
-    if (right_cons && t == 2)
-      if (c.coefficient(Variable(non_zero_position[1]))
-	  != -c.coefficient(Variable(non_zero_position[0])))
-	right_cons = false;
-
-    // We will now make sure `c' has one of the following forms:
-    //
-    //           0 <=/= b, if t == 0;
-    //   a*x       <=/= b, if t == 1;
-    //   a*x - a*y <=/= b, if t == 2.
-    //
-    // In addition, non_zero_position[0] and (if t >= 1)
-    // non_zero_position[1] will contain the indices
-    // of the cell(s) of `dbm' to be modified.
-    if (right_cons && t != 0) {
-      Coefficient a;
-      Coefficient b = c.inhomogeneous_term();
-      switch (t) {
-      case 2:
-	a = c.coefficient(Variable(non_zero_position[1]));
-	// In DBMs there is a +1 offset on the position of each dimension.
-	++non_zero_position[1];
-	++non_zero_position[0];
-	break;
-	
-      case 1:
-	a = -c.coefficient(Variable(non_zero_position[0]));
-	// In DBMs there is a +1 offset on the position of each dimension.
-	++non_zero_position[0];
-	break;
-      }
-      // Select the cell to be modified for the "<=" part of the constraint,
-      // and set `a' to the absolute value of itself.
-      N& dbm_j_0_j_1 = dbm[non_zero_position[0]][non_zero_position[1]];
-      N& dbm_j_1_j_0 = dbm[non_zero_position[1]][non_zero_position[0]];
-      N& x = (a < 0) ? dbm_j_0_j_1 : dbm_j_1_j_0;
-      // The element `y' is the symmetric of `x'.
-      N& y = (a < 0) ? dbm_j_1_j_0 : dbm_j_0_j_1;
-      if (a < 0)
-	a = -a;
-
-      // Compute b/a into `d', rounding the result towards plus infinity.
-      div_round_up(d, b, a);
-      if (x <= d) {
-	if (c.is_inequality())
-	  add_cons.insert(c);
-	else {
-	  // Compute -b/a into `d', rounding the result towards plus infinity.
-	  div_round_up(d, -b, a);
-	  if (y <= d)
-	    add_cons.insert(c);
-	}
-      }
-    }
-  }
+  Constraint_System limiting_cs;
+  get_limiting_constraints(cs, limiting_cs);
   CH78_widening_assign(y);
-  add_constraints(add_cons);
+  add_constraints(limiting_cs);
   assert(OK());
 }
 
@@ -2535,7 +2367,7 @@ BD_Shape<T>::affine_image(const Variable var,
   //   equal to `denominator' or `-denominator', since otherwise we have
   //   to fall back on the general form;
   // - If t > 1, the `expr' is of the general form.
-  Coefficient_traits::const_reference b = expr.inhomogeneous_term();
+  const Coefficient& b = expr.inhomogeneous_term();
 
   if (t == 0) {
     // Case 1: expr = b.
@@ -2549,7 +2381,7 @@ BD_Shape<T>::affine_image(const Variable var,
 
   if (t == 1) {
     // Value of the one and only non-zero coefficient in `expr'.
-    Coefficient_traits::const_reference coeff = expr.coefficient(Variable(j));
+    const Coefficient& coeff = expr.coefficient(Variable(j));
     if (coeff == denominator || coeff == -denominator) {
       // Case 2: expr = coeff*v + b, with coeff = +/- denominator.
       if (j == num_var - 1) {
@@ -3167,7 +2999,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	      Coefficient n;
 	      Coefficient d;
 	      numer_denom(up_sum, n, d);
-	      add_constraint(d*denominator*(var - Variable(up_var_index_inf)) <= n);
+	      add_constraint(d*denominator*(var - Variable(up_var_index_inf))
+			     <= n);
 	    }
 	
 	break;	
@@ -3268,7 +3101,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	      Coefficient n;
 	      Coefficient d;
 	      numer_denom(low_sum, n, d);
-	      add_constraint(d*denominator*(Variable(low_var_index_inf) - var) <= n);
+	      add_constraint(d*denominator*(Variable(low_var_index_inf) - var)
+			     <= n);
 	    }
 	break;
       }
@@ -3858,19 +3692,5 @@ BD_Shape<T>::throw_generic(const char* method,
     << reason;
   throw std::invalid_argument(s.str());
 }
-
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::BD_Shape */
-template <typename T>
-inline void
-swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
-     Parma_Polyhedra_Library::BD_Shape<T>& y) {
-  x.swap(y);
-}
-
-} // namespace std
 
 #endif // !defined(PPL_BD_Shape_inlines_hh)
