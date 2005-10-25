@@ -577,6 +577,12 @@ public:
 
   //! Write the covering box for \p *this into \p box.
   /*!
+    The covering box is an upper and lower bound for each dimension.
+    When the resulting covering box \p box is tiled the corners of the
+    box form the sparcest rectilinear grid that includes \p *this.
+    The lower bounds of the resulting \p box are as close as possible
+    to the origin.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p box are dimension-incompatible.
 
@@ -602,7 +608,9 @@ public:
     with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
     is <CODE>false</CODE>.
 
-    FIX check
+    FIX raise_lower_bound may be called more than once (for lines),
+        and (confirm) there may be common factors in n and d
+
     The function <CODE>raise_lower_bound(k, closed, n, d)</CODE>
     will be called at most once for each possible value for <CODE>k</CODE>
     and for all such calls the fraction \f$n/d\f$ will be in canonical form,
