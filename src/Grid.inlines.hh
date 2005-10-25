@@ -421,17 +421,18 @@ Grid::get_covering_box(Box& box) const {
   TEMP_INTEGER(divisor);
   divisor = point[0];
 
-  // The covering box of a single point has only lower bounds.
   if (num_rows > 1) {
-    Row gcds(num_dims, Row::Flags());
+    Row interval_sizes(num_dims, Row::Flags());
     dimension_type& last_index = num_rows;
     last_index--;
 
-    // Store in `gcds', for each column (that is, for each dimension),
-    // the GCD of the coefficients that are in parameter rows.
+    // Store in `interval_sizes', for each column (that is, for each
+    // dimension), the GCD of the coefficients that are in parameter
+    // rows.
 
     const Generator& last_gen = gen_sys[last_index];
-    // Initialise `gcds' according to the final parameter row.
+    // Initialise `interval_sizes' according to the final parameter
+    // row.
     dimension_type dim = num_dims - 1;
     if (last_gen.is_line_or_equality()) {
       if (last_gen[num_dims] != 0) {
@@ -440,24 +441,24 @@ Grid::get_covering_box(Box& box) const {
 	new_box.lower_upper_bound(dim, false, 0, 1);
 	new_box.raise_lower_bound(dim, false, 0, 1);
       }
-      gcds[dim] = 0;
+      interval_sizes[dim] = 0;
     }
     else
-      gcds[dim] = last_gen[num_dims];
+      interval_sizes[dim] = last_gen[num_dims];
     // Coefficients before the last are zero, due to minimal form.
     while (dim-- > 0)
-      gcds[dim] = 0;
+      interval_sizes[dim] = 0;
     last_index--;
-    // Include the preceding parameter rows into `gcds'.
+    // Include the preceding parameter rows into `interval_sizes'.
     for (dimension_type dim = num_dims; dim-- > 1; ) {
-      // `dim_kinds' is indexed one higher than `gcds', as it starts
-      // with the generator system's point.
+      // `dim_kinds' is indexed one higher than `interval_sizes', as
+      // it starts with the generator system's point.
       switch (dim_kinds[dim]) {
       case PARAMETER:
 	{
 	  const Generator& gen = gen_sys[last_index];
 	  for (dimension_type col = dim; col <= num_dims; ++col)
-	    gcd_assign(gcds[col-1], gen[col]);
+	    gcd_assign(interval_sizes[col-1], gen[col]);
 	  last_index--;
 	}
 	break;
@@ -480,15 +481,42 @@ Grid::get_covering_box(Box& box) const {
       }
     }
 
-    // Set each interval of the upper bound to the addition of the
-    // point and GCD values associated with the interval's dimension.
-    for (dimension_type dim = 0; dim < num_dims; ++dim)
-      new_box.lower_upper_bound(dim, false, gcds[dim] + point[dim+1], divisor);
-  }
+    // For each dimension make the lower bound of the interval the
+    // grid value closest to the origin, and the upper bound the
+    // addition of the lower bound and the shortest distance in the
+    // given dimension between all grid points.
+    TEMP_INTEGER(lower_bound);
+    for (dimension_type dim = 0; dim < num_dims; ++dim) {
+      lower_bound = point[dim+1];
 
-  // Make the point the lower bound.
-  for (dimension_type dim = 0; dim < num_dims; ++dim)
-    new_box.raise_lower_bound(dim, false, point[dim+1], divisor);
+      // If the interval size is zero then all points have the same
+      // value in this dimension, so set only the lower bound.
+      if (interval_sizes[dim] != 0) {
+	// Make the lower bound as close as possible to the origin,
+	// leaving the sign the same.
+	lower_bound %= interval_sizes[dim];
+	// Check if the lowest value the other side of the origin is
+	// closer to the origin, prefering the lowest positive if they
+	// are equal.
+	if (lower_bound > 0) {
+	  if (interval_sizes[dim] - lower_bound < lower_bound)
+	    lower_bound -= interval_sizes[dim];
+	}
+	else if (lower_bound < 0
+		 && interval_sizes[dim] + lower_bound < - lower_bound)
+	  lower_bound += interval_sizes[dim];
+
+	new_box.lower_upper_bound(dim, false,
+				  interval_sizes[dim] + lower_bound, divisor);
+      }
+
+      new_box.raise_lower_bound(dim, false, lower_bound, divisor);
+    }
+  }
+  else
+    // The covering box of a single point has only lower bounds.
+    for (dimension_type dim = 0; dim < num_dims; ++dim)
+      new_box.raise_lower_bound(dim, false, point[dim+1], divisor);
 
   box = new_box;
 }

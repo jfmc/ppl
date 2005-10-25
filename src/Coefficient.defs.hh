@@ -44,6 +44,8 @@ namespace Parma_Polyhedra_Library {
 Coefficient_traits::const_reference Coefficient_zero();
 Coefficient_traits::const_reference Coefficient_one();
 
+void ascii_dump(const Coefficient& x);
+
 } // namespace Parma_Polyhedra_Library
 
 #include "Coefficient.inlines.hh"

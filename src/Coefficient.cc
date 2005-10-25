@@ -21,5 +21,13 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
+#include <iostream>
 
 #include "Coefficient.defs.hh"
+
+namespace PPL = Parma_Polyhedra_Library;
+
+void
+PPL::ascii_dump(const Coefficient& x) {
+  std::cerr << x << std::endl;
+}
