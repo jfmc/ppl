@@ -21,7 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-#include "BBox.hh"
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
@@ -36,13 +35,50 @@ Variable D(3);
 
 #define SPACE_DIM 2
 
+bool
+operator==(const Bounding_Box& x, const Bounding_Box& y) {
+  dimension_type dimension = x.space_dimension();
+  if (dimension != y.space_dimension())
+    return false;
+
+  if (x.is_empty() && y.is_empty())
+    return true;
+
+  TEMP_INTEGER(n_x);
+  TEMP_INTEGER(n_y);
+  TEMP_INTEGER(d_x);
+  TEMP_INTEGER(d_y);
+
+  for (dimension_type i = dimension; i-- > 0; ) {
+    bool tem;
+    bool x_closed = x.get_lower_bound(i, tem, n_x, d_x);
+    bool y_closed = y.get_lower_bound(i, tem, n_y, d_y);
+    if (x_closed == y_closed) {
+      if (x_closed && (n_x != n_y || d_x != d_y))
+	return false;
+    }
+    else
+      return false;
+    x_closed = x.get_upper_bound(i, tem, n_x, d_x);
+    y_closed = y.get_upper_bound(i, tem, n_y, d_y);
+    if (x_closed == y_closed) {
+      if (x_closed && (n_x != n_y || d_x != d_y))
+	return false;
+    }
+    else
+      return false;
+  }
+
+  return true;
+}
+
 // Rectilinear grid.
 
 void
 test1() {
   nout << "test1:" << endl;
 
-  BBox box(SPACE_DIM);
+  Bounding_Box box(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_generator(point(B));
@@ -54,18 +90,28 @@ test1() {
 
   gr.get_covering_box(box);
 
-  BBox known_box(SPACE_DIM);
-  known_box.raise_lower_bound(0, false, 0, 1);
-  known_box.lower_upper_bound(0, false, 3, 1);
-  known_box.raise_lower_bound(1, false, 1, 1);
-  known_box.lower_upper_bound(1, false, 3, 1);
+  Bounding_Box known_box(SPACE_DIM);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.lower_upper_bound(0, true, 3, 1);
+  known_box.raise_lower_bound(1, true, 1, 1);
+  known_box.lower_upper_bound(1, true, 3, 1);
 
-  if (box == known_box)
-    return;
+  if (box == known_box) {
+    Grid tem_gr(box, From_Bounding_Box());
+    Bounding_Box box2(SPACE_DIM);
+    tem_gr.get_covering_box(box2);
 
-  nout << "Box should equal known box." << endl;
-  box.print(nout, "  box:");
-  known_box.print(nout, "known:");
+    if (box2 == known_box)
+      return;
+
+    nout << "Reproduced box should equal known box." << endl
+	 << "  box:" << endl << box2;
+  }
+  else
+    nout << "Original box should equal known box." << endl
+	 << "  box:" << endl << box;
+
+  nout << "known:" << endl << known_box;
 
   exit(1);
 }
@@ -76,7 +122,7 @@ void
 test2() {
   nout << "test2:" << endl;
 
-  BBox box(SPACE_DIM);
+  Bounding_Box box(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_generator(point(  A +   B));
@@ -88,18 +134,28 @@ test2() {
   if (find_variation(gr))
     exit(1);
 
-  BBox known_box(SPACE_DIM);
-  known_box.raise_lower_bound(0, false, 0, 1);
-  known_box.lower_upper_bound(0, false, 1, 1);
-  known_box.raise_lower_bound(1, false, 0, 1);
-  known_box.lower_upper_bound(1, false, 1, 1);
+  Bounding_Box known_box(SPACE_DIM);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.lower_upper_bound(0, true, 1, 1);
+  known_box.raise_lower_bound(1, true, 0, 1);
+  known_box.lower_upper_bound(1, true, 1, 1);
 
-  if (box == known_box)
-    return;
+  if (box == known_box) {
+    Grid tem_gr(box, From_Bounding_Box());
+    Bounding_Box box2(SPACE_DIM);
+    tem_gr.get_covering_box(box2);
 
-  nout << "Box should equal known box." << endl;
-  box.print(nout, "  box:");
-  known_box.print(nout, "known:");
+    if (box2 == known_box)
+      return;
+
+    nout << "Reproduced box should equal known box." << endl
+	 << "  box:" << endl << box2;
+  }
+  else
+    nout << "Original box should equal known box." << endl
+	 << "  box:" << endl << box;
+
+  nout << "known:" << endl << known_box;
 
   exit(1);
 }
@@ -110,30 +166,40 @@ void
 test3() {
   nout << "test3:" << endl;
 
-  BBox box(SPACE_DIM);
+  Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_generator(point());
   gr.add_generator(point(2*A));
   gr.add_generator(point(  A + 2*B, 2));
 
-  gr.get_covering_box(box);
+  gr.get_covering_box(box1);
 
   if (find_variation(gr))
     exit(1);
 
-  BBox known_box(SPACE_DIM);
-  known_box.raise_lower_bound(0, false, 0, 2);
-  known_box.lower_upper_bound(0, false, 1, 2);
-  known_box.raise_lower_bound(1, false, 0, 2);
-  known_box.lower_upper_bound(1, false, 2, 2);
+  Bounding_Box known_box(SPACE_DIM);
+  known_box.raise_lower_bound(0, true, 0, 2);
+  known_box.lower_upper_bound(0, true, 1, 2);
+  known_box.raise_lower_bound(1, true, 0, 2);
+  known_box.lower_upper_bound(1, true, 2, 2);
 
-  if (box == known_box)
-    return;
+  if (box1 == known_box) {
+    Grid tem_gr(box1, From_Bounding_Box());
+    Bounding_Box box2(SPACE_DIM);
+    tem_gr.get_covering_box(box2);
 
-  nout << "Box should equal known box." << endl;
-  box.print(nout, "  box:");
-  known_box.print(nout, "known:");
+    if (box2 == known_box)
+      return;
+
+    nout << "Reproduced box should equal known box." << endl
+	 << "  box:" << endl << box2;
+  }
+  else
+    nout << "Original box should equal known box." << endl
+	 << "  box:" << endl << box1;
+
+  nout << "known:" << endl << known_box;
 
   exit(1);
 }
@@ -147,32 +213,42 @@ void
 test4() {
   nout << "test4:" << endl;
 
-  BBox box(SPACE_DIM);
+  Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_generator(point());
   gr.add_generator( line(A + 2*B));
   gr.add_generator(point(C, 2));
 
-  gr.get_covering_box(box);
+  gr.get_covering_box(box1);
 
   if (find_variation(gr))
     exit(1);
 
-  BBox known_box(SPACE_DIM);
-  known_box.raise_lower_bound(0, false, 0, 1);
-  known_box.lower_upper_bound(0, false, 0, 1);
-  known_box.raise_lower_bound(1, false, 0, 1);
-  known_box.lower_upper_bound(1, false, 0, 1);
-  known_box.raise_lower_bound(2, false, 0, 1);
-  known_box.lower_upper_bound(2, false, 1, 2);
+  Bounding_Box known_box(SPACE_DIM);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.lower_upper_bound(0, true, 0, 1);
+  known_box.raise_lower_bound(1, true, 0, 1);
+  known_box.lower_upper_bound(1, true, 0, 1);
+  known_box.raise_lower_bound(2, true, 0, 1);
+  known_box.lower_upper_bound(2, true, 1, 2);
 
-  if (box == known_box)
-    return;
+  if (box1 == known_box) {
+    Grid tem_gr(box1, From_Bounding_Box());
+    Bounding_Box box2(SPACE_DIM);
+    tem_gr.get_covering_box(box2);
 
-  nout << "Box should equal known box." << endl;
-  box.print(nout, "  box:");
-  known_box.print(nout, "known:");
+    if (box2 == known_box)
+      return;
+
+    nout << "Reproduced box should equal known box." << endl
+	 << "  box:" << endl << box2;
+  }
+  else
+    nout << "Original box should equal known box." << endl
+	 << "  box:" << endl << box1;
+
+  nout << "known:" << endl << known_box;
 
   exit(1);
 }
@@ -183,29 +259,39 @@ void
 test5() {
   nout << "test5:" << endl;
 
-  BBox box(SPACE_DIM);
+  Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM);
 
-  gr.get_covering_box(box);
+  gr.get_covering_box(box1);
 
   if (find_variation(gr))
     exit(1);
 
-  BBox known_box(SPACE_DIM);
-  known_box.raise_lower_bound(0, false, 0, 1);
-  known_box.lower_upper_bound(0, false, 0, 1);
-  known_box.raise_lower_bound(1, false, 0, 1);
-  known_box.lower_upper_bound(1, false, 0, 1);
-  known_box.raise_lower_bound(2, false, 0, 1);
-  known_box.lower_upper_bound(2, false, 0, 1);
+  Bounding_Box known_box(SPACE_DIM);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.lower_upper_bound(0, true, 0, 1);
+  known_box.raise_lower_bound(1, true, 0, 1);
+  known_box.lower_upper_bound(1, true, 0, 1);
+  known_box.raise_lower_bound(2, true, 0, 1);
+  known_box.lower_upper_bound(2, true, 0, 1);
 
-  if (box == known_box)
-    return;
+  if (box1 == known_box) {
+    Grid tem_gr(box1, From_Bounding_Box());
+    Bounding_Box box2(SPACE_DIM);
+    tem_gr.get_covering_box(box2);
 
-  nout << "Box should equal known box." << endl;
-  box.print(nout, "  box:");
-  known_box.print(nout, "known:");
+    if (box2 == known_box)
+      return;
+
+    nout << "Reproduced box should equal known box." << endl
+	 << "  box:" << endl << box2;
+  }
+  else
+    nout << "Original box should equal known box." << endl
+	 << "  box:" << endl << box1;
+
+  nout << "known:" << endl << known_box;
 
   exit(1);
 }
@@ -216,27 +302,37 @@ void
 test6() {
   nout << "test6:" << endl;
 
-  BBox box(SPACE_DIM);
+  Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_generator(point(16*A + 6*B - 6*C, 7));
 
-  gr.get_covering_box(box);
+  gr.get_covering_box(box1);
 
   if (find_variation(gr))
     exit(1);
 
-  BBox known_box(SPACE_DIM);
-  known_box.raise_lower_bound(0, false, 16, 7);
-  known_box.raise_lower_bound(1, false, 6, 7);
-  known_box.raise_lower_bound(2, false, -6, 7);
+  Bounding_Box known_box(SPACE_DIM);
+  known_box.raise_lower_bound(0, true, 16, 7);
+  known_box.raise_lower_bound(1, true, 6, 7);
+  known_box.raise_lower_bound(2, true, -6, 7);
 
-  if (box == known_box)
-    return;
+  if (box1 == known_box) {
+    Grid tem_gr(box1, From_Bounding_Box());
+    Bounding_Box box2(SPACE_DIM);
+    tem_gr.get_covering_box(box2);
 
-  nout << "Box should equal known box." << endl;
-  box.print(nout, "  box:");
-  known_box.print(nout, "known:");
+    if (box2 == known_box)
+      return;
+
+    nout << "Reproduced box should equal known box." << endl
+	 << "  box:" << endl << box2;
+  }
+  else
+    nout << "Original box should equal known box." << endl
+	 << "  box:" << endl << box1;
+
+  nout << "known:" << endl << known_box;
 
   exit(1);
 }
@@ -247,27 +343,45 @@ void
 test7() {
   nout << "test7:" << endl;
 
-  BBox box(SPACE_DIM);
+  Bounding_Box box1(SPACE_DIM);
   // Set bounds, to check that get_covering_box clears them.
-  box.raise_lower_bound(0, false, 16, 7);
-  box.raise_lower_bound(1, false, 6, 7);
-  box.raise_lower_bound(2, false, -6, 7);
+  box1.raise_lower_bound(0, true, 16, 7);
+  box1.raise_lower_bound(1, true, 6, 7);
+  box1.raise_lower_bound(2, true, -6, 7);
 
   Grid gr(SPACE_DIM, EMPTY);
 
-  gr.get_covering_box(box);
+  gr.get_covering_box(box1);
 
   if (find_variation(gr))
     exit(1);
 
-  BBox known_box(SPACE_DIM);
+  Bounding_Box known_box(SPACE_DIM);
 
-  if (box == known_box)
-    return;
+  if (box1 == known_box) {
+    Grid tem_gr(box1, From_Bounding_Box());
 
-  nout << "Box should equal known box." << endl;
-  box.print(nout, "  box:");
-  known_box.print(nout, "known:");
+    Bounding_Box box2(SPACE_DIM);
+    // Set bounds, to check that get_covering_box clears them.
+    box2.raise_lower_bound(0, true, 1, 3);
+    box2.raise_lower_bound(1, true, 2, 2);
+    box2.raise_lower_bound(2, true, 3, 1);
+
+    tem_gr.get_covering_box(box2);
+
+    if (box2 == known_box)
+      return;
+
+    nout << "Reproduced box should equal known box." << endl
+	 << "   box:" << endl << box2
+	 << "  box1:" << endl << box1
+	 << "tem_gr:" << tem_gr;
+  }
+  else
+    nout << "Original box should equal known box." << endl
+	 << "  box:" << endl << box1;
+
+  nout << "known:" << endl << known_box;
 
   exit(1);
 }
@@ -278,7 +392,7 @@ void
 test8() {
   nout << "test8:" << endl;
 
-  BBox box(SPACE_DIM);
+  Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_generator(point());
@@ -287,25 +401,35 @@ test8() {
   gr.add_generator(point(2*A));
   gr.add_generator(point(C));
 
-  gr.get_covering_box(box);
+  gr.get_covering_box(box1);
 
   if (find_variation(gr))
     exit(1);
 
-  BBox known_box(SPACE_DIM);
-  known_box.raise_lower_bound(0, false, 0, 1);
-  known_box.lower_upper_bound(0, false, 1, 1);
-  known_box.raise_lower_bound(1, false, 0, 1);
-  known_box.lower_upper_bound(1, false, 1, 1);
-  known_box.raise_lower_bound(2, false, 0, 1);
-  known_box.lower_upper_bound(2, false, 1, 1);
+  Bounding_Box known_box(SPACE_DIM);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.lower_upper_bound(0, true, 1, 1);
+  known_box.raise_lower_bound(1, true, 0, 1);
+  known_box.lower_upper_bound(1, true, 1, 1);
+  known_box.raise_lower_bound(2, true, 0, 1);
+  known_box.lower_upper_bound(2, true, 1, 1);
 
-  if (box == known_box)
-    return;
+  if (box1 == known_box) {
+    Grid tem_gr(box1, From_Bounding_Box());
+    Bounding_Box box2(SPACE_DIM);
+    tem_gr.get_covering_box(box2);
 
-  nout << "Box should equal known box." << endl;
-  box.print(nout, "  box:");
-  known_box.print(nout, "known:");
+    if (box2 == known_box)
+      return;
+
+    nout << "Reproduced box should equal known box." << endl
+	 << "  box:" << endl << box2;
+  }
+  else
+    nout << "Original box should equal known box." << endl
+	 << "  box:" << endl << box1;
+
+  nout << "known:" << endl << known_box;
 
   exit(1);
 }
@@ -316,31 +440,41 @@ void
 test9() {
   nout << "test9:" << endl;
 
-  BBox box(SPACE_DIM);
+  Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM);
   gr.add_congruence((A + 2*B %= 0) / 2);
   gr.add_congruence((A %= 0) / 5);
 
-  gr.get_covering_box(box);
+  gr.get_covering_box(box1);
 
   if (find_variation(gr))
     exit(1);
 
-  BBox known_box(SPACE_DIM);
-  known_box.raise_lower_bound(0, false, 0, 1);
-  known_box.lower_upper_bound(0, false, 5, 1);
-  known_box.raise_lower_bound(1, false, 0, 1);
-  known_box.lower_upper_bound(1, false, 1, 2);
-  known_box.raise_lower_bound(2, false, 0, 1);
-  known_box.lower_upper_bound(2, false, 0, 1);
+  Bounding_Box known_box(SPACE_DIM);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.lower_upper_bound(0, true, 5, 1);
+  known_box.raise_lower_bound(1, true, 0, 1);
+  known_box.lower_upper_bound(1, true, 1, 2);
+  known_box.raise_lower_bound(2, true, 0, 1);
+  known_box.lower_upper_bound(2, true, 0, 1);
 
-  if (box == known_box)
-    return;
+  if (box1 == known_box) {
+    Grid tem_gr(box1, From_Bounding_Box());
+    Bounding_Box box2(SPACE_DIM);
+    tem_gr.get_covering_box(box2);
 
-  nout << "Box should equal known box." << endl;
-  box.print(nout, "  box:");
-  known_box.print(nout, "known:");
+    if (box2 == known_box)
+      return;
+
+    nout << "Reproduced box should equal known box." << endl
+	 << "  box:" << endl << box2;
+  }
+  else
+    nout << "Original box should equal known box." << endl
+	 << "  box:" << endl << box1;
+
+  nout << "known:" << endl << known_box;
 
   exit(1);
 }
@@ -351,7 +485,7 @@ void
 test10() {
   nout << "test10:" << endl;
 
-  BBox box(SPACE_DIM);
+  Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_generator(point());
@@ -359,25 +493,35 @@ test10() {
   gr.add_generator(point(B));
   gr.add_generator( line(C));
 
-  gr.get_covering_box(box);
+  gr.get_covering_box(box1);
 
   if (find_variation(gr))
     exit(1);
 
-  BBox known_box(SPACE_DIM);
-  known_box.raise_lower_bound(0, false, 0, 1);
-  known_box.lower_upper_bound(0, false, 1, 1);
-  known_box.raise_lower_bound(1, false, 0, 1);
-  known_box.lower_upper_bound(1, false, 1, 1);
-  known_box.raise_lower_bound(2, false, 0, 1);
-  known_box.lower_upper_bound(2, false, 0, 1);
+  Bounding_Box known_box(SPACE_DIM);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.lower_upper_bound(0, true, 1, 1);
+  known_box.raise_lower_bound(1, true, 0, 1);
+  known_box.lower_upper_bound(1, true, 1, 1);
+  known_box.raise_lower_bound(2, true, 0, 1);
+  known_box.lower_upper_bound(2, true, 0, 1);
 
-  if (box == known_box)
-    return;
+  if (box1 == known_box) {
+    Grid tem_gr(box1, From_Bounding_Box());
+    Bounding_Box box2(SPACE_DIM);
+    tem_gr.get_covering_box(box2);
 
-  nout << "Box should equal known box." << endl;
-  box.print(nout, "  box:");
-  known_box.print(nout, "known:");
+    if (box2 == known_box)
+      return;
+
+    nout << "Reproduced box should equal known box." << endl
+	 << "  box:" << endl << box2;
+  }
+  else
+    nout << "Original box should equal known box." << endl
+	 << "  box:" << endl << box1;
+
+  nout << "known:" << endl << known_box;
 
   exit(1);
 }
@@ -393,7 +537,7 @@ void
 test11() {
   nout << "test11:" << endl;
 
-  BBox box(SPACE_DIM);
+  Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_generator(point());
@@ -402,27 +546,37 @@ test11() {
   gr.add_generator(point(C + 8*D));
   gr.add_generator(point(16*D));
 
-  gr.get_covering_box(box);
+  gr.get_covering_box(box1);
 
   if (find_variation(gr))
     exit(1);
 
-  BBox known_box(SPACE_DIM);
-  known_box.raise_lower_bound(0, false, 0, 1);
-  known_box.lower_upper_bound(0, false, 1, 1);
-  known_box.raise_lower_bound(1, false, 0, 1);
-  known_box.lower_upper_bound(1, false, 1, 1);
-  known_box.raise_lower_bound(2, false, 0, 1);
-  known_box.lower_upper_bound(2, false, 1, 1);
-  known_box.raise_lower_bound(3, false, 0, 1);
-  known_box.lower_upper_bound(3, false, 2, 1);
+  Bounding_Box known_box(SPACE_DIM);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.lower_upper_bound(0, true, 1, 1);
+  known_box.raise_lower_bound(1, true, 0, 1);
+  known_box.lower_upper_bound(1, true, 1, 1);
+  known_box.raise_lower_bound(2, true, 0, 1);
+  known_box.lower_upper_bound(2, true, 1, 1);
+  known_box.raise_lower_bound(3, true, 0, 1);
+  known_box.lower_upper_bound(3, true, 2, 1);
 
-  if (box == known_box)
-    return;
+  if (box1 == known_box) {
+    Grid tem_gr(box1, From_Bounding_Box());
+    Bounding_Box box2(SPACE_DIM);
+    tem_gr.get_covering_box(box2);
 
-  nout << "Box should equal known box." << endl;
-  box.print(nout, "  box:");
-  known_box.print(nout, "known:");
+    if (box2 == known_box)
+      return;
+
+    nout << "Reproduced box should equal known box." << endl
+	 << "  box:" << endl << box2;
+  }
+  else
+    nout << "Original box should equal known box." << endl
+	 << "  box:" << endl << box1;
+
+  nout << "known:" << endl << known_box;
 
   exit(1);
 }
@@ -434,7 +588,7 @@ void
 test12() {
   nout << "test12:" << endl;
 
-  BBox box(SPACE_DIM);
+  Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_generator(point());
@@ -442,26 +596,36 @@ test12() {
   gr.add_generator(point(C));
   gr.add_generator(point(D));
 
-  gr.get_covering_box(box);
+  gr.get_covering_box(box1);
 
   if (find_variation(gr))
     exit(1);
 
-  BBox known_box(SPACE_DIM);
-  known_box.raise_lower_bound(0, false, 0, 1);
-  known_box.lower_upper_bound(0, false, 1, 1);
-  known_box.raise_lower_bound(1, false, 0, 1);
-  known_box.raise_lower_bound(2, false, 0, 1);
-  known_box.lower_upper_bound(2, false, 1, 1);
-  known_box.raise_lower_bound(3, false, 0, 1);
-  known_box.lower_upper_bound(3, false, 1, 1);
+  Bounding_Box known_box(SPACE_DIM);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.lower_upper_bound(0, true, 1, 1);
+  known_box.raise_lower_bound(1, true, 0, 1);
+  known_box.raise_lower_bound(2, true, 0, 1);
+  known_box.lower_upper_bound(2, true, 1, 1);
+  known_box.raise_lower_bound(3, true, 0, 1);
+  known_box.lower_upper_bound(3, true, 1, 1);
 
-  if (box == known_box)
-    return;
+  if (box1 == known_box) {
+    Grid tem_gr(box1, From_Bounding_Box());
+    Bounding_Box box2(SPACE_DIM);
+    tem_gr.get_covering_box(box2);
 
-  nout << "Box should equal known box." << endl;
-  box.print(nout, "  box:");
-  known_box.print(nout, "known:");
+    if (box2 == known_box)
+      return;
+
+    nout << "Reproduced box should equal known box." << endl
+	 << "  box:" << endl << box2;
+  }
+  else
+    nout << "Original box should equal known box." << endl
+	 << "  box:" << endl << box1;
+
+  nout << "known:" << endl << known_box;
 
   exit(1);
 }
