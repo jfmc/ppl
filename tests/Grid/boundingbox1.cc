@@ -1,4 +1,4 @@
-/* Test Grid(Box& box, From_Bounding_Box()).
+/* Test Grid(Box& box, From_Covering_Box()).
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -46,7 +46,7 @@ test1() {
 
   Bounding_Box box(SPACE_DIM);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box, From_Covering_Box());
 
   if (find_variation(gr))
     exit(1);
@@ -75,7 +75,7 @@ test2() {
   box.raise_lower_bound(0, true, 0, 1);
   box.raise_lower_bound(1, true, 0, 1);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box, From_Covering_Box());
 
   if (find_variation(gr))
     exit(1);
@@ -108,7 +108,7 @@ test3() {
   box.raise_lower_bound(1, true, -10, 1);
   box.lower_upper_bound(1, true, 12, 3);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box, From_Covering_Box());
 
   if (find_variation(gr))
     exit(1);
@@ -142,7 +142,7 @@ test4() {
   box.lower_upper_bound(1, true, 12, 3);
   box.raise_lower_bound(2, true, 15, 3);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box, From_Covering_Box());
 
   if (find_variation(gr))
     exit(1);
@@ -172,7 +172,7 @@ test5() {
 
   Bounding_Box box(0);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box, From_Covering_Box());
 
   Grid known_gr;
 
@@ -197,7 +197,7 @@ test6() {
   Bounding_Box box(2);
   box.set_empty();
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box, From_Covering_Box());
 
   Grid known_gr(2, EMPTY);
 
@@ -225,7 +225,7 @@ test7() {
   box.raise_lower_bound(1, true, 4, 1);
   box.lower_upper_bound(1, true, 4, 1);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box, From_Covering_Box());
 
   Grid known_gr(2);
 
@@ -253,7 +253,7 @@ test8() {
   box.raise_lower_bound(1, true, 0, 1);
   box.lower_upper_bound(1, true, 1, 1);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box, From_Covering_Box());
 
   Congruence_System known_cgs;
   known_cgs.insert(A %= 0);
@@ -284,7 +284,7 @@ test9() {
   box.raise_lower_bound(1, true, 0, 1);
   box.lower_upper_bound(1, true, 1, 2);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box, From_Covering_Box());
 
   Grid known_gr(2);
   known_gr.add_congruence(A == 0);
@@ -313,7 +313,7 @@ test10() {
   box.raise_lower_bound(1, true, 0, 1);
   box.lower_upper_bound(1, true, 1, 2);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box, From_Covering_Box());
 
   Grid known_gr(2);
   known_gr.add_congruence(7*A == 3);

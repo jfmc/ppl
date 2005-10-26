@@ -490,7 +490,7 @@ public:
     corresponds to the least upper bound of \f$I\f$.
   */
   template <typename Box>
-  Grid(const Box& box, From_Bounding_Box dummy);
+  Grid(const Box& box, From_Covering_Box dummy);
 
   //! Ordinary copy-constructor.
   Grid(const Grid& y);

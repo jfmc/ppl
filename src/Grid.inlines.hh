@@ -328,7 +328,7 @@ Grid::strictly_contains(const Grid& y) const {
 }
 
 template <typename Box>
-Grid::Grid(const Box& box, From_Bounding_Box dummy)
+Grid::Grid(const Box& box, From_Covering_Box dummy)
   : con_sys(),
     gen_sys(NECESSARILY_CLOSED) {
   used(dummy);

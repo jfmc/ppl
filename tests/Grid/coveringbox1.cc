@@ -97,7 +97,7 @@ test1() {
   known_box.lower_upper_bound(1, true, 3, 1);
 
   if (box == known_box) {
-    Grid tem_gr(box, From_Bounding_Box());
+    Grid tem_gr(box, From_Covering_Box());
     Bounding_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
@@ -141,7 +141,7 @@ test2() {
   known_box.lower_upper_bound(1, true, 1, 1);
 
   if (box == known_box) {
-    Grid tem_gr(box, From_Bounding_Box());
+    Grid tem_gr(box, From_Covering_Box());
     Bounding_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
@@ -185,7 +185,7 @@ test3() {
   known_box.lower_upper_bound(1, true, 2, 2);
 
   if (box1 == known_box) {
-    Grid tem_gr(box1, From_Bounding_Box());
+    Grid tem_gr(box1, From_Covering_Box());
     Bounding_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
@@ -234,7 +234,7 @@ test4() {
   known_box.lower_upper_bound(2, true, 1, 2);
 
   if (box1 == known_box) {
-    Grid tem_gr(box1, From_Bounding_Box());
+    Grid tem_gr(box1, From_Covering_Box());
     Bounding_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
@@ -277,7 +277,7 @@ test5() {
   known_box.lower_upper_bound(2, true, 0, 1);
 
   if (box1 == known_box) {
-    Grid tem_gr(box1, From_Bounding_Box());
+    Grid tem_gr(box1, From_Covering_Box());
     Bounding_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
@@ -318,7 +318,7 @@ test6() {
   known_box.raise_lower_bound(2, true, -6, 7);
 
   if (box1 == known_box) {
-    Grid tem_gr(box1, From_Bounding_Box());
+    Grid tem_gr(box1, From_Covering_Box());
     Bounding_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
@@ -359,7 +359,7 @@ test7() {
   Bounding_Box known_box(SPACE_DIM);
 
   if (box1 == known_box) {
-    Grid tem_gr(box1, From_Bounding_Box());
+    Grid tem_gr(box1, From_Covering_Box());
 
     Bounding_Box box2(SPACE_DIM);
     // Set bounds, to check that get_covering_box clears them.
@@ -415,7 +415,7 @@ test8() {
   known_box.lower_upper_bound(2, true, 1, 1);
 
   if (box1 == known_box) {
-    Grid tem_gr(box1, From_Bounding_Box());
+    Grid tem_gr(box1, From_Covering_Box());
     Bounding_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
@@ -460,7 +460,7 @@ test9() {
   known_box.lower_upper_bound(2, true, 0, 1);
 
   if (box1 == known_box) {
-    Grid tem_gr(box1, From_Bounding_Box());
+    Grid tem_gr(box1, From_Covering_Box());
     Bounding_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
@@ -507,7 +507,7 @@ test10() {
   known_box.lower_upper_bound(2, true, 0, 1);
 
   if (box1 == known_box) {
-    Grid tem_gr(box1, From_Bounding_Box());
+    Grid tem_gr(box1, From_Covering_Box());
     Bounding_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
@@ -562,7 +562,7 @@ test11() {
   known_box.lower_upper_bound(3, true, 2, 1);
 
   if (box1 == known_box) {
-    Grid tem_gr(box1, From_Bounding_Box());
+    Grid tem_gr(box1, From_Covering_Box());
     Bounding_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
@@ -611,7 +611,7 @@ test12() {
   known_box.lower_upper_bound(3, true, 1, 1);
 
   if (box1 == known_box) {
-    Grid tem_gr(box1, From_Bounding_Box());
+    Grid tem_gr(box1, From_Covering_Box());
     Bounding_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
