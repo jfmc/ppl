@@ -358,18 +358,34 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
       TEMP_INTEGER(d);
       for (dimension_type k = space_dim; k-- > 0; ) {
 	bool closed;
-	// FIX also add generators
-	if (box.get_lower_bound(k, closed, l_n, l_d)
-	    && box.get_upper_bound(k, closed, u_n, u_d)) {
-	  lcm_assign(d, l_d, u_d);
-	  // FIX division by l_d and u_d repeats some of lcm_assign (use gcd instd)
-	  l_n *= (d / l_d);
-	  con_sys.insert((d * Variable(k) %= l_n) / ((u_n * (d / u_d)) - l_n));
-	}
+	// TODO: Consider producing the system(s) in minimized form.
+	// FIXME: Also create the generator system.
+	if (box.get_lower_bound(k, closed, l_n, l_d))
+	  if (box.get_upper_bound(k, closed, u_n, u_d)) {
+	    if (l_n * u_d == u_n * l_d)
+	      // An empty interval allows any point along the
+	      // dimension k axis.
+	      continue;
+	    lcm_assign(d, l_d, u_d);
+	    // FIX division by l_d and u_d repeats some of lcm_assign (use gcd instd)
+	    l_n *= (d / l_d);
+	    con_sys.insert((d * Variable(k) %= l_n) / ((u_n * (d / u_d)) - l_n));
+	  }
+	  else
+	    // An interval bounded only from below produces an equality.
+	    con_sys.insert(l_d * Variable(k) == l_n);
+	else
+	  if (!box.get_upper_bound(k, closed, u_n, u_d)) {
+	    // Any dimension that is open in both directions produces
+	    // an empty grid.
+	    set_empty();
+	    goto end;
+	  }
       }
       set_congruences_up_to_date();
     }
 
+ end:
   gen_sys.set_sorted(false);
   gen_sys.unset_pending_rows();
 
@@ -438,8 +454,8 @@ Grid::get_covering_box(Box& box) const {
       if (last_gen[num_dims] != 0) {
 	// Empty interval, set both bounds for dimension `dim' to
 	// zero.
-	new_box.lower_upper_bound(dim, false, 0, 1);
-	new_box.raise_lower_bound(dim, false, 0, 1);
+	new_box.lower_upper_bound(dim, true, 0, 1);
+	new_box.raise_lower_bound(dim, true, 0, 1);
       }
       interval_sizes[dim] = 0;
     }
@@ -469,8 +485,8 @@ Grid::get_covering_box(Box& box) const {
 	    if (gen[col] != 0) {
 	      // Empty interval, set both bounds for dimension `dim' to
 	      // zero.
-	      new_box.lower_upper_bound(col-1, false, 0, 1);
-	      new_box.raise_lower_bound(col-1, false, 0, 1);
+	      new_box.lower_upper_bound(col-1, true, 0, 1);
+	      new_box.raise_lower_bound(col-1, true, 0, 1);
 	    }
 	  }
 	  last_index--;
@@ -506,17 +522,18 @@ Grid::get_covering_box(Box& box) const {
 		 && interval_sizes[dim] + lower_bound < - lower_bound)
 	  lower_bound += interval_sizes[dim];
 
-	new_box.lower_upper_bound(dim, false,
-				  interval_sizes[dim] + lower_bound, divisor);
+	new_box.lower_upper_bound(dim, true,
+				  interval_sizes[dim] + lower_bound,
+				  divisor);
       }
 
-      new_box.raise_lower_bound(dim, false, lower_bound, divisor);
+      new_box.raise_lower_bound(dim, true, lower_bound, divisor);
     }
   }
   else
     // The covering box of a single point has only lower bounds.
     for (dimension_type dim = 0; dim < num_dims; ++dim)
-      new_box.raise_lower_bound(dim, false, point[dim+1], divisor);
+      new_box.raise_lower_bound(dim, true, point[dim+1], divisor);
 
   box = new_box;
 }
