@@ -375,7 +375,10 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
 	    // An interval bounded only from below produces an equality.
 	    con_sys.insert(l_d * Variable(k) == l_n);
 	else
-	  if (!box.get_upper_bound(k, closed, u_n, u_d)) {
+	  if (box.get_upper_bound(k, closed, u_n, u_d))
+	    // An interval bounded only from above produces an equality.
+	    con_sys.insert(u_d * Variable(k) == u_n);
+	  else {
 	    // Any dimension that is open in both directions produces
 	    // an empty grid.
 	    set_empty();
