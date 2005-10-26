@@ -430,21 +430,20 @@ public:
     When a covering box is tiled onto empty space the corners of the
     box form a rectilinear grid.
 
-    An interval with only one of the bounds open fixes the values of
-    all points in that dimension to the value of the closed bound.  In
-    this case the upper bound of \p box is always the one set open.
-    An interval with upper and lower bounds equal includes every point
-    in that dimension.  Any interval open in both directions results
-    in the empty grid.
+    An interval with only one bound fixes the values of all points in
+    that dimension to the value of the bound.  An interval which has
+    both upper and lower bounds, and in which these bounds are of
+    equal value, allows grid points of any value in that dimension.
+    Any universe interval results in the empty grid.
+
+    The behaviour of this method is only defined if the bounds in \p
+    box are closed bounds.
 
     \param box
     The covering box representing the grid to be built.
 
     \param dummy
     A dummy tag to make this constructor syntactically unique.
-
-    \exception std::invalid_argument
-    Thrown if \p box has intervals that are incompatible with \p topol.
 
     The template class Box must provide the following methods.
     \code
@@ -606,27 +605,32 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p box are dimension-incompatible.
 
-    The template class Box must provide the following methods, whose
-    return values, if any, are simply ignored.
+    The template class Box must provide the following methods
+    \code
+      Box(dimension_type space_dimension)
+    \endcode
+    Creates a universe box of space_dimension dimensions.
+    \code
+      dimension_type space_dimension() const
+    \endcode
+    returns the dimension of the vector space enclosing the grid
+    represented by the bounding box.
     \code
       raise_lower_bound(dimension_type k, bool closed,
                         Coefficient_traits::const_reference n,
                         Coefficient_traits::const_reference d)
     \endcode
     intersects the interval corresponding to the <CODE>k</CODE>-th
-    space dimension
-    with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
-    with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
+    space dimension with \f$[n/d, +\infty)\f$.  <CODE>closed</CODE> is
+    always passed as <CODE>true</CODE>.
     \code
       lower_upper_bound(dimension_type k, bool closed,
                         Coefficient_traits::const_reference n,
                         Coefficient_traits::const_reference d)
     \endcode
     intersects the interval corresponding to the <CODE>k</CODE>-th
-    space dimension
-    with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
-    with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
-    is <CODE>false</CODE>.
+    space dimension with \f$(-\infty, n/d]\f$.  <CODE>closed</CODE> is
+    always passed as <CODE>true</CODE>.
 
     FIX raise_lower_bound may be called more than once (for lines),
         and (confirm) there may be common factors in n and d
