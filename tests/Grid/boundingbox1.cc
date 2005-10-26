@@ -302,6 +302,35 @@ test9() {
   exit(1);
 }
 
+// Box with a dimension open from below.
+
+void
+test10() {
+  nout << "test10:" << endl;
+
+  Bounding_Box box(2);
+  box.lower_upper_bound(0, true, 3, 7);
+  box.raise_lower_bound(1, true, 0, 1);
+  box.lower_upper_bound(1, true, 1, 2);
+
+  Grid gr(box, From_Bounding_Box());
+
+  Grid known_gr(2);
+  known_gr.add_congruence(7*A == 3);
+  known_gr.add_congruence(2*B %= 0);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -319,6 +348,7 @@ main() TRY {
   test7();
   test8();
   test9();
+  test10();
 
   return 0;
 }
