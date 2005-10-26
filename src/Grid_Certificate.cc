@@ -69,16 +69,12 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
       }
   else {
     if (!gr.generators_are_minimized()) {
-      // Minimize gr generator system.
-      // As in Polyhedron assume that `gr' contains at least one
-      // point.
-#ifndef NDEBUG
+      // Minimize gr generator system.  As in Polyhedron assume that
+      // `gr' contains at least one point.
       Grid::simplify(gr.gen_sys, gr.dim_kinds);
-#else
-      bool contains_points = Grid::simplify(gr.gen_sys, gr.dim_kinds);
-      used(contains_points);	// Quiet compiler warning.
-      assert(contains_points);
-#endif
+      // If gen_sys contained rows before being reduced, it should
+      // contain at least a single point afterwards.
+      assert(gr.gen_sys.num_rows() > 0);
       gr.set_generators_minimized();
     }
     // Calculate number of congruences from generators.
