@@ -424,10 +424,21 @@ public:
   */
   explicit Grid(Generator_System& gs, const bool convert_rays_to_lines = true);
 
-  //! Builds a grid out of a generic, interval-based bounding box.
+  //! Builds a grid out of a generic, interval-based covering box.
   /*!
+    The covering box is an upper and lower bound for each dimension.
+    When a covering box is tiled onto empty space the corners of the
+    box form a rectilinear grid.
+
+    An interval with only one of the bounds open fixes the values of
+    all points in that dimension to the value of the closed bound.  In
+    this case the upper bound of \p box is always the one set open.
+    An interval with upper and lower bounds equal includes every point
+    in that dimension.  Any interval open in both directions results
+    in the empty grid.
+
     \param box
-    The bounding box representing the grid to be built.
+    The covering box representing the grid to be built.
 
     \param dummy
     A dummy tag to make this constructor syntactically unique.
@@ -578,10 +589,19 @@ public:
   //! Write the covering box for \p *this into \p box.
   /*!
     The covering box is an upper and lower bound for each dimension.
-    When the resulting covering box \p box is tiled the corners of the
-    box form the sparcest rectilinear grid that includes \p *this.
+    When the resulting covering box \p box is tiled onto empty space
+    the corners of the box form the sparsest rectilinear grid that
+    includes \p *this.
+
     The lower bounds of the resulting \p box are as close as possible
     to the origin.
+
+    If all the points have a single value in a particular dimension
+    then the upper bound of the interval produced in \p box is open,
+    and the lower bound denotes this single value.  If the coordinates
+    of the points in a particular dimension include every value then
+    the upper and lower bounds of the associated interval in \p box
+    are set equal.  The empty grid produces the universe \p box.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p box are dimension-incompatible.
