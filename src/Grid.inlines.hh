@@ -417,12 +417,10 @@ Grid::get_covering_box(Box& box) const {
     Grid& gr = const_cast<Grid&>(*this);
     // Ensure generators are minimized.
     if (!generators_are_minimized()) {
-      if (simplify(gr.gen_sys, gr.dim_kinds)) {
-	// FIX empty result possible?
-	gr.set_empty();
-	box = new_box;
-	return;
-      }
+      simplify(gr.gen_sys, gr.dim_kinds);
+      // gen_sys contained rows before being reduced, so it should
+      // contain at least a single point afterwards.
+      assert(gen_sys.num_rows() > 0);
       gr.set_generators_minimized();
     }
   }
