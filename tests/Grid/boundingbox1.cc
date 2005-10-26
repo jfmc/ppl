@@ -1,4 +1,4 @@
-/* Test Grid(Box& box).
+/* Test Grid(Box& box, From_Bounding_Box()).
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -19,6 +19,10 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
+
+// FIX this test should be named using covering box eg coveringbox2.cc
+
+// This constructor is also tested via coveringbox1.cc.
 
 #include "ppl_test.hh"
 
@@ -47,7 +51,7 @@ test1() {
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(SPACE_DIM);
+  Grid known_gr(SPACE_DIM, EMPTY);
 
   if (gr == known_gr)
     return;
@@ -77,6 +81,8 @@ test2() {
     exit(1);
 
   Grid known_gr(SPACE_DIM);
+  known_gr.add_congruence(A == 0);
+  known_gr.add_congruence(B == 0);
 
   if (gr == known_gr)
     return;
@@ -142,10 +148,9 @@ test4() {
     exit(1);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(point(-2*A - 30*B, 3));
-  known_gr.add_generator(point(4*A + 4*B));
-  known_gr.add_generator(point(-2*A + 12*B, 3));
-  known_gr.add_generator(line(C));
+  known_gr.add_generator(point(-2*A - 30*B + 15*C, 3));
+  known_gr.add_generator(point(4*A - 10*B + 5*C));
+  known_gr.add_generator(point(-2*A + 12*B + 15*C, 3));
 
   if (gr == known_gr)
     return;
@@ -223,8 +228,6 @@ test7() {
   Grid gr(box, From_Bounding_Box());
 
   Grid known_gr(2);
-  known_gr.add_congruence(A == 2);
-  known_gr.add_congruence(B == 4);
 
   if (gr == known_gr)
     return;
@@ -284,6 +287,7 @@ test9() {
   Grid gr(box, From_Bounding_Box());
 
   Grid known_gr(2);
+  known_gr.add_congruence(A == 0);
   known_gr.add_congruence(2*B %= 0);
 
   if (gr == known_gr)
