@@ -640,6 +640,9 @@ PPL::Grid::OK(bool check_not_empty) const {
 	// should contain rows.
 	assert(gs.num_rows() > 0);
 	simplify(gs, d);
+	// gs contained rows before being reduced, so it should
+	// contain at least a single point afterwards.
+	assert(gs.num_rows() > 0);
 	for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
 	  Generator& g = gs[row];
 	  const Generator& g_copy = gen_sys[row];
