@@ -178,6 +178,13 @@ maybe_abandon();
 struct From_Bounding_Box {
 };
 
+//! A tag class.
+/*!
+  Tag class to make the Grid covering box constructor unique.
+*/
+struct From_Covering_Box {
+};
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
 //! If \f$g\f$ is the GCD of \p x and \p y, the values of \p x and \p y
