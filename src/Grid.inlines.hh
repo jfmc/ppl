@@ -360,8 +360,14 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
 	bool closed;
 	// TODO: Consider producing the system(s) in minimized form.
 	// FIXME: Also create the generator system.
-	if (box.get_lower_bound(k, closed, l_n, l_d))
+	if (box.get_lower_bound(k, closed, l_n, l_d)) {
+	  if (!closed)
+	    throw_invalid_argument("Grid(box, from_covering_box)",
+				   "box");
 	  if (box.get_upper_bound(k, closed, u_n, u_d)) {
+	    if (!closed)
+	      throw_invalid_argument("Grid(box, from_covering_box)",
+				     "box");
 	    if (l_n * u_d == u_n * l_d)
 	      // An empty interval allows any point along the
 	      // dimension k axis.
@@ -372,15 +378,20 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
 	    con_sys.insert((d * Variable(k) %= l_n) / ((u_n * (d / u_d)) - l_n));
 	  }
 	  else
-	    // An interval bounded only from below produces an equality.
+	    // An interval bounded only from below produces an
+	    // equality.
 	    con_sys.insert(l_d * Variable(k) == l_n);
+	}
 	else
-	  if (box.get_upper_bound(k, closed, u_n, u_d))
+	  if (box.get_upper_bound(k, closed, u_n, u_d)) {
+	    if (!closed)
+	      throw_invalid_argument("Grid(box, from_covering_box)",
+				     "box");
 	    // An interval bounded only from above produces an equality.
 	    con_sys.insert(u_d * Variable(k) == u_n);
+	  }
 	  else {
-	    // Any dimension that is open in both directions produces
-	    // an empty grid.
+	    // Any universe interval produces an empty grid.
 	    set_empty();
 	    goto end;
 	  }
