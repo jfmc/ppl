@@ -436,14 +436,14 @@ public:
     equal value, allows grid points of any value in that dimension.
     Any universe interval results in the empty grid.
 
-    The behaviour of this method is only defined if the bounds in \p
-    box are closed bounds.
-
     \param box
     The covering box representing the grid to be built.
 
     \param dummy
     A dummy tag to make this constructor syntactically unique.
+
+    \exception std::invalid_argument
+    Thrown if \p box contains any topologically open bounds.
 
     The template class Box must provide the following methods.
     \code
