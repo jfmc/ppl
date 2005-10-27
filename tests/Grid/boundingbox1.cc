@@ -302,7 +302,7 @@ test9() {
   exit(1);
 }
 
-// Box with a dimension open from below.
+// Box with a dimension bounded only from above.
 
 void
 test10() {
@@ -331,6 +331,35 @@ test10() {
   exit(1);
 }
 
+// Box with a dimension having an open bound.
+
+void
+test11() {
+  nout << "test11:" << endl;
+
+  Bounding_Box box(2);
+  box.lower_upper_bound(0, true, 3, 7);
+  box.raise_lower_bound(1, true, 0, 1);
+  box.lower_upper_bound(1, false, 1, 2);
+
+  bool caught = false;
+
+  try {
+    Grid gr(box, From_Covering_Box());
+  }
+  catch (std::invalid_argument e) {
+    caught = true;
+  }
+
+  if (caught)
+    return;
+
+  nout << "Construction should have thrown std::invalid_argument."
+       << endl;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -349,6 +378,7 @@ main() TRY {
   test8();
   test9();
   test10();
+  test11();
 
   return 0;
 }
