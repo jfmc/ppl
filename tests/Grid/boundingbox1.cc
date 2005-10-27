@@ -1,4 +1,4 @@
-/* Test Grid(Box& box, From_Covering_Box()).
+/* Test Grid::Grid(Box&, From_Bounding_Box).
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,10 +20,6 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-// FIX this test should be named using covering box eg coveringbox2.cc
-
-// This constructor is also tested via coveringbox1.cc.
-
 #include "ppl_test.hh"
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -35,10 +31,11 @@ namespace {
 Variable A(0);
 Variable B(1);
 Variable C(2);
+Variable D(3);
 
 #define SPACE_DIM 2
 
-// The box is the xy plane.
+// Universe box.
 
 void
 test1() {
@@ -46,12 +43,12 @@ test1() {
 
   Bounding_Box box(SPACE_DIM);
 
-  Grid gr(box, From_Covering_Box());
+  Grid gr(box, From_Bounding_Box());
 
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(SPACE_DIM, EMPTY);
+  Grid known_gr(SPACE_DIM);
 
   if (gr == known_gr)
     return;
@@ -65,24 +62,23 @@ test1() {
   exit(1);
 }
 
-// The box is the positive quadrant.
+// A 2D box which is a line parallel to the x axis.
 
 void
 test2() {
   nout << "test2:" << endl;
 
   Bounding_Box box(SPACE_DIM);
-  box.raise_lower_bound(0, true, 0, 1);
-  box.raise_lower_bound(1, true, 0, 1);
+  box.raise_lower_bound(1, true, 2, 3);
+  box.lower_upper_bound(1, true, 2, 3);
 
-  Grid gr(box, From_Covering_Box());
+  Grid gr(box, From_Bounding_Box());
 
   if (find_variation(gr))
     exit(1);
 
   Grid known_gr(SPACE_DIM);
-  known_gr.add_congruence(A == 0);
-  known_gr.add_congruence(B == 0);
+  known_gr.add_congruence(3*B == 2);
 
   if (gr == known_gr)
     return;
@@ -96,7 +92,7 @@ test2() {
   exit(1);
 }
 
-// A bounded box in 2D.
+// A 2D box that is a point, with divisors.
 
 void
 test3() {
@@ -104,18 +100,17 @@ test3() {
 
   Bounding_Box box(SPACE_DIM);
   box.raise_lower_bound(0, true, -2, 3);
-  box.lower_upper_bound(0, true, 4, 1);
+  box.lower_upper_bound(0, true, -2, 3);
   box.raise_lower_bound(1, true, -10, 1);
-  box.lower_upper_bound(1, true, 12, 3);
+  box.lower_upper_bound(1, true, -10, 1);
 
-  Grid gr(box, From_Covering_Box());
+  Grid gr(box, From_Bounding_Box());
 
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(SPACE_DIM);
-  known_gr.add_congruence((3*A %= -2) / 14);
-  known_gr.add_congruence((B %= -10) / 14);
+  Grid known_gr(SPACE_DIM, EMPTY);
+  known_gr.add_generator(point(-2*A - 30*B, 3));
 
   if (gr == known_gr)
     return;
@@ -129,28 +124,25 @@ test3() {
   exit(1);
 }
 
-// This is an unbounded closed box in 3D which is bounded in 2D.
+// A 3D box which is a 2D plane.
 
 void
 test4() {
   nout << "test4:" << endl;
 
   Bounding_Box box(3);
-  box.raise_lower_bound(0, true, -2, 3);
-  box.lower_upper_bound(0, true, 4, 1);
-  box.raise_lower_bound(1, true, -10, 1);
-  box.lower_upper_bound(1, true, 12, 3);
-  box.raise_lower_bound(2, true, 15, 3);
+  box.raise_lower_bound(2, true, 15, 5);
+  box.lower_upper_bound(2, true, 15, 5);
 
-  Grid gr(box, From_Covering_Box());
+  Grid gr(box, From_Bounding_Box());
 
   if (find_variation(gr))
     exit(1);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(point(-2*A - 30*B + 15*C, 3));
-  known_gr.add_generator(point(4*A - 10*B + 5*C));
-  known_gr.add_generator(point(-2*A + 12*B + 15*C, 3));
+  known_gr.add_generator(point(3*C));
+  known_gr.add_generator( line(  A));
+  known_gr.add_generator( line(  B));
 
   if (gr == known_gr)
     return;
@@ -172,7 +164,7 @@ test5() {
 
   Bounding_Box box(0);
 
-  Grid gr(box, From_Covering_Box());
+  Grid gr(box, From_Bounding_Box());
 
   Grid known_gr;
 
@@ -188,7 +180,7 @@ test5() {
   exit(1);
 }
 
-// Empty closed box in 2D.
+// Empty box in 2D.
 
 void
 test6() {
@@ -197,7 +189,7 @@ test6() {
   Bounding_Box box(2);
   box.set_empty();
 
-  Grid gr(box, From_Covering_Box());
+  Grid gr(box, From_Bounding_Box());
 
   Grid known_gr(2, EMPTY);
 
@@ -213,21 +205,20 @@ test6() {
   exit(1);
 }
 
-// A single point.
+// A 4D box containing a single 3D space.
 
 void
 test7() {
   nout << "test7:" << endl;
 
-  Bounding_Box box(2);
-  box.raise_lower_bound(0, true, 2, 1);
-  box.lower_upper_bound(0, true, 2, 1);
-  box.raise_lower_bound(1, true, 4, 1);
-  box.lower_upper_bound(1, true, 4, 1);
+  Bounding_Box box(4);
+  box.raise_lower_bound(3, true, 4, 1);
+  box.lower_upper_bound(3, true, 4, 1);
 
-  Grid gr(box, From_Covering_Box());
+  Grid gr(box, From_Bounding_Box());
 
-  Grid known_gr(2);
+  Grid known_gr(4);
+  known_gr.add_constraint(D == 4);
 
   if (gr == known_gr)
     return;
@@ -253,27 +244,25 @@ test8() {
   box.raise_lower_bound(1, true, 0, 1);
   box.lower_upper_bound(1, true, 1, 1);
 
-  Grid gr(box, From_Covering_Box());
+  bool caught = false;
 
-  Congruence_System known_cgs;
-  known_cgs.insert(A %= 0);
-  known_cgs.insert(B %= 0);
+  try {
+    Grid gr(box, From_Bounding_Box());
+  }
+  catch (std::invalid_argument e) {
+    caught = true;
+  }
 
-  Grid known_gr(known_cgs);
-
-  if (gr == known_gr)
+  if (caught)
     return;
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
+  nout << "Construction should have thrown std::invalid_argument."
+       << endl;
 
   exit(1);
 }
 
-// Simple box with divisor.
+// Simple box with divisor and an interval bounded only from below.
 
 void
 test9() {
@@ -284,20 +273,20 @@ test9() {
   box.raise_lower_bound(1, true, 0, 1);
   box.lower_upper_bound(1, true, 1, 2);
 
-  Grid gr(box, From_Covering_Box());
+  bool caught = false;
 
-  Grid known_gr(2);
-  known_gr.add_congruence(A == 0);
-  known_gr.add_congruence(2*B %= 0);
+  try {
+    Grid gr(box, From_Bounding_Box());
+  }
+  catch (std::invalid_argument e) {
+    caught = true;
+  }
 
-  if (gr == known_gr)
+  if (caught)
     return;
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
+  nout << "Construction should have thrown std::invalid_argument."
+       << endl;
 
   exit(1);
 }
@@ -313,39 +302,10 @@ test10() {
   box.raise_lower_bound(1, true, 0, 1);
   box.lower_upper_bound(1, true, 1, 2);
 
-  Grid gr(box, From_Covering_Box());
-
-  Grid known_gr(2);
-  known_gr.add_congruence(7*A == 3);
-  known_gr.add_congruence(2*B %= 0);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
-}
-
-// Box with a dimension having an open bound.
-
-void
-test11() {
-  nout << "test11:" << endl;
-
-  Bounding_Box box(2);
-  box.lower_upper_bound(0, true, 3, 7);
-  box.raise_lower_bound(1, true, 0, 1);
-  box.lower_upper_bound(1, false, 1, 2);
-
   bool caught = false;
 
   try {
-    Grid gr(box, From_Covering_Box());
+    Grid gr(box, From_Bounding_Box());
   }
   catch (std::invalid_argument e) {
     caught = true;
@@ -356,6 +316,62 @@ test11() {
 
   nout << "Construction should have thrown std::invalid_argument."
        << endl;
+
+  exit(1);
+}
+
+// An otherwise valid box having a dimension with an open bound, where
+// the open bound makes the box empty.
+
+void
+test11() {
+  nout << "test11:" << endl;
+
+  Bounding_Box box(2);
+  box.raise_lower_bound(0, true, 3, 7);
+  box.lower_upper_bound(0, true, 3, 7);
+  box.raise_lower_bound(1, false, 1, 2);
+  box.lower_upper_bound(1, true, 1, 2);
+
+  bool caught = false;
+
+  try {
+    Grid gr(box, From_Bounding_Box());
+  }
+  catch (std::invalid_argument e) {
+    caught = true;
+  }
+
+  if (caught)
+    return;
+
+  nout << "Construction should have thrown std::invalid_argument."
+       << endl;
+
+  exit(1);
+}
+
+// Zero-dimensional empty box.
+
+void
+test12() {
+  nout << "test12:" << endl;
+
+  Bounding_Box box(0);
+  box.set_empty();
+
+  Grid gr(box, From_Bounding_Box());
+
+  Grid known_gr(0, EMPTY);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
 
   exit(1);
 }
@@ -379,6 +395,7 @@ main() TRY {
   test9();
   test10();
   test11();
+  test12();
 
   return 0;
 }
