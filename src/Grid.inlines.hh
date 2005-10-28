@@ -442,10 +442,14 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
 	      // A point interval allows any point along the dimension
 	      // k axis.
 	      continue;
-	    lcm_assign(d, l_d, u_d);
-	    // FIX division by l_d and u_d repeats some of lcm_assign (use gcd instd)
-	    l_n *= (d / l_d);
-	    con_sys.insert((d * Variable(k) %= l_n) / ((u_n * (d / u_d)) - l_n));
+	    gcd_assign(d, l_d, u_d);
+	    // `d' is the gcd of the divisors.
+	    l_n *= (u_d / d);
+	    d = l_d / d;
+	    // `d' is now the smallest integer expression of the size
+	    // of l_d relative to u_d.  `d * u_d' is the lcm of the
+	    // divisors.
+	    con_sys.insert((d * u_d * Variable(k) %= l_n) / ((u_n * d) - l_n));
 	  }
 	  else
 	    // An interval bounded only from below produces an
