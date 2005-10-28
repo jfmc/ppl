@@ -94,3 +94,43 @@ Z-polyhedra are intersections and other representations for discrete sets.
   Génération automatique de codes de transfert pour
   multiprocesseurs à mémoires locales.
   PhD thesis, Université de Paris VI, March 1991.
+
+Grids Domain
+============
+
+-  Complete the implementation of any missing operators:
+      shrink_bounding_box
+      ????covered (or bounded) widening and extrapolation operators
+      affine_dimension
+      is_topologally_closed
+      is_bounded
+      bounds_from_above
+      bounds_from_below
+      maximize
+      minimize
+      add_congruences for constraints
+      add_recycled_congruences for constraints
+      add_recycled_congruences_and_minimize for constraints
+      similar operators where "congruences" is replaced by "constraints"
+      upper_bound_assign_and_minimize (as for join_assign_and_minimize).
+
+-  Check all FIX's and either remove or convert to FIXME's
+   with explanatory comment.
+
+-  Eliminate as many FIXME's as possible.
+
+-  clean-up the gcdext addition.
+
+-  Check the tests cover all the code.
+
+-  Add ascii_dump/0 to all classes
+
+-  Documentation needs checking and revising; in many places the 
+   cut and paste from the corresponding files for polyhedra has not
+   been adapted for grids.
+
+-  Develop a C interface.
+
+-  Develop a Prolog interface.
+
+-  Merge the branch with the main trunk.
