@@ -478,6 +478,90 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
 
 template <typename Box>
 void
+Grid::shrink_bounding_box(Box& box) const {
+  // Dimension-compatibility check.
+  if (space_dim > box.space_dimension())
+    throw_dimension_incompatible("shrink_bounding_box(box)", "box",
+				 box.space_dimension());
+
+  TEMP_INTEGER(l_n);
+  TEMP_INTEGER(l_d);
+
+  // Check that all bounds are closed.
+  for (dimension_type k = space_dim; k-- > 0; ) {
+    bool closed;
+    // FIXME: Perhaps introduce box::is_bounded_and_closed.
+    if (box.get_lower_bound(k, closed, l_n, l_d) && !closed)
+      throw_invalid_argument("shrink_bounding_box(box)", "box");
+    if (box.get_upper_bound(k, closed, l_n, l_d) && !closed)
+      throw_invalid_argument("shrink_bounding_box(box)", "box");
+  }
+
+  if (marked_empty()) {
+    box.set_empty();
+    return;
+  }
+  if (generators_are_up_to_date()) {
+    if (gen_sys.num_rows() == 0) {
+      box.set_empty();
+      return;
+    }
+  }
+  else if (!update_generators()) {
+    // Updating found the grid empty.
+    box.set_empty();
+    return;
+  }
+
+  assert(gen_sys.num_rows() > 0);
+
+  dimension_type num_dims = gen_sys.num_columns() - 1;
+  dimension_type num_rows = gen_sys.num_rows();
+
+  // Create a vector to record which dimensions are bounded.
+  std::vector<bool> bounded_interval(num_dims, true);
+
+  const Generator *first_point = NULL;
+  // Clear the bound flag in `bounded_interval' for all dimensions in
+  // which a line or sequence of points extends away from a single
+  // value in the dimension.
+  for (dimension_type row = 0; row < num_rows; ++row) {
+    Generator& gen = const_cast<Generator&>(gen_sys[row]);
+    if (gen.is_point()) {
+      if (first_point == NULL) {
+	first_point = &gen_sys[row];
+	continue;
+      }
+      const Generator& point = *first_point;
+      // Convert the point `gen' to a parameter.
+      for (dimension_type dim = 0; dim < num_dims; ++dim)
+	gen[dim] -= point[dim];
+    }
+    for (dimension_type col = num_dims; col > 0; )
+      if (gen[col--] != 0)
+	bounded_interval[col] = false;
+  }
+
+  // Attempt to set both bounds of each boundable interval to the
+  // value of the associated coefficient in the point.
+  const Generator& point = *first_point;
+  TEMP_INTEGER(divisor);
+  TEMP_INTEGER(gcd);
+  TEMP_INTEGER(bound);
+  TEMP_INTEGER(reduced_divisor);
+  divisor = point.divisor();
+  for (dimension_type dim = 0; dim < num_dims; ++dim)
+    if (bounded_interval[dim]) {
+      gcd_assign(gcd, point[dim+1], divisor);
+      exact_div_assign(bound, point[dim+1], gcd);
+      exact_div_assign(reduced_divisor, divisor, gcd);
+      box.raise_lower_bound(dim, true, bound, reduced_divisor);
+      box.lower_upper_bound(dim, true, bound, reduced_divisor);
+    }
+}
+
+template <typename Box>
+void
 Grid::get_covering_box(Box& box) const {
   // Dimension-compatibility check.
   if (space_dim > box.space_dimension())
@@ -565,8 +649,8 @@ Grid::get_covering_box(Box& box) const {
 	  const Generator& gen = gen_sys[last_index];
 	  for (dimension_type col = dim; col <= num_dims; ++col) {
 	    if (gen[col] != 0) {
-	      // Empty interval, set both bounds for dimension `dim' to
-	      // zero.
+	      // Empty interval, set both bounds for associated
+	      // dimension to zero.
 	      new_box.lower_upper_bound(col-1, true, 0, 1);
 	      new_box.raise_lower_bound(col-1, true, 0, 1);
 	    }
@@ -579,10 +663,10 @@ Grid::get_covering_box(Box& box) const {
       }
     }
 
-    // For each dimension make the lower bound of the interval the
-    // grid value closest to the origin, and the upper bound the
+    // For each dimension set the lower bound of the interval to the
+    // grid value closest to the origin, and the upper bound to the
     // addition of the lower bound and the shortest distance in the
-    // given dimension between all grid points.
+    // given dimension between any two grid points.
     TEMP_INTEGER(lower_bound);
     for (dimension_type dim = 0; dim < num_dims; ++dim) {
       lower_bound = point[dim+1];

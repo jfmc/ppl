@@ -626,6 +626,11 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this does not contain lines.
   bool is_pointed() const;
 
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this is a
+  //! topologically closed subset of the vector space.
+  bool is_topologically_closed() const;
+
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
     \exception std::invalid_argument
@@ -640,7 +645,80 @@ public:
   */
   bool strictly_contains(const Grid& y) const;
 
-  //! Write the covering box for \p *this into \p box.
+  //! Uses \p *this to shrink a generic, interval-based bounding box.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p box are dimension-incompatible, or if \p
+    box contains any topologically open bounds.
+
+    The template class Box must provide the following methods
+    \code
+      dimension_type space_dimension() const
+    \endcode
+    returns the dimension of the vector space enclosing the grid
+    represented by the bounding box.
+    \code
+      bool get_lower_bound(dimension_type k, bool closed,
+                           Coefficient& n, Coefficient& d) const
+    \endcode
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    space dimension.  If \f$I\f$ is not bounded from below, simply return
+    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
+    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
+    is set to <CODE>true</CODE> if the the lower boundary of \f$I\f$
+    is closed and is set to <CODE>false</CODE> otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
+    corresponds to the greatest lower bound of \f$I\f$.  The fraction
+    \f$n/d\f$ is in canonical form if and only if \f$n\f$ and \f$d\f$
+    have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
+    the unique representation for zero.
+    \code
+      bool get_upper_bound(dimension_type k, bool closed,
+                           Coefficient& n, Coefficient& d) const
+    \endcode
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    space dimension.  If \f$I\f$ is not bounded from above, simply return
+    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
+    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
+    is set to <CODE>true</CODE> if the the upper boundary of \f$I\f$
+    is closed and is set to <CODE>false</CODE> otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
+    corresponds to the least upper bound of \f$I\f$.
+    \code
+      set_empty()
+    \endcode
+    Causes the box to become empty, i.e., to represent the empty set.
+    \code
+      raise_lower_bound(dimension_type k, bool closed,
+                        Coefficient_traits::const_reference n,
+                        Coefficient_traits::const_reference d)
+    \endcode
+    intersects the interval corresponding to the <CODE>k</CODE>-th
+    space dimension with \f$[n/d, +\infty)\f$.  <CODE>closed</CODE> is
+    always passed as <CODE>true</CODE>.
+    \code
+      lower_upper_bound(dimension_type k, bool closed,
+                        Coefficient_traits::const_reference n,
+                        Coefficient_traits::const_reference d)
+    \endcode
+    intersects the interval corresponding to the <CODE>k</CODE>-th
+    space dimension with \f$(-\infty, n/d]\f$.  <CODE>closed</CODE> is
+    always passed as <CODE>true</CODE>.
+
+    The function <CODE>raise_lower_bound(k, closed, n, d)</CODE>
+    will be called at most once for each possible value for <CODE>k</CODE>
+    and for all such calls the fraction \f$n/d\f$ will be in canonical form,
+    that is, \f$n\f$ and \f$d\f$ have no common factors and \f$d\f$
+    is positive, \f$0/1\f$ being the unique representation for zero.
+    The same guarantee is offered for the function
+    <CODE>lower_upper_bound(k, closed, n, d)</CODE>.
+  */
+  template <typename Box>
+  void shrink_bounding_box(Box& box) const;
+
+  //! Writes the covering box for \p *this into \p box.
   /*!
     The covering box is an upper and lower bound for each dimension.
     When the resulting covering box \p box is tiled onto empty space
