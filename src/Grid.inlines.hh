@@ -552,6 +552,7 @@ Grid::shrink_bounding_box(Box& box) const {
   divisor = point.divisor();
   for (dimension_type dim = 0; dim < num_dims; ++dim)
     if (bounded_interval[dim]) {
+      // Reduce the bound fraction first.
       gcd_assign(gcd, point[dim+1], divisor);
       exact_div_assign(bound, point[dim+1], gcd);
       exact_div_assign(reduced_divisor, divisor, gcd);
@@ -603,38 +604,25 @@ Grid::get_covering_box(Box& box) const {
   TEMP_INTEGER(divisor);
   divisor = point[0];
 
+  TEMP_INTEGER(gcd);
+  TEMP_INTEGER(bound);
+  TEMP_INTEGER(reduced_divisor);
+
   if (num_rows > 1) {
     Row interval_sizes(num_dims, Row::Flags());
-    dimension_type& last_index = num_rows;
+    dimension_type last_index = num_rows;
     last_index--;
 
     // Store in `interval_sizes', for each column (that is, for each
     // dimension), the GCD of the coefficients that are in parameter
     // rows.
 
-    const Generator& last_gen = gen_sys[last_index];
-    // Initialise `interval_sizes' according to the final parameter
-    // row.
-    dimension_type dim = num_dims - 1;
-    if (last_gen.is_line_or_equality()) {
-      if (last_gen[num_dims] != 0) {
-	// Empty interval, set both bounds for dimension `dim' to
-	// zero.
-	new_box.lower_upper_bound(dim, true, 0, 1);
-	new_box.raise_lower_bound(dim, true, 0, 1);
-      }
+    for (dimension_type dim = num_dims; dim-- > 0; )
       interval_sizes[dim] = 0;
-    }
-    else
-      interval_sizes[dim] = last_gen[num_dims];
-    // Coefficients before the last are zero, due to minimal form.
-    while (dim-- > 0)
-      interval_sizes[dim] = 0;
-    last_index--;
     // Include the preceding parameter rows into `interval_sizes'.
-    for (dimension_type dim = num_dims; dim-- > 1; ) {
+    for (dimension_type dim = num_dims; last_index > 0; --dim) {
       // `dim_kinds' is indexed one higher than `interval_sizes', as
-      // it starts with the generator system's point.
+      // `dim_kinds' includes the constant term "dimension".
       switch (dim_kinds[dim]) {
       case PARAMETER:
 	{
@@ -661,6 +649,8 @@ Grid::get_covering_box(Box& box) const {
       case GEN_VIRTUAL:
 	break;
       }
+      if (dim == 0)
+	break;
     }
 
     // For each dimension set the lower bound of the interval to the
@@ -688,18 +678,30 @@ Grid::get_covering_box(Box& box) const {
 		 && interval_sizes[dim] + lower_bound < - lower_bound)
 	  lower_bound += interval_sizes[dim];
 
-	new_box.lower_upper_bound(dim, true,
-				  interval_sizes[dim] + lower_bound,
-				  divisor);
+	// Reduce the bound fraction first.
+	bound = interval_sizes[dim] + lower_bound;
+	gcd_assign(gcd, bound, divisor);
+	exact_div_assign(bound, gcd);
+	exact_div_assign(reduced_divisor, divisor, gcd);
+	new_box.lower_upper_bound(dim, true, bound, reduced_divisor);
       }
 
-      new_box.raise_lower_bound(dim, true, lower_bound, divisor);
+      // Reduce the bound fraction first.
+      gcd_assign(gcd, lower_bound, divisor);
+      exact_div_assign(lower_bound, gcd);
+      exact_div_assign(reduced_divisor, divisor, gcd);
+      new_box.raise_lower_bound(dim, true, lower_bound, reduced_divisor);
     }
   }
   else
     // The covering box of a single point has only lower bounds.
-    for (dimension_type dim = 0; dim < num_dims; ++dim)
-      new_box.raise_lower_bound(dim, true, point[dim+1], divisor);
+    for (dimension_type dim = 0; dim < num_dims; ++dim) {
+      // Reduce the bound fraction first.
+      gcd_assign(gcd, point[dim+1], divisor);
+      exact_div_assign(bound, point[dim+1], gcd);
+      exact_div_assign(reduced_divisor, divisor, gcd);
+      new_box.raise_lower_bound(dim, true, bound, reduced_divisor);
+    }
 
   box = new_box;
 }

@@ -765,8 +765,7 @@ public:
     space dimension with \f$(-\infty, n/d]\f$.  <CODE>closed</CODE> is
     always passed as <CODE>true</CODE>.
 
-    FIX raise_lower_bound may be called more than once (for lines),
-        and (confirm) there may be common factors in n and d
+    FIX raise_lower_bound may be called more than once (for lines)
 
     The function <CODE>raise_lower_bound(k, closed, n, d)</CODE>
     will be called at most once for each possible value for <CODE>k</CODE>
