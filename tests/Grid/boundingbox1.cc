@@ -20,6 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+// This constructor is also tested via coveringbox2.cc.
+
 #include "ppl_test.hh"
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
