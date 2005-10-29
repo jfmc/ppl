@@ -679,6 +679,100 @@ test13() {
   exit(1);
 }
 
+// Grid which is a single point, with a divisor, such that the
+// fractions for some intervals (B and C) will be reduced before being
+// assigned to the intervals.
+
+void
+test14() {
+  nout << "test14:" << endl;
+
+  Bounding_Box box1(SPACE_DIM);
+
+  Grid gr(SPACE_DIM, EMPTY);
+  gr.add_generator(point(16*A + 14*B - 7*C, 7));
+
+  gr.get_covering_box(box1);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Bounding_Box known_box(SPACE_DIM);
+  known_box.raise_lower_bound(0, true, 16, 7);
+  known_box.raise_lower_bound(1, true, 2, 1);
+  known_box.raise_lower_bound(2, true, -1, 1);
+  known_box.raise_lower_bound(3, true, 0, 1);
+
+  if (box1 == known_box) {
+    Grid tem_gr(box1, From_Covering_Box());
+    Bounding_Box box2(SPACE_DIM);
+    tem_gr.get_covering_box(box2);
+
+    if (box2 == known_box)
+      return;
+
+    nout << "Reproduced box should equal known box." << endl
+	 << "  box:" << endl << box2;
+  }
+  else
+    nout << "Original box should equal known box." << endl
+	 << "  box:" << endl << box1;
+
+  nout << "known:" << endl << known_box;
+
+  exit(1);
+}
+
+// Many-pointed grid, with a divisor, such that the fractions for some
+// intervals (B and C) will be reduced before being assigned to the
+// intervals.
+
+void
+test15() {
+  nout << "test15:" << endl;
+
+  Bounding_Box box1(SPACE_DIM);
+
+  Grid gr(SPACE_DIM, EMPTY);
+  gr.add_generator(point());
+  gr.add_generator(point(A, 6));
+  gr.add_generator(point(B, 3));
+  gr.add_generator(point(C, 2));
+
+  gr.get_covering_box(box1);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Bounding_Box known_box(SPACE_DIM);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.lower_upper_bound(0, true, 1, 6);
+  known_box.raise_lower_bound(1, true, 0, 1);
+  known_box.lower_upper_bound(1, true, 1, 3);
+  known_box.raise_lower_bound(2, true, 0, 1);
+  known_box.lower_upper_bound(2, true, 1, 2);
+  known_box.raise_lower_bound(3, true, 0, 1);
+
+  if (box1 == known_box) {
+    Grid tem_gr(box1, From_Covering_Box());
+    Bounding_Box box2(SPACE_DIM);
+    tem_gr.get_covering_box(box2);
+
+    if (box2 == known_box)
+      return;
+
+    nout << "Reproduced box should equal known box." << endl
+	 << "  box:" << endl << box2;
+  }
+  else
+    nout << "Original box should equal known box." << endl
+	 << "  box:" << endl << box1;
+
+  nout << "known:" << endl << known_box;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -700,6 +794,8 @@ main() TRY {
   test11();
   test12();
   test13();
+  test14();
+  test15();
 
   return 0;
 }
