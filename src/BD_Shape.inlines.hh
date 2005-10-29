@@ -132,6 +132,42 @@ forget_binary_constraints_on_var(DB_Matrix<N>& x,
   } 
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Decodes the constraint \p c as a bounded difference.
+/*! \relates Parma_Polyhedra_Library::BD_Shape
+  \return
+  <CODE>true</CODE> if the constraint \p c is a bounded difference;
+  <CODE>false</CODE> otherwise.
+
+  \param c
+  The constraint to be decoded.
+
+  \param c_space_dim
+  The space dimension of the constraint \p c (it is <EM>assumed</EM>
+  to match the actual space dimension of \p c).
+
+  \param c_num_vars
+  If <CODE>true</CODE> is returned, then it will be set to the number
+  of variables having a non-zero coefficient. The only legal values
+  will therefore be 0, 1 and 2.
+
+  \param c_first_var
+  If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
+  then it will be set to the index of the first variable having
+  a non-zero coefficient in \p c.
+
+  \param c_second_var
+  If <CODE>true</CODE> is returned and if \p c_num_vars is set to 2,
+  then it will be set to the index of the second variable having
+  a non-zero coefficient in \p c.
+
+  \param c_coeff
+  If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
+  then it will be set to the value of the first non-zero coefficient
+  in \p c.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 inline bool
 extract_bounded_difference(const Constraint& c,
 			   const dimension_type c_space_dim,
@@ -1413,19 +1449,19 @@ BD_Shape<T>::shortest_path_closure_assign() const {
   BD_Shape& x = const_cast<BD_Shape<T>&>(*this);
 
   // Fill the main diagonal with zeros.
-  for (dimension_type h = num_dimensions+1; h-- > 0; ) {
+  for (dimension_type h = num_dimensions + 1; h-- > 0; ) {
     assert(is_plus_infinity(x.dbm[h][h]));
     assign(x.dbm[h][h], 0, ROUND_IGNORE);
   }
 
   N sum;
-  for (dimension_type k = 0; k <= num_dimensions; ++k) {
+  for (dimension_type k = num_dimensions + 1; k-- > 0; ) {
     const DB_Row<N>& xdbm_k = x.dbm[k];
-    for (dimension_type i = 0; i <= num_dimensions; ++i) {
+    for (dimension_type i = num_dimensions + 1; i-- > 0; ) {
       DB_Row<N>& xdbm_i = x.dbm[i];
       const N& xdbm_i_k = xdbm_i[k];
       if (!is_plus_infinity(xdbm_i_k))
-	for (dimension_type j = 0; j <= num_dimensions; ++j) {
+	for (dimension_type j = num_dimensions + 1; j-- > 0; ) {
 	  const N& xdbm_k_j = xdbm_k[j];
 	  if (!is_plus_infinity(xdbm_k_j)) {
 	    // Rounding upward for correctness.
@@ -1438,7 +1474,7 @@ BD_Shape<T>::shortest_path_closure_assign() const {
 
   // Check for emptyness: the BDS is empty if and only if there is a
   // negative value on the main diagonal of `dbm'.
-  for (dimension_type h = num_dimensions+1; h-- > 0; ) {
+  for (dimension_type h = num_dimensions + 1; h-- > 0; ) {
     N& x_dbm_hh = x.dbm[h][h];
     if (x_dbm_hh < 0) {
       x.status.set_empty();
@@ -1565,10 +1601,10 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
   // Even though shortest-path reduction is not going to change the BDS,
   // it might change its internal representation.
   BD_Shape<T>& x = const_cast<BD_Shape<T>&>(*this);
-  for (dimension_type i = space_dim+1; i-- > 0; ) {
+  for (dimension_type i = space_dim + 1; i-- > 0; ) {
     DB_Row<N>& x_i = x.dbm[i];
     const std::deque<bool>& redundant_i = redundant[i];
-    for (dimension_type j = space_dim+1; j-- > 0; )
+    for (dimension_type j = space_dim + 1; j-- > 0; )
       if (redundant_i[j])
 	x_i[j] = PLUS_INFINITY;
   }
@@ -1599,10 +1635,10 @@ BD_Shape<T>::bds_hull_assign(const BD_Shape& y) {
   // The bds-hull consists in constructing `*this' with the maximum
   // elements selected from `*this' and `y'.
   assert(space_dim == 0 || marked_shortest_path_closed());
-  for (dimension_type i = 0; i <= space_dim; ++i) {
+  for (dimension_type i = space_dim + 1; i-- > 0; ) {
     DB_Row<N>& dbm_i = dbm[i];
     const DB_Row<N>& y_dbm_i = y.dbm[i];
-    for (dimension_type j = 0; j <= space_dim; ++j) {
+    for (dimension_type j = space_dim + 1; j-- > 0; ) {
       N& dbm_ij = dbm_i[j];
       const N& y_dbm_ij = y_dbm_i[j];
       if (dbm_ij < y_dbm_ij)
@@ -1718,9 +1754,9 @@ BD_Shape<T>::add_space_dimensions_and_project(const dimension_type m) {
   if (space_dim == 0) {
     dbm.grow(m + 1);
     if (!marked_empty()) {
-      for (dimension_type i = 0; i <= m; ++i) {
+      for (dimension_type i = m + 1; i-- > 0; ) {
 	DB_Row<N>& dbm_i = dbm[i];
-	for (dimension_type j = 0; j <= m; ++j)
+	for (dimension_type j = m + 1; j-- > 0; )
 	  if (i != j)
 	    assign(dbm_i[j], 0, ROUND_IGNORE);
       }
@@ -1921,10 +1957,10 @@ BD_Shape<T>::intersection_assign(const BD_Shape& y) {
   // To intersect two systems of bounded differences we compare
   // the constraints and we choose the less values.
   bool changed = false;
-  for (dimension_type i = 0; i <= space_dim; ++i) {
+  for (dimension_type i = space_dim + 1; i-- > 0; ) {
     DB_Row<N>& dbm_i = dbm[i];
     const DB_Row<N>& y_dbm_i = y.dbm[i];
-    for (dimension_type j = 0; j <= space_dim; ++j) {
+    for (dimension_type j = space_dim + 1; j-- > 0; ) {
       N& dbm_ij = dbm_i[j];
       const N& y_dbm_ij = y_dbm_i[j];
       if (dbm_ij > y_dbm_ij) {
@@ -2009,10 +2045,10 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
   // and, if in the container there is a value that is greater than
   // or equal to the value of the constraint, we take this value,
   // otherwise we remove this constraint.
-  for (dimension_type i = 0; i <= space_dim; ++i) {
+  for (dimension_type i = space_dim + 1; i-- > 0; ) {
     DB_Row<N>& dbm_i = dbm[i];
     const DB_Row<N>& y_dbm_i = y.dbm[i];
-    for (dimension_type j = 0; j <= space_dim; ++j) {
+    for (dimension_type j = space_dim + 1; j-- > 0; ) {
       N& dbm_ij = dbm_i[j];
       const N& y_dbm_ij = y_dbm_i[j];
       if (y_dbm_ij < dbm_ij) {
@@ -2032,11 +2068,13 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
 
 template <typename T>
 void
-BD_Shape<T>::get_limiting_constraints(const Constraint_System& cs,
-				      Constraint_System& limiting_cons) const {
+BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
+				BD_Shape& limiting_shape) const {
   const dimension_type cs_space_dim = cs.space_dimension();
   // Private method: the caller has to ensure the following.
   assert(cs_space_dim <= space_dimension());
+
+  bool changed = false;
   for (Constraint_System::const_iterator i = cs.begin(),
 	 iend = cs.end(); i != iend; ++i) {
     const Constraint& c = *i;
@@ -2050,6 +2088,9 @@ BD_Shape<T>::get_limiting_constraints(const Constraint_System& cs,
       // and set `coeff' to the absolute value of itself.
       const N& x = (coeff < 0) ? dbm[i][j] : dbm[j][i];
       const N& y = (coeff < 0) ? dbm[j][i] : dbm[i][j];
+      DB_Matrix<N>& ls_dbm = limiting_shape.dbm;
+      N& ls_x = (coeff < 0) ? ls_dbm[i][j] : ls_dbm[j][i];
+      N& ls_y = (coeff < 0) ? ls_dbm[j][i] : ls_dbm[i][j];
       if (coeff < 0)
 	coeff = -coeff;
       // Compute the bound for `x', rounding towards plus infinity.
@@ -2057,15 +2098,27 @@ BD_Shape<T>::get_limiting_constraints(const Constraint_System& cs,
       div_round_up(d, c.inhomogeneous_term(), coeff);
       if (x <= d)
 	if (c.is_inequality())
-	  limiting_cons.insert(c);
+	  if (ls_x > d) {
+	    ls_x = d;
+	    changed = true;
+	  }
 	else {
 	  // Compute the bound for `y', rounding towards plus infinity.
 	  div_round_up(d, -c.inhomogeneous_term(), coeff);
 	  if (y <= d)
-	    limiting_cons.insert(c);
+	    if (ls_y > d) {
+	      ls_y = d;
+	      changed = true;
+	    }
+
 	}
     }
   }
+
+  // In general, adding a constraint does not preserve the shortest-path
+  // closure of the system of bounded differences.
+  if (changed && limiting_shape.marked_shortest_path_closed())
+    limiting_shape.status.reset_shortest_path_closed();
 }
 
 template <typename T>
@@ -2111,10 +2164,10 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
   if (y.marked_empty())
     return;
 
-  Constraint_System limiting_cs;
-  get_limiting_constraints(cs, limiting_cs);
+  BD_Shape<T> limiting_shape(space_dim, UNIVERSE);
+  get_limiting_shape(cs, limiting_shape);
   CC76_extrapolation_assign(y);
-  add_constraints(limiting_cs);
+  intersection_assign(limiting_shape);
   assert(OK());
 }
 
@@ -2153,10 +2206,10 @@ BD_Shape<T>::CH78_widening_assign(const BD_Shape& y, unsigned* /*tp*/) {
     return;
 
   // Extrapolate unstable bounds.
-  for (dimension_type i = 0; i <= space_dim; ++i) {
+  for (dimension_type i = space_dim + 1; i-- > 0; ) {
     DB_Row<N>& dbm_i = dbm[i];
     const DB_Row<N>& y_dbm_i = y.dbm[i];
-    for (dimension_type j = 0; j <= space_dim; ++j) {
+    for (dimension_type j = space_dim + 1; j-- > 0; ) {
       N& dbm_ij = dbm_i[j];
       const N& y_dbm_ij = y_dbm_i[j];
       // Note: in the following line the use of `!=' (as opposed to
@@ -2212,10 +2265,10 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
   if (y.marked_empty())
     return;
 
-  Constraint_System limiting_cs;
-  get_limiting_constraints(cs, limiting_cs);
+  BD_Shape<T> limiting_shape(space_dim, UNIVERSE);
+  get_limiting_shape(cs, limiting_shape);
   CH78_widening_assign(y);
-  add_constraints(limiting_cs);
+  intersection_assign(limiting_shape);
   assert(OK());
 }
 
@@ -2304,10 +2357,10 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
   // `plus_infinity', we replace it with the value the corresponding
   // constraint of `y'.
   bool changed = false;
-  for (dimension_type i = 0; i <= space_dim; ++i) {
+  for (dimension_type i = space_dim + 1; i-- > 0; ) {
     DB_Row<N>& dbm_i = dbm[i];
     const DB_Row<N>& y_dbm_i = y.dbm[i];
-    for (dimension_type j = 0; j <= space_dim; ++j) {
+    for (dimension_type j = space_dim + 1; j-- > 0; ) {
       N& dbm_ij = dbm_i[j];
       const N& y_dbm_ij = y_dbm_i[j];
       if (is_plus_infinity(dbm_ij)) {

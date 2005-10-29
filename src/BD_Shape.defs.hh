@@ -958,10 +958,10 @@ private:
   bool is_shortest_path_reduced() const;
 
   //! \brief
-  //! Adds into \p limiting_cs the bounded differences in \p cs
+  //! Adds to \p limiting_shape the bounded differences in \p cs
   //! that are satisfied by \p *this.
-  void get_limiting_constraints(const Constraint_System& cs,
-				Constraint_System& limiting_cs) const;
+  void get_limiting_shape(const Constraint_System& cs,
+			  BD_Shape& limiting_shape) const;
 
 #if !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
   friend std::ostream&
