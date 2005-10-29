@@ -28,10 +28,3 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifdef DERIVED_TEST
 #define C_Polyhedron NNC_Polyhedron
 #endif
-
-namespace Parma_Polyhedra_Library {
-
-//typedef BD_Shape<mpq_class> TBD_Shape;
-typedef BD_Shape<int> TBD_Shape;
-
-}
