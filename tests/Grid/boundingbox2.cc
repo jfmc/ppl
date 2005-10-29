@@ -498,7 +498,7 @@ test12() {
   exit(1);
 }
 
-// Simple grid, with a divisor, such that the values for some
+// Simple grid, with a divisor, such that the fractions for some
 // intervals (B and C) will be reduced before being assigned to the
 // intervals.
 
