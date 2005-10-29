@@ -1,6 +1,7 @@
 #!/bin/sh
 
-instances="mpz_class mpq_class int8_t int16_t int32_t int64_t float32_t float64_t float96_t float128_t"
+# NOTE: mpz_class must be the first in the list.  See Makefile.am.
+instances="mpz_class float double mpq_class int8_t int16_t int32_t int64_t"
 
 mpz_class_XFAIL_TESTS=
 mpq_class_XFAIL_TESTS=
@@ -8,17 +9,16 @@ int8_t_XFAIL_TESTS=
 int16_t_XFAIL_TESTS=
 int32_t_XFAIL_TESTS=
 int64_t_XFAIL_TESTS=
-float32_t_XFAIL_TESTS=
-float64_t_XFAIL_TESTS=
-float96_t_XFAIL_TESTS=
-float128_t_XFAIL_TESTS=
+float_XFAIL_TESTS=
+double_XFAIL_TESTS=
+long_double_XFAIL_TESTS=
 
 check_PROGRAMS=$(MAKEFLAGS='' make -s print_check_PROGRAMS)
 
-# NOTE: mpz_class must be the first in the list.  See Makefile.am.
 for k in $instances 
 do
 	echo "**************************** " $k " ****************************"
-	make check TESTS="$check_PROGRAMS" TEST_CPPFLAGS="\"-DTBD_Shape=BD_Shape<$k>\""
+	eval xfail_tests='"$'$k'_XFAIL_TESTS"'
+	make check TESTS="$check_PROGRAMS" TEST_CPPFLAGS="\"-DTBD_Shape=BD_Shape<$k>\"" XFAIL_TESTS=$xfail_tests || exit 1
 	make clean
 done
