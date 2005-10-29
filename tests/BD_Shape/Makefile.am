@@ -28,6 +28,7 @@ VPATH = @srcdir@
 SUBDIRS =
 
 AM_CPPFLAGS = \
+$(TEST_CPPFLAGS) \
 -I$(top_srcdir)/src -I$(top_srcdir)/tests \
 -I$(top_builddir)/src \
 -I$(top_srcdir)/utils \
@@ -39,7 +40,7 @@ $(top_builddir)/tests/libppl_tests.a \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
-ORIGINAL_TESTS = \
+check_PROGRAMS = \
 	addconstraints1 \
 	addspacedims1  addspacedims2 addspacedims3 addspacedims4 \
 	addspacedims5 addspacedims6 addspacedims7 \
@@ -93,6 +94,19 @@ ORIGINAL_TESTS = \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
 	universe1 \
 	writebdshape1 writebdshape2
+
+
+# This will be overriden by the `run_tests' script.
+TEST_CPPFLAGS="-DTBD_Shape=BD_Shape<mpz_class>"
+
+check_SCRIPTS = run_tests
+
+TESTS = $(check_SCRIPTS)
+
+XFAIL_TESTS =
+
+print_check_PROGRAMS:
+	echo $(check_PROGRAMS)
 
 #
 # Sources for the tests
@@ -265,14 +279,6 @@ universe1_SOURCES = universe1.cc
 
 writebdshape1_SOURCES = writebdshape1.cc
 writebdshape2_SOURCES = writebdshape2.cc
-
-TESTS = $(ORIGINAL_TESTS)
-
-XFAIL_TESTS =
-
-check_PROGRAMS = $(TESTS) $(BUGS)
-
-BUGS =
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat \
