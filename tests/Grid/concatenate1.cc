@@ -1,4 +1,4 @@
-/* Test Grid::concatenate_assign.
+/* Test Grid::concatenate_assign().
    Copyright (C) 2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

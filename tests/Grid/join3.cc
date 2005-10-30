@@ -1,5 +1,5 @@
-/* Test Grid::join_assign_if_exact
-     (a.k.a. Grid::upper_bound_assign_if_exact).
+/* Test Grid::join_assign_if_exact()
+     (a.k.a. Grid::upper_bound_assign_if_exact()).
    Copyright (C) 2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

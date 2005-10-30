@@ -1,4 +1,4 @@
-/* Test Grid::add_space_dimensions_and_project.
+/* Test Grid::add_space_dimensions_and_project().
    Copyright (C) 2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

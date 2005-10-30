@@ -1,4 +1,4 @@
-/* Test Grid::join_assign_and_minimize.
+/* Test Grid::join_assign_and_minimize().
    Copyright (C) 2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
