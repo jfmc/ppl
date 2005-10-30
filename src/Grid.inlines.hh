@@ -575,22 +575,7 @@ Grid::get_covering_box(Box& box) const {
     box = new_box;
     return;
   }
-  if (generators_are_up_to_date()) {
-    if (gen_sys.num_rows() == 0) {
-      box = new_box;
-      return;
-    }
-    Grid& gr = const_cast<Grid&>(*this);
-    // Ensure generators are minimized.
-    if (!generators_are_minimized()) {
-      simplify(gr.gen_sys, gr.dim_kinds);
-      // gen_sys contained rows before being reduced, so it should
-      // contain at least a single point afterwards.
-      assert(gen_sys.num_rows() > 0);
-      gr.set_generators_minimized();
-    }
-  }
-  else if (!update_generators()) {
+  if (!generators_are_up_to_date() && !update_generators()) {
     // Updating found the grid empty.
     box = new_box;
     return;
@@ -600,65 +585,62 @@ Grid::get_covering_box(Box& box) const {
 
   dimension_type num_dims = gen_sys.num_columns() - 1;
   dimension_type num_rows = gen_sys.num_rows();
-  const Generator& point = gen_sys[0];
-  TEMP_INTEGER(divisor);
-  divisor = point[0];
 
+  TEMP_INTEGER(divisor);
   TEMP_INTEGER(gcd);
   TEMP_INTEGER(bound);
   TEMP_INTEGER(reduced_divisor);
 
   if (num_rows > 1) {
     Row interval_sizes(num_dims, Row::Flags());
-    dimension_type last_index = num_rows;
-    last_index--;
+    std::vector<bool> interval_emptiness(num_dims, false);
 
     // Store in `interval_sizes', for each column (that is, for each
-    // dimension), the GCD of the coefficients that are in parameter
-    // rows.
+    // dimension), the GCD of all the values in that column where the
+    // row is of type parameter.
 
     for (dimension_type dim = num_dims; dim-- > 0; )
       interval_sizes[dim] = 0;
-    // Include the preceding parameter rows into `interval_sizes'.
-    for (dimension_type dim = num_dims; last_index > 0; --dim) {
-      // `dim_kinds' is indexed one higher than `interval_sizes', as
-      // `dim_kinds' includes the constant term "dimension".
-      switch (dim_kinds[dim]) {
-      case PARAMETER:
-	{
-	  const Generator& gen = gen_sys[last_index];
-	  for (dimension_type col = dim; col <= num_dims; ++col)
-	    gcd_assign(interval_sizes[col-1], gen[col]);
-	  last_index--;
-	}
-	break;
-      case LINE:
-	{
-	  const Generator& gen = gen_sys[last_index];
-	  for (dimension_type col = dim; col <= num_dims; ++col) {
-	    if (gen[col] != 0) {
-	      // Empty interval, set both bounds for associated
-	      // dimension to zero.
-	      new_box.lower_upper_bound(col-1, true, 0, 1);
-	      new_box.raise_lower_bound(col-1, true, 0, 1);
-	    }
+    const Generator *first_point = NULL;
+    for (dimension_type row = 0; row < num_rows; ++row) {
+      Generator& gen = const_cast<Generator&>(gen_sys[row]);
+      if (gen.is_line()) {
+	for (dimension_type dim = 0; dim < num_dims; ++dim)
+	  if (!interval_emptiness[dim] && gen[dim+1] != 0) {
+	    // Empty interval, set both bounds for associated
+      	    // dimension to zero.
+	    new_box.lower_upper_bound(dim, true, 0, 1);
+	    new_box.raise_lower_bound(dim, true, 0, 1);
+	    interval_emptiness[dim] = true;
 	  }
-	  last_index--;
-	}
-	break;
-      case GEN_VIRTUAL:
-	break;
+	continue;
       }
-      if (dim == 0)
-	break;
+      if (gen.is_point()) {
+	if (first_point == NULL) {
+	  first_point = &gen_sys[row];
+	  continue;
+	}
+	const Generator& point = *first_point;
+	// Convert the point `gen' to a parameter.
+	for (dimension_type dim = 0; dim < num_dims; ++dim)
+	  gen[dim] -= point[dim];
+      }
+      for (dimension_type dim = 0; dim < num_dims; ++dim)
+	if (!interval_emptiness[dim])
+	  gcd_assign(interval_sizes[dim], gen[dim+1]);
     }
 
     // For each dimension set the lower bound of the interval to the
     // grid value closest to the origin, and the upper bound to the
     // addition of the lower bound and the shortest distance in the
     // given dimension between any two grid points.
+    const Generator& point = *first_point;
+    divisor = point.divisor();
     TEMP_INTEGER(lower_bound);
     for (dimension_type dim = 0; dim < num_dims; ++dim) {
+      if (interval_emptiness[dim])
+	continue;
+
       lower_bound = point[dim+1];
 
       // If the interval size is zero then all points have the same
@@ -693,7 +675,9 @@ Grid::get_covering_box(Box& box) const {
       new_box.raise_lower_bound(dim, true, lower_bound, reduced_divisor);
     }
   }
-  else
+  else {
+    const Generator& point = gen_sys[0];
+    divisor = point.divisor();
     // The covering box of a single point has only lower bounds.
     for (dimension_type dim = 0; dim < num_dims; ++dim) {
       // Reduce the bound fraction first.
@@ -702,6 +686,7 @@ Grid::get_covering_box(Box& box) const {
       exact_div_assign(reduced_divisor, divisor, gcd);
       new_box.raise_lower_bound(dim, true, bound, reduced_divisor);
     }
+  }
 
   box = new_box;
 }

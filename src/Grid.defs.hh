@@ -623,7 +623,9 @@ public:
   */
   bool is_disjoint_from(const Grid& y) const;
 
-  //! Returns <CODE>true</CODE> if and only if \p *this does not contain lines.
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this does not
+  //! contain lines. FIX and is not empty
   bool is_pointed() const;
 
   //! \brief
@@ -764,8 +766,6 @@ public:
     intersects the interval corresponding to the <CODE>k</CODE>-th
     space dimension with \f$(-\infty, n/d]\f$.  <CODE>closed</CODE> is
     always passed as <CODE>true</CODE>.
-
-    FIX raise_lower_bound may be called more than once (for lines)
 
     The function <CODE>raise_lower_bound(k, closed, n, d)</CODE>
     will be called at most once for each possible value for <CODE>k</CODE>
