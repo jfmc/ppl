@@ -101,7 +101,7 @@ TEST_CPPFLAGS="-DTBD_Shape=BD_Shape<mpz_class>"
 
 dist_check_SCRIPTS = run_tests
 
-TESTS = $(check_SCRIPTS)
+TESTS = $(dist_check_SCRIPTS)
 
 XFAIL_TESTS =
 
