@@ -339,7 +339,6 @@ Float<float128_t>::build(bool negative, mpz_t mantissa, int exponent) {
   u.parts.lsp = mpz_get_ui(mantissa);
 #endif
   mpz_tdiv_q_2exp(mantissa, mantissa, 64);
-  uint64_t m;
 #if ULONG_MAX == 0xffffffffUL
   mpz_export(&u.parts.lsp, 0, 1, 8, 0, 0, mantissa)
 #else
