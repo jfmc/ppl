@@ -23,8 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_float_types_hh
 #define PPL_float_types_hh
 
-#include <stdint.h>
-
 #define FLOAT32_TYPE float
 #define FLOAT64_TYPE double
 #if SIZEOF_LONG_DOUBLE == 12

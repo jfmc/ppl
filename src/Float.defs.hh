@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "compiler.hh"
 #include "float.types.hh"
 #include <gmp.h>
+#include <stdint.h>
 #include <cassert>
 #include <cmath>
 
