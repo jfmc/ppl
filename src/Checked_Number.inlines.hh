@@ -55,6 +55,12 @@ Checked_Number<T, Policy>::Checked_Number()
  : v(0) {
 }
 
+template <typename T, typename Policy>
+inline
+Checked_Number<T, Policy>::Checked_Number(const Checked_Number<T, Policy>& y) {
+  Checked::copy<Policy>(v, y.raw_value());
+}
+
 #if 0
 template <typename T, typename Policy>
 template <typename From, typename From_Policy>
@@ -417,6 +423,12 @@ swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y) {
   std::swap(x.raw_value(), y.raw_value());
 }
 
+template <typename T, typename Policy>
+inline Checked_Number<T, Policy>&
+Checked_Number<T, Policy>::operator=(const Checked_Number<T, Policy>& y) {
+  Checked::copy<Policy>(v, y.raw_value());
+  return *this;
+}
 template <typename T, typename Policy>
 template <typename From, typename From_Policy>
 inline Checked_Number<T, Policy>&

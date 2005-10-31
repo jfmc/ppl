@@ -84,13 +84,13 @@ public:
   //! Default constructor.
   Checked_Number();
 
-#if 0
   // Don't enable this: with GCC, the presence of a copy constructor
   // (even if it is defined exactly as the default one) inhibits some
   // important optimizations.
   //! Copy-constructor.
   Checked_Number(const Checked_Number& y);
 
+#if 0
   //! Direct initialization from a Checked_Number.
   template <typename From, typename From_Policy>
   Checked_Number(const Checked_Number<From, From_Policy>& y);
@@ -163,6 +163,7 @@ public:
   //@{
 
   //! Assignment operator.
+  Checked_Number& operator=(const Checked_Number& y);
   template <typename From, typename From_Policy>
   Checked_Number& operator=(const Checked_Number<From, From_Policy>& y);
   template <typename From>
