@@ -27,7 +27,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #define FLOAT32_TYPE float
 #define FLOAT64_TYPE double
+#if SIZEOF_LONG_DOUBLE == 12
 #define FLOAT96_TYPE long double
+#elif SIZEOF_LONG_DOUBLE == 16
+#define FLOAT128_TYPE long double
+#endif
 
 #ifdef FLOAT32_TYPE
 typedef FLOAT32_TYPE float32_t;
@@ -42,7 +46,7 @@ typedef FLOAT96_TYPE float96_t;
 #endif
 
 #ifdef FLOAT128_TYPE
-typedef FLOAT128_TYPE float96_t;
+typedef FLOAT128_TYPE float128_t;
 #endif
 
 #endif // !defined(PPL_float_types_hh)
