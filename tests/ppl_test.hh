@@ -28,3 +28,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifdef DERIVED_TEST
 #define C_Polyhedron NNC_Polyhedron
 #endif
+
+namespace Parma_Polyhedra_Library {
+
+typedef long double long_double;
+
+} // namespace Parma_Polyhedra_Library
