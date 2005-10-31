@@ -99,7 +99,7 @@ check_PROGRAMS = \
 # This will be overriden by the `run_tests' script.
 TEST_CPPFLAGS="-DTBD_Shape=BD_Shape<mpz_class>"
 
-check_SCRIPTS = run_tests
+dist_check_SCRIPTS = run_tests
 
 TESTS = $(check_SCRIPTS)
 
