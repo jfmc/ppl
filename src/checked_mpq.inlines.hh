@@ -123,6 +123,8 @@ assign_mpq_mpz(mpq_class& to, const mpz_class& from, Rounding_Dir) {
   return V_EQ;
 }
 
+SPECIALIZE_COPY(generic, mpq_class)
+
 SPECIALIZE_ASSIGN(mpq_mpz, mpq_class, mpz_class)
 
 template <typename Policy, typename From>

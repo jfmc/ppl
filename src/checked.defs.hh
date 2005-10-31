@@ -273,6 +273,8 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
 
 #define nonconst
 
+#define SPECIALIZE_COPY(suf, Type) \
+  SPECIALIZE_FUN2_0_0(copy, suf, void, nonconst, Type, const, Type)
 #define SPECIALIZE_SGN(suf, From) \
   SPECIALIZE_FUN1_0_0(sgn, suf, Result, const, From)
 #define SPECIALIZE_CMP(suf, Type1, Type2) \
@@ -325,6 +327,7 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
   SPECIALIZE_FUN1_1_2(output, suf, Result, std::ostream&, const, Type, const Numeric_Format&, Rounding_Dir)
 
 
+DECLARE_FUN2_0_0(copy,        void, nonconst, Type1, const, Type2)
 DECLARE_FUN1_0_0(sgn,         Result, const, From)
 DECLARE_FUN2_0_0(cmp,         Result, const, Type1, const, Type2)
 DECLARE_FUN1_0_1(set_special, Result, nonconst, Type, Result)

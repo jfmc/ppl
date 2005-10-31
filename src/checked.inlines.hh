@@ -36,6 +36,12 @@ struct FUNCTION_CLASS(assign)<Policy, Type, Type> {
   }
 };
 
+template <typename Policy, typename Type>
+inline void
+copy_generic(Type& to, const Type& from) {
+  to = from;
+}
+
 template <typename Policy, typename To, typename From>
 inline Result
 abs_generic(To& to, const From& from, Rounding_Dir dir) {

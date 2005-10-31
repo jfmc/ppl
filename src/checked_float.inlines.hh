@@ -731,13 +731,19 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 template <typename Policy, typename Type>
 inline Result
 output_float(std::ostream& os, Type& from, const Numeric_Format&, Rounding_Dir) {
-  if (from == 0) {
+  if (from == 0)
     os << "0";
-    return V_EQ;
+  else if (is_minf<Policy>(from))
+    os << "-inf";
+  else if (is_pinf<Policy>(from))
+    os << "+inf";
+  else if (is_nan<Policy>(from))
+    os << "nan";
+  else {
+    int old_precision = os.precision(10000);
+    os << from;
+    os.precision(old_precision);
   }
-  int old_precision = os.precision(10000);
-  os << from;
-  os.precision(old_precision);
   return V_EQ;
 }
 
@@ -820,6 +826,7 @@ ASSIGN_R2(float96_t, float128_t)
 
 #undef ASSIGN_R2
 
+SPECIALIZE_COPY(generic, float)
 SPECIALIZE_IS_INT(float, float)
 SPECIALIZE_ASSIGN(float_minf, float, Minus_Infinity)
 SPECIALIZE_ASSIGN(float_pinf, float, Plus_Infinity)
@@ -843,6 +850,7 @@ SPECIALIZE_SUB_MUL(float, float, float, float)
 SPECIALIZE_INPUT(generic, float)
 SPECIALIZE_OUTPUT(float, float)
 
+SPECIALIZE_COPY(generic, double)
 SPECIALIZE_IS_INT(float, double)
 SPECIALIZE_ASSIGN(float_minf, double, Minus_Infinity)
 SPECIALIZE_ASSIGN(float_pinf, double, Plus_Infinity)
@@ -866,6 +874,7 @@ SPECIALIZE_SUB_MUL(float, double, double, double)
 SPECIALIZE_INPUT(generic, double)
 SPECIALIZE_OUTPUT(float, double)
 
+SPECIALIZE_COPY(generic, long double)
 SPECIALIZE_IS_INT(float, long double)
 SPECIALIZE_ASSIGN(float_minf, long double, Minus_Infinity)
 SPECIALIZE_ASSIGN(float_pinf, long double, Plus_Infinity)

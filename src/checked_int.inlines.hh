@@ -171,6 +171,17 @@ round_gt_int(To& to, Rounding_Dir dir) {
   return V_GT;
 }
 
+SPECIALIZE_COPY(generic, signed char)
+SPECIALIZE_COPY(generic, signed short)
+SPECIALIZE_COPY(generic, signed int)
+SPECIALIZE_COPY(generic, signed long)
+SPECIALIZE_COPY(generic, signed long long)
+SPECIALIZE_COPY(generic, unsigned char)
+SPECIALIZE_COPY(generic, unsigned short)
+SPECIALIZE_COPY(generic, unsigned int)
+SPECIALIZE_COPY(generic, unsigned long)
+SPECIALIZE_COPY(generic, unsigned long long)
+
 template <typename Policy, typename Type>
 inline Result
 classify_int(const Type v, bool nan, bool inf, bool sign) {
