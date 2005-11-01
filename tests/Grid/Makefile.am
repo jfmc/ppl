@@ -68,6 +68,7 @@ isuniverse1 \
 join1 join2 join3 \
 limitedextrapolation1 \
 mapspacedims1 \
+pointed1 \
 relations1 relations2 \
 removespacedims1 removespacedims2 \
 timeelapse1 \
@@ -141,6 +142,8 @@ join3_SOURCES = join3.cc
 limitedextrapolation1_SOURCES = limitedextrapolation1.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
+
+pointed1_SOURCES = pointed1.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
