@@ -227,8 +227,10 @@ PPL::Grid::is_included_in(const Grid& y) const {
     y.update_congruences();
 #else
   if (!x.generators_are_minimized())
+    // FIX just call simplify?
     x.minimize();
   if (!y.congruences_are_minimized())
+    // FIX just call simplify?
     y.minimize();
 #endif
 
@@ -540,7 +542,7 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
       throw std::runtime_error("PPL::Grid::normalize_divisors(sys, gen_sys).");
   TEMP_INTEGER(gen_sys_divisor);
   TEMP_INTEGER(divisor);
-  gen_sys_divisor = gen_sys[row].divisor();
+  gen_sys_divisor = gen_sys[row][0];
   divisor = normalize_divisors(sys, gen_sys_divisor);
   if (divisor != gen_sys_divisor)
     // FIX here normalize_divisors can skip the lcm calc
@@ -550,6 +552,7 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
 PPL::Coefficient
 PPL::Grid::normalize_divisors(Generator_System& sys,
 			      Coefficient_traits::const_reference divisor) {
+  assert(divisor >= 0);
   TEMP_INTEGER(lcm);
   lcm = divisor;
   if (sys.num_columns()) {
@@ -559,14 +562,17 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
     // Move to the first point.
     while (!sys[row].is_point())
       if (++row == num_rows)
-	return divisor;		// All rows are lines.
+	// All rows are lines.
+	return divisor;
+
+    Generator& first_point = sys[row];
 
     if (lcm == 0) {
-      lcm = sys[row][0];
+      lcm = first_point[0];
       ++row;
     }
 
-    // Calculate the LCM of the divisors of the points.
+    // Calculate the LCM of `divisor' and the divisor of every point.
     while (row < num_rows) {
       Generator& g = sys[row];
       if (g.is_point())
@@ -574,6 +580,9 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
       ++row;
     }
 
+    TEMP_INTEGER(original_sys_divisor);
+    dimension_type num_cols = sys.num_columns();
+    original_sys_divisor = first_point[0];
     // Represent each point using the LCM as the divisor.
     for (dimension_type row = 0; row < num_rows; ++row) {
       Generator& gen = sys[row];
@@ -584,10 +593,11 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
 	  gen[0] = lcm;
 	}
 	else
-	  factor = lcm / sys[0][0];
-	// FIX skip if divisor == lcm
-	for (dimension_type col = 1; col < gen.size(); ++col)
-	  gen[col] *= factor;
+	  factor = lcm / original_sys_divisor;
+	assert(factor > 0);
+	if (factor > 1)
+	  for (dimension_type col = 1; col < num_cols; ++col)
+	    gen[col] *= factor;
       }
     }
   }

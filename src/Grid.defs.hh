@@ -2015,14 +2015,16 @@ private:
 		       Congruence_System& dest,
 		       Dimension_Kinds& dim_kinds);
 
-  //! Normalize the divisors in \p sys.
+  //! Normalizes the divisors in \p sys.
   /*!
-    Convert \p sys to an equivalent representation in which the
-    divisors of all the generators are equal.
+    Converts \p sys to an equivalent representation of *this in which
+    the divisors of all the generators are of equal value.
 
-    \p divisor is an extra divisor to include in the calculation of
-    the common divisor.  A value of 0 for \p divisor indicates to
-    leave it out of the calculation.
+    \param divisor
+    An extra divisor to include in the calculation of the common
+    divisor of \p sys.  If this value is zero then only the divisors
+    in \p sys are considered, otherwise it is expected that \p divisor
+    is positive.
   */
   static Coefficient
   normalize_divisors(Generator_System& sys,
@@ -2054,14 +2056,14 @@ private:
 
   //! Converts \p cgs to upper triangular form.
   /*!
-    Return true if \p cgs is consistent, else false.
+    Returns true if \p cgs is consistent, otherwise returns false.
   */
   static bool simplify(Congruence_System& cgs,
 		       Dimension_Kinds& dim_kinds);
 
   //! Converts \p gs to lower triangular form.
   /*!
-    Return true if \p gs is consistent, else false.
+    Returns true if \p gs is consistent, otherwise returns false.
   */
   static bool simplify(Generator_System& gs,
 		       Dimension_Kinds& dim_kinds);
@@ -2084,12 +2086,13 @@ private:
   static void reduce_equality_with_equality(Congruence& row, Congruence& pivot,
 					    dimension_type col);
 
-  //! Reduce \p row using \p pivot.
+  //! Reduces \p row using \p pivot.
   /*!
-    Use the parameter or congruence at \p pivot to change the
-    representation of the parameter or congruence at \p row so that
-    element col of \p row is zero.  If \p parameters is true then the
-    two rows are taken as parameters, else as congruences.
+    Uses the point, parameter or congruence at \p pivot to change the
+    representation of the point, parameter or congruence at \p row so
+    that element col of \p row is zero.  If \p parameters is true then
+    the two rows are assumed to be points or parameters, otherwise
+    congruences are assumed.
   */
   // Part of Grid for access to Matrix::rows.
   static void reduce_pc_with_pc(Row& row, Row& pivot, dimension_type col,
