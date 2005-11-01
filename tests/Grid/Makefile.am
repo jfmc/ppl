@@ -71,6 +71,7 @@ mapspacedims1 \
 relations1 relations2 \
 removespacedims1 removespacedims2 \
 timeelapse1 \
+topclosed1 \
 widening1 \
 writecongruencesystem
 
@@ -148,6 +149,8 @@ removespacedims1_SOURCES = removespacedims1.cc
 removespacedims2_SOURCES = removespacedims2.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
+
+topclosed1_SOURCES = topclosed1.cc
 
 widening1_SOURCES = widening1.cc
 
