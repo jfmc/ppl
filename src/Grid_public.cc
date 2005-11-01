@@ -405,13 +405,82 @@ PPL::Grid::is_bounded() const {
 }
 #endif
 bool
+PPL::Grid::is_pointed() const {
+  // A zero-dimensional or empty grid is pointed.
+  if (space_dim == 0 || marked_empty())
+    return true;
+
+  if (generators_are_minimized()) {
+  line_search:
+    // Search for lines in the minimized generator system.
+    for (dimension_type row = gen_sys.num_rows(); row-- > 1; )
+      if (gen_sys[row].is_line())
+	return false;
+    return true;
+  }
+
+  if (congruences_are_minimized()) {
+  free_dim_check:
+    // Search for a dimension that is free of any congruence or
+    // equality constraint from the minimized congruence system.
+    std::vector<bool> free_dim(space_dim, true);
+    dimension_type free_dims = space_dim;
+    for (dimension_type row = con_sys.num_rows(); row-- > 0; ) {
+      const Congruence& cg = con_sys[row];
+      for (dimension_type dim = 0; dim < space_dim; ++dim)
+	if (free_dim[dim] && cg[dim+1] != 0) {
+	  if (--free_dims == 0) {
+	    // All dimensions are constrained.
+#ifndef NDEBUG
+	    free_dim[dim] = false;
+	    // Check that there are free_dims dimensions marked free
+	    // in free_dim.
+	    dimension_type count = 0;
+	    for (dimension_type dim = 0; dim < space_dim; ++dim)
+	      count += free_dim[dim];
+	    assert(count == free_dims);
+#endif
+	    return true;
+	  }
+	  free_dim[dim] = false;
+	}
+    }
+    // At least one dimension is free of constraint.
+    return false;
+  }
+
+  Grid& gr = const_cast<Grid&>(*this);
+  if (generators_are_up_to_date()) {
+    // Minimize the generator system.
+    gr.simplify(gr.gen_sys, gr.dim_kinds);
+    gr.set_generators_minimized();
+
+    goto line_search;
+  }
+
+  // Generators are out of date.
+
+  // Minimize the congruence system to find out whether it is empty.
+  gr.con_sys.normalize_moduli();
+  if (gr.simplify(gr.con_sys, gr.dim_kinds)) {
+    // The congruence system reduced to the empty grid.
+    gr.set_empty();
+    return true;
+  }
+  gr.set_congruences_minimized();
+
+  goto free_dim_check;
+}
+
+bool
 PPL::Grid::is_topologically_closed() const {
   // Any empty or zero-dimensional grid is closed.
   if (marked_empty() || space_dim == 0)
     return true;
 
+  // FIX quicker to manually work through rows as in ph is_bounded
+
   if (generators_are_minimized())
-    // FIX first ray point?
     return gen_sys.num_rays() == 0;
 
   if (congruences_are_minimized())
@@ -423,7 +492,6 @@ PPL::Grid::is_topologically_closed() const {
   if (generators_are_up_to_date()) {
     gr.simplify(gr.gen_sys, gr.dim_kinds);
     gr.set_generators_minimized();
-    // FIX first ray point?
     return gen_sys.num_rays() == 0;
   }
 

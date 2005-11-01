@@ -623,9 +623,12 @@ public:
   */
   bool is_disjoint_from(const Grid& y) const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this does not
-  //! contain lines. FIX and is not empty
+  //! Returns <CODE>true</CODE> if and only if \p *this is pointed.
+  /*!
+    A grid is pointed if it can be defined by a generator system which
+    contains only points and parameters.  This includes the empty grid
+    and any grid in zero dimensions.
+  */
   bool is_pointed() const;
 
   //! \brief
