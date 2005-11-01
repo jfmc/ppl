@@ -31,15 +31,6 @@ Variable B(1);
 Variable C(2);
 Variable D(3);
 
-bool
-topclosed1_equal(Grid& a, Grid& b) {
-  // Comparing a temporary copy ensures that the underlying
-  // representation of the original is left the same.
-  Grid tem_a = a;
-  Grid tem_b = b;
-  return tem_a == tem_b;
-}
-
 // Empty.
 
 void
@@ -98,8 +89,8 @@ test4() {
   gr_cgs_needs_min.add_congruence(A == 3);
   gr_cgs_needs_min.add_congruence(B == 2);
 
-  assert(topclosed1_equal(gr_gs_min, gr_gs_needs_min));
-  assert(topclosed1_equal(gr_gs_needs_min, gr_cgs_needs_min));
+  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
+  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   if (gr_gs_min.is_topologically_closed())
     if (gr_gs_needs_min.is_topologically_closed())
@@ -132,8 +123,8 @@ test5() {
   gr_cgs_needs_min.add_congruence(A == 3);
   gr_cgs_needs_min.add_congruence(B == 2);
 
-  assert(topclosed1_equal(gr_gs_min, gr_gs_needs_min));
-  assert(topclosed1_equal(gr_gs_needs_min, gr_cgs_needs_min));
+  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
+  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   if (gr_gs_min.is_topologically_closed())
     if (gr_gs_needs_min.is_topologically_closed())
@@ -167,15 +158,15 @@ test6() {
   gr_cgs_needs_min.add_congruence(B %= 0);
   gr_cgs_needs_min.add_congruence(C == 0);
 
-  assert(topclosed1_equal(gr_gs_min, gr_gs_needs_min));
-  assert(topclosed1_equal(gr_gs_needs_min, gr_cgs_needs_min));
+  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
+  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   if (gr_gs_min.is_topologically_closed())
-    nout << "gr_cgs_needs_min";
+    nout << "gr_gs_min";
   else if (gr_gs_needs_min.is_topologically_closed())
     nout << "gr_gs_needs_min";
   else if (gr_cgs_needs_min.is_topologically_closed())
-    nout << "gr_gs_min";
+    nout << "gr_cgs_needs_min";
   else
     return;
 
@@ -204,15 +195,15 @@ test7() {
   gr_cgs_needs_min.add_congruence(A == 3);
   gr_cgs_needs_min.add_congruence(B %= 0);
 
-  assert(topclosed1_equal(gr_gs_min, gr_gs_needs_min));
-  assert(topclosed1_equal(gr_gs_needs_min, gr_cgs_needs_min));
+  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
+  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   if (gr_gs_min.is_topologically_closed())
-    nout << "gr_cgs_needs_min";
+    nout << "gr_gs_min";
   else if (gr_gs_needs_min.is_topologically_closed())
     nout << "gr_gs_needs_min";
   else if (gr_cgs_needs_min.is_topologically_closed())
-    nout << "gr_gs_min";
+    nout << "gr_cgs_needs_min";
   else
     return;
 
@@ -241,15 +232,15 @@ test8() {
   gr_cgs_needs_min.add_congruence((4*B %= 0) / 3);
   gr_cgs_needs_min.add_congruence(A - B %= 0);
 
-  assert(topclosed1_equal(gr_gs_min, gr_gs_needs_min));
-  assert(topclosed1_equal(gr_gs_needs_min, gr_cgs_needs_min));
+  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
+  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   if (gr_gs_min.is_topologically_closed())
-    nout << "gr_cgs_needs_min";
+    nout << "gr_gs_min";
   else if (gr_gs_needs_min.is_topologically_closed())
     nout << "gr_gs_needs_min";
   else if (gr_cgs_needs_min.is_topologically_closed())
-    nout << "gr_gs_min";
+    nout << "gr_cgs_needs_min";
   else
     return;
 
@@ -280,15 +271,15 @@ test9() {
   gr_cgs_needs_min.add_congruence((4*B %= 0) / 3);
   gr_cgs_needs_min.add_congruence(A - B %= 0);
 
-  assert(topclosed1_equal(gr_gs_min, gr_gs_needs_min));
-  assert(topclosed1_equal(gr_gs_needs_min, gr_cgs_needs_min));
+  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
+  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   if (gr_gs_min.is_topologically_closed())
-    nout << "gr_cgs_needs_min";
+    nout << "gr_gs_min";
   else if (gr_gs_needs_min.is_topologically_closed())
     nout << "gr_gs_needs_min";
   else if (gr_cgs_needs_min.is_topologically_closed())
-    nout << "gr_gs_min";
+    nout << "gr_cgs_needs_min";
   else
     return;
 
@@ -317,8 +308,8 @@ test10() {
   gr_cgs_needs_min.add_congruence(A == 0);
   gr_cgs_needs_min.add_congruence(D == 0);
 
-  assert(topclosed1_equal(gr_gs_min, gr_gs_needs_min));
-  assert(topclosed1_equal(gr_gs_needs_min, gr_cgs_needs_min));
+  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
+  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   if (gr_gs_min.is_topologically_closed())
     if (gr_gs_needs_min.is_topologically_closed())
