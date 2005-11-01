@@ -45,9 +45,6 @@ test1() {
   Grid known_gr(1);
   known_gr.add_congruence((A == -1) / 0);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr == known_gr)
     return;
 
@@ -76,9 +73,6 @@ test2() {
   Grid known_gr(2);
   known_gr.add_congruence((A == 1) / 0);
   known_gr.add_congruence((B == 1) / 0);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr == known_gr)
     return;
@@ -111,9 +105,6 @@ test3() {
 
   Grid known_gr(2);
   known_gr.add_congruence(B %= 0);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr == known_gr)
     return;
@@ -152,9 +143,6 @@ test4() {
   Grid known_gr(2);
   known_gr.add_congruence((4*A + 4*B == 7) / 0);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr == known_gr)
     return;
 
@@ -188,9 +176,6 @@ test5() {
   known_gr.add_congruence((C == 0) / 0);
   known_gr.add_congruence((D == 0) / 0);
 
-  if (find_variation(known_gr))
-    exit(1);
-
   if (gr == known_gr)
     return;
 
@@ -222,9 +207,6 @@ test6() {
 
   Grid known_gr(2);
   known_gr.add_congruence((B %= 0) / 2);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr == known_gr)
     return;
@@ -265,6 +247,43 @@ test7() {
   exit(1);
 }
 
+// add_generator_and_minimize, adding a generator with a divisor to a
+// grid of many generators.
+
+void
+test8() {
+  nout << "test8:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+
+  Grid gr(2, EMPTY);
+  gr.add_generator(point());
+  gr.add_generator(point(A));
+
+  // Minimize the grid.
+  if (find_variation(gr))
+    exit(1);
+
+  gr.add_generator_and_minimize(point(B, 3));
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(2);
+  known_gr.add_congruence(A %= 0);
+  known_gr.add_congruence(3*B %= 0);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -278,6 +297,7 @@ main() TRY {
   test5();
   test6();
   test7();
+  test8();
 
   return 0;
 }
