@@ -403,49 +403,41 @@ PPL::Grid::is_bounded() const {
   // points and closure points: the polyhedron is bounded.
   return true;
 }
-
+#endif
 bool
 PPL::Grid::is_topologically_closed() const {
-  // Necessarily closed polyhedra are trivially closed.
-  if (is_necessarily_closed())
+  // Any empty or zero-dimensional grid is closed.
+  if (marked_empty() || space_dim == 0)
     return true;
-  // Any empty or zero-dimensional polyhedron is closed.
-  if (marked_empty()
-      || space_dim == 0)
-     return true;
 
-  if (generators_are_minimized()) {
-    // A polyhedron is closed iff all of its (non-redundant)
-    // closure points are matched by a corresponding point.
-    const dimension_type n_rows = gen_sys.num_rows();
-    const dimension_type n_lines = gen_sys.num_lines();
-    for (dimension_type i = n_rows; i-- > n_lines; ) {
-      const Generator& gi = gen_sys[i];
-      if (gi.is_closure_point()) {
-	bool gi_has_no_matching_point = true;
-	for (dimension_type j = n_rows; j-- > n_lines; ) {
-	  const Generator& gj = gen_sys[j];
-	  if (i != j
-	      && gj.is_point()
-	      && gi.is_matching_closure_point(gj)) {
-	    gi_has_no_matching_point = false;
-	    break;
-	  }
-	}
-	if (gi_has_no_matching_point)
-	  return false;
-      }
-    }
-    // All closure points are matched.
-    return true;
+  if (generators_are_minimized())
+    // FIX first ray point?
+    return gen_sys.num_rays() == 0;
+
+  if (congruences_are_minimized())
+    // The minimized congruence system always has the integrality
+    // congruence, which is a proper congruence.
+    return con_sys.num_proper_congruences() == 1;
+
+  Grid& gr = const_cast<Grid&>(*this);
+  if (generators_are_up_to_date()) {
+    gr.simplify(gr.gen_sys, gr.dim_kinds);
+    gr.set_generators_minimized();
+    // FIX first ray point?
+    return gen_sys.num_rays() == 0;
   }
 
-  // A polyhedron is closed if, after strong minimization
-  // of its congruence system, it has no strict inequalities.
-  strongly_minimize_congruences();
-  return marked_empty() || !con_sys.has_strict_inequalities();
+  gr.con_sys.normalize_moduli();
+  if (gr.simplify(gr.con_sys, gr.dim_kinds)) {
+    // The congruence system reduced to the empty grid.
+    gr.set_empty();
+    return true;
+  }
+  gr.set_congruences_minimized();
+  // The minimized congruence system always has the integrality
+  // congruence, which is a proper congruence.
+  return con_sys.num_proper_congruences() == 1;
 }
-#endif
 
 bool
 PPL::Grid::OK(bool check_not_empty) const {
@@ -1016,7 +1008,7 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   if (cgs.num_rows() == 0)
     return minimize();
 
-  // Dealing with zero-dimensional space polyhedra first.
+  // Dealing with zero-dimensional space grids first.
   if (space_dim == 0) {
     // In a 0-dimensional space the congruences are
     // trivial (e.g., 0 == 0 or 1 >= 0 or 1 > 0) or
@@ -1250,7 +1242,7 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
   //gs.adjust_topology_and_space_dimension(topology(), space_dim); // FIX
   gs.adjust_topology_and_space_dimension(gs.topology(), space_dim);
 
-  if (minimize()) {
+  if (minimize()) {   // FIX why does this minimize (incls cgs) first?
     normalize_divisors(gs, gen_sys);
 
     for (dimension_type row = 0; row < gs.num_rows(); ++row) {
