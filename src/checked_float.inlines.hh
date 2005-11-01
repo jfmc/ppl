@@ -557,9 +557,7 @@ set_neg_overflow_float(Type& to, Rounding_Dir dir) {
   switch (dir) {
   case ROUND_UP:
     {
-      Float<Type> f(-HUGE_VAL);
-      f.dec();
-      to = f.value();
+      to = Float<Type>::NEG_MAX;
       return V_LT;
     }
   default:
@@ -574,9 +572,7 @@ set_pos_overflow_float(Type& to, Rounding_Dir dir) {
   switch (dir) {
   case ROUND_DOWN:
     {
-      Float<Type> f(HUGE_VAL);
-      f.dec();
-      to = f.value();
+      to = Float<Type>::POS_MAX;
       return V_GT;
     }
   default:

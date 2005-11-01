@@ -44,17 +44,19 @@ struct Float {
 template <>
 class Float<float32_t> {
 private:
+  union {
+    float32_t _value;
+    uint32_t word;
+  } u;
   static const uint32_t SGN_MASK = 0x80000000;
   static const uint32_t EXP_MASK = 0x7f800000;
   static const uint32_t POS_INF = 0x7f800000;
   static const uint32_t NEG_INF = 0xff800000;
   static const uint32_t POS_ZERO = 0x00000000;
   static const uint32_t NEG_ZERO = 0x80000000;
-  union {
-    float32_t _value;
-    uint32_t word;
-  } u;
 public:
+  static const float32_t POS_MAX = 0x1.fffffep127f;
+  static const float32_t NEG_MAX = -0x1.fffffep127f;
   static const int EXPONENT_BITS = 8;
   static const int MANTISSA_BITS = 23;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
@@ -98,6 +100,8 @@ private:
   static const uint32_t LSP_ZERO = 0;
   static const uint32_t LSP_MAX = 0xffffffff;
 public:
+  static const float64_t POS_MAX = 0x1.fffffffffffffp1023;
+  static const float64_t NEG_MAX = -0x1.fffffffffffffp1023;
   static const int EXPONENT_BITS = 11;
   static const int MANTISSA_BITS = 52;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
@@ -144,6 +148,8 @@ private:
   static const uint64_t LSP_DMAX = 0x7fffffffffffffffULL;
   static const uint64_t LSP_NMAX = 0xffffffffffffffffULL;
 public:
+  static const float96_t POS_MAX = 0x1.fffffffffffffffep16383l;
+  static const float96_t NEG_MAX = -0x1.fffffffffffffffep16383l;;
   static const int EXPONENT_BITS = 15;
   static const int MANTISSA_BITS = 63;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
@@ -191,6 +197,8 @@ private:
   static const uint64_t LSP_ZERO = 0;
   static const uint64_t LSP_MAX = 0xffffffffffffffffULL;
 public:
+  static const float96_t POS_MAX = 0x1.ffffffffffffffffffffffffffffp16383l;
+  static const float96_t NEG_MAX = -0x1.ffffffffffffffffffffffffffffp16383l;
   static const int EXPONENT_BITS = 15;
   static const int MANTISSA_BITS = 112;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
