@@ -42,6 +42,18 @@ namespace Parma_Polyhedra_Library {
 //typedef BD_Shape<mpq_class> TBD_Shape;
 typedef BD_Shape<int> TBD_Shape;
 
+//! Compare copies of \p a and \p b.
+/*!
+  Comparing temporary copies ensures that the underlying
+  representation of \p a and \p b stays the same.
+*/
+bool
+copy_compare(Grid& a, Grid& b) {
+  Grid tem_a = a;
+  Grid tem_b = b;
+  return tem_a == tem_b;
+}
+
 //! Look for variation in \p a.
 /*!
   Return <CODE>true</CODE> if \p a contains variation from
