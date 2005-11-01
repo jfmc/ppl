@@ -99,10 +99,8 @@ Grids Domain
 ============
 
 -  Complete the implementation of any missing operators:
-      shrink_bounding_box
       ????covered (or bounded) widening and extrapolation operators
       affine_dimension
-      is_topologally_closed
       is_bounded
       bounds_from_above
       bounds_from_below
@@ -125,7 +123,7 @@ Grids Domain
 
 -  Add ascii_dump/0 to all classes
 
--  Documentation needs checking and revising; in many places the 
+-  Documentation needs checking and revising; in many places the
    cut and paste from the corresponding files for polyhedra has not
    been adapted for grids.
 
