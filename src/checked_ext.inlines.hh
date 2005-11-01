@@ -152,13 +152,13 @@ sub_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
       goto pinf;
   }
   else {
-    if (is_minf<From2_Policy>(y)) {
+    if (is_pinf<From2_Policy>(y)) {
     minf:
-      return assign<To_Policy>(to, PLUS_INFINITY, dir);
-    }
-    else if (is_pinf<From2_Policy>(y)) {
-    pinf:
       return assign<To_Policy>(to, MINUS_INFINITY, dir);
+    }
+    else if (is_minf<From2_Policy>(y)) {
+    pinf:
+      return assign<To_Policy>(to, PLUS_INFINITY, dir);
     }
     else {
     native:
