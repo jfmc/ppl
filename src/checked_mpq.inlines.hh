@@ -116,16 +116,26 @@ set_special_mpq(mpq_class& v, Result r) {
 
 SPECIALIZE_SET_SPECIAL(mpq, mpq_class)
 
-template <typename Policy>
+SPECIALIZE_COPY(generic, mpq_class)
+
+template <typename Policy, typename From>
 inline Result
-assign_mpq_mpz(mpq_class& to, const mpz_class& from, Rounding_Dir) {
+assign_mpq_base(mpq_class& to, const From& from, Rounding_Dir) {
   to = from;
   return V_EQ;
 }
 
-SPECIALIZE_COPY(generic, mpq_class)
-
-SPECIALIZE_ASSIGN(mpq_mpz, mpq_class, mpz_class)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, mpz_class)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, signed char)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, signed short)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, signed int)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, signed long)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, unsigned char)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, unsigned short)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, unsigned int)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, unsigned long)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, float)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, double)
 
 template <typename Policy, typename From>
 inline Result
@@ -146,10 +156,6 @@ assign_mpq_signed_int(mpq_class& to, const From from, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed char)
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed short)
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed int)
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed long)
 SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed long long)
 
 template <typename Policy, typename From>
@@ -164,21 +170,7 @@ assign_mpq_unsigned_int(mpq_class& to, const From from, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned char)
-SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned short)
-SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned int)
-SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned long)
 SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned long long)
-
-template <typename Policy, typename From>
-inline Result
-assign_mpq_float(mpq_class& to, const From from, Rounding_Dir) {
-  to = from;
-  return V_EQ;
-}
-
-SPECIALIZE_ASSIGN(mpq_float, mpq_class, float)
-SPECIALIZE_ASSIGN(mpq_float, mpq_class, double)
 
 template <typename Policy>
 inline Result

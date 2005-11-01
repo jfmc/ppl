@@ -173,6 +173,22 @@ SPECIALIZE_ASSIGN(mpz_mpq, mpz_class, mpq_class)
 
 template <typename Policy, typename From>
 inline Result
+assign_mpz_base(mpz_class& to, const From from, Rounding_Dir) {
+    to = static_cast<signed long>(from);
+    return V_EQ;
+}
+
+SPECIALIZE_ASSIGN(mpz_base, mpz_class, signed char)
+SPECIALIZE_ASSIGN(mpz_base, mpz_class, signed short)
+SPECIALIZE_ASSIGN(mpz_base, mpz_class, signed int)
+SPECIALIZE_ASSIGN(mpz_base, mpz_class, signed long)
+SPECIALIZE_ASSIGN(mpz_base, mpz_class, unsigned char)
+SPECIALIZE_ASSIGN(mpz_base, mpz_class, unsigned short)
+SPECIALIZE_ASSIGN(mpz_base, mpz_class, unsigned int)
+SPECIALIZE_ASSIGN(mpz_base, mpz_class, unsigned long)
+
+template <typename Policy, typename From>
+inline Result
 assign_mpz_signed_int(mpz_class& to, const From from, Rounding_Dir) {
   if (sizeof(From) <= sizeof(signed long))
     to = static_cast<signed long>(from);
@@ -189,10 +205,6 @@ assign_mpz_signed_int(mpz_class& to, const From from, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, signed char)
-SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, signed short)
-SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, signed int)
-SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, signed long)
 SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, signed long long)
 
 template <typename Policy, typename From>
@@ -205,10 +217,6 @@ assign_mpz_unsigned_int(mpz_class& to, const From from, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned char)
-SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned short)
-SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned int)
-SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned long)
 SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned long long)
 
 template <typename Policy, typename From>
