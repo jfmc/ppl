@@ -46,6 +46,7 @@ addcongruence1 \
 addconstraints1 \
 addgenerator1 \
 addspacedims1 addspacedims2 \
+affinedim1 \
 affineimage1 \
 affinepreimage1 \
 bhz03widening1 \
@@ -88,6 +89,8 @@ addgenerator1_SOURCES = addgenerator1.cc
 
 addspacedims1_SOURCES = addspacedims1.cc
 addspacedims2_SOURCES = addspacedims2.cc
+
+affinedim1_SOURCES = affinedim1.cc
 
 affineimage1_SOURCES = affineimage1.cc
 
