@@ -252,6 +252,7 @@ libppl_la_SOURCES = \
 Bounding_Box.cc \
 checked.cc \
 Checked_Number.cc \
+Float.cc \
 Constraint.cc \
 Constraint_System.cc \
 simplex.cc \
