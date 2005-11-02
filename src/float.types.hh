@@ -31,6 +31,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define FLOAT128_TYPE long double
 #endif
 
+namespace Parma_Polyhedra_Library {
+
 #ifdef FLOAT32_TYPE
 typedef FLOAT32_TYPE float32_t;
 #endif
@@ -46,5 +48,7 @@ typedef FLOAT96_TYPE float96_t;
 #ifdef FLOAT128_TYPE
 typedef FLOAT128_TYPE float128_t;
 #endif
+
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_float_types_hh)
