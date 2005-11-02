@@ -197,8 +197,8 @@ private:
   static const uint64_t LSP_ZERO = 0;
   static const uint64_t LSP_MAX = 0xffffffffffffffffULL;
 public:
-  static const float96_t POS_MAX = 0x1.ffffffffffffffffffffffffffffp16383l;
-  static const float96_t NEG_MAX = -0x1.ffffffffffffffffffffffffffffp16383l;
+  static const float128_t POS_MAX = 0x1.ffffffffffffffffffffffffffffp16383l;
+  static const float128_t NEG_MAX = -0x1.ffffffffffffffffffffffffffffp16383l;
   static const int EXPONENT_BITS = 15;
   static const int MANTISSA_BITS = 112;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
