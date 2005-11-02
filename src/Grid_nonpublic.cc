@@ -538,20 +538,23 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
   while (gen_sys[row].is_line_or_equality())
     if (++row == num_rows)
       // All rows are lines; generators should always contain a point.
-      //abort(); // FIX instead?
       throw std::runtime_error("PPL::Grid::normalize_divisors(sys, gen_sys).");
   TEMP_INTEGER(gen_sys_divisor);
   TEMP_INTEGER(divisor);
-  gen_sys_divisor = gen_sys[row][0];
+  Generator& first_point = gen_sys[row];
+  gen_sys_divisor = first_point[0];
   divisor = normalize_divisors(sys, gen_sys_divisor);
   if (divisor != gen_sys_divisor)
-    // FIX here normalize_divisors can skip the lcm calc
-    normalize_divisors(gen_sys, divisor);
+    // The divisors of the points in gen_sys are always the same, so
+    // the new divisor will be the LCM of this value and `divisor',
+    // hence the third argument.
+    normalize_divisors(gen_sys, divisor, &first_point);
 }
 
 PPL::Coefficient
 PPL::Grid::normalize_divisors(Generator_System& sys,
-			      Coefficient_traits::const_reference divisor) {
+			      Coefficient_traits::const_reference divisor,
+			      Generator* first_point) {
   assert(divisor >= 0);
   TEMP_INTEGER(lcm);
   lcm = divisor;
@@ -559,30 +562,41 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
     dimension_type row = 0;
     dimension_type num_rows = sys.num_rows();
 
-    // Move to the first point.
-    while (!sys[row].is_point())
-      if (++row == num_rows)
-	// All rows are lines.
-	return divisor;
-
-    Generator& first_point = sys[row];
-
-    if (lcm == 0) {
-      lcm = first_point[0];
-      ++row;
-    }
-
-    // Calculate the LCM of `divisor' and the divisor of every point.
-    while (row < num_rows) {
-      Generator& g = sys[row];
-      if (g.is_point())
-	lcm_assign(lcm, g[0]);
-      ++row;
-    }
-
     TEMP_INTEGER(original_sys_divisor);
+
+    if (first_point) {
+      Generator& point_one = (*first_point);
+      original_sys_divisor = point_one[0];
+      if (lcm == 0)
+	lcm = point_one[0];
+      else
+	lcm_assign(lcm, point_one[0]);
+    }
+    else {
+      // Move to the first point.
+      while (!sys[row].is_point())
+	if (++row == num_rows)
+	  // All rows are lines.
+	  return divisor;
+
+      Generator& point_one = sys[row];
+      original_sys_divisor = point_one[0];
+
+      if (lcm == 0) {
+	lcm = point_one[0];
+	++row;
+      }
+
+      // Calculate the LCM of `divisor' and the divisor of every point.
+      while (row < num_rows) {
+	Generator& g = sys[row];
+	if (g.is_point())
+	  lcm_assign(lcm, g[0]);
+	++row;
+      }
+    }
+
     dimension_type num_cols = sys.num_columns();
-    original_sys_divisor = first_point[0];
     // Represent each point using the LCM as the divisor.
     for (dimension_type row = 0; row < num_rows; ++row) {
       Generator& gen = sys[row];

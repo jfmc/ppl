@@ -2028,11 +2028,17 @@ private:
     divisor of \p sys.  If this value is zero then only the divisors
     in \p sys are considered, otherwise it is expected that \p divisor
     is positive.
+
+    \param first_point
+    If \p first_point has a value other than NULL then it is taken as
+    the first point in \p sys, and it is assumed that any following
+    points have the same divisor as \p first_point.
   */
   static Coefficient
   normalize_divisors(Generator_System& sys,
 		     Coefficient_traits::const_reference divisor
-		     = Coefficient_one());
+		     = Coefficient_one(),
+		     Generator* first_point = NULL);
 
   //! Normalize all the divisors in \p sys and \p gen_sys.
   /*!
