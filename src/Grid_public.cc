@@ -490,23 +490,33 @@ PPL::Grid::is_topologically_closed() const {
   if (marked_empty() || space_dim == 0)
     return true;
 
-  // FIX quicker to manually work through rows as in ph is_bounded
+  if (generators_are_minimized()) {
+  param_search:
+    // Search for a parameter in the minimized generator system.
+    for (dimension_type row = gen_sys.num_rows(); row-- > 1; )
+      if (gen_sys[row].is_ray())
+	return false;
+    return true;
+  }
 
-  if (generators_are_minimized())
-    return gen_sys.num_rays() == 0;
-
-  if (congruences_are_minimized())
-    // The minimized congruence system always has the integrality
-    // congruence, which is a proper congruence.
-    return con_sys.num_proper_congruences() == 1;
+  if (congruences_are_minimized()) {
+  proper_cg_search:
+    // Search for a proper congruence following the integrality
+    // congruence, in the minimized congruence system.
+    for (dimension_type row = con_sys.num_rows() - 1; row-- > 0; )
+      if (con_sys[row].is_proper_congruence())
+	return false;
+    return true;
+  }
 
   Grid& gr = const_cast<Grid&>(*this);
   if (generators_are_up_to_date()) {
     gr.simplify(gr.gen_sys, gr.dim_kinds);
     gr.set_generators_minimized();
-    return gen_sys.num_rays() == 0;
+    goto param_search;
   }
 
+  // Minimize the congruence system.
   gr.con_sys.normalize_moduli();
   if (gr.simplify(gr.con_sys, gr.dim_kinds)) {
     // The congruence system reduced to the empty grid.
@@ -514,9 +524,7 @@ PPL::Grid::is_topologically_closed() const {
     return true;
   }
   gr.set_congruences_minimized();
-  // The minimized congruence system always has the integrality
-  // congruence, which is a proper congruence.
-  return con_sys.num_proper_congruences() == 1;
+  goto proper_cg_search;
 }
 
 bool
