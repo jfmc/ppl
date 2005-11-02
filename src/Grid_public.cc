@@ -106,23 +106,21 @@ PPL::Grid::Grid(const Constraint_System& ccs) {
   construct(cgs);
 }
 
-#if 0
-
 PPL::dimension_type
 PPL::Grid::affine_dimension() const {
-  if (is_empty())
+  if (is_empty() || space_dim == 0)
     return 0;
 
-  const Congruence_System& cs = minimized_congruences();
+  // FIXME: Use the minimized congruence system, or the generator
+  //        system in any form.
+
+  const Congruence_System& cgs = minimized_congruences();
   dimension_type d = space_dim;
-  for (Congruence_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i)
-    if (i->is_equality())
+  for (dimension_type i = cgs.num_rows(); i-- > 0; )
+    if (cgs[i].is_equality())
       --d;
   return d;
 }
-
-#endif
 
 const PPL::Congruence_System&
 PPL::Grid::congruences() const {
@@ -130,7 +128,7 @@ PPL::Grid::congruences() const {
     return con_sys;
 
   if (space_dim == 0) {
-    // zero-dimensional universe.
+    // Zero-dimensional universe.
     assert(con_sys.num_columns() == 0 && con_sys.num_rows() == 0);
     return con_sys;
   }
@@ -143,8 +141,15 @@ PPL::Grid::congruences() const {
 
 const PPL::Congruence_System&
 PPL::Grid::minimized_congruences() const {
-  // FIX this will update generators
-  minimize();
+  if (congruences_are_up_to_date() && !congruences_are_minimized()) {
+    // Minimize the congruences.
+    Grid& gr = const_cast<Grid&>(*this);
+    gr.con_sys.normalize_moduli();
+    if (gr.simplify(gr.con_sys, gr.dim_kinds))
+      gr.set_empty();
+    else
+      gr.set_congruences_minimized();
+  }
   return congruences();
 }
 
@@ -156,8 +161,8 @@ PPL::Grid::generators() const {
     // even though it is an empty generator system.
     if (gen_sys.space_dimension() != space_dim) {
       Generator_System gs;
-      //gs.adjust_topology_and_space_dimension(topology(), space_dim); // FIX
-      gs.adjust_topology_and_space_dimension(gs.topology(), space_dim);
+      gs.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
+					     space_dim);
       const_cast<Generator_System&>(gen_sys).swap(gs);
     }
     return gen_sys;
@@ -173,7 +178,14 @@ PPL::Grid::generators() const {
 
 const PPL::Generator_System&
 PPL::Grid::minimized_generators() const {
-  minimize();  // FIX this will update cgs
+  if (!marked_empty()
+      && generators_are_up_to_date()
+      && !generators_are_minimized()) {
+    // Minimize the generators.
+    Grid& gr = const_cast<Grid&>(*this);
+    gr.simplify(gr.gen_sys, gr.dim_kinds);
+    gr.set_generators_minimized();
+  }
   return generators();
 }
 
