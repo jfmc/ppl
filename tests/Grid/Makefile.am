@@ -50,6 +50,7 @@ affinedim1 \
 affineimage1 \
 affinepreimage1 \
 bhz03widening1 \
+bounded1 \
 boundingbox1 boundingbox2 \
 certificate1 \
 concatenate1 \
@@ -97,6 +98,8 @@ affineimage1_SOURCES = affineimage1.cc
 affinepreimage1_SOURCES = affinepreimage1.cc
 
 bhz03widening1_SOURCES = bhz03widening1.cc
+
+bounded1_SOURCES = bounded1.cc
 
 boundingbox1_SOURCES = boundingbox1.cc
 boundingbox2_SOURCES = boundingbox2.cc
