@@ -397,25 +397,26 @@ PPL::Grid::is_universe() const {
   }
   return true;
 }
-#if 0
+
 bool
 PPL::Grid::is_bounded() const {
-  // A zero-dimensional or empty polyhedron is bounded.
+  // A zero-dimensional or empty grid is bounded.
   if (space_dim == 0
       || marked_empty()
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
 
-   for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
-    if (gen_sys[i][0] == 0)
-      // A line or a ray is found: the polyhedron is not bounded.
-      return false;
+  // FIXME: Use the generator or congruence system, in any form.
 
-  // The system of generators is composed only by
-  // points and closure points: the polyhedron is bounded.
-  return true;
+  // If all the generators in the minimized generator system are
+  // points then there will be a single generator.
+  if (gen_sys.num_rows() == 1)
+    return true;
+
+  // The system of generators contains at least one line or parameter.
+  return false;
 }
-#endif
+
 bool
 PPL::Grid::is_pointed() const {
   // A zero-dimensional or empty grid is pointed.

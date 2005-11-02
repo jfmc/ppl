@@ -623,6 +623,9 @@ public:
   */
   bool is_disjoint_from(const Grid& y) const;
 
+  //! Returns <CODE>true</CODE> if and only if \p *this is bounded.
+  bool is_bounded() const;
+
   //! Returns <CODE>true</CODE> if and only if \p *this is pointed.
   /*!
     A grid is pointed if it can be defined by a generator system which
