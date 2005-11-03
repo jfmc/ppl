@@ -2591,6 +2591,205 @@ It is useful to note that:
   a system with \f$n\f$ vertices/rays the positivity constraint
   is irredundant.
 
+\section integer_floats Integers Represented by Floating Point Numbers
+
+Floating point numbers can be used to represent finite families
+of integer numbers.  In this section we collect some closure properties
+of these families that are exploited in the PPL.
+
+In order not to depend on the particular family of floating point
+numbers considered, we consider an abstraction that is parametric
+in the number \f$b\f$ of bits in the mantissa and gives no limit
+to the magnitude of the exponent \f$e\f$.
+For \f$b \in \Nset \setminus \{ 0 \}\f$ let
+%
+\f[
+\begin{aligned}
+  F_b^+
+    &=
+      \bigl\{\,
+        x \in \Nset
+      \bigm|
+        x = (1 + m / 2^b) \cdot 2^e,
+        e \in \Nset,
+        m \in \Nset \cap [0, 2^b - 1]
+      \,\bigr\} \\
+  F_b
+    &=
+      F_b^+ \cup \{ 0 \} \cup \{\, -x \mid x \in F_b^+ \,\}.
+\end{aligned}
+\f]
+
+Let \f$\phi \colon \Rset \to \Zset\f$ denote the function defined by
+\f[
+  \phi(t)
+    =
+      \begin{cases}
+        \lfloor t \rfloor, & \text{if $t \ge 0$;} \\
+        \lceil  t \rceil,  & \text{if $t  <  0$.}
+      \end{cases}
+\f]
+Notice that \f$\phi\f$ is an <EM>odd</EM> function, that is, it satisfies
+\f$\phi(-t) = -\phi(t)\f$ for all \f$t \in \Rset\f$.
+For \f$x\f$, \f$y \in \Zset\f$ with \f$y \ne 0\f$, we also write
+%
+\f[
+\begin{aligned}
+  x \bdiv y &= \phi(x / y), \\
+  x \brem y &= x - (x \bdiv y) y.
+\end{aligned}
+\f]
+These are the integer division and remainder function as defined by
+the C99 standard
+[ISO/IEC 9899:1999(E), Programming Languages - C (ISO and ANSI C99 Standard)].
+
+<B><EM>Theorem</EM></B>
+If \f$x\f$, \f$y \in F_b\f$ and \f$y \ne 0\f$, then \f$x \brem y \in F_b\f$.
+
+The proof is given in the next three lemmas.
+
+<B><EM>Lemma 1</EM></B>
+Let \f$G_b = \{\, n \in F_b^+ \mid \text{$n$ is odd} \,\}\f$.
+Then \f$G_b = \{ 1, 3, 5, \ldots, 2^{b + 1} - 1 \}\f$.
+Furthermore, if \f$x \in F_b^+\f$ then there exist \f$n \in G_b\f$ and
+\f$f \in \Nset\f$ such that \f$x = n \cdot 2^f\f$.
+
+<B><EM>Proof</EM></B>
+Let \f$n \in \{ 1, 3, 5, \ldots, 2^{b + 1} - 1 \}\f$.
+There is a non negative integer \f$\beta \le b\f$ such that
+\f$2^\beta \le n < 2^{\beta + 1}\f$.
+Then \f$n = (1 + m / 2^b) \cdot 2^e\f$ with
+\f$m = (n - 2^\beta) \cdot 2^{b - \beta}\f$ and \f$e = \beta\f$.
+Here \f$m < (2^{\beta + 1} - 2^\beta) \cdot 2^{b - \beta} = 2^b\f$
+so that \f$n \in G_b\f$.
+The same argument shows that odd integers larger than \f$2^{b+1}\f$ do not
+in fact belong to \f$G_b\f$, since the corresponding value of \f$m\f$ would
+exceed the bound \f$2^b - 1\f$ in the definition.
+
+For the second part, let \f$x = (1 + m / 2^b) \cdot 2^e \in F_b^+\f$.
+Let \f$m = 2^d \cdot m_1\f$ with \f$m_1\f$ odd and \f$d < b\f$.
+Then \f$n = 2^{b - d} + m_1\f$ is an odd integer that belongs to \f$G_b\f$
+since \f$2^{b - d} + m_1 \le 2^{b - d} + (2^b - 1) / 2^d < 2^{b - d + 1}
+\le 2^{b + 1}\f$, using the first part.
+Hence we may take \f$f = e + d - b\f$ which is non negative since
+otherwise \f$m \cdot 2^{e - b} = m_1 \cdot 2^{e + d - b}\f$ would not be
+an integer as assumed.
+
+<B><EM>Lemma 2</EM></B>
+If \f$x\f$, \f$y \in F_b^+\f$ and \f$y\f$ does not divide \f$x\f$, then
+\f$x \bmod y \in F_b^+\f$.
+
+<B><EM>Proof</EM></B>
+By Lemma 1 above we may assume that \f$x = n \cdot 2^e\f$ and
+\f$y = m \cdot 2^f\f$ with \f$n\f$, \f$m \in G_b\f$ odd integers, and \f$e\f$,
+\f$f \in \Nset\f$.
+Let \f$k = \lfloor x / y \rfloor\f$.
+The goal is to prove that \f$x - k y \in F_b^+\f$: we may assume that
+\f$k > 0\f$, that is, that \f$x > y\f$ for otherwise \f$x \bmod y = x\f$
+and there is nothing to prove.
+- If \f$e < f\f$ then \f$x - k y = 2^e (n - k m \cdot 2^{f - e})\f$.
+  The integer \f$n - k m \cdot 2^{f - e}\f$ is positive, odd and smaller
+  than \f$n\f$, and therefore belongs to \f$G_b\f$.
+- If \f$e = f\f$ then \f$x - k y = 2^e (n - k m)\f$.
+  The integer \f$n - k m\f$ is positive and smaller than \f$n\f$, and therefore
+  belongs to \f$F_b^+\f$.
+- If \f$e > f\f$ then \f$x - k y = 2^f (n \cdot 2^{e - f} - k m)\f$.
+  The integer \f$n \cdot 2^{e - f} - k m\f$ is positive and smaller
+  than \f$m\f$, and therefore belongs to \f$F_b^+\f$: in fact
+  \f[
+    n \cdot 2^{e - f} - k m
+    =
+    n \cdot 2^{e - f} - \Bigl\lfloor \frac xy \Bigr\rfloor m
+    =
+    n \cdot 2^{e - f} - \Bigl\lfloor \frac{n \cdot 2^{e - f}}m \Bigr\rfloor m.
+  \f]
+  In other words, this integer is \f$n \cdot 2^{e - f} \bmod m\f$ and
+  therefore it is smaller than \f$m\f$.
+
+In all cases, we wrote \f$x - k y\f$ as the product of a power of 2 and an
+element of \f$F_b^+\f$, and this product is another element of \f$F_b^+\f$.
+
+
+<B><EM>Lemma 3</EM></B>
+For \f$x\f$, \f$y \in \Zset\f$ with \f$y \ne 0\f$, we have
+%
+\f[
+  x \brem y
+  =
+  \begin{cases}
+       x  \brem |y|,  & \text{if $x \ge 0$;} \\
+    -(|x| \brem |y|), & \text{if $x  <  0$.}
+  \end{cases}
+\f]
+
+<B><EM>Proof</EM></B>
+Throughout the proof we write \f$x_0 = |x|\f$ and \f$y_0 = |y|\f$.
+First, assume that \f$x \ge 0\f$ and that \f$y < 0\f$.
+Let \f$k = \phi(x / y_0) = - \phi(x / y)\f$, by the property above.
+We have
+\f[
+  x \brem y
+  =
+  x - (x \bdiv y) y
+  =
+  x - (-k) y
+  =
+  x - k (-y)
+  =
+  x - k y_0.
+\f]
+Next, assume that \f$x < 0\f$ and that \f$y < 0\f$.
+Let \f$k = \phi(x_0 / y_0) = \phi(x / y)\f$.
+We have
+\f[
+  x \brem y
+  =
+  x - (x \bdiv y) y
+  =
+  x - k y
+  =
+  -( -x - k (-y))
+  =
+  -(x_0 - k y_0).
+\f]
+Finally, assume that \f$x < 0\f$ and that \f$y > 0\f$.
+Let \f$k = \phi(x_0 / y) = -\phi(x / y)\f$, again by the property above.
+We have
+\f[
+  x \brem y
+  =
+  x - (x \bdiv y) y
+  =
+  x - (-k) y
+  =
+  -( -x - k y)
+  =
+  -(x_0 - k y).
+\f]
+This completes the proof.
+
+<B><EM>Lemma 4</EM></B>
+If \f$x\f$, \f$y \in F_b^+\f$ then \f$\gcd(x, y) \in F_b^+\f$.
+
+<B><EM>Proof</EM></B>
+Let \f$x = n \cdot 2^e\f$ and \f$y = m \cdot 2^f\f$ with \f$n\f$, \f$m \in G_b\f$
+odd integers, and \f$e\f$, \f$f \in \Nset\f$.
+Then \f$\gcd(x, y) = \gcd(n, m) \cdot 2^{\min(e, f)}\f$, and therefore it
+belongs to \f$F_b^+\f$, since \f$\gcd(n, m) \le \min(n, m)\f$ so that it belongs
+to \f$G_b\f$.
+
+<B><EM>Lemma 5</EM></B>
+If \f$x\f$, \f$y \in F_b^+\f$, then \f$x / \gcd(x, y) \in F_b^+\f$.
+
+<B><EM>Proof</EM></B>
+With the same notation as in the previous Lemma, both \f$n\f$ and
+\f$\gcd(n, m) \in G_b\f$: but all positive odd integers up to and
+including \f$n\f$ belong to \f$G_b\f$, so that \f$n / \gcd(n, m)\f$
+does as well.
+By Lemma 1
+\f$x / \gcd(x, y) = n \cdot 2^e / (\gcd(n, m) \cdot 2^{\min(e, f)})
+                = (n / \gcd(n, m)) \cdot 2^{e - \min(e, f)} \in F_b^+\f$.
+
 \endif
 
 */
