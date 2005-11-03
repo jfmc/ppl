@@ -49,13 +49,15 @@ round_gt_mpz(mpz_class& to, Rounding_Dir dir) {
   return V_GT;
 }
 
-inline mp_size_t
+typedef int mp_size_field_t;
+
+inline mp_size_field_t
 get_mp_size(const mpz_class &v) {
   return v.get_mpz_t()->_mp_size;
 }
 
 inline void
-set_mp_size(mpz_class &v, mp_size_t size) {
+set_mp_size(mpz_class &v, mp_size_field_t size) {
   v.get_mpz_t()->_mp_size = size;
 }
 
@@ -63,15 +65,15 @@ template <typename Policy>
 inline Result
 classify_mpz(const mpz_class& v, bool nan, bool inf, bool sign) {
   if (Policy::store_nan || Policy::store_infinity) {
-    mp_size_t s = get_mp_size(v);
-    if (Policy::store_nan && (nan || sign) && s == Limits<mp_size_t>::min + 1)
+    mp_size_field_t s = get_mp_size(v);
+    if (Policy::store_nan && (nan || sign) && s == Limits<mp_size_field_t>::min + 1)
       return VC_NAN;
     if (!inf && !sign)
       return VC_NORMAL;
     if (Policy::store_infinity) {
-      if (s == Limits<mp_size_t>::min)
+      if (s == Limits<mp_size_field_t>::min)
 	return inf ? VC_MINUS_INFINITY : V_LT;
-      if (s == Limits<mp_size_t>::max)
+      if (s == Limits<mp_size_field_t>::max)
 	return inf ? VC_PLUS_INFINITY : V_GT;
     }
   }
@@ -85,7 +87,7 @@ SPECIALIZE_CLASSIFY(mpz, mpz_class)
 template <typename Policy>
 inline bool
 is_nan_mpz(const mpz_class& v) {
-  return Policy::store_nan && get_mp_size(v) == Limits<mp_size_t>::min + 1;
+  return Policy::store_nan && get_mp_size(v) == Limits<mp_size_field_t>::min + 1;
 }
 
 SPECIALIZE_IS_NAN(mpz, mpz_class)
@@ -93,7 +95,7 @@ SPECIALIZE_IS_NAN(mpz, mpz_class)
 template <typename Policy>
 inline bool
 is_minf_mpz(const mpz_class& v) {
-  return Policy::store_infinity && get_mp_size(v) == Limits<mp_size_t>::min;
+  return Policy::store_infinity && get_mp_size(v) == Limits<mp_size_field_t>::min;
 }
 
 SPECIALIZE_IS_MINF(mpz, mpz_class)
@@ -101,7 +103,7 @@ SPECIALIZE_IS_MINF(mpz, mpz_class)
 template <typename Policy>
 inline bool
 is_pinf_mpz(const mpz_class& v) {
-  return Policy::store_infinity && get_mp_size(v) == Limits<mp_size_t>::max;
+  return Policy::store_infinity && get_mp_size(v) == Limits<mp_size_field_t>::max;
 }
 
 SPECIALIZE_IS_PINF(mpz, mpz_class)
@@ -119,14 +121,14 @@ inline Result
 set_special_mpz(mpz_class& v, Result r) {
   Result c = classify(r);
   if (Policy::store_nan && c == VC_NAN)
-    set_mp_size(v, Limits<mp_size_t>::min + 1);
+    set_mp_size(v, Limits<mp_size_field_t>::min + 1);
   else if (Policy::store_infinity) {
     switch (c) {
     case VC_MINUS_INFINITY:
-      set_mp_size(v, Limits<mp_size_t>::min);
+      set_mp_size(v, Limits<mp_size_field_t>::min);
       break;
     case VC_PLUS_INFINITY:
-      set_mp_size(v, Limits<mp_size_t>::max);
+      set_mp_size(v, Limits<mp_size_field_t>::max);
       break;
     default:
       break;
