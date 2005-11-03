@@ -49,7 +49,14 @@ round_gt_mpz(mpz_class& to, Rounding_Dir dir) {
   return V_GT;
 }
 
+// FIXME: change this when Autoconf will support AC_C_TYPEOF.
+#ifdef __GNUC__
+//! Type of the _mp_size field of GMP's __mpz_struct.
+typedef __typeof__(__mpz_struct()._mp_size) mp_size_field_t;
+#else
+//! This is assumed to be the type of the _mp_size field of GMP's __mpz_struct.
 typedef int mp_size_field_t;
+#endif
 
 inline mp_size_field_t
 get_mp_size(const mpz_class &v) {
