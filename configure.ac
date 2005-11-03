@@ -466,6 +466,22 @@ add --enable-cxx to the configuration options.])
   fi
 fi
 
+AC_CHECK_MEMBERS([__mpz_struct._mp_alloc,
+                  __mpz_struct._mp_size,
+                  __mpz_struct._mp_d],
+                 ,
+                 gmp_has_changes=yes,
+                 [#include <gmp.h>])
+
+if test x"$gmp_has_changed" = xyes
+then
+  AC_MSG_ERROR([GMP HAS CHANGED:
+*** The PPL exploits some implementation details of GMP that were current
+*** until (at least) version 4.1.4 of GMP.  You seem to be using a version
+*** where these details have changed.
+*** Please report this to ppl-devel@cs.unipr.it.])
+fi
+
 extra_includes="${extra_includes}${extra_includes:+ }${gmp_includes_option}"
 extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_option}"
 
