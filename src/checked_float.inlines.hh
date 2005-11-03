@@ -254,33 +254,23 @@ succ_float(T& v) {
   v = f.value();
 }
 
-SPECIALIZE_CLASSIFY(float, float32_t)
-SPECIALIZE_IS_NAN(float, float32_t)
-SPECIALIZE_IS_MINF(float, float32_t)
-SPECIALIZE_IS_PINF(float, float32_t)
-SPECIALIZE_SET_SPECIAL(float, float32_t)
+SPECIALIZE_CLASSIFY(float, float)
+SPECIALIZE_IS_NAN(float, float)
+SPECIALIZE_IS_MINF(float, float)
+SPECIALIZE_IS_PINF(float, float)
+SPECIALIZE_SET_SPECIAL(float, float)
 
-SPECIALIZE_CLASSIFY(float, float64_t)
-SPECIALIZE_IS_NAN(float, float64_t)
-SPECIALIZE_IS_MINF(float, float64_t)
-SPECIALIZE_IS_PINF(float, float64_t)
-SPECIALIZE_SET_SPECIAL(float, float64_t)
+SPECIALIZE_CLASSIFY(float, double)
+SPECIALIZE_IS_NAN(float, double)
+SPECIALIZE_IS_MINF(float, double)
+SPECIALIZE_IS_PINF(float, double)
+SPECIALIZE_SET_SPECIAL(float, double)
 
-#ifdef FLOAT96_TYPE
-SPECIALIZE_CLASSIFY(float, float96_t)
-SPECIALIZE_IS_NAN(float, float96_t)
-SPECIALIZE_IS_MINF(float, float96_t)
-SPECIALIZE_IS_PINF(float, float96_t)
-SPECIALIZE_SET_SPECIAL(float, float96_t)
-#endif
-
-#ifdef FLOAT128_TYPE
-SPECIALIZE_CLASSIFY(float, float128_t)
-SPECIALIZE_IS_NAN(float, float128_t)
-SPECIALIZE_IS_MINF(float, float128_t)
-SPECIALIZE_IS_PINF(float, float128_t)
-SPECIALIZE_SET_SPECIAL(float, float128_t)
-#endif
+SPECIALIZE_CLASSIFY(float, long double)
+SPECIALIZE_IS_NAN(float, long double)
+SPECIALIZE_IS_MINF(float, long double)
+SPECIALIZE_IS_PINF(float, long double)
+SPECIALIZE_SET_SPECIAL(float, long double)
 
 template <typename Policy, typename To>
 inline Result
