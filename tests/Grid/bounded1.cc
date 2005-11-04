@@ -364,6 +364,24 @@ test11() {
   exit(1);
 }
 
+// A single point, duplicated.
+
+void
+test12() {
+  nout << "test12:" << endl;
+
+  Grid gr(2, EMPTY);
+  gr.add_generator(point(3*A + 2*B));
+  gr.add_generator(point(3*A + 2*B));
+
+  if (gr.is_bounded())
+    return;
+
+  nout << "Grid should be bounded." << endl;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -383,6 +401,7 @@ main() TRY {
   test9();
   test10();
   test11();
+  test12();
 
   return 0;
 }
