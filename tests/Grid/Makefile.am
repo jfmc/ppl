@@ -52,6 +52,7 @@ affinepreimage1 \
 bhz03widening1 \
 bounded1 \
 boundingbox1 boundingbox2 \
+bounds1 \
 certificate1 \
 concatenate1 \
 congruence1 \
@@ -103,6 +104,8 @@ bounded1_SOURCES = bounded1.cc
 
 boundingbox1_SOURCES = boundingbox1.cc
 boundingbox2_SOURCES = boundingbox2.cc
+
+bounds1_SOURCES = bounds1.cc
 
 certificate1_SOURCES = certificate1.cc
 
