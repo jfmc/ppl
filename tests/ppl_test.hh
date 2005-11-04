@@ -29,8 +29,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define C_Polyhedron NNC_Polyhedron
 #endif
 
+#ifndef BD_SHAPE_INSTANCE
+#define BD_SHAPE_INSTANCE mpq_class
+#endif
+
 namespace Parma_Polyhedra_Library {
 
 typedef long double long_double;
+typedef BD_Shape<BD_SHAPE_INSTANCE> TBD_Shape;
 
 } // namespace Parma_Polyhedra_Library

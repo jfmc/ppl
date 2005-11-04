@@ -16,10 +16,10 @@ long_double_XFAIL_TESTS=
 check_PROGRAMS=$(MAKEFLAGS='' make -s print_check_PROGRAMS)
 
 make clean
-for k in $instances 
+for instance in $instances 
 do
-	echo "**************************** " $k " ****************************"
-	eval xfail_tests='"$'$k'_XFAIL_TESTS"'
-	make check TESTS="$check_PROGRAMS" TEST_CPPFLAGS="\"-DTBD_Shape=BD_Shape<$k>\"" XFAIL_TESTS=$xfail_tests || exit 1
+	echo "**************************** " $instance " ****************************"
+	eval xfail_tests='"$'$instance'_XFAIL_TESTS"'
+	make check TESTS="$check_PROGRAMS" TEST_CPPFLAGS="-DBD_SHAPE_INSTANCE=$instance" XFAIL_TESTS=$xfail_tests || exit 1
 	make clean
 done
