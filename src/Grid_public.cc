@@ -406,15 +406,20 @@ PPL::Grid::is_bounded() const {
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
 
-  // FIXME: Use the generator or congruence system, in any form.
+  // TODO: Consider using con_sys when gen_sys is out of date.
 
-  // If all the generators in the minimized generator system are
-  // points then there will be a single generator.
-  if (gen_sys.num_rows() == 1)
-    return true;
-
-  // The system of generators contains at least one line or parameter.
-  return false;
+  if (gen_sys.num_rows() > 1) {
+    // Check if all generators are the same point.
+    const Generator& first_point = gen_sys[0];
+    if (!first_point.is_point())
+      return false;
+    for (dimension_type row = gen_sys.num_rows(); row-- > 0; ) {
+      const Generator& gen = gen_sys[row];
+      if (!gen.is_point() || gen != first_point)
+	return false;
+    }
+  }
+  return true;
 }
 
 bool
