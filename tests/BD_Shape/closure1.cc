@@ -1199,7 +1199,7 @@ add_edges(BD_Shape<mpq_class>& bd, const Edge* edges, unsigned n) {
 #if NOISY
     cout << "a = " << a << "; b = " << b << endl;
 #endif
-    bd.add_constraint(a*Variable(edges[i].from) - a*Variable(edges[i].from)
+    bd.add_constraint(a*Variable(edges[i].from) - a*Variable(edges[i].to)
 		      <= b);
   }
 }
