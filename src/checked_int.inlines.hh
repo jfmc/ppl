@@ -443,7 +443,7 @@ ASSIGN2_SIGNED_UNSIGNED(signed long long, unsigned long long)
 
 template <typename Policy, typename To, typename From>
 inline Result
-assign_int_float_check_min_max(To& to, const From from, Rounding_Dir dir) {
+assign_int_float(To& to, const From from, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_overflow, (from < min_int<Policy, To>())))
     return set_neg_overflow_int<Policy>(to, dir);
   if (CHECK_P(Policy::check_overflow, (from > max_int<Policy, To>())))
@@ -459,45 +459,38 @@ assign_int_float_check_min_max(To& to, const From from, Rounding_Dir dir) {
     return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float32_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float32_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float32_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float32_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, uint8_t, float32_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, uint16_t, float32_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, uint32_t, float32_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, uint64_t, float32_t)
+SPECIALIZE_ASSIGN(int_float, signed char, float)
+SPECIALIZE_ASSIGN(int_float, signed short, float)
+SPECIALIZE_ASSIGN(int_float, signed int, float)
+SPECIALIZE_ASSIGN(int_float, signed long, float)
+SPECIALIZE_ASSIGN(int_float, signed long long, float)
+SPECIALIZE_ASSIGN(int_float, unsigned char, float)
+SPECIALIZE_ASSIGN(int_float, unsigned short, float)
+SPECIALIZE_ASSIGN(int_float, unsigned int, float)
+SPECIALIZE_ASSIGN(int_float, unsigned long, float)
+SPECIALIZE_ASSIGN(int_float, unsigned long long, float)
 
-SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float64_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float64_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float64_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float64_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, uint8_t, float64_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, uint16_t, float64_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, uint32_t, float64_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, uint64_t, float64_t)
+SPECIALIZE_ASSIGN(int_float, signed char, double)
+SPECIALIZE_ASSIGN(int_float, signed short, double)
+SPECIALIZE_ASSIGN(int_float, signed int, double)
+SPECIALIZE_ASSIGN(int_float, signed long, double)
+SPECIALIZE_ASSIGN(int_float, signed long long, double)
+SPECIALIZE_ASSIGN(int_float, unsigned char, double)
+SPECIALIZE_ASSIGN(int_float, unsigned short, double)
+SPECIALIZE_ASSIGN(int_float, unsigned int, double)
+SPECIALIZE_ASSIGN(int_float, unsigned long, double)
+SPECIALIZE_ASSIGN(int_float, unsigned long long, double)
 
-#ifdef FLOAT96_TYPE
-SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float96_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float96_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float96_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float96_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, uint8_t, float96_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, uint16_t, float96_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, uint32_t, float96_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, uint64_t, float96_t)
-#endif
-
-#ifdef FLOAT128_TYPE
-SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float128_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float128_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float128_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float128_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, uint8_t, float128_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, uint16_t, float128_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, uint32_t, float128_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, uint64_t, float128_t)
-#endif
+SPECIALIZE_ASSIGN(int_float, signed char, long double)
+SPECIALIZE_ASSIGN(int_float, signed short, long double)
+SPECIALIZE_ASSIGN(int_float, signed int, long double)
+SPECIALIZE_ASSIGN(int_float, signed long, long double)
+SPECIALIZE_ASSIGN(int_float, signed long long, long double)
+SPECIALIZE_ASSIGN(int_float, unsigned char, long double)
+SPECIALIZE_ASSIGN(int_float, unsigned short, long double)
+SPECIALIZE_ASSIGN(int_float, unsigned int, long double)
+SPECIALIZE_ASSIGN(int_float, unsigned long, long double)
+SPECIALIZE_ASSIGN(int_float, unsigned long long, long double)
 
 #undef ASSIGN2_SIGNED_SIGNED
 #undef ASSIGN2_UNSIGNED_UNSIGNED

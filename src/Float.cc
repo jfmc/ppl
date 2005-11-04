@@ -25,35 +25,35 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-const float32_t Float<float32_t>::POS_MAX;
-const float32_t Float<float32_t>::NEG_MAX;
+const float32_t TFloat<float32_t>::POS_MAX;
+const float32_t TFloat<float32_t>::NEG_MAX;
 
-const float64_t Float<float64_t>::POS_MAX;
-const float64_t Float<float64_t>::NEG_MAX;
+const float64_t TFloat<float64_t>::POS_MAX;
+const float64_t TFloat<float64_t>::NEG_MAX;
 
 #ifdef FLOAT96_TYPE
 
-const uint64_t Float<float96_t>::LSP_INF;
-const uint64_t Float<float96_t>::LSP_ZERO;
-const uint64_t Float<float96_t>::LSP_DMAX;
-const uint64_t Float<float96_t>::LSP_NMAX;
-const float96_t Float<float96_t>::POS_MAX;
-const float96_t Float<float96_t>::NEG_MAX;
+const uint64_t TFloat<float96_t>::LSP_INF;
+const uint64_t TFloat<float96_t>::LSP_ZERO;
+const uint64_t TFloat<float96_t>::LSP_DMAX;
+const uint64_t TFloat<float96_t>::LSP_NMAX;
+const float96_t TFloat<float96_t>::POS_MAX;
+const float96_t TFloat<float96_t>::NEG_MAX;
 
 #endif
 
 #ifdef FLOAT128_TYPE
 
-const uint64_t Float<float128_t>::MSP_SGN_MASK;
-const uint64_t Float<float128_t>::MSP_POS_INF;
-const uint64_t Float<float128_t>::MSP_NEG_INF;
-const uint64_t Float<float128_t>::MSP_POS_ZERO;
-const uint64_t Float<float128_t>::MSP_NEG_ZERO;
-const uint64_t Float<float128_t>::LSP_INF;
-const uint64_t Float<float128_t>::LSP_ZERO;
-const uint64_t Float<float128_t>::LSP_MAX;
-const float128_t Float<float128_t>::POS_MAX;
-const float128_t Float<float128_t>::NEG_MAX;
+const uint64_t TFloat<float128_t>::MSP_SGN_MASK;
+const uint64_t TFloat<float128_t>::MSP_POS_INF;
+const uint64_t TFloat<float128_t>::MSP_NEG_INF;
+const uint64_t TFloat<float128_t>::MSP_POS_ZERO;
+const uint64_t TFloat<float128_t>::MSP_NEG_ZERO;
+const uint64_t TFloat<float128_t>::LSP_INF;
+const uint64_t TFloat<float128_t>::LSP_ZERO;
+const uint64_t TFloat<float128_t>::LSP_MAX;
+const float128_t TFloat<float128_t>::POS_MAX;
+const float128_t TFloat<float128_t>::NEG_MAX;
 
 #endif
 

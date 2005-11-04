@@ -29,17 +29,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Float<float32_t>::Float(float32_t v) {
+TFloat<float32_t>::TFloat(float32_t v) {
   u._value = v;
 }
 
 inline float32_t
-Float<float32_t>::value() {
+TFloat<float32_t>::value() {
   return u._value;
 }
 
 inline int
-Float<float32_t>::is_inf() const {
+TFloat<float32_t>::is_inf() const {
   if (u.word == NEG_INF)
     return -1;
   if (u.word == POS_INF)
@@ -48,12 +48,12 @@ Float<float32_t>::is_inf() const {
 }
 
 inline int
-Float<float32_t>::is_nan() const {
+TFloat<float32_t>::is_nan() const {
   return (u.word & ~SGN_MASK) > POS_INF;
 }
 
 inline int
-Float<float32_t>::is_zero() const {
+TFloat<float32_t>::is_zero() const {
   if (u.word == NEG_ZERO)
     return -1;
   if (u.word == POS_ZERO)
@@ -62,27 +62,27 @@ Float<float32_t>::is_zero() const {
 }
 
 inline void
-Float<float32_t>::negate() {
+TFloat<float32_t>::negate() {
   u.word ^= SGN_MASK;
 }
 
 inline int
-Float<float32_t>::sign_bit() const {
+TFloat<float32_t>::sign_bit() const {
   return !!(u.word & SGN_MASK);
 }
 
 inline void
-Float<float32_t>::dec() {
+TFloat<float32_t>::dec() {
   u.word--;
 }
 
 inline void
-Float<float32_t>::inc() {
+TFloat<float32_t>::inc() {
   u.word++;
 }
 
 inline void
-Float<float32_t>::build(bool negative, mpz_t mantissa, int exponent) {
+TFloat<float32_t>::build(bool negative, mpz_t mantissa, int exponent) {
   unsigned long m = mpz_get_ui(mantissa);
   u.word = negative ? SGN_MASK : 0;
   u.word |= static_cast<uint32_t>(exponent + EXPONENT_BIAS) << MANTISSA_BITS;
@@ -90,17 +90,17 @@ Float<float32_t>::build(bool negative, mpz_t mantissa, int exponent) {
 }
 
 inline
-Float<float64_t>::Float(float64_t v) {
+TFloat<float64_t>::TFloat(float64_t v) {
   u._value = v;
 }
 
 inline float64_t
-Float<float64_t>::value() {
+TFloat<float64_t>::value() {
   return u._value;
 }
 
 inline int
-Float<float64_t>::is_inf() const {
+TFloat<float64_t>::is_inf() const {
   if (u.parts.lsp != LSP_INF)
     return 0;
   if (u.parts.msp == MSP_NEG_INF)
@@ -111,13 +111,13 @@ Float<float64_t>::is_inf() const {
 }
 
 inline int
-Float<float64_t>::is_nan() const {
+TFloat<float64_t>::is_nan() const {
   uint32_t a = u.parts.msp & ~MSP_SGN_MASK;
   return a > MSP_POS_INF || (a == MSP_POS_INF && u.parts.lsp != LSP_INF);
 }
 
 inline int
-Float<float64_t>::is_zero() const {
+TFloat<float64_t>::is_zero() const {
   if (u.parts.lsp != LSP_ZERO)
     return 0;
   if (u.parts.msp == MSP_NEG_ZERO)
@@ -128,17 +128,17 @@ Float<float64_t>::is_zero() const {
 }
 
 inline void
-Float<float64_t>::negate() {
+TFloat<float64_t>::negate() {
   u.parts.msp ^= MSP_SGN_MASK;
 }
 
 inline int
-Float<float64_t>::sign_bit() const {
+TFloat<float64_t>::sign_bit() const {
   return !!(u.parts.msp & MSP_SGN_MASK);
 }
 
 inline void
-Float<float64_t>::dec() {
+TFloat<float64_t>::dec() {
   if (u.parts.lsp == 0) {
     u.parts.msp--;
     u.parts.lsp = LSP_MAX;
@@ -148,7 +148,7 @@ Float<float64_t>::dec() {
 }
 
 inline void
-Float<float64_t>::inc() {
+TFloat<float64_t>::inc() {
   if (u.parts.lsp == LSP_MAX) {
     u.parts.msp++;
     u.parts.lsp = 0;
@@ -158,7 +158,7 @@ Float<float64_t>::inc() {
 }
 
 inline void
-Float<float64_t>::build(bool negative, mpz_t mantissa, int exponent) {
+TFloat<float64_t>::build(bool negative, mpz_t mantissa, int exponent) {
   u.parts.msp = (negative ? MSP_SGN_MASK : 0);
   u.parts.msp |= static_cast<uint32_t>(exponent + EXPONENT_BIAS) << (MANTISSA_BITS - 32);
 #if ULONG_MAX == 0xffffffffUL
@@ -176,17 +176,17 @@ Float<float64_t>::build(bool negative, mpz_t mantissa, int exponent) {
 #ifdef FLOAT96_TYPE
 
 inline
-Float<float96_t>::Float(float96_t v) {
+TFloat<float96_t>::TFloat(float96_t v) {
   u._value = v;
 }
 
 inline float96_t
-Float<float96_t>::value() {
+TFloat<float96_t>::value() {
   return u._value;
 }
 
 inline int
-Float<float96_t>::is_inf() const {
+TFloat<float96_t>::is_inf() const {
   if (u.parts.lsp != LSP_INF)
     return 0;
   uint32_t a = u.parts.msp & MSP_NEG_INF;
@@ -198,13 +198,13 @@ Float<float96_t>::is_inf() const {
 }
 
 inline int
-Float<float96_t>::is_nan() const {
+TFloat<float96_t>::is_nan() const {
   return (u.parts.msp & MSP_POS_INF) == MSP_POS_INF &&
     u.parts.lsp != LSP_INF;
 }
 
 inline int
-Float<float96_t>::is_zero() const {
+TFloat<float96_t>::is_zero() const {
   if (u.parts.lsp != LSP_ZERO)
     return 0;
   uint32_t a = u.parts.msp & MSP_NEG_INF;
@@ -216,17 +216,17 @@ Float<float96_t>::is_zero() const {
 }
 
 inline void
-Float<float96_t>::negate() {
+TFloat<float96_t>::negate() {
   u.parts.msp ^= MSP_SGN_MASK;
 }
 
 inline int
-Float<float96_t>::sign_bit() const {
+TFloat<float96_t>::sign_bit() const {
   return !!(u.parts.msp & MSP_SGN_MASK);
 }
 
 inline void
-Float<float96_t>::dec() {
+TFloat<float96_t>::dec() {
   if ((u.parts.lsp & LSP_DMAX) == 0) {
     u.parts.msp--;
     u.parts.lsp = (u.parts.msp & MSP_NEG_INF) == 0 ? LSP_DMAX : LSP_NMAX;
@@ -236,7 +236,7 @@ Float<float96_t>::dec() {
 }
 
 inline void
-Float<float96_t>::inc() {
+TFloat<float96_t>::inc() {
   if ((u.parts.lsp & LSP_DMAX) == LSP_DMAX) {
     u.parts.msp++;
     u.parts.lsp = LSP_DMAX + 1;
@@ -246,7 +246,7 @@ Float<float96_t>::inc() {
 }
 
 inline void
-Float<float96_t>::build(bool negative, mpz_t mantissa, int exponent) {
+TFloat<float96_t>::build(bool negative, mpz_t mantissa, int exponent) {
   u.parts.msp = (negative ? MSP_SGN_MASK : 0);
   u.parts.msp |= static_cast<uint32_t>(exponent + EXPONENT_BIAS);
 #if ULONG_MAX == 0xffffffffUL
@@ -261,17 +261,17 @@ Float<float96_t>::build(bool negative, mpz_t mantissa, int exponent) {
 #ifdef FLOAT128_TYPE
 
 inline
-Float<float128_t>::Float(float128_t v) {
+TFloat<float128_t>::TFloat(float128_t v) {
   u._value = v;
 }
 
 inline float128_t
-Float<float128_t>::value() {
+TFloat<float128_t>::value() {
   return u._value;
 }
 
 inline int
-Float<float128_t>::is_inf() const {
+TFloat<float128_t>::is_inf() const {
   if (u.parts.lsp != LSP_INF)
     return 0;
   if (u.parts.msp == MSP_NEG_INF)
@@ -282,13 +282,13 @@ Float<float128_t>::is_inf() const {
 }
 
 inline int
-Float<float128_t>::is_nan() const {
+TFloat<float128_t>::is_nan() const {
   return (u.parts.msp & ~MSP_SGN_MASK) == MSP_POS_INF &&
     u.parts.lsp != LSP_INF;
 }
 
 inline int
-Float<float128_t>::is_zero() const {
+TFloat<float128_t>::is_zero() const {
   if (u.parts.lsp != LSP_ZERO)
     return 0;
   if (u.parts.msp == MSP_NEG_ZERO)
@@ -299,17 +299,17 @@ Float<float128_t>::is_zero() const {
 }
 
 inline void
-Float<float128_t>::negate() {
+TFloat<float128_t>::negate() {
   u.parts.msp ^= MSP_SGN_MASK;
 }
 
 inline int
-Float<float128_t>::sign_bit() const {
+TFloat<float128_t>::sign_bit() const {
   return !!(u.parts.msp & MSP_SGN_MASK);
 }
 
 inline void
-Float<float128_t>::dec() {
+TFloat<float128_t>::dec() {
   if (u.parts.lsp == 0) {
     u.parts.msp--;
     u.parts.lsp = LSP_MAX;
@@ -319,7 +319,7 @@ Float<float128_t>::dec() {
 }
 
 inline void
-Float<float128_t>::inc() {
+TFloat<float128_t>::inc() {
   if (u.parts.lsp == LSP_MAX) {
     u.parts.msp++;
     u.parts.lsp = 0;
@@ -329,7 +329,7 @@ Float<float128_t>::inc() {
 }
 
 inline void
-Float<float128_t>::build(bool negative, mpz_t mantissa, int exponent) {
+TFloat<float128_t>::build(bool negative, mpz_t mantissa, int exponent) {
   unsigned long m = mpz_get_ui(mantissa);
   u.parts.msp = (negative ? MSP_SGN_MASK : 0);
   u.parts.msp |= static_cast<uint64_t>(exponent + EXPONENT_BIAS) << (MANTISSA_BITS - 64);

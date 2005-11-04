@@ -24,7 +24,7 @@ namespace Parma_Polyhedra_Library {
 
 namespace Checked {
 
-#define handle_ext_natively(Type) (Float<Type>::fpu_related)
+#define handle_ext_natively(T) (Float<T>::Type::fpu_related)
 
 template <typename Policy, typename Type>
 inline Result

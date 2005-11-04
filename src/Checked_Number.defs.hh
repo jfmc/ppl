@@ -326,12 +326,13 @@ FUNC2(assign_sub_mul)
 template <typename T, typename Policy>
 void swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y);
 
-
+#if 0
 template <typename T, typename Policy>
 class Float<Checked_Number<T, Policy> > {
 public:
-  static const bool fpu_related = Float<T>::fpu_related;
+  typedef Float<T>::Type Type;
 };
+#endif
 
 //! \name Accessor Functions
 //@{
