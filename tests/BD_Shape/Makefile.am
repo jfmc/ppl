@@ -59,6 +59,7 @@ check_PROGRAMS = \
 	cc76extrapolation4 cc76extrapolation5 cc76extrapolation6 \
 	ch78widening1 ch78widening2 ch78widening3 ch78widening4 \
 	ch78widening5 ch78widening6 ch78widening7 ch78widening8 \
+	closure1 \
 	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
 	constraints1 constraints2 \
 	contains1 contains2 contains3 \
@@ -97,7 +98,7 @@ check_PROGRAMS = \
 
 
 # This will be overriden by the `run_tests' script.
-TEST_CPPFLAGS="-DTBD_Shape=BD_Shape<mpz_class>"
+TEST_CPPFLAGS=-DBD_SHAPE_INSTANCE=mpz_class
 
 dist_check_SCRIPTS = run_tests
 
@@ -173,6 +174,8 @@ ch78widening5_SOURCES = ch78widening5.cc
 ch78widening6_SOURCES = ch78widening6.cc
 ch78widening7_SOURCES = ch78widening7.cc
 ch78widening8_SOURCES = ch78widening8.cc
+
+closure1_SOURCES = closure1.cc
 
 concatenate1_SOURCES = concatenate1.cc
 concatenate2_SOURCES = concatenate2.cc
