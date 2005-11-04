@@ -2602,7 +2602,6 @@ numbers considered, we consider an abstraction that is parametric
 in the number \f$b\f$ of bits in the mantissa and gives no limit
 to the magnitude of the exponent \f$e\f$.
 For \f$b \in \Nset \setminus \{ 0 \}\f$ let
-%
 \f[
 \begin{aligned}
   F_b^+
@@ -2613,7 +2612,7 @@ For \f$b \in \Nset \setminus \{ 0 \}\f$ let
         x = (1 + m / 2^b) \cdot 2^e,
         e \in \Nset,
         m \in \Nset \cap [0, 2^b - 1]
-      \,\bigr\} \\
+      \,\bigr\}, \\
   F_b
     &=
       F_b^+ \cup \{ 0 \} \cup \{\, -x \mid x \in F_b^+ \,\}.
@@ -2632,7 +2631,6 @@ Let \f$\phi \colon \Rset \to \Zset\f$ denote the function defined by
 Notice that \f$\phi\f$ is an <EM>odd</EM> function, that is, it satisfies
 \f$\phi(-t) = -\phi(t)\f$ for all \f$t \in \Rset\f$.
 For \f$x\f$, \f$y \in \Zset\f$ with \f$y \ne 0\f$, we also write
-%
 \f[
 \begin{aligned}
   x \bdiv y &= \phi(x / y), \\
@@ -2643,7 +2641,7 @@ These are the integer division and remainder function as defined by
 the C99 standard
 [ISO/IEC 9899:1999(E), Programming Languages - C (ISO and ANSI C99 Standard)].
 
-<B><EM>Theorem</EM></B>
+<B><EM>Proposition A</EM></B>
 If \f$x\f$, \f$y \in F_b\f$ and \f$y \ne 0\f$, then \f$x \brem y \in F_b\f$.
 
 The proof is given in the next three lemmas.
@@ -2712,7 +2710,6 @@ element of \f$F_b^+\f$, and this product is another element of \f$F_b^+\f$.
 
 <B><EM>Lemma 3</EM></B>
 For \f$x\f$, \f$y \in \Zset\f$ with \f$y \ne 0\f$, we have
-%
 \f[
   x \brem y
   =
