@@ -60,6 +60,7 @@ numer_denom(const Checked_Number<T, Policy>& from,
 //! Divides \p x by \p y into \p to, rounding the result towards plus infinity.
 /*! \relates Parma_Polyhedra_Library::BD_Shape */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#if 0
 template <typename T, typename Policy>
 inline void
 div_round_up(Checked_Number<T, Policy>& to,
@@ -74,6 +75,21 @@ div_round_up(Checked_Number<T, Policy>& to,
   assign_div(qx, qx, qy, ROUND_IGNORE);
   assign(to, qx, ROUND_UP);
 }
+#else
+template <typename T, typename Policy>
+inline void
+div_round_up(Checked_Number<T, Policy>& to,
+         Coefficient_traits::const_reference x,
+         Coefficient_traits::const_reference y) {
+  Coefficient q;
+  Result r = assign_div(raw_value(q), raw_value(x), raw_value(y), ROUND_UP);
+  if (r == V_POS_OVERFLOW) {
+    to = PLUS_INFINITY;
+    return;
+  }
+  assign(to, raw_value(q), ROUND_UP);
+}
+#endif
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Assigns to \p x the minimum between \p x and \p y.
