@@ -15,11 +15,13 @@ long_double_XFAIL_TESTS=
 
 check_PROGRAMS=$(MAKEFLAGS='' make -s print_check_PROGRAMS)
 
-make clean
 for instance in $instances 
 do
 	echo "**************************** " $instance " ****************************"
 	eval xfail_tests='"$'$instance'_XFAIL_TESTS"'
+	[ -f dirty_marker ] && make clean
+	touch dirty_marker
 	make check TESTS="$check_PROGRAMS" TEST_CPPFLAGS="-DBD_SHAPE_INSTANCE=$instance" XFAIL_TESTS=$xfail_tests || exit 1
+	rm dirty_marker
 	make clean
 done
