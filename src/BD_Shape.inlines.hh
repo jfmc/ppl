@@ -63,15 +63,16 @@ numer_denom(const Checked_Number<T, Policy>& from,
 template <typename T, typename Policy>
 inline void
 div_round_up(Checked_Number<T, Policy>& to,
-	     Coefficient_traits::const_reference x,
-	     Coefficient_traits::const_reference y) {
-  Coefficient q;
-  Result r = assign_div(raw_value(q), raw_value(x), raw_value(y), ROUND_UP);
-  if (r == V_POS_OVERFLOW) {
-    to = PLUS_INFINITY;
-    return;
-  }
-  assign(to, raw_value(q), ROUND_UP);
+         Coefficient_traits::const_reference x,
+         Coefficient_traits::const_reference y) {
+  mpq_class qx;
+  mpq_class qy;
+  // Note: this code assumes that a Coefficient is always convertible
+  // to an mpq_class without loss of precision.
+  assign(qx, raw_value(x), ROUND_IGNORE);
+  assign(qy, raw_value(y), ROUND_IGNORE);
+  assign_div(qx, qx, qy, ROUND_IGNORE);
+  assign(to, qx, ROUND_UP);
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
