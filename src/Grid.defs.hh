@@ -615,6 +615,11 @@ public:
   //! grid.
   bool is_universe() const;
 
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this is a
+  //! topologically closed subset of the vector space.
+  bool is_topologically_closed() const;
+
   //! Returns <CODE>true</CODE> if and only if \p *this and \p y are disjoint.
   /*!
     \exception std::invalid_argument
@@ -622,9 +627,6 @@ public:
     dimension-incompatible.
   */
   bool is_disjoint_from(const Grid& y) const;
-
-  //! Returns <CODE>true</CODE> if and only if \p *this is bounded.
-  bool is_bounded() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this is pointed.
   /*!
@@ -634,10 +636,26 @@ public:
   */
   bool is_pointed() const;
 
+  //! Returns <CODE>true</CODE> if and only if \p *this is bounded.
+  bool is_bounded() const;
+
   //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is a
-  //! topologically closed subset of the vector space.
-  bool is_topologically_closed() const;
+  //! Returns <CODE>true</CODE> if and only if \p expr is
+  //! bounded from above in \p *this.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+  */
+  bool bounds_from_above(const Linear_Expression& expr) const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p expr is
+  //! bounded from below in \p *this.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+  */
+  bool bounds_from_below(const Linear_Expression& expr) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -1994,6 +2012,26 @@ private:
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is included in \p y.
   bool is_included_in(const Grid& y) const;
+
+  //! Checks if and how \p expr is bounded in \p *this.
+  /*!
+    Returns <CODE>true</CODE> if and only if \p from_above is
+    <CODE>true</CODE> and \p expr is bounded from above in \p *this,
+    or \p from_above is <CODE>false</CODE> and \p expr is bounded
+    from below in \p *this.
+
+    \param expr
+    The linear expression to test.
+
+    \param method_call
+    The call description of the public parent method
+    (e.g. "bounded_from_above(e)").  Passed as the first argument of
+    throw_dimension_incompatible.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+  */
+  bool bounds(const Linear_Expression& expr, const char* method_call) const;
 
   //! \name Widening- and Extrapolation-Related Functions
   //@{

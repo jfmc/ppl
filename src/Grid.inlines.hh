@@ -275,20 +275,19 @@ Grid::is_empty() const {
   // generator system (since it is well formed) contains a point.
   if (generators_are_up_to_date())
     return false;
-  return !minimize();
+  return !minimize();		// FIX simplify the cgs instead
 }
 
-#if 0
 inline bool
 Grid::bounds_from_above(const Linear_Expression& expr) const {
-  return bounds(expr, true);
+  return bounds(expr, "bounds_from_above(e)");
 }
 
 inline bool
 Grid::bounds_from_below(const Linear_Expression& expr) const {
-  return bounds(expr, false);
+  return bounds(expr, "bounds_from_below(e)");
 }
-
+#if 0
 inline bool
 Grid::maximize(const Linear_Expression& expr,
 	       Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const {

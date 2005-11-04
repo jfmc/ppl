@@ -100,8 +100,6 @@ Grids Domain
 
 -  Complete the implementation of any missing operators:
       ????covered (or bounded) widening and extrapolation operators
-      bounds_from_above
-      bounds_from_below
       maximize
       minimize
       add_congruences for constraints

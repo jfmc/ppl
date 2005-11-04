@@ -267,43 +267,24 @@ PPL::Grid::is_included_in(const Grid& y) const {
   // Inclusion holds.
   return true;
 }
-#if 0
+
 bool
 PPL::Grid::bounds(const Linear_Expression& expr,
-			const bool from_above) const {
-  // The dimension of `expr' should not be greater than the dimension
-  // of `*this'.
-  const dimension_type expr_space_dim = expr.space_dimension();
-  if (space_dim < expr_space_dim)
-    throw_dimension_incompatible((from_above
-				  ? "bounds_from_above(e)"
-				  : "bounds_from_below(e)"), "e", expr);
+		  const char* method_call) const {
+  // The dimension of `expr' must be at most the dimension of *this.
+  if (space_dim < expr.space_dimension())
+    throw_dimension_incompatible(method_call, "e", expr);
 
   // A zero-dimensional or empty grid bounds everything.
-  if (space_dim == 0
-      || marked_empty()
-      || (!generators_are_up_to_date() && !update_generators()))
+  if (space_dim == 0 || marked_empty())
     return true;
 
-  // The grid has updated generators.
-  for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
-    const Generator& g = gen_sys[i];
-    // Only lines and rays in `*this' can cause `expr' to be unbounded.
-    if (g[0] == 0) {
-      const int sp_sign = homogeneous_scalar_product_sign(expr, g);
-      if (sp_sign != 0
-	  && (g.is_line()
-	      || (from_above && sp_sign > 0)
-	      || (!from_above && sp_sign < 0)))
-	// `*this' does not bound `expr'.
-	return false;
-    }
-  }
-  // No sources of unboundedness have been found for `expr'
-  // in the given direction.
-  return true;
+  Grid tem = *this;
+  // FIX constant term
+  tem.add_congruence(expr == 0);
+  return tem.is_bounded();
 }
-
+#if 0
 bool
 PPL::Grid::max_min(const Linear_Expression& expr,
 			 const bool maximize,
