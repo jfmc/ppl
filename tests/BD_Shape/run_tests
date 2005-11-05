@@ -22,6 +22,5 @@ do
 	[ -f dirty_marker ] && make clean
 	touch dirty_marker
 	make check TESTS="$check_PROGRAMS" TEST_CPPFLAGS="-DBD_SHAPE_INSTANCE=$instance" XFAIL_TESTS=$xfail_tests || exit 1
-	rm dirty_marker
-	make clean
+	make clean && rm dirty_marker
 done
