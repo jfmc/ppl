@@ -610,7 +610,7 @@ assign_float_mpz(T& to, const mpz_class& _from, Rounding_Dir dir)
   size_t significative_bits = exponent - zeroes;
   mpz_t mantissa;
   mpz_init(mantissa);
-  if (exponent > (size_t) Float<T>::Type::MANTISSA_BITS)
+  if (exponent > Float<T>::Type::MANTISSA_BITS)
     mpz_tdiv_q_2exp(mantissa, from, exponent - Float<T>::Type::MANTISSA_BITS);
   else
     mpz_mul_2exp(mantissa, from, Float<T>::Type::MANTISSA_BITS - exponent);
@@ -618,7 +618,7 @@ assign_float_mpz(T& to, const mpz_class& _from, Rounding_Dir dir)
   f.build(sign < 0, mantissa, exponent);
   mpz_clear(mantissa);
   to = f.value();
-  if (significative_bits > (size_t) Float<T>::Type::MANTISSA_BITS) {
+  if (significative_bits > Float<T>::Type::MANTISSA_BITS) {
     if (sign < 0)
       return round_lt_float<Policy>(to, dir);
     else

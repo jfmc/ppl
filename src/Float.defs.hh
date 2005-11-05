@@ -57,8 +57,8 @@ private:
 public:
   static const float32_t POS_MAX = 0x1.fffffep127f;
   static const float32_t NEG_MAX = -0x1.fffffep127f;
-  static const int EXPONENT_BITS = 8;
-  static const int MANTISSA_BITS = 23;
+  static const unsigned int EXPONENT_BITS = 8;
+  static const unsigned int MANTISSA_BITS = 23;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
@@ -102,8 +102,8 @@ private:
 public:
   static const float64_t POS_MAX = 0x1.fffffffffffffp1023;
   static const float64_t NEG_MAX = -0x1.fffffffffffffp1023;
-  static const int EXPONENT_BITS = 11;
-  static const int MANTISSA_BITS = 52;
+  static const unsigned int EXPONENT_BITS = 11;
+  static const unsigned int MANTISSA_BITS = 52;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
@@ -150,8 +150,8 @@ private:
 public:
   static const float96_t POS_MAX = 0x1.fffffffffffffffep16383l;
   static const float96_t NEG_MAX = -0x1.fffffffffffffffep16383l;
-  static const int EXPONENT_BITS = 15;
-  static const int MANTISSA_BITS = 63;
+  static const unsigned int EXPONENT_BITS = 15;
+  static const unsigned int MANTISSA_BITS = 63;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
@@ -199,8 +199,8 @@ private:
 public:
   static const float128_t POS_MAX = 0x1.ffffffffffffffffffffffffffffp16383l;
   static const float128_t NEG_MAX = -0x1.ffffffffffffffffffffffffffffp16383l;
-  static const int EXPONENT_BITS = 15;
-  static const int MANTISSA_BITS = 112;
+  static const unsigned int EXPONENT_BITS = 15;
+  static const unsigned int MANTISSA_BITS = 112;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
