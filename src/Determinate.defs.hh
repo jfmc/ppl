@@ -135,7 +135,7 @@ public:
   void meet_assign(const Determinate& y);
 
   //! \brief
-  //! Assigns to \p *this the \ref concatenate "concatenation"
+  //! Assigns to \p *this the \ref Concatenating_Polyhedra "concatenation"
   //! of \p *this and \p y, taken in this order.
   void concatenate_assign(const Determinate& y);
 

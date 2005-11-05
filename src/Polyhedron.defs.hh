@@ -507,7 +507,8 @@ public:
 
   //! \brief
   //! Returns \f$0\f$, if \p *this is empty; otherwise, returns the
-  //! \ref affine_dimension "affine dimension" of \p *this.
+  //! \ref Affine_Independence_and_Affine_Dimension "affine dimension"
+  //! of \p *this.
   dimension_type affine_dimension() const;
 
   //! Returns the system of constraints.
@@ -1026,8 +1027,9 @@ public:
   void upper_bound_assign(const Polyhedron& y);
 
   //! \brief
-  //! Assigns to \p *this the \ref poly_difference "poly-difference" of
-  //! \p *this and \p y. The result is not guaranteed to be minimized.
+  //! Assigns to \p *this
+  //! the \ref Convex_Polyhedral_Difference "poly-difference"
+  //! of \p *this and \p y. The result is not guaranteed to be minimized.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
@@ -1607,7 +1609,7 @@ public:
   void add_space_dimensions_and_project(dimension_type m);
 
   //! \brief
-  //! Assigns to \p *this the \ref concatenate "concatenation"
+  //! Assigns to \p *this the \ref Concatenating_Polyhedra "concatenation"
   //! of \p *this and \p y, taken in this order.
   /*!
     \exception std::invalid_argument
@@ -1642,8 +1644,8 @@ public:
   void remove_higher_space_dimensions(dimension_type new_dimension);
 
   //! \brief
-  //! Remaps the dimensions of the vector space
-  //! according to a \ref map_space_dimensions "partial function".
+  //! Remaps the dimensions of the vector space according to
+  //! a \ref Mapping_the_Dimensions_of_the_Vector_Space "partial function".
   /*!
     \param pfunc
     The partial function specifying the destiny of each space dimension.
@@ -1678,7 +1680,8 @@ public:
 
     The result is undefined if \p pfunc does not encode a partial
     function with the properties described in the
-    \ref map_space_dimensions "specification of the mapping operator".
+    \ref Mapping_the_Dimensions_of_the_Vector_Space
+    "specification of the mapping operator".
   */
   template <typename Partial_Function>
   void map_space_dimensions(const Partial_Function& pfunc);

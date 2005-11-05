@@ -371,10 +371,11 @@ private:
     \param denominator
     The denominator of the affine transformation.
 
-    We want to allow affine transformations (see the Section \ref
-    operations) having any rational coefficients. Since the coefficients
-    of the constraints are integers we must also provide an integer
-    \p denominator that will be used as denominator of the affine
+    We want to allow affine transformations
+    (see Section \ref Images_and_Preimages_of_Affine_Transfer_Relations)
+    having any rational coefficients. Since the coefficients of the
+    constraints are integers we must also provide an integer \p
+    denominator that will be used as denominator of the affine
     transformation.
     The denominator is required to be a positive integer.
 

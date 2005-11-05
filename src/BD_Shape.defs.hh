@@ -301,7 +301,8 @@ public:
 
   //! \brief
   //! Returns \f$0\f$, if \p *this is empty; otherwise, returns the
-  //! \ref affine_dimension "affine dimension" of \p *this.
+  //! \ref Affine_Independence_and_Affine_Dimension "affine dimension"
+  //! of \p *this.
   dimension_type affine_dimension() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this is an empty BDS.
@@ -454,7 +455,8 @@ public:
   bool upper_bound_assign_if_exact(const BD_Shape& y);
 
   //! \brief
-  //! Assigns to \p *this the \ref poly_difference "poly-difference"
+  //! Assigns to \p *this
+  //! the \ref Convex_Polyhedral_Difference "poly-difference"
   //! of \p *this and \p y.
   /*!
     \exception std::invalid_argument
@@ -836,8 +838,8 @@ public:
   void remove_higher_space_dimensions(dimension_type new_dimension);
 
   //! \brief
-  //! Remaps the dimensions of the vector space
-  //! according to a \ref map_space_dimensions "partial function".
+  //! Remaps the dimensions of the vector space according to
+  //! a \ref Mapping_the_Dimensions_of_the_Vector_Space "partial function".
   /*!
     \param pfunc
     The partial function specifying the destiny of each dimension.
@@ -869,7 +871,8 @@ public:
 
     The result is undefined if \p pfunc does not encode a partial
     function with the properties described in the
-    \ref map_space_dimensions "specification of the mapping operator".
+    \ref Mapping_the_Dimensions_of_the_Vector_Space
+    "specification of the mapping operator".
   */
   template <typename PartialFunction>
   void map_space_dimensions(const PartialFunction& pfunc);

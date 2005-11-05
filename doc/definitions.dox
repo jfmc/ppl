@@ -93,7 +93,7 @@ For more information about the definitions and results stated here see
 \ref NW88 "[NW88]", and
 \ref Wil93 "[Wil93]".
 
-<B>Vectors, Matrices and Scalar Products</B>
+\subsection Vectors_Matrices_and_Scalar_Products Vectors, Matrices and Scalar Products
 
 We denote by \f$\Rset^n\f$ the \f$n\f$-dimensional vector space on the field
 of real numbers \f$\Rset\f$, endowed with the standard topology.
@@ -122,7 +122,7 @@ For any \f$S_1, S_2 \sseq \Rset^n\f$, the <EM>Minkowski's sum</EM> of
                 \vect{v}_1 \in S_1, \vect{v}_2 \in S_2 \,\}.\f$
 
 
-<B>Affine Hyperplanes and Half-spaces</B>
+\subsection Affine_Hyperplanes_and_Half_spaces Affine Hyperplanes and Half-spaces
 
 For each vector \f$\vect{a} \in \Rset^n\f$ and scalar \f$b \in \Rset\f$,
 where \f$\vect{a} \neq \vect{0}\f$,
@@ -149,7 +149,7 @@ or inconsistent (i.e., always false), so that it defines
 either the whole vector space \f$\Rset^n\f$ or the empty set \f$\emptyset\f$.
 
 
-<B>Convex Polyhedra</B>
+\subsection Convex_Polyhedra Convex Polyhedra
 
 The set \f$\cP \sseq \Rset^n\f$ is a
 <EM>not necessarily closed convex polyhedron</EM>
@@ -185,7 +185,7 @@ made, these operators are provided with the same specification when
 applied to the domain \f$\CPset_n\f$ of topologically closed
 polyhedra.  The implementation maintains a clearer separation between
 the two domains of polyhedra
-(see \ref topologies "Topologies and Topological-compatibility"):
+(see \ref Topologies_and_Topological_compatibility "Topologies and Topological-compatibility"):
 while computing polyhedra in \f$\Pset_n\f$ may provide more precise
 results, polyhedra in \f$\CPset_n\f$ can be represented and
 manipulated more efficiently.  As a rule of thumb, if your application
@@ -195,7 +195,7 @@ only recommended if you are going to actually benefit from the
 increased accuracy.
 
 
-<B>Bounded Polyhedra</B>
+\subsection Bounded_Polyhedra Bounded Polyhedra
 
 An NNC polyhedron \f$\cP \in \Pset_n\f$ is <EM>bounded</EM>
 if there exists a \f$\lambda \in \nonnegRset\f$ such that
@@ -218,7 +218,7 @@ the constraints (or implicit) representation and
 the generators (or parametric) representation.
 
 
-<B>Constraints Representation</B>
+\subsection Constraints_Representation Constraints Representation
 
 In the sequel, we will simply write ``equality'' and ``inequality''
 to mean ``linear equality'' and ``linear inequality'', respectively;
@@ -248,7 +248,7 @@ the number of strict inequalities,
 respectively.
 
 
-<B>Combinations and Hulls</B>
+\subsection Combinations_and_Hulls Combinations and Hulls
 
 Let \f$S = \{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$
 be a finite set of vectors.
@@ -287,7 +287,7 @@ It can be observed that
 \f$\NNChull(P, C)\f$ is an NNC polytope.
 
 
-<B>Points, Closure Points, Rays and Lines</B>
+\subsection Points_Closure_Points_Rays_and_Lines Points, Closure Points, Rays and Lines
 
 Let \f$\cP \in \Pset_n\f$ be an NNC polyhedron. Then
 - a vector \f$\vect{p} \in \cP\f$ is called a <EM>point</EM> of \f$\cP\f$;
@@ -318,7 +318,7 @@ for all \f$\lambda \in \nonnegRset\f$
 to be the same ray).
 
 
-<B>Generators Representation</B>
+\subsection Generators_Representation Generators Representation
 
 Each NNC polyhedron \f$\cP \in \Pset_n\f$ can be represented by
 finite sets of lines \f$L\f$, rays \f$R\f$,
@@ -360,7 +360,7 @@ constraint \f$y \geq 0\f$ can be represented by the generator system
 It is also worth noting that the only ray in \f$R\f$
 is <EM>not</EM> an extreme ray of \f$\cP\f$.
 
-<B>Minimized Representations</B>
+\subsection Minimized_Representations Minimized Representations
 
 A constraints system \f$\cC\f$ for an NNC polyhedron \f$\cP \in \Pset_n\f$
 is said to be <EM>minimized</EM> if no proper subset of \f$\cC\f$ is
@@ -374,7 +374,7 @@ such that \f$L' \sseq L\f$, \f$R' \sseq R\f$, \f$P' \sseq P\f$ and
 \f$C' \sseq C\f$.
 
 
-<B>Double Description</B>
+\subsection Double_Description Double Description
 
 Any NNC polyhedron \f$\cP\f$ can be described by using
 a constraint system \f$\cC\f$, a generator system \f$\cG\f$, or
@@ -395,8 +395,7 @@ when using one of the representations in a DD pair,
 while being rather cumbersome when using the other.
 
 
-\anchor topologies
-<B>Topologies and Topological-compatibility</B>
+\subsection Topologies_and_Topological_compatibility Topologies and Topological-compatibility
 
 As indicated above, when an NNC polyhedron \f$\cP\f$ is necessarily closed,
 we can ignore the closure points contained in its generator system
@@ -434,7 +433,7 @@ a given topology, build the corresponding polyhedron having
 the other topology.
 
 
-<B>Space Dimensions and Dimension-Compatibility</B>
+\subsection Space_Dimensions_and_Dimension_Compatibility Space Dimensions and Dimension Compatibility
 
 The <EM>space dimension</EM> of an NNC polyhedron \f$\cP \in \Pset_n\f$
 (resp., a C polyhedron \f$\cP \in \CPset_n\f$) is the dimension
@@ -465,8 +464,7 @@ is automatically adjusted when needed, the space dimension of a polyhedron
 can only be changed by explicit calls to operators provided for that
 purpose.
 
-\anchor affine_dimension
-<B>Affine Independence and Affine Dimension</B>
+\subsection Affine_Independence_and_Affine_Dimension Affine Independence and Affine Dimension
 
 A finite set of points
 \f$\{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$ is
@@ -504,7 +502,7 @@ and vice versa, \f$\cP\f$ and \f$\cQ\f$ may be dimension-incompatible
 polyhedra even though \f$\pdim(\cP) = \pdim(\cQ)\f$.
 
 
-<B>Rational Polyhedra</B>
+\subsection Rational_Polyhedra Rational Polyhedra
 
 An NNC polyhedron is called <EM>rational</EM>
 if it can be represented by a constraint system where
@@ -520,12 +518,12 @@ by the operators considered, such as the coefficients defining
 (rational) affine transformations and (rational) bounding boxes.
 
 
-\section operations Operations on Convex Polyhedra
+\section Operations_on_Convex_Polyhedra Operations on Convex Polyhedra
 
 In this section we briefly describe operations on NNC polyhedra
 that are provided by the library.
 
-<B>Intersection and Convex Polyhedral Hull</B>
+\subsection Intersection_and_Convex_Polyhedral_Hull Intersection and Convex Polyhedral Hull
 
 For any pair of NNC polyhedra \f$\cP_1, \cP_2 \in \Pset_n\f$,
 the <EM>intersection</EM> of \f$\cP_1\f$ and \f$\cP_2\f$,
@@ -543,8 +541,7 @@ the intersection and poly-hull operators defined above
 are the binary <EM>meet</EM> and the binary <EM>join</EM>
 operators on the lattices \f$\Pset_n\f$ and \f$\CPset_n\f$.
 
-\anchor poly_difference
-<B>Convex Polyhedral Difference</B>
+\subsection Convex_Polyhedral_Difference Convex Polyhedral Difference
 
 For any pair of NNC polyhedra \f$\cP_1, \cP_2 \in \Pset_n\f$,
 the <EM>convex polyhedral difference</EM> (or <EM>poly-difference</EM>)
@@ -559,8 +556,7 @@ For this reason, when computing the poly-difference of two
 C polyhedra, the library will enforce the topological closure
 of the result.
 
-\anchor concatenate
-<B>Concatenating Polyhedra</B>
+\subsection Concatenating_Polyhedra Concatenating Polyhedra
 
 Viewing a polyhedron as a set of tuples (its points), it is sometimes
 useful to consider the set of tuples obtained by concatenating
@@ -583,8 +579,7 @@ Another way of seeing it is as follows: first embed polyhedron \f$\cP\f$
 into a vector space of dimension \f$n+m\f$ and then add a suitably
 renamed-apart version of the constraints defining \f$\cQ\f$.
 
-\anchor add_space_dimensions
-<B>Adding New Dimensions to the Vector Space</B>
+\subsection Adding_New_Dimensions_to_the_Vector_Space Adding New Dimensions to the Vector Space
 
 The library provides two operators for adding a number \f$i\f$ of
 space dimensions to an NNC polyhedron \f$\cP \in \Pset_n\f$,
@@ -624,8 +619,7 @@ and adding a third space dimension, the result will be the polyhedron
         \,\bigr\}.
 \f]
 
-\anchor remove_space_dimensions
-<B>Removing Dimensions from the Vector Space</B>
+\subsection Removing_Dimensions_from_the_Vector_Space Removing Dimensions from the Vector Space
 
 The library provides two operators for removing
 space dimensions from an NNC polyhedron \f$\cP \in \Pset_n\f$,
@@ -652,8 +646,7 @@ will be
   \cQ = \bigl\{ (3, 1)^\transpose \bigr\} \sseq \Rset^2.
 \f]
 
-\anchor map_space_dimensions
-<B>Mapping the Dimensions of the Vector Space</B>
+\subsection Mapping_the_Dimensions_of_the_Vector_Space Mapping the Dimensions of the Vector Space
 
 The operator <CODE>map_space_dimensions</CODE> provided by the library
 maps the dimensions of the vector space \f$\Rset^n\f$ according
@@ -678,7 +671,7 @@ otherwise the result is \f$\cQ \in \Pset_m\f$ given by
 \f]
 
 \anchor expand_space_dimension
-<B>Expanding One Dimension of the Vector Space to Multiple Dimensions</B>
+\subsection Expanding_One_Dimension_of_the_Vector_Space_to_Multiple_Dimensions Expanding One Dimension of the Vector Space to Multiple Dimensions
 
 The operator <CODE>expand_space_dimension</CODE> provided by the library
 adds \f$m\f$ new space dimensions to a polyhedron \f$\cP \in \Pset_n\f$,
@@ -704,7 +697,7 @@ This operation has been proposed in \ref GDMDRS04 "[GDMDRS04]".
 
 
 \anchor fold_space_dimensions
-<B>Folding Multiple Dimensions of the Vector Space into One Dimension</B>
+\subsection Folding_Multiple_Dimensions_of_the_Vector_Space_into_One_Dimension Folding Multiple Dimensions of the Vector Space into One Dimension
 
 The operator <CODE>fold_space_dimensions</CODE> provided by the library,
 given a polyhedron \f$\cP \in \Pset_n\f$, with \f$n > 0\f$,
@@ -753,7 +746,7 @@ This operation has been proposed in \ref GDMDRS04 "[GDMDRS04]".
 
 
 \anchor affine_relation
-<B>Images and Preimages of Affine Transfer Relations</B>
+\subsection Images_and_Preimages_of_Affine_Transfer_Relations Images and Preimages of Affine Transfer Relations
 
 For each relation \f$\reld{\phi}{\Rset^n}{\Rset^m}\f$,
 we denote by \f$\phi(S) \sseq \Rset^m\f$ the <EM>image</EM>
@@ -866,7 +859,7 @@ of polyhedra under restricted subclasses of space dimension preserving
 affine relations, as described in the following.
 
 \anchor affine_function
-<B>Single-Update Affine Functions</B>.
+\subsection Single_Update_Affine_Functions Single-Update Affine Functions.
 Given a primed variable \f$x'_k\f$ and an unprimed affine expression
 \f$\langle \vect{a}, \vect{x} \rangle + b\f$,
 the <EM>affine function</EM>
@@ -962,7 +955,7 @@ Observe that provided the coefficient \f$a_k\f$ of the considered variable
 in the affine expression is non-zero, the affine function is invertible.
 
 \anchor bounded_affine_relation
-<B>Single-Update Bounded Affine Relations</B>.
+\subsection Single_Update_Bounded_Affine_Relations Single-Update Bounded Affine Relations.
 Given a primed variable \f$x'_k\f$ and
 two unprimed affine expressions
 \f$\mathrm{lb} = \langle \vect{a}, \vect{x} \rangle + b\f$ and
@@ -988,7 +981,7 @@ is defined as
 \f]
 
 \anchor generalized_affine_relation
-<B>Generalized Affine Relations</B>.
+\subsection Generalized_Affine_Relations Generalized Affine Relations.
 Similarly, the <EM>generalized affine relation</EM>
 \f$\phi = (\mathrm{lhs}' \relsym \mathrm{rhs})\f$, where
 \f$\mathrm{lhs} = \langle \vect{c}, \vect{x} \rangle + d\f$ and
@@ -1024,7 +1017,7 @@ are unprimed; for instance, the transfer relations
 are not equivalent in general.
 
 \anchor time_elapse
-<B>Time-Elapse Operator</B>
+\subsection Time_Elapse_Operator Time-Elapse Operator
 
 The <EM>time-elapse</EM> operator has been defined in
 \ref HPR97 "[HPR97]".
@@ -1048,7 +1041,7 @@ In contrast, when \f$\cQ\f$ is not topologically closed,
 the above set might not be an NNC polyhedron.
 
 \anchor relation_with
-<B>Relation-With Operators</B>
+\subsection Relation_With_Operators Relation-With Operators
 
 The library provides operators for checking the relation holding
 between an NNC polyhedron  and
@@ -1089,7 +1082,7 @@ adding \f$g\f$ to any generator system representing \f$\cP\f$
 does not change \f$\cP\f$.
 
 \anchor bounding_boxes
-<B>Intervals, Boxes and Bounding Boxes</B>
+\subsection Intervals_Boxes_and_Bounding_Boxes Intervals, Boxes and Bounding Boxes
 
 An <EM>interval</EM> in \f$\Rset\f$ is a pair of <EM>bounds</EM>,
 called <EM>lower</EM> and <EM>upper</EM>.
@@ -1136,7 +1129,7 @@ of an NNC polyhedron and conversely, for obtaining the NNC polyhedron
 representing a given bounding box.
 
 \anchor H79_widening
-<B>Widening Operators</B>
+\subsection Widening_Operators Widening Operators
 
 The library provides two widening operators for the domain of polyhedra.
 The first one, that we call <EM>H79-widening</EM>, mainly
@@ -1188,7 +1181,7 @@ language interfaces.
 
 
 \anchor widening_with_tokens
-<B>Widening with Tokens</B>
+\subsection Widening_with_Tokens Widening with Tokens
 
 When approximating a fixpoint computation using widening operators,
 a common tactic to improve the precision of the final result is to delay
@@ -1210,7 +1203,7 @@ a fixed number \f$k\f$ of tokens, which will be used if and when needed.
 When there are no tokens left, the widening is always applied.
 
 \anchor extrapolation
-<B>Extrapolation Operators</B>
+\subsection Extrapolation_Operators Extrapolation Operators
 
 Besides the two widening operators, the library also implements several
 <EM>extrapolation</EM> operators, which differ from widenings in that
@@ -1247,7 +1240,7 @@ which are supported in the instantiation of this construction by the
 domain of convex polyhedra and described in Section \ref poly_powerset).
 
 \anchor powerset_domain
-<B>The Powerset Domain</B>
+\subsection The_Powerset_Domain The Powerset Domain
 
 The domain is built from a pre-existing base-level domain
 \f$D\f$ which must include an entailment relation `\f$\mathord{\entails}\f$',
@@ -1316,7 +1309,7 @@ In this section we briefly describe the generic operations on Powerset Domains
 that are provided by the library for any given base-level domain \f$D\f$.
 
 \anchor ps_meet_upper_bound
-<B>Meet and Upper Bound</B>
+\subsection Meet_and_Upper_Bound Meet and Upper Bound
 
 Given the sets \f$\cS_1\f$ and \f$\cS_2 \in D_{\smallP}\f$, the
 <EM>meet</EM> and <EM>upper bound</EM> operators provided by the
@@ -1334,7 +1327,7 @@ library returns the set
 and reduced set union \f$\nonredmap(\cS_1 \union \cS_2)\f$ respectively.
 
 \anchor ps_add_disjunct
-<B>Adding a Disjunct</B>
+\subsection Adding_a_Disjunct Adding a Disjunct
 
 Given the powerset element \f$\cS \in D_{\smallP}\f$ and the base-level
 element \f$d \in D\f$, the <EM>add disjunct</EM> operator provided by
@@ -1342,7 +1335,7 @@ the library returns the powerset element
 \f$\nonredmap\bigl(\cS \union \{d\}\bigr)\f$.
 
 \anchor ps_collapse
-<B>Collapsing a Powerset Element</B>
+\subsection Collapsing_a_Powerset_Element Collapsing a Powerset Element
 
 If the given powerset element is not empty, then the
 <EM>collapse</EM> operator returns the
@@ -1363,7 +1356,7 @@ that are in the given set. Here we just describe those operations that
 are particular to the polyhedra powerset domain.
 
 \anchor pps_geometric
-<B>Geometric Comparisons</B>
+\subsection Geometric_Comparisons Geometric Comparisons
 
 Given the sets \f$\cS_1, \cS_2 \in (\Pset_n)_{\smallP}\f$, then
 we say that \f$\cS_1\f$ <EM>geometrically covers</EM> \f$\cS_2\f$
@@ -1374,7 +1367,7 @@ and \f$\cS_2\f$ geometrically covers \f$\cS_1\f$,
 then we say that they are <EM>geometrically equal</EM>.
 
 \anchor pps_pairwise_merge
-<B>Pairwise Merge</B>
+\subsection Pairwise_Merge Pairwise Merge
 
 Given the powerset \f$\cS \in (\Pset_n)_{\smallP}\f$, then the
 <EM>pairwise merge</EM> operator takes pairs of distinct elements in
@@ -1385,7 +1378,7 @@ polyhedra in the result set, we have
 \f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
 
 \anchor pps_bgp99_extrapolation
-<B>Extrapolation Operators</B>
+\subsection Extrapolation_Operators Extrapolation Operators
 
 The library implements a generalization of the extrapolation operator
 for powerset domains proposed in \ref BGP99 "[BGP99]".
@@ -1397,7 +1390,7 @@ convergence of the iteration sequence in a finite number of steps
 (for a counter-example, see \ref BHZ04 "[BHZ04]").
 
 \anchor pps_certificate_widening
-<B>Certificate-Based Widenings</B>
+\subsection Certificate_Based_Widenings Certificate-Based Widenings
 
 The PPL library provides support for the specification of proper widening
 operators on the powerset domain of convex polyhedra. In particular,
@@ -1427,7 +1420,8 @@ possibly applying
 If both heuristics fail to converge according to the convergence
 certificate, then an attempt is made to apply the base-level widening
 to the poly-hulls of the two arguments, possibly improving the result
-obtained by means of the \ref poly_difference "poly-difference" operator.
+obtained by means of the \ref Convex_Polyhedral_Difference "poly-difference"
+operator.
 For more details and a justification of the overall approach,
 see \ref BHZ03b "[BHZ03b]" and \ref BHZ04 "[BHZ04]".
 
@@ -1445,7 +1439,7 @@ then an extrapolation operator will be obtained.
 
 \section use_of_library Using the Library
 
-<B>A Note on the Implementation of the Operators</B>
+\subsection A_Note_on_the_Implementation_of_the_Operators A Note on the Implementation of the Operators
 
 When adopting the double description method for the representation of
 convex polyhedra, the implementation of most of the operators may
@@ -1478,7 +1472,7 @@ since the minimization process also enforces an emptiness check.
 Note anyway that the same effect can be obtained by interleaving
 the calls of the lazy operator with explicit emptiness checks.
 
-<B>On Object-Orientation and Polymorphism: A Disclaimer</B>
+\subsection On_Object_Orientation_and_Polymorphism_A_Disclaimer On Object-Orientation and Polymorphism: A Disclaimer
 
 The PPL library is mainly a collection of so-called ``concrete data
 types'': while providing the user with a clean and friendly interface,
@@ -1491,8 +1485,8 @@ functionalities, often can do so by using <EM>containment</EM> instead
 of inheritance; even when there is the need to override a
 <CODE>protected</CODE> method, non-public inheritance should suffice.
 
-<B>On Const-Correctness: A Warning about the Use of References
-and Iterators</B>
+\subsection On_Const_Correctness_A_Warning_about_the_Use_of_References_and_Iterators On Const-Correctness: A Warning about the Use of References
+and Iterators
 
 Most operators of the library depend on one or more parameters
 that are declared ``const'', meaning that they will not be changed
@@ -2130,7 +2124,7 @@ D.&nbsp;K. Wilde.
 
 \section prelims Further Notation and Terminology
 
-<B>Linear Independence</B>
+\subsection Linear_Independence Linear Independence
 
 A finite set of points
 \f$\{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$
@@ -2154,7 +2148,7 @@ linearly independent rows of \f$A\f$, viewed as vectors of \f$\Rset^n\f$,
 equals the maximum number of linearly independent columns of \f$A\f$,
 viewed as vectors of \f$\Rset^m\f$.
 
-<B>Rank</B>
+\subsection Rank Rank
 
 The maximum number of linearly independent rows (columns) of a
 matrix \f$A\f$ is the <EM>rank</EM> of \f$A\f$ and is denoted by
@@ -2164,7 +2158,7 @@ matrix \f$A\f$ is the <EM>rank</EM> of \f$A\f$ and is denoted by
 
 A polyhedron is a convex set.
 
-<B>Minkowski's Theorem</B>
+\subsection Minkowskis_Theorem Minkowski's Theorem
 
 Let
 \f$\cP = \{\, \vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b} \,\}\f$
@@ -2201,7 +2195,7 @@ rational coefficients only.
 The second theorem, called Weyl's theorem, states that any system of
 generators having rational coefficients defines a rational polyhedron:
 
-<B>Weyl's Theorem</B>
+\subsection Weyls_Theorem Weyl's Theorem
 
 If \f$A\f$ is a rational \f$m \times n\f$ matrix,
 \f$B\f$ is a rational \f$m' \times n\f$ matrix and
@@ -2223,7 +2217,7 @@ the rows of \f$A\f$ with positive combinations of the rows of \f$B\f$,
 we can think of \f$A\f$ as the matrix of vertices and \f$B\f$ as
 the matrix of rays.
 
-<B>Cone</B>
+\subsection Cone Cone
 
 A set \f$C \sseq \Rset^n\f$ is a <EM>cone</EM> if
 \f[
@@ -2231,7 +2225,7 @@ A set \f$C \sseq \Rset^n\f$ is a <EM>cone</EM> if
   \text{ for all } \lambda \in \nonnegRset.
 \f]
 
-<B>Polyhedral Cone</B>
+\subsection Polyhedral_Cone Polyhedral Cone
 
 The polyhedron
 \f$\cP = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{0}\,\}\f$
@@ -2240,7 +2234,7 @@ is a convex cone and is called <EM>polyhedral cone</EM>.
 A polyhedral cone is either <EM>pointed</EM>,
 having the origin as its only vertex, or has no vertices at all.
 
-<B>Lineality Space</B>
+\subsection Lineality_Space Lineality Space
 
 Given a polyhedron
 \f$\cP = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b}\,\}\f$,
@@ -2257,7 +2251,7 @@ To simplify the operations on polyhedra,
 each polyhedron is first transformed to a homogeneous cone
 in which the original polyhedron is embedded.
 
-<B>Corresponding Polyhedral Cone</B>
+\subsection Corresponding_Polyhedral_Cone Corresponding Polyhedral Cone
 
 The transformation changes the inhomogeneous system of constraints
 in \f$n\f$ variables, representing a polyhedron \f$\cP \in \Rset^n\f$,
@@ -2321,7 +2315,7 @@ only in that, for a vertex,
 the (\f$n+1\f$)'st term is different from zero and,
 for a ray, it is zero.
 
-<B>Double Description</B>
+\subsection Double_Description Double Description
 
 Let \f$\cP \in \Rset^n \f$ be a polyhedron and  \f$C \in \Rset^{n+1} \f$
 the corresponding polyhedral cone.
@@ -2336,7 +2330,7 @@ corresponding to the vertices, rays and lines for \f$\cP\f$)
 implicitly assumes the origin in \f$\Rset^{n+1}\f$
 as a point so that the cone \f$C\f$ represented by the generators is non-empty.
 
-<B>PPL Polyhedron Representation</B>
+\subsection PPL_Polyhedron_Representation PPL Polyhedron Representation
 
 In the PPL,
 a polyhedron is represented by one or both of the representations in
@@ -2345,7 +2339,7 @@ Thus, in the sequel, by <EM>PPL representation of a polyhedra</EM>,
 we are referring to the corresponding representation of
 its corresponding polyhedral cone.
 
-<B>Valid Linear Inequalities</B>
+\subsection Valid_Linear_Inequalities Valid Linear Inequalities
 
 Let \f$\cP\f$ be a convex polyhedron (or polytope) in
 \f$\Rset^n\f$. For a real \f$n\f$-vector \f$\vect{c}\f$ and a real number
@@ -2353,7 +2347,7 @@ Let \f$\cP\f$ be a convex polyhedron (or polytope) in
 (briefly denoted by \f$(\vect{c},b)\f$) is called <EM>valid</EM>
 for \f$\cP\f$ if it is satisfied by all points \f$\vect{x} \in \cP\f$.
 
-<B>Redundancy</B>
+\subsection Redundancy Redundancy
 
 -# In a system of equalities, if an equality is a linear combination
    of the others, it is said to be <EM>dependent</EM> upon them;
@@ -2378,7 +2372,7 @@ vertices are represented as rays so that
 this concept of a redundant ray also applies to the vertices of \f$\cP\f$.
 
 
-<B>Face</B>
+\subsection Face Face
 
 If \f$(\vect{c},b)\f$ is a valid inequality for \f$\cP\f$, and
 \f$F = \{\,\vect{x} \in \cP \mid \langle \vect{c}, \vect{x} \rangle = b\,\}\f$,
@@ -2402,7 +2396,7 @@ where \f$\vect{p}\f$ is a point of \f$\cP\f$ and the symbol
 '\f$+\f$' denotes the Minkowski's sum, is a <EM>minimal proper face</EM> of
 the polyhedron if \f$F\f$ is a proper face of \f$\cP\f$.
 
-<B>Facet</B>
+\subsection Facet Facet
 
 A proper face \f$F\f$ of \f$\cP\f$ is a <EM>facet</EM> (or <EM>maximal proper
 face</EM>) of \f$\cP\f$ if it is not strictly included into any other proper
@@ -2429,7 +2423,7 @@ by homogenization, then:
    a proper face of \f$C\f$, then \f$\vect{y}\f$ is an <EM>extremal ray</EM>
    of \f$C\f$.
 
-<B>Ray Space</B>
+\subsection Ray_Space Ray Space
 
 Given the decomposition \f$\mathcal{V} + \mathcal{R} + \mathcal{L}\f$
 of a polyhedron \f$\cP\f$ the set \f$\mathcal{V} + \mathcal{R}\f$
@@ -2446,7 +2440,7 @@ dimension given for polyhedra.
 
 The spaces defined are connected by some consistency rules shown below.
 
-<B>Dimensionality Rules</B>
+\subsection Dimensionality_Rules Dimensionality Rules
 
 In \f$\Rset^n\f$
 
@@ -2462,7 +2456,7 @@ In \f$\Rset^n\f$
 The proofs of these properties can be obtained considering the definitions of
 affine dimension and the decomposition of a polyhedron.
 
-<B>Saturation</B>
+\subsection Saturation Saturation
 
 Let us consider a ray \f$\vect{r} \in \Rset^n\f$ and an inequality
 \f$(\vect{a}, 0)\f$ where \f$\vect{a} \in \Rset^n\f$.
@@ -2494,7 +2488,7 @@ if and only if the set of constraints that are saturated by \f$\vect{y}_1\f$
 is equal to the set of constraints that are saturated by \f$\vect{y}_2\f$.
 
 
-<B>Saturation Matrix</B>
+\subsection Saturation_Matrix Saturation Matrix
 
 A <EM>saturation matrix</EM> is a
 Boolean matrix that represent the connection between constraints and
@@ -2517,7 +2511,7 @@ s_{ij} =
 \f]
 For efficiency reasons, the PPL uses both the sat_g and sat_c matrices.
 
-<B>Saturation Rule</B>
+\subsection Saturation_Rule Saturation Rule
 
 In an \f$n\f$-dimensional \f$\mathop{\mathrm{ray space}}\f$,
 -# Every inequality must be saturated by at least \f$n\f$ vertices/rays.
@@ -2542,7 +2536,7 @@ To see this, note that the minimal proper face of a polyhedral cone is equal
 to its lineality space. This for definition is composed by all \f$\vect{y}\f$
 of \f$C\f$ that satisfies \f$A \vect{x} = \vect{0}.\f$
 
-<B>Adjacent Rays</B>
+\subsection Adjacent_Rays Adjacent Rays
 
 Let \f$A\f$ be representing matrix of constraints of a cone \f$C\f$
 and \f$Q\f$ the set of rays that generate \f$C\f$. Then two rays
@@ -2553,7 +2547,7 @@ and \f$Q\f$ the set of rays that generate \f$C\f$. Then two rays
    \f$\vect{r}_2\f$, saturates all the constraints saturated by both
    \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$.
 
-<B>Independence Rule</B>
+\subsection Independence_Rule Independence Rule
 
 -# No inequality is a positive combination of any other two inequalities
    or equalities.
@@ -2564,7 +2558,7 @@ and \f$Q\f$ the set of rays that generate \f$C\f$. Then two rays
 To remove redundant constraints/generators we will use the following
 characterization:
 
-<B>Redundancy Rules</B>
+\subsection Redundancy_Rules Redundancy Rules
 
 - An inequality is not redundant if it
   satisfies both point (1) of the saturation rule and point (1)

@@ -310,16 +310,17 @@ public:
   //! Assigns to \p *this the difference of \p *this and \p y.
   /*!
     The result is obtained by computing the
-    \ref poly_difference "poly-difference" of each polyhedron in \p *this
-    with each polyhedron in \p y and collecting all these differences.
+    \ref Convex_Polyhedral_Difference "poly-difference" of each polyhedron
+    in \p *this with each polyhedron in \p y and collecting all these
+    differences.
   */
   void poly_difference_assign(const Polyhedra_Powerset& y);
 
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!
-    The result is obtained by computing the pairwise \ref concatenate
-    "concatenation" of each polyhedron in \p *this with each
-    polyhedron in \p y.
+    The result is obtained by computing the pairwise
+    \ref Concatenating_Polyhedra "concatenation" of each polyhedron
+    in \p *this with each polyhedron in \p y.
   */
   void concatenate_assign(const Polyhedra_Powerset& y);
 
