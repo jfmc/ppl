@@ -26,7 +26,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Float.defs.hh"
 #include <cmath>
 
-namespace std {
+namespace Parma_Polyhedra_Library {
+
+namespace Checked {
 
 inline double
 fma(double x, double y, double z) {
@@ -71,12 +73,6 @@ rint(long double x) {
   return ::rintl(x);
 }
 #endif
-
-}
-
-namespace Parma_Polyhedra_Library {
-
-namespace Checked {
 
 inline bool
 fpu_direct_rounding(Rounding_Dir dir) {
@@ -703,12 +699,12 @@ add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     return VC_NAN;
   prepare_inexact<Policy>(dir);
   if (fpu_direct_rounding(dir))
-    to = std::fma(x, y, to);
+    to = fma(x, y, to);
   else if (fpu_inverse_rounding(dir))
-    to = -limit_precision(std::fma(-x, y, -to));
+    to = -limit_precision(fma(-x, y, -to));
   else {
     int old = fpu_save_rounding_direction(dir);
-    to = std::fma(x, y, to);
+    to = fma(x, y, to);
     fpu_restore_rounding_direction(old);
   }
   return result_relation<Policy>(dir);
@@ -721,12 +717,12 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     return VC_NAN;
   prepare_inexact<Policy>(dir);
   if (fpu_direct_rounding(dir))
-    to = std::fma(x, -y, to);
+    to = fma(x, -y, to);
   else if (fpu_inverse_rounding(dir))
-    to = -limit_precision(std::fma(x, y, -to));
+    to = -limit_precision(fma(x, y, -to));
   else {
     int old = fpu_save_rounding_direction(dir);
-    to = std::fma(x, -y, to);
+    to = fma(x, -y, to);
     fpu_restore_rounding_direction(old);
   }
   return result_relation<Policy>(dir);
