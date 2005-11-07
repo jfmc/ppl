@@ -1026,9 +1026,7 @@ public:
   */
   bool add_generator_and_minimize(const Generator& g);
 
-  //! \brief
-  //! Adds a copy of the congruences in \p cgs to the system of
-  //! congruences of \p *this (without reducing the result).
+  //! Adds a copy of each congruence in \p cgs to \p *this.
   /*!
     \param cgs
     Contains the congruences that will be added to the system of
@@ -1038,6 +1036,17 @@ public:
     Thrown if \p *this and \p cgs are dimension-incompatible.
   */
   void add_congruences(const Congruence_System& cgs);
+
+  //! Adds a copy of each equality constraint in \p cs to \p *this.
+  /*!
+    \param cs
+    The congruences that will be considered for addition to the system
+    of congruences of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  void add_congruences(const Constraint_System& cs);
 
   //! \brief
   //! Adds the congruences in \p cgs to the system of congruences of
