@@ -373,7 +373,8 @@ private:
   //! affine expression.
   /*!
     \param v
-    Index of the column to which the affine transformation is substituted.
+    Index of the column to which the affine transformation is
+    substituted;
 
     \param expr
     The numerator of the affine transformation:
