@@ -1063,7 +1063,7 @@ public:
   */
   void add_recycled_congruences(Congruence_System& cgs);
 
-  //! Adds the equality constraints in \p cgs to \p *this.
+  //! Adds the equality constraints in \p cs to \p *this.
   /*!
     \param cgs
     The constraint system from which constraints will be considered
@@ -1130,6 +1130,24 @@ public:
     exceptional return is that it can be safely destroyed.
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
+
+  //! Adds the equalities in \p cs to \p *this, reducing the result.
+  /*!
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cs
+    The constraint system that will be recycled, adding its
+    equalities to the system of congruences of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  bool add_recycled_congruences_and_minimize(Constraint_System& cs);
 
   //! Adds to *this a congruence equivalent to constraint \p c.
   /*!

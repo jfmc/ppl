@@ -1171,6 +1171,19 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
 }
 
 bool
+PPL::Grid::add_recycled_congruences_and_minimize(Constraint_System& cs) {
+  // TODO: this is just an executable specification.
+  // The dimension of `cs' must be at most `space_dim'.
+  if (space_dim < cs.space_dimension())
+    throw_dimension_incompatible("add_recycled_congruences_and_minimize(cs)",
+				 "cs", cs);
+  Congruence_System cgs(cs);
+  if (cgs.num_rows() == 0)
+    return minimize();
+  return add_recycled_congruences_and_minimize(cgs);
+}
+
+bool
 PPL::Grid::add_congruences_and_minimize(const Congruence_System& cgs) {
   // TODO: this is just an executable specification.
   Congruence_System cgs_copy = cgs;
