@@ -33,6 +33,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Checked_Number.defs.hh"
 #include <cstddef>
 #include <iosfwd>
+#include <vector>
+#include <deque>
 
 
 namespace Parma_Polyhedra_Library {
@@ -926,6 +928,9 @@ private:
   //! The status flags to keep track of the internal state.
   Status status;
 
+  //! A matrix of Booleans indicating which constraints are redundant.
+  std::vector<std::deque<bool> > redundancy_dbm;
+
   //! \brief
   //! Returns <CODE>true</CODE> if the BDS is known to be empty.
   /*!
@@ -943,11 +948,28 @@ private:
   */
   bool marked_shortest_path_closed()const;
 
+  //! \brief
+  //! Returns <CODE>true</CODE> if the system of bounded differences
+  //! is known to be shortest-path reduced.
+  /*!
+    The return value <CODE>false</CODE> does not necessarily
+    implies that <CODE>this->dbm</CODE> is not shortest-path reduced.
+  */
+  bool marked_shortest_path_reduced()const;
+
   //! Turns \p *this into an empty BDS.
   void set_empty();
 
   //! Turns \p *this into an zero-dimensional universe BDS.
   void set_zero_dim_univ();
+
+  //! Adds the constraint <CODE>dbm[i][j] <= k/den</CODE>.
+  void add_dbm_constraint(dimension_type i, dimension_type j, N k,
+			  Coefficient_traits::const_reference den = 1);
+  //! Adds the constraint <CODE>dbm[i][j] <= num/den</CODE>.
+  void add_dbm_constraint(dimension_type i, dimension_type j,
+			  Coefficient_traits::const_reference num,
+			  Coefficient_traits::const_reference den);
 
   //! Assigns to <CODE>this->dbm</CODE> its shortest-path closure.
   void shortest_path_closure_assign() const;

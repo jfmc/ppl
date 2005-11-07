@@ -35,12 +35,16 @@ site: http://www.cs.unipr.it/ppl/ . */
   - <EM>empty</EM>: the BDS is the empty set;
   - <EM>shortest-path closed</EM>: the BDS is represented by a shortest-path
     closed system of bounded differences, so that all the constraints are
-    as tight as possible.
+    as tight as possible;
+  - <EM>shortest-path reduced</EM>: the BDS is represented by a shortest-path
+    closed system of boudned differences and each constraint in such a system
+    is marked as being either redundant or non-redundant.
 
   Not all the conjunctions of these elementary assertions constitute
   a legal Status.  In fact:
   - <EM>zero-dim universe</EM> excludes any other assertion;
-  - <EM>empty</EM>: excludes any other assertion.
+  - <EM>empty</EM>: excludes any other assertion;
+  - <EM>shortest-path reduced</EM> implies <EM>shortest-path closed</EM>.
 */
 class Status {
 public:
@@ -60,6 +64,10 @@ public:
   bool test_shortest_path_closed() const;
   void reset_shortest_path_closed();
   void set_shortest_path_closed();
+
+  bool test_shortest_path_reduced() const;
+  void reset_shortest_path_reduced();
+  void set_shortest_path_reduced();
   //@}
 
   //! Checks if all the invariants are satisfied.
@@ -82,9 +90,10 @@ private:
 
   //! \name Bit-masks for the individual assertions.
   //@{
-  static const flags_t ZERO_DIM_UNIV        = 0U;
-  static const flags_t EMPTY                = 1U << 0;
-  static const flags_t SHORTEST_PATH_CLOSED = 1U << 1;
+  static const flags_t ZERO_DIM_UNIV         = 0U;
+  static const flags_t EMPTY                 = 1U << 0;
+  static const flags_t SHORTEST_PATH_CLOSED  = 1U << 1;
+  static const flags_t SHORTEST_PATH_REDUCED = 1U << 2;
   //@}
 
   //! This holds the current bitset.

@@ -110,13 +110,33 @@ BD_Shape<T>::Status::test_shortest_path_closed() const {
 template <typename T>
 inline void
 BD_Shape<T>::Status::reset_shortest_path_closed() {
-  reset(SHORTEST_PATH_CLOSED);
+  // A system is reduced only if it is also closed.
+  reset(SHORTEST_PATH_CLOSED | SHORTEST_PATH_REDUCED);
 }
 
 template <typename T>
 inline void
 BD_Shape<T>::Status::set_shortest_path_closed() {
   set(SHORTEST_PATH_CLOSED);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::Status::test_shortest_path_reduced() const {
+  return test_any(SHORTEST_PATH_REDUCED);
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::Status::reset_shortest_path_reduced() {
+  reset(SHORTEST_PATH_REDUCED);
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::Status::set_shortest_path_reduced() {
+  assert(test_shortest_path_closed());
+  set(SHORTEST_PATH_REDUCED);
 }
 
 template <typename T>
@@ -140,6 +160,19 @@ BD_Shape<T>::Status::OK() const {
     }
   }
 
+  // Shortest-path reduction implies shortest-path closure.
+  if (test_shortest_path_reduced())
+    if (test_shortest_path_closed())
+      return true;
+    else {
+#ifndef NDEBUG
+      std::cerr << "The shortest-path reduction flag should also imply "
+		<< "the closure flag."
+		<< std::endl;
+#endif
+      return false;
+    }
+
   // Any other case is OK.
   return true;
 }
@@ -151,6 +184,7 @@ namespace {
 const std::string zero_dim_univ = "ZE";
 const std::string empty = "EM";
 const std::string sp_closed = "SPC";
+const std::string sp_reduced = "SPR";
 const char yes = '+';
 const char no = '-';
 const char sep = ' ';
@@ -181,7 +215,8 @@ BD_Shape<T>::Status::ascii_dump(std::ostream& s) const {
   s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
     << (test_empty() ? yes : no) << empty << sep
     << sep
-    << (test_shortest_path_closed() ? yes : no) << sp_closed << sep;
+    << (test_shortest_path_closed() ? yes : no) << sp_closed << sep
+    << (test_shortest_path_reduced() ? yes : no) << sp_reduced << sep;
 }
 
 template <typename T>
@@ -205,6 +240,13 @@ BD_Shape<T>::Status::ascii_load(std::istream& s) {
     set_shortest_path_closed();
   else
     reset_shortest_path_closed();
+
+  if (!get_field(s, sp_reduced, positive))
+    return false;
+  if (positive)
+    set_shortest_path_reduced();
+  else
+    reset_shortest_path_reduced();
 
   // Check for well-formedness.
   assert(OK());
