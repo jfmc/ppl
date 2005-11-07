@@ -703,12 +703,12 @@ add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     return VC_NAN;
   prepare_inexact<Policy>(dir);
   if (fpu_direct_rounding(dir))
-    to = std::fma(to, x, y);
+    to = std::fma(x, y, to);
   else if (fpu_inverse_rounding(dir))
-    to = -limit_precision(std::fma(-to, -x, y));
+    to = -limit_precision(std::fma(-x, y, -to));
   else {
     int old = fpu_save_rounding_direction(dir);
-    to = std::fma(to, x, y);
+    to = std::fma(x, y, to);
     fpu_restore_rounding_direction(old);
   }
   return result_relation<Policy>(dir);
@@ -721,12 +721,12 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     return VC_NAN;
   prepare_inexact<Policy>(dir);
   if (fpu_direct_rounding(dir))
-    to = std::fma(to, x, -y);
+    to = std::fma(x, -y, to);
   else if (fpu_inverse_rounding(dir))
-    to = -limit_precision(std::fma(-to, -x, -y));
+    to = -limit_precision(std::fma(x, y, -to));
   else {
     int old = fpu_save_rounding_direction(dir);
-    to = std::fma(to, x, -y);
+    to = std::fma(x, -y, to);
     fpu_restore_rounding_direction(old);
   }
   return result_relation<Policy>(dir);
