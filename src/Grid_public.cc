@@ -1095,17 +1095,9 @@ PPL::Grid::add_congruences(const Constraint_System& cs) {
   // The dimension of `cs' must be at most `space_dim'.
   if (space_dim < cs.space_dimension())
     throw_dimension_incompatible("add_congruences(cs)", "cs", cs);
-  Congruence_System cgs;
-  bool cgs_is_empty = true;
-  for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i)
-    if (i->is_equality()) {
-      Congruence cg(*i / 0);
-      cgs.insert(cg);
-      //cgs.insert(*i); // FIX?
-      cgs_is_empty = false;
-    }
-  cgs_is_empty || add_congruences_and_minimize(cgs);
+  Congruence_System cgs(cs);
+  if (cgs.num_rows() > 0)
+    add_recycled_congruences(cgs);
 }
 
 bool
@@ -1177,17 +1169,8 @@ PPL::Grid::add_congruences_and_minimize(const Constraint_System& cs) {
   // The dimension of `cs' must be at most `space_dim'.
   if (space_dim < cs.space_dimension())
     throw_dimension_incompatible("add_congruences_and_minimize(cs)", "cs", cs);
-  Congruence_System cgs;
-  bool cgs_is_empty = true;
-  for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i)
-    if (i->is_equality()) {
-      Congruence cg(*i / 0);
-      cgs.insert(cg);
-      //cgs.insert(*i); // FIX?
-      cgs_is_empty = false;
-    }
-  if (cgs_is_empty)
+  Congruence_System cgs(cs);
+  if (cgs.num_rows() == 0)
     return minimize();
   return add_recycled_congruences_and_minimize(cgs);
 }
