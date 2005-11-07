@@ -428,7 +428,7 @@ public:
   /*!
     \param box
     The bounding box representing the grid to be built.  The box can
-    contain only point and universe intervals.
+    contain only point and universe intervals;
 
     \param dummy
     A dummy tag to make this constructor syntactically unique.
@@ -495,7 +495,7 @@ public:
     Any universe interval results in the empty grid.
 
     \param box
-    The covering box representing the grid to be built.
+    The covering box representing the grid to be built;
 
     \param dummy
     A dummy tag to make this constructor syntactically unique.
@@ -656,6 +656,137 @@ public:
     Thrown if \p expr and \p *this are dimension-incompatible.
   */
   bool bounds_from_below(const Linear_Expression& expr) const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this is not empty
+  //! and \p expr is bounded from above in \p *this, in which case
+  //! the supremum value is computed.
+  /*!
+    \param expr
+    The linear expression to be maximized subject to \p *this;
+
+    \param sup_n
+    The numerator of the supremum value;
+
+    \param sup_d
+    The denominator of the supremum value;
+
+    \param maximum
+    <CODE>true</CODE> if the supremum value can be reached in \p this.
+    Always <CODE>true</CODE> when \p this bounds \p expr.  Present for
+    interface compatibility with class Polyhedron, where closure
+    points can result in a value of false.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from above,
+    <CODE>false</CODE> is returned and \p sup_n, \p sup_d
+    and \p maximum are left untouched.
+  */
+  bool maximize(const Linear_Expression& expr,
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this is not empty
+  //! and \p expr is bounded from above in \p *this, in which case the
+  //! supremum value and a point where \p expr reaches it are
+  //! computed.
+  /*!
+    \param expr
+    The linear expression to be maximized subject to \p *this;
+
+    \param sup_n
+    The numerator of the supremum value;
+
+    \param sup_d
+    The denominator of the supremum value;
+
+    \param maximum
+    <CODE>true</CODE> if the supremum value can be reached in \p this.
+    Always <CODE>true</CODE> when \p this bounds \p expr.  Present for
+    interface compatibility with class Polyhedron, where closure
+    points can result in a value of false;
+
+    \param point
+    When maximization succeeds, will be assigned a point where \p expr
+    reaches its supremum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from above,
+    <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
+    and \p point are left untouched.
+  */
+  bool maximize(const Linear_Expression& expr,
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+		Generator& point) const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this is not empty
+  //! and \p expr is bounded from below in \p *this, in which case
+  //! the infimum value is computed.
+  /*!
+    \param expr
+    The linear expression to be minimized subject to \p *this;
+
+    \param inf_n
+    The numerator of the infimum value;
+
+    \param inf_d
+    The denominator of the infimum value;
+
+    \param minimum
+    <CODE>true</CODE> if the is the infimum value can be reached in \p
+    this.  Always <CODE>true</CODE> when \p this bounds \p expr.
+    Present for interface compatibility with class Polyhedron, where
+    closure points can result in a value of false.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from below,
+    <CODE>false</CODE> is returned and \p inf_n, \p inf_d
+    and \p minimum are left untouched.
+  */
+  bool minimize(const Linear_Expression& expr,
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this is not empty
+  //! and \p expr is bounded from below in \p *this, in which case
+  //! the infimum value and a point where \p expr reaches it are computed.
+  /*!
+    \param expr
+    The linear expression to be minimized subject to \p *this;
+
+    \param inf_n
+    The numerator of the infimum value;
+
+    \param inf_d
+    The denominator of the infimum value;
+
+    \param minimum
+    <CODE>true</CODE> if the is the infimum value can be reached in \p
+    this.  Always <CODE>true</CODE> when \p this bounds \p expr.
+    Present for interface compatibility with class Polyhedron, where
+    closure points can result in a value of false;
+
+    \param point
+    When minimization succeeds, will be assigned a point where \p expr
+    reaches its infimum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from below,
+    <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
+    and \p point are left untouched.
+  */
+  bool minimize(const Linear_Expression& expr,
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+		Generator& point) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -1154,7 +1285,7 @@ public:
 
     \param denominator
     The denominator of the affine expression (optional argument with
-    default value 1.)
+    default value 1).
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
@@ -1247,7 +1378,7 @@ public:
 
     \param denominator
     The denominator of the affine expression (optional argument with
-    default value 1.)
+    default value 1).
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
@@ -1339,7 +1470,7 @@ public:
 
     \param denominator
     The denominator of the right hand side affine expression.
-    Optional argument with an automatic value of one.
+    Optional argument with an automatic value of one;
 
     \param modulus
     The modulus of the congruence lhs %= rhs.  A modulus of zero
@@ -1372,7 +1503,7 @@ public:
 
     \param denominator
     The denominator of the right hand side affine expression.
-    Optional argument with an automatic value of one.
+    Optional argument with an automatic value of one;
 
     \param modulus
     The modulus of the congruence lhs %= rhs.  A modulus of zero
@@ -1423,10 +1554,10 @@ public:
   //! \pmod{\mathrm{modulus}}\f$.
   /*!
     \param lhs
-    The left hand side affine expression.
+    The left hand side affine expression;
 
     \param rhs
-    The right hand side affine expression.
+    The right hand side affine expression;
 
     \param modulus
     The modulus of the congruence lhs %= rhs.  A modulus of zero
@@ -1822,7 +1953,7 @@ private:
     The grid inherits the space dimension of the generator system.
 
     \param gs
-    The system of generators defining the grid.
+    The system of generators defining the grid;
 
     \param convert_rays_to_lines
     If true then rays in \p gs are converted to lines, else they are
@@ -2021,17 +2152,54 @@ private:
     from below in \p *this.
 
     \param expr
-    The linear expression to test.
+    The linear expression to test;
 
     \param method_call
-    The call description of the public parent method
-    (e.g. "bounded_from_above(e)").  Passed as the first argument of
-    throw_dimension_incompatible.
+    The call description of the public parent method, for example
+    "bounded_from_above(e)".  Passed to throw_dimension_incompatible,
+    as the first argument.
 
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
   */
   bool bounds(const Linear_Expression& expr, const char* method_call) const;
+
+  //! Maximizes or minimizes \p expr subject to \p *this.
+  /*!
+    \param expr
+    The linear expression to be maximized or minimized subject to \p
+    *this;
+
+    \param method_call
+    The call description of the public parent method, for example
+    "maximize(e)".  Passed to throw_dimension_incompatible, as the
+    first argument;
+
+    \param ext_n
+    The numerator of the extremum value;
+
+    \param ext_d
+    The denominator of the extremum value;
+
+    \param included
+    <CODE>true</CODE> if and only if the extremum of \p expr in \p
+    *this can actually be reached;
+
+    \param point
+    When maximization or minimization succeeds, will be assigned the
+    point where \p expr reaches the extremum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded in the appropriate
+    direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d,
+    \p included and \p point are left untouched.
+  */
+  bool max_min(const Linear_Expression& expr,
+	       char* method_call,
+	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
+	       Generator* point = NULL) const;
 
   //! \name Widening- and Extrapolation-Related Functions
   //@{
@@ -2068,7 +2236,7 @@ private:
     An extra divisor to include in the calculation of the common
     divisor of \p sys.  If this value is zero then only the divisors
     in \p sys are considered, otherwise it is expected that \p divisor
-    is positive.
+    is positive;
 
     \param first_point
     If \p first_point has a value other than NULL then it is taken as

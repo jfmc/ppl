@@ -276,112 +276,61 @@ PPL::Grid::bounds(const Linear_Expression& expr,
     throw_dimension_incompatible(method_call, "e", expr);
 
   // A zero-dimensional or empty grid bounds everything.
-  if (space_dim == 0 || marked_empty())
+  if (space_dim == 0
+      || marked_empty()
+      || (!generators_are_up_to_date() && !update_generators()))
     return true;
 
-  Grid tem = *this;
-  // FIX constant term
-  tem.add_congruence(expr == 0);
-  return tem.is_bounded();
-}
-#if 0
-bool
-PPL::Grid::max_min(const Linear_Expression& expr,
-			 const bool maximize,
-			 Coefficient& ext_n, Coefficient& ext_d, bool& included,
-			 const Generator** const pppoint) const {
-  // The dimension of `expr' should not be greater than the dimension
-  // of `*this'.
-  const dimension_type expr_space_dim = expr.space_dimension();
-  if (space_dim < expr_space_dim)
-    throw_dimension_incompatible((maximize
-				  ? "maximize(e, ...)"
-				  : "minimize(e, ...)"), "e", expr);
-
-  // For an empty grid we simply return false.
-  if (marked_empty()
-      || (!generators_are_up_to_date() && !update_generators()))
-    return false;
-
-  // The grid has updated generators.  The following loop will iterate
-  // through the generator (FIX generators?) to find the extremum.
-  mpq_class extremum;
-
-  // True if we have no other candidate extremum to compare with.
-  bool first_candidate = true;
-
-  // To store the position of the current candidate extremum.
-  // Initialized only to avoid a compiler warning.
-  dimension_type ext_position = 0;
-
-  // Whether the current candidate extremum is included or not.
-  // Initialized only to avoid a compiler warning.
-  bool ext_included = false;
-
-  TEMP_INTEGER(sp);
+  // The generators are up to date.
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
-    homogeneous_scalar_product_assign(sp, expr, g);
-    // Lines and rays in `*this' can cause `expr' to be unbounded.
+    // Only lines and rays in `*this' can cause `expr' to be unbounded.
+    // FIX with next merge
+    //if (g.is_line_or_ray()) {
     if (g[0] == 0) {
-      const int sp_sign = sgn(sp);
-      if (sp_sign != 0
-	  && (g.is_line()
-	      || (maximize && sp_sign > 0)
-	      || (!maximize && sp_sign < 0)))
-	// `expr' is unbounded in `*this'.
+      const int sp_sign = homogeneous_scalar_product_sign(expr, g);
+      if (sp_sign != 0)
+	// `*this' does not bound `expr'.
 	return false;
     }
-    else {
-      // We have a point or a closure point.
-      assert(g.is_point() || g.is_closure_point());
-      // Notice that we are ignoring the constant term in `expr' here.
-      // We will add it to the extremum as soon as we find it.
-      mpq_class candidate;
-      Checked::assign<Check_Overflow_Policy>(candidate.get_num(),
-					     raw_value(sp));
-      Checked::assign<Check_Overflow_Policy>(candidate.get_den(),
-					     raw_value(g[0]));
-      candidate.canonicalize();
-      const bool g_is_point = g.is_point();
-      if (first_candidate
-	  || (maximize
-	      && (candidate > extremum
-		  || (g_is_point
-		      && !ext_included
-		      && candidate == extremum)))
-	  || (!maximize
-	      && (candidate < extremum
-		  || (g_is_point
-		      && !ext_included
-		      && candidate == extremum)))) {
-	// We have a (new) candidate extremum.
-	first_candidate = false;
-	extremum = candidate;
-	ext_position = i;
-	ext_included = g_is_point;
-      }
-    }
   }
-
-  // Add in the constant term in `expr'.
-  mpz_class n;
-  Checked::assign<Check_Overflow_Policy>(n, raw_value(expr[0]));
-  extremum += n;;
-
-  // The grid is bounded in the right direction and we have
-  // computed the extremum: write the result into the caller's structures.
-  assert(!first_candidate);
-  ext_n = Coefficient(extremum.get_num());
-  ext_d = Coefficient(extremum.get_den());
-  included = ext_included;
-  if (pppoint != 0)
-    *pppoint = &gen_sys[ext_position];
-
   return true;
 }
 
-#endif
+bool
+PPL::Grid::max_min(const Linear_Expression& expr,
+		   char* method_call,
+		   Coefficient& ext_n, Coefficient& ext_d, bool& included,
+		   Generator* point) const {
+  if (bounds(expr, method_call)) {
+    if (marked_empty())
+      return false;
+    if (!generators_are_minimized()) {
+      // Minimize the generator system.
+      Grid& gr = const_cast<Grid&>(*this);
+      gr.simplify(gr.gen_sys, gr.dim_kinds);
+      gr.set_generators_minimized();
+    }
+
+    const Generator& gen = gen_sys[0];
+    homogeneous_scalar_product_assign(ext_n, expr, gen);
+    ext_n += expr.inhomogeneous_term();
+    ext_d = gen[0];
+    // Reduce ext_n and ext_d.
+    TEMP_INTEGER(gcd);
+    gcd_assign(gcd, ext_n, ext_d);
+    exact_div_assign(ext_n, gcd);
+    exact_div_assign(ext_d, gcd);
+
+    included = true;
+    if (point) {
+      *point = gen;
+      point->strong_normalize();
+    }
+    return true;
+  }
+  return false;
+}
 
 void
 PPL::Grid::set_zero_dim_univ() {

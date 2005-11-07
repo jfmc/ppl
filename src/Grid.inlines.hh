@@ -287,33 +287,33 @@ inline bool
 Grid::bounds_from_below(const Linear_Expression& expr) const {
   return bounds(expr, "bounds_from_below(e)");
 }
-#if 0
+
 inline bool
 Grid::maximize(const Linear_Expression& expr,
 	       Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const {
-  return max_min(expr, true, sup_n, sup_d, maximum);
+  return max_min(expr, "maximize(e, ...)", sup_n, sup_d, maximum);
 }
 
 inline bool
 Grid::maximize(const Linear_Expression& expr,
 	       Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-	       const Generator** const pppoint) const {
-  return max_min(expr, true, sup_n, sup_d, maximum, pppoint);
+	       Generator& point) const {
+  return max_min(expr, "maximize(e, ...)", sup_n, sup_d, maximum, &point);
 }
 
 inline bool
 Grid::minimize(const Linear_Expression& expr,
 	       Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const {
-  return max_min(expr, false, inf_n, inf_d, minimum);
+  return max_min(expr, "minimize(e, ...)", inf_n, inf_d, minimum);
 }
 
 inline bool
 Grid::minimize(const Linear_Expression& expr,
 	       Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-	       const Generator** const pppoint) const {
-  return max_min(expr, false, inf_n, inf_d, minimum, pppoint);
+	       Generator& point) const {
+  return max_min(expr, "minimize(e, ...)", inf_n, inf_d, minimum, &point);
 }
-#endif // 0 FIX
+
 /*! \relates Grid */
 inline bool
 operator!=(const Grid& x, const Grid& y) {
