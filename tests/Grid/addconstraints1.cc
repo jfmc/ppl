@@ -285,6 +285,39 @@ test8() {
   exit(1);
 }
 
+// add_recycled_congruences(cs)
+
+void
+test9() {
+  nout << "test9:" << endl;
+
+  Constraint_System cs;
+  cs.insert(2*B == 3);
+  cs.insert(A == 0);
+  cs.insert(C > 0);
+
+  Grid gr(3);
+  gr.add_recycled_congruences(cs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(3);
+  known_gr.add_congruence(A == 0);
+  known_gr.add_congruence(2*B == 3);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -301,6 +334,7 @@ main() TRY {
   test6();
   test7();
   test8();
+  test9();
 
   return 0;
 }
