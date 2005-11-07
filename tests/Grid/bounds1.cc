@@ -22,8 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-#define find_variation find_variation_template<Grid>
-
 namespace {
 
 Variable A(0);
@@ -114,7 +112,7 @@ test4() {
   exit(1);
 }
 
-// A bounding line which affects some dimensions in expr.
+// Rectilinear line.
 
 void
 test5() {
@@ -134,24 +132,25 @@ test5() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  Linear_Expression le = A + B;
+  Linear_Expression le = 2*A - B;
   if (gr_gs_min.bounds_from_above(le)
-      && gr_gs_min.bounds_from_below(le))
-    if (gr_gs_needs_min.bounds_from_above(le)
-	&& gr_gs_needs_min.bounds_from_below(le))
-      if (gr_cgs_needs_min.bounds_from_above(le)
-	  && gr_cgs_needs_min.bounds_from_below(le))
-	return;
-      else nout << "gr_cgs_needs_min";
-    else nout << "gr_gs_needs_min";
-  else nout << "gr_gs_min";
+      || gr_gs_min.bounds_from_below(le))
+    nout << "gr_gs_min";
+  else if (gr_gs_needs_min.bounds_from_above(le)
+	   || gr_gs_needs_min.bounds_from_below(le))
+    nout << "gr_gs_needs_min";
+  else if (gr_cgs_needs_min.bounds_from_above(le)
+	   || gr_cgs_needs_min.bounds_from_below(le))
+    nout << "gr_cgs_needs_min";
+  else
+    return;
 
-  nout << " should bound expr from above and below." << endl;
+  nout << " bounded expr." << endl;
 
   exit(1);
 }
 
-// A bounding line which affects all dimensions in expr.
+// Line.
 
 void
 test6() {
@@ -171,19 +170,20 @@ test6() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  Linear_Expression le = A + B;
+  Linear_Expression le = 2*A + B;
   if (gr_gs_min.bounds_from_above(le)
-      && gr_gs_min.bounds_from_below(le))
-    if (gr_gs_needs_min.bounds_from_above(le)
-	&& gr_gs_needs_min.bounds_from_below(le))
-      if (gr_cgs_needs_min.bounds_from_above(le)
-	  && gr_cgs_needs_min.bounds_from_below(le))
-	return;
-      else nout << "gr_cgs_needs_min";
-    else nout << "gr_gs_needs_min";
-  else nout << "gr_gs_min";
+      || gr_gs_min.bounds_from_below(le))
+    nout << "gr_gs_min";
+  else if (gr_gs_needs_min.bounds_from_above(le)
+	   || gr_gs_needs_min.bounds_from_below(le))
+    nout << "gr_gs_needs_min";
+  else if (gr_cgs_needs_min.bounds_from_above(le)
+	   || gr_cgs_needs_min.bounds_from_below(le))
+    nout << "gr_cgs_needs_min";
+  else
+    return;
 
-  nout << " should bound expr from above and below." << endl;
+  nout << " bounded expr." << endl;
 
   exit(1);
 }
@@ -210,18 +210,17 @@ test7() {
 
   Linear_Expression le = 2*A - B;
   if (gr_gs_min.bounds_from_above(le)
-      || gr_gs_min.bounds_from_below(le))
-    nout << "gr_gs_min";
-  else if (gr_gs_needs_min.bounds_from_above(le)
-	   || gr_gs_needs_min.bounds_from_below(le))
-    nout << "gr_gs_needs_min";
-  else if (gr_cgs_needs_min.bounds_from_above(le)
-	   || gr_cgs_needs_min.bounds_from_below(le))
-    nout << "gr_cgs_needs_min";
-  else
-    return;
+      && gr_gs_min.bounds_from_below(le))
+    if (gr_gs_needs_min.bounds_from_above(le)
+	&& gr_gs_needs_min.bounds_from_below(le))
+      if (gr_cgs_needs_min.bounds_from_above(le)
+	  && gr_cgs_needs_min.bounds_from_below(le))
+	return;
+      else nout << "gr_cgs_needs_min";
+    else nout << "gr_gs_needs_min";
+  else nout << "gr_gs_min";
 
-  nout << " bounded expr." << endl;
+  nout << " should bound expr from above and below." << endl;
 
   exit(1);
 }
@@ -249,23 +248,22 @@ test8() {
 
   Linear_Expression le = 2*A - B;
   if (gr_gs_min.bounds_from_above(le)
-      || gr_gs_min.bounds_from_below(le))
-    nout << "gr_gs_min";
-  else if (gr_gs_needs_min.bounds_from_above(le)
-	   || gr_gs_needs_min.bounds_from_below(le))
-    nout << "gr_gs_needs_min";
-  else if (gr_cgs_needs_min.bounds_from_above(le)
-	   || gr_cgs_needs_min.bounds_from_below(le))
-    nout << "gr_cgs_needs_min";
-  else
-    return;
+      && gr_gs_min.bounds_from_below(le))
+    if (gr_gs_needs_min.bounds_from_above(le)
+	&& gr_gs_needs_min.bounds_from_below(le))
+      if (gr_cgs_needs_min.bounds_from_above(le)
+	  && gr_cgs_needs_min.bounds_from_below(le))
+	return;
+      else nout << "gr_cgs_needs_min";
+    else nout << "gr_gs_needs_min";
+  else nout << "gr_gs_min";
 
-  nout << " bounded expr." << endl;
+  nout << " should bound expr from above and below." << endl;
 
   exit(1);
 }
 
-// Two lines which combine to cover expr.
+// Two lines which combine to cover any line bounded by expr.
 
 void
 test9() {
@@ -304,7 +302,7 @@ test9() {
   exit(1);
 }
 
-// Three dimensions, lines and parameters which combine to include
+// In three dimensions, lines and parameters which combine to include
 // expr.
 
 void
@@ -353,16 +351,17 @@ test11() {
   nout << "test11:" << endl;
 
   Grid gr_gs_min(3, EMPTY);
-  gr_gs_min.add_generator(point(10*B + 10*C));
-  gr_gs_min.add_generator_and_minimize(line(A));
+  gr_gs_min.add_generator(point());
+  gr_gs_min.add_generator(line(3*B + C));
+  gr_gs_min.add_generator_and_minimize(line(A - 2*B));
 
   Grid gr_gs_needs_min(3, EMPTY);
-  gr_gs_needs_min.add_generator(point(10*B + 10*C));
-  gr_gs_needs_min.add_generator(line(A));
+  gr_gs_needs_min.add_generator(point());
+  gr_gs_needs_min.add_generator(line(3*B + C));
+  gr_gs_needs_min.add_generator(line(A - 2*B));
 
   Grid gr_cgs_needs_min(3);
-  gr_cgs_needs_min.add_congruence(C == 10);
-  gr_cgs_needs_min.add_congruence(B == 10);
+  gr_cgs_needs_min.add_congruence(2*A + B - 3*C == 0);
 
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
