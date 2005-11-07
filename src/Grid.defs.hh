@@ -1048,9 +1048,7 @@ public:
   */
   void add_congruences(const Constraint_System& cs);
 
-  //! \brief
-  //! Adds the congruences in \p cgs to the system of congruences of
-  //! \p *this (without reducing the result).
+  //! Adds the congruences in \p cgs to *this.
   /*!
     \param cgs
     The congruence system that will be recycled, adding its
@@ -1064,6 +1062,21 @@ public:
     exceptional return is that it can be safely destroyed.
   */
   void add_recycled_congruences(Congruence_System& cgs);
+
+  //! Adds the equality constraints in \p cgs to \p *this.
+  /*!
+    \param cgs
+    The constraint system from which constraints will be considered
+    for addition to the system of congruences of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  void add_recycled_congruences(Constraint_System& cs);
 
   //! \brief
   //! Adds a copy of the congruences in \p cgs to the system

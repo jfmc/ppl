@@ -1083,8 +1083,22 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
 }
 
 void
+PPL::Grid::add_recycled_congruences(Constraint_System& cs) {
+  // TODO: this is just an executable specification.
+  // The dimension of `cs' must be at most `space_dim'.
+  if (space_dim < cs.space_dimension())
+    throw_dimension_incompatible("add_recycled_congruences(cs)", "cs", cs);
+  Congruence_System cgs(cs);
+  if (cgs.num_rows() > 0)
+    add_recycled_congruences(cgs);
+}
+
+void
 PPL::Grid::add_congruences(const Congruence_System& cgs) {
   // TODO: this is just an executable specification.
+  // The dimension of `cgs' must be at most `space_dim'.
+  if (space_dim < cgs.space_dimension())
+    throw_dimension_incompatible("add_congruences(cgs)", "cgs", cgs);
   Congruence_System cgs_copy = cgs;
   add_recycled_congruences(cgs_copy);
 }
