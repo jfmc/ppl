@@ -34,44 +34,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-void
-PPL::Congruence_System::normalize_moduli() {
-  // FIX Add a flag to save doing this often.  Clear the flag when
-  //     congruences are added, and set it on conversion.
-  dimension_type row = num_rows();
-  if (row) {
-    // Calculate the LCM of all the moduli.
-    TEMP_INTEGER(lcm);
-    // Find first congruence.
-    while (true) {
-      lcm = operator[](--row).modulus();
-      if (lcm > 0)
-	break;
-      if (row == 0)
-	// All rows are equalities.
-	return;
-    }
-    while (row > 0) {
-      TEMP_INTEGER(modulus);
-      modulus = operator[](--row).modulus();
-      if (modulus > 0)
-	lcm_assign(lcm, modulus);
-    }
-
-    // Represent every row using the LCM as the modulus.
-    dimension_type row_size = operator[](0).size();
-    for (dimension_type row = num_rows(); row-- > 0; ) {
-      TEMP_INTEGER(modulus);
-      modulus = operator[](row).modulus();
-      if (modulus <= 0 || modulus == lcm)
-	continue;
-      TEMP_INTEGER(factor);
-      factor = lcm / modulus;
-      for (dimension_type col = row_size; col-- > 0; )
-	operator[](row)[col] *= factor;
-      operator[](row)[row_size-1] = lcm;
-    }
-  }
+PPL::Congruence_System::Congruence_System(const Constraint_System& cs) {
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i)
+    if (i->is_equality())
+      insert(*i);
 }
 
 bool
@@ -153,6 +120,46 @@ PPL::Congruence_System::add_rows(const Congruence_System& y) {
     std::swap(copy, x[x_n_rows+i]);
   }
   assert(OK());
+}
+
+void
+PPL::Congruence_System::normalize_moduli() {
+  // FIX Add a flag to save doing this often.  Clear the flag when
+  //     congruences are added, and set it on conversion.
+  dimension_type row = num_rows();
+  if (row) {
+    // Calculate the LCM of all the moduli.
+    TEMP_INTEGER(lcm);
+    // Find first congruence.
+    while (true) {
+      lcm = operator[](--row).modulus();
+      if (lcm > 0)
+	break;
+      if (row == 0)
+	// All rows are equalities.
+	return;
+    }
+    while (row > 0) {
+      TEMP_INTEGER(modulus);
+      modulus = operator[](--row).modulus();
+      if (modulus > 0)
+	lcm_assign(lcm, modulus);
+    }
+
+    // Represent every row using the LCM as the modulus.
+    dimension_type row_size = operator[](0).size();
+    for (dimension_type row = num_rows(); row-- > 0; ) {
+      TEMP_INTEGER(modulus);
+      modulus = operator[](row).modulus();
+      if (modulus <= 0 || modulus == lcm)
+	continue;
+      TEMP_INTEGER(factor);
+      factor = lcm / modulus;
+      for (dimension_type col = row_size; col-- > 0; )
+	operator[](row)[col] *= factor;
+      operator[](row)[row_size-1] = lcm;
+    }
+  }
 }
 
 bool

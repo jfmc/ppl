@@ -141,6 +141,9 @@ public:
   */
   explicit Congruence_System(const Constraint& c);
 
+  //! Builds a system containing copies of any equalities in \p cs.
+  explicit Congruence_System(const Constraint_System& cs);
+
   //! Ordinary copy-constructor.
   Congruence_System(const Congruence_System& cs);
 
