@@ -46,7 +46,7 @@ check_PROGRAMS = \
 	addspacedims5 addspacedims6 addspacedims7 \
 	affinedimension1 \
 	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
-	affineimage6 affineimage7 affineimage8 affineimage9 \
+	affineimage6 affineimage7 affineimage8 affineimage9 affineimage10 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	affinepreimage5 \
 	ascii_dump_load1 ascii_dump_load2 \
@@ -96,7 +96,6 @@ check_PROGRAMS = \
 	universe1 \
 	writebdshape1 writebdshape2
 
-
 # This will be overriden by the `run_tests' script.
 TEST_CPPFLAGS=-DBD_SHAPE_INSTANCE=mpz_class
 
@@ -134,6 +133,7 @@ affineimage6_SOURCES = affineimage6.cc
 affineimage7_SOURCES = affineimage7.cc
 affineimage8_SOURCES = affineimage8.cc
 affineimage9_SOURCES = affineimage9.cc
+affineimage10_SOURCES = affineimage10.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
@@ -282,6 +282,7 @@ universe1_SOURCES = universe1.cc
 
 writebdshape1_SOURCES = writebdshape1.cc
 writebdshape2_SOURCES = writebdshape2.cc
+
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat \
