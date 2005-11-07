@@ -268,6 +268,24 @@ SPECIALIZE_ABS(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
+add_mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
+  to += x * y;
+  return V_EQ;
+}
+
+SPECIALIZE_ADD_MUL(mpq, mpq_class, mpq_class, mpq_class)
+
+template <typename Policy>
+inline Result
+sub_mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
+  to -= x * y;
+  return V_EQ;
+}
+
+SPECIALIZE_SUB_MUL(mpq, mpq_class, mpq_class, mpq_class)
+
+template <typename Policy>
+inline Result
 input_mpq(mpq_class& to, std::istream& is, Rounding_Dir dir) {
   Result r = input_mpq(to, is);
   if (r == VC_MINUS_INFINITY)
