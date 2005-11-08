@@ -78,10 +78,11 @@ PPL::Grid::Grid(dimension_type num_dimensions,
 
 PPL::Grid::Grid(const Grid& y)
   : con_sys(),
-    gen_sys(y.gen_sys.topology()),
+    gen_sys(NECESSARILY_CLOSED),
     status(y.status),
     space_dim(y.space_dim),
     dim_kinds(y.dim_kinds) {
+  assert(y.gen_sys.topology() == NECESSARILY_CLOSED);
   // FIX check con,gen_sys dims correctly handled if out of date
   if (y.congruences_are_up_to_date())
     con_sys = y.con_sys;
@@ -120,6 +121,24 @@ PPL::Grid::Grid(Constraint_System& cs) {
     if (i->is_equality())
       cgs.insert(*i);
   construct(cgs);
+}
+
+PPL::Grid&
+PPL::Grid::operator=(const Grid& y) {
+  space_dim = y.space_dim;
+  dim_kinds = y.dim_kinds;
+  if (y.marked_empty())
+    set_empty();
+  else if (space_dim == 0)
+    set_zero_dim_univ();
+  else {
+    status = y.status;
+    if (y.congruences_are_up_to_date())
+      con_sys = y.con_sys;
+    if (y.generators_are_up_to_date())
+      gen_sys = y.gen_sys;
+  }
+  return *this;
 }
 
 PPL::dimension_type
@@ -2302,24 +2321,6 @@ PPL::operator==(const Grid& x, const Grid& y) {
     }
     return false;
   }
-}
-
-PPL::Grid&
-PPL::Grid::operator=(const Grid& y) {
-  space_dim = y.space_dim;
-  dim_kinds = y.dim_kinds;
-  if (y.marked_empty())
-    set_empty();
-  else if (space_dim == 0)
-    set_zero_dim_univ();
-  else {
-    status = y.status;
-    if (y.congruences_are_up_to_date())
-      con_sys = y.con_sys;
-    if (y.generators_are_up_to_date())
-      gen_sys = y.gen_sys;
-  }
-  return *this;
 }
 
 bool
