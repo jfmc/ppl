@@ -167,22 +167,22 @@ PPL::Grid::limited_extrapolation_assign(const Grid& y,
 					unsigned* tp) {
   Grid& x = *this;
 
+  // Check dimension compatibility.
+  if (x.space_dim != y.space_dim)
+    throw_dimension_incompatible("limited_extrapolation_assign(y, cgs)",
+				 "y", y);
+  // `cgs' must be dimension-compatible with the two grids.
+  const dimension_type cgs_space_dim = cgs.space_dimension();
+  if (x.space_dim < cgs_space_dim)
+    throw_dimension_incompatible("limited_extrapolation_assign(y, cgs)",
+				 "cgs", cgs);
+
   dimension_type cgs_num_rows = cgs.num_rows();
   // If `cgs' is empty, fall back to ordinary widening.
   if (cgs_num_rows == 0) {
     x.widening_assign(y, tp);
     return;
   }
-
-  // Check dimension compatibility.
-  if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("limited_extrapolation_assign(y, cgs)",
-				 "y", y);
-  // `cgs' must be dimension-compatible with the two polyhedra.
-  const dimension_type cgs_space_dim = cgs.space_dimension();
-  if (x.space_dim < cgs_space_dim)
-    throw_dimension_incompatible("limited_extrapolation_assign(y, cgs)",
-				 "cgs", cgs);
 
 #ifndef NDEBUG
   {
