@@ -72,7 +72,9 @@ operator<<(std::ostream& s, const Grid& gr);
 
 } // namespace IO_Operators
 
-//! Returns <CODE>true</CODE> if and only if \p x and \p y are the same grid.
+//! \brief
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are the
+//! same grid.
 /*!
   \relates Grid
   Note that \p x and \p y may be dimension-incompatible grids: in
@@ -110,30 +112,21 @@ bool operator!=(const Grid& x, const Grid& y);
     and returns the Boolean value <CODE>false</CODE> whenever
     the resulting grid turns out to be empty.
 
-    Two key attributes of any grid are its topological kind
-    (recording whether it is a C_Grid or an NNC_Grid object)
-    and its space dimension (the dimension \f$n \in \Nset\f$ of
-    the enclosing vector space):
+    A key attributes of any grid is its space dimension (the dimension
+    \f$n \in \Nset\f$ of the enclosing vector space):
 
-    - all grids, the empty ones included, are endowed with
-      a specific topology and space dimension;
-    - most operations working on a grid and another object
-      (i.e., another grid, a congruence or generator,
-      a set of variables, etc.) will throw an exception if
-      the grid and the object are not both topology-compatible
-      and dimension-compatible (see Section \ref representation);
-    - the topology of a grid cannot be changed;
-      rather, there are constructors for each of the two derived classes
-      that will build a new grid with the topology of that class
-      from another grid from either class and any topology;
+    - all grids, the empty ones included, are endowed with a space
+      dimension;
+    - most operations working on a grid and another object (i.e.,
+      another grid, a congruence or generator, a set of variables,
+      etc.) will throw an exception if the grid and the object are not
+      dimension-compatible (see Section \ref representation);
     - the only ways in which the space dimension of a grid can be
       changed are <EM>explicit</EM> calls to operators provided for
       that purpose, and standard copy, assignment and swap operators.
 
-    Note that four different grids can be defined on
-    the zero-dimension space:
-    the empty grid, either closed or NNC,
-    and the universe grid \f$R^0\f$, again either closed or NNC.
+    Note that two different grids can be defined on the zero-dimension
+    space: the empty grid and the universe grid \f$R^0\f$.
 
     \par
     In all the examples it is assumed that variables
@@ -143,6 +136,8 @@ bool operator!=(const Grid& x, const Grid& y);
   Variable x(0);
   Variable y(1);
     \endcode
+
+  FIX examples still from ph
 
     \par Example 1
     The following code builds a grid corresponding to
@@ -611,13 +606,13 @@ public:
   //! Returns the system of congruences.
   const Congruence_System& congruences() const;
 
-  //! Returns the system of congruences, in reduced form.
+  //! Returns the system of congruences in reduced form.
   const Congruence_System& minimized_congruences() const;
 
   //! Returns the system of generators.
   const Generator_System& generators() const;
 
-  //! Returns the system of generators, in reduced form.
+  //! Returns the system of generators in reduced form.
   const Generator_System& minimized_generators() const;
 
   //! \brief
@@ -662,11 +657,12 @@ public:
   //! topologically closed subset of the vector space.
   bool is_topologically_closed() const;
 
-  //! Returns <CODE>true</CODE> if and only if \p *this and \p y are disjoint.
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this and \p y are
+  //! disjoint.
   /*!
     \exception std::invalid_argument
-    Thrown if \p x and \p y are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p x and \p y are dimension-incompatible.
   */
   bool is_disjoint_from(const Grid& y) const;
 
@@ -674,7 +670,7 @@ public:
   /*!
     A grid is pointed if it can be defined by a generator system which
     contains only points and parameters.  This includes the empty grid
-    and any grid in zero dimensions.
+    and any grid in dimension zero.
   */
   bool is_pointed() const;
 
@@ -682,8 +678,8 @@ public:
   bool is_bounded() const;
 
   //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p expr is
-  //! bounded from above in \p *this.
+  //! Returns <CODE>true</CODE> if and only if \p expr is bounded from
+  //! above in \p *this.
   /*!
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
@@ -1720,8 +1716,7 @@ public:
     \ref widening_with_tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
   void widening_assign(const Grid& y, unsigned* tp = NULL);
 
@@ -1742,8 +1737,7 @@ public:
     \ref widening_with_tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
-    Thrown if \p *this, \p y and \p cs are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this, \p y and \p cs are dimension-incompatible.
   */
   void limited_extrapolation_assign(const Grid& y,
 				    const Congruence_System& cgs,
@@ -1989,12 +1983,8 @@ public:
   ~Grid();
 
   //! \brief
-  //! Swaps \p *this with grid \p y.
-  //! (\p *this and \p y can be dimension-incompatible.)
-  /*!
-    \exception std::invalid_argument
-    Thrown if \p x and \p y are topology-incompatible.
-  */
+  //! Swaps \p *this with grid \p y.  (\p *this and \p y can be
+  //! dimension-incompatible.)
   void swap(Grid& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
