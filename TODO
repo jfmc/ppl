@@ -100,7 +100,6 @@ Grids Domain
 
 -  Complete the implementation of any missing operators:
       ????covered (or bounded) widening and extrapolation operators
-      similar operators where "congruences" is replaced by "constraints"
       upper_bound_assign_and_minimize (as for join_assign_and_minimize).
 
 -  Check all FIX's and either remove or convert to FIXME's

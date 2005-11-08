@@ -106,6 +106,22 @@ PPL::Grid::Grid(const Constraint_System& ccs) {
   construct(cgs);
 }
 
+PPL::Grid::Grid(Constraint_System& cs) {
+  if (cs.space_dimension() > max_space_dimension())
+    throw_space_dimension_overflow("Grid(cs)",
+				   "the space dimension of cs "
+				   "exceeds the maximum allowed "
+				   "space dimension");
+  // FIXME: Adapt and use cs instead of using a copy.
+  Congruence_System cgs;
+  cgs.insert(0*Variable(cs.space_dimension() - 1) %= 1);
+  for (Constraint_System::const_iterator i = cs.begin(),
+         cs_end = cs.end(); i != cs_end; ++i)
+    if (i->is_equality())
+      cgs.insert(*i);
+  construct(cgs);
+}
+
 PPL::dimension_type
 PPL::Grid::affine_dimension() const {
   if (is_empty() || space_dim == 0)
@@ -876,6 +892,15 @@ PPL::Grid::add_congruence(const Congruence& cg) {
   assert(OK());
 }
 
+void
+PPL::Grid::add_congruence(const Constraint& c) {
+  // TODO: this is just an executable specification.
+  if (c.is_equality()) {
+    Congruence_System cgs(c);
+    add_recycled_congruences(cgs);
+  }
+}
+
 bool
 PPL::Grid::add_congruence_and_minimize(const Congruence& cg) {
   // TODO: this is just an executable specification.
@@ -883,18 +908,14 @@ PPL::Grid::add_congruence_and_minimize(const Congruence& cg) {
   return add_recycled_congruences_and_minimize(cgs);
 }
 
-void
-PPL::Grid::add_congruence(const Constraint& c) {
-  // TODO: this is just an executable specification.
-  Congruence_System cgs(c);
-  return add_recycled_congruences(cgs);
-}
-
 bool
 PPL::Grid::add_congruence_and_minimize(const Constraint& c) {
   // TODO: this is just an executable specification.
-  Congruence_System cgs(c);
-  return add_recycled_congruences_and_minimize(cgs);
+  if (c.is_equality()) {
+    Congruence_System cgs(c);
+    return add_recycled_congruences_and_minimize(cgs);
+  }
+  return minimize();
 }
 
 void
@@ -1213,23 +1234,64 @@ PPL::Grid::add_constraint(const Constraint& c) {
   }
 }
 
+bool
+PPL::Grid::add_constraint_and_minimize(const Constraint& c) {
+  // The dimension of `c' must be at most `space_dim'.
+  if (space_dim < c.space_dimension())
+    throw_dimension_incompatible("add_constraint_and_minimize(c)", "c", c);
+  if (c.is_equality()) {
+    Congruence cg(c);
+    return add_congruence_and_minimize(cg);
+  }
+  return minimize();
+}
+
 void
 PPL::Grid::add_constraints(const Constraint_System& cs) {
   // The dimension of `cs' must be at most `space_dim'.
   if (space_dim < cs.space_dimension())
     throw_dimension_incompatible("add_constraints(cs)", "cs", cs);
-  Congruence_System cgs;
-  bool inserted = false;
-  for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i)
-    if (i->is_equality()) {
-      cgs.insert(*i);
-      inserted = true;
-    }
+  Congruence_System cgs(cs);
   // Only add cgs if congruences were inserted into cgs, as the
   // dimension of cgs must be at most that of the grid.
-  if (inserted)
-    add_congruences(cgs);
+  // FIX match dimension to cs (in all these methods)
+  if (cgs.num_rows() > 0)
+    add_recycled_congruences(cgs);
+}
+
+bool
+PPL::Grid::add_constraints_and_minimize(const Constraint_System& cs) {
+  // The dimension of `cs' must be at most `space_dim'.
+  if (space_dim < cs.space_dimension())
+    throw_dimension_incompatible("add_constraints_and_minimize(cs)",
+				 "cs", cs);
+  Congruence_System cgs(cs);
+  if (cgs.num_rows() > 0)
+    return add_recycled_congruences_and_minimize(cgs);
+  return minimize();
+}
+
+void
+PPL::Grid::add_recycled_constraints(Constraint_System& cs) {
+  // The dimension of `cs' must be at most `space_dim'.
+  if (space_dim < cs.space_dimension())
+    throw_dimension_incompatible("add_recycled_constraints(cs)",
+				 "cs", cs);
+  Congruence_System cgs(cs);
+  if (cgs.num_rows() > 0)
+    add_recycled_congruences(cgs);
+}
+
+bool
+PPL::Grid::add_recycled_constraints_and_minimize(Constraint_System& cs) {
+  // The dimension of `cs' must be at most `space_dim'.
+  if (space_dim < cs.space_dimension())
+    throw_dimension_incompatible("add_recycled_constraints_and_minimize(cs)",
+				 "cs", cs);
+  Congruence_System cgs(cs);
+  if (cgs.num_rows() > 0)
+    return add_recycled_congruences_and_minimize(cgs);
+  return minimize();
 }
 
 void

@@ -389,7 +389,7 @@ public:
   */
   explicit Grid(Congruence_System& cgs);
 
-  //! Builds a grid from a system of constraints.
+  //! Builds a grid from a const system of constraints.
   /*!
     The grid inherits the space dimension of the constraint system.
 
@@ -397,6 +397,15 @@ public:
     The system of constraints defining the grid.
   */
   explicit Grid(const Constraint_System& cs);
+
+  //! Builds a grid recycling a system of constraints.
+  /*!
+    The grid inherits the space dimension of the constraint system.
+
+    \param cs
+    The system of constraints defining the grid.
+  */
+  explicit Grid(Constraint_System& cs);
 
   //! Builds a grid from a system of generators.
   /*!
@@ -957,14 +966,21 @@ public:
   //! \name Space Dimension Preserving Member Functions that May Modify the Grid
   //@{
 
-  //! \brief
-  //! Adds a copy of congruence \p cg to the system of congruences
-  //! of \p *this (without reducing the result).
+  //! Adds a copy of congruence \p cg to \p *this.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible.
   */
   void add_congruence(const Congruence& cg);
+
+  //! Adds constraint \p c to \p *this.
+  /*!
+    The addition will only affect \p *this if \p c is an equality.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are dimension-incompatible.
+  */
+  void add_congruence(const Constraint& c);
 
   //! \brief
   //! Adds a copy of congruence \p cg to the system of congruences
@@ -978,22 +994,10 @@ public:
   */
   bool add_congruence_and_minimize(const Congruence& c);
 
-  //! \brief
-  //! If \p c is an equality constraint, adds a copy \p c, seen as a
-  //! modulo 0 congruence, to the system of congruences of \p *this
-  //! (without reducing the result).
+  //! Adds a copy of constraint \p c to \p *this, reducing the result.
   /*!
-    \exception std::invalid_argument
-    Thrown if \p c is not an equality constraint or if \p *this and
-    constraint \p c are dimension-incompatible.
-  */
-  void add_congruence(const Constraint& c);
+    The addition will only affect \p *this if \p c is an equality.
 
-  //! \brief
-  //! If \p c is an equality constraint, adds a copy \p c, seen as a
-  //! modulo 0 congruence, to the system of congruences of \p *this,
-  //! reducing the result.
-  /*!
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
@@ -1005,7 +1009,7 @@ public:
 
   //! \brief
   //! Adds a copy of generator \p g to the system of generators
-  //! of \p *this (without reducing the result).
+  //! of \p *this.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible,
@@ -1058,8 +1062,8 @@ public:
     Thrown if \p *this and \p cs are dimension-incompatible.
 
     \warning
-    The only assumption that can be made on \p cgs upon successful or
-    exceptional return is that it can be safely destroyed.
+    The only assumption that can be made about \p cgs upon successful
+    or exceptional return is that it can be safely destroyed.
   */
   void add_recycled_congruences(Congruence_System& cgs);
 
@@ -1073,8 +1077,9 @@ public:
     Thrown if \p *this and \p cs are dimension-incompatible.
 
     \warning
-    The only assumption that can be made on \p cs upon successful or
-    exceptional return is that it can be safely destroyed.
+
+    The only assumption that can be made about \p cs upon successful
+    or exceptional return is that it can be safely destroyed.
   */
   void add_recycled_congruences(Constraint_System& cs);
 
@@ -1095,8 +1100,7 @@ public:
   bool add_congruences_and_minimize(const Congruence_System& cgs);
 
   //! \brief
-  //! Adds a copy of the equality constraints in \p cs, seen as modulo
-  //! 0 congruences, to the system of congruences of \p *this,
+  //! Adds a copy of each equality constraint in \p cs to \p *this,
   //! reducing the result.
   /*!
     \return
@@ -1126,8 +1130,9 @@ public:
     Thrown if \p *this and \p cgs are dimension-incompatible.
 
     \warning
-    The only assumption that can be made on \p cgs upon successful or
-    exceptional return is that it can be safely destroyed.
+
+    The only assumption that can be made about \p cgs upon successful
+    or exceptional return is that it can be safely destroyed.
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
 
@@ -1144,21 +1149,33 @@ public:
     Thrown if \p *this and \p cs are dimension-incompatible.
 
     \warning
-    The only assumption that can be made on \p cs upon successful or
-    exceptional return is that it can be safely destroyed.
+    The only assumption that can be made about \p cs upon successful
+    or exceptional return is that it can be safely destroyed.
   */
   bool add_recycled_congruences_and_minimize(Constraint_System& cs);
 
-  //! Adds to *this a congruence equivalent to constraint \p c.
+  //! Adds constraint \p c to \p *this.
   /*!
+    The addition will only affect \p *this if \p c is an equality.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p c are dimension-incompatible.
   */
   void add_constraint(const Constraint& c);
 
-  //! \brief
-  //! Adds to \p *this congruences equivalent to the constraints in \p
-  //! cs.
+  //! Adds constraint \p c to \p *this, reducing the result.
+  /*!
+    The addition will only affect \p *this if \p c is an equality.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p c are dimension-incompatible.
+  */
+  bool add_constraint_and_minimize(const Constraint& c);
+
+  //! Adds copies of the equality constraints in \p cs to \p *this.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
@@ -1166,8 +1183,43 @@ public:
   void add_constraints(const Constraint_System& cs);
 
   //! \brief
+  //! Adds copies of the equality constraints in \p cs to \p *this,
+  //! reducing the result.
+  /*!
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  bool add_constraints_and_minimize(const Constraint_System& cs);
+
+  //! Adds the equality constraints in \p cs to \p *this.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+
+    \warning
+    The only assumption that can be made about \p cs upon successful
+    or exceptional return is that it can be safely destroyed.
+  */
+  void add_recycled_constraints(Constraint_System& cs);
+
+  //! Adds the equality constraints in \p cs to \p *this, reducing the
+  //! result.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+
+    \warning
+    The only assumption that can be made about \p cs upon successful
+    or exceptional return is that it can be safely destroyed.
+  */
+  bool add_recycled_constraints_and_minimize(Constraint_System& cs);
+
+  //! \brief
   //! Adds a copy of the generators in \p gs to the system of
-  //! generators of \p *this (without reducing the result).
+  //! generators of \p *this.
   /*!
     \param gs
     Contains the generators that will be added to the system of
@@ -1182,7 +1234,7 @@ public:
 
   //! \brief
   //! Adds the generators in \p gs to the system of generators of \p
-  //! *this (without reducing the result).
+  //! *this.
   /*!
     \param gs
     The generator system that will be recycled, adding its generators
@@ -1194,8 +1246,8 @@ public:
     but has no points.
 
     \warning
-    The only assumption that can be made on \p gs upon successful or
-    exceptional return is that it can be safely destroyed.
+    The only assumption that can be made about \p gs upon successful
+    or exceptional return is that it can be safely destroyed.
   */
   void add_recycled_generators(Generator_System& gs);
 
@@ -1234,8 +1286,8 @@ public:
     but has no points.
 
     \warning
-    The only assumption that can be made on \p gs upon successful or
-    exceptional return is that it can be safely destroyed.
+    The only assumption that can be made about \p gs upon successful
+    or exceptional return is that it can be safely destroyed.
   */
   bool add_recycled_generators_and_minimize(Generator_System& gs);
 
