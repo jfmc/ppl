@@ -88,6 +88,7 @@ check_PROGRAMS = \
 	limitedh79extrapolation1 \
 	mapspacedims1 mapspacedims2 mapspacedims3 mapspacedims4 \
 	maxspacedim \
+	minconstraints1 \
 	polydifference1 polydifference2 polydifference3 polydifference4 \
 	polydifference5 polydifference6 \
 	relations1 relations2 relations3 relations4 relations5 \
@@ -254,6 +255,8 @@ mapspacedims3_SOURCES = mapspacedims3.cc
 mapspacedims4_SOURCES = mapspacedims4.cc
 
 maxspacedim_SOURCES = maxspacedim.cc
+
+minconstraints1_SOURCES = minconstraints1.cc
 
 polydifference1_SOURCES = polydifference1.cc
 polydifference2_SOURCES = polydifference2.cc

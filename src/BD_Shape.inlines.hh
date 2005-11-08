@@ -663,15 +663,36 @@ BD_Shape<T>::ascii_dump(std::ostream& s) const {
   status.ascii_dump(s);
   s << std::endl;
   dbm.ascii_dump(s);
+  // Redundancy info.
+  s << std::endl;
+  const char separator = ' ';
+  const dimension_type nrows = redundancy_dbm.size();
+  s << nrows << separator << std::endl;
+  for (dimension_type i = 0; i < nrows;  ++i) {
+    for (dimension_type j = 0; j < nrows; ++j)
+      s << redundancy_dbm[i][j] << separator;
+    s << std::endl;
+  }
 }
 
 template <typename T>
 inline bool
 BD_Shape<T>::ascii_load(std::istream& s) {
-  if(!status.ascii_load(s))
+  if (!status.ascii_load(s))
     return false;
-  if(!dbm.ascii_load(s))
+  if (!dbm.ascii_load(s))
     return false;
+  // Load redundancy info.
+  dimension_type nrows;
+   if (!(s >> nrows))
+    return false;
+  redundancy_dbm.clear();
+  std::deque<bool> red_row(nrows, false);
+  for (dimension_type i = 0; i < nrows;  ++i)
+    for (dimension_type j = 0; j < nrows; ++j) {
+      if (!(s >> redundancy_dbm[i][j]))
+	return false;
+    }
   return true;
 }
 
@@ -3561,26 +3582,25 @@ BD_Shape<T>::minimized_constraints() const {
 
     // Go through the leaders to generate inequality constraints.
     // First generate all the unary inequalities.
+    const std::deque<bool>& red_0 = redundancy_dbm[0];
     for (dimension_type l_i = 1; l_i < num_leaders; ++l_i) {
-      const dimension_type i = leaders[l_i];
-      const N& dbm_0i = dbm_0[i];
-      if (!is_plus_infinity(dbm_0i)) {
-	numer_denom(dbm_0i, den, num);
+      const dimension_type i = leader_indices[l_i];
+      if (!red_0[i]) {
+	numer_denom(dbm_0[i], num, den);
 	cs.insert(den*Variable(i-1) <= num);
       }
-      const N& dbm_i0 = dbm[i][0];
-      if (!is_plus_infinity(dbm_i0)) {
-	numer_denom(dbm_i0, num, den);
+      if (!redundancy_dbm[i][0]) {
+	numer_denom(dbm[i][0], num, den);
 	cs.insert(-den*Variable(i-1) <= num);
       }
     }
     // Then generate all the binary inequalities.
     for (dimension_type l_i = 1; l_i < num_leaders; ++l_i) {
-      const dimension_type i = leaders[l_i];
+      const dimension_type i = leader_indices[l_i];
       const DB_Row<N>& dbm_i = dbm[i];
       const std::deque<bool>& red_i = redundancy_dbm[i];
       for (dimension_type l_j = l_i + 1; l_j < num_leaders; ++l_j) {
-	const dimension_type j = leaders[l_j];
+	const dimension_type j = leader_indices[l_j];
 	if (!red_i[j]) {
 	  numer_denom(dbm_i[j], num, den);
 	  cs.insert(den*Variable(j-1) - den*Variable(i-1) <= num);
