@@ -32,7 +32,7 @@ Variable A(0);
 Variable B(1);
 Variable C(2);
 
-// Grid containing empty grid.
+// Grid of points containing empty grid.
 
 void
 test1() {
@@ -55,7 +55,7 @@ test1() {
   exit(1);
 }
 
-// Empty grid containing points.
+// Empty grid and grid of points.
 
 void
 test2() {
@@ -70,14 +70,12 @@ test2() {
   Grid gr2(gs);
 
   if (gr1.contains(gr2)) {
-    nout << "gr1 should fail to contain gr2." << endl
+    nout << "gr1 contained gr2." << endl
 	 << "gr1:" << endl << gr1 << endl
 	 << "gr2:" << endl << gr2 << endl;
 
     exit(1);
   }
-
-  return;
 }
 
 // Both empty.
@@ -126,15 +124,15 @@ void
 test5() {
   nout << "test5:" << endl;
 
-  Grid gr1(3);
-  gr1.add_congruence(A - B %= 0);
-  gr1.add_congruence(C %= 0);
+  Grid gr(3);
+  gr.add_congruence(A - B %= 0);
+  gr.add_congruence(C %= 0);
 
-  if (gr1.contains(gr1))
+  if (gr.contains(gr))
     return;
 
-  nout << "gr1 should contain gr1." << endl
-       << "gr1:" << endl << gr1 << endl;
+  nout << "gr should contain gr." << endl
+       << "gr:" << endl << gr << endl;
 
   exit(1);
 }
@@ -178,14 +176,12 @@ test7() {
   gr2.add_congruence(C %= 0);
 
   if (gr1.contains(gr2)) {
-    nout << "gr1 should fail to contain gr2." << endl
+    nout << "gr1 contained gr2." << endl
 	 << "gr1:" << endl << gr1 << endl
 	 << "gr2:" << endl << gr2 << endl;
 
     exit(1);
   }
-
-  return;
 }
 
 // CHINA example that showed an error in cgs::is_included_in.
@@ -205,14 +201,12 @@ test8() {
     exit(1);
 
   if (gr1.contains(gr2)) {
-    nout << "gr1 should fail to contain gr2." << endl
+    nout << "gr1 contained gr2." << endl
 	 << "gr1:" << endl << gr1 << endl
 	 << "gr2:" << endl << gr2 << endl;
 
     exit(1);
   }
-
-  return;
 }
 
 } // namespace
