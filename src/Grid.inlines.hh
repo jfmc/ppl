@@ -88,6 +88,167 @@ Grid::Grid(Generator_System& gs,
   construct(gs, convert_rays_to_lines);
 }
 
+template <typename Box>
+Grid::Grid(const Box& box, From_Bounding_Box dummy)
+  : con_sys(),
+    gen_sys(NECESSARILY_CLOSED) {
+  used(dummy);
+
+  if (box.space_dimension() > max_space_dimension())
+    throw_space_dimension_overflow("Grid(box, from_bounding_box)",
+				   "the space dimension of box "
+				   "exceeds the maximum allowed "
+				   "space dimension");
+
+  space_dim = box.space_dimension();
+
+  TEMP_INTEGER(l_n);
+  TEMP_INTEGER(l_d);
+
+  // Check that all bounds are closed.  This must be done before the
+  // empty check below, in case an open bound makes the grid empty.
+  for (dimension_type k = space_dim; k-- > 0; ) {
+    bool closed;
+    // FIXME: Perhaps introduce box::is_bounded_and_closed.
+    if (box.get_lower_bound(k, closed, l_n, l_d) && !closed)
+      throw_invalid_argument("Grid(box, from_bounding_box)", "box");
+    if (box.get_upper_bound(k, closed, l_n, l_d) && !closed)
+      throw_invalid_argument("Grid(box, from_bounding_box)", "box");
+  }
+
+  // Initialize the space dimension as indicated by the box.
+  con_sys.increase_space_dimension(space_dim);
+
+  if (box.is_empty())
+    // Empty grid.
+    status.set_empty();
+  else
+    if (space_dim == 0)
+      status.set_zero_dim_univ();
+    else {
+      // Add integrality congruence.
+      con_sys.insert(Linear_Expression::zero() %= 1);
+      // Add congruences according to `box'.
+      TEMP_INTEGER(u_n);
+      TEMP_INTEGER(u_d);
+      for (dimension_type k = space_dim; k-- > 0; ) {
+	bool closed;
+	// TODO: Consider producing the system(s) in minimized form.
+	// FIXME: Also create the generator system.
+	if (box.get_lower_bound(k, closed, l_n, l_d)) {
+	  if (box.get_upper_bound(k, closed, u_n, u_d))
+	    if (l_n * u_d == u_n * l_d) {
+	      // A point interval sets dimension k of every point to a
+	      // single value.
+	      con_sys.insert(l_d * Variable(k) == l_n);
+	      continue;
+	    }
+	  // The only valid bounded interval is a point interval.
+	  throw_invalid_argument("Grid(box, from_bounding_box)", "box");
+	}
+	else if (box.get_upper_bound(k, closed, u_n, u_d))
+	  // An interval can only be a point or the universe.
+	  throw_invalid_argument("Grid(box, from_covering_box)",
+				 "box");
+	// A universe interval allows any value in dimension k.
+      }
+      set_congruences_up_to_date();
+    }
+
+  gen_sys.set_sorted(false);
+  gen_sys.unset_pending_rows();
+
+  assert(OK());
+}
+
+template <typename Box>
+Grid::Grid(const Box& box, From_Covering_Box dummy)
+  : con_sys(),
+    gen_sys(NECESSARILY_CLOSED) {
+  used(dummy);
+
+  if (box.space_dimension() > max_space_dimension())
+    throw_space_dimension_overflow("Grid(box, from_covering_box)",
+				   "the space dimension of box "
+				   "exceeds the maximum allowed "
+				   "space dimension");
+
+  space_dim = box.space_dimension();
+
+  TEMP_INTEGER(l_n);
+  TEMP_INTEGER(l_d);
+
+  // Check that all bounds are closed.  This must be done before the
+  // empty check below, in case an open bound makes the grid empty.
+  for (dimension_type k = space_dim; k-- > 0; ) {
+    bool closed;
+    // FIXME: Perhaps introduce box::is_bounded_and_closed.
+    if (box.get_lower_bound(k, closed, l_n, l_d) && !closed)
+      throw_invalid_argument("Grid(box, from_covering_box)", "box");
+    if (box.get_upper_bound(k, closed, l_n, l_d) && !closed)
+      throw_invalid_argument("Grid(box, from_covering_box)", "box");
+  }
+
+  // Initialize the space dimension as indicated by the box.
+  con_sys.increase_space_dimension(space_dim);
+
+  if (box.is_empty())
+    // Empty grid.
+    status.set_empty();
+  else
+    if (space_dim == 0)
+      status.set_zero_dim_univ();
+    else {
+      // Add integrality congruence.
+      con_sys.insert(Linear_Expression::zero() %= 1);
+      // Add congruences according to `box'.
+      TEMP_INTEGER(u_n);
+      TEMP_INTEGER(u_d);
+      TEMP_INTEGER(d);
+      for (dimension_type k = space_dim; k-- > 0; ) {
+	bool closed;
+	// TODO: Consider producing the system(s) in minimized form.
+	// FIXME: Also create the generator system.
+	if (box.get_lower_bound(k, closed, l_n, l_d)) {
+	  if (box.get_upper_bound(k, closed, u_n, u_d)) {
+	    if (l_n * u_d == u_n * l_d)
+	      // A point interval allows any point along the dimension
+	      // k axis.
+	      continue;
+	    gcd_assign(d, l_d, u_d);
+	    // `d' is the gcd of the divisors.
+	    l_n *= (u_d / d);
+	    d = l_d / d;
+	    // `d' is now the smallest integer expression of the size
+	    // of l_d relative to u_d.  `d * u_d' is the lcm of the
+	    // divisors.
+	    con_sys.insert((d * u_d * Variable(k) %= l_n) / ((u_n * d) - l_n));
+	  }
+	  else
+	    // An interval bounded only from below produces an
+	    // equality.
+	    con_sys.insert(l_d * Variable(k) == l_n);
+	}
+	else
+	  if (box.get_upper_bound(k, closed, u_n, u_d))
+	    // An interval bounded only from above produces an equality.
+	    con_sys.insert(u_d * Variable(k) == u_n);
+	  else {
+	    // Any universe interval produces an empty grid.
+	    set_empty();
+	    goto end;
+	  }
+      }
+      set_congruences_up_to_date();
+    }
+
+ end:
+  gen_sys.set_sorted(false);
+  gen_sys.unset_pending_rows();
+
+  assert(OK());
+}
+
 inline
 Grid::~Grid() {
 }
@@ -324,155 +485,6 @@ inline bool
 Grid::strictly_contains(const Grid& y) const {
   const Grid& x = *this;
   return x.contains(y) && !y.contains(x);
-}
-
-template <typename Box>
-Grid::Grid(const Box& box, From_Bounding_Box dummy)
-  : con_sys(),
-    gen_sys(NECESSARILY_CLOSED) {
-  used(dummy);
-
-  space_dim = box.space_dimension();
-
-  TEMP_INTEGER(l_n);
-  TEMP_INTEGER(l_d);
-
-  // Check that all bounds are closed.  This must be done before the
-  // empty check below, in case an open bound makes the grid empty.
-  for (dimension_type k = space_dim; k-- > 0; ) {
-    bool closed;
-    // FIXME: Perhaps introduce box::is_bounded_and_closed.
-    if (box.get_lower_bound(k, closed, l_n, l_d) && !closed)
-      throw_invalid_argument("Grid(box, from_bounding_box)", "box");
-    if (box.get_upper_bound(k, closed, l_n, l_d) && !closed)
-      throw_invalid_argument("Grid(box, from_bounding_box)", "box");
-  }
-
-  // Initialize the space dimension as indicated by the box.
-  con_sys.increase_space_dimension(space_dim);
-
-  if (box.is_empty())
-    // Empty grid.
-    status.set_empty();
-  else
-    if (space_dim == 0)
-      status.set_zero_dim_univ();
-    else {
-      // Add integrality congruence.
-      con_sys.insert(Linear_Expression::zero() %= 1);
-      // Add congruences according to `box'.
-      TEMP_INTEGER(u_n);
-      TEMP_INTEGER(u_d);
-      for (dimension_type k = space_dim; k-- > 0; ) {
-	bool closed;
-	// TODO: Consider producing the system(s) in minimized form.
-	// FIXME: Also create the generator system.
-	if (box.get_lower_bound(k, closed, l_n, l_d)) {
-	  if (box.get_upper_bound(k, closed, u_n, u_d))
-	    if (l_n * u_d == u_n * l_d) {
-	      // A point interval sets dimension k of every point to a
-	      // single value.
-	      con_sys.insert(l_d * Variable(k) == l_n);
-	      continue;
-	    }
-	  // The only valid bounded interval is a point interval.
-	  throw_invalid_argument("Grid(box, from_bounding_box)", "box");
-	}
-	else if (box.get_upper_bound(k, closed, u_n, u_d))
-	  // An interval can only be a point or the universe.
-	  throw_invalid_argument("Grid(box, from_covering_box)",
-				 "box");
-	// A universe interval allows any value in dimension k.
-      }
-      set_congruences_up_to_date();
-    }
-
-  gen_sys.set_sorted(false);
-  gen_sys.unset_pending_rows();
-
-  assert(OK());
-}
-
-template <typename Box>
-Grid::Grid(const Box& box, From_Covering_Box dummy)
-  : con_sys(),
-    gen_sys(NECESSARILY_CLOSED) {
-  used(dummy);
-
-  space_dim = box.space_dimension();
-
-  TEMP_INTEGER(l_n);
-  TEMP_INTEGER(l_d);
-
-  // Check that all bounds are closed.  This must be done before the
-  // empty check below, in case an open bound makes the grid empty.
-  for (dimension_type k = space_dim; k-- > 0; ) {
-    bool closed;
-    // FIXME: Perhaps introduce box::is_bounded_and_closed.
-    if (box.get_lower_bound(k, closed, l_n, l_d) && !closed)
-      throw_invalid_argument("Grid(box, from_covering_box)", "box");
-    if (box.get_upper_bound(k, closed, l_n, l_d) && !closed)
-      throw_invalid_argument("Grid(box, from_covering_box)", "box");
-  }
-
-  // Initialize the space dimension as indicated by the box.
-  con_sys.increase_space_dimension(space_dim);
-
-  if (box.is_empty())
-    // Empty grid.
-    status.set_empty();
-  else
-    if (space_dim == 0)
-      status.set_zero_dim_univ();
-    else {
-      // Add integrality congruence.
-      con_sys.insert(Linear_Expression::zero() %= 1);
-      // Add congruences according to `box'.
-      TEMP_INTEGER(u_n);
-      TEMP_INTEGER(u_d);
-      TEMP_INTEGER(d);
-      for (dimension_type k = space_dim; k-- > 0; ) {
-	bool closed;
-	// TODO: Consider producing the system(s) in minimized form.
-	// FIXME: Also create the generator system.
-	if (box.get_lower_bound(k, closed, l_n, l_d)) {
-	  if (box.get_upper_bound(k, closed, u_n, u_d)) {
-	    if (l_n * u_d == u_n * l_d)
-	      // A point interval allows any point along the dimension
-	      // k axis.
-	      continue;
-	    gcd_assign(d, l_d, u_d);
-	    // `d' is the gcd of the divisors.
-	    l_n *= (u_d / d);
-	    d = l_d / d;
-	    // `d' is now the smallest integer expression of the size
-	    // of l_d relative to u_d.  `d * u_d' is the lcm of the
-	    // divisors.
-	    con_sys.insert((d * u_d * Variable(k) %= l_n) / ((u_n * d) - l_n));
-	  }
-	  else
-	    // An interval bounded only from below produces an
-	    // equality.
-	    con_sys.insert(l_d * Variable(k) == l_n);
-	}
-	else
-	  if (box.get_upper_bound(k, closed, u_n, u_d))
-	    // An interval bounded only from above produces an equality.
-	    con_sys.insert(u_d * Variable(k) == u_n);
-	  else {
-	    // Any universe interval produces an empty grid.
-	    set_empty();
-	    goto end;
-	  }
-      }
-      set_congruences_up_to_date();
-    }
-
- end:
-  gen_sys.set_sorted(false);
-  gen_sys.unset_pending_rows();
-
-  assert(OK());
 }
 
 template <typename Box>
