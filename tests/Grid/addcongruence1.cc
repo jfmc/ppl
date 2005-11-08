@@ -1,4 +1,4 @@
-/* Test Grid::add_congruence*().
+/* Test methods which add a single congruence to a grid.
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -29,14 +29,17 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 // Many cases are covered in addgenerator1, in which the known grid is
 // always created with Grid::add_congruence.
 
+namespace {
+
+Variable A(0);
+Variable B(1);
+Variable C(2);
+
 // add_congruence_and_minimize
 
 void
 test1() {
   nout << "test1:" << endl;
-
-  Variable A(0);
-  Variable B(1);
 
   Grid gr(2);
 
@@ -65,10 +68,6 @@ void
 test2() {
   nout << "test2:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Grid gr(3, EMPTY);
 
   gr.add_congruence((A + B + C %= 0) / 3);
@@ -87,6 +86,8 @@ test2() {
 
   exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {
