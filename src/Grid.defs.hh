@@ -365,49 +365,68 @@ public:
 
     \param kind
     Specifies whether the universe or the empty grid has to be built.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
   */
   explicit Grid(dimension_type num_dimensions = 0,
 		const Degenerate_Element kind = UNIVERSE);
 
-  //! Builds a grid from a const system of congruences.
+  //! Builds a grid, copying a system of congruences.
   /*!
     The grid inherits the space dimension of the congruence system.
 
     \param cgs
     The system of congruences defining the grid.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
   */
   explicit Grid(const Congruence_System& cgs);
 
-  //! Builds a grid recycling a system of congruences.
+  //! Builds a grid, recycling a system of congruences.
   /*!
     The grid inherits the space dimension of the congruence system.
 
     \param cgs
-    The system of congruences defining the grid.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
-    recycled to build the grid.
+    The system of congruences defining the grid.  Its data-structures
+    will be recycled to build the grid.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
   */
   explicit Grid(Congruence_System& cgs);
 
-  //! Builds a grid from a const system of constraints.
+  //! Builds a grid, copying a system of constraints.
   /*!
     The grid inherits the space dimension of the constraint system.
 
     \param cs
     The system of constraints defining the grid.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
   */
   explicit Grid(const Constraint_System& cs);
 
-  //! Builds a grid recycling a system of constraints.
+  //! Builds a grid, recycling a system of constraints.
   /*!
     The grid inherits the space dimension of the constraint system.
 
     \param cs
     The system of constraints defining the grid.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
   */
   explicit Grid(Constraint_System& cs);
 
-  //! Builds a grid from a system of generators.
+  //! Builds a grid, copying a system of generators.
   /*!
     The grid inherits the space dimension of the generator system.
 
@@ -416,20 +435,26 @@ public:
 
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
   */
   explicit Grid(const Generator_System& const_gs);
 
-  //! Builds a grid recycling a system of generators.
+  //! Builds a grid, recycling a system of generators.
   /*!
     The grid inherits the space dimension of the generator system.
 
     \param gs
-    The system of generators defining the grid.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
-    recycled to build the grid.
+    The system of generators defining the grid.  Its data-structures
+    will be recycled to build the grid.
 
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
   */
   explicit Grid(Generator_System& gs, const bool convert_rays_to_lines = true);
 
@@ -442,9 +467,13 @@ public:
     \param dummy
     A dummy tag to make this constructor syntactically unique.
 
+    \exception std::length_error
+    Thrown if the space dimension of \p box exceeds the maximum
+    allowed space dimension.
+
     \exception std::invalid_argument
     Thrown if \p box contains at least one interval with: a
-    topologically open bound, a single bound, two bounds which have
+    topologically open bound, a single bound, or two bounds which have
     space between them.
 
     The template class Box must provide the following methods.
@@ -462,11 +491,11 @@ public:
       bool get_lower_bound(dimension_type k, bool closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
     space dimension.  If \f$I\f$ is not bounded from below, simply return
     <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
     <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the the lower boundary of \f$I\f$
+    is set to <CODE>true</CODE> if the lower boundary of \f$I\f$
     is closed and is set to <CODE>false</CODE> otherwise;
     <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
     \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
@@ -478,11 +507,11 @@ public:
       bool get_upper_bound(dimension_type k, bool closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
     space dimension.  If \f$I\f$ is not bounded from above, simply return
     <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
     <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the the upper boundary of \f$I\f$
+    is set to <CODE>true</CODE> if the upper boundary of \f$I\f$
     is closed and is set to <CODE>false</CODE> otherwise;
     <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
     \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
@@ -500,14 +529,18 @@ public:
     An interval with only one bound fixes the values of all points in
     that dimension to the value of the bound.  An interval which has
     both upper and lower bounds, and in which these bounds are of
-    equal value, allows grid points of any value in that dimension.
-    Any universe interval results in the empty grid.
+    equal value, allows grid points having any value in that
+    dimension.  Any universe interval results in the empty grid.
 
     \param box
     The covering box representing the grid to be built;
 
     \param dummy
     A dummy tag to make this constructor syntactically unique.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p box exceeds the maximum
+    allowed space dimension.
 
     \exception std::invalid_argument
     Thrown if \p box contains any topologically open bounds.
@@ -527,11 +560,11 @@ public:
       bool get_lower_bound(dimension_type k, bool closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
     space dimension.  If \f$I\f$ is not bounded from below, simply return
     <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
     <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the the lower boundary of \f$I\f$
+    is set to <CODE>true</CODE> if the lower boundary of \f$I\f$
     is closed and is set to <CODE>false</CODE> otherwise;
     <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
     \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
@@ -543,11 +576,11 @@ public:
       bool get_upper_bound(dimension_type k, bool closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
     space dimension.  If \f$I\f$ is not bounded from above, simply return
     <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
     <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the the upper boundary of \f$I\f$
+    is set to <CODE>true</CODE> if the upper boundary of \f$I\f$
     is closed and is set to <CODE>false</CODE> otherwise;
     <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
     \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
@@ -831,7 +864,7 @@ public:
     space dimension.  If \f$I\f$ is not bounded from below, simply return
     <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
     <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the the lower boundary of \f$I\f$
+    is set to <CODE>true</CODE> if the lower boundary of \f$I\f$
     is closed and is set to <CODE>false</CODE> otherwise;
     <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
     \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
@@ -847,7 +880,7 @@ public:
     space dimension.  If \f$I\f$ is not bounded from above, simply return
     <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
     <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the the upper boundary of \f$I\f$
+    is set to <CODE>true</CODE> if the upper boundary of \f$I\f$
     is closed and is set to <CODE>false</CODE> otherwise;
     <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
     \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
@@ -1263,8 +1296,8 @@ public:
     generators of \p *this.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p gs are dimension-incompatible, or if
-    \p *this is empty and the the system of generators \p gs is not empty,
+    Thrown if \p *this and \p gs are dimension-incompatible, or if \p
+    *this is empty and the system of generators \p gs is not empty,
     but has no points.
   */
   bool add_generators_and_minimize(const Generator_System& gs);
