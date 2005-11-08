@@ -253,24 +253,10 @@ inline
 Grid::~Grid() {
 }
 
-#if 0
+#if 0 // FIX
 inline memory_size_type
 Grid::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
-}
-
-inline Topology
-Grid::topology() const {
-  // We can check either one of the two matrices.
-  // (`con_sys' is slightly better, since it is placed at offset 0.)
-  return con_sys.topology();
-}
-
-inline bool
-Grid::is_necessarily_closed() const {
-  // We can check either one of the two matrices.
-  // (`con_sys' is slightly better, since it is placed at offset 0.)
-  return con_sys.is_necessarily_closed();
 }
 #endif
 
