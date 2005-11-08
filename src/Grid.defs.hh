@@ -545,11 +545,11 @@ public:
       dimension_type space_dimension() const
     \endcode
     returns the dimension of the vector space enclosing the grid
-    represented by the bounding box.
+    represented by the covering box.
     \code
       bool is_empty() const
     \endcode
-    returns <CODE>true</CODE> if and only if the bounding box
+    returns <CODE>true</CODE> if and only if the covering box
     describes the empty set.
     \code
       bool get_lower_bound(dimension_type k, bool closed,
@@ -833,7 +833,9 @@ public:
   */
   bool contains(const Grid& y) const;
 
-  //! Returns <CODE>true</CODE> if and only if \p *this strictly contains \p y.
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this strictly
+  //! contains \p y.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
@@ -842,6 +844,9 @@ public:
 
   //! Uses \p *this to shrink a generic, interval-based bounding box.
   /*!
+    \param box
+    The bounding box to be shrunk.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p box are dimension-incompatible, or if \p
     box contains any topologically open bounds.
@@ -856,7 +861,7 @@ public:
       bool get_lower_bound(dimension_type k, bool closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
     space dimension.  If \f$I\f$ is not bounded from below, simply return
     <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
     <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
@@ -872,7 +877,7 @@ public:
       bool get_upper_bound(dimension_type k, bool closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
     space dimension.  If \f$I\f$ is not bounded from above, simply return
     <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
     <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
@@ -930,6 +935,9 @@ public:
     the upper and lower bounds of the associated interval in \p box
     are set equal.  The empty grid produces the universe \p box.
 
+    \param box
+    The covering box to be shrunk.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p box are dimension-incompatible.
 
@@ -942,7 +950,7 @@ public:
       dimension_type space_dimension() const
     \endcode
     returns the dimension of the vector space enclosing the grid
-    represented by the bounding box.
+    represented by the covering box.
     \code
       raise_lower_bound(dimension_type k, bool closed,
                         Coefficient_traits::const_reference n,
@@ -998,13 +1006,14 @@ public:
   //! Adds a copy of congruence \p cg to \p *this.
   /*!
     \exception std::invalid_argument
-    Thrown if \p *this and congruence \p cg are dimension-incompatible.
+    Thrown if \p *this and congruence \p cg are
+    dimension-incompatible.
   */
   void add_congruence(const Congruence& cg);
 
   //! Adds constraint \p c to \p *this.
   /*!
-    The addition will only affect \p *this if \p c is an equality.
+    The addition can only affect \p *this if \p c is an equality.
 
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible.
@@ -1025,14 +1034,13 @@ public:
 
   //! Adds a copy of constraint \p c to \p *this, reducing the result.
   /*!
-    The addition will only affect \p *this if \p c is an equality.
+    The addition can only affect \p *this if \p c is an equality.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
     \exception std::invalid_argument
-    Thrown if \p c is not an equality constraint or if \p *this and
-    constraint \p c are dimension-incompatible.
+    Thrown if \p *this and constraint \p c are dimension-incompatible.
   */
   bool add_congruence_and_minimize(const Constraint& c);
 
@@ -1159,7 +1167,6 @@ public:
     Thrown if \p *this and \p cgs are dimension-incompatible.
 
     \warning
-
     The only assumption that can be made about \p cgs upon successful
     or exceptional return is that it can be safely destroyed.
   */
@@ -1185,7 +1192,7 @@ public:
 
   //! Adds constraint \p c to \p *this.
   /*!
-    The addition will only affect \p *this if \p c is an equality.
+    The addition can only affect \p *this if \p c is an equality.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p c are dimension-incompatible.
@@ -1194,7 +1201,7 @@ public:
 
   //! Adds constraint \p c to \p *this, reducing the result.
   /*!
-    The addition will only affect \p *this if \p c is an equality.
+    The addition can only affect \p *this if \p c is an equality.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
@@ -1237,6 +1244,9 @@ public:
   //! Adds the equality constraints in \p cs to \p *this, reducing the
   //! result.
   /*!
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
 
@@ -1310,8 +1320,8 @@ public:
     to the system of generators of \p *this.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p gs are dimension-incompatible, or if
-    \p *this is empty and the the system of generators \p gs is not empty,
+    Thrown if \p *this and \p gs are dimension-incompatible, or if \p
+    *this is empty and the system of generators \p gs is not empty,
     but has no points.
 
     \warning
@@ -1343,12 +1353,23 @@ public:
 
   //! \brief
   //! Assigns to \p *this the join of \p *this and \p y.
-  //! The result is not guaranteed to be reduced.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   void join_assign(const Grid& y);
+
+  //! \brief
+  //! Assigns to \p *this the join of \p *this and \p y,
+  //! reducing the result.
+  /*!
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  bool join_assign_and_minimize(const Grid& y);
 
   //! Same as join_assign(y).
   void upper_bound_assign(const Grid& y);
@@ -1365,18 +1386,6 @@ public:
 
   //! Same as join_assign_if_exact(y).
   bool upper_bound_assign_if_exact(const Grid& y);
-
-  //! \brief
-  //! Assigns to \p *this the join of \p *this and \p y,
-  //! reducing the result.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-  */
-  bool join_assign_and_minimize(const Grid& y);
 
   //! \brief
   //! Assigns to \p *this the \ref grid_difference "grid-difference"
