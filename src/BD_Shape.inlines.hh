@@ -219,6 +219,72 @@ extract_bounded_difference(const Constraint& c,
   return true;
 }
 
+template <typename N>
+void
+compute_predecessors(const DB_Matrix<N>& dbm,
+		     std::vector<dimension_type>& predecessor) {
+  // Variables are ordered according to their index.
+  // The vector `predecessor' is used to indicate which variable
+  // immediately precedes a given one in the corresponding equivalence class.
+  // The `leader' of an equivalence class is the element having minimum
+  // index: leaders are their own predecessors.
+  assert(predecessor.size() == 0);
+  const dimension_type pred_size = dbm.num_rows();
+  // Initially, each variable is leader of its own zero-equivalence class.
+  predecessor.reserve(pred_size);
+  for (dimension_type i = 0; i < pred_size; ++i)
+    predecessor.push_back(i);
+  // Now compute actual predecessors.
+  for (dimension_type i = pred_size; i-- > 1; )
+    if (i == predecessor[i]) {
+      const DB_Row<N>& dbm_i = dbm[i];
+      for (dimension_type j = i; j-- > 0; )
+	if (j == predecessor[j]) {
+	  N negated_dbm_ji;
+	  if (assign_neg(negated_dbm_ji, dbm[j][i], ROUND_IGNORE) == V_EQ
+	      && negated_dbm_ji == dbm_i[j]) {
+	    // Choose as predecessor the variable having the smaller index.
+	    predecessor[i] = j;
+	    break;
+	  }
+	}
+    }
+}
+
+template <typename N>
+void
+compute_leaders(const DB_Matrix<N>& dbm,
+		std::vector<dimension_type>& leaders) {
+  assert(leaders.size() == 0);
+  // Compute predecessor information.
+  compute_predecessors(dbm, leaders);
+  // Flatten the predecessor chains so as to obtain leaders.
+  assert(leaders[0] == 0);
+  for (dimension_type i = 1, iend = leaders.size(); i != iend; ++i) {
+    const dimension_type l_i = leaders[i];
+    assert(l_i <= i);
+    if (l_i != i) {
+      const dimension_type ll_i = leaders[l_i];
+      assert(ll_i == leaders[ll_i]);
+      leaders[i] = ll_i;
+    }
+  }
+}
+
+void
+compute_leader_indices(const std::vector<dimension_type>& predecessor,
+		       std::vector<dimension_type>& indices) {
+  // The vector `indices' contains one entry for each equivalence
+  // class, storing the index of the corresponding leader in
+  // increasing order: it is used to avoid repeated tests for leadership.
+  assert(indices.size() == 0);
+  assert(0 == predecessor[0]);
+  indices.push_back(0);
+  for (dimension_type i = 1, iend = predecessor.size(); i != iend; ++i)
+    if (i == predecessor[i])
+      indices.push_back(i);
+}
+
 } // namespace
 
 
@@ -250,7 +316,7 @@ template <typename T>
 inline
 BD_Shape<T>::BD_Shape(const BD_Shape& y)
   : dbm(y.dbm), status(y.status), redundancy_dbm() {
-  if (marked_shortest_path_reduced())
+  if (y.marked_shortest_path_reduced())
     redundancy_dbm = y.redundancy_dbm;
 }
 
@@ -270,45 +336,27 @@ inline dimension_type
 BD_Shape<T>::affine_dimension() const {
   const dimension_type space_dim = space_dimension();
 
-  // Closure is necessary to detect emptiness and all (possibly
-  // implicit) equalities.
+  // Shortest-path closure is necessary to detect emptiness
+  // and all (possibly implicit) equalities.
   shortest_path_closure_assign();
   if (marked_empty())
     return 0;
 
-  // The vector `leader' is used to represent equivalence classes:
-  // `leader[i] == j' if and only if "variable" `i' is in the equivalence
-  // class whose smallest member is `j'.
-  std::vector<dimension_type> leader(space_dim + 1);
+  // The vector `predecessor' is used to represent equivalence classes:
+  // `predecessor[i] == i' if and only if `i' is the leader of its
+  // equivalence class (i.e., the minimum index in the class);
+  std::vector<dimension_type> predecessor;
+  compute_predecessors(dbm, predecessor);
 
-  // Initially we have all the singleton classes.
-  for (dimension_type i = space_dim + 1; i-- > 0; )
-    leader[i] = i;
-
-  dimension_type num_equivalence_classes = 0;
-  for (dimension_type i = 0; i <= space_dim; ++i)
-    // If `i' is not a leader, then it belongs to an equivalence class
-    // whose leader is less than `i';  hence this leader has already
-    // been counted.
-    if (leader[i] == i) {
-      // `i' is a leader: count it.
-      ++num_equivalence_classes;
-      // Find and mark all the dimensions that are equivalent to the
-      // `i'-th one.
-      const DB_Row<N>& dbm_i = dbm[i];
-      for (dimension_type j = i+1; j <= space_dim; ++j) {
-	// Dimension `j' is equivalent to dimension `i' if and only if
-	// m_i_j == -m_j_i.
-	N negated_dbm_ji;
-	if (assign_neg(negated_dbm_ji, dbm[j][i], ROUND_IGNORE) == V_EQ
-	    && negated_dbm_ji == dbm_i[j]) 
-	  leader[j] = i;
-      }
-    }
-  
   // Due to the fictitious variable `0', the affine dimension is one
-  // less the the number of equivalence classes we have just computed.
-  return num_equivalence_classes-1;
+  // less the number of equivalence classes.
+  dimension_type affine_dim = 0;
+  // Note: disregard the first equivalence class.
+  for (dimension_type i = 1; i <= space_dim; ++i)
+    if (predecessor[i] == i)
+      ++affine_dim;
+  
+  return affine_dim;
 }
 
 template <typename T>
@@ -316,7 +364,7 @@ inline BD_Shape<T>&
 BD_Shape<T>::operator=(const BD_Shape& y) {
   dbm = y.dbm;
   status = y.status;
-  if (marked_shortest_path_reduced())
+  if (y.marked_shortest_path_reduced())
     redundancy_dbm = y.redundancy_dbm;
   return *this;
 }
@@ -532,8 +580,8 @@ BD_Shape<T>::remove_higher_space_dimensions(const dimension_type new_dim) {
   shortest_path_closure_assign();
   dbm.resize_no_copy(new_dim + 1);
 
-  // TODO: closure is maintained.
-  // Check to see whether or not reduction can be maintained too.
+  // Shortest-path closure is maintained.
+  // TODO: see whether or not reduction can be (efficiently!) maintained too.
   if (marked_shortest_path_reduced())
     status.reset_shortest_path_reduced();  
 
@@ -607,13 +655,6 @@ BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
   BD_Shape x(px);
   swap(x);
   assert(OK());
-}
-
-template <typename T>
-inline Constraint_System
-BD_Shape<T>::minimized_constraints() const {
-  shortest_path_reduction_assign();
-  return constraints();
 }
 
 template <typename T>
@@ -1571,43 +1612,13 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
   // Variables corresponding to indices `i' and `j' are zero-equivalent
   // if they lie on a zero-weight loop; since the matrix is shortest-path
   // closed, this happens if and only if dbm[i][j] == -dbm[j][i].
-
-  // Variables are ordered according to their index.
-  // The vector `predecessor' is used to indicate which variable
-  // immediately precedes a given one in the corresponding equivalence class.
-  // The `leader' of an equivalence class is the element having minimum
-  // index: leaders are their own predecessors.
-  const dimension_type space_dim = space_dimension();
-  std::vector<dimension_type> predecessor(space_dim + 1);
-  // Initially, each variable is leader of its own zero-equivalence class.
-  for (dimension_type i = space_dim + 1; i-- > 0; )
-    predecessor[i] = i;
-  // Now compute actual predecessors.
-  for (dimension_type i = space_dim + 1; i-- > 1; )
-    if (i == predecessor[i]) {
-      const DB_Row<N>& dbm_i = dbm[i];
-      for (dimension_type j = i; j-- > 0; )
-	if (j == predecessor[j]) {
-	  N negated_dbm_ji;
-	  if (assign_neg(negated_dbm_ji, dbm[j][i], ROUND_IGNORE) == V_EQ
-	      && negated_dbm_ji == dbm_i[j]) {
-	    // Choose as leader the variable having the smaller index.
-	    predecessor[i] = j;
-	    break;
-	  }
-	}
-    }
-
-  // The vector `leader_index' contains one entry for each equivalence
-  // class, storing the indices of the corresponding leaders in
-  // increasing order: it is used to avoid repeated tests for leadership.
+  std::vector<dimension_type> predecessor;
+  compute_predecessors(dbm, predecessor);
   std::vector<dimension_type> leaders;
-  leaders.push_back(0);
-  for (dimension_type i = 1; i <= space_dim; ++i)
-    if (i == predecessor[i])
-      leaders.push_back(i);
+  compute_leader_indices(predecessor, leaders);
   const dimension_type num_leaders = leaders.size();
 
+  const dimension_type space_dim = space_dimension();
   // TODO: directly work on `redundancy_dbm' so as to minimize allocations.
   std::deque<bool> redundancy_row(space_dim + 1, true);
   std::vector<std::deque<bool> > redundancy(space_dim + 1, redundancy_row);
@@ -1790,8 +1801,8 @@ BD_Shape<T>::add_space_dimensions_and_embed(const dimension_type m) {
   // initialized to PLUS_INFINITY.
   dbm.grow(new_space_dim + 1);
 
-  // TODO: if closure was holding, it is maintained.
-  // Check to see whether or not reduction can be maintained too.
+  // Shortest-path closure is maintained (if it was holding).
+  // TODO: see whether reduction can be (efficiently!) maintained too.
   if (marked_shortest_path_reduced())
     status.reset_shortest_path_reduced();
 
@@ -1870,6 +1881,7 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
 
   // Shortest-path closure is necessary to keep precision.
   shortest_path_closure_assign();
+
   // When removing _all_ dimensions from a BDS,
   // we obtain the zero-dimensional BDS.
   const dimension_type new_space_dim = old_space_dim - to_be_removed.size();
@@ -1882,8 +1894,8 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
     return;
   }
 
-  // TODO: closure is maintained.
-  // Check to see whether or not reduction can be maintained too.
+  // Shortest-path closure is maintained.
+  // TODO: see whether reduction can be (efficiently!) maintained too.
   if (marked_shortest_path_reduced())
     status.reset_shortest_path_reduced();  
 
@@ -1936,35 +1948,27 @@ BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
     return;
 
   if (pfunc.has_empty_codomain()) {
-    // All dimensions vanish: the system of bounded differences
-    // becomes zero_dimensional.
+    // All dimensions vanish: the BDS becomes zero_dimensional.
     remove_higher_space_dimensions(0);
     assert(OK());
     return;
   }
 
   const dimension_type new_space_dim = pfunc.max_in_codomain() + 1;
-  // If the new dimension of space is strict less than the old one,
-  // since we don't want to loose solutions, we must close.
-  // In fact, we have this system of bounded differences:
-  // x - y <= 1;
-  // y     <= 2.
-  // and we have this function:
-  // x --> x.
-  // If we don't close, we loose the constraint: x <= 3.
+  // If we are going to actually reduce the space dimension,
+  // then shortest-path closure is required to keep precision.
   if (new_space_dim < space_dim)
     shortest_path_closure_assign();
 
-  // If we have got an empty system of bounded differences, then we must
-  // only adjust the dimension of the system of bounded differences,
-  // but it must remain empty.
+  // If the BDS is empty, then it is sufficient to adjust the
+  // space dimension of the system of bounded differences.
   if (marked_empty()) {
     remove_higher_space_dimensions(new_space_dim);
     return;
   }
 
-  // TODO: if closure was holding, it is maintained.
-  // Check to see whether or not reduction can be maintained too.
+  // Shortest-path closure is maintained (if it was holding).
+  // TODO: see whether reduction can be (efficiently!) maintained too.
   if (marked_shortest_path_reduced())
     status.reset_shortest_path_reduced();
 
@@ -3432,7 +3436,6 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 template <typename T>
 Constraint_System
 BD_Shape<T>::constraints() const {
-  // FIXME: disregard redundant constraints if the dbm is reduced.
   Constraint_System cs;
   const dimension_type space_dim = space_dimension();
   if (space_dim == 0) {
@@ -3441,6 +3444,9 @@ BD_Shape<T>::constraints() const {
   }
   else if (marked_empty())
     cs.insert(0*Variable(space_dim-1) <= -1);
+  else if (marked_shortest_path_reduced())
+    // Disregard redundant constraints.
+    cs = minimized_constraints();
   else {
     // KLUDGE: in the future `cs' will be constructed of the right dimension.
     // For the time being, we force the dimension with the following line.
@@ -3499,6 +3505,89 @@ BD_Shape<T>::constraints() const {
 	    numer_denom(dbm_ji, b, a);
 	    cs.insert(a*y - a*x <= b);
 	  }
+	}
+      }
+    }
+  }
+  return cs;
+}
+
+template <typename T>
+Constraint_System
+BD_Shape<T>::minimized_constraints() const {
+  shortest_path_reduction_assign();
+  Constraint_System cs;
+  const dimension_type space_dim = space_dimension();
+  if (space_dim == 0) {
+    if (marked_empty())
+      cs = Constraint_System::zero_dim_empty();
+  }
+  else if (marked_empty())
+    cs.insert(0*Variable(space_dim-1) <= -1);
+  else {
+    // KLUDGE: in the future `cs' will be constructed of the right dimension.
+    // For the time being, we force the dimension with the following line.
+    cs.insert(0*Variable(space_dim-1) <= 0);
+
+    Coefficient num;
+    Coefficient den;
+
+    // Compute leader information.
+    std::vector<dimension_type> leaders;
+    compute_leaders(dbm, leaders);
+    std::vector<dimension_type> leader_indices;
+    compute_leader_indices(leaders, leader_indices);
+    const dimension_type num_leaders = leader_indices.size();
+
+    // Go through the non-leaders to generate equality constraints.
+    const DB_Row<N>& dbm_0 = dbm[0];
+    for (dimension_type i = 1; i <= space_dim; ++i) {
+      const dimension_type leader = leaders[i];
+      if (i != leader)
+	// Generate the constraint relating `i' and its leader.
+	if (leader == 0) {
+	  // A unary equality has to be generated.
+	  assert(!is_plus_infinity(dbm_0[i]));
+	  numer_denom(dbm_0[i], num, den);
+	  cs.insert(den*Variable(i-1) == num);
+	}
+	else {
+	  // A binary equality has to be generated.
+	  assert(!is_plus_infinity(dbm[i][leader]));
+	  numer_denom(dbm[i][leader], num, den);
+	  cs.insert(den*Variable(leader-1) - den*Variable(i-1) == num);
+	}
+    }
+
+    // Go through the leaders to generate inequality constraints.
+    // First generate all the unary inequalities.
+    for (dimension_type l_i = 1; l_i < num_leaders; ++l_i) {
+      const dimension_type i = leaders[l_i];
+      const N& dbm_0i = dbm_0[i];
+      if (!is_plus_infinity(dbm_0i)) {
+	numer_denom(dbm_0i, den, num);
+	cs.insert(den*Variable(i-1) <= num);
+      }
+      const N& dbm_i0 = dbm[i][0];
+      if (!is_plus_infinity(dbm_i0)) {
+	numer_denom(dbm_i0, num, den);
+	cs.insert(-den*Variable(i-1) <= num);
+      }
+    }
+    // Then generate all the binary inequalities.
+    for (dimension_type l_i = 1; l_i < num_leaders; ++l_i) {
+      const dimension_type i = leaders[l_i];
+      const DB_Row<N>& dbm_i = dbm[i];
+      const std::deque<bool>& red_i = redundancy_dbm[i];
+      for (dimension_type l_j = l_i + 1; l_j < num_leaders; ++l_j) {
+	const dimension_type j = leaders[l_j];
+	if (!red_i[j]) {
+	  numer_denom(dbm_i[j], num, den);
+	  cs.insert(den*Variable(j-1) - den*Variable(i-1) <= num);
+	}
+	if (!redundancy_dbm[j][i]) {
+	  numer_denom(dbm[j][i], num, den);
+	  cs.insert(den*Variable(i-1) - den*Variable(j-1) <= num);
 	}
       }
     }
