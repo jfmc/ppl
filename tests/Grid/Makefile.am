@@ -43,6 +43,7 @@ $(top_builddir)/tests/libppl_tests.a \
 
 TESTS = \
 addcongruence1 \
+addcongruences1 \
 addconstraint1 \
 addconstraints1 \
 addgenerator1 \
@@ -86,6 +87,8 @@ writecongruencesystem
 #
 
 addcongruence1_SOURCES = addcongruence1.cc
+
+addcongruences1_SOURCES = addcongruences1.cc
 
 addconstraint1_SOURCES = addconstraint1.cc
 
