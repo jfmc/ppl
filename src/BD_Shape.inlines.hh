@@ -2701,15 +2701,18 @@ BD_Shape<T>::affine_image(const Variable var,
     }
   }
 
-  if (sc_den != 1) {
-    N d;
-    assign(d, raw_value(-sc_den), ROUND_UP);
-    assign_neg(d, d, ROUND_UP);
-    if (pos_pinf_count <= 1)
-      assign_div(pos_sum, pos_sum, d, ROUND_UP);
-    if (neg_pinf_count <= 1)
-      assign_div(neg_sum, neg_sum, d, ROUND_UP);
-  }
+  // The denominator should be approximated towards zero.
+  // Since `sc_den' is known to be positive, this amounts to
+  // rounding downwards, which is achieved as usual by rounding
+  // upwards the negation and negating again the result.
+  N down_sc_den;
+  assign(down_sc_den, raw_value(-sc_den), ROUND_UP);
+  assign_neg(down_sc_den, down_sc_den, ROUND_UP);
+  // Compute quotients.
+  if (pos_pinf_count <= 1)
+    assign_div(pos_sum, pos_sum, down_sc_den, ROUND_UP);
+  if (neg_pinf_count <= 1)
+    assign_div(neg_sum, neg_sum, down_sc_den, ROUND_UP);
 
   // Remove all constraints on 'v'.
   forget_all_constraints_on_var(dbm, space_dim, v);
@@ -2721,13 +2724,12 @@ BD_Shape<T>::affine_image(const Variable var,
   if (pos_pinf_count == 0) {
     // Add the constraint `var <= pos_sum'.
     add_dbm_constraint(0, v, pos_sum);
-    // CHECK ME: What is the meaning of the following?
     // Deduce constraints of the form `v - w', where `w != v'.
+    // TODO: properly comment the following lines.
     const DB_Row<N>& dbm_0 = dbm[0];
-    const N& dbm_0v = dbm_0[v];
     for (dimension_type w = space_dim; w > 0; --w)
-      if (w != v && sgn(sc_expr.coefficient(Variable(w-1))) > 0)
-	assign_sub(dbm[w][v], dbm_0v, dbm_0[w], ROUND_UP);
+      if (w != v && sc_expr.coefficient(Variable(w-1)) >= sc_den)
+	assign_sub(dbm[w][v], pos_sum, dbm_0[w], ROUND_UP);
   }
   else if (pos_pinf_count == 1)
     if (pos_pinf_index != v
@@ -2739,13 +2741,13 @@ BD_Shape<T>::affine_image(const Variable var,
   if (neg_pinf_count == 0) {
     // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
     add_dbm_constraint(v, 0, neg_sum);
-    // CHECK ME: What is the meaning of the following?
     // Deduce constraints of the form `w - v', where `w != v'.
+    // TODO: properly comment the following lines.
     DB_Row<N>& dbm_v = dbm[v];
-    const N& dbm_v0 = dbm_v[0];
+    Coefficient neg_sc_den = -sc_den;
     for (dimension_type w = space_dim; w > 0; --w)
-      if (w != v && sgn(sc_expr.coefficient(Variable(w-1))) < 0)
-	assign_sub(dbm_v[w], dbm_v0, dbm[w][0], ROUND_UP);
+      if (w != v && sc_expr.coefficient(Variable(w-1)) <= neg_sc_den)
+	assign_sub(dbm_v[w], neg_sum, dbm[w][0], ROUND_UP);
   }
   else if (neg_pinf_count == 1)
     if (neg_pinf_index != v
@@ -3633,6 +3635,19 @@ BD_Shape<T>::OK() const {
   if (marked_empty())
     return true;
 
+  // MINUS_INFINITY cannot occur at all.
+  for (dimension_type i = dbm.num_rows(); i-- > 0; )
+    for (dimension_type j = dbm.num_rows(); j-- > 0; )
+    if (is_minus_infinity(dbm[i][j])) {
+#ifndef NDEBUG
+      using namespace Parma_Polyhedra_Library::IO_Operators;
+      std::cerr << "BD_Shape::dbm[" << i << "][" << i << "] = "
+		<< dbm[i][i] << "!"
+		<< std::endl;
+#endif
+      return false;
+    }
+
   // On the main diagonal only PLUS_INFINITY can occur.
   for (dimension_type i = dbm.num_rows(); i-- > 0; )
     if (!is_plus_infinity(dbm[i][i])) {
@@ -3661,6 +3676,19 @@ BD_Shape<T>::OK() const {
 
   // Check whether the shortest-path reduction information is legal.
   if (marked_shortest_path_reduced()) {
+    // A non-redundant constraint cannot be equal to PLUS_INFINITY.
+    for (dimension_type i = dbm.num_rows(); i-- > 0; )
+      for (dimension_type j = dbm.num_rows(); j-- > 0; )
+	if (!redundancy_dbm[i][j] && is_plus_infinity(dbm[i][j])) {
+#ifndef NDEBUG
+	  using namespace Parma_Polyhedra_Library::IO_Operators;
+	  std::cerr << "BD_Shape::dbm[" << i << "][" << i << "] = "
+		    << dbm[i][i] << " is marked as non-redundant!"
+		    << std::endl;
+#endif
+	  return false;
+	}
+
     BD_Shape x = *this;
     x.status.reset_shortest_path_reduced();
     x.shortest_path_reduction_assign();
