@@ -406,7 +406,7 @@ PPL::Grid::is_universe() const {
   if (marked_empty())
     return false;
 
-  // FIX correct?
+  // FIX correct? eg cg 1 == 0
   if (space_dim == 0)
     return true;
 
@@ -806,7 +806,7 @@ PPL::Grid::OK(bool check_not_empty) const {
       if (check_not_empty) {
 	// Want to know the satisfiability of the congruences.
 #ifndef NDEBUG
-	cerr << "Insoluble system of congruences!"
+	cerr << "Unsatisfiable system of congruences!"
 	     << endl;
 #endif
 	goto fail;
@@ -1513,8 +1513,7 @@ PPL::Grid::intersection_assign(const Grid& y) {
   }
 
   // If both grids are zero-dimensional, then at this point they are
-  // necessarily non-empty, so that their intersection is non-empty
-  // too.
+  // necessarily universe, so the intersection is also universe.
   if (x.space_dim == 0)
     return;
 
@@ -1534,8 +1533,8 @@ PPL::Grid::intersection_assign(const Grid& y) {
   x.clear_generators_up_to_date();
   x.clear_congruences_minimized();
 
-  // At this point both `x' and `y' are not empty.
-  assert(x.OK(true) && y.OK(true));
+  // `y' should still contain a point.
+  assert(x.OK() && y.OK(true));
 }
 
 bool
@@ -2301,10 +2300,6 @@ PPL::operator==(const Grid& x, const Grid& y) {
     return x.is_empty();
   if (x.space_dim == 0)
     return true;
-#if 0 // FIX?
-  if (y.is_universe())
-    return x.is_universe();
-#endif
 
   switch (x.quick_equivalence_test(y)) {
   case Grid::TVB_TRUE:
@@ -2341,14 +2336,15 @@ PPL::Grid::contains(const Grid& y) const {
     return true;
   return y.is_included_in(x);
 }
-#if 0
+
 bool
 PPL::Grid::is_disjoint_from(const Grid& y) const {
+  // Dimension-compatibility check.
+  if (space_dim != y.space_dim)
+    throw_dimension_incompatible("is_disjoint_from(y)", "y", y);
   Grid z = *this;
-  z.intersection_assign_and_minimize(y);
-  return z.is_empty();
+  return !z.intersection_assign_and_minimize(y);
 }
-#endif
 
 void
 PPL::Grid::ascii_dump(std::ostream& s) const {
