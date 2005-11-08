@@ -53,7 +53,8 @@ main() TRY {
   int retval = (bd == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(bd, "*** bd.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, A+2) ***");
+  print_constraints(bd, "*** bd.generalized_affine_image"
+		        "(B, GREATER_THAN_OR_EQUAL, A+2) ***");
 #endif
 
   return retval;
