@@ -43,6 +43,7 @@ $(top_builddir)/tests/libppl_tests.a \
 
 TESTS = \
 addcongruence1 \
+addconstraint1 \
 addconstraints1 \
 addgenerator1 \
 addspacedims1 addspacedims2 \
@@ -64,7 +65,7 @@ foldspacedims1 \
 generalizedaffineimage1 generalizedaffineimage2 \
 generalizedaffinepreimage1 generalizedaffinepreimage2 \
 coveringbox1 coveringbox2 \
-grid1 grid2 \
+grid1 grid2 grid3 \
 griddifference1 \
 intersection1 intersection2 \
 isuniverse1 \
@@ -85,6 +86,8 @@ writecongruencesystem
 #
 
 addcongruence1_SOURCES = addcongruence1.cc
+
+addconstraint1_SOURCES = addconstraint1.cc
 
 addconstraints1_SOURCES = addconstraints1.cc
 
@@ -137,6 +140,7 @@ coveringbox2_SOURCES = coveringbox2.cc
 
 grid1_SOURCES = grid1.cc
 grid2_SOURCES = grid2.cc
+grid3_SOURCES = grid3.cc
 
 griddifference1_SOURCES = griddifference1.cc
 

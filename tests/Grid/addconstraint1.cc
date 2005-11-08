@@ -1,4 +1,4 @@
-/* Test adding constraints to a grid.
+/* Test adding single constraints to grids.
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -33,26 +33,21 @@ Variable B(1);
 Variable C(2);
 Variable D(3);
 
-// add_congruences_and_minimize(cs)
+// add_constraint
 
 void
 test1() {
   nout << "test1:" << endl;
 
-  Grid gr(3);
-
-  Constraint_System cs;
-  cs.insert(B == 0);
-  cs.insert(A >= 0);
-  cs.insert(C > 0);
-
-  gr.add_congruences_and_minimize(cs);
+  Grid gr(2);
+  gr.add_constraint(A == 3);
+  gr.add_constraint(B >= 0);
 
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(3);
-  known_gr.add_congruence(B == 0);
+  Grid known_gr(2);
+  known_gr.add_congruence(A == 3);
 
   if (gr == known_gr)
     return;
@@ -66,20 +61,20 @@ test1() {
   exit(1);
 }
 
-// add_constraints
+// Add an NNC constraint with add_constraint.
 
 void
 test2() {
   nout << "test2:" << endl;
 
   Constraint_System cs;
-  cs.insert(B == 0);
-  cs.insert(A >= 0);
-  cs.insert(C > 0);
+  cs.insert(B + 0*C == 0);
+
+  NNC_Polyhedron ph(cs);
 
   Grid gr(3);
 
-  gr.add_constraints(cs);
+  gr.add_constraint(*ph.constraints().begin());
 
   if (find_variation(gr))
     exit(1);
@@ -99,149 +94,16 @@ test2() {
   exit(1);
 }
 
-// add_constraints, resulting grid empty.
+// add_constraint_and_minimize(cs)
 
 void
 test3() {
   nout << "test3:" << endl;
 
-  Constraint_System cs;
-  cs.insert(B < 0);
-  cs.insert(A >= 0);
-  cs.insert(C > 0);
-
-  Grid gr(3);
-
-  gr.add_constraints(cs);
-
-  if (find_variation(gr))
-    exit(1);
-
-  Grid known_gr(3);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
-}
-
-// add_congruences(cs)
-
-void
-test4() {
-  nout << "test4:" << endl;
-
-  Constraint_System cs;
-  cs.insert(B < 0);
-  cs.insert(B > 0);
-  cs.insert(A == 0);
-  cs.insert(C > 0);
-
-  Grid gr(3);
-  gr.add_congruences(cs);
-
-  if (find_variation(gr))
-    exit(1);
-
-  Grid known_gr(3);
-  known_gr.add_congruence(A == 0);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
-}
-
-// add_recycled_congruences(cs)
-
-void
-test5() {
-  nout << "test5:" << endl;
-
-  Constraint_System cs;
-  cs.insert(2*B == 3);
-  cs.insert(A == 0);
-  cs.insert(C > 0);
-
-  Grid gr(3);
-  gr.add_recycled_congruences(cs);
-
-  if (find_variation(gr))
-    exit(1);
-
-  Grid known_gr(3);
-  known_gr.add_congruence(A == 0);
-  known_gr.add_congruence(2*B == 3);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
-}
-
-// add_recycled_congruences_and_minimize(cs)
-
-void
-test6() {
-  nout << "test6:" << endl;
-
-  Constraint_System cs;
-  cs.insert(2*B >= 3);
-  cs.insert(2*A == 7);
-  cs.insert(C > 0);
-
-  Grid gr(3);
-  gr.add_recycled_congruences_and_minimize(cs);
-
-  if (find_variation(gr))
-    exit(1);
-
-  Grid known_gr(3);
-  known_gr.add_congruence(2*A == 7);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
-}
-
-// add_constraints_and_minimize(cs)
-
-void
-test7() {
-  nout << "test7:" << endl;
-
-  Constraint_System cs;
-  cs.insert(2*B >= 3);
-  cs.insert(D == 0);
-  cs.insert(2*A == C);
-
   Grid gr(4);
-  gr.add_constraints_and_minimize(cs);
+  gr.add_constraint_and_minimize(2*A == C);
+  gr.add_constraint_and_minimize(D == 0);
+  gr.add_constraint_and_minimize(B > 2);
 
   if (find_variation(gr))
     exit(1);
@@ -262,24 +124,20 @@ test7() {
   exit(1);
 }
 
-// add_recycled_constraints
+// add_congruence(c), adding equality
 
 void
-test8() {
-  nout << "test8:" << endl;
-
-  Constraint_System cs;
-  cs.insert(2*B > 2);
-  cs.insert(2*D == 0);
+test4() {
+  nout << "test4:" << endl;
 
   Grid gr(4);
-  gr.add_recycled_constraints(cs);
+  gr.add_congruence(D == 4);
 
   if (find_variation(gr))
     exit(1);
 
   Grid known_gr(4);
-  known_gr.add_congruence(D == 0);
+  known_gr.add_congruence(D == 4);
 
   if (gr == known_gr)
     return;
@@ -293,24 +151,75 @@ test8() {
   exit(1);
 }
 
-// add_recycled_constraints_and_minimize
+// add_congruence(c), where grid stays the same
 
 void
-test9() {
-  nout << "test9:" << endl;
-
-  Constraint_System cs;
-  cs.insert(2*B > 6);
-  cs.insert(2*C == 6*D);
+test5() {
+  nout << "test5:" << endl;
 
   Grid gr(4);
-  gr.add_recycled_constraints_and_minimize(cs);
+
+  Grid known_gr = gr;
+
+  gr.add_congruence(D > 4);
 
   if (find_variation(gr))
     exit(1);
 
-  Grid known_gr(4);
-  known_gr.add_congruence(C == 3*D);
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
+  exit(1);
+}
+
+// add_congruence_and_minimize(c), add equality.
+
+void
+test6() {
+  nout << "test6:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence_and_minimize(C == 4*A);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(3);
+  known_gr.add_congruence(C == 4*A);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
+  exit(1);
+}
+
+// add_congruence_and_minimize(c), where grid stays the same.
+
+void
+test7() {
+  nout << "test7:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence((B == 0) / 0);
+
+  Grid known_gr = gr;
+
+  gr.add_congruence_and_minimize(C > 4*A);
+
+  if (find_variation(gr))
+    exit(1);
 
   if (gr == known_gr)
     return;
@@ -339,8 +248,6 @@ main() TRY {
   test5();
   test6();
   test7();
-  test8();
-  test9();
 
   return 0;
 }
