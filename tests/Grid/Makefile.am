@@ -75,6 +75,7 @@ join1 join2 join3 \
 limitedextrapolation1 \
 mapspacedims1 \
 maxmin1 \
+membytes1 membytes2 \
 pointed1 \
 relations1 relations2 \
 removespacedims1 removespacedims2 \
@@ -164,6 +165,9 @@ limitedextrapolation1_SOURCES = limitedextrapolation1.cc
 mapspacedims1_SOURCES = mapspacedims1.cc
 
 maxmin1_SOURCES = maxmin1.cc
+
+membytes1_SOURCES = membytes1.cc
+membytes2_SOURCES = membytes2.cc
 
 pointed1_SOURCES = pointed1.cc
 
