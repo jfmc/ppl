@@ -2226,7 +2226,7 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
   assert(x.OK(true) && y.OK(true));
 }
 
-/*! \relates Parma_Polyhedra_Library:Grid */
+/*! \relates Parma_Polyhedra_Library::Grid */
 bool
 PPL::operator==(const Grid& x, const Grid& y) {
   if (x.space_dim != y.space_dim)
