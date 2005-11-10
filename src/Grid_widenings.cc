@@ -33,7 +33,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Grid::select_wider_congruences(const Grid& y,
-				    Congruence_System& selected_cgs) const {
+				    Congruence_System& cgs_selected) const {
   // Private method: the caller must ensure the following conditions
   // (beside the inclusion `y <= x').
   assert(space_dim == y.space_dim);
@@ -54,13 +54,13 @@ PPL::Grid::select_wider_congruences(const Grid& y,
 	const Congruence& y_cg = y.con_sys[y_row];
 	if (cg[dim] * y_cg.modulus() == y_cg[dim] * cg.modulus())
 	  // The leading diagonal entries are equal.
-	  selected_cgs.insert(cg);
+	  cgs_selected.insert(cg);
 	++x_row;
 	++y_row;
       }
       break;
     case EQUALITY:
-      selected_cgs.insert(con_sys[x_row]);
+      cgs_selected.insert(con_sys[x_row]);
       ++x_row;
       ++y_row;
       break;
