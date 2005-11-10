@@ -2225,61 +2225,6 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
 
   assert(x.OK(true) && y.OK(true));
 }
-#if 0 // FIX
-void
-PPL::Grid::topological_closure_assign() {
-  // Necessarily closed polyhedra are trivially closed.
-  if (is_necessarily_closed())
-    return;
-  // Any empty or zero-dimensional polyhedron is closed.
-  if (marked_empty() || space_dim == 0)
-    return;
-
-  // The computation can be done using congruences or generators.
-
-  // Use congruences only if they are available.
-  if (congruences_are_up_to_date()) {
-    const dimension_type eps_index = space_dim + 1;
-    bool changed = false;
-    // Transform all strict inequalities into non-strict ones.
-    for (dimension_type i = con_sys.num_rows(); i-- > 0; ) {
-      Congruence& c = con_sys[i];
-      if (c[eps_index] < 0 && !c.is_trivial_true()) {
-	c[eps_index] = 0;
-	// Enforce normalization.
-	c.normalize();
-	changed = true;
-      }
-    }
-    if (changed) {
-      con_sys.insert(Congruence::epsilon_leq_one());
-      con_sys.set_sorted(false);
-      // After changing the system of congruences, the generators
-      // are no longer up-to-date and the congruences are no longer
-      // minimized.
-      clear_generators_up_to_date();
-      clear_congruences_minimized();
-    }
-  }
-  else {
-    // Here we use generators, possibly keeping congruences.
-    assert(generators_are_up_to_date());
-    // Add the corresponding point to each closure point.
-    // FIX adds pending
-    gen_sys.add_corresponding_points();
-#if 0 // FIX
-    // We cannot have pending generators; this also implies
-    // that generators may have lost their sortedness.
-    gen_sys.unset_pending_rows();
-#endif
-    gen_sys.set_sorted(false);
-    // Congruences are not up-to-date and generators are not minimized.
-    clear_congruences_up_to_date();
-    clear_generators_minimized();
-  }
-  assert(OK());
-}
-#endif
 
 /*! \relates Parma_Polyhedra_Library:Grid */
 bool

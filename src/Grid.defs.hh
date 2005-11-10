@@ -1720,6 +1720,9 @@ public:
   */
   void time_elapse_assign(const Grid& y);
 
+  //! Assigns to \p *this its topological closure.
+  void topological_closure_assign();
+
   //! \brief
   //! Assigns to \p *this the result of computing the
   //! \ref grid_widening Grid widening between \p *this and \p y.

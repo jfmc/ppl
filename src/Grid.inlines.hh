@@ -643,6 +643,11 @@ Grid::get_covering_box(Box& box) const {
   box = new_box;
 }
 
+inline void
+PPL::Grid::topological_closure_assign() {
+  return;
+}
+
 template <typename Partial_Function>
 void
 Grid::map_space_dimensions(const Partial_Function& pfunc) {
