@@ -216,6 +216,19 @@ public:
   void add_zero_rows_and_columns(dimension_type n, dimension_type m,
 				 Row::Flags row_flags);
 
+  //! Adds a copy of the row \p y to the matrix.
+  /*!
+    \param y
+    The row to be copied: it must have the same number of columns as
+    the matrix.
+
+    Turns the \f$r \times c\f$ matrix \f$M\f$ into
+    the \f$(r+1) \times c\f$ matrix
+    \f$\bigl({M \atop 0}\bigr)\f$.
+    The matrix is expanded avoiding reallocation whenever possible.
+  */
+  void add_row(const Row& y);
+
   //! Adds the row \p y to the matrix.
   /*!
     \param y
@@ -227,7 +240,7 @@ public:
     \f$\bigl({M \atop 0}\bigr)\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
-  void add_row(const Row& y);
+  void add_recycled_row(Row& y);
 
   //! Makes the matrix shrink by removing its \p n trailing columns.
   void remove_trailing_columns(dimension_type n);
