@@ -642,13 +642,6 @@ PPL::Grid::OK(bool check_not_empty) const {
     goto fail;
   }
 
-  if (has_something_pending()) {
-#ifndef NDEBUG
-    cerr << "Grid with congruences and/or generators pending." << endl;
-#endif
-    goto fail;
-  }
-
   {
     // This block is to limit the scope of num_columns, at least for
     // GCC < 3.4.
@@ -802,7 +795,7 @@ PPL::Grid::OK(bool check_not_empty) const {
     Generator_System tem_gen_sys(NECESSARILY_CLOSED);
     Dimension_Kinds d = dim_kinds;
 
-    if (minimize(cs_copy, tem_gen_sys, d)) {
+    if (!minimize(cs_copy, tem_gen_sys, d)) {
       if (check_not_empty) {
 	// Want to know the satisfiability of the congruences.
 #ifndef NDEBUG
@@ -1198,16 +1191,17 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
     con_sys.add_row(cgs[row]);
 
   if (minimize(con_sys, gen_sys, dim_kinds)) {
-    set_empty();
+    clear_empty();
+    set_congruences_minimized();
+    set_generators_minimized();
+
     assert(OK());
-    return false;
+    return true;
   }
 
-  clear_empty();
-  set_congruences_up_to_date();
-
+  set_empty();
   assert(OK());
-  return true;
+  return false;
 }
 
 bool
@@ -1458,7 +1452,6 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
 	gen_sys.add_row(g);
     }
 
-    // This call to minimize returns true.
     // FIX minimize copies the generators (check cgs version)
     minimize(gen_sys, con_sys, dim_kinds);
   }
@@ -2232,7 +2225,7 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
 
   assert(x.OK(true) && y.OK(true));
 }
-#if 0
+#if 0 // FIX
 void
 PPL::Grid::topological_closure_assign() {
   // Necessarily closed polyhedra are trivially closed.
@@ -2274,7 +2267,7 @@ PPL::Grid::topological_closure_assign() {
     // Add the corresponding point to each closure point.
     // FIX adds pending
     gen_sys.add_corresponding_points();
-#if 0
+#if 0 // FIX
     // We cannot have pending generators; this also implies
     // that generators may have lost their sortedness.
     gen_sys.unset_pending_rows();

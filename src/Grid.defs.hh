@@ -445,6 +445,14 @@ public:
     The system of generators defining the grid.  Its data-structures
     will be recycled to build the grid.
 
+    \param convert_rays_to_lines
+    If true then rays in \p gs are converted to lines, else they are
+    left as rays (which is the internal representation of parameters).
+    Rays should only occur in \p gs when \p gs comes from another
+    domain (e.g. Polyhedron), in which case the rays are converted to
+    lines to keep some of the information encoded in the ray.  A value
+    of false is used in the implementation of map_space_dimensions.
+
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
 
@@ -1758,8 +1766,8 @@ public:
   //@{
 
   //! \brief
-  //! Adds \p m new space dimensions and embeds the old grid
-  //! in the new vector space.
+  //! Adds \p m new space dimensions and embeds the old grid in the
+  //! new vector space.
   /*!
     \param m
     The number of dimensions to add.
@@ -1771,66 +1779,22 @@ public:
     The new space dimensions will be those having the highest indexes
     in the new grid, which is characterized by a system of congruences
     in which the variables which are the new dimensions can have any
-    value.  For instance, when starting from the grid \f$\cP \sseq
+    value.  For instance, when starting from the grid FIX \f$\cP \sseq
     \Rset^2\f$ and adding a third space dimension, the result will be
     the grid
     \f[
       \bigl\{\,
         (x, y, z)^\transpose \in \Rset^3
       \bigm|
-        (x, y)^\transpose \in \cP
+        (x, y)^\transpose \in \cP FIX
       \,\bigr\}.
     \f]
   */
   void add_space_dimensions_and_embed(dimension_type m);
 
-  // FIX should next 2 be public?
-
-  //! Adds new space dimensions to the given systems.
-  /*!
-    \param cgs
-    A congruence system, to which columns are added;
-
-    \param gs
-    A generator system, to which rows and columns are added;
-
-    \param dims
-    The number of space dimensions to add.
-
-    Adds new space dimensions to the vector space modifying the given
-    systems.
-
-    This method is invoked only by
-    <CODE>add_space_dimensions_and_embed()</CODE>.
-  */
-  void add_space_dimensions(Congruence_System& cgs,
-			    Generator_System& gs,
-			    dimension_type dims);
-
-  //! Adds new space dimensions to the given systems.
-  /*!
-    \param gs
-    A generator system, to which columns are added;
-
-    \param cgs
-    A congruence system, to which rows and columns are added;
-
-    \param dims
-    The number of space dimensions to add.
-
-    Adds new space dimensions to the vector space modifying the given
-    systems.
-
-    This method is invoked only by
-    <CODE>add_space_dimensions_and_project()</CODE>.
-  */
-  void add_space_dimensions(Generator_System& gs,
-			    Congruence_System& cgs,
-			    dimension_type dims);
-
   //! \brief
-  //! Adds \p m new space dimensions to the grid
-  //! and does not embed it in the new vector space.
+  //! Adds \p m new space dimensions to the grid and does not embed it
+  //! in the new vector space.
   /*!
     \param m
     The number of space dimensions to add.
@@ -1840,16 +1804,16 @@ public:
     vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
 
     The new space dimensions will be those having the highest indexes
-    in the new grid, which is characterized by a system
-    of congruences in which the variables running through
-    the new dimensions are all constrained to be equal to 0.
-    For instance, when starting from the grid \f$\cP \sseq \Rset^2\f$
-    and adding a third space dimension, the result will be the grid
+    in the new grid, which is characterized by a system of congruences
+    in which the variables running through the new dimensions are all
+    constrained to be equal to 0.  For instance, when starting from
+    the grid FIX \f$\cP \sseq \Rset^2\f$ and adding a third space
+    dimension, the result will be the grid
     \f[
       \bigl\{\,
         (x, y, 0)^\transpose \in \Rset^3
       \bigm|
-        (x, y)^\transpose \in \cP
+        (x, y)^\transpose \in \cP FIX
       \,\bigr\}.
     \f]
   */
@@ -1887,12 +1851,14 @@ public:
   */
   void remove_higher_space_dimensions(dimension_type new_dimension);
 
+
   //! \brief
-  //! Remaps the dimensions of the vector space
-  //! according to a \ref map_space_dimensions "partial function".
+  //! Remaps the dimensions of the vector space according to a \ref
+  //! map_space_dimensions "partial function".
   /*!
     \param pfunc
-    The partial function specifying the destiny of each space dimension.
+    The partial function specifying the destiny of each space
+    dimension.
 
     The template class Partial_Function must provide the following
     methods.
@@ -1908,23 +1874,22 @@ public:
     \code
       dimension_type max_in_codomain() const
     \endcode
-    returns the maximum value that belongs to the codomain
-    of the partial function.
+    returns the maximum value that belongs to the codomain of the
+    partial function.
     The <CODE>max_in_codomain()</CODE> method is called at most once.
     \code
       bool maps(dimension_type i, dimension_type& j) const
     \endcode
     Let \f$f\f$ be the represented function and \f$k\f$ be the value
     of \p i.  If \f$f\f$ is defined in \f$k\f$, then \f$f(k)\f$ is
-    assigned to \p j and <CODE>true</CODE> is returned.
-    If \f$f\f$ is undefined in \f$k\f$, then <CODE>false</CODE> is
-    returned.
+    assigned to \p j and <CODE>true</CODE> is returned.  If \f$f\f$ is
+    undefined in \f$k\f$, then <CODE>false</CODE> is returned.
     This method is called at most \f$n\f$ times, where \f$n\f$ is the
     dimension of the vector space enclosing the grid.
 
     The result is undefined if \p pfunc does not encode a partial
-    function with the properties described in the
-    \ref map_space_dimensions "specification of the mapping operator".
+    function with the properties described in the \ref
+    map_space_dimensions "specification of the mapping operator".
   */
   // FIX note above that dimensions may be erased
   template <typename Partial_Function>
@@ -1939,11 +1904,12 @@ public:
     The number of replicas to be created.
 
     \exception std::invalid_argument
-    Thrown if \p var does not correspond to a dimension of the vector space.
+    Thrown if \p var does not correspond to a dimension of the vector
+    space.
 
     \exception std::length_error
-    Thrown if adding \p m new space dimensions would cause the
-    vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
+    Thrown if adding \p m new space dimensions would cause the vector
+    space to exceed dimension <CODE>max_space_dimension()</CODE>.
 
     If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
     and <CODE>var</CODE> has space dimension \f$k \leq n\f$,
@@ -1965,8 +1931,8 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with \p var or with
-    one of the Variable objects contained in \p to_be_folded.
-    Also thrown if \p var is contained in \p to_be_folded.
+    one of the Variable objects contained in \p to_be_folded.  Also
+    thrown if \p var is contained in \p to_be_folded.
 
     If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
     <CODE>var</CODE> has space dimension \f$k \leq n\f$,
@@ -2014,7 +1980,10 @@ public:
   //! \brief
   //! Loads from \p s an ASCII representation (as produced by
   //! \ref ascii_dump) and sets \p *this accordingly.
-  //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  /*!
+     \return
+     <CODE>true</CODE> if successful, else <CODE>false</CODE>.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
@@ -2081,12 +2050,8 @@ private:
 
     \param convert_rays_to_lines
     If true then rays in \p gs are converted to lines, else they are
-    left as rays (which is the internal representation of parameters).
-    Rays should only occur in \p gs when \p gs comes from another
-    domain (e.g. Polyhedron), in which case it makes more sense to
-    convert the rays to lines.  A value of false is used internally.
+    left as rays (the internal representation of parameters).
   */
-  // FIX the convert_rays_to_lines description above
   void construct(const Generator_System& gs,
 		 const bool convert_rays_to_lines = true);
 
@@ -2106,36 +2071,11 @@ private:
   //! Returns <CODE>true</CODE> if the system of generators is up-to-date.
   bool generators_are_up_to_date() const;
 
-  //! Returns <CODE>true</CODE> if the system of congruences is reduced.
-  /*!
-    // FIX
-    Note that only \em weak minimization is entailed, so that
-    an NNC grid may still have \f$\epsilon\f$-redundant congruences.
-  */
+  //! Returns <CODE>true</CODE> if the system of congruences is minimized.
   bool congruences_are_minimized() const;
 
   //! Returns <CODE>true</CODE> if the system of generators is minimized.
-  /*!
-    Note that only \em weak minimization is entailed, so that
-    an NNC grid may still have \f$\epsilon\f$-redundant generators.
-  */
   bool generators_are_minimized() const;
-
-  //! Returns <CODE>true</CODE> if there are pending congruences.
-  bool has_pending_congruences() const;
-
-  //! Returns <CODE>true</CODE> if there are pending generators.
-  bool has_pending_generators() const;
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if there are either pending
-  //! congruences or pending generators.
-  bool has_something_pending() const;
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if the grid can have something
-  //! pending.
-  bool can_have_something_pending() const;
 
   //@} // Private Verifiers: Verify if Individual Flags are Set
 
@@ -2143,14 +2083,13 @@ private:
   //@{
 
   //! \brief
-  //! Sets \p status to express that the grid
-  //! is the universe 0-dimension vector space,
-  //! clearing all corresponding matrices.
+  //! Sets \p status to express that the grid is the universe
+  //! 0-dimension vector space, clearing all corresponding matrices.
   void set_zero_dim_univ();
 
   //! \brief
-  //! Sets \p status to express that the grid is empty,
-  //! clearing all corresponding matrices.
+  //! Sets \p status to express that the grid is empty, clearing all
+  //! corresponding matrices.
   void set_empty();
 
   //! Sets \p status to express that congruences are up-to-date.
@@ -2164,12 +2103,6 @@ private:
 
   //! Sets \p status to express that generators are minimized.
   void set_generators_minimized();
-
-  //! Sets \p status to express that congruences are pending.
-  void set_congruences_pending();
-
-  //! Sets \p status to express that generators are pending.
-  void set_generators_pending();
 
   //@} // State Flag Setters: Set Only the Specified Flags
 
@@ -2185,24 +2118,18 @@ private:
   //! Sets \p status to express that parameters are out of date.
   void clear_generators_up_to_date();
 
-  //! Sets \p status to express that congruences are no longer reduced.
+  //! Sets \p status to express that congruences are no longer minimized.
   void clear_congruences_minimized();
 
   //! Sets \p status to express that generators are no longer minimized.
   void clear_generators_minimized();
 
-  //! Sets \p status to express that there are no longer pending congruences.
-  void clear_pending_congruences();
-
-  //! Sets \p status to express that there are no longer pending generators.
-  void clear_pending_generators();
-
   //@} // State Flag Cleaners: Clear Only the Specified Flag
 
-  //! \name Updating and Sorting Matrices
+  //! \name Updating Matrices
   //@{
 
-  //! Updates congruences starting from generators and reduces them.
+  //! Updates and minimizes the congruences from the generators.
   /*!
     \return
     <CODE>false</CODE> if and only if \p *this turns out to be an
@@ -2210,7 +2137,7 @@ private:
   */
   bool update_congruences() const;
 
-  //! Updates generators starting from congruences and minimizes them.
+  //! Updates and minimizes the generators from the congruences.
   /*!
     \return
     <CODE>false</CODE> if and only if \p *this turns out to be an
@@ -2221,12 +2148,12 @@ private:
   */
   bool update_generators() const;
 
-  //@} // Updating and Sorting Matrices
+  //@} // Updating Matrices
 
-  //! \name Weak and Strong Minimization of Descriptions
+  //! \name Minimization of Descriptions
   //@{
 
-  //! Applies (weak) minimization to both the congruences and generators.
+  //! Minimizes both the congruences and the generators.
   /*!
     \return
     <CODE>false</CODE> if and only if \p *this turns out to be an
@@ -2237,23 +2164,7 @@ private:
   */
   bool minimize() const;
 
-  //! Applies strong minimization to the congruences of an NNC grid.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if \p *this turns out to be an
-    empty grid.
-  */
-  bool strongly_minimize_congruences() const;
-
-  //! Applies strong minimization to the generators of an NNC grid.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if \p *this turns out to be an
-    empty grid.
-  */
-  bool strongly_minimize_generators() const;
-
-  //@} // Weak and Strong Minimization of Descriptions
+  //@} // Minimization of Descriptions
 
   enum Three_Valued_Boolean {
     TVB_TRUE,
@@ -2264,7 +2175,6 @@ private:
   //! Polynomial but incomplete equivalence test between grids.
   Three_Valued_Boolean quick_equivalence_test(const Grid& y) const;
 
-  //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is included in \p y.
   bool is_included_in(const Grid& y) const;
 
@@ -2307,7 +2217,7 @@ private:
 
     \param included
     <CODE>true</CODE> if and only if the extremum of \p expr in \p
-    *this can actually be reached;
+    *this can actually be reached (which is always the case);
 
     \param point
     When maximization or minimization succeeds, will be assigned the
@@ -2328,33 +2238,70 @@ private:
   //! \name Widening- and Extrapolation-Related Functions
   //@{
 
-  //! \brief
   //! Copies a widened selection of congruences from \p y to \p selected_cgs.
   void select_wider_congruences(const Grid& y,
 				Congruence_System& selected_cgs) const;
 
   //@} // Widening- and Extrapolation-Related Functions
 
+  //! Adds new space dimensions to the given systems.
+  /*!
+    \param cgs
+    A congruence system, to which columns are added;
+
+    \param gs
+    A generator system, to which rows and columns are added;
+
+    \param dims
+    The number of space dimensions to add.
+
+    This method is invoked only by
+    <CODE>add_space_dimensions_and_embed()</CODE>.
+  */
+  void add_space_dimensions(Congruence_System& cgs,
+			    Generator_System& gs,
+			    dimension_type dims);
+
+  //! Adds new space dimensions to the given systems.
+  /*!
+    \param gs
+    A generator system, to which columns are added;
+
+    \param cgs
+    A congruence system, to which rows and columns are added;
+
+    \param dims
+    The number of space dimensions to add.
+
+    This method is invoked only by
+    <CODE>add_space_dimensions_and_project()</CODE>.
+  */
+  void add_space_dimensions(Generator_System& gs,
+			    Congruence_System& cgs,
+			    dimension_type dims);
+
   //! \name Minimization-related Static Member Functions
   //@{
 
-  // FIX params,returns
-  // FIX these ret true for empty while minimize() and the grid ops ret false
-
   //! Builds and simplifies congruences from generators.
-  static bool minimize(Congruence_System& source,
-		       Linear_System& dest,
+  static void minimize(Generator_System& dest,
+		       Congruence_System& source,
 		       Dimension_Kinds& dim_kinds);
 
   //! Builds and simplifies generators from congruences.
-  static bool minimize(Generator_System& source,
-		       Congruence_System& dest,
+  /*!
+    \return
+    <CODE>false</CODE> if and only if \p *this turns out to be an
+    empty grid.
+  */
+  static bool minimize(Congruence_System& dest,
+		       Linear_System& source,
 		       Dimension_Kinds& dim_kinds);
 
   //! Normalizes the divisors in \p sys.
   /*!
-    Converts \p sys to an equivalent representation of *this in which
-    the divisors of all the generators are of equal value.
+    Converts \p sys to an equivalent system in which the divisors are
+    of equal value.
 
     \param divisor
     An extra divisor to include in the calculation of the common
@@ -2375,35 +2322,35 @@ private:
 
   //! Normalize all the divisors in \p sys and \p gen_sys.
   /*!
-    Convert \p sys and \p gen_sys to equivalent representations in
-    which a single value is used for the divisors of the generators in
-    both systems.
+    Modify \p sys and \p gen_sys to use the same single divisor value
+    for all generators, leaving each system representing the grid it
+    represented originally.
   */
   static void normalize_divisors(Generator_System& sys,
 				 Generator_System& gen_sys);
 
   //! \brief
-  //! Converts parameter system \p dest to be equivalent to congruence
+  //! Converts generator system \p dest to be equivalent to congruence
   //! system \p source.
   static dimension_type conversion(Congruence_System& source,
 				   Linear_System& dest,
 				   Dimension_Kinds& dim_kinds);
 
   //! \brief
-  //! Converts congruence system \p dest to be equivalent to parameter
+  //! Converts congruence system \p dest to be equivalent to generator
   //! system \p source.
   static dimension_type conversion(Generator_System& source,
 				   Congruence_System& dest,
 				   Dimension_Kinds& dim_kinds);
 
-  //! Converts \p cgs to upper triangular form.
+  //! Converts \p cgs to upper triangular (i.e. minimized) form.
   /*!
     Returns true if \p cgs is consistent, otherwise returns false.
   */
   static bool simplify(Congruence_System& cgs,
 		       Dimension_Kinds& dim_kinds);
 
-  //! Converts \p gs to lower triangular form.
+  //! Converts \p gs to lower triangular (i.e. minimized) form.
   /*!
     Returns true if \p gs is consistent, otherwise returns false.
   */

@@ -26,12 +26,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-bool
+void
 Grid::minimize(Generator_System& source, Congruence_System& dest,
 	       Dimension_Kinds& dim_kinds) {
   assert(source.num_rows() > 0);
 
-  // FIX check if source,dest minimized? prhps in callers?
+  // FIX check if source minimized? prhps in callers?
 
   simplify(source, dim_kinds);
   // source contained rows before being reduced, so it should contain
@@ -41,12 +41,6 @@ Grid::minimize(Generator_System& source, Congruence_System& dest,
   // Populate `dest' with the congruences characterizing the grid
   // described by the generators in `source'.
   conversion(source, dest, dim_kinds);
-
-  // FIX can an empty gs dest result from a consistent cgs source?
-  // FIX   if so ret according to conversion ret
-  // FIX   perhaps trivial congruences?
-
-  return false;
 }
 
 bool
@@ -57,9 +51,11 @@ Grid::minimize(Congruence_System& source, Linear_System& dest,
   // FIX is spc_dim 0?
   assert(source.num_rows() > 0);
 
+  // FIX check if source minimized? prhps in callers?
+
   source.normalize_moduli();
   if (simplify(source, dim_kinds))
-    return true;
+    return false;
 
   // Populate `dest' with the generators characterizing the grid
   // described by the congruences in `source'.
@@ -68,7 +64,7 @@ Grid::minimize(Congruence_System& source, Linear_System& dest,
   // FIX can an empty gs dest result from a consistent cgs source?
   // FIX   if so ret according a conversion ret which indicates consistency
 
-  return false;
+  return true;
 }
 
 } // namespace Parma_Polyhedra_Library

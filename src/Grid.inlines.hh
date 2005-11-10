@@ -253,12 +253,10 @@ inline
 Grid::~Grid() {
 }
 
-#if 0 // FIX
 inline memory_size_type
 Grid::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
-#endif
 
 inline dimension_type
 Grid::space_dimension() const {
@@ -325,27 +323,6 @@ Grid::generators_are_minimized() const {
   return status.test_g_minimized();
 }
 
-inline bool
-Grid::has_pending_congruences() const {
-  return status.test_c_pending();
-}
-
-inline bool
-Grid::has_pending_generators() const {
-  return status.test_g_pending();
-}
-
-inline bool
-Grid::has_something_pending() const {
-  return status.test_c_pending() || status.test_g_pending();
-}
-
-inline bool
-Grid::can_have_something_pending() const {
-  return congruences_are_minimized()
-    && generators_are_minimized();
-}
-
 inline void
 Grid::set_generators_up_to_date() {
   status.set_g_up_to_date();
@@ -364,16 +341,6 @@ Grid::set_generators_minimized() {
 }
 
 inline void
-Grid::set_congruences_pending() {
-  status.set_c_pending();
-}
-
-inline void
-Grid::set_generators_pending() {
-  status.set_g_pending();
-}
-
-inline void
 Grid::clear_empty() {
   status.reset_empty();
 }
@@ -389,18 +356,7 @@ Grid::clear_generators_minimized() {
 }
 
 inline void
-Grid::clear_pending_congruences() {
-  status.reset_c_pending();
-}
-
-inline void
-Grid::clear_pending_generators() {
-  status.reset_g_pending();
-}
-
-inline void
 Grid::clear_congruences_up_to_date() {
-  clear_pending_congruences();
   clear_congruences_minimized();
   status.reset_c_up_to_date();
   // Can get rid of con_sys here.
@@ -408,7 +364,6 @@ Grid::clear_congruences_up_to_date() {
 
 inline void
 Grid::clear_generators_up_to_date() {
-  clear_pending_generators();
   clear_generators_minimized();
   status.reset_g_up_to_date();
   // Can get rid of gen_sys here.

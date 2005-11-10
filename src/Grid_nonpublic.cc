@@ -148,7 +148,6 @@ PPL::Grid::construct(const Generator_System& const_gs,
 PPL::Grid::Three_Valued_Boolean
 PPL::Grid::quick_equivalence_test(const Grid& y) const {
   // Private method: the caller must ensure the following.
-  //assert(topology() == y.topology()); // FIX
   assert(space_dim == y.space_dim);
   assert(!marked_empty() && !y.marked_empty() && space_dim > 0);
 
@@ -192,13 +191,9 @@ PPL::Grid::quick_equivalence_test(const Grid& y) const {
     }
 #endif
   }
+  // FIX else if up to date then min and recheck (similar for cgs)?
 
   if (css_normalized) {
-    // Sort the two systems and check for identity.
-#if 0
-    x.obtain_sorted_congruences();
-    y.obtain_sorted_congruences();
-#endif
 #if 0
     // FIX requires sorting or a canonical form?
     if (x.con_sys == y.con_sys)
@@ -344,7 +339,7 @@ PPL::Grid::set_zero_dim_univ() {
 void
 PPL::Grid::set_empty() {
   status.set_empty();
-  // FIX The grid is empty, so clear the descriptions.
+  // The grid is empty, so clear the representations.
   con_sys.clear();
   gen_sys.clear();
   gen_sys.set_sorted(false);
@@ -357,10 +352,7 @@ PPL::Grid::update_congruences() const {
   assert(generators_are_up_to_date());
 
   Grid& gr = const_cast<Grid&>(*this);
-  if (minimize(gr.gen_sys, gr.con_sys, gr.dim_kinds)) {
-    gr.set_empty();
-    return false;
-  }
+  minimize(gr.gen_sys, gr.con_sys, gr.dim_kinds);
   // Both systems are minimized.
   gr.set_congruences_minimized();
   gr.set_generators_minimized();
@@ -377,13 +369,13 @@ PPL::Grid::update_generators() const {
   // Either the system of congruences is consistent, or the grid is
   // empty.
   if (minimize(x.con_sys, x.gen_sys, x.dim_kinds)) {
-    x.set_empty();
-    return false;
+    // Both systems are minimized.
+    x.set_congruences_minimized();
+    x.set_generators_minimized();
+    return true;
   }
-  // Both systems are minimized.
-  x.set_congruences_minimized();
-  x.set_generators_minimized();
-  return true;
+  x.set_empty();
+  return false;
 }
 
 bool
@@ -415,48 +407,6 @@ PPL::Grid::minimize() const {
     assert(OK());
     return true;
   }
-}
-
-bool
-PPL::Grid::strongly_minimize_congruences() const {
-
-  // FIX is this (private) method necessary? perhaps use for strong reduc
-
-  // From the user perspective, the grid stays the same.
-  Grid& x = const_cast<Grid&>(*this);
-
-  // We need `con_sys' (weakly) minimized and `gen_sys' up-to-date.
-  if (!minimize())
-    return false;
-
-  // If the grid `*this' is zero-dimensional at this point then it
-  // must be a universe grid.
-  if (x.space_dim == 0)
-    return true;
-
-  assert(OK());
-  return true;
-}
-
-bool
-PPL::Grid::strongly_minimize_generators() const {
-
-  // FIX is this method necessary? perhaps use for strong reduc
-
-  // From the user perspective, the grid stays the same.
-  Grid& x = const_cast<Grid&>(*this);
-
-  // We need `gen_sys' (weakly) minimized and `con_sys' up-to-date.
-  if (!minimize())
-    return false;
-
-  // If the grid `*this' is zero-dimensional at this point it must be
-  // a universe grid.
-  if (x.space_dim == 0)
-    return true;
-
-  assert(OK());
-  return true;
 }
 
 void
