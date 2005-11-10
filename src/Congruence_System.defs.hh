@@ -167,6 +167,10 @@ public:
   //! \brief
   //! Inserts in \p *this a copy of the congruence \p cg,
   //! increasing the number of space dimensions if needed.
+  /*!
+    The copy of \p cg will be strongly normalized after being
+    inserted.
+  */
   void insert(const Congruence& cg);
 
   //! \brief
@@ -174,6 +178,9 @@ public:
   //! as a modulo 0 congruence, increasing the number of space
   //! dimensions if needed.
   /*!
+    The modulo 0 congruence will be strongly normalized after being
+    inserted.
+
     \exception std::invalid_argument
     Thrown if \p c is a relation.
   */
@@ -339,7 +346,8 @@ private:
   //! Inserts in \p *this an exact copy of the congruence \p cg,
   //! increasing the number of space dimensions if needed.
   /*!
-    FIX ref insert also does minimization.
+    This method inserts a copy of \p cg in the given form, instead of
+    first strong normalizing \p cg as \ref insert would do.
   */
   void insert_verbatim(const Congruence& cg);
 

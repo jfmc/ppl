@@ -85,6 +85,13 @@ Congruence_System::clear() {
 }
 
 inline void
+PPL::Congruence_System::insert(const Congruence& cg) {
+  insert_verbatim(cg);
+  static_cast<Congruence&>(operator[](rows.size()-1)).strong_normalize();
+  assert(OK());
+}
+
+inline void
 Congruence_System::resize_no_copy(const dimension_type new_n_rows,
 				  const dimension_type new_n_columns) {
   Matrix::resize_no_copy(new_n_rows, new_n_columns, Row::Flags());

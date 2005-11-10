@@ -354,6 +354,7 @@ private:
   friend class Parma_Polyhedra_Library::Congruence;
   friend class Parma_Polyhedra_Library::Constraint_System;
   friend class Parma_Polyhedra_Library::Constraint_System::const_iterator;
+  friend class Parma_Polyhedra_Library::Congruence_System;
   // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
   // FIXME: the following friend declaration is only to grant access to

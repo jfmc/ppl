@@ -66,14 +66,13 @@ increase_space_dimension(const dimension_type new_space_dim) {
 
 void
 PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
-  const dimension_type old_num_rows = num_rows();
   const dimension_type old_num_columns = num_columns();
   const dimension_type cg_size = cg.size();
 
   if (cg_size > old_num_columns) {
     // Resize the system, if necessary.
     add_zero_columns(cg_size - old_num_columns);
-    if (old_num_rows != 0)
+    if (num_rows() != 0)
       // Move the moduli to the last column.
       swap_columns(old_num_columns - 1, cg_size - 1);
     add_row(cg);
@@ -83,7 +82,7 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
     Congruence rc(cg, old_num_columns, row_capacity);
     // Move the modulus to its place.
     std::swap(rc[cg_size - 1], rc[old_num_columns - 1]);
-    add_row(rc);
+    add_recycled_row(rc);
   }
   else
     // Here cg_size == old_num_columns.
@@ -91,17 +90,27 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
 }
 
 void
-PPL::Congruence_System::insert(const Congruence& cg) {
-  insert_verbatim(cg);
-  static_cast<Congruence&>(operator[](rows.size()-1)).strong_normalize();
-  assert(OK());
-}
-
-void
 PPL::Congruence_System::insert(const Constraint& c) {
-  // FIX insert makes a copy of this copy (cg)
-  Congruence cg(c);
-  insert(cg);
+  dimension_type cg_size = c.size();
+  const dimension_type old_num_columns = num_columns();
+  if (c.is_necessarily_closed())
+    ++cg_size;
+  if (cg_size < old_num_columns) {
+    // Create a congruence of the required size from `c'.
+    Congruence cg(c, old_num_columns, row_capacity);
+    add_recycled_row(cg);
+  }
+  else {
+    if (cg_size > old_num_columns) {
+      // Resize the system, if necessary.
+      add_zero_columns(cg_size - old_num_columns);
+      if (num_rows() != 0)
+	// Move the moduli to the last column.
+	swap_columns(old_num_columns - 1, cg_size - 1);
+    }
+    Congruence cg(c, cg_size, row_capacity);
+    add_recycled_row(cg);
+  }
 }
 
 void
