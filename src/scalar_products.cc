@@ -69,24 +69,6 @@ PPL::scalar_product_assign(Coefficient& z,
     add_mul_assign(z, x[i], y[i]);
 }
 
-/*! \relates Parma_Polyhedra_Library::Congruence */
-void
-PPL::scalar_product_assign(Coefficient& z,
-			   const Linear_Row& x, const Congruence& y,
-			   const Linear_Row& ref) {
-  // Scalar product is only defined if `x' and `y' are
-  // dimension-compatible.
-  assert(x.size() <= y.size() - 1);
-  z = 0;
-  for (dimension_type i = x.size(); i-- > 0; ) {
-    // z += (ref[i] + x[i]) * y[i].
-    TEMP_INTEGER(ele);
-    ele = ref[i] + x[i];
-    // The following line optimizes z += ele * y[i].
-    add_mul_assign(z, ele, y[i]);
-  }
-}
-
 /*! \relates Parma_Polyhedra_Library::Linear_Row */
 void
 PPL::reduced_scalar_product_assign(Coefficient& z,
@@ -114,25 +96,6 @@ PPL::reduced_scalar_product_assign(Coefficient& z,
   for (dimension_type i = x.size() - 1; i-- > 0; )
     // The following line optimizes z += x[i] * y[i].
     add_mul_assign(z, x[i], y[i]);
-}
-
-/*! \relates Parma_Polyhedra_Library::Congruence */
-void
-PPL::reduced_scalar_product_assign(Coefficient& z,
-				   const Linear_Row& x, const Congruence& y,
-				   const Linear_Row& ref) {
-  // The reduced scalar product is only defined
-  // if the topology of `x' is NNC and `y' has enough coefficients.
-  assert(x.size() <= y.size());
-  z = 0;
-  for (dimension_type i = x.size() - 1; i-- > 0; ) {
-    // z += (x[i] + ref[i]) * y[i].
-    TEMP_INTEGER(ele);
-    ele = x[i] + ref[i];
-    // The following line optimizes the computation
-    // of z += ele * y[i].
-    add_mul_assign(z, ele, y[i]);
-  }
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Row */

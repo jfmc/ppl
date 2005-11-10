@@ -428,7 +428,6 @@ private:
   friend void
   std::swap(PPL::Congruence& x, PPL::Congruence& y);
 
-  // FIX check which used
   friend void
   PPL::scalar_product_assign(Coefficient& z,
 			     const Linear_Row& x,
@@ -438,19 +437,9 @@ private:
 			     const Congruence& x,
 			     const Linear_Row& y);
   friend void
-  PPL::scalar_product_assign(Coefficient& z,
-			     const Linear_Row& x,
-			     const Congruence& y,
-			     const Linear_Row& ref);
-  friend void
   PPL::reduced_scalar_product_assign(Coefficient& z,
 				     const Linear_Row& x,
 				     const Congruence& y);
-  friend void
-  PPL::reduced_scalar_product_assign(Coefficient& z,
-				     const Linear_Row& x,
-				     const Congruence& y,
-				     const Linear_Row& ref);
   friend void
   PPL::homogeneous_scalar_product_assign(Coefficient& z,
 					 const Linear_Row& x,

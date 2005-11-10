@@ -53,16 +53,6 @@ void scalar_product_assign(Coefficient& z,
 			   const Congruence& x, const Linear_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Computes the scalar product of \p x (FIX relative to \p ref) and
-//! \p y and assigns it to \p z.
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void scalar_product_assign(Coefficient& z,
-			   const Linear_Row& x, const Congruence& y,
-			   const Linear_Row& ref);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns the sign of the scalar product between \p x and \p y.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 int scalar_product_sign(const Linear_Row& x, const Linear_Row& y);
@@ -96,17 +86,6 @@ void reduced_scalar_product_assign(Coefficient& z,
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void reduced_scalar_product_assign(Coefficient& z,
 				   const Linear_Row& x, const Congruence& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Computes the \e reduced scalar product of \p x (FIX relative to \p
-//! ref) and \p y, where the \f$\epsilon\f$ coefficient of \p x is
-//! ignored, and assigns the result to \p z.
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void reduced_scalar_product_assign(Coefficient& z,
-				   const Linear_Row& x, const Congruence& y,
-				   const Linear_Row& ref);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
