@@ -436,7 +436,6 @@ private:
   // FIXME: the following friend declaration is only to grant access to
   // Constraint_System::satisfies_all_constraints().
   friend class Parma_Polyhedra_Library::Constraint_System;
-  // FIX check still needed
   // FIXME: the following friend declaration is only to grant access to
   // Congruence_System::satisfies_all_congruences().
   friend class Parma_Polyhedra_Library::Congruence_System;
