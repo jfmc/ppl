@@ -34,15 +34,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Congruence::Congruence(const Constraint& c)
-  : Row(c, c.size(), compute_capacity(c.size() + 1, Row::max_size())) {
-
-  // FIX check before row c'tion
-  if (c.is_inequality()) {
-    std::ostringstream s;
-    s << "PPL::Congruence::Congruence(c):" << std::endl
-      << "constraint c must be an equality.";
-    throw std::invalid_argument(s.str());
-  }
+  : Row(c.is_equality()
+	? c
+	: (throw_invalid_argument("Congruence(c)",
+				  "constraint c must be an equality."),
+	   c),
+	c.size(),
+	compute_capacity(c.size() + 1, Row::max_size())) {
 
   // NOT_NECESSARILY_CLOSED Constraints already have an extra element,
   // for the epsilon coefficient.
@@ -54,15 +52,13 @@ PPL::Congruence::Congruence(const Constraint& c)
 
 PPL::Congruence::Congruence(const Constraint& c,
 			    dimension_type sz, dimension_type capacity)
-  : Row(c, sz, capacity) {
-
-  // FIX check before row c'tion
-  if (c.is_inequality()) {
-    std::ostringstream s;
-    s << "PPL::Congruence::Congruence(c):" << std::endl
-      << "constraint c must be an equality.";
-    throw std::invalid_argument(s.str());
-  }
+  : Row(c.is_equality()
+	? c
+	: (throw_invalid_argument("Congruence(c)",
+				  "constraint c must be an equality."),
+	   c),
+	sz,
+	capacity) {
 
   (*this)[sz-1] = 0;
 }
@@ -162,14 +158,22 @@ PPL::operator%=(const Linear_Expression& e1, const Linear_Expression& e2) {
 }
 
 void
+PPL::Congruence::throw_invalid_argument(const char* method,
+					const char* message) const {
+  std::ostringstream s;
+  s << "PPL::Congruence::" << method << ":" << std::endl
+    << message;
+  throw std::invalid_argument(s.str());
+}
+
+void
 PPL::Congruence::throw_dimension_incompatible(const char* method,
 					      const char* v_name,
 					      const Variable v) const {
   std::ostringstream s;
-  s << "PPL::Congruence::" << method << ":" << std::endl
-    << "this->space_dimension() == " << space_dimension() << ", "
+  s << "this->space_dimension() == " << space_dimension() << ", "
     << v_name << ".space_dimension() == " << v.space_dimension() << ".";
-  throw std::invalid_argument(s.str());
+  throw_invalid_argument(method, s.str().c_str());
 }
 
 /*! \relates Parma_Polyhedra_Library::Congruence */

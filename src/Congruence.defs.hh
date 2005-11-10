@@ -392,6 +392,12 @@ private:
 
   //! \brief
   //! Throws a <CODE>std::invalid_argument</CODE> exception containing
+  //! error message \p message.
+  void
+  throw_invalid_argument(const char* method, const char* message) const;
+
+  //! \brief
+  //! Throws a <CODE>std::invalid_argument</CODE> exception containing
   //! the appropriate error message.
   void
   throw_dimension_incompatible(const char* method,
