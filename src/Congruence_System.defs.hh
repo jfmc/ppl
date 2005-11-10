@@ -275,22 +275,26 @@ public:
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool OK() const;
 
-  // FIX #ifdef PPL_DOX... next 3?
-
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void ascii_dump(std::ostream& s) const;
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
   //! Writes to std::cerr an ASCII representation of the internal
   //! representation of \p *this.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void ascii_dump() const;
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
   //! Loads from \p s an ASCII representation (as produced by
   //! \ref ascii_dump) and sets \p *this accordingly.
   //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -350,19 +354,12 @@ private:
   Parma_Polyhedra_Library::operator==(const Congruence_System& x,
 				      const Congruence_System& y);
 
-  // FIX where is this used?
-  //! \brief
-  //! Builds a system of \p n_rows congruences on a \p n_columns - 1
-  //! dimensional space.
-  Congruence_System(dimension_type n_rows, dimension_type n_columns);
-
   //! Swaps \p *this with \p y.
   void swap(Congruence_System& y);
 
-  // FIX where will this be used?
   //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! contains one or more linear equalities.
+  //! Returns <CODE>true</CODE> if and only if \p *this contains one
+  //! or more linear equalities.
   bool has_linear_equalities() const;
 
   //! Returns the \p k- th congruence of the system.

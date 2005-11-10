@@ -50,12 +50,6 @@ Congruence_System::Congruence_System(const Congruence_System& cs)
 }
 
 inline
-Congruence_System::Congruence_System(const dimension_type n_rows,
-				     const dimension_type n_columns)
-  : Matrix(n_rows, n_columns) {
-}
-
-inline
 Congruence_System::~Congruence_System() {
 }
 
