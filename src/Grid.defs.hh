@@ -137,83 +137,67 @@ bool operator!=(const Grid& x, const Grid& y);
   Variable y(1);
     \endcode
 
-  FIX examples still from ph
-
     \par Example 1
-    The following code builds a grid corresponding to
-    a square in \f$\Rset^2\f$, given as a system of congruences:
+    The following code builds a grid corresponding to the even integer
+    points in \f$\Rset^2\f$, given as a system of congruences:
     \code
-  Congruence_System cs;
-  cs.insert(x >= 0);
-  cs.insert(x <= 3);
-  cs.insert(y >= 0);
-  cs.insert(y <= 3);
-  C_Grid gr(cs);
+  Congruence_System cgs;
+  cgs.insert((x %= 0) / 2);
+  cgs.insert((y %= 0) / 2);
+  Grid gr(cgs);
     \endcode
-    The following code builds the same grid as above,
-    but starting from a system of generators specifying
-    the four vertices of the square:
+    The following code builds the same grid as above, but starting
+    from a system of generators specifying three of the points:
     \code
   Generator_System gs;
   gs.insert(point(0*x + 0*y));
-  gs.insert(point(0*x + 3*y));
-  gs.insert(point(3*x + 0*y));
-  gs.insert(point(3*x + 3*y));
-  C_Grid gr(gs);
+  gs.insert(point(0*x + 2*y));
+  gs.insert(point(2*x + 0*y));
+  Grid gr(gs);
     \endcode
 
     \par Example 2
-    The following code builds an unbounded grid
-    corresponding to a half-strip in \f$\Rset^2\f$,
-    given as a system of congruences:
+    The following code builds a grid corresponding to a line in
+    \f$\Rset^2\f$ by adding a single congruence to the universe grid:
     \code
-  Congruence_System cs;
-  cs.insert(x >= 0);
-  cs.insert(x - y <= 0);
-  cs.insert(x - y + 1 >= 0);
-  C_Grid gr(cs);
+  Congruence_System cgs;
+  cgs.insert(x - y == 0);
+  Grid gr(cgs);
     \endcode
-    The following code builds the same grid as above,
-    but starting from the system of generators specifying
-    the two vertices of the grid and one ray: FIX
+    The following code builds the same grid as above, but starting
+    from the system of generators specifying a point and a line:
     \code
   Generator_System gs;
   gs.insert(point(0*x + 0*y));
-  gs.insert(point(0*x + y));
-  gs.insert(ray(x - y));  FIX
-  C_Grid gr(gs);
+  gs.insert(line(x - y));
+  Grid gr(gs);
     \endcode
 
     \par Example 3
-    The following code builds the grid corresponding to
-    a half-plane by adding a single congruence
-    to the universe grid in \f$\Rset^2\f$:
+    The following code builds the grid corresponding to a plane by
+    creating the universe grid in \f$\Rset^2\f$:
     \code
-  C_Grid gr(2);
-  gr.add_congruence(y >= 0);
+  Grid gr(2);
     \endcode
-    The following code builds the same grid as above,
-    but starting from the empty grid in the space \f$\Rset^2\f$
-    and inserting the appropriate generators
-    (a point, a ray and a line).  FIX
+    The following code builds the same grid as above, but starting
+    from the empty grid in the space \f$\Rset^2\f$ and inserting the
+    appropriate generators (a point, and two lines).
     \code
-  C_Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
   gr.add_generator(point(0*x + 0*y));
-  gr.add_generator(ray(y)); FIX
   gr.add_generator(line(x));
+  gr.add_generator(line(y));
     \endcode
-    Note that, although the above grid has no vertices, we must add
-    one point, because otherwise the result of the Minkowsky's sum
-    would be an empty grid.
-    To avoid subtle errors related to the reduction process,
-    it is required that the first generator inserted in an empty
-    grid is a point (otherwise, an exception is thrown).
+    Note that a generator system must contain a point when describing
+    a grid.  To ensure that this is always the case it is required
+    that the first generator inserted in an empty grid is a point
+    (otherwise, an exception is thrown).
 
     \par Example 4
     The following code shows the use of the function
     <CODE>add_space_dimensions_and_embed</CODE>:
     \code
-  C_Grid gr(1);
+  Grid gr(1);
   gr.add_congruence(x == 2);
   gr.add_space_dimensions_and_embed(1);
     \endcode
@@ -234,7 +218,7 @@ bool operator!=(const Grid& x, const Grid& y);
     The following code shows the use of the function
     <CODE>add_space_dimensions_and_project</CODE>:
     \code
-  C_Grid gr(1);
+  Grid gr(1);
   gr.add_congruence(x == 2);
   gr.add_space_dimensions_and_project(1);
     \endcode
@@ -248,64 +232,66 @@ bool operator!=(const Grid& x, const Grid& y);
     The following code shows the use of the function
     <CODE>affine_image</CODE>:
     \code
-  C_Grid gr(2, Grid::EMPTY);
+  Grid gr(2, EMPTY);
   gr.add_generator(point(0*x + 0*y));
-  gr.add_generator(point(0*x + 3*y));
-  gr.add_generator(point(3*x + 0*y));
-  gr.add_generator(point(3*x + 3*y));
-  Linear_Expression coeff = x + 4;
-  gr.affine_image(x, coeff);
+  gr.add_generator(point(4*x + 0*y));
+  gr.add_generator(point(0*x + 2*y));
+  Linear_Expression expr = x + 3;
+  gr.affine_image(x, expr);
     \endcode
-    In this example the starting grid is a square in
-    \f$\Rset^2\f$, the considered variable is \f$x\f$ and the affine
-    expression is \f$x+4\f$.  The resulting grid is the same
-    square translated to the right.  Moreover, if the affine
-    transformation for the same variable \p x is \f$x+y\f$:
+    In this example the starting grid is all the pairs of \f$x\f$ and
+    \f$y\f$ in \f$\Rset^2\f$ where \f$x\f$ is an integer multiple of 4
+    and \f$y\f$ is an integer multiple of 2.  The considered variable
+    is \f$x\f$ and the affine expression is \f$x+3\f$.  The resulting
+    grid is the given grid translated 3 integers to the right (all the
+    pairs where \f$x\f$ is -1 plus a multiple of 4 and \f$x\f$ is a
+    multiple of 2).
+    Moreover, if the affine transformation for the same variable \p x
+    is instead \f$x+y\f$:
     \code
-  Linear_Expression coeff = x + y;
+  Linear_Expression expr = x + y;
     \endcode
-    the resulting grid is a parallelogram with the height equal to
-    the side of the square and the oblique sides parallel to the line
-    \f$x-y\f$.
-    Instead, if we do not use an invertible transformation for the same
-    variable; for example, the affine expression \f$y\f$:
+    the resulting grid is every second point along the \f$x=y\f$ line,
+    with this line of points repeated at every fourth value along the
+    \f$y\f$ axis.
+    Instead, if we do not use an invertible transformation for the
+    same variable; for example, the affine expression \f$y\f$:
     \code
-  Linear_Expression coeff = y;
+  Linear_Expression expr = y;
     \endcode
-    the resulting grid is a diagonal of the square.
+    the resulting grid is every second point along the \f$x=y\f$ line.
 
     \par Example 7
     The following code shows the use of the function
     <CODE>affine_preimage</CODE>:
     \code
-  C_Grid gr(2);
-  gr.add_congruence(x >= 0);
-  gr.add_congruence(x <= 3);
-  gr.add_congruence(y >= 0);
-  gr.add_congruence(y <= 3);
-  Linear_Expression coeff = x + 4;
-  gr.affine_preimage(x, coeff);
+  Grid gr(2, EMPTY);
+  gr.add_generator(point(0*x + 0*y));
+  gr.add_generator(point(4*x + 0*y));
+  gr.add_generator(point(0*x + 2*y));
+  Linear_Expression expr = x + 3;
+  gr.affine_preimage(x, expr);
     \endcode
     In this example the starting grid, \p var and the affine
-    expression and the denominator are the same as in Example 6,
-    while the resulting grid is again the same square,
-    but translated to the left.
+    expression and the denominator are the same as in Example 6, while
+    the resulting grid is again the same grid, but translated to the
+    left.
     Moreover, if the affine transformation for \p x is \f$x+y\f$
     \code
-  Linear_Expression coeff = x + y;
+  Linear_Expression expr = x + y;
     \endcode
-    the resulting grid is a parallelogram with the height equal to
-    the side of the square and the oblique sides parallel to the line
-    \f$x+y\f$.
+    the resulting grid is a similar grid to the result in Example 6,
+    only the grid is slanted along \f$x=-y\f$.
     Instead, if we do not use an invertible transformation for the same
     variable \p x, for example, the affine expression \f$y\f$:
     \code
-  Linear_Expression coeff = y;
+  Linear_Expression expr = y;
     \endcode
-    the resulting grid is a line that corresponds to the \f$y\f$ axis.
+    the resulting grid is every fourth line parallel to the \f$x\f$
+    axis.
 
     \par Example 8
-    For this example we use also the variables:
+    For this example we also use the variables:
     \code
   Variable z(2);
   Variable w(3);
@@ -315,8 +301,8 @@ bool operator!=(const Grid& x, const Grid& y);
     \code
   Generator_System gs;
   gs.insert(point(3*x + y +0*z + 2*w));
-  C_Grid gr(gs);
-  set<Variable> to_be_removed;
+  Grid gr(gs);
+  Variables_Set to_be_removed;
   to_be_removed.insert(y);
   to_be_removed.insert(z);
   gr.remove_space_dimensions(to_be_removed);
@@ -1114,7 +1100,7 @@ public:
 
   //! Adds the equality constraints in \p cs to \p *this.
   /*!
-    \param cgs
+    \param cs
     The constraint system from which constraints will be considered
     for addition to the system of congruences of \p *this.
 
