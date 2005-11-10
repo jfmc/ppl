@@ -36,6 +36,7 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Congruence::Congruence(const Constraint& c)
   : Row(c, c.size(), compute_capacity(c.size() + 1, Row::max_size())) {
 
+  // FIX check before row c'tion
   if (c.is_inequality()) {
     std::ostringstream s;
     s << "PPL::Congruence::Congruence(c):" << std::endl
@@ -49,6 +50,21 @@ PPL::Congruence::Congruence(const Constraint& c)
     Row::expand_within_capacity(size()+1);
 
   (*this)[size()-1] = 0;
+}
+
+PPL::Congruence::Congruence(const Constraint& c,
+			    dimension_type sz, dimension_type capacity)
+  : Row(c, sz, capacity) {
+
+  // FIX check before row c'tion
+  if (c.is_inequality()) {
+    std::ostringstream s;
+    s << "PPL::Congruence::Congruence(c):" << std::endl
+      << "constraint c must be an equality.";
+    throw std::invalid_argument(s.str());
+  }
+
+  (*this)[sz-1] = 0;
 }
 
 void

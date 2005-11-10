@@ -365,6 +365,11 @@ private:
 	     dimension_type sz,
 	     dimension_type capacity);
 
+  //! Constructs from a constraint, with specified size and capacity.
+  Congruence(const Constraint& c,
+	     dimension_type sz,
+	     dimension_type capacity);
+
   //! Copy-constructs from \p cg, multiplying \p k into the modulus.
   /*!
     If \p cg is said to represent the congruence \f$ e_1 = e_2
