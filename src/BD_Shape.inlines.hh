@@ -687,12 +687,14 @@ BD_Shape<T>::ascii_load(std::istream& s) {
    if (!(s >> nrows))
     return false;
   redundancy_dbm.clear();
-  std::deque<bool> red_row(nrows, false);
-  for (dimension_type i = 0; i < nrows;  ++i)
-    for (dimension_type j = 0; j < nrows; ++j) {
-      if (!(s >> redundancy_dbm[i][j]))
+  redundancy_dbm.reserve(nrows);
+  std::deque<bool> redundancy_row(nrows, false);
+  for (dimension_type i = 0; i < nrows;  ++i) {
+    for (dimension_type j = 0; j < nrows; ++j)
+      if (!(s >> redundancy_row[j]))
 	return false;
-    }
+    redundancy_dbm.push_back(redundancy_row);
+  }
   return true;
 }
 
@@ -2758,7 +2760,7 @@ BD_Shape<T>::affine_image(const Variable var,
   }
   else if (pos_pinf_count == 1)
     if (pos_pinf_index != v
-	&& expr.coefficient(Variable(pos_pinf_index-1)) == denominator)
+	&& sc_expr.coefficient(Variable(pos_pinf_index-1)) == sc_den)
       // Add the constraint `v - pos_pinf_index <= pos_sum'.
       add_dbm_constraint(pos_pinf_index, v, pos_sum);
   
@@ -2776,7 +2778,7 @@ BD_Shape<T>::affine_image(const Variable var,
   }
   else if (neg_pinf_count == 1)
     if (neg_pinf_index != v
-	&& expr.coefficient(Variable(neg_pinf_index-1)) == denominator)
+	&& sc_expr.coefficient(Variable(neg_pinf_index-1)) == sc_den)
       // Add the constraint `v - neg_pinf_index >= -neg_sum',
       // i.e., `neg_pinf_index - v <= neg_sum'.
       add_dbm_constraint(v, neg_pinf_index, neg_sum);
