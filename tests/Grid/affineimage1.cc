@@ -435,6 +435,94 @@ test12() {
   exit(1);
 }
 
+// Shift a rectilinear pointed grid along A.
+
+void
+test13() {
+  nout << "test13:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence((A %= 0) / 4);
+  gr.add_congruence((B %= 0) / 2);
+
+  gr.affine_image(A, A + 3);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(3);
+  known_gr.add_congruence((A %= 3) / 4);
+  known_gr.add_congruence((B %= 0) / 2);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Slant a rectilinear pointed grid along A == B.
+
+void
+test14() {
+  nout << "test14:" << endl;
+
+  Grid gr(2);
+  gr.add_congruence((A %= 0) / 4);
+  gr.add_congruence((B %= 0) / 2);
+
+  gr.affine_image(A, A + B);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(2);
+  known_gr.add_congruence((A - B %= 0) / 4);
+  known_gr.add_congruence((A %= 0) / 2);
+  known_gr.add_congruence((B %= 0) / 2);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Compress a rectilinear pointed grid to a line of points.
+
+void
+test15() {
+  nout << "test15:" << endl;
+
+  Grid gr(2);
+  gr.add_congruence((A %= 0) / 4);
+  gr.add_congruence((B %= 0) / 2);
+
+  gr.affine_image(A, B);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(2);
+  known_gr.add_congruence(A - B == 0);
+  known_gr.add_congruence((A %= 0) / 2);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -455,6 +543,9 @@ main() TRY {
   test10();
   test11();
   test12();
+  test13();
+  test14();
+  test15();
 
   return 0;
 }

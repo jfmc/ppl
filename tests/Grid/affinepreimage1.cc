@@ -500,6 +500,95 @@ test13() {
   exit(1);
 }
 
+// Shift a rectilinear pointed grid along A.
+
+void
+test14() {
+  nout << "test14:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence((A %= 0) / 4);
+  gr.add_congruence((B %= 0) / 2);
+
+  gr.affine_preimage(A, A + 3);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(3);
+  known_gr.add_congruence((A %= -3) / 4);
+  known_gr.add_congruence((B %= 0) / 2);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Slant a rectilinear pointed grid along A == -B.
+
+void
+test15() {
+  nout << "test15:" << endl;
+
+  Grid gr(2);
+  gr.add_congruence((A %= 0) / 4);
+  gr.add_congruence((B %= 0) / 2);
+
+  gr.affine_preimage(A, A + B);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(2);
+  known_gr.add_congruence((A + B %= 0) / 4);
+  known_gr.add_congruence((A %= 0) / 2);
+  known_gr.add_congruence((B %= 0) / 2);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Expand a rectilinear pointed grid to a sequence of lines.
+
+void
+test16() {
+  nout << "test16:" << endl;
+
+  Grid gr(2);
+  gr.add_congruence((A %= 0) / 4);
+  gr.add_congruence((B %= 0) / 2);
+
+  gr.affine_preimage(A, B);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(2);
+  known_gr.add_congruence((A + B %= 0) / 4);
+  known_gr.add_congruence((A %= 0) / 2);
+  known_gr.add_congruence((B %= 0) / 2);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -521,6 +610,9 @@ main() TRY {
   test11();
   test12();
   test13();
+  test14();
+  test15();
+  test16();
 
   return 0;
 }
