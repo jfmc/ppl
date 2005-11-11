@@ -143,7 +143,7 @@ PPL::Grid::operator=(const Grid& y) {
 
 PPL::dimension_type
 PPL::Grid::affine_dimension() const {
-  if (is_empty() || space_dim == 0)
+  if (space_dim == 0 || is_empty())
     return 0;
 
   // FIXME: Use the minimized congruence system, or the generator
@@ -399,6 +399,30 @@ PPL::Grid::relation_with(const Generator& g,
     con_sys.satisfies_all_congruences(g, divisor == 0 ? g.divisor() : divisor)
     ? Poly_Gen_Relation::subsumes()
     : Poly_Gen_Relation::nothing();
+}
+
+inline bool
+PPL::Grid::is_empty() const {
+  if (marked_empty())
+    return true;
+  // Try a fast-fail test: if generators are up-to-date then the
+  // generator system (since it is well formed) contains a point.
+  if (generators_are_up_to_date())
+    return false;
+  if (space_dim == 0)
+    return false;
+  if (congruences_are_minimized())
+    // If the grid was empty it would be marked empty.
+    return false;
+  // Minimize the congruences to check if the grid is empty.
+  Grid& gr = const_cast<Grid&>(*this);
+  gr.con_sys.normalize_moduli();
+  if (gr.simplify(gr.con_sys, gr.dim_kinds)) {
+    gr.set_empty();
+    return true;
+  }
+  gr.set_congruences_minimized();
+  return false;
 }
 
 bool

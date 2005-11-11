@@ -370,17 +370,6 @@ Grid::clear_generators_up_to_date() {
 }
 
 inline bool
-Grid::is_empty() const {
-  if (marked_empty())
-    return true;
-  // Try a fast-fail test: if generators are up-to-date then the
-  // generator system (since it is well formed) contains a point.
-  if (generators_are_up_to_date())
-    return false;
-  return !minimize();		// FIX simplify the cgs instead
-}
-
-inline bool
 Grid::bounds_from_above(const Linear_Expression& expr) const {
   return bounds(expr, "bounds_from_above(e)");
 }
