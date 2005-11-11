@@ -575,9 +575,7 @@ test16() {
     exit(1);
 
   Grid known_gr(2);
-  known_gr.add_congruence((A + B %= 0) / 4);
-  known_gr.add_congruence((A %= 0) / 2);
-  known_gr.add_congruence((B %= 0) / 2);
+  known_gr.add_congruence((B %= 0) / 4);
 
   if (gr == known_gr)
     return;
