@@ -93,23 +93,23 @@ bool operator!=(const Grid& x, const Grid& y);
 } // namespace Parma_Polyhedra_Library
 
 
-//! The class of grids.
+//! A grid.
 /*!
-    An object of the class Grid represents a convex grid in the vector
-    space \f$\Rset^n\f$.
+    An object of the class Grid represents a grid.
 
     A grid can be specified as either a finite system of congruences
-    or a finite system of generators (see Section \ref representation)
-    and it is always possible to obtain either representation.
+    or a finite system of generators (see Section \ref
+    sect_rational_grids) and it is always possible to obtain either
+    representation.
     That is, if we know the system of congruences, we can obtain
     from this the system of generators that define the same grid
     and vice versa.
-    These systems can contain redundant members: in this case we say
-    that they are not in the minimal form.
+    These systems can contain redundant members, or they can be in the
+    minimal form.
     Most operators on grids are provided with two implementations:
     one of these, denoted <CODE>\<operator-name\>_and_minimize</CODE>,
-    also enforces the reduction of the representations,
-    and returns the Boolean value <CODE>false</CODE> whenever
+    also enforces the minimization of the representations,
+    and returns the boolean value <CODE>false</CODE> whenever
     the resulting grid turns out to be empty.
 
     A key attributes of any grid is its space dimension (the dimension
@@ -117,13 +117,14 @@ bool operator!=(const Grid& x, const Grid& y);
 
     - all grids, the empty ones included, are endowed with a space
       dimension;
-    - most operations working on a grid and another object (i.e.,
-      another grid, a congruence or generator, a set of variables,
-      etc.) will throw an exception if the grid and the object are not
-      dimension-compatible (see Section \ref representation);
+    - most operations working on a grid and another object (another
+      grid, a congruence, a generator, a set of variables, etc.) will
+      throw an exception if the grid and the object are not
+      dimension-compatible (see Section \ref grid_space_dimensions);
     - the only ways in which the space dimension of a grid can be
-      changed are <EM>explicit</EM> calls to operators provided for
-      that purpose, and standard copy, assignment and swap operators.
+      changed are with <EM>explicit</EM> calls to operators provided
+      for that purpose, and with standard copy, assignment and swap
+      operators.
 
     Note that two different grids can be defined on the zero-dimension
     space: the empty grid and the universe grid \f$R^0\f$.
@@ -139,7 +140,7 @@ bool operator!=(const Grid& x, const Grid& y);
 
     \par Example 1
     The following code builds a grid corresponding to the even integer
-    points in \f$\Rset^2\f$, given as a system of congruences:
+    pairs in \f$\Rset^2\f$, given as a system of congruences:
     \code
   Congruence_System cgs;
   cgs.insert((x %= 0) / 2);
@@ -165,7 +166,7 @@ bool operator!=(const Grid& x, const Grid& y);
   Grid gr(cgs);
     \endcode
     The following code builds the same grid as above, but starting
-    from the system of generators specifying a point and a line:
+    from a system of generators specifying a point and a line:
     \code
   Generator_System gs;
   gs.insert(point(0*x + 0*y));
@@ -180,8 +181,8 @@ bool operator!=(const Grid& x, const Grid& y);
   Grid gr(2);
     \endcode
     The following code builds the same grid as above, but starting
-    from the empty grid in the space \f$\Rset^2\f$ and inserting the
-    appropriate generators (a point, and two lines).
+    from the empty grid in \f$\Rset^2\f$ and inserting the appropriate
+    generators (a point, and two lines).
     \code
   Grid gr(2, EMPTY);
   gr.add_generator(point(0*x + 0*y));
@@ -244,8 +245,8 @@ bool operator!=(const Grid& x, const Grid& y);
     and \f$y\f$ is an integer multiple of 2.  The considered variable
     is \f$x\f$ and the affine expression is \f$x+3\f$.  The resulting
     grid is the given grid translated 3 integers to the right (all the
-    pairs where \f$x\f$ is -1 plus a multiple of 4 and \f$x\f$ is a
-    multiple of 2).
+    pairs where \f$x\f$ is -1 plus an integer multiple of 4 and
+    \f$x\f$ is an integer multiple of 2).
     Moreover, if the affine transformation for the same variable \p x
     is instead \f$x+y\f$:
     \code
@@ -253,7 +254,7 @@ bool operator!=(const Grid& x, const Grid& y);
     \endcode
     the resulting grid is every second point along the \f$x=y\f$ line,
     with this line of points repeated at every fourth value along the
-    \f$y\f$ axis.
+    \f$x\f$ axis.
     Instead, if we do not use an invertible transformation for the
     same variable; for example, the affine expression \f$y\f$:
     \code
@@ -1397,8 +1398,8 @@ public:
   void difference_assign(const Grid& y);
 
   //! \brief
-  //! Assigns to \p *this the \ref affine_transformation "affine image"
-  //! of \p *this under the function mapping variable \p var to the
+  //! Assigns to \p *this the \ref affine_function "affine image" of
+  //! \p *this under the function mapping variable \p var to the
   //! affine expression specified by \p expr and \p denominator.
   /*!
     \param var
@@ -1490,7 +1491,7 @@ public:
 		    = Coefficient_one());
 
   //! \brief
-  //! Assigns to \p *this the \ref affine_transformation "affine preimage"
+  //! Assigns to \p *this the \ref affine_function "affine preimage"
   //! of \p *this under the function mapping variable \p var to the
   //! affine expression specified by \p expr and \p denominator.
   /*!
@@ -1582,12 +1583,12 @@ public:
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_image "generalized affine transfer function"
+  //! \ref generalized_affine_relation "generalized affine relation"
   //! \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
   //! \pmod{\mathrm{modulus}}\f$.
   /*!
     \param var
-    The left hand side variable of the generalized affine transfer function;
+    The left hand side variable of the generalized affine relation;
 
     \param expr
     The numerator of the right hand side affine expression;
@@ -1615,12 +1616,12 @@ public:
 
   //! \brief
   //! Assigns to \p *this the preimage of \p *this with respect to the
-  //! \ref generalized_image "generalized affine transfer function"
+  //! \ref generalized_affine_relation "generalized affine relation"
   //! \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
   //! \pmod{\mathrm{modulus}}\f$.
   /*!
     \param var
-    The left hand side variable of the generalized affine transfer function;
+    The left hand side variable of the generalized affine relation;
 
     \param expr
     The numerator of the right hand side affine expression;
@@ -1648,7 +1649,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref grid_generalized_image "generalized affine transfer function"
+  //! \ref grid_generalized_image "generalized affine relation"
   //! \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
   /*!
     \param lhs
@@ -1673,9 +1674,8 @@ public:
 
   //! \brief
   //! Assigns to \p *this the preimage of \p *this with respect to the
-  //! \ref grid_generalized_image "generalized affine transfer
-  //! function" \f$\mathrm{lhs}' = \mathrm{rhs}
-  //! \pmod{\mathrm{modulus}}\f$.
+  //! \ref grid_generalized_image "generalized affine relation"
+  //! \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
   /*!
     \param lhs
     The left hand side affine expression;
@@ -1768,14 +1768,14 @@ public:
     The new space dimensions will be those having the highest indexes
     in the new grid, which is characterized by a system of congruences
     in which the variables which are the new dimensions can have any
-    value.  For instance, when starting from the grid FIX \f$\cP \sseq
+    value.  For instance, when starting from the grid \f$\cL \sseq
     \Rset^2\f$ and adding a third space dimension, the result will be
     the grid
     \f[
       \bigl\{\,
         (x, y, z)^\transpose \in \Rset^3
       \bigm|
-        (x, y)^\transpose \in \cP FIX
+        (x, y)^\transpose \in \cL
       \,\bigr\}.
     \f]
   */
@@ -1796,13 +1796,13 @@ public:
     in the new grid, which is characterized by a system of congruences
     in which the variables running through the new dimensions are all
     constrained to be equal to 0.  For instance, when starting from
-    the grid FIX \f$\cP \sseq \Rset^2\f$ and adding a third space
+    the grid \f$\cL \sseq \Rset^2\f$ and adding a third space
     dimension, the result will be the grid
     \f[
       \bigl\{\,
         (x, y, 0)^\transpose \in \Rset^3
       \bigm|
-        (x, y)^\transpose \in \cP FIX
+        (x, y)^\transpose \in \cL
       \,\bigr\}.
     \f]
   */
@@ -1845,6 +1845,14 @@ public:
   //! Remaps the dimensions of the vector space according to a \ref
   //! map_space_dimensions "partial function".
   /*!
+    If \p pfunc maps only some of the dimensions of \p *this then the
+    rest will be projected away.
+
+    If the highest dimension mapped to by \p pfunc is higher than the
+    highest dimension in \p *this then the number of dimensions in \p
+    *this will be increased to the highest dimension mapped to by \p
+    pfunc.
+
     \param pfunc
     The partial function specifying the destiny of each space
     dimension.
@@ -1880,7 +1888,6 @@ public:
     function with the properties described in the \ref
     map_space_dimensions "specification of the mapping operator".
   */
-  // FIX note above that dimensions may be erased
   template <typename Partial_Function>
   void map_space_dimensions(const Partial_Function& pfunc);
 
@@ -2292,6 +2299,9 @@ private:
     Converts \p sys to an equivalent system in which the divisors are
     of equal value.
 
+    \param sys
+    The generator system to be normalized.
+
     \param divisor
     An extra divisor to include in the calculation of the common
     divisor of \p sys.  If this value is zero then only the divisors
@@ -2334,14 +2344,15 @@ private:
 
   //! Converts \p cgs to upper triangular (i.e. minimized) form.
   /*!
-    Returns true if \p cgs is consistent, otherwise returns false.
+    Returns true if \p cgs is represents the empty set, otherwise
+    returns false.
   */
   static bool simplify(Congruence_System& cgs,
 		       Dimension_Kinds& dim_kinds);
 
   //! Converts \p gs to lower triangular (i.e. minimized) form.
   /*!
-    Returns true if \p gs is consistent, otherwise returns false.
+    Returns true if \p gs is empty, otherwise returns false.
   */
   static bool simplify(Generator_System& gs,
 		       Dimension_Kinds& dim_kinds);
