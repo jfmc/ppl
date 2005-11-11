@@ -27,60 +27,45 @@ site: http://www.cs.unipr.it/ppl/ . */
 #error "Do not include Grid_Status.idefs.hh directly; use Grid.defs.hh instead."
 #endif
 
-//! A conjunctive assertion about a FIX polyhedron.
+//! A conjunctive assertion about a grid.
 /*!
-  The assertions supported are:
-  - <EM>zero-dim universe</EM>: the polyhedron is the zero-dimension
+  The assertions supported that are in use are:
+  - <EM>zero-dim universe</EM>: the grid is the zero-dimension
     vector space \f$\Rset^0 = \{\cdot\}\f$;
-  - <EM>empty</EM>: the polyhedron is the empty set;
-  - <EM>constraints pending</EM>: the polyhedron is correctly
-    characterized by the attached system of constraints, which is
-    split in two non-empty subsets: the already processed constraints,
-    which are in minimal form, and the pending constraints, which
-    still have to be processed and may thus be inconsistent or
-    contain redundancies;
-  - <EM>generators pending</EM>: the polyhedron is correctly
-    characterized by the attached system of generators, which is
-    split in two non-empty subsets: the already processed generators,
-    which are in minimal form, and the pending generators, which still
-    have to be processed and may thus contain redundancies;
-  - <EM>constraints up-to-date</EM>: the polyhedron is correctly
-    characterized by the attached system of constraints, modulo the
+  - <EM>empty</EM>: the grid is the empty set;
+  - <EM>congruences up-to-date</EM>: the grid is correctly
+    characterized by the attached system of congruences, modulo the
     processing of pending generators;
-  - <EM>generators up-to-date</EM>: the polyhedron is correctly
+  - <EM>generators up-to-date</EM>: the grid is correctly
     characterized by the attached system of generators, modulo the
-    processing of pending constraints;
-  - <EM>constraints minimized</EM>: the non-pending part of the system
-    of constraints attached to the polyhedron is in minimal form;
+    processing of pending congruences;
+  - <EM>congruences minimized</EM>: the non-pending part of the system
+    of congruences attached to the grid is in minimal form;
   - <EM>generators minimized</EM>: the non-pending part of the system
-    of generators attached to the polyhedron is in minimal form;
-  - <EM>constraints' saturation matrix up-to-date</EM>: the attached
-    saturation matrix having rows indexed by non-pending generators and
-    columns indexed by non-pending constraints correctly expresses
-    the saturation relation between the attached non-pending constraints
-    and generators;
-  - <EM>generators' saturation matrix up-to-date</EM>: the attached
-    saturation matrix having rows indexed by non-pending constraints and
-    columns indexed by non-pending generators correctly expresses
-    the saturation relation between the attached non-pending constraints
-    and generators;
+    of generators attached to the grid is in minimal form.
+
+  Other supported assertions are:
+  - <EM>congruences pending</EM>
+  - <EM>generators pending</EM>
+  - <EM>congruences' saturation matrix up-to-date</EM>
+  - <EM>generators' saturation matrix up-to-date</EM>.
 
   Not all the conjunctions of these elementary assertions constitute
   a legal Status.  In fact:
   - <EM>zero-dim universe</EM> excludes any other assertion;
   - <EM>empty</EM>: excludes any other assertion;
-  - <EM>constraints pending</EM> and <EM>generators pending</EM>
+  - <EM>congruences pending</EM> and <EM>generators pending</EM>
     are mutually exclusive;
-  - <EM>constraints pending</EM> implies both <EM>constraints minimized</EM>
+  - <EM>congruences pending</EM> implies both <EM>congruences minimized</EM>
     and <EM>generators minimized</EM>;
-  - <EM>generators pending</EM> implies both <EM>constraints minimized</EM>
+  - <EM>generators pending</EM> implies both <EM>congruences minimized</EM>
     and <EM>generators minimized</EM>;
-  - <EM>constraints minimized</EM> implies <EM>constraints up-to-date</EM>;
+  - <EM>congruences minimized</EM> implies <EM>congruences up-to-date</EM>;
   - <EM>generators minimized</EM> implies <EM>generators up-to-date</EM>;
-  - <EM>constraints' saturation matrix up-to-date</EM> implies both
-    <EM>constraints up-to-date</EM> and <EM>generators up-to-date</EM>;
+  - <EM>congruences' saturation matrix up-to-date</EM> implies both
+    <EM>congruences up-to-date</EM> and <EM>generators up-to-date</EM>;
   - <EM>generators' saturation matrix up-to-date</EM> implies both
-    <EM>constraints up-to-date</EM> and <EM>generators up-to-date</EM>.
+    <EM>congruences up-to-date</EM> and <EM>generators up-to-date</EM>.
 */
 class Status {
 public:

@@ -185,7 +185,7 @@ PPL::Grid::Status::OK() const {
       && !(test_c_up_to_date() && test_g_up_to_date())) {
 #ifndef NDEBUG
     cerr <<
-      "If a saturation matrix is up-to-date, constraints and\n"
+      "If a saturation matrix is up-to-date, congruences and\n"
       "generators have to be both up-to-date."
 	 << endl;
 #endif
@@ -194,7 +194,7 @@ PPL::Grid::Status::OK() const {
 
   if (test_c_minimized() && !test_c_up_to_date()) {
 #ifndef NDEBUG
-    cerr << "If constraints are minimized they must be up-to-date."
+    cerr << "If congruences are minimized they must be up-to-date."
 	 << endl;
 #endif
     return false;
@@ -210,7 +210,7 @@ PPL::Grid::Status::OK() const {
 
   if (test_c_pending() && test_g_pending()) {
 #ifndef NDEBUG
-    cerr << "There cannot be both pending constraints and pending generators."
+    cerr << "There cannot be both pending congruences and pending generators."
 	 << endl;
 #endif
     return false;
@@ -220,7 +220,7 @@ PPL::Grid::Status::OK() const {
     if (!test_c_minimized() || !test_g_minimized()) {
 #ifndef NDEBUG
     cerr <<
-      "If there are pending constraints or generators, constraints\n"
+      "If there are pending congruences or generators, congruences\n"
       "and generators must be minimized."
 	 << endl;
 #endif
@@ -230,7 +230,7 @@ PPL::Grid::Status::OK() const {
     if (!test_sat_c_up_to_date() && !test_sat_g_up_to_date()) {
 #ifndef NDEBUG
     cerr <<
-      "If there are pending constraints or generators, there must\n"
+      "If there are pending congruences or generators, there must\n"
       "be at least a saturation matrix up-to-date."
 	 << endl;
 #endif
