@@ -1020,7 +1020,7 @@ the variables occurring in expression \f$\mathrm{lhs}\f$ are interpreted
 as primed variables, whereas those occurring in \f$\mathrm{rhs}\f$
 are unprimed; for instance, the transfer relations
 \f$\mathrm{lhs}' \leq \mathrm{rhs}\f$ and
-\f$\mathrm{rhs}' \geq \mathrm{lhs}\f$ 
+\f$\mathrm{rhs}' \geq \mathrm{lhs}\f$
 are not equivalent in general.
 
 \anchor time_elapse
@@ -1659,6 +1659,7 @@ As for convex polyhedra, such changes of representation form a key step
 in the implementation of many operators on grids such as, for example,
 intersection and grid join.
 
+\anchor grid_space_dimensions
 <B>Space Dimensions and Dimension-compatibility for Grids</B>
 
 The <EM>space dimension</EM> of a grid \f$\cL \in \Gset_n\f$
@@ -1882,7 +1883,7 @@ and, for \f$ k = 0 \f$, \f$ \ldots \f$, \f$ n-1 \f$,
 \anchor grid_affine_transformation
 <B>Affine Images and Preimages</B>
 
-As for convex polyhedra, \ref affine_transformation
+As for convex polyhedra, \ref affine_function
 "affine image and preimage" operators for grids are provided:
 given a variable \f$x_k\f$ and
 linear expression \f$\mathrm{expr} = \sum_{i=0}^{n-1} a_i x_i + b\f$,
