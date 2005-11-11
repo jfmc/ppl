@@ -85,7 +85,7 @@ Congruence_System::clear() {
 }
 
 inline void
-PPL::Congruence_System::insert(const Congruence& cg) {
+Congruence_System::insert(const Congruence& cg) {
   insert_verbatim(cg);
   static_cast<Congruence&>(operator[](rows.size()-1)).strong_normalize();
   assert(OK());
