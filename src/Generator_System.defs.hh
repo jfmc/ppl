@@ -212,6 +212,9 @@ public:
   //! Inserts in \p *this a copy of the generator \p g,
   //! increasing the number of space dimensions if needed.
   /*!
+      \param g
+      The generator to copy.
+
       \param check_normalization
       If true normalization of generators is checked in the OK
       assertion.
@@ -451,7 +454,12 @@ private:
     \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$;
 
     \param denominator
-    The denominator of the affine transformation.
+    The denominator of the affine transformation;
+
+    \param grid
+    If true then \p *this is assumed to describe a grid, otherwise a
+    polyhedron is assumed, in which case strong normalization can be
+    performed on the result.
 
     We want to allow affine transformations (see the Introduction) having
     any rational coefficients. Since the coefficients of the
