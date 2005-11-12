@@ -97,14 +97,16 @@ AH_BOTTOM([
 # C compiler
 
 AC_ARG_WITH(cc,
-[  --with-cc=xxx           use XXX as the C compiler],
-CC=$with_cc)
+  AC_HELP_STRING([--with-cc=XXX],
+    [use XXX as the C compiler]),
+  CC=$with_cc)
 
 # C++ compiler
 
 AC_ARG_WITH(cxx,
-[  --with-cxx=xxx          use XXX as the C++ compiler],
-CXX=$with_cxx)
+  AC_HELP_STRING([--with-cxx=XXX],
+    [use XXX as the C++ compiler]),
+  CXX=$with_cxx)
 
 # Compilation flags
 
@@ -114,7 +116,8 @@ OPT_FLAGS=""
 enableval=yes
 AC_MSG_CHECKING([whether to compile with debug info])
 AC_ARG_ENABLE(debugging,
-[  --enable-debugging      compile with debugging information])
+  AC_HELP_STRING([--enable-debugging],
+    [compile with debugging information]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -131,7 +134,8 @@ esac
 enableval=no
 AC_MSG_CHECKING([whether to compile for profiling])
 AC_ARG_ENABLE(profiling,
-[  --enable-profiling      compile for profiling])
+  AC_HELP_STRING([--enable-profiling],
+    [compile for profiling]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -149,7 +153,8 @@ esac
 enableval=no
 AC_MSG_CHECKING([whether to compile for test coverage])
 AC_ARG_ENABLE(coverage,
-[  --enable-coverage       compile for test coverage])
+  AC_HELP_STRING([--enable-coverage],
+    [compile for test coverage]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -167,7 +172,8 @@ esac
 enableval=no
 AC_MSG_CHECKING([whether to enable checking of run-time assertions])
 AC_ARG_ENABLE(assertions,
-[  --enable-assertions     check run-time assertions])
+  AC_HELP_STRING([--enable-assertions],
+    [check run-time assertions]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -184,7 +190,8 @@ enable_assertions=${enableval}
 enableval=no
 AC_MSG_CHECKING([whether to enable even more run-time assertions])
 AC_ARG_ENABLE(more-assertions,
-[  --enable-more-assertions check even more run-time assertions])
+  AC_HELP_STRING([--enable-more-assertions],
+    [check even more run-time assertions]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -218,7 +225,8 @@ arch=no
 enableval=standard
 AC_MSG_CHECKING([whether to enable optimizations])
 AC_ARG_ENABLE(optimization,
-[  --enable-optimization   enable compiler optimizations])
+  AC_HELP_STRING([--enable-optimization],
+    [enable compiler optimizations]))
 case "${enableval}" in
 sspeed)
   AC_MSG_RESULT(sspeed)
@@ -258,7 +266,8 @@ esac
 enableval=$arch
 AC_MSG_CHECKING([for which architecture to optimize])
 AC_ARG_ENABLE(arch,
-[  --enable-arch[=arch]      optimize for architecture arch])
+  AC_HELP_STRING([--enable-arch@<:@=ARCH@:>@],
+    [optimize for architecture ARCH]))
 case "${enableval}" in
 yes)
   m=`uname -m`
@@ -287,7 +296,8 @@ CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
 enableval=mpz
 AC_MSG_CHECKING([the type of integral values to use as coefficients])
 AC_ARG_ENABLE(coefficients,
-[  --enable-coefficients   select the type of the coefficients])
+  AC_HELP_STRING([--enable-coefficients],
+    [select the type of the coefficients]))
 case "${enableval}" in
 native-int8)
   AC_MSG_RESULT([native 8 bits integers])
@@ -374,12 +384,14 @@ fi
 # Allow additions to C and C++ compilation flags
 
 AC_ARG_WITH(cflags,
-[  --with-cflags=xxx       add XXX to the options for the C compiler],
-CFLAGS="$CFLAGS $with_cflags")
+  AC_HELP_STRING([--with-cflags=XXX],
+    [add XXX to the options for the C compiler]),
+  CFLAGS="$CFLAGS $with_cflags")
 
 AC_ARG_WITH(cxxflags,
-[  --with-cxxflags=xxx     add XXX to the options for the C++ compiler],
-CXXFLAGS="$CXXFLAGS $with_cxxflags")
+  AC_HELP_STRING([--with-cxxflags=XXX],
+    [add XXX to the options for the C++ compiler]),
+  CXXFLAGS="$CXXFLAGS $with_cxxflags")
 
 # Checks for programs.
 AC_PROG_CC
@@ -488,7 +500,8 @@ extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_option}"
 enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
 AC_ARG_ENABLE(watchdog,
-[  --enable-watchdog       build also the Parma Watchdog Library])
+  AC_HELP_STRING([--enable-watchdog],
+    [build also the Parma Watchdog Library]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -516,7 +529,8 @@ default_interfaces=${available_interfaces}
 enableval=not_specified
 AC_MSG_CHECKING([which interfaces are enabled])
 AC_ARG_ENABLE(interfaces,
-[  --enable-interfaces   enable some or all the library interfaces])
+  AC_HELP_STRING([--enable-interfaces],
+    [enable some or all the library interfaces]))
 case x"${enableval}" in
 xyes | x)
   AC_MSG_ERROR([--enable-interfaces needs at least one argument chosen among ${available_interfaces}, none and all])
@@ -639,7 +653,8 @@ default_instantiations="Polyhedron @ BD_Shape<int8_t>"
 enableval=not_specified
 AC_MSG_CHECKING([which instantiations are enabled])
 AC_ARG_ENABLE(instantiations,
-[  --enable-instantiations   enable instantiations for the non-C++ interfaces])
+  AC_HELP_STRING([--enable-instantiations],
+    [enable instantiations for the non-C++ interfaces]))
 case x"${enableval}" in
 xyes | x)
   AC_MSG_ERROR([--enable-instantiations needs at least one argument])
