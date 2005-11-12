@@ -29,7 +29,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static void
+namespace {
+
+void
 test1() {
   Variable A(0);
   Variable B(1);
@@ -60,7 +62,7 @@ test1() {
     exit(1);
 }
 
-static void
+void
 test2() {
   Variable A(0);
   Variable B(1);
@@ -92,7 +94,7 @@ test2() {
     exit(1);
 }
 
-static void
+void
 test3() {
   Variable A(0);
   Variable B(1);
@@ -124,7 +126,7 @@ test3() {
     exit(1);
 }
 
-static void
+void
 test4() {
   Variable A(0);
   Variable B(1);
@@ -155,7 +157,7 @@ test4() {
     exit(1);
 }
 
-static void
+void
 test5() {
   Variable A(0);
   Variable B(1);
@@ -186,7 +188,7 @@ test5() {
     exit(1);
 }
 
-static void
+void
 test6() {
   Variable A(0);
   Variable B(1);
@@ -214,14 +216,15 @@ test6() {
   bool ok = (bd == known_result);
  
 #if NOISY
-  print_constraints(bd, "*** bd.affine_preimage(D, 4*A - B + 2*C + 5*D - 1, 3) ***");
+  print_constraints(bd, "*** bd.affine_preimage"
+		        "(D, 4*A - B + 2*C + 5*D - 1, 3) ***");
 #endif
 
   if (!ok)
     exit(1);
 }
 
-static void
+void
 test7() {
   Variable A(0);
   Variable B(1);
@@ -253,7 +256,7 @@ test7() {
     exit(1);
 }
 
-static void
+void
 test8() {
   Variable A(0);
   Variable B(1);
@@ -281,6 +284,8 @@ test8() {
   if (!ok)
     exit(1);
 }
+
+} // namespace
 
 int 
 main() TRY {

@@ -32,7 +32,11 @@ using namespace Parma_Polyhedra_Library;
 #include "files.hh"
 #include <fstream>
 
-static const char* my_file = "ascii_dump_load1.dat";
+namespace {
+
+const char* my_file = "ascii_dump_load1.dat";
+
+} // namespace
 
 int
 main() TRY {

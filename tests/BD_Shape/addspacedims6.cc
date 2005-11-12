@@ -30,7 +30,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static void
+namespace {
+
+void
 test1() {
   TBD_Shape bd1(0, UNIVERSE);
   TBD_Shape known_result(3, UNIVERSE);
@@ -50,7 +52,7 @@ test1() {
     exit(1);
 }
 
-static void
+void
 test2() {
   Variable A(0);
   Variable B(1);
@@ -80,7 +82,7 @@ test2() {
     exit(1);
 }
 
-static void
+void
 test3() {
   Variable A(0);
   Variable B(1);
@@ -108,7 +110,7 @@ test3() {
     exit(1);
 }
 
-static void
+void
 test4() {
   //Variable A(0);
   Variable B(1);
@@ -136,6 +138,8 @@ test4() {
   if (!ok)
     exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {

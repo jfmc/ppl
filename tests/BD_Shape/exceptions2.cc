@@ -29,7 +29,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static void
+namespace {
+
+void
 error1() {
   Variable x(0);
   Variable y(1);
@@ -53,7 +55,7 @@ error1() {
   }
 }
 
-static void
+void
 error2() {
   Variable x(0);
   Variable y(1);
@@ -78,7 +80,7 @@ error2() {
   }
 }
 
-static void
+void
 error3() {
   TBD_Shape bd1(5);
   TBD_Shape bd2(10);
@@ -100,7 +102,7 @@ error3() {
   }
 }
 
-static void
+void
 error4() {
   Variable x(0);
   Variable y(1);
@@ -136,7 +138,7 @@ error4() {
   }
 }
 
-static void
+void
 error5() {
   Variable y(1);
 
@@ -163,7 +165,7 @@ error5() {
   }
 }
 
-static void
+void
 error6() {
   Variable x(0);
   Variable y(1);
@@ -198,7 +200,7 @@ error6() {
   }
 }
 
-static void
+void
 error7() {
   Variable x(0);
   Variable y(1);
@@ -228,7 +230,7 @@ error7() {
   }
 }
 
-static void
+void
 error8() {
   Variable x(0);
   Variable y(1);
@@ -253,7 +255,7 @@ error8() {
   }
 }
 
-static void
+void
 error9() {
   Variable x(0);
   Variable y(1);
@@ -280,7 +282,7 @@ error9() {
   }
 }
 
-static void
+void
 error10() {
   TBD_Shape bd1(1);
   TBD_Shape bd2(2);
@@ -303,7 +305,7 @@ error10() {
 }
 
 
-static void
+void
 error11() {
   Variable x(0);
   Variable y(1);
@@ -333,7 +335,7 @@ error11() {
   }
 }
 
-static void
+void
 error12() {
   Variable x(0);
   Variable y(1);
@@ -358,7 +360,7 @@ error12() {
   }
 }
 
-static void
+void
 error13() {
   Variable x(0);
   Variable y(1);
@@ -384,7 +386,7 @@ error13() {
 }
 
 
-static void
+void
 error14() {
   Variable x(0);
   Variable y(1);
@@ -408,6 +410,8 @@ error14() {
     exit(1);
   }
 }
+
+} // namespace
 
 
 int

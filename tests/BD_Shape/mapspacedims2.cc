@@ -30,9 +30,12 @@ using namespace Parma_Polyhedra_Library;
 #endif
 #include "PFunction.hh"
 
+namespace {
+
 #if NOISY
-static void
-print_function(const PFunction& function, const string& intro = "",
+void
+print_function(const PFunction& function,
+	       const string& intro = "",
 	       ostream& s = cout) {
   if (!intro.empty())
     s << intro << endl;
@@ -41,7 +44,7 @@ print_function(const PFunction& function, const string& intro = "",
 #endif
 
 
-static void
+void
 test1() {
   PFunction function;
 
@@ -66,7 +69,7 @@ test1() {
     exit(1);
 }
 
-static void
+void
 test2() {
   PFunction function;
 
@@ -91,7 +94,7 @@ test2() {
     exit(1);
 }
 
-static void
+void
 test3() {
   PFunction function;
   function.insert(0, 1);
@@ -118,7 +121,7 @@ test3() {
     exit(1);
 }
 
-static void
+void
 test4() {
   Variable x(0);
   Variable y(1);
@@ -155,7 +158,7 @@ test4() {
     exit(1);
 }
 
-static void
+void
 test5() {
   Variable x(0);
   Variable y(1);
@@ -193,7 +196,7 @@ test5() {
 }
 
 
-static void
+void
 test6() {
   Variable x(0);
   Variable y(1);
@@ -233,6 +236,8 @@ test6() {
   if (!ok)
     exit(1);
 }
+
+} // namespace
 
 
 int

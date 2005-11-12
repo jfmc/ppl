@@ -29,7 +29,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static void
+namespace {
+
+void
 test1() {
   Variable x(0);
   Variable y(1);
@@ -63,7 +65,7 @@ test1() {
     exit(1);
 }
 
-static void
+void
 test2() {
   Variable x(0);
   Variable y(1);
@@ -97,7 +99,7 @@ test2() {
     exit(1);
 }
 
-static void
+void
 test3() {
   Variable x(0);
   Variable y(1);
@@ -131,7 +133,7 @@ test3() {
     exit(1);
 }
 
-static void
+void
 test4() {
   Variable x(0);
   Variable y(1);
@@ -164,7 +166,7 @@ test4() {
     exit(1);
 }
 
-static void
+void
 test5() {
   Variable x(0);
   Variable y(1);
@@ -198,7 +200,7 @@ test5() {
     exit(1);
 }
 
-static void
+void
 test6() {
   Variable x(0);
   Variable y(1);
@@ -234,7 +236,7 @@ test6() {
     exit(1);
 }
 
-static void
+void
 test7() {
   Variable x(0);
   Variable y(1);
@@ -269,7 +271,7 @@ test7() {
     exit(1);
 }
 
-static void
+void
 test8() {
   Variable x(0);
   Variable y(1);
@@ -306,7 +308,7 @@ test8() {
     exit(1);
 }
 
-static void
+void
 test9() {
   Variable x(0);
   Variable y(1);
@@ -343,7 +345,7 @@ test9() {
     exit(1);
 }
 
-static void
+void
 test10() {
   Variable x(0);
   Variable y(1);
@@ -379,7 +381,7 @@ test10() {
     exit(1);
 }
 
-static void
+void
 test11() {
   Variable x(0);
   Variable y(1);
@@ -394,19 +396,6 @@ test11() {
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
-
-#if 0
-  C_Polyhedron ph(3);
-  ph.add_constraint(y >= 0);
-  ph.add_constraint(y <= 2);
-  ph.add_constraint(z <= 3);
-  ph.affine_image(x, y + 5*z, 3);
-  TBD_Shape ph_bd(ph.minimized_generators());
-#if NOISY
-  print_generators(ph, "*** ph ***");
-  print_constraints(ph_bd, "*** ph_bd ***");
-#endif
-#endif  
 
   TBD_Shape known_result(3);
   known_result.add_constraint(x <= 6);
@@ -428,6 +417,8 @@ test11() {
   if (!ok)
     exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {
