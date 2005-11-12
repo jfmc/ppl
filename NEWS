@@ -40,8 +40,8 @@ o  The function template
      bool check_containment(const PH&, const Polyhedra_Powerset<PH>&)
 
    now works whenever there exists a lossless conversion mapping an
-   object of tyoe PH into an NNC_Polyhedron (e.g., when PH = BD_Shape).
-   The same holds for methods     
+   object of type PH into an NNC_Polyhedron (e.g., when PH = BD_Shape).
+   The same holds for methods
 
      bool Polyhedra_Powerset<PH>::geometrically_covers()
 
