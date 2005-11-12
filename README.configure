@@ -101,10 +101,10 @@ other environment variables, provides four switches with which you can
 select the compilers and compilers' options to use for building the
 library.  These switches are
 
-  --with-cc=xxx           use XXX as the C compiler
-  --with-cxx=xxx          use XXX as the C++ compiler
-  --with-cflags=xxx       add XXX to the options for the C compiler
-  --with-cxxflags=xxx     add XXX to the options for the C++ compiler
+  --with-cc=XXX           use XXX as the C compiler
+  --with-cxx=XXX          use XXX as the C++ compiler
+  --with-cflags=XXX       add XXX to the options for the C compiler
+  --with-cxxflags=XXX     add XXX to the options for the C++ compiler
  
 Let us take the occasion to stress, once again, the fact that you
 _must_ use the same C++ compiler to compile the C++ interface of GMP,
@@ -166,7 +166,7 @@ where TYPE is one of
   checked-int32     use 32-bit checked integers
   checked-int64     use 64-bit checked integers
 
-When using checked integers is it also wise to increase the
+When using checked integers it is also wise to increase the
 optimization level, since their efficiency largely depends on
 the compiler and on the optimization options used.  Adding
 
