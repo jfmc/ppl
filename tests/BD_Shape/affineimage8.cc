@@ -43,7 +43,6 @@ test1() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(z >= 3);
 
-
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
@@ -77,7 +76,6 @@ test2() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(z >= 3);
 
-
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
@@ -109,7 +107,6 @@ test3() {
   bd.add_constraint(x <= 1);
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= 1);
-
 
 #if NOISY
   print_constraints(bd, "*** bd ***");
@@ -144,7 +141,6 @@ test4() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= 1);
 
-
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
@@ -176,7 +172,6 @@ test5() {
   bd.add_constraint(x <= 1);
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= 1);
-
 
 #if NOISY
   print_constraints(bd, "*** bd ***");
@@ -212,7 +207,6 @@ test6() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= -1);
 
-
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
@@ -223,6 +217,7 @@ test6() {
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= -1);
   known_result.add_constraint(x - y <= 3);
+  known_result.add_constraint(x - y >= 1);
 
   bd.affine_image(x, 2*x + y + 1);
 
@@ -258,6 +253,7 @@ test7() {
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= -1);
   known_result.add_constraint(x - y <= 1);
+  known_result.add_constraint(x - y >= -1);
 
   bd.affine_image(x, -2*x + y + 1);
 
@@ -283,7 +279,6 @@ test8() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= -1);
  
-
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
@@ -319,7 +314,6 @@ test9() {
   bd.add_constraint(x >= 0);
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= -1);
-
 
 #if NOISY
   print_constraints(bd, "*** bd ***");

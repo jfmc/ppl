@@ -595,7 +595,7 @@ BD_Shape<T>::remove_higher_space_dimensions(const dimension_type new_dim) {
   // Shortest-path closure is maintained.
   // TODO: see whether or not reduction can be (efficiently!) maintained too.
   if (marked_shortest_path_reduced())
-    status.reset_shortest_path_reduced();  
+    status.reset_shortest_path_reduced();
 
   // If we removed _all_ dimensions from a non-empty BDS,
   // the zero-dim universe BDS has been obtained.
@@ -2740,60 +2740,76 @@ BD_Shape<T>::affine_image(const Variable var,
     }
   }
 
-  // The denominator should be approximated towards zero.
-  // Since `sc_den' is known to be positive, this amounts to
-  // rounding downwards, which is achieved as usual by rounding
-  // upwards the negation and negating again the result.
+  // Remove all constraints on 'v'.
+  forget_all_constraints_on_var(dbm, space_dim, v);
+  // Shortest-path closure is maintained, but not reduction.
+  if (marked_shortest_path_reduced())
+    status.reset_shortest_path_reduced();
+  // Return immediately if no approximation could be computed.
+  if (pos_pinf_count > 1 && neg_pinf_count > 1) {
+    assert(OK());
+    return;
+  }
+
+  // In the following, shortest-path closure will be definitely lost.
+  status.reset_shortest_path_closed();
+
+  // Before computing quotients, the denominator should be approximated
+  // towards zero. Since `sc_den' is known to be positive, this amounts to
+  // rounding downwards, which is achieved as usual by rounding upwards
+  // the negation and negating again the result.
   N down_sc_den;
   assign(down_sc_den, raw_value(-sc_den), ROUND_UP);
   assign_neg(down_sc_den, down_sc_den, ROUND_UP);
-  // Compute quotients.
-  if (pos_pinf_count <= 1)
-    assign_div(pos_sum, pos_sum, down_sc_den, ROUND_UP);
-  if (neg_pinf_count <= 1)
-    assign_div(neg_sum, neg_sum, down_sc_den, ROUND_UP);
 
-  // Remove all constraints on 'v'.
-  forget_all_constraints_on_var(dbm, space_dim, v);
-  // For better clarity, reset shortest-path closure immediately,
-  // instead of doing it just before returning.
-  status.reset_shortest_path_closed();
-  
-  // Add the upper bound constraint, if meaningful.
-  if (pos_pinf_count == 0) {
-    // Add the constraint `var <= pos_sum'.
-    add_dbm_constraint(0, v, pos_sum);
-    // Deduce constraints of the form `v - w', where `w != v'.
-    // TODO: properly comment the following lines.
-    const DB_Row<N>& dbm_0 = dbm[0];
-    for (dimension_type w = space_dim; w > 0; --w)
-      if (w != v && sc_expr.coefficient(Variable(w-1)) >= sc_den)
-	assign_sub(dbm[w][v], pos_sum, dbm_0[w], ROUND_UP);
+  // Exploit the upper approximation, if possible.
+  if (pos_pinf_count <= 1) {
+    // Compute quotient (if needed).
+    if (down_sc_den != 1)
+      assign_div(pos_sum, pos_sum, down_sc_den, ROUND_UP);
+    // Add the upper bound constraint, if meaningful.
+    if (pos_pinf_count == 0) {
+      // Add the constraint `var <= pos_sum'.
+      DB_Row<N>& dbm_0 = dbm[0];
+      assign(dbm_0[v], pos_sum, ROUND_UP);
+      // Deduce constraints of the form `v - w', where `w != v'.
+      // TODO: properly comment the following lines.
+      for (dimension_type w = space_dim; w > 0; --w)
+	if (w != v && sc_expr.coefficient(Variable(w-1)) >= sc_den)
+	  assign_sub(dbm[w][v], pos_sum, dbm_0[w], ROUND_UP);
+    }
+    else
+      // Here `pos_pinf_count == 1'.
+      if (pos_pinf_index != v
+	  && sc_expr.coefficient(Variable(pos_pinf_index-1)) == sc_den)
+	// Add the constraint `v - pos_pinf_index <= pos_sum'.
+	assign(dbm[pos_pinf_index][v], pos_sum, ROUND_UP);
   }
-  else if (pos_pinf_count == 1)
-    if (pos_pinf_index != v
-	&& sc_expr.coefficient(Variable(pos_pinf_index-1)) == sc_den)
-      // Add the constraint `v - pos_pinf_index <= pos_sum'.
-      add_dbm_constraint(pos_pinf_index, v, pos_sum);
-  
-  // Add the lower bound constraint, if meaningful.
-  if (neg_pinf_count == 0) {
-    // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
-    add_dbm_constraint(v, 0, neg_sum);
-    // Deduce constraints of the form `w - v', where `w != v'.
-    // TODO: properly comment the following lines.
-    DB_Row<N>& dbm_v = dbm[v];
-    Coefficient neg_sc_den = -sc_den;
-    for (dimension_type w = space_dim; w > 0; --w)
-      if (w != v && sc_expr.coefficient(Variable(w-1)) <= neg_sc_den)
-	assign_sub(dbm_v[w], neg_sum, dbm[w][0], ROUND_UP);
+
+  // Exploit the lower approximation, if possible.
+  if (neg_pinf_count <= 1) {
+    // Compute quotient (if needed).
+    if (down_sc_den != 1)
+      assign_div(neg_sum, neg_sum, down_sc_den, ROUND_UP);
+    // Add the lower bound constraint, if meaningful.
+    if (neg_pinf_count == 0) {
+      // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
+      DB_Row<N>& dbm_v = dbm[v];
+      assign(dbm_v[0], neg_sum, ROUND_UP);
+      // Deduce constraints of the form `w - v', where `w != v'.
+      // TODO: properly comment the following lines.
+      for (dimension_type w = space_dim; w > 0; --w)
+	if (w != v && sc_expr.coefficient(Variable(w-1)) >= sc_den)
+	  assign_sub(dbm_v[w], neg_sum, dbm[w][0], ROUND_UP);
+    }
+    else
+      // Here `neg_pinf_count == 1'.
+      if (neg_pinf_index != v
+	  && sc_expr.coefficient(Variable(neg_pinf_index-1)) == sc_den)
+	// Add the constraint `v - neg_pinf_index >= -neg_sum',
+	// i.e., `neg_pinf_index - v <= neg_sum'.
+	assign(dbm[v][neg_pinf_index], neg_sum, ROUND_UP);
   }
-  else if (neg_pinf_count == 1)
-    if (neg_pinf_index != v
-	&& sc_expr.coefficient(Variable(neg_pinf_index-1)) == sc_den)
-      // Add the constraint `v - neg_pinf_index >= -neg_sum',
-      // i.e., `neg_pinf_index - v <= neg_sum'.
-      add_dbm_constraint(v, neg_pinf_index, neg_sum);
 
   assert(OK());
 } 
