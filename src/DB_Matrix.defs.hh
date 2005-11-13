@@ -80,10 +80,8 @@ operator<<(std::ostream& s, const DB_Matrix<T>& c);
 
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-
 template <typename T>
 class Parma_Polyhedra_Library::DB_Matrix {
-
 public:
   //! Returns the maximum number of rows of a DB_Matrix.
   static dimension_type max_num_rows();
@@ -109,6 +107,10 @@ public:
 
   //! Copy-constructor.
   DB_Matrix(const DB_Matrix& y);
+
+  //! Constructs a conservative approximation of \p y.
+  template <typename U>
+  explicit DB_Matrix(const DB_Matrix<U>& y);
 
   //! Destructor.
   virtual ~DB_Matrix();
@@ -186,6 +188,8 @@ public:
   const_iterator end() const;
 
 private:
+  template <typename U> friend class DB_Matrix;
+
   //! Contains the rows of the matrix.
   std::vector<DB_Row<T> > rows;
 
