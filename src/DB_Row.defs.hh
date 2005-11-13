@@ -112,7 +112,6 @@ private:
 template <typename T>
 class Parma_Polyhedra_Library::DB_Row : private DB_Row_Impl_Handler<T> {
 public:
-
   //! Pre-constructs a row: construction must be completed by construct().
   DB_Row();
 
@@ -131,12 +130,29 @@ public:
 
     \param capacity
     The minimum capacity of the row that will be constructed.
-    
-    The row that we are constructing has a minimum capacity, i.e., it
-    can contain at least \p capacity elements, \p sz of which will be
-    constructed now.
+
+    The row that we are constructing has a minimum capacity of
+    (i.e., it can contain at least) \p elements, \p sz of which
+    will be constructed now.
   */
   void construct(dimension_type sz, dimension_type capacity);
+
+  //! Constructs properly a conservative approximation of \p y.
+  /*!
+    \param y
+    A row containing the elements whose upward approximations will
+    be used to properly construct \p *this.
+
+    \param capacity
+    The capacity of the constructed row.
+
+    It is assumed that \p capacity is greater than or equal to the
+    size of \p y.
+  */
+  template <typename U>
+  void construct_upward_approximation(const DB_Row<U>& y,
+				      dimension_type capacity);
+
   //@}
 
   //! Tight constructor: resizing will require reallocation.
@@ -245,6 +261,8 @@ public:
   bool OK(dimension_type row_size, dimension_type row_capacity) const;
 
 private:
+  template <typename U> friend class Parma_Polyhedra_Library::DB_Row;
+
   //! Exception-safe copy construction mechanism for coefficients.
   void copy_construct_coefficients(const DB_Row& y);
 
@@ -328,6 +346,13 @@ public:
   //! Exception-safe copy construction mechanism for coefficients.
   void copy_construct_coefficients(const Impl& y);
 
+  //! \brief
+  //! Exception-safe upward approximation construction mechanism
+  //! for coefficients.
+  template <typename U>
+  void construct_upward_approximation(const typename
+				      DB_Row_Impl_Handler<U>::Impl& y);
+
   //! Returns the size() of the largest possible Impl.
   static dimension_type max_size();
 
@@ -353,7 +378,7 @@ public:
   //@}
 
 private:
-  friend class Parma_Polyhedra_Library::DB_Row<T>;
+  template <typename U> friend class Parma_Polyhedra_Library::DB_Row;
 
   //! The number of coefficients in the row.
   dimension_type size_;
