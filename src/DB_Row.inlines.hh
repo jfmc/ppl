@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cassert>
 #include <algorithm>
 #include <iostream>
+#include "checked.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -95,6 +96,35 @@ DB_Row_Impl_Handler<T>::DB_Row_Impl_Handler()
   : impl(0) {
 #if EXTRA_ROW_DEBUG
   capacity_ = 0;
+#endif
+}
+
+template <typename T>
+template <typename U>
+void
+DB_Row_Impl_Handler<T>::Impl
+::construct_upward_approximation(const typename
+				 DB_Row_Impl_Handler<U>::Impl& y) {
+  const dimension_type y_size = y.size();
+#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  for (dimension_type i = 0; i < y_size; ++i) {
+    // FIXME: this should use a yet-to-be-written checked construction
+    // mechanism.
+    new (&vec_[i]) T(y.vec_[i]);
+    bump_size();
+  }
+#else
+  assert(y_size > 0);
+  if (y_size > 0) {
+    vec_[0] = y.vec_[0];
+    bump_size();
+    for (dimension_type i = 1; i < y_size; ++i) {
+      // FIXME: this should use a yet-to-be-written checked construction
+      // mechanism.
+      new (&vec_[i]) T(y.vec_[i]);
+      bump_size();
+    }
+  }
 #endif
 }
 
@@ -185,6 +215,18 @@ DB_Row<T>::copy_construct_coefficients(const DB_Row& y) {
   assert(y.size() <= x.capacity_);
 #endif
   x.impl->copy_construct_coefficients(*(y.impl));
+}
+
+template <typename T>
+template <typename U>
+inline void
+DB_Row<T>::construct_upward_approximation(const DB_Row<U>& y,
+					  const dimension_type capacity) {
+  DB_Row<T>& x = *this;
+  assert(y.size() <= capacity && capacity <= max_size());
+  allocate(capacity);
+  assert(y.impl);
+  x.impl->construct_upward_approximation(*(y.impl));
 }
 
 template <typename T>
