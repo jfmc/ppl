@@ -25,9 +25,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "BD_Shape.types.hh"
 #include "globals.types.hh"
+#include "Constraint.types.hh"
+#include "Generator.types.hh"
+#include "Linear_Expression.types.hh"
+#include "Constraint_System.types.hh"
+#include "Generator_System.types.hh"
 #include "Poly_Con_Relation.types.hh"
 #include "Poly_Gen_Relation.types.hh"
 #include "Polyhedron.types.hh"
+#include "Variable.defs.hh"
 #include "DB_Matrix.defs.hh"
 #include "DB_Row.defs.hh"
 #include "Checked_Number.defs.hh"
@@ -260,7 +266,11 @@ public:
 		    Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
-  BD_Shape(const BD_Shape& x);
+  BD_Shape(const BD_Shape& y);
+
+  //! Builds a conservative, upward approximation of \p y.
+  template <typename U>
+  explicit BD_Shape(const BD_Shape<U>& y);
 
   //! Builds a BDS from the system of constraints \p cs.
   /*!
@@ -918,6 +928,8 @@ public:
   bool OK() const;
 
 private:
+  template <typename U> friend class Parma_Polyhedra_Library::BD_Shape;
+
   //! The matrix representing the system of bounded differences.
   DB_Matrix<N> dbm;
 
@@ -994,10 +1006,10 @@ private:
 						      const BD_Shape<T>& c);
 #else
   // This is too lax than wanted.
-  template <typename S>
+  template <typename U>
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
-						    const BD_Shape<S>& c);
+						    const BD_Shape<U>& c);
 #endif
 
   //! \name Exception Throwers
