@@ -62,7 +62,8 @@ public:
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
-  static const int EXPONENT_MIN_DENORM = EXPONENT_MIN - MANTISSA_BITS;
+  static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
+					- static_cast<int>(MANTISSA_BITS);
   TFloat(float32_t v);
   float32_t value();
   int is_inf() const;
@@ -107,7 +108,8 @@ public:
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
-  static const int EXPONENT_MIN_DENORM = EXPONENT_MIN - MANTISSA_BITS;
+  static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
+					- static_cast<int>(MANTISSA_BITS);
   TFloat(float64_t v);
   float64_t value();
   int is_inf() const;
@@ -155,7 +157,8 @@ public:
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
-  static const int EXPONENT_MIN_DENORM = EXPONENT_MIN - MANTISSA_BITS;
+  static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
+					- static_cast<int>(MANTISSA_BITS);
   TFloat(float96_t v);
   float96_t value();
   int is_inf() const;
@@ -204,7 +207,8 @@ public:
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
-  static const int EXPONENT_MIN_DENORM = EXPONENT_MIN - MANTISSA_BITS;
+  static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
+					- static_cast<int>(MANTISSA_BITS);
   TFloat(float128_t v);
   float128_t value();
   int is_inf() const;
