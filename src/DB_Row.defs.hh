@@ -350,8 +350,7 @@ public:
   //! Exception-safe upward approximation construction mechanism
   //! for coefficients.
   template <typename U>
-  void construct_upward_approximation(const typename
-				      DB_Row_Impl_Handler<U>::Impl& y);
+  void construct_upward_approximation(const U& y);
 
   //! Returns the size() of the largest possible Impl.
   static dimension_type max_size();
@@ -378,7 +377,9 @@ public:
   //@}
 
 private:
-  template <typename U> friend class Parma_Polyhedra_Library::DB_Row;
+  //template <typename U> friend class Parma_Polyhedra_Library::DB_Row;
+  template <typename U>
+  friend class Parma_Polyhedra_Library::DB_Row_Impl_Handler<U>::Impl;
 
   //! The number of coefficients in the row.
   dimension_type size_;

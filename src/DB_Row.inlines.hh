@@ -102,15 +102,14 @@ DB_Row_Impl_Handler<T>::DB_Row_Impl_Handler()
 template <typename T>
 template <typename U>
 void
-DB_Row_Impl_Handler<T>::Impl
-::construct_upward_approximation(const typename
-				 DB_Row_Impl_Handler<U>::Impl& y) {
+DB_Row_Impl_Handler<T>::Impl::construct_upward_approximation(const U& y) {
   const dimension_type y_size = y.size();
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   for (dimension_type i = 0; i < y_size; ++i) {
     // FIXME: this should use a yet-to-be-written checked construction
     // mechanism.
-    new (&vec_[i]) T(y.vec_[i]);
+    new (&vec_[i]) T();
+    assign(vec_[i], y.vec_[i], ROUND_UP);
     bump_size();
   }
 #else
@@ -121,7 +120,8 @@ DB_Row_Impl_Handler<T>::Impl
     for (dimension_type i = 1; i < y_size; ++i) {
       // FIXME: this should use a yet-to-be-written checked construction
       // mechanism.
-      new (&vec_[i]) T(y.vec_[i]);
+      new (&vec_[i]) T();
+      assign(vec_[i], y.vec_[i], ROUND_UP);
       bump_size();
     }
   }
