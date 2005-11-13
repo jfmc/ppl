@@ -321,6 +321,18 @@ BD_Shape<T>::BD_Shape(const BD_Shape& y)
 }
 
 template <typename T>
+template <typename U>
+inline
+BD_Shape<T>::BD_Shape(const BD_Shape<U>& y)
+  : dbm(y.dbm), status(), redundancy_dbm() {
+  // FIXME: handle flags properly, possibly taking special cases into account.
+  if (y.marked_empty())
+    set_empty();
+  else if (y.status.test_zero_dim_univ())
+    set_zero_dim_univ();
+}
+
+template <typename T>
 inline
 BD_Shape<T>::BD_Shape(const Constraint_System& cs)
   : dbm(cs.space_dimension() + 1), status(), redundancy_dbm() {
