@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <cassert>
 #include <iostream>
+#include "globals.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -182,6 +183,19 @@ DB_Matrix<T>::DB_Matrix(const DB_Matrix& y)
   : rows(y.rows),
     row_size(y.row_size),
     row_capacity(compute_capacity(y.row_size)) {
+}
+
+template <typename T>
+template <typename U>
+inline
+DB_Matrix<T>::DB_Matrix(const DB_Matrix<U>& y)
+  : rows(y.rows.size()),
+    row_size(y.row_size),
+    row_capacity(compute_capacity(y.row_size)) {
+  // Construct in direct order: will destroy in reverse order.
+  for (dimension_type i = 0, n_rows = rows.size(); i < n_rows; ++i)
+    rows[i].construct_upward_approximation(y[i], row_capacity);
+  assert(OK());
 }
 
 template <typename T>
