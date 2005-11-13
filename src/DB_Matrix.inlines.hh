@@ -170,7 +170,7 @@ inline
 DB_Matrix<T>::DB_Matrix(const dimension_type n_rows)
   : rows(n_rows),
     row_size(n_rows),
-    row_capacity(compute_capacity(n_rows)) {
+    row_capacity(compute_capacity(n_rows, max_num_columns())) {
   // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = 0; i < n_rows; ++i)
     rows[i].construct(n_rows, row_capacity);
@@ -182,7 +182,7 @@ inline
 DB_Matrix<T>::DB_Matrix(const DB_Matrix& y)
   : rows(y.rows),
     row_size(y.row_size),
-    row_capacity(compute_capacity(y.row_size)) {
+    row_capacity(compute_capacity(y.row_size, max_num_columns())) {
 }
 
 template <typename T>
@@ -191,7 +191,7 @@ inline
 DB_Matrix<T>::DB_Matrix(const DB_Matrix<U>& y)
   : rows(y.rows.size()),
     row_size(y.row_size),
-    row_capacity(compute_capacity(y.row_size)) {
+    row_capacity(compute_capacity(y.row_size, max_num_columns())) {
   // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = 0, n_rows = rows.size(); i < n_rows; ++i)
     rows[i].construct_upward_approximation(y[i], row_capacity);
@@ -211,7 +211,7 @@ DB_Matrix<T>::operator=(const DB_Matrix& y) {
     row_size = y.row_size;
     // ... hence the following assignment must not be done on
     // auto-assignments.
-    row_capacity = compute_capacity(y.row_size);
+    row_capacity = compute_capacity(y.row_size, max_num_columns());
   }
   return *this;
 }
@@ -228,7 +228,7 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
       if (rows.capacity() < new_n_rows) {
 	// Reallocation will take place.
 	std::vector<DB_Row<T> > new_rows;
-	new_rows.reserve(compute_capacity(new_n_rows));
+	new_rows.reserve(compute_capacity(new_n_rows, max_num_rows()));
 	new_rows.insert(new_rows.end(), new_n_rows, DB_Row<T>());
 	// Construct the new rows.
 	dimension_type i = new_n_rows;
@@ -251,11 +251,12 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
     else {
       // We cannot even recycle the old rows.
       DB_Matrix new_matrix;
-      new_matrix.rows.reserve(compute_capacity(new_n_rows));
+      new_matrix.rows.reserve(compute_capacity(new_n_rows, max_num_rows()));
       new_matrix.rows.insert(new_matrix.rows.end(), new_n_rows, DB_Row<T>());
       // Construct the new rows.
       new_matrix.row_size = new_n_rows;
-      new_matrix.row_capacity = compute_capacity(new_n_rows);
+      new_matrix.row_capacity = compute_capacity(new_n_rows,
+						 max_num_columns());
       dimension_type i = new_n_rows;
       while (i-- > old_n_rows)
 	new_matrix.rows[i].construct(new_matrix.row_size,
@@ -283,7 +284,8 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
     else {
       // Capacity exhausted: we must reallocate the rows and
       // make sure all the rows have the same capacity.
-      const dimension_type new_row_capacity = compute_capacity(new_n_rows);
+      const dimension_type new_row_capacity
+	= compute_capacity(new_n_rows, max_num_columns());
       for (dimension_type i = old_n_rows; i-- > 0; ) {
 	DB_Row<T> new_row(rows[i], new_n_rows, new_row_capacity);
 	std::swap(rows[i], new_row);
@@ -307,7 +309,7 @@ DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
       if (rows.capacity() < new_n_rows) {
 	// Reallocation (of vector `rows') will take place.
 	std::vector<DB_Row<T> > new_rows;
-	new_rows.reserve(compute_capacity(new_n_rows));
+	new_rows.reserve(compute_capacity(new_n_rows, max_num_rows()));
 	new_rows.insert(new_rows.end(), new_n_rows, DB_Row<T>());
 	// Construct the new rows (be careful: each new row must have
 	// the same capacity as each one of the old rows).
@@ -355,7 +357,8 @@ DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
     else {
       // Capacity exhausted: we must reallocate the rows and
       // make sure all the rows have the same capacity.
-      const dimension_type new_row_capacity = compute_capacity(new_n_rows);
+      const dimension_type new_row_capacity
+	= compute_capacity(new_n_rows, max_num_columns());
       for (dimension_type i = old_n_rows; i-- > 0; ) {
 	DB_Row<T> new_row(new_n_rows, new_row_capacity);
 	std::swap(rows[i], new_row);

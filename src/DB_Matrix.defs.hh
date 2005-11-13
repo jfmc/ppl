@@ -113,7 +113,7 @@ public:
   explicit DB_Matrix(const DB_Matrix<U>& y);
 
   //! Destructor.
-  virtual ~DB_Matrix();
+  ~DB_Matrix();
 
   //! Assignment operator.
   DB_Matrix& operator=(const DB_Matrix& y);
@@ -243,17 +243,17 @@ public:
   //! \brief
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
-  virtual void ascii_dump(std::ostream& s) const;
+  void ascii_dump(std::ostream& s) const;
 
   //! \brief
   //! Loads from \p s an ASCII representation (as produced by \ref
   //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
   //! if successful, <CODE>false</CODE> otherwise.
   /*!
-    This virtual method is meant to read into a DB_Matrix object
+    This method is meant to read into a DB_Matrix object
     the information produced by the output of <CODE>ascii_dump()</CODE>.
   */
-  virtual bool ascii_load(std::istream& s);
+  bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
