@@ -37,7 +37,7 @@ site: http://www.cs.unipr.it/ppl/ . */
     closed system of bounded differences, so that all the constraints are
     as tight as possible;
   - <EM>shortest-path reduced</EM>: the BDS is represented by a shortest-path
-    closed system of boudned differences and each constraint in such a system
+    closed system of bounded differences and each constraint in such a system
     is marked as being either redundant or non-redundant.
 
   Not all the conjunctions of these elementary assertions constitute
