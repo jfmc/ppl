@@ -30,6 +30,7 @@ void
 Grid::minimize(Generator_System& source, Congruence_System& dest,
 	       Dimension_Kinds& dim_kinds) {
   assert(source.num_rows() > 0);
+  assert(source.num_columns() > 1);
 
   // FIX check if source minimized? prhps in callers?
 
@@ -48,8 +49,8 @@ Grid::minimize(Congruence_System& source, Linear_System& dest,
 	       Dimension_Kinds& dim_kinds) {
   // FIX should grid add single cong?
   // FIX this is for simplify, at least; check minimize callers
-  // FIX is spc_dim 0?
   assert(source.num_rows() > 0);
+  assert(source.num_columns() > 2);
 
   // FIX check if source minimized? prhps in callers?
 
