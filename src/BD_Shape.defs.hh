@@ -360,6 +360,10 @@ public:
   //! Adds a copy of constraint \p c to the system of bounded differences
   //! defining \p *this.
   /*!
+    \param c
+    The constraint to be added. If it is not a bounded difference, it
+    will be simply ignored.
+
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible,
     or if \p c is a strict inequality.
@@ -373,6 +377,10 @@ public:
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
+    \param c
+    The constraint to be added. If it is not a bounded difference, it
+    will be simply ignored.
+
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible,
     or if \p c is a strict inequality.
@@ -384,8 +392,8 @@ public:
   //! defining \p *this.
   /*!
     \param  cs
-    The constraints that will be added to the current system of
-    bounded differences.
+    The constraints that will be added. Constraints that are not bounded
+    differences will be simply ignored.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible,
@@ -400,9 +408,9 @@ public:
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
-    \param cs
-    The constraints that will be added to the current system of
-    bounded differences.
+    \param  cs
+    The constraints that will be added. Constraints that are not bounded
+    differences will be simply ignored.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible,
@@ -750,10 +758,10 @@ public:
 
   //@} Space-Dimension Preserving Member Functions that May Modify [...]
 
-  //! Returns a system of bounded differences defining \p *this.
+  //! Returns a system of constraints defining \p *this.
   Constraint_System constraints() const;
 
-  //! Returns a minimized system of bounded differences defining \p *this.
+  //! Returns a minimized system of constraints defining \p *this.
   Constraint_System minimized_constraints() const;
 
   //! \name Member Functions that May Modify the Dimension of the Vector Space
@@ -986,12 +994,16 @@ private:
   //! Assigns to <CODE>this->dbm</CODE> its shortest-path closure.
   void shortest_path_closure_assign() const;
 
-  //! Assigns to <CODE>this->dbm</CODE> its shortest-path reduction.
+  //! \brief
+  //! Assigns to <CODE>this->dbm</CODE> its shortest-path closure and
+  //! records into <CODE>this->redundancy_dbm</CODE> which of the entries
+  //! in <CODE>this->dbm</CODE> are redundant.
   void shortest_path_reduction_assign() const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if <CODE>this->dbm</CODE>
-  //! is a shortest-path reduced system of bounded differences.
+  //! is shortest-path closed and <CODE>this->redundancy_dbm</CODE>
+  //! correctly flags the redundant entries in <CODE>this->dbm</CODE>.
   bool is_shortest_path_reduced() const;
 
   //! \brief
