@@ -377,10 +377,6 @@ public:
   //@}
 
 private:
-  //template <typename U> friend class Parma_Polyhedra_Library::DB_Row;
-  template <typename U>
-  friend class Parma_Polyhedra_Library::DB_Row_Impl_Handler<U>::Impl;
-
   //! The number of coefficients in the row.
   dimension_type size_;
 
