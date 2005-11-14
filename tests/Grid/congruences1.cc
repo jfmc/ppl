@@ -195,6 +195,38 @@ test6() {
   exit(1);
 }
 
+// In zero dimensions get a reference to the universe congruences,
+// empty the grid, use the reference to create a new grid.
+
+void
+test7() {
+  nout << "test7:" << endl;
+
+  Grid gr1(0);
+  gr1.add_congruence(Congruence::zero_dim_integrality());
+
+  const Congruence_System& cgs = gr1.congruences();
+
+  // Empty the grid.  The idea is to check that `cgs' still refers to
+  // a congruence system that matches the grid.
+  gr1.add_congruence(Congruence::zero_dim_false());
+
+  Grid known_gr = gr1;
+
+  Grid gr2(cgs);
+
+  if (known_gr == gr2)
+    return;
+
+  nout << "Reproduced grid should equal known grid." << endl
+       << "grid:" << endl << gr2 << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr2, known_gr);
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -209,6 +241,7 @@ main() TRY {
   test4();
   test5();
   test6();
+  test7();
 
   return 0;
 }
