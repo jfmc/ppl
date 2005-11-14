@@ -81,7 +81,7 @@ div_round_up(Checked_Number<T, Policy>& to,
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename N>
 inline void
-min_assign(N& x, const N& y) {
+assign_min(N& x, const N& y) {
   if (x > y)
     x = y;
 }
@@ -92,7 +92,7 @@ min_assign(N& x, const N& y) {
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename N>
 inline void
-max_assign(N& x, const N& y) {
+assign_max(N& x, const N& y) {
   if (x < y)
     x = y;
 }
@@ -774,14 +774,14 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 	  // The loop correctly handles the case when i == j.
 	  for (dimension_type j = space_dim; j > 0; --j) {
 	    div_round_up(tmp, g.coefficient(Variable(j-1)) - g_i, d);
-	    max_assign(dbm_i[j], tmp);
+	    assign_max(dbm_i[j], tmp);
 	  }
 	  div_round_up(tmp, -g_i, d);
-	  max_assign(dbm_i[0], tmp);
+	  assign_max(dbm_i[0], tmp);
 	}
 	for (dimension_type j = space_dim; j > 0; --j) {
 	  div_round_up(tmp, g.coefficient(Variable(j-1)), d);
-	  max_assign(dbm_0[j], tmp);
+	  assign_max(dbm_0[j], tmp);
 	}
       }
       break;
@@ -1121,7 +1121,7 @@ BD_Shape<T>::is_empty() const {
       N& z_j = z[j];
       for (dimension_type h = 0; h <= space_dim; ++h) {
 	assign_add(sum1, dbm_j[h], z_j, ROUND_UP);
-	min_assign(z[h], sum1);
+	assign_min(z[h], sum1);
       }
     }
 
@@ -1604,7 +1604,7 @@ BD_Shape<T>::shortest_path_closure_assign() const {
 	  if (!is_plus_infinity(xdbm_k_j)) {
 	    // Rounding upward for correctness.
 	    assign_add(sum, xdbm_i_k, xdbm_k_j, ROUND_UP);
-	    min_assign(xdbm_i[j], sum);
+	    assign_min(xdbm_i[j], sum);
 	  }
 	}
     }
