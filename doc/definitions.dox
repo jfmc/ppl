@@ -1485,8 +1485,7 @@ functionalities, often can do so by using <EM>containment</EM> instead
 of inheritance; even when there is the need to override a
 <CODE>protected</CODE> method, non-public inheritance should suffice.
 
-\subsection On_Const_Correctness_A_Warning_about_the_Use_of_References_and_Iterators On Const-Correctness: A Warning about the Use of References
-and Iterators
+\subsection On_Const_Correctness_A_Warning_about_the_Use_of_References_and_Iterators On Const-Correctness: A Warning about the Use of References and Iterators
 
 Most operators of the library depend on one or more parameters
 that are declared ``const'', meaning that they will not be changed
