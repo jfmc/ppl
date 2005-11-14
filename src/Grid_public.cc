@@ -39,12 +39,17 @@ PPL::Grid::Grid(dimension_type num_dimensions,
 				   "n exceeds the maximum "
 				   "allowed space dimension");
 
-  if (kind == EMPTY)
-    status.set_empty();
   space_dim = num_dimensions;
-  con_sys.increase_space_dimension(num_dimensions);
-  // FIX where will gen_sys space dim be adjusted?
-  if (num_dimensions > 0 && kind == UNIVERSE) {
+
+  if (kind == EMPTY) {
+    set_empty();
+    assert(OK());
+    return;
+  }
+
+  if (num_dimensions > 0) {
+    // FIX where will gen_sys space dim be adjusted?
+    con_sys.increase_space_dimension(num_dimensions);
     // Initialise both systems to universe representations.
     set_congruences_minimized();
     set_congruences_up_to_date();
@@ -72,7 +77,9 @@ PPL::Grid::Grid(dimension_type num_dimensions,
     }
     gen_sys.unset_pending_rows();
   }
+
   gen_sys.set_sorted(false);
+
   assert(OK());
 }
 
@@ -164,7 +171,7 @@ PPL::Grid::congruences() const {
 
   if (space_dim == 0) {
     // Zero-dimensional universe.
-    assert(con_sys.num_columns() == 0 && con_sys.num_rows() == 0);
+    assert(con_sys.num_columns() == 2 && con_sys.num_rows() == 0);
     return con_sys;
   }
 
@@ -176,6 +183,7 @@ PPL::Grid::congruences() const {
 
 const PPL::Congruence_System&
 PPL::Grid::minimized_congruences() const {
+  // FIX zero dim check
   if (congruences_are_up_to_date() && !congruences_are_minimized()) {
     // Minimize the congruences.
     Grid& gr = const_cast<Grid&>(*this);
@@ -237,7 +245,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
   if (space_dim == 0)
     if (cg.is_trivial_false())
       // FIX
-      // The congruence 0 %= 1 mod 0 implicitly defines the hyperplane
+      // The congruence 1 %= 0 mod 0 implicitly defines the hyperplane
       // 0 = 0; thus, the zero-dimensional point also saturates it.
       return Poly_Con_Relation::is_disjoint();
     else if (cg.is_equality() || cg[0] == 0)
@@ -430,7 +438,6 @@ PPL::Grid::is_universe() const {
   if (marked_empty())
     return false;
 
-  // FIX correct? eg cg 1 == 0
   if (space_dim == 0)
     return true;
 
@@ -641,18 +648,17 @@ PPL::Grid::OK(bool check_not_empty) const {
     return true;
   }
 
-  // A zero-dimensional, non-empty grid is legal only if the system of
+  // A zero-dimensional universe grid is legal only if the system of
   // congruence `con_sys' and the system of generators `gen_sys' have
   // no rows.
   if (space_dim == 0) {
-    if (con_sys.num_rows() != 0 || gen_sys.num_rows() != 0) {
+    if (con_sys.num_rows() == 0 && gen_sys.num_rows() == 0)
+      return true;
 #ifndef NDEBUG
-      cerr << "Zero-dimensional grid with a non-empty" << endl
-	   << "system of congruences or generators." << endl;
+    cerr << "Zero-dimensional grid with a non-empty" << endl
+	 << "system of congruences or generators." << endl;
 #endif
-      goto fail;
-    }
-    return true;
+    goto fail;
   }
 
   // A grid is defined by a system of congruences or a system of
@@ -902,12 +908,12 @@ PPL::Grid::add_congruence(const Congruence& cg) {
   if (space_dim < cg.space_dimension())
     throw_dimension_incompatible("add_congruence(cg)", "cg", cg);
 
-  // Adding a new congruence to an empty polyhedron results in an
-  // empty polyhedron.
+  // Adding a new congruence to an empty grid results in an empty
+  // grid.
   if (marked_empty())
     return;
 
-  // Dealing with a zero-dimensional space polyhedron first.
+  // Dealing with a zero-dimensional space grid first.
   if (space_dim == 0) {
     if (!cg.is_trivial_true())
       set_empty();
@@ -1088,16 +1094,13 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
     return;
 
   if (space_dim == 0) {
-    // FIX
     // In a 0-dimensional space the congruences are trivial (e.g., 0
-    // == 0 or 1 >= 0 or 1 > 0) or inconsistent (e.g., 1 == 0 or -1 >=
-    // 0 or 0 > 0).  In a system of congruences `begin()' and `end()'
-    // are equal if and only if the system contains trivial
-    // congruences only.
+    // == 0 or 1 %= 0) or false (e.g., 1 == 0).  In a system of
+    // congruences `begin()' and `end()' are equal if and only if the
+    // system contains only trivial congruences.
     if (cgs.begin() != cgs.end())
-      // There is a congruence, it must be inconsistent, the
-      // polyhedron is empty.
-      status.set_empty();
+      // There is a congruence, it must be false, the grid is empty.
+      set_empty();
     return;
   }
 
@@ -1186,16 +1189,14 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
 
   // Dealing with zero-dimensional space grids first.
   if (space_dim == 0) {
-    // In a 0-dimensional space the congruences are
-    // trivial (e.g., 0 == 0 or 1 >= 0 or 1 > 0) or
-    // inconsistent (e.g., 1 == 0 or -1 >= 0 or 0 > 0).
-    // In a system of congruences `begin()' and `end()' are equal
-    // if and only if the system contains trivial congruences only.
+    // In a 0-dimensional space the congruences are trivial (e.g., 0
+    // == 0 or 1 %= 0) or false (e.g., 1 == 0).  In a system of
+    // congruences `begin()' and `end()' are equal if and only if the
+    // system contains only trivial congruences.
     if (cgs.begin() == cgs.end())
       return true;
-    // There is a congruence, it must be inconsistent, the grid is
-    // empty.
-    status.set_empty();
+    // There is a congruence, it must be false, the grid is empty.
+    set_empty();
     return false;
   }
 
@@ -1209,7 +1210,7 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   }
 
   // Adjust `cgs' to the current space dimension.
-  cgs.increase_space_dimension(space_dim); // FIX (?)
+  cgs.increase_space_dimension(space_dim);
 
   for (dimension_type row = 0; row < cgs.num_rows(); ++row)
     con_sys.add_row(cgs[row]);
@@ -1447,9 +1448,8 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
   if (gs.num_rows() == 0)
     return minimize();
 
-  // FIX
-  // Adding valid generators to a zero-dimensional polyhedron
-  // transforms it into the zero-dimensional universe polyhedron.
+  // Adding valid generators to a zero-dimensional grid produces the
+  // zero-dimensional universe grid.
   if (space_dim == 0) {
     if (marked_empty() && !gs.has_points())
       throw_invalid_generators("add_recycled_generators_and_minimize(gs)",
@@ -1462,9 +1462,9 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
   // Now adjusting dimensions (topology already adjusted).
   // NOTE: sortedness is preserved.
   //gs.adjust_topology_and_space_dimension(topology(), space_dim); // FIX
-  gs.adjust_topology_and_space_dimension(gs.topology(), space_dim);
+  gs.adjust_topology_and_space_dimension(gs.topology(), space_dim); // FIX
 
-  if (minimize()) {   // FIX why does this minimize (incls cgs) first?
+  if (minimize()) {   // FIX why does this minimize (which incls cgs) first?
     normalize_divisors(gs, gen_sys);
 
     for (dimension_type row = 0; row < gs.num_rows(); ++row) {
