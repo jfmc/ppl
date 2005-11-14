@@ -658,6 +658,70 @@ test16() {
   exit(1);
 }
 
+// Zero dimension empty grid.
+
+void
+test17() {
+  nout << "test17:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Congruence_System cgs;
+  cgs.insert(Congruence::zero_dim_false());
+
+  Grid gr(cgs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(0, EMPTY);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << "grid:" << endl << gr << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
+  exit(1);
+}
+
+// Zero dimension universe grid.
+
+void
+test18() {
+  nout << "test18:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Congruence_System cgs;
+  cgs.insert(Congruence::zero_dim_integrality());
+
+  Grid gr(cgs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(0);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << "grid:" << endl << gr << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -680,6 +744,8 @@ main() TRY {
   test14();
   test15();
   test16();
+  test17();
+  test18();
 
   return 0;
 }
