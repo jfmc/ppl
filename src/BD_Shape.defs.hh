@@ -90,46 +90,56 @@ bool operator!=(const BD_Shape<T>& x, const BD_Shape<T>& y);
   The class template BD_Shape<T> allows for the efficient representation
   of a restricted kind of <EM>topologically closed</EM> convex polyhedra
   called <EM>bounded difference shapes</EM> (BDSs, for short).
-  The name comes from fact that the closed affine half-spaces that
+  The name comes from the fact that the closed affine half-spaces that
   characterize the polyhedron can be expressed by constraints of the form
-  \f[
-    ax_i - bx_j \leq c
-  \f]
-  where \f$a, b \in \{0, 1\}\f$ and \f$c\f$ belongs to some family of
-  extended numbers that is provided by the template argument \p T.
-  This family of extended numbers must provide a representation for
-  \f$+\infty\f$ and, of course, must be closed with respect to the
-  operations specified below.
+  \f$\pm x_i \leq k\f$ or \f$x_i - x_j \leq k\f$, where the inhomogeneous
+  term \f$k\f$ is a rational number.
 
-  FIXME!
+  Based on the class template type parameter \p T, a family of extended
+  numbers is built and used to approximate the inhomogeneous term of
+  bounded differences. These extended numbers provide a representation
+  for the value \f$+\infty\f$, as well as <EM>rounding-aware</EM>
+  implementations for several arithmetic functions.
+  The value of the type parameter \p T may be one of the following:
+    - a bounded precision integer type (e.g., \c int32_t or \c int64_t);
+    - a bounded precision floating point type (e.g., \c float or \c double);
+    - an unbounded integer or rational type, as provided by GMP
+      (i.e., \c mpz_class or \c mpq_class).
 
-  Now we specify the approximations, applied by methods that add
-  constraints to <EM>bounded differences</EM>.
-  If the constraint is in the form \f$ ax_i - bx_j \leq c \f$
-  we have the following approximation:
-          \f[
-              ax_i - bx_j \leq c\uparrow
-          \f]
-  otherwise if the constraint is in the form \f$ ax_i - bx_j = c \f$
-  we have the following approximations:
-          \f[
-            \begin{cases}
-              ax_i - bx_j = c, & \text{if } c = c\uparrow
-              = c\downarrow; \\
-              ax_i - bx_j \geq c\downarrow \text{ and } ax_i - bx_j
-              \leq c\uparrow,  & \text{otherwise}.
-            \end{cases}
-          \f]
-  with \f$a, b \in \{0, 1\}\f$, where \f$\uparrow\f$ is used to indicate
-  an approximation from above and \f$\downarrow\f$
-  is used to indicate an approximations from below.
-  Moreover the constraints actually inserted depend on the expressive
-  power of T.
+  The user interface for BDSs is meant to be as similar as possible to
+  the one developed for the polyhedron class C_Polyhedron.  At the
+  interface level, bounded differences are specified using objects of
+  type Constraint: such a constraint is a bounded difference if it is
+  of the form
+    \f[
+      a_i x_i - a_j x_j \relsym b
+    \f]
+  where \f$\mathord{\relsym} \in \{ \leq, =, \geq \}\f$ and
+  \f$a_i\f$, \f$a_j\f$, \f$b\f$ are integer coefficients such that
+  \f$a_i = 0\f$, or \f$a_j = 0\f$, or \f$a_i = a_j\f$.
+  The user is warned that the above Constraint object will be mapped
+  into a <EM>correct</EM> approximation that, depending on the expressive
+  power of the chosen template argument \p T, may loose some precision.
+  In particular, constraint objects that do not encode a bounded difference
+  will be simply (and safely) ignored.
 
-  \par
-  In all the examples it is assumed the class T is defined as above
-  and that variables <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE>
-  are defined (where they are used) as follows:
+  For instance, a Constraint object encoding \f$3x - 3y \leq 1\f$ will be
+  approximated by:
+    - \f$x - y \leq 1\f$,
+      if \p T is a (bounded or unbounded) integer type;
+    - \f$x - y \leq \frac{1}{3}\f$,
+      if \p T is the unbounded rational type \c mpq_class;
+    - \f$x - y \leq k\f$, where \f$k > \frac{1}{3}\f$,
+      if \p T is a floating point type (having no exact representation
+      for \f$\frac{1}{3}\f$).
+
+  On the other hand, a Constraint object encoding \f$3x - y \leq 1\f$
+  will be safely ignored in all of the above cases.
+
+  In the following examples it is assumed that the type argument \p T
+  is one of the possible instances listed above and that variables
+  <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE> are defined
+  (where they are used) as follows:
   \code
     Variable x(0);
     Variable y(1);
@@ -149,19 +159,9 @@ bool operator!=(const BD_Shape<T>& x, const BD_Shape<T>& y);
     cs.insert(z <= 1);
     BD_Shape<T> bd(cs);
   \endcode
-  Remark that only constraints having the syntactic form of
-  <EM>bounded differences</EM> are inserted.
-  The following code builds the same BDS as above,
-  in fact the only inserted constraints must be of the form
-  \f[
-    ax_i + bx_j \leq c
-  \f]
-  or
-  \f[
-    ax_i + bx_j = c
-  \f]
-  with \f$a, b \in \{-1, 0, 1\}\f$ and \f$c\f$ belongs to class T,
-  the others are ignored (in this example the constraints 7, 8, 9
+  Since only those constraints having the syntactic form of a
+  <EM>bounded difference</EM> are considered, the following code
+  will build the same BDS as above (i.e., the constraints 7, 8, and 9
   are ignored):
   \code
     Constraint_System cs;
@@ -600,7 +600,7 @@ public:
   //! \ref CC76_extrapolation "CC76-extrapolation" between \p *this and \p y.
   /*!
     \param y
-    A BDS that <EM>must>/EM> be contained in \p *this.
+    A BDS that <EM>must</EM> be contained in \p *this.
     
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
