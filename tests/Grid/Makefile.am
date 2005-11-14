@@ -58,6 +58,7 @@ bounds1 \
 certificate1 \
 concatenate1 \
 congruence1 \
+congruences1 \
 congruencesystem1 congruencesystem2 \
 contains1 contains2 \
 disjoint1 \
@@ -122,6 +123,8 @@ certificate1_SOURCES = certificate1.cc
 concatenate1_SOURCES = concatenate1.cc
 
 congruence1_SOURCES = congruence1.cc
+
+congruences1_SOURCES = congruences1.cc
 
 congruencesystem1_SOURCES = congruencesystem1.cc
 congruencesystem2_SOURCES = congruencesystem2.cc
