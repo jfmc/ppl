@@ -62,19 +62,26 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
     std::swap(con_sys, cgs);
     con_sys.normalize_moduli();
     set_congruences_up_to_date();
+    gen_sys.set_sorted(false);
+    // Insert the integrality congruence, to ensure that the
+    // congruence system contains at least one row.
+    con_sys.insert(Congruence::zero_dim_integrality());
   }
-  else
+  else {
     // Here `space_dim == 0'.
-    if (cgs.num_columns() > 0)
+    if (cgs.num_columns() > 1)
       // See if an inconsistent congruence has been passed.
       for (dimension_type i = cgs.num_rows(); i-- > 0; )
 	if (cgs[i].is_trivial_false()) {
 	  // Inconsistent congruence found: the grid is empty.
 	  set_empty();
-	  break;
+	  gen_sys.set_sorted(false);
+	  assert(OK());
+	  return;
 	}
-
-  gen_sys.set_sorted(false);
+    set_zero_dim_univ();
+    gen_sys.set_sorted(false);
+  }
 
   assert(OK());
 }
@@ -90,9 +97,7 @@ PPL::Grid::construct(const Generator_System& const_gs,
 
   // An empty set of generators defines the empty grid.
   if (gs.num_rows() == 0) {
-    space_dim = gs.space_dimension();
-    status.set_empty();
-    gen_sys.set_sorted(false);
+    set_empty();
     return;
   }
 
@@ -209,7 +214,6 @@ PPL::Grid::quick_equivalence_test(const Grid& y) const {
 bool
 PPL::Grid::is_included_in(const Grid& y) const {
   // Private method: the caller must ensure the following.
-  //assert(topology() == y.topology()); // FIX
   assert(space_dim == y.space_dim);
   assert(!marked_empty() && !y.marked_empty() && space_dim > 0);
 
@@ -300,6 +304,14 @@ PPL::Grid::max_min(const Linear_Expression& expr,
   if (bounds(expr, method_call)) {
     if (marked_empty())
       return false;
+    if (space_dim == 0) {
+      ext_n = 0;
+      ext_d = 1;
+      included = true;
+      if (point)
+	*point = Generator::point();
+      return true;
+    }
     if (!generators_are_minimized()) {
       // Minimize the generator system.
       Grid& gr = const_cast<Grid&>(*this);
@@ -340,9 +352,14 @@ void
 PPL::Grid::set_empty() {
   status.set_empty();
   // The grid is empty, so clear the representations.
-  con_sys.clear();
   gen_sys.clear();
   gen_sys.set_sorted(false);
+  con_sys.clear();
+  // Extend the zero dim false congruence system to the appropriate
+  // dimension and then store it in `con_sys'.
+  Congruence_System cgs(Congruence::zero_dim_false());
+  cgs.increase_space_dimension(space_dim);
+  const_cast<Congruence_System&>(con_sys).swap(cgs);
 }
 
 bool
