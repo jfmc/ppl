@@ -44,6 +44,9 @@ operator==(const Bounding_Box& x, const Bounding_Box& y) {
   if (x.is_empty() && y.is_empty())
     return true;
 
+  if (x.is_empty() || y.is_empty())
+    return false;
+
   TEMP_INTEGER(n_x);
   TEMP_INTEGER(n_y);
   TEMP_INTEGER(d_x);
@@ -534,6 +537,64 @@ test13() {
   exit(1);
 }
 
+#undef SPACE_DIM
+#define SPACE_DIM 0
+
+// Zero dimension empty grid.
+
+void
+test14() {
+  nout << "test14:" << endl;
+
+  Bounding_Box box(SPACE_DIM);
+
+  Grid gr(SPACE_DIM, EMPTY);
+
+  gr.shrink_bounding_box(box);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Bounding_Box known_box(SPACE_DIM);
+  known_box.set_empty();
+
+  if (box == known_box)
+    return;
+
+  nout << "Box should equal known box." << endl
+       << "  box:" << endl << box
+       << "known:" << endl << known_box;
+
+  exit(1);
+}
+
+// Zero dimension universe grid.
+
+void
+test15() {
+  nout << "test15:" << endl;
+
+  Bounding_Box box(SPACE_DIM);
+
+  Grid gr(SPACE_DIM);
+
+  gr.shrink_bounding_box(box);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Bounding_Box known_box(SPACE_DIM);
+
+  if (box == known_box)
+    return;
+
+  nout << "Box should equal known box." << endl
+       << "  box:" << endl << box
+       << "known:" << endl << known_box;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -555,6 +616,8 @@ main() TRY {
   test11();
   test12();
   test13();
+  test14();
+  test15();
 
   return 0;
 }
