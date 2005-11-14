@@ -109,19 +109,19 @@ DB_Row_Impl_Handler<T>::Impl::construct_upward_approximation(const U& y) {
     // FIXME: this should use a yet-to-be-written checked construction
     // mechanism.
     new (&vec_[i]) T();
-    assign(vec_[i], y.vec_[i], ROUND_UP);
+    assign(vec_[i], y[i], ROUND_UP);
     bump_size();
   }
 #else
   assert(y_size > 0);
   if (y_size > 0) {
-    vec_[0] = y.vec_[0];
+    vec_[0] = y[0];
     bump_size();
     for (dimension_type i = 1; i < y_size; ++i) {
       // FIXME: this should use a yet-to-be-written checked construction
       // mechanism.
       new (&vec_[i]) T();
-      assign(vec_[i], y.vec_[i], ROUND_UP);
+      assign(vec_[i], y[i], ROUND_UP);
       bump_size();
     }
   }
