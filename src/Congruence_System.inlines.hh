@@ -29,7 +29,7 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Congruence_System::Congruence_System()
-  : Matrix() {
+  : Matrix(0, 2) {
 }
 
 inline
@@ -76,12 +76,13 @@ Congruence_System::max_space_dimension() {
 
 inline dimension_type
 Congruence_System::space_dimension() const {
-  return Matrix::num_columns() - (num_rows() ? 2 : 0);
+  return Matrix::num_columns() - 2;
 }
 
 inline void
 Congruence_System::clear() {
   Matrix::clear();
+  add_zero_columns(2); // Modulus and constant term.
 }
 
 inline void
