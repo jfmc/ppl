@@ -195,7 +195,7 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   \par Example 2
   The following code shows how it is possible to access each single
   coefficient of a constraint. Given an inequality constraint
-  (in this case \f$x - 5y + 3z <= 4\f$), we construct a new constraint
+  (in this case \f$x - 5y + 3z \leq 4\f$), we construct a new constraint
   corresponding to its complement (thus, in this case we want to obtain
   the strict inequality constraint \f$x - 5y + 3z > 4\f$).
   \code
