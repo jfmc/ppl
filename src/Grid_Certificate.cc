@@ -36,7 +36,7 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
   Grid& gr = const_cast<Grid&>(cgr);
   // As in Polyhedron assume that `gr' contains at least one point.
   assert(!gr.marked_empty());
-  if (cgr.space_dimension() == 0)
+  if (gr.space_dimension() == 0)
     return;
   // One of the systems must be in minimal form.
   if (gr.congruences_are_up_to_date())
