@@ -48,7 +48,7 @@ increase_space_dimension(const dimension_type new_space_dim) {
 
   dimension_type cols_to_add = new_space_dim - space_dimension();
 
-  if (cols_to_add) {
+  if (cols_to_add)
     if (num_rows()) {
       dimension_type old_num_cols = num_columns();
       add_zero_columns(cols_to_add);
@@ -56,9 +56,8 @@ increase_space_dimension(const dimension_type new_space_dim) {
       swap_columns(num_columns() - 1, old_num_cols - 1);
     }
     else
-      // Empty system; possibly add modulus and constant term.
-      add_zero_columns(cols_to_add - num_columns() + 2);
-  }
+      // Empty system.
+      add_zero_columns(cols_to_add);
 
   assert(OK());
   return true;
