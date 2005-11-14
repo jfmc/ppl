@@ -130,13 +130,9 @@ test2() {
 
   Grid gr(0, EMPTY);
 
-  Coefficient extr_n, extr_d;
-  bool dummy;
-  Generator pnt(point());
+  Linear_Expression le = Linear_Expression::zero();
 
-  if (gr.maximize(Linear_Expression(0), extr_n, extr_d, dummy, pnt)
-      || gr.minimize(Linear_Expression(0), extr_n, extr_d, dummy, pnt))
-    exit(1);
+  check_both(gr, le, "gr");
 }
 
 // Zero dimension universe.
@@ -147,11 +143,12 @@ test3() {
 
   Grid gr(0);
 
-  if (gr.bounds_from_above(Linear_Expression(3))
-      && gr.bounds_from_below(Linear_Expression(3)))
-    return;
+  Linear_Expression le = Linear_Expression::zero();
 
-  exit(1);
+  Generator exp_pnt(point());
+
+  check_maximize(gr, le, 0, 1, exp_pnt, "gr");
+  check_minimize(gr, le, 0, 1, exp_pnt, "gr");
 }
 
 // Point.
