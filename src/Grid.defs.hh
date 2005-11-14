@@ -520,7 +520,9 @@ public:
     that dimension to the value of the bound.  An interval which has
     both upper and lower bounds, and in which these bounds are of
     equal value, allows grid points having any value in that
-    dimension.  Any universe interval results in the empty grid.
+    dimension.  Any universe interval results in the empty grid.  The
+    empty box produces the empty grid of the same dimension as the
+    box.
 
     \param box
     The covering box representing the grid to be built;
@@ -920,15 +922,19 @@ public:
     the corners of the box form the sparsest rectilinear grid that
     includes \p *this.
 
-    The lower bounds of the resulting \p box are as close as possible
-    to the origin.
+    The value of the lower bound of each interval of the resulting \p
+    box are as close as possible to the origin, with positive values
+    taking preference when the lowest positive value equals the lowest
+    negative value.
 
-    If all the points have a single value in a particular dimension
-    then the upper bound of the interval produced in \p box is open,
-    and the lower bound denotes this single value.  If the coordinates
-    of the points in a particular dimension include every value then
-    the upper and lower bounds of the associated interval in \p box
-    are set equal.  The empty grid produces the universe \p box.
+    If all the points have a single value in a particular dimension of
+    the grid then there is only a lower bound on the interval produced
+    in \p box, and the lower bound denotes the single value for the
+    dimension.  If the coordinates of the points in a particular
+    dimension include every value then the upper and lower bounds of
+    the associated interval in \p box are set equal.  The empty grid
+    produces the empty \p box.  The zero dimension universe grid
+    produces the zero dimension universe box.
 
     \param box
     The covering box to be shrunk.
@@ -946,6 +952,10 @@ public:
     \endcode
     returns the dimension of the vector space enclosing the grid
     represented by the covering box.
+    \code
+      set_empty()
+    \endcode
+    Causes the box to become empty, i.e., to represent the empty set.
     \code
       raise_lower_bound(dimension_type k, bool closed,
                         Coefficient_traits::const_reference n,
