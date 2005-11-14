@@ -44,6 +44,9 @@ operator==(const Bounding_Box& x, const Bounding_Box& y) {
   if (x.is_empty() && y.is_empty())
     return true;
 
+  if (x.is_empty() || y.is_empty())
+    return false;
+
   TEMP_INTEGER(n_x);
   TEMP_INTEGER(n_y);
   TEMP_INTEGER(d_x);
@@ -357,6 +360,7 @@ test7() {
     exit(1);
 
   Bounding_Box known_box(SPACE_DIM);
+  known_box.set_empty();
 
   if (box1 == known_box) {
     Grid tem_gr(box1, From_Covering_Box());
@@ -652,6 +656,7 @@ test13() {
     exit(1);
 
   Bounding_Box known_box(SPACE_DIM);
+  known_box.set_empty();
 
   if (box1 == known_box) {
     Grid tem_gr(box1, From_Covering_Box());
@@ -773,6 +778,84 @@ test15() {
   exit(1);
 }
 
+#undef SPACE_DIM
+#define SPACE_DIM 0
+
+// Zero dimension empty grid.
+
+void
+test16() {
+  nout << "test16:" << endl;
+
+  Bounding_Box box1(SPACE_DIM);
+
+  Grid gr(SPACE_DIM, EMPTY);
+
+  gr.get_covering_box(box1);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Bounding_Box known_box(SPACE_DIM);
+  known_box.set_empty();
+
+  if (box1 == known_box) {
+    Grid tem_gr(box1, From_Covering_Box());
+    Bounding_Box box2(SPACE_DIM);
+    tem_gr.get_covering_box(box2);
+
+    if (box2 == known_box)
+      return;
+
+    nout << "Reproduced box should equal known box." << endl
+	 << "  box:" << endl << box2;
+  }
+  else
+    nout << "Original box should equal known box." << endl
+	 << "  box:" << endl << box1;
+
+  nout << "known:" << endl << known_box;
+
+  exit(1);
+}
+
+// Zero dimension universe grid.
+
+void
+test17() {
+  nout << "test17:" << endl;
+
+  Bounding_Box box1(SPACE_DIM);
+
+  Grid gr(SPACE_DIM);
+
+  gr.get_covering_box(box1);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Bounding_Box known_box(SPACE_DIM);
+
+  if (box1 == known_box) {
+    Grid tem_gr(box1, From_Covering_Box());
+    Bounding_Box box2(SPACE_DIM);
+    tem_gr.get_covering_box(box2);
+
+    if (box2 == known_box)
+      return;
+
+    nout << "Reproduced box should equal known box." << endl
+	 << "  box:" << endl << box2;
+  }
+  else
+    nout << "Original box should equal known box." << endl
+	 << "  box:" << endl << box1;
+
+  nout << "known:" << endl << known_box;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -796,6 +879,8 @@ main() TRY {
   test13();
   test14();
   test15();
+  test16();
+  test17();
 
   return 0;
 }
