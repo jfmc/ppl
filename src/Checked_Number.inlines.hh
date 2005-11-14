@@ -57,7 +57,7 @@ Checked_Number<T, Policy>::Checked_Number()
 
 template <typename T, typename Policy>
 inline
-Checked_Number<T, Policy>::Checked_Number(const Checked_Number<T, Policy>& y) {
+Checked_Number<T, Policy>::Checked_Number(const Checked_Number& y) {
   Checked::copy<Policy>(v, y.raw_value());
 }
 

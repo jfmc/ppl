@@ -238,42 +238,42 @@ Native_Integer<T>::raw_value() const {
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator=(const Native_Integer<T>& y) {
+Native_Integer<T>::operator=(const Native_Integer& y) {
   v = y.v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator+=(const Native_Integer<T>& y) {
+Native_Integer<T>::operator+=(const Native_Integer& y) {
   v += y.v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator-=(const Native_Integer<T>& y) {
+Native_Integer<T>::operator-=(const Native_Integer& y) {
   v -= y.v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator*=(const Native_Integer<T>& y) {
+Native_Integer<T>::operator*=(const Native_Integer& y) {
   v *= y.v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator/=(const Native_Integer<T>& y) {
+Native_Integer<T>::operator/=(const Native_Integer& y) {
   v /= y.v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator%=(const Native_Integer<T>& y) {
+Native_Integer<T>::operator%=(const Native_Integer& y) {
   v %= y.v;
   return *this;
 }
