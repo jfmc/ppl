@@ -81,9 +81,9 @@ operator%=(const Linear_Expression& e,
 
 //! Returns a copy of \p cg, multiplying \p k into the copy's modulus.
 /*!
-  If \p cg is said to represent the congruence \f$ e_1 = e_2
-  \pmod{m}\f$, then the returned copy can be said to represent the
-  congruence \f$ e_1 = e_2 \pmod{mk}\f$.
+    If \p cg represents the congruence \f$ e_1 = e_2
+    \pmod{m}\f$, then the result represents the
+    congruence \f$ e_1 = e_2 \pmod{mk}\f$.
   \relates Congruence
 */
 Congruence
@@ -110,23 +110,26 @@ swap(Parma_Polyhedra_Library::Congruence& x,
 
 //! A linear congruence.
 /*!
-  An object of the class Congruence is either:
-  - a congruence \f$\pmod{1}\f$: \f$\sum_{i=0}^{n-1} a_i x_i + b \%= 0\f$; or
-  - a congruence \f$\pmod{m}\f$: \f$\sum_{i=0}^{n-1} a_i x_i + b \%= 0 / m\f$;
-
+  An object of the class Congruence is a congruence:
+  - \f$\cg = \sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod m\f$
+ 
   where \f$n\f$ is the dimension of the space,
-  \f$a_i\f$ is the integer coefficient of variable \f$x_i\f$
-  and \f$b\f$ is the integer inhomogeneous term.
+  \f$a_i\f$ is the integer coefficient of variable \f$x_i\f$,
+  \f$b\f$ is the integer inhomogeneous term and \f$m\f$ is the integer modulus;
+  if \f$m = 0\f$, then \f$\cg\f$ represents the equality congruence
+  \f$\sum_{i=0}^{n-1} a_i x_i + b = 0\f$
+  and, if \f$m \neq 0\f$, then the congruence \f$\cg\f$ is
+  said to be a proper congruence.
 
   \par How to build a congruence
-  Congruences \f$\pmod{1}\f$ are typically built by applying the congruence symbol
+  Congruences \f$\pmod{1}\f$ are typically built by
+  applying the congruence symbol `<CODE>\%=</CODE>'
   to a pair of linear expressions.
-  The congruence symbol is (<CODE>\%=</CODE>).
-  Congruences \f$\pmod{m}\f$, for an integer \p m
-  are typically built by first building a congruence \f$\pmod{1}\f$
+  Congruences with modulus \p m
+  are typically constructed by building a congruence \f$\pmod{1}\f$
   using the given pair of linear expressions
-  and then adding the modulus \p m.
-  The modulus symbol is (<CODE>/</CODE>).
+  and then adding the modulus \p m
+  using the modulus symbol is `<CODE>/</CODE>'.
 
   The space dimension of a congruence is defined as the maximum
   space dimension of the arguments of its constructor.
@@ -184,7 +187,7 @@ swap(Parma_Polyhedra_Library::Congruence& x,
   Given a congruence with linear expression \p e and modulus \p m
   (in this case \f$x - 5y + 3z = 4 \pmod{5}\f$), we construct a new
   congruence with the same modulus \p m but where the linear
-  expression is \f$-e\f$ (\f$-x + 5y - 3z = -4 \pmod{5}\f$).
+  expression is \f$2 e\f$ (\f$2x - 10y + 6z = 8 \pmod{5}\f$).
   \code
   Congruence cg1((x - 5*y + 3*z %= 4) / 5);
   cout << "Congruence cg1: " << cg1 << endl;
@@ -194,20 +197,20 @@ swap(Parma_Polyhedra_Library::Congruence& x,
   else {
     Linear_Expression e;
     for (int i = cg1.space_dimension() - 1; i >= 0; --i)
-      e -= cg1.coefficient(Variable(i)) * Variable(i);
-      e -= cg1.inhomogeneous_term();
+      e += 2 * cg1.coefficient(Variable(i)) * Variable(i);
+      e += 2 * cg1.inhomogeneous_term();
     Congruence cg2((e %= 0) / m);
     cout << "Congruence cg2: " << cg2 << endl;
   }
   \endcode
   The actual output could be the following:
   \code
-  Congruence cg1: -A + 5*B - 3*C %= 4 / 5
-  Congruence cg2: A - 5*B + 3*C %= -4 / 5
+  Congruence cg1: x - 5*y + 3*z %= 4 / 5
+  Congruence cg2: 2*x - 10*y + 6*z %= 8 / 5
   \endcode
   Note that, in general, the particular output obtained can be
   syntactically different from the (semantically equivalent)
-  equality congruence considered.
+  congruence considered.
 */
 class Parma_Polyhedra_Library::Congruence : private Row {
 public:
@@ -251,9 +254,9 @@ public:
 
   //! Multiplies \p k into the modulus of \p *this.
   /*!
-    If \p *this is said to represent the congruence \f$ e_1 = e_2
-    \pmod{m}\f$, then it can be said that *this will be left
-    representing the congruence \f$ e_1 = e_2 \pmod{mk}\f$.
+    If called with \p *this representing the congruence \f$ e_1 = e_2
+    \pmod{m}\f$, then it returns with *this representing
+    the congruence \f$ e_1 = e_2 \pmod{mk}\f$.
   */
   Congruence&
   operator/=(const Coefficient_traits::const_reference k);
@@ -372,8 +375,8 @@ private:
 
   //! Copy-constructs from \p cg, multiplying \p k into the modulus.
   /*!
-    If \p cg is said to represent the congruence \f$ e_1 = e_2
-    \pmod{m}\f$, then the result can be said to represent the
+    If \p cg represents the congruence \f$ e_1 = e_2
+    \pmod{m}\f$, then the result represents the
     congruence \f$ e_1 = e_2 \pmod{mk}\f$.
   */
   Congruence(const Congruence& cg, Coefficient_traits::const_reference k);
@@ -382,7 +385,7 @@ private:
   /*!
      Builds a congruence with modulus \p m, stealing the coefficients
      from \p le.  Assumes that \p le has spare capacity of at least
-     one element, for the modulus.
+     one element for the modulus.
   */
   Congruence(Linear_Expression& le,
 	     Coefficient_traits::const_reference m);
