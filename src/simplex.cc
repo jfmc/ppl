@@ -45,7 +45,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 
 #ifndef PPL_SIMPLEX_ENABLE_STEEPEST_EDGE
-#define PPL_SIMPLEX_ENABLE_STEEPEST_EDGE 0
+#define PPL_SIMPLEX_ENABLE_STEEPEST_EDGE 1
 #endif
 
 namespace {
