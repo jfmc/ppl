@@ -95,6 +95,9 @@ PPL::Grid::construct(const Generator_System& const_gs,
   // TODO: this implementation is just an executable specification.
   Generator_System gs = const_gs;
 
+  // Set the space dimension.
+  space_dim = gs.space_dimension();
+
   // An empty set of generators defines the empty grid.
   if (gs.num_rows() == 0) {
     set_empty();
@@ -104,8 +107,6 @@ PPL::Grid::construct(const Generator_System& const_gs,
   // Non-empty valid generator systems have a supporting point, at least.
   if (!gs.has_points())
     throw_invalid_generators("Grid(const_gs)", "gs");
-
-  const dimension_type gs_space_dim = gs.space_dimension();
 
   if (!gs.is_necessarily_closed()) {
     // A NOT_NECESSARILY_CLOSED generator system can be converted in
@@ -117,8 +118,8 @@ PPL::Grid::construct(const Generator_System& const_gs,
     gs.set_necessarily_closed();
   }
 
-  if (gs_space_dim > 0) {
-    // Stealing the rows from `gs'.
+  if (space_dim > 0) {
+    // Steal the rows from `gs'.
     std::swap(gen_sys, gs);
     // FIX for now convert rays to lines
     if (convert_rays_to_lines)
@@ -131,23 +132,15 @@ PPL::Grid::construct(const Generator_System& const_gs,
       }
     normalize_divisors(gen_sys);
     gen_sys.unset_pending_rows();
-    gen_sys.set_sorted(false);
 
     // Generators are now up-to-date.
     set_generators_up_to_date();
-
-    // Set the space dimension.
-    space_dim = gs_space_dim;
-
-    assert(OK());
-    return;
   }
+  else
+    set_zero_dim_univ();
 
-  // Here `gs.num_rows > 0' and `gs_space_dim == 0': we have already
-  // checked for both the topology-compatibility and the supporting
-  // point.
-  space_dim = 0;
   gen_sys.set_sorted(false);
+  assert(OK());
 }
 
 PPL::Grid::Three_Valued_Boolean
@@ -345,15 +338,21 @@ PPL::Grid::set_zero_dim_univ() {
   space_dim = 0;
   con_sys.clear();
   gen_sys.clear();
+  gen_sys.insert(point());
   gen_sys.set_sorted(false);
 }
 
 void
 PPL::Grid::set_empty() {
   status.set_empty();
-  // The grid is empty, so clear the representations.
-  gen_sys.clear();
-  gen_sys.set_sorted(false);
+
+  // Replace gen_sys with an empty system of the right dimension.
+  Generator_System gs;
+  gs.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
+					 space_dim);
+  gs.set_sorted(false);
+  gen_sys.swap(gs);
+
   con_sys.clear();
   // Extend the zero dim false congruence system to the appropriate
   // dimension and then store it in `con_sys'.

@@ -124,7 +124,7 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
   }
 
   if (space_dim == 0)
-    status.set_zero_dim_univ();
+    set_zero_dim_univ();
   else {
     // Initialize the space dimension as indicated by the box.
     con_sys.increase_space_dimension(space_dim);
@@ -155,10 +155,9 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
       // A universe interval allows any value in dimension k.
     }
     set_congruences_up_to_date();
+    gen_sys.unset_pending_rows();
+    gen_sys.set_sorted(false);
   }
-
-  gen_sys.set_sorted(false);
-  gen_sys.unset_pending_rows();
 
   assert(OK());
 }
@@ -199,7 +198,7 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
   }
 
   if (space_dim == 0)
-    status.set_zero_dim_univ();
+    set_zero_dim_univ();
   else {
     // Initialize the space dimension as indicated by the box.
     con_sys.increase_space_dimension(space_dim);
@@ -240,15 +239,15 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
 	else {
 	  // Any universe interval produces an empty grid.
 	  set_empty();
+	  // FIX can this just return?
 	  goto end;
 	}
     }
     set_congruences_up_to_date();
+    gen_sys.set_sorted(false);
+  end:
+    gen_sys.unset_pending_rows();
   }
-
- end:
-  gen_sys.set_sorted(false);
-  gen_sys.unset_pending_rows();
 
   assert(OK());
 }
