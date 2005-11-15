@@ -209,13 +209,14 @@ PPL::Grid::minimized_congruences() const {
 
 const PPL::Generator_System&
 PPL::Grid::generators() const {
-  if (marked_empty()) {
-    assert(gen_sys.num_rows() == 0);
+  if (space_dim == 0) {
+    assert(gen_sys.num_columns() == 1
+	   && gen_sys.num_rows() == (marked_empty() ? 0 : 1));
     return gen_sys;
   }
 
-  if (space_dim == 0) {
-    assert(gen_sys.num_columns() == 1 && gen_sys.num_rows() == 1);
+  if (marked_empty()) {
+    assert(gen_sys.num_rows() == 0);
     return gen_sys;
   }
 
@@ -227,36 +228,43 @@ PPL::Grid::generators() const {
 
   // Convert parameters to points, to keep them from the user
   // interface.
-  const dimension_type num_rows = gen_sys.num_rows();
-  dimension_type pos = 0;
-  while (pos < num_rows)
-    if (gen_sys[pos++].is_point())
-      break;
-  const Generator& point = gen_sys[pos-1];
-  Grid& gr = const_cast<Grid&>(*this);
-  for (dimension_type row = num_rows; row-- > 0; ) {
-    Generator& gen = gr.gen_sys[row];
-    if (gen.is_ray()) {
-      for (dimension_type col = space_dim; col-- > 0; )
-	gen[col] += point[col];
-      gr.clear_generators_minimized();
-    }
-  }
+  const_cast<Grid&>(*this).hide_parameters();
 
   return gen_sys;
 }
 
 const PPL::Generator_System&
 PPL::Grid::minimized_generators() const {
-  if (!marked_empty()
-      && generators_are_up_to_date()
-      && !generators_are_minimized()) {
-    // Minimize the generators.
-    Grid& gr = const_cast<Grid&>(*this);
-    gr.simplify(gr.gen_sys, gr.dim_kinds);
-    gr.set_generators_minimized();
+  if (space_dim == 0) {
+    assert(gen_sys.num_columns() == 1
+	   && gen_sys.num_rows() == (marked_empty() ? 0 : 1));
+    return gen_sys;
   }
-  return generators();
+
+  if (marked_empty()) {
+    assert(gen_sys.num_rows() == 0);
+    return gen_sys;
+  }
+
+  if (generators_are_up_to_date()) {
+    if (!generators_are_minimized()) {
+      // Minimize the generators.
+      Grid& gr = const_cast<Grid&>(*this);
+      gr.simplify(gr.gen_sys, gr.dim_kinds);
+      gr.set_generators_minimized();
+    }
+  }
+  else if (!update_generators()) {
+    // Updating found the grid empty.
+    const_cast<Grid&>(*this).set_empty();
+    return gen_sys;
+  }
+
+  // Convert parameters to points, to keep parameters from the user
+  // interface.
+  const_cast<Grid&>(*this).hide_parameters();
+
+  return gen_sys;
 }
 
 PPL::Poly_Con_Relation
