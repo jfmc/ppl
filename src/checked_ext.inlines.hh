@@ -46,7 +46,7 @@ construct_ext(To& to, const From& from, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
     goto native;
   if (CHECK_P(From_Policy::check_nan_args, is_nan<From_Policy>(from)))
-    return construct<To_Policy>(to, NOT_A_NUMBER);
+    return construct<To_Policy>(to, NOT_A_NUMBER, dir);
   else if (is_minf<From_Policy>(from))
     return construct<To_Policy>(to, MINUS_INFINITY, dir);
   else if (is_pinf<From_Policy>(from))
