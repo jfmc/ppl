@@ -349,6 +349,12 @@ add_edges(BD_Shape<T>& bd, const Edge* edges, unsigned n) {
 } // namespace
 
 
+#define DISTANCE(To, Temp, distance)			       \
+  Checked_Number<To, Extended_Number_Policy> distance; \
+  rectilinear_distance_assign<Temp>(distance, qbd1, qbd2, ROUND_UP); \
+  cout << "distance<" #To ", " #Temp "> = " << distance << endl;
+
+
 int
 main() TRY {
   BD_Shape<mpq_class> qbd1(126);
@@ -361,6 +367,11 @@ main() TRY {
   if (!qbd2.contains(qbd1))
     exit(1);
 
+#if 0
+  DISTANCE(double, float, a)
+  DISTANCE(double, mpq_class, b)
+  DISTANCE(int, double, c)
+#endif
   return 0;
 }
 CATCH
