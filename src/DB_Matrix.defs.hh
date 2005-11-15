@@ -290,8 +290,8 @@ bool operator!=(const DB_Matrix<T>& x, const DB_Matrix<T>& y);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*!
-  If the rectilinear (or Manhattan) distance between \p x and \p y
-  is defined, stores an approximation of it into to \p r
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into to \p r
   and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
@@ -301,6 +301,26 @@ bool operator!=(const DB_Matrix<T>& x, const DB_Matrix<T>& y);
 */
 template <typename Temp, typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				 const DB_Matrix<T>& x,
+				 const DB_Matrix<T>& y,
+				 const Rounding_Dir dir,
+				 Temp& tmp0,
+				 Temp& tmp1,
+				 Temp& tmp2);
+
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*!
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into to \p r
+  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+template <typename Temp, typename To, typename T>
+bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const DB_Matrix<T>& x,
 				 const DB_Matrix<T>& y,
 				 const Rounding_Dir dir,

@@ -452,15 +452,15 @@ maybe_assign(const To* top, To& tmp, const From& from, Rounding_Dir dir) {
 }
 
 /*! \relates DB_Matrix */
-template <typename Temp, typename To, typename T>
+template <typename Specialization, typename Temp, typename To, typename T>
 inline bool
-rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const DB_Matrix<T>& x,
-			    const DB_Matrix<T>& y,
-			    const Rounding_Dir dir,
-			    Temp& tmp0,
-			    Temp& tmp1,
-			    Temp& tmp2) {
+l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+		    const DB_Matrix<T>& x,
+		    const DB_Matrix<T>& y,
+		    const Rounding_Dir dir,
+		    Temp& tmp0,
+		    Temp& tmp1,
+		    Temp& tmp2) {
   const dimension_type x_num_rows = x.num_rows();
   if (x_num_rows != y.num_rows())
     return false;
@@ -496,11 +496,107 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 	assign_sub(tmp1, *tmp1p, *tmp2p, dir);
       }
       assert(tmp1 >= 0);
-      assign_add(tmp0, tmp0, tmp1, dir);
+      Specialization::combine(tmp0, tmp1, dir);
     }
   }
+  Specialization::finalize(tmp0, dir);
   assign(r, tmp0, dir);
   return true;
+}
+
+template <typename Temp>
+struct Rectilinear_Distance_Specialization {
+  static inline void
+  combine(Temp& running, const Temp& current, Rounding_Dir dir) {
+    assign_add(running, running, current, dir);
+  }
+
+  static inline void
+  finalize(Temp&, Rounding_Dir) {
+  }
+};
+
+/*! \relates DB_Matrix */
+template <typename Temp, typename To, typename T>
+inline bool
+rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			    const DB_Matrix<T>& x,
+			    const DB_Matrix<T>& y,
+			    const Rounding_Dir dir,
+			    Temp& tmp0,
+			    Temp& tmp1,
+			    Temp& tmp2) {
+  return
+    l_m_distance_assign<Rectilinear_Distance_Specialization<Temp> >(r, x, y,
+								    dir,
+								    tmp0,
+								    tmp1,
+								    tmp2);
+}
+
+
+template <typename Temp>
+struct Euclidean_Distance_Specialization {
+  static inline void
+  combine(Temp& running, const Temp& current, Rounding_Dir dir) {
+    assign_mul(current, current, current, dir);
+    assign_add(running, running, current, dir);
+  }
+
+  static inline void
+  finalize(Temp& running, Rounding_Dir dir) {
+    assign_sqrt(running, running, dir);
+  }
+};
+
+/*! \relates DB_Matrix */
+template <typename Temp, typename To, typename T>
+inline bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const DB_Matrix<T>& x,
+			  const DB_Matrix<T>& y,
+			  const Rounding_Dir dir,
+			  Temp& tmp0,
+			  Temp& tmp1,
+			  Temp& tmp2) {
+  return
+    l_m_distance_assign<Euclidean_Distance_Specialization<Temp> >(r, x, y,
+								  dir,
+								  tmp0,
+								  tmp1,
+								  tmp2);
+}
+
+
+template <typename Temp>
+struct L_Infinity_Distance_Specialization {
+  static inline void
+  combine(Temp& running, const Temp& current, Rounding_Dir dir) {
+    if (current > running)
+      running = current;
+  }
+
+  static inline void
+  finalize(Temp&, Rounding_Dir) {
+  }
+};
+
+/*! \relates DB_Matrix */
+template <typename Temp, typename To, typename T>
+inline bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const DB_Matrix<T>& x,
+			   const DB_Matrix<T>& y,
+			   const Rounding_Dir dir,
+			   Temp& tmp0,
+			   Temp& tmp1,
+			   Temp& tmp2) {
+  return
+    l_m_distance_assign<L_Infinity_Distance_Specialization<Temp> >(r, x, y,
+								   dir,
+								   tmp0,
+								   tmp1,
+								   tmp2);
 }
 
 template <typename T>
