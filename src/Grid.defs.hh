@@ -170,7 +170,7 @@ bool operator!=(const Grid& x, const Grid& y);
     \code
   Generator_System gs;
   gs.insert(point(0*x + 0*y));
-  gs.insert(line(x - y));
+  gs.insert(line(x + y));
   Grid gr(gs);
     \endcode
 

@@ -205,8 +205,8 @@ swap(Parma_Polyhedra_Library::Congruence& x,
   \endcode
   The actual output could be the following:
   \code
-  Congruence cg1: x - 5*y + 3*z %= 4 / 5
-  Congruence cg2: 2*x - 10*y + 6*z %= 8 / 5
+  Congruence cg1: A - 5*B + 3*C %= 4 / 5
+  Congruence cg2: 2*A - 10*B + 6*C %= 8 / 5
   \endcode
   Note that, in general, the particular output obtained can be
   syntactically different from the (semantically equivalent)
