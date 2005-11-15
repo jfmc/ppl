@@ -67,6 +67,7 @@ expandspacedim1 \
 foldspacedims1 \
 generalizedaffineimage1 generalizedaffineimage2 \
 generalizedaffinepreimage1 generalizedaffinepreimage2 \
+generators1 \
 coveringbox1 coveringbox2 \
 grid1 grid2 grid3 \
 griddifference1 \
@@ -77,6 +78,7 @@ limitedextrapolation1 \
 mapspacedims1 \
 maxmin1 \
 membytes1 membytes2 \
+mincongruences1 \
 pointed1 \
 relations1 relations2 \
 removespacedims1 removespacedims2 \
@@ -146,6 +148,8 @@ generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
 generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
 
+generators1_SOURCES = generators1.cc
+
 coveringbox1_SOURCES = coveringbox1.cc
 coveringbox2_SOURCES = coveringbox2.cc
 
@@ -172,6 +176,8 @@ maxmin1_SOURCES = maxmin1.cc
 
 membytes1_SOURCES = membytes1.cc
 membytes2_SOURCES = membytes2.cc
+
+mincongruences1_SOURCES = mincongruences1.cc
 
 pointed1_SOURCES = pointed1.cc
 
