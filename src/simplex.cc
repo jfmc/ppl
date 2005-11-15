@@ -94,23 +94,29 @@ dimension_type
 steepest(const Matrix& tableau,
 	 const Row& cost,
 	 const std::vector<dimension_type>& base) {
-  // The lcm of all the coefficients of the variable in base.
-  TEMP_INTEGER(lcm_basis);
-  lcm_basis = 1;
-  // Compute lcm_basis.
-  const dimension_type base_size = base.size();
-  for (dimension_type i = base_size; i-- > 0; )
-    lcm_assign(lcm_basis, tableau[i][base[i]]);
-  // This Vector will contain the value that will be multiplied to each 
-  // computed coefficient of the tableau.
-  std::vector<Coefficient> right_mult(base_size);
-  for (dimension_type j = base_size; j-- > 0; )
-    exact_div_assign(right_mult[j], lcm_basis, tableau[j][base[j]]);
-  // Here we compute the square of `lcm_basis'. Since `lcm_basis' is
-  // no longer needed, we directly compute the square into it.
-  lcm_basis *= lcm_basis;
+  const dimension_type tableau_num_rows = tableau.num_rows();
+  assert(tableau_num_rows == base.size());
+  // The square of the lcm of all the coefficients of variables in base.
+  TEMP_INTEGER(squared_lcm_basis);
+  // The normalization factor for each coefficient in the tableau.
+  std::vector<Coefficient> norm_factor(tableau_num_rows);
 
-  // These variables are declared here to increase speed computation.
+  {
+    // Compute the lcm of all the coefficients of variables in base.
+    TEMP_INTEGER(lcm_basis);
+    lcm_basis = 1;
+    for (dimension_type i = tableau_num_rows; i-- > 0; )
+      lcm_assign(lcm_basis, tableau[i][base[i]]);
+    // Compute normalization factors.
+    for (dimension_type i = tableau_num_rows; i-- > 0; )
+      exact_div_assign(norm_factor[i], lcm_basis, tableau[i][base[i]]);
+    // Compute the square of `lcm_basis', exploiting the fact that
+    // `lcm_basis' will no longer be needed.
+    lcm_basis *= lcm_basis;
+    std::swap(squared_lcm_basis, lcm_basis);
+  }
+
+  // Defined here to avoid repeated (de-)allocations.
   TEMP_INTEGER(challenger_num);
   TEMP_INTEGER(scalar_value);
   TEMP_INTEGER(challenger_den);
@@ -121,31 +127,28 @@ steepest(const Matrix& tableau,
   TEMP_INTEGER(current_den); 
   dimension_type entering_index = 0;
   const int cost_sign = sgn(cost[cost.size() - 1]);
-  const dimension_type tableau_num_rows = tableau.num_rows();
-  for (dimension_type i = tableau.num_columns() - 1; i-- > 1; ) {
-    const Coefficient& cost_i = cost[i];
-    if (sgn(cost_i) == cost_sign) {
-      // We can't apply the square root to each \f$\|\Delta x^{j}\|\f$.
-      // The workaround is to compute the square of `cost[i]'.
-      challenger_num = cost_i * cost_i;
-      challenger_den = 0;
-      for (dimension_type j = tableau_num_rows; j-- > 0; ) {
-	const Coefficient& tableau_ji = tableau[j][i];
+  for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
+    const Coefficient& cost_j = cost[j];
+    if (sgn(cost_j) == cost_sign) {
+      // We can't compute the (exact) square root of abs(\Delta x_j).
+      // The workaround is to compute the square of `cost[j]'.
+      challenger_num = cost_j * cost_j;
+      // Due to our integer implementation, the `1' term in the denominator
+      // of the original formula has to be replaced by `squared_lcm_basis'.
+      challenger_den = squared_lcm_basis;
+      for (dimension_type i = tableau_num_rows; i-- > 0; ) {
+	const Coefficient& tableau_ij = tableau[i][j];
 	// FIXME: the test seems to speed up the GMP computation.
-	if (tableau_ji != 0) {
-	  scalar_value = tableau_ji * right_mult[j];
+	if (tableau_ij != 0) {
+	  scalar_value = tableau_ij * norm_factor[i];
 	  add_mul_assign(challenger_den, scalar_value, scalar_value);
 	}
       }
-      // The `1' of the denominator of the original formula must be 
-      // substituted (still related to the Integer implementation) to  
-      // the square of `lcm_basis' (already in `lcm_basis').
-      challenger_den += lcm_basis;
-      // Initialize the first value: this will be the first value to beat.
+      // Initialization during the first loop.
       if (entering_index == 0) {
 	std::swap(current_num, challenger_num);
 	std::swap(current_den, challenger_den);
-	entering_index = i;
+	entering_index = j;
  	continue;
       }
       challenger_value = challenger_num * current_den;
@@ -154,7 +157,7 @@ steepest(const Matrix& tableau,
       if (challenger_value > current_value) {
 	std::swap(current_num, challenger_num);
 	std::swap(current_den, challenger_den);
-	entering_index = i;
+	entering_index = j;
       }
     }
   }
@@ -298,7 +301,7 @@ get_entering_var_index(const Row& cost_function) {
 dimension_type
 get_exiting_base_index(const Matrix& tableau,  
 		       const dimension_type entering_var_index,
-		       std::vector<dimension_type>& base) {
+		       const std::vector<dimension_type>& base) {
   // The variable exiting the base should be associated to a tableau
   // constraint such that the ratio
   //   tableau[i][entering_var_index] / tableau[i][base[i]]
