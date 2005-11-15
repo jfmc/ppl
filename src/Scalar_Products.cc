@@ -49,8 +49,7 @@ PPL::Scalar_Products::reduced_assign(Coefficient& z,
   assert(x.size() - 1 <= y.size());
   z = 0;
   for (dimension_type i = x.size() - 1; i-- > 0; )
-    // The following line optimizes the computation
-    // of z += x[i] * y[i].
+    // The following line optimizes the computation of z += x[i] * y[i].
     add_mul_assign(z, x[i], y[i]);
 }
 
