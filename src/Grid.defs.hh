@@ -610,6 +610,7 @@ public:
   const Generator_System& generators() const;
 
   //! Returns the system of generators in reduced form.
+  // FIX note params
   const Generator_System& minimized_generators() const;
 
   //! \brief
@@ -2183,6 +2184,9 @@ private:
 
   //! Returns <CODE>true</CODE> if and only if \p *this is included in \p y.
   bool is_included_in(const Grid& y) const;
+
+  //! Converts all parameters in `gen_sys' to points.
+  void hide_parameters();
 
   //! Checks if and how \p expr is bounded in \p *this.
   /*!

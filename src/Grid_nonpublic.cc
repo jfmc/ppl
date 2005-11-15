@@ -260,6 +260,25 @@ PPL::Grid::is_included_in(const Grid& y) const {
   return true;
 }
 
+void
+PPL::Grid::hide_parameters() {
+  const dimension_type num_rows = gen_sys.num_rows();
+  dimension_type pos = 0;
+  while (pos < num_rows)
+    if (gen_sys[pos++].is_point())
+      break;
+  const Generator& point = gen_sys[pos-1];
+  Grid& gr = const_cast<Grid&>(*this);
+  for (dimension_type row = num_rows; row-- > 0; ) {
+    Generator& gen = gr.gen_sys[row];
+    if (gen.is_ray()) {
+      for (dimension_type col = space_dim; col-- > 0; )
+	gen[col] += point[col];
+      gr.clear_generators_minimized();
+    }
+  }
+}
+
 bool
 PPL::Grid::bounds(const Linear_Expression& expr,
 		  const char* method_call) const {
