@@ -106,8 +106,6 @@ DB_Row_Impl_Handler<T>::Impl::construct_upward_approximation(const U& y) {
   const dimension_type y_size = y.size();
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   for (dimension_type i = 0; i < y_size; ++i) {
-    // FIXME: this should use a yet-to-be-written checked construction
-    // mechanism.
     construct(vec_[i], y[i], ROUND_UP);
     bump_size();
   }
@@ -117,8 +115,6 @@ DB_Row_Impl_Handler<T>::Impl::construct_upward_approximation(const U& y) {
     vec_[0] = y[0];
     bump_size();
     for (dimension_type i = 1; i < y_size; ++i) {
-      // FIXME: this should use a yet-to-be-written checked construction
-      // mechanism.
       construct(vec_[i], y[i], ROUND_UP);
       bump_size();
     }
