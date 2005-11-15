@@ -458,7 +458,7 @@ inline void
 BD_Shape<T>::set_empty() {
   status.set_empty();
   assert(OK());
-  assert(is_empty());
+  assert(marked_empty());
 }
 
 template <typename T>
@@ -1088,6 +1088,10 @@ BD_Shape<T>::contains(const BD_Shape& y) const {
 template <typename T>
 bool
 BD_Shape<T>::is_empty() const {
+#if 1
+  shortest_path_closure_assign();
+  return marked_empty();
+#else
   if (marked_empty())
     return true;
   // Shortest-path closure implies non-emptyness.
@@ -1143,6 +1147,7 @@ BD_Shape<T>::is_empty() const {
   }
   // The BDS is not empty.
   return false;
+#endif
 }
 
 template <typename T>
