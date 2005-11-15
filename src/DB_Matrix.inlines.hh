@@ -419,6 +419,38 @@ operator==(const DB_Matrix<T>& x, const DB_Matrix<T>& y) {
   return true;
 }
 
+template <typename To, typename From>
+struct maybe_assign_struct {
+  static inline Result
+  function(const To*& top, To& tmp, const From& from, Rounding_Dir dir) {
+    // When `To' and `From' are different types, we make the conversion
+    // and use `tmp'.
+    top = &tmp;
+    return assign(tmp, from, dir);
+  }
+};
+
+template <typename Type>
+struct maybe_assign_struct<Type, Type> {
+  static inline Result
+  function(const Type* top, Type&, const Type& from, Rounding_Dir) {
+    // When the types are the same, conversion is unnecessary.
+    top = &from;
+    return V_EQ;
+  }
+};
+
+//! \brief
+//! Assigns to \p top a pointer to a location that holds the
+//! conversion, according to \p dir, of \p from to type \p To.  When
+//! necessary, and only when necessary, the variable \p tmp is used to
+//! hold the result of conversion.
+template <typename To, typename From>
+inline Result
+maybe_assign(const To* top, To& tmp, const From& from, Rounding_Dir dir) {
+  return maybe_assign_struct<To, From>::function(top, tmp, from, dir);
+}
+
 /*! \relates DB_Matrix */
 template <typename Temp, typename To, typename T>
 inline bool
@@ -443,28 +475,31 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 	if (is_plus_infinity(y_i_j))
 	  continue;
 	else {
-	  tmp0 = PLUS_INFINITY;
-	  goto done;
+	pinf:
+	  r = PLUS_INFINITY;
+	  return true;
 	}
       }
-      else if (is_plus_infinity(y_i_j)) {
-	  tmp0 = PLUS_INFINITY;
-	  goto done;
-      }
+      else if (is_plus_infinity(y_i_j))
+	goto pinf;
+
+      Temp* tmp1p;
+      Temp* tmp2p;
       if (x_i_j > y_i_j) {
-	assign(tmp1, x_i_j, dir);
-	assign(tmp2, y_i_j, inverse(dir));
+	maybe_assign(tmp1p, tmp1, x_i_j, dir);
+	maybe_assign(tmp2p, tmp2, y_i_j, inverse(dir));
+	assign_sub(tmp1, *tmp1p, *tmp2p, dir);
       }
       else {
-	assign(tmp1, y_i_j, dir);
-	assign(tmp2, x_i_j, inverse(dir));
+	maybe_assign(tmp1p, tmp1, y_i_j, dir);
+	maybe_assign(tmp2p, tmp2, x_i_j, inverse(dir));
+	assign_sub(tmp1, *tmp1p, *tmp2p, dir);
       }
-      assign_sub(tmp1, tmp1, tmp2, dir);
+      assert(tmp1 >= 0);
       assign_add(tmp0, tmp0, tmp1, dir);
     }
   }
- done:
-  r = tmp0;
+  assign(r, tmp0, dir);
   return true;
 }
 
