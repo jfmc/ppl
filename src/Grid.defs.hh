@@ -609,8 +609,11 @@ public:
   //! Returns the system of generators.
   const Generator_System& generators() const;
 
-  //! Returns the system of generators in reduced form.
-  // FIX note params
+  //! Returns the minimized system of generators.
+  /*!
+     All parameters in the system are converted to points, so the
+     system may actually lose the minimal form before being returned.
+  */
   const Generator_System& minimized_generators() const;
 
   //! \brief
