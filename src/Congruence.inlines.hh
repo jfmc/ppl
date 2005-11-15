@@ -163,30 +163,6 @@ Congruence::modulus() {
 }
 
 inline bool
-Congruence::is_trivial_true() const {
-  if ((is_equality() && inhomogeneous_term() == 0)
-      || (is_proper_congruence()
-	  && (inhomogeneous_term() % modulus() == 0))) {
-    for (unsigned i = 1; i <= space_dimension(); i++)
-      if ((*this)[i] != 0)
-	return false;
-    return true;
-  }
-  return false;
-}
-
-inline bool
-Congruence::is_trivial_false() const {
-  if (inhomogeneous_term() == 0
-      || modulus() != 0)
-    return false;
-  for (unsigned i = 1; i <= space_dimension(); i++)
-    if ((*this)[i] != 0)
-      return false;
-  return true;
-}
-
-inline bool
 Congruence::is_proper_congruence() const {
   return modulus() > 0;
 }

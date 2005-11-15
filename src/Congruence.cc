@@ -209,6 +209,30 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {
   return s;
 }
 
+bool
+PPL::Congruence::is_trivial_true() const {
+  if ((is_equality() && inhomogeneous_term() == 0)
+      || (is_proper_congruence()
+	  && (inhomogeneous_term() % modulus() == 0))) {
+    for (unsigned i = 1; i <= space_dimension(); i++)
+      if ((*this)[i] != 0)
+	return false;
+    return true;
+  }
+  return false;
+}
+
+bool
+PPL::Congruence::is_trivial_false() const {
+  if (inhomogeneous_term() == 0
+      || modulus() != 0)
+    return false;
+  for (unsigned i = 1; i <= space_dimension(); i++)
+    if ((*this)[i] != 0)
+      return false;
+  return true;
+}
+
 void
 PPL::Congruence::ascii_dump(std::ostream& s) const {
   const Row& x = *this;
