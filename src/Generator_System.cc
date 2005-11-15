@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.inlines.hh"
 #include "Constraint.defs.hh"
 #include "scalar_products.defs.hh"
+#include "compiler.hh"
 #include <cassert>
 #include <string>
 #include <vector>
@@ -280,6 +281,7 @@ PPL::Generator_System::const_iterator::skip_forward() {
 void
 PPL::Generator_System::insert(const Generator& g,
 			      bool check_normalization) {
+  used(check_normalization);
   // We are sure that the matrix has no pending rows
   // and that the new row is not a pending generator.
   assert(num_pending_rows() == 0);
