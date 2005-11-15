@@ -163,12 +163,40 @@ test5() {
   exit(1);
 }
 
-// Get a reference to the congruences, empty the grid, use the
-// reference to create a new grid.
+// 3D rectilinear grid defined by generators.
 
 void
 test6() {
   nout << "test6:" << endl;
+
+  Grid gr1(3);
+  gr1.add_generator(point(10*B));
+  gr1.add_generator(point(10*A + 10*B));
+
+  Grid known_gr = gr1;
+
+  Congruence_System gs = gr1.congruences();
+
+  Grid gr2(gs);
+
+  if (known_gr == gr2)
+    return;
+
+  nout << "Reproduced grid should equal known grid." << endl
+       << "grid:" << endl << gr2 << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr2, known_gr);
+
+  exit(1);
+}
+
+// Get a reference to the congruences, empty the grid, use the
+// reference to create a new grid.
+
+void
+test7() {
+  nout << "test7:" << endl;
 
   Grid gr1(3);
   gr1.add_congruence(Congruence::zero_dim_integrality());
@@ -199,8 +227,8 @@ test6() {
 // empty the grid, use the reference to create a new grid.
 
 void
-test7() {
-  nout << "test7:" << endl;
+test8() {
+  nout << "test8:" << endl;
 
   Grid gr1(0);
   gr1.add_congruence(Congruence::zero_dim_integrality());
@@ -209,7 +237,7 @@ test7() {
 
   // Empty the grid.  The idea is to check that `cgs' still refers to
   // a congruence system that matches the grid.
-  gr1.add_congruence(Congruence::zero_dim_false());
+  gr1.add_congruence_and_minimize(Congruence::zero_dim_false());
 
   Grid known_gr = gr1;
 
@@ -242,6 +270,7 @@ main() TRY {
   test5();
   test6();
   test7();
+  test8();
 
   return 0;
 }
