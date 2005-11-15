@@ -499,9 +499,9 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			    const BD_Shape<T>& x,
 			    const BD_Shape<T>& y,
 			    const Rounding_Dir dir) {
-  Checked_Number<Temp, Extended_Number_Policy> tmp0;
-  Checked_Number<Temp, Extended_Number_Policy> tmp1;
-  Checked_Number<Temp, Extended_Number_Policy> tmp2;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp0;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp1;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp2;
   return rectilinear_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
