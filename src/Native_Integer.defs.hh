@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Native_Integer_defs_hh 1
 
 #include "Native_Integer.types.hh"
-#include "Rounding.defs.hh"
+#include "Rounding_Dir.defs.hh"
 #include "float.types.hh"
 #include <gmpxx.h>
 #include <limits>

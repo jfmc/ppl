@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <iostream>
 #include <gmpxx.h>
-#include "Rounding.defs.hh"
+#include "Rounding_Dir.defs.hh"
 #include "Numeric_Format.defs.hh"
 
 namespace Parma_Polyhedra_Library {

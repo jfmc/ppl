@@ -151,8 +151,8 @@ Limits.hh \
 fpu.defs.hh \
 fpu-c99.inlines.hh \
 fpu-ia32.inlines.hh \
-Rounding.types.hh \
-Rounding.defs.hh \
+Rounding_Dir.defs.hh \
+Rounding_Dir.inlines.hh \
 Result.defs.hh \
 Result.inlines.hh \
 Numeric_Format.defs.hh \
