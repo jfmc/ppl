@@ -79,6 +79,7 @@ mapspacedims1 \
 maxmin1 \
 membytes1 membytes2 \
 mincongruences1 \
+mingenerators1 \
 pointed1 \
 relations1 relations2 \
 removespacedims1 removespacedims2 \
@@ -178,6 +179,8 @@ membytes1_SOURCES = membytes1.cc
 membytes2_SOURCES = membytes2.cc
 
 mincongruences1_SOURCES = mincongruences1.cc
+
+mingenerators1_SOURCES = mingenerators1.cc
 
 pointed1_SOURCES = pointed1.cc
 
