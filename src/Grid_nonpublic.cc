@@ -135,11 +135,11 @@ PPL::Grid::construct(const Generator_System& const_gs,
 
     // Generators are now up-to-date.
     set_generators_up_to_date();
+    gen_sys.set_sorted(false);
   }
   else
     set_zero_dim_univ();
 
-  gen_sys.set_sorted(false);
   assert(OK());
 }
 
