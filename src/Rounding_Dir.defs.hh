@@ -36,6 +36,11 @@ enum Rounding_Dir {
   ROUND_INVERSE = ROUND_DOWN
 };
 
+//! \brief
+//! Returns the inverse rounding mode of \p dir,
+//! <CODE>ROUND_IGNORE</CODE> being the inverse of itself.
+Rounding_Dir inverse(Rounding_Dir dir);
+
 } // namespace Parma_Polyhedra_Library
 
 #include "Rounding_Dir.inlines.hh"

@@ -19,3 +19,30 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
+
+#ifndef PPL_Rounding_Dir_inlines_hh
+#define PPL_Rounding_Dir_inlines_hh 1
+
+#include "Rounding_Dir.defs.hh"
+
+namespace Parma_Polyhedra_Library {
+
+/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+inline Rounding_Dir
+inverse(Rounding_Dir dir) {
+  switch (dir) {
+  case ROUND_UP:
+    return ROUND_DOWN;
+  case ROUND_DOWN:
+    return ROUND_UP;
+  case ROUND_IGNORE:
+    return ROUND_IGNORE;
+  default:
+    assert(false);
+    return ROUND_IGNORE;
+  }
+}
+
+} // namespace Parma_Polyhedra_Library
+
+#endif // !defined(PPL_Rounding_Dir_inlines_hh)
