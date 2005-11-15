@@ -200,6 +200,24 @@ public:
 				Coefficient& ext_d,
 				Generator& optimizing_point) const;
 
+  //! Checks satisfiability of \p *this using the primal simplex algorithm.
+  /*!
+    \return
+    <CODE>true</CODE> if the constraint system is satisfiable;
+    <CODE>false</CODE> otherwise.
+
+    \param feasible_point
+    On exit, if the constraint system is satisfiable, will contain a
+    feasible point.
+
+    \exception std::invalid_argument
+    Thrown if the constraint system contains any strict inequality.
+
+    If the optimization problem is unfeasible, the parameter
+    \p feasible_point will be left untouched.
+  */
+  bool is_satisfiable(Generator& feasible_point) const;
+
   //! \brief
   //! Returns the singleton system containing only
   //! Constraint::zero_dim_false().
