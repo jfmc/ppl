@@ -158,27 +158,21 @@ copy_mpz(mpz_class& to, const mpz_class& from) {
 
 SPECIALIZE_COPY(mpz, mpz_class)
 
-template <typename Policy>
+template <typename Policy, typename From>
 inline Result
-assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
-  if (dir == ROUND_IGNORE) {
-    to = from;
-    return V_LGE;
-  }
-  mpz_srcptr n = from.get_num().get_mpz_t();
-  mpz_srcptr d = from.get_den().get_mpz_t();
-  if (dir == ROUND_DOWN) {
-    mpz_fdiv_q(to.get_mpz_t(), n, d);
-    return mpz_divisible_p(n, d) ? V_EQ : V_GT;
-  }
-  else {
-    assert(dir == ROUND_UP);
-    mpz_cdiv_q(to.get_mpz_t(), n, d);
-    return mpz_divisible_p(n, d) ? V_EQ : V_LT;
-  }
+construct_mpz_base(mpz_class& to, const From from, Rounding_Dir) {
+    new (&to) mpz_class(from);
+    return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpz_mpq, mpz_class, mpq_class)
+SPECIALIZE_CONSTRUCT(mpz_base, mpz_class, signed char)
+SPECIALIZE_CONSTRUCT(mpz_base, mpz_class, signed short)
+SPECIALIZE_CONSTRUCT(mpz_base, mpz_class, signed int)
+SPECIALIZE_CONSTRUCT(mpz_base, mpz_class, signed long)
+SPECIALIZE_CONSTRUCT(mpz_base, mpz_class, unsigned char)
+SPECIALIZE_CONSTRUCT(mpz_base, mpz_class, unsigned short)
+SPECIALIZE_CONSTRUCT(mpz_base, mpz_class, unsigned int)
+SPECIALIZE_CONSTRUCT(mpz_base, mpz_class, unsigned long)
 
 template <typename Policy, typename From>
 inline Result
@@ -247,6 +241,28 @@ assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
 
 SPECIALIZE_ASSIGN(mpz_float, mpz_class, float)
 SPECIALIZE_ASSIGN(mpz_float, mpz_class, double)
+
+template <typename Policy>
+inline Result
+assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
+  if (dir == ROUND_IGNORE) {
+    to = from;
+    return V_LGE;
+  }
+  mpz_srcptr n = from.get_num().get_mpz_t();
+  mpz_srcptr d = from.get_den().get_mpz_t();
+  if (dir == ROUND_DOWN) {
+    mpz_fdiv_q(to.get_mpz_t(), n, d);
+    return mpz_divisible_p(n, d) ? V_EQ : V_GT;
+  }
+  else {
+    assert(dir == ROUND_UP);
+    mpz_cdiv_q(to.get_mpz_t(), n, d);
+    return mpz_divisible_p(n, d) ? V_EQ : V_LT;
+  }
+}
+
+SPECIALIZE_ASSIGN(mpz_mpq, mpz_class, mpq_class)
 
 template <typename Policy, typename To>
 inline Result

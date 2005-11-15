@@ -58,6 +58,7 @@ Checked_Number<T, Policy>::Checked_Number()
 template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const Checked_Number& y) {
+  // TODO: avoid default construction of value member
   Checked::copy<Policy>(v, y.raw_value());
 }
 
@@ -66,10 +67,12 @@ template <typename T, typename Policy>
 template <typename From, typename From_Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const Checked_Number<From, From_Policy>& y) {
+  // TODO: avoid default construction of value member
   Policy::handle_result(Checked::assign_ext<Policy, From_Policy>(v, y.raw_value(), Policy::ROUND_DEFAULT));
 }
 #endif
 
+// TODO: avoid default construction of value member
 #define DEF_CTOR(type) \
 template <typename T, typename Policy> \
 inline \
@@ -89,9 +92,7 @@ DEF_CTOR(unsigned long)
 DEF_CTOR(unsigned long long)
 DEF_CTOR(float)
 DEF_CTOR(double)
-#if CXX_SUPPORTS_LONG_DOUBLE
 DEF_CTOR(long double)
-#endif
 DEF_CTOR(mpq_class&)
 DEF_CTOR(mpz_class&)
 
@@ -107,18 +108,21 @@ Checked_Number<T, Policy>::Checked_Number(const char* x) {
 template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const Not_A_Number& x) {
+  // TODO: avoid default construction of value member
   Policy::handle_result(Checked::assign<Policy>(v, x, Policy::ROUND_DEFAULT));
 }
 
 template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const Minus_Infinity& x) {
+  // TODO: avoid default construction of value member
   Policy::handle_result(Checked::assign<Policy>(v, x, Policy::ROUND_DEFAULT));
 }
 
 template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const Plus_Infinity& x) {
+  // TODO: avoid default construction of value member
   Policy::handle_result(Checked::assign<Policy>(v, x, Policy::ROUND_DEFAULT));
 }
 
@@ -290,6 +294,7 @@ name(Checked_Number<To, To_Policy>& to, const Checked_Number<From, From_Policy>&
   return Checked::func<To_Policy, From_Policy>(to.raw_value(), x.raw_value(), dir); \
 }
 
+FUNC1(construct, construct_ext)
 FUNC1(assign, assign_ext)
 FUNC1(assign_neg, neg_ext)
 FUNC1(assign_abs, abs_ext)

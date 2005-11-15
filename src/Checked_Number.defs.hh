@@ -122,10 +122,8 @@ public:
   Checked_Number(const float y);
   //! Direct initialization from a double value.
   Checked_Number(const double y);
-#if CXX_SUPPORTS_LONG_DOUBLE
   //! Direct initialization from a long double value.
   Checked_Number(const long double y);
-#endif
 
   //! Direct initialization from a GMP unbounded rational value.
   Checked_Number(const mpq_class& y);

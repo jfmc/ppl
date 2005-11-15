@@ -120,6 +120,25 @@ SPECIALIZE_COPY(generic, mpq_class)
 
 template <typename Policy, typename From>
 inline Result
+construct_mpq_base(mpq_class& to, const From& from, Rounding_Dir) {
+  new (&to) mpq_class(from);
+  return V_EQ;
+}
+
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, mpz_class)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, signed char)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, signed short)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, signed int)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, signed long)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, unsigned char)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, unsigned short)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, unsigned int)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, unsigned long)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, float)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, double)
+
+template <typename Policy, typename From>
+inline Result
 assign_mpq_base(mpq_class& to, const From& from, Rounding_Dir) {
   to = from;
   return V_EQ;

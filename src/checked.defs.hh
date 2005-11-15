@@ -291,6 +291,8 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
   SPECIALIZE_FUN1_0_0(is_pinf, suf, bool, const, Type)
 #define SPECIALIZE_IS_INT(suf, Type) \
   SPECIALIZE_FUN1_0_0(is_int, suf, bool, const, Type)
+#define SPECIALIZE_CONSTRUCT(suf, To, From) \
+  SPECIALIZE_FUN2_0_1(construct, suf, Result, nonconst, To, const, From, Rounding_Dir)
 #define SPECIALIZE_ASSIGN(suf, To, From) \
   SPECIALIZE_FUN2_0_1(assign, suf, Result, nonconst, To, const, From, Rounding_Dir)
 #define SPECIALIZE_NEG(suf, To, From) \
@@ -336,6 +338,7 @@ DECLARE_FUN1_0_0(is_nan,      bool, const, Type)
 DECLARE_FUN1_0_0(is_minf,     bool, const, Type)
 DECLARE_FUN1_0_0(is_pinf,     bool, const, Type)
 DECLARE_FUN1_0_0(is_int,      bool, const, Type)
+DECLARE_FUN2_0_1(construct,   Result, nonconst, To, const, From, Rounding_Dir)
 DECLARE_FUN2_0_1(assign,      Result, nonconst, To, const, From, Rounding_Dir)
 DECLARE_FUN2_0_1(neg,         Result, nonconst, To, const, From, Rounding_Dir)
 DECLARE_FUN2_0_1(abs,         Result, nonconst, To, const, From, Rounding_Dir)

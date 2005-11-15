@@ -42,6 +42,24 @@ sgn_ext(const Type& x) {
 template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
+construct_ext(To& to, const From& from, Rounding_Dir dir) {
+  if (handle_ext_natively(To) && handle_ext_natively(From))
+    goto native;
+  if (CHECK_P(From_Policy::check_nan_args, is_nan<From_Policy>(from)))
+    return construct<To_Policy>(to, NOT_A_NUMBER);
+  else if (is_minf<From_Policy>(from))
+    return construct<To_Policy>(to, MINUS_INFINITY, dir);
+  else if (is_pinf<From_Policy>(from))
+    return construct<To_Policy>(to, PLUS_INFINITY, dir);
+  else {
+  native:
+    return construct<To_Policy>(to, from, dir);
+  }
+}
+
+template <typename To_Policy, typename From_Policy,
+	  typename To, typename From>
+inline Result
 assign_ext(To& to, const From& from, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
     goto native;
