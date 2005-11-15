@@ -198,7 +198,6 @@ PPL::Grid::minimized_congruences() const {
   if (congruences_are_up_to_date() && !congruences_are_minimized()) {
     // Minimize the congruences.
     Grid& gr = const_cast<Grid&>(*this);
-    gr.con_sys.normalize_moduli();
     if (gr.simplify(gr.con_sys, gr.dim_kinds))
       gr.set_empty();
     else
@@ -459,7 +458,6 @@ PPL::Grid::is_empty() const {
     return false;
   // Minimize the congruences to check if the grid is empty.
   Grid& gr = const_cast<Grid&>(*this);
-  gr.con_sys.normalize_moduli();
   if (gr.simplify(gr.con_sys, gr.dim_kinds)) {
     gr.set_empty();
     return true;
@@ -580,7 +578,6 @@ PPL::Grid::is_pointed() const {
   // Generators are out of date.
 
   // Minimize the congruence system to find out whether it is empty.
-  gr.con_sys.normalize_moduli();
   if (gr.simplify(gr.con_sys, gr.dim_kinds)) {
     // The congruence system reduced to the empty grid.
     gr.set_empty();
@@ -624,7 +621,6 @@ PPL::Grid::is_topologically_closed() const {
   }
 
   // Minimize the congruence system.
-  gr.con_sys.normalize_moduli();
   if (gr.simplify(gr.con_sys, gr.dim_kinds)) {
     // The congruence system reduced to the empty grid.
     gr.set_empty();
@@ -1397,9 +1393,11 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
   // Adding valid generators to a zero-dimensional grid transforms it
   // to the zero-dimensional universe grid.
   if (space_dim == 0) {
-    if (marked_empty() && !gs.has_points())
-      throw_invalid_generators("add_recycled_generators(gs)", "gs");
-    set_zero_dim_univ();
+    if (marked_empty())
+      if (gs.has_points())
+	set_zero_dim_univ();
+      else
+	throw_invalid_generators("add_recycled_generators(gs)", "gs");
     assert(OK(true));
     return;
   }
@@ -1497,10 +1495,12 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
   // Adding valid generators to a zero-dimensional grid produces the
   // zero-dimensional universe grid.
   if (space_dim == 0) {
-    if (marked_empty() && !gs.has_points())
-      throw_invalid_generators("add_recycled_generators_and_minimize(gs)",
-			       "gs");
-    set_zero_dim_univ();
+    if (marked_empty())
+      if (gs.has_points())
+	set_zero_dim_univ();
+      else
+	throw_invalid_generators("add_recycled_generators_and_minimize(gs)",
+				 "gs");
     assert(OK(true));
     return true;
   }

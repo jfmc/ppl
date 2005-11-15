@@ -51,10 +51,8 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
 	num_equalities = gr.space_dimension() + 1 - gr.gen_sys.num_rows();
       }
       else {
-	// Minimize gr congruence system.
-	gr.con_sys.normalize_moduli();
-	// As in Polyhedron assume that `gr' contains at least one
-	// point.
+	// Minimize gr congruence system.  As in Polyhedron assume
+	// that `gr' contains at least one point.
 #ifndef NDEBUG
 	Grid::simplify(gr.con_sys, gr.dim_kinds);
 #else

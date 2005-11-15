@@ -46,7 +46,8 @@ PPL::Grid::select_wider_congruences(const Grid& y,
   // the selected congruences.
   for (dimension_type dim = con_sys.space_dimension(), x_row = 0, y_row = 0;
        dim > 0; --dim) {
-    assert(dim_kinds[dim] == CON_VIRTUAL || dim_kinds[dim] == y.dim_kinds[dim]);
+    assert(dim_kinds[dim] == CON_VIRTUAL
+	   || dim_kinds[dim] == y.dim_kinds[dim]);
     switch (dim_kinds[dim]) {
     case PROPER_CONGRUENCE:
       {
@@ -97,7 +98,6 @@ PPL::Grid::widening_assign(const Grid& const_y, unsigned* tp) {
   // Ensure that the `x' congruences are in minimal form.
   if (x.congruences_are_up_to_date()) {
     if (!x.congruences_are_minimized()) {
-      x.con_sys.normalize_moduli();
       if (simplify(x.con_sys, x.dim_kinds)) {
 	// `x' is empty.
 	x.set_empty();
@@ -114,7 +114,6 @@ PPL::Grid::widening_assign(const Grid& const_y, unsigned* tp) {
   // Ensure that the `y' congruences are in minimal form.
   if (y.congruences_are_up_to_date()) {
     if (!y.congruences_are_minimized()) {
-      y.con_sys.normalize_moduli();
       if (simplify(y.con_sys, y.dim_kinds)) {
 	// `y' is empty.
 	y.set_empty();

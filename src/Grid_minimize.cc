@@ -35,8 +35,8 @@ Grid::minimize(Generator_System& source, Congruence_System& dest,
   // FIX check if source minimized? prhps in callers?
 
   simplify(source, dim_kinds);
-  // source contained rows before being reduced, so it should contain
-  // at least a single point afterwards.
+  // `source' contained rows before being reduced, so it should
+  // contain at least a single point afterwards.
   assert(source.num_rows() > 0);
 
   // Populate `dest' with the congruences characterizing the grid
@@ -54,7 +54,6 @@ Grid::minimize(Congruence_System& source, Linear_System& dest,
 
   // FIX check if source minimized? prhps in callers?
 
-  source.normalize_moduli();
   if (simplify(source, dim_kinds))
     return false;
 
