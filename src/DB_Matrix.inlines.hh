@@ -419,6 +419,55 @@ operator==(const DB_Matrix<T>& x, const DB_Matrix<T>& y) {
   return true;
 }
 
+/*! \relates DB_Matrix */
+template <typename Temp, typename To, typename T>
+inline bool
+rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			    const DB_Matrix<T>& x,
+			    const DB_Matrix<T>& y,
+			    const Rounding_Dir dir,
+			    Temp& tmp0,
+			    Temp& tmp1,
+			    Temp& tmp2) {
+  const dimension_type x_num_rows = x.num_rows();
+  if (x_num_rows != y.num_rows())
+    return false;
+  tmp0 = 0;
+  for (dimension_type i = x_num_rows; i-- > 0; ) {
+    const DB_Row<T>& x_i = x[i];
+    const DB_Row<T>& y_i = y[i];
+    for (dimension_type j = x_num_rows; j-- > 0; ) {
+      const T& x_i_j = x_i[j];
+      const T& y_i_j = y_i[j];
+      if (is_plus_infinity(x_i_j)) {
+	if (is_plus_infinity(y_i_j))
+	  continue;
+	else {
+	  tmp0 = PLUS_INFINITY;
+	  goto done;
+	}
+      }
+      else if (is_plus_infinity(y_i_j)) {
+	  tmp0 = PLUS_INFINITY;
+	  goto done;
+      }
+      if (x_i_j > y_i_j) {
+	assign(tmp1, x_i_j, dir);
+	assign(tmp2, y_i_j, inverse(dir));
+      }
+      else {
+	assign(tmp1, y_i_j, dir);
+	assign(tmp2, x_i_j, inverse(dir));
+      }
+      assign_sub(tmp1, tmp1, tmp2, dir);
+      assign_add(tmp0, tmp0, tmp1, dir);
+    }
+  }
+ done:
+  r = tmp0;
+  return true;
+}
+
 template <typename T>
 bool
 DB_Matrix<T>::OK() const {
