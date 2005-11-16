@@ -90,7 +90,7 @@ check_PROGRAMS = \
 	maxspacedim \
 	minconstraints1 \
 	polydifference1 polydifference2 polydifference3 polydifference4 \
-	polydifference5 polydifference6 \
+	polydifference5 polydifference6 polydifference7 \
 	relations1 relations2 relations3 relations4 relations5 \
 	removespacedims1 removespacedims2 removespacedims3 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
@@ -104,7 +104,7 @@ dist_check_SCRIPTS = run_tests
 
 TESTS = $(dist_check_SCRIPTS)
 
-XFAIL_TESTS =
+XFAIL_TESTS = polydifference7
 
 print_check_PROGRAMS:
 	echo $(check_PROGRAMS)
@@ -264,6 +264,7 @@ polydifference3_SOURCES = polydifference3.cc
 polydifference4_SOURCES = polydifference4.cc
 polydifference5_SOURCES = polydifference5.cc
 polydifference6_SOURCES = polydifference6.cc
+polydifference7_SOURCES = polydifference7.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
