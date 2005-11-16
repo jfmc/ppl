@@ -130,7 +130,7 @@ Grid::reduce_line_with_line(Row& row, Row& pivot,
      pn and rn are the pivot and row coefficients and pi and ri are
      the inhomogeneous terms of the pivot and row.
 
-     FIX Is is OK to consider the parameters as equations like this?
+     FIX Is it OK to consider the parameters as equations like this?
 
      1 The parameter or congruence relation row is multiplied
        throughout by pa, producing
