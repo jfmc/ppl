@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Grid.defs.hh"
 
-//#include "Bounding_Box.defs.hh" // FIX
 #include <cassert>
 #include <iostream>
 
