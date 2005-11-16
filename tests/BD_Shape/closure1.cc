@@ -375,7 +375,7 @@ main() TRY {
   if (!qbd2.contains(qbd1))
     exit(1);
 
-#if 0
+#if 1
   DISTANCE(double, float);
   DISTANCE(double, mpq_class);
   DISTANCE(int, double);
