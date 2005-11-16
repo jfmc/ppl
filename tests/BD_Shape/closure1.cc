@@ -349,11 +349,19 @@ add_edges(BD_Shape<T>& bd, const Edge* edges, unsigned n) {
 } // namespace
 
 
-#define DISTANCE(To, Temp, distance)			       \
-  Checked_Number<To, Extended_Number_Policy> distance; \
-  rectilinear_distance_assign<Temp>(distance, qbd1, qbd2, ROUND_UP); \
-  cout << "distance<" #To ", " #Temp "> = " << distance << endl;
-
+#define DISTANCE(To, Temp)			       \
+  do { \
+    Checked_Number<To, Extended_Number_Policy> distance; \
+    rectilinear_distance_assign<Temp>(distance, qbd1, qbd2, ROUND_UP); \
+    cout << "Rectilinear distance<" #To ", " #Temp "> = " << distance \
+         << endl; \
+    euclidean_distance_assign<Temp>(distance, qbd1, qbd2, ROUND_UP); \
+    cout << "Euclidean distance<" #To ", " #Temp "> = " << distance \
+         << endl; \
+    l_infinity_distance_assign<Temp>(distance, qbd1, qbd2, ROUND_UP); \
+    cout << "L-infinity distance<" #To ", " #Temp "> = " << distance \
+         << endl; \
+  } while (0)
 
 int
 main() TRY {
@@ -368,10 +376,11 @@ main() TRY {
     exit(1);
 
 #if 0
-  DISTANCE(double, float, a)
-  DISTANCE(double, mpq_class, b)
-  DISTANCE(int, double, c)
+  DISTANCE(double, float);
+  DISTANCE(double, mpq_class);
+  DISTANCE(int, double);
 #endif
+
   return 0;
 }
 CATCH
