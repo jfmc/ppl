@@ -119,7 +119,6 @@ void homogeneous_scalar_product_assign(Coefficient& z,
 				       const Linear_Row& x,
 				       const Linear_Row& y);
 
-// FIX will this ever be used?
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
 //! Computes the \e homogeneous scalar product of \p x and \p y,
