@@ -433,7 +433,7 @@ struct maybe_assign_struct {
 template <typename Type>
 struct maybe_assign_struct<Type, Type> {
   static inline Result
-  function(const Type* top, Type&, const Type& from, Rounding_Dir) {
+  function(const Type*& top, Type&, const Type& from, Rounding_Dir) {
     // When the types are the same, conversion is unnecessary.
     top = &from;
     return V_EQ;
@@ -447,7 +447,7 @@ struct maybe_assign_struct<Type, Type> {
 //! hold the result of conversion.
 template <typename To, typename From>
 inline Result
-maybe_assign(const To* top, To& tmp, const From& from, Rounding_Dir dir) {
+maybe_assign(const To*& top, To& tmp, const From& from, Rounding_Dir dir) {
   return maybe_assign_struct<To, From>::function(top, tmp, from, dir);
 }
 
@@ -483,8 +483,8 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
       else if (is_plus_infinity(y_i_j))
 	goto pinf;
 
-      Temp* tmp1p;
-      Temp* tmp2p;
+      const Temp* tmp1p;
+      const Temp* tmp2p;
       if (x_i_j > y_i_j) {
 	maybe_assign(tmp1p, tmp1, x_i_j, dir);
 	maybe_assign(tmp2p, tmp2, y_i_j, inverse(dir));
