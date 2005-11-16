@@ -85,8 +85,8 @@ bool operator!=(const BD_Shape<T>& x, const BD_Shape<T>& y);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*!
-  If the rectilinear (or Manhattan) distance between \p x and \p y
-  is defined, stores an approximation of it into to \p r
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into to \p r
   and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
@@ -102,8 +102,8 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*!
-  If the rectilinear (or Manhattan) distance between \p x and \p y
-  is defined, stores an approximation of it into to \p r
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into to \p r
   and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
@@ -119,8 +119,8 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*!
-  If the rectilinear (or Manhattan) distance between \p x and \p y
-  is defined, stores an approximation of it into to \p r
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into to \p r
   and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
@@ -136,6 +136,114 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 Temp& tmp0,
 				 Temp& tmp1,
 				 Temp& tmp2);
+
+//! Computes the euclidean distance between \p x and \p y.
+/*!
+  If the euclidean distance between \p x and \p y is defined,
+  stores an approximation of it into to \p r
+  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<To, Extended_Number_Policy>.
+*/
+template <typename To, typename T>
+bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			       const BD_Shape<T>& x,
+			       const BD_Shape<T>& y,
+			       const Rounding_Dir dir);
+
+//! Computes the euclidean distance between \p x and \p y.
+/*!
+  If the euclidean distance between \p x and \p y is defined,
+  stores an approximation of it into to \p r
+  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<Temp, Extended_Number_Policy>.
+*/
+template <typename Temp, typename To, typename T>
+bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			       const BD_Shape<T>& x,
+			       const BD_Shape<T>& y,
+			       const Rounding_Dir dir);
+
+//! Computes the euclidean distance between \p x and \p y.
+/*!
+  If the euclidean distance between \p x and \p y is defined,
+  stores an approximation of it into to \p r
+  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+template <typename Temp, typename To, typename T>
+bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			       const BD_Shape<T>& x,
+			       const BD_Shape<T>& y,
+			       const Rounding_Dir dir,
+			       Temp& tmp0,
+			       Temp& tmp1,
+			       Temp& tmp2);
+
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*!
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into to \p r
+  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<To, Extended_Number_Policy>.
+*/
+template <typename To, typename T>
+bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				const BD_Shape<T>& x,
+				const BD_Shape<T>& y,
+				const Rounding_Dir dir);
+
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*!
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into to \p r
+  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<Temp, Extended_Number_Policy>.
+*/
+template <typename Temp, typename To, typename T>
+bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				const BD_Shape<T>& x,
+				const BD_Shape<T>& y,
+				const Rounding_Dir dir);
+
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*!
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into to \p r
+  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+template <typename Temp, typename To, typename T>
+bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				const BD_Shape<T>& x,
+				const BD_Shape<T>& y,
+				const Rounding_Dir dir,
+				Temp& tmp0,
+				Temp& tmp1,
+				Temp& tmp2);
 
 } // namespace Parma_Polyhedra_Library
 

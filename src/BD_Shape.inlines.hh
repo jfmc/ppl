@@ -514,6 +514,128 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return rectilinear_distance_assign<To>(r, x.dbm, y.dbm, dir);
 }
 
+template <typename Temp, typename To, typename T>
+inline bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const BD_Shape<T>& x,
+			  const BD_Shape<T>& y,
+			  const Rounding_Dir dir,
+			  Temp& tmp0,
+			  Temp& tmp1,
+			  Temp& tmp2) {
+  const dimension_type x_space_dim = x.space_dimension();
+  // Dimension-compatibility check.
+  if (x_space_dim != y.space_dimension())
+    return false;
+
+  // Zero-dim BDSs are equal if and only if they are both empty or universe.
+  if (x_space_dim == 0) {
+    if (x.marked_empty() == y.marked_empty())
+      r = 0;
+    else
+      r = PLUS_INFINITY;
+    return true;
+  }
+
+  // The distance computation requires shortest-path closure.
+  x.shortest_path_closure_assign();
+  y.shortest_path_closure_assign();
+
+  // If one of two BDSs is empty, then they are equal if and only if
+  // the other BDS is empty too.
+  if (x.marked_empty() ||  y.marked_empty()) {
+   if (x.marked_empty() == y.marked_empty())
+      r = 0;
+    else
+      r = PLUS_INFINITY;
+   return true;
+  }
+
+  return euclidean_distance_assign(r, x.dbm, y.dbm, dir, tmp0, tmp1, tmp2);
+}
+
+template <typename Temp, typename To, typename T>
+inline bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const BD_Shape<T>& x,
+			  const BD_Shape<T>& y,
+			  const Rounding_Dir dir) {
+  static Checked_Number<Temp, Extended_Number_Policy> tmp0;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp1;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp2;
+  return euclidean_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
+}
+
+template <typename To, typename T>
+inline bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const BD_Shape<T>& x,
+			  const BD_Shape<T>& y,
+			  const Rounding_Dir dir) {
+  return euclidean_distance_assign<To>(r, x.dbm, y.dbm, dir);
+}
+
+template <typename Temp, typename To, typename T>
+inline bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const BD_Shape<T>& x,
+			   const BD_Shape<T>& y,
+			   const Rounding_Dir dir,
+			   Temp& tmp0,
+			   Temp& tmp1,
+			   Temp& tmp2) {
+  const dimension_type x_space_dim = x.space_dimension();
+  // Dimension-compatibility check.
+  if (x_space_dim != y.space_dimension())
+    return false;
+
+  // Zero-dim BDSs are equal if and only if they are both empty or universe.
+  if (x_space_dim == 0) {
+    if (x.marked_empty() == y.marked_empty())
+      r = 0;
+    else
+      r = PLUS_INFINITY;
+    return true;
+  }
+
+  // The distance computation requires shortest-path closure.
+  x.shortest_path_closure_assign();
+  y.shortest_path_closure_assign();
+
+  // If one of two BDSs is empty, then they are equal if and only if
+  // the other BDS is empty too.
+  if (x.marked_empty() ||  y.marked_empty()) {
+   if (x.marked_empty() == y.marked_empty())
+      r = 0;
+    else
+      r = PLUS_INFINITY;
+   return true;
+  }
+
+  return l_infinity_distance_assign(r, x.dbm, y.dbm, dir, tmp0, tmp1, tmp2);
+}
+
+template <typename Temp, typename To, typename T>
+inline bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const BD_Shape<T>& x,
+			   const BD_Shape<T>& y,
+			   const Rounding_Dir dir) {
+  static Checked_Number<Temp, Extended_Number_Policy> tmp0;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp1;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp2;
+  return l_infinity_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
+}
+
+template <typename To, typename T>
+inline bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const BD_Shape<T>& x,
+			   const BD_Shape<T>& y,
+			   const Rounding_Dir dir) {
+  return l_infinity_distance_assign<To>(r, x.dbm, y.dbm, dir);
+}
+
 template <typename T>
 inline void
 BD_Shape<T>::set_empty() {
