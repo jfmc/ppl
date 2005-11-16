@@ -488,13 +488,12 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
       if (x_i_j > y_i_j) {
 	maybe_assign(tmp1p, tmp1, x_i_j, dir);
 	maybe_assign(tmp2p, tmp2, y_i_j, inverse(dir));
-	assign_sub(tmp1, *tmp1p, *tmp2p, dir);
       }
       else {
 	maybe_assign(tmp1p, tmp1, y_i_j, dir);
 	maybe_assign(tmp2p, tmp2, x_i_j, inverse(dir));
-	assign_sub(tmp1, *tmp1p, *tmp2p, dir);
       }
+      assign_sub(tmp1, *tmp1p, *tmp2p, dir);
       assert(tmp1 >= 0);
       Specialization::combine(tmp0, tmp1, dir);
     }
@@ -538,7 +537,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp>
 struct Euclidean_Distance_Specialization {
   static inline void
-  combine(Temp& running, const Temp& current, Rounding_Dir dir) {
+  combine(Temp& running, Temp& current, Rounding_Dir dir) {
     assign_mul(current, current, current, dir);
     assign_add(running, running, current, dir);
   }
@@ -571,7 +570,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp>
 struct L_Infinity_Distance_Specialization {
   static inline void
-  combine(Temp& running, const Temp& current, Rounding_Dir dir) {
+  combine(Temp& running, const Temp& current, Rounding_Dir) {
     if (current > running)
       running = current;
   }
