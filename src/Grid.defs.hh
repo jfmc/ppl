@@ -678,19 +678,19 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this is bounded.
   bool is_bounded() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p expr is bounded from
-  //! above in \p *this.
+  //! Returns <CODE>true</CODE> if and only if \p expr is bounded in \p *this.
   /*!
+	This method is the same as bounds_from_below.
+
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
   */
   bool bounds_from_above(const Linear_Expression& expr) const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p expr is
-  //! bounded from below in \p *this.
+  //! Returns <CODE>true</CODE> if and only if \p expr is bounded in \p *this.
   /*!
+	This method is the same as bounds_from_above.
+
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
   */
@@ -719,9 +719,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
 
-    If \p *this is empty or \p expr is not bounded from above,
-    <CODE>false</CODE> is returned and \p sup_n, \p sup_d
-    and \p maximum are left untouched.
+    If \p *this is empty or \p expr is not bounded by \p *this,
+    <CODE>false</CODE> is returned and \p sup_n, \p sup_d and \p
+    maximum are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
 		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
@@ -754,7 +754,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
 
-    If \p *this is empty or \p expr is not bounded from above,
+    If \p *this is empty or \p expr is not bounded by \p *this,
     <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
     and \p point are left untouched.
   */
@@ -941,7 +941,7 @@ public:
     produces the zero dimension universe box.
 
     \param box
-    The covering box to be shrunk.
+    The Box into which the covering box is written.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p box are dimension-incompatible.
