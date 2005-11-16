@@ -305,6 +305,25 @@ SPECIALIZE_SUB_MUL(mpq, mpq_class, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
+sqrt_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir dir) {
+  if (CHECK_P(Policy::check_sqrt_neg, from < 0))
+    return set_special<Policy>(to, V_SQRT_NEG);
+  const unsigned long k = 3200;
+  mpz_ptr to_num = to.get_num().get_mpz_t();
+  mpz_mul_2exp(to_num, from.get_num().get_mpz_t(), 2*k);
+  mpz_tdiv_q(to_num, to_num, from.get_den().get_mpz_t());
+  mpz_sqrt(to_num, to_num);
+  mpz_ptr to_den = to.get_den().get_mpz_t();
+  mpz_set_si(to_den, 1);
+  mpz_mul_2exp(to_den, to_den, k);
+  to.canonicalize();
+  return V_LGE;
+}
+
+SPECIALIZE_SQRT(mpq, mpq_class, mpq_class)
+
+template <typename Policy>
+inline Result
 input_mpq(mpq_class& to, std::istream& is, Rounding_Dir dir) {
   Result r = input_mpq(to, is);
   if (r == VC_MINUS_INFINITY)
