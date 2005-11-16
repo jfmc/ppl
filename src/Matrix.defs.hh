@@ -332,17 +332,6 @@ public:
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
-
-  // FIX
-private:
-  // FIX For access to the size method of the rows attribute of the
-  // system (either a Congruence_System or a Generator_System) passed
-  // to Grid::le_pc_reduce.
-  friend class Parma_Polyhedra_Library::Grid;
-
-  friend bool
-  Parma_Polyhedra_Library::operator==(const Congruence_System& x,
-				      const Congruence_System& y);
 };
 
 namespace std {
