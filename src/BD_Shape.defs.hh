@@ -1091,16 +1091,18 @@ public:
 
   friend bool Parma_Polyhedra_Library::operator==<T>(const BD_Shape<T>& x,
 						     const BD_Shape<T>& y);
-  template <typename To, typename U>
-  friend bool Parma_Polyhedra_Library::rectilinear_distance_assign
-  (Checked_Number<To, Extended_Number_Policy>& r,
-   const BD_Shape<U>& x, const BD_Shape<U>& y, const Rounding_Dir dir);
   template <typename Temp, typename To, typename U>
   friend bool Parma_Polyhedra_Library::rectilinear_distance_assign
   (Checked_Number<To, Extended_Number_Policy>& r,
-   const BD_Shape<U>& x, const BD_Shape<U>& y, const Rounding_Dir dir);
+   const BD_Shape<U>& x, const BD_Shape<U>& y, const Rounding_Dir dir,
+   Temp& tmp0, Temp& tmp1, Temp& tmp2);
   template <typename Temp, typename To, typename U>
-  friend bool Parma_Polyhedra_Library::rectilinear_distance_assign
+  friend bool Parma_Polyhedra_Library::euclidean_distance_assign
+  (Checked_Number<To, Extended_Number_Policy>& r,
+   const BD_Shape<U>& x, const BD_Shape<U>& y, const Rounding_Dir dir,
+   Temp& tmp0, Temp& tmp1, Temp& tmp2);
+  template <typename Temp, typename To, typename U>
+  friend bool Parma_Polyhedra_Library::l_infinity_distance_assign
   (Checked_Number<To, Extended_Number_Policy>& r,
    const BD_Shape<U>& x, const BD_Shape<U>& y, const Rounding_Dir dir,
    Temp& tmp0, Temp& tmp1, Temp& tmp2);
