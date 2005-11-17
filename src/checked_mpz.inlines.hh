@@ -149,7 +149,7 @@ SPECIALIZE_SET_SPECIAL(mpz, mpz_class)
 template <typename Policy>
 inline void
 copy_mpz(mpz_class& to, const mpz_class& from) {
-  if (is_nan_mpz<Policy>(from) || 
+  if (is_nan_mpz<Policy>(from) ||
       is_minf_mpz<Policy>(from) || is_pinf_mpz<Policy>(from))
     set_mp_size(to, get_mp_size(from));
   else

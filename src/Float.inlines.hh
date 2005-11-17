@@ -172,7 +172,7 @@ TFloat<float64_t>::build(bool negative, mpz_t mantissa, int exponent) {
 #endif
   u.parts.msp |= m & ((1UL << (MANTISSA_BITS - 32)) - 1);
 }
-    
+
 #ifdef FLOAT96_TYPE
 
 inline
@@ -255,7 +255,7 @@ TFloat<float96_t>::build(bool negative, mpz_t mantissa, int exponent) {
   u.parts.lsp = mpz_get_ui(mantissa);
 #endif
 }
-    
+
 #endif
 
 #ifdef FLOAT128_TYPE
@@ -346,7 +346,7 @@ TFloat<float128_t>::build(bool negative, mpz_t mantissa, int exponent) {
 #endif
   u.parts.msp |= m & ((1UL << (MANTISSA_BITS - 64)) - 1);
 }
-    
+
 #endif
 
 } // namespace Parma_Polyhedra_Library

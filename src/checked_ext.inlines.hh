@@ -146,7 +146,7 @@ add_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
     }
   }
 }
-    
+
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
@@ -184,7 +184,7 @@ sub_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
     }
   }
 }
-    
+
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
@@ -245,7 +245,7 @@ mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   }
 }
 
-    
+
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
@@ -453,8 +453,8 @@ div_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
     }
   }
 }
-    
-	
+
+
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
@@ -476,7 +476,7 @@ rem_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
     }
   }
 }
-    
+
 template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
@@ -544,7 +544,7 @@ gcd_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   else
     return gcd<To_Policy>(to, x, y, dir);
 }
-    
+
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result

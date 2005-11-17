@@ -296,7 +296,7 @@ prepare_inexact(Rounding_Dir dir) {
 }
 
 template <typename Policy>
-inline Result 
+inline Result
 result_relation(Rounding_Dir dir) {
   if (Policy::fpu_check_inexact) {
     if (!fpu_check_inexact())
@@ -323,7 +323,7 @@ result_relation(Rounding_Dir dir) {
 }
 
 template <typename Policy, typename From, typename To>
-inline Result 
+inline Result
 assign_float_float_exact(To& to, const From from, Rounding_Dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(from)))
     return VC_NAN;
@@ -359,7 +359,7 @@ assign_float_float(To& to, const From from, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 neg_float(Type& to, const Type from, Rounding_Dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(from)))
     return VC_NAN;
@@ -368,7 +368,7 @@ neg_float(Type& to, const Type from, Rounding_Dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 add_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
@@ -388,7 +388,7 @@ add_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 sub_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
@@ -408,7 +408,7 @@ sub_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
@@ -429,7 +429,7 @@ mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
@@ -453,7 +453,7 @@ div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 rem_float(Type& to, const Type x, const Type y, Rounding_Dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
@@ -468,7 +468,7 @@ rem_float(Type& to, const Type x, const Type y, Rounding_Dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 mul2exp_float(Type& to, const Type x, int exp, Rounding_Dir dir) {
   if (exp < 0)
     return div2exp<Policy>(to, x, -exp, dir);
@@ -477,7 +477,7 @@ mul2exp_float(Type& to, const Type x, int exp, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 div2exp_float(Type& to, const Type x, int exp, Rounding_Dir dir) {
   if (exp < 0)
     return mul2exp<Policy>(to, x, -exp, dir);
@@ -533,7 +533,7 @@ cmp_float(const Type x, const Type y) {
 }
 
 template <typename Policy, typename To, typename From>
-inline Result 
+inline Result
 assign_float_int_exact(To& to, const From from, Rounding_Dir) {
   to = from;
   return V_EQ;
@@ -547,7 +547,7 @@ assign_float_int_inexact(To& to, const From from, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename To, typename From>
-inline Result 
+inline Result
 assign_float_int(To& to, const From from, Rounding_Dir dir) {
   if (sizeof(From) * 8 > Float<To>::Type::MANTISSA_BITS)
     return assign_float_int_inexact<Policy>(to, from, dir);
@@ -693,7 +693,7 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir)
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(to)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
@@ -711,7 +711,7 @@ add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(to)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
