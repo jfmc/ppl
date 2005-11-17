@@ -34,7 +34,7 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
   : num_equalities(0), num_proper_congruences(0) {
   Grid& gr = const_cast<Grid&>(cgr);
-  // As in Polyhedron assume that `gr' contains at least one point.
+  // As in Polyhedron assume that gr contains at least one point.
   assert(!gr.marked_empty());
   if (gr.space_dimension() == 0)
     return;
@@ -52,7 +52,7 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
       }
       else {
 	// Minimize gr congruence system.  As in Polyhedron assume
-	// that `gr' contains at least one point.
+	// that gr contains at least one point.
 #ifndef NDEBUG
 	Grid::simplify(gr.con_sys, gr.dim_kinds);
 #else
@@ -68,7 +68,7 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
   else {
     if (!gr.generators_are_minimized()) {
       // Minimize gr generator system.  As in Polyhedron assume that
-      // `gr' contains at least one point.
+      // gr contains at least one point.
       Grid::simplify(gr.gen_sys, gr.dim_kinds);
       // If gen_sys contained rows before being reduced, it should
       // contain at least a single point afterwards.
@@ -94,9 +94,8 @@ PPL::Grid_Certificate::compare(const Grid_Certificate& y) const {
 
 int
 PPL::Grid_Certificate::compare(const Grid& gr) const {
-  // FIX creating gc is a waste
   Grid_Certificate gc(gr);
-  return(compare(gc));
+  return compare(gc);
 }
 
 bool
