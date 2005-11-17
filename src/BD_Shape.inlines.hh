@@ -112,7 +112,7 @@ forget_all_constraints_on_var(DB_Matrix<N>& x,
   for (dimension_type i = x_space_dim + 1; i-- > 0; ) {
     x_v[i] = PLUS_INFINITY;
     x[i][var_index] = PLUS_INFINITY;
-  } 
+  }
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -130,7 +130,7 @@ forget_binary_constraints_on_var(DB_Matrix<N>& x,
   for (dimension_type i = x_space_dim; i > 0; --i) {
     x_v[i] = PLUS_INFINITY;
     x[i][var_index] = PLUS_INFINITY;
-  } 
+  }
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -189,7 +189,7 @@ extract_bounded_difference(const Constraint& c,
       else
 	// Constraint `c' is not a bounded difference.
 	return false;
-  
+
   // Make sure that `c' is indeed a bounded difference,
   // i.e., it has one of the following forms:
   //           0 <=/= b, if c_num_vars == 0;
@@ -367,7 +367,7 @@ BD_Shape<T>::affine_dimension() const {
   for (dimension_type i = 1; i <= space_dim; ++i)
     if (predecessor[i] == i)
       ++affine_dim;
-  
+
   return affine_dim;
 }
 
@@ -663,7 +663,7 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
     N d;
     assign(d, raw_value(-den), ROUND_UP);
     assign_neg(d, d, ROUND_UP);
-    assign_div(k, k, d, ROUND_UP);    
+    assign_div(k, k, d, ROUND_UP);
   }
   N& dbm_ij = dbm[i][j];
   if (dbm_ij > k) {
@@ -2120,7 +2120,7 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // Shortest-path closure is maintained.
   // TODO: see whether reduction can be (efficiently!) maintained too.
   if (marked_shortest_path_reduced())
-    status.reset_shortest_path_reduced();  
+    status.reset_shortest_path_reduced();
 
   // For each variable to remove, we erase the corresponding column and
   // row by shifting the other columns and rows, than are not removed,
@@ -2700,7 +2700,7 @@ BD_Shape<T>::affine_image(const Variable var,
   const dimension_type v = var.id() + 1;
   if (v > space_dim)
     throw_dimension_incompatible("affine_image(v, e, d)", var.id());
-  
+
   // The image of an empty BDS is empty too.
   shortest_path_closure_assign();
   if (marked_empty())
@@ -2831,7 +2831,7 @@ BD_Shape<T>::affine_image(const Variable var,
       return;
     }
   }
-  
+
   // General case.
   // Either t > 1, so that
   // expr = a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2,
@@ -3000,7 +3000,7 @@ BD_Shape<T>::affine_image(const Variable var,
   }
 
   assert(OK());
-} 
+}
 
 template <typename T>
 void
@@ -3309,7 +3309,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	  }
 	}
 	break;
-	
+
       default:
 	// We already dealt with the other cases.
 	throw std::runtime_error("PPL internal error");
@@ -3355,7 +3355,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 
       // Approximate the inhomogeneous term.
       assign(sum, raw_value(sc_b), ROUND_UP);
-      
+
       // Approximate the homogeneous part of `sc_expr'.
       for (dimension_type i = expr_space_dim + 1; i > 0; --i) {
 	const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
@@ -3397,7 +3397,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	add_dbm_constraint(0, v, sum);
 	// CHECK ME: What is the meaning of the following?
 	// Deduce constraints of the form `v - w', where `w != v'.
-	for (dimension_type h = 1; h <= space_dim; ++h)  
+	for (dimension_type h = 1; h <= space_dim; ++h)
 	  if (h != v && expr.coefficient(Variable(h-1)) > 0) {
 	    N dbm_0_h = dbm[0][h];
 	    N negate_dbm_0_h;
@@ -3406,7 +3406,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 		       ROUND_UP);
 	  }
       }
-      else if (pinf_count == 1) 
+      else if (pinf_count == 1)
 	if (pinf_index != v
 	    && expr.coefficient(Variable(pinf_index-1)) == denominator)
 	  // Add the constraint `v - pinf_index <= sum'.
@@ -3423,7 +3423,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 
       // Approximate the inhomogeneous term.
       assign(sum, raw_value(-sc_b), ROUND_UP);
-      
+
       // Approximate the homogeneous part of `-sc_expr'.
       for (dimension_type i = expr_space_dim + 1; i > 0; --i) {
 	const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
@@ -3465,8 +3465,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	add_dbm_constraint(v, 0, sum);
 	// CHECK ME: What is the meaning of the following?
 	// Deduce constraints of the form `w - v', where `w != v'.
-	for (dimension_type h = 1; h <= space_dim; ++h)  
-	  if (h != v && expr.coefficient(Variable(h-1)) < 0) {     
+	for (dimension_type h = 1; h <= space_dim; ++h)
+	  if (h != v && expr.coefficient(Variable(h-1)) < 0) {
 	    N dbm_h_0 = dbm[h][0];
 	    N negate_dbm_h_0;
 	    assign_neg(negate_dbm_h_0, dbm_h_0, ROUND_UP);
@@ -3474,7 +3474,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 		       ROUND_UP);
 	  }
       }
-      else if (pinf_count == 1) 
+      else if (pinf_count == 1)
 	if (pinf_index != v
 	    && expr.coefficient(Variable(pinf_index-1)) == denominator)
 	  // Add the constraint `v - pinf_index >= -sum',
@@ -3482,7 +3482,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	  add_dbm_constraint(v, pinf_index, sum);
     }
     break;
-      
+
   default:
     // We already dealt with the other cases.
     throw std::runtime_error("PPL internal error");
@@ -3619,21 +3619,21 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // Some variables in `lhs' also occur in `rhs'.
 
 #if 1 // Simplified computation (see the TODO note below).
-      
+
       for (dimension_type i = lhs_vars.size(); i-- > 0; )
 	forget_all_constraints_on_var(dbm, space_dim, lhs_vars[i].id() + 1);
-      
+
 #else // Currently unnecessarily complex computation.
-      
+
       // More accurate computation that is worth doing only if
       // the following TODO note is accurately dealt with.
-      
+
       // To ease the computation, we add an additional dimension.
       const Variable new_var = Variable(space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `rhs'.
       // NOTE: calling affine_image() instead of add_constraint()
-      // ensure some approximation is tried even when the constraint
+      // ensures some approximation is tried even when the constraint
       // is not a bounded difference.
       affine_image(new_var, rhs);
       // Cylindrificate on all variables in the lhs.
@@ -3666,7 +3666,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // Remove the temporarily added dimension.
       remove_higher_space_dimensions(space_dim-1);
 #endif // Currently unnecessarily complex computation.
-    }    
+    }
   }
 
   assert(OK());
