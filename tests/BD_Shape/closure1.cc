@@ -322,7 +322,6 @@ Edge hawaii[] = {
 
 const mpq_class&
 perturbate(unsigned long a) {
-  //static mpq_class q = a;
   static mpq_class q;
   q = a;
   q = (q*q)/(q-1);
