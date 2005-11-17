@@ -68,6 +68,22 @@ Length of source lines
 Avoid, when possible, source lines longer than 78 characters.
 
 
+Trailing whitespace
+-------------------
+
+Always avoid trailing whitespace.
+If you use emacs, then all the trailing whitespace in the current
+buffer can be removed by using the command
+
+  M-x delete-trailing-whitespace
+
+If you keep inserting trailing whitespace when coding, then you may
+want to put the following two lines in your .emacs:
+
+;; Show trailing whitespace.
+(setq-default show-trailing-whitespace t)
+
+
 Block closures
 --------------
 
