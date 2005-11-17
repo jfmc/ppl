@@ -155,7 +155,6 @@ void homogeneous_scalar_product_assign(Coefficient& z,
 int homogeneous_scalar_product_sign(const Linear_Expression& x,
 				    const Generator& y);
 
-// FIX will this ever be used?
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
 //! Returns the sign of the \e homogeneous scalar product of \p x and \p y,
