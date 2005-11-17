@@ -309,15 +309,15 @@ sqrt_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_sqrt_neg, from < 0))
     return set_special<Policy>(to, V_SQRT_NEG);
   const unsigned long k = 3200;
-  mpz_ptr to_num = to.get_num().get_mpz_t();
-  mpz_mul_2exp(to_num, from.get_num().get_mpz_t(), 2*k);
-  mpz_tdiv_q(to_num, to_num, from.get_den().get_mpz_t());
-  mpz_sqrt(to_num, to_num);
-  mpz_ptr to_den = to.get_den().get_mpz_t();
-  mpz_set_si(to_den, 1);
-  mpz_mul_2exp(to_den, to_den, k);
+  mpz_class& to_num = to.get_num();
+  mul2exp<Policy>(to_num, from.get_num(), 2*k, dir);
+  Result rdiv = div<Policy>(to_num, to_num, from.get_den(), dir);
+  Result rsqrt = sqrt<Policy>(to_num, to_num, dir);
+  mpz_class& to_den = to.get_den();
+  to_den = 1;
+  mul2exp<Policy>(to_den, to_den, k, dir);
   to.canonicalize();
-  return V_LGE;
+  return rdiv != V_EQ ? rdiv : rsqrt;
 }
 
 SPECIALIZE_SQRT(mpq, mpq_class, mpq_class)
