@@ -33,7 +33,7 @@ Variable B(1);
 Variable C(2);
 Variable D(3);
 
-// Test with a universe polyhedron.
+// Universe grid.
 
 void
 test1() {
@@ -61,7 +61,7 @@ test1() {
   exit(1);
 }
 
-// Test with an empty polyhedron.
+// Empty grid.
 
 void
 test2() {
@@ -279,7 +279,6 @@ test9() {
 
   gr.fold_space_dimensions(to_fold, C);
 
-  // FIX Is a relational grid always folded into the universe?
   Grid known_gr(2);
 
   if (gr == known_gr)
@@ -317,6 +316,37 @@ test10() {
   exit(1);
 }
 
+// Test folding dimensions of a relational grid into an intermediate
+// dimension, where the resulting grid is smaller than the universe.
+
+void
+test11() {
+  nout << "test11:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence(A - B == 0);
+  gr.add_congruence(A %= 0);
+  gr.add_congruence(C == 0);
+
+  Variables_Set to_fold;
+  to_fold.insert(A);
+
+  gr.fold_space_dimensions(to_fold, C);
+
+  Grid known_gr(2);
+  known_gr.add_congruence(A %= 0);
+  known_gr.add_congruence(B %= 0);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -335,6 +365,7 @@ main() TRY {
   test8();
   test9();
   test10();
+  test11();
 
   return 0;
 }
