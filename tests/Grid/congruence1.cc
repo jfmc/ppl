@@ -431,8 +431,6 @@ test14() {
   if (find_variation(b))
     exit(1);
 
-  // FIX should these be equal?
-
   if (a == b)
     return;
 
