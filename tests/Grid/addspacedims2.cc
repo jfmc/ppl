@@ -123,7 +123,6 @@ test3() {
   Variable E(4);
 
   Congruence_System known_cgs;
-  // FIX is it legit to add all equalities?
   known_cgs.insert((B %= 0) / 0);
   known_cgs.insert((C %= 0) / 0);
   known_cgs.insert((D %= 0) / 0);
@@ -208,11 +207,11 @@ test5() {
     exit(1);
 
   Congruence_System known_cgs;
-  known_cgs.insert((A == 1) / 0);
-  known_cgs.insert((B - C %= 0) / 0);
-  known_cgs.insert((B %= 0) / 1); // FIX why needed?
-  known_cgs.insert((D %= 0) / 0);
-  known_cgs.insert((E %= 0) / 0);
+  known_cgs.insert(A == 1);
+  known_cgs.insert(B - C == 0);
+  known_cgs.insert(B %= 0);
+  known_cgs.insert(D == 0);
+  known_cgs.insert(E == 0);
 
   Grid known_gr(known_cgs);
 
