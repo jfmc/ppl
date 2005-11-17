@@ -89,8 +89,8 @@ PPL::reduced_scalar_product_assign(Coefficient& z,
 void
 PPL::reduced_scalar_product_assign(Coefficient& z,
 				   const Linear_Row& x, const Congruence& y) {
-  // FIX The reduced scalar product is only defined if the topology of
-  // `x' is NNC and `y' has enough coefficients.
+  // The reduced scalar product is only defined if the topology of `x'
+  // is NNC and `y' has enough coefficients.
   assert(x.size() <= y.size());
   z = 0;
   for (dimension_type i = x.size() - 1; i-- > 0; )
