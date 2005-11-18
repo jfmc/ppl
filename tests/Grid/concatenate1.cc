@@ -26,13 +26,19 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #define find_variation find_variation_template<Grid>
 
+namespace {
+
+Variable A(0);
+Variable B(1);
+Variable C(2);
+Variable D(3);
+Variable E(4);
+
 // From congruences.
 
 void
 test1() {
   nout << "test1:" << endl;
-
-  Variable A(0);
 
   Congruence_System cgs;
   cgs.insert((A %= 0) / 2);
@@ -49,16 +55,11 @@ test1() {
   if (find_variation(gr1))
     exit(1);
 
-  Variable B(1);
-
   Congruence_System known_cgs;
   known_cgs.insert((A %= 0) / 2);
   known_cgs.insert((B %= 1) / 2);
 
   Grid known_gr(known_cgs);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr1 == known_gr)
     return;
@@ -70,16 +71,13 @@ test1() {
   exit(1);
 }
 
-// One of the grids empty.
+// First grid empty.
 
 void
 test2() {
   nout << "test2:" << endl;
 
   Grid gr1(2, EMPTY);
-
-  Variable A(0);
-  Variable C(2);
 
   Congruence_System cgs;
   cgs.insert((A + 0*C %= 0) / 2);
@@ -93,8 +91,35 @@ test2() {
 
   Grid known_gr(5, EMPTY);
 
-  if (find_variation(known_gr))
+  if (gr1 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Second grid empty.
+
+void
+test3() {
+  nout << "test3:" << endl;
+
+  Congruence_System cgs;
+  cgs.insert((A + 0*C %= 0) / 2);
+
+  Grid gr1(cgs);
+
+  Grid gr2(2, EMPTY);
+
+  gr1.concatenate_assign(gr2);
+
+  if (find_variation(gr1))
     exit(1);
+
+  Grid known_gr(5, EMPTY);
 
   if (gr1 == known_gr)
     return;
@@ -109,14 +134,10 @@ test2() {
 // First grid a universe.
 
 void
-test3() {
-  nout << "test3:" << endl;
+test4() {
+  nout << "test4:" << endl;
 
   Grid gr1(1, UNIVERSE);
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Generator_System gs;
   gs.insert(point(A));
@@ -129,17 +150,12 @@ test3() {
   if (find_variation(gr1))
     exit(1);
 
-  Variable D(3);
-
   Generator_System known_gs;
   known_gs.insert(point(B));
   known_gs.insert(point(B + D));
   known_gs.insert( line(A));
 
   Grid known_gr(known_gs);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr1 == known_gr)
     return;
@@ -154,12 +170,8 @@ test3() {
 // From generators.
 
 void
-test4() {
-  nout << "test4:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
+test5() {
+  nout << "test5:" << endl;
 
   Generator_System gs;
   gs.insert(point(A));
@@ -178,9 +190,6 @@ test4() {
   if (find_variation(gr1))
     exit(1);
 
-  Variable D(3);
-  Variable E(4);
-
   Congruence_System known_cgs;
   known_cgs.insert((A == 1) / 0);
   known_cgs.insert((C %= 0) / 1);
@@ -189,9 +198,6 @@ test4() {
   known_cgs.insert((E %= 0) / 1);
 
   Grid known_gr(known_cgs);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr1 == known_gr)
     return;
@@ -203,6 +209,123 @@ test4() {
   exit(1);
 }
 
+// First grid empty via the congruence system.
+
+void
+test6() {
+  nout << "test6:" << endl;
+
+  Grid gr1(1);
+  gr1.add_congruence((A %= 0) / 2);
+  gr1.add_congruence((A %= 1) / 2);
+
+  Grid gr2(2);
+
+  gr1.concatenate_assign(gr2);
+
+  if (find_variation(gr1))
+    exit(1);
+
+  Grid known_gr(3, EMPTY);
+
+  if (gr1 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Second grid empty via the congruence system.
+
+void
+test7() {
+  nout << "test7:" << endl;
+
+  Grid gr1(2);
+
+  Grid gr2(1);
+  gr2.add_congruence((A %= 0) / 2);
+  gr2.add_congruence((A %= 1) / 2);
+
+  gr1.concatenate_assign(gr2);
+
+  if (find_variation(gr1))
+    exit(1);
+
+  Grid known_gr(3, EMPTY);
+
+  if (gr1 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Zero dimension universe.
+
+void
+test8() {
+  nout << "test8:" << endl;
+
+  Grid gr1(0);
+
+  Grid gr2(1);
+  gr2.add_congruence((A %= 0) / 2);
+
+  gr1.concatenate_assign(gr2);
+
+  if (find_variation(gr1))
+    exit(1);
+
+  Grid known_gr(1);
+  known_gr.add_congruence((A %= 0) / 2);
+
+  if (gr1 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Zero dimension empty.
+
+void
+test9() {
+  nout << "test9:" << endl;
+
+  Grid gr1(0, EMPTY);
+
+  Grid gr2(1);
+  gr2.add_congruence((A %= 0) / 2);
+
+  gr1.concatenate_assign(gr2);
+
+  if (find_variation(gr1))
+    exit(1);
+
+  Grid known_gr(1, EMPTY);
+
+  if (gr1 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+} // namespace
+
 int
 main() TRY {
   set_handlers();
@@ -213,6 +336,11 @@ main() TRY {
   test2();
   test3();
   test4();
+  test5();
+  test6();
+  test7();
+  test8();
+  test9();
 
   return 0;
 }
