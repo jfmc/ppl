@@ -98,7 +98,7 @@ check_PROGRAMS = \
 	writebdshape1 writebdshape2
 
 # This will be overriden by the `run_tests' script.
-TEST_CPPFLAGS=-DBD_SHAPE_INSTANCE=mpz_class
+TEST_CPPFLAGS=-DBD_SHAPE_INSTANCE=mpq_class
 
 dist_check_SCRIPTS = run_tests
 
