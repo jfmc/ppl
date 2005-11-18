@@ -240,15 +240,13 @@ void
 test7() {
   nout << "test7:" << endl;
 
-  // FIX same grids as intersection1 test8
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
   Generator_System gs1;
   gs1.insert(point(A + C));
-  gs1.insert( line(C));
+  gs1.insert(point(A + 2*C));
 
   Generator_System gs2;
   gs2.insert(point(A));
