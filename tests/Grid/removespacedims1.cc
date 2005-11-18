@@ -26,7 +26,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #define find_variation find_variation_template<Grid>
 
-// From congruences.
+// Simple grid.
 
 void
 test1() {
@@ -34,39 +34,21 @@ test1() {
 
   Variable A(0);
   Variable B(1);
-  Variable C(2);
-  Variable D(3);
-  Variable E(4);
+
+  Grid gr(2);
+  gr.add_congruence(A - B == 0);
+  gr.add_congruence(A %= 0);
 
   Variables_Set vars;
   vars.insert(B);
-  vars.insert(D);
-
-  Congruence_System cgs;
-  cgs.insert((A + 2*C %= 0) / 3);
-  cgs.insert((B - E %= 0) / 2);
-
-  Grid gr(cgs);
-
-  if (find_variation(gr))
-    exit(1);
 
   gr.remove_space_dimensions(vars);
 
   if (find_variation(gr))
     exit(1);
 
-  // FIX check
-  Generator_System known_gs;
-  known_gs.insert(point(0*A, 2));
-  known_gs.insert( line(2*A - B));
-  known_gs.insert(point(3*B, 2));
-  known_gs.insert( line(  C));
-
-  Grid known_gr(known_gs);
-
-  if (find_variation(known_gr))
-    exit(1);
+  Grid known_gr(1);
+  known_gr.add_congruence(A %= 0);
 
   if (gr == known_gr)
     return;
@@ -86,9 +68,6 @@ test2() {
 
   Grid gr(4, EMPTY);
 
-  if (find_variation(gr))
-    exit(1);
-
   Variable B(1);
 
   Variables_Set vars;
@@ -100,9 +79,6 @@ test2() {
     exit(1);
 
   Grid known_gr(3, EMPTY);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr == known_gr)
     return;
@@ -122,9 +98,6 @@ test3() {
 
   Grid gr(7, UNIVERSE);
 
-  if (find_variation(gr))
-    exit(1);
-
   Variable C(2);
   Variable D(3);
 
@@ -138,9 +111,6 @@ test3() {
     exit(1);
 
   Grid known_gr(5, UNIVERSE);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr == known_gr)
     return;
@@ -168,9 +138,6 @@ test4() {
 
   Grid gr(gs);
 
-  if (find_variation(gr))
-    exit(1);
-
   Variables_Set vars;
   vars.insert(B);
 
@@ -184,8 +151,50 @@ test4() {
 
   Grid known_gr(known_cgs);
 
-  if (find_variation(known_gr))
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// From congruences.
+
+void
+test5() {
+  nout << "test5:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
+
+  Variables_Set vars;
+  vars.insert(B);
+  vars.insert(D);
+
+  Congruence_System cgs;
+  cgs.insert((A + 2*C %= 0) / 3);
+  cgs.insert((B - E %= 0) / 2);
+
+  Grid gr(cgs);
+
+  gr.remove_space_dimensions(vars);
+
+  if (find_variation(gr))
     exit(1);
+
+  Generator_System known_gs;
+  known_gs.insert(point());
+  known_gs.insert( line(2*A - B));
+  known_gs.insert(point(3*B, 2));
+  known_gs.insert( line(  C));
+
+  Grid known_gr(known_gs);
 
   if (gr == known_gr)
     return;
@@ -206,9 +215,8 @@ main() TRY {
   test1();
   test2();
   test3();
-#if 0
   test4();
-#endif
+  test5();
 
   return 0;
 }
