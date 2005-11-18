@@ -618,8 +618,7 @@ test15() {
     exit(1);
 
   Congruence_System known_cgs;
-  // FIX check
-  known_cgs.insert((  0*A +   0*B +  0*C + 0*D %= -27) / 27);
+  // FIX confirm that this is correct
   known_cgs.insert((  9*A +   0*B +  0*C + 0*D %=   0) / 27);
   known_cgs.insert((-18*A +  27*B +  0*C + 0*D %=   0) / 27);
   known_cgs.insert((-90*A + 135*B + 27*C + 0*D %=  27) / 27);
@@ -757,8 +756,6 @@ test19() {
 
   // Create coefficients with string constructors as they're too big
   // for the long type.
-
-  // FIX are the coefficients used or copied?
 
   // 37315344498526  0  0  0  congruence, modulus = 37315344498526
   // 0  343455281759218112380  0  0  congruence, modulus = 37315344498526
