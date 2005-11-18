@@ -271,19 +271,19 @@ PPL::Grid::concatenate_assign(const Grid& y) {
 
   const dimension_type added_columns = y.space_dim;
 
-  // If `*this' or `y' are empty polyhedra, it is sufficient to adjust
-  // the dimension of the space.
+  // If `*this' or `y' are empty grids just adjust the space
+  // dimension.
   if (marked_empty() || y.marked_empty()) {
     space_dim += added_columns;
     set_empty();
     return;
   }
 
-  // If `y' is a non-empty 0-dim space grid, the result is `*this'.
+  // If `y' is a universe 0-dim grid, the result is `*this'.
   if (added_columns == 0)
     return;
 
-  // If `*this' is a non-empty 0-dim space grid, the result is `y'.
+  // If `*this' is a universe 0-dim space grid, the result is `y'.
   if (space_dim == 0) {
     *this = y;
     return;
@@ -293,7 +293,6 @@ PPL::Grid::concatenate_assign(const Grid& y) {
   Congruence_System cgs = y.congruences();
 
   if (!congruences_are_up_to_date())
-    // FIX check if now empty? (also in ph?)
     update_congruences();
 
   // The matrix for the new system of congruences is obtained by
@@ -303,9 +302,10 @@ PPL::Grid::concatenate_assign(const Grid& y) {
   dimension_type old_num_columns = con_sys.num_columns();
   dimension_type added_rows = cgs.num_rows();
 
-  // We already dealt with the cases of an empty or zero-dim `y' grid;
-  // also, `cgs' contains the low-level constraints, at least.
-  assert(added_rows > 0 && added_columns > 0);
+  // The case of a zero-dim `y' grid is handled above.
+  assert(added_columns > 0);
+  // `cgs' contains at least the integrality congruence.
+  assert(added_rows > 0);
 
   con_sys.add_zero_rows_and_columns(added_rows, added_columns,
 				    Row::Flags());
