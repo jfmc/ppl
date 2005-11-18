@@ -20,17 +20,6 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-/* FIX
-
-   compare to known systems
-
-   could test:
-   max_space_dimension
-   zero_dim_empty  // (if it is kept)
-   ascii_load,dump // (explicitly)
-   total,external_memory_in_bytes
-*/
-
 #include "ppl_test.hh"
 
 #define find_variation find_variation_template<Congruence_System>
@@ -49,17 +38,20 @@ test1() {
   nout << "test1:" << endl;
 
   Test_Congruence_System cgs0;
-  if (find_variation(cgs0)) exit(1);
+  if (find_variation(cgs0))
+    exit(1);
 
   Test_Congruence_System cgs1(cgs0);
-  if (find_variation(cgs1)) exit(1);
+  if (find_variation(cgs1))
+    exit(1);
 
   if (cgs1 == cgs0) {
     Variable A(0);
     Variable B(1);
 
     Test_Congruence_System cgs2((A - 3*B %= 5) / 2);
-    if (find_variation(cgs2)) exit(1);
+    if (find_variation(cgs2))
+      exit(1);
 
     if (cgs2 == cgs0) {
       nout << "`cgs2 == cgs0' should fail." << endl;
@@ -126,7 +118,8 @@ test3() {
   if (cgs0.space_dimension() == SPACE_DIM)
     return;
 
-  nout << "Space dimension of cgs0 should have been " stringify(SPACE_DIM) "." << endl;
+  nout << "Space dimension of cgs0 should have been " stringify(SPACE_DIM) "."
+       << endl;
   exit(1);
 }
 
