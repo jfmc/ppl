@@ -95,6 +95,16 @@ raw_value(GMP_Integer& x) {
   return x;
 }
 
+inline const mpq_class&
+raw_value(const mpq_class& x) {
+  return x;
+}
+
+inline mpq_class&
+raw_value(mpq_class& x) {
+  return x;
+}
+
 inline memory_size_type
 external_memory_in_bytes(const GMP_Integer& x) {
   return x.get_mpz_t()[0]._mp_alloc * SIZEOF_MP_LIMB_T;
