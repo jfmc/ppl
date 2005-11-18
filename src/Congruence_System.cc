@@ -216,9 +216,7 @@ satisfies_all_congruences(const Generator& g,
   assert(g.space_dimension() <= space_dimension());
   assert(divisor >= 0);
 
-  // Setting `spa_fp' to the appropriate scalar product operator.
-  // This also avoids problems when having _legal_ topology mismatches
-  // (which could also cause a mismatch in the number of columns).
+  // Set `spa_fp' to the appropriate scalar product operator.
   void (*spa_fp)(Coefficient&, const Linear_Row&, const Congruence&);
   if (g.is_necessarily_closed())
     spa_fp = PPL::scalar_product_assign;
@@ -226,18 +224,29 @@ satisfies_all_congruences(const Generator& g,
     spa_fp = PPL::reduced_scalar_product_assign;
 
   const Congruence_System& cgs = *this;
-  for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
-    TEMP_INTEGER(sp);
-    const Congruence& cg = cgs[i];
-    spa_fp(sp, g, cg);
-    if (cg.is_equality() || g.is_line()) {
-      if (sp != 0)
+  TEMP_INTEGER(sp);
+  if (divisor > 1)
+    for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
+      const Congruence& cg = cgs[i];
+      spa_fp(sp, g, cg);
+      if (cg.is_equality() || g.is_line()) {
+	if (sp != 0)
+	  return false;
+      }
+      else if (sp % (cg.modulus() * divisor) != 0)
 	return false;
     }
-    // FIX compare divisor before loop
-    else if (sp % (divisor > 1 ? cg.modulus() * divisor : cg.modulus()) != 0)
-      return false;
-  }
+  else
+    for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
+      const Congruence& cg = cgs[i];
+      spa_fp(sp, g, cg);
+      if (cg.is_equality() || g.is_line()) {
+	if (sp != 0)
+	  return false;
+      }
+      else if (sp % cg.modulus() != 0)
+	return false;
+    }
   return true;
 }
 
