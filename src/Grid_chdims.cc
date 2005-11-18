@@ -407,9 +407,6 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // The number of remaining columns is `dst_col'.
   gen_sys.Matrix::remove_trailing_columns(gen_sys_num_columns - dst_col);
 
-  // FIX confirm OK to leave parameters that have zeros in all cols
-  // FIX confirm OK if vars include first col
-
   clear_congruences_up_to_date();
   clear_generators_minimized();
 

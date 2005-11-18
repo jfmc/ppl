@@ -26,14 +26,19 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #define find_variation find_variation_template<Grid>
 
+namespace {
+
+Variable A(0);
+Variable B(1);
+Variable C(2);
+Variable D(3);
+Variable E(4);
+
 // Simple grid.
 
 void
 test1() {
   nout << "test1:" << endl;
-
-  Variable A(0);
-  Variable B(1);
 
   Grid gr(2);
   gr.add_congruence(A - B == 0);
@@ -68,8 +73,6 @@ test2() {
 
   Grid gr(4, EMPTY);
 
-  Variable B(1);
-
   Variables_Set vars;
   vars.insert(B);
 
@@ -98,9 +101,6 @@ test3() {
 
   Grid gr(7, UNIVERSE);
 
-  Variable C(2);
-  Variable D(3);
-
   Variables_Set vars;
   vars.insert(C);
   vars.insert(D);
@@ -127,9 +127,6 @@ test3() {
 void
 test4() {
   nout << "test4:" << endl;
-
-  Variable A(0);
-  Variable B(1);
 
   Generator_System gs;
   gs.insert(point(0*A));
@@ -167,12 +164,6 @@ void
 test5() {
   nout << "test5:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-  Variable D(3);
-  Variable E(4);
-
   Variables_Set vars;
   vars.insert(B);
   vars.insert(D);
@@ -206,6 +197,73 @@ test5() {
   exit(1);
 }
 
+// Variable set includes first dimension.
+
+void
+test6() {
+  nout << "test6:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence(A - B == 0);
+  gr.add_congruence(A %= 0);
+
+  Variables_Set vars;
+  vars.insert(A);
+  vars.insert(C);
+
+  gr.remove_space_dimensions(vars);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(1);
+  known_gr.add_congruence(A %= 0);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// The resulting grid contains a parameter that is all zeros.
+
+void
+test7() {
+  nout << "test7:" << endl;
+
+  Grid gr(3, EMPTY);
+  gr.add_generator(point());
+  gr.add_generator(point(A));
+  gr.add_generator_and_minimize(point(B));
+  gr.add_generator(line(C));
+
+  Variables_Set vars;
+  vars.insert(B);
+
+  gr.remove_space_dimensions(vars);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(2);
+  known_gr.add_congruence(A %= 0);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+} // namespace
+
 int
 main() TRY {
   set_handlers();
@@ -217,6 +275,8 @@ main() TRY {
   test3();
   test4();
   test5();
+  test6();
+  test7();
 
   return 0;
 }
