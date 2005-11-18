@@ -2962,9 +2962,44 @@ BD_Shape<T>::affine_image(const Variable var,
       assign(dbm_0[v], pos_sum, ROUND_UP);
       // Deduce constraints of the form `v - w', where `w != v'.
       // TODO: properly comment the following lines.
+#if 0
       for (dimension_type w = space_dim; w > 0; --w)
 	if (w != v && sc_expr.coefficient(Variable(w-1)) >= sc_den)
 	  assign_sub(dbm[w][v], pos_sum, dbm_0[w], ROUND_UP);
+#else
+      for (dimension_type w = space_dim; w > 0; --w)
+	if (w != v) {
+	  const Coefficient& expr_w = sc_expr.coefficient(Variable(w-1));
+	  if (expr_w > 0)
+	    if (expr_w >= sc_den)
+	      assign_sub(dbm[w][v], pos_sum, dbm_0[w], ROUND_UP);
+	    else {
+	      DB_Row<N>& dbm_w = dbm[w];
+	      const N& dbm_w0 = dbm_w[0];
+	      if (!is_plus_infinity(dbm_w0)) {
+		// Let `ub_w' and `lb_w' be the known upper and lower bound
+		// for `w', respectively. Letting `q = expr_w/sc_den' be the
+		// rational coefficient of `w' in `sc_expr/sc_den, compute
+		// the convex combination `q * ub_w + (1-q) * lb_w'.
+		TEMP_INTEGER(ub_coeff);
+		ub_coeff = -expr_w;
+		TEMP_INTEGER(lb_coeff);
+		lb_coeff = sc_den - expr_w;
+		mpq_class ub_w;
+		assign(ub_w, raw_value(dbm_0[w]), ROUND_IGNORE);
+		ub_w *= ub_coeff;
+		mpq_class minus_lb_w;
+		assign(minus_lb_w, raw_value(dbm_w0), ROUND_IGNORE);
+		minus_lb_w *= lb_coeff;
+		ub_w += minus_lb_w;
+		ub_w /= sc_den;
+		N up_approx;
+		assign(up_approx, ub_w, ROUND_UP);
+		assign_add(dbm_w[v], pos_sum, up_approx, ROUND_UP);
+	      }
+	    }
+	}
+#endif
     }
     else
       // Here `pos_pinf_count == 1'.
@@ -2986,9 +3021,39 @@ BD_Shape<T>::affine_image(const Variable var,
       assign(dbm_v[0], neg_sum, ROUND_UP);
       // Deduce constraints of the form `w - v', where `w != v'.
       // TODO: properly comment the following lines.
+#if 0
       for (dimension_type w = space_dim; w > 0; --w)
 	if (w != v && sc_expr.coefficient(Variable(w-1)) >= sc_den)
 	  assign_sub(dbm_v[w], neg_sum, dbm[w][0], ROUND_UP);
+#else
+      for (dimension_type w = space_dim; w > 0; --w)
+	if (w != v) {
+	  const Coefficient& expr_w = sc_expr.coefficient(Variable(w-1));
+	  if (expr_w > 0)
+	    if (expr_w >= sc_den)
+	      assign_sub(dbm_v[w], neg_sum, dbm[w][0], ROUND_UP);
+	    else {
+	      const N& dbm_0w = dbm_0[w];
+	      if (!is_plus_infinity(dbm_0w)) {
+		TEMP_INTEGER(ub_coeff);
+		ub_coeff = sc_den - expr_w;
+		TEMP_INTEGER(lb_coeff);
+		lb_coeff = -expr_w;
+		mpq_class ub_w;
+		assign(ub_w, raw_value(dbm_0w), ROUND_IGNORE);
+		ub_w *= ub_coeff;
+		mpq_class minus_lb_w;
+		assign(minus_lb_w, raw_value(dbm[w][0]), ROUND_IGNORE);
+		minus_lb_w *= lb_coeff;
+		ub_w += minus_lb_w;
+		ub_w /= sc_den;
+		N up_approx;
+		assign(up_approx, ub_w, ROUND_UP);
+		assign_add(dbm_v[w], neg_sum, up_approx, ROUND_UP);
+	      }
+	    }
+	}
+#endif
     }
     else
       // Here `neg_pinf_count == 1'.
