@@ -26,7 +26,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 0
+#define NOISY 1
 #endif
 
 namespace {
@@ -48,12 +48,12 @@ test1() {
 #endif
 
   TBD_Shape known_result(2);
-  known_result.add_constraint(x >= -1);
-  known_result.add_constraint(x <= 2);
+  known_result.add_constraint(5*x >= -4);
+  known_result.add_constraint(5*x <= 7);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= -1);
-  // CHECK ME.
-  // known_result.add_constraint(y - x <= 0);
+  known_result.add_constraint(y - x <= 1);
+  known_result.add_constraint(5*x - 5*y <= 3);
 
   bd.affine_image(x, -2*x - 3*y + 1, -5);
 
@@ -79,7 +79,7 @@ test2() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(z >= 3);
 
- 
+
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
@@ -87,11 +87,8 @@ test2() {
   TBD_Shape known_result(3);
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(y <= 2);
-  known_result.add_constraint(z <= 0);
-  // CHECK ME.
-  // known_result.add_constraint(x - z >= 1);
-  // known_result.add_constraint(y - z >= 2);
- 
+  known_result.add_constraint(2*z <= -1);
+
   bd.affine_image(z, x + 2*y -3*z + 2, 4);
 
   bool ok = (bd == known_result);
@@ -130,6 +127,7 @@ test3() {
   known_result.add_constraint(B >= 1);
   known_result.add_constraint(C <= 0);
   known_result.add_constraint(D == 3);
+  known_result.add_constraint(3*B - 3*A <= 5);
 
   bd.affine_image(A, -B + 2*C + 1, -3);
 
@@ -138,7 +136,7 @@ test3() {
 #if NOISY
   print_constraints(bd, "*** bd.affine_image(A, -B + 2*C + 1, -3) ***");
 #endif
- 
+
   if (!ok)
     exit(1);
 }

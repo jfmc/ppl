@@ -117,7 +117,7 @@ test3() {
   known_result.add_constraint(x >= -1);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= 1);
-  
+
   bd.affine_image(x, -y + 1);
 
   bool ok = (bd == known_result);
@@ -149,7 +149,7 @@ test4() {
   known_result.add_constraint(2*x - 2*y == -1);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= 1);
-  
+
   bd.affine_image(x, -2*y + 1, -2);
 
   bool ok = (bd == known_result);
@@ -178,15 +178,15 @@ test5() {
 #endif
 
   TBD_Shape known_result(2);
-  known_result.add_constraint(x <= 0);
-  known_result.add_constraint(x >= -2);
+  known_result.add_constraint(2*x <= -1);
+  known_result.add_constraint(2*x >= -3);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= 1);
- 
+
   bd.affine_image(x, -2*y + 1, 2);
 
   bool ok = (bd == known_result);
- 
+
 #if NOISY
   print_constraints(bd, "*** bd.affine_image(x, -2*y + 1, 2) ***");
 #endif
@@ -222,7 +222,7 @@ test6() {
   bd.affine_image(x, 2*x + y + 1);
 
   bool ok = (bd == known_result);
- 
+
 #if NOISY
   print_constraints(bd, "*** bd.affine_image(x, 2*x + y + 1) ***");
 #endif
@@ -258,7 +258,7 @@ test7() {
   bd.affine_image(x, -2*x + y + 1);
 
   bool ok = (bd == known_result);
- 
+
 #if NOISY
   print_constraints(bd, "*** bd.affine_image(x, -2*x + y + 1) ***");
 #endif
@@ -278,23 +278,21 @@ test8() {
   bd.add_constraint(x >= 0);
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= -1);
- 
+
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
 
   TBD_Shape known_result(2);
-  known_result.add_constraint(x <= 2);
+  known_result.add_constraint(5*x <= 6);
   known_result.add_constraint(x >= -1);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= -1);
-  // CHECK ME.
-  // known_result.add_constraint(y - x <= 0);
 
   bd.affine_image(x, 2*x - 3*y + 1, 5);
 
   bool ok = (bd == known_result);
- 
+
 #if NOISY
   print_constraints(bd, "*** bd.affine_image(x, 2*x - 3*y + 1, 5) ***");
 #endif
@@ -320,17 +318,15 @@ test9() {
 #endif
 
   TBD_Shape known_result(2);
-  known_result.add_constraint(x <= 1);
-  known_result.add_constraint(x >= -2);
+  known_result.add_constraint(5*x <= 4);
+  known_result.add_constraint(5*x >= -7);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= -1);
-  // CHECK ME.
-  // known_result.add_constraint(y - x <= 1);
 
   bd.affine_image(x, -2*x - 3*y + 1, 5);
 
   bool ok = (bd == known_result);
- 
+
 #if NOISY
   print_constraints(bd, "*** bd.affine_image(x, -2*x - 3*y + 1, 5) ***");
 #endif
@@ -357,11 +353,12 @@ test10() {
 
   TBD_Shape known_result(2);
   known_result.add_constraint(x <= 1);
-  known_result.add_constraint(x >= -2);
+  known_result.add_constraint(5*x >= -6);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= -1);
   // CHECK ME.
-  // known_result.add_constraint(y - x <= 1);
+  known_result.add_constraint(5*x - 5*y <= 1);
+  known_result.add_constraint(5*x - 5*y >= -7);
 
   bd.affine_image(x, 2*x - 3*y + 1, -5);
 
@@ -392,13 +389,12 @@ test11() {
 #endif
 
   TBD_Shape known_result(3);
-  known_result.add_constraint(x <= 6);
+  known_result.add_constraint(3*x <= 17);
   known_result.add_constraint(y >= 0);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(z <= 3);
-  // CHECK ME.
-  // known_result.add_constraint(x - y <= 5);
-  known_result.add_constraint(x - z <= 3);
+  known_result.add_constraint(x - y <= 5);
+  known_result.add_constraint(3*x - 3*z <= 8);
 
   bd.affine_image(x, y + 5*z, 3);
 
