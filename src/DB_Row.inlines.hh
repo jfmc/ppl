@@ -485,8 +485,16 @@ DB_Row<T>::OK(const dimension_type row_size,
   for (dimension_type i = x.size(); i-- > 0; ) {
     const T& element = x[i];
     // Not OK is bad.
+    if (!element.OK()) {
+      is_broken = true;
+      break;
+    }
     // In addition, nans should never occur.
-    if (!element.OK() || is_not_a_number(element)) {
+    if (is_not_a_number(element)) {
+#ifndef NDEBUG
+      cerr << "Not-a-number found in DB_Row."
+	   << endl;
+#endif
       is_broken = true;
       break;
     }
