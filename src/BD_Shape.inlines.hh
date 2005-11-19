@@ -661,7 +661,7 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
   assert(den != 0);
   if (den != 1) {
     N d;
-    assign(d, -den, ROUND_UP);
+    assign(d, raw_value(-den), ROUND_UP);
     assign_neg(d, d, ROUND_UP);
     assign_div(k, k, d, ROUND_UP);
   }
@@ -2868,8 +2868,8 @@ BD_Shape<T>::affine_image(const Variable var,
   dimension_type neg_pinf_count = 0;
 
   // Approximate the inhomogeneous term.
-  assign(pos_sum, sc_b, ROUND_UP);
-  assign(neg_sum, -sc_b, ROUND_UP);
+  assign(pos_sum, raw_value(sc_b), ROUND_UP);
+  assign(neg_sum, raw_value(-sc_b), ROUND_UP);
 
   // Approximate the homogeneous part of `expr'.
   // Note: indices above `w' can be disregarded, as they all have
@@ -2880,7 +2880,7 @@ BD_Shape<T>::affine_image(const Variable var,
     const int sign_i = sgn(sc_i);
     if (sign_i > 0) {
       N coeff_i;
-      assign(coeff_i, sc_i, ROUND_UP);
+      assign(coeff_i, raw_value(sc_i), ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
 	const N& up_approx_i = dbm_0[i];
@@ -2904,7 +2904,7 @@ BD_Shape<T>::affine_image(const Variable var,
     }
     else if (sign_i < 0) {
       N minus_coeff_i;
-      assign(minus_coeff_i, -sc_i, ROUND_UP);
+      assign(minus_coeff_i, raw_value(-sc_i), ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
 	const N& up_approx_minus_i = dbm[i][0];
@@ -2947,7 +2947,7 @@ BD_Shape<T>::affine_image(const Variable var,
   // rounding downwards, which is achieved as usual by rounding upwards
   // the negation and negating again the result.
   N down_sc_den;
-  assign(down_sc_den, -sc_den, ROUND_UP);
+  assign(down_sc_den, raw_value(-sc_den), ROUND_UP);
   assign_neg(down_sc_den, down_sc_den, ROUND_UP);
 
   // Exploit the upper approximation, if possible.
@@ -3419,7 +3419,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       // taking into account the sign of `denominator'.
 
       // Approximate the inhomogeneous term.
-      assign(sum, sc_b, ROUND_UP);
+      assign(sum, raw_value(sc_b), ROUND_UP);
 
       // Approximate the homogeneous part of `sc_expr'.
       for (dimension_type i = expr_space_dim + 1; i > 0; --i) {
@@ -3437,16 +3437,16 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	}
 	N coeff_i;
 	if (sign_i > 0)
-	  assign(coeff_i, sc_i, ROUND_UP);
+	  assign(coeff_i, raw_value(sc_i), ROUND_UP);
 	else
-	  assign(coeff_i, -sc_i, ROUND_UP);
+	  assign(coeff_i, raw_value(-sc_i), ROUND_UP);
 	assign_add_mul(sum, coeff_i, approx_i, ROUND_UP);
       }
 
       // Divide by the (sign corrected) denominator.
       if (pinf_count <= 1 && sc_den != 1) {
 	N d;
-	assign(d, -sc_den, ROUND_UP);
+	assign(d, raw_value(-sc_den), ROUND_UP);
 	assign_neg(d, d, ROUND_UP);
 	assign_div(sum, sum, d, ROUND_UP);
       }
@@ -3487,7 +3487,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       // result is the same as approximating `expr' from below.
 
       // Approximate the inhomogeneous term.
-      assign(sum, -sc_b, ROUND_UP);
+      assign(sum, raw_value(-sc_b), ROUND_UP);
 
       // Approximate the homogeneous part of `-sc_expr'.
       for (dimension_type i = expr_space_dim + 1; i > 0; --i) {
@@ -3505,16 +3505,16 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	}
 	N coeff_i;
 	if (sign_i > 0)
-	  assign(coeff_i, sc_i, ROUND_UP);
+	  assign(coeff_i, raw_value(sc_i), ROUND_UP);
 	else
-	  assign(coeff_i, -sc_i, ROUND_UP);
+	  assign(coeff_i, raw_value(-sc_i), ROUND_UP);
 	assign_add_mul(sum, coeff_i, approx_i, ROUND_UP);
       }
 
       // Divide by the (sign corrected) denominator.
       if (pinf_count <= 1 && sc_den != 1) {
 	N d;
-	assign(d, -sc_den, ROUND_UP);
+	assign(d, raw_value(-sc_den), ROUND_UP);
 	assign_neg(d, d, ROUND_UP);
 	assign_div(sum, sum, d, ROUND_UP);
       }
