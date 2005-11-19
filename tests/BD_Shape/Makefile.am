@@ -104,7 +104,7 @@ dist_check_SCRIPTS = run_tests
 
 TESTS = $(dist_check_SCRIPTS)
 
-XFAIL_TESTS = polydifference7
+XFAIL_TESTS =
 
 print_check_PROGRAMS:
 	echo $(check_PROGRAMS)
