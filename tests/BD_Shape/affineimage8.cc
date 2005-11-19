@@ -351,7 +351,9 @@ test10() {
   print_constraints(bd, "*** bd ***");
 #endif
 
-  TBD_Shape known_result(2);
+  bd.affine_image(x, 2*x - 3*y + 1, -5);
+
+  BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(5*x >= -6);
   known_result.add_constraint(y <= 2);
@@ -360,13 +362,23 @@ test10() {
   known_result.add_constraint(5*x - 5*y <= 1);
   known_result.add_constraint(5*x - 5*y >= -7);
 
-  bd.affine_image(x, 2*x - 3*y + 1, -5);
-
-  bool ok = (bd == known_result);
+  TBD_Shape T_known_result(known_result);
+  bool ok = bd.contains(T_known_result);
 
 #if NOISY
   print_constraints(bd, "*** bd.affine_image(x, 2*x - 3*y + 1, -5) ***");
 #endif
+
+  if (ok) {
+    Checked_Number<mpq_class, Extended_Number_Policy> distance;
+    rectilinear_distance_assign<mpq_class>(distance,
+					   T_known_result, bd,
+					   ROUND_UP);
+#if NOISY
+    std::cout << "Rectilinear distance = " << distance << std::endl;
+#endif
+    ok = (distance <= 1);
+  }
 
   if (!ok)
     exit(1);
@@ -388,7 +400,9 @@ test11() {
   print_constraints(bd, "*** bd ***");
 #endif
 
-  TBD_Shape known_result(3);
+  bd.affine_image(x, y + 5*z, 3);
+
+  BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*x <= 17);
   known_result.add_constraint(y >= 0);
   known_result.add_constraint(y <= 2);
@@ -396,13 +410,23 @@ test11() {
   known_result.add_constraint(x - y <= 5);
   known_result.add_constraint(3*x - 3*z <= 8);
 
-  bd.affine_image(x, y + 5*z, 3);
-
-  bool ok = (bd == known_result);
+  TBD_Shape T_known_result(known_result);
+  bool ok = bd.contains(T_known_result);
 
 #if NOISY
   print_constraints(bd, "*** bd.affine_image(x, y + 5*z, 3) ***");
 #endif
+
+  if (ok) {
+    Checked_Number<mpq_class, Extended_Number_Policy> distance;
+    rectilinear_distance_assign<mpq_class>(distance,
+					   T_known_result, bd,
+					   ROUND_UP);
+#if NOISY
+    std::cout << "Rectilinear distance = " << distance << std::endl;
+#endif
+    ok = (distance <= 1);
+  }
 
   if (!ok)
     exit(1);

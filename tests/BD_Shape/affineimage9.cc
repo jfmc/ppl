@@ -26,7 +26,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 1
+#define NOISY 0
 #endif
 
 namespace {
@@ -47,7 +47,9 @@ test1() {
   print_constraints(bd, "*** bd ***");
 #endif
 
-  TBD_Shape known_result(2);
+  bd.affine_image(x, -2*x - 3*y + 1, -5);
+
+  BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(5*x >= -4);
   known_result.add_constraint(5*x <= 7);
   known_result.add_constraint(y <= 2);
@@ -55,13 +57,23 @@ test1() {
   known_result.add_constraint(y - x <= 1);
   known_result.add_constraint(5*x - 5*y <= 3);
 
-  bd.affine_image(x, -2*x - 3*y + 1, -5);
-
-  bool ok = (bd == known_result);
+  TBD_Shape T_known_result(known_result);
+  bool ok = bd.contains(T_known_result);
 
 #if NOISY
   print_constraints(bd, "*** bd.affine_image(x, -2*x - 3*y + 1, -5) ***");
 #endif
+
+  if (ok) {
+    Checked_Number<mpq_class, Extended_Number_Policy> distance;
+    rectilinear_distance_assign<mpq_class>(distance,
+					   T_known_result, bd,
+					   ROUND_UP);
+#if NOISY
+    std::cout << "Rectilinear distance = " << distance << std::endl;
+#endif
+    ok = (distance <= 2);
+  }
 
   if (!ok)
     exit(1);
