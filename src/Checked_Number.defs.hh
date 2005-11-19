@@ -45,7 +45,11 @@ struct Checked_Number_Default_Policy {
   static const int convertible = 1;
   static const int fpu_check_inexact = 0;
   static const int check_nan_args = 1;
-  static const Rounding_Dir ROUND_DEFAULT = ROUND_IGNORE;
+  static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
+  static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_UP;
+  static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_UP;
+  static const Rounding_Dir ROUND_DEFAULT_INPUT = ROUND_UP;
+  static const Rounding_Dir ROUND_DEFAULT_OUTPUT = ROUND_UP;
   static void handle_result(Result r);
 };
 
@@ -60,9 +64,20 @@ struct Extended_Number_Policy {
   static const int check_sqrt_neg = 0;
   static const int store_nan = 1;
   static const int store_infinity = 1;
+  // Don't uncomment the following.
+  // The compile time error on conversions is the expected behaviour.
+  // static const int convertible = 0;
   static const int fpu_check_inexact = 0;
   static const int check_nan_args = 1;
-  static const Rounding_Dir ROUND_DEFAULT = ROUND_UP;
+  static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_IGNORE;
+  static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_IGNORE;
+  // Don't uncomment the following.
+  // The compile time error is the expected behaviour.
+  // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
+  // static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_UP;
+  // static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_UP;
+  // static const Rounding_Dir ROUND_DEFAULT_INPUT = ROUND_UP;
+  // static const Rounding_Dir ROUND_DEFAULT_OUTPUT = ROUND_UP;
   static void handle_result(Result r);
 };
 
@@ -95,6 +110,46 @@ public:
   template <typename From, typename From_Policy>
   Checked_Number(const Checked_Number<From, From_Policy>& y);
 #endif
+
+  //! Direct initialization from a signed char value.
+  Checked_Number(const signed char y, Rounding_Dir dir);
+  //! Direct initialization from a signed short value.
+  Checked_Number(const signed short y, Rounding_Dir dir);
+  //! Direct initialization from a signed int value.
+  Checked_Number(const signed int y, Rounding_Dir dir);
+  //! Direct initialization from a signed long value.
+  Checked_Number(const signed long y, Rounding_Dir dir);
+  //! Direct initialization from a signed long long value.
+  Checked_Number(const signed long long y, Rounding_Dir dir);
+
+  //! Direct initialization from an unsigned char value.
+  Checked_Number(const unsigned char y, Rounding_Dir dir);
+  //! Direct initialization from an unsigned short value.
+  Checked_Number(const unsigned short y, Rounding_Dir dir);
+  //! Direct initialization from an unsigned int value.
+  Checked_Number(const unsigned int y, Rounding_Dir dir);
+  //! Direct initialization from an unsigned long value.
+  Checked_Number(const unsigned long y, Rounding_Dir dir);
+  //! Direct initialization from an unsigned long long value.
+  Checked_Number(const unsigned long long y, Rounding_Dir dir);
+
+  //! Direct initialization from a float value.
+  Checked_Number(const float y, Rounding_Dir dir);
+  //! Direct initialization from a double value.
+  Checked_Number(const double y, Rounding_Dir dir);
+  //! Direct initialization from a long double value.
+  Checked_Number(const long double y, Rounding_Dir dir);
+
+  //! Direct initialization from a GMP unbounded rational value.
+  Checked_Number(const mpq_class& y, Rounding_Dir dir);
+  //! Direct initialization from a GMP unbounded integer value.
+  Checked_Number(const mpz_class& y, Rounding_Dir dir);
+  //! Direct initialization from a C string value.
+  Checked_Number(const char* y, Rounding_Dir dir);
+
+  Checked_Number(const Minus_Infinity& y, Rounding_Dir dir);
+  Checked_Number(const Plus_Infinity& y, Rounding_Dir dir);
+  Checked_Number(const Not_A_Number& y, Rounding_Dir dir);
 
   //! Direct initialization from a signed char value.
   Checked_Number(const signed char y);
@@ -136,6 +191,7 @@ public:
   Checked_Number(const Plus_Infinity& y);
   Checked_Number(const Not_A_Number& y);
 
+
   //@} // Constructors
 
   //! \name Accessors and Conversions
@@ -166,6 +222,9 @@ public:
   Checked_Number& operator=(const Checked_Number<From, From_Policy>& y);
   template <typename From>
   Checked_Number& operator=(const From& y);
+  Checked_Number& operator=(const Not_A_Number& y);
+  Checked_Number& operator=(const Minus_Infinity& y);
+  Checked_Number& operator=(const Plus_Infinity& y);
   //! Add and assign operator.
   template <typename From_Policy>
   Checked_Number& operator+=(const Checked_Number<T, From_Policy>& y);

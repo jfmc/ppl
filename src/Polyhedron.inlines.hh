@@ -541,7 +541,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	q.canonicalize();
 	// Turn `n/d' into `-n/d'.
 	q = -q;
-	const ERational r(q);
+	const ERational r(q, ROUND_IGNORE);
 	const Constraint::Type c_type = c.type();
 	switch (c_type) {
 	case Constraint::EQUALITY:
@@ -623,7 +623,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	    assign(q.get_num(), raw_value(n), ROUND_IGNORE);
 	    assign(q.get_den(), raw_value(d), ROUND_IGNORE);
 	    q.canonicalize();
-	    const ERational r(q);
+	    const ERational r(q, ROUND_IGNORE);
 	    LBoundary lb(r,(g_type == Generator::CLOSURE_POINT
 			    ? LBoundary::OPEN
 			    : LBoundary::CLOSED));
