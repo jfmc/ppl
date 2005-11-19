@@ -396,8 +396,9 @@ DB_Matrix<T>::ascii_load(std::istream& s) {
   DB_Matrix& x = *this;
   for (dimension_type i = 0; i < nrows;  ++i)
     for (dimension_type j = 0; j < nrows; ++j) {
-      input(x[i][j], s, ROUND_UP);
-      if (!s)
+      Result r = input(x[i][j], s, ROUND_UP);
+      // FIXME: V_CVT_STR_UNK is probably not the only possible error.
+      if (!s || r == V_CVT_STR_UNK)
 	return false;
     }
   // Check for well-formedness.
