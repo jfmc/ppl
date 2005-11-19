@@ -472,7 +472,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
     if (x.marked_empty() == y.marked_empty())
       assign(r, 0, ROUND_IGNORE);
     else
-      assign(r, PLUS_INFINITY, ROUND_IGNORE);
+      r = PLUS_INFINITY;
     return true;
   }
 
@@ -486,7 +486,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
    if (x.marked_empty() == y.marked_empty())
       assign(r, 0, ROUND_IGNORE);
     else
-      assign(r, PLUS_INFINITY, ROUND_IGNORE);
+      r = PLUS_INFINITY;
    return true;
   }
 
@@ -533,7 +533,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
     if (x.marked_empty() == y.marked_empty())
       assign(r, 0, ROUND_IGNORE);
     else
-      assign(r, PLUS_INFINITY, ROUND_IGNORE);
+      r = PLUS_INFINITY;
     return true;
   }
 
@@ -547,7 +547,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
    if (x.marked_empty() == y.marked_empty())
       assign(r, 0, ROUND_IGNORE);
     else
-      assign(r, PLUS_INFINITY, ROUND_IGNORE);
+      r = PLUS_INFINITY;
    return true;
   }
 
@@ -594,7 +594,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
     if (x.marked_empty() == y.marked_empty())
       assign(r, 0, ROUND_IGNORE);
     else
-      assign(r, PLUS_INFINITY, ROUND_IGNORE);
+      r = PLUS_INFINITY;
     return true;
   }
 
@@ -608,7 +608,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
    if (x.marked_empty() == y.marked_empty())
       assign(r, 0, ROUND_IGNORE);
     else
-      assign(r, PLUS_INFINITY, ROUND_IGNORE);
+      r = PLUS_INFINITY;
    return true;
   }
 
@@ -2356,7 +2356,7 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
 	Iterator k = std::lower_bound(first, last, dbm_ij);
 	if (k != last) {
 	  if (dbm_ij < *k)
-	    dbm_ij = *k;
+	    assign(dbm_ij, *k, ROUND_UP);
 	}
 	else
 	  dbm_ij = PLUS_INFINITY;
