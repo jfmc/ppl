@@ -40,22 +40,6 @@ const mpz_class& raw_value(const GMP_Integer& x);
 /*! \relates GMP_Integer */
 mpz_class& raw_value(GMP_Integer& x);
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Identity function that avoids surprises when raw_value() is applied
-//! to an mpq_class object.  The problem is caused by the C++ interface
-//! of GMP, which defines an implicit constructor for mpz_class from
-//! an object of type mpq_class.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-const mpq_class& raw_value(const mpq_class& x);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Identity function that avoids surprises when raw_value() is applied
-//! to an mpq_class object.  The problem is caused by the C++ interface
-//! of GMP, which defines an implicit constructor for mpz_class from
-//! an object of type mpq_class.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-mpq_class& raw_value(mpq_class& x);
-
 //@} // Accessor Functions
 
 //! \name Memory Size Inspection Functions
