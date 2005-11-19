@@ -3,15 +3,15 @@
 # NOTE: mpq_class must be the first in the list.  See Makefile.am.
 instances="mpq_class float double mpz_class int8_t int16_t int32_t int64_t"
 
-mpz_class_XFAIL_TESTS=
-mpq_class_XFAIL_TESTS=
-int8_t_XFAIL_TESTS=
-int16_t_XFAIL_TESTS=
-int32_t_XFAIL_TESTS=
-int64_t_XFAIL_TESTS=
-float_XFAIL_TESTS=
-double_XFAIL_TESTS=
-long_double_XFAIL_TESTS=
+mpz_class_XFAIL_TESTS=polydifference7
+mpq_class_XFAIL_TESTS=polydifference7
+int8_t_XFAIL_TESTS=polydifference7
+int16_t_XFAIL_TESTS=polydifference7
+int32_t_XFAIL_TESTS=polydifference7
+int64_t_XFAIL_TESTS=polydifference7
+float_XFAIL_TESTS=polydifference7
+double_XFAIL_TESTS=polydifference7
+long_double_XFAIL_TESTS=polydifference7
 
 check_PROGRAMS=$(MAKEFLAGS='' make -s print_check_PROGRAMS)
 
