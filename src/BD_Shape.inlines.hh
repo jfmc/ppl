@@ -799,11 +799,11 @@ template <typename T>
 inline void
 BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y) {
   static N stop_points[] = {
-    N(-2, ROUND_IGNORE),
-    N(-1, ROUND_IGNORE),
-    N( 0, ROUND_IGNORE),
-    N( 1, ROUND_IGNORE),
-    N( 2, ROUND_IGNORE)
+    N(-2, ROUND_UP),
+    N(-1, ROUND_UP),
+    N( 0, ROUND_UP),
+    N( 1, ROUND_UP),
+    N( 2, ROUND_UP)
   };
   CC76_extrapolation_assign(y,
 			    stop_points,
