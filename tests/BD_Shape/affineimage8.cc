@@ -371,9 +371,7 @@ test10() {
 
   if (ok) {
     Checked_Number<mpq_class, Extended_Number_Policy> distance;
-    rectilinear_distance_assign<mpq_class>(distance,
-					   T_known_result, bd,
-					   ROUND_UP);
+    rectilinear_distance_assign(distance, T_known_result, bd, ROUND_UP);
 #if NOISY
     std::cout << "Rectilinear distance = " << distance << std::endl;
 #endif
@@ -419,9 +417,7 @@ test11() {
 
   if (ok) {
     Checked_Number<mpq_class, Extended_Number_Policy> distance;
-    rectilinear_distance_assign<mpq_class>(distance,
-					   T_known_result, bd,
-					   ROUND_UP);
+    rectilinear_distance_assign(distance, T_known_result, bd, ROUND_UP);
 #if NOISY
     std::cout << "Rectilinear distance = " << distance << std::endl;
 #endif
