@@ -396,8 +396,8 @@ DB_Matrix<T>::ascii_load(std::istream& s) {
   DB_Matrix& x = *this;
   for (dimension_type i = 0; i < nrows;  ++i)
     for (dimension_type j = 0; j < nrows; ++j) {
-      using namespace IO_Operators;
-      if (!(s >> x[i][j]))
+      input(x[i][j], s, ROUND_UP);
+      if (!s)
 	return false;
     }
   // Check for well-formedness.
@@ -464,7 +464,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   const dimension_type x_num_rows = x.num_rows();
   if (x_num_rows != y.num_rows())
     return false;
-  tmp0 = 0;
+  assign(tmp0, 0, ROUND_IGNORE);
   for (dimension_type i = x_num_rows; i-- > 0; ) {
     const DB_Row<T>& x_i = x[i];
     const DB_Row<T>& y_i = y[i];
