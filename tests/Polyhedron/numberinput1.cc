@@ -91,7 +91,13 @@ test(string number, string expected, string expected_residual,
   stringstream ss1;
   ss1 << q1;
   Checked_Number<mpq_class, Test_Extended_Number_Policy> q2;
-  ss1 >> q2;
+  if (input(q2, ss1, ROUND_UP) != V_EQ) {
+#if NOISY
+    cout << "Failed to read back `q2'." << endl;
+#endif
+    exit(1);
+  }
+
   // Check for a residual.
   stringstream::char_type *resid = (stringstream::char_type*) calloc(ss1.rdbuf()->in_avail(),
 								     sizeof(stringstream::char_type));
