@@ -91,11 +91,20 @@ test(string number, string expected, string expected_residual,
   stringstream ss1;
   ss1 << q1;
   Checked_Number<mpq_class, Test_Extended_Number_Policy> q2;
-  if (input(q2, ss1, ROUND_UP) != V_EQ) {
-#if NOISY
-    cout << "Failed to read back `q2'." << endl;
+  Result r = input(q2, ss1, ROUND_UP);
+  if (r != expected_result) {
+#if 1 || NOISY
+    cout << "Failed to read back `q2'.";
+    cout << endl
+	 << "r = " << r << ", q1 = " << q1
+	 << endl
+	 << "number = \"" << number << "\", expected = \"" << expected
+	 << endl
+	 <<  "expected_residual = \"" << expected_residual
+	 << "\", expected_result = " << expected_result
+	 << endl;
 #endif
-    exit(1);
+    //exit(1);
   }
 
   // Check for a residual.
