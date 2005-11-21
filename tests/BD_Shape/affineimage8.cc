@@ -358,7 +358,6 @@ test10() {
   known_result.add_constraint(5*x >= -6);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= -1);
-  // CHECK ME.
   known_result.add_constraint(5*x - 5*y <= 1);
   known_result.add_constraint(5*x - 5*y >= -7);
 
