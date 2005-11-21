@@ -265,9 +265,10 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this is a trivially
   //! true congruence.
   /*!
-    Trivially true congruences have either one of the following two forms:
-    - a congruence: \f$\sum_{i=0}^{n-1} 0 x_i + 0 \%= 0 / m\f$; or
-    - a congruence: \f$\sum_{i=0}^{n-1} 0 x_i + b \%= 0\f$.
+    Trivially true congruences are of one the following two forms:
+    - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + 0 == 0\f$; or
+    - a proper congruence: \f$\sum_{i=0}^{n-1} 0 x_i + b \%= 0 / m\f$;
+    where n is the space dimension and m is the modulus.
   */
   bool is_trivial_true() const;
 
