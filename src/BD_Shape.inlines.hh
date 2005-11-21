@@ -220,7 +220,7 @@ extract_bounded_difference(const Constraint& c,
 }
 
 template <typename N>
-void
+inline void
 compute_predecessors(const DB_Matrix<N>& dbm,
 		     std::vector<dimension_type>& predecessor) {
   // Variables are ordered according to their index.
@@ -252,7 +252,7 @@ compute_predecessors(const DB_Matrix<N>& dbm,
 }
 
 template <typename N>
-void
+inline void
 compute_leaders(const DB_Matrix<N>& dbm,
 		std::vector<dimension_type>& leaders) {
   assert(leaders.size() == 0);
@@ -271,7 +271,7 @@ compute_leaders(const DB_Matrix<N>& dbm,
   }
 }
 
-void
+inline void
 compute_leader_indices(const std::vector<dimension_type>& predecessor,
 		       std::vector<dimension_type>& indices) {
   // The vector `indices' contains one entry for each equivalence
@@ -295,6 +295,38 @@ BD_Shape<T>::max_space_dimension() {
   // that does not represent a legal dimension.
   return std::min(DB_Matrix<N>::max_num_rows() - 1,
 		  DB_Matrix<N>::max_num_columns() - 1);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::marked_empty() const {
+  return status.test_empty();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::set_empty() {
+  status.set_empty();
+  assert(OK());
+  assert(marked_empty());
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::set_zero_dim_univ() {
+  status.set_zero_dim_univ();
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::marked_shortest_path_closed() const {
+  return status.test_shortest_path_closed();
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::marked_shortest_path_reduced() const {
+  return status.test_shortest_path_reduced();
 }
 
 template <typename T>
@@ -330,6 +362,31 @@ BD_Shape<T>::BD_Shape(const BD_Shape<U>& y)
     set_empty();
   else if (y.status.test_zero_dim_univ())
     set_zero_dim_univ();
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
+  add_constraint(c);
+  shortest_path_closure_assign();
+  return !marked_empty();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::add_constraints(const Constraint_System& cs) {
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 iend = cs.end(); i != iend; ++i)
+    add_constraint(*i);
+  assert(OK());
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::add_constraints_and_minimize(const Constraint_System& cs) {
+  add_constraints(cs);
+  shortest_path_closure_assign();
+  return !marked_empty();
 }
 
 template <typename T>
@@ -391,24 +448,6 @@ inline void
 BD_Shape<T>::swap(BD_Shape& y) {
   std::swap(dbm, y.dbm);
   std::swap(status, y.status);
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::marked_empty() const {
-  return status.test_empty();
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::marked_shortest_path_closed() const {
-  return status.test_shortest_path_closed();
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::marked_shortest_path_reduced() const {
-  return status.test_shortest_path_reduced();
 }
 
 template <typename T>
@@ -638,20 +677,6 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 template <typename T>
 inline void
-BD_Shape<T>::set_empty() {
-  status.set_empty();
-  assert(OK());
-  assert(marked_empty());
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::set_zero_dim_univ() {
-  status.set_zero_dim_univ();
-}
-
-template <typename T>
-inline void
 BD_Shape<T>::add_dbm_constraint(const dimension_type i,
 				const dimension_type j,
 				N k,
@@ -686,31 +711,6 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
   N k;
   div_round_up(k, num, den);
   add_dbm_constraint(i, j, k);
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
-  add_constraint(c);
-  shortest_path_closure_assign();
-  return !marked_empty();
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::add_constraints(const Constraint_System& cs) {
-  for (Constraint_System::const_iterator i = cs.begin(),
-	 iend = cs.end(); i != iend; ++i)
-    add_constraint(*i);
-  assert(OK());
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::add_constraints_and_minimize(const Constraint_System& cs) {
-  add_constraints(cs);
-  shortest_path_closure_assign();
-  return !marked_empty();
 }
 
 template <typename T>
