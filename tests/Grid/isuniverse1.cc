@@ -26,6 +26,14 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #define find_variation find_variation_template<Grid>
 
+namespace {
+
+Variable A(0);
+Variable B(1);
+Variable C(2);
+Variable D(3);
+Variable E(4);
+
 // One dimension.
 
 void
@@ -58,7 +66,7 @@ test2() {
   exit(1);
 }
 
-// Zero dimensions.
+// Zero dimension universe.
 
 void
 test3() {
@@ -74,11 +82,27 @@ test3() {
   exit(1);
 }
 
-// Empty grid.
+// Zero dimension empty.
 
 void
 test4() {
   nout << "test4:" << endl;
+
+  Grid gr(0);
+
+  if (gr.is_universe())
+    return;
+
+  nout << "Grid should be universe." << endl
+       << "grid:" << endl << gr << endl;
+  exit(1);
+}
+
+// Empty grid.
+
+void
+test5() {
+  nout << "test5:" << endl;
 
   Grid gr(2, EMPTY);
 
@@ -92,12 +116,8 @@ test4() {
 // Grid of congruences.
 
 void
-test5() {
-  nout << "test5:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
+test6() {
+  nout << "test6:" << endl;
 
   Congruence_System cgs;
   cgs.insert((A + B + C %= 0) / 3);
@@ -111,14 +131,30 @@ test5() {
   }
 }
 
+// Universe grid of congruences.
+
+void
+test7() {
+  nout << "test7:" << endl;
+
+  Congruence_System cgs;
+  cgs.insert((0*C %= 6) / 3);
+
+  Grid gr(cgs);
+
+  if (gr.is_universe())
+    return;
+
+  nout << "Grid should be universe." << endl
+       << "grid:" << endl << gr << endl;
+  exit(1);
+}
+
 // Grid of generators.
 
 void
-test6() {
-  nout << "test6:" << endl;
-
-  Variable A(0);
-  Variable E(2);
+test8() {
+  nout << "test8:" << endl;
 
   Generator_System gs;
   gs.insert(point(A + 3*E));
@@ -132,6 +168,98 @@ test6() {
   }
 }
 
+// Universe grid of generators.
+
+void
+test9() {
+  nout << "test9:" << endl;
+
+  Generator_System gs;
+  gs.insert(point(A + 3*E));
+  gs.insert(line(A));
+  gs.insert(line(B));
+  gs.insert(line(C));
+  gs.insert(line(D));
+  gs.insert(line(E));
+
+  Grid gr(gs);
+
+  if (gr.is_universe())
+    return;
+
+  nout << "Grid should be universe." << endl
+       << "grid:" << endl << gr << endl;
+  exit(1);
+}
+
+// Empty grid of generators.
+
+void
+test10() {
+  nout << "test10:" << endl;
+
+  Generator_System gs;
+
+  Grid gr(4);
+  gr.add_generators(gs);
+
+  if (gr.is_universe())
+    return;
+
+  if (gr.is_universe()) {
+    nout << "Grid::is_universe should return false." << endl
+	 << "grid:" << endl << gr << endl;
+    exit(1);
+  }
+}
+
+// Minimized congruences.
+
+void
+test11() {
+  nout << "test11:" << endl;
+
+  Congruence_System cgs;
+  cgs.insert((A + B + C %= 0) / 3);
+
+  Grid gr(cgs);
+
+  // Minimize the congruences.
+  if (find_variation(gr))
+    exit(1);
+
+  if (gr.is_universe()) {
+    nout << "Grid::is_universe should return false." << endl
+	 << "grid:" << endl << gr << endl;
+    exit(1);
+  }
+}
+
+// Minimized universe congruences.
+
+void
+test12() {
+  nout << "test12:" << endl;
+
+  Congruence_System cgs;
+  cgs.insert((0*C %= 3) / 3);
+
+  Grid gr(cgs);
+
+  // Minimize the congruences.
+  if (find_variation(gr))
+    exit(1);
+
+  if (gr.is_universe())
+    return;
+
+  nout << "Grid should be universe." << endl
+       << "grid:" << endl << gr << endl;
+  exit(1);
+}
+
+} // namespace
+
 int
 main() TRY {
   set_handlers();
@@ -144,6 +272,12 @@ main() TRY {
   test4();
   test5();
   test6();
+  test7();
+  test8();
+  test9();
+  test10();
+  test11();
+  test12();
 
   return 0;
 }
