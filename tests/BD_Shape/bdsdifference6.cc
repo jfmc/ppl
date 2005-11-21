@@ -1,4 +1,4 @@
-/* Test BD_Shape::poly_difference_assign().
+/* Test BD_Shape::bds_difference_assign().
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -33,17 +33,17 @@ int
 main() TRY {
   Variable x(0);
   Variable y(1);
+  Variable z(2);
 
-  TBD_Shape bd1(2);
-  bd1.add_constraint(x <= 2);
-  bd1.add_constraint(x >= 0);
-  bd1.add_constraint(y <= 5);
-  bd1.add_constraint(y >= 2);
+  TBD_Shape bd1(3);
+  bd1.add_constraint(x <= 8);
+  bd1.add_constraint(y <= 7);
+  bd1.add_constraint(y >= 1);
+  bd1.add_constraint(z <= 2);
 
-  TBD_Shape bd2(2);
-  bd2.add_constraint(x <= 3);
-  bd2.add_constraint(x >= 1);
-  bd2.add_constraint(y <= 4);
+  TBD_Shape bd2(3);
+  bd2.add_constraint(x == 8);
+  bd2.add_constraint(y <= 2);
   bd2.add_constraint(y >= 1);
 
 #if NOISY
@@ -51,18 +51,17 @@ main() TRY {
   print_constraints(bd2, "*** bd2 ***");
 #endif
 
-  TBD_Shape known_result(2);
-  known_result.add_constraint(x >= 0);
-  known_result.add_constraint(x <= 2);
-  known_result.add_constraint(y <= 5);
-  known_result.add_constraint(y >= 2);
-  known_result.add_constraint(y - x >= 1);
+  TBD_Shape known_result(3);
+  known_result.add_constraint(x <= 8);
+  known_result.add_constraint(y <= 7);
+  known_result.add_constraint(y >= 1);
+  known_result.add_constraint(z <= 2);
 
 
-  bd1.poly_difference_assign(bd2);
+  bd1.bds_difference_assign(bd2);
 
 #if NOISY
-  print_constraints(bd1, "*** After bd1.poly_difference_assign(bd2) ***");
+  print_constraints(bd1, "*** After bd1.bds_difference_assign(bd2) ***");
 #endif
 
   int retval = (bd1 == known_result) ? 0 : 1;

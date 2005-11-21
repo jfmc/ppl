@@ -644,9 +644,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void poly_difference_assign(const BD_Shape& y);
+  void bds_difference_assign(const BD_Shape& y);
 
-  //! Same as poly_difference_assign.
+  //! Same as bds_difference_assign.
   void difference_assign(const BD_Shape& y);
 
   //! \brief

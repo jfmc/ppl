@@ -751,7 +751,7 @@ BD_Shape<T>::upper_bound_assign_if_exact(const BD_Shape& y) {
 template <typename T>
 inline void
 BD_Shape<T>::difference_assign(const BD_Shape& y) {
-  poly_difference_assign(y);
+  bds_difference_assign(y);
 }
 
 template <typename T>
@@ -1944,12 +1944,12 @@ BD_Shape<T>::bds_hull_assign(const BD_Shape& y) {
 
 template <typename T>
 void
-BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
+BD_Shape<T>::bds_difference_assign(const BD_Shape& y) {
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
   if (space_dim != y.space_dimension())
-    throw_dimension_incompatible("poly_difference_assign(y)", y);
+    throw_dimension_incompatible("bds_difference_assign(y)", y);
 
   BD_Shape new_bdiffs(space_dim, EMPTY);
 
@@ -1987,8 +1987,16 @@ BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
   const Constraint_System& y_cs = y.constraints();
   for (Constraint_System::const_iterator i = y_cs.begin(),
 	 y_cs_end = y_cs.end(); i != y_cs_end; ++i) {
-    BD_Shape z = x;
     const Constraint& c = *i;
+    // If the system of bounded differences `x' is included 
+    // in the system of bounded differences defined by `c', 
+    // then `c' _must_ be skipped, as adding its complement to `x'
+    // would result in the empty system of bounded differences, 
+    // and as we would obtain a result that is less precise 
+    // than the bds-difference.
+    if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
+      continue;
+    BD_Shape z = x;
     const Linear_Expression e = Linear_Expression(c);
     bool change = false;
     if (c.is_nonstrict_inequality())

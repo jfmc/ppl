@@ -1,4 +1,4 @@
-/* Test BD_Shape::poly_difference_assign().
+/* Test BD_Shape::bds_difference_assign().
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -31,25 +31,42 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() TRY {
-  TBD_Shape bd1;
-  TBD_Shape bd2;
+  Variable x(0);
+  Variable y(1);
+
+  TBD_Shape bd1(2);
+  bd1.add_constraint(x <= 2);
+  bd1.add_constraint(x >= 0);
+  bd1.add_constraint(y <= 5);
+  bd1.add_constraint(y >= 2);
+
+  TBD_Shape bd2(2);
+  bd2.add_constraint(x <= 3);
+  bd2.add_constraint(x >= 1);
+  bd2.add_constraint(y <= 4);
+  bd2.add_constraint(y >= 1);
 
 #if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 #endif
 
-  Constraint_System cs;
-  cs.insert(Linear_Expression(-4) >= 0);
-  TBD_Shape known_result(cs);
+  TBD_Shape known_result(2);
+  known_result.add_constraint(x >= 0);
+  known_result.add_constraint(x <= 2);
+  known_result.add_constraint(y <= 5);
+  known_result.add_constraint(y >= 2);
+  known_result.add_constraint(y - x >= 1);
 
-  bd1.poly_difference_assign(bd2);
+
+  bd1.bds_difference_assign(bd2);
+
+#if NOISY
+  print_constraints(bd1, "*** After bd1.bds_difference_assign(bd2) ***");
+#endif
 
   int retval = (bd1 == known_result) ? 0 : 1;
 
-#if NOISY
-  print_constraints(bd1, "*** After bd1.poly_difference_assign(bd2) ***");
-#endif
   return retval;
 }
 CATCH

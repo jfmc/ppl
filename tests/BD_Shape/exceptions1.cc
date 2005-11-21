@@ -293,9 +293,9 @@ error11() {
 
   try {
     // This is an incorrect use of function
-    // BD_Shape::poly_difference_assign(bd2): it is impossible to apply
+    // BD_Shape::bds_difference_assign(bd2): it is impossible to apply
     // this function to two polyhedra of different dimensions.
-    bd1.poly_difference_assign(bd2);
+    bd1.bds_difference_assign(bd2);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -316,7 +316,7 @@ error12() {
 
   try {
     // This is an incorrect use of function
-    // BD_Shape::poly_hull_assign(bd2): it is impossible to apply
+    // BD_Shape::bds_hull_assign(bd2): it is impossible to apply
     // this function to two polyhedra of different dimensions.
     bd1.bds_hull_assign(bd2);
   }

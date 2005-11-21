@@ -1,4 +1,4 @@
-/* Test BD_Shape::poly_difference_assign().
+/* Test BD_Shape::bds_difference_assign().
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -54,10 +54,10 @@ main() TRY {
   TBD_Shape known_result(2, EMPTY);
 
 
-  bd1.poly_difference_assign(bd2);
+  bd1.bds_difference_assign(bd2);
 
 #if NOISY
-  print_constraints(bd1, "*** After bd1.poly_difference_assign(bd2) ***");
+  print_constraints(bd1, "*** After bd1.bds_difference_assign(bd2) ***");
 #endif
 
   int retval = (bd1 == known_result) ? 0 : 1;

@@ -50,6 +50,8 @@ check_PROGRAMS = \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	affinepreimage5 \
 	ascii_dump_load1 ascii_dump_load2 \
+	bdsdifference1 bdsdifference2 bdsdifference3 bdsdifference4 \
+	bdsdifference5 bdsdifference6 bdsdifference7 \
 	bdshull1 bdshull2 bdshull3 bdshull4 \
 	bgp99extrapolation1 \
 	bhz03widening1 \
@@ -89,8 +91,6 @@ check_PROGRAMS = \
 	mapspacedims1 mapspacedims2 mapspacedims3 mapspacedims4 \
 	maxspacedim \
 	minconstraints1 \
-	polydifference1 polydifference2 polydifference3 polydifference4 \
-	polydifference5 polydifference6 polydifference7 \
 	relations1 relations2 relations3 relations4 relations5 \
 	removespacedims1 removespacedims2 removespacedims3 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
@@ -144,6 +144,14 @@ affinepreimage5_SOURCES = affinepreimage5.cc
 
 ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 ascii_dump_load2_SOURCES = ascii_dump_load2.cc
+
+bdsdifference1_SOURCES = bdsdifference1.cc
+bdsdifference2_SOURCES = bdsdifference2.cc
+bdsdifference3_SOURCES = bdsdifference3.cc
+bdsdifference4_SOURCES = bdsdifference4.cc
+bdsdifference5_SOURCES = bdsdifference5.cc
+bdsdifference6_SOURCES = bdsdifference6.cc
+bdsdifference7_SOURCES = bdsdifference7.cc
 
 bdshull1_SOURCES = bdshull1.cc
 bdshull2_SOURCES = bdshull2.cc
@@ -257,14 +265,6 @@ mapspacedims4_SOURCES = mapspacedims4.cc
 maxspacedim_SOURCES = maxspacedim.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
-
-polydifference1_SOURCES = polydifference1.cc
-polydifference2_SOURCES = polydifference2.cc
-polydifference3_SOURCES = polydifference3.cc
-polydifference4_SOURCES = polydifference4.cc
-polydifference5_SOURCES = polydifference5.cc
-polydifference6_SOURCES = polydifference6.cc
-polydifference7_SOURCES = polydifference7.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
