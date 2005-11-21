@@ -48,7 +48,6 @@ PPL::Grid::Grid(dimension_type num_dimensions,
   }
 
   if (num_dimensions > 0) {
-    // FIX where will gen_sys space dim be adjusted?
     con_sys.increase_space_dimension(num_dimensions);
     // Initialise both systems to universe representations.
     set_congruences_minimized();
@@ -79,6 +78,7 @@ PPL::Grid::Grid(dimension_type num_dimensions,
     gen_sys.set_sorted(false);
   }
   else
+    // FIX where will gen_sys space dim be adjusted?
     set_zero_dim_univ();
 
   assert(OK());
@@ -474,27 +474,38 @@ PPL::Grid::is_universe() const {
   if (space_dim == 0)
     return true;
 
-  if (generators_are_up_to_date() && gen_sys.num_columns() == 0)
+  if (congruences_are_up_to_date()) {
+    if (congruences_are_minimized())
+      // FIX confirm
+      // The mininimized universe congruence system has only one row,
+      // the integrality congruence.
+      return con_sys.num_rows() == 1 && con_sys[0].is_trivial_true();
+  }
+  else {
+    if (update_congruences())
+      return con_sys.num_rows() == 1 && con_sys[0].is_trivial_true();
+    // Updating found the grid empty.
     return false;
+  }
 
-  if (!congruences_are_up_to_date() && !update_congruences())
-    // Grid is empty.
-    return false;
+  // Test con_sys's inclusion in a universe generator system.
 
-  if (con_sys.num_columns() == 0)
-    return false;
-
-  // Test gen_sys's inclusion in a universe generator system.
-  // FIX if min cmp to single integrality cong
-  // FIX create single g'tor and modify for each iteration below
-  Grid gr(space_dim);
-  Generator_System& gs = gr.gen_sys;
-  for (dimension_type i = gs.num_rows(); i-- > 0; ) {
-    const Generator& g = gs[i];
-    if (!con_sys.satisfies_all_congruences(g, g[0]))
+  // Create a single generator to progressively represent the entire
+  // universe generator system.
+  Generator g = point(0*Variable(space_dim-1));
+  dimension_type i = 1;
+  // The zero dimension cases are handled above.
+  while (true) {
+    g[i] = 1;
+    if (con_sys.satisfies_all_congruences(g, 1)) {
+      if (i == space_dim)
+	return true;
+      g[i] = 0;
+      ++i;
+    }
+    else
       return false;
   }
-  return true;
 }
 
 bool
