@@ -26,21 +26,24 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #define find_variation find_variation_template<Congruence>
 
+namespace {
+
+Variable x(0);
+Variable y(1);
+Variable z(2);
+
 class Test_Congruence : public Congruence {
 public:
   Test_Congruence(Congruence cg) : Congruence(cg) {}
   Test_Congruence(Constraint c) : Congruence(c) {}
   void strong_normalize() { Congruence::strong_normalize(); }
+  void normalize() { Congruence::normalize(); }
 };
 
 // Negative inhomogeneous term.
 
 static void
 test1() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-
   nout << "test1:" << endl;
 
   Test_Congruence a((x + 2*y + 3*z %= 5) / 7);
@@ -66,10 +69,6 @@ test1() {
 
 static void
 test2() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-
   nout << "test2:" << endl;
 
   Test_Congruence a((x + 2*y + 3*z %= -5) / 7);
@@ -95,10 +94,6 @@ test2() {
 
 static void
 test3() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-
   nout << "test3:" << endl;
 
   Test_Congruence a((16*x + 2*y + 8*z + 64 %= 0) / 4);
@@ -124,10 +119,6 @@ test3() {
 
 static void
 test4() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-
   nout << "test4:" << endl;
 
   Test_Congruence a((- x + 2*y + 3*z %= 5) / 7);
@@ -153,10 +144,6 @@ test4() {
 
 static void
 test5() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-
   nout << "test5:" << endl;
 
   Test_Congruence c(x + 4*y + 3*z %= 5);
@@ -185,10 +172,6 @@ test5() {
 
 static void
 test6() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-
   nout << "test6:" << endl;
 
   Test_Congruence a((3*x + 24*y + 3*z %= -19) / 0);
@@ -214,10 +197,6 @@ test6() {
 
 static void
 test7() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-
   nout << "test7:" << endl;
 
   Test_Congruence a((x + 4*y + 3*z == 17) / 3);
@@ -243,10 +222,6 @@ test7() {
 
 static void
 test8() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-
   nout << "test8:" << endl;
 
   Test_Congruence a(x + 4*y + 3*z == 17);
@@ -272,10 +247,6 @@ test8() {
 
 static void
 test9() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-
   nout << "test9:" << endl;
 
   Test_Congruence a(x + 4*y + 3*z == 17);
@@ -299,21 +270,21 @@ test9() {
   exit(1);
 }
 
-// Use is_trivial_true.
+// is_trivial_true and is_trivial_false.
 
 static void
 test10() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-
   nout << "test10:" << endl;
 
   Test_Congruence a(0*x + 0*y + 0*z %= 17);
   if (find_variation(a))
     exit(1);
   if (!a.is_trivial_true()) {
-    nout << "is_trivial_true should have returned true." << endl;
+    nout << "is_trivial_true(" << a << ") should have returned true." << endl;
+    exit(1);
+  }
+  if (a.is_trivial_false()) {
+    nout << "is_trivial_false(" << a << ") should have returned false." << endl;
     exit(1);
   }
 
@@ -321,26 +292,36 @@ test10() {
   if (find_variation(a))
     exit(1);
   if (!a.is_trivial_true()) {
-    nout << "is_trivial_true should have returned true." << endl;
+    nout << "is_trivial_true(" << a << ") should have returned true." << endl;
     exit(1);
   }
-}
+  if (a.is_trivial_false()) {
+    nout << "is_trivial_false(" << a << ") should have returned false." << endl;
+    exit(1);
+  }
 
-// Use is_trivial_false.
+  a = Test_Congruence((0*x + 0*y + 8 %= 0) / 4);
+  if (find_variation(a))
+    exit(1);
+  if (!a.is_trivial_true()) {
+    nout << "is_trivial_true(" << a << ") should have returned true." << endl;
+    exit(1);
+  }
+  if (a.is_trivial_false()) {
+    nout << "is_trivial_false(" << a << ") should have returned false." << endl;
+    exit(1);
+  }
 
-static void
-test11() {
-  Variable x(0);
-  Variable y(1);
-
-  nout << "test11:" << endl;
-
-  Test_Congruence a(0*x + 0*y %= 17);
+  a = Test_Congruence(0*x + 0*y %= 17);
   a /= 0;
   if (find_variation(a))
     exit(1);
+  if (a.is_trivial_true()) {
+    nout << "is_trivial_true(" << a << ") should have returned false." << endl;
+    exit(1);
+  }
   if (!a.is_trivial_false()) {
-    nout << "is_trivial_false should have returned true." << endl;
+    nout << "is_trivial_false(" << a << ") should have returned true." << endl;
     exit(1);
   }
 
@@ -348,8 +329,25 @@ test11() {
   a.strong_normalize();
   if (find_variation(a))
     exit(1);
+  if (a.is_trivial_true()) {
+    nout << "is_trivial_true(" << a << ") should have returned false." << endl;
+    exit(1);
+  }
   if (!a.is_trivial_false()) {
-    nout << "is_trivial_false should have returned true." << endl;
+    nout << "is_trivial_false(" << a << ") should have returned true." << endl;
+    exit(1);
+  }
+
+  a = Test_Congruence((0*x + 0*y + 4 %= 0) / 3);
+  a.strong_normalize();
+  if (find_variation(a))
+    exit(1);
+  if (a.is_trivial_true()) {
+    nout << "is_trivial_true(" << a << ") should have returned false." << endl;
+    exit(1);
+  }
+  if (!a.is_trivial_false()) {
+    nout << "is_trivial_false(" << a << ") should have returned true." << endl;
     exit(1);
   }
 }
@@ -357,12 +355,8 @@ test11() {
 // Negative moduli.
 
 static void
-test12() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-
-  nout << "test12:" << endl;
+test11() {
+  nout << "test11:" << endl;
 
   Test_Congruence a((x + 4*y + 3*z %= -4) / -3);
   a.strong_normalize();
@@ -386,14 +380,14 @@ test12() {
 // Negative modulus and negative first coefficient.
 
 static void
-test13() {
+test12() {
   Variable x0(0);
   Variable x1(1);
   Variable x2(2);
   Variable x3(3);
   Variable x4(4);
 
-  nout << "test13:" << endl;
+  nout << "test12:" << endl;
 
   Test_Congruence a((-x0 + 4*x1 + 3*x2 + 17*x3 + 2*x4 %= -4) / -3);
   if (find_variation(a))
@@ -417,8 +411,8 @@ test13() {
 // Create from empty linear expression.
 
 static void
-test14() {
-  nout << "test14:" << endl;
+test13() {
+  nout << "test13:" << endl;
 
   Linear_Expression le;
   Test_Congruence a(le %= le);
@@ -440,6 +434,8 @@ test14() {
   exit(1);
 }
 
+} // namespace
+
 int
 main() TRY {
   set_handlers();
@@ -457,7 +453,6 @@ main() TRY {
   test11();
   test12();
   test13();
-  test14();
 
   return 0;
 }
