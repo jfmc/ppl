@@ -162,7 +162,7 @@ Grid::multiply_grid(const Coefficient& multiplier, Congruence& cg,
    Grid_convert.cc, to use verbs consistently as function and method
    names.  The same holds for the Polyhedron equivalents.  */
 
-dimension_type
+void
 Grid::conversion(Generator_System& source, Congruence_System& dest,
 		 Dimension_Kinds& dim_kinds) {
   ctrace << "============= convert gs to cgs" << std::endl
@@ -363,11 +363,9 @@ Grid::conversion(Generator_System& source, Congruence_System& dest,
   trace_dim_kinds("gs to cgs end ", dim_kinds);
 
   ctrace << "------------------- gs to cgs conversion done." << std::endl;
-
-  return 0; // FIX
 }
 
-dimension_type
+void
 Grid::conversion(Congruence_System& source, Linear_System& dest,
 		 Dimension_Kinds& dim_kinds) {
   ctrace << "============= convert cgs to gs" << std::endl
@@ -549,8 +547,6 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
   trace_dim_kinds("cgs to gs end ", dim_kinds);
 
   ctrace << "------------------- cgs to gs conversion done." << std::endl;
-
-  return 0; // FIX
 }
 
 } // namespace Parma_Polyhedra_Library

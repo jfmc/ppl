@@ -2348,16 +2348,16 @@ private:
   //! \brief
   //! Converts generator system \p dest to be equivalent to congruence
   //! system \p source.
-  static dimension_type conversion(Congruence_System& source,
-				   Linear_System& dest,
-				   Dimension_Kinds& dim_kinds);
+  static void conversion(Congruence_System& source,
+			 Linear_System& dest,
+			 Dimension_Kinds& dim_kinds);
 
   //! \brief
   //! Converts congruence system \p dest to be equivalent to generator
   //! system \p source.
-  static dimension_type conversion(Generator_System& source,
-				   Congruence_System& dest,
-				   Dimension_Kinds& dim_kinds);
+  static void conversion(Generator_System& source,
+			 Congruence_System& dest,
+			 Dimension_Kinds& dim_kinds);
 
   //! Converts \p cgs to upper triangular (i.e. minimized) form.
   /*!
