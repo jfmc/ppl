@@ -2441,9 +2441,6 @@ PPL::Grid::ascii_load(std::istream& s) {
   if (!gen_sys.ascii_load(s))
     return false;
 
-
-  // FIX Move to follow status above, when status is fixed.
-
   if (!(s >> str) || str != "dimension_kinds")
     return false;
 
@@ -2452,9 +2449,8 @@ PPL::Grid::ascii_load(std::istream& s) {
 	  || (congruences_are_up_to_date() && congruences_are_minimized()))) {
     dim_kinds.resize(space_dim + 1);
     for (Dimension_Kinds::size_type dim = 0; dim <= space_dim; ++dim) {
-      // FIX read directly into dim_kinds[dim]?
-      unsigned int dim_kind;
-      if (!(s >> dim_kind) || (dim_kind > GEN_VIRTUAL))
+      short unsigned int dim_kind;
+      if (!(s >> dim_kind))
 	return false;
       switch(dim_kind) {
       case 0: dim_kinds[dim] = PARAMETER; break;
