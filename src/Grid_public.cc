@@ -864,11 +864,17 @@ PPL::Grid::OK(bool check_not_empty) const {
       goto fail;
     }
 
-    Congruence_System cs_copy = con_sys;
-    Generator_System tem_gen_sys(NECESSARILY_CLOSED);
-    Dimension_Kinds d = dim_kinds;
+    Grid tem_gr = *this;
+    Congruence_System cs_copy = tem_gr.con_sys;
+    // Clear the generators in tem_gr.
+    Generator_System gs;
+    gs.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
+					   space_dim);
+    gs.set_sorted(false);
+    tem_gr.gen_sys.swap(gs);
+    tem_gr.clear_generators_up_to_date();
 
-    if (!minimize(cs_copy, tem_gen_sys, d)) {
+    if (!tem_gr.update_generators()) {
       if (check_not_empty) {
 	// Want to know the satisfiability of the congruences.
 #ifndef NDEBUG
@@ -1268,18 +1274,15 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   for (dimension_type row = 0; row < cgs.num_rows(); ++row)
     con_sys.add_row(cgs[row]);
 
-  if (minimize(con_sys, gen_sys, dim_kinds)) {
-    clear_empty();
-    set_congruences_minimized();
-    set_generators_minimized();
+  clear_congruences_minimized();
 
-    assert(OK());
-    return true;
-  }
-
-  set_empty();
+#ifndef NDEBUG
+  bool ret = update_generators();
   assert(OK());
-  return false;
+  return ret;
+#else
+  return update_generators();
+#endif
 }
 
 bool
@@ -1533,8 +1536,8 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
 	gen_sys.add_row(g);
     }
 
-    // FIX minimize copies the generators (check cgs version)
-    minimize(gen_sys, con_sys, dim_kinds);
+    clear_generators_minimized();
+    update_congruences();
   }
   else {
     // The grid was empty: check if `gs' contains a point.

@@ -385,9 +385,22 @@ PPL::Grid::update_congruences() const {
   assert(space_dim > 0);
   assert(!marked_empty());
   assert(generators_are_up_to_date());
+  assert(gen_sys.num_rows() > 0);
+  assert(gen_sys.num_columns() > 1);
 
   Grid& gr = const_cast<Grid&>(*this);
-  minimize(gr.gen_sys, gr.con_sys, gr.dim_kinds);
+
+  if (!generators_are_minimized())
+    gr.simplify(gr.gen_sys, gr.dim_kinds);
+
+  // `gen_sys' contained rows before being reduced, so it should
+  // contain at least a single point afterwards.
+  assert(gen_sys.num_rows() > 0);
+
+  // Populate `con_sys' with congruences characterizing the grid
+  // described by `gen_sys'.
+  gr.conversion(gr.gen_sys, gr.con_sys, gr.dim_kinds);
+
   // Both systems are minimized.
   gr.set_congruences_minimized();
   gr.set_generators_minimized();
@@ -400,17 +413,29 @@ PPL::Grid::update_generators() const {
   assert(!marked_empty());
   assert(congruences_are_up_to_date());
 
+  // FIX this is for simplify, at least; check callers
+  // FIX should simplify require the integrality cg?
+  assert(con_sys.num_rows() > 0);
+  assert(con_sys.num_columns() > 2);
+
   Grid& x = const_cast<Grid&>(*this);
-  // Either the system of congruences is consistent, or the grid is
-  // empty.
-  if (minimize(x.con_sys, x.gen_sys, x.dim_kinds)) {
-    // Both systems are minimized.
-    x.set_congruences_minimized();
-    x.set_generators_minimized();
-    return true;
-  }
-  x.set_empty();
-  return false;
+
+  if (!congruences_are_minimized())
+    // Either the system of congruences is consistent, or the grid is
+    // empty.
+    if (simplify(x.con_sys, x.dim_kinds)) {
+      x.set_empty();
+      return false;
+    }
+
+  // Populate gen_sys with generators characterizing the grid
+  // described by con_sys.
+  conversion(x.con_sys, x.gen_sys, x.dim_kinds);
+
+  // Both systems are minimized.
+  x.set_congruences_minimized();
+  x.set_generators_minimized();
+  return true;
 }
 
 bool

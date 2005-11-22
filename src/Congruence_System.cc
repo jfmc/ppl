@@ -132,8 +132,6 @@ PPL::Congruence_System::add_rows(const Congruence_System& y) {
 
 void
 PPL::Congruence_System::normalize_moduli() {
-  // FIX Add a flag to save doing this often.  Clear the flag when
-  //     congruences are added, and set it on conversion.
   dimension_type row = num_rows();
   if (row) {
     // Calculate the LCM of all the moduli.

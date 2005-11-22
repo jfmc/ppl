@@ -2296,21 +2296,6 @@ private:
   //! \name Minimization-related Static Member Functions
   //@{
 
-  //! Builds and simplifies congruences from generators.
-  static void minimize(Generator_System& dest,
-		       Congruence_System& source,
-		       Dimension_Kinds& dim_kinds);
-
-  //! Builds and simplifies generators from congruences.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if \p *this turns out to be an
-    empty grid.
-  */
-  static bool minimize(Congruence_System& dest,
-		       Linear_System& source,
-		       Dimension_Kinds& dim_kinds);
-
   //! Normalizes the divisors in \p sys.
   /*!
     Converts \p sys to an equivalent system in which the divisors are
