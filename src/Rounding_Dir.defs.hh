@@ -36,6 +36,13 @@ enum Rounding_Dir {
   ROUND_UP = FPU_UPWARD,
 
   ROUND_IGNORE = -1,
+
+  //! Rounding is not needed: client code must ensure the operation is exact.
+  ROUND_NOT_NEEDED = ROUND_IGNORE,
+
+  //! Rounding is not wanted: client is willing to trade correctness for speed.
+  ROUND_DONT_CARE = ROUND_IGNORE,
+
   ROUND_DIRECT = ROUND_UP,
   ROUND_INVERSE = ROUND_DOWN
 };
