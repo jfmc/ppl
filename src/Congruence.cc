@@ -108,11 +108,6 @@ PPL::Congruence::normalize() {
       row[0] += mod;
     return;
   }
-
-  // All the coefficients are zero.  For such a row the reduction and
-  // conversion algorithms require a value in the inhomogeneous term,
-  // at least for the first row in the congruence system.
-  row[0] = mod;
 }
 
 void
@@ -225,7 +220,8 @@ PPL::Congruence::is_trivial_true() const {
 bool
 PPL::Congruence::is_trivial_false() const {
   if (inhomogeneous_term() == 0
-      || modulus() != 0)
+      || (is_proper_congruence()
+	  && ((inhomogeneous_term() % modulus()) == 0)))
     return false;
   for (unsigned i = 1; i <= space_dimension(); i++)
     if ((*this)[i] != 0)

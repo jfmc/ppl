@@ -267,7 +267,7 @@ public:
   /*!
     Trivially true congruences are of one the following two forms:
     - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + 0 == 0\f$; or
-    - a proper congruence: \f$\sum_{i=0}^{n-1} 0 x_i + b \%= 0 / m\f$;
+    - a proper congruence: \f$\sum_{i=0}^{n-1} 0 x_i + b \%= 0 / m\f$,
     where n is the space dimension and m is the modulus.
   */
   bool is_trivial_true() const;
@@ -277,9 +277,10 @@ public:
   //! false congruence.
   /*!
     Trivially false congruences have one of the following two forms:
-    - a congruence: \f$\sum_{i=0}^{n-1} 0 x_i + 0 \%= b / 0\f$; or
-    - a congruence: \f$\sum_{i=0}^{n-1} 0 x_i + b \%= 0 / 0\f$,
-      where \f$b b \neq 0\f$.
+    - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + b == 0\f$
+      where \f$b \neq 0\f$; or
+    - a congruence: \f$\sum_{i=0}^{n-1} 0 x_i + b \%= 0 / m\f$,
+      where \f$b \neq 0 \pmod{m}\f$.
   */
   bool is_trivial_false() const;
 
