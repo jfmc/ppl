@@ -381,7 +381,7 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
   assert(lower_triangular(source, dim_kinds));
 
   // Initialise matrix row number counters and compute the LCM of the
-  // diagonal entries of the parameters in `source'.
+  // diagonal entries of the proper congruences in `source'.
   dimension_type source_num_rows = 0, dest_num_rows = 0;
   TEMP_INTEGER(diagonal_lcm);
   diagonal_lcm = 1;
@@ -392,9 +392,9 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
       ++dest_num_rows;
     else {
       if (dim_kinds[dim] == PROPER_CONGRUENCE) {
-	// Dimension `dim' has a parameter row at `source_num_rows' in
-	// `source', so include in `diagonal_lcm' the `dim'th element
-	// of that row.
+	// Dimension `dim' has a proper congruence row at
+	// `source_num_rows' in `source', so include in `diagonal_lcm'
+	// the `dim'th element of that row.
 	lcm_assign(diagonal_lcm, source[source_num_rows][dim]);
 	// Proper congruences map to parameters.
 	++dest_num_rows;
