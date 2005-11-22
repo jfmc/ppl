@@ -29,8 +29,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 enum Rounding_Dir {
+  //! Round toward \f$-\infty\f$.
   ROUND_DOWN = FPU_DOWNWARD,
+
+  //! Round toward \f$+\infty\f$.
   ROUND_UP = FPU_UPWARD,
+
   ROUND_IGNORE = -1,
   ROUND_DIRECT = ROUND_UP,
   ROUND_INVERSE = ROUND_DOWN
