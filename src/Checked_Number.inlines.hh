@@ -699,21 +699,21 @@ f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, const Checke
   Policy::handle_result(fun(x, y, z, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
-#define DEF_ASSIGN_FUN5_4(f, fun)				    \
-template <typename T, typename Policy>			    	    \
-inline void							    \
-f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, \
-  Checked_Number<T, Policy>& s, Checked_Number<T, Policy>& t) {	    \
-  Policy::handle_result(fun(x, x, y, s, t, Policy::ROUND_DEFAULT)); \
+#define DEF_ASSIGN_FUN5_4(f, fun)					\
+template <typename T, typename Policy>					\
+inline void								\
+f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y,	\
+  Checked_Number<T, Policy>& s, Checked_Number<T, Policy>& t) {		\
+  Policy::handle_result(fun(x, x, y, s, t, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
-#define DEF_ASSIGN_FUN5_5(f, fun)				    \
-template <typename T, typename Policy>			    	    \
-inline void							    \
-f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, \
-  const Checked_Number<T, Policy>& z,				    \
-  Checked_Number<T, Policy>& s, Checked_Number<T, Policy>& t) {	    \
-  Policy::handle_result(fun(x, y, z, s, t, Policy::ROUND_DEFAULT)); \
+#define DEF_ASSIGN_FUN5_5(f, fun)					\
+template <typename T, typename Policy>					\
+inline void								\
+f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y,	\
+  const Checked_Number<T, Policy>& z,					\
+  Checked_Number<T, Policy>& s, Checked_Number<T, Policy>& t) {		\
+  Policy::handle_result(fun(x, y, z, s, t, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
 DEF_ASSIGN_FUN2_1(sqrt_assign, assign_sqrt)
