@@ -367,11 +367,12 @@ public:
 
   //! Checks if all the invariants are satisfied.
   /*!
-      \param check_normalization
-      If true normalization of generators is checked in the OK
-      assertion.
+      \param polyhedron
+      If <CODE>true</CODE> then \p *this is considered a Polyhedron
+      generator system, otherwise it is treated as if it could be for
+      either one of a Grid or a Polyedron.
   */
-  bool OK(bool check_normalization = true) const;
+  bool OK(bool polyhedron = true) const;
 
   //! Swaps \p *this with \p y.
   void swap(Generator& y);
