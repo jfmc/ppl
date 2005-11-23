@@ -2975,6 +2975,8 @@ BD_Shape<T>::affine_image(const Variable var,
 	if (w != v && sc_expr.coefficient(Variable(w-1)) >= sc_den)
 	  assign_sub(dbm[w][v], pos_sum, dbm_0[w], ROUND_UP);
 #else
+      mpq_class mpq_sc_den;
+      assign(mpq_sc_den, raw_value(sc_den), ROUND_NOT_NEEDED);
       for (dimension_type w = space_dim; w > 0; --w)
 	if (w != v) {
 	  const Coefficient& expr_w = sc_expr.coefficient(Variable(w-1));
@@ -2989,18 +2991,18 @@ BD_Shape<T>::affine_image(const Variable var,
 		// for `w', respectively. Letting `q = expr_w/sc_den' be the
 		// rational coefficient of `w' in `sc_expr/sc_den, compute
 		// the convex combination `q * ub_w + (1-q) * lb_w'.
-		TEMP_INTEGER(ub_coeff);
-		ub_coeff = -expr_w;
-		TEMP_INTEGER(lb_coeff);
-		lb_coeff = sc_den - expr_w;
 		mpq_class ub_w;
 		assign(ub_w, raw_value(dbm_0[w]), ROUND_IGNORE);
-		ub_w *= ub_coeff;
+		mpq_class ub_coeff;
+		assign(ub_coeff, raw_value(expr_w), ROUND_NOT_NEEDED);
+		assign_neg(ub_coeff, ub_coeff, ROUND_NOT_NEEDED);
+		assign_mul(ub_w, ub_w, ub_coeff, ROUND_NOT_NEEDED);
 		mpq_class minus_lb_w;
-		assign(minus_lb_w, raw_value(dbm_w0), ROUND_IGNORE);
-		minus_lb_w *= lb_coeff;
-		ub_w += minus_lb_w;
-		ub_w /= sc_den;
+		assign(minus_lb_w, raw_value(dbm_w0), ROUND_NOT_NEEDED);
+		mpq_class lb_coeff;
+		assign_add(lb_coeff, mpq_sc_den, ub_coeff, ROUND_NOT_NEEDED);
+		assign_add_mul(ub_w, minus_lb_w, lb_coeff, ROUND_NOT_NEEDED);
+		assign_div(ub_w, ub_w, mpq_sc_den, ROUND_NOT_NEEDED);
 		N up_approx;
 		assign(up_approx, ub_w, ROUND_UP);
 		assign_add(dbm_w[v], pos_sum, up_approx, ROUND_UP);
@@ -3034,6 +3036,8 @@ BD_Shape<T>::affine_image(const Variable var,
 	if (w != v && sc_expr.coefficient(Variable(w-1)) >= sc_den)
 	  assign_sub(dbm_v[w], neg_sum, dbm[w][0], ROUND_UP);
 #else
+      mpq_class mpq_sc_den;
+      assign(mpq_sc_den, raw_value(sc_den), ROUND_NOT_NEEDED);
       for (dimension_type w = space_dim; w > 0; --w)
 	if (w != v) {
 	  const Coefficient& expr_w = sc_expr.coefficient(Variable(w-1));
@@ -3043,18 +3047,19 @@ BD_Shape<T>::affine_image(const Variable var,
 	    else {
 	      const N& dbm_0w = dbm_0[w];
 	      if (!is_plus_infinity(dbm_0w)) {
-		TEMP_INTEGER(ub_coeff);
-		ub_coeff = sc_den - expr_w;
-		TEMP_INTEGER(lb_coeff);
-		lb_coeff = -expr_w;
+		mpq_class lb_coeff;
+		assign(lb_coeff, raw_value(expr_w), ROUND_NOT_NEEDED);
+		assign_neg(lb_coeff, lb_coeff, ROUND_NOT_NEEDED);
+		mpq_class ub_coeff;
+		assign(ub_coeff, lb_coeff, ROUND_NOT_NEEDED);
+		assign_add(ub_coeff, ub_coeff, mpq_sc_den, ROUND_NOT_NEEDED);
 		mpq_class ub_w;
-		assign(ub_w, raw_value(dbm_0w), ROUND_IGNORE);
-		ub_w *= ub_coeff;
+		assign(ub_w, raw_value(dbm_0w), ROUND_NOT_NEEDED);
+		assign_mul(ub_w, ub_w, ub_coeff, ROUND_NOT_NEEDED);
 		mpq_class minus_lb_w;
-		assign(minus_lb_w, raw_value(dbm[w][0]), ROUND_IGNORE);
-		minus_lb_w *= lb_coeff;
-		ub_w += minus_lb_w;
-		ub_w /= sc_den;
+		assign(minus_lb_w, raw_value(dbm[w][0]), ROUND_NOT_NEEDED);
+		assign_add_mul(ub_w, minus_lb_w, lb_coeff, ROUND_NOT_NEEDED);
+		assign_div(ub_w, ub_w, mpq_sc_den, ROUND_NOT_NEEDED);
 		N up_approx;
 		assign(up_approx, ub_w, ROUND_UP);
 		assign_add(dbm_v[w], neg_sum, up_approx, ROUND_UP);
