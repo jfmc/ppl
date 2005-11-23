@@ -1525,7 +1525,9 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
   //gs.adjust_topology_and_space_dimension(topology(), space_dim); // FIX
   gs.adjust_topology_and_space_dimension(gs.topology(), space_dim); // FIX
 
-  if (minimize()) {   // FIX why does this minimize (which incls cgs) first?
+  if (!marked_empty()
+      && (generators_are_up_to_date() || update_generators())) {
+    // The grid contains at least one point.
     normalize_divisors(gs, gen_sys);
 
     for (dimension_type row = 0; row < gs.num_rows(); ++row) {
@@ -1536,18 +1538,13 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
       else
 	gen_sys.add_row(g);
     }
-
-    clear_generators_minimized();
-    update_congruences();
   }
   else {
-    // The grid was empty: check if `gs' contains a point.
+    // The grid is empty: check if `gs' contains a point.
     if (!gs.has_points())
       throw_invalid_generators("add_recycled_generators_and_minimize(gs)",
 			       "gs");
     gs.unset_pending_rows();
-    // `gs' has a point: the grid is no longer empty and generators
-    // are up-to-date.
     std::swap(gen_sys, gs);
     gen_sys.set_sorted(false);
     // FIX for now convert rays to lines
@@ -1560,10 +1557,10 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
     }
     normalize_divisors(gen_sys);
     clear_empty();
-    set_generators_up_to_date();
-    // This call to `minimize()' returns `true'.
-    minimize();
   }
+  clear_generators_minimized();
+  update_congruences();
+
   assert(OK(true));
   return true;
 }

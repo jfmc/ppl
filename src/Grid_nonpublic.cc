@@ -382,9 +382,9 @@ PPL::Grid::set_empty() {
 
 bool
 PPL::Grid::update_congruences() const {
+  // The caller must ensure that the generators are up to date.
   assert(space_dim > 0);
   assert(!marked_empty());
-  assert(generators_are_up_to_date());
   assert(gen_sys.num_rows() > 0);
   assert(gen_sys.num_columns() > 1);
 
