@@ -1422,64 +1422,70 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
   //gs.adjust_topology_and_space_dimension(topology(), space_dim);
   gs.adjust_topology_and_space_dimension(gs.topology(), space_dim); // FIX
 
-  // The generators are required.
-  if (!generators_are_up_to_date() && !minimize()) {
-    // `minimize' has shown that `*this' is empty.
-    // `gs' must contain at least one point.
-    if (!gs.has_points())
-      // FIX should this return an empty flag?
-      throw_invalid_generators("add_recycled_generators(gs)", "gs");
-    gs.unset_pending_rows();
-    std::swap(gen_sys, gs);
-    gen_sys.set_sorted(false);
-    // FIX for now convert rays to lines
-    for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
-      Generator& g = gen_sys[row];
-      if (g.is_ray()) {
-	g.set_is_line();
-	g.strong_normalize();
+  if (!marked_empty()
+      && (generators_are_up_to_date() || update_generators())) {
+    // The grid contains at least one point.
+
+    normalize_divisors(gs, gen_sys);
+
+    const dimension_type old_num_rows = gen_sys.num_rows();
+    const dimension_type gs_num_rows = gs.num_rows();
+    const dimension_type gs_num_columns = gs.num_columns();
+    gen_sys.add_zero_rows(gs_num_rows,
+			  Linear_Row::Flags(gs.topology(),
+					    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+    for (dimension_type i = gs_num_rows; i-- > 0; ) {
+      // Swap one coefficient at a time into the newly added rows
+      // instead of swapping each entire row.  This ensures that the
+      // added rows have the same capacities as the existing rows.
+      Generator& new_g = gen_sys[old_num_rows + i];
+      Generator& old_g = gs[i];
+      if (old_g.is_line())
+	new_g.set_is_line();
+      if (old_g.is_ray()) {
+	new_g.set_is_line();
+	new_g.strong_normalize();
       }
+      for (dimension_type j = gs_num_columns; j-- > 0; )
+	std::swap(new_g[j], old_g[j]);
     }
-    normalize_divisors(gen_sys);
-    // The grid is no longer empty and generators are up-to-date.
-    set_generators_up_to_date();
-    clear_empty();
-    assert(OK());
+
+    // Congruences are out of date and generators are not minimized.
+    clear_congruences_up_to_date();
+    clear_generators_minimized();
+
+    assert(OK(true));
     return;
   }
 
-  normalize_divisors(gs, gen_sys);
+  // The grid is empty.
 
-  // Here we do not require `gen_sys' to be sorted.
-  // also, we _swap_ (instead of copying) the coefficients of `gs'
-  // (which is not a const).
-  const dimension_type old_num_rows = gen_sys.num_rows();
-  const dimension_type gs_num_rows = gs.num_rows();
-  const dimension_type gs_num_columns = gs.num_columns();
-  gen_sys.add_zero_rows(gs_num_rows,
-			Linear_Row::Flags(gs.topology(),
-					  Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
-  for (dimension_type i = gs_num_rows; i-- > 0; ) {
-    // NOTE: we cannot directly swap the rows, since they might have
-    // different capacities (besides possibly having different sizes):
-    // thus, we steal one coefficient at a time.
-    Generator& new_g = gen_sys[old_num_rows + i];
-    Generator& old_g = gs[i];
-    if (old_g.is_line())
-      new_g.set_is_line();
-    if (old_g.is_ray()) {
-      new_g.set_is_line();
-      new_g.strong_normalize();
+  // `gs' must contain at least one point.
+  if (!gs.has_points())
+    // FIX should this return an empty flag? at the interface?
+    //         query prbly comes from gen_aff_img usage
+    throw_invalid_generators("add_recycled_generators(gs)", "gs");
+
+  gs.unset_pending_rows();
+  std::swap(gen_sys, gs);
+  gen_sys.set_sorted(false);
+
+  // FIX for now convert rays to lines
+  for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
+    Generator& g = gen_sys[row];
+    if (g.is_ray()) {
+      g.set_is_line();
+      g.strong_normalize();
     }
-    for (dimension_type j = gs_num_columns; j-- > 0; )
-      std::swap(new_g[j], old_g[j]);
   }
 
-  // Congruences are out of date and generators are not minimized.
-  clear_congruences_up_to_date();
-  clear_generators_minimized();
+  normalize_divisors(gen_sys);
 
-  assert(OK(true));
+  // The grid is no longer empty and generators are up-to-date.
+  set_generators_up_to_date();
+  clear_empty();
+
+  assert(OK());
 }
 
 void
