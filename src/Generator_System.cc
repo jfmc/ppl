@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.inlines.hh"
 #include "Constraint.defs.hh"
 #include "Scalar_Products.defs.hh"
+#include "compiler.hh"
 #include <cassert>
 #include <string>
 #include <vector>
@@ -781,18 +782,12 @@ PPL::Generator_System::satisfied_by_all_generators(const Constraint& c) const {
 
 
 void
-<<<<<<< Generator_System.cc
-PPL::Generator_System::affine_image(dimension_type v,
-				    const Linear_Expression& expr,
-				    Coefficient_traits::const_reference denominator,
-				    bool grid) {
-=======
 PPL::Generator_System
-::affine_image(const dimension_type v,
+::affine_image(dimension_type v,
 	       const Linear_Expression& expr,
-	       Coefficient_traits::const_reference denominator) {
+	       Coefficient_traits::const_reference denominator,
+	       bool grid) {
   Generator_System& x = *this;
->>>>>>> 1.13
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
   // nor the epsilon dimension of NNC polyhedra).
@@ -1021,15 +1016,9 @@ PPL::Generator_System::OK(bool check_normalization) const {
     return false;
 
   // Checking each generator in the system.
-<<<<<<< Generator_System.cc
-  for (dimension_type i = num_rows(); i-- > 0; ) {
-    const Generator& g = (*this)[i];
-    if (!g.OK(check_normalization))
-=======
   const Generator_System& x = *this;
   for (dimension_type i = num_rows(); i-- > 0; )
-    if (!x[i].OK())
->>>>>>> 1.13
+    if (!x[i].OK(check_normalization))
       return false;
 
   // All checks passed.
