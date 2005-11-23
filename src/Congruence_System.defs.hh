@@ -160,6 +160,11 @@ public:
   dimension_type space_dimension() const;
 
   //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this contains one
+  //! or more linear equalities.
+  bool has_linear_equalities() const;
+
+  //! \brief
   //! Removes all the congruences from the congruence system
   //! and sets its space dimension to 0.
   void clear();
@@ -364,11 +369,6 @@ private:
 
   //! Swaps \p *this with \p y.
   void swap(Congruence_System& y);
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this contains one
-  //! or more linear equalities.
-  bool has_linear_equalities() const;
 
   //! Returns the \p k- th congruence of the system.
   Congruence& operator[](dimension_type k);
