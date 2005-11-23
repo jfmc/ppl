@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Saturation_Row.defs.hh"
 #include "Saturation_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
-#include "scalar_products.defs.hh"
+#include "Scalar_Products.defs.hh"
 #include <cstddef>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -405,9 +405,9 @@ PPL::Polyhedron::conversion(Linear_System& source,
     // that does not saturate the constraint `source_k'.
     dimension_type index_non_zero = 0;
     for ( ; index_non_zero < dest_num_rows; ++index_non_zero) {
-      scalar_product_assign(scalar_prod[index_non_zero],
-			    source_k,
-			    dest[index_non_zero]);
+      Scalar_Products::assign(scalar_prod[index_non_zero],
+			      source_k,
+			      dest[index_non_zero]);
       if (scalar_prod[index_non_zero] != 0)
 	// The generator does not saturate the constraint.
 	break;
@@ -419,7 +419,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 #endif
     }
     for (dimension_type i = index_non_zero + 1; i < dest_num_rows; ++i) {
-      scalar_product_assign(scalar_prod[i], source_k, dest[i]);
+      Scalar_Products::assign(scalar_prod[i], source_k, dest[i]);
 #if REACTIVE_ABANDONING
       maybe_abandon();
 #endif

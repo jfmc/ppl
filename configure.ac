@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.8pre6],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.8pre7],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
@@ -97,14 +97,16 @@ AH_BOTTOM([
 # C compiler
 
 AC_ARG_WITH(cc,
-[  --with-cc=xxx           use XXX as the C compiler],
-CC=$with_cc)
+  AC_HELP_STRING([--with-cc=XXX],
+    [use XXX as the C compiler]),
+  CC=$with_cc)
 
 # C++ compiler
 
 AC_ARG_WITH(cxx,
-[  --with-cxx=xxx          use XXX as the C++ compiler],
-CXX=$with_cxx)
+  AC_HELP_STRING([--with-cxx=XXX],
+    [use XXX as the C++ compiler]),
+  CXX=$with_cxx)
 
 # Compilation flags
 
@@ -114,7 +116,8 @@ OPT_FLAGS=""
 enableval=yes
 AC_MSG_CHECKING([whether to compile with debug info])
 AC_ARG_ENABLE(debugging,
-[  --enable-debugging      compile with debugging information])
+  AC_HELP_STRING([--enable-debugging],
+    [compile with debugging information]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -131,7 +134,8 @@ esac
 enableval=no
 AC_MSG_CHECKING([whether to compile for profiling])
 AC_ARG_ENABLE(profiling,
-[  --enable-profiling      compile for profiling])
+  AC_HELP_STRING([--enable-profiling],
+    [compile for profiling]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -149,7 +153,8 @@ esac
 enableval=no
 AC_MSG_CHECKING([whether to compile for test coverage])
 AC_ARG_ENABLE(coverage,
-[  --enable-coverage       compile for test coverage])
+  AC_HELP_STRING([--enable-coverage],
+    [compile for test coverage]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -167,7 +172,8 @@ esac
 enableval=no
 AC_MSG_CHECKING([whether to enable checking of run-time assertions])
 AC_ARG_ENABLE(assertions,
-[  --enable-assertions     check run-time assertions])
+  AC_HELP_STRING([--enable-assertions],
+    [check run-time assertions]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -184,7 +190,8 @@ enable_assertions=${enableval}
 enableval=no
 AC_MSG_CHECKING([whether to enable even more run-time assertions])
 AC_ARG_ENABLE(more-assertions,
-[  --enable-more-assertions check even more run-time assertions])
+  AC_HELP_STRING([--enable-more-assertions],
+    [check even more run-time assertions]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -218,7 +225,8 @@ arch=no
 enableval=standard
 AC_MSG_CHECKING([whether to enable optimizations])
 AC_ARG_ENABLE(optimization,
-[  --enable-optimization   enable compiler optimizations])
+  AC_HELP_STRING([--enable-optimization],
+    [enable compiler optimizations]))
 case "${enableval}" in
 sspeed)
   AC_MSG_RESULT(sspeed)
@@ -258,7 +266,8 @@ esac
 enableval=$arch
 AC_MSG_CHECKING([for which architecture to optimize])
 AC_ARG_ENABLE(arch,
-[  --enable-arch[=arch]      optimize for architecture arch])
+  AC_HELP_STRING([--enable-arch@<:@=ARCH@:>@],
+    [optimize for architecture ARCH]))
 case "${enableval}" in
 yes)
   m=`uname -m`
@@ -287,7 +296,8 @@ CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
 enableval=mpz
 AC_MSG_CHECKING([the type of integral values to use as coefficients])
 AC_ARG_ENABLE(coefficients,
-[  --enable-coefficients   select the type of the coefficients])
+  AC_HELP_STRING([--enable-coefficients],
+    [select the type of the coefficients]))
 case "${enableval}" in
 native-int8)
   AC_MSG_RESULT([native 8 bits integers])
@@ -374,12 +384,14 @@ fi
 # Allow additions to C and C++ compilation flags
 
 AC_ARG_WITH(cflags,
-[  --with-cflags=xxx       add XXX to the options for the C compiler],
-CFLAGS="$CFLAGS $with_cflags")
+  AC_HELP_STRING([--with-cflags=XXX],
+    [add XXX to the options for the C compiler]),
+  CFLAGS="$CFLAGS $with_cflags")
 
 AC_ARG_WITH(cxxflags,
-[  --with-cxxflags=xxx     add XXX to the options for the C++ compiler],
-CXXFLAGS="$CXXFLAGS $with_cxxflags")
+  AC_HELP_STRING([--with-cxxflags=XXX],
+    [add XXX to the options for the C++ compiler]),
+  CXXFLAGS="$CXXFLAGS $with_cxxflags")
 
 # Checks for programs.
 AC_PROG_CC
@@ -466,13 +478,30 @@ add --enable-cxx to the configuration options.])
   fi
 fi
 
+AC_CHECK_MEMBERS([__mpz_struct._mp_alloc,
+                  __mpz_struct._mp_size,
+                  __mpz_struct._mp_d],
+                 ,
+                 gmp_has_changes=yes,
+                 [#include <gmp.h>])
+
+if test x"$gmp_has_changed" = xyes
+then
+  AC_MSG_ERROR([GMP HAS CHANGED:
+*** The PPL exploits some implementation details of GMP that were current
+*** until (at least) version 4.1.4 of GMP.  You seem to be using a version
+*** where these details have changed.
+*** Please report this to ppl-devel@cs.unipr.it.])
+fi
+
 extra_includes="${extra_includes}${extra_includes:+ }${gmp_includes_option}"
 extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_option}"
 
 enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
 AC_ARG_ENABLE(watchdog,
-[  --enable-watchdog       build also the Parma Watchdog Library])
+  AC_HELP_STRING([--enable-watchdog],
+    [build also the Parma Watchdog Library]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -500,7 +529,8 @@ default_interfaces=${available_interfaces}
 enableval=not_specified
 AC_MSG_CHECKING([which interfaces are enabled])
 AC_ARG_ENABLE(interfaces,
-[  --enable-interfaces   enable some or all the library interfaces])
+  AC_HELP_STRING([--enable-interfaces],
+    [enable some or all the library interfaces]))
 case x"${enableval}" in
 xyes | x)
   AC_MSG_ERROR([--enable-interfaces needs at least one argument chosen among ${available_interfaces}, none and all])
@@ -585,27 +615,9 @@ AM_CONDITIONAL(BUILD_GNU_PROLOG_INTERFACE, test x$GNU_PROLOG = xgprolog)
 # SICStus
 if test x${sicstus_prolog_interface_enabled} = xyes
 then
-  AC_CHECK_PROG(SICSTUS_PROLOG, sicstus, sicstus)
-  if test x"$SICSTUS_PROLOG" = xsicstus
-  then
-    # We require SICStus Prolog 3.9.1 or later.
-    AC_CHECK_HEADER(sicstus/sicstus.h,
-                    AC_MSG_CHECKING([for SICStus version 3.9.1 or later])
-                    AC_EGREP_CPP(yes,
-                      [
-                        #include <sicstus/sicstus.h>
-                        #if SICSTUS_MAJOR_VERSION > 3 || (SICSTUS_MAJOR_VERSION == 3 && SICSTUS_MINOR_VERSION > 9) || (SICSTUS_MAJOR_VERSION == 3 && SICSTUS_MINOR_VERSION == 9 && SICSTUS_REVISION_VERSION >= 1)
-                        yes
-                        #endif
-                      ],
-                    AC_MSG_RESULT(yes),
-                    SICSTUS_PROLOG=""
-                    AC_MSG_RESULT(no)
-                  ),
-                  SICSTUS_PROLOG="")
-  fi
+  AC_CHECK_SICSTUS_PROLOG
 fi
-AM_CONDITIONAL(BUILD_SICSTUS_PROLOG_INTERFACE, test x$SICSTUS_PROLOG = xsicstus)
+AM_CONDITIONAL(BUILD_SICSTUS_PROLOG_INTERFACE, test x$have_sicstus_prolog = xyes)
 
 # SWI Prolog
 if test x${swi_prolog_interface_enabled} = xyes
@@ -617,24 +629,9 @@ AM_CONDITIONAL(BUILD_SWI_PROLOG_INTERFACE, test x$have_swi_prolog = xyes)
 # XSB
 if test x${xsb_prolog_interface_enabled} = xyes
 then
-  AC_CHECK_PROG(XSB_PROLOG, xsb, xsb)
-  # The foreign language interface include file is `cinterf.h',
-  # but this resides in the emulator directory and is not installed
-  # in any standard place.
-  if test x"$XSB_PROLOG" = xxsb
-  then
-    xsb_emu_dir=`xsb --nobanner --quietload --noprompt \
-                  -e "write('emudir='), \
-                    xsb_configuration(emudir, X), write(X), nl, halt." \
-                      2>/dev/null | sed "s/^emudir=//g"`
-    xsb_config_dir=`xsb --nobanner --quietload --noprompt \
-                     -e "write('config_dir='), \
-                       xsb_configuration(config_dir,X), write(X), nl, halt." \
-                         2>/dev/null | sed "s/^config_dir=//g"`
-    xsb_includes="-I${xsb_emu_dir} -I${xsb_config_dir}"
-  fi
+  AC_CHECK_XSB_PROLOG
 fi
-AM_CONDITIONAL(BUILD_XSB_PROLOG_INTERFACE, test x$XSB_PROLOG = xxsb)
+AM_CONDITIONAL(BUILD_XSB_PROLOG_INTERFACE, test x$have_xsb_prolog = xyes)
 
 # YAP
 if test x${yap_prolog_interface_enabled} = xyes
@@ -656,7 +653,8 @@ default_instantiations="Polyhedron @ BD_Shape<int8_t>"
 enableval=not_specified
 AC_MSG_CHECKING([which instantiations are enabled])
 AC_ARG_ENABLE(instantiations,
-[  --enable-instantiations   enable instantiations for the non-C++ interfaces])
+  AC_HELP_STRING([--enable-instantiations],
+    [enable instantiations for the non-C++ interfaces]))
 case x"${enableval}" in
 xyes | x)
   AC_MSG_ERROR([--enable-instantiations needs at least one argument])
@@ -744,10 +742,7 @@ then
 fi
 
 # System-dependent adjustments.
-
-# On Debian the md5sum from package "dpkg" lacks -t.
-AC_TRY_RUN([md5sum -t], [text_md5sum="$MD5SUM -t"], [text_md5sum="$MD5SUM"])
-
+text_md5sum="$MD5SUM -t"
 no_undefined=no
 
 case "${host_os}" in
@@ -770,7 +765,6 @@ AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(debug_flag)
-AC_SUBST(xsb_includes)
 AC_SUBST(coefficient_mnemonic)
 AC_SUBST(text_md5sum)
 

@@ -29,7 +29,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static void
+namespace {
+
+void
 test1() {
   Variable A(0);
   Variable B(1);
@@ -44,8 +46,8 @@ test1() {
   print_constraints(bd, "*** bd ***");
 #endif
 
-  bd.affine_preimage(A, 4*B + 6*C + 2, -2); 
-  
+  bd.affine_preimage(A, 4*B + 6*C + 2, -2);
+
   TBD_Shape known_result(3);
   known_result.add_constraint(B <= 0);
   known_result.add_constraint(C >= 0);
@@ -60,7 +62,7 @@ test1() {
     exit(1);
 }
 
-static void
+void
 test2() {
   Variable A(0);
   Variable B(1);
@@ -75,8 +77,8 @@ test2() {
   print_constraints(bd, "*** bd ***");
 #endif
 
-  bd.affine_preimage(A, 2*A + 3*C + 2, 2); 
- 
+  bd.affine_preimage(A, 2*A + 3*C + 2, 2);
+
   TBD_Shape known_result(3);
   known_result.add_constraint(A <= -2);
   known_result.add_constraint(B <= 0);
@@ -92,7 +94,7 @@ test2() {
     exit(1);
 }
 
-static void
+void
 test3() {
   Variable A(0);
   Variable B(1);
@@ -124,7 +126,7 @@ test3() {
     exit(1);
 }
 
-static void
+void
 test4() {
   Variable A(0);
   Variable B(1);
@@ -138,8 +140,8 @@ test4() {
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
-  
-  bd.affine_preimage(A, 3*A + C - 1, -2); 
+
+  bd.affine_preimage(A, 3*A + C - 1, -2);
 
   TBD_Shape known_result(3);
   known_result.add_constraint(B <= 0);
@@ -155,7 +157,7 @@ test4() {
     exit(1);
 }
 
-static void
+void
 test5() {
   Variable A(0);
   Variable B(1);
@@ -169,8 +171,8 @@ test5() {
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
-  
-  bd.affine_preimage(A, -3*A + C - 1, -2); 
+
+  bd.affine_preimage(A, -3*A + C - 1, -2);
 
   TBD_Shape known_result(3);
   known_result.add_constraint(B <= 0);
@@ -186,7 +188,7 @@ test5() {
     exit(1);
 }
 
-static void
+void
 test6() {
   Variable A(0);
   Variable B(1);
@@ -198,30 +200,31 @@ test6() {
   bd.add_constraint(B == 0);
   bd.add_constraint(C >= -3);
   bd.add_constraint(D <= 5);
- 
+
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
 
-  bd.affine_preimage(D, 4*A - B + 2*C + 5*D - 1, 3); 
-  
+  bd.affine_preimage(D, 4*A - B + 2*C + 5*D - 1, 3);
+
   TBD_Shape known_result(4);
   known_result.add_constraint(A == 2);
   known_result.add_constraint(B == 0);
   known_result.add_constraint(C >= -3);
-  known_result.add_constraint(D <= 3);
- 
+  known_result.add_constraint(5*D <= 14);
+
   bool ok = (bd == known_result);
- 
+
 #if NOISY
-  print_constraints(bd, "*** bd.affine_preimage(D, 4*A - B + 2*C + 5*D - 1, 3) ***");
+  print_constraints(bd, "*** bd.affine_preimage"
+		        "(D, 4*A - B + 2*C + 5*D - 1, 3) ***");
 #endif
 
   if (!ok)
     exit(1);
 }
 
-static void
+void
 test7() {
   Variable A(0);
   Variable B(1);
@@ -236,8 +239,8 @@ test7() {
   print_constraints(bd, "*** bd ***");
 #endif
 
-  bd.affine_preimage(B, -B); 
-  
+  bd.affine_preimage(B, -B);
+
   TBD_Shape known_result(3);
   known_result.add_constraint(A <= -1);
   known_result.add_constraint(B >= 0);
@@ -253,7 +256,7 @@ test7() {
     exit(1);
 }
 
-static void
+void
 test8() {
   Variable A(0);
   Variable B(1);
@@ -270,7 +273,7 @@ test8() {
 
   TBD_Shape known_result(bd);
 
-  bd.affine_preimage(B, -B, -1); 
+  bd.affine_preimage(B, -B, -1);
 
   bool ok = (bd == known_result);
 
@@ -282,7 +285,9 @@ test8() {
     exit(1);
 }
 
-int 
+} // namespace
+
+int
 main() TRY {
 
   test1();
@@ -295,7 +300,7 @@ main() TRY {
   test8();
 
   return 0;
-} 
+}
 CATCH
 
 

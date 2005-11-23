@@ -710,6 +710,14 @@ ppl_Constraint_System_space_dimension
 PPL_PROTO((ppl_const_Constraint_System_t cs, ppl_dimension_type* m));
 
 /*! \brief
+  Returns a positive integer if \p cs contains any (non-trivial) strict
+  inequality; returns 0 otherwise.
+*/
+int
+ppl_Constraint_System_has_strict_inequalities
+PPL_PROTO((ppl_const_Constraint_System_t cs));
+
+/*! \brief
   Removes all the constraints from the constraint system \p cs
   and sets its space dimension to 0.
 */
@@ -1917,7 +1925,7 @@ ppl_Polyhedron_poly_hull_assign_and_minimize
 PPL_PROTO((ppl_Polyhedron_t x, ppl_const_Polyhedron_t y));
 
 /*! \brief
-  Assigns to \p x the \ref poly_difference "poly-difference"
+  Assigns to \p x the \ref Convex_Polyhedral_Difference "poly-difference"
   of \p x and \p y.
 */
 int
@@ -2359,8 +2367,9 @@ PPL_PROTO((ppl_Polyhedron_t ph, ppl_dimension_type d));
 
 /*! \brief
   Remaps the dimensions of the vector space according to a
-  \ref map_space_dimensions "partial function". This function is specified
-  by means of the \p maps array, which has \p n entries.
+  \ref Mapping_the_Dimensions_of_the_Vector_Space "partial function".
+  This function is specified by means of the \p maps array,
+  which has \p n entries.
 
   The partial function is defined on dimension <CODE>i</CODE>
   if <CODE>i < n</CODE> and <CODE>maps[i] != ppl_not_a_dimension</CODE>;
@@ -2370,7 +2379,8 @@ PPL_PROTO((ppl_Polyhedron_t ph, ppl_dimension_type d));
 
   The result is undefined if \p maps does not encode a partial
   function with the properties described in the
-  \ref map_space_dimensions "specification of the mapping operator".
+  \ref Mapping_the_Dimensions_of_the_Vector_Space
+  "specification of the mapping operator".
 */
 int
 ppl_Polyhedron_map_space_dimensions PPL_PROTO((ppl_Polyhedron_t ph,

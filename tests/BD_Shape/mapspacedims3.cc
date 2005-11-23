@@ -31,13 +31,17 @@ using namespace Parma_Polyhedra_Library;
 #include "PFunction.hh"
 
 #if NOISY
-static void
+namespace {
+
+void
 print_function(const PFunction& function, const string& intro = "",
 	       ostream& s = cout) {
   if (!intro.empty())
     s << intro << endl;
   function.print(s);
 }
+
+} // namespace
 #endif
 
 int

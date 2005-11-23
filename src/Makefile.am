@@ -112,7 +112,6 @@ endif
 INCLUDE_FILES = \
 namespaces.hh \
 compiler.hh \
-float.types.hh \
 Coefficient_traits_template.hh \
 Checked_Number.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
@@ -135,6 +134,7 @@ Saturation_Matrix.types.hh \
 Constraint_System.types.hh \
 Generator_System.types.hh \
 Congruence_System.types.hh \
+Scalar_Products.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
@@ -155,8 +155,8 @@ Limits.hh \
 fpu.defs.hh \
 fpu-c99.inlines.hh \
 fpu-ia32.inlines.hh \
-Rounding.types.hh \
-Rounding.defs.hh \
+Rounding_Dir.defs.hh \
+Rounding_Dir.inlines.hh \
 Result.defs.hh \
 Result.inlines.hh \
 Numeric_Format.defs.hh \
@@ -211,8 +211,8 @@ Congruence.defs.hh \
 Congruence.inlines.hh \
 Generator_System.inlines.hh \
 Congruence_System.inlines.hh \
-scalar_products.defs.hh \
-scalar_products.inlines.hh \
+Scalar_Products.defs.hh \
+Scalar_Products.inlines.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Con_Relation.inlines.hh \
 Poly_Gen_Relation.defs.hh \
@@ -266,6 +266,7 @@ libppl_la_SOURCES = \
 Bounding_Box.cc \
 checked.cc \
 Checked_Number.cc \
+Float.cc \
 Constraint.cc \
 Constraint_System.cc \
 Congruence.cc \
@@ -279,7 +280,7 @@ Interval.cc \
 Linear_Expression.cc \
 Linear_System.cc \
 Matrix.cc \
-scalar_products.cc \
+Scalar_Products.cc \
 Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
 BHRZ03_Certificate.cc \
@@ -409,18 +410,18 @@ ppl_include_files.hh: $(INCLUDE_FILES) Makefile
 
 if HAVE_PERL
 
-ppl_install.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(NESTED_INCLUDE_FILES) Makefile $(top_builddir)/utils/build_header
+ppl_install.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(INCLUDE_FILES) $(NESTED_INCLUDE_FILES) Makefile $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
 		-I $(top_builddir) -I $(top_builddir)/src \
 		$(top_srcdir)/src/ppl_header.hh >$@
 
-BUGS.cc:	$(top_builddir)/utils/text2cxxarray $(top_srcdir)/BUGS
+BUGS.cc: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/BUGS
 	$(top_builddir)/utils/text2cxxarray --name=BUGS_array \
 		$(top_srcdir)/BUGS >$@
-COPYING.cc:	$(top_builddir)/utils/text2cxxarray $(top_srcdir)/COPYING
+COPYING.cc: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/COPYING
 	$(top_builddir)/utils/text2cxxarray --name=COPYING_array \
 		$(top_srcdir)/COPYING >$@
-CREDITS.cc:	$(top_builddir)/utils/text2cxxarray $(top_srcdir)/CREDITS
+CREDITS.cc: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/CREDITS
 	$(top_builddir)/utils/text2cxxarray --name=CREDITS_array \
 		$(top_srcdir)/CREDITS >$@
 

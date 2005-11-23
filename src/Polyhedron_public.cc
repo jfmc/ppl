@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Polyhedron.defs.hh"
-#include "scalar_products.defs.hh"
+#include "Scalar_Products.defs.hh"
 
 #include <cassert>
 #include <iostream>
@@ -334,8 +334,7 @@ PPL::Polyhedron::is_universe() const {
   if (is_necessarily_closed())
     return (con_sys.num_rows() == 1
 	    && con_sys[0].is_inequality()
-	    && con_sys[0].inhomogeneous_term() > 0
-	    && con_sys[0].all_homogeneous_terms_are_zero());
+	    && con_sys[0].is_tautological());
   else {
     // NNC polyhedron.
     if (con_sys.num_rows() != 2
@@ -371,9 +370,10 @@ PPL::Polyhedron::is_bounded() const {
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
 
+  // If the system of generators contains any line or a ray,
+  // then the polyhedron is unbounded.
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
-    if (gen_sys[i][0] == 0)
-      // A line or a ray is found: the polyhedron is not bounded.
+    if (gen_sys[i].is_line_or_ray())
       return false;
 
   // The system of generators is composed only by
@@ -649,7 +649,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       dimension_type num_closure_points = 0;
       dimension_type eps_index = gen_sys.num_columns() - 1;
       for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
-	if (gen_sys[i][0] != 0)
+	if (!gen_sys[i].is_line_or_ray())
 	  if (gen_sys[i][eps_index] > 0)
 	    ++num_points;
 	  else
@@ -787,7 +787,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       if (check_not_empty) {
 	// Want to know the satisfiability of the constraints.
 #ifndef NDEBUG
-	cerr << "Insoluble system of constraints!"
+	cerr << "Unsatisfiable system of constraints!"
 	     << endl;
 #endif
 	goto bomb;
@@ -813,17 +813,17 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	goto bomb;
       }
       // The system `copy_of_con_sys' has the form that is obtained
-      // after the functions gauss() and back_substitute().
+      // after applying methods gauss() and back_substitute().
       // A system of constraints can be minimal even if it does not
       // have this form. So, to verify if the polyhedron is correct,
-      // we copy the system `con_sys' in a temporary one that then
-      // is modified using the functions gauss() and back_substitute().
+      // we copy the system `con_sys' in a temporary one and then
+      // modify it using method simplify() (which calls both gauss()
+      // and back_substitute()).
       // If the temporary system and `copy_of_con_sys' are different,
       // the polyhedron is not OK.
       copy_of_con_sys.strong_normalize();
       copy_of_con_sys.sort_rows();
-      cs_without_pending.sort_rows();
-      cs_without_pending.back_substitute(cs_without_pending.gauss());
+      cs_without_pending.simplify();
       cs_without_pending.strong_normalize();
       cs_without_pending.sort_rows();
       if (cs_without_pending != copy_of_con_sys) {
@@ -843,7 +843,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       const Generator tmp_gen = gen_sys[i];
       const Saturation_Row tmp_sat = sat_c[i];
       for (dimension_type j = sat_c.num_columns(); j-- > 0; )
-	if (scalar_product_sign(con_sys[j], tmp_gen) != tmp_sat[j]) {
+	if (Scalar_Products::sign(con_sys[j], tmp_gen) != tmp_sat[j]) {
 #ifndef NDEBUG
 	  cerr << "sat_c is declared up-to-date, but it is not!"
 	       << endl;
@@ -857,7 +857,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       const Constraint tmp_con = con_sys[i];
       const Saturation_Row tmp_sat = sat_g[i];
       for (dimension_type j = sat_g.num_columns(); j-- > 0; )
-	if (scalar_product_sign(tmp_con, gen_sys[j]) != tmp_sat[j]) {
+	if (Scalar_Products::sign(tmp_con, gen_sys[j]) != tmp_sat[j]) {
 #ifndef NDEBUG
 	  cerr << "sat_g is declared up-to-date, but it is not!"
 	       << endl;

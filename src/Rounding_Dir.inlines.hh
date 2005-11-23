@@ -1,4 +1,4 @@
-/* Rounding mode.
+/* Inline functions operating on enum Rounding_Dir values.
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,24 +20,29 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Rounding_defs_hh
-#define PPL_Rounding_defs_hh 1
+#ifndef PPL_Rounding_Dir_inlines_hh
+#define PPL_Rounding_Dir_inlines_hh 1
 
-#include "Result.defs.hh"
-#include "fpu.defs.hh"
-#include "Rounding.types.hh"
+#include "Rounding_Dir.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
-enum Rounding_Dir {
-  ROUND_DOWN = FPU_DOWNWARD,
-  ROUND_UP = FPU_UPWARD,
-  ROUND_IGNORE = -1,
-  ROUND_DIRECT = ROUND_UP,
-  ROUND_INVERSE = ROUND_DOWN
-};
+/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+inline Rounding_Dir
+inverse(Rounding_Dir dir) {
+  switch (dir) {
+  case ROUND_UP:
+    return ROUND_DOWN;
+  case ROUND_DOWN:
+    return ROUND_UP;
+  case ROUND_IGNORE:
+    return ROUND_IGNORE;
+  default:
+    assert(false);
+    return ROUND_IGNORE;
+  }
+}
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Float_defs_hh)
-
+#endif // !defined(PPL_Rounding_Dir_inlines_hh)

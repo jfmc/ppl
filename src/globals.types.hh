@@ -54,6 +54,14 @@ enum Complexity_Class {
   ANY_COMPLEXITY
 };
 
+//! Possible optimization kinds.
+enum Optimization_Kind {
+  //! Minimization is requested.
+  MINIMIZATION,
+  //! Maximiation is requested.
+  MAXIMIZATION
+};
+
 //! Possible outcomes of a simplex solver.
 enum Simplex_Status {
   //! The problem is unfeasible.

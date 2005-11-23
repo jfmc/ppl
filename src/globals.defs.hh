@@ -123,10 +123,6 @@ dimension_type
 compute_capacity(dimension_type requested_size,
 		 dimension_type maximum_size);
 
-// FIXME!!!
-dimension_type
-compute_capacity(dimension_type requested_size);
-
 //! User objects' the PPL can throw.
 /*!
   This abstract base class should be instantiated by those users

@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Native_Integer_defs_hh 1
 
 #include "Native_Integer.types.hh"
-#include "Rounding.defs.hh"
+#include "Rounding_Dir.defs.hh"
 #include "float.types.hh"
 #include <gmpxx.h>
 #include <limits>
@@ -80,18 +80,12 @@ public:
   //! Direct initialization from an unsigned long long value.
   Native_Integer(const unsigned long long y);
 
-  //! Direct initialization from a 32 bits floating-point value.
-  Native_Integer(const float32_t y);
-  //! Direct initialization from a 64 bits floating-point value.
-  Native_Integer(const float64_t y);
-#ifdef FLOAT96_TYPE
-  //! Direct initialization from a 96 bits floating-point value.
-  Native_Integer(const float96_t y);
-#endif
-#ifdef FLOAT128_TYPE
-  //! Direct initialization from a 128 bits floating-point value.
-  Native_Integer(const float128_t y);
-#endif
+  //! Direct initialization from a float value.
+  Native_Integer(const float y);
+  //! Direct initialization from a double value.
+  Native_Integer(const double y);
+  //! Direct initialization from a long double value.
+  Native_Integer(const long double y);
 
   //! Direct initialization from a GMP unbounded rational value.
   Native_Integer(const mpq_class& y);

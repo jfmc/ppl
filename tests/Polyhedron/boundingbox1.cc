@@ -389,6 +389,47 @@ test10() {
     exit(1);
 }
 
+// A bounded polyhedron having redundant constraints.
+void
+test11() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(x == 3);
+  ph.add_constraint(y == 1);
+  ph.add_constraint(x + y == 4);
+  ph.add_constraint(x - y == 2);
+  ph.add_constraint(3*x + y == 10);
+  ph.add_constraint(x >= 0);
+  ph.add_constraint(y <= 5);
+  ph.add_constraint(x + 2*y >= 5);
+
+#if NOISY
+  print_constraints(ph, "*** test11 ph ***");
+#endif
+
+  BBox pbox(ph.space_dimension());
+  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
+
+#if NOISY
+  pbox.print(cout, "*** test11 pbox ***");
+#endif
+
+  BBox known_box(2);
+  known_box.raise_lower_bound(0, true, 3, 1);
+  known_box.lower_upper_bound(0, true, 3, 1);
+  known_box.raise_lower_bound(1, true, 1, 1);
+  known_box.lower_upper_bound(1, true, 1, 1);
+
+#if NOISY
+  known_box.print(cout, "*** test11 known_box ***");
+#endif
+
+  if (pbox != known_box)
+    exit(1);
+}
+
 } // namespace
 
 int
@@ -405,6 +446,7 @@ main() TRY {
   test8();
   test9();
   test10();
+  test11();
 
   return 0;
 }

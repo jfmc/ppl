@@ -444,6 +444,18 @@ private:
   //! Returns <CODE>true</CODE> if all the generators satisfy \p c.
   bool satisfied_by_all_generators(const Constraint& c) const;
 
+  //! Returns <CODE>true</CODE> if all the generators satisfy \p c.
+  /*!
+    It is assumed that <CODE>c.is_necessarily_closed()</CODE> holds.
+  */
+  bool satisfied_by_all_generators_C(const Constraint& c) const;
+
+  //! Returns <CODE>true</CODE> if all the generators satisfy \p c.
+  /*!
+    It is assumed that <CODE>c.is_necessarily_closed()</CODE> does not hold.
+  */
+  bool satisfied_by_all_generators_NNC(const Constraint& c) const;
+
   //! Assigns to a given variable an affine expression.
   /*!
     \param v
@@ -493,6 +505,14 @@ private:
     the homogeneous terms set to zero.
   */
   void remove_invalid_lines_and_rays();
+
+  //! \brief
+  //! Applies Gaussian's elimination and back-substitution so as
+  //! to provide a partial simplification of the system of generators.
+  /*!
+    It is assumed that the system has no pending generators.
+  */
+  void simplify();
 
   //! \brief
   //! Inserts in \p *this a copy of the generator \p g,

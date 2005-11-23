@@ -80,10 +80,8 @@ operator<<(std::ostream& s, const DB_Matrix<T>& c);
 
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-
 template <typename T>
 class Parma_Polyhedra_Library::DB_Matrix {
-
 public:
   //! Returns the maximum number of rows of a DB_Matrix.
   static dimension_type max_num_rows();
@@ -110,8 +108,12 @@ public:
   //! Copy-constructor.
   DB_Matrix(const DB_Matrix& y);
 
+  //! Constructs a conservative approximation of \p y.
+  template <typename U>
+  explicit DB_Matrix(const DB_Matrix<U>& y);
+
   //! Destructor.
-  virtual ~DB_Matrix();
+  ~DB_Matrix();
 
   //! Assignment operator.
   DB_Matrix& operator=(const DB_Matrix& y);
@@ -134,7 +136,8 @@ public:
   public:
     typedef std::forward_iterator_tag iterator_category;
     typedef typename std::iterator_traits<Iter>::value_type value_type;
-    typedef typename std::iterator_traits<Iter>::difference_type difference_type;
+    typedef typename std::iterator_traits<Iter>::difference_type
+    difference_type;
     typedef typename std::iterator_traits<Iter>::pointer pointer;
     typedef typename std::iterator_traits<Iter>::reference reference;
 
@@ -185,9 +188,10 @@ public:
   const_iterator end() const;
 
 private:
+  template <typename U> friend class DB_Matrix;
+
   //! Contains the rows of the matrix.
   std::vector<DB_Row<T> > rows;
-
 
   //! Size of the initialized part of each row.
   dimension_type row_size;
@@ -224,21 +228,6 @@ public:
   */
   void resize_no_copy(dimension_type new_n_rows);
 
-  //! Adds \p n non-zero rows and columns to the matrix.
-  /*!
-    \param n      The number of rows and columns to be added.
-
-    Turn the \f$r \times c\f$ matrix \f$M\f$ into
-    the \f$(r+n) \times (c+n)\f$ matrix
-    \f$\bigl({0 \atop M}{J \atop 0}\bigr)\f$,
-    where \f$J\f$ is the specular image
-    of the \f$n \times n\f$ identity matrix.
-  */
-  void add_rows_and_columns(dimension_type n);
-
-  //! Returns the space-dimension of the rows in the matrix.
-  dimension_type space_dimension() const;
-
   //! Returns the number of rows in the matrix.
   dimension_type num_rows() const;
 
@@ -254,17 +243,17 @@ public:
   //! \brief
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
-  virtual void ascii_dump(std::ostream& s) const;
+  void ascii_dump(std::ostream& s) const;
 
   //! \brief
   //! Loads from \p s an ASCII representation (as produced by \ref
   //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
   //! if successful, <CODE>false</CODE> otherwise.
   /*!
-    This virtual method is meant to read into a DB_Matrix object
+    This method is meant to read into a DB_Matrix object
     the information produced by the output of <CODE>ascii_dump()</CODE>.
   */
-  virtual bool ascii_load(std::istream& s);
+  bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -298,6 +287,66 @@ bool operator==(const DB_Matrix<T>& x, const DB_Matrix<T>& y);
 #endif // Parma_Polyhedra_Library_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 bool operator!=(const DB_Matrix<T>& x, const DB_Matrix<T>& y);
+
+//! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
+/*!
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into to \p r
+  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+template <typename Temp, typename To, typename T>
+bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				 const DB_Matrix<T>& x,
+				 const DB_Matrix<T>& y,
+				 const Rounding_Dir dir,
+				 Temp& tmp0,
+				 Temp& tmp1,
+				 Temp& tmp2);
+
+//! Computes the euclidean distance between \p x and \p y.
+/*!
+  If the Euclidean distance between \p x and \p y is defined,
+  stores an approximation of it into to \p r
+  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+template <typename Temp, typename To, typename T>
+bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			       const DB_Matrix<T>& x,
+			       const DB_Matrix<T>& y,
+			       const Rounding_Dir dir,
+			       Temp& tmp0,
+			       Temp& tmp1,
+			       Temp& tmp2);
+
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*!
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into to \p r
+  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+template <typename Temp, typename To, typename T>
+bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				 const DB_Matrix<T>& x,
+				 const DB_Matrix<T>& y,
+				 const Rounding_Dir dir,
+				 Temp& tmp0,
+				 Temp& tmp1,
+				 Temp& tmp2);
 
 } // namespace Parma_Polyhedra_Library
 

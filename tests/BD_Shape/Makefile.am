@@ -28,6 +28,7 @@ VPATH = @srcdir@
 SUBDIRS =
 
 AM_CPPFLAGS = \
+$(TEST_CPPFLAGS) \
 -I$(top_srcdir)/src -I$(top_srcdir)/tests \
 -I$(top_builddir)/src \
 -I$(top_srcdir)/utils \
@@ -39,15 +40,18 @@ $(top_builddir)/tests/libppl_tests.a \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
-ORIGINAL_TESTS = \
+check_PROGRAMS = \
 	addconstraints1 \
 	addspacedims1  addspacedims2 addspacedims3 addspacedims4 \
 	addspacedims5 addspacedims6 addspacedims7 \
+	affinedimension1 \
 	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
-	affineimage6 affineimage7 affineimage8 affineimage9 \
+	affineimage6 affineimage7 affineimage8 affineimage9 affineimage10 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	affinepreimage5 \
 	ascii_dump_load1 ascii_dump_load2 \
+	bdsdifference1 bdsdifference2 bdsdifference3 bdsdifference4 \
+	bdsdifference5 bdsdifference6 bdsdifference7 \
 	bdshull1 bdshull2 bdshull3 bdshull4 \
 	bgp99extrapolation1 \
 	bhz03widening1 \
@@ -57,6 +61,7 @@ ORIGINAL_TESTS = \
 	cc76extrapolation4 cc76extrapolation5 cc76extrapolation6 \
 	ch78widening1 ch78widening2 ch78widening3 ch78widening4 \
 	ch78widening5 ch78widening6 ch78widening7 ch78widening8 \
+	closure1 \
 	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
 	constraints1 constraints2 \
 	contains1 contains2 contains3 \
@@ -85,13 +90,24 @@ ORIGINAL_TESTS = \
 	limitedh79extrapolation1 \
 	mapspacedims1 mapspacedims2 mapspacedims3 mapspacedims4 \
 	maxspacedim \
-	polydifference1 polydifference2 polydifference3 polydifference4 \
-	polydifference5 polydifference6 \
+	minconstraints1 \
 	relations1 relations2 relations3 relations4 relations5 \
 	removespacedims1 removespacedims2 removespacedims3 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
 	universe1 \
 	writebdshape1 writebdshape2
+
+# This will be overriden by the `run_tests' script.
+TEST_CPPFLAGS=-DBD_SHAPE_INSTANCE=mpq_class
+
+dist_check_SCRIPTS = run_tests
+
+TESTS = $(dist_check_SCRIPTS)
+
+XFAIL_TESTS =
+
+print_check_PROGRAMS:
+	echo $(check_PROGRAMS)
 
 #
 # Sources for the tests
@@ -107,6 +123,8 @@ addspacedims5_SOURCES = addspacedims5.cc
 addspacedims6_SOURCES = addspacedims6.cc
 addspacedims7_SOURCES = addspacedims7.cc
 
+affinedimension1_SOURCES = affinedimension1.cc
+
 affineimage1_SOURCES = affineimage1.cc
 affineimage2_SOURCES = affineimage2.cc
 affineimage3_SOURCES = affineimage3.cc
@@ -116,6 +134,7 @@ affineimage6_SOURCES = affineimage6.cc
 affineimage7_SOURCES = affineimage7.cc
 affineimage8_SOURCES = affineimage8.cc
 affineimage9_SOURCES = affineimage9.cc
+affineimage10_SOURCES = affineimage10.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
@@ -125,6 +144,14 @@ affinepreimage5_SOURCES = affinepreimage5.cc
 
 ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 ascii_dump_load2_SOURCES = ascii_dump_load2.cc
+
+bdsdifference1_SOURCES = bdsdifference1.cc
+bdsdifference2_SOURCES = bdsdifference2.cc
+bdsdifference3_SOURCES = bdsdifference3.cc
+bdsdifference4_SOURCES = bdsdifference4.cc
+bdsdifference5_SOURCES = bdsdifference5.cc
+bdsdifference6_SOURCES = bdsdifference6.cc
+bdsdifference7_SOURCES = bdsdifference7.cc
 
 bdshull1_SOURCES = bdshull1.cc
 bdshull2_SOURCES = bdshull2.cc
@@ -156,6 +183,8 @@ ch78widening5_SOURCES = ch78widening5.cc
 ch78widening6_SOURCES = ch78widening6.cc
 ch78widening7_SOURCES = ch78widening7.cc
 ch78widening8_SOURCES = ch78widening8.cc
+
+closure1_SOURCES = closure1.cc
 
 concatenate1_SOURCES = concatenate1.cc
 concatenate2_SOURCES = concatenate2.cc
@@ -235,12 +264,7 @@ mapspacedims4_SOURCES = mapspacedims4.cc
 
 maxspacedim_SOURCES = maxspacedim.cc
 
-polydifference1_SOURCES = polydifference1.cc
-polydifference2_SOURCES = polydifference2.cc
-polydifference3_SOURCES = polydifference3.cc
-polydifference4_SOURCES = polydifference4.cc
-polydifference5_SOURCES = polydifference5.cc
-polydifference6_SOURCES = polydifference6.cc
+minconstraints1_SOURCES = minconstraints1.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
@@ -263,13 +287,6 @@ universe1_SOURCES = universe1.cc
 writebdshape1_SOURCES = writebdshape1.cc
 writebdshape2_SOURCES = writebdshape2.cc
 
-TESTS = $(ORIGINAL_TESTS)
-
-XFAIL_TESTS =
-
-check_PROGRAMS = $(TESTS) $(BUGS)
-
-BUGS =
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat \

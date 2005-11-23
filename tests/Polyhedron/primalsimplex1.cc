@@ -41,7 +41,7 @@ main() {
   Coefficient n;
   Coefficient d;
   Generator g(point());
-  Simplex_Status status = cs.primal_simplex(expr, true, n, d, g);
+  Simplex_Status status = cs.primal_simplex(expr, MAXIMIZATION, n, d, g);
 
   return (status == UNFEASIBLE_PROBLEM) ? 0 : 1;
 }

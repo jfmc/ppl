@@ -1,4 +1,4 @@
-# Doxyfile 1.4.4-20050927
+# Doxyfile 1.4.5
 
 # This file describes the settings to be used by the documentation system
 # doxygen (www.doxygen.org) for a project
@@ -536,6 +536,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Generator_System.types.hh \
                          @srcdir@/../src/Generator_System.inlines.hh \
                          @srcdir@/../src/Generator_System.cc \
+                         @srcdir@/../src/Scalar_Products.types.hh \
+                         @srcdir@/../src/Scalar_Products.defs.hh \
+                         @srcdir@/../src/Scalar_Products.inlines.hh \
+                         @srcdir@/../src/Scalar_Products.cc \
                          @srcdir@/../src/Ph_Status.idefs.hh \
                          @srcdir@/../src/Ph_Status.inlines.hh \
                          @srcdir@/../src/Ph_Status.cc \
@@ -576,10 +580,6 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Widening_Function.types.hh \
                          @srcdir@/../src/Widening_Function.defs.hh \
                          @srcdir@/../src/Widening_Function.inlines.hh \
-                         @srcdir@/../src/Determinate.defs.hh \
-                         @srcdir@/../src/Determinate.inlines.hh \
-                         @srcdir@/../src/Powerset.defs.hh \
-                         @srcdir@/../src/Powerset.inlines.hh \
                          @srcdir@/../src/BHRZ03_Certificate.types.hh \
                          @srcdir@/../src/BHRZ03_Certificate.defs.hh \
                          @srcdir@/../src/BHRZ03_Certificate.inlines.hh \
@@ -588,10 +588,23 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/H79_Certificate.defs.hh \
                          @srcdir@/../src/H79_Certificate.inlines.hh \
                          @srcdir@/../src/H79_Certificate.cc \
+                         @srcdir@/../src/Determinate.defs.hh \
+                         @srcdir@/../src/Determinate.inlines.hh \
+                         @srcdir@/../src/Powerset.defs.hh \
+                         @srcdir@/../src/Powerset.inlines.hh \
                          @srcdir@/../src/Polyhedra_Powerset.types.hh \
                          @srcdir@/../src/Polyhedra_Powerset.defs.hh \
                          @srcdir@/../src/Polyhedra_Powerset.inlines.hh \
                          @srcdir@/../src/algorithms.hh \
+                         @srcdir@/../src/DB_Row.types.hh \
+                         @srcdir@/../src/DB_Row.defs.hh \
+                         @srcdir@/../src/DB_Row.inlines.hh \
+                         @srcdir@/../src/DB_Matrix.types.hh \
+                         @srcdir@/../src/DB_Matrix.defs.hh \
+                         @srcdir@/../src/DB_Matrix.inlines.hh \
+                         @srcdir@/../src/BD_Shape.types.hh \
+                         @srcdir@/../src/BD_Shape.defs.hh \
+                         @srcdir@/../src/BD_Shape.inlines.hh \
                          ../interfaces/C/ppl_c.h \
                          @srcdir@/../interfaces/C/ppl_c.cc \
                          @srcdir@/../interfaces/Prolog/Prolog_interface.dox \

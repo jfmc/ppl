@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Generator_defs_hh 1
 
 #include "Generator.types.hh"
+#include "Scalar_Products.types.hh"
 #include "Row.defs.hh"
 #include "Variable.defs.hh"
 #include "Constraint_System.types.hh"
@@ -36,23 +37,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 // Put them in the namespace here to declare them friend later.
-
-// This is commented in scalar_product.defs.hh.
-int scalar_product_sign(const Constraint& x, const Generator& y);
-
-// This is commented in scalar_product.defs.hh.
-int reduced_scalar_product_sign(const Constraint& x, const Generator& y);
-
-// This is commented in scalar_product.defs.hh.
-void
-homogeneous_scalar_product_assign(Coefficient& z,
-				  const Linear_Expression& x,
-				  const Generator& y);
-
-// This is commented in scalar_product.defs.hh.
-int
-homogeneous_scalar_product_sign(const Linear_Expression& x,
-				const Generator& y);
 
 namespace IO_Operators {
 
@@ -331,6 +315,11 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this is a ray.
   bool is_ray() const;
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Returns <CODE>true</CODE> if and only if \p *this is a line or a ray.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  bool is_line_or_ray() const;
+
   //! Returns <CODE>true</CODE> if and only if \p *this is a point.
   bool is_point() const;
 
@@ -407,6 +396,8 @@ private:
   void
   throw_invalid_argument(const char* method, const char* reason) const;
 
+  friend class Parma_Polyhedra_Library::Scalar_Products;
+  friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;
   friend class Parma_Polyhedra_Library::Generator_System;
   friend class Parma_Polyhedra_Library::Generator_System::const_iterator;
   // FIXME: the following friend declaration should be avoided.
@@ -416,29 +407,6 @@ private:
   friend
   Parma_Polyhedra_Library
   ::Linear_Expression::Linear_Expression(const Generator& g);
-  friend int
-  Parma_Polyhedra_Library::scalar_product_sign(const Constraint& x,
-					       const Generator& y);
-  friend int
-  Parma_Polyhedra_Library::reduced_scalar_product_sign(const Constraint& x,
-						       const Generator& y);
-  friend void
-  Parma_Polyhedra_Library
-  ::homogeneous_scalar_product_assign(Coefficient& z,
-				      const Linear_Expression& x,
-				      const Generator& y);
-  friend int
-  Parma_Polyhedra_Library
-  ::homogeneous_scalar_product_sign(const Linear_Expression& x,
-				    const Generator& y);
-
-
-  // FIXME: the following friend declaration is only to grant access to
-  // Constraint_System::satisfies_all_constraints().
-  friend class Parma_Polyhedra_Library::Constraint_System;
-  // FIXME: the following friend declaration is only to grant access to
-  // Congruence_System::satisfies_all_congruences().
-  friend class Parma_Polyhedra_Library::Congruence_System;
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,

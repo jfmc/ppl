@@ -68,11 +68,11 @@ public:
   }
 
   static Type epsilon() {
-    return static_cast<Type>(1);
+    return static_cast<Type>(0);
   }
 
   static Type round_error() {
-    return static_cast<Type>(1);
+    return static_cast<Type>(0);
   }
 
   static Type infinity() {

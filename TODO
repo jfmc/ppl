@@ -1,6 +1,8 @@
 Enhancements for PPL 0.8
 ========================
 
+- Solve failures of parallel builds (e.g., make -j 4) in the
+  Prolog interface directories.
 - Reduce the number of FIXMEs to no more than 40.
 - Improve the documentation about shared libraries.
   See http://www.cs.unipr.it/pipermail/ppl-devel/2005-July/006178.html.
@@ -15,10 +17,12 @@ Enhancements for PPL 0.8
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
 - Reconsider the handling of temporary coefficients.
-- In the Prolog interface, reconsider the functionality and names of the
-  "with_token" predicates.
 - The documentation has been read through but a more careful check,
   particularly on the detailed descriptions, should be done.
+- Should we really keep using both functions named add_mul_assign(),
+  exact_div_assign() and friends? Or should we better start using
+  assign_div(), assign_mul() and friends everywhere? What are the
+  guidelines for using these functions? 
 
 Enhancements for PPL 0.9
 ========================

@@ -218,14 +218,9 @@ PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned short)
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned int)
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned long)
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned long long)
-PPL_INTEGER_CONSTRUCT_FROM_NATIVE(float32_t)
-PPL_INTEGER_CONSTRUCT_FROM_NATIVE(float64_t)
-#ifdef FLOAT96_TYPE
-PPL_INTEGER_CONSTRUCT_FROM_NATIVE(float96_t)
-#endif
-#ifdef FLOAT128_TYPE
-PPL_INTEGER_CONSTRUCT_FROM_NATIVE(float128_t)
-#endif
+PPL_INTEGER_CONSTRUCT_FROM_NATIVE(float)
+PPL_INTEGER_CONSTRUCT_FROM_NATIVE(double)
+PPL_INTEGER_CONSTRUCT_FROM_NATIVE(long double)
 
 #define PPL_SIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(type) \
 template <> \
@@ -312,42 +307,42 @@ Native_Integer<T>::raw_value() const {
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator=(const Native_Integer<T>& y) {
+Native_Integer<T>::operator=(const Native_Integer& y) {
   v = y.v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator+=(const Native_Integer<T>& y) {
+Native_Integer<T>::operator+=(const Native_Integer& y) {
   v += y.v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator-=(const Native_Integer<T>& y) {
+Native_Integer<T>::operator-=(const Native_Integer& y) {
   v -= y.v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator*=(const Native_Integer<T>& y) {
+Native_Integer<T>::operator*=(const Native_Integer& y) {
   v *= y.v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator/=(const Native_Integer<T>& y) {
+Native_Integer<T>::operator/=(const Native_Integer& y) {
   v /= y.v;
   return *this;
 }
 
 template <typename T>
 inline Native_Integer<T>&
-Native_Integer<T>::operator%=(const Native_Integer<T>& y) {
+Native_Integer<T>::operator%=(const Native_Integer& y) {
   v %= y.v;
   return *this;
 }

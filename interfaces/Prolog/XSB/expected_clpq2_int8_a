@@ -20,22 +20,21 @@ PPL clpq ?- Y = 8
  more? yes
 PPL clpq ?- yes
 PPL clpq ?- 
-Error: an overflow has been detected by the PPL: Negative overflow.
+Error: an overflow has been detected by the PPL: Positive overflow.
 no
 PPL clpq ?- yes
-PPL clpq ?- X = 10
- more? yes
+PPL clpq ?- 
+Error: an overflow has been detected by the PPL: Positive overflow.
+no
 PPL clpq ?- yes
 PPL clpq ?- X =< 5
 X > 4
  more? X < 2
 X > 1
  more? no
-PPL clpq ?- X =< 205
-X > 110
- more? X < 35
-X > 28
- more? no
+PPL clpq ?- 
+Error: an overflow has been detected by the PPL: Positive overflow.
+no
 PPL clpq ?- -D2 > 0
 -S1 - D1 + S2 > 0
 S - S1 - D1 + D >= 0

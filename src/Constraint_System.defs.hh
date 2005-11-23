@@ -147,6 +147,11 @@ public:
   dimension_type space_dimension() const;
 
   //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this
+  //! contains one or more strict inequality constraints.
+  bool has_strict_inequalities() const;
+
+  //! \brief
   //! Removes all the constraints from the constraint system
   //! and sets its space dimension to 0.
   void clear();
@@ -167,10 +172,8 @@ public:
     \param expr
     The objective function to be optimized.
 
-    \param maximize
-    The kind of optimization requested. If <CODE>true</CODE>, the
-    objective function will be maximized; if <CODE>false</CODE>, the
-    objective function will be minimized.
+    \param kind
+    The kind of optimization requested.
 
     \param ext_n
     On exit, if the problem has been solved, will contain the numerator
@@ -192,10 +195,28 @@ public:
     will be left untouched.
   */
   Simplex_Status primal_simplex(const Linear_Expression& expr,
-				bool maximize,
+				Optimization_Kind kind,
 				Coefficient& ext_n,
 				Coefficient& ext_d,
 				Generator& optimizing_point) const;
+
+  //! Checks satisfiability of \p *this using the primal simplex algorithm.
+  /*!
+    \return
+    <CODE>true</CODE> if the constraint system is satisfiable;
+    <CODE>false</CODE> otherwise.
+
+    \param feasible_point
+    On exit, if the constraint system is satisfiable, will contain a
+    feasible point.
+
+    \exception std::invalid_argument
+    Thrown if the constraint system contains any strict inequality.
+
+    If the optimization problem is unfeasible, the parameter
+    \p feasible_point will be left untouched.
+  */
+  bool is_satisfiable(Generator& feasible_point) const;
 
   //! \brief
   //! Returns the singleton system containing only
@@ -345,11 +366,6 @@ private:
   bool adjust_topology_and_space_dimension(Topology topol,
 					   dimension_type num_dimensions);
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! contains one or more strict inequality constraints.
-  bool has_strict_inequalities() const;
-
   //! Returns the \p k- th constraint of the system.
   Constraint& operator[](dimension_type k);
 
@@ -373,10 +389,11 @@ private:
     \param denominator
     The denominator of the affine transformation.
 
-    We want to allow affine transformations (see the Section \ref
-    operations) having any rational coefficients. Since the coefficients
-    of the constraints are integers we must also provide an integer
-    \p denominator that will be used as denominator of the affine
+    We want to allow affine transformations
+    (see Section \ref Images_and_Preimages_of_Affine_Transfer_Relations)
+    having any rational coefficients. Since the coefficients of the
+    constraints are integers we must also provide an integer \p
+    denominator that will be used as denominator of the affine
     transformation.
     The denominator is required to be a positive integer.
 
@@ -404,6 +421,14 @@ private:
 
   //! Returns the number of inequality constraints.
   dimension_type num_inequalities() const;
+
+  //! \brief
+  //! Applies Gaussian's elimination and back-substitution so as
+  //! to provide a partial simplification of the system of constraints.
+  /*!
+    It is assumed that the system has no pending constraints.
+  */
+  void simplify();
 
   //! \brief
   //! Inserts in \p *this a copy of the constraint \p c,

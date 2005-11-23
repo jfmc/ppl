@@ -45,8 +45,6 @@ main() TRY {
   bd2.add_constraint(A - C <= 1);
   bd2.add_constraint(C - B <= 0);
 
-
-
 #if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
@@ -61,8 +59,6 @@ main() TRY {
   int retval = (bd1 == known_result) ? 0 : 1;
 
   return retval;
-
-
 
 }
 CATCH

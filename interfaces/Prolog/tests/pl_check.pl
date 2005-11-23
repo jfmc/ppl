@@ -176,17 +176,17 @@ run_one(transform_polyhedron) :-
 
 run_one(extrapolation_operators) :-
    widen_BHRZ03,
-   widen_BHRZ03_with_token,
+   widen_BHRZ03_with_tokens,
    lim_extrapolate_BHRZ03,
-   lim_extrapolate_BHRZ03_with_token,
+   lim_extrapolate_BHRZ03_with_tokens,
    bound_extrapolate_BHRZ03,
-   bound_extrapolate_BHRZ03_with_token,
+   bound_extrapolate_BHRZ03_with_tokens,
    widen_H79,
-   widen_H79_with_token,
+   widen_H79_with_tokens,
    lim_extrapolate_H79,
-   lim_extrapolate_H79_with_token,
+   lim_extrapolate_H79_with_tokens,
    bound_extrapolate_H79,
-   bound_extrapolate_H79_with_token.
+   bound_extrapolate_H79_with_tokens.
 
 run_one(get_system) :-
    get_cons,
@@ -1258,32 +1258,35 @@ widen_BHRZ03(Topology, CS_P, CS_Q, CS_Pa, CS_Qa) :-
   widen_extrapolation_final(P, CS_Pa, Topology),
   widen_extrapolation_final(Q, CS_Qa, Topology).
 
-% Tests ppl_Polyhedron_BHRZ03_widening_assign_with_token/3.
-widen_BHRZ03_with_token :-
+% Tests ppl_Polyhedron_BHRZ03_widening_assign_with_tokens/4.
+widen_BHRZ03_with_tokens :-
   make_vars(2, [A, B]),
-  widen_BHRZ03_with_token(c, [A >= 1], [A >= 1, B >= 1],
-                             [A >= 1], [A >= 1, B >= 1], 0
+  widen_BHRZ03_with_tokens(c, [A >= 1], [A >= 1, B >= 1],
+                             [A >= 1], [A >= 1, B >= 1], 1, 1
                          ),
-  widen_BHRZ03_with_token(c, [A >= 1, B >= 0], [A >= 1, B >= 1],
-                             [A >= 1, B >= 0], [A >= 1, B >= 1], 1
+  widen_BHRZ03_with_tokens(c, [A >= 1, B >= 0], [A >= 1, B >= 1],
+                             [A >= 1], [A >= 1, B >= 1], 1, 0
                          ),
-  widen_BHRZ03_with_token(nnc, [A > 1], [A > 1, B > 1],
-                               [A > 1], [A > 1, B > 1], 0
+  widen_BHRZ03_with_tokens(nnc, [A > 1], [A > 1, B > 1],
+                               [A > 1], [A > 1, B > 1], 2, 2
                          ),
-  widen_BHRZ03_with_token(nnc, [A > 1, B >= 0], [A > 1, B >= 1],
-                               [A > 1, B >= 0], [A > 1, B >= 1], 1
+  widen_BHRZ03_with_tokens(nnc, [A > 1, B >= 0], [A > 1, B >= 1],
+                               [A > 1, B >= 0], [A > 1, B >= 1], 3, 1
                          ).
 
-widen_BHRZ03_with_token(Topology, CS_P, CS_Q, CS_Pa, CS_Qa, Token) :-
+widen_BHRZ03_with_tokens(Topology,
+                      CS_P, CS_Q, CS_Pa, CS_Qa, Token_i, Token_o) :-
   widen_extrapolation_init(P, CS_P, Topology),
   widen_extrapolation_init(Q, CS_Q, Topology),
-  Wrong_Token is 1 - Token,
-  \+ ppl_Polyhedron_BHRZ03_widening_assign_with_token(P, Q, Wrong_Token),
-  ppl_Polyhedron_BHRZ03_widening_assign_with_token(P, Q, Token),
-  ppl_Polyhedron_BHRZ03_widening_assign_with_token(P, Q, X),
-  X = Token,
+  \+ ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(P, Q,
+                                            Token_i, 4),
+  \+ ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(P, Q,
+                                            Token_i, not_a_number),
+  ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(P, Q, Token_i, X),
+  ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(P, Q, X, Y),
+  Y == Token_o,
   widen_extrapolation_final(P, CS_Pa, Topology),
-  widen_extrapolation_final(Q, CS_Qa, Topology).
+  widen_extrapolation_final(Q, CS_Qa, Topology), !.
 
 % Tests ppl_Polyhedron_limited_BHRZ03_extrapolation_assign/3.
 lim_extrapolate_BHRZ03 :-
@@ -1309,30 +1312,32 @@ lim_extrapolate_BHRZ03(Topology, CS_P, CS_Q, CS_lim, CS_Pa)  :-
   !,
   ppl_delete_Polyhedron(Q).
 
-% Tests ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token/4.
-lim_extrapolate_BHRZ03_with_token :-
+% Tests ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens/5.
+lim_extrapolate_BHRZ03_with_tokens :-
   make_vars(2, [A, B]),
-  lim_extrapolate_BHRZ03_with_token(c,
+  lim_extrapolate_BHRZ03_with_tokens(c,
                   [A >= 1, B >= 0], [A >= 1, B >= 1],
-                  [A >= 1, B >= 0], [A >= 1, B >= 0], 1
+                  [A >= 1, B >= 0], [A >= 1, B >= 0], 1, 0
                                    ),
-  lim_extrapolate_BHRZ03_with_token(nnc,
+  lim_extrapolate_BHRZ03_with_tokens(nnc,
                     [A > 1, B > 0], [A > 1, B > 1],
-                    [A > 1, B > 0], [A > 1, B > 0], 1
+                    [A > 1, B > 0], [A > 1, B > 0], 1, 0
                                    ).
 
-lim_extrapolate_BHRZ03_with_token(Topology,
-                 CS_P, CS_Q, CS_lim, CS_Pa, Token) :-
+lim_extrapolate_BHRZ03_with_tokens(Topology,
+                 CS_P, CS_Q, CS_lim, CS_Pa, Token_i, Token_o) :-
   widen_extrapolation_init(P, CS_P, Topology),
   widen_extrapolation_init(Q, CS_Q, Topology),
-  Wrong_Token is 1 - Token,
-  \+ ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(P, Q,
-                                                   CS_lim, Wrong_Token),
-  ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(P, Q,
-                                                   CS_lim, Token),
-  ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(P, Q,
-                                                   CS_lim, X),
-  X = Token,
+  Wrong_Token is Token_i + 1,
+  \+ ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(P, Q,
+                                            CS_lim, Token_i, Wrong_Token),
+  \+ ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(P, Q,
+                                            CS_lim, Token_i, not_a_number),
+  ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(P, Q,
+                                            CS_lim, Token_i, X),
+  ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(P, Q,
+                                            CS_lim, X, Y),
+  Y == Token_o,
   widen_extrapolation_final(P, CS_Pa, Topology),
   !,
   ppl_delete_Polyhedron(Q).
@@ -1362,30 +1367,32 @@ bound_extrapolate_BHRZ03(Topology, CS_P, CS_Q, CS_lim, CS_Pa)  :-
   !,
   ppl_delete_Polyhedron(Q).
 
-% Tests ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token/4.
-bound_extrapolate_BHRZ03_with_token :-
+% Tests ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens/5.
+bound_extrapolate_BHRZ03_with_tokens :-
   make_vars(2, [A, B]),
-  bound_extrapolate_BHRZ03_with_token(c,
+  bound_extrapolate_BHRZ03_with_tokens(c,
                             [A >= 1, B >= 0], [A >= 1, B >= 1],
-                            [A >= 1, B >= 0], [A >= 1, B >= 0], 1
+                            [A >= 1, B >= 0], [A >= 1, B >= 0], 1, 0
                                      ),
-  bound_extrapolate_BHRZ03_with_token(nnc,
+  bound_extrapolate_BHRZ03_with_tokens(nnc,
                             [A > 1, B > 0], [A > 1, B > 1],
-                            [A > 1, B > 0], [A > 1, B > 0], 1
+                            [A > 1, B > 0], [A > 1, B > 0], 1, 0
                                      ).
 
-bound_extrapolate_BHRZ03_with_token(Topology,
-                 CS_P, CS_Q, CS_lim, CS_Pa, Token) :-
+bound_extrapolate_BHRZ03_with_tokens(Topology,
+                 CS_P, CS_Q, CS_lim, CS_Pa, Token_i, Token_o) :-
   widen_extrapolation_init(P, CS_P, Topology),
   widen_extrapolation_init(Q, CS_Q, Topology),
-  Wrong_Token is 1 - Token,
-  \+ ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(P, Q,
-                                                   CS_lim, Wrong_Token),
-  ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(P, Q,
-                                                   CS_lim, Token),
-  ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(P, Q,
-                                                   CS_lim, X),
-  X = Token,
+  Wrong_Token is Token_i + 1,
+  \+ ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(P, Q,
+                                         CS_lim, Token_i, Wrong_Token),
+  \+ ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(P, Q,
+                                         CS_lim, Token_i, not-a_number),
+  ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(P, Q,
+                                         CS_lim, Token_i, X),
+  ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(P, Q,
+                                         CS_lim, X, Y),
+  Y == Token_o,
   widen_extrapolation_final(P, CS_Pa, Topology),
   !,
   ppl_delete_Polyhedron(Q).
@@ -1413,32 +1420,35 @@ widen_H79(Topology, CS_P, CS_Q, CS_Pa, CS_Qa) :-
   widen_extrapolation_final(P, CS_Pa, Topology),
   widen_extrapolation_final(Q, CS_Qa, Topology).
 
-% Tests ppl_Polyhedron_H79_widening_assign_with_token/3.
-widen_H79_with_token :-
+% Tests ppl_Polyhedron_H79_widening_assign_with_tokens/4.
+widen_H79_with_tokens :-
   make_vars(2, [A, B]),
-  widen_H79_with_token(c,   [A >= 1], [A >= 1, B >= 1],
-                            [A >= 1], [A >= 1, B >= 1], 0
-                      ),
-  widen_H79_with_token(c,   [A >= 1, B >= 0], [A >= 1, B >= 1],
-                            [A >= 1, B >= 0], [A >= 1, B >= 1], 1
-                      ),
-  widen_H79_with_token(nnc, [A > 1], [A > 1, B > 1],
-                            [A > 1], [A > 1, B > 1], 0
-                      ),
-  widen_H79_with_token(nnc, [A > 1, B >= 0], [A > 1, B >= 1],
-                            [A > 1, B >= 0], [A > 1, B >= 1], 1
-                      ).
+  widen_H79_with_tokens(c, [A >= 1], [A >= 1, B >= 1],
+                             [A >= 1], [A >= 1, B >= 1], 1, 1
+                         ),
+  widen_H79_with_tokens(c, [A >= 1, B >= 0], [A >= 1, B >= 1],
+                             [A >= 1], [A >= 1, B >= 1], 1, 0
+                         ),
+  widen_H79_with_tokens(nnc, [A > 1], [A > 1, B > 1],
+                               [A > 1], [A > 1, B > 1], 2, 2
+                         ),
+  widen_H79_with_tokens(nnc, [A > 1, B >= 0], [A > 1, B >= 1],
+                               [A > 1, B >= 0], [A > 1, B >= 1], 3, 1
+                         ).
 
-widen_H79_with_token(Topology, CS_P, CS_Q, CS_Pa, CS_Qa, Token) :-
+widen_H79_with_tokens(Topology,
+                      CS_P, CS_Q, CS_Pa, CS_Qa, Token_i, Token_o) :-
   widen_extrapolation_init(P, CS_P, Topology),
   widen_extrapolation_init(Q, CS_Q, Topology),
-  Wrong_Token is 1 - Token,
-  \+  ppl_Polyhedron_H79_widening_assign_with_token(P, Q, Wrong_Token),
-  ppl_Polyhedron_H79_widening_assign_with_token(P, Q, Token),
-  ppl_Polyhedron_H79_widening_assign_with_token(P, Q, X),
-  X = Token,
+  \+ ppl_Polyhedron_H79_widening_assign_with_tokens(P, Q,
+                                            Token_i, 4),
+  \+ ppl_Polyhedron_H79_widening_assign_with_tokens(P, Q,
+                                            Token_i, not_a_number),
+  ppl_Polyhedron_H79_widening_assign_with_tokens(P, Q, Token_i, X),
+  ppl_Polyhedron_H79_widening_assign_with_tokens(P, Q, X, Y),
+  Y == Token_o,
   widen_extrapolation_final(P, CS_Pa, Topology),
-  widen_extrapolation_final(Q, CS_Qa, Topology).
+  widen_extrapolation_final(Q, CS_Qa, Topology), !.
 
 % Tests ppl_Polyhedron_limited_H79_extrapolation_assign/3.
 lim_extrapolate_H79 :-
@@ -1470,27 +1480,32 @@ lim_extrapolate_H79(Topology, CS_P, CS_Q, CS_lim, CS_Pa)  :-
   !,
   ppl_delete_Polyhedron(Q).
 
-% Tests ppl_Polyhedron_limited_H79_extrapolation_assign_with_token/4.
-lim_extrapolate_H79_with_token :-
+% Tests ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens/5.
+lim_extrapolate_H79_with_tokens :-
   make_vars(2, [A, B]),
-  lim_extrapolate_H79_with_token(c,
+  lim_extrapolate_H79_with_tokens(c,
                   [A >= 1, B >= 0], [A >= 1, B >= 1],
-                  [A >= 1, B >= 0], [A >= 1, B >= 0], 1
-                                ),
-  lim_extrapolate_H79_with_token(nnc,
-                  [A > 1, B > 0], [A > 1, B > 1],
-                  [A > 1, B > 0], [A > 1, B > 0], 1
-                                ).
+                  [A >= 1, B >= 0], [A >= 1, B >= 0], 1, 0
+                                   ),
+  lim_extrapolate_H79_with_tokens(nnc,
+                    [A > 1, B > 0], [A > 1, B > 1],
+                    [A > 1, B > 0], [A > 1, B > 0], 1, 0
+                                   ).
 
-lim_extrapolate_H79_with_token(Topology,
-                 CS_P, CS_Q, CS_lim, CS_Pa, Token) :-
+lim_extrapolate_H79_with_tokens(Topology,
+                 CS_P, CS_Q, CS_lim, CS_Pa, Token_i, Token_o) :-
   widen_extrapolation_init(P, CS_P, Topology),
   widen_extrapolation_init(Q, CS_Q, Topology),
-  Wrong_Token is 1 - Token,
-  \+ ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(P, Q,
-                                                   CS_lim, Wrong_Token),
-  ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(P, Q,
-                                                   CS_lim, Token),
+  Wrong_Token is Token_i + 1,
+  \+ ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(P, Q,
+                                            CS_lim, Token_i, Wrong_Token),
+  \+ ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(P, Q,
+                                            CS_lim, Token_i, not_a_number),
+  ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(P, Q,
+                                            CS_lim, Token_i, X),
+  ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(P, Q,
+                                            CS_lim, X, Y),
+  Y == Token_o,
   widen_extrapolation_final(P, CS_Pa, Topology),
   !,
   ppl_delete_Polyhedron(Q).
@@ -1520,30 +1535,33 @@ bound_extrapolate_H79(Topology, CS_P, CS_Q, CS_lim, CS_Pa)  :-
   !,
   ppl_delete_Polyhedron(Q).
 
-% Tests ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token/4.
-bound_extrapolate_H79_with_token :-
-  make_vars(2, [A, B]),
-  bound_extrapolate_H79_with_token(c,
-                  [A >= 1, B >= 0], [A >= 1, B >= 1],
-                  [A >= 1, B >= 0], [A >= 1, B >= 0], 1
-                                  ),
-  bound_extrapolate_H79_with_token(nnc,
-                  [A > 1, B > 0], [A > 1, B > 1],
-                  [A > 1, B > 0], [A > 1, B > 0], 1
-                                  ).
 
-bound_extrapolate_H79_with_token(Topology,
-                 CS_P, CS_Q, CS_lim, CS_Pa, Token) :-
+% Tests ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens/5.
+bound_extrapolate_H79_with_tokens :-
+  make_vars(2, [A, B]),
+  bound_extrapolate_H79_with_tokens(c,
+                            [A >= 1, B >= 0], [A >= 1, B >= 1],
+                            [A >= 1, B >= 0], [A >= 1, B >= 0], 1, 0
+                                     ),
+  bound_extrapolate_H79_with_tokens(nnc,
+                            [A > 1, B > 0], [A > 1, B > 1],
+                            [A > 1, B > 0], [A > 1, B > 0], 1, 0
+                                     ).
+
+bound_extrapolate_H79_with_tokens(Topology,
+                 CS_P, CS_Q, CS_lim, CS_Pa, Token_i, Token_o) :-
   widen_extrapolation_init(P, CS_P, Topology),
   widen_extrapolation_init(Q, CS_Q, Topology),
-  Wrong_Token is 1 - Token,
-  \+ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(P, Q,
-                                                   CS_lim, Wrong_Token),
-  ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(P, Q,
-                                                   CS_lim, Token),
-  ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(P, Q,
-                                                   CS_lim, X),
-  X = Token,
+  Wrong_Token is Token_i + 1,
+  \+ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(P, Q,
+                                         CS_lim, Token_i, Wrong_Token),
+  \+ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(P, Q,
+                                         CS_lim, Token_i, not_a_number),
+  ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(P, Q,
+                                         CS_lim, Token_i, X),
+  ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(P, Q,
+                                         CS_lim, X, Y),
+  Y == Token_o,
   widen_extrapolation_final(P, CS_Pa, Topology),
   !,
   ppl_delete_Polyhedron(Q).
@@ -2054,7 +2072,7 @@ exceptions :-
 % It does not check those that are dependent on a specific Prolog system.
 
 exception_prolog(V) :-
-   exception_prolog1(12, V).
+   exception_prolog1(13, V).
 
 exception_prolog1(0, _) :- !.
 exception_prolog1(N, V) :-
@@ -2084,8 +2102,29 @@ exception_prolog(2, _) :-
 exception_prolog(3, _) :-
   must_catch(ppl_set_timeout(-1)).
 
+
+%% TEST: not_unsigned_integer
+exception_prolog(4, _) :-
+  clean_ppl_new_Polyhedron_from_space_dimension(c, 3, universe, P),
+  clean_ppl_new_Polyhedron_from_space_dimension(c, 3, universe, Q),
+  must_catch(ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(
+             Q, P, -1, _X)),
+  must_catch(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(
+             Q, P, [], -1, _X)),
+  must_catch(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(
+             Q, P, [], -1, _X)),
+  must_catch(ppl_Polyhedron_H79_widening_assign_with_tokens(
+             Q, P, -1, _X)),
+  must_catch(ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(
+             Q, P, [], -1, _X)),
+  must_catch(ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(
+             Q, P, [], -1, _X)),
+  !,
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(Q).
+
 %% TEST: non_linear
-exception_prolog(4, [A,B,C]) :-
+exception_prolog(5, [A,B,C]) :-
   must_catch(ppl_new_Polyhedron_from_generators(c, [point(B + A*C)], _)),
   must_catch(ppl_new_Polyhedron_from_generators(c,
                      [point(C), ray(B + C, 1)], _)),
@@ -2101,14 +2140,14 @@ exception_prolog(4, [A,B,C]) :-
                      [A], _)).
 
 %% TEST: not_a_variable
-exception_prolog(5, [A,_,_]) :-
+exception_prolog(6, [A,_,_]) :-
   clean_ppl_new_Polyhedron_from_space_dimension(c, 3, universe, P),
   must_catch(ppl_Polyhedron_remove_space_dimensions(P, [A,1])),
   !,
   ppl_delete_Polyhedron(P).
 
 %% TEST: not_an_integer
-exception_prolog(6, [A,B,_]) :-
+exception_prolog(7, [A,B,_]) :-
   clean_ppl_new_Polyhedron_from_generators(c,
                [point(A + B), ray(A), ray(B)], P),
   must_catch(ppl_Polyhedron_affine_image(P, A, A + B + 1, i)),
@@ -2116,25 +2155,25 @@ exception_prolog(6, [A,B,_]) :-
   ppl_delete_Polyhedron(P).
 
 %% TEST: not_a_polyhedron_kind
-exception_prolog(7, [A,B,C]) :-
+exception_prolog(8, [A,B,C]) :-
    must_catch(ppl_new_Polyhedron_from_generators(_, [point(A + B + C, 1)], _)).
 
 %% TEST: not_a_polyhedron_handle
-exception_prolog(8, _) :-
+exception_prolog(9, _) :-
   must_catch(ppl_Polyhedron_space_dimension(_, _N)).
 
 %% TEST: not_a_complexity_class
-exception_prolog(9, [A, _, _]) :-
+exception_prolog(10, [A, _, _]) :-
    clean_ppl_new_Polyhedron_from_generators(c,
                [point(A)], P),
    must_catch(ppl_Polyhedron_get_bounding_box(P, a, _Box)).
  
 %% TEST: not_universe_or_empty
-exception_prolog(10, _) :-
+exception_prolog(11, _) :-
   must_catch(ppl_new_Polyhedron_from_space_dimension(c, 3, xxx, _)).
 
 %% TEST: not_relation
-exception_prolog(11, [A, B, _]) :-
+exception_prolog(12, [A, B, _]) :-
   clean_ppl_new_Polyhedron_from_generators(c,
                [point(A)], P),
   must_catch(ppl_Polyhedron_generalized_affine_image(P, A, x, A + 1, 1)),
@@ -2144,7 +2183,7 @@ exception_prolog(11, [A, B, _]) :-
      ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x + y, A + 1)).
 
 %% TEST: not_a_nil_terminated_list
-exception_prolog(12, [A, B, C]) :-
+exception_prolog(13, [A, B, C]) :-
   must_catch(ppl_new_Polyhedron_from_generators(c,
      [point(A + B + C, 1) | not_a_list], _)),
   must_catch(ppl_new_Polyhedron_from_constraints(c,
@@ -2167,20 +2206,20 @@ exception_prolog(12, [A, B, C]) :-
   must_catch(ppl_Polyhedron_remove_space_dimensions(Q, not_a_list)),
   must_catch(ppl_Polyhedron_limited_H79_extrapolation_assign(
              Q, P, not_a_list)),
-  must_catch(ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(
-             Q, P, not_a_list)),
+  must_catch(ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(
+             Q, P, not_a_list, 1, _)),
   must_catch(ppl_Polyhedron_bounded_H79_extrapolation_assign(
              Q, P, not_a_list)),
-  must_catch(ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(
-             Q, P, not_a_list)),
+  must_catch(ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(
+             Q, P, not_a_list, 1, _)),
   must_catch(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(
              Q, P, not_a_list)),
-  must_catch(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(
-             Q, P, not_a_list)),
+  must_catch(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(
+             Q, P, not_a_list, 1, _)),
   must_catch(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(
              Q, P, not_a_list)),
-  must_catch(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(
-             Q, P, not_a_list)),
+  must_catch(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(
+             Q, P, not_a_list, 1, _)),
   !,
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).

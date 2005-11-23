@@ -108,7 +108,7 @@ Bounding_Box::raise_lower_bound(const dimension_type k, const bool closed,
   assign(q.get_num(), raw_value(n), ROUND_IGNORE);
   assign(q.get_den(), raw_value(d), ROUND_IGNORE);
   q.canonicalize();
-  vec[k].raise_lower_bound(LBoundary(ERational(q),
+  vec[k].raise_lower_bound(LBoundary(ERational(q, ROUND_IGNORE),
 				     (closed
 				      ? LBoundary::CLOSED
 				      : LBoundary::OPEN)));
@@ -125,7 +125,7 @@ Bounding_Box::lower_upper_bound(const dimension_type k, const bool closed,
   assign(q.get_num(), raw_value(n), ROUND_IGNORE);
   assign(q.get_den(), raw_value(d), ROUND_IGNORE);
   q.canonicalize();
-  vec[k].lower_upper_bound(UBoundary(ERational(q),
+  vec[k].lower_upper_bound(UBoundary(ERational(q, ROUND_IGNORE),
 				     (closed
 				      ? UBoundary::CLOSED
 				      : UBoundary::OPEN)));

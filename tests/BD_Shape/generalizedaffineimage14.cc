@@ -29,7 +29,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static void
+namespace {
+
+void
 test1() {
   Variable x(0);
   Variable y(1);
@@ -41,9 +43,9 @@ test1() {
   TBD_Shape known_result(2);
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(y <= 0);
- 
+
   bd.generalized_affine_image(3*x + 2, LESS_THAN_OR_EQUAL, 2*x - 3);
-  
+
   bool ok = (bd == known_result);
 
 #if NOISY
@@ -56,7 +58,7 @@ test1() {
     exit(1);
 }
 
-static void
+void
 test2() {
   Variable x(0);
   Variable y(1);
@@ -66,10 +68,10 @@ test2() {
   bd.add_constraint(y >= 1);
 
   TBD_Shape known_result(bd);
-  known_result.affine_image(x, Linear_Expression(10), 3); 
+  known_result.affine_image(x, Linear_Expression(10), 3);
 
   bd.generalized_affine_image(Linear_Expression(6), EQUAL, 3*x - 4);
- 
+
   bool ok = (bd == known_result);
 
 #if NOISY
@@ -81,7 +83,7 @@ test2() {
     exit(1);
 }
 
-static void
+void
 test3() {
   Variable A(0);
   Variable B(1);
@@ -92,10 +94,8 @@ test3() {
 
   bd.generalized_affine_image(2*B + 3*A,
 			      LESS_THAN_OR_EQUAL, Linear_Expression(1));
- 
+
   TBD_Shape known_result(2);
-  known_result.add_constraint(B >= 0);
-  known_result.add_constraint(3*A <= 1);
 
   bool ok = (bd == known_result);
 
@@ -108,7 +108,7 @@ test3() {
     exit(1);
 }
 
-static void
+void
 test4() {
   Variable A(0);
   Variable B(1);
@@ -135,7 +135,7 @@ test4() {
     exit(1);
 }
 
-static void
+void
 test5() {
   Variable A(0);
   Variable B(1);
@@ -145,13 +145,10 @@ test5() {
   bd.add_constraint(B <= 1);
 
   bd.generalized_affine_image(A + 2*B - 5, GREATER_THAN_OR_EQUAL, 3*B);
- 
-  TBD_Shape known_result(2);
-  known_result.add_constraint(A <= 1);
-  known_result.add_constraint(B <= 0);
-  known_result.add_constraint(A - B >= 1);
 
-   bool ok = (bd == known_result);
+  TBD_Shape known_result(2);
+
+  bool ok = (bd == known_result);
 
 #if NOISY
   print_constraints(bd, "*** bd.generalized_affine_image(A + 2*B - 5, "
@@ -162,7 +159,7 @@ test5() {
     exit(1);
 }
 
-static void
+void
 test6() {
   Variable A(0);
   Variable B(1);
@@ -172,14 +169,12 @@ test6() {
   bd.add_constraint(A - B == 0);
   bd.add_constraint(B <= 1);
   bd.add_constraint(C - A <= 2);
- 
+
   bd.generalized_affine_image(2*B + C + 1, LESS_THAN_OR_EQUAL, A - 3*B + 2*C);
 
   TBD_Shape known_result(3);
-
   known_result.add_constraint(A <= 1);
-  known_result.add_constraint(C - A <= 2);
- 
+
   bool ok = (bd == known_result);
 
 #if NOISY
@@ -187,12 +182,12 @@ test6() {
 		    "*** bd.generalized_affine_image(2*B + C + 1, "
 		    "LESS_THAN_OR_EQUAL, A - 3*B + 2*C) ***");
 #endif
- 
+
   if (!ok)
     exit(1);
 }
 
-static void
+void
 test7() {
   Variable A(0);
   Variable B(1);
@@ -207,9 +202,7 @@ test7() {
 			      GREATER_THAN_OR_EQUAL, A - 3*B + 2*C);
 
   TBD_Shape known_result(3);
-
   known_result.add_constraint(A <= 1);
-  known_result.add_constraint(A - C >= -2);
 
   bool ok = (bd == known_result);
 
@@ -222,7 +215,7 @@ test7() {
     exit(1);
 }
 
-static void
+void
 test8() {
   Variable A(0);
   Variable B(1);
@@ -235,10 +228,9 @@ test8() {
 
   bd.generalized_affine_image(-2*A - B - 1,
 			      GREATER_THAN_OR_EQUAL, 3*A + B + 4*C - 2);
-  
+
   TBD_Shape known_result(3);
-  known_result.add_constraint(B - C >= -2);
-  known_result.add_constraint(B <= 1);
+  known_result.add_constraint(C <= 3);
 
   bool ok = (bd == known_result);
 
@@ -251,7 +243,7 @@ test8() {
     exit(1);
 }
 
-static void
+void
 test9() {
   Variable A(0);
   Variable B(1);
@@ -263,7 +255,7 @@ test9() {
   bd.add_constraint(C - A <= 2);
 
   bd.generalized_affine_image(-2*C + 3, LESS_THAN_OR_EQUAL, -3*B + 4);
-  
+
   TBD_Shape known_result(3);
   known_result.add_constraint(A - B == 0);
   known_result.add_constraint(B <= 1);
@@ -275,12 +267,12 @@ test9() {
   print_constraints(bd, "*** bd.generalized_affine_image(-2*C + 3, "
                         "LESS_THAN_OR_EQUAL, -3*B + 4) ***");
 #endif
- 
+
   if (!ok)
     exit(1);
 }
 
-static void
+void
 test10() {
   Variable A(0);
   Variable B(1);
@@ -292,7 +284,7 @@ test10() {
   bd.add_constraint(C + A <=2);
 
   TBD_Shape known_result(3, EMPTY);
- 
+
   bd.generalized_affine_image(Linear_Expression(3),
 			      GREATER_THAN_OR_EQUAL,
 			      Linear_Expression(4));
@@ -308,6 +300,9 @@ test10() {
   if (!ok)
     exit(1);
 }
+
+} // namespace
+
 
 int
 main() TRY {

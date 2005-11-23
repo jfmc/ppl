@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Coefficient.defs.hh"
 #include "Row.defs.hh"
 #include "Saturation_Matrix.defs.hh"
-#include "scalar_products.defs.hh"
+#include "Scalar_Products.defs.hh"
 #include <algorithm>
 #include <iostream>
 #include <string>
@@ -561,7 +561,7 @@ PPL::Linear_System::gram_schmidt() {
     const Linear_Row& x_i = x[i];
     std::vector<Coefficient>& mu_i = mu[i];
     for (dimension_type j = i+1; j-- > 0; )
-      scalar_product_assign(mu_i[j], x_i, x[j]);
+      Scalar_Products::assign(mu_i[j], x_i, x[j]);
   }
 
   const dimension_type n_columns = num_columns();
@@ -620,7 +620,7 @@ PPL::Linear_System::gram_schmidt() {
   for (dimension_type i = rank; i-- > 0; ) {
     const Linear_Row& x_i = x[i];
     for (dimension_type j = i; j-- > 0; )
-      if (scalar_product_sign(x_i, x[j]) != 0) {
+      if (Scalar_Products::sign(x_i, x[j]) != 0) {
 	std::cout << "Not an orthogonal base" << std::endl;
 	std::cout << "i = " << i << ", j = " << j << std::endl;
 	std::cout << "After Gram-Schmidt on the base" << std::endl;
@@ -654,7 +654,7 @@ PPL::Linear_System::gram_schmidt() {
   Coefficient denominator = 1;
   for (dimension_type i = rank; i-- > 0; ) {
     const Linear_Row& x_i = x[i];
-    scalar_product_assign(d[i], x_i, x_i);
+    Scalar_Products::assign(d[i], x_i, x_i);
     denominator *= d[i];
   }
   for (dimension_type i = rank; i-- > 0; )
@@ -666,7 +666,7 @@ PPL::Linear_System::gram_schmidt() {
     Linear_Row& w = x[i];
     // Compute `factors' according to `w'.
     for (dimension_type j = rank; j-- > 0; ) {
-      scalar_product_assign(factors[j], w, x[j]);
+      Scalar_Products::assign(factors[j], w, x[j]);
       factors[j] *= d[j];
     }
     for (dimension_type k = n_columns; k-- > 0; )
@@ -688,7 +688,7 @@ PPL::Linear_System::gram_schmidt() {
     // Check that w is indeed orthogonal with respect to all the
     // vectors in the base.
     for (dimension_type h = rank; h-- > 0; )
-      if (scalar_product_sign(w, x[h]) != 0) {
+      if (Scalar_Products::sign(w, x[h]) != 0) {
 	std::cout << "Not orthogonal" << std::endl;
 	std::cout << "i = " << i << ", h = " << h << std::endl;
 	std::cout << "After Gram-Schmidt on the whole system" << std::endl;
@@ -706,90 +706,94 @@ PPL::Linear_System::gram_schmidt() {
 }
 
 PPL::dimension_type
-PPL::Linear_System::gauss() {
-  // This method is only applied to a well-formed system
-  // having no pending rows.
-  assert(OK(true));
-  assert(num_pending_rows() == 0);
-
+PPL::Linear_System::gauss(const dimension_type n_lines_or_equalities) {
   Linear_System& x = *this;
+  // This method is only applied to a well-formed linear system
+  // having no pending rows and exactly `n_lines_or_equalities'
+  // lines or equalities, all of which occur before the rays or points
+  // or inequalities.
+  assert(x.OK(true));
+  assert(x.num_pending_rows() == 0);
+  assert(n_lines_or_equalities == x.num_lines_or_equalities());
+#ifndef NDEBUG
+  for (dimension_type i = n_lines_or_equalities; i-- > 0; )
+    assert(x[i].is_line_or_equality());
+#endif
+
   dimension_type rank = 0;
   // Will keep track of the variations on the system of equalities.
   bool changed = false;
-  const dimension_type n_columns =  num_columns();
-  const dimension_type n_lines_or_equalities = num_lines_or_equalities();
-  for (dimension_type j = n_columns; j-- > 0; ) {
+  for (dimension_type j = x.num_columns(); j-- > 0; )
     for (dimension_type i = rank; i < n_lines_or_equalities; ++i) {
-      // Looking for the first non-zero coefficient (the pivot)
-      // in the j-th column, starting from the last column.
-      if (x[i][j] != 0) {
-	// We want the pivot to be placed on the secondary diagonal,
-	// if it is not the case, we swap the row containing it
-	// with the one indexed by rank (that can be a previous one
-	// or the same: in this case we do not swap).
-	if (i > rank) {
-	  std::swap(x[i], x[rank]);
-	  // After swapping the system is no longer sorted.
+      // Search for the first row having a non-zero coefficient
+      // (the pivot) in the j-th column.
+      if (x[i][j] == 0)
+	continue;
+      // Pivot found: if needed, swap rows so that this one becomes
+      // the rank-th row in the linear system.
+      if (i > rank) {
+	std::swap(x[i], x[rank]);
+	// After swapping the system is no longer sorted.
+	changed = true;
+      }
+      // Combine the row containing the pivot with all the lines or
+      // equalities following it, so that all the elements on the j-th
+      // column in these rows become 0.
+      for (dimension_type k = i + 1; k < n_lines_or_equalities; ++k)
+	if (x[k][j] != 0) {
+	  x[k].linear_combine(x[rank], j);
 	  changed = true;
 	}
-	// Linear combining the row containing the pivot with
-	// all the ones that follow it such that all the elements
-	// on the j-th column (of these rows) become 0.
-	for (dimension_type k = i + 1; k < n_lines_or_equalities; ++k) {
-	  if (x[k][j] != 0) {
-	    x[k].linear_combine(x[rank], j);
-	    changed = true;
-	  }
-	}
-	// FIXME: the following comment must be rewritten.
-	// Have to consider the rows following the rank-th one
-	// because until that one are already triangularized.
-	++rank;
-	break;
-      }
+      // Already dealt with the rank-th row.
+      ++rank;
+      // Consider another column index `j'.
+      break;
     }
-  }
   if (changed)
-    set_sorted(false);
+    x.set_sorted(false);
   // A well-formed system is returned.
-  assert(OK(true));
+  assert(x.OK(true));
   return rank;
 }
 
 void
-PPL::Linear_System::back_substitute(const dimension_type rank) {
-  // This method is only applied to a well-formed system
-  // having no pending rows.
-  assert(OK(true));
-  assert(num_pending_rows() == 0);
-  // The system describes a non-empty polyhedron and thus it always
-  // contains a row which is not a line/equality (corresponding to
-  // a vertex or to a low-level constraint).
-  assert(num_rows() > rank);
-
+PPL::Linear_System
+::back_substitute(const dimension_type n_lines_or_equalities) {
   Linear_System& x = *this;
-  const dimension_type nrows = num_rows();
+  // This method is only applied to a well-formed system
+  // having no pending rows and exactly `n_lines_or_equalities'
+  // lines or equalities, all of which occur before the first ray
+  // or point or inequality.
+  assert(x.OK(true));
+  assert(x.num_pending_rows() == 0);
+  assert(n_lines_or_equalities <= x.num_lines_or_equalities());
+#ifndef NDEBUG
+  for (dimension_type i = n_lines_or_equalities; i-- > 0; )
+    assert(x[i].is_line_or_equality());
+#endif
+
+  const dimension_type nrows = x.num_rows();
+  const dimension_type ncols = x.num_columns();
   // Trying to keep sortedness.
-  bool still_sorted = is_sorted();
+  bool still_sorted = x.is_sorted();
   // This deque of booleans will be used to flag those rows that,
   // before exiting, need to be re-checked for sortedness.
   std::deque<bool> check_for_sortedness;
   if (still_sorted)
     check_for_sortedness.insert(check_for_sortedness.end(), nrows, false);
 
-  for (dimension_type k = rank; k-- > 0; ) {
-    // For each row, starting from the rank-th one,
+  for (dimension_type k = n_lines_or_equalities; k-- > 0; ) {
+    // For each line or equality, starting from the last one,
     // looks for the last non-zero element.
-    // j will be the index of such a element.
+    // `j' will be the index of such a element.
     Linear_Row& x_k = x[k];
-    dimension_type j = num_columns() - 1;
+    dimension_type j = ncols - 1;
     while (j != 0 && x_k[j] == 0)
       --j;
 
     // Go through the equalities above `x_k'.
     for (dimension_type i = k; i-- > 0; ) {
       Linear_Row& x_i = x[i];
-      assert(x_i.is_line_or_equality());
       if (x_i[j] != 0) {
 	// Combine linearly `x_i' with `x_k'
 	// so that `x_i[j]' becomes zero.
@@ -811,13 +815,13 @@ PPL::Linear_System::back_substitute(const dimension_type rank) {
     // forced to be positive.
     const bool have_to_negate = (x_k[j] < 0);
     if (have_to_negate)
-      for (dimension_type h = num_columns(); h-- > 0; )
+      for (dimension_type h = ncols; h-- > 0; )
 	PPL::negate(x_k[h]);
     // Note: we do not mark index `k' in `check_for_sortedness',
     // because we will later negate back the row.
 
-    // Go through all the inequalities of the system.
-    for (dimension_type i = rank; i < nrows; ++i) {
+    // Go through all the other rows of the system.
+    for (dimension_type i = n_lines_or_equalities; i < nrows; ++i) {
       Linear_Row& x_i = x[i];
       if (x_i[j] != 0) {
 	// Combine linearly the `x_i' with `x_k'
@@ -826,29 +830,71 @@ PPL::Linear_System::back_substitute(const dimension_type rank) {
 	if (still_sorted) {
 	  // Trying to keep sortedness: remember which rows
 	  // have to be re-checked for sortedness at the end.
-	  if (i > rank)
+	  if (i > n_lines_or_equalities)
 	    check_for_sortedness[i-1] = true;
 	  check_for_sortedness[i] = true;
 	}
       }
     }
-
     if (have_to_negate)
       // Negate `x_k' to restore strong-normalization.
-      for (dimension_type h = num_columns(); h-- > 0; )
+      for (dimension_type h = ncols; h-- > 0; )
 	PPL::negate(x_k[h]);
   }
 
   // Trying to keep sortedness.
   for (dimension_type i = 0; still_sorted && i < nrows-1; ++i)
     if (check_for_sortedness[i])
-      // Have to check sortedness of `mat[i]' with respect to `mat[i+1]'.
+      // Have to check sortedness of `x[i]' with respect to `x[i+1]'.
       still_sorted = (compare(x[i], x[i+1]) <= 0);
   // Set the sortedness flag.
-  set_sorted(still_sorted);
+  x.set_sorted(still_sorted);
 
   // A well-formed system is returned.
-  assert(OK(true));
+  assert(x.OK(true));
+}
+
+void
+PPL::Linear_System::simplify() {
+  Linear_System& x = *this;
+  // This method is only applied to a well-formed system
+  // having no pending rows.
+  assert(x.OK(true));
+  assert(x.num_pending_rows() == 0);
+
+  // Partially sort the linear system so that all lines/equalities come first.
+  dimension_type nrows = x.num_rows();
+  dimension_type n_lines_or_equalities = 0;
+  for (dimension_type i = 0; i < nrows; ++i)
+    if (x[i].is_line_or_equality()) {
+      if (n_lines_or_equalities < i) {
+	std::swap(x[i], x[n_lines_or_equalities]);
+	// The system was not sorted.
+	assert(!x.sorted);
+      }
+      ++n_lines_or_equalities;
+    }
+  // Apply Gaussian's elimination to the subsystem of lines/equalities.
+  const dimension_type rank = x.gauss(n_lines_or_equalities);
+  // Eliminate any redundant line/equality that has been detected.
+  if (rank < n_lines_or_equalities) {
+    const dimension_type
+      n_rays_or_points_or_inequalities = nrows - n_lines_or_equalities;
+    const dimension_type
+      num_swaps = std::min(n_lines_or_equalities - rank,
+			   n_rays_or_points_or_inequalities);
+    for (dimension_type i = num_swaps; i-- > 0; )
+      std::swap(x[--nrows], x[rank + i]);
+    x.erase_to_end(nrows);
+    x.unset_pending_rows();
+    if (n_rays_or_points_or_inequalities > num_swaps)
+      x.set_sorted(false);
+    n_lines_or_equalities = rank;
+  }
+  // Apply back-substitution to the system of rays/points/inequalities.
+  x.back_substitute(n_lines_or_equalities);
+  // A well-formed system is returned.
+  assert(x.OK(true));
 }
 
 void

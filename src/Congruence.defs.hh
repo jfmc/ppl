@@ -32,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.types.hh"
 #include "Linear_Row.types.hh"
 #include "Congruence_System.defs.hh"
-#include "scalar_products.defs.hh"
+#include "Scalar_Products.defs.hh"
 #include <iosfwd>
 
 namespace PPL = Parma_Polyhedra_Library;

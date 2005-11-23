@@ -117,7 +117,7 @@ public:
 template <typename Policy>
 class
 numeric_limits<Parma_Polyhedra_Library::Checked_Number<mpq_class, Policy> >
-: numeric_limits<mpq_class> {
+: public numeric_limits<mpq_class> {
 private:
   typedef Parma_Polyhedra_Library::Checked_Number<mpq_class, Policy> Type;
 

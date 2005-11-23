@@ -316,16 +316,17 @@ public:
   //! Assigns to \p *this the difference of \p *this and \p y.
   /*!
     The result is obtained by computing the
-    \ref poly_difference "poly-difference" of each polyhedron in \p *this
-    with each polyhedron in \p y and collecting all these differences.
+    \ref Convex_Polyhedral_Difference "poly-difference" of each polyhedron
+    in \p *this with each polyhedron in \p y and collecting all these
+    differences.
   */
   void poly_difference_assign(const Polyhedra_Powerset& y);
 
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!
-    The result is obtained by computing the pairwise \ref concatenate
-    "concatenation" of each polyhedron in \p *this with each
-    polyhedron in \p y.
+    The result is obtained by computing the pairwise
+    \ref Concatenating_Polyhedra "concatenation" of each polyhedron
+    in \p *this with each polyhedron in \p y.
   */
   void concatenate_assign(const Polyhedra_Powerset& y);
 
@@ -481,6 +482,24 @@ check_containment(const NNC_Polyhedron& ph,
 template <typename PH>
 bool
 check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps);
+
+// CHECK ME: according to the Intel compiler, the declaration of the
+// following specialization (of the class template parameter) should come
+// before the declaration of the corresponding full specialization
+// (where the member template parameter is specialized too).
+template <>
+template <typename QH>
+Polyhedra_Powerset<NNC_Polyhedron>
+::Polyhedra_Powerset(const Polyhedra_Powerset<QH>& y);
+
+// CHECK ME: according to the Intel compiler, the declaration of the
+// following specialization (of the class template parameter) should come
+// before the declaration of the corresponding full specialization
+// (where the member template parameter is specialized too).
+template <>
+template <typename QH>
+Polyhedra_Powerset<C_Polyhedron>
+::Polyhedra_Powerset(const Polyhedra_Powerset<QH>& y);
 
 // Non-inline full specializations should be declared here
 // so as to inhibit multiple instantiations of the generic template.

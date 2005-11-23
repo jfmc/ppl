@@ -29,12 +29,34 @@ namespace Parma_Polyhedra_Library {
 namespace Checked {
 
 template <typename Policy, typename Type>
+struct FUNCTION_CLASS(construct)<Policy, Type, Type> {
+  static inline Result function(Type& to, const Type& from, Rounding_Dir) {
+    new (&to) Type(from);
+    return V_EQ;
+  }
+};
+
+template <typename Policy, typename To, typename From>
+struct FUNCTION_CLASS(construct) {
+  static inline Result function(To& to, const From& from, Rounding_Dir dir) {
+    new (&to) To();
+    return assign<Policy>(to, from, dir);
+  }
+};
+
+template <typename Policy, typename Type>
 struct FUNCTION_CLASS(assign)<Policy, Type, Type> {
   static inline Result function(Type& to, const Type& from, Rounding_Dir) {
     to = from;
     return V_EQ;
   }
 };
+
+template <typename Policy, typename Type>
+inline void
+copy_generic(Type& to, const Type& from) {
+  to = from;
+}
 
 template <typename Policy, typename To, typename From>
 inline Result

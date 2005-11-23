@@ -30,7 +30,9 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-static void test1() {
+namespace {
+
+void test1() {
   // The zero-dim universe BDS.
   TBD_Shape bd(0);
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) >= 0);
@@ -47,7 +49,7 @@ static void test1() {
     exit(1);
 }
 
-static void test2() {
+void test2() {
   // The zero-dim universe BDS.
   TBD_Shape bd(0);
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) >= 1);
@@ -63,7 +65,7 @@ static void test2() {
     exit(1);
 }
 
-static void test3() {
+void test3() {
   // The zero-dim universe BDS.
   TBD_Shape bd;
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(1) >= 0);
@@ -79,7 +81,7 @@ static void test3() {
     exit(1);
 }
 
-static void test4() {
+void test4() {
   Variable x(0);
   // Variable y(1);
 
@@ -102,7 +104,7 @@ static void test4() {
     exit(1);
 }
 
-static void test5() {
+void test5() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -128,7 +130,7 @@ static void test5() {
     exit(1);
 }
 
-static void test6() {
+void test6() {
   Variable x(0);
   Variable y(1);
 
@@ -149,7 +151,7 @@ static void test6() {
     exit(1);
 }
 
-static void test7() {
+void test7() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -173,7 +175,7 @@ static void test7() {
     exit(1);
 }
 
-static void test8() {
+void test8() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -197,7 +199,7 @@ static void test8() {
     exit(1);
 }
 
-static void test9() {
+void test9() {
   Variable A(0);
 
   TBD_Shape bd(1);
@@ -216,6 +218,9 @@ static void test9() {
   if (rel != known_result)
     exit(1);
 }
+
+} // namespace
+
 
 int main() TRY {
 

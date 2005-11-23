@@ -127,7 +127,7 @@ inline
 Matrix::Matrix(const Matrix& y)
   : rows(y.rows),
     row_size(y.row_size),
-    row_capacity(compute_capacity(y.row_size, Row::max_size())) {
+    row_capacity(compute_capacity(y.row_size, max_num_columns())) {
 }
 
 inline
@@ -146,7 +146,7 @@ Matrix::operator=(const Matrix& y) {
     row_size = y.row_size;
     // ... hence the following assignment must not be done on
     // auto-assignments.
-    row_capacity = compute_capacity(y.row_size, Row::max_size());
+    row_capacity = compute_capacity(y.row_size, max_num_columns());
   }
   return *this;
 }

@@ -116,14 +116,45 @@ set_special_mpq(mpq_class& v, Result r) {
 
 SPECIALIZE_SET_SPECIAL(mpq, mpq_class)
 
-template <typename Policy>
+SPECIALIZE_COPY(generic, mpq_class)
+
+template <typename Policy, typename From>
 inline Result
-assign_mpq_mpz(mpq_class& to, const mpz_class& from, Rounding_Dir) {
+construct_mpq_base(mpq_class& to, const From& from, Rounding_Dir) {
+  new (&to) mpq_class(from);
+  return V_EQ;
+}
+
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, mpz_class)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, signed char)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, signed short)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, signed int)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, signed long)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, unsigned char)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, unsigned short)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, unsigned int)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, unsigned long)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, float)
+SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, double)
+
+template <typename Policy, typename From>
+inline Result
+assign_mpq_base(mpq_class& to, const From& from, Rounding_Dir) {
   to = from;
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpq_mpz, mpq_class, mpz_class)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, mpz_class)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, signed char)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, signed short)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, signed int)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, signed long)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, unsigned char)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, unsigned short)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, unsigned int)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, unsigned long)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, float)
+SPECIALIZE_ASSIGN(mpq_base, mpq_class, double)
 
 template <typename Policy, typename From>
 inline Result
@@ -144,10 +175,6 @@ assign_mpq_signed_int(mpq_class& to, const From from, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed char)
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed short)
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed int)
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed long)
 SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed long long)
 
 template <typename Policy, typename From>
@@ -162,21 +189,7 @@ assign_mpq_unsigned_int(mpq_class& to, const From from, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned char)
-SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned short)
-SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned int)
-SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned long)
 SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned long long)
-
-template <typename Policy, typename From>
-inline Result
-assign_mpq_float(mpq_class& to, const From from, Rounding_Dir) {
-  to = from;
-  return V_EQ;
-}
-
-SPECIALIZE_ASSIGN(mpq_float, mpq_class, float)
-SPECIALIZE_ASSIGN(mpq_float, mpq_class, double)
 
 template <typename Policy>
 inline Result
@@ -271,6 +284,43 @@ abs_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir) {
 }
 
 SPECIALIZE_ABS(mpq, mpq_class, mpq_class)
+
+template <typename Policy>
+inline Result
+add_mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
+  to += x * y;
+  return V_EQ;
+}
+
+SPECIALIZE_ADD_MUL(mpq, mpq_class, mpq_class, mpq_class)
+
+template <typename Policy>
+inline Result
+sub_mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
+  to -= x * y;
+  return V_EQ;
+}
+
+SPECIALIZE_SUB_MUL(mpq, mpq_class, mpq_class, mpq_class)
+
+template <typename Policy>
+inline Result
+sqrt_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir dir) {
+  if (CHECK_P(Policy::check_sqrt_neg, from < 0))
+    return set_special<Policy>(to, V_SQRT_NEG);
+  const unsigned long k = 3200;
+  mpz_class& to_num = to.get_num();
+  mul2exp<Policy>(to_num, from.get_num(), 2*k, dir);
+  Result rdiv = div<Policy>(to_num, to_num, from.get_den(), dir);
+  Result rsqrt = sqrt<Policy>(to_num, to_num, dir);
+  mpz_class& to_den = to.get_den();
+  to_den = 1;
+  mul2exp<Policy>(to_den, to_den, k, dir);
+  to.canonicalize();
+  return rdiv != V_EQ ? rdiv : rsqrt;
+}
+
+SPECIALIZE_SQRT(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result

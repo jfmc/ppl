@@ -198,6 +198,11 @@ Constraint_System::total_memory_in_bytes() const {
   return Linear_System::total_memory_in_bytes();
 }
 
+inline void
+Constraint_System::simplify() {
+  Linear_System::simplify();
+}
+
 } // namespace Parma_Polyhedra_Library
 
 

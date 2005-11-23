@@ -40,7 +40,7 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
 -I$(top_srcdir)/Watchdog/src \
 -I$(top_builddir)/src \
--I$(SWI_PROLOG_INCLUDE_DIRECTORY) \
+$(SWI_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
 pkglib_LTLIBRARIES = libppl_swiprolog.la

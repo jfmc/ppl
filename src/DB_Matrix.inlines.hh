@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <cassert>
 #include <iostream>
+#include "globals.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -169,7 +170,7 @@ inline
 DB_Matrix<T>::DB_Matrix(const dimension_type n_rows)
   : rows(n_rows),
     row_size(n_rows),
-    row_capacity(compute_capacity(n_rows)) {
+    row_capacity(compute_capacity(n_rows, max_num_columns())) {
   // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = 0; i < n_rows; ++i)
     rows[i].construct(n_rows, row_capacity);
@@ -181,7 +182,20 @@ inline
 DB_Matrix<T>::DB_Matrix(const DB_Matrix& y)
   : rows(y.rows),
     row_size(y.row_size),
-    row_capacity(compute_capacity(y.row_size)) {
+    row_capacity(compute_capacity(y.row_size, max_num_columns())) {
+}
+
+template <typename T>
+template <typename U>
+inline
+DB_Matrix<T>::DB_Matrix(const DB_Matrix<U>& y)
+  : rows(y.rows.size()),
+    row_size(y.row_size),
+    row_capacity(compute_capacity(y.row_size, max_num_columns())) {
+  // Construct in direct order: will destroy in reverse order.
+  for (dimension_type i = 0, n_rows = rows.size(); i < n_rows; ++i)
+    rows[i].construct_upward_approximation(y[i], row_capacity);
+  assert(OK());
 }
 
 template <typename T>
@@ -197,15 +211,15 @@ DB_Matrix<T>::operator=(const DB_Matrix& y) {
     row_size = y.row_size;
     // ... hence the following assignment must not be done on
     // auto-assignments.
-    row_capacity = compute_capacity(y.row_size);
+    row_capacity = compute_capacity(y.row_size, max_num_columns());
   }
   return *this;
 }
 
 template <typename T>
-inline void
+void
 DB_Matrix<T>::grow(const dimension_type new_n_rows) {
-  dimension_type old_n_rows = rows.size();
+  const dimension_type old_n_rows = rows.size();
   assert(new_n_rows >= old_n_rows);
 
   if (new_n_rows > old_n_rows) {
@@ -214,7 +228,7 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
       if (rows.capacity() < new_n_rows) {
 	// Reallocation will take place.
 	std::vector<DB_Row<T> > new_rows;
-	new_rows.reserve(compute_capacity(new_n_rows));
+	new_rows.reserve(compute_capacity(new_n_rows, max_num_rows()));
 	new_rows.insert(new_rows.end(), new_n_rows, DB_Row<T>());
 	// Construct the new rows.
 	dimension_type i = new_n_rows;
@@ -237,11 +251,12 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
     else {
       // We cannot even recycle the old rows.
       DB_Matrix new_matrix;
-      new_matrix.rows.reserve(compute_capacity(new_n_rows));
+      new_matrix.rows.reserve(compute_capacity(new_n_rows, max_num_rows()));
       new_matrix.rows.insert(new_matrix.rows.end(), new_n_rows, DB_Row<T>());
       // Construct the new rows.
       new_matrix.row_size = new_n_rows;
-      new_matrix.row_capacity = compute_capacity(new_n_rows);
+      new_matrix.row_capacity = compute_capacity(new_n_rows,
+						 max_num_columns());
       dimension_type i = new_n_rows;
       while (i-- > old_n_rows)
 	new_matrix.rows[i].construct(new_matrix.row_size,
@@ -269,7 +284,8 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
     else {
       // Capacity exhausted: we must reallocate the rows and
       // make sure all the rows have the same capacity.
-      dimension_type new_row_capacity = compute_capacity(new_n_rows);
+      const dimension_type new_row_capacity
+	= compute_capacity(new_n_rows, max_num_columns());
       for (dimension_type i = old_n_rows; i-- > 0; ) {
 	DB_Row<T> new_row(rows[i], new_n_rows, new_row_capacity);
 	std::swap(rows[i], new_row);
@@ -282,7 +298,7 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
 }
 
 template <typename T>
-inline void
+void
 DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
   dimension_type old_n_rows = rows.size();
 
@@ -293,7 +309,7 @@ DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
       if (rows.capacity() < new_n_rows) {
 	// Reallocation (of vector `rows') will take place.
 	std::vector<DB_Row<T> > new_rows;
-	new_rows.reserve(compute_capacity(new_n_rows));
+	new_rows.reserve(compute_capacity(new_n_rows, max_num_rows()));
 	new_rows.insert(new_rows.end(), new_n_rows, DB_Row<T>());
 	// Construct the new rows (be careful: each new row must have
 	// the same capacity as each one of the old rows).
@@ -342,7 +358,7 @@ DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
       // Capacity exhausted: we must reallocate the rows and
       // make sure all the rows have the same capacity.
       const dimension_type new_row_capacity
-	= compute_capacity(new_n_rows);
+	= compute_capacity(new_n_rows, max_num_columns());
       for (dimension_type i = old_n_rows; i-- > 0; ) {
 	DB_Row<T> new_row(new_n_rows, new_row_capacity);
 	std::swap(rows[i], new_row);
@@ -355,39 +371,36 @@ DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
 }
 
 template <typename T>
-inline void
+void
 DB_Matrix<T>::ascii_dump(std::ostream& s) const {
-  using std::endl;
-
   const DB_Matrix<T>& x = *this;
   const char separator = ' ';
-  dimension_type nrows = x.num_rows();
-  s << nrows << separator
-    << endl;
+  const dimension_type nrows = x.num_rows();
+  s << nrows << separator << std::endl;
   for (dimension_type i = 0; i < nrows;  ++i) {
     for (dimension_type j = 0; j < nrows; ++j) {
       using namespace IO_Operators;
       s << x[i][j] << separator;
     }
-    s << endl;
+    s << std::endl;
   }
 }
 
 template <typename T>
-inline bool
+bool
 DB_Matrix<T>::ascii_load(std::istream& s) {
   dimension_type nrows;
    if (!(s >> nrows))
     return false;
   resize_no_copy(nrows);
   DB_Matrix& x = *this;
-  for (dimension_type i = 0; i < nrows;  ++i) {
+  for (dimension_type i = 0; i < nrows;  ++i)
     for (dimension_type j = 0; j < nrows; ++j) {
-      using namespace IO_Operators;
-      if (!(s >> x[i][j]))
+      Result r = input(x[i][j], s, ROUND_UP);
+      // FIXME: V_CVT_STR_UNK is probably not the only possible error.
+      if (!s || r == V_CVT_STR_UNK)
 	return false;
     }
-  }
   // Check for well-formedness.
   assert(OK());
   return true;
@@ -398,7 +411,7 @@ DB_Matrix<T>::ascii_load(std::istream& s) {
 template <typename T>
 inline bool
 operator==(const DB_Matrix<T>& x, const DB_Matrix<T>& y) {
-  dimension_type x_num_rows = x.num_rows();
+  const dimension_type x_num_rows = x.num_rows();
   if (x_num_rows != y.num_rows())
     return false;
   for (dimension_type i = x_num_rows; i-- > 0; )
@@ -407,18 +420,187 @@ operator==(const DB_Matrix<T>& x, const DB_Matrix<T>& y) {
   return true;
 }
 
-template <typename T>
-inline void
-DB_Matrix<T>::add_rows_and_columns(const dimension_type n) {
-  assert(n > 0);
-  const dimension_type old_n_rows = num_rows();
-  grow(old_n_rows + n);
-  assert(OK());
+template <typename To, typename From>
+struct maybe_assign_struct {
+  static inline Result
+  function(const To*& top, To& tmp, const From& from, Rounding_Dir dir) {
+    // When `To' and `From' are different types, we make the conversion
+    // and use `tmp'.
+    top = &tmp;
+    return assign(tmp, from, dir);
+  }
+};
+
+template <typename Type>
+struct maybe_assign_struct<Type, Type> {
+  static inline Result
+  function(const Type*& top, Type&, const Type& from, Rounding_Dir) {
+    // When the types are the same, conversion is unnecessary.
+    top = &from;
+    return V_EQ;
+  }
+};
+
+//! \brief
+//! Assigns to \p top a pointer to a location that holds the
+//! conversion, according to \p dir, of \p from to type \p To.  When
+//! necessary, and only when necessary, the variable \p tmp is used to
+//! hold the result of conversion.
+template <typename To, typename From>
+inline Result
+maybe_assign(const To*& top, To& tmp, const From& from, Rounding_Dir dir) {
+  return maybe_assign_struct<To, From>::function(top, tmp, from, dir);
+}
+
+/*! \relates DB_Matrix */
+template <typename Specialization, typename Temp, typename To, typename T>
+inline bool
+l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+		    const DB_Matrix<T>& x,
+		    const DB_Matrix<T>& y,
+		    const Rounding_Dir dir,
+		    Temp& tmp0,
+		    Temp& tmp1,
+		    Temp& tmp2) {
+  const dimension_type x_num_rows = x.num_rows();
+  if (x_num_rows != y.num_rows())
+    return false;
+  assign(tmp0, 0, ROUND_IGNORE);
+  for (dimension_type i = x_num_rows; i-- > 0; ) {
+    const DB_Row<T>& x_i = x[i];
+    const DB_Row<T>& y_i = y[i];
+    for (dimension_type j = x_num_rows; j-- > 0; ) {
+      const T& x_i_j = x_i[j];
+      const T& y_i_j = y_i[j];
+      if (is_plus_infinity(x_i_j)) {
+	if (is_plus_infinity(y_i_j))
+	  continue;
+	else {
+	pinf:
+	  r = PLUS_INFINITY;
+	  return true;
+	}
+      }
+      else if (is_plus_infinity(y_i_j))
+	goto pinf;
+
+      const Temp* tmp1p;
+      const Temp* tmp2p;
+      if (x_i_j > y_i_j) {
+	maybe_assign(tmp1p, tmp1, x_i_j, dir);
+	maybe_assign(tmp2p, tmp2, y_i_j, inverse(dir));
+      }
+      else {
+	maybe_assign(tmp1p, tmp1, y_i_j, dir);
+	maybe_assign(tmp2p, tmp2, x_i_j, inverse(dir));
+      }
+      assign_sub(tmp1, *tmp1p, *tmp2p, dir);
+      assert(tmp1 >= 0);
+      Specialization::combine(tmp0, tmp1, dir);
+    }
+  }
+  Specialization::finalize(tmp0, dir);
+  assign(r, tmp0, dir);
+  return true;
+}
+
+template <typename Temp>
+struct Rectilinear_Distance_Specialization {
+  static inline void
+  combine(Temp& running, const Temp& current, Rounding_Dir dir) {
+    assign_add(running, running, current, dir);
+  }
+
+  static inline void
+  finalize(Temp&, Rounding_Dir) {
+  }
+};
+
+/*! \relates DB_Matrix */
+template <typename Temp, typename To, typename T>
+inline bool
+rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			    const DB_Matrix<T>& x,
+			    const DB_Matrix<T>& y,
+			    const Rounding_Dir dir,
+			    Temp& tmp0,
+			    Temp& tmp1,
+			    Temp& tmp2) {
+  return
+    l_m_distance_assign<Rectilinear_Distance_Specialization<Temp> >(r, x, y,
+								    dir,
+								    tmp0,
+								    tmp1,
+								    tmp2);
 }
 
 
-template <typename T>
+template <typename Temp>
+struct Euclidean_Distance_Specialization {
+  static inline void
+  combine(Temp& running, Temp& current, Rounding_Dir dir) {
+    assign_mul(current, current, current, dir);
+    assign_add(running, running, current, dir);
+  }
+
+  static inline void
+  finalize(Temp& running, Rounding_Dir dir) {
+    assign_sqrt(running, running, dir);
+  }
+};
+
+/*! \relates DB_Matrix */
+template <typename Temp, typename To, typename T>
 inline bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const DB_Matrix<T>& x,
+			  const DB_Matrix<T>& y,
+			  const Rounding_Dir dir,
+			  Temp& tmp0,
+			  Temp& tmp1,
+			  Temp& tmp2) {
+  return
+    l_m_distance_assign<Euclidean_Distance_Specialization<Temp> >(r, x, y,
+								  dir,
+								  tmp0,
+								  tmp1,
+								  tmp2);
+}
+
+
+template <typename Temp>
+struct L_Infinity_Distance_Specialization {
+  static inline void
+  combine(Temp& running, const Temp& current, Rounding_Dir) {
+    if (current > running)
+      running = current;
+  }
+
+  static inline void
+  finalize(Temp&, Rounding_Dir) {
+  }
+};
+
+/*! \relates DB_Matrix */
+template <typename Temp, typename To, typename T>
+inline bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const DB_Matrix<T>& x,
+			   const DB_Matrix<T>& y,
+			   const Rounding_Dir dir,
+			   Temp& tmp0,
+			   Temp& tmp1,
+			   Temp& tmp2) {
+  return
+    l_m_distance_assign<L_Infinity_Distance_Specialization<Temp> >(r, x, y,
+								   dir,
+								   tmp0,
+								   tmp1,
+								   tmp2);
+}
+
+template <typename T>
+bool
 DB_Matrix<T>::OK() const {
 #ifndef NDEBUG
   using std::endl;
@@ -437,7 +619,7 @@ DB_Matrix<T>::OK() const {
   }
 
   const DB_Matrix& x = *this;
-  dimension_type n_rows = num_rows();
+  const dimension_type n_rows = x.num_rows();
   for (dimension_type i = 0; i < n_rows; ++i) {
     if (!x[i].OK(row_size, row_capacity))
       return false;
@@ -449,13 +631,12 @@ DB_Matrix<T>::OK() const {
 
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */  //FIXME!!
 template <typename T>
-inline std::ostream&
+std::ostream&
 IO_Operators::operator<<(std::ostream& s, const DB_Matrix<T>& c) {
-  dimension_type n = c.num_rows();
+  const dimension_type n = c.num_rows();
   for (dimension_type i = 0; i < n; ++i) {
-    for (dimension_type j = 0; j < n; ++j) {
+    for (dimension_type j = 0; j < n; ++j)
       s << c[i][j] << " ";
-    }
     s << std::endl;
   }
   return s;

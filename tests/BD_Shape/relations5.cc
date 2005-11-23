@@ -30,7 +30,9 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-static void test1() {
+namespace {
+
+void test1() {
   // We verify that a generator is not subsumed by an empty BDS.
   Variable x(0);
 
@@ -51,7 +53,7 @@ static void test1() {
     exit(1);
 }
 
-static void test2() {
+void test2() {
   // We verify that a zero-dimensional generator is subsumed 
   // by a zero-dimensional, universal BDS.
   TBD_Shape bd;
@@ -71,7 +73,7 @@ static void test2() {
     exit(1);
 }
 
-static void test3() {
+void test3() {
   // The system of constraints of the BDS contains only 
   // an equality and the generator `g' is a point.
   Variable A(0);
@@ -92,7 +94,7 @@ static void test3() {
     exit(1);
 }
 
-static void test4() {
+void test4() {
   Variable A(0);
   Variable B(1);
 
@@ -115,7 +117,7 @@ static void test4() {
     exit(1);
 }
 
-static void test5() {
+void test5() {
   Variable A(0);
 
   TBD_Shape bd(2);
@@ -134,7 +136,7 @@ static void test5() {
     exit(1);
 }
 
-static void test6() {
+void test6() {
   Variable A(0);
 
   TBD_Shape bd(2);
@@ -153,7 +155,7 @@ static void test6() {
     exit(1);
 }
 
-static void test7() {
+void test7() {
   Variable A(0);
   Variable B(1);
 
@@ -174,7 +176,7 @@ static void test7() {
     exit(1);
 }
 
-static void test8() {
+void test8() {
   Variable A(0);
   Variable B(1);
 
@@ -194,6 +196,9 @@ static void test8() {
   if (rel != known_result) 
     exit(1);
 }
+
+} // namespace
+
 
 int main() TRY {
 

@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <iostream>
 #include <gmpxx.h>
-#include "Rounding.defs.hh"
+#include "Rounding_Dir.defs.hh"
 #include "Numeric_Format.defs.hh"
 
 namespace Parma_Polyhedra_Library {
@@ -36,7 +36,9 @@ namespace Parma_Polyhedra_Library {
 namespace Checked {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A policy that specifies a total adherence to behavior of the underlying type.
+//! \brief
+//! A policy that specifies a total adherence to behavior
+//! of the underlying type.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Transparent_Policy {
   //! Check for overflowed result.
@@ -302,6 +304,8 @@ struct FUNCTION_CLASS(name) <Policy,					\
 
 #define nonconst
 
+#define SPECIALIZE_COPY(suf, Type) \
+  SPECIALIZE_FUN2_0_0(copy, suf, void, nonconst, Type, const, Type)
 #define SPECIALIZE_SGN(suf, From) \
   SPECIALIZE_FUN1_0_0(sgn, suf, Result, const, From)
 #define SPECIALIZE_CMP(suf, Type1, Type2) \
@@ -318,6 +322,8 @@ struct FUNCTION_CLASS(name) <Policy,					\
   SPECIALIZE_FUN1_0_0(is_pinf, suf, bool, const, Type)
 #define SPECIALIZE_IS_INT(suf, Type) \
   SPECIALIZE_FUN1_0_0(is_int, suf, bool, const, Type)
+#define SPECIALIZE_CONSTRUCT(suf, To, From) \
+  SPECIALIZE_FUN2_0_1(construct, suf, Result, nonconst, To, const, From, Rounding_Dir)
 #define SPECIALIZE_ASSIGN(suf, To, From) \
   SPECIALIZE_FUN2_0_1(assign, suf, Result, nonconst, To, const, From, Rounding_Dir)
 #define SPECIALIZE_NEG(suf, To, From) \
@@ -357,6 +363,7 @@ struct FUNCTION_CLASS(name) <Policy,					\
   SPECIALIZE_FUN1_1_2(output, suf, Result, std::ostream&, const, Type, const Numeric_Format&, Rounding_Dir)
 
 
+DECLARE_FUN2_0_0(copy,        void, nonconst, Type1, const, Type2)
 DECLARE_FUN1_0_0(sgn,         Result, const, From)
 DECLARE_FUN2_0_0(cmp,         Result, const, Type1, const, Type2)
 DECLARE_FUN1_0_1(set_special, Result, nonconst, Type, Result)
@@ -365,6 +372,7 @@ DECLARE_FUN1_0_0(is_nan,      bool, const, Type)
 DECLARE_FUN1_0_0(is_minf,     bool, const, Type)
 DECLARE_FUN1_0_0(is_pinf,     bool, const, Type)
 DECLARE_FUN1_0_0(is_int,      bool, const, Type)
+DECLARE_FUN2_0_1(construct,   Result, nonconst, To, const, From, Rounding_Dir)
 DECLARE_FUN2_0_1(assign,      Result, nonconst, To, const, From, Rounding_Dir)
 DECLARE_FUN2_0_1(neg,         Result, nonconst, To, const, From, Rounding_Dir)
 DECLARE_FUN2_0_1(abs,         Result, nonconst, To, const, From, Rounding_Dir)

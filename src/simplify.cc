@@ -130,10 +130,10 @@ PPL::Polyhedron::simplify(Linear_System& sys, Saturation_Matrix& sat) {
   // At this point, all the equalities of `sys' (included those
   // inequalities that we just transformed to equalities) have
   // indexes between 0 and `num_lines_or_equalities' - 1,
-  // which is the property needed by the function gauss().
+  // which is the property needed by method gauss().
   // We can simplify the system of equalities, obtaining the rank
   // of `sys' as result.
-  const dimension_type rank = sys.gauss();
+  const dimension_type rank = sys.gauss(num_lines_or_equalities);
 
   // Now the irredundant equalities of `sys' have indexes from 0
   // to `rank' - 1, whereas the equalities having indexes from `rank'

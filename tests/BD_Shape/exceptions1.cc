@@ -29,7 +29,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static void
+namespace {
+
+void
 error1() {
   Variable x(0);
   Variable y(1);
@@ -55,7 +57,7 @@ error1() {
   }
 }
 
-static void
+void
 error2() {
   TBD_Shape bd1(7);
   TBD_Shape bd2(15);
@@ -76,7 +78,7 @@ error2() {
   }
 }
 
-static void
+void
 error3() {
   TBD_Shape bd(5);
 
@@ -96,7 +98,7 @@ error3() {
   }
 }
 
-static void
+void
 error4() {
   Variable x(0);
   Variable y(1);
@@ -122,7 +124,7 @@ error4() {
   }
 }
 
-static void
+void
 error5() {
   Variable y(1);
 
@@ -145,7 +147,7 @@ error5() {
   }
 }
 
-static void
+void
 error6() {
   Variable x(0);
   Variable y(1);
@@ -171,7 +173,7 @@ error6() {
   }
 }
 
-static void
+void
 error7() {
   TBD_Shape bd1(5);
   TBD_Shape bd2(10);
@@ -193,7 +195,7 @@ error7() {
   }
 }
 
-static void
+void
 error8() {
   Variable y(1);
 
@@ -220,7 +222,7 @@ error8() {
   }
 }
 
-static void
+void
 error9() {
   Variable x(0);
   Variable y(1);
@@ -256,7 +258,7 @@ error9() {
   }
 }
 
-static void
+void
 error10() {
   Variable x(0);
   Variable y(1);
@@ -283,7 +285,7 @@ error10() {
   }
 }
 
-static void
+void
 error11() {
 
   TBD_Shape bd1(3);
@@ -291,9 +293,9 @@ error11() {
 
   try {
     // This is an incorrect use of function
-    // BD_Shape::poly_difference_assign(bd2): it is impossible to apply
+    // BD_Shape::bds_difference_assign(bd2): it is impossible to apply
     // this function to two polyhedra of different dimensions.
-    bd1.poly_difference_assign(bd2);
+    bd1.bds_difference_assign(bd2);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -306,7 +308,7 @@ error11() {
 }
 
 
-static void
+void
 error12() {
 
   TBD_Shape bd1(12);
@@ -314,7 +316,7 @@ error12() {
 
   try {
     // This is an incorrect use of function
-    // BD_Shape::poly_hull_assign(bd2): it is impossible to apply
+    // BD_Shape::bds_hull_assign(bd2): it is impossible to apply
     // this function to two polyhedra of different dimensions.
     bd1.bds_hull_assign(bd2);
   }
@@ -328,7 +330,7 @@ error12() {
   }
 }
 
-static void
+void
 error13() {
   Variable x(0);
   Variable y(1);
@@ -355,7 +357,7 @@ error13() {
 }
 
 
-static void
+void
 error14() {
   Variable y(1);
 
@@ -382,7 +384,7 @@ error14() {
   }
 }
 
-static void
+void
 error15() {
   Variable x(0);
   Variable y(1);
@@ -417,7 +419,7 @@ error15() {
   }
 }
 
-static void
+void
 error16() {
   Variable x(0);
   Variable y(1);
@@ -452,7 +454,7 @@ error16() {
   }
 }
 
-static void
+void
 error17() {
   Variable x(0);
 
@@ -477,6 +479,9 @@ error17() {
     exit(1);
   }
 }
+
+} // namespace
+
 
 int
 main() TRY {

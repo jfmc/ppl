@@ -49,13 +49,22 @@ round_gt_mpz(mpz_class& to, Rounding_Dir dir) {
   return V_GT;
 }
 
-inline mp_size_t
+// FIXME: change this when Autoconf will support AC_C_TYPEOF.
+#ifdef __GNUC__
+//! Type of the _mp_size field of GMP's __mpz_struct.
+typedef __typeof__(__mpz_struct()._mp_size) mp_size_field_t;
+#else
+//! This is assumed to be the type of the _mp_size field of GMP's __mpz_struct.
+typedef int mp_size_field_t;
+#endif
+
+inline mp_size_field_t
 get_mp_size(const mpz_class &v) {
   return v.get_mpz_t()->_mp_size;
 }
 
 inline void
-set_mp_size(mpz_class &v, mp_size_t size) {
+set_mp_size(mpz_class &v, mp_size_field_t size) {
   v.get_mpz_t()->_mp_size = size;
 }
 
@@ -63,15 +72,15 @@ template <typename Policy>
 inline Result
 classify_mpz(const mpz_class& v, bool nan, bool inf, bool sign) {
   if (Policy::store_nan || Policy::store_infinity) {
-    mp_size_t s = get_mp_size(v);
-    if (Policy::store_nan && (nan || sign) && s == Limits<mp_size_t>::min + 1)
+    mp_size_field_t s = get_mp_size(v);
+    if (Policy::store_nan && (nan || sign) && s == Limits<mp_size_field_t>::min + 1)
       return VC_NAN;
     if (!inf && !sign)
       return VC_NORMAL;
     if (Policy::store_infinity) {
-      if (s == Limits<mp_size_t>::min)
+      if (s == Limits<mp_size_field_t>::min)
 	return inf ? VC_MINUS_INFINITY : V_LT;
-      if (s == Limits<mp_size_t>::max)
+      if (s == Limits<mp_size_field_t>::max)
 	return inf ? VC_PLUS_INFINITY : V_GT;
     }
   }
@@ -85,7 +94,7 @@ SPECIALIZE_CLASSIFY(mpz, mpz_class)
 template <typename Policy>
 inline bool
 is_nan_mpz(const mpz_class& v) {
-  return Policy::store_nan && get_mp_size(v) == Limits<mp_size_t>::min + 1;
+  return Policy::store_nan && get_mp_size(v) == Limits<mp_size_field_t>::min + 1;
 }
 
 SPECIALIZE_IS_NAN(mpz, mpz_class)
@@ -93,7 +102,7 @@ SPECIALIZE_IS_NAN(mpz, mpz_class)
 template <typename Policy>
 inline bool
 is_minf_mpz(const mpz_class& v) {
-  return Policy::store_infinity && get_mp_size(v) == Limits<mp_size_t>::min;
+  return Policy::store_infinity && get_mp_size(v) == Limits<mp_size_field_t>::min;
 }
 
 SPECIALIZE_IS_MINF(mpz, mpz_class)
@@ -101,7 +110,7 @@ SPECIALIZE_IS_MINF(mpz, mpz_class)
 template <typename Policy>
 inline bool
 is_pinf_mpz(const mpz_class& v) {
-  return Policy::store_infinity && get_mp_size(v) == Limits<mp_size_t>::max;
+  return Policy::store_infinity && get_mp_size(v) == Limits<mp_size_field_t>::max;
 }
 
 SPECIALIZE_IS_PINF(mpz, mpz_class)
@@ -119,14 +128,14 @@ inline Result
 set_special_mpz(mpz_class& v, Result r) {
   Result c = classify(r);
   if (Policy::store_nan && c == VC_NAN)
-    set_mp_size(v, Limits<mp_size_t>::min + 1);
+    set_mp_size(v, Limits<mp_size_field_t>::min + 1);
   else if (Policy::store_infinity) {
     switch (c) {
     case VC_MINUS_INFINITY:
-      set_mp_size(v, Limits<mp_size_t>::min);
+      set_mp_size(v, Limits<mp_size_field_t>::min);
       break;
     case VC_PLUS_INFINITY:
-      set_mp_size(v, Limits<mp_size_t>::max);
+      set_mp_size(v, Limits<mp_size_field_t>::max);
       break;
     default:
       break;
@@ -136,6 +145,102 @@ set_special_mpz(mpz_class& v, Result r) {
 }
 
 SPECIALIZE_SET_SPECIAL(mpz, mpz_class)
+
+template <typename Policy>
+inline void
+copy_mpz(mpz_class& to, const mpz_class& from) {
+  if (is_nan_mpz<Policy>(from) ||
+      is_minf_mpz<Policy>(from) || is_pinf_mpz<Policy>(from))
+    set_mp_size(to, get_mp_size(from));
+  else
+    to = from;
+}
+
+SPECIALIZE_COPY(mpz, mpz_class)
+
+template <typename Policy, typename From>
+inline Result
+construct_mpz_base(mpz_class& to, const From from, Rounding_Dir) {
+    new (&to) mpz_class(from);
+    return V_EQ;
+}
+
+SPECIALIZE_CONSTRUCT(mpz_base, mpz_class, signed char)
+SPECIALIZE_CONSTRUCT(mpz_base, mpz_class, signed short)
+SPECIALIZE_CONSTRUCT(mpz_base, mpz_class, signed int)
+SPECIALIZE_CONSTRUCT(mpz_base, mpz_class, signed long)
+SPECIALIZE_CONSTRUCT(mpz_base, mpz_class, unsigned char)
+SPECIALIZE_CONSTRUCT(mpz_base, mpz_class, unsigned short)
+SPECIALIZE_CONSTRUCT(mpz_base, mpz_class, unsigned int)
+SPECIALIZE_CONSTRUCT(mpz_base, mpz_class, unsigned long)
+
+template <typename Policy, typename From>
+inline Result
+assign_mpz_base(mpz_class& to, const From from, Rounding_Dir) {
+    to = static_cast<signed long>(from);
+    return V_EQ;
+}
+
+SPECIALIZE_ASSIGN(mpz_base, mpz_class, signed char)
+SPECIALIZE_ASSIGN(mpz_base, mpz_class, signed short)
+SPECIALIZE_ASSIGN(mpz_base, mpz_class, signed int)
+SPECIALIZE_ASSIGN(mpz_base, mpz_class, signed long)
+SPECIALIZE_ASSIGN(mpz_base, mpz_class, unsigned char)
+SPECIALIZE_ASSIGN(mpz_base, mpz_class, unsigned short)
+SPECIALIZE_ASSIGN(mpz_base, mpz_class, unsigned int)
+SPECIALIZE_ASSIGN(mpz_base, mpz_class, unsigned long)
+
+template <typename Policy, typename From>
+inline Result
+assign_mpz_signed_int(mpz_class& to, const From from, Rounding_Dir) {
+  if (sizeof(From) <= sizeof(signed long))
+    to = static_cast<signed long>(from);
+  else {
+    mpz_ptr m = to.get_mpz_t();
+    if (from >= 0)
+      mpz_import(m, 1, 1, sizeof(From), 0, 0, &from);
+    else {
+      From n = -from;
+      mpz_import(m, 1, 1, sizeof(From), 0, 0, &n);
+      mpz_neg(m, m);
+    }
+  }
+  return V_EQ;
+}
+
+SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, signed long long)
+
+template <typename Policy, typename From>
+inline Result
+assign_mpz_unsigned_int(mpz_class& to, const From from, Rounding_Dir) {
+  if (sizeof(From) <= sizeof(unsigned long))
+    to = static_cast<unsigned long>(from);
+  else
+    mpz_import(to.get_mpz_t(), 1, 1, sizeof(From), 0, 0, &from);
+  return V_EQ;
+}
+
+SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned long long)
+
+template <typename Policy, typename From>
+inline Result
+assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
+  if (dir == ROUND_IGNORE) {
+    to = from;
+    return V_LGE;
+  }
+  From n = rint(from);
+  to = n;
+  if (from < n)
+    return round_lt_mpz<Policy>(to, dir);
+  else if (from > n)
+    return round_gt_mpz<Policy>(to, dir);
+  else
+    return V_EQ;
+}
+
+SPECIALIZE_ASSIGN(mpz_float, mpz_class, float)
+SPECIALIZE_ASSIGN(mpz_float, mpz_class, double)
 
 template <typename Policy>
 inline Result
@@ -158,66 +263,6 @@ assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
 }
 
 SPECIALIZE_ASSIGN(mpz_mpq, mpz_class, mpq_class)
-
-template <typename Policy, typename From>
-inline Result
-assign_mpz_signed_int(mpz_class& to, const From from, Rounding_Dir) {
-  if (sizeof(From) <= sizeof(signed long))
-    to = static_cast<signed long>(from);
-  else {
-    mpz_ptr m = to.get_mpz_t();
-    if (from >= 0)
-      mpz_import(m, 1, 1, sizeof(From), 0, 0, &from);
-    else {
-      From n = -from;
-      mpz_import(m, 1, 1, sizeof(From), 0, 0, &n);
-      mpz_neg(m, m);
-    }
-  }
-  return V_EQ;
-}
-
-SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, signed char)
-SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, signed short)
-SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, signed int)
-SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, signed long)
-SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, signed long long)
-
-template <typename Policy, typename From>
-inline Result
-assign_mpz_unsigned_int(mpz_class& to, const From from, Rounding_Dir) {
-  if (sizeof(From) <= sizeof(unsigned long))
-    to = static_cast<unsigned long>(from);
-  else
-    mpz_import(to.get_mpz_t(), 1, 1, sizeof(From), 0, 0, &from);
-  return V_EQ;
-}
-
-SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned char)
-SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned short)
-SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned int)
-SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned long)
-SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned long long)
-
-template <typename Policy, typename From>
-inline Result
-assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
-  if (dir == ROUND_IGNORE) {
-    to = from;
-    return V_LGE;
-  }
-  From n = rint(from);
-  to = n;
-  if (from < n)
-    return round_lt_mpz<Policy>(to, dir);
-  else if (from > n)
-    return round_gt_mpz<Policy>(to, dir);
-  else
-    return V_EQ;
-}
-
-SPECIALIZE_ASSIGN(mpz_float, mpz_class, float)
-SPECIALIZE_ASSIGN(mpz_float, mpz_class, double)
 
 template <typename Policy, typename To>
 inline Result

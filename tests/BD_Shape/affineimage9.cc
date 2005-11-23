@@ -29,7 +29,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static void
+namespace {
+
+void
 test1() {
   Variable x(0);
   Variable y(1);
@@ -41,31 +43,41 @@ test1() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= -1);
 
-
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
 
-  TBD_Shape known_result(2);
-  known_result.add_constraint(x >= -1);
-  known_result.add_constraint(x <= 2);
-  known_result.add_constraint(y <= 2);
-  known_result.add_constraint(y >= -1);
-  known_result.add_constraint(y - x <= 0);
-
   bd.affine_image(x, -2*x - 3*y + 1, -5);
 
-  bool ok = (bd == known_result);
+  BD_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(5*x >= -4);
+  known_result.add_constraint(5*x <= 7);
+  known_result.add_constraint(y <= 2);
+  known_result.add_constraint(y >= -1);
+  known_result.add_constraint(y - x <= 1);
+  known_result.add_constraint(5*x - 5*y <= 3);
+
+  TBD_Shape T_known_result(known_result);
+  bool ok = bd.contains(T_known_result);
 
 #if NOISY
   print_constraints(bd, "*** bd.affine_image(x, -2*x - 3*y + 1, -5) ***");
 #endif
 
+  if (ok) {
+    Checked_Number<mpq_class, Extended_Number_Policy> distance;
+    rectilinear_distance_assign(distance, T_known_result, bd, ROUND_UP);
+#if NOISY
+    std::cout << "Rectilinear distance = " << distance << std::endl;
+#endif
+    ok = (distance <= 2);
+  }
+
   if (!ok)
     exit(1);
 }
 
-static void
+void
 test2() {
   Variable x(0);
   Variable y(1);
@@ -77,7 +89,7 @@ test2() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(z >= 3);
 
- 
+
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
@@ -85,10 +97,8 @@ test2() {
   TBD_Shape known_result(3);
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(y <= 2);
-  known_result.add_constraint(z <= 0);
-  known_result.add_constraint(x - z >= 1);
-  known_result.add_constraint(y - z >= 2);
- 
+  known_result.add_constraint(2*z <= -1);
+
   bd.affine_image(z, x + 2*y -3*z + 2, 4);
 
   bool ok = (bd == known_result);
@@ -101,7 +111,7 @@ test2() {
     exit(1);
 }
 
-static void
+void
 test3() {
   Variable A(0);
   Variable B(1);
@@ -127,7 +137,8 @@ test3() {
   known_result.add_constraint(B >= 1);
   known_result.add_constraint(C <= 0);
   known_result.add_constraint(D == 3);
- 
+  known_result.add_constraint(3*B - 3*A <= 5);
+
   bd.affine_image(A, -B + 2*C + 1, -3);
 
   bool ok = (bd == known_result);
@@ -135,10 +146,12 @@ test3() {
 #if NOISY
   print_constraints(bd, "*** bd.affine_image(A, -B + 2*C + 1, -3) ***");
 #endif
- 
+
   if (!ok)
     exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {

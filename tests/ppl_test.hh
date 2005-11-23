@@ -37,10 +37,14 @@ using namespace Parma_Polyhedra_Library;
 #define C_Polyhedron NNC_Polyhedron
 #endif
 
+#ifndef BD_SHAPE_INSTANCE
+#define BD_SHAPE_INSTANCE mpq_class
+#endif
+
 namespace Parma_Polyhedra_Library {
 
-//typedef BD_Shape<mpq_class> TBD_Shape;
-typedef BD_Shape<int> TBD_Shape;
+typedef long double long_double;
+typedef BD_Shape<BD_SHAPE_INSTANCE> TBD_Shape;
 
 //! Compare copies of \p a and \p b.
 /*!
@@ -115,4 +119,4 @@ find_variation_template(T& a) {
   return true;
 }
 
-}
+} // namespace Parma_Polyhedra_Library
