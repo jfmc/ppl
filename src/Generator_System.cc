@@ -945,7 +945,12 @@ PPL::Generator_System::ascii_load(std::istream& s) {
   }
 
   // Checking for well-formedness.
-  //assert(OK());   // FIX OK requires strong normalization of gens
+
+  // FIXME: Some OK checks are only valid for polyhedron generators.
+  //        The system being loaded could be for a Polyhedron or a
+  //        Grid.  One solution could be to use a special
+  //        Generator_System subclass for Grid.
+  assert(OK(false));
   return true;
 }
 
