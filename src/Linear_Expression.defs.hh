@@ -306,6 +306,10 @@ private:
   // Generator_System::affine_image().
   friend class Parma_Polyhedra_Library::Generator_System;
 
+  // FIXME: the following friend declaration is only to grant access to
+  // Congruence_System::affine_preimage().
+  friend class Parma_Polyhedra_Library::Congruence_System;
+
   //! Copy-constructor with a specified space dimension.
   Linear_Expression(const Linear_Expression& e, dimension_type sz);
 
