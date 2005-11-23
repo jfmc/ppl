@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence_System.inlines.hh"
 #include "Congruence.defs.hh"
 #include "Generator.defs.hh"
+#include "Scalar_Products.defs.hh"
 #include <cassert>
 #include <string>
 #include <vector>
@@ -214,19 +215,15 @@ satisfies_all_congruences(const Generator& g,
   assert(g.space_dimension() <= space_dimension());
   assert(divisor >= 0);
 
-  // Set `spa_fp' to the appropriate scalar product operator.
-  void (*spa_fp)(Coefficient&, const Linear_Row&, const Congruence&);
-  if (g.is_necessarily_closed())
-    spa_fp = PPL::scalar_product_assign;
-  else
-    spa_fp = PPL::reduced_scalar_product_assign;
+  // Set `spa' to the appropriate scalar product operator.
+  Topology_Adjusted_Scalar_Product_Assign spa(g);
 
   const Congruence_System& cgs = *this;
   TEMP_INTEGER(sp);
   if (divisor > 1)
     for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
       const Congruence& cg = cgs[i];
-      spa_fp(sp, g, cg);
+      spa(sp, g, cg);
       if (cg.is_equality() || g.is_line()) {
 	if (sp != 0)
 	  return false;
@@ -237,7 +234,7 @@ satisfies_all_congruences(const Generator& g,
   else
     for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
       const Congruence& cg = cgs[i];
-      spa_fp(sp, g, cg);
+      spa(sp, g, cg);
       if (cg.is_equality() || g.is_line()) {
 	if (sp != 0)
 	  return false;

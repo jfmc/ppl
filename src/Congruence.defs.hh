@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Congruence_defs_hh 1
 
 #include "Congruence.types.hh"
+#include "Scalar_Products.types.hh"
 #include "Row.defs.hh"
 #include "Grid.types.hh"
 #include "Polyhedron.types.hh"
@@ -32,7 +33,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.types.hh"
 #include "Linear_Row.types.hh"
 #include "Congruence_System.defs.hh"
-#include "Scalar_Products.defs.hh"
 #include <iosfwd>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -112,7 +112,7 @@ swap(Parma_Polyhedra_Library::Congruence& x,
 /*!
   An object of the class Congruence is a congruence:
   - \f$\cg = \sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod m\f$
- 
+
   where \f$n\f$ is the dimension of the space,
   \f$a_i\f$ is the integer coefficient of variable \f$x_i\f$,
   \f$b\f$ is the integer inhomogeneous term and \f$m\f$ is the integer modulus;
@@ -434,32 +434,18 @@ private:
   PPL::IO_Operators::operator<<(std::ostream& s,
 				const Congruence_System& cgs);
 
+  friend class PPL::Scalar_Products;
   friend class PPL::Congruence_System;
   friend class PPL::Congruence_System::const_iterator;
   friend class PPL::Grid;
   friend class PPL::Linear_Expression;
+  // FIX confirm
+  // FIXME: the following friend declaration should be avoided.
   // For Polyhedron::add_congruence.
   friend class PPL::Polyhedron;
 
   friend void
   std::swap(PPL::Congruence& x, PPL::Congruence& y);
-
-  friend void
-  PPL::scalar_product_assign(Coefficient& z,
-			     const Linear_Row& x,
-			     const Congruence& y);
-  friend void
-  PPL::scalar_product_assign(Coefficient& z,
-			     const Congruence& x,
-			     const Linear_Row& y);
-  friend void
-  PPL::reduced_scalar_product_assign(Coefficient& z,
-				     const Linear_Row& x,
-				     const Congruence& y);
-  friend void
-  PPL::homogeneous_scalar_product_assign(Coefficient& z,
-					 const Linear_Row& x,
-					 const Congruence& y);
 };
 
 #include "Congruence.inlines.hh"

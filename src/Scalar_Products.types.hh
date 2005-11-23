@@ -16,6 +16,7 @@ namespace Parma_Polyhedra_Library {
 
 class Scalar_Products;
 class Topology_Adjusted_Scalar_Product_Sign;
+class Topology_Adjusted_Scalar_Product_Assign;
 
 } // namespace Parma_Polyhedra_Library
 

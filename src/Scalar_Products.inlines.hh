@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
 #include "Generator.defs.hh"
+#include "Congruence.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -127,6 +128,36 @@ Topology_Adjusted_Scalar_Product_Sign::operator()(const Generator& g,
 		    : static_cast<SPS_type>(&Scalar_Products::reduced_sign)));
   return sps_fp(static_cast<const Linear_Row&>(g),
 		static_cast<const Linear_Row&>(c));
+}
+
+inline
+Topology_Adjusted_Scalar_Product_Assign
+::Topology_Adjusted_Scalar_Product_Assign(const Generator& g)
+  : sps_fp(g.is_necessarily_closed()
+	   ? static_cast<SPS_type>(&Scalar_Products::assign)
+	   : static_cast<SPS_type>(&Scalar_Products::reduced_assign)) {
+}
+
+inline void
+Topology_Adjusted_Scalar_Product_Assign::operator()(Coefficient& sp,
+						    const Congruence& cg,
+						    const Generator& g) const {
+  assert(cg.space_dimension() <= g.space_dimension());
+  assert(sps_fp == (g.is_necessarily_closed()
+		    ? static_cast<SPS_type>(&Scalar_Products::assign)
+		    : static_cast<SPS_type>(&Scalar_Products::reduced_assign)));
+  return sps_fp(sp, g, cg);
+}
+
+inline void
+Topology_Adjusted_Scalar_Product_Assign::operator()(Coefficient& sp,
+						  const Generator& g,
+						  const Congruence& cg) const {
+  assert(g.space_dimension() <= cg.space_dimension());
+  assert(sps_fp == (g.is_necessarily_closed()
+		    ? static_cast<SPS_type>(&Scalar_Products::assign)
+		    : static_cast<SPS_type>(&Scalar_Products::reduced_assign)));
+  return sps_fp(sp, g, cg);
 }
 
 } // namespace Parma_Polyhedra_Library

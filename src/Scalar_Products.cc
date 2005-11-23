@@ -40,6 +40,32 @@ PPL::Scalar_Products::assign(Coefficient& z,
 }
 
 void
+PPL::Scalar_Products::assign(Coefficient& z,
+			     const Linear_Row& x, const Congruence& y) {
+  // Scalar product is only defined if `x' and `y' are
+  // dimension-compatible.
+  assert(x.size() <= y.size() - 1);
+  z = 0;
+  for (dimension_type i = x.size(); i-- > 0; )
+    // The following line optimizes the computation of z += x[i] *
+    // y[i].
+    add_mul_assign(z, x[i], y[i]);
+}
+
+void
+PPL::Scalar_Products::assign(Coefficient& z,
+			     const Congruence& x, const Linear_Row& y) {
+  // Scalar product is only defined if `x' and `y' are
+  // dimension-compatible.
+  assert(x.size() - 1 <= y.size());
+  z = 0;
+  for (dimension_type i = x.size() - 1; i-- > 0; )
+    // The following line optimizes the computation of z += x[i] *
+    // y[i].
+    add_mul_assign(z, x[i], y[i]);
+}
+
+void
 PPL::Scalar_Products::reduced_assign(Coefficient& z,
 				     const Linear_Row& x,
 				     const Linear_Row& y) {
@@ -54,6 +80,19 @@ PPL::Scalar_Products::reduced_assign(Coefficient& z,
 }
 
 void
+PPL::Scalar_Products::reduced_assign(Coefficient& z,
+				     const Linear_Row& x,
+				     const Congruence& y) {
+  // The reduced scalar product is only defined if the topology of `x'
+  // is NNC and `y' has enough coefficients.
+  assert(x.size() <= y.size());
+  z = 0;
+  for (dimension_type i = x.size() - 1; i-- > 0; )
+    // The following line optimizes z += x[i] * y[i].
+    add_mul_assign(z, x[i], y[i]);
+}
+
+void
 PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
 					 const Linear_Row& x,
 					 const Linear_Row& y) {
@@ -62,6 +101,20 @@ PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
   assert(x.size() <= y.size());
   z = 0;
     // Note the pre-decrement of `i': last iteration should be for `i == 1'.
+  for (dimension_type i = x.size(); --i > 0; )
+    // The following line optimizes the computation of z += x[i] * y[i].
+    add_mul_assign(z, x[i], y[i]);
+}
+
+void
+PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
+					 const Linear_Row& x,
+					 const Congruence& y) {
+  // Scalar product is only defined if `x' and `y' are
+  // dimension-compatible.
+  assert(x.size() <= y.size() - 1);
+  z = 0;
+  // Note the pre-decrement of `i': last iteration should be for `i == 1'.
   for (dimension_type i = x.size(); --i > 0; )
     // The following line optimizes the computation of z += x[i] * y[i].
     add_mul_assign(z, x[i], y[i]);

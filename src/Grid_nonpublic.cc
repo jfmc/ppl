@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Grid.defs.hh"
-
+#include "Scalar_Products.defs.hh"
 #include <cassert>
 #include <string>
 #include <iostream>
@@ -299,7 +299,7 @@ PPL::Grid::bounds(const Linear_Expression& expr,
     // FIX with next merge
     //if (g.is_line_or_ray()) {
     if (g[0] == 0) {
-      const int sp_sign = homogeneous_scalar_product_sign(expr, g);
+      const int sp_sign = Scalar_Products::homogeneous_sign(expr, g);
       if (sp_sign != 0)
 	// `*this' does not bound `expr'.
 	return false;
@@ -332,7 +332,7 @@ PPL::Grid::max_min(const Linear_Expression& expr,
     }
 
     const Generator& gen = gen_sys[0];
-    homogeneous_scalar_product_assign(ext_n, expr, gen);
+    Scalar_Products::homogeneous_assign(ext_n, expr, gen);
     ext_n += expr.inhomogeneous_term();
     ext_d = gen[0];
     // Reduce ext_n and ext_d.

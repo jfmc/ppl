@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Grid.defs.hh"
 #include "Topology.hh"
+#include "Scalar_Products.defs.hh"
 
 #include <cassert>
 #include <iostream>
@@ -318,7 +319,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
   for (Generator_System::const_iterator g = gen_sys.begin(),
          gen_sys_end = gen_sys.end(); g != gen_sys_end; ++g) {
     TEMP_INTEGER(sp);
-    PPL::scalar_product_assign(sp, cg, *g);
+    Scalar_Products::assign(sp, cg, *g);
 
     switch (g->type()) {
 
