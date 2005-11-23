@@ -522,11 +522,11 @@ PPL::Grid::is_bounded() const {
   if (gen_sys.num_rows() > 1) {
     // Check if all generators are the same point.
     const Generator& first_point = gen_sys[0];
-    if (!first_point.is_point())
+    if (first_point.is_line_or_ray())
       return false;
     for (dimension_type row = gen_sys.num_rows(); row-- > 0; ) {
       const Generator& gen = gen_sys[row];
-      if (!gen.is_point() || gen != first_point)
+      if (gen.is_line_or_ray() || gen != first_point)
 	return false;
     }
   }
@@ -1036,7 +1036,7 @@ PPL::Grid::add_generator(const Generator& g) {
       || (!generators_are_up_to_date() && !update_generators())) {
     // Here the grid is empty: the specification says we can only
     // insert a point.
-    if (!g.is_point())
+    if (g.is_line_or_ray())
       throw_invalid_generator("add_generator(g)", "g");
     if (g.is_necessarily_closed())
       gen_sys.insert(g, false);

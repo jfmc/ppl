@@ -514,7 +514,7 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
     }
     else {
       // Move to the first point.
-      while (!sys[row].is_point())
+      while (sys[row].is_line_or_ray())
 	if (++row == num_rows)
 	  // All rows are lines.
 	  return divisor;
