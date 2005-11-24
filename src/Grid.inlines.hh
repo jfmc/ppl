@@ -239,13 +239,12 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
 	else {
 	  // Any universe interval produces an empty grid.
 	  set_empty();
-	  // FIX can this just return?
-	  goto end;
+	  assert(OK());
+	  return;
 	}
     }
     set_congruences_up_to_date();
     gen_sys.set_sorted(false);
-  end:
     gen_sys.unset_pending_rows();
   }
 
