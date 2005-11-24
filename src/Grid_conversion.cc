@@ -28,13 +28,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include <cstddef>
 
+namespace Parma_Polyhedra_Library {
+
 #define TRACE(x)
 //#define TRACE(x) x
 
 TRACE(using std::endl);
 TRACE(using std::cerr);
-
-namespace Parma_Polyhedra_Library {
 
 // X 0 0 0  upside down, so  x x x X
 // x X 0 0                   x x X 0
@@ -543,5 +543,7 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
 
   TRACE(cerr << "------------------- cgs to gs conversion done." << endl);
 }
+
+#undef TRACE
 
 } // namespace Parma_Polyhedra_Library
