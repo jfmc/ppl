@@ -296,9 +296,7 @@ PPL::Grid::bounds(const Linear_Expression& expr,
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
     // Only lines and rays in `*this' can cause `expr' to be unbounded.
-    // FIX with next merge
-    //if (g.is_line_or_ray()) {
-    if (g[0] == 0) {
+    if (g.is_line_or_ray()) {
       const int sp_sign = Scalar_Products::homogeneous_sign(expr, g);
       if (sp_sign != 0)
 	// `*this' does not bound `expr'.
