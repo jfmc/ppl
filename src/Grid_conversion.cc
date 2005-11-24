@@ -28,16 +28,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include <cstddef>
 
-// FIX Temporary tracing stream.
-#if 0
-#include <iostream>
-std::ostream& ctrace = std::cout;
-#define ctrace_dump(sys) sys.ascii_dump(ctrace)
-#else
-#include <fstream>
-std::ofstream ctrace;
-#define ctrace_dump(sys)
-#endif
+#define TRACE(x)
+//#define TRACE(x) x
+
+TRACE(using std::endl);
+TRACE(using std::cerr);
 
 namespace Parma_Polyhedra_Library {
 
@@ -165,11 +160,11 @@ Grid::multiply_grid(const Coefficient& multiplier, Congruence& cg,
 void
 Grid::conversion(Generator_System& source, Congruence_System& dest,
 		 Dimension_Kinds& dim_kinds) {
-  ctrace << "============= convert gs to cgs" << std::endl
-	<< "source:" << std::endl;
-  ctrace_dump(source);
-  ctrace << "dest:" << std::endl;
-  ctrace_dump(dest);
+  TRACE(cerr << "============= convert gs to cgs" << endl);
+  TRACE(cerr << "source:" << endl);
+  TRACE(source.ascii_dump(cerr));
+  TRACE(cerr << "dest:" << endl);
+  TRACE(dest.ascii_dump(cerr));
   trace_dim_kinds("gs to cgs ", dim_kinds);
 
   // Quite similar to the congruence to generator version below.
@@ -204,9 +199,9 @@ Grid::conversion(Generator_System& source, Congruence_System& dest,
       // Lines map to virtual congruences.
       ++source_num_rows;
     }
-  ctrace << "diagonal_lcm: " << diagonal_lcm << std::endl
-	 << "source_num_rows: " << source_num_rows << std::endl
-	 << "dest_num_rows: " << dest_num_rows << std::endl;
+  TRACE(cerr << "diagonal_lcm: " << diagonal_lcm << endl);
+  TRACE(cerr << "source_num_rows: " << source_num_rows << endl);
+  TRACE(cerr << "dest_num_rows: " << dest_num_rows << endl);
 
   // `source' must be regular.
   if (diagonal_lcm == 0)
@@ -217,9 +212,9 @@ Grid::conversion(Generator_System& source, Congruence_System& dest,
   // Initialize elements and row types in `dest'.
   dimension_type source_index = 0, dest_index = dest_num_rows - 1;
   for (dimension_type dim = 0; dim < dims; ++dim) {
-    ctrace << "init dim " << dim << std::endl;
+    TRACE(cerr << "init dim " << dim << endl);
     if (dim_kinds[dim] == LINE) {
-      ctrace << "  line" << std::endl;
+      TRACE(cerr << "  line" << endl);
       ++source_index;
     }
     else {
@@ -230,13 +225,13 @@ Grid::conversion(Generator_System& source, Congruence_System& dest,
 	cg[j] = 0;
 
       if (dim_kinds[dim] == GEN_VIRTUAL) {
-	ctrace << "  gen_virtual" << std::endl;
+	TRACE(cerr << "  gen_virtual" << endl);
 	cg[dims] = 0;		// An equality.
 	cg[dim] = 1;
       }
       else {
 	assert(dim_kinds[dim] == PARAMETER);
-	ctrace << "  parameter" << std::endl;
+	TRACE(cerr << "  parameter" << endl);
 	cg[dims] = 1;		// A proper congruence.
 	// Set the destination diagonal element to have the same size
 	// relative to the other diagonals as the corresponding
@@ -248,8 +243,8 @@ Grid::conversion(Generator_System& source, Congruence_System& dest,
     }
   }
 
-  ctrace << "dest after init:" << std::endl;
-  ctrace_dump(dest);
+  TRACE(cerr << "dest after init:" << endl);
+  TRACE(dest.ascii_dump(cerr));
 
   // Convert.
   //
@@ -261,7 +256,7 @@ Grid::conversion(Generator_System& source, Congruence_System& dest,
   dest_index = 0;
 
   for (dimension_type dim = dims; dim-- > 0; ) {
-    ctrace << "dim: " << dim << std::endl;
+    TRACE(cerr << "dim: " << dim << endl);
 
     if (dim_kinds[dim] != GEN_VIRTUAL) {
       --source_index;
@@ -270,8 +265,8 @@ Grid::conversion(Generator_System& source, Congruence_System& dest,
 
       // For each row in `dest' that is above the `dest_index'...
       for (dimension_type row = dest_index; row-- > 0; ) {
-	ctrace << "  row " << row << std::endl;
-	ctrace_dump(dest);
+	TRACE(cerr << "  row " << row << endl);
+	TRACE(dest.ascii_dump(cerr));
 
 	Congruence& cg = dest[row];
 
@@ -292,8 +287,8 @@ Grid::conversion(Generator_System& source, Congruence_System& dest,
 	// had before the mult_grid.
 	cg[dim] /= source_dim;
       }
-      ctrace << "dest after multiplying grid:" << std::endl;
-      ctrace_dump(dest);
+      TRACE(cerr << "dest after multiplying grid:" << endl);
+      TRACE(dest.ascii_dump(cerr));
     }
 
     // Consider each dimension `dim_prec' that precedes `dim', as the
@@ -302,14 +297,14 @@ Grid::conversion(Generator_System& source, Congruence_System& dest,
     if (dim_kinds[dim] != LINE)
       ++dest_index;
     for(dimension_type dim_prec = dim; dim_prec-- > 0; ) {
-      ctrace << "  dim_prec: " << dim_prec
-	     << "  dest_index: " << dest_index
-	     << "  tem_source_index: " << tem_source_index << std::endl;
+      TRACE(cerr << "  dim_prec: " << dim_prec);
+      TRACE(cerr << "  dest_index: " << dest_index);
+      TRACE(cerr << "  tem_source_index: " << tem_source_index << endl);
       if (dim_kinds[dim_prec] != GEN_VIRTUAL) {
 	--tem_source_index;
 	TEMP_INTEGER(source_dim);
 	source_dim = source[tem_source_index][dim];
-	ctrace << "  rows:" << std::endl;
+	TRACE(cerr << "  rows:" << endl);
 	// In order to compute the transpose of the inverse of
 	// `source', subtract source[tem_source_index][dim] times the
 	// column vector in `dest' at `dim' from the column vector in
@@ -320,15 +315,15 @@ Grid::conversion(Generator_System& source, Congruence_System& dest,
 	// entry `dim' from the entry at `dim_prec'.
 	for (dimension_type row = dest_index; row-- > 0; ) {
 	  assert(row < dest_num_rows);
-	  ctrace << "       " << row << std::endl;
+	  TRACE(cerr << "       " << row << endl);
 	  Congruence& cg = dest[row];
 	  cg[dim_prec] -= source_dim * cg[dim];
 	}
       }
     }
 
-    ctrace << "dest after processing preceding rows:" << std::endl;
-    ctrace_dump(dest);
+    TRACE(cerr << "dest after processing preceding rows:" << endl);
+    TRACE(dest.ascii_dump(cerr));
   }
   // Set the modulus in every congruence.
   TEMP_INTEGER(modulus);
@@ -344,8 +339,8 @@ Grid::conversion(Generator_System& source, Congruence_System& dest,
       // `cg' is a proper congruence.
       cg[dims] = modulus;
   }
-  ctrace << "dest after setting moduli:" << std::endl;
-  ctrace_dump(dest);
+  TRACE(cerr << "dest after setting moduli:" << endl);
+  TRACE(dest.ascii_dump(cerr));
 
 #ifdef STRONG_REDUCTION
   for (dimension_type dim = dims, i = 0; dim-- > 0; )
@@ -356,23 +351,23 @@ Grid::conversion(Generator_System& source, Congruence_System& dest,
       // Factor the "diagonal" congruence out of the preceding rows.
       reduce_reduced(dest, dim, i++, 0, dim, dim_kinds, false);
     }
-  ctrace << "dest after strong reduction:" << std::endl;
-  ctrace_dump(dest);
+  TRACE(cerr << "dest after strong reduction:" << endl);
+  TRACE(dest.ascii_dump(cerr));
 #endif
 
   trace_dim_kinds("gs to cgs end ", dim_kinds);
 
-  ctrace << "------------------- gs to cgs conversion done." << std::endl;
+  TRACE(cerr << "------------------- gs to cgs conversion done." << endl);
 }
 
 void
 Grid::conversion(Congruence_System& source, Linear_System& dest,
 		 Dimension_Kinds& dim_kinds) {
-  ctrace << "============= convert cgs to gs" << std::endl
-	 << "source:" << std::endl;
-  ctrace_dump(source);
-  ctrace << "dest:" << std::endl;
-  ctrace_dump(dest);
+  TRACE(cerr << "============= convert cgs to gs" << endl);
+  TRACE(cerr << "source:" << endl);
+  TRACE(source.ascii_dump(cerr));
+  TRACE(cerr << "dest:" << endl);
+  TRACE(dest.ascii_dump(cerr));
   trace_dim_kinds("cgs to gs ", dim_kinds);
 
   // Quite similar to the generator to congruence version above.
@@ -402,9 +397,9 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
       // Equalities map to virtual generators.
       ++source_num_rows;
     }
-  ctrace << "diagonal_lcm: " << diagonal_lcm << std::endl
-	 << "source_num_rows: " << source_num_rows << std::endl
-	 << "dest_num_rows: " << dest_num_rows << std::endl;
+  TRACE(cerr << "diagonal_lcm: " << diagonal_lcm << endl);
+  TRACE(cerr << "source_num_rows: " << source_num_rows << endl);
+  TRACE(cerr << "dest_num_rows: " << dest_num_rows << endl);
 
   // `source' must be regular.
   if (diagonal_lcm == 0)
@@ -421,9 +416,9 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
   // The generator system has a bottom-up ordering.
   dimension_type dest_index = dest_num_rows - 1;
   for (dimension_type dim = dims; dim-- > 0;) {
-    ctrace << "init dim " << dim << std::endl;
+    TRACE(cerr << "init dim " << dim << endl);
     if (dim_kinds[dim] == EQUALITY) {
-      ctrace << "  equality" << std::endl;
+      TRACE(cerr << "  equality" << endl);
       ++source_index;
     }
     else {
@@ -434,13 +429,13 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
 	g[j] = 0;
 
       if (dim_kinds[dim] == CON_VIRTUAL) {
-	ctrace << "  con_virtual" << std::endl;
+	TRACE(cerr << "  con_virtual" << endl);
 	g.set_is_line_or_equality();
 	g[dim] = 1;
       }
       else {
 	assert(dim_kinds[dim] == PROPER_CONGRUENCE);
-	ctrace << "  proper_congruence" << std::endl;
+	TRACE(cerr << "  proper_congruence" << endl);
 	g.set_is_ray_or_point_or_inequality();
 	g[dim] = diagonal_lcm / source[source_index][dim];
 	++source_index;
@@ -449,8 +444,8 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
     }
   }
 
-  ctrace << "dest after init:" << std::endl;
-  ctrace_dump(dest);
+  TRACE(cerr << "dest after init:" << endl);
+  TRACE(dest.ascii_dump(cerr));
 
   // Convert.
   //
@@ -462,7 +457,7 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
   dest_index = 0;
 
   for (dimension_type dim = 0; dim < dims; ++dim) {
-    ctrace << "dim: " << dim << std::endl;
+    TRACE(cerr << "dim: " << dim << endl);
 
     if (dim_kinds[dim] != CON_VIRTUAL) {
       --source_index;
@@ -471,8 +466,8 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
 
       // For each row in `dest' that is above the `dest_index'...
       for (dimension_type row = dest_index; row-- > 0; ) {
-	ctrace << "  row " << row << std::endl;
-	ctrace_dump(dest);
+	TRACE(cerr << "  row " << row << endl);
+	TRACE(dest.ascii_dump(cerr));
 
 	Linear_Row& g = dest[row];
 
@@ -493,8 +488,8 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
 	// had before the mult_grid.
 	g[dim] /= source_dim;
       }
-      ctrace << "dest after multiplying grid:" << std::endl;
-      ctrace_dump(dest);
+      TRACE(cerr << "dest after multiplying grid:" << endl);
+      TRACE(dest.ascii_dump(cerr));
     }
 
     // Consider each dimension `dim_fol' that precede `dim', as the
@@ -503,14 +498,14 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
     if (dim_kinds[dim] != EQUALITY)
       ++dest_index;
     for(dimension_type dim_fol = dim + 1; dim_fol < dims; ++dim_fol) {
-      ctrace << "  dim_fol: " << dim_fol
-	     << "  dest_index: " << dest_index
-	     << "  tem_source_index: " << tem_source_index << std::endl;
+      TRACE(cerr << "  dim_fol: " << dim_fol);
+      TRACE(cerr << "  dest_index: " << dest_index);
+      TRACE(cerr << "  tem_source_index: " << tem_source_index << endl);
       if (dim_kinds[dim_fol] != CON_VIRTUAL) {
 	--tem_source_index;
 	TEMP_INTEGER(source_dim);
 	source_dim = source[tem_source_index][dim];
-	ctrace << "  rows:" << std::endl;
+	TRACE(cerr << "  rows:" << endl);
 	// In order to compute the transpose of the inverse of
 	// `source', subtract source[tem_source_index][dim] times the
 	// column vector in `dest' at `dim' from the column vector in
@@ -521,14 +516,14 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
 	// entry `dim' from the entry at `dim_fol'.
 	for (dimension_type row = dest_index; row-- > 0; ) {
 	  assert(row < dest_num_rows);
-	  ctrace << "       " << row << std::endl;
+	  TRACE(cerr << "       " << row << endl);
 	  Linear_Row& g = dest[row];
 	  g[dim_fol] -= source_dim * g[dim];
 	}
       }
     }
-    ctrace << "dest after processing preceding rows:" << std::endl;
-    ctrace_dump(dest);
+    TRACE(cerr << "dest after processing preceding rows:" << endl);
+    TRACE(dest.ascii_dump(cerr));
   }
 
 #ifdef STRONG_REDUCTION
@@ -540,13 +535,13 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
       // Factor the "diagonal" congruence out of the preceding rows.
       reduce_reduced(dest, dim, i++, dim, dims - 1, dim_kinds);
     }
-  ctrace << "dest after strong reduction:" << std::endl;
-  ctrace_dump(dest);
+  TRACE(cerr << "dest after strong reduction:" << endl);
+  TRACE(dest.ascii_dump(cerr));
 #endif
 
   trace_dim_kinds("cgs to gs end ", dim_kinds);
 
-  ctrace << "------------------- cgs to gs conversion done." << std::endl;
+  TRACE(cerr << "------------------- cgs to gs conversion done." << endl);
 }
 
 } // namespace Parma_Polyhedra_Library
