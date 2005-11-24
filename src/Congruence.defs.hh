@@ -439,10 +439,6 @@ private:
   friend class PPL::Congruence_System::const_iterator;
   friend class PPL::Grid;
   friend class PPL::Linear_Expression;
-  // FIX confirm
-  // FIXME: the following friend declaration should be avoided.
-  // For Polyhedron::add_congruence.
-  friend class PPL::Polyhedron;
 
   friend void
   std::swap(PPL::Congruence& x, PPL::Congruence& y);
