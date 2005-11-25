@@ -176,8 +176,8 @@ PPL::Matrix::add_zero_rows_and_columns(const dimension_type n,
 
 void
 PPL::Matrix::add_recycled_row(Row& y) {
-  // The added row must have the same number of elements
-  // of the existing rows of the system.
+  // The added row must have the same number of elements as the
+  // existing rows of the system.
   assert(y.size() == row_size);
   const dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
