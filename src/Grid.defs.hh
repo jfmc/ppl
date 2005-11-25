@@ -2142,8 +2142,7 @@ private:
   //! Updates and minimizes the congruences from the generators.
   /*!
     \return
-    <CODE>false</CODE> if and only if \p *this turns out to be an
-    empty grid.
+    Always <CODE>true</CODE>.
   */
   bool update_congruences() const;
 
@@ -2169,8 +2168,8 @@ private:
     <CODE>false</CODE> if and only if \p *this turns out to be an
     empty grid.
 
-    Minimization is not attempted if the Status field already declares
-    both systems to be minimized.
+    Minimization is performed on each system only if the minimized
+    Status field is clear.
   */
   bool minimize() const;
 
