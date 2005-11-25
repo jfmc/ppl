@@ -422,7 +422,6 @@ Grid::strictly_contains(const Grid& y) const {
 template <typename Box>
 void
 Grid::shrink_bounding_box(Box& box) const {
-  // FIX why does grid intro this requirement?
   // Dimension-compatibility check.
   if (space_dim > box.space_dimension())
     throw_dimension_incompatible("shrink_bounding_box(box)", "box",
@@ -504,7 +503,6 @@ Grid::shrink_bounding_box(Box& box) const {
 template <typename Box>
 void
 Grid::get_covering_box(Box& box) const {
-  // FIX why does grid intro this requirement?
   // Dimension-compatibility check.
   if (space_dim > box.space_dimension())
     throw_dimension_incompatible("get_covering_box(box)", "box",
