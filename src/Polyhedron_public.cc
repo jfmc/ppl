@@ -1612,7 +1612,6 @@ PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
 
   bool empty;
   if (y.con_sys.num_pending_rows() > 0) {
-    // FIX why add to x (instd of calling a_and_m(t, x.cg, x.gs, sat, y.cg))?
     // Integrate `y.con_sys' as pending constraints of `x',
     // sort them in place and then call `add_and_minimize()'.
     x.con_sys.add_pending_rows(y.con_sys);
