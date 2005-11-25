@@ -447,4 +447,8 @@ Many tests use this technique:
 
 The template find_variation_template in ppl_test.hh can be used as a
 further check.  It creates a second object from the ASCII dump of a
-given PPL object, and tests whether the two objects are equal.
+given PPL object, and tests whether the two objects are equal.  It
+also call the OK method of the given PPL object.  For example:
+
+	if (find_variation_template<Grid>(gr))
+       exit(1);
