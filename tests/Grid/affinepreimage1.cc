@@ -310,7 +310,10 @@ test8() {
     // Up-to-date, minimized congruences.
 
     gr = Grid(2);
-    gr.add_congruence((3*A - 6*B %= 3) / 9);
+    // FIX Confirm that this should fail when Grid_nonpublic.cc
+    //     BE_LAZY=0.
+    //gr.add_congruence((3*A - 6*B %= 3) / 9);
+    gr.add_congruence((A - 2*B %= 1) / 9);
     gr.add_congruence((B %= 0) / 3);
 
     // Minimize the congruences.
