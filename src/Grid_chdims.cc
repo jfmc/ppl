@@ -292,8 +292,7 @@ PPL::Grid::concatenate_assign(const Grid& y) {
   // TODO: this implementation is just an executable specification.
   Congruence_System cgs = y.congruences();
 
-  if (!congruences_are_up_to_date())
-    update_congruences();
+  congruences_are_up_to_date() || update_congruences();
 
   // The matrix for the new system of congruences is obtained by
   // leaving the old system in the upper left-hand side and placing

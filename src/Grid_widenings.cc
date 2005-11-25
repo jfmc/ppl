@@ -106,9 +106,7 @@ PPL::Grid::widening_assign(const Grid& const_y, unsigned* tp) {
     }
   }
   else
-    if (!x.update_congruences())
-      // `x' is empty.
-      return;
+    x.update_congruences();
 
   // Ensure that the `y' congruences are in minimal form.
   if (y.congruences_are_up_to_date()) {
@@ -122,9 +120,7 @@ PPL::Grid::widening_assign(const Grid& const_y, unsigned* tp) {
     }
   }
   else
-    if (!y.update_congruences())
-      // `y' is empty.
-      return;
+    y.update_congruences();
 
   if (con_sys.num_equalities() < y.con_sys.num_equalities())
     return;

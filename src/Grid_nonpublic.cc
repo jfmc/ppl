@@ -214,16 +214,14 @@ PPL::Grid::is_included_in(const Grid& y) const {
 
 #if BE_LAZY
   if (!x.generators_are_up_to_date() && !x.update_generators())
+    // Updating found `x' empty.
     return true;
-  if (!y.congruences_are_up_to_date())
-    y.update_congruences();
+  y.congruences_are_up_to_date() || y.update_congruences();
 #else
-  if (!x.generators_are_minimized())
-    // FIX just call simplify?
-    x.minimize();
-  if (!y.congruences_are_minimized())
-    // FIX just call simplify?
-    y.minimize();
+  if (!x.generators_are_minimized() && !x.minimize())
+    // Minimizing found `x' empty.
+    return true;
+  y.congruences_are_minimized() || y.minimize();
 #endif
 
   assert(x.OK());
@@ -232,14 +230,16 @@ PPL::Grid::is_included_in(const Grid& y) const {
   const Generator_System& gs = x.gen_sys;
   const Congruence_System& cgs = y.con_sys;
 
-#if BE_LAZY
   dimension_type num_rows = gs.num_rows();
+#if BE_LAZY
   if (x.generators_are_minimized()) {
+#endif
     TEMP_INTEGER(divisor);
     divisor = gs[0][0];
     for (dimension_type i = num_rows; i-- > 0; )
       if (!cgs.satisfies_all_congruences(gs[i], divisor))
 	return false;
+#if BE_LAZY
   }
   else
     for (dimension_type i = num_rows; i-- > 0; ) {
@@ -247,13 +247,6 @@ PPL::Grid::is_included_in(const Grid& y) const {
       if (!cgs.satisfies_all_congruences(g, g[0]))
 	return false;
     }
-#else
-  TEMP_INTEGER(divisor);
-  divisor = gs[0][0];
-  dimension_type num_rows = gs.num_rows();
-  for (dimension_type i = num_rows; i-- > 0; )
-    if (!cgs.satisfies_all_congruences(gs[i], divisor))
-      return false;
 #endif
 
   // Inclusion holds.
@@ -444,27 +437,49 @@ PPL::Grid::minimize() const {
   if (space_dim == 0)
     return true;
 
-  // Is the grid already minimized?
+  // Are both systems already minimized?
   if (congruences_are_minimized() && generators_are_minimized())
     return true;
 
-  // If congruences or generators are up-to-date, invoking
-  // update_generators() or update_congruences(), respectively, FIX
-  // both of which minimize both congruences and generators.  If
-  // congruences and generators are up-to-date then either function
-  // can be called.
+  // Invoke update_generators, update_congruences or simplify,
+  // depending on the state of the systems.
   if (congruences_are_up_to_date()) {
-    // We may discover here that `*this' is empty.
-    const bool ret = update_generators();
-    assert(OK());
-    return ret;
+    if (generators_are_up_to_date()) {
+      Grid& gr = const_cast<Grid&>(*this);
+      // Only one of the systems can be minimized here.
+      if (congruences_are_minimized()) {
+	// Minimize the generator system.
+	gr.simplify(gr.gen_sys, gr.dim_kinds);
+	gr.set_generators_minimized();
+      }
+      else {
+	// Minimize the congruence system.
+	if (simplify(gr.con_sys, gr.dim_kinds)) {
+	  gr.set_empty();
+	  assert(OK());
+	  return false;
+	}
+	gr.set_congruences_minimized();
+	if (!generators_are_minimized()) {
+	  // Minimize the generator system.
+	  gr.simplify(gr.gen_sys, gr.dim_kinds);
+	  gr.set_generators_minimized();
+	}
+      }
+    }
+    else {
+      // Updating the generators may reveal that `*this' is empty.
+      const bool ret = update_generators();
+      assert(OK());
+      return ret;
+    }
   }
   else {
     assert(generators_are_up_to_date());
     update_congruences();
-    assert(OK());
-    return true;
   }
+  assert(OK());
+  return true;
 }
 
 void

@@ -177,8 +177,7 @@ PPL::Grid::congruences() const {
     return con_sys;
   }
 
-  if (!congruences_are_up_to_date())
-    update_congruences();
+  congruences_are_up_to_date() || update_congruences();
 
   return con_sys;
 }
@@ -483,10 +482,8 @@ PPL::Grid::is_universe() const {
       return con_sys.num_rows() == 1 && con_sys[0].is_trivial_true();
   }
   else {
-    if (update_congruences())
-      return con_sys.num_rows() == 1 && con_sys[0].is_trivial_true();
-    // Updating found the grid empty.
-    return false;
+    update_congruences();
+    return con_sys.num_rows() == 1 && con_sys[0].is_trivial_true();
   }
 
   // Test con_sys's inclusion in a universe generator system.
@@ -970,8 +967,7 @@ PPL::Grid::add_congruence(const Congruence& cg) {
     return;
   }
 
-  if (!congruences_are_up_to_date())
-    update_congruences();
+  congruences_are_up_to_date() || update_congruences();
 
   con_sys.insert(cg);
 
@@ -1166,11 +1162,7 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
   }
 
   // The congruences are required.
-  if (!congruences_are_up_to_date() && !update_congruences()) {
-    set_empty();
-    assert(OK());
-    return;
-  }
+  congruences_are_up_to_date() || update_congruences();
 
   // Adjust `cgs' to the right space dimension.
   cgs.increase_space_dimension(space_dim);
@@ -1263,11 +1255,7 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   if (marked_empty())
     return false;
 
-  if (!congruences_are_up_to_date() && !update_congruences()) {
-    set_empty();
-    assert(OK());
-    return false;
-  }
+  congruences_are_up_to_date() || update_congruences();
 
   // Adjust `cgs' to the current space dimension.
   cgs.increase_space_dimension(space_dim);
@@ -1599,14 +1587,8 @@ PPL::Grid::intersection_assign(const Grid& y) {
     return;
 
   // The congruences must be up-to-date.
-  if (!x.congruences_are_up_to_date() && !x.update_congruences())
-    // Discovered `x' empty when updating congruences.
-    return;
-  if (!y.congruences_are_up_to_date() && !y.update_congruences()) {
-    // Discovered `y' empty when updating congruences.
-    x.set_empty();
-    return;
-  }
+  x.congruences_are_up_to_date() || x.update_congruences();
+  y.congruences_are_up_to_date() || y.update_congruences();
 
   x.con_sys.add_rows(y.con_sys);
   // Generators may be out of date and congruences may have changed
