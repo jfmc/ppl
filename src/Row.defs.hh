@@ -330,7 +330,6 @@ private:
   dimension_type capacity() const;
 
   friend class Grid;
-  friend class Congruence_System;
 #endif // EXTRA_ROW_DEBUG
 };
 
