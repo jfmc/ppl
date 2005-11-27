@@ -91,10 +91,8 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
 
 void
 PPL::Congruence_System::insert(const Constraint& c) {
-  dimension_type cg_size = c.size();
+  dimension_type cg_size = c.space_dimension() + 2;
   const dimension_type old_num_columns = num_columns();
-  if (c.is_necessarily_closed())
-    ++cg_size;
   if (cg_size < old_num_columns) {
     // Create a congruence of the required size from `c'.
     Congruence cg(c, old_num_columns, row_capacity);
