@@ -24,9 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Row_defs_hh 1
 
 #include "Row.types.hh"
-#ifdef EXTRA_ROW_DEBUG
-#include "Grid.types.hh"
-#endif
 #include "globals.types.hh"
 #include "Coefficient.defs.hh"
 #include <vector>
@@ -328,8 +325,6 @@ private:
 #if EXTRA_ROW_DEBUG
   //! Returns the capacity of the row (only available during debugging).
   dimension_type capacity() const;
-
-  friend class Grid;
 #endif // EXTRA_ROW_DEBUG
 };
 
