@@ -351,7 +351,6 @@ private:
   friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;
   friend class Parma_Polyhedra_Library::Constraint_System;
   friend class Parma_Polyhedra_Library::Constraint_System::const_iterator;
-  friend class Parma_Polyhedra_Library::Congruence_System;
   // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
 
