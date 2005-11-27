@@ -1497,7 +1497,7 @@ PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
     if (i->is_equality()) {
       Linear_Expression le(*i);
       Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
-      // FIX insert *i directly into cs, instead of creating c.
+      // FIXME: Steal the row in c when adding it to cs.
       cs.insert(c);
       inserted = true;
     }
