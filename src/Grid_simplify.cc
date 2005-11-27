@@ -446,10 +446,7 @@ Grid::simplify(Generator_System& sys, Dimension_Kinds& dim_kinds) {
 
     sys.unset_pending_rows();
 
-    // FIX is this psbl after parameterizing?
-    // FIX related to gen_sys changes
-    // FIX add for true return below
-    //assert(sys.OK());
+    assert(sys.OK(false));
 
     TRACE(cerr << "---- simplify (reduce) gs done." << endl);
     return false;
@@ -459,6 +456,7 @@ Grid::simplify(Generator_System& sys, Dimension_Kinds& dim_kinds) {
   sys.set_sorted(false);
   sys.unset_pending_rows();
 
+  assert(sys.OK(false));
   TRACE(cerr << "---- simplify (reduce) gs done (empty)." << endl);
   return true;
 }
