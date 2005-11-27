@@ -214,8 +214,8 @@ Grid::reduce_parameter_with_line(Linear_Row& row,
 				 Linear_Row& pivot,
 				 dimension_type column,
 				 Linear_System& sys) {
-  // Very similar to the the Congruence version below.  Any change
-  // here may be needed there too.
+  // Very similar to reduce_congruence_with_equality below.  Any
+  // change here may be needed there too.
   // FIX check if row[column] == pivot[column], as in cong version?
   TRACE(cerr << "reduce_parameter_with_line" << endl);
 
@@ -261,8 +261,8 @@ Grid::reduce_congruence_with_equality(Congruence& row,
 				      Congruence& pivot,
 				      dimension_type column,
 				      Congruence_System& sys) {
-  // Very similar to the Linear_Row version above.  Any change here
-  // may be needed there too.
+  // Very similar to reduce_parameter_with_line above.  Any change
+  // here may be needed there too.
   TRACE(cerr << "reduce_congruence_with_equality" << endl);
   assert(row.modulus() > 0 && pivot.modulus() == 0);
 
@@ -331,7 +331,7 @@ Grid::simplify(Generator_System& sys, Dimension_Kinds& dim_kinds) {
   TRACE(cerr << "==== simplify (reduce) gs:" << endl);
   TRACE(cerr << "sys:" << endl);
   TRACE(sys.ascii_dump(cerr));
-  assert(sys.num_rows());
+  assert(sys.num_rows() > 0);
 
   // Changes here may also be required in the congruence version
   // below.
@@ -431,6 +431,7 @@ Grid::simplify(Generator_System& sys, Dimension_Kinds& dim_kinds) {
   trace_dim_kinds("gs simpl end ", dim_kinds);
 
   // Either the first row is a point, or H is empty.
+  // FIX all callers assume always returns containing points?
 
   if (sys[0].is_ray_or_point()) {
     // Clip any zero rows from the end of the matrix.
@@ -441,16 +442,13 @@ Grid::simplify(Generator_System& sys, Dimension_Kinds& dim_kinds) {
 			   sys.num_rows() - 1,  // index of last
 			   sys.num_columns())); // row size
       sys.erase_to_end(pivot_index);
-#if EXTRA_ROW_DEBUG
-      // std::vector may have relocated rows, so the row copy constructor may
-      // have used a new capacity.
-      sys.row_capacity = sys[0].capacity_;
-#endif
     }
 
     sys.unset_pending_rows();
 
     // FIX is this psbl after parameterizing?
+    // FIX related to gen_sys changes
+    // FIX add for true return below
     //assert(sys.OK());
 
     TRACE(cerr << "---- simplify (reduce) gs done." << endl);
@@ -460,6 +458,7 @@ Grid::simplify(Generator_System& sys, Dimension_Kinds& dim_kinds) {
   sys.clear();
   sys.set_sorted(false);
   sys.unset_pending_rows();
+
   TRACE(cerr << "---- simplify (reduce) gs done (empty)." << endl);
   return true;
 }
@@ -469,7 +468,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   TRACE(cerr << "======== simplify (reduce) cgs:" << endl);
   TRACE(cerr << "sys:" << endl);
   TRACE(sys.ascii_dump(cerr));
-  assert(sys.num_rows());
+  assert(sys.num_rows() > 0);
 
   // Changes here may also be required in the generator version above.
 
@@ -560,7 +559,6 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       // Factor this row out of the preceding ones.
       reduce_reduced(sys, dim, pivot_index, 0, dim, dim_kinds, false);
 #endif
-
       ++pivot_index;
     }
     TRACE(sys.ascii_dump(cerr));
@@ -576,12 +574,6 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 			 sys.num_rows() - 1,  // index of last
 			 sys.num_columns() - 1)); // row size
     sys.erase_to_end(reduced_num_rows);
-#if EXTRA_ROW_DEBUG
-    // std::vector may have relocated rows, so the row copy constructor may
-    // have used a new capacity.
-    sys.row_capacity = sys[0].capacity_;
-    // FIX check other places that do rows.erase (Linear_System...)
-#endif
   }
   assert(sys.num_rows() == reduced_num_rows);
 
@@ -603,14 +595,9 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   return_empty:
     last_row[0] = 1;
     dim_kinds.resize(1);
-    sys.rows.erase(sys.rows.begin(), // First.
-		   // One past last.
-		   sys.rows.begin() + reduced_num_rows - 1);
-#if EXTRA_ROW_DEBUG
-    // std::vector may have relocated rows, so the row copy constructor may
-    // have used a new capacity.
-    sys.row_capacity = sys[0].capacity_;
-#endif
+    std::swap(sys.rows[0], sys.rows.back());
+    sys.erase_to_end(1);
+
     trace_dim_kinds("cgs simpl end ", dim_kinds);
     assert(sys.OK());
     TRACE(cerr << "---- simplify (reduce) cgs done (empty)." << endl);
