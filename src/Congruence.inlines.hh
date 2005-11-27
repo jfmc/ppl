@@ -78,11 +78,10 @@ Congruence::operator=(const Congruence& c) {
 inline Congruence
 operator%=(const Linear_Expression& e,
 	   const Coefficient_traits::const_reference n) {
-  // Ensure that diff has capacity for the modulo.
-  dimension_type e_dim = e.space_dimension();
-  Linear_Expression diff(e, e_dim + 1, e_dim + 2);
+  // Ensure that diff has capacity for the modulus.
+  Linear_Expression diff(e, e.space_dimension() + 2);
   diff -= n;
-  Congruence cg(diff, 1);
+  Congruence cg(diff, 1, false);
   return cg;
 }
 
@@ -189,9 +188,11 @@ Congruence::total_memory_in_bytes() const {
 
 inline
 Congruence::Congruence(Linear_Expression& le,
-		       Coefficient_traits::const_reference m) {
+		       Coefficient_traits::const_reference m,
+		       bool capacity) {
   Row::swap(static_cast<Row&>(le));
-  Row::expand_within_capacity(size()+1);
+  if (capacity)
+    Row::expand_within_capacity(size()+1);
   if (m >= 0)
     (*this)[size()-1] = m;
   else

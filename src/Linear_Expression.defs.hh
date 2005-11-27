@@ -313,14 +313,6 @@ private:
   //! Copy-constructor with a specified space dimension.
   Linear_Expression(const Linear_Expression& e, dimension_type sz);
 
-  //! Copy-constructor with a specified space dimension and capacity.
-  /*!
-    It is assumed that \p sz is greater than or equal to the size of \p y
-    and, of course, that \p sz is less than or equal to \p capacity.
-  */
-  Linear_Expression(const Linear_Expression& e, dimension_type sz,
-		    dimension_type capacity);
-
   //! Implementation sizing constructor.
   /*!
     The bool parameter is just to avoid problems with

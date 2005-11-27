@@ -39,13 +39,8 @@ PPL::Congruence::Congruence(const Constraint& c)
 	: (throw_invalid_argument("Congruence(c)",
 				  "constraint c must be an equality."),
 	   c),
-	c.size(),
-	compute_capacity(c.size() + 1, Row::max_size())) {
-
-  // NOT_NECESSARILY_CLOSED Constraints already have an extra element,
-  // for the epsilon coefficient.
-  if (c.is_necessarily_closed())
-    Row::expand_within_capacity(size()+1);
+	c.space_dimension() + 2,
+	compute_capacity(c.space_dimension() + 2, Row::max_size())) {
 
   (*this)[size()-1] = 0;
 }
@@ -136,7 +131,7 @@ PPL::Congruence::strong_normalize() {
 /*! \relates Parma_Polyhedra_Library::Congruence */
 PPL::Congruence
 PPL::operator%=(const Linear_Expression& e1, const Linear_Expression& e2) {
-  // Ensure that diff is created with capacity for the modulo.
+  // Ensure that diff is created with capacity for the modulus.
   dimension_type dim, e1_dim, e2_dim;
   e1_dim = e1.space_dimension();
   e2_dim = e2.space_dimension();
@@ -145,10 +140,9 @@ PPL::operator%=(const Linear_Expression& e1, const Linear_Expression& e2) {
   else
     dim = e2_dim;
   Linear_Expression diff(e1_dim > e2_dim ? e1 : e2,
-			 dim + 1,
 			 dim + 2);
   diff -= (e1_dim > e2_dim ? e2 : e1);
-  Congruence cg(diff, 1);
+  Congruence cg(diff, 1, false);
   return cg;
 }
 

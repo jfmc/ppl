@@ -73,13 +73,6 @@ Linear_Expression::Linear_Expression(const Linear_Expression& e,
 }
 
 inline
-Linear_Expression::Linear_Expression(const Linear_Expression& e,
-				     dimension_type sz,
-				     dimension_type capacity)
-  : Linear_Row(e, sz, capacity) {
-}
-
-inline
 Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n)
   : Linear_Row(1, Linear_Row::Flags()) {
   (*this)[0] = n;
