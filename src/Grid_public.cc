@@ -1263,7 +1263,6 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   for (dimension_type row = 0; row < cgs.num_rows(); ++row)
     con_sys.add_row(cgs[row]);
 
-  // FIX simplify congruences (and in other places)
   clear_congruences_minimized();
 
 #ifndef NDEBUG
