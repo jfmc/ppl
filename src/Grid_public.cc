@@ -52,7 +52,6 @@ PPL::Grid::Grid(dimension_type num_dimensions,
     con_sys.increase_space_dimension(num_dimensions);
     // Initialise both systems to universe representations.
     set_congruences_minimized();
-    set_congruences_up_to_date();
     dim_kinds.resize(num_dimensions + 1);
     gen_sys.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
 						num_dimensions);
@@ -69,11 +68,11 @@ PPL::Grid::Grid(dimension_type num_dimensions,
     Congruence& first_cg = con_sys[0];
     first_cg[0] = 1;
     first_cg[num_dimensions + 1] = 1; // Modulus.
-    dim_kinds[0] = PROPER_CONGRUENCE;
+    dim_kinds[0] = PROPER_CONGRUENCE /* a.k.a PARAMETER */;
     // The rest.
     while (num_dimensions > 0) {
       gen_sys[num_dimensions][num_dimensions] = 1;
-      dim_kinds[num_dimensions--] = CON_VIRTUAL;
+      dim_kinds[num_dimensions--] = CON_VIRTUAL /* a.k.a LINE */;
     }
     gen_sys.unset_pending_rows();
     gen_sys.set_sorted(false);
@@ -280,10 +279,8 @@ PPL::Grid::relation_with(const Congruence& cg) const {
       && Poly_Con_Relation::is_disjoint();
 
   if (space_dim == 0)
+    // FIXME: Confirm that these are correct, especially the first.
     if (cg.is_trivial_false())
-      // FIX
-      // The congruence 1 %= 0 mod 0 implicitly defines the hyperplane
-      // 0 = 0; thus, the zero-dimensional point also saturates it.
       return Poly_Con_Relation::is_disjoint();
     else if (cg.is_equality() || cg[0] == 0)
       return Poly_Con_Relation::is_included();
@@ -479,7 +476,7 @@ PPL::Grid::is_universe() const {
 
   if (congruences_are_up_to_date()) {
     if (congruences_are_minimized())
-      // FIX confirm
+      // FIX confirm (4 %= 0, 3 %= 0, 1 %= 0?)
       // The mininimized universe congruence system has only one row,
       // the integrality congruence.
       return con_sys.num_rows() == 1 && con_sys[0].is_trivial_true();
@@ -1178,7 +1175,7 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
   con_sys.add_zero_rows(cgs_num_rows, Row::Flags());
   for (dimension_type i = cgs_num_rows; i-- > 0; ) {
     // Steal one coefficient at a time, since the rows might have
-    // different capacities (besides possibly having different sizes)
+    // different capacities (besides possibly having different sizes).
     Congruence& new_cg = con_sys[old_num_rows + i];
     Congruence& old_cg = cgs[i];
     for (dimension_type j = cgs_num_columns; j-- > 0; )
@@ -1593,11 +1590,13 @@ PPL::Grid::intersection_assign(const Grid& y) {
   x.congruences_are_up_to_date() || x.update_congruences();
   y.congruences_are_up_to_date() || y.update_congruences();
 
-  x.con_sys.add_rows(y.con_sys);
-  // Generators may be out of date and congruences may have changed
-  // from minimal form.
-  x.clear_generators_up_to_date();
-  x.clear_congruences_minimized();
+  if (y.con_sys.num_rows() > 0 ) {
+    x.con_sys.add_rows(y.con_sys);
+    // Generators may be out of date and congruences may have changed
+    // from minimal form.
+    x.clear_generators_up_to_date();
+    x.clear_congruences_minimized();
+  }
 
   // `y' should still contain a point.
   assert(x.OK() && y.OK(true));
