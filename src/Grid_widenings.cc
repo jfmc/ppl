@@ -172,7 +172,7 @@ PPL::Grid::limited_extrapolation_assign(const Grid& y,
 				 "cgs", cgs);
 
   dimension_type cgs_num_rows = cgs.num_rows();
-  // If `cgs' is empty, fall back to ordinary widening.
+  // If `cgs' is empty (of rows), fall back to ordinary widening.
   if (cgs_num_rows == 0) {
     x.widening_assign(y, tp);
     return;
