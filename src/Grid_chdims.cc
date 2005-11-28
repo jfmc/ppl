@@ -114,9 +114,7 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
   // integrality congruence of the current dimension).
   if (marked_empty()) {
     space_dim += m;
-    con_sys.clear();
-    gen_sys.clear();
-    gen_sys.set_sorted(false);
+    set_empty();
     return;
   }
 
@@ -201,9 +199,7 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
   // adjusting `space_dim'.
   if (marked_empty()) {
     space_dim += m;
-    con_sys.clear();
-    gen_sys.clear();
-    gen_sys.set_sorted(false);
+    set_empty();
     return;
   }
 
@@ -297,43 +293,51 @@ PPL::Grid::concatenate_assign(const Grid& y) {
   // The matrix for the new system of congruences is obtained by
   // leaving the old system in the upper left-hand side and placing
   // the constraints of `cgs' in the lower right-hand side.
-  dimension_type old_num_rows = con_sys.num_rows();
-  dimension_type old_num_columns = con_sys.num_columns();
   dimension_type added_rows = cgs.num_rows();
 
   // The case of a zero-dim `y' grid is handled above.
   assert(added_columns > 0);
-  // `cgs' contains at least the integrality congruence.
-  assert(added_rows > 0);
 
-  con_sys.add_zero_rows_and_columns(added_rows, added_columns,
-				    Row::Flags());
-  dimension_type cgs_num_columns = cgs.num_columns();
-  dimension_type old_modi = old_num_columns - 1;
-  dimension_type modi = con_sys.num_columns() - 1;
+  if (added_rows > 0) {
+    dimension_type old_num_rows = con_sys.num_rows();
+    dimension_type old_modi = con_sys.num_columns() - 1;
 
-  // Swap the modulus and the new last column, in the old rows.
-  for (dimension_type i = 0; i < old_num_rows; ++i) {
-    Congruence& cg = con_sys[i];
-    std::swap(cg[old_modi], cg[modi]);
+    con_sys.add_zero_rows_and_columns(added_rows, added_columns,
+				      Row::Flags());
+
+    dimension_type cgs_num_columns = cgs.num_columns();
+    dimension_type modi = con_sys.num_columns() - 1;
+
+    // Swap the modulus and the new last column, in the old rows.
+    for (dimension_type i = 0; i < old_num_rows; ++i) {
+      Congruence& cg = con_sys[i];
+      std::swap(cg[old_modi], cg[modi]);
+    }
+
+    // Move the congruences from `cgs' to `con_sys', shifting the
+    // coefficients along into the appropriate columns.
+    for (dimension_type i = added_rows; i-- > 0; ) {
+      Congruence& cg_old = cgs[i];
+      Congruence& cg_new = con_sys[old_num_rows + i];
+      // The inhomogeneous term is moved to the same column.
+      std::swap(cg_new[0], cg_old[0]);
+      // All homogeneous terms are shifted by `space_dim' columns.
+      for (dimension_type j = 1; j < cgs_num_columns; ++j)
+	std::swap(cg_old[j], cg_new[space_dim + j]);
+    }
+
+    clear_congruences_minimized();
+
+    // Update space dimension.
+    space_dim += added_columns;
+  }
+  else {
+    // Update space dimension.
+    space_dim += added_columns;
+    con_sys.increase_space_dimension(space_dim);
   }
 
-  // Move the congruences from `cgs' to `con_sys', shifting the
-  // coefficients along into the appropriate columns.
-  for (dimension_type i = added_rows; i-- > 0; ) {
-    Congruence& cg_old = cgs[i];
-    Congruence& cg_new = con_sys[old_num_rows + i];
-    // The inhomogeneous term is moved to the same column.
-    std::swap(cg_new[0], cg_old[0]);
-    // All homogeneous terms are shifted by `space_dim' columns.
-    for (dimension_type j = 1; j < cgs_num_columns; ++j)
-      std::swap(cg_old[j], cg_new[space_dim + j]);
-  }
-
-  clear_congruences_minimized();
   clear_generators_up_to_date();
-  // Update space dimension.
-  space_dim += added_columns;
 
   // Check that the system is OK, taking into account that the system
   // of congruences may now be empty.
