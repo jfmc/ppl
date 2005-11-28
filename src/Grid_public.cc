@@ -91,13 +91,17 @@ PPL::Grid::Grid(const Grid& y)
     space_dim(y.space_dim),
     dim_kinds(y.dim_kinds) {
   assert(y.gen_sys.topology() == NECESSARILY_CLOSED);
-  // FIX check con,gen_sys dims correctly handled if out of date
   if (y.congruences_are_up_to_date())
     con_sys = y.con_sys;
+  else
+    con_sys.increase_space_dimension(space_dim);
   if (y.generators_are_up_to_date())
     gen_sys = y.gen_sys;
-  else
+  else {
+    gen_sys.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
+						space_dim);
     gen_sys.set_sorted(false);
+  }
 }
 
 PPL::Grid::Grid(const Constraint_System& ccs) {
@@ -290,7 +294,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
       return Poly_Con_Relation::is_disjoint();
 
   if (!generators_are_up_to_date() && !update_generators())
-    // The grid is empty.
+    // Updating found the grid empty.
     return Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
 
