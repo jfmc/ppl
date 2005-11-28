@@ -63,9 +63,6 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
     con_sys.normalize_moduli();
     set_congruences_up_to_date();
     gen_sys.set_sorted(false);
-    // Insert the integrality congruence, to ensure that the
-    // congruence system contains at least one row.
-    con_sys.insert(Congruence::zero_dim_integrality());
   }
   else {
     // Here `space_dim == 0'.
@@ -347,6 +344,7 @@ PPL::Grid::set_zero_dim_univ() {
   status.set_zero_dim_univ();
   space_dim = 0;
   con_sys.clear();
+  // FIX adj spc dim? (to get 2 cols)?
   gen_sys.clear();
   gen_sys.insert(point());
   gen_sys.set_sorted(false);
@@ -404,9 +402,7 @@ PPL::Grid::update_generators() const {
   assert(!marked_empty());
   assert(congruences_are_up_to_date());
 
-  // FIX this is for simplify, at least; check callers
-  // FIX should simplify require the integrality cg?
-  assert(con_sys.num_rows() > 0);
+  // FIX for?
   assert(con_sys.num_columns() > 2);
 
   Grid& x = const_cast<Grid&>(*this);

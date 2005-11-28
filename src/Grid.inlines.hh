@@ -128,8 +128,6 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
   else {
     // Initialize the space dimension as indicated by the box.
     con_sys.increase_space_dimension(space_dim);
-    // Add integrality congruence.
-    con_sys.insert(Congruence::zero_dim_integrality());
     // Add congruences according to `box'.
     TEMP_INTEGER(u_n);
     TEMP_INTEGER(u_d);
@@ -202,8 +200,6 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
   else {
     // Initialize the space dimension as indicated by the box.
     con_sys.increase_space_dimension(space_dim);
-    // Add integrality congruence.
-    con_sys.insert(Congruence::zero_dim_integrality());
     // Add congruences according to `box'.
     TEMP_INTEGER(u_n);
     TEMP_INTEGER(u_d);

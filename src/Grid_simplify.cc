@@ -359,7 +359,7 @@ Grid::simplify(Generator_System& sys, Dimension_Kinds& dim_kinds) {
 
     // Move down over rows which have zero in column `dim'.
     while (row_index < num_rows && sys[row_index][dim] == 0) {
-      TRACE(cerr << ".");
+      TRACE(cerr << "  .");
       ++row_index;
     }
     TRACE(cerr << endl);
@@ -466,7 +466,6 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   TRACE(cerr << "======== simplify (reduce) cgs:" << endl);
   TRACE(cerr << "sys:" << endl);
   TRACE(sys.ascii_dump(cerr));
-  assert(sys.num_rows() > 0);
 
   // Changes here may also be required in the generator version above.
 
@@ -481,8 +480,8 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   TRACE(cerr << "  num_rows " << num_rows << endl);
 
   // For each dimension `dim' move or construct a row into position
-  // `pivot_index' such that the row has zero in all elements
-  // preceding column `dim' and a value other than zero in column
+  // `pivot_index' such that the row has a value of zero in all
+  // elements preceding column `dim' and some other value in column
   // `dim'.
   dimension_type pivot_index = 0;
   for (dimension_type dim = num_cols; dim-- > 0; ) {
@@ -495,13 +494,14 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 
     // Move down over rows which have zero in column `dim'.
     while (row_index < num_rows && sys[row_index][dim] == 0) {
-      TRACE(cerr << ".");
+      TRACE(cerr << "  .");
       ++row_index;
     }
     TRACE(cerr << endl);
 
     if (row_index == num_rows) {
-      // Element in column `dim' is zero in all rows from the pivot.
+      // Element in column `dim' is zero in all rows from the pivot,
+      // or `sys' is empty of rows.
       TRACE(cerr << "  Marking virtual row" << endl);
       dim_kinds[dim] = CON_VIRTUAL;
     }
@@ -565,45 +565,57 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   dimension_type& reduced_num_rows = pivot_index; // For clearer naming.
 
   // Clip any zero rows from the end of the matrix.
-  if (num_rows > reduced_num_rows) {
+  if (num_rows > 1 && num_rows > reduced_num_rows) {
     TRACE(cerr << "clipping trailing" << endl);
     assert(rows_are_zero(sys,
 			 reduced_num_rows,    // index of first
-			 sys.num_rows() - 1,  // index of last
-			 sys.num_columns() - 1)); // row size
+			 num_rows - 1,	      // index of last
+			 num_cols));	      // row size
     sys.erase_to_end(reduced_num_rows);
   }
-  assert(sys.num_rows() == reduced_num_rows);
 
-  // If the last row is false then make it the equality 1 = 0, and
-  // make it the only row.
-  Congruence& last_row = sys[reduced_num_rows - 1];
-  if (dim_kinds[0] == PROPER_CONGRUENCE) {
-    if (last_row.inhomogeneous_term() % last_row.modulus() != 0) {
-      // The last row is a false proper congruence.
-      last_row.set_is_equality();
-      dim_kinds[0] = EQUALITY;
-      goto return_empty;
+  assert(sys.num_rows() == reduced_num_rows
+	 || (sys.num_rows() == 1 && reduced_num_rows == 0));
+
+  if (reduced_num_rows > 0) {
+    // If the last row is false then make it the equality 1 = 0, and
+    // make it the only row.
+    Congruence& last_row = sys[reduced_num_rows - 1];
+    if (dim_kinds[0] == PROPER_CONGRUENCE) {
+      if (last_row.inhomogeneous_term() % last_row.modulus() != 0) {
+	// The last row is a false proper congruence.
+	last_row.set_is_equality();
+	dim_kinds[0] = EQUALITY;
+	goto return_empty;
+      }
+    }
+    else if (dim_kinds[0] == EQUALITY) {
+      // The last row is a false equality, as all the coefficient terms
+      // are zero while the inhomogeneous term (as a result of the
+      // reduced form) is some other value.
+    return_empty:
+      last_row[0] = 1;
+      dim_kinds.resize(1);
+      std::swap(sys.rows[0], sys.rows.back());
+      sys.erase_to_end(1);
+
+      trace_dim_kinds("cgs simpl end ", dim_kinds);
+      assert(sys.OK());
+      TRACE(cerr << "---- simplify (reduce) cgs done (empty)." << endl);
+      return true;
     }
   }
-  else if (dim_kinds[0] == EQUALITY) {
-    // The last row is a false equality, as all the coefficient terms
-    // are zero while the inhomogeneous term (as a result of the
-    // reduced form) holds a value.
-  return_empty:
-    last_row[0] = 1;
-    dim_kinds.resize(1);
-    std::swap(sys.rows[0], sys.rows.back());
-    sys.erase_to_end(1);
-
-    trace_dim_kinds("cgs simpl end ", dim_kinds);
-    assert(sys.OK());
-    TRACE(cerr << "---- simplify (reduce) cgs done (empty)." << endl);
-    return true;
+  else if (num_rows > 0) {
+    assert(sys.num_rows() == 1);
+    // All columns up to the modulus column must have been zero, set
+    // up the integrality congruence.
+    dim_kinds[0] = PROPER_CONGRUENCE;
+    sys[0][num_cols] = 1;
+    reduced_num_rows = 1;
   }
 
   // Ensure that the last row is the integrality congruence.
-  dimension_type mod_index = last_row.size() - 1;
+  dimension_type mod_index = num_cols;
   if (dim_kinds[0] == CON_VIRTUAL) {
     // The last row is virtual, append the integrality congruence.
     dim_kinds[0] = PROPER_CONGRUENCE;
@@ -625,8 +637,10 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     ++reduced_num_rows;
 #endif
   }
-  else
+  else {
+    Congruence& last_row = sys[reduced_num_rows - 1];
     last_row[0] = last_row[mod_index];
+  }
 
 #ifdef STRONG_REDUCTION
   // Factor the modified integrality congruence out of the other rows.
