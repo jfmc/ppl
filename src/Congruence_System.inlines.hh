@@ -82,7 +82,7 @@ Congruence_System::space_dimension() const {
 inline void
 Congruence_System::clear() {
   Matrix::clear();
-  add_zero_columns(2); // Modulus and constant term.
+  add_zero_columns(2);		// Modulus and constant term.
 }
 
 inline void
