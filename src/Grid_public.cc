@@ -79,7 +79,6 @@ PPL::Grid::Grid(dimension_type num_dimensions,
     gen_sys.set_sorted(false);
   }
   else
-    // FIX where will gen_sys space dim be adjusted?
     set_zero_dim_univ();
 
   assert(OK());
