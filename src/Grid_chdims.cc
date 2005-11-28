@@ -361,12 +361,9 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
 
   if (marked_empty()
       || (!generators_are_up_to_date() && !update_generators())) {
-    // FIX?  mark empty? keep empty con_sys?
-    con_sys.clear();
-    gen_sys.clear();
-    gen_sys.set_sorted(false);
     // Update the space dimension.
     space_dim = new_space_dim;
+    set_empty();
     assert(OK());
     return;
   }
@@ -435,10 +432,7 @@ PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
     // Removing dimensions from the empty grid just updates the space
     // dimension.
     space_dim = new_dimension;
-    // FIX?  mark empty? keep empty con_sys?
-    con_sys.clear();
-    gen_sys.clear();
-    gen_sys.set_sorted(false);
+    set_empty();
     assert(OK());
     return;
   }
