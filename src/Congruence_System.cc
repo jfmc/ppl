@@ -132,7 +132,7 @@ PPL::Congruence_System::add_rows(const Congruence_System& y) {
 void
 PPL::Congruence_System::normalize_moduli() {
   dimension_type row = num_rows();
-  if (row) {
+  if (row > 0) {
     // Calculate the LCM of all the moduli.
     TEMP_INTEGER(lcm);
     // Find first congruence.
