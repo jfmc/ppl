@@ -466,12 +466,12 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
 		      ppl_Coefficient_t optimum_n,
 		      ppl_Coefficient_t optimum_d,
 		      ppl_Generator_t point) {
-  ppl_Polyhedron_t ppl_ph;  
-  int empty;  
-  int unbounded; 
-  int included;    
+  ppl_Polyhedron_t ppl_ph;
+  int empty;
+  int unbounded;
+  int included;
   int ok;
-  
+
   /* Create the polyhedron. */
   ppl_new_C_Polyhedron_from_Constraint_System(&ppl_ph, ppl_cs);
 
@@ -525,7 +525,7 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
 
   if (!ok)
     fatal("internal error");
-  
+
   ppl_delete_Polyhedron(ppl_ph);
 
   if (print_timings) {
@@ -537,7 +537,7 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
 
   if (!included)
     fatal("internal error");
-  
+
   return 1;
 }
 
@@ -548,7 +548,7 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 		   ppl_Coefficient_t optimum_d,
 		   ppl_Generator_t point) {
   int status;
-  
+
   status = maximize
     ? ppl_Constraint_System_maximize(cs, objective,
 				     optimum_n, optimum_d, point)
@@ -721,7 +721,7 @@ solve(char* file_name) {
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_Linear_Expression_add_to_coefficient(ppl_objective_le, i-1, ppl_coeff);
   }
-  
+
   if (verbose) {
     fprintf(output_file, "Objective function:\n");
     ppl_io_fprint_Linear_Expression(output_file, ppl_objective_le);
@@ -765,7 +765,7 @@ solve(char* file_name) {
     fprintf(stderr, " s\n");
     start_clock();
   }
-  
+
   if (optimum_found) {
     mpq_init(optimum);
     ppl_Coefficient_to_mpz_t(optimum_n, tmp_z);
