@@ -67,7 +67,11 @@ struct Extended_Number_Policy {
   // Don't uncomment the following.
   // The compile time error on conversions is the expected behaviour.
   // static const int convertible = 0;
+#ifdef NDEBUG
   static const int fpu_check_inexact = 0;
+#else
+  static const int fpu_check_inexact = 1;
+#endif
   static const int check_nan_args = 1;
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
   static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
