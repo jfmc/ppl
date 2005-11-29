@@ -32,8 +32,8 @@ class Random_Number_Generator_Aux {
 public:
   Random_Number_Generator_Aux(unsigned int max_bits) {
     if (std::numeric_limits<T>::is_bounded) {
-      assign(zmin, std::numeric_limits<T>::min(), ROUND_IGNORE);
-      assign(zrange, std::numeric_limits<T>::max(), ROUND_IGNORE);
+      assign(zmin, std::numeric_limits<T>::min(), ROUND_NOT_NEEDED);
+      assign(zrange, std::numeric_limits<T>::max(), ROUND_NOT_NEEDED);
       zrange -= zmin;
       ++zrange;
     }
@@ -43,7 +43,7 @@ public:
       zmin = -zmin;
     }
     else {
-      assign(zmin, std::numeric_limits<T>::min(), ROUND_IGNORE);
+      assign(zmin, std::numeric_limits<T>::min(), ROUND_NOT_NEEDED);
     }
   }
   mpz_class zmin;
@@ -72,7 +72,7 @@ Random_Number_Generator::get(T& x, unsigned int info) {
     n = rand.get_z_bits(max_bits);
   }
   n += aux.zmin;
-  assign(x, n, ROUND_IGNORE);
+  assign(x, n, ROUND_NOT_NEEDED);
 }
 
 } // namespace Parma_Polyhedra_Library

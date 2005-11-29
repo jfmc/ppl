@@ -108,7 +108,7 @@ gcd_exact_noabs(To& to, const From& x, const From& y) {
     /* The following is derived from the assumption that x % y
        is always representable. This is true for both native integers
        and iec559 floating point numbers */
-    rem<Policy>(rm, nx, ny, ROUND_IGNORE);
+    rem<Policy>(rm, nx, ny, ROUND_NOT_NEEDED);
     nx = ny;
     ny = rm;
   }
@@ -142,7 +142,7 @@ lcm_gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   /* The following is derived from the assumption that x / gcd(x, y)
      is always representable. This is true for both native integers
      and iec559 floating point numbers */
-  div<Policy>(to, nx, gcd, ROUND_IGNORE);
+  div<Policy>(to, nx, gcd, ROUND_NOT_NEEDED);
   return mul<Policy>(to, to, ny, dir);
 }
 

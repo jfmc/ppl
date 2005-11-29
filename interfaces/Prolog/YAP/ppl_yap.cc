@@ -374,7 +374,7 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
   if (false && YAP_IsBigNumTerm(t) != FALSE)
     PPL::assign(n,
 		*static_cast<mpz_class*>(YAP_BigNumOfTerm(t)),
-		PPL::ROUND_IGNORE);
+		PPL::ROUND_NOT_NEEDED);
   else {
     long l;
     Prolog_get_long(t, &l);
@@ -387,12 +387,12 @@ Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   if (n <= LONG_MAX) {
     long l;
-    PPL::assign(l, n, PPL::ROUND_IGNORE);
+    PPL::assign(l, n, PPL::ROUND_NOT_NEEDED);
     return YAP_MkIntTerm(l);
   }
   else {
     static mpz_class m;
-    PPL::assign(m, n, PPL::ROUND_IGNORE);
+    PPL::assign(m, n, PPL::ROUND_NOT_NEEDED);
     return YAP_MkBigNumTerm(m.get_mpz_t());
   }
 }

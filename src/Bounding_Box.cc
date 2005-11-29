@@ -88,11 +88,11 @@ PPL::Bounding_Box::CC76_widening_assign(const Bounding_Box& y,
 void
 PPL::Bounding_Box::CC76_widening_assign(const Bounding_Box& y) {
   static ERational stop_points[] = {
-    ERational(-2, ROUND_IGNORE),
-    ERational(-1, ROUND_IGNORE),
-    ERational(0, ROUND_IGNORE),
-    ERational(1, ROUND_IGNORE),
-    ERational(2, ROUND_IGNORE)
+    ERational(-2, ROUND_NOT_NEEDED),
+    ERational(-1, ROUND_NOT_NEEDED),
+    ERational(0, ROUND_NOT_NEEDED),
+    ERational(1, ROUND_NOT_NEEDED),
+    ERational(2, ROUND_NOT_NEEDED)
   };
   CC76_widening_assign(y,
 		       stop_points,

@@ -465,7 +465,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   const dimension_type x_num_rows = x.num_rows();
   if (x_num_rows != y.num_rows())
     return false;
-  assign(tmp0, 0, ROUND_IGNORE);
+  assign(tmp0, 0, ROUND_NOT_NEEDED);
   for (dimension_type i = x_num_rows; i-- > 0; ) {
     const DB_Row<T>& x_i = x[i];
     const DB_Row<T>& y_i = y[i];

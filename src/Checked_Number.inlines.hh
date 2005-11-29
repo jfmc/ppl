@@ -28,6 +28,31 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline Rounding_Dir
+rounding_dir(Rounding_Dir dir) {
+  if (dir == ROUND_NOT_NEEDED) {
+#ifdef NDEBUG
+    return ROUND_IGNORE;
+#else
+    return ROUND_DIRECT;
+#endif
+  }
+  return dir;
+}
+
+inline Result
+check_result(Result r, Rounding_Dir dir) {
+  if (dir == ROUND_NOT_NEEDED && !is_special(r)) {
+#ifdef NDEBUG
+    return V_EQ;
+#else
+    assert(r == V_EQ);
+#endif
+  }
+  return r;
+}
+
+
 inline void
 Checked_Number_Default_Policy::handle_result(Result r) {
   if (is_special(r))
@@ -36,17 +61,8 @@ Checked_Number_Default_Policy::handle_result(Result r) {
 
 inline void
 Extended_Number_Policy::handle_result(Result r) {
-  switch (r) {
-  case V_EQ:
-  case V_LT:
-  case V_GT:
-  case V_GE:
-  case V_LE:
-    break;
-  default:
+  if (is_special(r))
     throw_result_exception(r);
-    break;
-  }
 }
 
 template <typename T, typename Policy>
@@ -68,7 +84,8 @@ template <typename From, typename From_Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const Checked_Number<From, From_Policy>& y) {
   // TODO: avoid default construction of value member
-  Policy::handle_result(Checked::assign_ext<Policy, From_Policy>(v, y.raw_value(), Policy::ROUND_DEFAULT_CONSTRUCTOR));
+  Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;
+  Policy::handle_result(check_result(Checked::assign_ext<Policy, From_Policy>(v, y.raw_value(), rounding_dir(dir)), dir));
 }
 #endif
 
@@ -77,12 +94,13 @@ Checked_Number<T, Policy>::Checked_Number(const Checked_Number<From, From_Policy
 template <typename T, typename Policy> \
 inline \
 Checked_Number<T, Policy>::Checked_Number(const type x, Rounding_Dir dir) { \
-  Policy::handle_result(Checked::assign_ext<Policy, Default_From_Policy>(v, x, dir)); \
+  Policy::handle_result(check_result(Checked::assign_ext<Policy, Default_From_Policy>(v, x, rounding_dir(dir)), dir)); \
 } \
 template <typename T, typename Policy> \
 inline \
 Checked_Number<T, Policy>::Checked_Number(const type x) { \
-  Policy::handle_result(Checked::assign_ext<Policy, Default_From_Policy>(v, x, Policy::ROUND_DEFAULT_CONSTRUCTOR)); \
+  Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR; \
+  Policy::handle_result(check_result(Checked::assign_ext<Policy, Default_From_Policy>(v, x, rounding_dir(dir)), dir)); \
 }
 
 DEF_CTOR(signed char)
@@ -107,56 +125,60 @@ template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const char* x, Rounding_Dir dir) {
   std::istringstream s(x);
-  Policy::handle_result(Checked::input<Policy>(v, s, dir));
+  Policy::handle_result(check_result(Checked::input<Policy>(v, s, rounding_dir(dir)), dir));
 }
 
 template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const char* x) {
   std::istringstream s(x);
-  Policy::handle_result(Checked::input<Policy>(v, s, Policy::ROUND_DEFAULT_CONSTRUCTOR));
+  Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;
+  Policy::handle_result(check_result(Checked::input<Policy>(v, s, rounding_dir(dir)), dir));
 }
 
 template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const Not_A_Number& x, Rounding_Dir dir) {
   // TODO: avoid default construction of value member
-  Policy::handle_result(Checked::assign<Policy>(v, x, dir));
+  Policy::handle_result(check_result(Checked::assign<Policy>(v, x, rounding_dir(dir)), dir));
 }
 
 template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const Not_A_Number& x) {
   // TODO: avoid default construction of value member
-  Policy::handle_result(Checked::assign<Policy>(v, x, ROUND_IGNORE));
+  Rounding_Dir dir = ROUND_IGNORE;
+  Policy::handle_result(check_result(Checked::assign<Policy>(v, x, rounding_dir(dir)), dir));
 }
 
 template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const Minus_Infinity& x, Rounding_Dir dir) {
   // TODO: avoid default construction of value member
-  Policy::handle_result(Checked::assign<Policy>(v, x, dir));
+  Policy::handle_result(check_result(Checked::assign<Policy>(v, x, rounding_dir(dir)), dir));
 }
 
 template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const Minus_Infinity& x) {
   // TODO: avoid default construction of value member
-  Policy::handle_result(Checked::assign<Policy>(v, x, Policy::ROUND_DEFAULT_CONSTRUCTOR_INF));
+  Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR_INF;
+  Policy::handle_result(check_result(Checked::assign<Policy>(v, x, rounding_dir(dir)), dir));
 }
 
 template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const Plus_Infinity& x, Rounding_Dir dir) {
   // TODO: avoid default construction of value member
-  Policy::handle_result(Checked::assign<Policy>(v, x, dir));
+  Policy::handle_result(check_result(Checked::assign<Policy>(v, x, rounding_dir(dir)), dir));
 }
 
 template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const Plus_Infinity& x) {
   // TODO: avoid default construction of value member
-  Policy::handle_result(Checked::assign<Policy>(v, x, Policy::ROUND_DEFAULT_CONSTRUCTOR_INF));
+  Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR_INF;
+  Policy::handle_result(check_result(Checked::assign<Policy>(v, x, rounding_dir(dir)), dir));
 }
 
 template <typename T>
@@ -269,24 +291,24 @@ external_memory_in_bytes(const Checked_Number<T, Policy>& x) {
 template <typename To, typename To_Policy>
 inline Result
 assign(Checked_Number<To, To_Policy>& to, const Minus_Infinity& x, Rounding_Dir dir) {
-  return Checked::assign<To_Policy>(to.raw_value(), x, dir);
+  return check_result(Checked::assign<To_Policy>(to.raw_value(), x, rounding_dir(dir)), dir);
 }
 template <typename To, typename To_Policy>
 inline Result
 assign(Checked_Number<To, To_Policy>& to, const Plus_Infinity& x, Rounding_Dir dir) {
-  return Checked::assign<To_Policy>(to.raw_value(), x, dir);
+  return check_result(Checked::assign<To_Policy>(to.raw_value(), x, rounding_dir(dir)), dir);
 }
 template <typename To, typename To_Policy>
 inline Result
 assign(Checked_Number<To, To_Policy>& to, const Not_A_Number& x, Rounding_Dir dir) {
-  return Checked::assign<To_Policy>(to.raw_value(), x, dir);
+  return check_result(Checked::assign<To_Policy>(to.raw_value(), x, rounding_dir(dir)), dir);
 }
 
 template <typename To, typename To_Policy>
 inline Result
 assign(Checked_Number<To, To_Policy>& to, const char* x, Rounding_Dir dir) {
   std::istringstream s(x);
-  return Checked::input<To_Policy>(to.raw_value(), s, dir);
+  return check_result(Checked::input<To_Policy>(to.raw_value(), s, rounding_dir(dir)), dir);
 }
 
 template <typename To, typename To_Policy>
@@ -299,32 +321,32 @@ template <typename To>
 inline Result
 assign(To& to, const char* x, Rounding_Dir dir) {
   std::istringstream s(x);
-  return Checked::input<Default_To_Policy>(to, s, dir);
+  return check_result(Checked::input<Default_To_Policy>(to, s, rounding_dir(dir)), dir);
 }
 
 #define FUNC1(name, func) \
 template <typename To, typename From> \
 inline Result \
 name(To& to, const From& x, Rounding_Dir dir) { \
-  return Checked::func<Default_To_Policy, Default_From_Policy>(to, x, dir); \
+  return check_result(Checked::func<Default_To_Policy, Default_From_Policy>(to, x, rounding_dir(dir)), dir); \
 } \
 template <typename To, typename To_Policy, \
           typename From> \
 inline Result \
 name(Checked_Number<To, To_Policy>& to, const From& x, Rounding_Dir dir) { \
-  return Checked::func<To_Policy, Default_From_Policy>(to.raw_value(), x, dir); \
+  return check_result(Checked::func<To_Policy, Default_From_Policy>(to.raw_value(), x, rounding_dir(dir)), dir); \
 } \
 template <typename To, \
           typename From, typename From_Policy> \
 inline Result \
 name(To& to, const Checked_Number<From, From_Policy>& x, Rounding_Dir dir) { \
-  return Checked::func<Default_To_Policy, From_Policy>(to, x.raw_value(), dir); \
+  return check_result(Checked::func<Default_To_Policy, From_Policy>(to, x.raw_value(), rounding_dir(dir)), dir); \
 } \
 template <typename To, typename To_Policy, \
           typename From, typename From_Policy> \
 inline Result \
 name(Checked_Number<To, To_Policy>& to, const Checked_Number<From, From_Policy>& x, Rounding_Dir dir) { \
-  return Checked::func<To_Policy, From_Policy>(to.raw_value(), x.raw_value(), dir); \
+  return check_result(Checked::func<To_Policy, From_Policy>(to.raw_value(), x.raw_value(), rounding_dir(dir)), dir); \
 }
 
 FUNC1(construct, construct_ext)
@@ -339,25 +361,25 @@ FUNC1(assign_sqrt, sqrt_ext)
 template <typename To, typename From> \
 inline Result \
 name(To& to, const From& x, int exp, Rounding_Dir dir) { \
-  return Checked::func<Default_To_Policy, Default_From_Policy>(to, x, exp, dir); \
+  return check_result(Checked::func<Default_To_Policy, Default_From_Policy>(to, x, exp, rounding_dir(dir)), dir); \
 } \
 template <typename To, typename To_Policy, \
           typename From> \
 inline Result \
 name(Checked_Number<To, To_Policy>& to, const From& x, int exp, Rounding_Dir dir) { \
-  return Checked::func<To_Policy, Default_From_Policy>(to.raw_value(), x, exp, dir); \
+  return check_result(Checked::func<To_Policy, Default_From_Policy>(to.raw_value(), x, exp, rounding_dir(dir)), dir); \
 } \
 template <typename To, \
           typename From, typename From_Policy> \
 inline Result \
 name(To& to, const Checked_Number<From, From_Policy>& x, int exp, Rounding_Dir dir) { \
-  return Checked::func<Default_To_Policy, From_Policy>(to, x.raw_value(), exp, dir); \
+  return check_result(Checked::func<Default_To_Policy, From_Policy>(to, x.raw_value(), exp, rounding_dir(dir)), dir); \
 } \
 template <typename To, typename To_Policy, \
           typename From, typename From_Policy> \
 inline Result \
 name(Checked_Number<To, To_Policy>& to, const Checked_Number<From, From_Policy>& x, int exp, Rounding_Dir dir) { \
-  return Checked::func<To_Policy, From_Policy>(to.raw_value(), x.raw_value(), exp, dir); \
+  return check_result(Checked::func<To_Policy, From_Policy>(to.raw_value(), x.raw_value(), exp, rounding_dir(dir)), dir); \
 }
 
 FUNC1(assign_mul2exp, mul2exp_ext)
@@ -371,56 +393,56 @@ template <typename To, \
 	  typename From2> \
 inline Result \
 name(To& to, const From1& x, const From2& y, Rounding_Dir dir) { \
-  return Checked::func<Default_To_Policy, Default_From_Policy, Default_From_Policy>(to, x, y, dir); \
+  return check_result(Checked::func<Default_To_Policy, Default_From_Policy, Default_From_Policy>(to, x, y, rounding_dir(dir)), dir); \
 } \
 template <typename To, typename To_Policy, \
           typename From1, \
 	  typename From2> \
 inline Result \
 name(Checked_Number<To, To_Policy>& to, const From1& x, const From2& y, Rounding_Dir dir) { \
-  return Checked::func<To_Policy, Default_From_Policy, Default_From_Policy>(to.raw_value(), x, y, dir); \
+  return check_result(Checked::func<To_Policy, Default_From_Policy, Default_From_Policy>(to.raw_value(), x, y, rounding_dir(dir)), dir); \
 } \
 template <typename To, \
           typename From1, \
 	  typename From2, typename Policy2> \
 inline Result \
 name(To& to, const From1& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir) { \
-  return Checked::func<Default_To_Policy, Default_From_Policy, Policy2>(to, x, y.raw_value(), dir); \
+  return check_result(Checked::func<Default_To_Policy, Default_From_Policy, Policy2>(to, x, y.raw_value(), rounding_dir(dir)), dir); \
 } \
 template <typename To, typename To_Policy, \
           typename From1, \
 	  typename From2, typename Policy2> \
 inline Result \
 name(Checked_Number<To, To_Policy>& to, const From1& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir) { \
-  return Checked::func<To_Policy, Default_From_Policy, Policy2>(to.raw_value(), x, y.raw_value(), dir); \
+  return check_result(Checked::func<To_Policy, Default_From_Policy, Policy2>(to.raw_value(), x, y.raw_value(), rounding_dir(dir)), dir); \
 } \
 template <typename To, \
           typename From1, typename Policy1, \
 	  typename From2> \
 inline Result \
 name(To& to, const Checked_Number<From1, Policy1>& x, const From2& y, Rounding_Dir dir) { \
-  return Checked::func<Default_To_Policy, Policy1, Default_From_Policy>(to, x.raw_value(), y, dir); \
+  return check_result(Checked::func<Default_To_Policy, Policy1, Default_From_Policy>(to, x.raw_value(), y, rounding_dir(dir)), dir); \
 } \
 template <typename To, typename To_Policy, \
           typename From1, typename Policy1, \
 	  typename From2> \
 inline Result \
 name(Checked_Number<To, To_Policy>& to, const Checked_Number<From1, Policy1>& x, const From2& y, Rounding_Dir dir) { \
-  return Checked::func<To_Policy, Policy1, Default_From_Policy>(to.raw_value(), x.raw_value(), y, dir); \
+  return check_result(Checked::func<To_Policy, Policy1, Default_From_Policy>(to.raw_value(), x.raw_value(), y, rounding_dir(dir)), dir); \
 } \
 template <typename To, \
           typename From1, typename Policy1, \
 	  typename From2, typename Policy2> \
 inline Result \
 name(To& to, const Checked_Number<From1, Policy1>& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir) { \
-  return Checked::func<Default_To_Policy, Policy1, Policy2>(to, x.raw_value(), y.raw_value(), dir); \
+  return check_result(Checked::func<Default_To_Policy, Policy1, Policy2>(to, x.raw_value(), y.raw_value(), rounding_dir(dir)), dir); \
 } \
 template <typename To, typename To_Policy, \
           typename From1, typename Policy1, \
 	  typename From2, typename Policy2> \
 inline Result \
 name(Checked_Number<To, To_Policy>& to, const Checked_Number<From1, Policy1>& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir) { \
-  return Checked::func<To_Policy, Policy1, Policy2>(to.raw_value(), x.raw_value(), y.raw_value(), dir); \
+  return check_result(Checked::func<To_Policy, Policy1, Policy2>(to.raw_value(), x.raw_value(), y.raw_value(), rounding_dir(dir)), dir); \
 }
 
 FUNC2(assign_add, add_ext)
@@ -742,7 +764,7 @@ cmp(const Checked_Number<T1, Policy1>& x,
 template <typename T, typename Policy>
 inline Result
 output(std::ostream& os, const Checked_Number<T, Policy>& x, const Numeric_Format& fmt, Rounding_Dir dir) {
-  return Checked::output_ext<Policy>(os, x.raw_value(), fmt, dir);
+  return check_result(Checked::output_ext<Policy>(os, x.raw_value(), fmt, rounding_dir(dir)), dir);
 }
 
 /*! \relates Checked_Number */
@@ -757,7 +779,7 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x) {
 template <typename T, typename Policy>
 inline Result
 input(Checked_Number<T, Policy>& x, std::istream& is, Rounding_Dir dir) {
-  return Checked::input_ext<Policy>(x.raw_value(), is, dir);
+  return check_result(Checked::input_ext<Policy>(x.raw_value(), is, rounding_dir(dir)), dir);
 }
 
 /*! \relates Checked_Number */

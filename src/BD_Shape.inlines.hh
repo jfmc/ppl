@@ -51,7 +51,7 @@ numer_denom(const Checked_Number<T, Policy>& from,
 	 && !is_minus_infinity(from)
 	 && !is_plus_infinity(from));
   mpq_class q;
-  assign(q, raw_value(from), ROUND_IGNORE);
+  assign(q, raw_value(from), ROUND_NOT_NEEDED);
   num = q.get_num();
   den = q.get_den();
 }
@@ -69,9 +69,9 @@ div_round_up(Checked_Number<T, Policy>& to,
   mpq_class qy;
   // Note: this code assumes that a Coefficient is always convertible
   // to an mpq_class without loss of precision.
-  assign(qx, raw_value(x), ROUND_IGNORE);
-  assign(qy, raw_value(y), ROUND_IGNORE);
-  assign_div(qx, qx, qy, ROUND_IGNORE);
+  assign(qx, raw_value(x), ROUND_NOT_NEEDED);
+  assign(qy, raw_value(y), ROUND_NOT_NEEDED);
+  assign_div(qx, qx, qy, ROUND_NOT_NEEDED);
   assign(to, qx, ROUND_UP);
 }
 
@@ -241,7 +241,7 @@ compute_predecessors(const DB_Matrix<N>& dbm,
       for (dimension_type j = i; j-- > 0; )
 	if (j == predecessor[j]) {
 	  N negated_dbm_ji;
-	  if (assign_neg(negated_dbm_ji, dbm[j][i], ROUND_IGNORE) == V_EQ
+	  if (assign_neg(negated_dbm_ji, dbm[j][i], ROUND_NOT_NEEDED) == V_EQ
 	      && negated_dbm_ji == dbm_i[j]) {
 	    // Choose as predecessor the variable having the smaller index.
 	    predecessor[i] = j;
@@ -509,7 +509,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
   if (x_space_dim == 0) {
     if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_IGNORE);
+      assign(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
     return true;
@@ -523,7 +523,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // the other BDS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
    if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_IGNORE);
+      assign(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
    return true;
@@ -570,7 +570,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
   if (x_space_dim == 0) {
     if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_IGNORE);
+      assign(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
     return true;
@@ -584,7 +584,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // the other BDS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
    if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_IGNORE);
+      assign(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
    return true;
@@ -631,7 +631,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
   if (x_space_dim == 0) {
     if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_IGNORE);
+      assign(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
     return true;
@@ -645,7 +645,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // the other BDS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
    if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_IGNORE);
+      assign(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
    return true;
@@ -1297,7 +1297,7 @@ BD_Shape<T>::is_empty() const {
   // Values of the minimum path, from source to all nodes.
   DB_Row<N> z(space_dim + 1);
   for (dimension_type i = space_dim + 1; i-- > 0; )
-    assign(z[i], 0, ROUND_IGNORE);
+    assign(z[i], 0, ROUND_NOT_NEEDED);
 
   // The relax-technique: given an arc (j,h), it tries to improve
   // the value of minimum path for h passing by j.
@@ -1391,7 +1391,7 @@ BD_Shape<T>::is_shortest_path_reduced() const {
     const DB_Row<N>& xdbm_i = x_copy.dbm[i];
     for (dimension_type j = i + 1; j <= x_space_dim; ++j) {
       N negated_xdbm_ji;
-      if (assign_neg(negated_xdbm_ji, x_copy.dbm[j][i], ROUND_IGNORE) == V_EQ
+      if (assign_neg(negated_xdbm_ji, x_copy.dbm[j][i], ROUND_NOT_NEEDED) == V_EQ
 	  && negated_xdbm_ji == xdbm_i[j])
 	// Two equivalent variables have got the same leader
 	// (the smaller variable).
@@ -1668,7 +1668,7 @@ BD_Shape<T>::relation_with(const Generator& g) const {
       const N& dbm_ji = dbm[j][i];
       N negated_dbm_ji;
       const bool is_equality
-	= assign_neg(negated_dbm_ji, dbm_ji, ROUND_IGNORE) == V_EQ
+	= assign_neg(negated_dbm_ji, dbm_ji, ROUND_NOT_NEEDED) == V_EQ
 	&& negated_dbm_ji == dbm_ij;
       const bool dbm_ij_is_infinity = is_plus_infinity(dbm_ij);
       const bool dbm_ji_is_infinity = is_plus_infinity(dbm_ji);
@@ -1777,7 +1777,7 @@ BD_Shape<T>::shortest_path_closure_assign() const {
   // Fill the main diagonal with zeros.
   for (dimension_type h = num_dimensions + 1; h-- > 0; ) {
     assert(is_plus_infinity(x.dbm[h][h]));
-    assign(x.dbm[h][h], 0, ROUND_IGNORE);
+    assign(x.dbm[h][h], 0, ROUND_NOT_NEEDED);
   }
 
   N sum;
@@ -2064,7 +2064,7 @@ BD_Shape<T>::add_space_dimensions_and_project(const dimension_type m) {
 	DB_Row<N>& dbm_i = dbm[i];
 	for (dimension_type j = m + 1; j-- > 0; )
 	  if (i != j)
-	    assign(dbm_i[j], 0, ROUND_IGNORE);
+	    assign(dbm_i[j], 0, ROUND_NOT_NEEDED);
       }
       status.set_shortest_path_closed();
     }
@@ -2082,8 +2082,8 @@ BD_Shape<T>::add_space_dimensions_and_project(const dimension_type m) {
   // Bottom of the matrix and first row.
   DB_Row<N>& dbm_0 = dbm[0];
   for (dimension_type i = space_dim + 1; i <= new_space_dim; ++i) {
-    assign(dbm[i][0], 0, ROUND_IGNORE);
-    assign(dbm_0[i], 0, ROUND_IGNORE);
+    assign(dbm[i][0], 0, ROUND_NOT_NEEDED);
+    assign(dbm_0[i], 0, ROUND_NOT_NEEDED);
   }
 
   if (marked_shortest_path_closed())
@@ -3823,7 +3823,7 @@ BD_Shape<T>::constraints() const {
       const N& dbm_0j = dbm_0[j];
       const N& dbm_j0 = dbm[j][0];
       N negated_dbm_j0;
-      if (assign_neg(negated_dbm_j0, dbm_j0, ROUND_IGNORE) == V_EQ
+      if (assign_neg(negated_dbm_j0, dbm_j0, ROUND_NOT_NEEDED) == V_EQ
 	  && negated_dbm_j0 == dbm_0j) {
 	// We have a unary equality constraint.
 	numer_denom(dbm_0j, b, a);
@@ -3851,7 +3851,7 @@ BD_Shape<T>::constraints() const {
 	const N& dbm_ij = dbm_i[j];
 	const N& dbm_ji = dbm[j][i];
 	N negated_dbm_ji;
-	if (assign_neg(negated_dbm_ji, dbm_ji, ROUND_IGNORE) == V_EQ
+	if (assign_neg(negated_dbm_ji, dbm_ji, ROUND_NOT_NEEDED) == V_EQ
 	    && negated_dbm_ji == dbm_ij) {
 	  // We have a binary equality constraint.
 	  numer_denom(dbm_ij, b, a);
@@ -3975,7 +3975,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	  const N& c_i_j = c.dbm[i][j];
 	  const N& c_j_i = c.dbm[j][i];
 	  N negated_c_ji;
-	  if (assign_neg(negated_c_ji, c_j_i, ROUND_IGNORE) == V_EQ
+	  if (assign_neg(negated_c_ji, c_j_i, ROUND_NOT_NEEDED) == V_EQ
 	      && negated_c_ji == c_i_j) {
 	    // We will print an equality.
 	    if (first)

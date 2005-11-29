@@ -996,8 +996,8 @@ write_polyhedron(std::ostream& out,
 	    mpz_class num, den;
 	    PPL::assign(num,
 			PPL::raw_value(g.coefficient(PPL::Variable(j))),
-			PPL::ROUND_IGNORE);
-	    PPL::assign(den, PPL::raw_value(divisor), PPL::ROUND_IGNORE);
+			PPL::ROUND_NOT_NEEDED);
+	    PPL::assign(den, PPL::raw_value(divisor), PPL::ROUND_NOT_NEEDED);
 	    guarded_write(out, mpq_class(num, den));
 	  }
 	}

@@ -45,11 +45,11 @@ struct Checked_Number_Default_Policy {
   static const int convertible = 1;
   static const int fpu_check_inexact = 0;
   static const int check_nan_args = 1;
-  static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
-  static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_UP;
-  static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_UP;
-  static const Rounding_Dir ROUND_DEFAULT_INPUT = ROUND_UP;
-  static const Rounding_Dir ROUND_DEFAULT_OUTPUT = ROUND_UP;
+  static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_NATIVE;
+  static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_NATIVE;
+  static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_NATIVE;
+  static const Rounding_Dir ROUND_DEFAULT_INPUT = ROUND_NATIVE;
+  static const Rounding_Dir ROUND_DEFAULT_OUTPUT = ROUND_NATIVE;
   static void handle_result(Result r);
 };
 
@@ -69,8 +69,8 @@ struct Extended_Number_Policy {
   // static const int convertible = 0;
   static const int fpu_check_inexact = 0;
   static const int check_nan_args = 1;
-  static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_IGNORE;
-  static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_IGNORE;
+  static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
+  static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
   // Don't uncomment the following.
   // The compile time error is the expected behaviour.
   // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
@@ -290,11 +290,11 @@ private:
 };
 
 template <typename To, typename To_Policy>
-Result assign(Checked_Number<To, To_Policy>& to, const Minus_Infinity& x, Rounding_Dir dir = ROUND_IGNORE);
+Result assign(Checked_Number<To, To_Policy>& to, const Minus_Infinity& x, Rounding_Dir dir);
 template <typename To, typename To_Policy>
-Result assign(Checked_Number<To, To_Policy>& to, const Plus_Infinity& x, Rounding_Dir dir = ROUND_IGNORE);
+Result assign(Checked_Number<To, To_Policy>& to, const Plus_Infinity& x, Rounding_Dir dir);
 template <typename To, typename To_Policy>
-Result assign(Checked_Number<To, To_Policy>& to, const Not_A_Number& x, Rounding_Dir dir = ROUND_IGNORE);
+Result assign(Checked_Number<To, To_Policy>& to, const Not_A_Number& x, Rounding_Dir dir);
 template <typename To, typename To_Policy>
 Result assign(Checked_Number<To, To_Policy>& to, const char* x, Rounding_Dir dir);
 template <typename To, typename To_Policy>
