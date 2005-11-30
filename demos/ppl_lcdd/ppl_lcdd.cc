@@ -1202,7 +1202,7 @@ main(int argc, char* argv[]) try {
 	for (PPL::Generator_System::const_iterator i = ph_gs.begin(),
 	       ph_gs_end = ph_gs.end(); i != ph_gs_end; ++i)
 	  ++ph_num_generators;
-	
+
 	// Count the number of generators of `e_ph'.
 	unsigned e_ph_num_generators = 0;
 	const PPL::Generator_System& e_ph_gs = e_ph.generators();
