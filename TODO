@@ -1,7 +1,8 @@
 Enhancements for PPL 0.8
 ========================
 
-- Specify in STANDARDS and implement a policy for writing test programs.
+- Specify in STANDARDS and implement a policy for writing test programs,
+  following the hints provided by Matthew Mundell.
 - Solve failures of parallel builds (e.g., make -j 4) in the
   Prolog interface directories.
 - Reduce the number of FIXMEs to no more than 40.
