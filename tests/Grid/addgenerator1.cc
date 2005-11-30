@@ -124,7 +124,7 @@ test4() {
   Variable B(1);
 
   Grid_Generator_System gs;
-  gs.insert(closure_point(3*A, 4));
+  //gs.insert(closure_point(3*A, 4)); // FIX
   gs.insert(point(7*A, 4));
   gs.insert(line(A - B));
 
