@@ -31,10 +31,10 @@ namespace Parma_Polyhedra_Library {
 inline Rounding_Dir
 rounding_dir(Rounding_Dir dir) {
   if (dir == ROUND_NOT_NEEDED) {
-#ifdef NDEBUG
-    return ROUND_IGNORE;
-#else
+#ifdef DEBUG_ROUND_NOT_NEEDED
     return ROUND_DIRECT;
+#else
+    return ROUND_IGNORE;
 #endif
   }
   return dir;
@@ -43,10 +43,11 @@ rounding_dir(Rounding_Dir dir) {
 inline Result
 check_result(Result r, Rounding_Dir dir) {
   if (dir == ROUND_NOT_NEEDED && !is_special(r)) {
-#ifdef NDEBUG
-    return V_EQ;
-#else
+#ifdef DEBUG_ROUND_NOT_NEEDED
+    // FIXME: this is wrong. If an overflow happens the Result may be V_LT or V_GT. What's the better way to cope with that?
     assert(r == V_EQ);
+#else
+    return V_EQ;
 #endif
   }
   return r;
