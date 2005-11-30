@@ -78,7 +78,7 @@ copy_compare(Grid& a, Grid& b) {
 */
 template <typename T>
 static bool
-find_variation_template(T& a) {
+find_variation(T& a) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
 
   if (!a.OK()) {
@@ -94,9 +94,9 @@ find_variation_template(T& a) {
   stringstream dump;
   a.ascii_dump(dump);
   if (!b.ascii_load(dump)) {
-    std::cerr << "Failed to load `b' from the ASCII dump of `a'." << endl;
-    std::cerr << "ASCII dump of `a':" << endl;
-    std::cerr << dump.str();
+    nout << "Failed to load `b' from the ASCII dump of `a'." << endl;
+    nout << "ASCII dump of `a':" << endl;
+    nout << dump.str();
     exit(1);
   }
 
@@ -113,8 +113,6 @@ find_variation_template(T& a) {
   nout << "ASCII dump of `a' after comparison:" << endl
        << "-----------------------------------" << endl;
   a.ascii_dump(nout);
-
-  abort();
 
   return true;
 }

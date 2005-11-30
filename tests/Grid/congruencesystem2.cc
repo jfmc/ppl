@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-#define find_variation find_variation_template<Congruence_System>
-
 namespace {
 
 class Test_Congruence_System : public Congruence_System {
@@ -55,11 +53,11 @@ public:
 */
 
 bool
-fulfils(const Generator_System& gs,
+fulfils(const Grid_Generator_System& gs,
 	const Test_Congruence_System& cgs,
 	Coefficient_traits::const_reference divisor,
 	bool pass_expected = false) {
-  Generator_System::const_iterator gi = gs.begin();
+  Grid_Generator_System::const_iterator gi = gs.begin();
 
   if (cgs.satisfies_all_congruences(*gi, divisor) == pass_expected)
     return pass_expected;
@@ -78,7 +76,7 @@ fulfils(const Generator_System& gs,
 #define satisfies fulfils
 
 inline bool
-fails_to_satisfy(const Generator_System& gs,
+fails_to_satisfy(const Grid_Generator_System& gs,
 		 const Congruence_System& cgs,
 		 Coefficient_traits::const_reference divisor) {
   if (fulfils(gs, cgs, divisor, true))
@@ -99,7 +97,7 @@ test1() {
   if (find_variation(cgs0))
     exit(1);
 
-  Generator_System gs0;
+  Grid_Generator_System gs0;
 
   // Points.
 
@@ -182,7 +180,7 @@ test2() {
   if (find_variation(cgs0))
     exit(1);
 
-  Generator_System gs0;
+  Grid_Generator_System gs0;
 
   // Points.
 

@@ -68,7 +68,7 @@ void
 test3() {
   nout << "test3:" << endl;
 
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point(0*C));
   gs.insert( line(A));
   gs.insert( line(B));

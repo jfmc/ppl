@@ -25,8 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-#define find_variation find_variation_template<Grid>
-
 namespace {
 
 #if NOISY
@@ -80,7 +78,7 @@ test2() {
   function.insert(2, 0);
   function.insert(1, 1);
 
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point(2*C));
   gs.insert(point(4*C));
   gs.insert(point(A));
@@ -89,7 +87,7 @@ test2() {
 
   gr.map_space_dimensions(function);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point(2*A));
   known_gs.insert(point(4*A));
   known_gs.insert(point(C));
@@ -122,7 +120,7 @@ test3() {
   function.insert(0, 1);
   function.insert(2, 0);
 
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point());
   gs.insert(point(2*A));
   gs.insert(line(A - C));
@@ -131,7 +129,7 @@ test3() {
 
   gr.map_space_dimensions(function);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point());
   known_gs.insert(point(2*B));
   known_gs.insert(line(B - A));
@@ -164,7 +162,7 @@ test4() {
   function.insert(3, 2);
   function.insert(4, 1);
 
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point());
   gs.insert(point(A));
   gs.insert(point(B));
@@ -173,7 +171,7 @@ test4() {
 
   gr.map_space_dimensions(function);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point(0*C));
   Grid known_gr(known_gs);
 
@@ -202,7 +200,7 @@ test5() {
   function.insert(0, 0);
   function.insert(1, 1);
 
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point());
   gs.insert(point(A));
   gs.insert(point(B));
@@ -240,7 +238,7 @@ test6() {
   function.insert(2, 2);
   function.insert(3, 3);
 
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point());
   gs.insert(point(A));
   gs.insert(point(2*B));
@@ -282,7 +280,7 @@ test7() {
   function.insert(2, 1);
   function.insert(3, 2);
 
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point());
   gs.insert(point(A));
   gs.insert(line(B));

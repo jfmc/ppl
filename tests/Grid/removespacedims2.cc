@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-#define find_variation find_variation_template<Grid>
-
 // From congruences.
 
 void
@@ -49,7 +47,7 @@ test1() {
   if (find_variation(gr))
     exit(1);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point(0*B));
   known_gs.insert( line(A));
   known_gs.insert( line(B));
@@ -140,7 +138,7 @@ test4() {
   Variable A(0);
   Variable B(1);
 
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point(0*A));
   gs.insert(point(2*A));
   gs.insert(point(3*B));

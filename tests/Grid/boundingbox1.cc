@@ -26,8 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-#define find_variation find_variation_template<Grid>
-
 namespace {
 
 Variable A(0);

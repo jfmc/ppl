@@ -41,7 +41,7 @@ test1() {
 
   Grid known_gr = gr1;
 
-  Generator_System gs = gr1.minimized_generators();
+  Grid_Generator_System gs = gr1.minimized_generators();
 
   Grid gr2(gs);
 
@@ -67,7 +67,7 @@ test2() {
 
   Grid known_gr = gr1;
 
-  Generator_System gs = gr1.minimized_generators();
+  Grid_Generator_System gs = gr1.minimized_generators();
 
   Grid gr2(gs);
 
@@ -93,7 +93,7 @@ test3() {
 
   Grid known_gr = gr1;
 
-  Generator_System gs = gr1.minimized_generators();
+  Grid_Generator_System gs = gr1.minimized_generators();
 
   Grid gr2(gs);
 
@@ -119,7 +119,7 @@ test4() {
 
   Grid known_gr = gr1;
 
-  Generator_System gs = gr1.minimized_generators();
+  Grid_Generator_System gs = gr1.minimized_generators();
 
   Grid gr2(gs);
 
@@ -151,7 +151,7 @@ test5() {
 
   Grid known_gr = gr1;
 
-  Generator_System gs = gr1.minimized_generators();
+  Grid_Generator_System gs = gr1.minimized_generators();
 
   Grid gr2(gs);
 
@@ -179,7 +179,7 @@ test6() {
 
   Grid known_gr = gr1;
 
-  Generator_System gs = gr1.minimized_generators();
+  Grid_Generator_System gs = gr1.minimized_generators();
 
   Grid gr2(gs);
 
@@ -204,7 +204,7 @@ test7() {
 
   Grid gr1(2, EMPTY);
 
-  const Generator_System& gs = gr1.minimized_generators();
+  const Grid_Generator_System& gs = gr1.minimized_generators();
 
   // Add a point.  The idea is to check that `gs' still refers to a
   // generator system that matches the grid.
@@ -235,7 +235,7 @@ test8() {
 
   Grid gr1(0);
 
-  const Generator_System& gs = gr1.minimized_generators();
+  const Grid_Generator_System& gs = gr1.minimized_generators();
 
   // Empty the grid.  The idea is to check that `gs' still refers to a
   // generator system that matches the grid.

@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-#define find_variation find_variation_template<Grid>
-
 // add_congruence_and_minimize, one dimension.
 
 void
@@ -45,7 +43,7 @@ test1() {
   Congruence cg(A %= 0);
   gr.add_congruence_and_minimize(cg);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point(0*A));
   known_gs.insert(point(2*A));
 
@@ -87,7 +85,7 @@ test2() {
     exit(1);
 
   // FIX check
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point(0*A - 15*B, 5));
   known_gs.insert(point(  A + 27*B, 5));
   known_gs.insert(point(0*A + 85*B, 5));
@@ -123,7 +121,7 @@ test3() {
   if (find_variation(gr))
     exit(1);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point(0*A));
   known_gs.insert(point(3*A));
 
@@ -158,7 +156,7 @@ test4() {
   if (find_variation(gr))
     exit(1);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point(1*A));
   known_gs.insert(point(4*A));
 
@@ -194,7 +192,7 @@ test5() {
   if (find_variation(gr))
     exit(1);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point());
   known_gs.insert(point(3*A));
   known_gs.insert(point(3*B));
@@ -235,7 +233,7 @@ test6() {
   if (find_variation(gr))
     exit(1);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point());
   known_gs.insert(point(A));
   known_gs.insert(point(B));
@@ -276,7 +274,7 @@ test7() {
   if (find_variation(gr))
     exit(1);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point());
   known_gs.insert(point(A));
   known_gs.insert(point(B));
@@ -351,7 +349,7 @@ test9() {
   if (find_variation(gr))
     exit(1);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point());
   known_gs.insert(point(2*A));
   known_gs.insert(point(2*B));
@@ -393,7 +391,7 @@ test10() {
   if (find_variation(gr))
     exit(1);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point(-2*A + 0*B +  7*C, 3));
   known_gs.insert(point( 1*A + 0*B +    C, 3));
   known_gs.insert(point(-2*A + 9*B +  7*C, 3));
@@ -436,7 +434,7 @@ test11() {
   if (find_variation(gr))
     exit(1);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point(  A       - 3*C));
   known_gs.insert(point(6*A       - 3*C));
   known_gs.insert(point(  A + 5*B - 3*C));
@@ -477,7 +475,7 @@ test12() {
   if (find_variation(gr))
     exit(1);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point(-2*A -  3*B - 6*C, 3));
   known_gs.insert(point( 3*A -  3*B - 6*C, 3));
   known_gs.insert(point(-2*A + 12*B - 6*C, 3));
@@ -518,7 +516,7 @@ test13() {
   if (find_variation(gr))
     exit(1);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point(A + B + C));
 
   Grid known_gr(known_gs);
@@ -556,7 +554,7 @@ test14() {
   if (find_variation(gr))
     exit(1);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point(A + C));
   known_gs.insert(point(A + B + C));
 

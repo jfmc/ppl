@@ -78,7 +78,7 @@ Grid::lower_triangular(const Congruence_System& sys,
 //
 // Any of the x's can be zeros.
 bool
-Grid::upper_triangular(const Generator_System& sys,
+Grid::upper_triangular(const Grid_Generator_System& sys,
 		       const Dimension_Kinds& dim_kinds) {
   dimension_type num_cols = sys.num_columns();
   dimension_type row = sys.num_rows();
@@ -153,12 +153,12 @@ Grid::multiply_grid(const Coefficient& multiplier, Congruence& cg,
   }
 }
 
-/* The next two methods should be named convert, and this file
-   Grid_convert.cc, to use verbs consistently as function and method
-   names.  The same holds for the Polyhedron equivalents.  */
+// TODO: Rename the next two methods convert and this file
+//       Grid_convert.cc (and equivalently for Polyhedron) to use
+//       verbs consistently as function and method names.
 
 void
-Grid::conversion(Generator_System& source, Congruence_System& dest,
+Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 		 Dimension_Kinds& dim_kinds) {
   TRACE(cerr << "============= convert gs to cgs" << endl);
   TRACE(cerr << "source:" << endl);

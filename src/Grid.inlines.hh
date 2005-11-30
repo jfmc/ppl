@@ -24,7 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Grid_inlines_hh 1
 
 #include "Interval.defs.hh"
-#include "Generator.defs.hh"
+#include "Grid_Generator.defs.hh"
+#include "Grid_Generator.defs.hh"
 #include <algorithm>
 #include <deque>
 
@@ -37,7 +38,7 @@ Grid::max_space_dimension() {
   // that does not represent a legal dimension.
   return min(std::numeric_limits<dimension_type>::max() - 1,
 	     min(Congruence_System::max_space_dimension(),
-		 Generator_System::max_space_dimension()
+		 Grid_Generator_System::max_space_dimension()
 		 )
 	     );
 }
@@ -68,7 +69,7 @@ Grid::Grid(Congruence_System& cgs) {
 }
 
 inline
-Grid::Grid(const Generator_System& gs) {
+Grid::Grid(const Grid_Generator_System& gs) {
   if (gs.space_dimension() > max_space_dimension())
     throw_space_dimension_overflow("Grid(gs)",
 				   "the space dimension of gs "
@@ -78,7 +79,7 @@ Grid::Grid(const Generator_System& gs) {
 }
 
 inline
-Grid::Grid(Generator_System& gs,
+Grid::Grid(Grid_Generator_System& gs,
 	   const bool convert_rays_to_lines) {
   if (gs.space_dimension() > max_space_dimension())
     throw_space_dimension_overflow("Grid(gs)",
@@ -386,7 +387,7 @@ Grid::maximize(const Linear_Expression& expr,
 inline bool
 Grid::maximize(const Linear_Expression& expr,
 	       Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-	       Generator& point) const {
+	       Grid_Generator& point) const {
   return max_min(expr, "maximize(e, ...)", sup_n, sup_d, maximum, &point);
 }
 
@@ -399,7 +400,7 @@ Grid::minimize(const Linear_Expression& expr,
 inline bool
 Grid::minimize(const Linear_Expression& expr,
 	       Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-	       Generator& point) const {
+	       Grid_Generator& point) const {
   return max_min(expr, "minimize(e, ...)", inf_n, inf_d, minimum, &point);
 }
 
@@ -456,18 +457,18 @@ Grid::shrink_bounding_box(Box& box) const {
   // Create a vector to record which dimensions are bounded.
   std::vector<bool> bounded_interval(num_dims, true);
 
-  const Generator *first_point = NULL;
+  const Grid_Generator *first_point = NULL;
   // Clear the bound flag in `bounded_interval' for all dimensions in
   // which a line or sequence of points extends away from a single
   // value in the dimension.
   for (dimension_type row = 0; row < num_rows; ++row) {
-    Generator& gen = const_cast<Generator&>(gen_sys[row]);
+    Grid_Generator& gen = const_cast<Grid_Generator&>(gen_sys[row]);
     if (gen.is_point()) {
       if (first_point == NULL) {
 	first_point = &gen_sys[row];
 	continue;
       }
-      const Generator& point = *first_point;
+      const Grid_Generator& point = *first_point;
       // Convert the point `gen' to a parameter.
       for (dimension_type dim = 0; dim < num_dims; ++dim)
 	gen[dim] -= point[dim];
@@ -479,7 +480,7 @@ Grid::shrink_bounding_box(Box& box) const {
 
   // Attempt to set both bounds of each boundable interval to the
   // value of the associated coefficient in the point.
-  const Generator& point = *first_point;
+  const Grid_Generator& point = *first_point;
   TEMP_INTEGER(divisor);
   TEMP_INTEGER(gcd);
   TEMP_INTEGER(bound);
@@ -541,9 +542,9 @@ Grid::get_covering_box(Box& box) const {
 
     for (dimension_type dim = num_dims; dim-- > 0; )
       interval_sizes[dim] = 0;
-    const Generator *first_point = NULL;
+    const Grid_Generator *first_point = NULL;
     for (dimension_type row = 0; row < num_rows; ++row) {
-      Generator& gen = const_cast<Generator&>(gen_sys[row]);
+      Grid_Generator& gen = const_cast<Grid_Generator&>(gen_sys[row]);
       if (gen.is_line()) {
 	for (dimension_type dim = 0; dim < num_dims; ++dim)
 	  if (!interval_emptiness[dim] && gen[dim+1] != 0) {
@@ -560,7 +561,7 @@ Grid::get_covering_box(Box& box) const {
 	  first_point = &gen_sys[row];
 	  continue;
 	}
-	const Generator& point = *first_point;
+	const Grid_Generator& point = *first_point;
 	// Convert the point `gen' to a parameter.
 	for (dimension_type dim = 0; dim < num_dims; ++dim)
 	  gen[dim] -= point[dim];
@@ -574,7 +575,7 @@ Grid::get_covering_box(Box& box) const {
     // grid value closest to the origin, and the upper bound to the
     // addition of the lower bound and the shortest distance in the
     // given dimension between any two grid points.
-    const Generator& point = *first_point;
+    const Grid_Generator& point = *first_point;
     divisor = point.divisor();
     TEMP_INTEGER(lower_bound);
     for (dimension_type dim = 0; dim < num_dims; ++dim) {
@@ -616,7 +617,7 @@ Grid::get_covering_box(Box& box) const {
     }
   }
   else {
-    const Generator& point = gen_sys[0];
+    const Grid_Generator& point = gen_sys[0];
     divisor = point.divisor();
     // The covering box of a single point has only lower bounds.
     for (dimension_type dim = 0; dim < num_dims; ++dim) {
@@ -728,7 +729,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
   // If control gets here, then `pfunc' is not a permutation and some
   // dimensions must be projected away.
 
-  const Generator_System& old_gensys = generators();
+  const Grid_Generator_System& old_gensys = generators();
 
   if (old_gensys.num_rows() == 0) {
     // The grid is empty.
@@ -746,12 +747,12 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
       pfunc_maps[j] = pfunc_j;
   }
 
-  Generator_System new_gensys;
+  Grid_Generator_System new_gensys;
   // Set sortedness, for the assertion met via gs::insert.
   new_gensys.set_sorted(false);
-  for (Generator_System::const_iterator i = old_gensys.begin(),
+  for (Grid_Generator_System::const_iterator i = old_gensys.begin(),
 	 old_gensys_end = old_gensys.end(); i != old_gensys_end; ++i) {
-    const Generator& old_g = *i;
+    const Grid_Generator& old_g = *i;
     Linear_Expression e(0 * Variable(new_space_dimension-1));
     bool all_zeroes = true;
     for (dimension_type j = space_dim; j-- > 0; ) {
@@ -762,26 +763,26 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
       }
     }
     switch (old_g.type()) {
-    case Generator::LINE:
+    case Grid_Generator::LINE:
       if (!all_zeroes)
-	new_gensys.insert(line(e), false);
+	new_gensys.insert(line(e));
       break;
-    case Generator::RAY:
+    case Grid_Generator::RAY:
       if (!all_zeroes) {
 	// Inserting a point is safe, even with the normalization in
 	// `point', as the divisor is 1.
-	new_gensys.insert(point(e), false);
+	new_gensys.insert(point(e));
 	new_gensys[new_gensys.num_rows()-1][0] = 0;
       }
       break;
-    case Generator::POINT:
+    case Grid_Generator::POINT:
       // A point in the origin has all zero homogeneous coefficients.
       // Inserting the point is safe, even with the normalization in
       // `point', as the divisor is 1.
-      new_gensys.insert(point(e), false);
+      new_gensys.insert(point(e));
       new_gensys[new_gensys.num_rows()-1][0] = old_g.divisor();
       break;
-    case Generator::CLOSURE_POINT:
+    case Grid_Generator::CLOSURE_POINT:
     default:
       assert(0);
     }

@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Grid.defs.hh"
+#include "Grid_Generator.defs.hh"
 #include "Scalar_Products.defs.hh"
 #include <cassert>
 #include <string>
@@ -84,13 +85,13 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
 }
 
 void
-PPL::Grid::construct(const Generator_System& const_gs,
+PPL::Grid::construct(const Grid_Generator_System& const_gs,
 		     const bool convert_rays_to_lines) {
   // Protecting against space dimension overflow is up to the caller.
   assert(const_gs.space_dimension() <= max_space_dimension());
 
   // TODO: this implementation is just an executable specification.
-  Generator_System gs = const_gs;
+  Grid_Generator_System gs = const_gs;
 
   // Set the space dimension.
   space_dim = gs.space_dimension();
@@ -121,7 +122,7 @@ PPL::Grid::construct(const Generator_System& const_gs,
     // FIX for now convert rays to lines
     if (convert_rays_to_lines)
       for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
-	Generator& g = gen_sys[row];
+	Grid_Generator& g = gen_sys[row];
 	if (g.is_ray()) {
 	  g.set_is_line();
 	  g.strong_normalize();
@@ -224,7 +225,7 @@ PPL::Grid::is_included_in(const Grid& y) const {
   assert(x.OK());
   assert(y.OK());
 
-  const Generator_System& gs = x.gen_sys;
+  const Grid_Generator_System& gs = x.gen_sys;
   const Congruence_System& cgs = y.con_sys;
 
   dimension_type num_rows = gs.num_rows();
@@ -240,7 +241,7 @@ PPL::Grid::is_included_in(const Grid& y) const {
   }
   else
     for (dimension_type i = num_rows; i-- > 0; ) {
-      const Generator& g = gs[i];
+      const Grid_Generator& g = gs[i];
       if (!cgs.satisfies_all_congruences(g, g[0]))
 	return false;
     }
@@ -257,10 +258,10 @@ PPL::Grid::hide_parameters() {
   while (pos < num_rows)
     if (gen_sys[pos++].is_point())
       break;
-  const Generator& point = gen_sys[pos-1];
+  const Grid_Generator& point = gen_sys[pos-1];
   Grid& gr = const_cast<Grid&>(*this);
   for (dimension_type row = num_rows; row-- > 0; ) {
-    Generator& gen = gr.gen_sys[row];
+    Grid_Generator& gen = gr.gen_sys[row];
     if (gen.is_ray()) {
       for (dimension_type col = space_dim; col-- > 0; )
 	gen[col] += point[col];
@@ -284,7 +285,7 @@ PPL::Grid::bounds(const Linear_Expression& expr,
 
   // The generators are up to date.
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
-    const Generator& g = gen_sys[i];
+    const Grid_Generator& g = gen_sys[i];
     // Only lines and rays in `*this' can cause `expr' to be unbounded.
     if (g.is_line_or_ray()) {
       const int sp_sign = Scalar_Products::homogeneous_sign(expr, g);
@@ -300,7 +301,7 @@ bool
 PPL::Grid::max_min(const Linear_Expression& expr,
 		   char* method_call,
 		   Coefficient& ext_n, Coefficient& ext_d, bool& included,
-		   Generator* point) const {
+		   Grid_Generator* point) const {
   if (bounds(expr, method_call)) {
     if (marked_empty())
       return false;
@@ -309,7 +310,7 @@ PPL::Grid::max_min(const Linear_Expression& expr,
       ext_d = 1;
       included = true;
       if (point)
-	*point = Generator::point();
+	*point = Grid_Generator::point();
       return true;
     }
     if (!generators_are_minimized()) {
@@ -319,7 +320,7 @@ PPL::Grid::max_min(const Linear_Expression& expr,
       gr.set_generators_minimized();
     }
 
-    const Generator& gen = gen_sys[0];
+    const Grid_Generator& gen = gen_sys[0];
     Scalar_Products::homogeneous_assign(ext_n, expr, gen);
     ext_n += expr.inhomogeneous_term();
     ext_d = gen[0];
@@ -346,7 +347,7 @@ PPL::Grid::set_zero_dim_univ() {
   con_sys.clear();
   // FIX adj spc dim? (to get 2 cols)?
   gen_sys.clear();
-  gen_sys.insert(point());
+  gen_sys.insert(Grid_Generator::point());
   gen_sys.set_sorted(false);
 }
 
@@ -355,7 +356,7 @@ PPL::Grid::set_empty() {
   status.set_empty();
 
   // Replace gen_sys with an empty system of the right dimension.
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
 					 space_dim);
   gs.set_sorted(false);
@@ -479,8 +480,8 @@ PPL::Grid::minimize() const {
 }
 
 void
-PPL::Grid::normalize_divisors(Generator_System& sys,
-			      Generator_System& gen_sys) {
+PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
+			      Grid_Generator_System& gen_sys) {
   dimension_type row = 0;
   dimension_type num_rows = gen_sys.num_rows();
   // Find first point in gen_sys.
@@ -490,7 +491,7 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
       throw std::runtime_error("PPL::Grid::normalize_divisors(sys, gen_sys).");
   TEMP_INTEGER(gen_sys_divisor);
   TEMP_INTEGER(divisor);
-  Generator& first_point = gen_sys[row];
+  Grid_Generator& first_point = gen_sys[row];
   gen_sys_divisor = first_point[0];
   divisor = normalize_divisors(sys, gen_sys_divisor);
   if (divisor != gen_sys_divisor)
@@ -501,9 +502,9 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
 }
 
 PPL::Coefficient
-PPL::Grid::normalize_divisors(Generator_System& sys,
+PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 			      Coefficient_traits::const_reference divisor,
-			      Generator* first_point) {
+			      Grid_Generator* first_point) {
   assert(divisor >= 0);
   TEMP_INTEGER(lcm);
   lcm = divisor;
@@ -514,7 +515,7 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
     TEMP_INTEGER(original_sys_divisor);
 
     if (first_point) {
-      Generator& point_one = (*first_point);
+      Grid_Generator& point_one = (*first_point);
       original_sys_divisor = point_one[0];
       if (lcm == 0)
 	lcm = point_one[0];
@@ -528,7 +529,7 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
 	  // All rows are lines.
 	  return divisor;
 
-      Generator& point_one = sys[row];
+      Grid_Generator& point_one = sys[row];
       original_sys_divisor = point_one[0];
 
       if (lcm == 0) {
@@ -538,7 +539,7 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
 
       // Calculate the LCM of `divisor' and the divisor of every point.
       while (row < num_rows) {
-	Generator& g = sys[row];
+	Grid_Generator& g = sys[row];
 	if (g.is_point())
 	  lcm_assign(lcm, g[0]);
 	++row;
@@ -548,7 +549,7 @@ PPL::Grid::normalize_divisors(Generator_System& sys,
     dimension_type num_cols = sys.num_columns();
     // Represent each point using the LCM as the divisor.
     for (dimension_type row = 0; row < num_rows; ++row) {
-      Generator& gen = sys[row];
+      Grid_Generator& gen = sys[row];
       if (gen.is_ray_or_point_or_inequality()) {
 	TEMP_INTEGER(factor);
 	if (gen.is_point()) {
@@ -586,7 +587,7 @@ PPL::Grid::throw_invalid_argument(const char* method,
 void
 PPL::Grid::throw_topology_incompatible(const char* method,
 				       const char* g_name,
-				       const Generator&) const {
+				       const Grid_Generator&) const {
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
     << g_name << " is a closure point.";
@@ -596,7 +597,7 @@ PPL::Grid::throw_topology_incompatible(const char* method,
 void
 PPL::Grid::throw_topology_incompatible(const char* method,
 				       const char* gs_name,
-				       const Generator_System&) const {
+				       const Grid_Generator_System&) const {
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
     << gs_name << " contains closure points.";
@@ -645,7 +646,7 @@ PPL::Grid::throw_dimension_incompatible(const char* method,
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
 					const char* g_name,
-					const Generator& g) const {
+					const Grid_Generator& g) const {
   throw_dimension_incompatible(method, g_name, g.space_dimension());
 }
 
@@ -666,7 +667,7 @@ PPL::Grid::throw_dimension_incompatible(const char* method,
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
 					const char* gs_name,
-					const Generator_System& gs) const {
+					const Grid_Generator_System& gs) const {
   throw_dimension_incompatible(method, gs_name, gs.space_dimension());
 }
 

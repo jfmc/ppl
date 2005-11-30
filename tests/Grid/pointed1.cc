@@ -22,8 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-#define find_variation find_variation_template<Grid>
-
 namespace {
 
 Variable A(0);

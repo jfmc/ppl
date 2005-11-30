@@ -22,8 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-#define find_variation find_variation_template<Congruence_System>
-
 class Test_Congruence_System : public Congruence_System {
 public:
   Test_Congruence_System() : Congruence_System() {}

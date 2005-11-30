@@ -146,7 +146,7 @@ main() TRY {
   const Congruence_System& cgs = gr1.congruences();
   const memory_size_type cgs_total_size = cgs.total_memory_in_bytes();
   const memory_size_type cgs_external_size = cgs.external_memory_in_bytes();
-  const Generator_System& gs = gr1.generators();
+  const Grid_Generator_System& gs = gr1.generators();
   const memory_size_type gs_total_size = gs.total_memory_in_bytes();
   const memory_size_type gs_external_size = gs.external_memory_in_bytes();
 
@@ -170,7 +170,7 @@ main() TRY {
 
   Grid gr2(3, EMPTY);
   unsigned n = 0;
-  for (Generator_System::const_iterator i = gs.begin(),
+  for (Grid_Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i) {
     add_generator(gr2, *i);
     if (++n % 4 == 0)
@@ -196,7 +196,7 @@ main() TRY {
        << endl;
 
   memory_size_type gs_elements_size = 0;
-  for (Generator_System::const_iterator i = gs.begin(),
+  for (Grid_Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
     gs_elements_size += i->total_memory_in_bytes();
 

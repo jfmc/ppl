@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-#define find_variation find_variation_template<Grid>
-
 // Simple grids, one dimension.
 
 void
@@ -244,11 +242,11 @@ test7() {
   Variable B(1);
   Variable C(2);
 
-  Generator_System gs1;
+  Grid_Generator_System gs1;
   gs1.insert(point(A + C));
   gs1.insert(point(A + 2*C));
 
-  Generator_System gs2;
+  Grid_Generator_System gs2;
   gs2.insert(point(A));
   gs2.insert(point(A + B));
 

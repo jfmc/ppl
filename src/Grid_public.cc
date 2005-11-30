@@ -61,7 +61,7 @@ PPL::Grid::Grid(dimension_type num_dimensions,
 			  Linear_Row::Flags(NECESSARILY_CLOSED,
 					    Linear_Row::LINE_OR_EQUALITY));
     // Trivially true parameter.
-    Generator& first_g = gen_sys[0];
+    Grid_Generator& first_g = gen_sys[0];
     first_g[0] = 1;
     first_g.set_is_ray_or_point();
     // Integrality congruence.
@@ -208,7 +208,7 @@ PPL::Grid::minimized_congruences() const {
   return congruences();
 }
 
-const PPL::Generator_System&
+const PPL::Grid_Generator_System&
 PPL::Grid::generators() const {
   if (space_dim == 0) {
     assert(gen_sys.num_columns() == 1
@@ -234,7 +234,7 @@ PPL::Grid::generators() const {
   return gen_sys;
 }
 
-const PPL::Generator_System&
+const PPL::Grid_Generator_System&
 PPL::Grid::minimized_generators() const {
   if (space_dim == 0) {
     assert(gen_sys.num_columns() == 1
@@ -315,14 +315,14 @@ PPL::Grid::relation_with(const Congruence& cg) const {
 
   bool known_to_intersect = false;
 
-  for (Generator_System::const_iterator g = gen_sys.begin(),
+  for (Grid_Generator_System::const_iterator g = gen_sys.begin(),
          gen_sys_end = gen_sys.end(); g != gen_sys_end; ++g) {
     TEMP_INTEGER(sp);
     Scalar_Products::assign(sp, cg, *g);
 
     switch (g->type()) {
 
-    case Generator::POINT:
+    case Grid_Generator::POINT:
       if (cg.is_proper_congruence())
 	// FIX include the divisor?
 	sp %= modulus;
@@ -359,7 +359,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
 	}
       break;
 
-    case Generator::RAY:	// PARAMETER
+    case Grid_Generator::RAY:	// PARAMETER
       if (cg.is_proper_congruence())
 	// FIX include the divisor?
 	sp %= modulus;
@@ -384,7 +384,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
 
       break;
 
-    case Generator::LINE:
+    case Grid_Generator::LINE:
       if (sp == 0)
 	// Line g satisfies the cg so the relation depends entirely on
 	// the other generators.
@@ -405,7 +405,8 @@ PPL::Grid::relation_with(const Congruence& cg) const {
 
       return Poly_Con_Relation::strictly_intersects();
 
-    case Generator::CLOSURE_POINT:
+    case Grid_Generator::CLOSURE_POINT:
+    default:
       assert(false);
       break;
     }
@@ -420,7 +421,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
 }
 
 PPL::Poly_Gen_Relation
-PPL::Grid::relation_with(const Generator& g,
+PPL::Grid::relation_with(const Grid_Generator& g,
 			 Coefficient_traits::const_reference divisor) const {
   // Dimension-compatibility check.
   if (space_dim < g.space_dimension())
@@ -490,7 +491,7 @@ PPL::Grid::is_universe() const {
 
   // Create a single generator to progressively represent the entire
   // universe generator system.
-  Generator g = point(0*Variable(space_dim-1));
+  Grid_Generator g = Grid_Generator::point(0*Variable(space_dim-1));
   dimension_type i = 1;
   // The zero dimension cases are handled above.
   while (true) {
@@ -518,11 +519,11 @@ PPL::Grid::is_bounded() const {
 
   if (gen_sys.num_rows() > 1) {
     // Check if all generators are the same point.
-    const Generator& first_point = gen_sys[0];
+    const Grid_Generator& first_point = gen_sys[0];
     if (first_point.is_line_or_ray())
       return false;
     for (dimension_type row = gen_sys.num_rows(); row-- > 0; ) {
-      const Generator& gen = gen_sys[row];
+      const Grid_Generator& gen = gen_sys[row];
       if (gen.is_line_or_ray() || gen != first_point)
 	return false;
     }
@@ -743,18 +744,16 @@ PPL::Grid::OK(bool check_not_empty) const {
 	goto fail;
       }
 
-      // Check if the system of generators is well-formed.  Check by
-      // hand, as many valid characteristics of a parameter system will
-      // fail Generator_System::OK.
-      if (!gen_sys.Linear_System::OK(false)) {
+      // Check if the system of generators is well-formed.
+      if (!gen_sys.OK()) {
 #ifndef NDEBUG
-	cerr << "gen_sys Linear_System::OK failed." << endl;
+	cerr << "gen_sys OK failed." << endl;
 #endif
 	goto fail;
       }
       // Check each generator in the system.
       for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
-	const Generator& g = gen_sys[i];
+	const Grid_Generator& g = gen_sys[i];
 
 	if (!g.is_necessarily_closed()) {
 #ifndef NDEBUG
@@ -784,7 +783,7 @@ PPL::Grid::OK(bool check_not_empty) const {
       }
 
       if (generators_are_minimized()) {
-	Generator_System gs = gen_sys;
+	Grid_Generator_System gs = gen_sys;
 
 	if (dim_kinds.size() != num_columns) {
 #ifndef NDEBUG
@@ -829,8 +828,8 @@ PPL::Grid::OK(bool check_not_empty) const {
 	// contain at least a single point afterwards.
 	assert(gs.num_rows() > 0);
 	for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
-	  Generator& g = gs[row];
-	  const Generator& g_copy = gen_sys[row];
+	  Grid_Generator& g = gs[row];
+	  const Grid_Generator& g_copy = gen_sys[row];
 	  dimension_type col = gen_sys.num_columns();
 	  if (g.type() != g_copy.type())
 	    goto message_fail;
@@ -865,7 +864,7 @@ PPL::Grid::OK(bool check_not_empty) const {
     Grid tem_gr = *this;
     Congruence_System cs_copy = tem_gr.con_sys;
     // Clear the generators in tem_gr.
-    Generator_System gs;
+    Grid_Generator_System gs;
     gs.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
 					   space_dim);
     gs.set_sorted(false);
@@ -1007,7 +1006,7 @@ PPL::Grid::add_congruence_and_minimize(const Constraint& c) {
 }
 
 void
-PPL::Grid::add_generator(const Generator& g) {
+PPL::Grid::add_generator(const Grid_Generator& g) {
   // Topology-compatibility check.
   if (g.is_closure_point())
     throw_topology_incompatible("add_generator(g)", "g", g);
@@ -1035,7 +1034,7 @@ PPL::Grid::add_generator(const Generator& g) {
     if (g.is_line_or_ray())
       throw_invalid_generator("add_generator(g)", "g");
     if (g.is_necessarily_closed())
-      gen_sys.insert(g, false);
+      gen_sys.insert(g);
     else {
       // Note: here we have a _legal_ topology mismatch,
       // because `g' is NOT a closure point (it is a point!)
@@ -1043,7 +1042,7 @@ PPL::Grid::add_generator(const Generator& g) {
       // cause a change in the topology of `gen_sys', which is wrong.
       // Thus, we insert a "topology corrected" copy of `g'.
       const Linear_Expression nc_expr = Linear_Expression(g);
-      gen_sys.insert(Generator::point(nc_expr, g.divisor()), false);
+      gen_sys.insert(Grid_Generator::point(nc_expr, g.divisor()));
     }
     // Since `gen_sys' was empty, resize the system of generators to
     // the right dimension.
@@ -1056,8 +1055,8 @@ PPL::Grid::add_generator(const Generator& g) {
     // Copy g, in all cases, in case the divisor needs to be changed
     // when g is a point.
     // FIX only copy when point
-    Generator tem(g);
-    Generator& g = tem;
+    Grid_Generator tem(g);
+    Grid_Generator& g = tem;
     // g is now a reference to the copy.
     TEMP_INTEGER(divisor);
     TEMP_INTEGER(gen_sys_divisor);
@@ -1071,16 +1070,16 @@ PPL::Grid::add_generator(const Generator& g) {
       // of the inserted generator are automatically adjusted.
       // FIX convert rays to lines for now
       if (g.is_ray())
-	gen_sys.insert(Generator::line(Linear_Expression(g)), false);
+	gen_sys.insert(Grid_Generator::line(Linear_Expression(g)));
       else {
-	gen_sys.insert(g, false);
+	gen_sys.insert(g);
 	if (g.is_point())
 	check_divisor:
 	  if (divisor != gen_sys_divisor) {
 	    // Multiply the inserted point to match the gen_sys
 	    // divisor.  Done after the insert so that a normalized g
 	    // is passed to insert.
-	    Generator& inserted_g = gen_sys[gen_sys.num_rows()-1];
+	    Grid_Generator& inserted_g = gen_sys[gen_sys.num_rows()-1];
 	    inserted_g[0] = gen_sys_divisor;
 	    gen_sys_divisor /= divisor;
 	    for (dimension_type col = 1; col < inserted_g.size(); ++col)
@@ -1097,19 +1096,19 @@ PPL::Grid::add_generator(const Generator& g) {
       // Thus, we insert a "topology corrected" copy of `g'.
       const Linear_Expression nc_expr = Linear_Expression(g);
       switch (g.type()) {
-      case Generator::LINE:
-	gen_sys.insert(Generator::line(nc_expr), false);
+      case Grid_Generator::LINE:
+	gen_sys.insert(Grid_Generator::line(nc_expr));
 	break;
-      case Generator::RAY:
+      case Grid_Generator::RAY:
 	// FIX should input parameter?
-	gen_sys.insert(Generator::line(nc_expr), false);
+	gen_sys.insert(Grid_Generator::line(nc_expr));
 	break;
-      case Generator::POINT:
-	gen_sys.insert(Generator::point(nc_expr, g.divisor()), false);
+      case Grid_Generator::POINT:
+	gen_sys.insert(Grid_Generator::point(nc_expr, g.divisor()));
 	goto check_divisor;
       default:
 	//abort(); // FIX instead?
-	throw_runtime_error("add_generator(const Generator& g)");
+	throw_runtime_error("add_generator(const Grid_Generator& g)");
       }
     }
   }
@@ -1123,9 +1122,9 @@ PPL::Grid::add_generator(const Generator& g) {
 }
 
 bool
-PPL::Grid::add_generator_and_minimize(const Generator& g) {
+PPL::Grid::add_generator_and_minimize(const Grid_Generator& g) {
   // TODO: this is just an executable specification.
-  Generator_System gs(g);
+  Grid_Generator_System gs(g);
   return add_recycled_generators_and_minimize(gs);
 }
 
@@ -1378,7 +1377,7 @@ PPL::Grid::add_recycled_constraints_and_minimize(Constraint_System& cs) {
 }
 
 void
-PPL::Grid::add_recycled_generators(Generator_System& gs) {
+PPL::Grid::add_recycled_generators(Grid_Generator_System& gs) {
   // Topology compatibility check.
   if (gs.has_closure_points())
     throw_topology_incompatible("add_recycled_generators(gs)", "gs", gs);
@@ -1426,8 +1425,8 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
       // Swap one coefficient at a time into the newly added rows
       // instead of swapping each entire row.  This ensures that the
       // added rows have the same capacities as the existing rows.
-      Generator& new_g = gen_sys[old_num_rows + i];
-      Generator& old_g = gs[i];
+      Grid_Generator& new_g = gen_sys[old_num_rows + i];
+      Grid_Generator& old_g = gs[i];
       if (old_g.is_line())
 	new_g.set_is_line();
       if (old_g.is_ray()) {
@@ -1460,7 +1459,7 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
 
   // FIX for now convert rays to lines
   for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
-    Generator& g = gen_sys[row];
+    Grid_Generator& g = gen_sys[row];
     if (g.is_ray()) {
       g.set_is_line();
       g.strong_normalize();
@@ -1477,14 +1476,14 @@ PPL::Grid::add_recycled_generators(Generator_System& gs) {
 }
 
 void
-PPL::Grid::add_generators(const Generator_System& gs) {
+PPL::Grid::add_generators(const Grid_Generator_System& gs) {
   // TODO: this is just an executable specification.
-  Generator_System gs_copy = gs;
+  Grid_Generator_System gs_copy = gs;
   add_recycled_generators(gs_copy);
 }
 
 bool
-PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
+PPL::Grid::add_recycled_generators_and_minimize(Grid_Generator_System& gs) {
   // Topology compatibility check.
   if (gs.has_closure_points())
     throw_topology_incompatible("add_recycled_generators_and_minimize(gs)",
@@ -1525,10 +1524,10 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
     normalize_divisors(gs, gen_sys);
 
     for (dimension_type row = 0; row < gs.num_rows(); ++row) {
-      const Generator& g = gs[row];
+      const Grid_Generator& g = gs[row];
       // FIX for now convert rays to lines
       if (g.is_ray())
-	gen_sys.insert(Generator::line(Linear_Expression(g)), false);
+	gen_sys.insert(Grid_Generator::line(Linear_Expression(g)));
       else
 	gen_sys.add_row(g);
     }
@@ -1543,7 +1542,7 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
     gen_sys.set_sorted(false);
     // FIX for now convert rays to lines
     for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
-      Generator& g = gen_sys[row];
+      Grid_Generator& g = gen_sys[row];
       if (g.is_ray()) {
 	g.set_is_line();
 	g.strong_normalize();
@@ -1560,9 +1559,9 @@ PPL::Grid::add_recycled_generators_and_minimize(Generator_System& gs) {
 }
 
 bool
-PPL::Grid::add_generators_and_minimize(const Generator_System& gs) {
+PPL::Grid::add_generators_and_minimize(const Grid_Generator_System& gs) {
   // TODO: this is just an executable specification.
-  Generator_System gs_copy = gs;
+  Grid_Generator_System gs_copy = gs;
   return add_recycled_generators_and_minimize(gs_copy);
 }
 
@@ -1592,7 +1591,7 @@ PPL::Grid::intersection_assign(const Grid& y) {
 
   if (y.con_sys.num_rows() > 0 ) {
     x.con_sys.add_rows(y.con_sys);
-    // Generators may be out of date and congruences may have changed
+    // Grid_Generators may be out of date and congruences may have changed
     // from minimal form.
     x.clear_generators_up_to_date();
     x.clear_congruences_minimized();
@@ -1640,7 +1639,7 @@ PPL::Grid::join_assign(const Grid& y) {
 
   // Match the divisors of the x and y generator systems.
   // FIX this makes a copy of which add_rows makes a copy
-  Generator_System gs(y.gen_sys);
+  Grid_Generator_System gs(y.gen_sys);
   normalize_divisors(x.gen_sys, gs);
   x.gen_sys.add_rows(gs);
   // Congruences may be out of date and generators may have lost
@@ -1777,7 +1776,7 @@ PPL::Grid::affine_image(const Variable var,
   if (var_space_dim <= expr_space_dim && expr[var_space_dim] != 0) {
     // The transformation is invertible.
     if (generators_are_up_to_date()) {
-      // Generator_System::affine_image() requires the third argument
+      // Grid_Generator_System::affine_image() requires the third argument
       // to be a positive Coefficient.
       if (denominator > 0)
 	gen_sys.affine_image(var_space_dim, expr, denominator, true);
@@ -1816,7 +1815,7 @@ PPL::Grid::affine_image(const Variable var,
     if (!generators_are_up_to_date())
       minimize();
     if (!marked_empty()) {
-      // Generator_System::affine_image() requires the third argument
+      // Grid_Generator_System::affine_image() requires the third argument
       // to be a positive Coefficient.
       if (denominator > 0)
 	gen_sys.affine_image(var_space_dim, expr, denominator, true);
@@ -1879,7 +1878,7 @@ affine_preimage(const Variable var,
       }
       else {
 	// The new denominator is negative:
-	// we negate everything once more, as Generator_System::affine_image()
+	// we negate everything once more, as Grid_Generator_System::affine_image()
 	// requires the third argument to be positive.
 	inverse = expr;
 	inverse[var_space_dim] = denominator;
@@ -1949,9 +1948,9 @@ generalized_affine_image(const Variable var,
     return;
 
   // Insert a strongly-normalized point that will pass assertions.
-  gen_sys.insert(point(), false);
+  gen_sys.insert(Grid_Generator::point());
   // Update the inserted point to the required parameter.
-  Generator& inserted_g = gen_sys[gen_sys.num_rows()-1];
+  Grid_Generator& inserted_g = gen_sys[gen_sys.num_rows()-1];
   inserted_g[0] = 0;		// Set inserted_g to a ray.
   if (modulus < 0)
     inserted_g[var.space_dimension()] = -modulus;
@@ -2021,7 +2020,7 @@ generalized_affine_preimage(const Variable var,
   // Note: DO check for emptyness here, as we will later add a line.
   if (is_empty())
     return;
-  add_generator(line(var));
+  add_generator(grid_line(var));
   assert(OK());
 }
 
@@ -2069,11 +2068,11 @@ generalized_affine_image(const Linear_Expression& lhs,
   // direction of variables occurring in `lhs'.  While at it, check
   // whether there exists a variable occurring in both `lhs' and
   // `rhs'.
-  Generator_System new_lines;
+  Grid_Generator_System new_lines;
   bool lhs_vars_intersect_rhs_vars = false;
   for (dimension_type i = lhs_space_dim; i-- > 0; )
     if (lhs.coefficient(Variable(i)) != 0) {
-      new_lines.insert(line(Variable(i)), false);
+      new_lines.insert(Grid_Generator::line(Variable(i)));
       if (rhs.coefficient(Variable(i)) != 0)
 	lhs_vars_intersect_rhs_vars = true;
     }
@@ -2168,11 +2167,11 @@ generalized_affine_preimage(const Linear_Expression& lhs,
   // the direction of variables occurring in `lhs'.
   // While at it, check whether or not there exists a variable
   // occurring in both `lhs' and `rhs'.
-  Generator_System new_lines;
+  Grid_Generator_System new_lines;
   bool lhs_vars_intersect_rhs_vars = false;
   for (dimension_type i = lhs_space_dim; i-- > 0; )
     if (lhs.coefficient(Variable(i)) != 0) {
-      new_lines.insert(line(Variable(i)), false);
+      new_lines.insert(Grid_Generator::line(Variable(i)));
       if (rhs.coefficient(Variable(i)) != 0)
 	lhs_vars_intersect_rhs_vars = true;
     }
@@ -2248,13 +2247,13 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
   }
 
   // At this point both generator systems are up-to-date.
-  Generator_System gs = y.gen_sys;
+  Grid_Generator_System gs = y.gen_sys;
   dimension_type gs_num_rows = gs.num_rows();
 
   normalize_divisors(gs, gen_sys);
 
   for (dimension_type i = gs_num_rows; i-- > 0; ) {
-    Generator& g = gs[i];
+    Grid_Generator& g = gs[i];
     if (g.is_point())
       // Either erase the origin.
       if (g.all_homogeneous_terms_are_zero()) {
@@ -2284,8 +2283,8 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
   for (dimension_type i = gs_num_rows; i-- > 0; ) {
     // Steal one coefficient at a time, to ensure that the row
     // capacities are all the same.
-    Generator& new_g = gen_sys[old_num_rows + i];
-    Generator& old_g = gs[i];
+    Grid_Generator& new_g = gen_sys[old_num_rows + i];
+    Grid_Generator& old_g = gs[i];
     if (old_g.is_line())
       new_g.set_is_line();
     for (dimension_type j = gs_num_columns; j-- > 0; )

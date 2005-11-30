@@ -26,7 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.inlines.hh"
 #include "Constraint.defs.hh"
 #include "Scalar_Products.defs.hh"
-#include "compiler.hh"
 #include <cassert>
 #include <string>
 #include <vector>
@@ -279,9 +278,7 @@ PPL::Generator_System::const_iterator::skip_forward() {
 }
 
 void
-PPL::Generator_System::insert(const Generator& g,
-			      bool check_normalization) {
-  used(check_normalization);
+PPL::Generator_System::insert(const Generator& g) {
   // We are sure that the matrix has no pending rows
   // and that the new row is not a pending generator.
   assert(num_pending_rows() == 0);
@@ -324,7 +321,7 @@ PPL::Generator_System::insert(const Generator& g,
       // Inserting the new generator.
       Linear_System::insert(tmp_g);
     }
-  assert(OK(check_normalization));
+  assert(OK());
 }
 
 void
@@ -785,8 +782,7 @@ void
 PPL::Generator_System
 ::affine_image(dimension_type v,
 	       const Linear_Expression& expr,
-	       Coefficient_traits::const_reference denominator,
-	       bool grid) {
+	       Coefficient_traits::const_reference denominator) {
   Generator_System& x = *this;
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
@@ -824,9 +820,6 @@ PPL::Generator_System
   const bool not_invertible = (v > expr.space_dimension() || expr[v] == 0);
   if (not_invertible)
     x.remove_invalid_lines_and_rays();
-
-  if (grid)
-    return;
 
   // Strong normalization also resets the sortedness flag.
   x.strong_normalize();
@@ -946,11 +939,7 @@ PPL::Generator_System::ascii_load(std::istream& s) {
 
   // Checking for well-formedness.
 
-  // FIXME: Some OK checks are only valid for polyhedron generators.
-  //        The system being loaded could be for a Polyhedron or a
-  //        Grid.  One solution could be to use a special
-  //        Generator_System subclass for Grid.
-  assert(OK(false));
+  assert(OK());
   return true;
 }
 
@@ -1013,7 +1002,7 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
 }
 
 bool
-PPL::Generator_System::OK(bool check_normalization) const {
+PPL::Generator_System::OK() const {
   // A Generator_System must be a valid Linear_System; do not check for
   // strong normalization, since this will be done when
   // checking each individual generator.
@@ -1023,7 +1012,7 @@ PPL::Generator_System::OK(bool check_normalization) const {
   // Checking each generator in the system.
   const Generator_System& x = *this;
   for (dimension_type i = num_rows(); i-- > 0; )
-    if (!x[i].OK(check_normalization))
+    if (!x[i].OK())
       return false;
 
   // All checks passed.

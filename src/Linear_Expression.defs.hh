@@ -34,6 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
 #include "Congruence_System.types.hh"
+#include "Grid_Generator_System.types.hh"
 #include "Polyhedron.types.hh"
 #include "Grid.types.hh"
 #include <cstddef>
@@ -309,6 +310,10 @@ private:
   // FIXME: the following friend declaration is only to grant access to
   // Congruence_System::affine_preimage().
   friend class Parma_Polyhedra_Library::Congruence_System;
+
+  // FIXME: the following friend declaration is only to grant access to
+  // Grid_Generator_System::affine_image().
+  friend class Parma_Polyhedra_Library::Grid_Generator_System;
 
   //! Copy-constructor with a specified space dimension.
   Linear_Expression(const Linear_Expression& e, dimension_type sz);

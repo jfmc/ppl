@@ -25,15 +25,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-#define find_variation find_variation_template<Grid>
-
 void
 test1() {
   nout << "test1:" << endl;
 
   Variable A(0);
 
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point());
   gs.insert(point(3*A));
 
@@ -80,7 +78,7 @@ test2() {
   if (find_variation(gr))
     exit(1);
 
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point());
   gs.insert( line(A + B));
   gs.insert(point(B));
@@ -121,7 +119,7 @@ test3() {
   if (find_variation(gr))
     exit(1);
 
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point());
   gs.insert( line(A - B));
   gs.insert(point(B));
@@ -152,7 +150,7 @@ test4() {
   Variable A(0);
   Variable B(1);
 
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point(0*A));
   gs.insert(point(1*A));
 
@@ -161,7 +159,7 @@ test4() {
   if (find_variation(gr1))
     exit(1);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point(0*A + 0*B));
   known_gs.insert(point(1*A + 0*B));
   known_gs.insert(point(0*A + 1*B));

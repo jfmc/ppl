@@ -34,9 +34,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.inlines.hh"
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
-#include "Generator_System.defs.hh"
-#include "Generator_System.inlines.hh"
-#include "Generator.types.hh"
+#include "Grid_Generator_System.defs.hh"
+#include "Grid_Generator_System.inlines.hh"
+#include "Grid_Generator.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include "Grid_Certificate.types.hh"
@@ -150,7 +150,7 @@ bool operator!=(const Grid& x, const Grid& y);
     The following code builds the same grid as above, but starting
     from a system of generators specifying three of the points:
     \code
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(point(0*x + 2*y));
   gs.insert(point(2*x + 0*y));
@@ -168,7 +168,7 @@ bool operator!=(const Grid& x, const Grid& y);
     The following code builds the same grid as above, but starting
     from a system of generators specifying a point and a line:
     \code
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(line(x + y));
   Grid gr(gs);
@@ -300,7 +300,7 @@ bool operator!=(const Grid& x, const Grid& y);
     The following code shows the use of the function
     <CODE>remove_space_dimensions</CODE>:
     \code
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point(3*x + y +0*z + 2*w));
   Grid gr(gs);
   Variables_Set to_be_removed;
@@ -422,7 +422,7 @@ public:
     Thrown if \p num_dimensions exceeds the maximum allowed space
     dimension.
   */
-  explicit Grid(const Generator_System& const_gs);
+  explicit Grid(const Grid_Generator_System& const_gs);
 
   //! Builds a grid, recycling a system of generators.
   /*!
@@ -446,7 +446,7 @@ public:
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
   */
-  explicit Grid(Generator_System& gs, const bool convert_rays_to_lines = true);
+  explicit Grid(Grid_Generator_System& gs, const bool convert_rays_to_lines = true);
 
   //! Builds a grid out of a generic, interval-based bounding box.
   /*!
@@ -607,14 +607,14 @@ public:
   const Congruence_System& minimized_congruences() const;
 
   //! Returns the system of generators.
-  const Generator_System& generators() const;
+  const Grid_Generator_System& generators() const;
 
   //! Returns the minimized system of generators.
   /*!
      All parameters in the system are converted to points, so the
      system may actually lose the minimal form before being returned.
   */
-  const Generator_System& minimized_generators() const;
+  const Grid_Generator_System& minimized_generators() const;
 
   //! \brief
   //! Returns the relations holding between the grid \p *this
@@ -640,7 +640,7 @@ public:
   */
   // FIXME: see the comment for Poly_Con_Relation above.
   Poly_Gen_Relation
-  relation_with(const Generator& g,
+  relation_with(const Grid_Generator& g,
 		Coefficient_traits::const_reference divisor = 0) const;
 
   //! \brief
@@ -760,7 +760,7 @@ public:
   */
   bool maximize(const Linear_Expression& expr,
 		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		Generator& point) const;
+		Grid_Generator& point) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -825,7 +825,7 @@ public:
   */
   bool minimize(const Linear_Expression& expr,
 		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		Generator& point) const;
+		Grid_Generator& point) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -1061,7 +1061,7 @@ public:
     Thrown if \p *this and generator \p g are dimension-incompatible,
     or if \p *this is an empty grid and \p g is not a point.
   */
-  void add_generator(const Generator& g);
+  void add_generator(const Grid_Generator& g);
 
   //! \brief
   //! Adds a copy of generator \p g to the system of generators
@@ -1074,7 +1074,7 @@ public:
     Thrown if \p *this and generator \p g are dimension-incompatible,
     or if \p *this is an empty grid and \p g is not a point.
   */
-  bool add_generator_and_minimize(const Generator& g);
+  bool add_generator_and_minimize(const Grid_Generator& g);
 
   //! Adds a copy of each congruence in \p cgs to \p *this.
   /*!
@@ -1278,7 +1278,7 @@ public:
     \p *this is empty and the system of generators \p gs is not empty,
     but has no points.
   */
-  void add_generators(const Generator_System& gs);
+  void add_generators(const Grid_Generator_System& gs);
 
   //! \brief
   //! Adds the generators in \p gs to the system of generators of \p
@@ -1297,7 +1297,7 @@ public:
     The only assumption that can be made about \p gs upon successful
     or exceptional return is that it can be safely destroyed.
   */
-  void add_recycled_generators(Generator_System& gs);
+  void add_recycled_generators(Grid_Generator_System& gs);
 
   //! \brief
   //! Adds a copy of the generators in \p gs to the system of
@@ -1315,7 +1315,7 @@ public:
     *this is empty and the system of generators \p gs is not empty,
     but has no points.
   */
-  bool add_generators_and_minimize(const Generator_System& gs);
+  bool add_generators_and_minimize(const Grid_Generator_System& gs);
 
   //! \brief
   //! Adds the generators in \p gs to the system of generators of \p
@@ -1337,7 +1337,7 @@ public:
     The only assumption that can be made about \p gs upon successful
     or exceptional return is that it can be safely destroyed.
   */
-  bool add_recycled_generators_and_minimize(Generator_System& gs);
+  bool add_recycled_generators_and_minimize(Grid_Generator_System& gs);
 
   //! \brief
   //! Assigns to \p *this the intersection of \p *this and \p y.
@@ -2011,7 +2011,7 @@ private:
   Congruence_System con_sys;
 
   //! The system of generators.
-  Generator_System gen_sys;
+  Grid_Generator_System gen_sys;
 
 #define PPL_IN_Grid_CLASS
 #include "Grid_Status.idefs.hh"
@@ -2062,7 +2062,7 @@ private:
     If true then rays in \p gs are converted to lines, else they are
     left as rays (the internal representation of parameters).
   */
-  void construct(const Generator_System& gs,
+  void construct(const Grid_Generator_System& gs,
 		 const bool convert_rays_to_lines = true);
 
   //! \name Private Verifiers: Verify if Individual Flags are Set
@@ -2245,7 +2245,7 @@ private:
   bool max_min(const Linear_Expression& expr,
 	       char* method_call,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
-	       Generator* point = NULL) const;
+	       Grid_Generator* point = NULL) const;
 
   //! \name Widening- and Extrapolation-Related Functions
   //@{
@@ -2271,7 +2271,7 @@ private:
     <CODE>add_space_dimensions_and_embed()</CODE>.
   */
   void add_space_dimensions(Congruence_System& cgs,
-			    Generator_System& gs,
+			    Grid_Generator_System& gs,
 			    dimension_type dims);
 
   //! Adds new space dimensions to the given systems.
@@ -2288,7 +2288,7 @@ private:
     This method is invoked only by
     <CODE>add_space_dimensions_and_project()</CODE>.
   */
-  void add_space_dimensions(Generator_System& gs,
+  void add_space_dimensions(Grid_Generator_System& gs,
 			    Congruence_System& cgs,
 			    dimension_type dims);
 
@@ -2315,10 +2315,10 @@ private:
     points have the same divisor as \p first_point.
   */
   static Coefficient
-  normalize_divisors(Generator_System& sys,
+  normalize_divisors(Grid_Generator_System& sys,
 		     Coefficient_traits::const_reference divisor
 		     = Coefficient_one(),
-		     Generator* first_point = NULL);
+		     Grid_Generator* first_point = NULL);
 
   //! Normalize all the divisors in \p sys and \p gen_sys.
   /*!
@@ -2326,8 +2326,8 @@ private:
     for all generators, leaving each system representing the grid it
     represented originally.
   */
-  static void normalize_divisors(Generator_System& sys,
-				 Generator_System& gen_sys);
+  static void normalize_divisors(Grid_Generator_System& sys,
+				 Grid_Generator_System& gen_sys);
 
   //! \brief
   //! Converts generator system \p dest to be equivalent to congruence
@@ -2339,7 +2339,7 @@ private:
   //! \brief
   //! Converts congruence system \p dest to be equivalent to generator
   //! system \p source.
-  static void conversion(Generator_System& source,
+  static void conversion(Grid_Generator_System& source,
 			 Congruence_System& dest,
 			 Dimension_Kinds& dim_kinds);
 
@@ -2355,7 +2355,7 @@ private:
   /*!
     Returns true if \p gs is empty, otherwise returns false.
   */
-  static bool simplify(Generator_System& gs,
+  static bool simplify(Grid_Generator_System& gs,
 		       Dimension_Kinds& dim_kinds);
 
   //! Reduces the line \p row using the line \p pivot.
@@ -2435,7 +2435,7 @@ private:
 			       const Dimension_Kinds& dim_kinds);
 
   //! If \p sys is upper triangular return true, else return false.
-  static bool upper_triangular(const Generator_System& sys,
+  static bool upper_triangular(const Grid_Generator_System& sys,
 			       const Dimension_Kinds& dim_kinds);
 
   //@} // Minimization-Related Static Member Functions
@@ -2448,10 +2448,10 @@ protected:
 
   void throw_topology_incompatible(const char* method,
 				   const char* g_name,
-				   const Generator& g) const;
+				   const Grid_Generator& g) const;
   void throw_topology_incompatible(const char* method,
 				   const char* gs_name,
-				   const Generator_System& gs) const;
+				   const Grid_Generator_System& gs) const;
 
   void throw_dimension_incompatible(const char* method,
 				    const char* other_name,
@@ -2470,7 +2470,7 @@ protected:
 				    const Constraint& c) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* g_name,
-				    const Generator& g) const;
+				    const Grid_Generator& g) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* cgs_name,
 				    const Congruence_System& cgs) const;
@@ -2479,7 +2479,7 @@ protected:
 				    const Constraint_System& cs) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* gs_name,
-				    const Generator_System& gs) const;
+				    const Grid_Generator_System& gs) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* var_name,
 				    const Variable var) const;

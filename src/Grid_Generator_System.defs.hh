@@ -1,4 +1,4 @@
-/* Generator_System class declaration.
+/* Grid_Generator_System class declaration.
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,31 +20,30 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Generator_System_defs_hh
-#define PPL_Generator_System_defs_hh 1
+#ifndef PPL_Grid_Generator_System_defs_hh
+#define PPL_Grid_Generator_System_defs_hh 1
 
-#include "Generator_System.types.hh"
+// FIX
 #include "Grid_Generator_System.types.hh"
-#include "Linear_Expression.types.hh"
-#include "Linear_System.defs.hh"
-#include "Generator.types.hh"
-#include "Constraint.types.hh"
+#include "Generator_System.defs.hh"
+#include "Grid_Generator.types.hh"
 #include "Polyhedron.types.hh"
-#include "Poly_Con_Relation.defs.hh"
-#include "Grid.types.hh" // FIX temp
+//#include "Grid.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
+
+// FIX --
 
 namespace IO_Operators {
 
 //! Output operator.
 /*!
-  \relates Parma_Polyhedra_Library::Generator_System
+  \relates Parma_Polyhedra_Library::Grid_Generator_System
   Writes <CODE>false</CODE> if \p gs is empty.  Otherwise, writes on
   \p s the generators of \p gs, all in one row and separated by ", ".
 */
-std::ostream& operator<<(std::ostream& s, const Generator_System& gs);
+std::ostream& operator<<(std::ostream& s, const Grid_Generator_System& gs);
 
 } // namespace IO_Operators
 
@@ -58,15 +57,18 @@ bool operator==(const Polyhedron& x, const Polyhedron& y);
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Generator_System */
-void swap(Parma_Polyhedra_Library::Generator_System& x,
-	  Parma_Polyhedra_Library::Generator_System& y);
+/*! \relates Parma_Polyhedra_Library::Grid_Generator_System */
+void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
+	  Parma_Polyhedra_Library::Grid_Generator_System& y);
 
 } // namespace std
 
-//! A system of generators.
+//--FIX
+
+//FIX
+//! A system of grid generators.
 /*!
-    An object of the class Generator_System is a system of generators,
+    An object of the class Grid_Generator_System is a system of generators,
     i.e., a multiset of objects of the class Generator
     (lines, rays, points and closure points).
     When inserting generators in a system, space dimensions are automatically
@@ -91,7 +93,7 @@ void swap(Parma_Polyhedra_Library::Generator_System& x,
     as the \f$x\f$ axis (i.e., the first Cartesian axis)
     in \f$\Rset^2\f$:
     \code
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(line(x + 0*y));
     \endcode
     As said above, this system of generators corresponds to
@@ -118,7 +120,7 @@ void swap(Parma_Polyhedra_Library::Generator_System& x,
     The following code builds a ray having the same direction as
     the positive part of the \f$x\f$ axis in \f$\Rset^2\f$:
     \code
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(ray(x + 0*y));
     \endcode
     To define a system of generators indeed corresponding to the set
@@ -139,7 +141,7 @@ void swap(Parma_Polyhedra_Library::Generator_System& x,
     and corresponding to a square in \f$\Rset^2\f$
     (the same as Example 1 for the system of constraints):
     \code
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(point(0*x + 3*y));
   gs.insert(point(3*x + 0*y));
@@ -153,7 +155,7 @@ void swap(Parma_Polyhedra_Library::Generator_System& x,
     Note that a supporting point is needed and, for that purpose,
     any inner point could be considered.
     \code
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point(x + y));
   gs.insert(closure_point(0*x + 0*y));
   gs.insert(closure_point(0*x + 3*y));
@@ -166,7 +168,7 @@ void swap(Parma_Polyhedra_Library::Generator_System& x,
     and a ray, corresponding to a half-strip in \f$\Rset^2\f$
     (the same as Example 2 for the system of constraints):
     \code
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(point(0*x + 1*y));
   gs.insert(ray(x - y));
@@ -180,28 +182,13 @@ void swap(Parma_Polyhedra_Library::Generator_System& x,
     will be available, where original generators may have been
     reordered, removed (if they are duplicate or redundant), etc.
 */
-class Parma_Polyhedra_Library::Generator_System : private Linear_System {
+class Parma_Polyhedra_Library::Grid_Generator_System : private Generator_System {
 public:
   //! Default constructor: builds an empty system of generators.
-  Generator_System();
+  Grid_Generator_System();
 
   //! Builds the singleton system containing only generator \p g.
-  explicit Generator_System(const Generator& g);
-
-  //! Ordinary copy-constructor.
-  Generator_System(const Generator_System& gs);
-
-  //! Destructor.
-  ~Generator_System();
-
-  //! Assignment operator.
-  Generator_System& operator=(const Generator_System& y);
-
-  //! Returns the maximum space dimension a Generator_System can handle.
-  static dimension_type max_space_dimension();
-
-  //! Returns the dimension of the vector space enclosing \p *this.
-  dimension_type space_dimension() const;
+  explicit Grid_Generator_System(const Generator& g);
 
   //! \brief
   //! Removes all the generators from the generator system
@@ -211,40 +198,36 @@ public:
   //! \brief
   //! Inserts in \p *this a copy of the generator \p g,
   //! increasing the number of space dimensions if needed.
+  void insert(const Grid_Generator& g);
+
+  // FIX this could go if grid_point... made compulsory
+  //! \brief
+  //! Inserts in \p *this a copy of the polyhedron generator \p g,
+  //! increasing the number of space dimensions if needed.
   void insert(const Generator& g);
 
-  //! \brief
-  //! Returns the singleton system containing only
-  //! Generator::zero_dim_point().
-  static const Generator_System& zero_dim_univ();
-
-  //! An iterator over a system of generators
+  //! An iterator over a system of grid generators
   /*!
       A const_iterator is used to provide read-only access
-      to each generator contained in an object of Generator_System.
+      to each generator contained in an object of Grid_Generator_System.
 
       \par Example
       The following code prints the system of generators
-      of the polyhedron <CODE>ph</CODE>:
+      of the grid <CODE>gr</CODE>:
       \code
-  const Generator_System& gs = ph.generators();
-  for (Generator_System::const_iterator i = gs.begin(),
+  const Grid_Generator_System& gs = gr.generators();
+  for (Grid_Generator_System::const_iterator i = gs.begin(),
          gs_end = gs.end(); i != gs_end; ++i)
     cout << *i << endl;
       \endcode
       The same effect can be obtained more concisely by using
       more features of the STL:
       \code
-  const Generator_System& gs = ph.generators();
-  copy(gs.begin(), gs.end(), ostream_iterator<Generator>(cout, "\n"));
+  const Generator_System& gs = gr.generators();
+  copy(gs.begin(), gs.end(), ostream_iterator<Grid_Generator>(cout, "\n"));
       \endcode
   */
-  class const_iterator
-    : public std::iterator<std::forward_iterator_tag,
-				Generator,
-				void,
-			   	const Generator*,
-		   		const Generator&> {
+  class const_iterator : private Generator_System::const_iterator {
   public:
     //! Default constructor.
     const_iterator();
@@ -281,22 +264,10 @@ public:
     bool operator!=(const const_iterator& y) const;
 
   private:
-    friend class Generator_System;
+    friend class Grid_Generator_System;
 
-    //! The const iterator over the Linear_System.
-    Linear_System::const_iterator i;
-
-    //! A const pointer to the Linear_System.
-    const Linear_System* gsp;
-
-    //! Constructor.
-    const_iterator(const Linear_System::const_iterator& iter,
-		   const Generator_System& gsys);
-
-    //! \brief
-    //! \p *this skips to the next generator, skipping those
-    //! closure points that are immediately followed by a matching point.
-    void skip_forward();
+    //! Copy-constructor from Generator_System::const_iterator.
+    const_iterator(const Generator_System::const_iterator& y);
   };
 
   //! \brief
@@ -308,13 +279,63 @@ public:
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
-  //! Checks if all the invariants are satisfied.
-  /*!
-    Returns <CODE>true</CODE> if and only if \p *this is a valid
-    Linear_System and each row in the system is a valid Generator.
-  */
-  bool OK() const;
+  //! Swaps \p *this with \p y.
+  void swap(Grid_Generator_System& y);
 
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Assigns to a given variable an affine expression.
+  /*!
+    \param v
+    Index of the column to which the affine transformation is assigned;
+
+    \param expr
+    The numerator of the affine transformation:
+    \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$;
+
+    \param denominator
+    The denominator of the affine transformation;
+
+    We want to allow affine transformations (see the Introduction) having
+    any rational coefficients. Since the coefficients of the
+    constraints are integers we must also provide an integer \p denominator
+    that will be used as denominator of the affine transformation.
+    The denominator is required to be a positive integer.
+
+    The affine transformation assigns to each element of \p v -th
+    column the follow expression:
+    \f[
+      \frac{\sum_{i = 0}^{n - 1} a_i x_i + b}
+           {\mathrm{denominator}}.
+    \f]
+
+    \p expr is a constant parameter and unaltered by this computation.
+  */
+  void affine_image(dimension_type v,
+		    const Linear_Expression& expr,
+		    Coefficient_traits::const_reference denominator,
+		    bool grid = false);
+
+  //! Returns the number of rows of the system.
+  dimension_type num_rows() const;
+
+  //! Returns the number of rays in the system.
+  dimension_type num_rays() const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this contains one
+  //! or more points.
+  bool has_points() const;
+
+  //! Returns the \p k- th generator of the system.
+  Grid_Generator& operator[](dimension_type k);
+
+  //! Returns a constant reference to the \p k- th generator of the system.
+  const Grid_Generator& operator[](dimension_type k) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
@@ -343,166 +364,23 @@ public:
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
-  //! Returns the total size in bytes of the memory occupied by \p *this.
-  memory_size_type total_memory_in_bytes() const;
-
-  //! Returns the size in bytes of the memory managed by \p *this.
-  memory_size_type external_memory_in_bytes() const;
-
-  //! Swaps \p *this with \p y.
-  void swap(Generator_System& y);
+  //! Checks if all the invariants are satisfied.
+  /*!
+    Returns <CODE>true</CODE> if and only if \p *this is a valid
+    Linear_System and each row in the system is a valid Grid_Generator.
+  */
+  bool OK() const;
 
 private:
-  friend class const_iterator;
-  friend class Parma_Polyhedra_Library::Polyhedron;
-  friend class Parma_Polyhedra_Library::Grid; // FIX temp
-  friend class Parma_Polyhedra_Library::Grid_Generator_System;
-
-  friend bool
-  Parma_Polyhedra_Library::operator==(const Polyhedron& x,
-				      const Polyhedron& y);
+  friend class Parma_Polyhedra_Library::Grid;
 
   //! Builds an empty system of generators having the specified topology.
-  explicit Generator_System(Topology topol);
+  explicit Grid_Generator_System(Topology topol);
 
-  //! \brief
-  //! Builds a system of \p n_rows rays/points on a \p n_columns - 1
-  //! dimensional space (including the \f$\epsilon\f$ dimension, if
-  //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
-  Generator_System(Topology topol,
-		   dimension_type n_rows, dimension_type n_columns);
-
-  //! \brief
-  //! Adjusts \p *this so that it matches the topology and
-  //! the number of space dimensions given as parameters
-  //! (adding or removing columns if needed).
-  //! Returns <CODE>false</CODE> if and only if \p topol is
-  //! equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
-  //! contains closure points.
-  bool adjust_topology_and_space_dimension(Topology topol,
-					   dimension_type num_dimensions);
-
-  //! \brief
-  //! For each unmatched closure point in \p *this, adds the
-  //! corresponding point.
-  /*!
-    It is assumed that the topology of \p *this
-    is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
-  */
-  void add_corresponding_points();
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! contains one or more points.
-  bool has_points() const;
-
-  //! \brief
-  //! For each unmatched point in \p *this, adds the corresponding
-  //! closure point.
-  /*!
-    It is assumed that the topology of \p *this
-    is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
-  */
-  void add_corresponding_closure_points();
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! contains one or more closure points.
-  /*!
-    Note: the check for the presence of closure points is
-    done under the point of view of the user. Namely, we scan
-    the generator system using high-level iterators, so that
-    closure points that are matching the corresponding points
-    will be disregarded.
-  */
-  bool has_closure_points() const;
-
-  //! Returns the \p k- th generator of the system.
-  Generator& operator[](dimension_type k);
-
-  //! Returns a constant reference to the \p k- th generator of the system.
-  const Generator& operator[](dimension_type k) const;
-
-  //! \brief
-  //! Returns the relations holding between the generator system
-  //! and the constraint \p c.
-  Parma_Polyhedra_Library::Poly_Con_Relation
-  relation_with(const Constraint& c) const;
-
-  //! Returns <CODE>true</CODE> if all the generators satisfy \p c.
-  bool satisfied_by_all_generators(const Constraint& c) const;
-
-  //! Returns <CODE>true</CODE> if all the generators satisfy \p c.
-  /*!
-    It is assumed that <CODE>c.is_necessarily_closed()</CODE> holds.
-  */
-  bool satisfied_by_all_generators_C(const Constraint& c) const;
-
-  //! Returns <CODE>true</CODE> if all the generators satisfy \p c.
-  /*!
-    It is assumed that <CODE>c.is_necessarily_closed()</CODE> does not hold.
-  */
-  bool satisfied_by_all_generators_NNC(const Constraint& c) const;
-
-  //! Assigns to a given variable an affine expression.
-  /*!
-    \param v
-    Index of the column to which the affine transformation is assigned;
-
-    \param expr
-    The numerator of the affine transformation:
-    \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$;
-
-    \param denominator
-    The denominator of the affine transformation.
-
-    We want to allow affine transformations (see the Introduction) having
-    any rational coefficients. Since the coefficients of the
-    constraints are integers we must also provide an integer \p denominator
-    that will be used as denominator of the affine transformation.
-    The denominator is required to be a positive integer.
-
-    The affine transformation assigns to each element of \p v -th
-    column the follow expression:
-    \f[
-      \frac{\sum_{i = 0}^{n - 1} a_i x_i + b}
-           {\mathrm{denominator}}.
-    \f]
-
-    \p expr is a constant parameter and unaltered by this computation.
-  */
-  void affine_image(dimension_type v,
-		    const Linear_Expression& expr,
-		    Coefficient_traits::const_reference denominator);
-
-  //! Returns the number of lines of the system.
-  dimension_type num_lines() const;
-
-  //! Returns the number of rays of the system.
-  dimension_type num_rays() const;
-
-  //! Removes all the invalid lines and rays.
-  /*!
-    The invalid lines and rays are those with all
-    the homogeneous terms set to zero.
-  */
-  void remove_invalid_lines_and_rays();
-
-  //! \brief
-  //! Applies Gaussian's elimination and back-substitution so as
-  //! to provide a partial simplification of the system of generators.
-  /*!
-    It is assumed that the system has no pending generators.
-  */
-  void simplify();
-
-  //! \brief
-  //! Inserts in \p *this a copy of the generator \p g,
-  //! increasing the number of space dimensions if needed.
-  //! It is a pending generator.
-  void insert_pending(const Generator& g);
+  //! Sets the sortedness flag of the system to \p b.
+  void set_sorted(bool b);
 };
 
-// Generator_System.inlines.hh is not included here on purpose.
+// Grid_Generator_System.inlines.hh is not included here on purpose.
 
-#endif // !defined(PPL_Generator_System_defs_hh)
+#endif // !defined(PPL_Grid_Generator_System_defs_hh)

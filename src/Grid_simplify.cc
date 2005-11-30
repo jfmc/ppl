@@ -327,7 +327,7 @@ rows_are_zero(Matrix& system, dimension_type first,
 #endif
 
 bool
-Grid::simplify(Generator_System& sys, Dimension_Kinds& dim_kinds) {
+Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   TRACE(cerr << "==== simplify (reduce) gs:" << endl);
   TRACE(cerr << "sys:" << endl);
   TRACE(sys.ascii_dump(cerr));
@@ -446,7 +446,7 @@ Grid::simplify(Generator_System& sys, Dimension_Kinds& dim_kinds) {
 
     sys.unset_pending_rows();
 
-    assert(sys.OK(false));
+    assert(sys.OK());
 
     TRACE(cerr << "---- simplify (reduce) gs done." << endl);
     return false;
@@ -456,7 +456,7 @@ Grid::simplify(Generator_System& sys, Dimension_Kinds& dim_kinds) {
   sys.set_sorted(false);
   sys.unset_pending_rows();
 
-  assert(sys.OK(false));
+  assert(sys.OK());
   TRACE(cerr << "---- simplify (reduce) gs done (empty)." << endl);
   return true;
 }

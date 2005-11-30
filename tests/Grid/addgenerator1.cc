@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-#define find_variation find_variation_template<Grid>
-
 // grid1.cc also tests add_generator_and_minimize.
 
 // One dimension.
@@ -125,14 +123,14 @@ test4() {
   Variable A(0);
   Variable B(1);
 
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(closure_point(3*A, 4));
   gs.insert(point(7*A, 4));
   gs.insert(line(A - B));
 
   Grid gr(2, EMPTY);
 
-  for (Generator_System::const_iterator i = gs.begin(),
+  for (Grid_Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
     if (!(*i).is_closure_point())
       gr.add_generator(*i);

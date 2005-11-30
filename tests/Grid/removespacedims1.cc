@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-#define find_variation find_variation_template<Grid>
-
 namespace {
 
 Variable A(0);
@@ -128,7 +126,7 @@ void
 test4() {
   nout << "test4:" << endl;
 
-  Generator_System gs;
+  Grid_Generator_System gs;
   gs.insert(point(0*A));
   gs.insert(point(2*A));
   gs.insert(point(3*B));
@@ -179,7 +177,7 @@ test5() {
   if (find_variation(gr))
     exit(1);
 
-  Generator_System known_gs;
+  Grid_Generator_System known_gs;
   known_gs.insert(point());
   known_gs.insert( line(2*A - B));
   known_gs.insert(point(3*B, 2));

@@ -33,7 +33,7 @@ namespace PPL = Parma_Polyhedra_Library;
 // Used for add_space_dimensions_and_embed.
 inline void
 PPL::Grid::add_space_dimensions(Congruence_System& cgs,
-				Generator_System& gs,
+				Grid_Generator_System& gs,
 				dimension_type dims) {
   assert(cgs.num_columns() - 1 == gs.num_columns());
   assert(dims > 0);
@@ -53,7 +53,7 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
   dimension_type col_num = gs.num_columns() - dims;
   for (dimension_type row_num = num_rows - dims;
        row_num < num_rows; ++row_num, ++col_num) {
-    Generator& gen = gs[row_num];
+    Grid_Generator& gen = gs[row_num];
     gen[col_num] = 1;
   }
   gen_sys.unset_pending_rows();
@@ -61,7 +61,7 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
 
 // Used for add_space_dimensions_and_project.
 inline void
-PPL::Grid::add_space_dimensions(Generator_System& gs,
+PPL::Grid::add_space_dimensions(Grid_Generator_System& gs,
 				Congruence_System& cgs,
 				dimension_type dims) {
   assert(cgs.num_columns() - 1 == gs.num_columns());
@@ -159,7 +159,7 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
     dimension_type col_num = gen_sys.num_columns() - m;
     for (dimension_type row_num = num_rows - m;
 	 row_num < num_rows; ++row_num, ++col_num) {
-      Generator& gen = gen_sys[row_num];
+      Grid_Generator& gen = gen_sys[row_num];
       gen[col_num] = 1;
     }
     // The grid does not support pending rows.

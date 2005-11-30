@@ -26,8 +26,6 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 typedef Polyhedra_Powerset<Grid> GSet;
 
-#define find_variation find_variation_template<GSet>
-
 namespace {
 
 Variable A(0);

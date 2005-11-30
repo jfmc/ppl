@@ -36,7 +36,7 @@ Variable F(5);
 
 void
 check_both(Grid& gr, Linear_Expression& le, string grid_name) {
-  Generator ext_pnt(point());
+  Grid_Generator ext_pnt(point());
   bool dummy;
   Coefficient ext_n, ext_d;
 
@@ -50,8 +50,8 @@ check_both(Grid& gr, Linear_Expression& le, string grid_name) {
 void
 check_minimize(Grid& gr, Linear_Expression& le,
 	       Coefficient expected_n, Coefficient expected_d,
-	       Generator& expected_pnt, string grid_name) {
-  Generator inf_pnt(point());
+	       Grid_Generator& expected_pnt, string grid_name) {
+  Grid_Generator inf_pnt(point());
 
   bool dummy;
   Coefficient inf_n, inf_d;
@@ -79,8 +79,8 @@ check_minimize(Grid& gr, Linear_Expression& le,
 void
 check_maximize(Grid& gr, Linear_Expression& le,
 	       Coefficient expected_n, Coefficient expected_d,
-	       Generator& expected_pnt, string grid_name) {
-  Generator sup_pnt(point());
+	       Grid_Generator& expected_pnt, string grid_name) {
+  Grid_Generator sup_pnt(point());
 
   bool dummy;
   Coefficient sup_n, sup_d;
@@ -115,7 +115,7 @@ test1() {
 
   Coefficient extr_n, extr_d;
   bool dummy;
-  Generator pnt(point());
+  Grid_Generator pnt(point());
 
   if (gr.maximize(Linear_Expression(0), extr_n, extr_d, dummy, pnt)
       || gr.minimize(Linear_Expression(0), extr_n, extr_d, dummy, pnt))
@@ -145,7 +145,7 @@ test3() {
 
   Linear_Expression le = Linear_Expression::zero();
 
-  Generator exp_pnt(point());
+  Grid_Generator exp_pnt(point());
 
   check_maximize(gr, le, 0, 1, exp_pnt, "gr");
   check_minimize(gr, le, 0, 1, exp_pnt, "gr");
@@ -172,7 +172,7 @@ test4() {
 
   Linear_Expression le = A + B;
 
-  Generator exp_pnt(point(3*A + 2*B, 3));
+  Grid_Generator exp_pnt(point(3*A + 2*B, 3));
 
   check_maximize(gr_gs_min, le, 5, 3, exp_pnt, "gr_gs_min");
   check_minimize(gr_gs_min, le, 5, 3, exp_pnt, "gr_gs_min");
@@ -260,7 +260,7 @@ test7() {
 
   Linear_Expression le = 2*A - B;
 
-  Generator exp_pnt(point(0*B));
+  Grid_Generator exp_pnt(point(0*B));
 
   check_maximize(gr_gs_min, le, 0, 1, exp_pnt, "gr_gs_min");
   check_minimize(gr_gs_min, le, 0, 1, exp_pnt, "gr_gs_min");
@@ -295,7 +295,7 @@ test8() {
 
   Linear_Expression le = 2*A - B;
 
-  Generator exp_pnt(point(0*B));
+  Grid_Generator exp_pnt(point(0*B));
 
   check_maximize(gr_gs_min, le, 0, 1, exp_pnt, "gr_gs_min");
   check_minimize(gr_gs_min, le, 0, 1, exp_pnt, "gr_gs_min");
@@ -390,7 +390,7 @@ test11() {
 
   Linear_Expression le = 2*A + B - 3*C;
 
-  Generator exp_pnt1(point(2*B + 0*C));
+  Grid_Generator exp_pnt1(point(2*B + 0*C));
 
   check_maximize(gr_gs_min, le, 2, 1, exp_pnt1, "gr_gs_min");
   check_minimize(gr_gs_min, le, 2, 1, exp_pnt1, "gr_gs_min");
@@ -398,7 +398,7 @@ test11() {
   check_maximize(gr_gs_needs_min, le, 2, 1, exp_pnt1, "gr_gs_needs_min");
   check_minimize(gr_gs_needs_min, le, 2, 1, exp_pnt1, "gr_gs_needs_min");
 
-  Generator exp_pnt2(point(-2*C, 3));
+  Grid_Generator exp_pnt2(point(-2*C, 3));
 
   check_maximize(gr_cgs_needs_min, le, 2, 1, exp_pnt2, "gr_cgs_needs_min");
   check_minimize(gr_cgs_needs_min, le, 2, 1, exp_pnt2, "gr_cgs_needs_min");
@@ -429,7 +429,7 @@ test12() {
 
   Linear_Expression le = A + 2*B + 3*C + 4*D + 6*F;
 
-  Generator exp_pnt(point(7*A - 11*B + 19*F));
+  Grid_Generator exp_pnt(point(7*A - 11*B + 19*F));
 
   check_maximize(gr_gs_min, le, 99, 1, exp_pnt, "gr_gs_min");
   check_minimize(gr_gs_min, le, 99, 1, exp_pnt, "gr_gs_min");
