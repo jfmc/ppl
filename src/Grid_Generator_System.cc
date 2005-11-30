@@ -219,9 +219,9 @@ PPL::Grid_Generator_System::OK() const {
     return false;
 
   // Checking each generator in the system.
-  const Generator_System& x = *this;
+  const Grid_Generator_System& x = *this;
   for (dimension_type i = num_rows(); i-- > 0; )
-    if (!x[i].OK(false))
+    if (!x[i].OK())
       return false;
 
   // All checks passed.
