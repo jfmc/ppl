@@ -763,7 +763,7 @@ public:
   /*!
     \param y
     A BDS that <EM>must</EM> be contained in \p *this.
-    
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
 
