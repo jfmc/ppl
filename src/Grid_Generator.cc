@@ -46,3 +46,53 @@ PPL::IO_Operators::operator<<(std::ostream& s,
   s << n;
   return s;
 }
+
+bool
+PPL::Grid_Generator::OK() const {
+  const Grid_Generator& g = *this;
+
+  if (!is_necessarily_closed()) {
+#ifndef NDEBUG
+    std::cerr << "Grid_Generator should be necessarily closed." << std::endl;
+#endif
+    return false;
+  }
+
+  // Topology consistency check.
+  if (size() < 1) {
+#ifndef NDEBUG
+    std::cerr << "Grid_Generator has fewer coefficients than the minimum "
+	      << "allowed:" << std::endl
+	      << "size is " << size() << ", minimum is 1." << std::endl;
+#endif
+    return false;
+  }
+
+  switch (g.type()) {
+  case Grid_Generator::LINE:
+    // Intentionally fall through.
+  case Grid_Generator::PARAMETER:
+    if (g[0] != 0) {
+#ifndef NDEBUG
+      std::cerr << "Lines and parameters must have a zero inhomogeneous term!"
+		<< std::endl;
+#endif
+      return false;
+    }
+    break;
+
+  case Grid_Generator::POINT:
+    if (g[0] <= 0) {
+#ifndef NDEBUG
+      std::cerr << "Points must have a positive divisor!"
+		<< std::endl;
+#endif
+      return false;
+    }
+    break;
+
+  }
+
+  // All tests passed.
+  return true;
+}

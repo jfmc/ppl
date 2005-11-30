@@ -288,6 +288,9 @@ public:
   */
   bool is_equivalent_to(const Grid_Generator& y) const;
 
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
   //! Swaps \p *this with \p y.
   void swap(Grid_Generator& y);
 
