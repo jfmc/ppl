@@ -367,13 +367,7 @@ public:
   bool is_equivalent_to(const Generator& y) const;
 
   //! Checks if all the invariants are satisfied.
-  /*!
-      \param polyhedron
-      If <CODE>true</CODE> then \p *this is considered a Polyhedron
-      generator system, otherwise it is treated as if it could be for
-      either one of a Grid or a Polyedron.
-  */
-  bool OK(bool polyhedron = true) const;
+  bool OK() const;
 
   //! Swaps \p *this with \p y.
   void swap(Generator& y);

@@ -288,7 +288,7 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
 
 
 bool
-PPL::Generator::OK(bool polyhedron) const {
+PPL::Generator::OK() const {
   const Generator& g = *this;
 
   // Topology consistency check.
@@ -306,16 +306,14 @@ PPL::Generator::OK(bool polyhedron) const {
   }
 
   // Normalization check.
-  if (polyhedron) {
-    Generator tmp = g;
-    tmp.strong_normalize();
-    if (tmp != g) {
+  Generator tmp = g;
+  tmp.strong_normalize();
+  if (tmp != g) {
 #ifndef NDEBUG
-      std::cerr << "Generators should be strongly normalized!"
-		<< std::endl;
+    std::cerr << "Generators should be strongly normalized!"
+	      << std::endl;
 #endif
-      return false;
-    }
+    return false;
   }
 
   switch (g.type()) {
@@ -337,16 +335,15 @@ PPL::Generator::OK(bool polyhedron) const {
 #endif
       return false;
     }
-    if (polyhedron)
-      // The following test is correct, since we already checked
-      // that the epsilon coordinate is zero.
-      if (g.all_homogeneous_terms_are_zero()) {
+    // The following test is correct, since we already checked
+    // that the epsilon coordinate is zero.
+    if (g.all_homogeneous_terms_are_zero()) {
 #ifndef NDEBUG
-	std::cerr << "The origin of the vector space cannot be a line or a ray!"
-		  << std::endl;
+      std::cerr << "The origin of the vector space cannot be a line or a ray!"
+		<< std::endl;
 #endif
-	return false;
-      }
+      return false;
+    }
     break;
 
   case POINT:
