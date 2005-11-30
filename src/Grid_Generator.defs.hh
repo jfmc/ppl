@@ -24,7 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Grid_Generator_defs_hh 1
 
 #include "Grid_Generator.types.hh"
-#include "Grid.types.hh" // FIX temp
+// FIX temp
+#include "Grid.types.hh"
 #include "Generator.defs.hh"
 #include <iosfwd>
 
