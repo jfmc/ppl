@@ -281,6 +281,7 @@ simplex.cc \
 Generator_System.cc \
 Grid_Generator_System.cc \
 Generator.cc \
+Grid_Generator.cc \
 Init.cc \
 Coefficient.cc \
 Interval.cc \

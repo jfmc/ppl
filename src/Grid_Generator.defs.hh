@@ -23,8 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Grid_Generator_defs_hh
 #define PPL_Grid_Generator_defs_hh 1
 
-// FIX
 #include "Grid_Generator.types.hh"
+#include "Grid.types.hh" // FIX temp
 #include "Generator.defs.hh"
 #include <iosfwd>
 
@@ -230,8 +230,21 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   the notion of <EM>coefficient</EM> with the notion of <EM>coordinate</EM>:
   these are equivalent only when the divisor of the (closure) point is 1.
 */
-class Parma_Polyhedra_Library::Grid_Generator : public Generator {
+class Parma_Polyhedra_Library::Grid_Generator : private Generator {
 public:
+  //! The generator type.
+  enum Type {
+    /*! The generator is a line. */
+    LINE,
+    /*! The generator is a parameter. */
+    PARAMETER,
+    /*! The generator is a point. */
+    POINT
+  };
+
+  //! Returns the generator type of \p *this.
+  Type type() const;
+
   //! Returns the line of direction \p e.
   /*!
     \exception std::invalid_argument
@@ -267,13 +280,28 @@ public:
   //! Assignment operator.
   Grid_Generator& operator=(const Generator& g);
 
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this and \p y
+  //! are equivalent generators.
+  /*!
+    Generators having different space dimensions are not equivalent.
+  */
+  bool is_equivalent_to(const Grid_Generator& y) const;
+
+  //! Swaps \p *this with \p y.
+  void swap(Grid_Generator& y);
+
 //private: //FIX
   //! \brief
   //! Constructs from Polyhedron generator \p g, stealing the
   //! coefficients from \p g.
   Grid_Generator(Generator g);
 
-private: // FIX
+private: // FIX (above)
+  friend class Grid;  // FIX temp
+  friend std::ostream&
+  IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g);
+
   friend class Grid_Generator_System;
   friend class Scalar_Products;
   friend class Topology_Adjusted_Scalar_Product_Sign;

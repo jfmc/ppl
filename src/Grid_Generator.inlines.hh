@@ -37,6 +37,21 @@ Grid_Generator::Grid_Generator(Generator g)
   : Generator(g) {
 }
 
+inline Grid_Generator::Type
+Grid_Generator::type() const {
+  switch (Generator::type()) {
+  case Generator::POINT:
+    return POINT;
+  case Generator::RAY:
+    return PARAMETER;
+  case Generator::LINE:
+    return LINE;
+  case Generator::CLOSURE_POINT:
+  default:
+    assert(false);
+  }
+}
+
 inline Grid_Generator&
 Grid_Generator::operator=(const Grid_Generator& g) {
   Generator::operator=(g);
@@ -47,6 +62,17 @@ inline Grid_Generator&
 Grid_Generator::operator=(const Generator& g) {
   Generator::operator=(g);
   return *this;
+}
+
+inline bool
+Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
+  return Generator::is_equivalent_to(y);
+}
+
+  //! Swaps \p *this with \p y.
+inline void
+Grid_Generator::swap(Grid_Generator& y) {
+  Generator::swap(y);
 }
 
 /*! \relates Grid_Generator */

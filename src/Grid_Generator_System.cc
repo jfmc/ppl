@@ -187,20 +187,16 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
 
     // Checking for equality of actual and declared types.
     switch (x[i].type()) {
-    case Generator::LINE:
+    case Grid_Generator::LINE:
       if (str == "L")
 	continue;
       break;
-    case Generator::RAY:
+    case Grid_Generator::PARAMETER:
       if (str == "R")
 	continue;
       break;
-    case Generator::POINT:
+    case Grid_Generator::POINT:
       if (str == "P")
-	continue;
-      break;
-    case Generator::CLOSURE_POINT:
-      if (str == "C")
 	continue;
       break;
     }
