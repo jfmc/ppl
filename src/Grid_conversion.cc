@@ -153,7 +153,7 @@ Grid::multiply_grid(const Coefficient& multiplier, Congruence& cg,
   }
 }
 
-// TODO: Rename the next two methods convert and this file
+// TODO: Rename the next two methods to convert and this file
 //       Grid_convert.cc (and equivalently for Polyhedron) to use
 //       verbs consistently as function and method names.
 
