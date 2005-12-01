@@ -38,7 +38,7 @@ add_congruence(Grid& gr, const Congruence& cg) {
 }
 
 void
-add_generator(Grid& gr, const Generator& g) {
+add_generator(Grid& gr, const Grid_Generator& g) {
   const memory_size_type gr_memory_before = gr.total_memory_in_bytes();
   const memory_size_type g_memory = g.total_memory_in_bytes();
   gr.add_generator(g);
