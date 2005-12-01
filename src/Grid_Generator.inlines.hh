@@ -100,6 +100,16 @@ Grid_Generator::divisor() const {
   return Generator::operator[](0);
 }
 
+inline memory_size_type
+Grid_Generator::total_memory_in_bytes() const {
+  return Generator::total_memory_in_bytes();
+}
+
+inline memory_size_type
+Grid_Generator::external_memory_in_bytes() const {
+  return Generator::external_memory_in_bytes();
+}
+
 inline bool
 Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
   return Generator::is_equivalent_to(y);

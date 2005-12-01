@@ -305,6 +305,14 @@ public:
   Coefficient_traits::const_reference divisor() const;
 
   //! \brief
+  //! Returns a lower bound to the total size in bytes of the memory
+  //! occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this and \p y
   //! are equivalent generators.
   /*!
