@@ -92,7 +92,7 @@ Grid::upper_triangular(const Grid_Generator_System& sys,
     --num_cols;
     if (dim_kinds[num_cols] == GEN_VIRTUAL)
       continue;
-    const Generator& gen = sys[--row];
+    const Grid_Generator& gen = sys[--row];
     // Check diagonal.
     if (gen[num_cols] == 0)
       return false;
