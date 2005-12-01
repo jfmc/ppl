@@ -46,6 +46,8 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
   if (congruences_are_minimized() || generators_are_minimized())
     dim_kinds.resize(tem + dims, CON_VIRTUAL /* a.k.a. LINE */);
 
+  gs.add_universe_rows_and_columns(dims);
+#if 0 // FIX
   gs.add_zero_rows_and_columns(dims, dims,
 			       Linear_Row::Flags(NECESSARILY_CLOSED,
 						 Linear_Row::LINE_OR_EQUALITY));
@@ -54,8 +56,9 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
   for (dimension_type row_num = num_rows - dims;
        row_num < num_rows; ++row_num, ++col_num) {
     Grid_Generator& gen = gs[row_num];
-    gen[col_num] = 1;
+    dgen[col_num] = 1;
   }
+#endif
   gen_sys.unset_pending_rows();
 }
 
@@ -151,6 +154,8 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
   else {
     // Only generators are up-to-date, so modify only them.
     assert(generators_are_up_to_date());
+    gen_sys.add_universe_rows_and_columns(m);
+#if 0
     // A very long method invocation follows.
     gen_sys.add_zero_rows_and_columns
       (m, m, Linear_Row::Flags(NECESSARILY_CLOSED,
@@ -162,10 +167,11 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
       Grid_Generator& gen = gen_sys[row_num];
       gen[col_num] = 1;
     }
+#endif
     // The grid does not support pending rows.
     gen_sys.unset_pending_rows();
     if (generators_are_minimized())
-      dim_kinds.resize(col_num, LINE);
+      dim_kinds.resize(gen_sys.num_columns(), LINE);
   }
   // Update the space dimension.
   space_dim += m;
