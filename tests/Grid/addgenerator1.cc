@@ -132,8 +132,7 @@ test4() {
 
   for (Grid_Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
-    if (!(*i).is_closure_point())
-      gr.add_generator(*i);
+    gr.add_generator(*i);
 
   if (find_variation(gr))
     exit(1);
