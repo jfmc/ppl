@@ -175,7 +175,7 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
   Grid_Generator_System& x = *this;
   for (dimension_type i = 0; i < x.num_rows(); ++i) {
     for (dimension_type j = 0; j < x.num_columns(); ++j)
-      if (!(s >> x[i][j]))
+      if (!(s >> const_cast<Coefficient&>(x[i][j])))
 	return false;
 
     if (!(s >> str))
@@ -226,4 +226,16 @@ PPL::Grid_Generator_System::OK() const {
 
   // All checks passed.
   return true;
+}
+
+void
+PPL::Grid_Generator_System
+::add_universe_rows_and_columns(dimension_type dims) {
+  dimension_type col = num_columns();
+  add_zero_rows_and_columns(dims, dims,
+			    Linear_Row::Flags(NECESSARILY_CLOSED,
+					      Linear_Row::LINE_OR_EQUALITY));
+  dimension_type rows = num_rows();
+  for (dimension_type row = rows - dims; row < rows; ++row, ++col)
+    const_cast<Coefficient&>(operator[](row)[col]) = 1;
 }

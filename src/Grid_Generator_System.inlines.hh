@@ -39,6 +39,11 @@ Grid_Generator_System::Grid_Generator_System(const Generator& g)
 }
 
 inline
+Grid_Generator_System::Grid_Generator_System(const Grid_Generator& g)
+  : Generator_System(g) {
+}
+
+inline
 Grid_Generator_System::Grid_Generator_System(Topology topol)
   : Generator_System(topol) {
 }
@@ -80,6 +85,12 @@ Grid_Generator_System::insert(const Generator& g) {
   insert(gg);
 }
 
+inline void
+Grid_Generator_System::add_row(const Grid_Generator& g) {
+  Generator_System::add_row(g);
+}
+
+
 inline
 Grid_Generator_System::const_iterator::const_iterator()
   : Generator_System::const_iterator() {
@@ -101,14 +112,16 @@ Grid_Generator_System::const_iterator::operator=(const const_iterator& y) {
     (Generator_System::const_iterator::operator=(y));
 }
 
-inline const Generator&
+inline const Grid_Generator&
 Grid_Generator_System::const_iterator::operator*() const {
-  return Generator_System::const_iterator::operator*();
+  return static_cast<const Grid_Generator&>
+    (Generator_System::const_iterator::operator*());
 }
 
-inline const Generator*
+inline const Grid_Generator*
 Grid_Generator_System::const_iterator::operator->() const {
-  return Generator_System::const_iterator::operator->();
+  return static_cast<const Grid_Generator*>
+    (Generator_System::const_iterator::operator->());
 }
 
 inline Grid_Generator_System::const_iterator&

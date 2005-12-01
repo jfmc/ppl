@@ -190,14 +190,17 @@ public:
   //! Builds the singleton system containing only generator \p g.
   explicit Grid_Generator_System(const Generator& g);
 
+  //! Builds the singleton system containing only generator \p g.
+  explicit Grid_Generator_System(const Grid_Generator& g);
+
   //! \brief
   //! Removes all the generators from the generator system
   //! and sets its space dimension to 0.
   void clear();
 
   //! \brief
-  //! Inserts in \p *this a copy of the generator \p g,
-  //! increasing the number of space dimensions if needed.
+  //! Inserts in \p *this a copy of the generator \p g, increasing the
+  //! number of space dimensions if needed.
   void insert(const Grid_Generator& g);
 
   // FIX this could go if grid_point... made compulsory
@@ -205,6 +208,9 @@ public:
   //! Inserts in \p *this a copy of the polyhedron generator \p g,
   //! increasing the number of space dimensions if needed.
   void insert(const Generator& g);
+
+  //! Adds a copy of the given Grid_Generator to the system.
+  void add_row(const Grid_Generator& g);
 
   //! An iterator over a system of grid generators
   /*!
@@ -242,10 +248,10 @@ public:
     const_iterator& operator=(const const_iterator& y);
 
     //! Dereference operator.
-    const Generator& operator*() const;
+    const Grid_Generator& operator*() const;
 
     //! Indirect member selector.
-    const Generator* operator->() const;
+    const Grid_Generator* operator->() const;
 
     //! Prefix increment operator.
     const_iterator& operator++();
@@ -379,6 +385,27 @@ private:
 
   //! Sets the sortedness flag of the system to \p b.
   void set_sorted(bool b);
+
+  //! \brief
+  //! Adds \p n rows and \p m columns of zeroes to the matrix,
+  //! initializing the added rows as in the universe generator system.
+  /*!
+    \param n
+    The number of rows to be added: must be strictly positive.
+
+    \param m
+    The number of columns to be added: must be strictly positive.
+
+    \param row_flags
+    Flags for the newly added rows.
+
+    FIX
+    Turns the \f$r \times c\f$ matrix \f$M\f$ into
+    the \f$(r+n) \times (c+m)\f$ matrix
+    \f$\bigl({M \atop 0}{0 \atop 0}\bigr)\f$.
+    The matrix is expanded avoiding reallocation whenever possible.
+  */
+  void add_universe_rows_and_columns(dimension_type dims);
 };
 
 // Grid_Generator_System.inlines.hh is not included here on purpose.
