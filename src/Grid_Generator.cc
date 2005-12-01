@@ -27,6 +27,51 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+void
+PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
+  // Swap one coefficient at a time into *this instead of swapping the
+  // entire row.  This ensures that the row keeps the same capacity.
+  if (y.is_line())
+    set_is_line();
+  else
+    set_is_ray_or_point();
+  for (dimension_type j = size(); j-- > 0; )
+    std::swap(operator[](j), y[j]);
+}
+
+bool
+PPL::Grid_Generator::is_equal_to(const Grid_Generator& y) const {
+  if (type() != y.type())
+    return false;
+  for (dimension_type col = size(); col-- > 0; )
+    if (Generator::operator[](col) != y.Generator::operator[](col))
+      return false;
+  return true;
+}
+
+void
+PPL::Grid_Generator::multiply(Coefficient_traits::const_reference mult,
+			      Coefficient_traits::const_reference div) {
+  if (is_parameter_or_point()) {
+    TEMP_INTEGER(factor);
+    if (is_point()) {
+      factor = mult / divisor();
+      const_cast<Coefficient&>(divisor()) = mult;
+    }
+    else {
+      if (div == 0)
+	return;
+      factor = mult / div;
+    }
+    assert(factor > 0);
+    if (factor > 1) {
+      dimension_type num_cols = size();
+      for (dimension_type col = 1; col < num_cols; ++col)
+	Generator::operator[](col) *= factor;
+    }
+  }
+}
+
 /*! \relates Parma_Polyhedra_Library::Grid_Generator */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s,
@@ -49,11 +94,10 @@ PPL::IO_Operators::operator<<(std::ostream& s,
 
 bool
 PPL::Grid_Generator::OK() const {
-  const Grid_Generator& g = *this;
-
   if (!is_necessarily_closed()) {
 #ifndef NDEBUG
-    std::cerr << "Grid_Generator should be necessarily closed." << std::endl;
+    std::cerr << "Grid_Generator Generator should be necessarily closed."
+	      << std::endl;
 #endif
     return false;
   }
@@ -68,11 +112,11 @@ PPL::Grid_Generator::OK() const {
     return false;
   }
 
-  switch (g.type()) {
+  switch (type()) {
   case Grid_Generator::LINE:
     // Intentionally fall through.
   case Grid_Generator::PARAMETER:
-    if (g[0] != 0) {
+    if (divisor() != 0) {
 #ifndef NDEBUG
       std::cerr << "Lines and parameters must have a zero inhomogeneous term!"
 		<< std::endl;
@@ -82,7 +126,7 @@ PPL::Grid_Generator::OK() const {
     break;
 
   case Grid_Generator::POINT:
-    if (g[0] <= 0) {
+    if (divisor() <= 0) {
 #ifndef NDEBUG
       std::cerr << "Points must have a positive divisor!"
 		<< std::endl;

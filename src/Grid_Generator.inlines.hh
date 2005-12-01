@@ -29,12 +29,18 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Grid_Generator::Grid_Generator(Generator g)
-#if 0 // FIX
+/* // FIX
   : Generator(g,
 	      g.type(),
-	      g.topology() /* FIX */) {
-#endif
+	      g.topology() FIX) {
+*/
   : Generator(g) {
+}
+
+//! Returns the dimension of the vector space enclosing \p *this.
+inline dimension_type
+Grid_Generator::space_dimension() const {
+  return Generator::space_dimension();
 }
 
 inline Grid_Generator::Type
@@ -52,6 +58,31 @@ Grid_Generator::type() const {
   }
 }
 
+inline bool
+Grid_Generator::is_line() const {
+  return Generator::is_line();
+}
+
+inline bool
+Grid_Generator::is_parameter() const {
+  return is_ray();
+}
+
+inline bool
+Grid_Generator::is_line_or_parameter() const {
+  return is_line_or_ray();
+}
+
+inline bool
+Grid_Generator::is_point() const {
+  return Generator::is_point();
+}
+
+inline bool
+Grid_Generator::is_parameter_or_point() const {
+  return is_ray_or_point_or_inequality();
+}
+
 inline Grid_Generator&
 Grid_Generator::operator=(const Grid_Generator& g) {
   Generator::operator=(g);
@@ -64,12 +95,27 @@ Grid_Generator::operator=(const Generator& g) {
   return *this;
 }
 
+inline Coefficient_traits::const_reference
+Grid_Generator::divisor() const {
+  return Generator::operator[](0);
+}
+
 inline bool
 Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
   return Generator::is_equivalent_to(y);
 }
 
-  //! Swaps \p *this with \p y.
+inline void
+Grid_Generator::strong_normalize() {
+  Generator::strong_normalize();
+}
+
+inline bool
+Grid_Generator::all_homogeneous_terms_are_zero() const {
+  return Generator::all_homogeneous_terms_are_zero();
+}
+
+//! Swaps \p *this with \p y.
 inline void
 Grid_Generator::swap(Grid_Generator& y) {
   Generator::swap(y);

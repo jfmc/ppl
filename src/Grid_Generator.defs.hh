@@ -24,9 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Grid_Generator_defs_hh 1
 
 #include "Grid_Generator.types.hh"
-// FIX temp
-#include "Grid.types.hh"
+#include "Grid_Generator_System.defs.hh"
 #include "Generator.defs.hh"
+#include "Grid.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -233,6 +233,9 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
 */
 class Parma_Polyhedra_Library::Grid_Generator : private Generator {
 public:
+  //! Returns the dimension of the vector space enclosing \p *this.
+  dimension_type space_dimension() const;
+
   //! The generator type.
   enum Type {
     /*! The generator is a line. */
@@ -245,6 +248,23 @@ public:
 
   //! Returns the generator type of \p *this.
   Type type() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is a line.
+  bool is_line() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is a parameter.
+  bool is_parameter() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is a line or a parameter.
+  bool is_line_or_parameter() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is a point.
+  bool is_point() const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this row represents
+  //! a parameter or a point.
+  bool is_parameter_or_point() const;
 
   //! Returns the line of direction \p e.
   /*!
@@ -281,6 +301,9 @@ public:
   //! Assignment operator.
   Grid_Generator& operator=(const Generator& g);
 
+  //! Returns the divisor of \p *this, or 0 if \p *this is a line.
+  Coefficient_traits::const_reference divisor() const;
+
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this and \p y
   //! are equivalent generators.
@@ -289,11 +312,41 @@ public:
   */
   bool is_equivalent_to(const Grid_Generator& y) const;
 
+  //! Returns <CODE>true</CODE> if \p *this is exactly equal to \p y.
+  bool is_equal_to(const Grid_Generator& y) const;
+
+  // FIX
+  //! \brief
+  //! Strong normalization: ensures that different Linear_Row objects
+  //! represent different hyperplanes or hyperspaces.
+  /*!
+    Applies both Linear_Row::normalize() and Linear_Row::sign_normalize().
+  */
+  void strong_normalize();
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if all the homogeneous
+  //! terms of \p *this are \f$0\f$.
+  bool all_homogeneous_terms_are_zero() const;
+
+  //! Multiplies \p *this by \p n if \p *this is a point or parameter.
+  /*!
+    \p divisor is the divisor to use if \p *this is a parameter.  The
+    parameter is only multiplied if \p divisor is greater than zero.
+  */
+  void multiply(Coefficient_traits::const_reference n,
+		Coefficient_traits::const_reference divisor = 0);
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
   //! Swaps \p *this with \p y.
   void swap(Grid_Generator& y);
+
+  //! \brief
+  //! Swaps \p *this with \p y, leaving the size of \p *this the
+  //! capacity.
+  void coefficient_swap(Grid_Generator& y);
 
 //private: //FIX
   //! \brief
@@ -302,14 +355,15 @@ public:
   Grid_Generator(Generator g);
 
 private: // FIX (above)
-  friend class Grid;  // FIX temp
   friend std::ostream&
   IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g);
+  friend class Grid;  // FIX temp
 
   friend class Grid_Generator_System;
+  friend class Grid_Generator_System::const_iterator;
+  friend class Congruence_System;
   friend class Scalar_Products;
   friend class Topology_Adjusted_Scalar_Product_Sign;
-  friend class Topology_Adjusted_Scalar_Product_Assign;
 };
 
 
