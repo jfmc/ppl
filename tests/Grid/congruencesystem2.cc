@@ -32,7 +32,7 @@ public:
   Test_Congruence_System(Congruence_System cgs) : Congruence_System(cgs) {}
   Test_Congruence_System(Congruence cg) : Congruence_System(cg) {}
   bool
-  satisfies_all_congruences(const Generator& g,
+  satisfies_all_congruences(const Grid_Generator& g,
 			    Coefficient_traits::const_reference d) const {
     return Congruence_System::satisfies_all_congruences(g, d);
   }
