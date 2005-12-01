@@ -41,7 +41,7 @@ PPL::Scalar_Products::assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
-			     const Linear_Row& x, const Congruence& y) {
+			     const Grid_Generator& x, const Congruence& y) {
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.
   assert(x.size() <= y.size() - 1);
@@ -54,7 +54,7 @@ PPL::Scalar_Products::assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
-			     const Congruence& x, const Linear_Row& y) {
+			     const Congruence& x, const Grid_Generator& y) {
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.
   assert(x.size() - 1 <= y.size());
@@ -81,7 +81,7 @@ PPL::Scalar_Products::reduced_assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::reduced_assign(Coefficient& z,
-				     const Linear_Row& x,
+				     const Grid_Generator& x,
 				     const Congruence& y) {
   // The reduced scalar product is only defined if the topology of `x'
   // is NNC and `y' has enough coefficients.
@@ -108,7 +108,7 @@ PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
-					 const Linear_Row& x,
+					 const Grid_Generator& x,
 					 const Congruence& y) {
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.

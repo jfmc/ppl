@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 #include "Congruence.types.hh"
+#include "Grid_Generator.types.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A class implementing various scalar product functions.
@@ -49,9 +50,9 @@ public:
   //! Computes the scalar product of \p g and \p c and assigns it to \p z.
   static void assign(Coefficient& z, const Generator& g, const Constraint& c);
   //! Computes the scalar product of \p g and \p cg and assigns it to \p z.
-  static void assign(Coefficient& z, const Linear_Row& g, const Congruence& cg);
+  static void assign(Coefficient& z, const Grid_Generator& g, const Congruence& cg);
   //! Computes the scalar product of \p cg and \p g and assigns it to \p z.
-  static void assign(Coefficient& z, const Congruence& cg, const Linear_Row& g);
+  static void assign(Coefficient& z, const Congruence& cg, const Grid_Generator& g);
 
   //! Returns the sign of the scalar product between \p x and \p y.
   static int sign(const Linear_Row& x, const Linear_Row& y);
@@ -83,7 +84,7 @@ public:
   //! where the \f$\epsilon\f$ coefficient of \p g is ignored,
   //! and assigns the result to \p z.
   static void reduced_assign(Coefficient& z,
-			     const Linear_Row& g, const Congruence& cg);
+			     const Grid_Generator& g, const Congruence& cg);
 
   //! \brief
   //! Returns the sign of the \e reduced scalar product of \p x and \p y,
@@ -116,7 +117,14 @@ public:
   //! where the inhomogeneous terms are ignored,
   //! and assigns the result to \p z.
   static void homogeneous_assign(Coefficient& z,
-				 const Linear_Row& g, const Congruence& cg);
+				 const Grid_Generator& g, const Congruence& cg);
+  //! \brief
+  //! Computes the \e homogeneous scalar product of \p e and \p g,
+  //! where the inhomogeneous terms are ignored,
+  //! and assigns the result to \p z.
+  static void homogeneous_assign(Coefficient& z,
+				 const Linear_Expression& e,
+				 const Grid_Generator& g);
 
   //! \brief
   //! Returns the sign of the \e homogeneous scalar product of \p x and \p y,
@@ -126,6 +134,10 @@ public:
   //! Returns the sign of the \e homogeneous scalar product of \p e and \p g,
   //! where the inhomogeneous terms are ignored,
   static int homogeneous_sign(const Linear_Expression& e, const Generator& g);
+  //! \brief
+  //! Returns the sign of the \e homogeneous scalar product of \p e and \p g,
+  //! where the inhomogeneous terms are ignored,
+  static int homogeneous_sign(const Linear_Expression& e, const Grid_Generator& g);
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -146,28 +158,6 @@ public:
 private:
   //! The type of the scalar product sign function pointer.
   typedef int (*SPS_type)(const Linear_Row&, const Linear_Row&);
-
-  //! The scalar product sign function pointer.
-  SPS_type sps_fp;
-};
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Scalar product assign function object depending on topology.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Assign {
-public:
-  //! Constructs the function object according to the topology of \p g.
-  Topology_Adjusted_Scalar_Product_Assign(const Generator& g);
-
-  //! Computes the (topology adjusted) scalar product sign of \p g and \p cg.
-  void operator()(Coefficient&, const Generator&, const Congruence&) const;
-
-  //! Computes the (topology adjusted) scalar product sign of \p cg and \p g.
-  void operator()(Coefficient&, const Congruence&, const Generator&) const;
-
-private:
-  //! The type of the scalar product sign function pointer.
-  typedef void (*SPS_type)(Coefficient&, const Linear_Row&, const Congruence&);
 
   //! The scalar product sign function pointer.
   SPS_type sps_fp;
