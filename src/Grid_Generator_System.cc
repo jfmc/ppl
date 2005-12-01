@@ -33,7 +33,19 @@ namespace PPL = Parma_Polyhedra_Library;
 void
 PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
 
-  // This is a copy of Generator_System::affine_image.
+  if (g.is_parameter()) {
+    // Insert a parameter that will pass the Linear_System::insert
+    // normalization assert.
+    Generator_System::insert(Grid_Generator::parameter(Variable(g.space_dimension() - 1)));
+    // Update the coefficients.
+    // FIX this is quite a waste, just to work around an assertion
+    Grid_Generator& inserted_g = operator[](num_rows()-1);
+    for (dimension_type col = g.size(); col-- > 0; )
+      inserted_g[col] = g[col];
+    return;
+  }
+
+  // The rest is a copy of Generator_System::affine_image.
 
   // We are sure that the matrix has no pending rows
   // and that the new row is not a pending generator.
