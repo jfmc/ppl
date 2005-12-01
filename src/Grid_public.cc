@@ -513,26 +513,14 @@ PPL::Grid::is_universe() const {
 
   // Test con_sys's inclusion in a universe generator system.
 
-  // Create a single generator to progressively represent the entire
-  // universe generator system.
-  Row row(space_dim, Row::Flags());
-  dimension_type i = 1;
   // The zero dimension cases are handled above.
-  while (true) {
-    row[i] = 1;
-    // FIX
-    //Grid_Generator& g = static_cast<Grid_Generator&>(row);
-    //Grid_Generator& g = *static_cast<Grid_Generator*>(&row);
-    Grid_Generator& g = *(Grid_Generator*)(&row);
-    if (con_sys.satisfies_all_congruences(g, 1)) {
-      if (i == space_dim)
-	return true;
-      row[i] = 0;
-      ++i;
-    }
-    else
+  Variable var(space_dim - 1);
+  for (dimension_type i = space_dim; i-- > 0; )
+    if (!con_sys.satisfies_all_congruences(line(Variable(i) + var), 0))
       return false;
-  }
+  if (con_sys.satisfies_all_congruences(point(0*var), 0))
+    return true;
+  return false;
 }
 
 bool
