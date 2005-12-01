@@ -119,6 +119,7 @@ PPL::Grid::construct(const Grid_Generator_System& const_gs,
   if (space_dim > 0) {
     // Steal the rows from `gs'.
     std::swap(gen_sys, gs);
+#if 0
     // FIX for now convert rays to lines
     if (convert_rays_to_lines)
       for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
@@ -128,6 +129,7 @@ PPL::Grid::construct(const Grid_Generator_System& const_gs,
 	  g.strong_normalize();
 	}
       }
+#endif
     normalize_divisors(gen_sys);
     gen_sys.unset_pending_rows();
 
@@ -233,7 +235,7 @@ PPL::Grid::is_included_in(const Grid& y) const {
   if (x.generators_are_minimized()) {
 #endif
     TEMP_INTEGER(divisor);
-    divisor = gs[0][0];
+    divisor = gs[0].divisor();
     for (dimension_type i = num_rows; i-- > 0; )
       if (!cgs.satisfies_all_congruences(gs[i], divisor))
 	return false;
@@ -242,7 +244,7 @@ PPL::Grid::is_included_in(const Grid& y) const {
   else
     for (dimension_type i = num_rows; i-- > 0; ) {
       const Grid_Generator& g = gs[i];
-      if (!cgs.satisfies_all_congruences(g, g[0]))
+      if (!cgs.satisfies_all_congruences(g, g.divisor()))
 	return false;
     }
 #endif
@@ -251,6 +253,7 @@ PPL::Grid::is_included_in(const Grid& y) const {
   return true;
 }
 
+#if 0 // FIX
 void
 PPL::Grid::hide_parameters() {
   const dimension_type num_rows = gen_sys.num_rows();
@@ -262,13 +265,14 @@ PPL::Grid::hide_parameters() {
   Grid& gr = const_cast<Grid&>(*this);
   for (dimension_type row = num_rows; row-- > 0; ) {
     Grid_Generator& gen = gr.gen_sys[row];
-    if (gen.is_ray()) {
+    if (gen.is_parameter()) {
       for (dimension_type col = space_dim; col-- > 0; )
 	gen[col] += point[col];
       gr.clear_generators_minimized();
     }
   }
 }
+#endif
 
 bool
 PPL::Grid::bounds(const Linear_Expression& expr,
@@ -286,8 +290,9 @@ PPL::Grid::bounds(const Linear_Expression& expr,
   // The generators are up to date.
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Grid_Generator& g = gen_sys[i];
-    // Only lines and rays in `*this' can cause `expr' to be unbounded.
-    if (g.is_line_or_ray()) {
+    // Only lines and parameters in `*this' can cause `expr' to be
+    // unbounded.
+    if (g.is_line_or_parameter()) {
       const int sp_sign = Scalar_Products::homogeneous_sign(expr, g);
       if (sp_sign != 0)
 	// `*this' does not bound `expr'.
@@ -323,7 +328,7 @@ PPL::Grid::max_min(const Linear_Expression& expr,
     const Grid_Generator& gen = gen_sys[0];
     Scalar_Products::homogeneous_assign(ext_n, expr, gen);
     ext_n += expr.inhomogeneous_term();
-    ext_d = gen[0];
+    ext_d = gen.divisor();
     // Reduce ext_n and ext_d.
     TEMP_INTEGER(gcd);
     gcd_assign(gcd, ext_n, ext_d);
@@ -485,14 +490,14 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
   dimension_type row = 0;
   dimension_type num_rows = gen_sys.num_rows();
   // Find first point in gen_sys.
-  while (gen_sys[row].is_line_or_equality())
+  while (gen_sys[row].is_line())
     if (++row == num_rows)
       // All rows are lines; generators should always contain a point.
       throw std::runtime_error("PPL::Grid::normalize_divisors(sys, gen_sys).");
   TEMP_INTEGER(gen_sys_divisor);
   TEMP_INTEGER(divisor);
   Grid_Generator& first_point = gen_sys[row];
-  gen_sys_divisor = first_point[0];
+  gen_sys_divisor = first_point.divisor();
   divisor = normalize_divisors(sys, gen_sys_divisor);
   if (divisor != gen_sys_divisor)
     // The divisors of the points in gen_sys are always the same, so
@@ -516,24 +521,24 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 
     if (first_point) {
       Grid_Generator& point_one = (*first_point);
-      original_sys_divisor = point_one[0];
+      original_sys_divisor = point_one.divisor();
       if (lcm == 0)
-	lcm = point_one[0];
+	lcm = point_one.divisor();
       else
-	lcm_assign(lcm, point_one[0]);
+	lcm_assign(lcm, point_one.divisor());
     }
     else {
       // Move to the first point.
-      while (sys[row].is_line_or_ray())
+      while (sys[row].is_line_or_parameter())
 	if (++row == num_rows)
 	  // All rows are lines.
 	  return divisor;
 
       Grid_Generator& point_one = sys[row];
-      original_sys_divisor = point_one[0];
+      original_sys_divisor = point_one.divisor();
 
       if (lcm == 0) {
-	lcm = point_one[0];
+	lcm = point_one.divisor();
 	++row;
       }
 
@@ -541,20 +546,22 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
       while (row < num_rows) {
 	Grid_Generator& g = sys[row];
 	if (g.is_point())
-	  lcm_assign(lcm, g[0]);
+	  lcm_assign(lcm, g.divisor());
 	++row;
       }
     }
 
-    dimension_type num_cols = sys.num_columns();
+    //dimension_type num_cols = sys.num_columns(); // FIX
     // Represent each point using the LCM as the divisor.
     for (dimension_type row = 0; row < num_rows; ++row) {
+      sys[row].multiply(lcm, original_sys_divisor);
+#if 0
       Grid_Generator& gen = sys[row];
-      if (gen.is_ray_or_point_or_inequality()) {
+      if (gen.is_parameter_or_point()) {
 	TEMP_INTEGER(factor);
 	if (gen.is_point()) {
-	  factor = lcm / gen[0];
-	  gen[0] = lcm;
+	  factor = lcm / gen.divisor();
+	  const_cast<Coefficient&>(gen.divisor()) = lcm;
 	}
 	else
 	  factor = lcm / original_sys_divisor;
@@ -563,6 +570,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 	  for (dimension_type col = 1; col < num_cols; ++col)
 	    gen[col] *= factor;
       }
+#endif
     }
   }
   return lcm;
