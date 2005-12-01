@@ -64,7 +64,7 @@ PPL::Grid::Grid(dimension_type num_dimensions,
 					    Linear_Row::LINE_OR_EQUALITY));
     // Trivially true parameter.
     Grid_Generator& first_g = gen_sys[0];
-    const_cast<Coefficient&>(first_g.divisor()) = 1;
+    first_g.divisor() = 1;
     first_g.set_is_point();
     // Integrality congruence.
     Congruence& first_cg = con_sys[0];
@@ -90,7 +90,7 @@ PPL::Grid::Grid(dimension_type num_dimensions,
 
     // Trivially true point.
     gen_sys.insert(grid_point(0*(Variable(0))));
-    const_cast<Coefficient&>(gen_sys[0].divisor()) = 1;
+    gen_sys[0].divisor() = 1;
 
     // The rest.
     dimension_type dim = 0;
@@ -1918,10 +1918,22 @@ generalized_affine_image(const Variable var,
   if (marked_empty())
     return;
 
+#if 1
+  // Insert a strongly-normalized point that will pass assertions.
+  gen_sys.insert(Grid_Generator::point());
+  // Update the inserted point to the required parameter.
+  Grid_Generator& inserted_g = gen_sys[gen_sys.num_rows()-1];
+  inserted_g[0] = 0;		// Set inserted_g to a ray.
+  if (modulus < 0)
+    inserted_g[var.space_dimension()] = -modulus;
+  else
+    inserted_g[var.space_dimension()] = modulus;
+#else
   if (modulus < 0)
     gen_sys.insert(parameter(-modulus * var));
   else
     gen_sys.insert(parameter(modulus * var));
+#endif
 
   clear_generators_minimized();
   clear_congruences_up_to_date();
@@ -2228,7 +2240,7 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
       }
       // Or transform the point into a parameter.
       else
-	const_cast<Coefficient&>(g.divisor()) = 0;
+	g.divisor() = 0;
   }
 
   if (gs_num_rows == 0)

@@ -561,7 +561,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 	TEMP_INTEGER(factor);
 	if (gen.is_point()) {
 	  factor = lcm / gen.divisor();
-	  const_cast<Coefficient&>(gen.divisor()) = lcm;
+	  gen.divisor() = lcm;
 	}
 	else
 	  factor = lcm / original_sys_divisor;

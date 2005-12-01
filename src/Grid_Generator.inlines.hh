@@ -95,6 +95,11 @@ Grid_Generator::operator=(const Generator& g) {
   return *this;
 }
 
+inline Coefficient&
+Grid_Generator::divisor() {
+  return Generator::operator[](0);
+}
+
 inline Coefficient_traits::const_reference
 Grid_Generator::divisor() const {
   return Generator::operator[](0);

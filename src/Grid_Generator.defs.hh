@@ -302,6 +302,9 @@ public:
   Grid_Generator& operator=(const Generator& g);
 
   //! Returns the divisor of \p *this, or 0 if \p *this is a line.
+  Coefficient& divisor();
+
+  //! Returns the divisor of \p *this, or 0 if \p *this is a line.
   Coefficient_traits::const_reference divisor() const;
 
   //! \brief
@@ -365,6 +368,8 @@ public:
 private: // FIX (above)
   friend std::ostream&
   IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g);
+  // FIX: Required for operator[] access in `conversion', and to
+  //      insert a parameter in generalized_affine_image.
   friend class Grid;  // FIX temp
 
   friend class Grid_Generator_System;

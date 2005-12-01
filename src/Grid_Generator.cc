@@ -56,7 +56,7 @@ PPL::Grid_Generator::multiply(Coefficient_traits::const_reference mult,
     TEMP_INTEGER(factor);
     if (is_point()) {
       factor = mult / divisor();
-      const_cast<Coefficient&>(divisor()) = mult;
+      divisor() = mult;
     }
     else {
       if (div == 0)
