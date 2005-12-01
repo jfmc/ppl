@@ -1054,17 +1054,21 @@ PPL::Grid::add_generator(const Grid_Generator& g) {
     if (g.is_parameter_or_point()) {
       // Ensure that the divisors of gen_sys and g are the same.
       divisor = g.divisor();
-      gen_sys_divisor = normalize_divisors(gen_sys, divisor);
-      gen_sys.insert(g);
-      if (divisor != gen_sys_divisor) {
-	// Multiply the inserted point to match the gen_sys
-	// divisor.  Done after the insert so that a normalized g
-	// is passed to insert.
-	Grid_Generator& inserted_g = gen_sys[gen_sys.num_rows()-1];
-	inserted_g[0] = gen_sys_divisor;
-	gen_sys_divisor /= divisor;
-	for (dimension_type col = 1; col < inserted_g.size(); ++col)
-	  inserted_g[col] *= gen_sys_divisor;
+      // FIX for now parameters always have a divisor of zero
+      if (divisor > 0) {
+	assert(g.is_point());
+	gen_sys_divisor = normalize_divisors(gen_sys, divisor);
+	gen_sys.insert(g);
+	if (divisor != gen_sys_divisor) {
+	  // Multiply the inserted point to match the gen_sys
+	  // divisor.  Done after the insert so that a normalized g
+	  // is passed to insert.
+	  Grid_Generator& inserted_g = gen_sys[gen_sys.num_rows()-1];
+	  inserted_g[0] = gen_sys_divisor;
+	  gen_sys_divisor /= divisor;
+	  for (dimension_type col = 1; col < inserted_g.size(); ++col)
+	    inserted_g[col] *= gen_sys_divisor;
+	}
       }
     }
     else
