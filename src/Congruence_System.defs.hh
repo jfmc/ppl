@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.types.hh"
 #include "Constraint.types.hh"
 #include "Congruence.types.hh"
-#include "Generator.types.hh"
+#include "Grid_Generator.types.hh"
 #include "Matrix.defs.hh"
 #include "Grid_Certificate.types.hh"
 #include <iosfwd>
@@ -329,7 +329,7 @@ protected:
     divisor, otherwise a value of one is assumed.
   */
   bool
-  satisfies_all_congruences(const Generator& g,
+  satisfies_all_congruences(const Grid_Generator& g,
 			    Coefficient_traits::const_reference divisor) const;
 
 private:
