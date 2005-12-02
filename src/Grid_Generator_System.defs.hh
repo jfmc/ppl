@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.defs.hh"
 #include "Grid_Generator.types.hh"
 #include "Polyhedron.types.hh"
+#include "Variable.defs.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -211,14 +212,15 @@ public:
   //! number of space dimensions if needed.
   void insert(const Grid_Generator& g);
 
-  // FIX this could go if grid_point... made compulsory
+  // FIX this could go if grid_point, parameter and grid_line are made compulsory
   //! \brief
   //! Inserts in \p *this a copy of the polyhedron generator \p g,
   //! increasing the number of space dimensions if needed.
   void insert(const Generator& g);
 
-  //! Adds a copy of the given Grid_Generator to the system.
-  void add_row(const Grid_Generator& g);
+  //! Inserts in \p *this the generators in \p gs.
+  // FIX throw (fits w/ gs?) if gs.spc_dim > spc_dim?
+  void recycling_insert(Grid_Generator_System& gs);
 
   //! An iterator over a system of grid generators
   /*!
@@ -388,15 +390,6 @@ public:
   */
   bool OK() const;
 
-private:
-  friend class Grid; // FIX temp
-
-  //! Builds an empty system of generators having the specified topology.
-  explicit Grid_Generator_System(Topology topol);
-
-  //! Sets the sortedness flag of the system to \p b.
-  void set_sorted(bool b);
-
   //! \brief
   //! Adds \p n rows and \p m columns of zeroes to the matrix,
   //! initializing the added rows as in the universe generator system.
@@ -417,6 +410,30 @@ private:
     The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_universe_rows_and_columns(dimension_type dims);
+
+  //! Removes all the specified dimensions from the generator system.
+  void remove_space_dimensions(const Variables_Set& to_be_removed);
+
+  //! \brief
+  //! Removes the higher dimensions of the system so that the
+  //! resulting system will have dimension \p new_dimension.
+  void remove_higher_space_dimensions(dimension_type new_dimension);
+
+private:
+  // FIXME: The following friend declaration grants Grid::conversion
+  //        access to Matrix (for the Grid::reduce_reduced call) and
+  //        Matrix::resize_no_copy.
+  friend class Grid;
+
+  // FIX -
+  //! Builds an empty system of generators having the specified topology.
+  explicit Grid_Generator_System(Topology topol);
+
+  //! Adds a copy of the given Grid_Generator to the system.
+  void add_row(const Grid_Generator& g);
+
+  //! Sets the sortedness flag of the system to \p b.
+  void set_sorted(bool b);
 
   //! A local version of Linear_System::insert.
   void linear_system_insert(const Linear_Row& r);

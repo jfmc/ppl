@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Scalar_Products.defs.hh"
 
 #include <cassert>
+#include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -78,6 +79,25 @@ PPL::Grid_Generator_System::linear_system_insert(const Linear_Row& r) {
   // The added row was not a pending row.
   assert(num_pending_rows() == 0);
   assert(OK());
+}
+
+void
+PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
+#if 0
+  if (space_dim < gs_space_dim)
+    throw_dimension_incompatible("recycling_insert(gs)", "gs", gs);
+#endif
+
+  const dimension_type old_num_rows = num_rows();
+  const dimension_type gs_num_rows = gs.num_rows();
+  add_zero_rows(gs_num_rows,
+		Linear_Row::Flags(NECESSARILY_CLOSED,
+				  Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+  for (dimension_type i = gs_num_rows; i-- > 0; )
+    // Swap one coefficient at a time into the newly added rows
+    // instead of swapping each entire row.  This ensures that the
+    // added rows have the same capacities as the existing rows.
+    operator[](old_num_rows + i).coefficient_swap(gs[i]);
 }
 
 void
@@ -279,8 +299,18 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
 bool
 PPL::Grid_Generator_System::OK() const {
   if (topology() == NOT_NECESSARILY_CLOSED) {
+#ifndef NDEBUG
     std::cerr << "Grid_Generator_System is NOT_NECESSARILY_CLOSED"
 	      << std::endl;
+#endif
+    return false;
+  }
+
+  if (is_sorted()) {
+#ifndef NDEBUG
+    std::cerr << "Grid_Generator_System is marked as sorted."
+	      << std::endl;
+#endif
     return false;
   }
 
@@ -303,6 +333,7 @@ PPL::Grid_Generator_System::OK() const {
 void
 PPL::Grid_Generator_System
 ::add_universe_rows_and_columns(dimension_type dims) {
+  // FIX add point if sys is empty
   dimension_type col = num_columns();
   add_zero_rows_and_columns(dims, dims,
 			    Linear_Row::Flags(NECESSARILY_CLOSED,
@@ -310,4 +341,42 @@ PPL::Grid_Generator_System
   dimension_type rows = num_rows();
   for (dimension_type row = rows - dims; row < rows; ++row, ++col)
     const_cast<Coefficient&>(operator[](row)[col]) = 1;
+}
+
+void
+PPL::Grid_Generator_System
+::remove_space_dimensions(const Variables_Set& to_be_removed) {
+  // FIX may need some checks, as in Grid::remove_space_dimensions
+
+  // For each variable to be removed, replace the corresponding column
+  // by shifting left the columns to the right that will be kept.
+  Variables_Set::const_iterator tbr = to_be_removed.begin();
+  Variables_Set::const_iterator tbr_end = to_be_removed.end();
+  dimension_type dst_col = tbr->space_dimension();
+  dimension_type src_col = dst_col + 1;
+  for (++tbr; tbr != tbr_end; ++tbr) {
+    dimension_type tbr_col = tbr->space_dimension();
+    // Move all columns in between to the left.
+    while (src_col < tbr_col)
+      // FIXME: consider whether Linear_System must have a swap_columns()
+      // method.  If the answer is "no", remove this Matrix:: qualification.
+      Matrix::swap_columns(dst_col++, src_col++);
+    ++src_col;
+  }
+  // Move any remaining columns.
+  const dimension_type num_cols = num_columns();
+  while (src_col < num_cols)
+    // FIXME: consider whether Linear_System must have a swap_columns()
+    // method.  If the answer is "no", remove this Matrix:: qualification.
+    Matrix::swap_columns(dst_col++, src_col++);
+
+  // The number of remaining columns is `dst_col'.
+  Matrix::remove_trailing_columns(num_cols - dst_col);
+}
+
+void
+PPL::Grid_Generator_System
+::remove_higher_space_dimensions(dimension_type new_dimension) {
+  // FIX may need some checks, as in Grid::remove_space_dimensions
+  Matrix::remove_trailing_columns(space_dimension() - new_dimension);
 }
