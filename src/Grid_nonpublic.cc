@@ -63,7 +63,6 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
     std::swap(con_sys, cgs);
     con_sys.normalize_moduli();
     set_congruences_up_to_date();
-    gen_sys.set_sorted(false);
   }
   else {
     // Here `space_dim == 0'.
@@ -73,12 +72,10 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
 	if (cgs[i].is_trivial_false()) {
 	  // Inconsistent congruence found: the grid is empty.
 	  set_empty();
-	  gen_sys.set_sorted(false);
 	  assert(OK());
 	  return;
 	}
     set_zero_dim_univ();
-    gen_sys.set_sorted(false);
   }
 
   assert(OK());
@@ -106,6 +103,7 @@ PPL::Grid::construct(const Grid_Generator_System& const_gs,
   if (!gs.has_points())
     throw_invalid_generators("Grid(const_gs)", "gs");
 
+#if 0 // FIX
   if (!gs.is_necessarily_closed()) {
     // A NOT_NECESSARILY_CLOSED generator system can be converted in
     // to a NECESSARILY_CLOSED one only if it does not contain closure
@@ -115,6 +113,7 @@ PPL::Grid::construct(const Grid_Generator_System& const_gs,
     gs.remove_trailing_columns(1); // The epsilon coefficient column.
     gs.set_necessarily_closed();
   }
+#endif
 
   if (space_dim > 0) {
     // Steal the rows from `gs'.
@@ -131,11 +130,9 @@ PPL::Grid::construct(const Grid_Generator_System& const_gs,
       }
 #endif
     normalize_divisors(gen_sys);
-    gen_sys.unset_pending_rows();
 
     // Generators are now up-to-date.
     set_generators_up_to_date();
-    gen_sys.set_sorted(false);
   }
   else
     set_zero_dim_univ();
@@ -353,7 +350,6 @@ PPL::Grid::set_zero_dim_univ() {
   // FIX adj spc dim? (to get 2 cols)?
   gen_sys.clear();
   gen_sys.insert(Grid_Generator::point());
-  gen_sys.set_sorted(false);
 }
 
 void
@@ -361,10 +357,7 @@ PPL::Grid::set_empty() {
   status.set_empty();
 
   // Replace gen_sys with an empty system of the right dimension.
-  Grid_Generator_System gs;
-  gs.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
-					 space_dim);
-  gs.set_sorted(false);
+  Grid_Generator_System gs(space_dim);
   gen_sys.swap(gs);
 
   con_sys.clear();
@@ -381,7 +374,7 @@ PPL::Grid::update_congruences() const {
   assert(space_dim > 0);
   assert(!marked_empty());
   assert(gen_sys.num_rows() > 0);
-  assert(gen_sys.num_columns() > 1);
+  assert(gen_sys.space_dimension() > 0);
 
   Grid& gr = const_cast<Grid&>(*this);
 
