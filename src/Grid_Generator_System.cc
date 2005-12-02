@@ -103,16 +103,24 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
 void
 PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
 
-#if 0
   if (g.is_parameter()) {
-    // FIX Scale to match system divisor, or divisor of first point
+    if (g.all_homogeneous_terms_are_zero()) {
+      dimension_type space_dim = space_dimension();
+      dimension_type g_space_dim = g.space_dimension();
+      if (space_dim < g_space_dim) {
+	// Adjust the space dimension.
+	add_zero_columns(g_space_dim - space_dim);
+	assert(OK());
+      }
+      return;
+    }
+    // FIX Scale g to match system divisor, or divisor of first point
   }
-#endif
 
   // The rest is a copy of Generator_System::insert which calls
   // linear_system_insert instead of Linear_System::insert.
 
-  // FIX much of this is redundant
+  // FIX much of this pertains only to real generators
 
   // We are sure that the matrix has no pending rows
   // and that the new row is not a pending generator.
@@ -338,6 +346,7 @@ PPL::Grid_Generator_System
   add_zero_rows_and_columns(dims, dims,
 			    Linear_Row::Flags(NECESSARILY_CLOSED,
 					      Linear_Row::LINE_OR_EQUALITY));
+  unset_pending_rows();
   dimension_type rows = num_rows();
   for (dimension_type row = rows - dims; row < rows; ++row, ++col)
     const_cast<Coefficient&>(operator[](row)[col]) = 1;
