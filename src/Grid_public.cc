@@ -1920,22 +1920,10 @@ generalized_affine_image(const Variable var,
   if (marked_empty())
     return;
 
-#if 1
-  // Insert a strongly-normalized point that will pass assertions.
-  gen_sys.insert(Grid_Generator::point());
-  // Update the inserted point to the required parameter.
-  Grid_Generator& inserted_g = gen_sys[gen_sys.num_rows()-1];
-  inserted_g[0] = 0;		// Set inserted_g to a ray.
-  if (modulus < 0)
-    inserted_g[var.space_dimension()] = -modulus;
-  else
-    inserted_g[var.space_dimension()] = modulus;
-#else
   if (modulus < 0)
     gen_sys.insert(parameter(-modulus * var));
   else
     gen_sys.insert(parameter(modulus * var));
-#endif
 
   clear_generators_minimized();
   clear_congruences_up_to_date();
