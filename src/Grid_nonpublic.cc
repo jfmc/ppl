@@ -360,7 +360,6 @@ PPL::Grid::set_empty() {
   Grid_Generator_System gs(space_dim);
   gen_sys.swap(gs);
 
-  con_sys.clear();
   // Extend the zero dim false congruence system to the appropriate
   // dimension and then store it in `con_sys'.
   Congruence_System cgs(Congruence::zero_dim_false());
@@ -506,7 +505,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
   assert(divisor >= 0);
   TEMP_INTEGER(lcm);
   lcm = divisor;
-  if (sys.num_columns()) {
+  if (sys.space_dimension() > 0) {
     dimension_type row = 0;
     dimension_type num_rows = sys.num_rows();
 

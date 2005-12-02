@@ -2274,7 +2274,7 @@ private:
   */
   void add_space_dimensions(Congruence_System& cgs,
 			    Grid_Generator_System& gs,
-			    dimension_type dims);
+			    const dimension_type dims);
 
   //! Adds new space dimensions to the given systems.
   /*!
@@ -2292,7 +2292,7 @@ private:
   */
   void add_space_dimensions(Grid_Generator_System& gs,
 			    Congruence_System& cgs,
-			    dimension_type dims);
+			    const dimension_type dims);
 
   //! \name Minimization-related Static Member Functions
   //@{
@@ -2335,7 +2335,7 @@ private:
   //! Converts generator system \p dest to be equivalent to congruence
   //! system \p source.
   static void conversion(Congruence_System& source,
-			 Linear_System& dest,
+			 Grid_Generator_System& dest,
 			 Dimension_Kinds& dim_kinds);
 
   //! \brief
@@ -2400,7 +2400,7 @@ private:
   static void reduce_parameter_with_line(Linear_Row& row,
 					 Linear_Row& pivot,
 					 dimension_type col,
-					 Linear_System& sys);
+					 Grid_Generator_System& sys);
 
   //! Reduce \p row using \p pivot.
   /*!
@@ -2430,6 +2430,12 @@ private:
   static void multiply_grid(const Coefficient& multiplier,
 			    Congruence& cg, Congruence_System& dest,
 			    const dimension_type num_rows,
+			    const dimension_type num_dims);
+
+  //! Multiply the elements of \p dest by \p multiplier.
+  // A member of Grid for access to Grid_Generator::operator[].
+  static void multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
+			    Grid_Generator_System& dest, const dimension_type num_rows,
 			    const dimension_type num_dims);
 
   //! If \p sys is lower triangular return true, else return false.

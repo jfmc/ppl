@@ -34,8 +34,8 @@ namespace PPL = Parma_Polyhedra_Library;
 inline void
 PPL::Grid::add_space_dimensions(Congruence_System& cgs,
 				Grid_Generator_System& gs,
-				dimension_type dims) {
-  assert(cgs.num_columns() - 1 == gs.num_columns());
+				const dimension_type dims) {
+  assert(cgs.num_columns() - 1 == gs.space_dimension() + 1);
   assert(dims > 0);
 
   dimension_type tem = cgs.num_columns() - 1;
@@ -59,15 +59,14 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
     dgen[col_num] = 1;
   }
 #endif
-  gen_sys.unset_pending_rows();
 }
 
 // Used for add_space_dimensions_and_project.
 inline void
 PPL::Grid::add_space_dimensions(Grid_Generator_System& gs,
 				Congruence_System& cgs,
-				dimension_type dims) {
-  assert(cgs.num_columns() - 1 == gs.num_columns());
+				const dimension_type dims) {
+  assert(cgs.num_columns() - 1 == gs.space_dimension() + 1);
   assert(dims > 0);
 
   dimension_type num_cols = cgs.num_columns() - 1;
@@ -87,7 +86,9 @@ PPL::Grid::add_space_dimensions(Grid_Generator_System& gs,
   //       new rows
   clear_congruences_minimized();
 
-  gs.add_zero_columns(dims);
+  // Add `dims' zero columns onto gs.
+  gs.insert(parameter(0*Variable(space_dim + dims - 1)));
+
   if (generators_are_minimized())
     dim_kinds.resize(last_col, EQUALITY /* a.k.a GEN_VIRTUAL */);
 }
@@ -168,10 +169,8 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
       gen[col_num] = 1;
     }
 #endif
-    // The grid does not support pending rows.
-    gen_sys.unset_pending_rows();
     if (generators_are_minimized())
-      dim_kinds.resize(gen_sys.num_columns(), LINE);
+      dim_kinds.resize(gen_sys.space_dimension() + 1, LINE);
   }
   // Update the space dimension.
   space_dim += m;
@@ -250,9 +249,12 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
   else {
     // Only generators are up-to-date so modify only them.
     assert(generators_are_up_to_date());
-    gen_sys.add_zero_columns(m);
+
+    // Add m zero columns onto gs.
+    gen_sys.insert(parameter(0*Variable(space_dim + m - 1)));
+
     if (generators_are_minimized())
-      dim_kinds.resize(gen_sys.num_columns(), EQUALITY);
+      dim_kinds.resize(gen_sys.space_dimension() + 1, EQUALITY);
   }
   // Now update the space dimension.
   space_dim += m;
@@ -385,33 +387,7 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
     return;
   }
 
-  // FIXME: provide a method in Linear_System that removes a set
-  // of columns and restores strong-normalization only at the end.
-
-  // For each variable to be removed, replace the corresponding column
-  // by shifting left the columns to the right that will be kept.
-  Variables_Set::const_iterator tbr = to_be_removed.begin();
-  Variables_Set::const_iterator tbr_end = to_be_removed.end();
-  dimension_type dst_col = tbr->space_dimension();
-  dimension_type src_col = dst_col + 1;
-  for (++tbr; tbr != tbr_end; ++tbr) {
-    dimension_type tbr_col = tbr->space_dimension();
-    // Move all columns in between to the left.
-    while (src_col < tbr_col)
-      // FIXME: consider whether Linear_System must have a swap_columns()
-      // method.  If the answer is "no", remove this Matrix:: qualification.
-      gen_sys.Matrix::swap_columns(dst_col++, src_col++);
-    ++src_col;
-  }
-  // Move any remaining columns.
-  const dimension_type gen_sys_num_columns = gen_sys.num_columns();
-  while (src_col < gen_sys_num_columns)
-    // FIXME: consider whether Linear_System must have a swap_columns()
-    // method.  If the answer is "no", remove this Matrix:: qualification.
-    gen_sys.Matrix::swap_columns(dst_col++, src_col++);
-
-  // The number of remaining columns is `dst_col'.
-  gen_sys.Matrix::remove_trailing_columns(gen_sys_num_columns - dst_col);
+  gen_sys.remove_space_dimensions(to_be_removed);
 
   clear_congruences_up_to_date();
   clear_generators_minimized();
@@ -454,12 +430,18 @@ PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
     return;
   }
 
-  gen_sys.Matrix::remove_trailing_columns(space_dim - new_dimension);
+  gen_sys.remove_higher_space_dimensions(new_dimension);
+
+#if 0
+  // FIXME: Perhaps add something like remove_rows_and_columns(dims)
+  //        to Grid_Generator_System for this.
   if (generators_are_minimized()) {
     gen_sys.erase_to_end(new_dimension + 1);
-    gen_sys.unset_pending_rows();
     dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
   }
+#else
+  clear_generators_minimized();
+#endif
 
   clear_congruences_up_to_date();
 

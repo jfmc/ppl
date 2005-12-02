@@ -34,16 +34,27 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Grid::Grid(dimension_type num_dimensions,
 		const Degenerate_Element kind)
   : con_sys(),
-    gen_sys() {
-  if (num_dimensions > max_space_dimension())
-    throw_space_dimension_overflow("Grid(n, k)",
-				   "n exceeds the maximum "
-				   "allowed space dimension");
+    gen_sys(num_dimensions > max_space_dimension()
+	    ? (throw_space_dimension_overflow("Grid(n, k)",
+					      "n exceeds the maximum "
+					      "allowed space dimension"),
+	       0)
+	    : num_dimensions) {
 
   space_dim = num_dimensions;
 
   if (kind == EMPTY) {
-    set_empty();
+    // Set emptiness directly instead of with set_empty, as gen_sys is
+    // already correctly initialized.
+
+    status.set_empty();
+
+    // Extend the zero dim false congruence system to the appropriate
+    // dimension and then store it in `con_sys'.
+    Congruence_System cgs(Congruence::zero_dim_false());
+    cgs.increase_space_dimension(space_dim);
+    const_cast<Congruence_System&>(con_sys).swap(cgs);
+
     assert(OK());
     return;
   }
@@ -52,10 +63,8 @@ PPL::Grid::Grid(dimension_type num_dimensions,
     con_sys.increase_space_dimension(num_dimensions);
     // Initialise both systems to universe representations.
     set_congruences_minimized();
-    dim_kinds.resize(num_dimensions + 1);
-    gen_sys.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
-						num_dimensions);
     set_generators_minimized();
+    dim_kinds.resize(num_dimensions + 1);
 
 #if 0 // FIX
     con_sys.add_zero_rows(1, Row::Flags());
@@ -98,9 +107,6 @@ PPL::Grid::Grid(dimension_type num_dimensions,
       gen_sys.insert(line(Variable(dim++)));
       dim_kinds[dim] = CON_VIRTUAL /* a.k.a LINE */;
     }
-
-    gen_sys.unset_pending_rows();
-    gen_sys.set_sorted(false);
   }
   else
     set_zero_dim_univ();
@@ -110,22 +116,18 @@ PPL::Grid::Grid(dimension_type num_dimensions,
 
 PPL::Grid::Grid(const Grid& y)
   : con_sys(),
-    gen_sys(NECESSARILY_CLOSED),
+    gen_sys(),
     status(y.status),
     space_dim(y.space_dim),
     dim_kinds(y.dim_kinds) {
-  assert(y.gen_sys.topology() == NECESSARILY_CLOSED);
   if (y.congruences_are_up_to_date())
     con_sys = y.con_sys;
   else
     con_sys.increase_space_dimension(space_dim);
   if (y.generators_are_up_to_date())
     gen_sys = y.gen_sys;
-  else {
-    gen_sys.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
-						space_dim);
-    gen_sys.set_sorted(false);
-  }
+  else
+    gen_sys = Grid_Generator_System(y.space_dim);
 }
 
 PPL::Grid::Grid(const Constraint_System& ccs) {
@@ -236,7 +238,7 @@ PPL::Grid::minimized_congruences() const {
 const PPL::Grid_Generator_System&
 PPL::Grid::generators() const {
   if (space_dim == 0) {
-    assert(gen_sys.num_columns() == 1
+    assert(gen_sys.space_dimension() == 0
 	   && gen_sys.num_rows() == (marked_empty() ? 0 : 1));
     return gen_sys;
   }
@@ -264,7 +266,7 @@ PPL::Grid::generators() const {
 const PPL::Grid_Generator_System&
 PPL::Grid::minimized_generators() const {
   if (space_dim == 0) {
-    assert(gen_sys.num_columns() == 1
+    assert(gen_sys.space_dimension() == 0
 	   && gen_sys.num_rows() == (marked_empty() ? 0 : 1));
     return gen_sys;
   }
@@ -663,22 +665,6 @@ PPL::Grid::OK(bool check_not_empty) const {
   using std::cerr;
 #endif
 
-  // Check the topology of `gen_sys'.
-  if (gen_sys.topology() == NOT_NECESSARILY_CLOSED) {
-#ifndef NDEBUG
-    cerr << "Generator system should be necessarily closed." << endl;
-#endif
-    goto fail;
-  }
-
-  // Check the sortedness of `gen_sys'.
-  if (gen_sys.is_sorted()) {
-#ifndef NDEBUG
-    cerr << "Generator system is marked as sorted." << endl;
-#endif
-    goto fail;
-  }
-
   // Check whether the status information is legal.
   if (!status.OK())
     goto fail;
@@ -752,7 +738,7 @@ PPL::Grid::OK(bool check_not_empty) const {
       }
 
     if (generators_are_up_to_date()) {
-      if (gen_sys.num_columns() != num_columns) {
+      if (gen_sys.space_dimension() + 1 != num_columns) {
 #ifndef NDEBUG
 	cerr << "Incompatible size! (gen_sys and space_dim)"
 	     << endl;
@@ -867,12 +853,10 @@ PPL::Grid::OK(bool check_not_empty) const {
 
     Grid tem_gr = *this;
     Congruence_System cs_copy = tem_gr.con_sys;
+
     // Clear the generators in tem_gr.
-    Grid_Generator_System gs;
-    gs.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
-					   space_dim);
-    gs.set_sorted(false);
-    tem_gr.gen_sys.swap(gs);
+    Grid_Generator_System gs(space_dim);
+    std::swap(tem_gr.gen_sys, gs);
     tem_gr.clear_generators_up_to_date();
 
     if (!tem_gr.update_generators()) {
@@ -1034,10 +1018,6 @@ PPL::Grid::add_generator(const Grid_Generator& g) {
     if (g.is_line_or_parameter())
       throw_invalid_generator("add_generator(g)", "g");
     gen_sys.insert(g);
-    // Since `gen_sys' was empty, resize the system of generators to
-    // the right dimension.
-    gen_sys.adjust_topology_and_space_dimension(NECESSARILY_CLOSED,
-						space_dim);
     clear_empty();
   }
   else {
@@ -1341,10 +1321,6 @@ PPL::Grid::add_recycled_constraints_and_minimize(Constraint_System& cs) {
 
 void
 PPL::Grid::add_recycled_generators(Grid_Generator_System& gs) {
-  // Topology compatibility check.
-  if (gs.has_closure_points())
-    throw_topology_incompatible("add_recycled_generators(gs)", "gs", gs);
-  // FIX handle nnc gs
   // Dimension-compatibility check:
   // the dimension of `gs' can not be greater than space_dim.
   const dimension_type gs_space_dim = gs.space_dimension();
@@ -1367,10 +1343,8 @@ PPL::Grid::add_recycled_generators(Grid_Generator_System& gs) {
     return;
   }
 
-  // Adjust `gs' to the right topology and dimensions.
-  // NOTE: we already checked for topology compatibility.
-  //gs.adjust_topology_and_space_dimension(topology(), space_dim);
-  gs.adjust_topology_and_space_dimension(gs.topology(), space_dim); // FIX
+  // Adjust `gs' to the right dimension.
+  gs.insert(parameter(0*Variable(space_dim-1)));
 
   if (!marked_empty()
       && (generators_are_up_to_date() || update_generators())) {
@@ -1378,18 +1352,20 @@ PPL::Grid::add_recycled_generators(Grid_Generator_System& gs) {
 
     normalize_divisors(gs, gen_sys);
 
+    gen_sys.recycling_insert(gs);
+#if 0
     const dimension_type old_num_rows = gen_sys.num_rows();
     const dimension_type gs_num_rows = gs.num_rows();
     //const dimension_type gs_num_columns = gs.num_columns(); // FIX
     gen_sys.add_zero_rows(gs_num_rows,
-			  Linear_Row::Flags(gs.topology(),
+			  Linear_Row::Flags(NECESSARILY_CLOSED,
 					    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
     for (dimension_type i = gs_num_rows; i-- > 0; ) {
-      gen_sys[old_num_rows + i].coefficient_swap(gs[i]);
-#if 0 // FIX
       // Swap one coefficient at a time into the newly added rows
       // instead of swapping each entire row.  This ensures that the
       // added rows have the same capacities as the existing rows.
+      gen_sys[old_num_rows + i].coefficient_swap(gs[i]);
+#if 0 // FIX
       Grid_Generator& new_g = gen_sys[old_num_rows + i];
       Grid_Generator& old_g = gs[i];
       if (old_g.is_line())
@@ -1402,6 +1378,7 @@ PPL::Grid::add_recycled_generators(Grid_Generator_System& gs) {
 	std::swap(new_g[j], old_g[j]);
 #endif
     }
+#endif
 
     // Congruences are out of date and generators are not minimized.
     clear_congruences_up_to_date();
@@ -1419,9 +1396,7 @@ PPL::Grid::add_recycled_generators(Grid_Generator_System& gs) {
     //         query prbly comes from gen_aff_img usage
     throw_invalid_generators("add_recycled_generators(gs)", "gs");
 
-  gs.unset_pending_rows();
   std::swap(gen_sys, gs);
-  gen_sys.set_sorted(false);
 
 #if 0
   // FIX for now convert rays to lines
@@ -1452,11 +1427,6 @@ PPL::Grid::add_generators(const Grid_Generator_System& gs) {
 
 bool
 PPL::Grid::add_recycled_generators_and_minimize(Grid_Generator_System& gs) {
-  // Topology compatibility check.
-  if (gs.has_closure_points())
-    throw_topology_incompatible("add_recycled_generators_and_minimize(gs)",
-				"gs", gs);
-  // FIX handle nnc gs
   // Dimension-compatibility check: the dimension of `gs' must be less
   // than or equal to that of space_dim.
   const dimension_type gs_space_dim = gs.space_dimension();
@@ -1481,10 +1451,8 @@ PPL::Grid::add_recycled_generators_and_minimize(Grid_Generator_System& gs) {
     return true;
   }
 
-  // Now adjusting dimensions (topology already adjusted).
-  // NOTE: sortedness is preserved.
-  //gs.adjust_topology_and_space_dimension(topology(), space_dim); // FIX
-  gs.adjust_topology_and_space_dimension(gs.topology(), space_dim); // FIX
+  // Adjust `gs' to the right dimension.
+  gs.insert(parameter(0*Variable(space_dim-1)));
 
   if (!marked_empty()
       && (generators_are_up_to_date() || update_generators())) {
@@ -1499,8 +1467,8 @@ PPL::Grid::add_recycled_generators_and_minimize(Grid_Generator_System& gs) {
 	gen_sys.insert(Grid_Generator::line(Linear_Expression(g)));
       else
 #endif
-	// FIX add_recycled_row?
-	gen_sys.add_row(g);
+	// FIX add and use Grid_Generator_System::recycling_insert
+	gen_sys.insert(g);
     }
   }
   else {
@@ -1508,9 +1476,7 @@ PPL::Grid::add_recycled_generators_and_minimize(Grid_Generator_System& gs) {
     if (!gs.has_points())
       throw_invalid_generators("add_recycled_generators_and_minimize(gs)",
 			       "gs");
-    gs.unset_pending_rows();
     std::swap(gen_sys, gs);
-    gen_sys.set_sorted(false);
 #if 0
     // FIX for now convert rays to lines
     for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
@@ -1611,10 +1577,9 @@ PPL::Grid::join_assign(const Grid& y) {
     return;
 
   // Match the divisors of the x and y generator systems.
-  // FIX this makes a copy of which add_rows makes a copy
   Grid_Generator_System gs(y.gen_sys);
   normalize_divisors(x.gen_sys, gs);
-  x.gen_sys.add_rows(gs);
+  x.gen_sys.recycling_insert(gs);
   // Congruences may be out of date and generators may have lost
   // minimal form.
   x.clear_congruences_up_to_date();
@@ -2223,6 +2188,7 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
   for (dimension_type i = gs_num_rows; i-- > 0; ) {
     Grid_Generator& g = gs[i];
     if (g.is_point())
+#if 0 // FIX
       // Either erase the origin.
       if (g.all_homogeneous_terms_are_zero()) {
 	--gs_num_rows;
@@ -2230,6 +2196,7 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
       }
       // Or transform the point into a parameter.
       else
+#endif
 	g.divisor() = 0;
   }
 
@@ -2238,30 +2205,14 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
     // the result is `x'.
     return;
 
+#if 0 // FIX
   // If it is present, erase the origin point.
   gs.erase_to_end(gs_num_rows);
+#endif
 
   // Append `gs' to the generators of `x'.
 
-  const dimension_type old_num_rows = gen_sys.num_rows();
-  //const dimension_type gs_num_columns = gs.num_columns(); // FIX
-  gen_sys.add_zero_rows(gs_num_rows,
-			Linear_Row::Flags(gs.topology(),
-					  Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
-  for (dimension_type i = gs_num_rows; i-- > 0; ) {
-    gen_sys[old_num_rows + i].coefficient_swap(gs[i]);
-
-#if 0 // FIX
-    // Steal one coefficient at a time, to ensure that the row
-    // capacities are all the same.
-    Grid_Generator& new_g = gen_sys[old_num_rows + i];
-    Grid_Generator& old_g = gs[i];
-    if (old_g.is_line())
-      new_g.set_is_line();
-    for (dimension_type j = gs_num_columns; j-- > 0; )
-      std::swap(new_g[j], old_g[j]);
-#endif
-  }
+  gen_sys.recycling_insert(gs);
 
   x.clear_congruences_up_to_date();
   x.clear_generators_minimized();

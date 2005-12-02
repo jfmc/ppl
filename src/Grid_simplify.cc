@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cassert>
 
 #include "Grid.defs.hh"
-#include "Linear_System.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -213,7 +212,7 @@ void
 Grid::reduce_parameter_with_line(Linear_Row& row,
 				 Linear_Row& pivot,
 				 dimension_type column,
-				 Linear_System& sys) {
+				 Grid_Generator_System& sys) {
   // Very similar to reduce_congruence_with_equality below.  Any
   // change here may be needed there too.
   // FIX check if row[column] == pivot[column], as in cong version?

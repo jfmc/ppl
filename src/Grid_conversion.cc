@@ -22,10 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "Linear_Row.defs.hh"
-#include "Linear_System.defs.hh"
 #include "Grid.defs.hh"
-#include "globals.defs.hh"
 #include <cstddef>
 
 namespace Parma_Polyhedra_Library {
@@ -80,7 +77,7 @@ Grid::lower_triangular(const Congruence_System& sys,
 bool
 Grid::upper_triangular(const Grid_Generator_System& sys,
 		       const Dimension_Kinds& dim_kinds) {
-  dimension_type num_cols = sys.num_columns();
+  dimension_type num_cols = sys.space_dimension() + 1;
   dimension_type row = sys.num_rows();
 
   // Check squareness.
@@ -108,22 +105,22 @@ Grid::upper_triangular(const Grid_Generator_System& sys,
 }
 
 inline void
-multiply_grid(const Coefficient& multiplier, Linear_Row& gen,
-	      Linear_System& dest, const dimension_type num_rows,
-	      const dimension_type num_dims) {
+Grid::multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
+		    Grid_Generator_System& dest, const dimension_type num_rows,
+		    const dimension_type num_dims) {
   if (multiplier == 1)
     return;
 
-  if (gen.is_line_or_equality())
+  if (gen.is_line())
     // Multiply every element of the equality.
     for (dimension_type column = 0; column < num_dims; ++column)
       gen[column] *= multiplier;
   else {
-    assert(gen.is_ray_or_point_or_inequality());
+    assert(gen.is_parameter_or_point());
     // Multiply every element of every parameter.
     for (dimension_type index = 0; index < num_rows; ++index) {
-      Linear_Row& generator = dest[index];
-      if (generator.is_ray_or_point_or_inequality())
+      Grid_Generator& generator = dest[index];
+      if (generator.is_parameter_or_point())
 	for (dimension_type column = 0; column < num_dims; ++column)
 	  generator[column] *= multiplier;
     }
@@ -182,7 +179,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   dimension_type dest_num_rows = 0;
   TEMP_INTEGER(diagonal_lcm);
   diagonal_lcm = 1;
-  const dimension_type dims = source.num_columns();
+  const dimension_type dims = source.space_dimension() + 1;
   for (dimension_type dim = 0; dim < dims; ++dim)
     if (dim_kinds[dim] == GEN_VIRTUAL)
       // Virtual generators map to equalities.
@@ -361,7 +358,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 }
 
 void
-Grid::conversion(Congruence_System& source, Linear_System& dest,
+Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 		 Dimension_Kinds& dim_kinds) {
   TRACE(cerr << "============= convert cgs to gs" << endl);
   TRACE(cerr << "source:" << endl);
@@ -422,7 +419,7 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
       ++source_index;
     }
     else {
-      Linear_Row& g = dest[dest_index];
+      Grid_Generator& g = dest[dest_index];
       for (dimension_type j = 0; j < dim; ++j)
 	g[j] = 0;
       for (dimension_type j = dim + 1; j < dims; ++j)
@@ -469,7 +466,7 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
 	TRACE(cerr << "  row " << row << endl);
 	TRACE(dest.ascii_dump(cerr));
 
-	Linear_Row& g = dest[row];
+	Grid_Generator& g = dest[row];
 
 	// Multiply `dest' by the minimum amount so that integer
         // division of entry `dim' at `row' (FIX by the corresponding
@@ -479,7 +476,7 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
 	// FIX multiplier like reduced source_dim (wrt assoc ele in dest row num row)
 	// FIX does it hold the relationship b/w these ele's?
 	multiplier = source_dim / multiplier;
-	PPL::multiply_grid(multiplier, g, dest, dest_num_rows, dims);
+	multiply_grid(multiplier, g, dest, dest_num_rows, dims);
 
 	// FIX Set entry `dim' at `row' in `dest' to the smallest
 	// possible integer value such that the corresponding entry in
@@ -517,7 +514,7 @@ Grid::conversion(Congruence_System& source, Linear_System& dest,
 	for (dimension_type row = dest_index; row-- > 0; ) {
 	  assert(row < dest_num_rows);
 	  TRACE(cerr << "       " << row << endl);
-	  Linear_Row& g = dest[row];
+	  Grid_Generator& g = dest[row];
 	  g[dim_fol] -= source_dim * g[dim];
 	}
       }
