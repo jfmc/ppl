@@ -366,6 +366,12 @@ public:
   Grid_Generator(Generator g);
 
 private: // FIX (above)
+  //! Returns a reference to the element of the row indexed by \p k.
+  Coefficient& operator[](dimension_type k);
+
+  //! Returns a constant reference to the element of the row indexed by \p k.
+  Coefficient_traits::const_reference operator[](dimension_type k) const;
+
   friend std::ostream&
   IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g);
   // FIXME: The following friend declaration is for operator[] access

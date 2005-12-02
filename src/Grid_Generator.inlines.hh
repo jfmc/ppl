@@ -161,6 +161,17 @@ Grid_Generator::point(const Linear_Expression& e,
   return static_cast<Grid_Generator>(Generator::point(e, d));
 }
 
+inline Coefficient&
+Grid_Generator::operator[](dimension_type k) {
+  return Generator::operator[](k);
+}
+
+inline Coefficient_traits::const_reference
+Grid_Generator::operator[](dimension_type k) const {
+  return Generator::operator[](k);
+}
+
+
 /*! \relates Grid_Generator */
 inline Grid_Generator
 grid_line(const Linear_Expression& e) {
