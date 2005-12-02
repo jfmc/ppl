@@ -31,12 +31,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-// Put them in the namespace here to declare them friend later.
+// Put these in the namespace here to declare them friend later.
+
+//! Negate \p g from index \p start to index \p end.
+/*! \relates Parma_Polyhedra_Library::Grid_Generator */
+inline void
+negate(Grid_Generator& g, dimension_type start, dimension_type end);
 
 namespace IO_Operators {
 
 //! Output operator.
-/*! \relates Parma_Polyhedra_Library::Generator */
+/*! \relates Parma_Polyhedra_Library::Grid_Generator */
 std::ostream& operator<<(std::ostream& s, const Grid_Generator& g);
 
 } // namespace IO_Operators
@@ -46,29 +51,26 @@ std::ostream& operator<<(std::ostream& s, const Grid_Generator& g);
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Generator */
+/*! \relates Parma_Polyhedra_Library::Grid_Generator */
 void swap(Parma_Polyhedra_Library::Grid_Generator& x,
 	  Parma_Polyhedra_Library::Grid_Generator& y);
 
 } // namespace std
 
-// FIX
-//! A line, ray, point or closure point.
+// FIXME: Update this to grids.
+//! A line, parameter or point.
 /*!
-  An object of the class Generator is one of the following:
+  An object of the class Grid_Generator is one of the following:
 
   - a line \f$\vect{l} = (a_0, \ldots, a_{n-1})^\transpose\f$;
 
-  - a ray \f$\vect{r} = (a_0, \ldots, a_{n-1})^\transpose\f$;
+  - a parameter \f$\vect{r} = (a_0, \ldots, a_{n-1})^\transpose\f$;
 
   - a point
     \f$\vect{p} = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$;
 
-  - a closure point
-    \f$\vect{c} = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$;
-
   where \f$n\f$ is the dimension of the space
-  and, for points and closure points, \f$d > 0\f$ is the divisor.
+  and, for points and parameters, \f$d > 0\f$ is the divisor.
 
   \par A note on terminology.
   As observed in Section \ref representation, there are cases when,
@@ -233,6 +235,8 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
 */
 class Parma_Polyhedra_Library::Grid_Generator : private Generator {
 public:
+  // FIXME: Add wrappers of any other public Generator methods.
+
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
@@ -326,10 +330,9 @@ public:
   //! Returns <CODE>true</CODE> if \p *this is exactly equal to \p y.
   bool is_equal_to(const Grid_Generator& y) const;
 
-  // FIX
   //! \brief
-  //! Strong normalization: ensures that different Linear_Row objects
-  //! represent different hyperplanes or hyperspaces.
+  //! Strong normalization: ensures that different Grid_Generator
+  //! objects represent different hyperplanes or hyperspaces.
   /*!
     Applies both Linear_Row::normalize() and Linear_Row::sign_normalize().
   */
@@ -359,13 +362,25 @@ public:
   //! capacity.
   void coefficient_swap(Grid_Generator& y);
 
-//private: //FIX
+  // FIX just to allow tests to use functions point, line and ray?
   //! \brief
   //! Constructs from Polyhedron generator \p g, stealing the
   //! coefficients from \p g.
   Grid_Generator(Generator g);
 
-private: // FIX (above)
+private:
+  //! Returns the topological kind of \p *this.
+  Topology topology() const;
+
+  //! Returns the actual size of \p this.
+  dimension_type size() const;
+
+  //! Sets the Linear_Row kind to <CODE>LINE_OR_EQUALITY</CODE>.
+  void set_is_line();
+
+  //! Sets the Linear_Row kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
+  void set_is_parameter();
+
   //! Returns a reference to the element of the row indexed by \p k.
   Coefficient& operator[](dimension_type k);
 
@@ -374,6 +389,9 @@ private: // FIX (above)
 
   friend std::ostream&
   IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g);
+  friend void Parma_Polyhedra_Library::negate(Grid_Generator&,
+					      dimension_type,
+					      dimension_type);
   // FIXME: The following friend declaration is for operator[] access
   //        in Grid::conversion.
   friend class Grid;

@@ -2366,7 +2366,8 @@ private:
     row so that element col of \p row is zero.
   */
   // A member of Grid for access to Matrix::rows.
-  static void reduce_line_with_line(Row& row, Row& pivot,
+  static void reduce_line_with_line(Grid_Generator& row,
+				    Grid_Generator& pivot,
 				    dimension_type col);
 
   //! Reduces the equality \p row using the equality \p pivot.
@@ -2375,7 +2376,8 @@ private:
     equality \p row so that element col of \p row is zero.
   */
   // A member of Grid for access to Matrix::rows.
-  static void reduce_equality_with_equality(Congruence& row, Congruence& pivot,
+  static void reduce_equality_with_equality(Congruence& row,
+					    Congruence& pivot,
 					    dimension_type col);
 
   //! Reduces \p row using \p pivot.
@@ -2387,7 +2389,10 @@ private:
     congruences are assumed.
   */
   // Part of Grid for access to Matrix::rows.
-  static void reduce_pc_with_pc(Row& row, Row& pivot, dimension_type col,
+  template <typename R>
+  static void reduce_pc_with_pc(R& row,
+				R& pivot,
+				dimension_type col,
 				bool parameters = true);
 
   //! Reduce \p row using \p pivot.
@@ -2397,8 +2402,8 @@ private:
     row is zero.
   */
   // A member of Grid for access to Matrix::rows.
-  static void reduce_parameter_with_line(Linear_Row& row,
-					 Linear_Row& pivot,
+  static void reduce_parameter_with_line(Grid_Generator& row,
+					 Grid_Generator& pivot,
 					 dimension_type col,
 					 Grid_Generator_System& sys);
 
@@ -2419,7 +2424,8 @@ private:
     pivot_index.  Flag \p generators indicates whether \p sys is a
     congruence or generator system.
   */
-  static void reduce_reduced(Matrix& sys, dimension_type dim,
+  template <typename M, typename R>
+  static void reduce_reduced(M& sys, dimension_type dim,
 			     dimension_type pivot_index,
 			     dimension_type start, dimension_type end,
 			     Dimension_Kinds& dim_kinds,

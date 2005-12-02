@@ -66,28 +66,7 @@ PPL::Grid::Grid(dimension_type num_dimensions,
     set_generators_minimized();
     dim_kinds.resize(num_dimensions + 1);
 
-#if 0 // FIX
-    con_sys.add_zero_rows(1, Row::Flags());
-    gen_sys.add_zero_rows(num_dimensions + 1,
-			  Linear_Row::Flags(NECESSARILY_CLOSED,
-					    Linear_Row::LINE_OR_EQUALITY));
-    // Trivially true parameter.
-    Grid_Generator& first_g = gen_sys[0];
-    first_g.divisor() = 1;
-    first_g.set_is_point();
-    // Integrality congruence.
-    Congruence& first_cg = con_sys[0];
-    first_cg[0] = 1;
-    first_cg[num_dimensions + 1] = 1; // Modulus.
-    dim_kinds[0] = PROPER_CONGRUENCE /* a.k.a PARAMETER */;
-    // The rest.
-    while (num_dimensions > 0) {
-      gen_sys[num_dimensions][num_dimensions] = 1;
-      dim_kinds[num_dimensions--] = CON_VIRTUAL /* a.k.a LINE */;
-    }
-#endif
-
-    // FIX confirm works
+    // FIX confirm that this works
 
     // Extend the zero dim integrality congruence system to the
     // appropriate dimension and then store it in `con_sys'.
@@ -1353,32 +1332,6 @@ PPL::Grid::add_recycled_generators(Grid_Generator_System& gs) {
     normalize_divisors(gs, gen_sys);
 
     gen_sys.recycling_insert(gs);
-#if 0
-    const dimension_type old_num_rows = gen_sys.num_rows();
-    const dimension_type gs_num_rows = gs.num_rows();
-    //const dimension_type gs_num_columns = gs.num_columns(); // FIX
-    gen_sys.add_zero_rows(gs_num_rows,
-			  Linear_Row::Flags(NECESSARILY_CLOSED,
-					    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
-    for (dimension_type i = gs_num_rows; i-- > 0; ) {
-      // Swap one coefficient at a time into the newly added rows
-      // instead of swapping each entire row.  This ensures that the
-      // added rows have the same capacities as the existing rows.
-      gen_sys[old_num_rows + i].coefficient_swap(gs[i]);
-#if 0 // FIX
-      Grid_Generator& new_g = gen_sys[old_num_rows + i];
-      Grid_Generator& old_g = gs[i];
-      if (old_g.is_line())
-	new_g.set_is_line();
-      if (old_g.is_ray()) {
-	new_g.set_is_line();
-	new_g.strong_normalize();
-      }
-      for (dimension_type j = gs_num_columns; j-- > 0; )
-	std::swap(new_g[j], old_g[j]);
-#endif
-    }
-#endif
 
     // Congruences are out of date and generators are not minimized.
     clear_congruences_up_to_date();
@@ -1717,9 +1670,9 @@ PPL::Grid::affine_image(const Variable var,
       // Grid_Generator_System::affine_image() requires the third argument
       // to be a positive Coefficient.
       if (denominator > 0)
-	gen_sys.affine_image(var_space_dim, expr, denominator, true);
+	gen_sys.affine_image(var_space_dim, expr, denominator);
       else
-	gen_sys.affine_image(var_space_dim, -expr, -denominator, true);
+	gen_sys.affine_image(var_space_dim, -expr, -denominator);
       clear_generators_minimized();
       // Strong normalization in gs::affine_image may have modified
       // divisors.
@@ -1756,9 +1709,9 @@ PPL::Grid::affine_image(const Variable var,
       // Grid_Generator_System::affine_image() requires the third argument
       // to be a positive Coefficient.
       if (denominator > 0)
-	gen_sys.affine_image(var_space_dim, expr, denominator, true);
+	gen_sys.affine_image(var_space_dim, expr, denominator);
       else
-	gen_sys.affine_image(var_space_dim, -expr, -denominator, true);
+	gen_sys.affine_image(var_space_dim, -expr, -denominator);
 
       clear_congruences_up_to_date();
       clear_generators_minimized();
@@ -1812,7 +1765,7 @@ affine_preimage(const Variable var,
       if (expr[var_space_dim] > 0) {
 	inverse = -expr;
 	inverse[var_space_dim] = denominator;
-	gen_sys.affine_image(var_space_dim, inverse, expr[var_space_dim], true);
+	gen_sys.affine_image(var_space_dim, inverse, expr[var_space_dim]);
       }
       else {
 	// The new denominator is negative:
@@ -1821,7 +1774,7 @@ affine_preimage(const Variable var,
 	inverse = expr;
 	inverse[var_space_dim] = denominator;
 	negate(inverse[var_space_dim]);
-	gen_sys.affine_image(var_space_dim, inverse, -expr[var_space_dim], true);
+	gen_sys.affine_image(var_space_dim, inverse, -expr[var_space_dim]);
       }
       clear_generators_minimized();
     }
@@ -2188,27 +2141,14 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
   for (dimension_type i = gs_num_rows; i-- > 0; ) {
     Grid_Generator& g = gs[i];
     if (g.is_point())
-#if 0 // FIX
-      // Either erase the origin.
-      if (g.all_homogeneous_terms_are_zero()) {
-	--gs_num_rows;
-	std::swap(g, gs[gs_num_rows]);
-      }
-      // Or transform the point into a parameter.
-      else
-#endif
-	g.divisor() = 0;
+      // Transform the point into a parameter.
+      g.divisor() = 0;
   }
 
   if (gs_num_rows == 0)
     // `y' was the grid containing a single point at the origin, so
     // the result is `x'.
     return;
-
-#if 0 // FIX
-  // If it is present, erase the origin point.
-  gs.erase_to_end(gs_num_rows);
-#endif
 
   // Append `gs' to the generators of `x'.
 

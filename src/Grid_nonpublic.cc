@@ -103,18 +103,6 @@ PPL::Grid::construct(const Grid_Generator_System& const_gs,
   if (!gs.has_points())
     throw_invalid_generators("Grid(const_gs)", "gs");
 
-#if 0 // FIX
-  if (!gs.is_necessarily_closed()) {
-    // A NOT_NECESSARILY_CLOSED generator system can be converted in
-    // to a NECESSARILY_CLOSED one only if it does not contain closure
-    // points.
-    if (gs.has_closure_points())
-      throw_topology_incompatible("Grid(const_gs)", "const_gs", gs);
-    gs.remove_trailing_columns(1); // The epsilon coefficient column.
-    gs.set_necessarily_closed();
-  }
-#endif
-
   if (space_dim > 0) {
     // Steal the rows from `gs'.
     std::swap(gen_sys, gs);
@@ -543,27 +531,9 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
       }
     }
 
-    //dimension_type num_cols = sys.num_columns(); // FIX
     // Represent each point using the LCM as the divisor.
-    for (dimension_type row = 0; row < num_rows; ++row) {
+    for (dimension_type row = 0; row < num_rows; ++row)
       sys[row].multiply(lcm, original_sys_divisor);
-#if 0
-      Grid_Generator& gen = sys[row];
-      if (gen.is_parameter_or_point()) {
-	TEMP_INTEGER(factor);
-	if (gen.is_point()) {
-	  factor = lcm / gen.divisor();
-	  gen.divisor() = lcm;
-	}
-	else
-	  factor = lcm / original_sys_divisor;
-	assert(factor > 0);
-	if (factor > 1)
-	  for (dimension_type col = 1; col < num_cols; ++col)
-	    gen[col] *= factor;
-      }
-#endif
-    }
   }
   return lcm;
 }

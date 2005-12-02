@@ -53,13 +53,6 @@ Grid_Generator_System::Grid_Generator_System(const Grid_Generator& g)
   set_sorted(false);
 }
 
-// FIX -
-inline
-Grid_Generator_System::Grid_Generator_System(Topology topol)
-  : Generator_System(topol) {
-  set_sorted(false);
-}
-
 inline dimension_type
 Grid_Generator_System::max_space_dimension() {
   return Generator_System::max_space_dimension();
@@ -111,12 +104,6 @@ Grid_Generator_System::insert(const Generator& g) {
   const Grid_Generator gg(g);
   insert(gg);
 }
-
-inline void
-Grid_Generator_System::add_row(const Grid_Generator& g) {
-  Generator_System::add_row(g);
-}
-
 
 inline
 Grid_Generator_System::const_iterator::const_iterator()

@@ -23,20 +23,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Grid_Generator_System_defs_hh
 #define PPL_Grid_Generator_System_defs_hh 1
 
-// FIX
 #include "Grid_Generator_System.types.hh"
 #include "Generator_System.defs.hh"
 #include "Grid_Generator.types.hh"
-#include "Polyhedron.types.hh"
 #include "Variable.defs.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
-// FIX --
-
 namespace IO_Operators {
 
+// FIX implement
 //! Output operator.
 /*!
   \relates Parma_Polyhedra_Library::Grid_Generator_System
@@ -47,12 +44,7 @@ std::ostream& operator<<(std::ostream& s, const Grid_Generator_System& gs);
 
 } // namespace IO_Operators
 
-// Put it in the namespace here to declare it friend later.
-/*! \relates Polyhedron */
-bool operator==(const Polyhedron& x, const Polyhedron& y);
-
 } // namespace Parma_Polyhedra_Library
-
 
 namespace std {
 
@@ -63,9 +55,8 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
 
 } // namespace std
 
-//--FIX
 
-//FIX
+// FIXME: Update this to grids.
 //! A system of grid generators.
 /*!
     An object of the class Grid_Generator_System is a system of generators,
@@ -184,6 +175,8 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
 */
 class Parma_Polyhedra_Library::Grid_Generator_System : private Generator_System {
 public:
+  // FIXME: Add wrappers of any other public Generator_System methods.
+
   //! Default constructor: builds an empty system of generators.
   Grid_Generator_System();
 
@@ -333,8 +326,7 @@ public:
   */
   void affine_image(dimension_type v,
 		    const Linear_Expression& expr,
-		    Coefficient_traits::const_reference denominator,
-		    bool grid = true);
+		    Coefficient_traits::const_reference denominator);
 
   //! Returns the number of rows in the system.
   dimension_type num_rows() const;
@@ -425,18 +417,8 @@ private:
   //        Matrix::resize_no_copy.
   friend class Grid;
 
-  // FIX -
-  //! Builds an empty system of generators having the specified topology.
-  explicit Grid_Generator_System(Topology topol);
-
-  //! Adds a copy of the given Grid_Generator to the system.
-  void add_row(const Grid_Generator& g);
-
   //! Sets the sortedness flag of the system to \p b.
   void set_sorted(bool b);
-
-  //! A local version of Linear_System::insert.
-  void linear_system_insert(const Linear_Row& r);
 };
 
 // Grid_Generator_System.inlines.hh is not included here on purpose.

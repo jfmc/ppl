@@ -34,11 +34,12 @@ TRACE(using std::endl);
 TRACE(using std::cerr);
 
 #ifdef STRONG_REDUCTION
+template <typename M, typename R>
 void
-Grid::reduce_reduced(Matrix& sys, dimension_type dim, dimension_type pivot_index,
+Grid::reduce_reduced(M& sys, dimension_type dim, dimension_type pivot_index,
 		     dimension_type start, dimension_type end,
 		     Dimension_Kinds& dim_kinds, bool generators) {
-  Row& pivot = sys[pivot_index];
+  R& pivot = sys[pivot_index];
 
   TEMP_INTEGER(pivot_dim);
   pivot_dim = pivot[dim];
@@ -71,7 +72,7 @@ Grid::reduce_reduced(Matrix& sys, dimension_type dim, dimension_type pivot_index
     if (row_kind == line_or_equality
 	|| (row_kind == PARAMETER // a.k.a. CONGRUENCE
 	    && dim_kinds[kinds_index] == PARAMETER)) {
-      Row& row = sys[row_index];
+      R& row = sys[row_index];
 
       TEMP_INTEGER(row_dim);
       row_dim = row[dim];
@@ -103,7 +104,7 @@ Grid::reduce_reduced(Matrix& sys, dimension_type dim, dimension_type pivot_index
 #endif // STRONG_REDUCTION
 
 inline void
-Grid::reduce_line_with_line(Row& row, Row& pivot,
+Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
 			    dimension_type column) {
   TRACE(cerr << "reduce_line_with_line" << endl);
   TEMP_INTEGER(gcd);
@@ -166,8 +167,9 @@ Grid::reduce_equality_with_equality(Congruence& row, Congruence& pivot,
     row[col] = (ra * pivot[col]) - (pa * row[col]);
 }
 
+template <typename R>
 void
-Grid::reduce_pc_with_pc(Row& row, Row& pivot,
+Grid::reduce_pc_with_pc(R& row, R& pivot,
 			dimension_type column,
 			bool parameters){
   TRACE(cerr << "reduce_pc_with_pc" << endl);
@@ -209,8 +211,8 @@ Grid::reduce_pc_with_pc(Row& row, Row& pivot,
 }
 
 void
-Grid::reduce_parameter_with_line(Linear_Row& row,
-				 Linear_Row& pivot,
+Grid::reduce_parameter_with_line(Grid_Generator& row,
+				 Grid_Generator& pivot,
 				 dimension_type column,
 				 Grid_Generator_System& sys) {
   // Very similar to reduce_congruence_with_equality below.  Any
@@ -244,8 +246,8 @@ Grid::reduce_parameter_with_line(Linear_Row& row,
   }
 #endif
   for (dimension_type index = 0; index < sys.num_rows(); ++index) {
-    Linear_Row& row = sys[index];
-    if (row.is_ray_or_point_or_inequality())
+    Grid_Generator& row = sys[index];
+    if (row.is_parameter_or_point())
       for (dimension_type col = 0; col < num_cols; ++col)
         row[col] *= pivot_a;
   }
@@ -371,8 +373,8 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
     else {
       if (row_index != pivot_index)
 	std::swap(sys[row_index], sys[pivot_index]);
-      Linear_Row& pivot = sys[pivot_index];
-      bool pivot_is_line = pivot.is_line_or_equality();
+      Grid_Generator& pivot = sys[pivot_index];
+      bool pivot_is_line = pivot.is_line();
 
       // Change the matrix so that the value at `dim' in every row
       // following `pivot_index' is 0, leaving an equivalent grid.
@@ -381,26 +383,26 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 	++row_index;
 	TRACE(cerr << "    row_index " << row_index << endl);
 
-	Linear_Row& row = sys[row_index];
+	Grid_Generator& row = sys[row_index];
 
 	if (row[dim] == 0)
 	  continue;
 
-	if (row.is_line_or_equality())
+	if (row.is_line())
 	  if (pivot_is_line)
 	    reduce_line_with_line(row, pivot, dim);
 	  else {
-	    assert(pivot.is_ray_or_point_or_inequality());
+	    assert(pivot.is_parameter_or_point());
 	    std::swap(row, pivot);
 	    pivot_is_line = true;
 	    reduce_parameter_with_line(row, pivot, dim, sys);
 	  }
 	else {
-	  assert(row.is_ray_or_point_or_inequality());
+	  assert(row.is_parameter_or_point());
 	  if (pivot_is_line)
 	    reduce_parameter_with_line(row, pivot, dim, sys);
 	  else {
-	    assert(pivot.is_ray_or_point_or_inequality());
+	    assert(pivot.is_parameter_or_point());
 	    reduce_pc_with_pc(row, pivot, dim);
 	  }
 	}
@@ -409,7 +411,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
       if (pivot_is_line)
 	dim_kinds[dim] = LINE;
       else {
-	assert(pivot.is_ray_or_point_or_inequality());
+	assert(pivot.is_parameter_or_point());
 	dim_kinds[dim] = PARAMETER;
       }
 
@@ -420,7 +422,8 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
       TRACE(cerr << "  rr pivot_index " << pivot_index << endl);
       TRACE(sys.ascii_dump(cerr));
       // Factor this row out of the preceding rows.
-      reduce_reduced(sys, dim, pivot_index, dim, num_cols - 1, dim_kinds);
+      reduce_reduced<Grid_Generator_System, Grid_Generator>
+	(sys, dim, pivot_index, dim, num_cols - 1, dim_kinds);
 #endif
 
       ++pivot_index;
@@ -432,7 +435,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   // Either the first row is a point, or H is empty.
   // FIX all callers assume always returns containing points?
 
-  if (sys[0].is_ray_or_point()) {
+  if (sys[0].is_parameter_or_point()) {
     // Clip any zero rows from the end of the matrix.
     if (num_rows > pivot_index) {
       TRACE(cerr << "clipping trailing" << endl);
@@ -554,7 +557,8 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       if (pivot[dim] < 0)
 	negate(pivot, 0, dim);
       // Factor this row out of the preceding ones.
-      reduce_reduced(sys, dim, pivot_index, 0, dim, dim_kinds, false);
+      reduce_reduced<Congruence_System, Congruence>
+	(sys, dim, pivot_index, 0, dim, dim_kinds, false);
 #endif
       ++pivot_index;
     }
@@ -643,7 +647,8 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 
 #ifdef STRONG_REDUCTION
   // Factor the modified integrality congruence out of the other rows.
-  reduce_reduced(sys, 0, reduced_num_rows - 1, 0, 0, dim_kinds, false);
+  reduce_reduced<Congruence_System, Congruence>
+    (sys, 0, reduced_num_rows - 1, 0, 0, dim_kinds, false);
 #endif
 
   trace_dim_kinds("cgs simpl end ", dim_kinds);

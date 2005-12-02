@@ -32,56 +32,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Grid_Generator_System::linear_system_insert(const Linear_Row& r) {
-
-  // This is a slightly modified copy of Linear_System::insert.  It is
-  // here to force Grid_Generator::OK to be used, which works around
-  // the normalization assertions in Linear_System::OK.
-
-  // The added row must be strongly normalized and have the same
-  // topology as the system.
-  assert(topology() == r.topology());
-  // This method is only used when the system has no pending rows.
-  assert(num_pending_rows() == 0);
-
-  const dimension_type old_num_rows = num_rows();
-  const dimension_type old_num_columns = num_columns();
-  const dimension_type r_size = r.size();
-
-  // Resize the system, if necessary.
-  if (r_size > old_num_columns) {
-    add_zero_columns(r_size - old_num_columns);
-    if (!is_necessarily_closed() && old_num_rows != 0)
-      // Move the epsilon coefficients to the last column
-      // (note: sorting is preserved).
-      swap_columns(old_num_columns - 1, r_size - 1);
-    Matrix::add_row(r);
-  }
-  else if (r_size < old_num_columns)
-    if (is_necessarily_closed() || old_num_rows == 0)
-      Matrix::add_row(Linear_Row(r, old_num_columns, row_capacity));
-    else {
-      // Create a resized copy of the row (and move the epsilon
-      // coefficient to its last position).
-      Linear_Row tmp_row(r, old_num_columns, row_capacity);
-      std::swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
-      // FIX what will free tmp_row mem if oom in add_row when insert
-      //     if being called from a ctor, as in Constraint?
-      Matrix::add_row(tmp_row);
-    }
-  else {
-    // Here r_size == old_num_columns.
-    Matrix::add_row(r);
-  }
-  set_index_first_pending_row(num_rows());
-  set_sorted(false);
-
-  // The added row was not a pending row.
-  assert(num_pending_rows() == 0);
-  assert(OK());
-}
-
-void
 PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
 #if 0
   if (space_dim < gs_space_dim)
@@ -117,55 +67,59 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
     // FIX Scale g to match system divisor, or divisor of first point
   }
 
-  // The rest is a copy of Generator_System::insert which calls
-  // linear_system_insert instead of Linear_System::insert.
-
-  // FIX much of this pertains only to real generators
+  // The rest is a substitute for Generator_System::insert, with the
+  // single call to Linear_System::insert that would result inlined.
 
   // We are sure that the matrix has no pending rows
   // and that the new row is not a pending generator.
   assert(num_pending_rows() == 0);
-  if (topology() == g.topology())
-    linear_system_insert(g);
-  else
-    // `*this' and `g' have different topologies.
-    if (is_necessarily_closed()) {
-      // Padding the matrix with the column
-      // corresponding to the epsilon coefficients:
-      // all points must have epsilon coordinate equal to 1
-      // (i.e., the epsilon coefficient is equal to the divisor);
-      // rays and lines must have epsilon coefficient equal to 0.
-      // Note: normalization is preserved.
-      const dimension_type eps_index = num_columns();
-      add_zero_columns(1);
-      Generator_System& gs = *this;
-      for (dimension_type i = num_rows(); i-- > 0; ) {
-	Generator& gen = gs[i];
-	if (!gen.is_line_or_ray())
-	  gen[eps_index] = gen[0];
-      }
-      set_not_necessarily_closed();
-      // Inserting the new generator.
-      linear_system_insert(g);
-    }
-    else {
-      // The generator system is NOT necessarily closed:
-      // copy the generator, adding the missing dimensions
-      // and the epsilon coefficient.
-      const dimension_type new_size = 2 + std::max(g.space_dimension(),
-						   space_dimension());
-      Generator tmp_g(g, new_size);
-      // If it was a point, set the epsilon coordinate to 1
-      // (i.e., set the coefficient equal to the divisor).
-      // Note: normalization is preserved.
-      if (!tmp_g.is_line_or_ray())
-	tmp_g[new_size - 1] = tmp_g[0];
-      tmp_g.set_not_necessarily_closed();
-      // Inserting the new generator.
-      linear_system_insert(tmp_g);
-    }
 
+
+  // This is a slightly modified copy of Linear_System::insert.  It is
+  // here to force Grid_Generator::OK to be used, which works around
+  // the normalization assertions in Linear_System::OK.
+
+  // The added row must be strongly normalized and have the same
+  // topology as the system.
+  assert(topology() == g.topology());
+  // This method is only used when the system has no pending rows.
+  assert(num_pending_rows() == 0);
+
+  const dimension_type old_num_rows = num_rows();
+  const dimension_type old_num_columns = num_columns();
+  const dimension_type g_size = g.size();
+
+  // Resize the system, if necessary.
+  if (g_size > old_num_columns) {
+    add_zero_columns(g_size - old_num_columns);
+    if (!is_necessarily_closed() && old_num_rows != 0)
+      // Move the epsilon coefficients to the last column
+      // (note: sorting is preserved).
+      swap_columns(old_num_columns - 1, g_size - 1);
+    Matrix::add_row(g);
+  }
+  else if (g_size < old_num_columns)
+    if (is_necessarily_closed() || old_num_rows == 0)
+      Matrix::add_row(Linear_Row(g, old_num_columns, row_capacity));
+    else {
+      // Create a resized copy of the row (and move the epsilon
+      // coefficient to its last position).
+      Linear_Row tmp_row(g, old_num_columns, row_capacity);
+      std::swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
+      // FIX what will free tmp_row mem if oom in add_row when insert
+      //     if being called from a ctor, as in Constraint?
+      Matrix::add_row(tmp_row);
+    }
+  else {
+    // Here r_size == old_num_columns.
+    Matrix::add_row(g);
+  }
+  set_index_first_pending_row(num_rows());
   set_sorted(false);
+
+  // The added row was not a pending row.
+  assert(num_pending_rows() == 0);
+
   assert(OK());
 }
 
@@ -173,10 +127,7 @@ void
 PPL::Grid_Generator_System
 ::affine_image(dimension_type v,
 	       const Linear_Expression& expr,
-	       Coefficient_traits::const_reference denominator,
-	       bool grid) {
-  // FIX use grid_generator
-
+	       Coefficient_traits::const_reference denominator) {
   // This is mostly a copy of Generator_System::affine_image.
 
   Generator_System& x = *this;
@@ -216,12 +167,6 @@ PPL::Grid_Generator_System
   const bool not_invertible = (v > expr.space_dimension() || expr[v] == 0);
   if (not_invertible)
     x.remove_invalid_lines_and_rays();
-
-  if (grid)
-    return;
-
-  // Strong normalization also resets the sortedness flag.
-  x.strong_normalize();
 }
 
 void

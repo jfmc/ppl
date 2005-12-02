@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Generator_defs_hh 1
 
 #include "Generator.types.hh"
-// FIX
-#include "Grid_Generator.types.hh"
 #include "Scalar_Products.types.hh"
 #include "Row.defs.hh"
 #include "Variable.defs.hh"
@@ -34,6 +32,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence_System.types.hh"
 #include "Linear_Expression.defs.hh"
 #include "Polyhedron.types.hh"
+#include "Grid_Generator.types.hh"
+#include "Grid_Generator_System.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -400,9 +400,9 @@ private:
   friend class Parma_Polyhedra_Library::Generator_System::const_iterator;
   // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
-  friend class Parma_Polyhedra_Library::Grid;
-  friend class Parma_Polyhedra_Library::Grid_Generator; // FIX
-  friend class Parma_Polyhedra_Library::Grid_Generator_System; // FIX temp
+  friend class Parma_Polyhedra_Library::Grid_Generator;
+  // This is for access to Row and Linear_Row in `insert'.
+  friend class Parma_Polyhedra_Library::Grid_Generator_System;
 
   friend
   Parma_Polyhedra_Library

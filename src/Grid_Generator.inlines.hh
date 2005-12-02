@@ -27,12 +27,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline void
+negate(Grid_Generator& g, dimension_type start, dimension_type end) {
+  while (start <= end)
+    negate(g[start++]);
+}
+
 inline
 Grid_Generator::Grid_Generator(Generator g)
 /* // FIX
   : Generator(g,
 	      g.type(),
-	      g.topology() FIX) {
+	      NECESSARILY_CLOSED) {
 */
   : Generator(g) {
 }
@@ -83,6 +89,16 @@ Grid_Generator::is_parameter_or_point() const {
   return is_ray_or_point_or_inequality();
 }
 
+inline void
+Grid_Generator::set_is_line() {
+  Generator::set_is_line();
+}
+
+inline void
+Grid_Generator::set_is_parameter() {
+  Generator::set_is_ray_or_point();
+}
+
 inline Grid_Generator&
 Grid_Generator::operator=(const Grid_Generator& g) {
   Generator::operator=(g);
@@ -125,6 +141,16 @@ Grid_Generator::strong_normalize() {
   Generator::strong_normalize();
 }
 
+inline Topology
+Grid_Generator::topology() const {
+  return Generator::topology();
+}
+
+inline dimension_type
+Grid_Generator::size() const {
+  return Generator::size();
+}
+
 inline bool
 Grid_Generator::all_homogeneous_terms_are_zero() const {
   return Generator::all_homogeneous_terms_are_zero();
@@ -150,14 +176,13 @@ operator!=(const Grid_Generator& x, const Grid_Generator& y) {
 
 inline Grid_Generator
 Grid_Generator::line(const Linear_Expression& e) {
-  // FIX creates a temp?
+  // FIX creates a temp? (and in point below)
   return static_cast<Grid_Generator>(Generator::line(e));
 }
 
 inline Grid_Generator
 Grid_Generator::point(const Linear_Expression& e,
 		      Coefficient_traits::const_reference d) {
-  // FIX creates a temp?
   return static_cast<Grid_Generator>(Generator::point(e, d));
 }
 

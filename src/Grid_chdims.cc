@@ -47,18 +47,6 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
     dim_kinds.resize(tem + dims, CON_VIRTUAL /* a.k.a. LINE */);
 
   gs.add_universe_rows_and_columns(dims);
-#if 0 // FIX
-  gs.add_zero_rows_and_columns(dims, dims,
-			       Linear_Row::Flags(NECESSARILY_CLOSED,
-						 Linear_Row::LINE_OR_EQUALITY));
-  dimension_type num_rows = gs.num_rows();
-  dimension_type col_num = gs.num_columns() - dims;
-  for (dimension_type row_num = num_rows - dims;
-       row_num < num_rows; ++row_num, ++col_num) {
-    Grid_Generator& gen = gs[row_num];
-    dgen[col_num] = 1;
-  }
-#endif
 }
 
 // Used for add_space_dimensions_and_project.

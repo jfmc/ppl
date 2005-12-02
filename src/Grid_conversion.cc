@@ -342,11 +342,12 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 #ifdef STRONG_REDUCTION
   for (dimension_type dim = dims, i = 0; dim-- > 0; )
     if (dim_kinds[dim] != CON_VIRTUAL) {
-      Row& row = dest[i];
+      Congruence& row = dest[i];
       if (row[dim] < 0)
 	negate(row, 0, dim);
       // Factor the "diagonal" congruence out of the preceding rows.
-      reduce_reduced(dest, dim, i++, 0, dim, dim_kinds, false);
+      reduce_reduced<Congruence_System, Congruence>
+	(dest, dim, i++, 0, dim, dim_kinds, false);
     }
   TRACE(cerr << "dest after strong reduction:" << endl);
   TRACE(dest.ascii_dump(cerr));
@@ -427,13 +428,13 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
       if (dim_kinds[dim] == CON_VIRTUAL) {
 	TRACE(cerr << "  con_virtual" << endl);
-	g.set_is_line_or_equality();
+	g.set_is_line();
 	g[dim] = 1;
       }
       else {
 	assert(dim_kinds[dim] == PROPER_CONGRUENCE);
 	TRACE(cerr << "  proper_congruence" << endl);
-	g.set_is_ray_or_point_or_inequality();
+	g.set_is_parameter();
 	g[dim] = diagonal_lcm / source[source_index][dim];
 	++source_index;
       }
@@ -526,11 +527,12 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 #ifdef STRONG_REDUCTION
   for (dimension_type dim = 0, i = 0; dim < dims; ++dim)
     if (dim_kinds[dim] != GEN_VIRTUAL) {
-      Row& row = dest[i];
+      Grid_Generator& row = dest[i];
       if (row[dim] < 0)
 	negate(row, dim, dims - 1);
       // Factor the "diagonal" congruence out of the preceding rows.
-      reduce_reduced(dest, dim, i++, dim, dims - 1, dim_kinds);
+      reduce_reduced<Grid_Generator_System, Grid_Generator>
+	(dest, dim, i++, dim, dims - 1, dim_kinds);
     }
   TRACE(cerr << "dest after strong reduction:" << endl);
   TRACE(dest.ascii_dump(cerr));
