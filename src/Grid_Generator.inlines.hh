@@ -155,13 +155,6 @@ Grid_Generator::line(const Linear_Expression& e) {
 }
 
 inline Grid_Generator
-Grid_Generator::parameter(const Linear_Expression& e) {
-  // FIX creates a temp?
-  // FIX ray will normalize e, prhps use point(e) instd
-  return static_cast<Grid_Generator>(Generator::ray(e));
-}
-
-inline Grid_Generator
 Grid_Generator::point(const Linear_Expression& e,
 		      Coefficient_traits::const_reference d) {
   // FIX creates a temp?

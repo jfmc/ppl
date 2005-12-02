@@ -27,6 +27,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+PPL::Grid_Generator
+PPL::Grid_Generator::parameter(const Linear_Expression& e) {
+  Linear_Expression ec = e;
+  Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
+  g[0] = 0;
+  return g;
+}
+
 void
 PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
   // Swap one coefficient at a time into *this instead of swapping the
