@@ -368,9 +368,9 @@ public:
 private: // FIX (above)
   friend std::ostream&
   IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g);
-  // FIX: Required for operator[] access in `conversion', and to
-  //      insert a parameter in generalized_affine_image.
-  friend class Grid;  // FIX temp
+  // FIXME: The following friend declaration is for operator[] access
+  //        in Grid::conversion.
+  friend class Grid;
 
   friend class Grid_Generator_System;
   friend class Grid_Generator_System::const_iterator;
