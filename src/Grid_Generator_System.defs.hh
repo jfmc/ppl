@@ -324,7 +324,7 @@ public:
   void affine_image(dimension_type v,
 		    const Linear_Expression& expr,
 		    Coefficient_traits::const_reference denominator,
-		    bool grid = false);
+		    bool grid = true);
 
   //! Returns the number of rows of the system.
   dimension_type num_rows() const;
@@ -406,6 +406,9 @@ private:
     The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_universe_rows_and_columns(dimension_type dims);
+
+  //! A local version of Linear_System::insert.
+  void linear_system_insert(const Linear_Row& r);
 };
 
 // Grid_Generator_System.inlines.hh is not included here on purpose.

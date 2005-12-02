@@ -186,11 +186,6 @@ Grid_Generator_System::ascii_dump(std::ostream& s) const {
 }
 
 inline void
-Grid_Generator_System::ascii_dump() const {
-  return Generator_System::ascii_dump();
-}
-
-inline void
 Grid_Generator_System::set_sorted(bool b) {
   Generator_System::set_sorted(b);
 }
