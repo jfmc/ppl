@@ -30,22 +30,44 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Grid_Generator_System::Grid_Generator_System()
-  : Generator_System() {
+  : Generator_System(NECESSARILY_CLOSED) {
+  set_sorted(false);
+}
+
+inline
+Grid_Generator_System::Grid_Generator_System(dimension_type dim)
+  : Generator_System(NECESSARILY_CLOSED) {
+  adjust_topology_and_space_dimension(NECESSARILY_CLOSED, dim);
+  set_sorted(false);
 }
 
 inline
 Grid_Generator_System::Grid_Generator_System(const Generator& g)
   : Generator_System(g) {
+  set_sorted(false);
 }
 
 inline
 Grid_Generator_System::Grid_Generator_System(const Grid_Generator& g)
   : Generator_System(g) {
+  set_sorted(false);
 }
 
+// FIX -
 inline
 Grid_Generator_System::Grid_Generator_System(Topology topol)
   : Generator_System(topol) {
+  set_sorted(false);
+}
+
+inline dimension_type
+Grid_Generator_System::max_space_dimension() {
+  return Generator_System::max_space_dimension();
+}
+
+inline dimension_type
+Grid_Generator_System::space_dimension() const {
+  return Generator_System::space_dimension();
 }
 
 inline void
@@ -76,6 +98,11 @@ Grid_Generator_System::num_rows() const {
 inline dimension_type
 Grid_Generator_System::num_rays() const {
   return Generator_System::num_rays();
+}
+
+inline dimension_type
+Grid_Generator_System::num_lines() const {
+  return Generator_System::num_lines();
 }
 
 inline void

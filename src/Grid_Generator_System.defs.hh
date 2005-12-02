@@ -28,7 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.defs.hh"
 #include "Grid_Generator.types.hh"
 #include "Polyhedron.types.hh"
-//#include "Grid.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -187,11 +186,20 @@ public:
   //! Default constructor: builds an empty system of generators.
   Grid_Generator_System();
 
+  //! Builds an empty system of generators of dimension \p dim.
+  explicit Grid_Generator_System(dimension_type dim);
+
   //! Builds the singleton system containing only generator \p g.
   explicit Grid_Generator_System(const Generator& g);
 
   //! Builds the singleton system containing only generator \p g.
   explicit Grid_Generator_System(const Grid_Generator& g);
+
+  //! Returns the maximum space dimension a Grid_Generator_System can handle.
+  static dimension_type max_space_dimension();
+
+  //! Returns the dimension of the vector space enclosing \p *this.
+  dimension_type space_dimension() const;
 
   //! \brief
   //! Removes all the generators from the generator system
@@ -326,11 +334,14 @@ public:
 		    Coefficient_traits::const_reference denominator,
 		    bool grid = true);
 
-  //! Returns the number of rows of the system.
+  //! Returns the number of rows in the system.
   dimension_type num_rows() const;
 
   //! Returns the number of rays in the system.
   dimension_type num_rays() const;
+
+  //! Returns the number of lines in the system.
+  dimension_type num_lines() const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this contains one
@@ -378,7 +389,7 @@ public:
   bool OK() const;
 
 private:
-  friend class Parma_Polyhedra_Library::Grid;
+  friend class Grid; // FIX temp
 
   //! Builds an empty system of generators having the specified topology.
   explicit Grid_Generator_System(Topology topol);

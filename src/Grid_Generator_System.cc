@@ -92,6 +92,8 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
   // The rest is a copy of Generator_System::insert which calls
   // linear_system_insert instead of Linear_System::insert.
 
+  // FIX much of this is redundant
+
   // We are sure that the matrix has no pending rows
   // and that the new row is not a pending generator.
   assert(num_pending_rows() == 0);
@@ -134,6 +136,8 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
       // Inserting the new generator.
       linear_system_insert(tmp_g);
     }
+
+  set_sorted(false);
   assert(OK());
 }
 
@@ -274,6 +278,12 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
 
 bool
 PPL::Grid_Generator_System::OK() const {
+  if (topology() == NOT_NECESSARILY_CLOSED) {
+    std::cerr << "Grid_Generator_System is NOT_NECESSARILY_CLOSED"
+	      << std::endl;
+    return false;
+  }
+
   // A Generator_System and hence a Grid_Generator must be a valid
   // Linear_System; do not check for strong normalization, since this
   // will be done when checking each individual generator.
