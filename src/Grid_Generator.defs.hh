@@ -237,6 +237,15 @@ class Parma_Polyhedra_Library::Grid_Generator : private Generator {
 public:
   // FIXME: Add wrappers of any other public Generator methods.
 
+  //! \brief
+  //! Constructs from polyhedron generator \p g, stealing the
+  //! underlying data structures from \p g.
+  /*!
+    This implicit constructor allows polyhedral generators to be used
+    for grids.
+  */
+  Grid_Generator(Generator g);
+
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
@@ -361,12 +370,6 @@ public:
   //! Swaps \p *this with \p y, leaving the size of \p *this the
   //! capacity.
   void coefficient_swap(Grid_Generator& y);
-
-  // FIX just to allow tests to use functions point, line and ray?
-  //! \brief
-  //! Constructs from Polyhedron generator \p g, stealing the
-  //! coefficients from \p g.
-  Grid_Generator(Generator g);
 
   //! \brief
   //! Writes to \p s an ASCII representation of the internal
