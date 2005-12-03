@@ -35,15 +35,10 @@ negate(Grid_Generator& g, dimension_type start, dimension_type end) {
 
 inline
 Grid_Generator::Grid_Generator(Generator g)
-/* // FIX
-  : Generator(g,
-	      g.type(),
-	      NECESSARILY_CLOSED) {
-*/
-  : Generator(g) {
+  : Generator(Generator::point()) {
+  Generator::swap(g);
 }
 
-//! Returns the dimension of the vector space enclosing \p *this.
 inline dimension_type
 Grid_Generator::space_dimension() const {
   return Generator::space_dimension();
@@ -171,28 +166,15 @@ Grid_Generator::ascii_load(std::istream& s) {
   return Generator::ascii_load(s);
 }
 
-/*! \relates Grid_Generator */
-inline bool
-operator==(const Grid_Generator& x, const Grid_Generator& y) {
-  return x.is_equivalent_to(y);
-}
-
-/*! \relates Grid_Generator */
-inline bool
-operator!=(const Grid_Generator& x, const Grid_Generator& y) {
-  return !(x == y);
-}
-
 inline Grid_Generator
 Grid_Generator::line(const Linear_Expression& e) {
-  // FIX creates a temp? (and in point below)
-  return static_cast<Grid_Generator>(Generator::line(e));
+  return Grid_Generator(Generator::line(e));
 }
 
 inline Grid_Generator
 Grid_Generator::point(const Linear_Expression& e,
 		      Coefficient_traits::const_reference d) {
-  return static_cast<Grid_Generator>(Generator::point(e, d));
+  return Grid_Generator(Generator::point(e, d));
 }
 
 inline Coefficient&
@@ -205,6 +187,17 @@ Grid_Generator::operator[](dimension_type k) const {
   return Generator::operator[](k);
 }
 
+/*! \relates Grid_Generator */
+inline bool
+operator==(const Grid_Generator& x, const Grid_Generator& y) {
+  return x.is_equivalent_to(y);
+}
+
+/*! \relates Grid_Generator */
+inline bool
+operator!=(const Grid_Generator& x, const Grid_Generator& y) {
+  return !(x == y);
+}
 
 /*! \relates Grid_Generator */
 inline Grid_Generator
@@ -226,8 +219,7 @@ grid_point(const Linear_Expression& e, Coefficient_traits::const_reference d) {
 
 namespace IO_Operators {
 
-//! Output operator.
-/*! \relates Parma_Polyhedra_Library::Grid_Generator */
+/*! \relates Grid_Generator */
 inline std::ostream&
 operator<<(std::ostream& s, const Grid_Generator& g) {
   return operator<<(s, dynamic_cast<const Generator&>(g));
