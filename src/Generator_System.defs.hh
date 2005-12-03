@@ -31,7 +31,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Polyhedron.types.hh"
 #include "Poly_Con_Relation.defs.hh"
-// FIX temp
 #include "Grid.types.hh"
 #include <iosfwd>
 
@@ -356,8 +355,10 @@ public:
 private:
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
-  friend class Parma_Polyhedra_Library::Grid; // FIX temp
   friend class Parma_Polyhedra_Library::Grid_Generator_System;
+  // This is at least for the Matrix::resize_no_copy call in the Grid
+  // generator system conversion.
+  friend class Parma_Polyhedra_Library::Grid;
 
   friend bool
   Parma_Polyhedra_Library::operator==(const Polyhedron& x,
