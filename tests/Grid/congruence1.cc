@@ -26,9 +26,9 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace {
 
-Variable x(0);
-Variable y(1);
-Variable z(2);
+Variable A(0);
+Variable B(1);
+Variable C(2);
 
 class Test_Congruence : public Congruence {
 public:
@@ -44,12 +44,12 @@ static void
 test1() {
   nout << "test1:" << endl;
 
-  Test_Congruence a((x + 2*y + 3*z %= 5) / 7);
+  Test_Congruence a((A + 2*B + 3*C %= 5) / 7);
   if (find_variation(a))
     exit(1);
   a.strong_normalize();
 
-  Test_Congruence b((x %= 5 - 3*z - 2*y) / 7);
+  Test_Congruence b((A %= 5 - 3*C - 2*B) / 7);
   if (find_variation(b))
     exit(1);
   b.strong_normalize();
@@ -69,12 +69,12 @@ static void
 test2() {
   nout << "test2:" << endl;
 
-  Test_Congruence a((x + 2*y + 3*z %= -5) / 7);
+  Test_Congruence a((A + 2*B + 3*C %= -5) / 7);
   if (find_variation(a))
     exit(1);
   a.strong_normalize();
 
-  Test_Congruence b((x %= -5 - 3*z - 2*y) / 7);
+  Test_Congruence b((A %= -5 - 3*C - 2*B) / 7);
   if (find_variation(b))
     exit(1);
   b.strong_normalize();
@@ -94,12 +94,12 @@ static void
 test3() {
   nout << "test3:" << endl;
 
-  Test_Congruence a((16*x + 2*y + 8*z + 64 %= 0) / 4);
+  Test_Congruence a((16*A + 2*B + 8*C + 64 %= 0) / 4);
   if (find_variation(a))
     exit(1);
   a.strong_normalize();
 
-  Test_Congruence b((16*x + 2*y %= - 64 - 8*z) / 4);
+  Test_Congruence b((16*A + 2*B %= - 64 - 8*C) / 4);
   b.strong_normalize();
   if (find_variation(b))
     exit(1);
@@ -119,12 +119,12 @@ static void
 test4() {
   nout << "test4:" << endl;
 
-  Test_Congruence a((- x + 2*y + 3*z %= 5) / 7);
+  Test_Congruence a((- A + 2*B + 3*C %= 5) / 7);
   if (find_variation(a))
     exit(1);
   a.strong_normalize();
 
-  Test_Congruence b((- x %= - 2*y + 5 - 3*z) / 7);
+  Test_Congruence b((- A %= - 2*B + 5 - 3*C) / 7);
   if (find_variation(b))
     exit(1);
   b.strong_normalize();
@@ -144,15 +144,15 @@ static void
 test5() {
   nout << "test5:" << endl;
 
-  Test_Congruence c(x + 4*y + 3*z %= 5);
+  Test_Congruence c(A + 4*B + 3*C %= 5);
   Test_Congruence a(c);
-  //Test_Congruence a = (x + 4*y + 3*z %= 5);
-  //Test_Congruence a(x + 4*y + 3*z %= 5);
+  //Test_Congruence a = (A + 4*B + 3*C %= 5);
+  //Test_Congruence a(A + 4*B + 3*C %= 5);
   if (find_variation(a))
     exit(1);
   a.strong_normalize();
 
-  Test_Congruence b(x + 4*y %= 5 - 3*z);
+  Test_Congruence b(A + 4*B %= 5 - 3*C);
   if (find_variation(b))
     exit(1);
   b.strong_normalize();
@@ -172,12 +172,12 @@ static void
 test6() {
   nout << "test6:" << endl;
 
-  Test_Congruence a((3*x + 24*y + 3*z %= -19) / 0);
+  Test_Congruence a((3*A + 24*B + 3*C %= -19) / 0);
   if (find_variation(a))
     exit(1);
   a.strong_normalize();
 
-  Test_Congruence b((3*x + 24*y %= -19 - 3*z) / 0);
+  Test_Congruence b((3*A + 24*B %= -19 - 3*C) / 0);
   if (find_variation(b))
     exit(1);
   b.strong_normalize();
@@ -197,12 +197,12 @@ static void
 test7() {
   nout << "test7:" << endl;
 
-  Test_Congruence a((x + 4*y + 3*z == 17) / 3);
+  Test_Congruence a((A + 4*B + 3*C == 17) / 3);
   if (find_variation(a))
     exit(1);
   a.strong_normalize();
 
-  Test_Congruence b((x + 4*y == 17 - 3*z) / 3);
+  Test_Congruence b((A + 4*B == 17 - 3*C) / 3);
   if (find_variation(b))
     exit(1);
   b.strong_normalize();
@@ -222,12 +222,12 @@ static void
 test8() {
   nout << "test8:" << endl;
 
-  Test_Congruence a(x + 4*y + 3*z == 17);
+  Test_Congruence a(A + 4*B + 3*C == 17);
   if (find_variation(a))
     exit(1);
   a.strong_normalize();
 
-  Test_Congruence b(x + 4*y == 17 - 3*z);
+  Test_Congruence b(A + 4*B == 17 - 3*C);
   if (find_variation(b))
     exit(1);
   b.strong_normalize();
@@ -247,13 +247,13 @@ static void
 test9() {
   nout << "test9:" << endl;
 
-  Test_Congruence a(x + 4*y + 3*z == 17);
+  Test_Congruence a(A + 4*B + 3*C == 17);
   a /= 3;
   if (find_variation(a))
     exit(1);
   a.strong_normalize();
 
-  Test_Congruence b(x + 4*y == 17 - 3*z);
+  Test_Congruence b(A + 4*B == 17 - 3*C);
   b /= 3;
   if (find_variation(b))
     exit(1);
@@ -274,7 +274,7 @@ static void
 test10() {
   nout << "test10:" << endl;
 
-  Test_Congruence a(0*x + 0*y + 0*z %= 17);
+  Test_Congruence a(0*A + 0*B + 0*C %= 17);
   if (find_variation(a))
     exit(1);
   if (!a.is_trivial_true()) {
@@ -286,7 +286,7 @@ test10() {
     exit(1);
   }
 
-  a = Test_Congruence((0*x + 0*y + 0*z %= 0) / 3);
+  a = Test_Congruence((0*A + 0*B + 0*C %= 0) / 3);
   if (find_variation(a))
     exit(1);
   if (!a.is_trivial_true()) {
@@ -298,7 +298,7 @@ test10() {
     exit(1);
   }
 
-  a = Test_Congruence((0*x + 0*y + 8 %= 0) / 4);
+  a = Test_Congruence((0*A + 0*B + 8 %= 0) / 4);
   if (find_variation(a))
     exit(1);
   if (!a.is_trivial_true()) {
@@ -310,7 +310,7 @@ test10() {
     exit(1);
   }
 
-  a = Test_Congruence(0*x + 0*y %= 17);
+  a = Test_Congruence(0*A + 0*B %= 17);
   a /= 0;
   if (find_variation(a))
     exit(1);
@@ -323,7 +323,7 @@ test10() {
     exit(1);
   }
 
-  a = Test_Congruence((0*x + 0*y + 3 %= 0) / 0);
+  a = Test_Congruence((0*A + 0*B + 3 %= 0) / 0);
   a.strong_normalize();
   if (find_variation(a))
     exit(1);
@@ -336,7 +336,7 @@ test10() {
     exit(1);
   }
 
-  a = Test_Congruence((0*x + 0*y + 4 %= 0) / 3);
+  a = Test_Congruence((0*A + 0*B + 4 %= 0) / 3);
   a.strong_normalize();
   if (find_variation(a))
     exit(1);
@@ -356,12 +356,12 @@ static void
 test11() {
   nout << "test11:" << endl;
 
-  Test_Congruence a((x + 4*y + 3*z %= -4) / -3);
+  Test_Congruence a((A + 4*B + 3*C %= -4) / -3);
   a.strong_normalize();
   if (find_variation(a))
     exit(1);
 
-  Test_Congruence b((x + 4*y %= -1 - 3*z) / -3);
+  Test_Congruence b((A + 4*B %= -1 - 3*C) / -3);
   if (find_variation(b))
     exit(1);
   b.strong_normalize();
@@ -437,6 +437,8 @@ test13() {
 int
 main() TRY {
   set_handlers();
+
+  nout << "congruence1:" << endl;
 
   test1();
   test2();
