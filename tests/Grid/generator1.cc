@@ -195,11 +195,37 @@ test7() {
   exit(1);
 }
 
-// Create from empty linear expression.
+// Construction from reference to Generator.
 
 static void
 test8() {
   nout << "test8:" << endl;
+
+  Generator g = point(- A + 2*B + 3*C, 4);
+  Generator& g_ref = g;
+
+  Grid_Generator a(g_ref);
+  if (find_variation(a))
+    exit(1);
+
+  Grid_Generator b(point(6*B - 3*A + 9*C, 12));
+  if (find_variation(b))
+    exit(1);
+
+  if (a == b)
+    return;
+
+  nout << "Grid_Generator a should equal Grid_Generator b." << endl
+       << "a:" << endl << a << endl
+       << "b:" << endl << b << endl;
+  exit(1);
+}
+
+// Create from empty linear expression.
+
+static void
+test9() {
+  nout << "test9:" << endl;
 
   Linear_Expression le;
   Grid_Generator a(grid_point(le));
@@ -235,6 +261,7 @@ main() TRY {
   test6();
   test7();
   test8();
+  test9();
 
   return 0;
 }
