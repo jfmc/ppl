@@ -100,9 +100,8 @@ Grid_Generator_System::num_lines() const {
 
 inline void
 Grid_Generator_System::insert(const Generator& g) {
-  // FIX this makes a copy
-  const Grid_Generator gg(g);
-  insert(gg);
+  Generator g_copy = g;
+  insert(Grid_Generator(g_copy));
 }
 
 inline
