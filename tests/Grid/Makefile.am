@@ -67,6 +67,7 @@ expandspacedim1 \
 foldspacedims1 \
 generalizedaffineimage1 generalizedaffineimage2 \
 generalizedaffinepreimage1 generalizedaffinepreimage2 \
+generator1 \
 generators1 \
 coveringbox1 coveringbox2 \
 grid1 grid2 grid3 \
@@ -148,6 +149,8 @@ generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
 
 generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
+
+generator1_SOURCES = generator1.cc
 
 generators1_SOURCES = generators1.cc
 
