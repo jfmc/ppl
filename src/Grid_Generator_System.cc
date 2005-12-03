@@ -176,7 +176,9 @@ PPL::Grid_Generator_System::ascii_dump() const {
 
 bool
 PPL::Grid_Generator_System::ascii_load(std::istream& s) {
-  // FIX
+  // This is a copy of Generator_System::ascii_load, to force
+  // Grid_Generator_System::OK to be called, in order to work around
+  // the assertions in Linear_System::OK.
 
   std::string str;
   if (!(s >> str) || str != "topology")
