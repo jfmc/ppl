@@ -156,10 +156,19 @@ Grid_Generator::all_homogeneous_terms_are_zero() const {
   return Generator::all_homogeneous_terms_are_zero();
 }
 
-//! Swaps \p *this with \p y.
 inline void
 Grid_Generator::swap(Grid_Generator& y) {
   Generator::swap(y);
+}
+
+inline void
+Grid_Generator::ascii_dump(std::ostream& s) const {
+  Generator::ascii_dump(s);
+}
+
+inline bool
+Grid_Generator::ascii_load(std::istream& s) {
+  return Generator::ascii_load(s);
 }
 
 /*! \relates Grid_Generator */
