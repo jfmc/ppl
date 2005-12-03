@@ -395,10 +395,14 @@ public:
     \param row_flags
     Flags for the newly added rows.
 
-    FIX
-    Turns the \f$r \times c\f$ matrix \f$M\f$ into
-    the \f$(r+n) \times (c+m)\f$ matrix
-    \f$\bigl({M \atop 0}{0 \atop 0}\bigr)\f$.
+    Turns the \f$r \times c\f$ matrix \f$M\f$ into the \f$(r+n) \times
+    (c+m)\f$ matrix
+    \f$\begin{tabular}{cccc}
+    M&0&\ldots&0\\
+    0&1&\ldots&0\\
+    \multicolumn{4}{c}{\ldots}\\
+    0&0&\ldots&1
+    \end{tabular}\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_universe_rows_and_columns(dimension_type dims);
