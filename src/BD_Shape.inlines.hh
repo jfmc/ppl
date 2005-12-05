@@ -2367,21 +2367,24 @@ BD_Shape<T>::CH78_widening_assign(const BD_Shape& y, unsigned* /*tp*/) {
   }
 #endif
 
-  // If both systems of bounded differences are zero-dimensional,
-  // since `*this' contains `y', we simply return `*this'.
-  if (space_dim == 0)
+  // Compute the affine dimension of `y'.
+  const dimension_type y_affine_dim = y.affine_dimension();
+  // If the affine dimension of `y' is zero, then either `y' is
+  // zero-dimensional, or it is empty, or it is a singleton.
+  // In all cases, due to the inclusion hypothesis, the result is `*this'.
+  if (y_affine_dim == 0)
     return;
 
-  shortest_path_closure_assign();
-  // If `*this' is empty, since `*this' contains `y', `y' is empty too.
-  if (marked_empty())
+  // If the affine dimension has changed, due to the inclusion hypothesis,
+  // the result is `*this'.
+  const dimension_type x_affine_dim = affine_dimension();
+  assert(x_affine_dim >= y_affine_dim);
+  if (x_affine_dim != y_affine_dim)
     return;
 
+  assert(marked_shortest_path_closed() && y.marked_shortest_path_closed());
   // Minimize `y'.
   y.shortest_path_reduction_assign();
-  // If `y' is empty, we return.
-  if (y.marked_empty())
-    return;
 
   // Extrapolate unstable bounds, taking into account redundancy in `y'.
   for (dimension_type i = space_dim + 1; i-- > 0; ) {
