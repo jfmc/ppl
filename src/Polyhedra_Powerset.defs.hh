@@ -326,11 +326,11 @@ public:
 
   //! \brief
   //! Assigns to \p *this the result of computing the
-  //! \ref time_elapse "time-elapse" between \p *this and \p y.
+  //! \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
   /*!
-    The result is obtained by computing the pairwise \ref time_elapse
-    "time elapse" of each polyhedron in \p *this with each
-    polyhedron in \p y.
+    The result is obtained by computing the pairwise
+    \ref Time_Elapse_Operator "time elapse" of each polyhedron
+    in \p *this with each polyhedron in \p y.
   */
   void time_elapse_assign(const Polyhedra_Powerset& y);
 

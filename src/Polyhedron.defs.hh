@@ -1042,7 +1042,8 @@ public:
   void difference_assign(const Polyhedron& y);
 
   //! \brief
-  //! Assigns to \p *this the \ref affine_function "affine image"
+  //! Assigns to \p *this the
+  //! \ref Single_Update_Affine_Functions "affine image"
   //! of \p *this under the function mapping variable \p var to the
   //! affine expression specified by \p expr and \p denominator.
   /*!
@@ -1135,7 +1136,8 @@ public:
 		      = Coefficient_one());
 
   //! \brief
-  //! Assigns to \p *this the \ref affine_function "affine preimage"
+  //! Assigns to \p *this the
+  //! \ref Single_Update_Affine_Functions "affine preimage"
   //! of \p *this under the function mapping variable \p var to the
   //! affine expression specified by \p expr and \p denominator.
   /*!
@@ -1227,7 +1229,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_affine_relation "generalized affine relation"
+  //! \ref Generalized_Affine_Relations "generalized affine relation"
   //! \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
   //! where \f$\mathord{\relsym}\f$ is the relation symbol encoded
   //! by \p relsym.
@@ -1259,7 +1261,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the preimage of \p *this with respect to the
-  //! \ref generalized_affine_relation "generalized affine relation"
+  //! \ref Generalized_Affine_Relations "generalized affine relation"
   //! \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
   //! where \f$\mathord{\relsym}\f$ is the relation symbol encoded
   //! by \p relsym.
@@ -1292,7 +1294,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_affine_relation "generalized affine relation"
+  //! \ref Generalized_Affine_Relations "generalized affine relation"
   //! \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
   //! \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
   /*!
@@ -1316,7 +1318,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the preimage of \p *this with respect to the
-  //! \ref generalized_affine_relation "generalized affine relation"
+  //! \ref Generalized_Affine_Relations "generalized affine relation"
   //! \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
   //! \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
   /*!
@@ -1338,13 +1340,14 @@ public:
 				   const Relation_Symbol relsym,
 				   const Linear_Expression& rhs);
 
-  //! \brief
-  //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref bounded_affine_relation "bounded affine relation"
-  //! \f$\frac{\mathrm{lb_expr}}{\mathrm{denominator}}
-  //!      \leq \mathrm{var}'
-  //!      \leq \frac{\mathrm{ub_expr}}{\mathrm{denominator}}\f$.
   /*!
+    \brief
+    Assigns to \p *this the image of \p *this with respect to the
+    \ref Single_Update_Bounded_Affine_Relations "bounded affine relation"
+    \f$\frac{\mathrm{lb\_expr}}{\mathrm{denominator}}
+         \leq \mathrm{var}'
+           \leq \frac{\mathrm{ub\_expr}}{\mathrm{denominator}}\f$.
+
     \param var
     The variable updated by the affine relation;
 
@@ -1369,13 +1372,14 @@ public:
 			    Coefficient_traits::const_reference denominator
 			    = Coefficient_one());
 
-  //! \brief
-  //! Assigns to \p *this the preimage of \p *this with respect to the
-  //! \ref bounded_affine_relation "bounded affine relation"
-  //! \f$\frac{\mathrm{lb_expr}}{\mathrm{denominator}}
-  //!      \leq \mathrm{var}'
-  //!      \leq \frac{\mathrm{ub_expr}}{\mathrm{denominator}}\f$.
   /*!
+    \brief
+    Assigns to \p *this the preimage of \p *this with respect to the
+    \ref Single_Update_Bounded_Affine_Relations "bounded affine relation"
+    \f$\frac{\mathrm{lb\_expr}}{\mathrm{denominator}}
+         \leq \mathrm{var}'
+           \leq \frac{\mathrm{ub\_expr}}{\mathrm{denominator}}\f$.
+
     \param var
     The variable updated by the affine relation;
 
@@ -1402,7 +1406,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the result of computing the
-  //! \ref time_elapse "time-elapse" between \p *this and \p y.
+  //! \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
@@ -1423,7 +1427,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref widening_with_tokens "widening with tokens" delay technique).
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
@@ -1445,7 +1449,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref widening_with_tokens "widening with tokens" delay technique).
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this, \p y and \p cs are topology-incompatible or
@@ -1471,7 +1475,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref widening_with_tokens "widening with tokens" delay technique).
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this, \p y and \p cs are topology-incompatible or
@@ -1491,7 +1495,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref widening_with_tokens "widening with tokens" delay technique).
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
@@ -1513,7 +1517,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref widening_with_tokens "widening with tokens" delay technique).
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this, \p y and \p cs are topology-incompatible or
@@ -1539,7 +1543,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref widening_with_tokens "widening with tokens" delay technique).
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this, \p y and \p cs are topology-incompatible or
