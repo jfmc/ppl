@@ -245,6 +245,54 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				Temp& tmp1,
 				Temp& tmp2);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Decodes the constraint \p c as a bounded difference.
+/*!
+  \return
+  <CODE>true</CODE> if the constraint \p c is a bounded difference;
+  <CODE>false</CODE> otherwise.
+
+  \param c
+  The constraint to be decoded.
+
+  \param c_space_dim
+  The space dimension of the constraint \p c (it is <EM>assumed</EM>
+  to match the actual space dimension of \p c).
+
+  \param c_num_vars
+  If <CODE>true</CODE> is returned, then it will be set to the number
+  of variables having a non-zero coefficient. The only legal values
+  will therefore be 0, 1 and 2.
+
+  \param c_first_var
+  If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
+  then it will be set to the index of the first variable having
+  a non-zero coefficient in \p c.
+
+  \param c_second_var
+  If <CODE>true</CODE> is returned and if \p c_num_vars is set to 2,
+  then it will be set to the index of the second variable having
+  a non-zero coefficient in \p c.
+
+  \param c_coeff
+  If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
+  then it will be set to the value of the first non-zero coefficient
+  in \p c.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+bool extract_bounded_difference(const Constraint& c,
+				const dimension_type c_space_dim,
+				dimension_type& c_num_vars,
+				dimension_type& c_first_var,
+				dimension_type& c_second_var,
+				Coefficient& c_coeff);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Extracts leader indices from the predecessor relation.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void compute_leader_indices(const std::vector<dimension_type>& predecessor,
+			    std::vector<dimension_type>& indices);
+
 } // namespace Parma_Polyhedra_Library
 
 //! A bounded difference shape.
@@ -768,34 +816,32 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
 
     \note
-    This operator is an <EM>extrapolation</EM> and not a
-    <EM>widening</EM>, since it does not provide a convergence
-    guarantee for fixpoint iterations. Use CH78_widening_assign
-    if such a guarantee is required.
+    This operator is an <EM>extrapolation</EM> and not a <EM>widening</EM>,
+    since it does not provide a convergence guarantee for fixpoint iterations.
+    Use CH78_widening_assign if such a guarantee is required.
   */
   void CC76_extrapolation_assign(const BD_Shape& y);
 
   //! \brief
   //! Assigns to \p *this the result of computing the
-  //! \ref CC76_widening "CC76-widening" between \p *this and \p y.
+  //! \ref CC76_extrapolation "CC76-extrapolation" between \p *this and \p y.
   /*!
     \param y
     A BDS that <EM>must</EM> be contained in \p *this.
 
     \param first
-    An iterator that points to the first stop-point.
+    An iterator referencing the first stop-point.
 
     \param last
-    An iterator that points one past the last stop-point.
+    An iterator referencing one past the last stop-point.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
 
     \note
-    This operator is an <EM>extrapolation</EM> and not a
-    <EM>widening</EM>, since it does not provide a convergence
-    guarantee for fixpoint iterations.  Use CH78_widening_assign
-    if such a guarantee is required.
+    This operator is an <EM>extrapolation</EM> and not a <EM>widening</EM>,
+    since it does not provide a convergence guarantee for fixpoint iterations.
+    Use CH78_widening_assign if such a guarantee is required.
   */
   template <typename Iterator>
   void CC76_extrapolation_assign(const BD_Shape& y,
@@ -1161,19 +1207,6 @@ private:
   //! Turns \p *this into an zero-dimensional universe BDS.
   void set_zero_dim_univ();
 
-  //! Adds the constraint <CODE>dbm[i][j] <= k/den</CODE>.
-  void add_dbm_constraint(dimension_type i, dimension_type j, N k,
-			  Coefficient_traits::const_reference den = 1);
-  //! Adds the constraint <CODE>dbm[i][j] <= num/den</CODE>.
-  void add_dbm_constraint(dimension_type i, dimension_type j,
-			  Coefficient_traits::const_reference num,
-			  Coefficient_traits::const_reference den);
-
-  //! Removes all constraints on the variable of index \p v.
-  void forget_all_constraints_on_var(dimension_type v);
-  //! Removes all binary constraints on the variable of index \p v.
-  void forget_binary_constraints_on_var(dimension_type v);
-
   //! Assigns to <CODE>this->dbm</CODE> its shortest-path closure.
   void shortest_path_closure_assign() const;
 
@@ -1189,11 +1222,79 @@ private:
   //! correctly flags the redundant entries in <CODE>this->dbm</CODE>.
   bool is_shortest_path_reduced() const;
 
+  //! Adds the constraint <CODE>dbm[i][j] <= k/den</CODE>.
+  void add_dbm_constraint(dimension_type i, dimension_type j, N k,
+			  Coefficient_traits::const_reference den = 1);
+  //! Adds the constraint <CODE>dbm[i][j] <= num/den</CODE>.
+  void add_dbm_constraint(dimension_type i, dimension_type j,
+			  Coefficient_traits::const_reference num,
+			  Coefficient_traits::const_reference den);
+
+  //! Removes all the constraints on row/column \p v.
+  void forget_all_dbm_constraints(dimension_type v);
+  //! Removes all binary constraints on row/column \p v.
+  void forget_binary_dbm_constraints(dimension_type v);
+
+  //! Helper function for the computation of affine relations.
+  /*!
+    For each dbm index \p u (less than or equal to \p last_v and different
+    from \p v), deduce constraints of the form <CODE>v - u \<= c</CODE>,
+    starting from \p pos_sum which is an upper bound for \p v.
+
+    The shortest-path closure is able to deduce the constraint
+    <CODE>v - u \<= ub_v - lb_u</CODE>. We can be more precise if variable
+    \p u played an active role in the computation of the upper bound for
+    \p v, i.e., if the corresponding coefficient
+    <CODE>q == sc_expr[u]/sc_den</CODE> is greater than zero. In particular:
+      - if <CODE>q \>= 1</CODE>, then <CODE>v - u \<= ub_v - ub_u</CODE>;
+      - if <CODE>0 \< q \< 1</CODE>, then
+        <CODE>v - u \<= ub_v - (q*ub_u + (1-q)*lb_u)</CODE>.
+  */
+  void deduce_v_minus_u_bounds(dimension_type v,
+			       dimension_type last_v,
+			       const Linear_Expression& sc_expr,
+			       Coefficient_traits::const_reference sc_den,
+			       const N& pos_sum);
+
+  //! An helper function for the computation of affine relations.
+  /*!
+    For each dbm index \p u (less than or equal to \p last_v and different
+    from \p v), deduce constraints of the form <CODE>u - v \<= c</CODE>,
+    starting from \p neg_sum which is a lower bound for \p v.
+
+    The shortest-path closure is able to deduce the constraint
+    <CODE>u - v \<= ub_u - lb_v</CODE>. We can be more precise if variable
+    \p u played an active role in the computation of the lower bound for
+    \p v, i.e., if the corresponding coefficient
+    <CODE>q == sc_expr[u]/sc_den</CODE> is greater than zero.
+    In particular:
+      - if <CODE>q \>= 1<CODE>, then <CODE>u - v \<= lb_u - lb_v</CODE>;
+      - if <CODE>0 \< q \< 1</CODE>, then
+        <CODE>u - v \<= (q*lb_u + (1-q)*ub_u) - lb_v</CODE>.
+  */
+  void deduce_u_minus_v_bounds(dimension_type v,
+			       dimension_type last_v,
+			       const Linear_Expression& sc_expr,
+			       Coefficient_traits::const_reference sc_den,
+			       const N& neg_sum);
+
   //! \brief
   //! Adds to \p limiting_shape the bounded differences in \p cs
   //! that are satisfied by \p *this.
   void get_limiting_shape(const Constraint_System& cs,
 			  BD_Shape& limiting_shape) const;
+
+  //! Compute the (zero-equivalence classes) predecessor relation.
+  /*!
+    It is assumed that the BDS is not empty and shortest-path closed.
+  */
+  void compute_predecessors(std::vector<dimension_type>& predecessor) const;
+
+  //! Compute the leaders of zero-equivalence classes.
+  /*!
+    It is assumed that the BDS is not empty and shortest-path closed.
+  */
+  void compute_leaders(std::vector<dimension_type>& leaders) const;
 
 #if !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
   friend std::ostream&
@@ -1225,14 +1326,15 @@ private:
 				    const char* name_row,
 				    const Linear_Expression& y) const;
 
-  void throw_constraint_incompatible(const char* method) const;
+  static void throw_constraint_incompatible(const char* method);
 
-  void throw_expression_too_complex(const char* method,
-				    const Linear_Expression& e) const;
+  static void throw_expression_too_complex(const char* method,
+					   const Linear_Expression& e);
 
-  void throw_generic(const char* method, const char* reason) const;
+  static void throw_generic(const char* method, const char* reason);
   //@} // Exception Throwers
 };
+
 
 namespace std {
 

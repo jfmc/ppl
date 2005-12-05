@@ -275,6 +275,7 @@ Polyhedron_chdims.cc \
 Polyhedron_widenings.cc \
 C_Polyhedron.cc \
 NNC_Polyhedron.cc \
+BD_Shape.cc \
 Polyhedra_Powerset.cc \
 Row.cc \
 Linear_Row.cc \
