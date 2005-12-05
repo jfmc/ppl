@@ -2906,7 +2906,7 @@ BD_Shape<T>::affine_image(const Variable var,
       DB_Row<N>& dbm_0 = dbm[0];
       assign(dbm_0[v], pos_sum, ROUND_UP);
       // Deduce constraints of the form `v - u', where `u != v'.
-      deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, pos_sum, dbm);
+      deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, pos_sum);
     }
     else
       // Here `pos_pinf_count == 1'.
@@ -2927,7 +2927,7 @@ BD_Shape<T>::affine_image(const Variable var,
       DB_Row<N>& dbm_v = dbm[v];
       assign(dbm_v[0], neg_sum, ROUND_UP);
       // Deduce constraints of the form `u - v', where `u != v'.
-      deduce_u_minus_v_bounds(v, w, sc_expr, sc_den, neg_sum, dbm);
+      deduce_u_minus_v_bounds(v, w, sc_expr, sc_den, neg_sum);
     }
     else
       // Here `neg_pinf_count == 1'.
@@ -3347,7 +3347,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       // Add the constraint `v <= sum'.
       add_dbm_constraint(0, v, sum);
       // Deduce constraints of the form `v - u', where `u != v'.
-      deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, sum, dbm);
+      deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, sum);
     }
     else if (pinf_count == 1)
       if (pinf_index != v
@@ -3414,7 +3414,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       // Add the constraint `v >= -sum', i.e., `-v <= sum'.
       add_dbm_constraint(v, 0, sum);
       // Deduce constraints of the form `u - v', where `u != v'.
-      deduce_u_minus_v_bounds(v, w, sc_expr, sc_den, sum, dbm);
+      deduce_u_minus_v_bounds(v, w, sc_expr, sc_den, sum);
     }
     else if (pinf_count == 1)
       if (pinf_index != v
