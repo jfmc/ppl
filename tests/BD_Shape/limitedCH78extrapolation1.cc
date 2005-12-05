@@ -45,7 +45,7 @@ main() TRY {
 #endif
 
   Constraint_System cs2;
-  cs2.insert(x == 0);
+  cs2.insert(x <= 0);
   cs2.insert(y >= 5);
 
   TBD_Shape bd2(cs2);
