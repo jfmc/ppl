@@ -98,42 +98,6 @@ assign_max(N& x, const N& y) {
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Removes all constraints regarding the variable of index \p var.
-/*! \relates Parma_Polyhedra_Library::BD_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename N>
-inline void
-forget_all_constraints_on_var(DB_Matrix<N>& x,
-			      const dimension_type x_space_dim,
-			      const dimension_type var_index) {
-  assert(x_space_dim == x.num_rows() - 1);
-  assert(0 < var_index && var_index <= x_space_dim);
-  DB_Row<N>& x_v = x[var_index];
-  for (dimension_type i = x_space_dim + 1; i-- > 0; ) {
-    x_v[i] = PLUS_INFINITY;
-    x[i][var_index] = PLUS_INFINITY;
-  }
-}
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Removes all the binary constraints regarding the variable of index \p var,
-/*! \relates Parma_Polyhedra_Library::BD_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename N>
-inline void
-forget_binary_constraints_on_var(DB_Matrix<N>& x,
-				 const dimension_type x_space_dim,
-				 const dimension_type var_index) {
-  assert(x_space_dim == x.num_rows() - 1);
-  assert(0 < var_index && var_index <= x_space_dim);
-  DB_Row<N>& x_v = x[var_index];
-  for (dimension_type i = x_space_dim; i > 0; --i) {
-    x_v[i] = PLUS_INFINITY;
-    x[i][var_index] = PLUS_INFINITY;
-  }
-}
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
 //! Decodes the constraint \p c as a bounded difference.
 /*! \relates Parma_Polyhedra_Library::BD_Shape
@@ -448,6 +412,7 @@ inline void
 BD_Shape<T>::swap(BD_Shape& y) {
   std::swap(dbm, y.dbm);
   std::swap(status, y.status);
+  std::swap(redundancy_dbm, y.redundancy_dbm);
 }
 
 template <typename T>
@@ -492,6 +457,7 @@ operator!=(const BD_Shape<T>& x, const BD_Shape<T>& y) {
   return !(x == y);
 }
 
+/*! \relates BD_Shape */
 template <typename Temp, typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -532,6 +498,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return rectilinear_distance_assign(r, x.dbm, y.dbm, dir, tmp0, tmp1, tmp2);
 }
 
+/*! \relates BD_Shape */
 template <typename Temp, typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -544,6 +511,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return rectilinear_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
+/*! \relates BD_Shape */
 template <typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -553,6 +521,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return rectilinear_distance_assign<To, To, T>(r, x, y, dir);
 }
 
+/*! \relates BD_Shape */
 template <typename Temp, typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -593,6 +562,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return euclidean_distance_assign(r, x.dbm, y.dbm, dir, tmp0, tmp1, tmp2);
 }
 
+/*! \relates BD_Shape */
 template <typename Temp, typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -605,6 +575,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return euclidean_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
+/*! \relates BD_Shape */
 template <typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -614,6 +585,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return euclidean_distance_assign<To, To, T>(r, x, y, dir);
 }
 
+/*! \relates BD_Shape */
 template <typename Temp, typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -654,6 +626,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return l_infinity_distance_assign(r, x.dbm, y.dbm, dir, tmp0, tmp1, tmp2);
 }
 
+/*! \relates BD_Shape */
 template <typename Temp, typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -666,6 +639,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return l_infinity_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
+/*! \relates BD_Shape */
 template <typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -856,17 +830,17 @@ template <typename T>
 inline void
 BD_Shape<T>::ascii_dump(std::ostream& s) const {
   status.ascii_dump(s);
-  s << std::endl;
+  s << "\n";
   dbm.ascii_dump(s);
   // Redundancy info.
-  s << std::endl;
+  s << "\n";
   const char separator = ' ';
   const dimension_type nrows = redundancy_dbm.size();
-  s << nrows << separator << std::endl;
+  s << nrows << separator << "\n";
   for (dimension_type i = 0; i < nrows;  ++i) {
     for (dimension_type j = 0; j < nrows; ++j)
       s << redundancy_dbm[i][j] << separator;
-    s << std::endl;
+    s << "\n";
   }
 }
 
@@ -891,6 +865,28 @@ BD_Shape<T>::ascii_load(std::istream& s) {
     redundancy_dbm.push_back(redundancy_row);
   }
   return true;
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::forget_all_constraints_on_var(const dimension_type v) {
+  assert(0 < v && v <= dbm.num_rows());
+  DB_Row<N>& dbm_v = dbm[v];
+  for (dimension_type i = dbm.num_rows(); i-- > 0; ) {
+    dbm_v[i] = PLUS_INFINITY;
+    dbm[i][v] = PLUS_INFINITY;
+  }
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::forget_binary_constraints_on_var(const dimension_type v) {
+  assert(0 < v && v <= dbm.num_rows());
+  DB_Row<N>& dbm_v = dbm[v];
+  for (dimension_type i = dbm.num_rows()-1; i > 0; --i) {
+    dbm_v[i] = PLUS_INFINITY;
+    dbm[i][v] = PLUS_INFINITY;
+  }
 }
 
 } // namespace Parma_Polyhedra_Library
@@ -2858,7 +2854,7 @@ BD_Shape<T>::affine_image(const Variable var,
   if (t == 0) {
     // Case 1: expr == b.
     // Remove all constraints on `var'.
-    forget_all_constraints_on_var(dbm, space_dim, v);
+    forget_all_constraints_on_var(v);
     // Shortest-path closure is preserved, but not reduction.
     if (marked_shortest_path_reduced())
       status.reset_shortest_path_reduced();
@@ -2900,7 +2896,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	else {
 	  // Here `a == -denominator'.
 	  // Remove the binary constraints on `var'.
-	  forget_binary_constraints_on_var(dbm, space_dim, v);
+	  forget_binary_constraints_on_var(v);
 	  // Swap the unary constraints on `var'.
 	  std::swap(dbm[v][0], dbm[0][v]);
 	  // Shortest-path closure is not preserved.
@@ -2923,7 +2919,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	// Here `w != v', so that `expr' is of the form
 	// +/-denominator * w + b.
 	// Remove all constraints on `var'.
-	forget_all_constraints_on_var(dbm, space_dim, v);
+	forget_all_constraints_on_var(v);
 	// Shortest-path closure is preserved, but not reduction.
 	if (marked_shortest_path_reduced())
 	  status.reset_shortest_path_reduced();
@@ -3056,7 +3052,7 @@ BD_Shape<T>::affine_image(const Variable var,
   }
 
   // Remove all constraints on 'v'.
-  forget_all_constraints_on_var(dbm, space_dim, v);
+  forget_all_constraints_on_var(v);
   // Shortest-path closure is maintained, but not reduction.
   if (marked_shortest_path_reduced())
     status.reset_shortest_path_reduced();
@@ -3174,7 +3170,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
   // - If t > 1, the `expr' is of the general form.
   if (t == 0) {
     // Case 1: expr = n; remove all constraints on `var'.
-    forget_all_constraints_on_var(dbm, space_dim, num_var);
+    forget_all_constraints_on_var(num_var);
     // Shortest-path closure is preserved, but not reduction.
     if (marked_shortest_path_reduced())
       status.reset_shortest_path_reduced();
@@ -3193,7 +3189,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
       else {
 	// `expr == a*w + b', where `w != var'.
 	// Remove all constraints on `var'.
-	forget_all_constraints_on_var(dbm, space_dim, num_var);
+	forget_all_constraints_on_var(num_var);
 	// Shortest-path closure is preserved, but not reduction.
 	if (marked_shortest_path_reduced())
 	  status.reset_shortest_path_reduced();
@@ -3216,7 +3212,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
   }
   else {
     // Transformation not invertible: all constraints on `var' are lost.
-    forget_all_constraints_on_var(dbm, space_dim, num_var);
+    forget_all_constraints_on_var(num_var);
     // Shortest-path closure is preserved, but not reduction.
     if (marked_shortest_path_reduced())
       status.reset_shortest_path_reduced();
@@ -3296,7 +3292,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   if (t == 0) {
     // Case 1: expr == b.
     // Remove all constraints on `var'.
-    forget_all_constraints_on_var(dbm, space_dim, v);
+    forget_all_constraints_on_var(v);
     // Both shortest-path closure and reduction are lost.
     status.reset_shortest_path_closed();
     switch (relsym) {
@@ -3349,14 +3345,14 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	    assign_add(dbm_0[v], dbm_v0, d, ROUND_UP);
 	    // Forget all the other constraints on `v'.
 	    dbm_v0 = PLUS_INFINITY;
-	    forget_binary_constraints_on_var(dbm, space_dim, v);
+	    forget_binary_constraints_on_var(v);
 	  }
 	}
 	else {
 	  // Here `w != v', so that `expr' is of the form
 	  // +/-denominator * w + b, with `w != v'.
 	  // Remove all constraints on `v'.
-	  forget_all_constraints_on_var(dbm, space_dim, v);
+	  forget_all_constraints_on_var(v);
 	  // Shortest-path closure is preserved, but not reduction.
 	  if (marked_shortest_path_reduced())
 	    status.reset_shortest_path_reduced();
@@ -3402,14 +3398,14 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	    assign_add(dbm_v[0], dbm_0v, d, ROUND_UP);
 	    // Forget all the other constraints on `v'.
 	    dbm_0v = PLUS_INFINITY;
-	    forget_binary_constraints_on_var(dbm, space_dim, v);
+	    forget_binary_constraints_on_var(v);
 	  }
 	}
 	else {
 	  // Here `w != v', so that `expr' is of the form
 	  // +/-denominator * w + b, with `w != v'.
 	  // Remove all constraints on `v'.
-	  forget_all_constraints_on_var(dbm, space_dim, v);
+	  forget_all_constraints_on_var(v);
 	  // Shortest-path closure is preserved, but not reduction.
 	  if (marked_shortest_path_reduced())
 	    status.reset_shortest_path_reduced();
@@ -3503,7 +3499,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     }
 
     // Remove all constraints on `v'.
-    forget_all_constraints_on_var(dbm, space_dim, v);
+    forget_all_constraints_on_var(v);
     // Shortest-path closure is preserved, but not reduction.
     if (marked_shortest_path_reduced())
       status.reset_shortest_path_reduced();
@@ -3570,7 +3566,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     }
 
     // Remove all constraints on `var'.
-    forget_all_constraints_on_var(dbm, space_dim, v);
+    forget_all_constraints_on_var(v);
     // Shortest-path closure is preserved, but not reduction.
     if (marked_shortest_path_reduced())
       status.reset_shortest_path_reduced();
@@ -3717,7 +3713,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // `lhs' and `rhs' variables are disjoint.
       // Cylindrificate on all variables in the lhs.
       for (dimension_type i = lhs_vars.size(); i-- > 0; )
-	forget_all_constraints_on_var(dbm, space_dim, lhs_vars[i].id() + 1);
+	forget_all_constraints_on_var(lhs_vars[i].id() + 1);
       // Constrain the left hand side expression so that it is related to
       // the right hand side expression as dictated by `relsym'.
       // TODO: if the following constraint is NOT a bounded difference,
@@ -3744,7 +3740,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 #if 1 // Simplified computation (see the TODO note below).
 
       for (dimension_type i = lhs_vars.size(); i-- > 0; )
-	forget_all_constraints_on_var(dbm, space_dim, lhs_vars[i].id() + 1);
+	forget_all_constraints_on_var(lhs_vars[i].id() + 1);
 
 #else // Currently unnecessarily complex computation.
 
@@ -3764,7 +3760,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       shortest_path_closure_assign();
       assert(!marked_empty());
       for (dimension_type i = lhs_vars.size(); i-- > 0; )
-	forget_all_constraints_on_var(dbm, space_dim, lhs_vars[i].id() + 1);
+	forget_all_constraints_on_var(lhs_vars[i].id() + 1);
       // Constrain the new dimension so that it is related to
       // the left hand side as dictated by `relsym'.
       // TODO: each one of the following constraints is definitely NOT

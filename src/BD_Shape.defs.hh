@@ -84,7 +84,7 @@ template <typename T>
 bool operator!=(const BD_Shape<T>& x, const BD_Shape<T>& y);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
-/*!
+/*! \relates BD_Shape
   If the rectilinear distance between \p x and \p y is defined,
   stores an approximation of it into to \p r
   and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
@@ -101,7 +101,7 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
-/*!
+/*! \relates BD_Shape
   If the rectilinear distance between \p x and \p y is defined,
   stores an approximation of it into to \p r
   and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
@@ -118,7 +118,7 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
-/*!
+/*! \relates BD_Shape
   If the rectilinear distance between \p x and \p y is defined,
   stores an approximation of it into to \p r
   and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
@@ -138,7 +138,7 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 Temp& tmp2);
 
 //! Computes the euclidean distance between \p x and \p y.
-/*!
+/*! \relates BD_Shape
   If the euclidean distance between \p x and \p y is defined,
   stores an approximation of it into to \p r
   and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
@@ -155,7 +155,7 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			       const Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
-/*!
+/*! \relates BD_Shape
   If the euclidean distance between \p x and \p y is defined,
   stores an approximation of it into to \p r
   and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
@@ -172,7 +172,7 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			       const Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
-/*!
+/*! \relates BD_Shape
   If the euclidean distance between \p x and \p y is defined,
   stores an approximation of it into to \p r
   and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
@@ -192,7 +192,7 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			       Temp& tmp2);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
-/*!
+/*! \relates BD_Shape
   If the \f$L_\infty\f$ distance between \p x and \p y is defined,
   stores an approximation of it into to \p r
   and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
@@ -209,7 +209,7 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				const Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
-/*!
+/*! \relates BD_Shape
   If the \f$L_\infty\f$ distance between \p x and \p y is defined,
   stores an approximation of it into to \p r
   and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
@@ -226,7 +226,7 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				const Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
-/*!
+/*! \relates BD_Shape
   If the \f$L_\infty\f$ distance between \p x and \p y is defined,
   stores an approximation of it into to \p r
   and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
@@ -1168,6 +1168,11 @@ private:
   void add_dbm_constraint(dimension_type i, dimension_type j,
 			  Coefficient_traits::const_reference num,
 			  Coefficient_traits::const_reference den);
+
+  //! Removes all constraints on the variable of index \p v.
+  void forget_all_constraints_on_var(dimension_type v);
+  //! Removes all binary constraints on the variable of index \p v.
+  void forget_binary_constraints_on_var(dimension_type v);
 
   //! Assigns to <CODE>this->dbm</CODE> its shortest-path closure.
   void shortest_path_closure_assign() const;
