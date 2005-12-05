@@ -249,7 +249,8 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Decodes the constraint \p c as a bounded difference.
 /*!
   \return
-  <CODE>true</CODE> if the constraint \p c is a bounded difference;
+  <CODE>true</CODE> if the constraint \p c is a
+  \ref Bounded_Difference_Shapes "bounded difference";
   <CODE>false</CODE> otherwise.
 
   \param c
@@ -487,8 +488,8 @@ public:
     The BDS inherits the space dimension of \p cs.
 
     \param cs
-    A system of constraints: constraints that are not in
-    \ref bounded_difference_form "bounded differences form"
+    A system of constraints: constraints that are not
+    \ref Bounded_Difference_Shapes "bounded differences"
     are ignored (even though they may have contributed
     to the space dimension).
 
@@ -698,7 +699,8 @@ public:
   void difference_assign(const BD_Shape& y);
 
   //! \brief
-  //! Assigns to \p *this the \ref affine_function "affine image"
+  //! Assigns to \p *this the
+  //! \ref Single_Update_Affine_Functions "affine image"
   //! of \p *this under the function mapping variable \p var into the
   //! affine expression specified by \p expr and \p denominator.
   /*!
@@ -721,7 +723,8 @@ public:
 		    = Coefficient_one());
 
   //! \brief
-  //! Assigns to \p *this the \ref affine_function "affine preimage"
+  //! Assigns to \p *this the
+  //! \ref Single_Update_Affine_Functions "affine preimage"
   //! of \p *this under the function mapping variable \p var into the
   //! affine expression specified by \p expr and \p denominator.
   /*!
@@ -745,7 +748,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_affine_relation "affine relation"
+  //! \ref Generalized_Affine_Relations "affine relation"
   //! \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
   //! where \f$\mathord{\relsym}\f$ is the relation symbol encoded
   //! by \p relsym.
@@ -775,7 +778,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_affine_relation "affine relation"
+  //! \ref Generalized_Affine_Relations "affine relation"
   //! \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
   //! \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
   /*!
@@ -798,7 +801,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the result of computing the
-  //! \ref time_elapse "time-elapse" between \p *this and \p y.
+  //! \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
@@ -814,11 +817,6 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
-
-    \note
-    This operator is an <EM>extrapolation</EM> and not a <EM>widening</EM>,
-    since it does not provide a convergence guarantee for fixpoint iterations.
-    Use CH78_widening_assign if such a guarantee is required.
   */
   void CC76_extrapolation_assign(const BD_Shape& y);
 
@@ -837,11 +835,6 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
-
-    \note
-    This operator is an <EM>extrapolation</EM> and not a <EM>widening</EM>,
-    since it does not provide a convergence guarantee for fixpoint iterations.
-    Use CH78_widening_assign if such a guarantee is required.
   */
   template <typename Iterator>
   void CC76_extrapolation_assign(const BD_Shape& y,
@@ -857,7 +850,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref widening_with_tokens "widening with tokens" delay technique).
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
@@ -878,7 +871,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref widening_with_tokens "widening with tokens" delay technique).
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this, \p y and \p cs are dimension-incompatible or
@@ -914,7 +907,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref widening_with_tokens "widening with tokens" delay technique).
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this, \p y and \p cs are dimension-incompatible or
@@ -934,7 +927,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref widening_with_tokens "widening with tokens" delay technique).
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
@@ -955,7 +948,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref widening_with_tokens "widening with tokens" delay technique).
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this, \p y and \p cs are dimension-incompatible.
@@ -1222,10 +1215,10 @@ private:
   //! correctly flags the redundant entries in <CODE>this->dbm</CODE>.
   bool is_shortest_path_reduced() const;
 
-  //! Adds the constraint <CODE>dbm[i][j] <= k/den</CODE>.
+  //! Adds the constraint <CODE>dbm[i][j] \<= k/den</CODE>.
   void add_dbm_constraint(dimension_type i, dimension_type j, N k,
 			  Coefficient_traits::const_reference den = 1);
-  //! Adds the constraint <CODE>dbm[i][j] <= num/den</CODE>.
+  //! Adds the constraint <CODE>dbm[i][j] \<= num/den</CODE>.
   void add_dbm_constraint(dimension_type i, dimension_type j,
 			  Coefficient_traits::const_reference num,
 			  Coefficient_traits::const_reference den);
@@ -1268,7 +1261,7 @@ private:
     \p v, i.e., if the corresponding coefficient
     <CODE>q == sc_expr[u]/sc_den</CODE> is greater than zero.
     In particular:
-      - if <CODE>q \>= 1<CODE>, then <CODE>u - v \<= lb_u - lb_v</CODE>;
+      - if <CODE>q \>= 1</CODE>, then <CODE>u - v \<= lb_u - lb_v</CODE>;
       - if <CODE>0 \< q \< 1</CODE>, then
         <CODE>u - v \<= (q*lb_u + (1-q)*ub_u) - lb_v</CODE>.
   */
