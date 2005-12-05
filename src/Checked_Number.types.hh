@@ -17,6 +17,7 @@ PURPOSE. */
 namespace Parma_Polyhedra_Library {
 
 struct Checked_Number_Default_Policy;
+struct Extended_Number_Policy;
 
 template <typename T, typename Policy = Checked_Number_Default_Policy>
 class Checked_Number;
