@@ -2826,33 +2826,23 @@ PPL::Polyhedron::is_disjoint_from(const Polyhedron& y) const {
 
 void
 PPL::Polyhedron::ascii_dump(std::ostream& s) const {
-  using std::endl;
-
-  s << "space_dim "
-    << space_dim
-    << endl;
+  s << "space_dim " << space_dim << "\n";
   status.ascii_dump(s);
-  s << endl
-    << "con_sys ("
+  s << "\ncon_sys ("
     << (constraints_are_up_to_date() ? "" : "not_")
     << "up-to-date)"
-    << endl;
+    << "\n";
   con_sys.ascii_dump(s);
-  s << endl
-    << "gen_sys ("
+  s << "\ngen_sys ("
     << (generators_are_up_to_date() ? "" : "not_")
     << "up-to-date)"
-    << endl;
+    << "\n";
   gen_sys.ascii_dump(s);
-  s << endl
-    << "sat_c"
-    << endl;
+  s << "\nsat_c\n";
   sat_c.ascii_dump(s);
-  s << endl
-    << "sat_g"
-    << endl;
+  s << "\nsat_g\n";
   sat_g.ascii_dump(s);
-  s << endl;
+  s << "\n";
 }
 
 bool

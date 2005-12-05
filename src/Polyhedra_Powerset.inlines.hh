@@ -728,7 +728,7 @@ Polyhedra_Powerset<PH>::ascii_dump(std::ostream& s) const {
   const Polyhedra_Powerset& x = *this;
   s << "size " << x.size()
     << "\nspace_dim " << x.space_dim
-    << std::endl;
+    << "\n";
   for (const_iterator xi = x.begin(), x_end = x.end(); xi != x_end; ++xi)
     xi->element().ascii_dump(s);
 }

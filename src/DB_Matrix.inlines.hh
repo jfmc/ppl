@@ -158,7 +158,9 @@ DB_Matrix<T>::num_rows() const {
   return rows.size();
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 inline bool
 operator!=(const DB_Matrix<T>& x, const DB_Matrix<T>& y) {
@@ -376,13 +378,13 @@ DB_Matrix<T>::ascii_dump(std::ostream& s) const {
   const DB_Matrix<T>& x = *this;
   const char separator = ' ';
   const dimension_type nrows = x.num_rows();
-  s << nrows << separator << std::endl;
+  s << nrows << separator << "\n";
   for (dimension_type i = 0; i < nrows;  ++i) {
     for (dimension_type j = 0; j < nrows; ++j) {
       using namespace IO_Operators;
       s << x[i][j] << separator;
     }
-    s << std::endl;
+    s << "\n";
   }
 }
 
@@ -407,7 +409,9 @@ DB_Matrix<T>::ascii_load(std::istream& s) {
 }
 
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 inline bool
 operator==(const DB_Matrix<T>& x, const DB_Matrix<T>& y) {
@@ -441,18 +445,22 @@ struct maybe_assign_struct<Type, Type> {
   }
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
 //! Assigns to \p top a pointer to a location that holds the
 //! conversion, according to \p dir, of \p from to type \p To.  When
 //! necessary, and only when necessary, the variable \p tmp is used to
 //! hold the result of conversion.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename To, typename From>
 inline Result
 maybe_assign(const To*& top, To& tmp, const From& from, Rounding_Dir dir) {
   return maybe_assign_struct<To, From>::function(top, tmp, from, dir);
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename Specialization, typename Temp, typename To, typename T>
 inline bool
 l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -516,7 +524,9 @@ struct Rectilinear_Distance_Specialization {
   }
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename Temp, typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -549,7 +559,9 @@ struct Euclidean_Distance_Specialization {
   }
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename Temp, typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -581,7 +593,9 @@ struct L_Infinity_Distance_Specialization {
   }
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename Temp, typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -629,7 +643,9 @@ DB_Matrix<T>::OK() const {
   return true;
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */  //FIXME!!
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 std::ostream&
 IO_Operators::operator<<(std::ostream& s, const DB_Matrix<T>& c) {
@@ -637,7 +653,7 @@ IO_Operators::operator<<(std::ostream& s, const DB_Matrix<T>& c) {
   for (dimension_type i = 0; i < n; ++i) {
     for (dimension_type j = 0; j < n; ++j)
       s << c[i][j] << " ";
-    s << std::endl;
+    s << "\n";
   }
   return s;
 }
@@ -646,7 +662,9 @@ IO_Operators::operator<<(std::ostream& s, const DB_Matrix<T>& c) {
 
 namespace std {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 inline void
 swap(Parma_Polyhedra_Library::DB_Matrix<T>& x,

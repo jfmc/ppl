@@ -165,7 +165,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const PPL::Bounding_Box& bbox) {
     }
     else
       s << "+inf)";
-    s << std::endl;
+    s << "\n";
   }
   return s;
 }

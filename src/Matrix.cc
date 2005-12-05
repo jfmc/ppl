@@ -259,8 +259,7 @@ PPL::Matrix::ascii_dump(std::ostream& s) const {
   const Matrix& x = *this;
   dimension_type x_num_rows = x.num_rows();
   dimension_type x_num_columns = x.num_columns();
-  s << x_num_rows << " x " << x_num_columns
-    << std::endl;
+  s << x_num_rows << " x " << x_num_columns << "\n";
   for (dimension_type i = 0; i < x_num_rows; ++i)
     x[i].ascii_dump(s);
 }

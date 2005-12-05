@@ -162,7 +162,7 @@ PPL::Row::ascii_dump(std::ostream& s) const {
     s << x[i] << ' ';
   s << "f ";
   flags().ascii_dump(s);
-  s << std::endl;
+  s << "\n";
 }
 
 bool

@@ -637,7 +637,7 @@ template <typename CS>
 void
 Ask_Tell<CS>::H79_extrapolation_assign(const Ask_Tell& y) {
   using namespace IO_Operators;
-  std::cout << *this << std::endl
+  std::cout << *this << "\n"
 	    << y << std::endl;
 }
 
