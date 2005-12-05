@@ -23,9 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_DB_Matrix_inlines_hh
 #define PPL_DB_Matrix_inlines_hh 1
 
+#include "globals.defs.hh"
+#include "Checked_Number.defs.hh"
 #include <cassert>
 #include <iostream>
-#include "globals.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

@@ -23,8 +23,11 @@ site: http://www.cs.unipr.it/ppl/ .  */
 #ifndef PPL_DB_Matrix_defs_hh
 #define PPL_DB_Matrix_defs_hh 1
 
+#include "globals.types.hh"
 #include "DB_Matrix.types.hh"
 #include "DB_Row.defs.hh"
+#include "Checked_Number.types.hh"
+#include "Rounding_Dir.defs.hh"
 #include <vector>
 #include <cstddef>
 #include <iosfwd>
@@ -215,10 +218,10 @@ public:
 
 namespace std {
 
-#ifdef Parma_Polyhedra_Library_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */
-#endif // Parma_Polyhedra_Library_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 void swap(Parma_Polyhedra_Library::DB_Matrix<T>& x,
 	  Parma_Polyhedra_Library::DB_Matrix<T>& y);
