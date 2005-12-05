@@ -1,3 +1,125 @@
+2005-10-11 Tuesday 10:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.guess, src/Makefile.am, src/Makefile.in, utils/Makefile.am
+	  (grids.[3,2,2,3]): Fifth merge from main trunk.
+
+2005-10-02 Sunday 14:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Makefile.am (1.3): Definition of BUILT_SOURCES revised.
+
+2005-10-02 Sunday 11:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.guess (1.17): Updated.
+
+2005-09-28 Wednesday 22:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Makefile.am (1.2): A PPL distribution should now be
+	  compilable even on environments lacking Perl.
+
+2005-09-28 Wednesday 21:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: .cvsignore, Doubly_Linked_Object.defs.hh,
+	  Doubly_Linked_Object.inlines.hh, Doubly_Linked_Object.types.hh,
+	  EList.defs.hh, EList.inlines.hh, EList.types.hh,
+	  EList_Iterator.defs.hh, EList_Iterator.inlines.hh,
+	  EList_Iterator.types.hh, Handler.defs.hh, Handler.inlines.hh,
+	  Handler.types.hh, Makefile.am, Makefile.in, Pending_Element.cc,
+	  Pending_Element.defs.hh, Pending_Element.inlines.hh,
+	  Pending_Element.types.hh, Pending_List.cc, Pending_List.defs.hh,
+	  Pending_List.inlines.hh, Pending_List.types.hh, Time.cc,
+	  Time.defs.hh, Time.inlines.hh, Time.types.hh, Watchdog.cc,
+	  Watchdog.defs.hh, Watchdog.inlines.hh, Watchdog.types.hh,
+	  pwl_header.hh
+	  (grids.[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]):
+	  Files moved as in the main trunk.
+
+2005-09-28 Wednesday 21:04  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* .cvsignore, ChangeLog, Doubly_Linked_Object.defs.hh,
+	  Doubly_Linked_Object.inlines.hh, Doubly_Linked_Object.types.hh,
+	  EList.defs.hh, EList.inlines.hh, EList.types.hh,
+	  EList_Iterator.defs.hh, EList_Iterator.inlines.hh,
+	  EList_Iterator.types.hh, Handler.defs.hh, Handler.inlines.hh,
+	  Handler.types.hh, Makefile.am, Pending_Element.cc,
+	  Pending_Element.defs.hh, Pending_Element.inlines.hh,
+	  Pending_Element.types.hh, Pending_List.cc, Pending_List.defs.hh,
+	  Pending_List.inlines.hh, Pending_List.types.hh, Time.cc,
+	  Time.defs.hh, Time.inlines.hh, Time.types.hh, Watchdog.cc,
+	  Watchdog.defs.hh, Watchdog.inlines.hh, Watchdog.types.hh,
+	  configure.ac, pwl_header.hh, utils/Makefile.am,
+	  utils/build_header, utils/build_header.in
+	  (grids.[1,1,2,2,1,2,2,1,2,2,1,3,3,1,2,2,2,2,1,2,2,2,1,2,2,3,1,2,2,2,1,2,2,2,2,1]):
+	  Fourth merge from the main trunk.
+
+2005-09-28 Wednesday 18:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* utils/Makefile.am (1.4): Make sure the scripts in the `utils'
+	  subdirectory are made also at distribution time, even if they are
+	  not distributed themselves.
+
+2005-09-23 Friday 22:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* .cvsignore (1.5): Updated.
+
+2005-09-23 Friday 21:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Doubly_Linked_Object.defs.hh (1.4),
+	  Doubly_Linked_Object.inlines.hh (1.4),
+	  Doubly_Linked_Object.types.hh (1.3), EList.defs.hh (1.6),
+	  EList.inlines.hh (1.5), EList.types.hh (1.3),
+	  EList_Iterator.defs.hh (1.4), EList_Iterator.inlines.hh (1.5),
+	  EList_Iterator.types.hh (1.3), Handler.defs.hh (1.6),
+	  Handler.inlines.hh (1.5), Handler.types.hh (1.3), Makefile.am
+	  (1.23), Pending_Element.cc (1.4), Pending_Element.defs.hh (1.4),
+	  Pending_Element.inlines.hh (1.4), Pending_Element.types.hh (1.3),
+	  Pending_List.cc (1.4), Pending_List.defs.hh (1.4),
+	  Pending_List.inlines.hh (1.4), Pending_List.types.hh (1.3),
+	  Time.cc (1.4), Time.defs.hh (1.4), Time.inlines.hh (1.5),
+	  Time.types.hh (1.3), Watchdog.cc (1.21), Watchdog.defs.hh (1.17),
+	  Watchdog.inlines.hh (1.14), Watchdog.types.hh (1.7), configure.ac
+	  (1.32), pwl_header.hh (1.2), src/.cvsignore (1.1),
+	  src/Doubly_Linked_Object.defs.hh (1.1),
+	  src/Doubly_Linked_Object.inlines.hh (1.1),
+	  src/Doubly_Linked_Object.types.hh (1.1), src/EList.defs.hh (1.1),
+	  src/EList.inlines.hh (1.1), src/EList.types.hh (1.1),
+	  src/EList_Iterator.defs.hh (1.1), src/EList_Iterator.inlines.hh
+	  (1.1), src/EList_Iterator.types.hh (1.1), src/Handler.defs.hh
+	  (1.1), src/Handler.inlines.hh (1.1), src/Handler.types.hh (1.1),
+	  src/Makefile.am (1.1), src/Pending_Element.cc (1.1),
+	  src/Pending_Element.defs.hh (1.1), src/Pending_Element.inlines.hh
+	  (1.1), src/Pending_Element.types.hh (1.1), src/Pending_List.cc
+	  (1.1), src/Pending_List.defs.hh (1.1),
+	  src/Pending_List.inlines.hh (1.1), src/Pending_List.types.hh
+	  (1.1), src/Time.cc (1.1), src/Time.defs.hh (1.1),
+	  src/Time.inlines.hh (1.1), src/Time.types.hh (1.1),
+	  src/Watchdog.cc (1.1), src/Watchdog.defs.hh (1.1),
+	  src/Watchdog.inlines.hh (1.1), src/Watchdog.types.hh (1.1),
+	  src/pwl_header.hh (1.1): Restructured.
+
+2005-09-23 Friday 21:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.31): Configure is no longer responsible for
+	  creating build_header.
+
+2005-09-23 Friday 19:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* utils/: Makefile.am (1.3), build_header.in (1.2): Generation of
+	  utility scripts fixed.
+
+2005-09-23 Friday 14:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.22), configure.ac (1.30), utils/Makefile.am (1.2),
+	  utils/build_header (1.2), utils/build_header.in (1.1): Allow Perl
+	  to be installed into non-standard places.
+
+2005-09-23 Friday 12:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.29): Check for Perl.
+
+2005-09-19 Monday 14:38  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.11): Updated.
+
 2005-09-08 Thursday 01:26  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* configure.ac (1.28): Allow the specification of
