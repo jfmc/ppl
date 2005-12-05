@@ -1624,10 +1624,6 @@ Your configure command would then look like
 <H2>CIAO Prolog</H2>
 
 The Ciao Prolog interface to the PPL is available
-both as a statically linked module and as a dynamically linked one.
-Only Ciao Prolog versions 1.10 #5 and later are supported.
-
-The Ciao Prolog interface to the PPL is available
 both as ``PPL enhanced'' Ciao Prolog interpreter
 and as a library that can be linked to Ciao Prolog programs.
 Only Ciao Prolog versions 1.10 #5 and later are supported.
@@ -1643,7 +1639,7 @@ on which you compiled the library, the command <CODE>make install</CODE>
 will install the executable <CODE>ppl_ciao</CODE> in the directory
 <CODE>prefix/bin</CODE>.
 The <CODE>ppl_ciao</CODE> executable is simply the Ciao Prolog
-interpreter with the Parma Polyhedra library linked in.
+interpreter with the Parma Polyhedra Library linked in.
 The only thing you should do to use the library is to
 call <CODE>ppl_initialize/0</CODE> before any other PPL predicate
 and to call <CODE>ppl_finalize/0</CODE> when you are done with the
@@ -1690,7 +1686,7 @@ on which you compiled the library, the command <CODE>make install</CODE>
 will install the executable <CODE>ppl_gprolog</CODE> in the directory
 <CODE>prefix/bin</CODE>.
 The <CODE>ppl_gprolog</CODE> executable is simply the GNU Prolog
-interpreter with the Parma Polyhedra library linked in.
+interpreter with the Parma Polyhedra Library linked in.
 The only thing you should do to use the library is to
 call <CODE>ppl_initialize/0</CODE> before any other PPL predicate
 and to call <CODE>ppl_finalize/0</CODE> when you are done with the
@@ -1727,7 +1723,7 @@ on which you compiled the library, the command <CODE>make install</CODE>
 will install the executable <CODE>ppl_sicstus</CODE> in the directory
 <CODE>prefix/bin</CODE>.
 The <CODE>ppl_sicstus</CODE> executable is simply the SICStus Prolog
-system with the Parma Polyhedra library statically linked.
+system with the Parma Polyhedra Library statically linked.
 The only thing you should do to use the library is to
 load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
 
@@ -1752,7 +1748,7 @@ on which you compiled the library, the command <CODE>make install</CODE>
 will install the executable <CODE>ppl_pl</CODE> in the directory
 <CODE>prefix/bin</CODE>.
 The <CODE>ppl_pl</CODE> executable is simply the SWI-Prolog
-shell with the Parma Polyhedra library statically linked:
+shell with the Parma Polyhedra Library statically linked:
 from within <CODE>ppl_pl</CODE> all the services of the library
 are available without further action.
 
