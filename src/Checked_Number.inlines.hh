@@ -478,6 +478,7 @@ DEF_INCREMENT(operator --, assign_sub)
 
 #undef DEF_INCREMENT
 
+/*! \relates Checked_Number */
 template <typename T, typename Policy>
 inline void
 swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y) {

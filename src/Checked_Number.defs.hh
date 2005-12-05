@@ -384,6 +384,7 @@ FUNC2(assign_sub_mul)
 #undef FUNC2
 
 //! Swaps \p *this with \p y.
+/*! \relates Checked_Number */
 template <typename T, typename Policy>
 void swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y);
 
