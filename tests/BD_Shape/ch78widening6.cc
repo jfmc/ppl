@@ -82,14 +82,16 @@ main() TRY {
     // Force closure.
     (void) (m_i_next == m_i_next);
     if (m_i == m_i_next) {
-     TBD_Shape known_result(3);
-     int retval = (m_i == known_result) ? 0 : 1;
+      TBD_Shape known_result(3);
+      known_result.add_constraint(-1 <= b-c);
+      known_result.add_constraint(      b-c <= 1);
+      int retval = (m_i == known_result) ? 0 : 1;
 #if NOISY
-    cout << "*** m_" << i << " (fixpoint) ***" << endl
-	 << m_i << endl;
-     print_constraints(known_result, "*** known_result ***");
+      cout << "*** m_" << i << " (fixpoint) ***" << endl
+	   << m_i << endl;
+      print_constraints(known_result, "*** known_result ***");
 #endif
-     return retval;
+      return retval;
     }
     m_i = m_i_next;
   }

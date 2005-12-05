@@ -59,10 +59,7 @@ main() TRY {
   TBD_Shape computed_result = bd2;
   computed_result.CH78_widening_assign(bd1);
 
-  TBD_Shape known_result(2);
-  known_result.add_constraint(y >= 0);
-  known_result.add_constraint(x <= 1);
-  known_result.add_constraint(x >= 0);
+  TBD_Shape known_result = bd2;
 
 #if NOISY
   print_constraints(computed_result,
