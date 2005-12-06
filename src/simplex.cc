@@ -559,7 +559,7 @@ void erase_slacks(Matrix& tableau,
   cost_function.swap(costs[1]);
   costs.erase_to_end(1);
   // ... then properly set the element in the (new) last column,
-  // encoding the kind of optimization; ...
+  // encoding the optimization mode; ...
   cost_function[new_tableau_last_index] = cost_function[tableau_last_index];
   // ... and finally remove redundant columns.
   costs.remove_trailing_columns(tableau_last_index - new_tableau_last_index);
@@ -1055,7 +1055,7 @@ PPL::Constraint_System::primal_simplex(Linear_Expression& cost_function,
 
 Simplex_Status
 PPL::Constraint_System::primal_simplex(const Linear_Expression& expr,
-				       const Optimization_Kind kind,
+				       const Optimization_Mode m,
 				       Coefficient& ext_n,
 				       Coefficient& ext_d,
 				       Generator& optimizing_point) const {
@@ -1080,7 +1080,7 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expr,
   Linear_Expression cost_function = expr;
 
   // Minimization is obtained by negating the cost_function.
-  if (kind == MINIMIZATION)
+  if (m == MINIMIZATION)
     for (dimension_type i = cost_function.size(); i-- > 0; )
       negate(cost_function[i]);
 

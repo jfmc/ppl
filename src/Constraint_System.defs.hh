@@ -173,8 +173,8 @@ public:
     \param expr
     The objective function to be optimized.
 
-    \param kind
-    The kind of optimization requested.
+    \param m
+    The optimization mode requested.
 
     \param ext_n
     On exit, if the problem has been solved, will contain the numerator
@@ -196,7 +196,7 @@ public:
     will be left untouched.
   */
   Simplex_Status primal_simplex(const Linear_Expression& expr,
-				Optimization_Kind kind,
+				Optimization_Mode m,
 				Coefficient& ext_n,
 				Coefficient& ext_d,
 				Generator& optimizing_point) const;

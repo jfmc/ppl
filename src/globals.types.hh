@@ -54,8 +54,8 @@ enum Complexity_Class {
   ANY_COMPLEXITY
 };
 
-//! Possible optimization kinds.
-enum Optimization_Kind {
+//! Possible optimization modes.
+enum Optimization_Mode {
   //! Minimization is requested.
   MINIMIZATION,
   //! Maximiation is requested.
