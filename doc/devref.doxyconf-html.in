@@ -504,6 +504,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Linear_System.defs.hh \
                          @srcdir@/../src/Linear_System.inlines.hh \
                          @srcdir@/../src/Linear_System.cc \
+                         @srcdir@/../src/LP_Problem.types.hh \
+                         @srcdir@/../src/LP_Problem.defs.hh \
+                         @srcdir@/../src/LP_Problem.inlines.hh \
+                         @srcdir@/../src/LP_Problem.cc \
                          @srcdir@/../src/Saturation_Row.types.hh \
                          @srcdir@/../src/Saturation_Row.defs.hh \
                          @srcdir@/../src/Saturation_Row.inlines.hh \
