@@ -36,7 +36,7 @@ LP_Problem::LP_Problem()
 inline
 LP_Problem::LP_Problem(const Constraint_System& cs,
 		       const Linear_Expression& obj,
-		       const Optimization_Kind kind)
+		       const Optimization_Mode kind)
   :tableau(), base(), dim_map(), status(PROBLEM_UNSOLVED),
    input_cs(cs), input_obj_function(obj), opt_kind(kind),
    last_generator(point()){
@@ -72,7 +72,7 @@ LP_Problem::add_constraints(const Constraint_System& cs) {
   for (dimension_type i = cs_num_rows; i-- > 0; )
     input_cs.insert(cs[i]);
   if (status != PROBLEM_UNSATISFIABLE)
-     // FIXME: Here we should apply the incremental simplex algorithm: for
+    // FIXME: Here we should apply the incremental simplex algorithm: for
     // the moment we'll proceed computing a feaseble base from the beginning.
     // As soon as possible the following line will be uncommented.
     // status = PROBLEM_PARTIALLY_SATISFIABLE;
@@ -95,7 +95,7 @@ LP_Problem::set_objective_function(const Linear_Expression& obj) {
 }
 
 inline void
-LP_Problem::set_optimization_kind(Optimization_Kind kind){
+LP_Problem::set_optimization_mode(Optimization_Mode kind){
   if (kind == opt_kind)
     return;
   switch(status){
@@ -112,14 +112,73 @@ LP_Problem::set_optimization_kind(Optimization_Kind kind){
 }
 
 inline const Linear_Expression&
-LP_Problem::obj_function() const {
+LP_Problem::objective_function() const {
   return input_obj_function;
 }
 
-inline Optimization_Kind
+inline Optimization_Mode
 LP_Problem::optimization_mode() const {
   return opt_kind;
 }
+
+inline const Generator&
+LP_Problem::feasible_point() {
+   switch(status) {
+  case PROBLEM_UNSOLVED:
+    if(is_satisfiable())
+      return last_generator;
+    throw std::domain_error("*this is not satisfiable.");
+    break;
+   case PROBLEM_UNSATISFIABLE:
+     throw std::domain_error("*this is not satisfiable.");
+     break;
+   case PROBLEM_SATISFIABLE:
+     return last_generator;
+     break;
+   case PROBLEM_UNBOUNDED:
+     return last_generator;
+   case PROBLEM_PARTIALLY_SATISFIABLE:
+     if(is_satisfiable())
+       return last_generator;
+     throw std::domain_error("*this is not satisfiable.");
+     break;
+   case PROBLEM_OPTIMIZED:
+     return last_generator;
+     break;
+  }
+   // If we have reached this point something went wrong.
+   throw std::runtime_error("PPL internal error");
+}
+
+inline const Generator&
+LP_Problem::optimizing_point() {
+  switch(status) {
+  case PROBLEM_UNSOLVED:
+    if(solve() == SOLVED_PROBLEM)
+      return last_generator;
+    throw std::domain_error("*this doesn't have an optimizing point.");
+    break;
+   case PROBLEM_UNSATISFIABLE:
+     throw std::domain_error("*this doesn't have an optimizing point.");
+     break;
+   case PROBLEM_SATISFIABLE:
+     if(second_phase() == SOLVED_PROBLEM)
+       return last_generator;
+     break;
+   case PROBLEM_UNBOUNDED:
+       throw std::domain_error("*this doesn't have an optimizing point.");
+  case PROBLEM_PARTIALLY_SATISFIABLE:
+     if(solve() == SOLVED_PROBLEM)
+       return last_generator;
+     throw std::domain_error("*this doesn't have an optimizing point.");
+     break;
+   case PROBLEM_OPTIMIZED:
+     return last_generator;
+     break;
+   }
+  // If we have reached this point something went wrong.
+  throw std::runtime_error("PPL internal error");
+};
 
 inline const Constraint_System&
 LP_Problem::constraints() const{
@@ -127,26 +186,26 @@ LP_Problem::constraints() const{
 }
 
 inline Simplex_Status
-LP_Problem::solve(Generator& optimal_point) {
+LP_Problem::solve() {
   switch(status){
   case PROBLEM_UNSATISFIABLE:
     return UNFEASIBLE_PROBLEM;
   case PROBLEM_SATISFIABLE:
-    Simplex_Status new_status =  second_phase(optimal_point);
+    Simplex_Status new_status = second_phase();
 
     // If the the return status is `SOLVED_PROBLEM' we keep track
     // of the optimal computed point, it's still a feasible point.
     if (new_status == SOLVED_PROBLEM)
-      last_generator = optimal_point;
-    assert(input_cs.satisfies_all_constraints(optimal_point));
+      // optimizing_point = optimal_point;
+      //   assert(input_cs.satisfies_all_constraints(last_optimizing_point));
     return new_status;
   default:
-    if(is_satisfiable(optimal_point)){
-      assert(input_cs.satisfies_all_constraints(optimal_point));
-      Simplex_Status new_status =  second_phase(optimal_point);
+    if(is_satisfiable()){
+      //      assert(input_cs.satisfies_all_constraints(last_feasible_point));
+      Simplex_Status new_status =  second_phase();
       // In this case we have an optimal point, still feasible.
       if (new_status == SOLVED_PROBLEM)
-	assert(input_cs.satisfies_all_constraints(optimal_point));
+	//assert(input_cs.satisfies_all_constraints(last_optimizing_point));
       return new_status;
     }
     return UNFEASIBLE_PROBLEM;
@@ -208,7 +267,8 @@ LP_Problem::external_memory_in_bytes() const {
     // + dim_map.external_memory_in_bytes()
     + input_cs.external_memory_in_bytes()
     + input_obj_function.external_memory_in_bytes()
-    + sizeof(opt_kind);
+    + last_generator.external_memory_in_bytes()
+   + sizeof(opt_kind);
 }
 
 inline memory_size_type
@@ -221,6 +281,7 @@ LP_Problem::total_memory_in_bytes() const {
     // + dim_map.total_memory_in_bytes()
     + input_cs.total_memory_in_bytes()
     + input_obj_function.total_memory_in_bytes()
+    + last_generator.external_memory_in_bytes()
     + sizeof(opt_kind);
 }
 

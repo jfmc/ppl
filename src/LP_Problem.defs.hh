@@ -68,7 +68,7 @@ public:
   */
   explicit LP_Problem(const Constraint_System& cs,
 		      const Linear_Expression& obj = Linear_Expression::zero(),
-		      Optimization_Kind kind = MAXIMIZATION);
+		      Optimization_Mode kind = MAXIMIZATION);
 
   //! Ordinary copy-constructor.
   LP_Problem(const LP_Problem& y);
@@ -89,10 +89,10 @@ public:
   const Constraint_System& constraints() const;
 
   //! Returns the current objective function.
-  const Linear_Expression& obj_function() const;
+  const Linear_Expression& objective_function() const;
 
   //! Returns the current objective function.
-  Optimization_Kind optimization_mode() const;
+  Optimization_Mode optimization_mode() const;
 
   //! Resets \p *this to be equal to the trivial LP problem.
   void clear();
@@ -116,40 +116,57 @@ public:
   void set_objective_function(const Linear_Expression& obj);
 
   //! Sets the optimization kind to \p kind.
-  void set_optimization_kind(Optimization_Kind kind);
+  void set_optimization_mode(Optimization_Mode kind);
 
   //! Checks satisfiability of \p *this.
   /*!
     \return
     <CODE>true</CODE> if and only if the LP problem is satisfiable.
-
-    \param feasible_point
-    On exit, if the LP problem is satisfiable, will contain a feasible point.
-
-    If the optimization problem is unfeasible, the parameter
-    \p feasible_point will be left untouched.
   */
-  bool is_satisfiable(Generator& feasible_point);
+  bool is_satisfiable();
 
   //! Optimizes the current LP problem using the primal simplex algorithm.
   /*!
     \return
     A Simplex_Status flag indicating the outcome of the optimization
     attempt (unfeasible, unbounded or solved problem).
-
-    \param optimal_point
-    On exit, if the LP problem is solved, will contain an optimal point;
-    if the LP problem is unbounded, will containt a feasible point.
-
-    If the optimization problem is unfeasible, the parameter
-    \p optimal_point will be left untouched.
   */
-  Simplex_Status solve(Generator& optimal_point);
+  Simplex_Status solve();
 
-  //! Gets the optimum value substiting the last succesfully computed generator
-  //!  in the objective function.
-  void get_optimum_value(Coefficient& a, Coefficient& b,
-			 const Generator& optimizing_point) const;
+  //! \brief
+  //! Computes a constant value substituting \p evaluating_point
+  //! in the objective function.
+  /*!
+    \param evaluating_point
+    The point to be evaluated
+
+    \param ext_n
+    On exit will contain the numerator of the evaluated point substituted in
+    the current objective function.
+
+    \param ext_d
+    On exit will contain the denominator of the evaluated point substituted in
+    the current objective function.
+  */
+
+ void evaluate_objective_function(const Generator&  evaluating_point,
+				  Coefficient& a, Coefficient& b) const;
+
+  //! \brief
+  //! Returns a feasible point of \p *this if this exists.
+  /*!
+    \exception std::domain_error
+    Thrown if \p *this is not satisfiable.
+  */
+  const Generator& feasible_point();
+
+  //! \brief
+  //! Returns an optimum point of \p *this if this exists.
+  /*!
+    \exception std::domain_error
+    Thrown if \p *this doesn't not have an optimizing point.
+  */
+  const Generator& optimizing_point();
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -212,13 +229,13 @@ private:
   Linear_Expression input_obj_function;
 
   //! The kind of optimization requested.
-  Optimization_Kind opt_kind;
+  Optimization_Mode opt_kind;
 
-  //! The last succesfully computed generator.
+  //! The last succesfully computed optmizing point.
   Generator last_generator;
 
   //! Optimizes the current LP problem using the second phase
-  //| primal simplex algorithm.
+  //! primal simplex algorithm.
   /*!
     \return
     A Simplex_Status flag indicating the outcome of the optimization
@@ -229,7 +246,7 @@ private:
     if the LP problem is unbounded, will contain a feasible point.
   */
 
-  Simplex_Status second_phase(Generator& optimal_point);
+  Simplex_Status second_phase();
 
   //! \brief
   //! Assigns to \p this->tableau a simplex tableau representing the

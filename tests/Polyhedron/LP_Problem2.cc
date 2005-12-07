@@ -56,8 +56,9 @@ main() {
   Coefficient a,b;
   Generator pg(point());
   LP_Problem lpp = LP_Problem(cs, cost, MAXIMIZATION);
-  lpp.solve(pg);
-  lpp.get_optimum_value(a, b, pg);
+  lpp.solve();
+  pg = lpp.optimizing_point();
+  lpp.evaluate_objective_function(pg, a, b);
 #if NOISY
   cout << "Optimum computed by LP_Problem::solve  "<< a <<
     "/" << b << endl << endl;
@@ -65,8 +66,9 @@ main() {
 #endif
   Linear_Expression new_cost = -51*A + 632*B;
   lpp.set_objective_function(new_cost);
-  lpp.solve(pg);
-  lpp.get_optimum_value(a, b, pg);
+  lpp.solve();
+  pg = lpp.optimizing_point();
+  lpp.evaluate_objective_function(pg, a, b);
 #if NOISY
   cout << "Optimum computed by LP_Problem::solve "<< a <<
     "/" << b << endl << endl;
@@ -77,14 +79,15 @@ main() {
   cout << "Optimum computed by Constraint_System::primal_simplex "<< a <<
     "/" << b << endl << endl;
 #endif
-  //   lpp.get_optimum_value(a, b, pg);
+  //   lpp.evaluate_objective_function(a, b, pg);
   //   print_generator(pg);
 #if NOISY
-  std::cout << "Setting a new Optimization_Kind" << std::endl;
+  std::cout << "Setting a new Optimization_Mode" << std::endl;
 #endif
-  lpp.set_optimization_kind(MINIMIZATION);
-  lpp.solve(pg);
-  lpp.get_optimum_value(a, b, pg);
+  lpp.set_optimization_mode(MINIMIZATION);
+  lpp.solve();
+  pg = lpp.optimizing_point();
+  lpp.evaluate_objective_function(pg, a, b);
 #if NOISY
   cout << "Optimum computed by LP_Problem::solve is "<< a <<
     "/" << b << endl << "Computed Generator ";
@@ -93,7 +96,7 @@ main() {
   cs.primal_simplex(new_cost, MINIMIZATION, a ,b, pg);
 #if NOISY
   cout << std::endl << "Optimum computed by Constraint_System::primal_simplex"
-    "is "<< a << "/" << b << endl << "Computed Generator ";
+    " is "<< a << "/" << b << endl << "Computed Generator ";
   print_generator(pg);
 #endif
   return 0;

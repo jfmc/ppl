@@ -113,8 +113,9 @@ main() {
   Generator pg(point());
   Simplex_Status ss;
   LP_Problem lpp = LP_Problem(cs, cost, MAXIMIZATION);
-  lpp.solve(pg);
-  lpp.get_optimum_value(a, b, pg);
+  lpp.solve();
+  pg = lpp.optimizing_point();
+  lpp.evaluate_objective_function(pg, a, b);
 #if NOISY
   cout << "Optimum computed by LP_Problem::solve is "<< a <<
     "/" << b << " Computed Generator";
@@ -126,13 +127,14 @@ main() {
     "/" << b << " Computed Generator";
   print_generator(pg);
 #endif
-  bool lpp_satisfiable = lpp.is_satisfiable(pg);
+  bool lpp_satisfiable = lpp.is_satisfiable();
 #if NOISY
   if (lpp_satisfiable)
-    cout << "lpp is feasable" << std::endl;
+    cout << "lpp is feasible" << std::endl;
   else
-    cout << "lpp is not feasable" << std::endl;
+    cout << "lpp is not feasible" << std::endl;
 #endif
+  // lpp now will be unfeasible.
   Constraint_System lp_other_constraints;
   lp_other_constraints.insert(X05 >= 5);
   lp_other_constraints.insert(X05 <= 3);
@@ -140,12 +142,12 @@ main() {
   std::cout << "Adding new constraints to lpp" << std::endl;
 #endif
   lpp.add_constraints(lp_other_constraints);
-  lpp_satisfiable = lpp.is_satisfiable(pg);
+  lpp_satisfiable = lpp.is_satisfiable();
 #if NOISY
   if (lpp_satisfiable)
-    cout << "lpp is feasable" << std::endl;
+    cout << "lpp is feasible" << std::endl;
   else
-    cout << "lpp is not feasable" << std::endl;
+    cout << "lpp is not feasible" << std::endl;
 #endif
-  lpp.solve(pg);
+  lpp.solve();
 }

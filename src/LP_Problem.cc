@@ -845,7 +845,7 @@ PPL::LP_Problem::compute_generator() {
 }
 
 PPL::Simplex_Status
-PPL::LP_Problem::second_phase(Generator& maximizing_point) {
+PPL::LP_Problem::second_phase() {
   // This code still requires a bit of testing.
   // Negate the cost function if we are minimizing.
   Row new_cost = input_obj_function;
@@ -883,8 +883,7 @@ PPL::LP_Problem::second_phase(Generator& maximizing_point) {
 	    << num_iterations << "." << std::endl;
 #endif
   if (second_phase_successful) {
-    maximizing_point = compute_generator();
-    last_generator = maximizing_point;
+    last_generator = compute_generator();
     status = PROBLEM_OPTIMIZED;
     return SOLVED_PROBLEM;
   }
@@ -894,24 +893,26 @@ PPL::LP_Problem::second_phase(Generator& maximizing_point) {
 }
 
 void
-PPL::LP_Problem::get_optimum_value(Coefficient& ext_n, Coefficient& ext_d,
-				   const Generator& optimizing_point) const{
+PPL::LP_Problem::evaluate_objective_function(const Generator&
+					     evaluating_point,
+					     Coefficient& ext_n,
+					     Coefficient& ext_d) const{
   // Compute the optimal value of the cost function.
   ext_n = input_obj_function.inhomogeneous_term();
-  for (dimension_type i = optimizing_point.space_dimension(); i-- > 0; )
-    ext_n += optimizing_point.coefficient(Variable(i))
+  for (dimension_type i = evaluating_point.space_dimension(); i-- > 0; )
+    ext_n += evaluating_point.coefficient(Variable(i))
       * input_obj_function.coefficient(Variable(i));
    // Numerator and denominator should be coprime.
-   normalize2(ext_n, optimizing_point.divisor(), ext_n, ext_d);
+   normalize2(ext_n, evaluating_point.divisor(), ext_n, ext_d);
  }
 
 bool
-PPL::LP_Problem::is_satisfiable(Generator& maximizing_point){
+PPL::LP_Problem::is_satisfiable(){
 #if PPL_NOISY_SIMPLEX
   num_iterations = 0;
 #endif
   // Check for the `status' attribute in trivial cases.
-  switch(status){
+switch (status){
   case PROBLEM_UNSATISFIABLE:{
 #if PPL_NOISY_SIMPLEX
     std::cout << "LP_Problem::solve: 1st phase ended at iteration "
@@ -924,7 +925,6 @@ PPL::LP_Problem::is_satisfiable(Generator& maximizing_point){
     std::cout << "LP_Problem::solve: 1st phase ended at iteration "
 	      << num_iterations << "." << std::endl;
 #endif
-    maximizing_point = last_generator;
     return true;
   }
 
@@ -933,7 +933,6 @@ PPL::LP_Problem::is_satisfiable(Generator& maximizing_point){
     std::cout << "LP_Problem::solve: 1st phase ended at iteration "
 	      << num_iterations << "." << std::endl;
 #endif
-    maximizing_point = last_generator;
     return true;
   }
   default:
@@ -958,16 +957,14 @@ PPL::LP_Problem::is_satisfiable(Generator& maximizing_point){
   case UNBOUNDED_PROBLEM:
     // A feasible point has to be returned: the origin.
     // Ensure the right space dimension is obtained.
-    maximizing_point = point(0*Variable(space_dim-1));
-    last_generator = maximizing_point;
+    last_generator = point(0*Variable(space_dim-1));
     return s_status;
   case SOLVED_PROBLEM:
     // Check for the special case of an empty tableau,
-    // in which case a maximizing solution is the origin.
+    // in which case an optimizing solution is the origin.
     if (tableau.num_rows() == 0) {
       // Ensure the right space dimension is obtained.
-      maximizing_point = point(0*Variable(space_dim-1));
-      last_generator = maximizing_point;
+      last_generator = point(0*Variable(space_dim-1));
       return s_status;
     }
     break;
@@ -1000,10 +997,8 @@ PPL::LP_Problem::is_satisfiable(Generator& maximizing_point){
 
   // The first phase has found a feasible solution. If only a satisfiability
   // check was requested, we can return that feasible solution.
-  maximizing_point = compute_generator();
-
   // Store the last succesfully computed generator.
-  last_generator = maximizing_point;
+  last_generator = compute_generator();
   status = PROBLEM_SATISFIABLE;
   // Erase the slack variables.
   erase_slacks();
