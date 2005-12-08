@@ -584,7 +584,9 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   }
   else {
 #if USE_LP_PROBLEM
-    ppl_LP_Problem_optimizing_point(lp, &point);
+    ppl_const_Generator_t g;
+    ppl_LP_Problem_optimizing_point(lp, &g);
+    ppl_assign_Generator_from_Generator(point, g);
     ppl_LP_Problem_evaluate_objective_function(lp, point,
 					       optimum_n, optimum_d);
 #endif
