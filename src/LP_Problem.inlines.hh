@@ -205,7 +205,7 @@ LP_Problem::solve() {
       Simplex_Status new_status = second_phase();
       // If the the return status is `SOLVED_PROBLEM' we keep track
       // of the optimal computed point, it's still a feasible point.
-      if (new_status == SOLVED_PROBLEM) 
+      if (new_status == SOLVED_PROBLEM)
 	assert(input_cs.satisfies_all_constraints(last_generator));
       return new_status;
       break;
@@ -216,10 +216,9 @@ LP_Problem::solve() {
 	assert(input_cs.satisfies_all_constraints(last_generator));
 	Simplex_Status new_status =  second_phase();
 	// In this case we have an optimal point, still feasible.
-	if (new_status == SOLVED_PROBLEM){
+	if (new_status == SOLVED_PROBLEM)
 	  assert(input_cs.satisfies_all_constraints(last_generator));
-	  return new_status;
-	}
+	return new_status;
       }
       return UNFEASIBLE_PROBLEM;
     }
