@@ -1739,7 +1739,7 @@ the library with the <CODE>--enable-shared</CODE> option.
 
 The SWI-Prolog interface to the PPL is available
 both as a statically linked module or as a dynamically linked one.
-Only SWI-Prolog versions 5.0 and later are supported.
+Only SWI-Prolog version 5.5.40 and later versions are supported.
 
 <H3>The <CODE>ppl_pl</CODE> Executable</H3>
 

@@ -117,6 +117,11 @@ o  In the Prolog interface, the names and arities of the "with_token"
    "with_tokens" with an extra argument and the functionality has been 
    revised to match more closely the corresponding C++ interface operators.
 
+o  The SWI-Prolog interface allows now the exchange of unbounded numbers
+   between the PPL and Prolog applications.  This requires SWI-Prolog
+   version 5.5.40 or later version.  Previous versions of SWI-Prolog
+   are no longer supported.
+
 
 Bugfixes
 ========
