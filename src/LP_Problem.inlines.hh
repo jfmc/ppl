@@ -124,11 +124,13 @@ LP_Problem::optimization_mode() const {
 inline const Generator&
 LP_Problem::feasible_point() {
    switch(status) {
-  case PROBLEM_UNSOLVED:
-    if(is_satisfiable())
-      return last_generator;
-    throw std::domain_error("*this is not satisfiable.");
-    break;
+   case PROBLEM_UNSOLVED:
+     {
+       if(is_satisfiable())
+	 return last_generator;
+       throw std::domain_error("*this is not satisfiable.");
+       break;
+     }
    case PROBLEM_UNSATISFIABLE:
      throw std::domain_error("*this is not satisfiable.");
      break;
@@ -137,17 +139,20 @@ LP_Problem::feasible_point() {
      break;
    case PROBLEM_UNBOUNDED:
      return last_generator;
+     break;
    case PROBLEM_PARTIALLY_SATISFIABLE:
+     {
      if(is_satisfiable())
        return last_generator;
      throw std::domain_error("*this is not satisfiable.");
      break;
+     }
    case PROBLEM_OPTIMIZED:
      return last_generator;
      break;
   }
    // If we have reached this point something went wrong.
-   throw std::runtime_error("PPL internal error");
+    throw std::runtime_error("PPL internal error");
 }
 
 inline const Generator&
@@ -158,24 +163,29 @@ LP_Problem::optimizing_point() {
       return last_generator;
     throw std::domain_error("*this doesn't have an optimizing point.");
     break;
-   case PROBLEM_UNSATISFIABLE:
-     throw std::domain_error("*this doesn't have an optimizing point.");
-     break;
-   case PROBLEM_SATISFIABLE:
-     if(second_phase() == SOLVED_PROBLEM)
-       return last_generator;
-     break;
-   case PROBLEM_UNBOUNDED:
-       throw std::domain_error("*this doesn't have an optimizing point.");
+  case PROBLEM_UNSATISFIABLE:
+    throw std::domain_error("*this doesn't have an optimizing point.");
+    break;
+  case PROBLEM_SATISFIABLE:
+    {
+    if(second_phase() == SOLVED_PROBLEM)
+      return last_generator;
+    break;
+    }
+  case PROBLEM_UNBOUNDED:
+    throw std::domain_error("*this doesn't have an optimizing point.");
+    break;
   case PROBLEM_PARTIALLY_SATISFIABLE:
-     if(solve() == SOLVED_PROBLEM)
-       return last_generator;
-     throw std::domain_error("*this doesn't have an optimizing point.");
-     break;
-   case PROBLEM_OPTIMIZED:
-     return last_generator;
-     break;
-   }
+    {
+      if(solve() == SOLVED_PROBLEM)
+	return last_generator;
+      throw std::domain_error("*this doesn't have an optimizing point.");
+      break;
+    }
+  case PROBLEM_OPTIMIZED:
+    return last_generator;
+    break;
+  }
   // If we have reached this point something went wrong.
   throw std::runtime_error("PPL internal error");
 };
@@ -191,25 +201,31 @@ LP_Problem::solve() {
   case PROBLEM_UNSATISFIABLE:
     return UNFEASIBLE_PROBLEM;
   case PROBLEM_SATISFIABLE:
-    Simplex_Status new_status = second_phase();
-
-    // If the the return status is `SOLVED_PROBLEM' we keep track
-    // of the optimal computed point, it's still a feasible point.
-    if (new_status == SOLVED_PROBLEM)
-      // optimizing_point = optimal_point;
-      //   assert(input_cs.satisfies_all_constraints(last_optimizing_point));
-    return new_status;
-  default:
-    if(is_satisfiable()){
-      //      assert(input_cs.satisfies_all_constraints(last_feasible_point));
-      Simplex_Status new_status =  second_phase();
-      // In this case we have an optimal point, still feasible.
-      if (new_status == SOLVED_PROBLEM)
-	//assert(input_cs.satisfies_all_constraints(last_optimizing_point));
+    {
+      Simplex_Status new_status = second_phase();
+      // If the the return status is `SOLVED_PROBLEM' we keep track
+      // of the optimal computed point, it's still a feasible point.
+      if (new_status == SOLVED_PROBLEM) 
+	assert(input_cs.satisfies_all_constraints(last_generator));
       return new_status;
+      break;
     }
-    return UNFEASIBLE_PROBLEM;
+  default:
+    {
+      if(is_satisfiable()){
+	assert(input_cs.satisfies_all_constraints(last_generator));
+	Simplex_Status new_status =  second_phase();
+	// In this case we have an optimal point, still feasible.
+	if (new_status == SOLVED_PROBLEM){
+	  assert(input_cs.satisfies_all_constraints(last_generator));
+	  return new_status;
+	}
+      }
+      return UNFEASIBLE_PROBLEM;
+    }
   }
+  // If we have reached this point something went wrong.
+   throw std::runtime_error("PPL internal error");
 }
 
 inline bool

@@ -913,31 +913,34 @@ PPL::LP_Problem::is_satisfiable(){
 #endif
   // Check for the `status' attribute in trivial cases.
 switch (status){
-  case PROBLEM_UNSATISFIABLE:{
+  case PROBLEM_UNSATISFIABLE:
+    {
 #if PPL_NOISY_SIMPLEX
     std::cout << "LP_Problem::solve: 1st phase ended at iteration "
 	      << num_iterations << "." << std::endl;
 #endif
     return false;
-  }
-  case PROBLEM_SATISFIABLE: {
+    }
+  case PROBLEM_SATISFIABLE:
+    {
 #if PPL_NOISY_SIMPLEX
-    std::cout << "LP_Problem::solve: 1st phase ended at iteration "
-	      << num_iterations << "." << std::endl;
+      std::cout << "LP_Problem::solve: 1st phase ended at iteration "
+		<< num_iterations << "." << std::endl;
 #endif
-    return true;
-  }
+      return true;
+    }
 
-  case PROBLEM_OPTIMIZED:{
+  case PROBLEM_OPTIMIZED:
+    {
 #if PPL_NOISY_SIMPLEX
-    std::cout << "LP_Problem::solve: 1st phase ended at iteration "
-	      << num_iterations << "." << std::endl;
+      std::cout << "LP_Problem::solve: 1st phase ended at iteration "
+		<< num_iterations << "." << std::endl;
 #endif
-    return true;
-  }
-  default:
-    break;
-  }
+      return true;
+    }
+ default:
+   break;
+}
 
   // The space dimension of the solution to be computed.
   // Note: here we can not use method Constraint_System::space_dimension(),
