@@ -465,6 +465,9 @@ public:
   //! Returns the maximum space dimension that a BDS can handle.
   static dimension_type max_space_dimension();
 
+  //! \name Constructors, Assignment, Swap and Destructor
+  //@{
+
   //! Builds a universe or empty BDS of the specified space dimension.
   /*!
     \param num_dimensions
@@ -519,6 +522,19 @@ public:
   //! (\p *this and \p y can be dimension-incompatible).
   BD_Shape& operator=(const BD_Shape& y);
 
+  //! \brief
+  //! Swaps \p *this with \p y
+  //! (\p *this and \p y can be dimension-incompatible).
+  void swap(BD_Shape& y);
+
+  //! Destructor.
+  ~BD_Shape();
+
+  //@} Constructors, Assignment, Swap and Destructor
+
+  //! \name Member Functions that Do Not Modify the BD_Shape
+  //@{
+
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
@@ -528,11 +544,11 @@ public:
   //! of \p *this.
   dimension_type affine_dimension() const;
 
-  //! Returns <CODE>true</CODE> if and only if \p *this is an empty BDS.
-  bool is_empty() const;
+  //! Returns a system of constraints defining \p *this.
+  Constraint_System constraints() const;
 
-  //! Returns <CODE>true</CODE> if and only if \p *this is a universe BDS.
-  bool is_universe() const;
+  //! Returns a minimized system of constraints defining \p *this.
+  Constraint_System minimized_constraints() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -563,6 +579,19 @@ public:
     Thrown if \p *this and generator \p g are dimension-incompatible.
   */
   Poly_Gen_Relation relation_with(const Generator& g) const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is an empty BDS.
+  bool is_empty() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is a universe BDS.
+  bool is_universe() const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this satisfies
+  //! all its invariants.
+  bool OK() const;
+
+  //@} Member Functions that Do Not Modify the BD_Shape
 
   //! \name Space-Dimension Preserving Member Functions that May Modify the BD_Shape
   //@{
@@ -959,12 +988,6 @@ public:
 
   //@} Space-Dimension Preserving Member Functions that May Modify [...]
 
-  //! Returns a system of constraints defining \p *this.
-  Constraint_System constraints() const;
-
-  //! Returns a minimized system of constraints defining \p *this.
-  Constraint_System minimized_constraints() const;
-
   //! \name Member Functions that May Modify the Dimension of the Vector Space
   //@{
 
@@ -1100,17 +1123,6 @@ public:
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
-  //! \name Miscellaneous Member Functions
-  //@{
-
-  //! Destructor.
-  ~BD_Shape();
-
-  //! \brief
-  //! Swaps \p *this with \p y
-  //! (\p *this and \p y can be dimension-incompatible).
-  void swap(BD_Shape& y);
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
   //! Writes to \p s an ASCII representation of the internal
@@ -1125,8 +1137,6 @@ public:
   //! if successful, <CODE>false</CODE> otherwise.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
-
-  //@} // Miscellaneous Member Functions
 
   friend bool Parma_Polyhedra_Library::operator==<T>(const BD_Shape<T>& x,
 						     const BD_Shape<T>& y);
@@ -1145,12 +1155,6 @@ public:
   (Checked_Number<To, Extended_Number_Policy>& r,
    const BD_Shape<U>& x, const BD_Shape<U>& y, const Rounding_Dir dir,
    Temp& tmp0, Temp& tmp1, Temp& tmp2);
-
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this satisfies
-  //! all its invariants.
-  bool OK() const;
 
 private:
   template <typename U> friend class Parma_Polyhedra_Library::BD_Shape;
