@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
+#include "LP_Problem.defs.hh"
 #include <cassert>
 #include <vector>
 #include <deque>
@@ -1069,37 +1070,79 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
       return;
     }
 
-  // If `complexity' allows it, use simplex to determine whether or not
-  // the polyhedron is empty.
+  // If `complexity' allows it, use simplex to derive the exact (modulo
+  // the fact that our BDSs are topologically closed) variable bounds.
   if (complexity == SIMPLEX_COMPLEXITY) {
-    Linear_Expression obj = Linear_Expression::zero();
-    Coefficient n;
-    Coefficient d;
-    Generator g(point());
-    Simplex_Status status;
-    if (!ph.con_sys.has_strict_inequalities())
-       status = ph.con_sys.primal_simplex(obj, MAXIMIZATION, n, d, g);
-    else {
-      // Building a topologically closed version of `ph.con_sys'.
-      Constraint_System cs;
-      for (Constraint_System::const_iterator i = ph.con_sys.begin(),
-	     iend = ph.con_sys.end(); i != iend; ++i) {
-	const Constraint& c = *i;
-	if (c.is_equality())
-	  cs.insert(Linear_Expression(c) == 0);
-	else
-	  cs.insert(Linear_Expression(c) >= 0);
-      }
-      status = cs.primal_simplex(obj, MAXIMIZATION, n, d, g);
-    }
+    LP_Problem lp;
+    lp.set_optimization_mode(MAXIMIZATION);
 
-    if (status == UNFEASIBLE_PROBLEM) {
+    const Constraint_System& ph_cs = ph.constraints();
+    if (!ph_cs.has_strict_inequalities())
+      lp.add_constraints(ph_cs);
+    else
+      // Adding to `lp' a topologically closed version of `ph_cs'.
+      for (Constraint_System::const_iterator i = ph_cs.begin(),
+	     iend = ph_cs.end(); i != iend; ++i) {
+	const Constraint& c = *i;
+	lp.add_constraint(c.is_equality()
+			  ? (Linear_Expression(c) == 0)
+			  : (Linear_Expression(c) >= 0));
+      }
+
+    // Check for unsatisfiability.
+    if (!lp.is_satisfiable()) {
       *this = BD_Shape(num_dimensions, EMPTY);
       return;
     }
 
-    // TODO: use simplex to derive the exact (modulo the fact that
-    // our BDSs are topologically closed) variable bounds.
+    // Get all the upper bounds.
+    Simplex_Status simplex_status;
+    Generator g(point());
+    Coefficient num;
+    Coefficient den;
+    for (dimension_type i = 1; i <= num_dimensions; ++i) {
+      Variable x(i-1);
+      // Evaluate optimal upper bound for `x <= ub'.
+      lp.set_objective_function(x);
+      simplex_status = lp.solve();
+      if (simplex_status == UNBOUNDED_PROBLEM)
+	dbm[0][i] = PLUS_INFINITY;
+      else {
+	assert(simplex_status == SOLVED_PROBLEM);
+	g = lp.optimizing_point();
+	lp.evaluate_objective_function(g, num, den);
+	div_round_up(dbm[0][i], num, den);
+      }
+      // Evaluate optimal upper bound for `x - y <= ub'.
+      for (dimension_type j = 1; j <= num_dimensions; ++j) {
+	if (i == j)
+	  continue;
+	Variable y(j-1);
+	lp.set_objective_function(x - y);
+	simplex_status = lp.solve();
+	if (simplex_status == UNBOUNDED_PROBLEM)
+	  dbm[j][i] = PLUS_INFINITY;
+	else {
+	  assert(simplex_status == SOLVED_PROBLEM);
+	  g = lp.optimizing_point();
+	  lp.evaluate_objective_function(g, num, den);
+	  div_round_up(dbm[j][i], num, den);
+	}
+      }
+      // Evaluate optimal upper bound for `-x <= ub'.
+      lp.set_objective_function(-x);
+      simplex_status = lp.solve();
+      if (simplex_status == UNBOUNDED_PROBLEM)
+	dbm[i][0] = PLUS_INFINITY;
+      else {
+	assert(simplex_status == SOLVED_PROBLEM);
+	g = lp.optimizing_point();
+	lp.evaluate_objective_function(g, num, den);
+	div_round_up(dbm[i][0], num, den);
+      }
+    }
+    status.set_shortest_path_closed();
+    return;
   }
 
   // Extract easy-to-find bounds from constraints.
