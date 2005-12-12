@@ -35,10 +35,10 @@ test1() {
   nout << "test1:" << endl;
 
   Grid_Generator_System gs1;
-  gs1.insert(point(A + 0*C));
+  gs1.insert(grid_point(A + 0*C));
 
   Grid_Generator_System gs2;
-  gs2.insert(point(2*A + 0*C));
+  gs2.insert(grid_point(2*A + 0*C));
 
   Grid gr1(gs1);
   Grid gr2(gs2);
@@ -49,8 +49,8 @@ test1() {
     exit(1);
 
   Grid_Generator_System known_gs;
-  known_gs.insert(point(A + 0*C));
-  known_gs.insert(point(2*A));
+  known_gs.insert(grid_point(A + 0*C));
+  known_gs.insert(grid_point(2*A));
 
   Grid known_gr(known_gs);
 

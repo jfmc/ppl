@@ -465,12 +465,12 @@ test14() {
   nout << "test14:" << endl;
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(point(C, 3));
-  gr1.add_generator(point(C + A - 2*B, 3));
+  gr1.add_generator(grid_point(C, 3));
+  gr1.add_generator(grid_point(C + A - 2*B, 3));
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(point(C, 3));
-  gr2.add_generator(point(2*C + A - 2*B, 6));
+  gr2.add_generator(grid_point(C, 3));
+  gr2.add_generator(grid_point(2*C + A - 2*B, 6));
 
   gr2.widening_assign(gr1);
 
@@ -478,8 +478,8 @@ test14() {
     exit(1);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(point(C, 3));
-  known_gr.add_generator( line(A - 2*B));
+  known_gr.add_generator(grid_point(C, 3));
+  known_gr.add_generator(grid_line(A - 2*B));
 
   if (gr2 == known_gr)
     return;

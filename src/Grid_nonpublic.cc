@@ -82,8 +82,7 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
 }
 
 void
-PPL::Grid::construct(const Grid_Generator_System& const_gs,
-		     const bool convert_rays_to_lines) {
+PPL::Grid::construct(const Grid_Generator_System& const_gs) {
   // Protecting against space dimension overflow is up to the caller.
   assert(const_gs.space_dimension() <= max_space_dimension());
 
@@ -106,17 +105,6 @@ PPL::Grid::construct(const Grid_Generator_System& const_gs,
   if (space_dim > 0) {
     // Steal the rows from `gs'.
     std::swap(gen_sys, gs);
-#if 0
-    // FIX for now convert rays to lines
-    if (convert_rays_to_lines)
-      for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
-	Grid_Generator& g = gen_sys[row];
-	if (g.is_ray()) {
-	  g.set_is_line();
-	  g.strong_normalize();
-	}
-      }
-#endif
     normalize_divisors(gen_sys);
 
     // Generators are now up-to-date.
@@ -328,7 +316,7 @@ PPL::Grid::set_empty() {
   gen_sys.swap(gs);
 
   // Extend the zero dim false congruence system to the appropriate
-  // dimension and then store it in `con_sys'.
+  // dimension and then swap it with `con_sys'.
   Congruence_System cgs(Congruence::zero_dim_false());
   cgs.increase_space_dimension(space_dim);
   const_cast<Congruence_System&>(con_sys).swap(cgs);

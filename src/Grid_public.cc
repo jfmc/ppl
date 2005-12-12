@@ -485,9 +485,9 @@ PPL::Grid::is_universe() const {
   // The zero dimension cases are handled above.
   Variable var(space_dim - 1);
   for (dimension_type i = space_dim; i-- > 0; )
-    if (!con_sys.satisfies_all_congruences(line(Variable(i) + var), 0))
+    if (!con_sys.satisfies_all_congruences(grid_line(Variable(i) + var), 0))
       return false;
-  if (con_sys.satisfies_all_congruences(point(0*var), 0))
+  if (con_sys.satisfies_all_congruences(grid_point(0*var), 0))
     return true;
   return false;
 }
@@ -1339,17 +1339,6 @@ PPL::Grid::add_recycled_generators(Grid_Generator_System& gs) {
 
   std::swap(gen_sys, gs);
 
-#if 0
-  // FIX for now convert rays to lines
-  for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
-    Grid_Generator& g = gen_sys[row];
-    if (g.is_parameter()) {
-      g.set_is_line();
-      g.strong_normalize();
-    }
-  }
-#endif
-
   normalize_divisors(gen_sys);
 
   // The grid is no longer empty and generators are up-to-date.
@@ -1400,17 +1389,9 @@ PPL::Grid::add_recycled_generators_and_minimize(Grid_Generator_System& gs) {
     // The grid contains at least one point.
     normalize_divisors(gs, gen_sys);
 
-    for (dimension_type row = 0; row < gs.num_rows(); ++row) {
-      const Grid_Generator& g = gs[row];
-#if 0
-      // FIX for now convert rays to lines
-      if (g.is_ray())
-	gen_sys.insert(Grid_Generator::line(Linear_Expression(g)));
-      else
-#endif
-	// FIX add and use Grid_Generator_System::recycling_insert
-	gen_sys.insert(g);
-    }
+    for (dimension_type row = 0; row < gs.num_rows(); ++row)
+      // FIX add and use Grid_Generator_System::recycling_insert
+      gen_sys.insert(gs[row]);
   }
   else {
     // The grid is empty: check if `gs' contains a point.
@@ -1418,16 +1399,6 @@ PPL::Grid::add_recycled_generators_and_minimize(Grid_Generator_System& gs) {
       throw_invalid_generators("add_recycled_generators_and_minimize(gs)",
 			       "gs");
     std::swap(gen_sys, gs);
-#if 0
-    // FIX for now convert rays to lines
-    for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
-      Grid_Generator& g = gen_sys[row];
-      if (g.is_ray()) {
-	g.set_is_line();
-	g.strong_normalize();
-      }
-    }
-#endif
     normalize_divisors(gen_sys);
     clear_empty();
   }

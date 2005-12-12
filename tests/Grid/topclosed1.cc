@@ -78,10 +78,10 @@ test4() {
   nout << "test4:" << endl;
 
   Grid gr_gs_min(2, EMPTY);
-  gr_gs_min.add_generator_and_minimize(point(3*A + 2*B));
+  gr_gs_min.add_generator_and_minimize(grid_point(3*A + 2*B));
 
   Grid gr_gs_needs_min(2, EMPTY);
-  gr_gs_needs_min.add_generator(point(3*A + 2*B));
+  gr_gs_needs_min.add_generator(grid_point(3*A + 2*B));
 
   Grid gr_cgs_needs_min(2);
   gr_cgs_needs_min.add_congruence(A == 3);
@@ -110,12 +110,12 @@ test5() {
   nout << "test5:" << endl;
 
   Grid gr_gs_min(3, EMPTY);
-  gr_gs_min.add_generator(point(3*A + 2*B));
-  gr_gs_min.add_generator_and_minimize(line(C));
+  gr_gs_min.add_generator(grid_point(3*A + 2*B));
+  gr_gs_min.add_generator_and_minimize(grid_line(C));
 
   Grid gr_gs_needs_min(3, EMPTY);
-  gr_gs_needs_min.add_generator(point(3*A + 2*B));
-  gr_gs_needs_min.add_generator(line(C));
+  gr_gs_needs_min.add_generator(grid_point(3*A + 2*B));
+  gr_gs_needs_min.add_generator(grid_line(C));
 
   Grid gr_cgs_needs_min(3);
   gr_cgs_needs_min.add_congruence(A == 3);
@@ -144,12 +144,12 @@ test6() {
   nout << "test6:" << endl;
 
   Grid gr_gs_min(3, EMPTY);
-  gr_gs_min.add_generator(point(3*A + 2*B));
-  gr_gs_min.add_generator_and_minimize(point(3*A + B));
+  gr_gs_min.add_generator(grid_point(3*A + 2*B));
+  gr_gs_min.add_generator_and_minimize(grid_point(3*A + B));
 
   Grid gr_gs_needs_min(3, EMPTY);
-  gr_gs_needs_min.add_generator(point(3*A + 2*B));
-  gr_gs_needs_min.add_generator(point(3*A + B));
+  gr_gs_needs_min.add_generator(grid_point(3*A + 2*B));
+  gr_gs_needs_min.add_generator(grid_point(3*A + B));
 
   Grid gr_cgs_needs_min(3);
   gr_cgs_needs_min.add_congruence(A == 3);
@@ -180,14 +180,14 @@ test7() {
   nout << "test7:" << endl;
 
   Grid gr_gs_min(3, EMPTY);
-  gr_gs_min.add_generator(point(3*A + 2*B));
-  gr_gs_min.add_generator(point(3*A + B));
-  gr_gs_min.add_generator_and_minimize(line(C));
+  gr_gs_min.add_generator(grid_point(3*A + 2*B));
+  gr_gs_min.add_generator(grid_point(3*A + B));
+  gr_gs_min.add_generator_and_minimize(grid_line(C));
 
   Grid gr_gs_needs_min(3, EMPTY);
-  gr_gs_needs_min.add_generator(point(3*A + 2*B));
-  gr_gs_needs_min.add_generator(point(3*A + B));
-  gr_gs_needs_min.add_generator(line(C));
+  gr_gs_needs_min.add_generator(grid_point(3*A + 2*B));
+  gr_gs_needs_min.add_generator(grid_point(3*A + B));
+  gr_gs_needs_min.add_generator(grid_line(C));
 
   Grid gr_cgs_needs_min(3);
   gr_cgs_needs_min.add_congruence(A == 3);
@@ -217,14 +217,14 @@ test8() {
   nout << "test8:" << endl;
 
   Grid gr_gs_min(2, EMPTY);
-  gr_gs_min.add_generator(point());
-  gr_gs_min.add_generator(point(A));
-  gr_gs_min.add_generator_and_minimize(point(3*A + 3*B, 4));
+  gr_gs_min.add_generator(grid_point());
+  gr_gs_min.add_generator(grid_point(A));
+  gr_gs_min.add_generator_and_minimize(grid_point(3*A + 3*B, 4));
 
   Grid gr_gs_needs_min(2, EMPTY);
-  gr_gs_needs_min.add_generator(point());
-  gr_gs_needs_min.add_generator(point(A));
-  gr_gs_needs_min.add_generator(point(3*A + 3*B, 4));
+  gr_gs_needs_min.add_generator(grid_point());
+  gr_gs_needs_min.add_generator(grid_point(A));
+  gr_gs_needs_min.add_generator(grid_point(3*A + 3*B, 4));
 
   Grid gr_cgs_needs_min(2);
   gr_cgs_needs_min.add_congruence((4*B %= 0) / 3);
@@ -254,16 +254,16 @@ test9() {
   nout << "test9:" << endl;
 
   Grid gr_gs_min(3, EMPTY);
-  gr_gs_min.add_generator(point());
-  gr_gs_min.add_generator(point(A));
-  gr_gs_min.add_generator(line(C));
-  gr_gs_min.add_generator_and_minimize(point(3*A + 3*B, 4));
+  gr_gs_min.add_generator(grid_point());
+  gr_gs_min.add_generator(grid_point(A));
+  gr_gs_min.add_generator(grid_line(C));
+  gr_gs_min.add_generator_and_minimize(grid_point(3*A + 3*B, 4));
 
   Grid gr_gs_needs_min(3, EMPTY);
-  gr_gs_needs_min.add_generator(point());
-  gr_gs_needs_min.add_generator(point(A));
-  gr_gs_needs_min.add_generator(line(C));
-  gr_gs_needs_min.add_generator(point(3*A + 3*B, 4));
+  gr_gs_needs_min.add_generator(grid_point());
+  gr_gs_needs_min.add_generator(grid_point(A));
+  gr_gs_needs_min.add_generator(grid_line(C));
+  gr_gs_needs_min.add_generator(grid_point(3*A + 3*B, 4));
 
   Grid gr_cgs_needs_min(3);
   gr_cgs_needs_min.add_congruence((4*B %= 0) / 3);
@@ -293,14 +293,14 @@ test10() {
   nout << "test10:" << endl;
 
   Grid gr_gs_min(4, EMPTY);
-  gr_gs_min.add_generator(point());
-  gr_gs_min.add_generator(line(B));
-  gr_gs_min.add_generator_and_minimize(line(C));
+  gr_gs_min.add_generator(grid_point());
+  gr_gs_min.add_generator(grid_line(B));
+  gr_gs_min.add_generator_and_minimize(grid_line(C));
 
   Grid gr_gs_needs_min(4, EMPTY);
-  gr_gs_needs_min.add_generator(point());
-  gr_gs_needs_min.add_generator(line(B));
-  gr_gs_needs_min.add_generator(line(C));
+  gr_gs_needs_min.add_generator(grid_point());
+  gr_gs_needs_min.add_generator(grid_line(B));
+  gr_gs_needs_min.add_generator(grid_line(C));
 
   Grid gr_cgs_needs_min(4);
   gr_cgs_needs_min.add_congruence(A == 0);

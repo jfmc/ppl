@@ -35,7 +35,7 @@ test1() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(point(-A));
+  gr.add_generator(grid_point(-A));
 
   if (find_variation(gr))
     exit(1);
@@ -63,7 +63,7 @@ test2() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(point(A + B));
+  gr.add_generator(grid_point(A + B));
 
   if (find_variation(gr))
     exit(1);
@@ -92,11 +92,11 @@ test3() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(point());
-  gr.add_generator(point(A + 2*B));
-  gr.add_generator(point(A + B));
-  gr.add_generator(point(2*A + 2*B));
-  gr.add_generator(line(A));
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_point(A + 2*B));
+  gr.add_generator(grid_point(A + B));
+  gr.add_generator(grid_point(2*A + 2*B));
+  gr.add_generator(grid_line(A));
 
   if (find_variation(gr))
     exit(1);
@@ -125,8 +125,8 @@ test4() {
 
   Grid_Generator_System gs;
   //gs.insert(closure_point(3*A, 4)); // FIX
-  gs.insert(point(7*A, 4));
-  gs.insert(line(A - B));
+  gs.insert(grid_point(7*A, 4));
+  gs.insert(grid_line(A - B));
 
   Grid gr(2, EMPTY);
 
@@ -162,8 +162,8 @@ test5() {
   Variable D(3);
 
   Grid gr(4, EMPTY);
-  gr.add_generator(point(7*A, 3));
-  gr.add_generator(line(A - B));
+  gr.add_generator(grid_point(7*A, 3));
+  gr.add_generator(grid_line(A - B));
 
   if (find_variation(gr))
     exit(1);
@@ -193,11 +193,11 @@ test6() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(point());
-  gr.add_generator(point(2*A + 2*B));
-  gr.add_generator(point(8*A + 8*B));
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_point(2*A + 2*B));
+  gr.add_generator(grid_point(8*A + 8*B));
 
-  gr.add_generator_and_minimize(line(A));
+  gr.add_generator_and_minimize(grid_line(A));
 
   if (find_variation(gr))
     exit(1);
@@ -227,7 +227,7 @@ test7() {
   Variable D(3);
 
   Grid gr(4);
-  gr.add_generator(point(12*A + 7*D));
+  gr.add_generator(grid_point(12*A + 7*D));
 
   if (find_variation(gr))
     exit(1);
@@ -255,14 +255,14 @@ test8() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(point());
-  gr.add_generator(point(A));
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_point(A));
 
   // Minimize the grid.
   if (find_variation(gr))
     exit(1);
 
-  gr.add_generator_and_minimize(point(B, 3));
+  gr.add_generator_and_minimize(grid_point(B, 3));
 
   if (find_variation(gr))
     exit(1);

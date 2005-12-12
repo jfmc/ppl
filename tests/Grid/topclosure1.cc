@@ -69,12 +69,12 @@ test3() {
   nout << "test3:" << endl;
 
   Grid_Generator_System gs;
-  gs.insert(point(0*C));
-  gs.insert( line(A));
-  gs.insert( line(B));
-  gs.insert(  ray(-C));
+  gs.insert(grid_point(0*C));
+  gs.insert(grid_line(A));
+  gs.insert(grid_line(B));
+  gs.insert(parameter(-C));
 
-  Grid gr(gs, EMPTY);
+  Grid gr(gs);
 
   Grid known_gr = gr;
 

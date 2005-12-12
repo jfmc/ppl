@@ -170,8 +170,8 @@ test6() {
   nout << "test6:" << endl;
 
   Grid gr1(3);
-  gr1.add_generator(point(10*B));
-  gr1.add_generator(point(10*A + 10*B));
+  gr1.add_generator(grid_point(10*B));
+  gr1.add_generator(grid_point(10*A + 10*B));
 
   Grid known_gr = gr1;
 

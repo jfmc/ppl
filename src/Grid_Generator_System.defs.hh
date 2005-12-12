@@ -204,7 +204,6 @@ public:
   //! number of space dimensions if needed.
   void insert(const Grid_Generator& g);
 
-  // FIX this could go if grid_point, parameter and grid_line are made compulsory
   //! \brief
   //! Inserts in \p *this a copy of the polyhedron generator \p g,
   //! increasing the number of space dimensions if needed.

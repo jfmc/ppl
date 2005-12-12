@@ -69,7 +69,7 @@ test2() {
   Grid gr1(4, EMPTY);
 
   Grid gr2(4, EMPTY);
-  gr2.add_generator(point(2*A));
+  gr2.add_generator(grid_point(2*A));
 
   Grid known_gr = gr2;
 
@@ -98,8 +98,8 @@ test3() {
   nout << "test3:" << endl;
 
   Grid gr1(4, EMPTY);
-  gr1.add_generator(point());
-  gr1.add_generator(line(B));
+  gr1.add_generator(grid_point());
+  gr1.add_generator(grid_line(B));
 
   Grid gr2(4, EMPTY);
 
@@ -264,10 +264,10 @@ test8() {
   nout << "test8:" << endl;
 
   Grid_Generator_System gs1;
-  gs1.insert(point(A));
+  gs1.insert(grid_point(A));
 
   Grid_Generator_System gs2;
-  gs2.insert(point(3*A, 5));
+  gs2.insert(grid_point(3*A, 5));
 
   Grid gr1(gs1);
   Grid gr2(gs2);

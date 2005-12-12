@@ -157,7 +157,7 @@ test5() {
   gr1.add_congruence(A + 2*B %= 0);
 
   Grid gr2(2, EMPTY);
-  gr2.add_generator(point());
+  gr2.add_generator(grid_point());
 
   Grid known_gr(gr1);
 
@@ -282,11 +282,11 @@ test9() {
   nout << "test9:" << endl;
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(point());
-  gr1.add_generator(point(A + 2*B - 3*C, 3));
+  gr1.add_generator(grid_point());
+  gr1.add_generator(grid_point(A + 2*B - 3*C, 3));
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(point(3*A - B + 4*C, 7));
+  gr2.add_generator(grid_point(3*A - B + 4*C, 7));
 
   gr1.time_elapse_assign(gr2);
 
@@ -294,9 +294,9 @@ test9() {
     exit(1);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator(point(A + 2*B - 3*C, 3));
-  known_gr.add_generator(point(3*A - B + 4*C, 7));
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_point(A + 2*B - 3*C, 3));
+  known_gr.add_generator(grid_point(3*A - B + 4*C, 7));
 
   if (gr1 == known_gr)
     return;
@@ -317,13 +317,13 @@ test10() {
   nout << "test10:" << endl;
 
   Grid gr1(4, EMPTY);
-  gr1.add_generator(point());
-  gr1.add_generator(point(2*A));
-  gr1.add_generator(point(4*A));
-  gr1.add_generator(point(D));
+  gr1.add_generator(grid_point());
+  gr1.add_generator(grid_point(2*A));
+  gr1.add_generator(grid_point(4*A));
+  gr1.add_generator(grid_point(D));
 
   Grid gr2(4, EMPTY);
-  gr2.add_generator(point(A));
+  gr2.add_generator(grid_point(A));
 
   gr1.time_elapse_assign(gr2);
 
@@ -331,9 +331,9 @@ test10() {
     exit(1);
 
   Grid known_gr(4, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator(point(A));
-  known_gr.add_generator(point(D));
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_point(A));
+  known_gr.add_generator(grid_point(D));
 
   if (gr1 == known_gr)
     return;

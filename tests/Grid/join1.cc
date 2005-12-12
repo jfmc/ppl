@@ -35,10 +35,10 @@ test1() {
   nout << "test1:" << endl;
 
   Grid_Generator_System gs1;
-  gs1.insert(point(C));
+  gs1.insert(grid_point(C));
 
   Grid_Generator_System gs2;
-  gs2.insert(point(B + 0*C));
+  gs2.insert(grid_point(B + 0*C));
 
   Grid gr1(gs1);
   Grid gr2(gs2);
@@ -49,8 +49,8 @@ test1() {
     exit(1);
 
   Grid_Generator_System known_gs;
-  known_gs.insert(point(C));
-  known_gs.insert(point(B));
+  known_gs.insert(grid_point(C));
+  known_gs.insert(grid_point(B));
 
   Grid known_gr(known_gs);
 
@@ -99,10 +99,10 @@ test3() {
   Grid gr1(3);
 
   Grid_Generator_System gs;
-  gs.insert(point());
-  gs.insert( line(A));
-  gs.insert( line(B));
-  gs.insert( line(-C));
+  gs.insert(grid_point());
+  gs.insert(grid_line(A));
+  gs.insert(grid_line(B));
+  gs.insert(grid_line(-C));
 
   Grid gr2(gs);
 
@@ -123,23 +123,23 @@ test3() {
   exit(1);
 }
 
-// Inserting a ray.
+// Inserting a parameter.
 
 void
 test4() {
   nout << "test4:" << endl;
 
   Grid_Generator_System gs1;
-  gs1.insert(point(0*C));
-  gs1.insert( line(A));
-  gs1.insert( line(B));
+  gs1.insert(grid_point(0*C));
+  gs1.insert(grid_line(A));
+  gs1.insert(grid_line(B));
 
   Grid gr1(gs1);
 
-  gr1.add_generator(ray(-C));
+  gr1.add_generator(parameter(-C));
 
   Grid_Generator_System gs2;
-  gs2.insert(point(0*C));
+  gs2.insert(grid_point(0*C));
 
   Grid gr2(gs2);
 
@@ -149,6 +149,7 @@ test4() {
     exit(1);
 
   Grid known_gr(3);
+  known_gr.add_congruence(C == 0);
 
   if (gr1 == known_gr)
     return;
@@ -167,15 +168,15 @@ test5() {
   nout << "test5:" << endl;
 
   Grid_Generator_System gs1;
-  gs1.insert(point(0*C));
-  gs1.insert( line(A));
-  gs1.insert( line(B));
+  gs1.insert(grid_point(0*C));
+  gs1.insert(grid_line(A));
+  gs1.insert(grid_line(B));
 
   Grid gr1(gs1);
 
   Grid_Generator_System gs2;
-  gs2.insert(point());
-  gs2.insert(point(C, 3));
+  gs2.insert(grid_point());
+  gs2.insert(grid_point(C, 3));
 
   Grid gr2(gs2);
 
@@ -211,7 +212,7 @@ test6() {
   gr1.add_congruence(C == 0);
 
   Grid_Generator_System gs2;
-  gs2.insert(point(B + 0*C));
+  gs2.insert(grid_point(B + 0*C));
 
   Grid gr2(gs2);
 
@@ -221,8 +222,8 @@ test6() {
     exit(1);
 
   Grid_Generator_System known_gs;
-  known_gs.insert(point());
-  known_gs.insert(point(B + 0*C));
+  known_gs.insert(grid_point());
+  known_gs.insert(grid_point(B + 0*C));
 
   Grid known_gr(known_gs);
 
@@ -243,7 +244,7 @@ test7() {
   nout << "test7:" << endl;
 
   Grid_Generator_System gs;
-  gs.insert(point(B + 0*C));
+  gs.insert(grid_point(B + 0*C));
 
   Grid gr1(gs);
 
@@ -258,8 +259,8 @@ test7() {
     exit(1);
 
   Grid_Generator_System known_gs;
-  known_gs.insert(point());
-  known_gs.insert(point(B + 0*C));
+  known_gs.insert(grid_point());
+  known_gs.insert(grid_point(B + 0*C));
 
   Grid known_gr(known_gs);
 
@@ -284,7 +285,7 @@ main() TRY {
   test1();
   test2();
   test3();
-  //test4();  // FIX pending ray handling resolution
+  test4();
   test5();
   test6();
   test7();

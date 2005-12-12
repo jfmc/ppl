@@ -32,7 +32,9 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e) {
   Linear_Expression ec = e;
   Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
   g[0] = 0;
-  return g;
+  // FIX this only saves realloc of coeffs (the array that is part of
+  //     obj g must still be reallocated)
+  return Grid_Generator(g);
 }
 
 void

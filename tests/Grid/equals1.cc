@@ -32,8 +32,8 @@ test1() {
   Variable A(0);
 
   Grid_Generator_System gs;
-  gs.insert(point());
-  gs.insert(point(3*A));
+  gs.insert(grid_point());
+  gs.insert(grid_point(3*A));
 
   Grid gr(gs);
 
@@ -79,10 +79,10 @@ test2() {
     exit(1);
 
   Grid_Generator_System gs;
-  gs.insert(point());
-  gs.insert( line(A + B));
-  gs.insert(point(B));
-  gs.insert(point(7*C));
+  gs.insert(grid_point());
+  gs.insert(grid_line(A + B));
+  gs.insert(grid_point(B));
+  gs.insert(grid_point(7*C));
 
   Grid known_gr(gs);
 
@@ -120,10 +120,10 @@ test3() {
     exit(1);
 
   Grid_Generator_System gs;
-  gs.insert(point());
-  gs.insert( line(A - B));
-  gs.insert(point(B));
-  gs.insert(point(7*C, 3));
+  gs.insert(grid_point());
+  gs.insert(grid_line(A - B));
+  gs.insert(grid_point(B));
+  gs.insert(grid_point(7*C, 3));
 
   Grid known_gr(gs);
 
@@ -151,8 +151,8 @@ test4() {
   Variable B(1);
 
   Grid_Generator_System gs;
-  gs.insert(point(0*A));
-  gs.insert(point(1*A));
+  gs.insert(grid_point(0*A));
+  gs.insert(grid_point(1*A));
 
   Grid gr1(gs);
 
@@ -160,9 +160,9 @@ test4() {
     exit(1);
 
   Grid_Generator_System known_gs;
-  known_gs.insert(point(0*A + 0*B));
-  known_gs.insert(point(1*A + 0*B));
-  known_gs.insert(point(0*A + 1*B));
+  known_gs.insert(grid_point(0*A + 0*B));
+  known_gs.insert(grid_point(1*A + 0*B));
+  known_gs.insert(grid_point(0*A + 1*B));
 
   Grid known_gr(known_gs);
 
@@ -174,9 +174,9 @@ test4() {
   }
 
   gs.clear();
-  gs.insert(point(0*A + 0*B));
-  gs.insert(point(1*A + 0*B));
-  gs.insert( line(0*A + 1*B));
+  gs.insert(grid_point(0*A + 0*B));
+  gs.insert(grid_point(1*A + 0*B));
+  gs.insert(grid_line(0*A + 1*B));
 
   Grid gr2(gs);
 

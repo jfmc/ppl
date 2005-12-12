@@ -145,9 +145,9 @@ test5() {
   nout << "test5:" << endl;
 
   Grid gr(3, EMPTY);
-  gr.add_generator(point(A + 2*B + 2*C));
-  gr.add_generator(point(A + 2*B + 4*C));
-  gr.add_generator(point(A + 6*B + 2*C));
+  gr.add_generator(grid_point(A + 2*B + 2*C));
+  gr.add_generator(grid_point(A + 2*B + 4*C));
+  gr.add_generator(grid_point(A + 6*B + 2*C));
 
   Variables_Set to_fold;
   to_fold.insert(C);
@@ -155,8 +155,8 @@ test5() {
   gr.fold_space_dimensions(to_fold, B);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point(A + 2*B));
-  known_gr.add_generator(point(A + 4*B));
+  known_gr.add_generator(grid_point(A + 2*B));
+  known_gr.add_generator(grid_point(A + 4*B));
 
   if (gr == known_gr)
     return;

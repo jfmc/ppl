@@ -49,9 +49,9 @@ test1() {
     exit(1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator(point(A));
-  known_gr.add_generator( line(B));
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_point(A));
+  known_gr.add_generator(grid_line(B));
 
   if (gr1 == known_gr) {
     // Congruence expression.
@@ -92,9 +92,9 @@ test2() {
     exit(1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator(point(A));
-  known_gr.add_generator( line(B));
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_point(A));
+  known_gr.add_generator(grid_line(B));
 
   if (gr1 == known_gr) {
     // Congruence expression.
@@ -138,14 +138,14 @@ test3() {
 
   // FIX check
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point(-1*A));
-  known_gr.add_generator(point(A));
-  known_gr.add_generator( line(B));
+  known_gr.add_generator(grid_point(-1*A));
+  known_gr.add_generator(grid_point(A));
+  known_gr.add_generator(grid_line(B));
 
   if (gr1 == known_gr) {
 
     // FIX known_gr should be same for gr1 and gr2?
-    known_gr.add_generator(point());
+    known_gr.add_generator(grid_point());
 
     // Congruence expression.
     gr2.generalized_affine_preimage(B, A + 1, 1, -7);
@@ -188,14 +188,14 @@ test4() {
 
   // FIX check
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point(-3*A));
-  known_gr.add_generator(point(A));
-  known_gr.add_generator( line(B));
+  known_gr.add_generator(grid_point(-3*A));
+  known_gr.add_generator(grid_point(A));
+  known_gr.add_generator(grid_line(B));
 
   if (gr1 == known_gr) {
 
     // FIX known_gr should be same for gr1 and gr2?
-    known_gr.add_generator(point(-A));
+    known_gr.add_generator(grid_point(-A));
 
     // Congruence expression.
     gr2.generalized_affine_preimage(B, A + 1, 2, 3);
@@ -238,14 +238,14 @@ test5() {
 
   // FIX check
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point(-2*A));
-  known_gr.add_generator(point(2*A));
-  known_gr.add_generator( line(B));
+  known_gr.add_generator(grid_point(-2*A));
+  known_gr.add_generator(grid_point(2*A));
+  known_gr.add_generator(grid_line(B));
 
   if (gr1 == known_gr) {
 
     // FIX known_gr should be same for gr1 and gr2?
-    known_gr.add_generator(point());
+    known_gr.add_generator(grid_point());
 
     // Congruence expression.
     gr2.generalized_affine_preimage(B, A + 2, -2);
@@ -284,11 +284,11 @@ test6() {
     exit(1);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(point(2*A));
-  known_gr.add_generator(point(2*A + 3*B));
-  known_gr.add_generator( line(A + C));
-  known_gr.add_generator(point(4*A));  // Original modulus.
-  known_gr.add_generator(point(7*A));  // Transformation modulus.
+  known_gr.add_generator(grid_point(2*A));
+  known_gr.add_generator(grid_point(2*A + 3*B));
+  known_gr.add_generator(grid_line(A + C));
+  known_gr.add_generator(grid_point(4*A));  // Original modulus.
+  known_gr.add_generator(grid_point(7*A));  // Transformation modulus.
 
   if (gr == known_gr)
     return;
@@ -318,10 +318,10 @@ test7() {
     exit(1);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(point(2*A));
-  known_gr.add_generator(point(2*A + 3*B));
-  known_gr.add_generator( line(A + C));
-  known_gr.add_generator(point(4*A));  // Original modulus.
+  known_gr.add_generator(grid_point(2*A));
+  known_gr.add_generator(grid_point(2*A + 3*B));
+  known_gr.add_generator(grid_line(A + C));
+  known_gr.add_generator(grid_point(4*A));  // Original modulus.
 
   if (gr == known_gr) {
     gr = Grid(3);

@@ -101,69 +101,68 @@ test1() {
 
   // Points.
 
-  gs0.insert(point());
+  gs0.insert(grid_point());
   if (fails_to_satisfy(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
-  gs0.insert(point(A + B));
+  gs0.insert(grid_point(A + B));
   if (fails_to_satisfy(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
-  gs0.insert(point(A + 2*B));
+  gs0.insert(grid_point(A + 2*B));
   if (satisfies(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
-  gs0.insert(point(5*A + 2*B));
+  gs0.insert(grid_point(5*A + 2*B));
   if (satisfies(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
-  gs0.insert(point(5*A - 2*B));
+  gs0.insert(grid_point(5*A - 2*B));
   if (fails_to_satisfy(gs0, cgs0, 1))
     exit(1);
 
-  // Rays.
-  // FIX Rays are converted to lines, at least for now.
+  // Parameters.
 
   gs0.clear();
-  gs0.insert(ray(3*A + 3*B));
+  gs0.insert(parameter(3*A + 3*B));
   if (fails_to_satisfy(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
-  gs0.insert(ray(A + 14*B));
+  gs0.insert(parameter(A + 14*B));
   if (satisfies(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
-  gs0.insert(ray(-A + 13*B));
+  gs0.insert(parameter(-A + 13*B));
   if (fails_to_satisfy(gs0, cgs0, 1))
     exit(1);
 
   // Lines.
 
   gs0.clear();
-  gs0.insert(line(13*A + 13*B));
+  gs0.insert(grid_line(13*A + 13*B));
   if (fails_to_satisfy(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
-  gs0.insert(line(18*A + 14*B));
+  gs0.insert(grid_line(18*A + 14*B));
   if (satisfies(gs0, cgs0, 1))
     exit(1);
 
   gs0.clear();
-  gs0.insert(line(14*A - 21*B));
+  gs0.insert(grid_line(14*A - 21*B));
   if (satisfies(gs0, cgs0, 1))
     exit(1);
 
   cgs0.clear();
   cgs0.insert((A %= 0) / 2);
   gs0.clear();
-  gs0.insert(line(3*A));
+  gs0.insert(grid_line(3*A));
   if (satisfies(gs0, cgs0, 1))
     exit(1);
 
@@ -185,64 +184,63 @@ test2() {
   // Points.
 
   gs0.clear();
-  gs0.insert(point(A + B, 3));
+  gs0.insert(grid_point(A + B, 3));
   if (fails_to_satisfy(gs0, cgs0, 3))
     exit(1);
 
   gs0.clear();
-  gs0.insert(point(A + 2*B, 3));
+  gs0.insert(grid_point(A + 2*B, 3));
   if (satisfies(gs0, cgs0, 3))
     exit(1);
 
   gs0.clear();
-  gs0.insert(point(5*A + 2*B, 5));
+  gs0.insert(grid_point(5*A + 2*B, 5));
   if (satisfies(gs0, cgs0, 5))
     exit(1);
 
   gs0.clear();
-  gs0.insert(point(5*A - 2*B, 7));
+  gs0.insert(grid_point(5*A - 2*B, 7));
   if (satisfies(gs0, cgs0, 7))
     exit(1);
 
-  // FIX Rays are converted to lines, at least for now.
-  // Rays.
+  // Parameters.
 
   gs0.clear();
-  gs0.insert(ray(3*A + 3*B));
+  gs0.insert(parameter(3*A + 3*B));
   if (fails_to_satisfy(gs0, cgs0, 4))
     exit(1);
 
   gs0.clear();
-  gs0.insert(ray(A + 14*B));
+  gs0.insert(parameter(A + 14*B));
   if (satisfies(gs0, cgs0, 5))
     exit(1);
 
   gs0.clear();
-  gs0.insert(ray(-A + 13*B));
+  gs0.insert(parameter(-A + 13*B));
   if (fails_to_satisfy(gs0, cgs0, 2))
     exit(1);
 
   // Lines.
 
   gs0.clear();
-  gs0.insert(line(13*A + 13*B));
+  gs0.insert(grid_line(13*A + 13*B));
   if (fails_to_satisfy(gs0, cgs0, 8))
     exit(1);
 
   gs0.clear();
-  gs0.insert(line(18*A + 14*B));
+  gs0.insert(grid_line(18*A + 14*B));
   if (satisfies(gs0, cgs0, 9))
     exit(1);
 
   gs0.clear();
-  gs0.insert(line(14*A - 21*B));
+  gs0.insert(grid_line(14*A - 21*B));
   if (satisfies(gs0, cgs0, 10))
     exit(1);
 
   cgs0.clear();
   cgs0.insert((A %= 0) / 2);
   gs0.clear();
-  gs0.insert(line(3*A));
+  gs0.insert(grid_line(3*A));
   if (satisfies(gs0, cgs0, 11))
     exit(1);
 

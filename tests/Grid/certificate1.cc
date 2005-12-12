@@ -43,8 +43,8 @@ test1() {
   Grid_Certificate grc1(gr1);
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(point(3*B + A));
-  gr2.add_generator(point(3*B + A + C));
+  gr2.add_generator(grid_point(3*B + A));
+  gr2.add_generator(grid_point(3*B + A + C));
 
   Grid_Certificate grc2(gr2);
 
@@ -72,8 +72,8 @@ test2() {
   Grid_Certificate grc1(gr1);
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(point(3*B + A));
-  gr2.add_generator(point(3*B + A + C));
+  gr2.add_generator(grid_point(3*B + A));
+  gr2.add_generator(grid_point(3*B + A + C));
 
   if (grc1.compare(gr2) == -1)
     return;
@@ -98,9 +98,9 @@ test3() {
   Grid_Certificate grc1(gr1);
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(point(3*B));
-  gr2.add_generator( line(A - C));
-  gr2.add_generator(point(3*B + A));
+  gr2.add_generator(grid_point(3*B));
+  gr2.add_generator(grid_line(A - C));
+  gr2.add_generator(grid_point(3*B + A));
 
   Grid_Certificate grc2(gr2);
 
@@ -125,8 +125,8 @@ test4() {
   nout << "test4:" << endl;
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(point(3*B + A));
-  gr1.add_generator(point(3*B + A + C));
+  gr1.add_generator(grid_point(3*B + A));
+  gr1.add_generator(grid_point(3*B + A + C));
 
   Grid_Certificate grc1(gr1);
 

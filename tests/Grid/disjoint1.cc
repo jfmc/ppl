@@ -37,7 +37,7 @@ test1() {
   nout << "test1:" << endl;
 
   Grid_Generator_System gs;
-  gs.insert(point(A));
+  gs.insert(grid_point(A));
 
   Grid gr1(gs);
 
@@ -62,8 +62,8 @@ test2() {
   Grid gr1(2, EMPTY);
 
   Grid_Generator_System gs;
-  gs.insert(point());
-  gs.insert(point(B));
+  gs.insert(grid_point());
+  gs.insert(grid_point(B));
 
   Grid gr2(gs);
 
@@ -145,10 +145,10 @@ test6() {
   gr1.add_congruence((C %= 0) / 2);
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(point(C));
-  gr2.add_generator(line(A + B));
-  gr2.add_generator(point(C + B));
-  gr2.add_generator(point(3*C));
+  gr2.add_generator(grid_point(C));
+  gr2.add_generator(grid_line(A + B));
+  gr2.add_generator(grid_point(C + B));
+  gr2.add_generator(grid_point(3*C));
 
   if (gr1.is_disjoint_from(gr2))
     return;
@@ -167,8 +167,8 @@ test7() {
   nout << "test7:" << endl;
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(point(A + B + C));
-  gr1.add_generator(point(3*A + 3*B + 3*C));
+  gr1.add_generator(grid_point(A + B + C));
+  gr1.add_generator(grid_point(3*A + 3*B + 3*C));
 
   Grid gr2(3);
   gr2.add_congruence(A - B %= 0);
@@ -191,8 +191,8 @@ test8() {
   nout << "test8:" << endl;
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(point(A + B + C));
-  gr1.add_generator(line(3*A + 3*B + 3*C));
+  gr1.add_generator(grid_point(A + B + C));
+  gr1.add_generator(grid_line(3*A + 3*B + 3*C));
 
   Grid gr2(3);
   gr2.add_congruence(A - B %= 0);
@@ -216,10 +216,10 @@ test9() {
   nout << "test9:" << endl;
 
   Grid gr1(1, EMPTY);
-  gr1.add_generator(point());
+  gr1.add_generator(grid_point());
 
   Grid gr2(1, EMPTY);
-  gr2.add_generator(point(A));
+  gr2.add_generator(grid_point(A));
 
   // Minimize both grids.
   if (find_variation(gr1) || find_variation(gr2))

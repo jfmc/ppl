@@ -240,11 +240,8 @@ public:
   //! \brief
   //! Constructs from polyhedron generator \p g, stealing the
   //! underlying data structures from \p g.
-  /*!
-    This implicit constructor allows polyhedral generators to be used
-    for grids.
-  */
-  Grid_Generator(Generator g);
+  // FIX steal? cf parameter(e),ggs::insert
+  explicit Grid_Generator(Generator g);
 
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;

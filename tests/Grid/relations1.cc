@@ -36,7 +36,7 @@ test1() {
 
   Grid gr(2, EMPTY);
 
-  if (gr.relation_with(point(A)) == Poly_Gen_Relation::nothing())
+  if (gr.relation_with(grid_point(A)) == Poly_Gen_Relation::nothing())
     return;
 
   exit(1);
@@ -50,7 +50,7 @@ test2() {
 
   Grid gr(2);
 
-  if (gr.relation_with(point(A)) == Poly_Gen_Relation::subsumes())
+  if (gr.relation_with(grid_point(A)) == Poly_Gen_Relation::subsumes())
     return;
 
   exit(1);
@@ -63,13 +63,13 @@ test3() {
   nout << "test3:" << endl;
 
   Grid_Generator_System gs;
-  gs.insert(point());
-  gs.insert(point(B));
-  gs.insert(line(A));
+  gs.insert(grid_point());
+  gs.insert(grid_point(B));
+  gs.insert(grid_line(A));
 
   Grid gr(gs);
 
-  if (gr.relation_with(point(A + B)) == Poly_Gen_Relation::subsumes())
+  if (gr.relation_with(grid_point(A + B)) == Poly_Gen_Relation::subsumes())
     return;
 
   exit(1);
@@ -84,7 +84,7 @@ test4() {
   Grid gr(2);
   gr.add_congruence((A %= 0) / 0);
 
-  if (gr.relation_with(point(2*A)) == Poly_Gen_Relation::nothing())
+  if (gr.relation_with(grid_point(2*A)) == Poly_Gen_Relation::nothing())
     return;
 
   exit(1);
@@ -100,14 +100,14 @@ test5() {
   gr.add_congruence((A - B %= 1) / 2);
   gr.add_congruence((A %= 1) / 3);
 
-  if (gr.relation_with(point()) == Poly_Gen_Relation::nothing()
-      && gr.relation_with(point(-B)) == Poly_Gen_Relation::nothing())
+  if (gr.relation_with(grid_point()) == Poly_Gen_Relation::nothing()
+      && gr.relation_with(grid_point(-B)) == Poly_Gen_Relation::nothing())
     return;
 
   exit(1);
 }
 
-// Congruence and ray.
+// Congruence and parameter.
 
 void
 test6() {
@@ -116,7 +116,7 @@ test6() {
   Grid gr(2);
   gr.add_congruence(2*A %= 0);
 
-  if (gr.relation_with(ray(A), 2) == Poly_Gen_Relation::subsumes())
+  if (gr.relation_with(parameter(A), 2) == Poly_Gen_Relation::subsumes())
     return;
 
   exit(1);
@@ -131,7 +131,7 @@ test7() {
   Grid gr(2);
   gr.add_congruence(2*A %= 0);
 
-  if (gr.relation_with(line(A), 2) == Poly_Gen_Relation::nothing())
+  if (gr.relation_with(grid_line(A), 2) == Poly_Gen_Relation::nothing())
     return;
 
   exit(1);

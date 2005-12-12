@@ -82,9 +82,9 @@ test1() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(point(B));
-  gr.add_generator(point(3*A + B));
-  gr.add_generator(point(3*A + 3*B));
+  gr.add_generator(grid_point(B));
+  gr.add_generator(grid_point(3*A + B));
+  gr.add_generator(grid_point(3*A + 3*B));
 
   if (find_variation(gr))
     exit(1);
@@ -126,9 +126,9 @@ test2() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(point(  A +   B));
-  gr.add_generator(point(2*A + 3*B));
-  gr.add_generator(point(  A + 4*B));
+  gr.add_generator(grid_point(  A +   B));
+  gr.add_generator(grid_point(2*A + 3*B));
+  gr.add_generator(grid_point(  A + 4*B));
 
   gr.get_covering_box(box1);
 
@@ -170,9 +170,9 @@ test3() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(point());
-  gr.add_generator(point(2*A));
-  gr.add_generator(point(  A + 2*B, 2));
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_point(2*A));
+  gr.add_generator(grid_point(  A + 2*B, 2));
 
   gr.get_covering_box(box1);
 
@@ -217,9 +217,9 @@ test4() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(point());
-  gr.add_generator( line(A + 2*B));
-  gr.add_generator(point(C, 2));
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_line(A + 2*B));
+  gr.add_generator(grid_point(C, 2));
 
   gr.get_covering_box(box1);
 
@@ -306,7 +306,7 @@ test6() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(point(16*A + 6*B - 6*C, 7));
+  gr.add_generator(grid_point(16*A + 6*B - 6*C, 7));
 
   gr.get_covering_box(box1);
 
@@ -397,11 +397,11 @@ test8() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(point());
-  gr.add_generator(point(A + B));
-  gr.add_generator(point(A));
-  gr.add_generator(point(2*A));
-  gr.add_generator(point(C));
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_point(A + B));
+  gr.add_generator(grid_point(A));
+  gr.add_generator(grid_point(2*A));
+  gr.add_generator(grid_point(C));
 
   gr.get_covering_box(box1);
 
@@ -490,10 +490,10 @@ test10() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(point());
-  gr.add_generator(point(A));
-  gr.add_generator(point(B));
-  gr.add_generator( line(C));
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_point(A));
+  gr.add_generator(grid_point(B));
+  gr.add_generator(grid_line(C));
 
   gr.get_covering_box(box1);
 
@@ -542,11 +542,11 @@ test11() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(point());
-  gr.add_generator(point(A + 2*D));
-  gr.add_generator(point(B + 4*D));
-  gr.add_generator(point(C + 8*D));
-  gr.add_generator(point(16*D));
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_point(A + 2*D));
+  gr.add_generator(grid_point(B + 4*D));
+  gr.add_generator(grid_point(C + 8*D));
+  gr.add_generator(grid_point(16*D));
 
   gr.get_covering_box(box1);
 
@@ -593,10 +593,10 @@ test12() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(point());
-  gr.add_generator(point(A));
-  gr.add_generator(point(C));
-  gr.add_generator(point(D));
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_point(A));
+  gr.add_generator(grid_point(C));
+  gr.add_generator(grid_point(D));
 
   gr.get_covering_box(box1);
 
@@ -693,7 +693,7 @@ test14() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(point(16*A + 14*B - 7*C, 7));
+  gr.add_generator(grid_point(16*A + 14*B - 7*C, 7));
 
   gr.get_covering_box(box1);
 
@@ -737,10 +737,10 @@ test15() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(point());
-  gr.add_generator(point(A, 6));
-  gr.add_generator(point(B, 3));
-  gr.add_generator(point(C, 2));
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_point(A, 6));
+  gr.add_generator(grid_point(B, 3));
+  gr.add_generator(grid_point(C, 2));
 
   gr.get_covering_box(box1);
 

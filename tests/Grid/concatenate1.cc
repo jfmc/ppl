@@ -138,8 +138,8 @@ test4() {
   Grid gr1(1, UNIVERSE);
 
   Grid_Generator_System gs;
-  gs.insert(point(A));
-  gs.insert(point(A + C));
+  gs.insert(grid_point(A));
+  gs.insert(grid_point(A + C));
 
   Grid gr2(gs);
 
@@ -149,9 +149,9 @@ test4() {
     exit(1);
 
   Grid_Generator_System known_gs;
-  known_gs.insert(point(B));
-  known_gs.insert(point(B + D));
-  known_gs.insert( line(A));
+  known_gs.insert(grid_point(B));
+  known_gs.insert(grid_point(B + D));
+  known_gs.insert(grid_line(A));
 
   Grid known_gr(known_gs);
 
@@ -172,14 +172,14 @@ test5() {
   nout << "test5:" << endl;
 
   Grid_Generator_System gs;
-  gs.insert(point(A));
-  gs.insert(point(A + C));
+  gs.insert(grid_point(A));
+  gs.insert(grid_point(A + C));
 
   Grid gr1(gs);
 
   gs.clear();
-  gs.insert(point(0*B));
-  gs.insert(point(B));
+  gs.insert(grid_point(0*B));
+  gs.insert(grid_point(B));
 
   Grid gr2(gs);
 

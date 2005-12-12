@@ -243,12 +243,12 @@ test7() {
   Variable C(2);
 
   Grid_Generator_System gs1;
-  gs1.insert(point(A + C));
-  gs1.insert(point(A + 2*C));
+  gs1.insert(grid_point(A + C));
+  gs1.insert(grid_point(A + 2*C));
 
   Grid_Generator_System gs2;
-  gs2.insert(point(A));
-  gs2.insert(point(A + B));
+  gs2.insert(grid_point(A));
+  gs2.insert(grid_point(A + B));
 
   Grid gr1(gs1);
 

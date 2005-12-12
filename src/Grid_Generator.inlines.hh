@@ -36,6 +36,7 @@ negate(Grid_Generator& g, dimension_type start, dimension_type end) {
 inline
 Grid_Generator::Grid_Generator(Generator g)
   : Generator(Generator::point()) {
+  // FIXME: Throw an exception if g is a ray?
   Generator::swap(g);
 }
 

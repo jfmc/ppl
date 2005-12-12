@@ -178,11 +178,11 @@ static void
 test7() {
   nout << "test7:" << endl;
 
-  Grid_Generator a(point(- A + 2*B + 3*C, 4));
+  Grid_Generator a(grid_point(- A + 2*B + 3*C, 4));
   if (find_variation(a))
     exit(1);
 
-  Grid_Generator b(point(6*B - 3*A + 9*C, 12));
+  Grid_Generator b(grid_point(6*B - 3*A + 9*C, 12));
   if (find_variation(b))
     exit(1);
 
@@ -201,14 +201,14 @@ static void
 test8() {
   nout << "test8:" << endl;
 
-  Generator g = point(- A + 2*B + 3*C, 4);
-  Generator& g_ref = g;
+  Grid_Generator g = grid_point(- A + 2*B + 3*C, 4);
+  Grid_Generator& g_ref = g;
 
   Grid_Generator a(g_ref);
   if (find_variation(a))
     exit(1);
 
-  Grid_Generator b(point(6*B - 3*A + 9*C, 12));
+  Grid_Generator b(grid_point(6*B - 3*A + 9*C, 12));
   if (find_variation(b))
     exit(1);
 
@@ -232,7 +232,7 @@ test9() {
   if (find_variation(a))
     exit(1);
 
-  Grid_Generator b(point(le));
+  Grid_Generator b(grid_point(le));
   if (find_variation(b))
     exit(1);
 

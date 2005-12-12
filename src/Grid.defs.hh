@@ -432,21 +432,13 @@ public:
     The system of generators defining the grid.  Its data-structures
     will be recycled to build the grid.
 
-    \param convert_rays_to_lines
-    If true then rays in \p gs are converted to lines, else they are
-    left as rays (which is the internal representation of parameters).
-    Rays should only occur in \p gs when \p gs comes from another
-    domain (e.g. Polyhedron), in which case the rays are converted to
-    lines to keep some of the information encoded in the ray.  A value
-    of false is used in the implementation of map_space_dimensions.
-
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
 
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
   */
-  explicit Grid(Grid_Generator_System& gs, const bool convert_rays_to_lines = true);
+  explicit Grid(Grid_Generator_System& gs);
 
   //! Builds a grid out of a generic, interval-based bounding box.
   /*!
@@ -610,10 +602,6 @@ public:
   const Grid_Generator_System& generators() const;
 
   //! Returns the minimized system of generators.
-  /*!
-     All parameters in the system are converted to points, so the
-     system may actually lose the minimal form before being returned.
-  */
   const Grid_Generator_System& minimized_generators() const;
 
   //! \brief
@@ -2057,13 +2045,8 @@ private:
 
     \param gs
     The system of generators defining the grid;
-
-    \param convert_rays_to_lines
-    If true then rays in \p gs are converted to lines, else they are
-    left as rays (the internal representation of parameters).
   */
-  void construct(const Grid_Generator_System& gs,
-		 const bool convert_rays_to_lines = true);
+  void construct(const Grid_Generator_System& gs);
 
   //! \name Private Verifiers: Verify if Individual Flags are Set
   //@{

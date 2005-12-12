@@ -105,8 +105,8 @@ test3() {
     exit(1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator(point(2*A - 2*B));
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_point(2*A - 2*B));
 
   if (gr == known_gr)
     return;
@@ -135,8 +135,8 @@ test4() {
     exit(1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator(point(2*A + 2*B));
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_point(2*A + 2*B));
 
   if (gr == known_gr)
     return;

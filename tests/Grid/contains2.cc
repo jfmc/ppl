@@ -41,8 +41,8 @@ test1() {
   gr1.add_congruence(C %= 0);
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(point());
-  gr2.add_generator(point(2*A + 2*B + 2*C));
+  gr2.add_generator(grid_point());
+  gr2.add_generator(grid_point(2*A + 2*B + 2*C));
 
   if (gr1.strictly_contains(gr2))
     return;
@@ -61,8 +61,8 @@ test2() {
   nout << "test2:" << endl;
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(point());
-  gr1.add_generator(point(2*A + 2*B + 2*C));
+  gr1.add_generator(grid_point());
+  gr1.add_generator(grid_point(2*A + 2*B + 2*C));
 
   Grid gr2(3);
   gr2.add_congruence(A - B %= 0);
@@ -86,10 +86,10 @@ test3() {
   nout << "test3:" << endl;
 
   Grid gr1(1, EMPTY);
-  gr1.add_generator(point());
+  gr1.add_generator(grid_point());
 
   Grid gr2(1, EMPTY);
-  gr2.add_generator(point(A));
+  gr2.add_generator(grid_point(A));
 
   // Minimize both grids.
   if (find_variation(gr1) || find_variation(gr2))

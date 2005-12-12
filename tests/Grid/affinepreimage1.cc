@@ -39,7 +39,7 @@ test1() {
   nout << "test1:" << endl;
 
   Grid gr(3, EMPTY);
-  gr.add_generator(point(2*B - 2*C));
+  gr.add_generator(grid_point(2*B - 2*C));
 
   gr.affine_preimage(B, A + 2, 1);
 
@@ -96,8 +96,8 @@ test3() {
   nout << "test3:" << endl;
 
   Grid gr(3, EMPTY);
-  gr.add_generator(point(2*A + 2*B));
-  gr.add_generator(line(C));
+  gr.add_generator(grid_point(2*A + 2*B));
+  gr.add_generator(grid_line(C));
 
   gr.affine_preimage(A, A + 1, 2);
 
@@ -155,16 +155,16 @@ test5() {
   nout << "test5:" << endl;
 
   Grid gr(3, EMPTY);
-  gr.add_generator(point(4*A + 6*B, 3));
-  gr.add_generator(point(9*A + 6*B, 3));
-  gr.add_generator(line(C));
+  gr.add_generator(grid_point(4*A + 6*B, 3));
+  gr.add_generator(grid_point(9*A + 6*B, 3));
+  gr.add_generator(grid_line(C));
 
   gr.affine_preimage(A, A + 1, 3);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(point(3*A + 2*B));
-  known_gr.add_generator(point(8*A + 2*B));
-  known_gr.add_generator(line(C));
+  known_gr.add_generator(grid_point(3*A + 2*B));
+  known_gr.add_generator(grid_point(8*A + 2*B));
+  known_gr.add_generator(grid_line(C));
 
   if (gr == known_gr) {
 
@@ -202,18 +202,18 @@ test6() {
   nout << "test6:" << endl;
 
   Grid gr(2, EMPTY);
-  gr.add_generator(point(4*A));
-  gr.add_generator(point(7*A));
-  gr.add_generator(point(6*A + B));
+  gr.add_generator(grid_point(4*A));
+  gr.add_generator(grid_point(7*A));
+  gr.add_generator(grid_point(6*A + B));
 
   // Out-of-date congruences.
 
   gr.affine_preimage(A, 3*A + 2*B + 4);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator(point(A));
-  known_gr.add_generator(point(B));
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_point(A));
+  known_gr.add_generator(grid_point(B));
 
   if (gr == known_gr) {
 
@@ -247,16 +247,16 @@ test7() {
   nout << "test7:" << endl;
 
   Grid gr(1, EMPTY);
-  gr.add_generator(point());
-  gr.add_generator(point(2*A));
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_point(2*A));
 
   // Out-of-date congruences.
 
   gr.affine_preimage(A, 2*A);
 
   Grid known_gr(1, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator(point(A));
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_point(A));
 
   if (gr == known_gr) {
 
@@ -290,18 +290,18 @@ test8() {
   nout << "test8:" << endl;
 
   Grid gr(2, EMPTY);
-  gr.add_generator(point(A));
-  gr.add_generator(point(7*A + 3*B));
-  gr.add_generator(point(10*A));
+  gr.add_generator(grid_point(A));
+  gr.add_generator(grid_point(7*A + 3*B));
+  gr.add_generator(grid_point(10*A));
 
   // Out-of-date congruences.
 
   gr.affine_preimage(A, 3*A + 2*B + 1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator(point(3*A));
-  known_gr.add_generator(point(3*B));
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_point(3*A));
+  known_gr.add_generator(grid_point(3*B));
 
   if (gr == known_gr) {
 
@@ -345,15 +345,15 @@ test9() {
   // Out-of-date congruences.
 
   Grid gr(2, EMPTY);
-  gr.add_generator(point());
-  gr.add_generator(point(3*A + 3*B));
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_point(3*A + 3*B));
 
   gr.affine_preimage(A, B);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator(line(A));
-  known_gr.add_generator(point(3*B));
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_line(A));
+  known_gr.add_generator(grid_point(3*B));
 
   if (gr == known_gr) {
 
@@ -387,9 +387,9 @@ test10() {
   nout << "test10:" << endl;
 
   Grid_Generator_System gs;
-  gs.insert(point());
-  gs.insert(point(2*A, 15));
-  gs.insert(point(5*B, 10));
+  gs.insert(grid_point());
+  gs.insert(grid_point(2*A, 15));
+  gs.insert(grid_point(5*B, 10));
 
   // The divisors are normalized on construction.
   Grid gr(gs);
@@ -398,9 +398,9 @@ test10() {
   gr.affine_preimage(A, 2*A, 5);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator(point(A, 3));
-  known_gr.add_generator(point(B, 2));
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_point(A, 3));
+  known_gr.add_generator(grid_point(B, 2));
 
   if (gr == known_gr)
     return;
@@ -419,13 +419,13 @@ test11() {
   nout << "test11:" << endl;
 
   Grid gr(2, EMPTY);
-  gr.add_generator(point(-2*A, 3));
+  gr.add_generator(grid_point(-2*A, 3));
 
   gr.affine_preimage(A, B + 2, -3);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator(line(A));
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_line(A));
 
   if (gr == known_gr)
     return;
@@ -469,12 +469,12 @@ test13() {
   // Out-of-date congruences.
 
   Grid gr(2, EMPTY);
-  gr.add_generator(point(5*A + 4*B, 7));
+  gr.add_generator(grid_point(5*A + 4*B, 7));
 
   gr.affine_preimage(B, A - B, -1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point(5*A + 9*B, 7));
+  known_gr.add_generator(grid_point(5*A + 9*B, 7));
 
   if (gr == known_gr) {
 

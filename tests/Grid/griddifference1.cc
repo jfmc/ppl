@@ -48,8 +48,8 @@ test1() {
     exit(1);
 
   Grid known_gr(1, EMPTY);
-  known_gr.add_generator(point(A));
-  known_gr.add_generator(point(3*A));
+  known_gr.add_generator(grid_point(A));
+  known_gr.add_generator(grid_point(3*A));
 
   if (gr1 == known_gr)
     return;
@@ -223,15 +223,15 @@ test7() {
   nout << "test7:" << endl;
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(point());
-  gr1.add_generator(point(A - 2*C));
-  gr1.add_generator(point(3*B));
+  gr1.add_generator(grid_point());
+  gr1.add_generator(grid_point(A - 2*C));
+  gr1.add_generator(grid_point(3*B));
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(point(A));
-  gr2.add_generator(point(A + 2*C));
-  gr2.add_generator(point(3*A));
-  gr2.add_generator(point(A + 3*B));
+  gr2.add_generator(grid_point(A));
+  gr2.add_generator(grid_point(A + 2*C));
+  gr2.add_generator(grid_point(3*A));
+  gr2.add_generator(grid_point(A + 3*B));
 
   gr1.grid_difference_assign(gr2);
 
@@ -292,9 +292,9 @@ test9() {
   nout << "test9:" << endl;
 
   Grid gr1(2, EMPTY);
-  gr1.add_generator(point());
-  gr1.add_generator( line(A));
-  gr1.add_generator(point(B));
+  gr1.add_generator(grid_point());
+  gr1.add_generator(grid_line(A));
+  gr1.add_generator(grid_point(B));
 
   Grid gr2(2);
   gr2.add_congruence((B %= 0) / 3);
@@ -325,9 +325,9 @@ test10() {
   nout << "test10:" << endl;
 
   Grid gr1(2, EMPTY);
-  gr1.add_generator(point());
-  gr1.add_generator(point(A));
-  gr1.add_generator(point(B));
+  gr1.add_generator(grid_point());
+  gr1.add_generator(grid_point(A));
+  gr1.add_generator(grid_point(B));
 
   Grid gr2(2);
   gr2.add_congruence((A - B %= 0) / 2);

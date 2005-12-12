@@ -121,9 +121,9 @@ test4() {
   nout << "test4:" << endl;
 
   Grid gr(2, EMPTY);
-  gr.add_generator(point(A));
-  gr.add_generator(point(A + 2*B));
-  gr.add_generator(point());
+  gr.add_generator(grid_point(A));
+  gr.add_generator(grid_point(A + 2*B));
+  gr.add_generator(grid_point());
 
   gr.expand_space_dimension(A, 1);
 
@@ -131,10 +131,10 @@ test4() {
     exit(1);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator(point(A));
-  known_gr.add_generator(point(A + 2*B));
-  known_gr.add_generator(point(C));
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_point(A));
+  known_gr.add_generator(grid_point(A + 2*B));
+  known_gr.add_generator(grid_point(C));
 
   if (gr == known_gr)
     return;

@@ -144,8 +144,8 @@ test4() {
   Variable E(4);
 
   Grid_Generator_System gs;
-  gs.insert(point(A));
-  gs.insert(point(A + C));
+  gs.insert(grid_point(A));
+  gs.insert(grid_point(A + C));
 
   Grid gr(gs);
 

@@ -110,7 +110,7 @@ test3() {
     exit(1);
 
   Grid known_gr(SPACE_DIM, EMPTY);
-  known_gr.add_generator(point(-2*A - 30*B, 3));
+  known_gr.add_generator(grid_point(-2*A - 30*B, 3));
 
   if (gr == known_gr)
     return;
@@ -140,9 +140,9 @@ test4() {
     exit(1);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(point(3*C));
-  known_gr.add_generator( line(  A));
-  known_gr.add_generator( line(  B));
+  known_gr.add_generator(grid_point(3*C));
+  known_gr.add_generator(grid_line(A));
+  known_gr.add_generator(grid_line(B));
 
   if (gr == known_gr)
     return;

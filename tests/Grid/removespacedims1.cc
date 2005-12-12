@@ -127,9 +127,9 @@ test4() {
   nout << "test4:" << endl;
 
   Grid_Generator_System gs;
-  gs.insert(point(0*A));
-  gs.insert(point(2*A));
-  gs.insert(point(3*B));
+  gs.insert(grid_point(0*A));
+  gs.insert(grid_point(2*A));
+  gs.insert(grid_point(3*B));
 
   Grid gr(gs);
 
@@ -178,10 +178,10 @@ test5() {
     exit(1);
 
   Grid_Generator_System known_gs;
-  known_gs.insert(point());
-  known_gs.insert( line(2*A - B));
-  known_gs.insert(point(3*B, 2));
-  known_gs.insert( line(  C));
+  known_gs.insert(grid_point());
+  known_gs.insert(grid_line(2*A - B));
+  known_gs.insert(grid_point(3*B, 2));
+  known_gs.insert(grid_line(C));
 
   Grid known_gr(known_gs);
 
@@ -234,10 +234,10 @@ test7() {
   nout << "test7:" << endl;
 
   Grid gr(3, EMPTY);
-  gr.add_generator(point());
-  gr.add_generator(point(A));
-  gr.add_generator_and_minimize(point(B));
-  gr.add_generator(line(C));
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_point(A));
+  gr.add_generator_and_minimize(grid_point(B));
+  gr.add_generator(grid_line(C));
 
   Variables_Set vars;
   vars.insert(B);

@@ -79,14 +79,13 @@ Grid::Grid(const Grid_Generator_System& gs) {
 }
 
 inline
-Grid::Grid(Grid_Generator_System& gs,
-	   const bool convert_rays_to_lines) {
+Grid::Grid(Grid_Generator_System& gs) {
   if (gs.space_dimension() > max_space_dimension())
     throw_space_dimension_overflow("Grid(gs)",
 				   "the space dimension of gs "
 				   "exceeds the maximum allowed "
 				   "space dimension");
-  construct(gs, convert_rays_to_lines);
+  construct(gs);
 }
 
 template <typename Box>
@@ -649,9 +648,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
 	|| (!generators_are_up_to_date() && !update_generators())) {
       // Removing all dimensions from the empty grid.
       space_dim = 0;
-      con_sys.clear();
-      gen_sys.clear();
-      gen_sys.set_sorted(false);
+      set_empty();
     }
     else
       // Removing all dimensions from a non-empty grid.
@@ -767,20 +764,14 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
       if (!all_zeroes)
 	new_gensys.insert(line(e));
       break;
-    case Grid_Generator::RAY:
-      if (!all_zeroes) {
-	// Inserting a point is safe, even with the normalization in
-	// `point', as the divisor is 1.
-	new_gensys.insert(point(e));
-	new_gensys[new_gensys.num_rows()-1][0] = 0;
-      }
+    case Grid_Generator::PARAMETER:
+      if (!all_zeroes)
+	new_gensys.insert(parameter(e));
       break;
     case Grid_Generator::POINT:
       // A point in the origin has all zero homogeneous coefficients.
-      // Inserting the point is safe, even with the normalization in
-      // `point', as the divisor is 1.
-      new_gensys.insert(point(e));
-      new_gensys[new_gensys.num_rows()-1][0] = old_g.divisor();
+      new_gensys.insert(grid_point(e));
+      new_gensys[new_gensys.num_rows()-1].divisor() = old_g.divisor();
       break;
     case Grid_Generator::CLOSURE_POINT:
     default:
@@ -788,7 +779,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
     }
   }
 
-  Grid new_grid(new_gensys, false);
+  Grid new_grid(new_gensys);
   std::swap(*this, new_grid);
 
   assert(OK(true));

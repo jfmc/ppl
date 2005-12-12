@@ -155,7 +155,7 @@ test8() {
   nout << "test8:" << endl;
 
   Grid_Generator_System gs;
-  gs.insert(point(A + 3*E));
+  gs.insert(grid_point(A + 3*E));
 
   Grid gr(gs);
 
@@ -173,12 +173,12 @@ test9() {
   nout << "test9:" << endl;
 
   Grid_Generator_System gs;
-  gs.insert(point(A + 3*E));
-  gs.insert(line(A));
-  gs.insert(line(B));
-  gs.insert(line(C));
-  gs.insert(line(D));
-  gs.insert(line(E));
+  gs.insert(grid_point(A + 3*E));
+  gs.insert(grid_line(A));
+  gs.insert(grid_line(B));
+  gs.insert(grid_line(C));
+  gs.insert(grid_line(D));
+  gs.insert(grid_line(E));
 
   Grid gr(gs);
 

@@ -158,8 +158,8 @@ test4() {
   Variable D(3);
 
   Grid_Generator_System known_gs;
-  known_gs.insert(point());
-  known_gs.insert(line(A + 0*D));
+  known_gs.insert(grid_point());
+  known_gs.insert(grid_line(A + 0*D));
 
   Grid known_gr(known_gs);
 
@@ -191,8 +191,8 @@ test5() {
   Variable E(4);
 
   Grid_Generator_System gs;
-  gs.insert(point(A));
-  gs.insert(point(A + B + C));
+  gs.insert(grid_point(A));
+  gs.insert(grid_point(A + B + C));
 
   Grid gr(gs);
 
@@ -240,8 +240,8 @@ test6() {
   Variable E(4);
 
   Grid_Generator_System gs;
-  gs.insert(point(A));
-  gs.insert(point(A + B + C));
+  gs.insert(grid_point(A));
+  gs.insert(grid_point(A + B + C));
 
   Grid gr(gs);
 

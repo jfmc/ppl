@@ -144,9 +144,9 @@ test4() {
     exit(1);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(point(-2*A - 30*B + 15*C, 3));
-  known_gr.add_generator(point(4*A - 10*B + 5*C));
-  known_gr.add_generator(point(-2*A + 12*B + 15*C, 3));
+  known_gr.add_generator(grid_point(-2*A - 30*B + 15*C, 3));
+  known_gr.add_generator(grid_point(4*A - 10*B + 5*C));
+  known_gr.add_generator(grid_point(-2*A + 12*B + 15*C, 3));
 
   if (gr == known_gr)
     return;

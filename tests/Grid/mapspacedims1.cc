@@ -79,18 +79,18 @@ test2() {
   function.insert(1, 1);
 
   Grid_Generator_System gs;
-  gs.insert(point(2*C));
-  gs.insert(point(4*C));
-  gs.insert(point(A));
+  gs.insert(grid_point(2*C));
+  gs.insert(grid_point(4*C));
+  gs.insert(grid_point(A));
 
   Grid gr(gs);
 
   gr.map_space_dimensions(function);
 
   Grid_Generator_System known_gs;
-  known_gs.insert(point(2*A));
-  known_gs.insert(point(4*A));
-  known_gs.insert(point(C));
+  known_gs.insert(grid_point(2*A));
+  known_gs.insert(grid_point(4*A));
+  known_gs.insert(grid_point(C));
 
   Grid known_gr(known_gs);
 
@@ -121,18 +121,18 @@ test3() {
   function.insert(2, 0);
 
   Grid_Generator_System gs;
-  gs.insert(point());
-  gs.insert(point(2*A));
-  gs.insert(line(A - C));
+  gs.insert(grid_point());
+  gs.insert(grid_point(2*A));
+  gs.insert(grid_line(A - C));
 
   Grid gr(gs);
 
   gr.map_space_dimensions(function);
 
   Grid_Generator_System known_gs;
-  known_gs.insert(point());
-  known_gs.insert(point(2*B));
-  known_gs.insert(line(B - A));
+  known_gs.insert(grid_point());
+  known_gs.insert(grid_point(2*B));
+  known_gs.insert(grid_line(B - A));
   Grid known_gr(known_gs);
 
   if (gr == known_gr)
@@ -163,16 +163,16 @@ test4() {
   function.insert(4, 1);
 
   Grid_Generator_System gs;
-  gs.insert(point());
-  gs.insert(point(A));
-  gs.insert(point(B));
+  gs.insert(grid_point());
+  gs.insert(grid_point(A));
+  gs.insert(grid_point(B));
 
   Grid gr(gs);
 
   gr.map_space_dimensions(function);
 
   Grid_Generator_System known_gs;
-  known_gs.insert(point(0*C));
+  known_gs.insert(grid_point(0*C));
   Grid known_gr(known_gs);
 
   if (gr == known_gr)
@@ -201,10 +201,10 @@ test5() {
   function.insert(1, 1);
 
   Grid_Generator_System gs;
-  gs.insert(point());
-  gs.insert(point(A));
-  gs.insert(point(B));
-  gs.insert(point(A + B));
+  gs.insert(grid_point());
+  gs.insert(grid_point(A));
+  gs.insert(grid_point(B));
+  gs.insert(grid_point(A + B));
 
   Grid gr(gs);
   Grid known_gr(gr);
@@ -239,20 +239,20 @@ test6() {
   function.insert(3, 3);
 
   Grid_Generator_System gs;
-  gs.insert(point());
-  gs.insert(point(A));
-  gs.insert(point(2*B));
-  gs.insert(point(A + 2*B));
+  gs.insert(grid_point());
+  gs.insert(grid_point(A));
+  gs.insert(grid_point(2*B));
+  gs.insert(grid_point(A + 2*B));
 
   Grid gr(gs);
 
   gr.map_space_dimensions(function);
 
   Grid known_gr(4, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator(point(B));
-  known_gr.add_generator(point(2*A));
-  known_gr.add_generator(point(2*A + B));
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_point(B));
+  known_gr.add_generator(grid_point(2*A));
+  known_gr.add_generator(grid_point(2*A + B));
 
   if (gr == known_gr)
     return;
@@ -281,18 +281,18 @@ test7() {
   function.insert(3, 2);
 
   Grid_Generator_System gs;
-  gs.insert(point());
-  gs.insert(point(A));
-  gs.insert(line(B));
-  gs.insert(line(A + B));
+  gs.insert(grid_point());
+  gs.insert(grid_point(A));
+  gs.insert(grid_line(B));
+  gs.insert(grid_line(A + B));
 
   Grid gr(gs);
 
   gr.map_space_dimensions(function);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(point());
-  known_gr.add_generator( line(A));
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_line(A));
 
   if (gr == known_gr)
     return;
@@ -350,8 +350,8 @@ test9() {
   function.insert(1, 0);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(point(4*A, 2));
-  gr.add_generator(point(4*A + B, 2));
+  gr.add_generator(grid_point(4*A, 2));
+  gr.add_generator(grid_point(4*A + B, 2));
 
   // Force minimization.
   if (find_variation(gr))
@@ -360,8 +360,8 @@ test9() {
   gr.map_space_dimensions(function);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(point(4*B, 2));
-  known_gr.add_generator(point(4*B + A, 2));
+  known_gr.add_generator(grid_point(4*B, 2));
+  known_gr.add_generator(grid_point(4*B + A, 2));
 
   if (gr == known_gr)
     return;

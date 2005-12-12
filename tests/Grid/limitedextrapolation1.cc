@@ -391,14 +391,14 @@ test11() {
   nout << "test11:" << endl;
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(point(C, 3));
-  gr1.add_generator( line(A - 2*B));
-  gr1.add_generator(point(C + 3*A + 3*C, 3));
+  gr1.add_generator(grid_point(C, 3));
+  gr1.add_generator(grid_line(A - 2*B));
+  gr1.add_generator(grid_point(C + 3*A + 3*C, 3));
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(point(C, 3));
-  gr2.add_generator( line(A - 2*B));
-  gr2.add_generator( line(A + C));
+  gr2.add_generator(grid_point(C, 3));
+  gr2.add_generator(grid_line(A - 2*B));
+  gr2.add_generator(grid_line(A + C));
 
   Grid known_gr = gr2;
 

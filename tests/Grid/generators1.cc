@@ -142,10 +142,10 @@ test5() {
   nout << "test5:" << endl;
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(point(3*B));
-  gr1.add_generator(point(5*A + 2*B));
-  gr1.add_generator(point(7*B));
-  gr1.add_generator(line(C));
+  gr1.add_generator(grid_point(3*B));
+  gr1.add_generator(grid_point(5*A + 2*B));
+  gr1.add_generator(grid_point(7*B));
+  gr1.add_generator(grid_line(C));
 
   Grid known_gr = gr1;
 
@@ -206,7 +206,7 @@ test7() {
 
   // Add a point.  The idea is to check that `gs' still refers to a
   // generator system that matches the grid.
-  gr1.add_generator(point());
+  gr1.add_generator(grid_point());
 
   Grid known_gr = gr1;
 
