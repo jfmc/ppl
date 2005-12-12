@@ -227,6 +227,12 @@ LP_Problem::solve() {
    throw std::runtime_error("PPL internal error");
 }
 
+inline void
+LP_Problem::optimal_value(Coefficient& num, Coefficient& den){
+  const Generator& g_ref = optimizing_point();
+  evaluate_objective_function(g_ref, num, den);
+}
+
 inline bool
 LP_Problem::OK() const{
   // FIXME: still requires to be implemented.

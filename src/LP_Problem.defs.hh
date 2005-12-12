@@ -168,6 +168,15 @@ public:
   */
   const Generator& optimizing_point();
 
+  //! \brief
+  //! Sets \p num and \p den so that \f$\frac{num}{den}\f$ is
+  //! the solution of the optimization problem.
+  /*!
+    \exception std::domain_error
+    Thrown if \p *this has no optimal solution.
+  */
+  void optimal_value(Coefficient& num, Coefficient& den);
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 

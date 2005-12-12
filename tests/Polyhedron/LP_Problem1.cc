@@ -113,9 +113,10 @@ main() {
   Generator pg(point());
   Simplex_Status ss;
   LP_Problem lpp = LP_Problem(cs, cost, MAXIMIZATION);
-  lpp.solve();
+  lpp.optimal_value(a,b);
+// lpp.solve();
   pg = lpp.optimizing_point();
-  lpp.evaluate_objective_function(pg, a, b);
+//   lpp.evaluate_objective_function(pg, a, b);
 #if NOISY
   cout << "Optimum computed by LP_Problem::solve is "<< a <<
     "/" << b << " Computed Generator";
