@@ -849,7 +849,7 @@ PPL::LP_Problem::second_phase() {
   // This code still requires a bit of testing.
   // Negate the cost function if we are minimizing.
   Row new_cost = input_obj_function;
-  if (opt_kind == MINIMIZATION)
+  if (opt_mode == MINIMIZATION)
     for (dimension_type i = new_cost.size(); i-- > 0; )
       negate(new_cost[i]);
 

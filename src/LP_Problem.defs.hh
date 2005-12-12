@@ -238,7 +238,7 @@ private:
   Linear_Expression input_obj_function;
 
   //! The kind of optimization requested.
-  Optimization_Mode opt_kind;
+  Optimization_Mode opt_mode;
 
   //! The last succesfully computed optmizing point.
   Generator last_generator;

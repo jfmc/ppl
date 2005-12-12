@@ -28,7 +28,7 @@ namespace Parma_Polyhedra_Library {
 inline
 LP_Problem::LP_Problem()
   : tableau(),  base(),  dim_map(), status(PROBLEM_UNSOLVED),
-    input_cs(), input_obj_function(), opt_kind(MAXIMIZATION),
+    input_cs(), input_obj_function(), opt_mode(MAXIMIZATION),
     last_generator(point()){
   assert(OK());
 }
@@ -38,7 +38,7 @@ LP_Problem::LP_Problem(const Constraint_System& cs,
 		       const Linear_Expression& obj,
 		       const Optimization_Mode kind)
   :tableau(), base(), dim_map(), status(PROBLEM_UNSOLVED),
-   input_cs(cs), input_obj_function(obj), opt_kind(kind),
+   input_cs(cs), input_obj_function(obj), opt_mode(kind),
    last_generator(point()){
   assert(OK());
 }
@@ -47,7 +47,7 @@ inline
 LP_Problem::LP_Problem(const LP_Problem& y)
   : tableau(y.tableau), base(y.base), dim_map(y.dim_map), status(y.status),
     input_cs(y.input_cs), input_obj_function(y.input_obj_function),
-    opt_kind(y.opt_kind), last_generator(y.last_generator) {
+    opt_mode(y.opt_mode), last_generator(y.last_generator) {
   assert(OK());
 }
 
@@ -77,6 +77,7 @@ LP_Problem::add_constraints(const Constraint_System& cs) {
     // As soon as possible the following line will be uncommented.
     // status = PROBLEM_PARTIALLY_SATISFIABLE;
     status = PROBLEM_UNSOLVED;
+  assert(OK());
 }
 
 inline void
@@ -92,11 +93,12 @@ LP_Problem::set_objective_function(const Linear_Expression& obj) {
     break;
   }
   input_obj_function = obj;
+  assert(OK());
 }
 
 inline void
-LP_Problem::set_optimization_mode(Optimization_Mode kind){
-  if (kind == opt_kind)
+LP_Problem::set_optimization_mode(Optimization_Mode new_mode){
+  if (opt_mode == new_mode)
     return;
   switch(status){
   case PROBLEM_UNBOUNDED:
@@ -108,7 +110,8 @@ LP_Problem::set_optimization_mode(Optimization_Mode kind){
   default:
     break;
   }
-  opt_kind = kind;
+  opt_mode = new_mode;
+  assert(OK());
 }
 
 inline const Linear_Expression&
@@ -118,41 +121,45 @@ LP_Problem::objective_function() const {
 
 inline Optimization_Mode
 LP_Problem::optimization_mode() const {
-  return opt_kind;
+  return opt_mode;
 }
 
 inline const Generator&
 LP_Problem::feasible_point() {
-   switch(status) {
-   case PROBLEM_UNSOLVED:
-     {
-       if(is_satisfiable())
-	 return last_generator;
-       throw std::domain_error("*this is not satisfiable.");
-       break;
-     }
-   case PROBLEM_UNSATISFIABLE:
-     throw std::domain_error("*this is not satisfiable.");
-     break;
-   case PROBLEM_SATISFIABLE:
-     return last_generator;
-     break;
-   case PROBLEM_UNBOUNDED:
-     return last_generator;
-     break;
-   case PROBLEM_PARTIALLY_SATISFIABLE:
-     {
-     if(is_satisfiable())
-       return last_generator;
-     throw std::domain_error("*this is not satisfiable.");
-     break;
-     }
-   case PROBLEM_OPTIMIZED:
-     return last_generator;
-     break;
-  }
-   // If we have reached this point something went wrong.
-    throw std::runtime_error("PPL internal error");
+  switch(status) {
+  case PROBLEM_UNSOLVED:
+    {
+      if(is_satisfiable()){
+	assert(OK());
+	return last_generator;
+      };
+      throw std::domain_error("*this is not satisfiable.");
+      break;
+    }
+  case PROBLEM_UNSATISFIABLE:
+    throw std::domain_error("*this is not satisfiable.");
+    break;
+  case PROBLEM_SATISFIABLE:
+    return last_generator;
+    break;
+  case PROBLEM_UNBOUNDED:
+    return last_generator;
+    break;
+  case PROBLEM_PARTIALLY_SATISFIABLE:
+    {
+      if(is_satisfiable()){
+	assert(OK());
+	return last_generator;
+      }
+    }
+    throw std::domain_error("*this is not satisfiable.");
+    break;
+  case PROBLEM_OPTIMIZED:
+    return last_generator;
+    break;
+}
+// If we have reached this point something went wrong.
+throw std::runtime_error("PPL internal error");
 }
 
 inline const Generator&
@@ -168,7 +175,7 @@ LP_Problem::optimizing_point() {
     break;
   case PROBLEM_SATISFIABLE:
     {
-    if(second_phase() == SOLVED_PROBLEM)
+    if(solve() == SOLVED_PROBLEM)
       return last_generator;
     break;
     }
@@ -203,21 +210,16 @@ LP_Problem::solve() {
   case PROBLEM_SATISFIABLE:
     {
       Simplex_Status new_status = second_phase();
-      // If the the return status is `SOLVED_PROBLEM' we keep track
-      // of the optimal computed point, it's still a feasible point.
-      if (new_status == SOLVED_PROBLEM)
-	assert(input_cs.satisfies_all_constraints(last_generator));
+      assert(OK());
       return new_status;
       break;
     }
   default:
     {
       if(is_satisfiable()){
-	assert(input_cs.satisfies_all_constraints(last_generator));
-	Simplex_Status new_status =  second_phase();
-	// In this case we have an optimal point, still feasible.
-	if (new_status == SOLVED_PROBLEM)
-	  assert(input_cs.satisfies_all_constraints(last_generator));
+	assert(OK());
+	Simplex_Status new_status = second_phase();
+	assert(OK());
 	return new_status;
       }
       return UNFEASIBLE_PROBLEM;
@@ -231,11 +233,21 @@ inline void
 LP_Problem::optimal_value(Coefficient& num, Coefficient& den){
   const Generator& g_ref = optimizing_point();
   evaluate_objective_function(g_ref, num, den);
+  assert(OK());
 }
 
 inline bool
-LP_Problem::OK() const{
-  // FIXME: still requires to be implemented.
+LP_Problem::OK() const {
+  // FIXME: still to be completed...
+  if (status == PROBLEM_SATISFIABLE || status == PROBLEM_OPTIMIZED
+      || status == PROBLEM_UNBOUNDED) {
+    // The dimension of the last computed generator must be equal to
+    // the input `Constraint_System' one.
+    if(last_generator.space_dimension() != input_cs.space_dimension())
+      return false;
+    if(!input_cs.satisfies_all_constraints(last_generator))
+      return false;
+  }
   return true;
 }
 
@@ -248,7 +260,7 @@ LP_Problem::swap(LP_Problem& y) {
   std::swap(status, y.status);
   std::swap(input_cs, y.input_cs);
   std::swap(input_obj_function, y.input_obj_function);
-  std::swap(opt_kind, y.opt_kind);
+  std::swap(opt_mode, y.opt_mode);
   std::swap(last_generator, y.last_generator);
 }
 
@@ -289,7 +301,7 @@ LP_Problem::external_memory_in_bytes() const {
     + input_cs.external_memory_in_bytes()
     + input_obj_function.external_memory_in_bytes()
     + last_generator.external_memory_in_bytes()
-   + sizeof(opt_kind);
+   + sizeof(opt_mode);
 }
 
 inline memory_size_type
@@ -303,7 +315,7 @@ LP_Problem::total_memory_in_bytes() const {
     + input_cs.total_memory_in_bytes()
     + input_obj_function.total_memory_in_bytes()
     + last_generator.external_memory_in_bytes()
-    + sizeof(opt_kind);
+    + sizeof(opt_mode);
 }
 
 } // namespace Parma_Polyhedra_Library
