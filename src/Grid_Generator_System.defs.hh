@@ -33,7 +33,6 @@ namespace Parma_Polyhedra_Library {
 
 namespace IO_Operators {
 
-// FIX implement
 //! Output operator.
 /*!
   \relates Parma_Polyhedra_Library::Grid_Generator_System

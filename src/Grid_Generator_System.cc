@@ -285,6 +285,21 @@ PPL::Grid_Generator_System::OK() const {
   return true;
 }
 
+/*! \relates Parma_Polyhedra_Library::Grid_Generator_System */
+std::ostream&
+PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator_System& gs) {
+  Grid_Generator_System::const_iterator i = gs.begin();
+  const Grid_Generator_System::const_iterator gs_end = gs.end();
+  if (i == gs_end)
+    return s << "false";
+  while (true) {
+    s << *i++;
+    if (i == gs_end)
+      return s;
+    s << ", ";
+  }
+}
+
 void
 PPL::Grid_Generator_System
 ::add_universe_rows_and_columns(dimension_type dims) {
