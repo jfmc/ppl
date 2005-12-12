@@ -233,12 +233,6 @@ PPL::Grid::generators() const {
     return gen_sys;
   }
 
-#if 0 // FIX
-  // Convert parameters to points, to keep them from the user
-  // interface.
-  const_cast<Grid&>(*this).hide_parameters();
-#endif
-
   return gen_sys;
 }
 
@@ -268,12 +262,6 @@ PPL::Grid::minimized_generators() const {
     const_cast<Grid&>(*this).set_empty();
     return gen_sys;
   }
-
-#if 0 // FIX
-  // Convert parameters to points, to keep parameters from the user
-  // interface.
-  const_cast<Grid&>(*this).hide_parameters();
-#endif
 
   return gen_sys;
 }
