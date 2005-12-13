@@ -1272,15 +1272,15 @@ main(int argc, char* argv[]) try {
 
   return 0;
 }
-catch(const std::bad_alloc&) {
+catch (const std::bad_alloc&) {
   fatal("out of memory");
   exit(1);
 }
-catch(const std::overflow_error& e) {
+catch (const std::overflow_error& e) {
   fatal("arithmetic overflow (%s)", e.what());
   exit(1);
 }
-catch(...) {
+catch (...) {
   fatal("internal error: please submit a bug report to ppl-devel@cs.unipr.it");
   exit(1);
 }
