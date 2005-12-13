@@ -698,30 +698,30 @@ main(int argc, char* argv[]) try {
     portray("LICENSE", PPL_LICENSE);
 
   if (required_copying) {
-    extern const char* const COPYING_array[]; 
+    extern const char* const COPYING_array[];
     portray("COPYING", COPYING_array);
   }
 
   if (required_bugs) {
-    extern const char* const BUGS_array[]; 
+    extern const char* const BUGS_array[];
     portray("BUGS", BUGS_array);
   }
 
   if (required_credits) {
-    extern const char* const CREDITS_array[]; 
+    extern const char* const CREDITS_array[];
     portray("CREDITS", CREDITS_array);
   }
 
   return 0;
 }
-catch(const std::bad_alloc&) {
+catch (const std::bad_alloc&) {
   fatal("out of memory");
   exit(1);
 }
-catch(const std::overflow_error& e) {
+catch (const std::overflow_error& e) {
   fatal("arithmetic overflow (%s)", e.what());
   exit(1);
 }
-catch(...) {
+catch (...) {
   internal_error();
 }
