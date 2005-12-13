@@ -93,7 +93,7 @@ ppl_set_error_handler(error_handler_type h) {
 }
 
 #define CATCH_STD_EXCEPTION(exception, code) \
-catch(const std::exception& e) { \
+catch (const std::exception& e) {	     \
   notify_error(code, e.what()); \
   return code; \
 }
@@ -105,7 +105,7 @@ CATCH_STD_EXCEPTION(length_error, PPL_ERROR_LENGTH_ERROR) \
 CATCH_STD_EXCEPTION(overflow_error, PPL_ARITHMETIC_OVERFLOW) \
 CATCH_STD_EXCEPTION(runtime_error, PPL_ERROR_INTERNAL_ERROR) \
 CATCH_STD_EXCEPTION(exception, PPL_ERROR_UNKNOWN_STANDARD_EXCEPTION) \
-catch(...) { \
+catch (...) {						     \
   notify_error(PPL_ERROR_UNEXPECTED_ERROR, \
 	       "completely unexpected error: a bug in the PPL"); \
   return PPL_ERROR_UNEXPECTED_ERROR; \
