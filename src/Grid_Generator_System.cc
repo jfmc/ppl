@@ -53,7 +53,7 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
 void
 PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
 
-  if (g.is_parameter()) {
+  if (g.is_parameter())
     if (g.all_homogeneous_terms_are_zero()) {
       dimension_type space_dim = space_dimension();
       dimension_type g_space_dim = g.space_dimension();
@@ -64,8 +64,6 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
       }
       return;
     }
-    // FIX Scale g to match system divisor, or divisor of first point
-  }
 
   // The rest is a substitute for Generator_System::insert, with the
   // single call to Linear_System::insert that would result inlined.
@@ -114,11 +112,32 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
     // Here r_size == old_num_columns.
     Matrix::add_row(g);
   }
-  set_index_first_pending_row(num_rows());
+  dimension_type num_rows = this->num_rows();
+  set_index_first_pending_row(num_rows);
   set_sorted(false);
 
   // The added row was not a pending row.
   assert(num_pending_rows() == 0);
+
+  if (g.is_parameter())
+    if (num_rows > 1) {
+      // Represent the added parameter using the same divisor as the
+      // first point.
+      // FIX for now parameter divisors are always 1
+      --num_rows;		// Only consider the old rows.
+      dimension_type row = 0;
+      while (operator[](row).is_line())
+	if (++row == num_rows) {
+	  // All rows are lines.
+	  assert(OK());
+	  return;
+	}
+      Grid_Generator& param = operator[](num_rows);
+      const Coefficient& point_divisor = operator[](row).divisor();
+      if (point_divisor > 1)
+	for (dimension_type col = num_columns() - 1; col > 0; --col)
+	  param[col] *= point_divisor;
+    }
 
   assert(OK());
 }
@@ -150,7 +169,7 @@ PPL::Grid_Generator_System
     std::swap(numerator, row[v]);
   }
 
-  if (denominator != 1) {
+  if (denominator != 1)
     // Since we want integer elements in the matrix,
     // we multiply by `denominator' all the columns of `*this'
     // having an index different from `v'.
@@ -160,7 +179,6 @@ PPL::Grid_Generator_System
 	if (j != v)
 	  row[j] *= denominator;
     }
-  }
 
   // If the mapping is not invertible we may have transformed
   // valid lines and rays into the origin of the space.
