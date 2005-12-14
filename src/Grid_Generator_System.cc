@@ -384,6 +384,24 @@ PPL::Grid_Generator_System
 void
 PPL::Grid_Generator_System
 ::remove_higher_space_dimensions(dimension_type new_dimension) {
-  // FIX may need some checks, as in Grid::remove_higher_space_dimensions
-  Matrix::remove_trailing_columns(space_dimension() - new_dimension);
+  dimension_type space_dim = space_dimension();
+  // Dimension-compatibility check.
+  if (new_dimension > space_dim) {
+    std::ostringstream s;
+    s << "PPL::Grid_Generator_System::remove_higher_space_dimensions(n):\n"
+      << "this->space_dimension() == " << space_dimension()
+      << ", required space dimension == " << new_dimension << ".";
+    throw std::invalid_argument(s.str());
+  }
+
+  // The removal of no dimensions from any system is a no-op.  Note
+  // that this case also captures the only legal removal of dimensions
+  // from a system in a 0-dim space.
+  if (new_dimension == space_dim)
+    return;
+
+  if (new_dimension == 0)
+    clear();
+  else
+    Matrix::remove_trailing_columns(space_dim - new_dimension);
 }

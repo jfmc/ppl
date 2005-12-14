@@ -417,6 +417,11 @@ public:
   //! \brief
   //! Removes the higher dimensions of the system so that the
   //! resulting system will have dimension \p new_dimension.
+  /*!
+    \exception std::invalid_argument
+    Thrown if the \p new_dimension is higher than the space dimension
+    of \p *this.
+  */
   void remove_higher_space_dimensions(dimension_type new_dimension);
 
 private:
