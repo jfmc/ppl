@@ -398,3 +398,69 @@ Standards for Documenting the Project with Doxygen
   */
   int foo(const bar& p1, const bar& p2, int p3);
 
+
+Standards for the Test Programs
+===============================
+
+o  Include the header file `ppl_test.hh' to include common declarations
+   for test code (see below).
+
+o  Place the test code either in the main function or in test functions
+   which are called from main. Name the test functions test1, test2, etc.
+
+o  On failure immediately exit the test program with a return value
+   other than zero. Do this by calling `exit' in a test function, or
+   `return' in the main function. Return zero on success.
+
+o  Wrap function main with TRY and CATCH, as follows.  This adds code
+   to print an error message if an exception reaches the top level.
+
+	int
+	main() TRY {
+
+	 // body of main
+
+	 return 0;
+	}
+	CATCH
+
+o  Normally, test code should produce no output at all (independently from
+   whether the test succeeded or failed). Output is only meant to help
+   during debugging. In order to support for the coding of conditional
+   output, the header file `ppl_test.hh' defines the output streams `nout'
+   and `vnout'. By default, any output directed to these streams will be
+   simply discarded. For example,
+
+        nout << "A message when noisy." << endl;
+        vnout << "A message when very noisy." << endl;
+
+   will produce no output at all. By default, the helper print functions
+   (e.g., print_constraints, print_generators, etc.) are directed to
+   stream `nout', so that they will normally discard the output too.
+
+o  By defining the preprocessor variables NOISY and VERY_NOISY to a value
+   other than zero, the streams `nout' and `vnout' will be redirected to
+   standard output and become noisy. Thus, if some output is (locally and
+   temporarily) needed for debugging purposes, one option is to add
+
+      #define NOISY 1
+      #define VERY_NOISY 1
+
+   as the very first line of the test source file.
+
+o  To avoid repeated namespace qualifications, the header file `ppl_test.hh'
+   adds a using directive for the whole PPL namespace. It also adds a
+   using declaration for `std::endl'. All the other objects defined in
+   the namespace `std' should be explicitly qualified in the test files
+   (typically, by adding a corresponding using declaration).
+
+o  If PPL stream input and output is required,then an explicit using
+   directive for the Parma_Polyhedra_Library::IO_Operators namespace
+   should be added to the test file.
+
+o  Refer to the existing tests for examples. Many tests are written along
+   the following schema:
+     a) create a PPL object and perform some computations with it;
+     b) create a second object in a different (maybe simpler) way, having
+        as value the expected result of the computations done in point a);
+     c) check for equivalence of the two objects.
