@@ -222,12 +222,12 @@ private:
   std::map<dimension_type, dimension_type> dim_map;
 
   enum Status {
-    PROBLEM_UNSOLVED,
-    PROBLEM_UNSATISFIABLE,
-    PROBLEM_SATISFIABLE,
-    PROBLEM_UNBOUNDED,
-    PROBLEM_OPTIMIZED,
-    PROBLEM_PARTIALLY_SATISFIABLE
+    UNSOLVED,
+    UNSATISFIABLE,
+    SATISFIABLE,
+    UNBOUNDED,
+    OPTIMIZED,
+    PARTIALLY_SATISFIABLE
   };
   //! The status describing the state of \p *this.
   Status status;

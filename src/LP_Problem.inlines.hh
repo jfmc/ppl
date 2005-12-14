@@ -24,10 +24,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_LP_Problem_inlines_hh 1
 
 namespace Parma_Polyhedra_Library {
-
+// FIXME: Have we to initialize the status to `UNSOLVED' or to
+//        `OPTIMIZED' ?
 inline
 LP_Problem::LP_Problem()
-  : tableau(),  base(),  dim_map(), status(PROBLEM_UNSOLVED),
+  : tableau(),  base(),  dim_map(), status(UNSOLVED),
     input_cs(), input_obj_function(), opt_mode(MAXIMIZATION),
     last_generator(point()){
   assert(OK());
@@ -37,7 +38,7 @@ inline
 LP_Problem::LP_Problem(const Constraint_System& cs,
 		       const Linear_Expression& obj,
 		       const Optimization_Mode kind)
-  :tableau(), base(), dim_map(), status(PROBLEM_UNSOLVED),
+  :tableau(), base(), dim_map(), status(UNSOLVED),
    input_cs(cs), input_obj_function(obj), opt_mode(kind),
    last_generator(point()){
   assert(OK());
@@ -58,12 +59,12 @@ LP_Problem::~LP_Problem() {
 inline void
 LP_Problem::add_constraint(const Constraint& c) {
   input_cs.insert(c);
-  if (status != PROBLEM_UNSATISFIABLE)
+  if (status != UNSATISFIABLE)
     // FIXME: Here we should apply the incremental simplex algorithm: for
     // the moment we'll proceed computing a feaseble base from the beginning.
     // As soon as possible the following line will be uncommented.
-    // status = PROBLEM_PARTIALLY_SATISFIABLE;
-    status = PROBLEM_UNSOLVED;
+    // status = PARTIALLY_SATISFIABLE;
+    status = UNSOLVED;
 }
 
 inline void
@@ -71,23 +72,23 @@ LP_Problem::add_constraints(const Constraint_System& cs) {
   const dimension_type cs_num_rows = cs.num_rows();
   for (dimension_type i = cs_num_rows; i-- > 0; )
     input_cs.insert(cs[i]);
-  if (status != PROBLEM_UNSATISFIABLE)
+  if (status != UNSATISFIABLE)
     // FIXME: Here we should apply the incremental simplex algorithm: for
     // the moment we'll proceed computing a feaseble base from the beginning.
     // As soon as possible the following line will be uncommented.
-    // status = PROBLEM_PARTIALLY_SATISFIABLE;
-    status = PROBLEM_UNSOLVED;
+    // status = PARTIALLY_SATISFIABLE;
+    status = UNSOLVED;
   assert(OK());
 }
 
 inline void
 LP_Problem::set_objective_function(const Linear_Expression& obj) {
   switch(status){
-  case PROBLEM_UNBOUNDED:
-    status = PROBLEM_SATISFIABLE;
+  case UNBOUNDED:
+    status = SATISFIABLE;
     break;
-  case PROBLEM_OPTIMIZED:
-    status = PROBLEM_SATISFIABLE;
+  case OPTIMIZED:
+    status = SATISFIABLE;
     break;
   default:
     break;
@@ -101,11 +102,11 @@ LP_Problem::set_optimization_mode(Optimization_Mode new_mode){
   if (opt_mode == new_mode)
     return;
   switch(status){
-  case PROBLEM_UNBOUNDED:
-    status = PROBLEM_SATISFIABLE;
+  case UNBOUNDED:
+    status = SATISFIABLE;
     break;
-  case PROBLEM_OPTIMIZED:
-    status = PROBLEM_SATISFIABLE;
+  case OPTIMIZED:
+    status = SATISFIABLE;
     break;
   default:
     break;
@@ -127,30 +128,30 @@ LP_Problem::optimization_mode() const {
 inline const Generator&
 LP_Problem::feasible_point() {
   switch(status) {
-  case PROBLEM_UNSOLVED:
+  case UNSOLVED:
     if(is_satisfiable()){
       assert(OK());
       return last_generator;
     };
     throw std::domain_error("*this is not satisfiable.");
     break;
-  case PROBLEM_UNSATISFIABLE:
+  case UNSATISFIABLE:
     throw std::domain_error("*this is not satisfiable.");
     break;
-  case PROBLEM_SATISFIABLE:
+  case SATISFIABLE:
     return last_generator;
     break;
-  case PROBLEM_UNBOUNDED:
+  case UNBOUNDED:
     return last_generator;
     break;
-  case PROBLEM_PARTIALLY_SATISFIABLE:
+  case PARTIALLY_SATISFIABLE:
     if(is_satisfiable()){
       assert(OK());
       return last_generator;
     }
     throw std::domain_error("*this is not satisfiable.");
     break;
-  case PROBLEM_OPTIMIZED:
+  case OPTIMIZED:
     return last_generator;
     break;
 }
@@ -161,27 +162,27 @@ throw std::runtime_error("PPL internal error");
 inline const Generator&
 LP_Problem::optimizing_point() {
   switch(status) {
-  case PROBLEM_UNSOLVED:
+  case UNSOLVED:
     if(solve() == SOLVED_PROBLEM)
       return last_generator;
     throw std::domain_error("*this doesn't have an optimizing point.");
     break;
-  case PROBLEM_UNSATISFIABLE:
+  case UNSATISFIABLE:
     throw std::domain_error("*this doesn't have an optimizing point.");
     break;
-  case PROBLEM_SATISFIABLE:
+  case SATISFIABLE:
     if(solve() == SOLVED_PROBLEM)
       return last_generator;
     break;
-  case PROBLEM_UNBOUNDED:
+  case UNBOUNDED:
     throw std::domain_error("*this doesn't have an optimizing point.");
     break;
-  case PROBLEM_PARTIALLY_SATISFIABLE:
+  case PARTIALLY_SATISFIABLE:
     if(solve() == SOLVED_PROBLEM)
       return last_generator;
     throw std::domain_error("*this doesn't have an optimizing point.");
     break;
-  case PROBLEM_OPTIMIZED:
+  case OPTIMIZED:
     return last_generator;
     break;
   }
@@ -197,9 +198,9 @@ LP_Problem::constraints() const{
 inline Simplex_Status
 LP_Problem::solve() {
   switch(status){
-  case PROBLEM_UNSATISFIABLE:
+  case UNSATISFIABLE:
     return UNFEASIBLE_PROBLEM;
-  case PROBLEM_SATISFIABLE:
+  case SATISFIABLE:
     {
       Simplex_Status new_status = second_phase();
       assert(OK());
@@ -231,8 +232,8 @@ LP_Problem::optimal_value(Coefficient& num, Coefficient& den){
 inline bool
 LP_Problem::OK() const {
   // FIXME: still to be completed...
-  if (status == PROBLEM_SATISFIABLE || status == PROBLEM_OPTIMIZED
-      || status == PROBLEM_UNBOUNDED) {
+  if (status == SATISFIABLE || status == OPTIMIZED
+      || status == UNBOUNDED) {
     // The dimension of the last computed generator must be equal to
     // the input `Constraint_System' one.
     if(last_generator.space_dimension() != input_cs.space_dimension())

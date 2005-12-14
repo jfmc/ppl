@@ -591,13 +591,13 @@ PPL::LP_Problem::compute_tableau() {
   if (tableau_num_rows == 0)
     for (dimension_type i = tableau_num_cols; i-- > 1; )
       if (input_obj_function[i] > 0){
-	status = PROBLEM_UNBOUNDED;
+	status = UNBOUNDED;
 	return UNBOUNDED_PROBLEM;
       }
   // The problem is neither trivially unfeasible nor trivially unbounded.
   // The tableau was successfull computed and the caller has to figure
   // out which case applies.
-  status = PROBLEM_OPTIMIZED;
+  status = OPTIMIZED;
   return SOLVED_PROBLEM;
 }
 
@@ -739,11 +739,11 @@ PPL::LP_Problem::second_phase() {
 #endif
   if (second_phase_successful) {
     last_generator = compute_generator();
-    status = PROBLEM_OPTIMIZED;
+    status = OPTIMIZED;
     return SOLVED_PROBLEM;
   }
   else
-    status = PROBLEM_UNBOUNDED;
+    status = UNBOUNDED;
     return UNBOUNDED_PROBLEM;
 }
 
@@ -768,19 +768,19 @@ PPL::LP_Problem::is_satisfiable(){
 #endif
   // Check for the `status' attribute in trivial cases.
   switch (status){
-  case PROBLEM_UNSATISFIABLE:
+  case UNSATISFIABLE:
 #if PPL_NOISY_SIMPLEX
     std::cout << "LP_Problem::solve: 1st phase ended at iteration "
 	      << num_iterations << "." << std::endl;
 #endif
     return false;
-  case PROBLEM_SATISFIABLE:
+  case SATISFIABLE:
 #if PPL_NOISY_SIMPLEX
     std::cout << "LP_Problem::solve: 1st phase ended at iteration "
 	      << num_iterations << "." << std::endl;
 #endif
     return true;
-  case PROBLEM_OPTIMIZED:
+  case OPTIMIZED:
 #if PPL_NOISY_SIMPLEX
     std::cout << "LP_Problem::solve: 1st phase ended at iteration "
 	      << num_iterations << "." << std::endl;
@@ -841,7 +841,7 @@ PPL::LP_Problem::is_satisfiable(){
   // If the first phase problem was not solved or if we found an optimum
   // value different from zero, then the origianl problem is unfeasible.
   if (!first_phase_successful || working_cost[0] != 0){
-    status = PROBLEM_UNSATISFIABLE;
+    status = UNSATISFIABLE;
     return false;
   }
 
@@ -849,7 +849,7 @@ PPL::LP_Problem::is_satisfiable(){
   // check was requested, we can return that feasible solution.
   // Store the last succesfully computed generator.
   last_generator = compute_generator();
-  status = PROBLEM_SATISFIABLE;
+  status = SATISFIABLE;
   // Erase the slack variables.
   erase_slacks();
   return true;
