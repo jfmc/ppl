@@ -34,59 +34,63 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-using namespace std;
 
 void
-print_constraint(const Constraint& c, const string& intro, ostream& s) {
+print_constraint(const Constraint& c,
+		 const std::string& intro, std::ostream& s) {
   if (!intro.empty())
-    s << intro << endl;
-  s << c << endl;
+    s << intro << "\n";
+  s << c << std::endl;
+}
+
+void
+print_constraints(const Polyhedron& ph,
+		  const std::string& intro, std::ostream& s) {
+  print_constraints(ph.constraints(), intro, s);
 }
 
 void
 print_constraints(const Constraint_System& cs,
-		  const string& intro, ostream& s) {
+		  const std::string& intro, std::ostream& s) {
   if (!intro.empty())
-    s << intro << endl;
+    s << intro << "\n";
   Constraint_System::const_iterator i = cs.begin();
   Constraint_System::const_iterator cs_end = cs.end();
   bool printed_something = i != cs_end;
   while (i != cs_end) {
     s << *i++;
     if (i != cs_end)
-      s << "," << endl;
+      s << ",\n";
   }
-  s << (printed_something ? "." : "true.") << endl;
+  s << (printed_something ? "." : "true.") << std::endl;
 }
 
 void
-print_constraints(const Polyhedron& ph, const string& intro, ostream& s) {
-  print_constraints(ph.constraints(), intro, s);
-}
-
-void
-print_generator(const Generator& g, const string& intro, ostream& s) {
+print_generator(const Generator& g,
+		const std::string& intro, std::ostream& s) {
   if (!intro.empty())
-    s << intro << endl;
-  s << g << endl;
+    s << intro << "\n";
+  s << g << std::endl;
 }
 
 void
-print_generators(const Generator_System& gs, const string& intro, ostream& s) {
+print_generators(const Polyhedron& ph,
+		 const std::string& intro, std::ostream& s) {
+  print_generators(ph.generators(), intro, s);
+}
+
+void
+print_generators(const Generator_System& gs,
+		 const std::string& intro, std::ostream& s) {
   if (!intro.empty())
-    s << intro << endl;
+    s << intro << "\n";
   Generator_System::const_iterator i = gs.begin();
   Generator_System::const_iterator gs_end = gs.end();
   bool printed_something = i != gs_end;
   while (i != gs_end) {
     s << *i++;
     if (i != gs_end)
-      s << "," << endl;
+      s << ",\n";
   }
-  s << (printed_something ? "." : "false.") << endl;
-}
-
-void
-print_generators(const Polyhedron& ph, const string& intro, ostream& s) {
-  print_generators(ph.generators(), intro, s);
+  s << (printed_something ? "." : "false.") << std::endl;
 }

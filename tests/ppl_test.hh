@@ -25,6 +25,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ehandlers.hh"
 #include "Random_Number_Generator.defs.hh"
 
+// These using directive and declaration are just to avoid the
+// corresponding namespace qualifications in all the tests.
+using namespace Parma_Polyhedra_Library;
+using std::endl;
+
+
 #ifdef DERIVED_TEST
 #define C_Polyhedron NNC_Polyhedron
 #endif
