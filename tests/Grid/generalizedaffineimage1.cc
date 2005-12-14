@@ -79,7 +79,7 @@ test2() {
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point());
   known_gr.add_generator(grid_point(A));
-  known_gr.add_generator(grid_point(B, 2));
+  known_gr.add_generator(grid_point(B));
 
   if (gr == known_gr)
     return;
@@ -141,9 +141,9 @@ test4() {
     exit(1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A));
   known_gr.add_generator(grid_point(B, 2));
+  known_gr.add_generator(grid_point(B + A));
+  known_gr.add_generator(grid_point(3*B, 2));
 
   if (gr == known_gr)
     return;
@@ -175,7 +175,7 @@ test5() {
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point(B, 2));
   known_gr.add_generator(grid_point(A + B));
-  known_gr.add_generator(grid_point(2*B));
+  known_gr.add_generator(grid_point(7*B, 2));
 
   if (gr == known_gr)
     return;
@@ -205,9 +205,9 @@ test6() {
     exit(1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(-B, 2));
-  known_gr.add_generator(grid_point(2*A + -3*B, 2));
   known_gr.add_generator(grid_point(-B));
+  known_gr.add_generator(grid_point(-3*B + 2*A, 2));
+  known_gr.add_generator(grid_point(-2*B));
 
   if (gr == known_gr)
     return;
