@@ -445,7 +445,7 @@ SPECIALIZE_GCD(mpz, mpz_class, mpz_class, mpz_class)
 template <typename Policy>
 inline Result
 gcdext_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, mpz_class& s, mpz_class& t, Rounding_Dir) {
-  mpz_gcd(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t(), s.get_mpz_t(), t.get_mpz_t());
+  mpz_gcdext(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t(), s.get_mpz_t(), t.get_mpz_t());
   return V_EQ;
 }
 
