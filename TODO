@@ -45,7 +45,8 @@ Enhancements for PPL 0.9 or later versions
   temporarily in algorithms.hh, more efficiently.
 - Provide optimized implementations of Polyhedron::expand_dimension()
   Polyhedron::fold_dimensions().
-
+- Experiment with different compilation flags, such as GCC's
+  `-fno-threadsafe-statics'.
 
 Constructions on Polyhedra
 ==========================
