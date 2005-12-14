@@ -337,7 +337,23 @@ PPL::Grid_Generator_System
 void
 PPL::Grid_Generator_System
 ::remove_space_dimensions(const Variables_Set& to_be_removed) {
-  // FIX may need some checks, as in Grid::remove_space_dimensions
+  // The removal of no dimensions from any system is a no-op.  This
+  // case also captures the only legal removal of dimensions from a
+  // 0-dim system.
+  if (to_be_removed.empty())
+    return;
+
+  // Dimension-compatibility check: the variable having maximum space
+  // dimension is the one occurring last in the set.
+  const dimension_type
+    min_space_dim = to_be_removed.rbegin()->space_dimension();
+  if (space_dimension() < min_space_dim) {
+    std::ostringstream s;
+    s << "PPL::Grid_Generator_System::remove_space_dimensions(vs):\n"
+      << "this->space_dimension() == " << space_dimension()
+      << ", required space dimension == " << min_space_dim << ".";
+    throw std::invalid_argument(s.str());
+  }
 
   // For each variable to be removed, replace the corresponding column
   // by shifting left the columns to the right that will be kept.
@@ -368,6 +384,6 @@ PPL::Grid_Generator_System
 void
 PPL::Grid_Generator_System
 ::remove_higher_space_dimensions(dimension_type new_dimension) {
-  // FIX may need some checks, as in Grid::remove_space_dimensions
+  // FIX may need some checks, as in Grid::remove_higher_space_dimensions
   Matrix::remove_trailing_columns(space_dimension() - new_dimension);
 }

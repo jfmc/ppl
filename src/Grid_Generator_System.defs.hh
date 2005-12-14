@@ -407,6 +407,11 @@ public:
   void add_universe_rows_and_columns(dimension_type dims);
 
   //! Removes all the specified dimensions from the generator system.
+  /*!
+    \exception std::invalid_argument
+    Thrown if the highest space dimension of the variables in \p
+    to_be_removed is higher than the space dimension of \p *this.
+  */
   void remove_space_dimensions(const Variables_Set& to_be_removed);
 
   //! \brief
