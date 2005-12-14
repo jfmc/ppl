@@ -380,31 +380,7 @@ private:
 
   bool is_in_base(const dimension_type var_index, dimension_type& row_index);
 
-  Parma_Polyhedra_Library::Generator compute_generator();
-
-  //! \brief
-  //! Applies the primal simplex algorithm so as to maximize the value
-  //! of \p cost_function on the system of constraints.
-  /*!
-    \return
-    A Simplex_Status flag indicating the outcome of the maximization
-    attempt (unfeasible, unbounded or solved problem).
-
-    \param cost_function
-    The cost function to be maximized. It could be modified
-    during the call.
-
-    \param maximizing_point
-    On exit, if the problem has been solved, will contain a feasible
-    point on which \p cost_function takes the maximal value.
-
-    If the optimization problem is unfeasible or unbounded,
-    the parameter \p maximizing_point will be left untouched.
-    It is assumed that the constraint system contains
-    no strict inequalities.
-  */
-  // FIXME: At the moment we pass a copy instead of a reference.
-  Simplex_Status primal_simplex(Generator& maximizing_point) ;
+  Generator compute_generator();
 };
 
 #include "LP_Problem.inlines.hh"

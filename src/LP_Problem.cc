@@ -804,19 +804,19 @@ PPL::LP_Problem::is_satisfiable(){
   // Check for trivial cases.
   switch (s_status) {
   case UNFEASIBLE_PROBLEM:
-    return s_status;
+    return false;
   case UNBOUNDED_PROBLEM:
     // A feasible point has to be returned: the origin.
     // Ensure the right space dimension is obtained.
     last_generator = point(0*Variable(space_dim-1));
-    return s_status;
+    return true;
   case SOLVED_PROBLEM:
     // Check for the special case of an empty tableau,
     // in which case an optimizing solution is the origin.
     if (tableau.num_rows() == 0) {
       // Ensure the right space dimension is obtained.
       last_generator = point(0*Variable(space_dim-1));
-      return s_status;
+      return true;
     }
     break;
   }
