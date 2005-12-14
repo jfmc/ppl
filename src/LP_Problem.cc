@@ -59,31 +59,6 @@ unsigned long num_iterations = 0;
 } // namespace
 #endif // PPL_NOISY_SIMPLEX
 
-//! \brief
-//! Checks for optimality and, if it does not hold, computes the column
-//! index of the variable entering the base of the LP problem.
-/*!
-  \return
-  The column index of the variable that enters the base. If no such
-  variable exists, optimality was achieved and <CODE>0</CODE> is retuned.
-
-  To compute the entering_index, the steepest edge algorithm chooses
-  the index `j' such that \f$\frac{d_{j}}{\|\Delta x^{j} \|}\f$ is the
-  largest in absolute value, where
-  \f[
-    \|\Delta x^{j} \|
-      = \left(
-          1+\sum_{i=1}^{m} \alpha_{ij}^2
-        \right)^{\frac{1}{2}}.
-  \f]
-  Recall that, due to the Integer implementation of the algorithm, our
-  tableau doesn't contain the ``real'' \f$\alpha\f$ values, but these
-  can be computed dividing the value of the cofficient by the value of
-  the variable in base. Obviously the result may not be an Integer, so
-  we will proceed in another way: the following code will compute the
-  lcm of all the variables in base to get the good ``weight'' of each
-  Coefficient of the tableau.
-*/
 PPL::dimension_type
 PPL::LP_Problem::steepest_edge() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
@@ -157,16 +132,6 @@ PPL::LP_Problem::steepest_edge() const {
 
 // See pag. 47 of Papadimitriou.
 
-//! \brief
-//! Checks for optimality and, if it does not hold, computes the column
-//! index of the variable entering the base of the LP problem.
-//! Implemented with anti-cycling rule.
-/*!
-  \return
-  The column index of the variable that enters the base. If no such
-  variable exists, optimality was achieved and <CODE>0</CODE> is retuned.
-
-*/
 PPL::dimension_type
 PPL::LP_Problem::get_entering_var_index() const{
   // The variable entering the base is the first one whose coefficient
@@ -186,21 +151,6 @@ PPL::LP_Problem::get_entering_var_index() const{
   return 0;
 }
 
-//! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
-/*!
-  \param x
-  The Row that will be combined with \p y object.
-
-  \param y
-  The Row that will be combined with \p x object.
-
-  \param k
-  The position of \p *this that have to be \f$0\f$.
-
-  Computes a linear combination of \p x and \p y having
-  the element of index \p k equal to \f$0\f$. Then it assigns
-  the resulting Linear_Row to \p x and normalizes it.
-*/
 void
 PPL::LP_Problem::linear_combine(Row& x,
 			       const Row& y,
@@ -232,16 +182,6 @@ PPL::LP_Problem::linear_combine(Row& x,
 
 // See pag 42-43 of Papadimitriou.
 
-//! \brief
-//! Swaps two variables in base during the simplex algorithm,
-//! performing the needed linear combinations.
-/*!
-  \param entering_var_index
-  The index of the variable entering the base.
-
-  \param exiting_base_index
-  The index of the row exiting the base.
-*/
 void
 PPL::LP_Problem::swap_base(const dimension_type entering_var_index,
 			   const dimension_type exiting_base_index) {
@@ -259,17 +199,6 @@ PPL::LP_Problem::swap_base(const dimension_type entering_var_index,
 
 // See pag. 47 + 50 of Papadimitriou.
 
-//! \brief
-//! Computes the row index of the variable exiting the base
-//! of the LP problem. Implemented with anti-cycling rules.
-/*!
-  \return
-  The row index of the variable exiting the base.
-
-  \param entering_var_index
-  The column index of the variable entering the base.
-
-*/
 PPL::dimension_type
 PPL::LP_Problem::get_exiting_base_index(const dimension_type entering_var_index) const  {
   // The variable exiting the base should be associated to a tableau
@@ -324,32 +253,6 @@ PPL::LP_Problem::get_exiting_base_index(const dimension_type entering_var_index)
 
 // See pag 49 of Papadimitriou.
 
-//! The simplex algorithm.
-/*!
-  \return
-  <CODE>true</CODE> if and if only the algorithm successfully computed
-  a feasible solution.
-
-  To solve the LP problem compute_simplex must receive the problem in this way:
-
-  1) Linear Expressions:
-  k + x_1 + x_2 + ... + x_n + s (with s > 0)
-  where k is the inhomogeneous term, x_i are the coefficients of the variables
-  and s is a special variable that stands for the sign of the cost function.
-  In this way is possible to know if the cost function was reversed during
-  the linear combinations. Reasoning in a "PPL way" we can think that this
-  row stands for k + x_1 + x_2 + s = 0, so -s = k + x_1 + x_2 + ...  + x_n.
-  We use a matrix instead of a row because in this way is very simple to have
-  the cost function of the second_phase. The old objective cost function, if
-  compute_simplex is called by first_phase, is stored in the second row.
-
-  2) Constraints:
-  These are the standard "PPL rows", so there should not be special
-  problems to understand what's in this matrix.
-
-  It is assumed that \p tableau and \p expressions have the same
-  number of columns (i.e., the same space dimension).
-*/
 bool
 PPL::LP_Problem::compute_simplex() {
   assert(tableau.num_columns() == working_cost.size());
@@ -390,12 +293,6 @@ PPL::LP_Problem::compute_simplex() {
 
 // See pag 28  Papadimitriou.
 
-//! \brief
-//! Adds the slack variables to satisfy the standard form of a LP problem,
-//! inserts the "sign" to the cost functions, and makes the
-//! necessary swaps to express the problem with the 1st phase base.
-/*!
-*/
 void
 PPL::LP_Problem::prepare_first_phase() {
   // We negate the row if tableau[i][0] <= 0 to get the inhomogeneous term > 0.
@@ -438,11 +335,6 @@ PPL::LP_Problem::prepare_first_phase() {
 
 // See pag 55-56 Papadimitriou.
 
-//! \brief
-//! Deletes the non necessary slack variables from the matrix
-//! and prepares for the 2nd phase.
-/*!
-*/
 void
 PPL::LP_Problem::erase_slacks() {
   const dimension_type tableau_last_index = tableau.num_columns() - 1;
@@ -502,20 +394,6 @@ PPL::LP_Problem::erase_slacks() {
 
 // See pag 55 of Papadimitriou.
 
-//! \brief
-//! Assigns to \p tableau a simplex tableau representing the problem
-//! given by the constraints in \p cs and the cost function \p expr,
-//! inserting into \p map the informations that are required to go
-//! back to the original problem.
-/*!
-  \return
-  <CODE>UNFEASIBLE_PROBLEM</CODE> if the constraint system contains
-  any trivially unfeasible constraint (tableau was not computed);
-  <CODE>UNBOUNDED_PROBLEM</CODE> if the problem is trivially unbounded
-  (the computed tableau contains no constraints);
-  <CODE>SOLVED_PROBLEM></CODE> if the problem is neither trivially
-  unfeasible nor trivially unbounded (the tableau was computed successfully).
-*/
 PPL::Simplex_Status
 PPL::LP_Problem::compute_tableau() {
   assert(tableau.num_rows() == 0);
@@ -723,22 +601,6 @@ PPL::LP_Problem::compute_tableau() {
   return SOLVED_PROBLEM;
 }
 
-//! \brief
-//!  Checks whether variable is in base and assigns to 'row'
-//! the row index of which is base.
-/*!
-  \return
-  <CODE>true</CODE> if and only if variable of index \p var_index
-  is one of the variables in \p base.
-
-  \param var_index
-  The index of the variable that has to be checked.
-
-  \param row_index
-  If <CODE>true</CODE> is returned, it will store the index of the
-  tableau constraint corresponding to variable \p var_index.
-*/
-
 bool
 PPL::LP_Problem::is_in_base(const dimension_type var_index,
 	   dimension_type& row_index) {
@@ -748,13 +610,6 @@ PPL::LP_Problem::is_in_base(const dimension_type var_index,
   return false;
 }
 
-
-//! Computes the generator corresponding to \p base.
-/*!
-  \return
-  The computed generator.
-
-*/
 PPL::Generator
 PPL::LP_Problem::compute_generator() {
   // We will store in num[] and in den[] the numerators and
@@ -912,35 +767,28 @@ PPL::LP_Problem::is_satisfiable(){
   num_iterations = 0;
 #endif
   // Check for the `status' attribute in trivial cases.
-switch (status){
+  switch (status){
   case PROBLEM_UNSATISFIABLE:
-    {
 #if PPL_NOISY_SIMPLEX
     std::cout << "LP_Problem::solve: 1st phase ended at iteration "
 	      << num_iterations << "." << std::endl;
 #endif
     return false;
-    }
   case PROBLEM_SATISFIABLE:
-    {
 #if PPL_NOISY_SIMPLEX
-      std::cout << "LP_Problem::solve: 1st phase ended at iteration "
-		<< num_iterations << "." << std::endl;
+    std::cout << "LP_Problem::solve: 1st phase ended at iteration "
+	      << num_iterations << "." << std::endl;
 #endif
-      return true;
-    }
-
+    return true;
   case PROBLEM_OPTIMIZED:
-    {
 #if PPL_NOISY_SIMPLEX
-      std::cout << "LP_Problem::solve: 1st phase ended at iteration "
-		<< num_iterations << "." << std::endl;
+    std::cout << "LP_Problem::solve: 1st phase ended at iteration "
+	      << num_iterations << "." << std::endl;
 #endif
-      return true;
-    }
- default:
-   break;
-}
+    return true;
+  default:
+    break;
+  }
 
   // The space dimension of the solution to be computed.
   // Note: here we can not use method Constraint_System::space_dimension(),
@@ -990,7 +838,6 @@ switch (status){
   std::cout << "LP_Problem::solve: 1st phase ended at iteration "
 	    << num_iterations << "." << std::endl;
 #endif
-
   // If the first phase problem was not solved or if we found an optimum
   // value different from zero, then the origianl problem is unfeasible.
   if (!first_phase_successful || working_cost[0] != 0){

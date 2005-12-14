@@ -149,8 +149,9 @@ public:
     the current objective function.
   */
 
- void evaluate_objective_function(const Generator&  evaluating_point,
-				  Coefficient& a, Coefficient& b) const;
+  void evaluate_objective_function(const Generator& evaluating_point,
+				   Coefficient& ext_n,
+				   Coefficient& ext_d) const;
 
   //! \brief
   //! Returns a feasible point of \p *this if this exists.

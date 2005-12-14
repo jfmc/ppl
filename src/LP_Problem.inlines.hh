@@ -128,14 +128,12 @@ inline const Generator&
 LP_Problem::feasible_point() {
   switch(status) {
   case PROBLEM_UNSOLVED:
-    {
-      if(is_satisfiable()){
-	assert(OK());
-	return last_generator;
-      };
-      throw std::domain_error("*this is not satisfiable.");
-      break;
-    }
+    if(is_satisfiable()){
+      assert(OK());
+      return last_generator;
+    };
+    throw std::domain_error("*this is not satisfiable.");
+    break;
   case PROBLEM_UNSATISFIABLE:
     throw std::domain_error("*this is not satisfiable.");
     break;
@@ -146,11 +144,9 @@ LP_Problem::feasible_point() {
     return last_generator;
     break;
   case PROBLEM_PARTIALLY_SATISFIABLE:
-    {
-      if(is_satisfiable()){
-	assert(OK());
-	return last_generator;
-      }
+    if(is_satisfiable()){
+      assert(OK());
+      return last_generator;
     }
     throw std::domain_error("*this is not satisfiable.");
     break;
@@ -174,21 +170,17 @@ LP_Problem::optimizing_point() {
     throw std::domain_error("*this doesn't have an optimizing point.");
     break;
   case PROBLEM_SATISFIABLE:
-    {
     if(solve() == SOLVED_PROBLEM)
       return last_generator;
     break;
-    }
   case PROBLEM_UNBOUNDED:
     throw std::domain_error("*this doesn't have an optimizing point.");
     break;
   case PROBLEM_PARTIALLY_SATISFIABLE:
-    {
-      if(solve() == SOLVED_PROBLEM)
-	return last_generator;
-      throw std::domain_error("*this doesn't have an optimizing point.");
-      break;
-    }
+    if(solve() == SOLVED_PROBLEM)
+      return last_generator;
+    throw std::domain_error("*this doesn't have an optimizing point.");
+    break;
   case PROBLEM_OPTIMIZED:
     return last_generator;
     break;
