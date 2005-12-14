@@ -321,7 +321,6 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator_System& gs) 
 void
 PPL::Grid_Generator_System
 ::add_universe_rows_and_columns(dimension_type dims) {
-  // FIX add point if sys is empty
   dimension_type col = num_columns();
   add_zero_rows_and_columns(dims, dims,
 			    Linear_Row::Flags(NECESSARILY_CLOSED,
