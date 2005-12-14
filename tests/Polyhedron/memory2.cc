@@ -24,17 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <new>
 #include <limits>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-#ifndef VERY_NOISY
-#define VERY_NOISY 0
-#endif
-
 // If GMP does not support exceptions the test is pointless.
 #if !GMP_SUPPORTS_EXCEPTIONS
 
@@ -65,42 +54,32 @@ reset_allocators(unsigned long new_malloc_threshold,
 void
 fail_if_leaked() {
   if (mallocated != freed) {
-#if NOISY
-    cout << "Memory leak: allocated " << mallocated
+    nout << "Memory leak: allocated " << mallocated
 	 << ", freed " << freed
 	 << endl;
-#endif
     exit(1);
   }
   else {
-#if NOISY
-    cout << "allocated = freed = " << mallocated
+    nout << "allocated = freed = " << mallocated
 	 << endl;
-#endif
   }
 }
 
 extern "C" void*
 cxx_malloc(size_t size) {
   if (mallocated >= malloc_threshold) {
-#if NOISY
-    cout << "std::bad_alloc thrown from cxx_malloc()" << endl;
-#endif
+    nout << "std::bad_alloc thrown from cxx_malloc()" << endl;
     throw std::bad_alloc();
   }
   void* p = ::operator new(size);
-#if VERY_NOISY
-  cout << "allocated " << size << " @ " << p << endl;
-#endif
+  vnout << "allocated " << size << " @ " << p << endl;
   ++mallocated;
   return p;
 }
 
 extern "C" void
 cxx_free(void* p, size_t) {
-#if VERY_NOISY
-  cout << "freed " << p << endl;
-#endif
+  vnout << "freed " << p << endl;
   ::operator delete(p);
   ++freed;
 }
@@ -116,28 +95,22 @@ cxx_realloc(void* p, size_t old_size, size_t new_size) {
   }
 
   if (new_size <= old_size) {
-#if VERY_NOISY
-  cout << "reallocated " << old_size << " @ " << p
-       << " down to " << new_size << " @ " << p
-       << endl;
-#endif
+  vnout << "reallocated " << old_size << " @ " << p
+	<< " down to " << new_size << " @ " << p
+	<< endl;
     return p;
   }
   else {
     if (reallocated >= realloc_threshold) {
-#if NOISY
-      cout << "std::bad_alloc thrown from cxx_realloc()" << endl;
-#endif
+      nout << "std::bad_alloc thrown from cxx_realloc()" << endl;
       throw std::bad_alloc();
     }
     void* new_p = ::operator new(new_size);
     memcpy(new_p, p, old_size);
     ::operator delete(p);
-#if VERY_NOISY
-    cout << "reallocated " << old_size << " @ " << p
-	 << " up to " << new_size << " @ " << new_p
-	 << endl;
-#endif
+    vnout << "reallocated " << old_size << " @ " << p
+	  << " up to " << new_size << " @ " << new_p
+	  << endl;
     ++reallocated;
     return new_p;
   }
@@ -145,9 +118,7 @@ cxx_realloc(void* p, size_t old_size, size_t new_size) {
 
 void
 test1() {
-#if NOISY
-  cout << "test1()" << endl;
-#endif
+  nout << "test1()" << endl;
 
   reset_allocators(6, ULONG_MAX);
   try {
@@ -157,15 +128,11 @@ test1() {
     delete matrix;
   }
   catch (const std::bad_alloc&) {
-#if NOISY
-    cout << "std::bad_alloc caught" << endl;
-#endif
+    nout << "std::bad_alloc caught" << endl;
     fail_if_leaked();
   }
   catch (...) {
-#if NOISY
-    cout << "exception different from std::bad_alloc caught" << endl;
-#endif
+    nout << "exception different from std::bad_alloc caught" << endl;
     fail_if_leaked();
   }
 }
@@ -180,11 +147,9 @@ test_every_allocation(const dimension_type d, const Threshold threshold) {
   unsigned long k = ULONG_MAX;
   bool go_ahead;
   do {
-#if NOISY
-    cout << "**************** k = " << k << " ****************" << endl;
+    nout << "**************** k = " << k << " ****************" << endl;
     if (dry_run)
-      cout << "*************** dry run ***************" << endl;
-#endif
+      nout << "*************** dry run ***************" << endl;
     go_ahead = dry_run;
     if (threshold == Malloc)
       reset_allocators(k, ULONG_MAX);
@@ -199,17 +164,13 @@ test_every_allocation(const dimension_type d, const Threshold threshold) {
       (void) ph.minimized_generators();
     }
     catch (const std::bad_alloc&) {
-#if NOISY
-      cout << "std::bad_alloc caught" << endl;
-#endif
+      nout << "std::bad_alloc caught" << endl;
       fail_if_leaked();
       go_ahead = true;
       ++k;
     }
     catch (...) {
-#if NOISY
-      cout << "exception different from std::bad_alloc caught" << endl;
-#endif
+      nout << "exception different from std::bad_alloc caught" << endl;
       fail_if_leaked();
       // Notice that we do not go ahead if we did not catch a bad_alloc.
     }
@@ -222,17 +183,13 @@ test_every_allocation(const dimension_type d, const Threshold threshold) {
 
 void
 test2() {
-#if NOISY
-  cout << "test2()" << endl;
-#endif
+  nout << "test2()" << endl;
   test_every_allocation(5, Malloc);
 }
 
 void
 test3() {
-#if NOISY
-  cout << "test3()" << endl;
-#endif
+  nout << "test3()" << endl;
   test_every_allocation(10, Realloc);
 }
 

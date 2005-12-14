@@ -24,13 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -40,10 +33,8 @@ main() TRY {
   C_Polyhedron ph1;
   C_Polyhedron ph2(2, EMPTY);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   bool ok = ph1.bounds_from_above(Linear_Expression(3))
     && ph2.bounds_from_below(A);

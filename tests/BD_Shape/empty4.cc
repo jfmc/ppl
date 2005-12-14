@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   Variable A(0);
@@ -43,12 +36,10 @@ main() TRY {
 
   bool empty = bd.is_empty();
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-  cout << "*** bd.is_empty() ***"
+  nout << "*** bd.is_empty() ***"
        << endl
        << (empty ? "true" : "false") << endl;
-#endif
 
   return !empty ? 0 : 1;
 }

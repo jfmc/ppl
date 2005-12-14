@@ -23,13 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -41,18 +34,14 @@ main() TRY {
   ph.add_constraint(x >= z);
   ph.add_constraint(z == 3);
 
-#if NOISY
   print_constraints(ph, "--- ph ---");
-#endif
 
   bool universe = ph.is_universe();
 
-#if NOISY
-  cout << "*** ph.is_universe() ***"
+  nout << "*** ph.is_universe() ***"
        << endl
        << (universe ? "true" : "false")
        << endl;
-#endif
 
   return !universe ? 0 : 1;
 }

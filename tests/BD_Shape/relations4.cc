@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -40,10 +34,8 @@ void test1() {
 
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(1) >= 1);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(1 >= 1) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(1 >= 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_included();
@@ -62,10 +54,8 @@ void test2() {
   
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(1) > 1);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(1 > 1) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(1 > 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_disjoint();
@@ -86,10 +76,8 @@ void test3() {
    
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(1) == 1);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(1 == 1) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(1 == 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_included();
@@ -100,7 +88,6 @@ void test3() {
 
 } // namespace
 
-
 int main() TRY {
   test1();
   test2();
@@ -109,5 +96,4 @@ int main() TRY {
   return 0;
 }
 CATCH
-
 

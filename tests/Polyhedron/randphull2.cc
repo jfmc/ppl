@@ -25,13 +25,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 #include <cmath>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-using namespace Parma_Polyhedra_Library::IO_Operators;
+using std::vector;
 
-#ifndef NOISY
-#define NOISY 0
-#endif
+using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #ifndef M_PI
 # define M_PI           3.14159265358979323846  /* pi */
@@ -101,7 +97,6 @@ random_polytope(C_Polyhedron& ph, unsigned dimension, unsigned num_points,
 
 } // namespace
 
-
 int
 main() TRY {
   set_handlers();
@@ -121,19 +116,15 @@ main() TRY {
 	 i != gs_end;
 	 ++i) {
       if (i->type() != Generator::POINT) {
-#if NOISY
-	cout << "i->type() == " << i->type() << endl;
-#endif
+	nout << "i->type() == " << i->type() << endl;
 	exit(1);
       }
       ++num_points;
     }
 
-#if NOISY
-    cout << "dimension = " << dimension
+    nout << "dimension = " << dimension
 	 << ", points = " << num_points << " (" << dimension*dimension << ")"
 	 << ", constraints = " << num_constraints << endl;
-#endif
   }
   return 0;
 }

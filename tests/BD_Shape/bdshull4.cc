@@ -22,18 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   Variable A(0);
   Variable B(1);
-
 
   TBD_Shape bd1(2);
   TBD_Shape bd2(2);
@@ -45,25 +37,20 @@ main() TRY {
   bd1.add_constraint(-B <= -1);
   bd1.add_constraint(A - B <= 1);
 
-
   bd2.add_constraint(B - A <= -1);
   bd2.add_constraint(A <= 3);
   bd2.add_constraint(-B <= 5);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   if (bd1.bds_hull_assign_and_minimize(bd2)) {
 
-#if NOISY
     print_constraints(bd1, "*** bd1.bds_hull_assign_and_minimize(bd2) ***");
-#endif
 
   }
   else
-    cout << endl << "The two BD_Shape are empty." << endl;
+    nout << endl << "The two BD_Shape are empty." << endl;
 
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(B >= -5);

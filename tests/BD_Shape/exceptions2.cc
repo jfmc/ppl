@@ -22,12 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
+using std::invalid_argument;
 
 namespace {
 
@@ -46,9 +41,9 @@ error1() {
     bd1.add_constraint(y < 0);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -71,9 +66,9 @@ error2() {
     bd1.add_constraint(y - x + z >= 0);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -93,9 +88,9 @@ error3() {
     bd2.CH78_widening_assign(bd1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -129,9 +124,9 @@ error4() {
     bd2.limited_CH78_extrapolation_assign(bd1, cs);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -156,9 +151,9 @@ error5() {
     bd2.limited_CH78_extrapolation_assign(bd1, cs);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -191,9 +186,9 @@ error6() {
     bd2.limited_CH78_extrapolation_assign(bd1, cs);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -221,9 +216,9 @@ error7() {
     bd.affine_image(x, coeff1, d);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -246,9 +241,9 @@ error8() {
     bd.affine_image(y, x + 1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -273,9 +268,9 @@ error9() {
     bd.affine_image(y, x + z + 1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -295,15 +290,14 @@ error10() {
     bd2.CC76_extrapolation_assign(bd1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
   }
 }
-
 
 void
 error11() {
@@ -326,9 +320,9 @@ error11() {
     bd.affine_image(x, coeff1, d);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -351,9 +345,9 @@ error12() {
     bd.affine_image(y, y - x);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -376,15 +370,14 @@ error13() {
     bd1.add_constraint(y - x + z >= 0);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
   }
 }
-
 
 void
 error14() {
@@ -402,9 +395,9 @@ error14() {
     bd1.add_constraint(2*y - 3*x <= 0);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -412,7 +405,6 @@ error14() {
 }
 
 } // namespace
-
 
 int
 main() TRY {

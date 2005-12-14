@@ -22,20 +22,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
 bool
 partition_ok(const C_Polyhedron& p,
 	     const C_Polyhedron& q,
-	     const pair<C_Polyhedron,
+	     const std::pair<C_Polyhedron,
 	     Powerset<Determinate<NNC_Polyhedron> > >& partition) {
   const C_Polyhedron& r = partition.first;
   // `r' must be a subset of or equal to `q'.
@@ -67,7 +61,6 @@ partition_ok(const C_Polyhedron& p,
 
 } // namespace
 
-
 int main() TRY {
   set_handlers();
 
@@ -80,9 +73,7 @@ int main() TRY {
   p.add_constraint(y >=  0);
   p.add_constraint(y <=  4);
 
-#if NOISY
-  cout << "p = " << p << endl;
-#endif
+  nout << "p = " << p << endl;
 
   C_Polyhedron q(2);
   q.add_constraint(x >= -1);
@@ -90,29 +81,23 @@ int main() TRY {
   q.add_constraint(y >=  1);
   q.add_constraint(y <=  3);
 
-#if NOISY
-  cout << "q = " << q << endl;
-#endif
+  nout << "q = " << q << endl;
 
-  pair<C_Polyhedron, Powerset<Determinate<NNC_Polyhedron> > >
+  std::pair<C_Polyhedron, Powerset<Determinate<NNC_Polyhedron> > >
     result = linear_partition(p, q);
 
-#if NOISY
-  cout << "*** q partition ***" << endl;
-  cout << "  === p inters q === " << endl << "  " << result.first << endl;
-  cout << "  ===    rest    === " << endl << "  " << result.second << endl;
-#endif
+  nout << "*** q partition ***" << endl;
+  nout << "  === p inters q === " << endl << "  " << result.first << endl;
+  nout << "  ===    rest    === " << endl << "  " << result.second << endl;
 
   if (!partition_ok(p, q, result))
     return 1;
 
   result = linear_partition(q, p);
 
-#if NOISY
-  cout << "*** p partition ***" << endl;
-  cout << "  === q inters p === " << endl << "  " << result.first << endl;
-  cout << "  ===    rest    === " << endl << "  " << result.second << endl;
-#endif
+  nout << "*** p partition ***" << endl;
+  nout << "  === q inters p === " << endl << "  " << result.first << endl;
+  nout << "  ===    rest    === " << endl << "  " << result.second << endl;
 
   if (!partition_ok(q, p, result))
     return 1;

@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
@@ -42,9 +35,7 @@ test1() {
   bd.add_constraint(x <= 1);
   bd.add_constraint(y <= 2);
  
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   TBD_Shape known_result(3);
   known_result.add_constraint(y <= 2);
@@ -53,9 +44,7 @@ test1() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_image(x, 2*y + z + 2, 4) ***");
-#endif
 
   if (!ok)
     exit(1);

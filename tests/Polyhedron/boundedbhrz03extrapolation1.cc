@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 #define PROPAGATION_STEPS 1
 #define NUMBER_OF_TOKENS 1
@@ -36,18 +30,18 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 namespace {
 
 void
-my_output_function(ostream& s, const Variable& v) { 
+my_output_function(std::ostream& s, const Variable& v) {
   s << char('i' + v.id());
-} 
+}
 
-} // namespace 
+} // namespace
 
 int
 main() TRY {
   Variable i(0);
   Variable j(1);
   Variable k(2);
-  Variable::set_output_function(my_output_function); 
+  Variable::set_output_function(my_output_function);
 
   C_Polyhedron ph(3);
   ph.add_constraint(i == 1);
@@ -72,17 +66,15 @@ main() TRY {
 
   // Widening.
   Constraint_System up_to_constraints = ph.constraints();
-#if NOISY
+
   print_constraints(up_to_constraints, "*** up_to_constraints ***");
-#endif
 
   unsigned tokens = NUMBER_OF_TOKENS;
 
   for (int step = 1; ; ++step) {
-#if NOISY
-    cout << "\nAt step " << step << endl;
+
+    nout << "\nAt step " << step << endl;
     print_constraints(ph);
-#endif
 
     old_ph = ph;
 
@@ -111,9 +103,7 @@ main() TRY {
 
   bool ok = (ph == known_result);
 
-#if NOISY
   print_constraints(ph, "\nPostfixpoint");
-#endif
 
   return ok ? 0 : 1;
 }

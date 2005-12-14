@@ -23,13 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 int
 main() TRY {
@@ -43,26 +37,18 @@ main() TRY {
   gs.insert(ray(y));
   gs.insert(line(x));
   C_Polyhedron ph(gs);
-
-
-#if NOISY
   print_generators(ph, "--- ph ---");
-#endif
 
   Generator g = point(x + y);
-
-#if NOISY
   print_generator(g, "--- g ---");
-#endif
 
   Poly_Gen_Relation rel = ph.relation_with(g);
 
   Poly_Gen_Relation known_rel = Poly_Gen_Relation::subsumes();
   int retval = (rel == known_rel) ? 0 : 1;
 
-#if NOISY
-  cout << "ph.relation_with(v(A + B)) == " << rel << endl;
-#endif
+  nout << "ph.relation_with(v(A + B)) == " << rel << endl;
+
   return retval;
 }
 CATCH

@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -54,10 +48,8 @@ n(int i) {
     bd.add_constraint(      a-c <= i);
   }
 
-#if NOISY
-  cout << "*** n_" << i << " ***" << endl
+  nout << "*** n_" << i << " ***" << endl
        << bd << endl;
-#endif
 
   // Force closure.
   (void) (bd == bd);
@@ -72,10 +64,10 @@ main() TRY {
   TBD_Shape m_i = n(i);
   TBD_Shape m_i_next;
   while (i < 100) {
-#if NOISY
-    cout << "*** m_" << i << " ***" << endl
+
+    nout << "*** m_" << i << " ***" << endl
 	 << m_i << endl;
-#endif
+
     m_i_next = n(++i);
     m_i_next.bds_hull_assign(m_i);
     m_i_next.CH78_widening_assign(m_i);
@@ -86,11 +78,11 @@ main() TRY {
       known_result.add_constraint(-1 <= b-c);
       known_result.add_constraint(      b-c <= 1);
       int retval = (m_i == known_result) ? 0 : 1;
-#if NOISY
-      cout << "*** m_" << i << " (fixpoint) ***" << endl
+
+      nout << "*** m_" << i << " (fixpoint) ***" << endl
 	   << m_i << endl;
       print_constraints(known_result, "*** known_result ***");
-#endif
+
       return retval;
     }
     m_i = m_i_next;

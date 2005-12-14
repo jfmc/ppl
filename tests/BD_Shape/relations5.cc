@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -41,11 +35,9 @@ void test1() {
   Generator g = point(x);
   Poly_Gen_Relation rel = bd.relation_with(g);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
   print_generator(g, "--- g ---");
-  cout << "bd.relation_with(v(A)) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(v(A)) == " << rel << endl;
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
 
@@ -61,11 +53,9 @@ void test2() {
   Generator g = point();
   Poly_Gen_Relation rel = bd.relation_with(g);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
   print_generator(g, "--- g ---");
-  cout << "bd.relation_with(v()) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(v()) == " << rel << endl;
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::subsumes();
   
@@ -83,10 +73,8 @@ void test3() {
 
   Poly_Gen_Relation rel = bd.relation_with(point(2*A));
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(point(2*A)) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(point(2*A)) == " << rel << endl;
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
 
@@ -105,11 +93,9 @@ void test4() {
   Poly_Gen_Relation rel1 = bd.relation_with(point(B));
   Poly_Gen_Relation rel2 = bd.relation_with(point(-B));
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-  cout << "bd.relation_with(point(B)) == " << rel1 << endl;
-  cout << "bd.relation_with(point(-B)) == " << rel2 << endl;
-#endif
+  nout << "bd.relation_with(point(B)) == " << rel1 << endl;
+  nout << "bd.relation_with(point(-B)) == " << rel2 << endl;
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
  
@@ -125,10 +111,8 @@ void test5() {
 
   Poly_Gen_Relation rel = bd.relation_with(ray(-A));
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-  cout << "bd.relation_with(ray(-A)) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(ray(-A)) == " << rel << endl;
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
   
@@ -144,10 +128,8 @@ void test6() {
 
   Poly_Gen_Relation rel = bd.relation_with(line(A));
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-  cout << "bd.relation_with(line(A)) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(line(A)) == " << rel << endl;
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
   
@@ -165,10 +147,8 @@ void test7() {
 
   Poly_Gen_Relation rel = bd.relation_with(closure_point(A));
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-  cout << "bd.relation_with(closure_point(A)) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(closure_point(A)) == " << rel << endl;
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
   
@@ -186,10 +166,8 @@ void test8() {
 
   Poly_Gen_Relation rel = bd.relation_with(ray(A + B));
   
-#if NOISY
   print_constraints(bd, "*** bd ***");
-  cout << "bd.relation_with(ray(A + B)) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(ray(A + B)) == " << rel << endl;
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
   
@@ -198,7 +176,6 @@ void test8() {
 }
 
 } // namespace
-
 
 int main() TRY {
 

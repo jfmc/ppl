@@ -21,20 +21,15 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include <string>
 #include <sstream>
 #include <cstdlib>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+using std::string;
+using std::stringstream;
+
 using namespace Parma_Polyhedra_Library::IO_Operators;
 using namespace Parma_Polyhedra_Library::Checked;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-using std::cout;
-using std::endl;
 
 // Adds slow, memory-heavy large exponent tests.
 //#define TEST_LARGE_EXPONENTS
@@ -77,12 +72,10 @@ test(string number, string expected, string expected_residual,
   // Convert `number' to checked number q1.
   Checked_Number<mpq_class, Test_Extended_Number_Policy> q1;
   Result result = input(q1, f, ROUND_UP);
-  stringstream::char_type *residual = (stringstream::char_type*) calloc(f.rdbuf()->in_avail(),
-									sizeof(stringstream::char_type));
+  typedef stringstream::char_type CH;
+  CH* residual = (CH*) calloc(f.rdbuf()->in_avail(), sizeof(CH));
   if (residual == NULL) {
-#if NOISY
-    cout << "Failed to allocate `residual'." << endl;
-#endif
+    nout << "Failed to allocate `residual'." << endl;
     exit(1);
   }
   f.readsome(residual, f.rdbuf()->in_avail());
@@ -94,43 +87,38 @@ test(string number, string expected, string expected_residual,
   Result r = input(q2, ss1, ROUND_UP);
   if (r != expected_result) {
 #if 1 || NOISY
+    using std::cout;
     cout << "Failed to read back `q2'.";
     cout << endl
 	 << "r = " << r << ", q1 = " << q1
 	 << endl
-	 << "number = \"" << number << "\", expected = \"" << expected
+	 << "number = \"" << number
+	 << "\", expected = \"" << expected << "\""
 	 << endl
 	 <<  "expected_residual = \"" << expected_residual
-	 << "\", expected_result = " << expected_result
+	 << "\", expected_result = " << expected_result << "\""
 	 << endl;
 #endif
     //exit(1);
   }
 
   // Check for a residual.
-  stringstream::char_type *resid = (stringstream::char_type*) calloc(ss1.rdbuf()->in_avail(),
-								     sizeof(stringstream::char_type));
+  CH* resid = (CH*) calloc(ss1.rdbuf()->in_avail(), sizeof(CH));
   if (resid == NULL) {
-#if NOISY
-    cout << "Failed to allocate `resid'." << endl;
-#endif
+    nout << "Failed to allocate `resid'." << endl;
     free(residual);
     exit(1);
   }
   ss1.readsome(resid, ss1.rdbuf()->in_avail());
   if (string("").compare(resid)) {
-#if NOISY
-    cout << "Residual left after reading q1 output into q2 (\""
+    nout << "Residual left after reading q1 output into q2 (\""
 	 << resid << "\")." << endl
 	 << "q1: " << q1 << endl
 	 << "q2: " << q2 << endl;
-#endif
   error:
-#if NOISY
-    cout << "given string: \"" << f.str() << "\""
+    nout << "given string: \"" << f.str() << "\""
 	 << ", value parsed: \"" << q1 << "\""
 	 << endl;
-#endif
     ret = 1;
     free(resid);
     free(residual);
@@ -140,10 +128,8 @@ test(string number, string expected, string expected_residual,
   // Check that q1 equals q2.
   if (!(is_not_a_number(q1) && is_not_a_number(q2))
       && q1 != q2) {
-#if NOISY
-    cout << "q1 should equal q2 (which was created from q1 output)."
+    nout << "q1 should equal q2 (which was created from q1 output)."
 	 << endl;
-#endif
     goto error;
   }
 
@@ -151,21 +137,17 @@ test(string number, string expected, string expected_residual,
   stringstream ss2;
   ss2 << q2;
   if (ss2.str().compare(expected)) {
-#if NOISY
-    cout << "q2 output is \"" << ss2.str()
+    nout << "q2 output is \"" << ss2.str()
 	 << "\" (expected \"" << expected << "\")."
 	 << endl
 	 << "q2: " << q2 << endl;
-#endif
     goto error;
   }
 
   // Compare residual from initial convertion to expected residual.
   if (expected_residual.compare(residual)) {
-#if NOISY
-    cout << "Residual from conversion: \"" << residual
+    nout << "Residual from conversion: \"" << residual
 	 << "\" (expected \"" << expected_residual << "\")" << endl;
-#endif
     goto error;
   }
 
@@ -176,10 +158,8 @@ test(string number, string expected, string expected_residual,
     return;
   }
 
-#if NOISY
-  cout << "Result from conversion: " << result
+  nout << "Result from conversion: " << result
        << " (expected " << expected_result << ")" << endl;
-#endif
 
   goto error;
 }
@@ -411,9 +391,7 @@ main() TRY {
   rl.rlim_cur = RLIM_INFINITY;
   rl.rlim_max = RLIM_INFINITY;
   if (setrlimit(RLIMIT_STACK, &rl) == -1) {
-#if NOISY
-    cout << "Failed to set stack limit." << endl;
-#endif
+    nout << "Failed to set stack limit." << endl;
     exit(1);
   }
 #endif

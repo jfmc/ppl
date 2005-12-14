@@ -23,13 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -44,9 +37,7 @@ main() TRY {
   ph1.add_constraint(z > x + 4);
   ph1.add_constraint(y < 6);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   NNC_Polyhedron ph2(ph1);
 
@@ -62,11 +53,9 @@ main() TRY {
 
   int retval = (ph1 == ph2) ? 0 : 1;
 
-#if NOISY
   print_constraints(ph1, "*** After remove_higher_space_dimensions(1) ***");
   print_constraints(ph2,
 		    "*** After remove_space_dimensions(to_be_removed) ***");
-#endif
 
   return retval;
 }

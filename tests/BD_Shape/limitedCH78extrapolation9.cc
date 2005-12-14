@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   Variable x(0);
@@ -44,9 +37,7 @@ main() TRY {
 
   TBD_Shape bd1(cs1);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ****");
-#endif
 
   Constraint_System cs2;
   cs2.insert(x >= 0);
@@ -57,9 +48,7 @@ main() TRY {
 
   TBD_Shape bd2(cs2);
 
-#if NOISY
   print_constraints(bd2, "*** bd2 ****");
-#endif
 
   Constraint_System cs;
   cs.insert(x >= 0);
@@ -68,9 +57,7 @@ main() TRY {
   cs.insert(y <= 5);
   cs.insert(x - y >= 0);
 
-#if NOISY
   print_constraints(cs, "*** cs ****");
-#endif
 
   TBD_Shape computed_result = bd2;
   computed_result.limited_CH78_extrapolation_assign(bd1, cs);
@@ -82,10 +69,8 @@ main() TRY {
   known_result.add_constraint(x >= 0);
   known_result.add_constraint(z <= 0);
 
-#if NOISY
   print_constraints(computed_result,
 		    "*** bd1.limited_CH78_extrapolation_assign(bd2) ***");
-#endif
 
   return (computed_result == known_result) ? 0 : 1;
 }

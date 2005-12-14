@@ -24,13 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -44,19 +37,14 @@ main() TRY {
   gs.insert(ray(x - y));
 
   C_Polyhedron ph(gs);
-
-#if NOISY
   print_generators(ph, "--- ph ---");
-#endif
 
   bool universe = ph.is_universe();
 
-#if NOISY
-  cout << "*** ph.is_universe() ***"
+  nout << "*** ph.is_universe() ***"
        << endl
        << (universe ? "true" : "false")
        << endl;
-#endif
 
   return universe ? 0 : 1;
 }

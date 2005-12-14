@@ -23,13 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -49,10 +43,8 @@ test1() {
 
   bool ok = (rel == known_rel);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-  cout << "ph.relation_with(ray(A + B)) == " << rel << endl;
-#endif
+  nout << "ph.relation_with(ray(A + B)) == " << rel << endl;
 
   if (!ok)
     exit(1);
@@ -75,10 +67,8 @@ test2() {
 
   bool ok = (rel == known_rel);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-  cout << "ph.relation_with(A == 0) == " << rel << endl;
-#endif
+  nout << "ph.relation_with(A == 0) == " << rel << endl;
 
   if (!ok)
     exit(1);

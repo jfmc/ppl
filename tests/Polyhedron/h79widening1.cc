@@ -25,26 +25,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 bool
 try_H79_widening_assign(C_Polyhedron& ph1, const C_Polyhedron& ph2,
 			// Note intentional call-by-value!
 			C_Polyhedron known_result) {
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
-#endif
 
   ph1.H79_widening_assign(ph2);
 
-#if NOISY
   print_generators(ph1, "*** After H79_widening_assign ***");
-#endif
 
   return ph1 == known_result;
 }

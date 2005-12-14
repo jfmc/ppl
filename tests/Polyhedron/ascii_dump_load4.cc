@@ -27,12 +27,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <string>
 #include <fstream>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
+using std::string;
+using std::fstream;
+using std::ios_base;
 
 namespace {
 
@@ -40,9 +37,8 @@ const char* my_file = "ascii_dump_load4.dat";
 
 void
 test1() {
-#if NOISY
-  cout << "test1()" << endl;
-#endif
+
+  nout << "test1()" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -67,9 +63,8 @@ test1() {
 
 void
 test2() {
-#if NOISY
-  cout << "test2()" << endl;
-#endif
+
+  nout << "test2()" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -87,7 +82,7 @@ test2() {
   string str;
   do
     f >> str;
-  while(str != "=");
+  while (str != "=");
   f.seekp(0, ios_base::cur);
   f << "A";
   close(f);
@@ -103,9 +98,8 @@ test2() {
 
 void
 test3() {
-#if NOISY
-  cout << "test3()" << endl;
-#endif
+
+  nout << "test3()" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -128,7 +122,7 @@ test3() {
   string str;
   do
     f >> str;
-  while(str != "=");
+  while (str != "=");
   f.seekp(-6, ios_base::cur);
   f << "A";
   close(f);
@@ -144,9 +138,8 @@ test3() {
 
 void
 test4() {
-#if NOISY
-  cout << "test4()" << endl;
-#endif
+
+  nout << "test4()" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -164,7 +157,7 @@ test4() {
   string str;
   do
     f >> str;
-  while(str != "NECESSARILY_CLOSED");
+  while (str != "NECESSARILY_CLOSED");
   f.seekp(-2, ios_base::cur);
   f << "A";
   close(f);
@@ -180,9 +173,8 @@ test4() {
 
 void
 test5() {
-#if NOISY
-  cout << "test5()" << endl;
-#endif
+
+  nout << "test5()" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -200,7 +192,7 @@ test5() {
   string str;
   do
     f >> str;
-  while(str != "x");
+  while (str != "x");
   f.seekp(1, ios_base::cur);
   f << "A";
   close(f);
@@ -216,9 +208,8 @@ test5() {
 
 void
 test6() {
-#if NOISY
-  cout << "test6()" << endl;
-#endif
+
+  nout << "test6()" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -236,7 +227,7 @@ test6() {
   string str;
   do
     f >> str;
-  while(str != "(not_sorted)");
+  while (str != "(not_sorted)");
   f.seekp(-2, ios_base::cur);
   f << "A";
   close(f);
@@ -252,9 +243,8 @@ test6() {
 
 void
 test7() {
-#if NOISY
-  cout << "test7()" << endl;
-#endif
+
+  nout << "test7()" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -274,10 +264,10 @@ test7() {
   string str;
   do
     f >> str;
-  while(str != "sat_c");
+  while (str != "sat_c");
   do
     f >> str;
-  while(str != "x");
+  while (str != "x");
   f.seekp(0, ios_base::cur);
   f << " A";
   close(f);
@@ -293,9 +283,8 @@ test7() {
 
 void
 test8() {
-#if NOISY
-  cout << "test8()" << endl;
-#endif
+
+  nout << "test8()" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -315,7 +304,7 @@ test8() {
   string str;
   do
     f >> str;
-  while(str != "sat_c");
+  while (str != "sat_c");
   f.seekp(8, ios_base::cur);
   f << " A";
   close(f);

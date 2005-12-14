@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
@@ -48,11 +41,9 @@ test1() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd,
 		    "*** bd.generalized_affine_image(3*x + 2, "
 		    "LESS_THAN_OR_EQUAL, 2*x - 3) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -74,10 +65,8 @@ test2() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd,
 		    "*** bd.generalized_affine_image(6, EQUAL, 3*x - 4) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -99,10 +88,8 @@ test3() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.generalized_affine_image(3*A + 2*B, "
                         "LESS_THAN_OR_EQUAL, 1) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -125,11 +112,9 @@ test4() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd,
 		    "*** bd.generalized_affine_image(-2*A + 5, "
 		    "EQUAL, -4*B) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -150,10 +135,8 @@ test5() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.generalized_affine_image(A + 2*B - 5, "
                         "GREATER_THAN_OR_EQUAL, 3*B) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -177,11 +160,9 @@ test6() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd,
 		    "*** bd.generalized_affine_image(2*B + C + 1, "
 		    "LESS_THAN_OR_EQUAL, A - 3*B + 2*C) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -206,10 +187,8 @@ test7() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.generalized_affine_image(2*B + C + 1, "
 		        "GREATER_THAN_OR_EQUAL, A - 3*B + 2*C) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -234,10 +213,8 @@ test8() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.generalized_affine_image(-2*A - B - 1, "
                         "GREATER_THAN_OR_EQUAL, 3*A + B + 4*C - 2) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -263,10 +240,8 @@ test9() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.generalized_affine_image(-2*C + 3, "
                         "LESS_THAN_OR_EQUAL, -3*B + 4) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -291,18 +266,15 @@ test10() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd,
 		    "*** bd.generalized_affine_image(3, "
 		    "GREATER_THAN_OR_EQUAL, 4) ***");
-#endif
 
   if (!ok)
     exit(1);
 }
 
 } // namespace
-
 
 int
 main() TRY {

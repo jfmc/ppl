@@ -20,22 +20,18 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#define NOISY 1
+
 #include "ppl_test.hh"
 #include <fstream>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 1
-#endif
 
 int
 main() TRY {
-  ifstream s(SRCDIR "/bug2.dat");
+  std::ifstream s(SRCDIR "/bug2.dat");
   if (!s) {
-    cerr << "Cannot open data file!!!" << endl;
+    std::cerr << "Cannot open data file!!!" << endl;
     exit(1);
   }
 
@@ -48,16 +44,16 @@ main() TRY {
        i != cs_end;
        ++i)
     ++num_constraints;
-  ph.ascii_dump(cout);
+  ph.ascii_dump(nout);
   const Generator_System& gs = ph.generators();
   unsigned num_points = 0;
   for (Generator_System::const_iterator i = gs.begin(), gs_end = gs.end();
        i != gs_end;
        ++i) {
     if (i->type() != Generator::POINT) {
-#if NOISY
-      cout << "i->type() == " << i->type() << endl;
-#endif
+
+      nout << "i->type() == " << i->type() << endl;
+
       exit(1);
     }
     ++num_points;

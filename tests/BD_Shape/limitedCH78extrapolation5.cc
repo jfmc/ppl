@@ -22,40 +22,25 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   TBD_Shape bd1;
   TBD_Shape known_result;
 
-#if NOISY
     print_constraints(bd1, "*** bd1 ****");
-#endif
 
   TBD_Shape bd2;
 
-#if NOISY
   print_constraints(bd2, "*** bd2 ****");
-#endif
 
   Constraint_System cs;
 
-#if NOISY
   print_constraints(cs, "*** cs ****");
-#endif
 
   bd1.limited_CH78_extrapolation_assign(bd2, cs);
 
-#if NOISY
   print_constraints(bd1,
 		    "*** bd1.limited_CH78_extrapolation_assign(bd2) ***");
-#endif
 
   return (bd1 == known_result) ? 0 : 1;
 }

@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 typedef Polyhedra_Powerset<C_Polyhedron> PCS;
 
@@ -49,31 +43,26 @@ main() TRY {
 
   PCS p1(2, EMPTY);
   p1.add_disjunct(ph1);
-#if NOISY
-  cout << p1 << endl;
-#endif
+
+  nout << p1 << endl;
 
   PCS p2(2, EMPTY);
   p2.add_disjunct(ph2);
-#if NOISY
-  cout << p2 << endl;
-#endif
+
+  nout << p2 << endl;
 
   p1.upper_bound_assign(p2);
-#if NOISY
-  cout << p1 << endl;
-#endif
+
+  nout << p1 << endl;
 
   p1.meet_assign(p2);
-#if NOISY
-  cout << p1 << endl;
-#endif
+
+  nout << p1 << endl;
 
   C_Polyhedron top(2);
   C_Polyhedron y_91(2);
-#if NOISY
+
   y_91.add_constraint(y == 91);
-#endif
 
   return 0;
 }

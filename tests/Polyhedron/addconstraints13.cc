@@ -24,13 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
@@ -53,11 +46,9 @@ test1() {
 
   bool ok = (ph == copy_ph);
 
-#if NOISY
   print_constraints(ph, "*** After ph.add_constraints(cs1) ***");
   print_constraints(ph,
 		    "*** After copy_ph.add_constraints_and_minimize(cs2) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -80,10 +71,8 @@ test2() {
   ph2.add_generator(ray(A));
   ph2.add_generator(ray(B));
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   Constraint_System cs1 = ph2.constraints();
   Constraint_System cs2 = ph2.constraints();
@@ -92,11 +81,10 @@ test2() {
   copy_ph1.add_constraints_and_minimize(cs2);
 
   bool ok = (ph1 == copy_ph1);
-#if NOISY
+
   print_constraints(ph1, "*** After add_constraints_assign ***");
   print_constraints(copy_ph1,
 		    "*** After add_constraints_and_minimize ***");
-#endif
 
   if (!ok)
     exit(1);

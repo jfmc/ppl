@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -40,9 +33,8 @@ main() TRY {
   Generator_System gs;
   gs.insert(point(0*x + y +0*z + 2*w));
   C_Polyhedron ph(gs);
-#if NOISY
+
   print_generators(ph, "*** ph ***");
-#endif
 
   // This is the set of the variables that we want to remove.
   Variables_Set to_be_removed;
@@ -56,10 +48,8 @@ main() TRY {
 
   int retval = (known_result == ph) ? 0 : 1;
 
-#if NOISY
   print_generators(ph, "*** ph ***");
   print_generators(known_result, "*** known_result ***");
-#endif
 
   return retval;
 }

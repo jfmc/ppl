@@ -24,12 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "files.hh"
 #include <fstream>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
+using std::fstream;
+using std::ios_base;
 
 namespace {
 
@@ -59,13 +55,13 @@ ascii_dump_load() {
       close(f);
 
       if (m1 != m2) {
-#if NOISY
-	cout << "Matrix::ascii_dump/load test failed." << endl
+
+	nout << "Matrix::ascii_dump/load test failed." << endl
 	     << "m1.ascii_dump() gives" << endl;
-	m1.ascii_dump(cout);
-	cout << "m2.ascii_dump() gives" << endl;
-	m2.ascii_dump(cout);
-#endif
+	m1.ascii_dump(nout);
+	nout << "m2.ascii_dump() gives" << endl;
+	m2.ascii_dump(nout);
+
 	exit(1);
       }
     }

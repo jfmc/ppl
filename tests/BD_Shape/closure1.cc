@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 struct Edge {
@@ -337,9 +330,9 @@ add_edges(BD_Shape<T>& bd, const Edge* edges, unsigned n) {
     assign(a, q.get_den(), ROUND_NOT_NEEDED);
     Coefficient b;
     assign(b, q.get_num(), ROUND_NOT_NEEDED);
-#if NOISY
-    cout << "a = " << a << "; b = " << b << endl;
-#endif
+
+    nout << "a = " << a << "; b = " << b << endl;
+
     bd.add_constraint(a*Variable(edges[i].from) - a*Variable(edges[i].to)
 		      <= b);
   }
@@ -347,18 +340,17 @@ add_edges(BD_Shape<T>& bd, const Edge* edges, unsigned n) {
 
 } // namespace
 
-
 #define DISTANCE(To, Temp)			       \
   do { \
     Checked_Number<To, Extended_Number_Policy> distance; \
     rectilinear_distance_assign<Temp>(distance, qbd1, qbd2, ROUND_UP); \
-    cout << "Rectilinear distance<" #To ", " #Temp "> = " << distance \
+    nout << "Rectilinear distance<" #To ", " #Temp "> = " << distance \
          << endl; \
     euclidean_distance_assign<Temp>(distance, qbd1, qbd2, ROUND_UP); \
-    cout << "Euclidean distance<" #To ", " #Temp "> = " << distance \
+    nout << "Euclidean distance<" #To ", " #Temp "> = " << distance \
          << endl; \
     l_infinity_distance_assign<Temp>(distance, qbd1, qbd2, ROUND_UP); \
-    cout << "L-infinity distance<" #To ", " #Temp "> = " << distance \
+    nout << "L-infinity distance<" #To ", " #Temp "> = " << distance \
          << endl; \
   } while (0)
 

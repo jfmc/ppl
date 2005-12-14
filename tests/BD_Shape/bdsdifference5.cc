@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   Variable x(0);
@@ -46,19 +39,14 @@ main() TRY {
   bd2.add_constraint(y <= 8);
   bd2.add_constraint(y >= 1);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   TBD_Shape known_result(2, EMPTY);
 
-
   bd1.bds_difference_assign(bd2);
 
-#if NOISY
   print_constraints(bd1, "*** After bd1.bds_difference_assign(bd2) ***");
-#endif
 
   int retval = (bd1 == known_result) ? 0 : 1;
 

@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -53,10 +46,8 @@ main() TRY {
   gs2.insert(ray(A + B + C));
   NNC_Polyhedron ph2(gs2);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
-#endif
 
   ph1.BHRZ03_widening_assign(ph2);
 
@@ -67,9 +58,7 @@ main() TRY {
 
   int retval = (ph1 == known_result) ? 0 : 1;
 
-#if NOISY
   print_constraints(ph1, "*** After BHRZ03_widening_assign ***");
-#endif
 
   return retval;
 }

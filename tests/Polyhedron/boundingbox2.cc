@@ -23,13 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_test.hh"
 #include "BBox.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 // This is unbounded NNC polyhedron in 4D but bounded in 2D
@@ -52,11 +45,9 @@ test1() {
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
 
-#if NOISY
   print_constraints(ph, "*** test1 ph ***");
-  nbox.print(cout, "*** test1 nbox ***");
-  pbox.print(cout, "*** test1 pbox ***");
-#endif
+  nbox.print(nout, "*** test1 nbox ***");
+  pbox.print(nout, "*** test1 pbox ***");
 
   BBox known_nbox(4);
   known_nbox.raise_lower_bound(1, false, -2, 3);
@@ -70,15 +61,12 @@ test1() {
   known_pbox.lower_upper_bound(2, true, 4, 1);
   known_pbox.raise_lower_bound(3, true, 5, 1);
 
-#if NOISY
-  known_nbox.print(cout, "*** test9 known_nbox ***");
-  known_pbox.print(cout, "*** test9 known_pbox ***");
-#endif
+  known_nbox.print(nout, "*** test9 known_nbox ***");
+  known_pbox.print(nout, "*** test9 known_pbox ***");
 
   if (nbox != known_nbox || pbox != known_pbox || !(nbox <= pbox))
     exit(1);
 }
-
 
 // This is a bounded NNC polyhedron with strict inequalities
 // causing upper and lower bounds of the box to be open.
@@ -98,11 +86,9 @@ test2() {
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
 
-#if NOISY
   print_constraints(ph, "*** test2 ph ***");
-  nbox.print(cout, "*** test2 nbox ***");
-  pbox.print(cout, "*** test2 pbox ***");
-#endif
+  nbox.print(nout, "*** test2 nbox ***");
+  pbox.print(nout, "*** test2 pbox ***");
 
   BBox known_nbox(2);
   known_nbox.raise_lower_bound(0, true, -2, 3);
@@ -114,10 +100,8 @@ test2() {
   known_pbox.lower_upper_bound(0, false, 4, 1);
   known_pbox.lower_upper_bound(1, true, 4, 1);
 
-#if NOISY
-  known_nbox.print(cout, "*** test2 known_nbox ***");
-  known_pbox.print(cout, "*** test2 known_pbox ***");
-#endif
+  known_nbox.print(nout, "*** test2 known_nbox ***");
+  known_pbox.print(nout, "*** test2 known_pbox ***");
 
   if (nbox != known_nbox || pbox != known_pbox || !(nbox <= pbox))
     exit(1);
@@ -144,11 +128,9 @@ test3() {
   NNC_Polyhedron known_pph(pbox, From_Bounding_Box());
   NNC_Polyhedron known_nph(nbox, From_Bounding_Box());
 
-#if NOISY
   print_generators(ph, "*** test3 ph ***");
   print_generators(known_pph, "*** test3 known_pph ***");
   print_generators(known_nph, "*** test3 known_nph ***");
-#endif
 
   if (ph != known_ph || ph != known_nph || ph != known_ph)
     exit(1);

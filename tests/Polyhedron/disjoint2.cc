@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 C_Polyhedron
@@ -60,10 +53,8 @@ test1() {
 
   bool disjoint = ph1.is_disjoint_from(ph2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   if (disjoint)
     exit(1);
@@ -79,10 +70,8 @@ test2() {
 
   bool disjoint = ph1.is_disjoint_from(ph2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   if (disjoint)
     exit(1);
@@ -98,10 +87,8 @@ test3() {
 
   bool disjoint = ph1.is_disjoint_from(ph2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   if (disjoint)
     exit(1);
@@ -121,10 +108,8 @@ test4() {
 
   bool disjoint = ph1.is_disjoint_from(ph2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   if (disjoint)
     exit(1);

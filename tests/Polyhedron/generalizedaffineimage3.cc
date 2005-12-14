@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -41,9 +34,8 @@ main() TRY {
   ph.add_constraint(7*A >= 2);
   ph.add_constraint(3*B >= 1);
   ph.add_constraint(2*A >= B);
-#if NOISY
+
   print_generators(ph, "--- ph ---");
-#endif
 
   ph.generalized_affine_image(B, LESS_THAN_OR_EQUAL, A-B+2, -3);
 
@@ -54,11 +46,9 @@ main() TRY {
 
   int retval = (ph == known_result) ? 0 : 1;
 
-#if NOISY
   print_generators(ph, "--- ph after "
 		   "ph.generalized_affine_image(B, LESS_THAN_OR_EQUAL,"
 		   " A-B+2, -3) ---");
-#endif
 
   return retval;
 }

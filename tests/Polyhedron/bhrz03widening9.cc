@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -88,29 +82,26 @@ main() TRY {
   C_Polyhedron q_i_minus_1 = p(0);
 
   for (unsigned i = 1; i <= 100; ++i) {
-#if NOISY
-    cout << "*** Result of the previous iteration:" << endl;
-    cout << q_i_minus_1.generators() << endl;
-#endif
+
+    nout << "*** Result of the previous iteration:" << endl;
+    nout << q_i_minus_1.generators() << endl;
+
     C_Polyhedron p_i = p(i);
-#if NOISY
-    cout << "*** New stuff:" << endl;
-    cout << p_i.generators() << endl;
-#endif
+
+    nout << "*** New stuff:" << endl;
+    nout << p_i.generators() << endl;
+
     C_Polyhedron q_i = q_i_minus_1;
     q_i.poly_hull_assign(p_i);
 
-#if NOISY
-    cout << "*** Poly-hull of previous with new:" << endl;
-    cout << q_i.generators() << endl;
-#endif
+    nout << "*** Poly-hull of previous with new:" << endl;
+    nout << q_i.generators() << endl;
 
     q_i.BHRZ03_widening_assign(q_i_minus_1);
 
-#if NOISY
-    cout << "*** Result of widening poly-hull with new:" << endl;
-    cout << q_i.generators() << endl;
-#endif
+    nout << "*** Result of widening poly-hull with new:" << endl;
+    nout << q_i.generators() << endl;
+
     if (q_i == q_i_minus_1) {
 
       C_Polyhedron known_result(5);
@@ -123,10 +114,9 @@ main() TRY {
 
       int retval = (q_i == known_result) ? 0 : 1;
 
-#if NOISY
       print_constraints(q_i, "*** The constraints of the fix point ***");
       print_generators(q_i, "*** The generators of the fix point ***");
-#endif
+
       return retval;
     }
     q_i_minus_1 = q_i;

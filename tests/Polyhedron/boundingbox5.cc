@@ -23,13 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_test.hh"
 #include "BBox.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -39,17 +32,13 @@ main() TRY {
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-  nbox.print(cout, "*** nbox ***");
-#endif
+  nbox.print(nout, "*** nbox ***");
 
   BBox known_box(ph.space_dimension());
   known_box.set_empty();
 
-#if NOISY
-  known_box.print(cout, "*** known_box ***");
-#endif
+  known_box.print(nout, "*** known_box ***");
 
   if (nbox != known_box)
     exit(1);

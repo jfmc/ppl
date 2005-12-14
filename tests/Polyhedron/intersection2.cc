@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 int
@@ -83,10 +76,8 @@ main() TRY {
   gs.insert(point(x + y + pyramid_height*z));
   C_Polyhedron pyramid(gs);
 
-#if NOISY
     print_constraints(pyramid, "*** pyramid constraints ***");
     print_generators(pyramid, "*** pyramid generators ***");
-#endif
 
   bool ok = true;
 
@@ -102,10 +93,8 @@ main() TRY {
 	&& count_points(computed_result) != ph_nv[i].num_points_above)
       ok = false;
 
-#if NOISY
     print_constraints(hyper_space_above, "*** hyper_space_above ***");
     print_generators(computed_result, "*** computed_result ***");
-#endif
 
     // Below.
     C_Polyhedron hyper_space_below(3);
@@ -118,10 +107,9 @@ main() TRY {
 	&& count_points(computed_result) != ph_nv[i].num_points_below)
       ok = false;
 
-#if NOISY
     print_constraints(hyper_space_below, "*** hyper_space_below ***");
     print_generators(computed_result, "*** computed_result ***");
-#endif
+
   }
   return ok ? 0 : 1;
 }

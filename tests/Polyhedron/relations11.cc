@@ -22,14 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 
 int
 main() TRY {
@@ -44,11 +37,9 @@ main() TRY {
   Poly_Gen_Relation rel1 = ph.relation_with(point(B));
   Poly_Gen_Relation rel2 = ph.relation_with(point(-B));
 
-#if NOISY
   print_generators(ph, "*** ph ***");
-  cout << "ph.relation_with(point(B)) == " << rel1 << endl;
-  cout << "ph.relation_with(point(-B)) == " << rel2 << endl;
-#endif
+  nout << "ph.relation_with(point(B)) == " << rel1 << endl;
+  nout << "ph.relation_with(point(-B)) == " << rel2 << endl;
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
   return (rel1 == known_result && rel2 == known_result) ? 0 : 1;

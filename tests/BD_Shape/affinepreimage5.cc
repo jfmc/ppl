@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
@@ -42,9 +35,7 @@ test1() {
   bd.add_constraint(B <= 0);
   bd.add_constraint(C >= 0);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   bd.affine_preimage(A, 4*B + 6*C + 2, -2);
 
@@ -54,9 +45,7 @@ test1() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_preimage(A, 4*B + 6*C + 2, -2) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -73,9 +62,7 @@ test2() {
   bd.add_constraint(B <= 0);
   bd.add_constraint(C >= 0);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   bd.affine_preimage(A, 2*A + 3*C + 2, 2);
 
@@ -86,9 +73,7 @@ test2() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_preimage(A, 2*A + 3*C + 2, 2) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -105,9 +90,7 @@ test3() {
   bd.add_constraint(B <= 0);
   bd.add_constraint(C >= 0);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   bd.affine_preimage(A, 2*A + 3*C + 2, 2);
 
@@ -118,9 +101,7 @@ test3() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_preimage(A, -3*A + C - 1, 2) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -137,9 +118,7 @@ test4() {
   bd.add_constraint(B <= 0);
   bd.add_constraint(C >= 0);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   bd.affine_preimage(A, 3*A + C - 1, -2);
 
@@ -149,9 +128,7 @@ test4() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_preimage(A, 3*A + C - 1, -2) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -168,9 +145,7 @@ test5() {
   bd.add_constraint(B <= 0);
   bd.add_constraint(C >= 0);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   bd.affine_preimage(A, -3*A + C - 1, -2);
 
@@ -180,9 +155,7 @@ test5() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_preimage(A, -3*A + C - 1, -2) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -201,9 +174,7 @@ test6() {
   bd.add_constraint(C >= -3);
   bd.add_constraint(D <= 5);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   bd.affine_preimage(D, 4*A - B + 2*C + 5*D - 1, 3);
 
@@ -215,10 +186,8 @@ test6() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_preimage"
 		        "(D, 4*A - B + 2*C + 5*D - 1, 3) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -235,9 +204,7 @@ test7() {
   bd.add_constraint(B <= 0);
   bd.add_constraint(C >= 0);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   bd.affine_preimage(B, -B);
 
@@ -248,9 +215,7 @@ test7() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_preimage(B, -B) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -267,9 +232,7 @@ test8() {
   bd.add_constraint(B <= 0);
   bd.add_constraint(C >= 0);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   TBD_Shape known_result(bd);
 
@@ -277,9 +240,7 @@ test8() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_preimage(B, -B, -1) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -302,5 +263,4 @@ main() TRY {
   return 0;
 }
 CATCH
-
 

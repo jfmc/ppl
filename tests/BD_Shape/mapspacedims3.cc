@@ -22,27 +22,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 #include "PFunction.hh"
+#include <string>
+#include <ostream>
 
-#if NOISY
 namespace {
 
 void
-print_function(const PFunction& function, const string& intro = "",
-	       ostream& s = cout) {
+print_function(const PFunction& function,
+	       const std::string& intro = "",
+	       std::ostream& s = nout) {
   if (!intro.empty())
     s << intro << endl;
   function.print(s);
 }
 
 } // namespace
-#endif
 
 int
 main() TRY {
@@ -64,10 +59,8 @@ main() TRY {
   function.insert(1, 1);
   function.insert(3, 0);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(bd, "*** bd ***");
-#endif
 
   bd.map_space_dimensions(function);
 
@@ -77,9 +70,7 @@ main() TRY {
   known_result.add_constraint(C >= 0);
   known_result.add_constraint(B - C == 0);
 
-#if NOISY
   print_constraints(bd, "*** bd.map_space_dimensions(function) ***");
-#endif
 
   return bd == known_result ? 0 : 1;
 }

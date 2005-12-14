@@ -24,13 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
@@ -48,20 +41,17 @@ test1() {
   ph2.add_constraint(A >= B + 1);
   C_Polyhedron copy_ph2 = ph2;
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
-#endif
 
   ph1.intersection_assign(ph2);
   copy_ph1.intersection_assign_and_minimize(copy_ph2);
 
   bool ok = (ph1 == copy_ph1);
-#if NOISY
+
   print_constraints(ph1, "*** After intersection_assign ***");
   print_constraints(copy_ph1,
 		    "*** After intersection_assign_and_minimize ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -86,20 +76,17 @@ test2() {
 
   C_Polyhedron copy_ph2 = ph2;
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph1.intersection_assign(ph2);
   copy_ph1.intersection_assign_and_minimize(copy_ph2);
 
   bool ok = (ph1 == copy_ph1);
-#if NOISY
+
   print_constraints(ph1, "*** After intersection_assign ***");
   print_constraints(copy_ph1,
 		    "*** After intersection_assign_and_minimize ***");
-#endif
 
   if (!ok)
     exit(1);

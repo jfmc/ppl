@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   BD_Shape<mpq_class> bd1(1);
@@ -41,9 +34,7 @@ main() TRY {
   dimension_type max_spacedim3 = bd3.max_space_dimension();
   dimension_type max_spacedim4 = bd4.max_space_dimension();
 
-
-#if NOISY
-  cout << endl
+  nout << endl
        << "The maximum space-dimension of a system of bounded differences "
        << endl
        << "of Rational is: "
@@ -51,7 +42,7 @@ main() TRY {
        << max_spacedim1
        << endl; 
 
-  cout << endl
+  nout << endl
        << "The maximum space-dimension of a system of bounded differences "
        << endl
        << "of long: "
@@ -59,7 +50,7 @@ main() TRY {
        << max_spacedim2
        << endl; 
 
-  cout << endl
+  nout << endl
        << "The maximum space-dimension of a system of bounded differences "
        << endl
        << "of int: "
@@ -67,29 +58,26 @@ main() TRY {
        << max_spacedim3
        << endl; 
 
-  cout << endl
+  nout << endl
        << "The maximum space-dimension of a system of bounded differences "
        << endl
        << "of signed char"
        << endl
        << max_spacedim4
        << endl;
-#endif
-
-
 
   if (max_spacedim1 < max_spacedim2) {
-#if NOISY
+
     print_constraints(bd1, "*** bd1 ***");
     print_constraints(bd2, "*** bd2 ***");
-#endif
+
   }
 
   if (max_spacedim3 < max_spacedim4) {
-#if NOISY
+
     print_constraints(bd3, "*** bd3 ***");
     print_constraints(bd4, "*** bd4 ***");
-#endif
+
   }
 
   return 0;

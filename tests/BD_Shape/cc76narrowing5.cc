@@ -22,31 +22,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   TBD_Shape bd1;
   TBD_Shape bd2(0, EMPTY);
   TBD_Shape known_result;
 
-
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
-
 
   bd1.CC76_narrowing_assign(bd2);
 
-#if NOISY
   print_constraints(bd1, "*** bd1.CC76_narrowing_assign(bd2) ***");
-#endif
 
   int retval = (bd1 == known_result) ? 0 : 1;
 

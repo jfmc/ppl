@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 // The box is the xy plane.
@@ -40,10 +33,8 @@ test1() {
 
   C_Polyhedron known_ph(box.space_dimension());
 
-#if NOISY
   print_generators(ph, "*** test1 ph ***");
   print_generators(known_ph, "*** test1 known_ph ***");
-#endif
 
   if (ph != known_ph)
     exit(1);
@@ -65,10 +56,8 @@ test2() {
   known_ph.add_constraint(x >= 0);
   known_ph.add_constraint(y >= 0);
 
-#if NOISY
   print_generators(ph, "*** test2 ph ***");
   print_generators(known_ph, "*** test2 known_ph ***");
-#endif
 
   if (ph != known_ph)
     exit(1);
@@ -94,10 +83,8 @@ test3() {
   known_ph.add_constraint(y <= 4);
   known_ph.add_constraint(y >= -10);
 
-#if NOISY
   print_generators(ph, "*** test3 ph ***");
   print_generators(known_ph, "*** test3 known_ph ***");
-#endif
 
   if (ph != known_ph)
     exit(1);
@@ -126,10 +113,8 @@ test4() {
   known_ph.add_constraint(y >= -10);
   known_ph.add_constraint(z >= 5);
 
-#if NOISY
   print_generators(ph, "*** test4 ph ***");
   print_generators(known_ph, "*** test4 known_ph ***");
-#endif
 
   if (ph != known_ph)
     exit(1);
@@ -144,10 +129,8 @@ test5() {
 
   C_Polyhedron known_ph;
 
-#if NOISY
   print_generators(ph, "*** test5 ph ***");
   print_generators(known_ph, "*** test5 known_ph ***");
-#endif
 
    if (ph != known_ph)
      exit(1);
@@ -161,15 +144,11 @@ test6() {
 
   C_Polyhedron ph(box, From_Bounding_Box());
 
-#if NOISY
   print_constraints(ph, "*** test6 ph ***");
-#endif
 
   C_Polyhedron known_ph(2, EMPTY);
 
-#if NOISY
   print_constraints(known_ph, "*** test6 known_ph ***");
-#endif
 
   if (ph != known_ph)
     exit(1);
@@ -193,10 +172,8 @@ test7() {
   known_ph.add_constraint(x == 2);
   known_ph.add_constraint(y == 4);
 
-#if NOISY
   print_generators(ph, "*** test7 ph ***");
   print_generators(known_ph, "*** test7 known_ph ***");
-#endif
 
   if (ph != known_ph)
     exit(1);
@@ -224,10 +201,8 @@ test8() {
 
   C_Polyhedron known_ph(known_cs);
 
-#if NOISY
   print_generators(ph, "*** test8 ph generators ***");
   print_generators(known_ph, "*** test8 known_ph ***");
-#endif
 
   if (ph != known_ph)
     exit(1);
@@ -244,9 +219,7 @@ test9() {
 
   C_Polyhedron ph(box, From_Bounding_Box());
 
-#if NOISY
   print_generators(ph, "*** test9 ph ***");
-#endif
 
   Variable x(0);
   Variable y(1);
@@ -256,9 +229,7 @@ test9() {
   known_ph.add_constraint(2*x <= 1);
   known_ph.add_constraint(y >= 0);
 
-#if NOISY
   print_generators(known_ph, "*** test9 known_ph ***");
-#endif
 
   if (ph != known_ph)
     exit(1);

@@ -23,42 +23,28 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
 
   C_Polyhedron ph1;
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-#endif
 
   ph1.add_space_dimensions_and_project(3);
-#if NOISY
+
   print_generators(ph1, "*** After add_space_dimensions_and_project(3) ***");
-#endif
 
   C_Polyhedron ph2;
   Constraint_System cs = ph2.constraints();
 
-#if NOISY
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.add_space_dimensions_and_project(3);
 
   int retval = (ph1 == ph2) ? 0: 1;
 
-#if NOISY
   print_generators(ph2, "*** After add_space_dimensions_and_project(3) ***");
-#endif
 
   return retval;
 }

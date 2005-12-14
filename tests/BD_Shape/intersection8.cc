@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   Variable x(0);
@@ -42,22 +35,18 @@ main() TRY {
   bd2.add_constraint(x <= 3);
   bd2.add_constraint(y >= -5);
 
-
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   TBD_Shape known_result(bd2);
 
-
   if (bd1.intersection_assign_and_minimize(bd2)) {
-#if NOISY
+
     print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
-#endif
+
   }
   else
-    cout << endl << "One of the two BD_Shape is empty." <<endl;
+    nout << endl << "One of the two BD_Shape is empty." <<endl;
 
   int retval = (bd1 == known_result) ? 0 : 1;
 

@@ -23,13 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -46,9 +39,7 @@ main() TRY {
   gs1.insert(ray(A));
   C_Polyhedron ph1(gs1);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-#endif
 
   C_Polyhedron known_result1(2);
   known_result1.add_constraint(A >= 0);
@@ -65,9 +56,7 @@ main() TRY {
   gs2.insert(ray(A));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   C_Polyhedron known_result2(3);
   known_result2.add_constraint(A >= 0);

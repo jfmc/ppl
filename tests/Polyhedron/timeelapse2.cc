@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -45,10 +38,9 @@ main() TRY {
   C_Polyhedron ph2(2);
   ph2.add_constraint(y == 5);
 
-#if NOISY
   print_constraints(ph1, "**** ph1 ****");
   print_constraints(ph2, "**** ph2 ****");
-#endif
+
   ph1.time_elapse_assign(ph2);
 
   C_Polyhedron known_result(2, EMPTY);
@@ -58,9 +50,7 @@ main() TRY {
 
   int retval = (ph1 == known_result) ? 0 : 1;
 
-#if NOISY
   print_generators(ph1, "**** ph1_time_elapse_assign(ph2) ****");
-#endif
 
   return retval;
 }

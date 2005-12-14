@@ -24,13 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
@@ -43,10 +36,8 @@ test1() {
   ph.add_constraint(C == 0);
   ph.add_constraint(A + 3*B == 2);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
   print_generators(ph, "*** ph ***");
-#endif
 
   ph.generalized_affine_image(A - C, EQUAL, B + 3);
 
@@ -55,12 +46,10 @@ test1() {
 
   bool ok = (ph == known_result);
 
-#if NOISY
   print_generators(ph, "*** After ph.generalized_affine_image"
 		    "(A - C, EQUAL, B + 3) ***");
   print_constraints(ph, "*** After ph.generalized_affine_image"
 		    "(A - C, EQUAL, B + 3) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -76,25 +65,20 @@ test2() {
   ph.add_constraint(C == 0);
   ph.add_constraint(A - 2*B >= 2);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
   print_generators(ph, "*** ph ***");
-#endif
 
   ph.generalized_affine_image(A - C, GREATER_THAN_OR_EQUAL, B + 3);
 
   C_Polyhedron known_result(3);
   known_result.add_constraint(A - B - C >= 3);
 
-
   bool ok = (ph == known_result);
 
-#if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
 		    "(A - C, GREATER_THAN_OR_EQUAL, B + 3) ***");
   print_generators(ph, "*** After ph.generalized_affine_image"
 		    "(A - C, GREATER_THAN_OR_EQUAL, B + 3) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -110,9 +94,7 @@ test3() {
   ph.add_constraint(C == 0);
   ph.add_constraint(A >= B);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   ph.generalized_affine_image(A - C, LESS_THAN_OR_EQUAL, B - 1);
 
@@ -121,12 +103,10 @@ test3() {
 
   bool ok = (ph == known_result);
 
-#if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
 		    "(A - C, LESS_THAN_OR_EQUAL, B - 1) ***");
   print_constraints(ph, "*** After ph.generalized_affine_image"
 		    "(A - C, LESS_THAN_OR_EQUAL, B - 1) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -142,9 +122,7 @@ test4() {
   ph.add_constraint(A - C == 0);
   ph.add_constraint(A >= B);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   ph.generalized_affine_image(A - 2*C, LESS_THAN, B - 1);
 
@@ -153,12 +131,10 @@ test4() {
 
   bool ok = (ph == known_result);
 
-#if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
 		    "(A - 2*C, LESS_THAN, B - 1) ***");
   print_constraints(ph, "*** After ph.generalized_affine_image"
 		    "(A - 2*C, LESS_THAN, B - 1) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -174,9 +150,7 @@ test5() {
   ph.add_constraint(A - 2*C == 0);
   ph.add_constraint(A > B - 2);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   ph.generalized_affine_image(A - 2*C + 3, GREATER_THAN, B - 1);
 
@@ -185,12 +159,10 @@ test5() {
 
   bool ok = (ph == known_result);
 
-#if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
 		    "(A - 2*C + 3, GREATER_THAN, B - 1) ***");
   print_constraints(ph, "*** After ph.generalized_affine_image"
 		    "(A - 2*C + 3, GREATER_THAN, B - 1) ***");
-#endif
 
   if (!ok)
     exit(1);

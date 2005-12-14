@@ -22,9 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
 int
 main() {
   Variable A(0);
@@ -45,5 +42,4 @@ main() {
   Generator opt(point(0*C));
   return (status == SOLVED_PROBLEM && g == opt) ? 0 : 1;
 }
-
 

@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 bool
@@ -36,16 +29,13 @@ try_poly_hull_assign_and_minimize(C_Polyhedron& ph1,
 				  const C_Polyhedron& ph2,
 				  // Note intentional call-by-value!
 				  C_Polyhedron known_result) {
-#if NOISY
+
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
-#endif
 
   ph1.poly_hull_assign_and_minimize(ph2);
 
-#if NOISY
   print_generators(ph1, "*** After poly_hull_assign ***");
-#endif
 
   return ph1 == known_result;
 }
@@ -75,7 +65,6 @@ main() TRY {
 
   if (!try_poly_hull_assign_and_minimize(ph1_1, ph2_1, ph1_1))
     return 1;
-
 
   if (!try_poly_hull_assign_and_minimize(ph2_2, ph1_2, ph1_2))
     return 1;

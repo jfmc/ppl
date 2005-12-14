@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 template <typename T>
 dimension_type foo() {
   return T::max_space_dimension();
@@ -46,13 +39,12 @@ template dimension_type foo<Polyhedra_Powerset<C_Polyhedron> >();
 template dimension_type foo<Polyhedra_Powerset<NNC_Polyhedron> >();
 
 #define PRINT(T) \
-cout << #T "::max_space_dimension() = " << T::max_space_dimension() << endl
+nout << #T "::max_space_dimension() = " << T::max_space_dimension() << endl
 
 int
 main() TRY {
   set_handlers();
 
-#if NOISY
   PRINT(Variable);
   PRINT(Linear_Expression);
   PRINT(Constraint);
@@ -63,7 +55,6 @@ main() TRY {
   PRINT(NNC_Polyhedron);
   PRINT(Polyhedra_Powerset<C_Polyhedron>);
   PRINT(Polyhedra_Powerset<NNC_Polyhedron>);
-#endif
 
   return 0;
 }

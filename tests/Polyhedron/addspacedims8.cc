@@ -23,14 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-
 int
 main() TRY {
   set_handlers();
@@ -42,9 +34,7 @@ main() TRY {
   ph.add_generator(closure_point());
   ph.add_generator(closure_point(3*A));
 
-#if NOISY
   print_generators(ph, "*** ph ***");
-#endif
 
   ph.add_space_dimensions_and_embed(1);
 
@@ -54,10 +44,8 @@ main() TRY {
 
   int retval = (ph == known_result) ? 0 : 1;
 
-#if NOISY
   print_constraints(ph, "*** After ph.add_space_dimensions_and_embed(1) ***");
   print_generators(ph, "*** After ph.add_space_dimensions_and_embed(1) ***");
-#endif
 
   return retval;
 }

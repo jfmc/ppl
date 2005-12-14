@@ -22,26 +22,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-namespace {
-
-void loo(...) {
-}
-
-} // namespace
-
 int
 main() TRY {
   set_handlers();
-
-  // Avoid warnings.
-  loo();
 
   Variable x(0);
   Variable y(1);
@@ -61,8 +44,7 @@ main() TRY {
   const memory_size_type dph_total_size = dph.total_memory_in_bytes();
   const memory_size_type dph_external_size = dph.external_memory_in_bytes();
 
-#if NOISY
-  cout << "ph.total_memory_in_bytes() = " << ph_total_size
+  nout << "ph.total_memory_in_bytes() = " << ph_total_size
        << endl
        << "ph.external_memory_in_bytes() = " << ph_external_size
        << endl
@@ -70,9 +52,6 @@ main() TRY {
        << endl
        << "dph.external_memory_in_bytes() = " << dph_external_size
        << endl;
-#else
-  loo(ph_total_size, ph_external_size, dph_total_size, dph_external_size);
-#endif
 
   Polyhedra_Powerset<C_Polyhedron> pph(ph);
 
@@ -95,8 +74,7 @@ main() TRY {
   const memory_size_type prh_total_size = prh.total_memory_in_bytes();
   const memory_size_type prh_external_size = prh.external_memory_in_bytes();
 
-#if NOISY
-  cout << "pph.total_memory_in_bytes() = " << pph_total_size
+  nout << "pph.total_memory_in_bytes() = " << pph_total_size
        << endl
        << "pph.external_memory_in_bytes() = " << pph_external_size
        << endl
@@ -108,11 +86,6 @@ main() TRY {
        << endl
        << "prh.external_memory_in_bytes() = " << prh_external_size
        << endl;
-#else
-  loo(pph_total_size, pph_external_size,
-      pqh_total_size, pqh_external_size,
-      prh_total_size, prh_external_size);
-#endif
 
   return 0;
 }

@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 Variable A(0);
@@ -41,9 +34,7 @@ void
 test1() {
   C_Polyhedron ph1(3);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-#endif
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
@@ -55,9 +46,7 @@ test1() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_generators(ph1, "*** After folding {A} into B ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -68,9 +57,7 @@ void
 test2() {
   C_Polyhedron ph1(3, EMPTY);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
@@ -82,9 +69,7 @@ test2() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "*** After folding {A} into B ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -97,9 +82,7 @@ test3() {
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(A + B + C <= 2);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
@@ -112,14 +95,11 @@ test3() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "*** After folding {} into B ***");
-#endif
 
   if (!ok)
     exit(1);
 }
-
 
 // Test as given in [GopanDMDRS04] on page 519.
 void
@@ -130,9 +110,7 @@ test4() {
   ph1.add_constraint(B >= 7);
   ph1.add_constraint(B <= 12);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
@@ -146,14 +124,11 @@ test4() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "***  After folding {A} into B ***");
-#endif
 
   if (!ok)
     exit(1);
 }
-
 
 // Test that takes the expected result of the expand operation
 // example given in [GopanDMDRS04] on page 519 and folds it to recover
@@ -171,9 +146,7 @@ test5() {
   ph1.add_generator(point(A + 4*B + 3*C));
   ph1.add_generator(point(A + 4*B + 4*C));
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-#endif
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
@@ -188,9 +161,7 @@ test5() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_generators(ph1, "***  After folding {C} into B ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -206,9 +177,7 @@ test6() {
   ph1.add_constraint(B <= 12);
   ph1.add_constraint(C == 15);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
@@ -223,9 +192,7 @@ test6() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "***  After folding {A,B} into C ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -239,9 +206,7 @@ test7() {
   ph1.add_generator(ray(A + B));
   ph1.add_generator(ray(A + 2*C));
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-#endif
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
@@ -257,9 +222,7 @@ test7() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_generators(ph1, "***  After folding {C} into B ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -276,9 +239,7 @@ test8() {
   ph1.add_constraint(D >= 0);
   ph1.add_constraint(D + B <= 2);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
@@ -293,9 +254,7 @@ test8() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "***  After folding {C,D} into A ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -313,9 +272,7 @@ test9() {
   ph1.add_constraint(D >= 0);
   ph1.add_constraint(D + B <= 2);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
@@ -332,9 +289,7 @@ test9() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "***  After folding {B,D} into C ***");
-#endif
 
   if (!ok)
     exit(1);

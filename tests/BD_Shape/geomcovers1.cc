@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 int
 main() TRY {
@@ -50,21 +44,19 @@ main() TRY {
   Polyhedra_Powerset<TBD_Shape> ps3(1, EMPTY);
   ps3.add_disjunct(bd3);
 
-#if NOISY
-  cout << "ps12 = " << ps12 << endl
+  nout << "ps12 = " << ps12 << endl
        << " ps3 = " << ps3 << endl;
-#endif
 
   if (ps12.geometrically_covers(ps3)) {
-#if NOISY
-    cout << "ps12 covers ps3." << endl;
-#endif
+
+    nout << "ps12 covers ps3." << endl;
+
     return 0;
   }
   else {
-#if NOISY
-    cout << "ps12 does not cover ps3." << endl;
-#endif
+
+    nout << "ps12 does not cover ps3." << endl;
+
     return 0;
   }
 }

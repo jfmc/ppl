@@ -23,13 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -43,9 +36,7 @@ main() TRY {
   ph.add_constraint(x1 >= 0);
   ph.add_constraint(x2 >= 0);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   Coefficient num;
   Coefficient den;
@@ -57,14 +48,12 @@ main() TRY {
     && g.coefficient(x1) == 5 && g.coefficient(x2) == 0
     && g.divisor() == 2;
 
-#if NOISY
-  cout << (included ? "maximum" : "supremum") << " = " << num;
+  nout << (included ? "maximum" : "supremum") << " = " << num;
   if (den != 1)
-    cout << "/" << den;
-  cout << " @ ";
+    nout << "/" << den;
+  nout << " @ ";
   print_generator(g);
-  cout << endl;
-#endif
+  nout << endl;
 
   if (!ok)
     return 1;
@@ -75,14 +64,12 @@ main() TRY {
     && g.coefficient(x1) == 5 && g.coefficient(x2) == 10
     && g.divisor() == 4;
 
-#if NOISY
-  cout << (included ? "minimum" : "infimum") << " = " << num;
+  nout << (included ? "minimum" : "infimum") << " = " << num;
   if (den != 1)
-    cout << "/" << den;
-  cout << " @ ";
+    nout << "/" << den;
+  nout << " @ ";
   print_generator(g);
-  cout << endl;
-#endif
+  nout << endl;
 
   return ok ? 0 : 1;
 }

@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -45,11 +38,9 @@ main() TRY {
 
   NNC_Polyhedron ph(cs);
 
-#if NOISY
-  cout << "Topologically closed square" << endl;
+  nout << "Topologically closed square" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
-#endif
 
   // Removing all the vertices using strict inequalities.
   cs.clear();
@@ -60,11 +51,9 @@ main() TRY {
 
   ph.add_constraints_and_minimize(cs);
 
-#if NOISY
-  cout << "After vertices removal" << endl;
+  nout << "After vertices removal" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
-#endif
 
   ph.minimized_generators();
 
@@ -82,15 +71,13 @@ main() TRY {
 
   bool equal = (ph == known_result);
 
-#if NOISY
-  cout << "After NNC minimization" << endl;
+  nout << "After NNC minimization" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
-  cout << endl;
-  cout << "known result" << endl;
+  nout << endl;
+  nout << "known result" << endl;
   print_constraints(known_result.constraints(), "*** known constraints ***");
   print_generators(known_result.generators(), "*** known generators ***");
-#endif
 
   // FIXME: find a way to correctly check if the output
   // is strongly minimized.

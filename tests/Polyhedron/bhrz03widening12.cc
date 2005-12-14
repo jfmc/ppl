@@ -23,13 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
@@ -49,10 +42,8 @@ test1() {
   gs2.insert(ray(A + 2*B));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.BHRZ03_widening_assign(ph1);
 
@@ -62,9 +53,7 @@ test1() {
 
   bool equal = (ph2 == known_result);
 
-#if NOISY
   print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
-#endif
 
   if (!equal)
     exit(1);
@@ -87,10 +76,8 @@ test2() {
   gs2.insert(ray(-A + 2*B));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.BHRZ03_widening_assign(ph1);
 
@@ -100,9 +87,7 @@ test2() {
 
   bool equal = (ph2 == known_result);
 
-#if NOISY
   print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
-#endif
 
   if (!equal)
     exit(1);
@@ -125,10 +110,8 @@ test3() {
   gs2.insert(ray(-A - 2*B));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.BHRZ03_widening_assign(ph1);
 
@@ -138,9 +121,7 @@ test3() {
 
   bool equal = (ph2 == known_result);
 
-#if NOISY
   print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
-#endif
 
   if (!equal)
     exit(1);
@@ -163,10 +144,8 @@ test4() {
   gs2.insert(ray(A - 2*B));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.BHRZ03_widening_assign(ph1);
 
@@ -176,9 +155,7 @@ test4() {
 
   bool equal = (ph2 == known_result);
 
-#if NOISY
   print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
-#endif
 
   if (!equal)
     exit(1);
@@ -201,10 +178,8 @@ test5() {
   gs2.insert(ray(A + B));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.BHRZ03_widening_assign(ph1);
 
@@ -214,9 +189,7 @@ test5() {
 
   bool equal = (ph2 == known_result);
 
-#if NOISY
   print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
-#endif
 
   if (!equal)
     exit(1);
@@ -239,10 +212,8 @@ test6() {
   gs2.insert(ray(-A + B));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.BHRZ03_widening_assign(ph1);
 
@@ -252,9 +223,7 @@ test6() {
 
   bool equal = (ph2 == known_result);
 
-#if NOISY
   print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
-#endif
 
   if (!equal)
     exit(1);
@@ -277,10 +246,8 @@ test7() {
   gs2.insert(ray(-A - B));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.BHRZ03_widening_assign(ph1);
 
@@ -290,9 +257,7 @@ test7() {
 
   bool equal = (ph2 == known_result);
 
-#if NOISY
   print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
-#endif
 
   if (!equal)
     exit(1);
@@ -315,10 +280,8 @@ test8() {
   gs2.insert(ray(A - B));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.BHRZ03_widening_assign(ph1);
 
@@ -328,9 +291,7 @@ test8() {
 
   bool equal = (ph2 == known_result);
 
-#if NOISY
   print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
-#endif
 
   if (!equal)
     exit(1);
@@ -353,10 +314,8 @@ test9() {
   gs2.insert(ray(-A + B));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.BHRZ03_widening_assign(ph1);
 
@@ -365,9 +324,7 @@ test9() {
 
   bool equal = (ph2 == known_result);
 
-#if NOISY
   print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
-#endif
 
   if (!equal)
     exit(1);
@@ -390,10 +347,8 @@ test10() {
   gs2.insert(ray(-A - B));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.BHRZ03_widening_assign(ph1);
 
@@ -402,9 +357,7 @@ test10() {
 
   bool equal = (ph2 == known_result);
 
-#if NOISY
   print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
-#endif
 
   if (!equal)
     exit(1);
@@ -427,10 +380,8 @@ test11() {
   gs2.insert(ray(A - B));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.BHRZ03_widening_assign(ph1);
 
@@ -439,9 +390,7 @@ test11() {
 
   bool equal = (ph2 == known_result);
 
-#if NOISY
   print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
-#endif
 
   if (!equal)
     exit(1);
@@ -464,10 +413,8 @@ test12() {
   gs2.insert(ray(A + B));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.BHRZ03_widening_assign(ph1);
 
@@ -476,9 +423,7 @@ test12() {
 
   bool equal = (ph2 == known_result);
 
-#if NOISY
   print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
-#endif
 
   if (!equal)
     exit(1);
@@ -501,10 +446,8 @@ test13() {
   gs2.insert(ray(A + B));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.BHRZ03_widening_assign(ph1);
 
@@ -513,9 +456,7 @@ test13() {
 
   bool equal = (ph2 == known_result);
 
-#if NOISY
   print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
-#endif
 
   if (!equal)
     exit(1);
@@ -538,10 +479,8 @@ test14() {
   gs2.insert(ray(-A + B));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.BHRZ03_widening_assign(ph1);
 
@@ -550,9 +489,7 @@ test14() {
 
   bool equal = (ph2 == known_result);
 
-#if NOISY
   print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
-#endif
 
   if (!equal)
     exit(1);
@@ -575,10 +512,8 @@ test15() {
   gs2.insert(ray(-A - B));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.BHRZ03_widening_assign(ph1);
 
@@ -587,9 +522,7 @@ test15() {
 
   bool equal = (ph2 == known_result);
 
-#if NOISY
   print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
-#endif
 
   if (!equal)
     exit(1);
@@ -612,10 +545,8 @@ test16() {
   gs2.insert(ray(A - B));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.BHRZ03_widening_assign(ph1);
 
@@ -624,9 +555,7 @@ test16() {
 
   bool equal = (ph2 == known_result);
 
-#if NOISY
   print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
-#endif
 
   if (!equal)
     exit(1);

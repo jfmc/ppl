@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 // This is a unbounded box in 4D but bounded in 2D with strict inequalities.
@@ -54,10 +47,8 @@ test1() {
   known_ph.add_constraint(y > -10);
   known_ph.add_constraint(z >= 5);
 
-#if NOISY
   print_generators(ph, "*** test1 ph ***");
   print_generators(known_ph, "*** test1 known_ph ***");
-#endif
 
   if (ph != known_ph)
     exit(1);
@@ -84,10 +75,8 @@ test2() {
   known_ph.add_constraint(y <= 4);
   known_ph.add_constraint(y > -10);
 
-#if NOISY
   print_generators(ph, "*** test2 ph ***");
   print_generators(known_ph, "*** test2 known_ph ***");
-#endif
 
   if (ph != known_ph)
     exit(1);
@@ -101,15 +90,11 @@ test3() {
 
   NNC_Polyhedron ph(box, From_Bounding_Box());
 
-#if NOISY
   print_constraints(ph, "*** test3 ph ***");
-#endif
 
   NNC_Polyhedron known_ph(2, EMPTY);
 
-#if NOISY
   print_constraints(known_ph, "*** test3 known_ph ***");
-#endif
 
   if (ph != known_ph)
     exit(1);

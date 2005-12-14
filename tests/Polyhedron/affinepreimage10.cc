@@ -23,13 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
@@ -43,20 +36,16 @@ test1() {
   ph.add_constraint(B >= 0);
   C_Polyhedron copy_ph(ph);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   ph.affine_preimage(A, A + 1);
   copy_ph.affine_preimage(A, -A - 1, -1);
 
   bool ok = (ph == copy_ph);
 
-#if NOISY
   print_generators(ph, "*** After ph.affine_preimage(A, A + 1) ***");
   print_generators(copy_ph,
 		   "*** After copy_ph.affine_preimage(A, -A - 1, -1) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -73,20 +62,16 @@ test2() {
   ph.add_constraint(B >= 0);
   C_Polyhedron copy_ph(ph);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   ph.affine_preimage(B, A + 1);
   copy_ph.affine_preimage(B, -A - 1, -1);
 
   bool ok = (ph == copy_ph);
 
-#if NOISY
   print_generators(ph, "*** After ph.affine_preimage(B, A + 1) ***");
   print_generators(copy_ph,
 		   "*** After copy_ph.affine_preimage(B, -A - 1, -1) ***");
-#endif
 
   if (!ok)
     exit(1);

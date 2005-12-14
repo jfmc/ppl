@@ -26,13 +26,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <string>
 #include <fstream>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-using namespace Parma_Polyhedra_Library::IO_Operators;
+using std::string;
+using std::fstream;
+using std::ios_base;
 
-#ifndef NOISY
-#define NOISY 0
-#endif
+using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace {
 
@@ -60,7 +58,7 @@ read_variables_and_check(const string& s) {
 }
 
 void
-my_output_function(ostream& s, const Variable& v) {
+my_output_function(std::ostream& s, const Variable& v) {
   s << "x" << v.id();
 }
 
@@ -69,7 +67,6 @@ my_output_function(ostream& s, const Variable& v) {
 int
 main() TRY {
   set_handlers();
-
 
   // Default output function: write...
   write_variables();

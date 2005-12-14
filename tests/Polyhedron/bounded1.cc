@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   Variable x(0);
@@ -38,9 +31,7 @@ main() TRY {
   C_Polyhedron ph1(2);
   ph1.add_constraint(x >= 0);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   if (ph1.is_bounded())
     return 1;
@@ -52,9 +43,7 @@ main() TRY {
   ph2.add_constraint(x <= 4);
   ph2.add_constraint(y <= 4);
 
-#if NOISY
   print_constraints(ph2, "*** ph2 ***");
-#endif
 
   if (!ph2.is_bounded())
     return 1;
@@ -62,9 +51,7 @@ main() TRY {
   // This is a universal, zero-dimensional polyhedron.
   C_Polyhedron ph3;
 
-#if NOISY
   print_constraints(ph3, "*** ph3 ***");
-#endif
 
   if (!ph3.is_bounded())
     return 1;
@@ -73,9 +60,7 @@ main() TRY {
   C_Polyhedron ph4;
   ph4.add_constraint(Linear_Expression(-3) >= 0);
 
-#if NOISY
   print_constraints(ph4, "*** ph4 ***");
-#endif
 
   if (!ph4.is_bounded())
     return 1;
@@ -83,9 +68,7 @@ main() TRY {
   // This is an empty polyhedron.
   C_Polyhedron ph5(4, EMPTY);
 
-#if NOISY
   print_constraints(ph5, "*** ph5 ***");
-#endif
 
   if (!ph5.is_bounded())
     return 1;

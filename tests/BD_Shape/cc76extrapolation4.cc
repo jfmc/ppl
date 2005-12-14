@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
@@ -40,19 +33,15 @@ test1() {
 
   TBD_Shape known_result(bd1);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   bd1.CC76_extrapolation_assign(bd2);
 
   bool ok = (bd1 == known_result);
 
-#if NOISY
   print_constraints(bd1,
 		    "*** bd1.CC76_extrapolation_assign(bd2) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -67,19 +56,15 @@ test2() {
 
   TBD_Shape known_result(bd2);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   bd2.CC76_extrapolation_assign(bd1);
 
   bool ok = (bd2 == known_result);
 
-#if NOISY
   print_constraints(bd2,
 		    "*** bd2.CC76_extrapolation_assign(bd1) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -103,19 +88,15 @@ test3() {
 
   TBD_Shape known_result(bd1);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   bd1.CC76_extrapolation_assign(bd2);
 
   bool ok = (bd1 == known_result);
 
-#if NOISY
   print_constraints(bd1,
 		    "*** bd1.CC76_extrapolation_assign(bd2) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -133,22 +114,17 @@ test4() {
   bd2.add_constraint(A <= 1);
   bd2.add_constraint(B == -1);
 
-
   TBD_Shape known_result(bd1);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   bd1.CC76_extrapolation_assign(bd2);
 
   bool ok = (bd1 == known_result);
 
-#if NOISY
   print_constraints(bd1,
 		    "*** bd1.CC76_extrapolation_assign(bd2) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -173,26 +149,21 @@ test5() {
   known_result.add_constraint(B >= 2);
   known_result.add_constraint(C - B <= 2);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   bd1.CC76_extrapolation_assign(bd2);
 
   bool ok = (bd1 == known_result);
 
-#if NOISY
   print_constraints(bd1,
 		    "*** bd1.CC76_extrapolation_assign(bd2) ***");
-#endif
 
   if (!ok)
     exit(1);
 }
 
 } // namespace
-
 
 int
 main() TRY {

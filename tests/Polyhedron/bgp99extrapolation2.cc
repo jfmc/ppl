@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -109,13 +102,11 @@ main() TRY {
   ps2.add_disjunct(ps2_3);
   ps2.add_disjunct(ps2_4);
 
-#if NOISY
   using namespace Parma_Polyhedra_Library::IO_Operators;
-  cout << "*** ps1 ***" << endl
+  nout << "*** ps1 ***" << endl
        << ps1 << endl;
-  cout << "*** ps2 ***" << endl
+  nout << "*** ps2 ***" << endl
        << ps2 << endl;
-#endif
 
   ps1.BGP99_extrapolation_assign
     (ps2, widen_fun_ref(&Polyhedron::H79_widening_assign), 7);
@@ -135,13 +126,11 @@ main() TRY {
 
   int retval = ps1.geometrically_equals(known_result) ? 0 : 1;
 
-#if NOISY
-  cout
+  nout
     << "*** ps1.BGP99_extrapolation_assign"
     << "(ps2, widen_fun_ref(&H79_widening_assign), 7) ***"
     << endl
     << ps1 << endl;
-#endif
 
   return retval;
 }

@@ -24,13 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_test.hh"
 #include <vector>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 Variable x(0);
@@ -85,9 +78,9 @@ PSet
 S(unsigned n) {
   PSet s(2, EMPTY);
   if (n == 0) {
-#if NOISY
-    cout << "S0 = { P0 }" << endl;
-#endif
+
+    nout << "S0 = { P0 }" << endl;
+
     s.add_disjunct(P(0));
     return s;
   }
@@ -96,29 +89,29 @@ S(unsigned n) {
 
   switch (n % 3) {
   case 1:
-#if NOISY
-    cout << "S" << n << " = { "
+
+    nout << "S" << n << " = { "
 	 << "P" << p_base + 1 << ", "
 	 << "P" << p_base + 3 << " }" << endl;
-#endif
+
     s.add_disjunct(P(p_base + 1));
     s.add_disjunct(P(p_base + 3));
     break;
   case 2:
-#if NOISY
-    cout << "S" << n << " = { "
+
+    nout << "S" << n << " = { "
 	 << "P" << p_base + 2 << ", "
 	 << "P" << p_base + 3 << " }" << endl;
-#endif
+
     s.add_disjunct(P(p_base + 2));
     s.add_disjunct(P(p_base + 3));
     break;
   case 0:
-#if NOISY
-    cout << "S" << n << " = { "
+
+    nout << "S" << n << " = { "
 	 << "P" << p_base + 2 << ", "
 	 << "P" << p_base + 4 << " }" << endl;
-#endif
+
     s.add_disjunct(P(p_base + 2));
     s.add_disjunct(P(p_base + 4));
     break;
@@ -127,7 +120,7 @@ S(unsigned n) {
 }
 
 void
-my_output_function(ostream& s, const Variable& v) {
+my_output_function(std::ostream& s, const Variable& v) {
   s << char('x' + v.id());
 }
 
@@ -141,22 +134,22 @@ main() TRY {
   Variable::set_output_function(my_output_function);
 
   PSet T = S(0);
-#if NOISY
+
   using namespace Parma_Polyhedra_Library::IO_Operators;
 
-  cout << "T0 = " << T << endl;
-#endif
+  nout << "T0 = " << T << endl;
+
   bool converged = false;
   for (unsigned n = 1; !converged && n <= 20; ++n) {
     PSet Sn = S(n);
-#if NOISY
-    cout << "S" << n << " = " << Sn << endl;
-#endif
+
+    nout << "S" << n << " = " << Sn << endl;
+
     Sn.BGP99_extrapolation_assign
       (T, widen_fun_ref(&Polyhedron::H79_widening_assign), 2);
-#if NOISY
-    cout << "T" << n << " = " << Sn << endl;
-#endif
+
+    nout << "T" << n << " = " << Sn << endl;
+
     if (Sn.definitely_entails(T))
       converged = true;
     else

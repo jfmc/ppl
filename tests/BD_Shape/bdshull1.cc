@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   Variable x1(0);
@@ -49,16 +42,12 @@ main() TRY {
   bd2.add_constraint(x1 - x2 <= 20);
   bd2.add_constraint(x4 - x3 <= 3);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   bd1.bds_hull_assign(bd2);
 
-#if NOISY
   print_constraints(bd1, "*** bd1.bds_hull_assign(bd2) ***");
-#endif
 
   known_result.add_constraint(x1 <= 5);
   known_result.add_constraint(x1 - x2 <= 20);

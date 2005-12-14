@@ -25,13 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -48,9 +41,7 @@ main() TRY {
 
   bool ok = !ph1.is_topologically_closed();
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-#endif
 
   return ok ? 0 : 1;
 }
