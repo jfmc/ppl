@@ -209,8 +209,9 @@ public:
   //! increasing the number of space dimensions if needed.
   void insert(const Generator& g);
 
-  //! Inserts in \p *this the generators in \p gs.
-  // FIX throw (fits w/ gs?) if gs.spc_dim > spc_dim?
+  //! \brief
+  //! Inserts in \p *this the generators in \p gs, increasing the
+  //! number of space dimensions if needed.
   void recycling_insert(Grid_Generator_System& gs);
 
   //! An iterator over a system of grid generators

@@ -33,16 +33,19 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
-#if 0
-  if (space_dim < gs_space_dim)
-    throw_dimension_incompatible("recycling_insert(gs)", "gs", gs);
-#endif
-
   const dimension_type old_num_rows = num_rows();
   const dimension_type gs_num_rows = gs.num_rows();
-  add_zero_rows(gs_num_rows,
-		Linear_Row::Flags(NECESSARILY_CLOSED,
-				  Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+  const dimension_type old_num_cols = num_columns();
+  const dimension_type gs_num_cols = gs.num_columns();
+  if (old_num_cols >= gs_num_cols)
+    add_zero_rows(gs_num_rows,
+		  Linear_Row::Flags(NECESSARILY_CLOSED,
+				    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+  else
+    add_zero_rows_and_columns(gs_num_rows,
+			      gs_num_cols - old_num_cols,
+			      Linear_Row::Flags(NECESSARILY_CLOSED,
+						Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
   for (dimension_type i = gs_num_rows; i-- > 0; )
     // Swap one coefficient at a time into the newly added rows
     // instead of swapping each entire row.  This ensures that the
