@@ -302,7 +302,6 @@ PPL::Grid::set_zero_dim_univ() {
   status.set_zero_dim_univ();
   space_dim = 0;
   con_sys.clear();
-  // FIX adj spc dim? (to get 2 cols)?
   gen_sys.clear();
   gen_sys.insert(Grid_Generator::point());
 }
