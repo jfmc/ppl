@@ -32,8 +32,10 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e) {
   Linear_Expression ec = e;
   Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
   g[0] = 0;
-  // FIX this only saves realloc of coeffs (the array that is part of
-  //     obj g must still be reallocated)
+  // FIXME: Using this constructor saves reallocating the
+  //        coefficients.  The array that is part of object g must
+  //        still be reallocated.  It would be better to somehow just
+  //        return g as a Grid_Generator.
   return Grid_Generator(g);
 }
 
