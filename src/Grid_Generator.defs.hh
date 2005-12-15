@@ -237,12 +237,6 @@ class Parma_Polyhedra_Library::Grid_Generator : private Generator {
 public:
   // FIXME: Add wrappers of any other public Generator methods.
 
-  //! \brief
-  //! Constructs from polyhedron generator \p g, stealing the
-  //! underlying data structures from \p g.
-  // FIX steal? cf parameter(e),ggs::insert
-  explicit Grid_Generator(Generator g);
-
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
@@ -381,6 +375,11 @@ public:
   bool ascii_load(std::istream& s);
 
 private:
+  //! \brief
+  //! Constructs from polyhedron generator \p g, stealing the
+  //! underlying data structures from \p g.
+  explicit Grid_Generator(Generator g);
+
   //! Returns the topological kind of \p *this.
   Topology topology() const;
 
