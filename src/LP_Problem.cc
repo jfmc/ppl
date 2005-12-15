@@ -752,14 +752,21 @@ PPL::LP_Problem::evaluate_objective_function(const Generator&
 					     evaluating_point,
 					     Coefficient& ext_n,
 					     Coefficient& ext_d) const{
+  const dimension_type evaluating_p_sd = evaluating_point.space_dimension();
+  const dimension_type input_obj_sd = input_obj_function.space_dimension();
+  // Compute the smallest space dimension  between `input_obj_function'
+  // and `evaluating_point' to improve performances.
+  dimension_type evaluating_sd;
+  evaluating_p_sd < input_obj_sd ? evaluating_sd = evaluating_p_sd
+    : evaluating_sd = input_obj_sd;
   // Compute the optimal value of the cost function.
   ext_n = input_obj_function.inhomogeneous_term();
-  for (dimension_type i = evaluating_point.space_dimension(); i-- > 0; )
+  for (dimension_type i = evaluating_sd; i-- > 0; )
     ext_n += evaluating_point.coefficient(Variable(i))
       * input_obj_function.coefficient(Variable(i));
-   // Numerator and denominator should be coprime.
-   normalize2(ext_n, evaluating_point.divisor(), ext_n, ext_d);
- }
+  // Numerator and denominator should be coprime.
+  normalize2(ext_n, evaluating_point.divisor(), ext_n, ext_d);
+}
 
 bool
 PPL::LP_Problem::is_satisfiable(){
@@ -767,24 +774,12 @@ PPL::LP_Problem::is_satisfiable(){
   num_iterations = 0;
 #endif
   // Check for the `status' attribute in trivial cases.
-  switch (status){
+  switch (status) {
   case UNSATISFIABLE:
-#if PPL_NOISY_SIMPLEX
-    std::cout << "LP_Problem::solve: 1st phase ended at iteration "
-	      << num_iterations << "." << std::endl;
-#endif
     return false;
   case SATISFIABLE:
-#if PPL_NOISY_SIMPLEX
-    std::cout << "LP_Problem::solve: 1st phase ended at iteration "
-	      << num_iterations << "." << std::endl;
-#endif
     return true;
   case OPTIMIZED:
-#if PPL_NOISY_SIMPLEX
-    std::cout << "LP_Problem::solve: 1st phase ended at iteration "
-	      << num_iterations << "." << std::endl;
-#endif
     return true;
   default:
     break;
@@ -795,10 +790,10 @@ PPL::LP_Problem::is_satisfiable(){
   // because if the constraint system is NNC, then even the epsilon
   // dimension has to be interpreted as a normal dimension.
   const dimension_type space_dim = input_cs.num_columns() - 1;
-
+  // Reset internal objects.
+  tableau.clear();
+  dim_map.clear();
   // Compute the initial tableau.
-  tableau = Matrix(0, 0);
-  dim_map =  std::map<dimension_type, dimension_type>();
   Simplex_Status s_status = compute_tableau();
 
   // Check for trivial cases.

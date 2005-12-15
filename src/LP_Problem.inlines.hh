@@ -83,7 +83,7 @@ LP_Problem::add_constraints(const Constraint_System& cs) {
 
 inline void
 LP_Problem::set_objective_function(const Linear_Expression& obj) {
-  switch(status){
+  switch(status) {
   case UNBOUNDED:
     status = SATISFIABLE;
     break;
@@ -101,7 +101,7 @@ inline void
 LP_Problem::set_optimization_mode(Optimization_Mode new_mode){
   if (opt_mode == new_mode)
     return;
-  switch(status){
+  switch (status) {
   case UNBOUNDED:
     status = SATISFIABLE;
     break;
@@ -127,7 +127,7 @@ LP_Problem::optimization_mode() const {
 
 inline const Generator&
 LP_Problem::feasible_point() {
-  switch(status) {
+  switch (status) {
   case UNSOLVED:
     if(is_satisfiable()){
       assert(OK());
@@ -161,7 +161,7 @@ throw std::runtime_error("PPL internal error");
 
 inline const Generator&
 LP_Problem::optimizing_point() {
-  switch(status) {
+  switch (status) {
   case UNSOLVED:
     if(solve() == SOLVED_PROBLEM)
       return last_generator;
@@ -197,7 +197,7 @@ LP_Problem::constraints() const{
 
 inline Simplex_Status
 LP_Problem::solve() {
-  switch(status){
+  switch (status) {
   case UNSATISFIABLE:
     return UNFEASIBLE_PROBLEM;
   case SATISFIABLE:
