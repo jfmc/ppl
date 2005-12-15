@@ -989,27 +989,20 @@ PPL::Grid::add_generator(const Grid_Generator& g) {
   }
   else {
     assert(generators_are_up_to_date());
-    // Copy g, in all cases, in case the divisor needs to be changed
-    // when g is a point.
-    // FIX only copy when point
-    Grid_Generator tem(g);
-    Grid_Generator& g = tem;
-    // g is now a reference to the copy.
     TEMP_INTEGER(divisor);
     TEMP_INTEGER(gen_sys_divisor);
-    // FIX changed much here
     if (g.is_parameter_or_point()) {
       // Ensure that the divisors of gen_sys and g are the same.
       divisor = g.divisor();
-      // FIX for now parameters always have a divisor of zero
+      // FIX for now parameters always return a divisor of zero
       if (divisor > 0) {
 	assert(g.is_point());
 	gen_sys_divisor = normalize_divisors(gen_sys, divisor);
 	gen_sys.insert(g);
 	if (divisor != gen_sys_divisor) {
-	  // Multiply the inserted point to match the gen_sys
-	  // divisor.  Done after the insert so that a normalized g
-	  // is passed to insert.
+	  // Multiply the inserted point to match the gen_sys divisor.
+	  // Done after the insert so that a normalized g is passed to
+	  // insert, and because g is a constant.
 	  Grid_Generator& inserted_g = gen_sys[gen_sys.num_rows()-1];
 	  inserted_g[0] = gen_sys_divisor;
 	  gen_sys_divisor /= divisor;
@@ -1020,7 +1013,6 @@ PPL::Grid::add_generator(const Grid_Generator& g) {
     }
     else
       gen_sys.insert(g);
-
   }
 
   // With the added generator, congruences are out of date.
