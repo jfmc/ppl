@@ -61,12 +61,12 @@ PPL::Grid::Grid(dimension_type num_dimensions,
 
   if (num_dimensions > 0) {
     con_sys.increase_space_dimension(num_dimensions);
+
     // Initialise both systems to universe representations.
+
     set_congruences_minimized();
     set_generators_minimized();
     dim_kinds.resize(num_dimensions + 1);
-
-    // FIX confirm that this works
 
     // Extend the zero dim integrality congruence system to the
     // appropriate dimension and then store it in `con_sys'.
@@ -74,17 +74,17 @@ PPL::Grid::Grid(dimension_type num_dimensions,
     cgs.increase_space_dimension(space_dim);
     con_sys.swap(cgs);
 
-    dim_kinds[0] = PROPER_CONGRUENCE /* a.k.a PARAMETER */;
+    dim_kinds[0] = PROPER_CONGRUENCE /* a.k.a. PARAMETER */;
 
     // Trivially true point.
     gen_sys.insert(grid_point(0*(Variable(0))));
     gen_sys[0].divisor() = 1;
 
-    // The rest.
+    // A line for each dimension.
     dimension_type dim = 0;
     while (dim < num_dimensions) {
       gen_sys.insert(line(Variable(dim++)));
-      dim_kinds[dim] = CON_VIRTUAL /* a.k.a LINE */;
+      dim_kinds[dim] = CON_VIRTUAL /* a.k.a. LINE */;
     }
   }
   else
