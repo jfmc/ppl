@@ -294,9 +294,9 @@ PPL::Grid::relation_with(const Congruence& cg) const {
       && Poly_Con_Relation::is_disjoint();
 
   // Return one of the relations
-  // 'strictly_intersects'   share at least one point
-  // 'is_included'	     share all points (FIX of grid?)
-  // 'is_disjoint'	     the other case, intersection fails
+  // 'strictly_intersects'   a strict subset of the grid points satisfy cg
+  // 'is_included'	     every grid point satisfies cg
+  // 'is_disjoint'	     cg and the grid occupy seperate spaces.
 
   // There is always a point.
 
