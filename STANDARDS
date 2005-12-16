@@ -61,6 +61,13 @@ void f() {
 
 } // namespace
 
+However, do not use anonymous namespaces in a header file
+(any file that is meant to be included in other translation units).
+Instead, define and use a new non-anonymous namespace that should
+be placed inside the namespace
+
+    Parma_Polyhedra_Library::Implementation
+
 
 Length of source lines
 ----------------------
