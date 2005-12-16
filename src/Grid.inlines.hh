@@ -766,7 +766,8 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
       break;
     case Grid_Generator::PARAMETER:
       if (!all_zeroes) {
-	//new_gensys.insert(parameter(e, FIX divisor_of_first_point));
+	// FIXME: If parameters ever get divisors then use:
+	//new_gensys.insert(parameter(e, <divisor_of_first_point>));
 	new_gensys.insert(point(e));
 	new_gensys[new_gensys.num_rows()-1][0] = 0;
       }
