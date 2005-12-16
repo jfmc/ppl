@@ -468,6 +468,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   TRACE(cerr << "======== simplify (reduce) cgs:" << endl);
   TRACE(cerr << "sys:" << endl);
   TRACE(sys.ascii_dump(cerr));
+  assert(sys.num_columns() > 2);
 
   // Changes here may also be required in the generator version above.
 

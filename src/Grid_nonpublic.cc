@@ -354,9 +354,6 @@ PPL::Grid::update_generators() const {
   assert(!marked_empty());
   assert(congruences_are_up_to_date());
 
-  // FIX for?
-  assert(con_sys.num_columns() > 2);
-
   Grid& x = const_cast<Grid&>(*this);
 
   if (!congruences_are_minimized())
