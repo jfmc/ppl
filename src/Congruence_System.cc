@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
+#include "Constraint_System.defs.hh"
+#include "Constraint_System.inlines.hh"
 #include "Congruence.defs.hh"
 #include "Grid_Generator.defs.hh"
 #include "Scalar_Products.defs.hh"
