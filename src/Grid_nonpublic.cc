@@ -149,30 +149,24 @@ PPL::Grid::quick_equivalence_test(const Grid& y) const {
     const dimension_type x_num_lines = x.gen_sys.num_lines();
     if (x_num_lines != y.gen_sys.num_lines())
       return Grid::TVB_FALSE;
-#if 0 // FIX requires canonical form?
       //  - and if there are no lines, the same generators.
     if (x_num_lines == 0) {
-      // Sort the two systems and check for syntactic identity.
-      x.obtain_sorted_generators();
-      y.obtain_sorted_generators();
+      // Check for syntactic identity.
       if (x.gen_sys == y.gen_sys)
 	return Grid::TVB_TRUE;
       else
 	return Grid::TVB_FALSE;
     }
-#endif
   }
-  // FIX else if up to date then min and recheck (similar for cgs)?
 
-  if (css_normalized) {
-#if 0
-    // FIX requires sorting or a canonical form?
+  // TODO: Consider minimizing the systems and reperforming these
+  //       checks.
+
+  if (css_normalized)
     if (x.con_sys == y.con_sys)
       return Grid::TVB_TRUE;
     else
       return Grid::TVB_FALSE;
-#endif
-  }
 
   return Grid::TVB_DONT_KNOW;
 }
