@@ -203,6 +203,19 @@ Grid_Generator_System::set_sorted(bool b) {
   Generator_System::set_sorted(b);
 }
 
+inline bool
+Grid_Generator_System::is_equal_to(const Grid_Generator_System y) const {
+  return operator==(static_cast<const Generator_System&>(*this),
+		    static_cast<const Generator_System&>(y));
+}
+
+/*! \relates Grid_Generator_System */
+inline bool
+operator==(const Grid_Generator_System& x,
+	   const Grid_Generator_System& y) {
+  return x.is_equal_to(y);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 

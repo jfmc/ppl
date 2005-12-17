@@ -43,6 +43,11 @@ std::ostream& operator<<(std::ostream& s, const Grid_Generator_System& gs);
 
 } // namespace IO_Operators
 
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
+/*! \relates Grid_Generator_System */
+bool operator==(const Grid_Generator_System& x,
+		const Grid_Generator_System& y);
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
@@ -341,6 +346,9 @@ public:
   //! or more points.
   bool has_points() const;
 
+  //! Returns <CODE>true</CODE> if \p *this is identical to \p y.
+  bool is_equal_to(const Grid_Generator_System y) const;
+
   //! Returns the \p k- th generator of the system.
   Grid_Generator& operator[](dimension_type k);
 
@@ -425,6 +433,8 @@ public:
   void remove_higher_space_dimensions(dimension_type new_dimension);
 
 private:
+  friend bool operator==(const Grid_Generator_System& x,
+			 const Grid_Generator_System& y);
   // FIXME: The following friend declaration grants Grid::conversion
   //        access to Matrix (for the Grid::reduce_reduced call) and
   //        Matrix::resize_no_copy.
