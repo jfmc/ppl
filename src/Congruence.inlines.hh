@@ -57,7 +57,7 @@ Congruence::~Congruence() {
 
 inline const Congruence&
 Congruence::zero_dim_integrality() {
-  static const Congruence zdi(Linear_Expression::zero() %= Coefficient_one());
+  static const Congruence zdi(Linear_Expression::zero() %= Coefficient(-1));
   return zdi;
 }
 
