@@ -699,9 +699,14 @@ PPL::LP_Problem::compute_generator() {
   return point(expr, lcm);
 }
 
-PPL::Simplex_Status
+void
 PPL::LP_Problem::second_phase() {
-  // This code still requires a bit of testing.
+  // second_phase requires that *this is satisfiable.
+  assert(status == SATISFIABLE || status == UNBOUNDED || status == OPTIMIZED);
+  // In this case the problem is already solved.
+  if (status == UNBOUNDED || status == OPTIMIZED)
+    return;
+
   // Negate the cost function if we are minimizing.
   Row new_cost = input_obj_function;
   if (opt_mode == MINIMIZATION)
@@ -740,11 +745,11 @@ PPL::LP_Problem::second_phase() {
   if (second_phase_successful) {
     last_generator = compute_generator();
     status = OPTIMIZED;
-    return SOLVED_PROBLEM;
+    return;
   }
   else
     status = UNBOUNDED;
-    return UNBOUNDED_PROBLEM;
+    return;
 }
 
 void
@@ -779,9 +784,13 @@ PPL::LP_Problem::is_satisfiable(){
     return false;
   case SATISFIABLE:
     return true;
+  case UNBOUNDED:
+    return true;
   case OPTIMIZED:
     return true;
-  default:
+  case PARTIALLY_SATISFIABLE:
+    return false;
+  case UNSOLVED:
     break;
   }
 

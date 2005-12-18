@@ -127,68 +127,19 @@ LP_Problem::optimization_mode() const {
 
 inline const Generator&
 LP_Problem::feasible_point() {
-  switch (status) {
-  case UNSOLVED:
-    if(is_satisfiable()){
-      assert(OK());
-      return last_generator;
-    };
-    throw std::domain_error("*this is not satisfiable.");
-    break;
-  case UNSATISFIABLE:
-    throw std::domain_error("*this is not satisfiable.");
-    break;
-  case SATISFIABLE:
+  if (is_satisfiable()) {
+    assert(OK());
     return last_generator;
-    break;
-  case UNBOUNDED:
-    return last_generator;
-    break;
-  case PARTIALLY_SATISFIABLE:
-    if(is_satisfiable()){
-      assert(OK());
-      return last_generator;
-    }
-    throw std::domain_error("*this is not satisfiable.");
-    break;
-  case OPTIMIZED:
-    return last_generator;
-    break;
-}
-// If we have reached this point something went wrong.
-throw std::runtime_error("PPL internal error");
+  }
+  throw std::domain_error("*this is not satisfiable.");
 }
 
 inline const Generator&
 LP_Problem::optimizing_point() {
-  switch (status) {
-  case UNSOLVED:
-    if(solve() == SOLVED_PROBLEM)
-      return last_generator;
-    throw std::domain_error("*this doesn't have an optimizing point.");
-    break;
-  case UNSATISFIABLE:
-    throw std::domain_error("*this doesn't have an optimizing point.");
-    break;
-  case SATISFIABLE:
-    if(solve() == SOLVED_PROBLEM)
-      return last_generator;
-    break;
-  case UNBOUNDED:
-    throw std::domain_error("*this doesn't have an optimizing point.");
-    break;
-  case PARTIALLY_SATISFIABLE:
-    if(solve() == SOLVED_PROBLEM)
-      return last_generator;
-    throw std::domain_error("*this doesn't have an optimizing point.");
-    break;
-  case OPTIMIZED:
+  if(solve() == SOLVED_PROBLEM)
     return last_generator;
-    break;
-  }
-  // If we have reached this point something went wrong.
-  throw std::runtime_error("PPL internal error");
-};
+  throw std::domain_error("*this doesn't have an optimizing point.");
+}
 
 inline const Constraint_System&
 LP_Problem::constraints() const{
@@ -197,29 +148,16 @@ LP_Problem::constraints() const{
 
 inline Simplex_Status
 LP_Problem::solve() {
-  switch (status) {
-  case UNSATISFIABLE:
-    return UNFEASIBLE_PROBLEM;
-  case SATISFIABLE:
-    {
-      Simplex_Status new_status = second_phase();
-      assert(OK());
-      return new_status;
-      break;
-    }
-  default:
-    {
-      if(is_satisfiable()){
-	assert(OK());
-	Simplex_Status new_status = second_phase();
-	assert(OK());
-	return new_status;
-      }
-      return UNFEASIBLE_PROBLEM;
-    }
+  if(is_satisfiable()){
+    assert(OK());
+    second_phase();
+    assert(OK());
+    if (status == UNBOUNDED)
+      return UNBOUNDED_PROBLEM;
+    if (status == OPTIMIZED)
+      return SOLVED_PROBLEM;
   }
-  // If we have reached this point something went wrong.
-   throw std::runtime_error("PPL internal error");
+  return UNFEASIBLE_PROBLEM;
 }
 
 inline void

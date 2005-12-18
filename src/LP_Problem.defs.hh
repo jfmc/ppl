@@ -256,7 +256,7 @@ private:
     if the LP problem is unbounded, will contain a feasible point.
   */
 
-  Simplex_Status second_phase();
+  void second_phase();
 
   //! \brief
   //! Assigns to \p this->tableau a simplex tableau representing the
