@@ -195,6 +195,8 @@ PPL::LP_Problem::swap_base(const dimension_type entering_var_index,
   // Linearly combine the cost function.
   if (working_cost[entering_var_index] != 0)
     linear_combine(working_cost, tableau_out, entering_var_index);
+  // Adjust the base.
+  base[exiting_base_index] = entering_var_index;
 }
 
 // See pag. 47 + 50 of Papadimitriou.
@@ -279,9 +281,7 @@ PPL::LP_Problem::compute_simplex() {
     // We have not reached the optimality or unbounded condition:
     // compute the new base and the corresponding vertex of the
     // feasible region.
-  base[exiting_base_index] = entering_var_index;
-  swap_base(entering_var_index, exiting_base_index);
-
+    swap_base(entering_var_index, exiting_base_index);
 #if PPL_NOISY_SIMPLEX
     ++num_iterations;
     if (num_iterations % 200 == 0)
@@ -350,8 +350,6 @@ PPL::LP_Problem::erase_slacks() {
       for (dimension_type j = first_slack_index; j-- > 1; )
 	if (tableau_i[j] != 0) {
 	  swap_base(j, i);
-	  // Adjust the base.
-	  base[i] = j;
 	  redundant = false;
 	  break;
 	}
