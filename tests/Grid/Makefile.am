@@ -61,6 +61,7 @@ congruence1 \
 congruences1 \
 congruencesystem1 congruencesystem2 \
 contains1 contains2 \
+copyconstruct1 \
 disjoint1 \
 equals1 \
 expandspacedim1 \
@@ -135,6 +136,8 @@ congruencesystem2_SOURCES = congruencesystem2.cc
 
 contains1_SOURCES = contains1.cc
 contains2_SOURCES = contains2.cc
+
+copyconstruct1_SOURCES = copyconstruct1.cc
 
 disjoint1_SOURCES = disjoint1.cc
 
