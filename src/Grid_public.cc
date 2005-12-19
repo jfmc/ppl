@@ -99,14 +99,20 @@ PPL::Grid::Grid(const Grid& y)
     status(y.status),
     space_dim(y.space_dim),
     dim_kinds(y.dim_kinds) {
-  if (y.congruences_are_up_to_date())
+  if (space_dim == 0) {
     con_sys = y.con_sys;
-  else
-    con_sys.increase_space_dimension(space_dim);
-  if (y.generators_are_up_to_date())
     gen_sys = y.gen_sys;
-  else
-    gen_sys = Grid_Generator_System(y.space_dim);
+  }
+  else {
+    if (y.congruences_are_up_to_date())
+      con_sys = y.con_sys;
+    else
+      con_sys.increase_space_dimension(space_dim);
+    if (y.generators_are_up_to_date())
+      gen_sys = y.gen_sys;
+    else
+      gen_sys = Grid_Generator_System(y.space_dim);
+  }
 }
 
 PPL::Grid::Grid(const Constraint_System& ccs) {
