@@ -32,9 +32,8 @@ public:
   Test_Congruence_System(Congruence_System cgs) : Congruence_System(cgs) {}
   Test_Congruence_System(Congruence cg) : Congruence_System(cg) {}
   bool
-  satisfies_all_congruences(const Grid_Generator& g,
-			    Coefficient_traits::const_reference d) const {
-    return Congruence_System::satisfies_all_congruences(g, d);
+  satisfies_all_congruences(const Grid_Generator& g) const {
+    return Congruence_System::satisfies_all_congruences(g);
   }
 };
 
@@ -46,8 +45,6 @@ public:
      If the first generator in GS fails to satify CGS, then return
      false, else print an error message and return true.
 
-   In both cases DIVISOR is passed to satisfies_all_congruences.
-
    FIXME: If Generator::ascii_dump was public this could take a
           Generator.
 */
@@ -55,11 +52,10 @@ public:
 bool
 fulfils(const Grid_Generator_System& gs,
 	const Test_Congruence_System& cgs,
-	Coefficient_traits::const_reference divisor,
 	bool pass_expected = false) {
   Grid_Generator_System::const_iterator gi = gs.begin();
 
-  if (cgs.satisfies_all_congruences(*gi, divisor) == pass_expected)
+  if (cgs.satisfies_all_congruences(*gi) == pass_expected)
     return pass_expected;
 
   nout << *gi << " should";
@@ -77,9 +73,8 @@ fulfils(const Grid_Generator_System& gs,
 
 inline bool
 fails_to_satisfy(const Grid_Generator_System& gs,
-		 const Congruence_System& cgs,
-		 Coefficient_traits::const_reference divisor) {
-  if (fulfils(gs, cgs, divisor, true))
+		 const Congruence_System& cgs) {
+  if (fulfils(gs, cgs, true))
     return false;
   return true;
 }
@@ -102,68 +97,68 @@ test1() {
   // Points.
 
   gs0.insert(grid_point());
-  if (fails_to_satisfy(gs0, cgs0, 1))
+  if (fails_to_satisfy(gs0, cgs0))
     exit(1);
 
   gs0.clear();
   gs0.insert(grid_point(A + B));
-  if (fails_to_satisfy(gs0, cgs0, 1))
+  if (fails_to_satisfy(gs0, cgs0))
     exit(1);
 
   gs0.clear();
   gs0.insert(grid_point(A + 2*B));
-  if (satisfies(gs0, cgs0, 1))
+  if (satisfies(gs0, cgs0))
     exit(1);
 
   gs0.clear();
   gs0.insert(grid_point(5*A + 2*B));
-  if (satisfies(gs0, cgs0, 1))
+  if (satisfies(gs0, cgs0))
     exit(1);
 
   gs0.clear();
   gs0.insert(grid_point(5*A - 2*B));
-  if (fails_to_satisfy(gs0, cgs0, 1))
+  if (fails_to_satisfy(gs0, cgs0))
     exit(1);
 
   // Parameters.
 
   gs0.clear();
   gs0.insert(parameter(3*A + 3*B));
-  if (fails_to_satisfy(gs0, cgs0, 1))
+  if (fails_to_satisfy(gs0, cgs0))
     exit(1);
 
   gs0.clear();
   gs0.insert(parameter(A + 14*B));
-  if (satisfies(gs0, cgs0, 1))
+  if (satisfies(gs0, cgs0))
     exit(1);
 
   gs0.clear();
   gs0.insert(parameter(-A + 13*B));
-  if (fails_to_satisfy(gs0, cgs0, 1))
+  if (fails_to_satisfy(gs0, cgs0))
     exit(1);
 
   // Lines.
 
   gs0.clear();
   gs0.insert(grid_line(13*A + 13*B));
-  if (fails_to_satisfy(gs0, cgs0, 1))
+  if (fails_to_satisfy(gs0, cgs0))
     exit(1);
 
   gs0.clear();
   gs0.insert(grid_line(18*A + 14*B));
-  if (satisfies(gs0, cgs0, 1))
+  if (satisfies(gs0, cgs0))
     exit(1);
 
   gs0.clear();
   gs0.insert(grid_line(14*A - 21*B));
-  if (satisfies(gs0, cgs0, 1))
+  if (satisfies(gs0, cgs0))
     exit(1);
 
   cgs0.clear();
   cgs0.insert((A %= 0) / 2);
   gs0.clear();
   gs0.insert(grid_line(3*A));
-  if (satisfies(gs0, cgs0, 1))
+  if (satisfies(gs0, cgs0))
     exit(1);
 
   return;
@@ -185,63 +180,63 @@ test2() {
 
   gs0.clear();
   gs0.insert(grid_point(A + B, 3));
-  if (fails_to_satisfy(gs0, cgs0, 3))
+  if (fails_to_satisfy(gs0, cgs0))
     exit(1);
 
   gs0.clear();
   gs0.insert(grid_point(A + 2*B, 3));
-  if (satisfies(gs0, cgs0, 3))
+  if (satisfies(gs0, cgs0))
     exit(1);
 
   gs0.clear();
   gs0.insert(grid_point(5*A + 2*B, 5));
-  if (satisfies(gs0, cgs0, 5))
+  if (satisfies(gs0, cgs0))
     exit(1);
 
   gs0.clear();
   gs0.insert(grid_point(5*A - 2*B, 7));
-  if (satisfies(gs0, cgs0, 7))
+  if (satisfies(gs0, cgs0))
     exit(1);
 
   // Parameters.
 
   gs0.clear();
-  gs0.insert(parameter(3*A + 3*B));
-  if (fails_to_satisfy(gs0, cgs0, 4))
+  gs0.insert(parameter(3*A + 3*B, 4));
+  if (fails_to_satisfy(gs0, cgs0))
     exit(1);
 
   gs0.clear();
-  gs0.insert(parameter(A + 14*B));
-  if (satisfies(gs0, cgs0, 5))
+  gs0.insert(parameter(A + 14*B, 5));
+  if (satisfies(gs0, cgs0))
     exit(1);
 
   gs0.clear();
-  gs0.insert(parameter(-A + 13*B));
-  if (fails_to_satisfy(gs0, cgs0, 2))
+  gs0.insert(parameter(-A + 13*B, 2));
+  if (fails_to_satisfy(gs0, cgs0))
     exit(1);
 
   // Lines.
 
   gs0.clear();
   gs0.insert(grid_line(13*A + 13*B));
-  if (fails_to_satisfy(gs0, cgs0, 8))
+  if (fails_to_satisfy(gs0, cgs0))
     exit(1);
 
   gs0.clear();
   gs0.insert(grid_line(18*A + 14*B));
-  if (satisfies(gs0, cgs0, 9))
+  if (satisfies(gs0, cgs0))
     exit(1);
 
   gs0.clear();
   gs0.insert(grid_line(14*A - 21*B));
-  if (satisfies(gs0, cgs0, 10))
+  if (satisfies(gs0, cgs0))
     exit(1);
 
   cgs0.clear();
   cgs0.insert((A %= 0) / 2);
   gs0.clear();
   gs0.insert(grid_line(3*A));
-  if (satisfies(gs0, cgs0, 11))
+  if (satisfies(gs0, cgs0))
     exit(1);
 
   return;
