@@ -798,7 +798,9 @@ Polyhedra_Powerset<PH>::OK() const {
   return x.Base::OK();
 }
 
-namespace {
+
+namespace Implementation {
+namespace Polyhedra_Powersets {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Partitions polyhedron \p qq according to constraint \p c.
@@ -821,12 +823,16 @@ linear_partition_aux(const Constraint& c,
   qq.add_constraint(c);
 }
 
-} // namespace
+} // namespace Polyhedra_Powersets
+} // namespace Implementation
+
 
 /*! \relates Polyhedra_Powerset */
 template <typename PH>
 std::pair<PH, Polyhedra_Powerset<NNC_Polyhedron> >
 linear_partition(const PH& p, const PH& q) {
+  using Implementation::Polyhedra_Powersets::linear_partition_aux;
+
   Polyhedra_Powerset<NNC_Polyhedron> r(p.space_dimension(), EMPTY);
   PH qq = q;
   const Constraint_System& pcs = p.constraints();

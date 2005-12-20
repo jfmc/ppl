@@ -32,7 +32,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-namespace {
+namespace Implementation {
+namespace Native_Integers {
 
 //! \brief
 //! Traits class to define the properties needed for the implementation
@@ -124,7 +125,8 @@ lcm(T x, T y) {
   return x;
 }
 
-} // namespace
+} // namespace Native_Integers
+} // namespace Implementation
 
 template <typename T>
 inline
@@ -488,6 +490,7 @@ sub_mul_assign(Native_Integer<T>& x,
 template <typename T>
 inline void
 gcd_assign(Native_Integer<T>& x, const Native_Integer<T>& y) {
+  using Implementation::Native_Integers::gcd;
   x.raw_value() = gcd(x.raw_value(), y.raw_value());
 }
 
@@ -497,6 +500,7 @@ template <typename T>
 inline void
 gcd_assign(Native_Integer<T>& x,
 	   const Native_Integer<T>& y, const Native_Integer<T>& z) {
+  using Implementation::Native_Integers::gcd;
   x.raw_value() = gcd(y.raw_value(), z.raw_value());
 }
 
@@ -504,6 +508,7 @@ gcd_assign(Native_Integer<T>& x,
 template <typename T>
 inline void
 lcm_assign(Native_Integer<T>& x, const Native_Integer<T>& y) {
+  using Implementation::Native_Integers::lcm;
   x.raw_value() = lcm(x.raw_value(), y.raw_value());
 }
 
@@ -512,6 +517,7 @@ template <typename T>
 inline void
 lcm_assign(Native_Integer<T>& x,
 	   const Native_Integer<T>& y, const Native_Integer<T>& z) {
+  using Implementation::Native_Integers::lcm;
   x.raw_value() = lcm(y.raw_value(), z.raw_value());
 }
 
@@ -535,7 +541,7 @@ template <typename T>
 inline void
 sqrt_assign(Native_Integer<T>& x) {
   assert(x.raw_value() >= 0);
-  x.raw_value() = isqrt(x.raw_value());
+  x.raw_value() = Implementation::Native_Integers::isqrt(x.raw_value());
 }
 
 /*! \relates Native_Integer */
@@ -543,7 +549,7 @@ template <typename T>
 inline void
 sqrt_assign(Native_Integer<T>& x, const Native_Integer<T>& y) {
   assert(x.raw_value() >= 0);
-  x.raw_value() = isqrt(y.raw_value());
+  x.raw_value() = Implementation::Native_Integers::isqrt(y.raw_value());
 }
 
 /*! \relates Native_Integer */

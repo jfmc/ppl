@@ -57,6 +57,12 @@ namespace Parma_Polyhedra_Library {
 namespace IO_Operators {
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Implementation related data and functions.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+namespace Implementation {
+}
+
 } // namespace Parma_Polyhedra_Library
 
 

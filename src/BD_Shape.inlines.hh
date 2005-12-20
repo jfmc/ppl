@@ -37,7 +37,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-namespace {
+namespace Implementation {
+namespace BD_Shapes {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Extract the numerator and denominator components of \p from.
@@ -97,7 +98,8 @@ assign_max(N& x, const N& y) {
     x = y;
 }
 
-} // namespace
+} // namespace BD_Shapes
+} // namespace Implementation
 
 
 template <typename T>
@@ -267,6 +269,13 @@ template <typename T>
 inline dimension_type
 BD_Shape<T>::space_dimension() const {
   return dbm.num_rows() - 1;
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::is_empty() const {
+  shortest_path_closure_assign();
+  return marked_empty();
 }
 
 template <typename T>
@@ -531,7 +540,7 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
   assert(i <= space_dimension() && j <= space_dimension() && i != j);
   assert(den != 0);
   N k;
-  div_round_up(k, num, den);
+  Implementation::BD_Shapes::div_round_up(k, num, den);
   add_dbm_constraint(i, j, k);
 }
 
@@ -759,6 +768,9 @@ namespace Parma_Polyhedra_Library {
 template <typename T>
 BD_Shape<T>::BD_Shape(const Generator_System& gs)
   : dbm(gs.space_dimension() + 1), status(), redundancy_dbm() {
+  using Implementation::BD_Shapes::assign_max;
+  using Implementation::BD_Shapes::div_round_up;
+
   const dimension_type space_dim = space_dimension();
   const Generator_System::const_iterator gs_begin = gs.begin();
   const Generator_System::const_iterator gs_end = gs.end();
@@ -953,6 +965,8 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
 template <typename T>
 void
 BD_Shape<T>::add_constraint(const Constraint& c) {
+  using Implementation::BD_Shapes::div_round_up;
+
   const dimension_type c_space_dim = c.space_dimension();
   // Dimension-compatibility check.
   if (c_space_dim > space_dimension())
@@ -1110,71 +1124,6 @@ BD_Shape<T>::contains(const BD_Shape& y) const {
 	return false;
   }
   return true;
-}
-
-template <typename T>
-bool
-BD_Shape<T>::is_empty() const {
-#if 1
-  shortest_path_closure_assign();
-  return marked_empty();
-#else
-  if (marked_empty())
-    return true;
-  // Shortest-path closure implies non-emptyness.
-  if (marked_shortest_path_closed())
-    return false;
-  const dimension_type space_dim = space_dimension();
-  // A zero-dim universe BDS is not empty.
-  if (space_dim == 0)
-    return false;
-
-  // Remark that the matrix `dbm' can be seen as the adjacent matrix
-  // of a weighted directed graph, where the nodes are the variables
-  // and the weights are the inhomogeneous terms of the constraints.
-  // Here we use a modification of Bellman-Ford algorithm for
-  // not-necessary-connected graph.
-  // Since the graph is not necessary connected we consider a new
-  // node, called source, that is joined with all other nodes with
-  // zero-weight arcs.
-
-  // Values of the minimum path, from source to all nodes.
-  DB_Row<N> z(space_dim + 1);
-  for (dimension_type i = space_dim + 1; i-- > 0; )
-    assign(z[i], 0, ROUND_NOT_NEEDED);
-
-  // The relax-technique: given an arc (j,h), it tries to improve
-  // the value of minimum path for h passing by j.
-  N sum1;
-  for (dimension_type i = 0; i <= space_dim; ++i)
-    for (dimension_type j = 0; j <= space_dim; ++j) {
-      const DB_Row<N>& dbm_j = dbm[j];
-      N& z_j = z[j];
-      for (dimension_type h = 0; h <= space_dim; ++h) {
-	assign_add(sum1, dbm_j[h], z_j, ROUND_UP);
-	assign_min(z[h], sum1);
-      }
-    }
-
-  // The BDS is empty if and only if it has a negative-weight cycle.
-  // This happens when vector `z' doesn't contain really the
-  // smaller values of minimum path, from source to all nodes.
-  N sum2;
-  for (dimension_type j = 0; j <= space_dim; ++j) {
-    const DB_Row<N>& dbm_j = dbm[j];
-    N& z_j = z[j];
-    for (dimension_type h = 0; h <= space_dim; ++h) {
-      assign_add(sum2, dbm_j[h], z_j, ROUND_UP);
-      if (z[h] > sum2) {
-	Status& nstatus = const_cast<Status&>(status);
-	nstatus.set_empty();
-	return true;
-      }
-    }
-  }
-  // The BDS is not empty.
-  return false;
-#endif
 }
 
 template <typename T>
@@ -1426,6 +1375,8 @@ BD_Shape<T>::is_shortest_path_reduced() const {
 template <typename T>
 Poly_Con_Relation
 BD_Shape<T>::relation_with(const Constraint& c) const {
+  using Implementation::BD_Shapes::div_round_up;
+
   const dimension_type c_space_dim = c.space_dimension();
   const dimension_type space_dim = space_dimension();
 
@@ -1659,6 +1610,8 @@ BD_Shape<T>::relation_with(const Generator& g) const {
 template <typename T>
 void
 BD_Shape<T>::shortest_path_closure_assign() const {
+  using Implementation::BD_Shapes::assign_min;
+
   // Do something only if necessary.
   if (marked_empty() || marked_shortest_path_closed())
     return;
@@ -2248,6 +2201,8 @@ template <typename T>
 void
 BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
 				BD_Shape& limiting_shape) const {
+  using Implementation::BD_Shapes::div_round_up;
+
   const dimension_type cs_space_dim = cs.space_dimension();
   // Private method: the caller has to ensure the following.
   assert(cs_space_dim <= space_dimension());
@@ -2629,6 +2584,8 @@ void
 BD_Shape<T>::affine_image(const Variable var,
 			  const Linear_Expression& expr,
 			  Coefficient_traits::const_reference denominator) {
+  using Implementation::BD_Shapes::div_round_up;
+
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_generic("affine_image(v, e, d)", "d == 0");
@@ -3049,6 +3006,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 				      const Linear_Expression& expr,
 				      Coefficient_traits::const_reference
 				      denominator) {
+  using Implementation::BD_Shapes::div_round_up;
+
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_generic("generalized_affine_image(v, r, e, d)", "d == 0");
@@ -3616,6 +3575,8 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 template <typename T>
 Constraint_System
 BD_Shape<T>::constraints() const {
+  using Implementation::BD_Shapes::numer_denom;
+
   Constraint_System cs;
   const dimension_type space_dim = space_dimension();
   if (space_dim == 0) {
@@ -3695,6 +3656,8 @@ BD_Shape<T>::constraints() const {
 template <typename T>
 Constraint_System
 BD_Shape<T>::minimized_constraints() const {
+  using Implementation::BD_Shapes::numer_denom;
+
   shortest_path_reduction_assign();
   Constraint_System cs;
   const dimension_type space_dim = space_dimension();

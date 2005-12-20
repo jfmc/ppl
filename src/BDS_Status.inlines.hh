@@ -178,8 +178,10 @@ BD_Shape<T>::Status::OK() const {
 }
 
 
-namespace {
- 
+namespace Implementation {
+
+namespace BD_Shapes {
+
 // These are the keywords that indicate the individual assertions.
 const std::string zero_dim_univ = "ZE";
 const std::string empty = "EM";
@@ -188,7 +190,7 @@ const std::string sp_reduced = "SPR";
 const char yes = '+';
 const char no = '-';
 const char sep = ' ';
- 
+
 /*! \relates Parma_Polyhedra_Library::BD_Shape<T>::Status
   Reads a keyword and its associated on/off flag from \p s.
   Returns <CODE>true</CODE> if the operation is successful,
@@ -207,11 +209,14 @@ get_field(std::istream& s, const std::string& keyword, bool& positive) {
   return true;
 }
 
-} // namespace
+} // namespace BD_Shapes
+
+} // namespace Implementation
 
 template <typename T>
 inline void
 BD_Shape<T>::Status::ascii_dump(std::ostream& s) const {
+  using namespace Implementation::BD_Shapes;
   s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
     << (test_empty() ? yes : no) << empty << sep
     << sep
@@ -222,6 +227,7 @@ BD_Shape<T>::Status::ascii_dump(std::ostream& s) const {
 template <typename T>
 inline bool
 BD_Shape<T>::Status::ascii_load(std::istream& s) {
+  using namespace Implementation::BD_Shapes;
   bool positive;
 
   if (!get_field(s, zero_dim_univ, positive))
