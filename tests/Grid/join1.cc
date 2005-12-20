@@ -149,7 +149,7 @@ test4() {
     exit(1);
 
   Grid known_gr(3);
-  known_gr.add_congruence(C == 0);
+  known_gr.add_congruence(C %= 0);
 
   if (gr1 == known_gr)
     return;
