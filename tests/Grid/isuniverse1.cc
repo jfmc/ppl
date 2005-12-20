@@ -204,11 +204,9 @@ test10() {
   if (gr.is_universe())
     return;
 
-  if (gr.is_universe()) {
-    nout << "Grid::is_universe should return false." << endl
-	 << "grid:" << endl << gr << endl;
-    exit(1);
-  }
+  nout << "Grid should be universe." << endl
+       << "grid:" << endl << gr << endl;
+  exit(1);
 }
 
 // Minimized congruences.
