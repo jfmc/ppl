@@ -25,7 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-namespace {
+namespace Implementation {
+namespace Random_Numbers {
 
 template <typename T>
 class Random_Number_Generator_Aux {
@@ -50,7 +51,8 @@ public:
   mpz_class zrange;
 };
 
-} // namespace
+} // namespace Random_Numbers
+} // namespace Implementation
 
 inline
 Random_Number_Generator::Random_Number_Generator()
@@ -62,6 +64,7 @@ Random_Number_Generator::Random_Number_Generator()
 template <typename T>
 inline void
 Random_Number_Generator::get(T& x, unsigned int info) {
+  using Implementation::Random_Numbers::Random_Number_Generator_Aux;
   used(info);
   static Random_Number_Generator_Aux<T> aux(max_bits);
   mpz_class n;
