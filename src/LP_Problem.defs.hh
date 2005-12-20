@@ -244,17 +244,9 @@ private:
   //! The last succesfully computed optmizing point.
   Generator last_generator;
 
+  //! \brief
   //! Optimizes the current LP problem using the second phase
   //! primal simplex algorithm.
-  /*!
-    \return
-    A Simplex_Status flag indicating the outcome of the optimization
-    attempt (unbounded or solved problem).
-
-    \param optimal_point
-    On exit, if the LP problem is solved, will contain an optimal point;
-    if the LP problem is unbounded, will contain a feasible point.
-  */
 
   void second_phase();
 
@@ -283,9 +275,6 @@ private:
     \return
     The column index of the variable that enters the base. If no such
     variable exists, optimality was achieved and <CODE>0</CODE> is retuned.
-
-    \param cost_function
-    The expression to be optimized.
   */
   dimension_type get_entering_var_index() const;
 
@@ -339,10 +328,7 @@ private:
     \return
     The column index of the variable that enters the base. If no such
     variable exists, optimality was achieved and <CODE>0</CODE> is retuned.
-
-    \param cost_function
-    The cost_function to be optimized.
-
+  
     To compute the entering_index, the steepest edge algorithm chooses
     the index `j' such that \f$\frac{d_{j}}{\|\Delta x^{j} \|}\f$ is the
     largest in absolute value, where
