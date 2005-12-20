@@ -28,21 +28,79 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Grid_Generator
-PPL::Grid_Generator::parameter(const Linear_Expression& e) {
-  Linear_Expression ec = e;
+PPL::Grid_Generator::parameter(const Linear_Expression& e,
+			       Coefficient_traits::const_reference d) {
+  if (d == 0)
+    throw std::invalid_argument("PPL::parameter(e, d):\n"
+				"d == 0.");
+  Linear_Expression ec(e,
+		       e.space_dimension() + 2 /* parameter divisor */);
   Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
   g[0] = 0;
-  // FIXME: Using this constructor saves reallocating the
-  //        coefficients.  The array that is part of object g must
-  //        still be reallocated.  It would be better to somehow just
-  //        return g as a Grid_Generator.
-  return Grid_Generator(g);
+  // Using this constructor saves reallocation when creating the
+  // coefficients.
+  Grid_Generator gg(g);
+  gg.divisor() = d;
+
+  // If the divisor is negative, negate it and all the coefficients of
+  // the parameter.  This ensures that divisors are always positive.
+  if (d < 0)
+    for (dimension_type i = gg.size(); i-- > 0; )
+      negate(gg[i]);
+
+  return gg;
+}
+
+PPL::Grid_Generator
+PPL::Grid_Generator::point(const Linear_Expression& e,
+			   Coefficient_traits::const_reference d) {
+  if (d == 0)
+    throw std::invalid_argument("PPL::grid_point(e, d):\n"
+				"d == 0.");
+  Linear_Expression ec(e,
+		       e.space_dimension() + 2 /* parameter divisor */);
+  Generator g(ec, Generator::POINT, NECESSARILY_CLOSED);
+  g[0] = d;
+  // Using this constructor saves reallocation when creating the
+  // coefficients.
+  Grid_Generator gg(g);
+
+  // If the divisor is negative, negate it and all the coefficients of
+  // the parameter.  This ensures that divisors are always positive.
+  if (d < 0)
+    for (dimension_type i = gg.size(); i-- > 0; )
+      negate(gg[i]);
+
+  // Enforce normalization.
+  gg.normalize();
+  return gg;
+}
+
+PPL::Grid_Generator
+PPL::Grid_Generator::line(const Linear_Expression& e) {
+  // The origin of the space cannot be a line.
+  if (e.all_homogeneous_terms_are_zero())
+    throw std::invalid_argument("PPL::grid_line(e):\n"
+				"e == 0, but the origin cannot be a line.");
+
+  Linear_Expression ec(e,
+		       e.space_dimension() + 2 /* parameter divisor */);
+  Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
+  g[0] = 0;
+  // Using this constructor saves reallocation when creating the
+  // coefficients.
+  Grid_Generator gg(g);
+
+  // Enforce normalization.
+  gg.strong_normalize();
+  return gg;
 }
 
 void
 PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
-  // Swap one coefficient at a time into *this instead of swapping the
-  // entire row.  This ensures that the row keeps the same capacity.
+  // Swap one coefficient at a time into *this.  Doing this instead of
+  // swapping the entire row ensures that the row keeps the same
+  // capacity.
   if (y.is_line())
     set_is_line();
   else
@@ -52,35 +110,64 @@ PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
 }
 
 bool
+PPL::Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
+  const Grid_Generator& x = *this;
+  dimension_type x_space_dim = x.space_dimension();
+  if (x_space_dim != y.space_dimension())
+    return false;
+
+  const Type x_type = x.type();
+  if (x_type != y.type())
+    return false;
+
+  Grid_Generator tem(*this);
+  Grid_Generator tem_y(y);
+  dimension_type& last = x_space_dim;
+  ++last;
+  if (x_type == POINT || x_type == LINE) {
+    tem[last] = 0;
+    tem_y[last] = 0;
+  }
+  // Normalize the copies, including the divisor column.
+  // FIX normalize signs?
+  tem.Row::normalize();
+  tem_y.Row::normalize();
+  // Check for equality.
+  while (last-- > 0)
+    if (tem[last] != tem_y[last])
+      return false;
+  return true;
+}
+
+bool
 PPL::Grid_Generator::is_equal_to(const Grid_Generator& y) const {
   if (type() != y.type())
     return false;
-  for (dimension_type col = size(); col-- > 0; )
+  for (dimension_type col = (is_parameter() ? size() : size() - 1);
+       col-- > 0; )
     if (Generator::operator[](col) != y.Generator::operator[](col))
       return false;
   return true;
 }
 
+bool
+PPL::Grid_Generator::all_homogeneous_terms_are_zero() const {
+  for (dimension_type i = size() - 1 /* parameter divisor */; --i > 0; )
+    if (operator[](i) != 0)
+      return false;
+  return true;
+}
+
 void
-PPL::Grid_Generator::multiply(Coefficient_traits::const_reference mult,
-			      Coefficient_traits::const_reference div) {
+PPL::Grid_Generator::multiply(Coefficient_traits::const_reference mult) {
   if (is_parameter_or_point()) {
     TEMP_INTEGER(factor);
-    if (is_point()) {
-      factor = mult / divisor();
-      divisor() = mult;
-    }
-    else {
-      if (div == 0)
-	return;
-      factor = mult / div;
-    }
+    factor = mult / divisor();
+    divisor() = mult;
     assert(factor > 0);
-    if (factor > 1) {
-      dimension_type num_cols = size();
-      for (dimension_type col = 1; col < num_cols; ++col)
+    if (factor > 1)
+      for (dimension_type col = size() - 1; col >= 1; --col)
 	Generator::operator[](col) *= factor;
-    }
   }
 }
 
@@ -126,21 +213,29 @@ PPL::Grid_Generator::OK() const {
 
   switch (type()) {
   case Grid_Generator::LINE:
-    // Intentionally fall through.
-  case Grid_Generator::PARAMETER:
-    if (divisor() != 0) {
+    if (operator[](0) != 0) {
 #ifndef NDEBUG
-      std::cerr << "Lines and parameters must have a zero inhomogeneous term!"
+      std::cerr << "Inhomogeneous terms of lines must be zero!"
 		<< std::endl;
 #endif
       return false;
     }
     break;
 
+  case Grid_Generator::PARAMETER:
+    if (operator[](0) != 0) {
+#ifndef NDEBUG
+      std::cerr << "Inhomogeneous terms of parameters must be zero!"
+		<< std::endl;
+#endif
+      return false;
+    }
+    // Fall through.
+
   case Grid_Generator::POINT:
     if (divisor() <= 0) {
 #ifndef NDEBUG
-      std::cerr << "Points must have a positive divisor!"
+      std::cerr << "Points and parameters must have positive divisors!"
 		<< std::endl;
 #endif
       return false;

@@ -112,7 +112,7 @@ Grid::multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
     return;
 
   if (gen.is_line())
-    // Multiply every element of the equality.
+    // Multiply every element of the line.
     for (dimension_type column = 0; column < num_dims; ++column)
       gen[column] *= multiplier;
   else {
@@ -404,7 +404,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     throw std::runtime_error("PPL internal error: Grid::conversion: source matrix singular.");
 
   dest.set_index_first_pending_row(dest_num_rows);
-  dest.resize_no_copy(dest_num_rows, dims);
+  dest.resize_no_copy(dest_num_rows, dims + 1 /* parameter divisor */);
 
   // Initialize elements and row types in `dest'.
   //
@@ -413,7 +413,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   dimension_type source_index = 0;
   // The generator system has a bottom-up ordering.
   dimension_type dest_index = dest_num_rows - 1;
-  for (dimension_type dim = dims; dim-- > 0;) {
+  for (dimension_type dim = dims; dim-- > 0; ) {
     TRACE(cerr << "init dim " << dim << endl);
     if (dim_kinds[dim] == EQUALITY) {
       TRACE(cerr << "  equality" << endl);
@@ -477,7 +477,8 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	// FIX multiplier like reduced source_dim (wrt assoc ele in dest row num row)
 	// FIX does it hold the relationship b/w these ele's?
 	multiplier = source_dim / multiplier;
-	multiply_grid(multiplier, g, dest, dest_num_rows, dims);
+	multiply_grid(multiplier, g, dest, dest_num_rows,
+		      dims + 1 /* parameter divisor */);
 
 	// FIX Set entry `dim' at `row' in `dest' to the smallest
 	// possible integer value such that the corresponding entry in
@@ -490,7 +491,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       TRACE(dest.ascii_dump(cerr));
     }
 
-    // Consider each dimension `dim_fol' that precede `dim', as the
+    // Consider each dimension `dim_fol' that precedes `dim', as the
     // preceding rows have zeros in `dest' below `dest_index'.
     dimension_type tem_source_index = source_index; // FIX name
     if (dim_kinds[dim] != EQUALITY)
@@ -530,13 +531,29 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       Grid_Generator& row = dest[i];
       if (row[dim] < 0)
 	negate(row, dim, dims - 1);
-      // Factor the "diagonal" congruence out of the preceding rows.
+      // FIX Factor the "diagonal" congruence out of the preceding
+      // rows.
       reduce_reduced<Grid_Generator_System, Grid_Generator>
 	(dest, dim, i++, dim, dims - 1, dim_kinds);
     }
   TRACE(cerr << "dest after strong reduction:" << endl);
   TRACE(dest.ascii_dump(cerr));
 #endif
+
+  // Ensure that the parameter divisors are the same as the divisor of
+  // the point.
+  Coefficient_traits::const_reference system_divisor = dest[0][0];
+  for (dimension_type row = 1, dim = 1; dim < dims; ++dim)
+    switch (dim_kinds[dim]) {
+    case PARAMETER:
+      dest[row].divisor() = system_divisor;
+    case LINE:
+      ++row;
+    case GEN_VIRTUAL:
+      break;
+    }
+  TRACE(cerr << "dest after updating param divisors:" << endl);
+  TRACE(dest.ascii_dump(cerr));
 
   trace_dim_kinds("cgs to gs end ", dim_kinds);
 

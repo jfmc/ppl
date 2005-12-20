@@ -33,7 +33,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
-  const dimension_type old_num_rows = num_rows();
+  dimension_type old_num_rows = num_rows();
   const dimension_type gs_num_rows = gs.num_rows();
   const dimension_type old_num_cols = num_columns();
   const dimension_type gs_num_cols = gs.num_columns();
@@ -41,106 +41,115 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
     add_zero_rows(gs_num_rows,
 		  Linear_Row::Flags(NECESSARILY_CLOSED,
 				    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
-  else
+  else {
     add_zero_rows_and_columns(gs_num_rows,
 			      gs_num_cols - old_num_cols,
 			      Linear_Row::Flags(NECESSARILY_CLOSED,
 						Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+    // Swap the parameter divisor column into the new last column.
+    swap_columns(old_num_cols - 1, num_columns() - 1);
+  }
+  // Swap one coefficient at a time into the newly added rows, instead
+  // of swapping each entire row.  This ensures that the added rows
+  // have the same capacities as the existing rows.
   for (dimension_type i = gs_num_rows; i-- > 0; )
-    // Swap one coefficient at a time into the newly added rows
-    // instead of swapping each entire row.  This ensures that the
-    // added rows have the same capacities as the existing rows.
     operator[](old_num_rows + i).coefficient_swap(gs[i]);
 }
 
 void
 PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
+  dimension_type g_space_dim = g.space_dimension();
 
   if (g.is_parameter())
     if (g.all_homogeneous_terms_are_zero()) {
-      dimension_type space_dim = space_dimension();
-      dimension_type g_space_dim = g.space_dimension();
-      if (space_dim < g_space_dim) {
+      dimension_type initial_space_dim = space_dimension();
+      if (initial_space_dim < g_space_dim) {
 	// Adjust the space dimension.
-	add_zero_columns(g_space_dim - space_dim);
+	add_zero_columns(g_space_dim - initial_space_dim);
+	// Swap the parameter divisor column into the new last column.
+	swap_columns(g_space_dim + 1, initial_space_dim + 1);
 	assert(OK());
       }
       return;
     }
 
-  // The rest is a substitute for Generator_System::insert, with the
-  // single call to Linear_System::insert that would result inlined.
+  {
+    // This block is a substitute for Generator_System::insert, in
+    // which the single call to Linear_System::insert has been
+    // inlined.
 
-  // We are sure that the matrix has no pending rows
-  // and that the new row is not a pending generator.
-  assert(num_pending_rows() == 0);
+    // We are sure that the matrix has no pending rows
+    // and that the new row is not a pending generator.
+    assert(num_pending_rows() == 0);
 
+    // FIX could the params divisors go in the extra nnc column?
 
-  // This is a slightly modified copy of Linear_System::insert.  It is
-  // here to force Grid_Generator::OK to be used, which works around
-  // the normalization assertions in Linear_System::OK.
+    // This is a modified copy of Linear_System::insert.  It is here
+    // to force Grid_Generator::OK to be used (to work around the
+    // normalization assertions in Linear_System::OK) and so that the
+    // parameter divisor column can be moved during the insert.
 
-  // The added row must be strongly normalized and have the same
-  // topology as the system.
-  assert(topology() == g.topology());
-  // This method is only used when the system has no pending rows.
-  assert(num_pending_rows() == 0);
+    // The added row must be strongly normalized and have the same
+    // topology as the system.
+    assert(topology() == g.topology());
+    // This method is only used when the system has no pending rows.
+    assert(num_pending_rows() == 0);
 
-  const dimension_type old_num_rows = num_rows();
-  const dimension_type old_num_columns = num_columns();
-  const dimension_type g_size = g.size();
+    const dimension_type old_num_rows = num_rows();
+    const dimension_type old_num_columns = num_columns();
+    const dimension_type g_size = g.size();
 
-  // Resize the system, if necessary.
-  if (g_size > old_num_columns) {
-    add_zero_columns(g_size - old_num_columns);
-    if (!is_necessarily_closed() && old_num_rows != 0)
-      // Move the epsilon coefficients to the last column
-      // (note: sorting is preserved).
-      swap_columns(old_num_columns - 1, g_size - 1);
-    Matrix::add_row(g);
-  }
-  else if (g_size < old_num_columns)
-    if (is_necessarily_closed() || old_num_rows == 0)
-      Matrix::add_row(Linear_Row(g, old_num_columns, row_capacity));
-    else {
-      // Create a resized copy of the row (and move the epsilon
-      // coefficient to its last position).
-      Linear_Row tmp_row(g, old_num_columns, row_capacity);
-      std::swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
-      // FIX what will free tmp_row mem if oom in add_row when insert
-      //     if being called from a ctor, as in Constraint?
-      Matrix::add_row(tmp_row);
+    // Resize the system, if necessary.
+    assert(is_necessarily_closed());
+    if (g_size > old_num_columns) {
+      add_zero_columns(g_size - old_num_columns);
+      if (old_num_rows > 0)
+	// Swap the existing parameter divisor column into the new
+	// last column.
+	swap_columns(old_num_columns - 1, g_size - 1);
+      Matrix::add_row(g);
     }
-  else {
-    // Here r_size == old_num_columns.
-    Matrix::add_row(g);
-  }
+    else if (g_size < old_num_columns)
+      if (old_num_rows == 0)
+	Matrix::add_row(Linear_Row(g, old_num_columns, row_capacity));
+      else {
+	// Create a resized copy of the row (and move the parameter
+	// divisor coefficient to its last position).
+	Linear_Row tmp_row(g, old_num_columns, row_capacity);
+	std::swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
+	// FIX what will free tmp_row mem if oom in add_row when insert
+	//     if being called from a ctor, as in Constraint,Congruence?
+	Matrix::add_row(tmp_row);
+      }
+    else
+      // Here r_size == old_num_columns.
+      Matrix::add_row(g);
+
+  } // Generator_System::insert(g) substitute.
+
   dimension_type num_rows = this->num_rows();
   set_index_first_pending_row(num_rows);
   set_sorted(false);
 
-  // The added row was not a pending row.
-  assert(num_pending_rows() == 0);
-
-  if (g.is_parameter())
-    if (num_rows > 1) {
-      // Represent the added parameter using the same divisor as the
-      // first point.
-      // FIX for now parameter divisors are always 1
-      --num_rows;		// Only consider the old rows.
-      dimension_type row = 0;
-      while (operator[](row).is_line())
-	if (++row == num_rows) {
-	  // All rows are lines.
-	  assert(OK());
-	  return;
-	}
-      Grid_Generator& param = operator[](num_rows);
-      const Coefficient& point_divisor = operator[](row).divisor();
-      if (point_divisor > 1)
-	for (dimension_type col = num_columns() - 1; col > 0; --col)
-	  param[col] *= point_divisor;
-    }
+  // FIX norm divisors (param divisor may be > sys divisor)
+  --num_rows;		// Consider the old rows.
+  if (g.is_parameter() && num_rows > 1) {
+    // Represent the added parameter using the same divisor as the
+    // first point or parameter.
+    dimension_type row = 0;
+    while (operator[](row).is_line())
+      if (++row == num_rows) {
+	// All rows are lines.
+	assert(OK());
+	return;
+      }
+    Grid_Generator& param = operator[](num_rows);
+    const Coefficient& point_divisor = operator[](row).divisor();
+    if (point_divisor > 1)
+      for (dimension_type col = num_columns() - 1; col > 0; --col)
+	param[col] *= point_divisor;
+    param.divisor() = point_divisor;
+  }
 
   assert(OK());
 }
@@ -183,8 +192,8 @@ PPL::Grid_Generator_System
 	  row[j] *= denominator;
     }
 
-  // If the mapping is not invertible we may have transformed
-  // valid lines and rays into the origin of the space.
+  // If the mapping is not invertible we may have transformed valid
+  // lines and rays into the origin of the space.
   const bool not_invertible = (v > expr.space_dimension() || expr[v] == 0);
   if (not_invertible)
     x.remove_invalid_lines_and_rays();
@@ -200,6 +209,8 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
   // This is a copy of Generator_System::ascii_load, to force
   // Grid_Generator_System::OK to be called, in order to work around
   // the assertions in Linear_System::OK.
+
+  // FIXME: Gridify this.  Add an ascii_dump to match.
 
   std::string str;
   if (!(s >> str) || str != "topology")
@@ -290,9 +301,9 @@ PPL::Grid_Generator_System::OK() const {
     return false;
   }
 
-  // A Generator_System and hence a Grid_Generator must be a valid
-  // Linear_System; do not check for strong normalization, since this
-  // will be done when checking each individual generator.
+  // A Generator_System and hence a Grid_Generator_System must be a
+  // valid Linear_System; do not check for strong normalization, since
+  // this will be done when checking each individual generator.
   if (!Linear_System::OK(false))
     return false;
 
@@ -324,11 +335,15 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator_System& gs) 
 void
 PPL::Grid_Generator_System
 ::add_universe_rows_and_columns(dimension_type dims) {
-  dimension_type col = num_columns();
+  assert(num_columns() > 0); // FIX
+  dimension_type col = num_columns() - 1;
   add_zero_rows_and_columns(dims, dims,
 			    Linear_Row::Flags(NECESSARILY_CLOSED,
 					      Linear_Row::LINE_OR_EQUALITY));
   unset_pending_rows();
+  // Swap the parameter divisor column into the new last column.
+  swap_columns(col, col + dims);
+  // Set the diagonal element of each added rows.
   dimension_type rows = num_rows();
   for (dimension_type row = rows - dims; row < rows; ++row, ++col)
     const_cast<Coefficient&>(operator[](row)[col]) = 1;
@@ -389,7 +404,7 @@ PPL::Grid_Generator_System
   if (new_dimension > space_dim) {
     std::ostringstream s;
     s << "PPL::Grid_Generator_System::remove_higher_space_dimensions(n):\n"
-      << "this->space_dimension() == " << space_dimension()
+      << "this->space_dimension() == " << space_dim
       << ", required space dimension == " << new_dimension << ".";
     throw std::invalid_argument(s.str());
   }
@@ -402,6 +417,10 @@ PPL::Grid_Generator_System
 
   if (new_dimension == 0)
     clear();
-  else
+  else {
+    // Swap the parameter divisor column into the column that will
+    // become the last column.
+    swap_columns(new_dimension + 1, space_dim + 1);
     Matrix::remove_trailing_columns(space_dim - new_dimension);
+  }
 }

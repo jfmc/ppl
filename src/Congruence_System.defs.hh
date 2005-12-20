@@ -324,13 +324,7 @@ public:
 protected:
 
   //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
-  /*!
-    If \p divisor is greater than zero then it is used as \p g's
-    divisor, otherwise a value of one is assumed.
-  */
-  bool
-  satisfies_all_congruences(const Grid_Generator& g,
-			    Coefficient_traits::const_reference divisor) const;
+  bool satisfies_all_congruences(const Grid_Generator& g) const;
 
 private:
 

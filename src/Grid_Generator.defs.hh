@@ -280,11 +280,16 @@ public:
 
   //! Returns the parameter at \p e.
   /*!
+    Both \p e and \p d are optional arguments, with default values
+    Linear_Expression::zero() and Coefficient_one(), respectively.
+
     \exception std::invalid_argument
-    Thrown if the homogeneous part of \p e represents the origin of
-    the vector space.
+    Thrown if \p d is zero.
   */
-  static Grid_Generator parameter(const Linear_Expression& e);
+  static Grid_Generator parameter(const Linear_Expression& e
+				  = Linear_Expression::zero(),
+				  Coefficient_traits::const_reference d
+				  = Coefficient_one());
 
   //! Returns the point at \p e / \p d.
   /*!
@@ -331,25 +336,12 @@ public:
   bool is_equal_to(const Grid_Generator& y) const;
 
   //! \brief
-  //! Strong normalization: ensures that different Grid_Generator
-  //! objects represent different hyperplanes or hyperspaces.
-  /*!
-    Applies both Linear_Row::normalize() and Linear_Row::sign_normalize().
-  */
-  void strong_normalize();
-
-  //! \brief
   //! Returns <CODE>true</CODE> if and only if all the homogeneous
   //! terms of \p *this are \f$0\f$.
   bool all_homogeneous_terms_are_zero() const;
 
   //! Multiplies \p *this by \p n if \p *this is a point or parameter.
-  /*!
-    \p divisor is the divisor to use if \p *this is a parameter.  The
-    parameter is only multiplied if \p divisor is greater than zero.
-  */
-  void multiply(Coefficient_traits::const_reference n,
-		Coefficient_traits::const_reference divisor = 0);
+  void multiply(Coefficient_traits::const_reference n);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -358,7 +350,7 @@ public:
   void swap(Grid_Generator& y);
 
   //! \brief
-  //! Swaps \p *this with \p y, leaving the size of \p *this the
+  //! Swaps \p *this with \p y, leaving \p *this with the original
   //! capacity.
   void coefficient_swap(Grid_Generator& y);
 
@@ -378,6 +370,10 @@ private:
   //! \brief
   //! Constructs from polyhedron generator \p g, stealing the
   //! underlying data structures from \p g.
+  /*!
+    The last column in \p g becomes the parameter divisor column of
+    the new Grid_Generator.
+  */
   explicit Grid_Generator(Generator g);
 
   //! Returns the topological kind of \p *this.
@@ -391,6 +387,17 @@ private:
 
   //! Sets the Linear_Row kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
   void set_is_parameter();
+
+  //! \brief
+  //! Strong normalization: ensures that different Grid_Generator
+  //! objects represent different hyperplanes or hyperspaces.
+  /*!
+    Applies both Linear_Row::normalize() and Linear_Row::sign_normalize().
+
+    This is simply a wrapper around the Generator::strong_normalize,
+    which means applying it to a parameter may change the parameter.
+  */
+  void strong_normalize();
 
   //! Returns a reference to the element of the row indexed by \p k.
   Coefficient& operator[](dimension_type k);
@@ -417,17 +424,25 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
-//! Shorthand for Generator Generator::line(const Linear_Expression& e).
+//! \brief
+//! Shorthand for Grid_Generator
+//! Grid_Generator::line(const Linear_Expression& e).
 /*! \relates Grid_Generator */
 Grid_Generator grid_line(const Linear_Expression& e);
 
-//! Shorthand for Generator Generator::parameter(const Linear_Expression& e).
+//! \brief
+//! Shorthand for Grid_Generator
+//! Grid_Generator::parameter(const Linear_Expression& e,
+//! Coefficient_traits::const_reference d).
 /*! \relates Grid_Generator */
-Grid_Generator parameter(const Linear_Expression& e);
+Grid_Generator
+parameter(const Linear_Expression& e = Linear_Expression::zero(),
+	  Coefficient_traits::const_reference d = Coefficient_one());
 
 //! \brief
 //! Shorthand for Grid_Generator
-//! Grid_Generator::point(const Linear_Expression& e, Coefficient_traits::const_reference d).
+//! Grid_Generator::point(const Linear_Expression& e,
+//! Coefficient_traits::const_reference d).
 /*! \relates Grid_Generator */
 Grid_Generator
 grid_point(const Linear_Expression& e = Linear_Expression::zero(),

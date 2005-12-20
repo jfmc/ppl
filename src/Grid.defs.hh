@@ -620,16 +620,12 @@ public:
   //! Returns the relations holding between the grid \p *this
   //! and the generator \p g.
   /*!
-    If \p divisor is zero then the divisor of \p g is used in finding
-    the relation, otherwise \p divisor is used.
-
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible.
   */
   // FIXME: see the comment for Poly_Con_Relation above.
   Poly_Gen_Relation
-  relation_with(const Grid_Generator& g,
-		Coefficient_traits::const_reference divisor = 0) const;
+  relation_with(const Grid_Generator& g) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is
@@ -2297,7 +2293,7 @@ private:
   static Coefficient
   normalize_divisors(Grid_Generator_System& sys,
 		     Coefficient_traits::const_reference divisor
-		     = Coefficient_one(),
+		     = Coefficient_one(), // FIX zero?
 		     Grid_Generator* first_point = NULL);
 
   //! Normalize all the divisors in \p sys and \p gen_sys.

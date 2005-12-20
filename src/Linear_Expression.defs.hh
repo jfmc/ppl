@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 #include "Congruence.types.hh"
+#include "Grid_Generator.types.hh"
 #include "Linear_Row.defs.hh"
 #include "Coefficient.types.hh"
 #include "Variable.types.hh"
@@ -294,6 +295,8 @@ private:
   friend class Parma_Polyhedra_Library::Scalar_Products;
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;
+  // The following declaration grants access to Grid_Generator::parameter.
+  friend class Parma_Polyhedra_Library::Grid_Generator;
   friend class Parma_Polyhedra_Library::Congruence;
   // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;

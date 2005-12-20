@@ -36,13 +36,12 @@ negate(Grid_Generator& g, dimension_type start, dimension_type end) {
 inline
 Grid_Generator::Grid_Generator(Generator g)
   : Generator(Generator::point()) {
-  // FIXME: Throw an exception if g is a ray?
   Generator::swap(g);
 }
 
 inline dimension_type
 Grid_Generator::space_dimension() const {
-  return Generator::space_dimension();
+  return Generator::space_dimension() - 1;
 }
 
 inline Grid_Generator::Type
@@ -57,6 +56,7 @@ Grid_Generator::type() const {
   case Generator::CLOSURE_POINT:
   default:
     assert(false);
+    return POINT;
   }
 }
 
@@ -109,11 +109,17 @@ Grid_Generator::operator=(const Generator& g) {
 
 inline Coefficient&
 Grid_Generator::divisor() {
+  // FIX throw if line
+  if (is_line_or_parameter())
+    return Generator::operator[](size() - 1);
   return Generator::operator[](0);
 }
 
 inline Coefficient_traits::const_reference
 Grid_Generator::divisor() const {
+  // FIX throw if line
+  if (is_line_or_parameter())
+    return Generator::operator[](size() - 1);
   return Generator::operator[](0);
 }
 
@@ -125,11 +131,6 @@ Grid_Generator::total_memory_in_bytes() const {
 inline memory_size_type
 Grid_Generator::external_memory_in_bytes() const {
   return Generator::external_memory_in_bytes();
-}
-
-inline bool
-Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
-  return Generator::is_equivalent_to(y);
 }
 
 inline void
@@ -147,11 +148,6 @@ Grid_Generator::size() const {
   return Generator::size();
 }
 
-inline bool
-Grid_Generator::all_homogeneous_terms_are_zero() const {
-  return Generator::all_homogeneous_terms_are_zero();
-}
-
 inline void
 Grid_Generator::swap(Grid_Generator& y) {
   Generator::swap(y);
@@ -165,17 +161,6 @@ Grid_Generator::ascii_dump(std::ostream& s) const {
 inline bool
 Grid_Generator::ascii_load(std::istream& s) {
   return Generator::ascii_load(s);
-}
-
-inline Grid_Generator
-Grid_Generator::line(const Linear_Expression& e) {
-  return Grid_Generator(Generator::line(e));
-}
-
-inline Grid_Generator
-Grid_Generator::point(const Linear_Expression& e,
-		      Coefficient_traits::const_reference d) {
-  return Grid_Generator(Generator::point(e, d));
 }
 
 inline Coefficient&
@@ -208,13 +193,15 @@ grid_line(const Linear_Expression& e) {
 
 /*! \relates Grid_Generator */
 inline Grid_Generator
-parameter(const Linear_Expression& e) {
-  return Grid_Generator::parameter(e);
+parameter(const Linear_Expression& e,
+	  Coefficient_traits::const_reference d) {
+  return Grid_Generator::parameter(e, d);
 }
 
 /*! \relates Grid_Generator */
 inline Grid_Generator
-grid_point(const Linear_Expression& e, Coefficient_traits::const_reference d) {
+grid_point(const Linear_Expression& e,
+	   Coefficient_traits::const_reference d) {
   return Grid_Generator::point(e, d);
 }
 
