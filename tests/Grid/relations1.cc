@@ -116,7 +116,7 @@ test6() {
   Grid gr(2);
   gr.add_congruence(2*A %= 0);
 
-  if (gr.relation_with(parameter(A), 2) == Poly_Gen_Relation::subsumes())
+  if (gr.relation_with(parameter(A, 2)) == Poly_Gen_Relation::subsumes())
     return;
 
   exit(1);
@@ -131,7 +131,7 @@ test7() {
   Grid gr(2);
   gr.add_congruence(2*A %= 0);
 
-  if (gr.relation_with(grid_line(A), 2) == Poly_Gen_Relation::nothing())
+  if (gr.relation_with(grid_line(A)) == Poly_Gen_Relation::nothing())
     return;
 
   exit(1);
