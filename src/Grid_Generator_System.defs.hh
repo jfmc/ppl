@@ -184,11 +184,11 @@ public:
   //! Default constructor: builds an empty system of generators.
   Grid_Generator_System();
 
+  //! Ordinary copy-constructor.
+  Grid_Generator_System(const Grid_Generator_System& gs);
+
   //! Builds an empty system of generators of dimension \p dim.
   explicit Grid_Generator_System(dimension_type dim);
-
-  //! Builds the singleton system containing only generator \p g.
-  explicit Grid_Generator_System(const Generator& g);
 
   //! Builds the singleton system containing only generator \p g.
   explicit Grid_Generator_System(const Grid_Generator& g);

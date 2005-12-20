@@ -198,23 +198,9 @@ PPL::Grid::is_included_in(const Grid& y) const {
   const Congruence_System& cgs = y.con_sys;
 
   dimension_type num_rows = gs.num_rows();
-#if BE_LAZY
-  if (x.generators_are_minimized()) {
-#endif
-    TEMP_INTEGER(divisor);
-    divisor = gs[0].divisor();
-    for (dimension_type i = num_rows; i-- > 0; )
-      if (!cgs.satisfies_all_congruences(gs[i], divisor))
-	return false;
-#if BE_LAZY
-  }
-  else
-    for (dimension_type i = num_rows; i-- > 0; ) {
-      const Grid_Generator& g = gs[i];
-      if (!cgs.satisfies_all_congruences(g, g.divisor()))
-	return false;
-    }
-#endif
+  for (dimension_type i = num_rows; i-- > 0; )
+    if (!cgs.satisfies_all_congruences(gs[i]))
+      return false;
 
   // Inclusion holds.
   return true;
@@ -427,15 +413,14 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
   dimension_type row = 0;
   dimension_type num_rows = gen_sys.num_rows();
   // Find first point in gen_sys.
-  while (gen_sys[row].is_line())
+  while (gen_sys[row].is_line_or_parameter())
     if (++row == num_rows)
-      // All rows are lines; generators should always contain a point.
+      // All rows are lines or parameters; generators should always
+      // contain a point.
       throw std::runtime_error("PPL::Grid::normalize_divisors(sys, gen_sys).");
-  TEMP_INTEGER(gen_sys_divisor);
-  TEMP_INTEGER(divisor);
   Grid_Generator& first_point = gen_sys[row];
-  gen_sys_divisor = first_point.divisor();
-  divisor = normalize_divisors(sys, gen_sys_divisor);
+  Coefficient_traits::const_reference gen_sys_divisor = first_point.divisor();
+  Coefficient divisor = normalize_divisors(sys, gen_sys_divisor);
   if (divisor != gen_sys_divisor)
     // The divisors of the points in gen_sys are always the same, so
     // the new divisor will be the LCM of this value and `divisor',
@@ -448,38 +433,33 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 			      Coefficient_traits::const_reference divisor,
 			      Grid_Generator* first_point) {
   assert(divisor >= 0);
-  TEMP_INTEGER(lcm);
-  lcm = divisor;
   if (sys.space_dimension() > 0) {
+    TEMP_INTEGER(lcm);
+    lcm = divisor;
+
     dimension_type row = 0;
     dimension_type num_rows = sys.num_rows();
 
-    TEMP_INTEGER(original_sys_divisor);
-
-    if (first_point) {
-      Grid_Generator& point_one = (*first_point);
-      original_sys_divisor = point_one.divisor();
+    if (first_point)
       if (lcm == 0)
-	lcm = point_one.divisor();
+	lcm = (*first_point).divisor();
       else
-	lcm_assign(lcm, point_one.divisor());
-    }
+	lcm_assign(lcm, (*first_point).divisor());
     else {
-      // Move to the first point.
-      while (sys[row].is_line_or_parameter())
+      // Move to the first point or parameter.
+      while (sys[row].is_line())
 	if (++row == num_rows)
 	  // All rows are lines.
 	  return divisor;
 
-      Grid_Generator& point_one = sys[row];
-      original_sys_divisor = point_one.divisor();
-
       if (lcm == 0) {
-	lcm = point_one.divisor();
+	lcm = sys[row].divisor();
 	++row;
       }
 
-      // Calculate the LCM of `divisor' and the divisor of every point.
+      // Calculate the LCM of `divisor' and the divisor of every
+      // point.  Every parameter should already have the same divisor
+      // as the first point or parameter.
       while (row < num_rows) {
 	Grid_Generator& g = sys[row];
 	if (g.is_point())
@@ -488,11 +468,14 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
       }
     }
 
-    // Represent each point using the LCM as the divisor.
+    // Represent every point and parameter using the LCM as the
+    // divisor.
     for (dimension_type row = 0; row < num_rows; ++row)
-      sys[row].multiply(lcm, original_sys_divisor);
+      sys[row].multiply(lcm);
+
+    return lcm;
   }
-  return lcm;
+  return divisor;
 }
 
 void

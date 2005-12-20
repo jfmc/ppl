@@ -78,12 +78,12 @@ PPL::Grid::Grid(dimension_type num_dimensions,
 
     // Trivially true point.
     gen_sys.insert(grid_point(0*(Variable(0))));
-    gen_sys[0].divisor() = 1;
+    gen_sys[0].divisor() = 1;  // FIX already 1?
 
     // A line for each dimension.
     dimension_type dim = 0;
     while (dim < num_dimensions) {
-      gen_sys.insert(line(Variable(dim++)));
+      gen_sys.insert(grid_line(Variable(dim++)));
       dim_kinds[dim] = CON_VIRTUAL /* a.k.a. LINE */;
     }
   }
@@ -420,8 +420,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
 }
 
 PPL::Poly_Gen_Relation
-PPL::Grid::relation_with(const Grid_Generator& g,
-			 Coefficient_traits::const_reference divisor) const {
+PPL::Grid::relation_with(const Grid_Generator& g) const {
   // Dimension-compatibility check.
   if (space_dim < g.space_dimension())
     throw_dimension_incompatible("relation_with(g)", "g", g);
@@ -438,7 +437,7 @@ PPL::Grid::relation_with(const Grid_Generator& g,
   congruences_are_up_to_date() || update_congruences();
 
   return
-    con_sys.satisfies_all_congruences(g, divisor == 0 ? g.divisor() : divisor)
+    con_sys.satisfies_all_congruences(g)
     ? Poly_Gen_Relation::subsumes()
     : Poly_Gen_Relation::nothing();
 }
@@ -491,9 +490,9 @@ PPL::Grid::is_universe() const {
   // The zero dimension cases are handled above.
   Variable var(space_dim - 1);
   for (dimension_type i = space_dim; i-- > 0; )
-    if (!con_sys.satisfies_all_congruences(grid_line(Variable(i) + var), 0))
+    if (!con_sys.satisfies_all_congruences(grid_line(Variable(i) + var)))
       return false;
-  if (con_sys.satisfies_all_congruences(grid_point(0*var), 0))
+  if (con_sys.satisfies_all_congruences(grid_point(0*var)))
     return true;
   return false;
 }
@@ -728,7 +727,7 @@ PPL::Grid::OK(bool check_not_empty) const {
       }
       // Check each generator in the system.
       for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
-#if 0 // FIX must a param always have coeff's
+#if 0 // FIX must a param always have coeff's?
 	const Grid_Generator& g = gen_sys[i];
 
 	if (g.size() < 1) {
@@ -998,23 +997,19 @@ PPL::Grid::add_generator(const Grid_Generator& g) {
     TEMP_INTEGER(divisor);
     TEMP_INTEGER(gen_sys_divisor);
     if (g.is_parameter_or_point()) {
-      // Ensure that the divisors of gen_sys and g are the same.
+      // Ensure that the divisors of gen_sys and the new generator are
+      // the same.
       divisor = g.divisor();
-      // FIX for now parameters always return a divisor of zero
-      if (divisor > 0) {
-	assert(g.is_point());
-	gen_sys_divisor = normalize_divisors(gen_sys, divisor);
-	gen_sys.insert(g);
-	if (divisor != gen_sys_divisor) {
-	  // Multiply the inserted point to match the gen_sys divisor.
-	  // Done after the insert so that a normalized g is passed to
-	  // insert, and because g is a constant.
-	  Grid_Generator& inserted_g = gen_sys[gen_sys.num_rows()-1];
-	  inserted_g[0] = gen_sys_divisor;
-	  gen_sys_divisor /= divisor;
-	  for (dimension_type col = 1; col < inserted_g.size(); ++col)
-	    inserted_g[col] *= gen_sys_divisor;
-	}
+      gen_sys_divisor = normalize_divisors(gen_sys, divisor);
+      gen_sys.insert(g);
+      if (divisor != gen_sys_divisor) {
+	// Multiply the inserted generator to match the gen_sys
+	// divisor.
+	Grid_Generator& inserted_g = gen_sys[gen_sys.num_rows()-1];
+	inserted_g.divisor() = gen_sys_divisor;
+	gen_sys_divisor /= divisor;
+	for (dimension_type col = 1; col < inserted_g.size(); ++col)
+	  inserted_g[col] *= gen_sys_divisor;
       }
     }
     else
@@ -2097,9 +2092,13 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
 
   for (dimension_type i = gs_num_rows; i-- > 0; ) {
     Grid_Generator& g = gs[i];
-    if (g.is_point())
+    if (g.is_point()) {
       // Transform the point into a parameter.
+      TEMP_INTEGER(div);
+      div = g.divisor();
       g.divisor() = 0;
+      g.divisor() = div;
+    }
   }
 
   if (gs_num_rows == 0)

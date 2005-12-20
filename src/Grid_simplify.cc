@@ -99,7 +99,6 @@ Grid::reduce_reduced(M& sys, dimension_type dim, dimension_type pivot_index,
 	  row[col] -= num_rows * pivot[col];
     }
   }
-
 }
 #endif // STRONG_REDUCTION
 
@@ -337,7 +336,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   // Changes here may also be required in the congruence version
   // below.
 
-  dimension_type num_cols = sys.num_columns();
+  dimension_type num_cols = sys.num_columns() - 1 /* parameter divisor */;
 
   if (dim_kinds.size() != num_cols)
     dim_kinds.resize(num_cols);
@@ -442,11 +441,27 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
       assert(rows_are_zero(sys,
 			   pivot_index,		// index of first
 			   sys.num_rows() - 1,  // index of last
-			   sys.num_columns())); // row size
+			   sys.num_columns() - 1)); // row size
       sys.erase_to_end(pivot_index);
     }
 
     sys.unset_pending_rows();
+
+    // Ensure that the parameter divisors are the same as the system
+    // divisor.
+    TRACE(cerr << "updating param divisors" << endl);
+    Coefficient_traits::const_reference system_divisor = sys[0][0];
+    for (dimension_type row = 1, dim = 1, num_cols = sys.num_columns() - 1;
+	 dim < num_cols;
+	 ++dim)
+      switch (dim_kinds[dim]) {
+      case PARAMETER:
+	sys[row].divisor() = system_divisor;
+      case LINE:
+	++row;
+      case GEN_VIRTUAL:
+	break;
+      }
 
     assert(sys.OK());
 

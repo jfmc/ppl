@@ -210,35 +210,31 @@ PPL::Congruence_System::num_proper_congruences() const {
 
 bool
 PPL::Congruence_System::
-satisfies_all_congruences(const Grid_Generator& g,
-			  Coefficient_traits::const_reference divisor) const {
+satisfies_all_congruences(const Grid_Generator& g) const {
   assert(g.space_dimension() <= space_dimension());
-  assert(divisor >= 0);
 
   const Congruence_System& cgs = *this;
   TEMP_INTEGER(sp);
-  if (divisor > 1)
+  if (g.is_line())
     for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
       const Congruence& cg = cgs[i];
       Scalar_Products::assign(sp, g, cg);
-      if (cg.is_equality() || g.is_line()) {
+      if (sp != 0)
+	return false;
+    }
+  else {
+    const Coefficient& divisor = g.divisor();
+    for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
+      const Congruence& cg = cgs[i];
+      Scalar_Products::assign(sp, g, cg);
+      if (cg.is_equality()) {
 	if (sp != 0)
 	  return false;
       }
       else if (sp % (cg.modulus() * divisor) != 0)
 	return false;
     }
-  else
-    for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
-      const Congruence& cg = cgs[i];
-      Scalar_Products::assign(sp, g, cg);
-      if (cg.is_equality() || g.is_line()) {
-	if (sp != 0)
-	  return false;
-      }
-      else if (sp % cg.modulus() != 0)
-	return false;
-    }
+  }
   return true;
 }
 

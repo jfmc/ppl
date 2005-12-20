@@ -450,7 +450,7 @@ Grid::shrink_bounding_box(Box& box) const {
 
   assert(gen_sys.num_rows() > 0);
 
-  dimension_type num_dims = gen_sys.num_columns() - 1;
+  dimension_type num_dims = gen_sys.num_columns() - 2 /* parameter divisor */;
   dimension_type num_rows = gen_sys.num_rows();
 
   // Create a vector to record which dimensions are bounded.
@@ -471,6 +471,7 @@ Grid::shrink_bounding_box(Box& box) const {
       // Convert the point `gen' to a parameter.
       for (dimension_type dim = 0; dim < num_dims; ++dim)
 	gen[dim] -= point[dim];
+      gen.divisor() = point.divisor();
     }
     for (dimension_type col = num_dims; col > 0; )
       if (gen[col--] != 0)
@@ -523,7 +524,7 @@ Grid::get_covering_box(Box& box) const {
 
   assert(gen_sys.num_rows() > 0);
 
-  dimension_type num_dims = gen_sys.num_columns() - 1;
+  dimension_type num_dims = gen_sys.num_columns() - 2 /* parameter divisor */;
   dimension_type num_rows = gen_sys.num_rows();
 
   TEMP_INTEGER(divisor);
@@ -564,6 +565,7 @@ Grid::get_covering_box(Box& box) const {
 	// Convert the point `gen' to a parameter.
 	for (dimension_type dim = 0; dim < num_dims; ++dim)
 	  gen[dim] -= point[dim];
+	gen.divisor() = point.divisor();
       }
       for (dimension_type dim = 0; dim < num_dims; ++dim)
 	if (!interval_emptiness[dim])
@@ -747,8 +749,17 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
   Grid_Generator_System new_gensys;
   // Set sortedness, for the assertion met via gs::insert.
   new_gensys.set_sorted(false);
-  for (Grid_Generator_System::const_iterator i = old_gensys.begin(),
-	 old_gensys_end = old_gensys.end(); i != old_gensys_end; ++i) {
+  // Get the divisor of the first point.
+  Grid_Generator_System::const_iterator i;
+  Grid_Generator_System::const_iterator old_gensys_end = old_gensys.end();
+  for (i = old_gensys.begin(); i != old_gensys_end; ++i)
+    if (i->is_point())
+      break;
+  assert(i != old_gensys_end);
+  Coefficient_traits::const_reference system_divisor = i->divisor();
+  for (Grid_Generator_System::const_iterator i = old_gensys.begin();
+       i != old_gensys_end;
+       ++i) {
     const Grid_Generator& old_g = *i;
     Linear_Expression e(0 * Variable(new_space_dimension-1));
     bool all_zeroes = true;
@@ -765,15 +776,10 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
 	new_gensys.insert(line(e));
       break;
     case Grid_Generator::PARAMETER:
-      if (!all_zeroes) {
-	// FIXME: If parameters ever get divisors then use:
-	//new_gensys.insert(parameter(e, <divisor_of_first_point>));
-	new_gensys.insert(point(e));
-	new_gensys[new_gensys.num_rows()-1][0] = 0;
-      }
+      if (!all_zeroes)
+	new_gensys.insert(parameter(e, system_divisor));
       break;
     case Grid_Generator::POINT:
-      // A point in the origin has all zero homogeneous coefficients.
       new_gensys.insert(grid_point(e));
       new_gensys[new_gensys.num_rows()-1].divisor() = old_g.divisor();
       break;
