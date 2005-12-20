@@ -130,9 +130,16 @@ test3() {
   gr.map_space_dimensions(function);
 
   Grid_Generator_System known_gs;
+  // FIX check
+#if 0
   known_gs.insert(grid_point());
   known_gs.insert(grid_point(2*B));
   known_gs.insert(grid_line(B - A));
+#else
+  known_gs.insert(grid_point());
+  known_gs.insert(grid_point(2*B));
+  known_gs.insert(grid_line(A));
+#endif
   Grid known_gr(known_gs);
 
   if (gr == known_gr)
