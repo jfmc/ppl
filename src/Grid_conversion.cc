@@ -531,8 +531,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       Grid_Generator& row = dest[i];
       if (row[dim] < 0)
 	negate(row, dim, dims - 1);
-      // FIX Factor the "diagonal" congruence out of the preceding
-      // rows.
+      // Factor the "diagonal" generator out of the preceding rows.
       reduce_reduced<Grid_Generator_System, Grid_Generator>
 	(dest, dim, i++, dim, dims - 1, dim_kinds);
     }
