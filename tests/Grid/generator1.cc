@@ -122,8 +122,6 @@ test4() {
   exit(1);
 }
 
-#if 0
-
 // Parameter with divisor.
 
 static void
@@ -146,8 +144,6 @@ test5() {
        << "b:" << endl << b << endl;
   exit(1);
 }
-
-#endif
 
 // Negative first coefficient.
 
@@ -257,7 +253,7 @@ main() TRY {
   test2();
   test3();
   test4();
-  //test5();  // FIX awaits param divisors
+  test5();
   test6();
   test7();
   test8();
