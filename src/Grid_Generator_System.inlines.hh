@@ -99,13 +99,6 @@ Grid_Generator_System::num_lines() const {
   return Generator_System::num_lines();
 }
 
-inline void
-Grid_Generator_System::insert(const Generator& g) {
-  // FIX pb add extra divsr col? add note if divisor col comes from g
-  Generator g_copy = g;
-  insert(Grid_Generator(g_copy));
-}
-
 inline
 Grid_Generator_System::const_iterator::const_iterator()
   : Generator_System::const_iterator() {

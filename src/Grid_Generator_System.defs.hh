@@ -210,11 +210,6 @@ public:
   void insert(const Grid_Generator& g);
 
   //! \brief
-  //! Inserts in \p *this a copy of the polyhedron generator \p g,
-  //! increasing the number of space dimensions if needed.
-  void insert(const Generator& g);
-
-  //! \brief
   //! Inserts in \p *this the generators in \p gs, increasing the
   //! number of space dimensions if needed.
   void recycling_insert(Grid_Generator_System& gs);
