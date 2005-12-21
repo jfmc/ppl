@@ -78,7 +78,6 @@ PPL::Grid::Grid(dimension_type num_dimensions,
 
     // Trivially true point.
     gen_sys.insert(grid_point(0*(Variable(0))));
-    gen_sys[0].divisor() = 1;  // FIX already 1?
 
     // A line for each dimension.
     dimension_type dim = 0;
