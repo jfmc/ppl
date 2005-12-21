@@ -335,7 +335,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator_System& gs) 
 void
 PPL::Grid_Generator_System
 ::add_universe_rows_and_columns(dimension_type dims) {
-  assert(num_columns() > 0); // FIX
+  assert(num_columns() > 0);
   dimension_type col = num_columns() - 1;
   add_zero_rows_and_columns(dims, dims,
 			    Linear_Row::Flags(NECESSARILY_CLOSED,
