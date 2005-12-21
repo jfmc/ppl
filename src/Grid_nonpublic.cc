@@ -159,7 +159,7 @@ PPL::Grid::quick_equivalence_test(const Grid& y) const {
     }
   }
 
-  // TODO: Consider minimizing the systems and reperforming these
+  // TODO: Consider minimizing the systems and re-performing these
   //       checks.
 
   if (css_normalized)
@@ -450,17 +450,16 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 	  return divisor;
 
       // Calculate the LCM of `divisor' and the divisor of every
-      // point.  Every parameter should already have the same divisor
-      // as the first point or parameter.
+      // point or parameter.
       while (row < num_rows) {
 	Grid_Generator& g = sys[row];
-	if (g.is_point())
+	if (g.is_parameter_or_point())
 	  lcm_assign(lcm, g.divisor());
 	++row;
       }
     }
 
-    // Represent every point and parameter using the LCM as the
+    // Represent every point and every parameter using the LCM as the
     // divisor.
     for (dimension_type row = 0; row < num_rows; ++row)
       sys[row].scale_to_divisor(lcm);
