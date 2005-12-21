@@ -343,6 +343,10 @@ public:
   //! \brief
   //! Scales \p *this to be represented with a divisor of \p d (if
   //! \*this is a parameter or point).
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p d is zero.
+  */
   void scale_to_divisor(Coefficient_traits::const_reference d);
 
   //! Checks if all the invariants are satisfied.

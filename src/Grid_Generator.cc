@@ -160,7 +160,10 @@ PPL::Grid_Generator::all_homogeneous_terms_are_zero() const {
 void
 PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
   if (is_parameter_or_point()) {
-    // FIX throw if d == 0
+    if (d == 0)
+      throw std::invalid_argument("PPL::Grid_Generator::scale_to_divisor(d):\n"
+				  "d == 0.");
+
     TEMP_INTEGER(factor);
     factor = d / divisor();
     divisor() = d;
