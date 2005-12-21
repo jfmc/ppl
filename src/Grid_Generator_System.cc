@@ -127,29 +127,8 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
 
   } // Generator_System::insert(g) substitute.
 
-  dimension_type num_rows = this->num_rows();
-  set_index_first_pending_row(num_rows);
+  set_index_first_pending_row(num_rows());
   set_sorted(false);
-
-  // FIX norm divisors (param divisor may be > sys divisor)
-  --num_rows;		// Consider the old rows.
-  if (g.is_parameter() && num_rows > 1) {
-    // Represent the added parameter using the same divisor as the
-    // first point or parameter.
-    dimension_type row = 0;
-    while (operator[](row).is_line())
-      if (++row == num_rows) {
-	// All rows are lines.
-	assert(OK());
-	return;
-      }
-    Grid_Generator& param = operator[](num_rows);
-    const Coefficient& point_divisor = operator[](row).divisor();
-    if (point_divisor > 1)
-      for (dimension_type col = num_columns() - 1; col > 0; --col)
-	param[col] *= point_divisor;
-    param.divisor() = point_divisor;
-  }
 
   assert(OK());
 }
