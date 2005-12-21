@@ -773,7 +773,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
     switch (old_g.type()) {
     case Grid_Generator::LINE:
       if (!all_zeroes)
-	new_gensys.insert(line(e));
+	new_gensys.insert(grid_line(e));
       break;
     case Grid_Generator::PARAMETER:
       if (!all_zeroes)
