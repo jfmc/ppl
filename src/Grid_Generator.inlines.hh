@@ -109,7 +109,8 @@ Grid_Generator::operator=(const Generator& g) {
 
 inline Coefficient&
 Grid_Generator::divisor() {
-  // FIX throw if line
+  if (is_line())
+    throw_invalid_argument("divisor()", "*this is a line");
   if (is_line_or_parameter())
     return Generator::operator[](size() - 1);
   return Generator::operator[](0);
@@ -117,7 +118,8 @@ Grid_Generator::divisor() {
 
 inline Coefficient_traits::const_reference
 Grid_Generator::divisor() const {
-  // FIX throw if line
+  if (is_line())
+    throw_invalid_argument("divisor()", "*this is a line");
   if (is_line_or_parameter())
     return Generator::operator[](size() - 1);
   return Generator::operator[](0);

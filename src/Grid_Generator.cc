@@ -24,8 +24,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Grid_Generator.defs.hh"
 #include <iostream>
+#include <sstream>
 
 namespace PPL = Parma_Polyhedra_Library;
+
+void
+PPL::Grid_Generator::throw_invalid_argument(const char* method,
+					    const char* reason) const {
+  std::ostringstream s;
+  s << "PPL::Grid_Generator::" << method << ":" << std::endl
+    << reason << ".";
+  throw std::invalid_argument(s.str());
+}
 
 PPL::Grid_Generator
 PPL::Grid_Generator::parameter(const Linear_Expression& e,

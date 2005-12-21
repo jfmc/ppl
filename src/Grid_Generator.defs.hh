@@ -310,10 +310,18 @@ public:
   //! Assignment operator.
   Grid_Generator& operator=(const Generator& g);
 
-  //! Returns the divisor of \p *this, or 0 if \p *this is a line.
+  //! Returns the divisor of \p *this.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this is a line.
+  */
   Coefficient& divisor();
 
-  //! Returns the divisor of \p *this, or 0 if \p *this is a line.
+  //! Returns the divisor of \p *this.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this is a line.
+  */
   Coefficient_traits::const_reference divisor() const;
 
   //! \brief
@@ -410,6 +418,12 @@ private:
 
   //! Returns a constant reference to the element of the row indexed by \p k.
   Coefficient_traits::const_reference operator[](dimension_type k) const;
+
+  //! \brief
+  //! Throw a <CODE>std::invalid_argument</CODE> exception
+  //! containing the appropriate error message.
+  void
+  throw_invalid_argument(const char* method, const char* reason) const;
 
   friend std::ostream&
   IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g);
