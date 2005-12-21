@@ -2435,13 +2435,6 @@ protected:
   void throw_runtime_error(const char* method) const;
   void throw_invalid_argument(const char* method, const char* reason) const;
 
-  void throw_topology_incompatible(const char* method,
-				   const char* g_name,
-				   const Grid_Generator& g) const;
-  void throw_topology_incompatible(const char* method,
-				   const char* gs_name,
-				   const Grid_Generator_System& gs) const;
-
   void throw_dimension_incompatible(const char* method,
 				    const char* other_name,
 				    dimension_type other_dim) const;

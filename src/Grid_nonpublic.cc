@@ -487,26 +487,6 @@ PPL::Grid::throw_invalid_argument(const char* method,
 }
 
 void
-PPL::Grid::throw_topology_incompatible(const char* method,
-				       const char* g_name,
-				       const Grid_Generator&) const {
-  std::ostringstream s;
-  s << "PPL::C_Polyhedron::" << method << ":" << std::endl
-    << g_name << " is a closure point.";
-  throw std::invalid_argument(s.str());
-}
-
-void
-PPL::Grid::throw_topology_incompatible(const char* method,
-				       const char* gs_name,
-				       const Grid_Generator_System&) const {
-  std::ostringstream s;
-  s << "PPL::C_Polyhedron::" << method << ":" << std::endl
-    << gs_name << " contains closure points.";
-  throw std::invalid_argument(s.str());
-}
-
-void
 PPL::Grid::throw_dimension_incompatible(const char* method,
 					const char* other_name,
 					dimension_type other_dim) const {
