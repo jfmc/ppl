@@ -568,7 +568,7 @@ BD_Shape<T>::upper_bound_assign(const BD_Shape& y) {
 
 template <typename T>
 inline bool
-BD_Shape<T>::bds_hull_assign_if_exact(const BD_Shape&) {
+BD_Shape<T>::bds_hull_assign_if_exact(const BD_Shape&) { 
   // FIXME: this must be properly implemented.
   return false;
 }
@@ -3569,6 +3569,327 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     }
   }
 
+  assert(OK());
+}
+
+template <typename T>
+void
+BD_Shape<T>::generalized_affine_preimage(const Variable var,
+					 const Relation_Symbol relsym,
+					 const Linear_Expression& expr,
+					 Coefficient_traits::const_reference
+					 denominator) {
+  using Implementation::BD_Shapes::div_round_up;
+
+  // The denominator cannot be zero.
+  if (denominator == 0)
+    throw_generic("generalized_affine_preimage(v, r, e, d)", "d == 0");
+
+  // Dimension-compatibility checks.
+  // The dimension of `expr' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type space_dim = space_dimension();
+  const dimension_type expr_space_dim = expr.space_dimension();
+  if (space_dim < expr_space_dim)
+    throw_dimension_incompatible("generalized_affine_preimage(v, r, e, d)",
+				 "e", expr);
+
+  // `var' should be one of the dimensions of the BDS.
+  const dimension_type v = var.id() + 1;
+  if (v > space_dim)
+    throw_dimension_incompatible("generalized_affine_preimage(v, r, e, d)",
+				 var.id());
+
+  // The relation symbol cannot be a strict relation symbol.
+  if (relsym == LESS_THAN || relsym == GREATER_THAN)
+    throw_generic("generalized_affine_preimage(v, r, e, d)",
+  		  "r is a strict relation symbol and "
+  		  "*this is a BD_Shape");
+
+  if (relsym == EQUAL) {
+    // The relation symbol is "==":
+    // this is just an affine preimage computation.
+    affine_preimage(var, expr, denominator);
+    assert(OK());
+    return;
+  }
+
+  // The image of an empty BDS is empty too.
+  shortest_path_closure_assign();
+  if (marked_empty())
+    return;
+
+  // Check whether the preimage of this affine relation can be easily
+  // computed as the image of its inverse relation.
+  const Coefficient& expr_v = expr.coefficient(var);
+  if (expr_v != 0) {
+    const Relation_Symbol reversed_relsym = (relsym == LESS_THAN_OR_EQUAL) 
+      ? GREATER_THAN_OR_EQUAL : LESS_THAN_OR_EQUAL;
+    Linear_Expression inverse
+      = expr - (expr_v + denominator)*var;
+    Coefficient inverse_den = - expr_v;
+    const Relation_Symbol inverse_relsym = (sgn(denominator) == sgn(inverse_den)) 
+      ? relsym : reversed_relsym;
+    generalized_affine_image(var, inverse_relsym, inverse, inverse_den);
+    return;
+  }
+
+  // Here `var_coefficient == 0', so that the preimage cannot
+  // be easily computed by inverting the affine relation.
+  // Shrink the bd_shape by adding the constraint induced
+  // by the affine relation.
+  const Coefficient& b = expr.inhomogeneous_term();
+  // Number of non-zero coefficients in `expr': will be set to
+  // 0, 1, or 2, the latter value meaning any value greater than 1.
+  dimension_type t = 0;
+  // Index of the last non-zero coefficient in `expr', if any.
+  dimension_type j = 0;
+  // Get information about the number of non-zero coefficients in `expr'.
+  for (dimension_type i = expr_space_dim; i-- > 0; )
+    if (expr.coefficient(Variable(i)) != 0)
+      if (t++ == 1)
+	break;
+      else
+	j = i+1;
+
+  // Now we know the form of `expr':
+  // - If t == 0, then expr == b, with `b' a constant;
+  // - If t == 1, then expr == a*j + b, where `j != v';
+  // - If t == 2, the `expr' is of the general form.
+  DB_Row<N>& dbm_0 = dbm[0];
+
+  if (t == 0) {
+    // Case 1: expr == b.
+    switch (relsym) {
+    case LESS_THAN_OR_EQUAL:
+      // Add the constraint `var <= b/denominator'.
+      add_dbm_constraint(0, v, b, denominator);
+      break;
+    case GREATER_THAN_OR_EQUAL:
+      // Add the constraint `var >= b/denominator',
+      // i.e., `-var <= -b/denominator',
+      add_dbm_constraint(v, 0, -b, denominator);
+      break;
+    default:
+      // We already dealt with the other cases.
+      throw std::runtime_error("PPL internal error");
+      break;
+    }
+  }
+  else if (t == 1) {
+    // Value of the one and only non-zero coefficient in `expr'.
+    const Coefficient& sc_j = expr.coefficient(Variable(j-1));
+    N d;
+    switch (relsym) {
+    case LESS_THAN_OR_EQUAL:
+      div_round_up(d, b, denominator);
+      // Note that: `j != v', so that `expr' is of the form
+      // a * j + b, with `j != v'.
+      if (sc_j == denominator)
+	// Add the new constraint `v - j <= b/denominator'.
+	add_dbm_constraint(j, v, d);
+      else {
+	// Here a != denominator, so that we should be adding
+	// the constraint `v <= b/denominator - j'.
+	N sum;
+	// Approximate the homogeneous part of `sc_j'.
+	const int sign_j = sgn(sc_j);
+	const N& approx_j = (sign_j > 0) ? dbm_0[j] : dbm[j][0];
+	if (!is_plus_infinity(approx_j)) {
+	  N coeff_j;
+	  if (sign_j > 0)
+	    assign(coeff_j, raw_value(sc_j), ROUND_UP);
+	  else
+	    assign(coeff_j, raw_value(-sc_j), ROUND_UP);
+	  assign_add_mul(sum, coeff_j, approx_j, ROUND_UP);
+	  add_dbm_constraint(0, v, sum);
+	}
+      }
+      break;
+
+    case GREATER_THAN_OR_EQUAL:
+      div_round_up(d, -b, denominator);
+      // Note that: `j != v', so that `expr' is of the form
+      // a * j + b, with `j != v'.
+      if (sc_j == denominator)
+	// Add the new constraint `v - j <= b/denominator'.
+	add_dbm_constraint(j, v, d);
+      else {
+	// Here a != denominator, so that we should be adding
+	// the constraint `v <= b/denominator - j'.
+	N sum;
+	// Approximate the homogeneous part of `sc_j'.
+	const int sign_j = sgn(sc_j);
+	const N& approx_j = (sign_j > 0) ? dbm_0[j] : dbm[j][0];
+	if (!is_plus_infinity(approx_j)) {
+	  N coeff_j;
+	  if (sign_j > 0)
+	    assign(coeff_j, raw_value(sc_j), ROUND_UP);
+	  else
+	    assign(coeff_j, raw_value(-sc_j), ROUND_UP);
+	  assign_add_mul(sum, coeff_j, approx_j, ROUND_UP);
+	  add_dbm_constraint(0, v, sum);
+	}
+      }
+      break;
+
+    default:
+      // We already dealt with the other cases.
+      throw std::runtime_error("PPL internal error");
+      break;
+    }
+  }
+  else {
+    // Here t == 2, so that
+    // expr == a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2.
+    Linear_Expression neg_expr;
+    Coefficient neg_b;
+    Coefficient neg_den;
+    const bool is_sc = (denominator > 0);
+    if (!is_sc) {
+      neg_expr = -expr;
+      neg_b = -b;
+      neg_den = -denominator;
+    }
+    const Linear_Expression& sc_expr = is_sc ? expr : neg_expr;
+    const Coefficient& sc_b = is_sc ? b : neg_b;
+    const Coefficient& sc_den = is_sc ? denominator : neg_den;
+
+    N sum;
+    // Index of variable that is unbounded in `this->dbm'.
+    // (The initialization is just to quiet a compiler warning.)
+    dimension_type pinf_index = 0;
+    // Number of unbounded variables found.
+    dimension_type pinf_count = 0;
+
+    switch (relsym) {
+    case LESS_THAN_OR_EQUAL:
+      // Compute an upper approximation for `expr' into `sum',
+      // taking into account the sign of `denominator'.
+
+      // Approximate the inhomogeneous term.
+      assign(sum, raw_value(sc_b), ROUND_UP);
+
+      // Approximate the homogeneous part of `sc_expr'.
+      // Note: indices above `w' can be disregarded, as they all have
+      // a zero coefficient in `expr'.
+      for (dimension_type i = j; i > 0; --i) {
+	const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
+	const int sign_i = sgn(sc_i);
+	if (sign_i == 0)
+	  continue;
+	// Choose carefully: we are approximating `sc_expr'.
+	const N& approx_i = (sign_i > 0) ? dbm_0[i] : dbm[i][0];
+	if (is_plus_infinity(approx_i)) {
+	  if (++pinf_count > 1)
+	    break;
+	  pinf_index = i;
+	  continue;
+	}
+	N coeff_i;
+	if (sign_i > 0)
+	  assign(coeff_i, raw_value(sc_i), ROUND_UP);
+	else
+	  assign(coeff_i, raw_value(-sc_i), ROUND_UP);
+	assign_add_mul(sum, coeff_i, approx_i, ROUND_UP);
+      }
+
+      // Divide by the (sign corrected) denominator (if needed).
+      if (sc_den != 1) {
+	// Before computing the quotient, the denominator should be approximated
+	// towards zero. Since `sc_den' is known to be positive, this amounts to
+	// rounding downwards, which is achieved as usual by rounding upwards
+	// the negation and negating again the result.
+	N down_sc_den;
+	assign(down_sc_den, raw_value(-sc_den), ROUND_UP);
+	assign_neg(down_sc_den, down_sc_den, ROUND_UP);
+	assign_div(sum, sum, down_sc_den, ROUND_UP);
+      }
+
+      if (pinf_count == 0) {
+	// Add the constraint `v <= sum'.
+	add_dbm_constraint(0, v, sum);
+	// Deduce constraints of the form `v - u', where `u != v'.
+	deduce_v_minus_u_bounds(v, j, sc_expr, sc_den, sum);
+      }
+      else if (pinf_count == 1)
+	if (expr.coefficient(Variable(pinf_index-1)) == denominator)
+	  // Add the constraint `v - pinf_index <= sum'.
+	  add_dbm_constraint(pinf_index, v, sum);
+      break;
+
+    case GREATER_THAN_OR_EQUAL:
+      // Compute an upper approximation for `-expr' into `sum',
+      // taking into account the sign of `denominator'.
+      // Note: approximating `-expr' from above and then negating the
+      // result is the same as approximating `expr' from below.
+
+      // Approximate the inhomogeneous term.
+      assign(sum, raw_value(-sc_b), ROUND_UP);
+
+      // Approximate the homogeneous part of `-sc_expr'.
+      for (dimension_type i = j; i > 0; --i) {
+	const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
+	const int sign_i = sgn(sc_i);
+	if (sign_i == 0)
+	  continue;
+	// Choose carefully: we are approximating `-sc_expr'.
+	const N& approx_i = (sign_i > 0) ? dbm[i][0] : dbm_0[i];
+	if (is_plus_infinity(approx_i)) {
+	  if (++pinf_count > 1)
+	    break;
+	  pinf_index = i;
+	  continue;
+	}
+	N coeff_i;
+	if (sign_i > 0)
+	  assign(coeff_i, raw_value(sc_i), ROUND_UP);
+	else
+	  assign(coeff_i, raw_value(-sc_i), ROUND_UP);
+	assign_add_mul(sum, coeff_i, approx_i, ROUND_UP);
+      }
+
+      // Divide by the (sign corrected) denominator (if needed).
+      if (sc_den != 1) {
+	// Before computing the quotient, the denominator should be approximated
+	// towards zero. Since `sc_den' is known to be positive, this amounts to
+	// rounding downwards, which is achieved as usual by rounding upwards
+	// the negation and negating again the result.
+	N down_sc_den;
+	assign(down_sc_den, raw_value(-sc_den), ROUND_UP);
+	assign_neg(down_sc_den, down_sc_den, ROUND_UP);
+	assign_div(sum, sum, down_sc_den, ROUND_UP);
+      }
+
+      if (pinf_count == 0) {
+	// Add the constraint `v >= -sum', i.e., `-v <= sum'.
+	add_dbm_constraint(v, 0, sum);
+	// Deduce constraints of the form `u - v', where `u != v'.
+	deduce_u_minus_v_bounds(v, j, sc_expr, sc_den, sum);
+      }
+      else if (pinf_count == 1)
+	if (pinf_index != v
+	    && expr.coefficient(Variable(pinf_index-1)) == denominator)
+	  // Add the constraint `v - pinf_index >= -sum',
+	  // i.e., `pinf_index - v <= sum'.
+	  add_dbm_constraint(v, pinf_index, sum);
+      break;
+
+    default:
+      // We already dealt with the other cases.
+      throw std::runtime_error("PPL internal error");
+      break;
+    }
+  }
+    
+  // If the shrunk bd_shape is empty, its preimage is empty too.
+  // Note: DO check for emptyness here, as we will later add a line.
+  if (is_empty())
+    return;
+  forget_all_dbm_constraints(v);
+  // Shortest-path closure is preserved, but not reduction.
+  if (marked_shortest_path_reduced())
+    status.reset_shortest_path_reduced();
   assert(OK());
 }
 

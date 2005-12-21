@@ -76,6 +76,7 @@ check_PROGRAMS = \
 	generalizedaffineimage9 generalizedaffineimage10 \
 	generalizedaffineimage11 generalizedaffineimage12 \
 	generalizedaffineimage13 generalizedaffineimage14 \
+	generalizedaffinepreimage1 generalizedaffinepreimage2 \
 	geomcovers1 \
 	h79widening1 \
 	intersection1 intersection2 intersection3 intersection4 \
@@ -227,6 +228,9 @@ generalizedaffineimage11_SOURCES = generalizedaffineimage11.cc
 generalizedaffineimage12_SOURCES = generalizedaffineimage12.cc
 generalizedaffineimage13_SOURCES = generalizedaffineimage13.cc
 generalizedaffineimage14_SOURCES = generalizedaffineimage14.cc
+
+generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
+generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
 
 geomcovers1_SOURCES = geomcovers1.cc
 
