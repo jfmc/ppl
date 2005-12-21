@@ -110,8 +110,8 @@ find_variation(T& a) {
   nout << "ASCII dump of `b' (after comparison):" << endl
        << "-------------------------------------" << endl;
   b.ascii_dump(nout);
-  nout << "ASCII dump of `a' after comparison:" << endl
-       << "-----------------------------------" << endl;
+  nout << "ASCII dump of `a' (after comparison):" << endl
+       << "-------------------------------------" << endl;
   a.ascii_dump(nout);
 
   return true;
