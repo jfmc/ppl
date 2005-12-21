@@ -140,10 +140,10 @@ PPL::Grid_Generator_System
 	       Coefficient_traits::const_reference denominator) {
   // This is mostly a copy of Generator_System::affine_image.
 
-  Generator_System& x = *this;
-  // `v' is the index of a column corresponding to
-  // a "user" variable (i.e., it cannot be the inhomogeneous term,
-  // nor the epsilon dimension of NNC polyhedra).
+  Grid_Generator_System& x = *this;
+  // `v' is the index of a column corresponding to a "user" variable
+  // (i.e., it cannot be the inhomogeneous term, nor the epsilon
+  // dimension of NNC polyhedra).
   assert(v > 0 && v <= x.space_dimension());
   assert(expr.space_dimension() <= x.space_dimension());
   assert(denominator > 0);
@@ -155,7 +155,7 @@ PPL::Grid_Generator_System
   // to the column of `*this' indexed by `v'.
   TEMP_INTEGER(numerator);
   for (dimension_type i = n_rows; i-- > 0; ) {
-    Generator& row = x[i];
+    Grid_Generator& row = x[i];
     Scalar_Products::assign(numerator, expr, row);
     std::swap(numerator, row[v]);
   }
@@ -165,7 +165,7 @@ PPL::Grid_Generator_System
     // we multiply by `denominator' all the columns of `*this'
     // having an index different from `v'.
     for (dimension_type i = n_rows; i-- > 0; ) {
-      Generator& row = x[i];
+      Grid_Generator& row = x[i];
       for (dimension_type j = n_columns; j-- > 0; )
 	if (j != v)
 	  row[j] *= denominator;
