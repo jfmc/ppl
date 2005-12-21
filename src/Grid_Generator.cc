@@ -179,7 +179,7 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
     divisor() = d;
     assert(factor > 0);
     if (factor > 1)
-      for (dimension_type col = size() - 1; col >= 1; --col)
+      for (dimension_type col = size() - 2; col >= 1; --col)
 	Generator::operator[](col) *= factor;
   }
 }
