@@ -433,7 +433,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 			      Coefficient_traits::const_reference divisor,
 			      Grid_Generator* first_point) {
   assert(divisor >= 0);
-  if (sys.space_dimension() > 0) {
+  if (sys.space_dimension() > 0 && divisor > 0) {
     TEMP_INTEGER(lcm);
     lcm = divisor;
 
@@ -441,21 +441,13 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
     dimension_type num_rows = sys.num_rows();
 
     if (first_point)
-      if (lcm == 0)
-	lcm = (*first_point).divisor();
-      else
-	lcm_assign(lcm, (*first_point).divisor());
+      lcm_assign(lcm, (*first_point).divisor());
     else {
       // Move to the first point or parameter.
       while (sys[row].is_line())
 	if (++row == num_rows)
 	  // All rows are lines.
 	  return divisor;
-
-      if (lcm == 0) {
-	lcm = sys[row].divisor();
-	++row;
-      }
 
       // Calculate the LCM of `divisor' and the divisor of every
       // point.  Every parameter should already have the same divisor
@@ -471,7 +463,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
     // Represent every point and parameter using the LCM as the
     // divisor.
     for (dimension_type row = 0; row < num_rows; ++row)
-      sys[row].multiply(lcm);
+      sys[row].scale_to_divisor(lcm);
 
     return lcm;
   }

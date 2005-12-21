@@ -2276,14 +2276,15 @@ private:
     Converts \p sys to an equivalent system in which the divisors are
     of equal value.
 
+    \return
+    The new system divisor, or zero if \p divisor was zero.
+
     \param sys
     The generator system to be normalized.
 
     \param divisor
     An extra divisor to include in the calculation of the common
-    divisor of \p sys.  If this value is zero then only the divisors
-    in \p sys are considered, otherwise it is expected that \p divisor
-    is positive;
+    divisor of \p sys.
 
     \param first_point
     If \p first_point has a value other than NULL then it is taken as
@@ -2293,7 +2294,7 @@ private:
   static Coefficient
   normalize_divisors(Grid_Generator_System& sys,
 		     Coefficient_traits::const_reference divisor
-		     = Coefficient_one(), // FIX zero?
+		     = Coefficient_one(),
 		     Grid_Generator* first_point = NULL);
 
   //! Normalize all the divisors in \p sys and \p gen_sys.

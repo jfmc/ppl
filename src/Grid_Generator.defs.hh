@@ -340,8 +340,10 @@ public:
   //! terms of \p *this are \f$0\f$.
   bool all_homogeneous_terms_are_zero() const;
 
-  //! Multiplies \p *this by \p n if \p *this is a point or parameter.
-  void multiply(Coefficient_traits::const_reference n);
+  //! \brief
+  //! Scales \p *this to be represented with a divisor of \p d (if
+  //! \*this is a parameter or point).
+  void scale_to_divisor(Coefficient_traits::const_reference d);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

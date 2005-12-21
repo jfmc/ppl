@@ -129,7 +129,6 @@ PPL::Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
     tem_y[last] = 0;
   }
   // Normalize the copies, including the divisor column.
-  // FIX normalize signs?
   tem.Row::normalize();
   tem_y.Row::normalize();
   // Check for equality.
@@ -159,11 +158,12 @@ PPL::Grid_Generator::all_homogeneous_terms_are_zero() const {
 }
 
 void
-PPL::Grid_Generator::multiply(Coefficient_traits::const_reference mult) {
+PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
   if (is_parameter_or_point()) {
+    // FIX throw if d == 0
     TEMP_INTEGER(factor);
-    factor = mult / divisor();
-    divisor() = mult;
+    factor = d / divisor();
+    divisor() = d;
     assert(factor > 0);
     if (factor > 1)
       for (dimension_type col = size() - 1; col >= 1; --col)
