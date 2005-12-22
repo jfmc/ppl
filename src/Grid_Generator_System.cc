@@ -82,7 +82,9 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
     // and that the new row is not a pending generator.
     assert(num_pending_rows() == 0);
 
-    // FIX could the params divisors go in the extra nnc column?
+    // TODO: Consider whether, if possible, it would be better to wrap
+    //       an NNC Generator, storing the generator divisor in the
+    //       epsilon column.
 
     // This is a modified copy of Linear_System::insert.  It is here
     // to force Grid_Generator::OK to be used (to work around the
