@@ -102,6 +102,7 @@ catch(const std::exception& e) { \
 #define CATCH_ALL \
 CATCH_STD_EXCEPTION(bad_alloc, PPL_ERROR_OUT_OF_MEMORY) \
 CATCH_STD_EXCEPTION(invalid_argument, PPL_ERROR_INVALID_ARGUMENT) \
+CATCH_STD_EXCEPTION(domain_error, PPL_ERROR_DOMAIN_ERROR) \
 CATCH_STD_EXCEPTION(length_error, PPL_ERROR_LENGTH_ERROR) \
 CATCH_STD_EXCEPTION(overflow_error, PPL_ARITHMETIC_OVERFLOW) \
 CATCH_STD_EXCEPTION(runtime_error, PPL_ERROR_INTERNAL_ERROR) \
@@ -2406,15 +2407,14 @@ ppl_LP_Problem_set_optimization_mode(ppl_LP_Problem_t lp, int mode) try {
 CATCH_ALL
 
 int
-ppl_LP_Problem_is_satisfiable(ppl_LP_Problem_t lp) try {
-  LP_Problem& llp = *to_nonconst(lp);
-  return llp.is_satisfiable() ? 1 : 0;
+ppl_LP_Problem_is_satisfiable(ppl_const_LP_Problem_t lp) try {
+  return to_const(lp)->is_satisfiable() ? 1 : 0;
 }
 CATCH_ALL
 
 int
-ppl_LP_Problem_solve(ppl_LP_Problem_t lp) try {
-  return to_nonconst(lp)->solve();
+ppl_LP_Problem_solve(ppl_const_LP_Problem_t lp) try {
+  return to_const(lp)->solve();
 }
 CATCH_ALL
 
@@ -2433,19 +2433,30 @@ ppl_LP_Problem_evaluate_objective_function(ppl_const_LP_Problem_t lp,
 CATCH_ALL
 
 int
-ppl_LP_Problem_feasible_point(ppl_LP_Problem_t lp,
+ppl_LP_Problem_feasible_point(ppl_const_LP_Problem_t lp,
 			      ppl_const_Generator_t* pg) try {
-  const Generator& g = to_nonconst(lp)->feasible_point();
+  const Generator& g = to_const(lp)->feasible_point();
   *pg = to_const(&g);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_LP_Problem_optimizing_point(ppl_LP_Problem_t lp,
+ppl_LP_Problem_optimizing_point(ppl_const_LP_Problem_t lp,
 				ppl_const_Generator_t* pg) try {
-  const Generator& g = to_nonconst(lp)->optimizing_point();
+  const Generator& g = to_const(lp)->optimizing_point();
   *pg = to_const(&g);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_optimal_value(ppl_const_LP_Problem_t lp,
+			     ppl_Coefficient_t num,
+			     ppl_Coefficient_t den) try {
+  Coefficient& nnum = *to_nonconst(num);
+  Coefficient& dden = *to_nonconst(den);
+  to_const(lp)->optimal_value(nnum, dden);
   return 0;
 }
 CATCH_ALL
