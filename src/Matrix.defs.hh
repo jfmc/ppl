@@ -232,8 +232,8 @@ public:
   //! Adds the row \p y to the matrix.
   /*!
     \param y
-    The row to be added: it must have the same size and capacity as
-    the \p *this.
+    The row to be added: it must have the same size and capacity as \p
+    *this.
 
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$(r+1) \times c\f$ matrix
