@@ -649,8 +649,7 @@ PPL::Grid::OK(bool check_not_empty) const {
       goto fail;
     }
 
-    if (con_sys.num_rows() != 0 // FIX check
-	&& con_sys.space_dimension() != space_dim) {
+    if (con_sys.space_dimension() != space_dim) {
 #ifndef NDEBUG
       cerr << "The grid is in a space of dimension " << space_dim
 	   << " while the system of congruences is in a space of dimension "
@@ -1365,8 +1364,7 @@ PPL::Grid::add_recycled_generators_and_minimize(Grid_Generator_System& gs) {
     normalize_divisors(gs, gen_sys);
 
     for (dimension_type row = 0; row < gs.num_rows(); ++row)
-      // FIX add and use Grid_Generator_System::recycling_insert
-      gen_sys.insert(gs[row]);
+      gen_sys.recycling_insert(gs[row]);
   }
   else {
     // The grid is empty: check if `gs' contains a point.
@@ -1913,8 +1911,15 @@ generalized_affine_image(const Linear_Expression& lhs,
 
       // Cylindrificate on all the variables occurring in the left
       // hand side expression.
-      // FIX this will do a redundant minimized check
-      add_recycled_generators(new_lines);
+
+      // Ajust `new_lines' to the right dimension.
+      new_lines.insert(parameter(0*Variable(space_dim-1)));
+      // Add the lines to `gen_sys'.
+      gen_sys.recycling_insert(new_lines);
+      normalize_divisors(gen_sys);
+      // Update the flags.
+      clear_congruences_up_to_date();
+      clear_generators_minimized();
 
       // Constrain the new dimension so that it is congruent to the left
       // hand side expression modulo `mod'.
