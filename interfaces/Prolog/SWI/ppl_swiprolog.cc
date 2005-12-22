@@ -22,10 +22,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
+// Include gmp.h before SWI-Prolog.h.  This is required in order
+// to get access to interface functions dealing with GMP numbers
+// and SWI-Prolog terms.
+#include <gmp.h>
+#include <SWI-Prolog.h>
+
 #include "Coefficient.defs.hh"
 #include "Checked_Number.defs.hh"
-#include <SWI-Prolog.h>
 #include <cassert>
+#include <stdint.h>
 
 typedef term_t Prolog_term_ref;
 typedef atom_t Prolog_atom;
@@ -68,9 +74,7 @@ long Prolog_max_integer;
 */
 void
 ppl_Prolog_sysdep_init() {
-  Prolog_has_unbounded_integers = false;
-  Prolog_min_integer = PL_query(PL_QUERY_MIN_INTEGER);
-  Prolog_max_integer = PL_query(PL_QUERY_MAX_INTEGER);
+  Prolog_has_unbounded_integers = true;
 }
 
 /*!
@@ -103,8 +107,6 @@ Prolog_put_term(Prolog_term_ref t, Prolog_term_ref u) {
 */
 inline int
 Prolog_put_long(Prolog_term_ref t, long l) {
-  if (l < Prolog_min_integer || l > Prolog_max_integer)
-    throw PPL_integer_out_of_range(l);
   PL_put_integer(t, l);
   return 1;
 }
@@ -114,9 +116,15 @@ Prolog_put_long(Prolog_term_ref t, long l) {
 */
 inline int
 Prolog_put_ulong(Prolog_term_ref t, unsigned long ul) {
-  if (ul > static_cast<unsigned long>(Prolog_max_integer))
-    throw PPL_integer_out_of_range(ul);
-  PL_put_integer(t, ul);
+  if (ul <= LONG_MAX)
+    PL_put_integer(t, ul);
+  else if (ul <= std::numeric_limits<int64_t>::max())
+    PL_put_int64(t, static_cast<int64_t>(ul));
+  else {
+    mpz_class z;
+    PPL::assign(z, ul, PPL::ROUND_NOT_NEEDED);
+    PL_unify_mpz(t, z.get_mpz_t());
+  }
   return 1;
 }
 
@@ -349,18 +357,19 @@ Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
 PPL::Coefficient
 integer_term_to_Coefficient(Prolog_term_ref t) {
   assert(Prolog_is_integer(t));
-  long v;
-  Prolog_get_long(t, &v);
-  return PPL::Coefficient(v);
+  mpz_class v;
+  PL_get_mpz(t, v.get_mpz_t());
+  PPL::Coefficient r;
+  PPL::assign(r, v, PPL::ROUND_NOT_NEEDED);
+  return r;
 }
 
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
-  long v;
-  if (PPL::assign(v, PPL::raw_value(n), PPL::ROUND_NOT_NEEDED) != PPL::V_EQ)
-    throw PPL_integer_out_of_range(n);
+  mpz_class v;
+  PPL::assign(v, PPL::raw_value(n), PPL::ROUND_NOT_NEEDED);
   Prolog_term_ref t = Prolog_new_term_ref();
-  Prolog_put_long(t, v);
+  PL_unify_mpz(t, v.get_mpz_t());
   return t;
 }
 
@@ -464,6 +473,27 @@ PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_Polyhedron_expand_space_dimension, 3)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_fold_space_dimensions, 3)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_map_space_dimensions, 2)
+  PL_EXTENSION_ENTRY(ppl_new_LP_Problem_trivial, 1)
+  PL_EXTENSION_ENTRY(ppl_new_LP_Problem, 4)
+  PL_EXTENSION_ENTRY(ppl_new_LP_Problem_from_LP_Problem, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_swap, 2)
+  PL_EXTENSION_ENTRY(ppl_delete_LP_Problem, 1)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_space_dimension, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_constraints, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_objective_function, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_optimization_mode, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_clear, 1)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_add_constraint, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_add_constraints, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_set_objective_function, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_set_optimization_mode, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_is_satisfiable, 1)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_solve, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_feasible_point, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_optimizing_point, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_optimal_value, 3)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_evaluate_objective_function, 4)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_OK, 1)
   { NULL, 0, NULL, 0 }
 };
 

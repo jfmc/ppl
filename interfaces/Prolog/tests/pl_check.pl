@@ -69,7 +69,7 @@ run_all([Group|Groups]):-
          print_exception_term(Exception), fail))  -> true ; run_fail(Group)),
    !,
    ppl_finalize,
-   run_all(Groups).   
+   run_all(Groups).
 
 run_all([]).
 
@@ -1219,7 +1219,7 @@ affine_image_genlr(T, R, CS, [A,B]) :-
 % % Tests ppl_Polyhedron_generalized_affine_preimage_lhs_rhs/4.
 affine_preimage_genlr :-
   make_vars(2, [A, B]),
-  affine_preimage_genlr(c, B - 1, =<,  A + 1, 
+  affine_preimage_genlr(c, B - 1, =<,  A + 1,
       [A >= 0, A =< 4, B >= 0, B =< A], [A,B]),
   affine_preimage_genlr(c, B + 1, =, A + 1,
       [A >= 0, A =< 4, B >= 0, B =< A], [A,B]),
@@ -2167,7 +2167,7 @@ exception_prolog(10, [A, _, _]) :-
    clean_ppl_new_Polyhedron_from_generators(c,
                [point(A)], P),
    must_catch(ppl_Polyhedron_get_bounding_box(P, a, _Box)).
- 
+
 %% TEST: not_universe_or_empty
 exception_prolog(11, _) :-
   must_catch(ppl_new_Polyhedron_from_space_dimension(c, 3, xxx, _)).
