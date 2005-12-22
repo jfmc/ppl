@@ -57,6 +57,29 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
 }
 
 void
+PPL::Grid_Generator_System::recycling_insert(Grid_Generator& g) {
+  dimension_type old_num_rows = num_rows();
+  const dimension_type old_num_cols = num_columns();
+  const dimension_type g_num_cols = g.size();
+  if (old_num_cols >= g_num_cols)
+    add_zero_rows(1,
+		  Linear_Row::Flags(NECESSARILY_CLOSED,
+				    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+  else {
+    add_zero_rows_and_columns(1,
+			      g_num_cols - old_num_cols,
+			      Linear_Row::Flags(NECESSARILY_CLOSED,
+						Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+    // Swap the parameter divisor column into the new last column.
+    swap_columns(old_num_cols - 1, num_columns() - 1);
+  }
+  // Swap one coefficient at a time into the newly added rows, instead
+  // of swapping each entire row.  This ensures that the added rows
+  // have the same capacities as the existing rows.
+  operator[](old_num_rows).coefficient_swap(g);
+}
+
+void
 PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
   dimension_type g_space_dim = g.space_dimension();
 

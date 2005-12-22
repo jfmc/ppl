@@ -205,12 +205,17 @@ public:
   void clear();
 
   //! \brief
-  //! Inserts in \p *this a copy of the generator \p g, increasing the
-  //! number of space dimensions if needed.
+  //! Inserts into \p *this a copy of the generator \p g, increasing
+  //! the number of space dimensions if needed.
   void insert(const Grid_Generator& g);
 
   //! \brief
-  //! Inserts in \p *this the generators in \p gs, increasing the
+  //! Inserts into \p *this the generator \p g, increasing the number
+  //! of space dimensions if needed.
+  void recycling_insert(Grid_Generator& g);
+
+  //! \brief
+  //! Inserts into \p *this the generators in \p gs, increasing the
   //! number of space dimensions if needed.
   void recycling_insert(Grid_Generator_System& gs);
 
