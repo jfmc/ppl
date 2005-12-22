@@ -186,6 +186,77 @@ test9() {
   exit(1);
 }
 
+// Point with a divisor that is greater than zero.
+
+void
+test10() {
+  nout << "test10:" << endl;
+
+  Grid gr(3, EMPTY);
+  gr.add_generator(grid_point(A, 2));
+
+  if (gr.relation_with((A %= 3) / 0)
+      == Poly_Con_Relation::is_disjoint()
+      && gr.relation_with((2*A %= 1) / 0)
+      == Poly_Con_Relation::is_included()
+      && gr.relation_with(2*A %= 1)
+      == Poly_Con_Relation::is_included())
+    return;
+
+  exit(1);
+}
+
+// Grid with a divisor that is greater than zero: seperate spaces.
+
+void
+test11() {
+  nout << "test11:" << endl;
+
+  Grid gr(1, EMPTY);
+  gr.add_generator(grid_point());
+  gr.add_generator(parameter(A, 5));
+
+  if (gr.relation_with((10*A %= 1) / 0)
+      == Poly_Con_Relation::is_disjoint())
+    return;
+
+  exit(1);
+}
+
+// Grid with a divisor that is greater than zero: inclusion.
+
+void
+test12() {
+  nout << "test12:" << endl;
+
+  Grid gr(1, EMPTY);
+  gr.add_generator(grid_point());
+  gr.add_generator(parameter(A, 5));
+
+  if (gr.relation_with((10*A %= 0) / 1)
+      == Poly_Con_Relation::is_included())
+    return;
+
+  exit(1);
+}
+
+// Grid with a divisor that is greater than zero: strict intersection.
+
+void
+test13() {
+  nout << "test13:" << endl;
+
+  Grid gr(1, EMPTY);
+  gr.add_generator(grid_point());
+  gr.add_generator(parameter(A, 5));
+
+  if (gr.relation_with(A %= 0)
+      == Poly_Con_Relation::strictly_intersects())
+    return;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -203,6 +274,10 @@ main() TRY {
   test7();
   test8();
   test9();
+  test10();
+  test11();
+  test12();
+  test13();
 
   return 0;
 }
