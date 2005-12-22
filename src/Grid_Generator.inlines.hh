@@ -207,16 +207,6 @@ grid_point(const Linear_Expression& e,
   return Grid_Generator::point(e, d);
 }
 
-namespace IO_Operators {
-
-/*! \relates Grid_Generator */
-inline std::ostream&
-operator<<(std::ostream& s, const Grid_Generator& g) {
-  return operator<<(s, dynamic_cast<const Generator&>(g));
-}
-
-} // namespace IO_Operators
-
 } // namespace Parma_Polyhedra_Library
 
 namespace std {

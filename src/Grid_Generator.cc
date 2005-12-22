@@ -186,6 +186,71 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
 
 /*! \relates Parma_Polyhedra_Library::Grid_Generator */
 std::ostream&
+PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
+  bool need_divisor = false;
+  bool extra_parentheses = false;
+  const int num_variables = g.space_dimension();
+  Grid_Generator::Type t = g.type();
+  switch (t) {
+  case Grid_Generator::LINE:
+    s << "l(";
+    break;
+  case Grid_Generator::PARAMETER:
+    s << "r(";
+    if (g[num_variables + 1] == 1)
+      break;
+    goto any_point;
+  case Grid_Generator::POINT:
+    s << "p(";
+    if (g[0] > 1) {
+    any_point:
+      need_divisor = true;
+      int num_non_zero_coefficients = 0;
+      for (int v = 0; v < num_variables; ++v)
+	if (g[v+1] != 0)
+	  if (++num_non_zero_coefficients > 1) {
+	    extra_parentheses = true;
+	    s << "(";
+	    break;
+	  }
+    }
+    break;
+  }
+
+  bool first = true;
+  for (int v = 0; v < num_variables; ++v) {
+    Coefficient gv = g[v+1];
+    if (gv != 0) {
+      if (!first) {
+	if (gv > 0)
+	  s << " + ";
+	else {
+	  s << " - ";
+	  negate(gv);
+	}
+      }
+      else
+	first = false;
+      if (gv == -1)
+	s << "-";
+      else if (gv != 1)
+	s << gv << "*";
+      s << PPL::Variable(v);
+    }
+  }
+  if (first)
+    // A generator in the origin.
+    s << 0;
+  if (extra_parentheses)
+    s << ")";
+  if (need_divisor)
+    s << "/" << g.divisor();
+  s << ")";
+  return s;
+}
+
+/*! \relates Parma_Polyhedra_Library::Grid_Generator */
+std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s,
 			      const Grid_Generator::Type& t) {
   const char* n = 0;
