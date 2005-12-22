@@ -37,10 +37,11 @@ LP_Problem::LP_Problem()
 inline
 LP_Problem::LP_Problem(const Constraint_System& cs,
 		       const Linear_Expression& obj,
-		       const Optimization_Mode kind)
-  :tableau(), base(), dim_map(), status(UNSOLVED),
-   input_cs(cs), input_obj_function(obj), opt_mode(kind),
-   last_generator(point()){
+		       const Optimization_Mode mode)
+  // FIXME: implement documented checks and throw an exception if needed.
+  : tableau(), base(), dim_map(), status(UNSOLVED),
+    input_cs(cs), input_obj_function(obj), opt_mode(mode),
+    last_generator(point()){
   assert(OK());
 }
 
@@ -61,7 +62,7 @@ LP_Problem::add_constraint(const Constraint& c) {
   input_cs.insert(c);
   if (status != UNSATISFIABLE)
     // FIXME: Here we should apply the incremental simplex algorithm: for
-    // the moment we'll proceed computing a feaseble base from the beginning.
+    // the moment we'll proceed computing a feasible base from the beginning.
     // As soon as possible the following line will be uncommented.
     // status = PARTIALLY_SATISFIABLE;
     status = UNSOLVED;
@@ -83,7 +84,7 @@ LP_Problem::add_constraints(const Constraint_System& cs) {
 
 inline void
 LP_Problem::set_objective_function(const Linear_Expression& obj) {
-  switch(status) {
+  switch (status) {
   case UNBOUNDED:
     status = SATISFIABLE;
     break;
@@ -98,8 +99,8 @@ LP_Problem::set_objective_function(const Linear_Expression& obj) {
 }
 
 inline void
-LP_Problem::set_optimization_mode(Optimization_Mode new_mode){
-  if (opt_mode == new_mode)
+LP_Problem::set_optimization_mode(Optimization_Mode mode) {
+  if (opt_mode == mode)
     return;
   switch (status) {
   case UNBOUNDED:
@@ -111,7 +112,7 @@ LP_Problem::set_optimization_mode(Optimization_Mode new_mode){
   default:
     break;
   }
-  opt_mode = new_mode;
+  opt_mode = mode;
   assert(OK());
 }
 
@@ -126,7 +127,7 @@ LP_Problem::optimization_mode() const {
 }
 
 inline const Generator&
-LP_Problem::feasible_point() {
+LP_Problem::feasible_point() const {
   if (is_satisfiable()) {
     assert(OK());
     return last_generator;
@@ -135,33 +136,32 @@ LP_Problem::feasible_point() {
 }
 
 inline const Generator&
-LP_Problem::optimizing_point() {
-  if(solve() == SOLVED_PROBLEM)
+LP_Problem::optimizing_point() const {
+  if (solve() == SOLVED_PROBLEM)
     return last_generator;
   throw std::domain_error("*this doesn't have an optimizing point.");
 }
 
 inline const Constraint_System&
-LP_Problem::constraints() const{
+LP_Problem::constraints() const {
   return input_cs;
 }
 
 inline Simplex_Status
-LP_Problem::solve() {
-  if(is_satisfiable()){
-    assert(OK());
-    second_phase();
-    assert(OK());
-    if (status == UNBOUNDED)
+LP_Problem::solve() const {
+  if (is_satisfiable()) {
+    LP_Problem& x = const_cast<LP_Problem&>(*this);
+    x.second_phase();
+    if (x.status == UNBOUNDED)
       return UNBOUNDED_PROBLEM;
-    if (status == OPTIMIZED)
+    if (x.status == OPTIMIZED)
       return SOLVED_PROBLEM;
   }
   return UNFEASIBLE_PROBLEM;
 }
 
 inline void
-LP_Problem::optimal_value(Coefficient& num, Coefficient& den){
+LP_Problem::optimal_value(Coefficient& num, Coefficient& den) const {
   const Generator& g_ref = optimizing_point();
   evaluate_objective_function(g_ref, num, den);
   assert(OK());

@@ -133,7 +133,7 @@ PPL::LP_Problem::steepest_edge() const {
 // See pag. 47 of Papadimitriou.
 
 PPL::dimension_type
-PPL::LP_Problem::get_entering_var_index() const{
+PPL::LP_Problem::get_entering_var_index() const {
   // The variable entering the base is the first one whose coefficient
   // in the cost function has the same sign the cost function itself.
   // If no such variable exists, then we met the optimality condition
@@ -153,8 +153,8 @@ PPL::LP_Problem::get_entering_var_index() const{
 
 void
 PPL::LP_Problem::linear_combine(Row& x,
-			       const Row& y,
-			       const dimension_type k) {
+				const Row& y,
+				const dimension_type k) {
   assert(x.size() == y.size());
   assert(y[k] != 0 && x[k] != 0);
   // Let g be the GCD between `x[k]' and `y[k]'.
@@ -202,7 +202,8 @@ PPL::LP_Problem::swap_base(const dimension_type entering_var_index,
 // See pag. 47 + 50 of Papadimitriou.
 
 PPL::dimension_type
-PPL::LP_Problem::get_exiting_base_index(const dimension_type entering_var_index) const  {
+PPL::LP_Problem
+::get_exiting_base_index(const dimension_type entering_var_index) const  {
   // The variable exiting the base should be associated to a tableau
   // constraint such that the ratio
   // tableau[i][entering_var_index] / tableau[i][base[i]]
@@ -601,7 +602,7 @@ PPL::LP_Problem::compute_tableau() {
 
 bool
 PPL::LP_Problem::is_in_base(const dimension_type var_index,
-	   dimension_type& row_index) {
+			    dimension_type& row_index) const {
   for (row_index = base.size(); row_index-- > 0; )
     if (base[row_index] == var_index)
       return true;
@@ -609,7 +610,7 @@ PPL::LP_Problem::is_in_base(const dimension_type var_index,
 }
 
 PPL::Generator
-PPL::LP_Problem::compute_generator() {
+PPL::LP_Problem::compute_generator() const {
   // We will store in num[] and in den[] the numerators and
   // the denominators of every variable of the original problem.
   dimension_type original_space_dim = input_cs.space_dimension();
@@ -699,9 +700,9 @@ PPL::LP_Problem::compute_generator() {
 
 void
 PPL::LP_Problem::second_phase() {
-  // second_phase requires that *this is satisfiable.
+  // Second_phase requires that *this is satisfiable.
   assert(status == SATISFIABLE || status == UNBOUNDED || status == OPTIMIZED);
-  // In this case the problem is already solved.
+  // In the following cases the problem is already solved.
   if (status == UNBOUNDED || status == OPTIMIZED)
     return;
 
@@ -743,28 +744,24 @@ PPL::LP_Problem::second_phase() {
   if (second_phase_successful) {
     last_generator = compute_generator();
     status = OPTIMIZED;
-    return;
   }
   else
     status = UNBOUNDED;
-    return;
+  assert(OK());
 }
 
 void
-PPL::LP_Problem::evaluate_objective_function(const Generator&
-					     evaluating_point,
+PPL::LP_Problem::evaluate_objective_function(const Generator& evaluating_point,
 					     Coefficient& ext_n,
-					     Coefficient& ext_d) const{
-  const dimension_type evaluating_p_sd = evaluating_point.space_dimension();
-  const dimension_type input_obj_sd = input_obj_function.space_dimension();
+					     Coefficient& ext_d) const {
   // Compute the smallest space dimension  between `input_obj_function'
-  // and `evaluating_point' to improve performances.
-  dimension_type evaluating_sd;
-  evaluating_p_sd < input_obj_sd ? evaluating_sd = evaluating_p_sd
-    : evaluating_sd = input_obj_sd;
+  // and `evaluating_point'.
+  const dimension_type space_dim
+    = std::min(evaluating_point.space_dimension(),
+	       input_obj_function.space_dimension());
   // Compute the optimal value of the cost function.
   ext_n = input_obj_function.inhomogeneous_term();
-  for (dimension_type i = evaluating_sd; i-- > 0; )
+  for (dimension_type i = space_dim; i-- > 0; )
     ext_n += evaluating_point.coefficient(Variable(i))
       * input_obj_function.coefficient(Variable(i));
   // Numerator and denominator should be coprime.
@@ -772,7 +769,7 @@ PPL::LP_Problem::evaluate_objective_function(const Generator&
 }
 
 bool
-PPL::LP_Problem::is_satisfiable(){
+PPL::LP_Problem::is_satisfiable() const {
 #if PPL_NOISY_SIMPLEX
   num_iterations = 0;
 #endif
@@ -792,16 +789,19 @@ PPL::LP_Problem::is_satisfiable(){
     break;
   }
 
+  LP_Problem& x = const_cast<LP_Problem&>(*this);
+
   // The space dimension of the solution to be computed.
   // Note: here we can not use method Constraint_System::space_dimension(),
   // because if the constraint system is NNC, then even the epsilon
   // dimension has to be interpreted as a normal dimension.
-  const dimension_type space_dim = input_cs.num_columns() - 1;
+  const dimension_type space_dim = x.input_cs.num_columns() - 1;
+
   // Reset internal objects.
-  tableau.clear();
-  dim_map.clear();
+  x.tableau.clear();
+  x.dim_map.clear();
   // Compute the initial tableau.
-  Simplex_Status s_status = compute_tableau();
+  Simplex_Status s_status = x.compute_tableau();
 
   // Check for trivial cases.
   switch (s_status) {
@@ -810,14 +810,14 @@ PPL::LP_Problem::is_satisfiable(){
   case UNBOUNDED_PROBLEM:
     // A feasible point has to be returned: the origin.
     // Ensure the right space dimension is obtained.
-    last_generator = point(0*Variable(space_dim-1));
+    x.last_generator = point(0*Variable(space_dim-1));
     return true;
   case SOLVED_PROBLEM:
     // Check for the special case of an empty tableau,
     // in which case an optimizing solution is the origin.
-    if (tableau.num_rows() == 0) {
+    if (x.tableau.num_rows() == 0) {
       // Ensure the right space dimension is obtained.
-      last_generator = point(0*Variable(space_dim-1));
+      x.last_generator = point(0*Variable(space_dim-1));
       return true;
     }
     break;
@@ -828,13 +828,13 @@ PPL::LP_Problem::is_satisfiable(){
 #endif
 
   // Actually solve the LP problem.
-  base = std::vector<dimension_type> (tableau.num_rows());
+  x.base = std::vector<dimension_type> (x.tableau.num_rows());
 
   // This will contain the new cost function for the 1st phase problem.
   // Adds the necessary slack variables to get the 1st phase problem.
-  prepare_first_phase();
+  x.prepare_first_phase();
   // Solve the first phase of the primal simplex algorithm.
-  bool first_phase_successful = compute_simplex();
+  bool first_phase_successful = x.compute_simplex();
 
 #if PPL_NOISY_SIMPLEX
   std::cout << "LP_Problem::solve: 1st phase ended at iteration "
@@ -842,17 +842,17 @@ PPL::LP_Problem::is_satisfiable(){
 #endif
   // If the first phase problem was not solved or if we found an optimum
   // value different from zero, then the origianl problem is unfeasible.
-  if (!first_phase_successful || working_cost[0] != 0){
-    status = UNSATISFIABLE;
+  if (!first_phase_successful || x.working_cost[0] != 0){
+    x.status = UNSATISFIABLE;
     return false;
   }
 
   // The first phase has found a feasible solution. If only a satisfiability
   // check was requested, we can return that feasible solution.
   // Store the last succesfully computed generator.
-  last_generator = compute_generator();
-  status = SATISFIABLE;
+  x.last_generator = compute_generator();
+  x.status = SATISFIABLE;
   // Erase the slack variables.
-  erase_slacks();
+  x.erase_slacks();
   return true;
 }

@@ -48,7 +48,7 @@ public:
 
   //! \brief
   //! Builds an LP problem from the constraint system \p cs, the objective
-  //! function \p obj and optimization mode \p kind.
+  //! function \p obj and optimization mode \p mode.
   /*!
     \param cs
     The constraint system defining the feasible region for the LP problem.
@@ -57,8 +57,8 @@ public:
     The objective function for the LP problem (optional argument with
     default value \f$0\f$).
 
-    \param kind
-    The optimization kind (optional argument with default value
+    \param mode
+    The optimization mode (optional argument with default value
     <CODE>MAXIMIZATION</CODE>).
 
     \exception std::invalid_argument
@@ -68,7 +68,7 @@ public:
   */
   explicit LP_Problem(const Constraint_System& cs,
 		      const Linear_Expression& obj = Linear_Expression::zero(),
-		      Optimization_Mode kind = MAXIMIZATION);
+		      Optimization_Mode mode = MAXIMIZATION);
 
   //! Ordinary copy-constructor.
   LP_Problem(const LP_Problem& y);
@@ -91,7 +91,7 @@ public:
   //! Returns the current objective function.
   const Linear_Expression& objective_function() const;
 
-  //! Returns the current objective function.
+  //! Returns the current optimization mode.
   Optimization_Mode optimization_mode() const;
 
   //! Resets \p *this to be equal to the trivial LP problem.
@@ -115,15 +115,15 @@ public:
   */
   void set_objective_function(const Linear_Expression& obj);
 
-  //! Sets the optimization kind to \p kind.
-  void set_optimization_mode(Optimization_Mode kind);
+  //! Sets the optimization mode to \p mode.
+  void set_optimization_mode(Optimization_Mode mode);
 
   //! Checks satisfiability of \p *this.
   /*!
     \return
     <CODE>true</CODE> if and only if the LP problem is satisfiable.
   */
-  bool is_satisfiable();
+  bool is_satisfiable() const;
 
   //! Optimizes the current LP problem using the primal simplex algorithm.
   /*!
@@ -131,52 +131,49 @@ public:
     A Simplex_Status flag indicating the outcome of the optimization
     attempt (unfeasible, unbounded or solved problem).
   */
-  Simplex_Status solve();
+  Simplex_Status solve() const;
 
   //! \brief
-  //! Computes a constant value substituting \p evaluating_point
-  //! in the objective function.
+  //! Sets \p num and \p den so that \f$\frac{num}{den}\f$ is the result
+  //! of evaluating the objective function on \p evaluating_point.
   /*!
     \param evaluating_point
-    The point to be evaluated
+    The point on which the objective function will be evaluated.
 
-    \param ext_n
-    On exit will contain the numerator of the evaluated point substituted in
-    the current objective function.
+    \param num
+    On exit will contain the numerator of the evaluated value.
 
-    \param ext_d
-    On exit will contain the denominator of the evaluated point substituted in
-    the current objective function.
+    \param den
+    On exit will contain the denominator of the evaluated value.
   */
-
   void evaluate_objective_function(const Generator& evaluating_point,
-				   Coefficient& ext_n,
-				   Coefficient& ext_d) const;
+				   Coefficient& num,
+				   Coefficient& den) const;
 
-  //! \brief
-  //! Returns a feasible point of \p *this if this exists.
+  //! Returns a feasible point for \p *this, if it exists.
   /*!
     \exception std::domain_error
-    Thrown if \p *this is not satisfiable.
+    Thrown if the LP problem is not satisfiable.
   */
-  const Generator& feasible_point();
+  const Generator& feasible_point() const;
 
-  //! \brief
-  //! Returns an optimum point of \p *this if this exists.
+  //! Returns an optimal point for \p *this, if it exists.
   /*!
     \exception std::domain_error
-    Thrown if \p *this doesn't not have an optimizing point.
+    Thrown if \p *this doesn't not have an optimizing point, i.e.,
+    if the LP problem is unbounded or not satisfiable.
   */
-  const Generator& optimizing_point();
+  const Generator& optimizing_point() const;
 
   //! \brief
   //! Sets \p num and \p den so that \f$\frac{num}{den}\f$ is
   //! the solution of the optimization problem.
   /*!
     \exception std::domain_error
-    Thrown if \p *this has no optimal solution.
+    Thrown if \p *this doesn't not have an optimizing point, i.e.,
+    if the LP problem is unbounded or not satisfiable.
   */
-  void optimal_value(Coefficient& num, Coefficient& den);
+  void optimal_value(Coefficient& num, Coefficient& den) const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -221,15 +218,26 @@ private:
   */
   std::map<dimension_type, dimension_type> dim_map;
 
+  //! An enumerated type describing the internal status of the LP problem.
   enum Status {
+    //! The LP problem has not been solved yet.
     UNSOLVED,
+    //! The LP problem is unsatisfiable.
     UNSATISFIABLE,
+    //! The LP problem is satisfiable; a feasible solution has been computed.
     SATISFIABLE,
+    //! The LP problem is unbounded; a feasible solution has been computed.
     UNBOUNDED,
+    //! The LP problem is optimized; an optimal solution has been computed.
     OPTIMIZED,
+    //! \brief
+    //! The feasible region of the LP problem has been changed by adding
+    //! new constraints; a feasible solution for the old constraints has
+    //! been computed.
     PARTIALLY_SATISFIABLE
   };
-  //! The status describing the state of \p *this.
+
+  //! The internal state of the LP problem.
   Status status;
 
   //! The constraint system describing the feasible region.
@@ -238,24 +246,21 @@ private:
   //! The objective function to be optimized.
   Linear_Expression input_obj_function;
 
-  //! The kind of optimization requested.
+  //! The optimization mode requested.
   Optimization_Mode opt_mode;
 
-  //! The last succesfully computed optmizing point.
+  //! The last successfully computed feasible or optimizing point.
   Generator last_generator;
 
   //! \brief
-  //! Optimizes the current LP problem using the second phase
+  //! Optimizes the current LP problem using the second phase of the
   //! primal simplex algorithm.
-
   void second_phase();
 
   //! \brief
   //! Assigns to \p this->tableau a simplex tableau representing the
-  //! problem given by the constraints in \p this->input_cs and the
-  //! cost function \p this->input_obj_function, inserting into
-  //! \p this->dim_map the information that is required to go back
-  //! to the original problem.
+  //! current LP problem, inserting into \p this->dim_map the information
+  //! that is required to recover the original LP problem.
   /*!
     \return
     <CODE>UNFEASIBLE_PROBLEM</CODE> if the constraint system contains
@@ -328,7 +333,7 @@ private:
     \return
     The column index of the variable that enters the base. If no such
     variable exists, optimality was achieved and <CODE>0</CODE> is retuned.
-  
+
     To compute the entering_index, the steepest edge algorithm chooses
     the index `j' such that \f$\frac{d_{j}}{\|\Delta x^{j} \|}\f$ is the
     largest in absolute value, where
@@ -364,9 +369,10 @@ private:
   //! for the second phase of the simplex algorithm.
   void erase_slacks();
 
-  bool is_in_base(const dimension_type var_index, dimension_type& row_index);
+  bool is_in_base(const dimension_type var_index,
+		  dimension_type& row_index) const;
 
-  Generator compute_generator();
+  Generator compute_generator() const;
 };
 
 #include "LP_Problem.inlines.hh"
