@@ -117,8 +117,6 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
 	// divisor coefficient to its last position).
 	Linear_Row tmp_row(g, old_num_columns, row_capacity);
 	std::swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
-	// FIX what will free tmp_row mem if oom in add_row when insert
-	//     if being called from a ctor, as in Constraint,Congruence?
 	Matrix::add_row(tmp_row);
       }
     else
