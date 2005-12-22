@@ -327,7 +327,6 @@ PPL::Grid::relation_with(const Congruence& cg) const {
 
     case Grid_Generator::POINT:
       if (cg.is_proper_congruence())
-	// FIX include the divisor?
 	sp %= modulus;
       if (sp == 0)
 	// The point satisfies the congruence.
@@ -364,8 +363,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
 
     case Grid_Generator::PARAMETER:
       if (cg.is_proper_congruence())
-	// FIX include the divisor?
-	sp %= modulus;
+	sp %= (modulus * g->divisor());
       if (sp == 0)
 	// Parameter g satisfies the cg so the relation depends
 	// entirely on the other generators.
