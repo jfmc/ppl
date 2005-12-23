@@ -366,6 +366,9 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
     return;
   }
 
+  // FIXME: Can this operate on the congruence system if only the
+  //        congruence system is up to date?
+
   gen_sys.remove_space_dimensions(to_be_removed);
 
   clear_congruences_up_to_date();
