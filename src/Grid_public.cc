@@ -1075,8 +1075,7 @@ PPL::Grid::add_recycled_congruences(Constraint_System& cs) {
   if (space_dim < cs.space_dimension())
     throw_dimension_incompatible("add_recycled_congruences(cs)", "cs", cs);
   Congruence_System cgs(cs);
-  if (cgs.num_rows() > 0)
-    add_recycled_congruences(cgs);
+  add_recycled_congruences(cgs);
 }
 
 void
@@ -1096,8 +1095,7 @@ PPL::Grid::add_congruences(const Constraint_System& cs) {
   if (space_dim < cs.space_dimension())
     throw_dimension_incompatible("add_congruences(cs)", "cs", cs);
   Congruence_System cgs(cs);
-  if (cgs.num_rows() > 0)
-    add_recycled_congruences(cgs);
+  add_recycled_congruences(cgs);
 }
 
 bool
@@ -1160,8 +1158,6 @@ PPL::Grid::add_recycled_congruences_and_minimize(Constraint_System& cs) {
     throw_dimension_incompatible("add_recycled_congruences_and_minimize(cs)",
 				 "cs", cs);
   Congruence_System cgs(cs);
-  if (cgs.num_rows() == 0)
-    return minimize();
   return add_recycled_congruences_and_minimize(cgs);
 }
 
@@ -1179,8 +1175,6 @@ PPL::Grid::add_congruences_and_minimize(const Constraint_System& cs) {
   if (space_dim < cs.space_dimension())
     throw_dimension_incompatible("add_congruences_and_minimize(cs)", "cs", cs);
   Congruence_System cgs(cs);
-  if (cgs.num_rows() == 0)
-    return minimize();
   return add_recycled_congruences_and_minimize(cgs);
 }
 
@@ -1213,11 +1207,7 @@ PPL::Grid::add_constraints(const Constraint_System& cs) {
   if (space_dim < cs.space_dimension())
     throw_dimension_incompatible("add_constraints(cs)", "cs", cs);
   Congruence_System cgs(cs);
-  // Only add cgs if congruences were inserted into cgs, as the
-  // dimension of cgs must be at most that of the grid.
-  // FIX match dimension to cs (in all these methods)
-  if (cgs.num_rows() > 0)
-    add_recycled_congruences(cgs);
+  add_recycled_congruences(cgs);
 }
 
 bool
@@ -1227,9 +1217,7 @@ PPL::Grid::add_constraints_and_minimize(const Constraint_System& cs) {
     throw_dimension_incompatible("add_constraints_and_minimize(cs)",
 				 "cs", cs);
   Congruence_System cgs(cs);
-  if (cgs.num_rows() > 0)
-    return add_recycled_congruences_and_minimize(cgs);
-  return minimize();
+  return add_recycled_congruences_and_minimize(cgs);
 }
 
 void
@@ -1239,8 +1227,7 @@ PPL::Grid::add_recycled_constraints(Constraint_System& cs) {
     throw_dimension_incompatible("add_recycled_constraints(cs)",
 				 "cs", cs);
   Congruence_System cgs(cs);
-  if (cgs.num_rows() > 0)
-    add_recycled_congruences(cgs);
+  add_recycled_congruences(cgs);
 }
 
 bool
@@ -1250,9 +1237,7 @@ PPL::Grid::add_recycled_constraints_and_minimize(Constraint_System& cs) {
     throw_dimension_incompatible("add_recycled_constraints_and_minimize(cs)",
 				 "cs", cs);
   Congruence_System cgs(cs);
-  if (cgs.num_rows() > 0)
-    return add_recycled_congruences_and_minimize(cgs);
-  return minimize();
+  return add_recycled_congruences_and_minimize(cgs);
 }
 
 void
