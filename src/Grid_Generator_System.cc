@@ -49,6 +49,7 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
     // Swap the parameter divisor column into the new last column.
     swap_columns(old_num_cols - 1, num_columns() - 1);
   }
+  set_index_first_pending_row(old_num_rows + gs_num_rows);
   // Swap one coefficient at a time into the newly added rows, instead
   // of swapping each entire row.  This ensures that the added rows
   // have the same capacities as the existing rows.
@@ -73,6 +74,7 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator& g) {
     // Swap the parameter divisor column into the new last column.
     swap_columns(old_num_cols - 1, num_columns() - 1);
   }
+  set_index_first_pending_row(old_num_rows + 1);
   // Swap one coefficient at a time into the newly added rows, instead
   // of swapping each entire row.  This ensures that the added rows
   // have the same capacities as the existing rows.
@@ -396,6 +398,10 @@ PPL::Grid_Generator_System
 
   // The number of remaining columns is `dst_col'.
   Matrix::remove_trailing_columns(num_cols - dst_col);
+
+
+
+  remove_invalid_lines_and_rays();
 }
 
 void
@@ -424,5 +430,6 @@ PPL::Grid_Generator_System
     // become the last column.
     swap_columns(new_dimension + 1, space_dim + 1);
     Matrix::remove_trailing_columns(space_dim - new_dimension);
+    remove_invalid_lines_and_rays();
   }
 }
