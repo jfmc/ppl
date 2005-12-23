@@ -722,7 +722,6 @@ PPL::Grid::OK(bool check_not_empty) const {
       }
       // Check each generator in the system.
       for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
-#if 0 // FIX must a param always have coeff's?
 	const Grid_Generator& g = gen_sys[i];
 
 	if (g.size() < 1) {
@@ -731,7 +730,6 @@ PPL::Grid::OK(bool check_not_empty) const {
 #endif
 	  goto fail;
 	}
-#endif
       }
 
       // A non-empty system of generators describing a grid is valid iff
