@@ -3623,12 +3623,13 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
   // computed as the image of its inverse relation.
   const Coefficient& expr_v = expr.coefficient(var);
   if (expr_v != 0) {
-    const Relation_Symbol reversed_relsym = (relsym == LESS_THAN_OR_EQUAL) 
+    const Relation_Symbol reversed_relsym = (relsym == LESS_THAN_OR_EQUAL)
       ? GREATER_THAN_OR_EQUAL : LESS_THAN_OR_EQUAL;
-    Linear_Expression inverse
+    const Linear_Expression inverse
       = expr - (expr_v + denominator)*var;
-    Coefficient inverse_den = - expr_v;
-    const Relation_Symbol inverse_relsym = (sgn(denominator) == sgn(inverse_den)) 
+    const Coefficient inverse_den = - expr_v;
+    const Relation_Symbol inverse_relsym
+      = (sgn(denominator) == sgn(inverse_den))
       ? relsym : reversed_relsym;
     generalized_affine_image(var, inverse_relsym, inverse, inverse_den);
     return;
@@ -3796,10 +3797,11 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
 
       // Divide by the (sign corrected) denominator (if needed).
       if (sc_den != 1) {
-	// Before computing the quotient, the denominator should be approximated
-	// towards zero. Since `sc_den' is known to be positive, this amounts to
-	// rounding downwards, which is achieved as usual by rounding upwards
-	// the negation and negating again the result.
+	// Before computing the quotient, the denominator should be
+	// approximated towards zero. Since `sc_den' is known to be
+	// positive, this amounts to rounding downwards, which is achieved
+	// as usual by rounding upwards the negation and negating again
+	// the result.
 	N down_sc_den;
 	assign(down_sc_den, raw_value(-sc_den), ROUND_UP);
 	assign_neg(down_sc_den, down_sc_den, ROUND_UP);
@@ -3851,10 +3853,11 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
 
       // Divide by the (sign corrected) denominator (if needed).
       if (sc_den != 1) {
-	// Before computing the quotient, the denominator should be approximated
-	// towards zero. Since `sc_den' is known to be positive, this amounts to
-	// rounding downwards, which is achieved as usual by rounding upwards
-	// the negation and negating again the result.
+	// Before computing the quotient, the denominator should be
+	// approximated towards zero. Since `sc_den' is known to be
+	// positive, this amounts to rounding downwards, which is
+	// achieved as usual by rounding upwards the negation and
+	// negating again the result.
 	N down_sc_den;
 	assign(down_sc_den, raw_value(-sc_den), ROUND_UP);
 	assign_neg(down_sc_den, down_sc_den, ROUND_UP);
@@ -3881,8 +3884,8 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
       break;
     }
   }
-    
-  // If the shrunk bd_shape is empty, its preimage is empty too.
+
+  // If the shrunk BD_Shape is empty, its preimage is empty too.
   // Note: DO check for emptyness here, as we will later add a line.
   if (is_empty())
     return;
