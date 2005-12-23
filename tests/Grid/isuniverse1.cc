@@ -254,6 +254,76 @@ test12() {
   exit(1);
 }
 
+// Minimized universe congruences.
+
+void
+test13() {
+  nout << "test13:" << endl;
+
+  Congruence_System cgs;
+  cgs.insert((0*C %= 4) / 2);
+
+  Grid gr(cgs);
+
+  // Minimize the congruences.
+  if (find_variation(gr))
+    exit(1);
+
+  if (gr.is_universe())
+    return;
+
+  nout << "Grid should be universe." << endl
+       << "grid:" << endl << gr << endl;
+  exit(1);
+}
+
+void
+test14() {
+  nout << "test14:" << endl;
+
+  Congruence_System cgs;
+  cgs.insert((A + 0*C %= 4) / 2);
+
+  Grid gr(cgs);
+
+  Variables_Set vars;
+  vars.insert(A);
+
+  gr.remove_space_dimensions(vars);
+
+  // Minimize the congruences.
+  if (find_variation(gr))
+    exit(1);
+
+  if (gr.is_universe())
+    return;
+
+  nout << "Grid should be universe." << endl
+       << "grid:" << endl << gr << endl;
+  exit(1);
+}
+
+void
+test15() {
+  nout << "test15:" << endl;
+
+  Congruence_System cgs;
+  cgs.insert(0*C == 0);
+
+  Grid gr(cgs);
+
+  // Minimize the congruences.
+  if (find_variation(gr))
+    exit(1);
+
+  if (gr.is_universe())
+    return;
+
+  nout << "Grid should be universe." << endl
+       << "grid:" << endl << gr << endl;
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -274,6 +344,9 @@ main() TRY {
   test10();
   test11();
   test12();
+  test13();
+  test14();
+  test15();
 
   return 0;
 }
