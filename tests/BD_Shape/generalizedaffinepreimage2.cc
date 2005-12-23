@@ -30,7 +30,7 @@ test1() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3); 
+  TBD_Shape bd(3);
   bd.add_constraint(2*A == 1);
   bd.add_constraint(B >= 5);
   bd.add_constraint(3*C <= 7);
@@ -41,7 +41,7 @@ test1() {
   known_result.add_constraint(3*C <= 7);
   known_result.add_constraint(5*C >= 7);
 
-  bd.generalized_affine_preimage(B, EQUAL, Linear_Expression(3*A+2));
+  bd.generalized_affine_preimage(B, EQUAL, 3*A+2);
 
 
   bool ok = (bd == known_result);
@@ -59,14 +59,15 @@ test2() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2); 
+  TBD_Shape bd(2);
   bd.add_constraint(2*A == 1);
   bd.add_constraint(B <= 5);
 
   TBD_Shape known_result(2);
   known_result.add_constraint(2*A == 1);
 
-  bd.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, Linear_Expression(-1));
+  bd.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL,
+				 Linear_Expression(-1));
 
   bool ok = (bd == known_result);
 
@@ -84,7 +85,7 @@ test3() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3); 
+  TBD_Shape bd(3);
   bd.add_constraint(2*A == 1);
   bd.add_constraint(B <= 5);
   bd.add_constraint(3*C <= 8);
@@ -95,7 +96,7 @@ test3() {
   known_result.add_constraint(3*C <= 8);
   known_result.add_constraint(2*C >= 7);
 
-  bd.generalized_affine_preimage(B, EQUAL, Linear_Expression(3*A+2));
+  bd.generalized_affine_preimage(B, EQUAL, 3*A+2);
 
 
   bool ok = (bd == known_result);

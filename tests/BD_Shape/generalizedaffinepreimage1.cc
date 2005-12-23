@@ -29,15 +29,15 @@ test1() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2); 
+  TBD_Shape bd(2);
   bd.add_constraint(2*A == 1);
   bd.add_constraint(B >= 5);
 
   TBD_Shape known_result(2);
   known_result.add_constraint(2*A == 1);
 
-  bd.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, Linear_Expression(-1));
-
+  bd.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL,
+				 Linear_Expression(-1));
 
   bool ok = (bd == known_result);
 
@@ -54,7 +54,7 @@ test2() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2); 
+  TBD_Shape bd(2);
   bd.add_constraint(2*A == 1);
   bd.add_constraint(B >= 5);
 
@@ -77,7 +77,7 @@ test3() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2); 
+  TBD_Shape bd(2);
   bd.add_constraint(4*A == 1);
   bd.add_constraint(B >= 5);
 
@@ -85,7 +85,7 @@ test3() {
   known_result.add_constraint(4*A == 1);
   known_result.add_constraint(-B >= 4);
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, Linear_Expression(-B+1));
+  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -B+1);
 
   bool ok = (bd == known_result);
 
@@ -102,7 +102,7 @@ test4() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2); 
+  TBD_Shape bd(2);
   bd.add_constraint(4*A == 1);
   bd.add_constraint(B >= 5);
 
@@ -110,7 +110,7 @@ test4() {
   known_result.add_constraint(4*A == 1);
   known_result.add_constraint(B >= 4);
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, Linear_Expression(B+1));
+  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, B+1);
 
   bool ok = (bd == known_result);
 
@@ -127,7 +127,7 @@ test5() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2); 
+  TBD_Shape bd(2);
   bd.add_constraint(7*A == 1);
   bd.add_constraint(B >= 5);
 
@@ -135,7 +135,7 @@ test5() {
   known_result.add_constraint(7*A == 1);
   known_result.add_constraint(B >= 2);
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, Linear_Expression(2*B+1));
+  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 2*B+1);
 
   bool ok = (bd == known_result);
 
@@ -152,7 +152,7 @@ test6() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2); 
+  TBD_Shape bd(2);
   bd.add_constraint(5*A == 1);
   bd.add_constraint(B >= 5);
 
@@ -160,7 +160,7 @@ test6() {
   known_result.add_constraint(5*A == 1);
   known_result.add_constraint(-B >= 2);
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, Linear_Expression(-2*B+1));
+  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -2*B+1);
 
   bool ok = (bd == known_result);
 
@@ -177,7 +177,7 @@ test7() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2); 
+  TBD_Shape bd(2);
   bd.add_constraint(3*A == 1);
   bd.add_constraint(B >= 5);
 
@@ -185,8 +185,7 @@ test7() {
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(-2*B >= 3);
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 
-				 Linear_Expression(3*A-2*B+1));
+  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 3*A-2*B+1);
 
   TBD_Shape T_known_result(known_result);
   bool ok = bd.contains(T_known_result);
@@ -213,7 +212,7 @@ test8() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2); 
+  TBD_Shape bd(2);
   bd.add_constraint(3*A == 1);
   bd.add_constraint(B >= 5);
 
@@ -221,8 +220,7 @@ test8() {
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(-2*B >= 5);
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 
-				 Linear_Expression(-3*A-2*B+1));
+  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+1);
 
   TBD_Shape T_known_result(known_result);
   bool ok = bd.contains(T_known_result);
@@ -250,7 +248,7 @@ test9() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3); 
+  TBD_Shape bd(3);
   bd.add_constraint(3*A == 1);
   bd.add_constraint(2*B >= 7);
   bd.add_constraint(3*C <= 7);
@@ -262,8 +260,7 @@ test9() {
   known_result.add_constraint(3*B - 3*C <= 7);
   known_result.add_constraint(3*C <= 7);
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 
-				 Linear_Expression(-3*A-2*B+7*C+1), 2);
+  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, 2);
 
   TBD_Shape T_known_result(known_result);
   bool ok = bd.contains(T_known_result);
@@ -272,13 +269,15 @@ test9() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, 2) ***");
 
+  print_constraints(known_result, "*** known_result ***");
+
   if (ok) {
     Checked_Number<mpq_class, Extended_Number_Policy> distance;
     rectilinear_distance_assign(distance, T_known_result, bd, ROUND_UP);
 
     nout << "Rectilinear distance = " << distance << endl;
 
-    ok = (distance <= 1);
+    ok = (distance <= 8);
   }
 
   if (!ok)
@@ -291,7 +290,7 @@ test10() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3); 
+  TBD_Shape bd(3);
   bd.add_constraint(3*A == 1);
   bd.add_constraint(2*B >= 7);
   bd.add_constraint(3*C <= 7);
@@ -305,8 +304,7 @@ test10() {
   known_result.add_constraint(3*C <= 7);
   known_result.add_constraint(5*C >= 7);
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 
-				 Linear_Expression(-3*A-2*B-7*C+1), 3);
+  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, 3);
 
   TBD_Shape T_known_result(known_result);
   bool ok = bd.contains(T_known_result);
@@ -315,13 +313,15 @@ test10() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, 3) ***");
 
+  print_constraints(known_result, "*** known_result ***");
+
   if (ok) {
     Checked_Number<mpq_class, Extended_Number_Policy> distance;
     rectilinear_distance_assign(distance, T_known_result, bd, ROUND_UP);
 
     nout << "Rectilinear distance = " << distance << endl;
 
-    ok = (distance <= 1);
+    ok = (distance <= 9);
   }
 
   if (!ok)
@@ -334,7 +334,7 @@ test11() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3); 
+  TBD_Shape bd(3);
   bd.add_constraint(3*A == 1);
   bd.add_constraint(2*B >= 7);
   bd.add_constraint(3*C <= 7);
@@ -343,8 +343,7 @@ test11() {
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(3*C <= 7);
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 
-				 Linear_Expression(-3*A-2*B+7*C+1), -2);
+  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2);
 
   TBD_Shape T_known_result(known_result);
   bool ok = bd.contains(T_known_result);
@@ -372,7 +371,7 @@ test12() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3); 
+  TBD_Shape bd(3);
   bd.add_constraint(3*A == 1);
   bd.add_constraint(2*B >= 7);
   bd.add_constraint(3*C <= 7);
@@ -386,8 +385,7 @@ test12() {
   known_result.add_constraint(3*C <= 7);
   known_result.add_constraint(5*C >= 7);
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 
-				 Linear_Expression(-3*A-2*B-7*C+1), -3);
+  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, -3);
 
   TBD_Shape T_known_result(known_result);
   bool ok = bd.contains(T_known_result);
@@ -396,13 +394,15 @@ test12() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, -3) ***");
 
+  print_constraints(known_result, "*** known_result ***");
+
   if (ok) {
     Checked_Number<mpq_class, Extended_Number_Policy> distance;
     rectilinear_distance_assign(distance, T_known_result, bd, ROUND_UP);
 
     nout << "Rectilinear distance = " << distance << endl;
 
-    ok = (distance <= 1);
+    ok = (distance <= 12);
   }
 
   if (!ok)
@@ -415,7 +415,7 @@ test13() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3); 
+  TBD_Shape bd(3);
   bd.add_constraint(3*A == 1);
   bd.add_constraint(2*B <= 7);
   bd.add_constraint(3*C <= 7);
@@ -427,8 +427,7 @@ test13() {
   known_result.add_constraint(3*B - 3*C <= 28);
   known_result.add_constraint(3*C <= 7);
 
-  bd.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, 
-				 Linear_Expression(-3*A-2*B+7*C+1), -2);
+  bd.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2);
 
   TBD_Shape T_known_result(known_result);
 
@@ -438,13 +437,15 @@ test13() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "GREATER_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
 
+  print_constraints(known_result, "*** known_result ***");
+
   if (ok) {
     Checked_Number<mpq_class, Extended_Number_Policy> distance;
     rectilinear_distance_assign(distance, T_known_result, bd, ROUND_UP);
 
     nout << "Rectilinear distance = " << distance << endl;
 
-    ok = (distance <= 1);
+    ok = (distance <= 8);
   }
 
   if (!ok)
@@ -457,7 +458,7 @@ test14() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3); 
+  TBD_Shape bd(3);
   bd.add_constraint(3*A == 1);
   bd.add_constraint(2*B <= 7);
   bd.add_constraint(3*C <= 7);
@@ -471,8 +472,7 @@ test14() {
   known_result.add_constraint(3*C <= 7);
   known_result.add_constraint(5*C >= 7);
 
-  bd.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, 
-				 Linear_Expression(3*A-2*B-7*C+1), -3);
+  bd.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3);
 
   TBD_Shape T_known_result(known_result);
 
@@ -482,13 +482,15 @@ test14() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
 
+  print_constraints(known_result, "*** known_result ***");
+
   if (ok) {
     Checked_Number<mpq_class, Extended_Number_Policy> distance;
     rectilinear_distance_assign(distance, T_known_result, bd, ROUND_UP);
 
     nout << "Rectilinear distance = " << distance << endl;
 
-    ok = (distance <= 1);
+    ok = (distance <= 9);
   }
 
   if (!ok)
@@ -501,7 +503,7 @@ test15() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3); 
+  TBD_Shape bd(3);
   bd.add_constraint(3*A == 1);
   bd.add_constraint(2*B >= 7);
   bd.add_constraint(3*C <= 7);
@@ -512,8 +514,7 @@ test15() {
   known_result.add_constraint(3*C <= 7);
   known_result.add_constraint(5*C >= 7);
 
-  bd.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, 
-				 Linear_Expression(3*A-2*B-7*C+1), -3);
+  bd.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3);
 
   TBD_Shape T_known_result(known_result);
   bool ok = bd.contains(T_known_result);
@@ -534,6 +535,7 @@ test15() {
   if (!ok)
     exit(1);
 }
+
 } // namespace
 
 int
