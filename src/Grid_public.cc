@@ -472,7 +472,6 @@ PPL::Grid::is_universe() const {
 
   if (congruences_are_up_to_date()) {
     if (congruences_are_minimized())
-      // FIX confirm (4 %= 0, 3 %= 0, 1 %= 0?)
       // The mininimized universe congruence system has only one row,
       // the integrality congruence.
       return con_sys.num_rows() == 1 && con_sys[0].is_trivial_true();
