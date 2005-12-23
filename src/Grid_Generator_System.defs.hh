@@ -207,6 +207,11 @@ public:
   //! \brief
   //! Inserts into \p *this a copy of the generator \p g, increasing
   //! the number of space dimensions if needed.
+  /*!
+    If \p g is an all-zero parameter then the only action is to ensure
+    that the space dimension of \p *this is at least the space
+    dimension of \p g.
+  */
   void insert(const Grid_Generator& g);
 
   //! \brief
