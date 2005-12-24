@@ -738,7 +738,7 @@ The specification uses the following grammar rules:
              --> max | min
 
  LP_Problem_Status
-             --> unfeasible | unbounded | solved
+             --> unfeasible | unbounded | optimized
 \endcode
 
 \anchor predicates

@@ -14,6 +14,16 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
+//! Possible outcomes of the LP_Problem solver.
+enum LP_Problem_Status {
+  //! The problem is unfeasible.
+  UNFEASIBLE_LP_PROBLEM,
+  //! The problem is unbounded.
+  UNBOUNDED_LP_PROBLEM,
+  //! The problem has an optimal solution.
+  OPTIMIZED_LP_PROBLEM
+};
+
 class LP_Problem;
 
 }

@@ -574,11 +574,11 @@ void erase_slacks(Matrix& tableau,
 //! back to the original problem.
 /*!
   \return
-  <CODE>UNFEASIBLE_PROBLEM</CODE> if the constraint system contains
+  <CODE>UNFEASIBLE_LP_PROBLEM</CODE> if the constraint system contains
   any trivially unfeasible constraint (tableau was not computed);
-  <CODE>UNBOUNDED_PROBLEM</CODE> if the problem is trivially unbounded
+  <CODE>UNBOUNDED_LP_PROBLEM</CODE> if the problem is trivially unbounded
   (the computed tableau contains no constraints);
-  <CODE>SOLVED_PROBLEM></CODE> if the problem is neither trivially
+  <CODE>OPTIMIZED_LP_PROBLEM></CODE> if the problem is neither trivially
   unfeasible nor trivially unbounded (the tableau was computed successfully).
 
   \param cs
@@ -596,7 +596,7 @@ void erase_slacks(Matrix& tableau,
   The "positive" one is represented again by Variable(i), and
   the "negative" one is represented by Variable(j).
 */
-Simplex_Status
+LP_Problem_Status
 compute_tableau(const Linear_System& cs,
 		Row& cost_function,
 		Matrix& tableau,
@@ -657,13 +657,13 @@ compute_tableau(const Linear_System& cs,
       if (cs_i.is_ray_or_point_or_inequality()) {
 	if (cs_i[0] < 0)
 	  // A constraint such as -1 >= 0 is trivially false.
-	  return UNFEASIBLE_PROBLEM;
+	  return UNFEASIBLE_LP_PROBLEM;
       }
       else
 	// The constraint is an equality.
 	if (cs_i[0] != 0)
 	  // A constraint such as 1 == 0 is trivially false.
-	  return UNFEASIBLE_PROBLEM;
+	  return UNFEASIBLE_LP_PROBLEM;
       // Here the constraint is trivially true.
       is_tableau_constraint[i] = false;
       --tableau_num_rows;
@@ -798,12 +798,12 @@ compute_tableau(const Linear_System& cs,
   if (tableau_num_rows == 0)
     for (dimension_type i = tableau_num_cols; i-- > 1; )
       if (cost_function[i] > 0)
-	return UNBOUNDED_PROBLEM;
+	return UNBOUNDED_LP_PROBLEM;
 
   // The problem is neither trivially unfeasible nor trivially unbounded.
   // The tableau was successfull computed and the caller has to figure
   // out which case applies.
-  return SOLVED_PROBLEM;
+  return OPTIMIZED_LP_PROBLEM;
 }
 
 //! \brief
@@ -946,7 +946,7 @@ compute_generator(const Matrix& tableau,
 }
 
 
-Simplex_Status
+LP_Problem_Status
 primal_simplex(const Linear_System& cs,
 	       Row& cost_function,
 	       Generator& maximizing_point,
@@ -961,19 +961,20 @@ primal_simplex(const Linear_System& cs,
   // Compute the initial tableau.
   Matrix tableau(0, 0);
   std::map<dimension_type, dimension_type> dim_map;
-  Simplex_Status status = compute_tableau(cs, cost_function, tableau, dim_map);
+  LP_Problem_Status status
+    = compute_tableau(cs, cost_function, tableau, dim_map);
 
   // Check for trivial cases.
   switch (status) {
-  case UNFEASIBLE_PROBLEM:
+  case UNFEASIBLE_LP_PROBLEM:
     return status;
-  case UNBOUNDED_PROBLEM:
+  case UNBOUNDED_LP_PROBLEM:
     if (satisfiability_check)
       // A feasible point has to be returned: the origin.
       // Ensure the right space dimension is obtained.
       maximizing_point = point(0*Variable(space_dim-1));
     return status;
-  case SOLVED_PROBLEM:
+  case OPTIMIZED_LP_PROBLEM:
     // Check for the special case of an empty tableau,
     // in which case a maximizing solution is the origin.
     if (tableau.num_rows() == 0) {
@@ -1006,13 +1007,13 @@ primal_simplex(const Linear_System& cs,
   // If the first phase problem was not solved or if we found an optimum
   // value different from zero, then the origianl problem is unfeasible.
   if (!first_phase_successful || costs[0][0] != 0)
-    return UNFEASIBLE_PROBLEM;
+    return UNFEASIBLE_LP_PROBLEM;
 
   // The first phase has found a feasible solution. If only a satisfiability
   // check was requested, we can return that feasible solution.
   if (satisfiability_check) {
     maximizing_point = compute_generator(tableau, base, dim_map, space_dim);
-    return SOLVED_PROBLEM;
+    return OPTIMIZED_LP_PROBLEM;
   }
 
   // Here the first phase problem succeeded with optimum value zero.
@@ -1035,10 +1036,10 @@ primal_simplex(const Linear_System& cs,
 
   if (second_phase_successful) {
     maximizing_point = compute_generator(tableau, base, dim_map, space_dim);
-    return SOLVED_PROBLEM;
+    return OPTIMIZED_LP_PROBLEM;
   }
   else
-    return UNBOUNDED_PROBLEM;
+    return UNBOUNDED_LP_PROBLEM;
 }
 
 } // namespace
@@ -1046,14 +1047,14 @@ primal_simplex(const Linear_System& cs,
 
 namespace PPL = Parma_Polyhedra_Library;
 
-Simplex_Status
+LP_Problem_Status
 PPL::Constraint_System::primal_simplex(Linear_Expression& cost_function,
 				       Generator& maximizing_point) const {
   return ::primal_simplex(*this, cost_function, maximizing_point, false);
 }
 
 
-Simplex_Status
+LP_Problem_Status
 PPL::Constraint_System::primal_simplex(const Linear_Expression& expr,
 				       const Optimization_Mode m,
 				       Coefficient& ext_n,
@@ -1084,10 +1085,10 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expr,
     for (dimension_type i = cost_function.size(); i-- > 0; )
       negate(cost_function[i]);
 
-  Simplex_Status status
+  LP_Problem_Status status
     = ::primal_simplex(*this, cost_function, optimizing_point, false);
 
-  if (status == SOLVED_PROBLEM) {
+  if (status == OPTIMIZED_LP_PROBLEM) {
     // Compute the optimal value of the cost function.
     ext_n = expr.inhomogeneous_term();
     for (dimension_type i = optimizing_point.space_dimension(); i-- > 0; )
@@ -1111,12 +1112,13 @@ PPL::Constraint_System::is_satisfiable(Generator& feasible_point) const {
 				"are not supported.");
 
   Linear_Expression cost(0);
-  Simplex_Status status = ::primal_simplex(*this, cost, feasible_point, true);
+  LP_Problem_Status status
+    = ::primal_simplex(*this, cost, feasible_point, true);
 
   // Check the computed generator for feasibility.
-  assert(status != UNBOUNDED_PROBLEM);
-  assert(status == UNFEASIBLE_PROBLEM
+  assert(status != UNBOUNDED_LP_PROBLEM);
+  assert(status == UNFEASIBLE_LP_PROBLEM
 	 || satisfies_all_constraints(feasible_point));
 
-  return (status == SOLVED_PROBLEM);
+  return (status == OPTIMIZED_LP_PROBLEM);
 }

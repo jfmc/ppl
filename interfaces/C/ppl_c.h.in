@@ -1125,19 +1125,19 @@ extern unsigned int PPL_COMPLEXITY_CLASS_SIMPLEX;
 extern unsigned int PPL_COMPLEXITY_CLASS_ANY;
 
 /*! \brief
-  Code of the "unfeasible problem" simplex status.
+  Code of the "unfeasible LP problem" status.
 */
-extern int PPL_SIMPLEX_STATUS_UNFEASIBLE;
+extern int PPL_LP_PROBLEM_STATUS_UNFEASIBLE;
 
 /*! \brief
-  Code of the "unbounded problem" simplex status.
+  Code of the "unbounded LP problem" status.
 */
-extern int PPL_SIMPLEX_STATUS_UNBOUNDED;
+extern int PPL_LP_PROBLEM_STATUS_UNBOUNDED;
 
 /*! \brief
-  Code of the "solved problem" simplex status.
+  Code of the "optimized LP problem" status.
 */
-extern int PPL_SIMPLEX_STATUS_SOLVED;
+extern int PPL_LP_PROBLEM_STATUS_OPTIMIZED;
 
 /*! \brief
   Code of the "maximization" optimization mode.

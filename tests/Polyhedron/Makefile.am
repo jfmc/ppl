@@ -125,7 +125,7 @@ ORIGINAL_TESTS = \
 	linearpartition3 linearpartition4 \
 	linexpression1 \
 	linearsystem1 \
-	LP_Problem1 LP_Problem2 \
+	LP_Problem1 LP_Problem2 LP_Problem3 \
 	mapspacedims1 mapspacedims2 mapspacedims3  mapspacedims4 \
 	matrix1 \
 	max_min1 max_min2 \
@@ -528,6 +528,7 @@ linearsystem1_SOURCES = linearsystem1.cc
 
 LP_Problem1_SOURCES = LP_Problem1.cc
 LP_Problem2_SOURCES = LP_Problem2.cc
+LP_Problem3_SOURCES = LP_Problem3.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 mapspacedims2_SOURCES = mapspacedims2.cc

@@ -137,7 +137,7 @@ LP_Problem::feasible_point() const {
 
 inline const Generator&
 LP_Problem::optimizing_point() const {
-  if (solve() == SOLVED_PROBLEM)
+  if (solve() == OPTIMIZED_LP_PROBLEM)
     return last_generator;
   throw std::domain_error("*this doesn't have an optimizing point.");
 }
@@ -147,17 +147,17 @@ LP_Problem::constraints() const {
   return input_cs;
 }
 
-inline Simplex_Status
+inline LP_Problem_Status
 LP_Problem::solve() const {
   if (is_satisfiable()) {
     LP_Problem& x = const_cast<LP_Problem&>(*this);
     x.second_phase();
     if (x.status == UNBOUNDED)
-      return UNBOUNDED_PROBLEM;
+      return UNBOUNDED_LP_PROBLEM;
     if (x.status == OPTIMIZED)
-      return SOLVED_PROBLEM;
+      return OPTIMIZED_LP_PROBLEM;
   }
-  return UNFEASIBLE_PROBLEM;
+  return UNFEASIBLE_LP_PROBLEM;
 }
 
 inline void

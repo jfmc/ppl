@@ -128,10 +128,10 @@ public:
   //! Optimizes the current LP problem using the primal simplex algorithm.
   /*!
     \return
-    A Simplex_Status flag indicating the outcome of the optimization
-    attempt (unfeasible, unbounded or solved problem).
+    An LP_Problem_Status flag indicating the outcome of the optimization
+    attempt (unfeasible, unbounded or optimized problem).
   */
-  Simplex_Status solve() const;
+  LP_Problem_Status solve() const;
 
   //! \brief
   //! Sets \p num and \p den so that \f$\frac{num}{den}\f$ is the result
@@ -263,14 +263,14 @@ private:
   //! that is required to recover the original LP problem.
   /*!
     \return
-    <CODE>UNFEASIBLE_PROBLEM</CODE> if the constraint system contains
+    <CODE>UNFEASIBLE_LP_PROBLEM</CODE> if the constraint system contains
     any trivially unfeasible constraint (tableau was not computed);
-    <CODE>UNBOUNDED_PROBLEM</CODE> if the problem is trivially unbounded
+    <CODE>UNBOUNDED_LP_PROBLEM</CODE> if the problem is trivially unbounded
     (the computed tableau contains no constraints);
-    <CODE>SOLVED_PROBLEM></CODE> if the problem is neither trivially
+    <CODE>OPTIMIZED_LP_PROBLEM></CODE> if the problem is neither trivially
     unfeasible nor trivially unbounded (the tableau was computed successfully).
   */
-  Simplex_Status compute_tableau();
+  LP_Problem_Status compute_tableau();
 
   //! \brief
   //! Checks for optimality and, if it does not hold, computes the column

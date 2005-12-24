@@ -167,7 +167,7 @@ public:
   //! of the objective function \p expr on the system of constraints.
   /*!
     \return
-    A Simplex_Status flag indicating the outcome of the optimization
+    A LP_Problem_Status flag indicating the outcome of the optimization
     attempt (unfeasible, unbounded or solved problem).
 
     \param expr
@@ -195,11 +195,11 @@ public:
     the parameters \p ext_n, \p ext_d and \p optimizing_point
     will be left untouched.
   */
-  Simplex_Status primal_simplex(const Linear_Expression& expr,
-				Optimization_Mode m,
-				Coefficient& ext_n,
-				Coefficient& ext_d,
-				Generator& optimizing_point) const;
+  LP_Problem_Status primal_simplex(const Linear_Expression& expr,
+				   Optimization_Mode m,
+				   Coefficient& ext_n,
+				   Coefficient& ext_d,
+				   Generator& optimizing_point) const;
 
   //! Checks satisfiability of \p *this using the primal simplex algorithm.
   /*!
@@ -446,7 +446,7 @@ private:
   //! of \p cost_function on the system of constraints.
   /*!
     \return
-    A Simplex_Status flag indicating the outcome of the maximization
+    A LP_Problem_Status flag indicating the outcome of the maximization
     attempt (unfeasible, unbounded or solved problem).
 
     \param cost_function
@@ -462,8 +462,8 @@ private:
     It is assumed that the constraint system contains
     no strict inequalities.
   */
-  Simplex_Status primal_simplex(Linear_Expression& cost_function,
-				Generator& maximizing_point) const;
+  LP_Problem_Status primal_simplex(Linear_Expression& cost_function,
+				   Generator& maximizing_point) const;
 };
 
 // Constraint_System.inlines.hh is not included here on purpose.

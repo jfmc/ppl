@@ -111,7 +111,6 @@ main() {
   Coefficient a,b;
   // Here will be stored a feasible / optimized point.
   Generator pg(point());
-  Simplex_Status ss;
   LP_Problem lpp = LP_Problem(cs, cost, MAXIMIZATION);
   lpp.optimal_value(a,b);
 // lpp.solve();
@@ -122,7 +121,7 @@ main() {
     "/" << b << " Computed Generator";
   print_generator(pg);
 #endif
-  ss = cs.primal_simplex(cost, MAXIMIZATION, a ,b, pg);
+  (void) cs.primal_simplex(cost, MAXIMIZATION, a ,b, pg);
 #if NOISY
   cout << "Optimum computed by primal_simplex is "<< a <<
     "/" << b << " Computed Generator";

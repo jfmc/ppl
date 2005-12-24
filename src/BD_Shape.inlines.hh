@@ -1096,7 +1096,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
     }
 
     // Get all the upper bounds.
-    Simplex_Status simplex_status;
+    LP_Problem_Status lp_status;
     Generator g(point());
     Coefficient num;
     Coefficient den;
@@ -1104,11 +1104,11 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
       Variable x(i-1);
       // Evaluate optimal upper bound for `x <= ub'.
       lp.set_objective_function(x);
-      simplex_status = lp.solve();
-      if (simplex_status == UNBOUNDED_PROBLEM)
+      lp_status = lp.solve();
+      if (lp_status == UNBOUNDED_LP_PROBLEM)
 	dbm[0][i] = PLUS_INFINITY;
       else {
-	assert(simplex_status == SOLVED_PROBLEM);
+	assert(lp_status == OPTIMIZED_LP_PROBLEM);
 	g = lp.optimizing_point();
 	lp.evaluate_objective_function(g, num, den);
 	div_round_up(dbm[0][i], num, den);
@@ -1119,11 +1119,11 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
 	  continue;
 	Variable y(j-1);
 	lp.set_objective_function(x - y);
-	simplex_status = lp.solve();
-	if (simplex_status == UNBOUNDED_PROBLEM)
+	lp_status = lp.solve();
+	if (lp_status == UNBOUNDED_LP_PROBLEM)
 	  dbm[j][i] = PLUS_INFINITY;
 	else {
-	  assert(simplex_status == SOLVED_PROBLEM);
+	  assert(lp_status == OPTIMIZED_LP_PROBLEM);
 	  g = lp.optimizing_point();
 	  lp.evaluate_objective_function(g, num, den);
 	  div_round_up(dbm[j][i], num, den);
@@ -1131,11 +1131,11 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
       }
       // Evaluate optimal upper bound for `-x <= ub'.
       lp.set_objective_function(-x);
-      simplex_status = lp.solve();
-      if (simplex_status == UNBOUNDED_PROBLEM)
+      lp_status = lp.solve();
+      if (lp_status == UNBOUNDED_LP_PROBLEM)
 	dbm[i][0] = PLUS_INFINITY;
       else {
-	assert(simplex_status == SOLVED_PROBLEM);
+	assert(lp_status == OPTIMIZED_LP_PROBLEM);
 	g = lp.optimizing_point();
 	lp.evaluate_objective_function(g, num, den);
 	div_round_up(dbm[i][0], num, den);

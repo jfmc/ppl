@@ -393,7 +393,7 @@ PPL::LP_Problem::erase_slacks() {
 
 // See pag 55 of Papadimitriou.
 
-PPL::Simplex_Status
+PPL::LP_Problem_Status
 PPL::LP_Problem::compute_tableau() {
   assert(tableau.num_rows() == 0);
   assert(dim_map.size() == 0);
@@ -452,13 +452,13 @@ PPL::LP_Problem::compute_tableau() {
       if (cs_i.is_ray_or_point_or_inequality()) {
 	if (cs_i[0] < 0)
 	  // A constraint such as -1 >= 0 is trivially false.
-	  return UNFEASIBLE_PROBLEM;
+	  return UNFEASIBLE_LP_PROBLEM;
       }
       else
 	// The constraint is an equality.
 	if (cs_i[0] != 0)
 	  // A constraint such as 1 == 0 is trivially false.
-	  return UNFEASIBLE_PROBLEM;
+	  return UNFEASIBLE_LP_PROBLEM;
       // Here the constraint is trivially true.
       is_tableau_constraint[i] = false;
       --tableau_num_rows;
@@ -591,13 +591,13 @@ PPL::LP_Problem::compute_tableau() {
     for (dimension_type i = tableau_num_cols; i-- > 1; )
       if (input_obj_function[i] > 0){
 	status = UNBOUNDED;
-	return UNBOUNDED_PROBLEM;
+	return UNBOUNDED_LP_PROBLEM;
       }
   // The problem is neither trivially unfeasible nor trivially unbounded.
   // The tableau was successfull computed and the caller has to figure
   // out which case applies.
   status = OPTIMIZED;
-  return SOLVED_PROBLEM;
+  return OPTIMIZED_LP_PROBLEM;
 }
 
 bool
@@ -801,18 +801,18 @@ PPL::LP_Problem::is_satisfiable() const {
   x.tableau.clear();
   x.dim_map.clear();
   // Compute the initial tableau.
-  Simplex_Status s_status = x.compute_tableau();
+  LP_Problem_Status s_status = x.compute_tableau();
 
   // Check for trivial cases.
   switch (s_status) {
-  case UNFEASIBLE_PROBLEM:
+  case UNFEASIBLE_LP_PROBLEM:
     return false;
-  case UNBOUNDED_PROBLEM:
+  case UNBOUNDED_LP_PROBLEM:
     // A feasible point has to be returned: the origin.
     // Ensure the right space dimension is obtained.
     x.last_generator = point(0*Variable(space_dim-1));
     return true;
-  case SOLVED_PROBLEM:
+  case OPTIMIZED_LP_PROBLEM:
     // Check for the special case of an empty tableau,
     // in which case an optimizing solution is the origin.
     if (x.tableau.num_rows() == 0) {

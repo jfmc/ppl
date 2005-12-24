@@ -572,12 +572,12 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     start_clock();
   }
 
-  if (status == PPL_SIMPLEX_STATUS_UNFEASIBLE) {
+  if (status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE) {
     fprintf(output_file, "Unfeasible problem.\n");
     /* FIXME: check!!! */
     return 0;
   }
-  else if (status == PPL_SIMPLEX_STATUS_UNBOUNDED) {
+  else if (status == PPL_LP_PROBLEM_STATUS_UNBOUNDED) {
     fprintf(output_file, "Unbounded problem.\n");
     /* FIXME: check!!! */
     return 0;

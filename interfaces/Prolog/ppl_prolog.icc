@@ -108,7 +108,7 @@ Prolog_atom a_min;
 // Denote possible outcomes of LP problems solution attempts.
 Prolog_atom a_unfeasible;
 Prolog_atom a_unbounded;
-Prolog_atom a_solved;
+Prolog_atom a_optimized;
 
 // Denotes an open interval boundary.
 Prolog_atom a_o;
@@ -188,7 +188,7 @@ struct {
 
   { &a_unfeasible,               "unfeasible" },
   { &a_unbounded,                "unbounded" },
-  { &a_solved,                   "solved" },
+  { &a_optimized,                "optimized" },
 
   { &a_o,                        "o" },
   { &a_i,                        "i" },
@@ -3231,14 +3231,14 @@ ppl_LP_Problem_solve(Prolog_term_ref t_lp, Prolog_term_ref t_status) {
 
     Prolog_atom a;
     switch (lp->solve()) {
-    case UNFEASIBLE_PROBLEM:
+    case UNFEASIBLE_LP_PROBLEM:
       a = a_unfeasible;
       break;
-    case UNBOUNDED_PROBLEM:
+    case UNBOUNDED_LP_PROBLEM:
       a = a_unbounded;
       break;
-    case SOLVED_PROBLEM:
-      a = a_solved;
+    case OPTIMIZED_LP_PROBLEM:
+      a = a_optimized;
       break;
     }
     Prolog_term_ref t = Prolog_new_term_ref();

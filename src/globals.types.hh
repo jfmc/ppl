@@ -62,16 +62,6 @@ enum Optimization_Mode {
   MAXIMIZATION
 };
 
-//! Possible outcomes of a simplex solver.
-enum Simplex_Status {
-  //! The problem is unfeasible.
-  UNFEASIBLE_PROBLEM,
-  //! The problem is unbounded.
-  UNBOUNDED_PROBLEM,
-  //! The problem has been solved.
-  SOLVED_PROBLEM
-};
-
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_globals_types_hh)
