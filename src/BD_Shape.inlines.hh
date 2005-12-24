@@ -171,7 +171,7 @@ template <typename U>
 inline
 BD_Shape<T>::BD_Shape(const BD_Shape<U>& y)
   : dbm(y.dbm), status(), redundancy_dbm() {
-  // FIXME: handle flags properly, possibly taking special cases into account.
+  // TODO: handle flags properly, possibly taking special cases into account.
   if (y.marked_empty())
     set_empty();
   else if (y.status.test_zero_dim_univ())
@@ -568,8 +568,8 @@ BD_Shape<T>::upper_bound_assign(const BD_Shape& y) {
 
 template <typename T>
 inline bool
-BD_Shape<T>::bds_hull_assign_if_exact(const BD_Shape&) { 
-  // FIXME: this must be properly implemented.
+BD_Shape<T>::bds_hull_assign_if_exact(const BD_Shape&) {
+  // TODO: this must be properly implemented.
   return false;
 }
 
@@ -3629,15 +3629,14 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
       = expr - (expr_v + denominator)*var;
     const Coefficient inverse_den = - expr_v;
     const Relation_Symbol inverse_relsym
-      = (sgn(denominator) == sgn(inverse_den))
-      ? relsym : reversed_relsym;
+      = (sgn(denominator) == sgn(inverse_den)) ? relsym : reversed_relsym;
     generalized_affine_image(var, inverse_relsym, inverse, inverse_den);
     return;
   }
 
   // Here `var_coefficient == 0', so that the preimage cannot
   // be easily computed by inverting the affine relation.
-  // Shrink the bd_shape by adding the constraint induced
+  // Shrink the BD shape by adding the constraint induced
   // by the affine relation.
   const Coefficient& b = expr.inhomogeneous_term();
   // Number of non-zero coefficients in `expr': will be set to
@@ -3679,29 +3678,29 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
   }
   else if (t == 1) {
     // Value of the one and only non-zero coefficient in `expr'.
-    const Coefficient& sc_j = expr.coefficient(Variable(j-1));
+    const Coefficient& expr_j = expr.coefficient(Variable(j-1));
     N d;
     switch (relsym) {
     case LESS_THAN_OR_EQUAL:
       div_round_up(d, b, denominator);
       // Note that: `j != v', so that `expr' is of the form
-      // a * j + b, with `j != v'.
-      if (sc_j == denominator)
+      // expr_j * j + b, with `j != v'.
+      if (expr_j == denominator)
 	// Add the new constraint `v - j <= b/denominator'.
 	add_dbm_constraint(j, v, d);
       else {
-	// Here a != denominator, so that we should be adding
+	// Here expr_j != denominator, so that we should be adding
 	// the constraint `v <= b/denominator - j'.
 	N sum;
-	// Approximate the homogeneous part of `sc_j'.
-	const int sign_j = sgn(sc_j);
+	// Approximate the homogeneous part of `expr'.
+	const int sign_j = sgn(expr_j);
 	const N& approx_j = (sign_j > 0) ? dbm_0[j] : dbm[j][0];
 	if (!is_plus_infinity(approx_j)) {
 	  N coeff_j;
 	  if (sign_j > 0)
-	    assign(coeff_j, raw_value(sc_j), ROUND_UP);
+	    assign(coeff_j, raw_value(expr_j), ROUND_UP);
 	  else
-	    assign(coeff_j, raw_value(-sc_j), ROUND_UP);
+	    assign(coeff_j, raw_value(-expr_j), ROUND_UP);
 	  assign_add_mul(sum, coeff_j, approx_j, ROUND_UP);
 	  add_dbm_constraint(0, v, sum);
 	}
@@ -3711,23 +3710,23 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
     case GREATER_THAN_OR_EQUAL:
       div_round_up(d, -b, denominator);
       // Note that: `j != v', so that `expr' is of the form
-      // a * j + b, with `j != v'.
-      if (sc_j == denominator)
-	// Add the new constraint `v - j <= b/denominator'.
+      // expr_j * j + b, with `j != v'.
+      if (expr_j == denominator)
+	// Add the new constraint `v - j >= b/denominator'.
 	add_dbm_constraint(j, v, d);
       else {
-	// Here a != denominator, so that we should be adding
+	// Here expr_j != denominator, so that we should be adding
 	// the constraint `v <= b/denominator - j'.
 	N sum;
-	// Approximate the homogeneous part of `sc_j'.
-	const int sign_j = sgn(sc_j);
+	// Approximate the homogeneous part of `expr_j'.
+	const int sign_j = sgn(expr_j);
 	const N& approx_j = (sign_j > 0) ? dbm_0[j] : dbm[j][0];
 	if (!is_plus_infinity(approx_j)) {
 	  N coeff_j;
 	  if (sign_j > 0)
-	    assign(coeff_j, raw_value(sc_j), ROUND_UP);
+	    assign(coeff_j, raw_value(expr_j), ROUND_UP);
 	  else
-	    assign(coeff_j, raw_value(-sc_j), ROUND_UP);
+	    assign(coeff_j, raw_value(-expr_j), ROUND_UP);
 	  assign_add_mul(sum, coeff_j, approx_j, ROUND_UP);
 	  add_dbm_constraint(0, v, sum);
 	}
