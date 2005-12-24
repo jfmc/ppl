@@ -853,10 +853,10 @@ public:
     of \p *this or if \p relsym is a strict relation symbol.
   */
   void generalized_affine_preimage(Variable var,
-				Relation_Symbol relsym,
-				const Linear_Expression& expr,
-				Coefficient_traits::const_reference denominator
-				= Coefficient_one());
+				   Relation_Symbol relsym,
+				   const Linear_Expression& expr,
+				   Coefficient_traits::const_reference
+				   denominator = Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the result of computing the
