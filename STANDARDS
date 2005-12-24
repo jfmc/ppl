@@ -461,7 +461,7 @@ o  To avoid repeated namespace qualifications, the header file `ppl_test.hh'
    the namespace `std' should be explicitly qualified in the test files
    (typically, by adding a corresponding using declaration).
 
-o  If PPL stream input and output is required,then an explicit using
+o  If PPL stream input and output is required, then an explicit using
    directive for the Parma_Polyhedra_Library::IO_Operators namespace
    should be added to the test file.
 
