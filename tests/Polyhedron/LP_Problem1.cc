@@ -23,7 +23,6 @@
 
 #include "ppl_test.hh"
 #include <iostream>
-#include <vector>
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
