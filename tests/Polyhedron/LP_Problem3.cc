@@ -30,7 +30,7 @@ using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #ifndef NOISY
-#define NOISY 1
+#define NOISY 0
 #endif
 
 int
