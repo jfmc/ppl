@@ -30,7 +30,7 @@ using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #ifndef NOISY
-#define NOISY 0
+#define NOISY 1
 #endif
 
 int
@@ -75,9 +75,9 @@ main() {
   Variable X37(36);
   Variable X38(37);
   Variable X39(38);
+
   // Define a Constraint vector and fill it.
   std::vector<Constraint> cs_vector;
-  Constraint_System cs;
   cs_vector.push_back(X01-X02-X03 +0*X39 == 0);
   cs_vector.push_back(Coefficient("2386907802506363")*X01-X04 == 0);
   cs_vector.push_back(-X01 >= -80);
@@ -114,6 +114,7 @@ main() {
   Coefficient a,b;
 
   // Set `cs'.
+  Constraint_System cs = Constraint_System();
   for (dimension_type i = 0; i < cs_vector.size(); ++i)
     cs.insert(cs_vector[i]);
 
@@ -127,13 +128,30 @@ main() {
   pg = lpp.optimizing_point();
   //   lpp.evaluate_objective_function(pg, a, b);
 #if NOISY
-  cout << endl << "Optimum computed by LP_Problem::solve is "<< a <<
+  cout << endl << "Optimum computed by LP_Problem solving the problem in one"
+    " shot is "<< a << "/" << b << endl <<" Computed Generator ";
+  print_generator(pg);
+  cout << "Elapsed Time:" ;
+  print_clock(cout);
+  cout << endl;
+#endif
+  // Reset `cs' to apply old style incrementality.
+  cs.clear();
+  start_clock();
+  for (dimension_type i = 0; i < cs_vector.size(); ++i) {
+    cs.insert(cs_vector[i]);
+    cs.primal_simplex(cost, MAXIMIZATION, a, b, pg);
+  }
+#if NOISY
+  cout << endl << "Optimum computed by Constraint_System::primal_simplex"
+    " adding constraints  `incrementally' is "<< a <<
     "/" << b << endl <<" Computed Generator ";
   print_generator(pg);
   cout << "Elapsed Time:" ;
   print_clock(cout);
   cout << endl;
 #endif
+
   // Now test incrementality.
   LP_Problem incremental_lpp = LP_Problem(Constraint_System(), cost,
 					  MAXIMIZATION);
