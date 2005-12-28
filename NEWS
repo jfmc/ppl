@@ -10,6 +10,14 @@ NEWS for version 0.8  (to be released on January 20, 2006)
 New and Changed Features
 ========================
 
+o  The class template BD_Shape<T> provides an implementation of the
+   abstract domain of Bounded Difference shapes. The template type
+   parameter T specifies the basic type used for the inhomogeneous term
+   of bounded difference constraints; it can be instantiated to either
+   GMP's unbounded precision types (mpq_class, mpz_class), native
+   floating point types (float, double), or native integer types
+   (8, 16, 32 and 64 bits wide).
+
 o  New method Constraint_System::primal_simplex() provides a textbook
    implementation of the primal simplex algorithm.
 
