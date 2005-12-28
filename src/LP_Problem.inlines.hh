@@ -23,14 +23,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_LP_Problem_inlines_hh
 #define PPL_LP_Problem_inlines_hh 1
 
+#include "Constraint.defs.hh"
+#include "Constraint_System.defs.hh"
+#include <stdexcept>
+
 namespace Parma_Polyhedra_Library {
-// FIXME: Have we to initialize the status to `UNSOLVED' or to
-//        `OPTIMIZED' ?
+
 inline
 LP_Problem::LP_Problem()
-  : tableau(),  base(),  dim_map(), status(UNSOLVED),
+  : tableau(),  base(),  dim_map(), status(OPTIMIZED),
     input_cs(), input_obj_function(), opt_mode(MAXIMIZATION),
-    last_generator(point()){
+    last_generator(point()) {
   assert(OK());
 }
 
@@ -38,10 +41,22 @@ inline
 LP_Problem::LP_Problem(const Constraint_System& cs,
 		       const Linear_Expression& obj,
 		       const Optimization_Mode mode)
-  // FIXME: implement documented checks and throw an exception if needed.
   : tableau(), base(), dim_map(), status(UNSOLVED),
-    input_cs(cs), input_obj_function(obj), opt_mode(mode),
-    last_generator(point()){
+    input_cs(!cs.has_strict_inequalities()
+	     ? cs
+	     : (throw std::invalid_argument("PPL::LP_Problem::"
+			   "LP_Problem(cs, obj, m):\n"
+			   "cs contains strict inequalities."),
+		cs)),
+    input_obj_function(obj.space_dimension() <= cs.space_dimension()
+		       ? obj
+		       : (throw std::invalid_argument("PPL::LP_Problem::"
+			             "LP_Problem(cs, obj, m):\n"
+				     "cs and obj have "
+				     "incompatible space dimensions."),
+			  obj)),
+    opt_mode(mode),
+    last_generator(point()) {
   assert(OK());
 }
 
@@ -59,6 +74,9 @@ LP_Problem::~LP_Problem() {
 
 inline void
 LP_Problem::add_constraint(const Constraint& c) {
+  if (c.is_strict_inequality())
+    throw std::invalid_argument("PPL::LP_Problem::add_constraint(c):\n"
+				"c is a strict inequality.");
   input_cs.insert(c);
   if (status != UNSATISFIABLE)
     // FIXME: Here we should apply the incremental simplex algorithm: for
@@ -70,6 +88,9 @@ LP_Problem::add_constraint(const Constraint& c) {
 
 inline void
 LP_Problem::add_constraints(const Constraint_System& cs) {
+  if (cs.has_strict_inequalities())
+    throw std::invalid_argument("PPL::LP_Problem::add_constraints(cs):\n"
+				"cs contains strict inequalities.");
   const dimension_type cs_num_rows = cs.num_rows();
   for (dimension_type i = cs_num_rows; i-- > 0; )
     input_cs.insert(cs[i]);
@@ -84,6 +105,10 @@ LP_Problem::add_constraints(const Constraint_System& cs) {
 
 inline void
 LP_Problem::set_objective_function(const Linear_Expression& obj) {
+  if (space_dimension() < obj.space_dimension())
+    throw std::invalid_argument("PPL::LP_Problem::"
+				"set_objective_function(obj):\n"
+				"*this and obj are dimension incompatible.");
   switch (status) {
   case UNBOUNDED:
     status = SATISFIABLE;
@@ -132,14 +157,16 @@ LP_Problem::feasible_point() const {
     assert(OK());
     return last_generator;
   }
-  throw std::domain_error("*this is not satisfiable.");
+  throw std::domain_error("PPL::LP_Problem::feasible_point():\n"
+			  "*this is not satisfiable.");
 }
 
 inline const Generator&
 LP_Problem::optimizing_point() const {
   if (solve() == OPTIMIZED_LP_PROBLEM)
     return last_generator;
-  throw std::domain_error("*this doesn't have an optimizing point.");
+  throw std::domain_error("PPL::LP_Problem::optimizing_point():\n"
+			  "*this doesn't have an optimizing point.");
 }
 
 inline const Constraint_System&
@@ -165,21 +192,6 @@ LP_Problem::optimal_value(Coefficient& num, Coefficient& den) const {
   const Generator& g_ref = optimizing_point();
   evaluate_objective_function(g_ref, num, den);
   assert(OK());
-}
-
-inline bool
-LP_Problem::OK() const {
-  // FIXME: still to be completed...
-  if (status == SATISFIABLE || status == OPTIMIZED
-      || status == UNBOUNDED) {
-    // The dimension of the last computed generator must be equal to
-    // the input `Constraint_System' one.
-    if(last_generator.space_dimension() != input_cs.space_dimension())
-      return false;
-    if(!input_cs.satisfies_all_constraints(last_generator))
-      return false;
-  }
-  return true;
 }
 
 inline void
