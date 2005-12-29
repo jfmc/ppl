@@ -34,8 +34,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <errno.h>
 #include <string.h>
 
-#define USE_LP_PROBLEM 1
-
 #ifdef HAVE_GETOPT_H
 # include <getopt.h>
 #endif
@@ -551,19 +549,11 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 		   ppl_Generator_t point) {
   int status;
 
-#if USE_LP_PROBLEM
   ppl_LP_Problem_t lp;
   int mode = maximize
     ? PPL_LP_PROBLEM_MAXIMIZATION : PPL_LP_PROBLEM_MINIMIZATION;
   ppl_new_LP_Problem(&lp, cs, objective, mode);
   status = ppl_LP_Problem_solve(lp);
-#else
-  status = maximize
-    ? ppl_Constraint_System_maximize(cs, objective,
-				     optimum_n, optimum_d, point)
-    : ppl_Constraint_System_minimize(cs, objective,
-				     optimum_n, optimum_d, point);
-#endif
 
   if (print_timings) {
     fprintf(stderr, "Time to find the optimum: ");
@@ -583,13 +573,10 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     return 0;
   }
   else {
-#if USE_LP_PROBLEM
+    ppl_LP_Problem_optimal_value(lp, optimum_n, optimum_d);
     ppl_const_Generator_t g;
     ppl_LP_Problem_optimizing_point(lp, &g);
     ppl_assign_Generator_from_Generator(point, g);
-    ppl_LP_Problem_evaluate_objective_function(lp, point,
-					       optimum_n, optimum_d);
-#endif
     return 1;
   }
 }
