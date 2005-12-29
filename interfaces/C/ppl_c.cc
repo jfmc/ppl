@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
+#include "LP_Problem.defs.hh"
 #include "Init.defs.hh"
 #include "max_space_dimension.hh"
 #include "version.hh"
@@ -101,6 +102,7 @@ catch (const std::exception& e) {	     \
 #define CATCH_ALL \
 CATCH_STD_EXCEPTION(bad_alloc, PPL_ERROR_OUT_OF_MEMORY) \
 CATCH_STD_EXCEPTION(invalid_argument, PPL_ERROR_INVALID_ARGUMENT) \
+CATCH_STD_EXCEPTION(domain_error, PPL_ERROR_DOMAIN_ERROR) \
 CATCH_STD_EXCEPTION(length_error, PPL_ERROR_LENGTH_ERROR) \
 CATCH_STD_EXCEPTION(overflow_error, PPL_ARITHMETIC_OVERFLOW) \
 CATCH_STD_EXCEPTION(runtime_error, PPL_ERROR_INTERNAL_ERROR) \
@@ -122,9 +124,12 @@ unsigned int PPL_COMPLEXITY_CLASS_POLYNOMIAL;
 unsigned int PPL_COMPLEXITY_CLASS_SIMPLEX;
 unsigned int PPL_COMPLEXITY_CLASS_ANY;
 
-int PPL_SIMPLEX_STATUS_UNFEASIBLE;
-int PPL_SIMPLEX_STATUS_UNBOUNDED;
-int PPL_SIMPLEX_STATUS_SOLVED;
+int PPL_LP_PROBLEM_STATUS_UNFEASIBLE;
+int PPL_LP_PROBLEM_STATUS_UNBOUNDED;
+int PPL_LP_PROBLEM_STATUS_OPTIMIZED;
+
+int PPL_LP_PROBLEM_MINIMIZATION;
+int PPL_LP_PROBLEM_MAXIMIZATION;
 
 namespace {
 
@@ -218,9 +223,12 @@ ppl_initialize(void) try {
   PPL_COMPLEXITY_CLASS_SIMPLEX = SIMPLEX_COMPLEXITY;
   PPL_COMPLEXITY_CLASS_ANY = ANY_COMPLEXITY;
 
-  PPL_SIMPLEX_STATUS_UNFEASIBLE = UNFEASIBLE_PROBLEM;
-  PPL_SIMPLEX_STATUS_UNBOUNDED = UNBOUNDED_PROBLEM;
-  PPL_SIMPLEX_STATUS_SOLVED = SOLVED_PROBLEM;
+  PPL_LP_PROBLEM_STATUS_UNFEASIBLE = UNFEASIBLE_LP_PROBLEM;
+  PPL_LP_PROBLEM_STATUS_UNBOUNDED = UNBOUNDED_LP_PROBLEM;
+  PPL_LP_PROBLEM_STATUS_OPTIMIZED = OPTIMIZED_LP_PROBLEM;
+
+  PPL_LP_PROBLEM_MINIMIZATION = MINIMIZATION;
+  PPL_LP_PROBLEM_MAXIMIZATION = MAXIMIZATION;
 
   c_variable_output_function = c_variable_default_output_function;
   saved_cxx_Variable_output_function = Variable::get_output_function();
@@ -316,6 +324,8 @@ typedef Generator_System::const_iterator Generator_System_const_iterator;
 DECLARE_CONVERSIONS(Generator_System_const_iterator)
 
 DECLARE_CONVERSIONS(Polyhedron)
+
+DECLARE_CONVERSIONS(LP_Problem)
 
 
 int
@@ -2269,6 +2279,191 @@ CATCH_ALL
 int
 ppl_Polyhedron_OK(ppl_const_Polyhedron_t ph) try {
   return to_const(ph)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_new_LP_Problem_trivial(ppl_LP_Problem_t* plp) try {
+  *plp = to_nonconst(new LP_Problem());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_LP_Problem(ppl_LP_Problem_t* plp, ppl_const_Constraint_System_t cs,
+		   ppl_const_Linear_Expression_t le, int m) try {
+  const Constraint_System& ccs = *to_const(cs);
+  const Linear_Expression& lle = *to_const(le);
+  Optimization_Mode mm = (m == PPL_LP_PROBLEM_MINIMIZATION)
+    ? MINIMIZATION : MAXIMIZATION;
+  *plp = to_nonconst(new LP_Problem(ccs, lle, mm));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_LP_Problem_from_LP_Problem(ppl_LP_Problem_t* plp,
+				   ppl_const_LP_Problem_t lp) try {
+  const LP_Problem& llp = *to_const(lp);
+  *plp = to_nonconst(new LP_Problem(llp));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_LP_Problem(ppl_const_LP_Problem_t lp) try {
+  delete to_const(lp);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_LP_Problem_from_LP_Problem(ppl_LP_Problem_t dst,
+				      ppl_const_LP_Problem_t src) try {
+  const LP_Problem& ssrc = *to_const(src);
+  LP_Problem& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_space_dimension(ppl_const_LP_Problem_t lp,
+			       ppl_dimension_type* m) try {
+  *m = to_const(lp)->space_dimension();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_constraints(ppl_const_LP_Problem_t lp,
+			   ppl_const_Constraint_System_t* pcs) try {
+  const Constraint_System& cs = to_const(lp)->constraints();
+  *pcs = to_const(&cs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_objective_function(ppl_const_LP_Problem_t lp,
+				  ppl_const_Linear_Expression_t* ple) try {
+  const Linear_Expression& le = to_const(lp)->objective_function();
+  *ple = to_const(&le);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_optimization_mode(ppl_const_LP_Problem_t lp) try {
+  return to_const(lp)->optimization_mode();
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_clear(ppl_LP_Problem_t lp) try {
+  to_nonconst(lp)->clear();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_add_constraint(ppl_LP_Problem_t lp,
+			      ppl_const_Constraint_t c) try {
+  const Constraint& cc = *to_const(c);
+  LP_Problem& llp = *to_nonconst(lp);
+  llp.add_constraint(cc);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_add_constraints(ppl_LP_Problem_t lp,
+			       ppl_const_Constraint_System_t cs) try {
+  const Constraint_System& ccs = *to_const(cs);
+  LP_Problem& llp = *to_nonconst(lp);
+  llp.add_constraints(ccs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_set_objective_function(ppl_LP_Problem_t lp,
+				      ppl_const_Linear_Expression_t le) try {
+  const Linear_Expression& lle = *to_const(le);
+  LP_Problem& llp = *to_nonconst(lp);
+  llp.set_objective_function(lle);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_set_optimization_mode(ppl_LP_Problem_t lp, int mode) try {
+  LP_Problem& llp = *to_nonconst(lp);
+  Optimization_Mode m = (mode == PPL_LP_PROBLEM_MINIMIZATION)
+    ? MINIMIZATION : MAXIMIZATION;
+  llp.set_optimization_mode(m);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_is_satisfiable(ppl_const_LP_Problem_t lp) try {
+  return to_const(lp)->is_satisfiable() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_solve(ppl_const_LP_Problem_t lp) try {
+  return to_const(lp)->solve();
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_evaluate_objective_function(ppl_const_LP_Problem_t lp,
+					   ppl_const_Generator_t g,
+					   ppl_Coefficient_t num,
+					   ppl_Coefficient_t den) try {
+  const LP_Problem& llp = *to_const(lp);
+  const Generator& gg = *to_const(g);
+  Coefficient& nnum = *to_nonconst(num);
+  Coefficient& dden = *to_nonconst(den);
+  llp.evaluate_objective_function(gg, nnum, dden);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_feasible_point(ppl_const_LP_Problem_t lp,
+			      ppl_const_Generator_t* pg) try {
+  const Generator& g = to_const(lp)->feasible_point();
+  *pg = to_const(&g);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_optimizing_point(ppl_const_LP_Problem_t lp,
+				ppl_const_Generator_t* pg) try {
+  const Generator& g = to_const(lp)->optimizing_point();
+  *pg = to_const(&g);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_optimal_value(ppl_const_LP_Problem_t lp,
+			     ppl_Coefficient_t num,
+			     ppl_Coefficient_t den) try {
+  Coefficient& nnum = *to_nonconst(num);
+  Coefficient& dden = *to_nonconst(den);
+  to_const(lp)->optimal_value(nnum, dden);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_OK(ppl_const_LP_Problem_t lp) try {
+  return to_const(lp)->OK() ? 1 : 0;
 }
 CATCH_ALL
 

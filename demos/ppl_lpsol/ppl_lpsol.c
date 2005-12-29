@@ -549,11 +549,11 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 		   ppl_Generator_t point) {
   int status;
 
-  status = maximize
-    ? ppl_Constraint_System_maximize(cs, objective,
-				     optimum_n, optimum_d, point)
-    : ppl_Constraint_System_minimize(cs, objective,
-				     optimum_n, optimum_d, point);
+  ppl_LP_Problem_t lp;
+  int mode = maximize
+    ? PPL_LP_PROBLEM_MAXIMIZATION : PPL_LP_PROBLEM_MINIMIZATION;
+  ppl_new_LP_Problem(&lp, cs, objective, mode);
+  status = ppl_LP_Problem_solve(lp);
 
   if (print_timings) {
     fprintf(stderr, "Time to find the optimum: ");
@@ -562,18 +562,23 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     start_clock();
   }
 
-  if (status == PPL_SIMPLEX_STATUS_UNFEASIBLE) {
+  if (status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE) {
     fprintf(output_file, "Unfeasible problem.\n");
     /* FIXME: check!!! */
     return 0;
   }
-  else if (status == PPL_SIMPLEX_STATUS_UNBOUNDED) {
+  else if (status == PPL_LP_PROBLEM_STATUS_UNBOUNDED) {
     fprintf(output_file, "Unbounded problem.\n");
     /* FIXME: check!!! */
     return 0;
   }
-  else
+  else {
+    ppl_LP_Problem_optimal_value(lp, optimum_n, optimum_d);
+    ppl_const_Generator_t g;
+    ppl_LP_Problem_optimizing_point(lp, &g);
+    ppl_assign_Generator_from_Generator(point, g);
     return 1;
+  }
 }
 
 static void

@@ -133,6 +133,7 @@ Saturation_Matrix.types.hh \
 Constraint_System.types.hh \
 Generator_System.types.hh \
 Scalar_Products.types.hh \
+LP_Problem.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
@@ -205,6 +206,8 @@ Generator.inlines.hh \
 Generator_System.inlines.hh \
 Scalar_Products.defs.hh \
 Scalar_Products.inlines.hh \
+LP_Problem.defs.hh \
+LP_Problem.inlines.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Con_Relation.inlines.hh \
 Poly_Gen_Relation.defs.hh \
@@ -265,6 +268,7 @@ Linear_Expression.cc \
 Linear_System.cc \
 Matrix.cc \
 Scalar_Products.cc \
+LP_Problem.cc \
 Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
 BHRZ03_Certificate.cc \
@@ -306,6 +310,7 @@ Constraint.types.hh \
 Constraint_System.types.hh \
 Generator.types.hh \
 Generator_System.types.hh \
+LP_Problem.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
@@ -324,6 +329,7 @@ Constraint.defs.hh \
 Constraint_System.defs.hh \
 Generator.defs.hh \
 Generator_System.defs.hh \
+LP_Problem.defs.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Gen_Relation.defs.hh \
 BHRZ03_Certificate.defs.hh \

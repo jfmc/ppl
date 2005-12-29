@@ -37,9 +37,9 @@ main() {
   Coefficient n;
   Coefficient d;
   Generator g(point());
-  Simplex_Status status = cs.primal_simplex(cost, MAXIMIZATION, n, d, g);
+  LP_Problem_Status status = cs.primal_simplex(cost, MAXIMIZATION, n, d, g);
 
   Generator opt(point(0*C));
-  return (status == SOLVED_PROBLEM && g == opt) ? 0 : 1;
+  return (status == OPTIMIZED_LP_PROBLEM && g == opt) ? 0 : 1;
 }
 

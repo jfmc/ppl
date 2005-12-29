@@ -164,31 +164,34 @@ enum ppl_enum_error_code {
     A function has been invoked with an invalid argument. */
   PPL_ERROR_INVALID_ARGUMENT = -3,
   /*! \hideinitializer
+    A function has been invoked outside its domain of definition. */
+  PPL_ERROR_DOMAIN_ERROR = -4,
+  /*! \hideinitializer
     The construction of an object that would exceed its maximum
     permitted size was attempted. */
-  PPL_ERROR_LENGTH_ERROR = -4,
+  PPL_ERROR_LENGTH_ERROR = -5,
   /*! \hideinitializer
     An arithmetic overflow occurred and the computation was consequently
     interrupted.  This can <EM>only</EM> happen in library's incarnations
     using bounded integers as coefficients. */
-  PPL_ARITHMETIC_OVERFLOW = -5,
+  PPL_ARITHMETIC_OVERFLOW = -6,
   /*! \hideinitializer
     An error occurred during a C input/output operation.  A more
     precise indication of what went wrong is available via
     <CODE>errno</CODE>. */
-  PPL_STDIO_ERROR = -6,
+  PPL_STDIO_ERROR = -7,
   /*! \hideinitializer
     An internal error that was diagnosed by the PPL itself.
     This indicates a bug in the PPL. */
-  PPL_ERROR_INTERNAL_ERROR = -7,
+  PPL_ERROR_INTERNAL_ERROR = -8,
   /*! \hideinitializer
     A standard exception has been raised by the C++ run-time environment.
     This indicates a bug in the PPL. */
-  PPL_ERROR_UNKNOWN_STANDARD_EXCEPTION = -8,
+  PPL_ERROR_UNKNOWN_STANDARD_EXCEPTION = -9,
   /*! \hideinitializer
     A totally unknown, totally unexpected error happened.
     This indicates a bug in the PPL. */
-  PPL_ERROR_UNEXPECTED_ERROR = -9
+  PPL_ERROR_UNEXPECTED_ERROR = -10
 };
 
 /*! \name Version Checking */
@@ -351,6 +354,8 @@ PPL_TYPE_DECLARATION(Generator_System);
 PPL_TYPE_DECLARATION(Generator_System_const_iterator);
 
 PPL_TYPE_DECLARATION(Polyhedron);
+
+PPL_TYPE_DECLARATION(LP_Problem);
 
 #undef PPL_TYPE_DECLARATION
 
@@ -1120,19 +1125,29 @@ extern unsigned int PPL_COMPLEXITY_CLASS_SIMPLEX;
 extern unsigned int PPL_COMPLEXITY_CLASS_ANY;
 
 /*! \brief
-  Code of the "unfeasible problem" simplex status.
+  Code of the "unfeasible LP problem" status.
 */
-extern int PPL_SIMPLEX_STATUS_UNFEASIBLE;
+extern int PPL_LP_PROBLEM_STATUS_UNFEASIBLE;
 
 /*! \brief
-  Code of the "unbounded problem" simplex status.
+  Code of the "unbounded LP problem" status.
 */
-extern int PPL_SIMPLEX_STATUS_UNBOUNDED;
+extern int PPL_LP_PROBLEM_STATUS_UNBOUNDED;
 
 /*! \brief
-  Code of the "solved problem" simplex status.
+  Code of the "optimized LP problem" status.
 */
-extern int PPL_SIMPLEX_STATUS_SOLVED;
+extern int PPL_LP_PROBLEM_STATUS_OPTIMIZED;
+
+/*! \brief
+  Code of the "maximization" optimization mode.
+*/
+extern int PPL_LP_PROBLEM_MAXIMIZATION;
+
+/*! \brief
+  Code of the "minimization" optimization mode.
+*/
+extern int PPL_LP_PROBLEM_MINIMIZATION;
 
 /*! \brief
   Individual bit saying that the polyhedron and the set of points
@@ -2409,6 +2424,198 @@ ppl_Polyhedron_fold_space_dimensions PPL_PROTO((ppl_Polyhedron_t ph,
 						ppl_dimension_type d));
 
 /*@}*/ /* Functions Related to Polyhedra */
+
+
+/*! \name Functions Related to LP Problems */
+/*@{*/
+
+/*! \brief
+  Builds a trivial LP problem and writes a handle to it at address \p plp.
+*/
+int
+ppl_new_LP_Problem_trivial PPL_PROTO((ppl_LP_Problem_t* plp));
+
+/*! \brief
+  Builds an LP problem having feasible region \p cs, objective function
+  \p le and optimization mode \p m; writes a handle to it at address \p plp.
+*/
+int
+ppl_new_LP_Problem PPL_PROTO((ppl_LP_Problem_t* plp,
+			      ppl_const_Constraint_System_t cs,
+			      ppl_const_Linear_Expression_t le,
+			      int m));
+
+/*! \brief
+  Builds an LP problem that is a copy of \p lp; writes a handle
+  for the newly created system at address \p plp.
+*/
+int
+ppl_new_LP_Problem_from_LP_Problem
+PPL_PROTO((ppl_LP_Problem_t* plp, ppl_const_LP_Problem_t lp));
+
+/*! \brief
+  Invalidates the handle \p lp: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_LP_Problem PPL_PROTO((ppl_const_LP_Problem_t lp));
+
+/*! \brief
+  Assigns a copy of the LP problem \p src to \p dst.
+*/
+int
+ppl_assign_LP_Problem_from_LP_Problem
+PPL_PROTO((ppl_LP_Problem_t dst, ppl_const_LP_Problem_t src));
+
+/*! \brief
+  Writes to \p m the dimension of the vector space enclosing \p lp.
+*/
+int
+ppl_LP_Problem_space_dimension
+PPL_PROTO((ppl_const_LP_Problem_t lp, ppl_dimension_type* m));
+
+/*! \brief
+  Writes a const handle to the constraint system defining the
+  feasible region of the LP problem \p lp at address \p pcs.
+*/
+int
+ppl_LP_Problem_constraints PPL_PROTO((ppl_const_LP_Problem_t lp,
+				      ppl_const_Constraint_System_t* pcs));
+
+/*! \brief
+  Writes a const handle to the linear expression defining the
+  objective function of the LP problem \p lp at address \p ple.
+*/
+int
+ppl_LP_Problem_objective_function
+PPL_PROTO((ppl_const_LP_Problem_t lp, ppl_const_Linear_Expression_t* ple));
+
+/*! \brief
+  Returns the optimization mode of the LP problem \p lp.
+*/
+int
+ppl_LP_Problem_optimization_mode PPL_PROTO((ppl_const_LP_Problem_t lp));
+
+/*! \brief
+  Resets the LP problem to be a trivial problem of space dimension 0.
+*/
+int
+ppl_LP_Problem_clear PPL_PROTO((ppl_LP_Problem_t lp));
+
+/*! \brief
+  Modifies the feasible region of the LP problem \p lp by adding a copy
+  of the constraint \p c; the space dimension is increased, if necessary.
+*/
+int
+ppl_LP_Problem_add_constraint PPL_PROTO((ppl_LP_Problem_t lp,
+					 ppl_const_Constraint_t c));
+
+/*! \brief
+  Modifies the feasible region of the LP problem \p lp by adding a copy
+  of the constraints in \p cs; the space dimension is increased, if necessary.
+*/
+int
+ppl_LP_Problem_add_constraints PPL_PROTO((ppl_LP_Problem_t lp,
+					  ppl_const_Constraint_System_t cs));
+
+/*! \brief
+  Sets the objective function of the LP problem \p lp to a copy of \p le.
+*/
+int
+ppl_LP_Problem_set_objective_function
+PPL_PROTO((ppl_LP_Problem_t lp, ppl_const_Linear_Expression_t le));
+
+/*! \brief
+  Sets the optimization mode of the LP problem \p lp to \p mode.
+*/
+int
+ppl_LP_Problem_set_optimization_mode PPL_PROTO((ppl_LP_Problem_t lp,
+						int mode));
+
+/*! \brief
+  Returns a positive integer if \p lp is satisfiable; returns 0 otherwise.
+*/
+int
+ppl_LP_Problem_is_satisfiable PPL_PROTO((ppl_const_LP_Problem_t lp));
+
+/*! \brief
+  Solves the LP problem \p lp, returning an exit status.
+
+  \return
+  <CODE>PPL_SIMPLEX_PROBLEM_UNFEASIBLE</CODE> if the LP problem
+  is not satisfiable;
+  <CODE>PPL_SIMPLEX_PROBLEM_UNBOUNDED</CODE> if the LP problem
+  is satisfiable but there is no finite bound to the value of
+  the objective function;
+  <CODE>PPL_SIMPLEX_PROBLEM_SOLVED</CODE> if the LP problem admits
+  an optimal solution.
+*/
+int
+ppl_LP_Problem_solve PPL_PROTO((ppl_const_LP_Problem_t lp));
+
+/*! \brief
+  Evaluates the objective function of \p lp on point \p g.
+
+  \param lp
+  The LP problem defining the objective function;
+
+  \param g
+  The generator on which the objective function will be evaluated;
+
+  \param num
+  Will be assigned the numerator of the objective function value;
+
+  \param den
+  Will be assigned the denominator of the objective function value;
+*/
+int
+ppl_LP_Problem_evaluate_objective_function
+PPL_PROTO((ppl_const_LP_Problem_t lp, ppl_const_Generator_t g,
+	   ppl_Coefficient_t num, ppl_Coefficient_t den));
+
+/*! \brief
+  Writes a const handle to a feasible point for the LP problem \p lp
+  at address \p pg.
+*/
+int
+ppl_LP_Problem_feasible_point PPL_PROTO((ppl_const_LP_Problem_t lp,
+					 ppl_const_Generator_t* pg));
+
+/*! \brief
+  Writes a const handle to an optimizing point for the LP problem \p lp
+  at address \p pg.
+*/
+int
+ppl_LP_Problem_optimizing_point PPL_PROTO((ppl_const_LP_Problem_t lp,
+					   ppl_const_Generator_t* pg));
+
+/*! \brief
+  Returns the optimal value for \p lp.
+
+  \param lp
+  The LP problem;
+
+  \param num
+  Will be assigned the numerator of the optimal value;
+
+  \param den
+  Will be assigned the denominator of the optimal value.
+*/
+int
+ppl_LP_Problem_optimal_value
+PPL_PROTO((ppl_const_LP_Problem_t lp,
+	   ppl_Coefficient_t num, ppl_Coefficient_t den));
+
+/*! \brief
+  Returns a positive integer if \p lp is well formed, i.e., if it
+  satisfies all its implementation invariants; returns 0 and perhaps
+  makes some noise if \p lp is broken.  Useful for debugging purposes.
+*/
+int
+ppl_LP_Problem_OK PPL_PROTO((ppl_const_LP_Problem_t lp));
+
+/*@}*/ /* Functions Related to LP Problems */
+
 
 /*! \name Simple I/O Functions */
 /*@{*/

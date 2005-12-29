@@ -1203,11 +1203,11 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       Generator g(point());
       // The cost function is `epsilon'.
       Linear_Expression cost_function = Variable(x.space_dim);
-      Simplex_Status status = cs.primal_simplex(cost_function, g);
-      assert(status != UNFEASIBLE_PROBLEM);
+      LP_Problem_Status status = cs.primal_simplex(cost_function, g);
+      assert(status != UNFEASIBLE_LP_PROBLEM);
       // If the epsilon dimension is actually unbounded,
       // then add the eps_leq_one constraint.
-      if (status == UNBOUNDED_PROBLEM)
+      if (status == UNBOUNDED_LP_PROBLEM)
 	cs.insert(Constraint::epsilon_leq_one());
     }
   }

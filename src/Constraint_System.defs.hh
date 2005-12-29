@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Polyhedron.types.hh"
 #include "Constraint.types.hh"
+#include "LP_Problem.types.hh"
 #include <iterator>
 #include <iosfwd>
 
@@ -166,14 +167,14 @@ public:
   //! of the objective function \p expr on the system of constraints.
   /*!
     \return
-    A Simplex_Status flag indicating the outcome of the optimization
+    A LP_Problem_Status flag indicating the outcome of the optimization
     attempt (unfeasible, unbounded or solved problem).
 
     \param expr
     The objective function to be optimized.
 
-    \param kind
-    The kind of optimization requested.
+    \param m
+    The optimization mode requested.
 
     \param ext_n
     On exit, if the problem has been solved, will contain the numerator
@@ -194,11 +195,11 @@ public:
     the parameters \p ext_n, \p ext_d and \p optimizing_point
     will be left untouched.
   */
-  Simplex_Status primal_simplex(const Linear_Expression& expr,
-				Optimization_Kind kind,
-				Coefficient& ext_n,
-				Coefficient& ext_d,
-				Generator& optimizing_point) const;
+  LP_Problem_Status primal_simplex(const Linear_Expression& expr,
+				   Optimization_Mode m,
+				   Coefficient& ext_n,
+				   Coefficient& ext_d,
+				   Generator& optimizing_point) const;
 
   //! Checks satisfiability of \p *this using the primal simplex algorithm.
   /*!
@@ -341,6 +342,7 @@ public:
 private:
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
+  friend class Parma_Polyhedra_Library::LP_Problem;
 
   friend bool
   Parma_Polyhedra_Library::operator==(const Polyhedron& x,
@@ -444,7 +446,7 @@ private:
   //! of \p cost_function on the system of constraints.
   /*!
     \return
-    A Simplex_Status flag indicating the outcome of the maximization
+    A LP_Problem_Status flag indicating the outcome of the maximization
     attempt (unfeasible, unbounded or solved problem).
 
     \param cost_function
@@ -460,8 +462,8 @@ private:
     It is assumed that the constraint system contains
     no strict inequalities.
   */
-  Simplex_Status primal_simplex(Linear_Expression& cost_function,
-				Generator& maximizing_point) const;
+  LP_Problem_Status primal_simplex(Linear_Expression& cost_function,
+				   Generator& maximizing_point) const;
 };
 
 // Constraint_System.inlines.hh is not included here on purpose.

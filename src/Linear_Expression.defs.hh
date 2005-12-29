@@ -33,6 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
 #include "Polyhedron.types.hh"
+#include "LP_Problem.types.hh"
 #include <cstddef>
 
 namespace Parma_Polyhedra_Library {
@@ -274,6 +275,7 @@ private:
   friend class Parma_Polyhedra_Library::Generator;
   // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
+  friend class Parma_Polyhedra_Library::LP_Problem;
 
   // FIXME: the following friend declaration is only to grant access to
   // Constraint_System::affine_preimage().

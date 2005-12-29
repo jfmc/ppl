@@ -288,20 +288,24 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_maximize(+Handle, +Lin_Expr, ?Coefficient_1, ?Coefficient_2, ?Boolean)
+  ppl_Polyhedron_maximize(+Handle, +Lin_Expr,
+                          ?Coefficient_1, ?Coefficient_2, ?Boolean)
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_maximize_with_point(+Handle, +Lin_Expr, ?Coefficient_1, ?Coefficient_2,
+  ppl_Polyhedron_maximize_with_point(+Handle, +Lin_Expr,
+                                     ?Coefficient_1, ?Coefficient_2,
                                      ?Boolean, ?Point)
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_minimize(+Handle, +Lin_Expr, ?Coefficient_1, ?Coefficient_2, ?Boolean)
+  ppl_Polyhedron_minimize(+Handle, +Lin_Expr,
+                          ?Coefficient_1, ?Coefficient_2, ?Boolean)
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_minimize_with_point(+Handle, +Lin_Expr, ?Coefficient_1, ?Coefficient_2,
+  ppl_Polyhedron_minimize_with_point(+Handle, +Lin_Expr,
+                                     ?Coefficient_1, ?Coefficient_2,
                                      ?Boolean, ?Point)
 </CODE>
 
@@ -523,6 +527,93 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
   ppl_Polyhedron_map_space_dimensions(+Handle, +P_Func))
 </CODE>
 
+<CODE>
+  ppl_new_LP_Problem_trivial(-Handle)
+</CODE>
+
+<CODE>
+  ppl_new_LP_Problem(+Constraint_System, +Lin_Expr, +Optimization_Mode,
+                     -Handle)
+</CODE>
+
+<CODE>
+  ppl_new_LP_Problem_from_LP_Problem(+Handle_1, -Handle_2)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_swap(+Handle_1, +Handle_2)
+</CODE>
+
+<CODE>
+  ppl_delete_LP_Problem(+Handle)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_space_dimension(+Handle, ?Dimension_Type)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_constraints(+Handle, -Constraint_System)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_objective_function(+Handle, -Lin_Expr)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_optimization_mode(+Handle, ?Optimization_Mode)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_clear(+Handle)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_add_constraint(+Handle, +Constraint)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_add_constraints(+Handle, +Constraint_System)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_set_objective_function(+Handle, +Lin_Expr)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_set_optimization_mode(+Handle, +Optimization_Mode)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_is_satisfiable(+Handle)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_solve(+Handle, ?LP_Problem_Status)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_feasible_point(+Handle, -Generator)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_optimizing_point(+Handle, -Generator)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_optimal_value(+Handle, ?Coefficient_1, ?Coefficient_2)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_evaluate_objective_function(+Handle, +Generator,
+                                             ?Coefficient_1, ?Coefficient_2)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_OK(+Handle)
+</CODE>
+
+
 <H2>PPL Predicate Specifications</H2>
 
 The PPL predicates provided by the Prolog interface are specified below.
@@ -531,10 +622,10 @@ The specification uses the following grammar rules:
 
  Number      --> unsigned integer	ranging from 0 to an upper bound
 					depending on the actual Prolog system.
- 
+
  C_int       --> Number | - Number	C integer
 
- C_unsigned  --> Number			C unsigned integer	
+ C_unsigned  --> Number			C unsigned integer
 
  Coefficient --> Number			used in linear expressions;
 					the upper bound will depend on how
@@ -561,7 +652,7 @@ The specification uses the following grammar rules:
  PPL_Var     --> '$VAR'(VarId)		PPL variable
 
  Lin_Expr    --> PPL_Var		PPL variable
-            | Coefficient			
+            | Coefficient
             | Lin_Expr			unary plus
             | - Lin_Expr		unary minus
             | Lin_Expr + Lin_Expr	addition
@@ -584,7 +675,7 @@ The specification uses the following grammar rules:
             | [Constraint | Constraint_System]
 
  Generator_Denominator --> Coefficient	must be non-zero
-	    | Coefficient 
+	    | Coefficient
             | - Coefficient
 
  Generator   --> point(Lin_Expr)	point
@@ -617,7 +708,7 @@ The specification uses the following grammar rules:
 	     --> []
 	    | [Poly_Relation | Poly_Relation_List]
 
- Complexity  --> polynomial | simplex | any		
+ Complexity  --> polynomial | simplex | any
 
  Rational_Numerator
 	     --> Coefficient | - Coefficient
@@ -642,6 +733,12 @@ The specification uses the following grammar rules:
 
  P_Func      --> []    			list of map relations
             | [Vars_Pair | P_Func].
+
+ Optimization_Mode
+             --> max | min
+
+ LP_Problem_Status
+             --> unfeasible | unbounded | optimized
 \endcode
 
 \anchor predicates
@@ -712,7 +809,7 @@ and \ref Operations_on_Convex_Polyhedra of this manual.
    If the computation is interrupted that way, the current timeout
    exception atom will be thrown.
    <CODE>C_unsigned</CODE> must be strictly greater than zero.
-   
+
 <H2><CODE> ppl_reset_timeout </CODE></H2>
 
    Resets the timeout time so that the computation is not interrupted.
@@ -735,7 +832,7 @@ and \ref Operations_on_Convex_Polyhedra of this manual.
 \endcode
    creates an empty NNC polyhedron embedded in \f$\Rset^3\f$ with
    \p X bound to a valid handle for accessing it.
- 
+
    Also the query
 \code
    ?- ppl_new_Polyhedron_from_space_dimension(c, 3, universe, X).

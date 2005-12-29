@@ -102,6 +102,20 @@ public:
   }
 };
 
+class not_an_optimization_mode : public internal_exception {
+public:
+  explicit not_an_optimization_mode(Prolog_term_ref t)
+    : internal_exception(t) {
+  }
+};
+
+class not_an_lp_problem_handle : public internal_exception {
+public:
+  explicit not_an_lp_problem_handle(Prolog_term_ref t)
+    : internal_exception(t) {
+  }
+};
+
 class not_a_complexity_class : public internal_exception {
 public:
   explicit not_a_complexity_class(Prolog_term_ref t)

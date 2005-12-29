@@ -38,8 +38,8 @@ main() {
   Coefficient n;
   Coefficient d;
   Generator g(point());
-  Simplex_Status status = cs.primal_simplex(expr, MAXIMIZATION, n, d, g);
+  LP_Problem_Status status = cs.primal_simplex(expr, MAXIMIZATION, n, d, g);
 
-  return (status == UNFEASIBLE_PROBLEM) ? 0 : 1;
+  return (status == UNFEASIBLE_LP_PROBLEM) ? 0 : 1;
 }
 
