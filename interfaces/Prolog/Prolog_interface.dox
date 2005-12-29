@@ -1739,7 +1739,7 @@ the library with the <CODE>--enable-shared</CODE> option.
 
 The SWI-Prolog interface to the PPL is available
 both as a statically linked module or as a dynamically linked one.
-Only SWI-Prolog version 5.5.40 and later versions are supported.
+Only SWI-Prolog version 5.6.0 and later versions are supported.
 
 <H3>The <CODE>ppl_pl</CODE> Executable</H3>
 
@@ -1756,9 +1756,8 @@ are available without further action.
 
 In order to dynamically load the library from SWI-Prolog you should
 simply load <CODE>prefix/lib/ppl/ppl_swiprolog.pl</CODE>.
-This will invoke <CODE>ppl_initialize/0</CODE> automatically
-but, at least for SWI-Prolog versions up to 5.0.7, it is the programmer's
-responsibility to call <CODE>ppl_finalize/0</CODE>.
+This will invoke <CODE>ppl_initialize/0</CODE> and
+<CODE>ppl_finalize/0</CODE> automatically.
 Alternatively, you can load the library directly with
 \code
 :- load_foreign_library('prefix/lib/ppl/libppl_swiprolog').
