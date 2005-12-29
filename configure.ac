@@ -394,6 +394,7 @@ AC_ARG_WITH(cxxflags,
   CXXFLAGS="$CXXFLAGS $with_cxxflags")
 
 # Checks for programs.
+AC_PROG_EGREP
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_CXXCPP
