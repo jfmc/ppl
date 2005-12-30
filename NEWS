@@ -130,6 +130,14 @@ o  The SWI-Prolog interface allows now the exchange of unbounded numbers
    version 5.6.0 or later version.  Previous versions of SWI-Prolog
    are no longer supported.
 
+o  The `ppl_lpsol' demo has now two more options: with `--enumerate' it
+   solves the given linear programming problem by vertex/point
+   enumeration; with `--simplex' (the default) it uses our simplex
+   implementation with exact arithmetics.  The `ppl_lpsol' program,
+   which is only built if a suitable version of GLPK is available, is
+   installed into the directory (selectable at configuration time) for
+   user executables.
+
 
 Bugfixes
 ========
