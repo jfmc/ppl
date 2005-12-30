@@ -367,7 +367,7 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   mpz_class v;
-  PPL::assign(v, PPL::raw_value(n), PPL::ROUND_NOT_NEEDED);
+  PPL::assign(v, n, PPL::ROUND_NOT_NEEDED);
   Prolog_term_ref t = Prolog_new_term_ref();
   PL_unify_mpz(t, v.get_mpz_t());
   return t;
