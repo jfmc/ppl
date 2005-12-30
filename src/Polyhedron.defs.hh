@@ -722,12 +722,34 @@ public:
   bool strictly_contains(const Polyhedron& y) const;
 
   //! Uses \p *this to shrink a generic, interval-based bounding box.
+  //! Assigns to \p box the intersection of \p box with the smallest
+  //! bounding box containing \p *this.
   /*!
     \param box
     The bounding box to be shrunk;
 
     \param complexity
     The complexity class of the algorithm to be used.
+
+    If the polyhedron \p *this or \p box is empty, then the empty box
+    is returned.
+
+    If \p *this and \p box are non-empty, then, for
+    each space dimension \f$k\f$ with variable \f$\mathrm{var}\f$, let
+    \f$u\f$ be the upper and \f$l\f$ the lower bound of the smallest
+    interval containing \p *this.
+
+    If \f$l\f$ is infinite, then \p box is unaltered; if \f$l\f$ is
+    finite, then the \p box interval for space dimension \f$k\f$ is
+    (destructively) intersected with \f$[l, +\mathrm{infty})\f$ if a
+    point of \p *this satisfies \f$\mathrm{var} == l\f$ and with
+    \f$(l, +\mathrm{infty})\f$ otherwise.
+
+    Similarly, if \f$u\f$ is infinite, then \p box is unaltered; if
+    \f$u\f$ is finite, then the \p box interval for space dimension
+    \f$k\f$ is (destructively) intersected with \f$(-\mathrm{infty},
+    u]\f$ if a point of \p *this satisfies \f$\mathrm{var} == u\f$ and
+    with \f$(-\mathrm{infty}, u)\f$ otherwise.
 
     The template class Box must provide the following methods, whose
     return values, if any, are simply ignored.
