@@ -12,8 +12,9 @@ PURPOSE. */
 #ifndef PPL_Coefficient_types_hh
 #define PPL_Coefficient_types_hh 1
 
-#if defined(CHECKED_INTEGERS) || defined(NATIVE_INTEGERS)
 #include "Checked_Number.defs.hh"
+
+#if defined(CHECKED_INTEGERS) || defined(NATIVE_INTEGERS)
 
 namespace Parma_Polyhedra_Library {
 
@@ -54,7 +55,8 @@ struct Coefficient_traits_template<Checked_Number<int64_t, Policy> > {
 };
 
 } // namespace Parma_Polyhedra_Library
-#endif
+
+#endif // defined(CHECKED_INTEGERS) || defined(NATIVE_INTEGERS)
 
 #ifdef GMP_INTEGERS
 #include "GMP_Integer.types.hh"
