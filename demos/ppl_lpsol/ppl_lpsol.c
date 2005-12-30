@@ -589,13 +589,15 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     /* FIXME: check!!! */
     return 0;
   }
-  else {
+  else if (status == PPL_LP_PROBLEM_STATUS_OPTIMIZED) {
     ppl_LP_Problem_optimal_value(lp, optimum_n, optimum_d);
     ppl_const_Generator_t g;
     ppl_LP_Problem_optimizing_point(lp, &g);
     ppl_assign_Generator_from_Generator(point, g);
     return 1;
   }
+  else
+    fatal("internal error");
 }
 
 static void
