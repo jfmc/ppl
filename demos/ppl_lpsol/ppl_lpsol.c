@@ -58,8 +58,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 # include <sys/resource.h>
 #endif
 
-#if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 6
-# error "PPL version 0.6 or following is required"
+#if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 8
+# error "PPL version 0.8 or following is required"
 #endif
 
 static const char* ppl_source_version = PPL_VERSION;
