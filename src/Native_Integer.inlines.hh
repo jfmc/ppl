@@ -317,6 +317,12 @@ raw_value(const Native_Integer<T>& x) {
   return x.raw_value();
 }
 
+template <typename T>
+inline
+Native_Integer<T>::operator T() const {
+  return raw_value();
+}
+
 /*! \relates Native_Integer */
 template <typename T>
 inline T&
