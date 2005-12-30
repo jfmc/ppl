@@ -804,7 +804,7 @@ namespace Polyhedra_Powersets {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Partitions polyhedron \p qq according to constraint \p c.
-/*! \relates Polyhedra_Powerset
+/*! \relates Parma_Polyhedra_Library::Polyhedra_Powerset
   On exit, the intersection of \p qq and constraint \p c is stored
   in \p qq, whereas the intersection of \p qq with the negation of \p c
   is added as a new disjunct of the powerset \p r.
