@@ -458,7 +458,7 @@ prepare_first_phase(Matrix& tableau,
     Row& tableau_i = tableau[i];
     if (tableau_i[0] > 0)
       for (dimension_type j = tableau_old_n_cols; j-- > 0; )
-	negate(tableau_i[j]);
+	neg_assign(tableau_i[j]);
   }
 
   // Add the columns for all the slack variables, plus an additional
@@ -1083,7 +1083,7 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expr,
   // Minimization is obtained by negating the cost_function.
   if (m == MINIMIZATION)
     for (dimension_type i = cost_function.size(); i-- > 0; )
-      negate(cost_function[i]);
+      neg_assign(cost_function[i]);
 
   LP_Problem_Status status
     = ::primal_simplex(*this, cost_function, optimizing_point, false);

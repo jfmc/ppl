@@ -185,7 +185,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
 	  s << " + ";
 	else {
 	  s << " - ";
-	  negate(cv);
+	  neg_assign(cv);
 	}
       }
       else

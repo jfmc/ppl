@@ -95,7 +95,7 @@ PPL::Row::normalize() {
     if (const int x_i_sign = sgn(x_i)) {
       gcd = x_i;
       if (x_i_sign < 0)
-	negate(gcd);
+	neg_assign(gcd);
       goto compute_gcd;
     }
   }

@@ -352,9 +352,9 @@ name(Checked_Number<To, To_Policy>& to, const Checked_Number<From, From_Policy>&
 
 FUNC1(construct, construct_ext)
 FUNC1(assign, assign_ext)
-FUNC1(assign_neg, neg_ext)
-FUNC1(assign_abs, abs_ext)
-FUNC1(assign_sqrt, sqrt_ext)
+FUNC1(neg_assign_r, neg_ext)
+FUNC1(abs_assign_r, abs_ext)
+FUNC1(sqrt_assign_r, sqrt_ext)
 
 #undef FUNC1
 
@@ -383,8 +383,8 @@ name(Checked_Number<To, To_Policy>& to, const Checked_Number<From, From_Policy>&
   return check_result(Checked::func<To_Policy, From_Policy>(to.raw_value(), x.raw_value(), exp, rounding_dir(dir)), dir); \
 }
 
-FUNC1(assign_mul2exp, mul2exp_ext)
-FUNC1(assign_div2exp, div2exp_ext)
+FUNC1(mul2exp_assign_r, mul2exp_ext)
+FUNC1(div2exp_assign_r, div2exp_ext)
 
 #undef FUNC1
 
@@ -446,15 +446,15 @@ name(Checked_Number<To, To_Policy>& to, const Checked_Number<From1, Policy1>& x,
   return check_result(Checked::func<To_Policy, Policy1, Policy2>(to.raw_value(), x.raw_value(), y.raw_value(), rounding_dir(dir)), dir); \
 }
 
-FUNC2(assign_add, add_ext)
-FUNC2(assign_sub, sub_ext)
-FUNC2(assign_mul, mul_ext)
-FUNC2(assign_div, div_ext)
-FUNC2(assign_rem, rem_ext)
-FUNC2(assign_gcd, gcd_ext)
-FUNC2(assign_lcm, lcm_ext)
-FUNC2(assign_add_mul, add_mul_ext)
-FUNC2(assign_sub_mul, sub_mul_ext)
+FUNC2(add_assign_r, add_ext)
+FUNC2(sub_assign_r, sub_ext)
+FUNC2(mul_assign_r, mul_ext)
+FUNC2(div_assign_r, div_ext)
+FUNC2(rem_assign_r, rem_ext)
+FUNC2(gcd_assign_r, gcd_ext)
+FUNC2(lcm_assign_r, lcm_ext)
+FUNC2(add_mul_assign_r, add_mul_ext)
+FUNC2(sub_mul_assign_r, sub_mul_ext)
 
 #undef FUNC2
 
@@ -473,8 +473,8 @@ Checked_Number<T, Policy>::f(int) {\
   return r;\
 }
 
-DEF_INCREMENT(operator ++, assign_add)
-DEF_INCREMENT(operator --, assign_sub)
+DEF_INCREMENT(operator ++, add_assign_r)
+DEF_INCREMENT(operator --, sub_assign_r)
 
 #undef DEF_INCREMENT
 
@@ -555,11 +555,11 @@ Checked_Number<T, Policy>::f(const From& y) { \
   return *this; \
 }
 
-DEF_BINARY_OP_ASSIGN(operator +=, assign_add)
-DEF_BINARY_OP_ASSIGN(operator -=, assign_sub)
-DEF_BINARY_OP_ASSIGN(operator *=, assign_mul)
-DEF_BINARY_OP_ASSIGN(operator /=, assign_div)
-DEF_BINARY_OP_ASSIGN(operator %=, assign_rem)
+DEF_BINARY_OP_ASSIGN(operator +=, add_assign_r)
+DEF_BINARY_OP_ASSIGN(operator -=, sub_assign_r)
+DEF_BINARY_OP_ASSIGN(operator *=, mul_assign_r)
+DEF_BINARY_OP_ASSIGN(operator /=, div_assign_r)
+DEF_BINARY_OP_ASSIGN(operator %=, rem_assign_r)
 
 #undef DEF_BINARY_OP_ASSIGN
 
@@ -603,11 +603,11 @@ DEF_BINARY_OP_TYPE(f, fun, long double) \
 DEF_BINARY_OP_TYPE(f, fun, mpz_class&) \
 DEF_BINARY_OP_TYPE(f, fun, mpq_class&)
 
-DEF_BINARY_OP(operator +, assign_add)
-DEF_BINARY_OP(operator -, assign_sub)
-DEF_BINARY_OP(operator *, assign_mul)
-DEF_BINARY_OP(operator /, assign_div)
-DEF_BINARY_OP(operator %, assign_rem)
+DEF_BINARY_OP(operator +, add_assign_r)
+DEF_BINARY_OP(operator -, sub_assign_r)
+DEF_BINARY_OP(operator *, mul_assign_r)
+DEF_BINARY_OP(operator /, div_assign_r)
+DEF_BINARY_OP(operator %, rem_assign_r)
 
 #undef DEF_BINARY_OP_TYPE
 #undef DEF_BINARY_OP
@@ -670,7 +670,7 @@ template <typename T, typename Policy>
 inline Checked_Number<T, Policy>
 operator-(const Checked_Number<T, Policy>& x) {
   Checked_Number<T, Policy> r;
-  Policy::handle_result(assign_neg(r, x, Policy::ROUND_DEFAULT_OPERATOR));
+  Policy::handle_result(neg_assign_r(r, x, Policy::ROUND_DEFAULT_OPERATOR));
   return r;
 }
 
@@ -702,24 +702,24 @@ f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, const Checke
   Policy::handle_result(fun(x, y, z, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
-DEF_ASSIGN_FUN2_1(sqrt_assign, assign_sqrt)
-DEF_ASSIGN_FUN2_2(sqrt_assign, assign_sqrt)
+DEF_ASSIGN_FUN2_1(sqrt_assign, sqrt_assign_r)
+DEF_ASSIGN_FUN2_2(sqrt_assign, sqrt_assign_r)
 
-DEF_ASSIGN_FUN2_1(negate, assign_neg)
-DEF_ASSIGN_FUN2_2(negate, assign_neg)
+DEF_ASSIGN_FUN2_1(neg_assign, neg_assign_r)
+DEF_ASSIGN_FUN2_2(neg_assign, neg_assign_r)
 
-DEF_ASSIGN_FUN3_2(exact_div_assign, assign_div)
-DEF_ASSIGN_FUN3_3(exact_div_assign, assign_div)
+DEF_ASSIGN_FUN3_2(exact_div_assign, div_assign_r)
+DEF_ASSIGN_FUN3_3(exact_div_assign, div_assign_r)
 
-DEF_ASSIGN_FUN3_3(add_mul_assign, assign_add_mul)
+DEF_ASSIGN_FUN3_3(add_mul_assign, add_mul_assign_r)
 
-DEF_ASSIGN_FUN3_3(sub_mul_assign, assign_sub_mul)
+DEF_ASSIGN_FUN3_3(sub_mul_assign, sub_mul_assign_r)
 
-DEF_ASSIGN_FUN3_2(gcd_assign, assign_gcd)
-DEF_ASSIGN_FUN3_3(gcd_assign, assign_gcd)
+DEF_ASSIGN_FUN3_2(gcd_assign, gcd_assign_r)
+DEF_ASSIGN_FUN3_3(gcd_assign, gcd_assign_r)
 
-DEF_ASSIGN_FUN3_2(lcm_assign, assign_lcm)
-DEF_ASSIGN_FUN3_3(lcm_assign, assign_lcm)
+DEF_ASSIGN_FUN3_2(lcm_assign, lcm_assign_r)
+DEF_ASSIGN_FUN3_3(lcm_assign, lcm_assign_r)
 
 #undef DEF_ASSIGN_FUN2_1
 #undef DEF_ASSIGN_FUN2_2

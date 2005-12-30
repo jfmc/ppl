@@ -838,7 +838,7 @@ PPL::Linear_System
     const bool have_to_negate = (x_k[j] < 0);
     if (have_to_negate)
       for (dimension_type h = ncols; h-- > 0; )
-	PPL::negate(x_k[h]);
+	PPL::neg_assign(x_k[h]);
     // Note: we do not mark index `k' in `check_for_sortedness',
     // because we will later negate back the row.
 
@@ -861,7 +861,7 @@ PPL::Linear_System
     if (have_to_negate)
       // Negate `x_k' to restore strong-normalization.
       for (dimension_type h = ncols; h-- > 0; )
-	PPL::negate(x_k[h]);
+	PPL::neg_assign(x_k[h]);
   }
 
   // Trying to keep sortedness.

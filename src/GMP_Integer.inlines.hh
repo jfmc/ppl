@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline void
-negate(GMP_Integer& x) {
+neg_assign(GMP_Integer& x) {
   mpz_neg(x.get_mpz_t(), x.get_mpz_t());
 }
 

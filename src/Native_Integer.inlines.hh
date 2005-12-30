@@ -351,7 +351,7 @@ template <typename T>
 inline Native_Integer<T>
 operator-(const Native_Integer<T>& x) {
   Native_Integer<T> tmp = x;
-  negate(tmp);
+  neg_assign(tmp);
   return tmp;
 }
 
@@ -464,7 +464,7 @@ cmp(const Native_Integer<T>& x, const Native_Integer<T>& y) {
 /*! \relates Native_Integer */
 template <typename T>
 inline void
-negate(Native_Integer<T>& x) {
+neg_assign(Native_Integer<T>& x) {
   x.raw_value() = -x.raw_value();
 }
 

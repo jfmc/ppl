@@ -373,7 +373,7 @@ operator%(const Native_Integer<T>& x,
 /*! \relates Native_Integer */
 template <typename T>
 void
-negate(Native_Integer<T>& x);
+neg_assign(Native_Integer<T>& x);
 
 //! Assigns to \p x the value <CODE>x + y * z</CODE>.
 /*! \relates Native_Integer */

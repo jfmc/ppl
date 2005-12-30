@@ -46,9 +46,9 @@ PPL::Linear_Row::sign_normalize() {
       // we negate the entire row.
       if (x[first_non_zero] < 0) {
 	for (dimension_type j = first_non_zero; j < sz; ++j)
-	  negate(x[j]);
+	  neg_assign(x[j]);
 	// Also negate the first coefficient.
-	negate(x[0]);
+	neg_assign(x[0]);
       }
   }
 }

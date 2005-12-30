@@ -306,7 +306,7 @@ PPL::LP_Problem::prepare_first_phase() {
     Row& tableau_i = tableau[i];
     if (tableau_i[0] > 0)
       for (dimension_type j = tableau_old_n_cols; j-- > 0; )
-	negate(tableau_i[j]);
+	neg_assign(tableau_i[j]);
   }
 
   // Add the columns for all the slack variables, plus an additional
@@ -712,7 +712,7 @@ PPL::LP_Problem::second_phase() {
   Row new_cost = input_obj_function;
   if (opt_mode == MINIMIZATION)
     for (dimension_type i = new_cost.size(); i-- > 0; )
-      negate(new_cost[i]);
+      neg_assign(new_cost[i]);
 
   // Substitute properly the cost funcion in the `costs' Matrix.
   const dimension_type cost_zero_size = working_cost.size();

@@ -322,9 +322,9 @@ Result name(Checked_Number<To, To_Policy>& to, \
             Rounding_Dir dir);
 
 FUNC1(assign)
-FUNC1(assign_neg)
-FUNC1(assign_abs)
-FUNC1(assign_sqrt)
+FUNC1(neg_assign_r)
+FUNC1(abs_assign_r)
+FUNC1(sqrt_assign_r)
 
 #undef FUNC1
 
@@ -345,8 +345,8 @@ Result name(To& to, \
             const Checked_Number<From, From_Policy>& x, \
             int exp, Rounding_Dir dir);
 
-FUNC1(assign_mul2exp)
-FUNC1(assign_div2exp)
+FUNC1(mul2exp_assign_r)
+FUNC1(div2exp_assign_r)
 
 #undef FUNC1
 
@@ -395,15 +395,15 @@ Result name(Checked_Number<To, To_Policy>& to, \
 	    const Checked_Number<From2, Policy2>& y, \
             Rounding_Dir dir);
 
-FUNC2(assign_add)
-FUNC2(assign_sub)
-FUNC2(assign_mul)
-FUNC2(assign_div)
-FUNC2(assign_rem)
-FUNC2(assign_gcd)
-FUNC2(assign_lcm)
-FUNC2(assign_add_mul)
-FUNC2(assign_sub_mul)
+FUNC2(add_assign_r)
+FUNC2(sub_assign_r)
+FUNC2(mul_assign_r)
+FUNC2(div_assign_r)
+FUNC2(rem_assign_r)
+FUNC2(gcd_assign_r)
+FUNC2(lcm_assign_r)
+FUNC2(add_mul_assign_r)
+FUNC2(sub_mul_assign_r)
 
 #undef FUNC2
 
@@ -473,7 +473,7 @@ operator-(const Checked_Number<T, Policy>& x);
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
 void
-negate(Checked_Number<T, Policy>& x);
+neg_assign(Checked_Number<T, Policy>& x);
 
 //! Assigns to \p x the value <CODE>x + y * z</CODE>.
 /*! \relates Checked_Number */

@@ -66,7 +66,7 @@ PPL::Generator::point(const Linear_Expression& e,
   // the invariant: the divisor of a point is strictly positive.
   if (d < 0)
     for (dimension_type i = g.size(); i-- > 0; )
-      negate(g[i]);
+      neg_assign(g[i]);
 
   // Enforce normalization.
   g.normalize();
@@ -200,7 +200,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
 	  s << " + ";
 	else {
 	  s << " - ";
-	  negate(gv);
+	  neg_assign(gv);
 	}
       }
       else

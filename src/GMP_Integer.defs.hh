@@ -60,7 +60,7 @@ memory_size_type external_memory_in_bytes(const GMP_Integer& x);
 
 //! Assigns to \p x its negation.
 /*! \relates GMP_Integer */
-void negate(GMP_Integer& x);
+void neg_assign(GMP_Integer& x);
 
 //! Assigns to \p x the greatest common divisor of \p x and \p y.
 /*! \relates GMP_Integer */

@@ -95,7 +95,7 @@ PPL::Linear_Expression
 PPL::operator-(const Linear_Expression& e) {
   Linear_Expression r(e);
   for (dimension_type i = e.size(); i-- > 0; )
-    negate(r[i]);
+    neg_assign(r[i]);
   return r;
 }
 
@@ -140,7 +140,7 @@ PPL::operator-(Coefficient_traits::const_reference n,
 	       const Linear_Expression& e) {
   Linear_Expression r(e);
   for (dimension_type i = e.size(); i-- > 0; )
-    negate(r[i]);
+    neg_assign(r[i]);
   r[0] += n;
 
   return r;
@@ -255,7 +255,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
 	  s << " + ";
 	else {
 	  s << " - ";
-	  negate(ev);
+	  neg_assign(ev);
 	}
       }
       else
@@ -275,7 +275,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
 	s << " + ";
       else {
 	s << " - ";
-	negate(it);
+	neg_assign(it);
       }
     }
     else

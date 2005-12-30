@@ -1857,7 +1857,7 @@ affine_image(const Variable var,
 	// third argument to be positive.
 	inverse = expr;
 	inverse[var_space_dim] = denominator;
-	negate(inverse[var_space_dim]);
+	neg_assign(inverse[var_space_dim]);
 	con_sys.affine_preimage(var_space_dim, inverse, -expr[var_space_dim]);
       }
     }
@@ -1936,7 +1936,7 @@ affine_preimage(const Variable var,
 	// requires the third argument to be positive.
 	inverse = expr;
 	inverse[var_space_dim] = denominator;
-	negate(inverse[var_space_dim]);
+	neg_assign(inverse[var_space_dim]);
 	gen_sys.affine_image(var_space_dim, inverse, -expr[var_space_dim]);
       }
     }
