@@ -80,12 +80,9 @@ libppl.la \
 
 if USE_NATIVE_INTEGERS
 
-COEFFICIENT_TYPES_INCLUDE_FILES = \
-  Native_Integer.types.hh
+COEFFICIENT_TYPES_INCLUDE_FILES =
 
-COEFFICIENT_DEFS_INCLUDE_FILES = \
-  Native_Integer.defs.hh \
-  Native_Integer.inlines.hh
+COEFFICIENT_DEFS_INCLUDE_FILES =
 
 endif
 
@@ -301,7 +298,6 @@ DOC_FILES = \
 namespaces.hh \
 GMP_Integer.types.hh \
 Checked_Number.types.hh \
-Native_Integer.types.hh \
 Coefficient.types.hh \
 globals.defs.hh \
 Variable.types.hh \
@@ -321,7 +317,6 @@ NNC_Polyhedron.types.hh \
 BD_Shape.types.hh \
 GMP_Integer.defs.hh \
 Checked_Number.defs.hh \
-Native_Integer.defs.hh \
 Coefficient.defs.hh \
 Variable.defs.hh \
 Linear_Expression.defs.hh \
