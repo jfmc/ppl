@@ -153,8 +153,10 @@ main() {
 #endif
 
   // Now test incrementality.
-  LP_Problem incremental_lpp = LP_Problem(Constraint_System(), cost,
-					  MAXIMIZATION);
+  cs.clear();
+  // Let `cs' be dimension compatible with `cost'.
+  cs.insert(0*Variable(cost.space_dimension() - 1) >= 0);
+  LP_Problem incremental_lpp = LP_Problem(cs, cost, MAXIMIZATION);
   start_clock();
   for (dimension_type i = 0; i < cs_vector.size(); ++i) {
     incremental_lpp.add_constraint(cs_vector[i]);
