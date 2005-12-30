@@ -958,15 +958,15 @@ Prolog_term_ref
 constraint_term(const Constraint& c) {
   Prolog_atom relation = 0;
   switch (c.type()) {
-    case Constraint::EQUALITY:
-      relation = a_equal;
-      break;
-    case Constraint::NONSTRICT_INEQUALITY:
-      relation = a_greater_than_equal;
-      break;
-    case Constraint::STRICT_INEQUALITY:
-      relation = a_greater_than;
-      break;
+  case Constraint::EQUALITY:
+    relation = a_equal;
+    break;
+  case Constraint::NONSTRICT_INEQUALITY:
+    relation = a_greater_than_equal;
+    break;
+  case Constraint::STRICT_INEQUALITY:
+    relation = a_greater_than;
+    break;
   default:
     throw unknown_interface_error("generator_term()");
   }
@@ -3240,6 +3240,8 @@ ppl_LP_Problem_solve(Prolog_term_ref t_lp, Prolog_term_ref t_status) {
     case OPTIMIZED_LP_PROBLEM:
       a = a_optimized;
       break;
+    default:
+      throw unknown_interface_error("ppl_LP_Problem_solve()");
     }
     Prolog_term_ref t = Prolog_new_term_ref();
     Prolog_put_atom(t, a);
