@@ -84,167 +84,167 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
 
 //! The base class for convex polyhedra.
 /*!
-    An object of the class Polyhedron represents a convex polyhedron
-    in the vector space \f$\Rset^n\f$.
+  An object of the class Polyhedron represents a convex polyhedron
+  in the vector space \f$\Rset^n\f$.
 
-    A polyhedron can be specified as either a finite system of constraints
-    or a finite system of generators (see Section \ref representation)
-    and it is always possible to obtain either representation.
-    That is, if we know the system of constraints, we can obtain
-    from this the system of generators that define the same polyhedron
-    and vice versa.
-    These systems can contain redundant members: in this case we say
-    that they are not in the minimal form.
-    Most operators on polyhedra are provided with two implementations:
-    one of these, denoted <CODE>\<operator-name\>_and_minimize</CODE>,
-    also enforces the minimization of the representations,
-    and returns the Boolean value <CODE>false</CODE> whenever
-    the resulting polyhedron turns out to be empty.
+  A polyhedron can be specified as either a finite system of constraints
+  or a finite system of generators (see Section \ref representation)
+  and it is always possible to obtain either representation.
+  That is, if we know the system of constraints, we can obtain
+  from this the system of generators that define the same polyhedron
+  and vice versa.
+  These systems can contain redundant members: in this case we say
+  that they are not in the minimal form.
+  Most operators on polyhedra are provided with two implementations:
+  one of these, denoted <CODE>\<operator-name\>_and_minimize</CODE>,
+  also enforces the minimization of the representations,
+  and returns the Boolean value <CODE>false</CODE> whenever
+  the resulting polyhedron turns out to be empty.
 
-    Two key attributes of any polyhedron are its topological kind
-    (recording whether it is a C_Polyhedron or an NNC_Polyhedron object)
-    and its space dimension (the dimension \f$n \in \Nset\f$ of
-    the enclosing vector space):
+  Two key attributes of any polyhedron are its topological kind
+  (recording whether it is a C_Polyhedron or an NNC_Polyhedron object)
+  and its space dimension (the dimension \f$n \in \Nset\f$ of
+  the enclosing vector space):
 
-    - all polyhedra, the empty ones included, are endowed with
-      a specific topology and space dimension;
-    - most operations working on a polyhedron and another object
-      (i.e., another polyhedron, a constraint or generator,
-      a set of variables, etc.) will throw an exception if
-      the polyhedron and the object are not both topology-compatible
-      and dimension-compatible (see Section \ref representation);
-    - the topology of a polyhedron cannot be changed;
-      rather, there are constructors for each of the two derived classes
-      that will build a new polyhedron with the topology of that class
-      from another polyhedron from either class and any topology;
-    - the only ways in which the space dimension of a polyhedron can
-      be changed are:
-      - <EM>explicit</EM> calls to operators provided for that purpose;
-      - standard copy, assignment and swap operators.
+  - all polyhedra, the empty ones included, are endowed with
+    a specific topology and space dimension;
+  - most operations working on a polyhedron and another object
+    (i.e., another polyhedron, a constraint or generator,
+    a set of variables, etc.) will throw an exception if
+    the polyhedron and the object are not both topology-compatible
+    and dimension-compatible (see Section \ref representation);
+  - the topology of a polyhedron cannot be changed;
+    rather, there are constructors for each of the two derived classes
+    that will build a new polyhedron with the topology of that class
+    from another polyhedron from either class and any topology;
+  - the only ways in which the space dimension of a polyhedron can
+    be changed are:
+    - <EM>explicit</EM> calls to operators provided for that purpose;
+    - standard copy, assignment and swap operators.
 
-    Note that four different polyhedra can be defined on
-    the zero-dimension space:
-    the empty polyhedron, either closed or NNC,
-    and the universe polyhedron \f$R^0\f$, again either closed or NNC.
+  Note that four different polyhedra can be defined on
+  the zero-dimension space:
+  the empty polyhedron, either closed or NNC,
+  and the universe polyhedron \f$R^0\f$, again either closed or NNC.
 
-    \par
-    In all the examples it is assumed that variables
-    <CODE>x</CODE> and <CODE>y</CODE> are defined (where they are
-    used) as follows:
-    \code
+  \par
+  In all the examples it is assumed that variables
+  <CODE>x</CODE> and <CODE>y</CODE> are defined (where they are
+  used) as follows:
+  \code
   Variable x(0);
   Variable y(1);
-    \endcode
+  \endcode
 
-    \par Example 1
-    The following code builds a polyhedron corresponding to
-    a square in \f$\Rset^2\f$, given as a system of constraints:
-    \code
+  \par Example 1
+  The following code builds a polyhedron corresponding to
+  a square in \f$\Rset^2\f$, given as a system of constraints:
+  \code
   Constraint_System cs;
   cs.insert(x >= 0);
   cs.insert(x <= 3);
   cs.insert(y >= 0);
   cs.insert(y <= 3);
   C_Polyhedron ph(cs);
-    \endcode
-    The following code builds the same polyhedron as above,
-    but starting from a system of generators specifying
-    the four vertices of the square:
-    \code
+  \endcode
+  The following code builds the same polyhedron as above,
+  but starting from a system of generators specifying
+  the four vertices of the square:
+  \code
   Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(point(0*x + 3*y));
   gs.insert(point(3*x + 0*y));
   gs.insert(point(3*x + 3*y));
   C_Polyhedron ph(gs);
-    \endcode
+  \endcode
 
-    \par Example 2
-    The following code builds an unbounded polyhedron
-    corresponding to a half-strip in \f$\Rset^2\f$,
-    given as a system of constraints:
-    \code
+  \par Example 2
+  The following code builds an unbounded polyhedron
+  corresponding to a half-strip in \f$\Rset^2\f$,
+  given as a system of constraints:
+  \code
   Constraint_System cs;
   cs.insert(x >= 0);
   cs.insert(x - y <= 0);
   cs.insert(x - y + 1 >= 0);
   C_Polyhedron ph(cs);
-    \endcode
-    The following code builds the same polyhedron as above,
-    but starting from the system of generators specifying
-    the two vertices of the polyhedron and one ray:
-    \code
+  \endcode
+  The following code builds the same polyhedron as above,
+  but starting from the system of generators specifying
+  the two vertices of the polyhedron and one ray:
+  \code
   Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(point(0*x + y));
   gs.insert(ray(x - y));
   C_Polyhedron ph(gs);
-    \endcode
+  \endcode
 
-    \par Example 3
-    The following code builds the polyhedron corresponding to
-    a half-plane by adding a single constraint
-    to the universe polyhedron in \f$\Rset^2\f$:
-    \code
+  \par Example 3
+  The following code builds the polyhedron corresponding to
+  a half-plane by adding a single constraint
+  to the universe polyhedron in \f$\Rset^2\f$:
+  \code
   C_Polyhedron ph(2);
   ph.add_constraint(y >= 0);
-    \endcode
-    The following code builds the same polyhedron as above,
-    but starting from the empty polyhedron in the space \f$\Rset^2\f$
-    and inserting the appropriate generators
-    (a point, a ray and a line).
-    \code
+  \endcode
+  The following code builds the same polyhedron as above,
+  but starting from the empty polyhedron in the space \f$\Rset^2\f$
+  and inserting the appropriate generators
+  (a point, a ray and a line).
+  \code
   C_Polyhedron ph(2, EMPTY);
   ph.add_generator(point(0*x + 0*y));
   ph.add_generator(ray(y));
   ph.add_generator(line(x));
-    \endcode
-    Note that, although the above polyhedron has no vertices, we must add
-    one point, because otherwise the result of the Minkowski's sum
-    would be an empty polyhedron.
-    To avoid subtle errors related to the minimization process,
-    it is required that the first generator inserted in an empty
-    polyhedron is a point (otherwise, an exception is thrown).
+  \endcode
+  Note that, although the above polyhedron has no vertices, we must add
+  one point, because otherwise the result of the Minkowski's sum
+  would be an empty polyhedron.
+  To avoid subtle errors related to the minimization process,
+  it is required that the first generator inserted in an empty
+  polyhedron is a point (otherwise, an exception is thrown).
 
-    \par Example 4
-    The following code shows the use of the function
-    <CODE>add_space_dimensions_and_embed</CODE>:
-    \code
+  \par Example 4
+  The following code shows the use of the function
+  <CODE>add_space_dimensions_and_embed</CODE>:
+  \code
   C_Polyhedron ph(1);
   ph.add_constraint(x == 2);
   ph.add_space_dimensions_and_embed(1);
-    \endcode
-    We build the universe polyhedron in the 1-dimension space \f$\Rset\f$.
-    Then we add a single equality constraint,
-    thus obtaining the polyhedron corresponding to the singleton set
-    \f$\{ 2 \} \sseq \Rset\f$.
-    After the last line of code, the resulting polyhedron is
-    \f[
-      \bigl\{\,
-        (2, y)^\transpose \in \Rset^2
-      \bigm|
-        y \in \Rset
-      \,\bigr\}.
-    \f]
+  \endcode
+  We build the universe polyhedron in the 1-dimension space \f$\Rset\f$.
+  Then we add a single equality constraint,
+  thus obtaining the polyhedron corresponding to the singleton set
+  \f$\{ 2 \} \sseq \Rset\f$.
+  After the last line of code, the resulting polyhedron is
+  \f[
+    \bigl\{\,
+      (2, y)^\transpose \in \Rset^2
+    \bigm|
+      y \in \Rset
+    \,\bigr\}.
+  \f]
 
-    \par Example 5
-    The following code shows the use of the function
-    <CODE>add_space_dimensions_and_project</CODE>:
-    \code
+  \par Example 5
+  The following code shows the use of the function
+  <CODE>add_space_dimensions_and_project</CODE>:
+  \code
   C_Polyhedron ph(1);
   ph.add_constraint(x == 2);
   ph.add_space_dimensions_and_project(1);
-    \endcode
-    The first two lines of code are the same as in Example 4 for
-    <CODE>add_space_dimensions_and_embed</CODE>.
-    After the last line of code, the resulting polyhedron is
-    the singleton set
-    \f$\bigl\{ (2, 0)^\transpose \bigr\} \sseq \Rset^2\f$.
+  \endcode
+  The first two lines of code are the same as in Example 4 for
+  <CODE>add_space_dimensions_and_embed</CODE>.
+  After the last line of code, the resulting polyhedron is
+  the singleton set
+  \f$\bigl\{ (2, 0)^\transpose \bigr\} \sseq \Rset^2\f$.
 
-    \par Example 6
-    The following code shows the use of the function
-    <CODE>affine_image</CODE>:
-    \code
+  \par Example 6
+  The following code shows the use of the function
+  <CODE>affine_image</CODE>:
+  \code
   C_Polyhedron ph(2, EMPTY);
   ph.add_generator(point(0*x + 0*y));
   ph.add_generator(point(0*x + 3*y));
@@ -252,29 +252,29 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   ph.add_generator(point(3*x + 3*y));
   Linear_Expression expr = x + 4;
   ph.affine_image(x, expr);
-    \endcode
-    In this example the starting polyhedron is a square in
-    \f$\Rset^2\f$, the considered variable is \f$x\f$ and the affine
-    expression is \f$x+4\f$.  The resulting polyhedron is the same
-    square translated to the right.  Moreover, if the affine
-    transformation for the same variable \p x is \f$x+y\f$:
-    \code
+  \endcode
+  In this example the starting polyhedron is a square in
+  \f$\Rset^2\f$, the considered variable is \f$x\f$ and the affine
+  expression is \f$x+4\f$.  The resulting polyhedron is the same
+  square translated to the right.  Moreover, if the affine
+  transformation for the same variable \p x is \f$x+y\f$:
+  \code
   Linear_Expression expr = x + y;
-    \endcode
-    the resulting polyhedron is a parallelogram with the height equal to
-    the side of the square and the oblique sides parallel to the line
-    \f$x-y\f$.
-    Instead, if we do not use an invertible transformation for the same
-    variable; for example, the affine expression \f$y\f$:
-    \code
+  \endcode
+  the resulting polyhedron is a parallelogram with the height equal to
+  the side of the square and the oblique sides parallel to the line
+  \f$x-y\f$.
+  Instead, if we do not use an invertible transformation for the same
+  variable; for example, the affine expression \f$y\f$:
+  \code
   Linear_Expression expr = y;
-    \endcode
-    the resulting polyhedron is a diagonal of the square.
+  \endcode
+  the resulting polyhedron is a diagonal of the square.
 
-    \par Example 7
-    The following code shows the use of the function
-    <CODE>affine_preimage</CODE>:
-    \code
+  \par Example 7
+  The following code shows the use of the function
+  <CODE>affine_preimage</CODE>:
+  \code
   C_Polyhedron ph(2);
   ph.add_constraint(x >= 0);
   ph.add_constraint(x <= 3);
@@ -282,34 +282,34 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   ph.add_constraint(y <= 3);
   Linear_Expression expr = x + 4;
   ph.affine_preimage(x, expr);
-    \endcode
-    In this example the starting polyhedron, \p var and the affine
-    expression and the denominator are the same as in Example 6,
-    while the resulting polyhedron is again the same square,
-    but translated to the left.
-    Moreover, if the affine transformation for \p x is \f$x+y\f$
-    \code
+  \endcode
+  In this example the starting polyhedron, \p var and the affine
+  expression and the denominator are the same as in Example 6,
+  while the resulting polyhedron is again the same square,
+  but translated to the left.
+  Moreover, if the affine transformation for \p x is \f$x+y\f$
+  \code
   Linear_Expression expr = x + y;
-    \endcode
-    the resulting polyhedron is a parallelogram with the height equal to
-    the side of the square and the oblique sides parallel to the line
-    \f$x+y\f$.
-    Instead, if we do not use an invertible transformation for the same
-    variable \p x, for example, the affine expression \f$y\f$:
-    \code
+  \endcode
+  the resulting polyhedron is a parallelogram with the height equal to
+  the side of the square and the oblique sides parallel to the line
+  \f$x+y\f$.
+  Instead, if we do not use an invertible transformation for the same
+  variable \p x, for example, the affine expression \f$y\f$:
+  \code
   Linear_Expression expr = y;
-    \endcode
-    the resulting polyhedron is a line that corresponds to the \f$y\f$ axis.
+  \endcode
+  the resulting polyhedron is a line that corresponds to the \f$y\f$ axis.
 
-    \par Example 8
-    For this example we use also the variables:
-    \code
+  \par Example 8
+  For this example we use also the variables:
+  \code
   Variable z(2);
   Variable w(3);
-    \endcode
-    The following code shows the use of the function
-    <CODE>remove_space_dimensions</CODE>:
-    \code
+  \endcode
+  The following code shows the use of the function
+  <CODE>remove_space_dimensions</CODE>:
+  \code
   Generator_System gs;
   gs.insert(point(3*x + y +0*z + 2*w));
   C_Polyhedron ph(gs);
@@ -317,32 +317,32 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   to_be_removed.insert(y);
   to_be_removed.insert(z);
   ph.remove_space_dimensions(to_be_removed);
-    \endcode
-    The starting polyhedron is the singleton set
-    \f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$, while
-    the resulting polyhedron is
-    \f$\bigl\{ (3, 2)^\transpose \bigr\} \sseq \Rset^2\f$.
-    Be careful when removing space dimensions <EM>incrementally</EM>:
-    since dimensions are automatically renamed after each application
-    of the <CODE>remove_space_dimensions</CODE> operator, unexpected
-    results can be obtained.
-    For instance, by using the following code we would obtain
-    a different result:
-    \code
+  \endcode
+  The starting polyhedron is the singleton set
+  \f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$, while
+  the resulting polyhedron is
+  \f$\bigl\{ (3, 2)^\transpose \bigr\} \sseq \Rset^2\f$.
+  Be careful when removing space dimensions <EM>incrementally</EM>:
+  since dimensions are automatically renamed after each application
+  of the <CODE>remove_space_dimensions</CODE> operator, unexpected
+  results can be obtained.
+  For instance, by using the following code we would obtain
+  a different result:
+  \code
   set<Variable> to_be_removed1;
   to_be_removed1.insert(y);
   ph.remove_space_dimensions(to_be_removed1);
   set<Variable> to_be_removed2;
   to_be_removed2.insert(z);
   ph.remove_space_dimensions(to_be_removed2);
-    \endcode
-    In this case, the result is the polyhedron
-    \f$\bigl\{(3, 0)^\transpose \bigr\} \sseq \Rset^2\f$:
-    when removing the set of dimensions \p to_be_removed2
-    we are actually removing variable \f$w\f$ of the original polyhedron.
-    For the same reason, the operator \p remove_space_dimensions
-    is not idempotent: removing twice the same non-empty set of dimensions
-    is never the same as removing them just once.
+  \endcode
+  In this case, the result is the polyhedron
+  \f$\bigl\{(3, 0)^\transpose \bigr\} \sseq \Rset^2\f$:
+  when removing the set of dimensions \p to_be_removed2
+  we are actually removing variable \f$w\f$ of the original polyhedron.
+  For the same reason, the operator \p remove_space_dimensions
+  is not idempotent: removing twice the same non-empty set of dimensions
+  is never the same as removing them just once.
 */
 
 class Parma_Polyhedra_Library::Polyhedron {
