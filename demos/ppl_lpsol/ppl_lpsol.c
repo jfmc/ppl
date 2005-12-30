@@ -79,6 +79,7 @@ static struct option long_options[] = {
   {"max-cpu",        required_argument, 0, 'C'},
   {"max-memory",     required_argument, 0, 'V'},
   {"output",         required_argument, 0, 'o'},
+  {"simplex",        no_argument,       0, 's'},
   {"timings",        no_argument,       0, 't'},
   {"verbose",        no_argument,       0, 'v'},
   {0, 0, 0, 0}
@@ -556,7 +557,7 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   status = ppl_LP_Problem_solve(lp);
 
   if (print_timings) {
-    fprintf(stderr, "Time to find the optimum: ");
+    fprintf(stderr, "Time to solve the LP problem: ");
     print_clock(stderr);
     fprintf(stderr, " s\n");
     start_clock();
@@ -763,13 +764,6 @@ solve(char* file_name) {
 
   ppl_delete_Constraint_System(ppl_cs);
   ppl_delete_Linear_Expression(ppl_objective_le);
-
-  if (print_timings) {
-    fprintf(stderr, "Time to find the optimum: ");
-    print_clock(stderr);
-    fprintf(stderr, " s\n");
-    start_clock();
-  }
 
   if (optimum_found) {
     mpq_init(optimum);
