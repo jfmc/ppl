@@ -79,6 +79,7 @@ static struct option long_options[] = {
   {"max-cpu",        required_argument, 0, 'C'},
   {"max-memory",     required_argument, 0, 'V'},
   {"output",         required_argument, 0, 'o'},
+  {"enumerate",      no_argument,       0, 'e'},
   {"simplex",        no_argument,       0, 's'},
   {"timings",        no_argument,       0, 't'},
   {"verbose",        no_argument,       0, 'v'},
@@ -95,6 +96,7 @@ static const char* usage_string
 "  -VMB, --max-memory=MB   limits memory usage to MB megabytes\n"
 "  -h, --help              prints this help text to stderr\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
+"  -e, --enumerate         use the (expensive!) enumeration method\n"
 "  -s, --simplex           use the simplex method\n"
 "  -t, --timings           prints timings to stderr\n"
 "  -v, --verbose           outputs also the constraints "
@@ -155,6 +157,8 @@ process_options(int argc, char* argv[]) {
 #ifdef HAVE_GETOPT_H
   int option_index;
 #endif
+  int enumerate_required = 0;
+  int simplex_required = 0;
   int c;
   char* endptr;
   long l;
@@ -212,8 +216,12 @@ process_options(int argc, char* argv[]) {
       output_argument = optarg;
       break;
 
+    case 'e':
+      enumerate_required = 1;
+      break;
+
     case 's':
-      use_simplex = 1;
+      simplex_required = 1;
       break;
 
     case 't':
@@ -228,6 +236,14 @@ process_options(int argc, char* argv[]) {
       abort();
     }
   }
+
+  if (enumerate_required && simplex_required)
+    fatal("--enumerate and --simplex are incompatible options");
+
+  if (enumerate_required)
+    use_simplex = 0;
+  else if (simplex_required)
+    use_simplex = 1;
 
   if (optind >= argc) {
     if (verbose)
