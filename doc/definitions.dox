@@ -1249,7 +1249,7 @@ containing a finite set of BDSs is said to be their <EM>bds-hull</EM>.
 
 The PPL provides support for computations on the domain of rational
 bounded difference shapes that, in selected contexts, can achieve a
-better precision/efficiency ratio with respect to the the corresponding
+better precision/efficiency ratio with respect to the corresponding
 computations on a domain of convex polyhedra.
 As far as the representation of the rational inhomogeneous term of
 each bounded difference is concerned, several <EM>rounding-aware</EM>
