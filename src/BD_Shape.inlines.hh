@@ -884,6 +884,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 template <typename T>
 BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   : dbm(), status(), redundancy_dbm() {
+  using Implementation::BD_Shapes::div_round_up;
   const dimension_type num_dimensions = ph.space_dimension();
 
   if (ph.marked_empty()) {
