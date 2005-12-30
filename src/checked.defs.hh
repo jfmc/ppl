@@ -40,35 +40,6 @@ namespace Checked {
 //! A policy that specifies a total adherence to behavior
 //! of the underlying type.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-struct Transparent_Policy {
-  //! Check for overflowed result.
-  static const int check_overflow = 0;
-  //! Check for attempts to add infinities with different sign.
-  static const int check_inf_add_inf = 0;
-  //! Check for attempts to sub infinities with same sign.
-  static const int check_inf_sub_inf = 0;
-  //! Check for attempts to mul infinities by zero.
-  static const int check_inf_mul_zero = 0;
-  //! Check for attempts to divide by zero.
-  static const int check_div_zero = 0;
-  //! Check for attempts to divide infinities.
-  static const int check_inf_div_inf = 0;
-  //! Check for attempts to compute remainder of infinities.
-  static const int check_inf_mod = 0;
-  //! Check for attempts to take the square root of a negative number.
-  static const int check_sqrt_neg = 0;
-  //! Store unknown special value.
-  static const int store_nan = 0;
-  //! Store overflow special values.
-  static const int store_infinity = 0;
-  //! Representation is identical to primitive.
-  static const int convertible = 1;
-  //! Check for FPU inexact result.
-  static const int fpu_check_inexact = 0;
-  //! Check for NaN arguments
-  static const int check_nan_args = 1;
-};
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A policy checking for overflows.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

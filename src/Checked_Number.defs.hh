@@ -28,8 +28,40 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-typedef Checked::Check_Overflow_Policy Default_To_Policy;
-typedef Checked::Transparent_Policy Default_From_Policy;
+struct Checked_Number_Transparent_Policy {
+  //! Check for overflowed result.
+  static const int check_overflow = 0;
+  //! Check for attempts to add infinities with different sign.
+  static const int check_inf_add_inf = 0;
+  //! Check for attempts to sub infinities with same sign.
+  static const int check_inf_sub_inf = 0;
+  //! Check for attempts to mul infinities by zero.
+  static const int check_inf_mul_zero = 0;
+  //! Check for attempts to divide by zero.
+  static const int check_div_zero = 0;
+  //! Check for attempts to divide infinities.
+  static const int check_inf_div_inf = 0;
+  //! Check for attempts to compute remainder of infinities.
+  static const int check_inf_mod = 0;
+  //! Check for attempts to take the square root of a negative number.
+  static const int check_sqrt_neg = 0;
+  //! Store unknown special value.
+  static const int store_nan = 0;
+  //! Store overflow special values.
+  static const int store_infinity = 0;
+  //! Representation is identical to primitive.
+  static const int convertible = 1;
+  //! Check for FPU inexact result.
+  static const int fpu_check_inexact = 0;
+  //! Check for NaN arguments
+  static const int check_nan_args = 0;
+  static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_NATIVE;
+  static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_NATIVE;
+  static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_NATIVE;
+  static const Rounding_Dir ROUND_DEFAULT_INPUT = ROUND_NATIVE;
+  static const Rounding_Dir ROUND_DEFAULT_OUTPUT = ROUND_NATIVE;
+  static void handle_result(Result r);
+};
 
 struct Checked_Number_Default_Policy {
   static const int check_overflow = 1;
@@ -84,6 +116,9 @@ struct Extended_Number_Policy {
   // static const Rounding_Dir ROUND_DEFAULT_OUTPUT = ROUND_UP;
   static void handle_result(Result r);
 };
+
+typedef Checked::Check_Overflow_Policy Default_To_Policy;
+typedef Checked_Number_Transparent_Policy Default_From_Policy;
 
 //! A wrapper for native numeric types implementing a given policy.
 /*!

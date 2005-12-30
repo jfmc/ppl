@@ -55,6 +55,10 @@ check_result(Result r, Rounding_Dir dir) {
 
 
 inline void
+Checked_Number_Transparent_Policy::handle_result(Result) {
+}
+
+inline void
 Checked_Number_Default_Policy::handle_result(Result r) {
   if (is_special(r))
     throw_result_exception(r);
