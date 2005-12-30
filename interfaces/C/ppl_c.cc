@@ -532,7 +532,7 @@ ppl_new_Constraint(ppl_Constraint_t* pc,
 		   enum ppl_enum_Constraint_Type t) try {
   Constraint* ppc;
   const Linear_Expression& lle = *to_const(le);
-  switch(t) {
+  switch (t) {
   case PPL_CONSTRAINT_TYPE_EQUAL:
     ppc = new Constraint(lle == 0);
     break;
@@ -874,7 +874,7 @@ ppl_new_Generator(ppl_Generator_t* pg,
   Generator* ppg;
   const Linear_Expression& lle = *to_const(le);
   const Coefficient& dd = *to_const(d);
-  switch(t) {
+  switch (t) {
   case PPL_GENERATOR_TYPE_POINT:
     ppg = new Generator(Generator::point(lle, dd));
     break;
