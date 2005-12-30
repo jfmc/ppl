@@ -16,7 +16,7 @@ namespace Parma_Polyhedra_Library {
 
 namespace Implementation {
 
-template <class P>
+template <typename P>
 class Ptr_Iterator;
 
 } // namespace Implementation
