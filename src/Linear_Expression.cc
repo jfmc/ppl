@@ -45,7 +45,6 @@ PPL::Linear_Expression::Linear_Expression(const Generator& g)
     e[i] = g[i];
 }
 
-
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator+(const Linear_Expression& e1, const Linear_Expression& e2) {
@@ -79,7 +78,6 @@ PPL::operator+(const Linear_Expression& e1, const Linear_Expression& e2) {
   return r;
 }
 
-
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator+(Coefficient_traits::const_reference n,
@@ -89,7 +87,6 @@ PPL::operator+(Coefficient_traits::const_reference n,
   return r;
 }
 
-
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator-(const Linear_Expression& e) {
@@ -98,7 +95,6 @@ PPL::operator-(const Linear_Expression& e) {
     neg_assign(r[i]);
   return r;
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
@@ -133,7 +129,6 @@ PPL::operator-(const Linear_Expression& e1, const Linear_Expression& e2) {
   }
 }
 
-
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator-(Coefficient_traits::const_reference n,
@@ -146,7 +141,6 @@ PPL::operator-(Coefficient_traits::const_reference n,
   return r;
 }
 
-
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator*(Coefficient_traits::const_reference n,
@@ -156,7 +150,6 @@ PPL::operator*(Coefficient_traits::const_reference n,
     r[i] *= n;
   return r;
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression&
@@ -175,7 +168,6 @@ PPL::operator+=(Linear_Expression& e1, const Linear_Expression& e2) {
   return e1;
 }
 
-
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression&
 PPL::operator+=(Linear_Expression& e, const Variable v) {
@@ -191,7 +183,6 @@ PPL::operator+=(Linear_Expression& e, const Variable v) {
   ++e[v_space_dim];
   return e;
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression&
@@ -209,7 +200,6 @@ PPL::operator-=(Linear_Expression& e1, const Linear_Expression& e2) {
   }
   return e1;
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression&
