@@ -310,6 +310,7 @@ void
 PPL::Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
   TEMP_INTEGER(tmp);
   const dimension_type n = cycles.size();
+  assert(cycles[n - 1] == 0);
   for (dimension_type k = num_rows(); k-- > 0; ) {
     Row& rows_k = rows[k];
     for (dimension_type i = 0, j = 0; i < n; i = ++j) {
