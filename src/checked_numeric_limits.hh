@@ -43,11 +43,11 @@ public: \
   static const bool has_quiet_NaN =  Policy::store_nan; \
  \
   static Type min() { \
-    return Parma_Polyhedra_Library::Checked::min_int<Policy, T>(); \
+    return Parma_Polyhedra_Library::Checked::Extended_Int<Policy, T>::min; \
   } \
  \
   static Type max() { \
-    return Parma_Polyhedra_Library::Checked::max_int<Policy, T>(); \
+    return Parma_Polyhedra_Library::Checked::Extended_Int<Policy, T>::max; \
   } \
  \
   static Type infinity() { \
