@@ -2542,13 +2542,13 @@ ppl_LP_Problem_is_satisfiable PPL_PROTO((ppl_const_LP_Problem_t lp));
   Solves the LP problem \p lp, returning an exit status.
 
   \return
-  <CODE>PPL_SIMPLEX_PROBLEM_UNFEASIBLE</CODE> if the LP problem
+  <CODE>PPL_LP_PROBLEM_STATUS_UNFEASIBLE</CODE> if the LP problem
   is not satisfiable;
-  <CODE>PPL_SIMPLEX_PROBLEM_UNBOUNDED</CODE> if the LP problem
+  <CODE>PPL_LP_PROBLEM_STATUS_UNBOUNDED</CODE> if the LP problem
   is satisfiable but there is no finite bound to the value of
   the objective function;
-  <CODE>PPL_SIMPLEX_PROBLEM_SOLVED</CODE> if the LP problem admits
-  an optimal solution.
+  <CODE>PPL_LP_PROBLEM_STATUS_OPTIMIZED</CODE> if the LP problem
+  admits an optimal solution.
 */
 int
 ppl_LP_Problem_solve PPL_PROTO((ppl_const_LP_Problem_t lp));
