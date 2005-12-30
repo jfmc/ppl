@@ -83,9 +83,12 @@ sc50b.mps \
 ship08l.mps \
 $(TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED)
 
+TOUGH_EXAMPLES_FOR_SIMPLEX = \
+ship08l.mps
+
 check-local: ppl_lpsol
-	echo $(TOUGH_EXAMPLES) >tough_examples
 	echo -n >obtained
+	echo $(TOUGH_EXAMPLES) >tough_examples
 	LANG=C; \
 	for path in $(srcdir)/examples/*.mps; \
 	do \
@@ -93,8 +96,19 @@ check-local: ppl_lpsol
 	  grep -q $$file tough_examples && continue; \
 	  for m in -m -M; \
 	  do \
-	    echo "*** ppl_lpsol -v $$m -oobtained $$file" >>obtained; \
-	    ./ppl_lpsol -v $$m -oobtained $$path >/dev/null; \
+	    echo "*** ppl_lpsol $$m -oobtained $$file" >>obtained; \
+	    ./ppl_lpsol $$m -oobtained $$path >/dev/null; \
+	  done \
+	done
+	echo $(TOUGH_EXAMPLES_FOR_SIMPLEX) >tough_examples
+	for path in $(srcdir)/examples/*.mps; \
+	do \
+	  file=`basename $$path`; \
+	  grep -q $$file tough_examples && continue; \
+	  for m in -m -M; \
+	  do \
+	    echo "*** ppl_lpsol -s $$m -oobtained $$file" >>obtained; \
+	    ./ppl_lpsol -s $$m -oobtained $$path >/dev/null; \
 	  done \
 	done
 	diff -u --ignore-all-space $(srcdir)/$(EXPECTED) obtained
