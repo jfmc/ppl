@@ -16,6 +16,6 @@ namespace Parma_Polyhedra_Library {
 
 class Linear_System;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Linear_System_types_hh)

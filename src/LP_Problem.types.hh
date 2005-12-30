@@ -26,6 +26,6 @@ enum LP_Problem_Status {
 
 class LP_Problem;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_LP_Problem_types_hh)

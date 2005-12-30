@@ -16,6 +16,6 @@ namespace Parma_Polyhedra_Library {
 
 class Constraint;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Constraint_types_hh)

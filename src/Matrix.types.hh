@@ -16,6 +16,6 @@ namespace Parma_Polyhedra_Library {
 
 class Matrix;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Matrix_types_hh)

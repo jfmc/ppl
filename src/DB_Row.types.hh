@@ -20,6 +20,6 @@ class DB_Row_Impl_Handler;
 template <typename BT>
 class DB_Row;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_DB_Row_types_hh)

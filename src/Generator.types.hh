@@ -16,6 +16,6 @@ namespace Parma_Polyhedra_Library {
 
 class Generator;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Generator_types_hh)

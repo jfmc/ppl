@@ -16,6 +16,6 @@ namespace Parma_Polyhedra_Library {
 
 class Poly_Gen_Relation;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Poly_Gen_Relation_types_hh)

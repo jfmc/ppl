@@ -20,6 +20,6 @@ class Widening_Function;
 template <typename PH, typename CS>
 class Limited_Widening_Function;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Widening_Function_types_hh)

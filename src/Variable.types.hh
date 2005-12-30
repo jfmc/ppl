@@ -16,6 +16,6 @@ namespace Parma_Polyhedra_Library {
 
 class Variable;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Variable_types_hh)

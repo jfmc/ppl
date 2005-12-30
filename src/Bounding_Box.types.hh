@@ -16,6 +16,6 @@ namespace Parma_Polyhedra_Library {
 
 class Bounding_Box;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Bounding_Box_types_hh)

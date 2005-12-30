@@ -19,6 +19,6 @@ class LBoundary;
 class UBoundary;
 class Interval;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Interval_types_hh)

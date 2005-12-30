@@ -17,6 +17,6 @@ namespace Parma_Polyhedra_Library {
 template <typename PH>
 class Determinate;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Determinate_types_hh)

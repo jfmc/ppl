@@ -16,6 +16,6 @@ namespace Parma_Polyhedra_Library {
 
 class Saturation_Matrix;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Saturation_Matrix_types_hh)

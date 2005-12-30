@@ -17,6 +17,6 @@ namespace Parma_Polyhedra_Library {
 template <typename CS>
 class Powerset;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Powerset_types_hh)

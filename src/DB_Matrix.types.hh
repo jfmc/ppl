@@ -17,6 +17,6 @@ namespace Parma_Polyhedra_Library {
 template <typename T>
 class DB_Matrix;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_DB_Matrix_types_hh)

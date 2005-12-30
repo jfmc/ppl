@@ -16,6 +16,6 @@ namespace Parma_Polyhedra_Library {
 
 class BHRZ03_Certificate;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_BHRZ03_Certificate_types_hh)

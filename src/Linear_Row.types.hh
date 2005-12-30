@@ -16,6 +16,6 @@ namespace Parma_Polyhedra_Library {
 
 class Linear_Row;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Linear_Row_types_hh)

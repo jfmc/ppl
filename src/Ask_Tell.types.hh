@@ -20,6 +20,6 @@ class Ask_Tell;
 template <typename CS>
 class Ask_Tell_Pair;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Ask_Tell_types_hh)

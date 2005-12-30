@@ -17,6 +17,6 @@ namespace Parma_Polyhedra_Library {
 template <typename T>
 class BD_Shape;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_BD_Shape_types_hh)

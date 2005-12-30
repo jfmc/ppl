@@ -16,6 +16,6 @@ namespace Parma_Polyhedra_Library {
 
 class NNC_Polyhedron;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_NNC_Polyhedron_types_hh)

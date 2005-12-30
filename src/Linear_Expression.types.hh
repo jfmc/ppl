@@ -16,6 +16,6 @@ namespace Parma_Polyhedra_Library {
 
 class Linear_Expression;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Linear_Expression_types_hh)
