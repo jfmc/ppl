@@ -1198,12 +1198,26 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 
     // If we haven't found an upper bound for the epsilon dimension,
     // then we have to check whether such an upper bound is implied
-    // by the remaining constraints.
+    // by the remaining constraints (exploiting teh simplex algorithm).
     if (!found_eps_leq_one) {
-      Generator g(point());
-      // The cost function is `epsilon'.
-      Linear_Expression cost_function = Variable(x.space_dim);
-      LP_Problem_Status status = cs.primal_simplex(cost_function, g);
+      LP_Problem lp;
+      // KLUDGE: temporarily mark the constraint system as if it was
+      // necessarily closed, so that we can interpret the epsilon
+      // dimension as a standard dimension. Be careful to reset the
+      // topology of `cs' even on exceptional execution path.
+      cs.set_necessarily_closed();
+      try {
+	lp.add_constraints(cs);
+	cs.set_not_necessarily_closed();
+      }
+      catch (...) {
+	cs.set_not_necessarily_closed();
+	throw;
+      }
+      // The objective function is `epsilon'.
+      lp.set_objective_function(Variable(x.space_dim));
+      lp.set_optimization_mode(MAXIMIZATION);
+      LP_Problem_Status status = lp.solve();
       assert(status != UNFEASIBLE_LP_PROBLEM);
       // If the epsilon dimension is actually unbounded,
       // then add the eps_leq_one constraint.
