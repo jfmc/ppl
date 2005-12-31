@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Interval.defs.hh"
 #include "Generator.defs.hh"
+#include "LP_Problem.defs.hh"
 #include <algorithm>
 #include <deque>
 
@@ -449,18 +450,17 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	  box.set_empty();
 	  return;
 	}
-#if 0
-      // If `complexity' allows it, use simplex to determine whether or not
-      // the polyhedron is empty.
-      if (complexity == SIMPLEX_COMPLEXITY) {
-	Linear_Expression obj = Linear_Expression::zero();
-	Generator g(point());
-	if (con_sys.primal_simplex(obj, g) == UNFEASIBLE_PROBLEM) {
+      // If `complexity' allows it, use the LP_Problem solver to determine
+      // whether or not the polyhedron is empty.
+      if (complexity == SIMPLEX_COMPLEXITY
+	  // TODO: find a workaround for NNC polyhedra.
+	  && is_necessarily_closed()) {
+	LP_Problem lp(con_sys);
+	if (!lp.is_satisfiable()) {
 	  box.set_empty();
 	  return;
 	}
       }
-#endif
     }
   }
   else
