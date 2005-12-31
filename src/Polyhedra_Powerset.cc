@@ -102,6 +102,7 @@ PPL::Polyhedra_Powerset<PPL::NNC_Polyhedron>
   return true;
 }
 
+/*! \relates Parma_Polyhedra_Library::Polyhedra_Powerset */
 bool
 PPL::check_containment(const NNC_Polyhedron& ph,
 		       const Polyhedra_Powerset<NNC_Polyhedron>& ps) {
