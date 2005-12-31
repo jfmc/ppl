@@ -742,36 +742,6 @@ ppl_Constraint_System_insert_Constraint(ppl_Constraint_System_t cs,
 CATCH_ALL
 
 int
-ppl_Constraint_System_maximize(ppl_const_Constraint_System_t cs,
-			       ppl_const_Linear_Expression_t le,
-			       ppl_Coefficient_t sup_n,
-			       ppl_Coefficient_t sup_d,
-			       ppl_Generator_t point) try {
-  const Constraint_System& ccs = *to_const(cs);
-  const Linear_Expression& lle = *to_const(le);
-  Coefficient& ssup_n = *to_nonconst(sup_n);
-  Coefficient& ssup_d = *to_nonconst(sup_d);
-  Generator& ppoint = *to_nonconst(point);
-  return ccs.primal_simplex(lle, MAXIMIZATION, ssup_n, ssup_d, ppoint);
-}
-CATCH_ALL
-
-int
-ppl_Constraint_System_minimize(ppl_const_Constraint_System_t cs,
-			       ppl_const_Linear_Expression_t le,
-			       ppl_Coefficient_t inf_n,
-			       ppl_Coefficient_t inf_d,
-			       ppl_Generator_t point) try {
-  const Constraint_System& ccs = *to_const(cs);
-  const Linear_Expression& lle = *to_const(le);
-  Coefficient& iinf_n = *to_nonconst(inf_n);
-  Coefficient& iinf_d = *to_nonconst(inf_d);
-  Generator& ppoint = *to_nonconst(point);
-  return ccs.primal_simplex(lle, MINIMIZATION, iinf_n, iinf_d, ppoint);
-}
-CATCH_ALL
-
-int
 ppl_Constraint_System_OK(ppl_const_Constraint_System_t cs) try {
   return to_const(cs)->OK() ? 1 : 0;
 }
