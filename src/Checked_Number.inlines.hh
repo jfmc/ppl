@@ -355,7 +355,7 @@ name(Checked_Number<To, To_Policy>& to, const Checked_Number<From, From_Policy>&
 }
 
 FUNC1(construct, construct_ext)
-FUNC1(assign, assign_ext)
+FUNC1(assign_r, assign_ext)
 FUNC1(neg_assign_r, neg_ext)
 FUNC1(abs_assign_r, abs_ext)
 FUNC1(sqrt_assign_r, sqrt_ext)
