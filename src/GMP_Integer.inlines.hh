@@ -31,6 +31,11 @@ neg_assign(GMP_Integer& x) {
 }
 
 inline void
+neg_assign(GMP_Integer& x, const GMP_Integer& y) {
+  mpz_neg(x.get_mpz_t(), y.get_mpz_t());
+}
+
+inline void
 gcd_assign(GMP_Integer& x, const GMP_Integer& y) {
   mpz_gcd(x.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
 }

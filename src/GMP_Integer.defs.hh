@@ -62,6 +62,10 @@ memory_size_type external_memory_in_bytes(const GMP_Integer& x);
 /*! \relates GMP_Integer */
 void neg_assign(GMP_Integer& x);
 
+//! Assigns to \p x the negation of \p y.
+/*! \relates GMP_Integer */
+void neg_assign(GMP_Integer& x, const GMP_Integer& y);
+
 //! Assigns to \p x the greatest common divisor of \p x and \p y.
 /*! \relates GMP_Integer */
 void gcd_assign(GMP_Integer& x, const GMP_Integer& y);
@@ -121,6 +125,7 @@ int cmp(const GMP_Integer& x, const GMP_Integer& y);
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::GMP_Integer */
 void swap(Parma_Polyhedra_Library::GMP_Integer& x,
 	  Parma_Polyhedra_Library::GMP_Integer& y);
 
