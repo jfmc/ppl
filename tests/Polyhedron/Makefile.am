@@ -125,7 +125,7 @@ ORIGINAL_TESTS = \
 	linearpartition3 linearpartition4 \
 	linexpression1 \
 	linearsystem1 \
-	LP_Problem1 LP_Problem2 LP_Problem3 \
+	lpproblem1 lpproblem2 \
 	mapspacedims1 mapspacedims2 mapspacedims3  mapspacedims4 \
 	matrix1 \
 	max_min1 max_min2 \
@@ -145,7 +145,6 @@ ORIGINAL_TESTS = \
 	polyhull7 polyhull8 polyhull9 polyhull10 polyhull11 \
 	polypowerset1 \
 	powerset1 \
-	primalsimplex1 primalsimplex2 \
 	randphull1 randphull2 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
 	relations7 relations8 relations9 relations10 relations11 \
@@ -526,9 +525,8 @@ linexpression1_SOURCES = linexpression1.cc
 
 linearsystem1_SOURCES = linearsystem1.cc
 
-LP_Problem1_SOURCES = LP_Problem1.cc
-LP_Problem2_SOURCES = LP_Problem2.cc
-LP_Problem3_SOURCES = LP_Problem3.cc
+lpproblem1_SOURCES = lpproblem1.cc
+lpproblem2_SOURCES = lpproblem2.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 mapspacedims2_SOURCES = mapspacedims2.cc
@@ -590,9 +588,6 @@ polyhull11_SOURCES = polyhull11.cc
 polypowerset1_SOURCES = polypowerset1.cc
 
 powerset1_SOURCES = powerset1.cc
-
-primalsimplex1_SOURCES = primalsimplex1.cc
-primalsimplex2_SOURCES = primalsimplex2.cc
 
 randphull1_SOURCES = randphull1.cc
 randphull2_SOURCES = randphull2.cc
