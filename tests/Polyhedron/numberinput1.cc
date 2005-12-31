@@ -281,7 +281,7 @@ test_denominators() {
   test("15/0", "nan", "", VC_NAN);
   test("15/1", "15", "", V_EQ);
   test("15/3", "5", "", V_EQ);
-  test("15/-3", "nan", "-3", V_CVT_STR_UNK);
+  test("15/-3", "-5", "", V_EQ);
   test("15/3f", "5", "f", V_EQ);
 
   // Exponent.
