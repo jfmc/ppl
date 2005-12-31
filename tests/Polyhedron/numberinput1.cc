@@ -65,103 +65,36 @@ Test_Extended_Number_Policy::handle_result(Result r) {
 }
 
 void
-test(string number, string expected, string expected_residual,
+test(string input_string, string expected_output, string expected_residual,
      Result expected_result) {
-  stringstream f(number);
+  stringstream input_stream(input_string);
+  Checked_Number<mpq_class, Test_Extended_Number_Policy> value;
+  Result result = input(value, input_stream, ROUND_UP);
+  string residual;
+  getline(input_stream, residual, '\0');
+  stringstream output_stream;
+  output_stream << value;
+  string output = output_stream.str();
 
-  // Convert `number' to checked number q1.
-  Checked_Number<mpq_class, Test_Extended_Number_Policy> q1;
-  Result result = input(q1, f, ROUND_UP);
-  typedef stringstream::char_type CH;
-  CH* residual = (CH*) calloc(f.rdbuf()->in_avail(), sizeof(CH));
-  if (residual == NULL) {
-    nout << "Failed to allocate `residual'." << endl;
-    exit(1);
-  }
-  f.readsome(residual, f.rdbuf()->in_avail());
-
-  // Read q2 from string output of q1.
-  stringstream ss1;
-  ss1 << q1;
-  Checked_Number<mpq_class, Test_Extended_Number_Policy> q2;
-  Result r = input(q2, ss1, ROUND_UP);
-  if (r != expected_result) {
+  if (result != expected_result 
+      || residual != expected_residual
+      || output != expected_output) {
 #if 1 || NOISY
     using std::cout;
-    cout << "Failed to read back `q2'.";
-    cout << endl
-	 << "r = " << r << ", q1 = " << q1
-	 << endl
-	 << "number = \"" << number
-	 << "\", expected = \"" << expected << "\""
-	 << endl
-	 <<  "expected_residual = \"" << expected_residual
-	 << "\", expected_result = " << expected_result << "\""
-	 << endl;
+    cout << "input = " << input_string
+         << endl
+         << "expected result = " << expected_result
+         << ", actual result = " << result
+         << endl
+         << "expected value = " << expected_output
+         << ", actual value = " << output
+         << endl
+         << "expected residual = " << expected_residual
+         << ", actual residual = " << residual
+         << endl;
 #endif
-    //exit(1);
-  }
-
-  // Check for a residual.
-  CH* resid = (CH*) calloc(ss1.rdbuf()->in_avail(), sizeof(CH));
-  if (resid == NULL) {
-    nout << "Failed to allocate `resid'." << endl;
-    free(residual);
     exit(1);
   }
-  ss1.readsome(resid, ss1.rdbuf()->in_avail());
-  if (string("").compare(resid)) {
-    nout << "Residual left after reading q1 output into q2 (\""
-	 << resid << "\")." << endl
-	 << "q1: " << q1 << endl
-	 << "q2: " << q2 << endl;
-  error:
-    nout << "given string: \"" << f.str() << "\""
-	 << ", value parsed: \"" << q1 << "\""
-	 << endl;
-    ret = 1;
-    free(resid);
-    free(residual);
-    return;
-  }
-
-  // Check that q1 equals q2.
-  if (!(is_not_a_number(q1) && is_not_a_number(q2))
-      && q1 != q2) {
-    nout << "q1 should equal q2 (which was created from q1 output)."
-	 << endl;
-    goto error;
-  }
-
-  // Compare the output of q2 and the expected string.
-  stringstream ss2;
-  ss2 << q2;
-  if (ss2.str().compare(expected)) {
-    nout << "q2 output is \"" << ss2.str()
-	 << "\" (expected \"" << expected << "\")."
-	 << endl
-	 << "q2: " << q2 << endl;
-    goto error;
-  }
-
-  // Compare residual from initial convertion to expected residual.
-  if (expected_residual.compare(residual)) {
-    nout << "Residual from conversion: \"" << residual
-	 << "\" (expected \"" << expected_residual << "\")" << endl;
-    goto error;
-  }
-
-  // Compare result of initial conversion and expected result.
-  if (result == expected_result) {
-    free(resid);
-    free(residual);
-    return;
-  }
-
-  nout << "Result from conversion: " << result
-       << " (expected " << expected_result << ")" << endl;
-
-  goto error;
 }
 
 inline void
