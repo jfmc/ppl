@@ -395,7 +395,7 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   long v;
-  if (PPL::assign(v, n, PPL::ROUND_NOT_NEEDED) != PPL::V_EQ)
+  if (PPL::assign_r(v, n, PPL::ROUND_NOT_NEEDED) != PPL::V_EQ)
     throw PPL_integer_out_of_range(n);
   Prolog_term_ref t = p2p_new();
   Prolog_put_long(t, v);

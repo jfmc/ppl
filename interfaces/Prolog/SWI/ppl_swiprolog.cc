@@ -122,7 +122,7 @@ Prolog_put_ulong(Prolog_term_ref t, unsigned long ul) {
     PL_put_int64(t, static_cast<int64_t>(ul));
   else {
     mpz_class z;
-    PPL::assign(z, ul, PPL::ROUND_NOT_NEEDED);
+    PPL::assign_r(z, ul, PPL::ROUND_NOT_NEEDED);
     PL_unify_mpz(t, z.get_mpz_t());
   }
   return 1;
@@ -360,14 +360,14 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
   mpz_class v;
   PL_get_mpz(t, v.get_mpz_t());
   PPL::Coefficient r;
-  PPL::assign(r, v, PPL::ROUND_NOT_NEEDED);
+  PPL::assign_r(r, v, PPL::ROUND_NOT_NEEDED);
   return r;
 }
 
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   mpz_class v;
-  PPL::assign(v, n, PPL::ROUND_NOT_NEEDED);
+  PPL::assign_r(v, n, PPL::ROUND_NOT_NEEDED);
   Prolog_term_ref t = Prolog_new_term_ref();
   PL_unify_mpz(t, v.get_mpz_t());
   return t;

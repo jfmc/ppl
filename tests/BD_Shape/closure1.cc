@@ -327,9 +327,9 @@ add_edges(BD_Shape<T>& bd, const Edge* edges, unsigned n) {
   for (unsigned i = 0; i < n; ++i) {
     const mpq_class& q = perturbate(edges[i].distance);
     Coefficient a;
-    assign(a, q.get_den(), ROUND_NOT_NEEDED);
+    assign_r(a, q.get_den(), ROUND_NOT_NEEDED);
     Coefficient b;
-    assign(b, q.get_num(), ROUND_NOT_NEEDED);
+    assign_r(b, q.get_num(), ROUND_NOT_NEEDED);
 
     nout << "a = " << a << "; b = " << b << endl;
 

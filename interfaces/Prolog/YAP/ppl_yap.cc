@@ -372,7 +372,7 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
   // FIXME: the "false &&" below is there because of the problem outlined in
   // http://sourceforge.net/mailarchive/forum.php?thread_id=8471263&forum_id=2080
   if (false && YAP_IsBigNumTerm(t) != FALSE)
-    PPL::assign(n,
+    PPL::assign_r(n,
 		*static_cast<mpz_class*>(YAP_BigNumOfTerm(t)),
 		PPL::ROUND_NOT_NEEDED);
   else {
@@ -387,12 +387,12 @@ Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   if (n <= LONG_MAX) {
     long l;
-    PPL::assign(l, n, PPL::ROUND_NOT_NEEDED);
+    PPL::assign_r(l, n, PPL::ROUND_NOT_NEEDED);
     return YAP_MkIntTerm(l);
   }
   else {
     static mpz_class m;
-    PPL::assign(m, n, PPL::ROUND_NOT_NEEDED);
+    PPL::assign_r(m, n, PPL::ROUND_NOT_NEEDED);
     return YAP_MkBigNumTerm(m.get_mpz_t());
   }
 }

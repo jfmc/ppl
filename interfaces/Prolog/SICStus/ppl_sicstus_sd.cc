@@ -80,7 +80,7 @@ Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   Prolog_term_ref t = Prolog_new_term_ref();
   long v;
-  if (PPL::assign(v, n, PPL::ROUND_NOT_NEEDED) == PPL::V_EQ) {
+  if (PPL::assign_r(v, n, PPL::ROUND_NOT_NEEDED) == PPL::V_EQ) {
     if (SP_put_integer(t, v) == 0)
       throw unknown_interface_error("Coefficient_to_integer_term()");
   } else {

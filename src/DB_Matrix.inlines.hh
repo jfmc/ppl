@@ -432,7 +432,7 @@ struct maybe_assign_struct {
     // When `To' and `From' are different types, we make the conversion
     // and use `tmp'.
     top = &tmp;
-    return assign(tmp, from, dir);
+    return assign_r(tmp, from, dir);
   }
 };
 
@@ -474,7 +474,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   const dimension_type x_num_rows = x.num_rows();
   if (x_num_rows != y.num_rows())
     return false;
-  assign(tmp0, 0, ROUND_NOT_NEEDED);
+  assign_r(tmp0, 0, ROUND_NOT_NEEDED);
   for (dimension_type i = x_num_rows; i-- > 0; ) {
     const DB_Row<T>& x_i = x[i];
     const DB_Row<T>& y_i = y[i];
@@ -509,7 +509,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
     }
   }
   Specialization::finalize(tmp0, dir);
-  assign(r, tmp0, dir);
+  assign_r(r, tmp0, dir);
   return true;
 }
 

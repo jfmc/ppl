@@ -53,7 +53,7 @@ numer_denom(const Checked_Number<T, Policy>& from,
 	 && !is_minus_infinity(from)
 	 && !is_plus_infinity(from));
   mpq_class q;
-  assign(q, from, ROUND_NOT_NEEDED);
+  assign_r(q, from, ROUND_NOT_NEEDED);
   num = q.get_num();
   den = q.get_den();
 }
@@ -71,10 +71,10 @@ div_round_up(Checked_Number<T, Policy>& to,
   mpq_class qy;
   // Note: this code assumes that a Coefficient is always convertible
   // to an mpq_class without loss of precision.
-  assign(qx, x, ROUND_NOT_NEEDED);
-  assign(qy, y, ROUND_NOT_NEEDED);
+  assign_r(qx, x, ROUND_NOT_NEEDED);
+  assign_r(qy, y, ROUND_NOT_NEEDED);
   div_assign_r(qx, qx, qy, ROUND_NOT_NEEDED);
-  assign(to, qx, ROUND_UP);
+  assign_r(to, qx, ROUND_UP);
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -333,7 +333,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
   if (x_space_dim == 0) {
     if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_NOT_NEEDED);
+      assign_r(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
     return true;
@@ -347,7 +347,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // the other BDS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
    if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_NOT_NEEDED);
+      assign_r(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
    return true;
@@ -397,7 +397,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
   if (x_space_dim == 0) {
     if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_NOT_NEEDED);
+      assign_r(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
     return true;
@@ -411,7 +411,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // the other BDS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
    if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_NOT_NEEDED);
+      assign_r(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
    return true;
@@ -461,7 +461,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
   if (x_space_dim == 0) {
     if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_NOT_NEEDED);
+      assign_r(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
     return true;
@@ -475,7 +475,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // the other BDS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
    if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_NOT_NEEDED);
+      assign_r(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
    return true;
@@ -518,7 +518,7 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
   assert(den != 0);
   if (den != 1) {
     N d;
-    assign(d, -den, ROUND_UP);
+    assign_r(d, -den, ROUND_UP);
     neg_assign_r(d, d, ROUND_UP);
     div_assign_r(k, k, d, ROUND_UP);
   }
@@ -1671,7 +1671,7 @@ BD_Shape<T>::shortest_path_closure_assign() const {
   // Fill the main diagonal with zeros.
   for (dimension_type h = num_dimensions + 1; h-- > 0; ) {
     assert(is_plus_infinity(x.dbm[h][h]));
-    assign(x.dbm[h][h], 0, ROUND_NOT_NEEDED);
+    assign_r(x.dbm[h][h], 0, ROUND_NOT_NEEDED);
   }
 
   N sum;
@@ -1958,7 +1958,7 @@ BD_Shape<T>::add_space_dimensions_and_project(const dimension_type m) {
 	DB_Row<N>& dbm_i = dbm[i];
 	for (dimension_type j = m + 1; j-- > 0; )
 	  if (i != j)
-	    assign(dbm_i[j], 0, ROUND_NOT_NEEDED);
+	    assign_r(dbm_i[j], 0, ROUND_NOT_NEEDED);
       }
       status.set_shortest_path_closed();
     }
@@ -1976,8 +1976,8 @@ BD_Shape<T>::add_space_dimensions_and_project(const dimension_type m) {
   // Bottom of the matrix and first row.
   DB_Row<N>& dbm_0 = dbm[0];
   for (dimension_type i = space_dim + 1; i <= new_space_dim; ++i) {
-    assign(dbm[i][0], 0, ROUND_NOT_NEEDED);
-    assign(dbm_0[i], 0, ROUND_NOT_NEEDED);
+    assign_r(dbm[i][0], 0, ROUND_NOT_NEEDED);
+    assign_r(dbm_0[i], 0, ROUND_NOT_NEEDED);
   }
 
   if (marked_shortest_path_closed())
@@ -2230,7 +2230,7 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
 	Iterator k = std::lower_bound(first, last, dbm_ij);
 	if (k != last) {
 	  if (dbm_ij < *k)
-	    assign(dbm_ij, *k, ROUND_UP);
+	    assign_r(dbm_ij, *k, ROUND_UP);
 	}
 	else
 	  dbm_ij = PLUS_INFINITY;
@@ -2525,7 +2525,7 @@ BD_Shape<T>
   // if `q >= 1',    then `v - u <= ub_v - ub_u';
   // if `0 < q < 1', then `v - u <= ub_v - (q*ub_u + (1-q)*lb_u)'.
   mpq_class mpq_sc_den;
-  assign(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
+  assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
   const DB_Row<N>& dbm_0 = dbm[0];
   // No need to consider indices greater than `last_v'.
   for (dimension_type u = last_v; u > 0; --u)
@@ -2546,18 +2546,18 @@ BD_Shape<T>
 	    // `ub_v - (q * ub_u + (1-q) * lb_u)', i.e.,
 	    // `pos_sum + (-lb_u) - q * (ub_u + (-lb_u))'.
 	    mpq_class minus_lb_u;
-	    assign(minus_lb_u, dbm_u0, ROUND_NOT_NEEDED);
+	    assign_r(minus_lb_u, dbm_u0, ROUND_NOT_NEEDED);
 	    mpq_class q;
-	    assign(q, expr_u, ROUND_NOT_NEEDED);
+	    assign_r(q, expr_u, ROUND_NOT_NEEDED);
 	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
 	    mpq_class ub_u;
-	    assign(ub_u, dbm_0[u], ROUND_NOT_NEEDED);
+	    assign_r(ub_u, dbm_0[u], ROUND_NOT_NEEDED);
 	    // Compute `ub_u - lb_u'.
 	    add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
 	    // Compute `(-lb_u) - q * (ub_u - lb_u)'.
 	    sub_mul_assign_r(minus_lb_u, q, ub_u, ROUND_NOT_NEEDED);
 	    N up_approx;
-	    assign(up_approx, minus_lb_u, ROUND_UP);
+	    assign_r(up_approx, minus_lb_u, ROUND_UP);
 	    // Deducing `v - u <= ub_v - (q * ub_u + (1-q) * lb_u)'.
 	    add_assign_r(dbm_u[v], pos_sum, up_approx, ROUND_UP);
 	  }
@@ -2582,7 +2582,7 @@ BD_Shape<T>
   // if `q >= 1',    then `u - v <= lb_u - lb_v';
   // if `0 < q < 1', then `u - v <= (q*lb_u + (1-q)*ub_u) - lb_v'.
   mpq_class mpq_sc_den;
-  assign(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
+  assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
   DB_Row<N>& dbm_0 = dbm[0];
   DB_Row<N>& dbm_v = dbm[v];
   // No need to consider indices greater than `last_v'.
@@ -2604,18 +2604,18 @@ BD_Shape<T>
 	    // `(q * lb_u + (1-q) * ub_u) - lb_v', i.e.,
 	    // `ub_u - q * (ub_u + (-lb_u)) + neg_sum'.
 	    mpq_class ub_u;
-	    assign(ub_u, dbm_0u, ROUND_NOT_NEEDED);
+	    assign_r(ub_u, dbm_0u, ROUND_NOT_NEEDED);
 	    mpq_class q;
-	    assign(q, expr_u, ROUND_NOT_NEEDED);
+	    assign_r(q, expr_u, ROUND_NOT_NEEDED);
 	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
 	    mpq_class minus_lb_u;
-	    assign(minus_lb_u, dbm[u][0], ROUND_NOT_NEEDED);
+	    assign_r(minus_lb_u, dbm[u][0], ROUND_NOT_NEEDED);
 	    // Compute `ub_u - lb_u'.
 	    add_assign_r(minus_lb_u, minus_lb_u, ub_u, ROUND_NOT_NEEDED);
 	    // Compute `ub_u - q * (ub_u - lb_u)'.
 	    sub_mul_assign_r(ub_u, q, minus_lb_u, ROUND_NOT_NEEDED);
 	    N up_approx;
-	    assign(up_approx, ub_u, ROUND_UP);
+	    assign_r(up_approx, ub_u, ROUND_UP);
 	    // Deducing `u - v <= (q*lb_u + (1-q)*ub_u) - lb_v'.
 	    add_assign_r(dbm_v[u], up_approx, neg_sum, ROUND_UP);
 	  }
@@ -2814,8 +2814,8 @@ BD_Shape<T>::affine_image(const Variable var,
   dimension_type neg_pinf_count = 0;
 
   // Approximate the inhomogeneous term.
-  assign(pos_sum, sc_b, ROUND_UP);
-  assign(neg_sum, -sc_b, ROUND_UP);
+  assign_r(pos_sum, sc_b, ROUND_UP);
+  assign_r(neg_sum, -sc_b, ROUND_UP);
 
   // Approximate the homogeneous part of `expr'.
   // Note: indices above `w' can be disregarded, as they all have
@@ -2826,7 +2826,7 @@ BD_Shape<T>::affine_image(const Variable var,
     const int sign_i = sgn(sc_i);
     if (sign_i > 0) {
       N coeff_i;
-      assign(coeff_i, sc_i, ROUND_UP);
+      assign_r(coeff_i, sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
 	const N& up_approx_i = dbm_0[i];
@@ -2850,7 +2850,7 @@ BD_Shape<T>::affine_image(const Variable var,
     }
     else if (sign_i < 0) {
       N minus_coeff_i;
-      assign(minus_coeff_i, -sc_i, ROUND_UP);
+      assign_r(minus_coeff_i, -sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
 	const N& up_approx_minus_i = dbm[i][0];
@@ -2893,7 +2893,7 @@ BD_Shape<T>::affine_image(const Variable var,
   // rounding downwards, which is achieved as usual by rounding upwards
   // the negation and negating again the result.
   N down_sc_den;
-  assign(down_sc_den, -sc_den, ROUND_UP);
+  assign_r(down_sc_den, -sc_den, ROUND_UP);
   neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
 
   // Exploit the upper approximation, if possible.
@@ -2905,7 +2905,7 @@ BD_Shape<T>::affine_image(const Variable var,
     if (pos_pinf_count == 0) {
       // Add the constraint `v <= pos_sum'.
       DB_Row<N>& dbm_0 = dbm[0];
-      assign(dbm_0[v], pos_sum, ROUND_UP);
+      assign_r(dbm_0[v], pos_sum, ROUND_UP);
       // Deduce constraints of the form `v - u', where `u != v'.
       deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, pos_sum);
     }
@@ -2914,7 +2914,7 @@ BD_Shape<T>::affine_image(const Variable var,
       if (pos_pinf_index != v
 	  && sc_expr.coefficient(Variable(pos_pinf_index-1)) == sc_den)
 	// Add the constraint `v - pos_pinf_index <= pos_sum'.
-	assign(dbm[pos_pinf_index][v], pos_sum, ROUND_UP);
+	assign_r(dbm[pos_pinf_index][v], pos_sum, ROUND_UP);
   }
 
   // Exploit the lower approximation, if possible.
@@ -2926,7 +2926,7 @@ BD_Shape<T>::affine_image(const Variable var,
     if (neg_pinf_count == 0) {
       // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
       DB_Row<N>& dbm_v = dbm[v];
-      assign(dbm_v[0], neg_sum, ROUND_UP);
+      assign_r(dbm_v[0], neg_sum, ROUND_UP);
       // Deduce constraints of the form `u - v', where `u != v'.
       deduce_u_minus_v_bounds(v, w, sc_expr, sc_den, neg_sum);
     }
@@ -2936,7 +2936,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	  && sc_expr.coefficient(Variable(neg_pinf_index-1)) == sc_den)
 	// Add the constraint `v - neg_pinf_index >= -neg_sum',
 	// i.e., `neg_pinf_index - v <= neg_sum'.
-	assign(dbm[v][neg_pinf_index], neg_sum, ROUND_UP);
+	assign_r(dbm[v][neg_pinf_index], neg_sum, ROUND_UP);
   }
 
   assert(OK());
@@ -3297,7 +3297,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     // taking into account the sign of `denominator'.
 
     // Approximate the inhomogeneous term.
-    assign(sum, sc_b, ROUND_UP);
+    assign_r(sum, sc_b, ROUND_UP);
 
     // Approximate the homogeneous part of `sc_expr'.
     // Note: indices above `w' can be disregarded, as they all have
@@ -3317,9 +3317,9 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       }
       N coeff_i;
       if (sign_i > 0)
-	assign(coeff_i, sc_i, ROUND_UP);
+	assign_r(coeff_i, sc_i, ROUND_UP);
       else
-	assign(coeff_i, -sc_i, ROUND_UP);
+	assign_r(coeff_i, -sc_i, ROUND_UP);
       add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
     }
 
@@ -3341,7 +3341,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       // rounding downwards, which is achieved as usual by rounding upwards
       // the negation and negating again the result.
       N down_sc_den;
-      assign(down_sc_den, -sc_den, ROUND_UP);
+      assign_r(down_sc_den, -sc_den, ROUND_UP);
       neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
       div_assign_r(sum, sum, down_sc_den, ROUND_UP);
     }
@@ -3366,7 +3366,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     // result is the same as approximating `expr' from below.
 
     // Approximate the inhomogeneous term.
-    assign(sum, -sc_b, ROUND_UP);
+    assign_r(sum, -sc_b, ROUND_UP);
 
     // Approximate the homogeneous part of `-sc_expr'.
     for (dimension_type i = expr_space_dim + 1; i > 0; --i) {
@@ -3384,9 +3384,9 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       }
       N coeff_i;
       if (sign_i > 0)
-	assign(coeff_i, sc_i, ROUND_UP);
+	assign_r(coeff_i, sc_i, ROUND_UP);
       else
-	assign(coeff_i, -sc_i, ROUND_UP);
+	assign_r(coeff_i, -sc_i, ROUND_UP);
       add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
     }
 
@@ -3408,7 +3408,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       // rounding downwards, which is achieved as usual by rounding upwards
       // the negation and negating again the result.
       N down_sc_den;
-      assign(down_sc_den, -sc_den, ROUND_UP);
+      assign_r(down_sc_den, -sc_den, ROUND_UP);
       neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
       div_assign_r(sum, sum, down_sc_den, ROUND_UP);
     }
@@ -3742,9 +3742,9 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
 	if (!is_plus_infinity(approx_j)) {
 	  N coeff_j;
 	  if (sign_j > 0)
-	    assign(coeff_j, expr_j, ROUND_UP);
+	    assign_r(coeff_j, expr_j, ROUND_UP);
 	  else
-	    assign(coeff_j, -expr_j, ROUND_UP);
+	    assign_r(coeff_j, -expr_j, ROUND_UP);
 	  add_mul_assign_r(sum, coeff_j, approx_j, ROUND_UP);
 	  add_dbm_constraint(0, v, sum);
 	}
@@ -3768,9 +3768,9 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
 	if (!is_plus_infinity(approx_j)) {
 	  N coeff_j;
 	  if (sign_j > 0)
-	    assign(coeff_j, expr_j, ROUND_UP);
+	    assign_r(coeff_j, expr_j, ROUND_UP);
 	  else
-	    assign(coeff_j, -expr_j, ROUND_UP);
+	    assign_r(coeff_j, -expr_j, ROUND_UP);
 	  add_mul_assign_r(sum, coeff_j, approx_j, ROUND_UP);
 	  add_dbm_constraint(0, v, sum);
 	}
@@ -3812,7 +3812,7 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
       // taking into account the sign of `denominator'.
 
       // Approximate the inhomogeneous term.
-      assign(sum, sc_b, ROUND_UP);
+      assign_r(sum, sc_b, ROUND_UP);
 
       // Approximate the homogeneous part of `sc_expr'.
       // Note: indices above `w' can be disregarded, as they all have
@@ -3832,9 +3832,9 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
 	}
 	N coeff_i;
 	if (sign_i > 0)
-	  assign(coeff_i, sc_i, ROUND_UP);
+	  assign_r(coeff_i, sc_i, ROUND_UP);
 	else
-	  assign(coeff_i, -sc_i, ROUND_UP);
+	  assign_r(coeff_i, -sc_i, ROUND_UP);
 	add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
       }
 
@@ -3846,7 +3846,7 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
 	// as usual by rounding upwards the negation and negating again
 	// the result.
 	N down_sc_den;
-	assign(down_sc_den, -sc_den, ROUND_UP);
+	assign_r(down_sc_den, -sc_den, ROUND_UP);
 	neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
 	div_assign_r(sum, sum, down_sc_den, ROUND_UP);
       }
@@ -3870,7 +3870,7 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
       // result is the same as approximating `expr' from below.
 
       // Approximate the inhomogeneous term.
-      assign(sum, -sc_b, ROUND_UP);
+      assign_r(sum, -sc_b, ROUND_UP);
 
       // Approximate the homogeneous part of `-sc_expr'.
       for (dimension_type i = j; i > 0; --i) {
@@ -3888,9 +3888,9 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
 	}
 	N coeff_i;
 	if (sign_i > 0)
-	  assign(coeff_i, sc_i, ROUND_UP);
+	  assign_r(coeff_i, sc_i, ROUND_UP);
 	else
-	  assign(coeff_i, -sc_i, ROUND_UP);
+	  assign_r(coeff_i, -sc_i, ROUND_UP);
 	add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
       }
 
@@ -3902,7 +3902,7 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
 	// achieved as usual by rounding upwards the negation and
 	// negating again the result.
 	N down_sc_den;
-	assign(down_sc_den, -sc_den, ROUND_UP);
+	assign_r(down_sc_den, -sc_den, ROUND_UP);
 	neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
 	div_assign_r(sum, sum, down_sc_den, ROUND_UP);
       }

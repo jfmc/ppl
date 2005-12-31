@@ -354,7 +354,7 @@ CATCH_ALL
 
 int
 ppl_Coefficient_to_mpz_t(ppl_const_Coefficient_t c, mpz_t z) try {
-  Result r = assign(reinterpret_mpz_class(z),
+  Result r = assign_r(reinterpret_mpz_class(z),
 		    *to_const(c),
 		    ROUND_DIRECT);
   used(r);
