@@ -255,7 +255,6 @@ Checked_Number.cc \
 Float.cc \
 Constraint.cc \
 Constraint_System.cc \
-simplex.cc \
 Generator_System.cc \
 Generator.cc \
 Init.cc \
