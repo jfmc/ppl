@@ -163,63 +163,6 @@ public:
   void insert(const Constraint& c);
 
   //! \brief
-  //! Applies the primal simplex algorithm so as to optimize the value
-  //! of the objective function \p expr on the system of constraints.
-  /*!
-    \return
-    A LP_Problem_Status flag indicating the outcome of the optimization
-    attempt (unfeasible, unbounded or solved problem).
-
-    \param expr
-    The objective function to be optimized.
-
-    \param m
-    The optimization mode requested.
-
-    \param ext_n
-    On exit, if the problem has been solved, will contain the numerator
-    of the optimal value for \p expr.
-
-    \param ext_d
-    On exit, if the problem has been solved, will contain the denominator
-    of the optimal value for \p expr.
-
-    \param optimizing_point
-    On exit, if the problem has been solved, will contain a feasible
-    point on which \p expr takes the optimal value.
-
-    \exception std::invalid_argument
-    Thrown if the constraint system contains any strict inequality.
-
-    If the optimization problem is unfeasible or unbounded,
-    the parameters \p ext_n, \p ext_d and \p optimizing_point
-    will be left untouched.
-  */
-  LP_Problem_Status primal_simplex(const Linear_Expression& expr,
-				   Optimization_Mode m,
-				   Coefficient& ext_n,
-				   Coefficient& ext_d,
-				   Generator& optimizing_point) const;
-
-  //! Checks satisfiability of \p *this using the primal simplex algorithm.
-  /*!
-    \return
-    <CODE>true</CODE> if the constraint system is satisfiable;
-    <CODE>false</CODE> otherwise.
-
-    \param feasible_point
-    On exit, if the constraint system is satisfiable, will contain a
-    feasible point.
-
-    \exception std::invalid_argument
-    Thrown if the constraint system contains any strict inequality.
-
-    If the optimization problem is unfeasible, the parameter
-    \p feasible_point will be left untouched.
-  */
-  bool is_satisfiable(Generator& feasible_point) const;
-
-  //! \brief
   //! Returns the singleton system containing only
   //! Constraint::zero_dim_false().
   static const Constraint_System& zero_dim_empty();
@@ -440,30 +383,6 @@ private:
 
   //! Adds low-level constraints to the constraint system.
   void add_low_level_constraints();
-
-  //! \brief
-  //! Applies the primal simplex algorithm so as to maximize the value
-  //! of \p cost_function on the system of constraints.
-  /*!
-    \return
-    A LP_Problem_Status flag indicating the outcome of the maximization
-    attempt (unfeasible, unbounded or solved problem).
-
-    \param cost_function
-    The cost function to be maximized. It could be modified
-    during the call.
-
-    \param maximizing_point
-    On exit, if the problem has been solved, will contain a feasible
-    point on which \p cost_function takes the maximal value.
-
-    If the optimization problem is unfeasible or unbounded,
-    the parameter \p maximizing_point will be left untouched.
-    It is assumed that the constraint system contains
-    no strict inequalities.
-  */
-  LP_Problem_Status primal_simplex(Linear_Expression& cost_function,
-				   Generator& maximizing_point) const;
 };
 
 // Constraint_System.inlines.hh is not included here on purpose.
