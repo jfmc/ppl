@@ -437,7 +437,12 @@ private:
   //! Sets the constraint type to <CODE>EQUALITY</CODE>.
   void set_is_equality();
 
-  //! Sets the constraint type to <CODE>INEQUALITY</CODE>.
+  //! Sets the constraint to be an inequality.
+  /*!
+    Whether the constraint type will become <CODE>NONSTRICT_INEQUALITY</CODE>
+    or <CODE>STRICT_INEQUALITY</CODE> depends on the topology and the value
+    of the low-level coefficients of the constraint.
+  */
   void set_is_inequality();
 };
 
