@@ -387,63 +387,6 @@ void compute_leader_indices(const std::vector<dimension_type>& predecessor,
     cs.insert(3*z - y <= 1);    // 9
     BD_Shape<T> bd(cs);
   \endcode
-
-  \par Example 2
-  The following code shows the use of the function
-  <CODE>CH78_widening_assign</CODE>:
-  \code
-    BD_Shape<T> bd1(2);
-    bd1.add_constraint(x <= 0);
-    bd1.add_constraint(y >= 0);
-    bd1.add_constraint(x - y <= 0);
-
-    BD_Shape<T> bd2(2);
-    bd2.add_constraint(x <= -1);
-    bd2.add_constraint(y >= 0);
-    bd2.add_constraint(x + y <= 0);
-
-    bd1.CH78_widening_assign(bd2);
-  \endcode
-  In this example the starting BDS \p bd1 is the fourth quadrant
-  and \p bd2 is an half-plane in \f$\Rset^2\f$. The resulting BDS
-  is the half-plane \f$y >= 0\f$.
-
-  \par Example 3
-  The following code shows the use of the function
-  <CODE>CC76_extrapolation_assign</CODE>:
-  \code
-    BD_Shape<T> bd1(2);
-    bd1.add_constraint(x <= 0);
-    bd1.add_constraint(y >= 0);
-    bd1.add_constraint(x - y <= 0);
-
-    BD_Shape<T> bd2(2);
-    bd2.add_constraint(x <= -1);
-    bd2.add_constraint(y >= 0);
-    bd2.add_constraint(x - y <= 0);
-
-    bd1.CC76_extrapolation_assign(bd2);
-  \endcode
-  In this example the starting bdiffs \p bd1 is the fourth quadrant
-  and \p bd2 is an half-plane in \f$\Rset^2\f$. The resulting bdiffs
-  is still \p bd1.
-
-  \par Example 4
-  The following code shows the use of the function
-  <CODE>CC76_narrowing_assign</CODE>:
-  \code
-    BD_Shape<T> bd1(2);
-    BD_Shape<T> bd2(2);
-
-    Constraint_System cs;
-    cs.insert(x >= 0);
-    bd2.add_constraints(cs2);
-
-    bd1.CC76_narrowing_assign(bd2);
-  \endcode
-  In this example the starting bdiffs \p bd1 is universe
-  and \p bd2 is non-negative half-lines. The resulting bdiffs
-  is the same \p bd2.
 */
 template <typename T>
 class Parma_Polyhedra_Library::BD_Shape {
@@ -538,10 +481,12 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  //! \brief
-  //! Returns \f$0\f$, if \p *this is empty; otherwise, returns the
-  //! \ref Affine_Independence_and_Affine_Dimension "affine dimension"
-  //! of \p *this.
+  // FIXME: the following is a workaround for a bug in doxygen 1.4.6.
+  /*! \brief
+    Returns \f$0\f$, if \p *this is empty; otherwise, returns the
+    \ref Affine_Independence_and_Affine_Dimension "affine dimension"
+    of \p *this.
+  */
   dimension_type affine_dimension() const;
 
   //! Returns a system of constraints defining \p *this.
@@ -828,13 +773,13 @@ public:
 				Relation_Symbol relsym,
 				const Linear_Expression& rhs);
 
-  //! \brief
-  //! Assigns to \p *this the preimage of \p *this with respect to the
-  //! \ref Generalized_Affine_Relations "affine relation"
-  //! \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
-  //! where \f$\mathord{\relsym}\f$ is the relation symbol encoded
-  //! by \p relsym.
-  /*!
+  /*! \brief
+    Assigns to \p *this the preimage of \p *this with respect to the
+    \ref Generalized_Affine_Relations "affine relation"
+    \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
+    where \f$\mathord{\relsym}\f$ is the relation symbol encoded
+    by \p relsym.
+
     \param var
     The left hand side variable of the generalized affine transfer function.
 
@@ -901,7 +846,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the result of computing the
-  //! \ref CH78_widening "CH78-widening" of \p *this and \p y.
+  //! \ref BHMZ05_widening "BHMZ05-widening" of \p *this and \p y.
   /*!
     \param y
     A BDS that <EM>must</EM> be contained in \p *this.
@@ -914,10 +859,10 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void CH78_widening_assign(const BD_Shape& y, unsigned* tp = 0);
+  void BHMZ05_widening_assign(const BD_Shape& y, unsigned* tp = 0);
 
   //! \brief
-  //! Improves the result of the \ref CH78_widening "CH78-widening"
+  //! Improves the result of the \ref BHMZ05_widening "BHMZ05-widening"
   //! computation by also enforcing those constraints in \p cs that are
   //! satisfied by all the points of \p *this.
   /*!
@@ -936,9 +881,9 @@ public:
     Thrown if \p *this, \p y and \p cs are dimension-incompatible or
     if \p cs contains a strict inequality.
   */
-  void limited_CH78_extrapolation_assign(const BD_Shape& y,
-					 const Constraint_System& cs,
-					 unsigned* tp = 0);
+  void limited_BHMZ05_extrapolation_assign(const BD_Shape& y,
+					   const Constraint_System& cs,
+					   unsigned* tp = 0);
 
   //! \brief
   //! Restores from \p y the constraints of \p *this, lost by
