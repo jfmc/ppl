@@ -31,7 +31,8 @@ namespace Parma_Polyhedra_Library {
 
 inline
 LP_Problem::LP_Problem()
-  : tableau(),  base(),  dim_map(), status(OPTIMIZED),
+  : tableau(), working_cost(0, Row::Flags()),
+    base(),  dim_map(), status(OPTIMIZED),
     input_cs(), input_obj_function(), opt_mode(MAXIMIZATION),
     last_generator(point()) {
   assert(OK());
@@ -41,7 +42,8 @@ inline
 LP_Problem::LP_Problem(const Constraint_System& cs,
 		       const Linear_Expression& obj,
 		       const Optimization_Mode mode)
-  : tableau(), base(), dim_map(), status(UNSOLVED),
+  : tableau(), working_cost(0, Row::Flags()),
+    base(), dim_map(), status(UNSOLVED),
     input_cs(!cs.has_strict_inequalities()
 	     ? cs
 	     : (throw std::invalid_argument("PPL::LP_Problem::"
@@ -62,7 +64,8 @@ LP_Problem::LP_Problem(const Constraint_System& cs,
 
 inline
 LP_Problem::LP_Problem(const LP_Problem& y)
-  : tableau(y.tableau), base(y.base), dim_map(y.dim_map), status(y.status),
+  : tableau(y.tableau), working_cost(y.working_cost),
+    base(y.base), dim_map(y.dim_map), status(y.status),
     input_cs(y.input_cs), input_obj_function(y.input_obj_function),
     opt_mode(y.opt_mode), last_generator(y.last_generator) {
   assert(OK());
@@ -197,8 +200,8 @@ LP_Problem::optimal_value(Coefficient& num, Coefficient& den) const {
 inline void
 LP_Problem::swap(LP_Problem& y) {
   std::swap(tableau, y.tableau);
-  std::swap(base, y.base);
   std::swap(working_cost, y.working_cost);
+  std::swap(base, y.base);
   std::swap(dim_map, y.dim_map);
   std::swap(status, y.status);
   std::swap(input_cs, y.input_cs);
