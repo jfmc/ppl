@@ -1,4 +1,4 @@
-/* Test BD_Shape::limited_CH78_extrapolation_assign().
+/* Test BD_Shape::limited_BHMZ05_extrapolation_assign().
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -37,10 +37,10 @@ main() TRY {
 
   print_constraints(cs, "*** cs ****");
 
-  bd1.limited_CH78_extrapolation_assign(bd2, cs);
+  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
 
   print_constraints(bd1,
-		    "*** bd1.limited_CH78_extrapolation_assign(bd2) ***");
+		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
 
   return (bd1 == known_result) ? 0 : 1;
 }

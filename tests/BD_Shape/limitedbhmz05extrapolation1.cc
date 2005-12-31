@@ -1,4 +1,4 @@
-/* Test BD_Shape::CH78_widening_assign().
+/* Test BD_Shape::limited_BHMZ05_extrapolation_assign().
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -27,31 +27,37 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(2);
-  TBD_Shape bd2(2);
+  Constraint_System cs1;
+  cs1.insert(x <= 1);
+  cs1.insert(y >= 4);
+
+  TBD_Shape bd1(cs1);
+
+  print_constraints(bd1, "*** bd1 ****");
+
+  Constraint_System cs2;
+  cs2.insert(x <= 0);
+  cs2.insert(y >= 5);
+
+  TBD_Shape bd2(cs2);
+
+  print_constraints(bd2, "*** bd2 ****");
+
+  Constraint_System cs;
+  cs.insert(x >= 20);
+  cs.insert(y >= 3);
+
+  print_constraints(cs, "*** cs ***");
+
+  TBD_Shape computed_result = bd1;
+  computed_result.limited_BHMZ05_extrapolation_assign(bd2, cs);
+
   TBD_Shape known_result(2);
+  known_result.add_constraint(y >= 3);
 
-  bd1.add_constraint(x <= 1);
-  bd1.add_constraint(x - y <= 2);
-  bd1.add_constraint(y - x <= 7);
+  print_constraints(computed_result,
+		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ****");
 
-  bd2.add_constraint(x - y <= 2);
-  bd2.add_constraint(-x <= 3);
-  bd2.add_constraint(x <= 0);
-  bd2.add_constraint(y - x <= 2);
-
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
-
-  bd1.CH78_widening_assign(bd2);
-
-  known_result.add_constraint(x - y <= 2);
-
-  print_constraints(bd1, "*** bd1.CC76_extrapolation_assign(bd2) ***");
-
-  int retval = (bd1 == known_result) ? 0 : 1;
-
-  return retval;
-
+  return (computed_result == known_result) ? 0 : 1;
 }
 CATCH

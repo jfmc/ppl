@@ -1,4 +1,5 @@
-/* Test BD_Shape::CH78_widening_assign().
+/* Test BD_Shape::BHMZ05_widening_assign(): we apply this function
+   to two zero-dimensional polyhedra.
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,50 +25,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 int
 main() TRY {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-  Variable D(3);
-  Variable E(4);
-
-  TBD_Shape bd1(5);
-  TBD_Shape bd2(5);
-  TBD_Shape known_result(5);
-
-  bd1.add_constraint(A >= 0);
-  bd1.add_constraint(B >= 0);
-  bd1.add_constraint(C >= 1);
-  bd1.add_constraint(D >= 0);
-  bd1.add_constraint(E >= 0);
-  bd1.add_constraint(C - D <= 76);
-  bd1.add_constraint(C - E <= 76);
-  bd1.add_constraint(E - D == 0);
-
-  bd2.add_constraint(A >= 0);
-  bd2.add_constraint(B >= 0);
-  bd2.add_constraint(C >= 1);
-  bd2.add_constraint(D >= 0);
-  bd2.add_constraint(E >= 0);
-  bd2.add_constraint(C - D <= 75);
-  bd2.add_constraint(C - E <= 75);
-  bd2.add_constraint(E - D == 0);
+  TBD_Shape bd1;
+  TBD_Shape bd2(0, EMPTY);
 
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 
-  bd1.CH78_widening_assign(bd2);
+  bd1.BHMZ05_widening_assign(bd2);
 
-  known_result.add_constraint(A >= 0);
-  known_result.add_constraint(B >= 0);
-  known_result.add_constraint(C >= 1);
-  known_result.add_constraint(D >= 0);
-  known_result.add_constraint(E - D == 0);
-
-  print_constraints(bd1, "*** bd1.CH78_widening_assign(bd2) ***");
+  TBD_Shape known_result;
 
   int retval = (bd1 == known_result) ? 0 : 1;
 
-  return retval;
+  print_constraints(bd1, "*** After bd1.BHMZ05_widening_assign(bd2) ***");
 
+  return retval;
 }
 CATCH

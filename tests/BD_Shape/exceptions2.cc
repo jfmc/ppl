@@ -82,10 +82,10 @@ error3() {
 
   try {
     // This is an invalid use of the function
-    // BD_Shape::CH78_widening_assign(bd1): it is illegal to apply
+    // BD_Shape::BHMZ05_widening_assign(bd1): it is illegal to apply
     // this function to two polyhedra that are not dimensional
     // compatible.
-    bd2.CH78_widening_assign(bd1);
+    bd2.BHMZ05_widening_assign(bd1);
   }
   catch (invalid_argument& e) {
 
@@ -118,10 +118,10 @@ error4() {
 
   try {
     // This is an invalid use of the function
-    // BD_Shape::limited_CH78_extrapolation_assign(bd, cs): it is
+    // BD_Shape::limited_BHMZ05_extrapolation_assign(bd, cs): it is
     // illegal to apply this function to a system of constraints that
     // is not dimension-compatible with the two polyhedra.
-    bd2.limited_CH78_extrapolation_assign(bd1, cs);
+    bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
   }
   catch (invalid_argument& e) {
 
@@ -145,10 +145,10 @@ error5() {
 
   try {
     // This is an invalid use of the function
-    // BD_Shape::limited_CH78_extrapolation_assign(bd2, cs): it is
+    // BD_Shape::limited_BHMZ05_extrapolation_assign(bd2, cs): it is
     // illegal to apply this function to two polyhedra that are not
     // dimension-compatible.
-    bd2.limited_CH78_extrapolation_assign(bd1, cs);
+    bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
   }
   catch (invalid_argument& e) {
 
@@ -180,10 +180,10 @@ error6() {
 
   try {
     // This is an invalid use of the function
-    // BD_Shape::limited_CH78_extrapolation_assign(bd, cs): it is
+    // BD_Shape::limited_BHMZ05_extrapolation_assign(bd, cs): it is
     // illegal to apply this function to a system of constraints that
     // has a strict-inequality.
-    bd2.limited_CH78_extrapolation_assign(bd1, cs);
+    bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
   }
   catch (invalid_argument& e) {
 

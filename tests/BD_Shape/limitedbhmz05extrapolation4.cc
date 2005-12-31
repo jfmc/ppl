@@ -1,4 +1,4 @@
-/* Test BD_Shape::CH78_widening_assign().
+/* Test BD_Shape::limited_BHMZ05_extrapolation_assign().
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,31 +24,45 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 int
 main() TRY {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
+  Variable x(0);
+  Variable y(1);
 
-  TBD_Shape bd1(3);
-  TBD_Shape bd2(3);
-  TBD_Shape known_result(3, EMPTY);
+  Constraint_System cs1;
+  cs1.insert(x >= 0);
+  cs1.insert(x <= 1);
+  cs1.insert(y >= 0);
+  cs1.insert(x - y >= 0);
 
-  bd1.add_constraint(A - B <= 1);
-  bd1.add_constraint(A - B >= 2);
+  TBD_Shape bd1(cs1);
+  TBD_Shape known_result(bd1);
 
-  bd2.add_constraint(A - B <= 1);
-  bd2.add_constraint(A - B >= 2);
-  bd2.add_constraint(A - C <= 1);
-  bd2.add_constraint(C - B <= 0);
+    print_constraints(bd1, "*** bd1 ****");
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  Constraint_System cs2;
+  cs2.insert(x >= 3);
+  cs2.insert(x <= 2);
+  cs2.insert(y >= 0);
+  cs2.insert(x - y >= 0);
 
-  bd1.CH78_widening_assign(bd2);
+  TBD_Shape bd2(cs2);
 
-  print_constraints(bd1, "*** bd1.CH78_widening_assign(bd2) ***");
+  print_constraints(bd2, "*** bd2 ****");
 
-  int retval = (bd1 == known_result) ? 0 : 1;
+  Constraint_System cs;
+  cs.insert(x >= 0);
+  cs.insert(y >= 0);
+  cs.insert(x + y <= 0);
+  cs.insert(x - y >= 0);
+  cs.insert(x <= 5);
+  cs.insert(y <= 5);
 
-  return retval;
+  print_constraints(cs, "*** cs ****");
+
+  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+
+  print_constraints(bd1,
+		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+
+  return (bd1 == known_result) ? 0 : 1;
 }
 CATCH

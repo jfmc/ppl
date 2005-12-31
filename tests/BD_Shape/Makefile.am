@@ -42,7 +42,7 @@ $(top_builddir)/src/libppl.la \
 
 check_PROGRAMS = \
 	addconstraints1 \
-	addspacedims1  addspacedims2 addspacedims3 addspacedims4 \
+	addspacedims1 addspacedims2 addspacedims3 addspacedims4 \
 	addspacedims5 addspacedims6 addspacedims7 \
 	affinedimension1 \
 	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
@@ -54,13 +54,13 @@ check_PROGRAMS = \
 	bdsdifference5 bdsdifference6 bdsdifference7 \
 	bdshull1 bdshull2 bdshull3 bdshull4 \
 	bgp99extrapolation1 \
+	bhmz05widening1 bhmz05widening2 bhmz05widening3 bhmz05widening4 \
+	bhmz05widening5 bhmz05widening6 bhmz05widening7 bhmz05widening8 \
 	bhz03widening1 \
 	cc76narrowing1 cc76narrowing2 cc76narrowing3 cc76narrowing4 \
 	cc76narrowing5 \
 	cc76extrapolation1 cc76extrapolation2 cc76extrapolation3 \
 	cc76extrapolation4 cc76extrapolation5 cc76extrapolation6 \
-	ch78widening1 ch78widening2 ch78widening3 ch78widening4 \
-	ch78widening5 ch78widening6 ch78widening7 ch78widening8 \
 	closure1 \
 	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
 	constraints1 constraints2 \
@@ -81,13 +81,13 @@ check_PROGRAMS = \
 	h79widening1 \
 	intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 intersection8 \
-	limitedCC76extrapolation1 limitedCC76extrapolation2 \
-	limitedCC76extrapolation3 \
-	limitedCH78extrapolation1 limitedCH78extrapolation2 \
-	limitedCH78extrapolation3 limitedCH78extrapolation4 \
-	limitedCH78extrapolation5 limitedCH78extrapolation6 \
-	limitedCH78extrapolation7 limitedCH78extrapolation8 \
-	limitedCH78extrapolation9 \
+	limitedbhmz05extrapolation1 limitedbhmz05extrapolation2 \
+	limitedbhmz05extrapolation3 limitedbhmz05extrapolation4 \
+	limitedbhmz05extrapolation5 limitedbhmz05extrapolation6 \
+	limitedbhmz05extrapolation7 limitedbhmz05extrapolation8 \
+	limitedbhmz05extrapolation9 \
+	limitedcc76extrapolation1 limitedcc76extrapolation2 \
+	limitedcc76extrapolation3 \
 	limitedh79extrapolation1 \
 	mapspacedims1 mapspacedims2 mapspacedims3 mapspacedims4 \
 	maxspacedim \
@@ -161,6 +161,15 @@ bdshull4_SOURCES = bdshull4.cc
 
 bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
 
+bhmz05widening1_SOURCES = bhmz05widening1.cc
+bhmz05widening2_SOURCES = bhmz05widening2.cc
+bhmz05widening3_SOURCES = bhmz05widening3.cc
+bhmz05widening4_SOURCES = bhmz05widening4.cc
+bhmz05widening5_SOURCES = bhmz05widening5.cc
+bhmz05widening6_SOURCES = bhmz05widening6.cc
+bhmz05widening7_SOURCES = bhmz05widening7.cc
+bhmz05widening8_SOURCES = bhmz05widening8.cc
+
 bhz03widening1_SOURCES = bhz03widening1.cc
 
 cc76narrowing1_SOURCES = cc76narrowing1.cc
@@ -175,15 +184,6 @@ cc76extrapolation3_SOURCES = cc76extrapolation3.cc
 cc76extrapolation4_SOURCES = cc76extrapolation4.cc
 cc76extrapolation5_SOURCES = cc76extrapolation5.cc
 cc76extrapolation6_SOURCES = cc76extrapolation6.cc
-
-ch78widening1_SOURCES = ch78widening1.cc
-ch78widening2_SOURCES = ch78widening2.cc
-ch78widening3_SOURCES = ch78widening3.cc
-ch78widening4_SOURCES = ch78widening4.cc
-ch78widening5_SOURCES = ch78widening5.cc
-ch78widening6_SOURCES = ch78widening6.cc
-ch78widening7_SOURCES = ch78widening7.cc
-ch78widening8_SOURCES = ch78widening8.cc
 
 closure1_SOURCES = closure1.cc
 
@@ -245,19 +245,19 @@ intersection6_SOURCES = intersection6.cc
 intersection7_SOURCES = intersection7.cc
 intersection8_SOURCES = intersection8.cc
 
-limitedCC76extrapolation1_SOURCES = limitedCC76extrapolation1.cc
-limitedCC76extrapolation2_SOURCES = limitedCC76extrapolation2.cc
-limitedCC76extrapolation3_SOURCES = limitedCC76extrapolation3.cc
+limitedbhmz05extrapolation1_SOURCES = limitedbhmz05extrapolation1.cc
+limitedbhmz05extrapolation2_SOURCES = limitedbhmz05extrapolation2.cc
+limitedbhmz05extrapolation3_SOURCES = limitedbhmz05extrapolation3.cc
+limitedbhmz05extrapolation4_SOURCES = limitedbhmz05extrapolation4.cc
+limitedbhmz05extrapolation5_SOURCES = limitedbhmz05extrapolation5.cc
+limitedbhmz05extrapolation6_SOURCES = limitedbhmz05extrapolation6.cc
+limitedbhmz05extrapolation7_SOURCES = limitedbhmz05extrapolation7.cc
+limitedbhmz05extrapolation8_SOURCES = limitedbhmz05extrapolation8.cc
+limitedbhmz05extrapolation9_SOURCES = limitedbhmz05extrapolation9.cc
 
-limitedCH78extrapolation1_SOURCES = limitedCH78extrapolation1.cc
-limitedCH78extrapolation2_SOURCES = limitedCH78extrapolation2.cc
-limitedCH78extrapolation3_SOURCES = limitedCH78extrapolation3.cc
-limitedCH78extrapolation4_SOURCES = limitedCH78extrapolation4.cc
-limitedCH78extrapolation5_SOURCES = limitedCH78extrapolation5.cc
-limitedCH78extrapolation6_SOURCES = limitedCH78extrapolation6.cc
-limitedCH78extrapolation7_SOURCES = limitedCH78extrapolation7.cc
-limitedCH78extrapolation8_SOURCES = limitedCH78extrapolation8.cc
-limitedCH78extrapolation9_SOURCES = limitedCH78extrapolation9.cc
+limitedcc76extrapolation1_SOURCES = limitedcc76extrapolation1.cc
+limitedcc76extrapolation2_SOURCES = limitedcc76extrapolation2.cc
+limitedcc76extrapolation3_SOURCES = limitedcc76extrapolation3.cc
 
 limitedh79extrapolation1_SOURCES = limitedh79extrapolation1.cc
 
