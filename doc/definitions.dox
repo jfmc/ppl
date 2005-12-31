@@ -1265,7 +1265,7 @@ even though they are typically characterized by a lower degree of precision.
 
 \subsection Widening_and_Extrapolation_Operators_on_BD_Shapes Widening and Extrapolation Operators on BD Shapes
 
-\anchor CH78_widening
+\anchor BHMZ05_widening
 For the domain of BDSs, the library provides a variant of the widening
 operator for convex polyhedra defined in \ref CH78 "[CH78]".
 The implementation follows the specification in \ref BHMZ05 "[BHMZ05]",
