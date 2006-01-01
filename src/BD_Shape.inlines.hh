@@ -511,20 +511,9 @@ template <typename T>
 inline void
 BD_Shape<T>::add_dbm_constraint(const dimension_type i,
 				const dimension_type j,
-				N k,
-				Coefficient_traits::const_reference den) {
+				N k) {
   // Private method: the caller has to ensure the following.
   assert(i <= space_dimension() && j <= space_dimension() && i != j);
-  assert(den != 0);
-  if (den != 1) {
-    // CHECK ME: Compute a downward approximation of `den'.
-    TEMP_INTEGER(minus_den);
-    neg_assign(minus_den, den);
-    N d;
-    assign_r(d, minus_den, ROUND_UP);
-    neg_assign_r(d, d, ROUND_UP);
-    div_assign_r(k, k, d, ROUND_UP);
-  }
   N& dbm_ij = dbm[i][j];
   if (dbm_ij > k) {
     dbm_ij = k;
@@ -2679,6 +2668,8 @@ BD_Shape<T>::affine_image(const Variable var,
   //   equal to `denominator' or `-denominator', since otherwise we have
   //   to fall back on the general form;
   // - If t == 2, the `expr' is of the general form.
+  TEMP_INTEGER(minus_den);
+  neg_assign(minus_den, denominator);
 
   if (t == 0) {
     // Case 1: expr == b.
@@ -2689,9 +2680,7 @@ BD_Shape<T>::affine_image(const Variable var,
       status.reset_shortest_path_reduced();
     // Add the constraint `var == b/denominator'.
     add_dbm_constraint(0, v, b, denominator);
-    TEMP_INTEGER(minus_b);
-    neg_assign(minus_b, b);
-    add_dbm_constraint(v, 0, minus_b, denominator);
+    add_dbm_constraint(v, 0, b, minus_den);
     assert(OK());
     return;
   }
@@ -2699,8 +2688,6 @@ BD_Shape<T>::affine_image(const Variable var,
   if (t == 1) {
     // Value of the one and only non-zero coefficient in `expr'.
     const Coefficient& a = expr.coefficient(Variable(w-1));
-    TEMP_INTEGER(minus_den);
-    neg_assign(minus_den, denominator);
     if (a == denominator || a == minus_den) {
       // Case 2: expr == a*w + b, with a == +/- denominator.
       if (w == v) {
@@ -2715,7 +2702,6 @@ BD_Shape<T>::affine_image(const Variable var,
 	    N d;
 	    div_round_up(d, b, denominator);
 	    N c;
-	    // Note: the same as div_round_up(c, -b, denominator);
 	    div_round_up(c, b, minus_den);
 	    DB_Row<N>& dbm_v = dbm[v];
 	    for (dimension_type i = space_dim + 1; i-- > 0; ) {
@@ -2760,9 +2746,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	if (a == denominator) {
 	  // Add the new constraint `v - w == b/denominator'.
 	  add_dbm_constraint(w, v, b, denominator);
-	  TEMP_INTEGER(minus_b);
-	  neg_assign(minus_b, b);
-	  add_dbm_constraint(v, w, minus_b, denominator);
+	  add_dbm_constraint(v, w, b, minus_den);
 	}
 	else {
 	  // Here a == -denominator, so that we should be adding
@@ -2780,7 +2764,6 @@ BD_Shape<T>::affine_image(const Variable var,
 	  if (!is_plus_infinity(dbm_0w)) {
 	    // Add the constraint `v >= b/denominator - upper_w'.
 	    N c;
-	    // Note: the same as div_round_up(c, -b, denominator);
 	    div_round_up(c, b, minus_den);
 	    add_assign_r(dbm[v][0], dbm_0w, c, ROUND_UP);
 	    status.reset_shortest_path_closed();
@@ -2805,21 +2788,19 @@ BD_Shape<T>::affine_image(const Variable var,
   // Note: approximating `-expr' from above and then negating the
   // result is the same as approximating `expr' from below.
   const bool is_sc = (denominator > 0);
-  TEMP_INTEGER(neg_b);
-  neg_assign(neg_b, b);
-  const Coefficient& sc_b = is_sc ? b : neg_b;
-  const Coefficient& minus_sc_b = is_sc ? neg_b : b;
-  TEMP_INTEGER(neg_den);
-  neg_assign(neg_den, denominator);
-  const Coefficient& sc_den = is_sc ? denominator : neg_den;
-  const Coefficient& minus_sc_den = is_sc ? neg_den : denominator;
-  // NOTE: here, for optimization purposes, `neg_expr' is only assigned
+  TEMP_INTEGER(minus_b);
+  neg_assign(minus_b, b);
+  const Coefficient& sc_b = is_sc ? b : minus_b;
+  const Coefficient& minus_sc_b = is_sc ? minus_b : b;
+  const Coefficient& sc_den = is_sc ? denominator : minus_den;
+  const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
+  // NOTE: here, for optimization purposes, `minus_expr' is only assigned
   // when `denominator' is negative. Do not use it unless you are sure
   // it has been correctly assigned.
-  Linear_Expression neg_expr;
+  Linear_Expression minus_expr;
   if (!is_sc)
-    neg_expr = -expr;
-  const Linear_Expression& sc_expr = is_sc ? expr : neg_expr;
+    minus_expr = -expr;
+  const Linear_Expression& sc_expr = is_sc ? expr : minus_expr;
 
   N pos_sum;
   N neg_sum;
@@ -2835,9 +2816,9 @@ BD_Shape<T>::affine_image(const Variable var,
   assign_r(pos_sum, sc_b, ROUND_UP);
   assign_r(neg_sum, minus_sc_b, ROUND_UP);
 
-  // Approximate the homogeneous part of `expr'.
+  // Approximate the homogeneous part of `sc_expr'.
   // Note: indices above `w' can be disregarded, as they all have
-  // a zero coefficient in `expr'.
+  // a zero coefficient in `sc_expr'.
   const DB_Row<N>& dbm_0 = dbm[0];
   for (dimension_type i = w; i > 0; --i) {
     const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
@@ -2867,7 +2848,6 @@ BD_Shape<T>::affine_image(const Variable var,
       }
     }
     else if (sign_i < 0) {
-      // CHECK ME.
       TEMP_INTEGER(minus_sc_i);
       neg_assign(minus_sc_i, sc_i);
       N minus_coeff_i;
@@ -2913,7 +2893,7 @@ BD_Shape<T>::affine_image(const Variable var,
   // Before computing quotients, the denominator should be approximated
   // towards zero. Since `sc_den' is known to be positive, this amounts to
   // rounding downwards, which is achieved as usual by rounding upwards
-  // the negation and negating again the result.
+  // `minus_sc_den' and negating again the result.
   N down_sc_den;
   assign_r(down_sc_den, minus_sc_den, ROUND_UP);
   neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
@@ -3135,6 +3115,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   // - If t == 2, the `expr' is of the general form.
   DB_Row<N>& dbm_0 = dbm[0];
   DB_Row<N>& dbm_v = dbm[v];
+  TEMP_INTEGER(minus_den);
+  neg_assign(minus_den, denominator);
 
   if (t == 0) {
     // Case 1: expr == b.
@@ -3150,7 +3132,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     case GREATER_THAN_OR_EQUAL:
       // Add the constraint `var >= b/denominator',
       // i.e., `-var <= -b/denominator',
-      add_dbm_constraint(v, 0, -b, denominator);
+      add_dbm_constraint(v, 0, b, minus_den);
       break;
     default:
       // We already dealt with the other cases.
@@ -3164,7 +3146,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   if (t == 1) {
     // Value of the one and only non-zero coefficient in `expr'.
     const Coefficient& a = expr.coefficient(Variable(w-1));
-    if (a == denominator || a == -denominator) {
+    if (a == denominator || a == minus_den) {
       // Case 2: expr == a*w + b, with a == +/- denominator.
       N d;
       switch (relsym) {
@@ -3222,7 +3204,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	break;
 
       case GREATER_THAN_OR_EQUAL:
-	div_round_up(d, -b, denominator);
+	div_round_up(d, b, minus_den);
 	if (w == v) {
 	  // `expr' is of the form: a*w + b.
 	  // Shortest-path closure and reduction are not preserved.
@@ -3294,21 +3276,19 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   // a constraint providing an upper or a lower bound for `v'
   // (depending on `relsym').
   const bool is_sc = (denominator > 0);
-  TEMP_INTEGER(neg_b);
-  neg_assign(neg_b, b);
-  const Coefficient& sc_b = is_sc ? b : neg_b;
-  const Coefficient& minus_sc_b = is_sc ? neg_b : b;
-  TEMP_INTEGER(neg_den);
-  neg_assign(neg_den, denominator);
-  const Coefficient& sc_den = is_sc ? denominator : neg_den;
-  const Coefficient& minus_sc_den = is_sc ? neg_den : denominator;
-  // NOTE: here, for optimization purposes, `neg_expr' is only assigned
+  TEMP_INTEGER(minus_b);
+  neg_assign(minus_b, b);
+  const Coefficient& sc_b = is_sc ? b : minus_b;
+  const Coefficient& minus_sc_b = is_sc ? minus_b : b;
+  const Coefficient& sc_den = is_sc ? denominator : minus_den;
+  const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
+  // NOTE: here, for optimization purposes, `minus_expr' is only assigned
   // when `denominator' is negative. Do not use it unless you are sure
   // it has been correctly assigned.
-  Linear_Expression neg_expr;
+  Linear_Expression minus_expr;
   if (!is_sc)
-    neg_expr = -expr;
-  const Linear_Expression& sc_expr = is_sc ? expr : neg_expr;
+    minus_expr = -expr;
+  const Linear_Expression& sc_expr = is_sc ? expr : minus_expr;
 
   N sum;
   // Index of variable that is unbounded in `this->dbm'.
@@ -3319,15 +3299,13 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 
   switch (relsym) {
   case LESS_THAN_OR_EQUAL:
-    // Compute an upper approximation for `expr' into `sum',
-    // taking into account the sign of `denominator'.
+    // Compute an upper approximation for `sc_expr' into `sum'.
 
     // Approximate the inhomogeneous term.
     assign_r(sum, sc_b, ROUND_UP);
-
     // Approximate the homogeneous part of `sc_expr'.
     // Note: indices above `w' can be disregarded, as they all have
-    // a zero coefficient in `expr'.
+    // a zero coefficient in `sc_expr'.
     for (dimension_type i = w; i > 0; --i) {
       const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
       const int sign_i = sgn(sc_i);
@@ -3368,7 +3346,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       // Before computing the quotient, the denominator should be approximated
       // towards zero. Since `sc_den' is known to be positive, this amounts to
       // rounding downwards, which is achieved as usual by rounding upwards
-      // the negation and negating again the result.
+      // `minus_sc_den' and negating again the result.
       N down_sc_den;
       assign_r(down_sc_den, minus_sc_den, ROUND_UP);
       neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
@@ -3389,14 +3367,12 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     break;
 
   case GREATER_THAN_OR_EQUAL:
-    // Compute an upper approximation for `-expr' into `sum',
-    // taking into account the sign of `denominator'.
-    // Note: approximating `-expr' from above and then negating the
-    // result is the same as approximating `expr' from below.
+    // Compute an upper approximation for `-sc_expr' into `sum'.
+    // Note: approximating `-sc_expr' from above and then negating the
+    // result is the same as approximating `sc_expr' from below.
 
     // Approximate the inhomogeneous term.
     assign_r(sum, minus_sc_b, ROUND_UP);
-
     // Approximate the homogeneous part of `-sc_expr'.
     for (dimension_type i = expr_space_dim + 1; i > 0; --i) {
       const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
@@ -3415,7 +3391,6 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       if (sign_i > 0)
 	assign_r(coeff_i, sc_i, ROUND_UP);
       else {
-	// CHECK ME.
 	TEMP_INTEGER(minus_sc_i);
 	neg_assign(minus_sc_i, sc_i);
 	assign_r(coeff_i, minus_sc_i, ROUND_UP);
@@ -3439,7 +3414,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       // Before computing the quotient, the denominator should be approximated
       // towards zero. Since `sc_den' is known to be positive, this amounts to
       // rounding downwards, which is achieved as usual by rounding upwards
-      // the negation and negating again the result.
+      // `minus_sc_den' and negating again the result.
       N down_sc_den;
       assign_r(down_sc_den, minus_sc_den, ROUND_UP);
       neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
@@ -3704,7 +3679,8 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
       ? GREATER_THAN_OR_EQUAL : LESS_THAN_OR_EQUAL;
     const Linear_Expression inverse
       = expr - (expr_v + denominator)*var;
-    const Coefficient inverse_den = - expr_v;
+    TEMP_INTEGER(inverse_den);
+    neg_assign(inverse_den, expr_v);
     const Relation_Symbol inverse_relsym
       = (sgn(denominator) == sgn(inverse_den)) ? relsym : reversed_relsym;
     generalized_affine_image(var, inverse_relsym, inverse, inverse_den);
@@ -3777,7 +3753,6 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
 	  if (sign_j > 0)
 	    assign_r(coeff_j, expr_j, ROUND_UP);
 	  else {
-	    // CHECK ME.
 	    TEMP_INTEGER(minus_expr_j);
 	    neg_assign(minus_expr_j, expr_j);
 	    assign_r(coeff_j, minus_expr_j, ROUND_UP);
@@ -3807,7 +3782,6 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
 	  if (sign_j > 0)
 	    assign_r(coeff_j, expr_j, ROUND_UP);
 	  else {
-	    // CHECK ME.
 	    TEMP_INTEGER(minus_expr_j);
 	    neg_assign(minus_expr_j, expr_j);
 	    assign_r(coeff_j, minus_expr_j, ROUND_UP);
@@ -3828,21 +3802,21 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
     // Here t == 2, so that
     // expr == a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2.
     const bool is_sc = (denominator > 0);
-    TEMP_INTEGER(neg_b);
-    neg_assign(neg_b, b);
-    const Coefficient& sc_b = is_sc ? b : neg_b;
-    const Coefficient& minus_sc_b = is_sc ? neg_b : b;
-    TEMP_INTEGER(neg_den);
-    neg_assign(neg_den, denominator);
-    const Coefficient& sc_den = is_sc ? denominator : neg_den;
-    const Coefficient& minus_sc_den = is_sc ? neg_den : denominator;
-    // NOTE: here, for optimization purposes, `neg_expr' is only assigned
+    TEMP_INTEGER(minus_b);
+    neg_assign(minus_b, b);
+    const Coefficient& sc_b = is_sc ? b : minus_b;
+    const Coefficient& minus_sc_b = is_sc ? minus_b : b;
+    TEMP_INTEGER(minus_den);
+    neg_assign(minus_den, denominator);
+    const Coefficient& sc_den = is_sc ? denominator : minus_den;
+    const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
+    // NOTE: here, for optimization purposes, `minus_expr' is only assigned
     // when `denominator' is negative. Do not use it unless you are sure
     // it has been correctly assigned.
-    Linear_Expression neg_expr;
+    Linear_Expression minus_expr;
     if (!is_sc)
-      neg_expr = -expr;
-    const Linear_Expression& sc_expr = is_sc ? expr : neg_expr;
+      minus_expr = -expr;
+    const Linear_Expression& sc_expr = is_sc ? expr : minus_expr;
 
     N sum;
     // Index of variable that is unbounded in `this->dbm'.
@@ -3879,7 +3853,6 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
 	if (sign_i > 0)
 	  assign_r(coeff_i, sc_i, ROUND_UP);
 	else {
-	  // CHECK ME.
 	  TEMP_INTEGER(minus_sc_i);
 	  neg_assign(minus_sc_i, sc_i);
 	  assign_r(coeff_i, minus_sc_i, ROUND_UP);
@@ -3892,8 +3865,7 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
 	// Before computing the quotient, the denominator should be
 	// approximated towards zero. Since `sc_den' is known to be
 	// positive, this amounts to rounding downwards, which is achieved
-	// as usual by rounding upwards the negation and negating again
-	// the result.
+	// by rounding upwards `minus_sc-den' and negating again the result.
 	N down_sc_den;
 	assign_r(down_sc_den, minus_sc_den, ROUND_UP);
 	neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
@@ -3913,10 +3885,9 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
       break;
 
     case GREATER_THAN_OR_EQUAL:
-      // Compute an upper approximation for `-expr' into `sum',
-      // taking into account the sign of `denominator'.
-      // Note: approximating `-expr' from above and then negating the
-      // result is the same as approximating `expr' from below.
+      // Compute an upper approximation for `-sc_expr' into `sum'.
+      // Note: approximating `-sc_expr' from above and then negating the
+      // result is the same as approximating `sc_expr' from below.
 
       // Approximate the inhomogeneous term.
       assign_r(sum, minus_sc_b, ROUND_UP);
@@ -3939,7 +3910,6 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
 	if (sign_i > 0)
 	  assign_r(coeff_i, sc_i, ROUND_UP);
 	else {
-	  // CHECK ME.
 	  TEMP_INTEGER(minus_sc_i);
 	  neg_assign(minus_sc_i, sc_i);
 	  assign_r(coeff_i, minus_sc_i, ROUND_UP);
@@ -3950,10 +3920,9 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
       // Divide by the (sign corrected) denominator (if needed).
       if (sc_den != 1) {
 	// Before computing the quotient, the denominator should be
-	// approximated towards zero. Since `sc_den' is known to be
-	// positive, this amounts to rounding downwards, which is
-	// achieved as usual by rounding upwards the negation and
-	// negating again the result.
+	// approximated towards zero. Since `sc_den' is known to be positive,
+	// this amounts to rounding downwards, which is achieved by rounding
+	// upwards `minus_sc_den' and negating again the result.
 	N down_sc_den;
 	assign_r(down_sc_den, minus_sc_den, ROUND_UP);
 	neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
@@ -3982,7 +3951,6 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
   }
 
   // If the shrunk BD_Shape is empty, its preimage is empty too.
-  // Note: DO check for emptyness here, as we will later add a line.
   if (is_empty())
     return;
   forget_all_dbm_constraints(v);
@@ -4013,8 +3981,8 @@ BD_Shape<T>::constraints() const {
     // For the time being, we force the dimension with the following line.
     cs.insert(0*Variable(space_dim-1) <= 0);
 
-    Coefficient a;
-    Coefficient b;
+    TEMP_INTEGER(a);
+    TEMP_INTEGER(b);
     // Go through all the unary constraints in `dbm'.
     const DB_Row<N>& dbm_0 = dbm[0];
     for (dimension_type j = 1; j <= space_dim; ++j) {
@@ -4092,8 +4060,8 @@ BD_Shape<T>::minimized_constraints() const {
     // For the time being, we force the dimension with the following line.
     cs.insert(0*Variable(space_dim-1) <= 0);
 
-    Coefficient num;
-    Coefficient den;
+    TEMP_INTEGER(num);
+    TEMP_INTEGER(den);
 
     // Compute leader information.
     std::vector<dimension_type> leaders;
