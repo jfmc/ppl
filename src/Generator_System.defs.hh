@@ -201,19 +201,22 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  //! \brief
-  //! Removes all the generators from the generator system
-  //! and sets its space dimension to 0.
+  /*! \brief
+    Removes all the generators from the generator system
+    and sets its space dimension to 0.
+  */
   void clear();
 
-  //! \brief
-  //! Inserts in \p *this a copy of the generator \p g,
-  //! increasing the number of space dimensions if needed.
+  /*! \brief
+    Inserts in \p *this a copy of the generator \p g,
+    increasing the number of space dimensions if needed.
+  */
   void insert(const Generator& g);
 
-  //! \brief
-  //! Returns the singleton system containing only
-  //! Generator::zero_dim_point().
+  /*! \brief
+    Returns the singleton system containing only
+    Generator::zero_dim_point().
+  */
   static const Generator_System& zero_dim_univ();
 
   //! An iterator over a system of generators
@@ -268,14 +271,16 @@ public:
     //! Postfix increment operator.
     const_iterator operator++(int);
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are identical.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if
+      \p *this and \p y are identical.
+    */
     bool operator==(const const_iterator& y) const;
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are different.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if
+      \p *this and \p y are different.
+    */
     bool operator!=(const const_iterator& y) const;
 
   private:
@@ -291,16 +296,18 @@ public:
     const_iterator(const Linear_System::const_iterator& iter,
 		   const Generator_System& gsys);
 
-    //! \brief
-    //! \p *this skips to the next generator, skipping those
-    //! closure points that are immediately followed by a matching point.
+    /*! \brief
+      \p *this skips to the next generator, skipping those
+      closure points that are immediately followed by a matching point.
+    */
     void skip_forward();
   };
 
-  //! \brief
-  //! Returns the const_iterator pointing to the first generator,
-  //! if \p *this is not empty;
-  //! otherwise, returns the past-the-end const_iterator.
+  /*! \brief
+    Returns the const_iterator pointing to the first generator,
+    if \p *this is not empty;
+    otherwise, returns the past-the-end const_iterator.
+  */
   const_iterator begin() const;
 
   //! Returns the past-the-end const_iterator.
@@ -315,18 +322,19 @@ public:
 
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Writes to \p s an ASCII representation of the internal
+    representation of \p *this.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void ascii_dump(std::ostream& s) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by
-  //! \ref ascii_dump) and sets \p *this accordingly.
-  //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
-  /*!
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    \ref ascii_dump) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+
     Resizes the matrix of generators using the numbers of rows and columns
     read from \p s, then initializes the coordinates of each generator
     and its type reading the contents from \p s.
@@ -354,50 +362,53 @@ private:
   //! Builds an empty system of generators having the specified topology.
   explicit Generator_System(Topology topol);
 
-  //! \brief
-  //! Builds a system of \p n_rows rays/points on a \p n_columns - 1
-  //! dimensional space (including the \f$\epsilon\f$ dimension, if
-  //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
+  /*! \brief
+    Builds a system of \p n_rows rays/points on a \p n_columns - 1
+    dimensional space (including the \f$\epsilon\f$ dimension, if
+    \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
+  */
   Generator_System(Topology topol,
 		   dimension_type n_rows, dimension_type n_columns);
 
-  //! \brief
-  //! Adjusts \p *this so that it matches the topology and
-  //! the number of space dimensions given as parameters
-  //! (adding or removing columns if needed).
-  //! Returns <CODE>false</CODE> if and only if \p topol is
-  //! equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
-  //! contains closure points.
+  /*! \brief
+    Adjusts \p *this so that it matches the topology and
+    the number of space dimensions given as parameters
+    (adding or removing columns if needed).
+    Returns <CODE>false</CODE> if and only if \p topol is
+    equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
+    contains closure points.
+  */
   bool adjust_topology_and_space_dimension(Topology topol,
 					   dimension_type num_dimensions);
 
-  //! \brief
-  //! For each unmatched closure point in \p *this, adds the
-  //! corresponding point.
-  /*!
+  /*! \brief
+    For each unmatched closure point in \p *this, adds the
+    corresponding point.
+
     It is assumed that the topology of \p *this
     is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
   */
   void add_corresponding_points();
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! contains one or more points.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains one or more points.
+  */
   bool has_points() const;
 
-  //! \brief
-  //! For each unmatched point in \p *this, adds the corresponding
-  //! closure point.
-  /*!
+  /*! \brief
+    For each unmatched point in \p *this, adds the corresponding
+    closure point.
+
     It is assumed that the topology of \p *this
     is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
   */
   void add_corresponding_closure_points();
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! contains one or more closure points.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains one or more closure points.
+
     Note: the check for the presence of closure points is
     done under the point of view of the user. Namely, we scan
     the generator system using high-level iterators, so that
@@ -412,9 +423,10 @@ private:
   //! Returns a constant reference to the \p k- th generator of the system.
   const Generator& operator[](dimension_type k) const;
 
-  //! \brief
-  //! Returns the relations holding between the generator system
-  //! and the constraint \p c.
+  /*! \brief
+    Returns the relations holding between the generator system
+    and the constraint \p c.
+  */
   Parma_Polyhedra_Library::Poly_Con_Relation
   relation_with(const Constraint& c) const;
 
@@ -477,18 +489,19 @@ private:
   */
   void remove_invalid_lines_and_rays();
 
-  //! \brief
-  //! Applies Gaussian's elimination and back-substitution so as
-  //! to provide a partial simplification of the system of generators.
-  /*!
+  /*! \brief
+    Applies Gaussian's elimination and back-substitution so as
+    to provide a partial simplification of the system of generators.
+
     It is assumed that the system has no pending generators.
   */
   void simplify();
 
-  //! \brief
-  //! Inserts in \p *this a copy of the generator \p g,
-  //! increasing the number of space dimensions if needed.
-  //! It is a pending generator.
+  /*! \brief
+    Inserts in \p *this a copy of the generator \p g,
+    increasing the number of space dimensions if needed.
+    It is a pending generator.
+  */
   void insert_pending(const Generator& g);
 };
 

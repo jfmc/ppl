@@ -147,24 +147,28 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! contains one or more strict inequality constraints.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains one or more strict inequality constraints.
+  */
   bool has_strict_inequalities() const;
 
-  //! \brief
-  //! Removes all the constraints from the constraint system
-  //! and sets its space dimension to 0.
+  /*! \brief
+    Removes all the constraints from the constraint system
+    and sets its space dimension to 0.
+  */
   void clear();
 
-  //! \brief
-  //! Inserts in \p *this a copy of the constraint \p c,
-  //! increasing the number of space dimensions if needed.
+  /*! \brief
+    Inserts in \p *this a copy of the constraint \p c,
+    increasing the number of space dimensions if needed.
+  */
   void insert(const Constraint& c);
 
-  //! \brief
-  //! Returns the singleton system containing only
-  //! Constraint::zero_dim_false().
+  /*! \brief
+    Returns the singleton system containing only
+    Constraint::zero_dim_false().
+  */
   static const Constraint_System& zero_dim_empty();
 
   //! An iterator over a system of constraints.
@@ -213,14 +217,16 @@ public:
     //! Postfix increment operator.
     const_iterator operator++(int);
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are identical.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if
+      \p *this and \p y are identical.
+    */
     bool operator==(const const_iterator& y) const;
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are different.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if
+      \p *this and \p y are different.
+    */
     bool operator!=(const const_iterator& y) const;
 
   private:
@@ -240,10 +246,11 @@ public:
     void skip_forward();
   };
 
-  //! \brief
-  //! Returns the const_iterator pointing to the first constraint,
-  //! if \p *this is not empty;
-  //! otherwise, returns the past-the-end const_iterator.
+  /*! \brief
+    Returns the const_iterator pointing to the first constraint,
+    if \p *this is not empty;
+    otherwise, returns the past-the-end const_iterator.
+  */
   const_iterator begin() const;
 
   //! Returns the past-the-end const_iterator.
@@ -259,17 +266,19 @@ public:
   bool OK() const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Writes to \p s an ASCII representation of the internal
+    representation of \p *this.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void ascii_dump(std::ostream& s) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by
-  //! \ref ascii_dump) and sets \p *this accordingly.
-  //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    \ref ascii_dump) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
@@ -294,20 +303,22 @@ private:
   //! Builds an empty system of constraints having the specified topology.
   explicit Constraint_System(Topology topol);
 
-  //! \brief
-  //! Builds a system of \p n_rows constraints on a \p n_columns - 1
-  //! dimensional space (including the \f$\epsilon\f$ dimension, if
-  //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
+  /*! \brief
+    Builds a system of \p n_rows constraints on a \p n_columns - 1
+    dimensional space (including the \f$\epsilon\f$ dimension, if
+    \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
+  */
   Constraint_System(Topology topol,
 		    dimension_type n_rows, dimension_type n_columns);
 
-  //! \brief
-  //! Adjusts \p *this so that it matches the topology and
-  //! the number of space dimensions given as parameters
-  //! (adding or removing columns if needed).
-  //! Returns <CODE>false</CODE> if and only if \p topol is
-  //! equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
-  //! contains strict inequalities.
+  /*! \brief
+    Adjusts \p *this so that it matches the topology and
+    the number of space dimensions given as parameters
+    (adding or removing columns if needed).
+    Returns <CODE>false</CODE> if and only if \p topol is
+    equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
+    contains strict inequalities.
+  */
   bool adjust_topology_and_space_dimension(Topology topol,
 					   dimension_type num_dimensions);
 
@@ -320,9 +331,7 @@ private:
   //! Returns <CODE>true</CODE> if \p g satisfies all the constraints.
   bool satisfies_all_constraints(const Generator& g) const;
 
-  //! \brief
-  //! Substitutes a given column of coefficients by a given
-  //! affine expression.
+  //! Substitutes a given column of coefficients by a given affine expression.
   /*!
     \param v
     Index of the column to which the affine transformation is substituted.
@@ -367,18 +376,19 @@ private:
   //! Returns the number of inequality constraints.
   dimension_type num_inequalities() const;
 
-  //! \brief
-  //! Applies Gaussian's elimination and back-substitution so as
-  //! to provide a partial simplification of the system of constraints.
-  /*!
+  /*! \brief
+    Applies Gaussian's elimination and back-substitution so as
+    to provide a partial simplification of the system of constraints.
+
     It is assumed that the system has no pending constraints.
   */
   void simplify();
 
-  //! \brief
-  //! Inserts in \p *this a copy of the constraint \p c,
-  //! increasing the number of space dimensions if needed.
-  //! It is a pending constraint.
+  /*! \brief
+    Inserts in \p *this a copy of the constraint \p c,
+    increasing the number of space dimensions if needed.
+    It is a pending constraint.
+  */
   void insert_pending(const Constraint& c);
 
   //! Adds low-level constraints to the constraint system.

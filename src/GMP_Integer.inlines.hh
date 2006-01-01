@@ -112,6 +112,7 @@ total_memory_in_bytes(const GMP_Integer& x) {
 
 } // namespace Parma_Polyhedra_Library
 
+/*! \relates Parma_Polyhedra_Library::GMP_Integer */
 inline void
 std::swap(Parma_Polyhedra_Library::GMP_Integer& x,
 	  Parma_Polyhedra_Library::GMP_Integer& y) {

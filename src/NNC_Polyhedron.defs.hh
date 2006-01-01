@@ -137,25 +137,25 @@ public:
   //! Ordinary copy-constructor.
   NNC_Polyhedron(const NNC_Polyhedron& y);
 
-  //! \brief
-  //! The assignment operator.
-  //! (\p *this and \p y can be dimension-incompatible.)
+  /*! \brief
+    The assignment operator.
+    (\p *this and \p y can be dimension-incompatible.)
+  */
   NNC_Polyhedron& operator=(const NNC_Polyhedron& y);
 
-  //! \brief
   //! Assigns to \p *this the C polyhedron \p y.
   NNC_Polyhedron& operator=(const C_Polyhedron& y);
 
   //! Destructor.
   ~NNC_Polyhedron();
 
-  //! \brief
-  //! If the poly-hull of \p *this and \p y is exact it is assigned
-  //! to \p *this and <CODE>true</CODE> is returned,
-  //! otherwise <CODE>false</CODE> is returned.
-  /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are dimension-incompatible.
+  /*! \brief
+    If the poly-hull of \p *this and \p y is exact it is assigned
+    to \p *this and <CODE>true</CODE> is returned,
+    otherwise <CODE>false</CODE> is returned.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
   bool poly_hull_assign_if_exact(const NNC_Polyhedron& y);
 

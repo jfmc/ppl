@@ -55,59 +55,69 @@ public:
   //! Returns the sign of the scalar product between \p g and \p c.
   static int sign(const Generator& g, const Constraint& c);
 
-  //! \brief
-  //! Computes the \e reduced scalar product of \p x and \p y,
-  //! where the \f$\epsilon\f$ coefficient of \p x is ignored,
-  //! and assigns the result to \p z.
+  /*! \brief
+    Computes the \e reduced scalar product of \p x and \p y,
+    where the \f$\epsilon\f$ coefficient of \p x is ignored,
+    and assigns the result to \p z.
+  */
   static void reduced_assign(Coefficient& z,
 			     const Linear_Row& x, const Linear_Row& y);
-  //! \brief
-  //! Computes the \e reduced scalar product of \p c and \p g,
-  //! where the \f$\epsilon\f$ coefficient of \p c is ignored,
-  //! and assigns the result to \p z.
+  /*! \brief
+    Computes the \e reduced scalar product of \p c and \p g,
+    where the \f$\epsilon\f$ coefficient of \p c is ignored,
+    and assigns the result to \p z.
+  */
   static void reduced_assign(Coefficient& z,
 			     const Constraint& c, const Generator& g);
-  //! \brief
-  //! Computes the \e reduced scalar product of \p g and \p c,
-  //! where the \f$\epsilon\f$ coefficient of \p g is ignored,
-  //! and assigns the result to \p z.
+  /*! \brief
+    Computes the \e reduced scalar product of \p g and \p c,
+    where the \f$\epsilon\f$ coefficient of \p g is ignored,
+    and assigns the result to \p z.
+  */
   static void reduced_assign(Coefficient& z,
 			     const Generator& g, const Constraint& c);
 
-  //! \brief
-  //! Returns the sign of the \e reduced scalar product of \p x and \p y,
-  //! where the \f$\epsilon\f$ coefficient of \p x is ignored.
+  /*! \brief
+    Returns the sign of the \e reduced scalar product of \p x and \p y,
+    where the \f$\epsilon\f$ coefficient of \p x is ignored.
+  */
   static int reduced_sign(const Linear_Row& x, const Linear_Row& y);
-  //! \brief
-  //! Returns the sign of the \e reduced scalar product of \p c and \p g,
-  //! where the \f$\epsilon\f$ coefficient of \p c is ignored.
+  /*! \brief
+    Returns the sign of the \e reduced scalar product of \p c and \p g,
+    where the \f$\epsilon\f$ coefficient of \p c is ignored.
+  */
   static int reduced_sign(const Constraint& c, const Generator& g);
-  //! \brief
-  //! Returns the sign of the \e reduced scalar product of \p g and \p c,
-  //! where the \f$\epsilon\f$ coefficient of \p g is ignored.
+  /*! \brief
+    Returns the sign of the \e reduced scalar product of \p g and \p c,
+    where the \f$\epsilon\f$ coefficient of \p g is ignored.
+  */
   static int reduced_sign(const Generator& g, const Constraint& c);
 
-  //! \brief
-  //! Computes the \e homogeneous scalar product of \p x and \p y,
-  //! where the inhomogeneous terms are ignored,
-  //! and assigns the result to \p z.
+  /*! \brief
+    Computes the \e homogeneous scalar product of \p x and \p y,
+    where the inhomogeneous terms are ignored,
+    and assigns the result to \p z.
+  */
   static void homogeneous_assign(Coefficient& z,
 				 const Linear_Row& x, const Linear_Row& y);
-  //! \brief
-  //! Computes the \e homogeneous scalar product of \p e and \p g,
-  //! where the inhomogeneous terms are ignored,
-  //! and assigns the result to \p z.
+  /*! \brief
+    Computes the \e homogeneous scalar product of \p e and \p g,
+    where the inhomogeneous terms are ignored,
+    and assigns the result to \p z.
+  */
   static void homogeneous_assign(Coefficient& z,
 				 const Linear_Expression& e,
 				 const Generator& g);
 
-  //! \brief
-  //! Returns the sign of the \e homogeneous scalar product of \p x and \p y,
-  //! where the inhomogeneous terms are ignored,
+  /*! \brief
+    Returns the sign of the \e homogeneous scalar product of \p x and \p y,
+    where the inhomogeneous terms are ignored.
+  */
   static int homogeneous_sign(const Linear_Row& x, const Linear_Row& y);
-  //! \brief
-  //! Returns the sign of the \e homogeneous scalar product of \p e and \p g,
-  //! where the inhomogeneous terms are ignored,
+  /*! \brief
+    Returns the sign of the \e homogeneous scalar product of \p e and \p g,
+    where the inhomogeneous terms are ignored.
+  */
   static int homogeneous_sign(const Linear_Expression& e, const Generator& g);
 };
 

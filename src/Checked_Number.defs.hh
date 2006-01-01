@@ -235,9 +235,10 @@ public:
   //! \name Accessors and Conversions
   //@{
 
-  //! \brief
-  //! Conversion operator:
-  //! returns a copy of the underlying native integer value.
+  /*! \brief
+    Conversion operator:
+    returns a copy of the underlying native integer value.
+  */
   operator T() const;
 
   //! Returns a reference to the underlying native integer value.
@@ -634,18 +635,22 @@ bool
 operator<(const Checked_Number<T1, Policy1>& x,
 	  const Checked_Number<T2, Policy2>& y);
 
-//! \brief
-//! Returns \f$-1\f$, \f$0\f$ or \f$1\f$ depending on whether the value
-//! of \p x is negative, zero or positive, respectively.
-/*! \relates Checked_Number */
+/*! \brief
+  Returns \f$-1\f$, \f$0\f$ or \f$1\f$ depending on whether the value
+  of \p x is negative, zero or positive, respectively.
+
+  \relates Checked_Number
+*/
 template <typename T, typename Policy>
 int
 sgn(const Checked_Number<T, Policy>& x);
 
-//! \brief
-//! Returns a negative, zero or positive value depending on whether
-//! \p x is lower than, equal to or greater than \p y, respectively.
-/*! \relates Checked_Number */
+/*! \brief
+  Returns a negative, zero or positive value depending on whether
+  \p x is lower than, equal to or greater than \p y, respectively.
+
+  \relates Checked_Number
+*/
 template <typename T1, typename Policy1,
 	  typename T2, typename Policy2>
 int

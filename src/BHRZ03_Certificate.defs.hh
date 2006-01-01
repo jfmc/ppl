@@ -69,9 +69,10 @@ public:
   int compare(const Polyhedron& ph) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if the certificate for
-  //! polyhedron \p ph is strictly smaller than \p *this.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the certificate for
+    polyhedron \p ph is strictly smaller than \p *this.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool is_stabilizing(const Polyhedron& ph) const;
 
@@ -98,14 +99,16 @@ private:
   dimension_type lin_space_dim;
   //! Cardinality of a non-redundant constraint system for the polyhedron.
   dimension_type num_constraints;
-  //! \brief
-  //! Number of non-redundant points in a generator system
-  //! for the polyhedron.
+  /*! \brief
+    Number of non-redundant points in a generator system
+    for the polyhedron.
+  */
   dimension_type num_points;
-  //! \brief
-  //! A vector containing, for each index `0 <= i < space_dim',
-  //! the number of non-redundant rays in a generator system of the
-  //! polyhedron having exactly `i' null coordinates.
+  /*! \brief
+    A vector containing, for each index `0 <= i < space_dim',
+    the number of non-redundant rays in a generator system of the
+    polyhedron having exactly `i' null coordinates.
+  */
   std::vector<dimension_type> num_rays_null_coord;
 };
 

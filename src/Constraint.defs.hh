@@ -251,24 +251,28 @@ public:
   //! Returns the constraint type of \p *this.
   Type type() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is an equality constraint.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    \p *this is an equality constraint.
+  */
   bool is_equality() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is an inequality constraint (either strict or non-strict).
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    \p *this is an inequality constraint (either strict or non-strict).
+  */
   bool is_inequality() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a non-strict inequality constraint.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    \p *this is a non-strict inequality constraint.
+  */
   bool is_nonstrict_inequality() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a strict inequality constraint.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    \p *this is a strict inequality constraint.
+  */
   bool is_strict_inequality() const;
 
   //! Returns the coefficient of \p v in \p *this.
@@ -284,23 +288,25 @@ public:
   //! The unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$.
   static const Constraint& zero_dim_false();
 
-  //! \brief
-  //! The true (zero-dimension space) constraint \f$0 \leq 1\f$,
-  //! also known as <EM>positivity constraint</EM>.
+  /*! \brief
+    The true (zero-dimension space) constraint \f$0 \leq 1\f$,
+    also known as <EM>positivity constraint</EM>.
+  */
   static const Constraint& zero_dim_positivity();
 
-  //! \brief
-  //! Returns a lower bound to the total size in bytes of the memory
-  //! occupied by \p *this.
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
+  */
   memory_size_type total_memory_in_bytes() const;
 
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a tautology (i.e., an always true constraint).
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    \p *this is a tautology (i.e., an always true constraint).
+
     A tautology can have either one of the following forms:
     - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + 0 = 0\f$; or
     - a non-strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \geq 0\f$,
@@ -310,10 +316,10 @@ public:
   */
   bool is_tautological() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is inconsistent (i.e., an always false constraint).
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    \p *this is inconsistent (i.e., an always false constraint).
+
     An inconsistent constraint can have either one of the following forms:
     - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + b = 0\f$,
       where \f$b \neq 0\f$; or
@@ -324,10 +330,10 @@ public:
   */
   bool is_inconsistent() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this and \p y
-  //! are equivalent constraints.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this and \p y
+    are equivalent constraints.
+
     Constraints having different space dimensions are not equivalent.
     Note that constraints having different types may nonetheless be
     equivalent, if they both are tautologies or inconsistent.
@@ -355,14 +361,16 @@ private:
   //! Default constructor: private and not implemented.
   Constraint();
 
-  //! \brief
-  //! Builds a constraint of type \p type and topology \p topology,
-  //! stealing the coefficients from \p e.
+  /*! \brief
+    Builds a constraint of type \p type and topology \p topology,
+    stealing the coefficients from \p e.
+  */
   Constraint(Linear_Expression& e, Type type, Topology topology);
 
-  //! \brief
-  //! Throws a <CODE>std::invalid_argument</CODE> exception
-  //! containing the appropriate error message.
+  /*! \brief
+    Throws a <CODE>std::invalid_argument</CODE> exception
+    containing the appropriate error message.
+  */
   void
   throw_dimension_incompatible(const char* method,
 			       const char* name_var,
@@ -421,17 +429,19 @@ private:
   //! Copy-constructor with given size.
   Constraint(const Constraint& c, dimension_type sz);
 
-  //! \brief
-  //! Builds a new copy of the zero-dimension space constraint
-  //! \f$\epsilon \geq 0\f$ (used to implement NNC polyhedra).
+  /*! \brief
+    Builds a new copy of the zero-dimension space constraint
+    \f$\epsilon \geq 0\f$ (used to implement NNC polyhedra).
+  */
   static Constraint construct_epsilon_geq_zero();
 
   //! Returns the zero-dimension space constraint \f$\epsilon \geq 0\f$.
   static const Constraint& epsilon_geq_zero();
 
-  //! \brief
-  //! The zero-dimension space constraint \f$\epsilon \leq 1\f$
-  //! (used to implement NNC polyhedra).
+  /*! \brief
+    The zero-dimension space constraint \f$\epsilon \leq 1\f$
+    (used to implement NNC polyhedra).
+  */
   static const Constraint& epsilon_leq_one();
 
   //! Sets the constraint type to <CODE>EQUALITY</CODE>.

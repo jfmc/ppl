@@ -46,10 +46,10 @@ public:
   */
   LP_Problem();
 
-  //! \brief
-  //! Builds an LP problem from the constraint system \p cs, the objective
-  //! function \p obj and optimization mode \p mode.
-  /*!
+  /*! \brief
+    Builds an LP problem from the constraint system \p cs, the objective
+    function \p obj and optimization mode \p mode.
+
     \param cs
     The constraint system defining the feasible region for the LP problem.
 
@@ -97,19 +97,19 @@ public:
   //! Resets \p *this to be equal to the trivial LP problem.
   void clear();
 
-  //! \brief
-  //! Adds a copy of constraint \p c to the current LP problem,
-  //! increasing the number of space dimensions if needed.
-  /*!
+  /*! \brief
+    Adds a copy of constraint \p c to the current LP problem,
+    increasing the number of space dimensions if needed.
+
     \exception std::invalid_argument
     Thrown if the constraint \p c is a strict inequality.
   */
   void add_constraint(const Constraint& c);
 
-  //! \brief
-  //! Adds a copy of the constraints in \p cs to the current LP problem,
-  //! increasing the number of space dimensions if needed.
-  /*!
+  /*! \brief
+    Adds a copy of the constraints in \p cs to the current LP problem,
+    increasing the number of space dimensions if needed.
+
     \exception std::invalid_argument
     Thrown if the constraint system \p cs contains any strict inequality.
   */
@@ -141,10 +141,10 @@ public:
   */
   LP_Problem_Status solve() const;
 
-  //! \brief
-  //! Sets \p num and \p den so that \f$\frac{num}{den}\f$ is the result
-  //! of evaluating the objective function on \p evaluating_point.
-  /*!
+  /*! \brief
+    Sets \p num and \p den so that \f$\frac{num}{den}\f$ is the result
+    of evaluating the objective function on \p evaluating_point.
+
     \param evaluating_point
     The point on which the objective function will be evaluated.
 
@@ -173,10 +173,10 @@ public:
   */
   const Generator& optimizing_point() const;
 
-  //! \brief
-  //! Sets \p num and \p den so that \f$\frac{num}{den}\f$ is
-  //! the solution of the optimization problem.
-  /*!
+  /*! \brief
+    Sets \p num and \p den so that \f$\frac{num}{den}\f$ is
+    the solution of the optimization problem.
+
     \exception std::domain_error
     Thrown if \p *this doesn't not have an optimizing point, i.e.,
     if the LP problem is unbounded or not satisfiable.
@@ -187,17 +187,19 @@ public:
   bool OK() const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Writes to \p s an ASCII representation of the internal
+    representation of \p *this.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void ascii_dump(std::ostream& s) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by
-  //! \ref ascii_dump) and sets \p *this accordingly.
-  //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    \ref ascii_dump) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
@@ -238,10 +240,11 @@ private:
     UNBOUNDED,
     //! The LP problem is optimized; an optimal solution has been computed.
     OPTIMIZED,
-    //! \brief
-    //! The feasible region of the LP problem has been changed by adding
-    //! new constraints; a feasible solution for the old constraints has
-    //! been computed.
+    /*! \brief
+      The feasible region of the LP problem has been changed by adding
+      new constraints; a feasible solution for the old constraints has
+      been computed.
+    */
     PARTIALLY_SATISFIABLE
   };
 
@@ -260,16 +263,17 @@ private:
   //! The last successfully computed feasible or optimizing point.
   Generator last_generator;
 
-  //! \brief
-  //! Optimizes the current LP problem using the second phase of the
-  //! primal simplex algorithm.
+  /*! \brief
+    Optimizes the current LP problem using the second phase of the
+    primal simplex algorithm.
+  */
   void second_phase();
 
-  //! \brief
-  //! Assigns to \p this->tableau a simplex tableau representing the
-  //! current LP problem, inserting into \p this->dim_map the information
-  //! that is required to recover the original LP problem.
-  /*!
+  /*! \brief
+    Assigns to \p this->tableau a simplex tableau representing the
+    current LP problem, inserting into \p this->dim_map the information
+    that is required to recover the original LP problem.
+
     \return
     <CODE>UNFEASIBLE_LP_PROBLEM</CODE> if the constraint system contains
     any trivially unfeasible constraint (tableau was not computed);
@@ -280,21 +284,21 @@ private:
   */
   LP_Problem_Status compute_tableau();
 
-  //! \brief
-  //! Checks for optimality and, if it does not hold, computes the column
-  //! index of the variable entering the base of the LP problem.
-  //! Implemented with anti-cycling rule.
-  /*!
+  /*! \brief
+    Checks for optimality and, if it does not hold, computes the column
+    index of the variable entering the base of the LP problem.
+    Implemented with anti-cycling rule.
+
     \return
     The column index of the variable that enters the base. If no such
     variable exists, optimality was achieved and <CODE>0</CODE> is retuned.
   */
   dimension_type get_entering_var_index() const;
 
-  //! \brief
-  //! Computes the row index of the variable exiting the base
-  //! of the LP problem. Implemented with anti-cycling rules.
-  /*!
+  /*! \brief
+    Computes the row index of the variable exiting the base
+    of the LP problem. Implemented with anti-cycling rules.
+
     \return
     The row index of the variable exiting the base.
 
@@ -321,10 +325,10 @@ private:
   */
   static void linear_combine(Row& x, const Row& y, const dimension_type k);
 
-  //! \brief
-  //! Swaps two variables in base during the simplex algorithm,
-  //! performing the needed linear combinations.
-  /*!
+  /*! \brief
+    Swaps two variables in base during the simplex algorithm,
+    performing the needed linear combinations.
+
     \param entering_var_index
     The index of the variable entering the base.
 
@@ -334,10 +338,10 @@ private:
   void swap_base(const dimension_type entering_var_index,
 		 const dimension_type exiting_base_index);
 
-  //! \brief
-  //! Checks for optimality and, if it does not hold, computes the column
-  //! index of the variable entering the base of the LP problem.
-  /*!
+  /*! \brief
+    Checks for optimality and, if it does not hold, computes the column
+    index of the variable entering the base of the LP problem.
+
     \return
     The column index of the variable that enters the base. If no such
     variable exists, optimality was achieved and <CODE>0</CODE> is retuned.
@@ -361,20 +365,23 @@ private:
   */
   dimension_type steepest_edge() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and if only the algorithm successfully
-  //! computed a feasible solution.
+  /*! \brief
+    Returns <CODE>true</CODE> if and if only the algorithm successfully
+    computed a feasible solution.
+  */
   bool compute_simplex();
 
-  //! \brief
-  //! Adds the slack variables to satisfy the standard form of a LP problem,
-  //! inserts the "sign" to the cost functions, and makes the
-  //! necessary swaps to express the problem with the 1st phase base.
+  /*! \brief
+    Adds the slack variables to satisfy the standard form of a LP problem,
+    inserts the "sign" to the cost functions, and makes the
+    necessary swaps to express the problem with the 1st phase base.
+  */
   void prepare_first_phase();
 
-  //! \brief
-  //! Drop unnecessary slack variables from the tableau and get ready
-  //! for the second phase of the simplex algorithm.
+  /*! \brief
+    Drop unnecessary slack variables from the tableau and get ready
+    for the second phase of the simplex algorithm.
+  */
   void erase_slacks();
 
   bool is_in_base(const dimension_type var_index,

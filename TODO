@@ -26,6 +26,7 @@ Enhancements for PPL 0.9
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
 - Reconsider the handling of temporary coefficients.
+- Provide a generic implementation for the `widening with tokens'.
 
 Enhancements for PPL 0.9 or later versions
 ==========================================

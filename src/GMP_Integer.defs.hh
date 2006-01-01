@@ -111,10 +111,12 @@ void sqrt_assign(GMP_Integer& x);
 /*! \relates GMP_Integer */
 void sqrt_assign(GMP_Integer& x, const GMP_Integer& y);
 
-//! \brief
-//! Returns a negative, zero or positive value depending on whether
-//! \p x is lower than, equal to or greater than \p y, respectively.
-/*! \relates GMP_Integer */
+/*! \brief
+  Returns a negative, zero or positive value depending on whether
+  \p x is lower than, equal to or greater than \p y, respectively.
+
+  \relates GMP_Integer
+*/
 int cmp(const GMP_Integer& x, const GMP_Integer& y);
 
 //@} // Arithmetic Operators

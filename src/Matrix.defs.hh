@@ -101,9 +101,10 @@ public:
     //! Default constructor.
     const_iterator();
 
-    //! \brief
-    //! Builds a const iterator on the matrix starting from
-    //! an iterator \p b on the elements of the vector \p rows.
+    /*! \brief
+      Builds a const iterator on the matrix starting from
+      an iterator \p b on the elements of the vector \p rows.
+    */
     explicit const_iterator(const Iter& b);
 
     //! Ordinary copy-constructor.
@@ -124,21 +125,23 @@ public:
     //! Postfix increment operator.
     const_iterator operator++(int);
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are identical.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if
+      \p *this and \p y are identical.
+    */
     bool operator==(const const_iterator& y) const;
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are different.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if
+      \p *this and \p y are different.
+    */
     bool operator!=(const const_iterator& y) const;
   };
 
-  //! \brief
-  //! Returns the const_iterator pointing to the first row,
-  //! if \p *this is not empty;
-  //! otherwise, returns the past-the-end const_iterator.
+  /*! \brief
+    Returns the const_iterator pointing to the first row, if \p *this is
+    not empty; otherwise, returns the past-the-end const_iterator.
+  */
   const_iterator begin() const;
 
   //! Returns the past-the-end const_iterator.
@@ -248,9 +251,7 @@ public:
   //! \name Accessors
   //@{
 
-  //! \brief
-  //! Returns the number of columns of the matrix
-  //! (i.e., the size of the rows).
+  //! Returns the number of columns of the matrix (i.e., the size of the rows).
   dimension_type num_columns() const;
 
   //! Returns the number of rows in the matrix.
@@ -269,15 +270,17 @@ public:
   //! Clears the matrix deallocating all its rows.
   void clear();
 
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Writes to \p s an ASCII representation of the internal
+    representation of \p *this.
+  */
   void ascii_dump(std::ostream& s) const;
 
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
-  //! if successful, <CODE>false</CODE> otherwise.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by \ref ascii_dump)
+    and sets \p *this accordingly.  Returns <CODE>true</CODE> if successful,
+    <CODE>false</CODE> otherwise.
+  */
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -286,9 +289,10 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  //! \brief
-  //! Erases from the matrix all the rows but those having
-  //! an index less than \p first_to_erase.
+  /*! \brief
+    Erases from the matrix all the rows but those having
+    an index less than \p first_to_erase.
+  */
   void erase_to_end(dimension_type first_to_erase);
 
   //! Checks if all the invariants are satisfied.

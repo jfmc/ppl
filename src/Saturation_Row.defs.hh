@@ -68,10 +68,12 @@ int compare(const Saturation_Row& x, const Saturation_Row& y);
 bool subset_or_equal(const Saturation_Row& x, const Saturation_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Set-theoretic inclusion test: sets \p strict_subset to a boolean
-//! indicating whether the inclusion is strict or not.
-/*! \relates Saturation_Row */
+/*! \brief
+  Set-theoretic inclusion test: sets \p strict_subset to a boolean
+  indicating whether the inclusion is strict or not.
+
+  \relates Saturation_Row
+*/
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 bool subset_or_equal(const Saturation_Row& x, const Saturation_Row& y,
 		     bool& strict_subset);
@@ -172,17 +174,19 @@ public:
   //! Returns the index of the first set bit or ULONG_MAX if no bit is set.
   unsigned long first() const;
 
-  //! \brief
-  //! Returns the index of the first set bit after \p position
-  //! or ULONG_MAX if no bit after \p position is set.
+  /*! \brief
+    Returns the index of the first set bit after \p position
+    or ULONG_MAX if no bit after \p position is set.
+  */
   unsigned long next(unsigned long position) const;
 
   //! Returns the index of the last set bit or ULONG_MAX if no bit is set.
   unsigned long last() const;
 
-  //! \brief
-  //! Returns the index of the first set bit before \p position
-  //! or ULONG_MAX if no bits before \p position is set.
+  /*! \brief
+    Returns the index of the first set bit before \p position
+    or ULONG_MAX if no bits before \p position is set.
+  */
   unsigned long prev(unsigned long position) const;
 
   //! Returns the number of set bits in the row.

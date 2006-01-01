@@ -200,9 +200,10 @@ public:
   //! Destructor.
   ~Linear_Expression();
 
-  //! \brief
-  //! Builds the linear expression corresponding
-  //! to the inhomogeneous term \p n.
+  /*! \brief
+    Builds the linear expression corresponding
+    to the inhomogeneous term \p n.
+  */
   explicit Linear_Expression(Coefficient_traits::const_reference n);
 
   //! Builds the linear expression corresponding to the variable \p v.
@@ -225,10 +226,10 @@ public:
   */
   explicit Linear_Expression(const Constraint& c);
 
-  //! \brief
-  //! Builds the linear expression corresponding to generator \p g
-  //! (for points and closure points, the divisor is not copied).
-  /*!
+  /*! \brief
+    Builds the linear expression corresponding to generator \p g
+    (for points and closure points, the divisor is not copied).
+
     Given the generator
     \f$g = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$
     (where, for lines and rays, we have \f$d = 1\f$),
@@ -255,9 +256,10 @@ public:
   //! Returns the (zero-dimension space) constant 0.
   static const Linear_Expression& zero();
 
-  //! \brief
-  //! Returns a lower bound to the total size in bytes of the memory
-  //! occupied by \p *this.
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
+  */
   memory_size_type total_memory_in_bytes() const;
 
   //! Returns the size in bytes of the memory managed by \p *this.

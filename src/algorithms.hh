@@ -31,10 +31,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief If the poly-hull of \p p and \p q is exact it is assigned
-//! to \p p and <CODE>true</CODE> is returned,
-//! otherwise <CODE>false</CODE> is returned.
-/*! \relates Polyhedron */
+/*! \brief
+  If the poly-hull of \p p and \p q is exact it is assigned
+  to \p p and <CODE>true</CODE> is returned,
+  otherwise <CODE>false</CODE> is returned.
+
+  \relates Polyhedron
+*/
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename PH>
 bool

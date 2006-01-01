@@ -100,7 +100,6 @@ public:
   */
   dimension_type space_dimension() const;
 
-  //! \brief
   //! Returns the total size in bytes of the memory occupied by \p *this.
   memory_size_type total_memory_in_bytes() const;
 

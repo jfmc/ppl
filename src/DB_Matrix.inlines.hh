@@ -447,11 +447,12 @@ struct maybe_assign_struct<Type, Type> {
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Assigns to \p top a pointer to a location that holds the
-//! conversion, according to \p dir, of \p from to type \p To.  When
-//! necessary, and only when necessary, the variable \p tmp is used to
-//! hold the result of conversion.
+/*! \brief
+  Assigns to \p top a pointer to a location that holds the
+  conversion, according to \p dir, of \p from to type \p To.  When
+  necessary, and only when necessary, the variable \p tmp is used to
+  hold the result of conversion.
+*/
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename To, typename From>
 inline Result

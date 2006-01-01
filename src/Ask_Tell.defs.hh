@@ -74,11 +74,12 @@ public:
   //! Non-const accessor to the <EM>tell</EM> component.
   CS& tell();
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if \p *this definitely entails \p y.
-  //! Returns <CODE>false</CODE> if \p *this may not entail \p y
-  //! (i.e., if \p *this does not entail \p y or if entailment could
-  //! not be decided).
+  /*! \brief
+    Returns <CODE>true</CODE> if \p *this definitely entails \p y.
+    Returns <CODE>false</CODE> if \p *this may not entail \p y
+    (i.e., if \p *this does not entail \p y or if entailment could
+    not be decided).
+  */
   bool definitely_entails(const Ask_Tell_Pair& y) const;
 
 private:
@@ -124,17 +125,19 @@ public:
   //! Ordinary copy-constructor.
   Ask_Tell(const Ask_Tell& y);
 
-  //! \brief
-  //! The assignment operator.
-  //! (\p *this and \p y can be dimension-incompatible.)
+  /*! \brief
+    The assignment operator.
+    (\p *this and \p y can be dimension-incompatible.)
+  */
   Ask_Tell& operator=(const Ask_Tell& y);
 
   //! Swaps \p *this with \p y.
   void swap(Ask_Tell& y);
 
-  //! \brief
-  //! Creates an ask-and-tell constraint system with the same
-  //! information contents as \p cs.
+  /*! \brief
+    Creates an ask-and-tell constraint system with the same
+    information contents as \p cs.
+  */
   Ask_Tell(const Constraint_System& cs);
 
   //! Adds to \p *this the pair constituted by \p ask and \p tell.
@@ -157,23 +160,26 @@ public:
   */
   void concatenate_assign(const Ask_Tell& y);
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if \p *this definitely entails \p y.
-  //! Returns <CODE>false</CODE> if \p *this may not entail \p y
-  //! (i.e., if \p *this does not entail \p y or if entailment could
-  //! not be decided).
+  /*! \brief
+    Returns <CODE>true</CODE> if \p *this definitely entails \p y.
+    Returns <CODE>false</CODE> if \p *this may not entail \p y
+    (i.e., if \p *this does not entail \p y or if entailment could
+    not be decided).
+  */
   bool definitely_entails(const Ask_Tell& y) const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is the top
-  //! element of the ask-and-tell constraint system (i.e., it
-  //! represents the universe).
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is the top
+    element of the ask-and-tell constraint system (i.e., it
+    represents the universe).
+  */
   bool is_top() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is the bottom
-  //! element of the ask-and-tell constraint system (i.e., it
-  //! represents the empty set).
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is the bottom
+    element of the ask-and-tell constraint system (i.e., it
+    represents the empty set).
+  */
   bool is_bottom() const;
 
   //! Returns the dimension of the vector space enclosing \p *this.
@@ -198,14 +204,16 @@ public:
   */
   void add_constraints(const Constraint_System& cs);
 
-  //! \brief
-  //! Adds \p m new dimensions to the vector space, embedding
-  //! the old polyhedron in the new space.
+  /*! \brief
+    Adds \p m new dimensions to the vector space, embedding
+    the old polyhedron in the new space.
+  */
   void add_space_dimensions_and_embed(dimension_type m);
 
-  //! \brief
-  //! Adds \p m new dimensions to the vector space
-  //! and does not embed it in the new space.
+  /*! \brief
+    Adds \p m new dimensions to the vector space
+    and does not embed it in the new space.
+  */
   void add_space_dimensions_and_project(dimension_type m);
 
   //! Removes all the specified dimensions from the vector space.
@@ -220,10 +228,10 @@ public:
   */
   void remove_space_dimensions(const Variables_Set& to_be_removed);
 
-  //! \brief
-  //! Removes the higher dimensions of the vector space so that
-  //! the resulting space will have dimension \p new_dimension.
-  /*!
+  /*! \brief
+    Removes the higher dimensions of the vector space so that
+    the resulting space will have dimension \p new_dimension.
+
     \exception std::invalid_argument
     Thrown if \p new_dimensions is greater than the space dimension of
     \p *this.
