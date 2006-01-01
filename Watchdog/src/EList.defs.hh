@@ -26,9 +26,10 @@ http://www.cs.unipr.it/Software/ . */
 #include "EList.types.hh"
 #include "EList_Iterator.defs.hh"
 
-//! \brief
-//! A simple kind of embedded list (i.e., a doubly linked objects
-//! where the links are embedded in the objects themselves).
+/*! \brief
+  A simple kind of embedded list (i.e., a doubly linked objects
+  where the links are embedded in the objects themselves).
+*/
 template <typename T>
 class Parma_Watchdog_Library::EList : private Doubly_Linked_Object {
 public:
@@ -50,14 +51,16 @@ public:
   //! Pushes \p obj to the back of the list.
   void push_back(T& obj);
 
-  //! \brief
-  //! Inserts \p obj jyst before \p position and returns an iterator
-  //! that points to the inserted object.
+  /*! \brief
+    Inserts \p obj jyst before \p position and returns an iterator
+    that points to the inserted object.
+  */
   Iterator insert(Iterator position, T& obj);
 
-  //! \brief
-  //! Removes the element pointed to by \p position, returning
-  //! an iterator pointing to the next element, if any, or end(), otherwise.
+  /*! \brief
+    Removes the element pointed to by \p position, returning
+    an iterator pointing to the next element, if any, or end(), otherwise.
+  */
   Iterator erase(Iterator position);
 
   //! Returns <CODE>true</CODE> if and only if the list is empty.
