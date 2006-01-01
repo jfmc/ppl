@@ -220,6 +220,9 @@ run_one(polyhedron_boxes) :-
 run_one(catch_time) :-
    time_out.
 
+run_one(lp_check) :-
+   lp_check.
+
 run_one(handle_exceptions) :-
    exceptions.
 
@@ -2052,6 +2055,140 @@ time_watch(Topology, Goal, No_Time_Out, Time_Out) :-
    !,
    ppl_delete_Polyhedron(Polyhedron_Copy).
 
+%%%%%%%%%%%%%%%%% LP_Problem tests %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+lp_check.
+
+lp_trivial :-
+  clean_ppl_new_LP_Problem_trivial(LP),
+  ppl_LP_Problem_space_dimension(LP, 0),
+  clean_ppl_new_Polyhedron_from_constraints(c, [], PH),
+  ppl_Polyhedron_is_universe(PH),
+  !,
+  ppl_delete_Polyhedron(PH),
+  ppl_delete_LP_Problem(LP).
+
+lp_from_cons :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_LP_Problem([A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP),
+  ppl_LP_Problem_space_dimension(LP, 3),
+  ppl_LP_Problem_constraints(LP, CS),
+  ppl_LP_Problem_OK(LP),
+  clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
+  clean_ppl_new_Polyhedron_from_constraints(c,
+       [A >= -1, B >= 5, C >= 0, C =< 3], Expect_PH),
+  ppl_Polyhedron_equals_Polyhedron(PH, Expect_PH),
+  !,
+  ppl_delete_Polyhedron(PH),
+  ppl_delete_Polyhedron(Expect_PH),
+  ppl_delete_LP_Problem(LP).
+
+lp_from_lp :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_LP_Problem([A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP),
+  clean_ppl_new_LP_Problem_from_LP_Problem(LP, LP1),
+  ppl_LP_Problem_constraints(LP1, CS),
+  clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
+  clean_ppl_new_Polyhedron_from_constraints(c,
+       [A >= -1, B >= 5, C >= 0, C =< 3], Expect_PH),
+  ppl_Polyhedron_equals_Polyhedron(PH, Expect_PH),
+  !,
+  ppl_delete_Polyhedron(PH),
+  ppl_delete_Polyhedron(Expect_PH),
+  ppl_delete_LP_Problem(LP1),
+  ppl_delete_LP_Problem(LP).
+
+lp_swap :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_LP_Problem_trivial(LP),
+  clean_ppl_new_LP_Problem([A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP1),
+  ppl_LP_Problem_swap(LP, LP1),
+  ppl_LP_Problem_constraints(LP, CS),
+  ppl_LP_Problem_constraints(LP1, CS1),
+  clean_ppl_new_Polyhedron_from_constraints(c, CS1, PH1),
+  ppl_Polyhedron_is_universe(PH1),
+  clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
+  clean_ppl_new_Polyhedron_from_constraints(c,
+       [A >= -1, B >= 5, C >= 0, C =< 3], Expect_PH),
+  ppl_Polyhedron_equals_Polyhedron(PH, Expect_PH),
+  !,
+  ppl_delete_Polyhedron(PH),
+  ppl_delete_Polyhedron(PH1),
+  ppl_delete_Polyhedron(Expect_PH),
+  ppl_delete_LP_Problem(LP1),
+  ppl_delete_LP_Problem(LP).
+
+lp_get :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_LP_Problem([A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP),
+  ppl_LP_Problem_constraints(LP, CS),
+  clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
+  clean_ppl_new_Polyhedron_from_constraints(c,
+       [A >= -1, B >= 5, C >= 0, C =< 3], Expect_PH),
+  ppl_Polyhedron_equals_Polyhedron(PH, Expect_PH),
+  ppl_LP_Problem_objective_function(LP, Obj),
+  Obj = 1*C,
+  ppl_LP_Problem_optimization_mode(LP, Opt),
+  Opt = max,
+  !,
+  ppl_delete_Polyhedron(PH),
+  ppl_delete_Polyhedron(Expect_PH),
+  ppl_delete_LP_Problem(LP).
+
+lp_clear :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_LP_Problem([A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP),
+  ppl_LP_Problem_clear(LP),
+  ppl_LP_Problem_space_dimension(LP, D),
+  D == 0,
+  ppl_LP_Problem_constraints(LP, CS),
+  clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
+  ppl_Polyhedron_is_universe(PH),
+  ppl_LP_Problem_objective_function(LP, Obj),
+  Obj == 0,
+  ppl_LP_Problem_optimization_mode(LP, Opt),
+  Opt == max,
+  !,
+  ppl_delete_Polyhedron(PH),
+  ppl_delete_LP_Problem(LP).
+
+lp_set :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_LP_Problem_trivial(LP),
+  ppl_LP_Problem_add_constraint(LP, A >= 0),
+  ppl_LP_Problem_add_constraints(LP, [A =< 3, A + B + C >= 9, B >= 5, C =< 5]),
+  ppl_LP_Problem_set_objective_function(LP, 2*B-C),
+  ppl_LP_Problem_set_optimization_mode(LP, min),
+  clean_ppl_new_LP_Problem([A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5],
+      2*B-C, min, LP1),
+  ppl_LP_Problem_solve(LP, Status),
+  ppl_LP_Problem_solve(LP1, Status),
+  ppl_LP_Problem_optimal_value(LP, N, D),
+  ppl_LP_Problem_optimal_value(LP1, N, D),
+  !,
+  ppl_delete_LP_Problem(LP),
+  ppl_delete_LP_Problem(LP1).
+
+lp_eval :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_LP_Problem([A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5],
+      2*B-C, min, LP),
+  ppl_LP_Problem_optimizing_point(LP, Point),
+  ppl_LP_Problem_feasible_point(LP, Point),
+  \+ ppl_LP_Problem_feasible_point(LP, point(B)),
+  ppl_LP_Problem_is_satisfiable(LP),
+  clean_ppl_new_Polyhedron_from_generators(c, [Point], PH),
+  clean_ppl_new_Polyhedron_from_generators(c, [point(5*B+5*C)], Expect_PH),
+  ppl_Polyhedron_equals_Polyhedron(PH, Expect_PH),
+  ppl_LP_Problem_optimal_value(LP, N, D),
+  ppl_LP_Problem_evaluate_objective_function(LP, Point, N1, D1),
+  N == N1,
+  D == D1,
+  !,
+  ppl_delete_LP_Problem(LP),
+  ppl_delete_Polyhedron(Expect_PH),
+  ppl_delete_Polyhedron(PH).
+
 %%%%%%%%%%%%%%%%% Exceptions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % exceptions/0 tests both Prolog and C++ exceptions using:
@@ -2402,6 +2539,11 @@ delete_all_ppl_Polyhedra([P|Ps]) :-
   ppl_delete_Polyhedron(P),
   delete_all_ppl_Polyhedra(Ps).
 
+cleanup_ppl_LP_Problem(_).
+cleanup_ppl_LP_Problem(LP) :-
+  out(lp, LP),
+  ppl_delete_LP_Problem(LP), fail.
+
 out(cs, P):-
   ((noisy(N), N < 2) -> true ;
     ppl_Polyhedron_get_constraints(P, CS),
@@ -2412,6 +2554,18 @@ out(gs, P):-
   ((noisy(N), N < 2) -> true ;
     ppl_Polyhedron_get_generators(P, GS),
     nl, write(GS), nl
+  ).
+
+out(lp, LP):-
+  ((noisy(N), N < 2) -> true ;
+    ppl_LP_Problem_constraints(LP, CS),
+    ppl_LP_Problem_objective_function(LP, Obj),
+    ppl_LP_Problem_optimization_mode(LP, Opt),
+    nl,
+    write(' constraint system is: '), write(CS), nl,
+    write(' objective function is: '), write(Obj), nl,
+    write(' optimization mode is: '), write(Opt),
+    nl
   ).
 
 %%% predicates for ensuring new polyhedra are always deleted on failure %
@@ -2435,6 +2589,18 @@ clean_ppl_new_Polyhedron_from_Polyhedron(TQ, Q, TP, P) :-
 clean_ppl_new_Polyhedron_from_bounding_box(T, Box, P) :-
   ppl_new_Polyhedron_from_bounding_box(T, Box, P),
   cleanup_ppl_Polyhedron(P).
+
+clean_ppl_new_LP_Problem_trivial(LP) :-
+  ppl_new_LP_Problem_trivial(LP),
+  cleanup_ppl_LP_Problem(LP).
+
+clean_ppl_new_LP_Problem(CS, Obj, Opt, LP) :-
+  ppl_new_LP_Problem(CS, Obj, Opt, LP),
+  cleanup_ppl_LP_Problem(LP).
+
+clean_ppl_new_LP_Problem_from_LP_Problem(LP1, LP) :-
+  ppl_new_LP_Problem_from_LP_Problem(LP1, LP),
+  cleanup_ppl_LP_Problem(LP).
 
 %%%%%%%%%%%% predicates for switching on/off output messages %
 
@@ -2541,7 +2707,7 @@ write_all([Phrase|Phrases]):-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% list_group(G)
+% list_groups(G)
 % The interface predicates are partitioned into related sets called
 % groups and here is a list of the groups.
 
@@ -2564,6 +2730,7 @@ list_groups( [
    compare_polyhedra,
    polyhedron_boxes,
    catch_time,
+   lp_check,
    handle_exceptions
              ] ).
 

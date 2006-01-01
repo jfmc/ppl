@@ -288,6 +288,27 @@ SP_STUB_2(ppl_Polyhedron_remove_higher_space_dimensions)
 SP_STUB_3(ppl_Polyhedron_expand_space_dimension)
 SP_STUB_3(ppl_Polyhedron_fold_space_dimensions)
 SP_STUB_2(ppl_Polyhedron_map_space_dimensions)
+SP_STUB_1(ppl_new_LP_Problem_trivial)
+SP_STUB_4(ppl_new_LP_Problem)
+SP_STUB_2(ppl_new_LP_Problem_from_LP_Problem)
+SP_STUB_2(ppl_LP_Problem_swap)
+SP_STUB_1(ppl_delete_LP_Problem)
+SP_STUB_2(ppl_LP_Problem_space_dimension)
+SP_STUB_2(ppl_LP_Problem_constraints)
+SP_STUB_2(ppl_LP_Problem_objective_function)
+SP_STUB_2(ppl_LP_Problem_optimization_mode)
+SP_STUB_1(ppl_LP_Problem_clear)
+SP_STUB_2(ppl_LP_Problem_add_constraint)
+SP_STUB_2(ppl_LP_Problem_add_constraints)
+SP_STUB_2(ppl_LP_Problem_set_objective_function)
+SP_STUB_2(ppl_LP_Problem_set_optimization_mode)
+SP_STUB_1(ppl_LP_Problem_is_satisfiable)
+SP_STUB_2(ppl_LP_Problem_solve)
+SP_STUB_2(ppl_LP_Problem_feasible_point)
+SP_STUB_2(ppl_LP_Problem_optimizing_point)
+SP_STUB_3(ppl_LP_Problem_optimal_value)
+SP_STUB_4(ppl_LP_Problem_evaluate_objective_function)
+SP_STUB_1(ppl_LP_Problem_OK)
 
 #define SP_DEFINE_C_PREDICATE(name, arity) \
   SP_define_c_predicate(#name, arity, "user", sp_stub_##name, NULL)
@@ -394,6 +415,27 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_expand_space_dimension, 3);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_fold_space_dimensions, 3);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_map_space_dimensions, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_LP_Problem_trivial, 1);
+  SP_DEFINE_C_PREDICATE(ppl_new_LP_Problem, 4);
+  SP_DEFINE_C_PREDICATE(ppl_new_LP_Problem_from_LP_Problem, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_swap, 2);
+  SP_DEFINE_C_PREDICATE(ppl_delete_LP_Problem, 1);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_space_dimension, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_constraints, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_objective_function, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_optimization_mode, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_clear, 1);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_add_constraint, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_add_constraints, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_set_objective_function, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_set_optimization_mode, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_is_satisfiable, 1);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_solve, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_feasible_point, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_optimizing_point, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_optimal_value, 3);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_evaluate_objective_function, 4);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_OK, 1);
 }
 
 extern "C" void

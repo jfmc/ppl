@@ -108,7 +108,28 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_Polyhedron_remove_higher_space_dimensions/2,
         ppl_Polyhedron_expand_space_dimension/3,
         ppl_Polyhedron_fold_space_dimensions/3,
-        ppl_Polyhedron_map_space_dimensions/2
+        ppl_Polyhedron_map_space_dimensions/2,
+	ppl_new_LP_Problem_trivial/1,
+	ppl_new_LP_Problem/4,
+	ppl_new_LP_Problem_from_LP_Problem/2,
+	ppl_LP_Problem_swap/2,
+	ppl_delete_LP_Problem/1,
+	ppl_LP_Problem_space_dimension/2,
+	ppl_LP_Problem_constraints/2,
+	ppl_LP_Problem_objective_function/2,
+	ppl_LP_Problem_optimization_mode/2,
+	ppl_LP_Problem_clear/1,
+	ppl_LP_Problem_add_constraint/2,
+	ppl_LP_Problem_add_constraints/2,
+	ppl_LP_Problem_set_objective_function/2,
+	ppl_LP_Problem_set_optimization_mode/2,
+	ppl_LP_Problem_is_satisfiable/1,
+	ppl_LP_Problem_solve/2,
+	ppl_LP_Problem_feasible_point/2,
+	ppl_LP_Problem_optimizing_point/2,
+	ppl_LP_Problem_optimal_value/3,
+	ppl_LP_Problem_evaluate_objective_function/4,
+	ppl_LP_Problem_OK/1
 ],
 [
         assertions,
@@ -787,6 +808,153 @@ ppl_Polyhedron_map_space_dimensions(Handle, PIFunc) :-
   :: any_term * any_term * int
   + (returns(Success), foreign(ppl_Polyhedron_map_space_dimensions)).
 
+:- true pred ppl_new_LP_Problem_trivial_2(in(Term1), go(Success))
+          :: any_term * int
+  + (returns(Success), foreign(ppl_new_LP_Problem_trivial)).
+ 
+ppl_new_LP_Problem_trivial(Term1) :-
+   ppl_new_LP_Problem_trivial_2(Term1, 1).
+
+:- true pred ppl_new_LP_Problem_2(in(Term1), in(Term2), in(Term3), in(Term4), go(Success))
+          :: any_term * any_term * any_term * any_term * int
+  + (returns(Success), foreign(ppl_new_LP_Problem)).
+ 
+ppl_new_LP_Problem(Term1, Term2, Term3, Term4) :-
+   ppl_new_LP_Problem_2(Term1, Term2, Term3, Term4, 1).
+
+:- true pred ppl_new_LP_Problem_from_LP_Problem_2(in(Term1), in(Term2), go(Success))
+          :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_new_LP_Problem_from_LP_Problem)).
+ 
+ppl_new_LP_Problem_from_LP_Problem(Term1, Term2) :-
+   ppl_new_LP_Problem_from_LP_Problem_2(Term1, Term2, 1).
+
+:- true pred ppl_LP_Problem_swap_2(in(Term1), in(Term2), go(Success))
+          :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_swap)).
+ 
+ppl_LP_Problem_swap(Term1, Term2) :-
+   ppl_LP_Problem_swap_2(Term1, Term2, 1).
+
+:- true pred ppl_delete_LP_Problem_2(in(Term1), go(Success))
+          :: any_term * int
+  + (returns(Success), foreign(ppl_delete_LP_Problem)).
+ 
+ppl_delete_LP_Problem(Term1) :-
+   ppl_delete_LP_Problem_2(Term1, 1).
+
+:- true pred ppl_LP_Problem_space_dimension_2(in(Term1), in(Term2), go(Success))
+          :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_space_dimension)).
+ 
+ppl_LP_Problem_space_dimension(Term1, Term2) :-
+   ppl_LP_Problem_space_dimension_2(Term1, Term2, 1).
+
+:- true pred ppl_LP_Problem_constraints_2(in(Term1), in(Term2), go(Success))
+          :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_constraints)).
+ 
+ppl_LP_Problem_constraints(Term1, Term2) :-
+   ppl_LP_Problem_constraints_2(Term1, Term2, 1).
+
+:- true pred ppl_LP_Problem_objective_function_2(in(Term1), in(Term2), go(Success))
+          :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_objective_function)).
+ 
+ppl_LP_Problem_objective_function(Term1, Term2) :-
+   ppl_LP_Problem_objective_function_2(Term1, Term2, 1).
+
+:- true pred ppl_LP_Problem_optimization_mode_2(in(Term1), in(Term2), go(Success))
+          :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_optimization_mode)).
+ 
+ppl_LP_Problem_optimization_mode(Term1, Term2) :-
+   ppl_LP_Problem_optimization_mode_2(Term1, Term2, 1).
+
+:- true pred ppl_LP_Problem_clear_2(in(Term1), go(Success))
+          :: any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_clear)).
+ 
+ppl_LP_Problem_clear(Term1) :-
+   ppl_LP_Problem_clear_2(Term1, 1).
+
+:- true pred ppl_LP_Problem_add_constraint_2(in(Term1), in(Term2), go(Success))
+          :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_add_constraint)).
+ 
+ppl_LP_Problem_add_constraint(Term1, Term2) :-
+   ppl_LP_Problem_add_constraint_2(Term1, Term2, 1).
+
+:- true pred ppl_LP_Problem_add_constraints_2(in(Term1), in(Term2), go(Success))
+          :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_add_constraints)).
+ 
+ppl_LP_Problem_add_constraints(Term1, Term2) :-
+   ppl_LP_Problem_add_constraints_2(Term1, Term2, 1).
+
+:- true pred ppl_LP_Problem_set_objective_function_2(in(Term1), in(Term2), go(Success))
+          :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_set_objective_function)).
+ 
+ppl_LP_Problem_set_objective_function(Term1, Term2) :-
+   ppl_LP_Problem_set_objective_function_2(Term1, Term2, 1).
+
+:- true pred ppl_LP_Problem_set_optimization_mode_2(in(Term1), in(Term2), go(Success))
+          :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_set_optimization_mode)).
+ 
+ppl_LP_Problem_set_optimization_mode(Term1, Term2) :-
+   ppl_LP_Problem_set_optimization_mode_2(Term1, Term2, 1).
+
+:- true pred ppl_LP_Problem_is_satisfiable_2(in(Term1), go(Success))
+          :: any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_is_satisfiable)).
+ 
+ppl_LP_Problem_is_satisfiable(Term1) :-
+   ppl_LP_Problem_is_satisfiable_2(Term1, 1).
+
+:- true pred ppl_LP_Problem_solve_2(in(Term1), in(Term2), go(Success))
+          :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_solve)).
+ 
+ppl_LP_Problem_solve(Term1, Term2) :-
+   ppl_LP_Problem_solve_2(Term1, Term2, 1).
+
+:- true pred ppl_LP_Problem_feasible_point_2(in(Term1), in(Term2), go(Success))
+          :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_feasible_point)).
+ 
+ppl_LP_Problem_feasible_point(Term1, Term2) :-
+   ppl_LP_Problem_feasible_point_2(Term1, Term2, 1).
+
+:- true pred ppl_LP_Problem_optimizing_point_2(in(Term1), in(Term2), go(Success))
+          :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_optimizing_point)).
+ 
+ppl_LP_Problem_optimizing_point(Term1, Term2) :-
+   ppl_LP_Problem_optimizing_point_2(Term1, Term2, 1).
+
+:- true pred ppl_LP_Problem_optimal_value_2(in(Term1), in(Term2), in(Term3), go(Success))
+          :: any_term * any_term * any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_optimal_value)).
+ 
+ppl_LP_Problem_optimal_value(Term1, Term2, Term3) :-
+   ppl_LP_Problem_optimal_value_2(Term1, Term2, Term3, 1).
+
+:- true pred ppl_LP_Problem_evaluate_objective_function_2(in(Term1), in(Term2), in(Term3), in(Term4), go(Success))
+          :: any_term * any_term * any_term * any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_evaluate_objective_function)).
+ 
+ppl_LP_Problem_evaluate_objective_function(Term1, Term2, Term3, Term4) :-
+   ppl_LP_Problem_evaluate_objective_function_2(Term1, Term2, Term3, Term4, 1).
+
+:- true pred ppl_LP_Problem_OK_2(in(Term1), go(Success))
+          :: any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_OK)).
+ 
+ppl_LP_Problem_OK(Term1) :-
+   ppl_LP_Problem_OK_2(Term1, 1).
+
 :- extra_linker_opts('-L.libs').
 :- use_foreign_library(ppl_ciao).
 
@@ -930,7 +1098,28 @@ ppl_Polyhedron_map_space_dimensions(Handle, PIFunc) :-
 %        ppl_Polyhedron_fold_space_dimensions/3,
         ppl_Polyhedron_fold_space_dimensions_2/4,
 %        ppl_Polyhedron_map_space_dimensions/2
-        ppl_Polyhedron_map_space_dimensions_2/3
+        ppl_Polyhedron_map_space_dimensions_2/3,
+	ppl_new_LP_Problem_trivial_2/2,
+	ppl_new_LP_Problem_2/5,
+	ppl_new_LP_Problem_from_LP_Problem_2/3,
+	ppl_LP_Problem_swap_2/3,
+	ppl_delete_LP_Problem_2/2,
+	ppl_LP_Problem_space_dimension_2/3,
+	ppl_LP_Problem_constraints_2/3,
+	ppl_LP_Problem_objective_function_2/3,
+	ppl_LP_Problem_optimization_mode_2/3,
+	ppl_LP_Problem_clear_2/2,
+	ppl_LP_Problem_add_constraint_2/3,
+	ppl_LP_Problem_add_constraints_2/3,
+	ppl_LP_Problem_set_objective_function_2/3,
+	ppl_LP_Problem_set_optimization_mode_2/3,
+	ppl_LP_Problem_is_satisfiable_2/2,
+	ppl_LP_Problem_solve_2/3,
+	ppl_LP_Problem_feasible_point_2/3,
+	ppl_LP_Problem_optimizing_point_2/3,
+	ppl_LP_Problem_optimal_value_2/4,
+	ppl_LP_Problem_evaluate_objective_function_2/5,
+	ppl_LP_Problem_OK_2/2
 ]).
 
 :- comment(version_maintenance,off).

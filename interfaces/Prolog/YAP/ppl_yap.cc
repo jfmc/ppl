@@ -551,6 +551,27 @@ YAP_STUB_2(ppl_Polyhedron_remove_higher_space_dimensions)
 YAP_STUB_3(ppl_Polyhedron_expand_space_dimension)
 YAP_STUB_3(ppl_Polyhedron_fold_space_dimensions)
 YAP_STUB_2(ppl_Polyhedron_map_space_dimensions)
+YAP_STUB_1(ppl_new_LP_Problem_trivial)
+YAP_STUB_4(ppl_new_LP_Problem)
+YAP_STUB_2(ppl_new_LP_Problem_from_LP_Problem)
+YAP_STUB_2(ppl_LP_Problem_swap)
+YAP_STUB_1(ppl_delete_LP_Problem)
+YAP_STUB_2(ppl_LP_Problem_space_dimension)
+YAP_STUB_2(ppl_LP_Problem_constraints)
+YAP_STUB_2(ppl_LP_Problem_objective_function)
+YAP_STUB_2(ppl_LP_Problem_optimization_mode)
+YAP_STUB_1(ppl_LP_Problem_clear)
+YAP_STUB_2(ppl_LP_Problem_add_constraint)
+YAP_STUB_2(ppl_LP_Problem_add_constraints)
+YAP_STUB_2(ppl_LP_Problem_set_objective_function)
+YAP_STUB_2(ppl_LP_Problem_set_optimization_mode)
+YAP_STUB_1(ppl_LP_Problem_is_satisfiable)
+YAP_STUB_2(ppl_LP_Problem_solve)
+YAP_STUB_2(ppl_LP_Problem_feasible_point)
+YAP_STUB_2(ppl_LP_Problem_optimizing_point)
+YAP_STUB_3(ppl_LP_Problem_optimal_value)
+YAP_STUB_4(ppl_LP_Problem_evaluate_objective_function)
+YAP_STUB_1(ppl_LP_Problem_OK)
 
 #define YAP_USER_C_PREDICATE(name, arity) \
  YAP_UserCPredicate(#name, reinterpret_cast<int(*)()>(yap_stub_##name), arity)
@@ -649,4 +670,25 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_expand_space_dimension, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_fold_space_dimensions, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_map_space_dimensions, 2);
+  YAP_USER_C_PREDICATE(ppl_new_LP_Problem_trivial, 1);
+  YAP_USER_C_PREDICATE(ppl_new_LP_Problem, 4);
+  YAP_USER_C_PREDICATE(ppl_new_LP_Problem_from_LP_Problem, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_swap, 2);
+  YAP_USER_C_PREDICATE(ppl_delete_LP_Problem, 1);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_space_dimension, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_constraints, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_objective_function, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_optimization_mode, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_clear, 1);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_add_constraint, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_add_constraints, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_set_objective_function, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_set_optimization_mode, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_is_satisfiable, 1);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_solve, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_feasible_point, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_optimizing_point, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_optimal_value, 3);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_evaluate_objective_function, 4);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_OK, 1);
 }

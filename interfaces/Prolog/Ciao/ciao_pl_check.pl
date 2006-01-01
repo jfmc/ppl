@@ -114,7 +114,28 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_remove_higher_space_dimensions/2,
 	ppl_Polyhedron_expand_space_dimension/3,
 	ppl_Polyhedron_fold_space_dimensions/3,
-	ppl_Polyhedron_map_space_dimensions/2
+	ppl_Polyhedron_map_space_dimensions/2,
+        ppl_new_LP_Problem_trivial/1,
+        ppl_new_LP_Problem/4,
+        ppl_new_LP_Problem_from_LP_Problem/2,
+        ppl_LP_Problem_swap/2,
+        ppl_delete_LP_Problem/1,
+        ppl_LP_Problem_space_dimension/2,
+        ppl_LP_Problem_constraints/2,
+        ppl_LP_Problem_objective_function/2,
+        ppl_LP_Problem_optimization_mode/2,
+        ppl_LP_Problem_clear/1,
+        ppl_LP_Problem_add_constraint/2,
+        ppl_LP_Problem_add_constraints/2,
+        ppl_LP_Problem_set_objective_function/2,
+        ppl_LP_Problem_set_optimization_mode/2,
+        ppl_LP_Problem_is_satisfiable/1,
+        ppl_LP_Problem_solve/2,
+        ppl_LP_Problem_feasible_point/2,
+        ppl_LP_Problem_optimizing_point/2,
+        ppl_LP_Problem_optimal_value/3,
+        ppl_LP_Problem_evaluate_objective_function/4,
+        ppl_LP_Problem_OK/1
 ]).
 
 :- set_prolog_flag(multi_arity_warnings, off).
