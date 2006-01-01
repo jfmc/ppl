@@ -2057,7 +2057,15 @@ time_watch(Topology, Goal, No_Time_Out, Time_Out) :-
 
 %%%%%%%%%%%%%%%%% LP_Problem tests %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-lp_check.
+lp_check :-
+  lp_trivial,
+  lp_from_cons,
+  lp_from_lp,
+  lp_swap,
+  lp_get,
+  lp_clear,
+  lp_set,
+  lp_eval.
 
 lp_trivial :-
   clean_ppl_new_LP_Problem_trivial(LP),
