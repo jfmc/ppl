@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
 int
-main() {
+main() TRY {
   // Variable declaration.
   Variable X01(0);
   Variable X02(1);
@@ -158,3 +158,4 @@ main() {
 
   return 0;
 }
+CATCH
