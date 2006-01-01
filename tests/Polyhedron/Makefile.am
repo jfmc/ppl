@@ -1194,6 +1194,8 @@ XFAIL_ALWAYS =
 
 XFAIL_WITH_INT64 = \
 $(XFAIL_ALWAYS) \
+lpproblem1 \
+lpproblem2 \
 randphull2 \
 nnc_randphull2
 
@@ -1201,8 +1203,6 @@ XFAIL_WITH_INT32 = \
 $(XFAIL_WITH_INT64) \
 dualhypercubes \
 equals1 \
-lpproblem1 \
-lpproblem2 \
 nnc_equals1
 
 XFAIL_WITH_INT16 = \
