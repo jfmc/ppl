@@ -1201,6 +1201,8 @@ XFAIL_WITH_INT32 = \
 $(XFAIL_WITH_INT64) \
 dualhypercubes \
 equals1 \
+lpproblem1 \
+lpproblem2 \
 nnc_equals1
 
 XFAIL_WITH_INT16 = \
