@@ -1893,7 +1893,11 @@ bounds_from_below(T, CS1, CS2, Var) :-
 maximize :-
   make_vars(2, [A, B]),
   maximize(c, [A >= -1, A =< 1, B >= -1, B =< 1], A + B, 2, 1, true),
-  maximize(nnc, [A > -1, A < 1, B > -1, B < 1], A + B -1, 1, 1, false).
+  \+ maximize(c, [B >= -1, B =< 1], A, _, _, _),
+  maximize(c, [B >= -1, B =< 1], B, 1, 1, true),
+  maximize(nnc, [A > -1, A < 1, B > -1, B < 1], A + B -1, 1, 1, false),
+  \+ maximize(nnc, [B > -1, B < 1], A, _, _, _),
+  maximize(nnc, [B > -1, B < 1], B, 1, 1, false).
 
 maximize(T, CS, LE, N, D, Max) :-
   clean_ppl_new_Polyhedron_from_constraints(T, CS, P),
@@ -1921,7 +1925,8 @@ maximize_with_point(T, CS, LE, N, D, Max, Point) :-
   !,
   ppl_delete_Polyhedron(Pm),
   ppl_delete_Polyhedron(Qm),
-  \+ ppl_Polyhedron_minimize_with_point(P, LE, N, 0, _, _),
+  \+ ppl_Polyhedron_maximize_with_point(P, LE, _N, 0, _, _),
+  !,
   ppl_delete_Polyhedron(P).
 
 
@@ -1929,11 +1934,16 @@ maximize_with_point(T, CS, LE, N, D, Max, Point) :-
 minimize :-
   make_vars(2, [A, B]),
   minimize(c, [A >= -1, A =< 1, B >= -1, B =< 1], A + B, -2, 1, true),
-  minimize(nnc, [A > -2, A =< 2, B > -2, B =< 2], A + B + 1, -3, 1, false).
+  \+ minimize(c, [B >= -1, B =< 1], A, _, _, _),
+  minimize(c, [B >= -1, B =< 1], B, -1, 1, true),
+  minimize(nnc, [A > -2, A =< 2, B > -2, B =< 2], A + B + 1, -3, 1, false),
+  \+ minimize(nnc, [B > -1, B < 1], A, _, _, _),
+  minimize(nnc, [B > -1, B < 1], B, -1, 1, false).
 
 minimize(T, CS, LE, N, D, Min) :-
   clean_ppl_new_Polyhedron_from_constraints(T, CS, P),
   ppl_Polyhedron_minimize(P, LE, N, D, Min),
+  !,
   ppl_delete_Polyhedron(P).
 
 % Tests ppl_Polyhedron_minimize_with_point/5.
@@ -1956,7 +1966,8 @@ minimize_with_point(T, CS, LE, N, D, Min, Point) :-
   !,
   ppl_delete_Polyhedron(Pm),
   ppl_delete_Polyhedron(Qm),
-   \+ ppl_Polyhedron_minimize_with_point(P, LE, N, 0, _, _),
+   \+ ppl_Polyhedron_minimize_with_point(P, LE, _N, 0, _, _),
+  !,
   ppl_delete_Polyhedron(P).
 
 %%%%%%%%%%%%%%%%% Watchdog tests %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
