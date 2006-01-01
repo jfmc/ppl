@@ -2064,13 +2064,19 @@ lp_check :-
   lp_swap,
   lp_get,
   lp_clear,
+  lp_satisfiable,
   lp_set,
+  lp_solve,
   lp_eval.
 
 lp_trivial :-
   clean_ppl_new_LP_Problem_trivial(LP),
   ppl_LP_Problem_space_dimension(LP, 0),
-  clean_ppl_new_Polyhedron_from_constraints(c, [], PH),
+  ppl_LP_Problem_objective_function(LP, Obj),
+  compare_lin_expressions(Obj, 0),
+  ppl_LP_Problem_optimization_mode(LP, max),
+  ppl_LP_Problem_constraints(LP, CS),
+  clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
   ppl_Polyhedron_is_universe(PH),
   !,
   ppl_delete_Polyhedron(PH),
@@ -2081,7 +2087,9 @@ lp_from_cons :-
   clean_ppl_new_LP_Problem([A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP),
   ppl_LP_Problem_space_dimension(LP, 3),
   ppl_LP_Problem_constraints(LP, CS),
-  ppl_LP_Problem_OK(LP),
+  ppl_LP_Problem_objective_function(LP, Obj),
+  compare_lin_expressions(Obj, C),
+  ppl_LP_Problem_optimization_mode(LP, max),
   clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
   clean_ppl_new_Polyhedron_from_constraints(c,
        [A >= -1, B >= 5, C >= 0, C =< 3], Expect_PH),
@@ -2093,12 +2101,15 @@ lp_from_cons :-
 
 lp_from_lp :-
   make_vars(3, [A, B, C]),
-  clean_ppl_new_LP_Problem([A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP),
-  clean_ppl_new_LP_Problem_from_LP_Problem(LP, LP1),
-  ppl_LP_Problem_constraints(LP1, CS),
+  clean_ppl_new_LP_Problem([A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP1),
+  clean_ppl_new_LP_Problem_from_LP_Problem(LP1, LP),
+  ppl_LP_Problem_objective_function(LP, Obj),
+  compare_lin_expressions(Obj, C),
+  ppl_LP_Problem_optimization_mode(LP, max),
+  ppl_LP_Problem_constraints(LP, CS),
   clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
-  clean_ppl_new_Polyhedron_from_constraints(c,
-       [A >= -1, B >= 5, C >= 0, C =< 3], Expect_PH),
+  ppl_LP_Problem_constraints(LP1, Expect_CS),
+  clean_ppl_new_Polyhedron_from_constraints(c, Expect_CS, Expect_PH),
   ppl_Polyhedron_equals_Polyhedron(PH, Expect_PH),
   !,
   ppl_delete_Polyhedron(PH),
@@ -2135,7 +2146,7 @@ lp_get :-
        [A >= -1, B >= 5, C >= 0, C =< 3], Expect_PH),
   ppl_Polyhedron_equals_Polyhedron(PH, Expect_PH),
   ppl_LP_Problem_objective_function(LP, Obj),
-  Obj = 1*C,
+  compare_lin_expressions(Obj, C),
   ppl_LP_Problem_optimization_mode(LP, Opt),
   Opt = max,
   !,
@@ -2153,29 +2164,74 @@ lp_clear :-
   clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
   ppl_Polyhedron_is_universe(PH),
   ppl_LP_Problem_objective_function(LP, Obj),
-  Obj == 0,
+  compare_lin_expressions(Obj, 0),
   ppl_LP_Problem_optimization_mode(LP, Opt),
   Opt == max,
   !,
   ppl_delete_Polyhedron(PH),
   ppl_delete_LP_Problem(LP).
 
-lp_set :-
+lp_satisfiable :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_LP_Problem([A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP),
+  ppl_LP_Problem_is_satisfiable(LP),
+  ppl_LP_Problem_add_constraint(LP, A + B =< 0),
+  \+ ppl_LP_Problem_is_satisfiable(LP),
+  !,
+  ppl_delete_LP_Problem(LP).
+
+lp_add :-
   make_vars(3, [A, B, C]),
   clean_ppl_new_LP_Problem_trivial(LP),
   ppl_LP_Problem_add_constraint(LP, A >= 0),
   ppl_LP_Problem_add_constraints(LP, [A =< 3, A + B + C >= 9, B >= 5, C =< 5]),
-  ppl_LP_Problem_set_objective_function(LP, 2*B-C),
-  ppl_LP_Problem_set_optimization_mode(LP, min),
   clean_ppl_new_LP_Problem([A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5],
-      2*B-C, min, LP1),
+      2*B-C, max, LP1),
   ppl_LP_Problem_solve(LP, Status),
   ppl_LP_Problem_solve(LP1, Status),
   ppl_LP_Problem_optimal_value(LP, N, D),
   ppl_LP_Problem_optimal_value(LP1, N, D),
+  ppl_LP_Problem_constraints(LP, CS),
+  clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
+  ppl_LP_Problem_constraints(LP1, Expect_CS),
+  clean_ppl_new_Polyhedron_from_constraints(c, Expect_CS, Expect_PH),
+  ppl_Polyhedron_equals_Polyhedron(PH, Expect_PH),
   !,
+  ppl_delete_Polyhedron(PH),
+  ppl_delete_Polyhedron(Expect_PH),
   ppl_delete_LP_Problem(LP),
   ppl_delete_LP_Problem(LP1).
+
+lp_set :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_LP_Problem(
+    [A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5], 0, max, LP),
+  ppl_LP_Problem_objective_function(LP, 0),
+  ppl_LP_Problem_optimization_mode(LP, max),
+  ppl_LP_Problem_set_objective_function(LP, 2*B-C),
+  ppl_LP_Problem_set_optimization_mode(LP, min),
+  ppl_LP_Problem_objective_function(LP, Obj),
+  compare_lin_expressions(Obj, 2*B-C),
+  ppl_LP_Problem_optimization_mode(LP, min),
+  ppl_LP_Problem_solve(LP, optimized),
+  !,
+  ppl_delete_LP_Problem(LP).
+
+lp_solve :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_LP_Problem(
+    [A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5], 0, max, LP),
+  ppl_LP_Problem_objective_function(LP, 0),
+  ppl_LP_Problem_optimization_mode(LP, max),
+  ppl_LP_Problem_set_objective_function(LP, 2*B-C),
+  ppl_LP_Problem_set_optimization_mode(LP, min),
+  ppl_LP_Problem_solve(LP, optimized),
+  ppl_LP_Problem_set_objective_function(LP, C),
+  ppl_LP_Problem_solve(LP, unbounded),
+  ppl_LP_Problem_add_constraint(LP, B = 0),
+  ppl_LP_Problem_solve(LP, unfeasible),
+  !,
+  ppl_delete_LP_Problem(LP).
 
 lp_eval :-
   make_vars(3, [A, B, C]),
@@ -2184,7 +2240,6 @@ lp_eval :-
   ppl_LP_Problem_optimizing_point(LP, Point),
   ppl_LP_Problem_feasible_point(LP, Point),
   \+ ppl_LP_Problem_feasible_point(LP, point(B)),
-  ppl_LP_Problem_is_satisfiable(LP),
   clean_ppl_new_Polyhedron_from_generators(c, [Point], PH),
   clean_ppl_new_Polyhedron_from_generators(c, [point(5*B+5*C)], Expect_PH),
   ppl_Polyhedron_equals_Polyhedron(PH, Expect_PH),
@@ -2192,10 +2247,25 @@ lp_eval :-
   ppl_LP_Problem_evaluate_objective_function(LP, Point, N1, D1),
   N == N1,
   D == D1,
+  ppl_LP_Problem_OK(LP),
   !,
   ppl_delete_LP_Problem(LP),
   ppl_delete_Polyhedron(Expect_PH),
   ppl_delete_Polyhedron(PH).
+
+% compare_lin_expressions/2 checks if 2 linear expressions
+% are semantically the same.
+%
+% If we need to compare 2 linear expressions, then this is better
+% than a syntactic check- since we want 1*C equal to C.
+
+compare_lin_expressions(LE1, LE2) :-
+  clean_ppl_new_Polyhedron_from_constraints(c, [LE1 = 0], PH1),
+  clean_ppl_new_Polyhedron_from_constraints(c, [LE2 = 0], PH2),
+  ppl_Polyhedron_equals_Polyhedron(PH1, PH2),
+  !,
+  ppl_delete_Polyhedron(PH1),
+  ppl_delete_Polyhedron(PH2).
 
 %%%%%%%%%%%%%%%%% Exceptions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
