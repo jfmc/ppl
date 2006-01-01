@@ -235,33 +235,26 @@ LP_Problem::space_dimension() const {
   return input_cs.space_dimension();
 }
 
-
 inline memory_size_type
 LP_Problem::external_memory_in_bytes() const {
-  // FIXME.
-  assert(false);
-  return tableau.external_memory_in_bytes()
-    + working_cost.total_memory_in_bytes()
-    // + base.external_memory_in_bytes()
-    // + dim_map.external_memory_in_bytes()
+  memory_size_type n
+    = tableau.external_memory_in_bytes()
+    + working_cost.external_memory_in_bytes()
     + input_cs.external_memory_in_bytes()
     + input_obj_function.external_memory_in_bytes()
-    + last_generator.external_memory_in_bytes()
-   + sizeof(opt_mode);
+    + last_generator.external_memory_in_bytes();
+  // Adding the external memory for `base'.
+  n += base.capacity() * sizeof(dimension_type);
+  // Adding the external memory for `dim_map'.
+  // CHECK ME: just a lower approximation?
+  n += dim_map.size()
+    * sizeof(std::map<dimension_type, dimension_type>::value_type);
+  return n;
 }
 
 inline memory_size_type
 LP_Problem::total_memory_in_bytes() const {
-  // FIXME.
-  assert(false);
-  return tableau.total_memory_in_bytes()
-    + working_cost.total_memory_in_bytes()
-    // + base.total_memory_in_bytes()
-    // + dim_map.total_memory_in_bytes()
-    + input_cs.total_memory_in_bytes()
-    + input_obj_function.total_memory_in_bytes()
-    + last_generator.external_memory_in_bytes()
-    + sizeof(opt_mode);
+  return sizeof(*this) + external_memory_in_bytes();
 }
 
 } // namespace Parma_Polyhedra_Library

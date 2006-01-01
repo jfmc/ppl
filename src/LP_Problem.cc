@@ -961,3 +961,59 @@ PPL::LP_Problem::OK() const {
   // All checks passed.
   return true;
 }
+
+void
+PPL::LP_Problem::ascii_dump(std::ostream& s) const {
+  using namespace IO_Operators;
+
+  s << "input_cs\n";
+  input_cs.ascii_dump(s);
+  s << "\ninput_obj_function\n";
+  input_obj_function.ascii_dump(s);
+  s << "\nopt_mode " << (opt_mode == MAXIMIZATION ? "MAX" : "MIN") << "\n";
+
+  s << "\nstatus: ";
+  switch (status) {
+  case UNSATISFIABLE:
+    s << "UNSAT";
+    break;
+  case SATISFIABLE:
+    s << "SATIS";
+    break;
+  case UNBOUNDED:
+    s << "UNBOU";
+    break;
+  case OPTIMIZED:
+    s << "OPTIM";
+    break;
+  case PARTIALLY_SATISFIABLE:
+    s << "P_SAT";
+    break;
+  case UNSOLVED:
+    s << "UNSOL";
+    break;
+  }
+  s << "\n";
+
+  s << "\ntableau\n";
+  tableau.ascii_dump(s);
+  s << "\nworking_cost\n";
+  working_cost.ascii_dump(s);
+
+  const dimension_type base_size = base.size();
+  s << "\nbase (" << base_size << ")\n";
+  for (dimension_type i = 0; i != base_size; ++i)
+    s << base[i] << ' ';
+
+  const dimension_type dim_map_size = dim_map.size();
+  s << "\ndim_map (" << dim_map_size << ")\n";
+  for (std::map<dimension_type, dimension_type>::const_iterator
+	 i = dim_map.begin(), iend = dim_map.end(); i != iend; ++i)
+    s << Variable(i->first) << "->" << Variable(i->second) << ' ';
+
+  // FIXME: no ascii_dump() for Generator?
+  // last_generator.ascii_dump(s);
+  s << "\nlast_generator\n";
+  s << last_generator;
+  s << "\n";
+}
