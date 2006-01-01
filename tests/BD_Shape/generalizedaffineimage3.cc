@@ -1,6 +1,6 @@
 /* Test BD_Shape::generalized_affine_image(v, r, e, d): the BDS
    is empty.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
