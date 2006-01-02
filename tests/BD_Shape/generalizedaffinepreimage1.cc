@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include <limits>
 
 namespace {
 
@@ -286,6 +287,12 @@ test9() {
 
 void
 test10() {
+  // If the Coefficient type is not wide enough, do nothing.
+  if (std::numeric_limits<Coefficient>::is_bounded
+      && (std::numeric_limits<Coefficient>::min() > -203
+	  || std::numeric_limits<Coefficient>::max() < 629))
+    return;
+
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -550,9 +557,7 @@ main() TRY {
   test7();
   test8();
   test9();
-  // FIXME: this fails if Coefficient is an 8-bit integer type,
-  // no matter what instance of BD_Shape is selected.
-  // test10();
+  test10();
   test11();
   test12();
   test13();
