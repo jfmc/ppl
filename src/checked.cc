@@ -35,9 +35,11 @@ struct number_struct {
   unsigned long exponent;
 };
 
-// Returns the integer value associated with the ASCII code c if there
-// is such an association, else -1.
-
+/*! \brief
+  Returns the integer value associated with the ASCII code \p c, in
+  the base \p base positional number system, if there is such an
+  association; returns \f$-1\f$ otherwise.
+*/
 inline int
 get_digit(int c, int base = 10) {
   if (c >= '0' && c < '0' + (base > 10 ? 10 : base))
@@ -52,24 +54,26 @@ get_digit(int c, int base = 10) {
   return -1;
 }
 
-// Adds a to b.  The signs of a and b are given by a_neg and b_neg.
-// Adjusts a_neg if required.
-//
-// Returns false if the result would be out of bounds, else true.
-
+/*! \brief
+  Adds the number represented (in the modulus-and-sign representation)
+  by \p b_neg and \p b_mod to the number represented by \p a_neg and
+  \p a_mod, assigning the result to the latter.  Returns
+  <CODE>false</CODE> is the result cannot be represented; returns
+  <CODE>true</CODE> otherwise.
+*/
 inline bool
-sum_sign(bool& a_neg, unsigned long& a,
-	 bool b_neg, unsigned long b) {
+sum_sign(bool& a_neg, unsigned long& a_mod,
+	 bool b_neg, unsigned long b_mod) {
   if (a_neg == b_neg) {
-    if (a > ULONG_MAX - b)
+    if (a_mod > ULONG_MAX - b_mod)
       return false;
-    a += b;
+    a_mod += b_mod;
   }
-  else if (a >= b)
-    a -= b;
+  else if (a_mod >= b_mod)
+    a_mod -= b_mod;
   else {
     a_neg = !a_neg;
-    a = b - a;
+    a_mod = b_mod - a_mod;
   }
   return true;
 }
