@@ -78,9 +78,12 @@ sum_sign(bool& a_neg, unsigned long& a_mod,
   return true;
 }
 
-// parse_number helper.  Reads the numerator or denominator part of a
-// number from `is' into num.  Returns a Result.
 
+/*! \brief
+  Helper function for parse_number(): reads the numerator or
+  denominator part of a number from \p is into \p num, returning the
+  appropriate Result value.
+*/
 Result
 parse_number1(std::istream& is, number_struct& num) {
   enum { BASE, INTEGER, FRACTIONAL, EXPONENT } state = BASE;
@@ -101,7 +104,7 @@ parse_number1(std::istream& is, number_struct& num) {
   switch (c) {
   case '-':
     num.neg_mantissa = true;
-    /* Fall through */
+    // Fall through.
   case '+':
     c = is.get();
     if (c == 'i' || c == 'I')
@@ -263,9 +266,11 @@ parse_number1(std::istream& is, number_struct& num) {
   return V_CVT_STR_UNK;
 }
 
-// Reads a number from `is' into numerator num and denominator den,
-// returning a Result.
-
+/* \brief
+   Reads a number from \p is writing it into \p num, the numerator,
+   and \p den, the denominator; the appropriate Result value is
+   returned.
+*/
 Result
 parse_number(std::istream& is, number_struct& num, number_struct& den) {
   // Read the numerator.
