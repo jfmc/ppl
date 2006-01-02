@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_test.hh"
 
 using std::invalid_argument;
+using std::domain_error;
 
 namespace {
 
@@ -911,6 +912,143 @@ error31() {
   }
 }
 
+void
+error32() {
+  Variable A(0);
+  LP_Problem lp;
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  cs.insert(A > -6);
+
+  try {
+    // This tries to build an invalid LP_Problem object: the feasible
+    // region can not be defined using strict inequalities.
+    lp.add_constraints(cs);
+
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error33() {
+  Variable A(0);
+  LP_Problem lp;
+
+  try {
+    // This tries to build an invalid LP_Problem object: the space dimension
+    // of the objective function can not be greater than the space dimension
+    // of the feasible region.
+    lp.set_objective_function(A);
+
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error34() {
+  Variable A(0);
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  cs.insert(A <= 0);
+  LP_Problem lp(cs, A, MAXIMIZATION);
+
+  try {
+    // We cannot extract a feasible point from an unsatisfiable LP_Problem.
+    Generator fp = lp.feasible_point();
+
+    exit(1);
+  }
+  catch (domain_error& e) {
+    nout << "domain_error: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error35() {
+  Variable A(0);
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  LP_Problem lp(cs, A, MAXIMIZATION);
+
+  try {
+    // We cannot extract an optimizing point from an unbounded LP_Problem.
+    Generator fp = lp.optimizing_point();
+
+    exit(1);
+  }
+  catch (domain_error& e) {
+    nout << "domain_error: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error36() {
+  Variable A(0);
+  Variable B(1);
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  LP_Problem lp(cs, A, MAXIMIZATION);
+  Generator p = point(A + B);
+  Coefficient num;
+  Coefficient den;
+
+  try {
+    // This tries to evaluate the objective function on a space dimension
+    // incompatible generator.
+    lp.evaluate_objective_function(p, num, den);
+
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error37() {
+  Variable A(0);
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  LP_Problem lp(cs, A, MAXIMIZATION);
+  Generator r = ray(A);
+  Coefficient num;
+  Coefficient den;
+
+  try {
+    // This tries to evaluate the objective function on a ray.
+    lp.evaluate_objective_function(r, num, den);
+
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
 } // namespace
 
 int
@@ -948,6 +1086,12 @@ main() TRY {
   error29();
   error30();
   error31();
+  error32();
+  error33();
+  error34();
+  error35();
+  error36();
+  error37();
 
   return 0;
 }
