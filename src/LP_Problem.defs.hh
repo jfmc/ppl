@@ -153,6 +153,10 @@ public:
 
     \param den
     On exit will contain the denominator of the evaluated value.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p evaluating_point are dimension-incompatible
+    or if the generator \p evaluating_point is not a point.
   */
   void evaluate_objective_function(const Generator& evaluating_point,
 				   Coefficient& num,

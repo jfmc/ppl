@@ -756,11 +756,20 @@ void
 PPL::LP_Problem::evaluate_objective_function(const Generator& evaluating_point,
 					     Coefficient& ext_n,
 					     Coefficient& ext_d) const {
+  const dimension_type ep_space_dim = evaluating_point.space_dimension();
+  if (space_dimension() < ep_space_dim)
+    throw std::invalid_argument("PPL::LP_Problem::"
+				"evaluate_objective_function(p, n, d):\n"
+				"*this and p are dimension incompatible.");
+  if (!evaluating_point.is_point())
+    throw std::invalid_argument("PPL::LP_Problem::"
+				"evaluate_objective_function(p, n, d):\n"
+				"p is not a point.");
+
   // Compute the smallest space dimension  between `input_obj_function'
   // and `evaluating_point'.
   const dimension_type space_dim
-    = std::min(evaluating_point.space_dimension(),
-	       input_obj_function.space_dimension());
+    = std::min(ep_space_dim, input_obj_function.space_dimension());
   // Compute the optimal value of the cost function.
   ext_n = input_obj_function.inhomogeneous_term();
   for (dimension_type i = space_dim; i-- > 0; )
