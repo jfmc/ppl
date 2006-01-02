@@ -85,7 +85,7 @@ sum_sign(bool& a_neg, unsigned long& a_mod,
   appropriate Result value.
 */
 Result
-parse_number1(std::istream& is, number_struct& num) {
+parse_number_part(std::istream& is, number_struct& num) {
   enum { BASE, INTEGER, FRACTIONAL, EXPONENT } state = BASE;
   unsigned long max_exp_div;
   int max_exp_rem;
@@ -274,7 +274,7 @@ parse_number1(std::istream& is, number_struct& num) {
 Result
 parse_number(std::istream& is, number_struct& num, number_struct& den) {
   // Read the numerator.
-  Result r = parse_number1(is, num);
+  Result r = parse_number_part(is, num);
   if (r != V_EQ)
     return r;
   if (is.get() != '/') {
@@ -283,7 +283,7 @@ parse_number(std::istream& is, number_struct& num, number_struct& den) {
     return r;
   }
   // Read the denominator.
-  r = parse_number1(is, den);
+  r = parse_number_part(is, den);
   if (r != V_EQ)
     return V_CVT_STR_UNK;
   if (num.base == den.base) {
