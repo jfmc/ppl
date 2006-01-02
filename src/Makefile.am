@@ -298,6 +298,7 @@ namespaces.hh \
 GMP_Integer.types.hh \
 Checked_Number.types.hh \
 Coefficient.types.hh \
+globals.types.hh \
 globals.defs.hh \
 Variable.types.hh \
 Linear_Expression.types.hh \
