@@ -31,15 +31,6 @@ using std::stringstream;
 using namespace Parma_Polyhedra_Library::IO_Operators;
 using namespace Parma_Polyhedra_Library::Checked;
 
-// Adds slow, memory-heavy large exponent tests.
-//#define TEST_LARGE_EXPONENTS
-
-#ifdef TEST_LARGE_EXPONENTS
-#include <sys/resource.h>
-#endif
-
-int ret;
-
 struct Test_Extended_Number_Policy {
   static const int check_overflow = 1;
   static const int check_inf_add_inf = 0;
@@ -79,7 +70,7 @@ test(string input_string, string expected_output, string expected_residual,
   if (result != expected_result 
       || residual != expected_residual
       || output != expected_output) {
-#if 1 || NOISY
+#if NOISY
     using std::cout;
     cout << "input = " << input_string
          << endl
@@ -180,11 +171,6 @@ test_integers() {
   stringstream ss2;
   ss2 << "1e" << (LONG_MAX / 10) << (LONG_MAX % 10) + 1;
   test(ss2.str(), "nan", "", V_CVT_STR_UNK);
-#ifdef TEST_LARGE_EXPONENTS
-  stringstream ss3;
-  ss3 << "1e" << (LONG_MAX / 10) << (LONG_MAX % 10);
-  test(ss3.str(), "nan", "10[...]0", V_CVT_STR_UNK);
-#endif
 
   // Exponent and fraction.
   test("5.3e3", "5300", "", V_EQ);
@@ -230,10 +216,6 @@ test_hexadecimals() {
   test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-20b",
        "-493504168323155221903720496056512238754896365637429427/2787593149816327892691964784081045188247552",
        "b", V_EQ);
-#ifdef TEST_LARGE_EXPONENTS
-  test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-20b3029",
-       "256", "", V_EQ);
-#endif
   test("0x0.1*^3   -0", "256", "   -0", V_EQ);
 }
 
@@ -320,17 +302,6 @@ test_large() {
 int
 main() TRY {
   set_handlers();
-  ret = 0;
-
-#ifdef TEST_LARGE_EXPONENTS
-  struct rlimit rl;
-  rl.rlim_cur = RLIM_INFINITY;
-  rl.rlim_max = RLIM_INFINITY;
-  if (setrlimit(RLIMIT_STACK, &rl) == -1) {
-    nout << "Failed to set stack limit." << endl;
-    exit(1);
-  }
-#endif
 
   test_symbols();
   test_integers();
@@ -339,6 +310,6 @@ main() TRY {
   test_denominators();
   test_large();
 
-  return ret;
+  return 0;
 }
 CATCH
