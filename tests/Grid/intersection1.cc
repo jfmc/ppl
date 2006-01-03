@@ -24,13 +24,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
+namespace {
+
+Variable A(0);
+Variable B(1);
+Variable C(2);
+
 // Simple grids, one dimensions.
 
 void
 test1() {
   nout << "test1:" << endl;
-
-  Variable A(0);
 
   Congruence_System cgs1;
   cgs1.insert((A %= 1) / 2);
@@ -72,10 +76,6 @@ test1() {
 void
 test2() {
   nout << "test2:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Congruence_System cgs1;
   cgs1.insert((A + 0*C %= 0) / 2);
@@ -119,10 +119,6 @@ void
 test3() {
   nout << "test3:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Congruence_System cgs;
   cgs.insert((B + 0*C %= 0) / 2);
 
@@ -158,10 +154,6 @@ void
 test4() {
   nout << "test4:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Congruence_System cgs;
   cgs.insert((B + 0*C %= 0) / 2);
 
@@ -196,10 +188,6 @@ test4() {
 void
 test5() {
   nout << "test5:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Congruence_System cgs;
   cgs.insert((5*A + 3*B + C %= 7) / 9);
@@ -238,10 +226,6 @@ test5() {
 void
 test6() {
   nout << "test6:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Congruence_System cgs;
   cgs.insert((2*B + 2*C %= 1) / 3);
@@ -317,10 +301,6 @@ void
 test8() {
   nout << "test8:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Grid_Generator_System gs1;
   gs1.insert(grid_point(A + C));
   gs1.insert(grid_line(C));
@@ -358,6 +338,8 @@ test8() {
 
   exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {
