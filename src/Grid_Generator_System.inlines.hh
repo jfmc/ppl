@@ -67,6 +67,8 @@ Grid_Generator_System::space_dimension() const {
 inline void
 Grid_Generator_System::clear() {
   Generator_System::clear();
+  set_sorted(false);
+  unset_pending_rows();
 }
 
 inline void
