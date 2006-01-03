@@ -588,6 +588,61 @@ test16() {
   exit(1);
 }
 
+// Transform a grid into the empty grid.
+
+void
+test17() {
+  nout << "test17:" << endl;
+
+  Grid gr(2);
+  gr.add_congruence(A == 3);
+  gr.add_congruence(B == 0);
+
+  gr.affine_preimage(B, A);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(2, EMPTY);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Transform away the constraint on a dimension (B).
+
+void
+test18() {
+  nout << "test18:" << endl;
+
+  Grid gr(2);
+  gr.add_congruence(A == 3);
+  gr.add_congruence(B == 3);
+
+  gr.affine_preimage(B, A);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(2);
+  known_gr.add_congruence(A == 3);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -612,6 +667,8 @@ main() TRY {
   test14();
   test15();
   test16();
+  test17();
+  test18();
 
   return 0;
 }
