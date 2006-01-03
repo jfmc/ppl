@@ -71,6 +71,9 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
       for (dimension_type i = cgs.num_rows(); i-- > 0; )
 	if (cgs[i].is_trivial_false()) {
 	  // Inconsistent congruence found: the grid is empty.
+	  // FIXME: Initialize con_sys to the correct dimension in the
+	  //        caller constructors, and copy the necessary parts
+	  //        of set_empty into here.
 	  set_empty();
 	  assert(OK());
 	  return;
@@ -94,6 +97,9 @@ PPL::Grid::construct(const Grid_Generator_System& const_gs) {
 
   // An empty set of generators defines the empty grid.
   if (gs.num_rows() == 0) {
+    // FIXME: Initialize gen_sys to the correct dimension in the
+    //        caller constructors, and copy the necessary parts of
+    //        set_empty into here.
     set_empty();
     return;
   }
