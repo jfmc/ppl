@@ -1747,7 +1747,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
   ppl_LP_Problem_objective_function(+Handle, -Lin_Expr)
 </CODE></H2>
 
-   Unifies <CODE>Lin_Exp</CODE> with the objective function
+   Unifies <CODE>Lin_Expr</CODE> with the objective function
    for the LP Problem referenced by <CODE>Handle</CODE>.
 
 <H2><CODE>
