@@ -359,8 +359,8 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
   assert(Prolog_is_integer(t));
   mpz_class v;
   PL_get_mpz(t, v.get_mpz_t());
-  PPL::Coefficient r;
-  PPL::assign_r(r, v, PPL::ROUND_NOT_NEEDED);
+  // CHECK ME!
+  PPL::Coefficient r = v;
   return r;
 }
 
