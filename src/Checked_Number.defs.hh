@@ -672,6 +672,92 @@ template <typename T, typename Policy>
 std::ostream&
 operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
 
+//! Input function.
+/*!
+  FIXME: this must be completed.
+
+  The accepted syntax is specified by the following grammar, with the
+  additional proviso that everything is <EM>case insensitive</EM>
+  and that the syntactic category <CODE>BDIGIT</CODE> is further restriced
+  by the current base.
+
+\code
+number	: NAN
+	| SIGN INF
+	| INF
+	| num
+	| num DIV num
+	;
+
+num     : unum
+        | SIGN unum
+
+unum	: unum1
+	| HEX unum1
+	| base BASE unum1
+	;
+
+unum1	: mantissa
+	| mantissa EXP exponent
+	;
+
+mantissa: bdigits
+        | POINT bdigits
+	| bdigits POINT bdigits
+	;
+
+exponent: SIGN digits
+	| digits
+	;
+
+bdigits : BDIGIT
+	| bdigits BDIGIT
+	;
+
+digits  : DIGIT
+	| digits DIGIT
+	;
+
+INF	: 'inf'
+	;
+
+NAN	: 'nan'
+	;
+
+SIGN	: '-'
+	| '+'
+	;
+
+EXP	: 'e'
+	| '*^'
+	;
+
+POINT	: '.'
+	;
+
+DIV	: '/'
+	;
+
+MINUS	: '-'
+	;
+
+PLUS	: '+'
+	;
+
+HEX	: '0x'
+	;
+
+BASE	: '^^'
+	;
+
+DIGIT   : '0' .. '9'
+	;
+
+BDIGIT  : '0' .. '9'
+	| 'a' .. 'z'
+	;
+\endcode
+*/
 template <typename T, typename Policy>
 Result
 input(std::istream& is, Checked_Number<T, Policy>& x, Rounding_Dir dir);
