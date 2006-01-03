@@ -169,6 +169,8 @@ public:
   //! and sets its space dimension to 0.
   void clear();
 
+  // TODO: Consider adding a recycling_insert.
+
   //! \brief
   //! Inserts in \p *this a copy of the congruence \p cg,
   //! increasing the number of space dimensions if needed.
