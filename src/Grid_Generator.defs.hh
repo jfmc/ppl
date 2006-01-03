@@ -315,13 +315,6 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this is a line.
   */
-  Coefficient& divisor();
-
-  //! Returns the divisor of \p *this.
-  /*!
-    \exception std::invalid_argument
-    Thrown if \p *this is a line.
-  */
   Coefficient_traits::const_reference divisor() const;
 
   //! \brief
@@ -396,6 +389,13 @@ private:
   //! Returns the actual size of \p this.
   dimension_type size() const;
 
+  //! Returns the divisor of \p *this.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this is a line.
+  */
+  Coefficient& divisor();
+
   //! Sets the Linear_Row kind to <CODE>LINE_OR_EQUALITY</CODE>.
   void set_is_line();
 
@@ -430,8 +430,8 @@ private:
   friend void Parma_Polyhedra_Library::negate(Grid_Generator&,
 					      dimension_type,
 					      dimension_type);
-  // FIXME: The following friend declaration is for operator[] access
-  //        in Grid::conversion.
+  // FIXME: The following friend declaration is for operator[] and
+  //        divisor() access in Grid::conversion and Grid::simplify.
   friend class Grid;
 
   friend class Grid_Generator_System;
