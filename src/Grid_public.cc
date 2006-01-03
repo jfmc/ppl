@@ -1287,8 +1287,6 @@ PPL::Grid::add_recycled_generators(Grid_Generator_System& gs) {
 
   // `gs' must contain at least one point.
   if (!gs.has_points())
-    // FIX should this return an empty flag? at the interface?
-    //         query prbly comes from gen_aff_img usage
     throw_invalid_generators("add_recycled_generators(gs)", "gs");
 
   std::swap(gen_sys, gs);
