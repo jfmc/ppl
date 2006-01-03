@@ -246,9 +246,6 @@ public:
   //! Returns the inhomogeneous term of \p *this.
   Coefficient_traits::const_reference inhomogeneous_term() const;
 
-  //! Returns a reference to the modulus of \p *this.
-  Coefficient& modulus();
-
   //! Returns a const reference to the modulus of \p *this.
   Coefficient_traits::const_reference modulus() const;
 
@@ -343,7 +340,7 @@ protected:
   */
   void sign_normalize();
 
-  //! Normalizes signs and then the inhomogeneous term.
+  //! Normalizes signs and the inhomogeneous term.
   /*!
     Applies sign_normalize, then reduces the inhomogeneous term to the
     smallest possible positive number.
@@ -352,12 +349,15 @@ protected:
 
   //! Calls normalize, then divides out common factors.
   /*!
-    Strongly normalized Congruences which have different syntaxes (as
-    output by operator<<) are guaranteed to have different semantics.
+    Strongly normalized Congruences have equivalent semantics if and
+    only if their syntaxes (as output by operator<<) are equal.
   */
   void strong_normalize();
 
 private:
+
+  //! Returns a reference to the modulus of \p *this.
+  Coefficient& modulus();
 
   //! Mark this congruence as a linear equality.
   void set_is_equality();
