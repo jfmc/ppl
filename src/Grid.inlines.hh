@@ -780,8 +780,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
 	new_gensys.insert(parameter(e, system_divisor));
       break;
     case Grid_Generator::POINT:
-      new_gensys.insert(grid_point(e));
-      new_gensys[new_gensys.num_rows()-1].divisor() = old_g.divisor();
+      new_gensys.insert(grid_point(e, old_g.divisor()));
       break;
     case Grid_Generator::CLOSURE_POINT:
     default:
