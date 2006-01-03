@@ -150,7 +150,7 @@ void swap(Parma_Polyhedra_Library::Linear_Expression& x,
   \f]
   where \f$n\f$ is the dimension of the vector space,
   each \f$a_i\f$ is the integer coefficient
-  of the \p i -th variable \f$x_i\f$
+  of the \f$i\f$-th variable \f$x_i\f$
   and \f$b\f$ is the integer for the inhomogeneous term.
 
   \par How to build a linear expression.

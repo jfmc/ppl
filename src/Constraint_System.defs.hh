@@ -174,7 +174,7 @@ public:
   //! An iterator over a system of constraints.
   /*!
     A const_iterator is used to provide read-only access
-    to each constraint contained in an object of Constraint_System.
+    to each constraint contained in a Constraint_System object.
 
     \par Example
     The following code prints the system of constraints
