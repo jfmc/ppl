@@ -275,6 +275,6 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
 
   if (first)
     // The null linear expression.
-    s << 0;
+    s << Coefficient_zero();
   return s;
 }
