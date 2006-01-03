@@ -1691,6 +1691,170 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    Section \ref Mapping_the_Dimensions_of_the_Vector_Space
    "specifying the map_space_dimensions operator".
 
+<H2><CODE>
+  ppl_new_LP_Problem_trivial(-Handle)
+</CODE></H2>
+
+   Creates an LP Problem \f$\mathrm{LP}\f$ with
+   the feasible region the \f$0\f$-dimensional universe,
+   objective function \f$0\f$ and optimization mode <CODE>max</CODE>.
+   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{LP}\f$.
+
+<H2><CODE>
+  ppl_new_LP_Problem(+Constraint_System, +Lin_Expr, +Optimization_Mode,
+                     -Handle)
+</CODE></H2>
+
+   Creates an LP Problem \f$\mathrm{LP}\f$ with
+   the feasible region represented by <CODE>Constraint_System</CODE>,
+   objective function <CODE>Lin_Expr</CODE> and optimization mode
+   <CODE>Optimization_Mode</CODE>.
+   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{LP}\f$.
+
+<H2><CODE>
+  ppl_LP_Problem_swap(+Handle_1, +Handle_2)
+</CODE></H2>
+
+   Swaps the LP Problem referenced by <CODE>Handle_1</CODE>
+   with the one referenced by <CODE>Handle_2</CODE>.
+
+<H2><CODE>
+  ppl_delete_LP_Problem(+Handle)
+</CODE></H2>
+
+   Deletes the LP Problem referenced by <CODE>Handle</CODE>.
+   After execution,
+   <CODE>Handle</CODE> is no longer a valid handle for a PPL LP Problem.
+
+<H2><CODE>
+  ppl_LP_Problem_space_dimension(+Handle, ?Dimension_Type)
+</CODE></H2>
+
+   Unifies the dimension of the vector space in which the
+   LP Problem referenced by <CODE>Handle</CODE> is embedded
+   with <CODE>Dimension_Type</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_constraints(+Handle, -Constraint_System)
+</CODE></H2>
+
+   Unifies <CODE>Constraint_System</CODE> with a list of
+   the constraints in the constraints system
+   representing the feasible region for the LP Problem
+   referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_objective_function(+Handle, -Lin_Expr)
+</CODE></H2>
+
+   Unifies <CODE>Lin_Exp</CODE> with the objective function
+   for the LP Problem referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_optimization_mode(+Handle, ?Optimization_Mode)
+</CODE></H2>
+
+   Unifies <CODE>Optimization_Mode</CODE> with the optimization mode
+   for the LP Problem referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_clear(+Handle)
+</CODE></H2>
+
+  Resets the LP problem referenced by <CODE>Handle</CODE>
+  to be the trivial problem with
+  the feasible region the \f$0\f$-dimensional universe,
+  objective function \f$0\f$ and optimization mode <CODE>max</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_add_constraint(+Handle, +Constraint)
+</CODE></H2>
+
+   Updates the LP Problem referenced by <CODE>Handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with the constraint <CODE>Constraint</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_add_constraints(+Handle, +Constraint_System)
+</CODE></H2>
+
+   Updates the LP Problem referenced by <CODE>Handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with all the constraints in <CODE>Constraint_System</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_set_objective_function(+Handle, +Lin_Expr)
+</CODE></H2>
+
+   Updates the LP Problem referenced by <CODE>Handle</CODE>
+   so that the objective function is changed to <CODE>Lin_Expr</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_set_optimization_mode(+Handle, +Optimization_Mode)
+</CODE></H2>
+
+   Updates the LP Problem referenced by <CODE>Handle</CODE>
+   so that the optimization mode is changed to <CODE>Optimization_Mode</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_is_satisfiable(+Handle)
+</CODE></H2>
+
+  Succeeds if and only if the LP Problem referenced by
+  <CODE>Handle</CODE> is satisfiable.
+
+<H2><CODE>
+  ppl_LP_Problem_solve(+Handle, ?LP_Problem_Status)
+</CODE></H2>
+
+  Solves the LP problem  referenced by
+  <CODE>Handle</CODE> and unifies <CODE>LP_Problem_Status</CODE>
+  with:
+  <CODE>unfeasible</CODE>, if the LP problem is not satisfiable;
+  <CODE>unbounded</CODE>, if the LP problem is satisfiable but
+  there is no finite bound to the value of the objective function;
+  <CODE>optimized</CODE>, if the LP problem admits an optimal solution.
+
+<H2><CODE>
+  ppl_LP_Problem_feasible_point(+Handle, ?Generator)
+</CODE></H2>
+
+  Unifies  <CODE>Generator</CODE> with a feasible point for the LP problem
+  referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_optimizing_point(+Handle, ?Generator)
+</CODE></H2>
+
+  Unifies  <CODE>Generator</CODE> with an optimizing point for the LP problem
+  referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_optimal_value(+Handle, ?Coefficient_1, ?Coefficient_2)
+</CODE></H2>
+
+  Unifies <CODE>Coefficient_1</CODE> and <CODE>Coefficient_2</CODE>
+  with the numerator and denominator, respectively, for the optimal value
+  for the LP problem  referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_evaluate_objective_function(+Handle, +Generator,
+                                             ?Coefficient_1, ?Coefficient_2)
+</CODE></H2>
+  Evaluates the objective function of the LP problem  referenced by
+  <CODE>Handle</CODE> at point <CODE>Generator</CODE>.
+  <CODE>Coefficient_1</CODE> is unified with the numerator and
+  <CODE>Coefficient_2</CODE> is unified with the denominator of the
+  objective function value at <CODE>Generator</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_OK(+Handle)
+</CODE></H2>
+
+   Succeeds only if the LP Problem referenced by
+   <CODE>Handle</CODE> is well formed, i.e., if it
+   satisfies all its implementation invariants.  Useful for debugging purposes.
+
 \anchor PI_Compilation
 <H1>Compilation and Installation</H1>
 
