@@ -74,6 +74,7 @@ PPL::LP_Problem::incrementality(Constraint new_constraint) {
     // Now expand the tableau to insert the variables of the original problem.
     tableau.add_zero_columns(space_diff);
 
+    // FIXME: perform a single permutation.
     // Permute `space_diff' times the columns to restore our simplex tableau
     // implementation: the left part of the tableau must contain only
     // variables that belong to the original problem.
@@ -99,8 +100,7 @@ PPL::LP_Problem::incrementality(Constraint new_constraint) {
 	base[i] += space_diff;
 
     // Every new variable inserted now must be splitted.
-    for (dimension_type i = input_cs_sd;
-	 i < new_c_sd + 1; ++i) {
+    for (dimension_type i = input_cs_sd; i < new_c_sd; ++i) {
       tableau.add_zero_columns(1);
       dim_map.insert(std::make_pair(i, tableau.num_columns()-3));
     }
@@ -976,6 +976,7 @@ PPL::LP_Problem::is_satisfiable() const {
     x.pending_input_cs.clear();
     if (status == UNSATISFIABLE)
       return false;
+    x.last_generator = compute_generator();
     return true;
   }
     break;
@@ -1090,8 +1091,9 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
   const dimension_type dim_map_size = dim_map.size();
   s << "\ndim_map (" << dim_map_size << ")\n";
   for (std::map<dimension_type, dimension_type>::const_iterator
- i = dim_map.begin(), iend = dim_map.end(); i != iend; ++i)
+	 i = dim_map.begin(), iend = dim_map.end(); i != iend; ++i)
     s << i->first << "->" << i->second << ' ';
+  s << std::endl;
 }
 
 bool
@@ -1107,6 +1109,7 @@ PPL::LP_Problem::OK() const {
     cerr << "The feasible region of the LP_Problem is defined by "
 	 << "a constraint system containing strict inequalities."
 	 << endl;
+    ascii_dump(cerr);
 #endif
     return false;
   }
@@ -1119,6 +1122,7 @@ PPL::LP_Problem::OK() const {
 	 << "incompatible space dimensions ("
 	 << space_dim << " < " << input_obj_function.space_dimension() << ")."
 	 << endl;
+    ascii_dump(cerr);
 #endif
     return false;
   }
@@ -1132,6 +1136,7 @@ PPL::LP_Problem::OK() const {
 	   << "incompatible space dimensions ("
 	   << space_dim << " != " << last_generator.space_dimension() << ")."
 	   << endl;
+    ascii_dump(cerr);
 #endif
       return false;
     }
@@ -1140,6 +1145,7 @@ PPL::LP_Problem::OK() const {
       cerr << "The cached feasible point does not belong to "
 	   << "the feasible region of the LP_Problem."
 	   << endl;
+    ascii_dump(cerr);
 #endif
       return false;
     }
@@ -1151,6 +1157,7 @@ PPL::LP_Problem::OK() const {
     if (tableau_nrows != base.size()) {
 #ifndef NDEBUG
       cerr << "tableau and base have incompatible sizes" << endl;
+      ascii_dump(cerr);
 #endif
       return false;
     }
@@ -1159,6 +1166,7 @@ PPL::LP_Problem::OK() const {
     if (tableau_ncols != working_cost.size()) {
 #ifndef NDEBUG
       cerr << "tableau and working_cost have incompatible sizes" << endl;
+      ascii_dump(cerr);
 #endif
       return false;
     }
@@ -1168,6 +1176,7 @@ PPL::LP_Problem::OK() const {
       if (base[i] > tableau_ncols) {
 #ifndef NDEBUG
 	cerr << "base contains an invalid column index" << endl;
+	ascii_dump(cerr);
 #endif
 	return false;
       }
@@ -1186,6 +1195,7 @@ PPL::LP_Problem::OK() const {
 					      range.begin(), range.end())) {
 #ifndef NDEBUG
       cerr << "dim_map encodes an invalid map" << endl;
+      ascii_dump(cerr);
 #endif
       return false;
     }
