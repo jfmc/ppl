@@ -61,6 +61,11 @@ bool Prolog_has_unbounded_integers;
 long Prolog_max_integer;
 
 /*!
+  Temporary used to communicate big integers between C++ and Prolog.
+*/
+mpz_class tmp_mpz_class;
+
+/*!
   Performs system-dependent initialization.
 */
 void
@@ -113,8 +118,8 @@ Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
   if (ul <= LONG_MAX)
     t = YAP_MkIntTerm(ul);
   else {
-    static mpz_class m = ul;
-    t = YAP_MkBigNumTerm(m.get_mpz_t());
+    tmp_mpz_class = ul;
+    t = YAP_MkBigNumTerm(tmp_mpz_class.get_mpz_t());
   }
   return 1;
 }
@@ -372,9 +377,7 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
   // FIXME: the "false &&" below is there because of the problem outlined in
   // http://sourceforge.net/mailarchive/forum.php?thread_id=8471263&forum_id=2080
   if (false && YAP_IsBigNumTerm(t) != FALSE)
-    PPL::assign_r(n,
-		*static_cast<mpz_class*>(YAP_BigNumOfTerm(t)),
-		PPL::ROUND_NOT_NEEDED);
+    n = *static_cast<mpz_class*>(YAP_BigNumOfTerm(t));
   else {
     long l;
     Prolog_get_long(t, &l);
@@ -385,15 +388,14 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
 
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
-  if (n <= LONG_MAX) {
+  if (n >= LONG_MIN && n <= LONG_MAX) {
     long l;
     PPL::assign_r(l, n, PPL::ROUND_NOT_NEEDED);
     return YAP_MkIntTerm(l);
   }
   else {
-    static mpz_class m;
-    PPL::assign_r(m, n, PPL::ROUND_NOT_NEEDED);
-    return YAP_MkBigNumTerm(m.get_mpz_t());
+    PPL::assign_r(tmp_mpz_class, n, PPL::ROUND_NOT_NEEDED);
+    return YAP_MkBigNumTerm(tmp_mpz_class.get_mpz_t());
   }
 }
 
