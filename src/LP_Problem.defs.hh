@@ -100,19 +100,11 @@ public:
   //! \brief
   //! Adds a copy of constraint \p c to the current LP problem,
   //! increasing the number of space dimensions if needed.
-  /*!
-    \exception std::invalid_argument
-    Thrown if the constraint \p c is a strict inequality.
-  */
   void add_constraint(const Constraint& c);
 
   //! \brief
   //! Adds a copy of the constraints in \p cs to the current LP problem,
   //! increasing the number of space dimensions if needed.
-  /*!
-    \exception std::invalid_argument
-    Thrown if the constraint system \p cs contains any strict inequality.
-  */
   void add_constraints(const Constraint_System& cs);
 
   //! Sets the objective function to \p obj.
@@ -251,6 +243,9 @@ private:
   //! The constraint system describing the feasible region.
   Constraint_System input_cs;
 
+  //! The constraint system that contains all the pending constraints.
+  Constraint_System pending_input_cs;
+
   //! The objective function to be optimized.
   Linear_Expression input_obj_function;
 
@@ -259,6 +254,17 @@ private:
 
   //! The last successfully computed feasible or optimizing point.
   Generator last_generator;
+
+  //! Applies incrementality on \p *this.
+  /*!
+    \param new_constraint
+    The Constraint that will be inserted incrementally to `input_cs'.
+
+    \return
+    <CODE>true</CODE> if and only if the LP problem is satisfiable after
+    applying incrementality, <CODE>false</CODE> otherwise.
+  */
+  bool incrementality(Constraint new_constraint);
 
   //! \brief
   //! Optimizes the current LP problem using the second phase of the

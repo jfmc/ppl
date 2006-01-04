@@ -36,8 +36,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <sstream>
 #include <map>
 #include <deque>
-#include <set>
-#include <algorithm>
 
 #ifndef PPL_NOISY_SIMPLEX
 #define PPL_NOISY_SIMPLEX 0
@@ -60,6 +58,173 @@ unsigned long num_iterations = 0;
 
 } // namespace
 #endif // PPL_NOISY_SIMPLEX
+
+bool
+PPL::LP_Problem::incrementality(Constraint new_constraint) {
+  // If the new constraint has a space dimension greater than the original one,
+  // we have to perform some changes to the tableau to match and map the
+  // old and new variables.
+  dimension_type new_c_sd = new_constraint.space_dimension();
+  dimension_type input_cs_sd = input_cs.space_dimension();
+  if (new_c_sd > input_cs_sd) {
+    dimension_type space_diff = new_c_sd - input_cs_sd;
+
+    // Now expand the tableau to insert the variables of the original problem.
+    tableau.add_zero_columns(space_diff);
+
+    // Permute `space_diff' times the columns to restore our simplex tableau
+    // implementation: the left part of the tableau must contain only
+    // variables that belong to the original problem.
+    std::vector<dimension_type> var_cycles;
+    dimension_type tableau_num_columns = tableau.num_columns();
+    for (dimension_type i = input_cs_sd + 1; i < tableau_num_columns; ++i)
+      var_cycles.push_back(i);
+    var_cycles.push_back(0);
+    for(dimension_type i = 0; i < space_diff; ++i)
+      tableau.permute_columns(var_cycles);
+
+    // Adjust the previously mapped variables.
+    typedef std::map<dimension_type, dimension_type>::iterator iter;
+    for (iter map_itr = dim_map.begin(), map_end = dim_map.end();
+	 map_itr != map_end; ++map_itr)
+      map_itr->second += space_diff;
+
+    // Set the right base values for the `artificial' variables inserted
+    // during the past simplex calls.
+    dimension_type base_size = base.size();
+    for (dimension_type i = 0; i < base_size; ++i)
+      if (base[i] > input_cs_sd)
+	base[i] += space_diff;
+
+    // Every new variable inserted now must be splitted.
+    for (dimension_type i = input_cs_sd;
+	 i < new_c_sd + 1; ++i) {
+      tableau.add_zero_columns(1);
+      dim_map.insert(std::make_pair(i, tableau.num_columns()-3));
+    }
+
+    // Make space for the splitted variables.
+    new_constraint = Constraint(new_constraint, new_c_sd + space_diff);
+
+    // Update `new_c_sd'. The tableau is properly built.
+    new_c_sd = new_constraint.space_dimension();
+  }
+
+  // Insert the new Constraint in the tableau.
+  tableau.add_zero_rows(1, Row::Flags());
+  dimension_type tableau_num_rows = tableau.num_rows();
+
+  for (dimension_type i = new_c_sd + 1; i-- > 0; )
+    tableau[tableau_num_rows-1][i] = new_constraint[i];
+
+  // Add a slack variable, if we have an inequality constraint.
+  if (new_constraint.is_ray_or_point_or_inequality()) {
+    tableau[tableau_num_rows-1][tableau.num_columns()-1] = -1;
+    tableau.add_zero_columns(1);
+  }
+
+  // Prepare the tableau to the insertion of the artificial variable:
+  // this will be done at last.
+  tableau.add_zero_columns(1);
+  dimension_type tableau_num_columns = tableau.num_columns();
+  tableau_num_rows = tableau.num_rows();
+  Row& tableau_last_row = tableau[tableau_num_rows-1];
+
+  // This will be the index of the artificial variable.
+  dimension_type artificial_variable = tableau_num_columns-2;
+
+  // Prepare the cost matrix for the modified first phase.
+  working_cost = Row(tableau_num_columns, Row::Flags());
+
+  // Split the variables in the tableau and cost function.
+  typedef std::map<dimension_type, dimension_type>::const_iterator iter;
+  for (iter map_itr = dim_map.begin(),
+	 map_end = dim_map.end(); map_itr != map_end; ++map_itr) {
+    const dimension_type original_var = (map_itr->first) + 1;
+    const dimension_type split_var = (map_itr->second) + 1;
+    tableau_last_row[split_var] = -tableau_last_row[original_var];
+    working_cost[split_var] = -working_cost[original_var];
+  }
+  // Express the last row in terms of the variables in base.
+  dimension_type base_size = base.size();
+
+  for (dimension_type i = base_size; i-- > 0; )
+    if (tableau_last_row[base[i]] != 0)
+      linear_combine(tableau_last_row, tableau[i], base[i]);
+
+  // Every inhomogeneous term, before starting the compute_simplex call, must
+  // be <= 0. If the condition is not satisfied, negate all the row.
+  if (tableau_last_row[0] > 0)
+    for (dimension_type i = tableau_num_columns; i-- > 0; )
+      negate(tableau_last_row[i]);
+
+  // Now we are ready the set the value of the artificial_variable.
+  // This is the index of the inserted variable, this must be memorized in the
+  // `base' vector.
+  base.push_back(artificial_variable);
+  tableau_last_row[artificial_variable] = 1;
+
+  // Set the extra-coefficient of the cost functions to record its sign.
+  // This is done to keep track of the possible sign's inversion.
+  const dimension_type last_obj_index = working_cost.size() - 1;
+  working_cost[last_obj_index] = 1;
+  working_cost[last_obj_index-1] = -1;
+
+  // Combine the cost funtion.
+  linear_combine(working_cost, tableau_last_row, base[base.size()-1]);
+
+  // Now we are ready to solve the first phase.
+  bool first_phase_succesful = compute_simplex();
+  if (first_phase_succesful &&  working_cost[0] != 0){
+    // The feasible region is empty.
+    status = UNSATISFIABLE;
+    return false;
+  }
+
+  // If the added artificial variable is not in base, it can be removed
+  // from the tableau and from the cost functions.
+  if (artificial_variable != base[base.size()-1]) {
+    tableau.swap_columns(tableau_num_columns-1, artificial_variable);
+    tableau.remove_trailing_columns(1);
+
+    // Keep the status variables updated.
+    tableau_num_columns = tableau.num_columns();
+    dimension_type working_cost_size = working_cost.size();
+    working_cost[artificial_variable] = working_cost[working_cost_size-1];
+    working_cost.shrink(working_cost_size-1);
+  }
+
+  // The slack variable is in base: if a coefficient is different from zero,
+  // this will be in base, else the constraint is redundant.
+  else {
+    dimension_type base_size = base.size();
+    tableau_num_columns = tableau.num_columns();
+    tableau_num_rows = tableau.num_rows();
+    bool redundant_constraint = true;
+    for (dimension_type i =  tableau_num_columns-1; i-- > 0; )
+      if (tableau_last_row[i] != 0){
+	// Update the base vector.
+	base[base_size-1] = i;
+	for (dimension_type i = tableau_num_rows-1; i-- > 0; )
+	  if (tableau[i][base[base_size-1]] != 0)
+	    linear_combine(tableau[i], tableau_last_row, base[base_size-1]);
+	redundant_constraint = false;
+	break;
+      }
+
+    // If the row has to be removed, modify properly the simplex
+    // data structures.
+    if (redundant_constraint) {
+      tableau.erase_to_end(tableau.num_rows()-1);
+      base.pop_back();
+    }
+  }
+
+  // The feasible region is not empty.
+  status = SATISFIABLE;
+  return true;
+}
+
 
 PPL::dimension_type
 PPL::LP_Problem::steepest_edge() const {
@@ -714,7 +879,7 @@ PPL::LP_Problem::second_phase() {
     for (dimension_type i = new_cost.size(); i-- > 0; )
       negate(new_cost[i]);
 
-  // Substitute properly the cost funcion in the `costs' Matrix.
+  // Substitute properly the cost function in the `costs' Matrix.
   const dimension_type cost_zero_size = working_cost.size();
   Row tmp_cost = Row(new_cost, cost_zero_size, cost_zero_size);
   tmp_cost.swap(working_cost);
@@ -775,7 +940,17 @@ PPL::LP_Problem::is_satisfiable() const {
 #if PPL_NOISY_SIMPLEX
   num_iterations = 0;
 #endif
-  // Check for the `status' attribute in trivial cases.
+ LP_Problem& x = const_cast<LP_Problem&>(*this);
+
+ LP_Problem_Status s_status;
+
+ // The space dimension of the solution to be computed.
+ // Note: here we can not use method Constraint_System::space_dimension(),
+ // because if the constraint system is NNC, then even the epsilon
+ // dimension has to be interpreted as a normal dimension.
+ const dimension_type space_dim = x.input_cs.num_columns() - 1;
+
+ // Check for the `status' attribute in trivial cases.
   switch (status) {
   case UNSATISFIABLE:
     return false;
@@ -785,25 +960,32 @@ PPL::LP_Problem::is_satisfiable() const {
     return true;
   case OPTIMIZED:
     return true;
-  case PARTIALLY_SATISFIABLE:
-    return false;
+  case PARTIALLY_SATISFIABLE: {
+    const dimension_type pending_input_cs_rows = pending_input_cs.num_rows();
+    // For each constraint apply incrementality.
+    // FIXME: probably there's a way to apply incrementality in one shot, this
+    //        only an attempt, but it should work.
+    for (dimension_type i = pending_input_cs_rows; i-- > 0; ) {
+      if (status != UNSATISFIABLE)
+	x.incrementality(pending_input_cs[i]);
+      x.input_cs.insert(pending_input_cs[i]);
+    }
+    // There are no more pending constraints.
+    x.pending_input_cs.clear();
+    if (status == UNSATISFIABLE)
+      return false;
+    return true;
+  }
+    break;
   case UNSOLVED:
     break;
   }
-
-  LP_Problem& x = const_cast<LP_Problem&>(*this);
-
-  // The space dimension of the solution to be computed.
-  // Note: here we can not use method Constraint_System::space_dimension(),
-  // because if the constraint system is NNC, then even the epsilon
-  // dimension has to be interpreted as a normal dimension.
-  const dimension_type space_dim = x.input_cs.num_columns() - 1;
 
   // Reset internal objects.
   x.tableau.clear();
   x.dim_map.clear();
   // Compute the initial tableau.
-  LP_Problem_Status s_status = x.compute_tableau();
+  s_status = x.compute_tableau();
 
   // Check for trivial cases.
   switch (s_status) {
@@ -835,6 +1017,7 @@ PPL::LP_Problem::is_satisfiable() const {
   // This will contain the new cost function for the 1st phase problem.
   // Adds the necessary slack variables to get the 1st phase problem.
   x.prepare_first_phase();
+
   // Solve the first phase of the primal simplex algorithm.
   bool first_phase_successful = x.compute_simplex();
 
@@ -859,105 +1042,52 @@ PPL::LP_Problem::is_satisfiable() const {
   return true;
 }
 
-bool
-PPL::LP_Problem::OK() const {
-#ifndef NDEBUG
-  using std::endl;
-  using std::cerr;
-#endif
+void
+PPL::LP_Problem::ascii_dump(std::ostream& s) const {
+  using namespace IO_Operators;
 
-  // Constraint system should contain no strict inequalities.
-  if (input_cs.has_strict_inequalities()) {
-#ifndef NDEBUG
-    cerr << "The feasible region of the LP_Problem is defined by "
-	 << "a constraint system containing strict inequalities."
-	 << endl;
-#endif
-    return false;
+  s << "input_cs\n";
+  input_cs.ascii_dump(s);
+  s << "\ninput_obj_function\n";
+  input_obj_function.ascii_dump(s);
+  s << "\nopt_mode " << (opt_mode == MAXIMIZATION ? "MAX" : "MIN") << "\n";
+
+  s << "\nstatus: ";
+  switch (status) {
+  case UNSATISFIABLE:
+    s << "UNSAT";
+    break;
+  case SATISFIABLE:
+    s << "SATIS";
+    break;
+  case UNBOUNDED:
+    s << "UNBOU";
+    break;
+  case OPTIMIZED:
+    s << "OPTIM";
+    break;
+  case PARTIALLY_SATISFIABLE:
+    s << "P_SAT";
+    break;
+  case UNSOLVED:
+    s << "UNSOL";
+    break;
   }
+  s << "\n";
 
-  // Constraint system and objective function should be dimension compatible.
-  const dimension_type space_dim = input_cs.space_dimension();
-  if (space_dim < input_obj_function.space_dimension()) {
-#ifndef NDEBUG
-    cerr << "The LP_Problem and the objective function have "
-	 << "incompatible space dimensions ("
-	 << space_dim << " < " << input_obj_function.space_dimension() << ")."
-	 << endl;
-#endif
-    return false;
-  }
+  s << "\ntableau\n";
+  tableau.ascii_dump(s);
+  s << "\nworking_cost\n";
+  working_cost.ascii_dump(s);
 
-  if (status == SATISFIABLE || status == UNBOUNDED || status == OPTIMIZED) {
-    // Here `last_generator' has to be meaningful.
-    // Check for dimension compatibility and actual feasibility.
-    if (space_dim != last_generator.space_dimension()) {
-#ifndef NDEBUG
-      cerr << "The LP_Problem and the cached feasible point have "
-	   << "incompatible space dimensions ("
-	   << space_dim << " != " << last_generator.space_dimension() << ")."
-	   << endl;
-#endif
-      return false;
-    }
-    if (!input_cs.satisfies_all_constraints(last_generator)) {
-#ifndef NDEBUG
-      cerr << "The cached feasible point does not belong to "
-	   << "the feasible region of the LP_Problem."
-	   << endl;
-#endif
-      return false;
-    }
+  const dimension_type base_size = base.size();
+  s << "\nbase (" << base_size << ")\n";
+  for (dimension_type i = 0; i != base_size; ++i)
+    s << base[i] << ' ';
 
-    const dimension_type tableau_nrows = tableau.num_rows();
-    const dimension_type tableau_ncols = tableau.num_columns();
-
-    // The number of rows in the tableau and base should be equal.
-    if (tableau_nrows != base.size()) {
-#ifndef NDEBUG
-      cerr << "tableau and base have incompatible sizes" << endl;
-#endif
-      return false;
-    }
-
-    // The number of columns in the tableau and working_cost should be equal.
-    if (tableau_ncols != working_cost.size()) {
-#ifndef NDEBUG
-      cerr << "tableau and working_cost have incompatible sizes" << endl;
-#endif
-      return false;
-    }
-
-    // The vector base should contain indices of tableau's columns.
-    for (dimension_type i = base.size(); i-- > 0; )
-      if (base[i] > tableau_ncols) {
-#ifndef NDEBUG
-	cerr << "base contains an invalid column index" << endl;
-#endif
-	return false;
-      }
-
-    // dim_map should encode an injective function having
-    // disjoint domain and range.
-    std::set<dimension_type> domain;
-    std::set<dimension_type> range;
-    typedef std::map<dimension_type, dimension_type>::const_iterator Iter;
-    for (Iter i = dim_map.begin(), iend = dim_map.end(); i != iend; ++i) {
-      domain.insert(i->first);
-      range.insert(i->second);
-    }
-    if (domain.size() != range.size()
-	|| domain.end() != std::find_first_of(domain.begin(), domain.end(),
-					      range.begin(), range.end())) {
-#ifndef NDEBUG
-      cerr << "dim_map encodes an invalid map" << endl;
-#endif
-      return false;
-    }
-
-  // FIXME: still to be completed...
-  }
-
-  // All checks passed.
-  return true;
+  const dimension_type dim_map_size = dim_map.size();
+  s << "\ndim_map (" << dim_map_size << ")\n";
+  for (std::map<dimension_type, dimension_type>::const_iterator
+ i = dim_map.begin(), iend = dim_map.end(); i != iend; ++i)
+    s << i->first << "->" << i->second << ' ';
 }

@@ -25,15 +25,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Constraint.defs.hh"
 #include "Constraint_System.defs.hh"
-#include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
-
+// FIXME: Have we to initialize the status to `UNSOLVED' or to
+//        `OPTIMIZED' ?
 inline
 LP_Problem::LP_Problem()
-  : tableau(),  base(),  dim_map(), status(OPTIMIZED),
-    input_cs(), input_obj_function(), opt_mode(MAXIMIZATION),
-    last_generator(point()) {
+  : tableau(), working_cost(0, Row::Flags()), base(), dim_map(),
+    status(UNSOLVED), input_cs(), pending_input_cs(), input_obj_function(),
+    opt_mode(MAXIMIZATION), last_generator(point()){
   assert(OK());
 }
 
@@ -41,30 +41,20 @@ inline
 LP_Problem::LP_Problem(const Constraint_System& cs,
 		       const Linear_Expression& obj,
 		       const Optimization_Mode mode)
-  : tableau(), base(), dim_map(), status(UNSOLVED),
-    input_cs(!cs.has_strict_inequalities()
-	     ? cs
-	     : (throw std::invalid_argument("PPL::LP_Problem::"
-			   "LP_Problem(cs, obj, m):\n"
-			   "cs contains strict inequalities."),
-		cs)),
-    input_obj_function(obj.space_dimension() <= cs.space_dimension()
-		       ? obj
-		       : (throw std::invalid_argument("PPL::LP_Problem::"
-			             "LP_Problem(cs, obj, m):\n"
-				     "cs and obj have "
-				     "incompatible space dimensions."),
-			  obj)),
-    opt_mode(mode),
-    last_generator(point()) {
+  // FIXME: implement documented checks and throw an exception if needed.
+  : tableau(), working_cost(0, Row::Flags()), base(), dim_map(),
+    status(UNSOLVED), input_cs(cs), pending_input_cs(),
+    input_obj_function(obj), opt_mode(mode), last_generator(point()){
   assert(OK());
 }
 
 inline
 LP_Problem::LP_Problem(const LP_Problem& y)
-  : tableau(y.tableau), base(y.base), dim_map(y.dim_map), status(y.status),
-    input_cs(y.input_cs), input_obj_function(y.input_obj_function),
-    opt_mode(y.opt_mode), last_generator(y.last_generator) {
+  : tableau(y.tableau), working_cost(y.working_cost), base(y.base),
+    dim_map(y.dim_map), status(y.status), input_cs(y.input_cs),
+    pending_input_cs(y.pending_input_cs),
+    input_obj_function(y.input_obj_function), opt_mode(y.opt_mode),
+    last_generator(y.last_generator) {
   assert(OK());
 }
 
@@ -74,41 +64,36 @@ LP_Problem::~LP_Problem() {
 
 inline void
 LP_Problem::add_constraint(const Constraint& c) {
-  if (c.is_strict_inequality())
-    throw std::invalid_argument("PPL::LP_Problem::add_constraint(c):\n"
-				"c is a strict inequality.");
-  input_cs.insert(c);
+  // In the following case follow the `standard' solving way.
+  if (status == UNSOLVED) {
+    input_cs.insert(c);
+    return;
+  }
+  // else fill the `pending_input_cs' Constraint_System.
+  pending_input_cs.insert(c);
   if (status != UNSATISFIABLE)
-    // FIXME: Here we should apply the incremental simplex algorithm: for
-    // the moment we'll proceed computing a feasible base from the beginning.
-    // As soon as possible the following line will be uncommented.
-    // status = PARTIALLY_SATISFIABLE;
-    status = UNSOLVED;
+    status = PARTIALLY_SATISFIABLE;
 }
 
 inline void
 LP_Problem::add_constraints(const Constraint_System& cs) {
-  if (cs.has_strict_inequalities())
-    throw std::invalid_argument("PPL::LP_Problem::add_constraints(cs):\n"
-				"cs contains strict inequalities.");
   const dimension_type cs_num_rows = cs.num_rows();
-  for (dimension_type i = cs_num_rows; i-- > 0; )
-    input_cs.insert(cs[i]);
-  if (status != UNSATISFIABLE)
-    // FIXME: Here we should apply the incremental simplex algorithm: for
-    // the moment we'll proceed computing a feaseble base from the beginning.
-    // As soon as possible the following line will be uncommented.
-    // status = PARTIALLY_SATISFIABLE;
-    status = UNSOLVED;
-  assert(OK());
+  // In the following case follow the `standard' solving way.
+ if (status == UNSOLVED) {
+    for (dimension_type i = cs_num_rows; i-- > 0; )
+      input_cs.insert(cs[i]);
+    return;
+  }
+ // else fill the `pending_input_cs' Constraint_System.
+ for (dimension_type i = cs_num_rows; i-- > 0; )
+   pending_input_cs.insert(cs[i]);
+ if (status != UNSATISFIABLE)
+   status = PARTIALLY_SATISFIABLE;
+ assert(OK());
 }
 
 inline void
 LP_Problem::set_objective_function(const Linear_Expression& obj) {
-  if (space_dimension() < obj.space_dimension())
-    throw std::invalid_argument("PPL::LP_Problem::"
-				"set_objective_function(obj):\n"
-				"*this and obj are dimension incompatible.");
   switch (status) {
   case UNBOUNDED:
     status = SATISFIABLE;
@@ -157,16 +142,14 @@ LP_Problem::feasible_point() const {
     assert(OK());
     return last_generator;
   }
-  throw std::domain_error("PPL::LP_Problem::feasible_point():\n"
-			  "*this is not satisfiable.");
+  throw std::domain_error("*this is not satisfiable.");
 }
 
 inline const Generator&
 LP_Problem::optimizing_point() const {
   if (solve() == OPTIMIZED_LP_PROBLEM)
     return last_generator;
-  throw std::domain_error("PPL::LP_Problem::optimizing_point():\n"
-			  "*this doesn't have an optimizing point.");
+  throw std::domain_error("*this doesn't have an optimizing point.");
 }
 
 inline const Constraint_System&
@@ -194,6 +177,21 @@ LP_Problem::optimal_value(Coefficient& num, Coefficient& den) const {
   assert(OK());
 }
 
+inline bool
+LP_Problem::OK() const {
+  // FIXME: still to be completed...
+  if (status == SATISFIABLE || status == OPTIMIZED
+      || status == UNBOUNDED) {
+    // The dimension of the last computed generator must be equal to
+    // the input `Constraint_System' one.
+    if(last_generator.space_dimension() != input_cs.space_dimension())
+      return false;
+    if(!input_cs.satisfies_all_constraints(last_generator))
+      return false;
+  }
+  return true;
+}
+
 inline void
 LP_Problem::swap(LP_Problem& y) {
   std::swap(tableau, y.tableau);
@@ -202,6 +200,7 @@ LP_Problem::swap(LP_Problem& y) {
   std::swap(dim_map, y.dim_map);
   std::swap(status, y.status);
   std::swap(input_cs, y.input_cs);
+  std::swap(pending_input_cs, y.pending_input_cs);
   std::swap(input_obj_function, y.input_obj_function);
   std::swap(opt_mode, y.opt_mode);
   std::swap(last_generator, y.last_generator);
@@ -242,6 +241,7 @@ LP_Problem::external_memory_in_bytes() const {
     // + base.external_memory_in_bytes()
     // + dim_map.external_memory_in_bytes()
     + input_cs.external_memory_in_bytes()
+    + pending_input_cs.external_memory_in_bytes()
     + input_obj_function.external_memory_in_bytes()
     + last_generator.external_memory_in_bytes()
    + sizeof(opt_mode);
@@ -255,6 +255,7 @@ LP_Problem::total_memory_in_bytes() const {
     + working_cost.total_memory_in_bytes()
     // + base.total_memory_in_bytes()
     // + dim_map.total_memory_in_bytes()
+    + pending_input_cs.external_memory_in_bytes()
     + input_cs.total_memory_in_bytes()
     + input_obj_function.total_memory_in_bytes()
     + last_generator.external_memory_in_bytes()
