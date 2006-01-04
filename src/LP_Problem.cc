@@ -36,6 +36,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <sstream>
 #include <map>
 #include <deque>
+#include <set>
+#include <algorithm>
 
 #ifndef PPL_NOISY_SIMPLEX
 #define PPL_NOISY_SIMPLEX 0
@@ -1090,4 +1092,107 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
   for (std::map<dimension_type, dimension_type>::const_iterator
  i = dim_map.begin(), iend = dim_map.end(); i != iend; ++i)
     s << i->first << "->" << i->second << ' ';
+}
+
+bool
+PPL::LP_Problem::OK() const {
+#ifndef NDEBUG
+  using std::endl;
+  using std::cerr;
+#endif
+
+  // Constraint system should contain no strict inequalities.
+  if (input_cs.has_strict_inequalities()) {
+#ifndef NDEBUG
+    cerr << "The feasible region of the LP_Problem is defined by "
+	 << "a constraint system containing strict inequalities."
+	 << endl;
+#endif
+    return false;
+  }
+
+  // Constraint system and objective function should be dimension compatible.
+  const dimension_type space_dim = input_cs.space_dimension();
+  if (space_dim < input_obj_function.space_dimension()) {
+#ifndef NDEBUG
+    cerr << "The LP_Problem and the objective function have "
+	 << "incompatible space dimensions ("
+	 << space_dim << " < " << input_obj_function.space_dimension() << ")."
+	 << endl;
+#endif
+    return false;
+  }
+
+  if (status == SATISFIABLE || status == UNBOUNDED || status == OPTIMIZED) {
+    // Here `last_generator' has to be meaningful.
+    // Check for dimension compatibility and actual feasibility.
+    if (space_dim != last_generator.space_dimension()) {
+#ifndef NDEBUG
+      cerr << "The LP_Problem and the cached feasible point have "
+	   << "incompatible space dimensions ("
+	   << space_dim << " != " << last_generator.space_dimension() << ")."
+	   << endl;
+#endif
+      return false;
+    }
+    if (!input_cs.satisfies_all_constraints(last_generator)) {
+#ifndef NDEBUG
+      cerr << "The cached feasible point does not belong to "
+	   << "the feasible region of the LP_Problem."
+	   << endl;
+#endif
+      return false;
+    }
+
+    const dimension_type tableau_nrows = tableau.num_rows();
+    const dimension_type tableau_ncols = tableau.num_columns();
+
+    // The number of rows in the tableau and base should be equal.
+    if (tableau_nrows != base.size()) {
+#ifndef NDEBUG
+      cerr << "tableau and base have incompatible sizes" << endl;
+#endif
+      return false;
+    }
+
+    // The number of columns in the tableau and working_cost should be equal.
+    if (tableau_ncols != working_cost.size()) {
+#ifndef NDEBUG
+      cerr << "tableau and working_cost have incompatible sizes" << endl;
+#endif
+      return false;
+    }
+
+    // The vector base should contain indices of tableau's columns.
+    for (dimension_type i = base.size(); i-- > 0; )
+      if (base[i] > tableau_ncols) {
+#ifndef NDEBUG
+	cerr << "base contains an invalid column index" << endl;
+#endif
+	return false;
+      }
+
+    // dim_map should encode an injective function having
+    // disjoint domain and range.
+    std::set<dimension_type> domain;
+    std::set<dimension_type> range;
+    typedef std::map<dimension_type, dimension_type>::const_iterator Iter;
+    for (Iter i = dim_map.begin(), iend = dim_map.end(); i != iend; ++i) {
+      domain.insert(i->first);
+      range.insert(i->second);
+    }
+    if (domain.size() != range.size()
+	|| domain.end() != std::find_first_of(domain.begin(), domain.end(),
+					      range.begin(), range.end())) {
+#ifndef NDEBUG
+      cerr << "dim_map encodes an invalid map" << endl;
+#endif
+      return false;
+    }
+
+  // FIXME: still to be completed...
+  }
+
+  // All checks passed.
+  return true;
 }

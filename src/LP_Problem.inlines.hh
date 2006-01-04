@@ -25,10 +25,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Constraint.defs.hh"
 #include "Constraint_System.defs.hh"
-
+#include <stdexcept>
 namespace Parma_Polyhedra_Library {
-// FIXME: Have we to initialize the status to `UNSOLVED' or to
-//        `OPTIMIZED' ?
+// FIXME: we start from `UNSOLVED' to let work incrementality.
 inline
 LP_Problem::LP_Problem()
   : tableau(), working_cost(0, Row::Flags()), base(), dim_map(),
@@ -41,12 +40,25 @@ inline
 LP_Problem::LP_Problem(const Constraint_System& cs,
 		       const Linear_Expression& obj,
 		       const Optimization_Mode mode)
-  // FIXME: implement documented checks and throw an exception if needed.
-  : tableau(), working_cost(0, Row::Flags()), base(), dim_map(),
-    status(UNSOLVED), input_cs(cs), pending_input_cs(),
-    input_obj_function(obj), opt_mode(mode), last_generator(point()){
+  : tableau(), working_cost(0, Row::Flags()),base(), dim_map(),
+  status(UNSOLVED), input_cs(!cs.has_strict_inequalities()
+	     ? cs
+	     : (throw std::invalid_argument("PPL::LP_Problem::"
+			   "LP_Problem(cs, obj, m):\n"
+			   "cs contains strict inequalities."),
+		cs)),
+    input_obj_function(obj.space_dimension() <= cs.space_dimension()
+		       ? obj
+		       : (throw std::invalid_argument("PPL::LP_Problem::"
+			             "LP_Problem(cs, obj, m):\n"
+				     "cs and obj have "
+				     "incompatible space dimensions."),
+			  obj)),
+    opt_mode(mode),
+    last_generator(point()) {
   assert(OK());
 }
+
 
 inline
 LP_Problem::LP_Problem(const LP_Problem& y)
@@ -64,7 +76,10 @@ LP_Problem::~LP_Problem() {
 
 inline void
 LP_Problem::add_constraint(const Constraint& c) {
-  // In the following case follow the `standard' solving way.
+ if (c.is_strict_inequality())
+    throw std::invalid_argument("PPL::LP_Problem::add_constraint(c):\n"
+				"c is a strict inequality.");
+ // In the following case follow the `standard' solving way.
   if (status == UNSOLVED) {
     input_cs.insert(c);
     return;
@@ -77,6 +92,9 @@ LP_Problem::add_constraint(const Constraint& c) {
 
 inline void
 LP_Problem::add_constraints(const Constraint_System& cs) {
+  if (cs.has_strict_inequalities())
+    throw std::invalid_argument("PPL::LP_Problem::add_constraints(cs):\n"
+				"cs contains strict inequalities.");
   const dimension_type cs_num_rows = cs.num_rows();
   // In the following case follow the `standard' solving way.
  if (status == UNSOLVED) {
@@ -94,7 +112,11 @@ LP_Problem::add_constraints(const Constraint_System& cs) {
 
 inline void
 LP_Problem::set_objective_function(const Linear_Expression& obj) {
-  switch (status) {
+ if (space_dimension() < obj.space_dimension())
+    throw std::invalid_argument("PPL::LP_Problem::"
+				"set_objective_function(obj):\n"
+				"*this and obj are dimension incompatible.");
+ switch (status) {
   case UNBOUNDED:
     status = SATISFIABLE;
     break;
@@ -175,21 +197,6 @@ LP_Problem::optimal_value(Coefficient& num, Coefficient& den) const {
   const Generator& g_ref = optimizing_point();
   evaluate_objective_function(g_ref, num, den);
   assert(OK());
-}
-
-inline bool
-LP_Problem::OK() const {
-  // FIXME: still to be completed...
-  if (status == SATISFIABLE || status == OPTIMIZED
-      || status == UNBOUNDED) {
-    // The dimension of the last computed generator must be equal to
-    // the input `Constraint_System' one.
-    if(last_generator.space_dimension() != input_cs.space_dimension())
-      return false;
-    if(!input_cs.satisfies_all_constraints(last_generator))
-      return false;
-  }
-  return true;
 }
 
 inline void

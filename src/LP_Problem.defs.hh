@@ -100,11 +100,19 @@ public:
   //! \brief
   //! Adds a copy of constraint \p c to the current LP problem,
   //! increasing the number of space dimensions if needed.
+  /*!
+    \exception std::invalid_argument
+    Thrown if the constraint \p c is a strict inequality.
+  */
   void add_constraint(const Constraint& c);
 
   //! \brief
   //! Adds a copy of the constraints in \p cs to the current LP problem,
   //! increasing the number of space dimensions if needed.
+  /*!
+    \exception std::invalid_argument
+    Thrown if the constraint system \p cs contains any strict inequality.
+  */
   void add_constraints(const Constraint_System& cs);
 
   //! Sets the objective function to \p obj.
