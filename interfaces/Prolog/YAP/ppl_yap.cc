@@ -259,7 +259,7 @@ Prolog_is_atom(Prolog_term_ref t) {
 */
 inline int
 Prolog_is_integer(Prolog_term_ref t) {
-  return YAP_IsIntTerm(t) != FALSE;
+  return YAP_IsIntTerm(t) != FALSE || YAP_IsBigNumTerm(t) != FALSE;
 }
 
 /*!
