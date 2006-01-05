@@ -1796,7 +1796,6 @@ generalized_affine_preimage(const Variable var,
     Linear_Expression inverse_expr
       = expr - (denominator + var_coefficient) * var;
     Coefficient inverse_denominator = - var_coefficient;
-    // FIX include modulus in the inverse properly
     if (modulus < 0)
       generalized_affine_image(var, inverse_expr, inverse_denominator,
 			       - modulus);
