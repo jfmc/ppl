@@ -2055,7 +2055,8 @@ in your current directory or in one of the XSB library directories.
 
 The YAP Prolog interface to the PPL is available
 as a dynamically linked module.
-Only YAP versions 4.4 and later are supported.
+Only YAP versions following 5.1.0 and CVS HEAD versions starting from
+4 January 2006 are supported.
 
 In order to dynamically load the library from YAP you should
 simply load <CODE>prefix/lib/ppl/ppl_yap.pl</CODE>.

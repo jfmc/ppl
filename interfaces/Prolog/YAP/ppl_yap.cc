@@ -374,10 +374,8 @@ Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
 PPL::Coefficient
 integer_term_to_Coefficient(Prolog_term_ref t) {
   PPL::Coefficient n;
-  // FIXME: the "false &&" below is there because of the problem outlined in
-  // http://sourceforge.net/mailarchive/forum.php?thread_id=8471263&forum_id=2080
-  if (false && YAP_IsBigNumTerm(t) != FALSE)
-    n = *static_cast<mpz_class*>(YAP_BigNumOfTerm(t));
+  if (YAP_IsBigNumTerm(t) != FALSE)
+    YAP_BigNumOfTerm(t, tmp_mpz_class.get_mpz_t());
   else {
     long l;
     Prolog_get_long(t, &l);
