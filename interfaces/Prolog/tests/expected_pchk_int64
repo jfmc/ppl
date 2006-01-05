@@ -1,1 +1,6 @@
-OK
+
+Error: an overflow has been detected by the PPL: Positive overflow.
+Error occurred while performing test large_nums which checks predicates: 
+[large number checks ] 
+Prolog interface checks failed. 
+FAILURE
