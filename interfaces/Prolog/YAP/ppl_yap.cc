@@ -374,8 +374,10 @@ Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
 PPL::Coefficient
 integer_term_to_Coefficient(Prolog_term_ref t) {
   PPL::Coefficient n;
-  if (YAP_IsBigNumTerm(t) != FALSE)
+  if (YAP_IsBigNumTerm(t) != FALSE) {
     YAP_BigNumOfTerm(t, tmp_mpz_class.get_mpz_t());
+    n = tmp_mpz_class;
+  }
   else {
     long l;
     Prolog_get_long(t, &l);
