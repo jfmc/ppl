@@ -22,6 +22,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 :- set_prolog_flag(language, iso).
 
+prolog_system(sicstus).
+
 :- ensure_loaded('ppl_sicstus.pl').
 :- use_module(library(lists), [append/3, member/2]).
 

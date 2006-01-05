@@ -142,6 +142,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 :- include('pl_check.pl').
 
+prolog_system(ciao).
+
 main:-
    (check_all ->
         write('OK')

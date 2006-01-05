@@ -59,6 +59,10 @@ check_noisy :-
    make_noisy,
    check_all.
 
+check_extra_noisy :-
+   make_extra_noisy,
+   check_all.
+
 run_all([Group|Groups]):-
    ppl_initialize,
    (catch(run_one(Group), Exception,
@@ -100,6 +104,7 @@ run_one(all_versions_and_banner) :-
   ppl_banner(B),
   (noisy(0) -> true ;
      (
+      nl,
       write('Version major is '), write(Vmajor), nl,
       write('Version minor is '), write(Vminor), nl,
       write('Version revision is '), write(Vrevision), nl,
@@ -222,6 +227,14 @@ run_one(catch_time) :-
 
 run_one(lp_check) :-
    lp_check.
+
+run_one(large_nums) :-
+   prolog_system(Prolog_System),
+   (Prolog_System \== xsb ->
+     large_nums
+   ;
+     true
+   ).
 
 run_one(handle_exceptions) :-
    exceptions.
@@ -1896,15 +1909,15 @@ bounds_from_below(T, CS1, CS2, Var) :-
 maximize :-
   make_vars(2, [A, B]),
   maximize(c, [A >= -1, A =< 1, B >= -1, B =< 1], A + B, 2, 1, true),
-  \+ maximize(c, [B >= -1, B =< 1], A, _, _, _),
   maximize(c, [B >= -1, B =< 1], B, 1, 1, true),
   maximize(nnc, [A > -1, A < 1, B > -1, B < 1], A + B -1, 1, 1, false),
-  \+ maximize(nnc, [B > -1, B < 1], A, _, _, _),
   maximize(nnc, [B > -1, B < 1], B, 1, 1, false).
 
 maximize(T, CS, LE, N, D, Max) :-
   clean_ppl_new_Polyhedron_from_constraints(T, CS, P),
   ppl_Polyhedron_maximize(P, LE, N, D, Max),
+  ppl_Polyhedron_add_generator(P, ray(LE)),
+  \+ ppl_Polyhedron_maximize(P, LE, _, _, _),
   !,
   ppl_delete_Polyhedron(P).
 
@@ -1937,15 +1950,15 @@ maximize_with_point(T, CS, LE, N, D, Max, Point) :-
 minimize :-
   make_vars(2, [A, B]),
   minimize(c, [A >= -1, A =< 1, B >= -1, B =< 1], A + B, -2, 1, true),
-  \+ minimize(c, [B >= -1, B =< 1], A, _, _, _),
   minimize(c, [B >= -1, B =< 1], B, -1, 1, true),
   minimize(nnc, [A > -2, A =< 2, B > -2, B =< 2], A + B + 1, -3, 1, false),
-  \+ minimize(nnc, [B > -1, B < 1], A, _, _, _),
   minimize(nnc, [B > -1, B < 1], B, -1, 1, false).
 
 minimize(T, CS, LE, N, D, Min) :-
   clean_ppl_new_Polyhedron_from_constraints(T, CS, P),
   ppl_Polyhedron_minimize(P, LE, N, D, Min),
+  ppl_Polyhedron_add_generator(P, ray(-LE)),
+  \+ ppl_Polyhedron_minimize(P, LE, _, _, _),
   !,
   ppl_delete_Polyhedron(P).
 
@@ -2156,7 +2169,7 @@ lp_get :-
 
 lp_clear :-
   make_vars(3, [A, B, C]),
-  clean_ppl_new_LP_Problem([A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP),
+  clean_ppl_new_LP_Problem([A >= -1, B >= 5, C >= 0, C =< 3], C, min, LP),
   ppl_LP_Problem_clear(LP),
   ppl_LP_Problem_space_dimension(LP, D),
   D == 0,
@@ -2230,6 +2243,7 @@ lp_solve :-
   ppl_LP_Problem_solve(LP, unbounded),
   ppl_LP_Problem_add_constraint(LP, B = 0),
   ppl_LP_Problem_solve(LP, unfeasible),
+  \+ppl_LP_Problem_solve(LP, invalid_status),
   !,
   ppl_delete_LP_Problem(LP).
 
@@ -2237,13 +2251,16 @@ lp_eval :-
   make_vars(3, [A, B, C]),
   clean_ppl_new_LP_Problem([A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5],
       2*B-C, min, LP),
+  \+ ppl_LP_Problem_optimizing_point(LP, closure_point(_X)),
   ppl_LP_Problem_optimizing_point(LP, Point),
   ppl_LP_Problem_feasible_point(LP, Point),
   \+ ppl_LP_Problem_feasible_point(LP, point(B)),
   clean_ppl_new_Polyhedron_from_generators(c, [Point], PH),
   clean_ppl_new_Polyhedron_from_generators(c, [point(5*B+5*C)], Expect_PH),
   ppl_Polyhedron_equals_Polyhedron(PH, Expect_PH),
+  \+ ppl_LP_Problem_optimal_value(LP, 2, 1),
   ppl_LP_Problem_optimal_value(LP, N, D),
+  \+ ppl_LP_Problem_evaluate_objective_function(LP, Point, 2, 1),
   ppl_LP_Problem_evaluate_objective_function(LP, Point, N1, D1),
   N == N1,
   D == D1,
@@ -2266,6 +2283,66 @@ compare_lin_expressions(LE1, LE2) :-
   !,
   ppl_delete_Polyhedron(PH1),
   ppl_delete_Polyhedron(PH2).
+
+%%%%%%%%%%%%%%%% Check C++ <--> Prolog numbers %%%%%%%%%%%%%%%%%%%%%%%
+
+large_nums_exponents([0, 7, 8, 15, 16, 27, 28, 29, 30, 31, 32, 63, 64]).
+
+large_nums_additions([-3, -2, -1, 0, 1, 2, 3]).
+
+large_nums :-
+  large_nums_exponents(Exps),
+  large_nums_additions(Adds),
+  out(large_int, init),
+  large_nums_prolog_cplusplus(Exps, Adds).
+
+large_nums_prolog_cplusplus([], _).
+large_nums_prolog_cplusplus([Exp|Exps], Adds) :-
+  current_prolog_flag(bounded, F),
+  (F == true ->
+     current_prolog_flag(max_integer, Max_int),
+    (Max_int >> 1 =< 1 << Exp - 3 ->
+       true
+    ;
+       large_nums_prolog_cplusplus1(Adds, Exp),
+       large_nums_prolog_cplusplus(Exps, Adds)
+    )
+  ;
+     large_nums_prolog_cplusplus1(Adds, Exp),
+     large_nums_prolog_cplusplus(Exps, Adds)
+  ).
+
+large_nums_prolog_cplusplus1([], _).
+large_nums_prolog_cplusplus1([Add|Adds], Exp) :-
+  large_nums_prolog_cplusplus2(Exp, Add, 1),
+  large_nums_prolog_cplusplus2(Exp, Add, -1),
+  large_nums_prolog_cplusplus1(Adds, Exp).
+
+large_nums_prolog_cplusplus2(Exp, Add, Sign) :-
+  Inhomo is Sign * ((1 << Exp) + Add),
+  out(large_int, Inhomo),
+  make_vars(1, [A]),
+  clean_ppl_new_Polyhedron_from_space_dimension(c, 1, universe, P),
+  ppl_Polyhedron_add_constraints(P, [A = Inhomo]),
+  ppl_Polyhedron_get_constraints(P, CS),
+  clean_ppl_new_Polyhedron_from_space_dimension(c, 1, universe, P1),
+  ppl_Polyhedron_add_constraints(P1, CS),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  clean_ppl_new_Polyhedron_from_space_dimension(c, 1, universe, P2),
+  ppl_Polyhedron_add_constraint(P2, A = 1),
+  large_nums_affine_transform_loop(Exp, P2, A),
+  ppl_Polyhedron_affine_image(P2, A, Sign * (A + Add), 1),
+  ppl_Polyhedron_equals_Polyhedron(P, P2),
+  !,
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P).
+
+large_nums_affine_transform_loop(0, _P, _).
+large_nums_affine_transform_loop(Exp, P, A) :-
+  Exp >= 1,
+  ppl_Polyhedron_affine_image(P, A, 2*A, 1),
+  Exp1 is Exp - 1,
+  large_nums_affine_transform_loop(Exp1, P, A).
 
 %%%%%%%%%%%%%%%%% Exceptions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -2452,7 +2529,7 @@ exception_prolog(13, [A, B, C]) :-
 
 % exception_sys_prolog(+N, +V) checks exceptions thrown by Prolog interfaces
 % that are dependent on a specific Prolog system.
-% These are only checked if current_prolog_flag(bounded, false) holds.
+% These are only checked if current_prolog_flag(bounded, true) holds.
 
 exception_sys_prolog(V) :-
    exception_sys_prolog1(4, V).
@@ -2646,6 +2723,18 @@ out(lp, LP):-
     nl
   ).
 
+out(large_int, init):-
+  !,
+  ((noisy(N), N < 2) -> true ;
+    nl, write(' At the Prolog/C++ interface, the numbers tested are: '),
+    nl
+  ).
+
+out(large_int, Num):-
+  ((noisy(N), N < 2) -> true ;
+    write(Num), write(',  ')
+  ).
+
 %%% predicates for ensuring new polyhedra are always deleted on failure %
 
 clean_ppl_new_Polyhedron_from_space_dimension(T, D, Universe_or_Empty, P) :-
@@ -2790,6 +2879,7 @@ write_all([Phrase|Phrases]):-
 % groups and here is a list of the groups.
 
 list_groups( [
+   large_nums,
    all_versions_and_banner,
    max_dimension,
    new_polyhedron_from_dimension,
@@ -2952,6 +3042,14 @@ group_predicates(catch_time,
    ppl_timeout_exception_atom/1,
    ppl_set_timeout/1,
    ppl_reset_timeout/0
+  ]).
+
+group_predicates(lp_check,
+  ['all LP_Prolog predicates'
+  ]).
+
+group_predicates(large_nums,
+  ['large number checks '
   ]).
 
 group_predicates(handle_exceptions,

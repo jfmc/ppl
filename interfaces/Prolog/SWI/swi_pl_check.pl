@@ -22,6 +22,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 :-  ensure_loaded('pl_check.pl').
 
+prolog_system(swi).
+
 main :-
     current_output(Old_Stream),
     open(obtained_pchk, write, Stream),
