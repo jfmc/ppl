@@ -231,7 +231,8 @@ run_one(lp_check) :-
 run_one(large_nums) :-
    prolog_system(Prolog_System),
    (Prolog_System \== xsb ->
-     large_nums
+     (catch(large_nums, Exception,
+         (check_exception_term(Exception))) -> true ; run_fail(large_nums))
    ;
      true
    ).
@@ -2816,6 +2817,14 @@ format_banner([C,C1|Chars]):-
   ).
 
 %%%%%%%%%%%% predicate for handling an unintended exception %%%%
+
+check_exception_term(ppl_overflow_error(Cause)) :-
+  ((Cause == 'Negative overflow.'; Cause == 'Positive overflow.') ->
+    true
+  ;
+    print_exception_term(ppl_overflow_error(Cause))
+  ),
+  !.
 
 print_exception_term(ppl_overflow_error(Cause)) :-
   nl,
