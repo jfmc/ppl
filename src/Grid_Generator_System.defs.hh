@@ -199,29 +199,32 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  //! \brief
-  //! Removes all the generators from the generator system
-  //! and sets its space dimension to 0.
+  /*! \brief
+    Removes all the generators from the generator system and sets its
+    space dimension to 0.
+  */
   void clear();
 
-  //! \brief
-  //! Inserts into \p *this a copy of the generator \p g, increasing
-  //! the number of space dimensions if needed.
-  /*!
+  /*! \brief
+    Inserts into \p *this a copy of the generator \p g, increasing the
+    number of space dimensions if needed.
+
     If \p g is an all-zero parameter then the only action is to ensure
     that the space dimension of \p *this is at least the space
     dimension of \p g.
   */
   void insert(const Grid_Generator& g);
 
-  //! \brief
-  //! Inserts into \p *this the generator \p g, increasing the number
-  //! of space dimensions if needed.
+  /*! \brief
+    Inserts into \p *this the generator \p g, increasing the number of
+    space dimensions if needed.
+  */
   void recycling_insert(Grid_Generator& g);
 
-  //! \brief
-  //! Inserts into \p *this the generators in \p gs, increasing the
-  //! number of space dimensions if needed.
+  /*! \brief
+    Inserts into \p *this the generators in \p gs, increasing the
+    number of space dimensions if needed.
+  */
   void recycling_insert(Grid_Generator_System& gs);
 
   //! An iterator over a system of grid generators
@@ -271,14 +274,16 @@ public:
     //! Postfix increment operator.
     const_iterator operator++(int);
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are identical.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if \p *this and \p y are
+      identical.
+    */
     bool operator==(const const_iterator& y) const;
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are different.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if \p *this and \p y are
+      different.
+    */
     bool operator!=(const const_iterator& y) const;
 
   private:
@@ -288,10 +293,11 @@ public:
     const_iterator(const Generator_System::const_iterator& y);
   };
 
-  //! \brief
-  //! Returns the const_iterator pointing to the first generator,
-  //! if \p *this is not empty;
-  //! otherwise, returns the past-the-end const_iterator.
+  /*! \brief
+    Returns the const_iterator pointing to the first generator, if \p
+    *this is not empty; otherwise, returns the past-the-end
+    const_iterator.
+  */
   const_iterator begin() const;
 
   //! Returns the past-the-end const_iterator.
@@ -346,9 +352,10 @@ public:
   //! Returns the number of lines in the system.
   dimension_type num_lines() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this contains one
-  //! or more points.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this contains one or
+    more points.
+  */
   bool has_points() const;
 
   //! Returns <CODE>true</CODE> if \p *this is identical to \p y.
@@ -361,25 +368,27 @@ public:
   const Grid_Generator& operator[](dimension_type k) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Writes to \p s an ASCII representation of the internal
+    representation of \p *this.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void ascii_dump(std::ostream& s) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Writes to std::cerr an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Writes to std::cerr an ASCII representation of the internal
+    representation of \p *this.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void ascii_dump() const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by
-  //! \ref ascii_dump) and sets \p *this accordingly.
-  //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
-  /*!
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by \ref
+    ascii_dump) and sets \p *this accordingly.  Returns
+    <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+
     Resizes the matrix of generators using the numbers of rows and columns
     read from \p s, then initializes the coordinates of each generator
     and its type reading the contents from \p s.
@@ -394,10 +403,10 @@ public:
   */
   bool OK() const;
 
-  //! \brief
-  //! Adds \p n rows and \p m columns of zeroes to the matrix,
-  //! initializing the added rows as in the universe generator system.
-  /*!
+  /*! \brief
+    Adds \p n rows and \p m columns of zeroes to the matrix,
+    initializing the added rows as in the universe generator system.
+
     \param n
     The number of rows to be added: must be strictly positive.
 
@@ -427,10 +436,10 @@ public:
   */
   void remove_space_dimensions(const Variables_Set& to_be_removed);
 
-  //! \brief
-  //! Removes the higher dimensions of the system so that the
-  //! resulting system will have dimension \p new_dimension.
-  /*!
+  /*! \brief
+    Removes the higher dimensions of the system so that the resulting
+    system will have dimension \p new_dimension.
+
     \exception std::invalid_argument
     Thrown if the \p new_dimension is higher than the space dimension
     of \p *this.

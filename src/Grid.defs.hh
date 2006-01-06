@@ -72,10 +72,10 @@ operator<<(std::ostream& s, const Grid& gr);
 
 } // namespace IO_Operators
 
-//! \brief
-//! Returns <CODE>true</CODE> if and only if \p x and \p y are the
-//! same grid.
-/*!
+/*! \brief
+  Returns <CODE>true</CODE> if and only if \p x and \p y are the same
+  grid.
+
   \relates Grid
   Note that \p x and \p y may be dimension-incompatible grids: in
   those cases, the value <CODE>false</CODE> is returned.
@@ -576,9 +576,10 @@ public:
   //! Ordinary copy-constructor.
   Grid(const Grid& y);
 
-  //! \brief
-  //! The assignment operator.
-  //! (\p *this and \p y can be dimension-incompatible.)
+  /*! \brief
+    The assignment operator.  (\p *this and \p y can be
+    dimension-incompatible.)
+  */
   Grid& operator=(const Grid& y);
 
   //! \name Member Functions that Do Not Modify the Grid
@@ -587,9 +588,10 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  //! \brief
-  //! Returns \f$0\f$, if \p *this is empty; otherwise, returns the
-  //! \ref affine_dimension "affine dimension" of \p *this.
+  /*! \brief
+    Returns \f$0\f$, if \p *this is empty; otherwise, returns the \ref
+    affine_dimension "affine dimension" of \p *this.
+  */
   dimension_type affine_dimension() const;
 
   //! Returns the system of congruences.
@@ -604,10 +606,10 @@ public:
   //! Returns the minimized system of generators.
   const Grid_Generator_System& minimized_generators() const;
 
-  //! \brief
-  //! Returns the relations holding between the grid \p *this
-  //! and the congruence \p cg.
-  /*!
+  /*! \brief
+    Returns the relations holding between the grid \p *this and the
+    congruence \p cg.
+
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible.
   */
@@ -616,10 +618,10 @@ public:
   // we keep using it without changing the name.
   Poly_Con_Relation relation_with(const Congruence& cg) const;
 
-  //! \brief
-  //! Returns the relations holding between the grid \p *this
-  //! and the generator \p g.
-  /*!
+  /*! \brief
+    Returns the relations holding between the grid \p *this and the
+    generator \p g.
+
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible.
   */
@@ -627,25 +629,28 @@ public:
   Poly_Gen_Relation
   relation_with(const Grid_Generator& g) const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is
-  //! an empty grid.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is an empty
+    grid.
+  */
   bool is_empty() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is a universe
-  //! grid.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is a universe
+    grid.
+  */
   bool is_universe() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is a
-  //! topologically closed subset of the vector space.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is a
+    topologically closed subset of the vector space.
+  */
   bool is_topologically_closed() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this and \p y are
-  //! disjoint.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this and \p y are
+    disjoint.
+
     \exception std::invalid_argument
     Thrown if \p x and \p y are dimension-incompatible.
   */
@@ -680,11 +685,11 @@ public:
   */
   bool bounds_from_below(const Linear_Expression& expr) const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is not empty
-  //! and \p expr is bounded from above in \p *this, in which case
-  //! the supremum value is computed.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty and
+    \p expr is bounded from above in \p *this, in which case the
+    supremum value is computed.
+
     \param expr
     The linear expression to be maximized subject to \p *this;
 
@@ -710,12 +715,11 @@ public:
   bool maximize(const Linear_Expression& expr,
 		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is not empty
-  //! and \p expr is bounded from above in \p *this, in which case the
-  //! supremum value and a point where \p expr reaches it are
-  //! computed.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty and
+    \p expr is bounded from above in \p *this, in which case the
+    supremum value and a point where \p expr reaches it are computed.
+
     \param expr
     The linear expression to be maximized subject to \p *this;
 
@@ -746,11 +750,11 @@ public:
 		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
 		Grid_Generator& point) const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is not empty
-  //! and \p expr is bounded from below in \p *this, in which case
-  //! the infimum value is computed.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty and
+    \p expr is bounded from below in \p *this, in which case the
+    infimum value is computed.
+
     \param expr
     The linear expression to be minimized subject to \p *this;
 
@@ -776,11 +780,11 @@ public:
   bool minimize(const Linear_Expression& expr,
 		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is not empty
-  //! and \p expr is bounded from below in \p *this, in which case
-  //! the infimum value and a point where \p expr reaches it are computed.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty and
+    \p expr is bounded from below in \p *this, in which case the
+    infimum value and a point where \p expr reaches it are computed.
+
     \param expr
     The linear expression to be minimized subject to \p *this;
 
@@ -818,10 +822,10 @@ public:
   */
   bool contains(const Grid& y) const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this strictly
-  //! contains \p y.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this strictly
+    contains \p y.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
@@ -1013,10 +1017,10 @@ public:
   */
   void add_congruence(const Constraint& c);
 
-  //! \brief
-  //! Adds a copy of congruence \p cg to the system of congruences
-  //! of \p *this, reducing the result
-  /*!
+  /*! \brief
+    Adds a copy of congruence \p cg to the system of congruences of \p
+    *this, reducing the result
+
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
@@ -1037,20 +1041,20 @@ public:
   */
   bool add_congruence_and_minimize(const Constraint& c);
 
-  //! \brief
-  //! Adds a copy of generator \p g to the system of generators
-  //! of \p *this.
-  /*!
+  /*! \brief
+    Adds a copy of generator \p g to the system of generators of \p
+    *this.
+
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible,
     or if \p *this is an empty grid and \p g is not a point.
   */
   void add_generator(const Grid_Generator& g);
 
-  //! \brief
-  //! Adds a copy of generator \p g to the system of generators
-  //! of \p *this, reducing the result.
-  /*!
+  /*! \brief
+    Adds a copy of generator \p g to the system of generators of \p
+    *this, reducing the result.
+
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
@@ -1113,10 +1117,10 @@ public:
   */
   void add_recycled_congruences(Constraint_System& cs);
 
-  //! \brief
-  //! Adds a copy of the congruences in \p cgs to the system
-  //! of congruences of \p *this, reducing the result.
-  /*!
+  /*! \brief
+    Adds a copy of the congruences in \p cgs to the system of
+    congruences of \p *this, reducing the result.
+
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
@@ -1129,10 +1133,10 @@ public:
   */
   bool add_congruences_and_minimize(const Congruence_System& cgs);
 
-  //! \brief
-  //! Adds a copy of each equality constraint in \p cs to \p *this,
-  //! reducing the result.
-  /*!
+  /*! \brief
+    Adds a copy of each equality constraint in \p cs to \p *this,
+    reducing the result.
+
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
@@ -1145,10 +1149,10 @@ public:
   */
   bool add_congruences_and_minimize(const Constraint_System& cs);
 
-  //! \brief
-  //! Adds the congruences in \p cgs to the system of congruences
-  //! of \p *this, reducing the result.
-  /*!
+  /*! \brief
+    Adds the congruences in \p cgs to the system of congruences of \p
+    *this, reducing the result.
+
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
@@ -1211,10 +1215,10 @@ public:
   */
   void add_constraints(const Constraint_System& cs);
 
-  //! \brief
-  //! Adds copies of the equality constraints in \p cs to \p *this,
-  //! reducing the result.
-  /*!
+  /*! \brief
+    Adds copies of the equality constraints in \p cs to \p *this,
+    reducing the result.
+
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
@@ -1249,10 +1253,10 @@ public:
   */
   bool add_recycled_constraints_and_minimize(Constraint_System& cs);
 
-  //! \brief
-  //! Adds a copy of the generators in \p gs to the system of
-  //! generators of \p *this.
-  /*!
+  /*! \brief
+    Adds a copy of the generators in \p gs to the system of generators
+    of \p *this.
+
     \param gs
     Contains the generators that will be added to the system of
     generators of \p *this.
@@ -1264,10 +1268,10 @@ public:
   */
   void add_generators(const Grid_Generator_System& gs);
 
-  //! \brief
-  //! Adds the generators in \p gs to the system of generators of \p
-  //! *this.
-  /*!
+  /*! \brief
+    Adds the generators in \p gs to the system of generators of \p
+    *this.
+
     \param gs
     The generator system that will be recycled, adding its generators
     to the system of generators of \p *this.
@@ -1283,10 +1287,10 @@ public:
   */
   void add_recycled_generators(Grid_Generator_System& gs);
 
-  //! \brief
-  //! Adds a copy of the generators in \p gs to the system of
-  //! generators of \p *this, reducing the result.
-  /*!
+  /*! \brief
+    Adds a copy of the generators in \p gs to the system of generators
+    of \p *this, reducing the result.
+
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
@@ -1301,10 +1305,10 @@ public:
   */
   bool add_generators_and_minimize(const Grid_Generator_System& gs);
 
-  //! \brief
-  //! Adds the generators in \p gs to the system of generators of \p
-  //! *this, reducing the result.
-  /*!
+  /*! \brief
+    Adds the generators in \p gs to the system of generators of \p
+    *this, reducing the result.
+
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
@@ -1323,19 +1327,19 @@ public:
   */
   bool add_recycled_generators_and_minimize(Grid_Generator_System& gs);
 
-  //! \brief
-  //! Assigns to \p *this the intersection of \p *this and \p y.
-  //! The result is not guaranteed to be reduced.
-  /*!
+  /*! \brief
+    Assigns to \p *this the intersection of \p *this and \p y.  The
+    result is not guaranteed to be reduced.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   void intersection_assign(const Grid& y);
 
-  //! \brief
-  //! Assigns to \p *this the intersection of \p *this and \p y,
-  //! reducing the result.
-  /*!
+  /*! \brief
+    Assigns to \p *this the intersection of \p *this and \p y,
+    reducing the result.
+
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
@@ -1344,18 +1348,18 @@ public:
   */
   bool intersection_assign_and_minimize(const Grid& y);
 
-  //! \brief
-  //! Assigns to \p *this the join of \p *this and \p y.
-  /*!
+  /*! \brief
+    Assigns to \p *this the join of \p *this and \p y.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   void join_assign(const Grid& y);
 
-  //! \brief
-  //! Assigns to \p *this the join of \p *this and \p y,
-  //! reducing the result.
-  /*!
+  /*! \brief
+    Assigns to \p *this the join of \p *this and \p y, reducing the
+    result.
+
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
@@ -1367,11 +1371,11 @@ public:
   //! Same as join_assign(y).
   void upper_bound_assign(const Grid& y);
 
-  //! \brief
-  //! If the join of \p *this and \p y is exact it is assigned
-  //! to \p *this and <CODE>true</CODE> is returned,
-  //! otherwise <CODE>false</CODE> is returned.
-  /*!
+  /*! \brief
+    If the join of \p *this and \p y is exact it is assigned to \p
+    *this and <CODE>true</CODE> is returned, otherwise
+    <CODE>false</CODE> is returned.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
@@ -1380,10 +1384,10 @@ public:
   //! Same as join_assign_if_exact(y).
   bool upper_bound_assign_if_exact(const Grid& y);
 
-  //! \brief
-  //! Assigns to \p *this the \ref grid_difference "grid-difference"
-  //! of \p *this and \p y.
-  /*!
+  /*! \brief
+    Assigns to \p *this the \ref grid_difference "grid-difference" of
+    \p *this and \p y.
+
     The grid difference between grids x and y is the smallest grid
     containing all the points from x and y that are only in x.
 
@@ -1395,11 +1399,11 @@ public:
   //! Same as grid_difference_assign(y).
   void difference_assign(const Grid& y);
 
-  //! \brief
-  //! Assigns to \p *this the \ref affine_function "affine image" of
-  //! \p *this under the function mapping variable \p var to the
-  //! affine expression specified by \p expr and \p denominator.
-  /*!
+  /*! \brief
+    Assigns to \p *this the \ref affine_function "affine image" of \p
+    *this under the function mapping variable \p var to the affine
+    expression specified by \p expr and \p denominator.
+
     \param var
     The variable to which the affine expression is assigned;
 
@@ -1488,11 +1492,11 @@ public:
 		    Coefficient_traits::const_reference denominator
 		    = Coefficient_one());
 
-  //! \brief
-  //! Assigns to \p *this the \ref affine_function "affine preimage"
-  //! of \p *this under the function mapping variable \p var to the
-  //! affine expression specified by \p expr and \p denominator.
-  /*!
+  /*! \brief
+    Assigns to \p *this the \ref affine_function "affine preimage" of
+    \p *this under the function mapping variable \p var to the affine
+    expression specified by \p expr and \p denominator.
+
     \param var
     The variable to which the affine expression is substituted;
 
@@ -1579,12 +1583,12 @@ public:
 		       Coefficient_traits::const_reference denominator
 		         = Coefficient_one());
 
-  //! \brief
-  //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_affine_relation "generalized affine relation"
-  //! \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
-  //! \pmod{\mathrm{modulus}}\f$.
-  /*!
+  /*! \brief
+    Assigns to \p *this the image of \p *this with respect to the \ref
+    generalized_affine_relation "generalized affine relation"
+    \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
+    \pmod{\mathrm{modulus}}\f$.
+
     \param var
     The left hand side variable of the generalized affine relation;
 
@@ -1612,12 +1616,12 @@ public:
 				Coefficient_traits::const_reference modulus
 				= Coefficient_one());
 
-  //! \brief
-  //! Assigns to \p *this the preimage of \p *this with respect to the
-  //! \ref generalized_affine_relation "generalized affine relation"
-  //! \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
-  //! \pmod{\mathrm{modulus}}\f$.
-  /*!
+  /*! \brief
+    Assigns to \p *this the preimage of \p *this with respect to the
+    \ref generalized_affine_relation "generalized affine relation"
+    \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
+    \pmod{\mathrm{modulus}}\f$.
+
     \param var
     The left hand side variable of the generalized affine relation;
 
@@ -1645,11 +1649,11 @@ public:
 				   Coefficient_traits::const_reference modulus
 				   = Coefficient_one());
 
-  //! \brief
-  //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref grid_generalized_image "generalized affine relation"
-  //! \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
-  /*!
+  /*! \brief
+    Assigns to \p *this the image of \p *this with respect to the \ref
+    grid_generalized_image "generalized affine relation"
+    \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
+
     \param lhs
     The left hand side affine expression.
 
@@ -1670,11 +1674,11 @@ public:
 				Coefficient_traits::const_reference modulus
 				= Coefficient_one());
 
-  //! \brief
-  //! Assigns to \p *this the preimage of \p *this with respect to the
-  //! \ref grid_generalized_image "generalized affine relation"
-  //! \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
-  /*!
+  /*! \brief
+    Assigns to \p *this the preimage of \p *this with respect to the
+    \ref grid_generalized_image "generalized affine relation"
+    \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
+
     \param lhs
     The left hand side affine expression;
 
@@ -1695,10 +1699,10 @@ public:
 				   Coefficient_traits::const_reference modulus
 				   = Coefficient_one());
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the
-  //! \ref time_elapse "time-elapse" between \p *this and \p y.
-  /*!
+  /*! \brief
+    Assigns to \p *this the result of computing the \ref time_elapse
+    "time-elapse" between \p *this and \p y.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
@@ -1707,10 +1711,10 @@ public:
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign();
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the
-  //! \ref grid_widening Grid widening between \p *this and \p y.
-  /*!
+  /*! \brief
+    Assigns to \p *this the result of computing the \ref grid_widening
+    Grid widening between \p *this and \p y.
+
     \param y
     A grid that <EM>must</EM> be contained in \p *this;
 
@@ -1724,11 +1728,11 @@ public:
   */
   void widening_assign(const Grid& y, unsigned* tp = NULL);
 
-  //! \brief
-  //! Improves the result of the \ref grid_widening Grid widening
-  //! computation by also enforcing those congruences in \p cgs that
-  //! are satisfied by all the points of \p *this.
-  /*!
+  /*! \brief
+    Improves the result of the \ref grid_widening Grid widening
+    computation by also enforcing those congruences in \p cgs that are
+    satisfied by all the points of \p *this.
+
     \param y
     A grid that <EM>must</EM> be contained in \p *this;
 
@@ -1752,10 +1756,10 @@ public:
   //! \name Member Functions that May Modify the Dimension of the Vector Space
   //@{
 
-  //! \brief
-  //! Adds \p m new space dimensions and embeds the old grid in the
-  //! new vector space.
-  /*!
+  /*! \brief
+    Adds \p m new space dimensions and embeds the old grid in the new
+    vector space.
+
     \param m
     The number of dimensions to add.
 
@@ -1779,10 +1783,10 @@ public:
   */
   void add_space_dimensions_and_embed(dimension_type m);
 
-  //! \brief
-  //! Adds \p m new space dimensions to the grid and does not embed it
-  //! in the new vector space.
-  /*!
+  /*! \brief
+    Adds \p m new space dimensions to the grid and does not embed it
+    in the new vector space.
+
     \param m
     The number of space dimensions to add.
 
@@ -1806,10 +1810,10 @@ public:
   */
   void add_space_dimensions_and_project(dimension_type m);
 
-  //! \brief
-  //! Assigns to \p *this the \ref concatenate "concatenation"
-  //! of \p *this and \p y, taken in this order.
-  /*!
+  /*! \brief
+    Assigns to \p *this the \ref concatenate "concatenation" of \p
+    *this and \p y, taken in this order.
+
     \exception std::length_error
     Thrown if the concatenation would cause the vector space
     to exceed dimension <CODE>max_space_dimension()</CODE>.
@@ -1828,10 +1832,10 @@ public:
   */
   void remove_space_dimensions(const Variables_Set& to_be_removed);
 
-  //! \brief
-  //! Removes the higher dimensions of the vector space so that
-  //! the resulting space will have dimension \p new_dimension.
-  /*!
+  /*! \brief
+    Removes the higher dimensions of the vector space so that the
+    resulting space will have dimension \p new_dimension.
+
     \exception std::invalid_argument
     Thrown if \p new_dimensions is greater than the space dimension of
     \p *this.
@@ -1839,10 +1843,10 @@ public:
   void remove_higher_space_dimensions(dimension_type new_dimension);
 
 
-  //! \brief
-  //! Remaps the dimensions of the vector space according to a \ref
-  //! map_space_dimensions "partial function".
-  /*!
+  /*! \brief
+    Remaps the dimensions of the vector space according to a \ref
+    map_space_dimensions "partial function".
+
     If \p pfunc maps only some of the dimensions of \p *this then the
     rest will be projected away.
 
@@ -1951,30 +1955,33 @@ public:
   //! Destructor.
   ~Grid();
 
-  //! \brief
-  //! Swaps \p *this with grid \p y.  (\p *this and \p y can be
-  //! dimension-incompatible.)
+  /*! \brief
+    Swaps \p *this with grid \p y.  (\p *this and \p y can be
+    dimension-incompatible.)
+  */
   void swap(Grid& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Writes to \p s an ASCII representation of the internal
+    representation of \p *this.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void ascii_dump(std::ostream& s) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Writes to std::cerr an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Writes to std::cerr an ASCII representation of the internal
+    representation of \p *this.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void ascii_dump() const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by
-  //! \ref ascii_dump) and sets \p *this accordingly.
-  /*!
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by \ref
+    ascii_dump) and sets \p *this accordingly.
+
      \return
      <CODE>true</CODE> if successful, else <CODE>false</CODE>.
   */
@@ -2071,14 +2078,16 @@ private:
   //! \name State Flag Setters: Set Only the Specified Flags
   //@{
 
-  //! \brief
-  //! Sets \p status to express that the grid is the universe
-  //! 0-dimension vector space, clearing all corresponding matrices.
+  /*! \brief
+    Sets \p status to express that the grid is the universe
+    0-dimension vector space, clearing all corresponding matrices.
+  */
   void set_zero_dim_univ();
 
-  //! \brief
-  //! Sets \p status to express that the grid is empty, clearing all
-  //! corresponding matrices.
+  /*! \brief
+    Sets \p status to express that the grid is empty, clearing all
+    corresponding matrices.
+  */
   void set_empty();
 
   //! Sets \p status to express that congruences are up-to-date.
@@ -2306,16 +2315,18 @@ private:
   static void normalize_divisors(Grid_Generator_System& sys,
 				 Grid_Generator_System& gen_sys);
 
-  //! \brief
-  //! Converts generator system \p dest to be equivalent to congruence
-  //! system \p source.
+  /*! \brief
+    Converts generator system \p dest to be equivalent to congruence
+    system \p source.
+  */
   static void conversion(Congruence_System& source,
 			 Grid_Generator_System& dest,
 			 Dimension_Kinds& dim_kinds);
 
-  //! \brief
-  //! Converts congruence system \p dest to be equivalent to generator
-  //! system \p source.
+  /*! \brief
+    Converts congruence system \p dest to be equivalent to generator
+    system \p source.
+  */
   static void conversion(Grid_Generator_System& source,
 			 Congruence_System& dest,
 			 Dimension_Kinds& dim_kinds);

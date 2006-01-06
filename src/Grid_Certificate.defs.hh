@@ -66,9 +66,10 @@ public:
   int compare(const Grid& gr) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if the certificate for
-  //! grid \p gr is strictly smaller than \p *this.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the certificate for grid
+    \p gr is strictly smaller than \p *this.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool is_stabilizing(const Grid& gr) const;
 

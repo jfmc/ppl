@@ -265,9 +265,10 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this is a point.
   bool is_point() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this row represents
-  //! a parameter or a point.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this row represents a
+    parameter or a point.
+  */
   bool is_parameter_or_point() const;
 
   //! Returns the line of direction \p e.
@@ -317,18 +318,19 @@ public:
   */
   Coefficient_traits::const_reference divisor() const;
 
-  //! \brief
-  //! Returns a lower bound to the total size in bytes of the memory
-  //! occupied by \p *this.
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
+  */
   memory_size_type total_memory_in_bytes() const;
 
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this and \p y
-  //! are equivalent generators.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this and \p y are
+    equivalent generators.
+
     Generators having different space dimensions are not equivalent.
   */
   bool is_equivalent_to(const Grid_Generator& y) const;
@@ -336,15 +338,16 @@ public:
   //! Returns <CODE>true</CODE> if \p *this is exactly equal to \p y.
   bool is_equal_to(const Grid_Generator& y) const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if all the homogeneous
-  //! terms of \p *this are \f$0\f$.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if all the homogeneous terms
+    of \p *this are \f$0\f$.
+  */
   bool all_homogeneous_terms_are_zero() const;
 
-  //! \brief
-  //! Scales \p *this to be represented with a divisor of \p d (if
-  //! \*this is a parameter or point).
-  /*!
+  /*! \brief
+    Scales \p *this to be represented with a divisor of \p d (if
+    \*this is a parameter or point).
+
     \exception std::invalid_argument
     Thrown if \p d is zero.
   */
@@ -356,14 +359,16 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Grid_Generator& y);
 
-  //! \brief
-  //! Swaps \p *this with \p y, leaving \p *this with the original
-  //! capacity.
+  /*! \brief
+    Swaps \p *this with \p y, leaving \p *this with the original
+    capacity.
+  */
   void coefficient_swap(Grid_Generator& y);
 
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Writes to \p s an ASCII representation of the internal
+    representation of \p *this.
+  */
   void ascii_dump(std::ostream& s) const;
 
   //! Uses the ASCII representation from \p s to recreate *this.
@@ -374,10 +379,10 @@ public:
   bool ascii_load(std::istream& s);
 
 private:
-  //! \brief
-  //! Constructs from polyhedron generator \p g, stealing the
-  //! underlying data structures from \p g.
-  /*!
+  /*! \brief
+    Constructs from polyhedron generator \p g, stealing the underlying
+    data structures from \p g.
+
     The last column in \p g becomes the parameter divisor column of
     the new Grid_Generator.
   */
@@ -402,10 +407,10 @@ private:
   //! Sets the Linear_Row kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
   void set_is_parameter();
 
-  //! \brief
-  //! Strong normalization: ensures that different Grid_Generator
-  //! objects represent different hyperplanes or hyperspaces.
-  /*!
+  /*! \brief
+    Strong normalization: ensures that different Grid_Generator
+    objects represent different hyperplanes or hyperspaces.
+
     Applies both Linear_Row::normalize() and Linear_Row::sign_normalize().
 
     This is simply a wrapper around the Generator::strong_normalize,
@@ -419,9 +424,10 @@ private:
   //! Returns a constant reference to the element of the row indexed by \p k.
   Coefficient_traits::const_reference operator[](dimension_type k) const;
 
-  //! \brief
-  //! Throw a <CODE>std::invalid_argument</CODE> exception
-  //! containing the appropriate error message.
+  /*! \brief
+    Throw a <CODE>std::invalid_argument</CODE> exception containing
+    the appropriate error message.
+  */
   void
   throw_invalid_argument(const char* method, const char* reason) const;
 
@@ -444,25 +450,28 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
-//! \brief
-//! Shorthand for Grid_Generator
-//! Grid_Generator::line(const Linear_Expression& e).
+/*! \brief
+  Shorthand for Grid_Generator
+  Grid_Generator::line(const Linear_Expression& e).
+*/
 /*! \relates Grid_Generator */
 Grid_Generator grid_line(const Linear_Expression& e);
 
-//! \brief
-//! Shorthand for Grid_Generator
-//! Grid_Generator::parameter(const Linear_Expression& e,
-//! Coefficient_traits::const_reference d).
+/*! \brief
+  Shorthand for Grid_Generator
+  Grid_Generator::parameter(const Linear_Expression& e,
+  Coefficient_traits::const_reference d).
+*/
 /*! \relates Grid_Generator */
 Grid_Generator
 parameter(const Linear_Expression& e = Linear_Expression::zero(),
 	  Coefficient_traits::const_reference d = Coefficient_one());
 
-//! \brief
-//! Shorthand for Grid_Generator
-//! Grid_Generator::point(const Linear_Expression& e,
-//! Coefficient_traits::const_reference d).
+/*! \brief
+  Shorthand for Grid_Generator
+  Grid_Generator::point(const Linear_Expression& e,
+  Coefficient_traits::const_reference d).
+*/
 /*! \relates Grid_Generator */
 Grid_Generator
 grid_point(const Linear_Expression& e = Linear_Expression::zero(),

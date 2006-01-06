@@ -258,10 +258,10 @@ public:
   Congruence&
   operator/=(const Coefficient_traits::const_reference k);
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is a trivially
-  //! true congruence.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is a trivially
+    true congruence.
+
     Trivially true congruences are of one the following two forms:
     - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + 0 == 0\f$; or
     - a proper congruence: \f$\sum_{i=0}^{n-1} 0 x_i + b \%= 0 / m\f$,
@@ -269,10 +269,10 @@ public:
   */
   bool is_trivial_true() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is a trivially
-  //! false congruence.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is a trivially
+    false congruence.
+
     Trivially false congruences have one of the following two forms:
     - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + b == 0\f$
       where \f$b \neq 0\f$; or
@@ -293,38 +293,44 @@ public:
   */
   bool is_equality() const;
 
-  //! \brief
-  //! Returns a reference to the true (zero-dimension space)
-  //! congruence \f$0 = 1 \pmod{1}\f$, also known as the
-  //! <EM>integrality congruence</EM>.
+  /*! \brief
+    Returns a reference to the true (zero-dimension space) congruence
+    \f$0 = 1 \pmod{1}\f$, also known as the <EM>integrality
+    congruence</EM>.
+  */
   static const Congruence& zero_dim_integrality();
 
-  //! \brief
-  //! Returns a reference to the false (zero-dimension space)
-  //! congruence \f$0 = 1 \pmod{0}\f$.
+  /*! \brief
+    Returns a reference to the false (zero-dimension space) congruence
+    \f$0 = 1 \pmod{0}\f$.
+  */
   static const Congruence& zero_dim_false();
 
-  //! \brief
-  //! Returns a lower bound to the total size in bytes of the memory
-  //! occupied by \p *this.
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
+  */
   memory_size_type total_memory_in_bytes() const;
 
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Writes to \p s an ASCII representation of the internal
+    representation of \p *this.
+  */
   void ascii_dump(std::ostream& s) const;
 
-  //! \brief
-  //! Writes to std::cerr an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Writes to std::cerr an ASCII representation of the internal
+    representation of \p *this.
+  */
   void ascii_dump() const;
 
-  //! \brief
-  //! Loads from \p s an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Loads from \p s an ASCII representation of the internal
+    representation of \p *this.
+  */
   bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
@@ -408,15 +414,17 @@ private:
   //! Swaps \p *this with \p y.
   void swap(Congruence& y);
 
-  //! \brief
-  //! Throws a <CODE>std::invalid_argument</CODE> exception containing
-  //! error message \p message.
+  /*! \brief
+    Throws a <CODE>std::invalid_argument</CODE> exception containing
+    error message \p message.
+  */
   void
   throw_invalid_argument(const char* method, const char* message) const;
 
-  //! \brief
-  //! Throws a <CODE>std::invalid_argument</CODE> exception containing
-  //! the appropriate error message.
+  /*! \brief
+    Throws a <CODE>std::invalid_argument</CODE> exception containing
+    the appropriate error message.
+  */
   void
   throw_dimension_incompatible(const char* method,
 			       const char* v_name,

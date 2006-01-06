@@ -132,10 +132,11 @@ public:
   //! Builds the singleton system containing only congruence \p cg.
   explicit Congruence_System(const Congruence& cg);
 
-  //! \brief
-  //! If \p c represents the constraint \f$ e_1 = e_2 \f$, builds the
-  //! singleton system containing only constraint \f$ e_1 = e_2 \pmod{0}\f$.
-  /*!
+  /*! \brief
+    If \p c represents the constraint \f$ e_1 = e_2 \f$, builds the
+    singleton system containing only constraint \f$ e_1 = e_2
+    \pmod{0}\f$.
+
     \exception std::invalid_argument
     Thrown if \p c is not an equality constraint.
   */
@@ -159,32 +160,34 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this contains one
-  //! or more linear equalities.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this contains one or
+    more linear equalities.
+  */
   bool has_linear_equalities() const;
 
-  //! \brief
-  //! Removes all the congruences from the congruence system
-  //! and sets its space dimension to 0.
+  /*! \brief
+    Removes all the congruences from the congruence system and sets
+    its space dimension to 0.
+  */
   void clear();
 
   // TODO: Consider adding a recycling_insert.
 
-  //! \brief
-  //! Inserts in \p *this a copy of the congruence \p cg,
-  //! increasing the number of space dimensions if needed.
-  /*!
+  /*! \brief
+    Inserts in \p *this a copy of the congruence \p cg, increasing the
+    number of space dimensions if needed.
+
     The copy of \p cg will be strongly normalized after being
     inserted.
   */
   void insert(const Congruence& cg);
 
-  //! \brief
-  //! Inserts in \p *this a copy of the equality constraint \p c, seen
-  //! as a modulo 0 congruence, increasing the number of space
-  //! dimensions if needed.
-  /*!
+  /*! \brief
+    Inserts in \p *this a copy of the equality constraint \p c, seen
+    as a modulo 0 congruence, increasing the number of space
+    dimensions if needed.
+
     The modulo 0 congruence will be strongly normalized after being
     inserted.
 
@@ -242,14 +245,16 @@ public:
     //! Postfix increment operator.
     const_iterator operator++(int);
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are identical.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if \p *this and \p y are
+      identical.
+    */
     bool operator==(const const_iterator& y) const;
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are different.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if \p *this and \p y are
+      different.
+    */
     bool operator!=(const const_iterator& y) const;
 
   private:
@@ -269,10 +274,11 @@ public:
     void skip_forward();
   };
 
-  //! \brief
-  //! Returns the const_iterator pointing to the first congruence,
-  //! if \p *this is not empty;
-  //! otherwise, returns the past-the-end const_iterator.
+  /*! \brief
+    Returns the const_iterator pointing to the first congruence, if \p
+    *this is not empty; otherwise, returns the past-the-end
+    const_iterator.
+  */
   const_iterator begin() const;
 
   //! Returns the past-the-end const_iterator.
@@ -290,24 +296,27 @@ public:
   bool OK() const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Writes to \p s an ASCII representation of the internal
+    representation of \p *this.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void ascii_dump(std::ostream& s) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Writes to std::cerr an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Writes to std::cerr an ASCII representation of the internal
+    representation of \p *this.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void ascii_dump() const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by
-  //! \ref ascii_dump) and sets \p *this accordingly.
-  //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by \ref
+    ascii_dump) and sets \p *this accordingly.  Returns
+    <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
@@ -343,10 +352,10 @@ private:
   */
   bool increase_space_dimension(const dimension_type new_space_dim);
 
-  //! \brief
-  //! Inserts in \p *this an exact copy of the congruence \p cg,
-  //! increasing the number of space dimensions if needed.
-  /*!
+  /*! \brief
+    Inserts in \p *this an exact copy of the congruence \p cg,
+    increasing the number of space dimensions if needed.
+
     This method inserts a copy of \p cg in the given form, instead of
     first strong normalizing \p cg as \ref insert would do.
   */
@@ -372,10 +381,10 @@ private:
   //! Returns a constant reference to the \p k- th congruence of the system.
   const Congruence& operator[](dimension_type k) const;
 
-  //! \brief
-  //! Substitutes a given column of coefficients by a given
-  //! affine expression.
-  /*!
+  /*! \brief
+    Substitutes a given column of coefficients by a given affine
+    expression.
+
     \param v
     Index of the column to which the affine transformation is
     substituted;
