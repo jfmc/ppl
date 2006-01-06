@@ -27,22 +27,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Row.defs.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
-#include "Congruence_System.types.hh"
 #include "Coefficient.types.hh"
-#include "Grid.types.hh"
 #include <vector>
 #include <cstddef>
-
-namespace Parma_Polyhedra_Library {
-
-// Put this in the namespace here to declare them friend later.
-
-//! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
-/*! \relates Congruence_System */
-bool
-operator==(const Congruence_System& x, const Congruence_System& y);
-
-} // namespace Parma_Polyhedra_Library
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A 2-dimensional matrix of coefficients.
