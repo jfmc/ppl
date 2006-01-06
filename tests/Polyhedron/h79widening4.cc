@@ -1,6 +1,6 @@
 /* Test Polyhedron::H79_widening_assign(): we apply this function
    to two polyhedra defined by their system of generators.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,13 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -49,10 +42,8 @@ main() TRY {
   gs2.insert(ray(A + 2*B));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph2.H79_widening_assign(ph1);
 
@@ -61,9 +52,7 @@ main() TRY {
 
   int retval = (ph2 == known_result) ? 0 : 1;
 
-#if NOISY
   print_constraints(ph2, "*** After ph2.H79_widening_assign(ph1) ***");
-#endif
 
   return retval;
 }

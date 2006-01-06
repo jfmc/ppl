@@ -1,5 +1,5 @@
 /* Test Polyhedron::generators().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -39,9 +32,7 @@ main() TRY {
   C_Polyhedron ph1(gs1);
   C_Polyhedron known_result(ph1);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-#endif
 
   const Generator_System gs2 = ph1.generators();
 
@@ -49,9 +40,7 @@ main() TRY {
 
   int retval = (ph2 == known_result) ? 0 : 1;
 
-#if NOISY
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   return retval;
 }

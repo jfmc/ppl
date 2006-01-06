@@ -1,5 +1,5 @@
 /* Declarations for the Interval class and its constituents.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -171,14 +171,16 @@ public:
   //! Returns a reference to the interval's upper bound.
   UBoundary& upper_bound();
 
-  //! \brief
-  //! Raises the interval's lower bound, if \p new_lower is higher
-  //! than the current one.
+  /*! \brief
+    Raises the interval's lower bound, if \p new_lower is higher
+    than the current one.
+  */
   void raise_lower_bound(LBoundary new_lower);
 
-  //! \brief
-  //! Lowers the interval's upper bound, if \p new_upper is lower
-  //! than the current one.
+  /*! \brief
+    Lowers the interval's upper bound, if \p new_upper is lower
+    than the current one.
+  */
   void lower_upper_bound(UBoundary new_upper);
 
   //! Turns \p *this into the empty interval.

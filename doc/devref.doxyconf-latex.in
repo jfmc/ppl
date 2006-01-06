@@ -1,4 +1,4 @@
-# Doxyfile 1.4.5
+# Doxyfile 1.4.6
 
 # This file describes the settings to be used by the documentation system
 # doxygen (www.doxygen.org) for a project
@@ -385,7 +385,7 @@ SHOW_USED_FILES        = YES
 
 # If the sources in your project are distributed over multiple directories 
 # then setting the SHOW_DIRECTORIES tag to YES will show the directory hierarchy 
-# in the documentation. The default is YES.
+# in the documentation. The default is NO.
 
 SHOW_DIRECTORIES       = NO
 
@@ -462,24 +462,31 @@ WARN_LOGFILE           =
 INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/namespaces.hh \
                          ../src/version.hh \
+                         @srcdir@/../src/version.cc \
                          @srcdir@/../src/float.types.hh \
+                         @srcdir@/../src/Float.defs.hh \
+                         @srcdir@/../src/Float.inlines.hh \
+                         @srcdir@/../src/Float.cc \
                          @srcdir@/../src/Checked_Number.types.hh \
                          @srcdir@/../src/Checked_Number.defs.hh \
                          @srcdir@/../src/Checked_Number.inlines.hh \
+                         @srcdir@/../src/Checked_Number.cc \
                          @srcdir@/../src/GMP_Integer.types.hh \
                          @srcdir@/../src/GMP_Integer.defs.hh \
                          @srcdir@/../src/GMP_Integer.inlines.hh \
                          @srcdir@/../src/Coefficient_traits_template.hh \
+                         @srcdir@/../src/Coefficient.types.hh \
+                         @srcdir@/../src/Coefficient.defs.hh \
+                         @srcdir@/../src/Coefficient.inlines.hh \
+                         @srcdir@/../src/Coefficient.cc \
                          @srcdir@/../src/Limits.hh \
-                         @srcdir@/../src/Native_Integer.types.hh \
-                         @srcdir@/../src/Native_Integer.defs.hh \
-                         @srcdir@/../src/Native_Integer.inlines.hh \
                          @srcdir@/../src/checked.defs.hh \
                          @srcdir@/../src/checked.inlines.hh \
                          @srcdir@/../src/checked_float.inlines.hh \
                          @srcdir@/../src/checked_int.inlines.hh \
                          @srcdir@/../src/checked_mpq.inlines.hh \
                          @srcdir@/../src/checked_mpz.inlines.hh \
+                         @srcdir@/../src/checked.cc \
                          @srcdir@/../src/Init.types.hh \
                          @srcdir@/../src/Init.defs.hh \
                          @srcdir@/../src/Init.cc \
@@ -595,7 +602,12 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Polyhedra_Powerset.types.hh \
                          @srcdir@/../src/Polyhedra_Powerset.defs.hh \
                          @srcdir@/../src/Polyhedra_Powerset.inlines.hh \
+                         @srcdir@/../src/Polyhedra_Powerset.cc \
                          @srcdir@/../src/algorithms.hh \
+                         @srcdir@/../src/LP_Problem.types.hh \
+                         @srcdir@/../src/LP_Problem.defs.hh \
+                         @srcdir@/../src/LP_Problem.inlines.hh \
+                         @srcdir@/../src/LP_Problem.cc \
                          @srcdir@/../src/DB_Row.types.hh \
                          @srcdir@/../src/DB_Row.defs.hh \
                          @srcdir@/../src/DB_Row.inlines.hh \
@@ -605,6 +617,7 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/BD_Shape.types.hh \
                          @srcdir@/../src/BD_Shape.defs.hh \
                          @srcdir@/../src/BD_Shape.inlines.hh \
+                         @srcdir@/../src/BD_Shape.cc \
                          ../interfaces/C/ppl_c.h \
                          @srcdir@/../interfaces/C/ppl_c.cc \
                          @srcdir@/../interfaces/Prolog/Prolog_interface.dox \

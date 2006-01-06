@@ -1,5 +1,5 @@
 /* Time class declaration.
-   Copyright (C) 2002-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2002-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
 
@@ -36,25 +36,28 @@ bool operator!=(const Time& x, const Time& y);
 //! Returns <CODE>true</CODE> if and only if \p x is shorter than \p y.
 bool operator<(const Time& x, const Time& y);
 
-//! \brief
-//! Returns <CODE>true</CODE> if and only if \p x is shorter than
-//! or equal to \p y.
+/*! \brief
+  Returns <CODE>true</CODE> if and only if \p x is shorter than
+  or equal to \p y.
+*/
 bool operator<=(const Time& x, const Time& y);
 
 //! Returns <CODE>true</CODE> if and only if \p x is longer than \p y.
 bool operator>(const Time& x, const Time& y);
 
-//! \brief
-//! Returns <CODE>true</CODE> if and only if \p x is longer than
-//! or equal to \p y.
+/*! \brief
+  Returns <CODE>true</CODE> if and only if \p x is longer than
+  or equal to \p y.
+*/
 bool operator>=(const Time& x, const Time& y);
 
 //! Returns the sum of \p x and \p y.
 Time operator+(const Time& x, const Time& y);
 
-//! \brief
-//! Returns the difference of \p x and \p y or the null interval,
-//! if \p x is shorter than \p y.
+/*! \brief
+  Returns the difference of \p x and \p y or the null interval,
+  if \p x is shorter than \p y.
+*/
 Time operator-(const Time& x, const Time& y);
 
 } // namespace Parma_Watchdog_Library
@@ -71,22 +74,25 @@ public:
   //! Constructor with seconds and microseconds.
   Time(unsigned long s, unsigned long m);
 
-  //! \brief
-  //! Returns the number of whole seconds contained in the represented
-  //! time interval.
+  /*! \brief
+    Returns the number of whole seconds contained in the represented
+    time interval.
+  */
   unsigned long seconds() const;
 
-  //! \brief
-  //! Returns the number of microseconds that, when added to the number
-  //! of seconds returned by seconds(), give the represent time interval.
+  /*! \brief
+    Returns the number of microseconds that, when added to the number
+    of seconds returned by seconds(), give the represent time interval.
+  */
   unsigned long microseconds() const;
 
   //! Adds \p y to \p *this.
   Time& operator+=(const Time& y);
 
-  //! \brief
-  //! Subtracts \p y from \p *this; if \p *this is shorter than \p y,
-  //! \p *this is set to the null interval,
+  /*! \brief
+    Subtracts \p y from \p *this; if \p *this is shorter than \p y,
+    \p *this is set to the null interval.
+  */
   Time& operator-=(const Time& y);
 
   //! Checks if all the invariants are satisfied.

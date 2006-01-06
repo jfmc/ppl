@@ -1,5 +1,5 @@
 /* Test Polyhedra_Powerset<PH>::BGP99_extrapolation_assign().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,13 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 int
 main() TRY {
@@ -63,13 +56,11 @@ main() TRY {
   BDS_Set bdss2(bdss1);
   bdss1.add_disjunct(bds4);
 
-#if NOISY
   using namespace Parma_Polyhedra_Library::IO_Operators;
-  cout << "*** bdss1 ***" << endl
+  nout << "*** bdss1 ***" << endl
        << bdss1 << endl;
-  cout << "*** bdss2 ***" << endl
+  nout << "*** bdss2 ***" << endl
        << bdss2 << endl;
-#endif
 
   TBD_Shape bds5(2);
   bds5.add_constraint(-A + B >= 4);
@@ -86,13 +77,11 @@ main() TRY {
 
   int retval = bdss1.geometrically_equals(known_result) ? 0 : 1;
 
-#if NOISY
-  cout
+  nout
     << "*** bdss1.BGP99_extrapolation_assign"
     << "(bdss2, widen_fun_ref(&H79_widening_assign), 3) ***"
     << endl
     << bdss1 << endl;
-#endif
 
   return retval;
 }

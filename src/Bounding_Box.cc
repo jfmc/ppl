@@ -1,5 +1,5 @@
 /* Bounding_Box class implementation (non-inline functions).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,19 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the 
-  //! \ref CC76_widening "CC76-widening" between \p *this and \p y.
-  /*!
-    \param y                 A bounding box that <EM>must</EM>
-                             be contained in \p *this.
-    \param first             An iterator that points to the first
-                             stop-point.
-    \param last		     An iterator that points one past the last
-                             stop-point.
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                            are dimension-incompatible.
-  */
 template <typename Iterator>
 void
 PPL::Bounding_Box::CC76_widening_assign(const Bounding_Box& y,
@@ -165,7 +152,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const PPL::Bounding_Box& bbox) {
     }
     else
       s << "+inf)";
-    s << std::endl;
+    s << "\n";
   }
   return s;
 }

@@ -1,5 +1,5 @@
 /* Test Polyhedron::add_space_dimensions_and_project().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -44,9 +37,7 @@ main() TRY {
 
   C_Polyhedron ph(gs);
 
-#if NOISY
   print_generators(ph, "*** ph ***");
-#endif
 
   ph.add_space_dimensions_and_project(1);
 
@@ -58,9 +49,7 @@ main() TRY {
 
   int retval = (ph == known_result) ? 0 : 1;
 
-#if NOISY
   print_generators(ph, "*** After add_space_dimensions_and_project ***");
-#endif
 
   return retval;
 }

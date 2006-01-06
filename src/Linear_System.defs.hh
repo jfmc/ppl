@@ -1,5 +1,5 @@
 /* Linear_System class declaration.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -159,14 +159,16 @@ public:
   //! Returns the value of the sortedness flag.
   bool is_sorted() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! the system topology is <CODE>NECESSARILY_CLOSED</CODE>.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    the system topology is <CODE>NECESSARILY_CLOSED</CODE>.
+  */
   bool is_necessarily_closed() const;
 
-  //! \brief
-  //! Returns the number of rows in the system
-  //! that represent either lines or equalities.
+  /*! \brief
+    Returns the number of rows in the system
+    that represent either lines or equalities.
+  */
   dimension_type num_lines_or_equalities() const;
 
   //! Returns the index of the first pending row.
@@ -176,9 +178,10 @@ public:
   dimension_type num_pending_rows() const;
   //@} // Accessors
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is sorted,
-  //! without checking for duplicates.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is sorted,
+    without checking for duplicates.
+  */
   bool check_sorted() const;
 
   //! Sets the system topology to <CODE>NECESSARILY_CLOSED</CODE>.
@@ -227,14 +230,16 @@ public:
   */
   void add_rows_and_columns(dimension_type n);
 
-  //! \brief
-  //! Adds a copy of \p r to the system,
-  //! automatically resizing the system or the row's copy, if needed.
+  /*! \brief
+    Adds a copy of \p r to the system,
+    automatically resizing the system or the row's copy, if needed.
+  */
   void insert(const Linear_Row& r);
 
-  //! \brief
-  //! Adds a copy of the given row to the pending part of the system,
-  //! automatically resizing the system or the row, if needed.
+  /*! \brief
+    Adds a copy of the given row to the pending part of the system,
+    automatically resizing the system or the row, if needed.
+  */
   void insert_pending(const Linear_Row& r);
 
   //! Adds a copy of the given row to the system.
@@ -255,37 +260,40 @@ public:
   //! Adds a copy of the rows of `y' to the pending part of `*this'.
   void add_pending_rows(const Linear_System& y);
 
-  //! \brief
-  //! Sorts the non-pending rows (in growing order) and eliminates
-  //! duplicated ones.
+  /*! \brief
+    Sorts the non-pending rows (in growing order) and eliminates
+    duplicated ones.
+  */
   void sort_rows();
 
-  //! \brief
-  //! Sorts the rows (in growing order) form \p first_row to
-  //! \p last_row and eliminates duplicated ones.
+  /*! \brief
+    Sorts the rows (in growing order) form \p first_row to
+    \p last_row and eliminates duplicated ones.
+  */
   void sort_rows(dimension_type first_row, dimension_type last_row);
 
-  //! \brief
-  //! Assigns to \p *this the result of merging its rows with
-  //! those of \p y, obtaining a sorted system.
-  /*!
+  /*! \brief
+    Assigns to \p *this the result of merging its rows with
+    those of \p y, obtaining a sorted system.
+
     Duplicated rows will occur only once in the result.
     On entry, both systems are assumed to be sorted and have
     no pending rows.
   */
   void merge_rows_assign(const Linear_System& y);
 
-  //! \brief
-  //! Sorts the pending rows and eliminates those that also occur
-  //! in the non-pending part of the system.
+  /*! \brief
+    Sorts the pending rows and eliminates those that also occur
+    in the non-pending part of the system.
+  */
   void sort_pending_and_remove_duplicates();
 
   class With_Saturation_Matrix_iterator;
 
-  //! \brief
-  //! Sorts the system, removing duplicates, keeping the saturation
-  //! matrix consistent.
-  /*!
+  /*! \brief
+    Sorts the system, removing duplicates, keeping the saturation
+    matrix consistent.
+
     \param sat
     Saturation matrix with rows corresponding to the rows of \p *this.
   */
@@ -305,10 +313,10 @@ public:
   */
   dimension_type gauss(dimension_type n_lines_or_equalities);
 
-  //! \brief
-  //! Back-substitutes the coefficients to reduce
-  //! the complexity of the system.
-  /*!
+  /*! \brief
+    Back-substitutes the coefficients to reduce
+    the complexity of the system.
+
     Takes an upper triangular system having \p n_lines_or_equalities rows.
     For each row, starting from the one having the minimum number of
     coefficients different from zero, computes the expression of an element
@@ -317,9 +325,10 @@ public:
   */
   void back_substitute(dimension_type n_lines_or_equalities);
 
-  //! \brief
-  //! Applies Gaussian's elimination and back-substitution so as to
-  //! simplify the linear system.
+  /*! \brief
+    Applies Gaussian's elimination and back-substitution so as to
+    simplify the linear system.
+  */
   void simplify();
 
   //! Applies the Gram-Schmidt orthogonalization method to the system.
@@ -329,17 +338,19 @@ public:
   */
   void gram_schmidt();
 
-  //! Normalizes the system by dividing each row for the GCD of the
-  //! row's elements.
+  /*! \brief
+    Normalizes the system by dividing each row for the GCD of the
+    row's elements.
+  */
   void normalize();
 
   //! Clears the system deallocating all its rows.
   void clear();
 
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
-  /*!
+  /*! \brief
+    Writes to \p s an ASCII representation of the internal
+    representation of \p *this.
+
     Prints the topology, the number of rows, the number of columns and
     the \p sorted flag.  The specialized methods provided by Constraint_System
     and Generator_System take care of properly printing the contents of the
@@ -347,11 +358,11 @@ public:
   */
   void ascii_dump(std::ostream& s) const;
 
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
-  //! if successful, <CODE>false</CODE> otherwise.
-  /*!
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by \ref
+    ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+    if successful, <CODE>false</CODE> otherwise.
+
     Reads into a Linear_System object the information produced by the
     output of <CODE>ascii_dump()</CODE>.  The specialized methods
     provided by Constraint_System and Generator_System take care of
@@ -385,11 +396,11 @@ private:
   //! The index of the first pending row.
   dimension_type index_first_pending;
 
-  //! \brief
-  //! <CODE>true</CODE> if rows are sorted in the ascending order as
-  //! defined by
-  //! <CODE>bool compare(const Linear_Row&, const Linear_Row&)</CODE>.
-  //! If <CODE>false</CODE> may not be sorted.
+  /*! \brief
+    <CODE>true</CODE> if rows are sorted in the ascending order as defined by
+    <CODE>bool compare(const Linear_Row&, const Linear_Row&)</CODE>.
+    If <CODE>false</CODE> may not be sorted.
+  */
   bool sorted;
 
   //! Ordering predicate (used when implementing the sort algorithm).

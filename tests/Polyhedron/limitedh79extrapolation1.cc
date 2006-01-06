@@ -1,5 +1,5 @@
 /* Test Polyhedron::limited_H79_extrapolation_assign().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   Variable x(0);
@@ -42,9 +35,7 @@ main() TRY {
 
   C_Polyhedron ph1(cs1);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ****");
-#endif
 
   Constraint_System cs2;
   cs2.insert(x >= 0);
@@ -54,9 +45,7 @@ main() TRY {
 
   C_Polyhedron ph2(cs2);
 
-#if NOISY
   print_constraints(ph2, "*** ph2 ****");
-#endif
 
   Constraint_System cs;
   cs.insert(x >= 0);
@@ -64,9 +53,7 @@ main() TRY {
   cs.insert(x <= 5);
   cs.insert(y <= 5);
 
-#if NOISY
   print_constraints(cs, "*** cs ****");
-#endif
 
   C_Polyhedron computed_result = ph2;
   computed_result.limited_H79_extrapolation_assign(ph1, cs);
@@ -76,10 +63,8 @@ main() TRY {
   known_result.add_constraint(y >= 0);
   known_result.add_constraint(x <= 5);
 
-#if NOISY
   print_constraints(computed_result,
 		    "*** After limited_H79_extrapolation_assign ****");
-#endif
 
   return (computed_result == known_result) ? 0 : 1;
 }

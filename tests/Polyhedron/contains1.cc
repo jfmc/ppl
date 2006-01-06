@@ -1,5 +1,5 @@
 /* Test Polyhedron::contains(const Polyhedron&).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -41,41 +34,33 @@ main() TRY {
   segment.add_constraint(x <= 1);
   segment.add_constraint(y == 0);
 
-#if NOISY
   print_constraints(segment, "*** segment constraints ***");
   print_generators(segment, "*** segment generators ***");
-#endif
 
   C_Polyhedron halfline(2);
   halfline.add_constraint(x >= 0);
   halfline.add_constraint(y == 0);
 
-#if NOISY
   print_constraints(halfline, "*** halfline constraints ***");
   print_generators(halfline, "*** halfline generators ***");
-#endif
 
   bool segment_includes_halfline = segment.contains(halfline);
 
-#if NOISY
-  cout << "segment ";
+  nout << "segment ";
   if (segment_includes_halfline)
-    cout << "includes ";
+    nout << "includes ";
   else
-    cout << "does not include ";
-  cout << "or is equal to halfline" << endl;
-#endif
+    nout << "does not include ";
+  nout << "or is equal to halfline" << endl;
 
   bool halfline_includes_segment = halfline.contains(segment);
 
-#if NOISY
-  cout << "halfline ";
+  nout << "halfline ";
   if (halfline_includes_segment)
-    cout << "includes ";
+    nout << "includes ";
   else
-    cout << "does not include ";
-  cout << "or is equal to segment" << endl;
-#endif
+    nout << "does not include ";
+  nout << "or is equal to segment" << endl;
 
   return (halfline_includes_segment && !segment_includes_halfline) ? 0 : 1;
 }

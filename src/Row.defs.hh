@@ -1,5 +1,5 @@
 /* Row class declaration.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -81,9 +81,10 @@ private:
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Parma_Polyhedra_Library::Row : private Row_Impl_Handler {
 public:
-  //! \brief
-  //! Wrapper class to represent a set of flags with bits in a native
-  //! unsigned integral type.
+  /*! \brief
+    Wrapper class to represent a set of flags with bits in a native
+    unsigned integral type.
+  */
   class Flags {
   public:
     //! Constructs an object with all the flags unset.
@@ -92,14 +93,16 @@ public:
     //! Returns <CODE>true</CODE> if and only if \p *this and \p y are equal.
     bool operator==(const Flags& y) const;
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if \p *this and \p y
-    //! are different.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if \p *this and \p y
+      are different.
+    */
     bool operator!=(const Flags& y) const;
 
-    //! \brief
-    //! Writes to \p s an ASCII representation of the internal
-    //! representation of \p *this.
+    /*! \brief
+      Writes to \p s an ASCII representation of the internal
+      representation of \p *this.
+    */
     void ascii_dump(std::ostream& s) const;
 
     //! Uses the ASCII Flags representation from \p s to recreate *this.
@@ -131,9 +134,10 @@ public:
     //! Resets the bits in \p mask.
     void reset_bits(base_type mask);
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if all the bits
-    //! in \p mask are set.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if all the bits
+      in \p mask are set.
+    */
     bool test_bits(base_type mask) const;
 
   private:
@@ -228,10 +232,10 @@ public:
   */
   void assign(Row& y);
 
-  //! \brief
-  //! Allocates memory for a default constructed Row object, setting
-  //! flags to \p f and allowing for \p capacity coefficients at most.
-  /*!
+  /*! \brief
+    Allocates memory for a default constructed Row object, setting
+    flags to \p f and allowing for \p capacity coefficients at most.
+
     It is assumed that no allocation has been performed before
     (otherwise, a memory leak will occur).
     After execution, the size of the Row object is zero.
@@ -283,9 +287,10 @@ public:
   */
   void normalize();
 
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Writes to \p s an ASCII representation of the internal
+    representation of \p *this.
+  */
   void ascii_dump(std::ostream& s) const;
 
   //! Uses the ASCII Row representation at \p s to recreate *this.
@@ -295,24 +300,28 @@ public:
   */
   bool ascii_load(std::istream& s);
 
-  //! \brief
-  //! Returns a lower bound to the total size in bytes of the memory
-  //! occupied by \p *this.
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
+  */
   memory_size_type total_memory_in_bytes() const;
 
-  //! \brief
-  //! Returns a lower bound to the size in bytes of the memory
-  //! managed by \p *this.
+  /*! \brief
+    Returns a lower bound to the size in bytes of the memory
+    managed by \p *this.
+  */
   memory_size_type external_memory_in_bytes() const;
 
-  //! \brief
-  //! Returns the total size in bytes of the memory occupied by \p *this,
-  //! provided the capacity of \p *this is given by \p capacity.
+  /*! \brief
+    Returns the total size in bytes of the memory occupied by \p *this,
+    provided the capacity of \p *this is given by \p capacity.
+  */
   memory_size_type total_memory_in_bytes(dimension_type capacity) const;
 
-  //! \brief
-  //! Returns the size in bytes of the memory managed by \p *this,
-  //! provided the capacity of \p *this is given by \p capacity.
+  /*! \brief
+    Returns the size in bytes of the memory managed by \p *this,
+    provided the capacity of \p *this is given by \p capacity.
+  */
   memory_size_type external_memory_in_bytes(dimension_type capacity) const;
 
   //! Checks if all the invariants are satisfied.
@@ -383,8 +392,10 @@ public:
   //! Uses the standard delete operator to free the memory \p p points to.
   static void operator delete(void* p);
 
-  //! \brief Placement version:
-  //! uses the standard operator delete to free the memory \p p points to.
+  /*! \brief
+    Placement version:
+    uses the standard operator delete to free the memory \p p points to.
+  */
   static void operator delete(void* p, dimension_type capacity);
   //@} // Custom allocator and deallocator
 
@@ -446,9 +457,10 @@ public:
   Coefficient_traits::const_reference operator[](dimension_type k) const;
   //@} // Subscript operators
 
-  //! \brief
-  //! Returns a lower bound to the total size in bytes of the memory
-  //! occupied by \p *this.
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
+  */
   memory_size_type total_memory_in_bytes() const;
 
   //! Returns the total size in bytes of the memory occupied by \p *this.

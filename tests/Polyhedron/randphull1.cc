@@ -1,5 +1,5 @@
 /* Compute poly-hulls of random polytopes.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 int
@@ -49,7 +42,7 @@ count_points(const C_Polyhedron& ph) {
 } // namespace
 
 #if NOISY
-#define COUNT(ph) cout << count_points(ph) << endl
+#define COUNT(ph) nout << count_points(ph) << endl
 #else
 #define COUNT(ph) (void) count_points(ph)
 #endif

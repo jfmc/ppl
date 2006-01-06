@@ -1,5 +1,5 @@
 /* Test BD_Shape::add_constraints_and_minimize().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   Variable A(0);
@@ -40,9 +33,7 @@ main() TRY {
   cs.insert(B == 5);
   bd1.add_constraints_and_minimize(cs);
 
-#if NOISY
   print_constraints(bd1, "*** bd1.add_constraints_and_minimize(cs) ***");
-#endif
 
   TBD_Shape known_result(2);
   known_result.add_constraint(A >= 0);
@@ -51,9 +42,7 @@ main() TRY {
 
   int retval = (bd1 == known_result) ? 0 : 1;
 
-#if NOISY
   print_constraints(known_result, "*** known_result ***");
-#endif
 
   return retval;
 }

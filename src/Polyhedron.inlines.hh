@@ -1,5 +1,5 @@
 /* Polyhedron class implementation: inline functions.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Interval.defs.hh"
 #include "Generator.defs.hh"
+#include "LP_Problem.defs.hh"
 #include <algorithm>
 #include <deque>
 
@@ -449,18 +450,17 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	  box.set_empty();
 	  return;
 	}
-#if 0
-      // If `complexity' allows it, use simplex to determine whether or not
-      // the polyhedron is empty.
-      if (complexity == SIMPLEX_COMPLEXITY) {
-	Linear_Expression obj = Linear_Expression::zero();
-	Generator g(point());
-	if (con_sys.primal_simplex(obj, g) == UNFEASIBLE_PROBLEM) {
+      // If `complexity' allows it, use the LP_Problem solver to determine
+      // whether or not the polyhedron is empty.
+      if (complexity == SIMPLEX_COMPLEXITY
+	  // TODO: find a workaround for NNC polyhedra.
+	  && is_necessarily_closed()) {
+	LP_Problem lp(con_sys);
+	if (!lp.is_satisfiable()) {
 	  box.set_empty();
 	  return;
 	}
       }
-#endif
     }
   }
   else
@@ -536,8 +536,8 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	// For the purpose of shrinking intervals, this is
 	// (morally) turned into `Variable(varid) rel -n/d'.
 	mpq_class q;
-	assign(q.get_num(), raw_value(n), ROUND_NOT_NEEDED);
-	assign(q.get_den(), raw_value(d), ROUND_NOT_NEEDED);
+	assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
+	assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
 	q.canonicalize();
 	// Turn `n/d' into `-n/d'.
 	q = -q;
@@ -620,8 +620,8 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	  for (dimension_type j = space_dim; j-- > 0; ) {
 	    Coefficient_traits::const_reference n = g.coefficient(Variable(j));
 	    mpq_class q;
-	    assign(q.get_num(), raw_value(n), ROUND_NOT_NEEDED);
-	    assign(q.get_den(), raw_value(d), ROUND_NOT_NEEDED);
+	    assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
+	    assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
 	    q.canonicalize();
 	    const ERational r(q, ROUND_NOT_NEEDED);
 	    LBoundary lb(r,(g_type == Generator::CLOSURE_POINT

@@ -1,5 +1,5 @@
 /* Test BD_Shape::affine_image().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
@@ -43,9 +36,7 @@ test1() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(z >= 3);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   TBD_Shape known_result(3);
   known_result.add_constraint(x >= -1);
@@ -56,9 +47,7 @@ test1() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_image(x, -x) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -76,9 +65,7 @@ test2() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(z >= 3);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   TBD_Shape known_result(3);
   known_result.add_constraint(x <= -3);
@@ -89,9 +76,7 @@ test2() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_image(x, -z) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -108,9 +93,7 @@ test3() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= 1);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   TBD_Shape known_result(2);
   known_result.add_constraint(x <= 0);
@@ -122,9 +105,7 @@ test3() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_image(x, -y + 1) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -141,9 +122,7 @@ test4() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= 1);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   TBD_Shape known_result(2);
   known_result.add_constraint(2*x - 2*y == -1);
@@ -154,9 +133,7 @@ test4() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_image(x, -2*y + 1, -2) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -173,9 +150,7 @@ test5() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= 1);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   TBD_Shape known_result(2);
   known_result.add_constraint(2*x <= -1);
@@ -187,9 +162,7 @@ test5() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_image(x, -2*y + 1, 2) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -207,9 +180,7 @@ test6() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= -1);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   TBD_Shape known_result(2);
   known_result.add_constraint(x <= 5);
@@ -223,9 +194,7 @@ test6() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_image(x, 2*x + y + 1) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -243,9 +212,7 @@ test7() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= -1);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   TBD_Shape known_result(2);
   known_result.add_constraint(x <= 3);
@@ -259,9 +226,7 @@ test7() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_image(x, -2*x + y + 1) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -279,9 +244,7 @@ test8() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= -1);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   TBD_Shape known_result(2);
   known_result.add_constraint(5*x <= 6);
@@ -293,9 +256,7 @@ test8() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_image(x, 2*x - 3*y + 1, 5) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -313,9 +274,7 @@ test9() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= -1);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   TBD_Shape known_result(2);
   known_result.add_constraint(5*x <= 4);
@@ -327,9 +286,7 @@ test9() {
 
   bool ok = (bd == known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_image(x, -2*x - 3*y + 1, 5) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -347,9 +304,7 @@ test10() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(y >= -1);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   bd.affine_image(x, 2*x - 3*y + 1, -5);
 
@@ -364,16 +319,14 @@ test10() {
   TBD_Shape T_known_result(known_result);
   bool ok = bd.contains(T_known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_image(x, 2*x - 3*y + 1, -5) ***");
-#endif
 
   if (ok) {
     Checked_Number<mpq_class, Extended_Number_Policy> distance;
     rectilinear_distance_assign(distance, T_known_result, bd, ROUND_UP);
-#if NOISY
-    std::cout << "Rectilinear distance = " << distance << std::endl;
-#endif
+
+    nout << "Rectilinear distance = " << distance << endl;
+
     ok = (distance <= 1);
   }
 
@@ -393,9 +346,7 @@ test11() {
   bd.add_constraint(y <= 2);
   bd.add_constraint(z <= 3);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   bd.affine_image(x, y + 5*z, 3);
 
@@ -410,16 +361,14 @@ test11() {
   TBD_Shape T_known_result(known_result);
   bool ok = bd.contains(T_known_result);
 
-#if NOISY
   print_constraints(bd, "*** bd.affine_image(x, y + 5*z, 3) ***");
-#endif
 
   if (ok) {
     Checked_Number<mpq_class, Extended_Number_Policy> distance;
     rectilinear_distance_assign(distance, T_known_result, bd, ROUND_UP);
-#if NOISY
-    std::cout << "Rectilinear distance = " << distance << std::endl;
-#endif
+
+    nout << "Rectilinear distance = " << distance << endl;
+
     ok = (distance <= 1);
   }
 

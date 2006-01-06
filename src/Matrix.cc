@@ -1,5 +1,5 @@
 /* Matrix class implementation (non-inline functions).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -259,8 +259,7 @@ PPL::Matrix::ascii_dump(std::ostream& s) const {
   const Matrix& x = *this;
   dimension_type x_num_rows = x.num_rows();
   dimension_type x_num_columns = x.num_columns();
-  s << x_num_rows << " x " << x_num_columns
-    << std::endl;
+  s << x_num_rows << " x " << x_num_columns << "\n";
   for (dimension_type i = 0; i < x_num_rows; ++i)
     x[i].ascii_dump(s);
 }
@@ -311,6 +310,7 @@ void
 PPL::Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
   TEMP_INTEGER(tmp);
   const dimension_type n = cycles.size();
+  assert(cycles[n - 1] == 0);
   for (dimension_type k = num_rows(); k-- > 0; ) {
     Row& rows_k = rows[k];
     for (dimension_type i = 0, j = 0; i < n; i = ++j) {

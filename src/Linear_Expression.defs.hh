@@ -1,5 +1,5 @@
 /* Linear_Expression class declaration.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -144,50 +144,50 @@ void swap(Parma_Polyhedra_Library::Linear_Expression& x,
 
 //! A linear expression.
 /*!
-    An object of the class Linear_Expression represents the linear expression
-    \f[
-      \sum_{i=0}^{n-1} a_i x_i + b
-    \f]
-    where \f$n\f$ is the dimension of the vector space,
-    each \f$a_i\f$ is the integer coefficient
-    of the \p i -th variable \f$x_i\f$
-    and \f$b\f$ is the integer for the inhomogeneous term.
+  An object of the class Linear_Expression represents the linear expression
+  \f[
+    \sum_{i=0}^{n-1} a_i x_i + b
+  \f]
+  where \f$n\f$ is the dimension of the vector space,
+  each \f$a_i\f$ is the integer coefficient
+  of the \f$i\f$-th variable \f$x_i\f$
+  and \f$b\f$ is the integer for the inhomogeneous term.
 
-    \par How to build a linear expression.
+  \par How to build a linear expression.
 
-    Linear expressions are the basic blocks for defining
-    both constraints (i.e., linear equalities or inequalities)
-    and generators (i.e., lines, rays, points and closure points).
-    A full set of functions is defined to provide a convenient interface
-    for building complex linear expressions starting from simpler ones
-    and from objects of the classes Variable and Coefficient:
-    available operators include unary negation,
-    binary addition and subtraction,
-    as well as multiplication by a Coefficient.
-    The space dimension of a linear expression is defined as the maximum
-    space dimension of the arguments used to build it:
-    in particular, the space dimension of a Variable <CODE>x</CODE>
-    is defined as <CODE>x.id()+1</CODE>,
-    whereas all the objects of the class Coefficient have space dimension zero.
+  Linear expressions are the basic blocks for defining
+  both constraints (i.e., linear equalities or inequalities)
+  and generators (i.e., lines, rays, points and closure points).
+  A full set of functions is defined to provide a convenient interface
+  for building complex linear expressions starting from simpler ones
+  and from objects of the classes Variable and Coefficient:
+  available operators include unary negation,
+  binary addition and subtraction,
+  as well as multiplication by a Coefficient.
+  The space dimension of a linear expression is defined as the maximum
+  space dimension of the arguments used to build it:
+  in particular, the space dimension of a Variable <CODE>x</CODE>
+  is defined as <CODE>x.id()+1</CODE>,
+  whereas all the objects of the class Coefficient have space dimension zero.
 
-    \par Example
-    The following code builds the linear expression \f$4x - 2y - z + 14\f$,
-    having space dimension \f$3\f$:
-    \code
+  \par Example
+  The following code builds the linear expression \f$4x - 2y - z + 14\f$,
+  having space dimension \f$3\f$:
+  \code
   Linear_Expression e = 4*x - 2*y - z + 14;
-    \endcode
-    Another way to build the same linear expression is:
-    \code
+  \endcode
+  Another way to build the same linear expression is:
+  \code
   Linear_Expression e1 = 4*x;
   Linear_Expression e2 = 2*y;
   Linear_Expression e3 = z;
   Linear_Expression e = Linear_Expression(14);
   e += e1 - e2 - e3;
-    \endcode
-    Note that \p e1, \p e2 and \p e3 have space dimension 1, 2 and 3,
-    respectively; also, in the fourth line of code, \p e is created
-    with space dimension zero and then extended to space dimension 3
-    in the fifth line.
+  \endcode
+  Note that \p e1, \p e2 and \p e3 have space dimension 1, 2 and 3,
+  respectively; also, in the fourth line of code, \p e is created
+  with space dimension zero and then extended to space dimension 3
+  in the fifth line.
 */
 class Parma_Polyhedra_Library::Linear_Expression : private Linear_Row {
 public:
@@ -200,9 +200,10 @@ public:
   //! Destructor.
   ~Linear_Expression();
 
-  //! \brief
-  //! Builds the linear expression corresponding
-  //! to the inhomogeneous term \p n.
+  /*! \brief
+    Builds the linear expression corresponding
+    to the inhomogeneous term \p n.
+  */
   explicit Linear_Expression(Coefficient_traits::const_reference n);
 
   //! Builds the linear expression corresponding to the variable \p v.
@@ -225,10 +226,10 @@ public:
   */
   explicit Linear_Expression(const Constraint& c);
 
-  //! \brief
-  //! Builds the linear expression corresponding to generator \p g
-  //! (for points and closure points, the divisor is not copied).
-  /*!
+  /*! \brief
+    Builds the linear expression corresponding to generator \p g
+    (for points and closure points, the divisor is not copied).
+
     Given the generator
     \f$g = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$
     (where, for lines and rays, we have \f$d = 1\f$),
@@ -255,9 +256,10 @@ public:
   //! Returns the (zero-dimension space) constant 0.
   static const Linear_Expression& zero();
 
-  //! \brief
-  //! Returns a lower bound to the total size in bytes of the memory
-  //! occupied by \p *this.
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
+  */
   memory_size_type total_memory_in_bytes() const;
 
   //! Returns the size in bytes of the memory managed by \p *this.

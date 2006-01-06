@@ -1,5 +1,5 @@
 /* SEND + MORE = MONEY.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,18 +22,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace Parma_Polyhedra_Library {
   // Import all the output operators into the main PPL namespace.
   using IO_Operators::operator<<;
 }
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 // The classic cryptarithmetic puzzle:
 //
@@ -122,16 +116,15 @@ main() TRY {
 		      S, E, N, D, M, O, R, Y,
 		      C1, C2, C3, C4);
 	  if (!ph.is_empty()) {
-#if NOISY
-	    cout << "Solution constraints" << endl;
+	    nout << "Solution constraints" << endl;
 	    const Constraint_System& cs = ph.constraints();
-	    copy(cs.begin(), cs.end(),
-		 ostream_iterator<Constraint>(cout, "\n"));
-	    cout << "Solution generators" << endl;
+	    std::copy(cs.begin(), cs.end(),
+		      std::ostream_iterator<Constraint>(nout, "\n"));
+	    nout << "Solution generators" << endl;
 	    const Generator_System& gs = ph.generators();
-	    copy(gs.begin(), gs.end(),
-		 ostream_iterator<Generator>(cout, "\n"));
-#endif
+	    std::copy(gs.begin(), gs.end(),
+		      std::ostream_iterator<Generator>(nout, "\n"));
+
 	    if (solution_found)
 	      return 1;
 

@@ -1,5 +1,5 @@
 /* Test Polyhedra_Powerset<PH>::geometrically_covers().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 int
 main(void) {
@@ -50,21 +44,19 @@ main(void) {
   Polyhedra_Powerset<C_Polyhedron> ps3(1, EMPTY);
   ps3.add_disjunct(ph3);
 
-#if NOISY
-  cout << "ps12 = " << ps12 << endl
+  nout << "ps12 = " << ps12 << endl
        << " ps3 = " << ps3 << endl;
-#endif
 
   if (ps12.geometrically_covers(ps3)) {
-#if NOISY
-    cout << "ps12 covers ps3." << endl;
-#endif
+
+    nout << "ps12 covers ps3." << endl;
+
     return 0;
   }
   else {
-#if NOISY
-    cout << "ps12 does not cover ps3." << endl;
-#endif
+
+    nout << "ps12 does not cover ps3." << endl;
+
     return 0;
   }
 }

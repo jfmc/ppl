@@ -1,5 +1,5 @@
 /* Test some functionality of class Linear_System.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,12 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "files.hh"
 #include <fstream>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
+using std::fstream;
+using std::ios_base;
 
 namespace {
 
@@ -69,13 +65,11 @@ ascii_dump_load() {
     if (ls1 == ls2)
       continue;
 
-#if NOISY
-    cout << "Linear_System::ascii_dump/load test failed." << endl
+    nout << "Linear_System::ascii_dump/load test failed." << endl
 	 << "m1.ascii_dump() gives" << endl;
-    ls1.ascii_dump(cout);
-    cout << "m2.ascii_dump() gives" << endl;
-    ls2.ascii_dump(cout);
-#endif
+    ls1.ascii_dump(nout);
+    nout << "m2.ascii_dump() gives" << endl;
+    ls2.ascii_dump(nout);
 
     exit(1);
   }

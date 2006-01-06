@@ -1,5 +1,5 @@
 /* Test Polyhedron::relation_with(c).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 int
 main() TRY {
@@ -42,20 +36,17 @@ main() TRY {
   cs.insert(y >= 5);
 
   C_Polyhedron ph(cs);
-#if NOISY
+
   print_generators(ph, "--- ph ---");
-#endif
 
   // An equality constraint non-intersecting the polyhedron.
   Constraint c(y == -1);
-#if NOISY
+
   print_constraint(c, "--- c ---");
-#endif
 
   Poly_Con_Relation rel = ph.relation_with(c);
-#if NOISY
-  cout << "ph.relation_with(c) == " << rel << endl;
-#endif
+
+  nout << "ph.relation_with(c) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
   return (rel == known_result) ? 0 : 1;

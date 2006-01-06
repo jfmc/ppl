@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -80,12 +80,9 @@ libppl.la \
 
 if USE_NATIVE_INTEGERS
 
-COEFFICIENT_TYPES_INCLUDE_FILES = \
-  Native_Integer.types.hh
+COEFFICIENT_TYPES_INCLUDE_FILES =
 
-COEFFICIENT_DEFS_INCLUDE_FILES = \
-  Native_Integer.defs.hh \
-  Native_Integer.inlines.hh
+COEFFICIENT_DEFS_INCLUDE_FILES =
 
 endif
 
@@ -258,7 +255,6 @@ Checked_Number.cc \
 Float.cc \
 Constraint.cc \
 Constraint_System.cc \
-simplex.cc \
 Generator_System.cc \
 Generator.cc \
 Init.cc \
@@ -279,6 +275,7 @@ Polyhedron_chdims.cc \
 Polyhedron_widenings.cc \
 C_Polyhedron.cc \
 NNC_Polyhedron.cc \
+BD_Shape.cc \
 Polyhedra_Powerset.cc \
 Row.cc \
 Linear_Row.cc \
@@ -300,8 +297,8 @@ DOC_FILES = \
 namespaces.hh \
 GMP_Integer.types.hh \
 Checked_Number.types.hh \
-Native_Integer.types.hh \
 Coefficient.types.hh \
+globals.types.hh \
 globals.defs.hh \
 Variable.types.hh \
 Linear_Expression.types.hh \
@@ -320,7 +317,6 @@ NNC_Polyhedron.types.hh \
 BD_Shape.types.hh \
 GMP_Integer.defs.hh \
 Checked_Number.defs.hh \
-Native_Integer.defs.hh \
 Coefficient.defs.hh \
 Variable.defs.hh \
 Linear_Expression.defs.hh \

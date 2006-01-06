@@ -1,5 +1,5 @@
 /* Some incorrect uses of the function BD_Shape::add_constraint().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,12 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
+using std::invalid_argument;
 
 namespace {
 
@@ -46,9 +41,9 @@ error1() {
     bd1.add_constraint(y < 0);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -71,9 +66,9 @@ error2() {
     bd1.add_constraint(y - x + z >= 0);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -87,15 +82,15 @@ error3() {
 
   try {
     // This is an invalid use of the function
-    // BD_Shape::CH78_widening_assign(bd1): it is illegal to apply
+    // BD_Shape::BHMZ05_widening_assign(bd1): it is illegal to apply
     // this function to two polyhedra that are not dimensional
     // compatible.
-    bd2.CH78_widening_assign(bd1);
+    bd2.BHMZ05_widening_assign(bd1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -123,15 +118,15 @@ error4() {
 
   try {
     // This is an invalid use of the function
-    // BD_Shape::limited_CH78_extrapolation_assign(bd, cs): it is
+    // BD_Shape::limited_BHMZ05_extrapolation_assign(bd, cs): it is
     // illegal to apply this function to a system of constraints that
     // is not dimension-compatible with the two polyhedra.
-    bd2.limited_CH78_extrapolation_assign(bd1, cs);
+    bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -150,15 +145,15 @@ error5() {
 
   try {
     // This is an invalid use of the function
-    // BD_Shape::limited_CH78_extrapolation_assign(bd2, cs): it is
+    // BD_Shape::limited_BHMZ05_extrapolation_assign(bd2, cs): it is
     // illegal to apply this function to two polyhedra that are not
     // dimension-compatible.
-    bd2.limited_CH78_extrapolation_assign(bd1, cs);
+    bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -185,15 +180,15 @@ error6() {
 
   try {
     // This is an invalid use of the function
-    // BD_Shape::limited_CH78_extrapolation_assign(bd, cs): it is
+    // BD_Shape::limited_BHMZ05_extrapolation_assign(bd, cs): it is
     // illegal to apply this function to a system of constraints that
     // has a strict-inequality.
-    bd2.limited_CH78_extrapolation_assign(bd1, cs);
+    bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -221,9 +216,9 @@ error7() {
     bd.affine_image(x, coeff1, d);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -246,9 +241,9 @@ error8() {
     bd.affine_image(y, x + 1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -273,9 +268,9 @@ error9() {
     bd.affine_image(y, x + z + 1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -295,15 +290,14 @@ error10() {
     bd2.CC76_extrapolation_assign(bd1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
   }
 }
-
 
 void
 error11() {
@@ -326,9 +320,9 @@ error11() {
     bd.affine_image(x, coeff1, d);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -351,9 +345,9 @@ error12() {
     bd.affine_image(y, y - x);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -376,15 +370,14 @@ error13() {
     bd1.add_constraint(y - x + z >= 0);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
   }
 }
-
 
 void
 error14() {
@@ -402,9 +395,9 @@ error14() {
     bd1.add_constraint(2*y - 3*x <= 0);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+
+    nout << "invalid_argument: " << e.what() << endl << endl;
+
   }
   catch (...) {
     exit(1);
@@ -412,7 +405,6 @@ error14() {
 }
 
 } // namespace
-
 
 int
 main() TRY {

@@ -1,5 +1,5 @@
 /* Polyhedron class implementation: conversion().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -444,9 +444,9 @@ PPL::Polyhedron::conversion(Linear_System& source,
       if (scalar_prod[index_non_zero] < 0) {
 	// The ray `dest[index_non_zero]' lies on the wrong half-space:
 	// we change it to have the opposite direction.
-	negate(scalar_prod[index_non_zero]);
+	neg_assign(scalar_prod[index_non_zero]);
 	for (dimension_type j = dest_num_columns; j-- > 0; )
-	  negate(dest[index_non_zero][j]);
+	  neg_assign(dest[index_non_zero][j]);
       }
       // Having changed a line to a ray, we set `dest' to be a
       // non-sorted system, we decrement the number of lines of `dest' and,

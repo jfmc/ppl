@@ -1,5 +1,5 @@
 /* Test the allocation error recovery facility of the library.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -43,13 +43,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 # include <unistd.h>
 #endif
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 // If GMP does not support exceptions the test is pointless.
 // Cygwin has an almost dummy definition of setrlimit().
 #if !GMP_SUPPORTS_EXCEPTIONS \
@@ -81,15 +74,15 @@ compute_open_hypercube_generators(dimension_type dimension) {
 #define LIMIT(WHAT) \
 do { \
   if (getrlimit(WHAT, &t) != 0) { \
-    cerr << "getrlimit failed: " << strerror(errno) << endl; \
+    std::cerr << "getrlimit failed: " << strerror(errno) << endl;	\
     exit(1); \
   } \
   t.rlim_cur = bytes; \
   if (setrlimit(WHAT, &t) != 0) { \
-    cerr << "setrlimit failed: " << strerror(errno) << endl; \
+    std::cerr << "setrlimit failed: " << strerror(errno) << endl;	\
     exit(1); \
   } \
-} while(0)
+} while (0)
 
 void
 limit_memory(unsigned long bytes) {
@@ -120,10 +113,8 @@ guarded_compute_open_hypercube_generators(dimension_type dimension,
     compute_open_hypercube_generators(dimension);
     return true;
   }
-  catch (const bad_alloc&) {
-#if NOISY
-    cout << "out of virtual memory" << endl;
-#endif
+  catch (const std::bad_alloc&) {
+    nout << "out of virtual memory" << endl;
     return false;
   }
   catch (...) {
@@ -169,9 +160,7 @@ main() TRY {
   dimension_type dimension = 0;
   do {
     ++dimension;
-#if NOISY
-    cout << "Trying dimension " << dimension << endl;
-#endif
+    nout << "Trying dimension " << dimension << endl;
   }
   while (guarded_compute_open_hypercube_generators(dimension, INIT_MEMORY));
 
@@ -179,9 +168,7 @@ main() TRY {
   unsigned long upper_bound = INIT_MEMORY;
   do {
     upper_bound *= 2;
-#if NOISY
-    cout << "Trying upper bound " << upper_bound << endl;
-#endif
+    nout << "Trying upper bound " << upper_bound << endl;
   }
   while (!guarded_compute_open_hypercube_generators(dimension, upper_bound));
 
@@ -189,19 +176,15 @@ main() TRY {
   int lower_bound = upper_bound/2;
   do {
     int test_memory = (lower_bound+upper_bound)/2;
-#if NOISY
-    cout << "Probing " << test_memory << endl;
-#endif
+    nout << "Probing " << test_memory << endl;
     if (guarded_compute_open_hypercube_generators(dimension, test_memory))
       upper_bound = test_memory;
     else
       lower_bound = test_memory;
   } while (upper_bound-lower_bound > 1024);
 
-#if NOISY
-  cout << "Estimated memory for dimension " << dimension
+  nout << "Estimated memory for dimension " << dimension
        << ": " << (lower_bound+upper_bound)/2 << " bytes" << endl;
-#endif
 
   return 0;
 }

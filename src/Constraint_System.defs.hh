@@ -1,5 +1,5 @@
 /* Constraint_System class declaration.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -147,87 +147,34 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! contains one or more strict inequality constraints.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains one or more strict inequality constraints.
+  */
   bool has_strict_inequalities() const;
 
-  //! \brief
-  //! Removes all the constraints from the constraint system
-  //! and sets its space dimension to 0.
+  /*! \brief
+    Removes all the constraints from the constraint system
+    and sets its space dimension to 0.
+  */
   void clear();
 
-  //! \brief
-  //! Inserts in \p *this a copy of the constraint \p c,
-  //! increasing the number of space dimensions if needed.
+  /*! \brief
+    Inserts in \p *this a copy of the constraint \p c,
+    increasing the number of space dimensions if needed.
+  */
   void insert(const Constraint& c);
 
-  //! \brief
-  //! Applies the primal simplex algorithm so as to optimize the value
-  //! of the objective function \p expr on the system of constraints.
-  /*!
-    \return
-    A LP_Problem_Status flag indicating the outcome of the optimization
-    attempt (unfeasible, unbounded or solved problem).
-
-    \param expr
-    The objective function to be optimized.
-
-    \param m
-    The optimization mode requested.
-
-    \param ext_n
-    On exit, if the problem has been solved, will contain the numerator
-    of the optimal value for \p expr.
-
-    \param ext_d
-    On exit, if the problem has been solved, will contain the denominator
-    of the optimal value for \p expr.
-
-    \param optimizing_point
-    On exit, if the problem has been solved, will contain a feasible
-    point on which \p expr takes the optimal value.
-
-    \exception std::invalid_argument
-    Thrown if the constraint system contains any strict inequality.
-
-    If the optimization problem is unfeasible or unbounded,
-    the parameters \p ext_n, \p ext_d and \p optimizing_point
-    will be left untouched.
+  /*! \brief
+    Returns the singleton system containing only
+    Constraint::zero_dim_false().
   */
-  LP_Problem_Status primal_simplex(const Linear_Expression& expr,
-				   Optimization_Mode m,
-				   Coefficient& ext_n,
-				   Coefficient& ext_d,
-				   Generator& optimizing_point) const;
-
-  //! Checks satisfiability of \p *this using the primal simplex algorithm.
-  /*!
-    \return
-    <CODE>true</CODE> if the constraint system is satisfiable;
-    <CODE>false</CODE> otherwise.
-
-    \param feasible_point
-    On exit, if the constraint system is satisfiable, will contain a
-    feasible point.
-
-    \exception std::invalid_argument
-    Thrown if the constraint system contains any strict inequality.
-
-    If the optimization problem is unfeasible, the parameter
-    \p feasible_point will be left untouched.
-  */
-  bool is_satisfiable(Generator& feasible_point) const;
-
-  //! \brief
-  //! Returns the singleton system containing only
-  //! Constraint::zero_dim_false().
   static const Constraint_System& zero_dim_empty();
 
   //! An iterator over a system of constraints.
   /*!
     A const_iterator is used to provide read-only access
-    to each constraint contained in an object of Constraint_System.
+    to each constraint contained in a Constraint_System object.
 
     \par Example
     The following code prints the system of constraints
@@ -270,14 +217,16 @@ public:
     //! Postfix increment operator.
     const_iterator operator++(int);
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are identical.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if
+      \p *this and \p y are identical.
+    */
     bool operator==(const const_iterator& y) const;
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are different.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if
+      \p *this and \p y are different.
+    */
     bool operator!=(const const_iterator& y) const;
 
   private:
@@ -297,10 +246,11 @@ public:
     void skip_forward();
   };
 
-  //! \brief
-  //! Returns the const_iterator pointing to the first constraint,
-  //! if \p *this is not empty;
-  //! otherwise, returns the past-the-end const_iterator.
+  /*! \brief
+    Returns the const_iterator pointing to the first constraint,
+    if \p *this is not empty;
+    otherwise, returns the past-the-end const_iterator.
+  */
   const_iterator begin() const;
 
   //! Returns the past-the-end const_iterator.
@@ -316,17 +266,19 @@ public:
   bool OK() const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Writes to \p s an ASCII representation of the internal
+    representation of \p *this.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void ascii_dump(std::ostream& s) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by
-  //! \ref ascii_dump) and sets \p *this accordingly.
-  //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    \ref ascii_dump) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
@@ -351,20 +303,22 @@ private:
   //! Builds an empty system of constraints having the specified topology.
   explicit Constraint_System(Topology topol);
 
-  //! \brief
-  //! Builds a system of \p n_rows constraints on a \p n_columns - 1
-  //! dimensional space (including the \f$\epsilon\f$ dimension, if
-  //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
+  /*! \brief
+    Builds a system of \p n_rows constraints on a \p n_columns - 1
+    dimensional space (including the \f$\epsilon\f$ dimension, if
+    \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
+  */
   Constraint_System(Topology topol,
 		    dimension_type n_rows, dimension_type n_columns);
 
-  //! \brief
-  //! Adjusts \p *this so that it matches the topology and
-  //! the number of space dimensions given as parameters
-  //! (adding or removing columns if needed).
-  //! Returns <CODE>false</CODE> if and only if \p topol is
-  //! equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
-  //! contains strict inequalities.
+  /*! \brief
+    Adjusts \p *this so that it matches the topology and
+    the number of space dimensions given as parameters
+    (adding or removing columns if needed).
+    Returns <CODE>false</CODE> if and only if \p topol is
+    equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
+    contains strict inequalities.
+  */
   bool adjust_topology_and_space_dimension(Topology topol,
 					   dimension_type num_dimensions);
 
@@ -377,9 +331,7 @@ private:
   //! Returns <CODE>true</CODE> if \p g satisfies all the constraints.
   bool satisfies_all_constraints(const Generator& g) const;
 
-  //! \brief
-  //! Substitutes a given column of coefficients by a given
-  //! affine expression.
+  //! Substitutes a given column of coefficients by a given affine expression.
   /*!
     \param v
     Index of the column to which the affine transformation is substituted.
@@ -424,46 +376,23 @@ private:
   //! Returns the number of inequality constraints.
   dimension_type num_inequalities() const;
 
-  //! \brief
-  //! Applies Gaussian's elimination and back-substitution so as
-  //! to provide a partial simplification of the system of constraints.
-  /*!
+  /*! \brief
+    Applies Gaussian's elimination and back-substitution so as
+    to provide a partial simplification of the system of constraints.
+
     It is assumed that the system has no pending constraints.
   */
   void simplify();
 
-  //! \brief
-  //! Inserts in \p *this a copy of the constraint \p c,
-  //! increasing the number of space dimensions if needed.
-  //! It is a pending constraint.
+  /*! \brief
+    Inserts in \p *this a copy of the constraint \p c,
+    increasing the number of space dimensions if needed.
+    It is a pending constraint.
+  */
   void insert_pending(const Constraint& c);
 
   //! Adds low-level constraints to the constraint system.
   void add_low_level_constraints();
-
-  //! \brief
-  //! Applies the primal simplex algorithm so as to maximize the value
-  //! of \p cost_function on the system of constraints.
-  /*!
-    \return
-    A LP_Problem_Status flag indicating the outcome of the maximization
-    attempt (unfeasible, unbounded or solved problem).
-
-    \param cost_function
-    The cost function to be maximized. It could be modified
-    during the call.
-
-    \param maximizing_point
-    On exit, if the problem has been solved, will contain a feasible
-    point on which \p cost_function takes the maximal value.
-
-    If the optimization problem is unfeasible or unbounded,
-    the parameter \p maximizing_point will be left untouched.
-    It is assumed that the constraint system contains
-    no strict inequalities.
-  */
-  LP_Problem_Status primal_simplex(Linear_Expression& cost_function,
-				   Generator& maximizing_point) const;
 };
 
 // Constraint_System.inlines.hh is not included here on purpose.

@@ -1,5 +1,5 @@
 /* LP_Problem class implementation: non-inline functions.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -61,6 +61,7 @@ unsigned long num_iterations = 0;
 } // namespace
 #endif // PPL_NOISY_SIMPLEX
 
+// FIXME: pass new_constraint by const&
 bool
 PPL::LP_Problem::incrementality(Constraint new_constraint) {
   // If the new constraint has a space dimension greater than the original one,
@@ -158,7 +159,7 @@ PPL::LP_Problem::incrementality(Constraint new_constraint) {
   // be <= 0. If the condition is not satisfied, negate all the row.
   if (tableau_last_row[0] > 0)
     for (dimension_type i = tableau_num_columns; i-- > 0; )
-      negate(tableau_last_row[i]);
+      neg_assign(tableau_last_row[i]);
 
   // Now we are ready the set the value of the artificial_variable.
   // This is the index of the inserted variable, this must be memorized in the
@@ -473,7 +474,7 @@ PPL::LP_Problem::prepare_first_phase() {
     Row& tableau_i = tableau[i];
     if (tableau_i[0] > 0)
       for (dimension_type j = tableau_old_n_cols; j-- > 0; )
-	negate(tableau_i[j]);
+	neg_assign(tableau_i[j]);
   }
 
   // Add the columns for all the slack variables, plus an additional
@@ -879,7 +880,7 @@ PPL::LP_Problem::second_phase() {
   Row new_cost = input_obj_function;
   if (opt_mode == MINIMIZATION)
     for (dimension_type i = new_cost.size(); i-- > 0; )
-      negate(new_cost[i]);
+      neg_assign(new_cost[i]);
 
   // Substitute properly the cost function in the `costs' Matrix.
   const dimension_type cost_zero_size = working_cost.size();
@@ -923,11 +924,20 @@ void
 PPL::LP_Problem::evaluate_objective_function(const Generator& evaluating_point,
 					     Coefficient& ext_n,
 					     Coefficient& ext_d) const {
+  const dimension_type ep_space_dim = evaluating_point.space_dimension();
+  if (space_dimension() < ep_space_dim)
+    throw std::invalid_argument("PPL::LP_Problem::"
+				"evaluate_objective_function(p, n, d):\n"
+				"*this and p are dimension incompatible.");
+  if (!evaluating_point.is_point())
+    throw std::invalid_argument("PPL::LP_Problem::"
+				"evaluate_objective_function(p, n, d):\n"
+				"p is not a point.");
+
   // Compute the smallest space dimension  between `input_obj_function'
   // and `evaluating_point'.
   const dimension_type space_dim
-    = std::min(evaluating_point.space_dimension(),
-	       input_obj_function.space_dimension());
+    = std::min(ep_space_dim, input_obj_function.space_dimension());
   // Compute the optimal value of the cost function.
   ext_n = input_obj_function.inhomogeneous_term();
   for (dimension_type i = space_dim; i-- > 0; )
@@ -937,67 +947,67 @@ PPL::LP_Problem::evaluate_objective_function(const Generator& evaluating_point,
   normalize2(ext_n, evaluating_point.divisor(), ext_n, ext_d);
 }
 
+// FIXME: assert(OK()) before returning.
 bool
 PPL::LP_Problem::is_satisfiable() const {
-#if PPL_NOISY_SIMPLEX
-  num_iterations = 0;
-#endif
- LP_Problem& x = const_cast<LP_Problem&>(*this);
-
- LP_Problem_Status s_status;
-
- // The space dimension of the solution to be computed.
- // Note: here we can not use method Constraint_System::space_dimension(),
- // because if the constraint system is NNC, then even the epsilon
- // dimension has to be interpreted as a normal dimension.
- const dimension_type space_dim = x.input_cs.num_columns() - 1;
-
- // Check for the `status' attribute in trivial cases.
+  // Check `status' to filter out trivial cases.
   switch (status) {
   case UNSATISFIABLE:
+    assert(OK());
     return false;
   case SATISFIABLE:
-    return true;
+    // Intentionally fall through.
   case UNBOUNDED:
-    return true;
+    // Intentionally fall through.
   case OPTIMIZED:
+    assert(OK());
     return true;
-  case PARTIALLY_SATISFIABLE: {
-    const dimension_type pending_input_cs_rows = pending_input_cs.num_rows();
-    // For each constraint apply incrementality.
-    // FIXME: probably there's a way to apply incrementality in one shot, this
-    //        only an attempt, but it should work.
-    for (dimension_type i = pending_input_cs_rows; i-- > 0; ) {
-      if (status != UNSATISFIABLE)
-	x.incrementality(pending_input_cs[i]);
-      x.input_cs.insert(pending_input_cs[i]);
+  case PARTIALLY_SATISFIABLE:
+    {
+      LP_Problem& x = const_cast<LP_Problem&>(*this);
+      // For each constraint apply incrementality.
+      // FIXME: probably there's a way to apply incrementality in one shot,
+      // this is only an attempt, but it should work.
+      for (dimension_type i = x.pending_input_cs.num_rows(); i-- > 0; ) {
+	if (status != UNSATISFIABLE)
+	  x.incrementality(pending_input_cs[i]);
+	x.input_cs.insert(pending_input_cs[i]);
+      }
+      // There are no more pending constraints.
+      x.pending_input_cs.clear();
+      if (status == UNSATISFIABLE) {
+	assert(OK());
+	return false;
+      }
+      else {
+	x.last_generator = compute_generator();
+	assert(OK());
+	return true;
+      }
     }
-    // There are no more pending constraints.
-    x.pending_input_cs.clear();
-    if (status == UNSATISFIABLE)
-      return false;
-    x.last_generator = compute_generator();
-    return true;
-  }
     break;
   case UNSOLVED:
     break;
   }
 
+  LP_Problem& x = const_cast<LP_Problem&>(*this);
+  const dimension_type space_dim = x.space_dimension();
   // Reset internal objects.
   x.tableau.clear();
   x.dim_map.clear();
   // Compute the initial tableau.
-  s_status = x.compute_tableau();
+  LP_Problem_Status s_status = x.compute_tableau();
 
   // Check for trivial cases.
   switch (s_status) {
   case UNFEASIBLE_LP_PROBLEM:
+    assert(OK());
     return false;
   case UNBOUNDED_LP_PROBLEM:
     // A feasible point has to be returned: the origin.
     // Ensure the right space dimension is obtained.
     x.last_generator = point(0*Variable(space_dim-1));
+    assert(OK());
     return true;
   case OPTIMIZED_LP_PROBLEM:
     // Check for the special case of an empty tableau,
@@ -1005,6 +1015,7 @@ PPL::LP_Problem::is_satisfiable() const {
     if (x.tableau.num_rows() == 0) {
       // Ensure the right space dimension is obtained.
       x.last_generator = point(0*Variable(space_dim-1));
+      assert(OK());
       return true;
     }
     break;
@@ -1017,10 +1028,8 @@ PPL::LP_Problem::is_satisfiable() const {
   // Actually solve the LP problem.
   x.base = std::vector<dimension_type> (x.tableau.num_rows());
 
-  // This will contain the new cost function for the 1st phase problem.
   // Adds the necessary slack variables to get the 1st phase problem.
   x.prepare_first_phase();
-
   // Solve the first phase of the primal simplex algorithm.
   bool first_phase_successful = x.compute_simplex();
 
@@ -1043,57 +1052,6 @@ PPL::LP_Problem::is_satisfiable() const {
   // Erase the slack variables.
   x.erase_slacks();
   return true;
-}
-
-void
-PPL::LP_Problem::ascii_dump(std::ostream& s) const {
-  using namespace IO_Operators;
-
-  s << "input_cs\n";
-  input_cs.ascii_dump(s);
-  s << "\ninput_obj_function\n";
-  input_obj_function.ascii_dump(s);
-  s << "\nopt_mode " << (opt_mode == MAXIMIZATION ? "MAX" : "MIN") << "\n";
-
-  s << "\nstatus: ";
-  switch (status) {
-  case UNSATISFIABLE:
-    s << "UNSAT";
-    break;
-  case SATISFIABLE:
-    s << "SATIS";
-    break;
-  case UNBOUNDED:
-    s << "UNBOU";
-    break;
-  case OPTIMIZED:
-    s << "OPTIM";
-    break;
-  case PARTIALLY_SATISFIABLE:
-    s << "P_SAT";
-    break;
-  case UNSOLVED:
-    s << "UNSOL";
-    break;
-  }
-  s << "\n";
-
-  s << "\ntableau\n";
-  tableau.ascii_dump(s);
-  s << "\nworking_cost\n";
-  working_cost.ascii_dump(s);
-
-  const dimension_type base_size = base.size();
-  s << "\nbase (" << base_size << ")\n";
-  for (dimension_type i = 0; i != base_size; ++i)
-    s << base[i] << ' ';
-
-  const dimension_type dim_map_size = dim_map.size();
-  s << "\ndim_map (" << dim_map_size << ")\n";
-  for (std::map<dimension_type, dimension_type>::const_iterator
-	 i = dim_map.begin(), iend = dim_map.end(); i != iend; ++i)
-    s << i->first << "->" << i->second << ' ';
-  s << std::endl;
 }
 
 bool
@@ -1205,4 +1163,59 @@ PPL::LP_Problem::OK() const {
 
   // All checks passed.
   return true;
+}
+
+void
+PPL::LP_Problem::ascii_dump(std::ostream& s) const {
+  using namespace IO_Operators;
+
+  s << "input_cs\n";
+  input_cs.ascii_dump(s);
+  s << "\ninput_obj_function\n";
+  input_obj_function.ascii_dump(s);
+  s << "\nopt_mode " << (opt_mode == MAXIMIZATION ? "MAX" : "MIN") << "\n";
+
+  s << "\nstatus: ";
+  switch (status) {
+  case UNSATISFIABLE:
+    s << "UNSAT";
+    break;
+  case SATISFIABLE:
+    s << "SATIS";
+    break;
+  case UNBOUNDED:
+    s << "UNBOU";
+    break;
+  case OPTIMIZED:
+    s << "OPTIM";
+    break;
+  case PARTIALLY_SATISFIABLE:
+    s << "P_SAT";
+    break;
+  case UNSOLVED:
+    s << "UNSOL";
+    break;
+  }
+  s << "\n";
+
+  s << "\ntableau\n";
+  tableau.ascii_dump(s);
+  s << "\nworking_cost\n";
+  working_cost.ascii_dump(s);
+
+  const dimension_type base_size = base.size();
+  s << "\nbase (" << base_size << ")\n";
+  for (dimension_type i = 0; i != base_size; ++i)
+    s << base[i] << ' ';
+
+  const dimension_type dim_map_size = dim_map.size();
+  s << "\ndim_map (" << dim_map_size << ")\n";
+  for (std::map<dimension_type, dimension_type>::const_iterator
+	 i = dim_map.begin(), iend = dim_map.end(); i != iend; ++i)
+    s << i->first << "->" << i->second << ' ';
+  // FIXME: no ascii_dump() for Generator?
+  // last_generator.ascii_dump(s);
+  s << "\nlast_generator\n";
+  s << last_generator << "\n";
+  s << std::endl;
 }

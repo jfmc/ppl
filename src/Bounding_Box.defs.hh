@@ -1,5 +1,5 @@
 /* Bounding_Box class declaration.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -49,20 +49,20 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  //! \brief
-  //! Returns a reference the interval that bounds
-  //! the box on the <CODE>k</CODE>-th space dimension.
+  /*! \brief
+    Returns a reference the interval that bounds
+    the box on the <CODE>k</CODE>-th space dimension.
+  */
   const Interval& operator[](dimension_type k) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this is empty.
   bool is_empty() const;
 
-  //! \brief
-  //! If the <CODE>k</CODE>-th space dimension is unbounded below,
-  //! returns <CODE>false</CODE>.
-  //! Otherwise returns <CODE>true</CODE> and set \p closed,
-  //! \p n and \p d accordingly.
-  /*!
+  /*! \brief
+    If the <CODE>k</CODE>-th space dimension is unbounded below, returns
+    <CODE>false</CODE>. Otherwise returns <CODE>true</CODE> and set
+    \p closed, \p n and \p d accordingly.
+
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
     space dimension.  If \f$I\f$ is not bounded from below, simply return
     <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
@@ -82,12 +82,11 @@ public:
   bool get_lower_bound(dimension_type k, bool& closed,
 		       Coefficient& n, Coefficient& d) const;
 
-  //! \brief
-  //! If the <CODE>k</CODE>-th space dimension is unbounded above,
-  //! returns <CODE>false</CODE>.
-  //! Otherwise returns <CODE>true</CODE> and set \p closed,
-  //! \p n and \p d accordingly.
-  /*!
+  /*! \brief
+    If the <CODE>k</CODE>-th space dimension is unbounded above, returns
+    <CODE>false</CODE>. Otherwise returns <CODE>true</CODE> and set
+    \p closed, \p n and \p d accordingly.
+
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
     space dimension.  If \f$I\f$ is not bounded from above, simply return
     <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
@@ -107,10 +106,10 @@ public:
   //! Causes the box to become empty, i.e., to represent the empty set.
   void set_empty();
 
-  //! \brief
-  //! Raises the lower bound of the interval corresponding
-  //! to the <CODE>k</CODE>-th space dimension.
-  /*!
+  /*! \brief
+    Raises the lower bound of the interval corresponding
+    to the <CODE>k</CODE>-th space dimension.
+
     Intersects the interval corresponding to the <CODE>k</CODE>-th
     space dimension
     with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
@@ -122,10 +121,10 @@ public:
 			 Coefficient_traits::const_reference n,
 			 Coefficient_traits::const_reference d);
 
-  //! \brief
-  //! Lowers the upper bound of the interval corresponding
-  //! to the <CODE>k</CODE>-th space dimension.
-  /*!
+  /*! \brief
+    Lowers the upper bound of the interval corresponding
+    to the <CODE>k</CODE>-th space dimension.
+
     Intersects the interval corresponding to the <CODE>k</CODE>-th
     space dimension
     with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
@@ -141,43 +140,48 @@ public:
   //! Returns a system of constraints corresponding to \p *this.
   Constraint_System constraints() const;
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the 
-  //! \ref CC76_widening "CC76-widening" between \p *this and \p y.
-  /*!
-    \param y                 A bounding box that <EM>must</EM>
-                             be contained in \p *this.
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are dimension-incompatible.
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref CC76_extrapolation "CC76-widening" between \p *this and \p y.
+
+    \param y
+    A bounding box that <EM>must</EM> be contained in \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
   void CC76_widening_assign(const Bounding_Box& y);
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the 
-  //! \ref CC76_widening "CC76-widening" between \p *this and \p y.
-  /*!
-    \param y                 A bounding box that <EM>must</EM>
-                             be contained in \p *this.
-    \param first             An iterator that points to the first
-                             stop-point.
-    \param last		     An iterator that points one past the last
-                             stop-point.
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                            are dimension-incompatible.
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref CC76_extrapolation "CC76-widening" between \p *this and \p y.
+
+    \param y
+    A bounding box that <EM>must</EM> be contained in \p *this.
+
+    \param first
+    An iterator that points to the first stop-point.
+
+    \param last
+    An iterator that points one past the last stop-point.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
   template <typename Iterator>
   void CC76_widening_assign(const Bounding_Box& y,
 			    Iterator first, Iterator last);
 
-
 private:
-  //! \brief
-  //! A vector of rational intervals, one for each dimension
-  //! of the vector space.
+  /*! \brief
+    A vector of rational intervals, one for each dimension
+    of the vector space.
+  */
   std::vector<Interval> vec;
-  //! \brief
-  //! A boolean flag indicating emptiness of the bounding box.
-  //! Only meaningful when \p empty_up_to_date is <CODE>true</CODE>.
+  /*! \brief
+    A boolean flag indicating emptiness of the bounding box.
+    Only meaningful when \p empty_up_to_date is <CODE>true</CODE>.
+  */
   mutable bool empty;
   //! Tells whether or not the flag \p empty is meaningful.
   mutable bool empty_up_to_date;

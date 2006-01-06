@@ -1,5 +1,5 @@
-/* Test Constraint_System::primal_simplex().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test BD_Shape::BHMZ05_widening_assign().
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,28 +22,32 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
 int
-main() {
+main() TRY {
   Variable A(0);
   Variable B(1);
   Variable C(2);
-  Linear_Expression expr(-2*A+3*B+C);
 
-  // Defining an inconsistent constraint system.
-  Constraint_System cs;
-  cs.insert(Linear_Expression(-2) >= 5);
-  for (dimension_type i = 0; i < 3; ++i)
-    cs.insert(Variable(i) >= 0);
+  TBD_Shape bd1(3);
+  TBD_Shape bd2(3);
+  TBD_Shape known_result(3);
 
-  Coefficient n;
-  Coefficient d;
-  Generator g(point());
-  LP_Problem_Status status = cs.primal_simplex(expr, MAXIMIZATION, n, d, g);
+  bd1.add_constraint(A - B <= 1);
 
-  return (status == UNFEASIBLE_LP_PROBLEM) ? 0 : 1;
+  bd2.add_constraint(A - B <= 1);
+  bd2.add_constraint(A - C <= 1);
+  bd2.add_constraint(C - B <= 0);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bd1.BHMZ05_widening_assign(bd2);
+
+  print_constraints(bd1, "*** bd1.BHMZ05_widening_assign(bd2) ***");
+
+  int retval = (bd1 == known_result) ? 0 : 1;
+
+  return retval;
+
 }
-
-
+CATCH

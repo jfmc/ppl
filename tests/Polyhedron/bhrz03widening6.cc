@@ -1,5 +1,5 @@
 /* Test Polyhedron::BHRZ03_widening_assign().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,13 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 int
 main() TRY {
@@ -51,10 +44,8 @@ main() TRY {
   gs2.insert(ray(A + 2*B + 4*C));
   C_Polyhedron ph2(gs2);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
-#endif
 
   ph2.BHRZ03_widening_assign(ph1);
 
@@ -65,9 +56,7 @@ main() TRY {
 
   int retval = (ph2 == known_result) ? 0 : 1;
 
-#if NOISY
   print_constraints(ph2, "*** After BHRZ03_widening_assign ***");
-#endif
 
   return retval;
 }

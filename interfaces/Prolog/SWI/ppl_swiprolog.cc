@@ -1,5 +1,5 @@
 /* SWI Prolog interface.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -70,6 +70,11 @@ long Prolog_min_integer;
 long Prolog_max_integer;
 
 /*!
+  Temporary used to communicate big integers between C++ and Prolog.
+*/
+mpz_class tmp_mpz_class;
+
+/*!
   Performs system-dependent initialization.
 */
 void
@@ -121,9 +126,8 @@ Prolog_put_ulong(Prolog_term_ref t, unsigned long ul) {
   else if (ul <= std::numeric_limits<int64_t>::max())
     PL_put_int64(t, static_cast<int64_t>(ul));
   else {
-    mpz_class z;
-    PPL::assign(z, ul, PPL::ROUND_NOT_NEEDED);
-    PL_unify_mpz(t, z.get_mpz_t());
+    PPL::assign_r(tmp_mpz_class, ul, PPL::ROUND_NOT_NEEDED);
+    PL_unify_mpz(t, tmp_mpz_class.get_mpz_t());
   }
   return 1;
 }
@@ -332,8 +336,6 @@ Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref a) {
   return PL_get_arg(i, t, a);
 }
 
-#include <iostream>
-using namespace std;
 /*!
   If \p c is a Prolog cons (list constructor), assign its head and
   tail to \p h and \p t, respectively.
@@ -357,19 +359,15 @@ Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
 PPL::Coefficient
 integer_term_to_Coefficient(Prolog_term_ref t) {
   assert(Prolog_is_integer(t));
-  mpz_class v;
-  PL_get_mpz(t, v.get_mpz_t());
-  PPL::Coefficient r;
-  PPL::assign(r, v, PPL::ROUND_NOT_NEEDED);
-  return r;
+  PL_get_mpz(t, tmp_mpz_class.get_mpz_t());
+  return PPL::Coefficient(tmp_mpz_class);
 }
 
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
-  mpz_class v;
-  PPL::assign(v, PPL::raw_value(n), PPL::ROUND_NOT_NEEDED);
+  PPL::assign_r(tmp_mpz_class, n, PPL::ROUND_NOT_NEEDED);
   Prolog_term_ref t = Prolog_new_term_ref();
-  PL_unify_mpz(t, v.get_mpz_t());
+  PL_unify_mpz(t, tmp_mpz_class.get_mpz_t());
   return t;
 }
 

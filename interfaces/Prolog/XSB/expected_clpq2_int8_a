@@ -1,5 +1,5 @@
 \
-Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>\n\
+Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>\n\
 this program is free software, covered by the GNU General Public License,\n\
 and you are welcome to change it and/or distribute copies of it\n\
 under certain conditions.\n\
@@ -20,7 +20,7 @@ PPL clpq ?- Y = 8
  more? yes
 PPL clpq ?- yes
 PPL clpq ?- 
-Error: an overflow has been detected by the PPL: Positive overflow.
+Error: an overflow has been detected by the PPL: Negative overflow.
 no
 PPL clpq ?- yes
 PPL clpq ?- 

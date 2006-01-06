@@ -1,5 +1,5 @@
 /* Test Polyhedron::bounded_affine_preimage().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -43,9 +36,8 @@ main() TRY {
   ph.add_constraint(B <= 4);
   ph.add_constraint(A - B <= 2);
   ph.add_constraint(A - B >= -2);
-#if NOISY
+
   print_constraints(ph, "--- ph ---");
-#endif
 
   // A longer way of computing the bounded affine preimage below.
   C_Polyhedron known_result(ph);
@@ -60,11 +52,9 @@ main() TRY {
 
   int retval = (ph == known_result) ? 0 : 1;
 
-#if NOISY
   print_generators(ph, "--- ph after "
 		   "ph.bounded_affine_preimage(B, 7-A, A+3)"
 		   " ---");
-#endif
 
   return retval;
 }

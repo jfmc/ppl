@@ -1,5 +1,5 @@
 /* Test Polyhedron::relation_with(c).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -46,10 +40,8 @@ test1() {
 
   bool ok = (rel == known_rel);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-  cout << "ph1.relation_with(A - B == 0) = " << rel << endl;
-#endif
+  nout << "ph1.relation_with(A - B == 0) = " << rel << endl;
 
   if (!ok)
     exit(1);
@@ -72,10 +64,8 @@ test2() {
 
   bool ok = (rel == known_rel);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-  cout << "ph1.relation_with(A >= 1) = " << rel << endl;
-#endif
+  nout << "ph1.relation_with(A >= 1) = " << rel << endl;
 
   if (!ok)
     exit(1);
@@ -97,10 +87,8 @@ test3() {
 
   bool ok = (rel == known_rel);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-  cout << "ph1.relation_with(A > 1) = " << rel << endl;
-#endif
+  nout << "ph1.relation_with(A > 1) = " << rel << endl;
 
   if (!ok)
     exit(1);
@@ -128,10 +116,8 @@ test4() {
 
   bool ok = (rel == known_rel);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-  cout << "ph1.relation_with(B >= 1) = " << rel << endl;
-#endif
+  nout << "ph1.relation_with(B >= 1) = " << rel << endl;
 
   if (!ok)
     exit(1);
@@ -161,10 +147,8 @@ test5() {
 
   bool ok = (rel == known_rel);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-  cout << "ph1.relation_with(B == 1) = " << rel << endl;
-#endif
+  nout << "ph1.relation_with(B == 1) = " << rel << endl;
 
   if (!ok)
     exit(1);
@@ -186,10 +170,8 @@ test6() {
 
   bool ok = (rel == known_rel);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-  cout << "ph1.relation_with(B <= 0) = " << rel << endl;
-#endif
+  nout << "ph1.relation_with(B <= 0) = " << rel << endl;
 
   if (!ok)
     exit(1);
@@ -211,10 +193,8 @@ test7() {
 
   bool ok = (rel == known_rel);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-  cout << "ph1.relation_with(A >= 0) = " << rel << endl;
-#endif
+  nout << "ph1.relation_with(A >= 0) = " << rel << endl;
 
   if (!ok)
     exit(1);
@@ -237,10 +217,8 @@ test8() {
 
   bool ok = (rel == known_rel);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-  cout << "ph1.relation_with(B < 0) = " << rel << endl;
-#endif
+  nout << "ph1.relation_with(B < 0) = " << rel << endl;
 
   if (!ok)
     exit(1);
@@ -263,10 +241,8 @@ test9() {
 
   bool ok = (rel == known_rel);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-  cout << "ph1.relation_with(A < 0) = " << rel << endl;
-#endif
+  nout << "ph1.relation_with(A < 0) = " << rel << endl;
 
   if (!ok)
     exit(1);

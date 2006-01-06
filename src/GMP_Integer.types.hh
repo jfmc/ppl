@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is free software; as a special exception the author gives
 unlimited permission to copy and/or distribute it, with or without
@@ -17,13 +17,14 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-//! Unbounded integers are implemented using the GMP library.
-/*!
+/*! \class Parma_Polyhedra_Library::GMP_Integer
+  \brief
+  Unbounded integers as provided by the GMP library.
+
   GMP_Integer is an alias for the <CODE>mpz_class</CODE> type
   defined in the C++ interface of the GMP library.
   For more information, see <CODE>http://www.swox.com/gmp/</CODE>
 */
-//! \class GMP_Integer
 typedef mpz_class GMP_Integer;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

@@ -15,7 +15,7 @@ long_double_XFAIL_TESTS=
 
 check_PROGRAMS=$(MAKEFLAGS='' make -s print_check_PROGRAMS)
 
-for instance in $instances 
+for instance in $instances
 do
 	echo "**************************** " $instance " ****************************"
 	eval xfail_tests='"$'$instance'_XFAIL_TESTS"'

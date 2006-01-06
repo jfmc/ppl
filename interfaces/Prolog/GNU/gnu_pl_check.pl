@@ -1,5 +1,5 @@
 /* Prolog main program for the PPL/GNU-Prolog predicate checker.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -19,6 +19,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
+
+prolog_system(gnu).
 
 main :-
     current_output(Old_Stream),

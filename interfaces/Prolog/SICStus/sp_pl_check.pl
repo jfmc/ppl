@@ -1,5 +1,5 @@
 /* Main program for the toy PPL/SICStus-Prolog CLP(Q) predicate checker.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,6 +21,8 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 :- set_prolog_flag(language, iso).
+
+prolog_system(sicstus).
 
 :- ensure_loaded('ppl_sicstus.pl').
 :- use_module(library(lists), [append/3, member/2]).

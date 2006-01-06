@@ -1,6 +1,6 @@
 /* Test Polyhedron::relation_with(c): we apply this function to
    a zero-dimensional, universal polyhedron.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,13 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 int
 main() TRY {
@@ -39,20 +33,15 @@ main() TRY {
   Poly_Con_Relation known_result = Poly_Con_Relation::nothing();
 
   C_Polyhedron ph;
-#if NOISY
   print_generators(ph, "--- ph ---");
-#endif
 
   // A false inequality constraint.
   Constraint c_false1(Linear_Expression(-1) >= 0);
-#if NOISY
   print_constraint(c_false1, "--- c_false1 ---");
-#endif
 
   rel = ph.relation_with(c_false1);
-#if NOISY
-  cout << "ph.relation_with(c_false1) == " << rel << endl;
-#endif
+
+  nout << "ph.relation_with(c_false1) == " << rel << endl;
 
   known_result = Poly_Con_Relation::is_disjoint();
   if (rel != known_result)
@@ -60,14 +49,11 @@ main() TRY {
 
   // A false equality constraint.
   Constraint c_false2(Linear_Expression(5) == -2);
-#if NOISY
   print_constraint(c_false2, "--- c_false2 ---");
-#endif
 
   rel = ph.relation_with(c_false2);
-#if NOISY
-  cout << "ph.relation_with(c_false2) == " << rel << endl;
-#endif
+
+  nout << "ph.relation_with(c_false2) == " << rel << endl;
 
   known_result = Poly_Con_Relation::is_disjoint();
   if (rel != known_result)
@@ -75,14 +61,11 @@ main() TRY {
 
   // A saturated inequality.
   Constraint c_saturated1(Linear_Expression(3) >= 3);
-#if NOISY
   print_constraint(c_saturated1, "--- c_saturated1 ---");
-#endif
 
   rel = ph.relation_with(c_saturated1);
-#if NOISY
-  cout << "ph.relation_with(c_saturated1) == " << rel << endl;
-#endif
+
+  nout << "ph.relation_with(c_saturated1) == " << rel << endl;
 
   known_result = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_included();
@@ -91,14 +74,11 @@ main() TRY {
 
   // A saturated equality.
   Constraint c_saturated2(Linear_Expression(1) == 1);
-#if NOISY
   print_constraint(c_saturated2, "--- c_saturated2 ---");
-#endif
 
   rel = ph.relation_with(c_saturated2);
-#if NOISY
-  cout << "ph.relation_with(c_saturated2) == " << rel << endl;
-#endif
+
+  nout << "ph.relation_with(c_saturated2) == " << rel << endl;
 
   known_result = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_included();
@@ -107,14 +87,11 @@ main() TRY {
 
   // A satisfied inequality which is not saturated.
   Constraint c_satisfied(Linear_Expression(7) >= 5);
-#if NOISY
   print_constraint(c_satisfied, "--- c_satisfied ---");
-#endif
 
   rel = ph.relation_with(c_satisfied);
-#if NOISY
-  cout << "ph.relation_with(c_satisfied) == " << rel << endl;
-#endif
+
+  nout << "ph.relation_with(c_satisfied) == " << rel << endl;
 
   known_result = Poly_Con_Relation::is_included();
   if (rel != known_result)

@@ -1,7 +1,7 @@
 /* Test Polyhedron::generalized_affine_image(v, r, e, d) and
    Polyhedron::generalized_affine_image(lhs, r, rhs): the polyhedra
    are empty.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,13 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
@@ -40,9 +33,7 @@ test1() {
 
   C_Polyhedron ph1(2, EMPTY);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   ph1.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B + 1);
 
@@ -50,12 +41,10 @@ test1() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "*** After ph1.generalized_affine_image"
 		    "(A, LESS_THAN_OR_EQUAL, B + 1) ***");
-#endif
 
-  if(!ok)
+  if (!ok)
     exit(1);
 }
 
@@ -66,9 +55,7 @@ test2() {
 
   C_Polyhedron ph1(2, EMPTY);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   ph1.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, A + B + 1);
 
@@ -76,12 +63,10 @@ test2() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "*** After ph1.generalized_affine_image"
 		    "(A + B, GREATER_THAN_OR_EQUAL, A + B + 1) ***");
-#endif
 
-  if(!ok)
+  if (!ok)
     exit(1);
 }
 

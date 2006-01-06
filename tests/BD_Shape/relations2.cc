@@ -1,5 +1,5 @@
 /* Test BD_Shape::relation_with(c).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -37,10 +31,8 @@ void test1() {
   TBD_Shape bd(0);
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) >= 0);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(0 >= 0) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(0 >= 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included()
     && Poly_Con_Relation::saturates();
@@ -54,10 +46,8 @@ void test2() {
   TBD_Shape bd(0);
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) >= 1);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(0 >= 1) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(0 >= 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
@@ -70,10 +60,8 @@ void test3() {
   TBD_Shape bd;
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(1) >= 0);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(1 >= 0) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(1 >= 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
 
@@ -91,11 +79,9 @@ void test4() {
   Constraint c(x > 1);
   Poly_Con_Relation rel = bd.relation_with(c);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
   print_constraint(c, "--- c ---");
-  cout << "bd.relation_with(c) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(c) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_disjoint();
@@ -117,11 +103,9 @@ void test5() {
   Constraint c(x > 1);
   Poly_Con_Relation rel = bd.relation_with(c);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
   print_constraint(c, "--- c ---");
-  cout << "bd.relation_with(c) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(c) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_disjoint();
@@ -140,10 +124,8 @@ void test6() {
 
   Poly_Con_Relation rel = bd.relation_with(-y >= -1);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(-y >= -1) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(-y >= -1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
@@ -164,10 +146,8 @@ void test7() {
 
   Poly_Con_Relation rel = bd.relation_with(y > 3);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(y > 3) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(y > 3) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
@@ -188,10 +168,8 @@ void test8() {
 
   Poly_Con_Relation rel = bd.relation_with(-y >= -4);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(1 >= 0) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(1 >= 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
 
@@ -208,10 +186,8 @@ void test9() {
 
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) >= -1);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(0 >= -1) == " << rel << endl;
-#endif
+  nout << "bd.relation_with(0 >= -1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
 
@@ -220,7 +196,6 @@ void test9() {
 }
 
 } // namespace
-
 
 int main() TRY {
 
@@ -237,5 +212,4 @@ int main() TRY {
   return 0;
 }
 CATCH
-
 

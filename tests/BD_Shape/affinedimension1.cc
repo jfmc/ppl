@@ -1,5 +1,5 @@
 /* Test BD_Shape::affine_dimension().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
@@ -44,28 +37,23 @@ test1() {
 
   TBD_Shape bd2(2);
 
-
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   dimension_type affine_dim1 = bd1.affine_dimension();
   dimension_type affine_dim2 = bd2.affine_dimension();
 
-#if NOISY
-  cout << endl
+  nout << endl
        << "The affine dimension of a system of `bd1' "
        << endl
        << affine_dim1
        << endl;
 
-  cout << endl
+  nout << endl
        << "The affine dimension of a system of `bd2' "
        << endl
        << affine_dim2
        << endl;  
-#endif
 
   bool ok = (affine_dim1 == affine_dim2);
 
@@ -94,27 +82,23 @@ test2() {
   bd2.add_constraint(A - D == 8);
   bd2.add_constraint(B <= 7);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   dimension_type affine_dim1 = bd1.affine_dimension();
   dimension_type affine_dim2 = bd2.affine_dimension();
 
-#if NOISY
-  cout << endl
+  nout << endl
        << "The affine dimension of a system of `bd1' "
        << endl
        << affine_dim1
        << endl; 
 
-  cout << endl
+  nout << endl
        << "The affine dimension of a system of `bd2' "
        << endl
        << affine_dim2
        << endl;
-#endif
 
   bool ok = (affine_dim1 == affine_dim2);
 
@@ -144,27 +128,23 @@ test3() {
   bd2.add_constraint(A - D == 8);
   bd2.add_constraint(B <= 7);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   dimension_type affine_dim1 = bd1.affine_dimension();
   dimension_type affine_dim2 = bd2.affine_dimension();
 
-#if NOISY
-  cout << endl
+  nout << endl
        << "The affine dimension of a system of `bd1' "
        << endl
        << affine_dim1
        << endl; 
 
-  cout << endl
+  nout << endl
        << "The affine dimension of a system of `bd2' "
        << endl
        << affine_dim2
        << endl;
-#endif
 
   bool ok = (affine_dim1 == affine_dim2);
 
@@ -188,34 +168,29 @@ test4() {
   bd2.add_constraint(A == 0);
   bd2.add_constraint(B == 2);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   dimension_type affine_dim1 = bd1.affine_dimension();
   dimension_type affine_dim2 = bd2.affine_dimension();
 
-#if NOISY
-  cout << endl
+  nout << endl
        << "The affine dimension of a system of `bd1' "
        << endl
        << affine_dim1
        << endl; 
 
-  cout << endl
+  nout << endl
        << "The affine dimension of a system of `bd2' "
        << endl
        << affine_dim2
        << endl;
-#endif
 
   bool ok = (affine_dim1 == affine_dim2);
 
   if (!ok)
     exit(1);
 }
-
 
 void
 test5() {
@@ -230,28 +205,23 @@ test5() {
   bd2.add_constraint(B == 2);
   bd2.add_constraint(B - A <= -6);
 
-
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   dimension_type affine_dim1 = bd1.affine_dimension();
   dimension_type affine_dim2 = bd2.affine_dimension();
 
-#if NOISY
-  cout << endl
+  nout << endl
        << "The affine dimension of a system of `bd1' "
        << endl
        << affine_dim1
        << endl; 
 
-  cout << endl
+  nout << endl
        << "The affine dimension of a system of `bd2' "
        << endl
        << affine_dim2
        << endl;
-#endif
 
   bool ok = (affine_dim1 == affine_dim2);
 
@@ -273,5 +243,4 @@ main() TRY {
   return 0;
 }
 CATCH
-
 

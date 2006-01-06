@@ -1,5 +1,5 @@
 /* Test BD_Shape::CC76_extrapolation_assign().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,20 +22,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   Variable A(0);
   Variable B(1);
   Variable C(2);
   Variable D(3);
-
 
   TBD_Shape bd1(4);
   TBD_Shape bd2(4);
@@ -79,21 +71,16 @@ main() TRY {
   cs.insert(C >= 0);
   cs.insert(D >= 0);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
   bd1.bds_hull_assign(bd2);
 
   bd1.limited_CC76_extrapolation_assign(bd2, cs);
 
-
-#if NOISY
   print_constraints(bd1,
 		    "bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
-#endif
 
  TBD_Shape known_result(4);
  known_result.add_constraint(A >= 0);

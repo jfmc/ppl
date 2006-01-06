@@ -1,5 +1,5 @@
 /* Ask_Tell class implementation: inline functions.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -637,7 +637,7 @@ template <typename CS>
 void
 Ask_Tell<CS>::H79_extrapolation_assign(const Ask_Tell& y) {
   using namespace IO_Operators;
-  std::cout << *this << std::endl
+  std::cout << *this << "\n"
 	    << y << std::endl;
 }
 

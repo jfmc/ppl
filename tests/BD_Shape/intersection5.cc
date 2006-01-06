@@ -1,5 +1,5 @@
 /* Test BD_Shape::intersection_assign().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,13 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 int
 main() TRY {
@@ -51,18 +44,14 @@ main() TRY {
 
   if (bd1 != bd2) {
 
-#if NOISY
     print_constraints(bd1, "*** bd1 ***");
     print_constraints(bd2, "*** bd2 ***");
-#endif
 
   }
 
   bd2.intersection_assign(bd1);
 
-#if NOISY
   print_constraints(bd2, "*** bd2.intersection_assign(bd1) ***");
-#endif
 
   int retval = (bd2 == known_result) ? 0 : 1;
 

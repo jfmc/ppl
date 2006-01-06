@@ -1,5 +1,5 @@
 /* Test Polyhedron::affine_image().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,17 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
-my_output_function(ostream& s, const Variable& v) {
+my_output_function(std::ostream& s, const Variable& v) {
   s << char('i' + v.id());
 }
 
@@ -55,18 +48,14 @@ main() TRY {
   p2.add_constraint(j == 0);
   p2.add_constraint(-i > 0);
 
-#if NOISY
   print_constraints(p1, "*** p1 ***");
   print_constraints(p2, "*** p2 ***");
-#endif
 
   p1.affine_image(j, i+2);
   p2.affine_image(j, i);
 
-#if NOISY
   print_constraints(p1, "*** p1.affine_image(j, i+2) ***");
   print_constraints(p2, "*** p2.affine_image(j, i) ***");
-#endif
 
   p1.poly_hull_assign_and_minimize(p2);
 
@@ -76,9 +65,7 @@ main() TRY {
 
   int retval = p1 == known_result ? 0 : 1;
 
-#if NOISY
   print_constraints(p1, "*** p1.poly_hull_assign_and_minimize(p2) ***");
-#endif
 
   return retval;
 }

@@ -1,5 +1,5 @@
 /* Test Polyhedron::fold_space_dimensions() for non-closed polyhedra.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 Variable A(0);
@@ -41,9 +34,7 @@ void
 test1() {
   NNC_Polyhedron ph1(3, EMPTY);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
@@ -55,9 +46,7 @@ test1() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "*** After folding {A} into B ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -70,9 +59,7 @@ test2() {
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(A + B + C < 2);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
@@ -85,14 +72,11 @@ test2() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "*** After folding {} into B ***");
-#endif
 
   if (!ok)
     exit(1);
 }
-
 
 // Test as given in [GopanDMDRS04] on page 519 but with strict constraints.
 void
@@ -103,9 +87,7 @@ test3() {
   ph1.add_constraint(B > 7);
   ph1.add_constraint(B < 12);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
@@ -119,14 +101,11 @@ test3() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "***  After folding {A} into B ***");
-#endif
 
   if (!ok)
     exit(1);
 }
-
 
 // Test folding several dimensions into a higher dimension.
 void
@@ -138,9 +117,7 @@ test4() {
   ph1.add_constraint(B < 12);
   ph1.add_constraint(C == 15);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
@@ -155,9 +132,7 @@ test4() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "***  After folding {A,B} into C ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -174,9 +149,7 @@ test5() {
   ph1.add_constraint(D > 0);
   ph1.add_constraint(D + B <= 2);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
@@ -191,9 +164,7 @@ test5() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "***  After folding {C,D} into A ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -211,9 +182,7 @@ test6() {
   ph1.add_constraint(D > 0);
   ph1.add_constraint(D + B <= 2);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
@@ -230,9 +199,7 @@ test6() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "***  After folding {B,D} into C ***");
-#endif
 
   if (!ok)
     exit(1);

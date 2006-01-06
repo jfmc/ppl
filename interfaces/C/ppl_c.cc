@@ -1,5 +1,5 @@
 /* Implementation of the C interface.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -94,7 +94,7 @@ ppl_set_error_handler(error_handler_type h) {
 }
 
 #define CATCH_STD_EXCEPTION(exception, code) \
-catch(const std::exception& e) { \
+catch (const std::exception& e) {	     \
   notify_error(code, e.what()); \
   return code; \
 }
@@ -107,7 +107,7 @@ CATCH_STD_EXCEPTION(length_error, PPL_ERROR_LENGTH_ERROR) \
 CATCH_STD_EXCEPTION(overflow_error, PPL_ARITHMETIC_OVERFLOW) \
 CATCH_STD_EXCEPTION(runtime_error, PPL_ERROR_INTERNAL_ERROR) \
 CATCH_STD_EXCEPTION(exception, PPL_ERROR_UNKNOWN_STANDARD_EXCEPTION) \
-catch(...) { \
+catch (...) {						     \
   notify_error(PPL_ERROR_UNEXPECTED_ERROR, \
 	       "completely unexpected error: a bug in the PPL"); \
   return PPL_ERROR_UNEXPECTED_ERROR; \
@@ -354,8 +354,8 @@ CATCH_ALL
 
 int
 ppl_Coefficient_to_mpz_t(ppl_const_Coefficient_t c, mpz_t z) try {
-  Result r = assign(reinterpret_mpz_class(z),
-		    raw_value(*to_const(c)),
+  Result r = assign_r(reinterpret_mpz_class(z),
+		    *to_const(c),
 		    ROUND_DIRECT);
   used(r);
   assert(r == V_EQ);
@@ -532,7 +532,7 @@ ppl_new_Constraint(ppl_Constraint_t* pc,
 		   enum ppl_enum_Constraint_Type t) try {
   Constraint* ppc;
   const Linear_Expression& lle = *to_const(le);
-  switch(t) {
+  switch (t) {
   case PPL_CONSTRAINT_TYPE_EQUAL:
     ppc = new Constraint(lle == 0);
     break;
@@ -742,36 +742,6 @@ ppl_Constraint_System_insert_Constraint(ppl_Constraint_System_t cs,
 CATCH_ALL
 
 int
-ppl_Constraint_System_maximize(ppl_const_Constraint_System_t cs,
-			       ppl_const_Linear_Expression_t le,
-			       ppl_Coefficient_t sup_n,
-			       ppl_Coefficient_t sup_d,
-			       ppl_Generator_t point) try {
-  const Constraint_System& ccs = *to_const(cs);
-  const Linear_Expression& lle = *to_const(le);
-  Coefficient& ssup_n = *to_nonconst(sup_n);
-  Coefficient& ssup_d = *to_nonconst(sup_d);
-  Generator& ppoint = *to_nonconst(point);
-  return ccs.primal_simplex(lle, MAXIMIZATION, ssup_n, ssup_d, ppoint);
-}
-CATCH_ALL
-
-int
-ppl_Constraint_System_minimize(ppl_const_Constraint_System_t cs,
-			       ppl_const_Linear_Expression_t le,
-			       ppl_Coefficient_t inf_n,
-			       ppl_Coefficient_t inf_d,
-			       ppl_Generator_t point) try {
-  const Constraint_System& ccs = *to_const(cs);
-  const Linear_Expression& lle = *to_const(le);
-  Coefficient& iinf_n = *to_nonconst(inf_n);
-  Coefficient& iinf_d = *to_nonconst(inf_d);
-  Generator& ppoint = *to_nonconst(point);
-  return ccs.primal_simplex(lle, MINIMIZATION, iinf_n, iinf_d, ppoint);
-}
-CATCH_ALL
-
-int
 ppl_Constraint_System_OK(ppl_const_Constraint_System_t cs) try {
   return to_const(cs)->OK() ? 1 : 0;
 }
@@ -874,7 +844,7 @@ ppl_new_Generator(ppl_Generator_t* pg,
   Generator* ppg;
   const Linear_Expression& lle = *to_const(le);
   const Coefficient& dd = *to_const(d);
-  switch(t) {
+  switch (t) {
   case PPL_GENERATOR_TYPE_POINT:
     ppg = new Generator(Generator::point(lle, dd));
     break;

@@ -1,5 +1,5 @@
 /* GMP_Integer class implementation: inline functions.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,8 +26,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline void
-negate(GMP_Integer& x) {
+neg_assign(GMP_Integer& x) {
   mpz_neg(x.get_mpz_t(), x.get_mpz_t());
+}
+
+inline void
+neg_assign(GMP_Integer& x, const GMP_Integer& y) {
+  mpz_neg(x.get_mpz_t(), y.get_mpz_t());
 }
 
 inline void
@@ -107,6 +112,7 @@ total_memory_in_bytes(const GMP_Integer& x) {
 
 } // namespace Parma_Polyhedra_Library
 
+/*! \relates Parma_Polyhedra_Library::GMP_Integer */
 inline void
 std::swap(Parma_Polyhedra_Library::GMP_Integer& x,
 	  Parma_Polyhedra_Library::GMP_Integer& y) {

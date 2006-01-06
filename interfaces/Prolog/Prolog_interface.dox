@@ -1,5 +1,5 @@
 /* Documentation for the Prolog interfaces.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -1691,6 +1691,170 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    Section \ref Mapping_the_Dimensions_of_the_Vector_Space
    "specifying the map_space_dimensions operator".
 
+<H2><CODE>
+  ppl_new_LP_Problem_trivial(-Handle)
+</CODE></H2>
+
+   Creates an LP Problem \f$\mathrm{LP}\f$ with
+   the feasible region the \f$0\f$-dimensional universe,
+   objective function \f$0\f$ and optimization mode <CODE>max</CODE>.
+   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{LP}\f$.
+
+<H2><CODE>
+  ppl_new_LP_Problem(+Constraint_System, +Lin_Expr, +Optimization_Mode,
+                     -Handle)
+</CODE></H2>
+
+   Creates an LP Problem \f$\mathrm{LP}\f$ with
+   the feasible region represented by <CODE>Constraint_System</CODE>,
+   objective function <CODE>Lin_Expr</CODE> and optimization mode
+   <CODE>Optimization_Mode</CODE>.
+   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{LP}\f$.
+
+<H2><CODE>
+  ppl_LP_Problem_swap(+Handle_1, +Handle_2)
+</CODE></H2>
+
+   Swaps the LP Problem referenced by <CODE>Handle_1</CODE>
+   with the one referenced by <CODE>Handle_2</CODE>.
+
+<H2><CODE>
+  ppl_delete_LP_Problem(+Handle)
+</CODE></H2>
+
+   Deletes the LP Problem referenced by <CODE>Handle</CODE>.
+   After execution,
+   <CODE>Handle</CODE> is no longer a valid handle for a PPL LP Problem.
+
+<H2><CODE>
+  ppl_LP_Problem_space_dimension(+Handle, ?Dimension_Type)
+</CODE></H2>
+
+   Unifies the dimension of the vector space in which the
+   LP Problem referenced by <CODE>Handle</CODE> is embedded
+   with <CODE>Dimension_Type</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_constraints(+Handle, -Constraint_System)
+</CODE></H2>
+
+   Unifies <CODE>Constraint_System</CODE> with a list of
+   the constraints in the constraints system
+   representing the feasible region for the LP Problem
+   referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_objective_function(+Handle, -Lin_Expr)
+</CODE></H2>
+
+   Unifies <CODE>Lin_Expr</CODE> with the objective function
+   for the LP Problem referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_optimization_mode(+Handle, ?Optimization_Mode)
+</CODE></H2>
+
+   Unifies <CODE>Optimization_Mode</CODE> with the optimization mode
+   for the LP Problem referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_clear(+Handle)
+</CODE></H2>
+
+  Resets the LP problem referenced by <CODE>Handle</CODE>
+  to be the trivial problem with
+  the feasible region the \f$0\f$-dimensional universe,
+  objective function \f$0\f$ and optimization mode <CODE>max</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_add_constraint(+Handle, +Constraint)
+</CODE></H2>
+
+   Updates the LP Problem referenced by <CODE>Handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with the constraint <CODE>Constraint</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_add_constraints(+Handle, +Constraint_System)
+</CODE></H2>
+
+   Updates the LP Problem referenced by <CODE>Handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with all the constraints in <CODE>Constraint_System</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_set_objective_function(+Handle, +Lin_Expr)
+</CODE></H2>
+
+   Updates the LP Problem referenced by <CODE>Handle</CODE>
+   so that the objective function is changed to <CODE>Lin_Expr</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_set_optimization_mode(+Handle, +Optimization_Mode)
+</CODE></H2>
+
+   Updates the LP Problem referenced by <CODE>Handle</CODE>
+   so that the optimization mode is changed to <CODE>Optimization_Mode</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_is_satisfiable(+Handle)
+</CODE></H2>
+
+  Succeeds if and only if the LP Problem referenced by
+  <CODE>Handle</CODE> is satisfiable.
+
+<H2><CODE>
+  ppl_LP_Problem_solve(+Handle, ?LP_Problem_Status)
+</CODE></H2>
+
+  Solves the LP problem  referenced by
+  <CODE>Handle</CODE> and unifies <CODE>LP_Problem_Status</CODE>
+  with:
+  <CODE>unfeasible</CODE>, if the LP problem is not satisfiable;
+  <CODE>unbounded</CODE>, if the LP problem is satisfiable but
+  there is no finite bound to the value of the objective function;
+  <CODE>optimized</CODE>, if the LP problem admits an optimal solution.
+
+<H2><CODE>
+  ppl_LP_Problem_feasible_point(+Handle, ?Generator)
+</CODE></H2>
+
+  Unifies  <CODE>Generator</CODE> with a feasible point for the LP problem
+  referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_optimizing_point(+Handle, ?Generator)
+</CODE></H2>
+
+  Unifies  <CODE>Generator</CODE> with an optimizing point for the LP problem
+  referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_optimal_value(+Handle, ?Coefficient_1, ?Coefficient_2)
+</CODE></H2>
+
+  Unifies <CODE>Coefficient_1</CODE> and <CODE>Coefficient_2</CODE>
+  with the numerator and denominator, respectively, for the optimal value
+  for the LP problem  referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_evaluate_objective_function(+Handle, +Generator,
+                                             ?Coefficient_1, ?Coefficient_2)
+</CODE></H2>
+  Evaluates the objective function of the LP problem  referenced by
+  <CODE>Handle</CODE> at point <CODE>Generator</CODE>.
+  <CODE>Coefficient_1</CODE> is unified with the numerator and
+  <CODE>Coefficient_2</CODE> is unified with the denominator of the
+  objective function value at <CODE>Generator</CODE>.
+
+<H2><CODE>
+  ppl_LP_Problem_OK(+Handle)
+</CODE></H2>
+
+   Succeeds only if the LP Problem referenced by
+   <CODE>Handle</CODE> is well formed, i.e., if it
+   satisfies all its implementation invariants.  Useful for debugging purposes.
+
 \anchor PI_Compilation
 <H1>Compilation and Installation</H1>
 
@@ -1721,10 +1885,6 @@ Your configure command would then look like
 <H2>CIAO Prolog</H2>
 
 The Ciao Prolog interface to the PPL is available
-both as a statically linked module and as a dynamically linked one.
-Only Ciao Prolog versions 1.10 #5 and later are supported.
-
-The Ciao Prolog interface to the PPL is available
 both as ``PPL enhanced'' Ciao Prolog interpreter
 and as a library that can be linked to Ciao Prolog programs.
 Only Ciao Prolog versions 1.10 #5 and later are supported.
@@ -1740,7 +1900,7 @@ on which you compiled the library, the command <CODE>make install</CODE>
 will install the executable <CODE>ppl_ciao</CODE> in the directory
 <CODE>prefix/bin</CODE>.
 The <CODE>ppl_ciao</CODE> executable is simply the Ciao Prolog
-interpreter with the Parma Polyhedra library linked in.
+interpreter with the Parma Polyhedra Library linked in.
 The only thing you should do to use the library is to
 call <CODE>ppl_initialize/0</CODE> before any other PPL predicate
 and to call <CODE>ppl_finalize/0</CODE> when you are done with the
@@ -1787,7 +1947,7 @@ on which you compiled the library, the command <CODE>make install</CODE>
 will install the executable <CODE>ppl_gprolog</CODE> in the directory
 <CODE>prefix/bin</CODE>.
 The <CODE>ppl_gprolog</CODE> executable is simply the GNU Prolog
-interpreter with the Parma Polyhedra library linked in.
+interpreter with the Parma Polyhedra Library linked in.
 The only thing you should do to use the library is to
 call <CODE>ppl_initialize/0</CODE> before any other PPL predicate
 and to call <CODE>ppl_finalize/0</CODE> when you are done with the
@@ -1824,7 +1984,7 @@ on which you compiled the library, the command <CODE>make install</CODE>
 will install the executable <CODE>ppl_sicstus</CODE> in the directory
 <CODE>prefix/bin</CODE>.
 The <CODE>ppl_sicstus</CODE> executable is simply the SICStus Prolog
-system with the Parma Polyhedra library statically linked.
+system with the Parma Polyhedra Library statically linked.
 The only thing you should do to use the library is to
 load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
 
@@ -1840,7 +2000,7 @@ the library with the <CODE>--enable-shared</CODE> option.
 
 The SWI-Prolog interface to the PPL is available
 both as a statically linked module or as a dynamically linked one.
-Only SWI-Prolog versions 5.0 and later are supported.
+Only SWI-Prolog version 5.6.0 and later versions are supported.
 
 <H3>The <CODE>ppl_pl</CODE> Executable</H3>
 
@@ -1849,7 +2009,7 @@ on which you compiled the library, the command <CODE>make install</CODE>
 will install the executable <CODE>ppl_pl</CODE> in the directory
 <CODE>prefix/bin</CODE>.
 The <CODE>ppl_pl</CODE> executable is simply the SWI-Prolog
-shell with the Parma Polyhedra library statically linked:
+shell with the Parma Polyhedra Library statically linked:
 from within <CODE>ppl_pl</CODE> all the services of the library
 are available without further action.
 
@@ -1857,9 +2017,8 @@ are available without further action.
 
 In order to dynamically load the library from SWI-Prolog you should
 simply load <CODE>prefix/lib/ppl/ppl_swiprolog.pl</CODE>.
-This will invoke <CODE>ppl_initialize/0</CODE> automatically
-but, at least for SWI-Prolog versions up to 5.0.7, it is the programmer's
-responsibility to call <CODE>ppl_finalize/0</CODE>.
+This will invoke <CODE>ppl_initialize/0</CODE> and
+<CODE>ppl_finalize/0</CODE> automatically.
 Alternatively, you can load the library directly with
 \code
 :- load_foreign_library('prefix/lib/ppl/libppl_swiprolog').
@@ -1896,7 +2055,8 @@ in your current directory or in one of the XSB library directories.
 
 The YAP Prolog interface to the PPL is available
 as a dynamically linked module.
-Only YAP versions 4.4 and later are supported.
+Only YAP versions following 5.1.0 and CVS HEAD versions starting from
+4 January 2006 are supported.
 
 In order to dynamically load the library from YAP you should
 simply load <CODE>prefix/lib/ppl/ppl_yap.pl</CODE>.

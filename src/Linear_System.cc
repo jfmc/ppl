@@ -1,5 +1,5 @@
 /* Linear_System class implementation (non-inline functions).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -117,12 +117,12 @@ PPL::Linear_System::ascii_dump(std::ostream& s) const {
   s << "topology " << (is_necessarily_closed()
 		       ? "NECESSARILY_CLOSED"
 		       : "NOT_NECESSARILY_CLOSED")
-    << std::endl
+    << "\n"
     << x_num_rows << " x " << x_num_columns
     << (x.sorted ? "(sorted)" : "(not_sorted)")
-    << std::endl
+    << "\n"
     << "index_first_pending " << x.first_pending_row()
-    << std::endl;
+    << "\n";
   for (dimension_type i = 0; i < x_num_rows; ++i)
     x[i].ascii_dump(s);
 }
@@ -838,7 +838,7 @@ PPL::Linear_System
     const bool have_to_negate = (x_k[j] < 0);
     if (have_to_negate)
       for (dimension_type h = ncols; h-- > 0; )
-	PPL::negate(x_k[h]);
+	PPL::neg_assign(x_k[h]);
     // Note: we do not mark index `k' in `check_for_sortedness',
     // because we will later negate back the row.
 
@@ -861,7 +861,7 @@ PPL::Linear_System
     if (have_to_negate)
       // Negate `x_k' to restore strong-normalization.
       for (dimension_type h = ncols; h-- > 0; )
-	PPL::negate(x_k[h]);
+	PPL::neg_assign(x_k[h]);
   }
 
   // Trying to keep sortedness.

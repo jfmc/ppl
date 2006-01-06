@@ -1,5 +1,5 @@
 /* Test linear_partition().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,18 +22,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 template <typename PH>
 Polyhedra_Powerset<NNC_Polyhedron>
 complement(const PH& ph) {
-  pair<PH, Polyhedra_Powerset<NNC_Polyhedron> > partition
+  std::pair<PH, Polyhedra_Powerset<NNC_Polyhedron> > partition
     = linear_partition(ph, PH(ph.space_dimension(), UNIVERSE));
   return partition.second;
 }
@@ -50,15 +44,11 @@ int main() TRY {
   p.add_generator(point(-x));
   p.add_generator(point(-y));
 
-#if NOISY
-  cout << "p = " << p << endl;
-#endif
+  nout << "p = " << p << endl;
 
   Polyhedra_Powerset<NNC_Polyhedron> p_c = complement(p);
 
-#if NOISY
-  cout << "complement(p) = " << p_c << endl;
-#endif
+  nout << "complement(p) = " << p_c << endl;
 
   C_Polyhedron q(2);
   q.add_constraint(x >= -1);
@@ -66,15 +56,11 @@ int main() TRY {
   q.add_constraint(y >=  1);
   q.add_constraint(y <=  3);
 
-#if NOISY
-  cout << "q = " << q << endl;
-#endif
+  nout << "q = " << q << endl;
 
   Polyhedra_Powerset<NNC_Polyhedron> q_c = complement(q);
 
-#if NOISY
-  cout << "complement(q) = " << q_c << endl;
-#endif
+  nout << "complement(q) = " << q_c << endl;
 
   // FIXME
 

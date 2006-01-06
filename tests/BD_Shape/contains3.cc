@@ -1,5 +1,5 @@
 /* Test BD_Shape::contains().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,31 +22,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   TBD_Shape bd1(0, EMPTY);
   TBD_Shape bd2(0, EMPTY);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   bool result = bd1.contains(bd2);
 
-#if NOISY
-  cout << "*** bd1.contains(bd2) ***"
+  nout << "*** bd1.contains(bd2) ***"
        << endl
        << (result ? "true" : "false")
        << endl;
-#endif
 
   int retval = result ? 0 : 1;
 

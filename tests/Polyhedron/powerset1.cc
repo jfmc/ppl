@@ -1,5 +1,5 @@
 /* Test Powerset<CS>.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,10 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_test.hh"
 #include <algorithm>
 #include <set>
-
-#ifndef NOISY 
-#define NOISY 0
-#endif
 
 namespace PPL = Parma_Polyhedra_Library;
 namespace PPL_IO =  PPL::IO_Operators;
@@ -112,7 +108,7 @@ int main() TRY {
 
   ps1.meet_assign(ps2);
 
-  //std::cout << ps1 << std::endl;
+  //nout << ps1 << std::endl;
 
   return 0;
 }

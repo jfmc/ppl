@@ -1,5 +1,5 @@
 /* Declarations of global objects.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -158,10 +158,12 @@ public:
 extern const Throwable* volatile abandon_expensive_computations;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! If the pointer abandon_expensive_computations is found
-//! to be nonzero, the exception it points to is thrown.
-/*! \relates Throwable */
+/*! \brief
+  If the pointer abandon_expensive_computations is found
+  to be nonzero, the exception it points to is thrown.
+
+  \relates Throwable
+*/
 #endif
 void
 maybe_abandon();
@@ -175,10 +177,10 @@ struct From_Bounding_Box {
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! If \f$g\f$ is the GCD of \p x and \p y, the values of \p x and \p y
-//! divided by \f$g\f$ are assigned to \p nx and \p ny, respectively.
-/*!
+/*! \brief
+  If \f$g\f$ is the GCD of \p x and \p y, the values of \p x and \p y
+  divided by \f$g\f$ are assigned to \p nx and \p ny, respectively.
+
   \note \p x and \p nx may be the same object and likewise for
         \p y and \p ny.  Any other aliasing results in undefined
 	behavior.

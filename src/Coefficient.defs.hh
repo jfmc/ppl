@@ -1,5 +1,5 @@
 /* Coefficient class declaration.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,11 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Coefficient.types.hh"
 #include <iosfwd>
 
-#ifdef NATIVE_INTEGERS
-#include "Native_Integer.defs.hh"
-#endif
-
-#ifdef CHECKED_INTEGERS
+#if defined(CHECKED_INTEGERS) || defined(NATIVE_INTEGERS)
 #include "Checked_Number.defs.hh"
 #include "checked_int.inlines.hh"
 #endif

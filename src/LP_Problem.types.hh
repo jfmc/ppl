@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is free software; as a special exception the author gives
 unlimited permission to copy and/or distribute it, with or without
@@ -26,6 +26,6 @@ enum LP_Problem_Status {
 
 class LP_Problem;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_LP_Problem_types_hh)

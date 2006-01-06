@@ -1,5 +1,5 @@
 /* Pending_List class declaration.
-   Copyright (C) 2002-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2002-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
 
@@ -46,9 +46,10 @@ public:
 		  const Handler& handler,
 		  bool& expired_flag);
 
-  //! \brief
-  //! Removes the element pointed to by \p position, returning
-  //! an iterator pointing to the next element, if any, or end(), otherwise.
+  /*! \brief
+    Removes the element pointed to by \p position, returning
+    an iterator pointing to the next element, if any, or end(), otherwise.
+  */
   Iterator erase(Iterator position);
 
   //! Returns <CODE>true</CODE> if and only if the list is empty.

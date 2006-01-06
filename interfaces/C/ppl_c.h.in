@@ -1,5 +1,5 @@
 /* Header file for the C interface.  -*- C -*-
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -736,22 +736,6 @@ ppl_Constraint_System_clear PPL_PROTO((ppl_Constraint_System_t cs));
 int
 ppl_Constraint_System_insert_Constraint PPL_PROTO((ppl_Constraint_System_t cs,
 						   ppl_const_Constraint_t c));
-
-/* FIXME: write the documentation. */
-int
-ppl_Constraint_System_maximize PPL_PROTO((ppl_const_Constraint_System_t cs,
-					  ppl_const_Linear_Expression_t le,
-					  ppl_Coefficient_t sup_n,
-					  ppl_Coefficient_t sup_d,
-					  ppl_Generator_t point));
-
-/* FIXME: write the documentation. */
-int
-ppl_Constraint_System_minimize PPL_PROTO((ppl_const_Constraint_System_t cs,
-					  ppl_const_Linear_Expression_t le,
-					  ppl_Coefficient_t inf_n,
-					  ppl_Coefficient_t inf_d,
-					  ppl_Generator_t point));
 
 /*! \brief
   Returns a positive integer if \p cs is well formed, i.e., if it
@@ -1993,7 +1977,7 @@ ppl_Polyhedron_affine_preimage PPL_PROTO((ppl_Polyhedron_t ph,
 
 /*! \brief
   Assigns to \p ph the image of \p ph with respect to the
-  \ref generalized_affine_relation "generalized affine transfer relation"
+  \ref Generalized_Affine_Relations "generalized affine transfer relation"
   \f$\frac{\mathrm{lb}}{\mathrm{d}}
        \leq \mathrm{var}'
          \leq \frac{\mathrm{ub}}{\mathrm{d}}\f$.
@@ -2023,7 +2007,7 @@ PPL_PROTO((ppl_Polyhedron_t ph,
 
 /*! \brief
   Assigns to \p ph the preimage of \p ph with respect to the
-  \ref generalized_affine_relation "generalized affine transfer relation"
+  \ref Generalized_Affine_Relations "generalized affine transfer relation"
   \f$\frac{\mathrm{lb}}{\mathrm{d}}
        \leq \mathrm{var}'
          \leq \frac{\mathrm{ub}}{\mathrm{d}}\f$.
@@ -2053,7 +2037,7 @@ PPL_PROTO((ppl_Polyhedron_t ph,
 
 /*! \brief
   Assigns to \p ph the image of \p ph with respect to the
-  \ref generalized_affine_relation "generalized affine transfer relation"
+  \ref Generalized_Affine_Relations "generalized affine transfer relation"
   \f$\mathrm{var}' \relsym \frac{\mathrm{le}}{\mathrm{d}}\f$,
   where \f$\mathord{\relsym}\f$ is the relation symbol encoded
   by \p relsym.
@@ -2083,7 +2067,7 @@ PPL_PROTO((ppl_Polyhedron_t ph,
 
 /*! \brief
   Assigns to \p ph the preimage of \p ph with respect to the
-  \ref generalized_affine_relation "generalized affine transfer relation"
+  \ref Generalized_Affine_Relations "generalized affine transfer relation"
   \f$\mathrm{var}' \relsym \frac{\mathrm{le}}{\mathrm{d}}\f$,
   where \f$\mathord{\relsym}\f$ is the relation symbol encoded
   by \p relsym.
@@ -2113,7 +2097,7 @@ PPL_PROTO((ppl_Polyhedron_t ph,
 
 /*! \brief
   Assigns to \p ph the image of \p ph with respect to the
-  \ref generalized_affine_relation "generalized affine transfer relation"
+  \ref Generalized_Affine_Relations "generalized affine transfer relation"
   \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
   \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
 
@@ -2138,7 +2122,7 @@ PPL_PROTO((ppl_Polyhedron_t ph,
 
 /*! \brief
   Assigns to \p ph the preimage of \p ph with respect to the
-  \ref generalized_affine_relation "generalized affine transfer relation"
+  \ref Generalized_Affine_Relations "generalized affine transfer relation"
   \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
   \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
 
@@ -2162,8 +2146,8 @@ PPL_PROTO((ppl_Polyhedron_t ph,
 	   ppl_const_Linear_Expression_t rhs));
 
 /*! \brief
-  Assigns to \p x the \ref time_elapse "time-elapse" between the polyhedra
-  \p x and \p y.
+  Assigns to \p x the \ref Time_Elapse_Operator "time-elapse" between
+  the polyhedra \p x and \p y.
 */
 int
 ppl_Polyhedron_time_elapse_assign PPL_PROTO((ppl_Polyhedron_t x,
@@ -2173,7 +2157,7 @@ ppl_Polyhedron_time_elapse_assign PPL_PROTO((ppl_Polyhedron_t x,
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the \ref BHRZ03_widening "BHRZ03-widening" of
   \p x and \p y.  If \p tp is not the null pointer, the
-  \ref widening_with_tokens "widening with tokens" delay technique
+  \ref Widening_with_Tokens "widening with tokens" delay technique
   is applied with <CODE>*tp</CODE> available tokens.
 */
 int
@@ -2196,7 +2180,7 @@ ppl_Polyhedron_BHRZ03_widening_assign PPL_PROTO((ppl_Polyhedron_t x,
   \p x, assigns to \p x the \ref BHRZ03_widening "BHRZ03-widening" of
   \p x and \p y intersected with the constraints in \p cs that are
   satisfied by all the points of \p x.  If \p tp is not the null pointer,
-  the \ref widening_with_tokens "widening with tokens" delay technique
+  the \ref Widening_with_Tokens "widening with tokens" delay technique
   is applied with <CODE>*tp</CODE> available tokens.
 */
 int
@@ -2226,7 +2210,7 @@ PPL_PROTO((ppl_Polyhedron_t x,
   the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
   with \f$r \in \Qset\f$, that are satisfied by all the points of \p
   x. If \p tp is not the null pointer,
-  the \ref widening_with_tokens "widening with tokens" delay technique
+  the \ref Widening_with_Tokens "widening with tokens" delay technique
   is applied with <CODE>*tp</CODE> available tokens.
 */
 int
@@ -2254,7 +2238,7 @@ PPL_PROTO((ppl_Polyhedron_t x,
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the \ref H79_widening "H79-widening" of \p x
   and \p y.  If \p tp is not the null pointer, the
-  \ref widening_with_tokens "widening with tokens" delay technique is
+  \ref Widening_with_Tokens "widening with tokens" delay technique is
   applied with <CODE>*tp</CODE> available tokens.
 */
 int
@@ -2277,7 +2261,7 @@ ppl_Polyhedron_H79_widening_assign PPL_PROTO((ppl_Polyhedron_t x,
   \p x, assigns to \p x the \ref H79_widening "H79-widening" of \p x
   and \p y intersected with the constraints in \p cs that are
   satisfied by all the points of \p x. If \p tp is not the null
-  pointer, the \ref widening_with_tokens "widening with tokens" delay
+  pointer, the \ref Widening_with_Tokens "widening with tokens" delay
   technique is applied with <CODE>*tp</CODE> available tokens.
 */
 int
@@ -2307,7 +2291,7 @@ PPL_PROTO((ppl_Polyhedron_t x,
   the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
   with \f$r \in \Qset\f$, that are satisfied by all the points of \p x.
   If \p tp is not the null pointer,
-  the \ref widening_with_tokens "widening with tokens" delay technique
+  the \ref Widening_with_Tokens "widening with tokens" delay technique
   is applied with <CODE>*tp</CODE> available tokens.
 */
 int
@@ -2542,13 +2526,13 @@ ppl_LP_Problem_is_satisfiable PPL_PROTO((ppl_const_LP_Problem_t lp));
   Solves the LP problem \p lp, returning an exit status.
 
   \return
-  <CODE>PPL_SIMPLEX_PROBLEM_UNFEASIBLE</CODE> if the LP problem
+  <CODE>PPL_LP_PROBLEM_STATUS_UNFEASIBLE</CODE> if the LP problem
   is not satisfiable;
-  <CODE>PPL_SIMPLEX_PROBLEM_UNBOUNDED</CODE> if the LP problem
+  <CODE>PPL_LP_PROBLEM_STATUS_UNBOUNDED</CODE> if the LP problem
   is satisfiable but there is no finite bound to the value of
   the objective function;
-  <CODE>PPL_SIMPLEX_PROBLEM_SOLVED</CODE> if the LP problem admits
-  an optimal solution.
+  <CODE>PPL_LP_PROBLEM_STATUS_OPTIMIZED</CODE> if the LP problem
+  admits an optimal solution.
 */
 int
 ppl_LP_Problem_solve PPL_PROTO((ppl_const_LP_Problem_t lp));

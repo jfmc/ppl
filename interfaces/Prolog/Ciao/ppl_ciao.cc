@@ -1,5 +1,5 @@
 /* Ciao Prolog interface: system-dependent part.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -377,7 +377,7 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   long v;
-  if (PPL::assign(v, PPL::raw_value(n), PPL::ROUND_NOT_NEEDED) == PPL::V_EQ)
+  if (PPL::assign_r(v, n, PPL::ROUND_NOT_NEEDED) == PPL::V_EQ)
     return ciao_integer(v);
   else {
     std::ostringstream s;

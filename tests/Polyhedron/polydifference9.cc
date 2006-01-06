@@ -1,5 +1,5 @@
 /* Test Polyhedra_Powerset<PH>::poly_difference_assign().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY 
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -54,9 +48,7 @@ int main() TRY {
   cross.add_disjunct(rectangle(0, 3, 9, 3));
   cross.add_disjunct(rectangle(3, 0, 3, 9));
 
-#if NOISY
-  cout << "cross = " << cross << endl;
-#endif
+  nout << "cross = " << cross << endl;
 
   Polyhedra_Powerset<C_Polyhedron> squares(2, EMPTY);
   squares.add_disjunct(rectangle(1, 4, 1, 1));
@@ -65,23 +57,17 @@ int main() TRY {
   squares.add_disjunct(rectangle(4, 1, 1, 1));
   squares.add_disjunct(rectangle(4, 7, 1, 1));
 
-#if NOISY
-  cout << "squares = " << squares << endl;
-#endif
+  nout << "squares = " << squares << endl;
 
   Polyhedra_Powerset<C_Polyhedron> difference = cross;
   difference.poly_difference_assign(squares);
 
-#if NOISY
-  cout << "cross - squares = " << difference << endl;
-#endif
+  nout << "cross - squares = " << difference << endl;
 
   Polyhedra_Powerset<C_Polyhedron> intersection = difference;
   intersection.meet_assign(squares);
 
-#if NOISY
-  cout << "(cross - squares) inters squares = " << intersection << endl;
-#endif
+  nout << "(cross - squares) inters squares = " << intersection << endl;
 
   // When using Polyhedra_Powerset<NNC_Polyhedron>, intersection will be
   // empty.  When using Polyhedra_Powerset<C_Polyhedron>,
@@ -90,29 +76,26 @@ int main() TRY {
 	 i = intersection.begin(), in_end = intersection.end();
        i != in_end; ++i)
     if (i->element().affine_dimension() > 1) {
-#if NOISY
-      cout << "intersection contains " << i->element() << "," << endl
+
+      nout << "intersection contains " << i->element() << "," << endl
 	   << "which is of affine dimension greater than 1" << endl;
-#endif
+
       return 1;
     }
 
   Polyhedra_Powerset<C_Polyhedron> re_union = difference;
   re_union.upper_bound_assign(squares);
-#if NOISY
-  cout << "(cross - squares) union squares = " << re_union << endl;
-#endif
+
+  nout << "(cross - squares) union squares = " << re_union << endl;
 
   re_union.pairwise_reduce();
 
-#if NOISY
-  cout << "<Above union pairwise reduced>  = " << re_union << endl;
-#endif
+  nout << "<Above union pairwise reduced>  = " << re_union << endl;
 
   if (!re_union.geometrically_equals(cross)) {
-#if NOISY
-    cout << "Union does not give back the original!" << endl;
-#endif
+
+    nout << "Union does not give back the original!" << endl;
+
     return 1;
   }
 

@@ -1,6 +1,6 @@
 /* Test Polyhedron::add_generators_and_minimize(): we add
    an empty system of generators to a polyhedron.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,13 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -39,9 +32,7 @@ main() TRY {
   C_Polyhedron ph(2);
   ph.add_constraint(A >= 3);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   C_Polyhedron known_result(ph);
 
@@ -50,9 +41,7 @@ main() TRY {
 
   int retval = (ph == known_result) ? 0 : 1;
 
-#if NOISY
   print_generators(ph, "*** After ph .add_generators_and_minimize(gs)***");
-#endif
 
   return retval;
 }

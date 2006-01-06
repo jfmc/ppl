@@ -1,6 +1,6 @@
 /* Test Polyhedron::add_constraints_and_minimize(): we add a system
    of constraints to an universal polyhedron.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,13 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -39,17 +32,14 @@ main() TRY {
 
   C_Polyhedron ph(3);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   Constraint_System cs;
   cs.insert(x >= 4);
   cs.insert(x - y >= 0);
 
-#if NOISY
   print_constraints(cs, "*** cs ***");
-#endif
+
   ph.add_constraints_and_minimize(cs);
 
   C_Polyhedron known_result(3);
@@ -58,9 +48,7 @@ main() TRY {
 
   int retval = (ph == known_result) ? 0 : 1;
 
-#if NOISY
   print_constraints(ph, "*** After add_constraints_and_minimize(cs) ***");
-#endif
 
   return retval;
 }

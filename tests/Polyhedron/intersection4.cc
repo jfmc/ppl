@@ -1,7 +1,7 @@
 /* Test Polyhedron::intersection_assign_and_minimize() and
    C_Polyhedron::intersection_assign(): we intersect an empty
    polyhedron with one non-empty.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,13 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -44,10 +37,8 @@ main() TRY {
 
   C_Polyhedron ph2(2, EMPTY);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
-#endif
 
   C_Polyhedron computed_result1(ph1);
   computed_result1.intersection_assign_and_minimize(ph2);
@@ -61,11 +52,9 @@ main() TRY {
   int retval = (computed_result1 == known_result
 		&& computed_result2 == known_result) ? 0 : 1;
 
-#if NOISY
   print_constraints(computed_result1,
 		    "*** After intersection_assign_and_minimize ***");
   print_constraints(computed_result2, "*** After intersection_assign ***");
-#endif
 
   return retval;
 }

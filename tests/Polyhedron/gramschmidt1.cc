@@ -1,5 +1,5 @@
 /* Test Constraint_System::gram_schmidt().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,12 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
 #define NOISY 1
-#endif
 
 int
 main() TRY {
@@ -49,15 +44,11 @@ main() TRY {
 
   Constraint_System cs1 = ph1.constraints();
 
-#if NOISY
   print_constraints(cs1, "*** cs1 ***");
-#endif
 
   cs1.gram_schmidt();
 
-#if NOISY
   print_constraints(cs1, "*** after cs1.gram_schmidt() ***");
-#endif
 
   return 0; //retval;
 }

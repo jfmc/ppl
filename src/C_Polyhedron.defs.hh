@@ -1,5 +1,5 @@
 /* C_Polyhedron class declaration.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -125,9 +125,10 @@ public:
   */
   explicit C_Polyhedron(Generator_System& gs);
 
-  //! \brief
-  //! Builds a C polyhedron representing the topological closure
-  //! of the NNC polyhedron \p y.
+  /*! \brief
+    Builds a C polyhedron representing the topological closure
+    of the NNC polyhedron \p y.
+  */
   explicit C_Polyhedron(const NNC_Polyhedron& y);
 
   //! Builds a C polyhedron out of a generic, interval-based bounding box.
@@ -158,25 +159,25 @@ public:
   //! Ordinary copy-constructor.
   C_Polyhedron(const C_Polyhedron& y);
 
-  //! \brief
-  //! The assignment operator.
-  //! (\p *this and \p y can be dimension-incompatible.)
+  /*! \brief
+    The assignment operator.
+    (\p *this and \p y can be dimension-incompatible.)
+  */
   C_Polyhedron& operator=(const C_Polyhedron& y);
 
-  //! \brief
   //! Assigns to \p *this the topological closure of the NNC polyhedron \p y.
   C_Polyhedron& operator=(const NNC_Polyhedron& y);
 
   //! Destructor.
   ~C_Polyhedron();
 
-  //! \brief
-  //! If the poly-hull of \p *this and \p y is exact it is assigned
-  //! to \p *this and <CODE>true</CODE> is returned,
-  //! otherwise <CODE>false</CODE> is returned.
-  /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are dimension-incompatible.
+  /*! \brief
+    If the poly-hull of \p *this and \p y is exact it is assigned
+    to \p *this and <CODE>true</CODE> is returned,
+    otherwise <CODE>false</CODE> is returned.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
   bool poly_hull_assign_if_exact(const C_Polyhedron& y);
 

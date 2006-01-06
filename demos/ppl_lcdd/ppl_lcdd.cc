@@ -1,5 +1,5 @@
 /* A sort of clone of the cddlib test program `lcdd'.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -994,10 +994,10 @@ write_polyhedron(std::ostream& out,
 	    guarded_write(out, '0');
 	  else {
 	    mpz_class num, den;
-	    PPL::assign(num,
-			PPL::raw_value(g.coefficient(PPL::Variable(j))),
+	    PPL::assign_r(num,
+			g.coefficient(PPL::Variable(j)),
 			PPL::ROUND_NOT_NEEDED);
-	    PPL::assign(den, PPL::raw_value(divisor), PPL::ROUND_NOT_NEEDED);
+	    PPL::assign_r(den, divisor, PPL::ROUND_NOT_NEEDED);
 	    guarded_write(out, mpq_class(num, den));
 	  }
 	}
@@ -1272,15 +1272,15 @@ main(int argc, char* argv[]) try {
 
   return 0;
 }
-catch(const std::bad_alloc&) {
+catch (const std::bad_alloc&) {
   fatal("out of memory");
   exit(1);
 }
-catch(const std::overflow_error& e) {
+catch (const std::overflow_error& e) {
   fatal("arithmetic overflow (%s)", e.what());
   exit(1);
 }
-catch(...) {
+catch (...) {
   fatal("internal error: please submit a bug report to ppl-devel@cs.unipr.it");
   exit(1);
 }

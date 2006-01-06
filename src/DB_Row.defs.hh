@@ -1,5 +1,5 @@
-/* DB_Row class declaration.   
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+/* DB_Row class declaration.
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -31,10 +31,11 @@ site: http://www.cs.unipr.it/ppl/ .*/
 
 #ifndef EXTRA_ROW_DEBUG
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! When EXTRA_ROW_DEBUG evaluates to <CODE>true</CODE>, each instance
-//! of the class DB_Row carries its own capacity; this enables extra
-//! consistency checks to be performed.
+/*! \brief
+  When EXTRA_ROW_DEBUG evaluates to <CODE>true</CODE>, each instance
+  of the class DB_Row carries its own capacity; this enables extra
+  consistency checks to be performed.
+*/
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define EXTRA_ROW_DEBUG 0
 #endif
@@ -78,35 +79,35 @@ private:
 //! The base class for the single rows of matrices.
 /*!
   The class template DB_Row<T> allows for the efficient representation of
-  the single rows of a DB_Matrix. It contains elements of type T stored 
+  the single rows of a DB_Matrix. It contains elements of type T stored
   as a vector. The class T is a family of extended numbers that
-  must provide representation for 
+  must provide representation for
   \f$ -\infty \f$, \f$0\f$,\f$ +\infty \f$ (and, consequently for <EM>nan</EM>,
-  <EM>not a number</EM>, since this arises as the ``result'' of 
+  <EM>not a number</EM>, since this arises as the ``result'' of
   undefined sums like \f$ +\infty + (-\infty) \f$).
 
   The class T must provide the following methods:
-  
+
   \code
     T()
   \endcode
   is the default constructor: no assumption is made on the particular
   object constructed, provided <CODE>T().OK()</CODE> gives <CODE>true</CODE>
-  (see below). 
+  (see below).
   \code
     ~T()
   \endcode
   is the destructor.
   \code
-    bool is_nan() const      
+    bool is_nan() const
   \endcode
-  returns <CODE>true</CODE> if and only \p *this represents 
+  returns <CODE>true</CODE> if and only \p *this represents
   the  <EM>not a number</EM> value.
   \code
-    bool OK() const 
+    bool OK() const
   \endcode
   returns <CODE>true</CODE> if and only if \p *this satisfies all
-  its invariants.  
+  its invariants.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
@@ -190,10 +191,10 @@ public:
   //! Assigns the implementation of \p y to \p *this.
   void assign(DB_Row& y);
 
-  //! \brief.
-  //! Allocates memory for a default constructed DB_Row object,
-  //! allowing for \p capacity coefficients at most.
-  /*!
+  /*! \brief.
+    Allocates memory for a default constructed DB_Row object,
+    allowing for \p capacity coefficients at most.
+
     It is assumed that no allocation has been performed before
     (otherwise, a memory leak will occur).
     After execution, the size of the DB_Row object is zero.
@@ -239,19 +240,21 @@ public:
   //! A const random access iterator to access the row's elements.
   typedef Implementation::Ptr_Iterator<const T*> const_iterator;
 
-  //! \brief
-  //! Returns the const iterator pointing to the first element,
-  //! if \p *this is not empty;
-  //! otherwise, returns the past-the-end const iterator.
+  /*! \brief
+    Returns the const iterator pointing to the first element,
+    if \p *this is not empty;
+    otherwise, returns the past-the-end const iterator.
+  */
   iterator begin();
 
   //! Returns the past-the-end iterator.
   iterator end();
 
-  //! \brief
-  //! Returns the const iterator pointing to the first element,
-  //! if \p *this is not empty;
-  //! otherwise, returns the past-the-end const iterator.
+  /*! \brief
+    Returns the const iterator pointing to the first element,
+    if \p *this is not empty;
+    otherwise, returns the past-the-end const iterator.
+  */
   const_iterator begin() const;
 
   //! Returns the past-the-end const iterator.
@@ -306,18 +309,20 @@ public:
   //! \name Custom allocator and deallocator.
   //@{
 
-  //! \brief
-  //! Allocates a chunk of memory able to contain \p capacity T objects
-  //! beyond the specified \p fixed_size and returns a pointer to the new
-  //! allocated memory.
+  /*! \brief
+    Allocates a chunk of memory able to contain \p capacity T objects
+    beyond the specified \p fixed_size and returns a pointer to the new
+    allocated memory.
+  */
   static void* operator new(size_t fixed_size, dimension_type capacity);
 
   //! Uses the standard delete operator to free the memory \p p points to.
   static void operator delete(void* p);
 
-  //! \brief
-  //! Placement version: uses the standard operator delete to free
-  //! the memory \p p points to.
+  /*! \brief
+    Placement version: uses the standard operator delete to free
+    the memory \p p points to.
+  */
   static void operator delete(void* p, dimension_type capacity);
   //@}
 
@@ -346,9 +351,10 @@ public:
   //! Exception-safe copy construction mechanism for coefficients.
   void copy_construct_coefficients(const Impl& y);
 
-  //! \brief
-  //! Exception-safe upward approximation construction mechanism
-  //! for coefficients.
+  /*! \brief
+    Exception-safe upward approximation construction mechanism
+    for coefficients.
+  */
   template <typename U>
   void construct_upward_approximation(const U& y);
 

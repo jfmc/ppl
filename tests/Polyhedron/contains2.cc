@@ -1,5 +1,5 @@
 /* Test Polyhedron::contains(const Polyhedron&).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -40,42 +33,34 @@ main() TRY {
   cs.insert(x + 0*y >= 2);
   C_Polyhedron p_half_space(cs);
 
-#if NOISY
   print_constraints(p_half_space, "*** p_half_space constraints ***");
   print_generators(p_half_space, "*** p_half_space generators ***");
-#endif
 
   Generator_System gs;
   gs.insert(point(2*x));
   gs.insert(line(x+y));
   C_Polyhedron p_line(gs);
 
-#if NOISY
   print_constraints(p_line, "*** p_line constraints ***");
   print_generators(p_line, "*** p_line generators ***");
-#endif
 
   bool p_half_space_includes_p_line = p_half_space.contains(p_line);
 
-#if NOISY
-  cout << "p_half_space ";
+  nout << "p_half_space ";
   if (p_half_space_includes_p_line)
-    cout << "includes ";
+    nout << "includes ";
   else
-    cout << "does not include ";
-  cout << "or is equal to p_line" << endl;
-#endif
+    nout << "does not include ";
+  nout << "or is equal to p_line" << endl;
 
   bool p_line_includes_p_half_space = p_line.contains(p_half_space);
 
-#if NOISY
-  cout << "p_line ";
+  nout << "p_line ";
   if (p_line_includes_p_half_space)
-    cout << "includes ";
+    nout << "includes ";
   else
-    cout << "does not include ";
-  cout << "or is equal to p_half_space" << endl;
-#endif
+    nout << "does not include ";
+  nout << "or is equal to p_half_space" << endl;
 
   return (!p_line_includes_p_half_space
 	  && !p_half_space_includes_p_line) ? 0 : 1;

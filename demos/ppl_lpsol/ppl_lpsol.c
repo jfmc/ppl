@@ -1,7 +1,7 @@
 /* Solve linear programming problems by either vertex/point enumeration
    or the primal simplex algorithm. Just a toy to test the C interface
    of the library.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -58,8 +58,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 # include <sys/resource.h>
 #endif
 
-#if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 6
-# error "PPL version 0.6 or following is required"
+#if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 8
+# error "PPL version 0.8 or following is required"
 #endif
 
 static const char* ppl_source_version = PPL_VERSION;
@@ -79,6 +79,8 @@ static struct option long_options[] = {
   {"max-cpu",        required_argument, 0, 'C'},
   {"max-memory",     required_argument, 0, 'V'},
   {"output",         required_argument, 0, 'o'},
+  {"enumerate",      no_argument,       0, 'e'},
+  {"simplex",        no_argument,       0, 's'},
   {"timings",        no_argument,       0, 't'},
   {"verbose",        no_argument,       0, 'v'},
   {0, 0, 0, 0}
@@ -94,6 +96,7 @@ static const char* usage_string
 "  -VMB, --max-memory=MB   limits memory usage to MB megabytes\n"
 "  -h, --help              prints this help text to stderr\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
+"  -e, --enumerate         use the (expensive!) enumeration method\n"
 "  -s, --simplex           use the simplex method\n"
 "  -t, --timings           prints timings to stderr\n"
 "  -v, --verbose           outputs also the constraints "
@@ -104,7 +107,7 @@ static const char* usage_string
 #endif
 ;
 
-#define OPTION_LETTERS "bcmMC:V:ho:stv"
+#define OPTION_LETTERS "bcemMC:V:ho:stv"
 
 static const char* program_name = 0;
 
@@ -154,6 +157,8 @@ process_options(int argc, char* argv[]) {
 #ifdef HAVE_GETOPT_H
   int option_index;
 #endif
+  int enumerate_required = 0;
+  int simplex_required = 0;
   int c;
   char* endptr;
   long l;
@@ -211,8 +216,12 @@ process_options(int argc, char* argv[]) {
       output_argument = optarg;
       break;
 
+    case 'e':
+      enumerate_required = 1;
+      break;
+
     case 's':
-      use_simplex = 1;
+      simplex_required = 1;
       break;
 
     case 't':
@@ -227,6 +236,14 @@ process_options(int argc, char* argv[]) {
       abort();
     }
   }
+
+  if (enumerate_required && simplex_required)
+    fatal("--enumerate and --simplex are incompatible options");
+
+  if (enumerate_required)
+    use_simplex = 0;
+  else if (simplex_required)
+    use_simplex = 1;
 
   if (optind >= argc) {
     if (verbose)
@@ -556,7 +573,7 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   status = ppl_LP_Problem_solve(lp);
 
   if (print_timings) {
-    fprintf(stderr, "Time to find the optimum: ");
+    fprintf(stderr, "Time to solve the LP problem: ");
     print_clock(stderr);
     fprintf(stderr, " s\n");
     start_clock();
@@ -572,13 +589,15 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     /* FIXME: check!!! */
     return 0;
   }
-  else {
+  else if (status == PPL_LP_PROBLEM_STATUS_OPTIMIZED) {
     ppl_LP_Problem_optimal_value(lp, optimum_n, optimum_d);
     ppl_const_Generator_t g;
     ppl_LP_Problem_optimizing_point(lp, &g);
     ppl_assign_Generator_from_Generator(point, g);
     return 1;
   }
+  else
+    fatal("internal error");
 }
 
 static void
@@ -763,13 +782,6 @@ solve(char* file_name) {
 
   ppl_delete_Constraint_System(ppl_cs);
   ppl_delete_Linear_Expression(ppl_objective_le);
-
-  if (print_timings) {
-    fprintf(stderr, "Time to find the optimum: ");
-    print_clock(stderr);
-    fprintf(stderr, " s\n");
-    start_clock();
-  }
 
   if (optimum_found) {
     mpq_init(optimum);

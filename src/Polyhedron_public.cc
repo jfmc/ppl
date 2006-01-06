@@ -1,5 +1,5 @@
 /* Polyhedron class implementation (non-inline public functions).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -1857,7 +1857,7 @@ affine_image(const Variable var,
 	// third argument to be positive.
 	inverse = expr;
 	inverse[var_space_dim] = denominator;
-	negate(inverse[var_space_dim]);
+	neg_assign(inverse[var_space_dim]);
 	con_sys.affine_preimage(var_space_dim, inverse, -expr[var_space_dim]);
       }
     }
@@ -1936,7 +1936,7 @@ affine_preimage(const Variable var,
 	// requires the third argument to be positive.
 	inverse = expr;
 	inverse[var_space_dim] = denominator;
-	negate(inverse[var_space_dim]);
+	neg_assign(inverse[var_space_dim]);
 	gen_sys.affine_image(var_space_dim, inverse, -expr[var_space_dim]);
       }
     }
@@ -2826,33 +2826,23 @@ PPL::Polyhedron::is_disjoint_from(const Polyhedron& y) const {
 
 void
 PPL::Polyhedron::ascii_dump(std::ostream& s) const {
-  using std::endl;
-
-  s << "space_dim "
-    << space_dim
-    << endl;
+  s << "space_dim " << space_dim << "\n";
   status.ascii_dump(s);
-  s << endl
-    << "con_sys ("
+  s << "\ncon_sys ("
     << (constraints_are_up_to_date() ? "" : "not_")
     << "up-to-date)"
-    << endl;
+    << "\n";
   con_sys.ascii_dump(s);
-  s << endl
-    << "gen_sys ("
+  s << "\ngen_sys ("
     << (generators_are_up_to_date() ? "" : "not_")
     << "up-to-date)"
-    << endl;
+    << "\n";
   gen_sys.ascii_dump(s);
-  s << endl
-    << "sat_c"
-    << endl;
+  s << "\nsat_c\n";
   sat_c.ascii_dump(s);
-  s << endl
-    << "sat_g"
-    << endl;
+  s << "\nsat_g\n";
   sat_g.ascii_dump(s);
-  s << endl;
+  s << "\n";
 }
 
 bool

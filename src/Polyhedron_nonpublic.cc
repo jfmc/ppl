@@ -1,6 +1,6 @@
 /* Polyhedron class implementation
    (non-inline private or protected functions).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -600,8 +600,8 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the extremum as soon as we find it.
       mpq_class candidate;
-      assign(candidate.get_num(), raw_value(sp), ROUND_NOT_NEEDED);
-      assign(candidate.get_den(), raw_value(g[0]), ROUND_NOT_NEEDED);
+      assign_r(candidate.get_num(), sp, ROUND_NOT_NEEDED);
+      assign_r(candidate.get_den(), g[0], ROUND_NOT_NEEDED);
       candidate.canonicalize();
       const bool g_is_point = g.is_point();
       if (first_candidate
@@ -626,7 +626,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
 
   // Add in the constant term in `expr'.
   mpz_class n;
-  assign(n, raw_value(expr.inhomogeneous_term()), ROUND_NOT_NEEDED);
+  assign_r(n, expr.inhomogeneous_term(), ROUND_NOT_NEEDED);
   extremum += n;
 
   // The polyhedron is bounded in the right direction and we have
@@ -1198,12 +1198,26 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 
     // If we haven't found an upper bound for the epsilon dimension,
     // then we have to check whether such an upper bound is implied
-    // by the remaining constraints.
+    // by the remaining constraints (exploiting teh simplex algorithm).
     if (!found_eps_leq_one) {
-      Generator g(point());
-      // The cost function is `epsilon'.
-      Linear_Expression cost_function = Variable(x.space_dim);
-      LP_Problem_Status status = cs.primal_simplex(cost_function, g);
+      LP_Problem lp;
+      // KLUDGE: temporarily mark the constraint system as if it was
+      // necessarily closed, so that we can interpret the epsilon
+      // dimension as a standard dimension. Be careful to reset the
+      // topology of `cs' even on exceptional execution path.
+      cs.set_necessarily_closed();
+      try {
+	lp.add_constraints(cs);
+	cs.set_not_necessarily_closed();
+      }
+      catch (...) {
+	cs.set_not_necessarily_closed();
+	throw;
+      }
+      // The objective function is `epsilon'.
+      lp.set_objective_function(Variable(x.space_dim));
+      lp.set_optimization_mode(MAXIMIZATION);
+      LP_Problem_Status status = lp.solve();
       assert(status != UNFEASIBLE_LP_PROBLEM);
       // If the epsilon dimension is actually unbounded,
       // then add the eps_leq_one constraint.

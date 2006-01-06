@@ -4,14 +4,22 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.8  (released date to be decided)
+NEWS for version 0.8  (to be released on January 20, 2006)
 --------------------------------------------------------------------------
 
 New and Changed Features
 ========================
 
-o  New method Constraint_System::primal_simplex() provides a textbook
-   implementation of the primal simplex algorithm.
+o  The class template BD_Shape<T> provides an implementation of the
+   abstract domain of Bounded Difference shapes. The template type
+   parameter T specifies the basic type used for the inhomogeneous term
+   of bounded difference constraints; it can be instantiated to either
+   GMP's unbounded precision types (mpq_class, mpz_class), native
+   floating point types (float, double), or native integer types
+   (8, 16, 32 and 64 bits wide).
+
+o  New class LP_Problem provides a textbook implementation of the
+   primal simplex algorithm, using exact arithmetics.
 
 o  Method
 
@@ -114,8 +122,21 @@ o  Portability has been improved.
 
 o  In the Prolog interface, the names and arities of the "with_token"
    widening and extrapolation predicates have been revised to
-   "with_tokens" with an extra argument and the functionality has been 
+   "with_tokens" with an extra argument and the functionality has been
    revised to match more closely the corresponding C++ interface operators.
+
+o  The SWI-Prolog interface allows now the exchange of unbounded numbers
+   between the PPL and Prolog applications.  This requires SWI-Prolog
+   version 5.6.0 or later version.  Previous versions of SWI-Prolog
+   are no longer supported.
+
+o  The `ppl_lpsol' demo has now two more options: with `--enumerate' it
+   solves the given linear programming problem by vertex/point
+   enumeration; with `--simplex' (the default) it uses our simplex
+   implementation with exact arithmetics.  The `ppl_lpsol' program,
+   which is only built if a suitable version of GLPK is available, is
+   installed into the directory (selectable at configuration time) for
+   user executables.
 
 
 Bugfixes

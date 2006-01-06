@@ -1,5 +1,5 @@
 /* Poly_Gen_Relation class declaration.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -43,10 +43,12 @@ bool operator!=(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y);
 Poly_Gen_Relation operator&&(const Poly_Gen_Relation& x,
 			     const Poly_Gen_Relation& y);
 
-//! \brief
-//! Yields the assertion with all the conjuncts of \p x
-//! that are not in \p y.
-/*! \relates Poly_Gen_Relation */
+/*! \brief
+  Yields the assertion with all the conjuncts of \p x
+  that are not in \p y.
+
+  \relates Poly_Gen_Relation
+*/
 Poly_Gen_Relation operator-(const Poly_Gen_Relation& x,
 			    const Poly_Gen_Relation& y);
 
@@ -115,9 +117,10 @@ private:
 
 public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Access the internal flags: this is needed for some foreign
-  //! language interfaces.
+  /*! \brief
+    Access the internal flags: this is needed for some foreign
+    language interfaces.
+  */
 #endif
   flags_t get_flags() const;
 

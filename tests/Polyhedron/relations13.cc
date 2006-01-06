@@ -1,5 +1,5 @@
 /* Test Polyhedron::relation_with(g): in this test `g' is a ray.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 int
 main() TRY {
@@ -41,10 +35,8 @@ main() TRY {
 
   Poly_Gen_Relation rel = ph.relation_with(ray(-A));
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-  cout << "ph.relation_with(ray(-A)) == " << rel << endl;
-#endif
+  nout << "ph.relation_with(ray(-A)) == " << rel << endl;
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
   return (rel == known_result) ? 0 : 1;

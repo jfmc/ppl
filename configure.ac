@@ -1,5 +1,5 @@
 # Autoconf source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.8pre7],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.8pre8],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
@@ -369,15 +369,17 @@ AM_CONDITIONAL(USE_GMP_INTEGERS, test x"$coefficient_type" = xmpz_class)
 
 if test x"$coefficient_kind" = xnative
 then
-  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, Parma_Polyhedra_Library::Native_Integer<$coefficient_type>, [The integral type used to represent coefficients.])
+  ctype="Parma_Polyhedra_Library::Checked_Number<$coefficient_type, Checked_Number_Transparent_Policy>"
+  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, $ctype, [The integral type used to represent coefficients.])
   AC_DEFINE(NATIVE_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a native one.])
 elif test x"$coefficient_kind" = xchecked
 then
-  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, Parma_Polyhedra_Library::Checked_Number<$coefficient_type>)
+  ctype="Parma_Polyhedra_Library::Checked_Number<$coefficient_type>"
+  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, $ctype, [The integral type used to represent coefficients.])
   AC_DEFINE(CHECKED_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a checked one.])
 elif test x"$coefficient_type" = xmpz_class
 then
-  AC_DEFINE(COEFFICIENT_TYPE, mpz_class)
+  AC_DEFINE(COEFFICIENT_TYPE, mpz_class, [The integral type used to represent coefficients.])
   AC_DEFINE(GMP_INTEGERS, 1, [Defined if the integral type to be used for coefficients is GMP's one.])
 fi
 
@@ -394,6 +396,7 @@ AC_ARG_WITH(cxxflags,
   CXXFLAGS="$CXXFLAGS $with_cxxflags")
 
 # Checks for programs.
+AC_PROG_EGREP
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_CXXCPP

@@ -1,7 +1,7 @@
 /* Test Polyhedron::add_space_dimensions_and_embed(): shows a bug in versions
    up to 0.5pre12 caused by the missing protection against auto-assignments
    in class Matrix.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,13 +23,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 int
 main() TRY {
