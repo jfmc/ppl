@@ -225,14 +225,17 @@ run_one(polyhedron_boxes) :-
 run_one(catch_time) :-
    time_out.
 
-run_one(lp_check) :-
-   lp_check.
+run_one(lp_problem) :-
+   lp_problem.
 
+% xsb has problems with large numbers - hence tests for xsb disallowed.
+% We catch the exception if it is caused by integer overflow in C++
+% and suppress output as this is expected when C++ uses checked_integers.
 run_one(large_nums) :-
    prolog_system(Prolog_System),
    (Prolog_System \== xsb ->
-     (catch(large_nums, Exception,
-         (check_exception_term(Exception))) -> true ; run_fail(large_nums))
+     catch(large_nums, ppl_overflow_error(Cause),
+        check_exception_term(ppl_overflow_error(Cause)))
    ;
      true
    ).
@@ -2071,7 +2074,7 @@ time_watch(Topology, Goal, No_Time_Out, Time_Out) :-
 
 %%%%%%%%%%%%%%%%% LP_Problem tests %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-lp_check :-
+lp_problem :-
   lp_trivial,
   lp_from_cons,
   lp_from_lp,
@@ -2287,6 +2290,26 @@ compare_lin_expressions(LE1, LE2) :-
 
 %%%%%%%%%%%%%%%% Check C++ <--> Prolog numbers %%%%%%%%%%%%%%%%%%%%%%%
 
+/*
+ This test checks the transfer of large numbers between Prolog and C++.
+ We test all numbers (BigNum) which are +/- (2^E +/- A) where E is one of
+ the numbers in the list defined by large_nums_exponents/1 and
+ A is one of the numbers in the list defined by large_nums_additions/1.
+
+ Thus we pass a BigNum from the Prolog to C++ and construct a polyhedron
+ P (space dimension = 1) consisting of a single point A = BigNum.
+ We also get the constraint defining P and then construct a second
+ polyhedron P1 from this constraint; P is then compared with P1.
+ To ensure that errors from Prolog to C++ and C++ to Prolog do not cancel
+ each other out, we also construct a polyhedron P2 consisting of just
+ the point A = 1 and use affine transformations (on polyhedra) to change P2
+ to a polyhedron with the point A = BigNum; then P2 is compared with P.
+
+ To see exactly which numbers are tested, first make the test "extra noisy"
+ using make_extra_noisy/0; i.e., type:
+ make_extra_noisy, large_nums.
+*/
+
 large_nums_exponents([0, 7, 8, 15, 16, 27, 28, 29, 30, 31, 32, 63, 64]).
 
 large_nums_additions([-3, -2, -1, 0, 1, 2, 3]).
@@ -2302,7 +2325,7 @@ large_nums_prolog_cplusplus([Exp|Exps], Adds) :-
   current_prolog_flag(bounded, F),
   (F == true ->
      current_prolog_flag(max_integer, Max_int),
-    (Max_int >> 1 =< 1 << Exp - 3 ->
+    (Max_int >> 1 =< 1 << Exp + 3 ->
        true
     ;
        large_nums_prolog_cplusplus1(Adds, Exp),
@@ -2897,17 +2920,19 @@ list_groups( [
    swap_polyhedra,
    polyhedron_dimension,
    basic_operators,
-   transform_polyhedron,
+%   transform_polyhedron,
    extrapolation_operators,
    get_system,
-   add_to_system,
+%   add_to_system,
    revise_dimensions,
    check_polyhedron,
    minmax_polyhedron,
    compare_polyhedra,
+   lp_problem,
+   transform_polyhedron,
    polyhedron_boxes,
+   add_to_system,
    catch_time,
-   lp_check,
    handle_exceptions
              ] ).
 
@@ -3053,12 +3078,12 @@ group_predicates(catch_time,
    ppl_reset_timeout/0
   ]).
 
-group_predicates(lp_check,
+group_predicates(lp_problem,
   ['all LP_Prolog predicates'
   ]).
 
 group_predicates(large_nums,
-  ['large number checks '
+  ['large number tests '
   ]).
 
 group_predicates(handle_exceptions,
