@@ -505,12 +505,6 @@ template <typename T, typename Policy>
 Checked_Number<T, Policy>
 operator-(const Checked_Number<T, Policy>& x);
 
-//! Assigns to \p x its negation.
-/*! \relates Checked_Number */
-template <typename T, typename Policy>
-void
-neg_assign(Checked_Number<T, Policy>& x);
-
 //! Assigns to \p x the value <CODE>x + y * z</CODE>.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
@@ -527,12 +521,6 @@ sub_mul_assign(Checked_Number<T, Policy>& x,
 	       const Checked_Number<T, Policy>& y,
 	       const Checked_Number<T, Policy>& z);
 
-//! Assigns to \p x the greatest common divisor of \p x and \p y.
-/*! \relates Checked_Number */
-template <typename T, typename Policy>
-void
-gcd_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
-
 //! Assigns to \p x the greatest common divisor of \p y and \p z.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
@@ -540,12 +528,6 @@ void
 gcd_assign(Checked_Number<T, Policy>& x,
 	   const Checked_Number<T, Policy>& y,
 	   const Checked_Number<T, Policy>& z);
-
-//! Assigns to \p x the least common multiple of \p x and \p y.
-/*! \relates Checked_Number */
-template <typename T, typename Policy>
-void
-lcm_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 //! Assigns to \p x the least common multiple of \p y and \p z.
 /*! \relates Checked_Number */
@@ -555,13 +537,6 @@ lcm_assign(Checked_Number<T, Policy>& x,
 	   const Checked_Number<T, Policy>& y,
 	   const Checked_Number<T, Policy>& z);
 
-//! Assigns to \p x the integer division of \p x and \p y.
-/*! \relates Checked_Number */
-template <typename T, typename Policy>
-void
-exact_div_assign(Checked_Number<T, Policy>& x,
-		 const Checked_Number<T, Policy>& y);
-
 //! Assigns to \p x the integer division of \p y and \p z.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
@@ -569,11 +544,6 @@ void
 exact_div_assign(Checked_Number<T, Policy>& x,
 		 const Checked_Number<T, Policy>& y,
 		 const Checked_Number<T, Policy>& z);
-
-//! Assigns to \p x its integer square root.
-/*! \relates Checked_Number */
-template <typename T, typename Policy>
-void sqrt_assign(Checked_Number<T, Policy>& x);
 
 //! Assigns to \p x the integer square root of \p y.
 /*! \relates Checked_Number */

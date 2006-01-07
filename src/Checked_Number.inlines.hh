@@ -678,25 +678,11 @@ operator-(const Checked_Number<T, Policy>& x) {
   return r;
 }
 
-#define DEF_ASSIGN_FUN2_1(f, fun) \
-template <typename T, typename Policy> \
-inline void \
-f(Checked_Number<T, Policy>& x) { \
-  Policy::handle_result(fun(x, x, Policy::ROUND_DEFAULT_FUNCTION)); \
-}
-
 #define DEF_ASSIGN_FUN2_2(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
   Policy::handle_result(fun(x, y, Policy::ROUND_DEFAULT_FUNCTION)); \
-}
-
-#define DEF_ASSIGN_FUN3_2(f, fun) \
-template <typename T, typename Policy> \
-inline void \
-f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
-  Policy::handle_result(fun(x, x, y, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
 #define DEF_ASSIGN_FUN3_3(f, fun) \
@@ -706,23 +692,18 @@ f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, const Checke
   Policy::handle_result(fun(x, y, z, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
-DEF_ASSIGN_FUN2_1(sqrt_assign, sqrt_assign_r)
 DEF_ASSIGN_FUN2_2(sqrt_assign, sqrt_assign_r)
 
-DEF_ASSIGN_FUN2_1(neg_assign, neg_assign_r)
 DEF_ASSIGN_FUN2_2(neg_assign, neg_assign_r)
 
-DEF_ASSIGN_FUN3_2(exact_div_assign, div_assign_r)
 DEF_ASSIGN_FUN3_3(exact_div_assign, div_assign_r)
 
 DEF_ASSIGN_FUN3_3(add_mul_assign, add_mul_assign_r)
 
 DEF_ASSIGN_FUN3_3(sub_mul_assign, sub_mul_assign_r)
 
-DEF_ASSIGN_FUN3_2(gcd_assign, gcd_assign_r)
 DEF_ASSIGN_FUN3_3(gcd_assign, gcd_assign_r)
 
-DEF_ASSIGN_FUN3_2(lcm_assign, lcm_assign_r)
 DEF_ASSIGN_FUN3_3(lcm_assign, lcm_assign_r)
 
 #undef DEF_ASSIGN_FUN2_1
