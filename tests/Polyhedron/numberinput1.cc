@@ -194,6 +194,7 @@ test_hexadecimals() {
   test("-0xfaz", "-250", "z", V_EQ);
   test("-0xfa .", "-250", " .", V_EQ);
   test("0xfa0xfa", "4000", "xfa", V_EQ);
+  test("0x0b123", "45347", "", V_EQ);
 
   // Fraction.
   test("0xfa.a", "2005/8", "", V_EQ);
