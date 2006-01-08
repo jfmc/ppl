@@ -331,13 +331,6 @@ public:
   */
   void simplify();
 
-  //! Applies the Gram-Schmidt orthogonalization method to the system.
-  /*!
-    It is assumed that the system corresponds to a minimized representation,
-    with all lines/equalities coming first.
-  */
-  void gram_schmidt();
-
   /*! \brief
     Normalizes the system by dividing each row for the GCD of the
     row's elements.
