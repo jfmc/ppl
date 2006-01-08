@@ -74,7 +74,7 @@ PPL::LP_Problem::steepest_edge() const {
     TEMP_INTEGER(lcm_basis);
     lcm_basis = 1;
     for (dimension_type i = tableau_num_rows; i-- > 0; )
-      lcm_assign(lcm_basis, tableau[i][base[i]]);
+      lcm_assign(lcm_basis, lcm_basis, tableau[i][base[i]]);
     // Compute normalization factors.
     for (dimension_type i = tableau_num_rows; i-- > 0; )
       exact_div_assign(norm_factor[i], lcm_basis, tableau[i][base[i]]);
@@ -685,7 +685,7 @@ PPL::LP_Problem::compute_generator() const {
   TEMP_INTEGER(lcm);
   lcm = den[0];
   for (dimension_type i = 1; i < original_space_dim; ++i)
-    lcm_assign(lcm, den[i]);
+    lcm_assign(lcm, lcm, den[i]);
   // Use the denominators to store the numerators' multipliers
   // and then compute the normalized numerators.
   for (dimension_type i = original_space_dim; i-- > 0; ) {
