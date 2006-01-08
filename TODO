@@ -2,8 +2,6 @@ Enhancements for PPL 0.8
 ========================
 
 - Reduce the number of FIXMEs to no more than 40.
-- Improve the documentation about shared libraries.
-  See http://www.cs.unipr.it/pipermail/ppl-devel/2005-July/006178.html.
 - The Powerset class implementation is still poorly documented.
 - Consider renaming Powerset::meet_assign().
 
