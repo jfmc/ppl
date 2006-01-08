@@ -125,8 +125,10 @@ PPL::Row::normalize() {
     }
   }
   // Divide the coefficients by the GCD.
-  for (dimension_type j = sz; j-- > 0; )
-    exact_div_assign(x[j], gcd);
+  for (dimension_type j = sz; j-- > 0; ) {
+    Coefficient& x_j = x[j];
+    exact_div_assign(x_j, x_j, gcd);
+  }
 }
 
 void
