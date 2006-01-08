@@ -144,11 +144,9 @@ public:
   //! Copy-constructor.
   Checked_Number(const Checked_Number& y);
 
-#if 0
   //! Direct initialization from a Checked_Number.
   template <typename From, typename From_Policy>
-  Checked_Number(const Checked_Number<From, From_Policy>& y);
-#endif
+  explicit Checked_Number(const Checked_Number<From, From_Policy>& y);
 
   //! Direct initialization from a signed char value.
   Checked_Number(const signed char y, Rounding_Dir dir);

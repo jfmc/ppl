@@ -83,16 +83,19 @@ Checked_Number<T, Policy>::Checked_Number(const Checked_Number& y) {
   Checked::copy<Policy>(v, y.raw_value());
 }
 
-#if 0
 template <typename T, typename Policy>
 template <typename From, typename From_Policy>
 inline
-Checked_Number<T, Policy>::Checked_Number(const Checked_Number<From, From_Policy>& y) {
+Checked_Number<T, Policy>
+::Checked_Number(const Checked_Number<From, From_Policy>& y) {
   // TODO: avoid default construction of value member
   Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;
-  Policy::handle_result(check_result(Checked::assign_ext<Policy, From_Policy>(v, y.raw_value(), rounding_dir(dir)), dir));
+  Policy::handle_result(check_result(Checked::assign_ext<Policy, From_Policy>
+				     (v,
+				      y.raw_value(),
+				      rounding_dir(dir)),
+				     dir));
 }
-#endif
 
 // TODO: avoid default construction of value member
 #define DEF_CTOR(type) \
