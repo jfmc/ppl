@@ -505,6 +505,12 @@ template <typename T, typename Policy>
 Checked_Number<T, Policy>
 operator-(const Checked_Number<T, Policy>& x);
 
+//! Assigns to \p x its negation.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+neg_assign(Checked_Number<T, Policy>& x);
+
 //! Assigns to \p x the value <CODE>x + y * z</CODE>.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
