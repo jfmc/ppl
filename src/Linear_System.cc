@@ -606,7 +606,7 @@ PPL::Linear_System::gram_schmidt() {
 	// accum += mu_i[h] * mu_j[h].
 	add_mul_assign(accum, mu_i[h], mu_j[h]);
 	if (h > 0)
-	  exact_div_assign(accum, mu[h-1][h-1]);
+	  exact_div_assign(accum, accum, mu[h-1][h-1]);
       }
       mu_i[j] -= accum;
     }
@@ -618,12 +618,13 @@ PPL::Linear_System::gram_schmidt() {
       Coefficient_traits::const_reference mu_ij = mu_i[j];
       Coefficient_traits::const_reference mu_jj = mu[j][j];
       for (dimension_type k = n_columns; k-- > 0; ) {
-        x_i[k] *= mu_jj;
+	Coefficient& x_i_k = x_i[k];
+        x_i_k *= mu_jj;
 	// The following line optimizes the computation of
         // x_i[k] -= mu_ij * x_j[k].
-        sub_mul_assign(x_i[k], mu_ij, x_j[k]);
+        sub_mul_assign(x_i_k, mu_ij, x_j[k]);
 	if (j > 0)
-	  exact_div_assign(x_i[k], mu[j-1][j-1]);
+	  exact_div_assign(x_i_k, x_i_k, mu[j-1][j-1]);
       }
     }
   }
