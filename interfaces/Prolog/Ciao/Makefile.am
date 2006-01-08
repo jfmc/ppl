@@ -53,40 +53,37 @@ ppl_ciao.po: ppl_ciao.pl
 	  cp -f $(srcdir)/ppl_ciao.pl .; \
 	fi
 	ciaoc -c ppl_ciao.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ppl_ciao.pl; \
-	fi
 
-ciao_clpq: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../tests/clpq.pl
+ciao_clpq: libppl_ciao.la ppl_ciao.po ciao_clpq.pl ../tests/clpq.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/ciao_clpq.pl $(srcdir)/ppl_ciao.pl .; \
+	  cp -f $(srcdir)/ciao_clpq.pl .; \
 	fi
 	cp -f $(srcdir)/../tests/clpq.pl .
 	ciaoc -o $@ ciao_clpq.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ciao_clpq.pl ppl_ciao.pl; \
+	  rm -f ciao_clpq.pl; \
 	fi
 	rm -f clpq.pl
 
-ciao_clpq2: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../tests/clpq2.pl
+ciao_clpq2: libppl_ciao.la ppl_ciao.po ciao_clpq.pl ../tests/clpq2.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/ciao_clpq2.pl $(srcdir)/ppl_ciao.pl .; \
+	  cp -f $(srcdir)/ciao_clpq2.pl .; \
 	fi
 	cp -f $(srcdir)/../tests/clpq2.pl .
 	ciaoc -o $@ ciao_clpq2.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ciao_clpq2.pl ppl_ciao.pl; \
+	  rm -f ciao_clpq2.pl; \
 	fi
 	rm -f clpq2.pl
 
-ciao_pl_check: libppl_ciao.la ppl_ciao.pl ciao_pl_check.pl ../tests/pl_check.pl
+ciao_pl_check: libppl_ciao.la ppl_ciao.po ciao_pl_check.pl ../tests/pl_check.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/ciao_pl_check.pl $(srcdir)/ppl_ciao.pl .; \
+	  cp -f $(srcdir)/ciao_pl_check.pl .; \
 	fi
 	cp -f $(srcdir)/../tests/pl_check.pl .
 	ciaoc -o $@ ciao_pl_check.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ciao_pl_check.pl ppl_ciao.pl; \
+	  rm -f ciao_pl_check.pl; \
 	fi
 	rm -f pl_check.pl
 
@@ -160,5 +157,10 @@ MOSTLYCLEANFILES = \
 ciao_clpq ciao_clpq2 ciao_pl_check \
 obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS)
+
+mostlyclean-local:
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  rm -f ppl_ciao.pl; \
+	fi
 
 endif BUILD_CIAO_PROLOG_INTERFACE
