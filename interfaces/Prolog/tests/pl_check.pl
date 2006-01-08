@@ -2358,8 +2358,9 @@ large_nums_prolog_cplusplus2(Exp, Add, Sign) :-
   ppl_Polyhedron_affine_image(P2, A, Sign * (A + Add), 1),
   ppl_Polyhedron_equals_Polyhedron(P, P2),
   !,
+  ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(P1),
-  ppl_delete_Polyhedron(P).
+  ppl_delete_Polyhedron(P2).
 
 large_nums_affine_transform_loop(0, _P, _).
 large_nums_affine_transform_loop(Exp, P, A) :-
@@ -2550,6 +2551,11 @@ exception_prolog(13, [A, B, C]) :-
   !,
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
+
+%% TEST: not_an_lp_problem_handle
+exception_prolog(9, _) :-
+  must_catch(ppl_LP_Problem_space_dimension(_, _N)),
+  must_catch(ppl_LP_Problem_constraints(p, [])).
 
 % exception_sys_prolog(+N, +V) checks exceptions thrown by Prolog interfaces
 % that are dependent on a specific Prolog system.
