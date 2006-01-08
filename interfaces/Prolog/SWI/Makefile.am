@@ -126,7 +126,7 @@ pl_check_test: swi_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 	fi
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
-clpq_test: pl_clpq ../tests/script_clpq $(EXPECTED_CLPQ) 
+clpq_test: pl_clpq ../tests/script_clpq $(EXPECTED_CLPQ)
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	$(LIBTOOL) --mode=execute \

@@ -105,15 +105,15 @@ COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
 if ASSERTIONS_ENABLED
 
-EXPECTED = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)_a
-EXPECTED2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)_a
-EXPECTED3 = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_CLPQ = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_CLPQ2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)_a
 
 else !ASSERTIONS_ENABLED
 
-EXPECTED = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)
-EXPECTED2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)
-EXPECTED3 = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
+EXPECTED_CLPQ = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)
+EXPECTED_CLPQ2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)
+EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
@@ -126,7 +126,7 @@ pl_check_test: ciao_pl_check$(EXEEXT) libppl_ciao.la $(EXPECTED_PCHK)
 		-dlopen libppl_ciao.la \
 		./ciao_pl_check \
 			 >obtained_pchk
-	diff -u --ignore-all-space $(EXPECTED3) obtained_pchk
+	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
 clpq_test: ciao_clpq$(EXEEXT) libppl_ciao.la ../tests/script_clpq $(EXPECTED_CLPQ) 
 	LANG=C; \
@@ -138,7 +138,7 @@ clpq_test: ciao_clpq$(EXEEXT) libppl_ciao.la ../tests/script_clpq $(EXPECTED_CLP
 		-dlopen libppl_ciao.la \
 		./ciao_clpq \
 			<$(srcdir)/../tests/script_clpq >obtained_clpq
-	diff -u --ignore-all-space $(EXPECTED) obtained_clpq
+	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
 
 clpq2_test: ciao_clpq2$(EXEEXT) libppl_ciao.la ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 	LANG=C; \
@@ -150,7 +150,7 @@ clpq2_test: ciao_clpq2$(EXEEXT) libppl_ciao.la ../tests/script_clpq2 $(EXPECTED_
 		-dlopen libppl_ciao.la \
 		./ciao_clpq2 \
 			<$(srcdir)/../tests/script_clpq2 >obtained_clpq2
-	diff -u --ignore-all-space $(EXPECTED2) obtained_clpq2
+	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
 MOSTLYCLEANFILES = \
 *.itf *.po *.c *.so \
