@@ -76,19 +76,19 @@ pl_clpq2_SOURCES = pl_clpq.cc
 
 # Notice: we are linking statically until we understand whether
 # and if libtool and plld can interoperate.
-ppl_pl$(EXEEXT): ppl_swiprolog.o ppl_pl.o
+ppl_pl$(EXEEXT): ppl_swiprolog.o ppl_pl.o | libppl_swiprolog.la
 	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/src/.libs -lpwl \
 		@extra_libraries@
 
-pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq.pl
+pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq.pl | libppl_swiprolog.la 
 	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/src/.libs -lpwl \
 		@extra_libraries@
 
-pl_clpq2$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
+pl_clpq2$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq2.pl | libppl_swiprolog.la 
 	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/src/.libs -lpwl \

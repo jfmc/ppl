@@ -122,7 +122,7 @@ endif !ASSERTIONS_ENABLED
 
 check-local: pl_check_test clpq_test clpq2_test
 
-pl_check_test: ciao_pl_check$(EXEEXT) $(EXPECTED_PCHK)
+pl_check_test: ciao_pl_check$(EXEEXT) libppl_ciao.la $(EXPECTED_PCHK)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/src/libpwl.la \
@@ -131,7 +131,7 @@ pl_check_test: ciao_pl_check$(EXEEXT) $(EXPECTED_PCHK)
 			 >obtained_pchk
 	diff -u --ignore-all-space $(EXPECTED3) obtained_pchk
 
-clpq_test: ciao_clpq$(EXEEXT) ../tests/script_clpq $(EXPECTED_CLPQ) 
+clpq_test: ciao_clpq$(EXEEXT) libppl_ciao.la ../tests/script_clpq $(EXPECTED_CLPQ) 
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	GLOBALSTKSIZE=1000000 \
@@ -143,7 +143,7 @@ clpq_test: ciao_clpq$(EXEEXT) ../tests/script_clpq $(EXPECTED_CLPQ)
 			<$(srcdir)/../tests/script_clpq >obtained_clpq
 	diff -u --ignore-all-space $(EXPECTED) obtained_clpq
 
-clpq2_test: ciao_clpq2$(EXEEXT) ../tests/script_clpq2 $(EXPECTED_CLPQ2)
+clpq2_test: ciao_clpq2$(EXEEXT) libppl_ciao.la ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	GLOBALSTKSIZE=100000 \
