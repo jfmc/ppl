@@ -82,10 +82,8 @@ LP_Problem::add_constraint(const Constraint& c) {
 				"c is a strict inequality.");
   input_cs.insert(c);
   if (status != UNSATISFIABLE)
-    // FIXME: Here we should apply the incremental simplex algorithm: for
-    // the moment we'll proceed computing a feasible base from the beginning.
-    // As soon as possible the following line will be uncommented.
-    // status = PARTIALLY_SATISFIABLE;
+    // TODO: apply an incremental version of the simplex algorithm,
+    // setting `status' to PARTIALLY_SATISFIABLE;
     status = UNSOLVED;
 }
 
@@ -98,10 +96,8 @@ LP_Problem::add_constraints(const Constraint_System& cs) {
   for (dimension_type i = cs_num_rows; i-- > 0; )
     input_cs.insert(cs[i]);
   if (status != UNSATISFIABLE)
-    // FIXME: Here we should apply the incremental simplex algorithm: for
-    // the moment we'll proceed computing a feaseble base from the beginning.
-    // As soon as possible the following line will be uncommented.
-    // status = PARTIALLY_SATISFIABLE;
+    // TODO: apply an incremental version of the simplex algorithm,
+    // setting `status' to PARTIALLY_SATISFIABLE;
     status = UNSOLVED;
   assert(OK());
 }
