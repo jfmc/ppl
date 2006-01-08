@@ -41,8 +41,6 @@ DB_Matrix<T>::swap(DB_Matrix& y) {
 template <typename T>
 inline dimension_type
 DB_Matrix<T>::max_num_rows() {
-  // FIXME: isn't this ridiculous?  Creating a vector only to know what
-  // its maximum size is?  Why is vector::max_size() not static?
   return std::vector<DB_Row<T> >().max_size();
 }
 
