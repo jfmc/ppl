@@ -448,14 +448,6 @@ FUNC2(sub_mul_assign_r)
 template <typename T, typename Policy>
 void swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y);
 
-#if 0
-template <typename T, typename Policy>
-class Float<Checked_Number<T, Policy> > {
-public:
-  typedef Float<T>::Type Type;
-};
-#endif
-
 //! \name Accessor Functions
 //@{
 
