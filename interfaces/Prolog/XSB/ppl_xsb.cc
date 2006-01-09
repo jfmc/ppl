@@ -78,10 +78,9 @@ long Prolog_max_integer;
 void
 ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = false;
-  // FIXME: these seem to be the values on IA32 but, who knows
-  //        on other architectures?
-  Prolog_min_integer = -268435456;
-  Prolog_max_integer = 268435455;
+  // XSB supports only 32-bit integers.
+  Prolog_min_integer = -2147483647-1;
+  Prolog_max_integer = 2147483647;
 }
 
 void
@@ -386,7 +385,7 @@ Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
 
 PPL::Coefficient
 integer_term_to_Coefficient(Prolog_term_ref t) {
-  // FIXME: does XSB support unlimited precision integers?
+  // XSB supports only 32-bit integers.
   long v;
   Prolog_get_long(t, &v);
   return PPL::Coefficient(v);
