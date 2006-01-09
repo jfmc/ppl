@@ -76,6 +76,59 @@ LP_Problem::~LP_Problem() {
 }
 
 inline void
+LP_Problem::swap(LP_Problem& y) {
+  std::swap(tableau, y.tableau);
+  std::swap(working_cost, y.working_cost);
+  std::swap(base, y.base);
+  std::swap(dim_map, y.dim_map);
+  std::swap(status, y.status);
+  std::swap(input_cs, y.input_cs);
+  std::swap(input_obj_function, y.input_obj_function);
+  std::swap(opt_mode, y.opt_mode);
+  std::swap(last_generator, y.last_generator);
+}
+
+inline LP_Problem&
+LP_Problem::operator=(const LP_Problem& y) {
+  LP_Problem tmp(y);
+  swap(tmp);
+  return *this;
+}
+
+inline dimension_type
+LP_Problem::max_space_dimension() {
+  // FIXME.
+  assert(false);
+  return Constraint_System::max_space_dimension();
+}
+
+inline dimension_type
+LP_Problem::space_dimension() const {
+  return input_cs.space_dimension();
+}
+
+inline const Constraint_System&
+LP_Problem::constraints() const {
+  return input_cs;
+}
+
+inline const Linear_Expression&
+LP_Problem::objective_function() const {
+  return input_obj_function;
+}
+
+inline Optimization_Mode
+LP_Problem::optimization_mode() const {
+  return opt_mode;
+}
+
+inline void
+LP_Problem::clear() {
+  LP_Problem tmp;
+  swap(tmp);
+}
+
+inline void
 LP_Problem::add_constraint(const Constraint& c) {
   if (c.is_strict_inequality())
     throw std::invalid_argument("PPL::LP_Problem::add_constraint(c):\n"
@@ -140,14 +193,17 @@ LP_Problem::set_optimization_mode(Optimization_Mode mode) {
   assert(OK());
 }
 
-inline const Linear_Expression&
-LP_Problem::objective_function() const {
-  return input_obj_function;
-}
-
-inline Optimization_Mode
-LP_Problem::optimization_mode() const {
-  return opt_mode;
+inline LP_Problem_Status
+LP_Problem::solve() const {
+  if (is_satisfiable()) {
+    LP_Problem& x = const_cast<LP_Problem&>(*this);
+    x.second_phase();
+    if (x.status == UNBOUNDED)
+      return UNBOUNDED_LP_PROBLEM;
+    if (x.status == OPTIMIZED)
+      return OPTIMIZED_LP_PROBLEM;
+  }
+  return UNFEASIBLE_LP_PROBLEM;
 }
 
 inline const Generator&
@@ -168,67 +224,11 @@ LP_Problem::optimizing_point() const {
 			  "*this doesn't have an optimizing point.");
 }
 
-inline const Constraint_System&
-LP_Problem::constraints() const {
-  return input_cs;
-}
-
-inline LP_Problem_Status
-LP_Problem::solve() const {
-  if (is_satisfiable()) {
-    LP_Problem& x = const_cast<LP_Problem&>(*this);
-    x.second_phase();
-    if (x.status == UNBOUNDED)
-      return UNBOUNDED_LP_PROBLEM;
-    if (x.status == OPTIMIZED)
-      return OPTIMIZED_LP_PROBLEM;
-  }
-  return UNFEASIBLE_LP_PROBLEM;
-}
-
 inline void
 LP_Problem::optimal_value(Coefficient& num, Coefficient& den) const {
   const Generator& g_ref = optimizing_point();
   evaluate_objective_function(g_ref, num, den);
   assert(OK());
-}
-
-inline void
-LP_Problem::swap(LP_Problem& y) {
-  std::swap(tableau, y.tableau);
-  std::swap(working_cost, y.working_cost);
-  std::swap(base, y.base);
-  std::swap(dim_map, y.dim_map);
-  std::swap(status, y.status);
-  std::swap(input_cs, y.input_cs);
-  std::swap(input_obj_function, y.input_obj_function);
-  std::swap(opt_mode, y.opt_mode);
-  std::swap(last_generator, y.last_generator);
-}
-
-inline LP_Problem&
-LP_Problem::operator=(const LP_Problem& y) {
-  LP_Problem tmp(y);
-  swap(tmp);
-  return *this;
-}
-
-inline void
-LP_Problem::clear() {
-  LP_Problem tmp;
-  swap(tmp);
-}
-
-inline dimension_type
-LP_Problem::max_space_dimension() {
-  // FIXME.
-  assert(false);
-  return Constraint_System::max_space_dimension();
-}
-
-inline dimension_type
-LP_Problem::space_dimension() const {
-  return input_cs.space_dimension();
 }
 
 inline memory_size_type
