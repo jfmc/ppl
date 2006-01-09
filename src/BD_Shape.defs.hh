@@ -481,7 +481,6 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  // FIXME: the following is a workaround for a bug in doxygen 1.4.6.
   /*! \brief
     Returns \f$0\f$, if \p *this is empty; otherwise, returns the
     \ref Affine_Independence_and_Affine_Dimension "affine dimension"
