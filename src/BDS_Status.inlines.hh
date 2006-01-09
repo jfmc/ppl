@@ -140,7 +140,7 @@ BD_Shape<T>::Status::set_shortest_path_reduced() {
 }
 
 template <typename T>
-inline bool
+bool
 BD_Shape<T>::Status::OK() const {
   if (test_zero_dim_univ())
     // Zero-dim universe is OK.
@@ -214,7 +214,7 @@ get_field(std::istream& s, const std::string& keyword, bool& positive) {
 } // namespace Implementation
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::Status::ascii_dump(std::ostream& s) const {
   using namespace Implementation::BD_Shapes;
   s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
@@ -225,7 +225,7 @@ BD_Shape<T>::Status::ascii_dump(std::ostream& s) const {
 }
 
 template <typename T>
-inline bool
+bool
 BD_Shape<T>::Status::ascii_load(std::istream& s) {
   using namespace Implementation::BD_Shapes;
   bool positive;
