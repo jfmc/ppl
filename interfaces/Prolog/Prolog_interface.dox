@@ -69,7 +69,6 @@ on the use of the interface.
   <CODE>ppl_finalize/0</CODE> are <CODE>ppl_finalize/0</CODE> itself
   (this further call has no effect) and <CODE>ppl_initialize/0</CODE>,
   after which the interface's services are usable again.
-%
   Some Prolog systems allow the specification of initialization
   and deinitialization functions in their foreign language interfaces.
   The corresponding incarnations of the PPL-Prolog interface

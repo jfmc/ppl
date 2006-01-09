@@ -66,11 +66,7 @@ check_extra_noisy :-
 run_all([Group|Groups]):-
    ppl_initialize,
    (catch(run_one(Group), Exception,
-         (group_predicates(Group, Predicates),
-          display_message(
-            ['Exception occurred while performing test ', Group,
-              'which checks predicates ', nl, Predicates]),
-         print_exception_term(Exception), fail)) -> true ; run_fail(Group)),
+         run_exception(Group, Exception)) -> true ; run_fail(Group)),
    !,
    ppl_finalize,
    run_all(Groups).
@@ -90,6 +86,23 @@ run_fail(Group) :-
    !,
    ppl_finalize,
    fail.
+
+run_exception(Group, ppl_overflow_error(Cause)) :-
+   !,
+   group_predicates(Group, Predicates),
+   display_message(
+            ['Overflow exception occurred while performing test ', Group,
+              'which checks predicates ', nl, Predicates]),
+   print_exception_term(ppl_overflow_error(Cause)).
+
+run_exception(Group, Exception) :-
+   group_predicates(Group, Predicates),
+   display_message(
+            ['Exception occurred while performing test ', Group,
+              'which checks predicates ', nl, Predicates]),
+   print_exception_term(Exception),
+   fail.
+
 
 % Tests predicates that return PPL version information and the PPL banner.
 % If noisy(0) holds, there is no output but if not,
@@ -2389,10 +2402,10 @@ large_nums_affine_transform_loop(Exp, P, A) :-
 % has a wrong exception message, then exceptions/0 will fail.
 
 exceptions :-
-   current_prolog_flag(bounded, Y),
+%   current_prolog_flag(bounded, Y),
    make_vars(3, V),
    exception_prolog(V),
-   (Y == true -> exception_sys_prolog(V) ; true),
+%   (Y == true -> exception_sys_prolog(V) ; true),
    exception_cplusplus(V),
    !.
 
@@ -2863,6 +2876,7 @@ print_exception_term(ppl_overflow_error(Cause)) :-
   !.
 
 print_exception_term(Exception) :-
+  write('exception'), nl,
   nl,
   writeq(Exception),
   nl.
@@ -2887,7 +2901,7 @@ format_exception_message(
                    'in call to', W, '.']).
 
 format_exception_message(Error) :-
-  display_message([Error]).
+  (noisy(0) -> true ; display_message([Error])).
 
 %%%%%%%%%%%% predicates for output messages %%%%%%%%%%%%%%%%%%
 
@@ -2896,9 +2910,10 @@ error_message(Message):-
    fail.
 
 display_message(Message):-
-   noisy(1), !,
-   nl, write_all(Message).
-display_message(_).
+  noisy(_),
+  (noisy(0) -> true ;
+    nl, write_all(Message)
+  ).
 
 write_all([]) :- nl.
 write_all([Phrase|Phrases]):-
