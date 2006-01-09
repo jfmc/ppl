@@ -214,11 +214,18 @@ SP_STUB_1(ppl_set_timeout_exception_atom)
 SP_STUB_1(ppl_timeout_exception_atom)
 SP_STUB_1(ppl_set_timeout)
 SP_STUB_0(ppl_reset_timeout)
-SP_STUB_4(ppl_new_Polyhedron_from_space_dimension)
-SP_STUB_4(ppl_new_Polyhedron_from_Polyhedron)
-SP_STUB_3(ppl_new_Polyhedron_from_constraints)
-SP_STUB_3(ppl_new_Polyhedron_from_generators)
-SP_STUB_3(ppl_new_Polyhedron_from_bounding_box)
+SP_STUB_3(ppl_new_C_Polyhedron_from_space_dimension)
+SP_STUB_3(ppl_new_NNC_Polyhedron_from_space_dimension)
+SP_STUB_2(ppl_new_C_Polyhedron_from_C_Polyhedron)
+SP_STUB_2(ppl_new_C_Polyhedron_from_NNC_Polyhedron)
+SP_STUB_2(ppl_new_NNC_Polyhedron_from_C_Polyhedron)
+SP_STUB_2(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron)
+SP_STUB_2(ppl_new_C_Polyhedron_from_constraints)
+SP_STUB_2(ppl_new_NNC_Polyhedron_from_constraints)
+SP_STUB_2(ppl_new_C_Polyhedron_from_generators)
+SP_STUB_2(ppl_new_NNC_Polyhedron_from_generators)
+SP_STUB_2(ppl_new_C_Polyhedron_from_bounding_box)
+SP_STUB_2(ppl_new_NNC_Polyhedron_from_bounding_box)
 SP_STUB_2(ppl_Polyhedron_swap)
 SP_STUB_1(ppl_delete_Polyhedron)
 SP_STUB_2(ppl_Polyhedron_space_dimension)
@@ -337,11 +344,18 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_timeout_exception_atom, 1);
   SP_DEFINE_C_PREDICATE(ppl_set_timeout, 1);
   SP_DEFINE_C_PREDICATE(ppl_reset_timeout, 0);
-  SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_space_dimension, 4);
-  SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_Polyhedron, 4);
-  SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_constraints, 3);
-  SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_generators, 3);
-  SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_bounding_box, 3);
+  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_space_dimension, 3);
+  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_space_dimension, 3);
+  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_C_Polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_NNC_Polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_C_Polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_constraints, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_constraints, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_generators, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_generators, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_bounding_box, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_bounding_box, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_swap, 2);
   SP_DEFINE_C_PREDICATE(ppl_delete_Polyhedron, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_space_dimension, 2);

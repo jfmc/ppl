@@ -125,6 +125,14 @@ o  In the Prolog interface, the names and arities of the "with_token"
    "with_tokens" with an extra argument and the functionality has been
    revised to match more closely the corresponding C++ interface operators.
 
+o  In the Prolog interface, the names and arities of the predicates
+   that create handles for new polyhedra have been revised
+   to match more closely the corresponding C and C++ interface
+   operators.
+   That is, instead of having "c" and/or "nnc" as arguments to indicate the
+   topology of the polyhedron, the topologies are now part of the names of
+   the predicates.
+
 o  The SWI-Prolog interface allows now the exchange of unbounded numbers
    between the PPL and Prolog applications.  This requires SWI-Prolog
    version 5.6.0 or later version.  Previous versions of SWI-Prolog

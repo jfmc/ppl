@@ -41,7 +41,7 @@ solve(Goals, Variable_Names) :-
     assertz(original_goal_variables(Variable_Names)),
     % The initial polyhedron is initialised with
     % `Dims' dimensions, the number of variables in `Goals'.
-    ppl_new_Polyhedron_from_space_dimension(c, Dims, universe, Polyhedron),
+    ppl_new_C_Polyhedron_from_space_dimension(Dims, universe, Polyhedron),
     % Try to reduce `Goals' to the empty continuation.
     (solve(Goals, true, Polyhedron) ->
 	Failed = no
@@ -60,7 +60,7 @@ solve(true, true, Polyhedron) :-
     !,
     % It is time to print the result and see if the user
     % wants to look for more solutions.
-    ppl_new_Polyhedron_from_Polyhedron(c, Polyhedron, c, Q),
+    ppl_new_C_Polyhedron_from_C_Polyhedron(Polyhedron, Q),
     original_goal_variables(Variable_Names),
     length(Variable_Names, Dims),
     ppl_Polyhedron_remove_higher_space_dimensions(Q, Dims),
@@ -103,7 +103,7 @@ solve(Atom, Goals, Polyhedron) :-
     % Copy the current polyhedron and work on the copy.
     % NOTE: the copy is under our responsibility, i.e.,
     %       it is our job to delete it, sooner or later.
-    ppl_new_Polyhedron_from_Polyhedron(c, Polyhedron, c, Poly_Copy),
+    ppl_new_C_Polyhedron_from_C_Polyhedron(Polyhedron, Poly_Copy),
 
     % Rename the selected clause apart and extend the polyhedron.
     ppl_Polyhedron_space_dimension(Poly_Copy, Dims),
