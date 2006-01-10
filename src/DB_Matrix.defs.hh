@@ -206,11 +206,7 @@ public:
   const DB_Row<T>& operator[](dimension_type k) const;
   //@}
 
-  /*! \brief
-    Writes to \p s an ASCII representation of the internal
-    representation of \p *this.
-  */
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS;
 
   /*! \brief
     Loads from \p s an ASCII representation (as produced by \ref ascii_dump)

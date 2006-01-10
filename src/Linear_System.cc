@@ -111,6 +111,10 @@ PPL::Linear_System::set_rows_topology() {
 
 void
 PPL::Linear_System::ascii_dump(std::ostream& s) const {
+  // Prints the topology, the number of rows, the number of columns
+  // and the sorted flag.  The specialized methods provided by
+  // Constraint_System and Generator_System take care of properly
+  // printing the contents of the system.
   const Linear_System& x = *this;
   dimension_type x_num_rows = x.num_rows();
   dimension_type x_num_columns = x.num_columns();
@@ -126,6 +130,8 @@ PPL::Linear_System::ascii_dump(std::ostream& s) const {
   for (dimension_type i = 0; i < x_num_rows; ++i)
     x[i].ascii_dump(s);
 }
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_System);
 
 bool
 PPL::Linear_System::ascii_load(std::istream& s) {

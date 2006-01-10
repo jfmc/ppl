@@ -340,16 +340,7 @@ public:
   //! Clears the system deallocating all its rows.
   void clear();
 
-  /*! \brief
-    Writes to \p s an ASCII representation of the internal
-    representation of \p *this.
-
-    Prints the topology, the number of rows, the number of columns and
-    the \p sorted flag.  The specialized methods provided by Constraint_System
-    and Generator_System take care of properly printing the contents of the
-    system.
-  */
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS;
 
   /*! \brief
     Loads from \p s an ASCII representation (as produced by \ref

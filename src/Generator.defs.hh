@@ -366,6 +366,17 @@ public:
   */
   bool is_equivalent_to(const Generator& y) const;
 
+  PPL_OUTPUT_DECLARATIONS;
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    \ref ascii_dump) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
+#endif
+  bool ascii_load(std::istream& s);
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 

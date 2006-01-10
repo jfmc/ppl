@@ -860,6 +860,8 @@ PPL::Generator_System::ascii_dump(std::ostream& s) const {
   }
 }
 
+PPL_OUTPUT_DEFINITIONS(Generator_System);
+
 bool
 PPL::Generator_System::ascii_load(std::istream& s) {
   std::string str;

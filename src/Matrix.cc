@@ -264,6 +264,8 @@ PPL::Matrix::ascii_dump(std::ostream& s) const {
     x[i].ascii_dump(s);
 }
 
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Matrix);
+
 bool
 PPL::Matrix::ascii_load(std::istream& s) {
   Matrix& x = *this;

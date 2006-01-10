@@ -170,11 +170,7 @@ public:
     */
     bool operator!=(const Flags& y) const;
 
-    /*! \brief
-      Writes to \p s an ASCII representation of the internal
-      representation of \p *this.
-    */
-    void ascii_dump(std::ostream& s) const;
+    PPL_OUTPUT_DECLARATIONS;
 
     //! Uses the ASCII Flags representation from \p s to recreate *this.
     /*!
@@ -365,11 +361,7 @@ public:
   */
   bool all_homogeneous_terms_are_zero() const;
 
-  /*! \brief
-    Writes to \p s an ASCII representation of the internal
-    representation of \p *this.
-  */
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS;
 
   //! Uses the ASCII Linear_Row representation from \p s to recreate *this.
   /*!

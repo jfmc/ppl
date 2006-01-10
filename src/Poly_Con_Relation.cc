@@ -62,6 +62,8 @@ PPL::Poly_Con_Relation::ascii_dump(std::ostream& s) const {
   }
 }
 
+PPL_OUTPUT_DEFINITIONS(Poly_Con_Relation);
+
 /*! \relates Parma_Polyhedra_Library::Poly_Con_Relation */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Poly_Con_Relation& r) {

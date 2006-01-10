@@ -143,6 +143,8 @@ PPL::Row::Flags::ascii_dump(std::ostream& s) const {
   s.flags(f);
 }
 
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Row::Flags);
+
 bool
 PPL::Row::Flags::ascii_load(std::istream& s) {
   std::string str;
@@ -166,6 +168,8 @@ PPL::Row::ascii_dump(std::ostream& s) const {
   flags().ascii_dump(s);
   s << "\n";
 }
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Row);
 
 bool
 PPL::Row::ascii_load(std::istream& s) {

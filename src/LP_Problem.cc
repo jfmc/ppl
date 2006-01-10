@@ -1023,3 +1023,5 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
   s << last_generator;
   s << "\n";
 }
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(LP_Problem);

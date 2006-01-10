@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Poly_Con_Relation_defs_hh 1
 
 #include "Poly_Con_Relation.types.hh"
+#include "globals.defs.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -98,9 +99,6 @@ private:
   //! Construct from a bit-mask.
   Poly_Con_Relation(flags_t mask);
 
-  //! Pretty printing.
-  void ascii_dump(std::ostream& s) const;
-
   friend bool
   Parma_Polyhedra_Library::operator==(const Poly_Con_Relation& x,
 				      const Poly_Con_Relation& y);
@@ -157,6 +155,8 @@ public:
     the constraint.
   */
   static Poly_Con_Relation saturates();
+
+  PPL_OUTPUT_DECLARATIONS;
 
   //! True if and only if \p *this implies \p y.
   bool implies(const Poly_Con_Relation& y) const;

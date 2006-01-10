@@ -694,6 +694,8 @@ BD_Shape<T>::ascii_dump(std::ostream& s) const {
   }
 }
 
+PPL_OUTPUT_TEMPLATE_DEFINITIONS(T, BD_Shape<T>);
+
 template <typename T>
 inline bool
 BD_Shape<T>::ascii_load(std::istream& s) {
@@ -1875,11 +1877,11 @@ BD_Shape<T>::bds_difference_assign(const BD_Shape& y) {
   for (Constraint_System::const_iterator i = y_cs.begin(),
 	 y_cs_end = y_cs.end(); i != y_cs_end; ++i) {
     const Constraint& c = *i;
-    // If the system of bounded differences `x' is included 
-    // in the system of bounded differences defined by `c', 
+    // If the system of bounded differences `x' is included
+    // in the system of bounded differences defined by `c',
     // then `c' _must_ be skipped, as adding its complement to `x'
-    // would result in the empty system of bounded differences, 
-    // and as we would obtain a result that is less precise 
+    // would result in the empty system of bounded differences,
+    // and as we would obtain a result that is less precise
     // than the bds-difference.
     if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
       continue;

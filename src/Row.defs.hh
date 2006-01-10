@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Row_defs_hh 1
 
 #include "Row.types.hh"
-#include "globals.types.hh"
+#include "globals.defs.hh"
 #include "Coefficient.defs.hh"
 #include <vector>
 #include <limits>
@@ -99,11 +99,7 @@ public:
     */
     bool operator!=(const Flags& y) const;
 
-    /*! \brief
-      Writes to \p s an ASCII representation of the internal
-      representation of \p *this.
-    */
-    void ascii_dump(std::ostream& s) const;
+    PPL_OUTPUT_DECLARATIONS;
 
     //! Uses the ASCII Flags representation from \p s to recreate *this.
     /*!
@@ -287,11 +283,7 @@ public:
   */
   void normalize();
 
-  /*! \brief
-    Writes to \p s an ASCII representation of the internal
-    representation of \p *this.
-  */
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS;
 
   //! Uses the ASCII Row representation at \p s to recreate *this.
   /*!
