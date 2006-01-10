@@ -98,6 +98,7 @@ $(MANUALS)
 
 dist_man_MANS = \
 ppl-config.1 \
+ppl_lcdd.1 \
 ppl_lpsol.1
 
 # Do nothing by default.
