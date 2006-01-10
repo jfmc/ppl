@@ -127,7 +127,7 @@ namespace {
 #ifdef HAVE_GETOPT_H
 struct option long_options[] = {
   {"max-cpu",        required_argument, 0, 'C'},
-  {"max-memory",     required_argument, 0, 'V'},
+  {"max-memory",     required_argument, 0, 'R'},
   {"help",           no_argument,       0, 'h'},
   {"version",        no_argument,       0, 'V'},
   {"output",         required_argument, 0, 'o'},
@@ -143,7 +143,7 @@ struct option long_options[] = {
 static const char* usage_string
 = "Usage: %s [OPTION]... [FILE]...\n\n"
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
-"  -MMB, --max-memory=MB   limits memory usage to MB megabytes\n"
+"  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
 "  -h, --help              prints this help text to stdout\n"
 "  -V, --version           prints version information to stdout\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
@@ -160,9 +160,9 @@ static const char* usage_string
 "Report bugs to <ppl-devel@cs.unipr.it>.\n";
 
 #if defined(USE_PPL)
-#define OPTION_LETTERS "C:M:hVo:tvc:"
+#define OPTION_LETTERS "C:R:hVo:tvc:"
 #else
-#define OPTION_LETTERS "C:M:hVo:tv"
+#define OPTION_LETTERS "C:R:hVo:tv"
 #endif
 
 const char* program_name = 0;
@@ -374,10 +374,10 @@ process_options(int argc, char* argv[]) {
 	max_seconds_of_cpu_time = l;
       break;
 
-    case 'M':
+    case 'R':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-M'");
+	fatal("a non-negative integer must follow `-R'");
       else
 	max_bytes_of_virtual_memory = l*1024*1024;
       break;
