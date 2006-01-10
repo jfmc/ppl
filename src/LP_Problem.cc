@@ -395,7 +395,8 @@ PPL::LP_Problem_Status
 PPL::LP_Problem::compute_tableau() {
   assert(tableau.num_rows() == 0);
   assert(dim_map.size() == 0);
-  // FIXME
+  // Note: exploiting friendship so as to efficiently access the
+  // coefficients of each constraint.
   Linear_System& cs = input_cs;
   const dimension_type cs_num_rows = cs.num_rows();
   const dimension_type cs_num_cols = cs.num_columns();
