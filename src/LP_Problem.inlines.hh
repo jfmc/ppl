@@ -97,8 +97,6 @@ LP_Problem::operator=(const LP_Problem& y) {
 
 inline dimension_type
 LP_Problem::max_space_dimension() {
-  // FIXME.
-  assert(false);
   return Constraint_System::max_space_dimension();
 }
 
