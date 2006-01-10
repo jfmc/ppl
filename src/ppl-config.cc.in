@@ -276,13 +276,13 @@ process_options(int argc, char* argv[]) {
       else if (strcaseeq(optarg, "GNU-Prolog"))
 	required_interface = GNU_PROLOG;
       else if (strcaseeq(optarg, "SICStus-Prolog"))
-	required_interface = GNU_PROLOG;
+	required_interface = SICSTUS_PROLOG;
       else if (strcaseeq(optarg, "SWI-Prolog"))
-	required_interface = GNU_PROLOG;
+	required_interface = SWI_PROLOG;
       else if (strcaseeq(optarg, "XSB-Prolog"))
-	required_interface = GNU_PROLOG;
+	required_interface = XSB_PROLOG;
       else if (strcaseeq(optarg, "YAP-Prolog"))
-	required_interface = GNU_PROLOG;
+	required_interface = YAP_PROLOG;
       else if (strcaseeq(optarg, "OCaml"))
 	required_interface = OCAML;
       else if (strcaseeq(optarg, "Java"))
