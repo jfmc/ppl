@@ -103,7 +103,6 @@ run_exception(Group, Exception) :-
    print_exception_term(Exception),
    fail.
 
-
 % Tests predicates that return PPL version information and the PPL banner.
 % If noisy(0) holds, there is no output but if not,
 % all the versions are printed and the banner is pretty printed.
@@ -244,10 +243,10 @@ run_one(lp_problem) :-
 % xsb has problems with large numbers - hence tests for xsb disallowed.
 % We catch the exception if it is caused by integer overflow in C++
 % and suppress output as this is expected when C++ uses checked_integers.
-run_one(large_nums) :-
+run_one(large_integers) :-
    prolog_system(Prolog_System),
    (Prolog_System \== xsb ->
-     catch(large_nums, ppl_overflow_error(Cause),
+     catch(large_integers, ppl_overflow_error(Cause),
         check_exception_term(ppl_overflow_error(Cause)))
    ;
      true
@@ -2314,8 +2313,8 @@ compare_lin_expressions(LE1, LE2) :-
 /*
  This test checks the transfer of large numbers between Prolog and C++.
  We test all numbers (BigNum) which are +/- (2^E +/- A) where E is one of
- the numbers in the list defined by large_nums_exponents/1 and
- A is one of the numbers in the list defined by large_nums_additions/1.
+ the numbers in the list defined by large_integers_exponents/1 and
+ A is one of the numbers in the list defined by large_integers_additions/1.
 
  Thus we pass a BigNum from the Prolog to C++ and construct a polyhedron
  P (space dimension = 1) consisting of a single point A = BigNum.
@@ -2328,42 +2327,79 @@ compare_lin_expressions(LE1, LE2) :-
 
  To see exactly which numbers are tested, first make the test "extra noisy"
  using make_extra_noisy/0; i.e., type:
- make_extra_noisy, large_nums.
+ make_extra_noisy, large_integers.
 */
 
-large_nums_exponents([0, 7, 8, 15, 16, 27, 28, 29, 30, 31, 32, 63, 64]).
+large_integers_exponents([0, 7, 8, 15, 16, 27, 28, 29, 30, 31, 32, 63, 64]).
 
-large_nums_additions([-3, -2, -1, 0, 1, 2, 3]).
+large_integers_additions([-3, -2, -1, 0, 1, 2, 3]).
 
-large_nums :-
-  large_nums_exponents(Exps),
-  large_nums_additions(Adds),
+large_integers :-
+  large_integers_exponents(Exps),
+  large_integers_additions(Adds),
   out(large_int, init),
-  large_nums_prolog_cplusplus(Exps, Adds).
+  large_integers_prolog_cpp(Exps, Adds),
+  current_prolog_flag(bounded, Y),
+  ((Y == true ; prolog_system(xsb)) ->
+     large_integers_sys_prolog_cpp(Adds)
+   ;
+     true
+  ).
 
-large_nums_prolog_cplusplus([], _).
-large_nums_prolog_cplusplus([Exp|Exps], Adds) :-
+large_integers_sys_prolog_cpp([]).
+large_integers_sys_prolog_cpp([Add|Adds]) :-
+  pl_check_prolog_flag(max_integer, Max_int),
+  pl_check_prolog_flag(min_integer, Min_int),
+  Max is Max_int-3,
+  Min is Min_int+3,
+  large_integers_sys_prolog_cpp2(Max, Add, 1),
+  large_integers_sys_prolog_cpp2(Min, Add, -1),
+  large_integers_sys_prolog_cpp(Adds).
+
+large_integers_sys_prolog_cpp2(MaxMin, Add, Sign) :-
+  make_vars(1, [A]),
+  Inhomo is MaxMin + Sign* Add,
+  out(large_int, Inhomo),
+  clean_ppl_new_Polyhedron_from_space_dimension(c, 1, universe, P),
+  ppl_Polyhedron_add_constraints(P, [A = Inhomo]),
+  ppl_Polyhedron_get_constraints(P, CS),
+  clean_ppl_new_Polyhedron_from_space_dimension(c, 1, universe, P1),
+  ppl_Polyhedron_add_constraints(P1, CS),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  clean_ppl_new_Polyhedron_from_space_dimension(c, 1, universe, P2),
+  InhomoDiv2 is Inhomo // 2,
+  InhomoMod2 is Inhomo mod 2,
+  ppl_Polyhedron_add_constraint(P2, A = InhomoDiv2),
+  ppl_Polyhedron_affine_image(P2, A, 2*A + Sign* InhomoMod2, 1),
+  ppl_Polyhedron_equals_Polyhedron(P, P2),
+  !,
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P2).
+
+large_integers_prolog_cpp([], _).
+large_integers_prolog_cpp([Exp|Exps], Adds) :-
   current_prolog_flag(bounded, F),
-  (F == true ->
-     current_prolog_flag(max_integer, Max_int),
+  ((F == true ; prolog_system(xsb)) ->
+     pl_check_prolog_flag(max_integer, Max_int),
     (Max_int >> 1 =< 1 << Exp + 3 ->
        true
     ;
-       large_nums_prolog_cplusplus1(Adds, Exp),
-       large_nums_prolog_cplusplus(Exps, Adds)
+       large_integers_prolog_cpp1(Adds, Exp),
+       large_integers_prolog_cpp(Exps, Adds)
     )
   ;
-     large_nums_prolog_cplusplus1(Adds, Exp),
-     large_nums_prolog_cplusplus(Exps, Adds)
+     large_integers_prolog_cpp1(Adds, Exp),
+     large_integers_prolog_cpp(Exps, Adds)
   ).
 
-large_nums_prolog_cplusplus1([], _).
-large_nums_prolog_cplusplus1([Add|Adds], Exp) :-
-  large_nums_prolog_cplusplus2(Exp, Add, 1),
-  large_nums_prolog_cplusplus2(Exp, Add, -1),
-  large_nums_prolog_cplusplus1(Adds, Exp).
+large_integers_prolog_cpp1([], _).
+large_integers_prolog_cpp1([Add|Adds], Exp) :-
+  large_integers_prolog_cpp2(Exp, Add, 1),
+  large_integers_prolog_cpp2(Exp, Add, -1),
+  large_integers_prolog_cpp1(Adds, Exp).
 
-large_nums_prolog_cplusplus2(Exp, Add, Sign) :-
+large_integers_prolog_cpp2(Exp, Add, Sign) :-
   Inhomo is Sign * ((1 << Exp) + Add),
   out(large_int, Inhomo),
   make_vars(1, [A]),
@@ -2375,7 +2411,7 @@ large_nums_prolog_cplusplus2(Exp, Add, Sign) :-
   ppl_Polyhedron_equals_Polyhedron(P, P1),
   clean_ppl_new_Polyhedron_from_space_dimension(c, 1, universe, P2),
   ppl_Polyhedron_add_constraint(P2, A = 1),
-  large_nums_affine_transform_loop(Exp, P2, A),
+  large_integers_affine_transform_loop(Exp, P2, A),
   ppl_Polyhedron_affine_image(P2, A, Sign * (A + Add), 1),
   ppl_Polyhedron_equals_Polyhedron(P, P2),
   !,
@@ -2383,12 +2419,12 @@ large_nums_prolog_cplusplus2(Exp, Add, Sign) :-
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P2).
 
-large_nums_affine_transform_loop(0, _P, _).
-large_nums_affine_transform_loop(Exp, P, A) :-
+large_integers_affine_transform_loop(0, _P, _).
+large_integers_affine_transform_loop(Exp, P, A) :-
   Exp >= 1,
   ppl_Polyhedron_affine_image(P, A, 2*A, 1),
   Exp1 is Exp - 1,
-  large_nums_affine_transform_loop(Exp1, P, A).
+  large_integers_affine_transform_loop(Exp1, P, A).
 
 %%%%%%%%%%%%%%%%% Exceptions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -2410,10 +2446,10 @@ large_nums_affine_transform_loop(Exp, P, A) :-
 % has a wrong exception message, then exceptions/0 will fail.
 
 exceptions :-
-%   current_prolog_flag(bounded, Y),
+   current_prolog_flag(bounded, Y),
    make_vars(3, V),
    exception_prolog(V),
-%   (Y == true -> exception_sys_prolog(V) ; true),
+   (Y == true -> exception_sys_prolog(V) ; true),
    exception_cplusplus(V),
    !.
 
@@ -2431,13 +2467,13 @@ exception_prolog1(N, V) :-
 
 %% TEST: Prolog_unsigned_out_of_range
 exception_prolog(1, _) :-
-   (current_prolog_flag(bounded, true)
-    ->
+    current_prolog_flag(bounded, Y),
+   ((Y == true ; prolog_system(xsb); prolog_system(yap)) ->
+     true
+    ;
      (I = 21474836470,
      must_catch(ppl_new_C_Polyhedron_from_generators([point('$VAR'(I))], _))
       )
-    ;
-   true
    ).
 
 %% TEST: not_unsigned_integer
@@ -2588,38 +2624,58 @@ exception_sys_prolog1(N, V) :-
    exception_sys_prolog1(N1, V).
 
 exception_sys_prolog(1, [A,B,_]) :-
-  current_prolog_flag(max_integer, Max_Int),
-  clean_ppl_new_Polyhedron_from_constraints(c,
-               [Max_Int * A - B >= 0, 3 >= A], P),
-  must_catch(ppl_Polyhedron_get_generators(P, _)),
-  !,
-  ppl_delete_Polyhedron(P).
+  pl_check_prolog_flag(max_integer, Max_Int),
+  catch((
+          clean_ppl_new_Polyhedron_from_constraints(c,
+               [Max_Int * A - B =< 0, 3 >= A], P),
+          must_catch(ppl_Polyhedron_get_generators(P, _GS)),
+          !,
+          ppl_delete_Polyhedron(P)
+        ),
+        ppl_overflow_error(Cause),
+        check_exception_term(ppl_overflow_error(Cause))
+       ).
 
  exception_sys_prolog(2, [A,B,_]) :-
-  current_prolog_flag(min_integer, Min_Int),
-  clean_ppl_new_Polyhedron_from_constraints(c,
-                                            [Min_Int * A - B =< 0, 2 >= A],
-                                            P),
-  must_catch(ppl_Polyhedron_get_generators(P, _)),
-  ppl_delete_Polyhedron(P).
+  pl_check_prolog_flag(min_integer, Min_Int),
+  catch((
+          clean_ppl_new_Polyhedron_from_constraints(c,
+               [Min_Int * A - B =< 0, 2 >= A], P),
+          must_catch(ppl_Polyhedron_get_generators(P, _GS)),
+          !,
+          ppl_delete_Polyhedron(P)
+        ),
+        ppl_overflow_error(Cause),
+        check_exception_term(ppl_overflow_error(Cause))
+       ).
 
 exception_sys_prolog(3, [A,B,_]) :-
-  current_prolog_flag(max_integer, Max_Int),
-  clean_ppl_new_Polyhedron_from_generators(c,
+  pl_check_prolog_flag(max_integer, Max_Int),
+  catch((
+          clean_ppl_new_Polyhedron_from_generators(c,
                [point(Max_Int * A + B)], P),
-  ppl_Polyhedron_affine_image(P, A, A + 1, 1),
-  must_catch(ppl_Polyhedron_get_generators(P, _)),
-  !,
-  ppl_delete_Polyhedron(P).
+          ppl_Polyhedron_affine_image(P, A, A + 1, 1),
+          must_catch(ppl_Polyhedron_get_generators(P, _GS)),
+          !,
+          ppl_delete_Polyhedron(P)
+        ),
+        ppl_overflow_error(Cause),
+        check_exception_term(ppl_overflow_error(Cause))
+       ).
 
 exception_sys_prolog(4, [A,B,_]) :-
-  current_prolog_flag(min_integer, Min_Int),
-  clean_ppl_new_Polyhedron_from_generators(c,
+  pl_check_prolog_flag(min_integer, Min_Int),
+  catch((
+          clean_ppl_new_Polyhedron_from_generators(c,
                [point(Min_Int * A + B)], P),
-  ppl_Polyhedron_affine_image(P, A, A - 1, 1),
-  must_catch(ppl_Polyhedron_get_generators(P, _GS)),
-  !,
-  ppl_delete_Polyhedron(P).
+          ppl_Polyhedron_affine_image(P, A, A - 1, 1),
+          must_catch(ppl_Polyhedron_get_generators(P, _GS)),
+          !,
+          ppl_delete_Polyhedron(P)
+        ),
+        ppl_overflow_error(Cause),
+        check_exception_term(ppl_overflow_error(Cause))
+       ).
 
 % exception_cplusplus(+N, +V) checks exceptions thrown by the C++
 % interface for the PPL.
@@ -2634,7 +2690,7 @@ exception_cplusplus1(N, V) :-
    exception_cplusplus1(N1, V).
 
 exception_cplusplus(1, [A,B,C]) :-
-  must_catch(ppl_new_Polyhedron_from_generators(C, [point(A + B + C, 0)], _)).
+  must_catch(ppl_new_C_Polyhedron_from_generators([point(A + B + C, 0)], _)).
 
 exception_cplusplus(2, [A,B,_]) :-
   clean_ppl_new_Polyhedron_from_generators(c,
@@ -2653,7 +2709,7 @@ exception_cplusplus(3, [A, B, _]) :-
   ppl_delete_Polyhedron(P2).
 
 exception_cplusplus(4, [A,B,C]) :-
-   must_catch(ppl_new_Polyhedron_from_generators(c, [line(A + B + C)], _)).
+   must_catch(ppl_new_C_Polyhedron_from_generators([line(A + B + C)], _)).
 
 exception_cplusplus(5, [A,B,C]) :-
   clean_ppl_new_Polyhedron_from_generators(c, [point(B + 2*C)], P),
@@ -2964,7 +3020,7 @@ write_all([Phrase|Phrases]):-
 % groups and here is a list of the groups.
 
 list_groups( [
-   large_nums,
+   large_integers,
    all_versions_and_banner,
    max_dimension,
    new_polyhedron_from_dimension,
@@ -3142,10 +3198,28 @@ group_predicates(lp_problem,
   ['all LP_Prolog predicates'
   ]).
 
-group_predicates(large_nums,
-  ['large number tests '
+group_predicates(large_integers,
+  ['large integer tests '
   ]).
 
 group_predicates(handle_exceptions,
   'all predicates'' exception handling.'
   ).
+
+%%%%%%%%%%%%%%%%%%%%%%% System flags %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% pl_check_prolog_flag/2 returns the maximum or minimum integer for Prolog
+% systems that have bounded integers.
+% Note that 2147483648 is 2^31.
+
+pl_check_prolog_flag(max_integer, Max_Int) :-
+  current_prolog_flag(max_integer, Max_Int).
+
+pl_check_prolog_flag(max_integer, Max_Int) :-
+  prolog_system(xsb), Max_Int is 2147483647.
+
+pl_check_prolog_flag(min_integer, Min_Int) :-
+  current_prolog_flag(min_integer, Min_Int).
+
+pl_check_prolog_flag(min_integer, Min_Int) :-
+  prolog_system(xsb), Min_Int is -2147483648-1.
