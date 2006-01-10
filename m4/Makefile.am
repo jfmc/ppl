@@ -20,11 +20,6 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
 # M4 macro files to be used by the client applications with Autoconf.
 m4datadir = $(datadir)/aclocal
 m4data_DATA = ppl.m4

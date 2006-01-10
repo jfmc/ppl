@@ -20,13 +20,6 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
-SUBDIRS =
-
 EXTRA_DIST = \
 ppl_swiprolog.cc \
 ppl_swiprolog.pl \

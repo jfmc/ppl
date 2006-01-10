@@ -20,14 +20,6 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
-SUBDIRS =
-
-
 # Libtool -version-info for libppl.la.
 #
 #  1. Start with version information of `0:0:0' for each Libtool library.

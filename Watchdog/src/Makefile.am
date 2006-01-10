@@ -20,11 +20,6 @@
 # For the most up-to-date information see the CS@Parma software
 # site: http://www.cs.unipr.it/Software/ . */
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
 Doubly_Linked_Object.types.hh \
