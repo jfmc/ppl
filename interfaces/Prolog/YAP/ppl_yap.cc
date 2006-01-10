@@ -295,7 +295,15 @@ Prolog_is_cons(Prolog_term_ref t) {
 inline int
 Prolog_get_long(Prolog_term_ref t, long* lp) {
   assert(Prolog_is_integer(t));
-  *lp = YAP_IntOfTerm(t);
+  if (YAP_IsBigNumTerm(t) != FALSE) {
+    YAP_BigNumOfTerm(t, tmp_mpz_class.get_mpz_t());
+    if (tmp_mpz_class >= LONG_MIN && tmp_mpz_class <= LONG_MAX)
+      PPL::assign_r(*lp, tmp_mpz_class, PPL::ROUND_NOT_NEEDED);
+    else
+      return 0;
+  }
+  else
+    *lp = YAP_IntOfTerm(t);
   return 1;
 }
 
@@ -378,11 +386,8 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
     YAP_BigNumOfTerm(t, tmp_mpz_class.get_mpz_t());
     n = tmp_mpz_class;
   }
-  else {
-    long l;
-    Prolog_get_long(t, &l);
-    n = l;
-  }
+  else
+    n = YAP_IntOfTerm(t);
   return n;
 }
 
