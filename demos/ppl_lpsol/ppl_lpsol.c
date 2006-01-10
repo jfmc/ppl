@@ -74,10 +74,11 @@ static const char* ppl_source_version = PPL_VERSION;
 static struct option long_options[] = {
   {"check",          no_argument,       0, 'c'},
   {"help",           no_argument,       0, 'h'},
+  {"version",        no_argument,       0, 'V'},
   {"min",            no_argument,       0, 'm'},
   {"max",            no_argument,       0, 'M'},
   {"max-cpu",        required_argument, 0, 'C'},
-  {"max-memory",     required_argument, 0, 'V'},
+  {"max-memory",     required_argument, 0, 'R'},
   {"output",         required_argument, 0, 'o'},
   {"enumerate",      no_argument,       0, 'e'},
   {"simplex",        no_argument,       0, 's'},
@@ -93,8 +94,9 @@ static const char* usage_string
 "  -m, --min               minimizes the objective function\n"
 "  -M, --max               maximizes the objective function (default)\n"
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
-"  -VMB, --max-memory=MB   limits memory usage to MB megabytes\n"
-"  -h, --help              prints this help text to stderr\n"
+"  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
+"  -h, --help              prints this help text to stdout\n"
+"  -V, --version           prints version information to stdout\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
 "  -e, --enumerate         use the (expensive!) enumeration method\n"
 "  -s, --simplex           use the simplex method\n"
@@ -107,7 +109,7 @@ static const char* usage_string
 #endif
 ;
 
-#define OPTION_LETTERS "bcemMC:V:ho:stv"
+#define OPTION_LETTERS "bcemMC:R:hVo:stv"
 
 static const char* program_name = 0;
 
@@ -192,22 +194,27 @@ process_options(int argc, char* argv[]) {
 
     case '?':
     case 'h':
-      fprintf(stderr, usage_string, argv[0]);
+      fprintf(stdout, usage_string, argv[0]);
       my_exit(0);
+      break;
+
+    case 'V':
+      fprintf(stdout, "%s\n", PPL_VERSION);
+      exit(0);
       break;
 
     case 'C':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-c'");
+	fatal("a non-negative integer must follow `-C'");
       else
 	max_seconds_of_cpu_time = l;
       break;
 
-    case 'V':
+    case 'R':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-m'");
+	fatal("a non-negative integer must follow `-R'");
       else
 	max_bytes_of_virtual_memory = l*1024*1024;
       break;
