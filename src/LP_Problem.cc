@@ -306,7 +306,12 @@ PPL::LP_Problem::prepare_first_phase() {
   }
 
   // Add the columns for all the slack variables, plus an additional
-  // column for the sign of the cost function.
+  // column for the sign of the cost function, provided we are not going
+  // to exceed the maximum number of allowed columns.
+  if (tableau.max_num_columns() - tableau_old_n_cols <= tableau.num_rows())
+    throw std::length_error("PPL::LP_Problem:\nthe maximum size of an "
+			    "internal data structure has been exceeded "
+			    "while solving the LP_Problem.");
   tableau.add_zero_columns(tableau.num_rows() + 1);
   // Set the working cost function with the right size.
   working_cost = Row(tableau.num_columns(), Row::Flags());
@@ -545,10 +550,15 @@ PPL::LP_Problem::compute_tableau() {
 
   // Step 2:
   // set the dimensions for the tableau and the cost function.
-  if (tableau_num_rows > 0)
+  if (tableau_num_rows > 0) {
+    if (tableau_num_cols > tableau.max_num_columns())
+      throw std::length_error("PPL::LP_Problem:\nthe maximum size of an "
+			      "internal data structure has been exceeded "
+			      "while solving the LP_Problem.");
     tableau.add_zero_rows_and_columns(tableau_num_rows,
 				      tableau_num_cols,
 				      Row::Flags());
+  }
 
   // Phase 3:
   // insert all the (possibly transformed) constraints that are not
