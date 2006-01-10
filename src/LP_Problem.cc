@@ -1027,10 +1027,8 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
 	 i = dim_map.begin(), iend = dim_map.end(); i != iend; ++i)
     s << Variable(i->first) << "->" << Variable(i->second) << ' ';
 
-  // FIXME: no ascii_dump() for Generator?
-  // last_generator.ascii_dump(s);
   s << "\nlast_generator\n";
-  s << last_generator;
+  last_generator.ascii_dump(s);
   s << "\n";
 }
 
