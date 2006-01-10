@@ -97,7 +97,8 @@ $(PS_LICENSES) \
 $(MANUALS)
 
 dist_man_MANS = \
-ppl-config.1
+ppl-config.1 \
+ppl_lpsol.1
 
 # Do nothing by default.
 all:
