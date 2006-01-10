@@ -108,7 +108,6 @@ bool required_license = false;
 bool required_copying = false;
 bool required_bugs = false;
 bool required_credits = false;
-bool required_all = false;
 
 unsigned num_required_items = 0;
 
@@ -140,7 +139,6 @@ struct option long_options[] = {
   {"copying",           no_argument,       0, 'c'},
   {"bugs",              no_argument,       0, 'u'},
   {"credits",           no_argument,       0, 'r'},
-  {"all",               no_argument,       0, 'Z'},
   {0, 0, 0, 0}
 };
 #endif
@@ -178,15 +176,15 @@ static const char* usage_string
 "  -c, --copying            prints detailed licensing information\n"
 "  -u, --bugs               prints bug reporting information\n"
 "  -r, --credits            prints credits\n"
-"  -Z, --all                prints all information available\n"
 #ifndef HAVE_GETOPT_H
 "\n"
 "NOTE: this version does not support long options.\n"
 #endif
+"\n"
 "Report bugs to <ppl-devel@cs.unipr.it>.\n"
 ;
 
-#define OPTION_LETTERS "hF:I:ALp::e::OVMNRBEniblPCXDgcurZ"
+#define OPTION_LETTERS "hF:I:ALp::e::OVMNRBEniblPCXDgcur"
 
 const char* program_name = 0;
 
@@ -446,11 +444,6 @@ process_options(int argc, char* argv[]) {
     case 'r':
       required_credits = true;
       ++num_required_items;
-      break;
-
-      // --all
-    case 'Z':
-      required_all = true;
       break;
 
     default:
