@@ -38,6 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "version.hh"
 #include "ppl_c.h"
 #include <stdexcept>
+#include <limits>
 #include <sstream>
 #include <cstdio>
 #include <cerrno>
@@ -386,7 +387,7 @@ ppl_assign_Coefficient_from_Coefficient(ppl_Coefficient_t dst,
   Coefficient& ddst = *to_nonconst(dst);
   ddst = ssrc;
   return 0;
-  }
+}
 CATCH_ALL
 
 int
@@ -395,6 +396,37 @@ ppl_Coefficient_OK(ppl_const_Coefficient_t /* c */) try {
 }
 CATCH_ALL
 
+int
+ppl_Coefficient_is_bounded(void) try {
+  return std::numeric_limits<Coefficient>::is_bounded ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Coefficient_min(mpz_t min) try {
+  if (std::numeric_limits<Coefficient>::is_bounded) {
+    assign_r(reinterpret_mpz_class(min),
+	     std::numeric_limits<Coefficient>::min(),
+	     ROUND_NOT_NEEDED);
+    return 1;
+  }
+  else
+    return 0;
+}
+CATCH_ALL
+
+int
+ppl_Coefficient_max(mpz_t max) try {
+  if (std::numeric_limits<Coefficient>::is_bounded) {
+    assign_r(reinterpret_mpz_class(max),
+	     std::numeric_limits<Coefficient>::max(),
+	     ROUND_NOT_NEEDED);
+    return 1;
+  }
+  else
+    return 0;
+}
+CATCH_ALL
 
 int
 ppl_new_Linear_Expression(ppl_Linear_Expression_t* ple) try {

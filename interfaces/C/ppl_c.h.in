@@ -118,7 +118,7 @@ HOWTO</A>.
 
 For examples on how to use the functions provided by the C interface,
 you are referred to the directory <CODE>demos/ppl_lpsol/</CODE> in
-the source distribution.  It contains a toy <EM>Linear Programming</EM>
+the source distribution.  It contains a <EM>Linear Programming</EM>
 solver written in C.  In order to use this solver you will need to install
 <A HREF="http://www.gnu.org/software/glpk/">GLPK</A> (the GNU Linear
 Programming Kit): this is used to read linear programs in MPS format.
@@ -418,6 +418,27 @@ ppl_Coefficient_to_mpz_t PPL_PROTO((ppl_const_Coefficient_t c, mpz_t z));
 */
 int
 ppl_Coefficient_OK PPL_PROTO((ppl_const_Coefficient_t c));
+
+/*! \brief
+  Returns a positive integer if coefficients are bounded; returns 0
+  otherwise.
+*/
+int
+ppl_Coefficient_is_bounded PPL_PROTO((void));
+
+/*! \brief
+  Returns a positive integer if coefficients are bounded, in which case
+  \p min is set to their minimum value; returns 0 otherwise.
+*/
+int
+ppl_Coefficient_min PPL_PROTO((mpz_t min));
+
+/*! \brief
+  Returns a positive integer if coefficients are bounded, in which case
+  \p max is set to their maximum value; returns 0 otherwise.
+*/
+int
+ppl_Coefficient_max PPL_PROTO((mpz_t max));
 
 /*@}*/ /* Functions Related to Coefficients */
 

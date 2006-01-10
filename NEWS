@@ -120,6 +120,15 @@ o  Added swap methods to classes Linear_Expression, Constraint, Generator,
 
 o  Portability has been improved.
 
+o  New functions added to the C interface:
+
+     int ppl_Coefficient_is_bounded(void),
+     int ppl_Coefficient_min(mpz_t min),
+     int ppl_Coefficient_max(mpz_t max)
+
+   allow C applications to obtain information about the Coefficient
+   integer numerical type.
+
 o  In the Prolog interface, the names and arities of the "with_token"
    widening and extrapolation predicates have been revised to
    "with_tokens" with an extra argument and the functionality has been
