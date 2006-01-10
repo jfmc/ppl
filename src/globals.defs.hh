@@ -197,6 +197,78 @@ normalize2(Coefficient_traits::const_reference x,
 template <typename T>
 T low_bits_mask(unsigned n);
 
+// Turn s into a string: xstr(x + y) => "x + y".
+#define PPL_STR(s) #s
+// Turn the expansion of s into a string: xstr(x) => "x expanded".
+#define PPL_XSTR(s) PPL_STR(s)
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#define PPL_OUTPUT_DECLARATIONS						\
+  /*! Writes to std::cerr an ASCII representation of \p *this. */	\
+  void ascii_dump() const;						\
+  /*! Writes to \p s an ASCII representation of \p *this. */		\
+  void ascii_dump(std::ostream& s) const;				\
+  /*! Prints \p *this to std::cerr using the << operator. */		\
+  void print() const;
+#else
+#define PPL_OUTPUT_DECLARATIONS					\
+  void ascii_dump() const;					\
+  void ascii_dump(std::ostream& s) const;			\
+  void print() const;
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+
+#define PPL_OUTPUT_DEFINITIONS(class_name)			\
+  void								\
+  Parma_Polyhedra_Library::class_name::ascii_dump() const {	\
+    ascii_dump(std::cerr);					\
+  }								\
+								\
+  void								\
+  Parma_Polyhedra_Library::class_name::print() const {		\
+    using namespace IO_Operators;				\
+    std::cerr << *this;						\
+  }
+
+#define PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(class_name)			\
+  void									\
+  Parma_Polyhedra_Library::class_name::ascii_dump() const {		\
+    ascii_dump(std::cerr);						\
+  }									\
+									\
+  void									\
+  Parma_Polyhedra_Library::class_name::print() const {			\
+    std::cerr << "No user level output operator defined "		\
+	      << "for class " PPL_XSTR(class_name) << "." << std::endl; \
+  }
+
+#define PPL_OUTPUT_TEMPLATE_DEFINITIONS(type_symbol, class_prefix)	\
+  template <typename type_symbol>					\
+  void									\
+  class_prefix::ascii_dump() const {					\
+    ascii_dump(std::cerr);						\
+  }									\
+									\
+  template <typename type_symbol>					\
+  void									\
+  class_prefix::print() const {						\
+    using namespace IO_Operators;					\
+    std::cerr << *this;							\
+  }
+
+#define PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(type_symbol, class_prefix) \
+  template <typename type_symbol>					\
+  void									\
+  class_prefix::ascii_dump() const {					\
+    ascii_dump(std::cerr);						\
+  }									\
+									\
+  template <typename type_symbol>					\
+  void									\
+  class_prefix::print() const {						\
+    std::cerr << "No user level output operator defined "		\
+	      << "for " PPL_XSTR(class_prefix) << "." << std::endl;	\
+  }
+
 } // namespace Parma_Polyhedra_Library
 
 #include "globals.inlines.hh"
