@@ -145,7 +145,7 @@ struct option long_options[] = {
 
 static const char* usage_string
 = "Usage: %s [OPTION]...\n\n"
-"  -h, --help               prints this help text\n"
+"  -h, --help               prints this help text to stdout\n"
 "  -FFMT, --format=FMT      sets the output format to FMT\n"
 "                           (one of `plain', `makefile', `sh' or `csh')\n"
 "  -IINT, --interface=INT   selects a library interface (one of `C++', `C',\n"
