@@ -129,6 +129,7 @@ struct option long_options[] = {
   {"max-cpu",        required_argument, 0, 'C'},
   {"max-memory",     required_argument, 0, 'V'},
   {"help",           no_argument,       0, 'h'},
+  {"version",        no_argument,       0, 'V'},
   {"output",         required_argument, 0, 'o'},
   {"timings",        no_argument,       0, 't'},
   {"verbose",        no_argument,       0, 'v'},
@@ -142,8 +143,9 @@ struct option long_options[] = {
 static const char* usage_string
 = "Usage: %s [OPTION]... [FILE]...\n\n"
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
-"  -VMB, --max-memory=MB   limits memory usage to MB megabytes\n"
-"  -h, --help              prints this help text to stderr\n"
+"  -MMB, --max-memory=MB   limits memory usage to MB megabytes\n"
+"  -h, --help              prints this help text to stdout\n"
+"  -V, --version           prints version information to stdout\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
 "  -t, --timings           prints timings to stderr\n"
 "  -v, --verbose           produces lots of output\n"
@@ -154,12 +156,13 @@ static const char* usage_string
 "\n"
 "NOTE: this version does not support long options.\n"
 #endif
-;
+"\n"
+"Report bugs to <ppl-devel@cs.unipr.it>.\n";
 
 #if defined(USE_PPL)
-#define OPTION_LETTERS "C:V:ho:tvc:"
+#define OPTION_LETTERS "C:M:hVo:tvc:"
 #else
-#define OPTION_LETTERS "C:V:ho:tvc:"
+#define OPTION_LETTERS "C:M:hVo:tv"
 #endif
 
 const char* program_name = 0;
@@ -354,7 +357,12 @@ process_options(int argc, char* argv[]) {
 
     case '?':
     case 'h':
-      fprintf(stderr, usage_string, argv[0]);
+      fprintf(stdout, usage_string, argv[0]);
+      exit(0);
+      break;
+
+    case 'V':
+      fprintf(stdout, "%s\n", PPL_VERSION);
       exit(0);
       break;
 
@@ -366,10 +374,10 @@ process_options(int argc, char* argv[]) {
 	max_seconds_of_cpu_time = l;
       break;
 
-    case 'V':
+    case 'M':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-V'");
+	fatal("a non-negative integer must follow `-M'");
       else
 	max_bytes_of_virtual_memory = l*1024*1024;
       break;
