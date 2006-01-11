@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Linear_Row_defs_hh 1
 
 #include "Linear_Row.types.hh"
+#include "globals.defs.hh"
 #include "Row.defs.hh"
 #include "Topology.hh"
 #include "Linear_Expression.types.hh"
@@ -175,7 +176,7 @@ public:
     //! Uses the ASCII Flags representation from \p s to recreate *this.
     /*!
       Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
-      otherwise.  The ASCII representation is as output by ascii_dump.
+      otherwise.  The ASCII representation is as output by \ref ascii_dump.
     */
     bool ascii_load(std::istream& s);
 
@@ -366,7 +367,7 @@ public:
   //! Uses the ASCII Linear_Row representation from \p s to recreate *this.
   /*!
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
-    otherwise.  The ASCII representation is as output by ascii_dump.
+    otherwise.  The ASCII representation is as output by \ref ascii_dump.
   */
   bool ascii_load(std::istream& s);
 

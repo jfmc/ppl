@@ -27,6 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #error "Do not include BDS_Status.idefs.hh directly; use BD_Shape.defs.hh instead."
 #endif
 
+#include "globals.defs.hh"
+
 //! A conjunctive assertion about a BD_Shape<T> object.
 /*!
   The assertions supported are:
@@ -76,8 +78,8 @@ public:
   PPL_OUTPUT_DECLARATIONS;
 
   /*! \brief
-    Loads from \p s an ASCII representation (as produced by
-    \ref ascii_dump) and sets \p *this accordingly.
+    Loads from \p s an ASCII representation (as produced by \ref ascii_dump)
+    and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
   bool ascii_load(std::istream& s);

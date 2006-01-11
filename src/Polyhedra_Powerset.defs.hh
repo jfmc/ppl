@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Polyhedra_Powerset_defs_hh
 
 #include "Polyhedra_Powerset.types.hh"
-#include "globals.types.hh"
+#include "globals.defs.hh"
 #include "BHRZ03_Certificate.types.hh"
 #include "Constraint_System.types.hh"
 #include "Constraint.types.hh"

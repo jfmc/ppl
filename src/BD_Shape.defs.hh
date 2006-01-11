@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_BD_Shape_defs_hh 1
 
 #include "BD_Shape.types.hh"
-#include "globals.types.hh"
+#include "globals.defs.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 #include "Linear_Expression.types.hh"
@@ -1099,7 +1099,7 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
-    Loads from \p s an ASCII representation (as produced by ascii_dump)
+    Loads from \p s an ASCII representation (as produced by \ref ascii_dump)
     and sets \p *this accordingly.  Returns <CODE>true</CODE> if successful,
     <CODE>false</CODE> otherwise.
   */

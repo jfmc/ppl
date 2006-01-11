@@ -27,6 +27,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #error "Do not include Ph_Status.idefs.hh directly; use Polyhedron.defs.hh instead."
 #endif
 
+#include "globals.defs.hh"
+#include <iosfwd>
+
 //! A conjunctive assertion about a polyhedron.
 /*!
   The assertions supported are:

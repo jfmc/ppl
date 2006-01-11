@@ -23,8 +23,8 @@ site: http://www.cs.unipr.it/ppl/ .  */
 #ifndef PPL_DB_Matrix_defs_hh
 #define PPL_DB_Matrix_defs_hh 1
 
-#include "globals.types.hh"
 #include "DB_Matrix.types.hh"
+#include "globals.defs.hh"
 #include "DB_Row.defs.hh"
 #include "Checked_Number.types.hh"
 #include "Rounding_Dir.defs.hh"

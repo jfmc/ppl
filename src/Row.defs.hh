@@ -104,7 +104,7 @@ public:
     //! Uses the ASCII Flags representation from \p s to recreate *this.
     /*!
       Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
-      otherwise.  The ASCII representation is as output by ascii_dump.
+      otherwise.  The ASCII representation is as output by \ref ascii_dump.
     */
     bool ascii_load(std::istream& s);
 
@@ -288,7 +288,7 @@ public:
   //! Uses the ASCII Row representation at \p s to recreate *this.
   /*!
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
-    otherwise.  The ASCII representation is as output by ascii_dump.
+    otherwise.  The ASCII representation is as output by \ref ascii_dump.
   */
   bool ascii_load(std::istream& s);
 
