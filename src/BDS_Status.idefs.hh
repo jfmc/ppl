@@ -27,8 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #error "Do not include BDS_Status.idefs.hh directly; use BD_Shape.defs.hh instead."
 #endif
 
-#include "globals.defs.hh"
-
 //! A conjunctive assertion about a BD_Shape<T> object.
 /*!
   The assertions supported are:
