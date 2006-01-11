@@ -2468,7 +2468,7 @@ exception_prolog1(N, V) :-
 %% TEST: Prolog_unsigned_out_of_range
 exception_prolog(1, _) :-
     current_prolog_flag(bounded, Y),
-   ((Y == true ; prolog_system(xsb); prolog_system(yap)) ->
+   ((Y == true ; prolog_system(xsb)) ->
      true
     ;
      (I = 21474836470,
