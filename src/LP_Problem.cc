@@ -999,7 +999,7 @@ PPL::LP_Problem::is_satisfiable() const {
   // Reset internal objects.
   x.tableau.clear();
   x.mapping.clear();
-
+  x.is_artificial.clear();
   const dimension_type input_cs_num_columns = input_cs.num_columns();
 
   // Initialize `mapping'.

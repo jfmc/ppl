@@ -222,7 +222,7 @@ private:
   Row working_cost;
 
   //! The `i' index is set to <CODE>true</CODE> if tableau[i] is an artificial
-  //! variable, is set to <CODE>false<CODE> otherwise.
+  //! variable, is set to <CODE>false</CODE> otherwise.
   std::vector<bool> is_artificial;
 
   //! A map between the variables of `input_cs' and `tableau'.
