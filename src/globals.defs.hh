@@ -181,9 +181,9 @@ struct From_Bounding_Box {
   If \f$g\f$ is the GCD of \p x and \p y, the values of \p x and \p y
   divided by \f$g\f$ are assigned to \p nx and \p ny, respectively.
 
-  \note \p x and \p nx may be the same object and likewise for
-        \p y and \p ny.  Any other aliasing results in undefined
-	behavior.
+  \note
+  \p x and \p nx may be the same object and likewise for
+  \p y and \p ny.  Any other aliasing results in undefined behavior.
 */
 #endif
 void
@@ -204,11 +204,11 @@ T low_bits_mask(unsigned n);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define PPL_OUTPUT_DECLARATIONS						\
-  /*! Writes to std::cerr an ASCII representation of \p *this. */	\
+  /*! \brief Writes to \c std::cerr an ASCII representation of \p *this. */ \
   void ascii_dump() const;						\
-  /*! Writes to \p s an ASCII representation of \p *this. */		\
+  /*! \brief Writes to \p s an ASCII representation of \p *this. */	\
   void ascii_dump(std::ostream& s) const;				\
-  /*! Prints \p *this to std::cerr using the << operator. */		\
+  /*! \brief Prints \p *this to \c std::cerr using \c operator<<. */	\
   void print() const;
 #else
 #define PPL_OUTPUT_DECLARATIONS					\
