@@ -221,7 +221,7 @@ private:
   //! The working cost function.
   Row working_cost;
 
-  //! The `i' index is set to <CODE>true</CODE> if tableau[i] is a slack
+  //! The `i' index is set to <CODE>true</CODE> if tableau[i] is an artificial
   //! variable, is set to <CODE>false<CODE> otherwise.
   std::vector<bool> is_artificial;
 
@@ -395,9 +395,9 @@ private:
   bool compute_simplex();
 
   /*! \brief
-    Adds the slack variables to satisfy the standard form of a LP problem,
-    inserts the "sign" to the cost functions, and makes the
-    necessary swaps to express the problem with the 1st phase base.
+    Adds artificial variables to satisfy the standard form of a LP problem,
+    inserts the "sign" to the cost functions, and makes the necessary pivoting
+    operations to express the problem with the 1st phase base.
   */
   void prepare_first_phase();
 
