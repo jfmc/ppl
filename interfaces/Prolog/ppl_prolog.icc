@@ -1258,7 +1258,7 @@ ppl_Coefficient_min(Prolog_term_ref t_min) {
   try {
     if (std::numeric_limits<Coefficient>::is_bounded) {
       Coefficient min = std::numeric_limits<const Coefficient>::min();
-      return Prolog_unify(t_min, min);
+      return Prolog_unify(t_min, Coefficient_to_integer_term(min));
     }
     else
       return PROLOG_FAILURE;
@@ -1271,7 +1271,7 @@ ppl_Coefficient_max(Prolog_term_ref t_max) {
   try {
     if (std::numeric_limits<Coefficient>::is_bounded) {
       Coefficient max = std::numeric_limits<const Coefficient>::max();
-      return Prolog_unify(t_max, max);
+      return Prolog_unify(t_max, Coefficient_to_integer_term(max));
     }
     else
       return PROLOG_FAILURE;
