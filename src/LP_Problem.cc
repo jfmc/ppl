@@ -74,7 +74,8 @@ PPL::LP_Problem::incrementality(Constraint new_constraint) {
 
     // Now expand the tableau to insert the variables of the original problem.
     tableau.add_zero_columns(space_diff);
-
+    for (dimension_type i = space_diff; i-- > 0; )
+      is_artificial.push_back(false);
     // FIXME: perform a single permutation.
     // Permute `space_diff' times the columns to restore our simplex tableau
     // implementation: the left part of the tableau must contain only
@@ -88,10 +89,9 @@ PPL::LP_Problem::incrementality(Constraint new_constraint) {
       tableau.permute_columns(var_cycles);
 
     // Adjust the previously mapped variables.
-    typedef std::map<dimension_type, dimension_type>::iterator iter;
-    for (iter map_itr = dim_map.begin(), map_end = dim_map.end();
-	 map_itr != map_end; ++map_itr)
-      map_itr->second += space_diff;
+    for (dimension_type i = mapping.size(); i-- > 1; )
+      if (mapping[i].second != 0)
+	mapping[i].second += space_diff;
 
     // Set the right base values for the `artificial' variables inserted
     // during the past simplex calls.
@@ -103,9 +103,9 @@ PPL::LP_Problem::incrementality(Constraint new_constraint) {
     // Every new variable inserted now must be splitted.
     for (dimension_type i = input_cs_sd; i < new_c_sd; ++i) {
       tableau.add_zero_columns(1);
-      dim_map.insert(std::make_pair(i, tableau.num_columns()-3));
+      mapping.push_back(std::make_pair(i+1, tableau.num_columns()-2));
+      is_artificial.push_back(false);
     }
-
     // Make space for the splitted variables.
     new_constraint = Constraint(new_constraint, new_c_sd + space_diff);
 
@@ -129,6 +129,7 @@ PPL::LP_Problem::incrementality(Constraint new_constraint) {
   // Prepare the tableau to the insertion of the artificial variable:
   // this will be done at last.
   tableau.add_zero_columns(1);
+  is_artificial.push_back(true);
   dimension_type tableau_num_columns = tableau.num_columns();
   tableau_num_rows = tableau.num_rows();
   Row& tableau_last_row = tableau[tableau_num_rows-1];
@@ -140,14 +141,13 @@ PPL::LP_Problem::incrementality(Constraint new_constraint) {
   working_cost = Row(tableau_num_columns, Row::Flags());
 
   // Split the variables in the tableau and cost function.
-  typedef std::map<dimension_type, dimension_type>::const_iterator iter;
-  for (iter map_itr = dim_map.begin(),
-	 map_end = dim_map.end(); map_itr != map_end; ++map_itr) {
-    const dimension_type original_var = (map_itr->first) + 1;
-    const dimension_type split_var = (map_itr->second) + 1;
-    tableau_last_row[split_var] = -tableau_last_row[original_var];
-    working_cost[split_var] = -working_cost[original_var];
-  }
+  for (dimension_type i = mapping.size(); i-- > 1; )
+    if (mapping[i].second != 0) {
+      const dimension_type original_var = mapping[i].first;
+      const dimension_type split_var = mapping[i].second;
+      tableau_last_row[split_var] = -tableau_last_row[original_var];
+      working_cost[split_var] = -working_cost[original_var];
+    }
   // Express the last row in terms of the variables in base.
   dimension_type base_size = base.size();
 
@@ -180,6 +180,7 @@ PPL::LP_Problem::incrementality(Constraint new_constraint) {
   bool first_phase_succesful = compute_simplex();
   if (first_phase_succesful &&  working_cost[0] != 0){
     // The feasible region is empty.
+    is_artificial.pop_back();
     status = UNSATISFIABLE;
     return false;
   }
@@ -189,7 +190,6 @@ PPL::LP_Problem::incrementality(Constraint new_constraint) {
   if (artificial_variable != base[base.size()-1]) {
     tableau.swap_columns(tableau_num_columns-1, artificial_variable);
     tableau.remove_trailing_columns(1);
-
     // Keep the status variables updated.
     tableau_num_columns = tableau.num_columns();
     dimension_type working_cost_size = working_cost.size();
@@ -197,8 +197,8 @@ PPL::LP_Problem::incrementality(Constraint new_constraint) {
     working_cost.shrink(working_cost_size-1);
   }
 
-  // The slack variable is in base: if a coefficient is different from zero,
-  // this will be in base, else the constraint is redundant.
+  // The artificial variable is in base: if a coefficient is different from
+  // zero, this will be in base, else the constraint is redundant.
   else {
     dimension_type base_size = base.size();
     tableau_num_columns = tableau.num_columns();
@@ -222,12 +222,12 @@ PPL::LP_Problem::incrementality(Constraint new_constraint) {
       base.pop_back();
     }
   }
-
+  // The last inserted artificial variable is surely no longer used.
+  is_artificial.pop_back();
   // The feasible region is not empty.
   status = SATISFIABLE;
   return true;
 }
-
 
 PPL::dimension_type
 PPL::LP_Problem::steepest_edge() const {
@@ -353,7 +353,7 @@ PPL::LP_Problem::linear_combine(Row& x,
 // See pag 42-43 of Papadimitriou.
 
 void
-PPL::LP_Problem::swap_base(const dimension_type entering_var_index,
+PPL::LP_Problem::pivot(const dimension_type entering_var_index,
 			   const dimension_type exiting_base_index) {
   const Row& tableau_out = tableau[exiting_base_index];
   // Linearly combine the constraints.
@@ -452,7 +452,7 @@ PPL::LP_Problem::compute_simplex() {
     // We have not reached the optimality or unbounded condition:
     // compute the new base and the corresponding vertex of the
     // feasible region.
-    swap_base(entering_var_index, exiting_base_index);
+    pivot(entering_var_index, exiting_base_index);
 #if PPL_NOISY_SIMPLEX
     ++num_iterations;
     if (num_iterations % 200 == 0)
@@ -467,8 +467,8 @@ PPL::LP_Problem::compute_simplex() {
 void
 PPL::LP_Problem::prepare_first_phase() {
   // We negate the row if tableau[i][0] <= 0 to get the inhomogeneous term > 0.
-  // This simplifies the insertion of the slack variables: the value of the
-  // slack variable of every constraint will be 1.
+  // This simplifies the insertion of the artificial variables: the value of
+  // each artificial variable will be 1.
   const dimension_type tableau_old_n_cols = tableau.num_columns();
   for (dimension_type i = tableau.num_rows(); i-- > 0 ; ) {
     Row& tableau_i = tableau[i];
@@ -477,21 +477,26 @@ PPL::LP_Problem::prepare_first_phase() {
 	neg_assign(tableau_i[j]);
   }
 
-  // Add the columns for all the slack variables, plus an additional
+  // Add the columns for all the artificial variables, plus an additional
   // column for the sign of the cost function.
   tableau.add_zero_columns(tableau.num_rows() + 1);
+
+  for (dimension_type i = tableau.num_columns()-1 ; i-- > 0; )
+    is_artificial.push_back(false);
+
   // Set the working cost function with the right size.
   working_cost = Row(tableau.num_columns(), Row::Flags());
 
   // Modify the tableau and the new cost function by adding
-  // the slack variables (which enter the base).
-  // As for the cost function, all the slack variables should have
+  // the artificial variables (which enter the base).
+  // As for the cost function, all the artificial variables should have
   // coefficient -1.
   for (dimension_type i = 0; i < tableau.num_rows(); ++i) {
     const dimension_type j = tableau_old_n_cols + i;
     tableau[i][j] = 1;
     working_cost[j] = -1;
     base[i] = j;
+    is_artificial[j] = true;
   }
 
   // Set the extra-coefficient of the cost functions to record its sign.
@@ -507,20 +512,19 @@ PPL::LP_Problem::prepare_first_phase() {
 // See pag 55-56 Papadimitriou.
 
 void
-PPL::LP_Problem::erase_slacks() {
+PPL::LP_Problem::erase_artificials() {
   const dimension_type tableau_last_index = tableau.num_columns() - 1;
   dimension_type tableau_n_rows = tableau.num_rows();
   const dimension_type first_slack_index = tableau_last_index - tableau_n_rows;
-
   // Step 1: try to remove from the base all the remaining slack variables.
   for (dimension_type i = 0; i < tableau_n_rows; ++i)
-    if (base[i] >= first_slack_index) {
+    if (is_artificial[base[i]]) {
       // Search for a non-zero element to enter the base.
       Row& tableau_i = tableau[i];
       bool redundant = true;
       for (dimension_type j = first_slack_index; j-- > 1; )
 	if (tableau_i[j] != 0) {
-	  swap_base(j, i);
+	  pivot(j, i);
 	  redundant = false;
 	  break;
 	}
@@ -547,8 +551,12 @@ PPL::LP_Problem::erase_slacks() {
   const dimension_type new_tableau_last_index = first_slack_index;
 
   // Adjust the number of columns of `tableau'.
-  tableau.remove_trailing_columns(tableau.num_columns() - new_tableau_n_cols);
-  // Zero the last column of the tableau.
+  const  dimension_type tableau_diff =
+    tableau.num_columns() - new_tableau_n_cols;
+  tableau.remove_trailing_columns(tableau_diff);
+   for (dimension_type i = tableau_diff; i-- > 0; )
+     is_artificial.pop_back();
+     // Zero the last column of the tableau.
   for (dimension_type i = tableau_n_rows; i-- > 0; )
     tableau[i][new_tableau_last_index] = 0;
 
@@ -566,7 +574,6 @@ PPL::LP_Problem::erase_slacks() {
 PPL::LP_Problem_Status
 PPL::LP_Problem::compute_tableau() {
   assert(tableau.num_rows() == 0);
-  assert(dim_map.size() == 0);
   // FIXME
   Linear_System& cs = input_cs;
   const dimension_type cs_num_rows = cs.num_rows();
@@ -706,11 +713,11 @@ PPL::LP_Problem::compute_tableau() {
   // The slack variables will be columns in the tableau.
   tableau_num_cols += num_slack_variables;
 
-  // Now we can fill the map.
+  // Now we can update `mapping'.
   for (dimension_type i = 0, j = nonnegative_variable.size(),
 	 nnv_size = j; i < nnv_size; ++i)
     if (!nonnegative_variable[i]) {
-      dim_map.insert(std::make_pair(i, j));
+      mapping[i+1].second = j+1;
       ++j;
     }
 
@@ -742,14 +749,14 @@ PPL::LP_Problem::compute_tableau() {
     }
 
   // Split the variables in the tableau and cost function.
-  typedef std::map<dimension_type, dimension_type>::const_iterator iter;
-  for (iter map_itr = dim_map.begin(),
-	 map_end = dim_map.end(); map_itr != map_end; ++map_itr) {
-    const dimension_type original_var = (map_itr->first) + 1;
-    const dimension_type split_var = (map_itr->second) + 1;
-    for (dimension_type i = tableau_num_rows; i-- > 0; ) {
-      Row& tableau_i = tableau[i];
-      tableau_i[split_var] = -tableau_i[original_var];
+  for (dimension_type i = mapping.size(); i-- > 1; ) {
+    if (mapping[i].second != 0) {
+      const dimension_type original_var = mapping[i].first;
+      const dimension_type split_var = mapping[i].second;
+      for (dimension_type j = tableau_num_rows; j-- > 0; ) {
+	Row& tableau_j = tableau[j];
+	tableau_j[split_var] = -tableau_j[original_var];
+      }
     }
   }
 
@@ -789,23 +796,21 @@ PPL::LP_Problem::compute_generator() const {
   dimension_type row = 0;
 
   // We start to compute num[] and den[].
-  typedef std::map<dimension_type, dimension_type>::const_iterator iter;
-  iter map_end = dim_map.end();
-
   for (dimension_type i = original_space_dim; i-- > 0; ) {
     Coefficient& num_i = num[i];
     Coefficient& den_i = den[i];
     // Get the value of the variable from the tableau
     // (if it is not a basic variable, the value is 0).
-    if (is_in_base(i+1, row)) {
+    const dimension_type original_var = mapping[i+1].first;
+    if (is_in_base(original_var, row)) {
       const Row& t_row = tableau[row];
-      if (t_row[i+1] > 0) {
+      if (t_row[original_var] > 0) {
 	num_i= -t_row[0];
-	den_i= t_row[i+1];
+	den_i= t_row[original_var];
       }
       else {
 	num_i= t_row[0];
-	den_i= -t_row[i+1];
+	den_i= -t_row[original_var];
       }
     }
     else {
@@ -813,23 +818,22 @@ PPL::LP_Problem::compute_generator() const {
       den_i = 1;
     }
     // Check whether the variable was split.
-    iter map_iter = dim_map.find(i);
-    if (map_iter != map_end) {
-      // The variable was split: get the value for the negative component,
-      // having index map[i] + 1.
-      const dimension_type split_i = map_iter->second;
-      // Like before, we he have to check if the variable is in base.
-      if (is_in_base(split_i+1, row)) {
+  const dimension_type split_var = mapping[i+1].second;
+  if (split_var != 0) {
+    // The variable was split: get the value for the negative component,
+    // having index mapping[i+1].second .
+    // Like before, we he have to check if the variable is in base.
+      if (is_in_base(split_var, row)) {
 	const Row& t_row = tableau[row];
 	TEMP_INTEGER(split_num);
 	TEMP_INTEGER(split_den);
-	if (t_row[split_i+1] > 0) {
+	if (t_row[split_var] > 0) {
 	  split_num = -t_row[0];
-	  split_den = t_row[split_i+1];
+	  split_den = t_row[split_var];
 	}
 	else {
 	  split_num = t_row[0];
-	  split_den = -t_row[split_i+1];
+	  split_den = -t_row[split_var];
 	}
 	// We compute the lcm to compute subsequently the difference
 	// between the 2 variables.
@@ -887,14 +891,14 @@ PPL::LP_Problem::second_phase() {
   Row tmp_cost = Row(new_cost, cost_zero_size, cost_zero_size);
   tmp_cost.swap(working_cost);
   working_cost[cost_zero_size-1] = 1;
-  // Split the variable in the original cost function as defined in the
-  // `dim_map' variable.
-  typedef std::map<dimension_type, dimension_type>::const_iterator iter;
-  for (iter map_itr = dim_map.begin(),
-	 map_end = dim_map.end(); map_itr != map_end; ++map_itr){
-    const dimension_type original_var = (map_itr->first) + 1;
-    const dimension_type split_var = (map_itr->second) + 1;
-    working_cost[split_var] = -working_cost[original_var];
+
+  // Split the variables the cost function.
+  for (dimension_type i = mapping.size(); i-- > 1; ) {
+    if (mapping[i].second != 0) {
+        const dimension_type original_var = mapping[i].first;
+	const dimension_type split_var = mapping[i].second;
+	working_cost[split_var] = -working_cost[original_var];
+    }
   }
 
   // Here the first phase problem succeeded with optimum value zero.
@@ -994,10 +998,17 @@ PPL::LP_Problem::is_satisfiable() const {
   const dimension_type space_dim = x.space_dimension();
   // Reset internal objects.
   x.tableau.clear();
-  x.dim_map.clear();
+  x.mapping.clear();
+
+  const dimension_type input_cs_num_columns = input_cs.num_columns();
+
+  // Initialize `mapping'.
+  x.mapping.push_back(std::make_pair(0, 0));
+  for (dimension_type i = 1; i < input_cs_num_columns; ++i)
+    x.mapping.push_back(std::make_pair(i, 0));
+
   // Compute the initial tableau.
   LP_Problem_Status s_status = x.compute_tableau();
-
   // Check for trivial cases.
   switch (s_status) {
   case UNFEASIBLE_LP_PROBLEM:
@@ -1043,14 +1054,13 @@ PPL::LP_Problem::is_satisfiable() const {
     x.status = UNSATISFIABLE;
     return false;
   }
-
   // The first phase has found a feasible solution. If only a satisfiability
   // check was requested, we can return that feasible solution.
   // Store the last succesfully computed generator.
   x.last_generator = compute_generator();
   x.status = SATISFIABLE;
   // Erase the slack variables.
-  x.erase_slacks();
+  x.erase_artificials();
   return true;
 }
 
@@ -1091,10 +1101,10 @@ PPL::LP_Problem::OK() const {
     if (space_dim != last_generator.space_dimension()) {
 #ifndef NDEBUG
       cerr << "The LP_Problem and the cached feasible point have "
-	   << "incompatible space dimensions ("
-	   << space_dim << " != " << last_generator.space_dimension() << ")."
-	   << endl;
-    ascii_dump(cerr);
+ 	   << "incompatible space dimensions ("
+ 	   << space_dim << " != " << last_generator.space_dimension() << ")."
+ 	   << endl;
+      ascii_dump(cerr);
 #endif
       return false;
     }
@@ -1103,7 +1113,7 @@ PPL::LP_Problem::OK() const {
       cerr << "The cached feasible point does not belong to "
 	   << "the feasible region of the LP_Problem."
 	   << endl;
-    ascii_dump(cerr);
+      ascii_dump(cerr);
 #endif
       return false;
     }
@@ -1138,25 +1148,6 @@ PPL::LP_Problem::OK() const {
 #endif
 	return false;
       }
-
-    // dim_map should encode an injective function having
-    // disjoint domain and range.
-    std::set<dimension_type> domain;
-    std::set<dimension_type> range;
-    typedef std::map<dimension_type, dimension_type>::const_iterator Iter;
-    for (Iter i = dim_map.begin(), iend = dim_map.end(); i != iend; ++i) {
-      domain.insert(i->first);
-      range.insert(i->second);
-    }
-    if (domain.size() != range.size()
-	|| domain.end() != std::find_first_of(domain.begin(), domain.end(),
-					      range.begin(), range.end())) {
-#ifndef NDEBUG
-      cerr << "dim_map encodes an invalid map" << endl;
-      ascii_dump(cerr);
-#endif
-      return false;
-    }
 
   // FIXME: still to be completed...
   }
@@ -1208,14 +1199,19 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
   for (dimension_type i = 0; i != base_size; ++i)
     s << base[i] << ' ';
 
-  const dimension_type dim_map_size = dim_map.size();
-  s << "\ndim_map (" << dim_map_size << ")\n";
-  for (std::map<dimension_type, dimension_type>::const_iterator
-	 i = dim_map.begin(), iend = dim_map.end(); i != iend; ++i)
-    s << i->first << "->" << i->second << ' ';
-  // FIXME: no ascii_dump() for Generator?
-  // last_generator.ascii_dump(s);
+   // FIXME: no ascii_dump() for Generator?
+   // last_generator.ascii_dump(s);
   s << "\nlast_generator\n";
   s << last_generator << "\n";
   s << std::endl;
+  const dimension_type mapping_size = mapping.size();
+  s << "\nmapping(" << mapping_size << ")\n";
+  for (dimension_type i = 1; i < mapping_size; ++i)
+    s << "\n"<< i << "->" << mapping[i].first << "->" << mapping[i].second << ' ';
+  const dimension_type is_artificial_size = is_artificial.size();
+  s << "\nis_artificial(" << is_artificial_size << ")\n";
+  for (dimension_type i = 1; i < is_artificial_size; ++i) {
+    s << "\n"<< i << "->";
+    is_artificial[i] ?  s << "true" : s << "false";
+  }
 }

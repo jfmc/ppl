@@ -34,7 +34,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 #include <map>
 #include <iosfwd>
-
 //! A Linear Programming problem.
 class Parma_Polyhedra_Library::LP_Problem {
 public:
@@ -221,16 +220,23 @@ private:
   Matrix tableau;
   //! The working cost function.
   Row working_cost;
+
+  //! The `i' index is set to <CODE>true</CODE> if tableau[i] is a slack
+  //! variable, is set to <CODE>false<CODE> otherwise.
+  std::vector<bool> is_artificial;
+
+  //! A map between the variables of `input_cs' and `tableau'.
+  /*!
+    Contains all the pairs (i, j) such that mapping[i].first encodes the index
+    of the column in the tableau where input_cs[i] is stored; mapping[i].second
+    not a zero, encodes the split part of the tableau of input_cs[i].
+    The "positive" one is represented by mapping[i].first and
+    the "negative" one is represented by mapping[i].second.
+  */
+  std::vector<std::pair<dimension_type, dimension_type> > mapping;
+
   //! The current basic solution.
   std::vector<dimension_type> base;
-  //! A mapping between original variables and split ones.
-  /*!
-    Contains all the pairs (i, j) such that Variable(i) (that was not found
-    to be constrained in sign) has been split into two nonnegative variables.
-    The "positive" one is represented again by Variable(i), and
-    the "negative" one is represented by Variable(j).
-  */
-  std::map<dimension_type, dimension_type> dim_map;
 
   //! An enumerated type describing the internal status of the LP problem.
   enum Status {
@@ -289,7 +295,7 @@ private:
 
   /*! \brief
     Assigns to \p this->tableau a simplex tableau representing the
-    current LP problem, inserting into \p this->dim_map the information
+    current LP problem, inserting into \p this->mapping the information
     that is required to recover the original LP problem.
 
     \return
@@ -344,8 +350,7 @@ private:
   static void linear_combine(Row& x, const Row& y, const dimension_type k);
 
   /*! \brief
-    Swaps two variables in base during the simplex algorithm,
-    performing the needed linear combinations.
+    Performs the pivoting operation on the tableau.
 
     \param entering_var_index
     The index of the variable entering the base.
@@ -353,8 +358,8 @@ private:
     \param exiting_base_index
     The index of the row exiting the base.
   */
-  void swap_base(const dimension_type entering_var_index,
-		 const dimension_type exiting_base_index);
+  void pivot(const dimension_type entering_var_index,
+	     const dimension_type exiting_base_index);
 
   /*! \brief
     Checks for optimality and, if it does not hold, computes the column
@@ -397,10 +402,10 @@ private:
   void prepare_first_phase();
 
   /*! \brief
-    Drop unnecessary slack variables from the tableau and get ready
+    Drop unnecessary artificial variables from the tableau and get ready
     for the second phase of the simplex algorithm.
   */
-  void erase_slacks();
+  void erase_artificials();
 
   bool is_in_base(const dimension_type var_index,
 		  dimension_type& row_index) const;
