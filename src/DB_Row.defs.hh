@@ -191,7 +191,7 @@ public:
   //! Assigns the implementation of \p y to \p *this.
   void assign(DB_Row& y);
 
-  /*! \brief.
+  /*! \brief
     Allocates memory for a default constructed DB_Row object,
     allowing for \p capacity coefficients at most.
 
