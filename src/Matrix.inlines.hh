@@ -148,6 +148,12 @@ Matrix::operator=(const Matrix& y) {
   return *this;
 }
 
+inline void
+Matrix::add_row(const Row& y) {
+  Row new_row(y, row_capacity);
+  add_recycled_row(new_row);
+}
+
 inline Row&
 Matrix::operator[](const dimension_type k) {
   assert(k < rows.size());
