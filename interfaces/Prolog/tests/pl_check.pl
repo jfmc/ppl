@@ -126,13 +126,12 @@ run_one(all_versions_and_banner) :-
      )
   ).
 
-% Tests predicates that return the maximum allowed dimension.
-% If noisy(0) holds, there is no output but if not, the maximum is printed.
-run_one(max_dimension) :-
-  ppl_max_space_dimension(M),
-  (noisy(0) -> true ;
-     display_message(['Maximum possible dimension is', M, nl])
-  ).
+% Tests predicates that return the maximum allowed dimension and coefficients.
+% If noisy(0) holds, there is no output but if not, the maximums/miniumums
+% are printed.
+run_one(numeric_bounds) :-
+  max_dimension,
+  coefficient_bounds.
 
 run_one(new_polyhedron_from_dimension) :-
   new_polyhedron_from_dim.
@@ -254,6 +253,28 @@ run_one(large_integers) :-
 
 run_one(handle_exceptions) :-
    exceptions.
+
+%%%%%%%%%%%%%%%%% numeric bounds in C++ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+max_dimension :-
+  ppl_max_space_dimension(M),
+  (noisy(0) -> true ;
+     display_message(['Maximum possible dimension is', M, nl])
+  ).
+
+coefficient_bounds :-
+  (ppl_Coefficient_is_bounded ->
+     (catch(ppl_Coefficient_max(Max), ppl_overflow_error(Cause),
+          current_prolog_flag(max_integer, Max)),
+      catch(ppl_Coefficient_min(Min), ppl_overflow_error(Cause),
+          current_prolog_flag(min_integer, Min)))
+   ;
+     (Max = 0, Min = 0)
+  ),
+  (noisy(0) -> true ;
+     display_message(['Maximum possible coefficient is', Max, nl]),
+     display_message(['Minimum possible coefficient is', Min, nl])
+  ).
 
 %%%%%%%%%%%%%%%%% New Polyhedron %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -2466,6 +2487,20 @@ exception_prolog1(N, V) :-
    exception_prolog1(N1, V).
 
 %% TEST: Prolog_unsigned_out_of_range
+exception_yap :-
+     I = 21474836470, J = 3, K = 0,
+     ppl_new_C_Polyhedron_from_generators(
+        [point('$VAR'(I)),point('$VAR'(J))], P),
+     ppl_Polyhedron_get_generators(P, GS),
+     nl, write(GS), nl,
+     ppl_new_C_Polyhedron_from_generators(
+        [point('$VAR'(I)),point('$VAR'(K))], P1),
+     ppl_Polyhedron_get_generators(P1, GS1),
+     nl, write(GS1), nl,
+     ppl_delete_Polyhedron(P),
+     ppl_delete_Polyhedron(P1).
+
+%% TEST: Prolog_unsigned_out_of_range
 exception_prolog(1, _) :-
     current_prolog_flag(bounded, Y),
    ((Y == true ; prolog_system(xsb)) ->
@@ -3022,7 +3057,7 @@ write_all([Phrase|Phrases]):-
 list_groups( [
    large_integers,
    all_versions_and_banner,
-   max_dimension,
+   numeric_bounds,
    new_polyhedron_from_dimension,
    new_polyhedron_from_polyhedron,
    new_polyhedron_from_representations,
@@ -3058,12 +3093,16 @@ group_predicates(all_versions_and_banner,
    ppl_banner/1
   ]).
 
-group_predicates(max_dimension,
-  [ppl_max_space_dimension/1
+group_predicates(numeric_bounds,
+  [ppl_max_space_dimension/1,
+   ppl_Coefficient_is_bounded/0,
+   ppl_Coefficient_max/1,
+   ppl_Coefficient_min/1
   ]).
 
 group_predicates(new_polyhedron_from_dimension,
-  [ppl_new_Polyhedron_from_space_dimension/4,
+  [ppl_new_C_Polyhedron_from_space_dimension/4,
+   ppl_new_NNC_Polyhedron_from_space_dimension/4,
    ppl_Polyhedron_is_universe/1,
    ppl_Polyhedron_is_empty/1,
    ppl_delete_polyhedron/1

@@ -58,6 +58,13 @@ bool Prolog_has_unbounded_integers;
 long Prolog_max_integer;
 
 /*!
+  If \p Prolog_has_unbounded_integers is false, holds the minimum
+  integer value representable by a Prolog integer.
+  Holds zero otherwise.
+*/
+long Prolog_min_integer;
+
+/*!
   Performs system-dependent initialization.
 */
 void

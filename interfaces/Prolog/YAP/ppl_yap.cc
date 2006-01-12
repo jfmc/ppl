@@ -478,6 +478,9 @@ YAP_STUB_1(ppl_version_beta)
 YAP_STUB_1(ppl_version)
 YAP_STUB_1(ppl_banner)
 YAP_STUB_1(ppl_max_space_dimension)
+YAP_STUB_0(ppl_Coefficient_is_bounded)
+YAP_STUB_1(ppl_Coefficient_max)
+YAP_STUB_1(ppl_Coefficient_min)
 YAP_STUB_0(ppl_initialize)
 YAP_STUB_0(ppl_finalize)
 YAP_STUB_1(ppl_set_timeout_exception_atom)
@@ -600,6 +603,9 @@ init() {
   YAP_USER_C_PREDICATE(ppl_version, 1);
   YAP_USER_C_PREDICATE(ppl_banner, 1);
   YAP_USER_C_PREDICATE(ppl_max_space_dimension, 1);
+  YAP_USER_C_PREDICATE(ppl_Coefficient_is_bounded, 0);
+  YAP_USER_C_PREDICATE(ppl_Coefficient_max, 1);
+  YAP_USER_C_PREDICATE(ppl_Coefficient_min, 1);
   YAP_USER_C_PREDICATE(ppl_initialize, 0);
   YAP_USER_C_PREDICATE(ppl_finalize, 0);
   YAP_USER_C_PREDICATE(ppl_set_timeout_exception_atom, 1);

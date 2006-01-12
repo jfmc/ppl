@@ -410,6 +410,9 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
 #define ppl_version xsb_stub_ppl_version
 #define ppl_banner xsb_stub_ppl_banner
 #define ppl_max_space_dimension xsb_stub_ppl_max_space_dimension
+#define ppl_Coefficient_is_bounded xsb_stub_ppl_Coefficient_is_bounded
+#define ppl_Coefficient_max xsb_stub_ppl_Coefficient_max
+#define ppl_Coefficient_min xsb_stub_ppl_Coefficient_min
 #define ppl_initialize xsb_stub_ppl_initialize
 #define ppl_finalize xsb_stub_ppl_finalize
 #define ppl_set_timeout_exception_atom xsb_stub_ppl_set_timeout_exception_atom
@@ -528,6 +531,9 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
 #undef ppl_version
 #undef ppl_banner
 #undef ppl_max_space_dimension
+#undef ppl_Coefficient_is_bounded
+#undef ppl_Coefficient_max
+#undef ppl_Coefficient_min
 #undef ppl_initialize
 #undef ppl_finalize
 #undef ppl_set_timeout_exception_atom
@@ -707,6 +713,9 @@ XSB_ENTRY_1(ppl_version_beta)
 XSB_ENTRY_1(ppl_version)
 XSB_ENTRY_1(ppl_banner)
 XSB_ENTRY_1(ppl_max_space_dimension)
+XSB_ENTRY_0(ppl_Coefficient_is_bounded)
+XSB_ENTRY_1(ppl_Coefficient_max)
+XSB_ENTRY_1(ppl_Coefficient_min)
 XSB_ENTRY_0(ppl_initialize)
 XSB_ENTRY_0(ppl_finalize)
 XSB_ENTRY_1(ppl_set_timeout_exception_atom)

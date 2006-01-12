@@ -27,6 +27,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_version(+term)).
 :- foreign(ppl_banner(+term)).
 :- foreign(ppl_max_space_dimension(+term)).
+:- foreign(ppl_Coefficient_is_bounded).
+:- foreign(ppl_Coefficient_max(+term)).
+:- foreign(ppl_Coefficient_min(+term)).
 :- foreign(ppl_initialize).
 :- foreign(ppl_finalize).
 :- foreign(ppl_set_timeout_exception_atom(+term)).

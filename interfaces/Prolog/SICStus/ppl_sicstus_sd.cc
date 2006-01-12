@@ -208,6 +208,9 @@ SP_STUB_1(ppl_version_beta)
 SP_STUB_1(ppl_version)
 SP_STUB_1(ppl_banner)
 SP_STUB_1(ppl_max_space_dimension)
+SP_STUB_0(ppl_Coefficient_is_bounded)
+SP_STUB_1(ppl_Coefficient_max)
+SP_STUB_1(ppl_Coefficient_min)
 SP_STUB_0(ppl_initialize)
 SP_STUB_0(ppl_finalize)
 SP_STUB_1(ppl_set_timeout_exception_atom)
@@ -338,6 +341,9 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_version, 1);
   SP_DEFINE_C_PREDICATE(ppl_banner, 1);
   SP_DEFINE_C_PREDICATE(ppl_max_space_dimension, 1);
+  SP_DEFINE_C_PREDICATE(ppl_Coefficient_is_bounded, 0);
+  SP_DEFINE_C_PREDICATE(ppl_Coefficient_max, 1);
+  SP_DEFINE_C_PREDICATE(ppl_Coefficient_min, 1);
   SP_DEFINE_C_PREDICATE(ppl_initialize, 0);
   SP_DEFINE_C_PREDICATE(ppl_finalize, 0);
   SP_DEFINE_C_PREDICATE(ppl_set_timeout_exception_atom, 1);

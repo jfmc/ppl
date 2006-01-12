@@ -184,6 +184,18 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
+  ppl_Coefficient_is_bounded
+</CODE>
+
+<CODE>
+  ppl_Coefficient_max(?Coefficient)
+</CODE>
+
+<CODE>
+  ppl_Coefficient_min(?Coefficient)
+</CODE>
+
+<CODE>
   ppl_initialize
 </CODE>
 
@@ -496,7 +508,7 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(+Handle_1,
+  ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(+Handle_1,
                                                   +Handle_2,
 						  +Constraint_System,
 						   +C_unsigned_1,
@@ -799,6 +811,28 @@ and \ref Operations_on_Convex_Polyhedra of this manual.
   information about the PPL version, the licensing, the lack of any
   warranty whatsoever, the C++ compiler used to build the library,
   where to report bugs and where to look for further information.
+
+<H2><CODE> ppl_Coefficient_is_bounded </CODE></H2>
+
+  Succeeds if and only if the Coefficients in the C++ interface are bounded.
+
+<H2><CODE> ppl_Coefficient_max(Max) </CODE></H2>
+
+  If the Coefficients in the C++ interface are bounded,
+  then the maximum coefficient the C++ interface can handle is
+  unified with <CODE>Max</Code>.
+  If the Prolog system cannot handle this coefficient, then
+  an exception is thrown.
+  It fails if the Coefficients in the C++ interface are unbounded.
+
+<H2><CODE> ppl_Coefficient_min(Min) </CODE></H2>
+
+  If the Coefficients in the C++ interface are bounded,
+  then the minimum coefficient the C++ interface can handle is
+  unified with <CODE>Min</Code>.
+  If the Prolog system cannot handle this coefficient, then
+  an exception is thrown.
+  It fails if the Coefficients in the C++ interface are unbounded.
 
 <H2><CODE> ppl_max_space_dimension(?Dimension_Type) </CODE></H2>
 
