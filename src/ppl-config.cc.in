@@ -181,8 +181,7 @@ static const char* usage_string
 "NOTE: this version does not support long options.\n"
 #endif
 "\n"
-"Report bugs to <ppl-devel@cs.unipr.it>.\n"
-;
+"Report bugs to <ppl-devel@cs.unipr.it>.\n";
 
 #define OPTION_LETTERS "hF:I:ALp::e::OVMNRBEniblPCXDgcur"
 
