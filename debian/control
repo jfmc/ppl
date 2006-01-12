@@ -3,7 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: PPL developers <ppl-devel@cs.unipr.it>
 Standards-Version: 3.6.1
-Build-Depends: debhelper (>= 4), binutils, g++-3.4, libgmp3-dev (>= 4.1.3), autoconf, automake1.9, libtool, doxygen, graphviz
+Build-Depends: debhelper (>= 4), binutils, g++-3.4, libgmp3-dev (>= 4.1.3), autoconf, automake1.9, libtool, doxygen, graphviz, glpk
 Build-Conflicts: automake1.4
 
 Package: libppl
