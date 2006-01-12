@@ -111,11 +111,12 @@ install-arch:
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
 	$(MAKE) -C Watchdog install DESTDIR=$(CURDIR)/debian/tmp
 
-#   Install the demo program.
-
+#   Install the demo programs.
 #   FIXME: Consider installing the ppl_lcdd examples (what about
-#		   copyrights?) and a brief manual page for ppl_lcdd.
+#		   copyrights?).
 	cp -a $(CURDIR)/demos/ppl_lcdd/ppl_lcdd $(CURDIR)/debian/tmp/usr/bin/
+	cp -a $(CURDIR)/demos/src/ppl-config $(CURDIR)/debian/tmp/usr/bin/
+	cp -a $(CURDIR)/demos/ppl_lpsol/ppl_lpsol $(CURDIR)/debian/tmp/usr/bin/
 
 #   Build all the documentation, then move it into debian/tmp
 #   directories which have fixed names.
