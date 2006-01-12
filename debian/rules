@@ -111,11 +111,11 @@ install-arch:
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
 	$(MAKE) -C Watchdog install DESTDIR=$(CURDIR)/debian/tmp
 
-#   Install the demo programs.
-#   FIXME: Consider installing the ppl_lcdd examples (what about
-#		   copyrights?).
+#   Install the PPL programs.
+#   FIXME: Consider installing the ppl_lcdd and ppl_lpsol examples
+#          (what about copyrights?).
+	cp -a $(CURDIR)/src/ppl-config $(CURDIR)/debian/tmp/usr/bin/
 	cp -a $(CURDIR)/demos/ppl_lcdd/ppl_lcdd $(CURDIR)/debian/tmp/usr/bin/
-	cp -a $(CURDIR)/demos/src/ppl-config $(CURDIR)/debian/tmp/usr/bin/
 	cp -a $(CURDIR)/demos/ppl_lpsol/ppl_lpsol $(CURDIR)/debian/tmp/usr/bin/
 
 #   Build all the documentation, then move it into debian/tmp
@@ -130,7 +130,7 @@ install-arch:
 	&& cp -a $(SRC_DOC_DIR)/ppl-devref-$(PPL_VERSION).pdf $(DEV_DOC_DIR)/ppl-devref-browse.pdf \
 	&& cp -a $(SRC_DOC_DIR)/ppl-devref-$(PPL_VERSION).ps.gz $(DEV_DOC_DIR)/ppl-devref-print.ps.gz
 
-#	Explicitly install the Debian changelog for libppl and libppl-pwl.
+#	Explicitly install the Debian changelog, for libppl and libppl-pwl.
 	mkdir -p debian/libppl/usr/share/doc/libppl/
 	cp -a debian/changelog debian/libppl/usr/share/doc/libppl/changelog.Debian
 	mkdir -p debian/libppl-pwl/usr/share/doc/libppl-pwl/
