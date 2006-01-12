@@ -64,7 +64,7 @@ Description: Parma Polyhedra Library: C interface
 
 Package: libppl-gprolog
 Architecture: any
-Depends: libppl, gprolog
+Depends: libppl
 Description: Parma Polyhedra Library: GNU Prolog interface
  The Parma Polyhedra Library (PPL) is a C++ library for the
  manipulation of (not necessarily closed) convex polyhedra and other
@@ -82,7 +82,7 @@ Description: Parma Polyhedra Library: GNU Prolog interface
 
 Package: libppl-swi
 Architecture: any
-Depends: libppl, swi-prolog
+Depends: libppl
 Description: Parma Polyhedra Library: SWI Prolog interface
  The Parma Polyhedra Library (PPL) is a C++ library for the
  manipulation of (not necessarily closed) convex polyhedra and other
