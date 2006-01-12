@@ -1,2 +1,6 @@
 usr/lib/libppl.so.*
 usr/bin/ppl_lcdd
+usr/bin/ppl_lpsol
+usr/share/man/man1/ppl-config.1
+usr/share/man/man1/ppl_lcdd.1
+usr/share/man/man1/ppl_lpsol.1
