@@ -8,7 +8,7 @@ Build-Conflicts: automake1.4
 
 Package: libppl
 Architecture: any
-Depends: libgmp3 (>=4.1.3)
+Depends: libgmp3c2 (>=4.1.3), libgmpxx3 (>=4.1.3)
 Description: Parma Polyhedra Library: base package
  The Parma Polyhedra Library (PPL) is a C++ library for the
  manipulation of (not necessarily closed) convex polyhedra and other
@@ -27,6 +27,7 @@ Architecture: any
 Section: libdevel
 Depends: g++-3.4, libppl, graphviz
 Recommends: libgmp3-dev
+Suggests: libgmp3-doc
 Description: Parma Polyhedra Library: C++ interface
  The Parma Polyhedra Library (PPL) is a C++ library for the
  manipulation of (not necessarily closed) convex polyhedra and other
@@ -38,8 +39,8 @@ Description: Parma Polyhedra Library: C++ interface
  limitation to the dimension of anything), written in standard C++,
  exception-safe, rather efficient and thoroughly documented.
  .
- This package provides C++ header files, the static library and, in
- various formats, the developer documentation.
+ This package provides C++ header files, the static library and
+ various formats of the developer documentation.
  .
  Homepage: http://www.cs.unipr.it/ppl/
 
