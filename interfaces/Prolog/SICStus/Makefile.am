@@ -32,9 +32,8 @@ sp_pl_check.pl
 if BUILD_SICSTUS_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src \
--I$(top_srcdir)/Watchdog/src \
 -I$(top_builddir)/src \
+-I$(top_builddir)/Watchdog/src \
 $(SICSTUS_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 

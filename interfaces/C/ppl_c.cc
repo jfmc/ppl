@@ -20,22 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-
-#include <config.h>
-
-#include "Coefficient.defs.hh"
-#include "Linear_Expression.defs.hh"
-#include "Constraint.defs.hh"
-#include "Constraint_System.defs.hh"
-#include "Generator.defs.hh"
-#include "Generator_System.defs.hh"
-#include "Polyhedron.defs.hh"
-#include "C_Polyhedron.defs.hh"
-#include "NNC_Polyhedron.defs.hh"
-#include "LP_Problem.defs.hh"
-#include "Init.defs.hh"
-#include "max_space_dimension.hh"
-#include "version.hh"
+#include "ppl_install.hh"
 #include "ppl_c.h"
 #include <stdexcept>
 #include <limits>

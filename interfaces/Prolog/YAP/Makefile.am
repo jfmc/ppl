@@ -25,9 +25,8 @@ EXTRA_DIST = ppl_yap.pl yap_clpq.pl yap_clpq2.pl yap_pl_check.pl
 if BUILD_YAP_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src \
 -I$(top_builddir)/src \
--I$(top_srcdir)/Watchdog/src \
+-I$(top_builddir)/Watchdog/src \
 @extra_includes@
 
 if NO_UNDEFINED

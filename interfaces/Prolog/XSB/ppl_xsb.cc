@@ -20,9 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
-#include "Coefficient.defs.hh"
-#include "Checked_Number.defs.hh"
+#include "ppl_install.hh"
+#include "pwl_install.hh"
 #include <cinterf.h>
 
 // In XSB 2.6, <error_xsb.h> does not come with the extern "C" wrapper.

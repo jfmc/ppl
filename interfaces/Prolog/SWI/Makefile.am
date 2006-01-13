@@ -30,9 +30,8 @@ swi_pl_check.pl
 if BUILD_SWI_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src \
--I$(top_srcdir)/Watchdog/src \
 -I$(top_builddir)/src \
+-I$(top_builddir)/Watchdog/src \
 $(SWI_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 

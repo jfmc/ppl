@@ -20,16 +20,14 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include "ppl_install.hh"
+#include "pwl_install.hh"
 
 // Include gmp.h before SWI-Prolog.h.  This is required in order
 // to get access to interface functions dealing with GMP numbers
 // and SWI-Prolog terms.
 #include <gmp.h>
 #include <SWI-Prolog.h>
-
-#include "Coefficient.defs.hh"
-#include "Checked_Number.defs.hh"
 #include <cassert>
 #include <stdint.h>
 

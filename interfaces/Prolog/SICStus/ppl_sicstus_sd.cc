@@ -20,14 +20,12 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
-#include <sstream>
-
-#include "Coefficient.defs.hh"
-#include "Checked_Number.defs.hh"
+#include "ppl_install.hh"
+#include "pwl_install.hh"
 #include "sicstus_cfli.h"
 #include "../exceptions.hh"
 #include <cassert>
+#include <sstream>
 
 namespace PPL = Parma_Polyhedra_Library;
 

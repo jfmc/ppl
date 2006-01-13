@@ -42,9 +42,8 @@ expected_clpq_int64_a expected_clpq2_int64_a expected_pchk_int64_a
 if BUILD_XSB_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src \
--I$(top_srcdir)/Watchdog/src \
 -I$(top_builddir)/src \
+-I$(top_builddir)/Watchdog/src \
 $(XSB_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 

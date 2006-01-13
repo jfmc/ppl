@@ -27,9 +27,8 @@ EXTRA_DIST = ppl_ciao.pl ciao_clpq.pl ciao_clpq2.pl ciao_pl_check.pl
 if BUILD_CIAO_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src \
 -I$(top_builddir)/src \
--I$(top_srcdir)/Watchdog/src \
+-I$(top_builddir)/Watchdog/src \
 @extra_includes@
 
 pkglib_LTLIBRARIES = libppl_ciao.la
