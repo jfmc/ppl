@@ -36,7 +36,7 @@ private:
   typedef mpz_class Type;
 
 public:
-  static const bool is_specialized = false;
+  static const bool is_specialized = true;
   static const int digits = 0;
   static const int digits10 = 0;
   static const bool is_signed = true;
@@ -94,7 +94,7 @@ private:
   typedef mpq_class Type;
 
 public:
-  static const bool is_specialized = false;
+  static const bool is_specialized = true;
   static const int digits = 0;
   static const int digits10 = 0;
   static const bool is_signed = true;
