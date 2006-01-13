@@ -124,6 +124,7 @@ PPL::LP_Problem::incrementality(Constraint new_constraint) {
   if (new_constraint.is_ray_or_point_or_inequality()) {
     tableau[tableau_num_rows-1][tableau.num_columns()-1] = -1;
     tableau.add_zero_columns(1);
+    is_artificial.push_back(false);
   }
 
   // Prepare the tableau to the insertion of the artificial variable:
@@ -178,53 +179,17 @@ PPL::LP_Problem::incrementality(Constraint new_constraint) {
 
   // Now we are ready to solve the first phase.
   bool first_phase_succesful = compute_simplex();
-  if (first_phase_succesful &&  working_cost[0] != 0){
+#if PPL_NOISY_SIMPLEX
+  std::cout << "LP_Problem::solve: 1st phase ended at iteration "
+	    << num_iterations << "." << std::endl;
+#endif
+  if (!first_phase_succesful || working_cost[0] != 0){
     // The feasible region is empty.
     is_artificial.pop_back();
     status = UNSATISFIABLE;
     return false;
   }
-
-  // If the added artificial variable is not in base, it can be removed
-  // from the tableau and from the cost functions.
-  if (artificial_variable != base[base.size()-1]) {
-    tableau.swap_columns(tableau_num_columns-1, artificial_variable);
-    tableau.remove_trailing_columns(1);
-    // Keep the status variables updated.
-    tableau_num_columns = tableau.num_columns();
-    dimension_type working_cost_size = working_cost.size();
-    working_cost[artificial_variable] = working_cost[working_cost_size-1];
-    working_cost.shrink(working_cost_size-1);
-  }
-
-  // The artificial variable is in base: if a coefficient is different from
-  // zero, this will be in base, else the constraint is redundant.
-  else {
-    dimension_type base_size = base.size();
-    tableau_num_columns = tableau.num_columns();
-    tableau_num_rows = tableau.num_rows();
-    bool redundant_constraint = true;
-    for (dimension_type i =  tableau_num_columns-1; i-- > 0; )
-      if (tableau_last_row[i] != 0){
-	// Update the base vector.
-	base[base_size-1] = i;
-	for (dimension_type i = tableau_num_rows-1; i-- > 0; )
-	  if (tableau[i][base[base_size-1]] != 0)
-	    linear_combine(tableau[i], tableau_last_row, base[base_size-1]);
-	redundant_constraint = false;
-	break;
-      }
-
-    // If the row has to be removed, modify properly the simplex
-    // data structures.
-    if (redundant_constraint) {
-      tableau.erase_to_end(tableau.num_rows()-1);
-      base.pop_back();
-    }
-  }
-  // The last inserted artificial variable is surely no longer used.
-  is_artificial.pop_back();
-  // The feasible region is not empty.
+  erase_artificials();
   status = SATISFIABLE;
   return true;
 }
@@ -509,21 +474,20 @@ PPL::LP_Problem::prepare_first_phase() {
     linear_combine(working_cost, tableau[i], base[i]);
 }
 
-// See pag 55-56 Papadimitriou.
-
+//See pag 55-56 Papadimitriou.
 void
 PPL::LP_Problem::erase_artificials() {
   const dimension_type tableau_last_index = tableau.num_columns() - 1;
   dimension_type tableau_n_rows = tableau.num_rows();
-  const dimension_type first_slack_index = tableau_last_index - tableau_n_rows;
+  const dimension_type is_artificial_size = is_artificial.size();
   // Step 1: try to remove from the base all the remaining slack variables.
   for (dimension_type i = 0; i < tableau_n_rows; ++i)
     if (is_artificial[base[i]]) {
       // Search for a non-zero element to enter the base.
       Row& tableau_i = tableau[i];
       bool redundant = true;
-      for (dimension_type j = first_slack_index; j-- > 1; )
-	if (tableau_i[j] != 0) {
+      for (dimension_type j = is_artificial_size; j-- > 1; )
+	if (!is_artificial[j] && tableau_i[j] != 0) {
 	  pivot(j, i);
 	  redundant = false;
 	  break;
@@ -547,25 +511,32 @@ PPL::LP_Problem::erase_artificials() {
   // Step 2: Adjust data structures so as to enter phase 2 of the simplex.
 
   // Compute the dimensions of the new tableau.
-  const dimension_type new_tableau_n_cols = first_slack_index + 1;
-  const dimension_type new_tableau_last_index = first_slack_index;
+  dimension_type num_artificials = 0;
+  for (dimension_type i = is_artificial.size(); i-- > 1; )
+    if (is_artificial[i]) {
+      ++num_artificials;
+      if (i != is_artificial.size()-1) {
+	// WARNING: this case, at the moment is not possible. The
+	// following code (still rough and not working) will be useful
+	// when `incrementality' will be modified.
+	assert(false);
+	tableau.swap_columns(i, tableau.num_columns()-1);
+	is_artificial[i] = is_artificial[is_artificial.size()-1];
+      }
+      tableau.remove_trailing_columns(1);
+      is_artificial.pop_back();
+    }
 
-  // Adjust the number of columns of `tableau'.
-  const  dimension_type tableau_diff =
-    tableau.num_columns() - new_tableau_n_cols;
-  tableau.remove_trailing_columns(tableau_diff);
-   for (dimension_type i = tableau_diff; i-- > 0; )
-     is_artificial.pop_back();
-     // Zero the last column of the tableau.
+  // Zero the last column of the tableau.
   for (dimension_type i = tableau_n_rows; i-- > 0; )
-    tableau[i][new_tableau_last_index] = 0;
+    tableau[i][tableau.num_columns()-1] = 0;
 
   // ... then properly set the element in the (new) last column,
   // encoding the kind of optimization; ...
-  working_cost[new_tableau_last_index] = working_cost[tableau_last_index];
+  working_cost[tableau.num_columns()-1] = working_cost[tableau_last_index];
   // ... and finally remove redundant columns.
   const dimension_type working_cost_new_size = working_cost.size() -
-    (tableau_last_index - new_tableau_last_index);
+    num_artificials;
   working_cost.shrink(working_cost_new_size);
 }
 
@@ -1061,6 +1032,7 @@ PPL::LP_Problem::is_satisfiable() const {
   x.status = SATISFIABLE;
   // Erase the slack variables.
   x.erase_artificials();
+  assert(OK());
   return true;
 }
 
@@ -1125,6 +1097,23 @@ PPL::LP_Problem::OK() const {
     if (tableau_nrows != base.size()) {
 #ifndef NDEBUG
       cerr << "tableau and base have incompatible sizes" << endl;
+      ascii_dump(cerr);
+#endif
+      return false;
+    }
+    // The number of columns in the tableau and in `is_artificial.size()+1'
+    // should be equal.
+    if (tableau_ncols != is_artificial.size()+1) {
+#ifndef NDEBUG
+      cerr << "tableau and `is_artificial` have incompatible sizes" << endl;
+      ascii_dump(cerr);
+#endif
+      return false;
+    }
+    // The size  of `input_cs' and `mapping' should be equal.
+    if (input_cs.num_columns() != mapping.size()) {
+#ifndef NDEBUG
+      cerr << "`input_cs' and `mapping' have incompatible sizes" << endl;
       ascii_dump(cerr);
 #endif
       return false;
