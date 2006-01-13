@@ -57,20 +57,20 @@ operator<<(std::ostream& s, const Powerset<CS>& x);
 
 //! The powerset construction on constraint systems.
 /*!
-  This class offers a generic implementation of <EM>powerset
-  constraint systems</EM> as defined in \ref Bag98 "[Bag98]".
-  See also the description in Section \ref powerset.
+  This class offers a generic implementation of a
+  <EM>powerset</EM> domain
+  as defined in Section \ref powerset.
 
-  Besides invoking the available methods on a Powerset element,
-  this class also provides bidirectional iterators that allow for
-  a direct inspection of the disjuncts. For a consistent handling
-  of Omega-reduction, all the iterators are <EM>read-only</EM>,
-  meaning that the disjuncts can not be overwritten. Rather,
-  by using class <CODE>iterator</CODE>, it is possible to drop
-  one or more disjuncts (to later add back the modified versions).
-  As an example of iterator usage, the following templatic function
-  drops from powerset \p ps all the disjuncts that would have become
-  redundant by the addition of the external element \p d.
+  Besides invoking the available methods on the disjuncts of a Powerset,
+  this class also provides bidirectional iterators that allow for a
+  direct inspection of these disjuncts. For a consistent handling of
+  Omega-reduction, all the iterators are <EM>read-only</EM>, meaning
+  that the disjuncts cannot be overwritten. Rather, by using the class
+  <CODE>iterator</CODE>, it is possible to drop one or more disjuncts
+  (possibly so as to later add back modified versions).  As an example
+  of iterator usage, the following templatic function drops from
+  powerset \p ps all the disjuncts that would have become redundant by
+  the addition of an external element \p d.
 
   \code
 template <typename CS>
@@ -186,8 +186,10 @@ public:
   //! \name Member Functions for the Direct Inspection of Disjuncts
   //@{
 
-  //! Erase from the sequence of disjuncts all the non-maximal elements.
-  /*!
+  /*! \brief
+    Drops from the sequence of disjuncts in \p *this all the
+    non-maximal elements so that \p *this is non-redundant.
+
     This method is declared <CODE>const</CODE> because, even though
     Omega-reduction may change the syntactic representation of \p *this,
     its semantics will be unchanged.
@@ -252,7 +254,7 @@ public:
   void add_disjunct(const CS& d);
 
   /*! \brief
-    Drops the disjunct pointed to by \p position, returning
+    Drops the disjunct in \p *this pointed to by \p position, returning
     an iterator to the disjunct following \p position.
   */
   iterator drop_disjunct(iterator position);
@@ -279,9 +281,10 @@ protected:
   */
   bool is_omega_reduced() const;
 
-  /*! \brief
-    Upon return, \p *this will contain \p max_disjuncts elements at most,
-    by replacing all the exceeding disjuncts, if any, with their upper-bound.
+  /*! \brief Upon return, \p *this will contain at most \p
+    max_disjuncts elements; the set of disjuncts in positions greater
+    than or equal to \p max_disjuncts, will be replaced at that
+    position by their upper-bound.
   */
   void collapse(unsigned max_disjuncts);
 
@@ -290,11 +293,11 @@ protected:
     assuming \p d is not the bottom element and ensuring
     partial Omega-reduction.
 
-    If \p d is not the bottom element and is not redundant with respect
-    to the elements in positions between \p first and \p last,
-    adds to \p *this the disjunct \p d, erasing all the elements
-    in the above mentioned positions that are made Omega-redundant
-    by the addition of \p d.
+    If \p d is not the bottom element and is not Omega-redundant with
+    respect to elements in positions between \p first and \p last, all
+    elements in these positions that would be made Omega-redundant by the
+    addition of \p d are dropped and \p d is added to the reduced
+    sequence.
   */
   iterator add_non_bottom_disjunct(const CS& d,
 				   iterator first,
