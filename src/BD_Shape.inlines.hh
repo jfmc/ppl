@@ -679,49 +679,6 @@ BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
 
 template <typename T>
 inline void
-BD_Shape<T>::ascii_dump(std::ostream& s) const {
-  status.ascii_dump(s);
-  s << "\n";
-  dbm.ascii_dump(s);
-  // Redundancy info.
-  s << "\n";
-  const char separator = ' ';
-  const dimension_type nrows = redundancy_dbm.size();
-  s << nrows << separator << "\n";
-  for (dimension_type i = 0; i < nrows;  ++i) {
-    for (dimension_type j = 0; j < nrows; ++j)
-      s << redundancy_dbm[i][j] << separator;
-    s << "\n";
-  }
-}
-
-PPL_OUTPUT_TEMPLATE_DEFINITIONS(T, BD_Shape<T>);
-
-template <typename T>
-inline bool
-BD_Shape<T>::ascii_load(std::istream& s) {
-  if (!status.ascii_load(s))
-    return false;
-  if (!dbm.ascii_load(s))
-    return false;
-  // Load redundancy info.
-  dimension_type nrows;
-   if (!(s >> nrows))
-    return false;
-  redundancy_dbm.clear();
-  redundancy_dbm.reserve(nrows);
-  std::deque<bool> redundancy_row(nrows, false);
-  for (dimension_type i = 0; i < nrows;  ++i) {
-    for (dimension_type j = 0; j < nrows; ++j)
-      if (!(s >> redundancy_row[j]))
-	return false;
-    redundancy_dbm.push_back(redundancy_row);
-  }
-  return true;
-}
-
-template <typename T>
-inline void
 BD_Shape<T>::forget_all_dbm_constraints(const dimension_type v) {
   assert(0 < v && v <= dbm.num_rows());
   DB_Row<N>& dbm_v = dbm[v];
@@ -4262,6 +4219,49 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
     }
   }
   return s;
+}
+
+template <typename T>
+void
+BD_Shape<T>::ascii_dump(std::ostream& s) const {
+  status.ascii_dump(s);
+  s << "\n";
+  dbm.ascii_dump(s);
+  // Redundancy info.
+  s << "\n";
+  const char separator = ' ';
+  const dimension_type nrows = redundancy_dbm.size();
+  s << nrows << separator << "\n";
+  for (dimension_type i = 0; i < nrows;  ++i) {
+    for (dimension_type j = 0; j < nrows; ++j)
+      s << redundancy_dbm[i][j] << separator;
+    s << "\n";
+  }
+}
+
+PPL_OUTPUT_TEMPLATE_DEFINITIONS(T, BD_Shape<T>);
+
+template <typename T>
+bool
+BD_Shape<T>::ascii_load(std::istream& s) {
+  if (!status.ascii_load(s))
+    return false;
+  if (!dbm.ascii_load(s))
+    return false;
+  // Load redundancy info.
+  dimension_type nrows;
+   if (!(s >> nrows))
+    return false;
+  redundancy_dbm.clear();
+  redundancy_dbm.reserve(nrows);
+  std::deque<bool> redundancy_row(nrows, false);
+  for (dimension_type i = 0; i < nrows;  ++i) {
+    for (dimension_type j = 0; j < nrows; ++j)
+      if (!(s >> redundancy_row[j]))
+	return false;
+    redundancy_dbm.push_back(redundancy_row);
+  }
+  return true;
 }
 
 template <typename T>
