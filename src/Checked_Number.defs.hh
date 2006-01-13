@@ -630,7 +630,10 @@ cmp(const Checked_Number<T1, Policy1>& x, const Checked_Number<T2, Policy2>& y);
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
 Result
-output(std::ostream& os, const Checked_Number<T, Policy>& x, const Numeric_Format& fmt, Rounding_Dir dir);
+output(std::ostream& os,
+       const Checked_Number<T, Policy>& x,
+       const Numeric_Format& fmt,
+       Rounding_Dir dir);
 
 //! Output operator.
 /*! \relates Checked_Number */
@@ -753,5 +756,6 @@ not_a_number();
 } // namespace Parma_Polyhedra_Library
 
 #include "Checked_Number.inlines.hh"
+#include "checked_numeric_limits.hh"
 
 #endif // !defined(PPL_Checked_Number_defs_hh)
