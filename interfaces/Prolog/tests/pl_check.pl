@@ -254,7 +254,7 @@ run_one(large_integers) :-
 run_one(handle_exceptions) :-
    exceptions.
 
-%%%%%%%%%%%%%%%%% numeric bounds in C++ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%% numeric bounds %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 max_dimension :-
   ppl_max_space_dimension(M),
@@ -262,19 +262,48 @@ max_dimension :-
      display_message(['Maximum possible dimension is', M, nl])
   ).
 
+% coefficient_bounds/0
+% This is mainly to check ppl_Coefficient_is_bounded/0,
+% ppl_Coefficient_max/1, ppl_Coefficient_min/1.
+% But it has to catch the case when the numeric bounds in the
+% prolog system are smaller than any finite bounds in C++
+% As the test does not know the configuartion, all that can be tested
+% here is that the results are consistent and the bounds are
+% in a list of possible bounds.
+
 coefficient_bounds :-
-  (ppl_Coefficient_is_bounded ->
-     (catch(ppl_Coefficient_max(Max), ppl_overflow_error(Cause),
-          current_prolog_flag(max_integer, Max)),
-      catch(ppl_Coefficient_min(Min), ppl_overflow_error(Cause),
-          current_prolog_flag(min_integer, Min)))
+  (pl_check_prolog_flag(bounded, true) ->
+     (pl_check_prolog_flag(max_integer, PLMax),
+      pl_check_prolog_flag(min_integer, PLMin))
    ;
-     (Max = 0, Min = 0)
+     PLMax = 0, PLMin = 0
+  ),
+  (ppl_Coefficient_is_bounded ->
+     (catch(
+             cpp_bounded_values(Max, Min),
+             ppl_overflow_error(_Cause),
+             (Max = PLMax, Min = PLMin)
+           )
+     )
+   ;
+     (cpp_unbounded_check, Max = PLMax, Min = PLMin)
   ),
   (noisy(0) -> true ;
      display_message(['Maximum possible coefficient is', Max, nl]),
      display_message(['Minimum possible coefficient is', Min, nl])
   ).
+
+cpp_unbounded_check :-
+  \+ ppl_Coefficient_max(_),
+  \+ ppl_Coefficient_min(_).
+
+cpp_bounded_values(Max, Min) :-
+  ppl_Coefficient_max(Max),
+  ppl_Coefficient_min(Min).
+%  possible_cpp_bounds(CppBounds),
+%  member((Max, Min), CppBounds).
+
+possible_cpp_bounds([]).
 
 %%%%%%%%%%%%%%%%% New Polyhedron %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -2360,8 +2389,8 @@ large_integers :-
   large_integers_additions(Adds),
   out(large_int, init),
   large_integers_prolog_cpp(Exps, Adds),
-  current_prolog_flag(bounded, Y),
-  ((Y == true ; prolog_system(xsb)) ->
+  pl_check_prolog_flag(bounded, Y),
+  (Y == true ->
      large_integers_sys_prolog_cpp(Adds)
    ;
      true
@@ -2400,8 +2429,8 @@ large_integers_sys_prolog_cpp2(MaxMin, Add, Sign) :-
 
 large_integers_prolog_cpp([], _).
 large_integers_prolog_cpp([Exp|Exps], Adds) :-
-  current_prolog_flag(bounded, F),
-  ((F == true ; prolog_system(xsb)) ->
+  pl_check_prolog_flag(bounded, F),
+  (F == true ->
      pl_check_prolog_flag(max_integer, Max_int),
     (Max_int >> 1 =< 1 << Exp + 3 ->
        true
@@ -2502,8 +2531,8 @@ exception_yap :-
 
 %% TEST: Prolog_unsigned_out_of_range
 exception_prolog(1, _) :-
-    current_prolog_flag(bounded, Y),
-   ((Y == true ; prolog_system(xsb)) ->
+    pl_check_prolog_flag(bounded, Y),
+   (Y == true ->
      true
     ;
      (I = 21474836470,
@@ -3024,7 +3053,7 @@ format_exception_message(
                    'in call to', W, '.']).
 
 format_exception_message(Error) :-
-  (noisy(0) -> true ; display_message([Error])).
+  display_message([Error]).
 
 %%%%%%%%%%%% predicates for output messages %%%%%%%%%%%%%%%%%%
 
@@ -3033,10 +3062,10 @@ error_message(Message):-
    fail.
 
 display_message(Message):-
-  noisy(_),
-  (noisy(0) -> true ;
-    nl, write_all(Message)
-  ).
+    noisy(_),
+    (noisy(0) -> true ;
+     (nl, write_all(Message))
+    ).
 
 write_all([]) :- nl.
 write_all([Phrase|Phrases]):-
@@ -3247,17 +3276,29 @@ group_predicates(handle_exceptions,
 
 %%%%%%%%%%%%%%%%%%%%%%% System flags %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% pl_check_prolog_flag/2 returns the maximum or minimum integer for Prolog
+% pl_check_prolog_flag/2
+% returns true or false (if the 1st argument is 'bounded')
+% or (if the 1st argument is 'max_integer' or  'min_integer')
+% the maximum or minimum integer for Prolog
 % systems that have bounded integers.
 % Note that 2147483648 is 2^31.
 
+pl_check_prolog_flag(bounded, TF) :-
+  \+ prolog_system(xsb),
+  current_prolog_flag(bounded, TF).
+
+pl_check_prolog_flag(bounded, true) :-
+  prolog_system(xsb).
+
 pl_check_prolog_flag(max_integer, Max_Int) :-
+  \+ prolog_system(xsb),
   current_prolog_flag(max_integer, Max_Int).
 
 pl_check_prolog_flag(max_integer, Max_Int) :-
   prolog_system(xsb), Max_Int is 2147483647.
 
 pl_check_prolog_flag(min_integer, Min_Int) :-
+  \+ prolog_system(xsb),
   current_prolog_flag(min_integer, Min_Int).
 
 pl_check_prolog_flag(min_integer, Min_Int) :-
