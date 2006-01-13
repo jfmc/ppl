@@ -621,7 +621,7 @@ BD_Shape<T>::intersection_assign_and_minimize(const BD_Shape& y) {
 
 template <typename T>
 inline void
-BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y) {
+BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y, unsigned* tp) {
   static N stop_points[] = {
     N(-2, ROUND_UP),
     N(-1, ROUND_UP),
@@ -632,7 +632,8 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y) {
   CC76_extrapolation_assign(y,
 			    stop_points,
 			    stop_points
-			    + sizeof(stop_points)/sizeof(stop_points[0]));
+			    + sizeof(stop_points)/sizeof(stop_points[0]),
+			    tp);
 }
 
 template <typename T>
@@ -1064,8 +1065,6 @@ template <typename T>
 void
 BD_Shape<T>::concatenate_assign(const BD_Shape& y) {
   BD_Shape& x = *this;
-  assert(x.OK());
-  assert(y.OK());
 
   const dimension_type x_space_dim = x.space_dimension();
   const dimension_type y_space_dim = y.space_dimension();
@@ -1074,6 +1073,7 @@ BD_Shape<T>::concatenate_assign(const BD_Shape& y) {
   // let `*this' become empty.
   if (y_space_dim == 0 && y.marked_empty()) {
     set_empty();
+    assert(OK());
     return;
   }
 
@@ -1081,6 +1081,7 @@ BD_Shape<T>::concatenate_assign(const BD_Shape& y) {
   // the dimension of the vector space.
   if (x_space_dim == 0 && marked_empty()) {
     dbm.grow(y_space_dim + 1);
+    assert(OK());
     return;
   }
   // First we increase the space dimension of `x' by adding
@@ -2177,7 +2178,8 @@ template <typename T>
 template <typename Iterator>
 void
 BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
-				       Iterator first, Iterator last) {
+				       Iterator first, Iterator last,
+				       unsigned* tp) {
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
@@ -2207,10 +2209,20 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
   if (y.marked_empty())
     return;
 
+  // If there are tokens available, work on a temporary copy.
+  if (tp != 0 && *tp > 0) {
+    BD_Shape<T> x_tmp(*this);
+    x_tmp.CC76_extrapolation_assign(y, first, last, 0);
+    // If the widening was not precise, use one of the available tokens.
+    if (!contains(x_tmp))
+      --(*tp);
+    return;
+  }
+
   // Compare each constraint in `y' to the corresponding one in `*this'.
   // The constraint in `*this' is kept as is if it is stronger than or
   // equal to the constraint in `y'; otherwise, the inhomogeneous term
-  // of teh constraint in `*this' is further compared with elements taken
+  // of the constraint in `*this' is further compared with elements taken
   // from a sorted container (the stop-points, provided by the user), and
   // is replaced by the first entry, if any, which is greater than or equal
   // to the inhomogeneous term. If no such entry exists, the constraint
@@ -2297,7 +2309,7 @@ template <typename T>
 void
 BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
 					       const Constraint_System& cs,
-					       unsigned* /*tp*/) {
+					       unsigned* tp) {
   // Dimension-compatibility check.
   const dimension_type space_dim = space_dimension();
   if (space_dim != y.space_dimension())
@@ -2338,14 +2350,14 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
 
   BD_Shape<T> limiting_shape(space_dim, UNIVERSE);
   get_limiting_shape(cs, limiting_shape);
-  CC76_extrapolation_assign(y);
+  CC76_extrapolation_assign(y, tp);
   intersection_assign(limiting_shape);
   assert(OK());
 }
 
 template <typename T>
 void
-BD_Shape<T>::BHMZ05_widening_assign(const BD_Shape& y, unsigned* /*tp*/) {
+BD_Shape<T>::BHMZ05_widening_assign(const BD_Shape& y, unsigned* tp) {
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
@@ -2376,6 +2388,17 @@ BD_Shape<T>::BHMZ05_widening_assign(const BD_Shape& y, unsigned* /*tp*/) {
   if (x_affine_dim != y_affine_dim)
     return;
 
+  // If there are tokens available, work on a temporary copy.
+  if (tp != 0 && *tp > 0) {
+    BD_Shape<T> x_tmp(*this);
+    x_tmp.BHMZ05_widening_assign(y, 0);
+    // If the widening was not precise, use one of the available tokens.
+    if (!contains(x_tmp))
+      --(*tp);
+    return;
+  }
+
+  // Here no token is available.
   assert(marked_shortest_path_closed() && y.marked_shortest_path_closed());
   // Minimize `y'.
   y.shortest_path_reduction_assign();
@@ -2406,7 +2429,7 @@ template <typename T>
 void
 BD_Shape<T>::limited_BHMZ05_extrapolation_assign(const BD_Shape& y,
 						 const Constraint_System& cs,
-						 unsigned* /*tp*/) {
+						 unsigned* tp) {
   // Dimension-compatibility check.
   const dimension_type space_dim = space_dimension();
   if (space_dim != y.space_dimension())
@@ -2448,7 +2471,7 @@ BD_Shape<T>::limited_BHMZ05_extrapolation_assign(const BD_Shape& y,
 
   BD_Shape<T> limiting_shape(space_dim, UNIVERSE);
   get_limiting_shape(cs, limiting_shape);
-  BHMZ05_widening_assign(y);
+  BHMZ05_widening_assign(y, tp);
   intersection_assign(limiting_shape);
   assert(OK());
 }

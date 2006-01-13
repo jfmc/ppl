@@ -817,10 +817,15 @@ public:
     \param y
     A BDS that <EM>must</EM> be contained in \p *this.
 
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void CC76_extrapolation_assign(const BD_Shape& y);
+  void CC76_extrapolation_assign(const BD_Shape& y, unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -835,12 +840,18 @@ public:
     \param last
     An iterator referencing one past the last stop-point.
 
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   template <typename Iterator>
   void CC76_extrapolation_assign(const BD_Shape& y,
-				 Iterator first, Iterator last);
+				 Iterator first, Iterator last,
+				 unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of computing the
