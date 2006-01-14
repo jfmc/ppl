@@ -692,7 +692,7 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
     <CODE>0x0.111*^3</CODE> (meaning \f$273\f$);
     notice that the exponent is always written as a plain base-10 integer
     number;
-  - integers and rationals in specified bases, in the range \f$2--32\f$,
+  - integers and rationals in specified bases, in the range \f$2--36\f$,
     in fractional, floating point and scientific notations, as
     <CODE>2^^11</CODE> (meaning \f$3\f$),
     <CODE>36^^z</CODE> (meaning \f$35\f$),
@@ -703,8 +703,8 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
     <CODE>8^^2.1e3</CODE> (meaning \f$1088\f$),
     <CODE>8^^20402543.120347e7</CODE> (meaning \f$9073863231288\f$),
     <CODE>8^^2.1</CODE> (meaning \f$17/8\f$);
-    notice that the exponent is always written as a plain base-10 integer
-    number;
+    notice that both the base and the exponent are always written
+    as plain base-10 integer numbers;
   - special values like <CODE>inf</CODE> and <CODE>+inf</CODE>
     (meaning \f$+\infty\f$), <CODE>-inf</CODE> (meaning \f$-\infty\f$),
     and <CODE>nan</CODE> (meaning "not a number").
