@@ -16,11 +16,11 @@ o  The new program ppl-config returns information about the
 
 o  In classes Poly_Con_Relation and Poly_Gen_Relation the methods
 
-      void ascii_dump(std::ostream& s) const
+     void ascii_dump(std::ostream& s) const
 
    and
 
-      void ascii_load(std::istream& s) const
+     void ascii_load(std::istream& s) const
 
    are now publicly available.
 
@@ -34,7 +34,7 @@ o  All classes which provide the method
 
    and
 
-	 void print() const.
+     void print() const.
 
    These methods print to std::cerr the textual and user-level
    representation (resp.) of the given object.  This enables the
@@ -52,12 +52,12 @@ o  The browse and print versions of the PS and PDF formats of the user
 
 o  Added to C_Polyhedron (resp., NNC_Polyhedron) new method
 
-	  bool poly_hull_assign_if_exact(const C_Polyhedron&)
+     bool poly_hull_assign_if_exact(const C_Polyhedron&)
 
    (resp. bool poly_hull_assign_if_exact(const NNC_Polyhedron&))
    and its synonym
 
-   	  bool upper_bound_assign_if_exact(const C_Polyhedron&)
+     bool upper_bound_assign_if_exact(const C_Polyhedron&)
 
    (resp. bool upper_bound_assign_if_exact(const NNC_Polyhedron&)).
 
@@ -69,20 +69,20 @@ o  Output operators have been added for Generator::Type and
 
 o  Class Bounding_Box has new method
 
-      Constraint_System Bounding_Box::constraints() const,
+     Constraint_System Bounding_Box::constraints() const,
 
    which returns the system of constraints.
 
 o  Class Bounding_Box has new widening methods
 
-	  Bounding_Box::CC76_widening_assign(const Bounding_Box& y)
+     Bounding_Box::CC76_widening_assign(const Bounding_Box& y)
 
    and
 
-	  template <typename Iterator>
-	  Bounding_Box::CC76_widening_assign(const Bounding_Box& y,
-	  								     Iterator first,
-										 Iterator last).
+     template <typename Iterator>
+     Bounding_Box::CC76_widening_assign(const Bounding_Box& y,
+                                        Iterator first,
+                                        Iterator last).
 
 o  All methods in class Determinate that are specific to the Polyhedra
    template parameter have been dropped.  If needed, they can still be
@@ -200,11 +200,11 @@ o  Added to classes Constraint (resp., Generator) the method
 
 o  Added to classes Constraint and Generator the methods
 
-      void ascii_dump(std::ostream& s) const
+     void ascii_dump(std::ostream& s) const
 
    and
 
-      void ascii_load(std::istream& s) const.
+     void ascii_load(std::istream& s) const.
 
 o  Added swap methods to classes Linear_Expression, Constraint, Generator,
    Constraint_System and Generator_System.
