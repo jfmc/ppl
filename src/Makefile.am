@@ -358,9 +358,12 @@ ppl.hh \
 ppl_include_files.hh \
 ppl_install.hh
 
-ppl.hh:	$(DOC_FILES) $(top_builddir)/src/version.hh Makefile
-	cat $(top_builddir)/src/version.hh >$@
-	(cd $(srcdir) ; cat $(DOC_FILES)) >>$@
+#ppl.hh:	$(DOC_FILES) $(top_builddir)/src/version.hh Makefile
+#	cat $(top_builddir)/src/version.hh >$@
+#	(cd $(srcdir) ; cat $(DOC_FILES)) >>$@
+
+ppl.hh:	ppl_install.hh
+	cat ppl_install.hh >$@
 
 ppl_include_files.hh: $(INCLUDE_FILES) Makefile
 	rm -f $@
