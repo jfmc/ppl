@@ -643,12 +643,79 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
 
 //! Input function.
 /*!
-  FIXME: this must be completed.
+  \param is
+  Input stream to read from;
 
-  The accepted syntax is specified by the following grammar, with the
-  additional proviso that everything is <EM>case insensitive</EM>
-  and that the syntactic category <CODE>BDIGIT</CODE> is further restriced
-  by the current base.
+  \param x
+  Number (possibly extended) to assign to in case of successful reading;
+
+  \param dir
+  Rounding mode to be applied;
+
+  \return
+  Result of the input operation.  Success, success with imprecision,
+  overflow, parsing error: all possibilities are taken into account,
+  checked for, and properly reported.
+
+  This function attempts reading a (possibly extended) number from the given
+  stream \p is, possibly rounding as specified by \p dir, assigning the result
+  to \p x upon success, and returning the appropriate Result.
+
+  The input syntax allows the specification of
+  - plain base-10 integer numbers as <CODE>34976098</CODE>,
+    <CODE>-77</CODE> and <CODE>+13</CODE>;
+  - base-10 integer numbers in scientific notation as <CODE>15e2</CODE>
+    and <CODE>15*^2</CODE> (both meaning \f$15 \cdot 10^2 = 1500\f$),
+    <CODE>9200e-2</CODE> and <CODE>-18*^+11111111111111111</CODE>;
+  - base-10 rational numbers in fraction notation as
+    <CODE>15/3</CODE> and <CODE>15/-3</CODE>;
+  - base-10 rational numbers in fraction/scientific notation as
+    <CODE>15/30e-1</CODE> (meaning \f$5\f$) and <CODE>15*^-3/29e2</CODE>
+    (meaning \f$3/580000\f$);
+  - base-10 rational numbers in floating point notation as
+    <CODE>71.3</CODE> (meaning \f$713/10\f$) and
+    <CODE>-0.123456</CODE> (meaning \f$-1929/15625\f$);
+  - base-10 rational numbers in floating point scientific notation as
+    <CODE>2.2e-1</CODE> (meaning \f$11/50\f$) and <CODE>-2.20001*^+3</CODE>
+    (meaning \f$-220001/100\f$);
+  - base-16 integer numbers in C notation as <CODE>0xfa</CODE>
+    (meaning \f$250\f$) and <CODE>0x0b123</CODE> (meaning \f$45347\f$);
+  - natural extensions to the C syntax for hexadecimal numbers to
+    fractional, floating point and base-16 scientific notations, as
+    <CODE>0x.f</CODE> (meaning \f$15/16\f$),
+    <CODE>0xfa.a</CODE> (meaning \f$2005/8\f$),
+    <CODE>0x.f*^1</CODE> (meaning \f$15\f$),
+    <CODE>0x1e2</CODE> (meaning \f$482\f$),
+    <CODE>0x1*^2</CODE> (meaning \f$256\f$),
+    <CODE>0x0.111*^3</CODE> (meaning \f$273\f$);
+  - integers and rationals in specified bases, in the range \f$2--32\f$,
+    in fractional, floating point and scientific notations, as
+    <CODE>2^^11</CODE> (meaning \f$3\f$),
+    <CODE>36^^z</CODE> (meaning \f$35\f$),
+    <CODE>36^^xyz</CODE> (meaning \f$44027\f$),
+    <CODE>2^^11.1</CODE> (meaning \f$7/2\f$),
+    <CODE>10^^2e3</CODE> (meaning \f$2000\f$),
+    <CODE>8^^2e3</CODE> (meaning \f$1024\f$),
+    <CODE>8^^2.1e3</CODE> (meaning \f$1088\f$),
+    <CODE>8^^20402543.120347e7</CODE> (meaning \f$9073863231288\f$),
+    <CODE>8^^2.1</CODE> (meaning \f$17/8\f$);
+  - special values like <CODE>inf</CODE> and <CODE>+inf</CODE>
+    (meaning \f$+\infty\f$), <CODE>-inf</CODE> (meaning \f$-\infty\f$),
+    and <CODE>nan</CODE> (meaning "not a number").
+
+  The rationale behind the accepted syntax can be summarized as follows:
+  - if the syntax is acceptable as standard C++, then this function
+    accepts it with the same semantics;
+  - if the syntax is accepted by Mathematica, then this function
+    accepts it with the same semantics;
+  - natural extensions of the above are accepted with the natural
+    extensions of the semantics;
+  - special values are accepted.
+
+  Valid syntax is more formally and completely specified by the
+  following grammar, with the additional proviso that everything is
+  <EM>case insensitive</EM> and that the syntactic category
+  <CODE>BDIGIT</CODE> is further restriced by the current base.
 
 \code
 number	: NAN
