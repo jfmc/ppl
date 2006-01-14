@@ -15,7 +15,9 @@ o  The configuration option --enable-optimization now accepts a value
 Bugfixes
 ========
 
-o  Fixed a bug in Time::operator+=(const Time&).
+o  Fixed a bug in Time::operator+=(const Time&) where the resulting
+   number of microseconds was being erroneously set to the resulting
+   number of seconds.
 
 
 --------------------------------------------------------------------------
