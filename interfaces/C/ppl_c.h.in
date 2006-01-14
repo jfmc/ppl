@@ -324,7 +324,7 @@ ppl_finalize PPL_PROTO((void));
 
   The error handler takes an error code and a textual description that
   gives further information about the actual error.  The C string
-  containing the textual description is read-only and its existence it
+  containing the textual description is read-only and its existence is
   not guaranteed after the handler has returned.
 */
 int
