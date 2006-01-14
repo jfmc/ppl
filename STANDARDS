@@ -35,8 +35,8 @@ Whenever appropriate for ensuring efficiency, the generic std::swap
 algorithm should be specialized to use the swap method.
 
 
-Limiting the visibility of variables and functions
---------------------------------------------------
+Limiting the visibility of variables, functions, macros and so forth
+--------------------------------------------------------------------
 
 Avoid using the keyword "static" to specify that global variables or
 functions should be visible only inside the current translation unit;
@@ -67,6 +67,27 @@ Instead, define and use a new non-anonymous namespace that should
 be placed inside the namespace
 
     Parma_Polyhedra_Library::Implementation
+
+Concerning macros and the implementation languages (such as C and Prolog)
+that have a flat identifiers namespace, make sure the library limits
+its impact as much as possible by naming objects in a conspicuous way
+and by limiting as much as possible the scope of declarations.
+This means
+
+- all C and C++ macros should have names prefixed by "PPL_";
+  those that are not meant to be directly accessible by the user should
+  be #undef'ed as soon as possible in the source file they are defined in;
+- all functions and types declared by the C interface should have
+  names prefixed by "ppl_";
+- all Prolog predicates declared by the Prolog interfaces should have
+  names prefixed by "ppl_".
+
+
+Macros
+------
+
+Macros should be used only if really needed (in many cases, macros can
+be replaced by inline functions).
 
 
 Length of source lines
@@ -171,20 +192,6 @@ For example, use
 instead of
 
 	assert(sys.num_rows());
-
-
-Macros
-------
-
-Macros should be used only if really needed (in many cases, macros can
-be replaced by inline functions).
-
-If macros are used, their scope should be minimized as much as possible.
-In particular, all macros that are not meant to be directly accessible
-by the user should be #undef'ed as soon as possible in the source file
-they are defined in.
-
-Macros should be given conspicuous names starting with "PPL_".
 
 
 Standards for Structuring the Source Code in Files
@@ -332,11 +339,11 @@ Standards for Documenting the Project with Doxygen
    In such a case, a single comment block should be used as follows:
 
      /*!
-       ... doxygen comments for both user and developer ...
+       ... Doxygen comments for both user and developer ...
        \if Include_Implementation_Details
-       ... doxygen comments for developer only ...
+       ... Doxygen comments for developer only ...
        \endif
-       ... doxygen comments for both user and developer ...
+       ... Doxygen comments for both user and developer ...
      */
 
 9) The documentation of those functions that are neither methods
@@ -359,7 +366,7 @@ Standards for Documenting the Project with Doxygen
 
 10)
   If the \return or \param special commands are used, then these have to
-  be placed after the brief doxygen comment.  The \return special
+  be placed after the brief Doxygen comment.  The \return special
   command, if present, should come before any \param command.  The
   \exception special command, if present, should come after any \param
   command. All the parameters of the function should be provided by the
