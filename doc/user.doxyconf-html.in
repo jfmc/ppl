@@ -1018,7 +1018,9 @@ PREDEFINED             = PPL_PROTO(protos):=protos
 # Use the PREDEFINED tag if you want to use a different macro definition.
 
 EXPAND_AS_DEFINED      = PPL_TYPE_DECLARATION \
-                         PPL_OUTPUT_DECLARATIONS
+                         PPL_OUTPUT_DECLARATIONS \
+                         PPL_SPECIALIZE_LIMITS_INT \
+                         PPL_SPECIALIZE_LIMITS_FLOAT
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES (the default) then 
 # doxygen's preprocessor will remove all function-like macros that are alone 
