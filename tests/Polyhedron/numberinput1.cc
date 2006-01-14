@@ -175,6 +175,8 @@ test_integers() {
   // Exponent and fraction.
   test("5.3e3", "5300", "", V_EQ);
   test("2.2e-1", "11/50", "", V_EQ);
+  test("5.33333*^-4", "533333/1000000000", "", V_EQ);
+  test("-2.20001*^+3", "-220001/100", "", V_EQ);
   test("7.e", "nan", "", V_CVT_STR_UNK);
   test("7.0 e3", "7", " e3", V_EQ);
 }
@@ -270,6 +272,7 @@ test_denominators() {
   // Exponent.
   test("15/30e-1", "5", "", V_EQ);
   test("27e3/30e-1", "9000", "", V_EQ);
+  test("15*^-3/29e2", "3/580000", "", V_EQ);
   test("15/30e-1,2", "5", ",2", V_EQ);
   test("15/30e-1.2", "5", ".2", V_EQ);
 
