@@ -643,6 +643,8 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
 
 //! Input function.
 /*!
+  \relates Checked_Number
+
   \param is
   Input stream to read from;
 
@@ -650,7 +652,7 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
   Number (possibly extended) to assign to in case of successful reading;
 
   \param dir
-  Rounding mode to be applied;
+  Rounding mode to be applied.
 
   \return
   Result of the input operation.  Success, success with imprecision,
@@ -661,7 +663,7 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
   stream \p is, possibly rounding as specified by \p dir, assigning the result
   to \p x upon success, and returning the appropriate Result.
 
-  The input syntax allows the specification of
+  The input syntax allows the specification of:
   - plain base-10 integer numbers as <CODE>34976098</CODE>,
     <CODE>-77</CODE> and <CODE>+13</CODE>;
   - base-10 integer numbers in scientific notation as <CODE>15e2</CODE>
@@ -688,6 +690,8 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
     <CODE>0x1e2</CODE> (meaning \f$482\f$),
     <CODE>0x1*^2</CODE> (meaning \f$256\f$),
     <CODE>0x0.111*^3</CODE> (meaning \f$273\f$);
+    notice that the exponent is always written as a plain base-10 integer
+    number;
   - integers and rationals in specified bases, in the range \f$2--32\f$,
     in fractional, floating point and scientific notations, as
     <CODE>2^^11</CODE> (meaning \f$3\f$),
@@ -699,6 +703,8 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
     <CODE>8^^2.1e3</CODE> (meaning \f$1088\f$),
     <CODE>8^^20402543.120347e7</CODE> (meaning \f$9073863231288\f$),
     <CODE>8^^2.1</CODE> (meaning \f$17/8\f$);
+    notice that the exponent is always written as a plain base-10 integer
+    number;
   - special values like <CODE>inf</CODE> and <CODE>+inf</CODE>
     (meaning \f$+\infty\f$), <CODE>-inf</CODE> (meaning \f$-\infty\f$),
     and <CODE>nan</CODE> (meaning "not a number").
@@ -718,81 +724,44 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
   <CODE>BDIGIT</CODE> is further restriced by the current base.
 
 \code
-number	: NAN
-	| SIGN INF
+number	: NAN					INF	: 'inf'
+	| SIGN INF					;
 	| INF
-	| num
-	| num DIV num
+	| num					NAN	: 'nan'
+	| num DIV num					;
 	;
+						SIGN	: '-'
+num     : unum						| '+'
+        | SIGN unum					;
 
-num     : unum
-        | SIGN unum
-
-unum	: unum1
-	| HEX unum1
-	| base BASE unum1
+unum	: unum1					EXP	: 'e'
+	| HEX unum1					| '*^'
+	| base BASE unum1				;
 	;
-
-unum1	: mantissa
+						POINT	: '.'
+unum1	: mantissa					;
 	| mantissa EXP exponent
-	;
-
+	;					DIV	: '/'
+							;
 mantissa: bdigits
-        | POINT bdigits
-	| bdigits POINT
+        | POINT bdigits				MINUS	: '-'
+	| bdigits POINT					;
 	| bdigits POINT bdigits
-	;
-
+	;					PLUS	: '+'
+						;
 exponent: SIGN digits
-	| digits
-	;
+	| digits				HEX	: '0x'
+	;					;
 
-bdigits : BDIGIT
-	| bdigits BDIGIT
+bdigits : BDIGIT				BASE	: '^^'
+	| bdigits BDIGIT				;
 	;
-
-digits  : DIGIT
+						DIGIT   : '0' .. '9'
+digits  : DIGIT						;
 	| digits DIGIT
-	;
-
-INF	: 'inf'
-	;
-
-NAN	: 'nan'
-	;
-
-SIGN	: '-'
-	| '+'
-	;
-
-EXP	: 'e'
-	| '*^'
-	;
-
-POINT	: '.'
-	;
-
-DIV	: '/'
-	;
-
-MINUS	: '-'
-	;
-
-PLUS	: '+'
-	;
-
-HEX	: '0x'
-	;
-
-BASE	: '^^'
-	;
-
-DIGIT   : '0' .. '9'
-	;
-
-BDIGIT  : '0' .. '9'
-	| 'a' .. 'z'
-	;
+	;					BDIGIT  : '0' .. '9'
+							| 'a' .. 'z'
+							;
 \endcode
 */
 template <typename T, typename Policy>
