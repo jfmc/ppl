@@ -2153,11 +2153,6 @@ and
 <CODE>prefix/lib/ppl/ppl_xsb.so</CODE>
 in your current directory or in one of the XSB library directories.
 
-There is a problem with XSB when handling large numbers and use of the
-library with XSB should be avoided when large numbers are accessed in
-the Prolog interface.
-(See
-http://sourceforge.net/tracker/index.php?func=detail&aid=1400271&group_id=1176&atid=101176 .)
 
 <H2>YAP</H2>
 
