@@ -171,7 +171,8 @@ void
 cxx_Variable_output_function(std::ostream& s, const Variable& v) {
   const char* b = c_variable_output_function(v.id());
   if (b == 0)
-    // FIXME: silently doing nothing is not the right thing to do!
+    // Something went wrong in the client's output function.
+    // Client code will know what to do: we do nothing.
     return;
   s << b;
 }
