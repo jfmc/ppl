@@ -30,10 +30,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace std {
 
-#define SPECIALIZE_LIMITS_INT(T)					\
+#define PPL_SPECIALIZE_LIMITS_INT(T)					\
+/*! \brief Partial specialization of std::numeric_limits. */		\
 template <typename Policy>						\
-class									\
-numeric_limits<Parma_Polyhedra_Library::Checked_Number<T, Policy> >	\
+class numeric_limits<Parma_Polyhedra_Library::Checked_Number<T, Policy> > \
   : public numeric_limits<T> {						\
  private:								\
   typedef Parma_Polyhedra_Library::Checked_Number<T, Policy> Type;	\
@@ -65,29 +65,34 @@ numeric_limits<Parma_Polyhedra_Library::Checked_Number<T, Policy> >	\
   }									\
 };
 
-SPECIALIZE_LIMITS_INT(signed char)
-SPECIALIZE_LIMITS_INT(signed short)
-SPECIALIZE_LIMITS_INT(signed int)
-SPECIALIZE_LIMITS_INT(signed long)
-SPECIALIZE_LIMITS_INT(signed long long)
+PPL_SPECIALIZE_LIMITS_INT(signed char)
+PPL_SPECIALIZE_LIMITS_INT(signed short)
+PPL_SPECIALIZE_LIMITS_INT(signed int)
+PPL_SPECIALIZE_LIMITS_INT(signed long)
+PPL_SPECIALIZE_LIMITS_INT(signed long long)
 
-SPECIALIZE_LIMITS_INT(unsigned char)
-SPECIALIZE_LIMITS_INT(unsigned short)
-SPECIALIZE_LIMITS_INT(unsigned int)
-SPECIALIZE_LIMITS_INT(unsigned long)
-SPECIALIZE_LIMITS_INT(unsigned long long)
+PPL_SPECIALIZE_LIMITS_INT(unsigned char)
+PPL_SPECIALIZE_LIMITS_INT(unsigned short)
+PPL_SPECIALIZE_LIMITS_INT(unsigned int)
+PPL_SPECIALIZE_LIMITS_INT(unsigned long)
+PPL_SPECIALIZE_LIMITS_INT(unsigned long long)
 
-#define SPECIALIZE_LIMITS_FLOAT(T) \
-template <typename Policy>	   \
-struct								    \
-numeric_limits<Parma_Polyhedra_Library::Checked_Number<T, Policy> > \
-  : public numeric_limits<T> {					    \
+#undef PPL_SPECIALIZE_LIMITS_INT
+
+#define PPL_SPECIALIZE_LIMITS_FLOAT(T)					\
+/*! \brief Partial specialization of std::numeric_limits. */		\
+template <typename Policy>						\
+struct numeric_limits<Parma_Polyhedra_Library::Checked_Number<T, Policy> > \
+  : public numeric_limits<T> {						\
 };
 
-SPECIALIZE_LIMITS_FLOAT(float)
-SPECIALIZE_LIMITS_FLOAT(double)
-SPECIALIZE_LIMITS_FLOAT(long double)
+PPL_SPECIALIZE_LIMITS_FLOAT(float)
+PPL_SPECIALIZE_LIMITS_FLOAT(double)
+PPL_SPECIALIZE_LIMITS_FLOAT(long double)
 
+#undef PPL_SPECIALIZE_LIMITS_FLOAT
+
+//! Partial specialization of std::numeric_limits.
 template <typename Policy>
 class
 numeric_limits<Parma_Polyhedra_Library::Checked_Number<mpz_class, Policy> >
@@ -114,6 +119,7 @@ public:
   }
 };
 
+//! Partial specialization of std::numeric_limits.
 template <typename Policy>
 class
 numeric_limits<Parma_Polyhedra_Library::Checked_Number<mpq_class, Policy> >
