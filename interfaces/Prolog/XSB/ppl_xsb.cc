@@ -24,14 +24,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "pwl_install.hh"
 #include <cinterf.h>
 
-// In XSB 2.6, <error_xsb.h> does not come with the extern "C" wrapper.
+// In XSB versions up to and including 2.7.1, <error_xsb.h> does not
+// come with the extern "C" wrapper.
 extern "C" {
 #include <error_xsb.h>
 }
-
-// In XSB 2.6, <cinterf.h> pollutes the namespace with `min' and `max'.
-#undef min
-#undef max
 
 #include <cassert>
 
