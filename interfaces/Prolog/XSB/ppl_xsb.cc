@@ -133,7 +133,7 @@ Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
 inline int
 Prolog_put_atom_chars(Prolog_term_ref& t, const char* s) {
   assert(is_var(t) == TRUE);
-  // FIXME: the following cast is really a bug in XSB.
+  // TODO: remove the const_cast when the XSB people fix cinterf.h.
   return c2p_string(string_find(const_cast<char*>(s), 1), t) != FALSE;
 }
 
@@ -160,7 +160,7 @@ Prolog_put_address(Prolog_term_ref& t, void* p) {
 */
 Prolog_atom
 Prolog_atom_from_string(const char* s) {
-  // FIXME: the following cast is really a bug in XSB.
+  // TODO: remove the const_cast when the XSB people fix cinterf.h.
   return string_find(const_cast<char*>(s), 1);
 }
 
