@@ -115,7 +115,7 @@ Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
   else {
     std::ostringstream s;
     s << ul;
-    // FIXME: the following cast is really a bug in Ciao Prolog.
+    // TODO: remove the const_cast when the Ciao people fix ciao_prolog.h.
     t = ciao_put_number_chars(const_cast<char*>(s.str().c_str()));
   }
   return 1;
@@ -396,7 +396,7 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
   else {
     std::ostringstream s;
     s << n;
-    // FIXME: the following cast is really a bug in Ciao Prolog.
+    // TODO: remove the const_cast when the Ciao people fix ciao_prolog.h.
     return ciao_put_number_chars(const_cast<char*>(s.str().c_str()));
   }
 }
