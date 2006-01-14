@@ -281,7 +281,8 @@ coefficient_bounds :-
   (ppl_Coefficient_is_bounded ->
      (catch(
              cpp_bounded_values(Max, Min),
-             ppl_overflow_error(_Cause),
+%             ppl_overflow_error(_Cause),
+              ppl_representation_error(_,where('Coefficient_to_integer_term')),
              (Max = PLMax, Min = PLMin)
            )
      )
