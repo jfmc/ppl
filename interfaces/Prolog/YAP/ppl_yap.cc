@@ -128,8 +128,7 @@ Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
 */
 inline int
 Prolog_put_atom_chars(Prolog_term_ref& t, const char* s) {
-  // FIXME: the following cast is really a bug in YAP.
-  t = YAP_MkAtomTerm(YAP_FullLookupAtom(const_cast<char*>(s)));
+  t = YAP_MkAtomTerm(YAP_FullLookupAtom(s));
   return 1;
 }
 
@@ -156,8 +155,7 @@ Prolog_put_address(Prolog_term_ref& t, void* p) {
 */
 Prolog_atom
 Prolog_atom_from_string(const char* s) {
-  // FIXME: the following cast is really a bug in YAP.
-  return YAP_FullLookupAtom(const_cast<char*>(s));
+  return YAP_FullLookupAtom(s);
 }
 
 Prolog_term_ref args[4];
