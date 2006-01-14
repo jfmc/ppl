@@ -1,13 +1,13 @@
 Enhancements for PPL 0.8
 ========================
 
-- Reduce the number of FIXMEs to no more than 40.
 - The Powerset class implementation is still poorly documented.
 - Consider renaming Powerset::meet_assign().
 
 Enhancements for PPL 0.9
 ========================
 
+- Reduce the number of FIXMEs to no more than 20.
 - Incorporate the domain of rational grids.
 - Incorporate the domain of intervals.
 - Provide a single, generic implementation to replace all our status
