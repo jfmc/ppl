@@ -18,8 +18,8 @@ o  The class template BD_Shape<T> provides an implementation of the
    floating point types (float, double), or native integer types
    (8, 16, 32 and 64 bits wide).
 
-o  New class LP_Problem provides a textbook implementation of the
-   primal simplex algorithm, using exact arithmetics.
+o  New class LP_Problem provides an implementation of the
+   primal simplex algorithm using exact arithmetic.
 
 o  Method
 

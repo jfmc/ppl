@@ -18,8 +18,8 @@ To be more precise, the Parma Polyhedra Library (PPL) can handle:
 
   + finite powersets of the above;
 
-  + a textbook implementation of the primal simplex algorithm
-    using exact arithmetics.
+  + linear programming problems, solved with an implementation of the
+    primal simplex algorithm using exact arithmetic.
 
 The Parma Polyhedra Library is:
 
