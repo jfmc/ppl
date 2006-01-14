@@ -801,7 +801,7 @@ where
 for each \f$i = 1, \ldots, \ell\f$.
 
 As a special case, the relation \f$\reld{\phi}{\Rset^n}{\Rset^m}\f$
-is an <EM>affine function</EM> if and only if there exists
+is an <EM>affine function</EM> if and only if there exist
 a matrix \f$A \in \Rset^m \times \Rset^n\f$ and
 a vector \f$\vect{b} \in \Rset^m\f$ such that,
 \f[
