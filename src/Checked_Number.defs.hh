@@ -739,6 +739,7 @@ unum1	: mantissa
 
 mantissa: bdigits
         | POINT bdigits
+	| bdigits POINT
 	| bdigits POINT bdigits
 	;
 
