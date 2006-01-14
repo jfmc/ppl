@@ -323,8 +323,7 @@ CATCH_ALL
 
 int
 ppl_new_Coefficient_from_mpz_t(ppl_Coefficient_t* pc, mpz_t z) try {
-  // FIXME: this is a kludge.
-  *pc = to_nonconst(new Coefficient(mpz_class(z)));
+  *pc = to_nonconst(new Coefficient(reinterpret_mpz_class(z)));
   return 0;
 }
 CATCH_ALL
@@ -340,11 +339,7 @@ CATCH_ALL
 
 int
 ppl_Coefficient_to_mpz_t(ppl_const_Coefficient_t c, mpz_t z) try {
-  Result r = assign_r(reinterpret_mpz_class(z),
-		    *to_const(c),
-		    ROUND_DIRECT);
-  used(r);
-  assert(r == V_EQ);
+  assign_r(reinterpret_mpz_class(z), *to_const(c), ROUND_NOT_NEEDED);
   return 0;
 }
 CATCH_ALL
@@ -359,8 +354,7 @@ CATCH_ALL
 int
 ppl_assign_Coefficient_from_mpz_t(ppl_Coefficient_t dst, mpz_t z) try {
   Coefficient& ddst = *to_nonconst(dst);
-  // FIXME: this is a kludge.
-  ddst = mpz_class(z);
+  ddst = reinterpret_mpz_class(z);
   return 0;
 }
 CATCH_ALL
