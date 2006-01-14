@@ -994,7 +994,7 @@ is a relation symbol, is defined as
         \iff
           \bigl(
             \langle \vect{c}, \vect{w} \rangle + d
-              \leq \langle \vect{a}, \vect{v} \rangle + b
+              \relsym \langle \vect{a}, \vect{v} \rangle + b
           \bigr)
             \land
           \Bigl(
@@ -1011,7 +1011,7 @@ the variables occurring in expression \f$\mathrm{lhs}\f$ are interpreted
 as primed variables, whereas those occurring in \f$\mathrm{rhs}\f$
 are unprimed; for instance, the transfer relations
 \f$\mathrm{lhs}' \leq \mathrm{rhs}\f$ and
-\f$\mathrm{rhs}' \geq \mathrm{lhs}\f$ 
+\f$\mathrm{rhs}' \geq \mathrm{lhs}\f$
 are not equivalent in general.
 
 \subsection Time_Elapse_Operator Time-Elapse Operator
