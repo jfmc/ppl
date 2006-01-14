@@ -58,8 +58,7 @@ operator<<(std::ostream& s, const Powerset<CS>& x);
 //! The powerset construction on constraint systems.
 /*!
   This class offers a generic implementation of a
-  <EM>powerset</EM> domain
-  as defined in Section \ref powerset.
+  <EM>powerset</EM> domain as defined in Section \ref powerset.
 
   Besides invoking the available methods on the disjuncts of a Powerset,
   this class also provides bidirectional iterators that allow for a
@@ -178,9 +177,27 @@ public:
   // Sequence manipulation types, accessors and modifiers
   typedef typename Sequence::size_type size_type;
   typedef typename Sequence::value_type value_type;
-  class iterator;
-  class const_iterator;
+
+  class omega_iterator;
+  class omega_const_iterator;
+
+  /*! \brief
+    Alias for a <EM>read-only</EM> bidirectional %iterator on the
+    disjuncts of a Powerset element.
+
+    By using this iterator type, the disjuncts cannot be overwritten,
+    but they can be removed using methods
+    <CODE>drop_disjunct(iterator position)</CODE> and
+    <CODE>drop_disjuncts(iterator first, iterator last)</CODE>,
+    while still ensuring a correct handling of Omega-reduction.
+  */
+  typedef omega_iterator iterator;
+  //! A bidirectional %const_iterator on the disjuncts of a Powerset element.
+  typedef omega_const_iterator const_iterator;
+
+  //! The reverse iterator type built from Powerset::iterator.
   typedef std::reverse_iterator<iterator> reverse_iterator;
+  //! The reverse iterator type built from Powerset::const_iterator.
   typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
   //! \name Member Functions for the Direct Inspection of Disjuncts
@@ -203,9 +220,8 @@ public:
   bool empty() const;
 
   /*! \brief
-    Returns the iterator pointing to the first disjunct,
-    if \p *this is not empty;
-    otherwise, returns the past-the-end iterator.
+    Returns an iterator pointing to the first disjunct, if \p *this
+    is not empty; otherwise, returns the past-the-end iterator.
   */
   iterator begin();
 
@@ -213,18 +229,28 @@ public:
   iterator end();
 
   /*! \brief
-    Returns the const_iterator pointing to the first disjunct,
-    if \p *this is not empty;
-    otherwise, returns the past-the-end const_iterator.
+    Returns a const_iterator pointing to the first disjunct, if \p *this
+    is not empty; otherwise, returns the past-the-end const_iterator.
   */
   const_iterator begin() const;
 
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
+  /*! \brief
+    Returns a reverse_iterator pointing to the last disjunct, if \p *this
+    is not empty; otherwise, returns the before-the-start reverse_iterator.
+  */
   reverse_iterator rbegin();
+  //! Returns the before-the-start reverse_iterator.
   reverse_iterator rend();
+  /*! \brief
+    Returns a const_reverse_iterator pointing to the last disjunct,
+    if \p *this is not empty; otherwise, returns the before-the-start
+    const_reverse_iterator.
+  */
   const_reverse_iterator rbegin() const;
+  //! Returns the before-the-start const_reverse_iterator.
   const_reverse_iterator rend() const;
 
   //@} // Member Functions for the Direct Inspection of Disjuncts
@@ -343,7 +369,7 @@ private:
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename CS>
-class Parma_Polyhedra_Library::Powerset<CS>::const_iterator {
+class Parma_Polyhedra_Library::Powerset<CS>::omega_const_iterator {
 protected:
   //! The type of the underlying %const_iterator.
   typedef typename Powerset::Sequence::const_iterator Base;
@@ -355,7 +381,7 @@ protected:
   Base base;
 
   //! Constructs from the lower-level const_iterator.
-  const_iterator(const Base& b);
+  omega_const_iterator(const Base& b);
 
   friend class Powerset;
 
@@ -368,13 +394,13 @@ public:
   typedef typename Traits::reference reference;
 
   //! Default constructor.
-  const_iterator();
+  omega_const_iterator();
 
   //! Copy constructor.
-  const_iterator(const const_iterator& y);
+  omega_const_iterator(const omega_const_iterator& y);
 
   //! Constructs from the corresponding non-const iterator.
-  const_iterator(const iterator& y);
+  omega_const_iterator(const omega_iterator& y);
 
   //! Dereference operator.
   reference operator*() const;
@@ -383,28 +409,28 @@ public:
   pointer operator->() const;
 
   //! Prefix increment operator.
-  const_iterator& operator++();
+  omega_const_iterator& operator++();
 
   //! Postfix increment operator.
-  const_iterator operator++(int);
+  omega_const_iterator operator++(int);
 
   //! Prefix decrement operator.
-  const_iterator& operator--();
+  omega_const_iterator& operator--();
 
   //! Postfix decrement operator.
-  const_iterator operator--(int);
+  omega_const_iterator operator--(int);
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if
     \p *this and \p y are identical.
   */
-  bool operator==(const const_iterator& y) const;
+  bool operator==(const omega_const_iterator& y) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if
     \p *this and \p y are different.
   */
-  bool operator!=(const const_iterator& y) const;
+  bool operator!=(const omega_const_iterator& y) const;
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -427,7 +453,7 @@ public:
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename CS>
-class Parma_Polyhedra_Library::Powerset<CS>::iterator {
+class Parma_Polyhedra_Library::Powerset<CS>::omega_iterator {
 protected:
   //! The type of the underlying mutable iterator.
   typedef typename Powerset::Sequence::iterator Base;
@@ -440,10 +466,11 @@ protected:
   Base base;
 
   //! Constructs from the lower-level iterator.
-  iterator(const Base& b);
+  omega_iterator(const Base& b);
 
   friend class Powerset;
-  friend Powerset<CS>::const_iterator::const_iterator(const iterator& y);
+  friend Powerset<CS>::omega_const_iterator
+  ::omega_const_iterator(const omega_iterator& y);
 
 public:
   // Same traits of the const_iterator, therefore
@@ -455,10 +482,10 @@ public:
   typedef typename Traits::reference reference;
 
   //! Default constructor.
-  iterator();
+  omega_iterator();
 
   //! Copy constructor.
-  iterator(const iterator& y);
+  omega_iterator(const omega_iterator& y);
 
   //! Dereference operator.
   reference operator*() const;
@@ -467,28 +494,28 @@ public:
   pointer operator->() const;
 
   //! Prefix increment operator.
-  iterator& operator++();
+  omega_iterator& operator++();
 
   //! Postfix increment operator.
-  iterator operator++(int);
+  omega_iterator operator++(int);
 
   //! Prefix decrement operator.
-  iterator& operator--();
+  omega_iterator& operator--();
 
   //! Postfix decrement operator.
-  iterator operator--(int);
+  omega_iterator operator--(int);
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if
     \p *this and \p y are identical.
   */
-  bool operator==(const iterator& y) const;
+  bool operator==(const omega_iterator& y) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if
     \p *this and \p y are different.
   */
-  bool operator!=(const iterator& y) const;
+  bool operator!=(const omega_iterator& y) const;
 };
 
 namespace Parma_Polyhedra_Library {
@@ -498,26 +525,26 @@ namespace Parma_Polyhedra_Library {
   Mixed comparison operator: returns <CODE>true</CODE> if and only
   if (the const version of) \p x is identical to \p y.
 
-  \relates Powerset::const_iterator
+  \relates Powerset::omega_const_iterator
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename CS>
 bool
-operator==(const typename Powerset<CS>::iterator& x,
-	   const typename Powerset<CS>::const_iterator& y);
+operator==(const typename Powerset<CS>::omega_iterator& x,
+	   const typename Powerset<CS>::omega_const_iterator& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
   Mixed comparison operator: returns <CODE>true</CODE> if and only
   if (the const version of) \p x is different from \p y.
 
-  \relates Powerset::const_iterator
+  \relates Powerset::omega_const_iterator
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename CS>
 bool
-operator!=(const typename Powerset<CS>::iterator& x,
-	   const typename Powerset<CS>::const_iterator& y);
+operator!=(const typename Powerset<CS>::omega_iterator& x,
+	   const typename Powerset<CS>::omega_const_iterator& y);
 
 } // namespace Parma_Polyhedra_Library
 
