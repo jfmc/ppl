@@ -175,7 +175,7 @@ test_integers() {
   // Exponent and fraction.
   test("5.3e3", "5300", "", V_EQ);
   test("2.2e-1", "11/50", "", V_EQ);
-  test("7.e", "nan", "e", V_CVT_STR_UNK);
+  test("7.e", "nan", "", V_CVT_STR_UNK);
   test("7.0 e3", "7", " e3", V_EQ);
 }
 
@@ -199,7 +199,7 @@ test_hexadecimals() {
   // Fraction.
   test("0xfa.a", "2005/8", "", V_EQ);
   test("0xfa.ay", "2005/8", "y", V_EQ);
-  test("-0xfa.", "nan", "", V_CVT_STR_UNK);
+  test("-0xfa.", "-250", "", V_EQ);
 
   // Exponent.
   test("0x1e2", "482", "", V_EQ);

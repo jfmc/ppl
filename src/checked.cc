@@ -198,8 +198,6 @@ parse_number_part(std::istream& is, number_struct& num) {
 	empty_mantissa = false;
 	break;
       }
-      if (!exponent_offset)
-	goto error;
     fractional:
       if (empty_mantissa)
 	goto error;
