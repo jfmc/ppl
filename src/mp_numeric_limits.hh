@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace std {
 
+//! Specialization of std::numeric_limits for mpz_class.
 template <>
 class numeric_limits<mpz_class> {
 private:
@@ -88,6 +89,7 @@ public:
   }
 };
 
+//! Specialization of std::numeric_limits for mpz_class.
 template <>
 class numeric_limits<mpq_class> {
 private:
