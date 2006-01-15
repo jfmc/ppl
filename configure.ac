@@ -587,6 +587,9 @@ xall)
   ;;
 esac
 
+# Set an Automake conditional to build or not to build the C interface.
+AM_CONDITIONAL(BUILD_C_INTERFACE, test x${c_interface_enabled} = xyes)
+
 # Checks for Prolog systems for which the interface is enabled.
 
 # Ciao Prolog

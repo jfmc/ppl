@@ -20,6 +20,10 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+EXTRA_DIST = ppl_c.h.in ppl_c.cc
+
+if BUILD_C_INTERFACE
+
 # Libtool -version-info for libppl_c.la.
 #
 #  1. Start with version information of `0:0:0' for each libtool library.
@@ -62,3 +66,5 @@ libppl_c_la_LDFLAGS = \
 -version-info $(LIBPPL_C_LT_CURRENT):$(LIBPPL_C_LT_REVISION):$(LIBPPL_C_LT_AGE)
 
 include_HEADERS = ppl_c.h
+
+endif BUILD_C_INTERFACE

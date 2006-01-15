@@ -35,6 +35,7 @@ expected_int32_a \
 expected_int64 \
 expected_int64_a
 
+if BUILD_C_INTERFACE
 if HAVE_GLPK
 
 AM_CPPFLAGS = -I$(top_builddir)/interfaces/C @extra_includes@
@@ -113,3 +114,4 @@ tough_examples \
 obtained
 
 endif HAVE_GLPK
+endif BUILD_C_INTERFACE
