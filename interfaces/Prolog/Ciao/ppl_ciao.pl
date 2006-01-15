@@ -206,13 +206,12 @@ ppl_banner(Banner) :-
 ppl_max_space_dimension(Dimension) :-
    ppl_max_space_dimension_2(Dimension, 1).
 
-:- true pred ppl_Coefficient_is_bounded_2(in(M),
-                                       go(Success))
-          :: any_term * int
+:- true pred ppl_Coefficient_is_bounded_1(go(Success))
+          :: int
   + (returns(Success), foreign(ppl_Coefficient_is_bounded)).
 
 ppl_Coefficient_is_bounded :-
-   ppl_Coefficient_is_bounded_2(_M, 1).
+   ppl_Coefficient_is_bounded_1(1).
 
 :- true pred ppl_Coefficient_max_2(in(Max),
                                        go(Success))
@@ -1069,7 +1068,7 @@ ppl_LP_Problem_OK(Term1) :-
 %        ppl_banner/1,
         ppl_max_space_dimension_2/2,
 %        ppl_max_space_dimension/1,
-        ppl_Coefficient_is_bounded_2/2,
+        ppl_Coefficient_is_bounded_1/1,
         ppl_Coefficient_max_2/2,
         ppl_Coefficient_min_2/2,
         ppl_initialize/0,
