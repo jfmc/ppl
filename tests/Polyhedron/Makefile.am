@@ -63,7 +63,7 @@ ORIGINAL_TESTS = \
 	affineimage6 affineimage7 affineimage8 affineimage9 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	affinepreimage5 affinepreimage6 affinepreimage7 affinepreimage8 \
-	affinepreimage9 affinepreimage10 affinepreimage11 \
+	affinepreimage9 affinepreimage10 affinepreimage11 affinepreimage12 \
 	affinetrans \
 	append1 append2 \
 	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
@@ -176,7 +176,7 @@ DERIVED_TESTS = \
 	nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
 	nnc_affinepreimage4 nnc_affinepreimage5 nnc_affinepreimage6 \
 	nnc_affinepreimage7 nnc_affinepreimage8 nnc_affinepreimage9 \
-	nnc_affinepreimage10 nnc_affinepreimage11 \
+	nnc_affinepreimage10 nnc_affinepreimage11 nnc_affinepreimage12 \
 	nnc_affinetrans \
 	nnc_append1 nnc_append2 \
 	nnc_ascii_dump_load1 nnc_ascii_dump_load2 nnc_ascii_dump_load3 \
@@ -344,6 +344,7 @@ affinepreimage8_SOURCES = affinepreimage8.cc
 affinepreimage9_SOURCES = affinepreimage9.cc
 affinepreimage10_SOURCES = affinepreimage10.cc
 affinepreimage11_SOURCES = affinepreimage11.cc
+affinepreimage12_SOURCES = affinepreimage12.cc
 
 affinetrans_SOURCES = affinetrans.cc
 
@@ -773,6 +774,8 @@ nnc_affinepreimage10_SOURCES = affinepreimage10.cc
 nnc_affinepreimage10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_affinepreimage11_SOURCES = affinepreimage11.cc
 nnc_affinepreimage11_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affinepreimage12_SOURCES = affinepreimage12.cc
+nnc_affinepreimage12_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affinetrans_SOURCES = affinetrans.cc
 nnc_affinetrans_CXXFLAGS = $(DERIVED_CXXFLAGS)
