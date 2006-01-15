@@ -31,28 +31,40 @@ namespace Parma_Polyhedra_Library {
 struct Checked_Number_Transparent_Policy {
   //! Check for overflowed result.
   static const int check_overflow = 0;
+
   //! Check for attempts to add infinities with different sign.
   static const int check_inf_add_inf = 0;
+
   //! Check for attempts to sub infinities with same sign.
   static const int check_inf_sub_inf = 0;
+
   //! Check for attempts to mul infinities by zero.
   static const int check_inf_mul_zero = 0;
+
   //! Check for attempts to divide by zero.
   static const int check_div_zero = 0;
+
   //! Check for attempts to divide infinities.
   static const int check_inf_div_inf = 0;
+
   //! Check for attempts to compute remainder of infinities.
   static const int check_inf_mod = 0;
+
   //! Check for attempts to take the square root of a negative number.
   static const int check_sqrt_neg = 0;
+
   //! Store unknown special value.
   static const int store_nan = 0;
+
   //! Store overflow special values.
   static const int store_infinity = 0;
+
   //! Representation is identical to primitive.
   static const int convertible = 1;
+
   //! Check for FPU inexact result.
   static const int fpu_check_inexact = 0;
+
   //! Check for NaN arguments
   static const int check_nan_args = 0;
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_NATIVE;
@@ -120,7 +132,7 @@ struct Extended_Number_Policy {
 typedef Checked::Check_Overflow_Policy Default_To_Policy;
 typedef Checked_Number_Transparent_Policy Default_From_Policy;
 
-//! A wrapper for native numeric types implementing a given policy.
+//! A wrapper for numeric types implementing a given policy.
 /*!
   The wrapper and related functions implement an interface which is common
   to all kinds of coefficient types, therefore allowing for a uniform
@@ -150,37 +162,49 @@ public:
 
   //! Direct initialization from a signed char value.
   Checked_Number(const signed char y, Rounding_Dir dir);
+
   //! Direct initialization from a signed short value.
   Checked_Number(const signed short y, Rounding_Dir dir);
+
   //! Direct initialization from a signed int value.
   Checked_Number(const signed int y, Rounding_Dir dir);
+
   //! Direct initialization from a signed long value.
   Checked_Number(const signed long y, Rounding_Dir dir);
+
   //! Direct initialization from a signed long long value.
   Checked_Number(const signed long long y, Rounding_Dir dir);
 
   //! Direct initialization from an unsigned char value.
   Checked_Number(const unsigned char y, Rounding_Dir dir);
+
   //! Direct initialization from an unsigned short value.
   Checked_Number(const unsigned short y, Rounding_Dir dir);
+
   //! Direct initialization from an unsigned int value.
   Checked_Number(const unsigned int y, Rounding_Dir dir);
+
   //! Direct initialization from an unsigned long value.
   Checked_Number(const unsigned long y, Rounding_Dir dir);
+
   //! Direct initialization from an unsigned long long value.
   Checked_Number(const unsigned long long y, Rounding_Dir dir);
 
   //! Direct initialization from a float value.
   Checked_Number(const float y, Rounding_Dir dir);
+
   //! Direct initialization from a double value.
   Checked_Number(const double y, Rounding_Dir dir);
+
   //! Direct initialization from a long double value.
   Checked_Number(const long double y, Rounding_Dir dir);
 
   //! Direct initialization from a GMP unbounded rational value.
   Checked_Number(const mpq_class& y, Rounding_Dir dir);
+
   //! Direct initialization from a GMP unbounded integer value.
   Checked_Number(const mpz_class& y, Rounding_Dir dir);
+
   //! Direct initialization from a C string value.
   Checked_Number(const char* y, Rounding_Dir dir);
 
@@ -190,42 +214,59 @@ public:
 
   //! Direct initialization from a signed char value.
   Checked_Number(const signed char y);
+
   //! Direct initialization from a signed short value.
   Checked_Number(const signed short y);
+
   //! Direct initialization from a signed int value.
   Checked_Number(const signed int y);
+
   //! Direct initialization from a signed long value.
   Checked_Number(const signed long y);
+
   //! Direct initialization from a signed long long value.
   Checked_Number(const signed long long y);
 
   //! Direct initialization from an unsigned char value.
   Checked_Number(const unsigned char y);
+
   //! Direct initialization from an unsigned short value.
   Checked_Number(const unsigned short y);
+
   //! Direct initialization from an unsigned int value.
   Checked_Number(const unsigned int y);
+
   //! Direct initialization from an unsigned long value.
   Checked_Number(const unsigned long y);
+
   //! Direct initialization from an unsigned long long value.
   Checked_Number(const unsigned long long y);
 
   //! Direct initialization from a float value.
   Checked_Number(const float y);
+
   //! Direct initialization from a double value.
   Checked_Number(const double y);
+
   //! Direct initialization from a long double value.
   Checked_Number(const long double y);
 
   //! Direct initialization from a GMP unbounded rational value.
   Checked_Number(const mpq_class& y);
+
   //! Direct initialization from a GMP unbounded integer value.
   Checked_Number(const mpz_class& y);
+
   //! Direct initialization from a C string value.
   Checked_Number(const char* y);
 
+  //! Constructor for negative infinity.
   Checked_Number(const Minus_Infinity& y);
+
+  //! Constructor for positive infinity.
   Checked_Number(const Plus_Infinity& y);
+
+  //! Constructor for NAN.
   Checked_Number(const Not_A_Number& y);
 
   //@} // Constructors
@@ -233,21 +274,30 @@ public:
   //! \name Accessors and Conversions
   //@{
 
-  /*! \brief
-    Conversion operator:
-    returns a copy of the underlying native integer value.
-  */
+  //! Conversion operator: returns a copy of the underlying numeric value.
   operator T() const;
 
-  //! Returns a reference to the underlying native integer value.
+  //! Returns a reference to the underlying numeric value.
   T& raw_value();
 
-  //! Returns a const reference to the underlying native integer value.
+  //! Returns a const reference to the underlying numeric value.
   const T& raw_value() const;
 
   //@} // Accessors and Conversions
 
+  //! Checks if all the invariants are satisfied.
   bool OK() const;
+
+  //! Classifies *this.
+  /*!
+    Returns the appropriate Result characterizing:
+    - whether \p *this is NAN,
+      if \p nan is <CODE>true</CODE>;
+    - whether \p *this is a (positive or negative) infinity,
+      if \p inf is <CODE>true</CODE>;
+    - the sign of \p *this,
+      if \p sign is <CODE>true</CODE>.
+  */
   Result classify(bool nan = true, bool inf = true, bool sign = true) const;
 
   //! \name Assignment Operators
@@ -255,51 +305,95 @@ public:
 
   //! Assignment operator.
   Checked_Number& operator=(const Checked_Number& y);
+
+  //! Assignment operator.
   template <typename From, typename From_Policy>
   Checked_Number& operator=(const Checked_Number<From, From_Policy>& y);
+
+  //! Assignment operator.
   template <typename From>
   Checked_Number& operator=(const From& y);
+
+  //! Assignment operator.
   Checked_Number& operator=(const Not_A_Number& y);
+
+  //! Assignment operator.
   Checked_Number& operator=(const Minus_Infinity& y);
+
+  //! Assignment operator.
   Checked_Number& operator=(const Plus_Infinity& y);
+
   //! Add and assign operator.
   template <typename From_Policy>
   Checked_Number& operator+=(const Checked_Number<T, From_Policy>& y);
+
+  //! Add and assign operator.
   Checked_Number& operator+=(const T& y);
+
+  //! Add and assign operator.
   template <typename From, typename From_Policy>
   Checked_Number& operator+=(const Checked_Number<From, From_Policy>& y);
+
   template <typename From>
   Checked_Number& operator+=(const From& y);
+
   //! Subtract and assign operator.
   template <typename From_Policy>
   Checked_Number& operator-=(const Checked_Number<T, From_Policy>& y);
+
+  //! Subtract and assign operator.
   Checked_Number& operator-=(const T& y);
+
+  //! Subtract and assign operator.
   template <typename From, typename From_Policy>
   Checked_Number& operator-=(const Checked_Number<From, From_Policy>& y);
+
+  //! Subtract and assign operator.
   template <typename From>
   Checked_Number& operator-=(const From& y);
+
   //! Multiply and assign operator.
   template <typename From_Policy>
   Checked_Number& operator*=(const Checked_Number<T, From_Policy>& y);
+
+  //! Multiply and assign operator.
   Checked_Number& operator*=(const T& y);
   template <typename From, typename From_Policy>
+
+  //! Multiply and assign operator.
   Checked_Number& operator*=(const Checked_Number<From, From_Policy>& y);
+
+  //! Multiply and assign operator.
   template <typename From>
   Checked_Number& operator*=(const From& y);
+
   //! Divide and assign operator.
   template <typename From_Policy>
   Checked_Number& operator/=(const Checked_Number<T, From_Policy>& y);
+
+  //! Divide and assign operator.
   Checked_Number& operator/=(const T& y);
+
+  //! Divide and assign operator.
   template <typename From, typename From_Policy>
   Checked_Number& operator/=(const Checked_Number<From, From_Policy>& y);
+
+  //! Divide and assign operator.
   template <typename From>
   Checked_Number& operator/=(const From& y);
+
   //! Compute remainder and assign operator.
   template <typename From_Policy>
   Checked_Number& operator%=(const Checked_Number<T, From_Policy>& y);
+
+  //! Compute remainder and assign operator.
   Checked_Number& operator%=(const T& y);
+
+  //! Compute remainder and assign operator.
   template <typename From, typename From_Policy>
   Checked_Number& operator%=(const Checked_Number<From, From_Policy>& y);
+
+  //! Compute remainder and assign operator.
   template <typename From>
   Checked_Number& operator%=(const From& y);
 
@@ -311,19 +405,21 @@ public:
 
   //! Pre-increment operator.
   Checked_Number& operator++();
+
   //! Post-increment operator.
   Checked_Number  operator++(int);
+
   //! Pre-decrement operator.
   Checked_Number& operator--();
+
   //! Post-decrement operator.
   Checked_Number  operator--(int);
 
   //@} // Increment and Decrement Operators
 
 private:
-  //! The underlying native integer value.
+  //! The underlying numeric value.
   T v;
-
 };
 
 template <typename To, typename To_Policy>
