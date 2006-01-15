@@ -10,7 +10,7 @@ unsure, the following is for you.
 There are two versions of the Parma Polyhedra Library's documentation:
 
   + a `user' manual, containing all and only the information needed by
-    people willing to use the library;
+    people wishing to use the library;
   + a `devref' (developer reference) manual, also containing details
     about the library implementation.
 
