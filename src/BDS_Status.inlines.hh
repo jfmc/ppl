@@ -191,7 +191,7 @@ const char yes = '+';
 const char no = '-';
 const char sep = ' ';
 
-/*! \relates Parma_Polyhedra_Library::BD_Shape<T>::Status
+/*! \relates Parma_Polyhedra_Library::BD_Shape::Status
   Reads a keyword and its associated on/off flag from \p s.
   Returns <CODE>true</CODE> if the operation is successful,
   returns <CODE>false</CODE> otherwise.
