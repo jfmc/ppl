@@ -204,18 +204,23 @@ PPL::Grid::limited_extrapolation_assign(const Grid& y,
     // `x' is empty.
     return;
 
-  Congruence_System new_cgs;
-  // The congruences to be added need only be satisfied by all the
-  // generators of `x', as `y <= x'.  Iterate upwards here, to keep
-  // the relative ordering of congruences (just for aesthetics).
-  for (dimension_type i = 0; i < cgs_num_rows; ++i) {
-    const Congruence& cg = cgs[i];
-    if (x.relation_with(cg) == Poly_Con_Relation::is_included())
-      new_cgs.insert(cg);
+  if (tp == NULL || *tp == 0) {
+    // Widening may change the grid, so add the congruences.
+    Congruence_System new_cgs;
+    // The congruences to be added need only be satisfied by all the
+    // generators of `x', as `y <= x'.  Iterate upwards here, to keep
+    // the relative ordering of congruences (just for aesthetics).
+    for (dimension_type i = 0; i < cgs_num_rows; ++i) {
+      const Congruence& cg = cgs[i];
+      if (x.relation_with(cg) == Poly_Con_Relation::is_included())
+	new_cgs.insert(cg);
+    }
+    x.widening_assign(y, tp);
+    x.add_congruences(new_cgs);
   }
-  x.widening_assign(y, tp);
-  // FIX If x is the same (due to tp) then adding new_cgs is
-  //     redundant.
-  x.add_congruences(new_cgs);
+  else
+    // There are tokens, so widening will leave the grid the same.
+    x.widening_assign(y, tp);
+
   assert(OK());
 }
