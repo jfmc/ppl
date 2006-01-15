@@ -78,6 +78,8 @@ mpz_class tmp_mpz_class;
 void
 ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = true;
+  Prolog_min_integer = 0;
+  Prolog_max_integer = 0;
 }
 
 /*!
