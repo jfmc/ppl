@@ -948,8 +948,8 @@ then we get the original square \f$\cP\f$ back.
 If, on the other hand, we apply the affine
 preimage operator as given in the second example
 using primed variable \f$x_0\f$ and affine expression \f$x_1\f$
-to \f$\cP_2\f$, then the resulting polyhedron is a line
-that corresponds to the \f$x_1\f$ axis.
+to \f$\cP_2\f$, then the resulting polyhedron is the stripe obtained
+by adding the line \f$(1, 0)^\transpose\f$ to polyhedron \f$\cP_2\f$.
 
 Observe that provided the coefficient \f$a_k\f$ of the considered variable
 in the affine expression is non-zero, the affine function is invertible.
@@ -2618,7 +2618,7 @@ of \f$C\f$ that satisfies \f$A \vect{x} = \vect{0}.\f$
 Let \f$A\f$ be representing matrix of constraints of a cone \f$C\f$
 and \f$Q\f$ the set of rays that generate \f$C\f$. Then two rays
 \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ are <EM>adjacent rays</EM> if
--# there exist at least one row of \f$A\f$ (i.e., a constraint) that
+-# there exists at least a row of \f$A\f$ (i.e., a constraint) that
    is saturated by both \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$
 -# and none of the rays of \f$Q\f$, except \f$\vect{r}_1\f$ and
    \f$\vect{r}_2\f$, saturates all the constraints saturated by both
