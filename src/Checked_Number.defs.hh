@@ -719,7 +719,7 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
   - special values are accepted.
 
   Valid syntax is more formally and completely specified by the
-  following grammar, with the additional proviso that everything is
+  following grammar, with the additional provisos that everything is
   <EM>case insensitive</EM> and that the syntactic category
   <CODE>BDIGIT</CODE> is further restriced by the current base.
 
