@@ -52,6 +52,13 @@ Prolog_atom a_throw;
 bool Prolog_has_unbounded_integers;
 
 /*!
+  If \p Prolog_has_unbounded_integers is false, holds the minimum
+  integer value representable by a Prolog integer.
+  Holds zero otherwise.
+*/
+long Prolog_min_integer;
+
+/*!
   If \p Prolog_has_unbounded_integers is false, holds the maximum
   integer value representable by a Prolog integer.
   Holds zero otherwise.
@@ -69,6 +76,7 @@ mpz_class tmp_mpz_class;
 void
 ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = true;
+  Prolog_min_integer = 0;
   Prolog_max_integer = 0;
 
   a_throw = YAP_LookupAtom("throw");
@@ -390,7 +398,7 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   if (n >= LONG_MIN && n <= LONG_MAX) {
-    long l;
+    long l = 0;
     PPL::assign_r(l, n, PPL::ROUND_NOT_NEEDED);
     return YAP_MkIntTerm(l);
   }

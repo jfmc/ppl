@@ -37,6 +37,13 @@ namespace {
 bool Prolog_has_unbounded_integers;
 
 /*!
+  If \p Prolog_has_unbounded_integers is false, holds the minimum
+  integer value representable by a Prolog integer.
+  Holds zero otherwise.
+*/
+long Prolog_min_integer;
+
+/*!
   If \p Prolog_has_unbounded_integers is false, holds the maximum
   integer value representable by a Prolog integer.
   Holds zero otherwise.
@@ -49,6 +56,7 @@ long Prolog_max_integer;
 void
 ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = true;
+  Prolog_min_integer = 0;
   Prolog_max_integer = 0;
 }
 
@@ -77,9 +85,9 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   Prolog_term_ref t = Prolog_new_term_ref();
-  long v;
-  if (PPL::assign_r(v, n, PPL::ROUND_NOT_NEEDED) == PPL::V_EQ) {
-    if (SP_put_integer(t, v) == 0)
+  long l = 0;
+  if (PPL::assign_r(l, n, PPL::ROUND_NOT_NEEDED) == PPL::V_EQ) {
+    if (SP_put_integer(t, l) == 0)
       throw unknown_interface_error("Coefficient_to_integer_term()");
   } else {
     std::ostringstream s;
