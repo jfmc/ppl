@@ -74,9 +74,16 @@ long Prolog_max_integer;
 void
 ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = false;
-  // XSB supports only 32-bit integers.
+  // XSB people claim XSB supports 32-bit integers.  However, experiments
+  // suggest this is not the case.
+  // See http://sourceforge.net/tracker/index.php?func=detail&aid=1400271&group_id=1176&atid=101176
+#if 0
   Prolog_min_integer = -2147483647-1;
   Prolog_max_integer = 2147483647;
+#else
+  Prolog_min_integer = -268435456;
+  Prolog_max_integer = 268435455;
+#endif
 }
 
 void
