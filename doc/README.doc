@@ -25,7 +25,7 @@ The Documentation You May Already Have
 ======================================
 
 First of all, you may already have some documentation and all you need
-is to find it.
+to do is to find it.
 
 If you have downloaded a source (tar or zip) archive for PPL version
 X.Y.Z, you will find in the doc subdirectory the following set of user
@@ -82,9 +82,9 @@ documents you want by executing a command of the form
 
     make doc1 doc2 ...
 
-Here, doc1, doc2 and so forth are the names of the documents to build.
-Document names can be obtained from the following list by replacing
-X.Y.Z with the version number you have determined before, and by
+Here, doc1, doc2 and so forth are the names of the documents to be built.
+Document names may be obtained from the following list by replacing
+X.Y.Z with the version number you have already determined, and by
 replacing KIND with either `user' or `devref':
 
     ppl-KIND-X.Y.Z.pdf
