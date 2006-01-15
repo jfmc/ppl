@@ -176,7 +176,7 @@ o  One of the possible values for the configuration option
    `--enable-coefficients' has been renamed from `gmp' to `mpz'.
 
 o  New configuration option --enable-interfaces allows some or all of
-   the Prolog interfaces to be selectively enabled.
+   the Prolog and C interfaces to be selectively enabled.
 
 o  Added to class Constraint the methods
 
