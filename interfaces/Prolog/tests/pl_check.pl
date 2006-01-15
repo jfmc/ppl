@@ -272,21 +272,18 @@ max_dimension :-
 % in a list of possible bounds.
 
 coefficient_bounds :-
-  (pl_check_prolog_flag(bounded, true) ->
+    (pl_check_prolog_flag(bounded, true) ->
      (pl_check_prolog_flag(max_integer, PLMax),
       pl_check_prolog_flag(min_integer, PLMin))
    ;
      PLMax = 0, PLMin = 0
   ),
   (ppl_Coefficient_is_bounded ->
-     (catch(
-             cpp_bounded_values(Max, Min),
-%             ppl_overflow_error(_Cause),
-              ppl_representation_error(_,where('Coefficient_to_integer_term')),
-             (Max = PLMax, Min = PLMin)
-           )
+     (cpp_bounded_values(Max, Min) -> true
+      ;
+       (Max = PLMax, Min = PLMin)
      )
-   ;
+  ;
      (cpp_unbounded_check, Max = PLMax, Min = PLMin)
   ),
   (noisy(0) -> true ;
@@ -301,10 +298,6 @@ cpp_unbounded_check :-
 cpp_bounded_values(Max, Min) :-
   ppl_Coefficient_max(Max),
   ppl_Coefficient_min(Min).
-%  possible_cpp_bounds(CppBounds),
-%  member((Max, Min), CppBounds).
-
-possible_cpp_bounds([]).
 
 %%%%%%%%%%%%%%%%% New Polyhedron %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -2504,18 +2497,6 @@ exceptions :-
    exception_cplusplus(V),
    !.
 
-% exception_prolog(+N, +V) checks exceptions thrown by the Prolog interface.
-% It does not check those that are dependent on a specific Prolog system.
-
-exception_prolog(V) :-
-   exception_prolog1(13, V).
-
-exception_prolog1(0, _) :- !.
-exception_prolog1(N, V) :-
-   exception_prolog(N, V),
-   N1 is N - 1,
-   exception_prolog1(N1, V).
-
 %% TEST: Prolog_unsigned_out_of_range
 exception_yap :-
      I = 21474836470, J = 3, K = 0,
@@ -2529,6 +2510,18 @@ exception_yap :-
      nl, write(GS1), nl,
      ppl_delete_Polyhedron(P),
      ppl_delete_Polyhedron(P1).
+
+% exception_prolog(+N, +V) checks exceptions thrown by the Prolog interface.
+% It does not check those that are dependent on a specific Prolog system.
+
+exception_prolog(V) :-
+   exception_prolog1(13, V).
+
+exception_prolog1(0, _) :- !.
+exception_prolog1(N, V) :-
+   exception_prolog(N, V),
+   N1 is N - 1,
+   exception_prolog1(N1, V).
 
 %% TEST: Prolog_unsigned_out_of_range
 exception_prolog(1, _) :-
@@ -3282,7 +3275,7 @@ group_predicates(handle_exceptions,
 % or (if the 1st argument is 'max_integer' or  'min_integer')
 % the maximum or minimum integer for Prolog
 % systems that have bounded integers.
-% Note that 2147483648 is 2^31.
+% Note that 268435456 is 2^28.
 
 pl_check_prolog_flag(bounded, TF) :-
   \+ prolog_system(xsb),
@@ -3296,11 +3289,11 @@ pl_check_prolog_flag(max_integer, Max_Int) :-
   current_prolog_flag(max_integer, Max_Int).
 
 pl_check_prolog_flag(max_integer, Max_Int) :-
-  prolog_system(xsb), Max_Int is 2147483647.
+  prolog_system(xsb), Max_Int is 268435455.
 
 pl_check_prolog_flag(min_integer, Min_Int) :-
   \+ prolog_system(xsb),
   current_prolog_flag(min_integer, Min_Int).
 
 pl_check_prolog_flag(min_integer, Min_Int) :-
-  prolog_system(xsb), Min_Int is -2147483648-1.
+  prolog_system(xsb), Min_Int is -268435456.
