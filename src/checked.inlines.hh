@@ -147,15 +147,24 @@ gcdext_exact(To& to, const From1& x, const From2& y, From3& s, From4& t,
   t = 0;
   bool negative_x = x < 0;
   bool negative_y = y < 0;
-  // FIX returns
-  abs<Policy>(to, x, dir);
-  From2 ay;
-  abs<Policy>(ay, y, dir);
 
+  Result r;
+  r = abs<Policy>(to, x, dir);
+  if (r != V_EQ)
+    return r;
+
+  From2 ay;
+  r = abs<Policy>(ay, y, dir);
+  if (r != V_EQ)
+    return r;
+
+  // If COPY_GMP is defined then s is favoured when the absolute
+  // values of the given numbers are equal.  For instance if x and y
+  // are both 5 then s will be 1 and t will be 0, instead of the other
+  // way round.  This is to match the behaviour of GMP.
 #define COPY_GMP
 #ifdef COPY_GMP
   if (to == ay)
-    // FIX This is to favour s, as GMP does.
     goto sign_check;
 #endif
 
@@ -183,9 +192,11 @@ gcdext_exact(To& to, const From1& x, const From2& y, From3& s, From4& t,
 #ifdef COPY_GMP
  sign_check:
 #endif
-  if (negative_x)
-    // FIX how to combine this result with the result of the neg below?
-    neg<Policy>(s, s, dir);
+  if (negative_x) {
+    r = neg<Policy>(s, s, dir);
+    if (r != V_EQ)
+      return r;
+  }
   if (negative_y)
     return neg<Policy>(t, t, dir);
   return V_EQ;
