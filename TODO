@@ -2,7 +2,7 @@ Enhancements for PPL 0.8
 ========================
 
 - The Powerset class implementation is still poorly documented.
-- Consider renaming Powerset::meet_assign().
+
 
 Enhancements for PPL 0.9
 ========================
