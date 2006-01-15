@@ -36,8 +36,10 @@ namespace Parma_Polyhedra_Library {
 
 namespace IO_Operators {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 std::ostream&
 operator<<(std::ostream& s, const DB_Matrix<T>& c);
