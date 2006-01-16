@@ -297,13 +297,12 @@ o  The new class BD_Shape<T> as well as the "checked" native
    also specifies whether T should be extended with representations
    for infinities or NAN (Not A Number) and default rounding modes.
    A complete set of arithmetic functions and operators are provided:
-   they either use the default rounding mode or accept it as an extra
-   parameter and, depending on the policy, may return a result that
-   indicates what the relation is between the true mathematical result
-   and the (possibly approximated) result computed by the function.
-   Input/output functions with the same properties (controlled
-   rounding and precise indication of the approximation happened in
-   practice) are also provided.
+   they either use the default rounding mode or accept a rounding mode
+   as an extra parameter and, depending on the policy, may return a result
+   that indicates the relation that exists between the true mathematical
+   result and the (possibly approximate) computed result. Input/output
+   functions with the same properties (controlled rounding and indications
+   of the approximations) are also provided.
 
 
 Bugfixes
