@@ -157,113 +157,118 @@ public:
   template <typename From, typename From_Policy>
   explicit Checked_Number(const Checked_Number<From, From_Policy>& y);
 
-  //! Direct initialization from a signed char value.
+  //! Direct initialization from a signed char and rounding mode.
   Checked_Number(const signed char y, Rounding_Dir dir);
 
-  //! Direct initialization from a signed short value.
+  //! Direct initialization from a signed short and rounding mode.
   Checked_Number(const signed short y, Rounding_Dir dir);
 
-  //! Direct initialization from a signed int value.
+  //! Direct initialization from a signed int and rounding mode.
   Checked_Number(const signed int y, Rounding_Dir dir);
 
-  //! Direct initialization from a signed long value.
+  //! Direct initialization from a signed long and rounding mode.
   Checked_Number(const signed long y, Rounding_Dir dir);
 
-  //! Direct initialization from a signed long long value.
+  //! Direct initialization from a signed long long and rounding mode.
   Checked_Number(const signed long long y, Rounding_Dir dir);
 
-  //! Direct initialization from an unsigned char value.
+  //! Direct initialization from an unsigned char and rounding mode.
   Checked_Number(const unsigned char y, Rounding_Dir dir);
 
-  //! Direct initialization from an unsigned short value.
+  //! Direct initialization from an unsigned short and rounding mode.
   Checked_Number(const unsigned short y, Rounding_Dir dir);
 
-  //! Direct initialization from an unsigned int value.
+  //! Direct initialization from an unsigned int and rounding mode.
   Checked_Number(const unsigned int y, Rounding_Dir dir);
 
-  //! Direct initialization from an unsigned long value.
+  //! Direct initialization from an unsigned long and rounding mode.
   Checked_Number(const unsigned long y, Rounding_Dir dir);
 
-  //! Direct initialization from an unsigned long long value.
+  //! Direct initialization from an unsigned long long and rounding mode.
   Checked_Number(const unsigned long long y, Rounding_Dir dir);
 
-  //! Direct initialization from a float value.
+  //! Direct initialization from a float and rounding mode.
   Checked_Number(const float y, Rounding_Dir dir);
 
-  //! Direct initialization from a double value.
+  //! Direct initialization from a double and rounding mode.
   Checked_Number(const double y, Rounding_Dir dir);
 
-  //! Direct initialization from a long double value.
+  //! Direct initialization from a long double and rounding mode.
   Checked_Number(const long double y, Rounding_Dir dir);
 
-  //! Direct initialization from a GMP unbounded rational value.
+  //! Direct initialization from a rational and rounding mode.
   Checked_Number(const mpq_class& y, Rounding_Dir dir);
 
-  //! Direct initialization from a GMP unbounded integer value.
+  //! Direct initialization from an unbounded integer and rounding mode.
   Checked_Number(const mpz_class& y, Rounding_Dir dir);
 
-  //! Direct initialization from a C string value.
+  //! Direct initialization from a C string and rounding mode.
   Checked_Number(const char* y, Rounding_Dir dir);
 
+  //! Direct initialization from minus infinity and rounding mode.
   Checked_Number(const Minus_Infinity& y, Rounding_Dir dir);
+
+  //! Direct initialization from plus infinity and rounding mode.
   Checked_Number(const Plus_Infinity& y, Rounding_Dir dir);
+
+  //! Direct initialization from NAN and rounding mode.
   Checked_Number(const Not_A_Number& y, Rounding_Dir dir);
 
-  //! Direct initialization from a signed char value.
+  //! Direct initialization from a signed char, default rounding mode.
   Checked_Number(const signed char y);
 
-  //! Direct initialization from a signed short value.
+  //! Direct initialization from a signed short, default rounding mode.
   Checked_Number(const signed short y);
 
-  //! Direct initialization from a signed int value.
+  //! Direct initialization from a signed int, default rounding mode.
   Checked_Number(const signed int y);
 
-  //! Direct initialization from a signed long value.
+  //! Direct initialization from a signed long, default rounding mode.
   Checked_Number(const signed long y);
 
-  //! Direct initialization from a signed long long value.
+  //! Direct initialization from a signed long long, default rounding mode.
   Checked_Number(const signed long long y);
 
-  //! Direct initialization from an unsigned char value.
+  //! Direct initialization from an unsigned char, default rounding mode.
   Checked_Number(const unsigned char y);
 
-  //! Direct initialization from an unsigned short value.
+  //! Direct initialization from an unsigned short, default rounding mode.
   Checked_Number(const unsigned short y);
 
-  //! Direct initialization from an unsigned int value.
+  //! Direct initialization from an unsigned int, default rounding mode.
   Checked_Number(const unsigned int y);
 
-  //! Direct initialization from an unsigned long value.
+  //! Direct initialization from an unsigned long, default rounding mode.
   Checked_Number(const unsigned long y);
 
-  //! Direct initialization from an unsigned long long value.
+  //! Direct initialization from an unsigned long long, default rounding mode.
   Checked_Number(const unsigned long long y);
 
-  //! Direct initialization from a float value.
+  //! Direct initialization from a float, default rounding mode.
   Checked_Number(const float y);
 
-  //! Direct initialization from a double value.
+  //! Direct initialization from a double, default rounding mode.
   Checked_Number(const double y);
 
-  //! Direct initialization from a long double value.
+  //! Direct initialization from a long double, default rounding mode.
   Checked_Number(const long double y);
 
-  //! Direct initialization from a GMP unbounded rational value.
+  //! Direct initialization from a rational, default rounding mode.
   Checked_Number(const mpq_class& y);
 
-  //! Direct initialization from a GMP unbounded integer value.
+  //! Direct initialization from an unbounded integer, default rounding mode.
   Checked_Number(const mpz_class& y);
 
-  //! Direct initialization from a C string value.
+  //! Direct initialization from a C string, default rounding mode.
   Checked_Number(const char* y);
 
-  //! Constructor for negative infinity.
+  //! Direct initialization from minus infinity, default rounding mode.
   Checked_Number(const Minus_Infinity& y);
 
-  //! Constructor for positive infinity.
+  //! Direct initialization from plus infinity, default rounding mode.
   Checked_Number(const Plus_Infinity& y);
 
-  //! Constructor for NAN.
+  //! Direct initialization from NAN, default rounding mode.
   Checked_Number(const Not_A_Number& y);
 
   //@} // Constructors
