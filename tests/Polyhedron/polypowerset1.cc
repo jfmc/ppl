@@ -226,7 +226,7 @@ test11() {
 
   bool ok = !c_ps.empty();
 
-  if (ok)
+  if (!ok)
     exit(1);
 }
 
