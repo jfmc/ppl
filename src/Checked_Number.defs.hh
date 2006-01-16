@@ -150,9 +150,6 @@ public:
   //! Default constructor.
   Checked_Number();
 
-  // Don't enable this: with GCC, the presence of a copy constructor
-  // (even if it is defined exactly as the default one) inhibits some
-  // important optimizations.
   //! Copy-constructor.
   Checked_Number(const Checked_Number& y);
 
