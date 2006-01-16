@@ -43,13 +43,14 @@ o  New Autoconf function
    indicated, the variables PPL_CPPFLAGS and PPL_LDFLAGS will be set
    accordingly and a quick sanity check of the PPL installation will
    be performed.  For more complex tasks, the AM_PATH_PPL function
-   defines the --with-ppl-prefix and --with-ppl-exec-prefix configure
-   options (useful when the PPL is installed into a non-standard place
-   or when multiple versions of the PPL are installed).  AM_PATH_PPL
-   also defines the --disable-ppltest configure option to disable the
-   quick sanity check.  When something fails, AM_PATH_PPL provides
-   accurate indications about what went wrong and how to fix it.
-   See the sources in m4/ppl.m4 for more information.
+   defines the `--with-ppl-prefix' and `--with-ppl-exec-prefix'
+   configure options (useful when the PPL is installed into a
+   non-standard place or when multiple versions of the PPL are
+   installed).  AM_PATH_PPL also defines the `--disable-ppltest'
+   configure option to disable the quick sanity check.  When something
+   fails, AM_PATH_PPL provides accurate indications about what went
+   wrong and how to fix it.  See the sources in m4/ppl.m4 for more
+   information.
 
 o  The browse and print versions of the PS and PDF formats of the user
    manual have been merged into single documents: ppl-user-0.8.pdf and
@@ -59,7 +60,7 @@ o  The browse and print versions of the PS and PDF formats of the user
 o  One of the possible values for the configuration option
    `--enable-coefficients' has been renamed from `gmp' to `mpz'.
 
-o  New configuration option --enable-interfaces allows some or all of
+o  New configuration option `--enable-interfaces' allows some or all of
    the Prolog and C interfaces to be selectively enabled.
 
 o  Portability has been further improved.
@@ -283,6 +284,26 @@ o  The `ppl_lpsol' demo has now two more options: with `--enumerate' it
 
 o  Manual pages have been added for the ppl_lpsol and ppl_lcdd
    programs.
+
+o  The new class BD_Shape<T> as well as the "checked" native
+   coefficients selectable with the `--enable-coefficients' configure
+   options, are based on a very general and powerful notion of "number
+   family with a policy".  This is made available to the users of the
+   PPL via the wrapper template class Checked_Number<T, P>, where T is
+   the underlying numeric type (native integer or float of any width,
+   unbounded integer or rational) and `P' is a policy specifying
+   things such as whether to check for overflows and other
+   "exceptional" conditions and what to do in such cases.  The policy
+   also specifies whether T should be extended with representations
+   for infinities or NAN (Not A Number) and default rounding modes.
+   A complete set of arithmetic functions and operators are provided:
+   they either use the default rounding mode or accept it as an extra
+   parameter and, depending on the policy, may return a result that
+   indicates what is the relation between the true mathematical result
+   and the (possibly approximated) result computed by the function.
+   Input/output functions with the same properties (controlled
+   rounding and precise indication of the approximation happened in
+   practice) are also provided.
 
 
 Bugfixes
