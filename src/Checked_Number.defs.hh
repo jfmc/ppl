@@ -776,20 +776,9 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
   - base-10 rational numbers in floating point scientific notation as
     <CODE>2.2e-1</CODE> (meaning \f$11/50\f$) and <CODE>-2.20001*^+3</CODE>
     (meaning \f$-220001/100\f$);
-  - base-16 integer numbers in C notation as <CODE>0xfa</CODE>
-    (meaning \f$250\f$) and <CODE>0x0b123</CODE> (meaning \f$45347\f$);
-  - natural extensions to the C syntax for hexadecimal numbers to
-    fractional, floating point and base-16 scientific notations, as
-    <CODE>0x.f</CODE> (meaning \f$15/16\f$),
-    <CODE>0xfa.a</CODE> (meaning \f$2005/8\f$),
-    <CODE>0x.f*^1</CODE> (meaning \f$15\f$),
-    <CODE>0x1e2</CODE> (meaning \f$482\f$),
-    <CODE>0x1*^2</CODE> (meaning \f$256\f$),
-    <CODE>0x0.111*^3</CODE> (meaning \f$273\f$);
-    notice that the exponent is always written as a plain base-10 integer
-    number;
-  - integers and rationals in specified bases, in the range \f$2--36\f$,
-    in fractional, floating point and scientific notations, as
+  - integers and rationals (in fractional, floating point and scientific
+    notations) specified by using Mathematica-style bases, in the range
+    from 2 to 36, as
     <CODE>2^^11</CODE> (meaning \f$3\f$),
     <CODE>36^^z</CODE> (meaning \f$35\f$),
     <CODE>36^^xyz</CODE> (meaning \f$44027\f$),
@@ -799,25 +788,34 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
     <CODE>8^^2.1e3</CODE> (meaning \f$1088\f$),
     <CODE>8^^20402543.120347e7</CODE> (meaning \f$9073863231288\f$),
     <CODE>8^^2.1</CODE> (meaning \f$17/8\f$);
-    notice that both the base and the exponent are always written
-    as plain base-10 integer numbers;
+    note that the base and the exponent are always written as plain
+    base-10 integer numbers; also, when an ambiguity may arise, the
+    character <CODE>e</CODE> is interpreted as a digit, so that
+    <CODE>16^^1e2</CODE> (meaning \f$482\f$) is different from
+    <CODE>16^^1*^2</CODE> (meaning \f$256\f$);
+  - the C-style hexadecimal prefix <CODE>0x</CODE> is interpreted as
+    the Mathematica-style prefix <CODE>16^^</CODE>;
   - special values like <CODE>inf</CODE> and <CODE>+inf</CODE>
     (meaning \f$+\infty\f$), <CODE>-inf</CODE> (meaning \f$-\infty\f$),
     and <CODE>nan</CODE> (meaning "not a number").
 
   The rationale behind the accepted syntax can be summarized as follows:
-  - if the syntax is acceptable as standard C++, then this function
-    accepts it with the same semantics;
   - if the syntax is accepted by Mathematica, then this function
     accepts it with the same semantics;
+  - if the syntax is acceptable as standard C++ integer or floating point
+    literal (except for octal notation and type suffixes, which are not
+    supported), then this function accepts it with the same semantics;
   - natural extensions of the above are accepted with the natural
     extensions of the semantics;
   - special values are accepted.
 
   Valid syntax is more formally and completely specified by the
   following grammar, with the additional provisos that everything is
-  <EM>case insensitive</EM> and that the syntactic category
-  <CODE>BDIGIT</CODE> is further restriced by the current base.
+  <EM>case insensitive</EM>, that the syntactic category
+  <CODE>BDIGIT</CODE> is further restriced by the current base
+  and that for all bases above 14, any <CODE>e</CODE> is always
+  interpreted as a digit and never as a delimiter for the exponent part
+  (if such a delimiter is desired, it has to be written as <CODE>*^</CODE>).
 
 \code
 number	: NAN					INF	: 'inf'
