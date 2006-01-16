@@ -16,6 +16,9 @@ To be more precise, the Parma Polyhedra Library (PPL) can handle:
     by an equality or a (strict or non-strict) inequality with rational
     coefficients;
 
+  + convex polyhedra defined by systems of bounded differences with
+    a wide choice of integer, rational or floating point coefficients;
+
   + finite powersets of the above;
 
   + linear programming problems, solved with an implementation of the
