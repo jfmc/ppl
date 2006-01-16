@@ -60,8 +60,10 @@ Ptr_Iterator<P> operator+(typename Ptr_Iterator<P>::difference_type m,
 
 } // namespace Parma_Polyhedra_Library
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A class to define STL const and non-const iterators from pointer types.
-template<typename P>
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename P>
 class Parma_Polyhedra_Library::Implementation::Ptr_Iterator
   : public std::iterator<typename std::iterator_traits<P>::iterator_category,
 			 typename std::iterator_traits<P>::value_type,
@@ -91,22 +93,22 @@ public:
 
   //! Indirect member selector.
   pointer operator->() const;
-      
+
   //! Subscript operator.
   reference operator[](const difference_type m) const;
-      
+
   //! Prefix increment operator.
   Ptr_Iterator& operator++();
-      
+
   //! Postfix increment operator.
   Ptr_Iterator operator++(int);
 
   //! Prefix decrement operator
   Ptr_Iterator& operator--();
-      
+
   //! Postfix decrement operator.
   Ptr_Iterator operator--(int);
-      
+
   //! Assignment-increment operator.
   Ptr_Iterator& operator+=(const difference_type m);
 
@@ -118,7 +120,7 @@ public:
 
   //! Returns the sum of \p *this and \p m.
   Ptr_Iterator operator+(const difference_type m) const;
-  
+
   //! Returns the difference of \p *this and \p m.
   Ptr_Iterator operator-(const difference_type m) const;
 

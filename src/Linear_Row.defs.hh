@@ -129,6 +129,7 @@ public:
     RAY_OR_POINT_OR_INEQUALITY = 1
   };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     The type of the object to which the coefficients refer to,
     encoding both topology and kind.
@@ -137,6 +138,7 @@ public:
     or not) and the kind (line/equality or ray/point/inequality)
     of a Linear_Row object.
   */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   class Flags : public Row::Flags {
   public:
     //! Default constructor: builds an object where all flags are invalid.

@@ -77,12 +77,14 @@ public:
   Linear_System(Topology topol,
 		dimension_type n_rows, dimension_type n_columns);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! A tag class.
   /*!
     Tag class to differentiate the Linear_System copy-constructor that
     copies pending rows as pending from the one that transforms
     pending rows into non-pending ones.
   */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   struct With_Pending {
   };
 

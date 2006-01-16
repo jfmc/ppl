@@ -81,10 +81,12 @@ private:
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Parma_Polyhedra_Library::Row : private Row_Impl_Handler {
 public:
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Wrapper class to represent a set of flags with bits in a native
     unsigned integral type.
   */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   class Flags {
   public:
     //! Constructs an object with all the flags unset.
@@ -104,7 +106,8 @@ public:
     //! Uses the ASCII Flags representation from \p s to recreate *this.
     /*!
       Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
-      otherwise.  The ASCII representation is as output by \ref ascii_dump.
+      otherwise.  The ASCII representation is as output by
+      \ref Parma_Polyhedra_Library::Row::Flags::ascii_dump.
     */
     bool ascii_load(std::istream& s);
 
