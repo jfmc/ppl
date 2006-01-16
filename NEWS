@@ -4,15 +4,17 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.8  (to be released on January 20, 2006)
+NEWS for version 0.8  (released on January 20, 2006)
 --------------------------------------------------------------------------
 
 New and Changed Features
 ========================
 
 o  The new program ppl-config returns information about the
-   configuration of the PPL and the applications using it.  A manual
-   page for ppl-config has also been added.
+   configuration and the installed components of the PPL.
+   This greatly simplifies the task of writing makefiles and
+   automatic configuration scripts.  A manual page for ppl-config
+   has also been added.
 
 o  In classes Poly_Con_Relation and Poly_Gen_Relation the methods
 
