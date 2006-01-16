@@ -317,10 +317,12 @@ public:
 
   PPL_OUTPUT_DECLARATIONS;
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation of the internal
     representation of \p *this.
   */
+#endif
   bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
