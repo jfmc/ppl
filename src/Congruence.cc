@@ -217,10 +217,7 @@ PPL::Congruence::ascii_dump(std::ostream& s) const {
   s << std::endl;
 }
 
-void
-PPL::Congruence::ascii_dump() const {
-  ascii_dump(std::cerr);
-}
+PPL_OUTPUT_DEFINITIONS(Congruence);
 
 bool
 PPL::Congruence::ascii_load(std::istream& s) {

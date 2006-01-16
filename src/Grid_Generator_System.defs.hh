@@ -367,21 +367,7 @@ public:
   //! Returns a constant reference to the \p k- th generator of the system.
   const Grid_Generator& operator[](dimension_type k) const;
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*! \brief
-    Writes to \p s an ASCII representation of the internal
-    representation of \p *this.
-  */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void ascii_dump(std::ostream& s) const;
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*! \brief
-    Writes to std::cerr an ASCII representation of the internal
-    representation of \p *this.
-  */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void ascii_dump() const;
+  PPL_OUTPUT_DECLARATIONS;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief

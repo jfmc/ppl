@@ -315,17 +315,7 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  /*! \brief
-    Writes to \p s an ASCII representation of the internal
-    representation of \p *this.
-  */
-  void ascii_dump(std::ostream& s) const;
-
-  /*! \brief
-    Writes to std::cerr an ASCII representation of the internal
-    representation of \p *this.
-  */
-  void ascii_dump() const;
+  PPL_OUTPUT_DECLARATIONS;
 
   /*! \brief
     Loads from \p s an ASCII representation of the internal
@@ -461,6 +451,7 @@ private:
   friend class PPL::Scalar_Products;
   friend class PPL::Congruence_System;
   friend class PPL::Congruence_System::const_iterator;
+  // FIX reduce dependency, explain why needed
   friend class PPL::Grid;
   friend class PPL::Linear_Expression;
 

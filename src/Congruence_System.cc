@@ -305,10 +305,7 @@ PPL::Congruence_System::ascii_dump(std::ostream& s) const {
       x[i].ascii_dump(s);
 }
 
-void
-PPL::Congruence_System::ascii_dump() const {
-  ascii_dump(std::cerr);
-}
+PPL_OUTPUT_DEFINITIONS(Congruence_System);
 
 bool
 PPL::Congruence_System::ascii_load(std::istream& s) {

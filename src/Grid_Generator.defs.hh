@@ -360,16 +360,13 @@ public:
   */
   void coefficient_swap(Grid_Generator& y);
 
-  /*! \brief
-    Writes to \p s an ASCII representation of the internal
-    representation of \p *this.
-  */
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS;
 
   //! Uses the ASCII representation from \p s to recreate *this.
   /*!
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
-    otherwise.  The ASCII representation is as output by ascii_dump.
+    otherwise.  The ASCII representation is as output by \ref
+    ascii_dump.
   */
   bool ascii_load(std::istream& s);
 

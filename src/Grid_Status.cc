@@ -82,6 +82,8 @@ PPL::Grid::Status::ascii_dump(std::ostream& s) const {
     << std::endl;
 }
 
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Grid::Status);
+
 bool
 PPL::Grid::Status::ascii_load(std::istream& s) {
   bool positive;

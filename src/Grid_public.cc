@@ -1949,7 +1949,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
 
   // Compute the actual space dimension of `lhs',
   // i.e., the highest dimension having a non-zero coefficient in `lhs'.
-  for ( ; lhs_space_dim > 0; lhs_space_dim--)
+  for ( ; lhs_space_dim > 0; --lhs_space_dim)
     if (lhs.coefficient(Variable(lhs_space_dim - 1)) != 0)
       break;
 
@@ -1963,6 +1963,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
   // in this case, preimage and image happen to be the same.
   // FIX really?
   if (lhs_space_dim == 0) {
+    // FIX inline equiv
     generalized_affine_image(lhs, rhs, mod);
     return;
   }
@@ -2168,10 +2169,7 @@ PPL::Grid::ascii_dump(std::ostream& s) const {
   s << endl;
 }
 
-void
-PPL::Grid::ascii_dump() const {
-  ascii_dump(std::cerr);
-}
+PPL_OUTPUT_DEFINITIONS(Grid);
 
 bool
 PPL::Grid::ascii_load(std::istream& s) {

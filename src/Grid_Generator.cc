@@ -325,3 +325,5 @@ PPL::Grid_Generator::OK() const {
   // All tests passed.
   return true;
 }
+
+PPL_OUTPUT_DEFINITIONS(Grid_Generator);
