@@ -194,10 +194,10 @@ o  Added to classes Constraint (resp., Generator) the method
    (resp., bool is_equivalent_to(const Generator& y) const)
    which check for semantic equivalence of corresponding class
    instances.  Also made available the (semantic) comparison operators
-   == and !=.
+   `==' and `!='.
 
-o  Added swap methods to classes Linear_Expression, Constraint, Generator,
-   Constraint_System and Generator_System.
+o  The swap() methods of classes Linear_Expression, Constraint, Generator,
+   Constraint_System and Generator_System are now publicly accessible.
 
 o  Added to classes Constraint and Generator the methods
 
@@ -215,7 +215,7 @@ o  In classes Poly_Con_Relation and Poly_Gen_Relation the methods
 
      void ascii_load(std::istream& s) const
 
-   are now publicly available.
+   are now publicly accessible.
 
 o  All classes which provide the method
 
