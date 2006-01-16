@@ -30,17 +30,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Types and functions implementing checked numbers.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 namespace Checked {
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \brief
-  A policy that specifies a total adherence to behavior
-  of the underlying type.
-*/
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A policy checking for overflows.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
