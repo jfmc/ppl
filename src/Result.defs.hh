@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! Possible outcomes of a checked arithmetic computation.
 enum Result {
 
   VC_MASK = 48,
