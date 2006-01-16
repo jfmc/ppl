@@ -104,11 +104,11 @@ void
 test5() {
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
 
-  int ok = (c_ps.is_bottom()) ? 1 : 0;
+  bool ok = c_ps.is_bottom();
 
   c_ps.add_disjunct(C_Polyhedron(1, UNIVERSE));
 
-  int ok1 = (c_ps.is_top()) ? 1 : 0;
+  bool ok1 = c_ps.is_top();
 
   c_ps.total_memory_in_bytes();
   c_ps.external_memory_in_bytes();
@@ -121,16 +121,16 @@ void
 test6() {
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
-
   cs.insert(x >= 0);
   c_ps.add_disjunct(C_Polyhedron(cs));
 
-  cs.insert(x <= 2);
-
   Polyhedra_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
-  c_ps1.add_disjunct(C_Polyhedron(cs));
+  Constraint_System cs1;
+  cs1.insert(x >= 0);
+  cs1.insert(x <= 2);
+  c_ps1.add_disjunct(C_Polyhedron(cs1));
 
-  int ok = (c_ps1.definitely_entails(c_ps)) ? 1 : 0;
+  bool ok = c_ps1.definitely_entails(c_ps);
 
   if (!ok)
     exit(1);
@@ -150,7 +150,7 @@ test7() {
   cs.insert(x <= 3);
   c_ps.add_disjunct(C_Polyhedron(cs));
 
-  int ok = (c_ps.size() == 2) ? 1 : 0;
+  bool ok = (c_ps.size() == 2);
 
   if (!ok)
     exit(1);
@@ -171,7 +171,7 @@ test8() {
   c_ps.add_disjunct(C_Polyhedron(cs));
   c_ps.omega_reduce();
 
-  int ok = (c_ps.size() == 1) ? 1 : 0;
+  bool ok = (c_ps.size() == 1);
 
   if (!ok)
     exit(1);
@@ -180,8 +180,7 @@ test8() {
 void
 test9() {
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
-  Constraint_System cs;
-  int ok = (c_ps.space_dimension() == 1) ? 0 : 1;
+  bool ok = (c_ps.space_dimension() == 1);
 
   if (!ok)
     exit(1);
@@ -197,7 +196,7 @@ test10() {
   c_ps.add_disjunct(C_Polyhedron(cs));
   c_ps.drop_disjunct(c_ps.begin());
 
-  int ok = (c_ps.empty()) ? 1 : 0;
+  bool ok = c_ps.empty();
 
   c_ps.add_disjunct(C_Polyhedron(cs));
 
@@ -206,7 +205,7 @@ test10() {
   c_ps.add_disjunct(C_Polyhedron(cs));
   c_ps.drop_disjuncts(c_ps.begin(), c_ps.end());
 
-  int ok1 = (c_ps.empty()) ? 1 : 0;
+  bool ok1 = c_ps.empty();
 
   if (!ok || !ok1)
     exit(1);
@@ -224,7 +223,7 @@ test11() {
   Polyhedra_Powerset<C_Polyhedron> c_ps1;
   c_ps1 = c_ps;
 
-  int ok = (!c_ps.empty()) ? 1 : 0;
+  bool ok = !c_ps.empty();
 
   if (ok)
     exit(1);
@@ -242,7 +241,7 @@ test12() {
   Polyhedra_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
   c_ps.swap(c_ps1);
 
-  int ok = (c_ps1.empty() && !c_ps.empty()) ? 1 : 0;
+  bool ok = (c_ps1.empty() && !c_ps.empty());
 
   if (ok)
     exit(1);
@@ -271,8 +270,8 @@ test13() {
   Polyhedra_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
   c_ps_expected.add_disjunct(C_Polyhedron(cs));
 
-  int ok = (c_ps.definitely_entails(c_ps_expected)) ? 1 : 0;
-  int ok1 = (c_ps_expected.definitely_entails(c_ps)) ? 1 : 0;
+  bool ok = c_ps.definitely_entails(c_ps_expected);
+  bool ok1 = c_ps_expected.definitely_entails(c_ps);
 
   if (!ok || !ok1)
     exit(1);
@@ -301,8 +300,8 @@ test14() {
   Polyhedra_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
   c_ps_expected.add_disjunct(C_Polyhedron(cs));
 
-  int ok = (c_ps.definitely_entails(c_ps_expected)) ? 1 : 0;
-  int ok1 = (c_ps_expected.definitely_entails(c_ps)) ? 1 : 0;
+  bool ok = c_ps.definitely_entails(c_ps_expected);
+  bool ok1 = c_ps_expected.definitely_entails(c_ps);
 
   if (!ok || !ok1)
     exit(1);
@@ -331,8 +330,8 @@ test15() {
   Polyhedra_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
   c_ps_expected.add_disjunct(C_Polyhedron(cs));
 
-  int ok = (c_ps.definitely_entails(c_ps_expected)) ? 1 : 0;
-  int ok1 = (c_ps_expected.definitely_entails(c_ps)) ? 1 : 0;
+  bool ok = c_ps.definitely_entails(c_ps_expected);
+  bool ok1 = c_ps_expected.definitely_entails(c_ps);
 
   if (!ok || !ok1)
     exit(1);
@@ -360,9 +359,9 @@ test16() {
   Polyhedra_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
   c_ps_expected.add_disjunct(C_Polyhedron(cs));
 
-  int ok = (c_ps.definitely_entails(c_ps_expected)) ? 1 : 0;
-  int ok1 = (c_ps_expected.definitely_entails(c_ps)) ? 1 : 0;
-  int ok2 = (c_ps.size() == 1) ? 1 : 0;
+  bool ok = c_ps.definitely_entails(c_ps_expected);
+  bool ok1 = c_ps_expected.definitely_entails(c_ps);
+  bool ok2 = (c_ps.size() == 1);
 
   if (!ok || !ok1 || !ok2)
     exit(1);
