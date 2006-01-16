@@ -64,7 +64,7 @@ fi
 
 AC_PATH_PROG(PPL_CONFIG, ppl-config, no)
 min_ppl_version=ifelse([$1], ,0.0,$1)
-if test \( "x$min_ppl_version" = "0.0" \) -o \( "x$min_ppl_version" = "0.0.0" \)
+if test \( "x$min_ppl_version" = "x0.0" \) -o \( "x$min_ppl_version" = "x0.0.0" \)
 then
   AC_MSG_CHECKING([for the Parma Polyhedra Library])
 else
