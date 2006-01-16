@@ -64,11 +64,6 @@ o  New configuration option --enable-interfaces allows some or all of
 
 o  Portability has been further improved.
 
-o  There is a new section in the "General Information on the PPL"
-   documentation: "Integers Represented by Floating Point Numbers".
-   This contains results that are needed to prove the correctness of
-   our implementation of the GCD and LCM operations.
-
 o  Added to C_Polyhedron (resp., NNC_Polyhedron) new method
 
      bool poly_hull_assign_if_exact(const C_Polyhedron&)
