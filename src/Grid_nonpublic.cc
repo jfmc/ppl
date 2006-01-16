@@ -270,8 +270,8 @@ PPL::Grid::max_min(const Linear_Expression& expr,
     // Reduce ext_n and ext_d.
     TEMP_INTEGER(gcd);
     gcd_assign(gcd, ext_n, ext_d);
-    exact_div_assign(ext_n, gcd);
-    exact_div_assign(ext_d, gcd);
+    exact_div_assign(ext_n, ext_n, gcd);
+    exact_div_assign(ext_d, ext_d, gcd);
 
     included = true;
     if (point) {

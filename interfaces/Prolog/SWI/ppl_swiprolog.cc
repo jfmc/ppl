@@ -1,5 +1,5 @@
 /* SWI Prolog interface.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -20,12 +20,16 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include "ppl_install.hh"
+#include "pwl_install.hh"
 
-#include "Coefficient.defs.hh"
-#include "Checked_Number.defs.hh"
+// Include gmp.h before SWI-Prolog.h.  This is required in order
+// to get access to interface functions dealing with GMP numbers
+// and SWI-Prolog terms.
+#include <gmp.h>
 #include <SWI-Prolog.h>
 #include <cassert>
+#include <stdint.h>
 
 typedef term_t Prolog_term_ref;
 typedef atom_t Prolog_atom;
@@ -64,13 +68,18 @@ long Prolog_min_integer;
 long Prolog_max_integer;
 
 /*!
+  Temporary used to communicate big integers between C++ and Prolog.
+*/
+mpz_class tmp_mpz_class;
+
+/*!
   Performs system-dependent initialization.
 */
 void
 ppl_Prolog_sysdep_init() {
-  Prolog_has_unbounded_integers = false;
-  Prolog_min_integer = PL_query(PL_QUERY_MIN_INTEGER);
-  Prolog_max_integer = PL_query(PL_QUERY_MAX_INTEGER);
+  Prolog_has_unbounded_integers = true;
+  Prolog_min_integer = 0;
+  Prolog_max_integer = 0;
 }
 
 /*!
@@ -103,8 +112,6 @@ Prolog_put_term(Prolog_term_ref t, Prolog_term_ref u) {
 */
 inline int
 Prolog_put_long(Prolog_term_ref t, long l) {
-  if (l < Prolog_min_integer || l > Prolog_max_integer)
-    throw PPL_integer_out_of_range(l);
   PL_put_integer(t, l);
   return 1;
 }
@@ -114,9 +121,14 @@ Prolog_put_long(Prolog_term_ref t, long l) {
 */
 inline int
 Prolog_put_ulong(Prolog_term_ref t, unsigned long ul) {
-  if (ul > static_cast<unsigned long>(Prolog_max_integer))
-    throw PPL_integer_out_of_range(ul);
-  PL_put_integer(t, ul);
+  if (ul <= LONG_MAX)
+    PL_put_integer(t, ul);
+  else if (ul <= std::numeric_limits<int64_t>::max())
+    PL_put_int64(t, static_cast<int64_t>(ul));
+  else {
+    PPL::assign_r(tmp_mpz_class, ul, PPL::ROUND_NOT_NEEDED);
+    PL_unify_mpz(t, tmp_mpz_class.get_mpz_t());
+  }
   return 1;
 }
 
@@ -324,8 +336,6 @@ Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref a) {
   return PL_get_arg(i, t, a);
 }
 
-#include <iostream>
-using namespace std;
 /*!
   If \p c is a Prolog cons (list constructor), assign its head and
   tail to \p h and \p t, respectively.
@@ -349,18 +359,15 @@ Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
 PPL::Coefficient
 integer_term_to_Coefficient(Prolog_term_ref t) {
   assert(Prolog_is_integer(t));
-  long v;
-  Prolog_get_long(t, &v);
-  return PPL::Coefficient(v);
+  PL_get_mpz(t, tmp_mpz_class.get_mpz_t());
+  return PPL::Coefficient(tmp_mpz_class);
 }
 
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
-  long v;
-  if (PPL::assign(v, PPL::raw_value(n), PPL::ROUND_IGNORE) != PPL::V_EQ)
-    throw PPL_integer_out_of_range(n);
+  PPL::assign_r(tmp_mpz_class, n, PPL::ROUND_NOT_NEEDED);
   Prolog_term_ref t = Prolog_new_term_ref();
-  Prolog_put_long(t, v);
+  PL_unify_mpz(t, tmp_mpz_class.get_mpz_t());
   return t;
 }
 
@@ -380,17 +387,27 @@ PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_version, 1)
   PL_EXTENSION_ENTRY(ppl_banner, 1)
   PL_EXTENSION_ENTRY(ppl_max_space_dimension, 1)
+  PL_EXTENSION_ENTRY(ppl_Coefficient_is_bounded, 0)
+  PL_EXTENSION_ENTRY(ppl_Coefficient_max, 1)
+  PL_EXTENSION_ENTRY(ppl_Coefficient_min, 1)
   PL_EXTENSION_ENTRY(ppl_initialize, 0)
   PL_EXTENSION_ENTRY(ppl_finalize, 0)
   PL_EXTENSION_ENTRY(ppl_set_timeout_exception_atom, 1)
   PL_EXTENSION_ENTRY(ppl_timeout_exception_atom, 1)
   PL_EXTENSION_ENTRY(ppl_set_timeout, 1)
   PL_EXTENSION_ENTRY(ppl_reset_timeout, 0)
-  PL_EXTENSION_ENTRY(ppl_new_Polyhedron_from_space_dimension, 4)
-  PL_EXTENSION_ENTRY(ppl_new_Polyhedron_from_Polyhedron, 4)
-  PL_EXTENSION_ENTRY(ppl_new_Polyhedron_from_constraints, 3)
-  PL_EXTENSION_ENTRY(ppl_new_Polyhedron_from_generators, 3)
-  PL_EXTENSION_ENTRY(ppl_new_Polyhedron_from_bounding_box, 3)
+  PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_space_dimension, 3)
+  PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_from_space_dimension, 3)
+  PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_C_Polyhedron, 2)
+  PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_NNC_Polyhedron, 2)
+  PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_from_C_Polyhedron, 2)
+  PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron, 2)
+  PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_constraints, 2)
+  PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_from_constraints, 2)
+  PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_generators, 2)
+  PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_from_generators, 2)
+  PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_bounding_box, 2)
+  PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_from_bounding_box, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_swap, 2)
   PL_EXTENSION_ENTRY(ppl_delete_Polyhedron, 1)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_space_dimension, 2)
@@ -464,6 +481,27 @@ PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_Polyhedron_expand_space_dimension, 3)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_fold_space_dimensions, 3)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_map_space_dimensions, 2)
+  PL_EXTENSION_ENTRY(ppl_new_LP_Problem_trivial, 1)
+  PL_EXTENSION_ENTRY(ppl_new_LP_Problem, 4)
+  PL_EXTENSION_ENTRY(ppl_new_LP_Problem_from_LP_Problem, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_swap, 2)
+  PL_EXTENSION_ENTRY(ppl_delete_LP_Problem, 1)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_space_dimension, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_constraints, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_objective_function, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_optimization_mode, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_clear, 1)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_add_constraint, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_add_constraints, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_set_objective_function, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_set_optimization_mode, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_is_satisfiable, 1)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_solve, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_feasible_point, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_optimizing_point, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_optimal_value, 3)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_evaluate_objective_function, 4)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_OK, 1)
   { NULL, 0, NULL, 0 }
 };
 

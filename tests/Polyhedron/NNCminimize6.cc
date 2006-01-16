@@ -1,5 +1,5 @@
 /* Full minimization of a NNC-redundant constraint system.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 int
 main() TRY {
@@ -47,11 +41,9 @@ main() TRY {
 
   ph.add_constraints(cs);
 
-#if NOISY
-  cout << endl << "Before NNC minimization" << endl;
+  nout << endl << "Before NNC minimization" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
-#endif
 
   ph.minimized_constraints();
 
@@ -61,17 +53,14 @@ main() TRY {
 
   int retval = (ph == known_result) ? 0 : 1;
 
-#if NOISY
-  cout << endl << "After NNC minimization" << endl;
+  nout << endl << "After NNC minimization" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
 
-  cout << endl << "=== ph ===" << endl << ph << endl;
+  nout << endl << "=== ph ===" << endl << ph << endl;
 
   print_generators(ph.generators(), "*** ph generators ***");
 
-  cout << endl << "=== ph ===" << endl << ph << endl;
-
-#endif
+  nout << endl << "=== ph ===" << endl << ph << endl;
 
   return retval;
 }

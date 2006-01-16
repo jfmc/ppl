@@ -1,5 +1,5 @@
 /* XSB Prolog interface: declarations.  -*- Prolog -*-
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -28,17 +28,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_version/1,
 	ppl_banner/1,
 	ppl_max_space_dimension/1,
+	ppl_Coefficient_is_bounded/0,
+	ppl_Coefficient_max/1,
+	ppl_Coefficient_min/1,
 	ppl_initialize/0,
 	ppl_finalize/0,
 	ppl_set_timeout_exception_atom/1,
 	ppl_timeout_exception_atom/1,
 	ppl_set_timeout/1,
 	ppl_reset_timeout/0,
-	ppl_new_Polyhedron_from_space_dimension/4,
-	ppl_new_Polyhedron_from_Polyhedron/4,
-	ppl_new_Polyhedron_from_constraints/3,
-	ppl_new_Polyhedron_from_generators/3,
-	ppl_new_Polyhedron_from_bounding_box/3,
+	ppl_new_C_Polyhedron_from_space_dimension/3,
+	ppl_new_NNC_Polyhedron_from_space_dimension/3,
+	ppl_new_C_Polyhedron_from_C_Polyhedron/2,
+	ppl_new_C_Polyhedron_from_NNC_Polyhedron/2,
+	ppl_new_NNC_Polyhedron_from_C_Polyhedron/2,
+	ppl_new_NNC_Polyhedron_from_NNC_Polyhedron/2,
+	ppl_new_C_Polyhedron_from_constraints/2,
+	ppl_new_NNC_Polyhedron_from_constraints/2,
+	ppl_new_C_Polyhedron_from_generators/2,
+	ppl_new_NNC_Polyhedron_from_generators/2,
+	ppl_new_C_Polyhedron_from_bounding_box/2,
+	ppl_new_NNC_Polyhedron_from_bounding_box/2,
 	ppl_Polyhedron_swap/2,
 	ppl_delete_Polyhedron/1,
 	ppl_Polyhedron_space_dimension/2,
@@ -107,6 +117,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_remove_higher_space_dimensions/2,
 	ppl_Polyhedron_expand_space_dimension/3,
 	ppl_Polyhedron_fold_space_dimensions/3,
-	ppl_Polyhedron_map_space_dimensions/2.
+	ppl_Polyhedron_map_space_dimensions/2,
+	ppl_new_LP_Problem_trivial/1,
+	ppl_new_LP_Problem/4,
+	ppl_new_LP_Problem_from_LP_Problem/2,
+	ppl_LP_Problem_swap/2,
+	ppl_delete_LP_Problem/1,
+	ppl_LP_Problem_space_dimension/2,
+	ppl_LP_Problem_constraints/2,
+	ppl_LP_Problem_objective_function/2,
+	ppl_LP_Problem_optimization_mode/2,
+	ppl_LP_Problem_clear/1,
+	ppl_LP_Problem_add_constraint/2,
+	ppl_LP_Problem_add_constraints/2,
+	ppl_LP_Problem_set_objective_function/2,
+	ppl_LP_Problem_set_optimization_mode/2,
+	ppl_LP_Problem_is_satisfiable/1,
+	ppl_LP_Problem_solve/2,
+	ppl_LP_Problem_feasible_point/2,
+	ppl_LP_Problem_optimizing_point/2,
+	ppl_LP_Problem_optimal_value/3,
+	ppl_LP_Problem_evaluate_objective_function/4,
+	ppl_LP_Problem_OK/1.
 
 :- ldoption('-L../../../src/.libs -lppl -L../../../Watchdog/src/.libs -lpwl -lgmp -lgmpxx').

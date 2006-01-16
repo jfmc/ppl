@@ -1,5 +1,5 @@
 /* Test BD_Shape<T>::minimized_constraints().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 int
 main() TRY {
@@ -44,26 +38,20 @@ main() TRY {
   bd.add_constraint(A >= -3);
   bd.add_constraint(A <= 1);
 
-#if NOISY
   print_constraints(bd, "*** bd ***");
-#endif
 
   const Constraint_System cs = bd.minimized_constraints();
 
-#if NOISY
-  std::cout << "*** bd.minimized_constraints() ***" << std::endl;
-#endif
+  nout << "*** bd.minimized_constraints() ***" << endl;
+
   dimension_type num_constraints = 0;
   for (Constraint_System::const_iterator i = cs.begin(),
 	 iend = cs.end(); i != iend; ++i) {
-#if NOISY
-    std::cout << *i << std::endl;
-#endif
+    nout << *i << endl;
     ++num_constraints;
   }
-#if NOISY
-  std::cout << "num_constraints == " << num_constraints << std::endl;
-#endif
+
+  nout << "num_constraints == " << num_constraints << endl;
 
   C_Polyhedron ph_bd(cs);
   C_Polyhedron known_result(2);

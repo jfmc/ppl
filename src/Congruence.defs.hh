@@ -365,8 +365,11 @@ private:
   //! Returns a reference to the modulus of \p *this.
   Coefficient& modulus();
 
-  //! Mark this congruence as a linear equality.
+  //! Marks this congruence as a linear equality.
   void set_is_equality();
+
+  //! Negates the elements from index \p start to index \p end.
+  void negate(dimension_type start, dimension_type end);
 
   //! Default constructor: private and not implemented.
   Congruence();

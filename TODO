@@ -1,35 +1,22 @@
 Enhancements for PPL 0.8
 ========================
 
-- Solve failures of parallel builds (e.g., make -j 4) in the
-  Prolog interface directories.
-- Reduce the number of FIXMEs to no more than 40.
-- Improve the documentation about shared libraries.
-  See http://www.cs.unipr.it/pipermail/ppl-devel/2005-July/006178.html.
-- Improve the documentation of Polyhedron::shrink_bounding_box().
-  See http://www.cs.unipr.it/pipermail/ppl-devel/2005-July/006191.html.
-- Add our implementation of bounded difference shapes.
-- Decide which interfaces should be provided for the simplex method,
-  write them, and write the documentation for them.
 - The Powerset class implementation is still poorly documented.
-- Consider renaming Powerset::meet_assign().
-- Clearly explain, in the documentation, how (not) to use
-  set_GMP_memory_allocation_functions().  More generally, explain how
-  to have memory-guarded computations.
-- Reconsider the handling of temporary coefficients.
-- The documentation has been read through but a more careful check,
-  particularly on the detailed descriptions, should be done.
-- Should we really keep using both functions named add_mul_assign(),
-  exact_div_assign() and friends? Or should we better start using
-  assign_div(), assign_mul() and friends everywhere? What are the
-  guidelines for using these functions? 
+
 
 Enhancements for PPL 0.9
 ========================
 
+- Reduce the number of FIXMEs to no more than 20.
 - Incorporate the domain of rational grids.
+- Incorporate the domain of intervals.
 - Provide a single, generic implementation to replace all our status
   classes.
+- Clearly explain, in the documentation, how (not) to use
+  set_GMP_memory_allocation_functions().  More generally, explain how
+  to have memory-guarded computations.
+- Reconsider the handling of temporary coefficients.
+- Provide a generic implementation for the `widening with tokens'.
 
 Enhancements for PPL 0.9 or later versions
 ==========================================
@@ -43,7 +30,8 @@ Enhancements for PPL 0.9 or later versions
   temporarily in algorithms.hh, more efficiently.
 - Provide optimized implementations of Polyhedron::expand_dimension()
   Polyhedron::fold_dimensions().
-
+- Experiment with different compilation flags, such as GCC's
+  `-fno-threadsafe-statics'.
 
 Constructions on Polyhedra
 ==========================
@@ -98,6 +86,25 @@ Z-polyhedra are intersections and other representations for discrete sets.
   Génération automatique de codes de transfert pour
   multiprocesseurs à mémoires locales.
   PhD thesis, Université de Paris VI, March 1991.
+
+
+Debian packaging
+================
+
+- Add an interface package for each Prolog as a suitable version of
+  that Prolog appears in Debian.  Control entries for these are in
+  control.prologs.
+
+- Find out if /usr/lib/pkgconfig entries are required in any packages.
+
+- libppl-dev is very large.  Consider moving the docs to libppl-doc
+  and the other files into libppl.
+
+- Verify the Build-Depends and Build-Depends-Indep settings, as per
+  the Debian Developers Reference section 5.10.1 point 1.
+
+- Consider renaming libppl-pwl to libpwl.
+
 
 Grids Domain
 ============

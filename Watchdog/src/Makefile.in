@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 # Automake source file for the Parma Watchdog Library.
-# Copyright (C) 2002-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2002-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Watchdog Library (PWL).
 #
@@ -37,7 +37,9 @@
 # site: http://www.cs.unipr.it/Software/ . */
 
 
+srcdir = @srcdir@
 top_srcdir = @top_srcdir@
+VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -120,8 +122,6 @@ HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-srcdir = @srcdir@
-VPATH = @srcdir@
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -610,8 +610,6 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES \
 	pdf pdf-am ps ps-am tags uninstall uninstall-am \
 	uninstall-info-am uninstall-libLTLIBRARIES uninstall-local
 
-
-@SET_MAKE@
 
 @BUILD_WATCHDOG_LIBRARY_TRUE@pwl.hh:	$(DOC_FILES)
 @BUILD_WATCHDOG_LIBRARY_TRUE@	(cd $(srcdir) ; cat $(DOC_FILES)) >pwl.hh

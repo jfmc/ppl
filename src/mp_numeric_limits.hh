@@ -1,7 +1,7 @@
 /* Specializations of std::numeric_limits for multi-precision types.
    This will become obsolete when GMP and MPFR will provide the
    specializations by themselves.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -30,13 +30,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace std {
 
+//! Specialization of std::numeric_limits.
 template <>
 class numeric_limits<mpz_class> {
 private:
   typedef mpz_class Type;
 
 public:
-  static const bool is_specialized = false;
+  static const bool is_specialized = true;
   static const int digits = 0;
   static const int digits10 = 0;
   static const bool is_signed = true;
@@ -88,13 +89,14 @@ public:
   }
 };
 
+//! Specialization of std::numeric_limits.
 template <>
 class numeric_limits<mpq_class> {
 private:
   typedef mpq_class Type;
 
 public:
-  static const bool is_specialized = false;
+  static const bool is_specialized = true;
   static const int digits = 0;
   static const int digits10 = 0;
   static const bool is_signed = true;

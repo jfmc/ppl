@@ -1,5 +1,5 @@
 /* Matrix class implementation: inline functions.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -31,10 +31,7 @@ namespace Parma_Polyhedra_Library {
 
 inline dimension_type
 Matrix::max_num_rows() {
-  // FIXME: isn't this ridiculous?  Creating a vector only to know what
-  // its maximum size is?  Why is vector::max_size() not static?
-  static const dimension_type max_nr = std::vector<Row>().max_size();
-  return max_nr;
+  return std::vector<Row>().max_size();
 }
 
 inline dimension_type

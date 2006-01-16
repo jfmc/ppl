@@ -1,5 +1,5 @@
 /* Poly_Gen_Relation class implementation (non-inline functions).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -49,6 +49,8 @@ PPL::Poly_Gen_Relation::ascii_dump(std::ostream& s) const {
       break;
   }
 }
+
+PPL_OUTPUT_DEFINITIONS(Poly_Gen_Relation);
 
 /*! \relates Parma_Polyhedra_Library::Poly_Gen_Relation */
 std::ostream&

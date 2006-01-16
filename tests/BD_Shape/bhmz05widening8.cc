@@ -1,5 +1,5 @@
-/* Test BD_Shape::limited_CH78_extrapolation_assign().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test BD_Shape::BHMZ05_widening_assign().
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,41 +22,37 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
-  TBD_Shape bd1;
-  TBD_Shape known_result;
+  Variable x(0);
+  Variable y(1);
 
-#if NOISY
-    print_constraints(bd1, "*** bd1 ****");
-#endif
+  Constraint_System cs1;
+  cs1.insert(x >= 0);
+  cs1.insert(x <= 1);
+  cs1.insert(y == 0);
 
-  TBD_Shape bd2;
+  TBD_Shape bd1(cs1);
 
-#if NOISY
+  print_constraints(bd1, "*** bd1 ****");
+
+  Constraint_System cs2;
+  cs2.insert(x <= 1);
+  cs2.insert(y >= 0);
+  cs2.insert(y - x <= 0);
+
+  TBD_Shape bd2(cs2);
+
   print_constraints(bd2, "*** bd2 ****");
-#endif
 
-  Constraint_System cs;
+  TBD_Shape computed_result = bd2;
+  computed_result.BHMZ05_widening_assign(bd1);
 
-#if NOISY
-  print_constraints(cs, "*** cs ****");
-#endif
+  TBD_Shape known_result = bd2;
 
-  bd1.limited_CH78_extrapolation_assign(bd2, cs);
+  print_constraints(computed_result,
+		    "*** bd2.BHMZ05_widening_assign(bd1) ***");
 
-#if NOISY
-  print_constraints(bd1,
-		    "*** bd1.limited_CH78_extrapolation_assign(bd2) ***");
-#endif
-
-  return (bd1 == known_result) ? 0 : 1;
+  return computed_result == known_result ? 0 : 1;
 }
 CATCH

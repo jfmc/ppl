@@ -1,5 +1,5 @@
 /* Helper functions for checked numbers
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -35,9 +35,11 @@ struct number_struct {
   unsigned long exponent;
 };
 
-// Returns the integer value associated with the ASCII code c if there
-// is such an association, else -1.
-
+/*! \brief
+  Returns the integer value associated with the ASCII code \p c, in
+  the base \p base positional number system, if there is such an
+  association; returns \f$-1\f$ otherwise.
+*/
 inline int
 get_digit(int c, int base = 10) {
   if (c >= '0' && c < '0' + (base > 10 ? 10 : base))
@@ -52,69 +54,62 @@ get_digit(int c, int base = 10) {
   return -1;
 }
 
-// Adds a to b.  The signs of a and b are given by a_neg and b_neg.
-// Adjusts a_neg if required.
-//
-// Returns false if the result would be out of bounds, else true.
-
+/*! \brief
+  Adds the number represented (in the modulus-and-sign representation)
+  by \p b_neg and \p b_mod to the number represented by \p a_neg and
+  \p a_mod, assigning the result to the latter.  Returns
+  <CODE>false</CODE> is the result cannot be represented; returns
+  <CODE>true</CODE> otherwise.
+*/
 inline bool
-sum_sign(bool& a_neg, unsigned long& a,
-	 bool b_neg, unsigned long b) {
+sum_sign(bool& a_neg, unsigned long& a_mod,
+	 bool b_neg, unsigned long b_mod) {
   if (a_neg == b_neg) {
-    if (a > ULONG_MAX - b)
+    if (a_mod > ULONG_MAX - b_mod)
       return false;
-    a += b;
+    a_mod += b_mod;
   }
-  else if (a >= b)
-    a -= b;
+  else if (a_mod >= b_mod)
+    a_mod -= b_mod;
   else {
     a_neg = !a_neg;
-    a = b - a;
+    a_mod = b_mod - a_mod;
   }
   return true;
 }
 
-// parse_number helper.  Reads the numerator or denominator part of a
-// number from `is' into num.  Returns a Result.
 
+/*! \brief
+  Helper function for parse_number(): reads the numerator or
+  denominator part of a number from \p is into \p num, returning the
+  appropriate Result value.
+*/
 Result
-parse_number1(std::istream& is, number_struct& num) {
+parse_number_part(std::istream& is, number_struct& num) {
+  enum { BASE, INTEGER, FRACTIONAL, EXPONENT } state = BASE;
+  unsigned long max_exp_div;
+  int max_exp_rem;
+  bool empty_exponent = true;
+  bool empty_mantissa = true;
+  long exponent_offset = 0;
   num.base = 10;
   num.neg_mantissa = false;
   num.neg_exponent = false;
   num.mantissa.erase();
   num.exponent = 0;
   int c;
-
-  // Whitespace.
-
   do {
     c = is.get();
   } while (isspace(c));
-
-  // Initial sign, and possibly not-a-number or infinity.
-
   switch (c) {
   case '-':
     num.neg_mantissa = true;
     // Fall through.
   case '+':
     c = is.get();
-    if (c != 'i' && c != 'I')
-      break;
-    // Else fall through.
-  case 'i':
-  case 'I':
-    c = is.get();
-    if (c != 'n' && c != 'N') {
-    error:
-      is.unget();
-      return V_CVT_STR_UNK;
-    }
-    c = is.get();
-    if (c != 'f' && c != 'F')
-      goto error;
-    return num.neg_mantissa ? VC_MINUS_INFINITY : VC_PLUS_INFINITY;
+    if (c == 'i' || c == 'I')
+      goto inf;
+    break;
   case 'n':
   case 'N':
     c = is.get();
@@ -124,143 +119,160 @@ parse_number1(std::istream& is, number_struct& num) {
     if (c != 'n' && c != 'N')
       goto error;
     return VC_NAN;
-  }
-
-  // Hexidecimal indicator or first mantissa/base digit.
-
-  if (c == '0') {
+  inf:
+  case 'i':
+  case 'I':
     c = is.get();
-    if (c == 'x' || c == 'X') {
+    if (c != 'n' && c != 'n')
+      goto error;
+    c = is.get();
+    if (c != 'f' && c != 'F')
+      goto error;
+    return num.neg_mantissa ? VC_MINUS_INFINITY : VC_PLUS_INFINITY;
+  }
+  if (get_digit(c, 10) < 0)
+    goto error;
+  if (c == '0') {
+    int d = is.get();
+    if (d == 'x' || d == 'X') {
       num.base = 16;
+      state = INTEGER;
       c = is.get();
-      goto hex;
+    }
+    else {
+      c = d;
+      empty_mantissa = false;
     }
   }
   else {
-    if (c < '1' || c > '9')
-      goto error;
     num.mantissa += (char) c;
+    empty_mantissa = false;
     c = is.get();
   }
-
-  // Mantissa and base.
-
-  // Leading digits.
-  while (c >= '0' && c <= '9') {
-    if (c != '0' || !num.mantissa.empty())
-      num.mantissa += (char) c;
-    c = is.get();
-  }
-  // Optional base.
-  if (c == '^') {
-    c = is.get();
-    if (c != '^')
-      goto error;
-    num.base = 0;
-    for (std::string::const_iterator i = num.mantissa.begin();
-	 i != num.mantissa.end();
-	 i++) {
-      num.base = num.base * 10 + (*i - '0');
-      if (num.base > 36)
+  while (true) {
+    switch (state) {
+    case BASE:
+      if (get_digit(c, 10) >= 0) {
+	if (c != '0' || !num.mantissa.empty())
+	  num.mantissa += (char) c;
+	empty_mantissa = false;
+	break;
+      }
+      if (c == '^') {
+	c = is.get();
+	if (c != '^')
+	  goto error;
+	std::string::const_iterator i;
+	num.base = 0;
+	for (i = num.mantissa.begin(); i != num.mantissa.end(); i++) {
+	  num.base = num.base * 10 + (*i - '0');
+	  if (num.base > 36)
+	    goto error;
+	}
+	if (num.base < 2)
+	  goto error;
+	num.mantissa.erase();
+	empty_mantissa = true;
+	state = INTEGER;
+	break;
+      }
+      goto integer;
+    case INTEGER:
+      if (get_digit(c, num.base) >= 0) {
+	if (c != '0' || !num.mantissa.empty())
+	  num.mantissa += (char) c;
+	empty_mantissa = false;
+	break;
+      }
+    integer:
+      if (c == '.') {
+	state = FRACTIONAL;
+	break;
+      }
+      goto fractional;
+    case FRACTIONAL:
+      if (get_digit(c, num.base) >= 0) {
+	exponent_offset--;
+	if (c != '0' || !num.mantissa.empty())
+	  num.mantissa += (char) c;
+	empty_mantissa = false;
+	break;
+      }
+    fractional:
+      if (empty_mantissa)
 	goto error;
+      if (c == 'e' || c == 'E')
+	goto exp;
+      if (c == '*') {
+	c = is.get();
+	if (c != '^')
+	  goto error;
+      exp:
+	state = EXPONENT;
+	max_exp_div = LONG_MAX / num.base;
+	max_exp_rem = LONG_MAX % num.base;
+	c = is.get();
+	if (c == '-') {
+	  num.neg_exponent = true;
+	  break;
+	}
+	if (c == '+')
+	  break;
+	continue;
+      }
+      goto ok;
+    case EXPONENT:
+      int d = get_digit(c, 10);
+      if (d >= 0) {
+	empty_exponent = false;
+	if (num.exponent > max_exp_div
+	    || (num.exponent == max_exp_div && d > max_exp_rem))
+	  return V_CVT_STR_UNK;
+	num.exponent = num.exponent * 10 + d;
+	break;
+      }
+      if (empty_exponent)
+	goto error;
+      goto ok;
     }
-    if (num.base < 2)
-      goto error;
-    num.mantissa.erase();
     c = is.get();
-
-  hex:
-    // Mantissa digits (for '0x' hex format, or when base present).
-    while (get_digit(c, num.base) >= 0) {
-      // The leading digit of num.mantissa must be greater than zero.
-      if (c != '0' || !num.mantissa.empty())
-	num.mantissa += (char) c;
-      c = is.get();
-    }
   }
 
-  // Fraction.
-
-  long exponent_offset = 0;
-
-  if (c == '.') {
-    c = is.get();
-    while (get_digit(c, num.base) >= 0) {
-      exponent_offset--;
-      // The leading digit of num.mantissa must be greater than zero.
-      if (c != '0' || !num.mantissa.empty())
-	num.mantissa += (char) c;
-      c = is.get();
+  {
+  ok:
+    is.unget();
+    unsigned int n = num.mantissa.size();
+    while (n > 0 && num.mantissa[n - 1] == '0') {
+      --n;
+      exponent_offset++;
     }
-    if (exponent_offset == 0)
-      goto error;
+    num.mantissa.erase(n);
+    bool neg;
+    if (exponent_offset < 0) {
+      neg = true;
+      exponent_offset = -exponent_offset;
+    }
+    else
+      neg = false;
+    sum_sign(num.neg_exponent, num.exponent,
+	     neg, exponent_offset);
+    return V_EQ;
   }
 
-  // Exponent.
-
-  if (c == 'e' || c == 'E')
-    goto exp;
-  if (c == '*') {
-    c = is.get();
-    if (c != '^')
-      goto error;
-  exp:
-    c = is.get();
-    if (c == '-') {
-      num.neg_exponent = true;
-      c = is.get();
-    }
-    if (c == '+')
-      c = is.get();
-    // Read exponent numeric digits.
-    int d = get_digit(c, num.base);
-    if (d < 0)
-      // An exponent value is required.
-      goto error;
-    unsigned long max_exp_div = LONG_MAX / num.base;
-    int max_exp_rem = LONG_MAX % num.base;
-    while (d >= 0) {
-      // Check that the exponent will be within bounds.
-      if (num.exponent > max_exp_div
-	  || (num.exponent == max_exp_div
-	      && d > max_exp_rem))
-	return V_CVT_STR_UNK;
-      num.exponent = num.exponent * num.base + d;
-      d = get_digit(is.get(), num.base);
-    }
-  }
-
+ error:
   is.unget();
-
-  // Transfer any trailing mantissa zeros to exponent_offset, so they
-  // can be included in the exponent.
-  unsigned int n = num.mantissa.size();
-  while (n > 0 && num.mantissa[n - 1] == '0') {
-    --n;
-    exponent_offset++;
-  }
-  num.mantissa.erase(n);
-  // Adjust the exponent to account for appending the fraction digits
-  // to the mantissa.
-  bool neg;
-  if (exponent_offset < 0) {
-    neg = true;
-    exponent_offset = -exponent_offset;
-  }
-  else
-    neg = false;
-  sum_sign(num.neg_exponent, num.exponent,
-	   neg, exponent_offset);
-  return V_EQ;
+  return V_CVT_STR_UNK;
 }
 
-// Reads a number from `is' into numerator num and denominator den,
-// returning a Result.
-
+/* \brief
+   Reads a number from \p is writing it into \p num, the numerator,
+   and \p den, the denominator; the appropriate Result value is
+   returned.
+*/
 Result
 parse_number(std::istream& is, number_struct& num, number_struct& den) {
   // Read the numerator.
-  Result r = parse_number1(is, num);
+  Result r = parse_number_part(is, num);
   if (r != V_EQ)
     return r;
   if (is.get() != '/') {
@@ -269,14 +281,12 @@ parse_number(std::istream& is, number_struct& num, number_struct& den) {
     return r;
   }
   // Read the denominator.
-  r = parse_number1(is, den);
+  r = parse_number_part(is, den);
   if (r != V_EQ)
     return V_CVT_STR_UNK;
-  if (num.base == den.base)
-    // Ensure that one of the denominator and numerator exponents is
-    // zero, leaving the other zero or positive.
+  if (num.base == den.base) {
     if (sum_sign(num.neg_exponent, num.exponent,
-		 !den.neg_exponent, den.exponent))
+		 !den.neg_exponent, den.exponent)) {
       if (num.neg_exponent) {
 	den.neg_exponent = false;
 	den.exponent = num.exponent;
@@ -284,10 +294,11 @@ parse_number(std::istream& is, number_struct& num, number_struct& den) {
       }
       else
 	den.exponent = 0;
+    }
+  }
   return V_EQ;
 }
 
-// Reads a number from `is' into `to', returning a Result.
 
 Result
 input_mpq(mpq_class& to, std::istream& is) {
@@ -297,17 +308,15 @@ input_mpq(mpq_class& to, std::istream& is) {
   if (r != V_EQ)
     return r;
   if (den_struct.base && den_struct.mantissa.empty())
-    return VC_NAN;
+      return VC_NAN;
   if (num_struct.mantissa.empty()) {
     to = 0;
     return V_EQ;
   }
-  // Convert the parsed results into GMP rational `to'.
   mpz_ptr num = to.get_num().get_mpz_t();
   mpz_ptr den = to.get_den().get_mpz_t();
   mpz_set_str(num, num_struct.mantissa.c_str(), num_struct.base);
   if (den_struct.base) {
-    // There is a denominator.
     if (num_struct.neg_mantissa ^ den_struct.neg_mantissa)
       mpz_neg(num, num);
     mpz_set_str(den, den_struct.mantissa.c_str(), den_struct.base);
@@ -333,7 +342,6 @@ input_mpq(mpq_class& to, std::istream& is) {
     }
   }
   else {
-    // There is only a numerator.
     if (num_struct.neg_mantissa)
       mpz_neg(num, num);
     if (num_struct.exponent) {
@@ -361,3 +369,4 @@ input_mpq(mpq_class& to, std::istream& is) {
 } // namespace Checked
 
 } // namespace Parma_Polyhedra_Library
+

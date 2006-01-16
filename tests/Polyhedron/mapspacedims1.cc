@@ -1,5 +1,5 @@
 /* Test Polyhedron::map_space_dimensions().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,24 +23,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_test.hh"
 #include "PFunction.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
-#if NOISY
 void
 print_function(const PFunction& function, const std::string& intro = "",
-	       std::ostream& s = std::cout) {
+	       std::ostream& s = nout) {
   if (!intro.empty())
     s << intro << endl;
   function.print(s);
 }
-#endif
 
 void
 test1() {
@@ -48,10 +39,8 @@ test1() {
 
   C_Polyhedron ph1(3);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   ph1.map_space_dimensions(function);
 
@@ -59,9 +48,7 @@ test1() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "*** After ph1.map_space_dimensions(function) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -73,10 +60,8 @@ test2() {
 
   C_Polyhedron ph1(3, EMPTY);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   ph1.map_space_dimensions(function);
 
@@ -84,9 +69,7 @@ test2() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "*** After ph1.map_space_dimensions(function) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -110,10 +93,8 @@ test3() {
 
   C_Polyhedron ph1(gs);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_generators(ph1, "*** ph1 ***");
-#endif
 
   ph1.map_space_dimensions(function);
 
@@ -125,9 +106,7 @@ test3() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -150,10 +129,8 @@ test4() {
 
   C_Polyhedron ph1(gs);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_generators(ph1, "*** ph1 ***");
-#endif
 
   ph1.map_space_dimensions(function);
 
@@ -165,9 +142,7 @@ test4() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -190,10 +165,8 @@ test5() {
 
   C_Polyhedron ph1(gs);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_generators(ph1, "*** ph1 ***");
-#endif
 
   ph1.map_space_dimensions(function);
 
@@ -202,9 +175,7 @@ test5() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -228,18 +199,14 @@ test6() {
   C_Polyhedron ph1(gs);
   C_Polyhedron known_result(ph1);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_generators(ph1, "*** ph1 ***");
-#endif
 
   ph1.map_space_dimensions(function);
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -264,10 +231,8 @@ test7() {
 
   C_Polyhedron ph1(gs);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_generators(ph1, "*** ph1 ***");
-#endif
 
   ph1.map_space_dimensions(function);
 
@@ -279,9 +244,7 @@ test7() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -305,10 +268,8 @@ test8() {
 
   C_Polyhedron ph1(gs);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_generators(ph1, "*** ph1 ***");
-#endif
 
   ph1.map_space_dimensions(function);
 
@@ -318,9 +279,7 @@ test8() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -334,10 +293,8 @@ test9() {
 
   C_Polyhedron ph1(3, EMPTY);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   ph1.map_space_dimensions(function);
 
@@ -345,9 +302,7 @@ test9() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "*** After ph1.map_space_dimensions(function) ***");
-#endif
 
   if (!ok)
     exit(1);

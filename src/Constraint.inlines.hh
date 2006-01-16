@@ -1,5 +1,5 @@
 /* Constraint class implementation: inline functions.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -310,6 +310,16 @@ Constraint::epsilon_leq_one() {
   static const Constraint
     eps_leq_one(Linear_Expression::zero() < Coefficient_one());
   return eps_leq_one;
+}
+
+inline void
+Constraint::ascii_dump(std::ostream& s) const {
+  Linear_Row::ascii_dump(s);
+}
+
+inline bool
+Constraint::ascii_load(std::istream& s) {
+  return Linear_Row::ascii_load(s);
 }
 
 inline void

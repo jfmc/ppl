@@ -1,7 +1,7 @@
 /* Test Polyhedron::generalized_affine_image() with a linear expression
    as the left hand side: when the left hand side has no coefficients
    of the variables different form zero.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,13 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
@@ -44,9 +37,7 @@ test1() {
 
   C_Polyhedron known_result(ph);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   ph.generalized_affine_image(Linear_Expression(2), EQUAL, A + B);
 
@@ -54,10 +45,8 @@ test1() {
 
   bool ok = (ph == known_result);
 
-#if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
 		    "(Linear_Expression(2), EQUAL, A + B) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -74,9 +63,7 @@ test2() {
 
   C_Polyhedron known_result(ph);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   ph.generalized_affine_image(Linear_Expression(2),
 			      GREATER_THAN_OR_EQUAL,
@@ -86,10 +73,8 @@ test2() {
 
   bool ok = (ph == known_result);
 
-#if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
 		    "(Linear_Expression(2), GREATER_THAN_OR_EQUAL, A + B) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -106,9 +91,7 @@ test3() {
 
   C_Polyhedron known_result(ph);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   ph.generalized_affine_image(Linear_Expression(2), LESS_THAN_OR_EQUAL, A + B);
 
@@ -116,10 +99,8 @@ test3() {
 
   bool ok = (ph == known_result);
 
-#if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
 		    "(Linear_Expression(2), LESS_THAN_OR_EQUAL, A + B) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -136,9 +117,7 @@ test4() {
 
   NNC_Polyhedron known_result(ph);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   ph.generalized_affine_image(Linear_Expression(2), GREATER_THAN, A + B);
 
@@ -146,10 +125,8 @@ test4() {
 
   bool ok = (ph == known_result);
 
-#if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
 		    "(Linear_Expression(2), GREATER_THAN, A + B) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -166,9 +143,7 @@ test5() {
 
   NNC_Polyhedron known_result(ph);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   ph.generalized_affine_image(Linear_Expression(2), LESS_THAN, A + B);
 
@@ -176,10 +151,8 @@ test5() {
 
   bool ok = (ph == known_result);
 
-#if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
 		    "(Linear_Expression(2), LESS_THAN, A + B) ***");
-#endif
 
   if (!ok)
     exit(1);

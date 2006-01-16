@@ -1,7 +1,7 @@
 /* Test Polyhedron::generalized_affine_image() with a linear expression
    as the left hand side: when the left hand side is a variable,
    check whether or not the same result is obtained.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,13 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 int
@@ -43,9 +36,8 @@ test1() {
   ph.add_constraint(A <= 4);
   ph.add_constraint(B <= 5);
   ph.add_constraint(A <= B);
-#if NOISY
+
   print_constraints(ph, "--- ph ---");
-#endif
 
   C_Polyhedron ph2 = ph;
 
@@ -54,15 +46,12 @@ test1() {
 
   int retval = (ph == ph2) ? 0 : 1;
 
-#if NOISY
   print_generators(ph, "--- ph after "
 		   "ph.generalized_affine_image(B, GREATER_THAN_OR_EQUAL,"
 		   " A+2) ---");
-#endif
 
   return retval;
 }
-
 
 int
 test2() {
@@ -74,9 +63,8 @@ test2() {
   ph.add_constraint(A <= 4);
   ph.add_constraint(B <= 5);
   ph.add_constraint(A <= B);
-#if NOISY
+
   print_constraints(ph, "--- ph ---");
-#endif
 
   C_Polyhedron ph2 = ph;
 
@@ -85,11 +73,9 @@ test2() {
 
   int retval = (ph == ph2) ? 0 : 1;
 
-#if NOISY
   print_generators(ph, "--- ph after "
 		   "ph.generalized_affine_image(B, GREATER_THAN_OR_EQUAL,"
 		   " A+2, -2) ---");
-#endif
 
   return retval;
 }
@@ -104,9 +90,8 @@ test3() {
   ph.add_constraint(7*A >= 2);
   ph.add_constraint(3*B >= 1);
   ph.add_constraint(2*A >= B);
-#if NOISY
+
   print_generators(ph, "--- ph ---");
-#endif
 
   C_Polyhedron ph2 = ph;
 
@@ -115,15 +100,12 @@ test3() {
 
   int retval = (ph == ph2) ? 0 : 1;
 
-#if NOISY
   print_generators(ph, "--- ph after "
 		   "ph.generalized_affine_image(B, LESS_THAN_OR_EQUAL,"
 		   " A-B+2, -3) ---");
-#endif
 
   return retval;
 }
-
 
 int
 test4() {
@@ -135,9 +117,8 @@ test4() {
   ph.add_generator(closure_point(2*A));
   ph.add_generator(closure_point(2*A + 2*B));
   ph.add_generator(closure_point(3*A + B));
-#if NOISY
+
   print_constraints(ph, "--- ph ---");
-#endif
 
   NNC_Polyhedron ph2 = ph;
 
@@ -146,10 +127,8 @@ test4() {
 
   int retval = (ph == ph2) ? 0 : 1;
 
-#if NOISY
   print_generators(ph, "--- ph after "
 		   "ph.generalized_affine_image(B, LESS_THAN, B+2) ---");
-#endif
 
   return retval;
 }
@@ -163,9 +142,7 @@ test5() {
   ph.add_constraint(B >= 0);
   ph.add_constraint(A - B >= 0);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   C_Polyhedron ph2 = ph;
 
@@ -174,15 +151,12 @@ test5() {
 
   int retval = (ph == ph2) ? 0 : 1;
 
-#if NOISY
   print_generators(ph,
 		   "*** After ph.generalized_affine_image"
 		   "(A, EQUAL, A + 2) ***");
-#endif
 
   return retval;
 }
-
 
 int
 test6() {
@@ -195,9 +169,7 @@ test6() {
   ph.add_generator(point(A + 3*B));
   ph.add_generator(point(3*A + 3*B));
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   C_Polyhedron ph2 = ph;
 
@@ -208,11 +180,9 @@ test6() {
 
   int retval = (ph == ph2) ? 0 : 1;
 
-#if NOISY
   print_generators(ph,
 		   "*** After ph.generalized_affine_image"
 		   "(A + B, GREATER_THAN_OR_EQUAL, 2*A - B + 2) ***");
-#endif
 
   return retval;
 }

@@ -1,5 +1,5 @@
 /* Test that the right exceptions are thrown in case of incorrect uses.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,12 +22,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
+using std::invalid_argument;
+using std::domain_error;
 
 namespace {
 
@@ -49,10 +45,8 @@ error1() {
     // It is an error if the exception is not thrown.
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     // It is an error if the wrong exception is thrown.
@@ -78,10 +72,8 @@ error2() {
     C_Polyhedron ph(gs);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -102,10 +94,8 @@ error3() {
     ph.add_constraint(x - y > 0);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -123,10 +113,8 @@ error4() {
     ph.add_generator(closure_point(Linear_Expression(2)));
     exit(1);
   }
-  catch(invalid_argument& e) {
-# if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -153,10 +141,8 @@ error5() {
     ph.add_constraints_and_minimize(cs);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -180,10 +166,8 @@ error6() {
     ph.add_constraints(cs);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -209,10 +193,8 @@ error7() {
     ph.concatenate_assign(qh);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -239,10 +221,8 @@ error8() {
     ph.add_generators_and_minimize(gs);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -267,10 +247,8 @@ error9() {
     ph.add_generators(gs);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -295,9 +273,7 @@ error10() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -316,10 +292,9 @@ error11() {
   ph2.add_constraint(A - B > 0);
   ph2.add_constraint(A >= 0);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
-#endif
+
   try {
     // This is an invalid use of the function
     // `intersection_assign_and_minimize': it is illegal to apply
@@ -327,10 +302,8 @@ error11() {
     ph1.intersection_assign_and_minimize(ph2);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -349,10 +322,9 @@ error12() {
   ph2.add_constraint(A - B > 0);
   ph2.add_constraint(B >= 0);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
-#endif
+
   try {
     // This is an invalid use of the function
     // `intersection_assign': it is illegal to apply this function
@@ -360,16 +332,13 @@ error12() {
     ph1.intersection_assign(ph2);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
   }
 }
-
 
 void
 error13() {
@@ -387,10 +356,8 @@ error13() {
   gs2.insert(closure_point(3*B));
   NNC_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
    try {
      // This is an invalid use of the function
@@ -400,10 +367,8 @@ error13() {
     ph1.poly_hull_assign_and_minimize(ph2);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -426,10 +391,8 @@ error14() {
   gs2.insert(closure_point(3*A));
   NNC_Polyhedron ph2(gs2);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
    try {
     // This is an invalid use of the function
@@ -438,10 +401,8 @@ error14() {
     ph1.poly_hull_assign(ph2);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -465,10 +426,8 @@ error15() {
   ph2.add_constraint(B >= 0);
   ph2.add_constraint(B <= 4);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
-#endif
 
   try {
     // This is an invalid use of the function
@@ -477,10 +436,8 @@ error15() {
     ph1.poly_difference_assign(ph2);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -502,10 +459,8 @@ error16() {
   ph2.add_constraint(A <= 4);
   ph2.add_constraint(A - B >= 0);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
-#endif
 
   try {
     // This is an invalid use of the function
@@ -514,10 +469,8 @@ error16() {
     ph2.H79_widening_assign(ph1);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -542,11 +495,9 @@ error17() {
   Constraint_System cs;
   cs.insert(A <= 8);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
   try {
     // This is an invalid use of the function
@@ -556,10 +507,8 @@ error17() {
     ph2.limited_H79_extrapolation_assign(ph1, cs);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -584,11 +533,9 @@ error18() {
   Constraint_System cs;
   cs.insert(A < 8);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
   try {
     // This is an invalid use of the function
@@ -598,10 +545,8 @@ error18() {
     ph2.limited_H79_extrapolation_assign(ph1, cs);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -623,10 +568,8 @@ error19() {
   gs.insert(ray(A + B));
   NNC_Polyhedron ph2(gs);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
  try {
     // This is an invalid use of the function
@@ -636,10 +579,8 @@ error19() {
     ph1.time_elapse_assign(ph2);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -656,10 +597,8 @@ error20() {
   NNC_Polyhedron ph2(1);
   ph2.add_constraint(A > 0);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
-#endif
 
   try {
     // This is an invalid use of the Polyhedron::contains(): it is
@@ -668,10 +607,8 @@ error20() {
     ph1.contains(ph2);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -689,9 +626,7 @@ error21() {
 
   const Constraint_System cs = ph1.constraints();
 
-#if NOISY
   print_constraints(cs, "*** cs ***");
-#endif
 
   try {
     // This is an incorrect use of the function
@@ -701,10 +636,8 @@ error21() {
     C_Polyhedron ph2(cs);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -732,10 +665,8 @@ error22() {
     C_Polyhedron ph2(gs2);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -753,10 +684,8 @@ error23() {
     ph.add_generator(closure_point());
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -767,9 +696,7 @@ void
 error24() {
   NNC_Polyhedron ph(0, EMPTY);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   Generator_System gs;
   gs.insert(closure_point());
@@ -783,9 +710,7 @@ error24() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -796,9 +721,7 @@ void
 error25() {
   NNC_Polyhedron ph(0, EMPTY);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   Generator_System gs;
   gs.insert(closure_point());
@@ -812,9 +735,7 @@ error25() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -831,10 +752,8 @@ error26() {
   C_Polyhedron ph2(1);
   ph2.add_constraint(A >= 0);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
-#endif
 
   try {
     // This is an invalid use of Polyhedron::contains():
@@ -843,10 +762,8 @@ error26() {
     ph2.contains(ph1);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -871,11 +788,9 @@ error27() {
   Constraint_System cs;
   cs.insert(A < 8);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
   try {
     // This is an invalid use of the function
@@ -886,10 +801,8 @@ error27() {
     ph2.limited_H79_extrapolation_assign(ph1, cs);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -919,10 +832,8 @@ error28() {
     ph2.BHRZ03_widening_assign(ph1);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -944,9 +855,7 @@ error29() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -972,10 +881,8 @@ error30() {
     ph1.swap(ph2);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -998,9 +905,144 @@ error31() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error32() {
+  Variable A(0);
+  LP_Problem lp;
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  cs.insert(A > -6);
+
+  try {
+    // This tries to build an invalid LP_Problem object: the feasible
+    // region can not be defined using strict inequalities.
+    lp.add_constraints(cs);
+
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error33() {
+  Variable A(0);
+  LP_Problem lp;
+
+  try {
+    // This tries to build an invalid LP_Problem object: the space dimension
+    // of the objective function can not be greater than the space dimension
+    // of the feasible region.
+    lp.set_objective_function(A);
+
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error34() {
+  Variable A(0);
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  cs.insert(A <= 0);
+  LP_Problem lp(cs, A, MAXIMIZATION);
+
+  try {
+    // We cannot extract a feasible point from an unsatisfiable LP_Problem.
+    Generator fp = lp.feasible_point();
+
+    exit(1);
+  }
+  catch (domain_error& e) {
+    nout << "domain_error: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error35() {
+  Variable A(0);
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  LP_Problem lp(cs, A, MAXIMIZATION);
+
+  try {
+    // We cannot extract an optimizing point from an unbounded LP_Problem.
+    Generator fp = lp.optimizing_point();
+
+    exit(1);
+  }
+  catch (domain_error& e) {
+    nout << "domain_error: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error36() {
+  Variable A(0);
+  Variable B(1);
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  LP_Problem lp(cs, A, MAXIMIZATION);
+  Generator p = point(A + B);
+  Coefficient num;
+  Coefficient den;
+
+  try {
+    // This tries to evaluate the objective function on a space dimension
+    // incompatible generator.
+    lp.evaluate_objective_function(p, num, den);
+
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error37() {
+  Variable A(0);
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  LP_Problem lp(cs, A, MAXIMIZATION);
+  Generator r = ray(A);
+  Coefficient num;
+  Coefficient den;
+
+  try {
+    // This tries to evaluate the objective function on a ray.
+    lp.evaluate_objective_function(r, num, den);
+
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -1044,6 +1086,12 @@ main() TRY {
   error29();
   error30();
   error31();
+  error32();
+  error33();
+  error34();
+  error35();
+  error36();
+  error37();
 
   return 0;
 }

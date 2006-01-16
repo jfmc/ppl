@@ -1,5 +1,5 @@
 /* Test Polyhedron::concatenate_assign().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -46,10 +39,8 @@ main() TRY {
   C_Polyhedron ph2(1, EMPTY);
   ph2.add_generator(point(10*A));
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   ph1.concatenate_assign(ph2);
 
@@ -60,9 +51,7 @@ main() TRY {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "*** After ph1.concatenate_assign(ph2) ***");
-#endif
 
   return ok ? 0 : 1;
 }

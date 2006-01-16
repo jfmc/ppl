@@ -1,5 +1,5 @@
 /* Limits for native integer types.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -59,7 +59,7 @@ namespace Parma_Polyhedra_Library {
 /*
   The only reason to use these definitions instead of std::numeric_limits
   is a missing optimization in GCC 3.4.1.
- */
+*/
 
 template <typename T>
 struct Limits;

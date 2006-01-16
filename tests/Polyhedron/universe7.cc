@@ -1,7 +1,7 @@
 /* Test Polyhedron::is_universe(): a generator systems containing
    a point and three rays in a 2-dim vector space may still define
    the universe polyhedron.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,13 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -44,19 +37,14 @@ main() TRY {
   gs.insert(ray(x - y));
 
   C_Polyhedron ph(gs);
-
-#if NOISY
   print_generators(ph, "--- ph ---");
-#endif
 
   bool universe = ph.is_universe();
 
-#if NOISY
-  cout << "*** ph.is_universe() ***"
+  nout << "*** ph.is_universe() ***"
        << endl
        << (universe ? "true" : "false")
        << endl;
-#endif
 
   return universe ? 0 : 1;
 }

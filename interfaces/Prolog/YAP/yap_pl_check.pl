@@ -1,5 +1,5 @@
 /* Prolog main program for the PPL/YAP-Prolog predicate checker.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,6 +22,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 :- ensure_loaded('ppl_yap.pl').
 :- ensure_loaded('../tests/pl_check.pl').
+
+prolog_system(yap).
 
 main :-
     (check_all ->

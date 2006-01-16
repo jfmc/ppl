@@ -1,7 +1,7 @@
 /* Test ascii_dump() 5 ascii_load(): we read a non completed file.
    we test these functions in the case that the file does not contain
    the right thing.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,12 +27,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <string>
 #include <fstream>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
+using std::string;
+using std::fstream;
+using std::ios_base;
 
 namespace {
 
@@ -40,9 +37,8 @@ const char* my_file = "ascii_dump_load5.dat";
 
 void
 test1() {
-#if NOISY
-  cout << "test1()" << endl;
-#endif
+
+  nout << "test1()" << endl;
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -65,9 +61,8 @@ test1() {
 
 void
 test2() {
-#if NOISY
-  cout << "test2()" << endl;
-#endif
+
+  nout << "test2()" << endl;
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -96,9 +91,8 @@ test2() {
 
 void
 test3() {
-#if NOISY
-  cout << "test3()" << endl;
-#endif
+
+  nout << "test3()" << endl;
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -118,12 +112,10 @@ test3() {
     exit(1);
 }
 
-
 void
 test4() {
-#if NOISY
-  cout << "test4()" << endl;
-#endif
+
+  nout << "test4()" << endl;
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -142,12 +134,10 @@ test4() {
     exit(1);
 }
 
-
 void
 test5() {
-#if NOISY
-  cout << "test5()" << endl;
-#endif
+
+  nout << "test5()" << endl;
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -184,7 +174,6 @@ test5() {
 }
 
 } // namespace
-
 
 int
 main() TRY {

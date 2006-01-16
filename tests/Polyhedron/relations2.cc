@@ -1,6 +1,6 @@
 /* Test Polyhedron::relation_with(g): we verify that a generator
    is not subsumed by an empty polyhedron.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,13 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 int
 main() TRY {
@@ -38,25 +32,18 @@ main() TRY {
   Variable x(0);
 
   C_Polyhedron ph(2, EMPTY);
-
-#if NOISY
   print_constraints(ph, "--- ph ---");
-#endif
 
   Generator g = point(x);
-
-#if NOISY
   print_generator(g, "--- g ---");
-#endif
 
   Poly_Gen_Relation rel = ph.relation_with(g);
 
   Poly_Gen_Relation known_rel = Poly_Gen_Relation::nothing();
   int retval = (rel == known_rel) ? 0 : 1;
 
-#if NOISY
-  cout << "ph.relation_with(v(A)) == " << rel << endl;
-#endif
+  nout << "ph.relation_with(v(A)) == " << rel << endl;
+
   return retval;
 }
 CATCH

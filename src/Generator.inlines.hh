@@ -1,5 +1,5 @@
 /* Generator class implementation: inline functions.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -192,6 +192,16 @@ operator==(const Generator& x, const Generator& y) {
 inline bool
 operator!=(const Generator& x, const Generator& y) {
   return !x.is_equivalent_to(y);
+}
+
+inline void
+Generator::ascii_dump(std::ostream& s) const {
+  Linear_Row::ascii_dump(s);
+}
+
+inline bool
+Generator::ascii_load(std::istream& s) {
+  return Linear_Row::ascii_load(s);
 }
 
 inline void

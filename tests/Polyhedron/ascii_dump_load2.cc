@@ -1,7 +1,7 @@
 /* Test Polyhedron::ascii_dump() and Polyhedron::ascii_load():
    we test these functions in the case that the file does not contain
    the right thing.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,12 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "files.hh"
 #include <fstream>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
+using std::fstream;
+using std::ios_base;
 
 namespace {
 

@@ -1,5 +1,5 @@
 /* Declaration of simple print functions used in test programs.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,25 +23,32 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_print_hh
 #define PPL_print_hh 1
 
-#include <iostream>
 #include <string>
+#include <iostream>
 
-#ifdef NOISY
+#ifndef NOISY
+#define NOISY 0
+#endif
+
+#if NOISY
 static std::ostream& nout = std::cout;
 #else
-#define NOISY 0
 #include <fstream>
 static std::ofstream nout;
 #endif
 
 #ifndef VERY_NOISY
+#define VERY_NOISY 0
+#endif
+
+#if VERY_NOISY
 static std::ostream& vnout = std::cout;
 #else
-#define VERY_NOISY 0
 #include <fstream>
 static std::ofstream vnout;
 #endif
 
+// FIX use inline function?
 #define dump_grids(grid,known_grid)			\
   nout << endl << "ASCII dump of grid:" << endl;	\
   grid.ascii_dump(nout);				\
@@ -51,12 +58,12 @@ static std::ofstream vnout;
 void
 print_constraint(const Parma_Polyhedra_Library::Constraint& c,
 		 const std::string& intro = "",
-		 std::ostream& s = std::cout);
+		 std::ostream& s = nout);
 
 void
 print_constraints(const Parma_Polyhedra_Library::Constraint_System& cs,
 		  const std::string& intro = "",
-		  std::ostream& s = std::cout);
+		  std::ostream& s = nout);
 
 void
 print_constraints(const Parma_Polyhedra_Library::Congruence_System& cgs,
@@ -66,13 +73,13 @@ print_constraints(const Parma_Polyhedra_Library::Congruence_System& cgs,
 void
 print_constraints(const Parma_Polyhedra_Library::Polyhedron& ph,
 		  const std::string& intro = "",
-		  std::ostream& s = std::cout);
+		  std::ostream& s = nout);
 
 template <typename T>
-inline void
+void
 print_constraints(const Parma_Polyhedra_Library::BD_Shape<T>& bd,
 		  const std::string& intro = "",
-		  std::ostream& s = std::cout) {
+		  std::ostream& s = nout) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
   if (!intro.empty())
     s << intro << std::endl;
@@ -82,16 +89,16 @@ print_constraints(const Parma_Polyhedra_Library::BD_Shape<T>& bd,
 void
 print_generator(const Parma_Polyhedra_Library::Generator& g,
 		const std::string& intro = "",
-		std::ostream& s = std::cout);
+		std::ostream& s = nout);
 
 void
 print_generators(const Parma_Polyhedra_Library::Generator_System& gs,
 		 const std::string& intro = "",
-		 std::ostream& s = std::cout);
+		 std::ostream& s = nout);
 
 void
 print_generators(const Parma_Polyhedra_Library::Polyhedron& ph,
 		 const std::string& intro = "",
-		 std::ostream& s = std::cout);
+		 std::ostream& s = nout);
 
 #endif // !defined(PPL_print_hh)

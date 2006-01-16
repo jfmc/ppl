@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -19,13 +19,6 @@
 #
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
-
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
-SUBDIRS =
 
 CHECKER =
 #CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(srcdir)/valgrind_suppressions
@@ -73,7 +66,7 @@ ORIGINAL_TESTS = \
 	affineimage6 affineimage7 affineimage8 affineimage9 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	affinepreimage5 affinepreimage6 affinepreimage7 affinepreimage8 \
-	affinepreimage9 affinepreimage10 affinepreimage11 \
+	affinepreimage9 affinepreimage10 affinepreimage11 affinepreimage12 \
 	affinetrans \
 	append1 append2 \
 	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
@@ -129,6 +122,7 @@ ORIGINAL_TESTS = \
 	linearpartition3 linearpartition4 \
 	linexpression1 \
 	linearsystem1 \
+	lpproblem1 lpproblem2 lpproblem3 \
 	mapspacedims1 mapspacedims2 mapspacedims3  mapspacedims4 \
 	matrix1 \
 	max_min1 max_min2 \
@@ -148,7 +142,6 @@ ORIGINAL_TESTS = \
 	polyhull7 polyhull8 polyhull9 polyhull10 polyhull11 \
 	polypowerset1 \
 	powerset1 \
-	primalsimplex1 primalsimplex2 \
 	randphull1 randphull2 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
 	relations7 relations8 relations9 relations10 relations11 \
@@ -191,7 +184,7 @@ DERIVED_TESTS = \
 	nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
 	nnc_affinepreimage4 nnc_affinepreimage5 nnc_affinepreimage6 \
 	nnc_affinepreimage7 nnc_affinepreimage8 nnc_affinepreimage9 \
-	nnc_affinepreimage10 nnc_affinepreimage11 \
+	nnc_affinepreimage10 nnc_affinepreimage11 nnc_affinepreimage12 \
 	nnc_affinetrans \
 	nnc_append1 nnc_append2 \
 	nnc_ascii_dump_load1 nnc_ascii_dump_load2 nnc_ascii_dump_load3 \
@@ -372,6 +365,7 @@ affinepreimage8_SOURCES = affinepreimage8.cc
 affinepreimage9_SOURCES = affinepreimage9.cc
 affinepreimage10_SOURCES = affinepreimage10.cc
 affinepreimage11_SOURCES = affinepreimage11.cc
+affinepreimage12_SOURCES = affinepreimage12.cc
 
 affinetrans_SOURCES = affinetrans.cc
 
@@ -548,6 +542,10 @@ linexpression1_SOURCES = linexpression1.cc
 
 linearsystem1_SOURCES = linearsystem1.cc
 
+lpproblem1_SOURCES = lpproblem1.cc
+lpproblem2_SOURCES = lpproblem2.cc
+lpproblem3_SOURCES = lpproblem3.cc
+
 mapspacedims1_SOURCES = mapspacedims1.cc
 mapspacedims2_SOURCES = mapspacedims2.cc
 mapspacedims3_SOURCES = mapspacedims3.cc
@@ -608,9 +606,6 @@ polyhull11_SOURCES = polyhull11.cc
 polypowerset1_SOURCES = polypowerset1.cc
 
 powerset1_SOURCES = powerset1.cc
-
-primalsimplex1_SOURCES = primalsimplex1.cc
-primalsimplex2_SOURCES = primalsimplex2.cc
 
 randphull1_SOURCES = randphull1.cc
 randphull2_SOURCES = randphull2.cc
@@ -824,6 +819,8 @@ nnc_affinepreimage10_SOURCES = affinepreimage10.cc
 nnc_affinepreimage10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_affinepreimage11_SOURCES = affinepreimage11.cc
 nnc_affinepreimage11_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affinepreimage12_SOURCES = affinepreimage12.cc
+nnc_affinepreimage12_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affinetrans_SOURCES = affinetrans.cc
 nnc_affinetrans_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -1242,6 +1239,9 @@ XFAIL_ALWAYS =
 
 XFAIL_WITH_INT64 = \
 $(XFAIL_ALWAYS) \
+lpproblem1 \
+lpproblem2 \
+lpproblem3 \
 randphull2 \
 nnc_randphull2
 

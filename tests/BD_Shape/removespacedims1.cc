@@ -1,5 +1,5 @@
 /* Remove some variables from the space.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   // Variable x1(0);
@@ -45,11 +38,7 @@ main() TRY {
   bd1.add_constraint(x6 - x5 <= 2);
   bd1.add_constraint(x5 <= 3);
 
-
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
-#endif
-
 
   // This is the set of the variables that we want to remove.
   Variables_Set to_be_removed;
@@ -57,15 +46,12 @@ main() TRY {
   to_be_removed.insert(x5);
   bd1.remove_space_dimensions(to_be_removed);
 
-
   TBD_Shape known_result(4);
 
   known_result.add_constraint(x2 <= 2);
   known_result.add_constraint(x4 <= 5);
 
-#if NOISY
   print_constraints(bd1, "*** bd1.remove_space_dimensions({x3,x5}) ***");
-#endif
 
   int retval = (bd1 == known_result) ? 0 : 1;
 

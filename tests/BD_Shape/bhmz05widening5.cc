@@ -1,5 +1,5 @@
-/* Test BD_Shape::CH78_widening_assign().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test BD_Shape::BHMZ05_widening_assign().
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,49 +22,33 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-  TBD_Shape bd1(2);
-  TBD_Shape bd2(2);
-  TBD_Shape known_result(2);
+  TBD_Shape bd1(3);
+  TBD_Shape bd2(3);
+  TBD_Shape known_result(3, EMPTY);
 
-  bd1.add_constraint(x <= 1);
-  bd1.add_constraint(x - y <= 2);
-  bd1.add_constraint(y - x <= 7);
+  bd1.add_constraint(A - B <= 1);
+  bd1.add_constraint(A - B >= 2);
 
-  bd2.add_constraint(x - y <= 2);
-  bd2.add_constraint(-x <= 3);
-  bd2.add_constraint(x <= 0);
-  bd2.add_constraint(y - x <= 2);
+  bd2.add_constraint(A - B <= 1);
+  bd2.add_constraint(A - B >= 2);
+  bd2.add_constraint(A - C <= 1);
+  bd2.add_constraint(C - B <= 0);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
-  bd1.CH78_widening_assign(bd2);
+  bd1.BHMZ05_widening_assign(bd2);
 
-  known_result.add_constraint(x - y <= 2);
-
-#if NOISY
-  print_constraints(bd1, "*** bd1.CC76_extrapolation_assign(bd2) ***");
-#endif
+  print_constraints(bd1, "*** bd1.BHMZ05_widening_assign(bd2) ***");
 
   int retval = (bd1 == known_result) ? 0 : 1;
 
   return retval;
-
-
-
 }
 CATCH

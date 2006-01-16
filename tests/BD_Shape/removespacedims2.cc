@@ -1,5 +1,5 @@
 /* Remove some variables from the space.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,13 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -51,11 +44,7 @@ test1() {
   bd1.add_constraint(x2 <= 10);
   bd1.add_constraint(x6 - x8 <= 4);
 
-
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
-#endif
-
 
   // This is the set of the variables that we want to remove.
   Variables_Set to_be_removed;
@@ -69,12 +58,9 @@ test1() {
   to_be_removed.insert(x8);
   bd1.remove_space_dimensions(to_be_removed);
 
-
   TBD_Shape known_result(0);
 
-#if NOISY
   print_constraints(bd1, "*** bd1.remove_space_dimensions({x1,x2,x3,x4,x5,x6,x7,x8}) ***");
-#endif
 
   bool ok = (bd1 == known_result);
 
@@ -97,9 +83,7 @@ test2() {
   bd1.add_constraint(x2 >= 5);
   bd1.add_constraint(x4 >= 3);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
-#endif
 
  Variables_Set to_be_removed;
  to_be_removed.insert(x1);
@@ -108,15 +92,11 @@ test2() {
 
  bd1.remove_space_dimensions(to_be_removed);
 
-#if NOISY
   print_constraints(bd1, "*** bd1.remove_space_dimensions({x1,x3,x4}) ***");
-#endif
 
  TBD_Shape known_result(1, EMPTY);
 
-#if NOISY
   print_constraints(known_result, "*** known_result ***");
-#endif
 
   bool ok = (bd1 == known_result);
 
@@ -125,7 +105,6 @@ test2() {
 }
 
 } // namespace
-
 
 int
 main() TRY {

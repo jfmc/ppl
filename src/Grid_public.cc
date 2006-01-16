@@ -353,7 +353,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
 
 	  if (sp != 0) {
 	    // Find the GCD between sp and the previous GCD.
-	    gcd_assign(div, sp);
+	    gcd_assign(div, div, sp);
 	    if (point_sp % div == 0)
 	      // There is a point in the grid satisfying cg.
 	      return Poly_Con_Relation::strictly_intersects();
@@ -375,7 +375,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
 	return Poly_Con_Relation::strictly_intersects();
 
       // Find the GCD between sp and the previous GCD.
-      gcd_assign(div, sp);
+      gcd_assign(div, div, sp);
       if (point_sp != 0)
 	// At least one of any previously encountered points fails to
 	// satisfy cg.
@@ -1604,7 +1604,7 @@ PPL::Grid::affine_image(const Variable var,
 	// requires the third argument to be positive.
 	inverse = expr;
 	inverse[var_space_dim] = denominator;
-	negate(inverse[var_space_dim]);
+	neg_assign(inverse[var_space_dim]);
 	con_sys.affine_preimage(var_space_dim, inverse, -expr[var_space_dim]);
       }
       clear_congruences_minimized();
@@ -1683,7 +1683,7 @@ affine_preimage(const Variable var,
 	// requires the third argument to be positive.
 	inverse = expr;
 	inverse[var_space_dim] = denominator;
-	negate(inverse[var_space_dim]);
+	neg_assign(inverse[var_space_dim]);
 	gen_sys.affine_image(var_space_dim, inverse, -expr[var_space_dim]);
       }
       clear_generators_minimized();

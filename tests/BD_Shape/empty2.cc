@@ -1,5 +1,5 @@
 /* Different ways of creating an empty BD_Shape.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 
 main() TRY {
@@ -39,19 +32,15 @@ main() TRY {
   TBD_Shape bd1(4);
   TBD_Shape bd2(4);
 
-
   bd1.add_constraint(-x <= 2);
   bd1.add_constraint(y - x <= -9);
   bd1.add_constraint(x - y <= -7);
 
   bool empty = bd1.is_empty();
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
-  cout << "*** bd1.is_empty() ***" << endl;
-  cout << (empty ? "true" : "false") << endl;
-#endif
-
+  nout << "*** bd1.is_empty() ***" << endl;
+  nout << (empty ? "true" : "false") << endl;
 
   bd2.add_constraint(-x <= 7);
   bd2.add_constraint(y - x <= 1);
@@ -60,11 +49,9 @@ main() TRY {
 
   bool empty1 = bd2.is_empty();
 
-#if NOISY
   print_constraints(bd2, "*** bd2 ***");
-  cout << "*** bd2.is_empty() ***" << endl;
-  cout << (empty1 ? "true" : "false") << endl;
-#endif
+  nout << "*** bd2.is_empty() ***" << endl;
+  nout << (empty1 ? "true" : "false") << endl;
 
   return (!empty1 && empty) ? 0 : 1;
 

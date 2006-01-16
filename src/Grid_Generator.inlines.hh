@@ -27,10 +27,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+// FIX
 inline void
 negate(Grid_Generator& g, dimension_type start, dimension_type end) {
   while (start <= end)
-    negate(g[start++]);
+    neg_assign(g[start++]);
 }
 
 inline

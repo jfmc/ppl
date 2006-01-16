@@ -1,4 +1,4 @@
-//  Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+//  Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 //
 //  This document describes the Parma Polyhedra Library (PPL).
 //
@@ -73,8 +73,9 @@ constructing new domains from pre-existing domains.
 The following domains and domain constructors are provided by the PPL:
 - the domain of topologically closed, rational convex polyhedra;
 - the domain of rational convex polyhedra that are not necessarily closed;
+- the domain of topologically closed, rational bounded difference shapes;
 - the powerset construction;
-- the powerset construction, instantiated for rational convex polyhedra.
+- the powerset construction, instantiated for convex polyhedra.
 
 In the following sections we describe these domains and domain
 constructors together with their representations and operations
@@ -858,7 +859,6 @@ The library allows for the computation of images and preimages
 of polyhedra under restricted subclasses of space dimension preserving
 affine relations, as described in the following.
 
-\anchor affine_function
 \subsection Single_Update_Affine_Functions Single-Update Affine Functions.
 Given a primed variable \f$x'_k\f$ and an unprimed affine expression
 \f$\langle \vect{a}, \vect{x} \rangle + b\f$,
@@ -948,13 +948,12 @@ then we get the original square \f$\cP\f$ back.
 If, on the other hand, we apply the affine
 preimage operator as given in the second example
 using primed variable \f$x_0\f$ and affine expression \f$x_1\f$
-to \f$\cP_2\f$, then the resulting polyhedron is a line
-that corresponds to the \f$x_1\f$ axis.
+to \f$\cP_2\f$, then the resulting polyhedron is the stripe obtained
+by adding the line \f$(1, 0)^\transpose\f$ to polyhedron \f$\cP_2\f$.
 
 Observe that provided the coefficient \f$a_k\f$ of the considered variable
 in the affine expression is non-zero, the affine function is invertible.
 
-\anchor bounded_affine_relation
 \subsection Single_Update_Bounded_Affine_Relations Single-Update Bounded Affine Relations.
 Given a primed variable \f$x'_k\f$ and
 two unprimed affine expressions
@@ -980,7 +979,6 @@ is defined as
           \Bigr).
 \f]
 
-\anchor generalized_affine_relation
 \subsection Generalized_Affine_Relations Generalized Affine Relations.
 Similarly, the <EM>generalized affine relation</EM>
 \f$\phi = (\mathrm{lhs}' \relsym \mathrm{rhs})\f$, where
@@ -996,7 +994,7 @@ is a relation symbol, is defined as
         \iff
           \bigl(
             \langle \vect{c}, \vect{w} \rangle + d
-              \leq \langle \vect{a}, \vect{v} \rangle + b
+              \relsym \langle \vect{a}, \vect{v} \rangle + b
           \bigr)
             \land
           \Bigl(
@@ -1016,7 +1014,6 @@ are unprimed; for instance, the transfer relations
 \f$\mathrm{rhs}' \geq \mathrm{lhs}\f$
 are not equivalent in general.
 
-\anchor time_elapse
 \subsection Time_Elapse_Operator Time-Elapse Operator
 
 The <EM>time-elapse</EM> operator has been defined in
@@ -1128,18 +1125,17 @@ The library provides operations for computing the bounding box
 of an NNC polyhedron and conversely, for obtaining the NNC polyhedron
 representing a given bounding box.
 
-\anchor H79_widening
 \subsection Widening_Operators Widening Operators
 
 The library provides two widening operators for the domain of polyhedra.
+\anchor H79_widening
 The first one, that we call <EM>H79-widening</EM>, mainly
 follows the specification provided in the PhD thesis of N. Halbwachs
 \ref Hal79 "[Hal79]", also described in \ref HPR97 "[HPR97]".
-The main difference between the H79-widening and the widening described
-in the cited paper is that the H79-widening \f$\cP \widen \cQ\f$ of two
-polyhedra \f$\cP, \cQ \in \CPset_n\f$ requires as a precondition that
-\f$\cP \sseq \cQ\f$ (other differences at the implementation
-level are transparent to the user of the library).
+Note that in the computation of the H79-widening \f$\cP \widen \cQ\f$
+of two polyhedra \f$\cP, \cQ \in \CPset_n\f$ it is required as a
+precondition that \f$\cP \sseq \cQ\f$ (the same assumption was implicitly
+present in the cited papers).
 
 \anchor BHRZ03_widening
 The second widening operator, that we call <EM>BHRZ03-widening</EM>,
@@ -1180,7 +1176,6 @@ operators that are implemented in the library and for all the foreign
 language interfaces.
 
 
-\anchor widening_with_tokens
 \subsection Widening_with_Tokens Widening with Tokens
 
 When approximating a fixpoint computation using widening operators,
@@ -1202,7 +1197,6 @@ tokens are used. The approximated fixpoint computation will start with
 a fixed number \f$k\f$ of tokens, which will be used if and when needed.
 When there are no tokens left, the widening is always applied.
 
-\anchor extrapolation
 \subsection Extrapolation_Operators Extrapolation Operators
 
 Besides the two widening operators, the library also implements several
@@ -1228,6 +1222,65 @@ that their results cannot be worse than the smallest
 \ref bounding_boxes "bounding box" enclosing the two argument polyhedra.
 
 
+\section Bounded_Difference_Shapes Bounded Difference Shapes
+
+For each vector \f$\vect{a} \in \Rset^n\f$ and scalar \f$b \in \Rset\f$,
+and for each relation symbol \f$\mathord{\relsym} \in \{ =, \geq\}\f$,
+the linear constraint \f$\langle \vect{a}, \vect{x} \rangle \relsym b\f$
+is said to be a <EM>bounded difference</EM> if there exist two indices
+\f$i, j \in \{ 0, \ldots, n-1 \}\f$ such that:
+  - \f$a_i, a_j \in \{ -1, 0, 1 \}\f$ and \f$a_i \neq a_j\f$;
+  - \f$a_k = 0\f$, for all \f$k \notin \{ i, j \}\f$.
+
+A convex polyhedron \f$\cP \in \CPset_n\f$ is said to be a
+<EM>bounded difference shape</EM> (BDS, for short) if and only if
+either \f$\cP\f$ can be expressed as the intersection of a finite number
+of bounded difference constraints or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
+
+By construction, a BDS is always topologically closed.
+Under the usual set inclusion ordering, the set of all BDSs on the vector
+space \f$\Rset^n\f$ is a lattice having the empty set \f$\emptyset\f$
+and the universe \f$\Rset^n\f$ as the smallest and the biggest elements,
+respectively.
+In theoretical terms, it is a meet sub-lattice of \f$\CPset_n\f$, meaning
+that the intersection of a finite set of BDSs is still a BDS; on the other
+hand, in general the poly-hull of two BDSs is not a BDS. The smallest BDS
+containing a finite set of BDSs is said to be their <EM>bds-hull</EM>.
+
+The PPL provides support for computations on the domain of rational
+bounded difference shapes that, in selected contexts, can achieve a
+better precision/efficiency ratio with respect to the corresponding
+computations on a domain of convex polyhedra.
+As far as the representation of the rational inhomogeneous term of
+each bounded difference is concerned, several <EM>rounding-aware</EM>
+implementation choices are available, including:
+  - bounded precision integer types;
+  - bounded precision floating point types;
+  - unbounded precision integer and rational types, as provided by GMP.
+
+The user interface for BDSs is meant to be as similar as possible to
+the one developed for the domain of closed polyhedra: in particular,
+all operators on polyhedra are also available for the domain of BDSs,
+even though they are typically characterized by a lower degree of precision.
+
+\subsection Widening_and_Extrapolation_Operators_on_BD_Shapes Widening and Extrapolation Operators on BD Shapes
+
+\anchor BHMZ05_widening
+For the domain of BDSs, the library provides a variant of the widening
+operator for convex polyhedra defined in \ref CH78 "[CH78]".
+The implementation follows the specification in \ref BHMZ05 "[BHMZ05]",
+resulting in an operator which is well-defined on the domain of BDSs
+(i.e., it does not depend on the internal representation of BDSs),
+while still ensuring convergence in a finite number of steps.
+
+\anchor CC76_extrapolation
+The library also implements an extension of the widening operator for
+intervals as defined in \ref CC76 "[CC76]". The reader is warned that
+such an extension, even though being well-defined on the domain of BDSs,
+is not provided with a convergence guarantee and is therefore an
+extrapolation operator.
+
+
 \section powerset The Powerset Construction
 
 The PPL provides the finite powerset construction; this takes a
@@ -1244,13 +1297,8 @@ domain of convex polyhedra and described in Section \ref poly_powerset).
 
 The domain is built from a pre-existing base-level domain
 \f$D\f$ which must include an entailment relation `\f$\mathord{\entails}\f$',
-a meet operation `\f$\mathord{\meet}\f$',
-a top element `\f$\true\f$' and bottom element `\f$\false\f$'.
-
-As the intended semantics of an element of the powerset of the
-base-level domain is that of disjunction, elements of the powerset are
-always <EM>reduced</EM> to semantically-equivalent non-redundant
-elements.
+meet operation `\f$\mathord{\meet}\f$', a top element `\f$\true\f$' and
+bottom element `\f$\false\f$'.
 
 A set \f$\cS \in \wp(D)\f$ is called <EM>non-redundant</EM>
 with respect to `\f$\mathord{\entails}\f$' if and only if
@@ -1259,11 +1307,11 @@ and \f$\forall d_1, d_2 \in \cS \itc d_1 \entails d_2 \implies d_1 = d_2\f$.
 The set of finite non-redundant subsets of \f$D\f$
 (with respect to `\f$\mathord{\entails}\f$')
 is denoted by \f$\wpfn{D}{\entails}\f$.
-The reduction function
-\f$\fund{\nonredmap}{\wpf(D)}{\wpfn{D}{\entails}}\f$
-mapping a finite set into its non-redundant counterpart,
-also called <EM>Omega-reduction</EM>,
-is defined, for each \f$\cS \in \wpf(D)\f$, by
+The function
+\f$\fund{\nonredmap}{\wpf(D)}{\wpfn{D}{\entails}}\f$,
+called <EM>Omega-reduction</EM>,
+maps a finite set into its non-redundant counterpart;
+it is defined, for each \f$\cS \in \wpf(D)\f$, by
 \f[
   \nonredmap(\cS)
     \defeq
@@ -1273,18 +1321,24 @@ is defined, for each \f$\cS \in \wpf(D)\f$, by
                    d = \false \text{ or } \exists d' \in \cS \st d \sentails d'
                  \,\}.
 \f]
+where \f$d \sentails d'\f$ denotes \f$d \entails d' \land d \ne d'\f$.
 
+As the intended semantics of a powerset domain element \f$\cS \in \wpf(D)\f$
+is that of disjunction of the semantics of \f$D\f$,
+the finite set \f$\cS\f$ is semantically equivalent
+to the non-redundant set \f$\nonredmap(\cS)\f$;
+and elements of \f$\cS\f$ will be called <EM>disjuncts</EM>.
 The restriction to the finite subsets reflects the fact that here
-disjunctions are implemented by explicit collections of elements
-of the base-level abstract domain.
+disjunctions are implemented by explicit collections of disjuncts.
 As a consequence of this restriction, for any \f$\cS \in \wpf(D)\f$
 such that \f$\cS \neq \{ \false \}\f$, \f$\nonredmap(\cS)\f$ is the (finite)
 set of the maximal elements of \f$\cS\f$.
 
 The <EM>finite powerset domain</EM> over a domain \f$D\f$ is the set
-of all finite reduced sets of \f$D\f$ and denoted by \f$D_{\smallP}\f$.
+of all finite non-redundant sets of \f$D\f$ and denoted by \f$D_{\smallP}\f$.
 The domain includes an approximation ordering
-`\f$\mathord{\entailsP}\f$' defined so that
+`\f$\mathord{\entailsP}\f$' defined so that,
+for any \f$\cS_1\f$ and \f$\cS_2 \in D_{\smallP}\f$,
 \f$\cS_1 \entailsP \cS_2\f$ if and only if
 \f[
   \forall d_1 \in \cS_1 \itc
@@ -1301,7 +1355,7 @@ represented by a potentially redundant sequence of disjuncts.
 Redundancies can be eliminated by explicitly invoking the operator
 <CODE>omega_reduce()</CODE>, e.g., before performing the output of a
 powerset element. Note that all the documented operators automatically
-perform reductions on their arguments, when needed or appropriate.
+perform Omega-reductions on their arguments, when needed or appropriate.
 
 \section ps_operations Operations on the Powerset Construction
 
@@ -1324,7 +1378,7 @@ library returns the set
       \,\}
     \bigr)
 \f$
-and reduced set union \f$\nonredmap(\cS_1 \union \cS_2)\f$ respectively.
+and Omega-reduced set union \f$\nonredmap(\cS_1 \union \cS_2)\f$ respectively.
 
 \anchor ps_add_disjunct
 \subsection Adding_a_Disjunct Adding a Disjunct
@@ -2247,6 +2301,19 @@ T.&nbsp;Bultan, R.&nbsp;Gerber, and W.&nbsp;Pugh.
 </DD>
 
 
+<DT> [BHMZ05] </DT>
+<DD>
+\anchor BHMZ05
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Mazzi, and E.&nbsp;Zaffanella.
+  Widening Operators for Weakly-Relational Numeric Abstractions.
+  In C.&nbsp;Hankin and I.&nbsp;Silveroni, editors, <i>Static Analysis:
+  Proceedings of the 12th International Symposium</i>, volume 3672 of
+  <i>Lecture Notes in Computer Science</i>, pages 3-18, London, UK, 2005.
+  Springer-Verlag, Berlin.
+
+</DD>
+
+
 <DT> [BHRZ03a] </DT>
 <DD>
 \anchor BHRZ03a
@@ -2388,6 +2455,17 @@ R.&nbsp;Bagnara, E.&nbsp;Ricci, E.&nbsp;Zaffanella, and P.&nbsp;M. Hill.
   Available at <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>,
   2002.
   See \ref BRZH02b "[BRZH02b]".
+
+</DD>
+
+
+<DT> [CC76] </DT>
+<DD>
+\anchor CC76
+P.&nbsp;Cousot and R.&nbsp;Cousot.
+  Static Determination of Dynamic Properties of Programs.
+  In B.&nbsp;Robinet, editor, <i>Proceedings of the 2nd International
+  Symposium on Programming</i>, pages 106-130, Paris, France, 1976.
 
 </DD>
 
@@ -3225,7 +3303,7 @@ of \f$C\f$ that satisfies \f$A \vect{x} = \vect{0}.\f$
 Let \f$A\f$ be representing matrix of constraints of a cone \f$C\f$
 and \f$Q\f$ the set of rays that generate \f$C\f$. Then two rays
 \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ are <EM>adjacent rays</EM> if
--# there exist at least one row of \f$A\f$ (i.e., a constraint) that
+-# there exists at least a row of \f$A\f$ (i.e., a constraint) that
    is saturated by both \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$
 -# and none of the rays of \f$Q\f$, except \f$\vect{r}_1\f$ and
    \f$\vect{r}_2\f$, saturates all the constraints saturated by both

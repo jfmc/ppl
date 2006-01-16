@@ -1,5 +1,5 @@
 /* Test that the right exceptions are thrown in case of incorrect uses.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,12 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
+using std::invalid_argument;
 
 namespace {
 
@@ -49,9 +44,7 @@ error1() {
   }
 
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     // It is an error if the wrong exception is thrown.
@@ -80,9 +73,7 @@ error2() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
  catch (...) {
     exit(1);
@@ -106,11 +97,9 @@ error3() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
-  catch(...) {
+  catch (...) {
     exit(1);
   }
 }
@@ -133,9 +122,7 @@ error4() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -168,9 +155,7 @@ error5() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -194,9 +179,7 @@ error6() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -222,9 +205,7 @@ error7() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -249,9 +230,7 @@ error8() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -279,9 +258,7 @@ error9() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -309,9 +286,7 @@ error10() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -336,9 +311,7 @@ error11() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -359,9 +332,7 @@ error12() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -385,9 +356,7 @@ error13() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -406,9 +375,7 @@ error14() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -433,9 +400,7 @@ error15() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -457,9 +422,7 @@ error16() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -484,9 +447,7 @@ error17() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -518,9 +479,7 @@ error18() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -542,9 +501,7 @@ error19() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -570,9 +527,7 @@ error20() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -599,9 +554,7 @@ error21() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -624,9 +577,7 @@ error22() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -647,9 +598,7 @@ error23() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -675,9 +624,7 @@ error24() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -712,9 +659,7 @@ error25() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -740,9 +685,7 @@ error26() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -765,9 +708,7 @@ error27() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -792,9 +733,7 @@ error28() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -820,9 +759,7 @@ error29() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -842,10 +779,8 @@ error30() {
     ph1.poly_difference_assign(ph2);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -864,10 +799,8 @@ error31() {
     ph1.time_elapse_assign(ph2);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -885,9 +818,7 @@ error32() {
 
   const Generator_System gs2 = gs1;
 
-#if NOISY
   print_generators(gs2, "*** gs2 ***");
-#endif
 
   try {
     // This is an incorrect use of the function
@@ -897,10 +828,8 @@ error32() {
     C_Polyhedron ph2(gs2);
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -913,9 +842,7 @@ error33() {
 
   C_Polyhedron ph1(2, EMPTY);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-#endif
 
   try {
     // This is an incorrect use of the function
@@ -924,10 +851,8 @@ error33() {
     ph1.add_generator(ray(A));
     exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -952,9 +877,7 @@ error34() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -968,9 +891,7 @@ error35() {
 
   C_Polyhedron ph(2, EMPTY);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   Generator_System gs;
   gs.insert(line(A));
@@ -985,9 +906,7 @@ error35() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -1001,9 +920,7 @@ error36() {
 
   C_Polyhedron ph(2, EMPTY);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   Generator_System gs;
   gs.insert(ray(A));
@@ -1018,9 +935,7 @@ error36() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -1041,9 +956,7 @@ error37() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -1068,9 +981,7 @@ error38() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
  catch (...) {
     exit(1);
@@ -1093,9 +1004,7 @@ error39() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -1119,9 +1028,7 @@ error40() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -1146,9 +1053,7 @@ error41() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -1173,9 +1078,7 @@ error42() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -1194,9 +1097,7 @@ error43() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -1215,9 +1116,7 @@ error44() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -1241,9 +1140,7 @@ error45() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -1263,9 +1160,7 @@ error46() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -1289,9 +1184,7 @@ error47() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -1315,9 +1208,7 @@ error48() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
  catch (...) {
     exit(1);
@@ -1341,9 +1232,7 @@ error49() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -1367,9 +1256,7 @@ error50() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -1393,9 +1280,7 @@ error51() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -1419,9 +1304,7 @@ error52() {
     exit(1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);

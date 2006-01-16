@@ -1,5 +1,5 @@
 /* Linear_Row class implementation (non-inline functions).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -46,9 +46,9 @@ PPL::Linear_Row::sign_normalize() {
       // we negate the entire row.
       if (x[first_non_zero] < 0) {
 	for (dimension_type j = first_non_zero; j < sz; ++j)
-	  negate(x[j]);
+	  neg_assign(x[j]);
 	// Also negate the first coefficient.
-	negate(x[0]);
+	neg_assign(x[0]);
       }
   }
 }
@@ -154,6 +154,8 @@ PPL::Linear_Row::Flags::ascii_dump(std::ostream& s) const {
     << is_nnc;
 }
 
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_Row::Flags);
+
 bool
 PPL::Linear_Row::Flags::ascii_load(std::istream& s) {
   std::string str;
@@ -182,13 +184,10 @@ PPL::Linear_Row::ascii_dump(std::ostream& s) const {
     s << x[i] << ' ';
   s << "f ";
   flags().ascii_dump(s);
-  s << std::endl;
+  s << "\n";
 }
 
-void
-PPL::Linear_Row::ascii_dump() const {
-  ascii_dump(std::cerr);
-}
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_Row);
 
 bool
 PPL::Linear_Row::ascii_load(std::istream& s) {

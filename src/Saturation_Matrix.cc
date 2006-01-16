@@ -1,5 +1,5 @@
 /* Saturation_Matrix class implementation (non-inline functions).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -139,18 +139,18 @@ PPL::Saturation_Matrix::resize(dimension_type new_n_rows,
 
 void
 PPL::Saturation_Matrix::ascii_dump(std::ostream& s) const {
-  using std::endl;
-
   const Saturation_Matrix& x = *this;
   const char separator = ' ';
   s << num_rows() << separator << 'x' << separator
-    << num_columns() << endl;
+    << num_columns() << "\n";
   for (dimension_type i = 0; i < num_rows(); ++i) {
     for (dimension_type j = 0; j < num_columns(); ++j)
       s << x[i][j] << separator;
-    s << endl;
+    s << "\n";
   }
 }
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Saturation_Matrix);
 
 bool
 PPL::Saturation_Matrix::ascii_load(std::istream& s) {

@@ -44,9 +44,7 @@ config.status:
 #   /usr/share/doc/autotools-dev/README.Debian.gz:
 #     - Call the autoconf suite using simple names ("autoconf", "autoheader", etc.)
 #     - Call the automake suite using *versioned* names ("automake-1.9", etc),
-#   FIX are all of these (a* commands) required?
-	aclocal-1.9 -I m4 && autoheader && automake-1.9 && autoconf && CFLAGS="$(CFLAGS)" ./configure $(confflags) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CC=/usr/bin/gcc-3.4 CXX=/usr/bin/g++-3.4
-	cd Watchdog && aclocal-1.9 && autoheader && automake-1.9 && autoconf && CFLAGS="$(CFLAGS)" ./configure $(confflags) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CC=/usr/bin/gcc-3.4 CXX=/usr/bin/g++-3.4
+	autoreconf && CFLAGS="$(CFLAGS)" ./configure $(confflags) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CC=/usr/bin/gcc-3.4 CXX=/usr/bin/g++-3.4
 
 ## Architecture
 build: build-arch build-indep
@@ -113,9 +111,12 @@ install-arch:
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
 	$(MAKE) -C Watchdog install DESTDIR=$(CURDIR)/debian/tmp
 
-#   Install the demo program.
-#   FIX perhaps install examples (licences?) and a doc for ppl_lcdd
+#   Install the PPL programs.
+#   FIXME: Consider installing the ppl_lcdd and ppl_lpsol examples
+#          (what about copyrights?).
+	cp -a $(CURDIR)/src/ppl-config $(CURDIR)/debian/tmp/usr/bin/
 	cp -a $(CURDIR)/demos/ppl_lcdd/ppl_lcdd $(CURDIR)/debian/tmp/usr/bin/
+	cp -a $(CURDIR)/demos/ppl_lpsol/ppl_lpsol $(CURDIR)/debian/tmp/usr/bin/
 
 #   Build all the documentation, then move it into debian/tmp
 #   directories which have fixed names.
@@ -123,15 +124,13 @@ install-arch:
 	mkdir -p $(DEV_DOC_DIR)/html || exit 1
 	$(MAKE) -C doc world \
 	&& cp -a $(SRC_DOC_DIR)/ppl-user-$(PPL_VERSION)-html $(DOC_DIR)/html/user-manual/ \
-	&& cp -a $(SRC_DOC_DIR)/ppl-user-$(PPL_VERSION)-browse.pdf $(DOC_DIR)/ppl-user-browse.pdf \
-	&& cp -a $(SRC_DOC_DIR)/ppl-user-$(PPL_VERSION)-print.pdf $(DOC_DIR)/ppl-user-print.pdf \
-	&& cp -a $(SRC_DOC_DIR)/ppl-user-$(PPL_VERSION)-print.ps.gz $(DOC_DIR)/ppl-user-print.ps.gz \
+	&& cp -a $(SRC_DOC_DIR)/ppl-user-$(PPL_VERSION).pdf $(DOC_DIR)/ppl-user-browse.pdf \
+	&& cp -a $(SRC_DOC_DIR)/ppl-user-$(PPL_VERSION).ps.gz $(DOC_DIR)/ppl-user-print.ps.gz \
 	&& cp -a $(SRC_DOC_DIR)/ppl-devref-$(PPL_VERSION)-html $(DEV_DOC_DIR)/html/developer-reference/ \
-	&& cp -a $(SRC_DOC_DIR)/ppl-devref-$(PPL_VERSION)-browse.pdf $(DEV_DOC_DIR)/ppl-devref-browse.pdf \
-	&& cp -a $(SRC_DOC_DIR)/ppl-devref-$(PPL_VERSION)-print.pdf $(DEV_DOC_DIR)/ppl-devref-print.pdf \
-	&& cp -a $(SRC_DOC_DIR)/ppl-devref-$(PPL_VERSION)-print.ps.gz $(DEV_DOC_DIR)/ppl-devref-print.ps.gz
+	&& cp -a $(SRC_DOC_DIR)/ppl-devref-$(PPL_VERSION).pdf $(DEV_DOC_DIR)/ppl-devref-browse.pdf \
+	&& cp -a $(SRC_DOC_DIR)/ppl-devref-$(PPL_VERSION).ps.gz $(DEV_DOC_DIR)/ppl-devref-print.ps.gz
 
-#	Only install the Debian changelog for libppl and libppl-pwl.
+#	Explicitly install the Debian changelog, for libppl and libppl-pwl.
 	mkdir -p debian/libppl/usr/share/doc/libppl/
 	cp -a debian/changelog debian/libppl/usr/share/doc/libppl/changelog.Debian
 	mkdir -p debian/libppl-pwl/usr/share/doc/libppl-pwl/
@@ -145,9 +144,11 @@ install-arch:
 binary-common:
 	dh_testdir
 	dh_testroot
-#	Only install the Debian changelog for libppl and libppl-pwl.
-#   FIX installs into all, copied explicitly in install-arch instead.
+
+#   This would install the change logs into every package, so instead
+#   the install-arch rule above copies the logs into place.
 #	dh_installchangelogs -plibppl -plibppl-pwl
+
 	dh_installdocs
 #   These directories will be symlinks instead.  The [^p] is to keep
 #   the directory for libppl-pwl.

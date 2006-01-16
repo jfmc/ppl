@@ -1,5 +1,5 @@
 /* Test BD_Shape::limited_CC76_extrapolation_assign().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
@@ -39,10 +32,8 @@ test1() {
   TBD_Shape bd1(3, EMPTY);
   TBD_Shape bd2(3, EMPTY);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   TBD_Shape known_result(bd1);
 
@@ -52,11 +43,9 @@ test1() {
 
   bd1.limited_CC76_extrapolation_assign(bd2, cs);
 
-#if NOISY
   print_constraints(cs, "*** cs ***");
   print_constraints(bd1,
 		    "*** bd1.limited_CC76_extrapolation_assign(bd2) ***");
-#endif
 
   bool ok = (bd1 == known_result);
 
@@ -78,10 +67,8 @@ test2() {
 
   TBD_Shape bd2(2, EMPTY);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
  Constraint_System cs2;
  cs2.insert(x <= 0);
@@ -91,11 +78,9 @@ test2() {
 
  TBD_Shape known_result(bd1);
 
-#if NOISY
   print_constraints(cs2, "*** cs2 ***");
   print_constraints(bd1,
 		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs2) ***");
-#endif
 
   bool ok = (bd1 == known_result);
 
@@ -104,7 +89,6 @@ test2() {
 }
 
 } // namespace
-
 
 int
 main() TRY {

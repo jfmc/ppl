@@ -1,6 +1,6 @@
 /* Test Polyhedron::add_constraints(): we add a system of constraints
    to a polyhedron described by its system of generators.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,13 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -44,16 +37,12 @@ main() TRY {
 
   C_Polyhedron ph(gs);
 
-#if NOISY
   print_generators(ph, "*** ph ***");
-#endif
 
   Constraint_System cs;
   cs.insert(x <= 3);
 
-#if NOISY
   print_constraints(cs, "*** cs ***");
-#endif
 
   ph.add_constraints(cs);
 
@@ -64,12 +53,9 @@ main() TRY {
 
   int retval = (known_result == ph) ? 0 : 1;
 
-#if NOISY
   print_constraints(ph, "*** After add_constraints ***");
-#endif
 
   return retval;
 }
 CATCH
-
 

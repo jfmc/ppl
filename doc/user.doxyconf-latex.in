@@ -1,4 +1,4 @@
-# Doxyfile 1.4.5
+# Doxyfile 1.4.6
 
 # This file describes the settings to be used by the documentation system
 # doxygen (www.doxygen.org) for a project
@@ -385,7 +385,7 @@ SHOW_USED_FILES        = NO
 
 # If the sources in your project are distributed over multiple directories 
 # then setting the SHOW_DIRECTORIES tag to YES will show the directory hierarchy 
-# in the documentation. The default is YES.
+# in the documentation. The default is NO.
 
 SHOW_DIRECTORIES       = NO
 
@@ -1018,7 +1018,9 @@ PREDEFINED             = PPL_PROTO(protos):=protos
 # Use the PREDEFINED tag if you want to use a different macro definition.
 
 EXPAND_AS_DEFINED      = PPL_TYPE_DECLARATION \
-                         PPL_DECLARE_PRINT_FUNCTIONS
+                         PPL_OUTPUT_DECLARATIONS \
+                         PPL_SPECIALIZE_LIMITS_INT \
+                         PPL_SPECIALIZE_LIMITS_FLOAT
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES (the default) then 
 # doxygen's preprocessor will remove all function-like macros that are alone 

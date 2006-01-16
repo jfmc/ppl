@@ -1,5 +1,5 @@
 /* DB_Row class implementation: inline functions.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -32,7 +32,7 @@ namespace Parma_Polyhedra_Library {
 
 template <typename T>
 inline void*
-DB_Row_Impl_Handler<T>::Impl::operator new(const size_t fixed_size, 
+DB_Row_Impl_Handler<T>::Impl::operator new(const size_t fixed_size,
 					   const dimension_type capacity) {
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   return ::operator new(fixed_size + capacity*sizeof(T));
@@ -54,7 +54,7 @@ DB_Row_Impl_Handler<T>::Impl::operator delete(void* p, dimension_type) {
   ::operator delete(p);
 }
 
-template <typename T> 
+template <typename T>
 inline dimension_type
 DB_Row_Impl_Handler<T>::Impl::max_size() {
   return size_t(-1)/sizeof(T);
@@ -225,7 +225,7 @@ DB_Row<T>::construct_upward_approximation(const DB_Row<U>& y,
 
 template <typename T>
 inline void
-DB_Row<T>::construct(const dimension_type sz, 
+DB_Row<T>::construct(const dimension_type sz,
 		     const dimension_type capacity) {
   assert(sz <= capacity && capacity <= max_size());
   allocate(capacity);
@@ -240,7 +240,7 @@ DB_Row<T>::construct(const dimension_type sz) {
 
 template <typename T>
 inline
-DB_Row<T>::DB_Row(const dimension_type sz, 
+DB_Row<T>::DB_Row(const dimension_type sz,
 		  const dimension_type capacity)
   : DB_Row_Impl_Handler<T>() {
   construct(sz, capacity);
@@ -264,7 +264,7 @@ DB_Row<T>::DB_Row(const DB_Row& y)
 
 template <typename T>
 inline
-DB_Row<T>::DB_Row(const DB_Row& y, 
+DB_Row<T>::DB_Row(const DB_Row& y,
 		  const	dimension_type capacity)
   : DB_Row_Impl_Handler<T>() {
   assert(y.impl);
@@ -275,8 +275,8 @@ DB_Row<T>::DB_Row(const DB_Row& y,
 
 template <typename T>
 inline
-DB_Row<T>::DB_Row(const DB_Row& y, 
-		  const dimension_type sz, 
+DB_Row<T>::DB_Row(const DB_Row& y,
+		  const dimension_type sz,
 		  const	dimension_type capacity)
   : DB_Row_Impl_Handler<T>() {
   assert(y.impl);
@@ -440,7 +440,7 @@ DB_Row<T>::OK(const dimension_type row_size,
   using std::endl;
   using std::cerr;
 #endif
-  
+
   const DB_Row<T>& x = *this;
 
   bool is_broken = false;

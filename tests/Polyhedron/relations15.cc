@@ -1,5 +1,5 @@
 /* Test Polyhedron::relation_with(c): in this test `c' is an equality.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 int
 main() TRY {
@@ -51,12 +45,10 @@ main() TRY {
   Poly_Con_Relation rel1 = ph1.relation_with(A == 0);
   Poly_Con_Relation rel2 = ph2.relation_with(A == 0);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-  cout << "ph1.relation_with(A == 0) == " << rel1 << endl;
-  cout << "ph2.relation_with(A == 0) == " << rel2 << endl;
-#endif
+  nout << "ph1.relation_with(A == 0) == " << rel1 << endl;
+  nout << "ph2.relation_with(A == 0) == " << rel2 << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
   return (rel1 == known_result && rel2 == known_result) ? 0 : 1;

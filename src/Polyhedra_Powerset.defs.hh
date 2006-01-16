@@ -1,5 +1,5 @@
 /* Polyhedra_Powerset class declaration.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Polyhedra_Powerset_defs_hh
 
 #include "Polyhedra_Powerset.types.hh"
-#include "globals.types.hh"
+#include "globals.defs.hh"
 #include "BHRZ03_Certificate.types.hh"
 #include "Constraint.types.hh"
 #include "Constraint_System.types.hh"
@@ -74,19 +74,23 @@ public:
   //! Ordinary copy-constructor.
   Polyhedra_Powerset(const Polyhedra_Powerset& y);
 
-  //! \brief
-  //! If \p ph is nonempty, builds a powerset containing only \p ph.
-  //! Builds the empty powerset otherwise.
+  /*! \brief
+    If \p ph is nonempty, builds a powerset containing only \p ph.
+    Builds the empty powerset otherwise.
+  */
   explicit Polyhedra_Powerset(const PH& ph);
 
-  //! \brief
-  //! Copy-constructor allowing a source powerset with elements of a
-  //! different polyhedron kind.
+  /*! \brief
+    Copy-constructor allowing a source powerset with elements of a
+    different polyhedron kind.
+  */
   template <typename QH>
   explicit Polyhedra_Powerset(const Polyhedra_Powerset<QH>& y);
 
-  //! Creates a Polyhedra_Powerset with a single polyhedron
-  //! with the same information contents as \p cs.
+  /*! \brief
+    Creates a Polyhedra_Powerset with a single polyhedron
+    with the same information contents as \p cs.
+  */
   explicit Polyhedra_Powerset(const Constraint_System& cs);
 
   //! Creates a Polyhedra_Powerset with a single polyhedron
@@ -101,11 +105,11 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this geometrically
-  //! covers \p y, i.e., if any point (in some element) of \p y is also
-  //! a point (of some element) of \p *this.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this geometrically
+    covers \p y, i.e., if any point (in some element) of \p y is also
+    a point (of some element) of \p *this.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
     dimension-incompatible.
@@ -115,11 +119,11 @@ public:
   */
   bool geometrically_covers(const Polyhedra_Powerset& y) const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is geometrically
-  //! equal to \p y, i.e., if (the elements of) \p *this and \p y
-  //! contain the same set of points.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is geometrically
+    equal to \p y, i.e., if (the elements of) \p *this and \p y
+    contain the same set of points.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
     dimension-incompatible.
@@ -129,14 +133,16 @@ public:
   */
   bool geometrically_equals(const Polyhedra_Powerset& y) const;
 
-  //! \brief
-  //! Returns a lower bound to the total size in bytes of the memory
-  //! occupied by \p *this.
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
+  */
   memory_size_type total_memory_in_bytes() const;
 
-  //! \brief
-  //! Returns a lower bound to the size in bytes of the memory
-  //! managed by \p *this.
+  /*! \brief
+    Returns a lower bound to the size in bytes of the memory
+    managed by \p *this.
+  */
   memory_size_type external_memory_in_bytes() const;
 
   //! Checks if all the invariants are satisfied.
@@ -184,10 +190,10 @@ public:
   */
   void add_constraints(const Constraint_System& cs);
 
-  //! \brief
-  //! Intersects \p *this with the constraints in \p cs,
-  //! minimizing the result.
-  /*!
+  /*! \brief
+    Intersects \p *this with the constraints in \p cs,
+    minimizing the result.
+
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
@@ -200,22 +206,22 @@ public:
   */
   bool add_constraints_and_minimize(const Constraint_System& cs);
 
-  //! \brief
-  //! Assign to \p *this the result of (recursively) merging together
-  //! the pairs of polyhedra whose poly-hull is the same as their
-  //! set-theoretical union.
-  /*!
+  /*! \brief
+    Assign to \p *this the result of (recursively) merging together
+    the pairs of polyhedra whose poly-hull is the same as their
+    set-theoretical union.
+
     On exit, for all the pairs \f$\cP\f$, \f$\cQ\f$ of different polyhedra
     in \p *this, we have \f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
   */
   void pairwise_reduce();
 
-  //! \brief
-  //! Assigns to \p *this the result of applying the
-  //! \ref pps_bgp99_extrapolation "BGP99 extrapolation operator"
-  //! to \p *this and \p y, using the widening function \p wf
-  //! and the cardinality threshold \p max_disjuncts.
-  /*!
+  /*! \brief
+    Assigns to \p *this the result of applying the
+    \ref pps_bgp99_extrapolation "BGP99 extrapolation operator"
+    to \p *this and \p y, using the widening function \p wf
+    and the cardinality threshold \p max_disjuncts.
+
     \param y
     A finite powerset of polyhedra.
     It <EM>must</EM> definitely entail \p *this;
@@ -244,12 +250,12 @@ public:
 				  Widening wf,
 				  unsigned max_disjuncts);
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the
-  //! \ref pps_certificate_widening "BHZ03-widening"
-  //! between \p *this and \p y, using the widening function \p wf
-  //! certified by the convergence certificate \p Cert.
-  /*!
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref pps_certificate_widening "BHZ03-widening"
+    between \p *this and \p y, using the widening function \p wf
+    certified by the convergence certificate \p Cert.
+
     \param y
     The finite powerset of polyhedra computed in the previous iteration step.
     It <EM>must</EM> definitely entail \p *this;
@@ -281,29 +287,33 @@ public:
   //! \name Member Functions that May Modify the Dimension of the Vector Space
   //@{
 
-  //! \brief
-  //! The assignment operator
-  //! (\p *this and \p y can be dimension-incompatible).
+  /*! \brief
+    The assignment operator
+    (\p *this and \p y can be dimension-incompatible).
+  */
   Polyhedra_Powerset& operator=(const Polyhedra_Powerset& y);
 
-  //! \brief
-  //! Assignment operator allowing a source powerset with elements of a
-  //! different polyhedron kind
-  //! (\p *this and \p y can be dimension-incompatible).
+  /*! \brief
+    Assignment operator allowing a source powerset with elements of a
+    different polyhedron kind
+    (\p *this and \p y can be dimension-incompatible).
+  */
   template <typename QH>
   Polyhedra_Powerset& operator=(const Polyhedra_Powerset<QH>& y);
 
   //! Swaps \p *this with \p y.
   void swap(Polyhedra_Powerset& y);
 
-  //! \brief
-  //! Adds \p m new dimensions to the vector space containing \p *this
-  //! and embeds each polyhedron in \p *this in the new space.
+  /*! \brief
+    Adds \p m new dimensions to the vector space containing \p *this
+    and embeds each polyhedron in \p *this in the new space.
+  */
   void add_space_dimensions_and_embed(dimension_type m);
 
-  //! \brief
-  //! Adds \p m new dimensions to the vector space containing \p *this
-  //! without embedding the polyhedra in \p *this in the new space.
+  /*! \brief
+    Adds \p m new dimensions to the vector space containing \p *this
+    without embedding the polyhedra in \p *this in the new space.
+  */
   void add_space_dimensions_and_project(dimension_type m);
 
   //! Assigns to \p *this the intersection of \p *this and \p y.
@@ -330,13 +340,13 @@ public:
   */
   void concatenate_assign(const Polyhedra_Powerset& y);
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the
-  //! \ref time_elapse "time-elapse" between \p *this and \p y.
-  /*!
-    The result is obtained by computing the pairwise \ref time_elapse
-    "time elapse" of each polyhedron in \p *this with each
-    polyhedron in \p y.
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
+
+    The result is obtained by computing the pairwise
+    \ref Time_Elapse_Operator "time elapse" of each polyhedron
+    in \p *this with each polyhedron in \p y.
   */
   void time_elapse_assign(const Polyhedra_Powerset& y);
 
@@ -352,20 +362,20 @@ public:
   */
   void remove_space_dimensions(const Variables_Set& to_be_removed);
 
-  //! \brief
-  //! Removes the higher space dimensions so that the resulting space
-  //! will have dimension \p new_dimension.
-  /*!
+  /*! \brief
+    Removes the higher space dimensions so that the resulting space
+    will have dimension \p new_dimension.
+
     \exception std::invalid_argument
     Thrown if \p new_dimensions is greater than the space dimension
     of \p *this.
   */
   void remove_higher_space_dimensions(dimension_type new_dimension);
 
-  //! \brief
-  //! Remaps the dimensions of the vector space according to
-  //! a partial function.
-  /*!
+  /*! \brief
+    Remaps the dimensions of the vector space according to
+    a partial function.
+
     See also Polyhedron::map_space_dimensions.
   */
   template <typename Partial_Function>
@@ -381,18 +391,14 @@ public:
   typedef typename Base::reverse_iterator reverse_iterator;
   typedef typename Base::const_reverse_iterator const_reverse_iterator;
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
-  //! if successful, <CODE>false</CODE> otherwise.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by \ref
+    ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+    if successful, <CODE>false</CODE> otherwise.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
@@ -404,9 +410,10 @@ private:
   //! The number of dimensions of the enclosing vector space.
   dimension_type space_dim;
 
-  //! \brief
-  //! Assigns to \p *this the result of applying the BGP99 heuristics
-  //! to \p *this and \p y, using the widening function \p wf.
+  /*! \brief
+    Assigns to \p *this the result of applying the BGP99 heuristics
+    to \p *this and \p y, using the widening function \p wf.
+  */
   template <typename Widening>
   void BGP99_heuristics_assign(const Polyhedra_Powerset& y, Widening wf);
 
@@ -415,9 +422,10 @@ private:
   void collect_certificates(std::map<Cert, size_type,
 		                     typename Cert::Compare>& cert_ms) const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if the current set of polyhedra
-  //! is stabilizing with respect to the multiset of certificates \p y_cert_ms.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the current set of polyhedra
+    is stabilizing with respect to the multiset of certificates \p y_cert_ms.
+  */
   template <typename Cert>
   bool is_cert_multiset_stabilizing(const std::map<Cert, size_type,
                                                    typename Cert::Compare>&
@@ -431,7 +439,7 @@ private:
   //   friend class Polyhedra_Powerset<NNC_Polyhedron>
   // but GCC 3.3.3 has a bug that causes its rejection.
   // So, temporarily, we make all Polyhedra_Powerset's friends of each other.
-  template <typename QH> friend class Polyhedra_Powerset; 
+  template <typename QH> friend class Polyhedra_Powerset;
 };
 
 
@@ -461,18 +469,20 @@ template <typename PH>
 std::pair<PH, Polyhedra_Powerset<NNC_Polyhedron> >
 linear_partition(const PH& p, const PH& q);
 
-//! \brief
-//! Returns <CODE>true</CODE> if and only if the union of
-//! the NNC polyhedra in \p ps contains the NNC polyhedron \p ph.
-/*! \relates Polyhedra_Powerset */
+/*! \brief
+  Returns <CODE>true</CODE> if and only if the union of
+  the NNC polyhedra in \p ps contains the NNC polyhedron \p ph.
+
+  \relates Polyhedra_Powerset
+*/
 bool
 check_containment(const NNC_Polyhedron& ph,
 		  const Polyhedra_Powerset<NNC_Polyhedron>& ps);
 
-//! \brief
-//! Returns <CODE>true</CODE> if and only if the union of
-//! the objects in \p ps contains \p ph.
-/*!
+/*! \brief
+  Returns <CODE>true</CODE> if and only if the union of
+  the objects in \p ps contains \p ph.
+
   \relates Polyhedra_Powerset
   \note
   It is assumed that the template parameter PH can be converted

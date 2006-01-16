@@ -1,5 +1,5 @@
 /* XSB Prolog interface: system-dependent part.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -20,19 +20,15 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
-#include "Coefficient.defs.hh"
-#include "Checked_Number.defs.hh"
+#include "ppl_install.hh"
+#include "pwl_install.hh"
 #include <cinterf.h>
 
-// In XSB 2.6, <error_xsb.h> does not come with the extern "C" wrapper.
+// In XSB versions up to and including 2.7.1, <error_xsb.h> does not
+// come with the extern "C" wrapper.
 extern "C" {
 #include <error_xsb.h>
 }
-
-// In XSB 2.6, <cinterf.h> pollutes the namespace with `min' and `max'.
-#undef min
-#undef max
 
 #include <cassert>
 
@@ -78,10 +74,16 @@ long Prolog_max_integer;
 void
 ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = false;
-  // FIXME: these seem to be the values on IA32 but, who knows
-  //        on other architectures?
+  // XSB people claim XSB supports 32-bit integers.  However, experiments
+  // suggest this is not the case.
+  // See http://sourceforge.net/tracker/index.php?func=detail&aid=1400271&group_id=1176&atid=101176
+#if 0
+  Prolog_min_integer = -2147483647-1;
+  Prolog_max_integer = 2147483647;
+#else
   Prolog_min_integer = -268435456;
   Prolog_max_integer = 268435455;
+#endif
 }
 
 void
@@ -135,7 +137,7 @@ Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
 inline int
 Prolog_put_atom_chars(Prolog_term_ref& t, const char* s) {
   assert(is_var(t) == TRUE);
-  // FIXME: the following cast is really a bug in XSB.
+  // TODO: remove the const_cast when the XSB people fix cinterf.h.
   return c2p_string(string_find(const_cast<char*>(s), 1), t) != FALSE;
 }
 
@@ -162,7 +164,7 @@ Prolog_put_address(Prolog_term_ref& t, void* p) {
 */
 Prolog_atom
 Prolog_atom_from_string(const char* s) {
-  // FIXME: the following cast is really a bug in XSB.
+  // TODO: remove the const_cast when the XSB people fix cinterf.h.
   return string_find(const_cast<char*>(s), 1);
 }
 
@@ -386,7 +388,7 @@ Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
 
 PPL::Coefficient
 integer_term_to_Coefficient(Prolog_term_ref t) {
-  // FIXME: does XSB support unlimited precision integers?
+  // XSB supports only 32-bit integers.
   long v;
   Prolog_get_long(t, &v);
   return PPL::Coefficient(v);
@@ -394,11 +396,11 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
 
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
-  long v;
-  if (PPL::assign(v, PPL::raw_value(n), PPL::ROUND_IGNORE) != PPL::V_EQ)
+  long l = 0;
+  if (PPL::assign_r(l, n, PPL::ROUND_NOT_NEEDED) != PPL::V_EQ)
     throw PPL_integer_out_of_range(n);
   Prolog_term_ref t = p2p_new();
-  Prolog_put_long(t, v);
+  Prolog_put_long(t, l);
   return t;
 }
 
@@ -411,17 +413,27 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
 #define ppl_version xsb_stub_ppl_version
 #define ppl_banner xsb_stub_ppl_banner
 #define ppl_max_space_dimension xsb_stub_ppl_max_space_dimension
+#define ppl_Coefficient_is_bounded xsb_stub_ppl_Coefficient_is_bounded
+#define ppl_Coefficient_max xsb_stub_ppl_Coefficient_max
+#define ppl_Coefficient_min xsb_stub_ppl_Coefficient_min
 #define ppl_initialize xsb_stub_ppl_initialize
 #define ppl_finalize xsb_stub_ppl_finalize
 #define ppl_set_timeout_exception_atom xsb_stub_ppl_set_timeout_exception_atom
 #define ppl_timeout_exception_atom xsb_stub_ppl_timeout_exception_atom
 #define ppl_set_timeout xsb_stub_ppl_set_timeout
 #define ppl_reset_timeout xsb_stub_ppl_reset_timeout
-#define ppl_new_Polyhedron_from_space_dimension xsb_stub_ppl_new_Polyhedron_from_space_dimension
-#define ppl_new_Polyhedron_from_Polyhedron xsb_stub_ppl_new_Polyhedron_from_Polyhedron
-#define ppl_new_Polyhedron_from_constraints xsb_stub_ppl_new_Polyhedron_from_constraints
-#define ppl_new_Polyhedron_from_generators xsb_stub_ppl_new_Polyhedron_from_generators
-#define ppl_new_Polyhedron_from_bounding_box xsb_stub_ppl_new_Polyhedron_from_bounding_box
+#define ppl_new_C_Polyhedron_from_space_dimension xsb_stub_ppl_new_C_Polyhedron_from_space_dimension
+#define ppl_new_NNC_Polyhedron_from_space_dimension xsb_stub_ppl_new_NNC_Polyhedron_from_space_dimension
+#define ppl_new_C_Polyhedron_from_C_Polyhedron xsb_stub_ppl_new_C_Polyhedron_from_C_Polyhedron
+#define ppl_new_C_Polyhedron_from_NNC_Polyhedron xsb_stub_ppl_new_C_Polyhedron_from_NNC_Polyhedron
+#define ppl_new_NNC_Polyhedron_from_C_Polyhedron xsb_stub_ppl_new_NNC_Polyhedron_from_C_Polyhedron
+#define ppl_new_NNC_Polyhedron_from_NNC_Polyhedron xsb_stub_ppl_new_NNC_Polyhedron_from_NNC_Polyhedron
+#define ppl_new_C_Polyhedron_from_constraints xsb_stub_ppl_new_C_Polyhedron_from_constraints
+#define ppl_new_NNC_Polyhedron_from_constraints xsb_stub_ppl_new_NNC_Polyhedron_from_constraints
+#define ppl_new_C_Polyhedron_from_generators xsb_stub_ppl_new_C_Polyhedron_from_generators
+#define ppl_new_NNC_Polyhedron_from_generators xsb_stub_ppl_new_NNC_Polyhedron_from_generators
+#define ppl_new_C_Polyhedron_from_bounding_box xsb_stub_ppl_new_C_Polyhedron_from_bounding_box
+#define ppl_new_NNC_Polyhedron_from_bounding_box xsb_stub_ppl_new_NNC_Polyhedron_from_bounding_box
 #define ppl_Polyhedron_swap xsb_stub_ppl_Polyhedron_swap
 #define ppl_delete_Polyhedron xsb_stub_ppl_delete_Polyhedron
 #define ppl_Polyhedron_space_dimension xsb_stub_ppl_Polyhedron_space_dimension
@@ -491,6 +503,27 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
 #define ppl_Polyhedron_expand_space_dimension xsb_stub_ppl_Polyhedron_expand_space_dimension
 #define ppl_Polyhedron_fold_space_dimensions xsb_stub_ppl_Polyhedron_fold_space_dimensions
 #define ppl_Polyhedron_map_space_dimensions xsb_stub_ppl_Polyhedron_map_space_dimensions
+#define ppl_new_LP_Problem_trivial xsb_stub_ppl_new_LP_Problem_trivial
+#define ppl_new_LP_Problem xsb_stub_ppl_new_LP_Problem
+#define ppl_new_LP_Problem_from_LP_Problem xsb_stub_ppl_new_LP_Problem_from_LP_Problem
+#define ppl_LP_Problem_swap xsb_stub_ppl_LP_Problem_swap
+#define ppl_delete_LP_Problem xsb_stub_ppl_delete_LP_Problem
+#define ppl_LP_Problem_space_dimension xsb_stub_ppl_LP_Problem_space_dimension
+#define ppl_LP_Problem_constraints xsb_stub_ppl_LP_Problem_constraints
+#define ppl_LP_Problem_objective_function xsb_stub_ppl_LP_Problem_objective_function
+#define ppl_LP_Problem_optimization_mode xsb_stub_ppl_LP_Problem_optimization_mode
+#define ppl_LP_Problem_clear xsb_stub_ppl_LP_Problem_clear
+#define ppl_LP_Problem_add_constraint xsb_stub_ppl_LP_Problem_add_constraint
+#define ppl_LP_Problem_add_constraints xsb_stub_ppl_LP_Problem_add_constraints
+#define ppl_LP_Problem_set_objective_function xsb_stub_ppl_LP_Problem_set_objective_function
+#define ppl_LP_Problem_set_optimization_mode xsb_stub_ppl_LP_Problem_set_optimization_mode
+#define ppl_LP_Problem_is_satisfiable xsb_stub_ppl_LP_Problem_is_satisfiable
+#define ppl_LP_Problem_solve xsb_stub_ppl_LP_Problem_solve
+#define ppl_LP_Problem_feasible_point xsb_stub_ppl_LP_Problem_feasible_point
+#define ppl_LP_Problem_optimizing_point xsb_stub_ppl_LP_Problem_optimizing_point
+#define ppl_LP_Problem_optimal_value xsb_stub_ppl_LP_Problem_optimal_value
+#define ppl_LP_Problem_evaluate_objective_function xsb_stub_ppl_LP_Problem_evaluate_objective_function
+#define ppl_LP_Problem_OK xsb_stub_ppl_LP_Problem_OK
 
 #include "../ppl_prolog.icc"
 
@@ -501,17 +534,27 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
 #undef ppl_version
 #undef ppl_banner
 #undef ppl_max_space_dimension
+#undef ppl_Coefficient_is_bounded
+#undef ppl_Coefficient_max
+#undef ppl_Coefficient_min
 #undef ppl_initialize
 #undef ppl_finalize
 #undef ppl_set_timeout_exception_atom
 #undef ppl_timeout_exception_atom
 #undef ppl_set_timeout
 #undef ppl_reset_timeout
-#undef ppl_new_Polyhedron_from_space_dimension
-#undef ppl_new_Polyhedron_from_Polyhedron
-#undef ppl_new_Polyhedron_from_constraints
-#undef ppl_new_Polyhedron_from_generators
-#undef ppl_new_Polyhedron_from_bounding_box
+#undef ppl_new_C_Polyhedron_from_space_dimension
+#undef ppl_new_NNC_Polyhedron_from_space_dimension
+#undef ppl_new_C_Polyhedron_from_C_Polyhedron
+#undef ppl_new_C_Polyhedron_from_NNC_Polyhedron
+#undef ppl_new_NNC_Polyhedron_from_C_Polyhedron
+#undef ppl_new_NNC_Polyhedron_from_NNC_Polyhedron
+#undef ppl_new_C_Polyhedron_from_constraints
+#undef ppl_new_NNC_Polyhedron_from_constraints
+#undef ppl_new_C_Polyhedron_from_generators
+#undef ppl_new_NNC_Polyhedron_from_generators
+#undef ppl_new_C_Polyhedron_from_bounding_box
+#undef ppl_new_NNC_Polyhedron_from_bounding_box
 #undef ppl_Polyhedron_swap
 #undef ppl_delete_Polyhedron
 #undef ppl_Polyhedron_space_dimension
@@ -581,6 +624,27 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
 #undef ppl_Polyhedron_expand_space_dimension
 #undef ppl_Polyhedron_fold_space_dimensions
 #undef ppl_Polyhedron_map_space_dimensions
+#undef ppl_new_LP_Problem_trivial
+#undef ppl_new_LP_Problem
+#undef ppl_new_LP_Problem_from_LP_Problem
+#undef ppl_LP_Problem_swap
+#undef ppl_delete_LP_Problem
+#undef ppl_LP_Problem_space_dimension
+#undef ppl_LP_Problem_constraints
+#undef ppl_LP_Problem_objective_function
+#undef ppl_LP_Problem_optimization_mode
+#undef ppl_LP_Problem_clear
+#undef ppl_LP_Problem_add_constraint
+#undef ppl_LP_Problem_add_constraints
+#undef ppl_LP_Problem_set_objective_function
+#undef ppl_LP_Problem_set_optimization_mode
+#undef ppl_LP_Problem_is_satisfiable
+#undef ppl_LP_Problem_solve
+#undef ppl_LP_Problem_feasible_point
+#undef ppl_LP_Problem_optimizing_point
+#undef ppl_LP_Problem_optimal_value
+#undef ppl_LP_Problem_evaluate_objective_function
+#undef ppl_LP_Problem_OK
 
 #define XSB_ENTRY_0(name) \
 extern "C" Prolog_foreign_return_type \
@@ -652,17 +716,27 @@ XSB_ENTRY_1(ppl_version_beta)
 XSB_ENTRY_1(ppl_version)
 XSB_ENTRY_1(ppl_banner)
 XSB_ENTRY_1(ppl_max_space_dimension)
+XSB_ENTRY_0(ppl_Coefficient_is_bounded)
+XSB_ENTRY_1(ppl_Coefficient_max)
+XSB_ENTRY_1(ppl_Coefficient_min)
 XSB_ENTRY_0(ppl_initialize)
 XSB_ENTRY_0(ppl_finalize)
 XSB_ENTRY_1(ppl_set_timeout_exception_atom)
 XSB_ENTRY_1(ppl_timeout_exception_atom)
 XSB_ENTRY_1(ppl_set_timeout)
 XSB_ENTRY_0(ppl_reset_timeout)
-XSB_ENTRY_4(ppl_new_Polyhedron_from_space_dimension)
-XSB_ENTRY_4(ppl_new_Polyhedron_from_Polyhedron)
-XSB_ENTRY_3(ppl_new_Polyhedron_from_constraints)
-XSB_ENTRY_3(ppl_new_Polyhedron_from_generators)
-XSB_ENTRY_3(ppl_new_Polyhedron_from_bounding_box)
+XSB_ENTRY_3(ppl_new_C_Polyhedron_from_space_dimension)
+XSB_ENTRY_3(ppl_new_NNC_Polyhedron_from_space_dimension)
+XSB_ENTRY_2(ppl_new_C_Polyhedron_from_C_Polyhedron)
+XSB_ENTRY_2(ppl_new_C_Polyhedron_from_NNC_Polyhedron)
+XSB_ENTRY_2(ppl_new_NNC_Polyhedron_from_C_Polyhedron)
+XSB_ENTRY_2(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron)
+XSB_ENTRY_2(ppl_new_C_Polyhedron_from_constraints)
+XSB_ENTRY_2(ppl_new_NNC_Polyhedron_from_constraints)
+XSB_ENTRY_2(ppl_new_C_Polyhedron_from_generators)
+XSB_ENTRY_2(ppl_new_NNC_Polyhedron_from_generators)
+XSB_ENTRY_2(ppl_new_C_Polyhedron_from_bounding_box)
+XSB_ENTRY_2(ppl_new_NNC_Polyhedron_from_bounding_box)
 XSB_ENTRY_2(ppl_Polyhedron_swap)
 XSB_ENTRY_1(ppl_delete_Polyhedron)
 XSB_ENTRY_2(ppl_Polyhedron_space_dimension)
@@ -732,6 +806,27 @@ XSB_ENTRY_2(ppl_Polyhedron_remove_higher_space_dimensions)
 XSB_ENTRY_3(ppl_Polyhedron_expand_space_dimension)
 XSB_ENTRY_3(ppl_Polyhedron_fold_space_dimensions)
 XSB_ENTRY_2(ppl_Polyhedron_map_space_dimensions)
+XSB_ENTRY_1(ppl_new_LP_Problem_trivial)
+XSB_ENTRY_4(ppl_new_LP_Problem)
+XSB_ENTRY_2(ppl_new_LP_Problem_from_LP_Problem)
+XSB_ENTRY_2(ppl_LP_Problem_swap)
+XSB_ENTRY_1(ppl_delete_LP_Problem)
+XSB_ENTRY_2(ppl_LP_Problem_space_dimension)
+XSB_ENTRY_2(ppl_LP_Problem_constraints)
+XSB_ENTRY_2(ppl_LP_Problem_objective_function)
+XSB_ENTRY_2(ppl_LP_Problem_optimization_mode)
+XSB_ENTRY_1(ppl_LP_Problem_clear)
+XSB_ENTRY_2(ppl_LP_Problem_add_constraint)
+XSB_ENTRY_2(ppl_LP_Problem_add_constraints)
+XSB_ENTRY_2(ppl_LP_Problem_set_objective_function)
+XSB_ENTRY_2(ppl_LP_Problem_set_optimization_mode)
+XSB_ENTRY_1(ppl_LP_Problem_is_satisfiable)
+XSB_ENTRY_2(ppl_LP_Problem_solve)
+XSB_ENTRY_2(ppl_LP_Problem_feasible_point)
+XSB_ENTRY_2(ppl_LP_Problem_optimizing_point)
+XSB_ENTRY_3(ppl_LP_Problem_optimal_value)
+XSB_ENTRY_4(ppl_LP_Problem_evaluate_objective_function)
+XSB_ENTRY_1(ppl_LP_Problem_OK)
 
 extern "C" void
 init() {

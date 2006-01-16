@@ -1,5 +1,5 @@
 /* Linear_Expression class implementation (non-inline functions).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -87,7 +87,6 @@ PPL::operator+(const Linear_Expression& e1, const Linear_Expression& e2) {
   return r;
 }
 
-
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator+(Coefficient_traits::const_reference n,
@@ -97,16 +96,14 @@ PPL::operator+(Coefficient_traits::const_reference n,
   return r;
 }
 
-
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator-(const Linear_Expression& e) {
   Linear_Expression r(e);
   for (dimension_type i = e.size(); i-- > 0; )
-    negate(r[i]);
+    neg_assign(r[i]);
   return r;
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
@@ -141,19 +138,17 @@ PPL::operator-(const Linear_Expression& e1, const Linear_Expression& e2) {
   }
 }
 
-
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator-(Coefficient_traits::const_reference n,
 	       const Linear_Expression& e) {
   Linear_Expression r(e);
   for (dimension_type i = e.size(); i-- > 0; )
-    negate(r[i]);
+    neg_assign(r[i]);
   r[0] += n;
 
   return r;
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
@@ -164,7 +159,6 @@ PPL::operator*(Coefficient_traits::const_reference n,
     r[i] *= n;
   return r;
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression&
@@ -183,7 +177,6 @@ PPL::operator+=(Linear_Expression& e1, const Linear_Expression& e2) {
   return e1;
 }
 
-
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression&
 PPL::operator+=(Linear_Expression& e, const Variable v) {
@@ -199,7 +192,6 @@ PPL::operator+=(Linear_Expression& e, const Variable v) {
   ++e[v_space_dim];
   return e;
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression&
@@ -217,7 +209,6 @@ PPL::operator-=(Linear_Expression& e1, const Linear_Expression& e2) {
   }
   return e1;
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression&
@@ -263,7 +254,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
 	  s << " + ";
 	else {
 	  s << " - ";
-	  negate(ev);
+	  neg_assign(ev);
 	}
       }
       else
@@ -283,7 +274,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
 	s << " + ";
       else {
 	s << " - ";
-	negate(it);
+	neg_assign(it);
       }
     }
     else
@@ -293,6 +284,6 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
 
   if (first)
     // The null linear expression.
-    s << 0;
+    s << Coefficient_zero();
   return s;
 }

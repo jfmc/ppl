@@ -1,5 +1,5 @@
 /* An example of iteration to a post-fixpoint.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,13 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -60,9 +53,8 @@ append_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
   base.add_constraint(A == 0);
   base.add_constraint(B >= 0);
   base.add_constraint(C == B);
-#if NOISY
+
   print_constraints(base, "*** base ***");
-#endif
 
   // This is the inductive case:
   // append(A,B,C) :- A = [X|D], B = E, C = [X|F], append(D,E,F).
@@ -73,9 +65,8 @@ append_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
   induct.add_constraint(D >= 0);
   induct.add_constraint(B >= 0);
   induct.add_constraint(A >= D + 1);
-#if NOISY
+
   print_constraints(induct, "*** inductive ***");
-#endif
 
   expect.add_space_dimensions_and_embed(3);
   expect.add_constraint(A + B == C);
@@ -88,9 +79,8 @@ fix_point(C_Polyhedron& start, C_Polyhedron& induct, C_Polyhedron& finish,
           dimension_type offset, unsigned int arity, unsigned int num_vars) {
   // Initialize the fixpoint iteration.
   C_Polyhedron current = start;
-#if NOISY
+
   print_constraints(current, "*** start ***");
-#endif
 
   // Contains the polyhedron computed at the previous iteration.
   C_Polyhedron previous;
@@ -98,22 +88,20 @@ fix_point(C_Polyhedron& start, C_Polyhedron& induct, C_Polyhedron& finish,
     previous = current;
     current = induct;
     shift_rename_add(previous, offset, current);
-#if NOISY
+
     print_constraints(current, "*** after shift_rename_add ***");
-#endif
 
     Variables_Set dimensions_to_remove;
     for (unsigned int i = num_vars-1 ; i >= arity; --i )
       dimensions_to_remove.insert(Variable(i));
     current.remove_space_dimensions(dimensions_to_remove);
 
-#if NOISY
     print_constraints(current, "*** after remove_space_dimensions ***");
-#endif
+
     current.poly_hull_assign_and_minimize(previous);
-#if NOISY
+
     print_constraints(current, "*** after poly_hull_assign_and_minimize***");
-#endif
+
   } while (current != previous);
   finish = current;
 }
@@ -134,9 +122,8 @@ main() TRY {
   C_Polyhedron final;
   fix_point(start, induct, final, recursive_offset, arity, num_vars);
 
-#if NOISY
     print_constraints(expect, "*** expected ***");
-#endif
+
   return final == expect ? 0 : 1;
 }
 CATCH

@@ -1,7 +1,7 @@
 /* Test Polyhedron::add_generators_and_minimize()
    and Polyhedron::add_generators(): the polyhedron can have
    something pending.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,13 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
@@ -52,11 +45,9 @@ test1() {
 
   bool ok = (ph == copy_ph);
 
-#if NOISY
   print_generators(ph, "*** After ph.add_generators(gs1) ***");
   print_generators(ph,
 		   "*** After copy_ph.add_generators_and_minimize(gs2) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -79,10 +70,8 @@ test2() {
   ph2.add_generator(ray(A));
   ph2.add_generator(ray(B));
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   Generator_System gs1 = ph2.generators();
   Generator_System gs2 = ph2.generators();
@@ -91,11 +80,10 @@ test2() {
   copy_ph1.add_generators_and_minimize(gs2);
 
   bool ok = (ph1 == copy_ph1);
-#if NOISY
+
   print_generators(ph1, "*** After add_generators_assign ***");
   print_generators(copy_ph1,
 		    "*** After add_generators_and_minimize ***");
-#endif
 
   if (!ok)
     exit(1);

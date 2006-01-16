@@ -1,5 +1,5 @@
 /* Test the function is_universe() for a NNC_polyhedron.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -43,48 +36,38 @@ main() TRY {
   Constraint_System cs;
   NNC_Polyhedron ph4(cs);
 
-#if NOISY
   print_constraints(ph1, "--- ph1 ---");
   print_constraints(ph2, "--- ph2 ---");
   print_constraints(ph3, "--- ph3 ---");
   print_constraints(ph4, "--- ph4 ---");
-#endif
 
   bool universe1 = ph1.is_universe();
 
-#if NOISY
-  cout << "*** ph1.is_universe() ***"
+  nout << "*** ph1.is_universe() ***"
        << endl
        << (universe1 ? "true" : "false")
        << endl;
-#endif
 
   bool universe2 = ph2.is_universe();
 
-#if NOISY
-  cout << "*** ph2.is_universe() ***"
+  nout << "*** ph2.is_universe() ***"
        << endl
        << (universe2 ? "true" : "false")
        << endl;
-#endif
 
   bool universe3 = ph3.is_universe();
 
-#if NOISY
-  cout << "*** ph3.is_universe() ***"
+  nout << "*** ph3.is_universe() ***"
        << endl
        << (universe3 ? "true" : "false")
        << endl;
-#endif
 
   bool universe4 = ph4.is_universe();
 
-#if NOISY
-  cout << "*** ph4.is_universe() ***"
+  nout << "*** ph4.is_universe() ***"
        << endl
        << (universe4 ? "true" : "false")
        << endl;
-#endif
 
   return (universe1 && universe2 && !universe3 && universe4) ? 0 : 1;
 }

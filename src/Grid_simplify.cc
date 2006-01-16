@@ -240,8 +240,8 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   // diagonals (including the divisor) remain positive.  It's safe to
   // swap the signs as row[column] will still come out 0.
   if (pivot_a < 0) {
-    negate(pivot_a);
-    negate(row_a);
+    neg_assign(pivot_a);
+    neg_assign(row_a);
   }
 #endif
   for (dimension_type index = 0; index < sys.num_rows(); ++index) {
@@ -286,8 +286,8 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   // positive when multiplying the proper congruences below.  It's
   // safe to swap the signs as row[column] will still come out 0.
   if (pivot_a < 0) {
-    negate(pivot_a);
-    negate(row_a);
+    neg_assign(pivot_a);
+    neg_assign(row_a);
   }
   // Multiply `row', including the modulus, by pivot_a.  FIX To keep
   // all the moduli the same this requires multiplying all the other
@@ -571,7 +571,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 #ifdef STRONG_REDUCTION
       // Ensure a positive follows the leading zeros.
       if (pivot[dim] < 0)
-	negate(pivot, 0, dim);
+	pivot.negate(0, dim);
       // Factor this row out of the preceding ones.
       reduce_reduced<Congruence_System, Congruence>
 	(sys, dim, pivot_index, 0, dim, dim_kinds, false);

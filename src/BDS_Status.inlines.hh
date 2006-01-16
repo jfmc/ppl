@@ -1,5 +1,5 @@
 /* BD_Shape<T>::Status class implementation: inline functions.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -140,7 +140,7 @@ BD_Shape<T>::Status::set_shortest_path_reduced() {
 }
 
 template <typename T>
-inline bool
+bool
 BD_Shape<T>::Status::OK() const {
   if (test_zero_dim_univ())
     // Zero-dim universe is OK.
@@ -178,8 +178,10 @@ BD_Shape<T>::Status::OK() const {
 }
 
 
-namespace {
- 
+namespace Implementation {
+
+namespace BD_Shapes {
+
 // These are the keywords that indicate the individual assertions.
 const std::string zero_dim_univ = "ZE";
 const std::string empty = "EM";
@@ -188,8 +190,8 @@ const std::string sp_reduced = "SPR";
 const char yes = '+';
 const char no = '-';
 const char sep = ' ';
- 
-/*! \relates Parma_Polyhedra_Library::BD_Shape<T>::Status
+
+/*! \relates Parma_Polyhedra_Library::BD_Shape::Status
   Reads a keyword and its associated on/off flag from \p s.
   Returns <CODE>true</CODE> if the operation is successful,
   returns <CODE>false</CODE> otherwise.
@@ -207,11 +209,14 @@ get_field(std::istream& s, const std::string& keyword, bool& positive) {
   return true;
 }
 
-} // namespace
+} // namespace BD_Shapes
+
+} // namespace Implementation
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::Status::ascii_dump(std::ostream& s) const {
+  using namespace Implementation::BD_Shapes;
   s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
     << (test_empty() ? yes : no) << empty << sep
     << sep
@@ -219,9 +224,12 @@ BD_Shape<T>::Status::ascii_dump(std::ostream& s) const {
     << (test_shortest_path_reduced() ? yes : no) << sp_reduced << sep;
 }
 
+PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(T, BD_Shape<T>::Status);
+
 template <typename T>
-inline bool
+bool
 BD_Shape<T>::Status::ascii_load(std::istream& s) {
+  using namespace Implementation::BD_Shapes;
   bool positive;
 
   if (!get_field(s, zero_dim_univ, positive))

@@ -1,7 +1,7 @@
 % A toy, non-ground meta-interpreter for CLP(Q)
 % for testing the Parma Polyhedra Library and its Prolog interface.
 %
-% Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+% Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 %
 % This file is part of the Parma Polyhedra Library (PPL).
 %
@@ -37,7 +37,7 @@ solve_query(Goals, VN, Polys_Out) :-
   % The initial polyhedron is initialised with 0 dimensions
   % We use the NNC topology so that we can handle strict constraints.
   Topology = nnc,
-  ppl_new_Polyhedron_from_space_dimension(Topology, 0, universe, Poly),
+  ppl_new_NNC_Polyhedron_from_space_dimension(0, universe, Poly),
   % On backtracking, clean up the unwanted polyhedron
   cleanup(Poly),
 
@@ -47,7 +47,7 @@ solve_query(Goals, VN, Polys_Out) :-
   % Use the last polyhedron `Poly_Out' that has been added to the list
   % for generating the resulting set of constraints.
   Polys_Out2 = [Poly_Out|_],
-  ppl_new_Polyhedron_from_Polyhedron(Topology, Poly_Out, Topology, Q),
+  ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(Poly_Out, Q),
   % On backtracking, clean up the unwanted polyhedron
   cleanup(Q),
 
@@ -89,14 +89,14 @@ solve(T, (A; B), Polys_In, Polys_Out) :-
   Polys_In = [Poly|_],
   (
     (
-      ppl_new_Polyhedron_from_Polyhedron(T, Poly, T, Q),
+      ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(Poly, Q),
       % On backtracking, clean up the unwanted polyhedron
       cleanup(Q),
       solve(T, A, [Q|Polys_In], Polys_Out)
     )
   ;
     (
-      ppl_new_Polyhedron_from_Polyhedron(T, Poly, T, Q),
+      ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(Poly, Q),
       % On backtracking, we clean up the unwanted polyhedron
       cleanup(Q),
       solve(T, B, [Q|Polys_In], Polys_Out)
@@ -154,7 +154,7 @@ solve(Topology, Atom, [Poly|Polys], Polys_Out) :-
   ppl_Polyhedron_space_dimension(Poly, Dims),
 
   % Copy the current polyhedron and work on the copy.
-  ppl_new_Polyhedron_from_Polyhedron(Topology, Poly, Topology, Poly_Copy),
+  ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(Poly, Poly_Copy),
   % On backtracking, clean up the unwanted polyhedron
   cleanup(Poly_Copy),
 
@@ -180,8 +180,7 @@ solve(Topology, Atom, [Poly|Polys], Polys_Out) :-
 
   % Copy the current polyhedron and work on the copy.
   Polys_Soln_Out = [Poly_Soln|_],
-  ppl_new_Polyhedron_from_Polyhedron(Topology, Poly_Soln,
-                                        Topology, Poly_Soln_Copy),
+  ppl_new_C_Polyhedron_from_C_Polyhedron(Poly_Soln, Poly_Soln_Copy),
   % On backtracking, clean up the unwanted polyhedron
   cleanup(Poly_Soln_Copy),
 
@@ -1110,7 +1109,7 @@ POSSIBILITY OF SUCH DAMAGES.\n').
 
 common_main :-
   write('\
-Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>\n\
+Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>\n\
 this program is free software, covered by the GNU General Public License,\n\
 and you are welcome to change it and/or distribute copies of it\n\
 under certain conditions.\n\

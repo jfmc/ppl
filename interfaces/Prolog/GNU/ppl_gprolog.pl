@@ -1,5 +1,5 @@
 /* GNU Prolog interface: GNU Prolog part.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,18 +27,29 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_version(+term)).
 :- foreign(ppl_banner(+term)).
 :- foreign(ppl_max_space_dimension(+term)).
+:- foreign(ppl_Coefficient_is_bounded).
+:- foreign(ppl_Coefficient_max(+term)).
+:- foreign(ppl_Coefficient_min(+term)).
 :- foreign(ppl_initialize).
 :- foreign(ppl_finalize).
 :- foreign(ppl_set_timeout_exception_atom(+term)).
 :- foreign(ppl_timeout_exception_atom(+term)).
 :- foreign(ppl_set_timeout(+term)).
 :- foreign(ppl_reset_timeout).
-:- foreign(ppl_new_Polyhedron_from_space_dimension(+term, +term, +term,
+:- foreign(ppl_new_C_Polyhedron_from_space_dimension(+term, +term,
                                                             +term)).
-:- foreign(ppl_new_Polyhedron_from_Polyhedron(+term, +term, +term, +term)).
-:- foreign(ppl_new_Polyhedron_from_constraints(+term, +term, +term)).
-:- foreign(ppl_new_Polyhedron_from_generators(+term, +term, +term)).
-:- foreign(ppl_new_Polyhedron_from_bounding_box(+term, +term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_space_dimension(+term, +term,
+                                                            +term)).
+:- foreign(ppl_new_C_Polyhedron_from_C_Polyhedron(+term, +term)).
+:- foreign(ppl_new_C_Polyhedron_from_NNC_Polyhedron(+term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_C_Polyhedron(+term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(+term, +term)).
+:- foreign(ppl_new_C_Polyhedron_from_constraints(+term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_constraints(+term, +term)).
+:- foreign(ppl_new_C_Polyhedron_from_generators(+term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_generators(+term, +term)).
+:- foreign(ppl_new_C_Polyhedron_from_bounding_box(+term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_bounding_box(+term, +term)).
 :- foreign(ppl_Polyhedron_swap(+term, +term)).
 :- foreign(ppl_delete_Polyhedron(+term)).
 :- foreign(ppl_Polyhedron_space_dimension(+term, +term)).
@@ -148,3 +159,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_expand_space_dimension(+term, +term, +term)).
 :- foreign(ppl_Polyhedron_fold_space_dimensions(+term, +term, +term)).
 :- foreign(ppl_Polyhedron_map_space_dimensions(+term, +term)).
+:- foreign(ppl_new_LP_Problem_trivial(+term)).
+:- foreign(ppl_new_LP_Problem(+term, +term, +term, +term)).
+:- foreign(ppl_new_LP_Problem_from_LP_Problem(+term, +term)).
+:- foreign(ppl_LP_Problem_swap(+term, +term)).
+:- foreign(ppl_delete_LP_Problem(+term)).
+:- foreign(ppl_LP_Problem_space_dimension(+term, +term)).
+:- foreign(ppl_LP_Problem_constraints(+term, +term)).
+:- foreign(ppl_LP_Problem_objective_function(+term, +term)).
+:- foreign(ppl_LP_Problem_optimization_mode(+term, +term)).
+:- foreign(ppl_LP_Problem_clear(+term)).
+:- foreign(ppl_LP_Problem_add_constraint(+term, +term)).
+:- foreign(ppl_LP_Problem_add_constraints(+term, +term)).
+:- foreign(ppl_LP_Problem_set_objective_function(+term, +term)).
+:- foreign(ppl_LP_Problem_set_optimization_mode(+term, +term)).
+:- foreign(ppl_LP_Problem_is_satisfiable(+term)).
+:- foreign(ppl_LP_Problem_solve(+term, +term)).
+:- foreign(ppl_LP_Problem_feasible_point(+term, +term)).
+:- foreign(ppl_LP_Problem_optimizing_point(+term, +term)).
+:- foreign(ppl_LP_Problem_optimal_value(+term, +term, +term)).
+:- foreign(ppl_LP_Problem_evaluate_objective_function(+term, +term, +term, +term)).
+:- foreign(ppl_LP_Problem_OK(+term)).

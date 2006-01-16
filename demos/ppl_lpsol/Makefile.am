@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -20,11 +20,6 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
 SUBDIRS = examples
 
 EXTRA_DIST = \
@@ -40,11 +35,12 @@ expected_int32_a \
 expected_int64 \
 expected_int64_a
 
+if BUILD_C_INTERFACE
 if HAVE_GLPK
 
 AM_CPPFLAGS = -I$(top_builddir)/interfaces/C @extra_includes@
 
-noinst_PROGRAMS = ppl_lpsol
+bin_PROGRAMS = ppl_lpsol
 # dummy.cc serves the only purpose to force linking using the C++ compiler.
 ppl_lpsol_SOURCES = \
 ppl_lpsol.c \
@@ -59,7 +55,7 @@ COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
 if ASSERTIONS_ENABLED
 
-TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED = \
+TOUGH_EXAMPLES_FOR_ENUM_IF_ASSERTIONS_ENABLED = \
 afiro.mps
 
 EXPECTED = expected_$(COEFFICIENT_MNEMONIC)_a
@@ -70,7 +66,7 @@ EXPECTED = expected_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-TOUGH_EXAMPLES = \
+TOUGH_EXAMPLES_FOR_ENUM = \
 adlittle.mps \
 blend.mps \
 boeing1.mps \
@@ -81,11 +77,14 @@ sc105.mps \
 sc50a.mps \
 sc50b.mps \
 ship08l.mps \
-$(TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED)
+$(TOUGH_EXAMPLES_FOR_ENUM_IF_ASSERTIONS_ENABLED)
+
+TOUGH_EXAMPLES_FOR_SIMPLEX = \
+ship08l.mps
 
 check-local: ppl_lpsol
-	echo $(TOUGH_EXAMPLES) >tough_examples
 	echo -n >obtained
+	echo $(TOUGH_EXAMPLES_FOR_ENUM) >tough_examples
 	LANG=C; \
 	for path in $(srcdir)/examples/*.mps; \
 	do \
@@ -93,8 +92,19 @@ check-local: ppl_lpsol
 	  grep -q $$file tough_examples && continue; \
 	  for m in -m -M; \
 	  do \
-	    echo "*** ppl_lpsol -v $$m -oobtained $$file" >>obtained; \
-	    ./ppl_lpsol -v $$m -oobtained $$path >/dev/null; \
+	    echo "*** ppl_lpsol -e $$m -oobtained $$file" >>obtained; \
+	    ./ppl_lpsol -e $$m -oobtained $$path >/dev/null; \
+	  done \
+	done
+	echo $(TOUGH_EXAMPLES_FOR_SIMPLEX) >tough_examples
+	for path in $(srcdir)/examples/*.mps; \
+	do \
+	  file=`basename $$path`; \
+	  grep -q $$file tough_examples && continue; \
+	  for m in -m -M; \
+	  do \
+	    echo "*** ppl_lpsol -s $$m -oobtained $$file" >>obtained; \
+	    ./ppl_lpsol -s $$m -oobtained $$path >/dev/null; \
 	  done \
 	done
 	diff -u --ignore-all-space $(srcdir)/$(EXPECTED) obtained
@@ -104,3 +114,4 @@ tough_examples \
 obtained
 
 endif HAVE_GLPK
+endif BUILD_C_INTERFACE

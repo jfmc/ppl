@@ -1,5 +1,5 @@
-/* Test Constraint_System::primal_simplex().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test BD_Shape::limited_BHMZ05_extrapolation_assign().
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,28 +22,26 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
 int
-main() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-  Linear_Expression cost(-A);
+main() TRY {
+  TBD_Shape bd1;
+  TBD_Shape known_result;
 
-  // Define the nonnegative orthant as the feasible region.
+    print_constraints(bd1, "*** bd1 ****");
+
+  TBD_Shape bd2;
+
+  print_constraints(bd2, "*** bd2 ****");
+
   Constraint_System cs;
-  for (dimension_type i = 0; i < 3; ++i)
-    cs.insert(Variable(i) >= 0);
 
-  Coefficient n;
-  Coefficient d;
-  Generator g(point());
-  Simplex_Status status = cs.primal_simplex(cost, MAXIMIZATION, n, d, g);
+  print_constraints(cs, "*** cs ****");
 
-  Generator opt(point(0*C));
-  return (status == SOLVED_PROBLEM && g == opt) ? 0 : 1;
+  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+
+  print_constraints(bd1,
+		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+
+  return (bd1 == known_result) ? 0 : 1;
 }
-
-
+CATCH

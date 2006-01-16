@@ -1,5 +1,5 @@
 /* Constraint_System class implementation (non-inline functions).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -460,12 +460,12 @@ PPL::Constraint_System::ascii_dump(std::ostream& s) const {
   s << "topology " << (is_necessarily_closed()
 		       ? "NECESSARILY_CLOSED"
 		       : "NOT_NECESSARILY_CLOSED")
-    << std::endl
+    << "\n"
     << x_num_rows << " x " << x_num_columns << ' '
     << (x.is_sorted() ? "(sorted)" : "(not_sorted)")
-    << std::endl
+    << "\n"
     << "index_first_pending " << x.first_pending_row()
-    << std::endl;
+    << "\n";
   for (dimension_type i = 0; i < x_num_rows; ++i) {
     const Constraint& c = x[i];
     for (dimension_type j = 0; j < x_num_columns; ++j)
@@ -481,9 +481,11 @@ PPL::Constraint_System::ascii_dump(std::ostream& s) const {
       s << ">";
       break;
     }
-    s << std::endl;
+    s << "\n";
   }
 }
+
+PPL_OUTPUT_DEFINITIONS(Constraint_System);
 
 bool
 PPL::Constraint_System::ascii_load(std::istream& s) {

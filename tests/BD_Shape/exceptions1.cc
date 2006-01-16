@@ -1,5 +1,5 @@
 /* Some incorrect uses of the functions of PPL.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,12 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
+using std::invalid_argument;
 
 namespace {
 
@@ -48,9 +43,7 @@ error1() {
     bd1.intersection_assign_and_minimize(bd2);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -69,9 +62,7 @@ error2() {
     bd1.intersection_assign(bd2);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -89,9 +80,7 @@ error3() {
     bd.remove_higher_space_dimensions(7);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -115,9 +104,7 @@ error4() {
     bd.add_constraints_and_minimize(cs);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -138,9 +125,7 @@ error5() {
     bd.add_constraint(y >= 0);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -164,9 +149,7 @@ error6() {
     bd.add_constraints(cs);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -186,9 +169,7 @@ error7() {
     bd2.CC76_extrapolation_assign(bd1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -213,9 +194,7 @@ error8() {
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -249,9 +228,7 @@ error9() {
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -276,9 +253,7 @@ error10() {
     bd1.contains(bd2);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -297,16 +272,13 @@ error11() {
     // this function to two polyhedra of different dimensions.
     bd1.bds_difference_assign(bd2);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
   }
 }
-
 
 void
 error12() {
@@ -320,10 +292,8 @@ error12() {
     // this function to two polyhedra of different dimensions.
     bd1.bds_hull_assign(bd2);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -347,15 +317,12 @@ error13() {
     bd1.bds_hull_assign_and_minimize(bd2);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
   }
 }
-
 
 void
 error14() {
@@ -375,9 +342,7 @@ error14() {
     bd2.CC76_narrowing_assign(bd1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -410,9 +375,7 @@ error15() {
     bd.remove_space_dimensions(to_be_removed);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -445,9 +408,7 @@ error16() {
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -471,9 +432,7 @@ error17() {
     bd1.time_elapse_assign(bd2);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -481,7 +440,6 @@ error17() {
 }
 
 } // namespace
-
 
 int
 main() TRY {

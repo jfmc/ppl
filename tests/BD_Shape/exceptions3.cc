@@ -1,5 +1,5 @@
 /* Some incorrect uses of the functions of PPL.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,12 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
+using std::invalid_argument;
 
 namespace {
 
@@ -48,9 +43,7 @@ error1() {
     bd.affine_preimage(x, x + 1, d);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -74,9 +67,7 @@ error2() {
     bd.affine_preimage(y, z);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -98,9 +89,7 @@ error3() {
     bd.generalized_affine_image(x, LESS_THAN, x + 1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -122,9 +111,7 @@ error4() {
     bd.generalized_affine_image(x, GREATER_THAN, x + 1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -148,9 +135,7 @@ error5() {
     bd.generalized_affine_image(x, LESS_THAN_OR_EQUAL, x + 1, d);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -174,9 +159,7 @@ error6() {
     bd.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, z);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -201,9 +184,7 @@ error7() {
     bd.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, B + C);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -227,9 +208,7 @@ error8() {
     bd.generalized_affine_image(B + C, LESS_THAN_OR_EQUAL, A + 1);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -253,9 +232,7 @@ error9() {
     Poly_Con_Relation rel = bd.relation_with(C - B <= 2);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -279,9 +256,7 @@ error10() {
     Poly_Con_Relation rel = bd.relation_with(A - C - B <= 2);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -305,9 +280,7 @@ error11() {
     Poly_Con_Relation rel = bd.relation_with(A - 2*B <= 2);
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -331,9 +304,7 @@ error12() {
     Poly_Gen_Relation rel = bd.relation_with(ray(C));
   }
   catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+    nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
     exit(1);
@@ -341,7 +312,6 @@ error12() {
 }
 
 } // namespace
-
 
 int
 main() TRY {

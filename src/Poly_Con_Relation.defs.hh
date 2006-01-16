@@ -1,5 +1,5 @@
 /* Poly_Con_Relation class declaration.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Poly_Con_Relation_defs_hh 1
 
 #include "Poly_Con_Relation.types.hh"
+#include "globals.defs.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -43,10 +44,12 @@ bool operator!=(const Poly_Con_Relation& x, const Poly_Con_Relation& y);
 Poly_Con_Relation operator&&(const Poly_Con_Relation& x,
 			     const Poly_Con_Relation& y);
 
-//! \brief
-//! Yields the assertion with all the conjuncts of \p x
-//! that are not in \p y.
-/*! \relates Poly_Con_Relation */
+/*! \brief
+  Yields the assertion with all the conjuncts of \p x
+  that are not in \p y.
+
+  \relates Poly_Con_Relation
+*/
 Poly_Con_Relation operator-(const Poly_Con_Relation& x,
 			    const Poly_Con_Relation& y);
 
@@ -96,9 +99,6 @@ private:
   //! Construct from a bit-mask.
   Poly_Con_Relation(flags_t mask);
 
-  //! Pretty printing.
-  void ascii_dump(std::ostream& s) const;
-
   friend bool
   Parma_Polyhedra_Library::operator==(const Poly_Con_Relation& x,
 				      const Poly_Con_Relation& y);
@@ -121,9 +121,10 @@ private:
 
 public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Access the internal flags: this is needed for some foreign
-  //! language interfaces.
+  /*! \brief
+    Access the internal flags: this is needed for some foreign
+    language interfaces.
+  */
 #endif
   flags_t get_flags() const;
 
@@ -131,25 +132,31 @@ public:
   //! The assertion that says nothing.
   static Poly_Con_Relation nothing();
 
-  //! \brief
-  //! The polyhedron and the set of points satisfying
-  //! the constraint are disjoint.
+  /*! \brief
+    The polyhedron and the set of points satisfying
+    the constraint are disjoint.
+  */
   static Poly_Con_Relation is_disjoint();
 
-  //! \brief
-  //! The polyhedron intersects the set of points satisfying
-  //! the constraint, but it is not included in it.
+  /*! \brief
+    The polyhedron intersects the set of points satisfying
+    the constraint, but it is not included in it.
+  */
   static Poly_Con_Relation strictly_intersects();
 
-  //! \brief
-  //! The polyhedron is included in the set of points satisfying
-  //! the constraint.
+  /*! \brief
+    The polyhedron is included in the set of points satisfying
+    the constraint.
+  */
   static Poly_Con_Relation is_included();
 
-  //! \brief
-  //! The polyhedron is included in the set of points saturating
-  //! the constraint.
+  /*! \brief
+    The polyhedron is included in the set of points saturating
+    the constraint.
+  */
   static Poly_Con_Relation saturates();
+
+  PPL_OUTPUT_DECLARATIONS;
 
   //! True if and only if \p *this implies \p y.
   bool implies(const Poly_Con_Relation& y) const;

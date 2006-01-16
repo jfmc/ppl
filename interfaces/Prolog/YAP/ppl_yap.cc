@@ -1,5 +1,5 @@
 /* YAP Prolog interface: system-dependent part.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -20,10 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
-
-#include "Coefficient.defs.hh"
-#include "Checked_Number.defs.hh"
+#include "ppl_install.hh"
+#include "pwl_install.hh"
 #include <Yap/YapInterface.h>
 #include <cassert>
 #include <cassert>
@@ -54,6 +52,13 @@ Prolog_atom a_throw;
 bool Prolog_has_unbounded_integers;
 
 /*!
+  If \p Prolog_has_unbounded_integers is false, holds the minimum
+  integer value representable by a Prolog integer.
+  Holds zero otherwise.
+*/
+long Prolog_min_integer;
+
+/*!
   If \p Prolog_has_unbounded_integers is false, holds the maximum
   integer value representable by a Prolog integer.
   Holds zero otherwise.
@@ -61,11 +66,17 @@ bool Prolog_has_unbounded_integers;
 long Prolog_max_integer;
 
 /*!
+  Temporary used to communicate big integers between C++ and Prolog.
+*/
+mpz_class tmp_mpz_class;
+
+/*!
   Performs system-dependent initialization.
 */
 void
 ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = true;
+  Prolog_min_integer = 0;
   Prolog_max_integer = 0;
 
   a_throw = YAP_LookupAtom("throw");
@@ -113,8 +124,8 @@ Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
   if (ul <= LONG_MAX)
     t = YAP_MkIntTerm(ul);
   else {
-    static mpz_class m = ul;
-    t = YAP_MkBigNumTerm(m.get_mpz_t());
+    tmp_mpz_class = ul;
+    t = YAP_MkBigNumTerm(tmp_mpz_class.get_mpz_t());
   }
   return 1;
 }
@@ -125,8 +136,7 @@ Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
 */
 inline int
 Prolog_put_atom_chars(Prolog_term_ref& t, const char* s) {
-  // FIXME: the following cast is really a bug in YAP.
-  t = YAP_MkAtomTerm(YAP_FullLookupAtom(const_cast<char*>(s)));
+  t = YAP_MkAtomTerm(YAP_FullLookupAtom(s));
   return 1;
 }
 
@@ -153,8 +163,7 @@ Prolog_put_address(Prolog_term_ref& t, void* p) {
 */
 Prolog_atom
 Prolog_atom_from_string(const char* s) {
-  // FIXME: the following cast is really a bug in YAP.
-  return YAP_FullLookupAtom(const_cast<char*>(s));
+  return YAP_FullLookupAtom(s);
 }
 
 Prolog_term_ref args[4];
@@ -254,7 +263,7 @@ Prolog_is_atom(Prolog_term_ref t) {
 */
 inline int
 Prolog_is_integer(Prolog_term_ref t) {
-  return YAP_IsIntTerm(t) != FALSE;
+  return YAP_IsIntTerm(t) != FALSE || YAP_IsBigNumTerm(t) != FALSE;
 }
 
 /*!
@@ -290,7 +299,15 @@ Prolog_is_cons(Prolog_term_ref t) {
 inline int
 Prolog_get_long(Prolog_term_ref t, long* lp) {
   assert(Prolog_is_integer(t));
-  *lp = YAP_IntOfTerm(t);
+  if (YAP_IsBigNumTerm(t) != FALSE) {
+    YAP_BigNumOfTerm(t, tmp_mpz_class.get_mpz_t());
+    if (tmp_mpz_class >= LONG_MIN && tmp_mpz_class <= LONG_MAX)
+      PPL::assign_r(*lp, tmp_mpz_class, PPL::ROUND_NOT_NEEDED);
+    else
+      return 0;
+  }
+  else
+    *lp = YAP_IntOfTerm(t);
   return 1;
 }
 
@@ -369,31 +386,25 @@ Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
 PPL::Coefficient
 integer_term_to_Coefficient(Prolog_term_ref t) {
   PPL::Coefficient n;
-  // FIXME: the "false &&" below is there because of the problem outlined in
-  // http://sourceforge.net/mailarchive/forum.php?thread_id=8471263&forum_id=2080
-  if (false && YAP_IsBigNumTerm(t) != FALSE)
-    PPL::assign(n,
-		*static_cast<mpz_class*>(YAP_BigNumOfTerm(t)),
-		PPL::ROUND_IGNORE);
-  else {
-    long l;
-    Prolog_get_long(t, &l);
-    n = l;
+  if (YAP_IsBigNumTerm(t) != FALSE) {
+    YAP_BigNumOfTerm(t, tmp_mpz_class.get_mpz_t());
+    n = tmp_mpz_class;
   }
+  else
+    n = YAP_IntOfTerm(t);
   return n;
 }
 
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
-  if (n <= LONG_MAX) {
-    long l;
-    PPL::assign(l, n, PPL::ROUND_IGNORE);
+  if (n >= LONG_MIN && n <= LONG_MAX) {
+    long l = 0;
+    PPL::assign_r(l, n, PPL::ROUND_NOT_NEEDED);
     return YAP_MkIntTerm(l);
   }
   else {
-    static mpz_class m;
-    PPL::assign(m, n, PPL::ROUND_IGNORE);
-    return YAP_MkBigNumTerm(m.get_mpz_t());
+    PPL::assign_r(tmp_mpz_class, n, PPL::ROUND_NOT_NEEDED);
+    return YAP_MkBigNumTerm(tmp_mpz_class.get_mpz_t());
   }
 }
 
@@ -471,17 +482,27 @@ YAP_STUB_1(ppl_version_beta)
 YAP_STUB_1(ppl_version)
 YAP_STUB_1(ppl_banner)
 YAP_STUB_1(ppl_max_space_dimension)
+YAP_STUB_0(ppl_Coefficient_is_bounded)
+YAP_STUB_1(ppl_Coefficient_max)
+YAP_STUB_1(ppl_Coefficient_min)
 YAP_STUB_0(ppl_initialize)
 YAP_STUB_0(ppl_finalize)
 YAP_STUB_1(ppl_set_timeout_exception_atom)
 YAP_STUB_1(ppl_timeout_exception_atom)
 YAP_STUB_1(ppl_set_timeout)
 YAP_STUB_0(ppl_reset_timeout)
-YAP_STUB_4(ppl_new_Polyhedron_from_space_dimension)
-YAP_STUB_4(ppl_new_Polyhedron_from_Polyhedron)
-YAP_STUB_3(ppl_new_Polyhedron_from_constraints)
-YAP_STUB_3(ppl_new_Polyhedron_from_generators)
-YAP_STUB_3(ppl_new_Polyhedron_from_bounding_box)
+YAP_STUB_3(ppl_new_C_Polyhedron_from_space_dimension)
+YAP_STUB_3(ppl_new_NNC_Polyhedron_from_space_dimension)
+YAP_STUB_2(ppl_new_C_Polyhedron_from_C_Polyhedron)
+YAP_STUB_2(ppl_new_C_Polyhedron_from_NNC_Polyhedron)
+YAP_STUB_2(ppl_new_NNC_Polyhedron_from_C_Polyhedron)
+YAP_STUB_2(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron)
+YAP_STUB_2(ppl_new_C_Polyhedron_from_constraints)
+YAP_STUB_2(ppl_new_NNC_Polyhedron_from_constraints)
+YAP_STUB_2(ppl_new_C_Polyhedron_from_generators)
+YAP_STUB_2(ppl_new_NNC_Polyhedron_from_generators)
+YAP_STUB_2(ppl_new_C_Polyhedron_from_bounding_box)
+YAP_STUB_2(ppl_new_NNC_Polyhedron_from_bounding_box)
 YAP_STUB_2(ppl_Polyhedron_swap)
 YAP_STUB_1(ppl_delete_Polyhedron)
 YAP_STUB_2(ppl_Polyhedron_space_dimension)
@@ -551,6 +572,27 @@ YAP_STUB_2(ppl_Polyhedron_remove_higher_space_dimensions)
 YAP_STUB_3(ppl_Polyhedron_expand_space_dimension)
 YAP_STUB_3(ppl_Polyhedron_fold_space_dimensions)
 YAP_STUB_2(ppl_Polyhedron_map_space_dimensions)
+YAP_STUB_1(ppl_new_LP_Problem_trivial)
+YAP_STUB_4(ppl_new_LP_Problem)
+YAP_STUB_2(ppl_new_LP_Problem_from_LP_Problem)
+YAP_STUB_2(ppl_LP_Problem_swap)
+YAP_STUB_1(ppl_delete_LP_Problem)
+YAP_STUB_2(ppl_LP_Problem_space_dimension)
+YAP_STUB_2(ppl_LP_Problem_constraints)
+YAP_STUB_2(ppl_LP_Problem_objective_function)
+YAP_STUB_2(ppl_LP_Problem_optimization_mode)
+YAP_STUB_1(ppl_LP_Problem_clear)
+YAP_STUB_2(ppl_LP_Problem_add_constraint)
+YAP_STUB_2(ppl_LP_Problem_add_constraints)
+YAP_STUB_2(ppl_LP_Problem_set_objective_function)
+YAP_STUB_2(ppl_LP_Problem_set_optimization_mode)
+YAP_STUB_1(ppl_LP_Problem_is_satisfiable)
+YAP_STUB_2(ppl_LP_Problem_solve)
+YAP_STUB_2(ppl_LP_Problem_feasible_point)
+YAP_STUB_2(ppl_LP_Problem_optimizing_point)
+YAP_STUB_3(ppl_LP_Problem_optimal_value)
+YAP_STUB_4(ppl_LP_Problem_evaluate_objective_function)
+YAP_STUB_1(ppl_LP_Problem_OK)
 
 #define YAP_USER_C_PREDICATE(name, arity) \
  YAP_UserCPredicate(#name, reinterpret_cast<int(*)()>(yap_stub_##name), arity)
@@ -565,17 +607,27 @@ init() {
   YAP_USER_C_PREDICATE(ppl_version, 1);
   YAP_USER_C_PREDICATE(ppl_banner, 1);
   YAP_USER_C_PREDICATE(ppl_max_space_dimension, 1);
+  YAP_USER_C_PREDICATE(ppl_Coefficient_is_bounded, 0);
+  YAP_USER_C_PREDICATE(ppl_Coefficient_max, 1);
+  YAP_USER_C_PREDICATE(ppl_Coefficient_min, 1);
   YAP_USER_C_PREDICATE(ppl_initialize, 0);
   YAP_USER_C_PREDICATE(ppl_finalize, 0);
   YAP_USER_C_PREDICATE(ppl_set_timeout_exception_atom, 1);
   YAP_USER_C_PREDICATE(ppl_timeout_exception_atom, 1);
   YAP_USER_C_PREDICATE(ppl_set_timeout, 1);
   YAP_USER_C_PREDICATE(ppl_reset_timeout, 0);
-  YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_space_dimension, 4);
-  YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_Polyhedron, 4);
-  YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_constraints, 3);
-  YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_generators, 3);
-  YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_bounding_box, 3);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_space_dimension, 3);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_space_dimension, 3);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_C_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_NNC_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_C_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_constraints, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_constraints, 2);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_generators, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_generators, 2);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_bounding_box, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_bounding_box, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_swap, 2);
   YAP_USER_C_PREDICATE(ppl_delete_Polyhedron, 1);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_space_dimension, 2);
@@ -649,4 +701,25 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_expand_space_dimension, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_fold_space_dimensions, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_map_space_dimensions, 2);
+  YAP_USER_C_PREDICATE(ppl_new_LP_Problem_trivial, 1);
+  YAP_USER_C_PREDICATE(ppl_new_LP_Problem, 4);
+  YAP_USER_C_PREDICATE(ppl_new_LP_Problem_from_LP_Problem, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_swap, 2);
+  YAP_USER_C_PREDICATE(ppl_delete_LP_Problem, 1);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_space_dimension, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_constraints, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_objective_function, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_optimization_mode, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_clear, 1);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_add_constraint, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_add_constraints, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_set_objective_function, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_set_optimization_mode, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_is_satisfiable, 1);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_solve, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_feasible_point, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_optimizing_point, 2);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_optimal_value, 3);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_evaluate_objective_function, 4);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_OK, 1);
 }

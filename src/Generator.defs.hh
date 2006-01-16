@@ -1,5 +1,5 @@
 /* Generator class declaration.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -346,26 +346,39 @@ public:
   //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Generator& zero_dim_point();
 
-  //! \brief
-  //! Returns, as a closure point,
-  //! the origin of the zero-dimensional space \f$\Rset^0\f$.
+  /*! \brief
+    Returns, as a closure point,
+    the origin of the zero-dimensional space \f$\Rset^0\f$.
+  */
   static const Generator& zero_dim_closure_point();
 
-  //! \brief
-  //! Returns a lower bound to the total size in bytes of the memory
-  //! occupied by \p *this.
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
+  */
   memory_size_type total_memory_in_bytes() const;
 
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this and \p y
-  //! are equivalent generators.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this and \p y
+    are equivalent generators.
+
     Generators having different space dimensions are not equivalent.
   */
   bool is_equivalent_to(const Generator& y) const;
+
+  PPL_OUTPUT_DECLARATIONS;
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    \ref ascii_dump) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
+#endif
+  bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -374,22 +387,25 @@ public:
   void swap(Generator& y);
 
 private:
-  //! \brief
-  //! Builds a generator of type \p type and topology \p topology,
-  //! stealing the coefficients from \p e.
+  /*! \brief
+    Builds a generator of type \p type and topology \p topology,
+    stealing the coefficients from \p e.
+  */
   Generator(Linear_Expression& e, Type type, Topology topology);
 
-  //! \brief
-  //! Throw a <CODE>std::invalid_argument</CODE> exception
-  //! containing the appropriate error message.
+  /*! \brief
+    Throw a <CODE>std::invalid_argument</CODE> exception
+    containing the appropriate error message.
+  */
   void
   throw_dimension_incompatible(const char* method,
 			       const char* name_var,
 			       Variable v) const;
 
-  //! \brief
-  //! Throw a <CODE>std::invalid_argument</CODE> exception
-  //! containing the appropriate error message.
+  /*! \brief
+    Throw a <CODE>std::invalid_argument</CODE> exception
+    containing the appropriate error message.
+  */
   void
   throw_invalid_argument(const char* method, const char* reason) const;
 
@@ -424,10 +440,10 @@ private:
   //! Sets the Linear_Row kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
   void set_is_ray_or_point();
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if the closure point
-  //! \p *this has the same \e coordinates of the point \p p.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the closure point
+    \p *this has the same \e coordinates of the point \p p.
+
     It is \e assumed that \p *this is a closure point, \p p is a point
     and both topologies and space dimensions agree.
   */
@@ -448,18 +464,22 @@ Generator line(const Linear_Expression& e);
 /*! \relates Generator */
 Generator ray(const Linear_Expression& e);
 
-//! \brief
-//! Shorthand for Generator
-//! Generator::point(const Linear_Expression& e, Coefficient_traits::const_reference d).
-/*! \relates Generator */
+/*! \brief
+  Shorthand for Generator
+  Generator::point(const Linear_Expression& e, Coefficient_traits::const_reference d).
+
+  \relates Generator
+*/
 Generator
 point(const Linear_Expression& e = Linear_Expression::zero(),
       Coefficient_traits::const_reference d = Coefficient_one());
 
-//! \brief
-//! Shorthand for Generator
-//! Generator::closure_point(const Linear_Expression& e, Coefficient_traits::const_reference d).
-/*! \relates Generator */
+/*! \brief
+  Shorthand for Generator
+  Generator::closure_point(const Linear_Expression& e, Coefficient_traits::const_reference d).
+
+  \relates Generator
+*/
 Generator
 closure_point(const Linear_Expression& e = Linear_Expression::zero(),
 	      Coefficient_traits::const_reference d = Coefficient_one());

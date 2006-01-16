@@ -1,7 +1,7 @@
 /* Solve linear programming problems by either vertex/point enumeration
    or the primal simplex algorithm. Just a toy to test the C interface
    of the library.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -58,8 +58,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 # include <sys/resource.h>
 #endif
 
-#if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 6
-# error "PPL version 0.6 or following is required"
+#if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 8
+# error "PPL version 0.8 or following is required"
 #endif
 
 static const char* ppl_source_version = PPL_VERSION;
@@ -74,11 +74,14 @@ static const char* ppl_source_version = PPL_VERSION;
 static struct option long_options[] = {
   {"check",          no_argument,       0, 'c'},
   {"help",           no_argument,       0, 'h'},
+  {"version",        no_argument,       0, 'V'},
   {"min",            no_argument,       0, 'm'},
   {"max",            no_argument,       0, 'M'},
   {"max-cpu",        required_argument, 0, 'C'},
-  {"max-memory",     required_argument, 0, 'V'},
+  {"max-memory",     required_argument, 0, 'R'},
   {"output",         required_argument, 0, 'o'},
+  {"enumerate",      no_argument,       0, 'e'},
+  {"simplex",        no_argument,       0, 's'},
   {"timings",        no_argument,       0, 't'},
   {"verbose",        no_argument,       0, 'v'},
   {0, 0, 0, 0}
@@ -91,9 +94,11 @@ static const char* usage_string
 "  -m, --min               minimizes the objective function\n"
 "  -M, --max               maximizes the objective function (default)\n"
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
-"  -VMB, --max-memory=MB   limits memory usage to MB megabytes\n"
-"  -h, --help              prints this help text to stderr\n"
+"  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
+"  -h, --help              prints this help text to stdout\n"
+"  -V, --version           prints version information to stdout\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
+"  -e, --enumerate         use the (expensive!) enumeration method\n"
 "  -s, --simplex           use the simplex method\n"
 "  -t, --timings           prints timings to stderr\n"
 "  -v, --verbose           outputs also the constraints "
@@ -104,7 +109,7 @@ static const char* usage_string
 #endif
 ;
 
-#define OPTION_LETTERS "bcmMC:V:ho:stv"
+#define OPTION_LETTERS "bcemMC:R:hVo:stv"
 
 static const char* program_name = 0;
 
@@ -154,6 +159,8 @@ process_options(int argc, char* argv[]) {
 #ifdef HAVE_GETOPT_H
   int option_index;
 #endif
+  int enumerate_required = 0;
+  int simplex_required = 0;
   int c;
   char* endptr;
   long l;
@@ -187,22 +194,27 @@ process_options(int argc, char* argv[]) {
 
     case '?':
     case 'h':
-      fprintf(stderr, usage_string, argv[0]);
+      fprintf(stdout, usage_string, argv[0]);
       my_exit(0);
+      break;
+
+    case 'V':
+      fprintf(stdout, "%s\n", PPL_VERSION);
+      exit(0);
       break;
 
     case 'C':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-c'");
+	fatal("a non-negative integer must follow `-C'");
       else
 	max_seconds_of_cpu_time = l;
       break;
 
-    case 'V':
+    case 'R':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-m'");
+	fatal("a non-negative integer must follow `-R'");
       else
 	max_bytes_of_virtual_memory = l*1024*1024;
       break;
@@ -211,8 +223,12 @@ process_options(int argc, char* argv[]) {
       output_argument = optarg;
       break;
 
+    case 'e':
+      enumerate_required = 1;
+      break;
+
     case 's':
-      use_simplex = 1;
+      simplex_required = 1;
       break;
 
     case 't':
@@ -227,6 +243,14 @@ process_options(int argc, char* argv[]) {
       abort();
     }
   }
+
+  if (enumerate_required && simplex_required)
+    fatal("--enumerate and --simplex are incompatible options");
+
+  if (enumerate_required)
+    use_simplex = 0;
+  else if (simplex_required)
+    use_simplex = 1;
 
   if (optind >= argc) {
     if (verbose)
@@ -466,12 +490,12 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
 		      ppl_Coefficient_t optimum_n,
 		      ppl_Coefficient_t optimum_d,
 		      ppl_Generator_t point) {
-  ppl_Polyhedron_t ppl_ph;  
-  int empty;  
-  int unbounded; 
-  int included;    
+  ppl_Polyhedron_t ppl_ph;
+  int empty;
+  int unbounded;
+  int included;
   int ok;
-  
+
   /* Create the polyhedron. */
   ppl_new_C_Polyhedron_from_Constraint_System(&ppl_ph, ppl_cs);
 
@@ -525,7 +549,7 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
 
   if (!ok)
     fatal("internal error");
-  
+
   ppl_delete_Polyhedron(ppl_ph);
 
   if (print_timings) {
@@ -537,7 +561,7 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
 
   if (!included)
     fatal("internal error");
-  
+
   return 1;
 }
 
@@ -548,32 +572,39 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 		   ppl_Coefficient_t optimum_d,
 		   ppl_Generator_t point) {
   int status;
-  
-  status = maximize
-    ? ppl_Constraint_System_maximize(cs, objective,
-				     optimum_n, optimum_d, point)
-    : ppl_Constraint_System_minimize(cs, objective,
-				     optimum_n, optimum_d, point);
+
+  ppl_LP_Problem_t lp;
+  int mode = maximize
+    ? PPL_LP_PROBLEM_MAXIMIZATION : PPL_LP_PROBLEM_MINIMIZATION;
+  ppl_new_LP_Problem(&lp, cs, objective, mode);
+  status = ppl_LP_Problem_solve(lp);
 
   if (print_timings) {
-    fprintf(stderr, "Time to find the optimum: ");
+    fprintf(stderr, "Time to solve the LP problem: ");
     print_clock(stderr);
     fprintf(stderr, " s\n");
     start_clock();
   }
 
-  if (status == PPL_SIMPLEX_STATUS_UNFEASIBLE) {
+  if (status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE) {
     fprintf(output_file, "Unfeasible problem.\n");
     /* FIXME: check!!! */
     return 0;
   }
-  else if (status == PPL_SIMPLEX_STATUS_UNBOUNDED) {
+  else if (status == PPL_LP_PROBLEM_STATUS_UNBOUNDED) {
     fprintf(output_file, "Unbounded problem.\n");
     /* FIXME: check!!! */
     return 0;
   }
-  else
+  else if (status == PPL_LP_PROBLEM_STATUS_OPTIMIZED) {
+    ppl_LP_Problem_optimal_value(lp, optimum_n, optimum_d);
+    ppl_const_Generator_t g;
+    ppl_LP_Problem_optimizing_point(lp, &g);
+    ppl_assign_Generator_from_Generator(point, g);
     return 1;
+  }
+  else
+    fatal("internal error");
 }
 
 static void
@@ -721,7 +752,7 @@ solve(char* file_name) {
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_Linear_Expression_add_to_coefficient(ppl_objective_le, i-1, ppl_coeff);
   }
-  
+
   if (verbose) {
     fprintf(output_file, "Objective function:\n");
     ppl_io_fprint_Linear_Expression(output_file, ppl_objective_le);
@@ -759,13 +790,6 @@ solve(char* file_name) {
   ppl_delete_Constraint_System(ppl_cs);
   ppl_delete_Linear_Expression(ppl_objective_le);
 
-  if (print_timings) {
-    fprintf(stderr, "Time to find the optimum: ");
-    print_clock(stderr);
-    fprintf(stderr, " s\n");
-    start_clock();
-  }
-  
   if (optimum_found) {
     mpq_init(optimum);
     ppl_Coefficient_to_mpz_t(optimum_n, tmp_z);

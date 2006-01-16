@@ -1,6 +1,6 @@
 /* Test Polyhedron::constraints(): we compute the system of
    constraints of a polyhedron with something pending.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,13 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
@@ -49,11 +42,9 @@ test1() {
 
   bool ok = (ph2 == known_result);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -77,11 +68,9 @@ test2() {
 
   bool ok = (ph2 == known_result);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
   if (!ok)
     exit(1);

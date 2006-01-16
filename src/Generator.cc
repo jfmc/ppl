@@ -1,5 +1,5 @@
 /* Generator class implementation (non-inline functions).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -66,7 +66,7 @@ PPL::Generator::point(const Linear_Expression& e,
   // the invariant: the divisor of a point is strictly positive.
   if (d < 0)
     for (dimension_type i = g.size(); i-- > 0; )
-      negate(g[i]);
+      neg_assign(g[i]);
 
   // Enforce normalization.
   g.normalize();
@@ -200,7 +200,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
 	  s << " + ";
 	else {
 	  s << " - ";
-	  negate(gv);
+	  neg_assign(gv);
 	}
       }
       else
@@ -286,6 +286,7 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
   }
 }
 
+PPL_OUTPUT_DEFINITIONS(Generator);
 
 bool
 PPL::Generator::OK() const {

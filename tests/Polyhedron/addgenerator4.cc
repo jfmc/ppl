@@ -1,7 +1,7 @@
 /* Test Polyhedron::add_generator(): we add points and rays of
    a system of generators that is not necessarily closed to a
    necessarily closed polyhedron.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,13 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -43,9 +36,7 @@ main() TRY {
   gs.insert(point(7*A, 4));
   gs.insert(ray(A - B));
 
-#if NOISY
   print_generators(gs, "*** gs ***");
-#endif
 
   C_Polyhedron ph(2, EMPTY);
 
@@ -61,10 +52,8 @@ main() TRY {
 
   int retval = (ph == known_result) ? 0 : 1;
 
-#if NOISY
   print_generators(gs, "*** gs ***");
   print_generators(ph, "*** ph ***");
-#endif
 
   return retval;
 }

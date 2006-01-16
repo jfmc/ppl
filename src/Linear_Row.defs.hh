@@ -1,5 +1,5 @@
 /* Linear_Row class declaration.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Linear_Row_defs_hh 1
 
 #include "Linear_Row.types.hh"
+#include "globals.defs.hh"
 #include "Row.defs.hh"
 #include "Topology.hh"
 #include "Linear_Expression.types.hh"
@@ -128,10 +129,10 @@ public:
     RAY_OR_POINT_OR_INEQUALITY = 1
   };
 
-  //! \brief
-  //! The type of the object to which the coefficients refer to,
-  //! encoding both topology and kind.
-  /*!
+  /*! \brief
+    The type of the object to which the coefficients refer to,
+    encoding both topology and kind.
+
     This combines the information about the topology (necessarily closed
     or not) and the kind (line/equality or ray/point/inequality)
     of a Linear_Row object.
@@ -164,20 +165,18 @@ public:
     //! Returns <CODE>true</CODE> if and only if \p *this and \p y are equal.
     bool operator==(const Flags& y) const;
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if \p *this and \p y
-    //! are different.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if \p *this and \p y
+      are different.
+    */
     bool operator!=(const Flags& y) const;
 
-    //! \brief
-    //! Writes to \p s an ASCII representation of the internal
-    //! representation of \p *this.
-    void ascii_dump(std::ostream& s) const;
+    PPL_OUTPUT_DECLARATIONS;
 
     //! Uses the ASCII Flags representation from \p s to recreate *this.
     /*!
       Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
-      otherwise.  The ASCII representation is as output by ascii_dump.
+      otherwise.  The ASCII representation is as output by \ref ascii_dump.
     */
     bool ascii_load(std::istream& s);
 
@@ -271,20 +270,28 @@ public:
   //! Returns the topological kind of \p *this.
   Topology topology() const;
 
-  //! \brief Returns <CODE>true</CODE> if and only if the topology
-  //! of \p *this row is not necessarily closed.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the topology
+    of \p *this row is not necessarily closed.
+  */
   bool is_not_necessarily_closed() const;
 
-  //! \brief Returns <CODE>true</CODE> if and only if the topology
-  //! of \p *this row is necessarily closed.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the topology
+    of \p *this row is necessarily closed.
+  */
   bool is_necessarily_closed() const;
 
-  //! \brief Returns <CODE>true</CODE> if and only if \p *this row
-  //! represents a line or an equality.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this row
+    represents a line or an equality.
+  */
   bool is_line_or_equality() const;
 
-  //! \brief Returns <CODE>true</CODE> if and only if \p *this row
-  //! represents a ray, a point or an inequality.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this row
+    represents a ray, a point or an inequality.
+  */
   bool is_ray_or_point_or_inequality() const;
   //@} // Flags inspection methods
 
@@ -315,22 +322,24 @@ public:
   //! Returns the coefficient \f$a_n\f$.
   Coefficient_traits::const_reference coefficient(dimension_type n) const;
 
-  //! \brief
-  //! Normalizes the sign of the coefficients so that the first non-zero
-  //! (homogeneous) coefficient of a line-or-equality is positive.
+  /*! \brief
+    Normalizes the sign of the coefficients so that the first non-zero
+    (homogeneous) coefficient of a line-or-equality is positive.
+  */
   void sign_normalize();
 
-  //! \brief
-  //! Strong normalization: ensures that different Linear_Row objects
-  //! represent different hyperplanes or hyperspaces.
-  /*!
+  /*! \brief
+    Strong normalization: ensures that different Linear_Row objects
+    represent different hyperplanes or hyperspaces.
+
     Applies both Linear_Row::normalize() and Linear_Row::sign_normalize().
   */
   void strong_normalize();
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if the coefficients are
-  //! strongly normalized.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the coefficients are
+    strongly normalized.
+  */
   bool check_strong_normalized() const;
 
   //! Linearly combines \p *this with \p y so that <CODE>*this[k]</CODE> is 0.
@@ -347,25 +356,18 @@ public:
   */
   void linear_combine(const Linear_Row& y, dimension_type k);
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if all the homogeneous
-  //! terms of \p *this are \f$0\f$.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if all the homogeneous
+    terms of \p *this are \f$0\f$.
+  */
   bool all_homogeneous_terms_are_zero() const;
 
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
-  void ascii_dump(std::ostream& s) const;
-
-  //! \brief
-  //! Writes to std::cerr an ASCII representation of the internal
-  //! representation of \p *this.
-  void ascii_dump() const;
+  PPL_OUTPUT_DECLARATIONS;
 
   //! Uses the ASCII Linear_Row representation from \p s to recreate *this.
   /*!
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
-    otherwise.  The ASCII representation is as output by ascii_dump.
+    otherwise.  The ASCII representation is as output by \ref ascii_dump.
   */
   bool ascii_load(std::istream& s);
 

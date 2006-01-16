@@ -1,5 +1,5 @@
 /* Test BD_Shape::CC76_extrapolation_assign().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,13 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 int
 main() TRY {
@@ -89,23 +82,17 @@ main() TRY {
   known_widening.add_constraint(C - D <= 0);
   known_widening.add_constraint(D - C <= 1);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   bd1.CC76_extrapolation_assign(bd2);
 
-#if NOISY
   print_constraints(bd1, "*** bd1.CC76_extrapolation_assign(bd2) ***");
-#endif
 
   // Force the closure of `bd1'.
   bd1 == bd2;
 
-#if NOISY
   print_constraints(bd1, "*** bd1.closure_assign() ***");
-#endif
 
   return bd1 == known_widening ? 0 : 1;
 

@@ -1,5 +1,5 @@
 /* Test BD_Shape::CC76_extrapolation_assign().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -54,10 +48,8 @@ n(int i) {
     bd.add_constraint(      a-c <= i);
   }
 
-#if NOISY
-  cout << "*** n_" << i << " ***" << endl
+  nout << "*** n_" << i << " ***" << endl
        << bd << endl;
-#endif
 
   // Force closure.
   (void) (bd == bd);
@@ -72,10 +64,10 @@ main() TRY {
   TBD_Shape m_i = n(i);
   TBD_Shape m_i_next;
   while (i < 100) {
-#if NOISY
-    cout << "*** m_" << i << " ***" << endl
+
+    nout << "*** m_" << i << " ***" << endl
 	 << m_i << endl;
-#endif
+
     m_i_next = n(++i);
     TBD_Shape::base_type* no_stop_points = 0;
     m_i_next.CC76_extrapolation_assign(m_i, no_stop_points, no_stop_points);
@@ -83,10 +75,10 @@ main() TRY {
     // Force closure.
     (void) (m_i_next == m_i_next);
     if (m_i == m_i_next) {
-#if NOISY
-    cout << "*** m_" << i << " (fixpoint) ***" << endl
+
+    nout << "*** m_" << i << " (fixpoint) ***" << endl
 	 << m_i << endl;
-#endif
+
      return 1;
     }
     m_i = m_i_next;

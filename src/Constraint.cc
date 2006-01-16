@@ -1,5 +1,5 @@
 /* Constraint class implementation (non-inline functions).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -185,7 +185,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
 	  s << " + ";
 	else {
 	  s << " - ";
-	  negate(cv);
+	  neg_assign(cv);
 	}
       }
       else
@@ -234,10 +234,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint::Type& t) {
   return s;
 }
 
-void
-PPL::Constraint::ascii_dump(std::ostream& s) const {
-  Linear_Row::ascii_dump(s);
-}
+PPL_OUTPUT_DEFINITIONS(Constraint);
 
 bool
 PPL::Constraint::OK() const {

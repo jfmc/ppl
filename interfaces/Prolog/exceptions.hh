@@ -1,5 +1,5 @@
 /* Exceptions used internally by the Prolog interfaces.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -98,6 +98,20 @@ public:
 class not_a_polyhedron_handle : public internal_exception {
 public:
   explicit not_a_polyhedron_handle(Prolog_term_ref t)
+    : internal_exception(t) {
+  }
+};
+
+class not_an_optimization_mode : public internal_exception {
+public:
+  explicit not_an_optimization_mode(Prolog_term_ref t)
+    : internal_exception(t) {
+  }
+};
+
+class not_an_lp_problem_handle : public internal_exception {
+public:
+  explicit not_an_lp_problem_handle(Prolog_term_ref t)
     : internal_exception(t) {
   }
 };

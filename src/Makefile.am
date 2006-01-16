@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -19,14 +19,6 @@
 #
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
-
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
-SUBDIRS =
-
 
 # Libtool -version-info for libppl.la.
 #
@@ -80,12 +72,9 @@ libppl.la \
 
 if USE_NATIVE_INTEGERS
 
-COEFFICIENT_TYPES_INCLUDE_FILES = \
-  Native_Integer.types.hh
+COEFFICIENT_TYPES_INCLUDE_FILES =
 
-COEFFICIENT_DEFS_INCLUDE_FILES = \
-  Native_Integer.defs.hh \
-  Native_Integer.inlines.hh
+COEFFICIENT_DEFS_INCLUDE_FILES =
 
 endif
 
@@ -137,6 +126,7 @@ Generator_System.types.hh \
 Grid_Generator_System.types.hh \
 Congruence_System.types.hh \
 Scalar_Products.types.hh \
+LP_Problem.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
@@ -219,6 +209,8 @@ Grid_Generator_System.inlines.hh \
 Congruence_System.inlines.hh \
 Scalar_Products.defs.hh \
 Scalar_Products.inlines.hh \
+LP_Problem.defs.hh \
+LP_Problem.inlines.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Con_Relation.inlines.hh \
 Poly_Gen_Relation.defs.hh \
@@ -277,7 +269,6 @@ Constraint.cc \
 Constraint_System.cc \
 Congruence.cc \
 Congruence_System.cc \
-simplex.cc \
 Generator_System.cc \
 Grid_Generator_System.cc \
 Generator.cc \
@@ -289,6 +280,7 @@ Linear_Expression.cc \
 Linear_System.cc \
 Matrix.cc \
 Scalar_Products.cc \
+LP_Problem.cc \
 Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
 BHRZ03_Certificate.cc \
@@ -304,6 +296,7 @@ Grid_nonpublic.cc \
 Grid_public.cc \
 Grid_chdims.cc \
 Grid_widenings.cc \
+BD_Shape.cc \
 Polyhedra_Powerset.cc \
 Row.cc \
 Linear_Row.cc \
@@ -329,8 +322,8 @@ DOC_FILES = \
 namespaces.hh \
 GMP_Integer.types.hh \
 Checked_Number.types.hh \
-Native_Integer.types.hh \
 Coefficient.types.hh \
+globals.types.hh \
 globals.defs.hh \
 Variable.types.hh \
 Linear_Expression.types.hh \
@@ -342,6 +335,7 @@ Congruence.types.hh \
 Generator_System.types.hh \
 Grid_Generator_System.types.hh \
 Congruence_System.types.hh \
+LP_Problem.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
@@ -354,7 +348,6 @@ NNC_Polyhedron.types.hh \
 BD_Shape.types.hh \
 GMP_Integer.defs.hh \
 Checked_Number.defs.hh \
-Native_Integer.defs.hh \
 Coefficient.defs.hh \
 Variable.defs.hh \
 Linear_Expression.defs.hh \
@@ -366,6 +359,7 @@ Congruence.defs.hh \
 Generator_System.defs.hh \
 Grid_Generator_System.defs.hh \
 Congruence_System.defs.hh \
+LP_Problem.defs.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Gen_Relation.defs.hh \
 BHRZ03_Certificate.defs.hh \
@@ -409,9 +403,12 @@ ppl.hh \
 ppl_include_files.hh \
 ppl_install.hh
 
-ppl.hh:	$(DOC_FILES) $(top_builddir)/src/version.hh Makefile
-	cat $(top_builddir)/src/version.hh >$@
-	(cd $(srcdir) ; cat $(DOC_FILES)) >>$@
+#ppl.hh:	$(DOC_FILES) $(top_builddir)/src/version.hh Makefile
+#	cat $(top_builddir)/src/version.hh >$@
+#	(cd $(srcdir) ; cat $(DOC_FILES)) >>$@
+
+ppl.hh:	ppl_install.hh
+	cat ppl_install.hh >$@
 
 ppl_include_files.hh: $(INCLUDE_FILES) Makefile
 	rm -f $@

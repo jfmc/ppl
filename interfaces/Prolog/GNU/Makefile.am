@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -20,21 +20,13 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
-SUBDIRS =
-
 EXTRA_DIST = ppl_gprolog_sd.cc ppl_gprolog.pl gp_clpq.pl gnu_pl_check.pl
 
 if BUILD_GNU_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src \
 -I$(top_builddir)/src \
--I$(top_srcdir)/Watchdog/src \
+-I$(top_builddir)/Watchdog/src \
 @extra_includes@
 
 bin_PROGRAMS = ppl_gprolog

@@ -1,5 +1,5 @@
 /* Full minimization of a NNC-redundant constraint system.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -45,11 +38,9 @@ main() TRY {
 
   NNC_Polyhedron ph(cs);
 
-#if NOISY
-  cout << "Topologically closed square" << endl;
+  nout << "Topologically closed square" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
-#endif
 
   // Removing all the vertices using strict inequalities.
   cs.clear();
@@ -60,11 +51,9 @@ main() TRY {
 
   ph.add_constraints_and_minimize(cs);
 
-#if NOISY
-  cout << "After vertices removal" << endl;
+  nout << "After vertices removal" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
-#endif
 
   Generator_System gs;
   gs.insert(point(x + y, 4));
@@ -76,11 +65,9 @@ main() TRY {
 
   ph.intersection_assign(ph2);
 
-#if NOISY
-  cout << "After intersection" << endl;
+  nout << "After intersection" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
-#endif
 
   ph.minimized_generators();
 
@@ -94,11 +81,9 @@ main() TRY {
 
   bool equal = (ph == known_result);
 
-#if NOISY
-  cout << "After NNC minimization" << endl;
+  nout << "After NNC minimization" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
-#endif
 
   // FIXME: find a way to correctly check if the output
   // is strongly minimized.

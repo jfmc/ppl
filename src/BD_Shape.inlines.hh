@@ -1,5 +1,5 @@
 /* BD_Shape class implementation: inline functions.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
+#include "LP_Problem.defs.hh"
 #include <cassert>
 #include <vector>
 #include <deque>
@@ -37,7 +38,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-namespace {
+namespace Implementation {
+namespace BD_Shapes {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Extract the numerator and denominator components of \p from.
@@ -51,7 +53,7 @@ numer_denom(const Checked_Number<T, Policy>& from,
 	 && !is_minus_infinity(from)
 	 && !is_plus_infinity(from));
   mpq_class q;
-  assign(q, raw_value(from), ROUND_IGNORE);
+  assign_r(q, from, ROUND_NOT_NEEDED);
   num = q.get_num();
   den = q.get_den();
 }
@@ -69,10 +71,10 @@ div_round_up(Checked_Number<T, Policy>& to,
   mpq_class qy;
   // Note: this code assumes that a Coefficient is always convertible
   // to an mpq_class without loss of precision.
-  assign(qx, raw_value(x), ROUND_IGNORE);
-  assign(qy, raw_value(y), ROUND_IGNORE);
-  assign_div(qx, qx, qy, ROUND_IGNORE);
-  assign(to, qx, ROUND_UP);
+  assign_r(qx, x, ROUND_NOT_NEEDED);
+  assign_r(qy, y, ROUND_NOT_NEEDED);
+  div_assign_r(qx, qx, qy, ROUND_NOT_NEEDED);
+  assign_r(to, qx, ROUND_UP);
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -81,7 +83,7 @@ div_round_up(Checked_Number<T, Policy>& to,
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename N>
 inline void
-assign_min(N& x, const N& y) {
+min_assign(N& x, const N& y) {
   if (x > y)
     x = y;
 }
@@ -92,200 +94,13 @@ assign_min(N& x, const N& y) {
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename N>
 inline void
-assign_max(N& x, const N& y) {
+max_assign(N& x, const N& y) {
   if (x < y)
     x = y;
 }
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Removes all constraints regarding the variable of index \p var.
-/*! \relates Parma_Polyhedra_Library::BD_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename N>
-inline void
-forget_all_constraints_on_var(DB_Matrix<N>& x,
-			      const dimension_type x_space_dim,
-			      const dimension_type var_index) {
-  assert(x_space_dim == x.num_rows() - 1);
-  assert(0 < var_index && var_index <= x_space_dim);
-  DB_Row<N>& x_v = x[var_index];
-  for (dimension_type i = x_space_dim + 1; i-- > 0; ) {
-    x_v[i] = PLUS_INFINITY;
-    x[i][var_index] = PLUS_INFINITY;
-  }
-}
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Removes all the binary constraints regarding the variable of index \p var,
-/*! \relates Parma_Polyhedra_Library::BD_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename N>
-inline void
-forget_binary_constraints_on_var(DB_Matrix<N>& x,
-				 const dimension_type x_space_dim,
-				 const dimension_type var_index) {
-  assert(x_space_dim == x.num_rows() - 1);
-  assert(0 < var_index && var_index <= x_space_dim);
-  DB_Row<N>& x_v = x[var_index];
-  for (dimension_type i = x_space_dim; i > 0; --i) {
-    x_v[i] = PLUS_INFINITY;
-    x[i][var_index] = PLUS_INFINITY;
-  }
-}
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Decodes the constraint \p c as a bounded difference.
-/*! \relates Parma_Polyhedra_Library::BD_Shape
-  \return
-  <CODE>true</CODE> if the constraint \p c is a bounded difference;
-  <CODE>false</CODE> otherwise.
-
-  \param c
-  The constraint to be decoded.
-
-  \param c_space_dim
-  The space dimension of the constraint \p c (it is <EM>assumed</EM>
-  to match the actual space dimension of \p c).
-
-  \param c_num_vars
-  If <CODE>true</CODE> is returned, then it will be set to the number
-  of variables having a non-zero coefficient. The only legal values
-  will therefore be 0, 1 and 2.
-
-  \param c_first_var
-  If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
-  then it will be set to the index of the first variable having
-  a non-zero coefficient in \p c.
-
-  \param c_second_var
-  If <CODE>true</CODE> is returned and if \p c_num_vars is set to 2,
-  then it will be set to the index of the second variable having
-  a non-zero coefficient in \p c.
-
-  \param c_coeff
-  If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
-  then it will be set to the value of the first non-zero coefficient
-  in \p c.
-*/
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-inline bool
-extract_bounded_difference(const Constraint& c,
-			   const dimension_type c_space_dim,
-			   dimension_type& c_num_vars,
-			   dimension_type& c_first_var,
-			   dimension_type& c_second_var,
-			   Coefficient& c_coeff) {
-  // Check for preconditions.
-  assert(c.space_dimension() == c_space_dim);
-  assert(c_num_vars == 0 && c_first_var == 0 && c_second_var == 0);
-  // Store the indices of the non-zero components of `c',
-  dimension_type non_zero_index[2] = { 0, 0 };
-  // Collect the non-zero components of `c'.
-  for (dimension_type i = c_space_dim; i-- > 0; )
-    if (c.coefficient(Variable(i)) != 0)
-      if (c_num_vars <= 1)
-	non_zero_index[c_num_vars++] = i + 1;
-      else
-	// Constraint `c' is not a bounded difference.
-	return false;
-
-  // Make sure that `c' is indeed a bounded difference,
-  // i.e., it has one of the following forms:
-  //           0 <=/= b, if c_num_vars == 0;
-  //   a*x       <=/= b, if c_num_vars == 1;
-  //   a*x - a*y <=/= b, if c_num_vars == 2.
-  switch (c_num_vars) {
-  case 2:
-    {
-      const Coefficient& c0 = c.coefficient(Variable(non_zero_index[0]-1));
-      const Coefficient& c1 = c.coefficient(Variable(non_zero_index[1]-1));
-      if (sgn(c0) == sgn(c1) || c0 != -c1)
-	// Constraint `c' is not a bounded difference.
-	return false;
-      c_coeff = c1;
-    }
-    c_first_var = non_zero_index[0];
-    c_second_var = non_zero_index[1];
-    break;
-  case 1:
-    c_coeff = -c.coefficient(Variable(non_zero_index[0]-1));
-    c_first_var = non_zero_index[0];
-    break;
-  default:
-    assert(c_num_vars == 0);
-    break;
-  }
-  return true;
-}
-
-template <typename N>
-inline void
-compute_predecessors(const DB_Matrix<N>& dbm,
-		     std::vector<dimension_type>& predecessor) {
-  // Variables are ordered according to their index.
-  // The vector `predecessor' is used to indicate which variable
-  // immediately precedes a given one in the corresponding equivalence class.
-  // The `leader' of an equivalence class is the element having minimum
-  // index: leaders are their own predecessors.
-  assert(predecessor.size() == 0);
-  const dimension_type pred_size = dbm.num_rows();
-  // Initially, each variable is leader of its own zero-equivalence class.
-  predecessor.reserve(pred_size);
-  for (dimension_type i = 0; i < pred_size; ++i)
-    predecessor.push_back(i);
-  // Now compute actual predecessors.
-  for (dimension_type i = pred_size; i-- > 1; )
-    if (i == predecessor[i]) {
-      const DB_Row<N>& dbm_i = dbm[i];
-      for (dimension_type j = i; j-- > 0; )
-	if (j == predecessor[j]) {
-	  N negated_dbm_ji;
-	  if (assign_neg(negated_dbm_ji, dbm[j][i], ROUND_IGNORE) == V_EQ
-	      && negated_dbm_ji == dbm_i[j]) {
-	    // Choose as predecessor the variable having the smaller index.
-	    predecessor[i] = j;
-	    break;
-	  }
-	}
-    }
-}
-
-template <typename N>
-inline void
-compute_leaders(const DB_Matrix<N>& dbm,
-		std::vector<dimension_type>& leaders) {
-  assert(leaders.size() == 0);
-  // Compute predecessor information.
-  compute_predecessors(dbm, leaders);
-  // Flatten the predecessor chains so as to obtain leaders.
-  assert(leaders[0] == 0);
-  for (dimension_type i = 1, iend = leaders.size(); i != iend; ++i) {
-    const dimension_type l_i = leaders[i];
-    assert(l_i <= i);
-    if (l_i != i) {
-      const dimension_type ll_i = leaders[l_i];
-      assert(ll_i == leaders[ll_i]);
-      leaders[i] = ll_i;
-    }
-  }
-}
-
-inline void
-compute_leader_indices(const std::vector<dimension_type>& predecessor,
-		       std::vector<dimension_type>& indices) {
-  // The vector `indices' contains one entry for each equivalence
-  // class, storing the index of the corresponding leader in
-  // increasing order: it is used to avoid repeated tests for leadership.
-  assert(indices.size() == 0);
-  assert(0 == predecessor[0]);
-  indices.push_back(0);
-  for (dimension_type i = 1, iend = predecessor.size(); i != iend; ++i)
-    if (i == predecessor[i])
-      indices.push_back(i);
-}
-
-} // namespace
+} // namespace BD_Shapes
+} // namespace Implementation
 
 
 template <typename T>
@@ -357,7 +172,7 @@ template <typename U>
 inline
 BD_Shape<T>::BD_Shape(const BD_Shape<U>& y)
   : dbm(y.dbm), status(), redundancy_dbm() {
-  // FIXME: handle flags properly, possibly taking special cases into account.
+  // TODO: handle flags properly, possibly taking special cases into account.
   if (y.marked_empty())
     set_empty();
   else if (y.status.test_zero_dim_univ())
@@ -415,7 +230,7 @@ BD_Shape<T>::affine_dimension() const {
   // `predecessor[i] == i' if and only if `i' is the leader of its
   // equivalence class (i.e., the minimum index in the class);
   std::vector<dimension_type> predecessor;
-  compute_predecessors(dbm, predecessor);
+  compute_predecessors(predecessor);
 
   // Due to the fictitious variable `0', the affine dimension is one
   // less the number of equivalence classes.
@@ -448,12 +263,20 @@ inline void
 BD_Shape<T>::swap(BD_Shape& y) {
   std::swap(dbm, y.dbm);
   std::swap(status, y.status);
+  std::swap(redundancy_dbm, y.redundancy_dbm);
 }
 
 template <typename T>
 inline dimension_type
 BD_Shape<T>::space_dimension() const {
   return dbm.num_rows() - 1;
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::is_empty() const {
+  shortest_path_closure_assign();
+  return marked_empty();
 }
 
 template <typename T>
@@ -492,6 +315,7 @@ operator!=(const BD_Shape<T>& x, const BD_Shape<T>& y) {
   return !(x == y);
 }
 
+/*! \relates BD_Shape */
 template <typename Temp, typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -509,7 +333,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
   if (x_space_dim == 0) {
     if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_IGNORE);
+      assign_r(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
     return true;
@@ -523,7 +347,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // the other BDS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
    if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_IGNORE);
+      assign_r(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
    return true;
@@ -532,6 +356,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return rectilinear_distance_assign(r, x.dbm, y.dbm, dir, tmp0, tmp1, tmp2);
 }
 
+/*! \relates BD_Shape */
 template <typename Temp, typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -544,6 +369,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return rectilinear_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
+/*! \relates BD_Shape */
 template <typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -553,6 +379,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return rectilinear_distance_assign<To, To, T>(r, x, y, dir);
 }
 
+/*! \relates BD_Shape */
 template <typename Temp, typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -570,7 +397,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
   if (x_space_dim == 0) {
     if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_IGNORE);
+      assign_r(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
     return true;
@@ -584,7 +411,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // the other BDS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
    if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_IGNORE);
+      assign_r(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
    return true;
@@ -593,6 +420,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return euclidean_distance_assign(r, x.dbm, y.dbm, dir, tmp0, tmp1, tmp2);
 }
 
+/*! \relates BD_Shape */
 template <typename Temp, typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -605,6 +433,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return euclidean_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
+/*! \relates BD_Shape */
 template <typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -614,6 +443,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return euclidean_distance_assign<To, To, T>(r, x, y, dir);
 }
 
+/*! \relates BD_Shape */
 template <typename Temp, typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -631,7 +461,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
   if (x_space_dim == 0) {
     if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_IGNORE);
+      assign_r(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
     return true;
@@ -645,7 +475,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // the other BDS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
    if (x.marked_empty() == y.marked_empty())
-      assign(r, 0, ROUND_IGNORE);
+      assign_r(r, 0, ROUND_NOT_NEEDED);
     else
       r = PLUS_INFINITY;
    return true;
@@ -654,6 +484,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return l_infinity_distance_assign(r, x.dbm, y.dbm, dir, tmp0, tmp1, tmp2);
 }
 
+/*! \relates BD_Shape */
 template <typename Temp, typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -666,6 +497,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return l_infinity_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
+/*! \relates BD_Shape */
 template <typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -679,17 +511,9 @@ template <typename T>
 inline void
 BD_Shape<T>::add_dbm_constraint(const dimension_type i,
 				const dimension_type j,
-				N k,
-				Coefficient_traits::const_reference den) {
+				N k) {
   // Private method: the caller has to ensure the following.
   assert(i <= space_dimension() && j <= space_dimension() && i != j);
-  assert(den != 0);
-  if (den != 1) {
-    N d;
-    assign(d, raw_value(-den), ROUND_UP);
-    assign_neg(d, d, ROUND_UP);
-    assign_div(k, k, d, ROUND_UP);
-  }
   N& dbm_ij = dbm[i][j];
   if (dbm_ij > k) {
     dbm_ij = k;
@@ -709,7 +533,7 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
   assert(i <= space_dimension() && j <= space_dimension() && i != j);
   assert(den != 0);
   N k;
-  div_round_up(k, num, den);
+  Implementation::BD_Shapes::div_round_up(k, num, den);
   add_dbm_constraint(i, j, k);
 }
 
@@ -738,7 +562,7 @@ BD_Shape<T>::upper_bound_assign(const BD_Shape& y) {
 template <typename T>
 inline bool
 BD_Shape<T>::bds_hull_assign_if_exact(const BD_Shape&) {
-  // FIXME: this must be properly implemented.
+  // TODO: this must be properly implemented.
   return false;
 }
 
@@ -797,7 +621,7 @@ BD_Shape<T>::intersection_assign_and_minimize(const BD_Shape& y) {
 
 template <typename T>
 inline void
-BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y) {
+BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y, unsigned* tp) {
   static N stop_points[] = {
     N(-2, ROUND_UP),
     N(-1, ROUND_UP),
@@ -808,7 +632,8 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y) {
   CC76_extrapolation_assign(y,
 			    stop_points,
 			    stop_points
-			    + sizeof(stop_points)/sizeof(stop_points[0]));
+			    + sizeof(stop_points)/sizeof(stop_points[0]),
+			    tp);
 }
 
 template <typename T>
@@ -854,43 +679,24 @@ BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
 
 template <typename T>
 inline void
-BD_Shape<T>::ascii_dump(std::ostream& s) const {
-  status.ascii_dump(s);
-  s << std::endl;
-  dbm.ascii_dump(s);
-  // Redundancy info.
-  s << std::endl;
-  const char separator = ' ';
-  const dimension_type nrows = redundancy_dbm.size();
-  s << nrows << separator << std::endl;
-  for (dimension_type i = 0; i < nrows;  ++i) {
-    for (dimension_type j = 0; j < nrows; ++j)
-      s << redundancy_dbm[i][j] << separator;
-    s << std::endl;
+BD_Shape<T>::forget_all_dbm_constraints(const dimension_type v) {
+  assert(0 < v && v <= dbm.num_rows());
+  DB_Row<N>& dbm_v = dbm[v];
+  for (dimension_type i = dbm.num_rows(); i-- > 0; ) {
+    dbm_v[i] = PLUS_INFINITY;
+    dbm[i][v] = PLUS_INFINITY;
   }
 }
 
 template <typename T>
-inline bool
-BD_Shape<T>::ascii_load(std::istream& s) {
-  if (!status.ascii_load(s))
-    return false;
-  if (!dbm.ascii_load(s))
-    return false;
-  // Load redundancy info.
-  dimension_type nrows;
-   if (!(s >> nrows))
-    return false;
-  redundancy_dbm.clear();
-  redundancy_dbm.reserve(nrows);
-  std::deque<bool> redundancy_row(nrows, false);
-  for (dimension_type i = 0; i < nrows;  ++i) {
-    for (dimension_type j = 0; j < nrows; ++j)
-      if (!(s >> redundancy_row[j]))
-	return false;
-    redundancy_dbm.push_back(redundancy_row);
+inline void
+BD_Shape<T>::forget_binary_dbm_constraints(const dimension_type v) {
+  assert(0 < v && v <= dbm.num_rows());
+  DB_Row<N>& dbm_v = dbm[v];
+  for (dimension_type i = dbm.num_rows()-1; i > 0; --i) {
+    dbm_v[i] = PLUS_INFINITY;
+    dbm[i][v] = PLUS_INFINITY;
   }
-  return true;
 }
 
 } // namespace Parma_Polyhedra_Library
@@ -915,6 +721,9 @@ namespace Parma_Polyhedra_Library {
 template <typename T>
 BD_Shape<T>::BD_Shape(const Generator_System& gs)
   : dbm(gs.space_dimension() + 1), status(), redundancy_dbm() {
+  using Implementation::BD_Shapes::max_assign;
+  using Implementation::BD_Shapes::div_round_up;
+
   const dimension_type space_dim = space_dimension();
   const Generator_System::const_iterator gs_begin = gs.begin();
   const Generator_System::const_iterator gs_end = gs.end();
@@ -957,14 +766,14 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 	  // The loop correctly handles the case when i == j.
 	  for (dimension_type j = space_dim; j > 0; --j) {
 	    div_round_up(tmp, g.coefficient(Variable(j-1)) - g_i, d);
-	    assign_max(dbm_i[j], tmp);
+	    max_assign(dbm_i[j], tmp);
 	  }
 	  div_round_up(tmp, -g_i, d);
-	  assign_max(dbm_i[0], tmp);
+	  max_assign(dbm_i[0], tmp);
 	}
 	for (dimension_type j = space_dim; j > 0; --j) {
 	  div_round_up(tmp, g.coefficient(Variable(j-1)), d);
-	  assign_max(dbm_0[j], tmp);
+	  max_assign(dbm_0[j], tmp);
 	}
       }
       break;
@@ -1027,6 +836,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 template <typename T>
 BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   : dbm(), status(), redundancy_dbm() {
+  using Implementation::BD_Shapes::div_round_up;
   const dimension_type num_dimensions = ph.space_dimension();
 
   if (ph.marked_empty()) {
@@ -1069,37 +879,79 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
       return;
     }
 
-  // If `complexity' allows it, use simplex to determine whether or not
-  // the polyhedron is empty.
+  // If `complexity' allows it, use simplex to derive the exact (modulo
+  // the fact that our BDSs are topologically closed) variable bounds.
   if (complexity == SIMPLEX_COMPLEXITY) {
-    Linear_Expression obj = Linear_Expression::zero();
-    Coefficient n;
-    Coefficient d;
-    Generator g(point());
-    Simplex_Status status;
-    if (!ph.con_sys.has_strict_inequalities())
-       status = ph.con_sys.primal_simplex(obj, MAXIMIZATION, n, d, g);
-    else {
-      // Building a topologically closed version of `ph.con_sys'.
-      Constraint_System cs;
-      for (Constraint_System::const_iterator i = ph.con_sys.begin(),
-	     iend = ph.con_sys.end(); i != iend; ++i) {
-	const Constraint& c = *i;
-	if (c.is_equality())
-	  cs.insert(Linear_Expression(c) == 0);
-	else
-	  cs.insert(Linear_Expression(c) >= 0);
-      }
-      status = cs.primal_simplex(obj, MAXIMIZATION, n, d, g);
-    }
+    LP_Problem lp;
+    lp.set_optimization_mode(MAXIMIZATION);
 
-    if (status == UNFEASIBLE_PROBLEM) {
+    const Constraint_System& ph_cs = ph.constraints();
+    if (!ph_cs.has_strict_inequalities())
+      lp.add_constraints(ph_cs);
+    else
+      // Adding to `lp' a topologically closed version of `ph_cs'.
+      for (Constraint_System::const_iterator i = ph_cs.begin(),
+	     iend = ph_cs.end(); i != iend; ++i) {
+	const Constraint& c = *i;
+	lp.add_constraint(c.is_equality()
+			  ? (Linear_Expression(c) == 0)
+			  : (Linear_Expression(c) >= 0));
+      }
+
+    // Check for unsatisfiability.
+    if (!lp.is_satisfiable()) {
       *this = BD_Shape(num_dimensions, EMPTY);
       return;
     }
 
-    // TODO: use simplex to derive the exact (modulo the fact that
-    // our BDSs are topologically closed) variable bounds.
+    // Get all the upper bounds.
+    LP_Problem_Status lp_status;
+    Generator g(point());
+    TEMP_INTEGER(num);
+    TEMP_INTEGER(den);
+    for (dimension_type i = 1; i <= num_dimensions; ++i) {
+      Variable x(i-1);
+      // Evaluate optimal upper bound for `x <= ub'.
+      lp.set_objective_function(x);
+      lp_status = lp.solve();
+      if (lp_status == UNBOUNDED_LP_PROBLEM)
+	dbm[0][i] = PLUS_INFINITY;
+      else {
+	assert(lp_status == OPTIMIZED_LP_PROBLEM);
+	g = lp.optimizing_point();
+	lp.evaluate_objective_function(g, num, den);
+	div_round_up(dbm[0][i], num, den);
+      }
+      // Evaluate optimal upper bound for `x - y <= ub'.
+      for (dimension_type j = 1; j <= num_dimensions; ++j) {
+	if (i == j)
+	  continue;
+	Variable y(j-1);
+	lp.set_objective_function(x - y);
+	lp_status = lp.solve();
+	if (lp_status == UNBOUNDED_LP_PROBLEM)
+	  dbm[j][i] = PLUS_INFINITY;
+	else {
+	  assert(lp_status == OPTIMIZED_LP_PROBLEM);
+	  g = lp.optimizing_point();
+	  lp.evaluate_objective_function(g, num, den);
+	  div_round_up(dbm[j][i], num, den);
+	}
+      }
+      // Evaluate optimal upper bound for `-x <= ub'.
+      lp.set_objective_function(-x);
+      lp_status = lp.solve();
+      if (lp_status == UNBOUNDED_LP_PROBLEM)
+	dbm[i][0] = PLUS_INFINITY;
+      else {
+	assert(lp_status == OPTIMIZED_LP_PROBLEM);
+	g = lp.optimizing_point();
+	lp.evaluate_objective_function(g, num, den);
+	div_round_up(dbm[i][0], num, den);
+      }
+    }
+    status.set_shortest_path_closed();
+    return;
   }
 
   // Extract easy-to-find bounds from constraints.
@@ -1109,6 +961,8 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
 template <typename T>
 void
 BD_Shape<T>::add_constraint(const Constraint& c) {
+  using Implementation::BD_Shapes::div_round_up;
+
   const dimension_type c_space_dim = c.space_dimension();
   // Dimension-compatibility check.
   if (c_space_dim > space_dimension())
@@ -1120,7 +974,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   dimension_type num_vars = 0;
   dimension_type i = 0;
   dimension_type j = 0;
-  Coefficient coeff;
+  TEMP_INTEGER(coeff);
   // Constraints that are not bounded differences are ignored.
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
     return;
@@ -1168,8 +1022,6 @@ template <typename T>
 void
 BD_Shape<T>::concatenate_assign(const BD_Shape& y) {
   BD_Shape& x = *this;
-  assert(x.OK());
-  assert(y.OK());
 
   const dimension_type x_space_dim = x.space_dimension();
   const dimension_type y_space_dim = y.space_dimension();
@@ -1178,6 +1030,7 @@ BD_Shape<T>::concatenate_assign(const BD_Shape& y) {
   // let `*this' become empty.
   if (y_space_dim == 0 && y.marked_empty()) {
     set_empty();
+    assert(OK());
     return;
   }
 
@@ -1185,6 +1038,7 @@ BD_Shape<T>::concatenate_assign(const BD_Shape& y) {
   // the dimension of the vector space.
   if (x_space_dim == 0 && marked_empty()) {
     dbm.grow(y_space_dim + 1);
+    assert(OK());
     return;
   }
   // First we increase the space dimension of `x' by adding
@@ -1270,71 +1124,6 @@ BD_Shape<T>::contains(const BD_Shape& y) const {
 
 template <typename T>
 bool
-BD_Shape<T>::is_empty() const {
-#if 1
-  shortest_path_closure_assign();
-  return marked_empty();
-#else
-  if (marked_empty())
-    return true;
-  // Shortest-path closure implies non-emptyness.
-  if (marked_shortest_path_closed())
-    return false;
-  const dimension_type space_dim = space_dimension();
-  // A zero-dim universe BDS is not empty.
-  if (space_dim == 0)
-    return false;
-
-  // Remark that the matrix `dbm' can be seen as the adjacent matrix
-  // of a weighted directed graph, where the nodes are the variables
-  // and the weights are the inhomogeneous terms of the constraints.
-  // Here we use a modification of Bellman-Ford algorithm for
-  // not-necessary-connected graph.
-  // Since the graph is not necessary connected we consider a new
-  // node, called source, that is joined with all other nodes with
-  // zero-weight arcs.
-
-  // Values of the minimum path, from source to all nodes.
-  DB_Row<N> z(space_dim + 1);
-  for (dimension_type i = space_dim + 1; i-- > 0; )
-    assign(z[i], 0, ROUND_IGNORE);
-
-  // The relax-technique: given an arc (j,h), it tries to improve
-  // the value of minimum path for h passing by j.
-  N sum1;
-  for (dimension_type i = 0; i <= space_dim; ++i)
-    for (dimension_type j = 0; j <= space_dim; ++j) {
-      const DB_Row<N>& dbm_j = dbm[j];
-      N& z_j = z[j];
-      for (dimension_type h = 0; h <= space_dim; ++h) {
-	assign_add(sum1, dbm_j[h], z_j, ROUND_UP);
-	assign_min(z[h], sum1);
-      }
-    }
-
-  // The BDS is empty if and only if it has a negative-weight cycle.
-  // This happens when vector `z' doesn't contain really the
-  // smaller values of minimum path, from source to all nodes.
-  N sum2;
-  for (dimension_type j = 0; j <= space_dim; ++j) {
-    const DB_Row<N>& dbm_j = dbm[j];
-    N& z_j = z[j];
-    for (dimension_type h = 0; h <= space_dim; ++h) {
-      assign_add(sum2, dbm_j[h], z_j, ROUND_UP);
-      if (z[h] > sum2) {
-	Status& nstatus = const_cast<Status&>(status);
-	nstatus.set_empty();
-	return true;
-      }
-    }
-  }
-  // The BDS is not empty.
-  return false;
-#endif
-}
-
-template <typename T>
-bool
 BD_Shape<T>::is_universe() const {
   if (marked_empty())
     return false;
@@ -1354,6 +1143,59 @@ BD_Shape<T>::is_universe() const {
 	return false;
   }
   return true;
+}
+
+template <typename T>
+void
+BD_Shape<T>
+::compute_predecessors(std::vector<dimension_type>& predecessor) const {
+  assert(!marked_empty() && marked_shortest_path_closed());
+  assert(predecessor.size() == 0);
+  // Variables are ordered according to their index.
+  // The vector `predecessor' is used to indicate which variable
+  // immediately precedes a given one in the corresponding equivalence class.
+  // The `leader' of an equivalence class is the element having minimum
+  // index: leaders are their own predecessors.
+  const dimension_type pred_size = dbm.num_rows();
+  // Initially, each variable is leader of its own zero-equivalence class.
+  predecessor.reserve(pred_size);
+  for (dimension_type i = 0; i < pred_size; ++i)
+    predecessor.push_back(i);
+  // Now compute actual predecessors.
+  for (dimension_type i = pred_size; i-- > 1; )
+    if (i == predecessor[i]) {
+      const DB_Row<N>& dbm_i = dbm[i];
+      for (dimension_type j = i; j-- > 0; )
+	if (j == predecessor[j]) {
+	  N negated_dbm_ji;
+	  if (neg_assign_r(negated_dbm_ji, dbm[j][i], ROUND_NOT_NEEDED) == V_EQ
+	      && negated_dbm_ji == dbm_i[j]) {
+	    // Choose as predecessor the variable having the smaller index.
+	    predecessor[i] = j;
+	    break;
+	  }
+	}
+    }
+}
+
+template <typename T>
+void
+BD_Shape<T>::compute_leaders(std::vector<dimension_type>& leaders) const {
+  assert(!marked_empty() && marked_shortest_path_closed());
+  assert(leaders.size() == 0);
+  // Compute predecessor information.
+  compute_predecessors(leaders);
+  // Flatten the predecessor chains so as to obtain leaders.
+  assert(leaders[0] == 0);
+  for (dimension_type i = 1, iend = leaders.size(); i != iend; ++i) {
+    const dimension_type l_i = leaders[i];
+    assert(l_i <= i);
+    if (l_i != i) {
+      const dimension_type ll_i = leaders[l_i];
+      assert(ll_i == leaders[ll_i]);
+      leaders[i] = ll_i;
+    }
+  }
 }
 
 template <typename T>
@@ -1391,7 +1233,8 @@ BD_Shape<T>::is_shortest_path_reduced() const {
     const DB_Row<N>& xdbm_i = x_copy.dbm[i];
     for (dimension_type j = i + 1; j <= x_space_dim; ++j) {
       N negated_xdbm_ji;
-      if (assign_neg(negated_xdbm_ji, x_copy.dbm[j][i], ROUND_IGNORE) == V_EQ
+      if (neg_assign_r(negated_xdbm_ji, x_copy.dbm[j][i],
+		       ROUND_NOT_NEEDED) == V_EQ
 	  && negated_xdbm_ji == xdbm_i[j])
 	// Two equivalent variables have got the same leader
 	// (the smaller variable).
@@ -1417,7 +1260,7 @@ BD_Shape<T>::is_shortest_path_reduced() const {
 	    if (leader[j] == j) {
 	      const N& x_i_j = x_i[j];
 	      if (!is_plus_infinity(x_i_j)) {
-		assign_add(c, x_i_k, x_k[j], ROUND_UP);
+		add_assign_r(c, x_i_k, x_k[j], ROUND_UP);
 		if (x_i_j >= c && !redundancy_i[j])
 		  return false;
 	      }
@@ -1529,6 +1372,8 @@ BD_Shape<T>::is_shortest_path_reduced() const {
 template <typename T>
 Poly_Con_Relation
 BD_Shape<T>::relation_with(const Constraint& c) const {
+  using Implementation::BD_Shapes::div_round_up;
+
   const dimension_type c_space_dim = c.space_dimension();
   const dimension_type space_dim = space_dimension();
 
@@ -1565,7 +1410,7 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   dimension_type num_vars = 0;
   dimension_type i = 0;
   dimension_type j = 0;
-  Coefficient coeff;
+  TEMP_INTEGER(coeff);
   // Constraints that are not bounded differences are not compatible.
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
     throw_constraint_incompatible("relation_with(c)");
@@ -1668,7 +1513,7 @@ BD_Shape<T>::relation_with(const Generator& g) const {
       const N& dbm_ji = dbm[j][i];
       N negated_dbm_ji;
       const bool is_equality
-	= assign_neg(negated_dbm_ji, dbm_ji, ROUND_IGNORE) == V_EQ
+	= neg_assign_r(negated_dbm_ji, dbm_ji, ROUND_NOT_NEEDED) == V_EQ
 	&& negated_dbm_ji == dbm_ij;
       const bool dbm_ij_is_infinity = is_plus_infinity(dbm_ij);
       const bool dbm_ji_is_infinity = is_plus_infinity(dbm_ji);
@@ -1762,6 +1607,8 @@ BD_Shape<T>::relation_with(const Generator& g) const {
 template <typename T>
 void
 BD_Shape<T>::shortest_path_closure_assign() const {
+  using Implementation::BD_Shapes::min_assign;
+
   // Do something only if necessary.
   if (marked_empty() || marked_shortest_path_closed())
     return;
@@ -1777,7 +1624,7 @@ BD_Shape<T>::shortest_path_closure_assign() const {
   // Fill the main diagonal with zeros.
   for (dimension_type h = num_dimensions + 1; h-- > 0; ) {
     assert(is_plus_infinity(x.dbm[h][h]));
-    assign(x.dbm[h][h], 0, ROUND_IGNORE);
+    assign_r(x.dbm[h][h], 0, ROUND_NOT_NEEDED);
   }
 
   N sum;
@@ -1791,8 +1638,8 @@ BD_Shape<T>::shortest_path_closure_assign() const {
 	  const N& xdbm_k_j = xdbm_k[j];
 	  if (!is_plus_infinity(xdbm_k_j)) {
 	    // Rounding upward for correctness.
-	    assign_add(sum, xdbm_i_k, xdbm_k_j, ROUND_UP);
-	    assign_min(xdbm_i[j], sum);
+	    add_assign_r(sum, xdbm_i_k, xdbm_k_j, ROUND_UP);
+	    min_assign(xdbm_i[j], sum);
 	  }
 	}
     }
@@ -1836,7 +1683,7 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
   // if they lie on a zero-weight loop; since the matrix is shortest-path
   // closed, this happens if and only if dbm[i][j] == -dbm[j][i].
   std::vector<dimension_type> predecessor;
-  compute_predecessors(dbm, predecessor);
+  compute_predecessors(predecessor);
   std::vector<dimension_type> leaders;
   compute_leader_indices(predecessor, leaders);
   const dimension_type num_leaders = leaders.size();
@@ -1860,7 +1707,7 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
 	redundancy_i[j] = false;
 	for (dimension_type l_k = 0; l_k < num_leaders; ++l_k) {
 	  const dimension_type k = leaders[l_k];
-	  assign_add(c, dbm_i[k], dbm[k][j], ROUND_UP);
+	  add_assign_r(c, dbm_i[k], dbm[k][j], ROUND_UP);
 	  if (dbm_i_j >= c) {
 	    redundancy_i[j] = true;
 	    break;
@@ -1988,11 +1835,11 @@ BD_Shape<T>::bds_difference_assign(const BD_Shape& y) {
   for (Constraint_System::const_iterator i = y_cs.begin(),
 	 y_cs_end = y_cs.end(); i != y_cs_end; ++i) {
     const Constraint& c = *i;
-    // If the system of bounded differences `x' is included 
-    // in the system of bounded differences defined by `c', 
+    // If the system of bounded differences `x' is included
+    // in the system of bounded differences defined by `c',
     // then `c' _must_ be skipped, as adding its complement to `x'
-    // would result in the empty system of bounded differences, 
-    // and as we would obtain a result that is less precise 
+    // would result in the empty system of bounded differences,
+    // and as we would obtain a result that is less precise
     // than the bds-difference.
     if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
       continue;
@@ -2064,7 +1911,7 @@ BD_Shape<T>::add_space_dimensions_and_project(const dimension_type m) {
 	DB_Row<N>& dbm_i = dbm[i];
 	for (dimension_type j = m + 1; j-- > 0; )
 	  if (i != j)
-	    assign(dbm_i[j], 0, ROUND_IGNORE);
+	    assign_r(dbm_i[j], 0, ROUND_NOT_NEEDED);
       }
       status.set_shortest_path_closed();
     }
@@ -2082,8 +1929,8 @@ BD_Shape<T>::add_space_dimensions_and_project(const dimension_type m) {
   // Bottom of the matrix and first row.
   DB_Row<N>& dbm_0 = dbm[0];
   for (dimension_type i = space_dim + 1; i <= new_space_dim; ++i) {
-    assign(dbm[i][0], 0, ROUND_IGNORE);
-    assign(dbm_0[i], 0, ROUND_IGNORE);
+    assign_r(dbm[i][0], 0, ROUND_NOT_NEEDED);
+    assign_r(dbm_0[i], 0, ROUND_NOT_NEEDED);
   }
 
   if (marked_shortest_path_closed())
@@ -2288,7 +2135,8 @@ template <typename T>
 template <typename Iterator>
 void
 BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
-				       Iterator first, Iterator last) {
+				       Iterator first, Iterator last,
+				       unsigned* tp) {
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
@@ -2318,42 +2166,24 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
   if (y.marked_empty())
     return;
 
-  /* The closure is necessary.
-     For example.
-     In `*this' there are the constraints:
-     x1 - x2 <= 1;
-     x2      <= 2;
-     x1      <= 4;   (with the closure x1 <= 3).
+  // If there are tokens available, work on a temporary copy.
+  if (tp != 0 && *tp > 0) {
+    BD_Shape<T> x_tmp(*this);
+    x_tmp.CC76_extrapolation_assign(y, first, last, 0);
+    // If the widening was not precise, use one of the available tokens.
+    if (!contains(x_tmp))
+      --(*tp);
+    return;
+  }
 
-     In `y' there are the constraints:
-     x1 - x2 <= 1;
-     x2      <= 2;
-     x1      <= 3.
-
-     Without closure of `*this' the result is:
-     x1 - x2 <= 1;
-     x2      <= 2.
-
-     With closure the result has also the constraint:
-     x1      <= 3.
-
-     We must close `y' too. In fact, if we have for `*this':
-     x1      <= 4
-
-     and for `y':
-     x2      <= 2;
-     x1 - x2 <= 1;
-     x1      <= 4; (with the closure x1 <= 3).
-
-     The result without the closure is the same  `*this', instead of universe.
-  */
-  // We compare a constraint of `y' at the time to the corresponding
-  // constraint of `*this'. If the value of constraint of `y' is
-  // less than of `*this' one, we further compare the constraint of
-  // `*this' to elements in a sorted container, given by the user,
-  // and, if in the container there is a value that is greater than
-  // or equal to the value of the constraint, we take this value,
-  // otherwise we remove this constraint.
+  // Compare each constraint in `y' to the corresponding one in `*this'.
+  // The constraint in `*this' is kept as is if it is stronger than or
+  // equal to the constraint in `y'; otherwise, the inhomogeneous term
+  // of the constraint in `*this' is further compared with elements taken
+  // from a sorted container (the stop-points, provided by the user), and
+  // is replaced by the first entry, if any, which is greater than or equal
+  // to the inhomogeneous term. If no such entry exists, the constraint
+  // is removed altogether.
   for (dimension_type i = space_dim + 1; i-- > 0; ) {
     DB_Row<N>& dbm_i = dbm[i];
     const DB_Row<N>& y_dbm_i = y.dbm[i];
@@ -2364,7 +2194,7 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
 	Iterator k = std::lower_bound(first, last, dbm_ij);
 	if (k != last) {
 	  if (dbm_ij < *k)
-	    assign(dbm_ij, *k, ROUND_UP);
+	    assign_r(dbm_ij, *k, ROUND_UP);
 	}
 	else
 	  dbm_ij = PLUS_INFINITY;
@@ -2379,6 +2209,8 @@ template <typename T>
 void
 BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
 				BD_Shape& limiting_shape) const {
+  using Implementation::BD_Shapes::div_round_up;
+
   const dimension_type cs_space_dim = cs.space_dimension();
   // Private method: the caller has to ensure the following.
   assert(cs_space_dim <= space_dimension());
@@ -2390,7 +2222,7 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
     dimension_type num_vars = 0;
     dimension_type i = 0;
     dimension_type j = 0;
-    Coefficient coeff;
+    TEMP_INTEGER(coeff);
     // Constraints that are not bounded differences are ignored.
     if (extract_bounded_difference(c, cs_space_dim, num_vars, i, j, coeff)) {
       // Select the cell to be modified for the "<=" part of the constraint,
@@ -2434,7 +2266,7 @@ template <typename T>
 void
 BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
 					       const Constraint_System& cs,
-					       unsigned* /*tp*/) {
+					       unsigned* tp) {
   // Dimension-compatibility check.
   const dimension_type space_dim = space_dimension();
   if (space_dim != y.space_dimension())
@@ -2475,19 +2307,19 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
 
   BD_Shape<T> limiting_shape(space_dim, UNIVERSE);
   get_limiting_shape(cs, limiting_shape);
-  CC76_extrapolation_assign(y);
+  CC76_extrapolation_assign(y, tp);
   intersection_assign(limiting_shape);
   assert(OK());
 }
 
 template <typename T>
 void
-BD_Shape<T>::CH78_widening_assign(const BD_Shape& y, unsigned* /*tp*/) {
+BD_Shape<T>::BHMZ05_widening_assign(const BD_Shape& y, unsigned* tp) {
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
   if (space_dim != y.space_dimension())
-    throw_dimension_incompatible("CH78_widening_assign(y)", y);
+    throw_dimension_incompatible("BHMZ05_widening_assign(y)", y);
 
 #ifndef NDEBUG
   {
@@ -2498,21 +2330,35 @@ BD_Shape<T>::CH78_widening_assign(const BD_Shape& y, unsigned* /*tp*/) {
   }
 #endif
 
-  // If both systems of bounded differences are zero-dimensional,
-  // since `*this' contains `y', we simply return `*this'.
-  if (space_dim == 0)
+  // Compute the affine dimension of `y'.
+  const dimension_type y_affine_dim = y.affine_dimension();
+  // If the affine dimension of `y' is zero, then either `y' is
+  // zero-dimensional, or it is empty, or it is a singleton.
+  // In all cases, due to the inclusion hypothesis, the result is `*this'.
+  if (y_affine_dim == 0)
     return;
 
-  shortest_path_closure_assign();
-  // If `*this' is empty, since `*this' contains `y', `y' is empty too.
-  if (marked_empty())
+  // If the affine dimension has changed, due to the inclusion hypothesis,
+  // the result is `*this'.
+  const dimension_type x_affine_dim = affine_dimension();
+  assert(x_affine_dim >= y_affine_dim);
+  if (x_affine_dim != y_affine_dim)
     return;
 
+  // If there are tokens available, work on a temporary copy.
+  if (tp != 0 && *tp > 0) {
+    BD_Shape<T> x_tmp(*this);
+    x_tmp.BHMZ05_widening_assign(y, 0);
+    // If the widening was not precise, use one of the available tokens.
+    if (!contains(x_tmp))
+      --(*tp);
+    return;
+  }
+
+  // Here no token is available.
+  assert(marked_shortest_path_closed() && y.marked_shortest_path_closed());
   // Minimize `y'.
   y.shortest_path_reduction_assign();
-  // If `y' is empty, we return.
-  if (y.marked_empty())
-    return;
 
   // Extrapolate unstable bounds, taking into account redundancy in `y'.
   for (dimension_type i = space_dim + 1; i-- > 0; ) {
@@ -2538,25 +2384,27 @@ BD_Shape<T>::CH78_widening_assign(const BD_Shape& y, unsigned* /*tp*/) {
 
 template <typename T>
 void
-BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
-					       const Constraint_System& cs,
-					       unsigned* /*tp*/) {
+BD_Shape<T>::limited_BHMZ05_extrapolation_assign(const BD_Shape& y,
+						 const Constraint_System& cs,
+						 unsigned* tp) {
   // Dimension-compatibility check.
   const dimension_type space_dim = space_dimension();
   if (space_dim != y.space_dimension())
-    throw_dimension_incompatible("limited_CH78_extrapolation_assign(y, cs)",
+    throw_dimension_incompatible("limited_BHMZ05_extrapolation_assign(y, cs)",
 				 y);
   // `cs' must be dimension-compatible with the two systems
   // of bounded differences.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_constraint_incompatible("limited_CH78_extrapolation_assign(y, cs)");
+    throw_constraint_incompatible("limited_BHMZ05_extrapolation_assign"
+				  "(y, cs)");
 
   // Strict inequalities are not allowed.
   if (cs.has_strict_inequalities())
-    throw_constraint_incompatible("limited_CH78_extrapolation_assign(y, cs)");
+    throw_constraint_incompatible("limited_BHMZ05_extrapolation_assign"
+				  "(y, cs)");
 
-  // The limited CH78-extrapolation between two systems of bounded
+  // The limited BHMZ05-extrapolation between two systems of bounded
   // differences in a zero-dimensional space is a system of bounded
   // differences in a zero-dimensional space, too.
   if (space_dim == 0)
@@ -2580,7 +2428,7 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
 
   BD_Shape<T> limiting_shape(space_dim, UNIVERSE);
   get_limiting_shape(cs, limiting_shape);
-  CH78_widening_assign(y);
+  BHMZ05_widening_assign(y, tp);
   intersection_assign(limiting_shape);
   assert(OK());
 }
@@ -2617,58 +2465,8 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
   if (y.marked_empty())
     return;
 
-  /* The closure is necessary.
-     For example.
-     In `*this' there are the constraints:
-
-     x1 - x2 <= 2;
-
-     In y there are the constraints:
-
-     x1      <= 2;
-     x1 - x2 <= 1;
-     x2      <= 0
-
-     If we don't close y the result is:
-
-     x1      <= 2;
-     x1 - x2 <= 2;
-     x2      <= 0.
-
-     If we before close y, the result is:
-
-     x1 - x2 <= 2;
-     x2 <= 0;
-     x1 <= 1;
-
-     So we observe that
-     x1 <= 1
-     is more tight than
-     x1 <= 2
-
-     We must close `*this' too, in fact, if we have these constraint for *this:
-     x1 - x2 <= 1;
-     x2      <= 5
-     (and the implicit constraint x1 <= 6)
-
-     and for y we have:
-     x1      <= 1;
-     x1 - x2 <= 1;
-     x2      <= 0;
-
-     we obtain:
-     x1      <= 1;
-     x1 - x2 <= 1;
-     x2      <= 5;
-
-     instead of:
-     x1      <= 6;
-     x1 - x2 <= 1;
-     x2      <= 5;
-   */
-  // We consider a constraint of `*this' at the time, if its value is
-  // `plus_infinity', we replace it with the value the corresponding
-  // constraint of `y'.
+  // Replace each constraint in `*this' by the corresponding constraint
+  // in `y' if the inhomogeneous term of the first one is `plus_infinity'.
   bool changed = false;
   for (dimension_type i = space_dim + 1; i-- > 0; ) {
     DB_Row<N>& dbm_i = dbm[i];
@@ -2676,7 +2474,7 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
     for (dimension_type j = space_dim + 1; j-- > 0; ) {
       N& dbm_ij = dbm_i[j];
       const N& y_dbm_ij = y_dbm_i[j];
-      if (is_plus_infinity(dbm_ij)) {
+      if (is_plus_infinity(dbm_ij) && !is_plus_infinity(y_dbm_ij)) {
 	dbm_ij = y_dbm_ij;
 	changed = true;
       }
@@ -2689,9 +2487,126 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
 
 template <typename T>
 void
+BD_Shape<T>
+::deduce_v_minus_u_bounds(const dimension_type v,
+			  const dimension_type last_v,
+			  const Linear_Expression& sc_expr,
+			  Coefficient_traits::const_reference sc_den,
+			  const N& pos_sum) {
+  // Deduce constraints of the form `v - u', where `u != v'.
+  // Note: the shortest-path closure is able to deduce the constraint
+  // `v - u <= ub_v - lb_u'. We can be more precise if variable `u'
+  // played an active role in the computation of the upper bound for `v',
+  // i.e., if the corresponding coefficient `q == expr_u/den' is
+  // greater than zero. In particular:
+  // if `q >= 1',    then `v - u <= ub_v - ub_u';
+  // if `0 < q < 1', then `v - u <= ub_v - (q*ub_u + (1-q)*lb_u)'.
+  mpq_class mpq_sc_den;
+  assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
+  const DB_Row<N>& dbm_0 = dbm[0];
+  // No need to consider indices greater than `last_v'.
+  for (dimension_type u = last_v; u > 0; --u)
+    if (u != v) {
+      const Coefficient& expr_u = sc_expr.coefficient(Variable(u-1));
+      if (expr_u > 0)
+	if (expr_u >= sc_den)
+	  // Deducing `v - u <= ub_v - ub_u'.
+	  sub_assign_r(dbm[u][v], pos_sum, dbm_0[u], ROUND_UP);
+	else {
+	  DB_Row<N>& dbm_u = dbm[u];
+	  const N& dbm_u0 = dbm_u[0];
+	  if (!is_plus_infinity(dbm_u0)) {
+	    // Let `ub_u' and `lb_u' be the known upper and lower bound
+	    // for `u', respectively. Letting `q = expr_u/sc_den' be the
+	    // rational coefficient of `u' in `sc_expr/sc_den',
+	    // the upper bound for `v - u' is computed as
+	    // `ub_v - (q * ub_u + (1-q) * lb_u)', i.e.,
+	    // `pos_sum + (-lb_u) - q * (ub_u + (-lb_u))'.
+	    mpq_class minus_lb_u;
+	    assign_r(minus_lb_u, dbm_u0, ROUND_NOT_NEEDED);
+	    mpq_class q;
+	    assign_r(q, expr_u, ROUND_NOT_NEEDED);
+	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
+	    mpq_class ub_u;
+	    assign_r(ub_u, dbm_0[u], ROUND_NOT_NEEDED);
+	    // Compute `ub_u - lb_u'.
+	    add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
+	    // Compute `(-lb_u) - q * (ub_u - lb_u)'.
+	    sub_mul_assign_r(minus_lb_u, q, ub_u, ROUND_NOT_NEEDED);
+	    N up_approx;
+	    assign_r(up_approx, minus_lb_u, ROUND_UP);
+	    // Deducing `v - u <= ub_v - (q * ub_u + (1-q) * lb_u)'.
+	    add_assign_r(dbm_u[v], pos_sum, up_approx, ROUND_UP);
+	  }
+	}
+    }
+}
+
+template <typename T>
+void
+BD_Shape<T>
+::deduce_u_minus_v_bounds(const dimension_type v,
+			  const dimension_type last_v,
+			  const Linear_Expression& sc_expr,
+			  Coefficient_traits::const_reference sc_den,
+			  const N& neg_sum) {
+  // Deduce constraints of the form `u - v', where `u != v'.
+  // Note: the shortest-path closure is able to deduce the constraint
+  // `u - v <= ub_u - lb_v'. We can be more precise if variable `u'
+  // played an active role in the computation of the lower bound for `v',
+  // i.e., if the corresponding coefficient `q == expr_u/den' is
+  // greater than zero. In particular:
+  // if `q >= 1',    then `u - v <= lb_u - lb_v';
+  // if `0 < q < 1', then `u - v <= (q*lb_u + (1-q)*ub_u) - lb_v'.
+  mpq_class mpq_sc_den;
+  assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
+  DB_Row<N>& dbm_0 = dbm[0];
+  DB_Row<N>& dbm_v = dbm[v];
+  // No need to consider indices greater than `last_v'.
+  for (dimension_type u = last_v; u > 0; --u)
+    if (u != v) {
+      const Coefficient& expr_u = sc_expr.coefficient(Variable(u-1));
+      if (expr_u > 0)
+	if (expr_u >= sc_den)
+	  // Deducing `u - v <= lb_u - lb_v',
+	  // i.e., `u - v <= (-lb_v) - (-lb_u)'.
+	  sub_assign_r(dbm_v[u], neg_sum, dbm[u][0], ROUND_UP);
+	else {
+	  const N& dbm_0u = dbm_0[u];
+	  if (!is_plus_infinity(dbm_0u)) {
+	    // Let `ub_u' and `lb_u' be the known upper and lower bound
+	    // for `u', respectively. Letting `q = expr_u/sc_den' be the
+	    // rational coefficient of `u' in `sc_expr/sc_den',
+	    // the upper bound for `u - v' is computed as
+	    // `(q * lb_u + (1-q) * ub_u) - lb_v', i.e.,
+	    // `ub_u - q * (ub_u + (-lb_u)) + neg_sum'.
+	    mpq_class ub_u;
+	    assign_r(ub_u, dbm_0u, ROUND_NOT_NEEDED);
+	    mpq_class q;
+	    assign_r(q, expr_u, ROUND_NOT_NEEDED);
+	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
+	    mpq_class minus_lb_u;
+	    assign_r(minus_lb_u, dbm[u][0], ROUND_NOT_NEEDED);
+	    // Compute `ub_u - lb_u'.
+	    add_assign_r(minus_lb_u, minus_lb_u, ub_u, ROUND_NOT_NEEDED);
+	    // Compute `ub_u - q * (ub_u - lb_u)'.
+	    sub_mul_assign_r(ub_u, q, minus_lb_u, ROUND_NOT_NEEDED);
+	    N up_approx;
+	    assign_r(up_approx, ub_u, ROUND_UP);
+	    // Deducing `u - v <= (q*lb_u + (1-q)*ub_u) - lb_v'.
+	    add_assign_r(dbm_v[u], up_approx, neg_sum, ROUND_UP);
+	  }
+	}
+    }
+}
+
+template <typename T>
+void
 BD_Shape<T>::affine_image(const Variable var,
 			  const Linear_Expression& expr,
 			  Coefficient_traits::const_reference denominator) {
+  using Implementation::BD_Shapes::div_round_up;
+
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_generic("affine_image(v, e, d)", "d == 0");
@@ -2729,23 +2644,25 @@ BD_Shape<T>::affine_image(const Variable var,
 	w = i+1;
 
   // Now we know the form of `expr':
-  // - If t == 0, then expr = b, with `b' a constant;
-  // - If t == 1, then expr = a*v + b, where `v' can be `var' or another
+  // - If t == 0, then expr == b, with `b' a constant;
+  // - If t == 1, then expr == a*w + b, where `w' can be `v' or another
   //   variable; in this second case we have to check whether `a' is
   //   equal to `denominator' or `-denominator', since otherwise we have
   //   to fall back on the general form;
-  // - If t > 1, the `expr' is of the general form.
+  // - If t == 2, the `expr' is of the general form.
+  TEMP_INTEGER(minus_den);
+  neg_assign(minus_den, denominator);
 
   if (t == 0) {
-    // Case 1: expr = b.
+    // Case 1: expr == b.
     // Remove all constraints on `var'.
-    forget_all_constraints_on_var(dbm, space_dim, v);
+    forget_all_dbm_constraints(v);
     // Shortest-path closure is preserved, but not reduction.
     if (marked_shortest_path_reduced())
       status.reset_shortest_path_reduced();
     // Add the constraint `var == b/denominator'.
     add_dbm_constraint(0, v, b, denominator);
-    add_dbm_constraint(v, 0, -b, denominator);
+    add_dbm_constraint(v, 0, b, minus_den);
     assert(OK());
     return;
   }
@@ -2753,10 +2670,10 @@ BD_Shape<T>::affine_image(const Variable var,
   if (t == 1) {
     // Value of the one and only non-zero coefficient in `expr'.
     const Coefficient& a = expr.coefficient(Variable(w-1));
-    if (a == denominator || a == -denominator) {
-      // Case 2: expr = a*w + b, with a = +/- denominator.
+    if (a == denominator || a == minus_den) {
+      // Case 2: expr == a*w + b, with a == +/- denominator.
       if (w == v) {
-	// `expr' is of the form: a*var + b.
+	// `expr' is of the form: a*v + b.
 	if (a == denominator) {
 	  if (b == 0)
 	    // The transformation is the identity function.
@@ -2767,13 +2684,13 @@ BD_Shape<T>::affine_image(const Variable var,
 	    N d;
 	    div_round_up(d, b, denominator);
 	    N c;
-	    div_round_up(c, -b, denominator);
+	    div_round_up(c, b, minus_den);
 	    DB_Row<N>& dbm_v = dbm[v];
 	    for (dimension_type i = space_dim + 1; i-- > 0; ) {
 	      N& dbm_vi = dbm_v[i];
-	      assign_add(dbm_vi, dbm_vi, c, ROUND_UP);
+	      add_assign_r(dbm_vi, dbm_vi, c, ROUND_UP);
 	      N& dbm_iv = dbm[i][v];
-	      assign_add(dbm_iv, dbm_iv, d, ROUND_UP);
+	      add_assign_r(dbm_iv, dbm_iv, d, ROUND_UP);
 	    }
 	    // Both shortest-path closure and reduction are preserved.
 	  }
@@ -2781,7 +2698,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	else {
 	  // Here `a == -denominator'.
 	  // Remove the binary constraints on `var'.
-	  forget_binary_constraints_on_var(dbm, space_dim, v);
+	  forget_binary_dbm_constraints(v);
 	  // Swap the unary constraints on `var'.
 	  std::swap(dbm[v][0], dbm[0][v]);
 	  // Shortest-path closure is not preserved.
@@ -2790,13 +2707,13 @@ BD_Shape<T>::affine_image(const Variable var,
 	    // Translate the unary constraints on `var',
 	    // adding or subtracting the value `b/denominator'.
 	    N c;
-	    div_round_up(c, -b, denominator);
+	    div_round_up(c, b, minus_den);
 	    N& dbm_v0 = dbm[v][0];
-	    assign_add(dbm_v0, dbm_v0, c, ROUND_UP);
+	    add_assign_r(dbm_v0, dbm_v0, c, ROUND_UP);
 	    N d;
 	    div_round_up(d, b, denominator);
 	    N& dbm_0v = dbm[0][v];
-	    assign_add(dbm_0v, dbm_0v, d, ROUND_UP);
+	    add_assign_r(dbm_0v, dbm_0v, d, ROUND_UP);
 	  }
 	}
       }
@@ -2804,14 +2721,14 @@ BD_Shape<T>::affine_image(const Variable var,
 	// Here `w != v', so that `expr' is of the form
 	// +/-denominator * w + b.
 	// Remove all constraints on `var'.
-	forget_all_constraints_on_var(dbm, space_dim, v);
+	forget_all_dbm_constraints(v);
 	// Shortest-path closure is preserved, but not reduction.
 	if (marked_shortest_path_reduced())
 	  status.reset_shortest_path_reduced();
 	if (a == denominator) {
 	  // Add the new constraint `v - w == b/denominator'.
 	  add_dbm_constraint(w, v, b, denominator);
-	  add_dbm_constraint(v, w, -b, denominator);
+	  add_dbm_constraint(v, w, b, minus_den);
 	}
 	else {
 	  // Here a == -denominator, so that we should be adding
@@ -2822,15 +2739,15 @@ BD_Shape<T>::affine_image(const Variable var,
 	    // Add the constraint `v <= b/denominator - lower_w'.
 	    N d;
 	    div_round_up(d, b, denominator);
-	    assign_add(dbm[0][v], d, dbm_w0, ROUND_UP);
+	    add_assign_r(dbm[0][v], d, dbm_w0, ROUND_UP);
 	    status.reset_shortest_path_closed();
 	  }
 	  const N& dbm_0w = dbm[0][w];
 	  if (!is_plus_infinity(dbm_0w)) {
 	    // Add the constraint `v >= b/denominator - upper_w'.
 	    N c;
-	    div_round_up(c, -b, denominator);
-	    assign_add(dbm[v][0], dbm_0w, c, ROUND_UP);
+	    div_round_up(c, b, minus_den);
+	    add_assign_r(dbm[v][0], dbm_0w, c, ROUND_UP);
 	    status.reset_shortest_path_closed();
 	  }
 	}
@@ -2841,9 +2758,9 @@ BD_Shape<T>::affine_image(const Variable var,
   }
 
   // General case.
-  // Either t > 1, so that
-  // expr = a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2,
-  // or t = 1, expr = a*w + b, but a <> +/- denominator.
+  // Either t == 2, so that
+  // expr == a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2,
+  // or t == 1, expr == a*w + b, but a <> +/- denominator.
   // We will remove all the constraints on `var' and add back
   // constraints providing upper and lower bounds for `var'.
 
@@ -2852,18 +2769,20 @@ BD_Shape<T>::affine_image(const Variable var,
   // the sign of `denominator'.
   // Note: approximating `-expr' from above and then negating the
   // result is the same as approximating `expr' from below.
-  Linear_Expression neg_expr;
-  Coefficient neg_b;
-  Coefficient neg_den;
   const bool is_sc = (denominator > 0);
-  if (!is_sc) {
-    neg_expr = -expr;
-    neg_b = -b;
-    neg_den = -denominator;
-  }
-  const Linear_Expression& sc_expr = is_sc ? expr : neg_expr;
-  const Coefficient& sc_b = is_sc ? b : neg_b;
-  const Coefficient& sc_den = is_sc ? denominator : neg_den;
+  TEMP_INTEGER(minus_b);
+  neg_assign(minus_b, b);
+  const Coefficient& sc_b = is_sc ? b : minus_b;
+  const Coefficient& minus_sc_b = is_sc ? minus_b : b;
+  const Coefficient& sc_den = is_sc ? denominator : minus_den;
+  const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
+  // NOTE: here, for optimization purposes, `minus_expr' is only assigned
+  // when `denominator' is negative. Do not use it unless you are sure
+  // it has been correctly assigned.
+  Linear_Expression minus_expr;
+  if (!is_sc)
+    minus_expr = -expr;
+  const Linear_Expression& sc_expr = is_sc ? expr : minus_expr;
 
   N pos_sum;
   N neg_sum;
@@ -2876,24 +2795,24 @@ BD_Shape<T>::affine_image(const Variable var,
   dimension_type neg_pinf_count = 0;
 
   // Approximate the inhomogeneous term.
-  assign(pos_sum, raw_value(sc_b), ROUND_UP);
-  assign(neg_sum, raw_value(-sc_b), ROUND_UP);
+  assign_r(pos_sum, sc_b, ROUND_UP);
+  assign_r(neg_sum, minus_sc_b, ROUND_UP);
 
-  // Approximate the homogeneous part of `expr'.
+  // Approximate the homogeneous part of `sc_expr'.
   // Note: indices above `w' can be disregarded, as they all have
-  // a zero coefficient in `expr'.
+  // a zero coefficient in `sc_expr'.
   const DB_Row<N>& dbm_0 = dbm[0];
   for (dimension_type i = w; i > 0; --i) {
     const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
     const int sign_i = sgn(sc_i);
     if (sign_i > 0) {
       N coeff_i;
-      assign(coeff_i, raw_value(sc_i), ROUND_UP);
+      assign_r(coeff_i, sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
 	const N& up_approx_i = dbm_0[i];
 	if (!is_plus_infinity(up_approx_i))
-	  assign_add_mul(pos_sum, coeff_i, up_approx_i, ROUND_UP);
+	  add_mul_assign_r(pos_sum, coeff_i, up_approx_i, ROUND_UP);
 	else {
 	  ++pos_pinf_count;
 	  pos_pinf_index = i;
@@ -2903,7 +2822,7 @@ BD_Shape<T>::affine_image(const Variable var,
       if (neg_pinf_count <= 1) {
 	const N& up_approx_minus_i = dbm[i][0];
 	if (!is_plus_infinity(up_approx_minus_i))
-	  assign_add_mul(neg_sum, coeff_i, up_approx_minus_i, ROUND_UP);
+	  add_mul_assign_r(neg_sum, coeff_i, up_approx_minus_i, ROUND_UP);
 	else {
 	  ++neg_pinf_count;
 	  neg_pinf_index = i;
@@ -2911,13 +2830,16 @@ BD_Shape<T>::affine_image(const Variable var,
       }
     }
     else if (sign_i < 0) {
+      TEMP_INTEGER(minus_sc_i);
+      neg_assign(minus_sc_i, sc_i);
       N minus_coeff_i;
-      assign(minus_coeff_i, raw_value(-sc_i), ROUND_UP);
+      assign_r(minus_coeff_i, minus_sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
 	const N& up_approx_minus_i = dbm[i][0];
 	if (!is_plus_infinity(up_approx_minus_i))
-	  assign_add_mul(pos_sum, minus_coeff_i, up_approx_minus_i, ROUND_UP);
+	  add_mul_assign_r(pos_sum,
+			   minus_coeff_i, up_approx_minus_i, ROUND_UP);
 	else {
 	  ++pos_pinf_count;
 	  pos_pinf_index = i;
@@ -2927,7 +2849,7 @@ BD_Shape<T>::affine_image(const Variable var,
       if (neg_pinf_count <= 1) {
 	const N& up_approx_i = dbm_0[i];
 	if (!is_plus_infinity(up_approx_i))
-	  assign_add_mul(neg_sum, minus_coeff_i, up_approx_i, ROUND_UP);
+	  add_mul_assign_r(neg_sum, minus_coeff_i, up_approx_i, ROUND_UP);
 	else {
 	  ++neg_pinf_count;
 	  neg_pinf_index = i;
@@ -2937,7 +2859,7 @@ BD_Shape<T>::affine_image(const Variable var,
   }
 
   // Remove all constraints on 'v'.
-  forget_all_constraints_on_var(dbm, space_dim, v);
+  forget_all_dbm_constraints(v);
   // Shortest-path closure is maintained, but not reduction.
   if (marked_shortest_path_reduced())
     status.reset_shortest_path_reduced();
@@ -2953,120 +2875,44 @@ BD_Shape<T>::affine_image(const Variable var,
   // Before computing quotients, the denominator should be approximated
   // towards zero. Since `sc_den' is known to be positive, this amounts to
   // rounding downwards, which is achieved as usual by rounding upwards
-  // the negation and negating again the result.
+  // `minus_sc_den' and negating again the result.
   N down_sc_den;
-  assign(down_sc_den, raw_value(-sc_den), ROUND_UP);
-  assign_neg(down_sc_den, down_sc_den, ROUND_UP);
+  assign_r(down_sc_den, minus_sc_den, ROUND_UP);
+  neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
 
   // Exploit the upper approximation, if possible.
   if (pos_pinf_count <= 1) {
     // Compute quotient (if needed).
     if (down_sc_den != 1)
-      assign_div(pos_sum, pos_sum, down_sc_den, ROUND_UP);
+      div_assign_r(pos_sum, pos_sum, down_sc_den, ROUND_UP);
     // Add the upper bound constraint, if meaningful.
     if (pos_pinf_count == 0) {
-      // Add the constraint `var <= pos_sum'.
+      // Add the constraint `v <= pos_sum'.
       DB_Row<N>& dbm_0 = dbm[0];
-      assign(dbm_0[v], pos_sum, ROUND_UP);
-      // Deduce constraints of the form `v - w', where `w != v'.
-      // TODO: properly comment the following lines.
-#if 0
-      for (dimension_type w = space_dim; w > 0; --w)
-	if (w != v && sc_expr.coefficient(Variable(w-1)) >= sc_den)
-	  assign_sub(dbm[w][v], pos_sum, dbm_0[w], ROUND_UP);
-#else
-      mpq_class mpq_sc_den;
-      assign(mpq_sc_den, raw_value(sc_den), ROUND_NOT_NEEDED);
-      for (dimension_type w = space_dim; w > 0; --w)
-	if (w != v) {
-	  const Coefficient& expr_w = sc_expr.coefficient(Variable(w-1));
-	  if (expr_w > 0)
-	    if (expr_w >= sc_den)
-	      assign_sub(dbm[w][v], pos_sum, dbm_0[w], ROUND_UP);
-	    else {
-	      DB_Row<N>& dbm_w = dbm[w];
-	      const N& dbm_w0 = dbm_w[0];
-	      if (!is_plus_infinity(dbm_w0)) {
-		// Let `ub_w' and `lb_w' be the known upper and lower bound
-		// for `w', respectively. Letting `q = expr_w/sc_den' be the
-		// rational coefficient of `w' in `sc_expr/sc_den, compute
-		// the convex combination `q * ub_w + (1-q) * lb_w'.
-		mpq_class ub_w;
-		assign(ub_w, raw_value(dbm_0[w]), ROUND_IGNORE);
-		mpq_class ub_coeff;
-		assign(ub_coeff, raw_value(expr_w), ROUND_NOT_NEEDED);
-		assign_neg(ub_coeff, ub_coeff, ROUND_NOT_NEEDED);
-		assign_mul(ub_w, ub_w, ub_coeff, ROUND_NOT_NEEDED);
-		mpq_class minus_lb_w;
-		assign(minus_lb_w, raw_value(dbm_w0), ROUND_NOT_NEEDED);
-		mpq_class lb_coeff;
-		assign_add(lb_coeff, mpq_sc_den, ub_coeff, ROUND_NOT_NEEDED);
-		assign_add_mul(ub_w, minus_lb_w, lb_coeff, ROUND_NOT_NEEDED);
-		assign_div(ub_w, ub_w, mpq_sc_den, ROUND_NOT_NEEDED);
-		N up_approx;
-		assign(up_approx, ub_w, ROUND_UP);
-		assign_add(dbm_w[v], pos_sum, up_approx, ROUND_UP);
-	      }
-	    }
-	}
-#endif
+      assign_r(dbm_0[v], pos_sum, ROUND_UP);
+      // Deduce constraints of the form `v - u', where `u != v'.
+      deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, pos_sum);
     }
     else
       // Here `pos_pinf_count == 1'.
       if (pos_pinf_index != v
 	  && sc_expr.coefficient(Variable(pos_pinf_index-1)) == sc_den)
 	// Add the constraint `v - pos_pinf_index <= pos_sum'.
-	assign(dbm[pos_pinf_index][v], pos_sum, ROUND_UP);
+	assign_r(dbm[pos_pinf_index][v], pos_sum, ROUND_UP);
   }
 
   // Exploit the lower approximation, if possible.
   if (neg_pinf_count <= 1) {
     // Compute quotient (if needed).
     if (down_sc_den != 1)
-      assign_div(neg_sum, neg_sum, down_sc_den, ROUND_UP);
+      div_assign_r(neg_sum, neg_sum, down_sc_den, ROUND_UP);
     // Add the lower bound constraint, if meaningful.
     if (neg_pinf_count == 0) {
       // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
       DB_Row<N>& dbm_v = dbm[v];
-      assign(dbm_v[0], neg_sum, ROUND_UP);
-      // Deduce constraints of the form `w - v', where `w != v'.
-      // TODO: properly comment the following lines.
-#if 0
-      for (dimension_type w = space_dim; w > 0; --w)
-	if (w != v && sc_expr.coefficient(Variable(w-1)) >= sc_den)
-	  assign_sub(dbm_v[w], neg_sum, dbm[w][0], ROUND_UP);
-#else
-      mpq_class mpq_sc_den;
-      assign(mpq_sc_den, raw_value(sc_den), ROUND_NOT_NEEDED);
-      for (dimension_type w = space_dim; w > 0; --w)
-	if (w != v) {
-	  const Coefficient& expr_w = sc_expr.coefficient(Variable(w-1));
-	  if (expr_w > 0)
-	    if (expr_w >= sc_den)
-	      assign_sub(dbm_v[w], neg_sum, dbm[w][0], ROUND_UP);
-	    else {
-	      const N& dbm_0w = dbm_0[w];
-	      if (!is_plus_infinity(dbm_0w)) {
-		mpq_class lb_coeff;
-		assign(lb_coeff, raw_value(expr_w), ROUND_NOT_NEEDED);
-		assign_neg(lb_coeff, lb_coeff, ROUND_NOT_NEEDED);
-		mpq_class ub_coeff;
-		assign(ub_coeff, lb_coeff, ROUND_NOT_NEEDED);
-		assign_add(ub_coeff, ub_coeff, mpq_sc_den, ROUND_NOT_NEEDED);
-		mpq_class ub_w;
-		assign(ub_w, raw_value(dbm_0w), ROUND_NOT_NEEDED);
-		assign_mul(ub_w, ub_w, ub_coeff, ROUND_NOT_NEEDED);
-		mpq_class minus_lb_w;
-		assign(minus_lb_w, raw_value(dbm[w][0]), ROUND_NOT_NEEDED);
-		assign_add_mul(ub_w, minus_lb_w, lb_coeff, ROUND_NOT_NEEDED);
-		assign_div(ub_w, ub_w, mpq_sc_den, ROUND_NOT_NEEDED);
-		N up_approx;
-		assign(up_approx, ub_w, ROUND_UP);
-		assign_add(dbm_v[w], neg_sum, up_approx, ROUND_UP);
-	      }
-	    }
-	}
-#endif
+      assign_r(dbm_v[0], neg_sum, ROUND_UP);
+      // Deduce constraints of the form `u - v', where `u != v'.
+      deduce_u_minus_v_bounds(v, w, sc_expr, sc_den, neg_sum);
     }
     else
       // Here `neg_pinf_count == 1'.
@@ -3074,7 +2920,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	  && sc_expr.coefficient(Variable(neg_pinf_index-1)) == sc_den)
 	// Add the constraint `v - neg_pinf_index >= -neg_sum',
 	// i.e., `neg_pinf_index - v <= neg_sum'.
-	assign(dbm[v][neg_pinf_index], neg_sum, ROUND_UP);
+	assign_r(dbm[v][neg_pinf_index], neg_sum, ROUND_UP);
   }
 
   assert(OK());
@@ -3099,8 +2945,8 @@ BD_Shape<T>::affine_preimage(const Variable var,
 
   // `var' should be one of the dimensions of
   // the systems of bounded differences.
-  const dimension_type num_var = var.id() + 1;
-  if (num_var > space_dim)
+  const dimension_type v = var.id() + 1;
+  if (v > space_dim)
     throw_dimension_incompatible("affine_preimage(v, e, d)", var.id());
 
   // The image of an empty BDS is empty too.
@@ -3124,14 +2970,14 @@ BD_Shape<T>::affine_preimage(const Variable var,
 
   // Now we know the form of `expr':
   // - If t == 0, then expr = b, with `b' a constant;
-  // - If t == 1, then expr = a*v + b, where `v' can be `var' or another
+  // - If t == 1, then expr = a*w + b, where `w' can be `v' or another
   //   variable; in this second case we have to check whether `a' is
   //   equal to `denominator' or `-denominator', since otherwise we have
   //   to fall back on the general form;
   // - If t > 1, the `expr' is of the general form.
   if (t == 0) {
     // Case 1: expr = n; remove all constraints on `var'.
-    forget_all_constraints_on_var(dbm, space_dim, num_var);
+    forget_all_dbm_constraints(v);
     // Shortest-path closure is preserved, but not reduction.
     if (marked_shortest_path_reduced())
       status.reset_shortest_path_reduced();
@@ -3148,9 +2994,9 @@ BD_Shape<T>::affine_preimage(const Variable var,
 	// Apply affine_image() on the inverse of this transformation.
 	affine_image(var, a*var - b, denominator);
       else {
-	// `expr == a*w + b', where `w != var'.
+	// `expr == a*w + b', where `w != v'.
 	// Remove all constraints on `var'.
-	forget_all_constraints_on_var(dbm, space_dim, num_var);
+	forget_all_dbm_constraints(v);
 	// Shortest-path closure is preserved, but not reduction.
 	if (marked_shortest_path_reduced())
 	  status.reset_shortest_path_reduced();
@@ -3161,7 +3007,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
   }
 
   // General case.
-  // Either t > 1, so that
+  // Either t == 2, so that
   // expr = a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2,
   // or t = 1, expr = a*w + b, but a <> +/- denominator.
   const Coefficient& expr_v = expr.coefficient(var);
@@ -3173,7 +3019,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
   }
   else {
     // Transformation not invertible: all constraints on `var' are lost.
-    forget_all_constraints_on_var(dbm, space_dim, num_var);
+    forget_all_dbm_constraints(v);
     // Shortest-path closure is preserved, but not reduction.
     if (marked_shortest_path_reduced())
       status.reset_shortest_path_reduced();
@@ -3188,6 +3034,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 				      const Linear_Expression& expr,
 				      Coefficient_traits::const_reference
 				      denominator) {
+  using Implementation::BD_Shapes::div_round_up;
+
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_generic("generalized_affine_image(v, r, e, d)", "d == 0");
@@ -3231,28 +3079,31 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type t = 0;
   // Index of the last non-zero coefficient in `expr', if any.
-  dimension_type j = 0;
+  dimension_type w = 0;
   // Get information about the number of non-zero coefficients in `expr'.
   for (dimension_type i = expr_space_dim; i-- > 0; )
     if (expr.coefficient(Variable(i)) != 0)
       if (t++ == 1)
 	break;
       else
-	j = i;
+	w = i+1;
 
   // Now we know the form of `expr':
-  // - If t == 0, then expr = b, with `b' a constant;
-  // - If t == 1, then expr = a*w + b, where `w' can be `var' or another
+  // - If t == 0, then expr == b, with `b' a constant;
+  // - If t == 1, then expr == a*w + b, where `w' can be `v' or another
   //   variable; in this second case we have to check whether `a' is
   //   equal to `denominator' or `-denominator', since otherwise we have
   //   to fall back on the general form;
-  // - If t > 1, the `expr' is of the general form.
+  // - If t == 2, the `expr' is of the general form.
+  DB_Row<N>& dbm_0 = dbm[0];
   DB_Row<N>& dbm_v = dbm[v];
+  TEMP_INTEGER(minus_den);
+  neg_assign(minus_den, denominator);
 
   if (t == 0) {
-    // Case 1: expr = b.
+    // Case 1: expr == b.
     // Remove all constraints on `var'.
-    forget_all_constraints_on_var(dbm, space_dim, v);
+    forget_all_dbm_constraints(v);
     // Both shortest-path closure and reduction are lost.
     status.reset_shortest_path_closed();
     switch (relsym) {
@@ -3263,7 +3114,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     case GREATER_THAN_OR_EQUAL:
       // Add the constraint `var >= b/denominator',
       // i.e., `-var <= -b/denominator',
-      add_dbm_constraint(v, 0, -b, denominator);
+      add_dbm_constraint(v, 0, b, minus_den);
       break;
     default:
       // We already dealt with the other cases.
@@ -3275,57 +3126,58 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   }
 
   if (t == 1) {
-    const Coefficient& a = expr.coefficient(Variable(j));
-    if (a == denominator || a == -denominator) {
-      // Case 2: expr = a*w + b, with a = +/- denominator.
+    // Value of the one and only non-zero coefficient in `expr'.
+    const Coefficient& a = expr.coefficient(Variable(w-1));
+    if (a == denominator || a == minus_den) {
+      // Case 2: expr == a*w + b, with a == +/- denominator.
       N d;
       switch (relsym) {
       case LESS_THAN_OR_EQUAL:
 	div_round_up(d, b, denominator);
-	if (j == var.id()) {
-	  // `expr' is of the form: a*var + b.
-	  // Shortest-path closure is not preserved.
+	if (w == v) {
+	  // `expr' is of the form: a*v + b.
+	  // Shortest-path closure and reduction are not preserved.
 	  status.reset_shortest_path_closed();
 	  if (a == denominator) {
-	    // Translate each constraint `var - w <= dbm_wv'
-	    // into the constraint `var - w <= dbm_wv + b/denominator';
-	    // forget each constraint `w - var <= dbm_vw'.
+	    // Translate each constraint `v - w <= dbm_wv'
+	    // into the constraint `v - w <= dbm_wv + b/denominator';
+	    // forget each constraint `w - v <= dbm_vw'.
 	    for (dimension_type i = space_dim + 1; i-- > 0; ) {
 	      N& dbm_iv = dbm[i][v];
-	      assign_add(dbm_iv, dbm_iv, d, ROUND_UP);
+	      add_assign_r(dbm_iv, dbm_iv, d, ROUND_UP);
 	      dbm_v[i] = PLUS_INFINITY;
 	    }
 	  }
 	  else {
 	    // Here `a == -denominator'.
-	    // Translate the constraint `0 - var <= dbm_v0'
-	    // into the constraint `0 - var <= dbm_v0 + b/denominator'.
+	    // Translate the constraint `0 - v <= dbm_v0'
+	    // into the constraint `0 - v <= dbm_v0 + b/denominator'.
 	    N& dbm_v0 = dbm_v[0];
-	    assign_add(dbm[0][v], dbm_v0, d, ROUND_UP);
-	    // We remove all the other constraints on 'var'.
+	    add_assign_r(dbm_0[v], dbm_v0, d, ROUND_UP);
+	    // Forget all the other constraints on `v'.
 	    dbm_v0 = PLUS_INFINITY;
-	    forget_binary_constraints_on_var(dbm, space_dim, v);
+	    forget_binary_dbm_constraints(v);
 	  }
 	}
 	else {
-	  // Here `j != var.id()', so that `expr' is of the form
-	  // +/-denominator * w + b, with `w != var'.
-	  // Remove all constraints on `var'.
-	  forget_all_constraints_on_var(dbm, space_dim, v);
+	  // Here `w != v', so that `expr' is of the form
+	  // +/-denominator * w + b, with `w != v'.
+	  // Remove all constraints on `v'.
+	  forget_all_dbm_constraints(v);
 	  // Shortest-path closure is preserved, but not reduction.
 	  if (marked_shortest_path_reduced())
 	    status.reset_shortest_path_reduced();
 	  if (a == denominator)
-	    // Add the new constraint `var - w <= b/denominator'.
-	    add_dbm_constraint(j+1, v, d);
+	    // Add the new constraint `v - w <= b/denominator'.
+	    add_dbm_constraint(w, v, d);
 	  else {
 	    // Here a == -denominator, so that we should be adding
-	    // the constraint `var <= b/denominator - w'.
+	    // the constraint `v <= b/denominator - w'.
 	    // Approximate it by computing a lower bound for `w'.
-	    const N& dbm_j0 = dbm[j+1][0];
-	    if (!is_plus_infinity(dbm_j0)) {
-	      // Add the constraint `var <= b/denominator - lower_w'.
-	      assign_add(dbm[0][v], d, dbm_j0, ROUND_UP);
+	    const N& dbm_w0 = dbm[w][0];
+	    if (!is_plus_infinity(dbm_w0)) {
+	      // Add the constraint `v <= b/denominator - lb_w'.
+	      add_assign_r(dbm_0[v], d, dbm_w0, ROUND_UP);
 	      // Shortest-path closure is not preserved.
 	      status.reset_shortest_path_closed();
 	    }
@@ -3334,53 +3186,53 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	break;
 
       case GREATER_THAN_OR_EQUAL:
-	div_round_up(d, -b, denominator);
-	if (j == var.id()) {
-	  // `expr' is of the form: a*var + b.
-	  // Shortest-path closure is not preserved.
+	div_round_up(d, b, minus_den);
+	if (w == v) {
+	  // `expr' is of the form: a*w + b.
+	  // Shortest-path closure and reduction are not preserved.
 	  status.reset_shortest_path_closed();
 	  if (a == denominator) {
-	    // Translate each constraint `w - var <= dbm_vw'
-	    // into the constraint `w - var <= dbm_vw - b/denominator';
-	    // forget each constraint `var - w <= dbm_wv'.
+	    // Translate each constraint `w - v <= dbm_vw'
+	    // into the constraint `w - v <= dbm_vw - b/denominator';
+	    // forget each constraint `v - w <= dbm_wv'.
 	    for (dimension_type i = space_dim + 1; i-- > 0; ) {
 	      N& dbm_vi = dbm_v[i];
-	      assign_add(dbm_vi, dbm_vi, d, ROUND_UP);
+	      add_assign_r(dbm_vi, dbm_vi, d, ROUND_UP);
 	      dbm[i][v] = PLUS_INFINITY;
 	    }
 	  }
 	  else {
 	    // Here `a == -denominator'.
-	    // Translate the constraint `0 - var <= dbm_v0'
-	    // into the constraint `0 - var <= dbm_0v - b/denominator'.
-	    N& dbm_0v = dbm[0][v];
-	    assign_add(dbm_v[0], dbm_0v, d, ROUND_UP);
-	    // Remove all the other constraints on 'var'.
+	    // Translate the constraint `0 - v <= dbm_v0'
+	    // into the constraint `0 - v <= dbm_0v - b/denominator'.
+	    N& dbm_0v = dbm_0[v];
+	    add_assign_r(dbm_v[0], dbm_0v, d, ROUND_UP);
+	    // Forget all the other constraints on `v'.
 	    dbm_0v = PLUS_INFINITY;
-	    forget_binary_constraints_on_var(dbm, space_dim, v);
+	    forget_binary_dbm_constraints(v);
 	  }
 	}
 	else {
-	  // Here `j != var.id()', so that `expr' is of the form
-	  // +/-denominator * w + b, with `w != var'.
-	  // Remove all constraints on `var'.
-	  forget_all_constraints_on_var(dbm, space_dim, v);
+	  // Here `w != v', so that `expr' is of the form
+	  // +/-denominator * w + b, with `w != v'.
+	  // Remove all constraints on `v'.
+	  forget_all_dbm_constraints(v);
 	  // Shortest-path closure is preserved, but not reduction.
 	  if (marked_shortest_path_reduced())
 	    status.reset_shortest_path_reduced();
 	  if (a == denominator)
-	    // Add the new constraint `var - w >= b/denominator',
-	    // i.e., `w - var <= -b/denominator'.
-	    add_dbm_constraint(v, j+1, d);
+	    // Add the new constraint `v - w >= b/denominator',
+	    // i.e., `w - v <= -b/denominator'.
+	    add_dbm_constraint(v, w, d);
 	  else {
 	    // Here a == -denominator, so that we should be adding
-	    // the constraint `var >= -w + b/denominator',
-	    // i.e., `-var <= w - b/denominator'.
+	    // the constraint `v >= -w + b/denominator',
+	    // i.e., `-v <= w - b/denominator'.
 	    // Approximate it by computing an upper bound for `w'.
-	    const N& dbm_0j = dbm[0][j+1];
-	    if (!is_plus_infinity(dbm_0j)) {
-	      // Add the constraint `-var <= upper_w - b/denominator'.
-	      assign_add(dbm_v[0], dbm_0j, d, ROUND_UP);
+	    const N& dbm_0w = dbm_0[w];
+	    if (!is_plus_infinity(dbm_0w)) {
+	      // Add the constraint `-v <= ub_w - b/denominator'.
+	      add_assign_r(dbm_v[0], dbm_0w, d, ROUND_UP);
 	      // Shortest-path closure is not preserved.
 	      status.reset_shortest_path_closed();
 	    }
@@ -3399,24 +3251,26 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   }
 
   // General case.
-  // Either t > 1, so that
-  // expr = a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2,
-  // or t = 1, expr = a*w + b, but a <> +/- denominator.
-  // We will remove all the constraints on `var' and add back
-  // a constraint providing an upper or a lower bound for `var'
+  // Either t == 2, so that
+  // expr == a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2,
+  // or t == 1, expr == a*w + b, but a <> +/- denominator.
+  // We will remove all the constraints on `v' and add back
+  // a constraint providing an upper or a lower bound for `v'
   // (depending on `relsym').
-  Linear_Expression neg_expr;
-  Coefficient neg_b;
-  Coefficient neg_den;
   const bool is_sc = (denominator > 0);
-  if (!is_sc) {
-    neg_expr = -expr;
-    neg_b = -b;
-    neg_den = -denominator;
-  }
-  const Linear_Expression& sc_expr = is_sc ? expr : neg_expr;
-  const Coefficient& sc_b = is_sc ? b : neg_b;
-  const Coefficient& sc_den = is_sc ? denominator : neg_den;
+  TEMP_INTEGER(minus_b);
+  neg_assign(minus_b, b);
+  const Coefficient& sc_b = is_sc ? b : minus_b;
+  const Coefficient& minus_sc_b = is_sc ? minus_b : b;
+  const Coefficient& sc_den = is_sc ? denominator : minus_den;
+  const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
+  // NOTE: here, for optimization purposes, `minus_expr' is only assigned
+  // when `denominator' is negative. Do not use it unless you are sure
+  // it has been correctly assigned.
+  Linear_Expression minus_expr;
+  if (!is_sc)
+    minus_expr = -expr;
+  const Linear_Expression& sc_expr = is_sc ? expr : minus_expr;
 
   N sum;
   // Index of variable that is unbounded in `this->dbm'.
@@ -3427,138 +3281,140 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 
   switch (relsym) {
   case LESS_THAN_OR_EQUAL:
-    {
-      // Compute an upper approximation for `expr' into `sum',
-      // taking into account the sign of `denominator'.
+    // Compute an upper approximation for `sc_expr' into `sum'.
 
-      // Approximate the inhomogeneous term.
-      assign(sum, raw_value(sc_b), ROUND_UP);
-
-      // Approximate the homogeneous part of `sc_expr'.
-      for (dimension_type i = expr_space_dim + 1; i > 0; --i) {
-	const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
-	const int sign_i = sgn(sc_i);
-	if (sign_i == 0)
-	  continue;
-	// Choose carefully: we are approximating `sc_expr'.
-	const N& approx_i = (sign_i > 0) ? dbm[0][i] : dbm[i][0];
-	if (is_plus_infinity(approx_i)) {
-	  if (++pinf_count > 1)
-	    break;
-	  pinf_index = i;
-	  continue;
-	}
-	N coeff_i;
-	if (sign_i > 0)
-	  assign(coeff_i, raw_value(sc_i), ROUND_UP);
-	else
-	  assign(coeff_i, raw_value(-sc_i), ROUND_UP);
-	assign_add_mul(sum, coeff_i, approx_i, ROUND_UP);
+    // Approximate the inhomogeneous term.
+    assign_r(sum, sc_b, ROUND_UP);
+    // Approximate the homogeneous part of `sc_expr'.
+    // Note: indices above `w' can be disregarded, as they all have
+    // a zero coefficient in `sc_expr'.
+    for (dimension_type i = w; i > 0; --i) {
+      const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
+      const int sign_i = sgn(sc_i);
+      if (sign_i == 0)
+	continue;
+      // Choose carefully: we are approximating `sc_expr'.
+      const N& approx_i = (sign_i > 0) ? dbm_0[i] : dbm[i][0];
+      if (is_plus_infinity(approx_i)) {
+	if (++pinf_count > 1)
+	  break;
+	pinf_index = i;
+	continue;
       }
-
-      // Divide by the (sign corrected) denominator.
-      if (pinf_count <= 1 && sc_den != 1) {
-	N d;
-	assign(d, raw_value(-sc_den), ROUND_UP);
-	assign_neg(d, d, ROUND_UP);
-	assign_div(sum, sum, d, ROUND_UP);
+      N coeff_i;
+      if (sign_i > 0)
+	assign_r(coeff_i, sc_i, ROUND_UP);
+      else {
+	TEMP_INTEGER(minus_sc_i);
+	neg_assign(minus_sc_i, sc_i);
+	assign_r(coeff_i, minus_sc_i, ROUND_UP);
       }
-
-      // Remove all constraints on `var'.
-      forget_all_constraints_on_var(dbm, space_dim, v);
-      // Shortest-path closure is preserved, but not reduction.
-      if (marked_shortest_path_reduced())
-	status.reset_shortest_path_reduced();
-
-      if (pinf_count == 0) {
-	// Add the constraint `var <= sum'.
-	add_dbm_constraint(0, v, sum);
-	// CHECK ME: What is the meaning of the following?
-	// Deduce constraints of the form `v - w', where `w != v'.
-	for (dimension_type h = 1; h <= space_dim; ++h)
-	  if (h != v && expr.coefficient(Variable(h-1)) > 0) {
-	    N dbm_0_h = dbm[0][h];
-	    N negate_dbm_0_h;
-	    assign_neg(negate_dbm_0_h, dbm_0_h, ROUND_UP);
-	    assign_add(dbm[h][v], negate_dbm_0_h, dbm[0][v],
-		       ROUND_UP);
-	  }
-      }
-      else if (pinf_count == 1)
-	if (pinf_index != v
-	    && expr.coefficient(Variable(pinf_index-1)) == denominator)
-	  // Add the constraint `v - pinf_index <= sum'.
-	  add_dbm_constraint(pinf_index, v, sum);
+      add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
     }
+
+    // Remove all constraints on `v'.
+    forget_all_dbm_constraints(v);
+    // Shortest-path closure is preserved, but not reduction.
+    if (marked_shortest_path_reduced())
+      status.reset_shortest_path_reduced();
+    // Return immediately if no approximation could be computed.
+    if (pinf_count > 1) {
+      assert(OK());
+      return;
+    }
+
+    // Divide by the (sign corrected) denominator (if needed).
+    if (sc_den != 1) {
+      // Before computing the quotient, the denominator should be approximated
+      // towards zero. Since `sc_den' is known to be positive, this amounts to
+      // rounding downwards, which is achieved as usual by rounding upwards
+      // `minus_sc_den' and negating again the result.
+      N down_sc_den;
+      assign_r(down_sc_den, minus_sc_den, ROUND_UP);
+      neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
+      div_assign_r(sum, sum, down_sc_den, ROUND_UP);
+    }
+
+    if (pinf_count == 0) {
+      // Add the constraint `v <= sum'.
+      add_dbm_constraint(0, v, sum);
+      // Deduce constraints of the form `v - u', where `u != v'.
+      deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, sum);
+    }
+    else if (pinf_count == 1)
+      if (pinf_index != v
+	  && expr.coefficient(Variable(pinf_index-1)) == denominator)
+	// Add the constraint `v - pinf_index <= sum'.
+	add_dbm_constraint(pinf_index, v, sum);
     break;
 
   case GREATER_THAN_OR_EQUAL:
-    {
-      // Compute an upper approximation for `-expr' into `sum',
-      // taking into account the sign of `denominator'.
-      // Note: approximating `-expr' from above and then negating the
-      // result is the same as approximating `expr' from below.
+    // Compute an upper approximation for `-sc_expr' into `sum'.
+    // Note: approximating `-sc_expr' from above and then negating the
+    // result is the same as approximating `sc_expr' from below.
 
-      // Approximate the inhomogeneous term.
-      assign(sum, raw_value(-sc_b), ROUND_UP);
-
-      // Approximate the homogeneous part of `-sc_expr'.
-      for (dimension_type i = expr_space_dim + 1; i > 0; --i) {
-	const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
-	const int sign_i = sgn(sc_i);
-	if (sign_i == 0)
-	  continue;
-	// Choose carefully: we are approximating `-sc_expr'.
-	const N& approx_i = (sign_i > 0) ? dbm[i][0] : dbm[0][i];
-	if (is_plus_infinity(approx_i)) {
-	  if (++pinf_count > 1)
-	    break;
-	  pinf_index = i;
-	  continue;
-	}
-	N coeff_i;
-	if (sign_i > 0)
-	  assign(coeff_i, raw_value(sc_i), ROUND_UP);
-	else
-	  assign(coeff_i, raw_value(-sc_i), ROUND_UP);
-	assign_add_mul(sum, coeff_i, approx_i, ROUND_UP);
+    // Approximate the inhomogeneous term.
+    assign_r(sum, minus_sc_b, ROUND_UP);
+    // Approximate the homogeneous part of `-sc_expr'.
+    for (dimension_type i = expr_space_dim + 1; i > 0; --i) {
+      const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
+      const int sign_i = sgn(sc_i);
+      if (sign_i == 0)
+	continue;
+      // Choose carefully: we are approximating `-sc_expr'.
+      const N& approx_i = (sign_i > 0) ? dbm[i][0] : dbm_0[i];
+      if (is_plus_infinity(approx_i)) {
+	if (++pinf_count > 1)
+	  break;
+	pinf_index = i;
+	continue;
       }
-
-      // Divide by the (sign corrected) denominator.
-      if (pinf_count <= 1 && sc_den != 1) {
-	N d;
-	assign(d, raw_value(-sc_den), ROUND_UP);
-	assign_neg(d, d, ROUND_UP);
-	assign_div(sum, sum, d, ROUND_UP);
+      N coeff_i;
+      if (sign_i > 0)
+	assign_r(coeff_i, sc_i, ROUND_UP);
+      else {
+	TEMP_INTEGER(minus_sc_i);
+	neg_assign(minus_sc_i, sc_i);
+	assign_r(coeff_i, minus_sc_i, ROUND_UP);
       }
-
-      // Remove all constraints on `var'.
-      forget_all_constraints_on_var(dbm, space_dim, v);
-      // Shortest-path closure is preserved, but not reduction.
-      if (marked_shortest_path_reduced())
-	status.reset_shortest_path_reduced();
-
-      if (pinf_count == 0) {
-	// Add the constraint `v >= -sum', i.e., `-v <= sum'.
-	add_dbm_constraint(v, 0, sum);
-	// CHECK ME: What is the meaning of the following?
-	// Deduce constraints of the form `w - v', where `w != v'.
-	for (dimension_type h = 1; h <= space_dim; ++h)
-	  if (h != v && expr.coefficient(Variable(h-1)) < 0) {
-	    N dbm_h_0 = dbm[h][0];
-	    N negate_dbm_h_0;
-	    assign_neg(negate_dbm_h_0, dbm_h_0, ROUND_UP);
-	    assign_add(dbm[v][h], negate_dbm_h_0, dbm[v][0],
-		       ROUND_UP);
-	  }
-      }
-      else if (pinf_count == 1)
-	if (pinf_index != v
-	    && expr.coefficient(Variable(pinf_index-1)) == denominator)
-	  // Add the constraint `v - pinf_index >= -sum',
-	  // i.e., `pinf_index - v <= sum'.
-	  add_dbm_constraint(v, pinf_index, sum);
+      add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
     }
+
+    // Remove all constraints on `var'.
+    forget_all_dbm_constraints(v);
+    // Shortest-path closure is preserved, but not reduction.
+    if (marked_shortest_path_reduced())
+      status.reset_shortest_path_reduced();
+    // Return immediately if no approximation could be computed.
+    if (pinf_count > 1) {
+      assert(OK());
+      return;
+    }
+
+    // Divide by the (sign corrected) denominator (if needed).
+    if (sc_den != 1) {
+      // Before computing the quotient, the denominator should be approximated
+      // towards zero. Since `sc_den' is known to be positive, this amounts to
+      // rounding downwards, which is achieved as usual by rounding upwards
+      // `minus_sc_den' and negating again the result.
+      N down_sc_den;
+      assign_r(down_sc_den, minus_sc_den, ROUND_UP);
+      neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
+      div_assign_r(sum, sum, down_sc_den, ROUND_UP);
+    }
+
+    if (pinf_count == 0) {
+      // Add the constraint `v >= -sum', i.e., `-v <= sum'.
+      add_dbm_constraint(v, 0, sum);
+      // Deduce constraints of the form `u - v', where `u != v'.
+      deduce_u_minus_v_bounds(v, w, sc_expr, sc_den, sum);
+    }
+    else if (pinf_count == 1)
+      if (pinf_index != v
+	  && expr.coefficient(Variable(pinf_index-1)) == denominator)
+	// Add the constraint `v - pinf_index >= -sum',
+	// i.e., `pinf_index - v <= sum'.
+	add_dbm_constraint(v, pinf_index, sum);
     break;
 
   default:
@@ -3672,7 +3528,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // `lhs' and `rhs' variables are disjoint.
       // Cylindrificate on all variables in the lhs.
       for (dimension_type i = lhs_vars.size(); i-- > 0; )
-	forget_all_constraints_on_var(dbm, space_dim, lhs_vars[i].id() + 1);
+	forget_all_dbm_constraints(lhs_vars[i].id() + 1);
       // Constrain the left hand side expression so that it is related to
       // the right hand side expression as dictated by `relsym'.
       // TODO: if the following constraint is NOT a bounded difference,
@@ -3699,7 +3555,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 #if 1 // Simplified computation (see the TODO note below).
 
       for (dimension_type i = lhs_vars.size(); i-- > 0; )
-	forget_all_constraints_on_var(dbm, space_dim, lhs_vars[i].id() + 1);
+	forget_all_dbm_constraints(lhs_vars[i].id() + 1);
 
 #else // Currently unnecessarily complex computation.
 
@@ -3719,7 +3575,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       shortest_path_closure_assign();
       assert(!marked_empty());
       for (dimension_type i = lhs_vars.size(); i-- > 0; )
-	forget_all_constraints_on_var(dbm, space_dim, lhs_vars[i].id() + 1);
+	forget_all_dbm_constraints(lhs_vars[i].id() + 1);
       // Constrain the new dimension so that it is related to
       // the left hand side as dictated by `relsym'.
       // TODO: each one of the following constraints is definitely NOT
@@ -3751,8 +3607,346 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 }
 
 template <typename T>
+void
+BD_Shape<T>::generalized_affine_preimage(const Variable var,
+					 const Relation_Symbol relsym,
+					 const Linear_Expression& expr,
+					 Coefficient_traits::const_reference
+					 denominator) {
+  using Implementation::BD_Shapes::div_round_up;
+
+  // The denominator cannot be zero.
+  if (denominator == 0)
+    throw_generic("generalized_affine_preimage(v, r, e, d)", "d == 0");
+
+  // Dimension-compatibility checks.
+  // The dimension of `expr' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type space_dim = space_dimension();
+  const dimension_type expr_space_dim = expr.space_dimension();
+  if (space_dim < expr_space_dim)
+    throw_dimension_incompatible("generalized_affine_preimage(v, r, e, d)",
+				 "e", expr);
+
+  // `var' should be one of the dimensions of the BDS.
+  const dimension_type v = var.id() + 1;
+  if (v > space_dim)
+    throw_dimension_incompatible("generalized_affine_preimage(v, r, e, d)",
+				 var.id());
+
+  // The relation symbol cannot be a strict relation symbol.
+  if (relsym == LESS_THAN || relsym == GREATER_THAN)
+    throw_generic("generalized_affine_preimage(v, r, e, d)",
+  		  "r is a strict relation symbol and "
+  		  "*this is a BD_Shape");
+
+  if (relsym == EQUAL) {
+    // The relation symbol is "==":
+    // this is just an affine preimage computation.
+    affine_preimage(var, expr, denominator);
+    assert(OK());
+    return;
+  }
+
+  // The image of an empty BDS is empty too.
+  shortest_path_closure_assign();
+  if (marked_empty())
+    return;
+
+  // Check whether the preimage of this affine relation can be easily
+  // computed as the image of its inverse relation.
+  const Coefficient& expr_v = expr.coefficient(var);
+  if (expr_v != 0) {
+    const Relation_Symbol reversed_relsym = (relsym == LESS_THAN_OR_EQUAL)
+      ? GREATER_THAN_OR_EQUAL : LESS_THAN_OR_EQUAL;
+    const Linear_Expression inverse
+      = expr - (expr_v + denominator)*var;
+    TEMP_INTEGER(inverse_den);
+    neg_assign(inverse_den, expr_v);
+    const Relation_Symbol inverse_relsym
+      = (sgn(denominator) == sgn(inverse_den)) ? relsym : reversed_relsym;
+    generalized_affine_image(var, inverse_relsym, inverse, inverse_den);
+    return;
+  }
+
+  // Here `var_coefficient == 0', so that the preimage cannot
+  // be easily computed by inverting the affine relation.
+  // Shrink the BD shape by adding the constraint induced
+  // by the affine relation.
+  const Coefficient& b = expr.inhomogeneous_term();
+  // Number of non-zero coefficients in `expr': will be set to
+  // 0, 1, or 2, the latter value meaning any value greater than 1.
+  dimension_type t = 0;
+  // Index of the last non-zero coefficient in `expr', if any.
+  dimension_type j = 0;
+  // Get information about the number of non-zero coefficients in `expr'.
+  for (dimension_type i = expr_space_dim; i-- > 0; )
+    if (expr.coefficient(Variable(i)) != 0)
+      if (t++ == 1)
+	break;
+      else
+	j = i+1;
+
+  // Now we know the form of `expr':
+  // - If t == 0, then expr == b, with `b' a constant;
+  // - If t == 1, then expr == a*j + b, where `j != v';
+  // - If t == 2, the `expr' is of the general form.
+  DB_Row<N>& dbm_0 = dbm[0];
+
+  if (t == 0) {
+    // Case 1: expr == b.
+    switch (relsym) {
+    case LESS_THAN_OR_EQUAL:
+      // Add the constraint `var <= b/denominator'.
+      add_dbm_constraint(0, v, b, denominator);
+      break;
+    case GREATER_THAN_OR_EQUAL:
+      // Add the constraint `var >= b/denominator',
+      // i.e., `-var <= -b/denominator',
+      add_dbm_constraint(v, 0, -b, denominator);
+      break;
+    default:
+      // We already dealt with the other cases.
+      throw std::runtime_error("PPL internal error");
+      break;
+    }
+  }
+  else if (t == 1) {
+    // Value of the one and only non-zero coefficient in `expr'.
+    const Coefficient& expr_j = expr.coefficient(Variable(j-1));
+    N d;
+    switch (relsym) {
+    case LESS_THAN_OR_EQUAL:
+      div_round_up(d, b, denominator);
+      // Note that: `j != v', so that `expr' is of the form
+      // expr_j * j + b, with `j != v'.
+      if (expr_j == denominator)
+	// Add the new constraint `v - j <= b/denominator'.
+	add_dbm_constraint(j, v, d);
+      else {
+	// Here expr_j != denominator, so that we should be adding
+	// the constraint `v <= b/denominator - j'.
+	N sum;
+	// Approximate the homogeneous part of `expr'.
+	const int sign_j = sgn(expr_j);
+	const N& approx_j = (sign_j > 0) ? dbm_0[j] : dbm[j][0];
+	if (!is_plus_infinity(approx_j)) {
+	  N coeff_j;
+	  if (sign_j > 0)
+	    assign_r(coeff_j, expr_j, ROUND_UP);
+	  else {
+	    TEMP_INTEGER(minus_expr_j);
+	    neg_assign(minus_expr_j, expr_j);
+	    assign_r(coeff_j, minus_expr_j, ROUND_UP);
+	  }
+	  add_mul_assign_r(sum, coeff_j, approx_j, ROUND_UP);
+	  add_dbm_constraint(0, v, sum);
+	}
+      }
+      break;
+
+    case GREATER_THAN_OR_EQUAL:
+      div_round_up(d, -b, denominator);
+      // Note that: `j != v', so that `expr' is of the form
+      // expr_j * j + b, with `j != v'.
+      if (expr_j == denominator)
+	// Add the new constraint `v - j >= b/denominator'.
+	add_dbm_constraint(j, v, d);
+      else {
+	// Here expr_j != denominator, so that we should be adding
+	// the constraint `v <= b/denominator - j'.
+	N sum;
+	// Approximate the homogeneous part of `expr_j'.
+	const int sign_j = sgn(expr_j);
+	const N& approx_j = (sign_j > 0) ? dbm_0[j] : dbm[j][0];
+	if (!is_plus_infinity(approx_j)) {
+	  N coeff_j;
+	  if (sign_j > 0)
+	    assign_r(coeff_j, expr_j, ROUND_UP);
+	  else {
+	    TEMP_INTEGER(minus_expr_j);
+	    neg_assign(minus_expr_j, expr_j);
+	    assign_r(coeff_j, minus_expr_j, ROUND_UP);
+	  }
+	  add_mul_assign_r(sum, coeff_j, approx_j, ROUND_UP);
+	  add_dbm_constraint(0, v, sum);
+	}
+      }
+      break;
+
+    default:
+      // We already dealt with the other cases.
+      throw std::runtime_error("PPL internal error");
+      break;
+    }
+  }
+  else {
+    // Here t == 2, so that
+    // expr == a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2.
+    const bool is_sc = (denominator > 0);
+    TEMP_INTEGER(minus_b);
+    neg_assign(minus_b, b);
+    const Coefficient& sc_b = is_sc ? b : minus_b;
+    const Coefficient& minus_sc_b = is_sc ? minus_b : b;
+    TEMP_INTEGER(minus_den);
+    neg_assign(minus_den, denominator);
+    const Coefficient& sc_den = is_sc ? denominator : minus_den;
+    const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
+    // NOTE: here, for optimization purposes, `minus_expr' is only assigned
+    // when `denominator' is negative. Do not use it unless you are sure
+    // it has been correctly assigned.
+    Linear_Expression minus_expr;
+    if (!is_sc)
+      minus_expr = -expr;
+    const Linear_Expression& sc_expr = is_sc ? expr : minus_expr;
+
+    N sum;
+    // Index of variable that is unbounded in `this->dbm'.
+    // (The initialization is just to quiet a compiler warning.)
+    dimension_type pinf_index = 0;
+    // Number of unbounded variables found.
+    dimension_type pinf_count = 0;
+
+    switch (relsym) {
+    case LESS_THAN_OR_EQUAL:
+      // Compute an upper approximation for `expr' into `sum',
+      // taking into account the sign of `denominator'.
+
+      // Approximate the inhomogeneous term.
+      assign_r(sum, sc_b, ROUND_UP);
+
+      // Approximate the homogeneous part of `sc_expr'.
+      // Note: indices above `w' can be disregarded, as they all have
+      // a zero coefficient in `expr'.
+      for (dimension_type i = j; i > 0; --i) {
+	const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
+	const int sign_i = sgn(sc_i);
+	if (sign_i == 0)
+	  continue;
+	// Choose carefully: we are approximating `sc_expr'.
+	const N& approx_i = (sign_i > 0) ? dbm_0[i] : dbm[i][0];
+	if (is_plus_infinity(approx_i)) {
+	  if (++pinf_count > 1)
+	    break;
+	  pinf_index = i;
+	  continue;
+	}
+	N coeff_i;
+	if (sign_i > 0)
+	  assign_r(coeff_i, sc_i, ROUND_UP);
+	else {
+	  TEMP_INTEGER(minus_sc_i);
+	  neg_assign(minus_sc_i, sc_i);
+	  assign_r(coeff_i, minus_sc_i, ROUND_UP);
+	}
+	add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
+      }
+
+      // Divide by the (sign corrected) denominator (if needed).
+      if (sc_den != 1) {
+	// Before computing the quotient, the denominator should be
+	// approximated towards zero. Since `sc_den' is known to be
+	// positive, this amounts to rounding downwards, which is achieved
+	// by rounding upwards `minus_sc-den' and negating again the result.
+	N down_sc_den;
+	assign_r(down_sc_den, minus_sc_den, ROUND_UP);
+	neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
+	div_assign_r(sum, sum, down_sc_den, ROUND_UP);
+      }
+
+      if (pinf_count == 0) {
+	// Add the constraint `v <= sum'.
+	add_dbm_constraint(0, v, sum);
+	// Deduce constraints of the form `v - u', where `u != v'.
+	deduce_v_minus_u_bounds(v, j, sc_expr, sc_den, sum);
+      }
+      else if (pinf_count == 1)
+	if (expr.coefficient(Variable(pinf_index-1)) == denominator)
+	  // Add the constraint `v - pinf_index <= sum'.
+	  add_dbm_constraint(pinf_index, v, sum);
+      break;
+
+    case GREATER_THAN_OR_EQUAL:
+      // Compute an upper approximation for `-sc_expr' into `sum'.
+      // Note: approximating `-sc_expr' from above and then negating the
+      // result is the same as approximating `sc_expr' from below.
+
+      // Approximate the inhomogeneous term.
+      assign_r(sum, minus_sc_b, ROUND_UP);
+
+      // Approximate the homogeneous part of `-sc_expr'.
+      for (dimension_type i = j; i > 0; --i) {
+	const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
+	const int sign_i = sgn(sc_i);
+	if (sign_i == 0)
+	  continue;
+	// Choose carefully: we are approximating `-sc_expr'.
+	const N& approx_i = (sign_i > 0) ? dbm[i][0] : dbm_0[i];
+	if (is_plus_infinity(approx_i)) {
+	  if (++pinf_count > 1)
+	    break;
+	  pinf_index = i;
+	  continue;
+	}
+	N coeff_i;
+	if (sign_i > 0)
+	  assign_r(coeff_i, sc_i, ROUND_UP);
+	else {
+	  TEMP_INTEGER(minus_sc_i);
+	  neg_assign(minus_sc_i, sc_i);
+	  assign_r(coeff_i, minus_sc_i, ROUND_UP);
+	}
+	add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
+      }
+
+      // Divide by the (sign corrected) denominator (if needed).
+      if (sc_den != 1) {
+	// Before computing the quotient, the denominator should be
+	// approximated towards zero. Since `sc_den' is known to be positive,
+	// this amounts to rounding downwards, which is achieved by rounding
+	// upwards `minus_sc_den' and negating again the result.
+	N down_sc_den;
+	assign_r(down_sc_den, minus_sc_den, ROUND_UP);
+	neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
+	div_assign_r(sum, sum, down_sc_den, ROUND_UP);
+      }
+
+      if (pinf_count == 0) {
+	// Add the constraint `v >= -sum', i.e., `-v <= sum'.
+	add_dbm_constraint(v, 0, sum);
+	// Deduce constraints of the form `u - v', where `u != v'.
+	deduce_u_minus_v_bounds(v, j, sc_expr, sc_den, sum);
+      }
+      else if (pinf_count == 1)
+	if (pinf_index != v
+	    && expr.coefficient(Variable(pinf_index-1)) == denominator)
+	  // Add the constraint `v - pinf_index >= -sum',
+	  // i.e., `pinf_index - v <= sum'.
+	  add_dbm_constraint(v, pinf_index, sum);
+      break;
+
+    default:
+      // We already dealt with the other cases.
+      throw std::runtime_error("PPL internal error");
+      break;
+    }
+  }
+
+  // If the shrunk BD_Shape is empty, its preimage is empty too.
+  if (is_empty())
+    return;
+  forget_all_dbm_constraints(v);
+  // Shortest-path closure is preserved, but not reduction.
+  if (marked_shortest_path_reduced())
+    status.reset_shortest_path_reduced();
+  assert(OK());
+}
+
+template <typename T>
 Constraint_System
 BD_Shape<T>::constraints() const {
+  using Implementation::BD_Shapes::numer_denom;
+
   Constraint_System cs;
   const dimension_type space_dim = space_dimension();
   if (space_dim == 0) {
@@ -3769,8 +3963,8 @@ BD_Shape<T>::constraints() const {
     // For the time being, we force the dimension with the following line.
     cs.insert(0*Variable(space_dim-1) <= 0);
 
-    Coefficient a;
-    Coefficient b;
+    TEMP_INTEGER(a);
+    TEMP_INTEGER(b);
     // Go through all the unary constraints in `dbm'.
     const DB_Row<N>& dbm_0 = dbm[0];
     for (dimension_type j = 1; j <= space_dim; ++j) {
@@ -3778,7 +3972,7 @@ BD_Shape<T>::constraints() const {
       const N& dbm_0j = dbm_0[j];
       const N& dbm_j0 = dbm[j][0];
       N negated_dbm_j0;
-      if (assign_neg(negated_dbm_j0, dbm_j0, ROUND_IGNORE) == V_EQ
+      if (neg_assign_r(negated_dbm_j0, dbm_j0, ROUND_NOT_NEEDED) == V_EQ
 	  && negated_dbm_j0 == dbm_0j) {
 	// We have a unary equality constraint.
 	numer_denom(dbm_0j, b, a);
@@ -3806,7 +4000,7 @@ BD_Shape<T>::constraints() const {
 	const N& dbm_ij = dbm_i[j];
 	const N& dbm_ji = dbm[j][i];
 	N negated_dbm_ji;
-	if (assign_neg(negated_dbm_ji, dbm_ji, ROUND_IGNORE) == V_EQ
+	if (neg_assign_r(negated_dbm_ji, dbm_ji, ROUND_NOT_NEEDED) == V_EQ
 	    && negated_dbm_ji == dbm_ij) {
 	  // We have a binary equality constraint.
 	  numer_denom(dbm_ij, b, a);
@@ -3832,6 +4026,8 @@ BD_Shape<T>::constraints() const {
 template <typename T>
 Constraint_System
 BD_Shape<T>::minimized_constraints() const {
+  using Implementation::BD_Shapes::numer_denom;
+
   shortest_path_reduction_assign();
   Constraint_System cs;
   const dimension_type space_dim = space_dimension();
@@ -3846,12 +4042,12 @@ BD_Shape<T>::minimized_constraints() const {
     // For the time being, we force the dimension with the following line.
     cs.insert(0*Variable(space_dim-1) <= 0);
 
-    Coefficient num;
-    Coefficient den;
+    TEMP_INTEGER(num);
+    TEMP_INTEGER(den);
 
     // Compute leader information.
     std::vector<dimension_type> leaders;
-    compute_leaders(dbm, leaders);
+    compute_leaders(leaders);
     std::vector<dimension_type> leader_indices;
     compute_leader_indices(leaders, leader_indices);
     const dimension_type num_leaders = leader_indices.size();
@@ -3930,7 +4126,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	  const N& c_i_j = c.dbm[i][j];
 	  const N& c_j_i = c.dbm[j][i];
 	  N negated_c_ji;
-	  if (assign_neg(negated_c_ji, c_j_i, ROUND_IGNORE) == V_EQ
+	  if (neg_assign_r(negated_c_ji, c_j_i, ROUND_NOT_NEEDED) == V_EQ
 	      && negated_c_ji == c_i_j) {
 	    // We will print an equality.
 	    if (first)
@@ -3969,7 +4165,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 		// We have got a constraint with an only Variable.
 		s << Variable(j - 1);
 		N v;
-		assign_neg(v, c_j_i, ROUND_DOWN);
+		neg_assign_r(v, c_j_i, ROUND_DOWN);
 		s << " >= " << v;
 	      }
 	      else {
@@ -3985,7 +4181,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 		  s << " - ";
 		  s << Variable(i - 1);
 		  N v;
-		  assign_neg(v, c_j_i, ROUND_DOWN);
+		  neg_assign_r(v, c_j_i, ROUND_DOWN);
 		  s << " >= " << v;
 		}
 	      }
@@ -4013,7 +4209,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 		  s << " - ";
 		  s << Variable(j - 1);
 		  N v;
-		  assign_neg(v, c_i_j, ROUND_DOWN);
+		  neg_assign_r(v, c_i_j, ROUND_DOWN);
 		  s << " >= " << v;
 		}
 	      }
@@ -4023,6 +4219,49 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
     }
   }
   return s;
+}
+
+template <typename T>
+void
+BD_Shape<T>::ascii_dump(std::ostream& s) const {
+  status.ascii_dump(s);
+  s << "\n";
+  dbm.ascii_dump(s);
+  // Redundancy info.
+  s << "\n";
+  const char separator = ' ';
+  const dimension_type nrows = redundancy_dbm.size();
+  s << nrows << separator << "\n";
+  for (dimension_type i = 0; i < nrows;  ++i) {
+    for (dimension_type j = 0; j < nrows; ++j)
+      s << redundancy_dbm[i][j] << separator;
+    s << "\n";
+  }
+}
+
+PPL_OUTPUT_TEMPLATE_DEFINITIONS(T, BD_Shape<T>);
+
+template <typename T>
+bool
+BD_Shape<T>::ascii_load(std::istream& s) {
+  if (!status.ascii_load(s))
+    return false;
+  if (!dbm.ascii_load(s))
+    return false;
+  // Load redundancy info.
+  dimension_type nrows;
+   if (!(s >> nrows))
+    return false;
+  redundancy_dbm.clear();
+  redundancy_dbm.reserve(nrows);
+  std::deque<bool> redundancy_row(nrows, false);
+  for (dimension_type i = 0; i < nrows;  ++i) {
+    for (dimension_type j = 0; j < nrows; ++j)
+      if (!(s >> redundancy_row[j]))
+	return false;
+    redundancy_dbm.push_back(redundancy_row);
+  }
+  return true;
 }
 
 template <typename T>
@@ -4160,7 +4399,7 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 
 template <typename T>
 void
-BD_Shape<T>::throw_constraint_incompatible(const char* method) const {
+BD_Shape<T>::throw_constraint_incompatible(const char* method) {
   std::ostringstream s;
   s << "PPL::BD_Shape::" << method << ":" << std::endl
     << "the constraint is incompatible.";
@@ -4170,7 +4409,7 @@ BD_Shape<T>::throw_constraint_incompatible(const char* method) const {
 template <typename T>
 void
 BD_Shape<T>::throw_expression_too_complex(const char* method,
-					  const Linear_Expression& e) const {
+					  const Linear_Expression& e) {
   using namespace IO_Operators;
   std::ostringstream s;
   s << "PPL::BD_Shape::" << method << ":" << std::endl
@@ -4196,8 +4435,7 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 
 template <typename T>
 void
-BD_Shape<T>::throw_generic(const char* method,
-			   const char* reason) const {
+BD_Shape<T>::throw_generic(const char* method, const char* reason) {
   std::ostringstream s;
   s << "PPL::";
   s << "BD_Shape::" << method << ":" << std::endl

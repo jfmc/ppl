@@ -1,5 +1,5 @@
 /* Test BD_Shape::map_space_dimensions().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,27 +22,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 #include "PFunction.hh"
+#include <string>
+#include <ostream>
 
 namespace {
 
-#if NOISY
 void
 print_function(const PFunction& function,
-	       const string& intro = "",
-	       ostream& s = cout) {
+	       const std::string& intro = "",
+	       std::ostream& s = nout) {
   if (!intro.empty())
     s << intro << endl;
   function.print(s);
 }
-#endif
-
 
 void
 test1() {
@@ -50,10 +43,8 @@ test1() {
 
   TBD_Shape bd1(3);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(bd1, "*** bd1 ***");
-#endif
 
   bd1.map_space_dimensions(function);
 
@@ -61,9 +52,7 @@ test1() {
 
   bool ok = (bd1 == known_result);
 
-#if NOISY
   print_constraints(bd1, "*** bd1.map_space_dimensions(function) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -75,10 +64,8 @@ test2() {
 
   TBD_Shape bd1(3, EMPTY);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(bd1, "*** bd1 ***");
-#endif
 
   bd1.map_space_dimensions(function);
 
@@ -86,9 +73,7 @@ test2() {
 
   bool ok = (bd1 == known_result);
 
-#if NOISY
   print_constraints(bd1, "*** bd1.map_space_dimensions(function) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -102,10 +87,8 @@ test3() {
 
   TBD_Shape bd1(3, EMPTY);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(bd1, "*** bd1 ***");
-#endif
 
   bd1.map_space_dimensions(function);
 
@@ -113,9 +96,7 @@ test3() {
 
   bool ok = (bd1 == known_result);
 
-#if NOISY
   print_constraints(bd1, "*** bd1.map_space_dimensions(function) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -137,10 +118,8 @@ test4() {
 
   TBD_Shape bd1(cs);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(bd1, "*** bd1 ***");
-#endif
 
   bd1.map_space_dimensions(function);
 
@@ -150,9 +129,7 @@ test4() {
 
   bool ok = (bd1 == known_result);
 
-#if NOISY
   print_constraints(bd1, "*** bd1.map_space_dimensions(function) ***");
-#endif
 
   if (!ok)
     exit(1);
@@ -175,26 +152,21 @@ test5() {
 
   TBD_Shape bd1(cs);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(bd1, "*** bd1 ***");
-#endif
 
   bd1.map_space_dimensions(function);
 
   TBD_Shape known_result(1);
   known_result.add_constraint(x <= 4);
 
-#if NOISY
   print_constraints(bd1, "*** bd1.map_space_dimensions(function) ***");
-#endif
 
   bool ok = (bd1 == known_result);
 
   if (!ok)
     exit(1);
 }
-
 
 void
 test6() {
@@ -206,7 +178,6 @@ test6() {
   function.insert(2, 1);
   function.insert(1, 0);
 
-
   Constraint_System cs;
   cs.insert(x == 1);
   cs.insert(z - x <= 1);
@@ -215,10 +186,8 @@ test6() {
 
   TBD_Shape bd1(cs);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(bd1, "*** bd1 ***");
-#endif
 
   bd1.map_space_dimensions(function);
 
@@ -227,9 +196,7 @@ test6() {
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y - x <= 7);
 
-#if NOISY
   print_constraints(bd1, "*** bd1.map_space_dimensions(function) ***");
-#endif
 
   bool ok = (bd1 == known_result);
 
@@ -238,7 +205,6 @@ test6() {
 }
 
 } // namespace
-
 
 int
 main() TRY {

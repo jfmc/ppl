@@ -4,18 +4,104 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.8  (released date to be decided)
+NEWS for version 0.8  (to be released on January 20, 2006)
 --------------------------------------------------------------------------
 
 New and Changed Features
 ========================
 
-o  New method Constraint_System::primal_simplex() provides a textbook
-   implementation of the primal simplex algorithm.
+o  The new program ppl-config returns information about the
+   configuration of the PPL and the applications using it.  A manual
+   page for ppl-config has also been added.
+
+o  In classes Poly_Con_Relation and Poly_Gen_Relation the methods
+
+     void ascii_dump(std::ostream& s) const
+
+   and
+
+     void ascii_load(std::istream& s) const
+
+   are now publicly available.
+
+o  All classes which provide the method
+
+     void ascii_dump(std::ostream& s) const
+
+   now also provide the methods
+
+     void ascii_dump() const
+
+   and
+
+     void print() const.
+
+   These methods print to std::cerr the textual and user-level
+   representation (resp.) of the given object.  This enables the
+   output of such object representations in GDB.
+
+o  There is a new section in the "General Information on the PPL"
+   documentation: "Integers Represented by Floating Point Numbers".
+   This contains results that are needed to prove the correctness of
+   our implementation of the GCD and LCM operations.
+
+o  The browse and print versions of the PS and PDF formats of the user
+   manual have been merged into single documents: ppl-user-0.8.pdf and
+   ppl-user-0.8.ps.gz.  The equivalent developer reference documents
+   have also been merged.
+
+o  Added to C_Polyhedron (resp., NNC_Polyhedron) new method
+
+     bool poly_hull_assign_if_exact(const C_Polyhedron&)
+
+   (resp. bool poly_hull_assign_if_exact(const NNC_Polyhedron&))
+   and its synonym
+
+     bool upper_bound_assign_if_exact(const C_Polyhedron&)
+
+   (resp. bool upper_bound_assign_if_exact(const NNC_Polyhedron&)).
+
+o  Added new typedef `element_type' to template Polyhedra_Powerset,
+   which corresponds to the type of the underlying numeric domain.
+
+o  Output operators have been added for Generator::Type and
+   Constraint::Type.
+
+o  Class Bounding_Box has new method
+
+     Constraint_System Bounding_Box::constraints() const,
+
+   which returns the system of constraints.
+
+o  Class Bounding_Box has new widening methods
+
+     Bounding_Box::CC76_widening_assign(const Bounding_Box& y)
+
+   and
+
+     template <typename Iterator>
+     Bounding_Box::CC76_widening_assign(const Bounding_Box& y,
+                                        Iterator first,
+                                        Iterator last).
+
+o  All methods in class Determinate that are specific to the Polyhedra
+   template parameter have been dropped.  If needed, they can still be
+   invoked through element().
+
+o  The class template BD_Shape<T> provides an implementation of the
+   abstract domain of Bounded Difference shapes. The template type
+   parameter T specifies the basic type used for the inhomogeneous term
+   of bounded difference constraints; it can be instantiated to either
+   GMP's unbounded precision types (mpq_class, mpz_class), native
+   floating point types (float, double), or native integer types
+   (8, 16, 32 and 64 bits wide).
+
+o  New class LP_Problem provides an implementation of the
+   primal simplex algorithm using exact arithmetic.
 
 o  Method
 
-     bool Constraint_System::has_strict_inequalities() const;
+     bool Constraint_System::has_strict_inequalities() const
 
    is now publicly accessible.
 
@@ -49,9 +135,10 @@ o  The function template
 
      bool Polyhedra_Powerset<PH>::geometrically_equals().
 
-o  Method Polyhedra_Powerset<PH>::add_disjunct() now throws an
-   exception when the powerset object and the added disjunct have
-   incompatible space dimensions.
+o  Disjuncts can be added to an instance of Polyhedra_Powerset with
+   the new method
+
+     void add_disjunct(const PH& ph).
 
 o  The two generalized_affine_image() methods of class Polyhedron
    are now matched by corresponding methods for computing preimages
@@ -62,8 +149,8 @@ o  Added to class Polyhedron the method
      void bounded_affine_image(Variable v,
                                const Linear_Expression& lb,
                                const Linear_Expression& ub,
-	                       Coefficient_traits::const_reference d
-                                 = Coefficient_one());
+                               Coefficient_traits::const_reference d
+                                 = Coefficient_one())
 
    computing the image of the polyhedron according to the
    transfer relation lb/d <= v' <= ub/d.
@@ -88,38 +175,96 @@ o  New output operators in namespace IO_Operators:
 o  One of the possible values for the configuration option
    `--enable-coefficients' has been renamed from `gmp' to `mpz'.
 
+o  New configuration option --enable-interfaces allows some or all of
+   the Prolog and C interfaces to be selectively enabled.
+
 o  Added to class Constraint the methods
 
-     bool is_tautological() const;
+     bool is_tautological() const
 
    and
 
-     bool is_inconsistent() const;
+     bool is_inconsistent() const
 
    returning true when the constraint is always or never satisfied,
    respectively.
 
 o  Added to classes Constraint (resp., Generator) the method
 
-     bool is_equivalent_to(const Constraint& y) const;
+     bool is_equivalent_to(const Constraint& y) const
 
-   (resp., bool is_equivalent_to(const Generator& y) const;)
-   checking for semantic equivalence of corresponding class instances.
-   Also made available the (semantic) comparison operators == and !=.
+   (resp., bool is_equivalent_to(const Generator& y) const)
+   which check for semantic equivalence of corresponding class
+   instances.  Also made available the (semantic) comparison operators
+   == and !=.
+
+o  Added to classes Constraint and Generator the methods
+
+     void ascii_dump(std::ostream& s) const
+
+   and
+
+     void ascii_load(std::istream& s) const.
 
 o  Added swap methods to classes Linear_Expression, Constraint, Generator,
    Constraint_System and Generator_System.
 
 o  Portability has been improved.
 
+o  New functions added to the C interface:
+
+     int ppl_Coefficient_is_bounded(void),
+     int ppl_Coefficient_min(mpz_t min),
+     int ppl_Coefficient_max(mpz_t max)
+
+   allow C applications to obtain information about the Coefficient
+   integer numerical type.
+
+   The new Prolog interface predicates ppl_Coeffient_is_bounded/0,
+   ppl_Coefficient_max/1 and ppl_Coefficient_min/1 provide the same
+   functionality.
+
+o  All predicates in the Prolog interface that require an input list
+   as an argument will now throw an exception if that argument is not
+   a list.  Before, some predicates, such as
+   ppl_Polyhedron_remove_space_dimensions/2, would fail.
+
 o  In the Prolog interface, the names and arities of the "with_token"
    widening and extrapolation predicates have been revised to
-   "with_tokens" with an extra argument and the functionality has been 
+   "with_tokens" with an extra argument and the functionality has been
    revised to match more closely the corresponding C++ interface operators.
+
+o  In the Prolog interface, the names and arities of the predicates
+   that create handles for new polyhedra have been revised
+   to match more closely the corresponding C and C++ interface
+   operators.
+   That is, instead of having "c" and/or "nnc" as arguments to indicate the
+   topology of the polyhedron, the topologies are now part of the names of
+   the predicates.
+
+o  The SWI-Prolog interface allows now the exchange of unbounded numbers
+   between the PPL and Prolog applications.  This requires SWI-Prolog
+   version 5.6.0 or later version.  Previous versions of SWI-Prolog
+   are no longer supported.
+
+o  The `ppl_lpsol' demo has now two more options: with `--enumerate' it
+   solves the given linear programming problem by vertex/point
+   enumeration; with `--simplex' (the default) it uses our simplex
+   implementation with exact arithmetic.  The `ppl_lpsol' program,
+   which is only built if a suitable version of GLPK is available, is
+   installed into the directory (selectable at configuration time) for
+   user executables.
+
+o  Manual pages have been added for the ppl_lpsol and ppl_lcdd
+   programs.
 
 
 Bugfixes
 ========
+
+o  Fixed a bug in Polyhedra_Powerset<PH>::concatenate_assign() whereby
+   a temporary Polyhedra_Powerset object was created with the wrong
+   dimension.
 
 o  Corrected a memory leak bug in the demo ppl_lpsol.
 
@@ -142,18 +287,18 @@ o  Fixed a bug whereby the occurrence of an `out of memory' error during
 o  Fixed a bug affecting the specialized constructors
 
      Polyhedra_Powerset<NNC_Polyhedron>::
-     Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y);
+     Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y)
 
    and
 
      Polyhedra_Powerset<C_Polyhedron>::
-     Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y);
+     Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y)
 
    whereby the newly built Polyhedra_Powerset object could have been
    flagged as non-redundant even though it was containing redundant
    disjuncts. Fixed a similar bug in generic constructor
 
-     Polyhedra_Powerset(const Constraint_System& cs);
+     Polyhedra_Powerset(const Constraint_System& cs)
 
    that manifests when `cs' is denoting an empty polyhedron.
 

@@ -1,6 +1,6 @@
 /* A program to enquire about the configuration of the PPL  -*- C++ -*-
    and of the applications using it.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -108,7 +108,6 @@ bool required_license = false;
 bool required_copying = false;
 bool required_bugs = false;
 bool required_credits = false;
-bool required_all = false;
 
 unsigned num_required_items = 0;
 
@@ -140,14 +139,13 @@ struct option long_options[] = {
   {"copying",           no_argument,       0, 'c'},
   {"bugs",              no_argument,       0, 'u'},
   {"credits",           no_argument,       0, 'r'},
-  {"all",               no_argument,       0, 'Z'},
   {0, 0, 0, 0}
 };
 #endif
 
 static const char* usage_string
 = "Usage: %s [OPTION]...\n\n"
-"  -h, --help               prints this help text\n"
+"  -h, --help               prints this help text to stdout\n"
 "  -FFMT, --format=FMT      sets the output format to FMT\n"
 "                           (one of `plain', `makefile', `sh' or `csh')\n"
 "  -IINT, --interface=INT   selects a library interface (one of `C++', `C',\n"
@@ -178,14 +176,14 @@ static const char* usage_string
 "  -c, --copying            prints detailed licensing information\n"
 "  -u, --bugs               prints bug reporting information\n"
 "  -r, --credits            prints credits\n"
-"  -Z, --all                prints all information available\n"
 #ifndef HAVE_GETOPT_H
 "\n"
 "NOTE: this version does not support long options.\n"
 #endif
-;
+"\n"
+"Report bugs to <ppl-devel@cs.unipr.it>.\n";
 
-#define OPTION_LETTERS "hF:I:ALp::e::OVMNRBEniblPCXDgcurZ"
+#define OPTION_LETTERS "hF:I:ALp::e::OVMNRBEniblPCXDgcur"
 
 const char* program_name = 0;
 
@@ -246,7 +244,7 @@ process_options(int argc, char* argv[]) {
 
     case '?':
     case 'h':
-      fprintf(stderr, usage_string, argv[0]);
+      fprintf(stdout, usage_string, argv[0]);
       exit(0);
       break;
 
@@ -277,13 +275,13 @@ process_options(int argc, char* argv[]) {
       else if (strcaseeq(optarg, "GNU-Prolog"))
 	required_interface = GNU_PROLOG;
       else if (strcaseeq(optarg, "SICStus-Prolog"))
-	required_interface = GNU_PROLOG;
+	required_interface = SICSTUS_PROLOG;
       else if (strcaseeq(optarg, "SWI-Prolog"))
-	required_interface = GNU_PROLOG;
+	required_interface = SWI_PROLOG;
       else if (strcaseeq(optarg, "XSB-Prolog"))
-	required_interface = GNU_PROLOG;
+	required_interface = XSB_PROLOG;
       else if (strcaseeq(optarg, "YAP-Prolog"))
-	required_interface = GNU_PROLOG;
+	required_interface = YAP_PROLOG;
       else if (strcaseeq(optarg, "OCaml"))
 	required_interface = OCAML;
       else if (strcaseeq(optarg, "Java"))
@@ -445,11 +443,6 @@ process_options(int argc, char* argv[]) {
     case 'r':
       required_credits = true;
       ++num_required_items;
-      break;
-
-      // --all
-    case 'Z':
-      required_all = true;
       break;
 
     default:
@@ -698,30 +691,30 @@ main(int argc, char* argv[]) try {
     portray("LICENSE", PPL_LICENSE);
 
   if (required_copying) {
-    extern const char* const COPYING_array[]; 
+    extern const char* const COPYING_array[];
     portray("COPYING", COPYING_array);
   }
 
   if (required_bugs) {
-    extern const char* const BUGS_array[]; 
+    extern const char* const BUGS_array[];
     portray("BUGS", BUGS_array);
   }
 
   if (required_credits) {
-    extern const char* const CREDITS_array[]; 
+    extern const char* const CREDITS_array[];
     portray("CREDITS", CREDITS_array);
   }
 
   return 0;
 }
-catch(const std::bad_alloc&) {
+catch (const std::bad_alloc&) {
   fatal("out of memory");
   exit(1);
 }
-catch(const std::overflow_error& e) {
+catch (const std::overflow_error& e) {
   fatal("arithmetic overflow (%s)", e.what());
   exit(1);
 }
-catch(...) {
+catch (...) {
   internal_error();
 }

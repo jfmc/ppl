@@ -176,6 +176,12 @@ Congruence::set_is_equality() {
   modulus() = 0;
 }
 
+inline void
+Congruence::negate(dimension_type start, dimension_type end) {
+  while (start <= end)
+    neg_assign(operator[](start++));
+}
+
 inline memory_size_type
 Congruence::external_memory_in_bytes() const {
   return Row::external_memory_in_bytes();

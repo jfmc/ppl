@@ -1,5 +1,5 @@
 /* Test Status::ascii_dump() and Status::ascii_load().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,12 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "files.hh"
 #include <fstream>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
+using std::string;
+using std::fstream;
+using std::ios_base;
 
 namespace {
 
@@ -37,9 +34,8 @@ const char* my_file = "ascii_dump_load6.dat";
 
 void
 test1() {
-#if NOISY
-  cout << "test1()" << endl;
-#endif
+
+  nout << "test1()" << endl;
 
   C_Polyhedron ph1;
 
@@ -61,9 +57,8 @@ test1() {
 
 void
 test2() {
-#if NOISY
-  cout << "test2()" << endl;
-#endif
+
+  nout << "test2()" << endl;
 
   C_Polyhedron ph1(2, EMPTY);
 
@@ -85,9 +80,8 @@ test2() {
 
 void
 test3() {
-#if NOISY
-  cout << "test3()" << endl;
-#endif
+
+  nout << "test3()" << endl;
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -106,9 +100,8 @@ test3() {
 
 void
 test4() {
-#if NOISY
-  cout << "test4()" << endl;
-#endif
+
+  nout << "test4()" << endl;
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -127,9 +120,8 @@ test4() {
 
 void
 test5() {
-#if NOISY
-  cout << "test5()" << endl;
-#endif
+
+  nout << "test5()" << endl;
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -148,9 +140,8 @@ test5() {
 
 void
 test6() {
-#if NOISY
-  cout << "test6()" << endl;
-#endif
+
+  nout << "test6()" << endl;
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -169,9 +160,8 @@ test6() {
 
 void
 test7() {
-#if NOISY
-  cout << "test7()" << endl;
-#endif
+
+  nout << "test7()" << endl;
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -190,9 +180,8 @@ test7() {
 
 void
 test8() {
-#if NOISY
-  cout << "test8()" << endl;
-#endif
+
+  nout << "test8()" << endl;
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -211,9 +200,8 @@ test8() {
 
 void
 test9() {
-#if NOISY
-  cout << "test9()" << endl;
-#endif
+
+  nout << "test9()" << endl;
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -230,12 +218,10 @@ test9() {
     exit(1);
 }
 
-
 void
 test10() {
-#if NOISY
-  cout << "test10()" << endl;
-#endif
+
+  nout << "test10()" << endl;
 
   fstream f;
   open(f, my_file, ios_base::out);

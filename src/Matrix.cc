@@ -1,5 +1,5 @@
 /* Matrix class implementation (non-inline functions).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -176,9 +176,9 @@ PPL::Matrix::add_zero_rows_and_columns(const dimension_type n,
 
 void
 PPL::Matrix::add_recycled_row(Row& y) {
-  // The added row must have the same number of elements as the
+  // The added row must have the same size and capacity as the
   // existing rows of the system.
-  assert(y.size() == row_size);
+  assert(y.OK(row_size, row_capacity));
   const dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
@@ -288,11 +288,12 @@ PPL::Matrix::ascii_dump(std::ostream& s) const {
   const Matrix& x = *this;
   dimension_type x_num_rows = x.num_rows();
   dimension_type x_num_columns = x.num_columns();
-  s << x_num_rows << " x " << x_num_columns
-    << std::endl;
+  s << x_num_rows << " x " << x_num_columns << "\n";
   for (dimension_type i = 0; i < x_num_rows; ++i)
     x[i].ascii_dump(s);
 }
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Matrix);
 
 bool
 PPL::Matrix::ascii_load(std::istream& s) {
@@ -340,6 +341,7 @@ void
 PPL::Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
   TEMP_INTEGER(tmp);
   const dimension_type n = cycles.size();
+  assert(cycles[n - 1] == 0);
   for (dimension_type k = num_rows(); k-- > 0; ) {
     Row& rows_k = rows[k];
     for (dimension_type i = 0, j = 0; i < n; i = ++j) {

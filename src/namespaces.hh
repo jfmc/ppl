@@ -1,5 +1,5 @@
 /* Documentation for used namespaces.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -55,7 +55,14 @@ namespace Parma_Polyhedra_Library {
   \endcode
 */
 namespace IO_Operators {
-}
+} // namespace IO_Operators
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Implementation related data and functions.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+namespace Implementation {
+} // namespace Implementation
+
 
 } // namespace Parma_Polyhedra_Library
 
@@ -65,10 +72,12 @@ namespace IO_Operators {
   The Parma Polyhedra Library conforms to the C++ standard and,
   in particular, as far as reserved names are concerned (17.4.3.1,
   [lib.reserved.names]).  The PPL, however, defines several
-  template specializations for the standard library templates
-  swap() and iter_swap() (25.2.2, [lib.alg.swap]).
+  template specializations for the standard library template functions
+  <CODE>swap()</CODE> and <CODE>iter_swap()</CODE> (25.2.2, [lib.alg.swap]),
+  and for the template class <CODE>numeric_limits</CODE>
+  (18.2.1, [lib.limits]).
 */
 namespace std {
-}
+} // namespace std
 
 #endif // !defined(PPL_namespaces_hh)

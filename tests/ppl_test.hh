@@ -1,5 +1,5 @@
 /* Header file for test programs.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -32,6 +32,12 @@ using namespace Parma_Polyhedra_Library;
 
 // Turn token S into a string: stringify(x + y) => "x + y".
 #define stringify(s) #s
+
+// These using directive and declaration are just to avoid the
+// corresponding namespace qualifications in all the tests.
+using namespace Parma_Polyhedra_Library;
+using std::endl;
+
 
 #ifdef DERIVED_TEST
 #define C_Polyhedron NNC_Polyhedron

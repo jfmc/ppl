@@ -1,5 +1,5 @@
 /* Test Polyhedron::map_space_dimensions().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,27 +23,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_test.hh"
 #include "PFunction.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-#if NOISY
 namespace {
 
 void
 print_function(const PFunction& function, const std::string& intro = "",
-	       std::ostream& s = std::cout) {
+	       std::ostream& s = nout) {
   if (!intro.empty())
     s << intro << endl;
   function.print(s);
 }
 
 } // namespace
-#endif
-
 
 int
 main() TRY {
@@ -63,10 +53,8 @@ main() TRY {
   rotate_right.insert(1, 2);
   rotate_right.insert(2, 0);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
   print_function(rotate_right, "*** rotate_right ***");
-#endif
 
   ph.map_space_dimensions(rotate_right);
 
@@ -77,9 +65,7 @@ main() TRY {
 
   bool ok = (ph == known_result);
 
-#if NOISY
   print_constraints(ph, "*** After ph.map_space_dimensions(rotate_right) ***");
-#endif
 
   if (!ok)
     exit(1);

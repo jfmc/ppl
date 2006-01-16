@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -20,10 +20,9 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
-VPATH = @srcdir@
+EXTRA_DIST = ppl_c.h.in ppl_c.cc
 
-@SET_MAKE@
+if BUILD_C_INTERFACE
 
 # Libtool -version-info for libppl_c.la.
 #
@@ -57,7 +56,9 @@ LIBPPL_C_LT_CURRENT =  1
 LIBPPL_C_LT_REVISION = 0
 LIBPPL_C_LT_AGE =      1
 
-AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src @extra_includes@
+AM_CPPFLAGS = \
+-I$(top_builddir)/src \
+@extra_includes@
 
 lib_LTLIBRARIES = libppl_c.la
 libppl_c_la_SOURCES = ppl_c.cc
@@ -65,3 +66,5 @@ libppl_c_la_LDFLAGS = \
 -version-info $(LIBPPL_C_LT_CURRENT):$(LIBPPL_C_LT_REVISION):$(LIBPPL_C_LT_AGE)
 
 include_HEADERS = ppl_c.h
+
+endif BUILD_C_INTERFACE

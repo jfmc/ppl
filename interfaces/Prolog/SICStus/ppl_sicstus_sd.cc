@@ -1,5 +1,5 @@
 /* SICStus Prolog interface: system-dependent part.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -20,14 +20,12 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
-#include <sstream>
-
-#include "Coefficient.defs.hh"
-#include "Checked_Number.defs.hh"
+#include "ppl_install.hh"
+#include "pwl_install.hh"
 #include "sicstus_cfli.h"
 #include "../exceptions.hh"
 #include <cassert>
+#include <sstream>
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -37,6 +35,13 @@ namespace {
   True if and only if the Prolog engine supports unbounded integers.
 */
 bool Prolog_has_unbounded_integers;
+
+/*!
+  If \p Prolog_has_unbounded_integers is false, holds the minimum
+  integer value representable by a Prolog integer.
+  Holds zero otherwise.
+*/
+long Prolog_min_integer;
 
 /*!
   If \p Prolog_has_unbounded_integers is false, holds the maximum
@@ -51,6 +56,7 @@ long Prolog_max_integer;
 void
 ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = true;
+  Prolog_min_integer = 0;
   Prolog_max_integer = 0;
 }
 
@@ -79,9 +85,9 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   Prolog_term_ref t = Prolog_new_term_ref();
-  long v;
-  if (PPL::assign(v, PPL::raw_value(n), PPL::ROUND_IGNORE) == PPL::V_EQ) {
-    if (SP_put_integer(t, v) == 0)
+  long l = 0;
+  if (PPL::assign_r(l, n, PPL::ROUND_NOT_NEEDED) == PPL::V_EQ) {
+    if (SP_put_integer(t, l) == 0)
       throw unknown_interface_error("Coefficient_to_integer_term()");
   } else {
     std::ostringstream s;
@@ -208,17 +214,27 @@ SP_STUB_1(ppl_version_beta)
 SP_STUB_1(ppl_version)
 SP_STUB_1(ppl_banner)
 SP_STUB_1(ppl_max_space_dimension)
+SP_STUB_0(ppl_Coefficient_is_bounded)
+SP_STUB_1(ppl_Coefficient_max)
+SP_STUB_1(ppl_Coefficient_min)
 SP_STUB_0(ppl_initialize)
 SP_STUB_0(ppl_finalize)
 SP_STUB_1(ppl_set_timeout_exception_atom)
 SP_STUB_1(ppl_timeout_exception_atom)
 SP_STUB_1(ppl_set_timeout)
 SP_STUB_0(ppl_reset_timeout)
-SP_STUB_4(ppl_new_Polyhedron_from_space_dimension)
-SP_STUB_4(ppl_new_Polyhedron_from_Polyhedron)
-SP_STUB_3(ppl_new_Polyhedron_from_constraints)
-SP_STUB_3(ppl_new_Polyhedron_from_generators)
-SP_STUB_3(ppl_new_Polyhedron_from_bounding_box)
+SP_STUB_3(ppl_new_C_Polyhedron_from_space_dimension)
+SP_STUB_3(ppl_new_NNC_Polyhedron_from_space_dimension)
+SP_STUB_2(ppl_new_C_Polyhedron_from_C_Polyhedron)
+SP_STUB_2(ppl_new_C_Polyhedron_from_NNC_Polyhedron)
+SP_STUB_2(ppl_new_NNC_Polyhedron_from_C_Polyhedron)
+SP_STUB_2(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron)
+SP_STUB_2(ppl_new_C_Polyhedron_from_constraints)
+SP_STUB_2(ppl_new_NNC_Polyhedron_from_constraints)
+SP_STUB_2(ppl_new_C_Polyhedron_from_generators)
+SP_STUB_2(ppl_new_NNC_Polyhedron_from_generators)
+SP_STUB_2(ppl_new_C_Polyhedron_from_bounding_box)
+SP_STUB_2(ppl_new_NNC_Polyhedron_from_bounding_box)
 SP_STUB_2(ppl_Polyhedron_swap)
 SP_STUB_1(ppl_delete_Polyhedron)
 SP_STUB_2(ppl_Polyhedron_space_dimension)
@@ -288,6 +304,27 @@ SP_STUB_2(ppl_Polyhedron_remove_higher_space_dimensions)
 SP_STUB_3(ppl_Polyhedron_expand_space_dimension)
 SP_STUB_3(ppl_Polyhedron_fold_space_dimensions)
 SP_STUB_2(ppl_Polyhedron_map_space_dimensions)
+SP_STUB_1(ppl_new_LP_Problem_trivial)
+SP_STUB_4(ppl_new_LP_Problem)
+SP_STUB_2(ppl_new_LP_Problem_from_LP_Problem)
+SP_STUB_2(ppl_LP_Problem_swap)
+SP_STUB_1(ppl_delete_LP_Problem)
+SP_STUB_2(ppl_LP_Problem_space_dimension)
+SP_STUB_2(ppl_LP_Problem_constraints)
+SP_STUB_2(ppl_LP_Problem_objective_function)
+SP_STUB_2(ppl_LP_Problem_optimization_mode)
+SP_STUB_1(ppl_LP_Problem_clear)
+SP_STUB_2(ppl_LP_Problem_add_constraint)
+SP_STUB_2(ppl_LP_Problem_add_constraints)
+SP_STUB_2(ppl_LP_Problem_set_objective_function)
+SP_STUB_2(ppl_LP_Problem_set_optimization_mode)
+SP_STUB_1(ppl_LP_Problem_is_satisfiable)
+SP_STUB_2(ppl_LP_Problem_solve)
+SP_STUB_2(ppl_LP_Problem_feasible_point)
+SP_STUB_2(ppl_LP_Problem_optimizing_point)
+SP_STUB_3(ppl_LP_Problem_optimal_value)
+SP_STUB_4(ppl_LP_Problem_evaluate_objective_function)
+SP_STUB_1(ppl_LP_Problem_OK)
 
 #define SP_DEFINE_C_PREDICATE(name, arity) \
   SP_define_c_predicate(#name, arity, "user", sp_stub_##name, NULL)
@@ -310,17 +347,27 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_version, 1);
   SP_DEFINE_C_PREDICATE(ppl_banner, 1);
   SP_DEFINE_C_PREDICATE(ppl_max_space_dimension, 1);
+  SP_DEFINE_C_PREDICATE(ppl_Coefficient_is_bounded, 0);
+  SP_DEFINE_C_PREDICATE(ppl_Coefficient_max, 1);
+  SP_DEFINE_C_PREDICATE(ppl_Coefficient_min, 1);
   SP_DEFINE_C_PREDICATE(ppl_initialize, 0);
   SP_DEFINE_C_PREDICATE(ppl_finalize, 0);
   SP_DEFINE_C_PREDICATE(ppl_set_timeout_exception_atom, 1);
   SP_DEFINE_C_PREDICATE(ppl_timeout_exception_atom, 1);
   SP_DEFINE_C_PREDICATE(ppl_set_timeout, 1);
   SP_DEFINE_C_PREDICATE(ppl_reset_timeout, 0);
-  SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_space_dimension, 4);
-  SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_Polyhedron, 4);
-  SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_constraints, 3);
-  SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_generators, 3);
-  SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_bounding_box, 3);
+  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_space_dimension, 3);
+  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_space_dimension, 3);
+  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_C_Polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_NNC_Polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_C_Polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_constraints, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_constraints, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_generators, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_generators, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_bounding_box, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_bounding_box, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_swap, 2);
   SP_DEFINE_C_PREDICATE(ppl_delete_Polyhedron, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_space_dimension, 2);
@@ -394,6 +441,27 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_expand_space_dimension, 3);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_fold_space_dimensions, 3);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_map_space_dimensions, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_LP_Problem_trivial, 1);
+  SP_DEFINE_C_PREDICATE(ppl_new_LP_Problem, 4);
+  SP_DEFINE_C_PREDICATE(ppl_new_LP_Problem_from_LP_Problem, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_swap, 2);
+  SP_DEFINE_C_PREDICATE(ppl_delete_LP_Problem, 1);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_space_dimension, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_constraints, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_objective_function, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_optimization_mode, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_clear, 1);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_add_constraint, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_add_constraints, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_set_objective_function, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_set_optimization_mode, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_is_satisfiable, 1);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_solve, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_feasible_point, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_optimizing_point, 2);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_optimal_value, 3);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_evaluate_objective_function, 4);
+  SP_DEFINE_C_PREDICATE(ppl_LP_Problem_OK, 1);
 }
 
 extern "C" void

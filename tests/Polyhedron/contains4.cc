@@ -1,5 +1,5 @@
 /* Test NNC_Polyhedron::contains(const Polyhedron&).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -45,10 +38,8 @@ main() TRY {
   gs2.insert(line(A + B));
   NNC_Polyhedron ph2(gs2);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   bool ok = !ph1.contains(ph2);
 

@@ -1,4 +1,4 @@
-Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 See below for the copying conditions.
 
 
@@ -16,7 +16,10 @@ To be more precise, the Parma Polyhedra Library (PPL) can handle:
     by an equality or a (strict or non-strict) inequality with rational
     coefficients;
 
-  + finite powersets of the above.
+  + finite powersets of the above;
+
+  + linear programming problems, solved with an implementation of the
+    primal simplex algorithm using exact arithmetic.
 
 The Parma Polyhedra Library is:
 
@@ -50,7 +53,7 @@ See the file BUGS for known bugs and how to report new ones.
 See the file CREDITS for a list of people, projects and organizations
 that made the PPL a reality.
 See http://www.cs.unipr.it/ppl/ for more information on the PPL.
-For any additional question you might have, please do not hesitate to
+For any additional questions you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
 Here is the contents of the PPL 0.8 source distributions
@@ -950,7 +953,7 @@ ppl-0.8
 
 --------
 
-Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

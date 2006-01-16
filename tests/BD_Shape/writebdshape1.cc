@@ -1,5 +1,5 @@
 /* Test operator<<(ostream&, const BD_Shape&).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   Variable x(0);
@@ -43,12 +36,9 @@ main() TRY {
   bd2.add_constraint(x - y <= 5);
   bd2.add_constraint(-y <= -2);
 
-#if NOISY
-   print_constraints(bd1, "*** bd1 ***");
-   print_constraints(bd2, "*** bd2 ***");
-#endif
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
 
   return 0;
-
 }
 CATCH

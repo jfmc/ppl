@@ -1,6 +1,6 @@
 /* Declaration of macros and functions providing version  -*- C++ -*-
    and licensing information.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -36,9 +36,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 //! The revision number of the PPL version.
 #define PPL_VERSION_REVISION @PPL_VERSION_REVISION@
 
-//! \brief
-//! The beta number of the PPL version.  This is zero for official
-//! releases and nonzero for development snapshots.
+/*! \brief
+  The beta number of the PPL version.  This is zero for official
+  releases and nonzero for development snapshots.
+*/
 #define PPL_VERSION_BETA @PPL_VERSION_BETA@
 
 //! A string containing the PPL version.

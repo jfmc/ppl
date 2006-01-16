@@ -17,16 +17,16 @@ be configured with the `--disable-regs' option.
 *** 1085,1091 ****
   	      if (++i >= argc)
   		Fatal_Error("FILE missing after %s option", last_opt);
-  
+
 ! 	      cmd_cc.exe_name = argv[i];
   	      continue;
   	    }
-  
+
 --- 1085,1091 ----
   	      if (++i >= argc)
   		Fatal_Error("FILE missing after %s option", last_opt);
-  
+
 ! 	      cmd_cc.exe_name = cmd_link.exe_name = argv[i];
   	      continue;
   	    }
-  
+

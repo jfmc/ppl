@@ -1,5 +1,5 @@
 /* Row class implementation: inline functions.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -28,12 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <algorithm>
 
 namespace Parma_Polyhedra_Library {
-
-inline void
-negate(Row& row, dimension_type start, dimension_type end) {
-  while (start <= end)
-    negate(row[start++]);
-}
 
 inline
 Row::Flags::Flags()

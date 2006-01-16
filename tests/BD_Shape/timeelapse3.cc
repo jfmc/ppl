@@ -1,5 +1,5 @@
 /* Test time_elapse_assign() for particular polyhedra.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   Variable x(0);
@@ -43,18 +36,15 @@ main() TRY {
   TBD_Shape oc2(2);
   oc2.add_constraint(y == 5);
 
-#if NOISY
   print_constraints(oc1, "**** oc1 ****");
   print_constraints(oc2, "**** oc2 ****");
-#endif
+
   oc1.time_elapse_assign(oc2);
 
   TBD_Shape known_result(2);
   known_result.add_constraint(y >= 1);
 
-#if NOISY
   print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
-#endif
 
   int retval = (oc1 == known_result) ? 0 : 1;
 

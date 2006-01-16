@@ -1,5 +1,5 @@
 /* Test Polyhedron::relation_with(c) when c is a strict inequality.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -37,10 +31,8 @@ void test1() {
   C_Polyhedron ph;
   Poly_Con_Relation rel = ph.relation_with(Linear_Expression(0) > 0);
 
-#if NOISY
   print_generators(ph, "--- ph ---");
-  cout << "ph.relation_with(0 > 0) == " << rel << endl;
-#endif
+  nout << "ph.relation_with(0 > 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_disjoint();
@@ -54,10 +46,8 @@ void test2() {
   C_Polyhedron ph;
   Poly_Con_Relation rel = ph.relation_with(Linear_Expression(0) > 1);
 
-#if NOISY
   print_generators(ph, "--- ph ---");
-  cout << "ph.relation_with(0 > 1) == " << rel << endl;
-#endif
+  nout << "ph.relation_with(0 > 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
@@ -70,10 +60,8 @@ void test3() {
   C_Polyhedron ph;
   Poly_Con_Relation rel = ph.relation_with(Linear_Expression(1) > 0);
 
-#if NOISY
   print_generators(ph, "--- ph ---");
-  cout << "ph.relation_with(1 > 0) == " << rel << endl;
-#endif
+  nout << "ph.relation_with(1 > 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
 
@@ -88,10 +76,8 @@ void test4() {
   Variable A(0);
   Poly_Con_Relation rel = ph.relation_with(A > 0);
 
-#if NOISY
   print_generators(ph, "--- ph ---");
-  cout << "ph.relation_with(A > 0) == " << rel << endl;
-#endif
+  nout << "ph.relation_with(A > 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_included()
@@ -109,10 +95,8 @@ void test5() {
 
   Poly_Con_Relation rel = ph.relation_with(A + B > 3);
 
-#if NOISY
   print_generators(ph, "--- ph ---");
-  cout << "ph.relation_with(A + B > 3) == " << rel << endl;
-#endif
+  nout << "ph.relation_with(A + B > 3) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_disjoint();
@@ -129,10 +113,8 @@ void test6() {
 
   Poly_Con_Relation rel = ph.relation_with(A + B > 3);
 
-#if NOISY
   print_generators(ph, "--- ph ---");
-  cout << "ph.relation_with(A + B > 3) == " << rel << endl;
-#endif
+  nout << "ph.relation_with(A + B > 3) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
@@ -151,10 +133,8 @@ void test7() {
 
   Poly_Con_Relation rel = ph.relation_with(A + 2*B < 10);
 
-#if NOISY
   print_generators(ph, "--- ph ---");
-  cout << "ph.relation_with(A + 2*B < 10) == " << rel << endl;
-#endif
+  nout << "ph.relation_with(A + 2*B < 10) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
 
@@ -173,10 +153,8 @@ void test8() {
 
   Poly_Con_Relation rel = ph.relation_with(A + B > 1);
 
-#if NOISY
   print_generators(ph, "--- ph ---");
-  cout << "ph.relation_with(A + B > 1) == " << rel << endl;
-#endif
+  nout << "ph.relation_with(A + B > 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 

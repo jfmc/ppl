@@ -1,5 +1,5 @@
 /* Test shortest path closure.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,13 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -334,12 +327,12 @@ add_edges(BD_Shape<T>& bd, const Edge* edges, unsigned n) {
   for (unsigned i = 0; i < n; ++i) {
     const mpq_class& q = perturbate(edges[i].distance);
     Coefficient a;
-    assign(a, q.get_den(), ROUND_IGNORE);
+    assign_r(a, q.get_den(), ROUND_NOT_NEEDED);
     Coefficient b;
-    assign(b, q.get_num(), ROUND_IGNORE);
-#if NOISY
-    cout << "a = " << a << "; b = " << b << endl;
-#endif
+    assign_r(b, q.get_num(), ROUND_NOT_NEEDED);
+
+    nout << "a = " << a << "; b = " << b << endl;
+
     bd.add_constraint(a*Variable(edges[i].from) - a*Variable(edges[i].to)
 		      <= b);
   }
@@ -347,18 +340,17 @@ add_edges(BD_Shape<T>& bd, const Edge* edges, unsigned n) {
 
 } // namespace
 
-
 #define DISTANCE(To, Temp)			       \
   do { \
     Checked_Number<To, Extended_Number_Policy> distance; \
     rectilinear_distance_assign<Temp>(distance, qbd1, qbd2, ROUND_UP); \
-    cout << "Rectilinear distance<" #To ", " #Temp "> = " << distance \
+    nout << "Rectilinear distance<" #To ", " #Temp "> = " << distance \
          << endl; \
     euclidean_distance_assign<Temp>(distance, qbd1, qbd2, ROUND_UP); \
-    cout << "Euclidean distance<" #To ", " #Temp "> = " << distance \
+    nout << "Euclidean distance<" #To ", " #Temp "> = " << distance \
          << endl; \
     l_infinity_distance_assign<Temp>(distance, qbd1, qbd2, ROUND_UP); \
-    cout << "L-infinity distance<" #To ", " #Temp "> = " << distance \
+    nout << "L-infinity distance<" #To ", " #Temp "> = " << distance \
          << endl; \
   } while (0)
 

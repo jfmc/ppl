@@ -1,5 +1,5 @@
 # Automake source file for the Parma Watchdog Library.
-# Copyright (C) 2002-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2002-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Watchdog Library (PWL).
 #
@@ -19,11 +19,6 @@
 #
 # For the most up-to-date information see the CS@Parma software
 # site: http://www.cs.unipr.it/Software/ . */
-
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \

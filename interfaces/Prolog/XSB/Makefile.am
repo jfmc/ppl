@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -20,13 +20,7 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
 abs_srcdir = @abs_srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
-SUBDIRS =
 
 EXTRA_DIST = \
 ppl_xsb.cc \
@@ -48,9 +42,8 @@ expected_clpq_int64_a expected_clpq2_int64_a expected_pchk_int64_a
 if BUILD_XSB_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src \
--I$(top_srcdir)/Watchdog/src \
 -I$(top_builddir)/src \
+-I$(top_builddir)/Watchdog/src \
 $(XSB_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 

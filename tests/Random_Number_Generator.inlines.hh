@@ -1,5 +1,5 @@
 /* Random_Number_Generator class implementation: inline functions.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -25,15 +25,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-namespace {
+namespace Implementation {
+namespace Random_Numbers {
 
 template <typename T>
 class Random_Number_Generator_Aux {
 public:
   Random_Number_Generator_Aux(unsigned int max_bits) {
     if (std::numeric_limits<T>::is_bounded) {
-      assign(zmin, std::numeric_limits<T>::min(), ROUND_IGNORE);
-      assign(zrange, std::numeric_limits<T>::max(), ROUND_IGNORE);
+      assign_r(zmin, std::numeric_limits<T>::min(), ROUND_NOT_NEEDED);
+      assign_r(zrange, std::numeric_limits<T>::max(), ROUND_NOT_NEEDED);
       zrange -= zmin;
       ++zrange;
     }
@@ -43,14 +44,15 @@ public:
       zmin = -zmin;
     }
     else {
-      assign(zmin, std::numeric_limits<T>::min(), ROUND_IGNORE);
+      assign_r(zmin, std::numeric_limits<T>::min(), ROUND_NOT_NEEDED);
     }
   }
   mpz_class zmin;
   mpz_class zrange;
 };
 
-} // namespace
+} // namespace Random_Numbers
+} // namespace Implementation
 
 inline
 Random_Number_Generator::Random_Number_Generator()
@@ -62,6 +64,7 @@ Random_Number_Generator::Random_Number_Generator()
 template <typename T>
 inline void
 Random_Number_Generator::get(T& x, unsigned int info) {
+  using Implementation::Random_Numbers::Random_Number_Generator_Aux;
   used(info);
   static Random_Number_Generator_Aux<T> aux(max_bits);
   mpz_class n;
@@ -72,7 +75,7 @@ Random_Number_Generator::get(T& x, unsigned int info) {
     n = rand.get_z_bits(max_bits);
   }
   n += aux.zmin;
-  assign(x, n, ROUND_IGNORE);
+  assign_r(x, n, ROUND_NOT_NEEDED);
 }
 
 } // namespace Parma_Polyhedra_Library

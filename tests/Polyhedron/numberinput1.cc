@@ -1,5 +1,5 @@
 /* Test number input.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,29 +21,15 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include <string>
 #include <sstream>
 #include <cstdlib>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+using std::string;
+using std::stringstream;
+
 using namespace Parma_Polyhedra_Library::IO_Operators;
 using namespace Parma_Polyhedra_Library::Checked;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-using std::cout;
-using std::endl;
-
-// Adds slow, memory-heavy large exponent tests.
-//#define TEST_LARGE_EXPONENTS
-
-#ifdef TEST_LARGE_EXPONENTS
-#include <sys/resource.h>
-#endif
-
-int ret;
 
 struct Test_Extended_Number_Policy {
   static const int check_overflow = 1;
@@ -70,125 +56,43 @@ Test_Extended_Number_Policy::handle_result(Result r) {
 }
 
 void
-test(string number, string expected, string expected_residual,
+test(string input_string, string expected_output, string expected_residual,
      Result expected_result) {
-  stringstream f(number);
+  stringstream input_stream(input_string);
+  Checked_Number<mpq_class, Test_Extended_Number_Policy> value;
+  Result result = input(value, input_stream, ROUND_UP);
+  string residual;
+  getline(input_stream, residual, '\0');
+  stringstream output_stream;
+  output_stream << value;
+  string output = output_stream.str();
 
-  // Convert `number' to checked number q1.
-  Checked_Number<mpq_class, Test_Extended_Number_Policy> q1;
-  Result result = input(q1, f, ROUND_UP);
-  stringstream::char_type *residual = (stringstream::char_type*) calloc(f.rdbuf()->in_avail(),
-									sizeof(stringstream::char_type));
-  if (residual == NULL) {
+  if (result != expected_result 
+      || residual != expected_residual
+      || output != expected_output) {
 #if NOISY
-    cout << "Failed to allocate `residual'." << endl;
+    using std::cout;
+    cout << "input = " << input_string
+         << endl
+         << "expected result = " << expected_result
+         << ", actual result = " << result
+         << endl
+         << "expected value = " << expected_output
+         << ", actual value = " << output
+         << endl
+         << "expected residual = " << expected_residual
+         << ", actual residual = " << residual
+         << endl;
 #endif
     exit(1);
   }
-  f.readsome(residual, f.rdbuf()->in_avail());
-
-  // Read q2 from string output of q1.
-  stringstream ss1;
-  ss1 << q1;
-  Checked_Number<mpq_class, Test_Extended_Number_Policy> q2;
-  Result r = input(q2, ss1, ROUND_UP);
-  if (r != expected_result) {
-#if 1 || NOISY
-    cout << "Failed to read back `q2'.";
-    cout << endl
-	 << "r = " << r << ", q1 = " << q1
-	 << endl
-	 << "number = \"" << number << "\", expected = \"" << expected
-	 << endl
-	 <<  "expected_residual = \"" << expected_residual
-	 << "\", expected_result = " << expected_result
-	 << endl;
-#endif
-    //exit(1);
-  }
-
-  // Check for a residual.
-  stringstream::char_type *resid = (stringstream::char_type*) calloc(ss1.rdbuf()->in_avail(),
-								     sizeof(stringstream::char_type));
-  if (resid == NULL) {
-#if NOISY
-    cout << "Failed to allocate `resid'." << endl;
-#endif
-    free(residual);
-    exit(1);
-  }
-  ss1.readsome(resid, ss1.rdbuf()->in_avail());
-  if (string("").compare(resid)) {
-#if NOISY
-    cout << "Residual left after reading q1 output into q2 (\""
-	 << resid << "\")." << endl
-	 << "q1: " << q1 << endl
-	 << "q2: " << q2 << endl;
-#endif
-  error:
-#if NOISY
-    cout << "given string: \"" << f.str() << "\""
-	 << ", value parsed: \"" << q1 << "\""
-	 << endl;
-#endif
-    ret = 1;
-    free(resid);
-    free(residual);
-    return;
-  }
-
-  // Check that q1 equals q2.
-  if (!(is_not_a_number(q1) && is_not_a_number(q2))
-      && q1 != q2) {
-#if NOISY
-    cout << "q1 should equal q2 (which was created from q1 output)."
-	 << endl;
-#endif
-    goto error;
-  }
-
-  // Compare the output of q2 and the expected string.
-  stringstream ss2;
-  ss2 << q2;
-  if (ss2.str().compare(expected)) {
-#if NOISY
-    cout << "q2 output is \"" << ss2.str()
-	 << "\" (expected \"" << expected << "\")."
-	 << endl
-	 << "q2: " << q2 << endl;
-#endif
-    goto error;
-  }
-
-  // Compare residual from initial convertion to expected residual.
-  if (expected_residual.compare(residual)) {
-#if NOISY
-    cout << "Residual from conversion: \"" << residual
-	 << "\" (expected \"" << expected_residual << "\")" << endl;
-#endif
-    goto error;
-  }
-
-  // Compare result of initial conversion and expected result.
-  if (result == expected_result) {
-    free(resid);
-    free(residual);
-    return;
-  }
-
-#if NOISY
-  cout << "Result from conversion: " << result
-       << " (expected " << expected_result << ")" << endl;
-#endif
-
-  goto error;
 }
 
 inline void
 test_symbols() {
 
   test("inf", "+inf", "", V_EQ);
-  test("InF", "+inf", "", V_EQ);    // FIX capatilise first n
+  test("InF", "+inf", "", V_EQ);
   test("+inF", "+inf", "", V_EQ);
   test("-InF", "-inf", "", V_EQ);
   test("-InFinity", "-inf", "inity", V_EQ);
@@ -205,8 +109,8 @@ test_symbols() {
   test("nAN/0", "nan", "/0", VC_NAN);
   test("nAN/-3", "nan", "/-3", VC_NAN);
 
-  test("inF/3", "+inf", "/3", V_EQ);   // FIX capatilise first n
-  test("Inf/-3", "+inf", "/-3", V_EQ); // FIX capatilise first n
+  test("inF/3", "+inf", "/3", V_EQ);
+  test("Inf/-3", "+inf", "/-3", V_EQ);
   test("-inf/-3", "-inf", "/-3", V_EQ);
 
   // Errors.
@@ -267,39 +171,37 @@ test_integers() {
   stringstream ss2;
   ss2 << "1e" << (LONG_MAX / 10) << (LONG_MAX % 10) + 1;
   test(ss2.str(), "nan", "", V_CVT_STR_UNK);
-#ifdef TEST_LARGE_EXPONENTS
-  stringstream ss3;
-  ss3 << "1e" << (LONG_MAX / 10) << (LONG_MAX % 10);
-  test(ss3.str(), "nan", "10[...]0", V_CVT_STR_UNK);
-#endif
 
   // Exponent and fraction.
   test("5.3e3", "5300", "", V_EQ);
   test("2.2e-1", "11/50", "", V_EQ);
-  test("7.e", "nan", "e", V_CVT_STR_UNK);
+  test("5.33333*^-4", "533333/1000000000", "", V_EQ);
+  test("-2.20001*^+3", "-220001/100", "", V_EQ);
+  test("7.e", "nan", "", V_CVT_STR_UNK);
   test("7.0 e3", "7", " e3", V_EQ);
 }
 
 inline void
 test_hexadecimals() {
 
-  test("0x", "0", "", V_EQ);	// FIX "nan", "", V_CVT_STR_UNK
-  test("0xx", "0", "x", V_EQ);	// FIX "nan", "x", V_CVT_STR_UNK
+  test("0x", "nan", "", V_CVT_STR_UNK);
+  test("0xx", "nan", "x", V_CVT_STR_UNK);
   test("0x0.f", "15/16", "", V_EQ);
-  test("0x.f", "15/16", "", V_EQ); // FIX "nan", ".f", V_CVT_STR_UNK
-  test("0x.f*^1", "15", "", V_EQ); // FIX "nan", ".f*^1", V_CVT_STR_UNK
-  test("0x-f", "0", "-f", V_EQ);   // FIX "nan", "-f", V_CVT_STR_UNK
+  test("0x.f", "15/16", "", V_EQ);
+  test("0x.f*^1", "15", "", V_EQ);
+  test("0x-f", "nan", "-f", V_CVT_STR_UNK);
   test("0xfa", "250", "", V_EQ);
   test("-0xfa", "-250", "", V_EQ);
   test("-0x000000000000000000000000fa", "-250", "", V_EQ);
   test("-0xfaz", "-250", "z", V_EQ);
   test("-0xfa .", "-250", " .", V_EQ);
   test("0xfa0xfa", "4000", "xfa", V_EQ);
+  test("0x0b123", "45347", "", V_EQ);
 
   // Fraction.
   test("0xfa.a", "2005/8", "", V_EQ);
   test("0xfa.ay", "2005/8", "y", V_EQ);
-  test("-0xfa.", "nan", "", V_CVT_STR_UNK);
+  test("-0xfa.", "-250", "", V_EQ);
 
   // Exponent.
   test("0x1e2", "482", "", V_EQ);
@@ -311,21 +213,20 @@ test_hexadecimals() {
   test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-2",
        "-493504168323155221903720496056512238754896365637429427/590295810358705651712",
        "", V_EQ);
-  test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-20b",
-       "-493504168323155221903720496056512238754896365637429427/1310933508604055428645639323137378916605714125627786059833620428064344929699983798856350724770249351343264006014785110634052203016928447702417826694914166499203532724061309761600565421336997063991815557515680099256435208755020866043671114406449028627331696698190741203965924596719013282704476143226108174949247429837123641776308586821274746853953307040976937411766310985422056170406984474085761281737469468808976890729698039324009144871950806544374270234375377739131156048222163582026729343976248181187638137223873724172759146299690233903325378612205820465841687984250694283465351797146791878992198286281436600229186585471120819282194789204326612992",
+  test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-20",
+       "-493504168323155221903720496056512238754896365637429427/2787593149816327892691964784081045188247552",
        "", V_EQ);
-#ifdef TEST_LARGE_EXPONENTS
-  test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-20b3029",
-       "256", "", V_EQ);
-#endif
+  test("-0x29382a093589c501594f729e672567.2f09f342582b4598*^-20b",
+       "-493504168323155221903720496056512238754896365637429427/2787593149816327892691964784081045188247552",
+       "b", V_EQ);
   test("0x0.1*^3   -0", "256", "   -0", V_EQ);
 }
 
 inline void
 test_bases() {
 
-  test("3^^", "0", "", V_EQ);	// FIX "nan", "", V_CVT_STR_UNK
-  test("3^^z", "0", "z", V_EQ);	// FIX "nan", "z", V_CVT_STR_UNK
+  test("3^^", "nan", "", V_CVT_STR_UNK);
+  test("3^^z", "nan", "z", V_CVT_STR_UNK);
   test("^^3", "nan", "^^3", V_CVT_STR_UNK);
   test("3^^1", "1", "", V_EQ);
   test("2^^0", "0", "", V_EQ);
@@ -339,7 +240,7 @@ test_bases() {
   test("37^^1.1", "nan", "^1.1", V_CVT_STR_UNK);
   test("2^^113", "3", "3", V_EQ);
   test("2^^11 3", "3", " 3", V_EQ);
-  test("3^^e2", "0", "", V_EQ); // FIX "nan", "e2", V_CVT_STR_UNK
+  test("3^^e2", "nan", "e2", V_CVT_STR_UNK);
 
   // Fraction.
   test("2^^11.1", "7/2", "", V_EQ);
@@ -350,7 +251,7 @@ test_bases() {
   // Exponent.
   test("10^^2e3", "2000", "", V_EQ);
   test("8^^2e3", "1024", "", V_EQ);
-  test("8^^2e38", "1024", "8", V_EQ);
+  test("8^^2e38", "41538374868278621028243970633760768", "", V_EQ);
   test("8^^2e3e", "1024", "e", V_EQ);
 
   // Fraction and exponent.
@@ -365,12 +266,13 @@ test_denominators() {
   test("15/0", "nan", "", VC_NAN);
   test("15/1", "15", "", V_EQ);
   test("15/3", "5", "", V_EQ);
-  test("15/-3", "-5", "", V_EQ); // FIX "nan", "-3", V_CVT_STR_UNK
+  test("15/-3", "-5", "", V_EQ);
   test("15/3f", "5", "f", V_EQ);
 
   // Exponent.
   test("15/30e-1", "5", "", V_EQ);
   test("27e3/30e-1", "9000", "", V_EQ);
+  test("15*^-3/29e2", "3/580000", "", V_EQ);
   test("15/30e-1,2", "5", ",2", V_EQ);
   test("15/30e-1.2", "5", ".2", V_EQ);
 
@@ -404,19 +306,6 @@ test_large() {
 int
 main() TRY {
   set_handlers();
-  ret = 0;
-
-#ifdef TEST_LARGE_EXPONENTS
-  struct rlimit rl;
-  rl.rlim_cur = RLIM_INFINITY;
-  rl.rlim_max = RLIM_INFINITY;
-  if (setrlimit(RLIMIT_STACK, &rl) == -1) {
-#if NOISY
-    cout << "Failed to set stack limit." << endl;
-#endif
-    exit(1);
-  }
-#endif
 
   test_symbols();
   test_integers();
@@ -425,6 +314,6 @@ main() TRY {
   test_denominators();
   test_large();
 
-  return ret;
+  return 0;
 }
 CATCH

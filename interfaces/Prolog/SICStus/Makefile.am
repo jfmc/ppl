@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -20,13 +20,6 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
-SUBDIRS =
-
 SICSTUS_CFLI_FILES = sicstus_cfli.h sicstus_cfli.ic sicstus_cfli.cc
 
 EXTRA_DIST = \
@@ -39,9 +32,8 @@ sp_pl_check.pl
 if BUILD_SICSTUS_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src \
--I$(top_srcdir)/Watchdog/src \
 -I$(top_builddir)/src \
+-I$(top_builddir)/Watchdog/src \
 $(SICSTUS_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
@@ -62,10 +54,10 @@ ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(top_buildd
 		$(top_builddir)/Watchdog/src/libpwl.la \
 		@extra_libraries@
 
-ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus_sd.o
+ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus_sd.o | ppl_sicstus_sd.la
 	splfr --static $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o
 
-ppl_sicstus.so: ppl_sicstus.pl ppl_sicstus_sd.o $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/src/libpwl.la
+ppl_sicstus.so: ppl_sicstus.pl ppl_sicstus_sd.o $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/src/libpwl.la | ppl_sicstus_sd.la
 	$(LIBTOOL) --mode=link --tag=CXX \
 	splfr $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o -o $@ \
 		$(top_builddir)/src/libppl.la \
@@ -94,15 +86,15 @@ COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
 if ASSERTIONS_ENABLED
 
-EXPECTED = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)_a
-EXPECTED2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)_a
-EXPECTED3 = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_CLPQ = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_CLPQ2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)_a
 
 else !ASSERTIONS_ENABLED
 
-EXPECTED = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)
-EXPECTED2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)
-EXPECTED3 = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
+EXPECTED_CLPQ = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)
+EXPECTED_CLPQ2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)
+EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
@@ -120,25 +112,29 @@ pl_check_test: ppl_sicstus ppl_sicstus.pl sp_pl_check.pl ../tests/pl_check.pl $(
 	if [ $(srcdir) != `pwd` ]; then \
 	  rm -f pl_check.pl ;\
 	fi
-	diff -u --ignore-all-space $(EXPECTED3) obtained_pchk
+	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
-clpq_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq.pl ../tests/script_clpq $(EXPECTED_CLPQ)
+# FIXME: the last prerequisite is to get around a bug of `spld': see
+# http://www.cs.unipr.it/pipermail/ppl-devel/2006-January/007610.html
+clpq_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq.pl ../tests/script_clpq $(EXPECTED_CLPQ) | pl_check_test
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 	  ./ppl_sicstus -l $(srcdir)/sp_clpq.pl \
 	    --goal "main('$(top_srcdir)/interfaces/Prolog/tests/clpq')." \
 	      <$(srcdir)/../tests/script_clpq >obtained_clpq
-	diff -u --ignore-all-space $(EXPECTED) obtained_clpq
+	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
 
-clpq2_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EXPECTED_CLPQ2)
+# FIXME: the last prerequisite is to get around a bug of `spld': see
+# http://www.cs.unipr.it/pipermail/ppl-devel/2006-January/007610.html
+clpq2_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EXPECTED_CLPQ2) | clpq_test
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 	  ./ppl_sicstus -l $(srcdir)/sp_clpq.pl \
 	    --goal "main('$(top_srcdir)/interfaces/Prolog/tests/clpq2')." \
 	      <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
-	diff -u --ignore-all-space $(EXPECTED2) obtained_clpq2
+	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
 MOSTLYCLEANFILES = \
 ppl_sicstus.s.o ppl_sicstus.so \

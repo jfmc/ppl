@@ -1,5 +1,5 @@
 /* Saturation_Matrix class declaration.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -49,9 +49,10 @@ public:
   //! Default constructor.
   Saturation_Matrix();
 
-  //! \brief
-  //! Construct a saturation matrix with \p n_rows rows
-  //! and \p n_columns columns.
+  /*! \brief
+    Construct a saturation matrix with \p n_rows rows
+    and \p n_columns columns.
+  */
   Saturation_Matrix(dimension_type n_rows, dimension_type n_columns);
 
   //! Copy-constructor.
@@ -121,15 +122,13 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS;
 
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
-  //! if successful, <CODE>false</CODE> otherwise.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by \ref ascii_dump)
+    and sets \p *this accordingly.  Returns <CODE>true</CODE> if successful,
+    <CODE>false</CODE> otherwise.
+  */
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.

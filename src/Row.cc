@@ -1,5 +1,5 @@
 /* Row class implementation (non-inline functions).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -95,7 +95,7 @@ PPL::Row::normalize() {
     if (const int x_i_sign = sgn(x_i)) {
       gcd = x_i;
       if (x_i_sign < 0)
-	negate(gcd);
+	neg_assign(gcd);
       goto compute_gcd;
     }
   }
@@ -125,8 +125,10 @@ PPL::Row::normalize() {
     }
   }
   // Divide the coefficients by the GCD.
-  for (dimension_type i = sz; i-- > 0; )
-    exact_div_assign(x[i], gcd);
+  for (dimension_type j = sz; j-- > 0; ) {
+    Coefficient& x_j = x[j];
+    exact_div_assign(x_j, x_j, gcd);
+  }
 }
 
 void
@@ -140,6 +142,8 @@ PPL::Row::Flags::ascii_dump(std::ostream& s) const {
   s.width(sz);
   s.flags(f);
 }
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Row::Flags);
 
 bool
 PPL::Row::Flags::ascii_load(std::istream& s) {
@@ -162,8 +166,10 @@ PPL::Row::ascii_dump(std::ostream& s) const {
     s << x[i] << ' ';
   s << "f ";
   flags().ascii_dump(s);
-  s << std::endl;
+  s << "\n";
 }
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Row);
 
 bool
 PPL::Row::ascii_load(std::istream& s) {

@@ -56,7 +56,7 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
   // the parameter.  This ensures that divisors are always positive.
   if (d < 0)
     for (dimension_type i = gg.size(); i-- > 0; )
-      negate(gg[i]);
+      neg_assign(gg[i]);
 
   return gg;
 }
@@ -79,7 +79,7 @@ PPL::Grid_Generator::point(const Linear_Expression& e,
   // the parameter.  This ensures that divisors are always positive.
   if (d < 0)
     for (dimension_type i = gg.size(); i-- > 0; )
-      negate(gg[i]);
+      neg_assign(gg[i]);
 
   // Enforce normalization.
   gg.normalize();
@@ -226,7 +226,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
 	  s << " + ";
 	else {
 	  s << " - ";
-	  negate(gv);
+	  neg_assign(gv);
 	}
       }
       else

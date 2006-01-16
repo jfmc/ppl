@@ -1,5 +1,5 @@
 /* Powerset class implementation: inline functions.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -31,167 +31,171 @@ namespace Parma_Polyhedra_Library {
 
 template <typename CS>
 inline
-Powerset<CS>::iterator::iterator()
+Powerset<CS>::omega_iterator::omega_iterator()
   : base() {
 }
 
 template <typename CS>
-inline 
-Powerset<CS>::iterator::iterator(const iterator& y)
+inline
+Powerset<CS>::omega_iterator::omega_iterator(const omega_iterator& y)
   : base(y.base) {
 }
 
 template <typename CS>
-inline 
-Powerset<CS>::iterator::iterator(const Base& b)
+inline
+Powerset<CS>::omega_iterator::omega_iterator(const Base& b)
   : base(b) {
 }
 
 template <typename CS>
-inline typename Powerset<CS>::iterator::reference
-Powerset<CS>::iterator::operator*() const {
+inline typename Powerset<CS>::omega_iterator::reference
+Powerset<CS>::omega_iterator::operator*() const {
   return *base;
 }
 
 template <typename CS>
-inline typename Powerset<CS>::iterator::pointer
-Powerset<CS>::iterator::operator->() const {
+inline typename Powerset<CS>::omega_iterator::pointer
+Powerset<CS>::omega_iterator::operator->() const {
   return &*base;
 }
 
 template <typename CS>
-inline typename Powerset<CS>::iterator&
-Powerset<CS>::iterator::operator++() {
+inline typename Powerset<CS>::omega_iterator&
+Powerset<CS>::omega_iterator::operator++() {
   ++base;
   return *this;
 }
 
 template <typename CS>
-inline typename Powerset<CS>::iterator
-Powerset<CS>::iterator::operator++(int) {
-  iterator tmp = *this;
+inline typename Powerset<CS>::omega_iterator
+Powerset<CS>::omega_iterator::operator++(int) {
+  omega_iterator tmp = *this;
   operator++();
   return tmp;
 }
 
 template <typename CS>
-inline typename Powerset<CS>::iterator&
-Powerset<CS>::iterator::operator--() {
+inline typename Powerset<CS>::omega_iterator&
+Powerset<CS>::omega_iterator::operator--() {
   --base;
   return *this;
 }
 
 template <typename CS>
-inline typename Powerset<CS>::iterator
-Powerset<CS>::iterator::operator--(int) {
-  iterator tmp = *this;
+inline typename Powerset<CS>::omega_iterator
+Powerset<CS>::omega_iterator::operator--(int) {
+  omega_iterator tmp = *this;
   operator--();
   return tmp;
 }
 
 template <typename CS>
 inline bool
-Powerset<CS>::iterator::operator==(const iterator& y) const {
+Powerset<CS>::omega_iterator::operator==(const omega_iterator& y) const {
   return base == y.base;
 }
 
 template <typename CS>
 inline bool
-Powerset<CS>::iterator::operator!=(const iterator& y) const {
+Powerset<CS>::omega_iterator::operator!=(const omega_iterator& y) const {
   return !operator==(y);
 }
 
 template <typename CS>
 inline
-Powerset<CS>::const_iterator::const_iterator()
+Powerset<CS>::omega_const_iterator::omega_const_iterator()
   : base() {
 }
 
 template <typename CS>
-inline 
-Powerset<CS>::const_iterator::const_iterator(const const_iterator& y)
+inline
+Powerset<CS>
+::omega_const_iterator::omega_const_iterator(const omega_const_iterator& y)
   : base(y.base) {
 }
 
 template <typename CS>
-inline 
-Powerset<CS>::const_iterator::const_iterator(const Base& b)
+inline
+Powerset<CS>::omega_const_iterator::omega_const_iterator(const Base& b)
   : base(b) {
 }
 
 template <typename CS>
-inline typename Powerset<CS>::const_iterator::reference
-Powerset<CS>::const_iterator::operator*() const {
+inline typename Powerset<CS>::omega_const_iterator::reference
+Powerset<CS>::omega_const_iterator::operator*() const {
   return *base;
 }
 
 template <typename CS>
-inline typename Powerset<CS>::const_iterator::pointer
-Powerset<CS>::const_iterator::operator->() const {
+inline typename Powerset<CS>::omega_const_iterator::pointer
+Powerset<CS>::omega_const_iterator::operator->() const {
   return &*base;
 }
 
 template <typename CS>
-inline typename Powerset<CS>::const_iterator&
-Powerset<CS>::const_iterator::operator++() {
+inline typename Powerset<CS>::omega_const_iterator&
+Powerset<CS>::omega_const_iterator::operator++() {
   ++base;
   return *this;
 }
 
 template <typename CS>
-inline typename Powerset<CS>::const_iterator
-Powerset<CS>::const_iterator::operator++(int) {
-  const_iterator tmp = *this;
+inline typename Powerset<CS>::omega_const_iterator
+Powerset<CS>::omega_const_iterator::operator++(int) {
+  omega_const_iterator tmp = *this;
   operator++();
   return tmp;
 }
 
 template <typename CS>
-inline typename Powerset<CS>::const_iterator&
-Powerset<CS>::const_iterator::operator--() {
+inline typename Powerset<CS>::omega_const_iterator&
+Powerset<CS>::omega_const_iterator::operator--() {
   --base;
   return *this;
 }
 
 template <typename CS>
-inline typename Powerset<CS>::const_iterator
-Powerset<CS>::const_iterator::operator--(int) {
-  const_iterator tmp = *this;
+inline typename Powerset<CS>::omega_const_iterator
+Powerset<CS>::omega_const_iterator::operator--(int) {
+  omega_const_iterator tmp = *this;
   operator--();
   return tmp;
 }
 
 template <typename CS>
 inline bool
-Powerset<CS>::const_iterator::operator==(const const_iterator& y) const {
+Powerset<CS>
+::omega_const_iterator::operator==(const omega_const_iterator& y) const {
   return base == y.base;
 }
 
 template <typename CS>
 inline bool
-Powerset<CS>::const_iterator::operator!=(const const_iterator& y) const {
+Powerset<CS>
+::omega_const_iterator::operator!=(const omega_const_iterator& y) const {
   return !operator==(y);
 }
 
 template <typename CS>
-inline 
-Powerset<CS>::const_iterator::const_iterator(const iterator& y)
+inline
+Powerset<CS>
+::omega_const_iterator::omega_const_iterator(const omega_iterator& y)
   : base(y.base) {
 }
 
-/*! \relates Powerset::const_iterator */
+/*! \relates Powerset::omega_const_iterator */
 template <typename CS>
 inline bool
-operator==(const typename Powerset<CS>::iterator& x,
-	   const typename Powerset<CS>::const_iterator& y) {
-  return Powerset<CS>::const_iterator(x).operator==(y);
+operator==(const typename Powerset<CS>::omega_iterator& x,
+	   const typename Powerset<CS>::omega_const_iterator& y) {
+  return Powerset<CS>::omega_const_iterator(x).operator==(y);
 }
 
-/*! \relates Powerset::const_iterator */
+/*! \relates Powerset::omega_const_iterator */
 template <typename CS>
 inline bool
-operator!=(const typename Powerset<CS>::iterator& x,
-	   const typename Powerset<CS>::const_iterator& y) {
+operator!=(const typename Powerset<CS>::omega_iterator& x,
+	   const typename Powerset<CS>::omega_const_iterator& y) {
   return !(x == y);
 }
 

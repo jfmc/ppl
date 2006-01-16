@@ -1,6 +1,6 @@
 /* Test Polyhedron::constraints(): we compute the system of constraints
    of a polyhedron that is declared empty.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,22 +23,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
 
   C_Polyhedron ph1(3, EMPTY);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
+
   C_Polyhedron known_result = ph1;
 
   Constraint_System cs = ph1.constraints();
@@ -46,9 +38,7 @@ main() TRY {
 
   int retval = (ph2 == known_result) ? 0 : 1;
 
-#if NOISY
   print_constraints(cs, "*** cs ***");
-#endif
 
   return retval;
 }

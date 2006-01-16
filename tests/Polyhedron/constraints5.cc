@@ -1,5 +1,5 @@
 /* Test Polyhedron::constraints().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -40,16 +33,12 @@ main() TRY {
   ph.add_constraint_and_minimize(A >= 0);
   ph.add_constraint(B >= 0);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   Constraint_System cs = ph.constraints();
   cs.insert(A >= B);
 
-#if NOISY
   print_constraints(cs, "*** cs ***");
-#endif
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);

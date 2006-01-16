@@ -74,9 +74,9 @@ PPL::Congruence::sign_normalize() {
     // negate all the coefficients and the inhomogeneous term.
     if (x[first_non_zero] < 0) {
       for (dimension_type j = first_non_zero; j < sz; ++j)
-	negate(x[j]);
+	neg_assign(x[j]);
       // Also negate the inhomogeneous term.
-      negate(x[0]);
+      neg_assign(x[0]);
     }
 }
 
@@ -161,7 +161,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {
 	  s << " + ";
 	else {
 	  s << " - ";
-	  negate(cv);
+	  neg_assign(cv);
 	}
       }
       else

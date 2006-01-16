@@ -1,5 +1,5 @@
 /* Specialized "checked" functions for native integer numbers.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -46,53 +46,33 @@ namespace Parma_Polyhedra_Library {
 namespace Checked {
 
 template <typename Policy, typename Type>
-inline Type
-plus_infinity_int() {
-  return Limits<Type>::max;
-}
-
-template <typename Policy, typename Type>
-inline Type
-minus_infinity_int() {
-  return Limits<Type>::min >= 0 ? Limits<Type>::max - 1 : Limits<Type>::min;
-}
-
-
-template <typename Policy, typename Type>
-inline Type
-not_a_number_int() {
-  return Limits<Type>::min >= 0
-	  ? Limits<Type>::max - Policy::store_infinity * 2
-	  : Limits<Type>::min + Policy::store_infinity;
-}
-
-template <typename Policy, typename Type>
-inline Type
-min_int() {
-  return Limits<Type>::min
-    + (Limits<Type>::min >= 0 ? 0
-       : (Policy::store_infinity + Policy::store_nan));
-}
-
-template <typename Policy, typename Type>
-inline Type
-max_int() {
-  return Limits<Type>::max
-    - (Limits<Type>::min >= 0
-       ? (2 * Policy::store_infinity + Policy::store_nan)
-       : Policy::store_infinity);
-}
+struct Extended_Int {
+  static const Type plus_infinity = Limits<Type>::max;
+  static const Type minus_infinity = (Limits<Type>::min >= 0
+				      ? Limits<Type>::max - 1
+				      : Limits<Type>::min);
+  static const Type not_a_number = (Limits<Type>::min >= 0
+				    ? Limits<Type>::max - Policy::store_infinity * 2
+				    : Limits<Type>::min + Policy::store_infinity);
+  static const Type min = (Limits<Type>::min
+			   + (Limits<Type>::min >= 0 ? 0
+			      : (Policy::store_infinity + Policy::store_nan)));
+  static const Type max = (Limits<Type>::max
+			   - (Limits<Type>::min >= 0
+			      ? (2 * Policy::store_infinity + Policy::store_nan)
+			      : Policy::store_infinity));
+};
 
 template <typename Policy, typename To>
 inline Result
 set_neg_overflow_int(To& to, Rounding_Dir dir) {
   if (dir == ROUND_UP) {
-    to = min_int<Policy, To>();
+    to = Extended_Int<Policy, To>::min;
     return V_LT;
   }
   else {
     if (Policy::store_infinity) {
-      to = minus_infinity_int<Policy, To>();
+      to = Extended_Int<Policy, To>::minus_infinity;
       return V_GT;
     }
     return V_NEG_OVERFLOW;
@@ -103,12 +83,12 @@ template <typename Policy, typename To>
 inline Result
 set_pos_overflow_int(To& to, Rounding_Dir dir) {
   if (dir == ROUND_DOWN) {
-    to = max_int<Policy, To>();
+    to = Extended_Int<Policy, To>::max;
     return V_GT;
   }
   else {
     if (Policy::store_infinity) {
-      to = plus_infinity_int<Policy, To>();
+      to = Extended_Int<Policy, To>::plus_infinity;
       return V_LT;
     }
     return V_POS_OVERFLOW;
@@ -139,9 +119,9 @@ template <typename Policy, typename To>
 inline Result
 round_lt_int(To& to, Rounding_Dir dir) {
   if (dir == ROUND_DOWN) {
-    if (to == min_int<Policy, To>()) {
+    if (to == Extended_Int<Policy, To>::min) {
       if (Policy::store_infinity) {
-	to = minus_infinity_int<Policy, To>();
+	to = Extended_Int<Policy, To>::minus_infinity;
 	return V_GT;
       }
       return V_NEG_OVERFLOW;
@@ -157,9 +137,9 @@ template <typename Policy, typename To>
 inline Result
 round_gt_int(To& to, Rounding_Dir dir) {
   if (dir == ROUND_UP) {
-    if (to == max_int<Policy, To>()) {
+    if (to == Extended_Int<Policy, To>::max) {
       if (Policy::store_infinity) {
-	to = plus_infinity_int<Policy, To>();
+	to = Extended_Int<Policy, To>::plus_infinity;
 	return V_LT;
       }
       return V_POS_OVERFLOW;
@@ -185,14 +165,14 @@ SPECIALIZE_COPY(generic, unsigned long long)
 template <typename Policy, typename Type>
 inline Result
 classify_int(const Type v, bool nan, bool inf, bool sign) {
-  if (Policy::store_nan && (nan || sign) && v == not_a_number_int<Policy, Type>())
+  if (Policy::store_nan && (nan || sign) && v == Extended_Int<Policy, Type>::not_a_number)
     return VC_NAN;
   if (!inf & !sign)
     return VC_NORMAL;
   if (Policy::store_infinity) {
-    if (v == minus_infinity_int<Policy, Type>())
+    if (v == Extended_Int<Policy, Type>::minus_infinity)
       return inf ? VC_MINUS_INFINITY : V_LT;
-    if (v == plus_infinity_int<Policy, Type>())
+    if (v == Extended_Int<Policy, Type>::plus_infinity)
       return inf ? VC_PLUS_INFINITY : V_GT;
   }
   if (sign) {
@@ -219,7 +199,7 @@ SPECIALIZE_CLASSIFY(int, unsigned long long)
 template <typename Policy, typename Type>
 inline bool
 is_nan_int(const Type v) {
-  return Policy::store_nan && v == not_a_number_int<Policy, Type>();
+  return Policy::store_nan && v == Extended_Int<Policy, Type>::not_a_number;
 }
 
 SPECIALIZE_IS_NAN(int, signed char)
@@ -236,7 +216,7 @@ SPECIALIZE_IS_NAN(int, unsigned long long)
 template <typename Policy, typename Type>
 inline bool
 is_minf_int(const Type v) {
-  return Policy::store_infinity && v == minus_infinity_int<Policy, Type>();
+  return Policy::store_infinity && v == Extended_Int<Policy, Type>::minus_infinity;
 }
 
 SPECIALIZE_IS_MINF(int, signed char)
@@ -253,7 +233,7 @@ SPECIALIZE_IS_MINF(int, unsigned long long)
 template <typename Policy, typename Type>
 inline bool
 is_pinf_int(const Type v) {
-  return Policy::store_infinity && v == plus_infinity_int<Policy, Type>();
+  return Policy::store_infinity && v == Extended_Int<Policy, Type>::plus_infinity;
 }
 
 SPECIALIZE_IS_PINF(int, signed char)
@@ -289,14 +269,14 @@ inline Result
 set_special_int(Type& v, Result r) {
   Result t = classify(r);
   if (Policy::store_nan && t == VC_NAN)
-    v = not_a_number_int<Policy, Type>();
+    v = Extended_Int<Policy, Type>::not_a_number;
   else if (Policy::store_infinity) {
     switch (t) {
     case VC_MINUS_INFINITY:
-      v = minus_infinity_int<Policy, Type>();
+      v = Extended_Int<Policy, Type>::minus_infinity;
       break;
     case VC_PLUS_INFINITY:
-      v = plus_infinity_int<Policy, Type>();
+      v = Extended_Int<Policy, Type>::plus_infinity;
       break;
     default:
       break;
@@ -320,9 +300,9 @@ template <typename Policy, typename To, typename From>
 inline Result
 assign_signed_int_signed_int(To& to, const From from, Rounding_Dir dir) {
   if (sizeof(To) <= sizeof(From)) {
-    if (CHECK_P(Policy::check_overflow, from < static_cast<From>(min_int<Policy, To>())))
+    if (CHECK_P(Policy::check_overflow, from < static_cast<From>(Extended_Int<Policy, To>::min)))
       return set_neg_overflow_int<Policy>(to, dir);
-    if (CHECK_P(Policy::check_overflow, from > static_cast<From>(max_int<Policy, To>())))
+    if (CHECK_P(Policy::check_overflow, from > static_cast<From>(Extended_Int<Policy, To>::max)))
       return set_pos_overflow_int<Policy>(to, dir);
   }
   to = To(from);
@@ -333,7 +313,7 @@ template <typename Policy, typename To, typename From>
 inline Result
 assign_signed_int_unsigned_int(To& to, const From from, Rounding_Dir dir) {
   if (sizeof(To) <= sizeof(From)) {
-    if (CHECK_P(Policy::check_overflow, from > static_cast<From>(max_int<Policy, To>())))
+    if (CHECK_P(Policy::check_overflow, from > static_cast<From>(Extended_Int<Policy, To>::max)))
       return set_pos_overflow_int<Policy>(to, dir);
   }
   to = To(from);
@@ -346,7 +326,7 @@ assign_unsigned_int_signed_int(To& to, const From from, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_overflow, from < 0))
     return set_neg_overflow_int<Policy>(to, dir);
   if (sizeof(To) < sizeof(From)) {
-    if (CHECK_P(Policy::check_overflow, from > static_cast<From>(max_int<Policy, To>())))
+    if (CHECK_P(Policy::check_overflow, from > static_cast<From>(Extended_Int<Policy, To>::max)))
       return set_pos_overflow_int<Policy>(to, dir);
   }
   to = To(from);
@@ -357,7 +337,7 @@ template <typename Policy, typename To, typename From>
 inline Result
 assign_unsigned_int_unsigned_int(To& to, const From from, Rounding_Dir dir) {
   if (sizeof(To) <= sizeof(From)) {
-    if (CHECK_P(Policy::check_overflow, from > static_cast<From>(max_int<Policy, To>())))
+    if (CHECK_P(Policy::check_overflow, from > static_cast<From>(Extended_Int<Policy, To>::max)))
       return set_pos_overflow_int<Policy>(to, dir);
   }
   to = To(from);
@@ -444,9 +424,9 @@ ASSIGN2_SIGNED_UNSIGNED(signed long long, unsigned long long)
 template <typename Policy, typename To, typename From>
 inline Result
 assign_int_float(To& to, const From from, Rounding_Dir dir) {
-  if (CHECK_P(Policy::check_overflow, (from < min_int<Policy, To>())))
+  if (CHECK_P(Policy::check_overflow, (from < Extended_Int<Policy, To>::min)))
     return set_neg_overflow_int<Policy>(to, dir);
-  if (CHECK_P(Policy::check_overflow, (from > max_int<Policy, To>())))
+  if (CHECK_P(Policy::check_overflow, (from > Extended_Int<Policy, To>::max)))
     return set_pos_overflow_int<Policy>(to, dir);
   to = static_cast<To>(from);
   if (dir == ROUND_IGNORE)
@@ -639,11 +619,11 @@ template <typename Policy, typename To>
 inline Result
 assign_int_minf(To& to, const Minus_Infinity&, Rounding_Dir dir) {
   if (Policy::store_infinity) {
-    to = minus_infinity_int<Policy, To>();
+    to = Extended_Int<Policy, To>::minus_infinity;
     return V_EQ;
   }
   if (dir == ROUND_UP) {
-    to = min_int<Policy, To>();
+    to = Extended_Int<Policy, To>::min;
     return V_LT;
   }
   return VC_MINUS_INFINITY;
@@ -653,11 +633,11 @@ template <typename Policy, typename To>
 inline Result
 assign_int_pinf(To& to, const Plus_Infinity&, Rounding_Dir dir) {
   if (Policy::store_infinity) {
-    to = plus_infinity_int<Policy, To>();
+    to = Extended_Int<Policy, To>::plus_infinity;
     return V_EQ;
   }
   if (dir == ROUND_DOWN) {
-    to = max_int<Policy, To>();
+    to = Extended_Int<Policy, To>::max;
     return V_GT;
   }
   return VC_PLUS_INFINITY;
@@ -667,7 +647,7 @@ template <typename Policy, typename To>
 inline Result
 assign_int_nan(To& to, const Not_A_Number&, Rounding_Dir) {
   if (Policy::store_nan) {
-    to = not_a_number_int<Policy, To>();
+    to = Extended_Int<Policy, To>::not_a_number;
     return V_EQ;
   }
   return VC_NAN;
@@ -905,7 +885,7 @@ inline Result
 neg_signed_int(Type& to, const Type from, Rounding_Dir dir) {
   if (Policy::check_overflow && Larger<Type>::use_for_neg)
     return neg_int_larger<Policy>(to, from, dir);
-  if (CHECK_P(Policy::check_overflow, (from < -max_int<Policy, Type>())))
+  if (CHECK_P(Policy::check_overflow, (from < -Extended_Int<Policy, Type>::max)))
     return set_pos_overflow_int<Policy>(to, dir);
   to = -from;
   return V_EQ;
@@ -929,10 +909,10 @@ add_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     return add_int_larger<Policy>(to, x, y, dir);
   if (Policy::check_overflow) {
     if (y >= 0) {
-      if (x > max_int<Policy, Type>() - y)
+      if (x > Extended_Int<Policy, Type>::max - y)
 	return set_pos_overflow_int<Policy>(to, dir);
     }
-    else if (x < min_int<Policy, Type>() - y)
+    else if (x < Extended_Int<Policy, Type>::min - y)
 	return set_neg_overflow_int<Policy>(to, dir);
   }
   to = x + y;
@@ -944,7 +924,7 @@ inline Result
 add_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (Policy::check_overflow && Larger<Type>::use_for_add)
     return add_int_larger<Policy>(to, x, y, dir);
-  if (CHECK_P(Policy::check_overflow, (x > max_int<Policy, Type>() - y)))
+  if (CHECK_P(Policy::check_overflow, (x > Extended_Int<Policy, Type>::max - y)))
     return set_pos_overflow_int<Policy>(to, dir);
   to = x + y;
   return V_EQ;
@@ -957,10 +937,10 @@ sub_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     return sub_int_larger<Policy>(to, x, y, dir);
   if (Policy::check_overflow) {
     if (y >= 0) {
-      if (x < min_int<Policy, Type>() + y)
+      if (x < Extended_Int<Policy, Type>::min + y)
 	return set_neg_overflow_int<Policy>(to, dir);
     }
-    else if (x > max_int<Policy, Type>() + y)
+    else if (x > Extended_Int<Policy, Type>::max + y)
 	return set_pos_overflow_int<Policy>(to, dir);
   }
   to = x - y;
@@ -972,7 +952,7 @@ inline Result
 sub_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (Policy::check_overflow && Larger<Type>::use_for_sub)
     return sub_int_larger<Policy>(to, x, y, dir);
-  if (CHECK_P(Policy::check_overflow, (x < min_int<Policy, Type>() + y)))
+  if (CHECK_P(Policy::check_overflow, (x < Extended_Int<Policy, Type>::min + y)))
     return set_neg_overflow_int<Policy>(to, dir);
   to = x - y;
   return V_EQ;
@@ -995,21 +975,21 @@ mul_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     return neg_signed_int<Policy>(to, x, dir);
   if (x >= 0) {
     if (y > 0) {
-      if (x > max_int<Policy, Type>() / y)
+      if (x > Extended_Int<Policy, Type>::max / y)
 	return set_pos_overflow_int<Policy>(to, dir);
     }
     else {
-      if (x > min_int<Policy, Type>() / y)
+      if (x > Extended_Int<Policy, Type>::min / y)
 	return set_neg_overflow_int<Policy>(to, dir);
     }
   }
   else {
     if (y < 0) {
-      if (x < max_int<Policy, Type>() / y)
+      if (x < Extended_Int<Policy, Type>::max / y)
 	return set_pos_overflow_int<Policy>(to, dir);
     }
     else {
-      if (x < min_int<Policy, Type>() / y)
+      if (x < Extended_Int<Policy, Type>::min / y)
 	return set_neg_overflow_int<Policy>(to, dir);
     }
   }
@@ -1030,7 +1010,7 @@ mul_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     to = 0;
     return V_EQ;
   }
-  if (x > max_int<Policy, Type>() / y)
+  if (x > Extended_Int<Policy, Type>::max / y)
     return set_pos_overflow_int<Policy>(to, dir);
   to = x * y;
   return V_EQ;
@@ -1165,7 +1145,7 @@ mul2exp_unsigned_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
   if (x & (((static_cast<Type>(1) << exp) - 1) << (sizeof(Type) * 8 - exp)))
     return set_pos_overflow_int<Policy>(to, dir);
   Type n = x << exp;
-  if (n > max_int<Policy, Type>())
+  if (n > Extended_Int<Policy, Type>::max)
     return set_pos_overflow_int<Policy>(to, dir);
   to = n;
   return V_EQ;
@@ -1196,14 +1176,14 @@ mul2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
     if ((x & mask) != mask)
       return set_neg_overflow_int<Policy>(to, dir);
     n = x << exp;
-    if (n < min_int<Policy, Type>())
+    if (n < Extended_Int<Policy, Type>::min)
       return set_neg_overflow_int<Policy>(to, dir);
   }
   else {
     if (x & mask)
       return set_pos_overflow_int<Policy>(to, dir);
     n = x << exp;
-    if (n > max_int<Policy, Type>())
+    if (n > Extended_Int<Policy, Type>::max)
       return set_pos_overflow_int<Policy>(to, dir);
   }
   to = n;

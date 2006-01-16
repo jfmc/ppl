@@ -33,6 +33,7 @@ namespace Parma_Polyhedra_Library {
 
 // Put these in the namespace here to declare them friend later.
 
+// FIX mv into class?
 //! Negate \p g from index \p start to index \p end.
 /*! \relates Parma_Polyhedra_Library::Grid_Generator */
 inline void

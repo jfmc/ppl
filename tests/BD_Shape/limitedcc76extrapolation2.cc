@@ -1,5 +1,5 @@
 /* Test BD_Shape::limited_CC76_extrapolation_assign().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
 void
@@ -37,10 +30,8 @@ test1() {
 
   TBD_Shape bd2(0);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
   TBD_Shape known_result(bd1);
 
@@ -48,10 +39,8 @@ test1() {
 
   bd1.limited_CC76_extrapolation_assign(bd2, cs);
 
-#if NOISY
   print_constraints(bd1,
 		    "*** bd1.limited_CC76_extrapolation_assign(bd2) ***");
-#endif
 
   bool ok = (bd1 == known_result);
 
@@ -75,20 +64,16 @@ test2() {
   cs.insert(A <= 0);
   cs.insert(A - B <= 6);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
   TBD_Shape known_result(bd1);
 
   bd1.limited_CC76_extrapolation_assign(bd2, cs);
 
-#if NOISY
   print_constraints(bd1,
 		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
-#endif
 
   bool ok = (bd1 == known_result);
 
@@ -111,20 +96,16 @@ test3() {
   cs.insert(A <= 0);
   cs.insert(A - B <= 6);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
   TBD_Shape known_result(2);
 
   bd1.limited_CC76_extrapolation_assign(bd2, cs);
 
-#if NOISY
   print_constraints(bd1,
 		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
-#endif
 
   bool ok = (bd1 == known_result);
 
@@ -150,11 +131,9 @@ test4() {
   cs.insert(A <= 5);
   cs.insert(A - B + C <= 6);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
   TBD_Shape known_result(3);
   known_result.add_constraint(A <= 5);
@@ -162,10 +141,8 @@ test4() {
 
   bd1.limited_CC76_extrapolation_assign(bd2, cs);
 
-#if NOISY
   print_constraints(bd1,
 		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
-#endif
 
   bool ok = (bd1 == known_result);
 
@@ -190,21 +167,17 @@ test5() {
   cs.insert(A >= 0);
   cs.insert(A + B <= 6);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
   TBD_Shape known_result(2);
   known_result.add_constraint(B >= 1);
 
   bd1.limited_CC76_extrapolation_assign(bd2, cs);
 
-#if NOISY
   print_constraints(bd1,
 		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
-#endif
 
   bool ok = (bd1 == known_result);
 
@@ -229,21 +202,17 @@ test6() {
   cs.insert(A >= 0);
   cs.insert(A - B <= 6);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
   TBD_Shape known_result(2);
   known_result.add_constraint(B >= 1);
 
   bd1.limited_CC76_extrapolation_assign(bd2, cs);
 
-#if NOISY
   print_constraints(bd1,
 		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
-#endif
 
   bool ok = (bd1 == known_result);
 
@@ -270,20 +239,16 @@ test7() {
   cs.insert(A >= 0);
   cs.insert(A - B <= 6);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
   TBD_Shape known_result(2, EMPTY);
 
   bd1.limited_CC76_extrapolation_assign(bd2, cs);
 
-#if NOISY
   print_constraints(bd1,
 		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
-#endif
 
   bool ok = (bd1 == known_result);
 
@@ -309,20 +274,16 @@ test8() {
   cs.insert(A >= 0);
   cs.insert(A - B <= 6);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
   TBD_Shape known_result(bd1);
 
   bd1.limited_CC76_extrapolation_assign(bd2, cs);
 
-#if NOISY
   print_constraints(bd1,
 		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
-#endif
 
   bool ok = (bd1 == known_result);
 
@@ -352,11 +313,9 @@ test9() {
   cs.insert(C - D == 5);
   cs.insert(A - B <= 6);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
   TBD_Shape known_result(4);
   known_result.add_constraint(A <= 4);
@@ -364,10 +323,8 @@ test9() {
 
   bd1.limited_CC76_extrapolation_assign(bd2, cs);
 
-#if NOISY
   print_constraints(bd1,
 		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
-#endif
 
   bool ok = (bd1 == known_result);
 
@@ -376,7 +333,6 @@ test9() {
 }
 
 } // namespace
-
 
 int
 main() TRY {

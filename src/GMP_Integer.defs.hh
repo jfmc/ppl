@@ -1,5 +1,5 @@
 /* GMP_Integer class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -60,17 +60,18 @@ memory_size_type external_memory_in_bytes(const GMP_Integer& x);
 
 //! Assigns to \p x its negation.
 /*! \relates GMP_Integer */
-void negate(GMP_Integer& x);
+void neg_assign(GMP_Integer& x);
 
-//! Assigns to \p x the greatest common divisor of \p x and \p y.
+//! Assigns to \p x the negation of \p y.
 /*! \relates GMP_Integer */
-void gcd_assign(GMP_Integer& x, const GMP_Integer& y);
+void neg_assign(GMP_Integer& x, const GMP_Integer& y);
 
 //! Assigns to \p x the greatest common divisor of \p y and \p z.
 /*! \relates GMP_Integer */
 void gcd_assign(GMP_Integer& x,
 		const GMP_Integer& y, const GMP_Integer& z);
 
+// FIX -
 //! Extended GCD which assigns to one of the input parameters.
 /*!
   Assigns to \p x the greatest common divisor of \p x and \p y, and to
@@ -108,27 +109,21 @@ void add_mul_assign(GMP_Integer& x,
 void sub_mul_assign(GMP_Integer& x,
 		    const GMP_Integer& y, const GMP_Integer& z);
 
-//! Assigns to \p x the quotient of the integer division of \p x by \p y.
-/*! \relates GMP_Integer */
-void exact_div_assign(GMP_Integer& x, const GMP_Integer& y);
-
 //! Assigns to \p x the quotient of the integer division of \p y by \p z.
 /*! \relates GMP_Integer */
 void exact_div_assign(GMP_Integer& x,
 		      const GMP_Integer& y, const GMP_Integer& z);
 
-//! Assigns to \p x its integer square root.
-/*! \relates GMP_Integer */
-void sqrt_assign(GMP_Integer& x);
-
 //! Assigns to \p x the integer square root of \p y.
 /*! \relates GMP_Integer */
 void sqrt_assign(GMP_Integer& x, const GMP_Integer& y);
 
-//! \brief
-//! Returns a negative, zero or positive value depending on whether
-//! \p x is lower than, equal to or greater than \p y, respectively.
-/*! \relates GMP_Integer */
+/*! \brief
+  Returns a negative, zero or positive value depending on whether
+  \p x is lower than, equal to or greater than \p y, respectively.
+
+  \relates GMP_Integer
+*/
 int cmp(const GMP_Integer& x, const GMP_Integer& y);
 
 //@} // Arithmetic Operators
@@ -139,6 +134,7 @@ int cmp(const GMP_Integer& x, const GMP_Integer& y);
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::GMP_Integer */
 void swap(Parma_Polyhedra_Library::GMP_Integer& x,
 	  Parma_Polyhedra_Library::GMP_Integer& y);
 

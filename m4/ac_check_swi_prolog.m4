@@ -1,5 +1,5 @@
 dnl A function to check for the existence and usability of SWI-Prolog.
-dnl Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -39,13 +39,27 @@ then
   swi_prolog_base=`$swi_prolog -dump-runtime-variables | grep PLBASE= | sed 's/PLBASE="\(.*\)";/\1/'`
   swi_prolog_version=`$swi_prolog -dump-runtime-variables | grep PLVERSION= | sed 's/PLVERSION="\(.*\)";/\1/'`
 
-  dnl Version checks should be inserted here, if necessary.
+  dnl Additional version checks could be inserted here, if necessary.
 
   SWI_PROLOG_INCLUDE_OPTIONS="-I${swi_prolog_base}/include"
   ac_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $SWI_PROLOG_INCLUDE_OPTIONS"
   AC_LANG_PUSH(C++)
-  AC_CHECK_HEADER(SWI-Prolog.h, [], swi_prolog="")
+  # We require SWI-Prolog 5.6.0 or later.
+  AC_CHECK_HEADER(SWI-Prolog.h,
+                  AC_MSG_CHECKING([for SWI-Prolog version 5.6.0 or later])
+                  AC_EGREP_CPP(yes,
+                    [
+                      #include <SWI-Prolog.h>
+                      #if PLVERSION >= 50600
+                      yes
+                      #endif
+                    ],
+                    AC_MSG_RESULT(yes),
+                    swi_prolog=""
+                    AC_MSG_RESULT(no)
+                  ),
+                  swi_prolog="")
   AC_LANG_POP(C++)
   CPPFLAGS="$ac_save_CPPFLAGS"
   AC_SUBST(SWI_PROLOG_INCLUDE_OPTIONS)

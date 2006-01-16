@@ -569,7 +569,7 @@ Grid::get_covering_box(Box& box) const {
       }
       for (dimension_type dim = 0; dim < num_dims; ++dim)
 	if (!interval_emptiness[dim])
-	  gcd_assign(interval_sizes[dim], gen[dim+1]);
+	  gcd_assign(interval_sizes[dim], interval_sizes[dim], gen[dim+1]);
     }
 
     // For each dimension set the lower bound of the interval to the
@@ -605,14 +605,14 @@ Grid::get_covering_box(Box& box) const {
 	// Reduce the bound fraction first.
 	bound = interval_sizes[dim] + lower_bound;
 	gcd_assign(gcd, bound, divisor);
-	exact_div_assign(bound, gcd);
+	exact_div_assign(bound, bound, gcd);
 	exact_div_assign(reduced_divisor, divisor, gcd);
 	new_box.lower_upper_bound(dim, true, bound, reduced_divisor);
       }
 
       // Reduce the bound fraction first.
       gcd_assign(gcd, lower_bound, divisor);
-      exact_div_assign(lower_bound, gcd);
+      exact_div_assign(lower_bound, lower_bound, gcd);
       exact_div_assign(reduced_divisor, divisor, gcd);
       new_box.raise_lower_bound(dim, true, lower_bound, reduced_divisor);
     }

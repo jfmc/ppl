@@ -1,5 +1,5 @@
 /* Polyhedra_Powerset class implementation: inline functions.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -744,10 +744,12 @@ Polyhedra_Powerset<PH>::ascii_dump(std::ostream& s) const {
   const Polyhedra_Powerset& x = *this;
   s << "size " << x.size()
     << "\nspace_dim " << x.space_dim
-    << std::endl;
+    << "\n";
   for (const_iterator xi = x.begin(), x_end = x.end(); xi != x_end; ++xi)
     xi->element().ascii_dump(s);
 }
+
+PPL_OUTPUT_TEMPLATE_DEFINITIONS(PH, Polyhedra_Powerset<PH>);
 
 template <typename PH>
 bool
@@ -814,11 +816,13 @@ Polyhedra_Powerset<PH>::OK() const {
   return x.Base::OK();
 }
 
-namespace {
+
+namespace Implementation {
+namespace Polyhedra_Powersets {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Partitions polyhedron \p qq according to constraint \p c.
-/*! \relates Polyhedra_Powerset
+/*! \relates Parma_Polyhedra_Library::Polyhedra_Powerset
   On exit, the intersection of \p qq and constraint \p c is stored
   in \p qq, whereas the intersection of \p qq with the negation of \p c
   is added as a new disjunct of the powerset \p r.
@@ -837,12 +841,16 @@ linear_partition_aux(const Constraint& c,
   qq.add_constraint(c);
 }
 
-} // namespace
+} // namespace Polyhedra_Powersets
+} // namespace Implementation
+
 
 /*! \relates Polyhedra_Powerset */
 template <typename PH>
 std::pair<PH, Polyhedra_Powerset<NNC_Polyhedron> >
 linear_partition(const PH& p, const PH& q) {
+  using Implementation::Polyhedra_Powersets::linear_partition_aux;
+
   Polyhedra_Powerset<NNC_Polyhedron> r(p.space_dimension(), EMPTY);
   PH qq = q;
   const Constraint_System& pcs = p.constraints();

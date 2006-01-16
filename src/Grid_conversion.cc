@@ -327,7 +327,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   Congruence& cg = dest[dest_num_rows - 1];
   modulus = cg[0];
   if (modulus < 0) {
-    negate(modulus);
+    neg_assign(modulus);
     cg[0] = modulus;
   }
   for (dimension_type row = 0; row < dest_num_rows; ++row) {
@@ -344,7 +344,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
     if (dim_kinds[dim] != CON_VIRTUAL) {
       Congruence& row = dest[i];
       if (row[dim] < 0)
-	negate(row, 0, dim);
+	row.negate(0, dim);
       // Factor the "diagonal" congruence out of the preceding rows.
       reduce_reduced<Congruence_System, Congruence>
 	(dest, dim, i++, 0, dim, dim_kinds, false);

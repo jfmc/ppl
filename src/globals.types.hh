@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is free software; as a special exception the author gives
 unlimited permission to copy and/or distribute it, with or without
@@ -54,22 +54,12 @@ enum Complexity_Class {
   ANY_COMPLEXITY
 };
 
-//! Possible optimization kinds.
-enum Optimization_Kind {
+//! Possible optimization modes.
+enum Optimization_Mode {
   //! Minimization is requested.
   MINIMIZATION,
   //! Maximiation is requested.
   MAXIMIZATION
-};
-
-//! Possible outcomes of a simplex solver.
-enum Simplex_Status {
-  //! The problem is unfeasible.
-  UNFEASIBLE_PROBLEM,
-  //! The problem is unbounded.
-  UNBOUNDED_PROBLEM,
-  //! The problem has been solved.
-  SOLVED_PROBLEM
 };
 
 } // namespace Parma_Polyhedra_Library

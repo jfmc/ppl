@@ -1,5 +1,5 @@
 /* Test Polyhedra_Powerset<PH>::BHZ03_widening_assign().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 #include <vector>
-
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -78,12 +71,10 @@ main() TRY {
   T2.add_disjunct(p3);
   T2.add_disjunct(p4);
 
-#if NOISY
   using namespace Parma_Polyhedra_Library::IO_Operators;
 
-  cout << "T1 = " << T1 << endl
+  nout << "T1 = " << T1 << endl
        << "T2 = " << T2 << endl;
-#endif
 
   PSet old_T2 = T2;
   T2.BHZ03_widening_assign<BHRZ03_Certificate>
@@ -97,10 +88,8 @@ main() TRY {
   PSet known_result = old_T2;
   known_result.add_disjunct(pd);
 
-#if NOISY
-  cout << "T2.BHZ03(T1, H79)" << " = " << T2 << endl;
-  cout << "known result" << " = " << known_result << endl;
-#endif
+  nout << "T2.BHZ03(T1, H79)" << " = " << T2 << endl;
+  nout << "known result" << " = " << known_result << endl;
 
   return
     (T2 == known_result

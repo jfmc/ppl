@@ -1,5 +1,5 @@
 /* Test Polyhedra_Powerset<PH>::BHZ03_widening_assign().
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,14 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-#include <vector>
-
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -68,19 +60,16 @@ main() TRY {
   Q.add_disjunct(q);
   Q.add_disjunct(s);
 
-#if NOISY
   using namespace Parma_Polyhedra_Library::IO_Operators;
 
-  cout << "P = " << P << endl
+  nout << "P = " << P << endl
        << "Q = " << Q << endl;
-#endif
 
   PSet old_P = P;
   P.BHZ03_widening_assign<H79_Certificate>
     (Q, widen_fun_ref(&TBD_Shape::H79_widening_assign));
-#if NOISY
-  cout << "P.BHZ03(Q, H79)" << " = " << P << endl;
-#endif
+
+  nout << "P.BHZ03(Q, H79)" << " = " << P << endl;
 
   return (P.geometrically_covers(old_P) && P.geometrically_covers(Q)) ? 0 : 1;
 }
