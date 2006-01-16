@@ -1,3 +1,53 @@
+2006-01-16 Monday 14:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.8): Release date decided.
+
+2006-01-16 Monday 02:10  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* ChangeLog, Makefile.am, NEWS, README, config.guess, config.sub,
+	  configure.ac, install-sh, ltmain.sh,
+	  src/Doubly_Linked_Object.defs.hh,
+	  src/Doubly_Linked_Object.inlines.hh,
+	  src/Doubly_Linked_Object.types.hh, src/EList.defs.hh,
+	  src/EList.inlines.hh, src/EList.types.hh,
+	  src/EList_Iterator.defs.hh, src/EList_Iterator.inlines.hh,
+	  src/EList_Iterator.types.hh, src/Handler.defs.hh,
+	  src/Handler.inlines.hh, src/Handler.types.hh, src/Makefile.am,
+	  src/Makefile.in, src/Pending_Element.cc,
+	  src/Pending_Element.defs.hh, src/Pending_Element.inlines.hh,
+	  src/Pending_Element.types.hh, src/Pending_List.cc,
+	  src/Pending_List.defs.hh, src/Pending_List.inlines.hh,
+	  src/Pending_List.types.hh, src/Time.cc, src/Time.defs.hh,
+	  src/Time.inlines.hh, src/Time.types.hh, src/Watchdog.cc,
+	  src/Watchdog.defs.hh, src/Watchdog.inlines.hh,
+	  src/Watchdog.types.hh, src/pwl_header.hh, utils/Makefile.am,
+	  utils/build_header.in
+	  (grids.[2,3,1,2,4,3,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,3,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,4,2]):
+	  Seventh (last but one?) merge of the main trunk to the grids
+	  branch.
+
+2006-01-14 Saturday 15:48  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* NEWS (1.7): Add detail to the 0.5 Time entry.
+
+2006-01-14 Saturday 15:37  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* NEWS (1.6): Update 0.8 entries from ChangeLog.
+
+2006-01-10 Tuesday 18:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.25), src/Makefile.am (1.5), utils/Makefile.am
+	  (1.6): Avoid providing default information that Automake does
+	  figure out by itself.
+
+2006-01-09 Monday 22:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.guess (1.19), config.sub (1.18): Updated.
+
+2006-01-09 Monday 21:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.13): Updated.
+
 2006-01-06 Friday 21:00  Enea Zaffanella <zaffanella@cs.unipr.it>
 
 	* ChangeLog, Makefile.am, README, config.guess, config.sub,
