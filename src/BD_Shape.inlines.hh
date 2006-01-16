@@ -1344,7 +1344,7 @@ BD_Shape<T>::is_shortest_path_reduced() const {
   // connected all the zero-equivalent variables between them.
   for (dimension_type i = 0; i <= x_space_dim; ++i) {
     bool jc_i = just_checked[i];
-    // We don't re-control the already considered single cycles.
+    // We do not re-check the already considered single cycles.
     if (!jc_i) {
       dimension_type v_con = var_conn[i];
       // We consider only the equivalence classes with
