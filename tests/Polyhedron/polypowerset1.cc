@@ -334,7 +334,7 @@ test15() {
   c_ps_expected.add_disjunct(C_Polyhedron(cs));
 
   bool ok = c_ps.definitely_entails(c_ps_expected);
-  bool ok1 = c_ps_expected.definitely_entails(c_ps);
+  bool ok1 = !c_ps_expected.definitely_entails(c_ps);
 
   if (!ok || !ok1)
     exit(1);
