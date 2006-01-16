@@ -138,23 +138,28 @@ public:
   virtual ~Throwable();
 };
 
-//! This pointer, which is initialized to zero, is repeatedly checked
-//! along any super-linear (i.e., computationally expensive) computation
-//! path in the library.
-//! When it is found nonzero the exception it points to is thrown.
-//! In other words, making this pointer point to an exception (and
-//! leaving it in this state) ensures that the library will return
-//! control to the client application, possibly by throwing the given
-//! exception, within a time that is a linear function of the size
-//! of the representation of the biggest object (powerset of polyhedra,
-//! polyhedron, system of constraints or generators) on which the library
-//! is operating upon.
-//! \note The only sensible way to assign to this pointer is from within
-//!       a signal handler or from a parallel thread.  For this reason,
-//!       the library, apart from ensuring that the pointer is initially
-//!       set to zero, never assigns to it.  In particular, it does not
-//!       zero it again when the exception is thrown: it is the client's
-//!       responsibility to do so.
+/*! \brief
+  A pointer to an exception object.
+
+  This pointer, which is initialized to zero, is repeatedly checked
+  along any super-linear (i.e., computationally expensive) computation
+  path in the library.
+  When it is found nonzero the exception it points to is thrown.
+  In other words, making this pointer point to an exception (and
+  leaving it in this state) ensures that the library will return
+  control to the client application, possibly by throwing the given
+  exception, within a time that is a linear function of the size
+  of the representation of the biggest object (powerset of polyhedra,
+  polyhedron, system of constraints or generators) on which the library
+  is operating upon.
+
+  \note
+  The only sensible way to assign to this pointer is from within a
+  signal handler or from a parallel thread.  For this reason, the
+  library, apart from ensuring that the pointer is initially set to zero,
+  never assigns to it.  In particular, it does not zero it again when
+  the exception is thrown: it is the client's responsibility to do so.
+*/
 extern const Throwable* volatile abandon_expensive_computations;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
