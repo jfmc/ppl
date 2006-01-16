@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! Rounding directions for arithmetic computations.
 enum Rounding_Dir {
   //! Round toward \f$-\infty\f$.
   ROUND_DOWN = FPU_DOWNWARD,
