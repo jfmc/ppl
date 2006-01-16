@@ -51,7 +51,7 @@ test2() {
   cs.insert(x < 1);
   nnc_ps.add_disjunct(NNC_Polyhedron(cs));
 
-  Polyhedra_Powerset<C_Polyhedron> c_ps(nnc_ps);  
+  Polyhedra_Powerset<C_Polyhedron> c_ps(nnc_ps);
 
   if (!c_ps.OK())
     exit(1);
@@ -74,7 +74,7 @@ test3() {
 
   c_ps.add_constraint(x == 1);
 
-  Polyhedra_Powerset<NNC_Polyhedron> nnc_ps(c_ps);  
+  Polyhedra_Powerset<NNC_Polyhedron> nnc_ps(c_ps);
 
   if (!nnc_ps.OK())
     exit(1);
@@ -100,6 +100,274 @@ test4() {
     exit(1);
 }
 
+void
+test5() {
+  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+
+  int ok = (c_ps.is_bottom()) ? 1 : 0;
+
+  c_ps.add_disjunct(C_Polyhedron(1, UNIVERSE));
+
+  int ok1 = (c_ps.is_top()) ? 1 : 0;
+
+  c_ps.total_memory_in_bytes();
+  c_ps.external_memory_in_bytes();
+
+  if (!ok || !ok1)
+    exit(1);
+}
+
+void
+test6() {
+  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Constraint_System cs;
+
+  cs.insert(x >= 0);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  cs.insert(x <= 2);
+
+  Polyhedra_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+  c_ps1.add_disjunct(C_Polyhedron(cs));
+
+  int ok = (c_ps1.definitely_entails(c_ps)) ? 1 : 0;
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test7() {
+  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Constraint_System cs;
+
+  cs.insert(x >= 0);
+  cs.insert(x <= 2);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  cs.clear();
+  cs.insert(x >= 1);
+  cs.insert(x <= 3);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  int ok = (c_ps.size() == 2) ? 1 : 0;
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test8() {
+  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Constraint_System cs;
+
+  cs.insert(x >= 0);
+  cs.insert(x <= 2);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  cs.clear();
+  cs.insert(x >= 0);
+  cs.insert(x <= 3);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+  c_ps.omega_reduce();
+
+  int ok = (c_ps.size() == 1) ? 1 : 0;
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test9() {
+  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Constraint_System cs;
+  int ok = (c_ps.space_dimension() == 1) ? 0 : 1;
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test10() {
+  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Constraint_System cs;
+
+  cs.insert(x >= 0);
+  cs.insert(x <= 2);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+  c_ps.drop_disjunct(c_ps.begin());
+
+  int ok = (c_ps.empty()) ? 1 : 0;
+
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  cs.insert(x >= 0);
+  cs.insert(x <= 3);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+  c_ps.drop_disjuncts(c_ps.begin(), c_ps.end());
+
+  int ok1 = (c_ps.empty()) ? 1 : 0;
+
+  if (!ok || !ok1)
+    exit(1);
+}
+
+void
+test11() {
+  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Constraint_System cs;
+
+  cs.insert(x >= 0);
+  cs.insert(x <= 2);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  Polyhedra_Powerset<C_Polyhedron> c_ps1;
+  c_ps1 = c_ps;
+
+  int ok = (!c_ps.empty()) ? 1 : 0;
+
+  if (ok)
+    exit(1);
+}
+
+void
+test12() {
+  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Constraint_System cs;
+
+  cs.insert(x >= 0);
+  cs.insert(x <= 2);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  Polyhedra_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+  c_ps.swap(c_ps1);
+
+  int ok = (c_ps1.empty() && !c_ps.empty()) ? 1 : 0;
+
+  if (ok)
+    exit(1);
+}
+
+void
+test13() {
+  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Constraint_System cs;
+
+  cs.insert(x >= 0);
+  cs.insert(x <= 2);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  cs.clear();
+  cs.insert(x >= 1);
+  cs.insert(x <= 3);
+
+  Polyhedra_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+  c_ps.least_upper_bound_assign(c_ps1);
+
+  cs.clear();
+  cs.insert(x >= 0);
+  cs.insert(x <= 3);
+
+  Polyhedra_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
+  c_ps_expected.add_disjunct(C_Polyhedron(cs));
+
+  int ok = (c_ps.definitely_entails(c_ps_expected)) ? 1 : 0;
+  int ok1 = (c_ps_expected.definitely_entails(c_ps)) ? 1 : 0;
+
+  if (!ok || !ok1)
+    exit(1);
+}
+
+void
+test14() {
+  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Constraint_System cs;
+
+  cs.insert(x >= 0);
+  cs.insert(x <= 2);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  cs.clear();
+  cs.insert(x >= 1);
+  cs.insert(x <= 3);
+
+  Polyhedra_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+  c_ps.upper_bound_assign(c_ps1);
+
+  cs.clear();
+  cs.insert(x >= 0);
+  cs.insert(x <= 3);
+
+  Polyhedra_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
+  c_ps_expected.add_disjunct(C_Polyhedron(cs));
+
+  int ok = (c_ps.definitely_entails(c_ps_expected)) ? 1 : 0;
+  int ok1 = (c_ps_expected.definitely_entails(c_ps)) ? 1 : 0;
+
+  if (!ok || !ok1)
+    exit(1);
+}
+
+void
+test15() {
+  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Constraint_System cs;
+
+  cs.insert(x >= 0);
+  cs.insert(x <= 2);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  Polyhedra_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+
+  cs.clear();
+  cs.insert(x >= 1);
+  cs.insert(x <= 3);
+
+  c_ps.meet_assign(c_ps1);
+
+  cs.clear();
+  cs.insert(x >= 1);
+  cs.insert(x <= 2);
+  Polyhedra_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
+  c_ps_expected.add_disjunct(C_Polyhedron(cs));
+
+  int ok = (c_ps.definitely_entails(c_ps_expected)) ? 1 : 0;
+  int ok1 = (c_ps_expected.definitely_entails(c_ps)) ? 1 : 0;
+
+  if (!ok || !ok1)
+    exit(1);
+}
+
+void
+test16() {
+  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Constraint_System cs;
+
+  cs.insert(x >= 0);
+  cs.insert(x <= 2);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  cs.clear();
+  cs.insert(x >= 1);
+  cs.insert(x <= 3);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  c_ps.collapse();
+
+  cs.clear();
+  cs.insert(x >= 0);
+  cs.insert(x <= 3);
+  Polyhedra_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
+  c_ps_expected.add_disjunct(C_Polyhedron(cs));
+
+  int ok = (c_ps.definitely_entails(c_ps_expected)) ? 1 : 0;
+  int ok1 = (c_ps_expected.definitely_entails(c_ps)) ? 1 : 0;
+  int ok2 = (c_ps.size() == 1) ? 1 : 0;
+
+  if (!ok || !ok1 || !ok2)
+    exit(1);
+}
+
 } // namespace
 
 int main() TRY {
@@ -109,6 +377,18 @@ int main() TRY {
   test2();
   test3();
   test4();
+  test5();
+  test6();
+  test7();
+  test8();
+  test9();
+  test10();
+  test11();
+  test12();
+  test13();
+  test14();
+  test15();
+  test16();
 
   return 0;
 }
