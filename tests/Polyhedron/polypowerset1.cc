@@ -262,17 +262,18 @@ test13() {
   cs.insert(x <= 3);
 
   Polyhedra_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+  c_ps1.add_disjunct(C_Polyhedron(cs));
   c_ps.least_upper_bound_assign(c_ps1);
 
   cs.clear();
   cs.insert(x >= 0);
   cs.insert(x <= 3);
 
-  Polyhedra_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
-  c_ps_expected.add_disjunct(C_Polyhedron(cs));
+  Polyhedra_Powerset<C_Polyhedron> c_ps2(1, EMPTY);
+  c_ps2.add_disjunct(C_Polyhedron(cs));
 
-  bool ok = c_ps.definitely_entails(c_ps_expected);
-  bool ok1 = c_ps_expected.definitely_entails(c_ps);
+  bool ok = c_ps.definitely_entails(c_ps2);
+  bool ok1 = !c_ps2.definitely_entails(c_ps);
 
   if (!ok || !ok1)
     exit(1);
