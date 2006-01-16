@@ -14,7 +14,7 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename CS>
+template <typename D>
 class Powerset;
 
 } // namespace Parma_Polyhedra_Library
