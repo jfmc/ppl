@@ -30,7 +30,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace std {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specialization of std::numeric_limits.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <>
 class numeric_limits<mpz_class> {
 private:
@@ -89,7 +91,9 @@ public:
   }
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specialization of std::numeric_limits.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <>
 class numeric_limits<mpq_class> {
 private:
