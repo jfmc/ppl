@@ -80,11 +80,13 @@ public:
   //! Assignment operator.
   Matrix& operator=(const Matrix& y);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! An iterator over a matrix.
   /*!
     A const_iterator is used to provide read-only access
     to each row contained in a Matrix object.
   */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   class const_iterator {
   private:
     typedef std::vector<Row>::const_iterator Iter;
