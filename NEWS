@@ -11,7 +11,7 @@ New and Changed Features
 ========================
 
 o  The class template BD_Shape<T> provides an implementation of the
-   abstract domain of Bounded Difference shapes. The template type
+   abstract domain of bounded difference shapes. The template type
    parameter T specifies the basic type used for the inhomogeneous term
    of bounded difference constraints; it can be instantiated to either
    GMP's unbounded precision types (mpq_class, mpz_class), native
@@ -21,10 +21,10 @@ o  The class template BD_Shape<T> provides an implementation of the
 o  New class LP_Problem provides an implementation of the
    primal simplex algorithm using exact arithmetic.
 
-o  The new program ppl-config returns information about the
+o  The new program `ppl-config' returns information about the
    configuration and the installed components of the PPL.
    This greatly simplifies the task of writing makefiles and
-   automatic configuration scripts.  A manual page for ppl-config
+   automatic configuration scripts.  A manual page for `ppl-config'
    has also been added.
 
 o  New Autoconf function
