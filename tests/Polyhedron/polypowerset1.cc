@@ -242,7 +242,7 @@ test12() {
   Polyhedra_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
   c_ps.swap(c_ps1);
 
-  bool ok = (c_ps1.empty() && !c_ps.empty());
+  bool ok = (c_ps.empty() && !c_ps1.empty());
 
   if (!ok)
     exit(1);
