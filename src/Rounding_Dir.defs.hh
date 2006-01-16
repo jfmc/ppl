@@ -30,17 +30,25 @@ namespace Parma_Polyhedra_Library {
 
 //! Rounding directions for arithmetic computations.
 enum Rounding_Dir {
-  //! Round toward \f$-\infty\f$.
+  /*! \hideinitializer
+    Round toward \f$-\infty\f$.
+  */
   ROUND_DOWN = FPU_DOWNWARD,
 
-  //! Round toward \f$+\infty\f$.
+  /*! \hideinitializer
+    Round toward \f$+\infty\f$.
+  */
   ROUND_UP = FPU_UPWARD,
 
-  //! Rounding is delegated to lower level. Result info is evaluated lazily.
+  /*! \hideinitializer
+    Rounding is delegated to lower level. Result info is evaluated lazily.
+  */
   ROUND_IGNORE = -1,
   ROUND_NATIVE = ROUND_IGNORE,
 
-  //! Rounding is not needed: client code must ensure the operation is exact.
+  /*! \hideinitializer
+    Rounding is not needed: client code must ensure the operation is exact.
+  */
   ROUND_NOT_NEEDED = -2,
 
   ROUND_DIRECT = ROUND_UP,
