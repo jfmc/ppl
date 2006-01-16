@@ -37,7 +37,7 @@ o  New Autoconf function
 
      AM_PATH_PPL(0.8)
 
-   to an application's configure.ac file is all what is needed in most
+   to an application's configure.ac file is all that is needed in most
    cases.  Paths to the installed version of the PPL will be detected,
    the version number will be checked to be at least the one
    indicated, the variables PPL_CPPFLAGS and PPL_LDFLAGS will be set
@@ -299,7 +299,7 @@ o  The new class BD_Shape<T> as well as the "checked" native
    A complete set of arithmetic functions and operators are provided:
    they either use the default rounding mode or accept it as an extra
    parameter and, depending on the policy, may return a result that
-   indicates what is the relation between the true mathematical result
+   indicates what the relation is between the true mathematical result
    and the (possibly approximated) result computed by the function.
    Input/output functions with the same properties (controlled
    rounding and precise indication of the approximation happened in
