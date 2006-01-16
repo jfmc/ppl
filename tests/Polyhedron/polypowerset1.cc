@@ -190,15 +190,16 @@ void
 test10() {
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
-
   cs.insert(x >= 0);
   cs.insert(x <= 2);
+  Constraint_System cs1 = cs;
   c_ps.add_disjunct(C_Polyhedron(cs));
   c_ps.drop_disjunct(c_ps.begin());
 
   bool ok = c_ps.empty();
 
-  c_ps.add_disjunct(C_Polyhedron(cs));
+  Constraint_System cs2 = cs1;
+  c_ps.add_disjunct(C_Polyhedron(cs1));
 
   cs.insert(x >= 0);
   cs.insert(x <= 3);
