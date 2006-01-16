@@ -244,7 +244,7 @@ test12() {
 
   bool ok = (c_ps1.empty() && !c_ps.empty());
 
-  if (ok)
+  if (!ok)
     exit(1);
 }
 
