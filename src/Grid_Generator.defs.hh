@@ -33,12 +33,6 @@ namespace Parma_Polyhedra_Library {
 
 // Put these in the namespace here to declare them friend later.
 
-// FIX mv into class?
-//! Negate \p g from index \p start to index \p end.
-/*! \relates Parma_Polyhedra_Library::Grid_Generator */
-inline void
-negate(Grid_Generator& g, dimension_type start, dimension_type end);
-
 namespace IO_Operators {
 
 //! Output operator.
@@ -395,6 +389,9 @@ private:
   //! Returns the actual size of \p this.
   dimension_type size() const;
 
+  //! Negates the elements from index \p start to index \p end.
+  void negate(dimension_type start, dimension_type end);
+
   //! Returns the divisor of \p *this.
   /*!
     \exception std::invalid_argument
@@ -434,11 +431,9 @@ private:
 
   friend std::ostream&
   IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g);
-  friend void Parma_Polyhedra_Library::negate(Grid_Generator&,
-					      dimension_type,
-					      dimension_type);
-  // FIXME: The following friend declaration is for operator[] and
-  //        divisor() access in Grid::conversion and Grid::simplify.
+  // FIXME: The following friend declaration is for operator[],
+  //        divisor() and negate() access in Grid::conversion and
+  //        Grid::simplify.
   friend class Grid;
 
   friend class Grid_Generator_System;

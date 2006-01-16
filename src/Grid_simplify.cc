@@ -417,7 +417,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 #ifdef STRONG_REDUCTION
       // Ensure a positive follows the leading zeros.
       if (pivot[dim] < 0)
-	negate(pivot, dim, num_cols - 1);
+	pivot.negate(dim, num_cols - 1);
       TRACE(cerr << "  rr pivot_index " << pivot_index << endl);
       TRACE(sys.ascii_dump(cerr));
       // Factor this row out of the preceding rows.

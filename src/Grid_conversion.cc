@@ -530,7 +530,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     if (dim_kinds[dim] != GEN_VIRTUAL) {
       Grid_Generator& row = dest[i];
       if (row[dim] < 0)
-	negate(row, dim, dims - 1);
+	row.negate(dim, dims - 1);
       // Factor the "diagonal" generator out of the preceding rows.
       reduce_reduced<Grid_Generator_System, Grid_Generator>
 	(dest, dim, i++, dim, dims - 1, dim_kinds);

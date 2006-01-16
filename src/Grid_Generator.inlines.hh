@@ -27,13 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-// FIX
-inline void
-negate(Grid_Generator& g, dimension_type start, dimension_type end) {
-  while (start <= end)
-    neg_assign(g[start++]);
-}
-
 inline
 Grid_Generator::Grid_Generator(Generator g)
   : Generator(Generator::point()) {
@@ -106,6 +99,12 @@ inline Grid_Generator&
 Grid_Generator::operator=(const Generator& g) {
   Generator::operator=(g);
   return *this;
+}
+
+inline void
+Grid_Generator::negate(dimension_type start, dimension_type end) {
+  while (start <= end)
+    neg_assign(operator[](start++));
 }
 
 inline Coefficient&
