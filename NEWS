@@ -16,6 +16,30 @@ o  The new program ppl-config returns information about the
    automatic configuration scripts.  A manual page for ppl-config
    has also been added.
 
+o  New Autoconf function
+
+     AM_PATH_PPL([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
+
+   allows to test the existence and usability of particular versions of the
+   PPL, defining macros containing the required paths.  The simple addition
+   of, e.g.,
+
+     AM_PATH_PPL(0.8)
+
+   to an application's configure.ac file is all what is needed in most
+   cases.  Paths to the installed version of the PPL will be detected,
+   the version number will be checked to be at least the one
+   indicated, the variables PPL_CPPFLAGS and PPL_LDFLAGS will be set
+   accordingly and a quick sanity check of the PPL installation will
+   be performed.  For more complex tasks, the AM_PATH_PPL function
+   defines the --with-ppl-prefix and --with-ppl-exec-prefix configure
+   options (useful when the PPL is installed into a non-standard place
+   or when multiple versions of the PPL are installed).  AM_PATH_PPL
+   also defines the --disable-ppltest configure option to disable the
+   quick sanity check.  When something fails, AM_PATH_PPL provides
+   accurate indications about what went wrong and how to fix it.
+   See the sources in m4/ppl.m4 for more information.
+
 o  In classes Poly_Con_Relation and Poly_Gen_Relation the methods
 
      void ascii_dump(std::ostream& s) const
