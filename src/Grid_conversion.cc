@@ -189,7 +189,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	// Dimension `dim' has a parameter row at `source_num_rows' in
 	// `source', so include in `diagonal_lcm' the `dim'th element
 	// of that row.
-	lcm_assign(diagonal_lcm, source[source_num_rows][dim]);
+	lcm_assign(diagonal_lcm, diagonal_lcm, source[source_num_rows][dim]);
 	// Parameters map to proper congruences.
 	++dest_num_rows;
       }
@@ -388,7 +388,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	// Dimension `dim' has a proper congruence row at
 	// `source_num_rows' in `source', so include in `diagonal_lcm'
 	// the `dim'th element of that row.
-	lcm_assign(diagonal_lcm, source[source_num_rows][dim]);
+	lcm_assign(diagonal_lcm, diagonal_lcm, source[source_num_rows][dim]);
 	// Proper congruences map to parameters.
 	++dest_num_rows;
       }

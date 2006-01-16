@@ -447,7 +447,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
     dimension_type num_rows = sys.num_rows();
 
     if (first_point)
-      lcm_assign(lcm, (*first_point).divisor());
+      lcm_assign(lcm, lcm, (*first_point).divisor());
     else {
       // Move to the first point or parameter.
       while (sys[row].is_line())
@@ -460,7 +460,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
       while (row < num_rows) {
 	Grid_Generator& g = sys[row];
 	if (g.is_parameter_or_point())
-	  lcm_assign(lcm, g.divisor());
+	  lcm_assign(lcm, lcm, g.divisor());
 	++row;
       }
     }

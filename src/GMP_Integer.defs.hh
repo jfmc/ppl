@@ -80,10 +80,6 @@ void gcdext_assign(GMP_Integer& x,
 		   const GMP_Integer& y, const GMP_Integer& z,
 		   GMP_Integer& s, GMP_Integer& t);
 
-//! Assigns to \p x the least common multiple of \p x and \p y.
-/*! \relates GMP_Integer */
-void lcm_assign(GMP_Integer& x, const GMP_Integer& y);
-
 //! Assigns to \p x the least common multiple of \p y and \p z.
 /*! \relates GMP_Integer */
 void lcm_assign(GMP_Integer& x,

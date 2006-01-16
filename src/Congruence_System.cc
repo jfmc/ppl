@@ -151,7 +151,7 @@ PPL::Congruence_System::normalize_moduli() {
       TEMP_INTEGER(modulus);
       modulus = operator[](--row).modulus();
       if (modulus > 0)
-	lcm_assign(lcm, modulus);
+	lcm_assign(lcm, lcm, modulus);
     }
 
     // Represent every row using the LCM as the modulus.

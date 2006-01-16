@@ -646,12 +646,6 @@ gcdext_assign(Checked_Number<T, Policy>& x,
 	      Checked_Number<T, Policy>& s,
 	      Checked_Number<T, Policy>& t);
 
-//! Assigns to \p x the least common multiple of \p x and \p y.
-/*! \relates Checked_Number */
-template <typename T, typename Policy>
-void
-lcm_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
-
 //! Assigns to \p x the least common multiple of \p y and \p z.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>

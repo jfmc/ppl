@@ -50,11 +50,6 @@ gcdext_assign(GMP_Integer& x,
 }
 
 inline void
-lcm_assign(GMP_Integer& x, const GMP_Integer& y) {
-  mpz_lcm(x.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
-}
-
-inline void
 lcm_assign(GMP_Integer& x, const GMP_Integer& y, const GMP_Integer& z) {
   mpz_lcm(x.get_mpz_t(), y.get_mpz_t(), z.get_mpz_t());
 }
