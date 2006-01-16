@@ -58,6 +58,12 @@ namespace IO_Operators {
 } // namespace IO_Operators
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Types and functions implementing checked numbers.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+namespace Checked {
+} // namespace Checked
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Implementation related data and functions.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 namespace Implementation {
@@ -72,10 +78,17 @@ namespace Implementation {
   The Parma Polyhedra Library conforms to the C++ standard and,
   in particular, as far as reserved names are concerned (17.4.3.1,
   [lib.reserved.names]).  The PPL, however, defines several
-  template specializations for the standard library template functions
+  template specializations for the standard library function templates
   <CODE>swap()</CODE> and <CODE>iter_swap()</CODE> (25.2.2, [lib.alg.swap]),
-  and for the template class <CODE>numeric_limits</CODE>
+  and for the class template <CODE>numeric_limits</CODE>
   (18.2.1, [lib.limits]).
+
+  \note
+  The PPL provides the specializations of the class template
+  <CODE>numeric_limits</CODE> not only for PPL-specific numeric types,
+  but also for the GMP types <CODE>mpz_class</CODE> and
+  <CODE>mpq_class</CODE>. These specializations will be removed
+  as soon as they will be provided by the C++ interface of GMP.
 */
 namespace std {
 } // namespace std
