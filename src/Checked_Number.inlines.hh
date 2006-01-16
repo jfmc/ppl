@@ -482,7 +482,7 @@ name(Checked_Number<To, To_Policy>& to,					\
      s.raw_value(), t.raw_value(), dir);				\
 }
 
-FUNC4(assign_gcdext, gcdext_ext)
+FUNC4(gcdext_assign_r, gcdext_ext)
 
 #undef FUNC4
 
@@ -723,14 +723,6 @@ f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, const Checke
   Policy::handle_result(fun(x, y, z, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
-#define DEF_ASSIGN_FUN5_4(f, fun)					\
-template <typename T, typename Policy>					\
-inline void								\
-f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y,	\
-  Checked_Number<T, Policy>& s, Checked_Number<T, Policy>& t) {		\
-  Policy::handle_result(fun(x, x, y, s, t, Policy::ROUND_DEFAULT_FUNCTION)); \
-}
-
 #define DEF_ASSIGN_FUN5_5(f, fun)					\
 template <typename T, typename Policy>					\
 inline void								\
@@ -753,9 +745,7 @@ DEF_ASSIGN_FUN3_3(sub_mul_assign, sub_mul_assign_r)
 
 DEF_ASSIGN_FUN3_3(gcd_assign, gcd_assign_r)
 
-// FIX gcdext_assign_r
-DEF_ASSIGN_FUN5_4(gcdext_assign, assign_gcdext)
-DEF_ASSIGN_FUN5_5(gcdext_assign, assign_gcdext)
+DEF_ASSIGN_FUN5_5(gcdext_assign, gcdext_assign_r)
 
 DEF_ASSIGN_FUN3_3(lcm_assign, lcm_assign_r)
 

@@ -71,16 +71,6 @@ void neg_assign(GMP_Integer& x, const GMP_Integer& y);
 void gcd_assign(GMP_Integer& x,
 		const GMP_Integer& y, const GMP_Integer& z);
 
-// FIX -
-//! Extended GCD which assigns to one of the input parameters.
-/*!
-  Assigns to \p x the greatest common divisor of \p x and \p y, and to
-  \p s and \p t the values such that
-  \p x (before) * \p s + \p y * \p t = \p x (after).
-*/
-void gcdext_assign(GMP_Integer& x, const GMP_Integer& y,
-		   GMP_Integer& s, GMP_Integer& t);
-
 //! Extended GCD.
 /*!
   Assigns to \p x the greatest common divisor of \p y and \p z, and to
