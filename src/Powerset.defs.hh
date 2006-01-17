@@ -106,7 +106,7 @@ drop_subsumed(Powerset<D>& ps, const D& d) {
   Returns <CODE>true</CODE> if the instance of D definitely entails
   <CODE>y</CODE>.  Returns <CODE>false</CODE> if the instance may not
   entail <CODE>y</CODE> (i.e., if the instance does not entail
-  <CODE>y<CODE> or if entailment could not be decided).
+  <CODE>y</CODE> or if entailment could not be decided).
   \code
     void upper_bound_assign(const D& y)
   \endcode
@@ -115,12 +115,12 @@ drop_subsumed(Powerset<D>& ps, const D& d) {
   \code
     void meet_assign(const D& y)
   \endcode
-  Assigns to the instance of D the meet the instance and
+  Assigns to the instance of D the meet of the instance and
   <CODE>y</CODE>.
   \code
     bool OK() const
   \endcode
-  Returns <CODE>true</CODE> if the instance of D is in a consitent
+  Returns <CODE>true</CODE> if the instance of D is in a consistent
   state, else returns <CODE>false</CODE>.
 
   The following operators on the template class D must be defined.
