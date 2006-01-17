@@ -30,8 +30,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-// Turn token S into a string: stringify(x + y) => "x + y".
-#define stringify(s) #s
+// Turn s into a string: PPL_TEST_STR(x + y) => "x + y".
+#define PPL_TEST_STR(s) #s
+
+// Turn the expansion of s into a string: PPL_TEST_XSTR(x) => "s expanded".
+#define PPL_TEST_XSTR(s) PPL_TEST_STR(s)
 
 // These using directive and declaration are just to avoid the
 // corresponding namespace qualifications in all the tests.

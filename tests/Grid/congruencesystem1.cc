@@ -113,10 +113,12 @@ test3() {
 
 #define SPACE_DIM 8
 
+#if 0 // FIX
   if (cgs0.space_dimension() == SPACE_DIM)
     return;
+#endif
 
-  nout << "Space dimension of cgs0 should have been " stringify(SPACE_DIM) "."
+  nout << "Space dimension of cgs0 should have been " PPL_TEST_XSTR(SPACE_DIM) "."
        << endl;
   exit(1);
 }
@@ -196,7 +198,8 @@ test6() {
 
   dimension_type tem = cgs0.num_equalities();
   if (tem != NUM_EQS) {
-    nout << "cgs0 should have had " stringify(NUM_EQS) " equalities (instead of "
+    nout << "cgs0 should have had " PPL_TEST_XSTR(NUM_EQS)
+	 << " equalities (instead of "
 	 << tem << ")." << endl;
     exit(1);
   }
@@ -207,7 +210,8 @@ test6() {
   if (tem == NUM_PRPR_CGS)
     return;
 
-  nout << "cgs0 should have had " stringify(NUM_PRPR_CGS) " \"non-equalities\" (instead of "
+  nout << "cgs0 should have had " PPL_TEST_XSTR(NUM_PRPR_CGS)
+       << " \"non-equalities\" (instead of "
        << tem << ")." << endl;
 
   exit(1);
