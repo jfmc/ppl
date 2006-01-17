@@ -134,6 +134,11 @@ drop_subsumed(Powerset<D>& ps, const D& d) {
   \endcode
   Returns <CODE>true</CODE> if and only if <CODE>x</CODE> and
   <CODE>y</CODE> are equivalent D's.
+  \code
+    operator!=(const D& x, const D& y)
+  \endcode
+  Returns <CODE>true</CODE> if and only if <CODE>x</CODE> and
+  <CODE>y</CODE> are different D's.
 */
 template <typename D>
 class Parma_Polyhedra_Library::Powerset {
