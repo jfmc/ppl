@@ -61,54 +61,25 @@ unsigned long num_iterations = 0;
 } // namespace
 #endif // PPL_NOISY_SIMPLEX
 
-// FIXME: pass new_constraint by const&
 bool
-PPL::LP_Problem::incrementality(Constraint new_constraint) {
+PPL::LP_Problem::incrementality(const Constraint& new_constraint) {
   // If the new constraint has a space dimension greater than the original one,
-  // we have to perform some changes to the tableau to match and map the
-  // old and new variables.
+  // we have to perform some changes to the tableau.
   dimension_type new_c_sd = new_constraint.space_dimension();
   dimension_type input_cs_sd = input_cs.space_dimension();
   if (new_c_sd > input_cs_sd) {
     dimension_type space_diff = new_c_sd - input_cs_sd;
-
-    // Now expand the tableau to insert the variables of the original problem.
-    tableau.add_zero_columns(space_diff);
-    for (dimension_type i = space_diff; i-- > 0; )
+    const dimension_type first_free_tableau_index = tableau.num_columns()-2;
+    // Every new variable must be inserted in the tableau and split.
+    tableau.add_zero_columns(2*space_diff);
+    for (dimension_type i = 0; i < space_diff; ++i) {
+      // Set `mapping' properly to store that every variable is split.
+      mapping.push_back(std::make_pair(first_free_tableau_index+i,
+				       first_free_tableau_index+i+space_diff));
+      // These are not artificial variables.
       is_artificial.push_back(false);
-    // FIXME: perform a single permutation.
-    // Permute `space_diff' times the columns to restore our simplex tableau
-    // implementation: the left part of the tableau must contain only
-    // variables that belong to the original problem.
-    std::vector<dimension_type> var_cycles;
-    dimension_type tableau_num_columns = tableau.num_columns();
-    for (dimension_type i = input_cs_sd + 1; i < tableau_num_columns; ++i)
-      var_cycles.push_back(i);
-    var_cycles.push_back(0);
-    for(dimension_type i = 0; i < space_diff; ++i)
-      tableau.permute_columns(var_cycles);
-
-    // Adjust the previously mapped variables.
-    for (dimension_type i = mapping.size(); i-- > 1; )
-      if (mapping[i].second != 0)
-	mapping[i].second += space_diff;
-
-    // Set the right base values for the `artificial' variables inserted
-    // during the past simplex calls.
-    dimension_type base_size = base.size();
-    for (dimension_type i = 0; i < base_size; ++i)
-      if (base[i] > input_cs_sd)
-	base[i] += space_diff;
-
-    // Every new variable inserted now must be splitted.
-    for (dimension_type i = input_cs_sd; i < new_c_sd; ++i) {
-      tableau.add_zero_columns(1);
-      mapping.push_back(std::make_pair(i+1, tableau.num_columns()-2));
       is_artificial.push_back(false);
     }
-    // Make space for the splitted variables.
-    new_constraint = Constraint(new_constraint, new_c_sd + space_diff);
-
     // Update `new_c_sd'. The tableau is properly built.
     new_c_sd = new_constraint.space_dimension();
   }
@@ -117,8 +88,15 @@ PPL::LP_Problem::incrementality(Constraint new_constraint) {
   tableau.add_zero_rows(1, Row::Flags());
   dimension_type tableau_num_rows = tableau.num_rows();
 
-  for (dimension_type i = new_c_sd + 1; i-- > 0; )
-    tableau[tableau_num_rows-1][i] = new_constraint[i];
+  // Insert the constraint, splitting if necessary.
+  const dimension_type new_constraint_size  = new_constraint.size();
+  for (dimension_type i = new_constraint_size; i-- > 1;) {
+    tableau[tableau_num_rows-1][mapping[i].first] = new_constraint[i];
+    if (mapping[i].second != 0)
+      tableau[tableau_num_rows-1][mapping[i].second] = -new_constraint[i];
+    // Inhomogeneous term.
+    tableau[tableau_num_rows-1][0] = new_constraint[0];
+  }
 
   // Add a slack variable, if we have an inequality constraint.
   if (new_constraint.is_ray_or_point_or_inequality()) {
@@ -141,17 +119,12 @@ PPL::LP_Problem::incrementality(Constraint new_constraint) {
   // Prepare the cost matrix for the modified first phase.
   working_cost = Row(tableau_num_columns, Row::Flags());
 
-  // Split the variables in the tableau and cost function.
+  // Split the variables in the cost function.
   for (dimension_type i = mapping.size(); i-- > 1; )
-    if (mapping[i].second != 0) {
-      const dimension_type original_var = mapping[i].first;
-      const dimension_type split_var = mapping[i].second;
-      tableau_last_row[split_var] = -tableau_last_row[original_var];
-      working_cost[split_var] = -working_cost[original_var];
-    }
+    if (mapping[i].second != 0)
+      working_cost[mapping[i].second] = -working_cost[mapping[i].first];
   // Express the last row in terms of the variables in base.
   dimension_type base_size = base.size();
-
   for (dimension_type i = base_size; i-- > 0; )
     if (tableau_last_row[base[i]] != 0)
       linear_combine(tableau_last_row, tableau[i], base[i]);
@@ -189,6 +162,7 @@ PPL::LP_Problem::incrementality(Constraint new_constraint) {
     status = UNSATISFIABLE;
     return false;
   }
+  // Prepare *this for the second phase.
   erase_artificials();
   status = SATISFIABLE;
   return true;
@@ -1083,8 +1057,8 @@ PPL::LP_Problem::OK() const {
     if (!input_cs.satisfies_all_constraints(last_generator)) {
 #ifndef NDEBUG
       cerr << "The cached feasible point does not belong to "
-	   << "the feasible region of the LP_Problem."
-	   << endl;
+ 	   << "the feasible region of the LP_Problem."
+ 	   << endl;
       ascii_dump(cerr);
 #endif
       return false;

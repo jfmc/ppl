@@ -285,7 +285,7 @@ private:
     <CODE>true</CODE> if and only if the LP problem is satisfiable after
     applying incrementality, <CODE>false</CODE> otherwise.
   */
-  bool incrementality(Constraint new_constraint);
+  bool incrementality(const Constraint& constraint);
 
   /*! \brief
     Optimizes the current LP problem using the second phase of the
