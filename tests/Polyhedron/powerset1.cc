@@ -192,14 +192,13 @@ main() TRY {
   if (count != 1)
     exit(1);
 
-#if 0
   // Constant reverse iterator.
   count = 0;
-  for (PS::const_reverse_iterator i = ps3.rbegin(); i != ps3.rend(); ++i)
+  for (PS::const_reverse_iterator i = ps3.rbegin(),
+	 ps3_rend = ps3.rend(); i != ps3_rend; ++i)
     ++count;
   if (count != 1)
     exit(1);
-#endif
 
   // Omega iterator typedef.
   count = 0;
