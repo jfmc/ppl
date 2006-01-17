@@ -20,23 +20,30 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-# Tell aclocal where to find `.m4' files.
-ACLOCAL_AMFLAGS = -I m4
-
-DISTCHECK_CONFIGURE_FLAGS = \
---enable-shared --enable-watchdog
-
-dist_noinst_SCRIPTS = \
-configure
-
-dist_noinst_HEADERS = \
-instchk.hh
-
 EXTRA_DIST = \
-ppl.lsm.in \
-ppl.spec.in \
-BUGS CREDITS README.configure STANDARDS
-
-@SET_MAKE@
-
-SUBDIRS = utils src Watchdog tests interfaces demos doc m4 debian
+changelog \
+compat \
+control \
+control.prologs \
+libppl-c.dirs \
+libppl-c.install \
+libppl-c.links \
+libppl-dev.dirs \
+libppl-dev.doc-base \
+libppl-dev.doc-base.user \
+libppl-dev.docs \
+libppl-dev.install \
+libppl-dev.links \
+libppl-gprolog.links \
+libppl-pwl.copyright.in \
+libppl-pwl.dirs \
+libppl-pwl.docs \
+libppl-pwl.install \
+libppl-sicstus.links \
+libppl-swi.links \
+libppl-yap.links \
+libppl.copyright.in \
+libppl.dirs \
+libppl.docs \
+libppl.install \
+rules
