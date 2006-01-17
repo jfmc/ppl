@@ -113,10 +113,8 @@ test3() {
 
 #define SPACE_DIM 8
 
-#if 0 // FIX
   if (cgs0.space_dimension() == SPACE_DIM)
     return;
-#endif
 
   nout << "Space dimension of cgs0 should have been " PPL_TEST_XSTR(SPACE_DIM) "."
        << endl;
