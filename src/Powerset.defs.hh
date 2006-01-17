@@ -25,8 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Powerset.types.hh"
 #include <iosfwd>
+#include <iterator>
 #include <list>
-#include <set>
 
 namespace Parma_Polyhedra_Library {
 
