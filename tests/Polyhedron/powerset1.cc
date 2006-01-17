@@ -136,7 +136,6 @@ int main() TRY {
 
   Fcaibvp d(A);
   PS ps3(d);
-  PS ps3;
 
   if (!ps1.definitely_entails(ps3))
     exit(1);
