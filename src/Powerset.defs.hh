@@ -83,6 +83,57 @@ drop_subsumed(Powerset<D>& ps, const D& d) {
       ++i;
 }
   \endcode
+
+  The template class D must provide the following methods.
+  \code
+    memory_size_type total_memory_in_bytes() const
+  \endcode
+  Returns a lower bound on the total size in bytes of the memory
+  occupied by the instance of D.
+  \code
+    bool is_top() const
+  \endcode
+  Returns <CODE>true</CODE> if and only if the instance of D is the top
+  element of the domain.
+  \code
+    bool is_bottom() const
+  \endcode
+  Returns <CODE>true</CODE> if and only if the instance of D is the
+  bottom element of the domain.
+  \code
+    bool definitely_entails(const D& y) const
+  \endcode
+  Returns <CODE>true</CODE> if the instance of D definitely entails
+  <CODE>y</CODE>.  Returns <CODE>false</CODE> if the instance may not
+  entail <CODE>y</CODE> (i.e., if the instance does not entail
+  <CODE>y<CODE> or if entailment could not be decided).
+  \code
+    void upper_bound_assign(const D& y)
+  \endcode
+  Assigns to the instance of D an upper bound of the instance and
+  <CODE>y</CODE>.
+  \code
+    void meet_assign(const D& y)
+  \endcode
+  Assigns to the instance of D the meet the instance and
+  <CODE>y</CODE>.
+  \code
+    bool OK() const
+  \endcode
+  Returns <CODE>true</CODE> if the instance of D is in a consitent
+  state, else returns <CODE>false</CODE>.
+
+  The following operators on the template class D must be defined.
+  \code
+    operator<<(std::ostream& s, const D& x)
+  \endcode
+  Writes a textual representation of the instance of D on
+  <CODE>s</CODE>.
+  \code
+    operator==(const D& x, const D& y)
+  \endcode
+  Returns <CODE>true</CODE> if and only if <CODE>x</CODE> and
+  <CODE>y</CODE> are equivalent D's.
 */
 template <typename D>
 class Parma_Polyhedra_Library::Powerset {
