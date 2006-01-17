@@ -71,7 +71,7 @@ generalizedaffinepreimage1 generalizedaffinepreimage2 \
 generator1 \
 generators1 \
 coveringbox1 coveringbox2 \
-grid1 grid2 grid3 \
+grid1 grid2 grid3 grid4 \
 griddifference1 \
 intersection1 intersection2 \
 isuniverse1 \
@@ -163,6 +163,7 @@ coveringbox2_SOURCES = coveringbox2.cc
 grid1_SOURCES = grid1.cc
 grid2_SOURCES = grid2.cc
 grid3_SOURCES = grid3.cc
+grid4_SOURCES = grid4.cc
 
 griddifference1_SOURCES = griddifference1.cc
 
@@ -219,7 +220,8 @@ XFAIL_WITH_INT16 = \
 $(XFAIL_WITH_INT32)
 
 XFAIL_WITH_INT8 = \
-$(XFAIL_WITH_INT16)
+$(XFAIL_WITH_INT16) \
+grid4
 
 if USE_INT64
 

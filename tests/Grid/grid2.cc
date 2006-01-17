@@ -369,53 +369,13 @@ test9() {
   exit(1);
 }
 
-// cong_test4 from Chiara Convert_Test.cc.
-
-void
-test10() {
-  nout << "test10:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Congruence_System cgs;
-  cgs.insert((3*A             %= -2) / 3);
-  cgs.insert((5*A + 9*B +   C %= -1) / 3);
-  cgs.insert((        B + 3*C %= -2) / 3);
-  cgs.insert((      2*B + 3*C %= -2) / 3);
-
-  Grid gr(3);
-  gr.add_congruences_and_minimize(cgs);
-
-  if (find_variation(gr))
-    exit(1);
-
-  Grid_Generator_System known_gs;
-  known_gs.insert(grid_point(-2*A + 0*B +  7*C, 3));
-  known_gs.insert(grid_point( 1*A + 0*B +    C, 3));
-  known_gs.insert(grid_point(-2*A + 9*B +  7*C, 3));
-  known_gs.insert(grid_point(-2*A + 0*B + 16*C, 3));
-
-  Grid known_gr(known_gs);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
-}
+// cong_test4 from Chiara Convert_Test.cc is in grid4.cc.
 
 // cong_test5 from Chiara Convert_Test.cc.
 
 void
-test11() {
-  nout << "test11:" << endl;
+test10() {
+  nout << "test10:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -457,8 +417,8 @@ test11() {
 // cong_test6 from Chiara Convert_Test.cc.
 
 void
-test12() {
-  nout << "test12:" << endl;
+test11() {
+  nout << "test11:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -498,8 +458,8 @@ test12() {
 // cong_test7 from Chiara Convert_Test.cc.
 
 void
-test13() {
-  nout << "test13:" << endl;
+test12() {
+  nout << "test12:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -536,8 +496,8 @@ test13() {
 // cong_test8 from Chiara Convert_Test.cc.
 
 void
-test14() {
-  nout << "test14:" << endl;
+test13() {
+  nout << "test13:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -575,8 +535,8 @@ test14() {
 // An empty grid constructed from congruences.
 
 void
-test15() {
-  nout << "test15:" << endl;
+test14() {
+  nout << "test14:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -610,8 +570,8 @@ test15() {
 // of the existing system.
 
 void
-test16() {
-  nout << "test16:" << endl;
+test15() {
+  nout << "test15:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -659,8 +619,8 @@ test16() {
 // Zero dimension empty grid.
 
 void
-test17() {
-  nout << "test17:" << endl;
+test16() {
+  nout << "test16:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -691,8 +651,8 @@ test17() {
 // Zero dimension universe grid.
 
 void
-test18() {
-  nout << "test18:" << endl;
+test17() {
+  nout << "test17:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -743,7 +703,6 @@ main() TRY {
   test15();
   test16();
   test17();
-  test18();
 
   return 0;
 }
