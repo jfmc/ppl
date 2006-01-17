@@ -622,18 +622,6 @@ gcd_assign(Checked_Number<T, Policy>& x,
 	   const Checked_Number<T, Policy>& z);
 
 /*! \brief
-  Assigns to \p x the greatest common divisor of \p x and \p y,
-  setting \p s and \p t such that s*x + t*y = gcd(x, z).
-*/
-/*! \relates Checked_Number */
-template <typename T, typename Policy>
-void
-gcdext_assign(Checked_Number<T, Policy>& x,
-	      const Checked_Number<T, Policy>& y,
-	      Checked_Number<T, Policy>& s,
-	      Checked_Number<T, Policy>& t);
-
-/*! \brief
   Assigns to \p x the greatest common divisor of \p y and \p z,
   setting \p s and \p t such that s*y + t*z = x = gcd(y, z).
 */
