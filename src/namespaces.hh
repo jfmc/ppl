@@ -24,10 +24,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_namespaces_hh 1
 
 //! The entire library is confined to this namespace.
+/*! \ingroup PPL_CXX_interface */
 namespace Parma_Polyhedra_Library {
 
 //! All input/output operators are confined to this namespace.
-/*!
+/*! \ingroup PPL_CXX_interface
   This is done so that the library's input/output operators
   do not interfere with those the user might want to define.
   In fact, it is highly unlikely that any pre-defined I/O
@@ -59,12 +60,14 @@ namespace IO_Operators {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Types and functions implementing checked numbers.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 namespace Checked {
 } // namespace Checked
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Implementation related data and functions.
+//! %Implementation related data and functions.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 namespace Implementation {
 } // namespace Implementation
@@ -74,7 +77,7 @@ namespace Implementation {
 
 
 //! The standard C++ namespace.
-/*!
+/*! \ingroup PPL_CXX_interface
   The Parma Polyhedra Library conforms to the C++ standard and,
   in particular, as far as reserved names are concerned (17.4.3.1,
   [lib.reserved.names]).  The PPL, however, defines several
@@ -92,5 +95,6 @@ namespace Implementation {
 */
 namespace std {
 } // namespace std
+
 
 #endif // !defined(PPL_namespaces_hh)

@@ -47,7 +47,7 @@ bool less(Variable v, Variable w);
 } // namespace Parma_Polyhedra_Library
 
 //! A dimension of the vector space.
-/*!
+/*! \ingroup PPL_CXX_interface
   An object of the class Variable represents a dimension of the space,
   that is one of the Cartesian axes.
   Variables are used as base blocks in order to build
@@ -119,6 +119,7 @@ public:
   static output_function_type* get_output_function();
 
   //! Binary predicate defining the total ordering on variables.
+  /*! \ingroup PPL_CXX_interface */
   struct Compare {
     //! Returns <CODE>true</CODE> if and only if \p x comes before \p y.
     bool operator()(Variable x, Variable y) const;
@@ -147,6 +148,7 @@ private:
 namespace Parma_Polyhedra_Library {
 
 //! An std::set containing variables in increasing order of dimension index.
+/*! \ingroup PPL_CXX_interface */
 typedef std::set<Variable, Variable::Compare> Variables_Set;
 
 } // namespace Parma_Polyhedra_Library

@@ -133,7 +133,7 @@ typedef Checked::Check_Overflow_Policy Default_To_Policy;
 typedef Checked_Number_Transparent_Policy Default_From_Policy;
 
 //! A wrapper for numeric types implementing a given policy.
-/*!
+/*! \ingroup PPL_CXX_interface
   The wrapper and related functions implement an interface which is common
   to all kinds of coefficient types, therefore allowing for a uniform
   coding style. This class also implements the policy encoded by the

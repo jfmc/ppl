@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 //! Rounding directions for arithmetic computations.
+/*! \ingroup PPL_CXX_interface */
 enum Rounding_Dir {
   /*! \hideinitializer
     Round toward \f$-\infty\f$.

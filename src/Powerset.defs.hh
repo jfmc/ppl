@@ -56,7 +56,7 @@ operator<<(std::ostream& s, const Powerset<D>& x);
 
 
 //! The powerset construction on a base-level domain.
-/*!
+/*! \ingroup PPL_CXX_interface
   This class offers a generic implementation of a
   <EM>powerset</EM> domain as defined in Section \ref powerset.
 
@@ -419,7 +419,7 @@ private:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A %const_iterator on the disjuncts of a Powerset element.
-/*!
+/*! \ingroup PPL_CXX_interface
   This class implements a read-only bidirectional iterator
   on the sequence of disjuncts.
 */
@@ -491,7 +491,7 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An iterator on the disjuncts of a Powerset element.
-/*!
+/*! \ingroup PPL_CXX_interface
   This class implements a <EM>read-only</EM> bidirectional iterator
   on the sequence of disjuncts. That is, by using an instance of
   this iterator class it is not possible to overwrite the disjuncts

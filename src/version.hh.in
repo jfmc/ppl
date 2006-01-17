@@ -24,26 +24,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_version_hh
 #define PPL_version_hh 1
 
-/*! \defgroup PPL_defines Library Defines */
-//@{
-
 //! The major number of the PPL version.
+/*! \ingroup PPL_CXX_interface */
 #define PPL_VERSION_MAJOR @PPL_VERSION_MAJOR@
 
 //! The minor number of the PPL version.
+/*! \ingroup PPL_CXX_interface */
 #define PPL_VERSION_MINOR @PPL_VERSION_MINOR@
 
 //! The revision number of the PPL version.
+/*! \ingroup PPL_CXX_interface */
 #define PPL_VERSION_REVISION @PPL_VERSION_REVISION@
 
 /*! \brief
   The beta number of the PPL version.  This is zero for official
   releases and nonzero for development snapshots.
+  \ingroup PPL_CXX_interface
 */
 #define PPL_VERSION_BETA @PPL_VERSION_BETA@
 
 //! A string containing the PPL version.
-/*!
+/*! \ingroup PPL_CXX_interface
   Let <CODE>M</CODE> and <CODE>m</CODE> denote the numbers associated
   to PPL_VERSION_MAJOR and PPL_VERSION_MINOR, respectively.  The
   format of PPL_VERSION is <CODE>M "." m</CODE> if both
@@ -55,8 +56,6 @@ site: http://www.cs.unipr.it/ppl/ . */
   neither PPL_VERSION_REVISION nor PPL_VERSION_BETA are zero.
 */
 #define PPL_VERSION "@VERSION@"
-
-//@}
 
 namespace Parma_Polyhedra_Library {
 

@@ -18,6 +18,7 @@ PURPOSE. */
 namespace Parma_Polyhedra_Library {
 
 /*! \class Parma_Polyhedra_Library::GMP_Integer
+  \ingroup PPL_CXX_interface
   \brief
   Unbounded integers as provided by the GMP library.
 
@@ -29,6 +30,7 @@ typedef mpz_class GMP_Integer;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Coefficient traits specialization for unbounded integers.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <>
 struct Coefficient_traits_template<GMP_Integer> {

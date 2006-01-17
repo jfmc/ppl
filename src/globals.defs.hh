@@ -124,7 +124,7 @@ compute_capacity(dimension_type requested_size,
 		 dimension_type maximum_size);
 
 //! User objects' the PPL can throw.
-/*!
+/*! \ingroup PPL_CXX_interface
   This abstract base class should be instantiated by those users
   willing to provide a polynomial upper bound to the time spent
   by any invocation of a library operator.
@@ -141,6 +141,7 @@ public:
 /*! \brief
   A pointer to an exception object.
 
+  \ingroup PPL_CXX_interface
   This pointer, which is initialized to zero, is repeatedly checked
   along any super-linear (i.e., computationally expensive) computation
   path in the library.
@@ -174,7 +175,7 @@ void
 maybe_abandon();
 
 //! A tag class.
-/*!
+/*! \ingroup PPL_CXX_interface
   Tag class to differentiate the C_Polyhedron and NNC_Polyhedron
   constructors that build a polyhedron out of a bounding box.
 */

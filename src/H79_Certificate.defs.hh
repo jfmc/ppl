@@ -30,7 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 
 //! A convergence certificate for the H79 widening operator.
-/*!
+/*! \ingroup PPL_CXX_interface
   Convergence certificates are used to instantiate the BHZ03 framework
   so as to define widening operators for the finite powerset domain.
   \note
@@ -75,7 +75,7 @@ public:
   int compare(const Polyhedron& ph) const;
 
   //! A total ordering on H79 certificates.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     This binary predicate defines a total ordering on H79 certificates
     which is used when storing information about sets of polyhedra.
   */

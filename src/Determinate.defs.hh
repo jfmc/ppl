@@ -63,6 +63,7 @@ operator<<(std::ostream&, const Determinate<PH>&);
 } // namespace Parma_Polyhedra_Library
 
 //! Wraps a PPL class into a determinate constraint system interface.
+/*! \ingroup PPL_CXX_interface */
 template <typename PH>
 class Parma_Polyhedra_Library::Determinate {
 public:
@@ -170,7 +171,7 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! A function adapter for the Determinate class.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     It lifts a Binary_Operator_Assign function object, taking arguments
     of type PH, producing the corresponding function object taking
     arguments of type Determinate<PH>.
@@ -210,7 +211,7 @@ public:
 
 private:
   //! The possibly shared representation of a Determinate object.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     By adopting the <EM>copy-on-write</EM> technique, a single
     representation of the base-level object may be shared by more than
     one object of the class Determinate.

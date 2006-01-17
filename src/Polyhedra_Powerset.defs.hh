@@ -39,6 +39,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <map>
 
 //! The powerset construction instantiated on PPL polyhedra.
+/*! \ingroup PPL_CXX_interface */
 template <typename PH>
 class Parma_Polyhedra_Library::Polyhedra_Powerset
   : public Parma_Polyhedra_Library::Powerset

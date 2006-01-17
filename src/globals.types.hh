@@ -17,12 +17,15 @@ PURPOSE. */
 namespace Parma_Polyhedra_Library {
 
 //! An unsigned integral type for representing space dimensions.
+/*! \ingroup PPL_CXX_interface */
 typedef size_t dimension_type;
 
 //! An unsigned integral type for representing memory size in bytes.
+/*! \ingroup PPL_CXX_interface */
 typedef size_t memory_size_type;
 
 //! Kinds of degenerate abstract elements.
+/*! \ingroup PPL_CXX_interface */
 enum Degenerate_Element {
   //! The universe element, i.e., the whole vector space.
   UNIVERSE,
@@ -31,6 +34,7 @@ enum Degenerate_Element {
 };
 
 //! Relation symbols.
+/*! \ingroup PPL_CXX_interface */
 enum Relation_Symbol {
   //! Less than.
   LESS_THAN,
@@ -45,6 +49,7 @@ enum Relation_Symbol {
 };
 
 //! Complexity pseudo-classes.
+/*! \ingroup PPL_CXX_interface */
 enum Complexity_Class {
   //! Worst-case polynomial complexity.
   POLYNOMIAL_COMPLEXITY,
@@ -55,6 +60,7 @@ enum Complexity_Class {
 };
 
 //! Possible optimization modes.
+/*! \ingroup PPL_CXX_interface */
 enum Optimization_Mode {
   //! Minimization is requested.
   MINIMIZATION,

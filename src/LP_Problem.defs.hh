@@ -36,6 +36,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iosfwd>
 
 //! A Linear Programming problem.
+/*! \ingroup PPL_CXX_interface */
 class Parma_Polyhedra_Library::LP_Problem {
 public:
   //! Default constructor: builds a trivial LP problem.

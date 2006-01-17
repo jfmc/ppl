@@ -293,7 +293,7 @@ void compute_leader_indices(const std::vector<dimension_type>& predecessor,
 } // namespace Parma_Polyhedra_Library
 
 //! A bounded difference shape.
-/*!
+/*! \ingroup PPL_CXX_interface
   The class template BD_Shape<T> allows for the efficient representation
   of a restricted kind of <EM>topologically closed</EM> convex polyhedra
   called <EM>bounded difference shapes</EM> (BDSs, for short).

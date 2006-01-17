@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 
 //! A not necessarily closed convex polyhedron.
-/*!
+/*! \ingroup PPL_CXX_interface
     An object of the class NNC_Polyhedron represents a
     <EM>not necessarily closed</EM> (NNC) convex polyhedron
     in the vector space \f$\Rset^n\f$.

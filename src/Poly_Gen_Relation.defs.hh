@@ -65,7 +65,7 @@ std::ostream& operator<<(std::ostream& s, const Poly_Gen_Relation& r);
 
 
 //! The relation between a polyhedron and a generator
-/*!
+/*! \ingroup PPL_CXX_interface
   This class implements conjunctions of assertions on the relation
   between a polyhedron and a generator.
 */
