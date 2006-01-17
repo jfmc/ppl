@@ -2172,4 +2172,4 @@ when the PPL library is no longer needed.
 Notice that, for dynamic linking to work, you should have configured
 the library with the <CODE>--enable-shared</CODE> option.
 
-*/
+*/ /* \defgroup PrologInterface */

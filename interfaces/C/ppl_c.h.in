@@ -128,7 +128,7 @@ Programming Kit): this is used to read linear programs in MPS format.
   For some reason, GMP up to and including version 4.1.3 requires
   <stdio.h> to be included before <gmp.h>.
 */
-/*@{*/
+/*@{*/ /* \defgroup PPL_C_interface */
 
 #include <stdio.h>
 #include <gmp.h>
