@@ -18,10 +18,10 @@ PURPOSE. */
 namespace Parma_Polyhedra_Library {
 
 /*! \class Parma_Polyhedra_Library::GMP_Integer
-  \ingroup PPL_CXX_interface
   \brief
   Unbounded integers as provided by the GMP library.
 
+  \ingroup PPL_CXX_interface
   GMP_Integer is an alias for the <CODE>mpz_class</CODE> type
   defined in the C++ interface of the GMP library.
   For more information, see <CODE>http://www.swox.com/gmp/</CODE>

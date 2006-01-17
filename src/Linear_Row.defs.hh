@@ -33,7 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The base class for linear expressions, constraints and generators.
-/*!
+/*! \ingroup PPL_CXX_interface
   The class Linear_Row allows us to build objects of the form
   \f$[b, a_0, \ldots, a_{d-1}]_{(t, k)}\f$,
   i.e., a finite sequence of coefficients subscripted by a pair of flags,
@@ -134,6 +134,7 @@ public:
     The type of the object to which the coefficients refer to,
     encoding both topology and kind.
 
+    \ingroup PPL_CXX_interface
     This combines the information about the topology (necessarily closed
     or not) and the kind (line/equality or ray/point/inequality)
     of a Linear_Row object.

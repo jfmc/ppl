@@ -96,7 +96,7 @@ void set_union(const Saturation_Row& x,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A row of a saturation matrix.
-/*!
+/*! \ingroup PPL_CXX_interface
   An object of this class represents a single row of a saturation matrix.
   The saturation row corresponds to a constraint and a system of generators
   (resp., a generator and a system of constraints) and records whether or

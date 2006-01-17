@@ -28,6 +28,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Checked_Number_Transparent_Policy {
   //! Check for overflowed result.
   static const int check_overflow = 0;
@@ -75,6 +78,9 @@ struct Checked_Number_Transparent_Policy {
   static void handle_result(Result r);
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Checked_Number_Default_Policy {
   static const int check_overflow = 1;
   static const int check_inf_add_inf = 0;
@@ -97,6 +103,9 @@ struct Checked_Number_Default_Policy {
   static void handle_result(Result r);
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Extended_Number_Policy {
   static const int check_overflow = 1;
   static const int check_inf_add_inf = 0;

@@ -35,8 +35,9 @@ not_a_dimension();
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A node of the list of available coefficients.
+/*! \ingroup PPL_CXX_interface */
 // FIXME: rewrite the comment.
-#endif
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Coefficient_free_list_element {
 private:
   Coefficient i;

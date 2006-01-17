@@ -54,7 +54,7 @@ bool operator>(const Boundary& x, const Boundary& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An extended rational bound of an interval.
-/*!
+/*! \ingroup PPL_CXX_interface
   An object of class Boundary represents either an upper or a lower
   bound of an interval over the set of extended rational numbers.
 */
@@ -98,6 +98,7 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The lower bound of an extended rational interval.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Parma_Polyhedra_Library::LBoundary : public Boundary {
 public:
@@ -118,6 +119,7 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The upper bound of an extended rational interval.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Parma_Polyhedra_Library::UBoundary : public Boundary {
 public:
@@ -138,7 +140,7 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A interval over the set of rational numbers.
-/*!
+/*! \ingroup PPL_CXX_interface
   An object of class Interval represents a closed/half-closed/open
   interval over the set of rational numbers \f$\Qset\f$.
 
