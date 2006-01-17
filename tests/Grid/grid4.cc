@@ -41,11 +41,7 @@ test1() {
   cgs.insert((        B + 3*C %= -2) / 3);
   cgs.insert((      2*B + 3*C %= -2) / 3);
 
-  nout << "." << endl;
-
   Grid gr(3);
-
-  nout << "." << endl;
 
   gr.add_congruences_and_minimize(cgs);
 
