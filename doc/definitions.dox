@@ -22,9 +22,11 @@
 //  site: http://www.cs.unipr.it/ppl/
 
 /*!
-  \defgroup PPL_Library The Library
+  \defgroup PPL_CXX_interface C++ Language Interface
+  \brief
   The core implementation of the Parma Polyhedra Library
   is written in C++.
+
   See Namespace, Hierarchical and Compound indexes
   for additional information about each single data type.
 */
@@ -2860,4 +2862,4 @@ By Lemma 1
 
 \endif
 
-*/
+*/ /* \mainpage */
