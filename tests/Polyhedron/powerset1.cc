@@ -24,31 +24,32 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <algorithm>
 #include <set>
 
-namespace PPL = Parma_Polyhedra_Library;
-namespace PPL_IO =  PPL::IO_Operators;
+namespace {
 
-using namespace PPL_IO;
+class Fcaibvp;
 
-//namespace {
+bool operator==(const Fcaibvp& x, const Fcaibvp& y);
+bool operator!=(const Fcaibvp& x, const Fcaibvp& y);
+
+std::ostream& operator<<(std::ostream& s, const Fcaibvp& x);
 
 // A class for representing Finite Conjunctions of Attribute
 // Independent Boolean Variable Properties.
-class Fcaibvp : private std::set<PPL::Variable, PPL::Variable::Compare> {
+class Fcaibvp {
 private:
-  typedef PPL::Variable::Compare Compare;
-  typedef std::set<PPL::Variable, Compare> Base;
+  typedef Variable::Compare Compare;
+  typedef std::set<Variable, Compare> Set;
+
+  Set set;
 
 public:
-
-  // The constructors are only required for this test.
-
   Fcaibvp()
-    : Base() {
+    : set() {
   }
 
-  Fcaibvp(const PPL::Variable& x)
-    : Base() {
-    insert(x);
+  explicit Fcaibvp(const Variable& x)
+    : set() {
+    set.insert(x);
   }
 
   memory_size_type total_memory_in_bytes() const {
@@ -56,7 +57,7 @@ public:
   }
 
   bool is_top() const {
-    return Base::empty();
+    return set.empty();
   }
 
   bool is_bottom() const {
@@ -65,23 +66,22 @@ public:
 
   bool definitely_entails(const Fcaibvp& y) const{
     const Fcaibvp& x = *this;
-    return std::includes(x.begin(), x.end(), y.begin(), y.end(),
+    return std::includes(x.set.begin(), x.set.end(),
+			 y.set.begin(), y.set.end(),
 			 Compare());
   }
 
   void upper_bound_assign(const Fcaibvp& y) {
-    Base::insert(y.begin(), y.end());
+    set.insert(y.set.begin(), y.set.end());
   }
 
   void meet_assign(const Fcaibvp& y) {
     Fcaibvp& x = *this;
     Fcaibvp z;
-    // FIXME: Why does this need public set parent?
-#if 0
-    std::set_intersection(x.begin(), x.end(), y.begin(), y.end(),
-			  std::inserter(z, z.begin()),
+    std::set_intersection(x.set.begin(), x.set.end(),
+			  y.set.begin(), y.set.end(),
+			  std::inserter(z.set, z.set.begin()),
 			  Compare());
-#endif
     std::swap(x, z);
   }
 
@@ -89,18 +89,22 @@ public:
     return true;
   }
 
-  friend bool operator==(const Fcaibvp& x, const Fcaibvp& y);
   friend std::ostream& operator<<(std::ostream& s, const Fcaibvp& x);
 };
 
 std::ostream&
 operator<<(std::ostream& s, const Fcaibvp& x) {
   s << "{";
-  for (Fcaibvp::const_iterator i = x.begin(),
-	 x_end = x.end(); i != x_end; ++i) {
-    const PPL::Variable& v = *i;
+  for (Fcaibvp::Set::const_iterator i = x.set.begin(),
+	 x_end = x.set.end(); i != x_end; ++i) {
+    const Variable& v = *i;
+#if 0
+    // FIXME: what is wrong with this?
     using namespace Parma_Polyhedra_Library::IO_Operators;
     s << v;
+#else
+    Parma_Polyhedra_Library::IO_Operators::operator<<(s, v);
+#endif
     if (i != x_end)
       s << ", ";
   }
@@ -110,19 +114,25 @@ operator<<(std::ostream& s, const Fcaibvp& x) {
 
 bool
 operator==(const Fcaibvp& x, const Fcaibvp& y) {
-  return x.size() == y.size();
+  return x.definitely_entails(y) && y.definitely_entails(x);
 }
 
-//} // namespace
+bool
+operator!=(const Fcaibvp& x, const Fcaibvp& y) {
+  return !(x == y);
+}
 
-typedef PPL::Powerset<Fcaibvp> PS;
+} // namespace
 
-int main() TRY {
+int
+main() TRY {
   set_handlers();
 
   // Use every public Powerset method.
 
-  PPL::Variable A(0);
+  typedef Powerset<Fcaibvp> PS;
+
+  Variable A(0);
 
   PS ps1;
   ps1.add_disjunct(Fcaibvp(A));
@@ -132,6 +142,7 @@ int main() TRY {
   if (ps2 != ps1 || !(ps2 == ps1))
     exit(1);
 
+  using namespace Parma_Polyhedra_Library::IO_Operators;
   nout << "ps1:" << std::endl << ps1 << std::endl;
 
   Fcaibvp d(A);
@@ -162,38 +173,29 @@ int main() TRY {
 
   // Iterator.
   dimension_type count = 0;
-  for (PS::iterator i = ps3.begin();
-       i != ps3.end();
-       ++i)
+  for (PS::iterator i = ps3.begin(); i != ps3.end(); ++i)
     ++count;
   if (count != 1)
     exit(1);
 
   // Constant iterator.
   count = 0;
-  for (PS::const_iterator i = ps3.begin();
-       i != ps3.end();
-       ++i)
+  for (PS::const_iterator i = ps3.begin(); i != ps3.end(); ++i)
     ++count;
   if (count != 1)
     exit(1);
 
   // Reverse iterator.
   count = 0;
-  for (PS::reverse_iterator i = ps3.rbegin();
-       i != ps3.rend();
-       ++i)
+  for (PS::reverse_iterator i = ps3.rbegin(); i != ps3.rend(); ++i)
     ++count;
   if (count != 1)
     exit(1);
 
 #if 0
-  // FIXME: Add operator!= for Powerset::const_reverse_iterator?
   // Constant reverse iterator.
   count = 0;
-  for (PS::const_reverse_iterator i = ps3.rbegin();
-       i != ps3.rend();
-       ++i)
+  for (PS::const_reverse_iterator i = ps3.rbegin(); i != ps3.rend(); ++i)
     ++count;
   if (count != 1)
     exit(1);
@@ -201,9 +203,7 @@ int main() TRY {
 
   // Omega iterator typedef.
   count = 0;
-  for (PS::omega_iterator i = ps3.begin();
-       i != ps3.end();
-       ++i)
+  for (PS::omega_iterator i = ps3.begin(); i != ps3.end(); ++i)
     ++count;
   if (count != 1)
     exit(1);
@@ -239,13 +239,11 @@ int main() TRY {
   if (ps2 != ps3)
     exit(1);
 
-  PPL::Variable B(1);
+  Variable B(1);
   ps2 = ps1;
   ps2.meet_assign(ps3);
-#if 0 // FIXME: Requires working Fcaibvp::meet_assign.
   if (ps2 != ps3)
     exit(1);
-#endif
 
   ps3.collapse();
   if (ps3.size() != 1)
