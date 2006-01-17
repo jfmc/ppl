@@ -204,9 +204,9 @@ normalize2(Coefficient_traits::const_reference x,
 template <typename T>
 T low_bits_mask(unsigned n);
 
-// Turn s into a string: xstr(x + y) => "x + y".
+// Turn s into a string: PPL_STR(x + y) => "x + y".
 #define PPL_STR(s) #s
-// Turn the expansion of s into a string: xstr(x) => "x expanded".
+// Turn the expansion of s into a string: PPL_XSTR(x) => "x expanded".
 #define PPL_XSTR(s) PPL_STR(s)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
