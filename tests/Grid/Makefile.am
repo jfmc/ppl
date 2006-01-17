@@ -85,7 +85,7 @@ mingenerators1 \
 pointed1 \
 relations1 relations2 \
 removespacedims1 removespacedims2 \
-timeelapse1 \
+timeelapse1 timeelapse2 \
 topclosed1 \
 topclosure1 \
 widening1 \
@@ -199,6 +199,8 @@ removespacedims2_SOURCES = removespacedims2.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
 
+timeelapse2_SOURCES = timeelapse2.cc
+
 topclosed1_SOURCES = topclosed1.cc
 
 topclosure1_SOURCES = topclosure1.cc
@@ -221,7 +223,8 @@ $(XFAIL_WITH_INT32)
 
 XFAIL_WITH_INT8 = \
 $(XFAIL_WITH_INT16) \
-grid4
+grid4 \
+timeelapse2
 
 if USE_INT64
 

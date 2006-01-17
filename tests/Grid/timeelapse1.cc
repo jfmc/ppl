@@ -275,46 +275,13 @@ test8() {
   exit(1);
 }
 
-// Multi-dimension grids with denominators.
-
-void
-test9() {
-  nout << "test9:" << endl;
-
-  Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point());
-  gr1.add_generator(grid_point(A + 2*B - 3*C, 3));
-
-  Grid gr2(3, EMPTY);
-  gr2.add_generator(grid_point(3*A - B + 4*C, 7));
-
-  gr1.time_elapse_assign(gr2);
-
-  if (find_variation(gr1))
-    exit(1);
-
-  Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A + 2*B - 3*C, 3));
-  known_gr.add_generator(grid_point(3*A - B + 4*C, 7));
-
-  if (gr1 == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr1, known_gr);
-
-  exit(1);
-}
+// Multi-dimension grids with denominators, in timeelapse2.
 
 // Multi-dimension grids from generators in sub-optimal form.
 
 void
-test10() {
-  nout << "test10:" << endl;
+test9() {
+  nout << "test9:" << endl;
 
   Grid gr1(4, EMPTY);
   gr1.add_generator(grid_point());
@@ -351,8 +318,8 @@ test10() {
 // causes the result to be more dense than the second grid.
 
 void
-test11() {
-  nout << "test11:" << endl;
+test10() {
+  nout << "test10:" << endl;
 
   Grid gr1(1);
   gr1.add_congruence(A == 2);
@@ -398,7 +365,6 @@ main() TRY {
   test8();
   test9();
   test10();
-  test11();
 
   return 0;
 }
