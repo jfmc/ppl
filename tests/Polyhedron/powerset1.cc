@@ -98,8 +98,12 @@ operator<<(std::ostream& s, const Fcaibvp& x) {
   for (Fcaibvp::Set::const_iterator i = x.set.begin(),
 	 x_end = x.set.end(); i != x_end; ++i) {
     const Variable& v = *i;
+#if 0 // Old compilers may not understand the following.
     using IO_Operators::operator<<;
     s << v;
+#else
+    Parma_Polyhedra_Library::IO_Operators::operator<<(s, v);
+#endif
     if (i != x_end)
       s << ", ";
   }
