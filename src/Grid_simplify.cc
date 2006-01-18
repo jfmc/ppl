@@ -178,12 +178,13 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   TEMP_INTEGER(s);
   TEMP_INTEGER(t);
   gcdext_assign(gcd, pivot[column], row[column], s, t);
-  TRACE(cerr << "gcd " << gcd << ", s " << s << ", t " << t << endl);
+  TRACE(cerr << "  gcd " << gcd << ", s " << s << ", t " << t << endl);
   // Now pivot[column] * s + row[column] * t == gcd.
   TEMP_INTEGER(pivot_a);
   TEMP_INTEGER(row_a);
   pivot_a = pivot[column] / gcd;
   row_a = row[column] / gcd;
+  TRACE(cerr << "  pivot_a " << pivot_a << ", row_a " << row_a << endl);
   // Adjust the elements of row and pivot, similarly to
   // reduce_line_with_line above.
   for (dimension_type col = 0; // FIX start from column?
