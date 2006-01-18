@@ -64,7 +64,7 @@ enum Complexity_Class {
 enum Optimization_Mode {
   //! Minimization is requested.
   MINIMIZATION,
-  //! Maximiation is requested.
+  //! Maximization is requested.
   MAXIMIZATION
 };
 
