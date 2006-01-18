@@ -947,7 +947,7 @@ ppl_new_C_Polyhedron_from_NNC_Polyhedron(+Handle_1, -Handle_2)
 ppl_new_NNC_Polyhedron_from_C_Polyhedron(+Handle_1, -Handle_2)
  </CODE></H2>
 
-   If <CODE>Handle_1</CODE> refers to an C polyhedron \f$\cP_1\f$,
+   If <CODE>Handle_1</CODE> refers to a C polyhedron \f$\cP_1\f$,
    then this creates a copy of \f$\cP_1\f$ as an NNC polyhedron \f$\cP_2\f$.
    <CODE>Handle_2</CODE> is unified with the handle for \f$\cP_2\f$.
 
