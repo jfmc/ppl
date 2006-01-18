@@ -71,7 +71,7 @@ generalizedaffinepreimage1 generalizedaffinepreimage2 \
 generator1 \
 generators1 \
 coveringbox1 coveringbox2 \
-grid1 grid2 grid3 grid4 \
+grid1 grid1_gmp grid2 grid3 grid4 \
 griddifference1 \
 intersection1 intersection2 \
 isuniverse1 \
@@ -161,6 +161,7 @@ coveringbox1_SOURCES = coveringbox1.cc
 coveringbox2_SOURCES = coveringbox2.cc
 
 grid1_SOURCES = grid1.cc
+grid1_gmp_SOURCES = grid1_gmp.cc
 grid2_SOURCES = grid2.cc
 grid3_SOURCES = grid3.cc
 grid4_SOURCES = grid4.cc
@@ -212,11 +213,11 @@ writecongruencesystem_SOURCES = writecongruencesystem.cc
 XFAIL_ALWAYS =
 
 XFAIL_WITH_INT64 = \
-$(XFAIL_ALWAYS)
+$(XFAIL_ALWAYS) \
+grid1_gmp
 
 XFAIL_WITH_INT32 = \
-$(XFAIL_WITH_INT64) \
-grid1
+$(XFAIL_WITH_INT64)
 
 XFAIL_WITH_INT16 = \
 $(XFAIL_WITH_INT32)

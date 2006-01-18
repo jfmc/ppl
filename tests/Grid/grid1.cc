@@ -727,76 +727,14 @@ test18() {
   exit(1);
 }
 
-// Even bigger values (param_test8 from Chiara Convert_Test.cc).
-
-void
-test19() {
-  nout << "test19:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Grid_Generator_System gs;
-  gs.insert(grid_point(-9933*A + 2000*B + 3953*C, 9113));
-  gs.insert(grid_point(    0*A +    0*B + 8888*C, 7302));
-  gs.insert(grid_point(   29*A +   23*B + 1111*C, 1010));
-  gs.insert(grid_point( 2394*A + 7273*B +    0*C,   30));
-
-  Grid gr(3, EMPTY);
-
-  gr.add_generators_and_minimize(gs);
-
-  if (find_variation(gr))
-    exit(1);
-
-  Congruence_System known_cgs;
-
-  // Create coefficients with string constructors as they're too big
-  // for the long type.
-
-  // 37315344498526  0  0  0  congruence, modulus = 37315344498526
-  // 0  343455281759218112380  0  0  congruence, modulus = 37315344498526
-  // 0  -133815138923073144612  223892066991156  0  congruence, modulus = 37315344498526
-  // -22220  -31385495955559489171  93798931757298  18255  congruence, modulus = 37315344498526
-
-  Coefficient* tem1 = new Coefficient("37315344498526");
-  known_cgs.insert((     0*A +     0*B +     0*C %= -*tem1) / *tem1);
-
-  Coefficient* tem2 = new Coefficient("343455281759218112380");
-  known_cgs.insert(( *tem2*A +     0*B +     0*C %= 0) / *tem1);
-  delete tem2;
-
-  tem2 = new Coefficient("-133815138923073144612");
-  Coefficient* tem3 = new Coefficient("223892066991156");
-  known_cgs.insert(( *tem2*A + *tem3*B +     0*C %= 0) / *tem1);
-  delete tem2; delete tem3;
-
-  tem2 = new Coefficient("-31385495955559489171");
-  tem3 = new Coefficient("93798931757298");
-  known_cgs.insert(( *tem2*A + *tem3*B + 18255*C %= 22220) / *tem1);
-  delete tem1; delete tem2; delete tem3;
-
-
-  Grid known_gr(known_cgs);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
-}
+// Even bigger values (param_test8 from Chiara Convert_Test.cc) -- in
+// grid1_gmp.cc.
 
 // Test reduce_line_with_line (param_test9 from Chiara Convert_Test.cc).
 
 void
-test20() {
-  nout << "test20:" << endl;
+test19() {
+  nout << "test19:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -836,8 +774,8 @@ test20() {
 // Convert_test.cc).
 
 void
-test21() {
-  nout << "test21:" << endl;
+test20() {
+  nout << "test20:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -881,8 +819,8 @@ test21() {
 // param_test11 from Chiara Convert_Test.cc.
 
 void
-test22() {
-  nout << "test22:" << endl;
+test21() {
+  nout << "test21:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -922,8 +860,8 @@ test22() {
 // Universe grid, one dimension.
 
 void
-test23() {
-  nout << "test23:" << endl;
+test22() {
+  nout << "test22:" << endl;
 
   Grid gr(1);
 
@@ -947,8 +885,8 @@ test23() {
 // Universe grid, many dimensions.
 
 void
-test24() {
-  nout << "test24:" << endl;
+test23() {
+  nout << "test23:" << endl;
 
   Grid gr(21);
 
@@ -972,8 +910,8 @@ test24() {
 // Universe grid, zero dimensions.
 
 void
-test25() {
-  nout << "test25:" << endl;
+test24() {
+  nout << "test24:" << endl;
 
   Grid gr(0);
 
@@ -997,8 +935,8 @@ test25() {
 // A generator system with only a line.
 
 void
-test26() {
-  nout << "test26:" << endl;
+test25() {
+  nout << "test25:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -1020,8 +958,8 @@ test26() {
 // A generator system containing a parameter.
 
 void
-test27() {
-  nout << "test27:" << endl;
+test26() {
+  nout << "test26:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -1077,7 +1015,6 @@ main() TRY {
   test16();
   test17();
   test18();
-  test19();
   test20();
   test21();
   test22();
@@ -1085,7 +1022,6 @@ main() TRY {
   test24();
   test25();
   test26();
-  test27();
 
   return 0;
 }
