@@ -934,9 +934,9 @@ ppl_new_C_Polyhedron_from_NNC_Polyhedron(+Handle_1, -Handle_2)
    ?- ppl_new_NNC_Polyhedron_from_space_dimension(3, empty, X),
       ppl_new_C_Polyhedron_from_NNC_Polyhedron(X, Y).
 \endcode
-   creates an empty C polyhedron embedded in \f$\Rset^3\f$
+   creates an empty NNC polyhedron embedded in \f$\Rset^3\f$
    referenced by \p X
-   and then makes a copy, converting the topology to an NNC polyhedron.
+   and then makes a copy, converting the topology to a C polyhedron.
    with \p Y bound to a valid handle for accessing it.
 
    When using <CODE>ppl_new_C_Polyhedron_from_NNC_Polyhedron/2</CODE>,
@@ -1114,7 +1114,7 @@ to be used has the following meaning:
   code of the universal complexity class.
 
 <H2><CODE> ppl_Polyhedron_is_empty(+Handle) </CODE></H2>
-b
+
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is empty.
 
@@ -1454,7 +1454,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    It is assumed that the polyhedron \f$\cP_1\f$ referenced by
    <CODE>Handle_1</CODE> contains the polyhedron \f$\cP_2\f$
    referenced by <CODE>Handle_2</CODE>;
-   let \f$\cP\f$ denote the BHRZ03_widening of
+   let \f$\cP\f$ denote the BHRZ03-widening of
    \f$\cP_1\f$ with \f$\cP_2\f$,
    Assuming that the quantity \f$t_1\f$ given by <CODE>C_unsigned_1</CODE>
    is the number of tokens available,
@@ -1493,7 +1493,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    It is assumed that the polyhedron \f$\cP_1\f$ referenced by
    <CODE>Handle_1</CODE> contains the polyhedron \f$\cP_2\f$
    referenced by <CODE>Handle_2</CODE>;
-   let \f$\cP\f$ denote the BHRZ03_extrapolation of
+   let \f$\cP\f$ denote the BHRZ03-extrapolation of
    \f$\cP_1\f$ with \f$\cP_2\f$,
    improved by enforcing those constraints in <CODE>Constraint_System</CODE>.
    <BR>
@@ -1536,7 +1536,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    It is assumed that the polyhedron \f$\cP_1\f$ referenced by
    <CODE>Handle_1</CODE> contains the polyhedron \f$\cP_2\f$
    referenced by <CODE>Handle_2</CODE>;
-   let \f$\cP\f$ denote the BHRZ03_extrapolation of \f$\cP_1\f$ with
+   let \f$\cP\f$ denote the BHRZ03-extrapolation of \f$\cP_1\f$ with
    \f$\cP_2\f$, improved by enforcing those constraints in
    <CODE>Constraint_System</CODE> together with all constraints of
    the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
@@ -1572,7 +1572,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    It is assumed that the polyhedron \f$\cP_1\f$ referenced by
    <CODE>Handle_1</CODE> contains the polyhedron \f$\cP_2\f$
    referenced by <CODE>Handle_2</CODE>;
-   let \f$\cP\f$ denote the H79_widening of
+   let \f$\cP\f$ denote the H79-widening of
    \f$\cP_1\f$ with \f$\cP_2\f$,
    <BR>
    Assuming that the quantity \f$t_1\f$ given by <CODE>C_unsigned_1</CODE>
@@ -1612,7 +1612,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    It is assumed that the polyhedron \f$\cP_1\f$ referenced by
    <CODE>Handle_1</CODE> contains the polyhedron \f$\cP_2\f$
    referenced by <CODE>Handle_2</CODE>;
-   let \f$\cP\f$ denote the H79_extrapolation of
+   let \f$\cP\f$ denote the H79-extrapolation of
    \f$\cP_1\f$ with \f$\cP_2\f$,
    improved by enforcing those constraints in <CODE>Constraint_System</CODE>.
    <BR>
@@ -1655,7 +1655,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    It is assumed that the polyhedron \f$\cP_1\f$ referenced by
    <CODE>Handle_1</CODE> contains the polyhedron \f$\cP_2\f$
    referenced by <CODE>Handle_2</CODE>;
-   let \f$\cP\f$ denote the H79_extrapolation of \f$\cP_1\f$ with
+   let \f$\cP\f$ denote the H79-extrapolation of \f$\cP_1\f$ with
    \f$\cP_2\f$, improved by enforcing those constraints in
    <CODE>Constraint_System</CODE> together with all constraints of
    the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
