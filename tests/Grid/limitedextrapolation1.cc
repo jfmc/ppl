@@ -294,8 +294,55 @@ test8() {
   if (find_variation(gr2))
     exit(1);
 
-#define TOKEN_MSG "`tokens' should be 5."
 #define TOKENS 5
+#define TOKEN_MSG "`tokens' should be " PPL_TEST_XSTR(TOKENS) "."
+
+  if (gr2 == known_gr)
+    if (tokens == TOKENS)
+      return;
+    else
+      nout << TOKEN_MSG << endl;
+  else {
+    nout << "Grid should equal known grid." << endl;
+    tokens == TOKENS || nout << TOKEN_MSG << endl;
+  }
+
+  nout << " grid:" << endl << gr2 << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr2, known_gr);
+
+  exit(1);
+}
+
+// 0 tokens.
+
+void
+test9() {
+  nout << "test9:" << endl;
+
+  Grid gr1(2);
+  gr1.add_congruence((A %= 0) / 4);
+
+  Grid gr2(2);
+  gr2.add_congruence(A %= 0);
+
+#undef TOKENS
+#define TOKENS 0
+
+  unsigned int tokens = TOKENS;
+
+  Congruence_System cgs;
+  cgs.insert((A + 0*B %= 0) / 2);
+
+  Grid known_gr(2);
+
+  gr2.limited_extrapolation_assign(gr1, cgs, &tokens);
+
+  if (find_variation(gr2))
+    exit(1);
+
+#define TOKEN_MSG "`tokens' should be " PPL_TEST_XSTR(TOKENS) "."
 
   if (gr2 == known_gr)
     if (tokens == TOKENS)
@@ -318,8 +365,8 @@ test8() {
 // Zero dimension.
 
 void
-test9() {
-  nout << "test9:" << endl;
+test10() {
+  nout << "test10:" << endl;
 
   Grid gr1(0);
 
@@ -349,8 +396,8 @@ test9() {
 // Congruences and equalities.
 
 void
-test10() {
-  nout << "test10:" << endl;
+test11() {
+  nout << "test11:" << endl;
 
   Grid gr1(2);
   gr1.add_congruence(A %= 0);
@@ -387,8 +434,8 @@ test10() {
 // From generators, with a limiting equality.
 
 void
-test11() {
-  nout << "test11:" << endl;
+test12() {
+  nout << "test12:" << endl;
 
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(C, 3));
@@ -441,6 +488,7 @@ main() TRY {
   test9();
   test10();
   test11();
+  test12();
 
   return 0;
 }
