@@ -124,7 +124,7 @@ dimension_type
 compute_capacity(dimension_type requested_size,
 		 dimension_type maximum_size);
 
-//! User objects' the PPL can throw.
+//! User objects the PPL can throw.
 /*! \ingroup PPL_CXX_interface
   This abstract base class should be instantiated by those users
   willing to provide a polynomial upper bound to the time spent
