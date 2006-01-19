@@ -82,8 +82,8 @@ bool operator!=(const BD_Shape<T>& x, const BD_Shape<T>& y);
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates BD_Shape
   If the rectilinear distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -99,8 +99,8 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates BD_Shape
   If the rectilinear distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -116,8 +116,8 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates BD_Shape
   If the rectilinear distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -136,8 +136,8 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates BD_Shape
   If the euclidean distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -153,8 +153,8 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates BD_Shape
   If the euclidean distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -170,8 +170,8 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates BD_Shape
   If the euclidean distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -190,8 +190,8 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates BD_Shape
   If the \f$L_\infty\f$ distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -207,8 +207,8 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates BD_Shape
   If the \f$L_\infty\f$ distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -224,8 +224,8 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates BD_Shape
   If the \f$L_\infty\f$ distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -1059,7 +1059,7 @@ public:
     will have dimension \p new_dimension.
 
     \exception std::invalid_argument
-    Thrown if \p new_dimensions is greater than the space dimension
+    Thrown if \p new_dimension is greater than the space dimension
     of \p *this.
   */
   void remove_higher_space_dimensions(dimension_type new_dimension);
