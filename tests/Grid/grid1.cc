@@ -686,46 +686,8 @@ test17() {
   exit(1);
 }
 
-// Bigger values (param_test7a from Chiara Convert_Test.cc).
-
-void
-test18() {
-  nout << "test18:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Grid_Generator_System gs;
-  gs.insert(grid_point(-93*A +   0*B +  39*C, 113));
-  gs.insert(grid_line( 29*A +  23*B + 111*C));
-  gs.insert(grid_point(117*A + 200*B +  88*C, 33));
-
-  Grid gr(3, EMPTY);
-
-  gr.add_generators_and_minimize(gs);
-
-  if (find_variation(gr))
-    exit(1);
-
-  Congruence_System known_cgs;
-  known_cgs.insert((       0*A +       0*B +      0*C %=  280730) / 280730);
-  known_cgs.insert((  -85767*A +  108141*B +      0*C %=   70587) / 280730);
-  known_cgs.insert((-2309489*A + 1557137*B + 280730*C %= 1997619) / 0);
-
-  Grid known_gr(known_cgs);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
-}
+// Bigger values (param_test7a from Chiara Convert_Test.cc) -- in
+// grid1_64.cc.
 
 // Even bigger values (param_test8 from Chiara Convert_Test.cc) -- in
 // grid1_gmp.cc.
@@ -733,8 +695,8 @@ test18() {
 // Test reduce_line_with_line (param_test9 from Chiara Convert_Test.cc).
 
 void
-test19() {
-  nout << "test19:" << endl;
+test18() {
+  nout << "test18:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -774,8 +736,8 @@ test19() {
 // Convert_test.cc).
 
 void
-test20() {
-  nout << "test20:" << endl;
+test19() {
+  nout << "test19:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -819,8 +781,8 @@ test20() {
 // param_test11 from Chiara Convert_Test.cc.
 
 void
-test21() {
-  nout << "test21:" << endl;
+test20() {
+  nout << "test20:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -860,8 +822,8 @@ test21() {
 // Universe grid, one dimension.
 
 void
-test22() {
-  nout << "test22:" << endl;
+test21() {
+  nout << "test21:" << endl;
 
   Grid gr(1);
 
@@ -885,8 +847,8 @@ test22() {
 // Universe grid, many dimensions.
 
 void
-test23() {
-  nout << "test23:" << endl;
+test22() {
+  nout << "test22:" << endl;
 
   Grid gr(21);
 
@@ -910,8 +872,8 @@ test23() {
 // Universe grid, zero dimensions.
 
 void
-test24() {
-  nout << "test24:" << endl;
+test23() {
+  nout << "test23:" << endl;
 
   Grid gr(0);
 
@@ -935,8 +897,8 @@ test24() {
 // A generator system with only a line.
 
 void
-test25() {
-  nout << "test25:" << endl;
+test24() {
+  nout << "test24:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -958,8 +920,8 @@ test25() {
 // A generator system containing a parameter.
 
 void
-test26() {
-  nout << "test26:" << endl;
+test25() {
+  nout << "test25:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -1021,7 +983,6 @@ main() TRY {
   test23();
   test24();
   test25();
-  test26();
 
   return 0;
 }
