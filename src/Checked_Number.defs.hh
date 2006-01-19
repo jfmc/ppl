@@ -823,7 +823,7 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
   Valid syntax is more formally and completely specified by the
   following grammar, with the additional provisos that everything is
   <EM>case insensitive</EM>, that the syntactic category
-  <CODE>BDIGIT</CODE> is further restriced by the current base
+  <CODE>BDIGIT</CODE> is further restricted by the current base
   and that for all bases above 14, any <CODE>e</CODE> is always
   interpreted as a digit and never as a delimiter for the exponent part
   (if such a delimiter is desired, it has to be written as <CODE>*^</CODE>).
