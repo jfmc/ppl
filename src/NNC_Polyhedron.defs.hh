@@ -65,9 +65,7 @@ public:
     The polyhedron inherits the space dimension of the constraint system.
 
     \param cs
-    The system of constraints defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
-    recycled to build the polyhedron.
+    The system of constraints defining the polyhedron.
   */
   explicit NNC_Polyhedron(const Constraint_System& cs);
 
@@ -87,9 +85,7 @@ public:
     The polyhedron inherits the space dimension of the generator system.
 
     \param gs
-    The system of generators defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
-    recycled to build the polyhedron.
+    The system of generators defining the polyhedron.
 
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
