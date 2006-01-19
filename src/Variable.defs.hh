@@ -50,7 +50,7 @@ bool less(Variable v, Variable w);
 /*! \ingroup PPL_CXX_interface
   An object of the class Variable represents a dimension of the space,
   that is one of the Cartesian axes.
-  Variables are used as base blocks in order to build
+  Variables are used as basic blocks in order to build
   more complex linear expressions.
   Each variable is identified by a non-negative integer,
   representing the index of the corresponding Cartesian axis
