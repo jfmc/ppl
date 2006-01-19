@@ -26,16 +26,16 @@ int
 main() TRY {
   TBD_Shape bd1;
   TBD_Shape bd2(0, EMPTY);
-  TBD_Shape known_result;
+  TBD_Shape known_result(bd2);
 
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 
-  bd1.CC76_narrowing_assign(bd2);
+  bd2.CC76_narrowing_assign(bd1);
 
-  print_constraints(bd1, "*** bd1.CC76_narrowing_assign(bd2) ***");
+  print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
 
-  int retval = (bd1 == known_result) ? 0 : 1;
+  int retval = (bd2 == known_result) ? 0 : 1;
 
   return retval;
 

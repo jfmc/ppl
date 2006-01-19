@@ -2444,29 +2444,29 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
 
 #ifndef NDEBUG
   {
-    // We assume that `y' is contained in or equal to `*this'.
+    // We assume that `*this' is contained in or equal to `y'.
     const BD_Shape x_copy = *this;
     const BD_Shape y_copy = y;
-    assert(x_copy.contains(y_copy));
+    assert(y_copy.contains(x_copy));
   }
 #endif
 
   // If both systems of bounded differences are zero-dimensional,
-  // since `*this' contains `y', we simply return `*this'.
+  // since `y' contains `*this', we simply return `*this'.
   if (space_dim == 0)
     return;
 
-  shortest_path_closure_assign();
-  // If `*this' is empty, since `*this' contains `y', `y' is empty too.
-  if (marked_empty())
-    return;
   y.shortest_path_closure_assign();
-  // If `y' is empty, we return.
+  // If `y' is empty, since `y' contains `this', `*this' is empty too.
   if (y.marked_empty())
+    return;
+  shortest_path_closure_assign();
+  // If `*this' is empty, we return.
+  if (marked_empty())
     return;
 
   // Replace each constraint in `*this' by the corresponding constraint
-  // in `y' if the inhomogeneous term of the first one is `plus_infinity'.
+  // in `y' if the corresponding inhomogeneous terms are both finite.
   bool changed = false;
   for (dimension_type i = space_dim + 1; i-- > 0; ) {
     DB_Row<N>& dbm_i = dbm[i];
@@ -2474,7 +2474,9 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
     for (dimension_type j = space_dim + 1; j-- > 0; ) {
       N& dbm_ij = dbm_i[j];
       const N& y_dbm_ij = y_dbm_i[j];
-      if (is_plus_infinity(dbm_ij) && !is_plus_infinity(y_dbm_ij)) {
+      if (!is_plus_infinity(dbm_ij)
+	  && !is_plus_infinity(y_dbm_ij)
+	  && dbm_ij != y_dbm_ij) {
 	dbm_ij = y_dbm_ij;
 	changed = true;
       }

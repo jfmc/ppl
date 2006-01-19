@@ -43,7 +43,7 @@ main() TRY {
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 
-  bd1.CC76_narrowing_assign(bd2);
+  bd2.CC76_narrowing_assign(bd1);
 
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(y - x <= 7);
@@ -52,9 +52,9 @@ main() TRY {
   known_result.add_constraint(-y <= 8);
   known_result.add_constraint(y <= 8);
 
-  print_constraints(bd1, "*** bd1.CC76_narrowing_assign(bd2) ***");
+  print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
 
-  int retval = (bd1 == known_result) ? 0 : 1;
+  int retval = (bd2 == known_result) ? 0 : 1;
 
   return retval;
 

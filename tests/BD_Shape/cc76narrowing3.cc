@@ -32,7 +32,7 @@ main() TRY {
   TBD_Shape bd2(3);
 
   bd1.add_constraint(z <= 1);
-  TBD_Shape known_result(bd1);
+  TBD_Shape known_result(3, EMPTY);
 
   bd2.add_constraint(-y <= 3);
   bd2.add_constraint(x >= 4);
@@ -43,11 +43,11 @@ main() TRY {
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 
-  bd1.CC76_narrowing_assign(bd2);
+  bd2.CC76_narrowing_assign(bd1);
 
-  print_constraints(bd1, "*** bd1.CC76_narrowing_assign(bd2) ***");
+  print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
 
-  int retval = (bd1 == known_result) ? 0 : 1;
+  int retval = (bd2 == known_result) ? 0 : 1;
 
   return retval;
 
