@@ -91,12 +91,37 @@ check_PROGRAMS = \
 	universe1 \
 	writebdshape1 writebdshape2
 
+## FIX Temporarily speed up tests.
+
 # This will be overriden by the `run_tests' script.
+#TEST_CPPFLAGS=-DBD_SHAPE_INSTANCE=mpq_class
+#
+#dist_check_SCRIPTS = run_tests
+#
+#TESTS = $(dist_check_SCRIPTS)
+
+if USE_GMP_INTEGERS
 TEST_CPPFLAGS=-DBD_SHAPE_INSTANCE=mpq_class
+else
+if USE_INT64
+TEST_CPPFLAGS=-DBD_SHAPE_INSTANCE=xint64_t
+else
+if USE_INT32
+TEST_CPPFLAGS=-DBD_SHAPE_INSTANCE=xint32_t
+else
+if USE_INT16
+TEST_CPPFLAGS=-DBD_SHAPE_INSTANCE=xint16_t
+else
+TEST_CPPFLAGS=-DBD_SHAPE_INSTANCE=xint8_t
+endif
+endif
+endif
+endif
 
-dist_check_SCRIPTS = run_tests
+## end FIX
 
-TESTS = $(dist_check_SCRIPTS)
+TESTS = $(check_PROGRAMS)
+
 
 XFAIL_TESTS =
 
