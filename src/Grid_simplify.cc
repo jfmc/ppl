@@ -187,19 +187,22 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   TRACE(cerr << "  pivot_a " << pivot_a << ", row_a " << row_a << endl);
   // Adjust the elements of row and pivot, similarly to
   // reduce_line_with_line above.
-  // FIX for the first column just set them to the values?
   dimension_type start, end;
   // FIXME: Can these initializations be generated according to the
   //        type of R in a clean way, in order to save the run-time
   //        comparison and the `parameter' argument?  Perhaps this
   //        template should be a macro.
   if (parameters) {
-    start = column;
+    start = column + 1;
     end = pivot.size();
   } else {
     start = 0;
-    end = column + 1;
+    end = column;
   }
+  assert(pivot.size() > 0);
+  assert(row.size() > 0);
+  pivot[column] = gcd;
+  row[column] = 0;
   for (dimension_type col = start; col < end; ++col) {
     TEMP_INTEGER(pivot_col);
     TEMP_INTEGER(row_col);
@@ -214,7 +217,6 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
        in reduce_line_with_line above, only with an s-multiplied copy
        of pivot being negated and then substituted into a t-multiplied
        row.  */
-    // FIX when col == column pivot[col] becomes gcd, row[col] becomes 0
     pivot[col] = (s * pivot_col) + (t * row_col);
     // FIX up then back down, is there a direct route?
     row[col] = (pivot_a * row_col) - (row_a * pivot_col);
@@ -344,6 +346,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   TRACE(cerr << "sys:" << endl);
   TRACE(sys.ascii_dump(cerr));
   assert(sys.num_rows() > 0);
+  assert(sys.num_columns() > 0); // For reduce_pc_with_pc.
 
   // Changes here may also be required in the congruence version
   // below.
