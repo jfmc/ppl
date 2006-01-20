@@ -303,54 +303,13 @@ test7() {
   exit(1);
 }
 
-// test4 from Chiara conversion_test.cc.
-
-void
-test8() {
-  nout << "test8:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Grid_Generator_System gs;
-  gs.insert(grid_point( 3*A +   B + 0*C, 4));
-  gs.insert(grid_point(11*A + 2*B + 0*C, 4));
-  gs.insert(grid_point( 3*A + 6*B + 0*C, 4));
-  gs.insert(grid_point( 3*A +   B + 2*C, 4));
-
-  Grid gr(3, EMPTY);
-
-  gr.add_generators_and_minimize(gs);
-
-  if (find_variation(gr))
-    exit(1);
-
-  Congruence_System known_cgs;
-  known_cgs.insert(( 0*A +  0*B +  0*C %= -40) / 40);
-  known_cgs.insert((20*A +  0*B +  0*C %=  15) / 40);
-  known_cgs.insert((-4*A + 32*B +  0*C %=   5) / 40);
-  known_cgs.insert(( 0*A +  0*B + 80*C %=   0) / 40);
-
-  Grid known_gr(known_cgs);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
-}
+// test4 from Chiara conversion_test.cc -- in grid1_16.cc.
 
 // param_test0/1 from Chiara Convert_Test.cc.
 
 void
-test9() {
-  nout << "test9:" << endl;
+test8() {
+  nout << "test8:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -391,8 +350,8 @@ test9() {
 // param_test2 from Chiara Convert_Test.cc.
 
 void
-test10() {
-  nout << "test10:" << endl;
+test9() {
+  nout << "test9:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -431,8 +390,8 @@ test10() {
 // param_test3 from Chiara Convert_Test.cc.
 
 void
-test11() {
-  nout << "test11:" << endl;
+test10() {
+  nout << "test10:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -472,8 +431,8 @@ test11() {
 // param_test4 from Chiara Convert_Test.cc.
 
 void
-test12() {
-  nout << "test12:" << endl;
+test11() {
+  nout << "test11:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -514,8 +473,8 @@ test12() {
 // param_test5 from Chiara Convert_Test.cc.
 
 void
-test13() {
-  nout << "test13:" << endl;
+test12() {
+  nout << "test12:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -554,8 +513,8 @@ test13() {
 // param_test6 from Chiara Convert_Test.cc.
 
 void
-test14() {
-  nout << "test14:" << endl;
+test13() {
+  nout << "test13:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -593,8 +552,8 @@ test14() {
 // add_generators_and_minimize, with more rows than columns.
 
 void
-test15() {
-  nout << "test15:" << endl;
+test14() {
+  nout << "test14:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -639,8 +598,8 @@ test15() {
 // Empty grid, one dimension.
 
 void
-test16() {
-  nout << "test16:" << endl;
+test15() {
+  nout << "test15:" << endl;
 
   Grid gr(1, EMPTY);
 
@@ -664,8 +623,8 @@ test16() {
 // Empty grid, many dimensions.
 
 void
-test17() {
-  nout << "test17:" << endl;
+test16() {
+  nout << "test16:" << endl;
 
   Grid gr(112, EMPTY);
 
@@ -695,8 +654,8 @@ test17() {
 // Test reduce_line_with_line (param_test9 from Chiara Convert_Test.cc).
 
 void
-test18() {
-  nout << "test18:" << endl;
+test17() {
+  nout << "test17:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -736,8 +695,8 @@ test18() {
 // Convert_test.cc).
 
 void
-test19() {
-  nout << "test19:" << endl;
+test18() {
+  nout << "test18:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -781,8 +740,8 @@ test19() {
 // param_test11 from Chiara Convert_Test.cc.
 
 void
-test20() {
-  nout << "test20:" << endl;
+test19() {
+  nout << "test19:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -822,8 +781,8 @@ test20() {
 // Universe grid, one dimension.
 
 void
-test21() {
-  nout << "test21:" << endl;
+test20() {
+  nout << "test20:" << endl;
 
   Grid gr(1);
 
@@ -847,8 +806,8 @@ test21() {
 // Universe grid, many dimensions.
 
 void
-test22() {
-  nout << "test22:" << endl;
+test21() {
+  nout << "test21:" << endl;
 
   Grid gr(21);
 
@@ -872,8 +831,8 @@ test22() {
 // Universe grid, zero dimensions.
 
 void
-test23() {
-  nout << "test23:" << endl;
+test22() {
+  nout << "test22:" << endl;
 
   Grid gr(0);
 
@@ -897,8 +856,8 @@ test23() {
 // A generator system with only a line.
 
 void
-test24() {
-  nout << "test24:" << endl;
+test23() {
+  nout << "test23:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -920,8 +879,8 @@ test24() {
 // A generator system containing a parameter.
 
 void
-test25() {
-  nout << "test25:" << endl;
+test24() {
+  nout << "test24:" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -982,7 +941,6 @@ main() TRY {
   test22();
   test23();
   test24();
-  test25();
 
   return 0;
 }
