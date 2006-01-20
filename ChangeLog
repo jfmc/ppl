@@ -1,3 +1,319 @@
+2006-01-20 Friday 08:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (ppl-0_8-branch.1): Reflected the fact that some files
+	  have been deleted overnight.
+
+2006-01-20 Friday 06:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* debian/Makefile.am (1.2): Do not distribute no longer existent
+	  files.
+
+2006-01-20 Friday 01:06  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* debian/: control.prologs (1.2), libppl-gprolog.links (1.2),
+	  libppl-sicstus.links (1.2), libppl-swi.links (1.2),
+	  libppl-yap.links (1.2): Clear out Prolog configuration files.
+
+2006-01-20 Friday 01:00  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* debian/rules (1.9): Use the system C and C++ compilers.
+
+2006-01-20 Friday 01:00  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* debian/control (1.12): Revert to the stable distribution (sarge)
+	  dependencies.
+
+2006-01-20 Friday 00:59  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* debian/changelog (1.3): Add entry for 0.8 release.
+
+2006-01-20 Friday 00:25  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* src/Grid_Generator_System.defs.hh (grids.21): Improve the
+	  add_universe_rows_and_columns description.
+
+2006-01-20 Friday 00:24  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* doc/devref.doxyconf-html.in (grids.7): Add to INPUT classes
+	  Grid_Generator, Grid_Generator_System, Grid_Certificate and file
+	  Grid_widenings.cc.
+
+2006-01-19 Thursday 20:23  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* tests/Makefile.am (grids.5): Run the grid tests before the
+	  others.
+
+2006-01-19 Thursday 18:24  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* tests/BD_Shape/Makefile.am (grids.9): Correct temporary
+	  BD_SHAPE_INSTANCE values.
+
+2006-01-19 Thursday 16:59  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* tests/BD_Shape/Makefile.am (grids.8): Temporarily modify to run
+	  the tests once, with BD_SHAPE_INSTANCE set according to
+	  --enable-coefficients, to speed the build machine test cycle.
+
+2006-01-19 Thursday 13:08  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/BD_Shape.defs.hh (1.64), src/BD_Shape.inlines.hh (1.122),
+	  tests/BD_Shape/cc76narrowing1.cc (1.7),
+	  tests/BD_Shape/cc76narrowing2.cc (1.7),
+	  tests/BD_Shape/cc76narrowing3.cc (1.7),
+	  tests/BD_Shape/cc76narrowing4.cc (1.8),
+	  tests/BD_Shape/cc76narrowing5.cc (1.8): Corrected implementation
+	  and documentation of CC76_narrowing_assign() so as to match the
+	  order of arguments already used in all the widening and
+	  extrapolation operators.
+
+2006-01-19 Thursday 11:32  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* TODO (1.174): Added an item.
+
+2006-01-19 Thursday 11:31  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.154): Added a missing
+	  full stop.
+
+2006-01-19 Thursday 11:30  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/NNC_Polyhedron.defs.hh (1.43): Corrected a couple of
+	  comments.
+
+2006-01-19 Thursday 10:39  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/globals.defs.hh (1.34): Removed spurious quote from the
+	  documentation.
+
+2006-01-19 Thursday 10:37  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Checked_Number.defs.hh (1.66): Documentation typo fixed.
+
+2006-01-19 Thursday 10:36  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/BD_Shape.defs.hh (1.63): Corrected several documentation
+	  glitches reported by Andrea and David.
+
+2006-01-19 Thursday 10:34  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Variable.defs.hh (1.51): "base blocks" --> "basic blocks".
+
+2006-01-18 Wednesday 19:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/ppl_swiprolog.cc (1.118): Avoid a compiler
+	  warning.
+
+2006-01-18 Wednesday 18:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/definitions.dox (1.189): Fixed anchor for LeVerge92.
+
+2006-01-18 Wednesday 16:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_swi_prolog.m4 (1.9): Fixed the detection of
+	  SWI-Prolog version 5.6.0 or later.
+
+2006-01-18 Wednesday 13:56  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* src/Grid_simplify.cc (grids.47): Add more tracing to
+	  reduce_pc_with_pc.
+
+2006-01-18 Wednesday 13:12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.153): Another typo
+	  fixed.
+
+2006-01-18 Wednesday 13:04  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_c.h.in (1.64): Many small improvements to the
+	  documentation of the C interface.
+
+2006-01-18 Wednesday 13:02  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.152): Several small
+	  corrections pointed out by Andrea.
+
+2006-01-18 Wednesday 13:01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/: BD_Shape/universe1.cc (1.8),
+	  Polyhedron/addconstraints6.cc (1.7),
+	  Polyhedron/writepolyhedron3.cc (1.7): "an universe" ==> "a
+	  universe".
+
+2006-01-18 Wednesday 13:00  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/globals.types.hh (1.6): Corrected a typo in the
+	  documentation.
+
+2006-01-18 Wednesday 09:25  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Polyhedron/powerset1.cc (1.10): Some old compilers do not
+	  fully understand using directives/declarations.
+
+2006-01-17 Tuesday 18:24  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* src/Checked_Number.defs.hh (grids.11): Take out the four
+	  parameter gcdext_assign declaration.
+
+2006-01-17 Tuesday 17:50  Andrea Cimino
+
+	* src/: LP_Problem.cc, LP_Problem.defs.hh (simplex.[21,19]):
+	  `incremetality' improved and simplified using by using the new
+	  mapping system. Now the Constraint taken by `incrementality' is
+	  passed by const reference.
+
+2006-01-17 Tuesday 17:03  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* tests/ppl_test.hh (grids.18): Add macro PPL_TEST_STR.  Rename
+	  macro stringify to PPL_TEST_XSTR, correcting the expansion.
+
+2006-01-17 Tuesday 16:54  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* src/globals.defs.hh (1.33): Correct the macro names in the
+	  PPL_STR and PPL_XSTR docs.
+
+2006-01-17 Tuesday 15:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.37), README (1.44), configure.ac (1.205),
+	  debian/Makefile.am (1.1): Distribute also the contents of the
+	  `debian' subdirectory.
+
+2006-01-17 Tuesday 15:51  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* Watchdog/CREDITS (1.2): "inexistent" replaced by "non-existent".
+
+2006-01-17 Tuesday 15:07  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Polyhedron/powerset1.cc (1.9): Corrected a name lookup
+	  problem for the output operator.
+
+2006-01-17 Tuesday 14:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.43): Updated.
+
+2006-01-17 Tuesday 14:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/README (1.13): Updated.
+
+2006-01-17 Tuesday 13:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Makefile.am (1.138): Removed no longer necessary definition
+	  of DOC_FILES.
+
+2006-01-17 Tuesday 13:43  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* README (1.42): Change "source distributions" to "source
+	  distribution".
+
+2006-01-17 Tuesday 12:58  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* README.configure (1.17): Clip trailing whitespace.
+
+2006-01-17 Tuesday 12:31  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: BDS_Status.idefs.hh (1.16), Bounding_Box.defs.hh (1.13),
+	  Checked_Number.defs.hh (1.65), Coefficient_traits_template.hh
+	  (1.6), DB_Matrix.defs.hh (1.19), DB_Row.defs.hh (1.17),
+	  Float.defs.hh (1.17), GMP_Integer.types.hh (1.13), Init.defs.hh
+	  (1.15), Interval.defs.hh (1.27), Linear_Row.defs.hh (1.18),
+	  Linear_System.defs.hh (1.24), Matrix.defs.hh (1.75),
+	  Ph_Status.idefs.hh (1.16), Row.defs.hh (1.104),
+	  Saturation_Matrix.defs.hh (1.7), Saturation_Row.defs.hh (1.10),
+	  Scalar_Products.defs.hh (1.4), Widening_Function.defs.hh (1.14),
+	  checked.defs.hh (1.33), globals.defs.hh (1.32): Added \ingroup
+	  Doxygen commands to the documentation of many
+	  implementation-related C++ type declarations.
+
+2006-01-17 Tuesday 12:21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Powerset.defs.hh (1.23): Do not include (useless) header file
+	  <set>.  Do directly include header file <iterator>.
+
+2006-01-17 Tuesday 12:20  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/: C/ppl_c.h.in (1.63), Prolog/Prolog_interface.dox
+	  (1.151): Mark the start/stop of \defgroup documentation blocks
+	  for readability.
+
+2006-01-17 Tuesday 12:17  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/: devref.doxyconf-html.in (1.64), devref.doxyconf-latex.in
+	  (1.7): File globals.types.hh was not considered when building the
+	  devref manual.
+
+2006-01-17 Tuesday 12:03  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.188): Added Doxygen group
+	  PPL_CXX_interface.
+
+2006-01-17 Tuesday 10:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/powerset1.cc (1.8): Fixed the test of constant
+	  reverse iterators.
+
+2006-01-17 Tuesday 10:08  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Powerset.defs.hh (1.22): Typo's fixed.
+
+2006-01-17 Tuesday 09:44  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: BD_Shape.defs.hh (1.62), BHRZ03_Certificate.defs.hh (1.15),
+	  C_Polyhedron.defs.hh (1.40), Checked_Number.defs.hh (1.64),
+	  Coefficient.types.hh (1.12), Constraint.defs.hh (1.115),
+	  Constraint_System.defs.hh (1.26), Determinate.defs.hh (1.61),
+	  GMP_Integer.types.hh (1.12), Generator.defs.hh (1.115),
+	  Generator_System.defs.hh (1.14), H79_Certificate.defs.hh (1.14),
+	  LP_Problem.defs.hh (1.7), LP_Problem.types.hh (1.5),
+	  Linear_Expression.defs.hh (1.19), NNC_Polyhedron.defs.hh (1.42),
+	  Poly_Con_Relation.defs.hh (1.31), Poly_Gen_Relation.defs.hh
+	  (1.29), Polyhedra_Powerset.defs.hh (1.31), Polyhedron.defs.hh
+	  (1.291), Powerset.defs.hh (1.21), Rounding_Dir.defs.hh (1.10),
+	  Topology.hh (1.12), Variable.defs.hh (1.50), globals.defs.hh
+	  (1.31), globals.types.hh (1.5), namespaces.hh (1.8),
+	  version.hh.in (1.14): Added Doxygen group PPL_CXX_interface.
+	  Added all (user-level) C++ namespaces, classes, structs, defines,
+	  typedefs and enumerations to the new group.
+
+2006-01-17 Tuesday 09:42  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Result.defs.hh (1.14): Hiding initializers of enumeration
+	  Result.  try to uniformize the documentation of enumeration
+	  values.
+
+2006-01-17 Tuesday 07:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.204): Bump version number.
+
+2006-01-17 Tuesday 07:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Powerset.defs.hh (1.20): List the availability of bool
+	  operator!=(const D& x, const D& y) among the requirements on D
+	  set by the class Powerset<D>.
+
+2006-01-17 Tuesday 07:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/powerset1.cc (1.7): Corrected and almost
+	  completed.
+
+2006-01-17 Tuesday 06:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/powerset1.cc (1.6): Removed spurious
+	  redeclaration of ps3 (it broke the build).
+
+2006-01-17 Tuesday 01:35  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* src/Powerset.defs.hh (1.19): Document the requirements for
+	  template parameter D.
+
+2006-01-17 Tuesday 01:13  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* tests/Polyhedron/powerset1.cc (1.5): Involve every method of
+	  Fcaibvp in the test.	Make std::set a private parent of Fcaibvp.
+	  Add operator==(Fcaibvp&, Fcaibvp&).
+
+2006-01-16 Monday 22:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.24): Updated.
+
 2006-01-16 Monday 22:39  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Watchdog/ChangeLog (1.14): Updated.
