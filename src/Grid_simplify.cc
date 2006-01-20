@@ -358,8 +358,8 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 
   // For each dimension `dim' move or construct a row into position
   // `pivot_index' such that the row has zero in all elements
-  // preceding FIX trailing? column `dim' and a value other than zero
-  // in column `dim'.
+  // following column `dim' and a value other than zero in column
+  // `dim'.
   dimension_type pivot_index = 0;
   for (dimension_type dim = 0; dim < num_cols; ++dim) {
     TRACE(cerr << "dim " << dim << endl);
