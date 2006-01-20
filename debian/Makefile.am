@@ -24,7 +24,6 @@ EXTRA_DIST = \
 changelog \
 compat \
 control \
-control.prologs \
 libppl-c.dirs \
 libppl-c.install \
 libppl-c.links \
@@ -34,14 +33,10 @@ libppl-dev.doc-base.user \
 libppl-dev.docs \
 libppl-dev.install \
 libppl-dev.links \
-libppl-gprolog.links \
 libppl-pwl.copyright.in \
 libppl-pwl.dirs \
 libppl-pwl.docs \
 libppl-pwl.install \
-libppl-sicstus.links \
-libppl-swi.links \
-libppl-yap.links \
 libppl.copyright.in \
 libppl.dirs \
 libppl.docs \
