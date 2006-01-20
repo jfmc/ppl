@@ -187,6 +187,7 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   TRACE(cerr << "  pivot_a " << pivot_a << ", row_a " << row_a << endl);
   // Adjust the elements of row and pivot, similarly to
   // reduce_line_with_line above.
+  // FIX for the first column just set them to the values?
   for (dimension_type col = 0; // FIX start from column?
        col < pivot.size() - (parameters ? 0 : 1 /* modulus */);
        ++col) {
