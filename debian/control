@@ -25,7 +25,7 @@ Description: Parma Polyhedra Library: base package
 Package: libppl-dev
 Architecture: any
 Section: libdevel
-Depends: g++-3.4, libppl, graphviz
+Depends: libppl, graphviz
 Recommends: libgmp3-dev
 Suggests: libgmp3-doc
 Description: Parma Polyhedra Library: C++ interface
