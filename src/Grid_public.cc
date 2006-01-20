@@ -1959,12 +1959,12 @@ generalized_affine_preimage(const Linear_Expression& lhs,
   else
     mod = modulus;
 
-  // If all variables have a zero coefficient, then `lhs' is a constant:
-  // in this case, preimage and image happen to be the same.
+  // If all variables have zero coefficients, then `lhs' is a
+  // constant: in this case, preimage and image happen to be the same.
   // FIX really?
   if (lhs_space_dim == 0) {
-    // FIX inline equiv
-    generalized_affine_image(lhs, rhs, mod);
+    // All variables have zero coefficients, so `lhs' is a constant.
+    add_congruence((lhs %= rhs) / mod);
     return;
   }
 
