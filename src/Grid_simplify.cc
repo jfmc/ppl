@@ -170,7 +170,7 @@ template <typename R>
 void
 Grid::reduce_pc_with_pc(R& row, R& pivot,
 			dimension_type column,
-			bool parameters){
+			bool parameters) {
   TRACE(cerr << "reduce_pc_with_pc" << endl);
   // Assume moduli are equal.
   assert(parameters || row[pivot.size()-1] == pivot[pivot.size()-1]);
@@ -188,9 +188,19 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   // Adjust the elements of row and pivot, similarly to
   // reduce_line_with_line above.
   // FIX for the first column just set them to the values?
-  for (dimension_type col = 0; // FIX start from column?
-       col < pivot.size() - (parameters ? 0 : 1 /* modulus */);
-       ++col) {
+  dimension_type start, end;
+  // FIXME: Can these initializations be generated according to the
+  //        type of R in a clean way, in order to save the run-time
+  //        comparison and the `parameter' argument?  Perhaps this
+  //        template should be a macro.
+  if (parameters) {
+    start = column;
+    end = pivot.size();
+  } else {
+    start = 0;
+    end = column + 1;
+  }
+  for (dimension_type col = start; col < end; ++col) {
     TEMP_INTEGER(pivot_col);
     TEMP_INTEGER(row_col);
     pivot_col = pivot[col];
@@ -348,8 +358,8 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 
   // For each dimension `dim' move or construct a row into position
   // `pivot_index' such that the row has zero in all elements
-  // preceding column `dim' and a value other than zero in column
-  // `dim'.
+  // preceding FIX trailing? column `dim' and a value other than zero
+  // in column `dim'.
   dimension_type pivot_index = 0;
   for (dimension_type dim = 0; dim < num_cols; ++dim) {
     TRACE(cerr << "dim " << dim << endl);
