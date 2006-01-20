@@ -60,7 +60,7 @@ For any additional questions you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
 Here is the contents of the PPL 0.8 source distribution
-(26 directories, 1140 files):
+(26 directories, 1135 files):
 
 ppl-0.8
 |-- BUGS
@@ -149,7 +149,6 @@ ppl-0.8
 |   |-- changelog
 |   |-- compat
 |   |-- control
-|   |-- control.prologs
 |   |-- libppl-c.dirs
 |   |-- libppl-c.install
 |   |-- libppl-c.links
@@ -159,14 +158,10 @@ ppl-0.8
 |   |-- libppl-dev.docs
 |   |-- libppl-dev.install
 |   |-- libppl-dev.links
-|   |-- libppl-gprolog.links
 |   |-- libppl-pwl.copyright.in
 |   |-- libppl-pwl.dirs
 |   |-- libppl-pwl.docs
 |   |-- libppl-pwl.install
-|   |-- libppl-sicstus.links
-|   |-- libppl-swi.links
-|   |-- libppl-yap.links
 |   |-- libppl.copyright.in
 |   |-- libppl.dirs
 |   |-- libppl.docs
