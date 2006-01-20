@@ -1,5 +1,5 @@
 /* Test reduction and conversion of grids created from congruences.
-   Tests that fail with checked-int8.
+   Tests that require at least 16-bit integers.
    Copyright (C) 2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -72,7 +72,7 @@ int
 main() TRY {
   set_handlers();
 
-  nout << "grid4:" << endl;
+  nout << "grid2_16:" << endl;
 
   test1();
 

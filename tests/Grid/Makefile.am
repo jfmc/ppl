@@ -71,7 +71,7 @@ generalizedaffinepreimage1 generalizedaffinepreimage2 \
 generator1 \
 generators1 \
 coveringbox1 coveringbox2 \
-grid1 grid1_gmp grid1_64 grid1_16 grid2 grid3 grid4 \
+grid1 grid1_gmp grid1_64 grid1_16 grid2 grid2_16 grid3 \
 griddifference1 \
 intersection1 intersection2 \
 isuniverse1 \
@@ -165,8 +165,8 @@ grid1_gmp_SOURCES = grid1_gmp.cc
 grid1_16_SOURCES = grid1_16.cc
 grid1_64_SOURCES = grid1_64.cc
 grid2_SOURCES = grid2.cc
+grid2_16_SOURCES = grid2_16.cc
 grid3_SOURCES = grid3.cc
-grid4_SOURCES = grid4.cc
 
 griddifference1_SOURCES = griddifference1.cc
 
@@ -228,7 +228,7 @@ $(XFAIL_WITH_INT32)
 XFAIL_WITH_INT8 = \
 $(XFAIL_WITH_INT16) \
 grid1_16 \
-grid4 \
+grid2_16 \
 timeelapse2
 
 if USE_INT64
