@@ -369,7 +369,7 @@ test9() {
   exit(1);
 }
 
-// cong_test4 from Chiara Convert_Test.cc is in grid4.cc.
+// cong_test4 from Chiara Convert_Test.cc -- in grid4.cc.
 
 // cong_test5 from Chiara Convert_Test.cc.
 
