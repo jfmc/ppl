@@ -36,7 +36,7 @@ endif
 
 # If the version string was set using automake then the build would
 # have to be configured before the dpkg-buildpackage command.
-PPL_VERSION = $(shell grep "^AC_INIT" $(CURDIR)/configure.ac | sed -e "s/^AC_INIT.\[[^]]*\],\[\([^]]*\)\],.*/\1/")
+PPL_VERSION = $(shell grep "^AC_INIT" $(CURDIR)/configure.ac | sed -e "s/^AC_INIT.\[[^]]*\],[ \t]*\[\([^]]*\)\],.*/\1/")
 
 config.status:
 	dh_testdir
