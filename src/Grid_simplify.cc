@@ -219,7 +219,6 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
 				 Grid_Generator_System& sys) {
   // Very similar to reduce_congruence_with_equality below.  Any
   // change here may be needed there too.
-  // FIX check if row[column] == pivot[column], as in cong version?
   TRACE(cerr << "reduce_parameter_with_line" << endl);
 
   dimension_type num_cols = sys.num_columns();
