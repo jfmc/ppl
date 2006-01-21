@@ -145,6 +145,7 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
          (ra * p0  -  pa * r0) * x0  +  (ra * p1  -  pa * r1) * x1 ...
 	     +  (ra * pi - pa * ri)  =  0
   */
+  // FIX known zero's?
   for (dimension_type col = 0; col < pivot.size(); ++col)
     row[col] = (ra * pivot[col]) - (pa * row[col]);
 }
@@ -155,12 +156,14 @@ Grid::reduce_equality_with_equality(Congruence& row, Congruence& pivot,
   TRACE(cerr << "reduce_equality_with_equality" << endl);
   // Assume two equalities.
   assert(row.modulus() == 0 && pivot.modulus() == 0);
+
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, pivot[column], row[column]);
   TEMP_INTEGER(pa);
   TEMP_INTEGER(ra);
   pa = pivot[column] / gcd;
   ra = row[column] / gcd;
+  // FIX known zero's?
   // Adjust the elements of row, as in reduce_line_with_line.
   for (dimension_type col = 0; col < pivot.size() - 1; ++col)
     row[col] = (ra * pivot[col]) - (pa * row[col]);
@@ -170,10 +173,8 @@ template <typename R>
 void
 Grid::reduce_pc_with_pc(R& row, R& pivot,
 			dimension_type column,
-			bool parameters) {
-  TRACE(cerr << "reduce_pc_with_pc" << endl);
-  // Assume moduli are equal.
-  assert(parameters || row[pivot.size()-1] == pivot[pivot.size()-1]);
+			dimension_type start,
+			dimension_type end) {
   TEMP_INTEGER(gcd);
   TEMP_INTEGER(s);
   TEMP_INTEGER(t);
@@ -187,18 +188,6 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   TRACE(cerr << "  pivot_a " << pivot_a << ", row_a " << row_a << endl);
   // Adjust the elements of row and pivot, similarly to
   // reduce_line_with_line above.
-  dimension_type start, end;
-  // FIXME: Can these initializations be generated according to the
-  //        type of R in a clean way, in order to save the run-time
-  //        comparison and the `parameter' argument?  Perhaps this
-  //        template should be a macro.
-  if (parameters) {
-    start = column + 1;
-    end = pivot.size();
-  } else {
-    start = 0;
-    end = column;
-  }
   assert(pivot.size() > 0);
   assert(row.size() > 0);
   pivot[column] = gcd;
@@ -417,7 +406,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 	    reduce_parameter_with_line(row, pivot, dim, sys);
 	  else {
 	    assert(pivot.is_parameter_or_point());
-	    reduce_pc_with_pc(row, pivot, dim);
+	    reduce_pc_with_pc(row, pivot, dim, dim + 1, num_cols);
 	  }
 	}
       }
@@ -571,7 +560,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 	    reduce_congruence_with_equality(row, pivot, dim, sys);
 	  else {
 	    assert(pivot.is_proper_congruence());
-	    reduce_pc_with_pc(row, pivot, dim, false);
+	    reduce_pc_with_pc(row, pivot, dim, 0, dim);
 	  }
 	}
       }

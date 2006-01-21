@@ -2354,18 +2354,20 @@ private:
 
   //! Reduces \p row using \p pivot.
   /*!
-    Uses the point, parameter or congruence at \p pivot to change the
-    representation of the point, parameter or congruence at \p row so
-    that element col of \p row is zero.  If \p parameters is true then
-    the two rows are assumed to be points or parameters, otherwise
-    congruences are assumed.
+
+    Uses the point, parameter or proper congruence at \p pivot to
+    change the representation of the point, parameter or proper
+    congruence at \p row so that element col of \p row is zero.  Only
+    elements from index \p start to index \p end are modified (i.e. it
+    is assumed that all other elements are zero).
   */
   // Part of Grid for access to Matrix::rows.
   template <typename R>
   static void reduce_pc_with_pc(R& row,
 				R& pivot,
 				dimension_type col,
-				bool parameters = true);
+				dimension_type start,
+				dimension_type end);
 
   //! Reduce \p row using \p pivot.
   /*!
