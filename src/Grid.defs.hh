@@ -2345,7 +2345,8 @@ private:
   //! Reduces the equality \p row using the equality \p pivot.
   /*!
     Uses the equality \p pivot to change the representation of the
-    equality \p row so that element col of \p row is zero.
+    equality \p row so that the element at index \p col of \p row is
+    zero.
   */
   // A member of Grid for access to Matrix::rows.
   static void reduce_equality_with_equality(Congruence& row,
@@ -2354,12 +2355,11 @@ private:
 
   //! Reduces \p row using \p pivot.
   /*!
-
     Uses the point, parameter or proper congruence at \p pivot to
     change the representation of the point, parameter or proper
-    congruence at \p row so that element col of \p row is zero.  Only
-    elements from index \p start to index \p end are modified (i.e. it
-    is assumed that all other elements are zero).
+    congruence at \p row so that the element at index \p col of \p row
+    is zero.  Only elements from index \p start to index \p end are
+    modified (i.e. it is assumed that all other elements are zero).
   */
   // Part of Grid for access to Matrix::rows.
   template <typename R>
@@ -2372,8 +2372,8 @@ private:
   //! Reduce \p row using \p pivot.
   /*!
     Use the line or equation at \p pivot to change the representation
-    of the parameter or congruence at \p row so that element col of \p
-    row is zero.
+    of the parameter or congruence at \p row so that the element at
+    index \p col of \p row is zero.
   */
   // A member of Grid for access to Matrix::rows.
   static void reduce_parameter_with_line(Grid_Generator& row,
@@ -2384,7 +2384,8 @@ private:
   //! Reduce \p row using \p pivot.
   /*!
     Use the equality \p pivot to change the representation of the
-    congruence \p row so that element col of \p row is zero.
+    congruence \p row so that element at index \p col of \p row is
+    zero.
   */
   // A member of Grid for access to Matrix::rows.
   static void reduce_congruence_with_equality(Congruence& row,
