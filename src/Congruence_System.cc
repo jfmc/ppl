@@ -138,7 +138,7 @@ PPL::Congruence_System::normalize_moduli() {
   if (row > 0) {
     // Calculate the LCM of all the moduli.
     TEMP_INTEGER(lcm);
-    // Find first congruence.
+    // Find last proper congruence.
     while (true) {
       lcm = operator[](--row).modulus();
       if (lcm > 0)
