@@ -141,6 +141,38 @@ struct Extended_Number_Policy {
 typedef Checked::Check_Overflow_Policy Default_To_Policy;
 typedef Checked_Number_Transparent_Policy Default_From_Policy;
 
+template <typename T>
+struct Native_Checked_From_Wrapper {
+  typedef Default_From_Policy Policy;
+  static const T& raw_value(const T& v) {
+    return v;
+  }
+};
+
+template <typename T, typename P>
+struct Native_Checked_From_Wrapper<Checked_Number<T, P> > {
+  typedef P Policy;
+  static const T& raw_value(const Checked_Number<T, P>& v) {
+    return v.raw_value();
+  }
+};
+
+template <typename T>
+struct Native_Checked_To_Wrapper {
+  typedef Default_To_Policy Policy;
+  static T& raw_value(T& v) {
+    return v;
+  }
+};
+
+template <typename T, typename P>
+struct Native_Checked_To_Wrapper<Checked_Number<T, P> > {
+  typedef P Policy;
+  static T& raw_value(Checked_Number<T, P>& v) {
+    return v.raw_value();
+  }
+};
+
 //! A wrapper for numeric types implementing a given policy.
 /*! \ingroup PPL_CXX_interface
   The wrapper and related functions implement an interface which is common
@@ -433,34 +465,20 @@ private:
   T v;
 };
 
+template <typename To>
+Result assign_r(To& to, const Minus_Infinity& x, Rounding_Dir dir);
+template <typename To>
+Result assign_r(To& to, const Plus_Infinity& x, Rounding_Dir dir);
+template <typename To>
+Result assign_r(To& to, const Not_A_Number& x, Rounding_Dir dir);
+template <typename To>
+Result assign_r(To& to, const char* x, Rounding_Dir dir);
 template <typename To, typename To_Policy>
-Result assign_r(Checked_Number<To, To_Policy>& to,
-		const Minus_Infinity& x, Rounding_Dir dir);
-template <typename To, typename To_Policy>
-Result assign_r(Checked_Number<To, To_Policy>& to,
-		const Plus_Infinity& x, Rounding_Dir dir);
-template <typename To, typename To_Policy>
-Result assign_r(Checked_Number<To, To_Policy>& to,
-		const Not_A_Number& x, Rounding_Dir dir);
-template <typename To, typename To_Policy>
-Result assign_r(Checked_Number<To, To_Policy>& to,
-		const char* x, Rounding_Dir dir);
-template <typename To, typename To_Policy>
-Result assign_r(Checked_Number<To, To_Policy>& to,
-		char* x, Rounding_Dir dir);
+Result assign_r(To& to, char* x, Rounding_Dir dir);
 
 #define FUNC1(name) \
 template <typename To, typename From> \
-Result name(To& to, const From& x, Rounding_Dir dir); \
-template <typename To, typename To_Policy, typename From> \
-Result name(Checked_Number<To, To_Policy>& to, \
-            const From& x, \
-	    Rounding_Dir dir); \
-template <typename To, typename To_Policy, \
-          typename From, typename From_Policy> \
-Result name(Checked_Number<To, To_Policy>& to, \
-            const Checked_Number<From, From_Policy>& x, \
-            Rounding_Dir dir);
+Result name(To& to, const From& x, Rounding_Dir dir);
 
 FUNC1(assign_r)
 FUNC1(neg_assign_r)
@@ -471,20 +489,7 @@ FUNC1(sqrt_assign_r)
 
 #define FUNC1(name) \
 template <typename To, typename From> \
-Result name(To& to, const From& x, int exp, Rounding_Dir dir); \
-template <typename To, typename To_Policy, typename From> \
-Result name(Checked_Number<To, To_Policy>& to, \
-            const From& x, \
-            int exp, Rounding_Dir dir); \
-template <typename To, typename To_Policy, \
-          typename From, typename From_Policy> \
-Result name(Checked_Number<To, To_Policy>& to, \
-            const Checked_Number<From, From_Policy>& x, \
-            int exp, Rounding_Dir dir); \
-template <typename To, typename From, typename From_Policy> \
-Result name(To& to, \
-            const Checked_Number<From, From_Policy>& x, \
-            int exp, Rounding_Dir dir);
+Result name(To& to, const From& x, int exp, Rounding_Dir dir);
 
 FUNC1(mul2exp_assign_r)
 FUNC1(div2exp_assign_r)
@@ -493,48 +498,7 @@ FUNC1(div2exp_assign_r)
 
 #define FUNC2(name) \
 template <typename To, typename From1, typename From2> \
-Result name(To& to, const From1& x, const From2& y, Rounding_Dir dir); \
-template <typename To, typename To_Policy, typename From1, typename From2> \
-Result name(Checked_Number<To, To_Policy>& to, \
-            const From1& x, \
-            const From2& y, \
-            Rounding_Dir dir); \
-template <typename To, typename From1, typename From2, typename Policy2> \
-Result name(To& to, \
-            const From1& x, \
-            const Checked_Number<From2, Policy2>& y, \
-	    Rounding_Dir dir); \
-template <typename To, typename To_Policy, \
-          typename From1, typename From2, typename Policy2> \
-Result name(Checked_Number<To, To_Policy>& to, \
-	    const From1& x, \
-            const Checked_Number<From2, Policy2>& y, \
-	    Rounding_Dir dir); \
-template <typename To, typename From1, typename Policy1, typename From2> \
-Result name(To& to, \
-	    const Checked_Number<From1, Policy1>& x, \
-            const From2& y, \
-	    Rounding_Dir dir); \
-template <typename To, typename To_Policy, \
-          typename From1, typename Policy1, typename From2> \
-Result name(Checked_Number<To, To_Policy>& to, \
-	    const Checked_Number<From1, Policy1>& x, \
-            const From2& y, \
-	    Rounding_Dir dir); \
-template <typename To, \
-          typename From1, typename Policy1, \
-	  typename From2, typename Policy2> \
-Result name(To& to, \
-            const Checked_Number<From1, Policy1>& x, \
-	    const Checked_Number<From2, Policy2>& y, \
-            Rounding_Dir dir); \
-template <typename To, typename To_Policy, \
-          typename From1, typename Policy1, \
-          typename From2, typename Policy2> \
-Result name(Checked_Number<To, To_Policy>& to, \
-	    const Checked_Number<From1, Policy1>& x, \
-	    const Checked_Number<From2, Policy2>& y, \
-            Rounding_Dir dir);
+Result name(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 FUNC2(add_assign_r)
 FUNC2(sub_assign_r)
