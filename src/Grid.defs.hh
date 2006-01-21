@@ -2335,7 +2335,7 @@ private:
   //! Reduces the line \p row using the line \p pivot.
   /*!
     Uses the line \p pivot to change the representation of the line \p
-    row so that element col of \p row is zero.
+    row so that the element at index \p col of \p row is zero.
   */
   // A member of Grid for access to Matrix::rows.
   static void reduce_line_with_line(Grid_Generator& row,
