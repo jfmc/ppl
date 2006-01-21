@@ -145,8 +145,9 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
          (ra * p0  -  pa * r0) * x0  +  (ra * p1  -  pa * r1) * x1 ...
 	     +  (ra * pi - pa * ri)  =  0
   */
-  // FIX known zero's?
-  for (dimension_type col = 0; col < pivot.size(); ++col)
+  for (dimension_type col = pivot.size() - 2 /* parameter divisor, index */;
+       col >= column;
+       --col)
     row[col] = (ra * pivot[col]) - (pa * row[col]);
 }
 
@@ -163,9 +164,8 @@ Grid::reduce_equality_with_equality(Congruence& row, Congruence& pivot,
   TEMP_INTEGER(ra);
   pa = pivot[column] / gcd;
   ra = row[column] / gcd;
-  // FIX known zero's?
   // Adjust the elements of row, as in reduce_line_with_line.
-  for (dimension_type col = 0; col < pivot.size() - 1; ++col)
+  for (dimension_type col = 0; col <= column; ++col)
     row[col] = (ra * pivot[col]) - (pa * row[col]);
 }
 
