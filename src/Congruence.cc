@@ -174,7 +174,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {
     }
   }
   if (first)
-    s << "0";
+    s << Coefficient_zero();
   s << " = " << -c.inhomogeneous_term();
   if (c.is_proper_congruence())
     s << " (mod " << c.modulus() << ")";
