@@ -112,39 +112,8 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
   TEMP_INTEGER(ra);
   pa = pivot[column] / gcd;
   ra = row[column] / gcd;
-  /* Adjust the elements of row such that row[column] is zero.
-
-     ra * pivot[col] == pa * row[col], which means that in the loop
-     below row[column] is set to zero.  All elements in row that were
-     originally zero remain zero, and the rest are updated.
-
-     The equivalence of the adjusted row can be seen as follows, where
-     pn and rn are the pivot and row coefficients and pi and ri are
-     the inhomogeneous terms of the pivot and row.
-
-     FIX Is it OK to consider the parameters as equations like this?
-
-     1 The parameter or congruence relation row is multiplied
-       throughout by pa, producing
-
-         pa * r0 * x0  +  pa * r1 * x1  ... +  pa * ri  ==  0
-
-     2 The relation pivot is multiplied throughout by ra and then
-       substituted for the zero in the updated row relation, resulting
-       in
-
-         pa * r0 * x0  +  pa * r1 * x1  ... +  pa * ri
-	     ==  ra * p0 * x0  +  ra * p1 * x1  ... +  ra * pi
-
-     3 The row relation is simplified, below, to show that the element
-       col will be ra * pivot[col] - pa * row[col], which is zero.
-
-         ra * p0 * x0  -  pa * r0 * x0  +  ra * p1 * x1  -  pa * r1 * x1
-	     ... +  ra * pi  -  pa * ri  =  0
-
-         (ra * p0  -  pa * r0) * x0  +  (ra * p1  -  pa * r1) * x1 ...
-	     +  (ra * pi - pa * ri)  =  0
-  */
+  // Multiply row and subtract from it a multiple of pivot such that
+  // the result in row[column] is zero.
   row[column] = 0;
   for (dimension_type col = pivot.size() - 2 /* parameter divisor, index */;
        col > column;
@@ -166,7 +135,8 @@ Grid::reduce_equality_with_equality(Congruence& row, Congruence& pivot,
   pa = pivot[column] / gcd;
   ra = row[column] / gcd;
   row[column] = 0;
-  // Adjust the elements of row, as in reduce_line_with_line.
+  // Multiply row and subtract from it a multiple of pivot such that
+  // the result in row[column] is zero.
   for (dimension_type col = 0; col < column; ++col)
     row[col] = (ra * pivot[col]) - (pa * row[col]);
 }
@@ -188,8 +158,8 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   pivot_a = pivot[column] / gcd;
   row_a = row[column] / gcd;
   TRACE(cerr << "  pivot_a " << pivot_a << ", row_a " << row_a << endl);
-  // Adjust the elements of row and pivot, similarly to
-  // reduce_line_with_line above.
+  // Adjust the elements of row and pivot, in a similar way to the
+  // reduction functions above.
   assert(pivot.size() > 0);
   assert(row.size() > 0);
   pivot[column] = gcd;
@@ -209,7 +179,6 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
        of pivot being negated and then substituted into a t-multiplied
        row.  */
     pivot[col] = (s * pivot_col) + (t * row_col);
-    // FIX up then back down, is there a direct route?
     row[col] = (pivot_a * row_col) - (row_a * pivot_col);
   }
 }
@@ -254,7 +223,7 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
       for (dimension_type col = 0; col < num_cols; ++col)
         row[col] *= pivot_a;
   }
-  // Adjust row as in reduce_line_with_line (row[col] has been
+  // Adjust row as in the reduction functions above (row[col] has been
   // multiplied by pivot_a already, in the loop above).
   for (dimension_type col = 0; col < num_cols; ++col)
     row[col] -= row_a * pivot[col];
