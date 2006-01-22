@@ -237,7 +237,7 @@ int
 main() TRY {
   set_handlers();
 
-  nout << "addconstraints1:" << endl;
+  nout << "addconstraint1:" << endl;
 
   test1();
   test2();
