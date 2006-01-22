@@ -115,14 +115,52 @@ PPL::Congruence_System::insert(const Constraint& c) {
 }
 
 void
-PPL::Congruence_System::add_rows(const Congruence_System& y) {
+PPL::Congruence_System::recycling_insert(Congruence_System& cgs) {
+  const dimension_type old_num_rows = num_rows();
+  const dimension_type cgs_num_rows = cgs.num_rows();
+  const dimension_type old_num_cols = num_columns();
+  dimension_type cgs_num_cols = cgs.num_columns();
+  if (old_num_cols >= cgs_num_cols)
+    add_zero_rows(cgs_num_rows, Row::Flags());
+  else {
+    add_zero_rows_and_columns(cgs_num_rows,
+			      cgs_num_cols - old_num_cols,
+			      Row::Flags());
+    // Swap the modulus column into the new last column.
+    swap_columns(old_num_cols - 1, num_columns() - 1);
+  }
+  --cgs_num_cols; // Convert to modulus index.
+  const dimension_type mod_index = num_columns() - 1;
+  for (dimension_type i = cgs_num_rows; i-- > 0; ) {
+    // Swap one coefficient at a time into the newly added rows, instead
+    // of swapping each entire row.  This ensures that the added rows
+    // have the same capacities as the existing rows.
+    Congruence& new_cg = operator[](old_num_rows + i);
+    Congruence& old_cg = cgs[i];
+    for (dimension_type j = cgs_num_cols; j-- > 0; )
+      std::swap(new_cg[j], old_cg[j]);
+    std::swap(new_cg[mod_index], old_cg[cgs_num_cols]); // Modulus.
+  }
+}
+
+void
+PPL::Congruence_System::insert(const Congruence_System& y) {
   Congruence_System& x = *this;
-  assert(x.row_size == y.row_size);
 
   const dimension_type x_n_rows = x.num_rows();
   const dimension_type y_n_rows = y.num_rows();
+  const dimension_type old_n_cols = num_columns();
+  const dimension_type y_n_cols = y.num_columns();
   // Grow to the required size.
-  add_zero_rows(y_n_rows, Row::Flags());
+  if (old_n_cols >= y_n_cols)
+    add_zero_rows(y_n_rows, Row::Flags());
+  else {
+    add_zero_rows_and_columns(y_n_rows,
+			      y_n_cols - old_n_cols,
+			      Row::Flags());
+    // Swap the modulus column into the new last column.
+    swap_columns(old_n_cols - 1, num_columns() - 1);
+  }
 
   // Copy the rows of `y', forcing size and capacity.
   for (dimension_type i = y_n_rows; i-- > 0; ) {
@@ -168,6 +206,17 @@ PPL::Congruence_System::normalize_moduli() {
       operator[](row)[row_size-1] = lcm;
     }
   }
+}
+
+bool
+PPL::Congruence_System::is_equal_to(const Congruence_System& cgs) const {
+  for (dimension_type row = 0; row < cgs.num_rows(); ++row)
+    for (dimension_type col = 0; col < cgs.num_columns(); ++col) {
+      if (operator[](row)[col] == cgs[row][col])
+	continue;
+      return false;
+    }
+  return true;
 }
 
 bool
@@ -237,6 +286,37 @@ satisfies_all_congruences(const Grid_Generator& g) const {
     }
   }
   return true;
+}
+
+bool
+PPL::Congruence_System::has_a_free_dimension() const {
+  // Search for a dimension that is free of any congruence or equality
+  // constraint.  Assumes a minimized system.
+  dimension_type space_dim = space_dimension();
+  std::vector<bool> free_dim(space_dim, true);
+  dimension_type free_dims = space_dim;
+  for (dimension_type row = num_rows(); row-- > 0; ) {
+    const Congruence& cg = operator[](row);
+    for (dimension_type dim = 0; dim < space_dim; ++dim)
+      if (free_dim[dim] && cg[dim+1] != 0) {
+	if (--free_dims == 0) {
+	  // All dimensions are constrained.
+#ifndef NDEBUG
+	  free_dim[dim] = false;
+	  // Check that there are free_dims dimensions marked free
+	  // in free_dim.
+	  dimension_type count = 0;
+	  for (dimension_type dim = 0; dim < space_dim; ++dim)
+	    count += free_dim[dim];
+	  assert(count == free_dims);
+#endif
+	  return true;
+	}
+	free_dim[dim] = false;
+      }
+  }
+  // At least one dimension is free of constraint.
+  return false;
 }
 
 void
@@ -389,4 +469,67 @@ PPL::operator==(const Congruence_System& x, const Congruence_System& y) {
     }
   }
   return false;
+}
+
+void
+PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
+  assert(num_columns() > 0);
+  dimension_type col = num_columns() - 1;
+  dimension_type old_num_rows = num_rows();
+  add_zero_rows_and_columns(dims, dims,
+			    Linear_Row::Flags(NECESSARILY_CLOSED,
+					      Linear_Row::LINE_OR_EQUALITY));
+  // Swap the modulus column into the new last column.
+  swap_columns(col, col + dims);
+
+  // Swap the added columns to the front of the matrix.
+  for (dimension_type row = old_num_rows; row-- > 0; )
+    std::swap(operator[](row), operator[](row + dims));
+
+  col += dims - 1;
+  // Set the diagonal element of each added row.
+  for (dimension_type row = 0; row < dims; ++row)
+    const_cast<Coefficient&>(operator[](row)[col - row]) = 1;
+}
+
+void
+PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
+  // TODO: this implementation is just an executable specification.
+  Congruence_System cgs = const_cgs;
+
+  dimension_type added_rows = cgs.num_rows();
+  dimension_type added_columns = cgs.space_dimension();
+
+  if (added_rows == 0) {
+    increase_space_dimension(space_dimension() + added_columns);
+    return;
+  }
+
+  dimension_type old_num_rows = num_rows();
+  dimension_type old_modi = num_columns() - 1;
+  dimension_type old_space_dim = space_dimension();
+
+  add_zero_rows_and_columns(added_rows, added_columns,
+			    Row::Flags());
+
+  dimension_type cgs_num_columns = cgs.num_columns();
+  dimension_type modi = num_columns() - 1;
+
+  // Swap the modulus and the new last column, in the old rows.
+  for (dimension_type i = 0; i < old_num_rows; ++i) {
+    Congruence& cg = operator[](i);
+    std::swap(cg[old_modi], cg[modi]);
+  }
+
+  // Move the congruences into *this from `cgs', shifting the
+  // coefficients along into the appropriate columns.
+  for (dimension_type i = added_rows; i-- > 0; ) {
+    Congruence& cg_old = cgs[i];
+    Congruence& cg_new = operator[](old_num_rows + i);
+    // The inhomogeneous term is moved to the same column.
+    std::swap(cg_new[0], cg_old[0]);
+    // All homogeneous terms are shifted by `space_dim' columns.
+    for (dimension_type j = 1; j < cgs_num_columns; ++j)
+      std::swap(cg_old[j], cg_new[old_space_dim + j]);
+  }
 }

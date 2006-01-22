@@ -146,13 +146,13 @@ public:
   explicit Congruence_System(const Constraint_System& cs);
 
   //! Ordinary copy-constructor.
-  Congruence_System(const Congruence_System& cs);
+  Congruence_System(const Congruence_System& cgs);
 
   //! Destructor.
   ~Congruence_System();
 
   //! Assignment operator.
-  Congruence_System& operator=(const Congruence_System& y);
+  Congruence_System& operator=(const Congruence_System& cgs);
 
   //! Returns the maximum space dimension a Congruence_System can handle.
   static dimension_type max_space_dimension();
@@ -161,18 +161,19 @@ public:
   dimension_type space_dimension() const;
 
   /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is exactly equal
+    to \p cgs.
+  */
+  bool is_equal_to(const Congruence_System& cgs) const;
+
+  /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this contains one or
     more linear equalities.
   */
   bool has_linear_equalities() const;
 
-  /*! \brief
-    Removes all the congruences from the congruence system and sets
-    its space dimension to 0.
-  */
+  //! Removes all the congruences and sets the space dimension to 0.
   void clear();
-
-  // TODO: Consider adding a recycling_insert.
 
   /*! \brief
     Inserts in \p *this a copy of the congruence \p cg, increasing the
@@ -195,6 +196,22 @@ public:
     Thrown if \p c is a relation.
   */
   void insert(const Constraint& c);
+
+  // TODO: Consider adding a recycling_insert(cg).
+
+  /*! \brief
+    Inserts in \p *this a copy of the congruences in \p cgs,
+    increasing the number of space dimensions if needed.
+
+    The inserted copies will be strongly normalized.
+  */
+  void insert(const Congruence_System& cgs);
+
+  /*! \brief
+    Inserts into \p *this the congruences in \p cgs, increasing the
+    number of space dimensions if needed.
+  */
+  void recycling_insert(Congruence_System& cgs);
 
   //! Returns the system containing only Congruence::zero_dim_false().
   static const Congruence_System& zero_dim_empty();
@@ -268,7 +285,7 @@ public:
 
     //! Constructor.
     const_iterator(const Matrix::const_iterator& iter,
-		   const Congruence_System& csys);
+		   const Congruence_System& cgs);
 
     //! \p *this skips to the next non-trivial congruence.
     void skip_forward();
@@ -287,7 +304,6 @@ public:
   //! Checks if all the invariants are satisfied.
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*!
-
     Returns <CODE>true</CODE> if and only if \p *this is a valid
     Matrix, each row in the system is a valid Congruence and the
     number of columns is consistent with the number of congruences.
@@ -318,15 +334,43 @@ public:
   //! Returns the number of proper congruences.
   dimension_type num_proper_congruences() const;
 
+  /*! \brief
+    Adds \p n rows and \p m columns of zeroes to the matrix,
+    initializing the added rows as in the unit congruence system.
+
+    \param n
+    The number of rows to be added: must be strictly positive.
+
+    \param m
+    The number of columns to be added: must be strictly positive.
+
+    \param row_flags
+    Flags for the newly added rows.
+
+    Turns the \f$r \times c\f$ matrix \f$A\f$ into the \f$(r+n) \times
+    (c+m)\f$ matrix \f$\bigl({0 \atop A}{B \atop A}\bigr)\f$ where
+    \f$B\f$ is the \f$n \times m\f$ unit matrix of the form
+    \f$\bigl({0 \atop 1}{1 \atop 0}\bigr)\f$.  The matrix is expanded
+    avoiding reallocation whenever possible.
+  */
+  void add_unit_rows_and_columns(dimension_type dims);
+
+  /*! \brief
+    Concatenates copies of the congruences from \p cgs onto \p *this.
+
+    The matrix for the new system of congruences is obtained by
+    leaving the old system in the upper left-hand side and placing the
+    congruences of \p cgs in the lower right-hand side, and padding
+    with zeroes.
+  */
+  void concatenate(const Congruence_System& cgs);
+
 protected:
 
   //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
   bool satisfies_all_congruences(const Grid_Generator& g) const;
 
 private:
-
-  //! Add the rows in \p y to the end of the system.
-  void add_rows(const Congruence_System& y);
 
   //! Adjusts all expressions to have the same moduli.
   void normalize_moduli();
@@ -348,6 +392,7 @@ private:
   void insert_verbatim(const Congruence& cg);
 
   friend class const_iterator;
+  // FIXME: Reduce the dependence on this declaration.
   friend class Grid;
   friend class Grid_Certificate;
 
@@ -359,13 +404,24 @@ private:
 				      const Congruence_System& y);
 
   //! Swaps \p *this with \p y.
-  void swap(Congruence_System& y);
+  void swap(Congruence_System& cgs);
 
   //! Returns the \p k- th congruence of the system.
   Congruence& operator[](dimension_type k);
 
   //! Returns a constant reference to the \p k- th congruence of the system.
   const Congruence& operator[](dimension_type k) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if any of the dimensions in
+    \p *this is free of constraint.
+
+    Any equality or proper congruence affecting a dimension constrains
+    that dimension.
+
+    This method only works for systems in minimal form.
+  */
+  bool has_a_free_dimension() const;
 
   /*! \brief
     Substitutes a given column of coefficients by a given affine
