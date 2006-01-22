@@ -57,30 +57,14 @@ PPL::Grid::add_space_dimensions(Grid_Generator_System& gs,
   assert(cgs.num_columns() - 1 == gs.space_dimension() + 1);
   assert(dims > 0);
 
-  dimension_type num_cols = cgs.num_columns() - 1;
-  cgs.add_zero_rows_and_columns(dims, dims, Row::Flags());
-  // Move the moduli.
-  dimension_type last_col = num_cols + dims;
-  cgs.swap_columns(num_cols, last_col);
-  dimension_type num_rows = cgs.num_rows();
-  dimension_type col_num = cgs.num_columns() - dims - 1;
-  for (dimension_type row_num = num_rows - dims;
-       row_num < num_rows; ++row_num, ++col_num) {
-    Congruence& cg = cgs[row_num];
-    cg.set_is_equality();
-    cg[col_num] = 1;
-  }
-  // TODO: consider the option of staying minimal by prepending the
-  //       new rows
-  clear_congruences_minimized();
+  cgs.add_unit_rows_and_columns(dims);
 
   // Add `dims' zero columns onto gs.
   gs.insert(parameter(0*Variable(space_dim + dims - 1)));
 
   normalize_divisors(gs);
 
-  if (generators_are_minimized())
-    dim_kinds.resize(last_col, EQUALITY /* a.k.a GEN_VIRTUAL */);
+  dim_kinds.resize(cgs.num_columns() - 1, EQUALITY /* a.k.a GEN_VIRTUAL */);
 }
 
 // (o is a point)       y
@@ -204,25 +188,9 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
     if (generators_are_up_to_date())
       // Adds rows and/or columns to both matrices.
       add_space_dimensions(gen_sys, con_sys, m);
-    else {
+    else
       // Only congruences are up-to-date so modify only them.
-      dimension_type num_cols = con_sys.num_columns() - 1;
-      con_sys.add_zero_rows_and_columns(m, m, Row::Flags());
-      // Swap the modulus and the new last column.
-      con_sys.swap_columns(num_cols, num_cols + m);
-      // Limit the added dimensions.
-      dimension_type num_rows = con_sys.num_rows();
-      dimension_type col_num = con_sys.num_columns() - m - 1;
-      for (dimension_type row_num = num_rows - m;
-	   row_num < num_rows; ++row_num, ++col_num) {
-	Congruence& cg = con_sys[row_num];
-	cg.set_is_equality();
-	cg[col_num] = 1;
-      }
-      // TODO: consider the option of staying minimal by prepending
-      //       the new rows, as in add_space_dimensions(gs,cgs,m).
-      clear_congruences_minimized();
-    }
+      con_sys.add_unit_rows_and_columns(m);
   else {
     // Only generators are up-to-date so modify only them.
     assert(generators_are_up_to_date());
@@ -272,58 +240,13 @@ PPL::Grid::concatenate_assign(const Grid& y) {
     return;
   }
 
-  // TODO: this implementation is just an executable specification.
-  Congruence_System cgs = y.congruences();
-
   congruences_are_up_to_date() || update_congruences();
 
-  // The matrix for the new system of congruences is obtained by
-  // leaving the old system in the upper left-hand side and placing
-  // the constraints of `cgs' in the lower right-hand side.
-  dimension_type added_rows = cgs.num_rows();
+  con_sys.concatenate(y.congruences());
 
-  // The case of a zero-dim `y' grid is handled above.
-  assert(added_columns > 0);
+  space_dim += added_columns;
 
-  if (added_rows > 0) {
-    dimension_type old_num_rows = con_sys.num_rows();
-    dimension_type old_modi = con_sys.num_columns() - 1;
-
-    con_sys.add_zero_rows_and_columns(added_rows, added_columns,
-				      Row::Flags());
-
-    dimension_type cgs_num_columns = cgs.num_columns();
-    dimension_type modi = con_sys.num_columns() - 1;
-
-    // Swap the modulus and the new last column, in the old rows.
-    for (dimension_type i = 0; i < old_num_rows; ++i) {
-      Congruence& cg = con_sys[i];
-      std::swap(cg[old_modi], cg[modi]);
-    }
-
-    // Move the congruences from `cgs' to `con_sys', shifting the
-    // coefficients along into the appropriate columns.
-    for (dimension_type i = added_rows; i-- > 0; ) {
-      Congruence& cg_old = cgs[i];
-      Congruence& cg_new = con_sys[old_num_rows + i];
-      // The inhomogeneous term is moved to the same column.
-      std::swap(cg_new[0], cg_old[0]);
-      // All homogeneous terms are shifted by `space_dim' columns.
-      for (dimension_type j = 1; j < cgs_num_columns; ++j)
-	std::swap(cg_old[j], cg_new[space_dim + j]);
-    }
-
-    clear_congruences_minimized();
-
-    // Update space dimension.
-    space_dim += added_columns;
-  }
-  else {
-    // Update space dimension.
-    space_dim += added_columns;
-    con_sys.increase_space_dimension(space_dim);
-  }
-
+  clear_congruences_minimized();
   clear_generators_up_to_date();
 
   // Check that the system is OK, taking into account that the system
