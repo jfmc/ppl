@@ -33,7 +33,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
-  dimension_type old_num_rows = num_rows();
+  const dimension_type old_num_rows = num_rows();
   const dimension_type gs_num_rows = gs.num_rows();
   const dimension_type old_num_cols = num_columns();
   const dimension_type gs_num_cols = gs.num_columns();
