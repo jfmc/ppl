@@ -52,7 +52,7 @@ PPL::Grid::select_wider_congruences(const Grid& y,
       {
 	const Congruence& cg = con_sys[x_row];
 	const Congruence& y_cg = y.con_sys[y_row];
-	if (cg[dim] * y_cg.modulus() == y_cg[dim] * cg.modulus())
+	if (cg.is_equal_at_dimension(dim, y_cg))
 	  // The leading diagonal entries are equal.
 	  cgs_selected.insert(cg);
 	++x_row;
