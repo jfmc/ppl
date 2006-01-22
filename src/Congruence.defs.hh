@@ -294,6 +294,13 @@ public:
   bool is_equality() const;
 
   /*! \brief
+    Returns <CODE>true</CODE> if \p *this is equal to \p cg in
+    dimension \p dim.
+  */
+  bool is_equal_at_dimension(dimension_type dim,
+			     const Congruence& cg) const;
+
+  /*! \brief
     Returns a reference to the true (zero-dimension space) congruence
     \f$0 = 1 \pmod{1}\f$, also known as the <EM>integrality
     congruence</EM>.
@@ -453,7 +460,8 @@ private:
   friend class PPL::Scalar_Products;
   friend class PPL::Congruence_System;
   friend class PPL::Congruence_System::const_iterator;
-  // FIX reduce dependency, explain why needed
+  // FIXME: The following friend declaration is at least for
+  //        operator[] access in Grid::conversion.
   friend class PPL::Grid;
   friend class PPL::Linear_Expression;
 

@@ -171,6 +171,12 @@ Congruence::is_equality() const {
   return modulus() == 0;
 }
 
+inline bool
+Congruence::is_equal_at_dimension(dimension_type dim,
+				  const Congruence& cg) const {
+  return operator[](dim) * modulus() == cg[dim] * cg.modulus();
+}
+
 inline void
 Congruence::set_is_equality() {
   modulus() = 0;
