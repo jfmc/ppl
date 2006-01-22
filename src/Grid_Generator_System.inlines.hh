@@ -200,6 +200,37 @@ Grid_Generator_System::set_sorted(bool b) {
   Generator_System::set_sorted(b);
 }
 
+inline void
+Grid_Generator_System::unset_pending_rows() {
+  Generator_System::unset_pending_rows();
+}
+
+inline void
+Grid_Generator_System::set_index_first_pending_row(const dimension_type i) {
+  Generator_System::set_index_first_pending_row(i);
+}
+
+inline void
+Grid_Generator_System::resize_no_copy(const dimension_type new_n_rows,
+				      const dimension_type new_n_columns) {
+  Generator_System::resize_no_copy(new_n_rows, new_n_columns);
+}
+
+inline dimension_type
+Grid_Generator_System::num_columns() const {
+  return Generator_System::num_columns();
+}
+
+inline void
+Grid_Generator_System::erase_to_end(dimension_type first_to_erase) {
+  return Generator_System::erase_to_end(first_to_erase);
+}
+
+inline void
+Grid_Generator_System::permute_columns(const std::vector<dimension_type>& cycles) {
+  return Generator_System::permute_columns(cycles);
+}
+
 inline bool
 Grid_Generator_System::is_equal_to(const Grid_Generator_System y) const {
   return operator==(static_cast<const Generator_System&>(*this),

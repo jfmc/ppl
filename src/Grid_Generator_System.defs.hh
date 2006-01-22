@@ -433,11 +433,62 @@ private:
 			 const Grid_Generator_System& y);
   // FIXME: The following friend declaration grants Grid::conversion
   //        access to Matrix (for the Grid::reduce_reduced call) and
-  //        Matrix::resize_no_copy.
+  //        Matrix::resize_no_copy, and the following methods.
   friend class Grid;
 
   //! Sets the sortedness flag of the system to \p b.
   void set_sorted(bool b);
+
+  //! Sets the index to indicate that the system has no pending rows.
+  void unset_pending_rows();
+
+  //! Sets the index of the first pending row to \p i.
+  void set_index_first_pending_row(dimension_type i);
+
+  //! Resizes the system without worrying about the old contents.
+  /*!
+    \param new_n_rows
+    The number of rows of the resized system;
+
+    \param new_n_columns
+    The number of columns of the resized system.
+
+    The system is expanded to the specified dimensions avoiding
+    reallocation whenever possible.
+    The contents of the original system is lost.
+  */
+  void resize_no_copy(dimension_type new_n_rows,
+		      dimension_type new_n_columns);
+
+  /*! \brief
+    Returns the number of columns of the matrix (i.e., the size of the
+    rows).
+  */
+  dimension_type num_columns() const;
+
+  /*! \brief
+    Erases from the matrix all the rows but those having an index less
+    than \p first_to_erase.
+  */
+  void erase_to_end(dimension_type first_to_erase);
+
+  //! Permutes the columns of the matrix.
+  /*
+    \param cycles
+    A vector representing the non-trivial cycles of the permutation
+    according to which the columns must be rearranged.
+
+    The \p cycles vector contains, one after the other, the
+    non-trivial cycles (i.e., the cycles of length greater than one)
+    of a permutation of non-zero column indexes.  Each cycle is
+    terminated by zero.  For example, assuming the matrix has 6
+    columns, the permutation \f$ \{ 1 \mapsto 3, 2 \mapsto 4,
+    3 \mapsto 6, 4 \mapsto 2, 5 \mapsto 5, 6 \mapsto 1 \}\f$ can be
+    represented by the non-trivial cycles \f$(1 3 6)(2 4)\f$ that, in
+    turn can be represented by a vector of 6 elements containing 1, 3,
+    6, 0, 2, 4, 0.
+  */
+  void permute_columns(const std::vector<dimension_type>& cycles);
 };
 
 // Grid_Generator_System.inlines.hh is not included here on purpose.
