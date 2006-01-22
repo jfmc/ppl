@@ -198,7 +198,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
     }
   }
   if (first)
-    s << "0";
+    s << Coefficient_zero();
   const char* relation_symbol = 0;
   switch (c.type()) {
   case Constraint::EQUALITY:
