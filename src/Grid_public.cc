@@ -285,9 +285,9 @@ PPL::Grid::relation_with(const Congruence& cg) const {
     // FIXME: Confirm that these are correct, especially the first.
     if (cg.is_trivial_false())
       return Poly_Con_Relation::is_disjoint();
-    else if (cg.is_equality() || cg[0] == 0)
+    else if (cg.is_equality() || cg.inhomogeneous_term() == 0)
       return Poly_Con_Relation::is_included();
-    else if (cg[0] % cg.modulus() == 0)
+    else if (cg.inhomogeneous_term() % cg.modulus() == 0)
       return Poly_Con_Relation::is_included();
     else
       // cg is false.
@@ -532,35 +532,8 @@ PPL::Grid::is_pointed() const {
     return true;
   }
 
-  if (congruences_are_minimized()) {
-  free_dim_check:
-    // Search for a dimension that is free of any congruence or
-    // equality constraint from the minimized congruence system.
-    std::vector<bool> free_dim(space_dim, true);
-    dimension_type free_dims = space_dim;
-    for (dimension_type row = con_sys.num_rows(); row-- > 0; ) {
-      const Congruence& cg = con_sys[row];
-      for (dimension_type dim = 0; dim < space_dim; ++dim)
-	if (free_dim[dim] && cg[dim+1] != 0) {
-	  if (--free_dims == 0) {
-	    // All dimensions are constrained.
-#ifndef NDEBUG
-	    free_dim[dim] = false;
-	    // Check that there are free_dims dimensions marked free
-	    // in free_dim.
-	    dimension_type count = 0;
-	    for (dimension_type dim = 0; dim < space_dim; ++dim)
-	      count += free_dim[dim];
-	    assert(count == free_dims);
-#endif
-	    return true;
-	  }
-	  free_dim[dim] = false;
-	}
-    }
-    // At least one dimension is free of constraint.
-    return false;
-  }
+  if (congruences_are_minimized())
+    return con_sys.has_a_free_dimension();
 
   Grid& gr = const_cast<Grid&>(*this);
   if (generators_are_up_to_date()) {
@@ -581,7 +554,7 @@ PPL::Grid::is_pointed() const {
   }
   gr.set_congruences_minimized();
 
-  goto free_dim_check;
+  return gr.con_sys.has_a_free_dimension();
 }
 
 bool
@@ -849,20 +822,17 @@ PPL::Grid::OK(bool check_not_empty) const {
       // If the congruences are minimized, all the elements in the
       // congruence system must be the same as those in the temporary,
       // minimized system `cs_copy'.
-      for (dimension_type row = 0; row < cs_copy.num_rows(); ++row)
-	for (dimension_type col = 0; col < cs_copy.num_columns(); ++col) {
-	  if (con_sys[row][col] == cs_copy[row][col])
-	    continue;
+      if (!con_sys.is_equal_to(cs_copy)) {
 #ifndef NDEBUG
-	  cerr << "Congruences are declared minimized, but they change under reduction!"
-	       << endl
-	       << "Here is the minimized form of the congruence system:"
-	       << endl;
-	  cs_copy.ascii_dump(cerr);
-	  cerr << endl;
+	cerr << "Congruences are declared minimized, but they change under reduction!"
+	     << endl
+	     << "Here is the minimized form of the congruence system:"
+	     << endl;
+	cs_copy.ascii_dump(cerr);
+	cerr << endl;
 #endif
-	  goto fail;
-	}
+	goto fail;
+      }
 
       if (dim_kinds.size() != con_sys.num_columns() - 1 /* modulus */) {
 #ifndef NDEBUG
@@ -1042,23 +1012,9 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
   // The congruences are required.
   congruences_are_up_to_date() || update_congruences();
 
-  // Adjust `cgs' to the right space dimension.
-  cgs.increase_space_dimension(space_dim);
-
   // Swap (instead of copying) the coefficients of `cgs' (which is
   // writable).
-  const dimension_type old_num_rows = con_sys.num_rows();
-  const dimension_type cgs_num_rows = cgs.num_rows();
-  const dimension_type cgs_num_columns = cgs.num_columns();
-  con_sys.add_zero_rows(cgs_num_rows, Row::Flags());
-  for (dimension_type i = cgs_num_rows; i-- > 0; ) {
-    // Steal one coefficient at a time, since the rows might have
-    // different capacities (besides possibly having different sizes).
-    Congruence& new_cg = con_sys[old_num_rows + i];
-    Congruence& old_cg = cgs[i];
-    for (dimension_type j = cgs_num_columns; j-- > 0; )
-      std::swap(new_cg[j], old_cg[j]);
-  }
+  con_sys.recycling_insert(cgs);
 
   // Congruences may not be minimized and generators are out of date.
   clear_congruences_minimized();
@@ -1133,11 +1089,7 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
 
   congruences_are_up_to_date() || update_congruences();
 
-  // Adjust `cgs' to the current space dimension.
-  cgs.increase_space_dimension(space_dim);
-
-  for (dimension_type row = 0; row < cgs.num_rows(); ++row)
-    con_sys.add_row(cgs[row]);
+  con_sys.insert(cgs);
 
   clear_congruences_minimized();
 
@@ -1264,6 +1216,7 @@ PPL::Grid::add_recycled_generators(Grid_Generator_System& gs) {
     return;
   }
 
+  // FIX move to empty case (recycling_insert already does this)
   // Adjust `gs' to the right dimension.
   gs.insert(parameter(0*Variable(space_dim-1)));
 
@@ -1392,7 +1345,7 @@ PPL::Grid::intersection_assign(const Grid& y) {
   y.congruences_are_up_to_date() || y.update_congruences();
 
   if (y.con_sys.num_rows() > 0 ) {
-    x.con_sys.add_rows(y.con_sys);
+    x.con_sys.insert(y.con_sys);
     // Grid_Generators may be out of date and congruences may have changed
     // from minimal form.
     x.clear_generators_up_to_date();

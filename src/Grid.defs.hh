@@ -2427,6 +2427,21 @@ private:
   static bool upper_triangular(const Grid_Generator_System& sys,
 			       const Dimension_Kinds& dim_kinds);
 
+#ifndef NDEBUG
+  //! Check for trailing rows containing only zero terms.
+  /*!
+    If all columns contain zero in the rows of \p system from row index
+    \p first to row index \p last then return <code>true</code>, else
+    return <code>false</code>.  \p row_size gives the number of columns
+    in each row.  Used in assertion below.
+  */
+  template <typename M, typename R>
+  static bool Grid::rows_are_zero(M& system,
+				  dimension_type first,
+				  dimension_type last,
+				  dimension_type row_size);
+#endif
+
   //@} // Minimization-Related Static Member Functions
 
   //! \name Exception Throwers

@@ -192,7 +192,7 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   // change here may be needed there too.
   TRACE(cerr << "reduce_parameter_with_line" << endl);
 
-  dimension_type num_cols = sys.num_columns();
+  dimension_type num_cols = sys.num_columns() - 1;
 
   // If the elements at column in row and pivot are the same, then
   // just subtract pivot from row.
@@ -279,18 +279,12 @@ Grid::reduce_congruence_with_equality(Congruence& row,
 }
 
 #ifndef NDEBUG
-//! Check for trailing rows containing only zero terms.
-/*!
-  If all columns contain zero in the rows of \p system from row index
-  \p first to row index \p last then return <code>true</code>, else
-  return <code>false</code>.  \p row_size gives the number of columns
-  in each row.  Used in assertion below.
-*/
+template <typename M, typename R>
 bool
-rows_are_zero(Matrix& system, dimension_type first,
-	      dimension_type last, dimension_type row_size) {
+Grid::rows_are_zero(M& system, dimension_type first,
+		    dimension_type last, dimension_type row_size) {
   while (first <= last) {
-    Row& row = system[first++];
+    R& row = system[first++];
     for (dimension_type col = 0; col < row_size; ++col)
       if (row[col] != 0)
 	return false;
@@ -412,10 +406,14 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
     // Clip any zero rows from the end of the matrix.
     if (num_rows > pivot_index) {
       TRACE(cerr << "clipping trailing" << endl);
-      assert(rows_are_zero(sys,
-			   pivot_index,		// index of first
-			   sys.num_rows() - 1,  // index of last
-			   sys.num_columns() - 1)); // row size
+#ifndef NDEBUG
+      bool ret = rows_are_zero<Grid_Generator_System,Grid_Generator>
+	(sys,
+	 pivot_index,		// index of first
+	 sys.num_rows() - 1,	// index of last
+	 sys.num_columns() - 1); // row size
+      assert(ret == true);
+#endif
       sys.erase_to_end(pivot_index);
     }
 
@@ -560,10 +558,14 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   // Clip any zero rows from the end of the matrix.
   if (num_rows > 1 && num_rows > reduced_num_rows) {
     TRACE(cerr << "clipping trailing" << endl);
-    assert(rows_are_zero(sys,
-			 reduced_num_rows,    // index of first
-			 num_rows - 1,	      // index of last
-			 num_cols));	      // row size
+#ifndef NDEBUG
+    bool ret = rows_are_zero<Congruence_System,Congruence>
+      (sys,
+       reduced_num_rows,	// index of first
+       num_rows - 1,		// index of last
+       num_cols);		// row size
+    assert(ret == true);
+#endif
     sys.erase_to_end(reduced_num_rows);
   }
 
