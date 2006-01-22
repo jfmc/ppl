@@ -174,7 +174,7 @@ Congruence::is_equality() const {
 inline bool
 Congruence::is_equal_at_dimension(dimension_type dim,
 				  const Congruence& cg) const {
-  return operator[](dim) * modulus() == cg[dim] * cg.modulus();
+  return operator[](dim) * cg.modulus() == cg[dim] * modulus();
 }
 
 inline void
