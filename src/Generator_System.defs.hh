@@ -350,9 +350,6 @@ private:
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend class Parma_Polyhedra_Library::Grid_Generator_System;
-  // This is at least for the Matrix::resize_no_copy call in the Grid
-  // generator system conversion.
-  friend class Parma_Polyhedra_Library::Grid;
 
   friend bool
   Parma_Polyhedra_Library::operator==(const Polyhedron& x,
