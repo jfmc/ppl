@@ -106,19 +106,21 @@ inline void
 Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
 			    dimension_type column) {
   TRACE(cerr << "reduce_line_with_line" << endl);
+
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, pivot[column], row[column]);
-  TEMP_INTEGER(pa);
-  TEMP_INTEGER(ra);
-  pa = pivot[column] / gcd;
-  ra = row[column] / gcd;
-  // Multiply row and subtract from it a multiple of pivot such that
+  // Store the reduced ratio between pivot[column] and row[column].
+  TEMP_INTEGER(red_pivot_col);
+  TEMP_INTEGER(red_row_col);
+  red_pivot_col = pivot[column] / gcd;
+  red_row_col = row[column] / gcd;
+  // Multiply row, then subtract from it a multiple of pivot such that
   // the result in row[column] is zero.
   row[column] = 0;
   for (dimension_type col = pivot.size() - 2 /* parameter divisor, index */;
        col > column;
        --col)
-    row[col] = (ra * pivot[col]) - (pa * row[col]);
+    row[col] = (red_pivot_col * row[col]) - (red_row_col * pivot[col]);
 }
 
 inline void
@@ -130,15 +132,16 @@ Grid::reduce_equality_with_equality(Congruence& row, Congruence& pivot,
 
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, pivot[column], row[column]);
-  TEMP_INTEGER(pa);
-  TEMP_INTEGER(ra);
-  pa = pivot[column] / gcd;
-  ra = row[column] / gcd;
-  row[column] = 0;
-  // Multiply row and subtract from it a multiple of pivot such that
+  // Store the reduced ratio between pivot[column] and row[column].
+  TEMP_INTEGER(red_pivot_col);
+  TEMP_INTEGER(red_row_col);
+  red_pivot_col = pivot[column] / gcd;
+  red_row_col = row[column] / gcd;
+  // Multiply row, then subtract from it a multiple of pivot such that
   // the result in row[column] is zero.
+  row[column] = 0;
   for (dimension_type col = 0; col < column; ++col)
-    row[col] = (ra * pivot[col]) - (pa * row[col]);
+    row[col] = (red_pivot_col * row[col]) - (red_row_col * pivot[col]);
 }
 
 template <typename R>
@@ -151,15 +154,22 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   TEMP_INTEGER(s);
   TEMP_INTEGER(t);
   gcdext_assign(gcd, pivot[column], row[column], s, t);
-  TRACE(cerr << "  gcd " << gcd << ", s " << s << ", t " << t << endl);
   // Now pivot[column] * s + row[column] * t == gcd.
-  TEMP_INTEGER(pivot_a);
-  TEMP_INTEGER(row_a);
-  pivot_a = pivot[column] / gcd;
-  row_a = row[column] / gcd;
-  TRACE(cerr << "  pivot_a " << pivot_a << ", row_a " << row_a << endl);
-  // Adjust the elements of row and pivot, in a similar way to the
-  // reduction functions above.
+  TRACE(cerr << "  gcd " << gcd << ", s " << s << ", t " << t << endl);
+
+  // Store the reduced ratio between pivot[column] and row[column].
+  TEMP_INTEGER(red_pivot_col);
+  TEMP_INTEGER(red_row_col);
+  red_pivot_col = pivot[column] / gcd;
+  red_row_col = row[column] / gcd;
+  TRACE(cerr << "  red_pivot_col " << red_pivot_col
+	     << ", red_row_col " << red_row_col << endl);
+
+  // Multiply row, then subtract from it a multiple of pivot such that
+  // the result in row[column] is zero.  Afterwards, multiply pivot,
+  // then add to it a (possibly negative) multiple of row such that
+  // the result in pivot[column] is the smallest possible positive
+  // integer.
   assert(pivot.size() > 0);
   assert(row.size() > 0);
   pivot[column] = gcd;
@@ -169,17 +179,8 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
     TEMP_INTEGER(row_col);
     pivot_col = pivot[col];
     row_col = row[col];
-    /* FIX Is this to lower pivot[col] to the value of gcd, and hence
-       lower the sizes of the elements?  Could it be done in
-       reduce_line_with_line?  (confirm whether) NB for reducing all rows
-       with only constant terms to the integrality congruence.
-
-       The equivalence of the adjusted pivot can be seen as with row
-       in reduce_line_with_line above, only with an s-multiplied copy
-       of pivot being negated and then substituted into a t-multiplied
-       row.  */
     pivot[col] = (s * pivot_col) + (t * row_col);
-    row[col] = (pivot_a * row_col) - (row_a * pivot_col);
+    row[col] = (red_pivot_col * row_col) - (red_row_col * pivot_col);
   }
 }
 
@@ -192,7 +193,7 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   // change here may be needed there too.
   TRACE(cerr << "reduce_parameter_with_line" << endl);
 
-  dimension_type num_cols = sys.num_columns() - 1;
+  dimension_type num_cols = sys.num_columns() - 1 /* parameter divisor */;
 
   // If the elements at column in row and pivot are the same, then
   // just subtract pivot from row.
@@ -204,29 +205,35 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
 
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, pivot[column], row[column]);
-  TEMP_INTEGER(pivot_a);
-  TEMP_INTEGER(row_a);
-  pivot_a = pivot[column] / gcd;
-  row_a = row[column] / gcd;
+  // Store the reduced ratio between pivot[column] and row[column].
+  TEMP_INTEGER(red_pivot_col);
+  TEMP_INTEGER(red_row_col);
+  red_pivot_col = pivot[column] / gcd;
+  red_row_col = row[column] / gcd;
+
+  // Multiply row such that a multiple of pivot can be subtracted from
+  // it below to render row[column] zero.  This requires multiplying
+  // all other parameters to match.
 #ifdef STRONG_REDUCTION
   // Ensure that the multiplier is positive, so that the preceding
   // diagonals (including the divisor) remain positive.  It's safe to
   // swap the signs as row[column] will still come out 0.
-  if (pivot_a < 0) {
-    neg_assign(pivot_a);
-    neg_assign(row_a);
+  if (red_pivot_col < 0) {
+    neg_assign(red_pivot_col);
+    neg_assign(red_row_col);
   }
 #endif
   for (dimension_type index = 0; index < sys.num_rows(); ++index) {
     Grid_Generator& row = sys[index];
     if (row.is_parameter_or_point())
       for (dimension_type col = 0; col < num_cols; ++col)
-        row[col] *= pivot_a;
+        row[col] *= red_pivot_col;
   }
-  // Adjust row as in the reduction functions above (row[col] has been
-  // multiplied by pivot_a already, in the loop above).
+  // FIX Set row[column] directly, only affect required eles
+  // Subtract from row a multiple of pivot such that the result in
+  // row[column] is zero.
   for (dimension_type col = 0; col < num_cols; ++col)
-    row[col] -= row_a * pivot[col];
+    row[col] -= red_row_col * pivot[col];
 }
 
 void
@@ -262,8 +269,8 @@ Grid::reduce_congruence_with_equality(Congruence& row,
     neg_assign(pivot_a);
     neg_assign(row_a);
   }
-  // Multiply `row', including the modulus, by pivot_a.  FIX To keep
-  // all the moduli the same this requires multiplying all the other
+  // Multiply `row', including the modulus, by pivot_a.  To keep all
+  // the moduli the same this requires multiplying all the other
   // proper congruences in the same way.
   for (dimension_type index = 0; index < sys.num_rows(); ++index) {
     Congruence& row = sys[index];
@@ -272,6 +279,7 @@ Grid::reduce_congruence_with_equality(Congruence& row,
         row[col] *= pivot_a;
   }
   --num_cols;			// Modulus.
+  // FIX do column case directly, only affect required eles
   // Adjust row as in reduce_line_with_line (`row' has been multiplied
   // by pivot_a already, in the loop above).
   for (dimension_type col = 0; col < num_cols; ++col)
