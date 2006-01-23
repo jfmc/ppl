@@ -334,6 +334,9 @@ public:
   //! Returns the number of proper congruences.
   dimension_type num_proper_congruences() const;
 
+  //! Swaps \p *this with \p y.
+  void swap(Congruence_System& cgs);
+
   /*! \brief
     Adds \p n rows and \p m columns of zeroes to the matrix,
     initializing the added rows as in the unit congruence system.
@@ -403,9 +406,6 @@ private:
   Parma_Polyhedra_Library::operator==(const Congruence_System& x,
 				      const Congruence_System& y);
 
-  //! Swaps \p *this with \p y.
-  void swap(Congruence_System& cgs);
-
   //! Returns the \p k- th congruence of the system.
   Congruence& operator[](dimension_type k);
 
@@ -419,7 +419,7 @@ private:
     Any equality or proper congruence affecting a dimension constrains
     that dimension.
 
-    This method only works for systems in minimal form.
+    This method assumes the system is in minimal form.
   */
   bool has_a_free_dimension() const;
 
