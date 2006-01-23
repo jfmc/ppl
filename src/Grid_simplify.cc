@@ -467,6 +467,8 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 
   // Changes here may also be required in the generator version above.
 
+  // TODO: Consider normalizing the moduli only when congruences are
+  //       added to con_sys.
   sys.normalize_moduli();
 
   dimension_type num_cols = sys.num_columns() - 1 /* modulus */;
