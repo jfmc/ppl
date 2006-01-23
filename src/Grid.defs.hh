@@ -2371,9 +2371,9 @@ private:
 
   //! Reduce \p row using \p pivot.
   /*!
-    Use the line or equation at \p pivot to change the representation
-    of the parameter or congruence at \p row so that the element at
-    index \p col of \p row is zero.
+    Use the line \p pivot to change the representation of the
+    parameter \p row such that the element at index \p col of \p row
+    is zero.
   */
   // A member of Grid for access to Matrix::rows.
   static void reduce_parameter_with_line(Grid_Generator& row,
@@ -2384,7 +2384,7 @@ private:
   //! Reduce \p row using \p pivot.
   /*!
     Use the equality \p pivot to change the representation of the
-    congruence \p row so that element at index \p col of \p row is
+    congruence \p row such that element at index \p col of \p row is
     zero.
   */
   // A member of Grid for access to Matrix::rows.
