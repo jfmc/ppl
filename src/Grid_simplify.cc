@@ -229,10 +229,10 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
       for (dimension_type col = 0; col < num_cols; ++col)
         row[col] *= red_pivot_col;
   }
-  // FIX Set row[column] directly, only affect required eles
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
-  for (dimension_type col = 0; col < num_cols; ++col)
+  row[column] = 0;
+  for (dimension_type col = num_cols - 1; col > column; --col)
     row[col] -= red_row_col * pivot[col];
 }
 
