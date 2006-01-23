@@ -1216,10 +1216,6 @@ PPL::Grid::add_recycled_generators(Grid_Generator_System& gs) {
     return;
   }
 
-  // FIX move to empty case (recycling_insert already does this)
-  // Adjust `gs' to the right dimension.
-  gs.insert(parameter(0*Variable(space_dim-1)));
-
   if (!marked_empty()
       && (generators_are_up_to_date() || update_generators())) {
     // The grid contains at least one point.
@@ -1241,6 +1237,9 @@ PPL::Grid::add_recycled_generators(Grid_Generator_System& gs) {
   // `gs' must contain at least one point.
   if (!gs.has_points())
     throw_invalid_generators("add_recycled_generators(gs)", "gs");
+
+  // Adjust `gs' to the right dimension.
+  gs.insert(parameter(0*Variable(space_dim-1)));
 
   std::swap(gen_sys, gs);
 
