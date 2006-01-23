@@ -115,7 +115,12 @@ PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
     set_is_line();
   else
     set_is_ray_or_point();
-  for (dimension_type j = size(); j-- > 0; )
+  assert(size() > 0);
+  assert(y.size() > 0);
+  dimension_type sz = size() - 1;
+  dimension_type y_sz = y.size() - 1;
+  std::swap(operator[](sz), y[y_sz]); // Parameter divisors.
+  for (dimension_type j = (sz > y_sz ? y_sz : sz); j-- > 0; )
     std::swap(operator[](j), y[j]);
 }
 

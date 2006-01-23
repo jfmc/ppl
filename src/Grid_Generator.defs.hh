@@ -357,6 +357,10 @@ public:
   /*! \brief
     Swaps \p *this with \p y, leaving \p *this with the original
     capacity.
+
+    All up to and including the last element of the smaller of \p
+    *this and \p y are swapped.  The parameter divisor element of \p y
+    is swapped with the divisor element of \p *this.
   */
   void coefficient_swap(Grid_Generator& y);
 
