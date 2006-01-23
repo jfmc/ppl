@@ -72,6 +72,7 @@ PPL::Grid::Grid(dimension_type num_dimensions,
     // appropriate dimension and then store it in `con_sys'.
     Congruence_System cgs(Congruence::zero_dim_integrality());
     cgs.increase_space_dimension(space_dim);
+    cgs[0][0] = 1; // Recover minimal form after cgs(zdi) normalization.
     con_sys.swap(cgs);
 
     dim_kinds[0] = PROPER_CONGRUENCE /* a.k.a. PARAMETER */;
@@ -204,6 +205,7 @@ PPL::Grid::minimized_congruences() const {
       // then storing it in `con_sys'.
       Congruence_System cgs(Congruence::zero_dim_integrality());
       cgs.increase_space_dimension(space_dim);
+      cgs[0][0] = 1; // Recover minimal form after cgs(zdi) normalization.
       const_cast<Congruence_System&>(con_sys).swap(cgs);
     }
     return con_sys;
