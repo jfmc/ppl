@@ -2327,9 +2327,9 @@ private:
 
   //! Converts \p gs to lower triangular (i.e. minimized) form.
   /*!
-    Returns true if \p gs is empty, otherwise returns false.
+    Expect \p gs to contain at least one point.
   */
-  static bool simplify(Grid_Generator_System& gs,
+  static void simplify(Grid_Generator_System& gs,
 		       Dimension_Kinds& dim_kinds);
 
   //! Reduces the line \p row using the line \p pivot.

@@ -301,7 +301,7 @@ Grid::rows_are_zero(M& system, dimension_type first,
 }
 #endif
 
-bool
+void
 Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   TRACE(cerr << "==== simplify (reduce) gs:" << endl);
   TRACE(cerr << "sys:" << endl);
@@ -407,55 +407,41 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   }
   trace_dim_kinds("gs simpl end ", dim_kinds);
 
-  // Either the first row is a point, or H is empty.
-  // FIX all callers assume always returns containing points?
-
-  if (sys[0].is_parameter_or_point()) {
-    // Clip any zero rows from the end of the matrix.
-    if (num_rows > pivot_index) {
-      TRACE(cerr << "clipping trailing" << endl);
+  // Clip any zero rows from the end of the matrix.
+  if (num_rows > pivot_index) {
+    TRACE(cerr << "clipping trailing" << endl);
 #ifndef NDEBUG
-      bool ret = rows_are_zero<Grid_Generator_System,Grid_Generator>
-	(sys,
-	 pivot_index,		// index of first
-	 sys.num_rows() - 1,	// index of last
-	 sys.num_columns() - 1); // row size
-      assert(ret == true);
+    bool ret = rows_are_zero<Grid_Generator_System,Grid_Generator>
+      (sys,
+       pivot_index,		// index of first
+       sys.num_rows() - 1,	// index of last
+       sys.num_columns() - 1); // row size
+    assert(ret == true);
 #endif
-      sys.erase_to_end(pivot_index);
-    }
-
-    sys.unset_pending_rows();
-
-    // Ensure that the parameter divisors are the same as the system
-    // divisor.
-    TRACE(cerr << "updating param divisors" << endl);
-    Coefficient_traits::const_reference system_divisor = sys[0][0];
-    for (dimension_type row = 1, dim = 1, num_cols = sys.num_columns() - 1;
-	 dim < num_cols;
-	 ++dim)
-      switch (dim_kinds[dim]) {
-      case PARAMETER:
-	sys[row].divisor() = system_divisor;
-      case LINE:
-	++row;
-      case GEN_VIRTUAL:
-	break;
-      }
-
-    assert(sys.OK());
-
-    TRACE(cerr << "---- simplify (reduce) gs done." << endl);
-    return false;
+    sys.erase_to_end(pivot_index);
   }
 
-  sys.clear();
-  sys.set_sorted(false);
   sys.unset_pending_rows();
 
+  // Ensure that the parameter divisors are the same as the system
+  // divisor.
+  TRACE(cerr << "updating param divisors" << endl);
+  Coefficient_traits::const_reference system_divisor = sys[0][0];
+  for (dimension_type row = 1, dim = 1, num_cols = sys.num_columns() - 1;
+       dim < num_cols;
+       ++dim)
+    switch (dim_kinds[dim]) {
+    case PARAMETER:
+      sys[row].divisor() = system_divisor;
+    case LINE:
+      ++row;
+    case GEN_VIRTUAL:
+      break;
+    }
+
   assert(sys.OK());
-  TRACE(cerr << "---- simplify (reduce) gs done (empty)." << endl);
-  return true;
+
+  TRACE(cerr << "---- simplify (reduce) gs done." << endl);
 }
 
 bool
