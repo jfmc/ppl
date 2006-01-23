@@ -121,8 +121,6 @@ Grids Domain
 
 -  Check the tests cover all the code.
 
--  Add ascii_dump/0 to all classes
-
 -  Documentation needs checking and revising; in many places the
    cut and paste from the corresponding files for polyhedra has not
    been adapted for grids.
