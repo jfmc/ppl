@@ -112,6 +112,7 @@ PPL::Congruence_System::insert(const Constraint& c) {
     Congruence cg(c, cg_size, row_capacity);
     add_recycled_row(cg);
   }
+  operator[](rows.size()-1).strong_normalize();
 }
 
 void

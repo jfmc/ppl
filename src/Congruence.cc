@@ -64,7 +64,7 @@ PPL::Congruence::sign_normalize() {
   const dimension_type sz = x.size() - 1;
   // `first_non_zero' indicates the index of the first
   // coefficient of the row different from zero, disregarding
-  // the very first coefficient (inhomogeneous term / divisor).
+  // the very first coefficient (inhomogeneous term).
   dimension_type first_non_zero;
   for (first_non_zero = 1; first_non_zero < sz; ++first_non_zero)
     if (x[first_non_zero] != 0)
@@ -88,21 +88,17 @@ PPL::Congruence::normalize() {
   if (sz == 0)
     return;
 
-  TEMP_INTEGER(mod);
-  mod = modulus();
+  Coefficient_traits::const_reference mod = modulus();
   if (mod == 0)
     return;
 
-  Congruence& row = (*this);
-  for (dimension_type col = 1; col < sz - 1 /* modulus */; ++col) {
-    if (row[col] == 0)
-      continue;
-    // Factor the modulus out of the inhomogeneous term.
-    if ((row[0] %= mod) < 0)
-      // Make the inhomogeneous term positive.
-      row[0] += mod;
-    return;
-  }
+  Coefficient& row_0 = (*this)[0];
+  // Factor the modulus out of the inhomogeneous term.
+  row_0 %= mod;
+  if (row_0 < 0)
+    // Make inhomogeneous term positive.
+    row_0 += mod;
+  return;
 }
 
 void
