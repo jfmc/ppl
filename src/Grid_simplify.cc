@@ -258,32 +258,32 @@ Grid::reduce_congruence_with_equality(Congruence& row,
 
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, pivot[column], row[column]);
-  TEMP_INTEGER(pivot_a);
-  TEMP_INTEGER(row_a);
-  pivot_a = pivot[column] / gcd;
-  row_a = row[column] / gcd;
-  // Ensure that `pivot_a' is positive, so that the modulus remains
-  // positive when multiplying the proper congruences below.  It's
-  // safe to swap the signs as row[column] will still come out 0.
-  if (pivot_a < 0) {
-    neg_assign(pivot_a);
-    neg_assign(row_a);
+  TEMP_INTEGER(red_pivot_col);
+  TEMP_INTEGER(red_row_a);
+  red_pivot_col = pivot[column] / gcd;
+  red_row_a = row[column] / gcd;
+  // Ensure that `red_pivot_col' is positive, so that the modulus
+  // remains positive when multiplying the proper congruences below.
+  // It's safe to swap the signs as row[column] will still come out 0.
+  if (red_pivot_col < 0) {
+    neg_assign(red_pivot_col);
+    neg_assign(red_row_a);
   }
-  // Multiply `row', including the modulus, by pivot_a.  To keep all
-  // the moduli the same this requires multiplying all the other
+  // Multiply `row', including the modulus, by red_pivot_col.  To keep
+  // all the moduli the same this requires multiplying all the other
   // proper congruences in the same way.
   for (dimension_type index = 0; index < sys.num_rows(); ++index) {
     Congruence& row = sys[index];
     if (row.is_proper_congruence())
       for (dimension_type col = 0; col < num_cols; ++col)
-        row[col] *= pivot_a;
+        row[col] *= red_pivot_col;
   }
   --num_cols;			// Modulus.
-  // FIX do column case directly, only affect required eles
-  // Adjust row as in reduce_line_with_line (`row' has been multiplied
-  // by pivot_a already, in the loop above).
-  for (dimension_type col = 0; col < num_cols; ++col)
-    row[col] -= row_a * pivot[col];
+  row[column] = 0;
+  // Subtract from row a multiple of pivot such that the result in
+  // row[column] is zero.
+  for (dimension_type col = 0; col < column; ++col)
+    row[col] -= red_row_a * pivot[col];
 }
 
 #ifndef NDEBUG
