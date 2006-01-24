@@ -206,7 +206,9 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 
   dest.resize_no_copy(dest_num_rows, dims + 1 /* moduli */);
 
-  // Initialize elements and row types in `dest'.
+  // In `dest' initialize row types and elements, including setting
+  // the diagonal elements to the inverse ratio of the `source'
+  // diagonal elements.
   dimension_type source_index = 0, dest_index = dest_num_rows - 1;
   for (dimension_type dim = 0; dim < dims; ++dim) {
     TRACE(cerr << "init dim " << dim << endl);
@@ -230,9 +232,6 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	assert(dim_kinds[dim] == PARAMETER);
 	TRACE(cerr << "  parameter" << endl);
 	cg[dims] = 1;		// A proper congruence.
-	// Set the destination diagonal element to have the same size
-	// relative to the other diagonals as the corresponding
-	// element in the source has to the other source diagonals.
 	cg[dim] = diagonal_lcm / source[source_index][dim];
 	++source_index;
       }
@@ -402,7 +401,9 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   dest.set_index_first_pending_row(dest_num_rows);
   dest.resize_no_copy(dest_num_rows, dims + 1 /* parameter divisor */);
 
-  // Initialize elements and row types in `dest'.
+  // In `dest' initialize row types and elements, including setting
+  // the diagonal elements to the inverse ratio of the `source'
+  // diagonal elements.
   //
   // The top-down order of the congruence system rows corresponds to
   // the right-left order of the dimensions.
