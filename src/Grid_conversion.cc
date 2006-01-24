@@ -38,7 +38,7 @@ TRACE(using std::cerr);
 // x x X 0                   x X 0 0
 // x x x X                   X 0 0 0
 //
-// Any of the x's can be zeros.
+// Any of the x's can be zeroes.
 bool
 Grid::lower_triangular(const Congruence_System& sys,
 		       const Dimension_Kinds& dim_kinds) {
@@ -73,7 +73,7 @@ Grid::lower_triangular(const Congruence_System& sys,
 // 0 0 X x
 // 0 0 0 X
 //
-// Any of the x's can be zeros.
+// Any of the x's can be zeroes.
 bool
 Grid::upper_triangular(const Grid_Generator_System& sys,
 		       const Dimension_Kinds& dim_kinds) {
@@ -279,16 +279,17 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 
 	cg[dim] /= source_dim;
       }
-      TRACE(cerr << "dest after multiplying grid:" << endl);
+      TRACE(cerr << "dest after dividing grid:" << endl);
       TRACE(dest.ascii_dump(cerr));
     }
 
     // Consider each dimension `dim_prec' that precedes `dim', as the
-    // ones that follow have zeros in `dest' below `dest_index'.
+    // rows in `dest' that follow `dim_index' have zeroes at index
+    // `dim'.
     dimension_type tem_source_index = source_index;
     if (dim_kinds[dim] != LINE)
       ++dest_index;
-    for(dimension_type dim_prec = dim; dim_prec-- > 0; ) {
+    for (dimension_type dim_prec = dim; dim_prec-- > 0; ) {
       TRACE(cerr << "  dim_prec: " << dim_prec);
       TRACE(cerr << "  dest_index: " << dest_index);
       TRACE(cerr << "  tem_source_index: " << tem_source_index << endl);
@@ -302,7 +303,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	// column vector in `dest' at `dim' from the column vector in
 	// `dest' at `dim_prec'.
 	//
-	// I.e., for each row `dest_index' in `dest' that is below the
+	// I.e., for each row `dest_index' in `dest' that is above the
 	// row `dest_index', subtract dest[tem_source_index][dim]
 	// times the entry `dim' from the entry at `dim_prec'.
 	for (dimension_type row = dest_index; row-- > 0; ) {
@@ -477,16 +478,17 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
 	g[dim] /= source_dim;
       }
-      TRACE(cerr << "dest after multiplying grid:" << endl);
+      TRACE(cerr << "dest after dividing grid:" << endl);
       TRACE(dest.ascii_dump(cerr));
     }
 
-    // Consider each dimension `dim_fol' that precedes `dim', as the
-    // preceding rows have zeros in `dest' below `dest_index'.
+    // Consider each dimension `dim_fol' that follows `dim', as the
+    // rows in `dest' that follow row `dest_index' are zero at index
+    // `dim'.
     dimension_type tem_source_index = source_index;
     if (dim_kinds[dim] != EQUALITY)
       ++dest_index;
-    for(dimension_type dim_fol = dim + 1; dim_fol < dims; ++dim_fol) {
+    for (dimension_type dim_fol = dim + 1; dim_fol < dims; ++dim_fol) {
       TRACE(cerr << "  dim_fol: " << dim_fol);
       TRACE(cerr << "  dest_index: " << dest_index);
       TRACE(cerr << "  tem_source_index: " << tem_source_index << endl);
@@ -500,7 +502,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	// column vector in `dest' at `dim' from the column vector in
 	// `dest' at `dim_fol'.
 	//
-	// I.e., for each row `dest_index' in `dest' that is below the
+	// I.e., for each row `dest_index' in `dest' that is above the
 	// row `dest_index', subtract dest[tem_source_index][dim]
 	// times the entry `dim' from the entry at `dim_fol'.
 	for (dimension_type row = dest_index; row-- > 0; ) {
