@@ -290,7 +290,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 
     // Consider each dimension `dim_prec' that precedes `dim', as the
     // ones that follow have zeros in `dest' below `dest_index'.
-    dimension_type tem_source_index = source_index; // FIX name
+    dimension_type tem_source_index = source_index;
     if (dim_kinds[dim] != LINE)
       ++dest_index;
     for(dimension_type dim_prec = dim; dim_prec-- > 0; ) {
@@ -493,7 +493,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
     // Consider each dimension `dim_fol' that precedes `dim', as the
     // preceding rows have zeros in `dest' below `dest_index'.
-    dimension_type tem_source_index = source_index; // FIX name
+    dimension_type tem_source_index = source_index;
     if (dim_kinds[dim] != EQUALITY)
       ++dest_index;
     for(dimension_type dim_fol = dim + 1; dim_fol < dims; ++dim_fol) {
