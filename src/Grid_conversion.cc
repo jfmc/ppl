@@ -261,28 +261,22 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
       TEMP_INTEGER(source_dim);
       source_dim = source[source_index][dim];
 
-      // For each row in `dest' that is above the `dest_index'...
+      // In the rows in `dest' above `dest_index' divide each element
+      // at column `dim' by `source_dim'.
       for (dimension_type row = dest_index; row-- > 0; ) {
 	TRACE(cerr << "  row " << row << endl);
 	TRACE(dest.ascii_dump(cerr));
 
 	Congruence& cg = dest[row];
 
-	// Multiply `dest' by the minimum amount so that integer
-        // division of entry `dim' at `row' (FIX by the corresponding
-        // entry in `source'?) is exact.
+	// Multiply the representation of `dest' such that entry `dim'
+        // of `g' is a multiple of `source_dim'.  This ensures that
+        // the result of the division that follows is a whole number.
 	TEMP_INTEGER(multiplier);
 	gcd_assign(multiplier, cg[dim], source_dim);
-	// FIX multiplier like reduced source_dim (wrt assoc ele in dest row num row)
-	// FIX does it hold the relationship b/w these ele's?
 	multiplier = source_dim / multiplier;
 	multiply_grid(multiplier, cg, dest, dest_num_rows, dims);
 
-	// FIX Set entry `dim' at `row' in `dest' to the smallest
-	// possible integer value such that the corresponding entry in
-	// `source' could be made an integer such that `source' and
-	// `dest' would then have the same relative sizes that they
-	// had before the mult_grid.
 	cg[dim] /= source_dim;
       }
       TRACE(cerr << "dest after multiplying grid:" << endl);
@@ -309,8 +303,8 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	// `dest' at `dim_prec'.
 	//
 	// I.e., for each row `dest_index' in `dest' that is below the
-	// row npiv, subtract dest[tem_source_index][dim] times the
-	// entry `dim' from the entry at `dim_prec'.
+	// row `dest_index', subtract dest[tem_source_index][dim]
+	// times the entry `dim' from the entry at `dim_prec'.
 	for (dimension_type row = dest_index; row-- > 0; ) {
 	  assert(row < dest_num_rows);
 	  TRACE(cerr << "       " << row << endl);
@@ -464,29 +458,23 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       TEMP_INTEGER(source_dim);
       source_dim = source[source_index][dim];
 
-      // For each row in `dest' that is above the `dest_index'...
+      // In the rows in `dest' above `dest_index' divide each element
+      // at column `dim' by `source_dim'.
       for (dimension_type row = dest_index; row-- > 0; ) {
 	TRACE(cerr << "  row " << row << endl);
 	TRACE(dest.ascii_dump(cerr));
 
 	Grid_Generator& g = dest[row];
 
-	// Multiply `dest' by the minimum amount so that integer
-        // division of entry `dim' at `row' (FIX by the corresponding
-        // entry in `source'?) is exact.
-	TEMP_INTEGER(multiplier);
-	gcd_assign(multiplier, g[dim], source_dim);
-	// FIX multiplier like reduced source_dim (wrt assoc ele in dest row num row)
-	// FIX does it hold the relationship b/w these ele's?
-	multiplier = source_dim / multiplier;
-	multiply_grid(multiplier, g, dest, dest_num_rows,
+	// Multiply the representation of `dest' such that entry `dim'
+        // of `g' is a multiple of `source_dim'.  This ensures that
+        // the result of the division that follows is a whole number.
+	TEMP_INTEGER(red_source_dim);
+	gcd_assign(red_source_dim, g[dim], source_dim);
+	red_source_dim = source_dim / red_source_dim;
+	multiply_grid(red_source_dim, g, dest, dest_num_rows,
 		      dims + 1 /* parameter divisor */);
 
-	// FIX Set entry `dim' at `row' in `dest' to the smallest
-	// possible integer value such that the corresponding entry in
-	// `source' could be made an integer such that `source' and
-	// `dest' would then have the same relative sizes that they
-	// had before the mult_grid.
 	g[dim] /= source_dim;
       }
       TRACE(cerr << "dest after multiplying grid:" << endl);
@@ -513,8 +501,8 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	// `dest' at `dim_fol'.
 	//
 	// I.e., for each row `dest_index' in `dest' that is below the
-	// row npiv, subtract dest[tem_source_index][dim] times the
-	// entry `dim' from the entry at `dim_fol'.
+	// row `dest_index', subtract dest[tem_source_index][dim]
+	// times the entry `dim' from the entry at `dim_fol'.
 	for (dimension_type row = dest_index; row-- > 0; ) {
 	  assert(row < dest_num_rows);
 	  TRACE(cerr << "       " << row << endl);
