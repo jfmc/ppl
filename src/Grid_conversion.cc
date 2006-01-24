@@ -245,10 +245,11 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 
   // Convert.
   //
-  // `source_index' and `dest_index' hold positions of pivot rows in
-  // `source' and `dest'.  The order of the rows in `dest' is the
+  // `source_index' and `dest_index' hold the positions of pivot rows
+  // in `source' and `dest'.  The order of the rows in `dest' is the
   // reverse of the order in `source', so the rows are iterated from
-  // top to bottom in `source' and from bottom to top in `dest'.
+  // last to first (index 0) in `source' and from first to last in
+  // `dest'.
   source_index = source_num_rows;
   dest_index = 0;
 
@@ -447,10 +448,11 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
   // Convert.
   //
-  // `source_index' and `dest_index' hold positions of pivot rows in
-  // `source' and `dest'.  The order of the rows in `dest' is the
+  // `source_index' and `dest_index' hold the positions of pivot rows
+  // in `source' and `dest'.  The order of the rows in `dest' is the
   // reverse of the order in `source', so the rows are iterated from
-  // (FIX confirm) top to bottom in `source' and from bottom to top in `dest'.
+  // last to first (index 0) in `source' and from first to last in
+  // `dest'.
   source_index = source_num_rows;
   dest_index = 0;
 
