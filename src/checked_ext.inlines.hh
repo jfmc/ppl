@@ -545,6 +545,27 @@ gcd_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
     return gcd<To_Policy>(to, x, y, dir);
 }
 
+template <typename To1_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To2_Policy, typename To3_Policy,
+	  typename To1, typename From1, typename From2, typename To2, typename To3>
+inline Result
+gcdext_ext(To1& to, const From1& x, const From2& y, To2& s, To3& t, Rounding_Dir dir) {
+  if (CHECK_P(From1_Policy::check_nan_args, is_nan<From1_Policy>(x)) || CHECK_P(From2_Policy::check_nan_args, is_nan<From2_Policy>(y)))
+    return set_special<To1_Policy>(to, VC_NAN);
+  else if (is_minf<From1_Policy>(x) || is_pinf<From1_Policy>(x)) {
+    s = 0;
+    t = y > 0 ? -1 : 1;
+    return abs_ext<To1_Policy, From2_Policy>(to, y, dir);
+  }
+  else if (is_minf<From2_Policy>(y) || is_pinf<From2_Policy>(y)) {
+    s = x > 0 ? -1 : 1;
+    t = 0;
+    return abs_ext<To1_Policy, From1_Policy>(to, x, dir);
+  }
+  else
+    return gcdext<To1_Policy>(to, x, y, s, t, dir);
+}
+
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result

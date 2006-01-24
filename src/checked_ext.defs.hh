@@ -71,6 +71,9 @@ Result sqrt_ext(To& to, const From& x, Rounding_Dir dir);
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
 Result gcd_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
+template <typename To1_Policy, typename From1_Policy, typename From2_Policy, typename To2_Policy, typename To3_Policy, typename To1, typename From1, typename From2, typename To3, typename To4>
+Result gcdext_ext(To1& to, const From1& x, const From2& y, const To2& s, const To3& t, Rounding_Dir dir);
+
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
 Result lcm_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 

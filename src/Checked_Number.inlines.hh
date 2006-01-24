@@ -343,6 +343,35 @@ FUNC2(sub_mul_assign_r, sub_mul_ext)
 
 #undef FUNC2
 
+#define FUNC4(name, func)						\
+template <typename To1,							\
+          typename From1,						\
+          typename From2,						\
+          typename To2,							\
+	  typename To3>							\
+inline Result								\
+name(To1& to, const From1& x, const From2& y, To2& s, To3& t,		\
+     Rounding_Dir dir) {						\
+  return								\
+    check_result							\
+    (Checked::func<typename Native_Checked_To_Wrapper<To1>::Policy,	\
+                   typename Native_Checked_From_Wrapper<From1>::Policy,	\
+                   typename Native_Checked_From_Wrapper<From2>::Policy,	\
+                   typename Native_Checked_To_Wrapper<To2>::Policy,	\
+                   typename Native_Checked_To_Wrapper<To3>::Policy>	\
+     (Native_Checked_To_Wrapper<To1>::raw_value(to),			\
+      Native_Checked_From_Wrapper<From1>::raw_value(x),			\
+      Native_Checked_From_Wrapper<From2>::raw_value(y),			\
+      Native_Checked_To_Wrapper<To2>::raw_value(s),			\
+      Native_Checked_To_Wrapper<To3>::raw_value(t),			\
+      rounding_dir(dir)),						\
+     dir);								\
+}
+
+FUNC4(gcdext_assign_r, gcdext_ext)
+
+#undef FUNC4
+
 #define DEF_INCREMENT(f, fun) \
 template <typename T, typename Policy> \
 inline Checked_Number<T, Policy>& \
@@ -580,6 +609,15 @@ f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, const Checke
   Policy::handle_result(fun(x, y, z, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
+#define DEF_ASSIGN_FUN5_5(f, fun)					\
+template <typename T, typename Policy>					\
+inline void								\
+f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y,	\
+  const Checked_Number<T, Policy>& z,					\
+  Checked_Number<T, Policy>& s, Checked_Number<T, Policy>& t) {		\
+  Policy::handle_result(fun(x, y, z, s, t, Policy::ROUND_DEFAULT_FUNCTION)); \
+}
+
 DEF_ASSIGN_FUN2_2(sqrt_assign, sqrt_assign_r)
 
 DEF_ASSIGN_FUN2_1(neg_assign, neg_assign_r)
@@ -592,6 +630,8 @@ DEF_ASSIGN_FUN3_3(add_mul_assign, add_mul_assign_r)
 DEF_ASSIGN_FUN3_3(sub_mul_assign, sub_mul_assign_r)
 
 DEF_ASSIGN_FUN3_3(gcd_assign, gcd_assign_r)
+
+DEF_ASSIGN_FUN5_5(gcdext_assign, gcdext_assign_r)
 
 DEF_ASSIGN_FUN3_3(lcm_assign, lcm_assign_r)
 

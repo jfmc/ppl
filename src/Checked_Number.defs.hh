@@ -512,6 +512,16 @@ FUNC2(sub_mul_assign_r)
 
 #undef FUNC2
 
+#define FUNC4(name) \
+template <typename To1, typename From1, typename From2,		\
+	  typename To2, typename To3>				\
+Result name(To1& to, const From1& x, const From2& y,		\
+	    To2& s, To3& t, Rounding_Dir dir);
+
+FUNC4(gcdext_assign_r)
+
+#undef FUNC4
+
 //! Swaps \p *this with \p y.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
@@ -595,6 +605,19 @@ void
 gcd_assign(Checked_Number<T, Policy>& x,
 	   const Checked_Number<T, Policy>& y,
 	   const Checked_Number<T, Policy>& z);
+
+/*! \brief
+  Assigns to \p x the greatest common divisor of \p y and \p z,
+  setting \p s and \p t such that s*y + t*z = x = gcd(y, z).
+*/
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+gcdext_assign(Checked_Number<T, Policy>& x,
+	      const Checked_Number<T, Policy>& y,
+	      const Checked_Number<T, Policy>& z,
+	      Checked_Number<T, Policy>& s,
+	      Checked_Number<T, Policy>& t);
 
 //! Assigns to \p x the least common multiple of \p y and \p z.
 /*! \relates Checked_Number */
