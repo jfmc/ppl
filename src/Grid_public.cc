@@ -1915,9 +1915,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
 
   // If all variables have zero coefficients, then `lhs' is a
   // constant: in this case, preimage and image happen to be the same.
-  // FIX really?
   if (lhs_space_dim == 0) {
-    // All variables have zero coefficients, so `lhs' is a constant.
     add_congruence((lhs %= rhs) / mod);
     return;
   }
@@ -1936,7 +1934,6 @@ generalized_affine_preimage(const Linear_Expression& lhs,
     }
 
   if (lhs_vars_intersect_rhs_vars) {
-    // FIX this case is identical to same case in gen_affine_image
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, add an additional dimension.
     const Variable new_var = Variable(space_dim);
@@ -1944,7 +1941,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
 
     // Constrain the new dimension to be equal to `lhs'
     // TODO: Use add_congruence_and_minimize() when it has been updated.
-    Congruence_System new_cgs1(new_var == rhs);
+    Congruence_System new_cgs1(new_var == lhs);
     if (add_recycled_congruences_and_minimize(new_cgs1)) {
       // The grid still contains points.
 
@@ -1963,7 +1960,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
       // Constrain the new dimension so that it is related to
       // the right hand side modulo `mod'.
       // TODO: Use add_congruence() when it has been updated.
-      Congruence_System new_cgs2((lhs %= new_var) / mod);
+      Congruence_System new_cgs2((rhs %= new_var) / mod);
       add_recycled_congruences(new_cgs2);
     }
 
