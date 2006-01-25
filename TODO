@@ -1,7 +1,6 @@
 Enhancements for PPL 0.9
 ========================
 
-
 - Develop a C and Prolog interfaces for all the supported domains.
 - Incorporate the domain of intervals.
 - Reduce the number of FIXMEs to no more than 20.
@@ -16,6 +15,13 @@ Enhancements for PPL 0.9
 - Provide a generic implementation for the `widening with tokens'.
 - Transform LP_Problem into an incremental solver and add to it support
   for abandoning costly computations.
+- Documentation for the grid classes needs checking and revising; in
+  many places the cut and paste from the corresponding files for
+  polyhedra has not been adapted for grids.
+- Complete the implementation of any missing Grid operators, including
+  deciding whether covered (or bounded) widening and extrapolation
+  operators are required.
+- Check that the Grid tests cover all the code.
 
 Enhancements for PPL 0.9 or later versions
 ==========================================
@@ -103,23 +109,3 @@ Debian packaging
   the Debian Developers Reference section 5.10.1 point 1.
 
 - Consider renaming libppl-pwl to libpwl.
-
-
-Grids Domain
-============
-
--  Complete the implementation of any missing operators:
-      ????covered (or bounded) widening and extrapolation operators
-
--  Check all FIX's and either remove or convert to FIXME's
-   with explanatory comment.
-
--  Eliminate as many FIXME's as possible.
-
--  Clean-up the gcdext addition.
-
--  Check the tests cover all the code.
-
--  Documentation needs checking and revising; in many places the
-   cut and paste from the corresponding files for polyhedra has not
-   been adapted for grids.
