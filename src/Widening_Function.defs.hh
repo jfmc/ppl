@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Wraps a widening method into a function object.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename PH>
 class Parma_Polyhedra_Library::Widening_Function {
@@ -54,6 +55,7 @@ private:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Wraps a limited widening method into a function object.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename PH, typename CS>
 class Parma_Polyhedra_Library::Limited_Widening_Function {

@@ -86,7 +86,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
 
 
 //! The base class for convex polyhedra.
-/*!
+/*! \ingroup PPL_CXX_interface
   An object of the class Polyhedron represents a convex polyhedron
   in the vector space \f$\Rset^n\f$.
 

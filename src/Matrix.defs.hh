@@ -33,7 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A 2-dimensional matrix of coefficients.
-/*!
+/*! \ingroup PPL_CXX_interface
   A Matrix object is a sequence of Row objects and is characterized
   by the matrix dimensions (the number of rows and columns).
   All the rows in a matrix, besides having the same size (corresponding
@@ -80,11 +80,13 @@ public:
   //! Assignment operator.
   Matrix& operator=(const Matrix& y);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! An iterator over a matrix.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     A const_iterator is used to provide read-only access
     to each row contained in a Matrix object.
   */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   class const_iterator {
   private:
     typedef std::vector<Row>::const_iterator Iter;

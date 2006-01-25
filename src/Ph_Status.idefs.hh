@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 
 //! A conjunctive assertion about a polyhedron.
-/*!
+/*! \ingroup PPL_CXX_interface
   The assertions supported are:
   - <EM>zero-dim universe</EM>: the polyhedron is the zero-dimension
     vector space \f$\Rset^0 = \{\cdot\}\f$;

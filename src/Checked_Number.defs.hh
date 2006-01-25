@@ -28,6 +28,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Checked_Number_Transparent_Policy {
   //! Check for overflowed result.
   static const int check_overflow = 0;
@@ -75,6 +78,9 @@ struct Checked_Number_Transparent_Policy {
   static void handle_result(Result r);
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Checked_Number_Default_Policy {
   static const int check_overflow = 1;
   static const int check_inf_add_inf = 0;
@@ -97,6 +103,9 @@ struct Checked_Number_Default_Policy {
   static void handle_result(Result r);
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Extended_Number_Policy {
   static const int check_overflow = 1;
   static const int check_inf_add_inf = 0;
@@ -132,8 +141,40 @@ struct Extended_Number_Policy {
 typedef Checked::Check_Overflow_Policy Default_To_Policy;
 typedef Checked_Number_Transparent_Policy Default_From_Policy;
 
+template <typename T>
+struct Native_Checked_From_Wrapper {
+  typedef Default_From_Policy Policy;
+  static const T& raw_value(const T& v) {
+    return v;
+  }
+};
+
+template <typename T, typename P>
+struct Native_Checked_From_Wrapper<Checked_Number<T, P> > {
+  typedef P Policy;
+  static const T& raw_value(const Checked_Number<T, P>& v) {
+    return v.raw_value();
+  }
+};
+
+template <typename T>
+struct Native_Checked_To_Wrapper {
+  typedef Default_To_Policy Policy;
+  static T& raw_value(T& v) {
+    return v;
+  }
+};
+
+template <typename T, typename P>
+struct Native_Checked_To_Wrapper<Checked_Number<T, P> > {
+  typedef P Policy;
+  static T& raw_value(Checked_Number<T, P>& v) {
+    return v.raw_value();
+  }
+};
+
 //! A wrapper for numeric types implementing a given policy.
-/*!
+/*! \ingroup PPL_CXX_interface
   The wrapper and related functions implement an interface which is common
   to all kinds of coefficient types, therefore allowing for a uniform
   coding style. This class also implements the policy encoded by the
@@ -150,9 +191,6 @@ public:
   //! Default constructor.
   Checked_Number();
 
-  // Don't enable this: with GCC, the presence of a copy constructor
-  // (even if it is defined exactly as the default one) inhibits some
-  // important optimizations.
   //! Copy-constructor.
   Checked_Number(const Checked_Number& y);
 
@@ -160,113 +198,118 @@ public:
   template <typename From, typename From_Policy>
   explicit Checked_Number(const Checked_Number<From, From_Policy>& y);
 
-  //! Direct initialization from a signed char value.
+  //! Direct initialization from a signed char and rounding mode.
   Checked_Number(const signed char y, Rounding_Dir dir);
 
-  //! Direct initialization from a signed short value.
+  //! Direct initialization from a signed short and rounding mode.
   Checked_Number(const signed short y, Rounding_Dir dir);
 
-  //! Direct initialization from a signed int value.
+  //! Direct initialization from a signed int and rounding mode.
   Checked_Number(const signed int y, Rounding_Dir dir);
 
-  //! Direct initialization from a signed long value.
+  //! Direct initialization from a signed long and rounding mode.
   Checked_Number(const signed long y, Rounding_Dir dir);
 
-  //! Direct initialization from a signed long long value.
+  //! Direct initialization from a signed long long and rounding mode.
   Checked_Number(const signed long long y, Rounding_Dir dir);
 
-  //! Direct initialization from an unsigned char value.
+  //! Direct initialization from an unsigned char and rounding mode.
   Checked_Number(const unsigned char y, Rounding_Dir dir);
 
-  //! Direct initialization from an unsigned short value.
+  //! Direct initialization from an unsigned short and rounding mode.
   Checked_Number(const unsigned short y, Rounding_Dir dir);
 
-  //! Direct initialization from an unsigned int value.
+  //! Direct initialization from an unsigned int and rounding mode.
   Checked_Number(const unsigned int y, Rounding_Dir dir);
 
-  //! Direct initialization from an unsigned long value.
+  //! Direct initialization from an unsigned long and rounding mode.
   Checked_Number(const unsigned long y, Rounding_Dir dir);
 
-  //! Direct initialization from an unsigned long long value.
+  //! Direct initialization from an unsigned long long and rounding mode.
   Checked_Number(const unsigned long long y, Rounding_Dir dir);
 
-  //! Direct initialization from a float value.
+  //! Direct initialization from a float and rounding mode.
   Checked_Number(const float y, Rounding_Dir dir);
 
-  //! Direct initialization from a double value.
+  //! Direct initialization from a double and rounding mode.
   Checked_Number(const double y, Rounding_Dir dir);
 
-  //! Direct initialization from a long double value.
+  //! Direct initialization from a long double and rounding mode.
   Checked_Number(const long double y, Rounding_Dir dir);
 
-  //! Direct initialization from a GMP unbounded rational value.
+  //! Direct initialization from a rational and rounding mode.
   Checked_Number(const mpq_class& y, Rounding_Dir dir);
 
-  //! Direct initialization from a GMP unbounded integer value.
+  //! Direct initialization from an unbounded integer and rounding mode.
   Checked_Number(const mpz_class& y, Rounding_Dir dir);
 
-  //! Direct initialization from a C string value.
+  //! Direct initialization from a C string and rounding mode.
   Checked_Number(const char* y, Rounding_Dir dir);
 
+  //! Direct initialization from minus infinity and rounding mode.
   Checked_Number(const Minus_Infinity& y, Rounding_Dir dir);
+
+  //! Direct initialization from plus infinity and rounding mode.
   Checked_Number(const Plus_Infinity& y, Rounding_Dir dir);
+
+  //! Direct initialization from NAN and rounding mode.
   Checked_Number(const Not_A_Number& y, Rounding_Dir dir);
 
-  //! Direct initialization from a signed char value.
+  //! Direct initialization from a signed char, default rounding mode.
   Checked_Number(const signed char y);
 
-  //! Direct initialization from a signed short value.
+  //! Direct initialization from a signed short, default rounding mode.
   Checked_Number(const signed short y);
 
-  //! Direct initialization from a signed int value.
+  //! Direct initialization from a signed int, default rounding mode.
   Checked_Number(const signed int y);
 
-  //! Direct initialization from a signed long value.
+  //! Direct initialization from a signed long, default rounding mode.
   Checked_Number(const signed long y);
 
-  //! Direct initialization from a signed long long value.
+  //! Direct initialization from a signed long long, default rounding mode.
   Checked_Number(const signed long long y);
 
-  //! Direct initialization from an unsigned char value.
+  //! Direct initialization from an unsigned char, default rounding mode.
   Checked_Number(const unsigned char y);
 
-  //! Direct initialization from an unsigned short value.
+  //! Direct initialization from an unsigned short, default rounding mode.
   Checked_Number(const unsigned short y);
 
-  //! Direct initialization from an unsigned int value.
+  //! Direct initialization from an unsigned int, default rounding mode.
   Checked_Number(const unsigned int y);
 
-  //! Direct initialization from an unsigned long value.
+  //! Direct initialization from an unsigned long, default rounding mode.
   Checked_Number(const unsigned long y);
 
-  //! Direct initialization from an unsigned long long value.
+  //! Direct initialization from an unsigned long long, default rounding mode.
   Checked_Number(const unsigned long long y);
 
-  //! Direct initialization from a float value.
+  //! Direct initialization from a float, default rounding mode.
   Checked_Number(const float y);
 
-  //! Direct initialization from a double value.
+  //! Direct initialization from a double, default rounding mode.
   Checked_Number(const double y);
 
-  //! Direct initialization from a long double value.
+  //! Direct initialization from a long double, default rounding mode.
   Checked_Number(const long double y);
 
-  //! Direct initialization from a GMP unbounded rational value.
+  //! Direct initialization from a rational, default rounding mode.
   Checked_Number(const mpq_class& y);
 
-  //! Direct initialization from a GMP unbounded integer value.
+  //! Direct initialization from an unbounded integer, default rounding mode.
   Checked_Number(const mpz_class& y);
 
-  //! Direct initialization from a C string value.
+  //! Direct initialization from a C string, default rounding mode.
   Checked_Number(const char* y);
 
-  //! Constructor for negative infinity.
+  //! Direct initialization from minus infinity, default rounding mode.
   Checked_Number(const Minus_Infinity& y);
 
-  //! Constructor for positive infinity.
+  //! Direct initialization from plus infinity, default rounding mode.
   Checked_Number(const Plus_Infinity& y);
 
-  //! Constructor for NAN.
+  //! Direct initialization from NAN, default rounding mode.
   Checked_Number(const Not_A_Number& y);
 
   //@} // Constructors
@@ -422,34 +465,20 @@ private:
   T v;
 };
 
+template <typename To>
+Result assign_r(To& to, const Minus_Infinity& x, Rounding_Dir dir);
+template <typename To>
+Result assign_r(To& to, const Plus_Infinity& x, Rounding_Dir dir);
+template <typename To>
+Result assign_r(To& to, const Not_A_Number& x, Rounding_Dir dir);
+template <typename To>
+Result assign_r(To& to, const char* x, Rounding_Dir dir);
 template <typename To, typename To_Policy>
-Result assign_r(Checked_Number<To, To_Policy>& to,
-		const Minus_Infinity& x, Rounding_Dir dir);
-template <typename To, typename To_Policy>
-Result assign_r(Checked_Number<To, To_Policy>& to,
-		const Plus_Infinity& x, Rounding_Dir dir);
-template <typename To, typename To_Policy>
-Result assign_r(Checked_Number<To, To_Policy>& to,
-		const Not_A_Number& x, Rounding_Dir dir);
-template <typename To, typename To_Policy>
-Result assign_r(Checked_Number<To, To_Policy>& to,
-		const char* x, Rounding_Dir dir);
-template <typename To, typename To_Policy>
-Result assign_r(Checked_Number<To, To_Policy>& to,
-		char* x, Rounding_Dir dir);
+Result assign_r(To& to, char* x, Rounding_Dir dir);
 
 #define FUNC1(name) \
 template <typename To, typename From> \
-Result name(To& to, const From& x, Rounding_Dir dir); \
-template <typename To, typename To_Policy, typename From> \
-Result name(Checked_Number<To, To_Policy>& to, \
-            const From& x, \
-	    Rounding_Dir dir); \
-template <typename To, typename To_Policy, \
-          typename From, typename From_Policy> \
-Result name(Checked_Number<To, To_Policy>& to, \
-            const Checked_Number<From, From_Policy>& x, \
-            Rounding_Dir dir);
+Result name(To& to, const From& x, Rounding_Dir dir);
 
 FUNC1(assign_r)
 FUNC1(neg_assign_r)
@@ -460,20 +489,7 @@ FUNC1(sqrt_assign_r)
 
 #define FUNC1(name) \
 template <typename To, typename From> \
-Result name(To& to, const From& x, int exp, Rounding_Dir dir); \
-template <typename To, typename To_Policy, typename From> \
-Result name(Checked_Number<To, To_Policy>& to, \
-            const From& x, \
-            int exp, Rounding_Dir dir); \
-template <typename To, typename To_Policy, \
-          typename From, typename From_Policy> \
-Result name(Checked_Number<To, To_Policy>& to, \
-            const Checked_Number<From, From_Policy>& x, \
-            int exp, Rounding_Dir dir); \
-template <typename To, typename From, typename From_Policy> \
-Result name(To& to, \
-            const Checked_Number<From, From_Policy>& x, \
-            int exp, Rounding_Dir dir);
+Result name(To& to, const From& x, int exp, Rounding_Dir dir);
 
 FUNC1(mul2exp_assign_r)
 FUNC1(div2exp_assign_r)
@@ -482,48 +498,7 @@ FUNC1(div2exp_assign_r)
 
 #define FUNC2(name) \
 template <typename To, typename From1, typename From2> \
-Result name(To& to, const From1& x, const From2& y, Rounding_Dir dir); \
-template <typename To, typename To_Policy, typename From1, typename From2> \
-Result name(Checked_Number<To, To_Policy>& to, \
-            const From1& x, \
-            const From2& y, \
-            Rounding_Dir dir); \
-template <typename To, typename From1, typename From2, typename Policy2> \
-Result name(To& to, \
-            const From1& x, \
-            const Checked_Number<From2, Policy2>& y, \
-	    Rounding_Dir dir); \
-template <typename To, typename To_Policy, \
-          typename From1, typename From2, typename Policy2> \
-Result name(Checked_Number<To, To_Policy>& to, \
-	    const From1& x, \
-            const Checked_Number<From2, Policy2>& y, \
-	    Rounding_Dir dir); \
-template <typename To, typename From1, typename Policy1, typename From2> \
-Result name(To& to, \
-	    const Checked_Number<From1, Policy1>& x, \
-            const From2& y, \
-	    Rounding_Dir dir); \
-template <typename To, typename To_Policy, \
-          typename From1, typename Policy1, typename From2> \
-Result name(Checked_Number<To, To_Policy>& to, \
-	    const Checked_Number<From1, Policy1>& x, \
-            const From2& y, \
-	    Rounding_Dir dir); \
-template <typename To, \
-          typename From1, typename Policy1, \
-	  typename From2, typename Policy2> \
-Result name(To& to, \
-            const Checked_Number<From1, Policy1>& x, \
-	    const Checked_Number<From2, Policy2>& y, \
-            Rounding_Dir dir); \
-template <typename To, typename To_Policy, \
-          typename From1, typename Policy1, \
-          typename From2, typename Policy2> \
-Result name(Checked_Number<To, To_Policy>& to, \
-	    const Checked_Number<From1, Policy1>& x, \
-	    const Checked_Number<From2, Policy2>& y, \
-            Rounding_Dir dir);
+Result name(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 FUNC2(add_assign_r)
 FUNC2(sub_assign_r)
@@ -536,6 +511,16 @@ FUNC2(add_mul_assign_r)
 FUNC2(sub_mul_assign_r)
 
 #undef FUNC2
+
+#define FUNC4(name) \
+template <typename To1, typename From1, typename From2,		\
+	  typename To2, typename To3>				\
+Result name(To1& to, const From1& x, const From2& y,		\
+	    To2& s, To3& t, Rounding_Dir dir);
+
+FUNC4(gcdext_assign_r)
+
+#undef FUNC4
 
 //! Swaps \p *this with \p y.
 /*! \relates Checked_Number */
@@ -789,20 +774,9 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
   - base-10 rational numbers in floating point scientific notation as
     <CODE>2.2e-1</CODE> (meaning \f$11/50\f$) and <CODE>-2.20001*^+3</CODE>
     (meaning \f$-220001/100\f$);
-  - base-16 integer numbers in C notation as <CODE>0xfa</CODE>
-    (meaning \f$250\f$) and <CODE>0x0b123</CODE> (meaning \f$45347\f$);
-  - natural extensions to the C syntax for hexadecimal numbers to
-    fractional, floating point and base-16 scientific notations, as
-    <CODE>0x.f</CODE> (meaning \f$15/16\f$),
-    <CODE>0xfa.a</CODE> (meaning \f$2005/8\f$),
-    <CODE>0x.f*^1</CODE> (meaning \f$15\f$),
-    <CODE>0x1e2</CODE> (meaning \f$482\f$),
-    <CODE>0x1*^2</CODE> (meaning \f$256\f$),
-    <CODE>0x0.111*^3</CODE> (meaning \f$273\f$);
-    notice that the exponent is always written as a plain base-10 integer
-    number;
-  - integers and rationals in specified bases, in the range \f$2--36\f$,
-    in fractional, floating point and scientific notations, as
+  - integers and rationals (in fractional, floating point and scientific
+    notations) specified by using Mathematica-style bases, in the range
+    from 2 to 36, as
     <CODE>2^^11</CODE> (meaning \f$3\f$),
     <CODE>36^^z</CODE> (meaning \f$35\f$),
     <CODE>36^^xyz</CODE> (meaning \f$44027\f$),
@@ -812,25 +786,34 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
     <CODE>8^^2.1e3</CODE> (meaning \f$1088\f$),
     <CODE>8^^20402543.120347e7</CODE> (meaning \f$9073863231288\f$),
     <CODE>8^^2.1</CODE> (meaning \f$17/8\f$);
-    notice that both the base and the exponent are always written
-    as plain base-10 integer numbers;
+    note that the base and the exponent are always written as plain
+    base-10 integer numbers; also, when an ambiguity may arise, the
+    character <CODE>e</CODE> is interpreted as a digit, so that
+    <CODE>16^^1e2</CODE> (meaning \f$482\f$) is different from
+    <CODE>16^^1*^2</CODE> (meaning \f$256\f$);
+  - the C-style hexadecimal prefix <CODE>0x</CODE> is interpreted as
+    the Mathematica-style prefix <CODE>16^^</CODE>;
   - special values like <CODE>inf</CODE> and <CODE>+inf</CODE>
     (meaning \f$+\infty\f$), <CODE>-inf</CODE> (meaning \f$-\infty\f$),
     and <CODE>nan</CODE> (meaning "not a number").
 
   The rationale behind the accepted syntax can be summarized as follows:
-  - if the syntax is acceptable as standard C++, then this function
-    accepts it with the same semantics;
   - if the syntax is accepted by Mathematica, then this function
     accepts it with the same semantics;
+  - if the syntax is acceptable as standard C++ integer or floating point
+    literal (except for octal notation and type suffixes, which are not
+    supported), then this function accepts it with the same semantics;
   - natural extensions of the above are accepted with the natural
     extensions of the semantics;
   - special values are accepted.
 
   Valid syntax is more formally and completely specified by the
   following grammar, with the additional provisos that everything is
-  <EM>case insensitive</EM> and that the syntactic category
-  <CODE>BDIGIT</CODE> is further restriced by the current base.
+  <EM>case insensitive</EM>, that the syntactic category
+  <CODE>BDIGIT</CODE> is further restricted by the current base
+  and that for all bases above 14, any <CODE>e</CODE> is always
+  interpreted as a digit and never as a delimiter for the exponent part
+  (if such a delimiter is desired, it has to be written as <CODE>*^</CODE>).
 
 \code
 number	: NAN					INF	: 'inf'

@@ -20,7 +20,7 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = . Grid BD_Shape Polyhedron
+SUBDIRS = . Grid Polyhedron BD_Shape
 
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src @extra_includes@
 

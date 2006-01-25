@@ -124,7 +124,7 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
 } // namespace std
 
 //! A linear equality or inequality.
-/*!
+/*! \ingroup PPL_CXX_interface
   An object of the class Constraint is either:
   - an equality: \f$\sum_{i=0}^{n-1} a_i x_i + b = 0\f$;
   - a non-strict inequality: \f$\sum_{i=0}^{n-1} a_i x_i + b \geq 0\f$; or

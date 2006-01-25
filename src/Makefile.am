@@ -317,75 +317,6 @@ $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
 swapping_sort.icc
 
-# The ordering of the following list *matters*!
-DOC_FILES = \
-namespaces.hh \
-GMP_Integer.types.hh \
-Checked_Number.types.hh \
-Coefficient.types.hh \
-globals.types.hh \
-globals.defs.hh \
-Variable.types.hh \
-Linear_Expression.types.hh \
-Constraint.types.hh \
-Constraint_System.types.hh \
-Generator.types.hh \
-Grid_Generator.types.hh \
-Congruence.types.hh \
-Generator_System.types.hh \
-Grid_Generator_System.types.hh \
-Congruence_System.types.hh \
-LP_Problem.types.hh \
-Poly_Con_Relation.types.hh \
-Poly_Gen_Relation.types.hh \
-BHRZ03_Certificate.types.hh \
-H79_Certificate.types.hh \
-Grid_Certificate.types.hh \
-Polyhedron.types.hh \
-Grid.types.hh \
-C_Polyhedron.types.hh \
-NNC_Polyhedron.types.hh \
-BD_Shape.types.hh \
-GMP_Integer.defs.hh \
-Checked_Number.defs.hh \
-Coefficient.defs.hh \
-Variable.defs.hh \
-Linear_Expression.defs.hh \
-Constraint.defs.hh \
-Constraint_System.defs.hh \
-Generator.defs.hh \
-Grid_Generator.defs.hh \
-Congruence.defs.hh \
-Generator_System.defs.hh \
-Grid_Generator_System.defs.hh \
-Congruence_System.defs.hh \
-LP_Problem.defs.hh \
-Poly_Con_Relation.defs.hh \
-Poly_Gen_Relation.defs.hh \
-BHRZ03_Certificate.defs.hh \
-H79_Certificate.defs.hh \
-Grid_Certificate.defs.hh \
-Polyhedron.defs.hh \
-Grid.defs.hh \
-C_Polyhedron.defs.hh \
-NNC_Polyhedron.defs.hh \
-globals.defs.hh \
-Widening_Function.types.hh \
-Widening_Function.defs.hh \
-Widening_Function.inlines.hh \
-BD_Shape.defs.hh \
-BD_Shape.inlines.hh \
-Determinate.types.hh \
-Determinate.defs.hh \
-Determinate.inlines.hh \
-Powerset.types.hh \
-Powerset.defs.hh \
-Powerset.inlines.hh \
-Polyhedra_Powerset.types.hh \
-Polyhedra_Powerset.defs.hh \
-Polyhedra_Powerset.inlines.hh \
-algorithms.hh
-
 if NO_UNDEFINED
 
 NO_UNDEFINED_FLAG = -no-undefined
@@ -402,10 +333,6 @@ noinst_HEADERS = \
 ppl.hh \
 ppl_include_files.hh \
 ppl_install.hh
-
-#ppl.hh:	$(DOC_FILES) $(top_builddir)/src/version.hh Makefile
-#	cat $(top_builddir)/src/version.hh >$@
-#	(cd $(srcdir) ; cat $(DOC_FILES)) >>$@
 
 ppl.hh:	ppl_install.hh
 	cat ppl_install.hh >$@

@@ -36,7 +36,7 @@ endif
 
 # If the version string was set using automake then the build would
 # have to be configured before the dpkg-buildpackage command.
-PPL_VERSION = $(shell grep "^AC_INIT" $(CURDIR)/configure.ac | sed -e "s/^AC_INIT.\[[^]]*\],\[\([^]]*\)\],.*/\1/")
+PPL_VERSION = $(shell grep "^AC_INIT" $(CURDIR)/configure.ac | sed -e "s/^AC_INIT.\[[^]]*\],[ \t]*\[\([^]]*\)\],.*/\1/")
 
 config.status:
 	dh_testdir
@@ -44,7 +44,7 @@ config.status:
 #   /usr/share/doc/autotools-dev/README.Debian.gz:
 #     - Call the autoconf suite using simple names ("autoconf", "autoheader", etc.)
 #     - Call the automake suite using *versioned* names ("automake-1.9", etc),
-	autoreconf && CFLAGS="$(CFLAGS)" ./configure $(confflags) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CC=/usr/bin/gcc-3.4 CXX=/usr/bin/g++-3.4
+	autoreconf && CFLAGS="$(CFLAGS)" ./configure $(confflags) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
 
 ## Architecture
 build: build-arch build-indep

@@ -122,10 +122,10 @@ gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   return abs<Policy>(to, to, dir);
 }
 
-template <typename Policy, typename To,
-	  typename From1, typename From2, typename From3, typename From4>
+template <typename Policy, typename To1,
+	  typename From1, typename From2, typename To2, typename To3>
 inline Result
-gcdext_exact(To& to, const From1& x, const From2& y, From3& s, From4& t,
+gcdext_exact(To1& to, const From1& x, const From2& y, To2& s, To3& t,
 	     Rounding_Dir dir) {
   if (y == 0) {
     if (x == 0) {
@@ -169,15 +169,15 @@ gcdext_exact(To& to, const From1& x, const From2& y, From3& s, From4& t,
 #endif
 
   {
-    From3 v1 = 0;
-    From4 v2 = 1;
-    To v3 = static_cast<To>(ay);
+    To2 v1 = 0;
+    To3 v2 = 1;
+    To1 v3 = static_cast<To1>(ay);
     while (true) {
-      To q = to / v3;
+      To1 q = to / v3;
       // Remainder, next candidate GCD.
-      To t3 = to - q*v3;
-      From3 t1 = s - static_cast<From3>(q)*v1;
-      From4 t2 = t - static_cast<From4>(q)*v2;
+      To1 t3 = to - q*v3;
+      To2 t1 = s - static_cast<To2>(q)*v1;
+      To3 t2 = t - static_cast<To3>(q)*v2;
       s = v1;
       t = v2;
       to = v3;

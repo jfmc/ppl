@@ -158,7 +158,7 @@ void swap(Parma_Polyhedra_Library::Linear_Expression& x,
 } // namespace std
 
 //! A linear expression.
-/*!
+/*! \ingroup PPL_CXX_interface
   An object of the class Linear_Expression represents the linear expression
   \f[
     \sum_{i=0}^{n-1} a_i x_i + b

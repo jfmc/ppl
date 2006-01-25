@@ -20,6 +20,7 @@ namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Coefficient traits specialization for 8 bits checked integers.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename Policy>
 struct Coefficient_traits_template<Checked_Number<int8_t, Policy> > {
@@ -29,6 +30,7 @@ struct Coefficient_traits_template<Checked_Number<int8_t, Policy> > {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Coefficient traits specialization for 16 bits checked integers.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename Policy>
 struct Coefficient_traits_template<Checked_Number<int16_t, Policy> > {
@@ -38,6 +40,7 @@ struct Coefficient_traits_template<Checked_Number<int16_t, Policy> > {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Coefficient traits specialization for 32 bits checked integers.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename Policy>
 struct Coefficient_traits_template<Checked_Number<int32_t, Policy> > {
@@ -47,6 +50,7 @@ struct Coefficient_traits_template<Checked_Number<int32_t, Policy> > {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Coefficient traits specialization for 64 bits checked integers.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename Policy>
 struct Coefficient_traits_template<Checked_Number<int64_t, Policy> > {
@@ -65,7 +69,7 @@ struct Coefficient_traits_template<Checked_Number<int64_t, Policy> > {
 namespace Parma_Polyhedra_Library {
 
 //! An alias for easily naming the type of PPL coefficients.
-/*!
+/*! \ingroup PPL_CXX_interface
   Objects of type Coefficient are used to implement the integral valued
   coefficients occurring in linear expressions, constraints, generators,
   intervals, bounding boxes and so on. Depending on the chosen
@@ -86,6 +90,7 @@ typedef COEFFICIENT_TYPE Coefficient;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An alias for easily naming the coefficient traits.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 typedef Coefficient_traits_template<Coefficient> Coefficient_traits;
 

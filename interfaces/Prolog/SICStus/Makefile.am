@@ -54,12 +54,12 @@ ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(top_buildd
 		$(top_builddir)/Watchdog/src/libpwl.la \
 		@extra_libraries@
 
-ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus_sd.o | ppl_sicstus_sd.la
-	splfr --static $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o
+ppl_sicstus.s.o: ppl_sicstus.pl .libs/ppl_sicstus_sd.o | ppl_sicstus_sd.la
+	splfr --static $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o
 
-ppl_sicstus.so: ppl_sicstus.pl ppl_sicstus_sd.o $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/src/libpwl.la | ppl_sicstus_sd.la
+ppl_sicstus.so: ppl_sicstus.pl .libs/ppl_sicstus_sd.o $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/src/libpwl.la | ppl_sicstus_sd.la
 	$(LIBTOOL) --mode=link --tag=CXX \
-	splfr $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o -o $@ \
+	splfr $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o -o $@ \
 		$(top_builddir)/src/libppl.la \
 		$(top_builddir)/Watchdog/src/libpwl.la \
 		@extra_libraries@

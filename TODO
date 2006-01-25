@@ -1,15 +1,11 @@
-Enhancements for PPL 0.8
-========================
-
-- The Powerset class implementation is still poorly documented.
-
-
 Enhancements for PPL 0.9
 ========================
 
-- Reduce the number of FIXMEs to no more than 20.
 - Incorporate the domain of rational grids.
 - Incorporate the domain of intervals.
+- Reduce the number of FIXMEs to no more than 20.
+- Complete the manual pages for ppl-config, ppl_lpsol and ppl_lcdd.
+- Write a manual page for ppl (3).
 - Provide a single, generic implementation to replace all our status
   classes.
 - Clearly explain, in the documentation, how (not) to use
@@ -17,6 +13,8 @@ Enhancements for PPL 0.9
   to have memory-guarded computations.
 - Reconsider the handling of temporary coefficients.
 - Provide a generic implementation for the `widening with tokens'.
+- Transform LP_Problem into an incremental solver and add to it support
+  for abandoning costly computations.
 
 Enhancements for PPL 0.9 or later versions
 ==========================================

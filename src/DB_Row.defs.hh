@@ -35,6 +35,7 @@ site: http://www.cs.unipr.it/ppl/ .*/
   When EXTRA_ROW_DEBUG evaluates to <CODE>true</CODE>, each instance
   of the class DB_Row carries its own capacity; this enables extra
   consistency checks to be performed.
+  \ingroup PPL_CXX_interface
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define EXTRA_ROW_DEBUG 0
@@ -43,7 +44,7 @@ site: http://www.cs.unipr.it/ppl/ .*/
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The handler of the actual DB_Row implementation.
-/*!
+/*! \ingroup PPL_CXX_interface
   Exception-safety is the only responsibility of this class: it has
   to ensure that its \p impl member is correctly deallocated.
 */
@@ -77,7 +78,7 @@ private:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The base class for the single rows of matrices.
-/*!
+/*! \ingroup PPL_CXX_interface
   The class template DB_Row<T> allows for the efficient representation of
   the single rows of a DB_Matrix. It contains elements of type T stored
   as a vector. The class T is a family of extended numbers that
@@ -297,7 +298,7 @@ bool operator!=(const DB_Row<T>& x, const DB_Row<T>& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The real implementation of a DB_Row object.
-/*!
+/*! \ingroup PPL_CXX_interface
   The class DB_Row_Impl_Handler::Impl provides the implementation of
   DB_Row objects and, in particular, of the corresponding memory
   allocation functions.

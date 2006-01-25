@@ -82,8 +82,8 @@ bool operator!=(const BD_Shape<T>& x, const BD_Shape<T>& y);
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates BD_Shape
   If the rectilinear distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -99,8 +99,8 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates BD_Shape
   If the rectilinear distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -116,8 +116,8 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates BD_Shape
   If the rectilinear distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -136,8 +136,8 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates BD_Shape
   If the euclidean distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -153,8 +153,8 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates BD_Shape
   If the euclidean distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -170,8 +170,8 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates BD_Shape
   If the euclidean distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -190,8 +190,8 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates BD_Shape
   If the \f$L_\infty\f$ distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -207,8 +207,8 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates BD_Shape
   If the \f$L_\infty\f$ distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -224,8 +224,8 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates BD_Shape
   If the \f$L_\infty\f$ distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -293,7 +293,7 @@ void compute_leader_indices(const std::vector<dimension_type>& predecessor,
 } // namespace Parma_Polyhedra_Library
 
 //! A bounded difference shape.
-/*!
+/*! \ingroup PPL_CXX_interface
   The class template BD_Shape<T> allows for the efficient representation
   of a restricted kind of <EM>topologically closed</EM> convex polyhedra
   called <EM>bounded difference shapes</EM> (BDSs, for short).
@@ -895,14 +895,23 @@ public:
 					   unsigned* tp = 0);
 
   /*! \brief
-    Restores from \p y the constraints of \p *this, lost by
+    Assigns to \p *this the result of restoring in \p y the constraints
+    of \p *this that were lost by
     \ref CC76_extrapolation "CC76-extrapolation" applications.
 
     \param y
-    A BDS that <EM>must</EM> be contained in \p *this.
+    A BDS that <EM>must</EM> contain \p *this.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
+
+    \note
+    As was the case for widening operators, the argument \p y is meant to
+    denote the value computed in the previous iteration step, whereas
+    \p *this denotes the value computed in the current iteration step
+    (in the <EM>descreasing</EM> iteration sequence). Hence, the call
+    <CODE>x.CC76_narrowing_assign(y)</CODE> will assign to \p x
+    the result of the computation \f$\mathtt{y} \Delta \mathtt{x}\f$.
   */
   void CC76_narrowing_assign(const BD_Shape& y);
 
@@ -1059,7 +1068,7 @@ public:
     will have dimension \p new_dimension.
 
     \exception std::invalid_argument
-    Thrown if \p new_dimensions is greater than the space dimension
+    Thrown if \p new_dimension is greater than the space dimension
     of \p *this.
   */
   void remove_higher_space_dimensions(dimension_type new_dimension);

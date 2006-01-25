@@ -22,9 +22,11 @@
 //  site: http://www.cs.unipr.it/ppl/
 
 /*!
-  \defgroup PPL_Library The Library
+  \defgroup PPL_CXX_interface C++ Language Interface
+  \brief
   The core implementation of the Parma Polyhedra Library
   is written in C++.
+
   See Namespace, Hierarchical and Compound indexes
   for additional information about each single data type.
 */
@@ -2721,7 +2723,7 @@ H.&nbsp;W. Kuhn.
 
 <DT> [Le 92] </DT>
 <DD>
-\anchor Le 92
+\anchor Le92
 H.&nbsp;Le Verge.
   A note on Chernikova's algorithm.
   <em>Publication interne</em> 635, IRISA, Campus de Beaulieu, Rennes,
@@ -3545,4 +3547,4 @@ By Lemma 1
 
 \endif
 
-*/
+*/ /* \mainpage */

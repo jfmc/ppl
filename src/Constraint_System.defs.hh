@@ -64,7 +64,7 @@ void swap(Parma_Polyhedra_Library::Constraint_System& x,
 } // namespace std
 
 //! A system of constraints.
-/*!
+/*! \ingroup PPL_CXX_interface
     An object of the class Constraint_System is a system of constraints,
     i.e., a multiset of objects of the class Constraint.
     When inserting constraints in a system, space dimensions are
@@ -172,7 +172,7 @@ public:
   static const Constraint_System& zero_dim_empty();
 
   //! An iterator over a system of constraints.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     A const_iterator is used to provide read-only access
     to each constraint contained in a Constraint_System object.
 

@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Class for initialization and finalization.
-/*!
+/*! \ingroup PPL_CXX_interface
   <EM>Nifty Counter</EM> initialization class,
   ensuring that the library is initialized only once
   and before its first use.

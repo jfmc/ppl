@@ -34,7 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A class implementing various scalar product functions.
-/*!
+/*! \ingroup PPL_CXX_interface
   When computing the scalar product of (Linear_Row or Constraint or
   Generator) objects <CODE>x</CODE> and <CODE>y</CODE>, it is assumed
   that the space dimension of the first object <CODE>x</CODE> is less
@@ -152,6 +152,7 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Scalar product sign function object depending on topology.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign {
 public:

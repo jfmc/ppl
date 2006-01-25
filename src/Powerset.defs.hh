@@ -25,38 +25,38 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Powerset.types.hh"
 #include <iosfwd>
+#include <iterator>
 #include <list>
-#include <set>
 
 namespace Parma_Polyhedra_Library {
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
 /*! \relates Powerset */
-template <typename CS>
+template <typename D>
 bool
-operator==(const Powerset<CS>& x, const Powerset<CS>& y);
+operator==(const Powerset<D>& x, const Powerset<D>& y);
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are not equivalent.
 /*! \relates Powerset */
-template <typename CS>
+template <typename D>
 bool
-operator!=(const Powerset<CS>& x, const Powerset<CS>& y);
+operator!=(const Powerset<D>& x, const Powerset<D>& y);
 
 namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Powerset */
-template <typename CS>
+template <typename D>
 std::ostream&
-operator<<(std::ostream& s, const Powerset<CS>& x);
+operator<<(std::ostream& s, const Powerset<D>& x);
 
 } // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 
 
-//! The powerset construction on constraint systems.
-/*!
+//! The powerset construction on a base-level domain.
+/*! \ingroup PPL_CXX_interface
   This class offers a generic implementation of a
   <EM>powerset</EM> domain as defined in Section \ref powerset.
 
@@ -72,10 +72,10 @@ operator<<(std::ostream& s, const Powerset<CS>& x);
   the addition of an external element \p d.
 
   \code
-template <typename CS>
+template <typename D>
 void
-drop_subsumed(Powerset<CS>& ps, const CS& d) {
-  for (typename Powerset<CS>::iterator i = ps.begin(),
+drop_subsumed(Powerset<D>& ps, const D& d) {
+  for (typename Powerset<D>::iterator i = ps.begin(),
          ps_end = ps.end(), i != ps_end; )
     if (i->definitely_entails(d))
       i = ps.drop_disjunct(i);
@@ -83,8 +83,64 @@ drop_subsumed(Powerset<CS>& ps, const CS& d) {
       ++i;
 }
   \endcode
+
+  The template class D must provide the following methods.
+  \code
+    memory_size_type total_memory_in_bytes() const
+  \endcode
+  Returns a lower bound on the total size in bytes of the memory
+  occupied by the instance of D.
+  \code
+    bool is_top() const
+  \endcode
+  Returns <CODE>true</CODE> if and only if the instance of D is the top
+  element of the domain.
+  \code
+    bool is_bottom() const
+  \endcode
+  Returns <CODE>true</CODE> if and only if the instance of D is the
+  bottom element of the domain.
+  \code
+    bool definitely_entails(const D& y) const
+  \endcode
+  Returns <CODE>true</CODE> if the instance of D definitely entails
+  <CODE>y</CODE>.  Returns <CODE>false</CODE> if the instance may not
+  entail <CODE>y</CODE> (i.e., if the instance does not entail
+  <CODE>y</CODE> or if entailment could not be decided).
+  \code
+    void upper_bound_assign(const D& y)
+  \endcode
+  Assigns to the instance of D an upper bound of the instance and
+  <CODE>y</CODE>.
+  \code
+    void meet_assign(const D& y)
+  \endcode
+  Assigns to the instance of D the meet of the instance and
+  <CODE>y</CODE>.
+  \code
+    bool OK() const
+  \endcode
+  Returns <CODE>true</CODE> if the instance of D is in a consistent
+  state, else returns <CODE>false</CODE>.
+
+  The following operators on the template class D must be defined.
+  \code
+    operator<<(std::ostream& s, const D& x)
+  \endcode
+  Writes a textual representation of the instance of D on
+  <CODE>s</CODE>.
+  \code
+    operator==(const D& x, const D& y)
+  \endcode
+  Returns <CODE>true</CODE> if and only if <CODE>x</CODE> and
+  <CODE>y</CODE> are equivalent D's.
+  \code
+    operator!=(const D& x, const D& y)
+  \endcode
+  Returns <CODE>true</CODE> if and only if <CODE>x</CODE> and
+  <CODE>y</CODE> are different D's.
 */
-template <typename CS>
+template <typename D>
 class Parma_Polyhedra_Library::Powerset {
 public:
   //! \name Constructors and Destructor
@@ -103,7 +159,7 @@ public:
     If \p d is not bottom, builds a powerset containing only \p d.
     Builds the empty powerset otherwise.
   */
-  explicit Powerset(const CS& d);
+  explicit Powerset(const D& d);
 
   //! Destructor.
   ~Powerset();
@@ -159,7 +215,7 @@ protected:
     The particular sequence employed must support efficient deletion
     in any position and efficient back insertion.
   */
-  typedef std::list<CS> Sequence;
+  typedef std::list<D> Sequence;
 
   //! Alias for the low-level iterator on the disjuncts.
   typedef typename Sequence::iterator Sequence_iterator;
@@ -200,7 +256,7 @@ public:
   //! The reverse iterator type built from Powerset::const_iterator.
   typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-  //! \name Member Functions for the Direct Inspection of Disjuncts
+  //! \name Member Functions for the Direct Manipulation of Disjuncts
   //@{
 
   /*! \brief
@@ -253,7 +309,22 @@ public:
   //! Returns the before-the-start const_reverse_iterator.
   const_reverse_iterator rend() const;
 
-  //@} // Member Functions for the Direct Inspection of Disjuncts
+  //! Adds to \p *this the disjunct \p d.
+  void add_disjunct(const D& d);
+
+  /*! \brief
+    Drops the disjunct in \p *this pointed to by \p position, returning
+    an iterator to the disjunct following \p position.
+  */
+  iterator drop_disjunct(iterator position);
+
+  //! Drops all the disjuncts from \p first to \p last (excluded).
+  void drop_disjuncts(iterator first, iterator last);
+
+  //! Drops all the disjuncts, making \p *this an empty powerset.
+  void clear();
+
+  //@} // Member Functions for the Direct Manipulation of Disjuncts
 
   //! \name Member Functions that May Modify the Powerset Element
   //@{
@@ -275,21 +346,6 @@ public:
 
   //! Assigns to \p *this the meet of \p *this and \p y.
   void meet_assign(const Powerset& y);
-
-  //! Adds to \p *this the disjunct \p d.
-  void add_disjunct(const CS& d);
-
-  /*! \brief
-    Drops the disjunct in \p *this pointed to by \p position, returning
-    an iterator to the disjunct following \p position.
-  */
-  iterator drop_disjunct(iterator position);
-
-  //! Drops all the disjuncts from \p first to \p last (excluded).
-  void drop_disjuncts(iterator first, iterator last);
-
-  //! Drops all the disjuncts, making \p *this an empty powerset.
-  void clear();
 
   /*! \brief
     If \p *this is not empty (i.e., it is not the bottom element),
@@ -325,7 +381,7 @@ protected:
     addition of \p d are dropped and \p d is added to the reduced
     sequence.
   */
-  iterator add_non_bottom_disjunct(const CS& d,
+  iterator add_non_bottom_disjunct(const D& d,
 				   iterator first,
 				   iterator last);
 
@@ -333,7 +389,7 @@ protected:
     Adds to \p *this the disjunct \p d,
     assuming \p d is not the bottom element.
   */
-  void add_non_bottom_disjunct(const CS& d);
+  void add_non_bottom_disjunct(const D& d);
 
   /*! \brief
     Assigns to \p *this the result of applying \p op_assign pairwise
@@ -363,13 +419,13 @@ private:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A %const_iterator on the disjuncts of a Powerset element.
-/*!
+/*! \ingroup PPL_CXX_interface
   This class implements a read-only bidirectional iterator
   on the sequence of disjuncts.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename CS>
-class Parma_Polyhedra_Library::Powerset<CS>::omega_const_iterator {
+template <typename D>
+class Parma_Polyhedra_Library::Powerset<D>::omega_const_iterator {
 protected:
   //! The type of the underlying %const_iterator.
   typedef typename Powerset::Sequence::const_iterator Base;
@@ -435,7 +491,7 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An iterator on the disjuncts of a Powerset element.
-/*!
+/*! \ingroup PPL_CXX_interface
   This class implements a <EM>read-only</EM> bidirectional iterator
   on the sequence of disjuncts. That is, by using an instance of
   this iterator class it is not possible to overwrite the disjuncts
@@ -452,8 +508,8 @@ public:
   <CODE>Powerset::sequence</CODE>.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename CS>
-class Parma_Polyhedra_Library::Powerset<CS>::omega_iterator {
+template <typename D>
+class Parma_Polyhedra_Library::Powerset<D>::omega_iterator {
 protected:
   //! The type of the underlying mutable iterator.
   typedef typename Powerset::Sequence::iterator Base;
@@ -469,7 +525,7 @@ protected:
   omega_iterator(const Base& b);
 
   friend class Powerset;
-  friend Powerset<CS>::omega_const_iterator
+  friend Powerset<D>::omega_const_iterator
   ::omega_const_iterator(const omega_iterator& y);
 
 public:
@@ -528,10 +584,10 @@ namespace Parma_Polyhedra_Library {
   \relates Powerset::omega_const_iterator
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename CS>
+template <typename D>
 bool
-operator==(const typename Powerset<CS>::omega_iterator& x,
-	   const typename Powerset<CS>::omega_const_iterator& y);
+operator==(const typename Powerset<D>::omega_iterator& x,
+	   const typename Powerset<D>::omega_const_iterator& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -541,10 +597,10 @@ operator==(const typename Powerset<CS>::omega_iterator& x,
   \relates Powerset::omega_const_iterator
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename CS>
+template <typename D>
 bool
-operator!=(const typename Powerset<CS>::omega_iterator& x,
-	   const typename Powerset<CS>::omega_const_iterator& y);
+operator!=(const typename Powerset<D>::omega_iterator& x,
+	   const typename Powerset<D>::omega_const_iterator& y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -552,9 +608,9 @@ namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Powerset */
-template <typename CS>
-void swap(Parma_Polyhedra_Library::Powerset<CS>& x,
-	  Parma_Polyhedra_Library::Powerset<CS>& y);
+template <typename D>
+void swap(Parma_Polyhedra_Library::Powerset<D>& x,
+	  Parma_Polyhedra_Library::Powerset<D>& y);
 
 } // namespace std
 

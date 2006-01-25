@@ -31,10 +31,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifndef EXTRA_ROW_DEBUG
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \ingroup PPL_defines
+/*!
   \brief
   Enables extra debugging information for class Row.
 
+  \ingroup PPL_CXX_interface
   When <CODE>EXTRA_ROW_DEBUG</CODE> evaluates to <CODE>true</CODE>,
   each instance of the class Row carries its own capacity; this enables
   extra consistency checks to be performed.
@@ -45,7 +46,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The handler of the actual Row implementation.
-/*!
+/*! \ingroup PPL_CXX_interface
   Exception-safety is the only responsibility of this class: it has
   to ensure that its \p impl member is correctly deallocated.
 */
@@ -78,13 +79,17 @@ private:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A finite sequence of coefficients.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Parma_Polyhedra_Library::Row : private Row_Impl_Handler {
 public:
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Wrapper class to represent a set of flags with bits in a native
     unsigned integral type.
+    \ingroup PPL_CXX_interface
   */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   class Flags {
   public:
     //! Constructs an object with all the flags unset.
@@ -104,7 +109,8 @@ public:
     //! Uses the ASCII Flags representation from \p s to recreate *this.
     /*!
       Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
-      otherwise.  The ASCII representation is as output by \ref ascii_dump.
+      otherwise.  The ASCII representation is as output by
+      \ref Parma_Polyhedra_Library::Row::Flags::ascii_dump.
     */
     bool ascii_load(std::istream& s);
 
@@ -363,7 +369,7 @@ void iter_swap(std::vector<Parma_Polyhedra_Library::Row>::iterator x,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The actual implementation of a Row object.
-/*!
+/*! \ingroup PPL_CXX_interface
   The class Row_Impl_Handler::Impl provides the implementation of Row
   objects and, in particular, of the corresponding memory allocation
   functions.

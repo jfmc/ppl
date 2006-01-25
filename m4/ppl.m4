@@ -64,7 +64,7 @@ fi
 
 AC_PATH_PROG(PPL_CONFIG, ppl-config, no)
 min_ppl_version=ifelse([$1], ,0.0,$1)
-if test \( "x$min_ppl_version" = "0.0" \) -o \( "x$min_ppl_version" = "0.0.0" \)
+if test \( "x$min_ppl_version" = "x0.0" \) -o \( "x$min_ppl_version" = "x0.0.0" \)
 then
   AC_MSG_CHECKING([for the Parma Polyhedra Library])
 else
@@ -202,11 +202,11 @@ main() {
               "\n*** being found.  The easiest way to fix this is to remove"
               " the old version"
               "\n*** of PPL, but you can also set the PPL_CONFIG environment"
-              " to point to the"
-              "\n*** correct copy of ppl-config.  (In this case, you will"
-              " have to"
-              "\n*** modify your LD_LIBRARY_PATH enviroment variable,"
-              " or edit /etc/ld.so.conf"
+              " variable to point"
+              "\n*** to the correct copy of ppl-config.  (In this case,"
+              " you will have to"
+              "\n*** modify your LD_LIBRARY_PATH enviroment"
+              " variable or edit /etc/ld.so.conf"
               "\n*** so that the correct libraries are found at run-time.)"
            << endl;
       exit(1);

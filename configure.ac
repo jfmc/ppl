@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.8pre9],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.8pre10],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
@@ -776,6 +776,7 @@ AC_SUBST(text_md5sum)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm ppl.spec
+                debian/Makefile
                 debian/libppl.copyright
                 debian/libppl-pwl.copyright
                 src/Makefile

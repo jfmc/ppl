@@ -30,19 +30,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Types and functions implementing checked numbers.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 namespace Checked {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \brief
-  A policy that specifies a total adherence to behavior
-  of the underlying type.
-*/
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A policy checking for overflows.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Check_Overflow_Policy {
   static const int check_overflow = 1;
@@ -324,9 +316,9 @@ struct FUNCTION_CLASS(name) <Policy,					\
   SPECIALIZE_FUN3_0_1(sub_mul, suf, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 #define SPECIALIZE_GCD(suf, To, From1, From2) \
   SPECIALIZE_FUN3_0_1(gcd, suf, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-#define SPECIALIZE_GCDEXT(suf, To, From1, From2, From3, From4)		\
-  SPECIALIZE_FUN5_0_1(gcdext, suf, Result, nonconst, To,		\
-		      const, From1, const, From2, nonconst, From3, nonconst, From4, Rounding_Dir)
+#define SPECIALIZE_GCDEXT(suf, To1, From1, From2, To2, To3)		\
+  SPECIALIZE_FUN5_0_1(gcdext, suf, Result, nonconst, To1,		\
+		      const, From1, const, From2, nonconst, To2, nonconst, To3, Rounding_Dir)
 #define SPECIALIZE_LCM(suf, To, From1, From2) \
   SPECIALIZE_FUN3_0_1(lcm, suf, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 #define SPECIALIZE_INPUT(suf, Type) \
@@ -359,8 +351,8 @@ DECLARE_FUN2_0_2(div2exp,     Result, nonconst, To, const, From, int, Rounding_D
 DECLARE_FUN3_0_1(add_mul,     Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN3_0_1(sub_mul,     Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN3_0_1(gcd,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-DECLARE_FUN5_0_1(gcdext,      Result, nonconst, To, const, From1, const, From2,
-		 nonconst, From3, nonconst, From4, Rounding_Dir)
+DECLARE_FUN5_0_1(gcdext,      Result, nonconst, To1, const, From1, const, From2,
+		                      nonconst, To2, nonconst, To3, Rounding_Dir)
 DECLARE_FUN3_0_1(lcm,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN1_0_2(input,       Result, nonconst, Type, std::istream&, Rounding_Dir)
 DECLARE_FUN1_1_2(output,      Result, std::ostream&, const, Type, const Numeric_Format&, Rounding_Dir)

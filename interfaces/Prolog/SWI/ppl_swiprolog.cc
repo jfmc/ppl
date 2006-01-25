@@ -123,7 +123,7 @@ inline int
 Prolog_put_ulong(Prolog_term_ref t, unsigned long ul) {
   if (ul <= LONG_MAX)
     PL_put_integer(t, ul);
-  else if (ul <= std::numeric_limits<int64_t>::max())
+  else if (ul <= static_cast<uint64_t>(std::numeric_limits<int64_t>::max()))
     PL_put_int64(t, static_cast<int64_t>(ul));
   else {
     PPL::assign_r(tmp_mpz_class, ul, PPL::ROUND_NOT_NEEDED);

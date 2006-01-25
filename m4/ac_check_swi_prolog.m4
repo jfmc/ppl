@@ -48,13 +48,18 @@ then
   # We require SWI-Prolog 5.6.0 or later.
   AC_CHECK_HEADER(SWI-Prolog.h,
                   AC_MSG_CHECKING([for SWI-Prolog version 5.6.0 or later])
-                  AC_EGREP_CPP(yes,
-                    [
-                      #include <SWI-Prolog.h>
-                      #if PLVERSION >= 50600
-                      yes
-                      #endif
-                    ],
+                  AC_COMPILE_IFELSE(
+[#include <SWI-Prolog.h>
+
+int
+main() {
+#if !defined(PLVERSION) || PLVERSION < 50600
+  choke me
+#endif
+
+  ;
+  return 0;
+}],
                     AC_MSG_RESULT(yes),
                     swi_prolog=""
                     AC_MSG_RESULT(no)

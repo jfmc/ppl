@@ -65,7 +65,7 @@ void swap(Parma_Polyhedra_Library::Generator_System& x,
 } // namespace std
 
 //! A system of generators.
-/*!
+/*! \ingroup PPL_CXX_interface
     An object of the class Generator_System is a system of generators,
     i.e., a multiset of objects of the class Generator
     (lines, rays, points and closure points).
@@ -222,7 +222,7 @@ public:
   static const Generator_System& zero_dim_univ();
 
   //! An iterator over a system of generators
-  /*!
+  /*! \ingroup PPL_CXX_interface
       A const_iterator is used to provide read-only access
       to each generator contained in an object of Generator_System.
 

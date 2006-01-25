@@ -15,6 +15,7 @@ PURPOSE. */
 namespace Parma_Polyhedra_Library {
 
 //! Possible outcomes of the LP_Problem solver.
+/*! \ingroup PPL_CXX_interface */
 enum LP_Problem_Status {
   //! The problem is unfeasible.
   UNFEASIBLE_LP_PROBLEM,

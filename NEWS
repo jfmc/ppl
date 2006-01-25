@@ -4,51 +4,66 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.8  (to be released on January 20, 2006)
+NEWS for version 0.8  (released on January 20, 2006)
 --------------------------------------------------------------------------
 
 New and Changed Features
 ========================
 
-o  The new program ppl-config returns information about the
-   configuration of the PPL and the applications using it.  A manual
-   page for ppl-config has also been added.
+o  The class template BD_Shape<T> provides an implementation of the
+   abstract domain of bounded difference shapes. The template type
+   parameter T specifies the basic type used for the inhomogeneous term
+   of bounded difference constraints; it can be instantiated to either
+   GMP's unbounded precision types (mpq_class, mpz_class), native
+   floating point types (float, double), or native integer types
+   (8, 16, 32 and 64 bits wide).
 
-o  In classes Poly_Con_Relation and Poly_Gen_Relation the methods
+o  New class LP_Problem provides an implementation of the
+   primal simplex algorithm using exact arithmetic.
 
-     void ascii_dump(std::ostream& s) const
+o  The new program `ppl-config' returns information about the
+   configuration and the installed components of the PPL.
+   This greatly simplifies the task of writing makefiles and
+   automatic configuration scripts.  A manual page for `ppl-config'
+   has also been added.
 
-   and
+o  New Autoconf function
 
-     void ascii_load(std::istream& s) const
+     AM_PATH_PPL([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
 
-   are now publicly available.
+   allows to test the existence and usability of particular versions of the
+   PPL, defining macros containing the required paths.  The simple addition
+   of, e.g.,
 
-o  All classes which provide the method
+     AM_PATH_PPL(0.8)
 
-     void ascii_dump(std::ostream& s) const
-
-   now also provide the methods
-
-     void ascii_dump() const
-
-   and
-
-     void print() const.
-
-   These methods print to std::cerr the textual and user-level
-   representation (resp.) of the given object.  This enables the
-   output of such object representations in GDB.
-
-o  There is a new section in the "General Information on the PPL"
-   documentation: "Integers Represented by Floating Point Numbers".
-   This contains results that are needed to prove the correctness of
-   our implementation of the GCD and LCM operations.
+   to an application's configure.ac file is all that is needed in most
+   cases.  Paths to the installed version of the PPL will be detected,
+   the version number will be checked to be at least the one
+   indicated, the variables PPL_CPPFLAGS and PPL_LDFLAGS will be set
+   accordingly and a quick sanity check of the PPL installation will
+   be performed.  For more complex tasks, the AM_PATH_PPL function
+   defines the `--with-ppl-prefix' and `--with-ppl-exec-prefix'
+   configure options (useful when the PPL is installed into a
+   non-standard place or when multiple versions of the PPL are
+   installed).  AM_PATH_PPL also defines the `--disable-ppltest'
+   configure option to disable the quick sanity check.  When something
+   fails, AM_PATH_PPL provides accurate indications about what went
+   wrong and how to fix it.  See the sources in m4/ppl.m4 for more
+   information.
 
 o  The browse and print versions of the PS and PDF formats of the user
    manual have been merged into single documents: ppl-user-0.8.pdf and
    ppl-user-0.8.ps.gz.  The equivalent developer reference documents
    have also been merged.
+
+o  One of the possible values for the configuration option
+   `--enable-coefficients' has been renamed from `gmp' to `mpz'.
+
+o  New configuration option `--enable-interfaces' allows some or all of
+   the Prolog and C interfaces to be selectively enabled.
+
+o  Portability has been further improved.
 
 o  Added to C_Polyhedron (resp., NNC_Polyhedron) new method
 
@@ -87,17 +102,6 @@ o  Class Bounding_Box has new widening methods
 o  All methods in class Determinate that are specific to the Polyhedra
    template parameter have been dropped.  If needed, they can still be
    invoked through element().
-
-o  The class template BD_Shape<T> provides an implementation of the
-   abstract domain of Bounded Difference shapes. The template type
-   parameter T specifies the basic type used for the inhomogeneous term
-   of bounded difference constraints; it can be instantiated to either
-   GMP's unbounded precision types (mpq_class, mpz_class), native
-   floating point types (float, double), or native integer types
-   (8, 16, 32 and 64 bits wide).
-
-o  New class LP_Problem provides an implementation of the
-   primal simplex algorithm using exact arithmetic.
 
 o  Method
 
@@ -172,12 +176,6 @@ o  New output operators in namespace IO_Operators:
 
      std::ostream& operator<<(std::ostream&, const Generator::Type&).
 
-o  One of the possible values for the configuration option
-   `--enable-coefficients' has been renamed from `gmp' to `mpz'.
-
-o  New configuration option --enable-interfaces allows some or all of
-   the Prolog and C interfaces to be selectively enabled.
-
 o  Added to class Constraint the methods
 
      bool is_tautological() const
@@ -196,7 +194,10 @@ o  Added to classes Constraint (resp., Generator) the method
    (resp., bool is_equivalent_to(const Generator& y) const)
    which check for semantic equivalence of corresponding class
    instances.  Also made available the (semantic) comparison operators
-   == and !=.
+   `==' and `!='.
+
+o  The swap() methods of classes Linear_Expression, Constraint, Generator,
+   Constraint_System and Generator_System are now publicly accessible.
 
 o  Added to classes Constraint and Generator the methods
 
@@ -206,10 +207,31 @@ o  Added to classes Constraint and Generator the methods
 
      void ascii_load(std::istream& s) const.
 
-o  Added swap methods to classes Linear_Expression, Constraint, Generator,
-   Constraint_System and Generator_System.
+o  In classes Poly_Con_Relation and Poly_Gen_Relation the methods
 
-o  Portability has been improved.
+     void ascii_dump(std::ostream& s) const
+
+   and
+
+     void ascii_load(std::istream& s) const
+
+   are now publicly accessible.
+
+o  All classes which provide the method
+
+     void ascii_dump(std::ostream& s) const
+
+   now also provide the methods
+
+     void ascii_dump() const
+
+   and
+
+     void print() const.
+
+   These methods print to std::cerr the textual and user-level
+   representation (resp.) of the given object.  This enables the
+   output of such object representations in GDB.
 
 o  New functions added to the C interface:
 
@@ -232,19 +254,24 @@ o  All predicates in the Prolog interface that require an input list
 o  In the Prolog interface, the names and arities of the "with_token"
    widening and extrapolation predicates have been revised to
    "with_tokens" with an extra argument and the functionality has been
-   revised to match more closely the corresponding C++ interface operators.
+   revised to match more closely the corresponding C++ interface
+   operators.
 
 o  In the Prolog interface, the names and arities of the predicates
-   that create handles for new polyhedra have been revised
-   to match more closely the corresponding C and C++ interface
-   operators.
-   That is, instead of having "c" and/or "nnc" as arguments to indicate the
-   topology of the polyhedron, the topologies are now part of the names of
-   the predicates.
+   that create handles for new polyhedra have been revised to match
+   more closely the corresponding C and C++ interface operators.  That
+   is, instead of having "c" and/or "nnc" as arguments to indicate the
+   topology of the polyhedron, the topologies are now part of the
+   names of the predicates.
 
 o  The SWI-Prolog interface allows now the exchange of unbounded numbers
    between the PPL and Prolog applications.  This requires SWI-Prolog
    version 5.6.0 or later version.  Previous versions of SWI-Prolog
+   are no longer supported.
+
+o  The YAP interface allows now the exchange of unbounded numbers
+   between the PPL and Prolog applications.  This requires YAP
+   version 5.1.0 or later version.  Previous versions of YAP
    are no longer supported.
 
 o  The `ppl_lpsol' demo has now two more options: with `--enumerate' it
@@ -257,6 +284,25 @@ o  The `ppl_lpsol' demo has now two more options: with `--enumerate' it
 
 o  Manual pages have been added for the ppl_lpsol and ppl_lcdd
    programs.
+
+o  The new class BD_Shape<T> as well as the "checked" native
+   coefficients selectable with the `--enable-coefficients' configure
+   options, are based on a very general and powerful notion of "number
+   family with a policy".  This is made available to the users of the
+   PPL via the wrapper template class Checked_Number<T, P>, where T is
+   the underlying numeric type (native integer or float of any width,
+   unbounded integer or rational) and `P' is a policy specifying
+   things such as whether to check for overflows and other
+   "exceptional" conditions and what to do in such cases.  The policy
+   also specifies whether T should be extended with representations
+   for infinities or NAN (Not A Number) and default rounding modes.
+   A complete set of arithmetic functions and operators are provided:
+   they either use the default rounding mode or accept a rounding mode
+   as an extra parameter and, depending on the policy, may return a result
+   that indicates the relation that exists between the true mathematical
+   result and the (possibly approximate) computed result. Input/output
+   functions with the same properties (controlled rounding and indications
+   of the approximations) are also provided.
 
 
 Bugfixes

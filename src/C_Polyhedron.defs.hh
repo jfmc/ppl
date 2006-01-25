@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 
 //! A closed convex polyhedron.
-/*!
+/*! \ingroup PPL_CXX_interface
     An object of the class C_Polyhedron represents a
     <EM>topologically closed</EM> convex polyhedron
     in the vector space \f$\Rset^n\f$.
