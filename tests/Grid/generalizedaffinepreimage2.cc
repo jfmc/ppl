@@ -130,9 +130,6 @@ test16() {
   exit(1);
 }
 
-// FIX the tests with common vars are the same as common var tests in
-//     generalizedaffineimage2 (perhaps share them)
-
 // Simple expressions having common variables.
 
 void
@@ -148,6 +145,7 @@ test17() {
     exit(1);
 
   Grid known_gr(2);
+  known_gr.add_congruence(A == 0);
 
   if (gr == known_gr)
     return;
@@ -177,9 +175,9 @@ test18() {
     exit(1);
 
   Grid known_gr(2, EMPTY);
+  known_gr.add_generator(grid_point());
   known_gr.add_generator(grid_point(A));
-  known_gr.add_generator(grid_point(B));
-  known_gr.add_generator(grid_line(2*A - B));
+  known_gr.add_generator(grid_line(A + B));
 
   if (gr == known_gr)
     return;
@@ -208,6 +206,7 @@ test20() {
   if (find_variation(gr))
     exit(1);
 
+  // FIX check
   Grid known_gr(3);
 
   if (gr == known_gr)
@@ -233,7 +232,7 @@ test21() {
   gr.generalized_affine_preimage(A - B, 2*A - 2*B, 5);
 
   Grid known_gr(2);
-  known_gr.add_congruence((A - B %= 0) / 5);
+  known_gr.add_congruence((2*A - 2*B %= 0) / 5);
 
   if (gr == known_gr)
     return;
@@ -245,6 +244,9 @@ test21() {
   exit(1);
 }
 
+// Expressions having common variables, where
+// generalized_affine_preimage must minimize the grid.
+
 void
 test22() {
   nout << "test22:" << endl;
@@ -255,7 +257,7 @@ test22() {
   gr.generalized_affine_preimage(2*A - 2*B, A - B, 5);
 
   Grid known_gr(2);
-  known_gr.add_congruence((2*A - 2*B %= 0) / 5);
+  known_gr.add_congruence((A - B %= 0) / 5);
 
   if (gr == known_gr)
     return;
