@@ -286,7 +286,9 @@ test6() {
   Grid known_gr(3, EMPTY);
   known_gr.add_generator(grid_point(2*A));
   known_gr.add_generator(grid_point(2*A + 3*B));
-  known_gr.add_generator(grid_line(A + C));
+  // FIX check
+  //known_gr.add_generator(grid_line(A + C));
+  known_gr.add_generator(grid_line(3*A + C));
   known_gr.add_generator(grid_point(4*A));  // Original modulus.
   known_gr.add_generator(grid_point(7*A));  // Transformation modulus.
 
@@ -320,7 +322,9 @@ test7() {
   Grid known_gr(3, EMPTY);
   known_gr.add_generator(grid_point(2*A));
   known_gr.add_generator(grid_point(2*A + 3*B));
-  known_gr.add_generator(grid_line(A + C));
+  // FIX check
+  //known_gr.add_generator(grid_line(A + C));
+  known_gr.add_generator(grid_line(3*A + C));
   known_gr.add_generator(grid_point(4*A));  // Original modulus.
 
   if (gr == known_gr) {
@@ -443,10 +447,8 @@ main() TRY {
   test3();
   test4();
   test5();
-#if 0
   test6();
   test7();
-#endif
   test8();
   test9();
   test10();
