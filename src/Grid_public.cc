@@ -1835,7 +1835,7 @@ generalized_affine_image(const Linear_Expression& lhs,
     add_space_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to the right hand side.
-    // TODO: use add_congruence_and_minimize() when it has been updated
+    // TODO: Use add_congruence_and_minimize() when it has been updated.
     Congruence_System new_cgs1(new_var == rhs);
     if (add_recycled_congruences_and_minimize(new_cgs1)) {
       // The grid still contains points.
@@ -1854,7 +1854,7 @@ generalized_affine_image(const Linear_Expression& lhs,
 
       // Constrain the new dimension so that it is congruent to the left
       // hand side expression modulo `mod'.
-      // TODO: use add_congruence() when it has been updated
+      // TODO: Use add_congruence() when it has been updated.
       Congruence_System new_cgs2((lhs %= new_var) / mod);
       add_recycled_congruences(new_cgs2);
     }
@@ -1943,17 +1943,26 @@ generalized_affine_preimage(const Linear_Expression& lhs,
     add_space_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to `lhs'
-    // TODO: use add_congruence_and_minimize() when it has been updated
+    // TODO: Use add_congruence_and_minimize() when it has been updated.
     Congruence_System new_cgs1(new_var == rhs);
     if (add_recycled_congruences_and_minimize(new_cgs1)) {
       // The grid still contains points.
 
-      // Cylindrificate on all the variables occurring in the left hand side
-      add_recycled_generators(new_lines);
+      // Cylindrificate on all the variables occurring in the left
+      // hand side
+
+      // Ajust `new_lines' to the right dimension.
+      new_lines.insert(parameter(0*Variable(space_dim-1)));
+      // Add the lines to `gen_sys'.
+      gen_sys.recycling_insert(new_lines);
+      normalize_divisors(gen_sys);
+      // Update the flags.
+      clear_congruences_up_to_date();
+      clear_generators_minimized();
 
       // Constrain the new dimension so that it is related to
       // the right hand side modulo `mod'.
-      // TODO: use add_congruence() when it has been updated
+      // TODO: Use add_congruence() when it has been updated.
       Congruence_System new_cgs2((lhs %= new_var) / mod);
       add_recycled_congruences(new_cgs2);
     }
