@@ -1,7 +1,8 @@
 Enhancements for PPL 0.9
 ========================
 
-- Incorporate the domain of rational grids.
+
+- Develop a C and Prolog interfaces for all the supported domains.
 - Incorporate the domain of intervals.
 - Reduce the number of FIXMEs to no more than 20.
 - Complete the manual pages for ppl-config, ppl_lpsol and ppl_lcdd.
@@ -115,16 +116,10 @@ Grids Domain
 
 -  Eliminate as many FIXME's as possible.
 
--  clean-up the gcdext addition.
+-  Clean-up the gcdext addition.
 
 -  Check the tests cover all the code.
 
 -  Documentation needs checking and revising; in many places the
    cut and paste from the corresponding files for polyhedra has not
    been adapted for grids.
-
--  Develop a C interface.
-
--  Develop a Prolog interface.
-
--  Merge the branch with the main trunk.
