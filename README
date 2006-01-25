@@ -2,10 +2,10 @@ Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 See below for the copying conditions.
 
 
-Parma Polyhedra Library (Release 0.8)
+Parma Polyhedra Library (Release 0.9)
 =====================================
 
-This is the release 0.8 of the Parma Polyhedra Library:
+This is the release 0.9 of the Parma Polyhedra Library:
 a C++ library for (not necessarily closed) convex polyhedra
 and other numerical abstractions.
 
@@ -59,7 +59,7 @@ See http://www.cs.unipr.it/ppl/ for more information on the PPL.
 For any additional questions you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
-Here is the contents of the PPL 0.8 source distribution
+Here is the contents of the PPL 0.9 source distribution
 (26 directories, 1140 files):
 
 ppl-0.8
