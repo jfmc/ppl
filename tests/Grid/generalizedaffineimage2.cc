@@ -590,8 +590,8 @@ test18() {
     exit(1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(A));
-  known_gr.add_generator(grid_point(B));
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_point(B, 2));
   known_gr.add_generator(grid_line(2*A - B));
 
   if (gr == known_gr)
