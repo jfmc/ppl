@@ -785,6 +785,7 @@ AC_CONFIG_FILES(Makefile
                 tests/Makefile
                 tests/BD_Shape/Makefile
                 tests/Polyhedron/Makefile
+                tests/Grid/Makefile
                 utils/Makefile
                 m4/Makefile
                 demos/Makefile

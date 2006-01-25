@@ -27,17 +27,32 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Scalar_Products.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
+#include "Congruence.types.hh"
+#include "Grid_Generator.types.hh"
 #include "Linear_Row.defs.hh"
 #include "Coefficient.types.hh"
 #include "Variable.types.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
+#include "Congruence_System.types.hh"
+#include "Grid_Generator_System.types.hh"
 #include "Polyhedron.types.hh"
+#include "Grid.types.hh"
 #include "LP_Problem.types.hh"
 #include <cstddef>
 
 namespace Parma_Polyhedra_Library {
 // Put them in the namespace here to declare them friend later.
+
+//! Returns the congruence \p e1 = \p e2 \p \pmod{1}.
+/*! \relates Congruence */
+Congruence
+operator%=(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the congruence \p e = \p n \p \pmod{1}.
+/*! \relates Congruence */
+Congruence
+operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n);
 
 //! Returns the linear expression \p e1 + \p e2.
 /*! \relates Linear_Expression */
@@ -241,6 +256,14 @@ public:
   */
   explicit Linear_Expression(const Generator& g);
 
+  //! Builds the linear expression corresponding to congruence \p cg.
+  /*!
+    Given the congruence
+    \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
+    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i + b\f$.
+  */
+  explicit Linear_Expression(const Congruence& cg);
+
   //! Returns the maximum space dimension a Linear_Expression can handle.
   static dimension_type max_space_dimension();
 
@@ -275,8 +298,12 @@ private:
   friend class Parma_Polyhedra_Library::Scalar_Products;
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;
+  // The following declaration grants access to Grid_Generator::parameter.
+  friend class Parma_Polyhedra_Library::Grid_Generator;
+  friend class Parma_Polyhedra_Library::Congruence;
   // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
+  friend class Parma_Polyhedra_Library::Grid;
   friend class Parma_Polyhedra_Library::LP_Problem;
 
   // FIXME: the following friend declaration is only to grant access to
@@ -286,6 +313,14 @@ private:
   // FIXME: the following friend declaration is only to grant access to
   // Generator_System::affine_image().
   friend class Parma_Polyhedra_Library::Generator_System;
+
+  // FIXME: the following friend declaration is only to grant access to
+  // Congruence_System::affine_preimage().
+  friend class Parma_Polyhedra_Library::Congruence_System;
+
+  // FIXME: the following friend declaration is only to grant access to
+  // Grid_Generator_System::affine_image().
+  friend class Parma_Polyhedra_Library::Grid_Generator_System;
 
   //! Copy-constructor with a specified space dimension.
   Linear_Expression(const Linear_Expression& e, dimension_type sz);
@@ -354,6 +389,14 @@ private:
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
 						    const Linear_Expression& e);
+
+  friend Congruence
+  Parma_Polyhedra_Library::operator%=(const Linear_Expression& e1,
+				      const Linear_Expression& e2);
+
+  friend Congruence
+  Parma_Polyhedra_Library::operator%=(const Linear_Expression& e,
+				      Coefficient_traits::const_reference n);
 };
 
 #include "Linear_Expression.inlines.hh"

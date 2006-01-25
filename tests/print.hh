@@ -48,6 +48,13 @@ static std::ostream& vnout = std::cout;
 static std::ofstream vnout;
 #endif
 
+// FIX use inline function?
+#define dump_grids(grid,known_grid)			\
+  nout << endl << "ASCII dump of grid:" << endl;	\
+  grid.ascii_dump(nout);				\
+  nout << endl << "ASCII dump of known grid:" << endl;	\
+  known_grid.ascii_dump(nout);
+
 void
 print_constraint(const Parma_Polyhedra_Library::Constraint& c,
 		 const std::string& intro = "",
@@ -57,6 +64,11 @@ void
 print_constraints(const Parma_Polyhedra_Library::Constraint_System& cs,
 		  const std::string& intro = "",
 		  std::ostream& s = nout);
+
+void
+print_constraints(const Parma_Polyhedra_Library::Congruence_System& cgs,
+		  const std::string& intro = "",
+		  std::ostream& s = std::cout);
 
 void
 print_constraints(const Parma_Polyhedra_Library::Polyhedron& ph,

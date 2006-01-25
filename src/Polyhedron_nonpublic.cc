@@ -1461,6 +1461,13 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* cg_name,
+					      const Congruence& cg) const {
+  throw_dimension_incompatible(method, cg_name, cg.space_dimension());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 					      const char* cs_name,
 					      const Constraint_System& cs) const {
   throw_dimension_incompatible(method, cs_name, cs.space_dimension());
@@ -1471,6 +1478,13 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 					      const char* gs_name,
 					      const Generator_System& gs) const {
   throw_dimension_incompatible(method, gs_name, gs.space_dimension());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* cgs_name,
+					      const Congruence_System& cgs) const {
+  throw_dimension_incompatible(method, cgs_name, cgs.space_dimension());
 }
 
 void

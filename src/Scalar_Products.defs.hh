@@ -29,6 +29,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
+#include "Congruence.types.hh"
+#include "Grid_Generator.types.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A class implementing various scalar product functions.
@@ -47,6 +49,10 @@ public:
   static void assign(Coefficient& z, const Constraint& c, const Generator& g);
   //! Computes the scalar product of \p g and \p c and assigns it to \p z.
   static void assign(Coefficient& z, const Generator& g, const Constraint& c);
+  //! Computes the scalar product of \p g and \p cg and assigns it to \p z.
+  static void assign(Coefficient& z, const Grid_Generator& g, const Congruence& cg);
+  //! Computes the scalar product of \p cg and \p g and assigns it to \p z.
+  static void assign(Coefficient& z, const Congruence& cg, const Grid_Generator& g);
 
   //! Returns the sign of the scalar product between \p x and \p y.
   static int sign(const Linear_Row& x, const Linear_Row& y);
@@ -76,6 +82,12 @@ public:
   */
   static void reduced_assign(Coefficient& z,
 			     const Generator& g, const Constraint& c);
+  //! \brief
+  //! Computes the \e reduced scalar product of \p g and \p cg,
+  //! where the \f$\epsilon\f$ coefficient of \p g is ignored,
+  //! and assigns the result to \p z.
+  static void reduced_assign(Coefficient& z,
+			     const Grid_Generator& g, const Congruence& cg);
 
   /*! \brief
     Returns the sign of the \e reduced scalar product of \p x and \p y,
@@ -108,6 +120,19 @@ public:
   static void homogeneous_assign(Coefficient& z,
 				 const Linear_Expression& e,
 				 const Generator& g);
+  //! \brief
+  //! Computes the \e homogeneous scalar product of \p g and \p cg,
+  //! where the inhomogeneous terms are ignored,
+  //! and assigns the result to \p z.
+  static void homogeneous_assign(Coefficient& z,
+				 const Grid_Generator& g, const Congruence& cg);
+  //! \brief
+  //! Computes the \e homogeneous scalar product of \p e and \p g,
+  //! where the inhomogeneous terms are ignored,
+  //! and assigns the result to \p z.
+  static void homogeneous_assign(Coefficient& z,
+				 const Linear_Expression& e,
+				 const Grid_Generator& g);
 
   /*! \brief
     Returns the sign of the \e homogeneous scalar product of \p x and \p y,
@@ -119,6 +144,10 @@ public:
     where the inhomogeneous terms are ignored.
   */
   static int homogeneous_sign(const Linear_Expression& e, const Generator& g);
+  //! \brief
+  //! Returns the sign of the \e homogeneous scalar product of \p e and \p g,
+  //! where the inhomogeneous terms are ignored,
+  static int homogeneous_sign(const Linear_Expression& e, const Grid_Generator& g);
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

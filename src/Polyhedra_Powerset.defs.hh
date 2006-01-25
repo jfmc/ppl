@@ -26,8 +26,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedra_Powerset.types.hh"
 #include "globals.defs.hh"
 #include "BHRZ03_Certificate.types.hh"
-#include "Constraint_System.types.hh"
 #include "Constraint.types.hh"
+#include "Constraint_System.types.hh"
+#include "Congruence.types.hh"
+#include "Congruence_System.types.hh"
 #include "C_Polyhedron.types.hh"
 #include "NNC_Polyhedron.types.hh"
 #include "Polyhedron.defs.hh"
@@ -91,6 +93,10 @@ public:
     with the same information contents as \p cs.
   */
   explicit Polyhedra_Powerset(const Constraint_System& cs);
+
+  //! Creates a Polyhedra_Powerset with a single polyhedron
+  //! with the same information contents as \p cgs.
+  explicit Polyhedra_Powerset(const Congruence_System& cgs);
 
   //@} // Constructors and Destructor
 

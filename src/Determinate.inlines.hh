@@ -44,6 +44,11 @@ Determinate<PH>::Rep::Rep(const Constraint_System& cs)
 }
 
 template <typename PH>
+Determinate<PH>::Rep::Rep(const Congruence_System& cgs)
+  : references(0), ph(cgs) {
+}
+
+template <typename PH>
 Determinate<PH>::Rep::~Rep() {
   assert(references == 0);
 }
@@ -87,6 +92,12 @@ Determinate<PH>::Determinate(const PH& ph)
 template <typename PH>
 Determinate<PH>::Determinate(const Constraint_System& cs)
   : prep(new Rep(cs)) {
+  prep->new_reference();
+}
+
+template <typename PH>
+Determinate<PH>::Determinate(const Congruence_System& cgs)
+  : prep(new Rep(cgs)) {
   prep->new_reference();
 }
 

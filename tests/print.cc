@@ -22,6 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
+#include "Congruence_System.defs.hh"
 #include "Constraint.defs.hh"
 #include "Generator.defs.hh"
 #include "Constraint_System.defs.hh"
@@ -65,6 +66,21 @@ print_constraints(const Constraint_System& cs,
   s << (printed_something ? "." : "true.") << std::endl;
 }
 
+void
+print_constraints(const Congruence_System& cs,
+		  const std::string& intro, std::ostream& s) {
+  if (!intro.empty())
+    s << intro << std::endl;
+  Congruence_System::const_iterator i = cs.begin();
+  Congruence_System::const_iterator cs_end = cs.end();
+  bool printed_something = i != cs_end;
+  while (i != cs_end) {
+    s << *i++;
+    if (i != cs_end)
+      s << "," << std::endl;
+  }
+  s << (printed_something ? "." : "true.") << std::endl;
+}
 void
 print_generator(const Generator& g,
 		const std::string& intro, std::ostream& s) {

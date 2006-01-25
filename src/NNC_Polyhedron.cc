@@ -34,6 +34,32 @@ PPL::NNC_Polyhedron::NNC_Polyhedron(const C_Polyhedron& y)
   assert(OK());
 }
 
+PPL::NNC_Polyhedron::NNC_Polyhedron(const Congruence_System& cgs)
+  : Polyhedron(NOT_NECESSARILY_CLOSED,
+	       cgs.space_dimension() <= max_space_dimension()
+	       ? cgs.space_dimension()
+	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
+						 "NNC_Polyhedron(cgs)",
+						 "the space dimension of cgs "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+	       UNIVERSE) {
+  add_congruences(cgs);
+}
+
+PPL::NNC_Polyhedron::NNC_Polyhedron(Congruence_System& cgs)
+  : Polyhedron(NOT_NECESSARILY_CLOSED,
+	       cgs.space_dimension() <= max_space_dimension()
+	       ? cgs.space_dimension()
+	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
+						 "NNC_Polyhedron(cgs)",
+						 "the space dimension of cgs "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+	       UNIVERSE) {
+  add_congruences(cgs);
+}
+
 bool
 PPL::NNC_Polyhedron::poly_hull_assign_if_exact(const NNC_Polyhedron& y) {
   return PPL::poly_hull_assign_if_exact(*this, y);

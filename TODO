@@ -102,3 +102,29 @@ Debian packaging
   the Debian Developers Reference section 5.10.1 point 1.
 
 - Consider renaming libppl-pwl to libpwl.
+
+
+Grids Domain
+============
+
+-  Complete the implementation of any missing operators:
+      ????covered (or bounded) widening and extrapolation operators
+
+-  Check all FIX's and either remove or convert to FIXME's
+   with explanatory comment.
+
+-  Eliminate as many FIXME's as possible.
+
+-  clean-up the gcdext addition.
+
+-  Check the tests cover all the code.
+
+-  Documentation needs checking and revising; in many places the
+   cut and paste from the corresponding files for polyhedra has not
+   been adapted for grids.
+
+-  Develop a C interface.
+
+-  Develop a Prolog interface.
+
+-  Merge the branch with the main trunk.

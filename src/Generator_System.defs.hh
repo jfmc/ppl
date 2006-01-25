@@ -24,12 +24,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Generator_System_defs_hh 1
 
 #include "Generator_System.types.hh"
+#include "Grid_Generator_System.types.hh"
 #include "Linear_Expression.types.hh"
 #include "Linear_System.defs.hh"
 #include "Generator.types.hh"
 #include "Constraint.types.hh"
 #include "Polyhedron.types.hh"
 #include "Poly_Con_Relation.defs.hh"
+#include "Grid.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -244,8 +246,8 @@ public:
     : public std::iterator<std::forward_iterator_tag,
 				Generator,
 				void,
-				const Generator*,
-                                const Generator&> {
+			   	const Generator*,
+		   		const Generator&> {
   public:
     //! Default constructor.
     const_iterator();
@@ -347,6 +349,7 @@ public:
 private:
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
+  friend class Parma_Polyhedra_Library::Grid_Generator_System;
 
   friend bool
   Parma_Polyhedra_Library::operator==(const Polyhedron& x,

@@ -29,8 +29,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.defs.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.defs.hh"
+#include "Congruence_System.types.hh"
 #include "Linear_Expression.defs.hh"
 #include "Polyhedron.types.hh"
+#include "Grid_Generator.types.hh"
+#include "Grid_Generator_System.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -408,10 +411,14 @@ private:
 
   friend class Parma_Polyhedra_Library::Scalar_Products;
   friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;
+  friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Assign;
   friend class Parma_Polyhedra_Library::Generator_System;
   friend class Parma_Polyhedra_Library::Generator_System::const_iterator;
   // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
+  friend class Parma_Polyhedra_Library::Grid_Generator;
+  // This is for access to Row and Linear_Row in `insert'.
+  friend class Parma_Polyhedra_Library::Grid_Generator_System;
 
   friend
   Parma_Polyhedra_Library

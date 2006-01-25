@@ -110,6 +110,8 @@ Interval.types.hh \
 Bounding_Box.types.hh \
 Constraint.types.hh \
 Generator.types.hh \
+Grid_Generator.types.hh \
+Congruence.types.hh \
 Init.types.hh \
 Row.types.hh \
 Linear_Row.types.hh \
@@ -121,15 +123,19 @@ Saturation_Row.types.hh \
 Saturation_Matrix.types.hh \
 Constraint_System.types.hh \
 Generator_System.types.hh \
+Grid_Generator_System.types.hh \
+Congruence_System.types.hh \
 Scalar_Products.types.hh \
 LP_Problem.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
 H79_Certificate.types.hh \
+Grid_Certificate.types.hh \
 Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
+Grid.types.hh \
 Ptr_Iterator.types.hh \
 DB_Row.types.hh \
 DB_Matrix.types.hh \
@@ -185,6 +191,8 @@ Saturation_Matrix.defs.hh \
 Saturation_Matrix.inlines.hh \
 Constraint_System.defs.hh \
 Generator_System.defs.hh \
+Grid_Generator_System.defs.hh \
+Congruence_System.defs.hh \
 Linear_Expression.defs.hh \
 Linear_Expression.inlines.hh \
 Constraint.defs.hh \
@@ -192,7 +200,13 @@ Constraint.inlines.hh \
 Constraint_System.inlines.hh \
 Generator.defs.hh \
 Generator.inlines.hh \
+Grid_Generator.inlines.hh \
+Grid_Generator.defs.hh \
+Congruence.defs.hh \
+Congruence.inlines.hh \
 Generator_System.inlines.hh \
+Grid_Generator_System.inlines.hh \
+Congruence_System.inlines.hh \
 Scalar_Products.defs.hh \
 Scalar_Products.inlines.hh \
 LP_Problem.defs.hh \
@@ -205,9 +219,14 @@ BHRZ03_Certificate.defs.hh \
 BHRZ03_Certificate.inlines.hh \
 H79_Certificate.defs.hh \
 H79_Certificate.inlines.hh \
+Grid_Certificate.defs.hh \
+Grid_Certificate.inlines.hh \
 Polyhedron.defs.hh \
 Ph_Status.inlines.hh \
 Polyhedron.inlines.hh \
+Grid.defs.hh \
+Grid_Status.inlines.hh \
+Grid.inlines.hh \
 C_Polyhedron.defs.hh \
 C_Polyhedron.inlines.hh \
 NNC_Polyhedron.defs.hh \
@@ -238,6 +257,7 @@ algorithms.hh
 
 NESTED_INCLUDE_FILES = \
 Ph_Status.idefs.hh \
+Grid_Status.idefs.hh \
 BDS_Status.idefs.hh
 
 libppl_la_SOURCES = \
@@ -247,8 +267,12 @@ Checked_Number.cc \
 Float.cc \
 Constraint.cc \
 Constraint_System.cc \
+Congruence.cc \
+Congruence_System.cc \
 Generator_System.cc \
+Grid_Generator_System.cc \
 Generator.cc \
+Grid_Generator.cc \
 Init.cc \
 Coefficient.cc \
 Interval.cc \
@@ -261,12 +285,17 @@ Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
 BHRZ03_Certificate.cc \
 H79_Certificate.cc \
+Grid_Certificate.cc \
 Polyhedron_nonpublic.cc \
 Polyhedron_public.cc \
 Polyhedron_chdims.cc \
 Polyhedron_widenings.cc \
 C_Polyhedron.cc \
 NNC_Polyhedron.cc \
+Grid_nonpublic.cc \
+Grid_public.cc \
+Grid_chdims.cc \
+Grid_widenings.cc \
 BD_Shape.cc \
 Polyhedra_Powerset.cc \
 Row.cc \
@@ -274,10 +303,14 @@ Linear_Row.cc \
 Saturation_Matrix.cc \
 Saturation_Row.cc \
 Ph_Status.cc \
+Grid_Status.cc \
 Variable.cc \
 conversion.cc \
 minimize.cc \
 simplify.cc \
+Grid_conversion.cc \
+Grid_minimize.cc \
+Grid_simplify.cc \
 globals.cc \
 version.cc \
 $(INCLUDE_FILES) \
