@@ -282,6 +282,9 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
       TRACE(dest.ascii_dump(cerr));
     }
 
+    // Invert and transpose the source row at `source_index' into the
+    // destination row at `dest_index'.
+    //
     // Consider each dimension `dim_prec' that precedes `dim', as the
     // rows in `dest' that follow `dim_index' have zeroes at index
     // `dim'.
@@ -483,6 +486,9 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       TRACE(dest.ascii_dump(cerr));
     }
 
+    // Invert and transpose the source row at `source_index' into the
+    // destination row at `dest_index'.
+    //
     // Consider each dimension `dim_fol' that follows `dim', as the
     // rows in `dest' that follow row `dest_index' are zero at index
     // `dim'.
