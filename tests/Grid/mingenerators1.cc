@@ -257,6 +257,34 @@ test8() {
   exit(1);
 }
 
+// Empty grid, where updating the generators finds the grid empty.
+
+void
+test9() {
+  nout << "test9:" << endl;
+
+  Grid gr1(4);
+  gr1.add_congruence(C == 4);
+  gr1.add_congruence(C == 0);
+
+  Grid known_gr = gr1;
+
+  Grid_Generator_System gs = gr1.minimized_generators();
+
+  Grid gr2(gs);
+
+  if (known_gr == gr2)
+    return;
+
+  nout << "Reproduced grid should equal known grid." << endl
+       << "grid:" << endl << gr2 << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr2, known_gr);
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -273,6 +301,7 @@ main() TRY {
   test6();
   test7();
   test8();
+  test9();
 
   return 0;
 }
