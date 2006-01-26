@@ -710,19 +710,19 @@ inline std::istream& operator>>(std::istream& is, Checked_Number<T, Policy>& x) 
 }
 
 template <typename T>
-T
+inline T
 plus_infinity() {
   return PLUS_INFINITY;
 }
 
 template <typename T>
-T
+inline T
 minus_infinity() {
   return MINUS_INFINITY;
 }
 
 template <typename T>
-T
+inline T
 not_a_number() {
   return NOT_A_NUMBER;
 }
