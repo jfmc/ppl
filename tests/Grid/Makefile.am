@@ -74,6 +74,7 @@ coveringbox1 coveringbox2 \
 grid1 grid1_gmp grid1_64 grid1_16 grid2 grid2_16 grid3 \
 griddifference1 \
 intersection1 intersection2 \
+isempty1 \
 isuniverse1 \
 join1 join2 join3 \
 limitedextrapolation1 \
@@ -172,6 +173,8 @@ griddifference1_SOURCES = griddifference1.cc
 
 intersection1_SOURCES = intersection1.cc
 intersection2_SOURCES = intersection2.cc
+
+isempty1_SOURCES = isempty1.cc
 
 isuniverse1_SOURCES = isuniverse1.cc
 
