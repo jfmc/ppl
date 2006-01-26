@@ -390,8 +390,8 @@ public:
   bool OK() const;
 
   /*! \brief
-    Adds \p dims rows columns of zeroes to the matrix, initializing
-    the added rows as in the universe system.
+    Adds \p dims rows and \p dims columns of zeroes to the matrix,
+    initializing the added rows as in the universe system.
 
     \param dims
     The number of rows and columns to be added: must be strictly
