@@ -137,6 +137,21 @@ test7() {
   exit(1);
 }
 
+// Space dimension exception.
+
+void
+test8() {
+  nout << "test8:" << endl;
+
+  Grid gr(2);
+
+  try {
+    gr.relation_with(grid_line(A + C));
+    exit(1);
+  }
+  catch (std::invalid_argument) {}
+}
+
 } // namespace
 
 int
@@ -152,6 +167,7 @@ main() TRY {
   test5();
   test6();
   test7();
+  test8();
 
   return 0;
 }
