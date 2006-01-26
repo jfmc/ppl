@@ -338,21 +338,16 @@ public:
   void swap(Congruence_System& cgs);
 
   /*! \brief
-    Adds \p n rows and \p m columns of zeroes to the matrix,
+    Adds \p dims rows and \p dims columns of zeroes to the matrix,
     initializing the added rows as in the unit congruence system.
 
-    \param n
-    The number of rows to be added: must be strictly positive.
+    \param dims
+    The number of rows and columns to be added: must be strictly
+    positive.
 
-    \param m
-    The number of columns to be added: must be strictly positive.
-
-    \param row_flags
-    Flags for the newly added rows.
-
-    Turns the \f$r \times c\f$ matrix \f$A\f$ into the \f$(r+n) \times
-    (c+m)\f$ matrix \f$\bigl({0 \atop A}{B \atop A}\bigr)\f$ where
-    \f$B\f$ is the \f$n \times m\f$ unit matrix of the form
+    Turns the \f$r \times c\f$ matrix \f$A\f$ into the \f$(r+dims) \times
+    (c+dims)\f$ matrix \f$\bigl({0 \atop A}{B \atop A}\bigr)\f$ where
+    \f$B\f$ is the \f$dims \times dims\f$ unit matrix of the form
     \f$\bigl({0 \atop 1}{1 \atop 0}\bigr)\f$.  The matrix is expanded
     avoiding reallocation whenever possible.
   */
@@ -439,11 +434,11 @@ private:
     The denominator of the affine transformation.
 
     We want to allow affine transformations (see the Section \ref
-    operations) having any rational coefficients. Since the coefficients
-    of the congruences are integers we must also provide an integer
-    \p denominator that will be used as denominator of the affine
-    transformation.
-    The denominator is required to be a positive integer.
+    Operations_on_Convex_Polyhedra) having any rational
+    coefficients. Since the coefficients of the congruences are
+    integers we must also provide an integer \p denominator that will
+    be used as denominator of the affine transformation.  The
+    denominator is required to be a positive integer.
 
     The affine transformation substitutes the matrix of congruences
     by a new matrix whose elements \f${a'}_{ij}\f$ are built from
