@@ -476,7 +476,7 @@ PPL::Grid::is_universe() const {
 
   if (congruences_are_up_to_date()) {
     if (congruences_are_minimized())
-      // The mininimized universe congruence system has only one row,
+      // The minimized universe congruence system has only one row,
       // the integrality congruence.
       return con_sys.num_rows() == 1 && con_sys[0].is_trivial_true();
   }
@@ -492,9 +492,8 @@ PPL::Grid::is_universe() const {
   for (dimension_type i = space_dim; i-- > 0; )
     if (!con_sys.satisfies_all_congruences(grid_line(Variable(i) + var)))
       return false;
-  if (con_sys.satisfies_all_congruences(grid_point(0*var)))
-    return true;
-  return false;
+  assert(con_sys.satisfies_all_congruences(grid_point(0*var)));
+  return true;
 }
 
 bool
