@@ -829,6 +829,33 @@ test22() {
   exit(1);
 }
 
+// Assignment of universe grid, zero dimensions.
+
+void
+test23() {
+  nout << "test23:" << endl;
+
+  Grid gr(0, EMPTY);
+
+  gr = Grid(0);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(0);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -856,6 +883,7 @@ main() TRY {
   test20();
   test21();
   test22();
+  test23();
 
   return 0;
 }
