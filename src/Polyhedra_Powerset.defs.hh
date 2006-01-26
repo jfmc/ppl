@@ -548,5 +548,6 @@ void swap(Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& x,
 } // namespace std
 
 #include "Polyhedra_Powerset.inlines.hh"
+#include "Polyhedra_Powerset.templates.hh"
 
 #endif // !defined(PPL_Polyhedra_Powerset_defs_hh)

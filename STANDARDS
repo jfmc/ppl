@@ -219,16 +219,17 @@ its interface.
 
 c) Xtype.inlines.hh
 Contains the definitions of inline functions.
-Temporarily, also contains the non-inline definitions of all class
-template members and all (member or non-member) function templates
-that are not fully specialized. Eventually, these will be systematically
-moved in other files called Xtype.templates.hh.
 
-d) Xtype.cc
+d) Xtype.templates.hh
+Contains the non-inline definitions of all class template members and
+all (member or non-member) function templates that are not fully
+specialized.
+
+e) Xtype.cc
 Contains the definitions of non-inline functions, including non-inline
-full specializations of templates;
+full specializations of templates.
 
-e) When appropriate, further *.cc files can be used to split huge
+f) When appropriate, further *.cc files can be used to split huge
 source files into more manageable components (e.g., see the files
 Polyhedron_public.cc, Polyhedron_nonpublic.cc, Polyhedron_chdims.cc
 and Polyhedron_widenings.cc, or even conversion.cc, minimize.cc, etc.).

@@ -1334,5 +1334,6 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
 
 #include "BDS_Status.inlines.hh"
 #include "BD_Shape.inlines.hh"
+#include "BD_Shape.templates.hh"
 
 #endif // !defined(PPL_BD_Shape_defs_hh)

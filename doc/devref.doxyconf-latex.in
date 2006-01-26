@@ -600,9 +600,11 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Determinate.inlines.hh \
                          @srcdir@/../src/Powerset.defs.hh \
                          @srcdir@/../src/Powerset.inlines.hh \
+                         @srcdir@/../src/Powerset.templates.hh \
                          @srcdir@/../src/Polyhedra_Powerset.types.hh \
                          @srcdir@/../src/Polyhedra_Powerset.defs.hh \
                          @srcdir@/../src/Polyhedra_Powerset.inlines.hh \
+                         @srcdir@/../src/Polyhedra_Powerset.templates.hh \
                          @srcdir@/../src/Polyhedra_Powerset.cc \
                          @srcdir@/../src/algorithms.hh \
                          @srcdir@/../src/LP_Problem.types.hh \
@@ -618,6 +620,7 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/BD_Shape.types.hh \
                          @srcdir@/../src/BD_Shape.defs.hh \
                          @srcdir@/../src/BD_Shape.inlines.hh \
+                         @srcdir@/../src/BD_Shape.templates.hh \
                          @srcdir@/../src/BD_Shape.cc \
                          ../interfaces/C/ppl_c.h \
                          @srcdir@/../interfaces/C/ppl_c.cc \

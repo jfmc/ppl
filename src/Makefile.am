@@ -244,15 +244,18 @@ DB_Matrix.inlines.hh \
 BD_Shape.defs.hh \
 BDS_Status.inlines.hh \
 BD_Shape.inlines.hh \
+BD_Shape.templates.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
 Powerset.types.hh \
 Powerset.defs.hh \
 Powerset.inlines.hh \
+Powerset.templates.hh \
 Polyhedra_Powerset.types.hh \
 Polyhedra_Powerset.defs.hh \
 Polyhedra_Powerset.inlines.hh \
+Polyhedra_Powerset.templates.hh \
 max_space_dimension.hh \
 algorithms.hh
 
