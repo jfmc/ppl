@@ -232,15 +232,6 @@ PPL::Congruence::ascii_load(std::istream& s) {
   if (!(s >> x[col]))
     return false;
 
-#if 0
-  if (!(s >> str))
-    return false;
-  if (str == "=")
-    x.set_is_equality();
-  else
-    x.set_is_inequality();
-#endif
-
   return true;
 }
 
