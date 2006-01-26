@@ -152,6 +152,20 @@ test8() {
   catch (std::invalid_argument) {}
 }
 
+// Zero dimension universe grid.
+
+void
+test9() {
+  nout << "test9:" << endl;
+
+  Grid gr(0);
+
+  if (gr.relation_with(grid_point()) == Poly_Gen_Relation::subsumes())
+    return;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -168,6 +182,7 @@ main() TRY {
   test6();
   test7();
   test8();
+  test9();
 
   return 0;
 }
