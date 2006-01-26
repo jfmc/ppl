@@ -61,11 +61,12 @@ namespace IO_Operators {
 
 //! Output operator.
 /*!
-  \relates Parma_Polyhedra_Library::Grid Writes a textual
-  representation of \p gr on \p s: <CODE>false</CODE> is written if \p
-  gr is an empty grid; <CODE>true</CODE> is written if \p gr is a
-  universe grid; a reduced system of congruences defining \p gr is
-  written otherwise, all congruences in one row separated by ", "s.
+  \relates Parma_Polyhedra_Library::Grid
+  Writes a textual representation of \p gr on \p s: <CODE>false</CODE>
+  is written if \p gr is an empty grid; <CODE>true</CODE> is written
+  if \p gr is a universe grid; a minimized system of congruences
+  defining \p gr is written otherwise, all congruences in one row
+  separated by ", "s.
 */
 std::ostream&
 operator<<(std::ostream& s, const Grid& gr);
@@ -82,8 +83,10 @@ operator<<(std::ostream& s, const Grid& gr);
 */
 bool operator==(const Grid& x, const Grid& y);
 
-//! Returns <CODE>true</CODE> if and only if \p x and \p y are different grids.
-/*!
+/*! \brief
+  Returns <CODE>true</CODE> if and only if \p x and \p y are different
+  grids.
+
   \relates Grid
   Note that \p x and \p y may be dimension-incompatible grids: in
   those cases, the value <CODE>true</CODE> is returned.
@@ -95,211 +98,211 @@ bool operator!=(const Grid& x, const Grid& y);
 
 //! A grid.
 /*!
-    An object of the class Grid represents a grid.
+  An object of the class Grid represents a grid.
 
-    A grid can be specified as either a finite system of congruences
-    or a finite system of generators (see Section \ref
-    sect_rational_grids) and it is always possible to obtain either
-    representation.
-    That is, if we know the system of congruences, we can obtain
-    from this the system of generators that define the same grid
-    and vice versa.
-    These systems can contain redundant members, or they can be in the
-    minimal form.
-    Most operators on grids are provided with two implementations:
-    one of these, denoted <CODE>\<operator-name\>_and_minimize</CODE>,
-    also enforces the minimization of the representations,
-    and returns the boolean value <CODE>false</CODE> whenever
-    the resulting grid turns out to be empty.
+  A grid can be specified as either a finite system of congruences
+  or a finite system of generators (see Section \ref
+  sect_rational_grids) and it is always possible to obtain either
+  representation.
+  That is, if we know the system of congruences, we can obtain
+  from this the system of generators that define the same grid
+  and vice versa.
+  These systems can contain redundant members, or they can be in the
+  minimal form.
+  Most operators on grids are provided with two implementations:
+  one of these, denoted <CODE>\<operator-name\>_and_minimize</CODE>,
+  also enforces the minimization of the representations,
+  and returns the boolean value <CODE>false</CODE> whenever
+  the resulting grid turns out to be empty.
 
-    A key attributes of any grid is its space dimension (the dimension
-    \f$n \in \Nset\f$ of the enclosing vector space):
+  A key attributes of any grid is its space dimension (the dimension
+  \f$n \in \Nset\f$ of the enclosing vector space):
 
-    - all grids, the empty ones included, are endowed with a space
-      dimension;
-    - most operations working on a grid and another object (another
-      grid, a congruence, a generator, a set of variables, etc.) will
-      throw an exception if the grid and the object are not
-      dimension-compatible (see Section \ref grid_space_dimensions);
-    - the only ways in which the space dimension of a grid can be
-      changed are with <EM>explicit</EM> calls to operators provided
-      for that purpose, and with standard copy, assignment and swap
-      operators.
+  - all grids, the empty ones included, are endowed with a space
+    dimension;
+  - most operations working on a grid and another object (another
+    grid, a congruence, a generator, a set of variables, etc.) will
+    throw an exception if the grid and the object are not
+    dimension-compatible (see Section \ref grid_space_dimensions);
+  - the only ways in which the space dimension of a grid can be
+    changed are with <EM>explicit</EM> calls to operators provided for
+    that purpose, and with standard copy, assignment and swap
+    operators.
 
-    Note that two different grids can be defined on the zero-dimension
-    space: the empty grid and the universe grid \f$R^0\f$.
+  Note that two different grids can be defined on the zero-dimension
+  space: the empty grid and the universe grid \f$R^0\f$.
 
-    \par
-    In all the examples it is assumed that variables
-    <CODE>x</CODE> and <CODE>y</CODE> are defined (where they are
-    used) as follows:
-    \code
+  \par
+  In all the examples it is assumed that variables
+  <CODE>x</CODE> and <CODE>y</CODE> are defined (where they are
+  used) as follows:
+  \code
   Variable x(0);
   Variable y(1);
-    \endcode
+  \endcode
 
-    \par Example 1
-    The following code builds a grid corresponding to the even integer
-    pairs in \f$\Rset^2\f$, given as a system of congruences:
-    \code
+  \par Example 1
+  The following code builds a grid corresponding to the even integer
+  pairs in \f$\Rset^2\f$, given as a system of congruences:
+  \code
   Congruence_System cgs;
   cgs.insert((x %= 0) / 2);
   cgs.insert((y %= 0) / 2);
   Grid gr(cgs);
-    \endcode
-    The following code builds the same grid as above, but starting
-    from a system of generators specifying three of the points:
-    \code
+  \endcode
+  The following code builds the same grid as above, but starting
+  from a system of generators specifying three of the points:
+  \code
   Grid_Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(point(0*x + 2*y));
   gs.insert(point(2*x + 0*y));
   Grid gr(gs);
-    \endcode
+  \endcode
 
-    \par Example 2
-    The following code builds a grid corresponding to a line in
-    \f$\Rset^2\f$ by adding a single congruence to the universe grid:
-    \code
+  \par Example 2
+  The following code builds a grid corresponding to a line in
+  \f$\Rset^2\f$ by adding a single congruence to the universe grid:
+  \code
   Congruence_System cgs;
   cgs.insert(x - y == 0);
   Grid gr(cgs);
-    \endcode
-    The following code builds the same grid as above, but starting
-    from a system of generators specifying a point and a line:
-    \code
+  \endcode
+  The following code builds the same grid as above, but starting
+  from a system of generators specifying a point and a line:
+  \code
   Grid_Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(line(x + y));
   Grid gr(gs);
-    \endcode
+  \endcode
 
-    \par Example 3
-    The following code builds the grid corresponding to a plane by
-    creating the universe grid in \f$\Rset^2\f$:
-    \code
+  \par Example 3
+  The following code builds the grid corresponding to a plane by
+  creating the universe grid in \f$\Rset^2\f$:
+  \code
   Grid gr(2);
-    \endcode
-    The following code builds the same grid as above, but starting
-    from the empty grid in \f$\Rset^2\f$ and inserting the appropriate
-    generators (a point, and two lines).
-    \code
+  \endcode
+  The following code builds the same grid as above, but starting
+  from the empty grid in \f$\Rset^2\f$ and inserting the appropriate
+  generators (a point, and two lines).
+  \code
   Grid gr(2, EMPTY);
   gr.add_generator(point(0*x + 0*y));
   gr.add_generator(line(x));
   gr.add_generator(line(y));
-    \endcode
-    Note that a generator system must contain a point when describing
-    a grid.  To ensure that this is always the case it is required
-    that the first generator inserted in an empty grid is a point
-    (otherwise, an exception is thrown).
+  \endcode
+  Note that a generator system must contain a point when describing
+  a grid.  To ensure that this is always the case it is required
+  that the first generator inserted in an empty grid is a point
+  (otherwise, an exception is thrown).
 
-    \par Example 4
-    The following code shows the use of the function
-    <CODE>add_space_dimensions_and_embed</CODE>:
-    \code
+  \par Example 4
+  The following code shows the use of the function
+  <CODE>add_space_dimensions_and_embed</CODE>:
+  \code
   Grid gr(1);
   gr.add_congruence(x == 2);
   gr.add_space_dimensions_and_embed(1);
-    \endcode
-    We build the universe grid in the 1-dimension space \f$\Rset\f$.
-    Then we add a single equality congruence,
-    thus obtaining the grid corresponding to the singleton set
-    \f$\{ 2 \} \sseq \Rset\f$.
-    After the last line of code, the resulting grid is
-    \f[
-      \bigl\{\,
-        (2, y)^\transpose \in \Rset^2
-      \bigm|
-        y \in \Rset
-      \,\bigr\}.
-    \f]
+  \endcode
+  We build the universe grid in the 1-dimension space \f$\Rset\f$.
+  Then we add a single equality congruence,
+  thus obtaining the grid corresponding to the singleton set
+  \f$\{ 2 \} \sseq \Rset\f$.
+  After the last line of code, the resulting grid is
+  \f[
+  \bigl\{\,
+  (2, y)^\transpose \in \Rset^2
+  \bigm|
+  y \in \Rset
+  \,\bigr\}.
+  \f]
 
-    \par Example 5
-    The following code shows the use of the function
-    <CODE>add_space_dimensions_and_project</CODE>:
-    \code
+  \par Example 5
+  The following code shows the use of the function
+  <CODE>add_space_dimensions_and_project</CODE>:
+  \code
   Grid gr(1);
   gr.add_congruence(x == 2);
   gr.add_space_dimensions_and_project(1);
-    \endcode
-    The first two lines of code are the same as in Example 4 for
-    <CODE>add_space_dimensions_and_embed</CODE>.
-    After the last line of code, the resulting grid is
-    the singleton set
-    \f$\bigl\{ (2, 0)^\transpose \bigr\} \sseq \Rset^2\f$.
+  \endcode
+  The first two lines of code are the same as in Example 4 for
+  <CODE>add_space_dimensions_and_embed</CODE>.
+  After the last line of code, the resulting grid is
+  the singleton set
+  \f$\bigl\{ (2, 0)^\transpose \bigr\} \sseq \Rset^2\f$.
 
-    \par Example 6
-    The following code shows the use of the function
-    <CODE>affine_image</CODE>:
-    \code
+  \par Example 6
+  The following code shows the use of the function
+  <CODE>affine_image</CODE>:
+  \code
   Grid gr(2, EMPTY);
   gr.add_generator(point(0*x + 0*y));
   gr.add_generator(point(4*x + 0*y));
   gr.add_generator(point(0*x + 2*y));
   Linear_Expression expr = x + 3;
   gr.affine_image(x, expr);
-    \endcode
-    In this example the starting grid is all the pairs of \f$x\f$ and
-    \f$y\f$ in \f$\Rset^2\f$ where \f$x\f$ is an integer multiple of 4
-    and \f$y\f$ is an integer multiple of 2.  The considered variable
-    is \f$x\f$ and the affine expression is \f$x+3\f$.  The resulting
-    grid is the given grid translated 3 integers to the right (all the
-    pairs where \f$x\f$ is -1 plus an integer multiple of 4 and
-    \f$x\f$ is an integer multiple of 2).
-    Moreover, if the affine transformation for the same variable \p x
-    is instead \f$x+y\f$:
-    \code
+  \endcode
+  In this example the starting grid is all the pairs of \f$x\f$ and
+  \f$y\f$ in \f$\Rset^2\f$ where \f$x\f$ is an integer multiple of 4
+  and \f$y\f$ is an integer multiple of 2.  The considered variable
+  is \f$x\f$ and the affine expression is \f$x+3\f$.  The resulting
+  grid is the given grid translated 3 integers to the right (all the
+  pairs where \f$x\f$ is -1 plus an integer multiple of 4 and
+  \f$x\f$ is an integer multiple of 2).
+  Moreover, if the affine transformation for the same variable \p x
+  is instead \f$x+y\f$:
+  \code
   Linear_Expression expr = x + y;
-    \endcode
-    the resulting grid is every second point along the \f$x=y\f$ line,
-    with this line of points repeated at every fourth value along the
-    \f$x\f$ axis.
-    Instead, if we do not use an invertible transformation for the
-    same variable; for example, the affine expression \f$y\f$:
-    \code
+  \endcode
+  the resulting grid is every second point along the \f$x=y\f$ line,
+  with this line of points repeated at every fourth value along the
+  \f$x\f$ axis.
+  Instead, if we do not use an invertible transformation for the
+  same variable; for example, the affine expression \f$y\f$:
+  \code
   Linear_Expression expr = y;
-    \endcode
-    the resulting grid is every second point along the \f$x=y\f$ line.
+  \endcode
+  the resulting grid is every second point along the \f$x=y\f$ line.
 
-    \par Example 7
-    The following code shows the use of the function
-    <CODE>affine_preimage</CODE>:
-    \code
+  \par Example 7
+  The following code shows the use of the function
+  <CODE>affine_preimage</CODE>:
+  \code
   Grid gr(2, EMPTY);
   gr.add_generator(point(0*x + 0*y));
   gr.add_generator(point(4*x + 0*y));
   gr.add_generator(point(0*x + 2*y));
   Linear_Expression expr = x + 3;
   gr.affine_preimage(x, expr);
-    \endcode
-    In this example the starting grid, \p var and the affine
-    expression and the denominator are the same as in Example 6, while
-    the resulting grid is again the same grid, but translated to the
-    left.
-    Moreover, if the affine transformation for \p x is \f$x+y\f$
-    \code
+  \endcode
+  In this example the starting grid, \p var and the affine
+  expression and the denominator are the same as in Example 6, while
+  the resulting grid is again the same grid, but translated to the
+  left.
+  Moreover, if the affine transformation for \p x is \f$x+y\f$
+  \code
   Linear_Expression expr = x + y;
-    \endcode
-    the resulting grid is a similar grid to the result in Example 6,
-    only the grid is slanted along \f$x=-y\f$.
-    Instead, if we do not use an invertible transformation for the same
-    variable \p x, for example, the affine expression \f$y\f$:
-    \code
+  \endcode
+  the resulting grid is a similar grid to the result in Example 6,
+  only the grid is slanted along \f$x=-y\f$.
+  Instead, if we do not use an invertible transformation for the same
+  variable \p x, for example, the affine expression \f$y\f$:
+  \code
   Linear_Expression expr = y;
-    \endcode
-    the resulting grid is every fourth line parallel to the \f$x\f$
-    axis.
+  \endcode
+  the resulting grid is every fourth line parallel to the \f$x\f$
+  axis.
 
-    \par Example 8
-    For this example we also use the variables:
-    \code
+  \par Example 8
+  For this example we also use the variables:
+  \code
   Variable z(2);
   Variable w(3);
-    \endcode
-    The following code shows the use of the function
-    <CODE>remove_space_dimensions</CODE>:
-    \code
+  \endcode
+  The following code shows the use of the function
+  <CODE>remove_space_dimensions</CODE>:
+  \code
   Grid_Generator_System gs;
   gs.insert(point(3*x + y +0*z + 2*w));
   Grid gr(gs);
@@ -307,32 +310,32 @@ bool operator!=(const Grid& x, const Grid& y);
   to_be_removed.insert(y);
   to_be_removed.insert(z);
   gr.remove_space_dimensions(to_be_removed);
-    \endcode
-    The starting grid is the singleton set
-    \f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$, while
-    the resulting grid is
-    \f$\bigl\{ (3, 2)^\transpose \bigr\} \sseq \Rset^2\f$.
-    Be careful when removing space dimensions <EM>incrementally</EM>:
-    since dimensions are automatically renamed after each application
-    of the <CODE>remove_space_dimensions</CODE> operator, unexpected
-    results can be obtained.
-    For instance, by using the following code we would obtain
-    a different result:
-    \code
+  \endcode
+  The starting grid is the singleton set
+  \f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$, while
+  the resulting grid is
+  \f$\bigl\{ (3, 2)^\transpose \bigr\} \sseq \Rset^2\f$.
+  Be careful when removing space dimensions <EM>incrementally</EM>:
+  since dimensions are automatically renamed after each application
+  of the <CODE>remove_space_dimensions</CODE> operator, unexpected
+  results can be obtained.
+  For instance, by using the following code we would obtain
+  a different result:
+  \code
   set<Variable> to_be_removed1;
   to_be_removed1.insert(y);
   gr.remove_space_dimensions(to_be_removed1);
   set<Variable> to_be_removed2;
   to_be_removed2.insert(z);
   gr.remove_space_dimensions(to_be_removed2);
-    \endcode
-    In this case, the result is the grid
-    \f$\bigl\{(3, 0)^\transpose \bigr\} \sseq \Rset^2\f$:
-    when removing the set of dimensions \p to_be_removed2
-    we are actually removing variable \f$w\f$ of the original grid.
-    For the same reason, the operator \p remove_space_dimensions
-    is not idempotent: removing twice the same non-empty set of dimensions
-    is never the same as removing them just once.
+  \endcode
+  In this case, the result is the grid
+  \f$\bigl\{(3, 0)^\transpose \bigr\} \sseq \Rset^2\f$:
+  when removing the set of dimensions \p to_be_removed2
+  we are actually removing variable \f$w\f$ of the original grid.
+  For the same reason, the operator \p remove_space_dimensions
+  is not idempotent: removing twice the same non-empty set of dimensions
+  is never the same as removing them just once.
 */
 
 class Parma_Polyhedra_Library::Grid {
@@ -504,17 +507,17 @@ public:
 
   //! Builds a grid out of a generic, interval-based covering box.
   /*!
-    The covering box is an upper and lower bound for each dimension.
-    When a covering box is tiled onto empty space the corners of the
-    box form a rectilinear grid.
+    The covering box is a set of upper and lower values for each
+    dimension.  When a covering box is tiled onto empty space the
+    corners of the tiles form a rectilinear grid.
 
-    An interval with only one bound fixes the values of all points in
-    that dimension to the value of the bound.  An interval which has
-    both upper and lower bounds, and in which these bounds are of
-    equal value, allows grid points having any value in that
-    dimension.  Any universe interval results in the empty grid.  The
-    empty box produces the empty grid of the same dimension as the
-    box.
+    A box interval with only one bound fixes the values of all grid
+    points in the dimension associated with the box to the value of
+    the bound.  A box interval which has upper and lower bounds of
+    equal value allows all grid points with any value in the dimension
+    associated with the interval.  The presence of a universe interval
+    results in the empty grid.  The empty box produces the empty grid
+    of the same dimension as the box.
 
     \param box
     The covering box representing the grid to be built;
@@ -606,10 +609,8 @@ public:
   //! Returns the minimized system of generators.
   const Grid_Generator_System& minimized_generators() const;
 
-  /*! \brief
-    Returns the relations holding between the grid \p *this and the
-    congruence \p cg.
-
+  //! Returns the relations holding between \p *this and \p cg.
+  /*
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible.
   */
@@ -618,10 +619,8 @@ public:
   // we keep using it without changing the name.
   Poly_Con_Relation relation_with(const Congruence& cg) const;
 
-  /*! \brief
-    Returns the relations holding between the grid \p *this and the
-    generator \p g.
-
+  //! Returns the relations holding between \p *this and \p g.
+  /*
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible.
   */
@@ -669,7 +668,7 @@ public:
 
   //! Returns <CODE>true</CODE> if and only if \p expr is bounded in \p *this.
   /*!
-	This method is the same as bounds_from_below.
+    This method is the same as bounds_from_below.
 
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
@@ -678,7 +677,7 @@ public:
 
   //! Returns <CODE>true</CODE> if and only if \p expr is bounded in \p *this.
   /*!
-	This method is the same as bounds_from_above.
+    This method is the same as bounds_from_above.
 
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
@@ -909,10 +908,10 @@ public:
 
   //! Writes the covering box for \p *this into \p box.
   /*!
-    The covering box is an upper and lower bound for each dimension.
-    When the resulting covering box \p box is tiled onto empty space
-    the corners of the box form the sparsest rectilinear grid that
-    includes \p *this.
+    The covering box is a set of upper and lower values for each
+    dimension.  When the covering box written into \p box is tiled
+    onto empty space the corners of the tiles form the sparsest
+    rectilinear grid that includes \p *this.
 
     The value of the lower bound of each interval of the resulting \p
     box are as close as possible to the origin, with positive values
@@ -1399,8 +1398,9 @@ public:
   //! Same as grid_difference_assign(y).
   void difference_assign(const Grid& y);
 
+  // FIXME: Update to grids?
   /*! \brief
-    Assigns to \p *this the \ref affine_function "affine image" of \p
+    Assigns to \p *this the \ref affine_relation "affine image" of \p
     *this under the function mapping variable \p var to the affine
     expression specified by \p expr and \p denominator.
 
@@ -1492,8 +1492,9 @@ public:
 		    Coefficient_traits::const_reference denominator
 		    = Coefficient_one());
 
+  // FIXME: Update to grids?
   /*! \brief
-    Assigns to \p *this the \ref affine_function "affine preimage" of
+    Assigns to \p *this the \ref affine_relation "affine preimage" of
     \p *this under the function mapping variable \p var to the affine
     expression specified by \p expr and \p denominator.
 
@@ -1585,7 +1586,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the \ref
-    generalized_affine_relation "generalized affine relation"
+    Generalized_Affine_Relations "generalized affine relation"
     \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
     \pmod{\mathrm{modulus}}\f$.
 
@@ -1618,7 +1619,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
-    \ref generalized_affine_relation "generalized affine relation"
+    \ref Generalized_Affine_Relations "generalized affine relation"
     \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
     \pmod{\mathrm{modulus}}\f$.
 
@@ -1700,7 +1701,7 @@ public:
 				   = Coefficient_one());
 
   /*! \brief
-    Assigns to \p *this the result of computing the \ref time_elapse
+    Assigns to \p *this the result of computing the \ref grid_time_elapse
     "time-elapse" between \p *this and \p y.
 
     \exception std::invalid_argument
@@ -1721,7 +1722,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref widening_with_tokens "widening with tokens" delay technique).
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
@@ -1742,7 +1743,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref widening_with_tokens "widening with tokens" delay technique).
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this, \p y and \p cs are dimension-incompatible.
@@ -1811,8 +1812,8 @@ public:
   void add_space_dimensions_and_project(dimension_type m);
 
   /*! \brief
-    Assigns to \p *this the \ref concatenate "concatenation" of \p
-    *this and \p y, taken in this order.
+    Assigns to \p *this the \ref grid_concatenate "concatenation" of
+    \p *this and \p y, taken in this order.
 
     \exception std::length_error
     Thrown if the concatenation would cause the vector space
@@ -1841,7 +1842,6 @@ public:
     \p *this.
   */
   void remove_higher_space_dimensions(dimension_type new_dimension);
-
 
   /*! \brief
     Remaps the dimensions of the vector space according to a \ref
@@ -2319,15 +2319,15 @@ private:
 
   //! Converts \p cgs to upper triangular (i.e. minimized) form.
   /*!
-    Returns true if \p cgs is represents the empty set, otherwise
-    returns false.
+    Returns <CODE>true</CODE> if \p cgs represents the empty set,
+    otherwise returns <CODE>false</CODE>.
   */
   static bool simplify(Congruence_System& cgs,
 		       Dimension_Kinds& dim_kinds);
 
   //! Converts \p gs to lower triangular (i.e. minimized) form.
   /*!
-    Expect \p gs to contain at least one point.
+    Expects \p gs to contain at least one point.
   */
   static void simplify(Grid_Generator_System& gs,
 		       Dimension_Kinds& dim_kinds);
@@ -2419,21 +2419,29 @@ private:
 			    Grid_Generator_System& dest, const dimension_type num_rows,
 			    const dimension_type num_dims);
 
-  //! If \p sys is lower triangular return true, else return false.
+  /*! \brief
+    If \p sys is lower triangular return <CODE>true</CODE>, else
+    return <CODE>false</CODE>.
+  */
   static bool lower_triangular(const Congruence_System& sys,
 			       const Dimension_Kinds& dim_kinds);
 
-  //! If \p sys is upper triangular return true, else return false.
+  /*! \brief
+    If \p sys is upper triangular return <CODE>true</CODE>, else
+    return <CODE>false</CODE>.
+  */
   static bool upper_triangular(const Grid_Generator_System& sys,
 			       const Dimension_Kinds& dim_kinds);
 
 #ifndef NDEBUG
-  //! Check for trailing rows containing only zero terms.
+  //! Checks that trailing rows containing only zero terms.
   /*!
-    If all columns contain zero in the rows of \p system from row index
-    \p first to row index \p last then return <code>true</code>, else
-    return <code>false</code>.  \p row_size gives the number of columns
-    in each row.  Used in assertion below.
+    If all columns contain zero in the rows of \p system from row
+    index \p first to row index \p last then return <code>true</code>,
+    else return <code>false</code>.  \p row_size gives the number of
+    columns in each row.
+
+    This method is only used in assertions in the simplify methods.
   */
   template <typename M, typename R>
   static bool Grid::rows_are_zero(M& system,
