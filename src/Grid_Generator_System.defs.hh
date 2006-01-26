@@ -390,23 +390,18 @@ public:
   bool OK() const;
 
   /*! \brief
-    Adds \p n rows and \p m columns of zeroes to the matrix,
-    initializing the added rows as in the universe generator system.
+    Adds \p dims rows columns of zeroes to the matrix, initializing
+    the added rows as in the universe system.
 
-    \param n
-    The number of rows to be added: must be strictly positive.
+    \param dims
+    The number of rows and columns to be added: must be strictly
+    positive.
 
-    \param m
-    The number of columns to be added: must be strictly positive.
-
-    \param row_flags
-    Flags for the newly added rows.
-
-    Turns the \f$r \times c\f$ matrix \f$A\f$ into the \f$(r+n) \times
-    (c+m)\f$ matrix \f$\bigl({A \atop 0}{0 \atop B}\bigr)\f$ where
-    \f$B\f$ is the \f$n \times m\f$ unit matrix of the form
-    \f$\bigl({1 \atop 0}{0 \atop 1}\bigr)\f$.  The matrix is expanded
-    avoiding reallocation whenever possible.
+    Turns the \f$r \times c\f$ matrix \f$A\f$ into the \f$(r+dims)
+    \times (c+dims)\f$ matrix \f$\bigl({A \atop 0}{0 \atop B}\bigr)\f$
+    where \f$B\f$ is the \f$dims \times dims\f$ unit matrix of the
+    form \f$\bigl({1 \atop 0}{0 \atop 1}\bigr)\f$.  The matrix is
+    expanded avoiding reallocation whenever possible.
   */
   void add_universe_rows_and_columns(dimension_type dims);
 
