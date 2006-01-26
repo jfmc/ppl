@@ -86,14 +86,13 @@ void
 test4() {
   nout << "test4:" << endl;
 
-  Grid gr(0);
+  Grid gr(0, EMPTY);
 
-  if (gr.is_universe())
-    return;
-
-  nout << "Grid should be universe." << endl
-       << "grid:" << endl << gr << endl;
-  exit(1);
+  if (gr.is_universe()) {
+    nout << "Grid::is_universe should return false." << endl
+	 << "grid:" << endl << gr << endl;
+    exit(1);
+  }
 }
 
 // Empty grid.
@@ -190,30 +189,11 @@ test9() {
   exit(1);
 }
 
-// Empty grid of generators.
+// Minimized congruences.
 
 void
 test10() {
   nout << "test10:" << endl;
-
-  Grid_Generator_System gs;
-
-  Grid gr(4);
-  gr.add_generators(gs);
-
-  if (gr.is_universe())
-    return;
-
-  nout << "Grid should be universe." << endl
-       << "grid:" << endl << gr << endl;
-  exit(1);
-}
-
-// Minimized congruences.
-
-void
-test11() {
-  nout << "test11:" << endl;
 
   Congruence_System cgs;
   cgs.insert((A + B + C %= 0) / 3);
@@ -234,8 +214,8 @@ test11() {
 // Minimized universe congruences.
 
 void
-test12() {
-  nout << "test12:" << endl;
+test11() {
+  nout << "test11:" << endl;
 
   Congruence_System cgs;
   cgs.insert((0*C %= 3) / 3);
@@ -257,8 +237,8 @@ test12() {
 // Minimized universe congruences.
 
 void
-test13() {
-  nout << "test13:" << endl;
+test12() {
+  nout << "test12:" << endl;
 
   Congruence_System cgs;
   cgs.insert((0*C %= 4) / 2);
@@ -277,9 +257,11 @@ test13() {
   exit(1);
 }
 
+// Universe after remove_space_dimensions.
+
 void
-test14() {
-  nout << "test14:" << endl;
+test13() {
+  nout << "test13:" << endl;
 
   Congruence_System cgs;
   cgs.insert((A + 0*C %= 4) / 2);
@@ -303,9 +285,11 @@ test14() {
   exit(1);
 }
 
+// Empty from a simple constraint.
+
 void
-test15() {
-  nout << "test15:" << endl;
+test14() {
+  nout << "test14:" << endl;
 
   Congruence_System cgs;
   cgs.insert(0*C == 0);
@@ -322,6 +306,27 @@ test15() {
   nout << "Grid should be universe." << endl
        << "grid:" << endl << gr << endl;
   exit(1);
+}
+
+// Congruences before minimization, where a point is required to
+// determine that the grid is a strict subset of the universe.
+
+void
+test15() {
+  nout << "test15:" << endl;
+
+  Congruence_System cgs;
+  cgs.insert(A == 3);
+
+  Grid gr(cgs);
+
+  gr.ascii_dump();
+
+  if (gr.is_universe()) {
+    nout << "Grid::is_universe should return false." << endl
+	 << "grid:" << endl << gr << endl;
+    exit(1);
+  }
 }
 
 } // namespace
@@ -341,7 +346,6 @@ main() TRY {
   test7();
   test8();
   test9();
-  test10();
   test11();
   test12();
   test13();
