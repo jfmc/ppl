@@ -1732,7 +1732,7 @@ Thus we have \f$0 \leq \pdim(\cG) \leq n\f$.
 
 In this section we briefly describe operations on rational grids
 that are provided by the library.
-These are similar to those described in Section \ref operations.
+These are similar to those described in Section \ref Operations_on_Convex_Polyhedra.
 
 \anchor grid_intersection_and_join
 <B>Grid Intersection and Grid Join</B>
@@ -1933,7 +1933,7 @@ and, for \f$ k = 0 \f$, \f$ \ldots \f$, \f$ n-1 \f$,
 \anchor grid_affine_transformation
 <B>Affine Images and Preimages</B>
 
-As for convex polyhedra, \ref affine_function
+As for convex polyhedra, \ref affine_relation
 "affine image and preimage" operators for grids are provided:
 given a variable \f$x_k\f$ and
 linear expression \f$\mathrm{expr} = \sum_{i=0}^{n-1} a_i x_i + b\f$,
@@ -2150,7 +2150,7 @@ where
 \anchor grid_widening_with_tokens
 <B>Widening with Tokens</B>
 
-This will be as for \ref widening_with_tokens "widening with tokens"
+This will be as for \ref Widening_with_Tokens "widening with tokens"
 for convex polyhedra.
 
 \anchor grid_extrapolation
