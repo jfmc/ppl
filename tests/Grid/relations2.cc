@@ -278,6 +278,77 @@ test14() {
   catch (std::invalid_argument) {}
 }
 
+// Empty grid, where updating finds the grid empty.
+
+void
+test15() {
+  nout << "test15:" << endl;
+
+  Grid gr(2);
+  gr.add_congruence(A == 1);
+  gr.add_congruence(A == 2);
+
+  if (gr.relation_with((B %= 0) / 2)
+      == (Poly_Con_Relation::is_included()
+	  && Poly_Con_Relation::is_disjoint()))
+    return;
+
+  exit(1);
+}
+
+// Generators that require the relation_with(cg) GCD calculation.
+
+void
+test16() {
+  nout << "test16:" << endl;
+
+  Grid gr(1, EMPTY);
+  gr.add_generator(grid_point(A));
+  gr.add_generator(grid_point(3*A));
+
+  if (gr.relation_with((A %= 0) / 4)
+      == Poly_Con_Relation::is_disjoint())
+    return;
+
+  exit(1);
+}
+
+// Strict intersection, where generators require the relation_with(cg)
+// GCD calculation.
+
+void
+test17() {
+  nout << "test17:" << endl;
+
+  Grid gr(1, EMPTY);
+  gr.add_generator(grid_point(3*A));
+  gr.add_generator(grid_point(6*A));
+
+  if (gr.relation_with((A %= 0) / 8)
+      == Poly_Con_Relation::strictly_intersects())
+    return;
+
+  exit(1);
+}
+
+// Strict intersection, where generators require the relation_with(cg)
+// GCD calculation, with a parameter.
+
+void
+test18() {
+  nout << "test18:" << endl;
+
+  Grid gr(1, EMPTY);
+  gr.add_generator(grid_point(3*A));
+  gr.add_generator(parameter(3*A));
+
+  if (gr.relation_with((A %= 0) / 8)
+      == Poly_Con_Relation::strictly_intersects())
+    return;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -300,6 +371,10 @@ main() TRY {
   test12();
   test13();
   test14();
+  test15();
+  test16();
+  test17();
+  test18();
 
   return 0;
 }
