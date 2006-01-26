@@ -134,14 +134,20 @@ test7() {
 
   Grid gr;
 
-  if (// False congruence.
+  if (// Trivially false congruence.
       gr.relation_with(Congruence::zero_dim_false())
+      == Poly_Con_Relation::is_disjoint()
+      // False congruence.
+      && gr.relation_with((Linear_Expression(5) %= 1) / 3)
       == Poly_Con_Relation::is_disjoint()
       // False equality.
       && gr.relation_with((Linear_Expression(1) %= 0) / 0)
       == Poly_Con_Relation::is_disjoint()
       // Proper congruence.
       && gr.relation_with(Linear_Expression(1) %= 1)
+      == Poly_Con_Relation::is_included()
+      // Proper congruence.
+      && gr.relation_with((Linear_Expression(5) %= 1) / 4)
       == Poly_Con_Relation::is_included()
       // Equality.
       && gr.relation_with(Linear_Expression(1) %= 1)
@@ -257,6 +263,21 @@ test13() {
   exit(1);
 }
 
+// Space dimension exception.
+
+void
+test14() {
+  nout << "test14:" << endl;
+
+  Grid gr(1);
+
+  try {
+    gr.relation_with(A + B %= 0);
+    exit(1);
+  }
+  catch (std::invalid_argument) {}
+}
+
 } // namespace
 
 int
@@ -278,6 +299,7 @@ main() TRY {
   test11();
   test12();
   test13();
+  test14();
 
   return 0;
 }
