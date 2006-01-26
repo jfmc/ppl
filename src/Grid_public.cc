@@ -284,11 +284,13 @@ PPL::Grid::relation_with(const Congruence& cg) const {
       && Poly_Con_Relation::is_disjoint();
 
   if (space_dim == 0)
-    // FIXME: Confirm that these are correct, especially the first.
-    if (cg.is_trivial_false())
-      return Poly_Con_Relation::is_disjoint();
-    else if (cg.is_equality() || cg.inhomogeneous_term() == 0)
+    // FIXME: Confirm that the relation with the false cg is correct.
+    //        Does the false congruence define the empty grid?  If so,
+    //        is the empty grid disjoint from the universe grid?
+    if (cg.inhomogeneous_term() == 0)
       return Poly_Con_Relation::is_included();
+    else if (cg.is_equality())
+      return Poly_Con_Relation::is_disjoint();
     else if (cg.inhomogeneous_term() % cg.modulus() == 0)
       return Poly_Con_Relation::is_included();
     else
