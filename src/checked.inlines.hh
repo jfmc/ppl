@@ -229,11 +229,11 @@ lcm_gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
 template <typename Policy, typename Type>
 inline Result
 sgn_generic(const Type& x) {
-  if (x < 0)
-    return V_LT;
   if (x > 0)
     return V_GT;
-  return V_EQ;
+  if (x == 0)
+    return V_EQ;
+  return V_LT;
 }
 
 template <typename Policy, typename Type>
