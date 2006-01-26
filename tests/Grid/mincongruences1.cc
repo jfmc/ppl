@@ -229,6 +229,34 @@ test7() {
   exit(1);
 }
 
+// Empty grid, where minimizing the congruences finds the grid empty.
+
+void
+test8() {
+  nout << "test8:" << endl;
+
+  Grid gr1(4);
+  gr1.add_congruence(A == 1);
+  gr1.add_congruence(A == 0);
+
+  Grid known_gr(4, EMPTY);
+
+  Congruence_System cgs = gr1.minimized_congruences();
+
+  Grid gr2(cgs);
+
+  if (known_gr == gr2)
+    return;
+
+  nout << "Reproduced grid should equal known grid." << endl
+       << "grid:" << endl << gr2 << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr2, known_gr);
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -244,6 +272,7 @@ main() TRY {
   test5();
   test6();
   test7();
+  test8();
 
   return 0;
 }
