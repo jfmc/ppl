@@ -582,7 +582,6 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Grid_public.cc \
                          @srcdir@/../src/Grid_nonpublic.cc \
                          @srcdir@/../src/Grid_conversion.cc \
-                         @srcdir@/../src/Grid_minimize.cc \
                          @srcdir@/../src/Grid_simplify.cc \
                          @srcdir@/../src/Grid_widenings.cc \
                          @srcdir@/../src/Poly_Con_Relation.types.hh \

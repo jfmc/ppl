@@ -310,7 +310,6 @@ conversion.cc \
 minimize.cc \
 simplify.cc \
 Grid_conversion.cc \
-Grid_minimize.cc \
 Grid_simplify.cc \
 globals.cc \
 version.cc \
