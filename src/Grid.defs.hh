@@ -2518,5 +2518,6 @@ void swap(Parma_Polyhedra_Library::Grid& x,
 
 #include "Grid_Status.inlines.hh"
 #include "Grid.inlines.hh"
+#include "Grid.templates.hh"
 
 #endif // !defined(PPL_Grid_defs_hh)

@@ -228,6 +228,7 @@ Polyhedron.inlines.hh \
 Grid.defs.hh \
 Grid_Status.inlines.hh \
 Grid.inlines.hh \
+Grid.templates.hh \
 C_Polyhedron.defs.hh \
 C_Polyhedron.inlines.hh \
 NNC_Polyhedron.defs.hh \
