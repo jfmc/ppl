@@ -322,6 +322,22 @@ test10() {
   exit(1);
 }
 
+// Empty.
+
+void
+test11() {
+  nout << "test11:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence(A == 1);
+  gr.add_congruence(A == 2);
+
+  if (gr.is_topologically_closed())
+    return;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -340,6 +356,7 @@ main() TRY {
   test8();
   test9();
   test10();
+  test11();
 
   return 0;
 }
