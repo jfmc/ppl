@@ -380,6 +380,25 @@ test12() {
   exit(1);
 }
 
+// A parameter that comes first in the generator system.
+
+void
+test13() {
+  nout << "test13:" << endl;
+
+  Grid_Generator_System gs;
+  gs.insert(parameter(3*A + 2*B));
+  gs.insert(grid_point(3*A + 2*B));
+
+  Grid gr(gs);
+
+  if (gr.is_bounded()) {
+    nout << "Grid was bounded." << endl;
+
+    exit(1);
+  }
+}
+
 } // namespace
 
 int
@@ -400,6 +419,7 @@ main() TRY {
   test10();
   test11();
   test12();
+  test13();
 
   return 0;
 }
