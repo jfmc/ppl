@@ -2446,10 +2446,10 @@ private:
     This method is only used in assertions in the simplify methods.
   */
   template <typename M, typename R>
-  static bool Grid::rows_are_zero(M& system,
-				  dimension_type first,
-				  dimension_type last,
-				  dimension_type row_size);
+  static bool rows_are_zero(M& system,
+			    dimension_type first,
+			    dimension_type last,
+			    dimension_type row_size);
 #endif
 
   //@} // Minimization-Related Static Member Functions
