@@ -22,7 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 :-  ensure_loaded('pl_check.pl').
 
-prolog_system(swi).
+prolog_system('SWI').
 
 main :-
     current_output(Old_Stream),

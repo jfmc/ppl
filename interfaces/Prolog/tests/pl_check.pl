@@ -239,12 +239,12 @@ run_one(catch_time) :-
 run_one(lp_problem) :-
    lp_problem.
 
-% xsb has problems with large numbers - hence tests for xsb disallowed.
+% XSB has problems with large numbers - hence tests for XSB disallowed.
 % We catch the exception if it is caused by integer overflow in C++
 % and suppress output as this is expected when C++ uses checked_integers.
 run_one(large_integers) :-
    prolog_system(Prolog_System),
-   (Prolog_System \== xsb ->
+   (Prolog_System \== 'XSB' ->
      catch(large_integers, ppl_overflow_error(Cause),
         check_exception_term(ppl_overflow_error(Cause)))
    ;
@@ -2385,41 +2385,11 @@ large_integers :-
   large_integers_prolog_cpp(Exps, Adds),
   pl_check_prolog_flag(bounded, Y),
   (Y == true ->
-     large_integers_sys_prolog_cpp(Adds)
+    (out(sys_large_int, init),
+     large_integers_sys_prolog_cpp(Adds))
    ;
      true
   ).
-
-large_integers_sys_prolog_cpp([]).
-large_integers_sys_prolog_cpp([Add|Adds]) :-
-  pl_check_prolog_flag(max_integer, Max_int),
-  pl_check_prolog_flag(min_integer, Min_int),
-  Max is Max_int-3,
-  Min is Min_int+3,
-  large_integers_sys_prolog_cpp2(Max, Add, 1),
-  large_integers_sys_prolog_cpp2(Min, Add, -1),
-  large_integers_sys_prolog_cpp(Adds).
-
-large_integers_sys_prolog_cpp2(MaxMin, Add, Sign) :-
-  make_vars(1, [A]),
-  Inhomo is MaxMin + Sign* Add,
-  out(large_int, Inhomo),
-  clean_ppl_new_Polyhedron_from_space_dimension(c, 1, universe, P),
-  ppl_Polyhedron_add_constraints(P, [A = Inhomo]),
-  ppl_Polyhedron_get_constraints(P, CS),
-  clean_ppl_new_Polyhedron_from_space_dimension(c, 1, universe, P1),
-  ppl_Polyhedron_add_constraints(P1, CS),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  clean_ppl_new_Polyhedron_from_space_dimension(c, 1, universe, P2),
-  InhomoDiv2 is Inhomo // 2,
-  InhomoMod2 is Inhomo mod 2,
-  ppl_Polyhedron_add_constraint(P2, A = InhomoDiv2),
-  ppl_Polyhedron_affine_image(P2, A, 2*A + Sign* InhomoMod2, 1),
-  ppl_Polyhedron_equals_Polyhedron(P, P2),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1),
-  ppl_delete_Polyhedron(P2).
 
 large_integers_prolog_cpp([], _).
 large_integers_prolog_cpp([Exp|Exps], Adds) :-
@@ -2445,7 +2415,7 @@ large_integers_prolog_cpp1([Add|Adds], Exp) :-
 
 large_integers_prolog_cpp2(Exp, Add, Sign) :-
   Inhomo is Sign * ((1 << Exp) + Add),
-  out(large_int, Inhomo),
+  out(large_int, Inhomo, Sign, Add, Exp),
   make_vars(1, [A]),
   clean_ppl_new_Polyhedron_from_space_dimension(c, 1, universe, P),
   ppl_Polyhedron_add_constraints(P, [A = Inhomo]),
@@ -2457,6 +2427,37 @@ large_integers_prolog_cpp2(Exp, Add, Sign) :-
   ppl_Polyhedron_add_constraint(P2, A = 1),
   large_integers_affine_transform_loop(Exp, P2, A),
   ppl_Polyhedron_affine_image(P2, A, Sign * (A + Add), 1),
+  ppl_Polyhedron_equals_Polyhedron(P, P2),
+  !,
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P2).
+
+large_integers_sys_prolog_cpp([]).
+large_integers_sys_prolog_cpp([Add|Adds]) :-
+  pl_check_prolog_flag(max_integer, Max_int),
+  pl_check_prolog_flag(min_integer, Min_int),
+  Max is Max_int-3,
+  Min is Min_int+3,
+  large_integers_sys_prolog_cpp2(Max, Add, 1),
+  large_integers_sys_prolog_cpp2(Min, Add, -1),
+  large_integers_sys_prolog_cpp(Adds).
+
+large_integers_sys_prolog_cpp2(MaxMin, Add, Sign) :-
+  make_vars(1, [A]),
+  Inhomo is MaxMin + Sign* Add,
+  out(sys_large_int, Inhomo),
+  clean_ppl_new_Polyhedron_from_space_dimension(c, 1, universe, P),
+  ppl_Polyhedron_add_constraints(P, [A = Inhomo]),
+  ppl_Polyhedron_get_constraints(P, CS),
+  clean_ppl_new_Polyhedron_from_space_dimension(c, 1, universe, P1),
+  ppl_Polyhedron_add_constraints(P1, CS),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  clean_ppl_new_Polyhedron_from_space_dimension(c, 1, universe, P2),
+  InhomoDiv2 is Inhomo // 2,
+  InhomoMod2 is Inhomo mod 2,
+  ppl_Polyhedron_add_constraint(P2, A = InhomoDiv2),
+  ppl_Polyhedron_affine_image(P2, A, 2*A + Sign* InhomoMod2, 1),
   ppl_Polyhedron_equals_Polyhedron(P, P2),
   !,
   ppl_delete_Polyhedron(P),
@@ -2884,6 +2885,20 @@ out(lp, LP):-
     nl
   ).
 
+out(sys_large_int, init):-
+  !,
+  prolog_system(System),
+  ((noisy(N), N < 2) -> true ;
+    nl, write_all([' At the Prolog/C++ interface, for', System, 'Prolog', nl,
+       ' the extra numbers tested are: ']),
+    nl
+  ).
+
+out(sys_large_int, Num):-
+  ((noisy(N), N < 2) -> true ;
+      write_all([Num, ',  '])
+  ).
+
 out(large_int, init):-
   !,
   ((noisy(N), N < 2) -> true ;
@@ -2891,9 +2906,9 @@ out(large_int, init):-
     nl
   ).
 
-out(large_int, Num):-
+out(large_int, Num, Sign, Add, Exp):-
   ((noisy(N), N < 2) -> true ;
-    write(Num), write(',  ')
+    write_all([Num, ' = ', Sign, ' * ', '((1 << ', Exp, ') + ', Add, '),  '])
   ).
 
 %%% predicates for ensuring new polyhedra are always deleted on failure %
@@ -3278,22 +3293,22 @@ group_predicates(handle_exceptions,
 % Note that 268435456 is 2^28.
 
 pl_check_prolog_flag(bounded, TF) :-
-  \+ prolog_system(xsb),
+  \+ prolog_system('XSB'),
   current_prolog_flag(bounded, TF).
 
 pl_check_prolog_flag(bounded, true) :-
-  prolog_system(xsb).
+  prolog_system('XSB').
 
 pl_check_prolog_flag(max_integer, Max_Int) :-
-  \+ prolog_system(xsb),
+  \+ prolog_system('XSB'),
   current_prolog_flag(max_integer, Max_Int).
 
 pl_check_prolog_flag(max_integer, Max_Int) :-
-  prolog_system(xsb), Max_Int is 268435455.
+  prolog_system('XSB'), Max_Int is 268435455.
 
 pl_check_prolog_flag(min_integer, Min_Int) :-
-  \+ prolog_system(xsb),
+  \+ prolog_system('XSB'),
   current_prolog_flag(min_integer, Min_Int).
 
 pl_check_prolog_flag(min_integer, Min_Int) :-
-  prolog_system(xsb), Min_Int is -268435456.
+  prolog_system('XSB'), Min_Int is -268435456.
