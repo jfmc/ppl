@@ -579,11 +579,14 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/simplify.cc \
                          @srcdir@/../src/Grid.types.hh \
                          @srcdir@/../src/Grid.defs.hh \
+                         @srcdir@/../src/Grid.inlines.hh \
+                         @srcdir@/../src/Grid.templates.hh \
                          @srcdir@/../src/Grid_public.cc \
                          @srcdir@/../src/Grid_nonpublic.cc \
                          @srcdir@/../src/Grid_conversion.cc \
                          @srcdir@/../src/Grid_simplify.cc \
                          @srcdir@/../src/Grid_widenings.cc \
+                         @srcdir@/../src/Grid_chdims.cc \
                          @srcdir@/../src/Poly_Con_Relation.types.hh \
                          @srcdir@/../src/Poly_Con_Relation.defs.hh \
                          @srcdir@/../src/Poly_Con_Relation.inlines.hh \
