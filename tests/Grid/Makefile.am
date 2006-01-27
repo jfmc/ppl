@@ -51,6 +51,7 @@ addspacedims1 addspacedims2 \
 affinedim1 \
 affineimage1 \
 affinepreimage1 \
+asciidumpload1 \
 bhz03widening1 \
 bounded1 \
 boundingbox1 boundingbox2 \
@@ -83,6 +84,7 @@ maxmin1 \
 membytes1 membytes2 \
 mincongruences1 \
 mingenerators1 \
+outputoperator1 \
 pointed1 \
 relations1 relations2 \
 removespacedims1 removespacedims2 \
@@ -114,6 +116,8 @@ affinedim1_SOURCES = affinedim1.cc
 affineimage1_SOURCES = affineimage1.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
+
+asciidumpload1_SOURCES = asciidumpload1.cc
 
 bhz03widening1_SOURCES = bhz03widening1.cc
 
@@ -194,6 +198,8 @@ membytes2_SOURCES = membytes2.cc
 mincongruences1_SOURCES = mincongruences1.cc
 
 mingenerators1_SOURCES = mingenerators1.cc
+
+outputoperator1_SOURCES = outputoperator1.cc
 
 pointed1_SOURCES = pointed1.cc
 
