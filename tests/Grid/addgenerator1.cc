@@ -281,6 +281,84 @@ test8() {
   exit(1);
 }
 
+// Space dimension exception.
+
+void
+test9() {
+  nout << "test9:" << endl;
+
+  Variable A(0);
+  Variable C(2);
+
+  Grid gr(2);
+
+  try {
+    gr.add_generator(grid_point(A + C));
+    exit(1);
+  }
+  catch (std::invalid_argument) {}
+}
+
+// Zero dimensions empty.
+
+void
+test10() {
+  nout << "test10:" << endl;
+
+  Grid gr(0, EMPTY);
+  gr.add_generator(grid_point());
+
+  Grid known_gr(0);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Zero dimension universe.
+
+void
+test11() {
+  nout << "test11:" << endl;
+
+  Grid gr(0);
+  gr.add_generator(grid_point());
+
+  Grid known_gr(0);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Space dimension exception.
+
+void
+test12() {
+  nout << "test12:" << endl;
+
+  Variable A(0);
+  Variable C(2);
+
+  Grid gr(2, EMPTY);
+
+  try {
+    gr.add_generator(grid_line(A));
+    exit(1);
+  }
+  catch (std::invalid_argument) {}
+}
+
 int
 main() TRY {
   set_handlers();
@@ -295,6 +373,10 @@ main() TRY {
   test6();
   test7();
   test8();
+  test9();
+  test10();
+  test11();
+  test12();
 
   return 0;
 }
