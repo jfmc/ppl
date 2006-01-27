@@ -111,7 +111,7 @@ Grid::upper_bound_assign_if_exact(const Grid& y) {
 }
 
 inline void
-PPL::Grid::difference_assign(const Grid& y) {
+Grid::difference_assign(const Grid& y) {
   grid_difference_assign(y);
 }
 
@@ -255,7 +255,7 @@ Grid::strictly_contains(const Grid& y) const {
 }
 
 inline void
-PPL::Grid::topological_closure_assign() {
+Grid::topological_closure_assign() {
   return;
 }
 
