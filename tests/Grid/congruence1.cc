@@ -432,6 +432,21 @@ test13() {
   exit(1);
 }
 
+// Space dimension exception.
+
+static void
+test14() {
+  nout << "test14:" << endl;
+
+  Grid gr(2);
+
+  try {
+    gr.add_congruence(A + C %= 0);
+    exit(1);
+  }
+  catch (std::invalid_argument) {}
+}
+
 } // namespace
 
 int
@@ -453,6 +468,7 @@ main() TRY {
   test11();
   test12();
   test13();
+  test14();
 
   return 0;
 }
