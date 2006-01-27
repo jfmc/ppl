@@ -379,9 +379,6 @@ private:
   */
   explicit Grid_Generator(Generator g);
 
-  //! Returns the topological kind of \p *this.
-  Topology topology() const;
-
   //! Returns the actual size of \p this.
   dimension_type size() const;
 

@@ -140,11 +140,6 @@ Grid_Generator::strong_normalize() {
   Generator::strong_normalize();
 }
 
-inline Topology
-Grid_Generator::topology() const {
-  return Generator::topology();
-}
-
 inline dimension_type
 Grid_Generator::size() const {
   return Generator::size();
