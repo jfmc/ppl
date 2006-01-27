@@ -96,7 +96,7 @@ PPL::Grid::construct(const Grid_Generator_System& const_gs) {
   space_dim = gs.space_dimension();
 
   // An empty set of generators defines the empty grid.
-  if (gs.num_rows() == 0) {
+  if (gs.num_generators() == 0) {
     // FIXME: Initialize gen_sys to the correct dimension in the
     //        caller constructors, and copy the necessary parts of
     //        set_empty into here.
@@ -149,7 +149,7 @@ PPL::Grid::quick_equivalence_test(const Grid& y) const {
   if (x.generators_are_minimized() && y.generators_are_minimized()) {
     // Equivalent minimized generator systems have:
     //  - the same number of generators; ...
-    if (x.gen_sys.num_rows() != y.gen_sys.num_rows())
+    if (x.gen_sys.num_generators() != y.gen_sys.num_generators())
       return Grid::TVB_FALSE;
     //  - the same number of lines; ...
     const dimension_type x_num_lines = x.gen_sys.num_lines();
@@ -203,7 +203,7 @@ PPL::Grid::is_included_in(const Grid& y) const {
   const Grid_Generator_System& gs = x.gen_sys;
   const Congruence_System& cgs = y.con_sys;
 
-  dimension_type num_rows = gs.num_rows();
+  dimension_type num_rows = gs.num_generators();
   for (dimension_type i = num_rows; i-- > 0; )
     if (!cgs.satisfies_all_congruences(gs[i]))
       return false;
@@ -226,7 +226,7 @@ PPL::Grid::bounds(const Linear_Expression& expr,
     return true;
 
   // The generators are up to date.
-  for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
+  for (dimension_type i = gen_sys.num_generators(); i-- > 0; ) {
     const Grid_Generator& g = gen_sys[i];
     // Only lines and parameters in `*this' can cause `expr' to be
     // unbounded.
@@ -312,7 +312,7 @@ PPL::Grid::update_congruences() const {
   // The caller must ensure that the generators are up to date.
   assert(space_dim > 0);
   assert(!marked_empty());
-  assert(gen_sys.num_rows() > 0);
+  assert(gen_sys.num_generators() > 0);
   assert(gen_sys.space_dimension() > 0);
 
   Grid& gr = const_cast<Grid&>(*this);
@@ -322,7 +322,7 @@ PPL::Grid::update_congruences() const {
 
   // `gen_sys' contained rows before being reduced, so it should
   // contain at least a single point afterwards.
-  assert(gen_sys.num_rows() > 0);
+  assert(gen_sys.num_generators() > 0);
 
   // Populate `con_sys' with congruences characterizing the grid
   // described by `gen_sys'.
@@ -417,7 +417,7 @@ void
 PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 			      Grid_Generator_System& gen_sys) {
   dimension_type row = 0;
-  dimension_type num_rows = gen_sys.num_rows();
+  dimension_type num_rows = gen_sys.num_generators();
   // Find first point in gen_sys.
   while (gen_sys[row].is_line_or_parameter())
     if (++row == num_rows)
@@ -444,7 +444,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
     lcm = divisor;
 
     dimension_type row = 0;
-    dimension_type num_rows = sys.num_rows();
+    dimension_type num_rows = sys.num_generators();
 
     if (first_point)
       lcm_assign(lcm, lcm, (*first_point).divisor());

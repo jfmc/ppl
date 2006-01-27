@@ -340,11 +340,11 @@ public:
 		    const Linear_Expression& expr,
 		    Coefficient_traits::const_reference denominator);
 
-  //! Returns the number of rows in the system.
-  dimension_type num_rows() const;
+  //! Returns the number of generators in the system.
+  dimension_type num_generators() const;
 
-  //! Returns the number of rays in the system.
-  dimension_type num_rays() const;
+  //! Returns the number of parameters in the system.
+  dimension_type num_parameters() const;
 
   //! Returns the number of lines in the system.
   dimension_type num_lines() const;

@@ -111,7 +111,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   \endcode
   Note that, unlike lines, for parameters, the length as well
   as the direction of the vector represented by the code is significant.
-  Thus \p q is \e not the same as the parameter \p \q1 defined by
+  Thus \p q is \e not the same as the parameter \p q1 defined by
   \code
   Grid_Generator q1 = parameter(2x - 2y - 2z);
   \endcode
@@ -396,7 +396,7 @@ private:
   void set_is_line();
 
   //! Sets the Linear_Row kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
-  void set_is_parameter();
+  void set_is_parameter_or_point();
 
   /*! \brief
     Strong normalization: ensures that different Grid_Generator

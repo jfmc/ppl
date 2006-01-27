@@ -47,8 +47,8 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
     else
       if (gr.generators_are_up_to_date() && gr.generators_are_minimized()) {
 	// Calculate number of congruences from generators.
- 	num_proper_congruences = gr.gen_sys.num_rays() + 1 /* Integrality cg. */;
-	num_equalities = gr.space_dimension() + 1 - gr.gen_sys.num_rows();
+ 	num_proper_congruences = gr.gen_sys.num_parameters() + 1 /* Integrality cg. */;
+	num_equalities = gr.space_dimension() + 1 - gr.gen_sys.num_generators();
       }
       else {
 	// Minimize gr congruence system.  As in Polyhedron assume
@@ -72,12 +72,12 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
       Grid::simplify(gr.gen_sys, gr.dim_kinds);
       // If gen_sys contained rows before being reduced, it should
       // contain at least a single point afterwards.
-      assert(gr.gen_sys.num_rows() > 0);
+      assert(gr.gen_sys.num_generators() > 0);
       gr.set_generators_minimized();
     }
     // Calculate number of congruences from generators.
-    num_proper_congruences = gr.gen_sys.num_rays() + 1 /* Integrality cg. */;
-    num_equalities = gr.space_dimension() + 1 - gr.gen_sys.num_rows();
+    num_proper_congruences = gr.gen_sys.num_parameters() + 1 /* Integrality cg. */;
+    num_equalities = gr.space_dimension() + 1 - gr.gen_sys.num_generators();
   }
 }
 

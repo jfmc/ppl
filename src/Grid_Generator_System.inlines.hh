@@ -88,12 +88,12 @@ Grid_Generator_System::total_memory_in_bytes() const {
 }
 
 inline dimension_type
-Grid_Generator_System::num_rows() const {
+Grid_Generator_System::num_generators() const {
   return Generator_System::num_rows();
 }
 
 inline dimension_type
-Grid_Generator_System::num_rays() const {
+Grid_Generator_System::num_parameters() const {
   return Generator_System::num_rays();
 }
 

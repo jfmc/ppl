@@ -78,7 +78,7 @@ bool
 Grid::upper_triangular(const Grid_Generator_System& sys,
 		       const Dimension_Kinds& dim_kinds) {
   dimension_type num_cols = sys.space_dimension() + 1;
-  dimension_type row = sys.num_rows();
+  dimension_type row = sys.num_generators();
 
   // Check squareness.
   if (row > num_cols)
@@ -434,7 +434,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       else {
 	assert(dim_kinds[dim] == PROPER_CONGRUENCE);
 	TRACE(cerr << "  proper_congruence" << endl);
-	g.set_is_parameter();
+	g.set_is_parameter_or_point();
 	g[dim] = diagonal_lcm / source[source_index][dim];
 	++source_index;
       }

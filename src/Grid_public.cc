@@ -225,12 +225,12 @@ const PPL::Grid_Generator_System&
 PPL::Grid::generators() const {
   if (space_dim == 0) {
     assert(gen_sys.space_dimension() == 0
-	   && gen_sys.num_rows() == (marked_empty() ? 0 : 1));
+	   && gen_sys.num_generators() == (marked_empty() ? 0 : 1));
     return gen_sys;
   }
 
   if (marked_empty()) {
-    assert(gen_sys.num_rows() == 0);
+    assert(gen_sys.num_generators() == 0);
     return gen_sys;
   }
 
@@ -247,12 +247,12 @@ const PPL::Grid_Generator_System&
 PPL::Grid::minimized_generators() const {
   if (space_dim == 0) {
     assert(gen_sys.space_dimension() == 0
-	   && gen_sys.num_rows() == (marked_empty() ? 0 : 1));
+	   && gen_sys.num_generators() == (marked_empty() ? 0 : 1));
     return gen_sys;
   }
 
   if (marked_empty()) {
-    assert(gen_sys.num_rows() == 0);
+    assert(gen_sys.num_generators() == 0);
     return gen_sys;
   }
 
@@ -506,12 +506,12 @@ PPL::Grid::is_bounded() const {
 
   // TODO: Consider using con_sys when gen_sys is out of date.
 
-  if (gen_sys.num_rows() > 1) {
+  if (gen_sys.num_generators() > 1) {
     // Check if all generators are the same point.
     const Grid_Generator& first_point = gen_sys[0];
     if (first_point.is_line_or_parameter())
       return false;
-    for (dimension_type row = gen_sys.num_rows(); row-- > 0; ) {
+    for (dimension_type row = gen_sys.num_generators(); row-- > 0; ) {
       const Grid_Generator& gen = gen_sys[row];
       if (gen.is_line_or_parameter() || gen != first_point)
 	return false;
@@ -529,7 +529,7 @@ PPL::Grid::is_pointed() const {
   if (generators_are_minimized()) {
   line_search:
     // Search for lines in the minimized generator system.
-    for (dimension_type row = gen_sys.num_rows(); row-- > 1; )
+    for (dimension_type row = gen_sys.num_generators(); row-- > 1; )
       if (gen_sys[row].is_line())
 	return false;
     return true;
@@ -569,7 +569,7 @@ PPL::Grid::is_topologically_closed() const {
   if (generators_are_minimized()) {
   param_search:
     // Search for a parameter in the minimized generator system.
-    for (dimension_type row = gen_sys.num_rows(); row-- > 1; )
+    for (dimension_type row = gen_sys.num_generators(); row-- > 1; )
       if (gen_sys[row].is_parameter())
 	return false;
     return true;
@@ -639,7 +639,7 @@ PPL::Grid::OK(bool check_not_empty) const {
   // one point.
   if (space_dim == 0) {
     if (con_sys.num_rows() == 0)
-      if (gen_sys.num_rows() == 1 && gen_sys[0].is_point())
+      if (gen_sys.num_generators() == 1 && gen_sys[0].is_point())
 	return true;
 #ifndef NDEBUG
     cerr << "Zero-dimensional grid should have an empty congruence" << endl
@@ -697,7 +697,7 @@ PPL::Grid::OK(bool check_not_empty) const {
 	goto fail;
       }
       // Check each generator in the system.
-      for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
+      for (dimension_type i = gen_sys.num_generators(); i-- > 0; ) {
 	const Grid_Generator& g = gen_sys[i];
 
 	if (g.size() < 1) {
@@ -710,7 +710,7 @@ PPL::Grid::OK(bool check_not_empty) const {
 
       // A non-empty system of generators describing a grid is valid iff
       // it contains a point.
-      if (gen_sys.num_rows() > 0 && !gen_sys.has_points()) {
+      if (gen_sys.num_generators() > 0 && !gen_sys.has_points()) {
 #ifndef NDEBUG
 	cerr << "Non-empty generator system declared up-to-date "
 	     << "has no points!"
@@ -759,12 +759,12 @@ PPL::Grid::OK(bool check_not_empty) const {
 	Dimension_Kinds dk = dim_kinds;
 	// `gs' is minimized and marked_empty returned false, so `gs'
 	// should contain rows.
-	assert(gs.num_rows() > 0);
+	assert(gs.num_generators() > 0);
 	simplify(gs, dk);
 	// gs contained rows before being reduced, so it should
 	// contain at least a single point afterwards.
-	assert(gs.num_rows() > 0);
-	for (dimension_type row = 0; row < gen_sys.num_rows(); ++row) {
+	assert(gs.num_generators() > 0);
+	for (dimension_type row = 0; row < gen_sys.num_generators(); ++row) {
 	  Grid_Generator& g = gs[row];
 	  const Grid_Generator& g_copy = gen_sys[row];
 	  if (g.is_equal_to(g_copy))
@@ -1204,7 +1204,7 @@ PPL::Grid::add_recycled_generators(Grid_Generator_System& gs) {
     throw_dimension_incompatible("add_recycled_generators(gs)", "gs", gs);
 
   // Adding no generators leaves the grid the same.
-  if (gs.num_rows() == 0)
+  if (gs.num_generators() == 0)
     return;
 
   // Adding valid generators to a zero-dimensional grid transforms it
@@ -1272,7 +1272,7 @@ PPL::Grid::add_recycled_generators_and_minimize(Grid_Generator_System& gs) {
 				 "gs", gs);
 
   // Adding no generators is equivalent to just requiring reduction.
-  if (gs.num_rows() == 0)
+  if (gs.num_generators() == 0)
     return minimize();
 
   // Adding valid generators to a zero-dimensional grid produces the
@@ -1296,7 +1296,7 @@ PPL::Grid::add_recycled_generators_and_minimize(Grid_Generator_System& gs) {
     // The grid contains at least one point.
     normalize_divisors(gs, gen_sys);
 
-    for (dimension_type row = 0; row < gs.num_rows(); ++row)
+    for (dimension_type row = 0; row < gs.num_generators(); ++row)
       gen_sys.recycling_insert(gs[row]);
   }
   else {
@@ -2015,7 +2015,7 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
 
   // At this point both generator systems are up-to-date.
   Grid_Generator_System gs = y.gen_sys;
-  dimension_type gs_num_rows = gs.num_rows();
+  dimension_type gs_num_rows = gs.num_generators();
 
   normalize_divisors(gs, gen_sys);
 

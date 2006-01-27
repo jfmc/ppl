@@ -223,7 +223,7 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
     neg_assign(red_row_col);
   }
 #endif
-  for (dimension_type index = 0; index < sys.num_rows(); ++index) {
+  for (dimension_type index = 0; index < sys.num_generators(); ++index) {
     Grid_Generator& row = sys[index];
     if (row.is_parameter_or_point())
       for (dimension_type col = 0; col < num_cols; ++col)
@@ -306,7 +306,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   TRACE(cerr << "==== simplify (reduce) gs:" << endl);
   TRACE(cerr << "sys:" << endl);
   TRACE(sys.ascii_dump(cerr));
-  assert(sys.num_rows() > 0);
+  assert(sys.num_generators() > 0);
   assert(sys.num_columns() > 0); // For reduce_pc_with_pc.
 
   // Changes here may also be required in the congruence version
@@ -317,7 +317,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   if (dim_kinds.size() != num_cols)
     dim_kinds.resize(num_cols);
 
-  dimension_type num_rows = sys.num_rows();
+  dimension_type num_rows = sys.num_generators();
   TRACE(cerr << "  num_rows " << num_rows << endl);
 
   // For each dimension `dim' move or construct a row into position
@@ -413,9 +413,9 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 #ifndef NDEBUG
     bool ret = rows_are_zero<Grid_Generator_System,Grid_Generator>
       (sys,
-       pivot_index,		// index of first
-       sys.num_rows() - 1,	// index of last
-       sys.num_columns() - 1); // row size
+       pivot_index,		 // index of first
+       sys.num_generators() - 1, // index of last
+       sys.num_columns() - 1);	 // row size
     assert(ret == true);
 #endif
     sys.erase_to_end(pivot_index);
