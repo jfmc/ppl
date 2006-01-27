@@ -121,8 +121,15 @@ test5() {
   gr_cgs_needs_min.add_congruence(A == 3);
   gr_cgs_needs_min.add_congruence(B == 2);
 
+  Grid gr_cgs_min(3);
+  gr_cgs_min.add_congruence(A == 3);
+  gr_cgs_min.add_congruence(B == 2);
+  // Minimize the congruences.
+  gr_cgs_min.minimized_congruences();
+
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  assert(copy_compare(gr_cgs_needs_min, gr_cgs_min));
 
   if (gr_gs_min.is_pointed())
     nout << "gr_gs_min";
@@ -130,6 +137,8 @@ test5() {
     nout << "gr_gs_needs_min";
   else if (gr_cgs_needs_min.is_pointed())
     nout << "gr_cgs_needs_min";
+  else if (gr_cgs_min.is_pointed())
+    nout << "gr_cgs_min";
   else
     return;
 
@@ -322,6 +331,22 @@ test10() {
   exit(1);
 }
 
+// Empty.
+
+void
+test11() {
+  nout << "test11:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence(A == 1);
+  gr.add_congruence(A == 2);
+
+  if (gr.is_pointed())
+    return;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -340,6 +365,7 @@ main() TRY {
   test8();
   test9();
   test10();
+  test11();
 
   return 0;
 }
