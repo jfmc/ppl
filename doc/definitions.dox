@@ -1434,7 +1434,7 @@ polyhedra in the result set, we have
 \f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
 
 \anchor pps_bgp99_extrapolation
-\subsection Extrapolation_Operators Extrapolation Operators
+\subsection Powerset_Extrapolation_Operators Extrapolation Operators
 
 The library implements a generalization of the extrapolation operator
 for powerset domains proposed in \ref BGP99 "[BGP99]".
@@ -1510,8 +1510,8 @@ Moreover, as we have already used the symbol \f$\cG\f$ to
 denote a generator system, we will use \f$\cL\f$ to denote
 a rational grids.
 
-\anchor congruence_relations
-<B>Congruences and Congruence Relations</B>
+\subsection Congruence_Relations
+   Congruences and Congruence Relations
 
 For any \f$a, b, f \in \Rset\f$,
 \f$a \equiv_f b\f$ denotes the <EM>congruence</EM>
@@ -1550,8 +1550,7 @@ for  any \f$\mu \in \Zset\f$ is said to
 <EM>satisfy</EM> the congruence relation
 \f$\langle \vect{a}, \vect{x} \rangle \equiv_f b\f$.
 
-\anchor rational_grids
-<B>Rational Grids</B>
+\subsection Rational_Grids Rational Grids
 
 The set \f$\cL  \sseq \Rset^n\f$ is a <EM>rational grid</EM>
 if and only if either \f$\cL\f$ is the set of vectors in
@@ -1587,8 +1586,7 @@ The vector space \f$\Rset^n\f$ is also called the <EM>universe</EM> grid.
 In set theoretical terms,
 \f$\Gset_n\f$ is a <EM>lattice</EM> under set inclusion.
 
-\anchor integer_combinations
-<B>Integer Combinations</B>
+\subsection Integer_Combinations Integer Combinations
 
 Let \f$S = \{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$
 be a finite set of vectors.
@@ -1602,8 +1600,7 @@ We denote by \f$\inthull(S)\f$
 the set of all the integer (resp., integer affine)
 combinations of the vectors in \f$S\f$.
 
-\anchor points_parameters_lines
-<B>Points, Parameters and Lines</B>
+\subsection Points_Parameters_Lines Points, Parameters and Lines
 
 Let \f$\cL\f$ be a grid.
 Then
@@ -1617,8 +1614,7 @@ Then
   for all points \f$\vect{p} \in \cL\f$ and all \f$\lambda \in \Rset\f$.
 
 
-\anchor grid_generator_representation
-<B>The Generator Representation</B>
+\subsection Grid_Generator_Representation The Generator Representation
 
 We can generate any rational grid in \f$\Gset_n\f$
 from a finite subset of its points, parameters and lines;
@@ -1653,8 +1649,7 @@ above, the generator system \f$(L, Q, P)\f$ can be easily converted to
 the generator system \f$(L, \emptyset, Q_{\vect{p}} \union P)\f$
 that generates the same grid.
 
-\anchor grid_minimized_representations
-<B>Minimized Representations</B>
+\subsection Grid_Minimized_Representations Minimized Representations
 
 A <EM>minimized</EM> congruence system \f$\cC\f$ for \f$\cL\f$
 is such that, if \f$\cC'\f$ is another congruence system for \f$\cL\f$,
@@ -1692,7 +1687,7 @@ a minimized generator system
 where
 \f$Q_{\vect{p}} = \{ \vect{p} + \vect{q} \mid \vect{q} \in Q\}\f$.
 
-<B>Double Description for Grids</B>
+\subsection Grids_Double_Description_Grids Double Description for Grids
 
 As for convex polyhedra, any grid \f$\cL\f$ can be described by using
 a congruence system \f$\cC\f$ for \f$\cL\f$,
@@ -1709,8 +1704,7 @@ As for convex polyhedra, such changes of representation form a key step
 in the implementation of many operators on grids such as, for example,
 intersection and grid join.
 
-\anchor grid_space_dimensions
-<B>Space Dimensions and Dimension-compatibility for Grids</B>
+\subsection Grid_Space_Dimensions Space Dimensions and Dimension-compatibility for Grids
 
 The <EM>space dimension</EM> of a grid \f$\cL \in \Gset_n\f$
 is the dimension
@@ -1718,8 +1712,7 @@ is the dimension
 The space dimension of congruence relations, generators and other objects
 of the library is defined similarly.
 
-\anchor grid_affine_dimension
-<B>Affine Independence and Affine Dimension for Grids</B>
+\subsection Grid_Affine_Dimension Affine Independence and Affine Dimension for Grids
 
 A <EM>non-empty</EM> grid \f$\cL \in \Gset_n\f$ has
 <EM>affine dimension</EM> \f$k \in \Nset\f$, denoted by \f$\pdim(\cG) = k\f$,
@@ -1734,8 +1727,7 @@ In this section we briefly describe operations on rational grids
 that are provided by the library.
 These are similar to those described in Section \ref Operations_on_Convex_Polyhedra.
 
-\anchor grid_intersection_and_join
-<B>Grid Intersection and Grid Join</B>
+\subsection Grid_Intersection_and__Join Grid Intersection and Grid Join
 
 For any pair of grids \f$\cL_1, \cL_2 \in \Gset_n\f$,
 the <EM>intersection</EM> of \f$\cL_1\f$ and \f$\cL_2\f$,
@@ -1751,8 +1743,7 @@ the intersection and grid join operators defined above
 are the binary <EM>meet</EM> and the binary <EM>join</EM>
 operators on the lattice \f$\Gset_n\f$.
 
-\anchor grid_difference
-<B>Grid Difference</B>
+\subsection Grid_Difference Grid Difference
 
 For any pair of grids \f$\cL_1, \cL_2 \in \Gset_n\f$,
 the <EM>grid difference</EM>
@@ -1760,8 +1751,7 @@ of \f$\cL_1\f$ and \f$\cL_2\f$ is defined as the smallest
 grid containing the set-theoretic difference
 of \f$\cL_1\f$ and \f$\cL_2\f$.
 
-\anchor grid_concatenate
-<B>Concatenating Grids</B>
+\subsection Grid_Concatenate Concatenating Grids
 
 Viewing a grid as a set of tuples (its points), it is sometimes
 useful to consider the set of tuples obtained by concatenating
@@ -1782,8 +1772,7 @@ Another way of seeing it is as follows: first embed grid \f$\cL_1\f$
 into a vector space of dimension \f$n+m\f$ and then add a suitably
 renamed-apart version of the congruence relations defining \f$\cL_2\f$.
 
-\anchor grid_add_space_dimensions
-<B>Adding New Dimensions to the Vector Space</B>
+\subsection  Grid_Add_Space_Dimensions Adding New Dimensions to the Vector Space
 
 The library provides two operators for adding a number \f$i\f$ of
 space dimensions to a grid \f$\cL \in \Gset_n\f$,
@@ -1823,8 +1812,7 @@ and adding a third space dimension, the result will be the grid
         \,\bigr\}.
 \f]
 
-\anchor grid_remove_space_dimensions
-<B>Removing Dimensions from the Vector Space</B>
+\subsection Grid_Remove_Space_Dimensions Removing Dimensions from the Vector Space
 
 The library provides two operators for removing
 space dimensions from a grid \f$\cL \in \Gset_n\f$,
@@ -1838,8 +1826,7 @@ Given a space dimension \f$m\f$ less than or equal to that of the grid,
 the operator <CODE>remove_higher_space_dimensions</CODE> removes
 the space dimensions having indices greater than or equal to \f$m\f$.
 
-\anchor grid_map_space_dimensions
-<B>Mapping the Dimensions of the Vector Space</B>
+\subsection Grid_Map_Space_Dimensions Mapping the Dimensions of the Vector Space
 
 The operator <CODE>map_space_dimensions</CODE> provided by the library
 maps the dimensions of the vector space \f$\Rset^n\f$ according
@@ -1864,8 +1851,7 @@ otherwise the result is a grid in \f$\Gset_m\f$ given by
       \,\Bigr\}.
 \f]
 
-\anchor grid_expand_space_dimension
-<B>Expanding One Dimension of the Vector Space to Multiple Dimensions</B>
+\subsection Grid_Expand_Space_Dimension Expanding One Dimension of the Vector Space to Multiple Dimensions
 
 The operator <CODE>expand_space_dimension</CODE> provided by the library
 adds \f$m\f$ new space dimensions to a grid \f$\cL \in \Gset_n\f$,
@@ -1886,8 +1872,7 @@ of \f$\cL\f$.  More formally, the result is a grid in \f$\Gset_m\f$ given by
       }.
 \f]
 
-\anchor grid_fold_space_dimensions
-<B>Folding Multiple Dimensions of the Vector Space into One Dimension</B>
+\subsection Grid_Fold_Space_Dimensions Folding Multiple Dimensions of the Vector Space into One Dimension
 
 The operator <CODE>fold_space_dimensions</CODE> provided by the library,
 given a grid \f$\cL \in \Gset_n\f$, with \f$n > 0\f$,
@@ -1930,8 +1915,7 @@ and, for \f$ k = 0 \f$, \f$ \ldots \f$, \f$ n-1 \f$,
       k - \card \{\, j \in J \mid k > j \,\}.
 \f]
 
-\anchor grid_affine_transformation
-<B>Affine Images and Preimages</B>
+\subsection Grid_Affine_Transformation Affine Images and Preimages
 
 As for convex polyhedra, \ref affine_relation
 "affine image and preimage" operators for grids are provided:
@@ -1994,8 +1978,7 @@ then the resulting grid is unchanged.
 Observe that provided the coefficient \f$a_k\f$ of the considered variable
 in the linear expression is non-zero, the affine transformation is invertible.
 
-\anchor grid_generalized_image
-<B>Generalized Affine Images</B>
+\subsection Grid_Generalized_Image Generalized Affine Images
 
 The library provides other operators
 that are generalizations of the affine image operator.
@@ -2026,8 +2009,7 @@ is equivalent to the application of the standard affine image
 of \f$\cL\f$ with respect to the variable \f$x_k\f$ and the
 affine expression \f$\mathrm{rhs}\f$.
 
-\anchor grid_time_elapse
-<B>Time-Elapse Operator</B>
+\subsection Grid_Time_Elapse Time-Elapse Operator
 
 For any two grids \f$\cL_1, \cL_2 \in \Gset_n\f$,
 the <EM>time-elapse</EM> between \f$\cL_1\f$ and \f$\cL_2\f$,
@@ -2041,8 +2023,7 @@ is the grid
   \,\bigr\}.
 \f]
 
-\anchor grid_relation_with
-<B>Relation-with Operators</B>
+\subsection Grid_Relation_With Relation-with Operators
 
 The library provides operators for checking the relation holding
 between a grid  and
@@ -2074,8 +2055,7 @@ A grid \f$\cL\f$ <EM>subsumes</EM> a generator \f$g\f$ if
 adding \f$g\f$ to any generator system representing \f$\cL\f$
 does not change \f$\cL\f$.
 
-\anchor rectilinear_grids
-<B>Boxes and Rectilinear Grids</B>
+\subsection Rectilinear_Grids Boxes and Rectilinear Grids
 
 Consider again the  \ref bounding_boxes "boxes" used for convex polyhedra.
 An \f$n\f$-dimensional <EM>rational box</EM> is a box
@@ -2113,8 +2093,7 @@ As for convex polyhedra, the library will provide
 operations for computing the rectilinear grid corresponding to a given box
 and, also, a covering box for any given grid.
 
-\anchor grid_widening
-<B>Widening Operators</B>
+\subsection Grid_Widening Widening Operators
 
 The proposed widening for grids follows closely the standard
 \ref H79_widening "H79-widening" for convex polyhedra
@@ -2147,14 +2126,12 @@ where
       \,\Bigr\}.
 \f$
 
-\anchor grid_widening_with_tokens
-<B>Widening with Tokens</B>
+\subsection Grid_Widening_with_Tokens Widening with Tokens
 
 This will be as for \ref Widening_with_Tokens "widening with tokens"
 for convex polyhedra.
 
-\anchor grid_extrapolation
-<B>Extrapolation Operators</B>
+\subsection Grid_Extrapolation Extrapolation Operators
 
 Besides the two widening operators, the library also implements several
 <EM>extrapolation</EM> operators, which differ from widenings in that
