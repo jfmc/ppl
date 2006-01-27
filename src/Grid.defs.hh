@@ -248,16 +248,16 @@ bool operator!=(const Grid& x, const Grid& y);
   and \f$y\f$ is an integer multiple of 2.  The considered variable
   is \f$x\f$ and the affine expression is \f$x+3\f$.  The resulting
   grid is the given grid translated 3 integers to the right (all the
-  pairs where \f$x\f$ is -1 plus an integer multiple of 4 and
-  \f$x\f$ is an integer multiple of 2).
+  pairs \f$(x, y)\f$ where \f$x\f$ is -1 plus an integer multiple of 4
+  and \f$y\f$ is an integer multiple of 2).
   Moreover, if the affine transformation for the same variable \p x
   is instead \f$x+y\f$:
   \code
   Linear_Expression expr = x + y;
   \endcode
-  the resulting grid is every second point along the \f$x=y\f$ line,
-  with this line of points repeated at every fourth value along the
-  \f$x\f$ axis.
+  the resulting grid is every second integral point along the \f$x=y\f$
+  line, with this line of points repeated at every fourth integral value
+  along the \f$x\f$ axis.
   Instead, if we do not use an invertible transformation for the
   same variable; for example, the affine expression \f$y\f$:
   \code
@@ -278,8 +278,10 @@ bool operator!=(const Grid& x, const Grid& y);
   \endcode
   In this example the starting grid, \p var and the affine
   expression and the denominator are the same as in Example 6, while
-  the resulting grid is again the same grid, but translated to the
-  left.
+  the resulting grid is similar but translated 3 integers to the
+  left (all the pairs \f$(x, y)\f$
+  where \f$x\f$ is -3 plus an integer multiple of 4 and
+  \f$y\f$ is an integer multiple of 2)..
   Moreover, if the affine transformation for \p x is \f$x+y\f$
   \code
   Linear_Expression expr = x + y;
@@ -2434,7 +2436,7 @@ private:
 			       const Dimension_Kinds& dim_kinds);
 
 #ifndef NDEBUG
-  //! Checks that trailing rows containing only zero terms.
+  //! Checks that trailing rows contain only zero terms.
   /*!
     If all columns contain zero in the rows of \p system from row
     index \p first to row index \p last then return <code>true</code>,

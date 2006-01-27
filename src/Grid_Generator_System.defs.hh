@@ -60,20 +60,19 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
 } // namespace std
 
 
-// FIXME: Update this to grids.
 //! A system of grid generators.
 /*!
-    An object of the class Grid_Generator_System is a system of generators,
-    i.e., a multiset of objects of the class Generator
-    (lines, rays, points and closure points).
-    When inserting generators in a system, space dimensions are automatically
-    adjusted so that all the generators in the system are defined
-    on the same vector space.
-    A system of generators which is meant to define a non-empty
-    polyhedron must include at least one point: the reason is that
-    lines, rays and closure points need a supporting point
-    (lines and rays only specify directions while closure points only
-    specify points in the topological closure of the NNC polyhedron).
+    An object of the class Grid_Generator_System is a system of
+    grid generators, i.e., a multiset of objects of the class
+    Grid_Generator (lines, parameters and points).
+    When inserting generators in a system, space dimensions are
+    automatically adjusted so that all the generators in the system
+    are defined on the same vector space.
+    A system of grid generators which is meant to define a non-empty
+    grid must include at least one point: the reason is that
+    lines and parameters need a supporting point
+    (lines only specify directions while parameters only
+    specify direction and distance.
 
     \par
      In all the examples it is assumed that variables
@@ -92,7 +91,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
   gs.insert(line(x + 0*y));
     \endcode
     As said above, this system of generators corresponds to
-    an empty polyhedron, because the line has no supporting point.
+    an empty grid, because the line has no supporting point.
     To define a system of generators that does correspond to
     the \f$x\f$ axis, we can add the following code which
     inserts the origin of the space as a point:
@@ -112,68 +111,66 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
     \endcode
 
     \par Example 2
-    The following code builds a ray having the same direction as
-    the positive part of the \f$x\f$ axis in \f$\Rset^2\f$:
-    \code
-  Grid_Generator_System gs;
-  gs.insert(ray(x + 0*y));
-    \endcode
-    To define a system of generators indeed corresponding to the set
+    The following code builds a system of generators corresponding
+    to the grid corresponding to the integral points on the \f$x\f$ axes;
+    that is, all points satisfying the congruence relation
     \f[
       \bigl\{\,
         (x, 0)^\transpose \in \Rset^2
       \bigm|
-        x \geq 0
+        x \pmod{1}\ 0
       \,\bigr\},
     \f]
-    one just has to add the origin:
     \code
+  Grid_Generator_System gs;
+  gs.insert(parameter(x + 0*y));
   gs.insert(point(0*x + 0*y));
     \endcode
 
     \par Example 3
-    The following code builds a system of generators having four points
-    and corresponding to a square in \f$\Rset^2\f$
-    (the same as Example 1 for the system of constraints):
+    The following code builds a system of generators having three points
+    corresponding to a non-relational grid consisting of all points
+    whose coordinates are integer multiple of 3.
     \code
   Grid_Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(point(0*x + 3*y));
   gs.insert(point(3*x + 0*y));
-  gs.insert(point(3*x + 3*y));
     \endcode
 
     \par Example 4
-    By using closure points, we can define the \e kernel
-    (i.e., the largest open set included in a given set)
-    of the square defined in the previous example.
-    Note that a supporting point is needed and, for that purpose,
-    any inner point could be considered.
-    \code
-  Grid_Generator_System gs;
-  gs.insert(point(x + y));
-  gs.insert(closure_point(0*x + 0*y));
-  gs.insert(closure_point(0*x + 3*y));
-  gs.insert(closure_point(3*x + 0*y));
-  gs.insert(closure_point(3*x + 3*y));
-    \endcode
-
-    \par Example 5
-    The following code builds a system of generators having two points
-    and a ray, corresponding to a half-strip in \f$\Rset^2\f$
-    (the same as Example 2 for the system of constraints):
+    By using parameters instead of two of the points we
+    can define the same grid as that defined in the previous example.
+    Note that there has to be at least one point and, for this purpose,
+    any point in the grid could be considered.
+    Thus the following code builds two identical grids from the
+    grid generator systems \p gs and \p gs1.
     \code
   Grid_Generator_System gs;
   gs.insert(point(0*x + 0*y));
-  gs.insert(point(0*x + 1*y));
-  gs.insert(ray(x - y));
+  gs.insert(parameter(0*x + 3*y));
+  gs.insert(parameter(3*x + 0*y));
+  Grid_Generator_System gs1;
+  gs1.insert(point(3*x + 3*y));
+  gs1.insert(parameter(0*x + 3*y));
+  gs1.insert(parameter(3*x + 0*y));
+    \endcode
+
+    \par Example 5
+    The following code builds a system of generators having one point and
+    a parameter corresponding to all the integral points that
+    lie on \f$x + y = 2\f$ in \f$\Rset^2\f$
+    \code
+  Grid_Generator_System gs;
+  gs.insert(point(1*x + 1*y));
+  gs.insert(parameter(1*x - 1*y));
     \endcode
 
     \note
-    After inserting a multiset of generators in a generator system,
+    After inserting a multiset of generators in a grid generator system,
     there are no guarantees that an <EM>exact</EM> copy of them
     can be retrieved:
-    in general, only an <EM>equivalent</EM> generator system
+    in general, only an <EM>equivalent</EM> grid generator system
     will be available, where original generators may have been
     reordered, removed (if they are duplicate or redundant), etc.
 */

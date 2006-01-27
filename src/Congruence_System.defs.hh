@@ -434,7 +434,7 @@ private:
     The denominator of the affine transformation.
 
     We want to allow affine transformations (see the Section \ref
-    Operations_on_Convex_Polyhedra) having any rational
+    rational_grid_operations) having any rational
     coefficients. Since the coefficients of the congruences are
     integers we must also provide an integer \p denominator that will
     be used as denominator of the affine transformation.  The

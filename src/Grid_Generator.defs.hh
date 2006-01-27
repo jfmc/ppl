@@ -52,14 +52,14 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
 
 } // namespace std
 
-// FIXME: Update this to grids.
 //! A line, parameter or point.
 /*!
   An object of the class Grid_Generator is one of the following:
 
   - a line \f$\vect{l} = (a_0, \ldots, a_{n-1})^\transpose\f$;
 
-  - a parameter \f$\vect{r} = (a_0, \ldots, a_{n-1})^\transpose\f$;
+  - a parameter
+    \f$\vect{q} = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$;
 
   - a point
     \f$\vect{p} = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$;
@@ -67,26 +67,15 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   where \f$n\f$ is the dimension of the space
   and, for points and parameters, \f$d > 0\f$ is the divisor.
 
-  \par A note on terminology.
-  As observed in Section \ref representation, there are cases when,
-  in order to represent a polyhedron \f$\cP\f$ using the generator system
-  \f$\cG = (L, R, P, C)\f$, we need to include in the finite set
-  \f$P\f$ even points of \f$\cP\f$ that are <EM>not</EM> vertices
-  of \f$\cP\f$.
-  This situation is even more frequent when working with NNC polyhedra
-  and it is the reason why we prefer to use the word `point'
-  where other libraries use the word `vertex'.
-
-  \par How to build a generator.
+  \par How to build a grid generator.
   Each type of generator is built by applying the corresponding
-  function (<CODE>line</CODE>, <CODE>ray</CODE>, <CODE>point</CODE>
-  or <CODE>closure_point</CODE>) to a linear expression,
-  representing a direction in the space;
+  function (<CODE>line</CODE>, <CODE>parameter</CODE> or <CODE>point</CODE>)
+  to a linear expression;
   the space dimension of the generator is defined as the space dimension
   of the corresponding linear expression.
   Linear expressions used to define a generator should be homogeneous
   (any constant term will be simply ignored).
-  When defining points and closure points, an optional Coefficient argument
+  When defining points and parameters, an optional Coefficient argument
   can be used as a common <EM>divisor</EM> for all the coefficients
   occurring in the provided linear expression;
   the default value for this argument is 1.
@@ -105,57 +94,61 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   The following code builds a line with direction \f$x-y-z\f$
   and having space dimension \f$3\f$:
   \code
-  Generator l = line(x - y - z);
-  \endcode
-  As mentioned above, the constant term of the linear expression
-  is not relevant. Thus, the following code has the same effect:
-  \code
-  Generator l = line(x - y - z + 15);
+  Grid_Generator l = line(x - y - z);
   \endcode
   By definition, the origin of the space is not a line, so that
   the following code throws an exception:
   \code
-  Generator l = line(0*x);
+  Grid_Generator l = line(0*x);
   \endcode
 
   \par Example 2
-  The following code builds a ray with the same direction as the
-  line in Example 1:
+  The following code builds the parameter as the vector
+  \f$\vect{p} = (1, -1, -1)^\transpose \in \Rset^3\f$
+  which has the same direction as the line in Example 1:
   \code
-  Generator r = ray(x - y - z);
+  Grid_Generator q = parameter(x - y - z);
   \endcode
-  As is the case for lines, when specifying a ray the constant term
-  of the linear expression is not relevant; also, an exception is thrown
-  when trying to build a ray from the origin of the space.
+  Note that, unlike lines, for parameters, the length as well
+  as the direction of the vector represented by the code is significant.
+  Thus \p q is \e not the same as the parameter \p \q1 defined by
+  \code
+  Grid_Generator q1 = parameter(2x - 2y - 2z);
+  \endcode
+  By definition, the origin of the space is not a parameter, so that
+  the following code throws an exception:
+  \code
+  Grid_Generator q = parameter(0*x);
+  \endcode
 
   \par Example 3
   The following code builds the point
   \f$\vect{p} = (1, 0, 2)^\transpose \in \Rset^3\f$:
   \code
-  Generator p = point(1*x + 0*y + 2*z);
+  Grid_Generator p = point(1*x + 0*y + 2*z);
   \endcode
   The same effect can be obtained by using the following code:
   \code
-  Generator p = point(x + 2*z);
+  Grid_Generator p = point(x + 2*z);
   \endcode
   Similarly, the origin \f$\vect{0} \in \Rset^3\f$ can be defined
   using either one of the following lines of code:
   \code
-  Generator origin3 = point(0*x + 0*y + 0*z);
-  Generator origin3_alt = point(0*z);
+  Grid_Generator origin3 = point(0*x + 0*y + 0*z);
+  Grid_Generator origin3_alt = point(0*z);
   \endcode
   Note however that the following code would have defined
   a different point, namely \f$\vect{0} \in \Rset^2\f$:
   \code
-  Generator origin2 = point(0*y);
+  Grid_Generator origin2 = point(0*y);
   \endcode
   The following two lines of code both define the only point
   having space dimension zero, namely \f$\vect{0} \in \Rset^0\f$.
   In the second case we exploit the fact that the first argument
   of the function <CODE>point</CODE> is optional.
   \code
-  Generator origin0 = Generator::zero_dim_point();
-  Generator origin0_alt = grid_point();
+  Grid_Generator origin0 = Generator::zero_dim_point();
+  Grid_Generator origin0_alt = grid_point();
   \endcode
 
   \par Example 4
@@ -164,44 +157,46 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   where we provide a non-default value for the second argument
   of the function <CODE>point</CODE> (the divisor):
   \code
-  Generator p = point(2*x + 0*y + 4*z, 2);
+  Grid_Generator p = point(2*x + 0*y + 4*z, 2);
   \endcode
-  Obviously, the divisor can be usefully exploited to specify
+  Obviously, the divisor can be used to specify
   points having some non-integer (but rational) coordinates.
   For instance, the point
-  \f$\vect{q} = (-1.5, 3.2, 2.1)^\transpose \in \Rset^3\f$
+  \f$\vect{p1} = (-1.5, 3.2, 2.1)^\transpose \in \Rset^3\f$
   can be specified by the following code:
   \code
-  Generator q = point(-15*x + 32*y + 21*z, 10);
+  Grid_Generator p1 = point(-15*x + 32*y + 21*z, 10);
   \endcode
   If a zero divisor is provided, an exception is thrown.
 
   \par Example 5
-  Closure points are specified in the same way we defined points,
-  but invoking their specific constructor function.
-  For instance, the closure point
-  \f$\vect{c} = (1, 0, 2)^\transpose \in \Rset^3\f$ is defined by
+  Parameters, like points can have a divisor.
+  For instance, the parameter
+  \f$\vect{q} = (1, 0, 2)^\transpose \in \Rset^3\f$ can be defined:
   \code
-  Generator c = closure_point(1*x + 0*y + 2*z);
+  Grid_Generator q = parameter(2*x + 0*y + 4*z, 2);
   \endcode
-  For the particular case of the (only) closure point
-  having space dimension zero, we can use any of the following:
+  Also, the divisor can be used to specify
+  parameters having some non-integer (but rational) coordinates.
+  For instance, the parameter
+  \f$\vect{q} = (-1.5, 3.2, 2.1)^\transpose \in \Rset^3\f$
+  can be defined:
   \code
-  Generator closure_origin0 = Generator::zero_dim_closure_point();
-  Generator closure_origin0_alt = closure_point();
+  Grid_Generator q = parameter(-15*x + 32*y + 21*z, 10);
   \endcode
+  If a zero divisor is provided, an exception is thrown.
 
-  \par How to inspect a generator
-  Several methods are provided to examine a generator and extract
+  \par How to inspect a grid generator
+  Several methods are provided to examine a grid generator and extract
   all the encoded information: its space dimension, its type and
-  the value of its integer coefficients.
+  the value of its integer coefficients and the value of the denominator.
 
   \par Example 6
   The following code shows how it is possible to access each single
-  coefficient of a generator.
+  coefficient of a grid generator.
   If <CODE>g1</CODE> is a point having coordinates
   \f$(a_0, \ldots, a_{n-1})^\transpose\f$,
-  we construct the closure point <CODE>g2</CODE> having coordinates
+  we construct the parameter <CODE>g2</CODE> having coordinates
   \f$(a_0, 2 a_1, \ldots, (i+1)a_i, \ldots, n a_{n-1})^\transpose\f$.
   \code
   if (g1.is_point()) {
@@ -209,24 +204,24 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
     Linear_Expression e;
     for (int i = g1.space_dimension() - 1; i >= 0; i--)
       e += (i + 1) * g1.coefficient(Variable(i)) * Variable(i);
-    Generator g2 = closure_point(e, g1.divisor());
-    cout << "Closure point g2: " << g2 << endl;
+    Grid_Generator g2 = parameter(e, g1.divisor());
+    cout << "Parameter g2: " << g2 << endl;
   }
   else
-    cout << "Generator g1 is not a point." << endl;
+    cout << "Grid Generator g1 is not a point." << endl;
   \endcode
   Therefore, for the point
   \code
-  Generator g1 = point(2*x - y + 3*z, 2);
+  Grid_Generator g1 = point(2*x - y + 3*z, 2);
   \endcode
   we would obtain the following output:
   \code
   Point g1: p((2*A - B + 3*C)/2)
-  Closure point g2: cp((2*A - 2*B + 9*C)/2)
+  Parameter g2: parameter((2*A - 2*B + 9*C)/2)
   \endcode
-  When working with (closure) points, be careful not to confuse
+  When working with points and parameters, be careful not to confuse
   the notion of <EM>coefficient</EM> with the notion of <EM>coordinate</EM>:
-  these are equivalent only when the divisor of the (closure) point is 1.
+  these are equivalent only when the divisor is 1.
 */
 class Parma_Polyhedra_Library::Grid_Generator : private Generator {
 public:
