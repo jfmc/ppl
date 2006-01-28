@@ -680,6 +680,65 @@ test17() {
   exit(1);
 }
 
+// add_recycled_congruence, add empty system to zero dimension
+// universe.
+
+void
+test18() {
+  nout << "test18:" << endl;
+
+  Grid gr(0);
+
+  Congruence_System cgs;
+  gr.add_recycled_congruences(cgs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(0);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << "grid:" << endl << gr << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
+  exit(1);
+}
+
+// add_recycled_congruence, zero dimension empty.
+
+void
+test19() {
+  nout << "test19:" << endl;
+
+  Grid gr(0);
+
+  Congruence_System cgs;
+  cgs.insert(Congruence::zero_dim_false());
+
+  gr.add_recycled_congruences(cgs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(0, EMPTY);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << "grid:" << endl << gr << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -703,6 +762,8 @@ main() TRY {
   test15();
   test16();
   test17();
+  test18();
+  test19();
 
   return 0;
 }
