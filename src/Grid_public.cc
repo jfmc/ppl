@@ -996,14 +996,10 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
     // == 0 or 1 %= 0) or false (e.g., 1 == 0).  In a system of
     // congruences `begin()' and `end()' are equal if and only if the
     // system contains only trivial congruences.
-    if (cgs.begin() == cgs.end()) {
-      if (marked_empty())
-	set_zero_dim_univ();
-      return;
-    }
-    // There is a congruence, it must be false, the grid is empty.
-    if (status.test_zero_dim_univ())
-      set_empty();
+    if (cgs.begin() != cgs.end())
+      // There is a congruence, it must be false, the grid is empty.
+      if (status.test_zero_dim_univ())
+	set_empty();
     return;
   }
 
@@ -1076,11 +1072,8 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
     // == 0 or 1 %= 0) or false (e.g., 1 == 0).  In a system of
     // congruences `begin()' and `end()' are equal if and only if the
     // system contains only trivial congruences.
-    if (cgs.begin() == cgs.end()) {
-      if (marked_empty())
-	set_zero_dim_univ();
+    if (cgs.begin() == cgs.end())
       return true;
-    }
     // There is a congruence, it must be false, the grid is empty.
     if (status.test_zero_dim_univ())
       set_empty();
