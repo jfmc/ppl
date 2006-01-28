@@ -231,6 +231,36 @@ test7() {
   exit(1);
 }
 
+// add_constraint -- space dimension exception
+
+void
+test8() {
+  nout << "test8:" << endl;
+
+  Grid gr(1);
+
+  try {
+    gr.add_constraint(B == 0);
+    nout << "Exception expected." << endl;
+    exit(1);
+  } catch (const std::invalid_argument& e) {}
+}
+
+// add_constraint_and_minimize -- space dimension exception
+
+void
+test9() {
+  nout << "test9:" << endl;
+
+  Grid gr(1);
+
+  try {
+    gr.add_constraint_and_minimize(B == 0);
+    nout << "Exception expected." << endl;
+    exit(1);
+  } catch (const std::invalid_argument& e) {}
+}
+
 } // namespace
 
 int
@@ -246,6 +276,8 @@ main() TRY {
   test5();
   test6();
   test7();
+  test8();
+  test9();
 
   return 0;
 }

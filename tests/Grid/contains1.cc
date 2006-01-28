@@ -207,6 +207,24 @@ test8() {
   }
 }
 
+// Space dimension exception
+
+void
+test9() {
+  nout << "test9:" << endl;
+
+  Grid gr1(1, EMPTY);
+  gr1.add_generator(grid_point());
+
+  Grid gr2(21, EMPTY);
+
+  try {
+    gr1.contains(gr2);
+    nout << "Exception expected." << endl;
+    exit(1);
+  } catch (const std::invalid_argument& e) {}
+}
+
 } // namespace
 
 int
@@ -223,6 +241,7 @@ main() TRY {
   test6();
   test7();
   test8();
+  test9();
 
   return 0;
 }

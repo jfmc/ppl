@@ -856,6 +856,19 @@ test23() {
   exit(1);
 }
 
+// Space dimension exception.
+
+void
+test24() {
+  nout << "test24:" << endl;
+
+  try {
+    Grid gr(Grid::max_space_dimension() + 1);
+    exit(1);
+  }
+  catch (const std::length_error& e) {}
+}
+
 int
 main() TRY {
   set_handlers();
@@ -884,6 +897,7 @@ main() TRY {
   test21();
   test22();
   test23();
+  test24();
 
   return 0;
 }

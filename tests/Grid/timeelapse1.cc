@@ -347,6 +347,24 @@ test10() {
   exit(1);
 }
 
+// Space dimension exception.
+
+void
+test11() {
+  nout << "test11:" << endl;
+
+  Grid gr1(1, EMPTY);
+  gr1.add_generator(grid_point());
+
+  Grid gr2(19, EMPTY);
+
+  try {
+    gr1.time_elapse_assign(gr2);
+    nout << "Exception expected." << endl;
+    exit(1);
+  } catch (const std::invalid_argument& e) {}
+}
+
 } // namespace
 
 int
@@ -365,6 +383,7 @@ main() TRY {
   test8();
   test9();
   test10();
+  test11();
 
   return 0;
 }

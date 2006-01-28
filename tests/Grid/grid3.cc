@@ -156,6 +156,19 @@ test4() {
   exit(1);
 }
 
+// Space dimension exception.
+
+void
+test5() {
+  nout << "test5:" << endl;
+
+  try {
+    Grid gr(Constraint_System::max_space_dimension() + 1);
+    exit(1);
+  }
+  catch (const std::length_error& e) {}
+}
+
 } // namespace
 
 int
@@ -168,6 +181,7 @@ main() TRY {
   test2();
   test3();
   test4();
+  test5();
 
   return 0;
 }

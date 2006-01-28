@@ -322,6 +322,170 @@ test9() {
   exit(1);
 }
 
+// add_recycled_congruences(cs) -- space dimension exception
+
+void
+test10() {
+  nout << "test10:" << endl;
+
+  Constraint_System cs;
+  cs.insert(A + B == 0);
+
+  Grid gr(1);
+
+  try {
+    gr.add_recycled_congruences(cs);
+    nout << "Exception expected." << endl;
+    exit(1);
+  } catch (const std::invalid_argument& e) {}
+}
+
+// add_congruences(cs) -- space dimension exception
+
+void
+test11() {
+  nout << "test11:" << endl;
+
+  Constraint_System cs;
+  cs.insert(B == 0);
+
+  Grid gr(1);
+
+  try {
+    gr.add_congruences(cs);
+    nout << "Exception expected." << endl;
+    exit(1);
+  } catch (const std::invalid_argument& e) {}
+}
+
+// add_recycled_congruences_and_minimize(cs) -- space dimension
+// exception
+
+void
+test12() {
+  nout << "test12:" << endl;
+
+  Constraint_System cs;
+  cs.insert(B == 0);
+
+  Grid gr(1);
+
+  try {
+    gr.add_recycled_congruences_and_minimize(cs);
+    nout << "Exception expected." << endl;
+    exit(1);
+  } catch (const std::invalid_argument& e) {}
+}
+
+// add_congruences_and_minimize(cs) -- space dimension exception
+
+void
+test13() {
+  nout << "test13:" << endl;
+
+  Constraint_System cs;
+  cs.insert(B == 0);
+
+  Grid gr(1);
+
+  try {
+    gr.add_congruences_and_minimize(cs);
+    nout << "Exception expected." << endl;
+    exit(1);
+  } catch (const std::invalid_argument& e) {}
+}
+
+// add_constraints(cs) -- space dimension exception
+
+void
+test14() {
+  nout << "test14:" << endl;
+
+  Constraint_System cs;
+  cs.insert(A + B == 0);
+
+  Grid gr(1);
+
+  try {
+    gr.add_constraints(cs);
+    nout << "Exception expected." << endl;
+    exit(1);
+  } catch (const std::invalid_argument& e) {}
+}
+
+// add_constraints(cs) -- space dimension exception
+
+void
+test15() {
+  nout << "test15:" << endl;
+
+  Constraint_System cs;
+  cs.insert(A + B == 0);
+
+  Grid gr(1);
+
+  try {
+    gr.add_constraints(cs);
+    nout << "Exception expected." << endl;
+    exit(1);
+  } catch (const std::invalid_argument& e) {}
+}
+
+// add_recycled_constraints(cs) -- space dimension exception
+
+void
+test16() {
+  nout << "test16:" << endl;
+
+  Constraint_System cs;
+  cs.insert(A + B == 0);
+
+  Grid gr(1);
+
+  try {
+    gr.add_recycled_constraints(cs);
+    nout << "Exception expected." << endl;
+    exit(1);
+  } catch (const std::invalid_argument& e) {}
+}
+
+// add_recycled_constraints_and_minimize(cs) -- space dimension
+// exception
+
+void
+test17() {
+  nout << "test17:" << endl;
+
+  Constraint_System cs;
+  cs.insert(A + B == 0);
+
+  Grid gr(1);
+
+  try {
+    gr.add_recycled_constraints_and_minimize(cs);
+    nout << "Exception expected." << endl;
+    exit(1);
+  } catch (const std::invalid_argument& e) {}
+}
+
+// add_constraints_and_minimize(cs) -- space dimension exception
+
+void
+test18() {
+  nout << "test18:" << endl;
+
+  Constraint_System cs;
+  cs.insert(A + B == 0);
+
+  Grid gr(1);
+
+  try {
+    gr.add_constraints_and_minimize(cs);
+    nout << "Exception expected." << endl;
+    exit(1);
+  } catch (const std::invalid_argument& e) {}
+}
+
 } // namespace
 
 int
@@ -339,6 +503,15 @@ main() TRY {
   test7();
   test8();
   test9();
+  test10();
+  test11();
+  test12();
+  test13();
+  test14();
+  test15();
+  test16();
+  test17();
+  test18();
 
   return 0;
 }
